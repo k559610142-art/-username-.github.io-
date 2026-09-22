@@ -533,7 +533,7 @@
             <div style="margin-top: 5px;">靈石：<span id="coins-display" style="color: #facc15; font-weight: bold;">0</span></div>
             <div style="margin-top: 5px;">聲望：<span id="reputation-display" style="color: var(--reputation-color); font-weight: bold;">0</span></div>
         </div>
-        <div id="combat-status">當前狀態：在洞府 / 弟子居 靜修 (安全區)</div>
+        <div id="combat-status">當前狀態：在宗門 靜修 (安全區)</div>
     </div>
 
     <div>
@@ -601,7 +601,7 @@
                 🗺️ 展開選單 <span class="drawer-arrow">▾</span>
             </button>
             <div id="drawer-map" class="drawer-body">
-                <button class="sys-btn" onclick="openMapCategoryModal(0)">📍 第一區：宗門核心安全區</button>
+                <button class="sys-btn" onclick="openMapCategoryModal(0)">📍 第一區：宗門 (安全區)</button>
                 <button class="sys-btn" onclick="openMapCategoryModal(1)">📍 第二區：野外歷練區</button>
                 <button class="sys-btn" onclick="openMapCategoryModal(2)">📍 第三區：開放世界大區域</button>
                 <button class="sys-btn" onclick="openMapCategoryModal(3)">📍 第四區：上古禁區 (高難)</button>
@@ -654,7 +654,7 @@
         <button class="sys-btn" style="border-color: rgba(250, 204, 21, 0.4); color: #facc15;" onclick="openBagModal()">🎒 修仙背包 (道具/裝備)</button>
         <button class="servant-btn" onclick="openServantModal()">🤝 僕從小屋 (拯救與派遣)</button>
 
-        <button id="btn-sect-quest" class="sect-btn" style="border-color:#22d3ee; color:#22d3ee; display: none;" onclick="openQuestModal()">📜 門派任務 (需在演武學宮)</button>
+        <button id="btn-sect-quest" class="sect-btn" style="border-color:#22d3ee; color:#22d3ee; display: none;" onclick="openQuestModal()">📜 門派任務 (需在宗門)</button>
         <button id="btn-sect-field" class="sect-btn" style="border-color:#4ade80; color:#4ade80; display: none;" onclick="openFieldModal()">🚜 宗門靈田 (種植靈草)</button>
         <button id="btn-sect-beast" class="sect-btn" style="border-color:#fb923c; color:#fb923c; display: none;" onclick="openBeastModal()">🐾 靈獸園 (培育靈獸)</button>
         
@@ -767,7 +767,7 @@
 
 <div id="lingbao-shop-modal" class="modal-bg">
     <div class="modal-content" style="border-color: var(--reputation-color);">
-        <h2 style="text-align: center; color: var(--reputation-color); margin-top: 0;">💎 後山禁地 - 靈寶閣</h2>
+        <h2 style="text-align: center; color: var(--reputation-color); margin-top: 0;">💎 宗門 - 靈寶閣</h2>
         <p style="text-align: center; color: #9ca3af; font-size: 0.9em;">三個階段的宗門各有專屬的戰略級寶物與武學，兌換需<strong style="color: var(--accent);">同時</strong>消耗靈石與聲望。<br>每件皆為唯一性物品，兌換後不會再補貨。</p>
         <!-- 內容由 lingbao-shop.js 的 renderLingbaoShopUI() 依初級/中級/高級分區產生（各區自帶 grid-container） -->
         <div id="lingbao-shop-container" style="margin-top: 20px;"></div>
@@ -812,7 +812,7 @@
 
 <div id="quest-modal" class="modal-bg">
     <div class="modal-content" style="border-color: #22d3ee; text-align: center;">
-        <h2 style="color: #22d3ee; margin-top: 0;">📜 演武學宮 - 門派任務</h2>
+        <h2 style="color: #22d3ee; margin-top: 0;">📜 宗門 - 門派任務</h2>
         <p style="color: #9ca3af; font-size: 0.9em;">接取任務後，將自動累積進度並獲得獎勵。</p>
         <div id="current-quest-display" style="margin-bottom: 10px; font-weight: bold; color: var(--accent);">當前未接取任務</div>
         <div id="assigned-servant-display" style="margin-bottom: 20px; font-size: 0.9em; color: var(--servant-color);">派遣僕從：無</div>
@@ -898,7 +898,7 @@
 
 <div id="library-modal" class="modal-bg">
     <div class="modal-content" style="border-color: #c084fc;">
-        <h2 style="text-align: center; color: #c084fc; margin-top: 0;">📚 後山禁地 - 藏書閣</h2>
+        <h2 style="text-align: center; color: #c084fc; margin-top: 0;">📚 宗門 - 藏書閣</h2>
         <p style="text-align: center; color: #9ca3af; font-size: 0.9em;">消耗【武學積分】參悟上古古籍，永久提升屬性！（每種書籍學習上限 100 次）</p>
         <div class="grid-container" style="margin-top: 20px;">
             <div class="card">
@@ -952,7 +952,7 @@
 
 <div id="forge-modal" class="modal-bg">
     <div class="modal-content" style="border-color: #fb923c;">
-        <h2 style="text-align: center; color: #fb923c; margin-top: 0;">⚒️ 後山禁地 - 鍛造閣</h2>
+        <h2 style="text-align: center; color: #fb923c; margin-top: 0;">⚒️ 宗門 - 鍛造閣</h2>
         <p style="text-align: center; color: #9ca3af; font-size: 0.9em;">消耗靈石打造靈寶裝備，品質與五行屬性隨機產生！</p>
         <div style="text-align: center; margin-bottom: 20px;">
             <label style="color: var(--accent);">選擇打造部位：</label>
@@ -971,7 +971,7 @@
 
 <div id="alchemy-modal" class="modal-bg">
     <div class="modal-content" style="border-color: #f472b6;">
-        <h2 style="text-align: center; color: #f472b6; margin-top: 0;">🧪 後山禁地 - 煉丹房</h2>
+        <h2 style="text-align: center; color: #f472b6; margin-top: 0;">🧪 宗門 - 煉丹房</h2>
         <p style="text-align: center; color: #9ca3af; font-size: 0.9em;">使用高級靈草煉製神丹，服用後可永久提升個人各項屬性！</p>
         <div class="grid-container" style="margin-top: 20px;">
             <div class="card">

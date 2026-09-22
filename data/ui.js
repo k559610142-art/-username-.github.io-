@@ -30,27 +30,10 @@ function updateSectFacilitiesUI() {
     const forbiddenForge = document.getElementById('btn-forbidden-forge');
     const forbiddenAlchemy = document.getElementById('btn-forbidden-alchemy');
 
-    if (player.currentMap && player.currentMap.name === '演武學宮') {
-        questBtn.style.display = 'block';
-        fieldBtn.style.display = 'block';
-        beastBtn.style.display = 'block';
-    } else {
-        questBtn.style.display = 'none';
-        fieldBtn.style.display = 'none';
-        beastBtn.style.display = 'none';
-    }
-
-    if (player.currentMap && player.currentMap.name === '後山禁地') {
-        forbiddenLingbao.style.display = 'block';
-        forbiddenLibrary.style.display = 'block';
-        forbiddenForge.style.display = 'block';
-        forbiddenAlchemy.style.display = 'block';
-    } else {
-        forbiddenLingbao.style.display = 'none';
-        forbiddenLibrary.style.display = 'none';
-        forbiddenForge.style.display = 'none';
-        forbiddenAlchemy.style.display = 'none';
-    }
+    // 身在宗門時，所有宗門設施一律開放
+    const display = isInSect() ? 'block' : 'none';
+    [questBtn, fieldBtn, beastBtn, forbiddenLingbao, forbiddenLibrary, forbiddenForge, forbiddenAlchemy]
+        .forEach(btn => { btn.style.display = display; });
 }
 
 function updateCombatVisualPanel() {

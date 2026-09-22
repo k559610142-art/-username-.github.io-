@@ -58,45 +58,45 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 1 | `config-realms.js` | `realms` 境界名稱陣列 | 無 | `stats.js`(getNextExp)、`ui.js`、`leveling.js` |
 | 2 | `config-level.js` | `MAX_PLAYER_LEVEL`、`LEVEL_UP_*` 成長值、`LEVEL_EXP_SEGMENTS` 經驗曲線 | 無 | `stats.js`(getLevelExpNeeded、getMaxHp/getMaxMp)、`leveling.js`(gainLevelExp)、`ui.js` |
 | 3 | `config-lifespan.js` | `lifespanByRealm` 各境界壽元增加量與死亡折壽、歲月流逝常數 `LIFESPAN_AGING_MINUTES`/`LIFESPAN_DANGER_MULT`/`LIFESPAN_TRIBULATION_MULT`/`LIFESPAN_OFFLINE_RATE`/`LIFESPAN_FLOOR_DEATHS` | 無 | `lifespan.js`、`leveling.js`(轉世重設壽元) |
-| 4 | `config-maps.js` | `maps` 地圖資料、`monsterIcons` | 無 | `state.js`、`map.js`、`combat.js`、`ui.js` |
+| 4 | `config-maps.js` | `SECT_MAP_NAME`（"宗門"，唯一安全區的名稱）、`maps` 地圖資料、`monsterIcons` | 無 | `state.js`、`map.js`(isInSect)、`combat.js`、`ui.js`、`save.js`(migrateCurrentMap) |
 | 5 | `config-sects.js` | `sectData` 宗門與技能表、`SECT_SKILL_BONUS`、`SECT_TIER_NAMES`、`findSectByName()`；尾端迴圈替每招補上 `tier`/`mult` | 無 | `sect.js`、`stats.js`(getSectTier/getAllSkills)、`ui.js`、`save.js`(重新綁定宗門) |
 | 6 | `config-lingbao.js` | `legacySkillAdjustments` 舊版禁術下修數值、`lingbaoTierCosts` 各階段兌換價格、`lingbaoShopItems` 三階段戰略級寶物與武學 | 無 | `lingbao-shop.js`、`equipment.js`(五行說明列固定屬性裝備) |
-| 7 | `config-shop.js` | `shopItems` 丹藥堂商品 | 無 | `shop.js`、`bag.js`、`combat.js`(自動補血補魔) |
+| 7 | `config-shop.js` | `shopItems` 丹藥堂商品、`shopSections` 分區、`POTION_COOLDOWN_SECONDS` 丹藥冷卻、`SHOP_MAX_BUY_QTY` 單次購買上限(9999) | 無 | `shop.js`、`bag.js`、`combat.js`(自動補血補魔) |
 | 8 | `config-beasts.js` | `beastData` 靈寵兌換與被動、`BEAST_REVIVE_COST_CORE`、`BEAST_SKILL_LEVELS`、`BEAST_SKILL_CHANCE`、`beastElementInfo`、`beastSkillTree` | 無 | `beast.js`、`beast-combat.js`、`save.js`(舊存檔轉換) |
 | 9 | `config-servants.js` | `MAX_SERVANTS`、`servantQualities`、`servantNames` | 無 | `combat.js`(tryRescueServant) |
 | 10 | `config-equipment.js` | `MAX_EQUIP_INVENTORY`、`equipTypes`（含 artifact 神器欄）、`NON_FORGEABLE_SLOTS`、`wuxingElements`、`wuxingArrayEffects`(五行法陣名稱/效果/搭配說明)、`equipQualities`(含各品質的減傷/閃避/屬性傷害值) | 無 | `equipment.js`(鍛造、五行說明視窗)、`stats.js`(getWuxingBuff)、`save.js`(補齊欄位)、`beast.js`(五行選項) |
 | 11 | `config-tribulation.js` | 渡劫門檻、勝算常數 `TRIBULATION_*`、心魔倍率與技能 | 無 | `leveling.js`、`tribulation.js`、`save.js` |
-| 12 | `config-quests.js` | `questData` 門派任務、`QUEST_*` 進度常數 | 無 | `quest.js`、`servant.js`、`combat.js` |
+| 12 | `config-quests.js` | `questData` 門派任務、`questRewardInfo` 獎勵名稱與對應欄位、`QUEST_*` 進度常數、`MAX_ASSIGNED_SERVANTS` | 無 | `quest.js`、`servant.js`、`combat.js` |
 | 13 | `config-activities.js` | `activityData` 活動清單與解鎖條件 | 無 | `activity.js` |
-| 14 | `config-daily-quests.js` | 每日任務池與獎勵、千寶閣 `AUCTION_*`、`auctionQualityOdds`、`auctionLifePills`(壽元丹) | 無 | `daily-quest.js`、`auction.js` |
+| 14 | `config-daily-quests.js` | 每日任務 `DAILY_REFRESH_HOURS`/`DAILY_QUEST_COUNT`/`dailyQuestPool`/`dailyQuestRewards`、千寶閣 `AUCTION_*`、`auctionQualityOdds`、`auctionLifePills`(壽元丹) | 無 | `daily-quest.js`、`auction.js` |
 | 15 | `config-elements.js` | 戰鬥屬性上限 `DEF_CAP`/`EVA_CAP`/`AFFIX_CAP`、效果常數（凍結/燒傷/中毒/金重擊）、`combatAttrInfo`、`AFFIX_TYPES`、`monsterAttrsByMapCategory` | 無 | `elements.js`、`ui.js`、`equipment.js`(鍛造屬性) |
 | 16 | `state.js` | `player`（含 `lingbaoSold`）、`DEFAULT_PLAYER_JSON`（全新角色預設值快照，讀檔/匯入的合併基底）、`enemies`（每隻帶 `attrs`/`status`）、`respawnTimer`、`safeZoneTimer`；不存檔的執行期狀態：`inTribulation`/`heartDemon`/`tribulationFatedWin`/丹藥冷卻/`gameOver`/`playerStatus`(玩家身上的凍結/燒傷/中毒)/靈寵輔助計時(`petBuff*`/`petShield*`/`petRegen*`) | **`maps`**（必須排在 config-maps.js 之後） | 幾乎所有檔案都會讀寫 `player` |
 | 17 | `stats.js` | `EQUIP_STAT_KEYS`、`getEquipBonus`(四維＋減傷/閃避/屬性傷害)/`getWuxingBuff`/`getNextExp`/`getLevelExpNeeded`/`hasLiveBeast`/`getBasePower`/`getPhysAttack`/`getMagAttack`/`getMaxHp`/`getMaxMp`/`getSectTier`/`getAllSkills` | `player`、`realms`、`sectData`、`LEVEL_*`、靈寵輔助計時 | `ui.js`、`combat.js`、`leveling.js`、`tribulation.js`、`beast-combat.js` 等幾乎全部功能檔 |
 | 18 | `elements.js` | `newStatus`/`getPlayerCombatAttrs`/`withSkillEffect`/`getMapCategoryIndex`/`rollMonsterAttrs`/`resolveHit`/`addDotStack`/`tickStatus`/`formatStatus`/`summarizeTags`/`formatEquipStats` | `config-elements.js`、`stats.js`(getEquipBonus)、`maps`、`playerStatus` | `combat.js`、`tribulation.js`、`ui.js`、`bag.js`/`equipment.js`/`auction.js`/`lingbao-shop.js`(裝備屬性文字) |
-| 19 | `ui.js` | 常數 `PLAYER_AVATARS`（頭像/預設道號，戰鬥實況與性別選擇共用）、`updateUI`/`updateCombatVisualPanel`/`updateStudyCountsUI`/`renderSkillList`/`addLog`/`updateAutoSettings`/`syncAutoSettingsUI`/`updateSectFacilitiesUI`/`closeModal`/`toggleDrawer`/`formatCountdown`/`resolveBatchCount`(×1/×10/最高 共用)/批次刪除工具 | `player`、`realms`、`stats.js` 的計算函式、`lifespan.js`(getDeathLifespanCost) | 幾乎所有功能檔在資料變動後都會呼叫 `updateUI()`/`addLog()` |
-| 20 | `map.js` | `openMapCategoryModal`/`selectMap`/`changeMap` | `maps`、`player`、`ui.js` | `quest.js`(stopQuest 由 changeMap 呼叫)、HTML 按鈕 |
+| 19 | `ui.js` | 常數 `PLAYER_AVATARS`（頭像/預設道號，戰鬥實況與性別選擇共用）、`updateUI`/`updateCombatVisualPanel`/`updateTribulationUI`/`updatePotionCooldownUI`/`updateStudyCountsUI`/`renderSkillList`/`addLog`/`refreshCombatStatusText`/`updateAutoSettings`/`syncAutoSettingsUI`/`updateSectFacilitiesUI`/`closeModal`/`toggleDrawer`/`formatCountdown`/`resolveBatchCount`(×1/×10/最高 共用)/批次刪除工具 `renderBulkDeleteBar`/`getCheckedBulkQualities`/`toggleAllBulkQualities` | `player`、`realms`、`stats.js` 的計算函式、`lifespan.js`(getDeathLifespanCost) | 幾乎所有功能檔在資料變動後都會呼叫 `updateUI()`/`addLog()` |
+| 20 | `map.js` | `isInSect`(是否身在宗門)/`openMapCategoryModal`/`selectMap`/`changeMap` | `maps`、`SECT_MAP_NAME`、`player`、`ui.js` | `ui.js`(updateSectFacilitiesUI)、`combat.js`/`quest.js`(門派任務須在宗門)、HTML 按鈕；changeMap 離開宗門時呼叫 `quest.js` 的 stopQuest |
 | 21 | `combat.js` | `combatTick`/`playerAttackTurn`(普攻/技能出手，渡劫共用)/`onPlayerKilledInField`/`checkAutoHealAndMana`/`tryRescueServant` | `player`、`enemies`、`shopItems`、`servantQualities`、`servantNames`、`stats.js`、`elements.js`(resolveHit/tickStatus)、`leveling.js`(gainExp)、`beast-combat.js`(petAssistTick/applyPetDamageReduction)、`lifespan.js`(handlePlayerDeath)、`map.js`(changeMap 死亡回城) | `main.js`(setInterval 每秒呼叫) |
 | 22 | `leveling.js` | `gainExp`/`gainLevelExp`/`advanceRealm`/`triggerReincarnate` | `realms`、`player`、`stats.js`、`beast-combat.js`(gainBeastExp)、`lifespan.js`(gainRealmLifespan) | `combat.js`、`tribulation.js`、`save.js`、HTML 輪迴按鈕 |
-| 23 | `lifespan.js` | `getDeathLifespanCost`/`formatLifespan`/`getLifespanFloor`/`getAgingMultiplier`/`getAgingPerMinute`/`ageLifespan`/`checkLifespanWarnings`/`getInitialLifespanForRealm`/`gainRealmLifespan`/`handlePlayerDeath`/`triggerLifespanGameOver` | `lifespanByRealm`、`LIFESPAN_*`、`player`、`inTribulation`、`elements.js`(getMapCategoryIndex)、`beast-combat.js`(killAllBeasts) | `combat.js`(每秒 ageLifespan、死亡)、`tribulation.js`(死亡)、`leveling.js`(突破)、`save.js`(離線流逝、舊存檔)、`ui.js`、`auction.js` |
+| 23 | `lifespan.js` | `getDeathLifespanCost`/`formatLifespan`/`getLifespanFloor`/`getAgingMultiplier`/`getAgingPerMinute`/`ageLifespan`/`checkLifespanWarnings`(提示旗標 `lifespanWarned`，不存檔)/`getInitialLifespanForRealm`/`gainRealmLifespan`/`handlePlayerDeath`/`triggerLifespanGameOver` | `lifespanByRealm`、`LIFESPAN_*`、`player`、`inTribulation`、`elements.js`(getMapCategoryIndex)、`beast-combat.js`(killAllBeasts) | `combat.js`(每秒 ageLifespan、死亡)、`tribulation.js`(死亡)、`leveling.js`(突破)、`save.js`(離線流逝、舊存檔)、`ui.js`、`auction.js` |
 | 24 | `tribulation.js` | `getTribulationChance`/`formatChance`/`triggerTribulation`/`tribulationTick`/`resolvePlayerFall`/`endTribulation` | `player`、`config-tribulation.js`、`shopItems`(丹藥加成)、`sectData`(技能加成)、`stats.js`、`elements.js`、`combat.js`(playerAttackTurn)、`beast-combat.js`、`lifespan.js`、`leveling.js`(advanceRealm) | `combat.js`(渡劫中接管 tick)、`ui.js`(按鈕顯示勝算)、HTML 渡劫按鈕 |
 | 25 | `sect.js` | `checkSectJoined`/`openSectModal`/`renderSects`/`joinSect` | `sectData`、`player.sect`/`sectSkills` | 幾乎所有「需拜入宗門才能使用」的彈窗（shop/servant/field/beast/lingbao-shop/library/forge/alchemy）都會先呼叫 `checkSectJoined()` |
-| 26 | `shop.js` | `openShopModal`/`renderShop`/`buyShopItem` | `shopItems`、`player`、`sect.js`(checkSectJoined) | HTML 按鈕、`bag.js` 顯示已購買道具 |
+| 26 | `shop.js` | `openShopModal`/`renderShop`/`renderShopCard`/`getShopQty`/`setShopQty`/`setShopQtyMax`/`updateShopTotal`/`buyShopItem` | `shopItems`、`player`、`sect.js`(checkSectJoined) | HTML 按鈕、`bag.js` 顯示已購買道具 |
 | 27 | `bag.js` | `openBagModal`/`hasEquipInventorySpace`(背包上限檢查，鍛造/千寶閣/靈寶閣/卸下裝備共用)/`renderBag`/`useItemFromBag`/`deleteItemFromBag`/`deleteEquipFromInventory`/`bulkDeleteEquipment` | `shopItems`、`player.bag`、`player.equipInventory` | `equipment.js`(equipItem 後呼叫 renderBag) |
-| 28 | `equipment.js` | `initForgeSelect`/`openEquipmentModal`/`renderLingbaoUI`(注意：命名沿用舊碼，實際是角色裝備列表)/`openWuxingInfo`/`equipItem`/`unequipItem`/`openForgeModal`/`forgeEquipment`/`forgeOneEquipment`/`generateEquipStats`(鍛造與千寶閣共用的屬性產生)、常數 `FORGE_COST` | `equipTypes`、`wuxingElements`、`wuxingArrayEffects`、`equipQualities`、`lingbaoShopItems`(說明視窗列固定屬性裝備)、`player.equipment`、`player.equipInventory`、`ui.js`(resolveBatchCount) | `bag.js`(equipItem)、`sect.js`(forge 需拜入宗門) |
-| 29 | `lingbao-shop.js` | `openLingbaoShopModal`/`renderLingbaoShopUI`/`buyLingbaoItem(itemId)` | `lingbaoShopItems`、`lingbaoTierCosts`、`player.sectSkills`/`lingbaoSold`/`coins`/`reputation`/`equipInventory`/`learnedSkills`、`bag.js`(hasEquipInventorySpace) | HTML 按鈕（僅在「後山禁地」顯示） |
+| 28 | `equipment.js` | `EQUIP_CATEGORY_NAMES`(部位分類中文名)、`initForgeSelect`/`openEquipmentModal`/`renderLingbaoUI`(注意：命名沿用舊碼，實際是角色裝備列表)/`openWuxingInfo`/`equipItem`/`unequipItem`/`openForgeModal`/`forgeEquipment`/`forgeOneEquipment`/`generateEquipStats`(鍛造與千寶閣共用的屬性產生)、常數 `FORGE_COST` | `equipTypes`、`wuxingElements`、`wuxingArrayEffects`、`equipQualities`、`lingbaoShopItems`(說明視窗列固定屬性裝備)、`player.equipment`、`player.equipInventory`、`ui.js`(resolveBatchCount) | `bag.js`(equipItem)、`sect.js`(forge 需拜入宗門) |
+| 29 | `lingbao-shop.js` | `openLingbaoShopModal`/`renderLingbaoShopUI`/`buyLingbaoItem(itemId)` | `lingbaoShopItems`、`lingbaoTierCosts`、`player.sectSkills`/`lingbaoSold`/`coins`/`reputation`/`equipInventory`/`learnedSkills`、`bag.js`(hasEquipInventorySpace) | HTML 按鈕（僅在「宗門」顯示） |
 | 30 | `servant.js` | `openServantModal`/`renderServants`/`assignServantQuest`/`dismissServant`/`bulkDismissServants`/`tickServantQuests`/`getAssignedServantCount` | `questData`、`player.servants`(每位自帶 `quest`/`timer`)、`quest.js` 的獎勵函式 | `combat.js`(每 tick 呼叫 tickServantQuests)、`quest.js`(顯示派遣狀態) |
-| 31 | `quest.js` | `openQuestModal`/`renderQuestButtons`/`startQuest`/`stopQuest`/`updateQuestUI` + 共用獎勵函式 `getQuestDef`/`formatQuestRewards`/`grantQuestRewards` | `questData`(config-quests.js)、`player.activeQuest`、`stats.js`(getSectTier) | `combat.js`(玩家任務結算)、`servant.js`(僕從任務結算)、`map.js`(離開演武學宮時中斷) |
+| 31 | `quest.js` | `openQuestModal`/`renderQuestButtons`/`startQuest`/`stopQuest`/`updateQuestUI` + 共用獎勵函式 `getQuestDef`/`formatQuestRewards`/`grantQuestRewards` | `questData`(config-quests.js)、`player.activeQuest`、`stats.js`(getSectTier)、`map.js`(isInSect) | `combat.js`(玩家任務結算)、`servant.js`(僕從任務結算)、`map.js`(離開宗門時中斷) |
 | 32 | `activity.js` | `renderActivityList`/`getActivityLockReason`/`openActivity` | `activityData`、`player.reputation`/`realmIndex` | `ui.js`(updateUI 每秒重繪) |
-| 33 | `daily-quest.js` | `openDailyQuestModal`/`claimDailyQuest`/`claimAllDailyQuests`/`addDailyProgress`/`refreshDailyQuestsIfDue` | `config-daily-quests.js`、`player.daily*` | 各功能的 `addDailyProgress()` 埋點 |
-| 34 | `auction.js` | `openAuctionModal`/`refreshAuctionIfDue`/`rollAuctionItem`/`rollAuctionEquip`/`buyAuctionItem`/`buyAuctionLifePill`/`renderAuction` | `auctionQualityOdds`、`auctionLifePills`、`equipQualities`、`player.auctionItems`/`coins`/`reputation`/`lifespan` | `activity.js`(千寶閣按鈕) |
-| 35 | `field.js` | `herbRecipes`、`openFieldModal`/`plantHerb` | `player.spiritGrass`/`player.herbs`/`player.coins`、`ui.js`(resolveBatchCount) | HTML 按鈕（僅在「演武學宮」顯示） |
+| 33 | `daily-quest.js` | `openDailyQuestModal`/`renderDailyQuests`/`claimDailyQuest`/`claimAllDailyQuests`/`addDailyProgress`/`refreshDailyQuestsIfDue` | `config-daily-quests.js`、`player.daily*` | 各功能的 `addDailyProgress()` 埋點 |
+| 34 | `auction.js` | `openAuctionModal`/`refreshAuctionIfDue`/`rollAuctionItem`/`rollAuctionEquip`/`buyAuctionItem`(壽元丹轉交 `buyAuctionLifePill`)/`buyAuctionLifePill`/`renderAuction`/`renderAuctionLifePillCard` | `auctionQualityOdds`、`auctionLifePills`、`equipQualities`、`player.auctionItems`/`coins`/`reputation`/`lifespan` | `activity.js`(千寶閣按鈕) |
+| 35 | `field.js` | `herbRecipes`、`openFieldModal`/`plantHerb` | `player.spiritGrass`/`player.herbs`/`player.coins`、`ui.js`(resolveBatchCount) | HTML 按鈕（僅在「宗門」顯示） |
 | 36 | `beast-combat.js` | `createBeast`/`getBeastSkill`/`describeBeastSkill`/`gainBeastExp`/`killAllBeasts`/`applyPetDamageReduction`/`petAssistTick` | `beastData`、`beastSkillTree`、`player.beasts`/`level`、`stats.js`(getLevelExpNeeded/getPhysAttack) | `leveling.js`(gainExp)、`combat.js`/`tribulation.js`(每回合)、`lifespan.js`(死亡)、`beast.js`、`save.js` |
-| 37 | `beast.js` | `openBeastModal`/`renderBeasts`/`tameBeast`/`reviveBeast`/`learnBeastSkill` | `beastData`、`player.beastCore`/`coins`/`beasts`、`beast-combat.js`、`stats.js`(getEquipBonus 算魅力折扣) | HTML 按鈕（僅在「演武學宮」顯示） |
-| 38 | `library.js` | `STUDY_COST`/`STUDY_GAIN`/`STUDY_MAX_COUNT`、`openLibraryModal`/`studyBook` | `player.studyCounts`/`martialPoints`/`stats`、`ui.js`(resolveBatchCount) | HTML 按鈕（僅在「後山禁地」顯示） |
-| 39 | `alchemy.js` | `pillRecipes`、`openAlchemyModal`/`craftPill` | `player.herbs`/`stats`/`coins`、`ui.js`(resolveBatchCount) | HTML 按鈕（僅在「後山禁地」顯示） |
+| 37 | `beast.js` | `openBeastModal`/`getBeastDiscountMult`(魅力折扣倍率)/`renderBeasts`/`tameBeast`/`reviveBeast`/`learnBeastSkill` | `beastData`、`player.beastCore`/`coins`/`beasts`、`beast-combat.js`、`stats.js`(getEquipBonus 算魅力折扣) | HTML 按鈕（僅在「宗門」顯示） |
+| 38 | `library.js` | `STUDY_COST`/`STUDY_GAIN`/`STUDY_MAX_COUNT`、`openLibraryModal`/`studyBook` | `player.studyCounts`/`martialPoints`/`stats`、`ui.js`(resolveBatchCount) | HTML 按鈕（僅在「宗門」顯示） |
+| 39 | `alchemy.js` | `pillRecipes`、`openAlchemyModal`/`craftPill` | `player.herbs`/`stats`/`coins`、`ui.js`(resolveBatchCount) | HTML 按鈕（僅在「宗門」顯示） |
 | 40 | `player-profile.js` | `PLAYER_NAME_MAX_LENGTH`、`sanitizePlayerName`(移除 HTML 特殊字元，讀檔/匯入也套用)/`changePlayerName`(開啟 #name-modal)/`confirmPlayerName` | `player.name` | HTML 按鈕、`save.js`(applySaveData) |
-| 41 | `save.js` | `calcOfflineProgress`/`saveLocal`/`loadLocal`/`applySaveData`(讀檔與匯入共用)/`resetGameCompletely` + 舊存檔相容 `migrate*()`（含 `migrateLegacySkills`）+ `reloadLocalSave`(選單按鈕，無存檔時給提示) + 存檔代碼（皆為 async）`encodeSaveCode`/`decodeSaveCode`/`bytesToBase64`/`base64ToBytes`/`pipeBytes`/`openSaveCodeModal`/`setSaveCodeStatus`/`exportSave`/`copySaveCode`/`downloadSaveCode`/`importSave`/`pasteSaveCodeFromClipboard`/`importSaveFromFile`/`confirmImportSave`/`resetImportConfirm` | `player`（整包序列化進 `localStorage`）、`leveling.js`(gainExp)、`combat.js`(tryRescueServant)、`lifespan.js`、`beast-combat.js`(createBeast)、`ui.js` | `main.js`(啟動時 loadLocal)、`main.js`(initGame 內每 30 秒 saveLocal) |
-| 42 | `title-screen.js` | `enterWorld`/`initTitleScreen`、旗標 `worldEntered` | `main.js`(startGame)、`#title-screen` DOM | `main.js`(onload 呼叫 initTitleScreen)、標題頁按鈕 |
+| 41 | `save.js` | `calcOfflineProgress`/`saveLocal`/`loadLocal`/`applySaveData`(讀檔與匯入共用)/`resetGameCompletely` + 舊存檔相容 `migrateServantAssignments`/`migrateEquipmentSlots`/`migrateActivityFields`/`migrateCurrentMap`/`migrateProgressionFields`/`migrateLegacySkills` + `reloadLocalSave`(選單按鈕，無存檔時給提示) + 存檔代碼（常數 `SAVE_CODE_PREFIX`="FS2:"、兩段式確認暫存 `pendingImportData`；編解碼皆為 async）`encodeSaveCode`/`decodeSaveCode`/`bytesToBase64`/`base64ToBytes`/`pipeBytes`/`openSaveCodeModal`/`setSaveCodeStatus`/`exportSave`/`selectSaveCodeText`/`copySaveCode`/`downloadSaveCode`/`importSave`/`pasteSaveCodeFromClipboard`/`importSaveFromFile`/`confirmImportSave`/`resetImportConfirm` | `player`（整包序列化進 `localStorage`）、`maps`(migrateCurrentMap)、`leveling.js`(gainExp)、`combat.js`(tryRescueServant)、`lifespan.js`、`beast-combat.js`(createBeast)、`ui.js` | `main.js`(啟動時 loadLocal)、`main.js`(initGame 內每 30 秒 saveLocal) |
+| 42 | `title-screen.js` | `TITLE_HOTSPOTS`(光環座標)/`currentTitleHotspot`/`positionTitleHotspot`/`enterWorld`/`initTitleScreen`、旗標 `worldEntered` | `main.js`(startGame)、`#title-screen` DOM | `main.js`(onload 呼叫 initTitleScreen)、標題頁按鈕 |
 | 43 | `main.js` | `initGame`(含每 30 秒存檔與切到背景時存檔)/`startGame`/`chooseGender`/`window.onload`、旗標 `gameStarted` | 幾乎全部模組（啟動流程的膠水程式碼） | 瀏覽器 `onload`、`title-screen.js`(enterWorld 呼叫 startGame) |
 
 ## 3. 資料流總覽（文字版流程圖）
@@ -139,7 +139,7 @@ combatTick() 每秒執行 [combat.js]
         │        → 靈寵協助 petAssistTick() [beast-combat.js] → 怪物狀態結算 → 擊殺結算 → 怪物逐隻反擊（同樣經 resolveHit()）
         │       ├─ 擊殺 → gainExp()（同時累積境界、人物等級、靈寵等級）、加靈石、tryRescueServant() [combat.js]
         │       └─ 戰死 → handlePlayerDeath() [lifespan.js]：折壽、靈寵全數陣亡；壽元歸零 → 清除存檔重新開始
-        ├─ 玩家任務進度（須在演武學宮）[quest.js 的 activeQuest]
+        ├─ 玩家任務進度（須在宗門）[quest.js 的 activeQuest]
         ├─ tickServantQuests() 每位僕從各自的任務進度 [servant.js]
         └─ checkAutoHealAndMana() 自動補給 [combat.js]
 
@@ -160,7 +160,7 @@ combatTick() 每秒執行 [combat.js]
 | `openSectModal`, `joinSect` | `data/sect.js` |
 | `openShopModal`, `buyShopItem` | `data/shop.js` |
 | `openBagModal`, `useItemFromBag`, `deleteItemFromBag`, `deleteEquipFromInventory` | `data/bag.js` |
-| `openServantModal`, `assignServant`, `dismissServant` | `data/servant.js` |
+| `openServantModal`, `dismissServant` | `data/servant.js` |
 | `openQuestModal`, `startQuest`, `stopQuest` | `data/quest.js` |
 | `openFieldModal`, `plantHerb` | `data/field.js` |
 | `openBeastModal`, `tameBeast`, `reviveBeast`, `learnBeastSkill` | `data/beast.js` |
@@ -191,7 +191,7 @@ combatTick() 每秒執行 [combat.js]
 3. **修改屬性公式**：只改 `data/stats.js`。
 4. **修改存檔結構**：修改 `data/state.js` 的 `player` 初始值，並檢查 `data/save.js` 的
    `loadLocal`/`importSave` 是否需要補上舊存檔缺欄位時的預設值（目前已有 `gender`/`name`/`stats.cha`/`studyCounts`/`pendingTribulation`/`tribulationCount` 的相容處理，
-   以及 `migrate*()` 系列：僕從任務、裝備欄位、活動欄位、`migrateProgressionFields()`（等級/壽元/宗門技能/靈寵）。
+   以及 `migrate*()` 系列：僕從任務、裝備欄位、活動欄位、`migrateCurrentMap()`（所在地圖改指向最新設定，已刪除的地圖回到宗門）、`migrateProgressionFields()`（等級/壽元/宗門技能/靈寵）。
    讀檔與匯入都走 `applySaveData(data)`，它會把存檔合併到**全新角色的預設值**（`state.js` 的 `DEFAULT_PLAYER_JSON`）上，
    **不是**合併到目前的 `player`——否則遊戲中匯入缺欄位的舊存檔，會沿用目前角色的等級、宗門技能等資料（曾發生過）。
    ⚠️ 因為已合併過預設值，**判斷「存檔裡原本有沒有這個欄位」要看原始 `data`，不能看 `player`**，
@@ -406,7 +406,7 @@ combatTick() 每秒執行 [combat.js]
 
 | 角色 | 執行條件 | 進度速度 | 結算位置 |
 |---|---|---|---|
-| 玩家本人 | 必須待在「演武學宮」，離開即自動中斷 | 每秒 `QUEST_PROGRESS_PER_TICK`(1.5) | `combat.js` 的 `combatTick()` |
+| 玩家本人 | 必須待在「宗門」（`isInSect()`），離開即自動中斷 | 每秒 `QUEST_PROGRESS_PER_TICK`(1.5) | `combat.js` 的 `combatTick()` |
 | 每位僕從 | 在「僕從小屋」各自指派任務，**不受玩家所在地點限制** | 每秒 `1.5 × 該僕從的 mult` | `servant.js` 的 `tickServantQuests()` |
 
 - 僕從資料結構：`{ id, name, quality, mult, quest, timer }`；`quest` 是任務代號（或 `null` 表示閒置），
@@ -629,4 +629,15 @@ combatTick() 每秒執行 [combat.js]
 - **仍使用原生對話框的地方**（在 App 內建瀏覽器可能失效）：拜入宗門、渡劫、靈寶閣兌換、轉世、完全重置等的 `confirm()` 確認，
   以及各處資源不足的 `alert()` 提示。若玩家回報這些按鈕在 LINE 內沒反應，比照本節改為視窗內確認。
 
+## 20. 宗門地圖（第一區）
 
+- 舊版第一區有三張安全區地圖，設施分散：「洞府 / 弟子居」(經驗 ×1，無設施)、「演武學宮」(×1.5，門派任務／靈田／靈獸園)、
+  「後山禁地」(×3，靈寶閣／藏書閣／鍛造閣／煉丹房)。現已**合併為單一地圖「宗門」**（`config-maps.js` 的 `SECT_MAP_NAME`），
+  經驗倍率沿用三者最高的 ×3、難度 1。
+- **身在宗門即可使用全部七項宗門設施**：`ui.js` 的 `updateSectFacilitiesUI()` 只看 `map.js` 的 `isInSect()`，
+  一次顯示或隱藏所有設施按鈕。親自執行門派任務也改為「待在宗門」即可（`combat.js`／`quest.js`／`map.js` 皆呼叫 `isInSect()`）。
+  **日後判斷「是否在宗門」一律呼叫 `isInSect()`**，不要再把地圖名稱字串寫死在各檔案。
+- 設施本身仍需先拜入宗門（`checkSectJoined()`），這點不變。
+- **舊存檔相容**：存檔裡的 `currentMap` 是當時地圖物件的副本。`save.js` 的 `migrateCurrentMap()` 在讀檔／匯入時依名稱改指向
+  `maps` 內的最新設定（順便讓倍率調整生效），找不到的地圖（三張舊地圖）一律回到宗門。
+  日後刪除或改名任何地圖，都靠這個函式自動處理，不必另外寫轉換。

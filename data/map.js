@@ -1,5 +1,10 @@
 // 地圖選擇彈窗與切換地圖邏輯
 
+// 是否身在宗門（宗門設施與親自執行門派任務的共同條件）
+function isInSect() {
+    return !!player.currentMap && player.currentMap.name === SECT_MAP_NAME;
+}
+
 function openMapCategoryModal(catIndex) {
     let cat = maps[catIndex];
     document.getElementById('map-modal-title').innerText = cat.category;
@@ -54,9 +59,9 @@ function changeMap(cIndex, iIndex) {
 
     updateSectFacilitiesUI();
 
-    if (player.activeQuest && player.currentMap.name !== '演武學宮') {
+    if (player.activeQuest && !isInSect()) {
         stopQuest();
-        addLog("離開了演武學宮，自動中斷你親自執行的門派任務（僕從仍會繼續各自的任務）。", "system");
+        addLog("離開了宗門，自動中斷你親自執行的門派任務（僕從仍會繼續各自的任務）。", "system");
     }
 
     refreshCombatStatusText();

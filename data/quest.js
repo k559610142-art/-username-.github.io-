@@ -1,4 +1,4 @@
-// 演武學宮門派任務：顯示各任務獎勵、接取/停止玩家自己的任務
+// 宗門門派任務：顯示各任務獎勵、接取/停止玩家自己的任務
 // 僕從的任務指派在 servant.js（每位僕從可各自負責不同任務）
 
 // 取得指定任務在目前宗門等級下的定義
@@ -24,8 +24,8 @@ function grantQuestRewards(def) {
 
 function openQuestModal() {
     if (!checkSectJoined()) return;
-    if (player.currentMap.name !== '演武學宮' && !player.servants.some(s => s.quest)) {
-        alert("你必須移動到【演武學宮】才能接取任務，或先到「僕從小屋」指派僕從代為執行！");
+    if (!isInSect() && !player.servants.some(s => s.quest)) {
+        alert("你必須回到【宗門】才能接取任務，或先到「僕從小屋」指派僕從代為執行！");
         return;
     }
     document.getElementById('quest-modal').style.display = 'flex';
@@ -36,7 +36,7 @@ function openQuestModal() {
 function renderQuestButtons() {
     let tier = getSectTier();
     let container = document.getElementById('quest-buttons-container');
-    let atAcademy = player.currentMap.name === '演武學宮';
+    let atSect = isInSect();
 
     let cards = Object.keys(questData).map(questId => {
         let def = getQuestDef(questId, tier);
@@ -52,8 +52,8 @@ function renderQuestButtons() {
                 <p style="font-size: 0.82em; color: #9ca3af; margin: 4px 0;">耗時：基礎 ${QUEST_REQUIRED_PROGRESS / QUEST_PROGRESS_PER_TICK} 秒／次</p>
                 <p style="font-size: 0.85em; color: #4ade80; margin: 4px 0;">獎勵：${formatQuestRewards(def)}</p>
                 ${workerText}
-                <button class="sys-btn ${isActive ? 'active' : ''}" ${atAcademy ? '' : 'disabled'} onclick="startQuest('${questId}')">
-                    ${isActive ? '✅ 執行中' : (atAcademy ? '接取任務' : '需在演武學宮')}
+                <button class="sys-btn ${isActive ? 'active' : ''}" ${atSect ? '' : 'disabled'} onclick="startQuest('${questId}')">
+                    ${isActive ? '✅ 執行中' : (atSect ? '接取任務' : '需在宗門')}
                 </button>
             </div>`;
     }).join("");
@@ -62,8 +62,8 @@ function renderQuestButtons() {
 }
 
 function startQuest(questId) {
-    if (player.currentMap.name !== '演武學宮') {
-        alert("你必須待在【演武學宮】才能親自接取任務！（或指派僕從代為執行）");
+    if (!isInSect()) {
+        alert("你必須待在【宗門】才能親自接取任務！（或指派僕從代為執行）");
         return;
     }
     let def = getQuestDef(questId, getSectTier());

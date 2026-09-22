@@ -111,6 +111,22 @@ function migrateActivityFields() {
     if (typeof player.auctionRefreshAt !== 'number') player.auctionRefreshAt = 0;
 }
 
+// 舊存檔相容：存檔內的 currentMap 是當時的地圖物件副本，改指向最新設定（倍率調整才會生效）。
+// 已不存在的地圖（例如合併進「宗門」的洞府 / 弟子居、演武學宮、後山禁地）一律回到宗門。
+function migrateCurrentMap() {
+    let name = player.currentMap && player.currentMap.name;
+    for (let cat of maps) {
+        let found = cat.items.find(item => item.name === name);
+        if (found) {
+            player.currentMap = found;
+            player.currentMapIsSafe = cat.isSafe;
+            return;
+        }
+    }
+    player.currentMap = maps[0].items[0];
+    player.currentMapIsSafe = maps[0].isSafe;
+}
+
 // 舊存檔相容：人物等級、壽元、分階段宗門技能、靈寵等級制
 // savedData 是存檔原始內容：player 已被 Object.assign 合併過預設值（lifespan 60），
 // 必須看原始存檔才知道壽元欄位是否真的不存在。
@@ -181,6 +197,7 @@ function applySaveData(data) {
     migrateServantAssignments();
     migrateEquipmentSlots();
     migrateActivityFields();
+    migrateCurrentMap();
     migrateProgressionFields(data);
     migrateLegacySkills();
 

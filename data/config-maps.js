@@ -1,9 +1,12 @@
 // 地圖區域資料：分類、安全區標記、經驗倍率、難度、進入限制
+
+// 宗門（唯一的安全區）：待在這裡時，所有宗門設施（任務/靈田/靈獸園/靈寶閣/藏書閣/鍛造閣/煉丹房）都可使用
+// 舊版的「洞府 / 弟子居」「演武學宮」「後山禁地」已合併進來，舊存檔由 save.js 的 migrateCurrentMap() 轉換
+const SECT_MAP_NAME = "宗門";
+
 const maps = [
-    { category: "一、宗門內部核心 (安全區)", isSafe: true, items: [
-        { name: "洞府 / 弟子居", expRate: 1, diff: 1 },
-        { name: "演武學宮", expRate: 1.5, diff: 1 },
-        { name: "後山禁地", expRate: 3, diff: 1 }
+    { category: "一、宗門 (安全區)", isSafe: true, items: [
+        { name: SECT_MAP_NAME, expRate: 3, diff: 1 }
     ]},
     { category: "二、野外歷練 (戰鬥區)", isSafe: false, items: [
         { name: "靈山大川", expRate: 8, diff: 2 },

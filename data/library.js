@@ -20,7 +20,7 @@ function studyBook(statType, qty = 1) {
 
     let affordable = Math.min(Math.floor(player.martialPoints / STUDY_COST), remaining);
     if (affordable <= 0) {
-        alert(`武學積分不足 ${STUDY_COST} 點！可前往演武學宮完成【整理武學秘典】任務獲得。`);
+        alert(`武學積分不足 ${STUDY_COST} 點！可在宗門完成【整理武學秘典】任務獲得。`);
         return;
     }
     let n = resolveBatchCount(qty, affordable, "參悟");

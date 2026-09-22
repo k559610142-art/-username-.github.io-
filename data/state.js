@@ -22,7 +22,7 @@ let player = {
     servants: [],
     // 每隻靈寵：{ id, level, exp, alive, skills: [6 格，已選的五行屬性或 null] }
     beasts: [],
-    activeQuest: null, questTimer: 0,   // 玩家「親自」執行的任務（須待在演武學宮）
+    activeQuest: null, questTimer: 0,   // 玩家「親自」執行的任務（須待在宗門）
     currentMap: maps[0].items[0], currentMapIsSafe: true,
     sect: null, buffTimer: 0, buffMult: 1,
     sectSkills: { 1: null, 2: null, 3: null },   // 各階段已拜入（並學得技能）的宗門名稱，選定後鎖定

@@ -19,8 +19,8 @@ function combatTick() {
 
     checkAutoHealAndMana();
 
-    // 玩家親自執行的門派任務：必須待在演武學宮
-    if (player.activeQuest && player.currentMap.name === '演武學宮') {
+    // 玩家親自執行的門派任務：必須待在宗門
+    if (player.activeQuest && isInSect()) {
         player.questTimer += QUEST_PROGRESS_PER_TICK;
         if (player.questTimer >= QUEST_REQUIRED_PROGRESS) {
             player.questTimer -= QUEST_REQUIRED_PROGRESS;
