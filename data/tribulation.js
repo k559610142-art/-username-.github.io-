@@ -63,7 +63,7 @@ function triggerTribulation() {
         hp: demonHp,
         buffTimer: 0,
         buffMult: 1,
-        attrs: getPlayerCombatAttrs(),   // 鏡像：與玩家相同的減傷/閃避/屬性傷害
+        attrs: getPlayerCombatAttrs(),   // 鏡像：與玩家相同的減傷/閃避/屬性傷害/五行（同五行不相剋）
         status: newStatus()
     };
     playerStatus = newStatus();

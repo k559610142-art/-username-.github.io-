@@ -1,11 +1,12 @@
-// 戰鬥屬性引擎：減傷、閃避、屬性傷害（冰凍 / 燒傷 / 中毒 / 金重擊）與持續傷害
+// 戰鬥屬性引擎：減傷、閃避、屬性傷害（冰凍 / 燒傷 / 中毒 / 金重擊 / 雷擊）、五行相剋與持續傷害
 // 玩家→怪物、怪物→玩家、玩家↔心魔 全部走 resolveHit()，規則完全對稱。數值見 config-elements.js
+// attrs.element 是該單位的五行（"金"/"木"/"水"/"火"/"土" 或 null），用於五行相剋
 
 function newStatus() {
     return { frozen: 0, burn: null, poison: null };
 }
 
-// 玩家目前的戰鬥屬性（裝備加總後套上限）
+// 玩家目前的戰鬥屬性（裝備加總後套上限）＋本命五行
 function getPlayerCombatAttrs() {
     let b = getEquipBonus();
     return {
@@ -14,8 +15,18 @@ function getPlayerCombatAttrs() {
         ice: Math.min(AFFIX_CAP, b.ice),
         fire: Math.min(AFFIX_CAP, b.fire),
         poison: Math.min(AFFIX_CAP, b.poison),
-        metal: Math.min(AFFIX_CAP, b.metal)
+        metal: Math.min(AFFIX_CAP, b.metal),
+        thunder: Math.min(AFFIX_CAP, b.thunder),
+        element: getPlayerElement()
     };
+}
+
+// 五行相剋倍率：回傳 { mult, tag }，tag 為 "counter"（剋制）/"countered"（被剋）/null
+function getWuxingCounterMult(atkElem, defElem) {
+    if (!atkElem || !defElem) return { mult: 1, tag: null };
+    if (WUXING_COUNTERS[atkElem] === defElem) return { mult: 1 + WUXING_COUNTER_BONUS, tag: "counter" };
+    if (WUXING_COUNTERS[defElem] === atkElem) return { mult: 1 - WUXING_COUNTERED_PENALTY, tag: "countered" };
+    return { mult: 1, tag: null };
 }
 
 // 技能自帶的屬性效果（skill.effect = { type, chance }）會與裝備取較高者
@@ -33,14 +44,15 @@ function getMapCategoryIndex(mapName) {
 
 function rollMonsterAttrs() {
     let profile = monsterAttrsByMapCategory[getMapCategoryIndex(player.currentMap.name)] || monsterAttrsByMapCategory[1];
-    let attrs = { def: profile.def, eva: profile.eva, ice: 0, fire: 0, poison: 0, metal: 0 };
+    let attrs = { def: profile.def, eva: profile.eva, ice: 0, fire: 0, poison: 0, metal: 0, thunder: 0,
+                  element: wuxingElements[Math.floor(Math.random() * wuxingElements.length)] };
     if (Math.random() < profile.affixProb) {
-        attrs[AFFIX_TYPES[Math.floor(Math.random() * AFFIX_TYPES.length)]] = profile.affixChance;
+        attrs[MONSTER_AFFIX_TYPES[Math.floor(Math.random() * MONSTER_AFFIX_TYPES.length)]] = profile.affixChance;
     }
     return attrs;
 }
 
-// 單次命中結算（依序）：閃避 → 金重擊 → 減傷 → 附加冰/火/毒狀態
+// 單次命中結算（依序）：閃避 → 金重擊 → 雷擊 → 五行相剋 → 減傷（雷擊時略過）→ 附加冰/火/毒狀態
 //   attacker = { attrs, power }  power 為計算燒傷/中毒的攻擊力基準
 //   defender = { attrs, status }
 // 回傳 { dmg, tags }，tags 為本次觸發的效果（供日誌彙整），呼叫端自行扣 hp
@@ -55,7 +67,17 @@ function resolveHit(rawDmg, attacker, defender) {
         dmg *= 1 + METAL_BONUS;
         tags.push("metal");
     }
-    dmg *= 1 - (defender.attrs.def || 0) / 100;
+    let thunder = attacker.attrs.thunder > 0 && Math.random() < attacker.attrs.thunder / 100;
+    if (thunder) {
+        dmg *= 1 + THUNDER_BONUS;
+        tags.push("thunder");
+    }
+    let wx = getWuxingCounterMult(attacker.attrs.element, defender.attrs.element);
+    if (wx.tag) {
+        dmg *= wx.mult;
+        tags.push(wx.tag);
+    }
+    if (!thunder) dmg *= 1 - (defender.attrs.def || 0) / 100;
 
     let st = defender.status;
     if (attacker.attrs.ice > 0 && Math.random() < attacker.attrs.ice / 100) {
@@ -104,9 +126,10 @@ function formatStatus(st) {
     return parts.join(" ");
 }
 
-// 把一回合內的觸發標籤彙整成一小段日誌文字，例：「❄️凍結×1 🔥燒傷×2 💨被閃避×1」
+// 把一回合內的觸發標籤彙整成一小段日誌文字，例：「❄️凍結×1 🔥燒傷×2 💨被閃避×1 ☯️五行剋制×3」
 function summarizeTags(tags, dodgeLabel) {
-    let names = { ice: "❄️凍結", fire: "🔥燒傷", poison: "☠️中毒", metal: "⚔️重擊", dodge: dodgeLabel };
+    let names = { ice: "❄️凍結", fire: "🔥燒傷", poison: "☠️中毒", metal: "⚔️重擊", thunder: "⚡雷擊",
+                  counter: "☯️五行剋制", countered: "☯️五行被剋", dodge: dodgeLabel };
     let counts = {};
     tags.forEach(t => { counts[t] = (counts[t] || 0) + 1; });
     return Object.keys(counts).map(t => `${names[t]}${counts[t] > 1 ? '×' + counts[t] : ''}`).join(" ");

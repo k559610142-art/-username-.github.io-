@@ -3,7 +3,7 @@
 // - 必須已拜入該階段的宗門（player.sectSkills[tier]）才能兌換該階段商品
 // - 每件都是唯一性物品：兌換後記錄在 player.lingbaoSold，永遠不會補貨
 // - 設計原則：高階段的武學／裝備一定比低階段更好（同部位的裝備各項數值皆更高、武學倍率更高）
-// 戰鬥屬性（def/eva/ice/fire/poison/metal）單位為 %，技能的 effect.chance 為 0~1，見 config-elements.js
+// 戰鬥屬性（def/eva/ice/fire/poison/metal/thunder）單位為 %，技能的 effect.chance 為 0~1，見 config-elements.js
 
 // 舊版靈寶閣禁術（已下架）的數值校正：讀檔／匯入時套用到 player.learnedSkills（save.js 的 migrateLegacySkills）
 // 舊版售價僅 1～1.5 萬靈石，遠低於新版初級寶物的 10 萬，因此下修到「初級武學」標準、不超過新版任何一階：

@@ -36,8 +36,17 @@ function updateSectFacilitiesUI() {
         .forEach(btn => { btn.style.display = display; });
 }
 
+// 五行相剋說明文字（滑鼠提示用），例：「火剋金（傷害 +30%）；被水剋（傷害 -30%）」
+function formatWuxingCounterTip(elem) {
+    let beatenBy = Object.keys(WUXING_COUNTERS).find(k => WUXING_COUNTERS[k] === elem);
+    return `${elem}剋${WUXING_COUNTERS[elem]}（對其傷害 +${Math.round(WUXING_COUNTER_BONUS * 100)}%）；`
+        + `被${beatenBy}剋（對其傷害 -${Math.round(WUXING_COUNTERED_PENALTY * 100)}%）`;
+}
+
 function updateCombatVisualPanel() {
-    document.getElementById('battle-player-name').innerText = player.name || (player.gender === 'female' ? "南宮婉" : "韓立");
+    let playerElem = getPlayerElement();
+    document.getElementById('battle-player-name').innerText = (player.name || (player.gender === 'female' ? "南宮婉" : "韓立"))
+        + (playerElem ? `【${playerElem}】` : '');
     let playerSt = formatStatus(playerStatus);
     document.getElementById('battle-player-hp').innerText = `氣血: ${Math.floor(player.hp)}/${player.maxHp}${playerSt ? ' ' + playerSt : ''}`;
 
@@ -75,7 +84,13 @@ function updateCombatVisualPanel() {
         let burnN = enemies.reduce((s, e) => s + (e.status && e.status.burn ? e.status.burn.stacks : 0), 0);
         let poisonN = enemies.reduce((s, e) => s + (e.status && e.status.poison ? e.status.poison.stacks : 0), 0);
         let enemySt = [frozenN ? `❄️×${frozenN}` : '', burnN ? `🔥×${burnN}` : '', poisonN ? `☠️×${poisonN}` : ''].filter(Boolean).join(' ');
-        document.getElementById('battle-enemy-info').innerText = `總血量: ${Math.floor(totalEnemyHp)}/${Math.floor(totalMaxEnemyHp)}${enemySt ? ' ' + enemySt : ''}`;
+        // 彙整怪物的五行與異屬性，例：「五行 火×2 金×1｜⚡雷×1」
+        let elemCounts = wuxingElements.map(el => [el, enemies.filter(e => e.attrs && e.attrs.element === el).length]).filter(([, c]) => c > 0);
+        let affixCounts = MONSTER_AFFIX_TYPES.map(k => [k, enemies.filter(e => e.attrs && e.attrs[k] > 0).length]).filter(([, c]) => c > 0);
+        let enemyAttrText = (elemCounts.length ? '五行 ' + elemCounts.map(([el, c]) => `${el}×${c}`).join(' ') : '')
+            + (affixCounts.length ? '｜' + affixCounts.map(([k, c]) => `${combatAttrInfo[k].icon}${combatAttrInfo[k].label.charAt(0)}×${c}`).join(' ') : '');
+        document.getElementById('battle-enemy-info').innerText = `總血量: ${Math.floor(totalEnemyHp)}/${Math.floor(totalMaxEnemyHp)}${enemySt ? ' ' + enemySt : ''}`
+            + (enemyAttrText ? `\n${enemyAttrText}` : '');
         document.getElementById('battle-action-desc').innerText = `⚔️ 劍氣縱橫！正在 ${player.currentMap.name} 與巨獸殊死搏鬥！`;
     } else {
         document.getElementById('battle-enemy-title').innerText = "索敵中";
@@ -122,7 +137,10 @@ function updateUI() {
     document.getElementById('stat-cha').innerText = `${player.stats.cha} (+${eqBonus.cha})`;
 
     let attrs = getPlayerCombatAttrs();
-    document.getElementById('combat-attr-display').innerHTML = ["def", "eva"].concat(AFFIX_TYPES).map(k => {
+    let elemHtml = attrs.element
+        ? `<span title="${formatWuxingCounterTip(attrs.element)}">☯️本命 <b><span class="elem-${attrs.element}">${attrs.element}</span></b></span>`
+        : `<span title="穿戴裝備後，數量最多的五行即為本命五行">☯️本命 <b>無</b></span>`;
+    document.getElementById('combat-attr-display').innerHTML = elemHtml + ["def", "eva"].concat(AFFIX_TYPES).map(k => {
         let info = combatAttrInfo[k];
         let tip = info.desc ? ` title="${info.desc}"` : '';
         return `<span${tip}>${info.icon}${info.label} <b>${+attrs[k].toFixed(1)}%</b></span>`;

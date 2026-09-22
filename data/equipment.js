@@ -61,6 +61,7 @@ function openWuxingInfo() {
         counts[eq.element] = (counts[eq.element] || 0) + 1;
     });
     let categoryCount = cat => slots.filter(key => equipTypes[key] === cat).length;
+    let playerElem = getPlayerElement();
 
     let progress = wuxingElements.map(e =>
         `<span class="elem-${e}">${e} ${counts[e] || 0}/${slots.length}</span>`
@@ -81,7 +82,15 @@ function openWuxingInfo() {
         <h4 class="wuxing-info-h">發動條件</h4>
         <p>除了神器以外的 <strong>${slots.length} 個部位</strong>（武器 ${categoryCount('weapon')}、防具 ${categoryCount('armor')}、飾品 ${categoryCount('accessory')}）
         必須<strong>全部穿戴</strong>，且<strong>五行屬性完全相同</strong>，才會發動該屬性的法陣。
-        只要有一格空著或混到別的屬性就不生效；法陣只會有一種，不能兩種疊加，也沒有相生相剋。</p>
+        只要有一格空著或混到別的屬性就不生效；法陣只會有一種，不能兩種疊加。</p>
+
+        <h4 class="wuxing-info-h">五行相剋</h4>
+        <p>裝備中<strong>數量最多的五行</strong>就是你的<strong>本命五行</strong>（目前：${playerElem ? `<span class="elem-${playerElem}">${playerElem}</span>` : '無'}），
+        每隻妖獸也各有一種五行。<br>
+        ${Object.keys(WUXING_COUNTERS).map(k => `<span class="elem-${k}">${k}</span>剋<span class="elem-${WUXING_COUNTERS[k]}">${WUXING_COUNTERS[k]}</span>`).join('　')}<br>
+        ・剋制對方：你打它傷害 +${Math.round(WUXING_COUNTER_BONUS * 100)}%，它打你傷害 -${Math.round(WUXING_COUNTERED_PENALTY * 100)}%。<br>
+        ・被對方剋制：反過來，你打它 -${Math.round(WUXING_COUNTERED_PENALTY * 100)}%、它打你 +${Math.round(WUXING_COUNTER_BONUS * 100)}%。<br>
+        ・心魔與你同屬性，不相剋；靈寵的攻擊不受五行影響。</p>
 
         <h4 class="wuxing-info-h">目前進度</h4>
         <p>${progress}</p>
@@ -173,7 +182,7 @@ function forgeEquipment(qty = 1) {
 }
 
 // 依部位分類與品質產生裝備屬性（鍛造閣與千寶閣共用）
-//   武器：力量、靈力 + 隨機一種屬性傷害（冰/火/毒/金）
+//   武器：力量、靈力 + 隨機一種屬性傷害（冰/火/毒/金/雷）
 //   防具：體質 + 減傷
 //   飾品：悟性、靈力、魅力 + 閃避
 function generateEquipStats(category, qualityObj, baseBonus) {

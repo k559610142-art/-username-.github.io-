@@ -1,7 +1,7 @@
 // 屬性計算：裝備加成、五行法陣判定、戰力/氣血/靈力/升級門檻公式
 
-// 加總所有已穿戴裝備的屬性：四維＋魅力，以及戰鬥屬性（減傷/閃避/冰火毒金，單位 %，見 config-elements.js）
-const EQUIP_STAT_KEYS = ["str", "con", "int", "spr", "cha", "def", "eva", "ice", "fire", "poison", "metal"];
+// 加總所有已穿戴裝備的屬性：四維＋魅力，以及戰鬥屬性（減傷/閃避/冰火毒金雷，單位 %，見 config-elements.js）
+const EQUIP_STAT_KEYS = ["str", "con", "int", "spr", "cha", "def", "eva", "ice", "fire", "poison", "metal", "thunder"];
 
 function getEquipBonus() {
     let bonus = {};
@@ -30,6 +30,23 @@ function getWuxingBuff() {
     let info = wuxingArrayEffects[firstElem];
     if (!info) return { type: null, name: "無" };
     return { type: firstElem, name: `${info.title} (${info.effect})` };
+}
+
+// 本命五行（五行相剋用）：已穿戴裝備（不含神器）中數量最多的五行；
+// 同數時取部位順序（equipTypes，武器在前）中最先出現者。沒穿任何裝備則為 null（不參與相剋）。
+function getPlayerElement() {
+    let counts = {};
+    let order = [];
+    for (let key of Object.keys(equipTypes)) {
+        if (equipTypes[key] === "artifact") continue;
+        let eq = player.equipment[key];
+        if (!eq || !WUXING_COUNTERS[eq.element]) continue;
+        if (!counts[eq.element]) { counts[eq.element] = 0; order.push(eq.element); }
+        counts[eq.element]++;
+    }
+    let best = null;
+    order.forEach(e => { if (best === null || counts[e] > counts[best]) best = e; });
+    return best;
 }
 
 function getNextExp() { return (player.realmIndex === 0 ? 100 : 200 * Math.pow(10, player.realmIndex)) * player.stage; }

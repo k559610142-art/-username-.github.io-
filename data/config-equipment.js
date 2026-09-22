@@ -45,7 +45,7 @@ const wuxingArrayEffects = {
 // 戰鬥屬性（單位 %，見 config-elements.js）：
 //   def   = 防具每件的減傷      （6 件防具全橙 = 24%）
 //   eva   = 飾品每件的閃避      （5 件飾品全橙 = 15%）
-//   affix = 武器隨機一種屬性傷害（冰/火/毒/金）的觸發率；同種屬性可疊加，上限 AFFIX_CAP
+//   affix = 武器隨機一種屬性傷害（冰/火/毒/金/雷）的觸發率；同種屬性可疊加，上限 AFFIX_CAP
 const equipQualities = [
     { name: "白色", mult: 1, color: "#ffffff", def: 1, eva: 0.5, affix: 2 },
     { name: "綠色", mult: 2, color: "#4ade80", def: 1.5, eva: 1, affix: 3 },
