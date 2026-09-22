@@ -18,17 +18,22 @@ function calcOfflineProgress() {
     let coinsEarned = 0;
     let msg = "";
 
+    // 修為已圓滿待渡劫時，離線期間同樣無法再累積經驗
+    let wasPending = player.pendingTribulation;
+
     if (player.currentMapIsSafe) {
         let ticks = Math.floor(offlineSeconds / 5);
         expEarned = ticks * (player.currentMap.expRate * 50);
-        gainExp(expEarned);
-        msg = `🧘‍♂️ 離線於【${player.currentMap.name}】靜修打坐 ${Math.floor(offlineSeconds / 60)} 分鐘，獲得 ${Math.floor(expEarned)} 點經驗！`;
+        let gained = gainExp(expEarned) || 0;
+        msg = wasPending
+            ? `🧘‍♂️ 離線於【${player.currentMap.name}】靜修 ${Math.floor(offlineSeconds / 60)} 分鐘，但修為已圓滿待渡劫，未能再累積經驗。`
+            : `🧘‍♂️ 離線於【${player.currentMap.name}】靜修打坐 ${Math.floor(offlineSeconds / 60)} 分鐘，獲得 ${Math.floor(gained)} 點經驗！`;
     } else {
         let combatTicks = Math.floor(offlineSeconds * 0.7);
         expEarned = combatTicks * (player.currentMap.expRate * 15);
         coinsEarned = combatTicks * (player.currentMap.diff * 10);
 
-        gainExp(expEarned);
+        let gained = gainExp(expEarned) || 0;
         player.coins += coinsEarned;
 
         // 離線拯救僕從機率發放
@@ -41,7 +46,8 @@ function calcOfflineProgress() {
             }
         }
 
-        msg = `⚔️ 離線於【${player.currentMap.name}】歷練 ${Math.floor(offlineSeconds / 60)} 分鐘，獲得 ${Math.floor(expEarned)} 經驗與 ${coinsEarned} 靈石${rescuedCount > 0 ? `，並拯救了 ${rescuedCount} 名受困修士！` : '！'}`;
+        let expText = wasPending ? "修為已滿(待渡劫，無經驗)" : `${Math.floor(gained)} 經驗`;
+        msg = `⚔️ 離線於【${player.currentMap.name}】歷練 ${Math.floor(offlineSeconds / 60)} 分鐘，獲得 ${expText}與 ${coinsEarned} 靈石${rescuedCount > 0 ? `，並拯救了 ${rescuedCount} 名受困修士！` : '！'}`;
     }
 
     player.lastSaveTime = Date.now();
@@ -72,6 +78,8 @@ function loadLocal() {
             if (!player.name) player.name = (player.gender === 'female' ? "南宮婉" : "韓立");
             if (!player.stats.cha) player.stats.cha = 10;
             if (!player.studyCounts) player.studyCounts = { str: 0, con: 0, int: 0, spr: 0 };
+            if (typeof player.pendingTribulation !== 'boolean') player.pendingTribulation = false;
+            if (!player.tribulationCount) player.tribulationCount = 0;
 
             // 讀取成功後觸發離線補償計算
             calcOfflineProgress();
@@ -116,6 +124,8 @@ function importSave() {
             if (!player.name) player.name = (player.gender === 'female' ? "南宮婉" : "韓立");
             if (!player.stats.cha) player.stats.cha = 10;
             if (!player.studyCounts) player.studyCounts = { str: 0, con: 0, int: 0, spr: 0 };
+            if (typeof player.pendingTribulation !== 'boolean') player.pendingTribulation = false;
+            if (!player.tribulationCount) player.tribulationCount = 0;
 
             // 匯入成功後觸發離線補償計算
             calcOfflineProgress();

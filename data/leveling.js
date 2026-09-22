@@ -1,7 +1,10 @@
-// 經驗獲取、升階/突破結算，以及轉世輪迴
+// 經驗獲取、小境界升階、大境界突破（需渡劫）與轉世輪迴
 
+// 回傳實際獲得的經驗值；若修為已圓滿待渡劫則回傳 0（經驗暫停累積）
 function gainExp(amount) {
-    if (player.realmIndex >= realms.length - 1 && player.stage >= 10) return;
+    if (player.pendingTribulation) return 0;
+    if (player.realmIndex >= realms.length - 1 && player.stage >= 10) return 0;
+
     let finalAmount = amount * (player.sect ? player.sect.expMult : 1.0);
     if (player.beasts.includes('fox')) finalAmount *= 1.1;
     if (player.beasts.includes('dragon')) finalAmount *= 1.2;
@@ -9,6 +12,16 @@ function gainExp(amount) {
 
     let maxExp = getNextExp();
     while (player.exp >= maxExp) {
+        // 小境界已達 10 階：修為封頂，必須渡劫才能晉升下一個大境界
+        if (player.stage >= 10) {
+            player.exp = maxExp;
+            if (player.realmIndex < realms.length - 1) {
+                player.pendingTribulation = true;
+                addLog(`☁️ 修為已臻【${realms[player.realmIndex]} 10階】圓滿，天劫將至！經驗暫停累積，需渡劫方能晉升【${realms[player.realmIndex + 1]}】。`, "reincarnate");
+            }
+            break;
+        }
+
         player.exp -= maxExp;
         player.stage++;
 
@@ -18,37 +31,43 @@ function gainExp(amount) {
         player.stats.spr += 5;
         player.stats.cha += 2;
 
-        if (player.stage > 10) {
-            player.realmIndex++;
-            player.stage = 1;
+        addLog(`✨ 修為精進，達到【${realms[player.realmIndex]} ${player.stage}階】！四維屬性 +5，魅力 +2。`, "level-up");
 
-            let realmName = realms[player.realmIndex];
-            let statBonus = 100;
-
-            if (realmName === "渡劫") statBonus = 200;
-            else if (realmName === "仙人初境") statBonus = 300;
-            else if (realmName === "天仙") statBonus = 400;
-            else if (realmName === "真仙") statBonus = 500;
-            else if (realmName === "大羅金仙") statBonus = 1000;
-            else if (realmName === "混元大羅金仙") statBonus = 2000;
-            else if (realmName === "混沌道祖") statBonus = 3000;
-
-            player.stats.str += statBonus;
-            player.stats.con += statBonus;
-            player.stats.int += statBonus;
-            player.stats.spr += statBonus;
-            player.stats.cha += Math.floor(statBonus / 5);
-
-            addLog(`⚡ 突破成功！境界晉升至【${realmName}】！四維與魅力屬性全面暴增！`, "level-up");
-        } else {
-            addLog(`✨ 修為精進，達到【${realms[player.realmIndex]} ${player.stage}階】！四維屬性 +5，魅力 +2。`, "level-up");
-        }
         player.hp = getMaxHp();
         player.mp = getMaxMp();
         maxExp = getNextExp();
     }
     updateUI();
     return finalAmount;
+}
+
+// 晉升下一個大境界（僅由渡劫成功時呼叫，見 tribulation.js）
+function advanceRealm() {
+    player.realmIndex++;
+    player.stage = 1;
+    player.exp = 0;
+
+    let realmName = realms[player.realmIndex];
+    let statBonus = 100;
+
+    if (realmName === "渡劫") statBonus = 200;
+    else if (realmName === "仙人初境") statBonus = 300;
+    else if (realmName === "天仙") statBonus = 400;
+    else if (realmName === "真仙") statBonus = 500;
+    else if (realmName === "大羅金仙") statBonus = 1000;
+    else if (realmName === "混元大羅金仙") statBonus = 2000;
+    else if (realmName === "混沌道祖") statBonus = 3000;
+
+    player.stats.str += statBonus;
+    player.stats.con += statBonus;
+    player.stats.int += statBonus;
+    player.stats.spr += statBonus;
+    player.stats.cha += Math.floor(statBonus / 5);
+
+    player.hp = getMaxHp();
+    player.mp = getMaxMp();
+
+    addLog(`⚡ 突破成功！境界晉升至【${realmName}】！四維與魅力屬性全面暴增！`, "level-up");
 }
 
 function triggerReincarnate() {
@@ -62,6 +81,7 @@ function triggerReincarnate() {
         player.realmIndex = 0;
         player.stage = 1;
         player.exp = 0;
+        player.pendingTribulation = false;
         player.stats = { str: 10 + player.reincarnations * 50, con: 10 + player.reincarnations * 50, int: 10 + player.reincarnations * 50, spr: 10 + player.reincarnations * 50, cha: 10 + player.reincarnations * 10 };
         player.studyCounts = { str: 0, con: 0, int: 0, spr: 0 };
         player.hp = getMaxHp();

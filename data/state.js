@@ -22,6 +22,8 @@ let player = {
     sect: null, buffTimer: 0, buffMult: 1,
     learnedSkills: [],
     reincarnations: 0,
+    pendingTribulation: false,   // 小境界已滿 10 階，修為暫停、等待渡劫
+    tribulationCount: 0,         // 累計渡劫成功次數
     autoHp: { enabled: false, threshold: 50 },
     autoMp: { enabled: false, threshold: 30 },
     lastSaveTime: Date.now()
@@ -30,3 +32,9 @@ let player = {
 let enemies = [];
 let respawnTimer = 0;
 let safeZoneTimer = 0;
+
+// 以下為「不寫入存檔」的執行期狀態：重新整理後即歸零
+let inTribulation = false;   // 是否正在與心魔對決
+let heartDemon = null;       // 心魔實體 { name, icon, hp, maxHp, attack, buffTimer, buffMult }
+let potionCooldownHp = 0;    // 氣血類藥品剩餘冷卻秒數
+let potionCooldownMp = 0;    // 靈力類藥品剩餘冷卻秒數

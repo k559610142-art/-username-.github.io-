@@ -58,7 +58,12 @@ function updateCombatVisualPanel() {
         avatarContainer.innerHTML = `<img src="https://i.postimg.cc/fbJ8LT1t/han-tian-zun.jpg" alt="韓天尊" style="width: 60px; height: 60px; object-fit: cover; border-radius: 50%; border: 2px solid var(--accent); box-shadow: 0 0 10px var(--accent-glow);">`;
     }
 
-    if (player.currentMapIsSafe) {
+    if (inTribulation && heartDemon) {
+        document.getElementById('battle-enemy-title').innerText = "心魔";
+        document.getElementById('battle-enemy-icon').innerText = heartDemon.icon;
+        document.getElementById('battle-enemy-info').innerText = `氣血: ${Math.floor(heartDemon.hp)}/${heartDemon.maxHp}`;
+        document.getElementById('battle-action-desc').innerText = `☯️ 渡劫中！正在與心魔生死對決...`;
+    } else if (player.currentMapIsSafe) {
         document.getElementById('battle-enemy-title').innerText = "安全區域";
         document.getElementById('battle-enemy-icon').innerText = "🕊️";
         document.getElementById('battle-enemy-info').innerText = "無敵意目標";
@@ -123,7 +128,12 @@ function updateUI() {
 
     let expPercent = Math.min((player.exp / getNextExp()) * 100, 100);
     document.getElementById('exp-bar').style.width = expPercent + '%';
-    document.getElementById('exp-text').innerText = `${Math.floor(player.exp)} / ${getNextExp()}`;
+    document.getElementById('exp-text').innerText = player.pendingTribulation
+        ? `⚡ 修為圓滿・待渡劫 (${Math.floor(player.exp)} / ${getNextExp()})`
+        : `${Math.floor(player.exp)} / ${getNextExp()}`;
+
+    updateTribulationUI();
+    updatePotionCooldownUI();
 
     let hpPercent = Math.max((player.hp / player.maxHp) * 100, 0);
     document.getElementById('hp-bar').style.width = hpPercent + '%';
@@ -136,6 +146,35 @@ function updateUI() {
     renderSkillList();
     updateStudyCountsUI();
     updateCombatVisualPanel();
+}
+
+// 修為圓滿時顯示渡劫按鈕；渡劫進行中則改為狀態提示並鎖住按鈕
+function updateTribulationUI() {
+    const btn = document.getElementById('btn-tribulation');
+    if (!btn) return;
+
+    if (inTribulation) {
+        btn.style.display = 'block';
+        btn.disabled = true;
+        btn.innerText = `☯️ 渡劫中…心魔氣血 ${heartDemon ? Math.floor(heartDemon.hp).toLocaleString() : 0}`;
+    } else if (player.pendingTribulation) {
+        btn.style.display = 'block';
+        btn.disabled = false;
+        btn.innerText = `⚡ 天劫將至！點此渡劫晉升【${realms[player.realmIndex + 1] || ''}】`;
+    } else {
+        btn.style.display = 'none';
+        btn.disabled = false;
+    }
+}
+
+function updatePotionCooldownUI() {
+    const display = document.getElementById('potion-cd-display');
+    if (!display) return;
+    const hpText = potionCooldownHp > 0 ? `${potionCooldownHp} 秒` : '就緒';
+    const mpText = potionCooldownMp > 0 ? `${potionCooldownMp} 秒` : '就緒';
+    display.innerHTML = `丹藥冷卻（每 ${POTION_COOLDOWN_SECONDS} 秒）：`
+        + `<span style="color:${potionCooldownHp > 0 ? '#f87171' : '#4ade80'};">氣血 ${hpText}</span> / `
+        + `<span style="color:${potionCooldownMp > 0 ? '#f87171' : '#4ade80'};">靈力 ${mpText}</span>`;
 }
 
 function updateStudyCountsUI() {
@@ -174,6 +213,18 @@ function addLog(msg, type = "normal") {
     entry.innerHTML = `[${new Date().toLocaleTimeString('zh-TW', { hour12: false })}] ${msg}`;
     logBox.prepend(entry);
     if (logBox.children.length > 50) logBox.removeChild(logBox.lastChild);
+}
+
+// 依目前所在地圖重設頂部「當前狀態」列（切換地圖、渡劫結束後呼叫）
+function refreshCombatStatusText() {
+    const el = document.getElementById('combat-status');
+    if (player.currentMapIsSafe) {
+        el.innerText = `當前狀態：在 ${player.currentMap.name} 靜修 (安全區)`;
+        el.style.color = '#38bdf8';
+    } else {
+        el.innerText = `當前狀態：在 ${player.currentMap.name} 探索中...`;
+        el.style.color = '#fb923c';
+    }
 }
 
 function closeModal(id) { document.getElementById(id).style.display = 'none'; }

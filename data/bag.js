@@ -49,13 +49,17 @@ function useItemFromBag(itemId) {
     if (!shopItem) return;
 
     if (shopItem.type === 'heal') {
+        if (potionCooldownHp > 0) { alert(`氣血類丹藥冷卻中，尚需 ${potionCooldownHp} 秒才能再次服用。`); return; }
         if (player.hp >= player.maxHp) { alert("氣血已滿，無需使用！"); return; }
         player.hp = Math.min(player.maxHp, player.hp + player.maxHp * shopItem.amount);
-        addLog(`🎒 從背包使用【${shopItem.name}】，氣血大幅恢復！`, "heal");
+        potionCooldownHp = POTION_COOLDOWN_SECONDS;
+        addLog(`🎒 從背包使用【${shopItem.name}】，氣血回復 ${Math.round(shopItem.amount * 100)}%！`, "heal");
     } else if (shopItem.type === 'mp') {
+        if (potionCooldownMp > 0) { alert(`靈力類丹藥冷卻中，尚需 ${potionCooldownMp} 秒才能再次服用。`); return; }
         if (player.mp >= player.maxMp) { alert("靈力已滿，無需使用！"); return; }
         player.mp = Math.min(player.maxMp, player.mp + player.maxMp * shopItem.amount);
-        addLog(`🎒 從背包使用【${shopItem.name}】，靈力大幅恢復！`, "skill");
+        potionCooldownMp = POTION_COOLDOWN_SECONDS;
+        addLog(`🎒 從背包使用【${shopItem.name}】，靈力回復 ${Math.round(shopItem.amount * 100)}%！`, "skill");
     }
 
     player.bag[itemId]--;

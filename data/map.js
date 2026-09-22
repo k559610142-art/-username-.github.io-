@@ -59,13 +59,10 @@ function changeMap(cIndex, iIndex) {
         addLog("離開了演武學宮且無僕從代勞，自動中斷門派任務。", "system");
     }
 
-    if(player.currentMapIsSafe) {
-        document.getElementById('combat-status').innerText = `當前狀態：在 ${player.currentMap.name} 靜修 (安全區)`;
-        document.getElementById('combat-status').style.color = '#38bdf8';
+    refreshCombatStatusText();
+    if (player.currentMapIsSafe) {
         addLog(`🗺️ 回到安全區 ${player.currentMap.name}，開始打坐療傷。`);
     } else {
-        document.getElementById('combat-status').innerText = `當前狀態：在 ${player.currentMap.name} 探索中...`;
-        document.getElementById('combat-status').style.color = '#fb923c';
         addLog(`🗺️ 深入野外 ${player.currentMap.name}，四周充滿危險氣息。`);
     }
     updateCombatVisualPanel();

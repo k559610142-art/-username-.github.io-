@@ -126,6 +126,8 @@ combatTick() 每秒執行 [combat.js]
 | `openForgeModal` | `data/equipment.js` |
 | `openAlchemyModal`, `craftPill` | `data/alchemy.js` |
 | `triggerReincarnate` | `data/leveling.js` |
+| `triggerTribulation` | `data/tribulation.js` |
+| `setShopQty`, `setShopQtyMax`, `updateShopTotal` | `data/shop.js` |
 | `resetGameCompletely`, `saveLocal`, `loadLocal`, `exportSave`, `importSave` | `data/save.js` |
 | `updateAutoSettings` | `data/ui.js` |
 | `closeModal` | `data/ui.js` |
@@ -138,10 +140,39 @@ combatTick() 每秒執行 [combat.js]
    （放在 `state.js`/`ui.js` 之後、`main.js` 之前即可，除非新檔案有頂層立即執行的程式碼且依賴其他資料）。
 3. **修改屬性公式**：只改 `data/stats.js`。
 4. **修改存檔結構**：修改 `data/state.js` 的 `player` 初始值，並檢查 `data/save.js` 的
-   `loadLocal`/`importSave` 是否需要補上舊存檔缺欄位時的預設值（目前已有 `gender`/`name`/`stats.cha`/`studyCounts` 的相容處理）。
+   `loadLocal`/`importSave` 是否需要補上舊存檔缺欄位時的預設值（目前已有 `gender`/`name`/`stats.cha`/`studyCounts`/`pendingTribulation`/`tribulationCount` 的相容處理）。
 5. **新增畫面元素時**：先確認電腦版排版，再到 `index.html` 的 media query 區塊
    （第 6 節）補上手機版的調整，避免手機出現破版或水平捲動。
 6. **完成任何修改後，回來更新本檔案（ARCHITECTURE.md）對應章節。**
+
+## 7. 渡劫系統（心魔試煉）
+
+小境界修滿 10 階後不會自動晉升，必須擊敗心魔才能進入下一個大境界。
+
+| 環節 | 位置 | 說明 |
+|---|---|---|
+| 修為封頂 | `leveling.js` 的 `gainExp()` | 小境界到 10 階且經驗滿格時，`player.pendingTribulation = true`，之後 `gainExp()` 一律回傳 0（經驗完全停止累積，含離線收益） |
+| 渡劫按鈕 | `index.html` 的 `#btn-tribulation` + `ui.js` 的 `updateTribulationUI()` | 只在待渡劫時顯示；渡劫進行中改為顯示心魔剩餘氣血並鎖定 |
+| 心魔數值 | `config-tribulation.js` | 戰力 = 玩家 150%（`HEART_DEMON_POWER_MULT`）、氣血 = 玩家 100%（`HEART_DEMON_HP_MULT`）、4 個魔功技能 |
+| 戰鬥流程 | `tribulation.js` 的 `tribulationTick()` | 由 `combat.js` 的 `combatTick()` 在 `inTribulation` 為 true 時接管，暫停掛機、刷怪與宗門任務 |
+| 成功 | `endTribulation(true)` → `leveling.js` 的 `advanceRealm()` | 晉升大境界並給予屬性獎勵，`pendingTribulation` 解除、經驗恢復累積 |
+| 失敗 | `endTribulation(false)` | 氣血歸 1、損失 10% 靈石、回到安全區；`pendingTribulation` 保留，可無限重試 |
+
+平衡備註：心魔氣血刻意設為玩家的 100% 而非 150%。實測若氣血也給 1.5 倍，
+即使頂級宗門＋滿背包九轉還魂丹，勝率也不足 11%，等同無法通關。
+目前設定下（滿血進場＋備妥 30% 丹藥）概略勝率：蜀山劍派約 94%、武當約 86%、少林約 48%、無宗門散修約 12%，
+亦即「宗門技能品質＋丹藥存量」是渡劫的主要準備方向。
+
+## 8. 丹藥與冷卻規則
+
+- 回復量（`config-shop.js` 的 `amount`）：凝血草 5%／培元丹 10%／九轉還魂丹 30%；聚氣散 5%／回天靈液 10%／造化神髓液 30%。
+- **使用冷卻**：`POTION_COOLDOWN_SECONDS = 5`。氣血類與靈力類**各自獨立**計時
+  （全域變數 `potionCooldownHp` / `potionCooldownMp`，在 `combatTick()` 開頭每秒遞減）。
+  手動使用（`bag.js`）與自動輔助（`combat.js`）共用同一組冷卻。
+- **自動購買限制**：`shopItems` 中標記 `noAutoBuy: true` 的丹藥（九轉還魂丹、回天靈液）
+  永遠不會被自動輔助花靈石購買；但玩家手動買進背包後，自動輔助仍會優先服用它們。
+- 自動輔助的選藥邏輯為「背包內回復量最高者 → 否則買得起且未標記 `noAutoBuy` 的回復量最高者」，
+  新增丹藥只要加進 `config-shop.js` 就會自動納入，不需改動 `combat.js`。
 
 ## 6. 版型與 RWD 規則（電腦版 / 手機版）
 

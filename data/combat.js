@@ -1,9 +1,18 @@
 // 每秒戰鬥 tick：安全區打坐、野外遭遇/戰鬥結算、自動補血補魔、僕從救援判定
 
 function combatTick() {
+    if (potionCooldownHp > 0) potionCooldownHp--;
+    if (potionCooldownMp > 0) potionCooldownMp--;
+
     if (player.hp <= 0) return;
 
     if (player.buffTimer > 0) player.buffTimer--;
+
+    // 渡劫期間由 tribulation.js 接管戰鬥，暫停掛機與任務流程
+    if (inTribulation) {
+        tribulationTick();
+        return;
+    }
 
     checkAutoHealAndMana();
 
@@ -50,8 +59,12 @@ function combatTick() {
         safeZoneTimer++;
         if (safeZoneTimer >= 5) {
             safeZoneTimer = 0;
-            let expEarned = gainExp(player.currentMap.expRate * 50);
-            addLog(`🧘‍♂️ 於安全區打坐 5 秒，吸收天地靈氣，獲得 ${Math.floor(expEarned)} 點經驗。`);
+            let expEarned = gainExp(player.currentMap.expRate * 50) || 0;
+            if (player.pendingTribulation && expEarned === 0) {
+                addLog(`🧘‍♂️ 打坐調息中…但修為已然圓滿，唯有渡劫方能更進一步。`);
+            } else {
+                addLog(`🧘‍♂️ 於安全區打坐 5 秒，吸收天地靈氣，獲得 ${Math.floor(expEarned)} 點經驗。`);
+            }
         }
         updateUI();
         return;
@@ -132,10 +145,11 @@ function combatTick() {
         });
 
         if (expEarned > 0) {
-            gainExp(expEarned);
+            let gainedExp = gainExp(expEarned) || 0;
             player.coins += coinsEarned;
             player.reputation = (player.reputation || 0) + killedCount;
-            addLog(`斬殺敵手，獲得 ${Math.floor(expEarned)} 經驗, ${coinsEarned} 靈石 與 ${killedCount} 點聲望！`, "combat");
+            let expText = (player.pendingTribulation && gainedExp === 0) ? "修為已滿(待渡劫)" : `${Math.floor(gainedExp)} 經驗`;
+            addLog(`斬殺敵手，獲得 ${expText}, ${coinsEarned} 靈石 與 ${killedCount} 點聲望！`, "combat");
             for(let k = 0; k < killedCount; k++) {
                 tryRescueServant();
             }
@@ -164,67 +178,60 @@ function combatTick() {
     }
 }
 
-// 自動補血/補魔：優先消耗背包藥品，不足則以靈石直接購買
+// 自動補血/補魔：優先消耗背包藥品（由高階往低階），背包沒有才以靈石自動購買。
+// 受 POTION_COOLDOWN_SECONDS 冷卻限制；標記 noAutoBuy 的丹藥永遠不會被自動購買（但可手動買來讓自動服用）。
 function checkAutoHealAndMana() {
     if (player.hp <= 0) return;
 
-    if (player.autoHp.enabled) {
+    if (player.autoHp.enabled && potionCooldownHp <= 0) {
         let hpPercent = (player.hp / player.maxHp) * 100;
         if (hpPercent <= player.autoHp.threshold && player.hp < player.maxHp) {
-            let used = false;
-            for (let id of ['heal_3', 'heal_2', 'heal_1']) {
-                if (player.bag[id] && player.bag[id] > 0) {
-                    player.bag[id]--;
-                    if (player.bag[id] <= 0) delete player.bag[id];
-                    let item = shopItems.find(s => s.id === id);
-                    player.hp = Math.min(player.maxHp, player.hp + player.maxHp * item.amount);
-                    addLog(`⚡ [自動補血]消耗背包中的【${item.name}】，氣血回復！`, "heal");
-                    used = true;
-                    break;
-                }
-            }
-            if (!used) {
-                if (player.coins >= 500 && player.hp <= player.maxHp * 0.3) {
-                    player.coins -= 500;
-                    player.hp = player.maxHp;
-                    addLog(`⚡ [自動補血] 自動購買並服下【九轉還魂丹】，氣血瞬間全滿！`, "heal");
-                } else if (player.coins >= 200) {
-                    player.coins -= 200;
-                    player.hp = Math.min(player.maxHp, player.hp + player.maxHp * 0.5);
-                    addLog(`⚡ [自動補血] 自動購買並服下【培元丹】，氣血大幅回復！`, "heal");
-                } else if (player.coins >= 50) {
-                    player.coins -= 50;
-                    player.hp = Math.min(player.maxHp, player.hp + player.maxHp * 0.2);
-                    addLog(`⚡ [自動補血] 自動購買並服下【凝血草】，氣血回復！`, "heal");
+            let bagItem = shopItems
+                .filter(s => s.type === 'heal' && player.bag[s.id] > 0)
+                .sort((a, b) => b.amount - a.amount)[0];
+
+            if (bagItem) {
+                player.bag[bagItem.id]--;
+                if (player.bag[bagItem.id] <= 0) delete player.bag[bagItem.id];
+                player.hp = Math.min(player.maxHp, player.hp + player.maxHp * bagItem.amount);
+                potionCooldownHp = POTION_COOLDOWN_SECONDS;
+                addLog(`⚡ [自動補血] 服用背包中的【${bagItem.name}】，氣血回復 ${Math.round(bagItem.amount * 100)}%！`, "heal");
+            } else {
+                let buyItem = shopItems
+                    .filter(s => s.type === 'heal' && !s.noAutoBuy && player.coins >= s.cost)
+                    .sort((a, b) => b.amount - a.amount)[0];
+                if (buyItem) {
+                    player.coins -= buyItem.cost;
+                    player.hp = Math.min(player.maxHp, player.hp + player.maxHp * buyItem.amount);
+                    potionCooldownHp = POTION_COOLDOWN_SECONDS;
+                    addLog(`⚡ [自動補血] 自動購買並服下【${buyItem.name}】，氣血回復 ${Math.round(buyItem.amount * 100)}%！`, "heal");
                 }
             }
         }
     }
 
-    if (player.autoMp.enabled) {
+    if (player.autoMp.enabled && potionCooldownMp <= 0) {
         let mpPercent = (player.mp / player.maxMp) * 100;
         if (mpPercent <= player.autoMp.threshold && player.mp < player.maxMp) {
-            let used = false;
-            for (let id of ['mp_3', 'mp_2', 'mp_1']) {
-                if (player.bag[id] && player.bag[id] > 0) {
-                    player.bag[id]--;
-                    if (player.bag[id] <= 0) delete player.bag[id];
-                    let item = shopItems.find(s => s.id === id);
-                    player.mp = Math.min(player.maxHp, player.mp + player.maxMp * item.amount);
-                    addLog(`✨ [自動補魔]消耗背包中的【${item.name}】，靈力回復！`, "skill");
-                    used = true;
-                    break;
-                }
-            }
-            if (!used) {
-                if (player.coins >= 150) {
-                    player.coins -= 150;
-                    player.mp = Math.min(player.maxHp, player.mp + player.maxMp * 0.7);
-                    addLog(`✨ [自動補魔] 自動購買並服下【回天靈液】，靈力大幅恢復！`, "skill");
-                } else if (player.coins >= 40) {
-                    player.coins -= 40;
-                    player.mp = Math.min(player.maxHp, player.mp + player.maxMp * 0.3);
-                    addLog(`✨ [自動補魔] 自動購買並服下【聚氣散】，靈力恢復！`, "skill");
+            let bagItem = shopItems
+                .filter(s => s.type === 'mp' && player.bag[s.id] > 0)
+                .sort((a, b) => b.amount - a.amount)[0];
+
+            if (bagItem) {
+                player.bag[bagItem.id]--;
+                if (player.bag[bagItem.id] <= 0) delete player.bag[bagItem.id];
+                player.mp = Math.min(player.maxMp, player.mp + player.maxMp * bagItem.amount);
+                potionCooldownMp = POTION_COOLDOWN_SECONDS;
+                addLog(`✨ [自動補魔] 服用背包中的【${bagItem.name}】，靈力回復 ${Math.round(bagItem.amount * 100)}%！`, "skill");
+            } else {
+                let buyItem = shopItems
+                    .filter(s => s.type === 'mp' && !s.noAutoBuy && player.coins >= s.cost)
+                    .sort((a, b) => b.amount - a.amount)[0];
+                if (buyItem) {
+                    player.coins -= buyItem.cost;
+                    player.mp = Math.min(player.maxMp, player.mp + player.maxMp * buyItem.amount);
+                    potionCooldownMp = POTION_COOLDOWN_SECONDS;
+                    addLog(`✨ [自動補魔] 自動購買並服下【${buyItem.name}】，靈力回復 ${Math.round(buyItem.amount * 100)}%！`, "skill");
                 }
             }
         }
