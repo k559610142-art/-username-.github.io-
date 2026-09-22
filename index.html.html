@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>凡人修仙放置傳 - 仙魔對峙戰鬥版</title>
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --panel-bg: rgba(18, 24, 38, 0.85);
+            --panel-border: rgba(212, 175, 55, 0.3);
+            --text-main: #d1d5db;
+            --accent: #f0d588;
+            --accent-glow: rgba(240, 213, 136, 0.4);
+            --sect-color: #38bdf8;
+            --shop-color: #fb923c;
+            --hp-color: #ef4444;
+            --mp-color: #3b82f6;
+            --sys-color: #4ade80;
+            --reincarnate-color: #e879f9;
+            --servant-color: #c084fc;
+            --equip-color: #f87171;
+            --reputation-color: #f472b6;
+            --charm-color: #fb7185;
+            --btn-hover: rgba(240, 213, 136, 0.15);
+        }
+
+        body {
+            font-family: "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(circle at 50% 20%, #1a233a 0%, #0b0f19 100%);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        #game-container {
+            width: 100%;
+            max-width: 1250px;
+            display: grid;
+            grid-template-columns: 300px 1fr 300px;
+            gap: 20px;
+        }
+
+        .panel {
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--panel-border);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        .panel-title {
+            color: var(--accent);
+            text-align: center;
+            border-bottom: 1px solid var(--panel-border);
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        #header {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 15px;
+            align-items: center;
+            font-size: 1.05em;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(24, 32, 52, 0.9), rgba(13, 18, 30, 0.9));
+        }
+
+        .bar-container {
+            background: #05070a;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            height: 22px;
+            position: relative;
+            margin-bottom: 6px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
+        }
+
+        .exp-bar { background: linear-gradient(90deg, #b45309, #f59e0b); width: 0%; height: 100%; transition: width 0.3s; box-shadow: 0 0 8px rgba(245, 158, 11, 0.5); }
+        .hp-bar { background: linear-gradient(90deg, #991b1b, var(--hp-color)); width: 100%; height: 100%; transition: width 0.3s; box-shadow: 0 0 8px rgba(239, 68, 68, 0.5); }
+        .mp-bar { background: linear-gradient(90deg, #1e3a8a, var(--mp-color)); width: 100%; height: 100%; transition: width 0.3s; box-shadow: 0 0 8px rgba(59, 130, 246, 0.5); }
+        
+        .bar-text { 
+            position: absolute; top: 0; left: 0; width: 100%; 
+            text-align: center; font-size: 0.8em; line-height: 22px; 
+            color: #fff; text-shadow: 1px 1px 2px #000; font-weight: bold;
+        }
+        
+        #combat-status {
+            grid-column: 1 / -1;
+            color: var(--shop-color);
+            font-size: 0.95em;
+            padding-top: 10px;
+            border-top: 1px dashed var(--panel-border);
+            letter-spacing: 0.5px;
+        }
+
+        #combat-visual-panel {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(20, 30, 48, 0.9));
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            border-radius: 8px;
+            padding: 14px;
+            margin-bottom: 12px;
+            box-shadow: inset 0 0 20px rgba(56, 189, 248, 0.15), 0 4px 15px rgba(0,0,0,0.6);
+        }
+        .battle-view-grid {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9em;
+            gap: 12px;
+        }
+        .battle-side {
+            flex: 1;
+            text-align: center;
+            background: rgba(10, 14, 24, 0.7);
+            padding: 10px 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        
+        .fighter-avatar {
+            margin: 6px 0;
+            filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.6));
+            animation: float-avatar 3s ease-in-out infinite alternate;
+        }
+        .monster-avatar {
+            font-size: 2.8em;
+            margin: 6px 0;
+            filter: drop-shadow(0 0 10px rgba(248, 113, 113, 0.6));
+            animation: float-avatar 3s ease-in-out infinite alternate;
+        }
+        @keyframes float-avatar {
+            0% { transform: translateY(0px) scale(1); }
+            100% { transform: translateY(-4px) scale(1.06); }
+        }
+
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.9em; margin-bottom: 10px; }
+        .stat-item { background: rgba(15, 20, 32, 0.6); border: 1px solid rgba(255, 255, 255, 0.05); padding: 6px; border-radius: 6px; text-align: center; }
+        .stat-item span { color: var(--accent); font-weight: bold; }
+        .res-item span { color: #4ade80; font-weight: bold; }
+
+        button { 
+            background: rgba(25, 33, 50, 0.6); 
+            color: var(--text-main); 
+            border: 1px solid var(--panel-border); 
+            padding: 8px 12px; 
+            width: 100%; 
+            margin-bottom: 8px; 
+            cursor: pointer; 
+            border-radius: 6px; 
+            transition: all 0.2s ease;
+            font-family: "Microsoft JhengHei", sans-serif;
+            font-size: 0.9em;
+        }
+        button:hover { 
+            background: var(--btn-hover); 
+            border-color: var(--accent);
+            box-shadow: 0 0 8px var(--accent-glow);
+            transform: translateY(-1px);
+        }
+        button:active { transform: translateY(0); }
+        button.active { background: var(--accent); color: #0b0f19; font-weight: bold; border-color: var(--accent); }
+        button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+        
+        .sect-btn { border-color: rgba(56, 189, 248, 0.4); color: var(--sect-color); }
+        .sect-btn:hover { background: rgba(56, 189, 248, 0.15); border-color: var(--sect-color); box-shadow: 0 0 8px rgba(56, 189, 248, 0.4); }
+        
+        .shop-btn { border-color: rgba(251, 146, 60, 0.4); color: var(--shop-color); }
+        .shop-btn:hover { background: rgba(251, 146, 60, 0.15); border-color: var(--shop-color); box-shadow: 0 0 8px rgba(251, 146, 60, 0.4); }
+        
+        .sys-btn { border-color: rgba(74, 222, 128, 0.4); color: var(--sys-color); }
+        .sys-btn:hover { background: rgba(74, 222, 128, 0.15); border-color: var(--sys-color); box-shadow: 0 0 8px rgba(74, 222, 128, 0.4); }
+        
+        .servant-btn { border-color: rgba(192, 132, 252, 0.4); color: var(--servant-color); }
+        .servant-btn:hover { background: rgba(192, 132, 252, 0.15); border-color: var(--servant-color); box-shadow: 0 0 8px rgba(192, 132, 252, 0.4); }
+        
+        .equip-btn { border-color: rgba(248, 113, 113, 0.4); color: var(--equip-color); }
+        .equip-btn:hover { background: rgba(248, 113, 113, 0.15); border-color: var(--equip-color); box-shadow: 0 0 8px rgba(248, 113, 113, 0.4); }
+        
+        .rep-btn { border-color: rgba(244, 114, 182, 0.4); color: var(--reputation-color); }
+        .rep-btn:hover { background: rgba(244, 114, 182, 0.15); border-color: var(--reputation-color); box-shadow: 0 0 8px rgba(244, 114, 182, 0.4); }
+        
+        .reincarnate-btn { border-color: rgba(232, 121, 249, 0.6); color: var(--reincarnate-color); font-weight: bold; }
+        .reincarnate-btn:hover { background: rgba(232, 121, 249, 0.2); border-color: var(--reincarnate-color); box-shadow: 0 0 12px rgba(232, 121, 249, 0.5); }
+
+        #log { 
+            height: 290px; 
+            overflow-y: auto; 
+            font-size: 0.85em; 
+            line-height: 1.5; 
+            display: flex; 
+            flex-direction: column-reverse; 
+            padding-right: 5px;
+        }
+        #log::-webkit-scrollbar { width: 6px; }
+        #log::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 3px; }
+        #log::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.3); border-radius: 3px; }
+
+        .log-entry { margin-bottom: 5px; padding-bottom: 3px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .log-entry.level-up { color: var(--accent); font-weight: bold; text-shadow: 0 0 6px var(--accent-glow); }
+        .log-entry.system { color: var(--sys-color); }
+        .log-entry.combat { color: #f87171; }
+        .log-entry.skill { color: #c084fc; }
+        .log-entry.heal { color: #4ade80; }
+        .log-entry.quest { color: #22d3ee; }
+        .log-entry.servant { color: var(--servant-color); font-weight: bold; }
+        .log-entry.equip { color: #f87171; font-weight: bold; }
+        .log-entry.reincarnate { color: var(--reincarnate-color); font-weight: bold; }
+
+        .modal-bg { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 7, 12, 0.85); backdrop-filter: blur(5px); justify-content: center; align-items: center; z-index: 100; }
+        .modal-content { background: #131c2e; border: 1px solid var(--panel-border); border-radius: 12px; padding: 25px; width: 80%; max-width: 900px; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .card { border: 1px solid rgba(255,255,255,0.08); padding: 15px; border-radius: 8px; text-align: center; background: rgba(18, 24, 38, 0.6); transition: transform 0.2s; }
+        .card:hover { border-color: var(--panel-border); transform: translateY(-2px); }
+        .card h3 { margin-top: 0; margin-bottom: 8px; font-size: 1.1em; }
+        .close-btn { width: auto; padding: 10px 35px; margin: 0 auto; display: block; border-color: #ef4444; color: #ef4444; background: rgba(239, 68, 68, 0.1); }
+        .close-btn:hover { background: rgba(239, 68, 68, 0.25); border-color: #ef4444; box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
+        
+        .auto-settings { font-size: 0.85em; background: rgba(15, 20, 32, 0.6); padding: 10px; border-radius: 6px; margin-top: 12px; border: 1px solid rgba(255,255,255,0.05); }
+        .auto-settings label { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; cursor: pointer; }
+        .auto-settings input[type="number"] { width: 55px; background: #0b0f19; border: 1px solid var(--panel-border); color: #fff; text-align: center; border-radius: 4px; padding: 2px; }
+
+        .quality-凡品, .quality-白色, .quality-一般 { color: #f3f4f6; }
+        .quality-優秀, .quality-綠色 { color: #4ade80; }
+        .quality-稀有, .quality-藍色 { color: #38bdf8; }
+        .quality-史詩, .quality-紫色 { color: #c084fc; }
+        .quality-傳說, .quality-橙色 { color: #fb923c; font-weight: bold; text-shadow: 0 0 8px rgba(251, 146, 60, 0.5); }
+
+        .elem-金 { color: #facc15; font-weight: bold; }
+        .elem-木 { color: #4ade80; font-weight: bold; }
+        .elem-水 { color: #38bdf8; font-weight: bold; }
+        .elem-火 { color: #fb7185; font-weight: bold; }
+        .elem-土 { color: #d97706; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <div id="header" class="panel">
+        <div>
+            <div>境界：<span id="realm-display" style="color: var(--accent); font-weight: bold;">凡人 1階</span></div>
+            <div style="margin-top: 5px;">戰力：<span id="power-display">5</span></div>
+        </div>
+        <div>
+            <div class="bar-container" style="border-color: var(--hp-color);">
+                <div id="hp-bar" class="hp-bar"></div>
+                <div id="hp-text" class="bar-text">100 / 100</div>
+            </div>
+            <div class="bar-container" style="border-color: var(--mp-color);">
+                <div id="mp-bar" class="mp-bar"></div>
+                <div id="mp-text" class="bar-text">100 / 100</div>
+            </div>
+            <div class="bar-container">
+                <div id="exp-bar" class="exp-bar"></div>
+                <div id="exp-text" class="bar-text">0 / 100</div>
+            </div>
+        </div>
+        <div>
+            <div>勢力：<span id="sect-display" style="color: var(--sect-color); font-weight: bold;">散修</span></div>
+            <div style="margin-top: 5px;">靈石：<span id="coins-display" style="color: #facc15; font-weight: bold;">0</span></div>
+            <div style="margin-top: 5px;">聲望：<span id="reputation-display" style="color: var(--reputation-color); font-weight: bold;">0</span></div>
+        </div>
+        <div id="combat-status">當前狀態：在洞府 / 弟子居 靜修 (安全區)</div>
+    </div>
+
+    <div>
+        <div class="panel" style="margin-bottom: 20px;">
+            <div class="panel-title">
+                修士道號：<span id="player-name-display" style="color: var(--accent);">韓立</span>
+            </div>
+            <button class="sys-btn" onclick="changePlayerName()" style="margin-bottom: 12px; font-size: 0.9em;">✏️ 修改道號</button>
+
+            <div class="stat-grid">
+                <div class="stat-item">力量 <span id="stat-str">10</span></div>
+                <div class="stat-item">體質 <span id="stat-con">10</span></div>
+                <div class="stat-item">悟性 <span id="stat-int">10</span></div>
+                <div class="stat-item">靈力 <span id="stat-spr">10</span></div>
+                <div class="stat-item" style="grid-column: 1 / -1;">魅力 <span id="stat-cha" style="color: var(--charm-color);">10</span></div>
+            </div>
+
+            <button class="equip-btn" onclick="openEquipmentModal()" style="margin-top: 10px; font-weight: bold;">🛡️ 角色裝備與狀態</button>
+
+            <div style="font-size: 0.8em; color: #9ca3af; text-align: center; margin-top: 10px; margin-bottom: 10px;">
+                (輪迴次數: <span id="reincarnate-count" style="color:var(--reincarnate-color);">0</span>)
+            </div>
+
+            <div class="auto-settings">
+                <div style="color: var(--accent); font-weight: bold; margin-bottom: 5px; text-align: center;">自動輔助設定</div>
+                <label>
+                    <span><input type="checkbox" id="auto-hp-enabled" onchange="updateAutoSettings()"> 自動補血</span>
+                    <span>低於 <input type="number" id="auto-hp-threshold" value="50" min="10" max="90" onchange="updateAutoSettings()"> %</span>
+                </label>
+                <label>
+                    <span><input type="checkbox" id="auto-mp-enabled" onchange="updateAutoSettings()"> 自動補魔</span>
+                    <span>低於 <input type="number" id="auto-mp-threshold" value="30" min="10" max="90" onchange="updateAutoSettings()"> %</span>
+                </label>
+            </div>
+
+            <hr style="border-color: rgba(255,255,255,0.08); margin-top: 15px;">
+            <div class="stat-grid res-item" style="margin-top: 12px;">
+                <div class="stat-item">靈草 <span id="res-grass">0</span></div>
+                <div class="stat-item">獸丹 <span id="res-beastcore">0</span></div>
+                <div class="stat-item">武學積分 <span id="res-martial">0</span></div>
+                <div class="stat-item">凡品靈草 <span id="herb-mortal">0</span></div>
+                <div class="stat-item">上品靈草 <span id="herb-high">0</span></div>
+                <div class="stat-item">極品靈草 <span id="herb-epic">0</span></div>
+                <div class="stat-item">仙品靈草 <span id="herb-immortal">0</span></div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">修仙地圖</div>
+            <div id="map-category-list">
+                <button class="sys-btn" onclick="openMapCategoryModal(0)">📍 第一區：宗門核心安全區</button>
+                <button class="sys-btn" onclick="openMapCategoryModal(1)">📍 第二區：野外歷練區</button>
+                <button class="sys-btn" onclick="openMapCategoryModal(2)">📍 第三區：開放世界大區域</button>
+                <button class="sys-btn" onclick="openMapCategoryModal(3)">📍 第四區：上古禁區 (高難)</button>
+                <button class="sys-btn" onclick="openMapCategoryModal(4)">📍 第五區：諸天至高戰場</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 中間欄位：包含玩家與怪物圖像的戰鬥實況 -->
+    <div class="panel">
+        <div class="panel-title">⚔️ 仙魔戰場實況</div>
+        <div id="combat-visual-panel">
+            <div class="battle-view-grid">
+                <div class="battle-side">
+                    <div style="color: var(--sect-color); font-weight: bold; font-size: 0.95em; margin-bottom: 2px;" id="battle-player-name">韓立</div>
+                    <div class="fighter-avatar" id="battle-player-icon">
+                        <!-- 動態根據性別載入圖片 -->
+                    </div>
+                    <div style="font-size: 0.8em; color: #9ca3af;" id="battle-player-hp">氣血: 100/100</div>
+                </div>
+                <div style="text-align: center; font-weight: bold; color: #f87171; font-size: 1.2em; text-shadow: 0 0 8px rgba(248, 113, 113, 0.6);">VS</div>
+                <div class="battle-side">
+                    <div style="color: #f87171; font-weight: bold; font-size: 0.95em; margin-bottom: 2px;" id="battle-enemy-title">上古巨獸</div>
+                    <div class="monster-avatar" id="battle-enemy-icon">🐉</div>
+                    <div style="font-size: 0.8em; color: #9ca3af;" id="battle-enemy-info">無敵意目標</div>
+                </div>
+            </div>
+            <div style="text-align: center; font-size: 0.85em; color: #38bdf8; margin-top: 8px; font-weight: bold;" id="battle-action-desc">
+                劍氣縱橫，天地元氣激盪...
+            </div>
+        </div>
+
+        <div class="panel-title" style="margin-top: 12px;">歷練日誌</div>
+        <div id="log"></div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-title">宗門與設施</div>
+        <button class="sect-btn" onclick="openSectModal()">⛩️ 尋訪仙門 (加入/切換)</button>
+        <button class="shop-btn" onclick="openShopModal()">💊 丹藥堂 (買賣丹藥)</button>
+        <button class="sys-btn" style="border-color: rgba(250, 204, 21, 0.4); color: #facc15;" onclick="openBagModal()">🎒 修仙背包 (道具/裝備)</button>
+        <button class="servant-btn" onclick="openServantModal()">🤝 僕從小屋 (拯救與派遣)</button>
+        
+        <button id="btn-sect-quest" class="sect-btn" style="border-color:#22d3ee; color:#22d3ee; display: none;" onclick="openQuestModal()">📜 門派任務 (需在演武學宮)</button>
+        <button id="btn-sect-field" class="sect-btn" style="border-color:#4ade80; color:#4ade80; display: none;" onclick="openFieldModal()">🚜 宗門靈田 (種植靈草)</button>
+        <button id="btn-sect-beast" class="sect-btn" style="border-color:#fb923c; color:#fb923c; display: none;" onclick="openBeastModal()">🐾 靈獸園 (培育靈獸)</button>
+        
+        <button id="btn-forbidden-lingbao" class="rep-btn" style="border-color: var(--reputation-color); color: var(--reputation-color); display: none;" onclick="openLingbaoShopModal()">💎 靈寶阁 (宗門代表裝備與禁術)</button>
+        <button id="btn-forbidden-library" class="equip-btn" style="border-color:#c084fc; color:#c084fc; display: none;" onclick="openLibraryModal()">📚 藏書閣 (秘籍領悟)</button>
+        <button id="btn-forbidden-forge" class="equip-btn" style="border-color:#fb923c; color:#fb923c; display: none;" onclick="openForgeModal()">⚒️ 鍛造閣 (裝備打造)</button>
+        <button id="btn-forbidden-alchemy" class="shop-btn" style="border-color:#f472b6; color:#f472b6; display: none;" onclick="openAlchemyModal()">🧪 煉丹房 (丹藥煉製)</button>
+
+        <div id="skill-list" style="margin-top: 12px; margin-bottom: 15px; font-size: 0.9em; color: #c084fc; background: rgba(192, 132, 252, 0.05); padding: 8px; border-radius: 6px; border: 1px dashed rgba(192, 132, 252, 0.2);">
+            尚未領悟門派技能。
+        </div>
+
+        <div class="panel-title" style="margin-top: 25px;">命運與系統</div>
+        <button class="reincarnate-btn" onclick="triggerReincarnate()">🌀 轉世輪迴 (仙人初境解鎖)</button>
+        <button class="sys-btn" style="border-color: rgba(239, 68, 68, 0.5); color: #ef4444;" onclick="resetGameCompletely()">🔄 遊戲重新開始 (完全重置)</button>
+        <button class="sys-btn" onclick="saveLocal()">💾 本地存檔</button>
+        <button class="sys-btn" onclick="loadLocal()">📂 讀取本地存檔</button>
+        <button class="sys-btn" onclick="exportSave()">📤 匯出存檔代碼</button>
+        <button class="sys-btn" onclick="importSave()">📥 匯入存檔代碼</button>
+    </div>
+</div>
+
+<!-- 彈出視窗群組 -->
+<div id="map-category-modal" class="modal-bg">
+    <div class="modal-content" style="border-color: var(--accent);">
+        <h2 id="map-modal-title" style="text-align: center; color: var(--accent); margin-top: 0;">區域地圖</h2>
+        <div id="map-modal-list" class="grid-container"></div>
+        <button class="close-btn" onclick="closeModal('map-category-modal')">關閉</button>
+    </div>
+</div>
+
+<div id="equipment-modal" class="modal-bg">
+    <div class="modal-content" style="border-color: var(--equip-color);">
+        <h2 style="text-align: center; color: var(--equip-color); margin-top: 0;">🛡️ 角色裝備與五行狀態</h2>
+        <div id="wuxing-status-modal" style="text-align: center; color: var(--accent); font-weight: bold; margin-bottom: 20px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 6px;">
+            【五行法陣】：無生效
+        </div>
+        <div id="equipped-list-container" class="grid-container"></div>
+        <button class="close-btn" onclick="closeModal('equipment-modal')">關閉</button>
+    </div>
+</div>
+
+<div id="lingbao-shop-modal" class="modal-bg">
+    <div class="modal-content" style="border-color: var(--reputation-color);">
+        <h2 style="text-align: center; color: var(--reputation-color); margin-top: 0;">💎 後山禁地 - 靈寶閣</h2>
+        <p style="text-align: center; color: #9ca3af; font-size: 0.9em;">可使用【靈石】或【聲望】購買宗門最高絕學禁術與代表裝備。</p>
+        <div id="lingbao-shop-container" class="grid-container" style="margin-top: 20px;"></div>
+        <button class="close-btn" onclick="closeModal('lingbao-shop-modal')">離開</button>
+    </div>
+</div>
+
+<div id="sect-modal" class="modal-bg">
+    <div class="modal-content" style="border-color: var(--sect-color);">
+        <h2 style="text-align: center; color: var(--sect-color); margin-top: 0;">諸天萬界宗門錄</h2>
+        <div id="sect-list-container"></div>
+        <button class="close-btn" onclick="closeModal('sect-modal')">關閉</button>
+    </div>
+</div>
+
+<div id="shop-modal" class="modal-bg">
+    <div class="modal-content" style="border-color: var(--shop-color);">
+        <h2 style="text-align: center; color: var(--shop-color); margin-top: 0;">💊 丹藥堂</h2>
+        <div id="shop-list-container" class="grid-container" style="margin-top: 20px;"></div>
+        <button class="close-btn" onclick="closeModal('shop-modal')">離開</button>
+    </div>
+</div>
+
+<div id="bag-modal" class="modal-bg">
+    <div class="modal-content" style="border-color: #facc15;">
+        <h2 style="text-align: center; color: #facc15; margin-top: 0;">🎒 修仙背包</h2>
+        <p style="text-align: center; color: #9ca3af; font-size: 0.9em;">可在這裡使用丹藥、穿戴裝備，或自由刪除不需要的物品。</p>
+        <div id="bag-list-container" class="grid-container" style="margin-top: 20px;"></div>
+        <button class="close-btn" onclick="closeModal('bag-modal')">關閉背包</button>
+    </div>
+</div>
+
+<div id="servant-modal" class="modal-bg">
+    <div class="modal-content" style="border-color: var(--servant-color);">
+        <h2 style="text-align: center; color: var(--servant-color); margin-top: 0;">🤝 僕從小屋</h2>
+        <p style="text-align: center; color: #9ca3af; font-size: 0.9em;">在野外冒險時有機率拯救受困的僕從。（魅力值將大幅增加遇見高品質僕從機率，最多指派 3 名僕從）</p>
+        <div id="servant-list-container" class="grid-container" style="margin-top: 20px;"></div>
+        <button class="close-btn" onclick="closeModal('servant-modal')">關閉</button>
+    </div>
+</div>
+
+<div id="quest-modal" class="modal-bg">
+    <div class="modal-content" style="border-color: #22d3ee; text-align: center;">
+        <h2 style="color: #22d3ee; margin-top: 0;">📜 演武學宮 - 門派任務</h2>
+        <p style="color: #9ca3af; font-size: 0.9em;">接取任務後，將自動累積進度並獲得獎勵。</p>
+        <div id="current-quest-display" style="margin-bottom: 10px; font-weight: bold; color: var(--accent);">當前未接取任務</div>
+        <div id="assigned-servant-display" style="margin-bottom: 20px; font-size: 0.9em; color: var(--servant-color);">派遣僕從：無</div>
+        <div id="quest-buttons-container"></div>
+        <button style="border-color: #ef4444; color: #ef4444; margin-top: 15px; background: rgba(239,68,68,0.1);" onclick="stopQuest()">🛑 停止當前任務</button>
+        <button class="close-btn" style="margin-top: 20px;" onclick="closeModal('quest-modal')">離開</button>
+    </div>
+</div>
+
+<div id="field-modal" class="modal-bg">
+    <div class="modal-content" style="border-color: #4ade80; text-align: center;">
+        <h2 style="color: #4ade80; margin-top: 0;">🚜 宗門靈田</h2>
+        <p style="color: #9ca3af; font-size: 0.9em;">消耗資源即可瞬間培育並收穫高級靈草。</p>
+        <div class="grid-container" style="margin-top: 20px;">
+            <div class="card">
+                <h3>凡品靈草</h3>
+                <p style="font-size: 0.85em; color:#9ca3af;">消耗: 10株靈草 + 5靈石</p>
+                <button class="sys-btn" onclick="plantHerb('mortal')">種植收穫</button>
+            </div>
+            <div class="card">
+                <h3>上品靈草</h3>
+                <p style="font-size: 0.85em; color:#9ca3af;">消耗: 50株靈草 + 10靈石</p>
+                <button class="sys-btn" onclick="plantHerb('high')">種植收穫</button>
+            </div>
+            <div class="card">
+                <h3>極品靈草</h3>
+                <p style="font-size: 0.85em; color:#9ca3af;">消耗: 200株靈草 + 20靈石</p>
+                <button class="sys-btn" onclick="plantHerb('epic')">種植收穫</button>
+            </div>
+            <div class="card">
+                <h3>仙品靈草</h3>
+                <p style="font-size: 0.85em; color:#9ca3af;">消耗: 500株靈草 + 50靈石</p>
+                <button class="sys-btn" onclick="plantHerb('immortal')">種植收穫</button>
+            </div>
+        </div>
+        <button class="close-btn" onclick="closeModal('field-modal')">離開</button>
+    </div>
+</div>
+
+<div id="beast-modal" class="modal-bg">
+    <div class="modal-content" style="border-color: #fb923c; text-align: center;">
+        <h2 style="color: #fb923c; margin-top: 0;">🐾 宗門靈獸園</h2>
+        <p style="color: #9ca3af; font-size: 0.9em;">消耗獸丹與靈石來馴養靈獸，獲得強大被動加成！（高魅力值可獲得靈獸兌換折扣）</p>
+        <div id="beast-list-container" class="grid-container" style="margin-top: 20px;"></div>
+        <button class="close-btn" onclick="closeModal('beast-modal')">離開</button>
+    </div>
+</div>
+
+<div id="library-modal" class="modal-bg">
+    <div class="modal-content" style="border-color: #c084fc;">
+        <h2 style="text-align: center; color: #c084fc; margin-top: 0;">📚 後山禁地 - 藏書閣</h2>
+        <p style="text-align: center; color: #9ca3af; font-size: 0.9em;">消耗【武學積分】參悟上古古籍，永久提升屬性！（每種書籍學習上限 100 次）</p>
+        <div class="grid-container" style="margin-top: 20px;">
+            <div class="card">
+                <h3>《力道真解》</h3>
+                <p style="font-size: 0.85em; color: #9ca3af;">消耗: 10 武學積分</p>
+                <p style="font-size: 0.85em; color: var(--accent);" id="study-count-str">已學習: 0 / 100</p>
+                <button class="sys-btn" onclick="studyBook('str')">參悟 (力量 +20)</button>
+            </div>
+            <div class="card">
+                <h3>《洗髓經》</h3>
+                <p style="font-size: 0.85em; color: #9ca3af;">消耗: 10 武學積分</p>
+                <p style="font-size: 0.85em; color: var(--accent);" id="study-count-con">已學習: 0 / 100</p>
+                <button class="sys-btn" onclick="studyBook('con')">參悟 (體質 +20)</button>
+            </div>
+            <div class="card">
+                <h3>《黃庭內景經》</h3>
+                <p style="font-size: 0.85em; color: #9ca3af;">消耗: 10 武學積分</p>
+                <p style="font-size: 0.85em; color: var(--accent);" id="study-count-int">已學習: 0 / 100</p>
+                <button class="sys-btn" onclick="studyBook('int')">參悟 (悟性 +20)</button>
+            </div>
+            <div class="card">
+                <h3>《靈飛經》</h3>
+                <p style="font-size: 0.85em; color: #9ca3af;">消耗: 10 武學積分</p>
+                <p style="font-size: 0.85em; color: var(--accent);" id="study-count-spr">已學習: 0 / 100</p>
+                <button class="sys-btn" onclick="studyBook('spr')">參悟 (靈力 +20)</button>
+            </div>
+        </div>
+        <button class="close-btn" onclick="closeModal('library-modal')">離開</button>
+    </div>
+</div>
+
+<div id="forge-modal" class="modal-bg">
+    <div class="modal-content" style="border-color: #fb923c;">
+        <h2 style="text-align: center; color: #fb923c; margin-top: 0;">⚒️ 後山禁地 - 鍛造閣</h2>
+        <p style="text-align: center; color: #9ca3af; font-size: 0.9em;">消耗靈石打造靈寶裝備，品質與五行屬性隨機產生！</p>
+        <div style="text-align: center; margin-bottom: 20px;">
+            <label style="color: var(--accent);">選擇打造部位：</label>
+            <select id="forge-type-select" style="background: #0b0f19; color: #fff; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--panel-border);">
+            </select>
+            <button class="shop-btn" style="width: auto; margin-left: 10px; display: inline-block;" onclick="forgeEquipment()">🔨 開始鍛造 (消耗 1000 靈石)</button>
+        </div>
+        <button class="close-btn" onclick="closeModal('forge-modal')">離開</button>
+    </div>
+</div>
+
+<div id="alchemy-modal" class="modal-bg">
+    <div class="modal-content" style="border-color: #f472b6;">
+        <h2 style="text-align: center; color: #f472b6; margin-top: 0;">🧪 後山禁地 - 煉丹房</h2>
+        <p style="text-align: center; color: #9ca3af; font-size: 0.9em;">使用高級靈草煉製神丹，服用後可永久提升個人各項屬性！</p>
+        <div class="grid-container" style="margin-top: 20px;">
+            <div class="card">
+                <h3>大力神丸</h3>
+                <p style="font-size: 0.85em; color: #9ca3af;">材料: 1 株 凡品靈草</p>
+                <p style="font-size: 0.85em; color: #4ade80;">效果: 力量 +10</p>
+                <button class="shop-btn" onclick="craftPill('str')">煉製並服用</button>
+            </div>
+            <div class="card">
+                <h3>洗髓丹</h3>
+                <p style="font-size: 0.85em; color: #9ca3af;">材料: 1 株 上品靈草</p>
+                <p style="font-size: 0.85em; color: #4ade80;">效果: 體質 +25</p>
+                <button class="shop-btn" onclick="craftPill('con')">煉製並服用</button>
+            </div>
+            <div class="card">
+                <h3>悟道丹</h3>
+                <p style="font-size: 0.85em; color: #9ca3af;">材料: 1 株 極品靈草</p>
+                <p style="font-size: 0.85em; color: #4ade80;">效果: 悟性 +50</p>
+                <button class="shop-btn" onclick="craftPill('int')">煉製並服用</button>
+            </div>
+            <div class="card">
+                <h3>九轉聚靈丹</h3>
+                <p style="font-size: 0.85em; color: #9ca3af;">材料: 1 株 仙品靈草</p>
+                <p style="font-size: 0.85em; color: #4ade80;">效果: 靈力 +100</p>
+                <button class="shop-btn" onclick="craftPill('spr')">煉製並服用</button>
+            </div>
+            <div class="card">
+                <h3>駐顏駐魅力丹</h3>
+                <p style="font-size: 0.85em; color: #9ca3af;">材料: 1株 仙品靈草 + 1000 靈石</p>
+                <p style="font-size: 0.85em; color: var(--charm-color);">效果: 魅力 +20</p>
+                <button class="shop-btn" onclick="craftPill('cha')">煉製並服用</button>
+            </div>
+        </div>
+        <button class="close-btn" onclick="closeModal('alchemy-modal')">離開</button>
+    </div>
+</div>
+
+<!--
+    遊戲邏輯已拆分為獨立 JS 檔案，統一放置於 data/ 資料夾。
+    載入順序具有依賴性（設定資料 -> 執行狀態 -> 功能模組 -> 進入點），請勿任意調換。
+    詳細的檔案關聯說明請見 ARCHITECTURE.md。
+-->
+<script src="data/config-realms.js"></script>
+<script src="data/config-maps.js"></script>
+<script src="data/config-sects.js"></script>
+<script src="data/config-lingbao.js"></script>
+<script src="data/config-shop.js"></script>
+<script src="data/config-beasts.js"></script>
+<script src="data/config-servants.js"></script>
+<script src="data/config-equipment.js"></script>
+<script src="data/state.js"></script>
+<script src="data/stats.js"></script>
+<script src="data/ui.js"></script>
+<script src="data/map.js"></script>
+<script src="data/combat.js"></script>
+<script src="data/leveling.js"></script>
+<script src="data/sect.js"></script>
+<script src="data/shop.js"></script>
+<script src="data/bag.js"></script>
+<script src="data/equipment.js"></script>
+<script src="data/lingbao-shop.js"></script>
+<script src="data/servant.js"></script>
+<script src="data/quest.js"></script>
+<script src="data/field.js"></script>
+<script src="data/beast.js"></script>
+<script src="data/library.js"></script>
+<script src="data/alchemy.js"></script>
+<script src="data/player-profile.js"></script>
+<script src="data/save.js"></script>
+<script src="data/main.js"></script>
+
+</body>
+</html>
