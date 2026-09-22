@@ -1,5 +1,7 @@
 // 遊戲進入點：網頁載入先顯示標題畫面，玩家點擊「進入世界」後才啟動遊戲
 
+let gameStarted = false;
+
 function initGame() {
     initForgeSelect();
     syncAutoSettingsUI();
@@ -10,20 +12,30 @@ function initGame() {
 }
 
 // 由標題畫面的 enterWorld() 呼叫（title-screen.js）
+// 有存檔 → 直接開始；沒有存檔（第一次進入）→ 先跳出性別選擇，選完才開始
 function startGame() {
-    if (!loadLocal()) {
-        let genderChoice = prompt("請選擇您的角色性別：\n輸入 1 或 m 代表【男性】（初始道號：韓立）\n輸入 2 或 f 代表【女性】（初始道號：南宮婉）", "1");
-        if (genderChoice === "2" || genderChoice === "f" || genderChoice === "女性") {
-            player.gender = "female";
-            player.name = "南宮婉";
-        } else {
-            player.gender = "male";
-            player.name = "韓立";
-        }
-        player.lastSaveTime = Date.now();
-        addLog(`🌱 歡迎踏入修仙世界！系統已初始化角色【${player.name}】。`, "system");
+    if (loadLocal()) {
+        gameStarted = true;
+        initGame();
+        return;
     }
+    document.getElementById('gender-modal').style.display = 'flex';
+}
+
+// 開場性別選擇視窗的按鈕（index.html 的 #gender-modal）
+function chooseGender(gender) {
+    if (gameStarted) return;   // 避免連點重複啟動主迴圈
+    gameStarted = true;
+
+    const avatar = PLAYER_AVATARS[gender] || PLAYER_AVATARS.male;
+    player.gender = gender === 'female' ? 'female' : 'male';
+    player.name = avatar.defaultName;
+    player.lastSaveTime = Date.now();
+
+    closeModal('gender-modal');
+    addLog(`🌱 歡迎踏入修仙世界！系統已初始化角色【${player.name}】。`, "system");
     initGame();
+    saveLocal();   // 立刻存檔，重新整理後不會再次詢問性別
 }
 
 window.onload = function() {

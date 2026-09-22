@@ -151,6 +151,13 @@
         .stat-item span { color: var(--accent); font-weight: bold; }
         .res-item span { color: #4ade80; font-weight: bold; }
 
+        /* 開場性別選擇 */
+        .gender-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px; }
+        .gender-card { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 16px 8px; margin: 0; }
+        .gender-card img { width: 96px; height: 96px; object-fit: cover; border-radius: 50%; border: 2px solid var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
+        .gender-label { color: var(--accent); font-weight: bold; font-size: 1.1em; }
+        .gender-name { color: #9ca3af; font-size: 0.85em; }
+
         /* 靈獸園：靈寵技能欄位與五行選擇按鈕 */
         .beast-skill-slot { border: 1px dashed rgba(255,255,255,0.1); border-radius: 6px; padding: 5px 6px; margin-top: 5px; line-height: 1.5; }
         .beast-elem-choices { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
@@ -461,6 +468,26 @@
     </picture>
     <!-- 熱區位置由 title-screen.js 依當前圖片與 cover 裁切比例即時計算，永遠對準光環 -->
     <button id="title-hotspot" onclick="enterWorld()" aria-label="進入世界"></button>
+</div>
+
+<!-- 開場性別選擇：第一次進入世界（沒有存檔）時由 main.js 的 startGame() 顯示，選完才開始遊戲 -->
+<div id="gender-modal" class="modal-bg">
+    <div class="modal-content" style="max-width: 520px; text-align: center; border-color: var(--accent);">
+        <h2 style="color: var(--accent); margin-top: 0;">🌱 踏入修仙之路</h2>
+        <p style="color: #9ca3af; font-size: 0.9em;">請選擇你的角色。道號之後可以修改，性別選定後無法更改。</p>
+        <div class="gender-choices">
+            <button class="gender-card" onclick="chooseGender('male')">
+                <img src="https://i.postimg.cc/fbJ8LT1t/han-tian-zun.jpg" alt="男修">
+                <span class="gender-label">男修</span>
+                <span class="gender-name">初始道號：韓立</span>
+            </button>
+            <button class="gender-card" onclick="chooseGender('female')">
+                <img src="https://i.postimg.cc/L8WZRzfy/nan-gong-wan.jpg" alt="女修">
+                <span class="gender-label">女修</span>
+                <span class="gender-name">初始道號：南宮婉</span>
+            </button>
+        </div>
+    </div>
 </div>
 
 <div id="game-container">

@@ -11,9 +11,10 @@ function getAssignedServantCount() {
     return player.servants.filter(s => s.quest).length;
 }
 
+// ⚠️ 僕從數量沒有上限（長期掛機可累積上千名），一律先組好整段 HTML 再一次寫入。
+// 不可在迴圈內使用 container.innerHTML +=：每次都會重新解析整個列表，600 名僕從就會卡住約 12 秒。
 function renderServants() {
     const container = document.getElementById('servant-list-container');
-    container.innerHTML = "";
 
     if (player.servants.length === 0) {
         container.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; color: #6b7280; padding: 20px;">您目前沒有僕從，去野外戰鬥拯救受困修士吧！</div>`;
@@ -22,35 +23,44 @@ function renderServants() {
 
     let tier = getSectTier();
     let assignedCount = getAssignedServantCount();
+    let parts = [];
 
-    container.innerHTML += `<div style="grid-column: 1 / -1; text-align: center; color: var(--accent); font-size: 0.9em;">
-        目前派遣中：${assignedCount} / ${MAX_ASSIGNED_SERVANTS} 名（每位僕從可負責不同任務，且不受你所在地點限制）
-    </div>`;
+    parts.push(`<div style="grid-column: 1 / -1; text-align: center; color: var(--accent); font-size: 0.9em;">
+        目前派遣中：${assignedCount} / ${MAX_ASSIGNED_SERVANTS} 名（每位僕從可負責不同任務，且不受你所在地點限制）｜共 ${player.servants.length} 名僕從
+    </div>`);
 
     // 依品級一鍵解僱
     let counts = {};
     player.servants.forEach(s => { counts[s.quality] = (counts[s.quality] || 0) + 1; });
-    container.innerHTML += renderBulkDeleteBar(
+    parts.push(renderBulkDeleteBar(
         "一鍵解僱僕從（依品級）",
         "bulk-servant-quality",
         servantQualities.map(q => q.name),
         counts,
         "bulkDismissServants",
         "※ 正在執行任務的僕從一併解僱，其任務會中止"
-    );
+    ));
 
-    player.servants.forEach(s => {
-        let options = `<option value="">— 不指派 —</option>` + Object.keys(questData).map(questId => {
-            let def = getQuestDef(questId, tier);
-            return `<option value="${questId}" ${s.quest === questId ? 'selected' : ''}>${def.icon} ${def.name}（${formatQuestRewards(def)}）</option>`;
-        }).join("");
+    // 任務選項每位僕從都一樣，只算一次
+    let questOptions = Object.keys(questData).map(questId => {
+        let def = getQuestDef(questId, tier);
+        return { questId, label: `${def.icon} ${def.name}（${formatQuestRewards(def)}）` };
+    });
+
+    // 派遣中的僕從排在最前面，方便管理
+    let sorted = player.servants.filter(s => s.quest).concat(player.servants.filter(s => !s.quest));
+
+    sorted.forEach(s => {
+        let options = `<option value="">— 不指派 —</option>` + questOptions.map(o =>
+            `<option value="${o.questId}" ${s.quest === o.questId ? 'selected' : ''}>${o.label}</option>`
+        ).join("");
 
         let percent = Math.floor(((s.timer || 0) / QUEST_REQUIRED_PROGRESS) * 100);
         let statusText = s.quest
             ? `<p style="font-size: 0.8em; color: #4ade80; margin: 6px 0;">執行中・進度 ${percent}%</p>`
             : `<p style="font-size: 0.8em; color: #6b7280; margin: 6px 0;">閒置中</p>`;
 
-        container.innerHTML += `
+        parts.push(`
             <div class="card" style="border-color: var(--servant-color);">
                 <h3 class="quality-${s.quality}">${s.name}</h3>
                 <p style="font-size: 0.85em; margin: 5px 0; color:#9ca3af;">品質：<span class="quality-${s.quality}">${s.quality}</span></p>
@@ -61,8 +71,10 @@ function renderServants() {
                 </select>
                 ${statusText}
                 <button style="border-color: #ef4444; color: #ef4444; background: rgba(239,68,68,0.1);" onclick="dismissServant('${s.id}')">解僱僕從</button>
-            </div>`;
+            </div>`);
     });
+
+    container.innerHTML = parts.join("");
 }
 
 // 指派（或取消指派）單一僕從的任務

@@ -60,9 +60,13 @@ function calcOfflineProgress() {
 function migrateServantAssignments() {
     if (!Array.isArray(player.servants)) player.servants = [];
 
+    // 舊版僕從 id 可能重複（同一毫秒救出多名），重複者換發新 id，避免解僱時連帶刪掉別人
+    let seenIds = new Set();
     player.servants.forEach(s => {
         if (typeof s.quest === 'undefined') s.quest = null;
         if (typeof s.timer !== 'number') s.timer = 0;
+        if (!s.id || seenIds.has(s.id)) s.id = Date.now() + "_" + Math.random().toString(36).slice(2, 10);
+        seenIds.add(s.id);
     });
 
     if (Array.isArray(player.assignedServantIds)) {

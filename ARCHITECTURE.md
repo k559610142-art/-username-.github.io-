@@ -70,7 +70,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 14 | `config-daily-quests.js` | 每日任務池與獎勵、千寶閣 `AUCTION_*`、`auctionQualityOdds`、`auctionLifePills`(壽元丹) | 無 | `daily-quest.js`、`auction.js` |
 | 15 | `state.js` | `player`、`enemies`、`respawnTimer`、`safeZoneTimer`；不存檔的執行期狀態：`inTribulation`/`heartDemon`/丹藥冷卻/`gameOver`/靈寵輔助計時(`petBuff*`/`petShield*`/`petRegen*`) | **`maps`**（必須排在 config-maps.js 之後） | 幾乎所有檔案都會讀寫 `player` |
 | 16 | `stats.js` | `getEquipBonus`/`getWuxingBuff`/`getNextExp`/`getLevelExpNeeded`/`hasLiveBeast`/`getBasePower`/`getPhysAttack`/`getMagAttack`/`getMaxHp`/`getMaxMp`/`getSectTier`/`getAllSkills` | `player`、`realms`、`sectData`、`LEVEL_*`、靈寵輔助計時 | `ui.js`、`combat.js`、`leveling.js`、`tribulation.js`、`beast-combat.js` 等幾乎全部功能檔 |
-| 17 | `ui.js` | `updateUI`/`updateCombatVisualPanel`/`updateStudyCountsUI`/`renderSkillList`/`addLog`/`updateAutoSettings`/`syncAutoSettingsUI`/`updateSectFacilitiesUI`/`closeModal`/`toggleDrawer`/`formatCountdown`/批次刪除工具 | `player`、`realms`、`stats.js` 的計算函式、`lifespan.js`(getDeathLifespanCost) | 幾乎所有功能檔在資料變動後都會呼叫 `updateUI()`/`addLog()` |
+| 17 | `ui.js` | 常數 `PLAYER_AVATARS`（頭像/預設道號，戰鬥實況與性別選擇共用）、`updateUI`/`updateCombatVisualPanel`/`updateStudyCountsUI`/`renderSkillList`/`addLog`/`updateAutoSettings`/`syncAutoSettingsUI`/`updateSectFacilitiesUI`/`closeModal`/`toggleDrawer`/`formatCountdown`/批次刪除工具 | `player`、`realms`、`stats.js` 的計算函式、`lifespan.js`(getDeathLifespanCost) | 幾乎所有功能檔在資料變動後都會呼叫 `updateUI()`/`addLog()` |
 | 18 | `map.js` | `openMapCategoryModal`/`selectMap`/`changeMap` | `maps`、`player`、`ui.js` | `quest.js`(stopQuest 由 changeMap 呼叫)、HTML 按鈕 |
 | 19 | `combat.js` | `combatTick`/`checkAutoHealAndMana`/`tryRescueServant` | `player`、`enemies`、`shopItems`、`servantQualities`、`servantNames`、`stats.js`、`leveling.js`(gainExp)、`beast-combat.js`(petAssistTick/applyPetDamageReduction)、`lifespan.js`(handlePlayerDeath)、`map.js`(changeMap 死亡回城) | `main.js`(setInterval 每秒呼叫) |
 | 20 | `leveling.js` | `gainExp`/`gainLevelExp`/`advanceRealm`/`triggerReincarnate` | `realms`、`player`、`stats.js`、`beast-combat.js`(gainBeastExp)、`lifespan.js`(gainRealmLifespan) | `combat.js`、`tribulation.js`、`save.js`、HTML 輪迴按鈕 |
@@ -94,7 +94,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 38 | `player-profile.js` | `changePlayerName` | `player.name` | HTML 按鈕 |
 | 39 | `save.js` | `calcOfflineProgress`/`saveLocal`/`loadLocal`/`exportSave`/`importSave`/`resetGameCompletely` + 舊存檔相容 `migrate*()` | `player`（整包序列化進 `localStorage`）、`leveling.js`(gainExp)、`combat.js`(tryRescueServant)、`lifespan.js`、`beast-combat.js`(createBeast)、`ui.js` | `main.js`(啟動時 loadLocal)、`main.js`(initGame 內每 30 秒 saveLocal) |
 | 40 | `title-screen.js` | `enterWorld`/`initTitleScreen`、旗標 `worldEntered` | `main.js`(startGame)、`#title-screen` DOM | `main.js`(onload 呼叫 initTitleScreen)、標題頁按鈕 |
-| 41 | `main.js` | `initGame`/`startGame`/`window.onload` | 幾乎全部模組（啟動流程的膠水程式碼） | 瀏覽器 `onload`、`title-screen.js`(enterWorld 呼叫 startGame) |
+| 41 | `main.js` | `initGame`/`startGame`/`chooseGender`/`window.onload`、旗標 `gameStarted` | 幾乎全部模組（啟動流程的膠水程式碼） | 瀏覽器 `onload`、`title-screen.js`(enterWorld 呼叫 startGame) |
 
 ## 3. 資料流總覽（文字版流程圖）
 
@@ -118,8 +118,9 @@ enterWorld() [title-screen.js] → 標題頁淡出、移除 body.title-mode → 
         ▼
 startGame() [main.js]
         ├─ loadLocal() [save.js] 讀 localStorage
-        │       ├─ 成功 → calcOfflineProgress() 結算離線收益 → updateUI()
-        │       └─ 失敗 → prompt() 選性別，建立新 player [state.js 的預設值]
+        │       ├─ 成功 → calcOfflineProgress() 結算離線收益 → updateUI() → initGame()
+        │       └─ 失敗（第一次進入）→ 顯示 #gender-modal 性別選擇視窗
+        │               └─ 玩家點選 → chooseGender() [main.js]：設定性別與預設道號 → initGame() → 立即 saveLocal()
         │
         ▼
 initGame() [main.js]
@@ -174,6 +175,7 @@ combatTick() 每秒執行 [combat.js]
 | `openDailyQuestModal`, `claimDailyQuest`, `claimAllDailyQuests` | `data/daily-quest.js` |
 | `openAuctionModal`, `buyAuctionItem` | `data/auction.js` |
 | `enterWorld` | `data/title-screen.js` |
+| `chooseGender` | `data/main.js` |
 
 ## 5. 新增功能的建議流程
 
@@ -231,8 +233,18 @@ combatTick() 每秒執行 [combat.js]
 
 平衡備註：心魔氣血刻意設為玩家的 100% 而非 150%。實測若氣血也給 1.5 倍，
 即使頂級宗門＋滿背包九轉還魂丹，勝率也不足 11%，等同無法通關。
-目前設定下（滿血進場＋備妥 30% 丹藥）概略勝率：蜀山劍派約 94%、武當約 86%、少林約 48%、無宗門散修約 12%，
-亦即「宗門技能品質＋丹藥存量」是渡劫的主要準備方向。
+目前設定下（滿血進場＋備妥九轉還魂丹、開自動補血；宗門技能 +50/100/200%，每組模擬 400 場）概略勝率：
+
+| 渡劫 | 條件 | 勝率 |
+|---|---|---|
+| 築基 → 金丹（第一次） | 散修 | 約 7% |
+| 築基 → 金丹 | 武當 / 少林 / 皇朝 | 約 63% / 71% / 65% |
+| 金丹 → 元嬰 | 武當 | 約 79% |
+| 化神 / 大乘 / 渡劫 | 初級＋中級宗門 | 約 93～94% |
+| 真仙 / 大羅金仙 | 三階宗門 | 約 98% |
+
+亦即「宗門技能＋丹藥存量」是渡劫的主要準備方向。**宗門技能倍率一改，這張表就會失準**，
+調整 `SECT_SKILL_BONUS` 後請重新模擬（見第 13 節）。
 
 ## 8. 丹藥與冷卻規則
 
@@ -251,6 +263,14 @@ combatTick() 每秒執行 [combat.js]
   新增丹藥只要加進 `config-shop.js` 就會自動納入，不需改動 `combat.js`。
 
 ## 9. 介面慣例（抽屜、批次刪除、神器欄）
+
+- **大量列表的渲染規則（效能）**：僕從（`renderServants`）與背包裝備（`renderBag`）的數量**沒有上限**，
+  長期掛機可累積上千筆。這類列表一律先把每張卡片放進陣列、最後 `container.innerHTML = parts.join("")` 一次寫入，
+  **禁止在迴圈內寫 `container.innerHTML += ...`**：每次 `+=` 都會把整個列表重新解析一遍，成本隨數量平方成長。
+  實測 600 名僕從用 `+=` 會卡住約 12 秒（玩家回報「點開僕從小屋卡住」即此原因），改寫後只要 33 毫秒，3000 名約 0.2 秒。
+  固定少量的列表（宗門、地圖、靈寶閣、裝備欄位）不受影響，但新寫的列表請比照同樣做法。
+- **僕從 id**：`tryRescueServant()` 產生 `時間戳_8 碼隨機英數`。離線結算會在同一毫秒內救出多名僕從，
+  舊版只用 0～999 的隨機數，id 可能重複，重複時解僱一名會連帶刪掉另一名。
 
 - **技能面板位置**：「當前可用技能」(`#skill-list`) 放在**左欄角色面板、「🛡️ 角色裝備與狀態」按鈕正下方**
   （四維屬性 `.stat-grid` → 裝備按鈕 → 技能面板 → 輪迴次數），不在右側設施欄。內容由 `ui.js` 的 `renderSkillList()` 以 `getElementById` 填入，
@@ -333,15 +353,18 @@ combatTick() 每秒執行 [combat.js]
   | 圖片 | 尺寸 | 光環座標 (x, y, w, h) |
   |---|---|---|
   | `cover.jpg` | 1264 × 843 | 652, 527, 330, 290 |
-  | `cover-portrait.jpg` | 960 × 1706 | 495, 880, 251, 220 |
+  | `cover-portrait.jpg` | 960 × 1920 | 632, 1427, 330, 290 |
 
   `currentTitleHotspot()` 依 `img.currentSrc` 判斷目前載入哪張圖來選用對應座標；
   `positionTitleHotspot()` 會在圖片 `load`、`resize`、`orientationchange` 時重算
   （`<picture>` 切換來源時也會觸發 `load`，所以跨斷點縮放會自動校正）。
   ※ 若日後更換封面圖，只需重新量測光環座標並改 `TITLE_HOTSPOTS`，其餘不必動。
 - **啟動時機**：`window.onload` 只呼叫 `initTitleScreen()`，**不會**直接開始遊戲。
-  讀檔、性別選擇、離線收益結算全部延後到玩家點擊後才執行（`main.js` 的 `startGame()`），
-  所以玩家不會一打開網頁就被 `prompt()` 攔住。
+  讀檔、性別選擇、離線收益結算全部延後到玩家點擊後才執行（`main.js` 的 `startGame()`）。
+- **第一次進入（沒有存檔）**：顯示 `#gender-modal` 性別選擇視窗（男修／女修，含頭像與預設道號），
+  **沒有關閉按鈕**，必須選一個才會 `initGame()` 開始遊戲；選完立即存檔，之後進入不會再問。
+  以前用 `prompt()` 讓玩家輸入 1/2，按取消或瀏覽器擋掉對話框都會直接變成男性，因此改成視窗。
+  頭像與預設道號來自 `ui.js` 的 `PLAYER_AVATARS`。`gameStarted` 旗標防止連點重複啟動主迴圈。
 - `<body>` 出廠時就帶著 `class="title-mode"`（CSS 會隱藏 `#game-container` 並鎖住捲動），
   避免遊戲畫面在 JS 執行前閃一下；`enterWorld()` 會移除這個 class。
 - `worldEntered` 旗標確保只會觸發一次（避免重複建立 `setInterval`）。
@@ -374,9 +397,14 @@ combatTick() 每秒執行 [combat.js]
   再加上靈寶閣的 `learnedSkills`，**不再讀 `player.sect.skills`**。因此換到下一階段宗門時，舊技能仍在，
   最終可同時擁有 3 個門派共 6 招技能。`player.sect` 只決定目前的經驗/戰力倍率與設施權限。
 - **傷害公式**：技能傷害 = 對應攻擊力 × `mult`，`mult = 1 + SECT_SKILL_BONUS[tier]`
-  （初級 110% / 中級 120% / 高級 150%）。`dmgType: "phys"` 用物理攻擊（受**力量**影響），
+  （初級 150% / 中級 200% / 高級 300%）。`dmgType: "phys"` 用物理攻擊（受**力量**影響），
   `"mag"` 用法術攻擊（受**悟性**影響）。每個宗門各有 1 招力量型、1 招悟性型；全部都是傷害技（單體或群體）。
   **傷害若過高，只需調整 `config-sects.js` 的 `SECT_SKILL_BONUS`**，所有宗門技能會一起生效。
+- **數值依據**（渡劫模擬，詳見 `config-sects.js` 註解與第 7 節勝率表）：
+  - +10/20/50%：第一次渡劫勝率只剩 14～18%，過難。
+  - +50/100/200%：第一次約 65%，之後 79～98%，**採用這組**。
+  - +100/150/300%：第一次 81～89%，之後幾乎必勝，挑戰性偏低。
+  - 技能觸發率 40%，野外單體平均輸出只比普攻高約 20%／40%／80%，不會出現異常爆量。
 - `mult`/`tier` 是在 `config-sects.js` 尾端用迴圈補上的，新增宗門技能時不要手寫 `mult`。
 - 舊存檔的 `player.sect` 是整包存進去的舊物件（含舊技能），`migrateProgressionFields()` 會用
   `findSectByName()` 改指向最新設定，並把該宗門登記進 `sectSkills` 對應階段。

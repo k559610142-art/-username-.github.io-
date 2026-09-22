@@ -1,5 +1,11 @@
 // 共用 UI 更新：頂部狀態列、戰鬥實況面板、技能列表、日誌、彈窗開關
 
+// 角色頭像與預設道號（戰鬥實況與開場性別選擇共用）
+const PLAYER_AVATARS = {
+    male:   { img: "https://i.postimg.cc/fbJ8LT1t/han-tian-zun.jpg", defaultName: "韓立", label: "男修" },
+    female: { img: "https://i.postimg.cc/L8WZRzfy/nan-gong-wan.jpg", defaultName: "南宮婉", label: "女修" }
+};
+
 function updateAutoSettings() {
     player.autoHp.enabled = document.getElementById('auto-hp-enabled').checked;
     player.autoHp.threshold = parseInt(document.getElementById('auto-hp-threshold').value) || 50;
@@ -52,11 +58,8 @@ function updateCombatVisualPanel() {
     document.getElementById('battle-player-hp').innerText = `氣血: ${Math.floor(player.hp)}/${player.maxHp}`;
 
     const avatarContainer = document.getElementById('battle-player-icon');
-    if (player.gender === 'female') {
-        avatarContainer.innerHTML = `<img src="https://i.postimg.cc/L8WZRzfy/nan-gong-wan.jpg" alt="${player.name}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 50%; border: 2px solid var(--accent); box-shadow: 0 0 10px var(--accent-glow);">`;
-    } else {
-        avatarContainer.innerHTML = `<img src="https://i.postimg.cc/fbJ8LT1t/han-tian-zun.jpg" alt="韓天尊" style="width: 60px; height: 60px; object-fit: cover; border-radius: 50%; border: 2px solid var(--accent); box-shadow: 0 0 10px var(--accent-glow);">`;
-    }
+    const avatar = PLAYER_AVATARS[player.gender === 'female' ? 'female' : 'male'];
+    avatarContainer.innerHTML = `<img src="${avatar.img}" alt="${player.name}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 50%; border: 2px solid var(--accent); box-shadow: 0 0 10px var(--accent-glow);">`;
 
     if (inTribulation && heartDemon) {
         document.getElementById('battle-enemy-title').innerText = "心魔";

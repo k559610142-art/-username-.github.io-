@@ -260,7 +260,8 @@ function tryRescueServant() {
 
         let sName = servantNames[Math.floor(Math.random() * servantNames.length)] + " (僕從)";
         let newServant = {
-            id: Date.now() + "_" + Math.floor(Math.random() * 1000),
+            // 離線結算會在同一毫秒內救出多名僕從，隨機段需夠長以免 id 重複（重複會導致解僱時連帶刪掉別人）
+            id: Date.now() + "_" + Math.random().toString(36).slice(2, 10),
             name: sName,
             quality: selectedQuality.name,
             mult: selectedQuality.mult,
