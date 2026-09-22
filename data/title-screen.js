@@ -2,11 +2,11 @@
 // 等玩家點擊後才真正開始遊戲，因此性別選擇與離線收益結算都發生在進入之後
 
 // 光環在「各封面圖原始座標系」中的位置與大小
-// 橫式：images/cover.jpg (1264 x 843)；直式：images/cover-portrait.jpg (960 x 1706)
+// 橫式：images/cover.jpg (1264 x 843)；直式：images/cover-portrait.jpg (960 x 1920)
 // ※ 若更換封面圖，必須重新量測對應的數值
 const TITLE_HOTSPOTS = {
     landscape: { x: 652, y: 527, w: 330, h: 290 },
-    portrait:  { x: 495, y: 880, w: 251, h: 220 }
+    portrait:  { x: 632, y: 1427, w: 330, h: 290 }
 };
 
 // <picture> 會依螢幕比例自動切換圖片，這裡依實際載入的檔名挑選對應座標
