@@ -15,9 +15,10 @@ let player = {
         "頭": null, "內衣": null, "盔甲": null, "手套": null, "長靴": null, "披風": null,
         "腰帶": null, "項鍊": null, "戒指": null, "耳環": null, "腰牌": null
     },
+    // 每位僕從自帶 quest（負責的任務代號）與 timer（自身進度），可各自指派不同任務
     servants: [],
-    assignedServantIds: [],
-    beasts: [], activeQuest: null, questTimer: 0,
+    beasts: [],
+    activeQuest: null, questTimer: 0,   // 玩家「親自」執行的任務（須待在演武學宮）
     currentMap: maps[0].items[0], currentMapIsSafe: true,
     sect: null, buffTimer: 0, buffMult: 1,
     learnedSkills: [],

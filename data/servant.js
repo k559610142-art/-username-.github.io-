@@ -1,9 +1,14 @@
-// 僕從小屋彈窗：列表渲染、指派/召回、解僱
+// 僕從小屋：每位僕從可各自被指派到不同的門派任務，並獨立累積進度
+// 僕從資料結構：{ id, name, quality, mult, quest: 任務代號或 null, timer: 進度 }
 
 function openServantModal() {
     if (!checkSectJoined()) return;
     document.getElementById('servant-modal').style.display = 'flex';
     renderServants();
+}
+
+function getAssignedServantCount() {
+    return player.servants.filter(s => s.quest).length;
 }
 
 function renderServants() {
@@ -15,49 +20,95 @@ function renderServants() {
         return;
     }
 
-    if (!player.assignedServantIds) player.assignedServantIds = [];
+    let tier = getSectTier();
+    let assignedCount = getAssignedServantCount();
+
+    container.innerHTML += `<div style="grid-column: 1 / -1; text-align: center; color: var(--accent); font-size: 0.9em;">
+        目前派遣中：${assignedCount} / ${MAX_ASSIGNED_SERVANTS} 名（每位僕從可負責不同任務，且不受你所在地點限制）
+    </div>`;
 
     player.servants.forEach(s => {
-        let isAssigned = player.assignedServantIds.includes(s.id);
+        let options = `<option value="">— 不指派 —</option>` + Object.keys(questData).map(questId => {
+            let def = getQuestDef(questId, tier);
+            return `<option value="${questId}" ${s.quest === questId ? 'selected' : ''}>${def.icon} ${def.name}（${formatQuestRewards(def)}）</option>`;
+        }).join("");
+
+        let percent = Math.floor(((s.timer || 0) / QUEST_REQUIRED_PROGRESS) * 100);
+        let statusText = s.quest
+            ? `<p style="font-size: 0.8em; color: #4ade80; margin: 6px 0;">執行中・進度 ${percent}%</p>`
+            : `<p style="font-size: 0.8em; color: #6b7280; margin: 6px 0;">閒置中</p>`;
+
         container.innerHTML += `
             <div class="card" style="border-color: var(--servant-color);">
                 <h3 class="quality-${s.quality}">${s.name}</h3>
                 <p style="font-size: 0.85em; margin: 5px 0; color:#9ca3af;">品質：<span class="quality-${s.quality}">${s.quality}</span></p>
-                <p style="font-size: 0.85em; color: #facc15; margin-bottom: 10px;">任務效率：x${s.mult}</p>
-                <button class="sys-btn" onclick="assignServant('${s.id}')">${isAssigned ? '召回僕從' : '指派做任務'}</button>
-                <button style="border-color: #ef4444; color: #ef4444; margin-top: 5px; background: rgba(239,68,68,0.1);" onclick="dismissServant('${s.id}')">解僱僕從</button>
+                <p style="font-size: 0.85em; color: #facc15; margin-bottom: 8px;">任務效率：x${s.mult}</p>
+                <select onchange="assignServantQuest('${s.id}', this.value)"
+                        style="width: 100%; background: #0b0f19; color: #fff; padding: 6px; border-radius: 6px; border: 1px solid var(--panel-border); font-size: 0.82em;">
+                    ${options}
+                </select>
+                ${statusText}
+                <button style="border-color: #ef4444; color: #ef4444; background: rgba(239,68,68,0.1);" onclick="dismissServant('${s.id}')">解僱僕從</button>
             </div>`;
     });
 }
 
-function assignServant(servantId) {
-    if (!player.assignedServantIds) player.assignedServantIds = [];
+// 指派（或取消指派）單一僕從的任務
+function assignServantQuest(servantId, questId) {
+    let servant = player.servants.find(s => s.id === servantId);
+    if (!servant) return;
 
-    let index = player.assignedServantIds.indexOf(servantId);
-    if (index > -1) {
-        player.assignedServantIds.splice(index, 1);
-        addLog(`召回了任務僕從。`, "system");
-    } else {
-        if (player.assignedServantIds.length >= 3) {
-            alert("最多只能指派 3 名僕從同時執行任務！");
+    if (questId) {
+        // 從「閒置」變成「執行任務」時才需檢查派遣上限；單純更換任務不受限
+        if (!servant.quest && getAssignedServantCount() >= MAX_ASSIGNED_SERVANTS) {
+            alert(`最多只能同時派遣 ${MAX_ASSIGNED_SERVANTS} 名僕從執行任務！\n請先將其他僕從設為「不指派」。`);
+            renderServants();
             return;
         }
-        player.assignedServantIds.push(servantId);
-        let s = player.servants.find(serv => serv.id === servantId);
-        addLog(`指派僕從【${s.name}】負責代勞宗門任務！(${player.assignedServantIds.length}/3)`, "servant");
+        let def = getQuestDef(questId, getSectTier());
+        if (!def) return;
+
+        if (servant.quest !== questId) servant.timer = 0;
+        servant.quest = questId;
+        addLog(`🤝 指派僕從【${servant.name}】負責【${def.name}】，每次完成可得 ${formatQuestRewards(def)}。`, "servant");
+    } else {
+        servant.quest = null;
+        servant.timer = 0;
+        addLog(`🤝 召回了僕從【${servant.name}】，暫停其任務。`, "system");
     }
+
     renderServants();
     updateQuestUI();
 }
 
 function dismissServant(servantId) {
     if (!confirm("確定要解僱此僕從嗎？")) return;
-    if (player.assignedServantIds) {
-        let index = player.assignedServantIds.indexOf(servantId);
-        if (index > -1) player.assignedServantIds.splice(index, 1);
-    }
     player.servants = player.servants.filter(s => s.id !== servantId);
     addLog(`解僱了僕從。`, "system");
     renderServants();
     updateQuestUI();
+}
+
+// 由 combatTick() 每秒呼叫：每位有任務的僕從各自累積進度並結算獎勵
+function tickServantQuests() {
+    if (!player.servants || player.servants.length === 0) return;
+
+    let tier = getSectTier();
+    let anyCompleted = false;
+
+    player.servants.forEach(s => {
+        if (!s.quest) return;
+        s.timer = (s.timer || 0) + QUEST_PROGRESS_PER_TICK * s.mult;
+
+        while (s.timer >= QUEST_REQUIRED_PROGRESS) {
+            s.timer -= QUEST_REQUIRED_PROGRESS;
+            let def = getQuestDef(s.quest, tier);
+            if (!def) { s.quest = null; break; }
+            grantQuestRewards(def);
+            addLog(`${def.icon} 僕從【${s.name}】完成【${def.name}】：獲得 ${formatQuestRewards(def)}`, "servant");
+            anyCompleted = true;
+        }
+    });
+
+    if (anyCompleted) updateUI();
 }

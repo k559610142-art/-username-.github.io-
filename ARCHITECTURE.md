@@ -13,6 +13,7 @@ index.html            唯一的 HTML 進入點：畫面結構、CSS（含手機 
                       ※ 檔名必須是 index.html（GitHub Pages 只把 index.html 當作預設首頁）
 data/                 所有遊戲邏輯與資料，依「設定資料 / 執行狀態 / 功能模組 / 進入點」分層
   config-*.js         純資料表（不含函式，無副作用），可視為遊戲的「設計數值表」
+                      （含 config-quests.js：任務名稱與獎勵，顯示與發放共用同一份）
   state.js            執行期間的可變全域狀態（player、enemies…）
   stats.js            屬性/戰力計算的純函式
   ui.js               畫面渲染共用函式（頂部狀態列、戰鬥實況、日誌、彈窗開關）
@@ -60,8 +61,8 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 17 | `bag.js` | `openBagModal`/`renderBag`/`useItemFromBag`/`deleteItemFromBag`/`deleteEquipFromInventory` | `shopItems`、`player.bag`、`player.equipInventory` | `equipment.js`(equipItem 後呼叫 renderBag) |
 | 18 | `equipment.js` | `initForgeSelect`/`openEquipmentModal`/`renderLingbaoUI`(注意：命名沿用舊碼，實際是角色裝備列表)/`equipItem`/`unequipItem`/`openForgeModal`/`forgeEquipment` | `equipTypes`、`wuxingElements`、`equipQualities`、`player.equipment`、`player.equipInventory` | `bag.js`(equipItem)、`sect.js`(forge 需拜入宗門) |
 | 19 | `lingbao-shop.js` | `openLingbaoShopModal`/`renderLingbaoShopUI`/`buyLingbaoItem` | `lingbaoShopItems`、`player.coins`/`reputation`/`equipInventory`/`learnedSkills` | HTML 按鈕（僅在「後山禁地」顯示） |
-| 20 | `servant.js` | `openServantModal`/`renderServants`/`assignServant`/`dismissServant` | `player.servants`、`player.assignedServantIds` | `quest.js`(任務加速)、`combat.js`(tryRescueServant 新增僕從) |
-| 21 | `quest.js` | `openQuestModal`/`renderQuestButtons`/`startQuest`/`stopQuest`/`updateQuestUI` | `player.activeQuest`、`stats.js`(getSectTier) | `combat.js`(每 tick 累積任務進度)、`map.js`(離開演武學宮時中斷任務) |
+| 20 | `servant.js` | `openServantModal`/`renderServants`/`assignServantQuest`/`dismissServant`/`tickServantQuests`/`getAssignedServantCount` | `questData`、`player.servants`(每位自帶 `quest`/`timer`)、`quest.js` 的獎勵函式 | `combat.js`(每 tick 呼叫 tickServantQuests)、`quest.js`(顯示派遣狀態) |
+| 21 | `quest.js` | `openQuestModal`/`renderQuestButtons`/`startQuest`/`stopQuest`/`updateQuestUI` + 共用獎勵函式 `getQuestDef`/`formatQuestRewards`/`grantQuestRewards` | `questData`(config-quests.js)、`player.activeQuest`、`stats.js`(getSectTier) | `combat.js`(玩家任務結算)、`servant.js`(僕從任務結算)、`map.js`(離開演武學宮時中斷) |
 | 22 | `field.js` | `openFieldModal`/`plantHerb` | `player.spiritGrass`/`player.herbs`/`player.coins` | HTML 按鈕（僅在「演武學宮」顯示） |
 | 23 | `beast.js` | `openBeastModal`/`renderBeasts`/`tameBeast` | `beastData`、`player.beastCore`/`coins`/`beasts`、`stats.js`(getEquipBonus 算魅力折扣) | HTML 按鈕（僅在「演武學宮」顯示） |
 | 24 | `library.js` | `openLibraryModal`/`studyBook` | `player.studyCounts`/`martialPoints`/`stats` | HTML 按鈕（僅在「後山禁地」顯示） |
@@ -98,7 +99,8 @@ combatTick() 每秒執行 [combat.js]
         ├─ 安全區：回血回魔、每 5 秒 gainExp() [leveling.js]
         ├─ 野外：刷怪 / 攻擊 / 技能 [stats.js 算傷害] / 擊殺結算
         │       └─ 擊殺 → gainExp()、加靈石、tryRescueServant() [combat.js]
-        ├─ 任務進度累積 [quest.js 的 activeQuest]
+        ├─ 玩家任務進度（須在演武學宮）[quest.js 的 activeQuest]
+        ├─ tickServantQuests() 每位僕從各自的任務進度 [servant.js]
         └─ checkAutoHealAndMana() 自動補給 [combat.js]
 
 任何彈窗操作（購買/裝備/宗門/任務…）
@@ -173,6 +175,25 @@ combatTick() 每秒執行 [combat.js]
   永遠不會被自動輔助花靈石購買；但玩家手動買進背包後，自動輔助仍會優先服用它們。
 - 自動輔助的選藥邏輯為「背包內回復量最高者 → 否則買得起且未標記 `noAutoBuy` 的回復量最高者」，
   新增丹藥只要加進 `config-shop.js` 就會自動納入，不需改動 `combat.js`。
+
+## 9. 門派任務與僕從派遣
+
+任務的**名稱、圖示、獎勵**全部集中在 `config-quests.js` 的 `questData`（以宗門等級 1/2/3 分層）。
+任務面板顯示的獎勵與實際發放的獎勵讀取同一份資料，**改數值只需要改這一個檔案**。
+
+| 角色 | 執行條件 | 進度速度 | 結算位置 |
+|---|---|---|---|
+| 玩家本人 | 必須待在「演武學宮」，離開即自動中斷 | 每秒 `QUEST_PROGRESS_PER_TICK`(1.5) | `combat.js` 的 `combatTick()` |
+| 每位僕從 | 在「僕從小屋」各自指派任務，**不受玩家所在地點限制** | 每秒 `1.5 × 該僕從的 mult` | `servant.js` 的 `tickServantQuests()` |
+
+- 僕從資料結構：`{ id, name, quality, mult, quest, timer }`；`quest` 是任務代號（或 `null` 表示閒置），
+  `timer` 是該僕從自己的進度，因此多名僕從可同時跑**不同**任務、互不干擾。
+- 同時派遣上限為 `MAX_ASSIGNED_SERVANTS`(3)；僅在「從閒置變成接任務」時檢查，單純更換任務不受限。
+- 完成一次任務所需時間 = `QUEST_REQUIRED_PROGRESS / QUEST_PROGRESS_PER_TICK` = 20 秒
+  （舊版 UI 寫「基礎30秒」是錯的，實際是 20 秒；現在由程式自動算出顯示）。
+- **舊存檔相容**：早期版本使用「單一 `activeQuest` + `assignedServantIds` 共同加速」，
+  `save.js` 的 `migrateServantAssignments()` 會在讀檔/匯入時把舊結構轉成每位僕從自帶 `quest`/`timer`，
+  並移除 `assignedServantIds`。
 
 ## 6. 版型與 RWD 規則（電腦版 / 手機版）
 

@@ -16,37 +16,22 @@ function combatTick() {
 
     checkAutoHealAndMana();
 
-    if (player.activeQuest && (player.currentMap.name === '演武學宮' || (player.assignedServantIds && player.assignedServantIds.length > 0))) {
-        let speedMult = 1.0;
-        if (player.assignedServantIds && player.assignedServantIds.length > 0) {
-            speedMult = player.assignedServantIds.reduce((acc, id) => {
-                let s = player.servants.find(serv => serv.id === id);
-                return acc * (s ? s.mult : 1.0);
-            }, 1.0);
-        }
-
-        player.questTimer += 1.5 * speedMult;
-        if (player.questTimer >= 30) {
-            player.questTimer -= 30;
-            let tier = getSectTier();
-            let servantText = (player.assignedServantIds && player.assignedServantIds.length > 0) ? ` (${player.assignedServantIds.length}名僕從代為完成)` : "";
-
-            if (player.activeQuest === 'clean') {
-                if (tier === 1) { player.coins += 5; addLog(`🧹 任務完成【打掃清潔】${servantText}：獲得 5 靈石`, "quest"); }
-                else if (tier === 2) { player.coins += 50; player.beastCore += 10; addLog(`🥩 任務完成【餵養靈獸】${servantText}：獲得 50 靈石, 10 獸丹`, "quest"); }
-                else if (tier === 3) { player.coins += 100; player.beastCore += 50; addLog(`🐉 任務完成【餵養仙獸】${servantText}：獲得 100 靈石, 50 獸丹`, "quest"); }
-            } else if (player.activeQuest === 'plant') {
-                if (tier === 1) { player.coins += 5; player.spiritGrass += 1; addLog(`🌱 任務完成【種植靈草】${servantText}：獲得 5 靈石, 1 靈草`, "quest"); }
-                else if (tier === 2) { player.coins += 50; player.spiritGrass += 10; addLog(`🌱 任務完成【種植靈草】${servantText}：獲得 50 靈石, 10 靈草`, "quest"); }
-                else if (tier === 3) { player.coins += 100; player.spiritGrass += 50; addLog(`🌱 任務完成【種植靈草】${servantText}：獲得 100 靈石, 50 靈草`, "quest"); }
-            } else if (player.activeQuest === 'book') {
-                if (tier === 1) { player.coins += 5; player.martialPoints += 1; addLog(`📚 任務完成【整理武學秘典】${servantText}：獲得 5 靈石, 1 武學積分`, "quest"); }
-                else if (tier === 2) { player.coins += 50; player.martialPoints += 10; addLog(`📚 任務完成【整理武學秘典】${servantText}：獲得 50 靈石, 10 武學積分`, "quest"); }
-                else if (tier === 3) { player.coins += 100; player.martialPoints += 50; addLog(`📚 任務完成【整理武學秘典】${servantText}：獲得 100 靈石, 50 武學積分`, "quest"); }
+    // 玩家親自執行的門派任務：必須待在演武學宮
+    if (player.activeQuest && player.currentMap.name === '演武學宮') {
+        player.questTimer += QUEST_PROGRESS_PER_TICK;
+        if (player.questTimer >= QUEST_REQUIRED_PROGRESS) {
+            player.questTimer -= QUEST_REQUIRED_PROGRESS;
+            let def = getQuestDef(player.activeQuest, getSectTier());
+            if (def) {
+                grantQuestRewards(def);
+                addLog(`${def.icon} 任務完成【${def.name}】：獲得 ${formatQuestRewards(def)}`, "quest");
             }
             updateUI();
         }
     }
+
+    // 僕從各自執行被指派的任務（不受玩家所在地點限制）
+    tickServantQuests();
 
     if (player.currentMapIsSafe) {
         let wuxing = getWuxingBuff();
@@ -270,7 +255,9 @@ function tryRescueServant() {
             id: Date.now() + "_" + Math.floor(Math.random() * 1000),
             name: sName,
             quality: selectedQuality.name,
-            mult: selectedQuality.mult
+            mult: selectedQuality.mult,
+            quest: null,    // 負責的任務代號，於僕從小屋指派
+            timer: 0        // 該僕從自身的任務進度
         };
 
         player.servants.push(newServant);

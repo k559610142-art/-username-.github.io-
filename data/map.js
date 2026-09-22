@@ -54,9 +54,9 @@ function changeMap(cIndex, iIndex) {
 
     updateSectFacilitiesUI();
 
-    if (player.activeQuest && player.currentMap.name !== '演武學宮' && (!player.assignedServantIds || player.assignedServantIds.length === 0)) {
+    if (player.activeQuest && player.currentMap.name !== '演武學宮') {
         stopQuest();
-        addLog("離開了演武學宮且無僕從代勞，自動中斷門派任務。", "system");
+        addLog("離開了演武學宮，自動中斷你親自執行的門派任務（僕從仍會繼續各自的任務）。", "system");
     }
 
     refreshCombatStatusText();

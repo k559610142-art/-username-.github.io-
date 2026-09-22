@@ -55,6 +55,29 @@ function calcOfflineProgress() {
     setTimeout(() => { alert(`【離線掛機收益結算】\n${msg}`); }, 500);
 }
 
+// 舊存檔相容：早期版本是「一份 activeQuest + assignedServantIds 共同加速」，
+// 新版改為每位僕從各自負責一項任務，這裡把舊資料轉成新結構。
+function migrateServantAssignments() {
+    if (!Array.isArray(player.servants)) player.servants = [];
+
+    player.servants.forEach(s => {
+        if (typeof s.quest === 'undefined') s.quest = null;
+        if (typeof s.timer !== 'number') s.timer = 0;
+    });
+
+    if (Array.isArray(player.assignedServantIds)) {
+        let fallbackQuest = player.activeQuest || 'clean';
+        player.assignedServantIds.forEach(id => {
+            let s = player.servants.find(serv => serv.id === id);
+            if (s && !s.quest) {
+                s.quest = fallbackQuest;
+                s.timer = 0;
+            }
+        });
+        delete player.assignedServantIds;
+    }
+}
+
 function resetGameCompletely() {
     if (confirm("確定要完全重置遊戲嗎？這將清除所有存檔進度！")) {
         localStorage.removeItem('xiuxian_save');
@@ -80,6 +103,7 @@ function loadLocal() {
             if (!player.studyCounts) player.studyCounts = { str: 0, con: 0, int: 0, spr: 0 };
             if (typeof player.pendingTribulation !== 'boolean') player.pendingTribulation = false;
             if (!player.tribulationCount) player.tribulationCount = 0;
+            migrateServantAssignments();
 
             // 讀取成功後觸發離線補償計算
             calcOfflineProgress();
@@ -126,6 +150,7 @@ function importSave() {
             if (!player.studyCounts) player.studyCounts = { str: 0, con: 0, int: 0, spr: 0 };
             if (typeof player.pendingTribulation !== 'boolean') player.pendingTribulation = false;
             if (!player.tribulationCount) player.tribulationCount = 0;
+            migrateServantAssignments();
 
             // 匯入成功後觸發離線補償計算
             calcOfflineProgress();
