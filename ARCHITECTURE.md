@@ -171,8 +171,13 @@ combatTick() 每秒執行 [combat.js]
 - **使用冷卻**：`POTION_COOLDOWN_SECONDS = 5`。氣血類與靈力類**各自獨立**計時
   （全域變數 `potionCooldownHp` / `potionCooldownMp`，在 `combatTick()` 開頭每秒遞減）。
   手動使用（`bag.js`）與自動輔助（`combat.js`）共用同一組冷卻。
-- **自動購買限制**：`shopItems` 中標記 `noAutoBuy: true` 的丹藥（九轉還魂丹、回天靈液）
-  永遠不會被自動輔助花靈石購買；但玩家手動買進背包後，自動輔助仍會優先服用它們。
+- **分區顯示**：丹藥堂依 `config-shop.js` 的 `shopSections` 分成「氣血丹藥／靈力丹藥」兩區，
+  中間以分隔線隔開（`shop.js` 的 `renderShop()` 產生，每區各自一個 `.grid-container`）。
+  新增丹藥類型時只要在 `shopSections` 加一筆即可，不必改 `renderShop()`。
+  注意 `#shop-list-container` 本身**不可**再掛 `grid-container` class，格線由各分區自己套用。
+- **自動購買限制**：`shopItems` 中標記 `noAutoBuy: true` 的丹藥（九轉還魂丹、造化神髓液，
+  即兩個類別各自的最高階丹藥）永遠不會被自動輔助花靈石購買；
+  但玩家手動買進背包後，自動輔助仍會優先服用它們。
 - 自動輔助的選藥邏輯為「背包內回復量最高者 → 否則買得起且未標記 `noAutoBuy` 的回復量最高者」，
   新增丹藥只要加進 `config-shop.js` 就會自動納入，不需改動 `combat.js`。
 

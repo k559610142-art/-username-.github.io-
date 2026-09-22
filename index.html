@@ -427,7 +427,7 @@
                     丹藥冷卻（每 5 秒）：<span style="color:#4ade80;">氣血 就緒</span> / <span style="color:#4ade80;">靈力 就緒</span>
                 </div>
                 <div style="font-size: 0.75em; color: #6b7280; text-align: center; margin-top: 4px;">
-                    ※【九轉還魂丹】【回天靈液】不會被自動購買
+                    ※【九轉還魂丹】【造化神髓液】不會被自動購買
                 </div>
             </div>
 
@@ -558,7 +558,8 @@
 <div id="shop-modal" class="modal-bg">
     <div class="modal-content" style="border-color: var(--shop-color);">
         <h2 style="text-align: center; color: var(--shop-color); margin-top: 0;">💊 丹藥堂</h2>
-        <div id="shop-list-container" class="grid-container" style="margin-top: 20px;"></div>
+        <!-- 內容由 renderShop() 依 shopSections 分區產生（氣血／靈力各自一個 grid-container） -->
+        <div id="shop-list-container" style="margin-top: 20px;"></div>
         <button class="close-btn" onclick="closeModal('shop-modal')">離開</button>
     </div>
 </div>

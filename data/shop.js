@@ -8,9 +8,22 @@ function openShopModal() {
 
 function renderShop() {
     const container = document.getElementById('shop-list-container');
-    container.innerHTML = "";
-    shopItems.forEach(item => {
-        container.innerHTML += `
+    // 依 shopSections 分區（氣血 / 靈力），區塊之間插入分隔線
+    container.innerHTML = shopSections.map((section, index) => {
+        let cards = shopItems.filter(item => item.type === section.type).map(item => renderShopCard(item)).join("");
+        let divider = index > 0
+            ? `<hr style="border: none; border-top: 1px solid var(--panel-border); margin: 22px 0 18px;">`
+            : "";
+        return `${divider}
+            <div style="text-align: center; color: ${section.color}; font-weight: bold; letter-spacing: 1px; margin-bottom: 12px;">
+                ${section.icon} ${section.title}
+            </div>
+            <div class="grid-container">${cards}</div>`;
+    }).join("");
+}
+
+function renderShopCard(item) {
+    return `
             <div class="card" style="border-color: var(--shop-color);">
                 <h3>${item.name}</h3>
                 <p style="font-size: 0.85em; color: #9ca3af;">${item.desc}</p>
@@ -28,7 +41,6 @@ function renderShop() {
                 <p id="total-${item.id}" style="font-size: 0.8em; color: #4ade80; margin: 6px 0;">合計: ${item.cost} 靈石</p>
                 <button class="shop-btn" onclick="buyShopItem('${item.id}')">購買</button>
             </div>`;
-    });
 }
 
 // 讀取卡片上的購買數量（非法輸入回傳 0）
