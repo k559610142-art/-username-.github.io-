@@ -230,8 +230,8 @@ combatTick() 每秒執行 [combat.js]
 
 ## 9. 介面慣例（抽屜、批次刪除、神器欄）
 
-- **技能面板位置**：「當前可用技能」(`#skill-list`) 放在**左欄角色面板、四維屬性 `.stat-grid` 正下方**
-  （裝備按鈕之上），不在右側設施欄。內容由 `ui.js` 的 `renderSkillList()` 以 `getElementById` 填入，
+- **技能面板位置**：「當前可用技能」(`#skill-list`) 放在**左欄角色面板、「🛡️ 角色裝備與狀態」按鈕正下方**
+  （四維屬性 `.stat-grid` → 裝備按鈕 → 技能面板 → 輪迴次數），不在右側設施欄。內容由 `ui.js` 的 `renderSkillList()` 以 `getElementById` 填入，
   搬移 DOM 位置不需改 JS，只要保留 `id="skill-list"`。
 - **抽屜式區塊**：`ui.js` 的 `toggleDrawer(id, btn)` 切換 `.drawer-body.open`。
   「命運與系統」拆成【存檔管理】與【命運抉擇】兩個抽屜，兩者**預設收合**，

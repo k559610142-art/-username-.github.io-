@@ -501,13 +501,13 @@
                 <div class="stat-item" style="grid-column: 1 / -1;">魅力 <span id="stat-cha" style="color: var(--charm-color);">10</span></div>
             </div>
 
-            <!-- 技能面板緊接在四維屬性下方，方便對照屬性與可用絕學 -->
+            <button class="equip-btn" onclick="openEquipmentModal()" style="margin-top: 10px; font-weight: bold;">🛡️ 角色裝備與狀態</button>
+
+            <!-- 技能面板緊接在「角色裝備與狀態」按鈕下方 -->
             <div class="panel-title" style="margin-top: 12px;">當前可用技能</div>
             <div id="skill-list" style="font-size: 0.9em; color: #c084fc; background: rgba(192, 132, 252, 0.05); padding: 8px; border-radius: 6px; border: 1px dashed rgba(192, 132, 252, 0.2);">
                 尚未領悟門派技能。
             </div>
-
-            <button class="equip-btn" onclick="openEquipmentModal()" style="margin-top: 10px; font-weight: bold;">🛡️ 角色裝備與狀態</button>
 
             <div style="font-size: 0.8em; color: #9ca3af; text-align: center; margin-top: 10px; margin-bottom: 10px;">
                 (輪迴次數: <span id="reincarnate-count" style="color:var(--reincarnate-color);">0</span>)
