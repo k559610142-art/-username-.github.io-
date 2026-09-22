@@ -12,14 +12,26 @@ function gainExp(amount) {
 
     let maxExp = getNextExp();
     while (player.exp >= maxExp) {
-        // 小境界已達 10 階：修為封頂，必須渡劫才能晉升下一個大境界
+        // 小境界已達 10 階：準備晉升下一個大境界
         if (player.stage >= 10) {
-            player.exp = maxExp;
-            if (player.realmIndex < realms.length - 1) {
+            // 已是最高境界，修為封頂
+            if (player.realmIndex >= realms.length - 1) {
+                player.exp = maxExp;
+                break;
+            }
+            // 築基以上：封頂並等待渡劫
+            if (player.realmIndex >= TRIBULATION_MIN_REALM_INDEX) {
+                player.exp = maxExp;
                 player.pendingTribulation = true;
                 addLog(`☁️ 修為已臻【${realms[player.realmIndex]} 10階】圓滿，天劫將至！經驗暫停累積，需渡劫方能晉升【${realms[player.realmIndex + 1]}】。`, "reincarnate");
+                break;
             }
-            break;
+            // 築基以前：直接突破，不需渡劫（保留溢出的經驗值）
+            let carryExp = player.exp - maxExp;
+            advanceRealm();
+            player.exp = carryExp;
+            maxExp = getNextExp();
+            continue;
         }
 
         player.exp -= maxExp;

@@ -103,6 +103,8 @@ function loadLocal() {
             if (!player.studyCounts) player.studyCounts = { str: 0, con: 0, int: 0, spr: 0 };
             if (typeof player.pendingTribulation !== 'boolean') player.pendingTribulation = false;
             if (!player.tribulationCount) player.tribulationCount = 0;
+            // 舊存檔可能在築基以前就被標記待渡劫，依現行規則清除
+            if (player.pendingTribulation && player.realmIndex < TRIBULATION_MIN_REALM_INDEX) player.pendingTribulation = false;
             migrateServantAssignments();
 
             // 讀取成功後觸發離線補償計算
@@ -150,6 +152,8 @@ function importSave() {
             if (!player.studyCounts) player.studyCounts = { str: 0, con: 0, int: 0, spr: 0 };
             if (typeof player.pendingTribulation !== 'boolean') player.pendingTribulation = false;
             if (!player.tribulationCount) player.tribulationCount = 0;
+            // 舊存檔可能在築基以前就被標記待渡劫，依現行規則清除
+            if (player.pendingTribulation && player.realmIndex < TRIBULATION_MIN_REALM_INDEX) player.pendingTribulation = false;
             migrateServantAssignments();
 
             // 匯入成功後觸發離線補償計算

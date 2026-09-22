@@ -1,4 +1,4 @@
-# 專案架構說明（凡人修仙放置傳）
+# 專案架構說明（凡塵修仙傳-紅塵篇）
 
 > **維護規則：本檔案需與程式碼同步更新。**
 > 每次新增/刪除/搬移 `data/` 內的檔案、新增全域函式或資料、或調整 `<script>` 載入順序時，
@@ -163,11 +163,13 @@ combatTick() 每秒執行 [combat.js]
 
 ## 7. 渡劫系統（心魔試煉）
 
-小境界修滿 10 階後不會自動晉升，必須擊敗心魔才能進入下一個大境界。
+**從「築基 → 金丹」開始**，小境界修滿 10 階後不會自動晉升，必須擊敗心魔才能進入下一個大境界。
+門檻由 `config-tribulation.js` 的 `TRIBULATION_MIN_REALM_INDEX`（預設 2 =【築基】）控制；
+在此之前（凡人 → 煉氣、煉氣 → 築基）滿 10 階會直接突破，溢出的經驗會保留到新境界。
 
 | 環節 | 位置 | 說明 |
 |---|---|---|
-| 修為封頂 | `leveling.js` 的 `gainExp()` | 小境界到 10 階且經驗滿格時，`player.pendingTribulation = true`，之後 `gainExp()` 一律回傳 0（經驗完全停止累積，含離線收益） |
+| 修為封頂 | `leveling.js` 的 `gainExp()` | 小境界到 10 階且經驗滿格時：若 `realmIndex >= TRIBULATION_MIN_REALM_INDEX` 則 `pendingTribulation = true`，之後 `gainExp()` 一律回傳 0（經驗完全停止累積，含離線收益）；未達門檻則直接呼叫 `advanceRealm()` 突破並保留溢出經驗 |
 | 渡劫按鈕 | `index.html` 的 `#btn-tribulation` + `ui.js` 的 `updateTribulationUI()` | 只在待渡劫時顯示；渡劫進行中改為顯示心魔剩餘氣血並鎖定 |
 | 心魔數值 | `config-tribulation.js` | 戰力 = 玩家 150%（`HEART_DEMON_POWER_MULT`）、氣血 = 玩家 100%（`HEART_DEMON_HP_MULT`）、4 個魔功技能 |
 | 戰鬥流程 | `tribulation.js` 的 `tribulationTick()` | 由 `combat.js` 的 `combatTick()` 在 `inTribulation` 為 true 時接管，暫停掛機、刷怪與宗門任務 |
