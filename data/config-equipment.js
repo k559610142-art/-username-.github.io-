@@ -7,6 +7,9 @@ const equipTypes = {
     "神器": "artifact"
 };
 
+// 背包裝備上限（不含已穿戴的）：已滿時無法鍛造、購買、卸下裝備（舊存檔超過上限的不會被刪除）
+const MAX_EQUIP_INVENTORY = 100;
+
 // 不可在鍛造閣打造的部位（神器另有取得方式，後續再實作）
 const NON_FORGEABLE_SLOTS = ["神器"];
 

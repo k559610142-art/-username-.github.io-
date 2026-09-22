@@ -1,3 +1,6 @@
+// 僕從數量上限：已滿時野外不再救出新僕從（舊存檔超過上限的不會被刪除，但要先解僱到上限以下才能再收）
+const MAX_SERVANTS = 100;
+
 // 僕從品質權重（受魅力加成影響）與可用姓名池
 const servantQualities = [
     { name: "一般", weight: 2.0, mult: 1.2 },

@@ -72,6 +72,7 @@ function equipItem(equipId) {
 function unequipItem(slotName) {
     let item = player.equipment[slotName];
     if (!item) return;
+    if (!hasEquipInventorySpace()) return;
 
     player.equipment[slotName] = null;
     player.equipInventory.push(item);
@@ -91,6 +92,7 @@ function forgeEquipment() {
         alert("靈石不足 1000！無法打造裝備。");
         return;
     }
+    if (!hasEquipInventorySpace()) return;
 
     player.coins -= 1000;
     let name = document.getElementById('forge-type-select').value;

@@ -231,9 +231,13 @@ function checkAutoHealAndMana() {
     }
 }
 
-// 野外擊殺後機率觸發拯救僕從（魅力提升史詩/傳說機率）
+// 野外擊殺後機率觸發拯救僕從（魅力提升史詩/傳說機率）；回傳是否真的救出
 function tryRescueServant() {
     if (Math.random() < 0.05) {
+        if (player.servants.length >= MAX_SERVANTS) {
+            addLog(`🆘 遇見一名受困修士，但僕從小屋已滿（${MAX_SERVANTS} 名），只能目送其離去…`, "servant");
+            return false;
+        }
         let totalCha = player.stats.cha + getEquipBonus().cha;
         let epicBonus = Math.min(totalCha * 0.0005, 0.05);
         let legendBonus = Math.min(totalCha * 0.0001, 0.01);
@@ -272,5 +276,7 @@ function tryRescueServant() {
         player.servants.push(newServant);
         addDailyProgress('rescue');
         addLog(`🆘 在野外歷練時，憑藉高超氣質與魅力拯救了一名受困修士【${newServant.name}】！品質：<span class="quality-${newServant.quality}">${newServant.quality}</span> (任務速度 x${newServant.mult})！`, "servant");
+        return true;
     }
+    return false;
 }

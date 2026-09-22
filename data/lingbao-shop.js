@@ -30,6 +30,7 @@ function renderLingbaoShopUI() {
 function buyLingbaoItem(itemId, payType) {
     let item = lingbaoShopItems.find(i => i.id === itemId);
     if (!item) return;
+    if (item.type === 'equip' && !hasEquipInventorySpace()) return;
 
     if (payType === 'coins') {
         if (player.coins < item.coins) { alert("靈石不足！"); return; }

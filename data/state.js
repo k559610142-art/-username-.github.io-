@@ -49,6 +49,7 @@ let safeZoneTimer = 0;
 // 以下為「不寫入存檔」的執行期狀態：重新整理後即歸零
 let inTribulation = false;   // 是否正在與心魔對決
 let heartDemon = null;       // 心魔實體 { name, icon, hp, maxHp, attack, buffTimer, buffMult }
+let tribulationFatedWin = false;   // 開打時依勝算擲出的天命（true = 此次渡劫必定成功）
 let potionCooldownHp = 0;    // 氣血類藥品剩餘冷卻秒數
 let potionCooldownMp = 0;    // 靈力類藥品剩餘冷卻秒數
 let gameOver = false;        // 壽元耗盡：停止戰鬥與存檔，等待重新載入

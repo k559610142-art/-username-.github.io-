@@ -1,5 +1,27 @@
 // 渡劫：小境界滿 10 階後，擊敗心魔才能晉升下一個大境界
-// 心魔擁有玩家 150% 的戰力與氣血，並會施展魔功（見 config-tribulation.js）
+// 勝敗由開打前的「勝算」擲骰決定（基礎 60%，丹藥與宗門技能最多各 +10%，上限 80%），
+// 戰鬥過程照常進行；若戰況與天命相反，會在關鍵一刻以「絕處逢生／心魔反噬」收尾。
+// 數值見 config-tribulation.js
+
+// 計算目前的渡劫勝算與各項加成（渡劫按鈕與確認視窗共用）
+function getTribulationChance() {
+    // 丹藥：必須開啟自動補血才會在渡劫中服用，否則不計
+    let healStock = 0;
+    if (player.autoHp.enabled) {
+        shopItems.filter(s => s.type === 'heal').forEach(s => { healStock += s.amount * (player.bag[s.id] || 0); });
+    }
+    let potion = TRIBULATION_POTION_BONUS * Math.min(1, healStock / TRIBULATION_POTION_FULL_STOCK);
+
+    // 技能：目前境界已開放的宗門階段中，已學會的比例
+    let openTiers = sectData.filter(cat => player.realmIndex >= cat.minRealm).map(cat => cat.tier);
+    let learnedTiers = openTiers.filter(t => player.sectSkills && player.sectSkills[t]);
+    let skill = openTiers.length > 0 ? TRIBULATION_SKILL_BONUS * learnedTiers.length / openTiers.length : 0;
+
+    let total = Math.min(TRIBULATION_MAX_CHANCE, TRIBULATION_BASE_CHANCE + potion + skill);
+    return { total, base: TRIBULATION_BASE_CHANCE, potion, skill, openTiers: openTiers.length, learnedTiers: learnedTiers.length };
+}
+
+function formatChance(rate) { return `${Math.round(rate * 100)}%`; }
 
 function triggerTribulation() {
     if (!player.pendingTribulation) {
@@ -10,22 +32,28 @@ function triggerTribulation() {
 
     let demonPower = Math.floor(getPhysAttack() * HEART_DEMON_POWER_MULT);
     let demonHp = Math.floor(getMaxHp() * HEART_DEMON_HP_MULT);
+    let chance = getTribulationChance();
 
-    let warn = "";
-    if (player.hp < player.maxHp) warn += "\n⚠️ 你目前氣血未滿，建議先回安全區療傷再渡劫！";
-    if (!player.autoHp.enabled) warn += "\n⚠️ 尚未開啟【自動補血】，心魔攻勢兇猛，強烈建議先開啟！";
+    let tips = "";
+    if (!player.autoHp.enabled) tips += "\n・開啟【自動補血】並備妥氣血丹藥，最多可再 +10%";
+    else if (chance.potion < TRIBULATION_POTION_BONUS) tips += `\n・再多備氣血丹藥（約 10 顆九轉還魂丹即可拿滿），最多可再 +${formatChance(TRIBULATION_POTION_BONUS - chance.potion)}`;
+    if (chance.skill < TRIBULATION_SKILL_BONUS) tips += `\n・拜入目前可加入的宗門學得技能，最多可再 +${formatChance(TRIBULATION_SKILL_BONUS - chance.skill)}`;
 
     if (!confirm(
         `即將渡劫，晉升【${realms[player.realmIndex + 1]}】！\n\n`
-        + `心魔戰力：${demonPower.toLocaleString()}（你的 150%）\n`
-        + `心魔氣血：${demonHp.toLocaleString()}（與你相同）\n`
-        + `心魔為人形魔身，會施展魔功並吸取靈力。\n\n`
-        + `建議先備妥丹藥並開啟自動補血；渡劫失敗會重傷跌回安全區並折壽 ${getDeathLifespanCost()} 年（剩餘 ${player.lifespan.toLocaleString()} 年），靈寵也會陣亡。${warn}\n\n是否開始渡劫？`
+        + `【渡劫勝算：${formatChance(chance.total)}】（上限 ${formatChance(TRIBULATION_MAX_CHANCE)}）\n`
+        + `・基礎 ${formatChance(chance.base)}\n`
+        + `・丹藥準備 +${formatChance(chance.potion)}\n`
+        + `・宗門技能 +${formatChance(chance.skill)}（已學 ${chance.learnedTiers} / ${chance.openTiers} 階）\n`
+        + (tips ? `\n提升勝算：${tips}\n` : '')
+        + `\n心魔戰力 ${demonPower.toLocaleString()}／氣血 ${demonHp.toLocaleString()}，會施展魔功並吸取靈力。\n`
+        + `渡劫失敗會重傷跌回安全區並折壽 ${getDeathLifespanCost()} 年（剩餘 ${player.lifespan.toLocaleString()} 年），靈寵也會陣亡。\n\n是否開始渡劫？`
     )) return;
 
     enemies = [];
     respawnTimer = 0;
     inTribulation = true;
+    tribulationFatedWin = Math.random() < chance.total;
 
     heartDemon = {
         name: "心魔",
@@ -37,7 +65,7 @@ function triggerTribulation() {
         buffMult: 1
     };
 
-    addLog(`☯️ 【渡劫開始】天地變色，心魔自你識海中走出，化作與你一模一樣的魔身！（戰力 ${demonPower.toLocaleString()}／氣血 ${demonHp.toLocaleString()}）`, "reincarnate");
+    addLog(`☯️ 【渡劫開始】天地變色，心魔自你識海中走出，化作與你一模一樣的魔身！（勝算 ${formatChance(chance.total)}｜戰力 ${demonPower.toLocaleString()}／氣血 ${demonHp.toLocaleString()}）`, "reincarnate");
     document.getElementById('combat-status').innerText = `☯️ 渡劫中：與心魔生死對決！`;
     document.getElementById('combat-status').style.color = 'var(--reincarnate-color)';
     updateUI();
@@ -88,6 +116,11 @@ function tribulationTick() {
     petAssistTick([heartDemon]);
 
     if (heartDemon.hp <= 0) {
+        if (!tribulationFatedWin) {
+            addLog(`🧍 心魔即將潰散之際，你心神一時失守，被心魔抓住破綻反噬！`, "combat");
+            endTribulation(false);
+            return;
+        }
         endTribulation(true);
         return;
     }
@@ -117,6 +150,12 @@ function tribulationTick() {
     player.hp -= applyPetDamageReduction(demonDmg);
 
     if (player.hp <= 0) {
+        if (tribulationFatedWin) {
+            player.hp = 1;
+            addLog(`⚡ 生死一線，你道心通明、絕處逢生，斬出最後一劍將心魔劈散！`, "level-up");
+            endTribulation(true);
+            return;
+        }
         endTribulation(false);
         return;
     }

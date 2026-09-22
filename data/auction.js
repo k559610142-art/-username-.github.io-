@@ -91,6 +91,7 @@ function buyAuctionItem(itemId) {
         buyAuctionLifePill(item);
         return;
     }
+    if (!hasEquipInventorySpace()) return;
 
     if (player.coins < item.price) {
         alert(`靈石不足！\n此商品需要 ${item.price.toLocaleString()} 靈石，你目前只有 ${player.coins.toLocaleString()} 靈石。`);

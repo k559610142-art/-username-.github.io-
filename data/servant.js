@@ -26,7 +26,7 @@ function renderServants() {
     let parts = [];
 
     parts.push(`<div style="grid-column: 1 / -1; text-align: center; color: var(--accent); font-size: 0.9em;">
-        目前派遣中：${assignedCount} / ${MAX_ASSIGNED_SERVANTS} 名（每位僕從可負責不同任務，且不受你所在地點限制）｜共 ${player.servants.length} 名僕從
+        目前派遣中：${assignedCount} / ${MAX_ASSIGNED_SERVANTS} 名（每位僕從可負責不同任務，且不受你所在地點限制）｜僕從 ${player.servants.length} / ${MAX_SERVANTS} 名${player.servants.length >= MAX_SERVANTS ? '（已滿，野外不會再收留新僕從）' : ''}
     </div>`);
 
     // 依品級一鍵解僱

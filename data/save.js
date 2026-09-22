@@ -40,10 +40,8 @@ function calcOfflineProgress() {
         let rescueRolls = Math.floor(combatTicks / 30);
         let rescuedCount = 0;
         for (let i = 0; i < rescueRolls; i++) {
-            if (Math.random() < 0.05) {
-                tryRescueServant();
-                rescuedCount++;
-            }
+            // 只計算真的救出的人數（tryRescueServant 內還有一次機率判定與上限檢查）
+            if (Math.random() < 0.05 && tryRescueServant()) rescuedCount++;
         }
 
         let expText = wasPending ? "修為已滿(待渡劫，無經驗)" : `${Math.floor(gained)} 經驗`;

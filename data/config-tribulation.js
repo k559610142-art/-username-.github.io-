@@ -5,11 +5,24 @@
 // 在此之前（凡人 → 煉氣、煉氣 → 築基）滿 10 階會直接突破，不需渡劫。
 const TRIBULATION_MIN_REALM_INDEX = 2;
 
-// 心魔戰力＝玩家的 150%
-const HEART_DEMON_POWER_MULT = 1.5;
+// ---- 渡劫勝算（開打前擲骰決定天命，實際勝率＝畫面顯示的勝算）----
+// 勝算 = 基礎 60% + 丹藥準備（最多 +10%）+ 宗門技能（最多 +10%），上限 80%
+//   丹藥：需開啟【自動補血】；背包氣血丹藥的「回復量 × 數量」總和達 TRIBULATION_POTION_FULL_STOCK 即拿滿
+//         （3.0 = 10 顆九轉還魂丹，或 30 顆培元丹、60 株凝血草）
+//   技能：目前境界已開放的宗門階段中，已學會幾個階段（例：築基只開放初級，學了就 +10%；
+//         化神開放初級＋中級，只學初級 +5%、兩個都學 +10%）
+// 為何不用純數值平衡：戰鬥結果幾乎由數值決定，模擬顯示「無藥 60%」時帶滿藥必定 99~100%，
+// 且學到越多階段技能越容易，無法同時滿足「基礎 60%、準備後不超過 80%」。
+const TRIBULATION_BASE_CHANCE = 0.60;
+const TRIBULATION_POTION_BONUS = 0.10;
+const TRIBULATION_POTION_FULL_STOCK = 3.0;
+const TRIBULATION_SKILL_BONUS = 0.10;
+const TRIBULATION_MAX_CHANCE = 0.80;
+
+// 心魔戰力＝玩家的 100%（天命已在開打前決定，數值只影響戰鬥過程的觀感，設成勢均力敵）
+const HEART_DEMON_POWER_MULT = 1.0;
 
 // 心魔氣血＝玩家的 100%（心魔是你的鏡像魔身，生命力與你相同）
-// 註：若連氣血也給 1.5 倍，心魔會同時更肉更痛，實測勝率不足 11%，形同無法通過。
 const HEART_DEMON_HP_MULT = 1.0;
 
 // 心魔為人形（與玩家同貌的魔身）

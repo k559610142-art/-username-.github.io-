@@ -170,7 +170,7 @@ function updateTribulationUI() {
     } else if (player.pendingTribulation) {
         btn.style.display = 'block';
         btn.disabled = false;
-        btn.innerText = `⚡ 天劫將至！點此渡劫晉升【${realms[player.realmIndex + 1] || ''}】`;
+        btn.innerText = `⚡ 天劫將至！點此渡劫晉升【${realms[player.realmIndex + 1] || ''}】（勝算 ${formatChance(getTribulationChance().total)}）`;
     } else {
         btn.style.display = 'none';
         btn.disabled = false;

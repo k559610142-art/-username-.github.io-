@@ -2,11 +2,24 @@
 
 function openBagModal() { document.getElementById('bag-modal').style.display = 'flex'; renderBag(); }
 
+// 背包裝備是否還有空位（上限 MAX_EQUIP_INVENTORY）；已滿時跳提示並回傳 false。
+// 所有「會把裝備放進背包」的地方都要在扣資源「之前」先呼叫：鍛造、千寶閣、靈寶閣、卸下裝備。
+function hasEquipInventorySpace() {
+    if (player.equipInventory.length < MAX_EQUIP_INVENTORY) return true;
+    alert(`背包裝備已滿（${player.equipInventory.length} / ${MAX_EQUIP_INVENTORY} 件）！\n請先穿戴或刪除部分裝備。`);
+    return false;
+}
+
 // ⚠️ 背包裝備數量沒有上限，比照 renderServants() 先組好整段 HTML 再一次寫入，避免裝備多時卡住
 function renderBag() {
     const container = document.getElementById('bag-list-container');
     let parts = [];
     let hasItems = false;
+
+    let equipCount = player.equipInventory ? player.equipInventory.length : 0;
+    parts.push(`<div style="grid-column: 1 / -1; text-align: center; font-size: 0.9em; color: ${equipCount >= MAX_EQUIP_INVENTORY ? '#ef4444' : 'var(--accent)'};">
+        背包裝備：${equipCount} / ${MAX_EQUIP_INVENTORY} 件${equipCount >= MAX_EQUIP_INVENTORY ? '（已滿，無法再鍛造、購買或卸下裝備）' : ''}
+    </div>`);
 
     // 依品級一鍵刪除裝備（只作用於背包內未穿戴的裝備）
     if (player.equipInventory && player.equipInventory.length > 0) {

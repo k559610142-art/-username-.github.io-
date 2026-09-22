@@ -62,23 +62,23 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 6 | `config-lingbao.js` | `lingbaoShopItems` 靈寶閣商品 | 無 | `lingbao-shop.js` |
 | 7 | `config-shop.js` | `shopItems` 丹藥堂商品 | 無 | `shop.js`、`bag.js`、`combat.js`(自動補血補魔) |
 | 8 | `config-beasts.js` | `beastData` 靈寵兌換與被動、`BEAST_REVIVE_COST_CORE`、`BEAST_SKILL_LEVELS`、`BEAST_SKILL_CHANCE`、`beastElementInfo`、`beastSkillTree` | 無 | `beast.js`、`beast-combat.js`、`save.js`(舊存檔轉換) |
-| 9 | `config-servants.js` | `servantQualities`、`servantNames` | 無 | `combat.js`(tryRescueServant) |
-| 10 | `config-equipment.js` | `equipTypes`（含 artifact 神器欄）、`NON_FORGEABLE_SLOTS`、`wuxingElements`、`equipQualities` | 無 | `equipment.js`、`stats.js`(getWuxingBuff)、`save.js`(補齊欄位)、`beast.js`(五行選項) |
-| 11 | `config-tribulation.js` | 渡劫門檻、心魔倍率與技能 | 無 | `leveling.js`、`tribulation.js`、`save.js` |
+| 9 | `config-servants.js` | `MAX_SERVANTS`、`servantQualities`、`servantNames` | 無 | `combat.js`(tryRescueServant) |
+| 10 | `config-equipment.js` | `MAX_EQUIP_INVENTORY`、`equipTypes`（含 artifact 神器欄）、`NON_FORGEABLE_SLOTS`、`wuxingElements`、`equipQualities` | 無 | `equipment.js`、`stats.js`(getWuxingBuff)、`save.js`(補齊欄位)、`beast.js`(五行選項) |
+| 11 | `config-tribulation.js` | 渡劫門檻、勝算常數 `TRIBULATION_*`、心魔倍率與技能 | 無 | `leveling.js`、`tribulation.js`、`save.js` |
 | 12 | `config-quests.js` | `questData` 門派任務、`QUEST_*` 進度常數 | 無 | `quest.js`、`servant.js`、`combat.js` |
 | 13 | `config-activities.js` | `activityData` 活動清單與解鎖條件 | 無 | `activity.js` |
 | 14 | `config-daily-quests.js` | 每日任務池與獎勵、千寶閣 `AUCTION_*`、`auctionQualityOdds`、`auctionLifePills`(壽元丹) | 無 | `daily-quest.js`、`auction.js` |
-| 15 | `state.js` | `player`、`enemies`、`respawnTimer`、`safeZoneTimer`；不存檔的執行期狀態：`inTribulation`/`heartDemon`/丹藥冷卻/`gameOver`/靈寵輔助計時(`petBuff*`/`petShield*`/`petRegen*`) | **`maps`**（必須排在 config-maps.js 之後） | 幾乎所有檔案都會讀寫 `player` |
+| 15 | `state.js` | `player`、`enemies`、`respawnTimer`、`safeZoneTimer`；不存檔的執行期狀態：`inTribulation`/`heartDemon`/`tribulationFatedWin`/丹藥冷卻/`gameOver`/靈寵輔助計時(`petBuff*`/`petShield*`/`petRegen*`) | **`maps`**（必須排在 config-maps.js 之後） | 幾乎所有檔案都會讀寫 `player` |
 | 16 | `stats.js` | `getEquipBonus`/`getWuxingBuff`/`getNextExp`/`getLevelExpNeeded`/`hasLiveBeast`/`getBasePower`/`getPhysAttack`/`getMagAttack`/`getMaxHp`/`getMaxMp`/`getSectTier`/`getAllSkills` | `player`、`realms`、`sectData`、`LEVEL_*`、靈寵輔助計時 | `ui.js`、`combat.js`、`leveling.js`、`tribulation.js`、`beast-combat.js` 等幾乎全部功能檔 |
 | 17 | `ui.js` | 常數 `PLAYER_AVATARS`（頭像/預設道號，戰鬥實況與性別選擇共用）、`updateUI`/`updateCombatVisualPanel`/`updateStudyCountsUI`/`renderSkillList`/`addLog`/`updateAutoSettings`/`syncAutoSettingsUI`/`updateSectFacilitiesUI`/`closeModal`/`toggleDrawer`/`formatCountdown`/批次刪除工具 | `player`、`realms`、`stats.js` 的計算函式、`lifespan.js`(getDeathLifespanCost) | 幾乎所有功能檔在資料變動後都會呼叫 `updateUI()`/`addLog()` |
 | 18 | `map.js` | `openMapCategoryModal`/`selectMap`/`changeMap` | `maps`、`player`、`ui.js` | `quest.js`(stopQuest 由 changeMap 呼叫)、HTML 按鈕 |
 | 19 | `combat.js` | `combatTick`/`checkAutoHealAndMana`/`tryRescueServant` | `player`、`enemies`、`shopItems`、`servantQualities`、`servantNames`、`stats.js`、`leveling.js`(gainExp)、`beast-combat.js`(petAssistTick/applyPetDamageReduction)、`lifespan.js`(handlePlayerDeath)、`map.js`(changeMap 死亡回城) | `main.js`(setInterval 每秒呼叫) |
 | 20 | `leveling.js` | `gainExp`/`gainLevelExp`/`advanceRealm`/`triggerReincarnate` | `realms`、`player`、`stats.js`、`beast-combat.js`(gainBeastExp)、`lifespan.js`(gainRealmLifespan) | `combat.js`、`tribulation.js`、`save.js`、HTML 輪迴按鈕 |
 | 21 | `lifespan.js` | `getDeathLifespanCost`/`getInitialLifespanForRealm`/`gainRealmLifespan`/`handlePlayerDeath`/`triggerLifespanGameOver` | `lifespanByRealm`、`player`、`beast-combat.js`(killAllBeasts) | `combat.js`/`tribulation.js`(死亡)、`leveling.js`(突破)、`save.js`(舊存檔)、`ui.js` |
-| 22 | `tribulation.js` | `triggerTribulation`/`tribulationTick`/`endTribulation` | `player`、`config-tribulation.js`、`stats.js`、`beast-combat.js`、`lifespan.js`、`leveling.js`(advanceRealm) | `combat.js`(渡劫中接管 tick)、HTML 渡劫按鈕 |
+| 22 | `tribulation.js` | `getTribulationChance`/`formatChance`/`triggerTribulation`/`tribulationTick`/`endTribulation` | `player`、`config-tribulation.js`、`shopItems`(丹藥加成)、`sectData`(技能加成)、`stats.js`、`beast-combat.js`、`lifespan.js`、`leveling.js`(advanceRealm) | `combat.js`(渡劫中接管 tick)、`ui.js`(按鈕顯示勝算)、HTML 渡劫按鈕 |
 | 23 | `sect.js` | `checkSectJoined`/`openSectModal`/`renderSects`/`joinSect` | `sectData`、`player.sect`/`sectSkills` | 幾乎所有「需拜入宗門才能使用」的彈窗（shop/servant/field/beast/lingbao-shop/library/forge/alchemy）都會先呼叫 `checkSectJoined()` |
 | 24 | `shop.js` | `openShopModal`/`renderShop`/`buyShopItem` | `shopItems`、`player`、`sect.js`(checkSectJoined) | HTML 按鈕、`bag.js` 顯示已購買道具 |
-| 25 | `bag.js` | `openBagModal`/`renderBag`/`useItemFromBag`/`deleteItemFromBag`/`deleteEquipFromInventory`/`bulkDeleteEquipment` | `shopItems`、`player.bag`、`player.equipInventory` | `equipment.js`(equipItem 後呼叫 renderBag) |
+| 25 | `bag.js` | `openBagModal`/`hasEquipInventorySpace`(背包上限檢查，鍛造/千寶閣/靈寶閣/卸下裝備共用)/`renderBag`/`useItemFromBag`/`deleteItemFromBag`/`deleteEquipFromInventory`/`bulkDeleteEquipment` | `shopItems`、`player.bag`、`player.equipInventory` | `equipment.js`(equipItem 後呼叫 renderBag) |
 | 26 | `equipment.js` | `initForgeSelect`/`openEquipmentModal`/`renderLingbaoUI`(注意：命名沿用舊碼，實際是角色裝備列表)/`equipItem`/`unequipItem`/`openForgeModal`/`forgeEquipment` | `equipTypes`、`wuxingElements`、`equipQualities`、`player.equipment`、`player.equipInventory` | `bag.js`(equipItem)、`sect.js`(forge 需拜入宗門) |
 | 27 | `lingbao-shop.js` | `openLingbaoShopModal`/`renderLingbaoShopUI`/`buyLingbaoItem` | `lingbaoShopItems`、`player.coins`/`reputation`/`equipInventory`/`learnedSkills` | HTML 按鈕（僅在「後山禁地」顯示） |
 | 28 | `servant.js` | `openServantModal`/`renderServants`/`assignServantQuest`/`dismissServant`/`bulkDismissServants`/`tickServantQuests`/`getAssignedServantCount` | `questData`、`player.servants`(每位自帶 `quest`/`timer`)、`quest.js` 的獎勵函式 | `combat.js`(每 tick 呼叫 tickServantQuests)、`quest.js`(顯示派遣狀態) |
@@ -225,26 +225,28 @@ combatTick() 每秒執行 [combat.js]
 | 環節 | 位置 | 說明 |
 |---|---|---|
 | 修為封頂 | `leveling.js` 的 `gainExp()` | 小境界到 10 階且經驗滿格時：若 `realmIndex >= TRIBULATION_MIN_REALM_INDEX` 則 `pendingTribulation = true`，之後 `gainExp()` 一律回傳 0（經驗完全停止累積，含離線收益）；未達門檻則直接呼叫 `advanceRealm()` 突破並保留溢出經驗 |
-| 渡劫按鈕 | `index.html` 的 `#btn-tribulation` + `ui.js` 的 `updateTribulationUI()` | 只在待渡劫時顯示；渡劫進行中改為顯示心魔剩餘氣血並鎖定 |
-| 心魔數值 | `config-tribulation.js` | 戰力 = 玩家 150%（`HEART_DEMON_POWER_MULT`）、氣血 = 玩家 100%（`HEART_DEMON_HP_MULT`）、4 個魔功技能 |
-| 戰鬥流程 | `tribulation.js` 的 `tribulationTick()` | 由 `combat.js` 的 `combatTick()` 在 `inTribulation` 為 true 時接管，暫停掛機、刷怪與宗門任務 |
+| 渡劫按鈕 | `index.html` 的 `#btn-tribulation` + `ui.js` 的 `updateTribulationUI()` | 只在待渡劫時顯示，並即時顯示目前勝算；渡劫進行中改為顯示心魔剩餘氣血並鎖定 |
+| 勝算計算 | `tribulation.js` 的 `getTribulationChance()` | 基礎 + 丹藥 + 技能，上限 80%（見下方） |
+| 天命擲骰 | `triggerTribulation()` | 確認視窗列出勝算明細與提升建議；開打時 `tribulationFatedWin = Math.random() < 勝算`（`state.js`，不存檔） |
+| 心魔數值 | `config-tribulation.js` | 戰力 = 玩家 100%（`HEART_DEMON_POWER_MULT`）、氣血 = 玩家 100%（`HEART_DEMON_HP_MULT`）、4 個魔功技能；只影響戰鬥過程的觀感 |
+| 戰鬥流程 | `tribulation.js` 的 `tribulationTick()` | 由 `combat.js` 的 `combatTick()` 在 `inTribulation` 為 true 時接管，暫停掛機、刷怪與宗門任務。戰況與天命相反時在關鍵一刻收尾：天命勝卻將戰死 →「絕處逢生」判勝；天命敗卻將擊殺心魔 →「心魔反噬」判敗 |
 | 成功 | `endTribulation(true)` → `leveling.js` 的 `advanceRealm()` | 晉升大境界並給予屬性獎勵，`pendingTribulation` 解除、經驗恢復累積 |
 | 失敗 | `endTribulation(false)` | **視同死亡**：先呼叫 `handlePlayerDeath()` 折壽並使靈寵陣亡（壽元歸零即遊戲結束），再氣血歸 1、損失 10% 靈石、回到安全區；`pendingTribulation` 保留，壽元足夠即可重試 |
 
-平衡備註：心魔氣血刻意設為玩家的 100% 而非 150%。實測若氣血也給 1.5 倍，
-即使頂級宗門＋滿背包九轉還魂丹，勝率也不足 11%，等同無法通關。
-目前設定下（滿血進場＋備妥九轉還魂丹、開自動補血；宗門技能 +50/100/200%，每組模擬 400 場）概略勝率：
+**勝算規則**（`config-tribulation.js` 的 `TRIBULATION_*` 常數）：
 
-| 渡劫 | 條件 | 勝率 |
+| 項目 | 加成 | 條件 |
 |---|---|---|
-| 築基 → 金丹（第一次） | 散修 | 約 7% |
-| 築基 → 金丹 | 武當 / 少林 / 皇朝 | 約 63% / 71% / 65% |
-| 金丹 → 元嬰 | 武當 | 約 79% |
-| 化神 / 大乘 / 渡劫 | 初級＋中級宗門 | 約 93～94% |
-| 真仙 / 大羅金仙 | 三階宗門 | 約 98% |
+| 基礎 | 60% | 無 |
+| 丹藥準備 | 最多 +10% | 需開啟【自動補血】；背包氣血丹藥「回復量 × 數量」總和 ÷ 3.0（10 顆九轉還魂丹／30 顆培元丹／60 株凝血草即拿滿） |
+| 宗門技能 | 最多 +10% | 目前境界已開放的宗門階段中已學會的比例（築基只開放初級；金丹起開放中級；仙人初境起開放高級） |
+| 上限 | 80% | `TRIBULATION_MAX_CHANCE` |
 
-亦即「宗門技能＋丹藥存量」是渡劫的主要準備方向。**宗門技能倍率一改，這張表就會失準**，
-調整 `SECT_SKILL_BONUS` 後請重新模擬（見第 13 節）。
+**為什麼不用純數值平衡**：模擬顯示渡劫結果幾乎由數值決定，勝率曲線非常陡——
+調到「無藥約 60%」時，帶滿藥必定 99～100%；且學到越多階段技能越容易（同設定下真仙比築基高約 40 個百分點）。
+無法同時做到「基礎 60%、準備後不超過 80%」，因此改成開打前擲骰。
+實測每種情境各 1000 場，實際勝率與顯示勝算誤差在 ±3% 內（抽樣誤差），平均 13～17 回合分出勝負。
+調整勝算只需改 `TRIBULATION_*` 常數，**不受宗門技能倍率或屬性數值影響**。
 
 ## 8. 丹藥與冷卻規則
 
@@ -269,6 +271,12 @@ combatTick() 每秒執行 [combat.js]
   **禁止在迴圈內寫 `container.innerHTML += ...`**：每次 `+=` 都會把整個列表重新解析一遍，成本隨數量平方成長。
   實測 600 名僕從用 `+=` 會卡住約 12 秒（玩家回報「點開僕從小屋卡住」即此原因），改寫後只要 33 毫秒，3000 名約 0.2 秒。
   固定少量的列表（宗門、地圖、靈寶閣、裝備欄位）不受影響，但新寫的列表請比照同樣做法。
+- **數量上限**：僕從 `MAX_SERVANTS`（`config-servants.js`）、背包裝備 `MAX_EQUIP_INVENTORY`（`config-equipment.js`，不含已穿戴）皆為 100。
+  - 僕從：`tryRescueServant()` 已滿時不收留（日誌提示），回傳是否真的救出；離線結算只計算真正救出的人數。
+  - 背包：`bag.js` 的 `hasEquipInventorySpace()` 已滿時跳提示並回傳 false。**鍛造、千寶閣、靈寶閣裝備、卸下裝備**
+    都在扣靈石／聲望「之前」檢查。穿戴裝備是一換一，不受影響。**日後新增任何會把裝備放進背包的功能，都要先呼叫它。**
+  - 舊存檔已超過上限的不會被刪除，只是要先解僱／刪除到上限以下才能再增加。
+  - 僕從小屋與背包頂端顯示「目前數量 / 上限」，滿了轉為提示文字。
 - **僕從 id**：`tryRescueServant()` 產生 `時間戳_8 碼隨機英數`。離線結算會在同一毫秒內救出多名僕從，
   舊版只用 0～999 的隨機數，id 可能重複，重複時解僱一名會連帶刪掉另一名。
 
@@ -400,11 +408,9 @@ combatTick() 每秒執行 [combat.js]
   （初級 150% / 中級 200% / 高級 300%）。`dmgType: "phys"` 用物理攻擊（受**力量**影響），
   `"mag"` 用法術攻擊（受**悟性**影響）。每個宗門各有 1 招力量型、1 招悟性型；全部都是傷害技（單體或群體）。
   **傷害若過高，只需調整 `config-sects.js` 的 `SECT_SKILL_BONUS`**，所有宗門技能會一起生效。
-- **數值依據**（渡劫模擬，詳見 `config-sects.js` 註解與第 7 節勝率表）：
-  - +10/20/50%：第一次渡劫勝率只剩 14～18%，過難。
-  - +50/100/200%：第一次約 65%，之後 79～98%，**採用這組**。
-  - +100/150/300%：第一次 81～89%，之後幾乎必勝，挑戰性偏低。
-  - 技能觸發率 40%，野外單體平均輸出只比普攻高約 20%／40%／80%，不會出現異常爆量。
+- **數值依據**：+50/100/200% 是在「渡劫仍由戰鬥決定」時，依模擬選出的第一次渡劫約 65% 的數值
+  （+10/20/50% 只有 14～18%）。渡劫改成勝算擲骰後（第 7 節），技能倍率只影響野外戰鬥：
+  技能觸發率 40%，單體平均輸出比普攻高約 20%／40%／80%，不會出現異常爆量。
 - `mult`/`tier` 是在 `config-sects.js` 尾端用迴圈補上的，新增宗門技能時不要手寫 `mult`。
 - 舊存檔的 `player.sect` 是整包存進去的舊物件（含舊技能），`migrateProgressionFields()` 會用
   `findSectByName()` 改指向最新設定，並把該宗門登記進 `sectSkills` 對應階段。
