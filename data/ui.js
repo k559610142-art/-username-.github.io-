@@ -118,9 +118,14 @@ function updateUI() {
     let levelPct = player.level >= MAX_PLAYER_LEVEL ? 100 : Math.min(player.levelExp / getLevelExpNeeded(player.level) * 100, 100);
     document.getElementById('level-display').innerText = `Lv.${player.level.toLocaleString()} (${levelPct.toFixed(1)}%)`;
     let lifespanEl = document.getElementById('lifespan-display');
-    lifespanEl.innerText = `${player.lifespan.toLocaleString()} 年`;
-    lifespanEl.title = `此境界每死亡一次折壽 ${getDeathLifespanCost()} 年`;
-    lifespanEl.style.color = player.lifespan <= getDeathLifespanCost() * 3 ? '#ef4444' : '#4ade80';
+    let atFloor = player.lifespan <= getLifespanFloor();
+    let perMin = getAgingPerMinute();
+    lifespanEl.innerText = `${formatLifespan(player.lifespan)} 年`;
+    lifespanEl.style.color = atFloor ? '#ef4444' : (player.lifespan <= getLifespanFloor() * 2 ? '#facc15' : '#4ade80');
+    lifespanEl.title = `此境界每死亡一次折壽 ${getDeathLifespanCost()} 年；壽元剩 ${formatLifespan(getLifespanFloor())} 年時歲月停止流逝`;
+    let rateEl = document.getElementById('lifespan-rate');
+    rateEl.innerText = atFloor ? '（歲月已止）' : `⌛-${perMin >= 10 ? Math.round(perMin).toLocaleString() : perMin.toFixed(1)}年/分`;
+    rateEl.style.color = atFloor ? '#ef4444' : (getAgingMultiplier() > 1 ? '#fb923c' : '#9ca3af');
     document.getElementById('power-display').innerText = getPhysAttack().toLocaleString();
     document.getElementById('sect-display').innerText = player.sect ? player.sect.name : "散修 (無技能)";
     document.getElementById('coins-display').innerText = player.coins.toLocaleString();

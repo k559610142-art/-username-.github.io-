@@ -118,7 +118,7 @@ function buyAuctionLifePill(item) {
     player.lifespan += pill.years;
     item.sold = true;
 
-    addLog(`🏺 於千寶閣標下【${pill.name}】並當場服下，續命 ${pill.years} 年！（剩餘壽元 ${player.lifespan.toLocaleString()} 年）`, "heal");
+    addLog(`🏺 於千寶閣標下【${pill.name}】並當場服下，續命 ${pill.years} 年！（剩餘壽元 ${formatLifespan(player.lifespan)} 年）`, "heal");
     renderAuction();
     updateUI();
 }

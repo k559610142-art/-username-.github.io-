@@ -47,7 +47,7 @@ function triggerTribulation() {
         + `・宗門技能 +${formatChance(chance.skill)}（已學 ${chance.learnedTiers} / ${chance.openTiers} 階）\n`
         + (tips ? `\n提升勝算：${tips}\n` : '')
         + `\n心魔戰力 ${demonPower.toLocaleString()}／氣血 ${demonHp.toLocaleString()}，會施展魔功並吸取靈力。\n`
-        + `渡劫失敗會重傷跌回安全區並折壽 ${getDeathLifespanCost()} 年（剩餘 ${player.lifespan.toLocaleString()} 年），靈寵也會陣亡。\n\n是否開始渡劫？`
+        + `渡劫失敗會重傷跌回安全區並折壽 ${getDeathLifespanCost()} 年（剩餘 ${formatLifespan(player.lifespan)} 年，渡劫期間歲月流逝加快），靈寵也會陣亡。\n\n是否開始渡劫？`
     )) return;
 
     enemies = [];

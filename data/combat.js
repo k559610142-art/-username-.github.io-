@@ -6,6 +6,9 @@ function combatTick() {
 
     if (gameOver || player.hp <= 0) return;
 
+    // 歲月流逝：每秒依所在地危險度消耗壽元（觸及底線後停止，見 lifespan.js）
+    ageLifespan(1);
+
     if (player.buffTimer > 0) player.buffTimer--;
 
     // 渡劫期間由 tribulation.js 接管戰鬥，暫停掛機與任務流程

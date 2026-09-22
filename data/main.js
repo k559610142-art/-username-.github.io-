@@ -9,6 +9,10 @@ function initGame() {
     setInterval(combatTick, 1000);
     // 每 30 秒自動存檔
     setInterval(saveLocal, 30000);
+    // 手機切換 App、鎖螢幕或關閉分頁時立刻存檔：手機瀏覽器常在背景直接結束分頁，
+    // 只靠 30 秒自動存檔會遺失最後一段進度（重新開啟時像是「讀檔失敗、進度倒退」）
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') saveLocal(); });
+    window.addEventListener('pagehide', saveLocal);
 }
 
 // 由標題畫面的 enterWorld() 呼叫（title-screen.js）

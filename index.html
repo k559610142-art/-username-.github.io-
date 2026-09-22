@@ -511,7 +511,8 @@
             <div>境界：<span id="realm-display" style="color: var(--accent); font-weight: bold;">凡人 1階</span></div>
             <div style="margin-top: 5px;">等級：<span id="level-display" style="color: var(--accent);">Lv.1 (0.0%)</span></div>
             <div style="margin-top: 5px;">戰力：<span id="power-display">5</span></div>
-            <div style="margin-top: 5px;">壽元：<span id="lifespan-display" style="color: #4ade80; font-weight: bold;">60 年</span></div>
+            <div style="margin-top: 5px;">壽元：<span id="lifespan-display" style="color: #4ade80; font-weight: bold;">60 年</span>
+                <span id="lifespan-rate" style="font-size: 0.75em; color: #9ca3af;"></span></div>
         </div>
         <div>
             <div class="bar-container" style="border-color: var(--hp-color);">
@@ -680,7 +681,7 @@
         </button>
         <div id="drawer-save" class="drawer-body">
             <button class="sys-btn" onclick="saveLocal()">💾 本地存檔</button>
-            <button class="sys-btn" onclick="loadLocal()">📂 讀取本地存檔</button>
+            <button class="sys-btn" onclick="reloadLocalSave()">📂 讀取本地存檔</button>
             <button class="sys-btn" onclick="exportSave()">📤 匯出存檔代碼</button>
             <button class="sys-btn" onclick="importSave()">📥 匯入存檔代碼</button>
         </div>
@@ -697,22 +698,38 @@
 </div>
 
 <!-- 彈出視窗群組 -->
+<!-- 修改道號（player-profile.js，取代舊版 prompt()） -->
+<div id="name-modal" class="modal-bg">
+    <div class="modal-content" style="max-width: 420px; text-align: center; border-color: var(--accent);">
+        <h2 style="color: var(--accent); margin-top: 0;">✏️ 修改道號</h2>
+        <input id="name-input" type="text" maxlength="12" class="save-code-text" style="font-size: 1em; text-align: center;"
+               placeholder="最多 12 個字" onkeydown="if (event.key === 'Enter') confirmPlayerName()">
+        <div id="name-status" style="color: #ef4444; font-size: 0.85em; min-height: 1.3em; margin: 6px 0;"></div>
+        <div class="batch-btns">
+            <button class="sys-btn" onclick="closeModal('name-modal')">取消</button>
+            <button class="sys-btn" onclick="confirmPlayerName()">✅ 確認</button>
+        </div>
+    </div>
+</div>
+
 <!-- 存檔代碼匯出/匯入（save.js：exportSave / importSave 開啟，取代舊版 prompt() 對話框） -->
 <div id="save-code-modal" class="modal-bg">
     <div class="modal-content" style="max-width: 640px; border-color: var(--accent);">
         <h2 id="save-code-title" style="text-align: center; color: var(--accent); margin-top: 0;">存檔代碼</h2>
         <p id="save-code-hint" style="color: #9ca3af; font-size: 0.88em;"></p>
-        <textarea id="save-code-text" class="save-code-text" rows="8" spellcheck="false" placeholder="在此貼上存檔代碼…"></textarea>
+        <textarea id="save-code-text" class="save-code-text" rows="8" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="在此貼上存檔代碼…" oninput="resetImportConfirm()"></textarea>
         <div id="save-code-status" style="font-size: 0.85em; color: #4ade80; min-height: 1.3em; margin: 6px 0;"></div>
         <div id="save-code-export-actions" class="batch-btns">
             <button class="sys-btn" onclick="copySaveCode()">📋 複製代碼</button>
             <button class="sys-btn" onclick="downloadSaveCode()">💾 下載存檔檔案</button>
         </div>
         <div id="save-code-import-actions" class="batch-btns">
+            <button class="sys-btn" onclick="pasteSaveCodeFromClipboard()">📋 從剪貼簿貼上</button>
             <button class="sys-btn" onclick="document.getElementById('save-code-file').click()">📂 從檔案讀取</button>
-            <button class="sys-btn" onclick="confirmImportSave()">✅ 確認匯入</button>
+            <button class="sys-btn" id="save-code-confirm-btn" onclick="confirmImportSave()">✅ 確認匯入</button>
         </div>
-        <input type="file" id="save-code-file" accept=".txt,text/plain" onchange="importSaveFromFile(this)" hidden>
+        <!-- 不設 accept：部分 Android 會把 .txt 標成其他類型，限制後反而選不到檔案 -->
+        <input type="file" id="save-code-file" onchange="importSaveFromFile(this)" hidden>
         <button class="close-btn" style="margin-top: 12px;" onclick="closeModal('save-code-modal')">關閉</button>
     </div>
 </div>

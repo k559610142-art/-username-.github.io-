@@ -48,6 +48,10 @@ function calcOfflineProgress() {
         msg = `⚔️ 離線於【${player.currentMap.name}】歷練 ${Math.floor(offlineSeconds / 60)} 分鐘，獲得 ${expText}與 ${coinsEarned} 靈石${rescuedCount > 0 ? `，並拯救了 ${rescuedCount} 名受困修士！` : '！'}`;
     }
 
+    // 離線期間的歲月流逝（半速，同樣受底線保護）
+    let aged = ageLifespan(offlineSeconds, LIFESPAN_OFFLINE_RATE);
+    if (aged >= 1) msg += `\n⏳ 歲月流逝，壽元減少 ${formatLifespan(aged)} 年（剩餘 ${formatLifespan(player.lifespan)} 年）。`;
+
     player.lastSaveTime = Date.now();
     addLog(`🌙 ${msg}`, "system");
     setTimeout(() => { alert(`【離線掛機收益結算】\n${msg}`); }, 500);
@@ -166,6 +170,7 @@ function migrateLegacySkills() {
 function applySaveData(data) {
     player = Object.assign(JSON.parse(DEFAULT_PLAYER_JSON), data);
     if (!player.gender) player.gender = "male";
+    player.name = sanitizePlayerName(player.name);   // 別人分享的存檔代碼可能夾帶 HTML，道號會被插進日誌
     if (!player.name) player.name = (player.gender === 'female' ? "南宮婉" : "韓立");
     if (!player.stats.cha) player.stats.cha = 10;
     if (!player.studyCounts) player.studyCounts = { str: 0, con: 0, int: 0, spr: 0 };
@@ -204,14 +209,23 @@ function loadLocal() {
     }
 }
 
-// ---- 存檔代碼（匯出/匯入）----
-// 格式：UTF-8 JSON → Base64。中文字在舊格式（encodeURIComponent）每字變 9 個字元，Base64 只需 4 個，代碼短一半以上。
-// 匯入同時相容：Base64（新）、%7B 開頭的舊格式、直接貼上的 JSON。
-// 以前用 prompt() 顯示與輸入代碼：手機上幾乎無法全選複製 4 萬多字，部分 App 內建瀏覽器更會直接擋掉 prompt，
-// 因此改為 #save-code-modal 視窗（文字框＋複製／下載檔案／從檔案讀取）。
+// 「命運與系統 → 讀取本地存檔」按鈕：沒有存檔時也要給回應（loadLocal 本身在開場時需保持安靜）
+function reloadLocalSave() {
+    if (!loadLocal()) addLog("📂 找不到本地存檔（或存檔已損毀）。", "system");
+}
 
-function encodeSaveCode(obj) {
-    let bytes = new TextEncoder().encode(JSON.stringify(obj));
+// ---- 存檔代碼（匯出/匯入）----
+// 格式（新）："FS2:" + Base64(deflate-raw 壓縮的 UTF-8 JSON)。重度存檔約 4 千字（未壓縮 Base64 約 4 萬字），
+//   可以完整貼進 LINE 等通訊軟體（LINE 單則訊息上限約 1 萬字，過長會被截斷或拆開，導致匯入失敗）。
+//   瀏覽器沒有 CompressionStream（iOS 16.3 以前）時退回未壓縮的 Base64。
+// 匯入相容：FS2 壓縮代碼、未壓縮 Base64、%7B 開頭的最舊版代碼、直接貼上的 JSON。
+// ⚠️ 此視窗內「不使用」alert/confirm/prompt：LINE、Facebook 等 App 內建瀏覽器常會擋掉這些原生對話框，
+//    confirm 被擋時會直接回傳 false，造成「按了確認匯入卻什麼事都沒發生」。所有訊息都顯示在 #save-code-status，
+//    覆蓋進度改為「按兩次確認」。
+
+const SAVE_CODE_PREFIX = "FS2:";
+
+function bytesToBase64(bytes) {
     let binary = "";
     for (let i = 0; i < bytes.length; i += 0x8000) {
         binary += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
@@ -219,55 +233,102 @@ function encodeSaveCode(obj) {
     return btoa(binary);
 }
 
-function decodeSaveCode(code) {
+function base64ToBytes(b64) {
+    return Uint8Array.from(atob(b64.replace(/\s+/g, "")), c => c.charCodeAt(0));
+}
+
+async function pipeBytes(bytes, stream) {
+    return new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(stream)).arrayBuffer());
+}
+
+async function encodeSaveCode(obj) {
+    let bytes = new TextEncoder().encode(JSON.stringify(obj));
+    if (typeof CompressionStream === 'function') {
+        return SAVE_CODE_PREFIX + bytesToBase64(await pipeBytes(bytes, new CompressionStream('deflate-raw')));
+    }
+    return bytesToBase64(bytes);
+}
+
+async function decodeSaveCode(code) {
     let text = (code || "").trim();
+    if (text.startsWith(SAVE_CODE_PREFIX)) {
+        if (typeof DecompressionStream !== 'function') {
+            throw new Error("此瀏覽器版本過舊，無法讀取壓縮存檔代碼，請更新瀏覽器（iOS 需 16.4 以上）後再試。");
+        }
+        let bytes = await pipeBytes(base64ToBytes(text.slice(SAVE_CODE_PREFIX.length)), new DecompressionStream('deflate-raw'));
+        return JSON.parse(new TextDecoder().decode(bytes));
+    }
     if (text.startsWith("{")) return JSON.parse(text);                        // 直接貼 JSON
-    if (text.startsWith("%7B")) return JSON.parse(decodeURIComponent(text));  // 舊版代碼
-    let binary = atob(text.replace(/\s+/g, ""));                              // Base64（允許中間夾換行）
-    let bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
-    return JSON.parse(new TextDecoder().decode(bytes));
+    if (text.startsWith("%7B")) return JSON.parse(decodeURIComponent(text));  // 最舊版代碼
+    return JSON.parse(new TextDecoder().decode(base64ToBytes(text)));         // 未壓縮 Base64
+}
+
+function setSaveCodeStatus(msg, type) {
+    const el = document.getElementById('save-code-status');
+    el.innerText = msg;
+    el.style.color = type === 'error' ? '#ef4444' : (type === 'warn' ? '#facc15' : '#4ade80');
+}
+
+let pendingImportData = null;   // 已解析、等待第二次確認的存檔
+
+function resetImportConfirm() {
+    pendingImportData = null;
+    document.getElementById('save-code-confirm-btn').innerText = "✅ 確認匯入";
 }
 
 function openSaveCodeModal(mode) {
     const isExport = mode === 'export';
     document.getElementById('save-code-title').innerText = isExport ? "📤 匯出存檔代碼" : "📥 匯入存檔代碼";
     document.getElementById('save-code-hint').innerText = isExport
-        ? "請按「複製代碼」後貼到安全的地方保存，或直接下載成檔案。換裝置時用「匯入存檔代碼」還原。"
-        : "請把先前匯出的存檔代碼貼到下方，或選擇下載的存檔檔案，再按「確認匯入」。目前的進度會被覆蓋！";
+        ? "請按「複製代碼」後貼到安全的地方保存（例如傳給自己的 LINE），或下載成檔案。換裝置時用「匯入存檔代碼」還原。"
+        : "請把先前匯出的存檔代碼貼到下方（可按「從剪貼簿貼上」），或選擇存檔檔案，再按「確認匯入」。目前的進度會被覆蓋！";
     document.getElementById('save-code-export-actions').style.display = isExport ? 'flex' : 'none';
     document.getElementById('save-code-import-actions').style.display = isExport ? 'none' : 'flex';
     const box = document.getElementById('save-code-text');
-    box.readOnly = isExport;
+    // 匯出時不用 readOnly：iOS 無法用程式選取 readOnly 文字框，改用 inputmode="none" 避免跳出鍵盤
+    box.readOnly = false;
+    box.setAttribute('inputmode', isExport ? 'none' : 'text');
     box.value = "";
+    setSaveCodeStatus("", "ok");
+    resetImportConfirm();
     document.getElementById('save-code-modal').style.display = 'flex';
     return box;
 }
 
-function exportSave() {
+async function exportSave() {
+    let box = openSaveCodeModal('export');
+    setSaveCodeStatus("產生代碼中…", "warn");
     try {
         player.lastSaveTime = Date.now();
-        let box = openSaveCodeModal('export');
-        box.value = encodeSaveCode(player);
-        document.getElementById('save-code-status').innerText = `代碼長度：${box.value.length.toLocaleString()} 字`;
+        box.value = await encodeSaveCode(player);
+        setSaveCodeStatus(`代碼長度：${box.value.length.toLocaleString()} 字${box.value.startsWith(SAVE_CODE_PREFIX) ? '（已壓縮）' : ''}`, "ok");
     } catch(e) {
-        alert("匯出存檔失敗！");
+        setSaveCodeStatus("匯出存檔失敗：" + e.message, "error");
     }
+}
+
+function selectSaveCodeText() {
+    const box = document.getElementById('save-code-text');
+    box.focus();
+    box.select();
+    box.setSelectionRange(0, box.value.length);   // iOS 需要這行才會全選
 }
 
 function copySaveCode() {
     const box = document.getElementById('save-code-text');
-    const status = document.getElementById('save-code-status');
-    const fallback = () => {
-        box.select();
-        box.setSelectionRange(0, box.value.length);
-        let ok = false;
-        try { ok = document.execCommand('copy'); } catch(e) {}
-        status.innerText = ok ? "✅ 已複製到剪貼簿！" : "⚠️ 無法自動複製，請長按文字框手動全選複製。";
-    };
+    // 先同步嘗試 execCommand（仍在點擊事件內，iOS 舊版只接受這種方式），失敗再用 Clipboard API
+    selectSaveCodeText();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch(e) {}
+    if (ok) { setSaveCodeStatus("✅ 已複製到剪貼簿！", "ok"); return; }
+
     if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(box.value).then(() => { status.innerText = "✅ 已複製到剪貼簿！"; }, fallback);
+        navigator.clipboard.writeText(box.value).then(
+            () => setSaveCodeStatus("✅ 已複製到剪貼簿！", "ok"),
+            () => { selectSaveCodeText(); setSaveCodeStatus("⚠️ 瀏覽器不允許自動複製，文字已全選，請長按文字框選「複製」。", "warn"); }
+        );
     } else {
-        fallback();
+        setSaveCodeStatus("⚠️ 瀏覽器不允許自動複製，文字已全選，請長按文字框選「複製」。", "warn");
     }
 }
 
@@ -277,53 +338,82 @@ function downloadSaveCode() {
     const a = document.createElement('a');
     const stamp = new Date().toISOString().slice(0, 10);
     a.href = URL.createObjectURL(blob);
-    a.download = `凡塵修仙傳存檔_${player.name}_${stamp}.txt`;
+    a.download = `fanchen-save_${stamp}.txt`;   // 檔名用英數字，部分手機瀏覽器遇到中文檔名會變亂碼或下載失敗
     document.body.appendChild(a);
     a.click();
     a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-    document.getElementById('save-code-status').innerText = "✅ 已下載存檔檔案。";
+    // App 內建瀏覽器常不支援下載，無法偵測是否成功，因此只提示「若沒反應請改用複製」
+    setSaveCodeStatus("已送出下載。若沒有出現下載（LINE 等 App 內建瀏覽器不支援），請改用「複製代碼」。", "warn");
 }
 
 function importSave() {
-    openSaveCodeModal('import').focus();
-    document.getElementById('save-code-status').innerText = "";
+    openSaveCodeModal('import');
+}
+
+async function pasteSaveCodeFromClipboard() {
+    if (!navigator.clipboard || !navigator.clipboard.readText) {
+        setSaveCodeStatus("⚠️ 此瀏覽器無法讀取剪貼簿，請長按文字框選「貼上」。", "warn");
+        return;
+    }
+    try {
+        document.getElementById('save-code-text').value = await navigator.clipboard.readText();
+        resetImportConfirm();
+        setSaveCodeStatus("已貼上，請按「確認匯入」。", "ok");
+    } catch(e) {
+        setSaveCodeStatus("⚠️ 無法讀取剪貼簿（可能未允許權限），請長按文字框選「貼上」。", "warn");
+    }
 }
 
 // 「從檔案讀取」：把檔案內容放進文字框，玩家確認後再按「確認匯入」
+// （input 不限制檔案類型：部分 Android 會把 .txt 標成 application/octet-stream，限制後反而選不到）
 function importSaveFromFile(input) {
     const file = input.files && input.files[0];
     if (!file) return;
     const reader = new FileReader();
     reader.onload = () => {
         document.getElementById('save-code-text').value = reader.result;
-        document.getElementById('save-code-status').innerText = `已讀取檔案：${file.name}，請按「確認匯入」。`;
+        resetImportConfirm();
+        setSaveCodeStatus(`已讀取檔案：${file.name}，請按「確認匯入」。`, "ok");
     };
+    reader.onerror = () => setSaveCodeStatus("讀取檔案失敗，請改用貼上代碼。", "error");
     reader.readAsText(file);
     input.value = "";
 }
 
-function confirmImportSave() {
+// 第一次按：解析並顯示存檔資訊；第二次按：真正覆蓋（取代原生 confirm）
+async function confirmImportSave() {
     const code = document.getElementById('save-code-text').value;
-    if (!code.trim()) { alert("請先貼上存檔代碼或選擇存檔檔案！"); return; }
+    const btn = document.getElementById('save-code-confirm-btn');
 
-    let data;
-    try {
-        data = decodeSaveCode(code);
-        if (!data || typeof data !== 'object' || typeof data.realmIndex === 'undefined') throw new Error("存檔結構不符");
-    } catch(e) {
-        alert("「存檔代碼無效」！請確認完整複製了整段代碼（可能只複製到一部分）。");
+    if (!pendingImportData) {
+        if (!code.trim()) { setSaveCodeStatus("請先貼上存檔代碼或選擇存檔檔案！", "error"); return; }
+        let data;
+        try {
+            data = await decodeSaveCode(code);
+            if (!data || typeof data !== 'object' || typeof data.realmIndex === 'undefined') throw new Error("存檔結構不符");
+        } catch(e) {
+            let reason = e.message && e.message.startsWith("此瀏覽器") ? e.message : "請確認完整複製了整段代碼（可能只複製到一部分，或通訊軟體把它拆成好幾則訊息）。";
+            setSaveCodeStatus("「存檔代碼無效」！" + reason, "error");
+            return;
+        }
+        pendingImportData = data;
+        btn.innerText = "⚠️ 再按一次，覆蓋目前進度";
+        setSaveCodeStatus(`讀取到【${sanitizePlayerName(data.name) || '無名修士'}】（${realms[data.realmIndex] || ''}）的存檔。再按一次按鈕即匯入，目前的進度會被覆蓋。`, "warn");
         return;
     }
-    if (!confirm(`即將匯入【${data.name || '無名修士'}】（${realms[data.realmIndex] || ''}）的存檔，目前的進度會被覆蓋。確定匯入？`)) return;
 
+    let data = pendingImportData;
+    let backup = JSON.stringify(player);
     try {
         applySaveData(data);
         saveLocal();   // 立刻寫入本地存檔，避免重新整理後又回到舊進度
+        resetImportConfirm();
         closeModal('save-code-modal');
         addLog("📥 匯入存檔成功！", "system");
-        alert("匯入存檔成功！");
     } catch(e) {
-        alert("匯入存檔失敗：存檔內容有誤。");
+        player = JSON.parse(backup);   // 失敗時還原，不留下半套資料
+        resetImportConfirm();
+        setSaveCodeStatus("匯入存檔失敗：存檔內容有誤。目前進度未受影響。", "error");
     }
 }

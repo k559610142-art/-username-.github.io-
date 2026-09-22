@@ -1,9 +1,61 @@
-// 壽元：突破大境界增加、每次死亡依當前境界扣除，歸零即身死道消（清除存檔重新開始）
+// 壽元：突破大境界增加、歲月自然流逝（有底線）、每次死亡依當前境界扣除，歸零即身死道消（清除存檔重新開始）
 // 數值表見 config-lifespan.js；壽元與戰力無關。
 
 function getDeathLifespanCost() {
     let row = lifespanByRealm[player.realmIndex] || lifespanByRealm[lifespanByRealm.length - 1];
     return row.deathCost;
+}
+
+// 壽元可能有小數（自然流逝），顯示時一律取整數
+function formatLifespan(years) {
+    return Math.floor(years).toLocaleString();
+}
+
+// ---- 歲月流逝 ----
+
+// 自然流逝的底線：剩下「3 次死亡的量」時停止
+function getLifespanFloor() {
+    return getDeathLifespanCost() * LIFESPAN_FLOOR_DEATHS;
+}
+
+// 目前所在地的流逝倍率（安全區 1、野外依危險度加速、渡劫中最快）
+function getAgingMultiplier() {
+    if (inTribulation) return LIFESPAN_TRIBULATION_MULT;
+    let cat = getMapCategoryIndex(player.currentMap.name);
+    return LIFESPAN_DANGER_MULT[cat] || 1;
+}
+
+// 目前每分鐘流逝的年數（未觸底時）
+function getAgingPerMinute() {
+    let row = lifespanByRealm[player.realmIndex] || lifespanByRealm[lifespanByRealm.length - 1];
+    return row.gain / LIFESPAN_AGING_MINUTES * getAgingMultiplier();
+}
+
+let lifespanWarned = { low: false, floor: false };   // 提示只出現一次，壽元回升後重置
+
+// 經過 seconds 秒，以 rateScale 倍速流逝（線上 1、離線 LIFESPAN_OFFLINE_RATE）；回傳實際流逝的年數
+function ageLifespan(seconds, rateScale = 1) {
+    let floor = getLifespanFloor();
+    if (player.lifespan <= floor) { checkLifespanWarnings(); return 0; }
+    let loss = getAgingPerMinute() * (seconds / 60) * rateScale;
+    let before = player.lifespan;
+    player.lifespan = Math.max(floor, player.lifespan - loss);
+    checkLifespanWarnings();
+    return before - player.lifespan;
+}
+
+function checkLifespanWarnings() {
+    let floor = getLifespanFloor();
+    if (player.lifespan > floor * 2) lifespanWarned.low = false;
+    if (player.lifespan > floor) lifespanWarned.floor = false;
+
+    if (player.lifespan <= floor && !lifespanWarned.floor) {
+        lifespanWarned.floor = lifespanWarned.low = true;
+        addLog(`🕯️ 壽元將盡（剩 ${formatLifespan(player.lifespan)} 年）！歲月已停止侵蝕，但再死亡 ${LIFESPAN_FLOOR_DEATHS} 次便身死道消。盡快突破境界或至千寶閣求取壽元丹！`, "combat");
+    } else if (player.lifespan <= floor * 2 && !lifespanWarned.low) {
+        lifespanWarned.low = true;
+        addLog(`⏳ 壽元日漸枯竭（剩 ${formatLifespan(player.lifespan)} 年），歲月無情，請把握時間突破境界！`, "combat");
+    }
 }
 
 // 舊存檔沒有壽元欄位時，依目前境界補上「凡人起累積到現在」的壽元
@@ -18,7 +70,7 @@ function gainRealmLifespan() {
     let row = lifespanByRealm[player.realmIndex];
     if (!row) return;
     player.lifespan += row.gain;
-    addLog(`⏳ 晉升【${row.realm}】，壽元增加 ${row.gain.toLocaleString()} 年！（剩餘 ${player.lifespan.toLocaleString()} 年，此境界每死亡一次折壽 ${row.deathCost} 年）`, "level-up");
+    addLog(`⏳ 晉升【${row.realm}】，壽元增加 ${row.gain.toLocaleString()} 年！（剩餘 ${formatLifespan(player.lifespan)} 年，此境界每死亡一次折壽 ${row.deathCost} 年）`, "level-up");
 }
 
 // 玩家死亡（野外戰死、渡劫失敗）時呼叫：扣壽元、所有靈寵陣亡。
@@ -32,7 +84,7 @@ function handlePlayerDeath() {
         triggerLifespanGameOver();
         return true;
     }
-    addLog(`🕯️ 死裡逃生，折損壽元 ${cost} 年！剩餘壽元 ${player.lifespan.toLocaleString()} 年。`, "combat");
+    addLog(`🕯️ 死裡逃生，折損壽元 ${cost} 年！剩餘壽元 ${formatLifespan(player.lifespan)} 年。`, "combat");
     return false;
 }
 

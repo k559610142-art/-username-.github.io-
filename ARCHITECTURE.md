@@ -57,7 +57,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 |---|------|------|----------------------|------------------------|
 | 1 | `config-realms.js` | `realms` 境界名稱陣列 | 無 | `stats.js`(getNextExp)、`ui.js`、`leveling.js` |
 | 2 | `config-level.js` | `MAX_PLAYER_LEVEL`、`LEVEL_UP_*` 成長值、`LEVEL_EXP_SEGMENTS` 經驗曲線 | 無 | `stats.js`(getLevelExpNeeded、getMaxHp/getMaxMp)、`leveling.js`(gainLevelExp)、`ui.js` |
-| 3 | `config-lifespan.js` | `lifespanByRealm` 各境界壽元增加量與死亡折壽 | 無 | `lifespan.js`、`leveling.js`(轉世重設壽元) |
+| 3 | `config-lifespan.js` | `lifespanByRealm` 各境界壽元增加量與死亡折壽、歲月流逝常數 `LIFESPAN_AGING_MINUTES`/`LIFESPAN_DANGER_MULT`/`LIFESPAN_TRIBULATION_MULT`/`LIFESPAN_OFFLINE_RATE`/`LIFESPAN_FLOOR_DEATHS` | 無 | `lifespan.js`、`leveling.js`(轉世重設壽元) |
 | 4 | `config-maps.js` | `maps` 地圖資料、`monsterIcons` | 無 | `state.js`、`map.js`、`combat.js`、`ui.js` |
 | 5 | `config-sects.js` | `sectData` 宗門與技能表、`SECT_SKILL_BONUS`、`SECT_TIER_NAMES`、`findSectByName()`；尾端迴圈替每招補上 `tier`/`mult` | 無 | `sect.js`、`stats.js`(getSectTier/getAllSkills)、`ui.js`、`save.js`(重新綁定宗門) |
 | 6 | `config-lingbao.js` | `legacySkillAdjustments` 舊版禁術下修數值、`lingbaoTierCosts` 各階段兌換價格、`lingbaoShopItems` 三階段戰略級寶物與武學 | 無 | `lingbao-shop.js`、`equipment.js`(五行說明列固定屬性裝備) |
@@ -77,7 +77,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 20 | `map.js` | `openMapCategoryModal`/`selectMap`/`changeMap` | `maps`、`player`、`ui.js` | `quest.js`(stopQuest 由 changeMap 呼叫)、HTML 按鈕 |
 | 21 | `combat.js` | `combatTick`/`playerAttackTurn`(普攻/技能出手，渡劫共用)/`onPlayerKilledInField`/`checkAutoHealAndMana`/`tryRescueServant` | `player`、`enemies`、`shopItems`、`servantQualities`、`servantNames`、`stats.js`、`elements.js`(resolveHit/tickStatus)、`leveling.js`(gainExp)、`beast-combat.js`(petAssistTick/applyPetDamageReduction)、`lifespan.js`(handlePlayerDeath)、`map.js`(changeMap 死亡回城) | `main.js`(setInterval 每秒呼叫) |
 | 22 | `leveling.js` | `gainExp`/`gainLevelExp`/`advanceRealm`/`triggerReincarnate` | `realms`、`player`、`stats.js`、`beast-combat.js`(gainBeastExp)、`lifespan.js`(gainRealmLifespan) | `combat.js`、`tribulation.js`、`save.js`、HTML 輪迴按鈕 |
-| 23 | `lifespan.js` | `getDeathLifespanCost`/`getInitialLifespanForRealm`/`gainRealmLifespan`/`handlePlayerDeath`/`triggerLifespanGameOver` | `lifespanByRealm`、`player`、`beast-combat.js`(killAllBeasts) | `combat.js`/`tribulation.js`(死亡)、`leveling.js`(突破)、`save.js`(舊存檔)、`ui.js` |
+| 23 | `lifespan.js` | `getDeathLifespanCost`/`formatLifespan`/`getLifespanFloor`/`getAgingMultiplier`/`getAgingPerMinute`/`ageLifespan`/`checkLifespanWarnings`/`getInitialLifespanForRealm`/`gainRealmLifespan`/`handlePlayerDeath`/`triggerLifespanGameOver` | `lifespanByRealm`、`LIFESPAN_*`、`player`、`inTribulation`、`elements.js`(getMapCategoryIndex)、`beast-combat.js`(killAllBeasts) | `combat.js`(每秒 ageLifespan、死亡)、`tribulation.js`(死亡)、`leveling.js`(突破)、`save.js`(離線流逝、舊存檔)、`ui.js`、`auction.js` |
 | 24 | `tribulation.js` | `getTribulationChance`/`formatChance`/`triggerTribulation`/`tribulationTick`/`resolvePlayerFall`/`endTribulation` | `player`、`config-tribulation.js`、`shopItems`(丹藥加成)、`sectData`(技能加成)、`stats.js`、`elements.js`、`combat.js`(playerAttackTurn)、`beast-combat.js`、`lifespan.js`、`leveling.js`(advanceRealm) | `combat.js`(渡劫中接管 tick)、`ui.js`(按鈕顯示勝算)、HTML 渡劫按鈕 |
 | 25 | `sect.js` | `checkSectJoined`/`openSectModal`/`renderSects`/`joinSect` | `sectData`、`player.sect`/`sectSkills` | 幾乎所有「需拜入宗門才能使用」的彈窗（shop/servant/field/beast/lingbao-shop/library/forge/alchemy）都會先呼叫 `checkSectJoined()` |
 | 26 | `shop.js` | `openShopModal`/`renderShop`/`buyShopItem` | `shopItems`、`player`、`sect.js`(checkSectJoined) | HTML 按鈕、`bag.js` 顯示已購買道具 |
@@ -94,10 +94,10 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 37 | `beast.js` | `openBeastModal`/`renderBeasts`/`tameBeast`/`reviveBeast`/`learnBeastSkill` | `beastData`、`player.beastCore`/`coins`/`beasts`、`beast-combat.js`、`stats.js`(getEquipBonus 算魅力折扣) | HTML 按鈕（僅在「演武學宮」顯示） |
 | 38 | `library.js` | `STUDY_COST`/`STUDY_GAIN`/`STUDY_MAX_COUNT`、`openLibraryModal`/`studyBook` | `player.studyCounts`/`martialPoints`/`stats`、`ui.js`(resolveBatchCount) | HTML 按鈕（僅在「後山禁地」顯示） |
 | 39 | `alchemy.js` | `pillRecipes`、`openAlchemyModal`/`craftPill` | `player.herbs`/`stats`/`coins`、`ui.js`(resolveBatchCount) | HTML 按鈕（僅在「後山禁地」顯示） |
-| 40 | `player-profile.js` | `changePlayerName` | `player.name` | HTML 按鈕 |
-| 41 | `save.js` | `calcOfflineProgress`/`saveLocal`/`loadLocal`/`applySaveData`(讀檔與匯入共用)/`resetGameCompletely` + 舊存檔相容 `migrate*()`（含 `migrateLegacySkills`）+ 存檔代碼 `encodeSaveCode`/`decodeSaveCode`/`openSaveCodeModal`/`exportSave`/`copySaveCode`/`downloadSaveCode`/`importSave`/`importSaveFromFile`/`confirmImportSave` | `player`（整包序列化進 `localStorage`）、`leveling.js`(gainExp)、`combat.js`(tryRescueServant)、`lifespan.js`、`beast-combat.js`(createBeast)、`ui.js` | `main.js`(啟動時 loadLocal)、`main.js`(initGame 內每 30 秒 saveLocal) |
+| 40 | `player-profile.js` | `PLAYER_NAME_MAX_LENGTH`、`sanitizePlayerName`(移除 HTML 特殊字元，讀檔/匯入也套用)/`changePlayerName`(開啟 #name-modal)/`confirmPlayerName` | `player.name` | HTML 按鈕、`save.js`(applySaveData) |
+| 41 | `save.js` | `calcOfflineProgress`/`saveLocal`/`loadLocal`/`applySaveData`(讀檔與匯入共用)/`resetGameCompletely` + 舊存檔相容 `migrate*()`（含 `migrateLegacySkills`）+ `reloadLocalSave`(選單按鈕，無存檔時給提示) + 存檔代碼（皆為 async）`encodeSaveCode`/`decodeSaveCode`/`bytesToBase64`/`base64ToBytes`/`pipeBytes`/`openSaveCodeModal`/`setSaveCodeStatus`/`exportSave`/`copySaveCode`/`downloadSaveCode`/`importSave`/`pasteSaveCodeFromClipboard`/`importSaveFromFile`/`confirmImportSave`/`resetImportConfirm` | `player`（整包序列化進 `localStorage`）、`leveling.js`(gainExp)、`combat.js`(tryRescueServant)、`lifespan.js`、`beast-combat.js`(createBeast)、`ui.js` | `main.js`(啟動時 loadLocal)、`main.js`(initGame 內每 30 秒 saveLocal) |
 | 42 | `title-screen.js` | `enterWorld`/`initTitleScreen`、旗標 `worldEntered` | `main.js`(startGame)、`#title-screen` DOM | `main.js`(onload 呼叫 initTitleScreen)、標題頁按鈕 |
-| 43 | `main.js` | `initGame`/`startGame`/`chooseGender`/`window.onload`、旗標 `gameStarted` | 幾乎全部模組（啟動流程的膠水程式碼） | 瀏覽器 `onload`、`title-screen.js`(enterWorld 呼叫 startGame) |
+| 43 | `main.js` | `initGame`(含每 30 秒存檔與切到背景時存檔)/`startGame`/`chooseGender`/`window.onload`、旗標 `gameStarted` | 幾乎全部模組（啟動流程的膠水程式碼） | 瀏覽器 `onload`、`title-screen.js`(enterWorld 呼叫 startGame) |
 
 ## 3. 資料流總覽（文字版流程圖）
 
@@ -154,7 +154,7 @@ combatTick() 每秒執行 [combat.js]
 
 | onclick 呼叫 | 定義檔案 |
 |---|---|
-| `changePlayerName` | `data/player-profile.js` |
+| `changePlayerName`, `confirmPlayerName` | `data/player-profile.js` |
 | `openEquipmentModal`, `unequipItem`, `equipItem`, `forgeEquipment` | `data/equipment.js` |
 | `openMapCategoryModal`, `selectMap` | `data/map.js` |
 | `openSectModal`, `joinSect` | `data/sect.js` |
@@ -171,7 +171,7 @@ combatTick() 每秒執行 [combat.js]
 | `triggerReincarnate` | `data/leveling.js` |
 | `triggerTribulation` | `data/tribulation.js` |
 | `setShopQty`, `setShopQtyMax`, `updateShopTotal` | `data/shop.js` |
-| `resetGameCompletely`, `saveLocal`, `loadLocal`, `exportSave`, `importSave`, `copySaveCode`, `downloadSaveCode`, `importSaveFromFile`, `confirmImportSave` | `data/save.js` |
+| `resetGameCompletely`, `saveLocal`, `reloadLocalSave`, `exportSave`, `importSave`, `copySaveCode`, `downloadSaveCode`, `pasteSaveCodeFromClipboard`, `importSaveFromFile`, `confirmImportSave`, `resetImportConfirm` | `data/save.js` |
 | `updateAutoSettings` | `data/ui.js` |
 | `closeModal`, `toggleDrawer`, `toggleAllBulkQualities` | `data/ui.js` |
 | `bulkDeleteEquipment` | `data/bag.js` |
@@ -466,14 +466,34 @@ combatTick() 每秒執行 [combat.js]
 - `player.lifespan`（年），數值表在 `config-lifespan.js` 的 `lifespanByRealm`（索引對應 `realms`）。
   凡人初始 60 年；`advanceRealm()` 晉升時呼叫 `gainRealmLifespan()` 加上該境界的 `gain`
   （包含築基以前不需渡劫的自動突破）。
-- 壽元**只會因死亡減少**，與戰力、時間流逝無關。死亡點：`combat.js` 野外戰死、`tribulation.js` 渡劫失敗，
-  皆呼叫 `handlePlayerDeath()`：依**當前境界**的 `deathCost` 折壽，並讓所有靈寵陣亡。
+- 壽元會因兩件事減少：**歲月流逝**（有底線，見下方）與**死亡**。與戰力無關。
+  死亡點：`combat.js` 野外戰死、`tribulation.js` 渡劫失敗，皆呼叫 `handlePlayerDeath()`：依**當前境界**的 `deathCost` 折壽，並讓所有靈寵陣亡。
+- **歲月流逝（方案一＋三混合）**：`combatTick()` 每秒呼叫 `ageLifespan(1)`；離線結算呼叫 `ageLifespan(離線秒數, LIFESPAN_OFFLINE_RATE)`。
+  - 每分鐘流逝 = 目前境界的 `gain` ÷ `LIFESPAN_AGING_MINUTES`(360) × 所在地倍率 → 在安全區，一個境界給的壽元約可撐 6 小時線上時間。
+  - 所在地倍率 `LIFESPAN_DANGER_MULT`：安全區 ×1、野外 ×1.5、開放世界 ×2、禁區 ×3、至高戰場 ×4；渡劫中 ×4。離線 ×0.5（倍率依離線時所在地）。
+
+    | 境界（例） | 安全區 | 野外 | 開放世界 | 禁區 | 至高戰場 | 底線 |
+    |---|---|---|---|---|---|---|
+    | 凡人 | 0.17 年/分 | 0.25 | 0.33 | — | — | 3 年 |
+    | 金丹 | 1.39 | 2.08 | 2.78 | — | — | 15 年 |
+    | 渡劫 | 8.33 | 12.5 | 16.7 | — | — | 30 年 |
+    | 大羅金仙 | 55.6 | 83.3 | 111 | 167 | 222 | 150 年 |
+
+  - **底線** `getLifespanFloor()` = 目前境界 `deathCost × LIFESPAN_FLOOR_DEATHS(3)`：剩餘壽元觸底後自然流逝**完全停止**（線上、離線都一樣）。
+    **時間永遠不會直接害死玩家**，只有死亡會；但觸底後再死 3 次就身死道消，形成「越接近底線越不敢冒險」的緊張感。
+  - 提示（`checkLifespanWarnings()`，各只出現一次，壽元回升後重置）：剩餘 ≤ 底線×2 時「壽元日漸枯竭」；觸底時「壽元將盡，再死亡 3 次便身死道消」。
+  - 壽元可能帶小數，所有顯示一律經 `formatLifespan()` 取整數。
+  - 恢復方式：突破境界（加上新境界的 `gain`，底線也會跟著新境界調整）或千寶閣壽元丹。
+  - ⚠️ 平衡注意：壽元丹是固定年數（+10～+100 年），後期境界（例：大羅金仙每分鐘流逝 55 年起）幾乎沒有作用。
+    若後期玩家常卡在底線，可考慮讓壽元丹改為「目前境界 gain 的百分比」。
 - **壽元歸零 → `triggerLifespanGameOver()`**：設 `gameOver = true`（`combatTick()` 停止、`saveLocal()` 不再寫入）、
   刪除 `localStorage` 存檔、跳出提示後重新整理，回到標題畫面以新角色開始。
 - 需求表的「仙王／仙帝」在遊戲中不存在，對應方式：大羅金仙＝仙王（+20000 / -50）、混元大羅金仙＝仙帝（+50000 / -100）；
   需求表沒有的境界補值：仙人初境 +4000 / -15、天仙 +4500 / -15、混沌道祖 +100000 / -200。
 - 轉世輪迴時壽元重設為凡人的 60 年。舊存檔沒有壽元欄位時，依目前境界補上累積值（`getInitialLifespanForRealm()`）。
-- 頂部狀態列 `#lifespan-display` 顯示剩餘壽元；剩餘不足 3 次死亡時轉紅色，滑鼠移上去顯示本境界的折壽量。
+- 頂部狀態列 `#lifespan-display` 顯示剩餘壽元（綠 → 剩餘 ≤ 底線×2 轉黃 → 觸底轉紅），
+  旁邊的 `#lifespan-rate` 顯示目前流逝速度（例「⌛-2.1年/分」，在野外轉橘色；觸底顯示「（歲月已止）」）；
+  滑鼠移上去顯示本境界的折壽量與底線。
 
 ## 16. 靈寵（靈獸園）
 
@@ -581,15 +601,32 @@ combatTick() 每秒執行 [combat.js]
 
 - **介面**：`#save-code-modal` 視窗，取代舊版 `prompt()` 對話框。
   舊版的問題：存檔代碼動輒 3～5 萬字，手機上的 `prompt()` 幾乎無法全選複製，部分 App 內建瀏覽器（LINE、Facebook 等）更會直接擋掉 `prompt()`，導致按了沒反應。
-  - 匯出：文字框顯示代碼＋「📋 複製代碼」（`navigator.clipboard`，失敗時退回選取＋`execCommand('copy')`，再不行提示長按手動複製）
-    ＋「💾 下載存檔檔案」（`凡塵修仙傳存檔_道號_日期.txt`）。
-  - 匯入：貼上代碼或「📂 從檔案讀取」（`FileReader` 把檔案內容放進文字框）→「✅ 確認匯入」（會顯示存檔的道號與境界再次確認）。
-    匯入成功後**立刻 `saveLocal()`**，避免重新整理又回到舊進度。
-- **格式**：`encodeSaveCode()` = UTF-8 JSON → Base64。中文字在舊格式（`encodeURIComponent`）每字 9 個字元、Base64 只需 4 個，
-  實測同一份存檔從 47,527 字縮到 30,972 字（-35%）。`decodeSaveCode()` 相容三種輸入：
-  Base64（新，允許夾雜換行與前後空白）、`%7B` 開頭的舊版代碼、直接貼上的 JSON。
-- **驗證**：解析失敗或缺 `realmIndex` 一律提示「存檔代碼無效」（常見原因是只複製到一部分），不會改動目前進度。
+- ⚠️ **此視窗內禁止使用 `alert`/`confirm`/`prompt`**：App 內建瀏覽器擋掉 `confirm()` 時會直接回傳 false，
+  造成「按了確認匯入卻什麼都沒發生」。所有訊息都寫進 `#save-code-status`（`setSaveCodeStatus(訊息, 'ok'|'warn'|'error')`），
+  覆蓋進度改為**按兩次確認**：第一次按解析代碼並顯示存檔的道號／境界，按鈕變成「⚠️ 再按一次，覆蓋目前進度」；
+  修改文字框內容會重置確認（`resetImportConfirm()`）。
+  - 匯出：文字框顯示代碼＋「📋 複製代碼」＋「💾 下載存檔檔案」。
+    - 複製：先在點擊事件內**同步**執行 `execCommand('copy')`（iOS 舊版只接受這種），失敗才用 `navigator.clipboard`，
+      再失敗就把文字全選並提示長按複製。文字框不設 `readOnly`（iOS 無法用程式選取唯讀文字框），改用 `inputmode="none"` 避免跳出鍵盤。
+    - 下載：檔名 `fanchen-save_日期.txt`（英數字，避免手機瀏覽器中文檔名亂碼）。App 內建瀏覽器常不支援下載且無法偵測，
+      所以只提示「若沒有出現下載，請改用複製」。
+  - 匯入：貼上（或「📋 從剪貼簿貼上」，`navigator.clipboard.readText`）／「📂 從檔案讀取」（`FileReader`；
+    `<input type="file">` **不設 accept**，部分 Android 會把 .txt 標成其他類型導致選不到）→「✅ 確認匯入」按兩次。
+    匯入成功後**立刻 `saveLocal()`**；套用失敗會還原成匯入前的進度。
+- **格式**（`encodeSaveCode`/`decodeSaveCode`，皆為 async）：
+  - 新：`"FS2:"` + Base64(deflate-raw 壓縮的 UTF-8 JSON)，用瀏覽器內建的 `CompressionStream`。
+    實測：100 名僕從＋100 件裝備的存檔，最舊版 47,527 字 → 未壓縮 Base64 約 3～4 萬字 → **壓縮後約 2,000～4,000 字**。
+    **可以完整貼進 LINE**（LINE 單則訊息上限約 1 萬字，過長會被截斷或拆成多則，是手機匯入失敗的主因之一）。
+  - 瀏覽器沒有 `CompressionStream`（iOS 16.3 以前）時自動退回未壓縮 Base64；
+    在這類舊瀏覽器匯入 FS2 代碼會提示「瀏覽器版本過舊，請更新」。
+  - 匯入相容四種輸入：FS2 壓縮代碼、未壓縮 Base64（允許夾雜換行與前後空白）、`%7B` 開頭的最舊版代碼、直接貼上的 JSON。
+- **驗證**：解析失敗或缺 `realmIndex` 一律提示「存檔代碼無效」（常見原因：只複製到一部分、通訊軟體拆成多則訊息），不會改動目前進度。
 - **切換存檔時的清理**：`applySaveData()` 會清空進行中的戰鬥、渡劫與身上狀態（`enemies`/`inTribulation`/`heartDemon`/`playerStatus`），
-  再做離線收益結算。
+  再做離線收益結算；並用 `sanitizePlayerName()` 清理道號（別人分享的代碼可能夾帶 HTML，道號會被插進日誌的 innerHTML）。
+- **手機背景存檔**：`main.js` 的 `initGame()` 在 `visibilitychange`（切到背景）與 `pagehide`（關閉分頁）時立刻 `saveLocal()`。
+  手機瀏覽器常在背景直接結束分頁，只靠 30 秒自動存檔會遺失最後一段進度，重開時像是「讀檔失敗、進度倒退」。
+- **修改道號**（`player-profile.js`）也改用 `#name-modal` 視窗（不用 `prompt()`），最多 12 字，並移除 `< > & " ' \`` 等字元。
+- **仍使用原生對話框的地方**（在 App 內建瀏覽器可能失效）：拜入宗門、渡劫、靈寶閣兌換、轉世、完全重置等的 `confirm()` 確認，
+  以及各處資源不足的 `alert()` 提示。若玩家回報這些按鈕在 LINE 內沒反應，比照本節改為視窗內確認。
 
 
