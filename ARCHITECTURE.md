@@ -11,7 +11,9 @@
 index.html            唯一的 HTML 進入點：畫面結構、CSS（含手機 RWD，見第 6 節）、
                       彈窗(modal) DOM、<script src> 載入清單
                       ※ 檔名必須是 index.html（GitHub Pages 只把 index.html 當作預設首頁）
-images/               圖片素材（cover.jpg：主頁標題畫面用的封面圖，1264x843）
+images/               圖片素材
+  cover.jpg           主頁封面・橫式（1264x843），電腦與橫向螢幕使用
+  cover-portrait.jpg  主頁封面・直式（960x1706），手機直向使用（由橫式圖重新構圖而成）
 data/                 所有遊戲邏輯與資料，依「設定資料 / 執行狀態 / 功能模組 / 進入點」分層
   config-*.js         純資料表（不含函式，無副作用），可視為遊戲的「設計數值表」
                       （含 config-quests.js：任務名稱與獎勵，顯示與發放共用同一份）
@@ -196,18 +198,33 @@ combatTick() 每秒執行 [combat.js]
 ## 9. 遊戲主頁（標題畫面）
 
 - 畫面結構在 `index.html` 的 `#title-screen`，樣式集中在 `<style>` 內同名的區塊，邏輯在 `data/title-screen.js`。
-- `<body>` 出廠時就帶著 `class="title-mode"`（CSS 會隱藏 `#game-container`），
-  避免遊戲畫面在 JS 執行前閃一下；`enterWorld()` 會移除這個 class。
+- **滿版呈現**：封面 `#title-art` 使用 `position: absolute; inset: 0` + `object-fit: cover`，
+  一定填滿整個視窗，不會有任何未覆蓋區域。
+- **橫式／直式兩張封面**：用 `<picture>` + `media="(max-aspect-ratio: 3/4)"` 自動切換，
+  直式螢幕（手機）載入 `images/cover-portrait.jpg`，其餘載入 `images/cover.jpg`。
+  直式版是把橫式原圖縮到滿版寬度後置中，上方用原圖雲層、下方用原圖草木做羽化延伸而成，
+  因此手機上角色與標題都完整可見，不會被 `cover` 裁掉。
+- **唯一進入點**：畫面中央光環上的透明按鈕 `#title-hotspot`，除此之外沒有其他按鈕或提示文字。
+- **熱區如何對準光環**：因為 `cover` 會裁切，無法用固定百分比對齊，
+  改由 `positionTitleHotspot()` 依 cover 縮放公式即時計算：
+  `scale = max(容器寬/圖片寬, 容器高/圖片高)`，再加上置中裁切的位移量，
+  把「該圖原始座標」換算成螢幕像素。兩張圖各有一組座標：
+
+  | 圖片 | 尺寸 | 光環座標 (x, y, w, h) |
+  |---|---|---|
+  | `cover.jpg` | 1264 × 843 | 652, 527, 330, 290 |
+  | `cover-portrait.jpg` | 960 × 1706 | 495, 880, 251, 220 |
+
+  `currentTitleHotspot()` 依 `img.currentSrc` 判斷目前載入哪張圖來選用對應座標；
+  `positionTitleHotspot()` 會在圖片 `load`、`resize`、`orientationchange` 時重算
+  （`<picture>` 切換來源時也會觸發 `load`，所以跨斷點縮放會自動校正）。
+  ※ 若日後更換封面圖，只需重新量測光環座標並改 `TITLE_HOTSPOTS`，其餘不必動。
 - **啟動時機**：`window.onload` 只呼叫 `initTitleScreen()`，**不會**直接開始遊戲。
-  讀檔、性別選擇、離線收益結算全部延後到玩家點擊「進入世界」後才執行（`main.js` 的 `startGame()`），
+  讀檔、性別選擇、離線收益結算全部延後到玩家點擊後才執行（`main.js` 的 `startGame()`），
   所以玩家不會一打開網頁就被 `prompt()` 攔住。
-- **光環熱區的對齊方式**：`#title-art-wrap` 用 `display: inline-block` 緊貼圖片實際尺寸，
-  熱區 `#title-hotspot` 再以**百分比**定位（`left: 51.6%; top: 62.5%`，對應原圖 1264×843 的 (652, 527)）。
-  因此圖片不論縮放到多大都能精準對齊，不需要任何 JS 計算座標。
-  ※ 若日後更換 `images/cover.jpg`，必須重新量測光環中心並調整這組百分比。
-- 圖片未填滿的區域，由 `#title-screen::before` 用同一張圖模糊放大填滿，避免出現死黑邊。
-- 進入方式有三種：點光環熱區、點「進入世界」按鈕、按 Enter 或空白鍵；
-  `worldEntered` 旗標確保只會觸發一次（避免重複 `setInterval`）。
+- `<body>` 出廠時就帶著 `class="title-mode"`（CSS 會隱藏 `#game-container` 並鎖住捲動），
+  避免遊戲畫面在 JS 執行前閃一下；`enterWorld()` 會移除這個 class。
+- `worldEntered` 旗標確保只會觸發一次（避免重複建立 `setInterval`）。
 
 ## 10. 門派任務與僕從派遣
 
