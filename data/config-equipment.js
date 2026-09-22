@@ -10,7 +10,7 @@ const equipTypes = {
 // 背包裝備上限（不含已穿戴的）：已滿時無法鍛造、購買、卸下裝備（舊存檔超過上限的不會被刪除）
 const MAX_EQUIP_INVENTORY = 100;
 
-// 不可在鍛造閣打造的部位（神器另有取得方式，後續再實作）
+// 不可在鍛造閣打造的部位（神器只能於靈寶閣高級宗門兌換）
 const NON_FORGEABLE_SLOTS = ["神器"];
 
 // 五行屬性列表（鍛造隨機抽取，集齊 17 件同屬性裝備可觸發五行法陣）
@@ -42,10 +42,14 @@ const wuxingArrayEffects = {
 };
 
 // 裝備品質等級：倍率影響鍛造屬性加成，color 供 UI 顯示使用
+// 戰鬥屬性（單位 %，見 config-elements.js）：
+//   def   = 防具每件的減傷      （6 件防具全橙 = 24%）
+//   eva   = 飾品每件的閃避      （5 件飾品全橙 = 15%）
+//   affix = 武器隨機一種屬性傷害（冰/火/毒/金）的觸發率；同種屬性可疊加，上限 AFFIX_CAP
 const equipQualities = [
-    { name: "白色", mult: 1, color: "#ffffff" },
-    { name: "綠色", mult: 2, color: "#4ade80" },
-    { name: "藍色", mult: 3, color: "#38bdf8" },
-    { name: "紫色", mult: 5, color: "#c084fc" },
-    { name: "橙色", mult: 8, color: "#fb923c" }
+    { name: "白色", mult: 1, color: "#ffffff", def: 1, eva: 0.5, affix: 2 },
+    { name: "綠色", mult: 2, color: "#4ade80", def: 1.5, eva: 1, affix: 3 },
+    { name: "藍色", mult: 3, color: "#38bdf8", def: 2, eva: 1.5, affix: 5 },
+    { name: "紫色", mult: 5, color: "#c084fc", def: 3, eva: 2, affix: 7 },
+    { name: "橙色", mult: 8, color: "#fb923c", def: 4, eva: 3, affix: 10 }
 ];

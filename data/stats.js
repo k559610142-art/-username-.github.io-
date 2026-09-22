@@ -1,15 +1,15 @@
 // 屬性計算：裝備加成、五行法陣判定、戰力/氣血/靈力/升級門檻公式
 
+// 加總所有已穿戴裝備的屬性：四維＋魅力，以及戰鬥屬性（減傷/閃避/冰火毒金，單位 %，見 config-elements.js）
+const EQUIP_STAT_KEYS = ["str", "con", "int", "spr", "cha", "def", "eva", "ice", "fire", "poison", "metal"];
+
 function getEquipBonus() {
-    let bonus = { str: 0, con: 0, int: 0, spr: 0, cha: 0 };
+    let bonus = {};
+    EQUIP_STAT_KEYS.forEach(k => { bonus[k] = 0; });
     for (let key in player.equipment) {
         let eq = player.equipment[key];
-        if (eq) {
-            bonus.str += eq.stats.str || 0;
-            bonus.con += eq.stats.con || 0;
-            bonus.int += eq.stats.int || 0;
-            bonus.spr += eq.stats.spr || 0;
-            bonus.cha += eq.stats.cha || 0;
+        if (eq && eq.stats) {
+            EQUIP_STAT_KEYS.forEach(k => { bonus[k] += eq.stats[k] || 0; });
         }
     }
     return bonus;

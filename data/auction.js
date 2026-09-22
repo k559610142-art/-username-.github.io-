@@ -61,12 +61,8 @@ function rollAuctionEquip() {
     const category = equipTypes[slotName];
     const element = wuxingElements[Math.floor(Math.random() * wuxingElements.length)];
 
-    // 比照鍛造閣公式，但整體高一成，凸顯拍賣場的價值
-    const baseBonus = Math.floor((player.realmIndex + 1) * 11 * qualityObj.mult);
-    const stats = { str: 0, con: 0, int: 0, spr: 0, cha: 0 };
-    if (category === 'weapon') { stats.str = baseBonus; stats.spr = baseBonus; }
-    else if (category === 'armor') { stats.con = baseBonus * 2; }
-    else { stats.int = baseBonus; stats.spr = baseBonus; stats.cha = Math.floor(baseBonus / 2); }
+    // 比照鍛造閣公式（含減傷/閃避/屬性傷害），但四維整體高一成，凸顯拍賣場的價值
+    const stats = generateEquipStats(category, qualityObj, Math.floor((player.realmIndex + 1) * 11 * qualityObj.mult));
 
     return {
         id: Date.now() + "_" + Math.floor(Math.random() * 100000),
@@ -155,7 +151,7 @@ function renderAuction() {
             <div class="card" style="border-color: ${item.sold ? 'rgba(255,255,255,0.07)' : 'var(--accent)'}; opacity: ${item.sold ? 0.45 : 1};">
                 <h3 class="quality-${eq.quality}">${eq.name}</h3>
                 <p style="font-size: 0.82em; color: #9ca3af;">品質: <span class="quality-${eq.quality}">${eq.quality}</span> | 屬性: <span class="elem-${eq.element}">${eq.element}</span></p>
-                <p style="font-size: 0.78em; color: #facc15;">加成: 力量+${eq.stats.str}, 體質+${eq.stats.con}, 悟性+${eq.stats.int}, 靈力+${eq.stats.spr}, 魅力+${eq.stats.cha}</p>
+                <p style="font-size: 0.78em; color: #facc15;">加成: ${formatEquipStats(eq.stats)}</p>
                 <p style="font-size: 0.85em; color: var(--accent); margin: 6px 0;">價格：${item.price.toLocaleString()} 靈石</p>
                 <button class="shop-btn" ${item.sold ? 'disabled' : ''} onclick="buyAuctionItem('${item.id}')">
                     ${item.sold ? '已售出' : '標下'}

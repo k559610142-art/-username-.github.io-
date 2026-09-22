@@ -62,8 +62,11 @@ function triggerTribulation() {
         maxHp: demonHp,
         hp: demonHp,
         buffTimer: 0,
-        buffMult: 1
+        buffMult: 1,
+        attrs: getPlayerCombatAttrs(),   // 鏡像：與玩家相同的減傷/閃避/屬性傷害
+        status: newStatus()
     };
+    playerStatus = newStatus();
 
     addLog(`☯️ 【渡劫開始】天地變色，心魔自你識海中走出，化作與你一模一樣的魔身！（勝算 ${formatChance(chance.total)}｜戰力 ${demonPower.toLocaleString()}／氣血 ${demonHp.toLocaleString()}）`, "reincarnate");
     document.getElementById('combat-status').innerText = `☯️ 渡劫中：與心魔生死對決！`;
@@ -77,43 +80,27 @@ function tribulationTick() {
 
     checkAutoHealAndMana();
 
-    // ---- 玩家出手：與一般戰鬥相同的技能判定 ----
-    let usedSkill = false;
-    let availableSkills = getAllSkills();
-
-    if (availableSkills.length > 0 && Math.random() < 0.4) {
-        let skill = availableSkills[Math.floor(Math.random() * availableSkills.length)];
-        if (player.mp >= skill.mpCost) {
-            player.mp -= skill.mpCost;
-            usedSkill = true;
-
-            let skillDmg = skill.dmgType === 'mag' ? getMagAttack() * skill.mult : getPhysAttack() * skill.mult;
-            let wuxing = getWuxingBuff();
-            if (wuxing.type === "金") skillDmg *= 1.2;
-
-            if (skill.type === "heal") {
-                player.hp = Math.min(player.maxHp, player.hp + player.maxHp * skill.mult);
-                addLog(skill.msg + ` (消耗 ${skill.mpCost} MP)`, "heal");
-            } else if (skill.type === "buff") {
-                player.buffTimer = skill.duration;
-                player.buffMult = skill.mult;
-                addLog(skill.msg + ` (消耗 ${skill.mpCost} MP)`, "skill");
-            } else {
-                // 渡劫為一對一，範圍技與單體技同樣只打在心魔身上
-                addLog(skill.msg + ` (消耗 ${skill.mpCost} MP)`, "skill");
-                heartDemon.hp -= skillDmg;
-            }
-        } else {
-            addLog(`💦 靈力不足 (需 ${skill.mpCost} MP)，無法施展【${skill.name}】，改以普通攻擊迎敵！`, "skill");
-        }
+    // ---- 玩家回合：自身持續傷害 → 凍結判定 → 出手（與野外相同，範圍技也只打心魔）----
+    let selfTick = tickStatus(playerStatus);
+    if (selfTick.dot > 0) {
+        player.hp -= selfTick.dot;
+        addLog(`🩸 身上的異常狀態發作，損失 ${selfTick.dot.toLocaleString()} 點氣血！`, "combat");
+        if (player.hp <= 0) { resolvePlayerFall(); return; }
     }
 
-    if (!usedSkill) {
-        heartDemon.hp -= getPhysAttack();
-    }
+    let tags = [];
+    if (selfTick.frozen) addLog(`❄️ 你被心魔凍結，本回合無法行動！`, "combat");
+    else playerAttackTurn(getAllSkills(), [heartDemon], tags);
 
     // 靈寵協助（渡劫為一對一，群體技能也只打在心魔身上）
     petAssistTick([heartDemon]);
+
+    // 心魔身上的燒傷/中毒發作
+    let demonTick = tickStatus(heartDemon.status);
+    heartDemon.hp -= demonTick.dot;
+    if (tags.length > 0 || demonTick.dot > 0) {
+        addLog(`✨ 屬性效果：${[tags.length ? summarizeTags(tags, "💨被心魔閃避") : '', demonTick.dot ? `心魔受持續傷害 ${demonTick.dot.toLocaleString()}` : ''].filter(Boolean).join("｜")}`, "skill");
+    }
 
     if (heartDemon.hp <= 0) {
         if (!tribulationFatedWin) {
@@ -125,7 +112,12 @@ function tribulationTick() {
         return;
     }
 
-    // ---- 心魔出手 ----
+    // ---- 心魔回合（被凍結則跳過）----
+    if (demonTick.frozen) {
+        addLog(`❄️ 心魔被凍結，本回合無法出手！`, "skill");
+        updateUI();
+        return;
+    }
     if (heartDemon.buffTimer > 0) heartDemon.buffTimer--;
     let demonBase = heartDemon.attack * (heartDemon.buffTimer > 0 ? heartDemon.buffMult : 1);
     let demonDmg = demonBase;
@@ -147,25 +139,31 @@ function tribulationTick() {
         }
     }
 
-    player.hp -= applyPetDamageReduction(demonDmg);
+    // 心魔是你的鏡像，帶有與你相同的減傷/閃避/屬性傷害
+    let r = resolveHit(demonDmg, { attrs: heartDemon.attrs, power: heartDemon.attack }, { attrs: getPlayerCombatAttrs(), status: playerStatus });
+    if (r.tags.length > 0) addLog(`🧍 心魔攻勢：${summarizeTags(r.tags, "💨你閃避了")}`, "combat");
+    player.hp -= applyPetDamageReduction(r.dmg);
 
-    if (player.hp <= 0) {
-        if (tribulationFatedWin) {
-            player.hp = 1;
-            addLog(`⚡ 生死一線，你道心通明、絕處逢生，斬出最後一劍將心魔劈散！`, "level-up");
-            endTribulation(true);
-            return;
-        }
-        endTribulation(false);
-        return;
-    }
+    if (player.hp <= 0) { resolvePlayerFall(); return; }
 
     updateUI();
+}
+
+// 玩家氣血歸零：依天命判定「絕處逢生」或「渡劫失敗」
+function resolvePlayerFall() {
+    if (tribulationFatedWin) {
+        player.hp = 1;
+        addLog(`⚡ 生死一線，你道心通明、絕處逢生，斬出最後一劍將心魔劈散！`, "level-up");
+        endTribulation(true);
+        return;
+    }
+    endTribulation(false);
 }
 
 function endTribulation(success) {
     inTribulation = false;
     heartDemon = null;
+    playerStatus = newStatus();
 
     if (success) {
         player.pendingTribulation = false;

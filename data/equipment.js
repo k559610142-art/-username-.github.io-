@@ -35,16 +35,16 @@ function renderLingbaoUI() {
                 <div class="card" style="border-color: var(--equip-color);">
                     <h3 class="quality-${eq.quality}">${eq.name}</h3>
                     <p style="font-size:0.85em; color:#9ca3af;">品質：<span class="quality-${eq.quality}">${eq.quality}</span> | 屬性：<span class="elem-${eq.element}">${eq.element}</span></p>
-                    <p style="font-size:0.8em; color:#facc15;">加成: 力量+${eq.stats.str||0}, 體質+${eq.stats.con||0}, 悟性+${eq.stats.int||0}, 靈力+${eq.stats.spr||0}, 魅力+${eq.stats.cha||0}</p>
+                    <p style="font-size:0.8em; color:#facc15;">加成: ${formatEquipStats(eq.stats)}</p>
                     <button class="sys-btn" onclick="unequipItem('${eqName}')">卸下裝備</button>
                 </div>`;
         } else {
-            // 神器為特殊部位，取得方式後續再實作，欄位先以金色標示
+            // 神器為特殊部位（靈寶閣高級宗門兌換，不計入五行法陣），欄位以金色標示
             let isArtifact = equipTypes[eqName] === 'artifact';
             container.innerHTML += `
                 <div class="card" style="border-color: ${isArtifact ? 'rgba(240,213,136,0.45)' : 'rgba(255,255,255,0.05)'}; color: #6b7280; background: rgba(10,14,22,0.3);">
                     <h3 style="${isArtifact ? 'color: var(--accent);' : ''}">${isArtifact ? '✨ ' : ''}${eqName}</h3>
-                    <p style="font-size:0.85em;">${isArtifact ? '(尚未開放取得)' : '(未裝備)'}</p>
+                    <p style="font-size:0.85em;">${isArtifact ? '(未裝備・可於靈寶閣高級宗門兌換)' : '(未裝備)'}</p>
                 </div>`;
         }
     }
@@ -74,7 +74,7 @@ function openWuxingInfo() {
         </tr>`;
     }).join('');
 
-    let fixedEquips = lingbaoShopItems.filter(i => i.type === 'equip')
+    let fixedEquips = lingbaoShopItems.filter(i => i.type === 'equip' && i.itemData.category !== 'artifact')
         .map(i => `${i.name}（<span class="elem-${i.itemData.element}">${i.itemData.element}</span>）`).join('、');
 
     document.getElementById('wuxing-info-body').innerHTML = `
@@ -104,6 +104,11 @@ function equipItem(equipId) {
 
     let item = player.equipInventory[index];
     let slotName = item.name;
+    // 舊版靈寶閣「降魔伏虎杖」的部位「杖」不在 equipTypes 內，穿上會破壞五行法陣判定
+    if (!(slotName in equipTypes)) {
+        alert(`【${item.name}】的部位已停用，無法穿戴。可在背包中毀棄。`);
+        return;
+    }
 
     if (player.equipment[slotName]) {
         player.equipInventory.push(player.equipment[slotName]);
@@ -167,6 +172,25 @@ function forgeEquipment(qty = 1) {
     updateUI();
 }
 
+// 依部位分類與品質產生裝備屬性（鍛造閣與千寶閣共用）
+//   武器：力量、靈力 + 隨機一種屬性傷害（冰/火/毒/金）
+//   防具：體質 + 減傷
+//   飾品：悟性、靈力、魅力 + 閃避
+function generateEquipStats(category, qualityObj, baseBonus) {
+    let stats = { str: 0, con: 0, int: 0, spr: 0, cha: 0 };
+    if (category === 'weapon') {
+        stats.str = baseBonus; stats.spr = baseBonus;
+        stats[AFFIX_TYPES[Math.floor(Math.random() * AFFIX_TYPES.length)]] = qualityObj.affix;
+    } else if (category === 'armor') {
+        stats.con = baseBonus * 2;
+        stats.def = qualityObj.def;
+    } else {
+        stats.int = baseBonus; stats.spr = baseBonus; stats.cha = Math.floor(baseBonus / 2);
+        stats.eva = qualityObj.eva;
+    }
+    return stats;
+}
+
 // 打造一件裝備並放進背包（扣靈石），回傳新裝備
 function forgeOneEquipment(name) {
     player.coins -= FORGE_COST;
@@ -180,13 +204,7 @@ function forgeOneEquipment(name) {
     else if (qRand < 0.65) qualityObj = equipQualities[1];
 
     let elem = wuxingElements[Math.floor(Math.random() * wuxingElements.length)];
-
-    let baseBonus = (player.realmIndex + 1) * 10 * qualityObj.mult;
-    let statsBonus = { str: 0, con: 0, int: 0, spr: 0, cha: 0 };
-
-    if (category === 'weapon') { statsBonus.str = baseBonus; statsBonus.spr = baseBonus; }
-    else if (category === 'armor') { statsBonus.con = baseBonus * 2; }
-    else { statsBonus.int = baseBonus; statsBonus.spr = baseBonus; statsBonus.cha = Math.floor(baseBonus / 2); }
+    let statsBonus = generateEquipStats(category, qualityObj, (player.realmIndex + 1) * 10 * qualityObj.mult);
 
     let newEquip = {
         // 連續開爐會在同一毫秒產生多件，隨機段需夠長以免 id 重複

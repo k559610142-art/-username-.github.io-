@@ -86,6 +86,16 @@ function migrateEquipmentSlots() {
     for (let slot in equipTypes) {
         if (!(slot in player.equipment)) player.equipment[slot] = null;
     }
+    // 舊版靈寶閣「降魔伏虎杖」的部位是不存在的「杖」，穿上會多出一格，卸下後留下的空格會讓五行法陣永遠無法達成。
+    // 移除 equipTypes 以外的部位，原本穿著的裝備退回背包（不受背包上限限制，避免物品消失）。
+    for (let slot in player.equipment) {
+        if (slot in equipTypes) continue;
+        if (player.equipment[slot]) {
+            if (!Array.isArray(player.equipInventory)) player.equipInventory = [];
+            player.equipInventory.push(player.equipment[slot]);
+        }
+        delete player.equipment[slot];
+    }
 }
 
 // 舊存檔相容：補上活動相關欄位（每日任務／千寶閣）
@@ -104,6 +114,7 @@ function migrateProgressionFields(savedData) {
     if (typeof player.level !== 'number' || player.level < 1) player.level = 1;
     if (typeof player.levelExp !== 'number') player.levelExp = 0;
     if (typeof savedData.lifespan !== 'number') player.lifespan = getInitialLifespanForRealm(player.realmIndex);
+    if (!Array.isArray(savedData.lingbaoSold)) player.lingbaoSold = [];
 
     // 存檔內的 player.sect 是舊版整包物件，改指向最新設定，技能/倍率調整才會生效
     if (!player.sectSkills || typeof player.sectSkills !== 'object') player.sectSkills = { 1: null, 2: null, 3: null };
@@ -139,86 +150,180 @@ function saveLocal() {
     addLog("💾 遊戲存檔成功！", "system");
 }
 
+// 舊版靈寶閣禁術（大羅天經／神魔九變）下修到新標準，數值見 config-lingbao.js 的 legacySkillAdjustments。
+// 每次讀檔都套用（結果固定，重複套用不會越改越低）
+function migrateLegacySkills() {
+    if (!Array.isArray(player.learnedSkills)) { player.learnedSkills = []; return; }
+    player.learnedSkills.forEach(sk => {
+        let fix = legacySkillAdjustments[sk.name];
+        if (fix) Object.assign(sk, fix);
+    });
+}
+
+// 讀檔與匯入共用：合併預設值 → 各項舊存檔相容 → 清除執行期戰鬥狀態 → 離線收益結算 → 更新畫面
+// ⚠️ 必須合併到「全新角色的預設值」（DEFAULT_PLAYER_JSON），不能合併到目前的 player：
+//    否則遊戲中匯入缺欄位的舊存檔，會沿用目前角色的等級、宗門技能、靈寶閣購買紀錄等。
+function applySaveData(data) {
+    player = Object.assign(JSON.parse(DEFAULT_PLAYER_JSON), data);
+    if (!player.gender) player.gender = "male";
+    if (!player.name) player.name = (player.gender === 'female' ? "南宮婉" : "韓立");
+    if (!player.stats.cha) player.stats.cha = 10;
+    if (!player.studyCounts) player.studyCounts = { str: 0, con: 0, int: 0, spr: 0 };
+    if (typeof player.pendingTribulation !== 'boolean') player.pendingTribulation = false;
+    if (!player.tribulationCount) player.tribulationCount = 0;
+    // 舊存檔可能在築基以前就被標記待渡劫，依現行規則清除
+    if (player.pendingTribulation && player.realmIndex < TRIBULATION_MIN_REALM_INDEX) player.pendingTribulation = false;
+    migrateServantAssignments();
+    migrateEquipmentSlots();
+    migrateActivityFields();
+    migrateProgressionFields(data);
+    migrateLegacySkills();
+
+    // 換了一份存檔，原本進行中的戰鬥、渡劫、身上狀態都不該延續
+    enemies = [];
+    respawnTimer = 0;
+    inTribulation = false;
+    heartDemon = null;
+    playerStatus = newStatus();
+
+    calcOfflineProgress();
+    updateUI();
+    updateSectFacilitiesUI();
+}
+
 function loadLocal() {
     let save = localStorage.getItem('xiuxian_save');
-    if (save) {
-        try {
-            let data = JSON.parse(save);
-            player = Object.assign({}, player, data);
-            if (!player.gender) player.gender = "male";
-            if (!player.name) player.name = (player.gender === 'female' ? "南宮婉" : "韓立");
-            if (!player.stats.cha) player.stats.cha = 10;
-            if (!player.studyCounts) player.studyCounts = { str: 0, con: 0, int: 0, spr: 0 };
-            if (typeof player.pendingTribulation !== 'boolean') player.pendingTribulation = false;
-            if (!player.tribulationCount) player.tribulationCount = 0;
-            // 舊存檔可能在築基以前就被標記待渡劫，依現行規則清除
-            if (player.pendingTribulation && player.realmIndex < TRIBULATION_MIN_REALM_INDEX) player.pendingTribulation = false;
-            migrateServantAssignments();
-            migrateEquipmentSlots();
-            migrateActivityFields();
-            migrateProgressionFields(data);
-
-            // 讀取成功後觸發離線補償計算
-            calcOfflineProgress();
-
-            updateUI();
-            updateSectFacilitiesUI();
-            addLog("📂 成功讀取本地存檔！", "system");
-            return true;
-        } catch(e) {
-            alert("本地存檔格式損毀！");
-            return false;
-        }
-    } else {
+    if (!save) return false;
+    try {
+        applySaveData(JSON.parse(save));
+        addLog("📂 成功讀取本地存檔！", "system");
+        return true;
+    } catch(e) {
+        alert("本地存檔格式損毀！");
         return false;
     }
+}
+
+// ---- 存檔代碼（匯出/匯入）----
+// 格式：UTF-8 JSON → Base64。中文字在舊格式（encodeURIComponent）每字變 9 個字元，Base64 只需 4 個，代碼短一半以上。
+// 匯入同時相容：Base64（新）、%7B 開頭的舊格式、直接貼上的 JSON。
+// 以前用 prompt() 顯示與輸入代碼：手機上幾乎無法全選複製 4 萬多字，部分 App 內建瀏覽器更會直接擋掉 prompt，
+// 因此改為 #save-code-modal 視窗（文字框＋複製／下載檔案／從檔案讀取）。
+
+function encodeSaveCode(obj) {
+    let bytes = new TextEncoder().encode(JSON.stringify(obj));
+    let binary = "";
+    for (let i = 0; i < bytes.length; i += 0x8000) {
+        binary += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+    }
+    return btoa(binary);
+}
+
+function decodeSaveCode(code) {
+    let text = (code || "").trim();
+    if (text.startsWith("{")) return JSON.parse(text);                        // 直接貼 JSON
+    if (text.startsWith("%7B")) return JSON.parse(decodeURIComponent(text));  // 舊版代碼
+    let binary = atob(text.replace(/\s+/g, ""));                              // Base64（允許中間夾換行）
+    let bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
+    return JSON.parse(new TextDecoder().decode(bytes));
+}
+
+function openSaveCodeModal(mode) {
+    const isExport = mode === 'export';
+    document.getElementById('save-code-title').innerText = isExport ? "📤 匯出存檔代碼" : "📥 匯入存檔代碼";
+    document.getElementById('save-code-hint').innerText = isExport
+        ? "請按「複製代碼」後貼到安全的地方保存，或直接下載成檔案。換裝置時用「匯入存檔代碼」還原。"
+        : "請把先前匯出的存檔代碼貼到下方，或選擇下載的存檔檔案，再按「確認匯入」。目前的進度會被覆蓋！";
+    document.getElementById('save-code-export-actions').style.display = isExport ? 'flex' : 'none';
+    document.getElementById('save-code-import-actions').style.display = isExport ? 'none' : 'flex';
+    const box = document.getElementById('save-code-text');
+    box.readOnly = isExport;
+    box.value = "";
+    document.getElementById('save-code-modal').style.display = 'flex';
+    return box;
 }
 
 function exportSave() {
     try {
         player.lastSaveTime = Date.now();
-        let jsonStr = JSON.stringify(player);
-        let code = encodeURIComponent(jsonStr);
-        prompt("請複製以下存檔代碼：", code);
+        let box = openSaveCodeModal('export');
+        box.value = encodeSaveCode(player);
+        document.getElementById('save-code-status').innerText = `代碼長度：${box.value.length.toLocaleString()} 字`;
     } catch(e) {
         alert("匯出存檔失敗！");
     }
 }
 
+function copySaveCode() {
+    const box = document.getElementById('save-code-text');
+    const status = document.getElementById('save-code-status');
+    const fallback = () => {
+        box.select();
+        box.setSelectionRange(0, box.value.length);
+        let ok = false;
+        try { ok = document.execCommand('copy'); } catch(e) {}
+        status.innerText = ok ? "✅ 已複製到剪貼簿！" : "⚠️ 無法自動複製，請長按文字框手動全選複製。";
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(box.value).then(() => { status.innerText = "✅ 已複製到剪貼簿！"; }, fallback);
+    } else {
+        fallback();
+    }
+}
+
+function downloadSaveCode() {
+    const text = document.getElementById('save-code-text').value;
+    const blob = new Blob([text], { type: "text/plain" });
+    const a = document.createElement('a');
+    const stamp = new Date().toISOString().slice(0, 10);
+    a.href = URL.createObjectURL(blob);
+    a.download = `凡塵修仙傳存檔_${player.name}_${stamp}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    document.getElementById('save-code-status').innerText = "✅ 已下載存檔檔案。";
+}
+
 function importSave() {
-    let code = prompt("請貼上存檔代碼：");
-    if (code) {
-        try {
-            let jsonStr = decodeURIComponent(code.trim());
-            let data = JSON.parse(jsonStr);
+    openSaveCodeModal('import').focus();
+    document.getElementById('save-code-status').innerText = "";
+}
 
-            if (!data || typeof data !== 'object' || typeof data.realmIndex === 'undefined') {
-                throw new Error("存檔結構不符");
-            }
+// 「從檔案讀取」：把檔案內容放進文字框，玩家確認後再按「確認匯入」
+function importSaveFromFile(input) {
+    const file = input.files && input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+        document.getElementById('save-code-text').value = reader.result;
+        document.getElementById('save-code-status').innerText = `已讀取檔案：${file.name}，請按「確認匯入」。`;
+    };
+    reader.readAsText(file);
+    input.value = "";
+}
 
-            player = Object.assign({}, player, data);
-            if (!player.gender) player.gender = "male";
-            if (!player.name) player.name = (player.gender === 'female' ? "南宮婉" : "韓立");
-            if (!player.stats.cha) player.stats.cha = 10;
-            if (!player.studyCounts) player.studyCounts = { str: 0, con: 0, int: 0, spr: 0 };
-            if (typeof player.pendingTribulation !== 'boolean') player.pendingTribulation = false;
-            if (!player.tribulationCount) player.tribulationCount = 0;
-            // 舊存檔可能在築基以前就被標記待渡劫，依現行規則清除
-            if (player.pendingTribulation && player.realmIndex < TRIBULATION_MIN_REALM_INDEX) player.pendingTribulation = false;
-            migrateServantAssignments();
-            migrateEquipmentSlots();
-            migrateActivityFields();
-            migrateProgressionFields(data);
+function confirmImportSave() {
+    const code = document.getElementById('save-code-text').value;
+    if (!code.trim()) { alert("請先貼上存檔代碼或選擇存檔檔案！"); return; }
 
-            // 匯入成功後觸發離線補償計算
-            calcOfflineProgress();
+    let data;
+    try {
+        data = decodeSaveCode(code);
+        if (!data || typeof data !== 'object' || typeof data.realmIndex === 'undefined') throw new Error("存檔結構不符");
+    } catch(e) {
+        alert("「存檔代碼無效」！請確認完整複製了整段代碼（可能只複製到一部分）。");
+        return;
+    }
+    if (!confirm(`即將匯入【${data.name || '無名修士'}】（${realms[data.realmIndex] || ''}）的存檔，目前的進度會被覆蓋。確定匯入？`)) return;
 
-            updateUI();
-            updateSectFacilitiesUI();
-            addLog("📥 匯入存檔成功！", "system");
-            alert("匯入存檔成功！");
-        } catch(e) {
-            alert("「存檔代碼無效」！請確認您完整複製了代碼字串，且未夾雜多餘的空白或換行符號。");
-        }
+    try {
+        applySaveData(data);
+        saveLocal();   // 立刻寫入本地存檔，避免重新整理後又回到舊進度
+        closeModal('save-code-modal');
+        addLog("📥 匯入存檔成功！", "system");
+        alert("匯入存檔成功！");
+    } catch(e) {
+        alert("匯入存檔失敗：存檔內容有誤。");
     }
 }

@@ -151,6 +151,14 @@
         .stat-item span { color: var(--accent); font-weight: bold; }
         .res-item span { color: #4ade80; font-weight: bold; }
 
+        /* 存檔代碼視窗 */
+        .save-code-text { width: 100%; box-sizing: border-box; background: #0b0f19; color: #d1d5db; border: 1px solid var(--panel-border);
+                          border-radius: 6px; padding: 8px; font-family: Consolas, monospace; font-size: 0.78em; word-break: break-all; resize: vertical; }
+
+        /* 角色面板的戰鬥屬性列 */
+        .combat-attr-line { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 10px; font-size: 0.82em; margin: -2px 0 8px; color: #9ca3af; }
+        .combat-attr-line b { color: var(--accent); }
+
         /* 批次操作按鈕（藏書閣／煉丹房／鍛造閣／宗門靈田的 ×1 / ×10 / 最高） */
         .batch-btns { display: flex; gap: 6px; }
         .batch-btns button { flex: 1; width: auto; margin-bottom: 0; padding: 8px 4px; }
@@ -435,9 +443,6 @@
             .card h3 { font-size: 0.95em; }
             .close-btn { width: 100%; padding: 12px; }
 
-            /* 靈寶閣的「靈石購買 / 聲望購買」在窄卡片內改為上下排列 */
-            #lingbao-shop-container .card > div { flex-direction: column; }
-
             /* 鍛造閣：下拉選單改為整列顯示（×1/×10/最高 按鈕由 .batch-btns 排成一列） */
             #forge-modal select { width: 100%; margin-top: 8px; }
 
@@ -544,6 +549,8 @@
                 <div class="stat-item">靈力 <span id="stat-spr">10</span></div>
                 <div class="stat-item" style="grid-column: 1 / -1;">魅力 <span id="stat-cha" style="color: var(--charm-color);">10</span></div>
             </div>
+            <!-- 戰鬥屬性（減傷/閃避/屬性傷害），由 ui.js 的 updateUI() 依裝備計算 -->
+            <div id="combat-attr-display" class="combat-attr-line"></div>
 
             <button class="equip-btn" onclick="openEquipmentModal()" style="margin-top: 10px; font-weight: bold;">🛡️ 角色裝備與狀態</button>
 
@@ -690,6 +697,26 @@
 </div>
 
 <!-- 彈出視窗群組 -->
+<!-- 存檔代碼匯出/匯入（save.js：exportSave / importSave 開啟，取代舊版 prompt() 對話框） -->
+<div id="save-code-modal" class="modal-bg">
+    <div class="modal-content" style="max-width: 640px; border-color: var(--accent);">
+        <h2 id="save-code-title" style="text-align: center; color: var(--accent); margin-top: 0;">存檔代碼</h2>
+        <p id="save-code-hint" style="color: #9ca3af; font-size: 0.88em;"></p>
+        <textarea id="save-code-text" class="save-code-text" rows="8" spellcheck="false" placeholder="在此貼上存檔代碼…"></textarea>
+        <div id="save-code-status" style="font-size: 0.85em; color: #4ade80; min-height: 1.3em; margin: 6px 0;"></div>
+        <div id="save-code-export-actions" class="batch-btns">
+            <button class="sys-btn" onclick="copySaveCode()">📋 複製代碼</button>
+            <button class="sys-btn" onclick="downloadSaveCode()">💾 下載存檔檔案</button>
+        </div>
+        <div id="save-code-import-actions" class="batch-btns">
+            <button class="sys-btn" onclick="document.getElementById('save-code-file').click()">📂 從檔案讀取</button>
+            <button class="sys-btn" onclick="confirmImportSave()">✅ 確認匯入</button>
+        </div>
+        <input type="file" id="save-code-file" accept=".txt,text/plain" onchange="importSaveFromFile(this)" hidden>
+        <button class="close-btn" style="margin-top: 12px;" onclick="closeModal('save-code-modal')">關閉</button>
+    </div>
+</div>
+
 <div id="map-category-modal" class="modal-bg">
     <div class="modal-content" style="border-color: var(--accent);">
         <h2 id="map-modal-title" style="text-align: center; color: var(--accent); margin-top: 0;">區域地圖</h2>
@@ -724,8 +751,9 @@
 <div id="lingbao-shop-modal" class="modal-bg">
     <div class="modal-content" style="border-color: var(--reputation-color);">
         <h2 style="text-align: center; color: var(--reputation-color); margin-top: 0;">💎 後山禁地 - 靈寶閣</h2>
-        <p style="text-align: center; color: #9ca3af; font-size: 0.9em;">可使用【靈石】或【聲望】購買宗門最高絕學禁術與代表裝備。</p>
-        <div id="lingbao-shop-container" class="grid-container" style="margin-top: 20px;"></div>
+        <p style="text-align: center; color: #9ca3af; font-size: 0.9em;">三個階段的宗門各有專屬的戰略級寶物與武學，兌換需<strong style="color: var(--accent);">同時</strong>消耗靈石與聲望。<br>每件皆為唯一性物品，兌換後不會再補貨。</p>
+        <!-- 內容由 lingbao-shop.js 的 renderLingbaoShopUI() 依初級/中級/高級分區產生（各區自帶 grid-container） -->
+        <div id="lingbao-shop-container" style="margin-top: 20px;"></div>
         <button class="close-btn" onclick="closeModal('lingbao-shop-modal')">離開</button>
     </div>
 </div>
@@ -1003,8 +1031,10 @@
 <script src="data/config-quests.js"></script>
 <script src="data/config-activities.js"></script>
 <script src="data/config-daily-quests.js"></script>
+<script src="data/config-elements.js"></script>
 <script src="data/state.js"></script>
 <script src="data/stats.js"></script>
+<script src="data/elements.js"></script>
 <script src="data/ui.js"></script>
 <script src="data/map.js"></script>
 <script src="data/combat.js"></script>

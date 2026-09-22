@@ -55,7 +55,8 @@ function updateSectFacilitiesUI() {
 
 function updateCombatVisualPanel() {
     document.getElementById('battle-player-name').innerText = player.name || (player.gender === 'female' ? "南宮婉" : "韓立");
-    document.getElementById('battle-player-hp').innerText = `氣血: ${Math.floor(player.hp)}/${player.maxHp}`;
+    let playerSt = formatStatus(playerStatus);
+    document.getElementById('battle-player-hp').innerText = `氣血: ${Math.floor(player.hp)}/${player.maxHp}${playerSt ? ' ' + playerSt : ''}`;
 
     const avatarContainer = document.getElementById('battle-player-icon');
     const avatar = PLAYER_AVATARS[player.gender === 'female' ? 'female' : 'male'];
@@ -64,7 +65,8 @@ function updateCombatVisualPanel() {
     if (inTribulation && heartDemon) {
         document.getElementById('battle-enemy-title').innerText = "心魔";
         document.getElementById('battle-enemy-icon').innerText = heartDemon.icon;
-        document.getElementById('battle-enemy-info').innerText = `氣血: ${Math.floor(heartDemon.hp)}/${heartDemon.maxHp}`;
+        let demonSt = formatStatus(heartDemon.status);
+        document.getElementById('battle-enemy-info').innerText = `氣血: ${Math.floor(heartDemon.hp)}/${heartDemon.maxHp}${demonSt ? ' ' + demonSt : ''}`;
         document.getElementById('battle-action-desc').innerText = `☯️ 渡劫中！正在與心魔生死對決...`;
     } else if (player.currentMapIsSafe) {
         document.getElementById('battle-enemy-title').innerText = "安全區域";
@@ -85,7 +87,12 @@ function updateCombatVisualPanel() {
         });
         document.getElementById('battle-enemy-title').innerText = `上古巨獸 (${enemies.length}隻)`;
         document.getElementById('battle-enemy-icon').innerText = enemies[0].icon || "🐉";
-        document.getElementById('battle-enemy-info').innerText = `總血量: ${Math.floor(totalEnemyHp)}/${Math.floor(totalMaxEnemyHp)}`;
+        // 彙整全體怪物身上的狀態：凍結隻數、燒傷/中毒總層數
+        let frozenN = enemies.filter(e => e.status && e.status.frozen > 0).length;
+        let burnN = enemies.reduce((s, e) => s + (e.status && e.status.burn ? e.status.burn.stacks : 0), 0);
+        let poisonN = enemies.reduce((s, e) => s + (e.status && e.status.poison ? e.status.poison.stacks : 0), 0);
+        let enemySt = [frozenN ? `❄️×${frozenN}` : '', burnN ? `🔥×${burnN}` : '', poisonN ? `☠️×${poisonN}` : ''].filter(Boolean).join(' ');
+        document.getElementById('battle-enemy-info').innerText = `總血量: ${Math.floor(totalEnemyHp)}/${Math.floor(totalMaxEnemyHp)}${enemySt ? ' ' + enemySt : ''}`;
         document.getElementById('battle-action-desc').innerText = `⚔️ 劍氣縱橫！正在 ${player.currentMap.name} 與巨獸殊死搏鬥！`;
     } else {
         document.getElementById('battle-enemy-title').innerText = "索敵中";
@@ -125,6 +132,13 @@ function updateUI() {
     document.getElementById('stat-int').innerText = `${player.stats.int} (+${eqBonus.int})`;
     document.getElementById('stat-spr').innerText = `${player.stats.spr} (+${eqBonus.spr})`;
     document.getElementById('stat-cha').innerText = `${player.stats.cha} (+${eqBonus.cha})`;
+
+    let attrs = getPlayerCombatAttrs();
+    document.getElementById('combat-attr-display').innerHTML = ["def", "eva"].concat(AFFIX_TYPES).map(k => {
+        let info = combatAttrInfo[k];
+        let tip = info.desc ? ` title="${info.desc}"` : '';
+        return `<span${tip}>${info.icon}${info.label} <b>${+attrs[k].toFixed(1)}%</b></span>`;
+    }).join('');
     document.getElementById('reincarnate-count').innerText = player.reincarnations;
 
     document.getElementById('res-grass').innerText = player.spiritGrass;
@@ -205,10 +219,11 @@ function renderSkillList() {
     let html = "";
     skills.forEach(sk => {
         let typeName = {"single":"單體", "aoe":"範圍", "heal":"補血", "buff":"增益"}[sk.type];
-        let source = sk.tier ? SECT_TIER_NAMES[sk.tier] : "禁術";
+        let source = sk.tier ? SECT_TIER_NAMES[sk.tier] : "靈寶閣";
         let detail = (sk.type === "single" || sk.type === "aoe")
             ? `${typeName}・${sk.dmgType === 'mag' ? '悟性' : '力量'}・威力 ${Math.round(sk.mult * 100)}%`
             : typeName;
+        if (sk.effect) detail += `・${combatAttrInfo[sk.effect.type].icon}${Math.round(sk.effect.chance * 100)}%`;
         html += `・[${source}] ${sk.name} (${detail}, 耗魔:${sk.mpCost})<br>`;
     });
     document.getElementById('skill-list').innerHTML = html;

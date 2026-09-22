@@ -27,6 +27,7 @@ let player = {
     sect: null, buffTimer: 0, buffMult: 1,
     sectSkills: { 1: null, 2: null, 3: null },   // 各階段已拜入（並學得技能）的宗門名稱，選定後鎖定
     learnedSkills: [],
+    lingbaoSold: [],             // 靈寶閣已兌換（售出）的唯一性商品 id，售出後永不補貨
     reincarnations: 0,
     pendingTribulation: false,   // 小境界已滿 10 階，修為暫停、等待渡劫
     tribulationCount: 0,         // 累計渡劫成功次數
@@ -42,6 +43,10 @@ let player = {
     lastSaveTime: Date.now()
 };
 
+// 全新角色的預設值快照：讀檔／匯入一律「合併到這份預設值」而不是目前的 player，
+// 否則匯入缺欄位的舊存檔時，會把目前角色的等級、宗門技能等資料帶進新存檔（見 save.js 的 applySaveData）
+const DEFAULT_PLAYER_JSON = JSON.stringify(player);
+
 let enemies = [];
 let respawnTimer = 0;
 let safeZoneTimer = 0;
@@ -53,6 +58,7 @@ let tribulationFatedWin = false;   // 開打時依勝算擲出的天命（true =
 let potionCooldownHp = 0;    // 氣血類藥品剩餘冷卻秒數
 let potionCooldownMp = 0;    // 靈力類藥品剩餘冷卻秒數
 let gameOver = false;        // 壽元耗盡：停止戰鬥與存檔，等待重新載入
+let playerStatus = { frozen: 0, burn: null, poison: null };   // 玩家身上的凍結/燒傷/中毒（elements.js）
 
 // 靈寵輔助效果（木：攻擊增益／土：減傷／水：持續回復），皆以回合數倒數
 let petBuffTimer = 0, petBuffMult = 1;

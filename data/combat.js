@@ -35,6 +35,7 @@ function combatTick() {
     tickServantQuests();
 
     if (player.currentMapIsSafe) {
+        playerStatus = newStatus();   // 回到安全區即解除凍結、燒傷、中毒
         let wuxing = getWuxingBuff();
         let healRate = 0.1;
         if (wuxing.type === "木") healRate *= 1.2;
@@ -69,53 +70,47 @@ function combatTick() {
         let enemyBasePower = player.currentMap.diff * 50;
         for (let i = 0; i < count; i++) {
             let randomIcon = monsterIcons[Math.floor(Math.random() * monsterIcons.length)];
-            enemies.push({ hp: enemyBasePower * 10, maxHp: enemyBasePower * 10, attack: enemyBasePower, icon: randomIcon });
+            enemies.push({ hp: enemyBasePower * 10, maxHp: enemyBasePower * 10, attack: enemyBasePower, icon: randomIcon,
+                           attrs: rollMonsterAttrs(), status: newStatus() });
         }
         document.getElementById('combat-status').innerText = `⚔️ 遭遇 ${count} 隻妖獸！戰鬥中！`;
         document.getElementById('combat-status').style.color = '#f87171';
         addLog(`⚠️ 遭遇 ${count} 隻強大的妖獸/禁區強者攔路！`, "combat");
         updateCombatVisualPanel();
     } else {
-        let usedSkill = false;
-
-        let availableSkills = getAllSkills();
-
-        if (availableSkills.length > 0 && Math.random() < 0.4) {
-            let skill = availableSkills[Math.floor(Math.random() * availableSkills.length)];
-            if (player.mp >= skill.mpCost) {
-                player.mp -= skill.mpCost;
-                usedSkill = true;
-
-                let skillDmg = skill.dmgType === 'mag' ? getMagAttack() * skill.mult : getPhysAttack() * skill.mult;
-                let wuxing = getWuxingBuff();
-                if (wuxing.type === "金") skillDmg *= 1.2;
-
-                if (skill.type === "aoe") {
-                    addLog(skill.msg + ` (消耗 ${skill.mpCost} MP)`, "skill");
-                    enemies.forEach(e => e.hp -= skillDmg);
-                } else if (skill.type === "heal") {
-                    let healAmt = player.maxHp * skill.mult;
-                    player.hp = Math.min(player.maxHp, player.hp + healAmt);
-                    addLog(skill.msg + ` (消耗 ${skill.mpCost} MP)`, "heal");
-                } else if (skill.type === "buff") {
-                    player.buffTimer = skill.duration;
-                    player.buffMult = skill.mult;
-                    addLog(skill.msg + ` (消耗 ${skill.mpCost} MP)`, "skill");
-                } else {
-                    addLog(skill.msg + ` (消耗 ${skill.mpCost} MP)`, "skill");
-                    enemies[0].hp -= skillDmg;
-                }
-            } else {
-                addLog(`💦 靈力不足 (需 ${skill.mpCost} MP)，無法施展【${skill.name}】，改以普通攻擊迎敵！`, "skill");
-            }
+        // ---- 玩家回合：先結算自身的燒傷/中毒，被凍結則本回合無法出手 ----
+        let selfTick = tickStatus(playerStatus);
+        if (selfTick.dot > 0) {
+            player.hp -= selfTick.dot;
+            addLog(`🩸 身上的${formatStatus(playerStatus) || '異常狀態'}發作，損失 ${selfTick.dot.toLocaleString()} 點氣血！`, "combat");
+            if (player.hp <= 0) { onPlayerKilledInField(); return; }
         }
 
-        if (!usedSkill) {
-            enemies[0].hp -= getPhysAttack();
+        let playerTags = [];
+        if (selfTick.frozen) {
+            addLog(`❄️ 你被凍結，本回合無法行動！`, "combat");
+        } else {
+            playerAttackTurn(getAllSkills(), enemies, playerTags);
         }
 
         // 存活的靈寵各自判定是否出手協助
         petAssistTick(enemies);
+
+        // ---- 怪物身上的燒傷/中毒發作，並記錄誰被凍結 ----
+        let dotTotal = 0;
+        enemies.forEach(e => {
+            if (e.hp <= 0) return;
+            let t = tickStatus(e.status);
+            e.hp -= t.dot;
+            dotTotal += t.dot;
+            e.skipTurn = t.frozen;
+        });
+        if (playerTags.length > 0 || dotTotal > 0) {
+            let parts = [];
+            if (playerTags.length > 0) parts.push(summarizeTags(playerTags, "💨被閃避"));
+            if (dotTotal > 0) parts.push(`持續傷害 ${dotTotal.toLocaleString()}`);
+            addLog(`✨ 屬性效果：${parts.join("｜")}`, "skill");
+        }
 
         let expEarned = 0;
         let coinsEarned = 0;
@@ -148,23 +143,86 @@ function combatTick() {
             document.getElementById('combat-status').innerText = `⚔️ 敵方全滅！5秒後刷新下一波怪物...`;
             document.getElementById('combat-status').style.color = '#fb923c';
         } else {
+            // ---- 怪物回合：每隻各自命中判定（玩家的閃避/減傷生效，怪物的屬性傷害可施加在玩家身上）----
+            let playerDef = { attrs: getPlayerCombatAttrs(), status: playerStatus };
             let totalDmg = 0;
-            enemies.forEach(e => totalDmg += e.attack);
+            let enemyTags = [];
+            let frozenCount = 0;
+            enemies.forEach(e => {
+                if (e.skipTurn) { frozenCount++; return; }
+                let r = resolveHit(e.attack, { attrs: e.attrs || {}, power: e.attack }, playerDef);
+                totalDmg += r.dmg;
+                enemyTags = enemyTags.concat(r.tags);
+            });
             player.hp -= applyPetDamageReduction(totalDmg);
-
-            if (player.hp <= 0) {
-                if (handlePlayerDeath()) return;
-                player.hp = 1;
-                enemies = [];
-                respawnTimer = 0;
-                let lostCoins = Math.floor(player.coins * 0.1);
-                player.coins -= lostCoins;
-                addLog(`💀 寡不敵眾，身受重傷！被路過修士救回宗門，遺失了 ${lostCoins} 靈石... (當前氣血：1 滴殘血，開始靜修療傷)`, "combat");
-                changeMap(0, 0);
+            if (enemyTags.length > 0 || frozenCount > 0) {
+                let parts = [];
+                if (frozenCount > 0) parts.push(`${frozenCount} 隻妖獸被凍結無法出手`);
+                if (enemyTags.length > 0) parts.push(`妖獸攻勢：${summarizeTags(enemyTags, "💨你閃避了")}`);
+                addLog(`⚠️ ${parts.join("｜")}`, "combat");
             }
+
+            if (player.hp <= 0) { onPlayerKilledInField(); return; }
         }
         updateUI();
     }
+}
+
+// 玩家本回合出手（普攻或技能）；每一擊都經過 resolveHit()，觸發的效果標籤推進 tags
+function playerAttackTurn(availableSkills, targets, tags) {
+    let usedSkill = false;
+    let baseAttrs = getPlayerCombatAttrs();
+    let hitTarget = (target, dmg, attrs) => {
+        let r = resolveHit(dmg, { attrs, power: getPhysAttack() }, { attrs: target.attrs || {}, status: target.status || newStatus() });
+        target.hp -= r.dmg;
+        r.tags.forEach(t => tags.push(t));
+    };
+
+    if (availableSkills.length > 0 && Math.random() < 0.4) {
+        let skill = availableSkills[Math.floor(Math.random() * availableSkills.length)];
+        if (player.mp >= skill.mpCost) {
+            player.mp -= skill.mpCost;
+            usedSkill = true;
+
+            let skillDmg = skill.dmgType === 'mag' ? getMagAttack() * skill.mult : getPhysAttack() * skill.mult;
+            let wuxing = getWuxingBuff();
+            if (wuxing.type === "金") skillDmg *= 1.2;
+            let attrs = withSkillEffect(baseAttrs, skill);
+
+            if (skill.type === "aoe") {
+                addLog(skill.msg + ` (消耗 ${skill.mpCost} MP)`, "skill");
+                targets.forEach(e => hitTarget(e, skillDmg, attrs));
+            } else if (skill.type === "heal") {
+                player.hp = Math.min(player.maxHp, player.hp + player.maxHp * skill.mult);
+                addLog(skill.msg + ` (消耗 ${skill.mpCost} MP)`, "heal");
+            } else if (skill.type === "buff") {
+                player.buffTimer = skill.duration;
+                player.buffMult = skill.mult;
+                addLog(skill.msg + ` (消耗 ${skill.mpCost} MP)`, "skill");
+            } else {
+                addLog(skill.msg + ` (消耗 ${skill.mpCost} MP)`, "skill");
+                hitTarget(targets[0], skillDmg, attrs);
+            }
+        } else {
+            addLog(`💦 靈力不足 (需 ${skill.mpCost} MP)，無法施展【${skill.name}】，改以普通攻擊迎敵！`, "skill");
+        }
+    }
+
+    if (!usedSkill) hitTarget(targets[0], getPhysAttack(), baseAttrs);
+}
+
+// 野外戰死：折壽、靈寵陣亡、損失靈石並被送回宗門
+function onPlayerKilledInField() {
+    playerStatus = newStatus();
+    if (handlePlayerDeath()) return;
+    player.hp = 1;
+    enemies = [];
+    respawnTimer = 0;
+    let lostCoins = Math.floor(player.coins * 0.1);
+    player.coins -= lostCoins;
+    addLog(`💀 寡不敵眾，身受重傷！被路過修士救回宗門，遺失了 ${lostCoins} 靈石... (當前氣血：1 滴殘血，開始靜修療傷)`, "combat");
+    changeMap(0, 0);
+    updateUI();
 }
 
 // 自動補血/補魔：優先消耗背包藥品（由高階往低階），背包沒有才以靈石自動購買。

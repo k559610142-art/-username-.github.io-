@@ -1,0 +1,122 @@
+// 戰鬥屬性引擎：減傷、閃避、屬性傷害（冰凍 / 燒傷 / 中毒 / 金重擊）與持續傷害
+// 玩家→怪物、怪物→玩家、玩家↔心魔 全部走 resolveHit()，規則完全對稱。數值見 config-elements.js
+
+function newStatus() {
+    return { frozen: 0, burn: null, poison: null };
+}
+
+// 玩家目前的戰鬥屬性（裝備加總後套上限）
+function getPlayerCombatAttrs() {
+    let b = getEquipBonus();
+    return {
+        def: Math.min(DEF_CAP, b.def),
+        eva: Math.min(EVA_CAP, b.eva),
+        ice: Math.min(AFFIX_CAP, b.ice),
+        fire: Math.min(AFFIX_CAP, b.fire),
+        poison: Math.min(AFFIX_CAP, b.poison),
+        metal: Math.min(AFFIX_CAP, b.metal)
+    };
+}
+
+// 技能自帶的屬性效果（skill.effect = { type, chance }）會與裝備取較高者
+function withSkillEffect(attrs, skill) {
+    if (!skill || !skill.effect) return attrs;
+    let copy = Object.assign({}, attrs);
+    copy[skill.effect.type] = Math.max(copy[skill.effect.type] || 0, skill.effect.chance * 100);
+    return copy;
+}
+
+// 依地圖分類產生怪物的戰鬥屬性
+function getMapCategoryIndex(mapName) {
+    return maps.findIndex(cat => cat.items.some(m => m.name === mapName));
+}
+
+function rollMonsterAttrs() {
+    let profile = monsterAttrsByMapCategory[getMapCategoryIndex(player.currentMap.name)] || monsterAttrsByMapCategory[1];
+    let attrs = { def: profile.def, eva: profile.eva, ice: 0, fire: 0, poison: 0, metal: 0 };
+    if (Math.random() < profile.affixProb) {
+        attrs[AFFIX_TYPES[Math.floor(Math.random() * AFFIX_TYPES.length)]] = profile.affixChance;
+    }
+    return attrs;
+}
+
+// 單次命中結算（依序）：閃避 → 金重擊 → 減傷 → 附加冰/火/毒狀態
+//   attacker = { attrs, power }  power 為計算燒傷/中毒的攻擊力基準
+//   defender = { attrs, status }
+// 回傳 { dmg, tags }，tags 為本次觸發的效果（供日誌彙整），呼叫端自行扣 hp
+function resolveHit(rawDmg, attacker, defender) {
+    let tags = [];
+    if (defender.attrs.eva > 0 && Math.random() < defender.attrs.eva / 100) {
+        return { dmg: 0, tags: ["dodge"] };
+    }
+
+    let dmg = rawDmg;
+    if (attacker.attrs.metal > 0 && Math.random() < attacker.attrs.metal / 100) {
+        dmg *= 1 + METAL_BONUS;
+        tags.push("metal");
+    }
+    dmg *= 1 - (defender.attrs.def || 0) / 100;
+
+    let st = defender.status;
+    if (attacker.attrs.ice > 0 && Math.random() < attacker.attrs.ice / 100) {
+        st.frozen = Math.max(st.frozen, FREEZE_TURNS);
+        tags.push("ice");
+    }
+    if (attacker.attrs.fire > 0 && Math.random() < attacker.attrs.fire / 100) {
+        st.burn = addDotStack(st.burn, BURN_MAX_STACKS, BURN_TURNS, attacker.power * BURN_RATE);
+        tags.push("fire");
+    }
+    if (attacker.attrs.poison > 0 && Math.random() < attacker.attrs.poison / 100) {
+        st.poison = addDotStack(st.poison, POISON_MAX_STACKS, POISON_TURNS, attacker.power * POISON_RATE);
+        tags.push("poison");
+    }
+    return { dmg: Math.floor(dmg), tags };
+}
+
+// 疊一層持續傷害：層數 +1（有上限）、回合數刷新、每層傷害取較高者
+function addDotStack(dot, maxStacks, turns, perStack) {
+    if (!dot) return { stacks: 1, turns: turns, perStack: perStack };
+    return { stacks: Math.min(maxStacks, dot.stacks + 1), turns: turns, perStack: Math.max(dot.perStack, perStack) };
+}
+
+// 行動前結算自身狀態：扣持續傷害、判斷是否被凍結（凍結會消耗 1 回合）
+// 回傳 { dot, frozen }，呼叫端自行扣 hp
+function tickStatus(st) {
+    let dot = 0;
+    ["burn", "poison"].forEach(k => {
+        if (!st[k]) return;
+        dot += st[k].stacks * st[k].perStack;
+        st[k].turns--;
+        if (st[k].turns <= 0) st[k] = null;
+    });
+    let frozen = st.frozen > 0;
+    if (frozen) st.frozen--;
+    return { dot: Math.floor(dot), frozen };
+}
+
+// 狀態圖示文字（戰鬥實況面板用），例：「❄️ 🔥×2 ☠️×3」
+function formatStatus(st) {
+    if (!st) return "";
+    let parts = [];
+    if (st.frozen > 0) parts.push("❄️凍結");
+    if (st.burn) parts.push(`🔥×${st.burn.stacks}`);
+    if (st.poison) parts.push(`☠️×${st.poison.stacks}`);
+    return parts.join(" ");
+}
+
+// 把一回合內的觸發標籤彙整成一小段日誌文字，例：「❄️凍結×1 🔥燒傷×2 💨被閃避×1」
+function summarizeTags(tags, dodgeLabel) {
+    let names = { ice: "❄️凍結", fire: "🔥燒傷", poison: "☠️中毒", metal: "⚔️重擊", dodge: dodgeLabel };
+    let counts = {};
+    tags.forEach(t => { counts[t] = (counts[t] || 0) + 1; });
+    return Object.keys(counts).map(t => `${names[t]}${counts[t] > 1 ? '×' + counts[t] : ''}`).join(" ");
+}
+
+// 裝備屬性文字（背包、裝備欄、千寶閣、靈寶閣共用），只列出非 0 的項目
+function formatEquipStats(stats) {
+    let base = [["str", "力量"], ["con", "體質"], ["int", "悟性"], ["spr", "靈力"], ["cha", "魅力"]]
+        .filter(([k]) => stats[k]).map(([k, label]) => `${label}+${stats[k].toLocaleString()}`);
+    let attrs = ["def", "eva"].concat(AFFIX_TYPES)
+        .filter(k => stats[k]).map(k => `${combatAttrInfo[k].icon}${combatAttrInfo[k].label}+${stats[k]}%`);
+    return base.concat(attrs).join("、") || "無";
+}
