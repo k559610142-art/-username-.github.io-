@@ -27,6 +27,18 @@ function renderServants() {
         目前派遣中：${assignedCount} / ${MAX_ASSIGNED_SERVANTS} 名（每位僕從可負責不同任務，且不受你所在地點限制）
     </div>`;
 
+    // 依品級一鍵解僱
+    let counts = {};
+    player.servants.forEach(s => { counts[s.quality] = (counts[s.quality] || 0) + 1; });
+    container.innerHTML += renderBulkDeleteBar(
+        "一鍵解僱僕從（依品級）",
+        "bulk-servant-quality",
+        servantQualities.map(q => q.name),
+        counts,
+        "bulkDismissServants",
+        "※ 正在執行任務的僕從一併解僱，其任務會中止"
+    );
+
     player.servants.forEach(s => {
         let options = `<option value="">— 不指派 —</option>` + Object.keys(questData).map(questId => {
             let def = getQuestDef(questId, tier);
@@ -79,6 +91,25 @@ function assignServantQuest(servantId, questId) {
 
     renderServants();
     updateQuestUI();
+}
+
+// 一鍵解僱：把所有勾選品級的僕從一次遣散
+function bulkDismissServants() {
+    let selected = getCheckedBulkQualities('bulk-servant-quality');
+    if (selected.length === 0) { alert("請先勾選要解僱的品級！"); return; }
+
+    let targets = player.servants.filter(s => selected.includes(s.quality));
+    if (targets.length === 0) { alert("沒有符合勾選品級的僕從。"); return; }
+
+    let working = targets.filter(s => s.quest).length;
+    let warn = working > 0 ? `\n（其中 ${working} 名正在執行任務，解僱後任務將中止）` : "";
+    if (!confirm(`確定要解僱 ${targets.length} 名【${selected.join('、')}】僕從嗎？${warn}\n此操作無法復原。`)) return;
+
+    player.servants = player.servants.filter(s => !selected.includes(s.quality));
+    addLog(`🗑️ 一鍵解僱了 ${targets.length} 名僕從（${selected.join('、')}）。`, "system");
+    renderServants();
+    updateQuestUI();
+    updateUI();
 }
 
 function dismissServant(servantId) {

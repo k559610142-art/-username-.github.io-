@@ -25,6 +25,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
   sect.js / shop.js / bag.js / equipment.js / lingbao-shop.js /
   servant.js / quest.js / field.js / beast.js / library.js / alchemy.js
                       每個彈出視窗(modal) 對應一支檔案，管理該功能的渲染與互動
+  daily-quest.js      每日任務（目前僅有介面骨架，內容後續再實作）
   player-profile.js   玩家道號修改
   save.js             本地存檔/讀檔/匯出入/離線掛機結算/重置
   main.js             initGame() 與 window.onload，遊戲啟動進入點
@@ -52,7 +53,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 5 | `config-shop.js` | `shopItems` 丹藥堂商品 | 無 | `shop.js`、`bag.js`、`combat.js`(自動補血補魔) |
 | 6 | `config-beasts.js` | `beastData` 靈獸資料 | 無 | `beast.js`、`stats.js`(getBasePower)、`leveling.js`(gainExp) |
 | 7 | `config-servants.js` | `servantQualities`、`servantNames` | 無 | `combat.js`(tryRescueServant) |
-| 8 | `config-equipment.js` | `equipTypes`、`wuxingElements`、`equipQualities` | 無 | `equipment.js` |
+| 8 | `config-equipment.js` | `equipTypes`（含 artifact 神器欄）、`NON_FORGEABLE_SLOTS`、`wuxingElements`、`equipQualities` | 無 | `equipment.js`、`stats.js`(getWuxingBuff)、`save.js`(補齊欄位) |
 | 9 | `state.js` | `player`、`enemies`、`respawnTimer`、`safeZoneTimer` | **`maps`**（必須排在 config-maps.js 之後） | 幾乎所有檔案都會讀寫 `player` |
 | 10 | `stats.js` | `getEquipBonus`/`getWuxingBuff`/`getNextExp`/`getBasePower`/`getPhysAttack`/`getMagAttack`/`getMaxHp`/`getMaxMp`/`getSectTier` | `player`、`realms`、`sectData` 判斷邏輯 | `ui.js`、`combat.js`、`leveling.js`、`equipment.js`、`beast.js` 等幾乎全部功能檔 |
 | 11 | `ui.js` | `updateUI`/`updateCombatVisualPanel`/`updateStudyCountsUI`/`renderSkillList`/`addLog`/`updateAutoSettings`/`syncAutoSettingsUI`/`updateSectFacilitiesUI`/`closeModal` | `player`、`realms`、`stats.js` 的計算函式 | 幾乎所有功能檔在資料變動後都會呼叫 `updateUI()`/`addLog()` |
@@ -145,7 +146,10 @@ combatTick() 每秒執行 [combat.js]
 | `setShopQty`, `setShopQtyMax`, `updateShopTotal` | `data/shop.js` |
 | `resetGameCompletely`, `saveLocal`, `loadLocal`, `exportSave`, `importSave` | `data/save.js` |
 | `updateAutoSettings` | `data/ui.js` |
-| `closeModal` | `data/ui.js` |
+| `closeModal`, `toggleDrawer`, `toggleAllBulkQualities` | `data/ui.js` |
+| `bulkDeleteEquipment` | `data/bag.js` |
+| `bulkDismissServants`, `assignServantQuest` | `data/servant.js` |
+| `openDailyQuestModal` | `data/daily-quest.js` |
 | `enterWorld` | `data/title-screen.js` |
 
 ## 5. 新增功能的建議流程
@@ -160,6 +164,29 @@ combatTick() 每秒執行 [combat.js]
 5. **新增畫面元素時**：先確認電腦版排版，再到 `index.html` 的 media query 區塊
    （第 6 節）補上手機版的調整，避免手機出現破版或水平捲動。
 6. **完成任何修改後，回來更新本檔案（ARCHITECTURE.md）對應章節。**
+
+## 6. 版型與 RWD 規則（電腦版 / 手機版）
+
+所有樣式集中在 `index.html` 的 `<style>` 內，分成兩段：
+
+1. **共用 / 電腦版樣式**（檔案前半，`@media` 之前）：原本的三欄式版型，未加任何條件，行為與改版前完全相同。
+2. **手機 / 平板樣式**（檔案末端，兩個 `@media` 區塊）：**只在窄螢幕生效**，因此不會影響電腦版。
+
+| 斷點 | 目標裝置 | 主要調整 |
+|---|---|---|
+| `@media (max-width: 900px)` | 手機、平板直式 | 三欄 `300px 1fr 300px` → 單欄；用 `order` 重排為 **狀態列 → 戰場實況 → 角色/地圖 → 宗門設施**；狀態列改直式堆疊（境界/戰力、靈石/聲望各自橫向排）；按鈕加大為觸控尺寸並取消 hover 位移；彈窗寬度 94%、卡片自動排成雙欄；靈寶閣雙按鈕改上下排列；鍛造閣下拉選單與按鈕改整列 |
+| `@media (max-width: 480px)` | 一般手機（360–430px） | 進一步縮小 padding、字級、日誌高度、頭像尺寸，卡片最小寬度降為 135px 以維持雙欄 |
+
+維護注意事項：
+
+- **不要為了手機去改電腦版的既有規則**；所有手機調整一律寫進 media query 內，這是「手機有自己的 UI、電腦版不受影響」的前提。
+- HTML 內有不少**行內樣式**（如 `style="width: auto; margin-left: 10px;"`）。行內樣式優先權高於 CSS，
+  若手機版需要覆蓋它，必須在 media query 內使用 `!important`（目前 `#forge-modal .shop-btn`、
+  `#battle-player-icon img`、狀態列子項的 `margin-top` 即是這種情況）。
+- `#game-container > div:nth-of-type(n)` 依賴四個直接子元素的順序（header / 角色欄 / 戰場欄 / 設施欄）。
+  若之後在 `#game-container` 內新增或調換區塊，必須同步更新 media query 內的 `order` 規則。
+- 驗證方式：瀏覽器開發者工具切換 375px、360px 與 >900px 三種寬度，確認
+  `document.documentElement.scrollWidth === clientWidth`（無水平捲動），且電腦版維持三欄。
 
 ## 7. 渡劫系統（心魔試煉）
 
@@ -197,7 +224,24 @@ combatTick() 每秒執行 [combat.js]
 - 自動輔助的選藥邏輯為「背包內回復量最高者 → 否則買得起且未標記 `noAutoBuy` 的回復量最高者」，
   新增丹藥只要加進 `config-shop.js` 就會自動納入，不需改動 `combat.js`。
 
-## 9. 遊戲主頁（標題畫面）
+## 9. 介面慣例（抽屜、批次刪除、預留欄位）
+
+- **抽屜式區塊**：`ui.js` 的 `toggleDrawer(id, btn)` 切換 `.drawer-body.open`。
+  「命運與系統」拆成【存檔管理】與【命運抉擇】兩個抽屜，兩者**預設收合**，
+  用意是把「轉世輪迴／完全重置」與日常存檔操作隔開，避免誤觸。
+- **依品級批次刪除**：`ui.js` 的 `renderBulkDeleteBar()` 產生共用工具列，
+  搭配 `getCheckedBulkQualities()` / `toggleAllBulkQualities()`。目前兩處使用：
+  - 背包裝備 → `bag.js` 的 `bulkDeleteEquipment()`（品級取自 `equipQualities`，**只刪背包內、不動已穿戴的**）
+  - 僕從小屋 → `servant.js` 的 `bulkDismissServants()`（品級取自 `servantQualities`，會一併中止其任務）
+- **神器欄位**：`equipTypes` 新增 `"神器": "artifact"`。三個相關注意事項：
+  1. `NON_FORGEABLE_SLOTS` 讓鍛造閣選單排除神器（尚無取得管道）。
+  2. `getWuxingBuff()` 會**濾掉 artifact 分類**再判斷，否則神器無法取得會導致五行法陣永遠無法達成。
+  3. `save.js` 的 `migrateEquipmentSlots()` 會替舊存檔補上新欄位。
+     **日後再新增部位時，這三處都要一併確認。**
+- **預留介面**：`daily-quest.js` 的每日任務目前只有彈窗骨架與「敬請期待」文字，
+  之後補內容時建議把任務表放進 `data/config-daily-quests.js`，比照 `config-quests.js` 的做法。
+
+## 10. 遊戲主頁（標題畫面）
 
 - 畫面結構在 `index.html` 的 `#title-screen`，樣式集中在 `<style>` 內同名的區塊，邏輯在 `data/title-screen.js`。
 - **滿版呈現**：封面 `#title-art` 使用 `position: absolute; inset: 0` + `object-fit: cover`，
@@ -233,7 +277,7 @@ combatTick() 每秒執行 [combat.js]
   避免遊戲畫面在 JS 執行前閃一下；`enterWorld()` 會移除這個 class。
 - `worldEntered` 旗標確保只會觸發一次（避免重複建立 `setInterval`）。
 
-## 10. 門派任務與僕從派遣
+## 11. 門派任務與僕從派遣
 
 任務的**名稱、圖示、獎勵**全部集中在 `config-quests.js` 的 `questData`（以宗門等級 1/2/3 分層）。
 任務面板顯示的獎勵與實際發放的獎勵讀取同一份資料，**改數值只需要改這一個檔案**。
@@ -252,25 +296,3 @@ combatTick() 每秒執行 [combat.js]
   `save.js` 的 `migrateServantAssignments()` 會在讀檔/匯入時把舊結構轉成每位僕從自帶 `quest`/`timer`，
   並移除 `assignedServantIds`。
 
-## 6. 版型與 RWD 規則（電腦版 / 手機版）
-
-所有樣式集中在 `index.html` 的 `<style>` 內，分成兩段：
-
-1. **共用 / 電腦版樣式**（檔案前半，`@media` 之前）：原本的三欄式版型，未加任何條件，行為與改版前完全相同。
-2. **手機 / 平板樣式**（檔案末端，兩個 `@media` 區塊）：**只在窄螢幕生效**，因此不會影響電腦版。
-
-| 斷點 | 目標裝置 | 主要調整 |
-|---|---|---|
-| `@media (max-width: 900px)` | 手機、平板直式 | 三欄 `300px 1fr 300px` → 單欄；用 `order` 重排為 **狀態列 → 戰場實況 → 角色/地圖 → 宗門設施**；狀態列改直式堆疊（境界/戰力、靈石/聲望各自橫向排）；按鈕加大為觸控尺寸並取消 hover 位移；彈窗寬度 94%、卡片自動排成雙欄；靈寶閣雙按鈕改上下排列；鍛造閣下拉選單與按鈕改整列 |
-| `@media (max-width: 480px)` | 一般手機（360–430px） | 進一步縮小 padding、字級、日誌高度、頭像尺寸，卡片最小寬度降為 135px 以維持雙欄 |
-
-維護注意事項：
-
-- **不要為了手機去改電腦版的既有規則**；所有手機調整一律寫進 media query 內，這是「手機有自己的 UI、電腦版不受影響」的前提。
-- HTML 內有不少**行內樣式**（如 `style="width: auto; margin-left: 10px;"`）。行內樣式優先權高於 CSS，
-  若手機版需要覆蓋它，必須在 media query 內使用 `!important`（目前 `#forge-modal .shop-btn`、
-  `#battle-player-icon img`、狀態列子項的 `margin-top` 即是這種情況）。
-- `#game-container > div:nth-of-type(n)` 依賴四個直接子元素的順序（header / 角色欄 / 戰場欄 / 設施欄）。
-  若之後在 `#game-container` 內新增或調換區塊，必須同步更新 media query 內的 `order` 規則。
-- 驗證方式：瀏覽器開發者工具切換 375px、360px 與 >900px 三種寬度，確認
-  `document.documentElement.scrollWidth === clientWidth`（無水平捲動），且電腦版維持三欄。

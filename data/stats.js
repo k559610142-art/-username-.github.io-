@@ -16,16 +16,14 @@ function getEquipBonus() {
 }
 
 function getWuxingBuff() {
+    // 神器欄位不列入五行法陣的計算（特殊部位，取得方式後續再實作）
+    let slots = Object.keys(player.equipment).filter(key => equipTypes[key] !== "artifact");
     let elements = [];
-    let count = 0;
-    for (let key in player.equipment) {
+    for (let key of slots) {
         let eq = player.equipment[key];
-        if (eq) {
-            elements.push(eq.element);
-            count++;
-        }
+        if (!eq) return { type: null, name: "無 (裝備未集齊)" };
+        elements.push(eq.element);
     }
-    if (count < 17) return { type: null, name: "無 (裝備未集齊)" };
     let firstElem = elements[0];
     let allSame = elements.every(e => e === firstElem);
     if (!allSame) return { type: null, name: "無 (五行混雜)" };

@@ -1,9 +1,14 @@
-// 裝備部位 -> 分類（武器/防具/飾品）對照表
+// 裝備部位 -> 分類（武器/防具/飾品/神器）對照表
+// 這份表同時決定「角色裝備」彈窗要顯示哪些欄位，新增部位只要加在這裡即可
 const equipTypes = {
     "劍": "weapon", "刀": "weapon", "扇": "weapon", "弓": "weapon", "笛": "weapon", "筆": "weapon",
     "頭": "armor", "內衣": "armor", "盔甲": "armor", "手套": "armor", "長靴": "armor", "披風": "armor",
-    "腰帶": "accessory", "項鍊": "accessory", "戒指": "accessory", "耳環": "accessory", "腰牌": "accessory"
+    "腰帶": "accessory", "項鍊": "accessory", "戒指": "accessory", "耳環": "accessory", "腰牌": "accessory",
+    "神器": "artifact"
 };
+
+// 不可在鍛造閣打造的部位（神器另有取得方式，後續再實作）
+const NON_FORGEABLE_SLOTS = ["神器"];
 
 // 五行屬性列表（鍛造隨機抽取，集齊 17 件同屬性裝備可觸發五行法陣）
 const wuxingElements = ["金", "木", "水", "火", "土"];

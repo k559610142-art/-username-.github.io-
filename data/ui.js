@@ -228,3 +228,41 @@ function refreshCombatStatusText() {
 }
 
 function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+// 抽屜式區塊展開/收合（命運與系統）
+function toggleDrawer(id, btn) {
+    const body = document.getElementById(id);
+    if (!body) return;
+    const opened = body.classList.toggle('open');
+    if (btn) btn.classList.toggle('open', opened);
+}
+
+// --- 依品級批次刪除的共用小工具（背包裝備與僕從共用） ---
+function getCheckedBulkQualities(className) {
+    return Array.from(document.querySelectorAll('.' + className + ':checked')).map(el => el.value);
+}
+
+function toggleAllBulkQualities(className) {
+    const boxes = Array.from(document.querySelectorAll('.' + className));
+    const allChecked = boxes.length > 0 && boxes.every(b => b.checked);
+    boxes.forEach(b => { b.checked = !allChecked; });
+}
+
+// 產生「依品級勾選 + 刪除」的工具列
+// qualityNames: 品級名稱陣列；counts: { 品級: 數量 }
+function renderBulkDeleteBar(title, className, qualityNames, counts, deleteFn, note) {
+    const boxes = qualityNames.map(name =>
+        `<label><input type="checkbox" class="${className}" value="${name}">
+            <span class="quality-${name}">${name}</span> (${counts[name] || 0})</label>`
+    ).join("");
+    return `
+        <div class="bulk-bar">
+            <div class="bulk-title">🗑️ ${title}</div>
+            <div class="bulk-qualities">${boxes}</div>
+            <div class="bulk-actions">
+                <button class="sys-btn" onclick="toggleAllBulkQualities('${className}')">全選 / 全不選</button>
+                <button style="border-color:#ef4444; color:#ef4444; background:rgba(239,68,68,0.12);" onclick="${deleteFn}()">刪除勾選品級</button>
+            </div>
+            <div style="font-size:0.75em; color:#6b7280; text-align:center; margin-top:6px;">${note}</div>
+        </div>`;
+}

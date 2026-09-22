@@ -1,12 +1,15 @@
 // 角色裝備彈窗（穿戴部位列表 + 五行狀態）與鍛造閣
 
+const EQUIP_CATEGORY_NAMES = { weapon: '武器', armor: '防具', accessory: '飾品', artifact: '神器' };
+
 function initForgeSelect() {
     const select = document.getElementById('forge-type-select');
     select.innerHTML = "";
     for (let name in equipTypes) {
+        if (NON_FORGEABLE_SLOTS.includes(name)) continue;
         let option = document.createElement('option');
         option.value = name;
-        option.innerText = `${name} (${equipTypes[name] === 'weapon' ? '武器' : equipTypes[name] === 'armor' ? '防具' : '飾品'})`;
+        option.innerText = `${name} (${EQUIP_CATEGORY_NAMES[equipTypes[name]]})`;
         select.appendChild(option);
     }
 }
@@ -36,10 +39,12 @@ function renderLingbaoUI() {
                     <button class="sys-btn" onclick="unequipItem('${eqName}')">卸下裝備</button>
                 </div>`;
         } else {
+            // 神器為特殊部位，取得方式後續再實作，欄位先以金色標示
+            let isArtifact = equipTypes[eqName] === 'artifact';
             container.innerHTML += `
-                <div class="card" style="border-color: rgba(255,255,255,0.05); color: #6b7280; background: rgba(10,14,22,0.3);">
-                    <h3>${eqName}</h3>
-                    <p style="font-size:0.85em;">(未裝備)</p>
+                <div class="card" style="border-color: ${isArtifact ? 'rgba(240,213,136,0.45)' : 'rgba(255,255,255,0.05)'}; color: #6b7280; background: rgba(10,14,22,0.3);">
+                    <h3 style="${isArtifact ? 'color: var(--accent);' : ''}">${isArtifact ? '✨ ' : ''}${eqName}</h3>
+                    <p style="font-size:0.85em;">${isArtifact ? '(尚未開放取得)' : '(未裝備)'}</p>
                 </div>`;
         }
     }

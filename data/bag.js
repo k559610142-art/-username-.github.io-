@@ -7,6 +7,20 @@ function renderBag() {
     container.innerHTML = "";
     let hasItems = false;
 
+    // 依品級一鍵刪除裝備（只作用於背包內未穿戴的裝備）
+    if (player.equipInventory && player.equipInventory.length > 0) {
+        let counts = {};
+        player.equipInventory.forEach(eq => { counts[eq.quality] = (counts[eq.quality] || 0) + 1; });
+        container.innerHTML += renderBulkDeleteBar(
+            "一鍵刪除裝備（依品級）",
+            "bulk-equip-quality",
+            equipQualities.map(q => q.name),
+            counts,
+            "bulkDeleteEquipment",
+            "※ 只會刪除背包內的裝備，已穿戴的不受影響"
+        );
+    }
+
     for (let itemId in player.bag) {
         let count = player.bag[itemId];
         if (count > 0) {
@@ -77,6 +91,22 @@ function deleteItemFromBag(itemId) {
         addLog(`🗑️ 刪除了背包道具【${name}】。`, "system");
         renderBag();
     }
+}
+
+// 一鍵刪除：把背包內所有勾選品級的裝備一次清掉（已穿戴的不受影響）
+function bulkDeleteEquipment() {
+    let selected = getCheckedBulkQualities('bulk-equip-quality');
+    if (selected.length === 0) { alert("請先勾選要刪除的品級！"); return; }
+
+    let targets = player.equipInventory.filter(eq => selected.includes(eq.quality));
+    if (targets.length === 0) { alert("背包內沒有符合勾選品級的裝備。"); return; }
+
+    if (!confirm(`確定要刪除背包內 ${targets.length} 件【${selected.join('、')}】裝備嗎？\n此操作無法復原。`)) return;
+
+    player.equipInventory = player.equipInventory.filter(eq => !selected.includes(eq.quality));
+    addLog(`🗑️ 一鍵刪除了 ${targets.length} 件裝備（${selected.join('、')}）。`, "equip");
+    renderBag();
+    updateUI();
 }
 
 function deleteEquipFromInventory(equipId) {

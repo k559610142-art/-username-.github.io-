@@ -78,6 +78,14 @@ function migrateServantAssignments() {
     }
 }
 
+// 舊存檔相容：補齊之後版本新增的裝備部位（例如神器），避免欄位缺漏
+function migrateEquipmentSlots() {
+    if (!player.equipment || typeof player.equipment !== 'object') player.equipment = {};
+    for (let slot in equipTypes) {
+        if (!(slot in player.equipment)) player.equipment[slot] = null;
+    }
+}
+
 function resetGameCompletely() {
     if (confirm("確定要完全重置遊戲嗎？這將清除所有存檔進度！")) {
         localStorage.removeItem('xiuxian_save');
@@ -106,6 +114,7 @@ function loadLocal() {
             // 舊存檔可能在築基以前就被標記待渡劫，依現行規則清除
             if (player.pendingTribulation && player.realmIndex < TRIBULATION_MIN_REALM_INDEX) player.pendingTribulation = false;
             migrateServantAssignments();
+            migrateEquipmentSlots();
 
             // 讀取成功後觸發離線補償計算
             calcOfflineProgress();
@@ -155,6 +164,7 @@ function importSave() {
             // 舊存檔可能在築基以前就被標記待渡劫，依現行規則清除
             if (player.pendingTribulation && player.realmIndex < TRIBULATION_MIN_REALM_INDEX) player.pendingTribulation = false;
             migrateServantAssignments();
+            migrateEquipmentSlots();
 
             // 匯入成功後觸發離線補償計算
             calcOfflineProgress();

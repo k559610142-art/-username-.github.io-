@@ -13,7 +13,8 @@ let player = {
     equipment: {
         "劍": null, "刀": null, "扇": null, "弓": null, "笛": null, "筆": null,
         "頭": null, "內衣": null, "盔甲": null, "手套": null, "長靴": null, "披風": null,
-        "腰帶": null, "項鍊": null, "戒指": null, "耳環": null, "腰牌": null
+        "腰帶": null, "項鍊": null, "戒指": null, "耳環": null, "腰牌": null,
+        "神器": null
     },
     // 每位僕從自帶 quest（負責的任務代號）與 timer（自身進度），可各自指派不同任務
     servants: [],
