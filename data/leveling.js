@@ -43,6 +43,7 @@ function gainExp(amount) {
         player.stats.spr += 5;
         player.stats.cha += 2;
 
+        addDailyProgress('breakthrough');
         addLog(`✨ 修為精進，達到【${realms[player.realmIndex]} ${player.stage}階】！四維屬性 +5，魅力 +2。`, "level-up");
 
         player.hp = getMaxHp();

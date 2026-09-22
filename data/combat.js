@@ -24,6 +24,7 @@ function combatTick() {
             let def = getQuestDef(player.activeQuest, getSectTier());
             if (def) {
                 grantQuestRewards(def);
+                addDailyProgress('sectQuest');
                 addLog(`${def.icon} 任務完成【${def.name}】：獲得 ${formatQuestRewards(def)}`, "quest");
             }
             updateUI();
@@ -133,6 +134,7 @@ function combatTick() {
             let gainedExp = gainExp(expEarned) || 0;
             player.coins += coinsEarned;
             player.reputation = (player.reputation || 0) + killedCount;
+            addDailyProgress('kill', killedCount);
             let expText = (player.pendingTribulation && gainedExp === 0) ? "修為已滿(待渡劫)" : `${Math.floor(gainedExp)} 經驗`;
             addLog(`斬殺敵手，獲得 ${expText}, ${coinsEarned} 靈石 與 ${killedCount} 點聲望！`, "combat");
             for(let k = 0; k < killedCount; k++) {
@@ -180,6 +182,7 @@ function checkAutoHealAndMana() {
                 if (player.bag[bagItem.id] <= 0) delete player.bag[bagItem.id];
                 player.hp = Math.min(player.maxHp, player.hp + player.maxHp * bagItem.amount);
                 potionCooldownHp = POTION_COOLDOWN_SECONDS;
+                addDailyProgress('potion');
                 addLog(`⚡ [自動補血] 服用背包中的【${bagItem.name}】，氣血回復 ${Math.round(bagItem.amount * 100)}%！`, "heal");
             } else {
                 let buyItem = shopItems
@@ -189,6 +192,7 @@ function checkAutoHealAndMana() {
                     player.coins -= buyItem.cost;
                     player.hp = Math.min(player.maxHp, player.hp + player.maxHp * buyItem.amount);
                     potionCooldownHp = POTION_COOLDOWN_SECONDS;
+                addDailyProgress('potion');
                     addLog(`⚡ [自動補血] 自動購買並服下【${buyItem.name}】，氣血回復 ${Math.round(buyItem.amount * 100)}%！`, "heal");
                 }
             }
@@ -207,6 +211,7 @@ function checkAutoHealAndMana() {
                 if (player.bag[bagItem.id] <= 0) delete player.bag[bagItem.id];
                 player.mp = Math.min(player.maxMp, player.mp + player.maxMp * bagItem.amount);
                 potionCooldownMp = POTION_COOLDOWN_SECONDS;
+                addDailyProgress('potion');
                 addLog(`✨ [自動補魔] 服用背包中的【${bagItem.name}】，靈力回復 ${Math.round(bagItem.amount * 100)}%！`, "skill");
             } else {
                 let buyItem = shopItems
@@ -216,6 +221,7 @@ function checkAutoHealAndMana() {
                     player.coins -= buyItem.cost;
                     player.mp = Math.min(player.maxMp, player.mp + player.maxMp * buyItem.amount);
                     potionCooldownMp = POTION_COOLDOWN_SECONDS;
+                addDailyProgress('potion');
                     addLog(`✨ [自動補魔] 自動購買並服下【${buyItem.name}】，靈力回復 ${Math.round(buyItem.amount * 100)}%！`, "skill");
                 }
             }
@@ -261,6 +267,7 @@ function tryRescueServant() {
         };
 
         player.servants.push(newServant);
+        addDailyProgress('rescue');
         addLog(`🆘 在野外歷練時，憑藉高超氣質與魅力拯救了一名受困修士【${newServant.name}】！品質：<span class="quality-${newServant.quality}">${newServant.quality}</span> (任務速度 x${newServant.mult})！`, "servant");
     }
 }

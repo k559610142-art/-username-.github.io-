@@ -122,6 +122,7 @@ function forgeEquipment() {
     };
 
     player.equipInventory.push(newEquip);
+    addDailyProgress('forge');
     addLog(`⚒️ 鍛造閣開爐成功！獲得【${newEquip.quality}·${newEquip.element}屬性】的【${newEquip.name}】！`, "equip");
     updateUI();
 }

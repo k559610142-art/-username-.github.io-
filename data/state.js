@@ -26,6 +26,13 @@ let player = {
     reincarnations: 0,
     pendingTribulation: false,   // 小境界已滿 10 階，修為暫停、等待渡劫
     tribulationCount: 0,         // 累計渡劫成功次數
+
+    // 活動：每日任務與千寶閣（皆以時間戳判斷是否該刷新）
+    dailyQuests: [],             // 當期 10 項每日任務
+    dailyRefreshAt: 0,           // 每日任務下次刷新的時間戳
+    dailyStats: {},              // 當期各類型累計次數（刷新時清空）
+    auctionItems: [],            // 千寶閣當期 5 件商品
+    auctionRefreshAt: 0,         // 千寶閣下次上架的時間戳
     autoHp: { enabled: false, threshold: 50 },
     autoMp: { enabled: false, threshold: 30 },
     lastSaveTime: Date.now()

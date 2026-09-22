@@ -136,6 +136,7 @@ function tickServantQuests() {
             let def = getQuestDef(s.quest, tier);
             if (!def) { s.quest = null; break; }
             grantQuestRewards(def);
+            addDailyProgress('sectQuest');
             addLog(`${def.icon} 僕從【${s.name}】完成【${def.name}】：獲得 ${formatQuestRewards(def)}`, "servant");
             anyCompleted = true;
         }

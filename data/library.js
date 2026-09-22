@@ -20,6 +20,7 @@ function studyBook(statType) {
     player.martialPoints -= 10;
     player.studyCounts[statType]++;
     player.stats[statType] += 20;
+    addDailyProgress('study');
 
     let names = { str: '力量', con: '體質', int: '悟性', spr: '靈力' };
     addLog(`📚 在藏書閣研讀秘典 (${player.studyCounts[statType]}/100)，【${names[statType]}】永久提升 20 點！`, "skill");

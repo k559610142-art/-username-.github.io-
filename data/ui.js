@@ -134,6 +134,7 @@ function updateUI() {
 
     updateTribulationUI();
     updatePotionCooldownUI();
+    renderActivityList();
 
     let hpPercent = Math.max((player.hp / player.maxHp) * 100, 0);
     document.getElementById('hp-bar').style.width = hpPercent + '%';
@@ -228,6 +229,17 @@ function refreshCombatStatusText() {
 }
 
 function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+// 把剩餘毫秒數格式化成「3 小時 12 分」，供每日任務／千寶閣倒數使用
+function formatCountdown(ms) {
+    if (!ms || ms <= 0) return "即將刷新";
+    const totalMinutes = Math.floor(ms / 60000);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    if (hours > 0) return `${hours} 小時 ${minutes} 分`;
+    if (minutes > 0) return `${minutes} 分`;
+    return "不到 1 分鐘";
+}
 
 // 抽屜式區塊展開/收合（命運與系統）
 function toggleDrawer(id, btn) {

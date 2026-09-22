@@ -16,6 +16,7 @@ function plantHerb(type) {
         player.spiritGrass -= reqGrass;
         player.coins -= reqCoins;
         player.herbs[type]++;
+        addDailyProgress('plant');
         let names = {mortal: '凡品', high: '上品', epic: '極品', immortal: '仙品'};
         addLog(`🌾 消耗資源，在靈田成功培育並收穫了 1 株【${names[type]}靈草】！`, "system");
         updateUI();

@@ -86,6 +86,15 @@ function migrateEquipmentSlots() {
     }
 }
 
+// 舊存檔相容：補上活動相關欄位（每日任務／千寶閣）
+function migrateActivityFields() {
+    if (!Array.isArray(player.dailyQuests)) player.dailyQuests = [];
+    if (typeof player.dailyRefreshAt !== 'number') player.dailyRefreshAt = 0;
+    if (!player.dailyStats || typeof player.dailyStats !== 'object') player.dailyStats = {};
+    if (!Array.isArray(player.auctionItems)) player.auctionItems = [];
+    if (typeof player.auctionRefreshAt !== 'number') player.auctionRefreshAt = 0;
+}
+
 function resetGameCompletely() {
     if (confirm("確定要完全重置遊戲嗎？這將清除所有存檔進度！")) {
         localStorage.removeItem('xiuxian_save');
@@ -115,6 +124,7 @@ function loadLocal() {
             if (player.pendingTribulation && player.realmIndex < TRIBULATION_MIN_REALM_INDEX) player.pendingTribulation = false;
             migrateServantAssignments();
             migrateEquipmentSlots();
+            migrateActivityFields();
 
             // 讀取成功後觸發離線補償計算
             calcOfflineProgress();
@@ -165,6 +175,7 @@ function importSave() {
             if (player.pendingTribulation && player.realmIndex < TRIBULATION_MIN_REALM_INDEX) player.pendingTribulation = false;
             migrateServantAssignments();
             migrateEquipmentSlots();
+            migrateActivityFields();
 
             // 匯入成功後觸發離線補償計算
             calcOfflineProgress();

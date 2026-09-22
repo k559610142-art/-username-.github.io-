@@ -539,7 +539,10 @@
 
         <div class="panel">
             <div class="panel-title">修仙地圖</div>
-            <div id="map-category-list">
+            <button class="sys-btn drawer-toggle" onclick="toggleDrawer('drawer-map', this)">
+                🗺️ 展開選單 <span class="drawer-arrow">▾</span>
+            </button>
+            <div id="drawer-map" class="drawer-body">
                 <button class="sys-btn" onclick="openMapCategoryModal(0)">📍 第一區：宗門核心安全區</button>
                 <button class="sys-btn" onclick="openMapCategoryModal(1)">📍 第二區：野外歷練區</button>
                 <button class="sys-btn" onclick="openMapCategoryModal(2)">📍 第三區：開放世界大區域</button>
@@ -583,12 +586,21 @@
     </div>
 
     <div class="panel">
-        <div class="panel-title">宗門與設施</div>
+        <!-- 技能面板上移到最頂端，方便隨時確認可用絕學 -->
+        <div class="panel-title">當前可用技能</div>
+        <div id="skill-list" style="margin-bottom: 15px; font-size: 0.9em; color: #c084fc; background: rgba(192, 132, 252, 0.05); padding: 8px; border-radius: 6px; border: 1px dashed rgba(192, 132, 252, 0.2);">
+            尚未領悟門派技能。
+        </div>
+
+        <div class="panel-title" style="margin-top: 20px;">宗門與設施</div>
+        <button class="sys-btn drawer-toggle" onclick="toggleDrawer('drawer-facility', this)">
+            ⛩️ 展開選單 <span class="drawer-arrow">▾</span>
+        </button>
+        <div id="drawer-facility" class="drawer-body">
         <button class="sect-btn" onclick="openSectModal()">⛩️ 尋訪仙門 (加入/切換)</button>
         <button class="shop-btn" onclick="openShopModal()">💊 丹藥堂 (買賣丹藥)</button>
         <button class="sys-btn" style="border-color: rgba(250, 204, 21, 0.4); color: #facc15;" onclick="openBagModal()">🎒 修仙背包 (道具/裝備)</button>
         <button class="servant-btn" onclick="openServantModal()">🤝 僕從小屋 (拯救與派遣)</button>
-        <button class="sys-btn" style="border-color: rgba(34, 211, 238, 0.45); color: #22d3ee;" onclick="openDailyQuestModal()">📅 每日任務</button>
 
         <button id="btn-sect-quest" class="sect-btn" style="border-color:#22d3ee; color:#22d3ee; display: none;" onclick="openQuestModal()">📜 門派任務 (需在演武學宮)</button>
         <button id="btn-sect-field" class="sect-btn" style="border-color:#4ade80; color:#4ade80; display: none;" onclick="openFieldModal()">🚜 宗門靈田 (種植靈草)</button>
@@ -598,9 +610,15 @@
         <button id="btn-forbidden-library" class="equip-btn" style="border-color:#c084fc; color:#c084fc; display: none;" onclick="openLibraryModal()">📚 藏書閣 (秘籍領悟)</button>
         <button id="btn-forbidden-forge" class="equip-btn" style="border-color:#fb923c; color:#fb923c; display: none;" onclick="openForgeModal()">⚒️ 鍛造閣 (裝備打造)</button>
         <button id="btn-forbidden-alchemy" class="shop-btn" style="border-color:#f472b6; color:#f472b6; display: none;" onclick="openAlchemyModal()">🧪 煉丹房 (丹藥煉製)</button>
+        </div>
 
-        <div id="skill-list" style="margin-top: 12px; margin-bottom: 15px; font-size: 0.9em; color: #c084fc; background: rgba(192, 132, 252, 0.05); padding: 8px; border-radius: 6px; border: 1px dashed rgba(192, 132, 252, 0.2);">
-            尚未領悟門派技能。
+        <!-- 活動：按鈕與解鎖狀態由 activity.js 依聲望/境界即時產生 -->
+        <div class="panel-title" style="margin-top: 20px;">活動</div>
+        <button class="sys-btn drawer-toggle" style="border-color: rgba(34,211,238,0.45); color: #22d3ee;" onclick="toggleDrawer('drawer-activity', this)">
+            🎪 展開選單 <span class="drawer-arrow">▾</span>
+        </button>
+        <div id="drawer-activity" class="drawer-body">
+            <div id="activity-list"></div>
         </div>
 
         <!-- 命運與系統：預設收合，分成「存檔管理」與「命運抉擇」兩個抽屜，避免誤觸重置 -->
@@ -703,12 +721,22 @@
     </div>
 </div>
 
-<!-- 每日任務：介面骨架已就緒，任務內容與獎勵後續再補（見 data/daily-quest.js） -->
+<!-- 每日任務：內容由 data/daily-quest.js 產生（每 12 小時刷新 10 項） -->
 <div id="daily-quest-modal" class="modal-bg">
     <div class="modal-content" style="border-color: #22d3ee; text-align: center;">
         <h2 style="color: #22d3ee; margin-top: 0;">📅 每日任務</h2>
-        <div id="daily-quest-container" style="margin: 20px 0;"></div>
+        <div id="daily-quest-container" style="margin: 16px 0;"></div>
         <button class="close-btn" onclick="closeModal('daily-quest-modal')">關閉</button>
+    </div>
+</div>
+
+<!-- 千寶閣（拍賣場）：內容由 data/auction.js 產生（每 3 小時刷新 5 件） -->
+<div id="auction-modal" class="modal-bg">
+    <div class="modal-content" style="border-color: var(--accent); text-align: center;">
+        <h2 style="color: var(--accent); margin-top: 0;">🏺 千寶閣</h2>
+        <p style="color: #9ca3af; font-size: 0.88em;">天下奇珍匯聚之所，過時不候。</p>
+        <div id="auction-container" style="margin: 16px 0;"></div>
+        <button class="close-btn" onclick="closeModal('auction-modal')">離開</button>
     </div>
 </div>
 
@@ -854,6 +882,8 @@
 <script src="data/config-equipment.js"></script>
 <script src="data/config-tribulation.js"></script>
 <script src="data/config-quests.js"></script>
+<script src="data/config-activities.js"></script>
+<script src="data/config-daily-quests.js"></script>
 <script src="data/state.js"></script>
 <script src="data/stats.js"></script>
 <script src="data/ui.js"></script>
@@ -868,7 +898,9 @@
 <script src="data/lingbao-shop.js"></script>
 <script src="data/servant.js"></script>
 <script src="data/quest.js"></script>
+<script src="data/activity.js"></script>
 <script src="data/daily-quest.js"></script>
+<script src="data/auction.js"></script>
 <script src="data/field.js"></script>
 <script src="data/beast.js"></script>
 <script src="data/library.js"></script>

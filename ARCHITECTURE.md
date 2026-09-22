@@ -25,7 +25,9 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
   sect.js / shop.js / bag.js / equipment.js / lingbao-shop.js /
   servant.js / quest.js / field.js / beast.js / library.js / alchemy.js
                       每個彈出視窗(modal) 對應一支檔案，管理該功能的渲染與互動
-  daily-quest.js      每日任務（目前僅有介面骨架，內容後續再實作）
+  activity.js         活動選單：統一把關各活動的解鎖條件（聲望＋境界）
+  daily-quest.js      每日任務（每 12 小時刷新 10 項）
+  auction.js          千寶閣拍賣場（每 3 小時刷新 5 件商品）
   player-profile.js   玩家道號修改
   save.js             本地存檔/讀檔/匯出入/離線掛機結算/重置
   main.js             initGame() 與 window.onload，遊戲啟動進入點
@@ -149,7 +151,9 @@ combatTick() 每秒執行 [combat.js]
 | `closeModal`, `toggleDrawer`, `toggleAllBulkQualities` | `data/ui.js` |
 | `bulkDeleteEquipment` | `data/bag.js` |
 | `bulkDismissServants`, `assignServantQuest` | `data/servant.js` |
-| `openDailyQuestModal` | `data/daily-quest.js` |
+| `openActivity` | `data/activity.js` |
+| `openDailyQuestModal`, `claimDailyQuest`, `claimAllDailyQuests` | `data/daily-quest.js` |
+| `openAuctionModal`, `buyAuctionItem` | `data/auction.js` |
 | `enterWorld` | `data/title-screen.js` |
 
 ## 5. 新增功能的建議流程
@@ -224,7 +228,7 @@ combatTick() 每秒執行 [combat.js]
 - 自動輔助的選藥邏輯為「背包內回復量最高者 → 否則買得起且未標記 `noAutoBuy` 的回復量最高者」，
   新增丹藥只要加進 `config-shop.js` 就會自動納入，不需改動 `combat.js`。
 
-## 9. 介面慣例（抽屜、批次刪除、預留欄位）
+## 9. 介面慣例（抽屜、批次刪除、神器欄）
 
 - **抽屜式區塊**：`ui.js` 的 `toggleDrawer(id, btn)` 切換 `.drawer-body.open`。
   「命運與系統」拆成【存檔管理】與【命運抉擇】兩個抽屜，兩者**預設收合**，
@@ -241,7 +245,36 @@ combatTick() 每秒執行 [combat.js]
 - **預留介面**：`daily-quest.js` 的每日任務目前只有彈窗骨架與「敬請期待」文字，
   之後補內容時建議把任務表放進 `data/config-daily-quests.js`，比照 `config-quests.js` 的做法。
 
-## 10. 遊戲主頁（標題畫面）
+## 10. 活動系統（每日任務 / 千寶閣 / 待實作項目）
+
+所有活動集中在右側「活動」抽屜，按鈕由 `activity.js` 的 `renderActivityList()` 依
+`config-activities.js` 產生，並在 `updateUI()` 內每秒重繪，因此解鎖狀態會即時反映聲望與境界變化。
+
+| 活動 | 聲望門檻 | 境界門檻 | 狀態 |
+|---|---|---|---|
+| 每日任務 | 1,000 | 無 | ✅ 已實作（每 12 小時刷新 10 項） |
+| 千寶閣（拍賣場） | 5,000 | 無 | ✅ 已實作（每 3 小時刷新 5 件） |
+| 秘境 | 5,000 | 煉虛 | ⏳ 敬請期待 |
+| 獵殺邪修 | 8,000 | 金丹 | ⏳ 敬請期待 |
+| 域外天魔（世界BOSS） | 10,000 | 大乘 | ⏳ 敬請期待 |
+
+- **解鎖判定**一律走 `getActivityLockReason()`，未達標會說明缺什麼；
+  `implemented: false` 的活動即使達標也只顯示「敬請期待」。
+  **新增活動時只要在 `config-activities.js` 加一筆**，按鈕與把關都會自動生效。
+- **刷新機制**：兩者都用「下次刷新時間戳」判斷（`dailyRefreshAt` / `auctionRefreshAt`），
+  開啟面板時呼叫 `refreshDailyQuestsIfDue()` / `refreshAuctionIfDue()`。
+  時間戳存進存檔，所以關掉網頁再回來，倒數仍然正確（不是以「開啟次數」計算）。
+- **每日任務進度**：任務池剛好 10 項且每次全用上，各自隨機難度（普通/困難/艱鉅）。
+  進度靠各功能呼叫 `addDailyProgress(type, n)` 累加，目前已接上的埋點：
+  `kill`(combat.js 擊殺)、`sectQuest`(combat.js 玩家任務 + servant.js 僕從任務)、
+  `potion`(bag.js 手動服用 + combat.js 自動補給)、`forge`(equipment.js)、`plant`(field.js)、
+  `study`(library.js)、`craft`(alchemy.js)、`rescue`(combat.js)、`buy`(shop.js)、
+  `breakthrough`(leveling.js 小境界升階)。
+  **新增任務類型時，務必到對應功能補上 `addDailyProgress()`，否則進度永遠是 0。**
+- **千寶閣商品**由 `rollAuctionItem()` 依 `auctionQualityOdds` 抽品質、玩家境界決定數值與售價，
+  神器不在拍賣場流通（沿用 `NON_FORGEABLE_SLOTS`）。
+
+## 11. 遊戲主頁（標題畫面）
 
 - 畫面結構在 `index.html` 的 `#title-screen`，樣式集中在 `<style>` 內同名的區塊，邏輯在 `data/title-screen.js`。
 - **滿版呈現**：封面 `#title-art` 使用 `position: absolute; inset: 0` + `object-fit: cover`，
@@ -277,7 +310,7 @@ combatTick() 每秒執行 [combat.js]
   避免遊戲畫面在 JS 執行前閃一下；`enterWorld()` 會移除這個 class。
 - `worldEntered` 旗標確保只會觸發一次（避免重複建立 `setInterval`）。
 
-## 11. 門派任務與僕從派遣
+## 12. 門派任務與僕從派遣
 
 任務的**名稱、圖示、獎勵**全部集中在 `config-quests.js` 的 `questData`（以宗門等級 1/2/3 分層）。
 任務面板顯示的獎勵與實際發放的獎勵讀取同一份資料，**改數值只需要改這一個檔案**。

@@ -33,5 +33,6 @@ function craftPill(type) {
         player.stats.cha += 20;
         addLog("🧪 服用【駐顏駐魅力丹】，魅力 +20！", "heal");
     }
+    addDailyProgress('craft');
     updateUI();
 }

@@ -91,6 +91,7 @@ function buyShopItem(id) {
 
     player.coins -= totalCost;
     player.bag[id] = (player.bag[id] || 0) + qty;
+    addDailyProgress('buy', qty);
     addLog(`🛒 購買了【${item.name}】x${qty}，花費 ${totalCost.toLocaleString()} 靈石，已存入背包。`, "system");
     updateShopTotal(id);
     updateUI();

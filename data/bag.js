@@ -78,6 +78,7 @@ function useItemFromBag(itemId) {
 
     player.bag[itemId]--;
     if (player.bag[itemId] <= 0) delete player.bag[itemId];
+    addDailyProgress('potion');
     renderBag();
     updateUI();
 }
