@@ -4,7 +4,7 @@ function combatTick() {
     if (potionCooldownHp > 0) potionCooldownHp--;
     if (potionCooldownMp > 0) potionCooldownMp--;
 
-    if (player.hp <= 0) return;
+    if (gameOver || player.hp <= 0) return;
 
     if (player.buffTimer > 0) player.buffTimer--;
 
@@ -78,9 +78,7 @@ function combatTick() {
     } else {
         let usedSkill = false;
 
-        let availableSkills = [];
-        if (player.sect && player.sect.skills) availableSkills = availableSkills.concat(player.sect.skills);
-        if (player.learnedSkills) availableSkills = availableSkills.concat(player.learnedSkills);
+        let availableSkills = getAllSkills();
 
         if (availableSkills.length > 0 && Math.random() < 0.4) {
             let skill = availableSkills[Math.floor(Math.random() * availableSkills.length)];
@@ -116,6 +114,9 @@ function combatTick() {
             enemies[0].hp -= getPhysAttack();
         }
 
+        // 存活的靈寵各自判定是否出手協助
+        petAssistTick(enemies);
+
         let expEarned = 0;
         let coinsEarned = 0;
         let killedCount = 0;
@@ -149,9 +150,10 @@ function combatTick() {
         } else {
             let totalDmg = 0;
             enemies.forEach(e => totalDmg += e.attack);
-            player.hp -= totalDmg;
+            player.hp -= applyPetDamageReduction(totalDmg);
 
             if (player.hp <= 0) {
+                if (handlePlayerDeath()) return;
                 player.hp = 1;
                 enemies = [];
                 respawnTimer = 0;

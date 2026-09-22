@@ -37,3 +37,13 @@ const auctionQualityOdds = [
     { quality: "綠色", chance: 0.20 },
     { quality: "白色", chance: 0.10 }
 ];
+
+// 千寶閣的壽元丹：每個商品欄位依下列機率「先」判定是否上架壽元丹（合計 27%），
+// 沒抽中才改上架裝備。購買需同時支付靈石與聲望，標下後立即服用增加壽元。
+const auctionLifePills = [
+    { id: "life_pill_0", name: "普通壽元丹", quality: "白色", years: 10,  chance: 0.10, coins: 10000,  rep: 1000 },
+    { id: "life_pill_1", name: "一紋壽元丹", quality: "綠色", years: 20,  chance: 0.08, coins: 20000,  rep: 2000 },
+    { id: "life_pill_2", name: "二紋壽元丹", quality: "藍色", years: 30,  chance: 0.05, coins: 50000,  rep: 3000 },
+    { id: "life_pill_3", name: "三紋壽元丹", quality: "紫色", years: 50,  chance: 0.03, coins: 80000,  rep: 5000 },
+    { id: "life_pill_4", name: "四紋壽元丹", quality: "橙色", years: 100, chance: 0.01, coins: 100000, rep: 10000 }
+];

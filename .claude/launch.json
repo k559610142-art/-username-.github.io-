@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "static",
+      "runtimeExecutable": "powershell",
+      "runtimeArgs": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "C:\\Users\\User\\AppData\\Local\\Temp\\claude\\C--Users-User-Desktop--------username--github-io-\\84ab306a-f699-4dbc-85d8-e4cb7499c5bb\\scratchpad\\serve.ps1", "-Root", "C:\\Users\\User\\Desktop\\凡人修仙傳\\-username-.github.io-", "-Port", "8765"],
+      "port": 8765
+    }
+  ]
+}

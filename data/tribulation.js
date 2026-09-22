@@ -20,7 +20,7 @@ function triggerTribulation() {
         + `心魔戰力：${demonPower.toLocaleString()}（你的 150%）\n`
         + `心魔氣血：${demonHp.toLocaleString()}（與你相同）\n`
         + `心魔為人形魔身，會施展魔功並吸取靈力。\n\n`
-        + `建議先備妥丹藥並開啟自動補血；渡劫失敗只會重傷跌回安全區，可再次挑戰。${warn}\n\n是否開始渡劫？`
+        + `建議先備妥丹藥並開啟自動補血；渡劫失敗會重傷跌回安全區並折壽 ${getDeathLifespanCost()} 年（剩餘 ${player.lifespan.toLocaleString()} 年），靈寵也會陣亡。${warn}\n\n是否開始渡劫？`
     )) return;
 
     enemies = [];
@@ -51,9 +51,7 @@ function tribulationTick() {
 
     // ---- 玩家出手：與一般戰鬥相同的技能判定 ----
     let usedSkill = false;
-    let availableSkills = [];
-    if (player.sect && player.sect.skills) availableSkills = availableSkills.concat(player.sect.skills);
-    if (player.learnedSkills) availableSkills = availableSkills.concat(player.learnedSkills);
+    let availableSkills = getAllSkills();
 
     if (availableSkills.length > 0 && Math.random() < 0.4) {
         let skill = availableSkills[Math.floor(Math.random() * availableSkills.length)];
@@ -86,6 +84,9 @@ function tribulationTick() {
         heartDemon.hp -= getPhysAttack();
     }
 
+    // 靈寵協助（渡劫為一對一，群體技能也只打在心魔身上）
+    petAssistTick([heartDemon]);
+
     if (heartDemon.hp <= 0) {
         endTribulation(true);
         return;
@@ -113,7 +114,7 @@ function tribulationTick() {
         }
     }
 
-    player.hp -= demonDmg;
+    player.hp -= applyPetDamageReduction(demonDmg);
 
     if (player.hp <= 0) {
         endTribulation(false);
@@ -135,6 +136,8 @@ function endTribulation(success) {
         refreshCombatStatusText();
         updateUI();
     } else {
+        // 渡劫失敗視同死亡：折壽並使靈寵陣亡，壽元耗盡則遊戲結束
+        if (handlePlayerDeath()) return;
         player.hp = 1;
         let lostCoins = Math.floor(player.coins * TRIBULATION_FAIL_COIN_LOSS);
         player.coins -= lostCoins;

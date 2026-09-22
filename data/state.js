@@ -3,6 +3,8 @@ let player = {
     name: "韓立",
     gender: "male",
     realmIndex: 0, stage: 1, exp: 0,
+    level: 1, levelExp: 0,       // 人物等級（與境界獨立，上限 MAX_PLAYER_LEVEL）
+    lifespan: 60,                // 剩餘壽元（年），歸零即身死道消、重新開始
     hp: 100, maxHp: 100, mp: 100, maxMp: 100, coins: 0, reputation: 0,
     stats: { str: 10, con: 10, int: 10, spr: 10, cha: 10 },
     studyCounts: { str: 0, con: 0, int: 0, spr: 0 },
@@ -18,10 +20,12 @@ let player = {
     },
     // 每位僕從自帶 quest（負責的任務代號）與 timer（自身進度），可各自指派不同任務
     servants: [],
+    // 每隻靈寵：{ id, level, exp, alive, skills: [6 格，已選的五行屬性或 null] }
     beasts: [],
     activeQuest: null, questTimer: 0,   // 玩家「親自」執行的任務（須待在演武學宮）
     currentMap: maps[0].items[0], currentMapIsSafe: true,
     sect: null, buffTimer: 0, buffMult: 1,
+    sectSkills: { 1: null, 2: null, 3: null },   // 各階段已拜入（並學得技能）的宗門名稱，選定後鎖定
     learnedSkills: [],
     reincarnations: 0,
     pendingTribulation: false,   // 小境界已滿 10 階，修為暫停、等待渡劫
@@ -47,3 +51,9 @@ let inTribulation = false;   // 是否正在與心魔對決
 let heartDemon = null;       // 心魔實體 { name, icon, hp, maxHp, attack, buffTimer, buffMult }
 let potionCooldownHp = 0;    // 氣血類藥品剩餘冷卻秒數
 let potionCooldownMp = 0;    // 靈力類藥品剩餘冷卻秒數
+let gameOver = false;        // 壽元耗盡：停止戰鬥與存檔，等待重新載入
+
+// 靈寵輔助效果（木：攻擊增益／土：減傷／水：持續回復），皆以回合數倒數
+let petBuffTimer = 0, petBuffMult = 1;
+let petShieldTimer = 0, petShieldRate = 0;
+let petRegenTimer = 0, petRegenRate = 0;

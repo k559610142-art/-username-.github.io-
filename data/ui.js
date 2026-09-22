@@ -105,6 +105,12 @@ function updateUI() {
     if (player.mp > player.maxMp) player.mp = player.maxMp;
 
     document.getElementById('realm-display').innerText = `${realms[player.realmIndex]} ${player.stage}階`;
+    let levelPct = player.level >= MAX_PLAYER_LEVEL ? 100 : Math.min(player.levelExp / getLevelExpNeeded(player.level) * 100, 100);
+    document.getElementById('level-display').innerText = `Lv.${player.level.toLocaleString()} (${levelPct.toFixed(1)}%)`;
+    let lifespanEl = document.getElementById('lifespan-display');
+    lifespanEl.innerText = `${player.lifespan.toLocaleString()} 年`;
+    lifespanEl.title = `此境界每死亡一次折壽 ${getDeathLifespanCost()} 年`;
+    lifespanEl.style.color = player.lifespan <= getDeathLifespanCost() * 3 ? '#ef4444' : '#4ade80';
     document.getElementById('power-display').innerText = getPhysAttack().toLocaleString();
     document.getElementById('sect-display').innerText = player.sect ? player.sect.name : "散修 (無技能)";
     document.getElementById('coins-display').innerText = player.coins.toLocaleString();
@@ -186,23 +192,21 @@ function updateStudyCountsUI() {
 }
 
 function renderSkillList() {
-    let skills = [];
-    if (player.sect && player.sect.skills) {
-        skills = [...player.sect.skills];
-    }
-    if (player.learnedSkills) {
-        skills = skills.concat(player.learnedSkills);
-    }
+    let skills = getAllSkills();
 
     if (skills.length === 0) {
         document.getElementById('skill-list').innerHTML = "尚未領悟門派技能。";
         return;
     }
 
-    let html = "<strong>當前可用技能/絕學：</strong><br>";
+    let html = "";
     skills.forEach(sk => {
         let typeName = {"single":"單體", "aoe":"範圍", "heal":"補血", "buff":"增益"}[sk.type];
-        html += `・${sk.name} (${typeName}, 耗魔:${sk.mpCost})<br>`;
+        let source = sk.tier ? SECT_TIER_NAMES[sk.tier] : "禁術";
+        let detail = (sk.type === "single" || sk.type === "aoe")
+            ? `${typeName}・${sk.dmgType === 'mag' ? '悟性' : '力量'}・威力 ${Math.round(sk.mult * 100)}%`
+            : typeName;
+        html += `・[${source}] ${sk.name} (${detail}, 耗魔:${sk.mpCost})<br>`;
     });
     document.getElementById('skill-list').innerHTML = html;
 }

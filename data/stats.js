@@ -36,10 +36,25 @@ function getWuxingBuff() {
 }
 
 function getNextExp() { return (player.realmIndex === 0 ? 100 : 200 * Math.pow(10, player.realmIndex)) * player.stage; }
+
+// 人物等級：從 level 升到 level+1 所需的經驗（見 config-level.js）
+function getLevelExpNeeded(level) {
+    let coef = LEVEL_EXP_SEGMENTS[0].coef;
+    for (let seg of LEVEL_EXP_SEGMENTS) {
+        if (level >= seg.minLevel) coef = seg.coef;
+    }
+    return Math.floor(coef * Math.pow(level, 1.5));
+}
+
+// 是否擁有「存活中」的指定靈寵（死亡的靈寵不提供被動加成）
+function hasLiveBeast(id) {
+    return player.beasts.some(b => b.id === id && b.alive);
+}
+
 function getBasePower() {
     let base = Math.pow(10, player.realmIndex) * 5 * player.stage + player.exp / 100;
-    if (player.beasts.includes('wolf')) base *= 1.15;
-    if (player.beasts.includes('dragon')) base *= 1.3;
+    if (hasLiveBeast('wolf')) base *= 1.15;
+    if (hasLiveBeast('dragon')) base *= 1.3;
     return base;
 }
 
@@ -50,6 +65,7 @@ function getPhysAttack() {
     let wuxing = getWuxingBuff();
     if (wuxing.type === "火") base *= 1.2;
     if (player.buffTimer > 0) base *= player.buffMult;
+    if (petBuffTimer > 0) base *= petBuffMult;
     return Math.floor(base);
 }
 
@@ -60,6 +76,7 @@ function getMagAttack() {
     let wuxing = getWuxingBuff();
     if (wuxing.type === "火") base *= 1.2;
     if (player.buffTimer > 0) base *= player.buffMult;
+    if (petBuffTimer > 0) base *= petBuffMult;
     return Math.floor(base);
 }
 
@@ -70,22 +87,29 @@ function getMaxHp() {
     if (wuxing.type === "土") totalCon *= 1.2;
     let baseHp = Math.floor(getBasePower() * 20 * (player.sect ? player.sect.powerMult : 1.0) + (totalCon * 10));
     if (wuxing.type === "水") baseHp = Math.floor(baseHp * 1.2);
-    return baseHp;
+    return baseHp + (player.level - 1) * LEVEL_UP_HP_GAIN;
 }
 
 function getMaxMp() {
     let eqBonus = getEquipBonus();
     let totalSpr = player.stats.spr + eqBonus.spr;
-    return Math.floor(50 + (totalSpr * 10));
+    return Math.floor(50 + (totalSpr * 10)) + (player.level - 1) * LEVEL_UP_MP_GAIN;
 }
 
-// 依宗門名稱分級（凡俗/修真/至高），供任務獎勵與門檻判斷使用
+// 依目前宗門分級（凡俗 1 / 修真 2 / 至高 3），供任務獎勵與門檻判斷使用
 function getSectTier() {
     if (!player.sect) return 1;
-    let name = player.sect.name;
-    let tier1 = ["武當", "峨嵋", "少林寺", "全真教", "皇朝"];
-    let tier2 = ["崑崙仙宗", "蜀山劍派", "丹鼎司", "御獸仙宗", "天魔教"];
-    if (tier1.includes(name)) return 1;
-    if (tier2.includes(name)) return 2;
-    return 3;
+    let sect = findSectByName(player.sect.name);
+    return sect ? sect.tier : 1;
+}
+
+// 目前可施展的所有技能：各階段已學的宗門技能（初級→高級）+ 靈寶閣習得的禁術
+function getAllSkills() {
+    let skills = [];
+    for (let tier of [1, 2, 3]) {
+        let sect = player.sectSkills && player.sectSkills[tier] ? findSectByName(player.sectSkills[tier]) : null;
+        if (sect) skills = skills.concat(sect.skills);
+    }
+    if (player.learnedSkills) skills = skills.concat(player.learnedSkills);
+    return skills;
 }

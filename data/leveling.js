@@ -1,13 +1,18 @@
 // 經驗獲取、小境界升階、大境界突破（需渡劫）與轉世輪迴
 
-// 回傳實際獲得的經驗值；若修為已圓滿待渡劫則回傳 0（經驗暫停累積）
+// 回傳實際獲得的「境界修為」；若修為已圓滿待渡劫則回傳 0（境界經驗暫停累積）
+// 人物等級與靈寵等級不受渡劫限制，仍會持續成長。
 function gainExp(amount) {
-    if (player.pendingTribulation) return 0;
-    if (player.realmIndex >= realms.length - 1 && player.stage >= 10) return 0;
-
     let finalAmount = amount * (player.sect ? player.sect.expMult : 1.0);
-    if (player.beasts.includes('fox')) finalAmount *= 1.1;
-    if (player.beasts.includes('dragon')) finalAmount *= 1.2;
+    if (hasLiveBeast('fox')) finalAmount *= 1.1;
+    if (hasLiveBeast('dragon')) finalAmount *= 1.2;
+
+    gainLevelExp(finalAmount);
+    gainBeastExp(finalAmount);
+
+    if (player.pendingTribulation) { updateUI(); return 0; }
+    if (player.realmIndex >= realms.length - 1 && player.stage >= 10) { updateUI(); return 0; }
+
     player.exp += finalAmount;
 
     let maxExp = getNextExp();
@@ -54,6 +59,31 @@ function gainExp(amount) {
     return finalAmount;
 }
 
+// 人物等級：每升 1 級四維各 +1、生命上限 +10、靈力上限 +5（後兩者由 getMaxHp/getMaxMp 依等級計算）
+function gainLevelExp(amount) {
+    if (player.level >= MAX_PLAYER_LEVEL || !(amount > 0)) return;
+    player.levelExp += amount;
+
+    let startLevel = player.level;
+    let need = getLevelExpNeeded(player.level);
+    while (player.levelExp >= need && player.level < MAX_PLAYER_LEVEL) {
+        player.levelExp -= need;
+        player.level++;
+        need = getLevelExpNeeded(player.level);
+    }
+    if (player.level >= MAX_PLAYER_LEVEL) player.levelExp = 0;
+
+    let gained = player.level - startLevel;
+    if (gained > 0) {
+        let statGain = gained * LEVEL_UP_STAT_GAIN;
+        player.stats.str += statGain;
+        player.stats.con += statGain;
+        player.stats.int += statGain;
+        player.stats.spr += statGain;
+        addLog(`🆙 人物等級提升至【Lv.${player.level}】${gained > 1 ? `（連升 ${gained} 級）` : ''}！四維各 +${statGain}，生命上限 +${gained * LEVEL_UP_HP_GAIN}，靈力上限 +${gained * LEVEL_UP_MP_GAIN}。`, "level-up");
+    }
+}
+
 // 晉升下一個大境界（僅由渡劫成功時呼叫，見 tribulation.js）
 function advanceRealm() {
     player.realmIndex++;
@@ -81,6 +111,7 @@ function advanceRealm() {
     player.mp = getMaxMp();
 
     addLog(`⚡ 突破成功！境界晉升至【${realmName}】！四維與魅力屬性全面暴增！`, "level-up");
+    gainRealmLifespan();
 }
 
 function triggerReincarnate() {
@@ -89,12 +120,13 @@ function triggerReincarnate() {
         return;
     }
 
-    if (confirm("轉世輪迴將重置等級與境界，但會永久增加輪迴次數並提升天賦！是否確定輪迴？")) {
+    if (confirm("轉世輪迴將重置境界，壽元也會回到凡人的 60 年（人物等級保留），但會永久增加輪迴次數並提升天賦！是否確定輪迴？")) {
         player.reincarnations++;
         player.realmIndex = 0;
         player.stage = 1;
         player.exp = 0;
         player.pendingTribulation = false;
+        player.lifespan = lifespanByRealm[0].gain;
         player.stats = { str: 10 + player.reincarnations * 50, con: 10 + player.reincarnations * 50, int: 10 + player.reincarnations * 50, spr: 10 + player.reincarnations * 50, cha: 10 + player.reincarnations * 10 };
         player.studyCounts = { str: 0, con: 0, int: 0, spr: 0 };
         player.hp = getMaxHp();

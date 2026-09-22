@@ -95,6 +95,34 @@ function migrateActivityFields() {
     if (typeof player.auctionRefreshAt !== 'number') player.auctionRefreshAt = 0;
 }
 
+// 舊存檔相容：人物等級、壽元、分階段宗門技能、靈寵等級制
+// savedData 是存檔原始內容：player 已被 Object.assign 合併過預設值（lifespan 60），
+// 必須看原始存檔才知道壽元欄位是否真的不存在。
+function migrateProgressionFields(savedData) {
+    if (typeof player.level !== 'number' || player.level < 1) player.level = 1;
+    if (typeof player.levelExp !== 'number') player.levelExp = 0;
+    if (typeof savedData.lifespan !== 'number') player.lifespan = getInitialLifespanForRealm(player.realmIndex);
+
+    // 存檔內的 player.sect 是舊版整包物件，改指向最新設定，技能/倍率調整才會生效
+    if (!player.sectSkills || typeof player.sectSkills !== 'object') player.sectSkills = { 1: null, 2: null, 3: null };
+    if (player.sect) {
+        let sect = findSectByName(player.sect.name);
+        player.sect = sect;
+        if (sect && !player.sectSkills[sect.tier]) player.sectSkills[sect.tier] = sect.name;
+    }
+
+    // 舊版靈獸只存 id 字串，轉成 Lv1 的靈寵物件
+    if (!Array.isArray(player.beasts)) player.beasts = [];
+    player.beasts = player.beasts.map(b => {
+        if (typeof b === 'string') return createBeast(b);
+        if (!Array.isArray(b.skills)) b.skills = BEAST_SKILL_LEVELS.map(() => null);
+        if (typeof b.level !== 'number') b.level = 1;
+        if (typeof b.exp !== 'number') b.exp = 0;
+        if (typeof b.alive !== 'boolean') b.alive = true;
+        return b;
+    });
+}
+
 function resetGameCompletely() {
     if (confirm("確定要完全重置遊戲嗎？這將清除所有存檔進度！")) {
         localStorage.removeItem('xiuxian_save');
@@ -103,6 +131,7 @@ function resetGameCompletely() {
 }
 
 function saveLocal() {
+    if (gameOver) return;   // 壽元耗盡後存檔已清除，不可再寫回
     player.lastSaveTime = Date.now();
     localStorage.setItem('xiuxian_save', JSON.stringify(player));
     addLog("💾 遊戲存檔成功！", "system");
@@ -125,6 +154,7 @@ function loadLocal() {
             migrateServantAssignments();
             migrateEquipmentSlots();
             migrateActivityFields();
+            migrateProgressionFields(data);
 
             // 讀取成功後觸發離線補償計算
             calcOfflineProgress();
@@ -176,6 +206,7 @@ function importSave() {
             migrateServantAssignments();
             migrateEquipmentSlots();
             migrateActivityFields();
+            migrateProgressionFields(data);
 
             // 匯入成功後觸發離線補償計算
             calcOfflineProgress();

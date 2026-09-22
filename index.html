@@ -151,6 +151,11 @@
         .stat-item span { color: var(--accent); font-weight: bold; }
         .res-item span { color: #4ade80; font-weight: bold; }
 
+        /* 靈獸園：靈寵技能欄位與五行選擇按鈕 */
+        .beast-skill-slot { border: 1px dashed rgba(255,255,255,0.1); border-radius: 6px; padding: 5px 6px; margin-top: 5px; line-height: 1.5; }
+        .beast-elem-choices { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+        .beast-elem-btn { width: 100%; margin: 0; padding: 4px 6px; font-size: 0.95em; text-align: left; background: rgba(0,0,0,0.25); }
+
         button { 
             background: rgba(25, 33, 50, 0.6); 
             color: var(--text-main); 
@@ -462,7 +467,9 @@
     <div id="header" class="panel">
         <div>
             <div>境界：<span id="realm-display" style="color: var(--accent); font-weight: bold;">凡人 1階</span></div>
+            <div style="margin-top: 5px;">等級：<span id="level-display" style="color: var(--accent);">Lv.1 (0.0%)</span></div>
             <div style="margin-top: 5px;">戰力：<span id="power-display">5</span></div>
+            <div style="margin-top: 5px;">壽元：<span id="lifespan-display" style="color: #4ade80; font-weight: bold;">60 年</span></div>
         </div>
         <div>
             <div class="bar-container" style="border-color: var(--hp-color);">
@@ -773,7 +780,7 @@
 <div id="beast-modal" class="modal-bg">
     <div class="modal-content" style="border-color: #fb923c; text-align: center;">
         <h2 style="color: #fb923c; margin-top: 0;">🐾 宗門靈獸園</h2>
-        <p style="color: #9ca3af; font-size: 0.9em;">消耗獸丹與靈石來馴養靈獸，獲得強大被動加成！（高魅力值可獲得靈獸兌換折扣）</p>
+        <p style="color: #9ca3af; font-size: 0.9em;">消耗獸丹與靈石兌換靈寵（高魅力值可獲得兌換折扣）。靈寵從 Lv1 起與你一同成長（等級不超過人物等級），<br>於 Lv30 / 60 / 100 / 300 / 500 / 1000 各可自選一招五行技能。靈寵無氣血，但主人死亡時會一同陣亡。</p>
         <div id="beast-list-container" class="grid-container" style="margin-top: 20px;"></div>
         <button class="close-btn" onclick="closeModal('beast-modal')">離開</button>
     </div>
@@ -873,6 +880,8 @@
     詳細的檔案關聯說明請見 ARCHITECTURE.md。
 -->
 <script src="data/config-realms.js"></script>
+<script src="data/config-level.js"></script>
+<script src="data/config-lifespan.js"></script>
 <script src="data/config-maps.js"></script>
 <script src="data/config-sects.js"></script>
 <script src="data/config-lingbao.js"></script>
@@ -890,6 +899,7 @@
 <script src="data/map.js"></script>
 <script src="data/combat.js"></script>
 <script src="data/leveling.js"></script>
+<script src="data/lifespan.js"></script>
 <script src="data/tribulation.js"></script>
 <script src="data/sect.js"></script>
 <script src="data/shop.js"></script>
@@ -902,6 +912,7 @@
 <script src="data/daily-quest.js"></script>
 <script src="data/auction.js"></script>
 <script src="data/field.js"></script>
+<script src="data/beast-combat.js"></script>
 <script src="data/beast.js"></script>
 <script src="data/library.js"></script>
 <script src="data/alchemy.js"></script>
