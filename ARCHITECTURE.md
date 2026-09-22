@@ -8,8 +8,9 @@
 ## 1. 專案結構
 
 ```
-index.html.html      唯一的 HTML 進入點：畫面結構、CSS（含手機 RWD，見第 6 節）、
+index.html            唯一的 HTML 進入點：畫面結構、CSS（含手機 RWD，見第 6 節）、
                       彈窗(modal) DOM、<script src> 載入清單
+                      ※ 檔名必須是 index.html（GitHub Pages 只把 index.html 當作預設首頁）
 data/                 所有遊戲邏輯與資料，依「設定資料 / 執行狀態 / 功能模組 / 進入點」分層
   config-*.js         純資料表（不含函式，無副作用），可視為遊戲的「設計數值表」
   state.js            執行期間的可變全域狀態（player、enemies…）
@@ -26,12 +27,12 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 ```
 
 這是一個**純前端、無建置工具**的專案：所有 `data/*.js` 都是傳統 `<script>`（非 `type="module"`），
-彼此共享同一個全域作用域。`index.html.html` 內的 `onclick="xxx()"` 會直接呼叫這些全域函式，
+彼此共享同一個全域作用域。`index.html` 內的 `onclick="xxx()"` 會直接呼叫這些全域函式，
 因此**檔案拆分時一律保留原本的函式名稱**，不可改名，否則畫面按鈕會失效。
 
 ## 2. 載入順序與依賴關係
 
-`index.html.html` 底部依序載入以下腳本。多數功能檔案彼此呼叫時**不受載入順序影響**
+`index.html` 底部依序載入以下腳本。多數功能檔案彼此呼叫時**不受載入順序影響**
 （函式宣告會先被瀏覽器解析完成，實際呼叫要等到 `window.onload` 之後才發生）。
 但以下兩個檔案在載入當下就會**立即執行頂層程式碼**，因此順序不可調換：
 
@@ -72,7 +73,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 ## 3. 資料流總覽（文字版流程圖）
 
 ```
-使用者開啟 index.html.html
+使用者開啟 index.html
         │
         ▼
 瀏覽器依序載入 config-*.js → state.js → stats.js → ui.js
@@ -133,18 +134,18 @@ combatTick() 每秒執行 [combat.js]
 
 1. **新增資料（怪物/裝備/宗門/商品…）**：優先修改對應的 `data/config-*.js`，不要動邏輯檔。
 2. **新增彈窗/系統玩法**：比照現有模式新增一支 `data/新功能.js`（`open高X高Modal` + `render高X高` + 互動函式），
-   在 `index.html.html` 對應位置加上按鈕與彈窗 DOM，並在 `<script>` 清單中加入 `<script src="data/新功能.js"></script>`
+   在 `index.html` 對應位置加上按鈕與彈窗 DOM，並在 `<script>` 清單中加入 `<script src="data/新功能.js"></script>`
    （放在 `state.js`/`ui.js` 之後、`main.js` 之前即可，除非新檔案有頂層立即執行的程式碼且依賴其他資料）。
 3. **修改屬性公式**：只改 `data/stats.js`。
 4. **修改存檔結構**：修改 `data/state.js` 的 `player` 初始值，並檢查 `data/save.js` 的
    `loadLocal`/`importSave` 是否需要補上舊存檔缺欄位時的預設值（目前已有 `gender`/`name`/`stats.cha`/`studyCounts` 的相容處理）。
-5. **新增畫面元素時**：先確認電腦版排版，再到 `index.html.html` 的 media query 區塊
+5. **新增畫面元素時**：先確認電腦版排版，再到 `index.html` 的 media query 區塊
    （第 6 節）補上手機版的調整，避免手機出現破版或水平捲動。
 6. **完成任何修改後，回來更新本檔案（ARCHITECTURE.md）對應章節。**
 
 ## 6. 版型與 RWD 規則（電腦版 / 手機版）
 
-所有樣式集中在 `index.html.html` 的 `<style>` 內，分成兩段：
+所有樣式集中在 `index.html` 的 `<style>` 內，分成兩段：
 
 1. **共用 / 電腦版樣式**（檔案前半，`@media` 之前）：原本的三欄式版型，未加任何條件，行為與改版前完全相同。
 2. **手機 / 平板樣式**（檔案末端，兩個 `@media` 區塊）：**只在窄螢幕生效**，因此不會影響電腦版。
