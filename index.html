@@ -151,6 +151,22 @@
         .stat-item span { color: var(--accent); font-weight: bold; }
         .res-item span { color: #4ade80; font-weight: bold; }
 
+        /* 批次操作按鈕（藏書閣／煉丹房／鍛造閣／宗門靈田的 ×1 / ×10 / 最高） */
+        .batch-btns { display: flex; gap: 6px; }
+        .batch-btns button { flex: 1; width: auto; margin-bottom: 0; padding: 8px 4px; }
+
+        /* 標題旁的「!」說明按鈕與五行法陣說明視窗 */
+        .info-btn {
+            width: 26px; height: 26px; padding: 0; margin: 0 0 0 6px; border-radius: 50%;
+            display: inline-flex; align-items: center; justify-content: center; vertical-align: middle;
+            font-size: 0.7em; font-weight: bold; color: var(--accent); border-color: var(--accent);
+        }
+        .wuxing-info-body { font-size: 0.9em; line-height: 1.7; }
+        .wuxing-info-body p { margin: 4px 0 10px; }
+        .wuxing-info-h { color: var(--accent); margin: 14px 0 4px; border-bottom: 1px dashed var(--panel-border); padding-bottom: 4px; }
+        .wuxing-info-table { width: 100%; border-collapse: collapse; }
+        .wuxing-info-table td { border-bottom: 1px solid rgba(255,255,255,0.06); padding: 6px 4px; vertical-align: top; }
+
         /* 開場性別選擇 */
         .gender-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px; }
         .gender-card { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 16px 8px; margin: 0; }
@@ -422,14 +438,8 @@
             /* 靈寶閣的「靈石購買 / 聲望購買」在窄卡片內改為上下排列 */
             #lingbao-shop-container .card > div { flex-direction: column; }
 
-            /* 鍛造閣：下拉選單與鍛造按鈕改為整列顯示 */
+            /* 鍛造閣：下拉選單改為整列顯示（×1/×10/最高 按鈕由 .batch-btns 排成一列） */
             #forge-modal select { width: 100%; margin-top: 8px; }
-            #forge-modal .shop-btn {
-                width: 100% !important;
-                margin-left: 0 !important;
-                margin-top: 10px;
-                display: block !important;
-            }
 
             .auto-settings label { flex-wrap: wrap; gap: 4px; }
         }
@@ -690,12 +700,24 @@
 
 <div id="equipment-modal" class="modal-bg">
     <div class="modal-content" style="border-color: var(--equip-color);">
-        <h2 style="text-align: center; color: var(--equip-color); margin-top: 0;">🛡️ 角色裝備與五行狀態</h2>
+        <h2 style="text-align: center; color: var(--equip-color); margin-top: 0;">
+            🛡️ 角色裝備與五行狀態
+            <button class="info-btn" onclick="openWuxingInfo()" title="五行法陣說明" aria-label="五行法陣說明">!</button>
+        </h2>
         <div id="wuxing-status-modal" style="text-align: center; color: var(--accent); font-weight: bold; margin-bottom: 20px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 6px;">
             【五行法陣】：無生效
         </div>
         <div id="equipped-list-container" class="grid-container"></div>
         <button class="close-btn" onclick="closeModal('equipment-modal')">關閉</button>
+    </div>
+</div>
+
+<!-- 五行法陣說明（由角色裝備視窗標題旁的「!」開啟，內容由 equipment.js 的 openWuxingInfo() 產生） -->
+<div id="wuxing-info-modal" class="modal-bg" onclick="if (event.target === this) closeModal('wuxing-info-modal')">
+    <div class="modal-content" style="max-width: 640px; border-color: var(--accent);">
+        <h2 style="text-align: center; color: var(--accent); margin-top: 0;">☯️ 五行法陣說明</h2>
+        <div id="wuxing-info-body" class="wuxing-info-body"></div>
+        <button class="close-btn" onclick="closeModal('wuxing-info-modal')">知道了</button>
     </div>
 </div>
 
@@ -777,27 +799,43 @@
 <div id="field-modal" class="modal-bg">
     <div class="modal-content" style="border-color: #4ade80; text-align: center;">
         <h2 style="color: #4ade80; margin-top: 0;">🚜 宗門靈田</h2>
-        <p style="color: #9ca3af; font-size: 0.9em;">消耗資源即可瞬間培育並收穫高級靈草。</p>
+        <p style="color: #9ca3af; font-size: 0.9em;">消耗資源即可瞬間培育並收穫高級靈草。「最高」會用光可負擔的靈草與靈石一次培育。</p>
         <div class="grid-container" style="margin-top: 20px;">
             <div class="card">
                 <h3>凡品靈草</h3>
                 <p style="font-size: 0.85em; color:#9ca3af;">消耗: 10株靈草 + 5靈石</p>
-                <button class="sys-btn" onclick="plantHerb('mortal')">種植收穫</button>
+                <div class="batch-btns">
+                    <button class="sys-btn" onclick="plantHerb('mortal', 1)">×1</button>
+                    <button class="sys-btn" onclick="plantHerb('mortal', 10)">×10</button>
+                    <button class="sys-btn" onclick="plantHerb('mortal', 'max')">最高</button>
+                </div>
             </div>
             <div class="card">
                 <h3>上品靈草</h3>
                 <p style="font-size: 0.85em; color:#9ca3af;">消耗: 50株靈草 + 10靈石</p>
-                <button class="sys-btn" onclick="plantHerb('high')">種植收穫</button>
+                <div class="batch-btns">
+                    <button class="sys-btn" onclick="plantHerb('high', 1)">×1</button>
+                    <button class="sys-btn" onclick="plantHerb('high', 10)">×10</button>
+                    <button class="sys-btn" onclick="plantHerb('high', 'max')">最高</button>
+                </div>
             </div>
             <div class="card">
                 <h3>極品靈草</h3>
                 <p style="font-size: 0.85em; color:#9ca3af;">消耗: 200株靈草 + 20靈石</p>
-                <button class="sys-btn" onclick="plantHerb('epic')">種植收穫</button>
+                <div class="batch-btns">
+                    <button class="sys-btn" onclick="plantHerb('epic', 1)">×1</button>
+                    <button class="sys-btn" onclick="plantHerb('epic', 10)">×10</button>
+                    <button class="sys-btn" onclick="plantHerb('epic', 'max')">最高</button>
+                </div>
             </div>
             <div class="card">
                 <h3>仙品靈草</h3>
                 <p style="font-size: 0.85em; color:#9ca3af;">消耗: 500株靈草 + 50靈石</p>
-                <button class="sys-btn" onclick="plantHerb('immortal')">種植收穫</button>
+                <div class="batch-btns">
+                    <button class="sys-btn" onclick="plantHerb('immortal', 1)">×1</button>
+                    <button class="sys-btn" onclick="plantHerb('immortal', 10)">×10</button>
+                    <button class="sys-btn" onclick="plantHerb('immortal', 'max')">最高</button>
+                </div>
             </div>
         </div>
         <button class="close-btn" onclick="closeModal('field-modal')">離開</button>
@@ -822,25 +860,45 @@
                 <h3>《力道真解》</h3>
                 <p style="font-size: 0.85em; color: #9ca3af;">消耗: 10 武學積分</p>
                 <p style="font-size: 0.85em; color: var(--accent);" id="study-count-str">已學習: 0 / 100</p>
-                <button class="sys-btn" onclick="studyBook('str')">參悟 (力量 +20)</button>
+                <p style="font-size: 0.85em; color: #4ade80;">每次 力量 +20</p>
+                <div class="batch-btns">
+                    <button class="sys-btn" onclick="studyBook('str', 1)">×1</button>
+                    <button class="sys-btn" onclick="studyBook('str', 10)">×10</button>
+                    <button class="sys-btn" onclick="studyBook('str', 'max')">最高</button>
+                </div>
             </div>
             <div class="card">
                 <h3>《洗髓經》</h3>
                 <p style="font-size: 0.85em; color: #9ca3af;">消耗: 10 武學積分</p>
                 <p style="font-size: 0.85em; color: var(--accent);" id="study-count-con">已學習: 0 / 100</p>
-                <button class="sys-btn" onclick="studyBook('con')">參悟 (體質 +20)</button>
+                <p style="font-size: 0.85em; color: #4ade80;">每次 體質 +20</p>
+                <div class="batch-btns">
+                    <button class="sys-btn" onclick="studyBook('con', 1)">×1</button>
+                    <button class="sys-btn" onclick="studyBook('con', 10)">×10</button>
+                    <button class="sys-btn" onclick="studyBook('con', 'max')">最高</button>
+                </div>
             </div>
             <div class="card">
                 <h3>《黃庭內景經》</h3>
                 <p style="font-size: 0.85em; color: #9ca3af;">消耗: 10 武學積分</p>
                 <p style="font-size: 0.85em; color: var(--accent);" id="study-count-int">已學習: 0 / 100</p>
-                <button class="sys-btn" onclick="studyBook('int')">參悟 (悟性 +20)</button>
+                <p style="font-size: 0.85em; color: #4ade80;">每次 悟性 +20</p>
+                <div class="batch-btns">
+                    <button class="sys-btn" onclick="studyBook('int', 1)">×1</button>
+                    <button class="sys-btn" onclick="studyBook('int', 10)">×10</button>
+                    <button class="sys-btn" onclick="studyBook('int', 'max')">最高</button>
+                </div>
             </div>
             <div class="card">
                 <h3>《靈飛經》</h3>
                 <p style="font-size: 0.85em; color: #9ca3af;">消耗: 10 武學積分</p>
                 <p style="font-size: 0.85em; color: var(--accent);" id="study-count-spr">已學習: 0 / 100</p>
-                <button class="sys-btn" onclick="studyBook('spr')">參悟 (靈力 +20)</button>
+                <p style="font-size: 0.85em; color: #4ade80;">每次 靈力 +20</p>
+                <div class="batch-btns">
+                    <button class="sys-btn" onclick="studyBook('spr', 1)">×1</button>
+                    <button class="sys-btn" onclick="studyBook('spr', 10)">×10</button>
+                    <button class="sys-btn" onclick="studyBook('spr', 'max')">最高</button>
+                </div>
             </div>
         </div>
         <button class="close-btn" onclick="closeModal('library-modal')">離開</button>
@@ -855,7 +913,12 @@
             <label style="color: var(--accent);">選擇打造部位：</label>
             <select id="forge-type-select" style="background: #0b0f19; color: #fff; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--panel-border);">
             </select>
-            <button class="shop-btn" style="width: auto; margin-left: 10px; display: inline-block;" onclick="forgeEquipment()">🔨 開始鍛造 (消耗 1000 靈石)</button>
+            <p style="color: #9ca3af; font-size: 0.85em; margin: 10px 0 4px;">🔨 每次消耗 1000 靈石｜「最高」受靈石與背包空位（上限 100 件）限制</p>
+            <div class="batch-btns" style="max-width: 420px; margin: 0 auto;">
+                <button class="shop-btn" onclick="forgeEquipment(1)">×1</button>
+                <button class="shop-btn" onclick="forgeEquipment(10)">×10</button>
+                <button class="shop-btn" onclick="forgeEquipment('max')">最高</button>
+            </div>
         </div>
         <button class="close-btn" onclick="closeModal('forge-modal')">離開</button>
     </div>
@@ -870,31 +933,51 @@
                 <h3>大力神丸</h3>
                 <p style="font-size: 0.85em; color: #9ca3af;">材料: 1 株 凡品靈草</p>
                 <p style="font-size: 0.85em; color: #4ade80;">效果: 力量 +10</p>
-                <button class="shop-btn" onclick="craftPill('str')">煉製並服用</button>
+                <div class="batch-btns">
+                    <button class="shop-btn" onclick="craftPill('str', 1)">×1</button>
+                    <button class="shop-btn" onclick="craftPill('str', 10)">×10</button>
+                    <button class="shop-btn" onclick="craftPill('str', 'max')">最高</button>
+                </div>
             </div>
             <div class="card">
                 <h3>洗髓丹</h3>
                 <p style="font-size: 0.85em; color: #9ca3af;">材料: 1 株 上品靈草</p>
                 <p style="font-size: 0.85em; color: #4ade80;">效果: 體質 +25</p>
-                <button class="shop-btn" onclick="craftPill('con')">煉製並服用</button>
+                <div class="batch-btns">
+                    <button class="shop-btn" onclick="craftPill('con', 1)">×1</button>
+                    <button class="shop-btn" onclick="craftPill('con', 10)">×10</button>
+                    <button class="shop-btn" onclick="craftPill('con', 'max')">最高</button>
+                </div>
             </div>
             <div class="card">
                 <h3>悟道丹</h3>
                 <p style="font-size: 0.85em; color: #9ca3af;">材料: 1 株 極品靈草</p>
                 <p style="font-size: 0.85em; color: #4ade80;">效果: 悟性 +50</p>
-                <button class="shop-btn" onclick="craftPill('int')">煉製並服用</button>
+                <div class="batch-btns">
+                    <button class="shop-btn" onclick="craftPill('int', 1)">×1</button>
+                    <button class="shop-btn" onclick="craftPill('int', 10)">×10</button>
+                    <button class="shop-btn" onclick="craftPill('int', 'max')">最高</button>
+                </div>
             </div>
             <div class="card">
                 <h3>九轉聚靈丹</h3>
                 <p style="font-size: 0.85em; color: #9ca3af;">材料: 1 株 仙品靈草</p>
                 <p style="font-size: 0.85em; color: #4ade80;">效果: 靈力 +100</p>
-                <button class="shop-btn" onclick="craftPill('spr')">煉製並服用</button>
+                <div class="batch-btns">
+                    <button class="shop-btn" onclick="craftPill('spr', 1)">×1</button>
+                    <button class="shop-btn" onclick="craftPill('spr', 10)">×10</button>
+                    <button class="shop-btn" onclick="craftPill('spr', 'max')">最高</button>
+                </div>
             </div>
             <div class="card">
                 <h3>駐顏駐魅力丹</h3>
                 <p style="font-size: 0.85em; color: #9ca3af;">材料: 1株 仙品靈草 + 1000 靈石</p>
                 <p style="font-size: 0.85em; color: var(--charm-color);">效果: 魅力 +20</p>
-                <button class="shop-btn" onclick="craftPill('cha')">煉製並服用</button>
+                <div class="batch-btns">
+                    <button class="shop-btn" onclick="craftPill('cha', 1)">×1</button>
+                    <button class="shop-btn" onclick="craftPill('cha', 10)">×10</button>
+                    <button class="shop-btn" onclick="craftPill('cha', 'max')">最高</button>
+                </div>
             </div>
         </div>
         <button class="close-btn" onclick="closeModal('alchemy-modal')">離開</button>

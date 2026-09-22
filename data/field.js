@@ -1,26 +1,34 @@
-// 宗門靈田彈窗：消耗靈草+靈石瞬間培育高階靈草
+// 宗門靈田彈窗：消耗靈草+靈石瞬間培育高階靈草（可 ×1 / ×10 / 最高 批次培育）
+
+const herbRecipes = {
+    mortal:   { name: "凡品", grass: 10,  coins: 5 },
+    high:     { name: "上品", grass: 50,  coins: 10 },
+    epic:     { name: "極品", grass: 200, coins: 20 },
+    immortal: { name: "仙品", grass: 500, coins: 50 }
+};
 
 function openFieldModal() {
     if (!checkSectJoined()) return;
     document.getElementById('field-modal').style.display = 'flex';
 }
 
-function plantHerb(type) {
-    let reqGrass = 0, reqCoins = 0;
-    if (type === 'mortal') { reqGrass = 10; reqCoins = 5; }
-    if (type === 'high') { reqGrass = 50; reqCoins = 10; }
-    if (type === 'epic') { reqGrass = 200; reqCoins = 20; }
-    if (type === 'immortal') { reqGrass = 500; reqCoins = 50; }
+// qty：1、10 或 'max'
+function plantHerb(type, qty = 1) {
+    let r = herbRecipes[type];
+    if (!r) return;
 
-    if (player.spiritGrass >= reqGrass && player.coins >= reqCoins) {
-        player.spiritGrass -= reqGrass;
-        player.coins -= reqCoins;
-        player.herbs[type]++;
-        addDailyProgress('plant');
-        let names = {mortal: '凡品', high: '上品', epic: '極品', immortal: '仙品'};
-        addLog(`🌾 消耗資源，在靈田成功培育並收穫了 1 株【${names[type]}靈草】！`, "system");
-        updateUI();
-    } else {
-        alert("資源不足！請確認靈草與靈石數量。");
+    let affordable = Math.min(Math.floor(player.spiritGrass / r.grass), Math.floor(player.coins / r.coins));
+    if (affordable <= 0) {
+        alert(`資源不足！培育 1 株${r.name}靈草需要 ${r.grass} 株靈草 + ${r.coins} 靈石。`);
+        return;
     }
+    let n = resolveBatchCount(qty, affordable, "培育");
+    if (!n) return;
+
+    player.spiritGrass -= r.grass * n;
+    player.coins -= r.coins * n;
+    player.herbs[type] += n;
+    addDailyProgress('plant', n);
+    addLog(`🌾 消耗 ${(r.grass * n).toLocaleString()} 株靈草與 ${(r.coins * n).toLocaleString()} 靈石，在靈田收穫了 ${n} 株【${r.name}靈草】！`, "system");
+    updateUI();
 }

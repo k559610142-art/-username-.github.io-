@@ -1,38 +1,36 @@
-// 煉丹房彈窗：消耗高階靈草煉製神丹，永久提升單項屬性
+// 煉丹房彈窗：消耗高階靈草煉製神丹，永久提升單項屬性（可 ×1 / ×10 / 最高 批次煉製）
+
+const pillRecipes = {
+    str: { name: "大力神丸",       herb: "mortal",   herbName: "凡品靈草", coins: 0,    stat: "str", gain: 10,  statName: "力量" },
+    con: { name: "洗髓丹",         herb: "high",     herbName: "上品靈草", coins: 0,    stat: "con", gain: 25,  statName: "體質" },
+    int: { name: "悟道丹",         herb: "epic",     herbName: "極品靈草", coins: 0,    stat: "int", gain: 50,  statName: "悟性" },
+    spr: { name: "九轉聚靈丹",     herb: "immortal", herbName: "仙品靈草", coins: 0,    stat: "spr", gain: 100, statName: "靈力" },
+    cha: { name: "駐顏駐魅力丹",   herb: "immortal", herbName: "仙品靈草", coins: 1000, stat: "cha", gain: 20,  statName: "魅力" }
+};
 
 function openAlchemyModal() {
     if (!checkSectJoined()) return;
     document.getElementById('alchemy-modal').style.display = 'flex';
 }
 
-function craftPill(type) {
-    if (type === 'str') {
-        if (player.herbs.mortal < 1) { alert("凡品靈草不足 1 株！"); return; }
-        player.herbs.mortal--;
-        player.stats.str += 10;
-        addLog("🧪 服用【大力神丸】，力量 +10！", "heal");
-    } else if (type === 'con') {
-        if (player.herbs.high < 1) { alert("上品靈草不足 1 株！"); return; }
-        player.herbs.high--;
-        player.stats.con += 25;
-        addLog("🧪 服用【洗髓丹】，體質 +25！", "heal");
-    } else if (type === 'int') {
-        if (player.herbs.epic < 1) { alert("極品靈草不足 1 株！"); return; }
-        player.herbs.epic--;
-        player.stats.int += 50;
-        addLog("🧪 服用【悟道丹】，悟性 +50！", "heal");
-    } else if (type === 'spr') {
-        if (player.herbs.immortal < 1) { alert("仙品靈草不足 1 株！"); return; }
-        player.herbs.immortal--;
-        player.stats.spr += 100;
-        addLog("🧪 服用【九轉聚靈丹】，靈力 +100！", "heal");
-    } else if (type === 'cha') {
-        if (player.herbs.immortal < 1 || player.coins < 1000) { alert("需要 1 株仙品靈草與 1000 靈石！"); return; }
-        player.herbs.immortal--;
-        player.coins -= 1000;
-        player.stats.cha += 20;
-        addLog("🧪 服用【駐顏駐魅力丹】，魅力 +20！", "heal");
+// qty：1、10 或 'max'
+function craftPill(type, qty = 1) {
+    let r = pillRecipes[type];
+    if (!r) return;
+
+    let affordable = player.herbs[r.herb];
+    if (r.coins > 0) affordable = Math.min(affordable, Math.floor(player.coins / r.coins));
+    if (affordable <= 0) {
+        alert(`材料不足！煉製 1 顆【${r.name}】需要 1 株${r.herbName}${r.coins > 0 ? ` 與 ${r.coins} 靈石` : ''}。`);
+        return;
     }
-    addDailyProgress('craft');
+    let n = resolveBatchCount(qty, affordable, "煉製");
+    if (!n) return;
+
+    player.herbs[r.herb] -= n;
+    player.coins -= r.coins * n;
+    player.stats[r.stat] += r.gain * n;
+    addDailyProgress('craft', n);
+    addLog(`🧪 煉製並服用 ${n} 顆【${r.name}】，${r.statName} +${(r.gain * n).toLocaleString()}！`, "heal");
     updateUI();
 }

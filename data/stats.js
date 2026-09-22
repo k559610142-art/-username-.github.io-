@@ -27,12 +27,9 @@ function getWuxingBuff() {
     let firstElem = elements[0];
     let allSame = elements.every(e => e === firstElem);
     if (!allSame) return { type: null, name: "無 (五行混雜)" };
-    if (firstElem === "火") return { type: "火", name: "火靈星君加持 (傷害 +20%)" };
-    if (firstElem === "水") return { type: "水", name: "水靈星君加持 (生命 +20%)" };
-    if (firstElem === "木") return { type: "木", name: "木靈星君加持 (生命恢復 +20%)" };
-    if (firstElem === "土") return { type: "土", name: "土靈星君加持 (防禦 +20%)" };
-    if (firstElem === "金") return { type: "金", name: "金靈星君加持 (技能傷害 +20%)" };
-    return { type: null, name: "無" };
+    let info = wuxingArrayEffects[firstElem];
+    if (!info) return { type: null, name: "無" };
+    return { type: firstElem, name: `${info.title} (${info.effect})` };
 }
 
 function getNextExp() { return (player.realmIndex === 0 ? 100 : 200 * Math.pow(10, player.realmIndex)) * player.stage; }

@@ -237,6 +237,21 @@ function refreshCombatStatusText() {
 
 function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
+// 批次操作（藏書閣／煉丹房／鍛造閣／宗門靈田的 ×1、×10、最高）共用：
+// qty 為 1、10 或 'max'；affordable 為目前資源（與上限）允許的最多次數。
+// 回傳實際要執行的次數；0 代表不執行（呼叫端需先自行處理 affordable 為 0 的提示）。
+// ×10 資源不足時不做部分執行，而是提示可改按「最高」。
+function resolveBatchCount(qty, affordable, actionName) {
+    if (affordable <= 0) return 0;
+    if (qty === 'max') return affordable;
+    let n = parseInt(qty) || 1;
+    if (affordable < n) {
+        alert(`目前最多只能${actionName} ${affordable} 次（受資源或次數上限限制），無法一次${actionName} ${n} 次。\n可改按「最高」一次完成 ${affordable} 次。`);
+        return 0;
+    }
+    return n;
+}
+
 // 把剩餘毫秒數格式化成「3 小時 12 分」，供每日任務／千寶閣倒數使用
 function formatCountdown(ms) {
     if (!ms || ms <= 0) return "即將刷新";

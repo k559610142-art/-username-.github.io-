@@ -16,6 +16,31 @@ const NON_FORGEABLE_SLOTS = ["神器"];
 // 五行屬性列表（鍛造隨機抽取，集齊 17 件同屬性裝備可觸發五行法陣）
 const wuxingElements = ["金", "木", "水", "火", "土"];
 
+// 五行法陣效果說明：法陣名稱（getWuxingBuff）與「!」說明視窗（equipment.js）共用這份資料。
+// ※ 實際數值寫在計算處，改效果時兩邊要一起改：
+//    金 → combat.js / tribulation.js 的技能傷害 ×1.2
+//    木 → combat.js 安全區回血 10% → 12%
+//    水 → stats.js getMaxHp() 氣血上限 ×1.2
+//    火 → stats.js getPhysAttack()/getMagAttack() ×1.2
+//    土 → stats.js getMaxHp() 總體質 ×1.2
+const wuxingArrayEffects = {
+    "金": { title: "金靈星君加持", effect: "技能傷害 +20%",
+            detail: "宗門技能與靈寶閣禁術的傷害 ×1.2（普通攻擊、靈寵技能不受影響）",
+            suit: "技能流：已學會多階宗門技能、靈力充足時最划算" },
+    "木": { title: "木靈星君加持", effect: "生命恢復 +20%",
+            detail: "在安全區打坐時，每秒回血由最大氣血的 10% 提升為 12%（野外戰鬥中無效）",
+            suit: "效果最弱，只加快回城療傷，一般不建議" },
+    "水": { title: "水靈星君加持", effect: "生命 +20%",
+            detail: "氣血上限 ×1.2（整體氣血，含境界帶來的部分）",
+            suit: "生存流：高難度地圖常被打回城時選它" },
+    "火": { title: "火靈星君加持", effect: "傷害 +20%",
+            detail: "物理與法術攻擊力 ×1.2，普攻、宗門技能、靈寵攻擊都會一起提升，戰力數字也會變高",
+            suit: "輸出流：刷怪最快，最通用的首選" },
+    "土": { title: "土靈星君加持", effect: "體質 +20%",
+            detail: "總體質（含裝備）×1.2，只放大「體質換算的氣血」，境界越高占比越小",
+            suit: "前期體質占比高時有感，中後期不如水陣" }
+};
+
 // 裝備品質等級：倍率影響鍛造屬性加成，color 供 UI 顯示使用
 const equipQualities = [
     { name: "白色", mult: 1, color: "#ffffff" },
