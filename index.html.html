@@ -243,6 +243,123 @@
         .elem-水 { color: #38bdf8; font-weight: bold; }
         .elem-火 { color: #fb7185; font-weight: bold; }
         .elem-土 { color: #d97706; font-weight: bold; }
+
+        /* ==========================================================
+           手機 / 平板專用版型
+           以下規則全部包在 media query 內，僅於窄螢幕生效，
+           電腦版 (>900px) 的樣式完全不受影響。
+           斷點：≤900px 三欄改單欄堆疊；≤480px 進一步壓縮間距與字級。
+           ========================================================== */
+        @media (max-width: 900px) {
+            body {
+                padding: 10px;
+                -webkit-text-size-adjust: 100%;
+            }
+
+            /* 三欄 -> 單欄。並重新排序為：狀態列 → 戰場實況 → 角色/地圖 → 宗門設施 */
+            #game-container {
+                grid-template-columns: 1fr;
+                gap: 12px;
+                max-width: 100%;
+            }
+            #game-container > div:nth-of-type(1) { order: 1; }  /* #header */
+            #game-container > div:nth-of-type(2) { order: 3; }  /* 角色 + 地圖 */
+            #game-container > div:nth-of-type(3) { order: 2; }  /* 戰場實況 + 日誌 */
+            #game-container > div:nth-of-type(4) { order: 4; }  /* 宗門設施 + 系統 */
+
+            /* 狀態列改為垂直堆疊，左右兩區資訊轉成橫向排列以節省高度 */
+            #header {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                padding: 12px;
+                font-size: 0.95em;
+            }
+            #header > div:nth-child(1),
+            #header > div:nth-child(3) {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: space-around;
+                gap: 4px 14px;
+            }
+            #header > div:nth-child(1) > div,
+            #header > div:nth-child(3) > div {
+                margin-top: 0 !important;
+            }
+            #combat-status { padding-top: 8px; font-size: 0.88em; }
+
+            .panel { padding: 12px; }
+            .panel-title { font-size: 0.98em; margin-bottom: 10px; }
+
+            /* 戰鬥實況：縮小頭像與字級，讓「我方 VS 敵方」仍能並排不換行 */
+            #combat-visual-panel { padding: 10px; }
+            .battle-view-grid { gap: 6px; font-size: 0.85em; }
+            .battle-side { padding: 8px 4px; }
+            .monster-avatar { font-size: 2.2em; }
+            #battle-player-icon img { width: 48px !important; height: 48px !important; }
+
+            #log { height: 210px; font-size: 0.82em; }
+
+            /* 觸控友善：加大按鈕點擊範圍，並取消 hover 位移（手機無滑鼠指標） */
+            button {
+                padding: 12px;
+                font-size: 0.95em;
+                margin-bottom: 10px;
+            }
+            button:hover { transform: none; }
+
+            /* 彈窗改為接近全螢幕，卡片自動排成雙欄 */
+            .modal-content {
+                width: 94%;
+                max-height: 88vh;
+                padding: 16px 12px;
+            }
+            .modal-content h2 { font-size: 1.15em; }
+            .grid-container {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 10px;
+            }
+            .card { padding: 10px 8px; }
+            .card:hover { transform: none; }
+            .card h3 { font-size: 0.95em; }
+            .close-btn { width: 100%; padding: 12px; }
+
+            /* 靈寶閣的「靈石購買 / 聲望購買」在窄卡片內改為上下排列 */
+            #lingbao-shop-container .card > div { flex-direction: column; }
+
+            /* 鍛造閣：下拉選單與鍛造按鈕改為整列顯示 */
+            #forge-modal select { width: 100%; margin-top: 8px; }
+            #forge-modal .shop-btn {
+                width: 100% !important;
+                margin-left: 0 !important;
+                margin-top: 10px;
+                display: block !important;
+            }
+
+            .auto-settings label { flex-wrap: wrap; gap: 4px; }
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 8px; }
+            #game-container { gap: 10px; }
+            .panel { padding: 10px; }
+            #header { font-size: 0.9em; }
+
+            .stat-grid { gap: 6px; font-size: 0.85em; }
+            .stat-item { padding: 5px 3px; }
+
+            #log { height: 180px; }
+
+            .grid-container { grid-template-columns: repeat(auto-fill, minmax(135px, 1fr)); gap: 8px; }
+            .modal-content { width: 96%; padding: 14px 10px; }
+
+            .battle-view-grid { font-size: 0.8em; }
+            .monster-avatar { font-size: 1.9em; }
+            #battle-player-icon img { width: 42px !important; height: 42px !important; }
+
+            .auto-settings { font-size: 0.8em; }
+            .auto-settings input[type="number"] { width: 46px; }
+        }
     </style>
 </head>
 <body>

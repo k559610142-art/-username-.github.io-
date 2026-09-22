@@ -8,7 +8,8 @@
 ## 1. 專案結構
 
 ```
-index.html.html      唯一的 HTML 進入點：畫面結構、CSS、彈窗(modal) DOM、<script src> 載入清單
+index.html.html      唯一的 HTML 進入點：畫面結構、CSS（含手機 RWD，見第 6 節）、
+                      彈窗(modal) DOM、<script src> 載入清單
 data/                 所有遊戲邏輯與資料，依「設定資料 / 執行狀態 / 功能模組 / 進入點」分層
   config-*.js         純資料表（不含函式，無副作用），可視為遊戲的「設計數值表」
   state.js            執行期間的可變全域狀態（player、enemies…）
@@ -137,4 +138,29 @@ combatTick() 每秒執行 [combat.js]
 3. **修改屬性公式**：只改 `data/stats.js`。
 4. **修改存檔結構**：修改 `data/state.js` 的 `player` 初始值，並檢查 `data/save.js` 的
    `loadLocal`/`importSave` 是否需要補上舊存檔缺欄位時的預設值（目前已有 `gender`/`name`/`stats.cha`/`studyCounts` 的相容處理）。
-5. **完成任何修改後，回來更新本檔案（ARCHITECTURE.md）對應章節。**
+5. **新增畫面元素時**：先確認電腦版排版，再到 `index.html.html` 的 media query 區塊
+   （第 6 節）補上手機版的調整，避免手機出現破版或水平捲動。
+6. **完成任何修改後，回來更新本檔案（ARCHITECTURE.md）對應章節。**
+
+## 6. 版型與 RWD 規則（電腦版 / 手機版）
+
+所有樣式集中在 `index.html.html` 的 `<style>` 內，分成兩段：
+
+1. **共用 / 電腦版樣式**（檔案前半，`@media` 之前）：原本的三欄式版型，未加任何條件，行為與改版前完全相同。
+2. **手機 / 平板樣式**（檔案末端，兩個 `@media` 區塊）：**只在窄螢幕生效**，因此不會影響電腦版。
+
+| 斷點 | 目標裝置 | 主要調整 |
+|---|---|---|
+| `@media (max-width: 900px)` | 手機、平板直式 | 三欄 `300px 1fr 300px` → 單欄；用 `order` 重排為 **狀態列 → 戰場實況 → 角色/地圖 → 宗門設施**；狀態列改直式堆疊（境界/戰力、靈石/聲望各自橫向排）；按鈕加大為觸控尺寸並取消 hover 位移；彈窗寬度 94%、卡片自動排成雙欄；靈寶閣雙按鈕改上下排列；鍛造閣下拉選單與按鈕改整列 |
+| `@media (max-width: 480px)` | 一般手機（360–430px） | 進一步縮小 padding、字級、日誌高度、頭像尺寸，卡片最小寬度降為 135px 以維持雙欄 |
+
+維護注意事項：
+
+- **不要為了手機去改電腦版的既有規則**；所有手機調整一律寫進 media query 內，這是「手機有自己的 UI、電腦版不受影響」的前提。
+- HTML 內有不少**行內樣式**（如 `style="width: auto; margin-left: 10px;"`）。行內樣式優先權高於 CSS，
+  若手機版需要覆蓋它，必須在 media query 內使用 `!important`（目前 `#forge-modal .shop-btn`、
+  `#battle-player-icon img`、狀態列子項的 `margin-top` 即是這種情況）。
+- `#game-container > div:nth-of-type(n)` 依賴四個直接子元素的順序（header / 角色欄 / 戰場欄 / 設施欄）。
+  若之後在 `#game-container` 內新增或調換區塊，必須同步更新 media query 內的 `order` 規則。
+- 驗證方式：瀏覽器開發者工具切換 375px、360px 與 >900px 三種寬度，確認
+  `document.documentElement.scrollWidth === clientWidth`（無水平捲動），且電腦版維持三欄。
