@@ -11,6 +11,7 @@
 index.html            唯一的 HTML 進入點：畫面結構、CSS（含手機 RWD，見第 6 節）、
                       彈窗(modal) DOM、<script src> 載入清單
                       ※ 檔名必須是 index.html（GitHub Pages 只把 index.html 當作預設首頁）
+images/               圖片素材（cover.jpg：主頁標題畫面用的封面圖，1264x843）
 data/                 所有遊戲邏輯與資料，依「設定資料 / 執行狀態 / 功能模組 / 進入點」分層
   config-*.js         純資料表（不含函式，無副作用），可視為遊戲的「設計數值表」
                       （含 config-quests.js：任務名稱與獎勵，顯示與發放共用同一份）
@@ -69,7 +70,8 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 25 | `alchemy.js` | `openAlchemyModal`/`craftPill` | `player.herbs`/`stats`/`coins` | HTML 按鈕（僅在「後山禁地」顯示） |
 | 26 | `player-profile.js` | `changePlayerName` | `player.name` | HTML 按鈕 |
 | 27 | `save.js` | `calcOfflineProgress`/`saveLocal`/`loadLocal`/`exportSave`/`importSave`/`resetGameCompletely` | `player`（整包序列化進 `localStorage`）、`leveling.js`(gainExp)、`combat.js`(tryRescueServant)、`ui.js` | `main.js`(啟動時 loadLocal)、`main.js`(initGame 內每 30 秒 saveLocal) |
-| 28 | `main.js` | `initGame`/`window.onload` | 幾乎全部模組（啟動流程的膠水程式碼） | 瀏覽器 `onload` 事件 |
+| 28 | `title-screen.js` | `enterWorld`/`initTitleScreen`、旗標 `worldEntered` | `main.js`(startGame)、`#title-screen` DOM | `main.js`(onload 呼叫 initTitleScreen)、標題頁按鈕 |
+| 29 | `main.js` | `initGame`/`startGame`/`window.onload` | 幾乎全部模組（啟動流程的膠水程式碼） | 瀏覽器 `onload`、`title-screen.js`(enterWorld 呼叫 startGame) |
 
 ## 3. 資料流總覽（文字版流程圖）
 
@@ -81,8 +83,17 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
         → map/combat/leveling → 各彈窗功能檔 → save.js → main.js
         │
         ▼
-window.onload (main.js)
+window.onload (main.js) → initTitleScreen() [title-screen.js]
         │
+        ▼
+顯示遊戲主頁 #title-screen（此時 <body class="title-mode"> 會隱藏 #game-container）
+        │
+        │  玩家點擊光環熱區 / 「進入世界」按鈕 / 按 Enter、空白鍵
+        ▼
+enterWorld() [title-screen.js] → 標題頁淡出、移除 body.title-mode → startGame()
+        │
+        ▼
+startGame() [main.js]
         ├─ loadLocal() [save.js] 讀 localStorage
         │       ├─ 成功 → calcOfflineProgress() 結算離線收益 → updateUI()
         │       └─ 失敗 → prompt() 選性別，建立新 player [state.js 的預設值]
@@ -133,6 +144,7 @@ combatTick() 每秒執行 [combat.js]
 | `resetGameCompletely`, `saveLocal`, `loadLocal`, `exportSave`, `importSave` | `data/save.js` |
 | `updateAutoSettings` | `data/ui.js` |
 | `closeModal` | `data/ui.js` |
+| `enterWorld` | `data/title-screen.js` |
 
 ## 5. 新增功能的建議流程
 
@@ -181,7 +193,23 @@ combatTick() 每秒執行 [combat.js]
 - 自動輔助的選藥邏輯為「背包內回復量最高者 → 否則買得起且未標記 `noAutoBuy` 的回復量最高者」，
   新增丹藥只要加進 `config-shop.js` 就會自動納入，不需改動 `combat.js`。
 
-## 9. 門派任務與僕從派遣
+## 9. 遊戲主頁（標題畫面）
+
+- 畫面結構在 `index.html` 的 `#title-screen`，樣式集中在 `<style>` 內同名的區塊，邏輯在 `data/title-screen.js`。
+- `<body>` 出廠時就帶著 `class="title-mode"`（CSS 會隱藏 `#game-container`），
+  避免遊戲畫面在 JS 執行前閃一下；`enterWorld()` 會移除這個 class。
+- **啟動時機**：`window.onload` 只呼叫 `initTitleScreen()`，**不會**直接開始遊戲。
+  讀檔、性別選擇、離線收益結算全部延後到玩家點擊「進入世界」後才執行（`main.js` 的 `startGame()`），
+  所以玩家不會一打開網頁就被 `prompt()` 攔住。
+- **光環熱區的對齊方式**：`#title-art-wrap` 用 `display: inline-block` 緊貼圖片實際尺寸，
+  熱區 `#title-hotspot` 再以**百分比**定位（`left: 51.6%; top: 62.5%`，對應原圖 1264×843 的 (652, 527)）。
+  因此圖片不論縮放到多大都能精準對齊，不需要任何 JS 計算座標。
+  ※ 若日後更換 `images/cover.jpg`，必須重新量測光環中心並調整這組百分比。
+- 圖片未填滿的區域，由 `#title-screen::before` 用同一張圖模糊放大填滿，避免出現死黑邊。
+- 進入方式有三種：點光環熱區、點「進入世界」按鈕、按 Enter 或空白鍵；
+  `worldEntered` 旗標確保只會觸發一次（避免重複 `setInterval`）。
+
+## 10. 門派任務與僕從派遣
 
 任務的**名稱、圖示、獎勵**全部集中在 `config-quests.js` 的 `questData`（以宗門等級 1/2/3 分層）。
 任務面板顯示的獎勵與實際發放的獎勵讀取同一份資料，**改數值只需要改這一個檔案**。

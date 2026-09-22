@@ -245,6 +245,120 @@
         .elem-土 { color: #d97706; font-weight: bold; }
 
         /* ==========================================================
+           遊戲主頁（標題畫面）
+           進入遊戲前覆蓋全畫面；點擊光環熱區或「進入世界」按鈕後淡出。
+           ========================================================== */
+        body.title-mode { overflow: hidden; }
+        body.title-mode #game-container { display: none; }
+
+        #title-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+            background: #05070a;
+            opacity: 1;
+            transition: opacity 0.6s ease;
+        }
+        /* 用同一張圖模糊放大當作背景填滿，避免letterbox留下死黑色塊 */
+        #title-screen::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: url('images/cover.jpg') center / cover no-repeat;
+            filter: blur(30px) brightness(0.42) saturate(1.15);
+            transform: scale(1.12);
+        }
+        #title-art-wrap,
+        #btn-enter-world,
+        #title-hint { position: relative; z-index: 1; }
+
+        /* inline-block 讓外框緊貼圖片實際尺寸，熱區才能用百分比精準對齊 */
+        #title-art-wrap {
+            display: inline-block;
+            position: relative;
+            line-height: 0;
+            max-width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(240, 213, 136, 0.28);
+        }
+        #title-art {
+            display: block;
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 70vh;
+        }
+
+        /* 疊在彩色光環上的透明按鈕（座標對應原圖 1264x843 中光環的位置） */
+        #title-hotspot {
+            position: absolute;
+            left: 51.6%;
+            top: 62.5%;
+            width: 26%;
+            height: 34%;
+            transform: translate(-50%, -50%);
+            margin: 0;
+            padding: 0;
+            border: none;
+            border-radius: 50%;
+            background: transparent;
+            cursor: pointer;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+        #title-hotspot:hover,
+        #title-hotspot:focus-visible {
+            outline: none;
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 45px 12px rgba(255, 255, 255, 0.28);
+            transform: translate(-50%, -50%) scale(1.04);
+        }
+
+        #btn-enter-world {
+            width: auto;
+            margin: 0;
+            padding: 14px 54px;
+            font-size: 1.15em;
+            font-weight: bold;
+            letter-spacing: 4px;
+            color: var(--accent);
+            background: linear-gradient(135deg, rgba(20, 28, 46, 0.92), rgba(12, 17, 28, 0.92));
+            border: 1px solid var(--accent);
+            border-radius: 999px;
+            animation: enter-world-pulse 2.6s ease-in-out infinite;
+        }
+        #btn-enter-world:hover {
+            background: var(--accent);
+            color: #0b0f19;
+            box-shadow: 0 0 36px rgba(240, 213, 136, 0.65);
+            transform: translateY(-2px);
+        }
+        @keyframes enter-world-pulse {
+            0%, 100% { box-shadow: 0 0 18px rgba(240, 213, 136, 0.28), inset 0 0 14px rgba(240, 213, 136, 0.10); }
+            50%      { box-shadow: 0 0 34px rgba(240, 213, 136, 0.55), inset 0 0 20px rgba(240, 213, 136, 0.18); }
+        }
+
+        #title-hint {
+            color: #9ca3af;
+            font-size: 0.85em;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+        }
+
+        @media (max-width: 900px) {
+            #title-screen { gap: 14px; padding: 16px; }
+            #title-art { max-height: 46vh; }
+            #btn-enter-world { padding: 14px 40px; font-size: 1.05em; }
+            #title-hint { font-size: 0.78em; text-align: center; }
+        }
+
+        /* ==========================================================
            手機 / 平板專用版型
            以下規則全部包在 media query 內，僅於窄螢幕生效，
            電腦版 (>900px) 的樣式完全不受影響。
@@ -362,7 +476,18 @@
         }
     </style>
 </head>
-<body>
+<body class="title-mode">
+
+<!-- 遊戲主頁（標題畫面）：點擊畫面中的光環或下方按鈕即可進入遊戲 -->
+<div id="title-screen">
+    <div id="title-art-wrap">
+        <img id="title-art" src="images/cover.jpg" alt="凡塵修仙傳">
+        <!-- 熱區疊在畫面中央的彩色光環上，位置以百分比對齊圖片本身，縮放時不會跑掉 -->
+        <button id="title-hotspot" onclick="enterWorld()" aria-label="進入世界"></button>
+    </div>
+    <button id="btn-enter-world" onclick="enterWorld()">進 入 世 界</button>
+    <div id="title-hint">點擊畫面中的光環，或下方按鈕，踏入仙途</div>
+</div>
 
 <div id="game-container">
     <div id="header" class="panel">
@@ -756,6 +881,7 @@
 <script src="data/alchemy.js"></script>
 <script src="data/player-profile.js"></script>
 <script src="data/save.js"></script>
+<script src="data/title-screen.js"></script>
 <script src="data/main.js"></script>
 
 </body>
