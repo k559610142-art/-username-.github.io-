@@ -163,7 +163,7 @@
         .batch-btns { display: flex; gap: 6px; }
         .batch-btns button { flex: 1; width: auto; margin-bottom: 0; padding: 8px 4px; }
 
-        /* 標題旁的「!」說明按鈕與五行法陣說明視窗 */
+        /* 標題旁的「!」說明按鈕與靈根說明視窗 */
         .info-btn {
             width: 26px; height: 26px; padding: 0; margin: 0 0 0 6px; border-radius: 50%;
             display: inline-flex; align-items: center; justify-content: center; vertical-align: middle;
@@ -745,21 +745,21 @@
 <div id="equipment-modal" class="modal-bg">
     <div class="modal-content" style="border-color: var(--equip-color);">
         <h2 style="text-align: center; color: var(--equip-color); margin-top: 0;">
-            🛡️ 角色裝備與五行狀態
-            <button class="info-btn" onclick="openWuxingInfo()" title="五行法陣說明" aria-label="五行法陣說明">!</button>
+            🛡️ 角色裝備與靈根狀態
+            <button class="info-btn" onclick="openWuxingInfo()" title="靈根與五行說明" aria-label="靈根與五行說明">!</button>
         </h2>
         <div id="wuxing-status-modal" style="text-align: center; color: var(--accent); font-weight: bold; margin-bottom: 20px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 6px;">
-            【五行法陣】：無生效
+            【靈根】：無
         </div>
         <div id="equipped-list-container" class="grid-container"></div>
         <button class="close-btn" onclick="closeModal('equipment-modal')">關閉</button>
     </div>
 </div>
 
-<!-- 五行法陣說明（由角色裝備視窗標題旁的「!」開啟，內容由 equipment.js 的 openWuxingInfo() 產生） -->
+<!-- 靈根與五行說明（由角色裝備視窗標題旁的「!」開啟，內容由 equipment.js 的 openWuxingInfo() 產生） -->
 <div id="wuxing-info-modal" class="modal-bg" onclick="if (event.target === this) closeModal('wuxing-info-modal')">
     <div class="modal-content" style="max-width: 640px; border-color: var(--accent);">
-        <h2 style="text-align: center; color: var(--accent); margin-top: 0;">☯️ 五行法陣說明</h2>
+        <h2 style="text-align: center; color: var(--accent); margin-top: 0;">☯️ 靈根與五行說明</h2>
         <div id="wuxing-info-body" class="wuxing-info-body"></div>
         <button class="close-btn" onclick="closeModal('wuxing-info-modal')">知道了</button>
     </div>

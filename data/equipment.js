@@ -1,4 +1,4 @@
-// 角色裝備彈窗（穿戴部位列表 + 五行狀態）與鍛造閣
+// 角色裝備彈窗（穿戴部位列表 + 靈根狀態）與鍛造閣
 
 const EQUIP_CATEGORY_NAMES = { weapon: '武器', armor: '防具', accessory: '飾品', artifact: '神器' };
 
@@ -24,9 +24,7 @@ function renderLingbaoUI() {
     const container = document.getElementById('equipped-list-container');
     container.innerHTML = "";
 
-    let wuxing = getWuxingBuff();
-    let wuxingText = wuxing.type ? `<span class="elem-${wuxing.type}">【${wuxing.name}】</span>` : `【五行法陣】：${wuxing.name}`;
-    document.getElementById('wuxing-status-modal').innerHTML = wuxingText;
+    document.getElementById('wuxing-status-modal').innerHTML = formatSpiritRoots();
 
     for (let eqName in player.equipment) {
         let eq = player.equipment[eqName];
@@ -39,7 +37,7 @@ function renderLingbaoUI() {
                     <button class="sys-btn" onclick="unequipItem('${eqName}')">卸下裝備</button>
                 </div>`;
         } else {
-            // 神器為特殊部位（靈寶閣高級宗門兌換，不計入五行法陣），欄位以金色標示
+            // 神器為特殊部位（靈寶閣高級宗門兌換，不計入五行/靈根），欄位以金色標示
             let isArtifact = equipTypes[eqName] === 'artifact';
             container.innerHTML += `
                 <div class="card" style="border-color: ${isArtifact ? 'rgba(240,213,136,0.45)' : 'rgba(255,255,255,0.05)'}; color: #6b7280; background: rgba(10,14,22,0.3);">
@@ -50,7 +48,19 @@ function renderLingbaoUI() {
     }
 }
 
-// 「!」說明視窗：五行法陣的發動條件、目前進度、各屬性效果與搭配建議（效果文字來自 wuxingArrayEffects）
+// 目前生效的靈根一覽（角色裝備視窗頂端與「!」說明視窗共用）
+function formatSpiritRoots() {
+    let roots = getSpiritRoots();
+    let parts = roots.singles.map(e => {
+        let info = wuxingArrayEffects[e];
+        return `<span class="elem-${e}">【${info.title}】${info.effect}</span>`;
+    });
+    if (roots.special) parts.push(`<span style="color: var(--reputation-color);">【${roots.special.icon} ${roots.special.name}】${roots.special.effect}</span>`);
+    if (parts.length === 0) return `【靈根】：無（同屬性湊滿 ${ROOT_SINGLE_COUNT} 件即可激活）`;
+    return parts.join('<br>');
+}
+
+// 「!」說明視窗：靈根的激活條件、目前進度、各靈根效果與五行相剋說明
 function openWuxingInfo() {
     let slots = Object.keys(player.equipment).filter(key => equipTypes[key] !== "artifact");
     let counts = {};
@@ -62,10 +72,12 @@ function openWuxingInfo() {
     });
     let categoryCount = cat => slots.filter(key => equipTypes[key] === cat).length;
     let playerElem = getPlayerElement();
+    let roots = getSpiritRoots();
 
     let progress = wuxingElements.map(e =>
-        `<span class="elem-${e}">${e} ${counts[e] || 0}/${slots.length}</span>`
-    ).join('　') + (empty > 0 ? `　<span style="color:#6b7280;">未穿戴 ${empty} 格</span>` : '');
+        `<span class="elem-${e}">${e} ${counts[e] || 0}</span>`
+    ).join('　') + `　完整五行套數 <strong>${roots.sets}</strong>`
+      + (empty > 0 ? `　<span style="color:#6b7280;">未穿戴 ${empty} 格</span>` : '');
 
     let rows = wuxingElements.map(e => {
         let info = wuxingArrayEffects[e];
@@ -75,14 +87,33 @@ function openWuxingInfo() {
         </tr>`;
     }).join('');
 
+    let pureRows = wuxingElements.map(e => {
+        let info = pureRootEffects[e];
+        return `<tr><td class="elem-${e}" style="white-space:nowrap;">${e} ×${ROOT_PURE_REST} → ${info.icon} ${info.name}</td><td>${info.effect}</td></tr>`;
+    }).join('');
+
+    let dualRows = Object.keys(dualRootEffects).map(key => {
+        let def = dualRootEffects[key];
+        let elems = key.split('+').map(e => `<span class="elem-${e}">${e}</span>`).join('＋');
+        if (def.byMain) {
+            return Object.keys(def.byMain).map(main =>
+                `<tr><td style="white-space:nowrap;">${elems}（${main}較多）</td><td>${def.byMain[main].icon} ${def.byMain[main].name}：${def.byMain[main].effect}</td></tr>`
+            ).join('');
+        }
+        return `<tr><td style="white-space:nowrap;">${elems}</td><td>${def.icon} ${def.name}：${def.effect}</td></tr>`;
+    }).join('');
+
     let fixedEquips = lingbaoShopItems.filter(i => i.type === 'equip' && i.itemData.category !== 'artifact')
         .map(i => `${i.name}（<span class="elem-${i.itemData.element}">${i.itemData.element}</span>）`).join('、');
 
     document.getElementById('wuxing-info-body').innerHTML = `
-        <h4 class="wuxing-info-h">發動條件</h4>
-        <p>除了神器以外的 <strong>${slots.length} 個部位</strong>（武器 ${categoryCount('weapon')}、防具 ${categoryCount('armor')}、飾品 ${categoryCount('accessory')}）
-        必須<strong>全部穿戴</strong>，且<strong>五行屬性完全相同</strong>，才會發動該屬性的法陣。
-        只要有一格空著或混到別的屬性就不生效；法陣只會有一種，不能兩種疊加。</p>
+        <h4 class="wuxing-info-h">激活條件</h4>
+        <p>共 <strong>${slots.length} 個部位</strong>（武器 ${categoryCount('weapon')}、防具 ${categoryCount('armor')}、飾品 ${categoryCount('accessory')}；神器不計入五行）。<br>
+        ・<strong>單屬性靈根</strong>：同屬性湊滿 <strong>${ROOT_SINGLE_COUNT} 件</strong>即激活，最多可同時擁有 <strong>3 種</strong>。<br>
+        ・<strong>特殊靈根</strong>：另外依「完整五行套數（金木水火土各 1 件為 1 套）」與多出來的件數判定，只會有一個，與單屬性靈根並存。</p>
+
+        <h4 class="wuxing-info-h">目前靈根</h4>
+        <p>${formatSpiritRoots()}</p>
 
         <h4 class="wuxing-info-h">五行相剋</h4>
         <p>裝備中<strong>數量最多的五行</strong>就是你的<strong>本命五行</strong>（目前：${playerElem ? `<span class="elem-${playerElem}">${playerElem}</span>` : '無'}），
@@ -95,8 +126,16 @@ function openWuxingInfo() {
         <h4 class="wuxing-info-h">目前進度</h4>
         <p>${progress}</p>
 
-        <h4 class="wuxing-info-h">五種法陣效果</h4>
+        <h4 class="wuxing-info-h">單屬性靈根（同屬性 ${ROOT_SINGLE_COUNT} 件）</h4>
         <table class="wuxing-info-table">${rows}</table>
+
+        <h4 class="wuxing-info-h">特殊靈根</h4>
+        <p>・<strong>${ROOT_SUPREME_SETS} 套五行</strong>（${ROOT_SUPREME_SETS * 5} 件，剩下的件數不論屬性）→
+        <span style="color: var(--reputation-color);">${supremeRootEffect.icon} ${supremeRootEffect.name}</span>：${supremeRootEffect.effect}<br>
+        ・<strong>${ROOT_PURE_SETS} 套五行 + 同屬性再 ${ROOT_PURE_REST} 件</strong> → 純化靈根<br>
+        ・<strong>${ROOT_DUAL_SETS} 套五行 + 兩個屬性各再 ${ROOT_DUAL_REST} 件</strong> → 雙屬性靈根</p>
+        <table class="wuxing-info-table">${pureRows}${dualRows}</table>
+        <p style="color:#9ca3af;">※ 靈根提供的屬性傷害與減傷會和裝備加總後一起套上限（屬性傷害 ${AFFIX_CAP}%、減傷 ${DEF_CAP}%）。</p>
 
         <h4 class="wuxing-info-h">如何湊齊</h4>
         <p>・<strong>鍛造閣</strong>：屬性隨機，可用「最高」一次大量開爐，再挑出同屬性的保留，其餘在背包依品級一鍵刪除。<br>
@@ -113,7 +152,7 @@ function equipItem(equipId) {
 
     let item = player.equipInventory[index];
     let slotName = item.name;
-    // 舊版靈寶閣「降魔伏虎杖」的部位「杖」不在 equipTypes 內，穿上會破壞五行法陣判定
+    // 舊版靈寶閣「降魔伏虎杖」的部位「杖」不在 equipTypes 內，穿上會破壞靈根判定
     if (!(slotName in equipTypes)) {
         alert(`【${item.name}】的部位已停用，無法穿戴。可在背包中毀棄。`);
         return;

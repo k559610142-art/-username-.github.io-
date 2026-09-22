@@ -39,9 +39,7 @@ function combatTick() {
 
     if (player.currentMapIsSafe) {
         playerStatus = newStatus();   // 回到安全區即解除凍結、燒傷、中毒
-        let wuxing = getWuxingBuff();
-        let healRate = 0.1;
-        if (wuxing.type === "木") healRate *= 1.2;
+        let healRate = 0.1 * getRootBonus().healMult;
 
         if (player.hp < player.maxHp) player.hp = Math.min(player.maxHp, player.hp + player.maxHp * healRate);
         if (player.mp < player.maxMp) player.mp = Math.min(player.maxMp, player.mp + player.maxMp * 0.1);
@@ -108,10 +106,12 @@ function combatTick() {
             dotTotal += t.dot;
             e.skipTurn = t.frozen;
         });
-        if (playerTags.length > 0 || dotTotal > 0) {
+        let regen = applyRootRegen();
+        if (playerTags.length > 0 || dotTotal > 0 || regen > 0) {
             let parts = [];
             if (playerTags.length > 0) parts.push(summarizeTags(playerTags, "💨被閃避"));
             if (dotTotal > 0) parts.push(`持續傷害 ${dotTotal.toLocaleString()}`);
+            if (regen > 0) parts.push(`🌿靈根回復 ${regen.toLocaleString()}`);
             addLog(`✨ 屬性效果：${parts.join("｜")}`, "skill");
         }
 
@@ -171,6 +171,15 @@ function combatTick() {
     }
 }
 
+// 木系靈根（生／榮）的每回合回復：野外與渡劫共用，回傳實際回復量
+function applyRootRegen() {
+    let rate = getRootBonus().regen;
+    if (rate <= 0 || player.hp <= 0 || player.hp >= player.maxHp) return 0;
+    let heal = Math.min(player.maxHp - player.hp, player.maxHp * rate);
+    player.hp += heal;
+    return Math.floor(heal);
+}
+
 // 玩家本回合出手（普攻或技能）；每一擊都經過 resolveHit()，觸發的效果標籤推進 tags
 function playerAttackTurn(availableSkills, targets, tags) {
     let usedSkill = false;
@@ -187,9 +196,8 @@ function playerAttackTurn(availableSkills, targets, tags) {
             player.mp -= skill.mpCost;
             usedSkill = true;
 
-            let skillDmg = skill.dmgType === 'mag' ? getMagAttack() * skill.mult : getPhysAttack() * skill.mult;
-            let wuxing = getWuxingBuff();
-            if (wuxing.type === "金") skillDmg *= 1.2;
+            let skillDmg = (skill.dmgType === 'mag' ? getMagAttack() * skill.mult : getPhysAttack() * skill.mult)
+                * getRootBonus().skillMult;
             let attrs = withSkillEffect(baseAttrs, skill);
 
             if (skill.type === "aoe") {

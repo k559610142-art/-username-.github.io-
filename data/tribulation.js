@@ -98,8 +98,11 @@ function tribulationTick() {
     // 心魔身上的燒傷/中毒發作
     let demonTick = tickStatus(heartDemon.status);
     heartDemon.hp -= demonTick.dot;
-    if (tags.length > 0 || demonTick.dot > 0) {
-        addLog(`✨ 屬性效果：${[tags.length ? summarizeTags(tags, "💨被心魔閃避") : '', demonTick.dot ? `心魔受持續傷害 ${demonTick.dot.toLocaleString()}` : ''].filter(Boolean).join("｜")}`, "skill");
+    let regen = applyRootRegen();
+    if (tags.length > 0 || demonTick.dot > 0 || regen > 0) {
+        addLog(`✨ 屬性效果：${[tags.length ? summarizeTags(tags, "💨被心魔閃避") : '',
+            demonTick.dot ? `心魔受持續傷害 ${demonTick.dot.toLocaleString()}` : '',
+            regen ? `🌿靈根回復 ${regen.toLocaleString()}` : ''].filter(Boolean).join("｜")}`, "skill");
     }
 
     if (heartDemon.hp <= 0) {

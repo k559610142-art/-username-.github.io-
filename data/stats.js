@@ -1,4 +1,4 @@
-// 屬性計算：裝備加成、五行法陣判定、戰力/氣血/靈力/升級門檻公式
+// 屬性計算：裝備加成、靈根判定、戰力/氣血/靈力/升級門檻公式
 
 // 加總所有已穿戴裝備的屬性：四維＋魅力，以及戰鬥屬性（減傷/閃避/冰火毒金雷，單位 %，見 config-elements.js）
 const EQUIP_STAT_KEYS = ["str", "con", "int", "spr", "cha", "def", "eva", "ice", "fire", "poison", "metal", "thunder"];
@@ -15,21 +15,64 @@ function getEquipBonus() {
     return bonus;
 }
 
-function getWuxingBuff() {
-    // 神器欄位不列入五行法陣的計算（特殊部位，取得方式後續再實作）
-    let slots = Object.keys(player.equipment).filter(key => equipTypes[key] !== "artifact");
-    let elements = [];
-    for (let key of slots) {
+// 已穿戴裝備（神器不列入五行計算）各五行的件數
+function getElementCounts() {
+    let counts = {};
+    wuxingElements.forEach(e => { counts[e] = 0; });
+    for (let key in player.equipment) {
+        if (equipTypes[key] === "artifact") continue;
         let eq = player.equipment[key];
-        if (!eq) return { type: null, name: "無 (裝備未集齊)" };
-        elements.push(eq.element);
+        if (eq && counts[eq.element] !== undefined) counts[eq.element]++;
     }
-    let firstElem = elements[0];
-    let allSame = elements.every(e => e === firstElem);
-    if (!allSame) return { type: null, name: "無 (五行混雜)" };
-    let info = wuxingArrayEffects[firstElem];
-    if (!info) return { type: null, name: "無" };
-    return { type: firstElem, name: `${info.title} (${info.effect})` };
+    return counts;
+}
+
+// 目前啟動的靈根（判定規則見 config-equipment.js）
+// 回傳 { counts, sets, rest, singles: ["火", …], special: {name, icon, effect, bonus} | null }
+function getSpiritRoots() {
+    let counts = getElementCounts();
+    let sets = Math.min(...wuxingElements.map(e => counts[e]));
+    let rest = {};
+    wuxingElements.forEach(e => { rest[e] = counts[e] - sets; });
+
+    let singles = wuxingElements.filter(e => counts[e] >= ROOT_SINGLE_COUNT);
+
+    let special = null;
+    if (sets >= ROOT_SUPREME_SETS) {
+        special = supremeRootEffect;
+    } else if (sets >= ROOT_PURE_SETS) {
+        let pure = wuxingElements.find(e => rest[e] >= ROOT_PURE_REST);
+        if (pure) special = pureRootEffects[pure];
+    }
+    if (!special && sets >= ROOT_DUAL_SETS) {
+        let pair = wuxingElements.filter(e => rest[e] >= ROOT_DUAL_REST);
+        if (pair.length >= 2) {
+            let def = dualRootEffects[pair[0] + "+" + pair[1]];
+            // 金＋水依件數較多者決定（相同則視為主金），其餘組合不分主副
+            if (def && def.byMain) def = def.byMain[rest[pair[1]] > rest[pair[0]] ? pair[1] : pair[0]];
+            if (def) special = def;
+        }
+    }
+    return { counts, sets, rest, singles, special };
+}
+
+// 所有生效靈根的加成總和：倍率相乘、數值相加、旗標取最高
+function getRootBonus() {
+    let roots = getSpiritRoots();
+    let list = roots.singles.map(e => wuxingArrayEffects[e].bonus);
+    if (roots.special) list.push(roots.special.bonus);
+
+    let b = { atkMult: 1, hpMult: 1, conMult: 1, skillMult: 1, healMult: 1,
+              def: 0, ice: 0, fire: 0, poison: 0, metal: 0, thunder: 0,
+              regen: 0, freezeResist: 0, burnMax: 0, poisonMax: 0, ignoreCounter: false };
+    list.forEach(bonus => {
+        if (!bonus) return;
+        ["atkMult", "hpMult", "conMult", "skillMult", "healMult"].forEach(k => { if (bonus[k]) b[k] *= bonus[k]; });
+        ["def", "ice", "fire", "poison", "metal", "thunder", "regen"].forEach(k => { if (bonus[k]) b[k] += bonus[k]; });
+        ["freezeResist", "burnMax", "poisonMax"].forEach(k => { if (bonus[k]) b[k] = Math.max(b[k], bonus[k]); });
+        if (bonus.ignoreCounter) b.ignoreCounter = true;
+    });
+    return b;
 }
 
 // 本命五行（五行相剋用）：已穿戴裝備（不含神器）中數量最多的五行；
@@ -76,8 +119,7 @@ function getPhysAttack() {
     let eqBonus = getEquipBonus();
     let totalStr = player.stats.str + eqBonus.str;
     let base = getBasePower() * (player.sect ? player.sect.powerMult : 1.0) + (totalStr * 5);
-    let wuxing = getWuxingBuff();
-    if (wuxing.type === "火") base *= 1.2;
+    base *= getRootBonus().atkMult;
     if (player.buffTimer > 0) base *= player.buffMult;
     if (petBuffTimer > 0) base *= petBuffMult;
     return Math.floor(base);
@@ -87,8 +129,7 @@ function getMagAttack() {
     let eqBonus = getEquipBonus();
     let totalInt = player.stats.int + eqBonus.int;
     let base = getBasePower() * (player.sect ? player.sect.powerMult : 1.0) + (totalInt * 5);
-    let wuxing = getWuxingBuff();
-    if (wuxing.type === "火") base *= 1.2;
+    base *= getRootBonus().atkMult;
     if (player.buffTimer > 0) base *= player.buffMult;
     if (petBuffTimer > 0) base *= petBuffMult;
     return Math.floor(base);
@@ -97,10 +138,10 @@ function getMagAttack() {
 function getMaxHp() {
     let eqBonus = getEquipBonus();
     let totalCon = player.stats.con + eqBonus.con;
-    let wuxing = getWuxingBuff();
-    if (wuxing.type === "土") totalCon *= 1.2;
+    let root = getRootBonus();
+    totalCon *= root.conMult;
     let baseHp = Math.floor(getBasePower() * 20 * (player.sect ? player.sect.powerMult : 1.0) + (totalCon * 10));
-    if (wuxing.type === "水") baseHp = Math.floor(baseHp * 1.2);
+    baseHp = Math.floor(baseHp * root.hpMult);
     return baseHp + (player.level - 1) * LEVEL_UP_HP_GAIN;
 }
 

@@ -6,18 +6,24 @@ function newStatus() {
     return { frozen: 0, burn: null, poison: null };
 }
 
-// 玩家目前的戰鬥屬性（裝備加總後套上限）＋本命五行
+// 玩家目前的戰鬥屬性：裝備 + 靈根加成（一起套上限）＋本命五行
 function getPlayerCombatAttrs() {
     let b = getEquipBonus();
+    let r = getRootBonus();
     return {
-        def: Math.min(DEF_CAP, b.def),
+        def: Math.min(DEF_CAP, b.def + r.def),
         eva: Math.min(EVA_CAP, b.eva),
-        ice: Math.min(AFFIX_CAP, b.ice),
-        fire: Math.min(AFFIX_CAP, b.fire),
-        poison: Math.min(AFFIX_CAP, b.poison),
-        metal: Math.min(AFFIX_CAP, b.metal),
-        thunder: Math.min(AFFIX_CAP, b.thunder),
-        element: getPlayerElement()
+        ice: Math.min(AFFIX_CAP, b.ice + r.ice),
+        fire: Math.min(AFFIX_CAP, b.fire + r.fire),
+        poison: Math.min(AFFIX_CAP, b.poison + r.poison),
+        metal: Math.min(AFFIX_CAP, b.metal + r.metal),
+        thunder: Math.min(AFFIX_CAP, b.thunder + r.thunder),
+        element: getPlayerElement(),
+        // 以下由靈根提供（怪物沒有這些欄位，會取 resolveHit 內的預設值）
+        freezeResist: r.freezeResist,
+        burnMax: r.burnMax,
+        poisonMax: r.poisonMax,
+        ignoreCounter: r.ignoreCounter
     };
 }
 
@@ -72,7 +78,10 @@ function resolveHit(rawDmg, attacker, defender) {
         dmg *= 1 + THUNDER_BONUS;
         tags.push("thunder");
     }
-    let wx = getWuxingCounterMult(attacker.attrs.element, defender.attrs.element);
+    // 五行聖靈根：任一方持有即不受相剋影響（雙向都不生效）
+    let wx = (attacker.attrs.ignoreCounter || defender.attrs.ignoreCounter)
+        ? { mult: 1, tag: null }
+        : getWuxingCounterMult(attacker.attrs.element, defender.attrs.element);
     if (wx.tag) {
         dmg *= wx.mult;
         tags.push(wx.tag);
@@ -80,16 +89,18 @@ function resolveHit(rawDmg, attacker, defender) {
     if (!thunder) dmg *= 1 - (defender.attrs.def || 0) / 100;
 
     let st = defender.status;
-    if (attacker.attrs.ice > 0 && Math.random() < attacker.attrs.ice / 100) {
+    // 冰靈根等提供的 freezeResist 會折減「被凍結」的機率
+    let iceChance = attacker.attrs.ice / 100 * (1 - (defender.attrs.freezeResist || 0));
+    if (attacker.attrs.ice > 0 && Math.random() < iceChance) {
         st.frozen = Math.max(st.frozen, FREEZE_TURNS);
         tags.push("ice");
     }
     if (attacker.attrs.fire > 0 && Math.random() < attacker.attrs.fire / 100) {
-        st.burn = addDotStack(st.burn, BURN_MAX_STACKS, BURN_TURNS, attacker.power * BURN_RATE);
+        st.burn = addDotStack(st.burn, attacker.attrs.burnMax || BURN_MAX_STACKS, BURN_TURNS, attacker.power * BURN_RATE);
         tags.push("fire");
     }
     if (attacker.attrs.poison > 0 && Math.random() < attacker.attrs.poison / 100) {
-        st.poison = addDotStack(st.poison, POISON_MAX_STACKS, POISON_TURNS, attacker.power * POISON_RATE);
+        st.poison = addDotStack(st.poison, attacker.attrs.poisonMax || POISON_MAX_STACKS, POISON_TURNS, attacker.power * POISON_RATE);
         tags.push("poison");
     }
     return { dmg: Math.floor(dmg), tags };

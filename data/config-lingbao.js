@@ -65,7 +65,7 @@ const lingbaoShopItems = [
     { id: "lb3_artifact", tier: 3, type: "equip", name: "神器・混沌鐘",
       itemData: { name: "神器", category: "artifact", quality: "橙色", element: "土",
                   stats: { str: 20000, con: 20000, int: 20000, spr: 20000, def: 20, eva: 10 } },
-      desc: "開天闢地之神器，鐘聲鎮壓諸天。可裝備於神器欄（不影響五行法陣）。" },
+      desc: "開天闢地之神器，鐘聲鎮壓諸天。可裝備於神器欄（不影響五行/靈根）。" },
     { id: "lb3_skill_ice", tier: 3, type: "skill", name: "武學《太虛寒獄》",
       skillData: { name: "太虛寒獄", type: "aoe", dmgType: "mag", mpCost: 100, mult: 4.0,
                    effect: { type: "ice", chance: 0.5 }, msg: "【太虛寒獄】降臨，萬里冰封，群敵盡凍！" },

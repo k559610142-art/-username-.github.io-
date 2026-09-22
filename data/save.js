@@ -90,7 +90,7 @@ function migrateEquipmentSlots() {
     for (let slot in equipTypes) {
         if (!(slot in player.equipment)) player.equipment[slot] = null;
     }
-    // 舊版靈寶閣「降魔伏虎杖」的部位是不存在的「杖」，穿上會多出一格，卸下後留下的空格會讓五行法陣永遠無法達成。
+    // 舊版靈寶閣「降魔伏虎杖」的部位是不存在的「杖」，穿上會多出一格，卸下後留下的空格會干擾靈根判定。
     // 移除 equipTypes 以外的部位，原本穿著的裝備退回背包（不受背包上限限制，避免物品消失）。
     for (let slot in player.equipment) {
         if (slot in equipTypes) continue;
