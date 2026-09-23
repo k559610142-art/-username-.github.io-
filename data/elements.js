@@ -23,7 +23,9 @@ function getPlayerCombatAttrs() {
         freezeResist: r.freezeResist,
         burnMax: r.burnMax,
         poisonMax: r.poisonMax,
-        ignoreCounter: r.ignoreCounter
+        ignoreCounter: r.ignoreCounter,
+        // 藏書閣屬性秘典的傷害加成（library.js），怪物沒有此欄位
+        book: getElementBookBonus()
     };
 }
 
@@ -69,13 +71,19 @@ function resolveHit(rawDmg, attacker, defender) {
     }
 
     let dmg = rawDmg;
+    // 藏書閣屬性秘典：本命五行的直接傷害、對凍結中目標的傷害（其餘在各效果觸發時套用）
+    let book = attacker.attrs.book;
+    if (book) {
+        if (attacker.attrs.element) dmg *= 1 + (book.wuxing[attacker.attrs.element] || 0);
+        if (defender.status && defender.status.frozen > 0) dmg *= 1 + book.ice;
+    }
     if (attacker.attrs.metal > 0 && Math.random() < attacker.attrs.metal / 100) {
-        dmg *= 1 + METAL_BONUS;
+        dmg *= (1 + METAL_BONUS) * (1 + (book ? book.metal : 0));
         tags.push("metal");
     }
     let thunder = attacker.attrs.thunder > 0 && Math.random() < attacker.attrs.thunder / 100;
     if (thunder) {
-        dmg *= 1 + THUNDER_BONUS;
+        dmg *= (1 + THUNDER_BONUS) * (1 + (book ? book.thunder : 0));
         tags.push("thunder");
     }
     // 五行聖靈根：任一方持有即不受相剋影響（雙向都不生效）
@@ -96,11 +104,13 @@ function resolveHit(rawDmg, attacker, defender) {
         tags.push("ice");
     }
     if (attacker.attrs.fire > 0 && Math.random() < attacker.attrs.fire / 100) {
-        st.burn = addDotStack(st.burn, attacker.attrs.burnMax || BURN_MAX_STACKS, BURN_TURNS, attacker.power * BURN_RATE);
+        st.burn = addDotStack(st.burn, attacker.attrs.burnMax || BURN_MAX_STACKS, BURN_TURNS,
+            attacker.power * BURN_RATE * (1 + (book ? book.fire : 0)));
         tags.push("fire");
     }
     if (attacker.attrs.poison > 0 && Math.random() < attacker.attrs.poison / 100) {
-        st.poison = addDotStack(st.poison, attacker.attrs.poisonMax || POISON_MAX_STACKS, POISON_TURNS, attacker.power * POISON_RATE);
+        st.poison = addDotStack(st.poison, attacker.attrs.poisonMax || POISON_MAX_STACKS, POISON_TURNS,
+            attacker.power * POISON_RATE * (1 + (book ? book.poison : 0)));
         tags.push("poison");
     }
     return { dmg: Math.floor(dmg), tags };

@@ -142,13 +142,19 @@ function getMaxHp() {
     totalCon *= root.conMult;
     let baseHp = Math.floor(getBasePower() * 20 * (player.sect ? player.sect.powerMult : 1.0) + (totalCon * 10));
     baseHp = Math.floor(baseHp * root.hpMult);
-    return baseHp + (player.level - 1) * LEVEL_UP_HP_GAIN;
+    return baseHp + (player.level - 1) * LEVEL_UP_HP_GAIN + getReincarnateBonus().hp;
 }
 
 function getMaxMp() {
     let eqBonus = getEquipBonus();
     let totalSpr = player.stats.spr + eqBonus.spr;
-    return Math.floor(50 + (totalSpr * 10)) + (player.level - 1) * LEVEL_UP_MP_GAIN;
+    return Math.floor(50 + (totalSpr * 10)) + (player.level - 1) * LEVEL_UP_MP_GAIN + getReincarnateBonus().mp;
+}
+
+// 轉世保留的氣血／靈力上限（leveling.js 的 triggerReincarnate 寫入），舊存檔沒有此欄位視為 0
+function getReincarnateBonus() {
+    let b = player.reincarnateBonus || {};
+    return { hp: b.hp || 0, mp: b.mp || 0 };
 }
 
 // 依目前宗門分級（凡俗 1 / 修真 2 / 至高 3），供任務獎勵與門檻判斷使用

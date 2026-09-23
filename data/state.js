@@ -8,6 +8,7 @@ let player = {
     hp: 100, maxHp: 100, mp: 100, maxMp: 100, coins: 0, reputation: 0,
     stats: { str: 10, con: 10, int: 10, spr: 10, cha: 10 },
     studyCounts: { str: 0, con: 0, int: 0, spr: 0 },
+    elementStudy: {},            // 藏書閣第二階段屬性秘典的參悟次數 { metal, wood, ... }（library.js 的 elementBooks）
     spiritGrass: 0, beastCore: 0, martialPoints: 0,
     herbs: { mortal: 0, high: 0, epic: 0, immortal: 0 },
     bag: {},
@@ -29,6 +30,7 @@ let player = {
     learnedSkills: [],
     lingbaoSold: [],             // 靈寶閣已兌換（售出）的唯一性商品 id，售出後永不補貨
     reincarnations: 0,
+    reincarnateBonus: { hp: 0, mp: 0 },   // 轉世保留的氣血／靈力上限（前世上限的 REINCARNATE_KEEP_RATE）
     pendingTribulation: false,   // 小境界已滿 10 階，修為暫停、等待渡劫
     tribulationCount: 0,         // 累計渡劫成功次數
 

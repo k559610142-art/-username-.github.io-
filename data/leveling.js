@@ -1,5 +1,7 @@
 // 經驗獲取、小境界升階、大境界突破（需渡劫）與轉世輪迴
 
+const REINCARNATE_KEEP_RATE = 0.05;   // 轉世時保留前世四維／魅力、氣血上限、靈力上限的比例
+
 // 回傳實際獲得的「境界修為」；若修為已圓滿待渡劫則回傳 0（境界經驗暫停累積）
 // 人物等級與靈寵等級不受渡劫限制，仍會持續成長。
 function gainExp(amount) {
@@ -120,18 +122,38 @@ function triggerReincarnate() {
         return;
     }
 
-    if (confirm("轉世輪迴將重置境界，壽元也會回到凡人的 60 年（人物等級保留），但會永久增加輪迴次數並提升天賦！是否確定輪迴？")) {
+    let pct = Math.round(REINCARNATE_KEEP_RATE * 100);
+    if (confirm(`轉世輪迴將洗去此世修為：\n` +
+        `・保留：四維與魅力的 ${pct}%、氣血上限與靈力上限的 ${pct}%\n` +
+        `・遺忘：境界、人物等級、宗門（須重新拜入）與宗門技能、藏書閣古籍與屬性秘典\n` +
+        `・壽元回到凡人的 ${lifespanByRealm[0].gain} 年\n` +
+        `此操作無法復原，是否確定輪迴？`)) {
+        // 先記下此世的數值，再依比例保留（上一世留下的部分已包含在內，會自然累積）
+        let oldStats = player.stats;
+        let keptHp = Math.floor(getMaxHp() * REINCARNATE_KEEP_RATE);
+        let keptMp = Math.floor(getMaxMp() * REINCARNATE_KEEP_RATE);
+        let keep = v => 10 + Math.floor((v || 0) * REINCARNATE_KEEP_RATE);
+
         player.reincarnations++;
         player.realmIndex = 0;
         player.stage = 1;
         player.exp = 0;
+        player.level = 1;
+        player.levelExp = 0;
         player.pendingTribulation = false;
         player.lifespan = lifespanByRealm[0].gain;
-        player.stats = { str: 10 + player.reincarnations * 50, con: 10 + player.reincarnations * 50, int: 10 + player.reincarnations * 50, spr: 10 + player.reincarnations * 50, cha: 10 + player.reincarnations * 10 };
+        player.stats = { str: keep(oldStats.str), con: keep(oldStats.con), int: keep(oldStats.int), spr: keep(oldStats.spr), cha: keep(oldStats.cha) };
+        player.reincarnateBonus = { hp: keptHp, mp: keptMp };
+        player.sect = null;
+        player.sectSkills = { 1: null, 2: null, 3: null };
+        player.activeQuest = null;
+        player.questTimer = 0;
         player.studyCounts = { str: 0, con: 0, int: 0, spr: 0 };
+        player.elementStudy = {};
         player.hp = getMaxHp();
         player.mp = getMaxMp();
-        addLog(`🌀 成功轉世輪迴！第 ${player.reincarnations} 次輪迴，基礎屬性獲得極大幅度提升！`, "reincarnate");
+        addLog(`🌀 成功轉世輪迴！第 ${player.reincarnations} 次輪迴，前世修為化為 ${pct}% 的底蘊（氣血上限 +${keptHp.toLocaleString()}、靈力上限 +${keptMp.toLocaleString()}），其餘盡數遺忘。`, "reincarnate");
         updateUI();
+        updateSectFacilitiesUI();
     }
 }

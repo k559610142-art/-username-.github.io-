@@ -177,12 +177,15 @@ function saveLocal() {
 }
 
 // 舊版靈寶閣禁術（大羅天經／神魔九變）下修到新標準，數值見 config-lingbao.js 的 legacySkillAdjustments。
+// 現行靈寶閣武學兌換時是複製一份 skillData 存進存檔，因此耗魔改用最新設定（例：耗魔調為 3 倍後，舊存檔也會生效）。
 // 每次讀檔都套用（結果固定，重複套用不會越改越低）
 function migrateLegacySkills() {
     if (!Array.isArray(player.learnedSkills)) { player.learnedSkills = []; return; }
     player.learnedSkills.forEach(sk => {
         let fix = legacySkillAdjustments[sk.name];
         if (fix) Object.assign(sk, fix);
+        let current = lingbaoShopItems.find(it => it.skillData && it.skillData.name === sk.name);
+        if (current) sk.mpCost = current.skillData.mpCost;
     });
 }
 

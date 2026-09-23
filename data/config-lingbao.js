@@ -10,8 +10,8 @@
 //   大羅天經：群體 ×5.0 → ×1.8（同初級《烈火刀法》，但無屬性效果）
 //   神魔九變：攻擊 ×4.0 持續 3 回合 → ×1.5（與靈寵木屬性最高階增益相同）
 const legacySkillAdjustments = {
-    "大羅天經": { mult: 1.8, mpCost: 40, msg: "運轉【大羅天經】，光芒掃過群敵！" },
-    "神魔九變": { mult: 1.5, duration: 3, mpCost: 50, msg: "發動宗門禁術【神魔九變】，戰力暴漲 1.5 倍！" }
+    "大羅天經": { mult: 1.8, mpCost: 120, msg: "運轉【大羅天經】，光芒掃過群敵！" },
+    "神魔九變": { mult: 1.5, duration: 3, mpCost: 150, msg: "發動宗門禁術【神魔九變】，戰力暴漲 1.5 倍！" }
 };
 
 const lingbaoTierCosts = {
@@ -31,11 +31,11 @@ const lingbaoShopItems = [
                   stats: { con: 1600, def: 8, fire: 8 } },
       desc: "護心甲內封赤焰，既能減傷，反擊時亦會灼傷敵人。" },
     { id: "lb1_skill_ice", tier: 1, type: "skill", name: "武學《寒冰綿掌》",
-      skillData: { name: "寒冰綿掌", type: "single", dmgType: "mag", mpCost: 30, mult: 2.0,
+      skillData: { name: "寒冰綿掌", type: "single", dmgType: "mag", mpCost: 90, mult: 2.0,
                    effect: { type: "ice", chance: 0.3 }, msg: "拍出【寒冰綿掌】，寒氣透體直侵經脈！" },
       desc: "單體 200% 法術傷害（悟性），30% 機率凍結目標。" },
     { id: "lb1_skill_fire", tier: 1, type: "skill", name: "武學《烈火刀法》",
-      skillData: { name: "烈火刀法", type: "aoe", dmgType: "phys", mpCost: 40, mult: 1.8,
+      skillData: { name: "烈火刀法", type: "aoe", dmgType: "phys", mpCost: 120, mult: 1.8,
                    effect: { type: "fire", chance: 0.4 }, msg: "【烈火刀法】刀捲火浪，橫掃群敵！" },
       desc: "群體 180% 物理傷害（力量），40% 機率使目標燒傷。" },
 
@@ -49,11 +49,11 @@ const lingbaoShopItems = [
                   stats: { con: 10000, def: 15, eva: 5, fire: 10 } },
       desc: "玄武靈甲，厚重護體又不失靈動，甲上離火可焚傷來敵。" },
     { id: "lb2_skill_poison", tier: 2, type: "skill", name: "武學《萬毒噬心功》",
-      skillData: { name: "萬毒噬心功", type: "aoe", dmgType: "mag", mpCost: 60, mult: 2.6,
+      skillData: { name: "萬毒噬心功", type: "aoe", dmgType: "mag", mpCost: 180, mult: 2.6,
                    effect: { type: "poison", chance: 0.6 }, msg: "運轉【萬毒噬心功】，毒霧瀰漫噬咬群敵！" },
       desc: "群體 260% 法術傷害（悟性），60% 機率使目標中毒（可疊 5 層）。" },
     { id: "lb2_skill_metal", tier: 2, type: "skill", name: "武學《天罡破軍斬》",
-      skillData: { name: "天罡破軍斬", type: "single", dmgType: "phys", mpCost: 60, mult: 3.5,
+      skillData: { name: "天罡破軍斬", type: "single", dmgType: "phys", mpCost: 180, mult: 3.5,
                    effect: { type: "metal", chance: 0.5 }, msg: "引天罡之氣，【天罡破軍斬】一刀破軍！" },
       desc: "單體 350% 物理傷害（力量），50% 機率金屬性重擊（傷害再翻倍）。" },
 
@@ -67,11 +67,11 @@ const lingbaoShopItems = [
                   stats: { str: 20000, con: 20000, int: 20000, spr: 20000, def: 20, eva: 10 } },
       desc: "開天闢地之神器，鐘聲鎮壓諸天。可裝備於神器欄（不影響五行/靈根）。" },
     { id: "lb3_skill_ice", tier: 3, type: "skill", name: "武學《太虛寒獄》",
-      skillData: { name: "太虛寒獄", type: "aoe", dmgType: "mag", mpCost: 100, mult: 4.0,
+      skillData: { name: "太虛寒獄", type: "aoe", dmgType: "mag", mpCost: 300, mult: 4.0,
                    effect: { type: "ice", chance: 0.5 }, msg: "【太虛寒獄】降臨，萬里冰封，群敵盡凍！" },
       desc: "群體 400% 法術傷害（悟性），50% 機率凍結目標。" },
     { id: "lb3_skill_fire", tier: 3, type: "skill", name: "武學《九幽焚天訣》",
-      skillData: { name: "九幽焚天訣", type: "single", dmgType: "phys", mpCost: 120, mult: 6.0,
+      skillData: { name: "九幽焚天訣", type: "single", dmgType: "phys", mpCost: 360, mult: 6.0,
                    effect: { type: "fire", chance: 1.0 }, msg: "九幽冥火沖天而起，【九幽焚天訣】焚盡強敵！" },
       desc: "單體 600% 物理傷害（力量），必定使目標燒傷。" }
 ];

@@ -230,6 +230,7 @@
         
         .reincarnate-btn { border-color: rgba(232, 121, 249, 0.6); color: var(--reincarnate-color); font-weight: bold; }
         .reincarnate-btn:hover { background: rgba(232, 121, 249, 0.2); border-color: var(--reincarnate-color); box-shadow: 0 0 12px rgba(232, 121, 249, 0.5); }
+        .reincarnate-note { font-size: 0.75em; color: #9ca3af; line-height: 1.5; text-align: center; margin: -4px 0 10px; }
 
         #log { 
             height: 290px; 
@@ -692,6 +693,10 @@
         <div id="drawer-fate" class="drawer-body">
             <div style="font-size: 0.78em; color: #9ca3af; text-align: center; margin-bottom: 8px;">以下操作無法復原，請謹慎使用</div>
             <button class="reincarnate-btn" onclick="triggerReincarnate()">🌀 轉世輪迴 (仙人初境解鎖)</button>
+            <div class="reincarnate-note">
+                轉世只保留：四維與魅力的 5%、氣血上限與靈力上限的 5%<br>
+                全部遺忘：境界、人物等級、宗門與宗門技能、藏書閣古籍與屬性秘典（壽元回到 60 年）
+            </div>
             <button class="sys-btn" style="border-color: rgba(239, 68, 68, 0.5); color: #ef4444;" onclick="resetGameCompletely()">🔄 遊戲重新開始 (完全重置)</button>
         </div>
     </div>
@@ -900,7 +905,8 @@
     <div class="modal-content" style="border-color: #c084fc;">
         <h2 style="text-align: center; color: #c084fc; margin-top: 0;">📚 宗門 - 藏書閣</h2>
         <p style="text-align: center; color: #9ca3af; font-size: 0.9em;">消耗【武學積分】參悟上古古籍，永久提升屬性！（每種書籍學習上限 100 次）</p>
-        <div class="grid-container" style="margin-top: 20px;">
+        <h3 style="text-align: center; color: #c084fc; margin: 20px 0 4px;">📖 第一階段・四維古籍</h3>
+        <div class="grid-container" style="margin-top: 12px;">
             <div class="card">
                 <h3>《力道真解》</h3>
                 <p style="font-size: 0.85em; color: #9ca3af;">消耗: 10 武學積分</p>
@@ -946,6 +952,9 @@
                 </div>
             </div>
         </div>
+        <h3 style="text-align: center; color: #c084fc; margin: 28px 0 4px;">📜 第二階段・屬性秘典</h3>
+        <!-- 內容由 library.js 的 renderElementBooks() 產生（解鎖提示、持有資源、八本秘典卡片） -->
+        <div id="element-book-section"></div>
         <button class="close-btn" onclick="closeModal('library-modal')">離開</button>
     </div>
 </div>
