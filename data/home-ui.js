@@ -82,8 +82,11 @@ function updateHomeHud() {
     const width = (id, pct) => { const el = document.getElementById(id); if (el) el.style.width = Math.max(0, Math.min(100, pct)) + '%'; };
 
     const avatar = document.getElementById('hud-avatar');
-    const avatarSrc = (PLAYER_AVATARS[player.gender] || PLAYER_AVATARS.male).img;
-    if (avatar && avatar.getAttribute('src') !== avatarSrc) avatar.setAttribute('src', avatarSrc);
+    const avatarInfo = getPlayerAvatar();   // 玩家選用的頭像（avatar.js），點頭像可更換
+    if (avatar && avatar.getAttribute('src') !== avatarInfo.img) {
+        avatar.setAttribute('src', avatarInfo.img);
+        avatar.style.objectPosition = avatarInfo.pos;
+    }
 
     set('hud-player-name', player.name);
     set('hud-realm', `${realms[player.realmIndex]} ${player.stage}階${player.pendingTribulation ? '・待渡劫' : ''}`);

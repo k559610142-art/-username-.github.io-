@@ -525,8 +525,28 @@
         /* ---- HUD ---- */
         #hud-avatar {
             position: absolute; left: 3.98%; top: 2.24%; width: 17.61%; height: 8.16%;
-            border-radius: 50%; object-fit: cover; object-position: top;
+            border-radius: 50%; object-fit: cover; object-position: center;   /* 實際位置由 home-ui.js 依頭像的 pos 設定 */
+            cursor: pointer; transition: box-shadow 0.2s;
         }
+        #hud-avatar:hover { box-shadow: 0 0 18px rgba(253, 230, 138, 0.8); }
+
+        /* ---- 頭像選擇視窗（avatar.js）---- */
+        #avatar-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 10px; }
+        .avatar-card {
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            padding: 8px 4px; margin: 0; background: rgba(18, 24, 38, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; color: #e5e7eb; cursor: pointer;
+        }
+        .avatar-card img { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(240, 213, 136, 0.5); }
+        .avatar-card.in-use { border-color: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
+        .avatar-card.in-use img { border-color: var(--accent); }
+        .avatar-card.locked { cursor: not-allowed; opacity: 0.85; }
+        .avatar-card.locked img { filter: grayscale(1) brightness(0.45); }
+        .avatar-name { font-weight: bold; font-size: 0.9em; color: #fde68a; }
+        .avatar-status { font-size: 0.72em; color: #9ca3af; line-height: 1.35; }
+        .avatar-status.in-use { color: #4ade80; }
+        .avatar-status.locked { color: #f87171; }
+        .avatar-status small { color: #6b7280; }
         #hud-name {
             position: absolute; left: 22.6%; top: 3.1%; width: 28.4%; height: 7%;
             display: flex; flex-direction: column; justify-content: center; gap: calc(var(--u) * 3);
@@ -693,12 +713,12 @@
         <p style="color: #9ca3af; font-size: 0.9em;">請選擇你的角色。道號之後可以修改，性別選定後無法更改。</p>
         <div class="gender-choices">
             <button class="gender-card" onclick="chooseGender('male')">
-                <img src="https://i.postimg.cc/fbJ8LT1t/han-tian-zun.jpg" alt="男修">
+                <img src="images/avatar-male.jpg" alt="男修" style="object-position: 49% center;">
                 <span class="gender-label">男修</span>
                 <span class="gender-name">初始道號：韓立</span>
             </button>
             <button class="gender-card" onclick="chooseGender('female')">
-                <img src="https://i.postimg.cc/L8WZRzfy/nan-gong-wan.jpg" alt="女修">
+                <img src="images/avatar-female.jpg" alt="女修" style="object-position: 29% center;">
                 <span class="gender-label">女修</span>
                 <span class="gender-name">初始道號：南宮婉</span>
             </button>
@@ -714,7 +734,7 @@
     <img id="stage-bg" src="images/home-bg.jpg" alt="">
 
     <!-- 頂部 HUD：疊在圖上的頭像框、名字框、兩個資源框內 -->
-    <img id="hud-avatar" alt="">
+    <img id="hud-avatar" alt="更換頭像" title="點擊更換頭像" onclick="openAvatarModal()">
     <div id="hud-name">
         <div class="hud-name-line"><span id="hud-player-name">韓立</span></div>
         <div id="hud-realm" class="hud-realm">凡人 1階</div>
@@ -1100,6 +1120,16 @@
     </div>
 </div>
 
+<!-- 更換頭像：點洞府左上頭像開啟，內容由 data/avatar.js 的 renderAvatarModal() 產生 -->
+<div id="avatar-modal" class="modal-bg" onclick="if (event.target === this) closeModal('avatar-modal')">
+    <div class="modal-content" style="max-width: 560px; border-color: var(--accent); text-align: center;">
+        <h2 style="color: var(--accent); margin-top: 0;">🎭 更換頭像</h2>
+        <p style="color: #9ca3af; font-size: 0.85em;">達成條件即可解鎖，解鎖後永久可用（轉世也不會失去）。<span id="avatar-count"></span></p>
+        <div id="avatar-list"></div>
+        <button class="close-btn" onclick="closeModal('avatar-modal')">離開</button>
+    </div>
+</div>
+
 <!-- 符寶坊：煉製符寶與鑲嵌到橙裝孔位，內容由 data/talisman.js 的 renderTalismanWorkshop() 產生 -->
 <div id="talisman-modal" class="modal-bg">
     <div class="modal-content" style="border-color: #a78bfa; text-align: center;">
@@ -1342,54 +1372,56 @@
 -->
 <!-- ⚠️ 版本號 ?v=：每次發佈（推上 GitHub Pages）前要把所有 ?v= 改成新的值（全部取代即可）。
      GitHub Pages 會快取檔案約 10 分鐘，沒改版本號時玩家可能拿到「舊 index.html＋新 JS」而讀檔失敗。見 ARCHITECTURE.md 第 30 節 -->
-<script src="data/config-realms.js?v=20260924a"></script>
-<script src="data/config-level.js?v=20260924a"></script>
-<script src="data/config-lifespan.js?v=20260924a"></script>
-<script src="data/config-maps.js?v=20260924a"></script>
-<script src="data/config-sects.js?v=20260924a"></script>
-<script src="data/config-lingbao.js?v=20260924a"></script>
-<script src="data/config-shop.js?v=20260924a"></script>
-<script src="data/config-beasts.js?v=20260924a"></script>
-<script src="data/config-servants.js?v=20260924a"></script>
-<script src="data/config-equipment.js?v=20260924a"></script>
-<script src="data/config-tribulation.js?v=20260924a"></script>
-<script src="data/config-quests.js?v=20260924a"></script>
-<script src="data/config-activities.js?v=20260924a"></script>
-<script src="data/config-daily-quests.js?v=20260924a"></script>
-<script src="data/config-elements.js?v=20260924a"></script>
-<script src="data/config-merit.js?v=20260924a"></script>
-<script src="data/config-talisman.js?v=20260924a"></script>
-<script src="data/state.js?v=20260924a"></script>
-<script src="data/stats.js?v=20260924a"></script>
-<script src="data/elements.js?v=20260924a"></script>
-<script src="data/ui.js?v=20260924a"></script>
-<script src="data/map.js?v=20260924a"></script>
-<script src="data/combat.js?v=20260924a"></script>
-<script src="data/leveling.js?v=20260924a"></script>
-<script src="data/lifespan.js?v=20260924a"></script>
-<script src="data/tribulation.js?v=20260924a"></script>
-<script src="data/sect.js?v=20260924a"></script>
-<script src="data/shop.js?v=20260924a"></script>
-<script src="data/bag.js?v=20260924a"></script>
-<script src="data/equipment.js?v=20260924a"></script>
-<script src="data/lingbao-shop.js?v=20260924a"></script>
-<script src="data/servant.js?v=20260924a"></script>
-<script src="data/quest.js?v=20260924a"></script>
-<script src="data/activity.js?v=20260924a"></script>
-<script src="data/daily-quest.js?v=20260924a"></script>
-<script src="data/auction.js?v=20260924a"></script>
-<script src="data/merit.js?v=20260924a"></script>
-<script src="data/talisman.js?v=20260924a"></script>
-<script src="data/field.js?v=20260924a"></script>
-<script src="data/beast-combat.js?v=20260924a"></script>
-<script src="data/beast.js?v=20260924a"></script>
-<script src="data/library.js?v=20260924a"></script>
-<script src="data/alchemy.js?v=20260924a"></script>
-<script src="data/player-profile.js?v=20260924a"></script>
-<script src="data/save.js?v=20260924a"></script>
-<script src="data/home-ui.js?v=20260924a"></script>
-<script src="data/title-screen.js?v=20260924a"></script>
-<script src="data/main.js?v=20260924a"></script>
+<script src="data/config-realms.js?v=20260924c"></script>
+<script src="data/config-level.js?v=20260924c"></script>
+<script src="data/config-lifespan.js?v=20260924c"></script>
+<script src="data/config-maps.js?v=20260924c"></script>
+<script src="data/config-sects.js?v=20260924c"></script>
+<script src="data/config-lingbao.js?v=20260924c"></script>
+<script src="data/config-shop.js?v=20260924c"></script>
+<script src="data/config-beasts.js?v=20260924c"></script>
+<script src="data/config-servants.js?v=20260924c"></script>
+<script src="data/config-equipment.js?v=20260924c"></script>
+<script src="data/config-tribulation.js?v=20260924c"></script>
+<script src="data/config-quests.js?v=20260924c"></script>
+<script src="data/config-activities.js?v=20260924c"></script>
+<script src="data/config-daily-quests.js?v=20260924c"></script>
+<script src="data/config-elements.js?v=20260924c"></script>
+<script src="data/config-merit.js?v=20260924c"></script>
+<script src="data/config-talisman.js?v=20260924c"></script>
+<script src="data/config-avatars.js?v=20260924c"></script>
+<script src="data/state.js?v=20260924c"></script>
+<script src="data/stats.js?v=20260924c"></script>
+<script src="data/elements.js?v=20260924c"></script>
+<script src="data/ui.js?v=20260924c"></script>
+<script src="data/map.js?v=20260924c"></script>
+<script src="data/combat.js?v=20260924c"></script>
+<script src="data/leveling.js?v=20260924c"></script>
+<script src="data/lifespan.js?v=20260924c"></script>
+<script src="data/tribulation.js?v=20260924c"></script>
+<script src="data/sect.js?v=20260924c"></script>
+<script src="data/shop.js?v=20260924c"></script>
+<script src="data/bag.js?v=20260924c"></script>
+<script src="data/equipment.js?v=20260924c"></script>
+<script src="data/lingbao-shop.js?v=20260924c"></script>
+<script src="data/servant.js?v=20260924c"></script>
+<script src="data/quest.js?v=20260924c"></script>
+<script src="data/activity.js?v=20260924c"></script>
+<script src="data/daily-quest.js?v=20260924c"></script>
+<script src="data/auction.js?v=20260924c"></script>
+<script src="data/merit.js?v=20260924c"></script>
+<script src="data/talisman.js?v=20260924c"></script>
+<script src="data/field.js?v=20260924c"></script>
+<script src="data/beast-combat.js?v=20260924c"></script>
+<script src="data/beast.js?v=20260924c"></script>
+<script src="data/library.js?v=20260924c"></script>
+<script src="data/alchemy.js?v=20260924c"></script>
+<script src="data/player-profile.js?v=20260924c"></script>
+<script src="data/save.js?v=20260924c"></script>
+<script src="data/home-ui.js?v=20260924c"></script>
+<script src="data/avatar.js?v=20260924c"></script>
+<script src="data/title-screen.js?v=20260924c"></script>
+<script src="data/main.js?v=20260924c"></script>
 
 </body>
 </html>

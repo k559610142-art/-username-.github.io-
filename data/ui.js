@@ -1,9 +1,10 @@
 // 共用 UI 更新：頂部狀態列、戰鬥實況面板、技能列表、日誌、彈窗開關
 
 // 角色頭像與預設道號（戰鬥實況與開場性別選擇共用）
+// 頭像為本地檔案（images/）；原圖是橫式，裁成圓形時用 pos（CSS object-position）對準臉部
 const PLAYER_AVATARS = {
-    male:   { img: "https://i.postimg.cc/fbJ8LT1t/han-tian-zun.jpg", defaultName: "韓立", label: "男修" },
-    female: { img: "https://i.postimg.cc/L8WZRzfy/nan-gong-wan.jpg", defaultName: "南宮婉", label: "女修" }
+    male:   { img: "images/avatar-male.jpg",   pos: "49% center", defaultName: "韓立",   label: "男修" },
+    female: { img: "images/avatar-female.jpg", pos: "29% center", defaultName: "南宮婉", label: "女修" }
 };
 
 function updateAutoSettings() {
@@ -52,8 +53,8 @@ function updateCombatVisualPanel() {
     document.getElementById('battle-player-hp').innerText = `氣血: ${Math.floor(player.hp)}/${player.maxHp}${playerSt ? ' ' + playerSt : ''}`;
 
     const avatarContainer = document.getElementById('battle-player-icon');
-    const avatar = PLAYER_AVATARS[player.gender === 'female' ? 'female' : 'male'];
-    avatarContainer.innerHTML = `<img src="${avatar.img}" alt="${player.name}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 50%; border: 2px solid var(--accent); box-shadow: 0 0 10px var(--accent-glow);">`;
+    const avatar = getPlayerAvatar();   // 玩家選用的頭像（avatar.js），未選則依性別
+    avatarContainer.innerHTML = `<img src="${avatar.img}" alt="${player.name}" style="width: 60px; height: 60px; object-fit: cover; object-position: ${avatar.pos}; border-radius: 50%; border: 2px solid var(--accent); box-shadow: 0 0 10px var(--accent-glow);">`;
 
     if (inTribulation && heartDemon) {
         document.getElementById('battle-enemy-title').innerText = "心魔";
@@ -187,6 +188,7 @@ function updateUI() {
     renderSkillList();
     updateStudyCountsUI();
     updateCombatVisualPanel();
+    checkAvatarUnlocks();   // 達成條件的頭像自動解鎖（avatar.js）
     updateHomeHud();   // 洞府主畫面的 HUD（home-ui.js）
 }
 

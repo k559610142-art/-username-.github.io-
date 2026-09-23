@@ -6,6 +6,8 @@ let player = {
     level: 1, levelExp: 0,       // 人物等級（與境界獨立，上限 MAX_PLAYER_LEVEL）
     lifespan: 60,                // 剩餘壽元（年），歸零即身死道消、重新開始
     age: 16,                     // 年齡（歲），隨歲月流逝增加（LIFESPAN_START_AGE 起算）
+    avatarId: null,              // 目前使用的頭像（config-avatars.js 的 id；null = 依性別預設）
+    unlockedAvatars: [],         // 已解鎖的頭像 id，永久保留（avatar.js）
     merit: 0,                    // 功德：獵殺邪修取得，只能兌換七彩補天石（merit.js）
     butianStones: 0,             // 七彩補天石：千寶閣珍貴物資的貨幣
     breakPills: 0,               // 破障丹：渡劫時自動服用

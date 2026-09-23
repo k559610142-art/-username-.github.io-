@@ -13,12 +13,16 @@ index.html            唯一的 HTML 進入點：畫面結構、CSS（含手機 
                       ※ 檔名必須是 index.html（GitHub Pages 只把 index.html 當作預設首頁）
 images/               圖片素材
   home-bg.jpg         洞府主畫面背景（704×1520，頭像框／資源框／側邊按鈕／底部導覽已畫在圖上，見第 31 節）
+  avatar-male.jpg     男修頭像（韓立，597×335 橫式）
+  avatar-female.jpg   女修頭像（南宮婉，599×333 橫式）
+                      ※ 頭像原本放在外部圖床 postimg.cc，已改為本地檔案；橫式圖裁成圓形時依 PLAYER_AVATARS.pos 對準臉部
+  avatars/            可解鎖更換的頭像（256×256 正方形、臉部置中，由玩家提供的原圖裁切縮小），見第 32 節
   cover.jpg           主頁封面・橫式（1264x843），電腦與橫向螢幕使用
   cover-portrait.jpg  主頁封面・直式（960x1920），手機直向使用（由橫式圖重新構圖而成）
 data/                 所有遊戲邏輯與資料，依「設定資料 / 執行狀態 / 功能模組 / 進入點」分層
   config-*.js         純資料表（原則上不含函式、無副作用），可視為遊戲的「設計數值表」：
                       realms / level / lifespan / maps / sects / lingbao / shop / beasts /
-                      servants / equipment / tribulation / quests / activities / daily-quests / elements / merit / talisman
+                      servants / equipment / tribulation / quests / activities / daily-quests / elements / merit / talisman / avatars
                       （config-realms.js 另含修煉節奏表 realmPacing，經驗門檻與壽元流逝都由它換算，見第 26 節）
                       （config-sects.js 例外：尾端有一段迴圈補上技能倍率，並提供 findSectByName()）
   state.js            執行期間的可變全域狀態（player、enemies、靈寵輔助效果計時…）
@@ -40,6 +44,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
   talisman.js         符寶坊：礦石煉製符寶、橙裝孔位鑲嵌／打掉（第 28 節）
   player-profile.js   玩家道號修改
   save.js             本地存檔/讀檔/匯出入/離線掛機結算/重置/舊存檔相容
+  avatar.js           頭像更換：解鎖判定、選擇視窗（設定在 config-avatars.js，第 32 節）
   home-ui.js          洞府主畫面：舞台等比縮放、HUD 數值、底部導覽分頁、建築熱點、興建中提示（第 31 節）
   title-screen.js     遊戲主頁（標題畫面）與進入世界
   main.js             initGame()/startGame() 與 window.onload，遊戲啟動進入點
@@ -77,11 +82,12 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 14 | `config-daily-quests.js` | 每日任務 `DAILY_REFRESH_HOURS`/`DAILY_QUEST_COUNT`/`dailyQuestPool`/`dailyQuestRewards`、千寶閣 `AUCTION_*`、`auctionQualityOdds`、`auctionLifePills`(壽元丹) | 無 | `daily-quest.js`、`auction.js` |
 | 15 | `config-elements.js` | 戰鬥屬性上限 `DEF_CAP`/`EVA_CAP`/`AFFIX_CAP`、效果常數（凍結/燒傷/中毒/金重擊/雷擊 `THUNDER_BONUS`）、`combatAttrInfo`、`AFFIX_TYPES`(玩家武器)/`MONSTER_AFFIX_TYPES`(怪物異屬性：冰/毒/雷)、五行相剋 `WUXING_COUNTERS`/`WUXING_COUNTER_BONUS`/`WUXING_COUNTERED_PENALTY`、`monsterAttrsByMapCategory` | 無 | `elements.js`、`stats.js`(getPlayerElement)、`ui.js`、`equipment.js`(鍛造屬性、五行說明視窗) |
 | 15a | `config-merit.js` | 邪修 `EVIL_SPAWN_CHANCE`/`EVIL_POWER_MULT`/`EVIL_MERIT_MIN`/`EVIL_MERIT_MAX`/`EVIL_ICON`、兌換 `MERIT_PER_BUTIAN_STONE`/`BREAK_PILL_STONE_COST`、破障丹效果 `BREAK_PILL_DEMON_POWER_MULT`/`BREAK_PILL_CHANCE_BONUS`/`BREAK_PILL_MAX_CHANCE`、`preciousItems`(顯示資料) | 無 | `merit.js`、`combat.js`(邪修生成)、`save.js`(離線功德)、`tribulation.js`(破障丹)、`bag.js`、`ui.js` |
+| 15c | `config-avatars.js` | `avatarList`（頭像 id／名稱／圖片／裁切位置／解鎖條件） | 無 | `avatar.js` |
 | 15b | `config-talisman.js` | 孔位 `SOCKET_QUALITY`/`SOCKET_MIN`/`SOCKET_MAX`、`talismanTypes`(11 種)、`talismanGrades`(下/中/上品的效果與出現機率)、`TALISMAN_CRAFT_COST`(每次 500 礦石＋5 萬靈石) | 無 | `talisman.js` |
-| 16 | `state.js` | `player`（含 `lingbaoSold`、礦石 `ore`、符寶 `talismans`、藏書閣屬性秘典次數 `elementStudy`、轉世保留的上限 `reincarnateBonus`、年齡 `age`、功德系統 `merit`/`butianStones`/`breakPills`/`evilKills`）、`DEFAULT_PLAYER_JSON`（全新角色預設值快照，讀檔/匯入的合併基底）、`enemies`（每隻帶 `attrs`/`status`）、`respawnTimer`、`safeZoneTimer`；不存檔的執行期狀態：`inTribulation`/`heartDemon`/`tribulationFatedWin`/丹藥冷卻/`gameOver`/`playerStatus`(玩家身上的凍結/燒傷/中毒)/靈寵輔助計時(`petBuff*`/`petShield*`/`petRegen*`) | **`maps`**（必須排在 config-maps.js 之後） | 幾乎所有檔案都會讀寫 `player` |
+| 16 | `state.js` | `player`（含 `lingbaoSold`、頭像 `avatarId`/`unlockedAvatars`、礦石 `ore`、符寶 `talismans`、藏書閣屬性秘典次數 `elementStudy`、轉世保留的上限 `reincarnateBonus`、年齡 `age`、功德系統 `merit`/`butianStones`/`breakPills`/`evilKills`）、`DEFAULT_PLAYER_JSON`（全新角色預設值快照，讀檔/匯入的合併基底）、`enemies`（每隻帶 `attrs`/`status`）、`respawnTimer`、`safeZoneTimer`；不存檔的執行期狀態：`inTribulation`/`heartDemon`/`tribulationFatedWin`/丹藥冷卻/`gameOver`/`playerStatus`(玩家身上的凍結/燒傷/中毒)/靈寵輔助計時(`petBuff*`/`petShield*`/`petRegen*`) | **`maps`**（必須排在 config-maps.js 之後） | 幾乎所有檔案都會讀寫 `player` |
 | 17 | `stats.js` | `EQUIP_STAT_KEYS`、`getEquipBonus`(四維＋減傷/閃避/屬性傷害)/`getElementCounts`/`getSpiritRoots`(靈根判定)/`getRootBonus`(靈根加成總和)/`getPlayerElement`(本命五行，五行相剋用)/`getRealmStageExp`(依 realmPacing 換算每階經驗基數，有快取)/`getNextExp`/`getLevelExpNeeded`/`hasLiveBeast`/`getBasePower`/`getPhysAttack`/`getMagAttack`/`getMaxHp`/`getMaxMp`(兩者皆加上轉世保留值)/`getReincarnateBonus`/`getSectTier`/`getAllSkills` | `player`、`realms`、`sectData`、`LEVEL_*`、`equipTypes`/`WUXING_COUNTERS`、靈寵輔助計時 | `ui.js`、`combat.js`、`leveling.js`、`tribulation.js`、`beast-combat.js` 等幾乎全部功能檔 |
 | 18 | `elements.js` | `newStatus`/`getPlayerCombatAttrs`(含 `element`)/`getWuxingCounterMult`/`withSkillEffect`/`getMapCategoryIndex`/`rollMonsterAttrs`/`resolveHit`/`addDotStack`/`tickStatus`/`formatStatus`/`summarizeTags`/`formatEquipStats` | `config-elements.js`、`stats.js`(getEquipBonus/getPlayerElement)、`library.js`(getElementBookBonus)、`wuxingElements`、`maps`、`playerStatus` | `combat.js`、`tribulation.js`、`ui.js`、`bag.js`/`equipment.js`/`auction.js`/`lingbao-shop.js`(裝備屬性文字) |
-| 19 | `ui.js` | 常數 `PLAYER_AVATARS`（頭像/預設道號，戰鬥實況與性別選擇共用）、`updateUI`/`updateCombatVisualPanel`/`formatWuxingCounterTip`/`updateTribulationUI`/`updatePotionCooldownUI`/`updateStudyCountsUI`/`renderSkillList`/`addLog`/`refreshCombatStatusText`/`updateAutoSettings`/`syncAutoSettingsUI`/`updateSectFacilitiesUI`/`closeModal`/`toggleDrawer`/`formatCountdown`/`resolveBatchCount`(×1/×10/最高 共用)/批次刪除工具 `renderBulkDeleteBar`/`getCheckedBulkQualities`/`toggleAllBulkQualities` | `player`、`realms`、`stats.js` 的計算函式、`lifespan.js`(getDeathLifespanCost) | 幾乎所有功能檔在資料變動後都會呼叫 `updateUI()`/`addLog()` |
+| 19 | `ui.js` | 常數 `PLAYER_AVATARS`（頭像 `img`（本地 images/avatar-*.jpg）/裁切位置 `pos`/預設道號，洞府頭像框、戰鬥實況、性別選擇共用；性別選擇視窗的兩張 `<img>` 寫在 index.html，換圖時要一起改）、`updateUI`/`updateCombatVisualPanel`/`formatWuxingCounterTip`/`updateTribulationUI`/`updatePotionCooldownUI`/`updateStudyCountsUI`/`renderSkillList`/`addLog`/`refreshCombatStatusText`/`updateAutoSettings`/`syncAutoSettingsUI`/`updateSectFacilitiesUI`/`closeModal`/`toggleDrawer`/`formatCountdown`/`resolveBatchCount`(×1/×10/最高 共用)/批次刪除工具 `renderBulkDeleteBar`/`getCheckedBulkQualities`/`toggleAllBulkQualities` | `player`、`realms`、`stats.js` 的計算函式、`lifespan.js`(getDeathLifespanCost) | 幾乎所有功能檔在資料變動後都會呼叫 `updateUI()`/`addLog()` |
 | 20 | `map.js` | `isInSect`(是否身在宗門)/`openMapCategoryModal`/`selectMap`/`changeMap` | `maps`、`SECT_MAP_NAME`、`player`、`ui.js` | `ui.js`(updateSectFacilitiesUI)、`combat.js`/`quest.js`(門派任務須在宗門)、HTML 按鈕；changeMap 離開宗門時呼叫 `quest.js` 的 stopQuest |
 | 21 | `combat.js` | `combatTick`/`playerAttackTurn`(普攻/技能出手，渡劫共用)/`onPlayerKilledInField`/`checkAutoHealAndMana`/`tryRescueServant` | `player`、`enemies`、`shopItems`、`servantQualities`、`servantNames`、`stats.js`、`elements.js`(resolveHit/tickStatus)、`leveling.js`(gainExp)、`beast-combat.js`(petAssistTick/applyPetDamageReduction)、`lifespan.js`(handlePlayerDeath)、`map.js`(changeMap 死亡回城)、`merit.js`(isEvilHuntUnlocked/rollEvilMerit，邪修生成與功德)、`config-merit.js` | `main.js`(setInterval 每秒呼叫) |
 | 22 | `leveling.js` | `REINCARNATE_KEEP_RATE`(轉世保留比例 5%)、`gainExp`/`gainLevelExp`/`advanceRealm`/`triggerReincarnate`（規則見第 25 節） | `realms`、`player`、`stats.js`、`ui.js`(updateSectFacilitiesUI)、`beast-combat.js`(gainBeastExp)、`lifespan.js`(gainRealmLifespan) | `combat.js`、`tribulation.js`、`save.js`、HTML 輪迴按鈕 |
@@ -106,6 +112,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 39 | `alchemy.js` | `pillRecipes`、`openAlchemyModal`/`craftPill` | `player.herbs`/`stats`/`coins`、`ui.js`(resolveBatchCount) | HTML 按鈕（僅在「宗門」顯示） |
 | 40 | `player-profile.js` | `PLAYER_NAME_MAX_LENGTH`、`sanitizePlayerName`(移除 HTML 特殊字元，讀檔/匯入也套用)/`changePlayerName`(開啟 #name-modal)/`confirmPlayerName` | `player.name` | HTML 按鈕、`save.js`(applySaveData) |
 | 41 | `save.js` | `calcOfflineProgress`/`saveLocal`/`loadLocal`/`applySaveData`(讀檔與匯入共用)/`resetGameCompletely` + 舊存檔相容 `migrateServantAssignments`/`migrateEquipmentSlots`/`migrateActivityFields`/`migrateCurrentMap`/`migrateProgressionFields`/`migrateLegacySkills`(舊禁術下修＋已兌換武學耗魔同步)/`migrateRealmExp`(經驗曲線改版：待渡劫者修為壓回滿格)/`migrateEquipSockets`(只補 talismans 欄位) + 讀檔失敗保護 `saveLoadFailed`/`reportLoadFailure`/`retryLoadAfterFailure`/`showRawSaveForCopy`/`abandonSaveAndStartNew`（第 30 節） + 離線斬殺邪修的功德 + `reloadLocalSave`(選單按鈕，無存檔時給提示) + 存檔代碼（常數 `SAVE_CODE_PREFIX`="FS2:"、兩段式確認暫存 `pendingImportData`；編解碼皆為 async）`encodeSaveCode`/`decodeSaveCode`/`bytesToBase64`/`base64ToBytes`/`pipeBytes`/`openSaveCodeModal`/`setSaveCodeStatus`/`exportSave`/`selectSaveCodeText`/`copySaveCode`/`downloadSaveCode`/`importSave`/`pasteSaveCodeFromClipboard`/`importSaveFromFile`/`confirmImportSave`/`resetImportConfirm` | `player`（整包序列化進 `localStorage`）、`maps`(migrateCurrentMap)、`legacySkillAdjustments`/`lingbaoShopItems`(migrateLegacySkills)、`leveling.js`(gainExp)、`combat.js`(tryRescueServant)、`lifespan.js`、`beast-combat.js`(createBeast)、`ui.js` | `main.js`(啟動時 loadLocal)、`main.js`(initGame 內每 30 秒 saveLocal) |
+| 41b | `avatar.js` | `getPlayerAvatar`/`isAvatarUnlocked`/`checkAvatarCondition`/`checkAvatarUnlocks`/`openAvatarModal`/`renderAvatarModal`/`selectAvatar` | `avatarList`、`player.avatarId`/`unlockedAvatars`/`gender`/`realmIndex`/`level`/`reputation`/`tribulationCount`、`realms` | `ui.js`(updateUI 呼叫 checkAvatarUnlocks；戰鬥實況頭像)、`home-ui.js`(頭像框)、HTML 頭像點擊 |
 | 41a | `home-ui.js` | `STAGE_IMG_W`/`STAGE_IMG_H`、`TAB_TITLES`、`layoutStage`/`initHomeUi`/`switchTab`/`showStageToast`/`showUnderConstruction`/`openAscensionPlatform`/`formatShortNumber`/`getCultivationRate`/`updateHomeHud` | `player`、`realms`、`PLAYER_AVATARS`、`stats.js`、`tribulation.js`(triggerTribulation)、`activity.js`(openActivity) | `ui.js`(updateUI 結尾呼叫 updateHomeHud)、`main.js`(onload 呼叫 initHomeUi)、HTML 熱點與底部導覽 |
 | 42 | `title-screen.js` | `TITLE_HOTSPOTS`(光環座標)/`currentTitleHotspot`/`positionTitleHotspot`/`enterWorld`/`initTitleScreen`、旗標 `worldEntered` | `main.js`(startGame)、`#title-screen` DOM | `main.js`(onload 呼叫 initTitleScreen)、標題頁按鈕 |
 | 43 | `main.js` | `initGame`(含每 30 秒存檔與切到背景時存檔)/`startGame`(讀檔失敗時不進入開新角色)/`chooseGender`/`window.onload`、旗標 `gameStarted` | 幾乎全部模組（啟動流程的膠水程式碼） | 瀏覽器 `onload`、`title-screen.js`(enterWorld 呼叫 startGame) |
@@ -195,6 +202,7 @@ combatTick() 每秒執行 [combat.js]
 | `enterWorld` | `data/title-screen.js` |
 | `retryLoadAfterFailure`, `showRawSaveForCopy`, `abandonSaveAndStartNew`（讀檔失敗視窗） | `data/save.js` |
 | `switchTab`, `openAscensionPlatform`, `showUnderConstruction`（洞府主畫面） | `data/home-ui.js` |
+| `openAvatarModal`（點洞府頭像）、`selectAvatar(id)`（選擇視窗內動態產生） | `data/avatar.js` |
 | `chooseGender` | `data/main.js` |
 
 ## 5. 新增功能的建議流程
@@ -993,7 +1001,7 @@ combatTick() 每秒執行 [combat.js]
 （以 8 種舊存檔形態測試目前程式皆可正常讀取；移除 `#age-display` 即可重現同一錯誤。）
 
 ### 1. 發佈版本號（防止新舊檔案混用）
-- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260924a`）。
+- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260924c`）。
 - **每次推上 GitHub Pages 前，把所有 `?v=` 全部取代成新值**（例：日期＋序號）。新 index.html 會指向新網址的 JS，不會再拿到快取的舊檔。
 - 新增 `data/*.js` 時也要記得帶上 `?v=`。
 
@@ -1026,7 +1034,7 @@ combatTick() 每秒執行 [combat.js]
 
 | 元素 | 位置 | 內容／功能 |
 |---|---|---|
-| `#hud-avatar` | 頭像框 (28,34) 124×124 | 玩家頭像（`PLAYER_AVATARS`，依性別），蓋住圖上的預設頭像 |
+| `#hud-avatar` | 頭像框 (28,34) 124×124 | 玩家頭像（`getPlayerAvatar()`：玩家選用的頭像，未選則依性別），蓋住圖上的預設頭像；**點擊開啟更換頭像視窗**（第 32 節） |
 | `#hud-name` | 名字框 (159,47) | 道號、境界階數（待渡劫會標示）、Lv 與等級進度條、戰力 |
 | `#hud-coins` | 左資源框（元寶） | 靈石（`formatShortNumber`：萬／億縮寫） |
 | `#hud-rep` | 右資源框（圖上原為「仙玉」） | **聲望** |
@@ -1059,3 +1067,32 @@ combatTick() 每秒執行 [combat.js]
 - `updateUI()` 結尾呼叫 `updateHomeHud()`，所以 HUD 與原面板永遠同步。
 - 彈出視窗（`.modal-bg`，z-index 100）仍是全螢幕，蓋在舞台上方。
 - 背景圖只有 704 寬，在高解析手機上會略微放大；若之後有更大的同構圖，直接替換並依上方警語重新量座標即可。
+
+## 32. 頭像更換（可解鎖）
+
+- **入口**：點洞府左上的頭像（`#hud-avatar`）→ `openAvatarModal()` 開啟 `#avatar-modal`，列出全部頭像（已解鎖／使用中／鎖定與條件、目前進度）。
+- **不分性別**，所有頭像男女修都能用；`player.avatarId = null` 時依性別顯示預設的韓立／南宮婉（`getPlayerAvatar()`）。
+- **解鎖**：`checkAvatarUnlocks()` 由 `updateUI()` 每次呼叫，達成條件就把 id 加進 `player.unlockedAvatars` 並寫一筆日誌；
+  **解鎖後永久保留**（轉世重置境界／等級也不會失去；選用中的頭像也保留）。條件只看「是否達到」，不會扣聲望。
+
+  | 頭像 | id | 解鎖條件 |
+  |---|---|---|
+  | 韓立／南宮婉 | `male` / `female` | 一開始就有 |
+  | 執扇仙子 | `fan-fairy` | 境界達【築基】 |
+  | 琵琶仙子 | `pipa-fairy` | 人物等級 Lv.30 |
+  | 花仙童女 | `flower-girl` | 聲望 1,000 |
+  | 藍衣少年 | `blue-youth` | 境界達【金丹】 |
+  | 星海客 | `starsea` | 聲望 10,000 |
+  | 銀髮劍仙 | `silver-swordswoman` | 境界達【元嬰】 |
+  | 妖妖 | `yaoyao` | 人物等級 Lv.200 |
+  | 羅峰 | `luofeng` | 境界達【化神】 |
+  | 姜太虛 | `jiang-taixu` | 累計渡劫成功 5 次 |
+  | 金龍帝君 | `golden-emperor` | 境界達【仙人初境】 |
+
+- **條件類型**（`checkAvatarCondition()`）：`realm`（境界索引）、`level`、`reputation`、`tribulation`。要新增類型時在這個函式加一個 case。
+- **新增頭像**：圖片裁成正方形（建議 256×256、臉部置中）放進 `images/avatars/`，在 `config-avatars.js` 的 `avatarList` 加一筆。
+  `id` 會寫進存檔，**上線後不要改名**（改名會讓已解鎖／使用中的紀錄失效，退回預設頭像）。
+- **圖片處理紀錄**：`images/avatars/` 的圖是用 .NET System.Drawing 從玩家提供的原圖依臉部位置裁正方形、縮成 256×256（JPEG 品質 90）。
+  三位仙子取自三聯圖（解析度較高），妖妖的原圖只有 225×225，放大後較模糊，有更清楚的圖可直接替換同檔名。
+- **顯示位置**：洞府頭像框（`home-ui.js`）、戰鬥分頁的戰場實況（`ui.js` 的 `updateCombatVisualPanel`）都用 `getPlayerAvatar()`；
+  開場性別選擇視窗仍固定顯示韓立／南宮婉。
