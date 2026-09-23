@@ -52,6 +52,18 @@ function renderBag() {
         }
     }
 
+    // 珍貴道具（七彩補天石、破障丹）：七彩發光外觀，不能直接使用（補天石於千寶閣消費、破障丹渡劫時自動服用）
+    [["butianStone", player.butianStones], ["breakPill", player.breakPills]].forEach(([key, count]) => {
+        if (!(count > 0)) return;
+        hasItems = true;
+        let item = preciousItems[key];
+        parts.push(`
+            <div class="card rainbow-glow">
+                <h3 class="rainbow-text">${item.icon} ${item.name} <span style="font-size:0.8em;">(x${count.toLocaleString()})</span></h3>
+                <p style="font-size: 0.85em; color: #9ca3af;">${item.desc}</p>
+            </div>`);
+    });
+
     if (player.equipInventory && player.equipInventory.length > 0) {
         hasItems = true;
         player.equipInventory.forEach(eq => {

@@ -4,9 +4,16 @@
 // 壽元與戰力無關；歸零即身死道消，存檔清除並重新開始（只有「死亡」會讓壽元歸零，見下方底線）。
 
 // ---- 歲月流逝（自然消耗）：安全區緩慢流逝，野外依危險度加速，觸及底線後停止 ----
-// 每分鐘流逝 = 目前境界的 gain ÷ LIFESPAN_AGING_MINUTES × 所在地倍率
-//   → 在安全區，一個境界給的壽元約可撐 360 分鐘（6 小時）線上時間
-const LIFESPAN_AGING_MINUTES = 360;
+// 每分鐘流逝 = 目前境界的 gain ÷（getAgingHours() × 60）× 所在地倍率
+//   getAgingHours()（lifespan.js）= 一個境界給的壽元在「安全區」可撐幾小時：
+//     max(LIFESPAN_MIN_AGING_HOURS, 修煉時數 × LIFESPAN_PACE_MULT × 主要地圖的流逝倍率)
+//   → 在該境界的主要地圖，壽元約可撐「修滿該境界所需時間」的 5 倍；前期至少維持安全區 6 小時
+//   修煉時數與主要地圖見 config-realms.js 的 realmPacing
+const LIFESPAN_MIN_AGING_HOURS = 6;
+const LIFESPAN_PACE_MULT = 5;
+
+// 新角色（與轉世後）的起始年齡；年齡只會隨歲月流逝增加（折壽不算年齡）
+const LIFESPAN_START_AGE = 16;
 
 // 所在地倍率：索引對應 maps 的分類（0 安全區 / 1 野外 / 2 開放世界 / 3 禁區 / 4 至高戰場）
 const LIFESPAN_DANGER_MULT = [1, 1.5, 2, 3, 4];

@@ -50,8 +50,19 @@ function calcOfflineProgress() {
             if (Math.random() < 0.05 && tryRescueServant()) rescuedCount++;
         }
 
+        // 離線斬殺邪修：戰鬥 tick 數 × 邪修出現機率，每名給平均功德（需已解鎖獵殺邪修）
+        let meritEarned = 0;
+        if (isEvilHuntUnlocked()) {
+            let evilKills = Math.floor(combatTicks * EVIL_SPAWN_CHANCE);
+            meritEarned = Math.floor(evilKills * (EVIL_MERIT_MIN + EVIL_MERIT_MAX) / 2);
+            player.evilKills = (player.evilKills || 0) + evilKills;
+            player.merit = (player.merit || 0) + meritEarned;
+        }
+
         let expText = wasPending ? "修為已滿(待渡劫，無經驗)" : `${Math.floor(gained)} 經驗`;
-        msg = `⚔️ 離線於【${player.currentMap.name}】歷練 ${Math.floor(offlineSeconds / 60)} 分鐘，獲得 ${expText}、${coinsEarned.toLocaleString()} 靈石與 ${repEarned.toLocaleString()} 點聲望${rescuedCount > 0 ? `，並拯救了 ${rescuedCount} 名受困修士！` : '！'}`;
+        msg = `⚔️ 離線於【${player.currentMap.name}】歷練 ${Math.floor(offlineSeconds / 60)} 分鐘，獲得 ${expText}、${coinsEarned.toLocaleString()} 靈石與 ${repEarned.toLocaleString()} 點聲望`
+            + (meritEarned > 0 ? `、${meritEarned.toLocaleString()} 點功德` : '')
+            + (rescuedCount > 0 ? `，並拯救了 ${rescuedCount} 名受困修士！` : '！');
     }
 
     // 離線期間的歲月流逝（半速，同樣受底線保護）
@@ -192,6 +203,12 @@ function migrateLegacySkills() {
 // 讀檔與匯入共用：合併預設值 → 各項舊存檔相容 → 清除執行期戰鬥狀態 → 離線收益結算 → 更新畫面
 // ⚠️ 必須合併到「全新角色的預設值」（DEFAULT_PLAYER_JSON），不能合併到目前的 player：
 //    否則遊戲中匯入缺欄位的舊存檔，會沿用目前角色的等級、宗門技能、靈寶閣購買紀錄等。
+// 經驗曲線改版（config-realms.js 的 realmPacing）後，舊存檔的修為可能遠超過新門檻：
+// 待渡劫者直接壓回滿格；其餘保留，下次獲得經驗時由 gainExp() 連續升階（大境界仍需渡劫）
+function migrateRealmExp() {
+    if (player.pendingTribulation && player.exp > getNextExp()) player.exp = getNextExp();
+}
+
 function applySaveData(data) {
     player = Object.assign(JSON.parse(DEFAULT_PLAYER_JSON), data);
     if (!player.gender) player.gender = "male";
@@ -209,6 +226,7 @@ function applySaveData(data) {
     migrateCurrentMap();
     migrateProgressionFields(data);
     migrateLegacySkills();
+    migrateRealmExp();
 
     // 換了一份存檔，原本進行中的戰鬥、渡劫、身上狀態都不該延續
     enemies = [];

@@ -1,4 +1,5 @@
 // 千寶閣（拍賣場）：每 3 小時刷新 5 件商品，售完或刷新前不再變動
+// 下方另有常駐的「珍貴物資」區（功德 → 七彩補天石 → 破障丹），由 merit.js 的 renderPreciousSection() 產生
 // 解鎖條件（聲望 5000）由 activity.js 統一把關
 
 function openAuctionModal() {
@@ -164,5 +165,6 @@ function renderAuction() {
             <span style="color: #9ca3af;">每 ${AUCTION_REFRESH_HOURS} 小時上架 ${AUCTION_ITEM_COUNT} 件商品</span>
             <span style="color: var(--accent);">下次上架：${formatCountdown(player.auctionRefreshAt - Date.now())}</span>
         </div>
-        <div class="grid-container">${cards}</div>`;
+        <div class="grid-container">${cards}</div>
+        ${renderPreciousSection()}`;
 }

@@ -142,6 +142,7 @@ function triggerReincarnate() {
         player.levelExp = 0;
         player.pendingTribulation = false;
         player.lifespan = lifespanByRealm[0].gain;
+        player.age = LIFESPAN_START_AGE;
         player.stats = { str: keep(oldStats.str), con: keep(oldStats.con), int: keep(oldStats.int), spr: keep(oldStats.spr), cha: keep(oldStats.cha) };
         player.reincarnateBonus = { hp: keptHp, mp: keptMp };
         player.sect = null;

@@ -92,7 +92,22 @@ function getPlayerElement() {
     return best;
 }
 
-function getNextExp() { return (player.realmIndex === 0 ? 100 : 200 * Math.pow(10, player.realmIndex)) * player.stage; }
+// 大境界每一階的經驗基數：依 config-realms.js 的 realmPacing 換算，讓「在主要地圖掛機 hours 小時」剛好修滿 10 階
+//   基數 = hours × 3600 × 每秒經驗（地圖 expRate × 15 × 每秒擊殺數 × 估算加成）÷ 55，取 2 位有效數字
+let realmStageExpCache = [];
+function getRealmStageExp(realmIndex) {
+    if (realmStageExpCache[realmIndex]) return realmStageExpCache[realmIndex];
+    let pace = realmPacing[realmIndex] || realmPacing[realmPacing.length - 1];
+    let map = null;
+    maps.forEach(cat => cat.items.forEach(m => { if (m.name === pace.map) map = m; }));
+    let expPerSec = (map ? map.expRate : 1) * 15 * REALM_PACING_KILLS_PER_SEC * pace.expMult;
+    let base = pace.hours * 3600 * expPerSec / 55;
+    let mag = Math.pow(10, Math.max(0, Math.floor(Math.log10(base)) - 1));
+    realmStageExpCache[realmIndex] = Math.max(1, Math.round(base / mag) * mag);
+    return realmStageExpCache[realmIndex];
+}
+
+function getNextExp() { return getRealmStageExp(player.realmIndex) * player.stage; }
 
 // 人物等級：從 level 升到 level+1 所需的經驗（見 config-level.js）
 function getLevelExpNeeded(level) {
@@ -109,7 +124,11 @@ function hasLiveBeast(id) {
 }
 
 function getBasePower() {
-    let base = Math.pow(10, player.realmIndex) * 5 * player.stage + player.exp / 100;
+    // 修為進度加成：沿用舊版「exp / 100」的最大值（舊曲線滿格時 = 2×10^境界×階數，凡人為 1×階數），
+    // 改依進度百分比計算，經驗曲線調整後戰力曲線維持不變
+    let progress = Math.min(1, player.exp / getNextExp());
+    let base = Math.pow(10, player.realmIndex) * 5 * player.stage
+             + progress * (player.realmIndex === 0 ? 1 : 2 * Math.pow(10, player.realmIndex)) * player.stage;
     if (hasLiveBeast('wolf')) base *= 1.15;
     if (hasLiveBeast('dragon')) base *= 1.3;
     return base;

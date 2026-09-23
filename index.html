@@ -230,6 +230,28 @@
         
         .reincarnate-btn { border-color: rgba(232, 121, 249, 0.6); color: var(--reincarnate-color); font-weight: bold; }
         .reincarnate-btn:hover { background: rgba(232, 121, 249, 0.2); border-color: var(--reincarnate-color); box-shadow: 0 0 12px rgba(232, 121, 249, 0.5); }
+        /* ========== 七彩發光（七彩補天石、破障丹等珍貴道具）========== */
+        .rainbow-text {
+            background: linear-gradient(90deg, #ff6b6b, #ffc36b, #fff36b, #6bff95, #6be4ff, #8b8bff, #e56bff, #ff6b6b);
+            background-size: 200% 100%;
+            -webkit-background-clip: text; background-clip: text;
+            color: transparent; font-weight: bold;
+            animation: rainbow-shift 4s linear infinite;
+        }
+        .rainbow-glow { border-width: 2px; animation: rainbow-glow 3s linear infinite; }
+        @keyframes rainbow-shift { from { background-position: 0% 50%; } to { background-position: 200% 50%; } }
+        @keyframes rainbow-glow {
+            0%, 100% { border-color: #ff6b6b; box-shadow: 0 0 14px rgba(255, 107, 107, 0.55); }
+            17% { border-color: #ffc36b; box-shadow: 0 0 14px rgba(255, 195, 107, 0.55); }
+            33% { border-color: #fff36b; box-shadow: 0 0 14px rgba(255, 243, 107, 0.55); }
+            50% { border-color: #6bff95; box-shadow: 0 0 14px rgba(107, 255, 149, 0.55); }
+            67% { border-color: #6be4ff; box-shadow: 0 0 14px rgba(107, 228, 255, 0.55); }
+            83% { border-color: #e56bff; box-shadow: 0 0 14px rgba(229, 107, 255, 0.55); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .rainbow-text, .rainbow-glow { animation: none; }
+            .rainbow-glow { border-color: #e56bff; box-shadow: 0 0 12px rgba(229, 107, 255, 0.5); }
+        }
         .reincarnate-note { font-size: 0.75em; color: #9ca3af; line-height: 1.5; text-align: center; margin: -4px 0 10px; }
 
         #log { 
@@ -513,7 +535,8 @@
             <div>境界：<span id="realm-display" style="color: var(--accent); font-weight: bold;">凡人 1階</span></div>
             <div style="margin-top: 5px;">等級：<span id="level-display" style="color: var(--accent);">Lv.1 (0.0%)</span></div>
             <div style="margin-top: 5px;">戰力：<span id="power-display">5</span></div>
-            <div style="margin-top: 5px;">壽元：<span id="lifespan-display" style="color: #4ade80; font-weight: bold;">60 年</span>
+            <div style="margin-top: 5px;">當前壽命：<span id="age-display" style="color: #e5e7eb; font-weight: bold;">16 歲</span></div>
+            <div style="margin-top: 5px;">剩餘壽元：<span id="lifespan-display" style="color: #4ade80; font-weight: bold;">60 年</span>
                 <span id="lifespan-rate" style="font-size: 0.75em; color: #9ca3af;"></span></div>
         </div>
         <div>
@@ -590,6 +613,9 @@
                 <div class="stat-item">靈草 <span id="res-grass">0</span></div>
                 <div class="stat-item">獸丹 <span id="res-beastcore">0</span></div>
                 <div class="stat-item">武學積分 <span id="res-martial">0</span></div>
+                <div class="stat-item">🙏功德 <span id="res-merit">0</span></div>
+                <div class="stat-item"><span class="rainbow-text">💎七彩補天石</span> <span id="res-butian">0</span></div>
+                <div class="stat-item"><span class="rainbow-text">🔮破障丹</span> <span id="res-breakpill">0</span></div>
                 <div class="stat-item">凡品靈草 <span id="herb-mortal">0</span></div>
                 <div class="stat-item">上品靈草 <span id="herb-high">0</span></div>
                 <div class="stat-item">極品靈草 <span id="herb-epic">0</span></div>
@@ -837,7 +863,16 @@
     </div>
 </div>
 
-<!-- 千寶閣（拍賣場）：內容由 data/auction.js 產生（每 3 小時刷新 5 件） -->
+<!-- 獵殺邪修：說明與功德統計，內容由 data/merit.js 的 renderEvilHunt() 產生 -->
+<div id="evil-hunt-modal" class="modal-bg">
+    <div class="modal-content" style="border-color: #f87171; text-align: center;">
+        <h2 style="color: #f87171; margin-top: 0;">🗡️ 獵殺邪修</h2>
+        <div id="evil-hunt-container" style="margin: 12px 0;"></div>
+        <button class="close-btn" onclick="closeModal('evil-hunt-modal')">離開</button>
+    </div>
+</div>
+
+<!-- 千寶閣（拍賣場）：內容由 data/auction.js 產生（每 3 小時刷新 5 件）＋ 常駐珍貴物資區（data/merit.js） -->
 <div id="auction-modal" class="modal-bg">
     <div class="modal-content" style="border-color: var(--accent); text-align: center;">
         <h2 style="color: var(--accent); margin-top: 0;">🏺 千寶閣</h2>
@@ -1068,6 +1103,7 @@
 <script src="data/config-activities.js"></script>
 <script src="data/config-daily-quests.js"></script>
 <script src="data/config-elements.js"></script>
+<script src="data/config-merit.js"></script>
 <script src="data/state.js"></script>
 <script src="data/stats.js"></script>
 <script src="data/elements.js"></script>
@@ -1087,6 +1123,7 @@
 <script src="data/activity.js"></script>
 <script src="data/daily-quest.js"></script>
 <script src="data/auction.js"></script>
+<script src="data/merit.js"></script>
 <script src="data/field.js"></script>
 <script src="data/beast-combat.js"></script>
 <script src="data/beast.js"></script>

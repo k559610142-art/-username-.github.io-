@@ -1,5 +1,6 @@
 // 渡劫：小境界滿 10 階後，擊敗心魔才能晉升下一個大境界
-// 勝敗由開打前的「勝算」擲骰決定（基礎 60%，丹藥與宗門技能最多各 +10%，上限 80%），
+// 勝敗由開打前的「勝算」擲骰決定（基礎 60%，丹藥與宗門技能最多各 +10%，上限 80%；
+// 持有破障丹時自動服用 1 顆：再 +10%、上限 90%、心魔戰力 -10%，見 config-merit.js），
 // 戰鬥過程照常進行；若戰況與天命相反，會在關鍵一刻以「絕處逢生／心魔反噬」收尾。
 // 數值見 config-tribulation.js
 
@@ -17,8 +18,13 @@ function getTribulationChance() {
     let learnedTiers = openTiers.filter(t => player.sectSkills && player.sectSkills[t]);
     let skill = openTiers.length > 0 ? TRIBULATION_SKILL_BONUS * learnedTiers.length / openTiers.length : 0;
 
-    let total = Math.min(TRIBULATION_MAX_CHANCE, TRIBULATION_BASE_CHANCE + potion + skill);
-    return { total, base: TRIBULATION_BASE_CHANCE, potion, skill, openTiers: openTiers.length, learnedTiers: learnedTiers.length };
+    // 破障丹：持有時渡劫會自動服用 1 顆，勝算 +10% 且上限提高到 90%（config-merit.js）
+    let hasPill = (player.breakPills || 0) > 0;
+    let pill = hasPill ? BREAK_PILL_CHANCE_BONUS : 0;
+    let cap = hasPill ? BREAK_PILL_MAX_CHANCE : TRIBULATION_MAX_CHANCE;
+
+    let total = Math.min(cap, TRIBULATION_BASE_CHANCE + potion + skill + pill);
+    return { total, cap, base: TRIBULATION_BASE_CHANCE, potion, skill, pill, hasPill, openTiers: openTiers.length, learnedTiers: learnedTiers.length };
 }
 
 function formatChance(rate) { return `${Math.round(rate * 100)}%`; }
@@ -30,25 +36,33 @@ function triggerTribulation() {
     }
     if (inTribulation) return;
 
-    let demonPower = Math.floor(getPhysAttack() * HEART_DEMON_POWER_MULT);
-    let demonHp = Math.floor(getMaxHp() * HEART_DEMON_HP_MULT);
     let chance = getTribulationChance();
+    let demonPower = Math.floor(getPhysAttack() * HEART_DEMON_POWER_MULT * (chance.hasPill ? BREAK_PILL_DEMON_POWER_MULT : 1));
+    let demonHp = Math.floor(getMaxHp() * HEART_DEMON_HP_MULT);
 
     let tips = "";
     if (!player.autoHp.enabled) tips += "\n・開啟【自動補血】並備妥氣血丹藥，最多可再 +10%";
     else if (chance.potion < TRIBULATION_POTION_BONUS) tips += `\n・再多備氣血丹藥（約 10 顆九轉還魂丹即可拿滿），最多可再 +${formatChance(TRIBULATION_POTION_BONUS - chance.potion)}`;
     if (chance.skill < TRIBULATION_SKILL_BONUS) tips += `\n・拜入目前可加入的宗門學得技能，最多可再 +${formatChance(TRIBULATION_SKILL_BONUS - chance.skill)}`;
+    // 沒把握（未帶破障丹）時提醒可準備破障丹
+    if (!chance.hasPill && isMeritSystemOpen()) tips += `\n・🔮 沒把握？可至千寶閣以七彩補天石購買【破障丹】：心魔戰力 -10%、勝算 +10%（上限提高到 ${formatChance(BREAK_PILL_MAX_CHANCE)}）`;
 
     if (!confirm(
         `即將渡劫，晉升【${realms[player.realmIndex + 1]}】！\n\n`
-        + `【渡劫勝算：${formatChance(chance.total)}】（上限 ${formatChance(TRIBULATION_MAX_CHANCE)}）\n`
+        + `【渡劫勝算：${formatChance(chance.total)}】（上限 ${formatChance(chance.cap)}）\n`
         + `・基礎 ${formatChance(chance.base)}\n`
         + `・丹藥準備 +${formatChance(chance.potion)}\n`
         + `・宗門技能 +${formatChance(chance.skill)}（已學 ${chance.learnedTiers} / ${chance.openTiers} 階）\n`
+        + (chance.hasPill ? `・🔮 破障丹 +${formatChance(chance.pill)}（將服用 1 顆，剩 ${player.breakPills - 1} 顆；心魔戰力 -10%）\n` : '')
         + (tips ? `\n提升勝算：${tips}\n` : '')
         + `\n心魔戰力 ${demonPower.toLocaleString()}／氣血 ${demonHp.toLocaleString()}，會施展魔功並吸取靈力。\n`
         + `渡劫失敗會重傷跌回安全區並折壽 ${getDeathLifespanCost()} 年（剩餘 ${formatLifespan(player.lifespan)} 年，渡劫期間歲月流逝加快），靈寵也會陣亡。\n\n是否開始渡劫？`
     )) return;
+
+    if (chance.hasPill) {
+        player.breakPills--;
+        addLog(`🔮 服下【破障丹】，靈台一片清明，心魔之力削弱一成！（剩餘 ${player.breakPills} 顆）`, "level-up");
+    }
 
     enemies = [];
     respawnTimer = 0;

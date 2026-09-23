@@ -17,7 +17,8 @@ images/               圖片素材
 data/                 所有遊戲邏輯與資料，依「設定資料 / 執行狀態 / 功能模組 / 進入點」分層
   config-*.js         純資料表（原則上不含函式、無副作用），可視為遊戲的「設計數值表」：
                       realms / level / lifespan / maps / sects / lingbao / shop / beasts /
-                      servants / equipment / tribulation / quests / activities / daily-quests / elements
+                      servants / equipment / tribulation / quests / activities / daily-quests / elements / merit
+                      （config-realms.js 另含修煉節奏表 realmPacing，經驗門檻與壽元流逝都由它換算，見第 26 節）
                       （config-sects.js 例外：尾端有一段迴圈補上技能倍率，並提供 findSectByName()）
   state.js            執行期間的可變全域狀態（player、enemies、靈寵輔助效果計時…）
   stats.js            屬性/戰力/等級經驗門檻計算的純函式，以及 getAllSkills()
@@ -33,7 +34,8 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
                       （library.js 另含第二階段屬性秘典，並提供戰鬥用的 getElementBookBonus()）
   activity.js         活動選單：統一把關各活動的解鎖條件（聲望＋境界）
   daily-quest.js      每日任務（每 4 小時刷新 10 項）
-  auction.js          千寶閣拍賣場（每 3 小時刷新 5 件商品，含壽元丹）
+  auction.js          千寶閣拍賣場（每 3 小時刷新 5 件商品，含壽元丹）＋常駐珍貴物資區
+  merit.js            功德系統：獵殺邪修、功德兌換七彩補天石、購買破障丹（第 27 節）
   player-profile.js   玩家道號修改
   save.js             本地存檔/讀檔/匯出入/離線掛機結算/重置/舊存檔相容
   title-screen.js     遊戲主頁（標題畫面）與進入世界
@@ -56,9 +58,9 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 
 | # | 檔案 | 責任 | 依賴（讀取哪些全域） | 被誰依賴 / 誰會呼叫它 |
 |---|------|------|----------------------|------------------------|
-| 1 | `config-realms.js` | `realms` 境界名稱陣列 | 無 | `stats.js`(getNextExp)、`ui.js`、`leveling.js` |
+| 1 | `config-realms.js` | `realms` 境界名稱陣列、修煉節奏表 `realmPacing`（每境界目標時數/主要地圖/估算加成）、`REALM_PACING_KILLS_PER_SEC` | 無（`realmPacing.map` 是地圖名稱字串，執行期才查 `maps`） | `stats.js`(getRealmStageExp/getNextExp)、`lifespan.js`(getAgingHours)、`ui.js`、`leveling.js` |
 | 2 | `config-level.js` | `MAX_PLAYER_LEVEL`、`LEVEL_UP_*` 成長值、`LEVEL_EXP_SEGMENTS` 經驗曲線 | 無 | `stats.js`(getLevelExpNeeded、getMaxHp/getMaxMp)、`leveling.js`(gainLevelExp)、`ui.js` |
-| 3 | `config-lifespan.js` | `lifespanByRealm` 各境界壽元增加量與死亡折壽、歲月流逝常數 `LIFESPAN_AGING_MINUTES`/`LIFESPAN_DANGER_MULT`/`LIFESPAN_TRIBULATION_MULT`/`LIFESPAN_OFFLINE_RATE`/`LIFESPAN_FLOOR_DEATHS` | 無 | `lifespan.js`、`leveling.js`(轉世重設壽元) |
+| 3 | `config-lifespan.js` | `lifespanByRealm` 各境界壽元增加量與死亡折壽、歲月流逝常數 `LIFESPAN_MIN_AGING_HOURS`/`LIFESPAN_PACE_MULT`/`LIFESPAN_DANGER_MULT`/`LIFESPAN_TRIBULATION_MULT`/`LIFESPAN_OFFLINE_RATE`/`LIFESPAN_FLOOR_DEATHS`、起始年齡 `LIFESPAN_START_AGE` | 無 | `lifespan.js`、`leveling.js`(轉世重設壽元與年齡)、`ui.js`(年齡顯示) |
 | 4 | `config-maps.js` | `SECT_MAP_NAME`（"宗門"，唯一安全區的名稱）、`maps` 地圖資料（含各圖 `coins` 每隻靈石）、`KILLS_PER_HOUR_ESTIMATE`、`REPUTATION_MAX_BY_MAP_CATEGORY`（各區擊殺聲望上限）、`OFFLINE_COMBAT_RATE`/`OFFLINE_REPUTATION_RATE`、`monsterIcons` | 無 | `state.js`、`map.js`(isInSect)、`combat.js`、`ui.js`、`save.js`(migrateCurrentMap) |
 | 5 | `config-sects.js` | `sectData` 宗門與技能表、`SECT_SKILL_BONUS`、`SECT_TIER_NAMES`、`findSectByName()`；尾端迴圈替每招補上 `tier`/`mult` | 無 | `sect.js`、`stats.js`(getSectTier/getAllSkills)、`ui.js`、`save.js`(重新綁定宗門) |
 | 6 | `config-lingbao.js` | `legacySkillAdjustments` 舊版禁術下修數值、`lingbaoTierCosts` 各階段兌換價格、`lingbaoShopItems` 三階段戰略級寶物與武學 | 無 | `lingbao-shop.js`、`equipment.js`(五行說明列固定屬性裝備) |
@@ -71,15 +73,16 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 13 | `config-activities.js` | `activityData` 活動清單與解鎖條件 | 無 | `activity.js` |
 | 14 | `config-daily-quests.js` | 每日任務 `DAILY_REFRESH_HOURS`/`DAILY_QUEST_COUNT`/`dailyQuestPool`/`dailyQuestRewards`、千寶閣 `AUCTION_*`、`auctionQualityOdds`、`auctionLifePills`(壽元丹) | 無 | `daily-quest.js`、`auction.js` |
 | 15 | `config-elements.js` | 戰鬥屬性上限 `DEF_CAP`/`EVA_CAP`/`AFFIX_CAP`、效果常數（凍結/燒傷/中毒/金重擊/雷擊 `THUNDER_BONUS`）、`combatAttrInfo`、`AFFIX_TYPES`(玩家武器)/`MONSTER_AFFIX_TYPES`(怪物異屬性：冰/毒/雷)、五行相剋 `WUXING_COUNTERS`/`WUXING_COUNTER_BONUS`/`WUXING_COUNTERED_PENALTY`、`monsterAttrsByMapCategory` | 無 | `elements.js`、`stats.js`(getPlayerElement)、`ui.js`、`equipment.js`(鍛造屬性、五行說明視窗) |
-| 16 | `state.js` | `player`（含 `lingbaoSold`、藏書閣屬性秘典次數 `elementStudy`、轉世保留的上限 `reincarnateBonus`）、`DEFAULT_PLAYER_JSON`（全新角色預設值快照，讀檔/匯入的合併基底）、`enemies`（每隻帶 `attrs`/`status`）、`respawnTimer`、`safeZoneTimer`；不存檔的執行期狀態：`inTribulation`/`heartDemon`/`tribulationFatedWin`/丹藥冷卻/`gameOver`/`playerStatus`(玩家身上的凍結/燒傷/中毒)/靈寵輔助計時(`petBuff*`/`petShield*`/`petRegen*`) | **`maps`**（必須排在 config-maps.js 之後） | 幾乎所有檔案都會讀寫 `player` |
-| 17 | `stats.js` | `EQUIP_STAT_KEYS`、`getEquipBonus`(四維＋減傷/閃避/屬性傷害)/`getElementCounts`/`getSpiritRoots`(靈根判定)/`getRootBonus`(靈根加成總和)/`getPlayerElement`(本命五行，五行相剋用)/`getNextExp`/`getLevelExpNeeded`/`hasLiveBeast`/`getBasePower`/`getPhysAttack`/`getMagAttack`/`getMaxHp`/`getMaxMp`(兩者皆加上轉世保留值)/`getReincarnateBonus`/`getSectTier`/`getAllSkills` | `player`、`realms`、`sectData`、`LEVEL_*`、`equipTypes`/`WUXING_COUNTERS`、靈寵輔助計時 | `ui.js`、`combat.js`、`leveling.js`、`tribulation.js`、`beast-combat.js` 等幾乎全部功能檔 |
+| 15a | `config-merit.js` | 邪修 `EVIL_SPAWN_CHANCE`/`EVIL_POWER_MULT`/`EVIL_MERIT_MIN`/`EVIL_MERIT_MAX`/`EVIL_ICON`、兌換 `MERIT_PER_BUTIAN_STONE`/`BREAK_PILL_STONE_COST`、破障丹效果 `BREAK_PILL_DEMON_POWER_MULT`/`BREAK_PILL_CHANCE_BONUS`/`BREAK_PILL_MAX_CHANCE`、`preciousItems`(顯示資料) | 無 | `merit.js`、`combat.js`(邪修生成)、`save.js`(離線功德)、`tribulation.js`(破障丹)、`bag.js`、`ui.js` |
+| 16 | `state.js` | `player`（含 `lingbaoSold`、藏書閣屬性秘典次數 `elementStudy`、轉世保留的上限 `reincarnateBonus`、年齡 `age`、功德系統 `merit`/`butianStones`/`breakPills`/`evilKills`）、`DEFAULT_PLAYER_JSON`（全新角色預設值快照，讀檔/匯入的合併基底）、`enemies`（每隻帶 `attrs`/`status`）、`respawnTimer`、`safeZoneTimer`；不存檔的執行期狀態：`inTribulation`/`heartDemon`/`tribulationFatedWin`/丹藥冷卻/`gameOver`/`playerStatus`(玩家身上的凍結/燒傷/中毒)/靈寵輔助計時(`petBuff*`/`petShield*`/`petRegen*`) | **`maps`**（必須排在 config-maps.js 之後） | 幾乎所有檔案都會讀寫 `player` |
+| 17 | `stats.js` | `EQUIP_STAT_KEYS`、`getEquipBonus`(四維＋減傷/閃避/屬性傷害)/`getElementCounts`/`getSpiritRoots`(靈根判定)/`getRootBonus`(靈根加成總和)/`getPlayerElement`(本命五行，五行相剋用)/`getRealmStageExp`(依 realmPacing 換算每階經驗基數，有快取)/`getNextExp`/`getLevelExpNeeded`/`hasLiveBeast`/`getBasePower`/`getPhysAttack`/`getMagAttack`/`getMaxHp`/`getMaxMp`(兩者皆加上轉世保留值)/`getReincarnateBonus`/`getSectTier`/`getAllSkills` | `player`、`realms`、`sectData`、`LEVEL_*`、`equipTypes`/`WUXING_COUNTERS`、靈寵輔助計時 | `ui.js`、`combat.js`、`leveling.js`、`tribulation.js`、`beast-combat.js` 等幾乎全部功能檔 |
 | 18 | `elements.js` | `newStatus`/`getPlayerCombatAttrs`(含 `element`)/`getWuxingCounterMult`/`withSkillEffect`/`getMapCategoryIndex`/`rollMonsterAttrs`/`resolveHit`/`addDotStack`/`tickStatus`/`formatStatus`/`summarizeTags`/`formatEquipStats` | `config-elements.js`、`stats.js`(getEquipBonus/getPlayerElement)、`library.js`(getElementBookBonus)、`wuxingElements`、`maps`、`playerStatus` | `combat.js`、`tribulation.js`、`ui.js`、`bag.js`/`equipment.js`/`auction.js`/`lingbao-shop.js`(裝備屬性文字) |
 | 19 | `ui.js` | 常數 `PLAYER_AVATARS`（頭像/預設道號，戰鬥實況與性別選擇共用）、`updateUI`/`updateCombatVisualPanel`/`formatWuxingCounterTip`/`updateTribulationUI`/`updatePotionCooldownUI`/`updateStudyCountsUI`/`renderSkillList`/`addLog`/`refreshCombatStatusText`/`updateAutoSettings`/`syncAutoSettingsUI`/`updateSectFacilitiesUI`/`closeModal`/`toggleDrawer`/`formatCountdown`/`resolveBatchCount`(×1/×10/最高 共用)/批次刪除工具 `renderBulkDeleteBar`/`getCheckedBulkQualities`/`toggleAllBulkQualities` | `player`、`realms`、`stats.js` 的計算函式、`lifespan.js`(getDeathLifespanCost) | 幾乎所有功能檔在資料變動後都會呼叫 `updateUI()`/`addLog()` |
 | 20 | `map.js` | `isInSect`(是否身在宗門)/`openMapCategoryModal`/`selectMap`/`changeMap` | `maps`、`SECT_MAP_NAME`、`player`、`ui.js` | `ui.js`(updateSectFacilitiesUI)、`combat.js`/`quest.js`(門派任務須在宗門)、HTML 按鈕；changeMap 離開宗門時呼叫 `quest.js` 的 stopQuest |
-| 21 | `combat.js` | `combatTick`/`playerAttackTurn`(普攻/技能出手，渡劫共用)/`onPlayerKilledInField`/`checkAutoHealAndMana`/`tryRescueServant` | `player`、`enemies`、`shopItems`、`servantQualities`、`servantNames`、`stats.js`、`elements.js`(resolveHit/tickStatus)、`leveling.js`(gainExp)、`beast-combat.js`(petAssistTick/applyPetDamageReduction)、`lifespan.js`(handlePlayerDeath)、`map.js`(changeMap 死亡回城) | `main.js`(setInterval 每秒呼叫) |
+| 21 | `combat.js` | `combatTick`/`playerAttackTurn`(普攻/技能出手，渡劫共用)/`onPlayerKilledInField`/`checkAutoHealAndMana`/`tryRescueServant` | `player`、`enemies`、`shopItems`、`servantQualities`、`servantNames`、`stats.js`、`elements.js`(resolveHit/tickStatus)、`leveling.js`(gainExp)、`beast-combat.js`(petAssistTick/applyPetDamageReduction)、`lifespan.js`(handlePlayerDeath)、`map.js`(changeMap 死亡回城)、`merit.js`(isEvilHuntUnlocked/rollEvilMerit，邪修生成與功德)、`config-merit.js` | `main.js`(setInterval 每秒呼叫) |
 | 22 | `leveling.js` | `REINCARNATE_KEEP_RATE`(轉世保留比例 5%)、`gainExp`/`gainLevelExp`/`advanceRealm`/`triggerReincarnate`（規則見第 25 節） | `realms`、`player`、`stats.js`、`ui.js`(updateSectFacilitiesUI)、`beast-combat.js`(gainBeastExp)、`lifespan.js`(gainRealmLifespan) | `combat.js`、`tribulation.js`、`save.js`、HTML 輪迴按鈕 |
-| 23 | `lifespan.js` | `getDeathLifespanCost`/`formatLifespan`/`getLifespanFloor`/`getAgingMultiplier`/`getAgingPerMinute`/`ageLifespan`/`checkLifespanWarnings`(提示旗標 `lifespanWarned`，不存檔)/`getInitialLifespanForRealm`/`gainRealmLifespan`/`handlePlayerDeath`/`triggerLifespanGameOver` | `lifespanByRealm`、`LIFESPAN_*`、`player`、`inTribulation`、`elements.js`(getMapCategoryIndex)、`beast-combat.js`(killAllBeasts) | `combat.js`(每秒 ageLifespan、死亡)、`tribulation.js`(死亡)、`leveling.js`(突破)、`save.js`(離線流逝、舊存檔)、`ui.js`、`auction.js` |
-| 24 | `tribulation.js` | `getTribulationChance`/`formatChance`/`triggerTribulation`/`tribulationTick`/`resolvePlayerFall`/`endTribulation` | `player`、`config-tribulation.js`、`shopItems`(丹藥加成)、`sectData`(技能加成)、`stats.js`、`elements.js`、`combat.js`(playerAttackTurn)、`beast-combat.js`、`lifespan.js`、`leveling.js`(advanceRealm) | `combat.js`(渡劫中接管 tick)、`ui.js`(按鈕顯示勝算)、HTML 渡劫按鈕 |
+| 23 | `lifespan.js` | `getDeathLifespanCost`/`formatLifespan`/`getLifespanFloor`/`getAgingHours`(依 realmPacing 算出一境界壽元可撐時數)/`getAgingMultiplier`/`getAgingPerMinute`/`ageLifespan`(同時增加年齡 `player.age`)/`checkLifespanWarnings`(提示旗標 `lifespanWarned`，不存檔)/`getInitialLifespanForRealm`/`gainRealmLifespan`/`handlePlayerDeath`/`triggerLifespanGameOver` | `lifespanByRealm`、`LIFESPAN_*`、`player`、`inTribulation`、`elements.js`(getMapCategoryIndex)、`beast-combat.js`(killAllBeasts) | `combat.js`(每秒 ageLifespan、死亡)、`tribulation.js`(死亡)、`leveling.js`(突破)、`save.js`(離線流逝、舊存檔)、`ui.js`、`auction.js` |
+| 24 | `tribulation.js` | `getTribulationChance`/`formatChance`/`triggerTribulation`/`tribulationTick`/`resolvePlayerFall`/`endTribulation` | `player`、`config-tribulation.js`、`config-merit.js`(破障丹)、`player.breakPills`、`shopItems`(丹藥加成)、`sectData`(技能加成)、`stats.js`、`elements.js`、`combat.js`(playerAttackTurn)、`beast-combat.js`、`lifespan.js`、`leveling.js`(advanceRealm) | `combat.js`(渡劫中接管 tick)、`ui.js`(按鈕顯示勝算)、HTML 渡劫按鈕 |
 | 25 | `sect.js` | `checkSectJoined`/`openSectModal`/`renderSects`/`joinSect` | `sectData`、`player.sect`/`sectSkills` | 幾乎所有「需拜入宗門才能使用」的彈窗（shop/servant/field/beast/lingbao-shop/library/forge/alchemy）都會先呼叫 `checkSectJoined()` |
 | 26 | `shop.js` | `openShopModal`/`renderShop`/`renderShopCard`/`getShopQty`/`setShopQty`/`setShopQtyMax`/`updateShopTotal`/`buyShopItem` | `shopItems`、`player`、`sect.js`(checkSectJoined) | HTML 按鈕、`bag.js` 顯示已購買道具 |
 | 27 | `bag.js` | `openBagModal`/`hasEquipInventorySpace`(背包上限檢查，鍛造/千寶閣/靈寶閣/卸下裝備共用)/`renderBag`/`useItemFromBag`/`deleteItemFromBag`/`deleteEquipFromInventory`/`bulkDeleteEquipment` | `shopItems`、`player.bag`、`player.equipInventory` | `equipment.js`(equipItem 後呼叫 renderBag) |
@@ -89,14 +92,15 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 31 | `quest.js` | `openQuestModal`/`renderQuestButtons`/`startQuest`/`stopQuest`/`updateQuestUI` + 共用獎勵函式 `getQuestDef`/`formatQuestRewards`/`grantQuestRewards` | `questData`(config-quests.js)、`player.activeQuest`、`stats.js`(getSectTier)、`map.js`(isInSect) | `combat.js`(玩家任務結算)、`servant.js`(僕從任務結算)、`map.js`(離開宗門時中斷) |
 | 32 | `activity.js` | `renderActivityList`/`getActivityLockReason`/`openActivity` | `activityData`、`player.reputation`/`realmIndex` | `ui.js`(updateUI 每秒重繪) |
 | 33 | `daily-quest.js` | `openDailyQuestModal`/`renderDailyQuests`/`claimDailyQuest`/`claimAllDailyQuests`/`addDailyProgress`/`refreshDailyQuestsIfDue` | `config-daily-quests.js`、`player.daily*` | 各功能的 `addDailyProgress()` 埋點 |
-| 34 | `auction.js` | `openAuctionModal`/`refreshAuctionIfDue`/`rollAuctionItem`/`rollAuctionEquip`/`buyAuctionItem`(壽元丹轉交 `buyAuctionLifePill`)/`buyAuctionLifePill`/`renderAuction`/`renderAuctionLifePillCard` | `auctionQualityOdds`、`auctionLifePills`、`equipQualities`、`player.auctionItems`/`coins`/`reputation`/`lifespan` | `activity.js`(千寶閣按鈕) |
+| 34 | `auction.js` | `openAuctionModal`/`refreshAuctionIfDue`/`rollAuctionItem`/`rollAuctionEquip`/`buyAuctionItem`(壽元丹轉交 `buyAuctionLifePill`)/`buyAuctionLifePill`/`renderAuction`/`renderAuctionLifePillCard` | `auctionQualityOdds`、`auctionLifePills`、`equipQualities`、`player.auctionItems`/`coins`/`reputation`/`lifespan`、`merit.js`(renderPreciousSection 嵌在商品下方) | `activity.js`(千寶閣按鈕)、`merit.js`(兌換/購買後重繪) |
+| 34a | `merit.js` | `isEvilHuntUnlocked`/`isMeritSystemOpen`(暫停開關)/`rollEvilMerit`/`openEvilHuntModal`/`renderEvilHunt`/`renderPreciousSection`/`exchangeMeritForStone`/`buyBreakPill` | `config-merit.js`、`activityData`、`activity.js`(getActivityLockReason)、`player.merit`/`butianStones`/`breakPills`/`evilKills`、`ui.js`(resolveBatchCount)、`auction.js`(renderAuction) | `combat.js`、`save.js`、`auction.js`、`activity.js`(獵殺邪修按鈕 openFn) |
 | 35 | `field.js` | `herbRecipes`、`openFieldModal`/`plantHerb` | `player.spiritGrass`/`player.herbs`/`player.coins`、`ui.js`(resolveBatchCount) | HTML 按鈕（僅在「宗門」顯示） |
 | 36 | `beast-combat.js` | `createBeast`/`getBeastSkill`/`describeBeastSkill`/`gainBeastExp`/`killAllBeasts`/`applyPetDamageReduction`/`petAssistTick` | `beastData`、`beastSkillTree`、`player.beasts`/`level`、`stats.js`(getLevelExpNeeded/getPhysAttack) | `leveling.js`(gainExp)、`combat.js`/`tribulation.js`(每回合)、`lifespan.js`(死亡)、`beast.js`、`save.js` |
 | 37 | `beast.js` | `openBeastModal`/`getBeastDiscountMult`(魅力折扣倍率)/`renderBeasts`/`tameBeast`/`reviveBeast`/`learnBeastSkill` | `beastData`、`player.beastCore`/`coins`/`beasts`、`beast-combat.js`、`stats.js`(getEquipBonus 算魅力折扣) | HTML 按鈕（僅在「宗門」顯示） |
 | 38 | `library.js` | 第一階段 `STUDY_COST`/`STUDY_GAIN`/`STUDY_MAX_COUNT`、`openLibraryModal`/`studyBook`；第二階段屬性秘典（第 24 節）`ELEMENT_BOOK_TIER`/`ELEMENT_BOOK_GAIN`/`ELEMENT_BOOK_MAX`/`ELEMENT_BOOK_COST`/`elementBooks`、`isElementBookUnlocked`/`getElementBookBonus`/`formatElementBookPercent`/`renderElementBooks`/`studyElementBook` | `player.studyCounts`/`elementStudy`/`martialPoints`/`spiritGrass`/`coins`/`stats`/`sectSkills`、`SECT_TIER_NAMES`、`ui.js`(resolveBatchCount) | HTML 按鈕（僅在「宗門」顯示）、`elements.js`(getPlayerCombatAttrs 呼叫 getElementBookBonus) |
 | 39 | `alchemy.js` | `pillRecipes`、`openAlchemyModal`/`craftPill` | `player.herbs`/`stats`/`coins`、`ui.js`(resolveBatchCount) | HTML 按鈕（僅在「宗門」顯示） |
 | 40 | `player-profile.js` | `PLAYER_NAME_MAX_LENGTH`、`sanitizePlayerName`(移除 HTML 特殊字元，讀檔/匯入也套用)/`changePlayerName`(開啟 #name-modal)/`confirmPlayerName` | `player.name` | HTML 按鈕、`save.js`(applySaveData) |
-| 41 | `save.js` | `calcOfflineProgress`/`saveLocal`/`loadLocal`/`applySaveData`(讀檔與匯入共用)/`resetGameCompletely` + 舊存檔相容 `migrateServantAssignments`/`migrateEquipmentSlots`/`migrateActivityFields`/`migrateCurrentMap`/`migrateProgressionFields`/`migrateLegacySkills`(舊禁術下修＋已兌換武學耗魔同步) + `reloadLocalSave`(選單按鈕，無存檔時給提示) + 存檔代碼（常數 `SAVE_CODE_PREFIX`="FS2:"、兩段式確認暫存 `pendingImportData`；編解碼皆為 async）`encodeSaveCode`/`decodeSaveCode`/`bytesToBase64`/`base64ToBytes`/`pipeBytes`/`openSaveCodeModal`/`setSaveCodeStatus`/`exportSave`/`selectSaveCodeText`/`copySaveCode`/`downloadSaveCode`/`importSave`/`pasteSaveCodeFromClipboard`/`importSaveFromFile`/`confirmImportSave`/`resetImportConfirm` | `player`（整包序列化進 `localStorage`）、`maps`(migrateCurrentMap)、`legacySkillAdjustments`/`lingbaoShopItems`(migrateLegacySkills)、`leveling.js`(gainExp)、`combat.js`(tryRescueServant)、`lifespan.js`、`beast-combat.js`(createBeast)、`ui.js` | `main.js`(啟動時 loadLocal)、`main.js`(initGame 內每 30 秒 saveLocal) |
+| 41 | `save.js` | `calcOfflineProgress`/`saveLocal`/`loadLocal`/`applySaveData`(讀檔與匯入共用)/`resetGameCompletely` + 舊存檔相容 `migrateServantAssignments`/`migrateEquipmentSlots`/`migrateActivityFields`/`migrateCurrentMap`/`migrateProgressionFields`/`migrateLegacySkills`(舊禁術下修＋已兌換武學耗魔同步)/`migrateRealmExp`(經驗曲線改版：待渡劫者修為壓回滿格) + 離線斬殺邪修的功德 + `reloadLocalSave`(選單按鈕，無存檔時給提示) + 存檔代碼（常數 `SAVE_CODE_PREFIX`="FS2:"、兩段式確認暫存 `pendingImportData`；編解碼皆為 async）`encodeSaveCode`/`decodeSaveCode`/`bytesToBase64`/`base64ToBytes`/`pipeBytes`/`openSaveCodeModal`/`setSaveCodeStatus`/`exportSave`/`selectSaveCodeText`/`copySaveCode`/`downloadSaveCode`/`importSave`/`pasteSaveCodeFromClipboard`/`importSaveFromFile`/`confirmImportSave`/`resetImportConfirm` | `player`（整包序列化進 `localStorage`）、`maps`(migrateCurrentMap)、`legacySkillAdjustments`/`lingbaoShopItems`(migrateLegacySkills)、`leveling.js`(gainExp)、`combat.js`(tryRescueServant)、`lifespan.js`、`beast-combat.js`(createBeast)、`ui.js` | `main.js`(啟動時 loadLocal)、`main.js`(initGame 內每 30 秒 saveLocal) |
 | 42 | `title-screen.js` | `TITLE_HOTSPOTS`(光環座標)/`currentTitleHotspot`/`positionTitleHotspot`/`enterWorld`/`initTitleScreen`、旗標 `worldEntered` | `main.js`(startGame)、`#title-screen` DOM | `main.js`(onload 呼叫 initTitleScreen)、標題頁按鈕 |
 | 43 | `main.js` | `initGame`(含每 30 秒存檔與切到背景時存檔)/`startGame`/`chooseGender`/`window.onload`、旗標 `gameStarted` | 幾乎全部模組（啟動流程的膠水程式碼） | 瀏覽器 `onload`、`title-screen.js`(enterWorld 呼叫 startGame) |
 
@@ -180,6 +184,7 @@ combatTick() 每秒執行 [combat.js]
 | `openActivity` | `data/activity.js` |
 | `openDailyQuestModal`, `claimDailyQuest`, `claimAllDailyQuests` | `data/daily-quest.js` |
 | `openAuctionModal`, `buyAuctionItem` | `data/auction.js` |
+| `exchangeMeritForStone`, `buyBreakPill`（千寶閣珍貴物資區，動態產生）、`openEvilHuntModal`（經由 `openActivity('evil')`） | `data/merit.js` |
 | `enterWorld` | `data/title-screen.js` |
 | `chooseGender` | `data/main.js` |
 
@@ -248,7 +253,10 @@ combatTick() 每秒執行 [combat.js]
 | 基礎 | 60% | 無 |
 | 丹藥準備 | 最多 +10% | 需開啟【自動補血】；背包氣血丹藥「回復量 × 數量」總和 ÷ 3.0（10 顆九轉還魂丹／30 顆培元丹／60 株凝血草即拿滿） |
 | 宗門技能 | 最多 +10% | 目前境界已開放的宗門階段中已學會的比例（築基只開放初級；金丹起開放中級；仙人初境起開放高級） |
-| 上限 | 80% | `TRIBULATION_MAX_CHANCE` |
+| 破障丹 | +10% | 背包有破障丹時，渡劫開打自動服用 1 顆（`config-merit.js`），並讓心魔戰力 ×0.9 |
+| 上限 | 80%（服用破障丹時 90%） | `TRIBULATION_MAX_CHANCE` / `BREAK_PILL_MAX_CHANCE` |
+
+- 確認視窗在**沒有破障丹**且功德系統開放（`isMeritSystemOpen()`）時會提醒「沒把握？可至千寶閣以七彩補天石購買破障丹」；有破障丹時列出 +10% 並註明服用後剩幾顆。
 
 **為什麼不用純數值平衡**：模擬顯示渡劫結果幾乎由數值決定，勝率曲線非常陡——
 調到「無藥約 60%」時，帶滿藥必定 99～100%；且學到越多階段技能越容易（同設定下真仙比築基高約 40 個百分點）。
@@ -330,7 +338,7 @@ combatTick() 每秒執行 [combat.js]
 | 每日任務 | 1,000 | 無 | ✅ 已實作（每 4 小時刷新 10 項） |
 | 千寶閣（拍賣場） | 5,000 | 無 | ✅ 已實作（每 3 小時刷新 5 件） |
 | 秘境 | 5,000 | 煉虛 | ⏳ 敬請期待 |
-| 獵殺邪修 | 8,000 | 金丹 | ⏳ 敬請期待 |
+| 獵殺邪修 | 8,000 | 金丹 | ⏸️ 已實作但**暫停開放**（`implemented: false`，仍需調整；見第 27 節） |
 | 域外天魔（世界BOSS） | 10,000 | 大乘 | ⏳ 敬請期待 |
 
 - **解鎖判定**一律走 `getActivityLockReason()`，未達標會說明缺什麼；
@@ -486,22 +494,31 @@ combatTick() 每秒執行 [combat.js]
 - 壽元會因兩件事減少：**歲月流逝**（有底線，見下方）與**死亡**。與戰力無關。
   死亡點：`combat.js` 野外戰死、`tribulation.js` 渡劫失敗，皆呼叫 `handlePlayerDeath()`：依**當前境界**的 `deathCost` 折壽，並讓所有靈寵陣亡。
 - **歲月流逝（方案一＋三混合）**：`combatTick()` 每秒呼叫 `ageLifespan(1)`；離線結算呼叫 `ageLifespan(離線秒數, LIFESPAN_OFFLINE_RATE)`。
-  - 每分鐘流逝 = 目前境界的 `gain` ÷ `LIFESPAN_AGING_MINUTES`(360) × 所在地倍率 → 在安全區，一個境界給的壽元約可撐 6 小時線上時間。
+  - 每分鐘流逝 = 目前境界的 `gain` ÷（`getAgingHours()` × 60）× 所在地倍率。
+    `getAgingHours(境界)` = max(`LIFESPAN_MIN_AGING_HOURS` 6, 修煉時數 × `LIFESPAN_PACE_MULT` 5 × 主要地圖的所在地倍率)，
+    修煉時數與主要地圖取自 `config-realms.js` 的 `realmPacing`（第 26 節）。
+    → **在該境界的主要地圖掛機，一個境界給的壽元約可撐「修滿該境界所需時間」的 5 倍**；前期（凡人）至少維持安全區 6 小時。
+    改修煉時數時壽元會自動跟著對齊，不需另外調整。
   - 所在地倍率 `LIFESPAN_DANGER_MULT`：安全區 ×1、野外 ×1.5、開放世界 ×2、禁區 ×3、至高戰場 ×4；渡劫中 ×4。離線 ×0.5（倍率依離線時所在地）。
 
-    | 境界（例） | 安全區 | 野外 | 開放世界 | 禁區 | 至高戰場 | 底線 |
-    |---|---|---|---|---|---|---|
-    | 凡人 | 0.17 年/分 | 0.25 | 0.33 | — | — | 3 年 |
-    | 金丹 | 1.39 | 2.08 | 2.78 | — | — | 15 年 |
-    | 渡劫 | 8.33 | 12.5 | 16.7 | — | — | 30 年 |
-    | 大羅金仙 | 55.6 | 83.3 | 111 | 167 | 222 | 150 年 |
+    | 境界 | 主要地圖 | 修滿約需 | 壽元在主要地圖可撐 | 底線 |
+    |---|---|---|---|---|
+    | 凡人 | 靈山大川 | 0.5 時 | 4 時（下限 6 時×安全區） | 3 年 |
+    | 金丹 | 上古遺跡 | 3 時 | 15 時 | 15 年 |
+    | 化神 | 亂星海 | 10 時 | 50 時 | 15 年 |
+    | 渡劫 | 鬼谷八荒 | 30 天 | 150 天 | 30 年 |
+    | 大羅金仙 | 仙界戰場 | 200 天 | 1,000 天 | 150 年 |
 
+  - 後期流逝很慢（每分鐘不到 0.1 年），`#lifespan-rate` 會自動改以「年/時」顯示。
+- **年齡（當前壽命）**：`player.age`，新角色與轉世後從 `LIFESPAN_START_AGE`(16) 歲起算，`ageLifespan()` 依**實際流逝的年數**同步增加
+  （觸底歲月停止時年齡也停住；死亡折壽不計入年齡）。舊存檔沒有此欄位，由 `DEFAULT_PLAYER_JSON` 補 16 歲。
+  頂部狀態列在剩餘壽元前顯示「當前壽命：X 歲」（`#age-display`）。
   - **底線** `getLifespanFloor()` = 目前境界 `deathCost × LIFESPAN_FLOOR_DEATHS(3)`：剩餘壽元觸底後自然流逝**完全停止**（線上、離線都一樣）。
     **時間永遠不會直接害死玩家**，只有死亡會；但觸底後再死 3 次就身死道消，形成「越接近底線越不敢冒險」的緊張感。
   - 提示（`checkLifespanWarnings()`，各只出現一次，壽元回升後重置）：剩餘 ≤ 底線×2 時「壽元日漸枯竭」；觸底時「壽元將盡，再死亡 3 次便身死道消」。
   - 壽元可能帶小數，所有顯示一律經 `formatLifespan()` 取整數。
   - 恢復方式：突破境界（加上新境界的 `gain`，底線也會跟著新境界調整）或千寶閣壽元丹。
-  - ⚠️ 平衡注意：壽元丹是固定年數（+10～+100 年），後期境界（例：大羅金仙每分鐘流逝 55 年起）幾乎沒有作用。
+  - ⚠️ 平衡注意：壽元丹是固定年數（+10～+100 年），後期境界的 `gain` 以萬年計，效果相對有限。
     若後期玩家常卡在底線，可考慮讓壽元丹改為「目前境界 gain 的百分比」。
 - **壽元歸零 → `triggerLifespanGameOver()`**：設 `gameOver = true`（`combatTick()` 停止、`saveLocal()` 不再寫入）、
   刪除 `localStorage` 存檔、跳出提示後重新整理，回到標題畫面以新角色開始。
@@ -808,8 +825,8 @@ combatTick() 每秒執行 [combat.js]
 | 保留 5% | 四維與魅力：新值 = `10 + floor(前世 player.stats × 5%)`（只看基礎屬性，不含裝備） |
 | 保留 5% | 氣血上限、靈力上限：取前世 `getMaxHp()`/`getMaxMp()`（含裝備、宗門、靈根、等級）的 5%，存入 `player.reincarnateBonus = { hp, mp }`，由 `getMaxHp()`/`getMaxMp()` 加上 |
 | 遺忘 | 境界（回凡人 1 階）、人物等級（Lv1）、`sect`（變回散修）與 `sectSkills`（可重新選宗門）、門派任務 `activeQuest`、四維古籍 `studyCounts`、屬性秘典 `elementStudy` |
-| 重設 | 壽元回到凡人的 60 年，氣血／靈力補滿新上限，輪迴次數 +1 |
-| 不動 | 裝備與背包、靈石等資源、僕從、靈寵（等級可能高於 Lv1 的人物，但之後的經驗受人物等級上限卡住）、靈寶閣武學 `learnedSkills` 與 `lingbaoSold`、每日任務／千寶閣 |
+| 重設 | 壽元回到凡人的 60 年、年齡回到 16 歲，氣血／靈力補滿新上限，輪迴次數 +1 |
+| 不動 | 裝備與背包、靈石等資源、功德／七彩補天石／破障丹、僕從、靈寵（等級可能高於 Lv1 的人物，但之後的經驗受人物等級上限卡住）、靈寶閣武學 `learnedSkills` 與 `lingbaoSold`、每日任務／千寶閣 |
 
 - **累積方式**：保留值是「覆寫」而不是「累加」——前世的數值本來就含上上世留下的部分，所以會自然滾動累積，不會重複計算。
 - ⚠️ 舊版規則是「四維 = 10 + 輪迴次數×50、魅力 = 10 + 輪迴次數×10」且保留人物等級、宗門技能與秘典，已廢除。
@@ -818,3 +835,64 @@ combatTick() 每秒執行 [combat.js]
 - **介面**：「命運抉擇」抽屜內轉世按鈕下方的 `.reincarnate-note` 備註保留／遺忘項目（文字寫死 5%，**改 `REINCARNATE_KEEP_RATE` 時要一併改這段 HTML**）；
   `confirm()` 視窗的文字則由常數自動產生。
 - **舊存檔**：沒有 `reincarnateBonus` 時由 `DEFAULT_PLAYER_JSON` 補 `{hp:0,mp:0}`，`getReincarnateBonus()` 也會把缺值視為 0。已經在舊規則下轉世過的存檔維持現狀，不追溯。
+
+## 26. 修煉節奏（境界經驗曲線）
+
+- **舊版問題**：每階經驗 = `200 × 10^境界 × 階數`，每個大境界 ×10，但地圖經驗成長慢得多、禁區又要仙人初境才開放，
+  化神後即使滿加成也要數天～數十年才能修滿（渡劫約 11 年、仙人初境之後以千年計），壽元也長期卡在底線。
+- **新版**：`config-realms.js` 的 `realmPacing` 直接寫「每個境界要花幾小時」，由 `stats.js` 的 `getRealmStageExp()` 反推經驗：
+  每階基數 = `hours × 3600 × (地圖 expRate × 15 × REALM_PACING_KILLS_PER_SEC(0.32) × expMult) ÷ 55`，取 2 位有效數字；
+  `getNextExp()` = 基數 × 目前階數（10 階合計 55 倍基數，所以剛好是 `hours`）。
+  `expMult` 是「一般玩家」的估算加成：凡俗宗門 ×1.2 → 修真宗門約 ×2＋靈幻狐 = 2.2 → 至高宗門約 ×4＋狐＋蛟龍 = 5.28。
+
+  | 境界 | 主要地圖 | 目標時間 | 每階基數 |
+  |---|---|---|---|
+  | 凡人 | 靈山大川 | 30 分 | 1,500 |
+  | 煉氣 | 靈山大川 | 1 時 | 3,000 |
+  | 築基 | 深淵險地 | 2 時 | 15,000 |
+  | 金丹 | 上古遺跡 | 3 時 | 100,000 |
+  | 元嬰 | 天南 | 5 時 | 350,000 |
+  | 化神 | 亂星海 | 10 時 | 2,100,000 |
+  | 煉虛 | 鬼谷八荒 | 20 時 | 1,400 萬 |
+  | 合體 | 鬼谷八荒 | 2 天 | 3,300 萬 |
+  | 大乘 | 鬼谷八荒 | 10 天 | 1.7 億 |
+  | 渡劫 | 鬼谷八荒 | 30 天 | 5 億 |
+  | 仙人初境 | 荒古禁地 | 50 天 | 60 億 |
+  | 天仙 | 上蒼（葬天島） | 100 天 | 200 億 |
+  | 真仙 | 冥界 | 150 天 | 540 億 |
+  | 大羅金仙 | 仙界戰場 | 200 天 | 1,200 億 |
+  | 混元大羅金仙 | 萬界戰場 | 200 天 | 2,000 億 |
+  | 混沌道祖 | 混沌初界 | 300 天 | 6,000 億 |
+
+  全程約 1,040 天（約 25,000 小時，線上與離線合計，離線經驗約為線上的 94%）。
+- **只改 `hours` 就能調整節奏**，經驗門檻與壽元流逝（第 15 節）都會自動跟著換算；`realmPacing.map` 必須是 `maps` 裡存在的地圖名稱。
+- **戰力曲線不變**：`getBasePower()` 原本有一項「目前修為 ÷ 100」，改成「修為進度百分比 × 舊版滿格值（`2×10^境界×階數`，凡人 `1×階數`）」，
+  所以經驗曲線怎麼調，戰力都與舊版一致（實測相同進度下數值完全相同），怪物難度不受影響。
+- **舊存檔**：修為可能遠超新門檻。`save.js` 的 `migrateRealmExp()` 把「待渡劫」者的修為壓回滿格；
+  其餘保留，下次獲得經驗時 `gainExp()` 會連續升階，到 10 階後照常停在待渡劫（大境界仍須渡劫，不會一次跳好幾個境界）。
+
+## 27. 功德系統（獵殺邪修／七彩補天石／破障丹）
+
+設定在 `config-merit.js`，邏輯在 `merit.js`。流程：**斬殺邪修 → 功德 → 七彩補天石 → 千寶閣珍貴物資（破障丹）**。功德只能兌換道具。
+
+- ⏸️ **目前暫停開放**：`config-activities.js` 的 `evil` 設為 `implemented: false`（活動選單顯示「敬請期待」）。
+  暫停期間 `isEvilHuntUnlocked()` 一律回傳 false（野外不出現邪修、離線不累積功德），
+  `isMeritSystemOpen()` 為 false 時千寶閣**不顯示珍貴物資區**、渡劫確認視窗**不提醒破障丹**（避免引導去買拿不到的東西）；
+  已持有的破障丹仍會在渡劫時生效。**調整完成後把 `implemented` 改回 `true` 即全部開放**，不需改其他程式。
+- **獵殺邪修**（活動選單，聲望 8,000＋金丹解鎖，`isEvilHuntUnlocked()` 走 `getActivityLockReason()`）：
+  - 解鎖後，`combat.js` 刷怪時每隻有 `EVIL_SPAWN_CHANCE`(1.6%) 機率是邪修（`isEvil: true`、圖示 `EVIL_ICON` 🧛、氣血與攻擊 ×`EVIL_POWER_MULT` 1.5）。
+    戰鬥實況標題會顯示「邪修×N」，遭遇與斬殺都有日誌。
+  - 斬殺一名得 `EVIL_MERIT_MIN`～`EVIL_MERIT_MAX`（1～10）功德，並累計 `player.evilKills`。
+  - 離線（野外）：戰鬥 tick 數 × `EVIL_SPAWN_CHANCE` 名邪修 × 平均 5.5 功德（`save.js` 的 `calcOfflineProgress()`）。
+  - 產量目標：**線上每小時約 100 功德**（每小時約 1,152 隻 × 1.6% ≈ 18 名邪修 × 5.5）≈ 每小時 1 顆補天石 ≈ 每 5 小時 1 顆破障丹。
+    要調整產量改 `EVIL_SPAWN_CHANCE`（每 1% 約 63 功德/小時）。
+  - 活動按鈕開啟 `#evil-hunt-modal`（`renderEvilHunt()`）：說明、持有數量、累計斬殺數，以及前往千寶閣的按鈕。
+- **七彩補天石**：`player.butianStones`，在千寶閣以 `MERIT_PER_BUTIAN_STONE`(100) 功德兌換 1 顆（`exchangeMeritForStone(qty)`，×1/×10/最高）。
+- **破障丹**：`player.breakPills`，在千寶閣以 `BREAK_PILL_STONE_COST`(5) 顆補天石購買（`buyBreakPill(qty)`）。
+  渡劫時若持有會**自動服用 1 顆**：心魔戰力 ×`BREAK_PILL_DEMON_POWER_MULT`(0.9)、勝算 +`BREAK_PILL_CHANCE_BONUS`(10%)、上限提高到 `BREAK_PILL_MAX_CHANCE`(90%)。見第 7 節。
+- **千寶閣珍貴物資區**：`renderPreciousSection()` 嵌在 `renderAuction()` 的商品下方，**常駐、不佔每 3 小時刷新的 5 格**。
+  「只能用七彩補天石購買的珍貴物資」之後要新增，也加在這一區。
+- **七彩發光外觀**：`index.html` 的 `.rainbow-text`（漸層流動文字）與 `.rainbow-glow`（卡片框線與光暈循環變色），
+  用於千寶閣珍貴物資、背包、角色資源列、獵殺邪修視窗；`prefers-reduced-motion` 時停用動畫。顯示資料在 `preciousItems`。
+- **背包**：`renderBag()` 會列出補天石與破障丹（七彩卡片、不能直接使用）；角色面板資源列也顯示功德／補天石／破障丹。
+- **存檔**：`merit`/`butianStones`/`breakPills`/`evilKills` 都在 `player` 上，舊存檔由 `DEFAULT_PLAYER_JSON` 補 0；轉世不重置。

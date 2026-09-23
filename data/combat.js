@@ -69,14 +69,20 @@ function combatTick() {
 
         let count = Math.floor(Math.random() * 5) + 1;
         let enemyBasePower = player.currentMap.diff * 50;
+        // 獵殺邪修解鎖後，每隻有 EVIL_SPAWN_CHANCE 機率換成邪修（較強，斬殺得功德，見 merit.js）
+        let evilOpen = isEvilHuntUnlocked();
+        let evilCount = 0;
         for (let i = 0; i < count; i++) {
-            let randomIcon = monsterIcons[Math.floor(Math.random() * monsterIcons.length)];
-            enemies.push({ hp: enemyBasePower * 10, maxHp: enemyBasePower * 10, attack: enemyBasePower, icon: randomIcon,
+            let isEvil = evilOpen && Math.random() < EVIL_SPAWN_CHANCE;
+            let power = enemyBasePower * (isEvil ? EVIL_POWER_MULT : 1);
+            let icon = isEvil ? EVIL_ICON : monsterIcons[Math.floor(Math.random() * monsterIcons.length)];
+            if (isEvil) evilCount++;
+            enemies.push({ hp: power * 10, maxHp: power * 10, attack: power, icon: icon, isEvil: isEvil,
                            attrs: rollMonsterAttrs(), status: newStatus() });
         }
         document.getElementById('combat-status').innerText = `⚔️ 遭遇 ${count} 隻妖獸！戰鬥中！`;
         document.getElementById('combat-status').style.color = '#f87171';
-        addLog(`⚠️ 遭遇 ${count} 隻強大的妖獸/禁區強者攔路！`, "combat");
+        addLog(`⚠️ 遭遇 ${count} 隻強大的妖獸/禁區強者攔路！${evilCount > 0 ? `其中混有 ${evilCount} 名${EVIL_ICON}邪修！` : ''}`, "combat");
         updateCombatVisualPanel();
     } else {
         // ---- 玩家回合：先結算自身的燒傷/中毒，被凍結則本回合無法出手 ----
@@ -119,6 +125,8 @@ function combatTick() {
         let coinsEarned = 0;
         let repEarned = 0;
         let killedCount = 0;
+        let evilKilled = 0;
+        let meritEarned = 0;
 
         enemies = enemies.filter(e => {
             if (e.hp <= 0) {
@@ -126,6 +134,7 @@ function combatTick() {
                 coinsEarned += rollKillCoins();
                 repEarned += rollKillReputation();
                 killedCount++;
+                if (e.isEvil) { evilKilled++; meritEarned += rollEvilMerit(); }
                 return false;
             }
             return true;
@@ -135,9 +144,12 @@ function combatTick() {
             let gainedExp = gainExp(expEarned) || 0;
             player.coins += coinsEarned;
             player.reputation = (player.reputation || 0) + repEarned;
+            player.merit = (player.merit || 0) + meritEarned;
+            player.evilKills = (player.evilKills || 0) + evilKilled;
             addDailyProgress('kill', killedCount);
             let expText = (player.pendingTribulation && gainedExp === 0) ? "修為已滿(待渡劫)" : `${Math.floor(gainedExp)} 經驗`;
             addLog(`斬殺敵手，獲得 ${expText}, ${coinsEarned} 靈石 與 ${repEarned} 點聲望！`, "combat");
+            if (evilKilled > 0) addLog(`🙏 斬除 ${evilKilled} 名${EVIL_ICON}邪修，積累 ${meritEarned} 點功德！（目前 ${player.merit.toLocaleString()}）`, "level-up");
             for(let k = 0; k < killedCount; k++) {
                 tryRescueServant();
             }

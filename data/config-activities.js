@@ -16,8 +16,9 @@ const activityData = [
       implemented: false,
       desc: "煉虛以上開放" },
 
+    // ⏸️ 暫停開放（仍需調整）：功能已實作於 merit.js，改回 implemented: true 即可開放
     { id: "evil", name: "獵殺邪修", icon: "🗡️", minRep: 8000, minRealmIndex: 3,
-      implemented: false,
+      implemented: false, openFn: "openEvilHuntModal",
       desc: "金丹以上開放" },
 
     { id: "demon", name: "域外天魔", icon: "👹", minRep: 10000, minRealmIndex: 8,

@@ -77,7 +77,8 @@ function updateCombatVisualPanel() {
             totalEnemyHp += e.hp;
             totalMaxEnemyHp += e.maxHp;
         });
-        document.getElementById('battle-enemy-title').innerText = `上古巨獸 (${enemies.length}隻)`;
+        let evilN = enemies.filter(e => e.isEvil).length;
+        document.getElementById('battle-enemy-title').innerText = `上古巨獸 (${enemies.length}隻${evilN ? `｜${EVIL_ICON}邪修×${evilN}` : ''})`;
         document.getElementById('battle-enemy-icon').innerText = enemies[0].icon || "🐉";
         // 彙整全體怪物身上的狀態：凍結隻數、燒傷/中毒總層數
         let frozenN = enemies.filter(e => e.status && e.status.frozen > 0).length;
@@ -121,8 +122,13 @@ function updateUI() {
     lifespanEl.innerText = `${formatLifespan(player.lifespan)} 年`;
     lifespanEl.style.color = atFloor ? '#ef4444' : (player.lifespan <= getLifespanFloor() * 2 ? '#facc15' : '#4ade80');
     lifespanEl.title = `此境界每死亡一次折壽 ${getDeathLifespanCost()} 年；壽元剩 ${formatLifespan(getLifespanFloor())} 年時歲月停止流逝`;
+    document.getElementById('age-display').innerText = `${formatLifespan(player.age || LIFESPAN_START_AGE)} 歲`;
     let rateEl = document.getElementById('lifespan-rate');
-    rateEl.innerText = atFloor ? '（歲月已止）' : `⌛-${perMin >= 10 ? Math.round(perMin).toLocaleString() : perMin.toFixed(1)}年/分`;
+    // 後期境界流逝很慢（每分鐘不到 0.1 年），改以「年/時」顯示
+    let rateText = perMin >= 10 ? `${Math.round(perMin).toLocaleString()}年/分`
+                 : perMin >= 0.1 ? `${perMin.toFixed(1)}年/分`
+                 : `${(perMin * 60).toFixed(1)}年/時`;
+    rateEl.innerText = atFloor ? '（歲月已止）' : `⌛-${rateText}`;
     rateEl.style.color = atFloor ? '#ef4444' : (getAgingMultiplier() > 1 ? '#fb923c' : '#9ca3af');
     document.getElementById('power-display').innerText = getPhysAttack().toLocaleString();
     document.getElementById('sect-display').innerText = player.sect ? player.sect.name : "散修 (無技能)";
@@ -150,6 +156,9 @@ function updateUI() {
     document.getElementById('res-grass').innerText = player.spiritGrass;
     document.getElementById('res-beastcore').innerText = player.beastCore;
     document.getElementById('res-martial').innerText = player.martialPoints;
+    document.getElementById('res-merit').innerText = (player.merit || 0).toLocaleString();
+    document.getElementById('res-butian').innerText = (player.butianStones || 0).toLocaleString();
+    document.getElementById('res-breakpill').innerText = (player.breakPills || 0).toLocaleString();
     document.getElementById('herb-mortal').innerText = player.herbs.mortal;
     document.getElementById('herb-high').innerText = player.herbs.high;
     document.getElementById('herb-epic').innerText = player.herbs.epic;
@@ -158,8 +167,8 @@ function updateUI() {
     let expPercent = Math.min((player.exp / getNextExp()) * 100, 100);
     document.getElementById('exp-bar').style.width = expPercent + '%';
     document.getElementById('exp-text').innerText = player.pendingTribulation
-        ? `⚡ 修為圓滿・待渡劫 (${Math.floor(player.exp)} / ${getNextExp()})`
-        : `${Math.floor(player.exp)} / ${getNextExp()}`;
+        ? `⚡ 修為圓滿・待渡劫 (${Math.floor(player.exp).toLocaleString()} / ${getNextExp().toLocaleString()})`
+        : `${Math.floor(player.exp).toLocaleString()} / ${getNextExp().toLocaleString()}`;
 
     updateTribulationUI();
     updatePotionCooldownUI();

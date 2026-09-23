@@ -25,10 +25,17 @@ function getAgingMultiplier() {
     return LIFESPAN_DANGER_MULT[cat] || 1;
 }
 
+// 該境界給的壽元在「安全區」可撐幾小時（見 config-lifespan.js 的說明）
+function getAgingHours(realmIndex) {
+    let pace = realmPacing[realmIndex] || realmPacing[realmPacing.length - 1];
+    let mapDanger = LIFESPAN_DANGER_MULT[getMapCategoryIndex(pace.map)] || 1;
+    return Math.max(LIFESPAN_MIN_AGING_HOURS, pace.hours * LIFESPAN_PACE_MULT * mapDanger);
+}
+
 // 目前每分鐘流逝的年數（未觸底時）
 function getAgingPerMinute() {
     let row = lifespanByRealm[player.realmIndex] || lifespanByRealm[lifespanByRealm.length - 1];
-    return row.gain / LIFESPAN_AGING_MINUTES * getAgingMultiplier();
+    return row.gain / (getAgingHours(player.realmIndex) * 60) * getAgingMultiplier();
 }
 
 let lifespanWarned = { low: false, floor: false };   // 提示只出現一次，壽元回升後重置
@@ -40,6 +47,8 @@ function ageLifespan(seconds, rateScale = 1) {
     let loss = getAgingPerMinute() * (seconds / 60) * rateScale;
     let before = player.lifespan;
     player.lifespan = Math.max(floor, player.lifespan - loss);
+    // 年齡隨實際流逝的歲月增加（觸底後歲月停止，年齡也跟著停住）
+    player.age = (player.age || LIFESPAN_START_AGE) + (before - player.lifespan);
     checkLifespanWarnings();
     return before - player.lifespan;
 }
