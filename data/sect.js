@@ -18,7 +18,8 @@ function renderSects() {
     container.innerHTML = `<p style="text-align:center; color:#9ca3af; font-size:0.85em; margin-top:0;">
         每個階段只能拜入<strong style="color:var(--accent);">一個</strong>宗門並學得其 2 招技能，選定後無法更改；
         晉升後拜入下一階段的宗門，先前學會的技能仍會保留，<strong style="color:var(--accent);">也隨時可以按「回歸宗門」切回舊宗門</strong>
-        （切換的只是宗門加成與設施歸屬，技能不會消失）。</p>
+        （切換的只是宗門加成與設施歸屬，技能不會消失）。<br>
+        境界超過某階段的建議範圍後<strong style="color:var(--accent);">仍可補拜入</strong>該階段尚未選擇的宗門；拜入後無法退出或改投。</p>
         <p style="text-align:center; font-size:0.85em; margin-top:0;">
         已選定：${joined.length ? joined.join('／') : '尚無'}　｜　目前所屬：<span style="color:var(--sect-color);">${player.sect ? player.sect.name : '散修'}</span></p>`;
 
@@ -38,7 +39,7 @@ function renderSects() {
 
             // 已選定的宗門不受境界限制（可隨時回歸）；只有「新拜入」才需要符合境界
             let isOwnSect = lockedName === sect.name;
-            let realmOk = player.realmIndex >= cat.minRealm && player.realmIndex <= cat.maxRealm;
+            let realmOk = player.realmIndex >= cat.minRealm;   // 只看下限，超過上限仍可補拜入
             let disabled = isCurrent || isLocked || (!isOwnSect && !realmOk);
 
             let btnText = isCurrent ? '當前宗門'
@@ -73,8 +74,10 @@ function joinSect(sectName) {
                 alert(`此階段您已拜入【${lockedName}】，每個階段只能選擇一個宗門，無法改投【${s.name}】。\n（可按【${lockedName}】的「回歸宗門」切回該宗門）`);
                 return;
             }
-            if (player.realmIndex < cat.minRealm || player.realmIndex > cat.maxRealm) {
-                alert(`您的境界不符合【${s.name}】的加入要求！\n（可加入境界：${realms[cat.minRealm]} ～ ${realms[Math.min(cat.maxRealm, realms.length - 1)]}）`);
+            // 只擋「境界不足」：境界超過該階段上限仍可補拜入（例如金丹後才想挑一個初級宗門），
+            // 否則前期沒拜入宗門的玩家會永遠失去該階段的技能。`maxRealm` 僅供顯示，不再用於封鎖。
+            if (player.realmIndex < cat.minRealm) {
+                alert(`您的境界不符合【${s.name}】的加入要求！\n（需達【${realms[cat.minRealm]}】以上）`);
                 return;
             }
             if (!confirm(`確定拜入【${s.name}】嗎？\n\n此階段（${SECT_TIER_NAMES[cat.tier]}）只能選擇一個宗門，選定後無法更改。\n將學會：${s.skills.map(sk => sk.name).join('、')}`)) return;

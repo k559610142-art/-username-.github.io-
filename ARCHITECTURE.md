@@ -31,7 +31,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
   servant.js / quest.js / field.js / beast.js / library.js / alchemy.js
                       每個彈出視窗(modal) 對應一支檔案，管理該功能的渲染與互動
   activity.js         活動選單：統一把關各活動的解鎖條件（聲望＋境界）
-  daily-quest.js      每日任務（每 12 小時刷新 10 項）
+  daily-quest.js      每日任務（每 4 小時刷新 10 項）
   auction.js          千寶閣拍賣場（每 3 小時刷新 5 件商品，含壽元丹）
   player-profile.js   玩家道號修改
   save.js             本地存檔/讀檔/匯出入/離線掛機結算/重置/舊存檔相容
@@ -58,7 +58,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 1 | `config-realms.js` | `realms` 境界名稱陣列 | 無 | `stats.js`(getNextExp)、`ui.js`、`leveling.js` |
 | 2 | `config-level.js` | `MAX_PLAYER_LEVEL`、`LEVEL_UP_*` 成長值、`LEVEL_EXP_SEGMENTS` 經驗曲線 | 無 | `stats.js`(getLevelExpNeeded、getMaxHp/getMaxMp)、`leveling.js`(gainLevelExp)、`ui.js` |
 | 3 | `config-lifespan.js` | `lifespanByRealm` 各境界壽元增加量與死亡折壽、歲月流逝常數 `LIFESPAN_AGING_MINUTES`/`LIFESPAN_DANGER_MULT`/`LIFESPAN_TRIBULATION_MULT`/`LIFESPAN_OFFLINE_RATE`/`LIFESPAN_FLOOR_DEATHS` | 無 | `lifespan.js`、`leveling.js`(轉世重設壽元) |
-| 4 | `config-maps.js` | `SECT_MAP_NAME`（"宗門"，唯一安全區的名稱）、`maps` 地圖資料、`monsterIcons` | 無 | `state.js`、`map.js`(isInSect)、`combat.js`、`ui.js`、`save.js`(migrateCurrentMap) |
+| 4 | `config-maps.js` | `SECT_MAP_NAME`（"宗門"，唯一安全區的名稱）、`maps` 地圖資料、`REPUTATION_MAX_BY_MAP_CATEGORY`（各區擊殺聲望上限）、`OFFLINE_REPUTATION_RATE`、`monsterIcons` | 無 | `state.js`、`map.js`(isInSect)、`combat.js`、`ui.js`、`save.js`(migrateCurrentMap) |
 | 5 | `config-sects.js` | `sectData` 宗門與技能表、`SECT_SKILL_BONUS`、`SECT_TIER_NAMES`、`findSectByName()`；尾端迴圈替每招補上 `tier`/`mult` | 無 | `sect.js`、`stats.js`(getSectTier/getAllSkills)、`ui.js`、`save.js`(重新綁定宗門) |
 | 6 | `config-lingbao.js` | `legacySkillAdjustments` 舊版禁術下修數值、`lingbaoTierCosts` 各階段兌換價格、`lingbaoShopItems` 三階段戰略級寶物與武學 | 無 | `lingbao-shop.js`、`equipment.js`(五行說明列固定屬性裝備) |
 | 7 | `config-shop.js` | `shopItems` 丹藥堂商品、`shopSections` 分區、`POTION_COOLDOWN_SECONDS` 丹藥冷卻、`SHOP_MAX_BUY_QTY` 單次購買上限(9999) | 無 | `shop.js`、`bag.js`、`combat.js`(自動補血補魔) |
@@ -324,7 +324,7 @@ combatTick() 每秒執行 [combat.js]
 
 | 活動 | 聲望門檻 | 境界門檻 | 狀態 |
 |---|---|---|---|
-| 每日任務 | 1,000 | 無 | ✅ 已實作（每 12 小時刷新 10 項） |
+| 每日任務 | 1,000 | 無 | ✅ 已實作（每 4 小時刷新 10 項） |
 | 千寶閣（拍賣場） | 5,000 | 無 | ✅ 已實作（每 3 小時刷新 5 件） |
 | 秘境 | 5,000 | 煉虛 | ⏳ 敬請期待 |
 | 獵殺邪修 | 8,000 | 金丹 | ⏳ 敬請期待 |
@@ -422,10 +422,14 @@ combatTick() 每秒執行 [combat.js]
 - 宗門分三個階段，對應 `sectData` 每個分類的 `tier`：凡俗 1（初級）/ 修真 2（中級）/ 至高 3（高級）。
 - **每個階段只能拜入一個宗門**：`player.sectSkills = { 1, 2, 3 }` 記錄各階段選定的宗門名稱，
   第一次加入時會跳確認並鎖定；之後同階段的其他宗門按鈕會被停用。
-- **已選定的宗門永遠可以回歸**（`sect.js` 的 `joinSect()`）：**境界檢查（`minRealm`/`maxRealm`）只套用在「新拜入」**。
+- **境界只擋下限，不擋上限**：新拜入時只檢查 `player.realmIndex >= cat.minRealm`，
+  **超過 `maxRealm` 仍可補拜入該階段尚未選擇的宗門**（例：金丹前沒加入任何宗門，金丹後仍可回頭挑一個初級宗門，
+  否則該階段的 2 招技能就永遠拿不到了）。`cat.maxRealm` 現在只是分類說明用，不再封鎖加入。
+  拜入後一律鎖定，**無法退出、也無法改投同階段的其他宗門**。
+- **已選定的宗門永遠可以回歸**（`sect.js` 的 `joinSect()`）：**境界檢查只套用在「新拜入」**。
   ⚠️ 舊版把境界檢查寫在最前面，導致境界一旦超過該階段的 `maxRealm`（例：凡俗宗門 `maxRealm: 3`），
   連按自己的宗門都會跳「境界不符合」，晉升並拜入下一階段後就再也回不去舊宗門（玩家回報「加入宗門後就離開宗門了」即此）。
-  現在判定順序是：**是不是自己已選定的宗門 → 該階段是否已選別家 → 境界是否符合 → 確認並鎖定**。
+  現在判定順序是：**是不是自己已選定的宗門 → 該階段是否已選別家 → 境界是否達 `minRealm` → 確認並鎖定**。
   宗門列表的按鈕也照這個順序顯示「當前宗門／回歸宗門／此階段已選定【X】／境界不符」，並在頂端列出各階段已選宗門與目前所屬。
 - 切換所屬宗門**只改變經驗/戰力倍率與設施歸屬，技能不會消失**，所以可以視情況在已選定的宗門之間來回切換。
 - **技能永久保留**：戰鬥用的技能由 `stats.js` 的 `getAllSkills()` 依 `sectSkills` 組合（初級→高級）
@@ -693,3 +697,29 @@ combatTick() 每秒執行 [combat.js]
 - **新增靈根或改效果只要動 `config-equipment.js`**；若要新增 `bonus` 欄位，需同時在 `getRootBonus()` 的合併清單與套用處加上。
 - **舊存檔不需轉換**：裝備資料本身沒變，只是判定規則改變，讀檔後自動用新規則重算。
 - 顯示：角色裝備視窗頂端與「!」說明視窗共用 `equipment.js` 的 `formatSpiritRoots()`。
+
+## 22. 聲望
+
+| 來源 | 數量 | 位置 |
+|---|---|---|
+| 野外擊殺妖獸 | **每殺一隻隨機 1 ~ 該區上限**（`rollKillReputation()`，上限見下表） | `combat.js` |
+| 每日任務 | 普通 20／困難 50／艱鉅 120 | `config-daily-quests.js` 的 `dailyQuestRewards` |
+| 離線掛機（野外） | 戰鬥 tick 數 × 該區平均聲望 × `OFFLINE_REPUTATION_RATE`(0.3)，約為線上的 **65%** | `save.js` 的 `calcOfflineProgress()` |
+
+擊殺聲望依**所在地圖分類**給，設定在 `config-maps.js` 的 `REPUTATION_MAX_BY_MAP_CATEGORY`（key 為 `maps` 的索引）：
+
+| 地圖分類 | 每隻聲望 | 平均 |
+|---|---|---|
+| 二、野外歷練 | 1 ~ 3 | 2 |
+| 三、開放世界 | 1 ~ 10 | 5.5 |
+| 四、上古禁區 | 1 ~ 30 | 15.5 |
+| 五、諸天戰場 | 1 ~ 100 | 50.5 |
+
+- 舊版不分地圖一律「每殺 1 隻 = 1 點」，導致低難度地圖刷聲望效率最高；改成分區後高難度地圖才划算。
+- 門派任務、僕從派遣**不給聲望**（獎勵只有靈石／獸丹／靈草／武學積分，見 `config-quests.js`）。
+- **離線掛機也給聲望**，但刻意比線上少：離線以「戰鬥 tick 數（離線秒數 ×0.7）× 該區平均聲望 × 0.3」計算。
+  實測線上滿速掛機每秒約 0.31 隻（波次之間有 5 秒刷新），離線換算約每秒 0.21 隻，比值穩定在 0.65～0.67。
+  ⚠️ `OFFLINE_REPUTATION_RATE` 調高到 0.5 以上時，離線反而會比線上划算（實測 0.5 時離線略高於線上），修改前請重新實測。
+  離線待在安全區（宗門）不給聲望。
+- 消耗：靈寶閣兌換（初級 1 萬／中級 10 萬／高級 50 萬）、千寶閣壽元丹（1,000 ~ 10,000）；
+  活動解鎖門檻見第 10 節（每日任務 1,000、千寶閣 5,000、秘境 5,000、獵殺邪修 8,000、世界BOSS 10,000）。

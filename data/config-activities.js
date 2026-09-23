@@ -6,7 +6,7 @@
 const activityData = [
     { id: "daily", name: "每日任務", icon: "📅", minRep: 1000, minRealmIndex: 0,
       implemented: true, openFn: "openDailyQuestModal",
-      desc: "每 12 小時刷新，共 10 項任務" },
+      desc: "每 4 小時刷新，共 10 項任務" },
 
     { id: "auction", name: "千寶閣", icon: "🏺", minRep: 5000, minRealmIndex: 0,
       implemented: true, openFn: "openAuctionModal",

@@ -1,4 +1,4 @@
-// 每日任務：每 12 小時刷新 10 項任務，各功能透過 addDailyProgress() 回報進度
+// 每日任務：每 4 小時刷新 10 項任務，各功能透過 addDailyProgress() 回報進度
 // 解鎖條件（聲望 1000）由 activity.js 統一把關
 
 function openDailyQuestModal() {
@@ -10,6 +10,11 @@ function openDailyQuestModal() {
 // 時間到就重新產生任務；未完成的進度一併清空
 function refreshDailyQuestsIfDue(force) {
     const now = Date.now();
+    // 縮短刷新間隔（12 → 4 小時）時，舊存檔的 dailyRefreshAt 仍是照舊間隔算的，
+    // 不修掉的話玩家得先等完舊的一輪。超出新間隔就直接壓回上限。
+    let maxRefreshAt = now + DAILY_REFRESH_HOURS * 3600 * 1000;
+    if (player.dailyRefreshAt > maxRefreshAt) player.dailyRefreshAt = maxRefreshAt;
+
     if (!force && player.dailyRefreshAt && now < player.dailyRefreshAt
         && Array.isArray(player.dailyQuests) && player.dailyQuests.length > 0) {
         return false;

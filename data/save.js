@@ -36,6 +36,11 @@ function calcOfflineProgress() {
         let gained = gainExp(expEarned) || 0;
         player.coins += coinsEarned;
 
+        // 離線聲望：以該區「平均擊殺聲望 × OFFLINE_REPUTATION_RATE」計算，刻意低於線上掛機
+        let repMax = REPUTATION_MAX_BY_MAP_CATEGORY[getMapCategoryIndex(player.currentMap.name)] || 1;
+        let repEarned = Math.floor(combatTicks * ((repMax + 1) / 2) * OFFLINE_REPUTATION_RATE);
+        player.reputation = (player.reputation || 0) + repEarned;
+
         // 離線拯救僕從機率發放
         let rescueRolls = Math.floor(combatTicks / 30);
         let rescuedCount = 0;
@@ -45,7 +50,7 @@ function calcOfflineProgress() {
         }
 
         let expText = wasPending ? "修為已滿(待渡劫，無經驗)" : `${Math.floor(gained)} 經驗`;
-        msg = `⚔️ 離線於【${player.currentMap.name}】歷練 ${Math.floor(offlineSeconds / 60)} 分鐘，獲得 ${expText}與 ${coinsEarned} 靈石${rescuedCount > 0 ? `，並拯救了 ${rescuedCount} 名受困修士！` : '！'}`;
+        msg = `⚔️ 離線於【${player.currentMap.name}】歷練 ${Math.floor(offlineSeconds / 60)} 分鐘，獲得 ${expText}、${coinsEarned.toLocaleString()} 靈石與 ${repEarned.toLocaleString()} 點聲望${rescuedCount > 0 ? `，並拯救了 ${rescuedCount} 名受困修士！` : '！'}`;
     }
 
     // 離線期間的歲月流逝（半速，同樣受底線保護）

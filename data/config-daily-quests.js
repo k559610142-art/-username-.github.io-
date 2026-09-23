@@ -1,5 +1,5 @@
 // 每日任務設定
-const DAILY_REFRESH_HOURS = 12;   // 每 12 小時刷新一次
+const DAILY_REFRESH_HOURS = 4;    // 每 4 小時刷新一次
 const DAILY_QUEST_COUNT = 10;     // 每次刷新給 10 項任務
 
 // 任務池：type 同時是進度計數的鍵，由各功能呼叫 addDailyProgress(type, n) 累加。

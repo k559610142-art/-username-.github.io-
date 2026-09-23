@@ -117,12 +117,14 @@ function combatTick() {
 
         let expEarned = 0;
         let coinsEarned = 0;
+        let repEarned = 0;
         let killedCount = 0;
 
         enemies = enemies.filter(e => {
             if (e.hp <= 0) {
                 expEarned += player.currentMap.expRate * 15;
                 coinsEarned += player.currentMap.diff * (Math.floor(Math.random() * 5) + 8);
+                repEarned += rollKillReputation();
                 killedCount++;
                 return false;
             }
@@ -132,10 +134,10 @@ function combatTick() {
         if (expEarned > 0) {
             let gainedExp = gainExp(expEarned) || 0;
             player.coins += coinsEarned;
-            player.reputation = (player.reputation || 0) + killedCount;
+            player.reputation = (player.reputation || 0) + repEarned;
             addDailyProgress('kill', killedCount);
             let expText = (player.pendingTribulation && gainedExp === 0) ? "修為已滿(待渡劫)" : `${Math.floor(gainedExp)} 經驗`;
-            addLog(`斬殺敵手，獲得 ${expText}, ${coinsEarned} 靈石 與 ${killedCount} 點聲望！`, "combat");
+            addLog(`斬殺敵手，獲得 ${expText}, ${coinsEarned} 靈石 與 ${repEarned} 點聲望！`, "combat");
             for(let k = 0; k < killedCount; k++) {
                 tryRescueServant();
             }
@@ -169,6 +171,12 @@ function combatTick() {
         }
         updateUI();
     }
+}
+
+// 擊殺一隻妖獸的聲望：依所在地圖分類隨機 1 ~ 上限（見 config-maps.js 的 REPUTATION_MAX_BY_MAP_CATEGORY）
+function rollKillReputation() {
+    let max = REPUTATION_MAX_BY_MAP_CATEGORY[getMapCategoryIndex(player.currentMap.name)] || 1;
+    return Math.floor(Math.random() * max) + 1;
 }
 
 // 木系靈根（生／榮）的每回合回復：野外與渡劫共用，回傳實際回復量
