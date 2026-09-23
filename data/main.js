@@ -23,6 +23,8 @@ function startGame() {
         initGame();
         return;
     }
+    // 有存檔但讀取失敗：由讀檔失敗視窗處理（save.js 的 reportLoadFailure），絕不直接進入開新角色
+    if (saveLoadFailed) return;
     document.getElementById('gender-modal').style.display = 'flex';
 }
 
@@ -43,5 +45,6 @@ function chooseGender(gender) {
 }
 
 window.onload = function() {
+    initHomeUi();       // 洞府主畫面：舞台縮放與預設分頁（home-ui.js）
     initTitleScreen();
 };

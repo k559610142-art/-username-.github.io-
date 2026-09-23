@@ -12,6 +12,7 @@ index.html            唯一的 HTML 進入點：畫面結構、CSS（含手機 
                       彈窗(modal) DOM、<script src> 載入清單
                       ※ 檔名必須是 index.html（GitHub Pages 只把 index.html 當作預設首頁）
 images/               圖片素材
+  home-bg.jpg         洞府主畫面背景（704×1520，頭像框／資源框／側邊按鈕／底部導覽已畫在圖上，見第 31 節）
   cover.jpg           主頁封面・橫式（1264x843），電腦與橫向螢幕使用
   cover-portrait.jpg  主頁封面・直式（960x1920），手機直向使用（由橫式圖重新構圖而成）
 data/                 所有遊戲邏輯與資料，依「設定資料 / 執行狀態 / 功能模組 / 進入點」分層
@@ -39,6 +40,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
   talisman.js         符寶坊：礦石煉製符寶、橙裝孔位鑲嵌／打掉（第 28 節）
   player-profile.js   玩家道號修改
   save.js             本地存檔/讀檔/匯出入/離線掛機結算/重置/舊存檔相容
+  home-ui.js          洞府主畫面：舞台等比縮放、HUD 數值、底部導覽分頁、建築熱點、興建中提示（第 31 節）
   title-screen.js     遊戲主頁（標題畫面）與進入世界
   main.js             initGame()/startGame() 與 window.onload，遊戲啟動進入點
 ```
@@ -49,7 +51,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 
 ## 2. 載入順序與依賴關係
 
-`index.html` 底部依序載入以下腳本。多數功能檔案彼此呼叫時**不受載入順序影響**
+`index.html` 底部依序載入以下腳本（每個都帶 `?v=版本號`，發佈前要更新，見第 30 節）。多數功能檔案彼此呼叫時**不受載入順序影響**
 （函式宣告會先被瀏覽器解析完成，實際呼叫要等到 `window.onload` 之後才發生）。
 但以下兩個檔案在載入當下就會**立即執行頂層程式碼**，因此順序不可調換：
 
@@ -103,9 +105,10 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 38 | `library.js` | 第一階段 `STUDY_COST`/`STUDY_GAIN`/`STUDY_MAX_COUNT`、`openLibraryModal`/`studyBook`；第二階段屬性秘典（第 24 節）`ELEMENT_BOOK_TIER`/`ELEMENT_BOOK_GAIN`/`ELEMENT_BOOK_MAX`/`ELEMENT_BOOK_COST`/`elementBooks`、`isElementBookUnlocked`/`getElementBookBonus`/`formatElementBookPercent`/`renderElementBooks`/`studyElementBook` | `player.studyCounts`/`elementStudy`/`martialPoints`/`spiritGrass`/`coins`/`stats`/`sectSkills`、`SECT_TIER_NAMES`、`ui.js`(resolveBatchCount) | HTML 按鈕（僅在「宗門」顯示）、`elements.js`(getPlayerCombatAttrs 呼叫 getElementBookBonus) |
 | 39 | `alchemy.js` | `pillRecipes`、`openAlchemyModal`/`craftPill` | `player.herbs`/`stats`/`coins`、`ui.js`(resolveBatchCount) | HTML 按鈕（僅在「宗門」顯示） |
 | 40 | `player-profile.js` | `PLAYER_NAME_MAX_LENGTH`、`sanitizePlayerName`(移除 HTML 特殊字元，讀檔/匯入也套用)/`changePlayerName`(開啟 #name-modal)/`confirmPlayerName` | `player.name` | HTML 按鈕、`save.js`(applySaveData) |
-| 41 | `save.js` | `calcOfflineProgress`/`saveLocal`/`loadLocal`/`applySaveData`(讀檔與匯入共用)/`resetGameCompletely` + 舊存檔相容 `migrateServantAssignments`/`migrateEquipmentSlots`/`migrateActivityFields`/`migrateCurrentMap`/`migrateProgressionFields`/`migrateLegacySkills`(舊禁術下修＋已兌換武學耗魔同步)/`migrateRealmExp`(經驗曲線改版：待渡劫者修為壓回滿格)/`migrateEquipSockets`(舊橙裝補孔) + 離線斬殺邪修的功德 + `reloadLocalSave`(選單按鈕，無存檔時給提示) + 存檔代碼（常數 `SAVE_CODE_PREFIX`="FS2:"、兩段式確認暫存 `pendingImportData`；編解碼皆為 async）`encodeSaveCode`/`decodeSaveCode`/`bytesToBase64`/`base64ToBytes`/`pipeBytes`/`openSaveCodeModal`/`setSaveCodeStatus`/`exportSave`/`selectSaveCodeText`/`copySaveCode`/`downloadSaveCode`/`importSave`/`pasteSaveCodeFromClipboard`/`importSaveFromFile`/`confirmImportSave`/`resetImportConfirm` | `player`（整包序列化進 `localStorage`）、`maps`(migrateCurrentMap)、`legacySkillAdjustments`/`lingbaoShopItems`(migrateLegacySkills)、`leveling.js`(gainExp)、`combat.js`(tryRescueServant)、`lifespan.js`、`beast-combat.js`(createBeast)、`ui.js` | `main.js`(啟動時 loadLocal)、`main.js`(initGame 內每 30 秒 saveLocal) |
+| 41 | `save.js` | `calcOfflineProgress`/`saveLocal`/`loadLocal`/`applySaveData`(讀檔與匯入共用)/`resetGameCompletely` + 舊存檔相容 `migrateServantAssignments`/`migrateEquipmentSlots`/`migrateActivityFields`/`migrateCurrentMap`/`migrateProgressionFields`/`migrateLegacySkills`(舊禁術下修＋已兌換武學耗魔同步)/`migrateRealmExp`(經驗曲線改版：待渡劫者修為壓回滿格)/`migrateEquipSockets`(只補 talismans 欄位) + 讀檔失敗保護 `saveLoadFailed`/`reportLoadFailure`/`retryLoadAfterFailure`/`showRawSaveForCopy`/`abandonSaveAndStartNew`（第 30 節） + 離線斬殺邪修的功德 + `reloadLocalSave`(選單按鈕，無存檔時給提示) + 存檔代碼（常數 `SAVE_CODE_PREFIX`="FS2:"、兩段式確認暫存 `pendingImportData`；編解碼皆為 async）`encodeSaveCode`/`decodeSaveCode`/`bytesToBase64`/`base64ToBytes`/`pipeBytes`/`openSaveCodeModal`/`setSaveCodeStatus`/`exportSave`/`selectSaveCodeText`/`copySaveCode`/`downloadSaveCode`/`importSave`/`pasteSaveCodeFromClipboard`/`importSaveFromFile`/`confirmImportSave`/`resetImportConfirm` | `player`（整包序列化進 `localStorage`）、`maps`(migrateCurrentMap)、`legacySkillAdjustments`/`lingbaoShopItems`(migrateLegacySkills)、`leveling.js`(gainExp)、`combat.js`(tryRescueServant)、`lifespan.js`、`beast-combat.js`(createBeast)、`ui.js` | `main.js`(啟動時 loadLocal)、`main.js`(initGame 內每 30 秒 saveLocal) |
+| 41a | `home-ui.js` | `STAGE_IMG_W`/`STAGE_IMG_H`、`TAB_TITLES`、`layoutStage`/`initHomeUi`/`switchTab`/`showStageToast`/`showUnderConstruction`/`openAscensionPlatform`/`formatShortNumber`/`getCultivationRate`/`updateHomeHud` | `player`、`realms`、`PLAYER_AVATARS`、`stats.js`、`tribulation.js`(triggerTribulation)、`activity.js`(openActivity) | `ui.js`(updateUI 結尾呼叫 updateHomeHud)、`main.js`(onload 呼叫 initHomeUi)、HTML 熱點與底部導覽 |
 | 42 | `title-screen.js` | `TITLE_HOTSPOTS`(光環座標)/`currentTitleHotspot`/`positionTitleHotspot`/`enterWorld`/`initTitleScreen`、旗標 `worldEntered` | `main.js`(startGame)、`#title-screen` DOM | `main.js`(onload 呼叫 initTitleScreen)、標題頁按鈕 |
-| 43 | `main.js` | `initGame`(含每 30 秒存檔與切到背景時存檔)/`startGame`/`chooseGender`/`window.onload`、旗標 `gameStarted` | 幾乎全部模組（啟動流程的膠水程式碼） | 瀏覽器 `onload`、`title-screen.js`(enterWorld 呼叫 startGame) |
+| 43 | `main.js` | `initGame`(含每 30 秒存檔與切到背景時存檔)/`startGame`(讀檔失敗時不進入開新角色)/`chooseGender`/`window.onload`、旗標 `gameStarted` | 幾乎全部模組（啟動流程的膠水程式碼） | 瀏覽器 `onload`、`title-screen.js`(enterWorld 呼叫 startGame) |
 
 ## 3. 資料流總覽（文字版流程圖）
 
@@ -190,6 +193,8 @@ combatTick() 每秒執行 [combat.js]
 | `openTalismanModal`、`craftTalisman(qty)`（隨機煉製）、`inlayTalisman(equipId, idx)`、`removeTalisman(equipId, idx)`（後三者由 `renderTalismanWorkshop()` 動態產生） | `data/talisman.js` |
 | `exchangeMeritForStone`, `buyBreakPill`（千寶閣珍貴物資區，動態產生）、`openEvilHuntModal`（經由 `openActivity('evil')`） | `data/merit.js` |
 | `enterWorld` | `data/title-screen.js` |
+| `retryLoadAfterFailure`, `showRawSaveForCopy`, `abandonSaveAndStartNew`（讀檔失敗視窗） | `data/save.js` |
+| `switchTab`, `openAscensionPlatform`, `showUnderConstruction`（洞府主畫面） | `data/home-ui.js` |
 | `chooseGender` | `data/main.js` |
 
 ## 5. 新增功能的建議流程
@@ -211,6 +216,10 @@ combatTick() 每秒執行 [combat.js]
 6. **完成任何修改後，回來更新本檔案（ARCHITECTURE.md）對應章節。**
 
 ## 6. 版型與 RWD 規則（電腦版 / 手機版）
+
+> ⚠️ **2026-09-24 起主畫面改為「洞府」舞台版面（第 31 節）**：舊的三欄 `#game-container` 已搬進舞台內的分頁區 `#tab-sheet`，
+> 各面板依 `data-tab` 分到修仙／戰鬥／宗門／世界分頁，不再是三欄。本節下方的三欄與 `nth-of-type` 排序規則仍留在 CSS 內，
+> 但已被 `<style>` 最後的舞台樣式覆蓋；**新增畫面元素請依第 31 節的做法**。彈出視窗（`.modal-bg`）的 RWD 規則照舊有效。
 
 所有樣式集中在 `index.html` 的 `<style>` 內，分成兩段：
 
@@ -974,3 +983,79 @@ combatTick() 每秒執行 [combat.js]
 - **穿戴限制**：裝備帶 `level` 欄位，`equipItem()` 要求**人物等級 ≥ 裝備等級**；卡片名稱前顯示「Lv.N」（`formatEquipLevel()`，等級不足時標紅）。
   舊裝備、千寶閣、靈寶閣的裝備沒有 `level`，不受限制。
 - **費用**：`FORGE_COST` 每次 10,000 靈石（不分等級）。
+
+## 30. 發佈版本號與讀檔失敗保護
+
+### 事故紀錄（2026-09-23）
+玩家更新後讀檔跳出「本地存檔格式損毀」。**存檔本身沒有壞**：GitHub Pages 會快取檔案約 10 分鐘，
+瀏覽器拿到「舊 index.html（沒有 `#age-display`）＋新 ui.js」，`updateUI()` 對不存在的元素寫入而拋出 TypeError；
+舊版 `loadLocal()` 把任何例外都當成「格式損毀」，接著 `startGame()` 直接跳性別選擇——**玩家一選性別，新角色就會覆蓋原存檔**。
+（以 8 種舊存檔形態測試目前程式皆可正常讀取；移除 `#age-display` 即可重現同一錯誤。）
+
+### 1. 發佈版本號（防止新舊檔案混用）
+- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260924a`）。
+- **每次推上 GitHub Pages 前，把所有 `?v=` 全部取代成新值**（例：日期＋序號）。新 index.html 會指向新網址的 JS，不會再拿到快取的舊檔。
+- 新增 `data/*.js` 時也要記得帶上 `?v=`。
+
+### 2. 讀檔失敗保護（`save.js`）
+- `loadLocal()` 分開處理兩種失敗：`JSON.parse` 失敗（存檔真的壞了）與 `applySaveData()` 拋錯（多半是版本混用）。
+- 失敗時 `reportLoadFailure()`：
+  1. 設 `saveLoadFailed = true` → `saveLocal()`（含每 30 秒自動存檔、切背景存檔）**一律不寫入**。
+  2. 原始存檔另存到 `localStorage['xiuxian_save_backup']`（時間在 `xiuxian_save_backup_at`）。
+  3. 顯示 `#load-error-modal`：錯誤原因（真正的例外訊息）、依原因給的建議，以及三個選項（沒有關閉鈕、不用 alert/confirm）：
+     - 🔄 重新整理再試一次：`retryLoadAfterFailure()` 以 `?reload=時間戳` 重新載入，避開快取的舊 index.html。
+     - 📋 顯示原始存檔代碼：`showRawSaveForCopy()` 把原始存檔放進文字框並嘗試複製（可貼到「匯入存檔」救回）。
+     - 🗑️ 放棄存檔開新角色：`abandonSaveAndStartNew()`，**要按兩次**；備份仍保留。
+  - 若頁面是舊版 index.html（沒有這個視窗），退回用 `alert` 說明，寫入一樣被封鎖。
+- `main.js` 的 `startGame()`：`loadLocal()` 失敗且 `saveLoadFailed` 時直接返回，**絕不自動進入開新角色**。
+- ⚠️ 新增讀檔邏輯時，任何「可能覆蓋存檔」的路徑都要先檢查 `saveLoadFailed`。
+
+## 31. 洞府主畫面（舞台版面）
+
+背景圖 `images/home-bg.jpg`（**704×1520**）本身就是介面：頭像框、名字框、兩個資源框、左右側按鈕、底部導覽都**畫在圖上**。
+程式只負責把即時數值疊進框裡，並在圖上的按鈕位置放透明點擊區。
+
+### 舞台與對齊
+- `#app-stage`：`home-ui.js` 的 `layoutStage()` 依視窗大小**等比縮放**（完整顯示整張圖，contain），置中；
+  寬螢幕（電腦）兩側由 `body::before` 用同一張圖放大模糊補底。視窗縮放、轉向時重算。
+- CSS 變數 `--u` = 舞台寬 ÷ 704，字級與間距一律 `calc(var(--u) * 圖上像素)`，縮放後比例不變。
+- 疊加元素的 `left/top/width/height` 一律寫成「**圖上座標 ÷ 704（橫向）或 ÷ 1520（縱向）**」的百分比。
+  ⚠️ **換背景圖時**：要改 `STAGE_IMG_W`/`STAGE_IMG_H`，並重新量 index.html 內所有 `%` 座標（HUD、熱點、側邊按鈕、底部導覽、`#tab-sheet`）。
+
+### 元素對照（圖上座標，704×1520）
+
+| 元素 | 位置 | 內容／功能 |
+|---|---|---|
+| `#hud-avatar` | 頭像框 (28,34) 124×124 | 玩家頭像（`PLAYER_AVATARS`，依性別），蓋住圖上的預設頭像 |
+| `#hud-name` | 名字框 (159,47) | 道號、境界階數（待渡劫會標示）、Lv 與等級進度條、戰力 |
+| `#hud-coins` | 左資源框（元寶） | 靈石（`formatShortNumber`：萬／億縮寫） |
+| `#hud-rep` | 右資源框（圖上原為「仙玉」） | **聲望** |
+| `#hud-stats` | 資源框下方（新增的半透明面板） | 氣血／靈力／修為條、修煉效率（`getCultivationRate()` = 宗門經驗倍率 × 靈寵加成） |
+| 熱點「升仙台」 | 寶塔 | `openAscensionPlatform()`：待渡劫時 `triggerTribulation()`，否則提示修為進度；待渡劫時牌匾亮紅點 |
+| 熱點「領物閣」 | 山中發光洞口 | `openActivity('auction')`（千寶閣，未解鎖會提示條件） |
+| 熱點「宗門」 | 左側山門 | 切到宗門分頁 |
+| 熱點「僕從小屋」 | 右側屋舍 | `openServantModal()` |
+| 側邊「任務」「背包」 | 左側 | `openQuestModal()`、`openBagModal()` |
+| 側邊「特惠商城」 | 右側 | `openShopModal()`（丹藥堂） |
+| 側邊「郵件」「充值」 | 左／右 | 遊戲沒有對應功能 → `showUnderConstruction()` 顯示「興建中」 |
+| 底部導覽 | 修仙／戰鬥／洞府／宗門／世界 | `switchTab()`；選中的按鈕有金色光暈（`.nav-btn.active`） |
+
+### 分頁（底部導覽）
+- `switchTab(tab)` 設定 `body[data-tab]`：`home`（洞府）只顯示背景與熱點；其他分頁在 `#tab-sheet`（圖上 y 212～1372 之間）顯示面板。
+- 原本的面板仍在 `#game-container` 內（所有 id 不變，`updateUI()` 照常寫入），用 `data-tab` 標記屬於哪個分頁（可多個，以空白分隔）：
+
+  | 分頁 | 面板 |
+  |---|---|
+  | 修仙 `cultivate` | `#header`（境界、壽命、狀態條等詳細資訊）、修士面板（四維、戰鬥屬性、裝備、技能、自動輔助、資源） |
+  | 戰鬥 `battle` | 戰場實況＋渡劫按鈕＋日誌（`#battle-panel`，排在最前）、修仙地圖 |
+  | 宗門 `sect` | 宗門與設施 |
+  | 世界 `world` | 修仙地圖、活動、命運與系統（存檔、轉世、重置） |
+
+- 分頁內的地圖、設施、活動抽屜**預設展開**（分頁本身就是選單）；存檔管理與命運抉擇仍預設收合。
+- **新增面板**：放進 `#game-container` 並加上 `data-tab="分頁名"` 即可。
+
+### 其他
+- 標題畫面期間 `body.title-mode` 會隱藏 `#app-stage`。`main.js` 的 `window.onload` 先 `initHomeUi()` 再 `initTitleScreen()`。
+- `updateUI()` 結尾呼叫 `updateHomeHud()`，所以 HUD 與原面板永遠同步。
+- 彈出視窗（`.modal-bg`，z-index 100）仍是全螢幕，蓋在舞台上方。
+- 背景圖只有 704 寬，在高解析手機上會略微放大；若之後有更大的同構圖，直接替換並依上方警語重新量座標即可。

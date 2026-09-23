@@ -182,6 +182,7 @@ function resetGameCompletely() {
 
 function saveLocal() {
     if (gameOver) return;   // 壽元耗盡後存檔已清除，不可再寫回
+    if (saveLoadFailed) return;   // 讀檔失敗期間禁止寫入，保護原本的存檔
     player.lastSaveTime = Date.now();
     localStorage.setItem('xiuxian_save', JSON.stringify(player));
     addLog("💾 遊戲存檔成功！", "system");
@@ -246,17 +247,98 @@ function applySaveData(data) {
     updateSectFacilitiesUI();
 }
 
+// ---- 讀檔失敗保護 ----
+// 本地已有存檔但讀取出錯時設為 true：saveLocal() 一律不寫入，避免「開新角色／自動存檔」覆蓋掉原本的存檔。
+// ⚠️ 舊版把任何錯誤都報成「格式損毀」並直接跳性別選擇，選了就會覆蓋原存檔。實際最常見的原因不是存檔壞掉，
+//    而是更新後瀏覽器快取到「舊 index.html＋新 JS」，畫面元素對不上而拋錯（見 ARCHITECTURE.md 第 30 節）。
+let saveLoadFailed = false;
+let failedRawSave = null;
+const SAVE_BACKUP_KEY = 'xiuxian_save_backup';
+
 function loadLocal() {
     let save = localStorage.getItem('xiuxian_save');
     if (!save) return false;
+
+    let data;
     try {
-        applySaveData(JSON.parse(save));
-        addLog("📂 成功讀取本地存檔！", "system");
-        return true;
-    } catch(e) {
-        alert("本地存檔格式損毀！");
+        data = JSON.parse(save);
+    } catch (e) {
+        reportLoadFailure(save, `存檔內容無法解析（${e.message}）`, false);
         return false;
     }
+    try {
+        applySaveData(data);
+    } catch (e) {
+        console.error("讀檔失敗：", e);
+        // 找不到畫面元素（null）幾乎都是新舊版本檔案混用，重新整理即可
+        let versionMismatch = e instanceof TypeError && /null|undefined/.test(e.message);
+        reportLoadFailure(save, `${e.name}: ${e.message}`, versionMismatch);
+        return false;
+    }
+    saveLoadFailed = false;
+    addLog("📂 成功讀取本地存檔！", "system");
+    return true;
+}
+
+// 備份原始存檔、封鎖寫入，並顯示讀檔失敗視窗（不用 alert/confirm，App 內建瀏覽器可能擋掉）
+function reportLoadFailure(raw, reason, versionMismatch) {
+    saveLoadFailed = true;
+    failedRawSave = raw;
+    try {
+        localStorage.setItem(SAVE_BACKUP_KEY, raw);
+        localStorage.setItem(SAVE_BACKUP_KEY + '_at', String(Date.now()));
+    } catch (e) { console.error("備份存檔失敗：", e); }
+
+    let hint = versionMismatch
+        ? "這通常是遊戲剛更新、瀏覽器還留著舊版檔案造成的，存檔本身沒有問題。請按「重新整理再試一次」；若仍失敗，電腦請按 Ctrl+F5，手機請清除此網站的快取後再開啟。"
+        : "存檔內容可能不完整。請先「顯示原始存檔代碼」複製保存，再回報給開發者協助救回。";
+
+    const modal = document.getElementById('load-error-modal');
+    if (!modal) {
+        // 快取到舊版 index.html 時頁面上沒有這個視窗：退回用 alert，寫入一樣被封鎖
+        alert(`【存檔讀取失敗】\n你的存檔沒有被刪除，也已另外備份。\n\n錯誤原因：${reason}\n\n${hint}\n\n在問題排除前，本次遊戲不會寫入存檔。`);
+        return;
+    }
+    document.getElementById('load-error-reason').innerText = `錯誤原因：${reason}`;
+    document.getElementById('load-error-hint').innerText = hint;
+    document.getElementById('load-error-raw').style.display = 'none';
+    resetAbandonConfirm();
+    modal.style.display = 'flex';
+}
+
+// 以新網址重新載入，避免拿到快取的舊 index.html
+function retryLoadAfterFailure() {
+    location.href = location.pathname + '?reload=' + Date.now();
+}
+
+function showRawSaveForCopy() {
+    const box = document.getElementById('load-error-raw');
+    box.value = failedRawSave || localStorage.getItem(SAVE_BACKUP_KEY) || '';
+    box.style.display = 'block';
+    box.focus();
+    box.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    addLog("📋 已顯示原始存檔代碼（若沒有自動複製，請長按文字框全選複製）。", "system");
+}
+
+// 放棄存檔：按兩次才生效（第一次變成確認狀態），備份保留在 xiuxian_save_backup
+let abandonArmed = false;
+function resetAbandonConfirm() {
+    abandonArmed = false;
+    const btn = document.getElementById('load-error-newgame');
+    if (btn) btn.innerText = "🗑️ 放棄這個存檔，開新角色";
+}
+function abandonSaveAndStartNew() {
+    const btn = document.getElementById('load-error-newgame');
+    if (!abandonArmed) {
+        abandonArmed = true;
+        btn.innerText = "⚠️ 再按一次確認：開新角色（原存檔保留在備份中，但目前進度會被新角色取代）";
+        return;
+    }
+    saveLoadFailed = false;
+    player = JSON.parse(DEFAULT_PLAYER_JSON);
+    closeModal('load-error-modal');
+    if (!gameStarted) document.getElementById('gender-modal').style.display = 'flex';
 }
 
 // 「命運與系統 → 讀取本地存檔」按鈕：沒有存檔時也要給回應（loadLocal 本身在開場時需保持安靜）

@@ -494,9 +494,169 @@
             .auto-settings { font-size: 0.8em; }
             .auto-settings input[type="number"] { width: 46px; }
         }
+
+        /* ==================== 洞府主畫面（第 31 節）====================
+           --u = 舞台寬度 ÷ 704（背景圖原始寬度），所有字級與間距用 calc(var(--u) * 圖上像素) 等比縮放。
+           疊加元素的 left/top/width/height 一律用「圖上座標 ÷ 704 或 1520」的百分比，才能跟圖上畫好的框對齊。 */
+        html, body { height: 100%; }
+        body {
+            padding: 0; margin: 0; overflow: hidden;
+            display: block;
+            background: #0b0f19;
+        }
+        /* 電腦版（寬螢幕）兩側：同一張圖放大模糊當底 */
+        body::before {
+            content: ""; position: fixed; inset: -40px; z-index: 0;
+            background: url("images/home-bg.jpg") center / cover no-repeat;
+            filter: blur(24px) brightness(0.45);
+        }
+        #app-stage {
+            --u: 0.55px;
+            position: fixed; z-index: 1;
+            left: 50%; top: 50%; transform: translate(-50%, -50%);
+            width: 390px; height: 842px;     /* 實際尺寸由 layoutStage() 設定 */
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+            font-size: calc(var(--u) * 22);
+        }
+        body.title-mode #app-stage { display: none; }
+        #stage-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: fill; user-select: none; pointer-events: none; }
+
+        /* ---- HUD ---- */
+        #hud-avatar {
+            position: absolute; left: 3.98%; top: 2.24%; width: 17.61%; height: 8.16%;
+            border-radius: 50%; object-fit: cover; object-position: top;
+        }
+        #hud-name {
+            position: absolute; left: 22.6%; top: 3.1%; width: 28.4%; height: 7%;
+            display: flex; flex-direction: column; justify-content: center; gap: calc(var(--u) * 3);
+            padding-left: calc(var(--u) * 10); box-sizing: border-box;
+            color: #f5e6c4; text-shadow: 0 1px 3px #000;
+        }
+        #hud-player-name { font-size: calc(var(--u) * 26); font-weight: bold; color: #fde68a; }
+        .hud-realm {
+            align-self: flex-start;
+            font-size: calc(var(--u) * 17); padding: 0 calc(var(--u) * 10);
+            border: 1px solid rgba(240, 213, 136, 0.6); border-radius: calc(var(--u) * 12);
+            background: rgba(120, 53, 15, 0.55); color: #fcd34d;
+        }
+        .hud-level-line { display: flex; align-items: center; gap: calc(var(--u) * 6); font-size: calc(var(--u) * 17); }
+        .hud-mini-bar { flex: 1; height: calc(var(--u) * 7); background: rgba(0,0,0,0.6); border-radius: 4px; overflow: hidden; margin-right: calc(var(--u) * 10); }
+        #hud-level-bar { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #f59e0b, #fde68a); }
+        .hud-power { font-size: calc(var(--u) * 15); color: #cbd5e1; }
+        .hud-pill-text {
+            position: absolute; height: 2.37%; display: flex; align-items: center;
+            font-size: calc(var(--u) * 21); font-weight: bold; color: #fef3c7; text-shadow: 0 1px 3px #000;
+            white-space: nowrap; overflow: hidden;
+        }
+        #hud-coins { left: 61.2%; top: 2.76%; width: 14.5%; }
+        #hud-rep { left: 83.9%; top: 2.76%; width: 14.2%; color: #c4b5fd; }
+        #hud-stats {
+            position: absolute; left: 55.3%; top: 5.8%; width: 43.3%;
+            padding: calc(var(--u) * 8) calc(var(--u) * 12); box-sizing: border-box;
+            background: linear-gradient(180deg, rgba(10, 14, 26, 0.82), rgba(10, 14, 26, 0.68));
+            border: 1px solid rgba(240, 213, 136, 0.45); border-radius: calc(var(--u) * 14);
+            color: #e5e7eb; font-size: calc(var(--u) * 16);
+        }
+        .hud-bar-row { display: flex; align-items: center; gap: calc(var(--u) * 6); margin: calc(var(--u) * 4) 0; }
+        .hud-bar-icon { width: calc(var(--u) * 22); text-align: center; }
+        .hud-bar-label { width: calc(var(--u) * 36); color: #fcd34d; }
+        .hud-bar { position: relative; flex: 1; height: calc(var(--u) * 20); background: rgba(0,0,0,0.65); border-radius: calc(var(--u) * 10); overflow: hidden; border: 1px solid rgba(255,255,255,0.12); }
+        .hud-bar > span { display: block; height: 100%; width: 0; }
+        .hud-bar.hp > span { background: linear-gradient(90deg, #7f1d1d, #ef4444); }
+        .hud-bar.mp > span { background: linear-gradient(90deg, #1e3a8a, #3b82f6); }
+        .hud-bar.exp > span { background: linear-gradient(90deg, #92400e, #f59e0b); }
+        .hud-bar > em { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-style: normal; font-size: calc(var(--u) * 14); text-shadow: 0 1px 2px #000; white-space: nowrap; }
+        .hud-rate { text-align: right; margin-top: calc(var(--u) * 4); color: #cbd5e1; }
+        .hud-rate b { color: #4ade80; }
+
+        /* ---- 洞府熱點與牌匾 ---- */
+        #home-hotspots { position: absolute; inset: 0; pointer-events: none; }
+        body:not([data-tab="home"]) #home-hotspots { display: none; }
+        .hotspot {
+            position: absolute; pointer-events: auto; padding: 0; margin: 0;
+            background: transparent; border: none; border-radius: 12px; cursor: pointer;
+            box-shadow: none; transform: none;
+        }
+        .hotspot:hover, .hotspot:focus-visible { background: rgba(253, 230, 138, 0.10); box-shadow: 0 0 18px rgba(253, 230, 138, 0.35); transform: none; outline: none; }
+        .plaque {
+            position: absolute; writing-mode: vertical-rl; letter-spacing: calc(var(--u) * 4);
+            padding: calc(var(--u) * 10) calc(var(--u) * 5);
+            font-size: calc(var(--u) * 21); font-weight: bold; color: #fde68a; white-space: nowrap;
+            background: linear-gradient(180deg, rgba(40, 24, 10, 0.92), rgba(20, 14, 8, 0.92));
+            border: 1px solid #b08d4a; border-radius: calc(var(--u) * 6);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+        }
+        .plaque-left { right: 100%; top: 10%; margin-right: calc(var(--u) * 4); }
+        .plaque-right { left: 100%; top: 0; margin-left: calc(var(--u) * 4); }
+        .plaque-top { right: 0; bottom: 100%; margin-bottom: calc(var(--u) * 4); }
+        .plaque.alert::after {
+            content: ""; position: absolute; top: calc(var(--u) * -5); right: calc(var(--u) * -5);
+            width: calc(var(--u) * 12); height: calc(var(--u) * 12); border-radius: 50%; background: #ef4444;
+            box-shadow: 0 0 8px #ef4444;
+        }
+
+        /* ---- 圖上畫好的按鈕：透明點擊區 ---- */
+        .stage-btn, .nav-btn {
+            position: absolute; padding: 0; margin: 0; background: transparent; border: none;
+            border-radius: 50%; cursor: pointer; box-shadow: none; transform: none;
+        }
+        .stage-btn:hover, .stage-btn:focus-visible, .nav-btn:hover, .nav-btn:focus-visible {
+            background: rgba(253, 230, 138, 0.12); box-shadow: 0 0 16px rgba(253, 230, 138, 0.4); transform: none; outline: none;
+        }
+        #bottom-nav { position: absolute; inset: 0; pointer-events: none; z-index: 6; }
+        .nav-btn { pointer-events: auto; border-radius: calc(var(--u) * 16); }
+        .nav-btn.active { box-shadow: inset 0 0 0 2px rgba(253, 230, 138, 0.75), 0 0 18px rgba(253, 230, 138, 0.55); background: rgba(253, 230, 138, 0.08); }
+        .nav-btn.nav-home { border-radius: 50%; }
+
+        /* ---- 分頁內容區：放原本的各個面板 ---- */
+        #tab-sheet {
+            position: absolute; left: 1.7%; top: 13.95%; width: 96.6%; height: 76.3%;
+            display: none; flex-direction: column; z-index: 5;
+            background: rgba(10, 14, 24, 0.94);
+            border: 1px solid rgba(240, 213, 136, 0.5); border-radius: calc(var(--u) * 18);
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            font-size: 14px;
+        }
+        body:not([data-tab="home"]) #tab-sheet { display: flex; }
+        .sheet-head {
+            display: flex; align-items: center; justify-content: center; position: relative;
+            padding: 8px; border-bottom: 1px solid rgba(240, 213, 136, 0.3);
+            color: #fde68a; font-weight: bold; letter-spacing: 4px; font-size: 1.05em;
+        }
+        .sheet-close {
+            position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+            width: auto; padding: 2px 10px; margin: 0; background: transparent; color: #fde68a;
+            border: 1px solid rgba(240, 213, 136, 0.5); border-radius: 6px;
+        }
+        .sheet-close:hover { transform: translateY(-50%); }
+        #sheet-body { flex: 1; overflow-y: auto; padding: 10px; -webkit-overflow-scrolling: touch; }
+        #tab-sheet #game-container {
+            display: flex; flex-direction: column; max-width: none; width: 100%; margin: 0; gap: 0;
+        }
+        body[data-tab="battle"] #tab-sheet #battle-panel { order: -1; }   /* 戰鬥分頁：戰場實況在地圖之前 */
+        #tab-sheet #game-container > [data-tab] { display: none; margin-bottom: 12px; }
+        body[data-tab="cultivate"] #tab-sheet #game-container > [data-tab~="cultivate"],
+        body[data-tab="battle"]    #tab-sheet #game-container > [data-tab~="battle"],
+        body[data-tab="sect"]      #tab-sheet #game-container > [data-tab~="sect"],
+        body[data-tab="world"]     #tab-sheet #game-container > [data-tab~="world"] { display: block; }
+        body[data-tab="cultivate"] #tab-sheet #game-container > #header { display: grid; }
+        /* 分頁內寬度等同手機：狀態列改單欄、卡片雙欄 */
+        #tab-sheet #header { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        #tab-sheet .grid-container { grid-template-columns: repeat(auto-fill, minmax(135px, 1fr)); }
+        #tab-sheet #log { height: 260px; }
+
+        /* ---- 「興建中」等提示 ---- */
+        #stage-toast {
+            position: absolute; left: 50%; top: 45%; transform: translate(-50%, -50%);
+            z-index: 20; pointer-events: none; opacity: 0; transition: opacity 0.25s;
+            padding: 10px 18px; border-radius: 10px; font-size: 15px; white-space: nowrap;
+            background: rgba(20, 14, 8, 0.92); color: #fde68a; border: 1px solid #b08d4a;
+        }
+        #stage-toast.show { opacity: 1; }
     </style>
 </head>
-<body class="title-mode">
+<body class="title-mode" data-tab="home">
 
 <!-- 遊戲主頁（標題畫面）：滿版封面，唯一進入點是圖片中央光環的「進入世界」 -->
 <div id="title-screen">
@@ -507,6 +667,23 @@
     </picture>
     <!-- 熱區位置由 title-screen.js 依當前圖片與 cover 裁切比例即時計算，永遠對準光環 -->
     <button id="title-hotspot" onclick="enterWorld()" aria-label="進入世界"></button>
+</div>
+
+<!-- 讀檔失敗：本地已有存檔但讀取出錯時由 save.js 的 reportLoadFailure() 顯示。沒有關閉鈕，必須選一個處理方式；
+     期間 saveLoadFailed = true，saveLocal() 一律不寫入，原始存檔也已備份到 xiuxian_save_backup -->
+<div id="load-error-modal" class="modal-bg">
+    <div class="modal-content" style="max-width: 560px; text-align: center; border-color: #ef4444;">
+        <h2 style="color: #ef4444; margin-top: 0;">⚠️ 存檔讀取失敗</h2>
+        <p style="color: #e5e7eb; font-size: 0.92em;">你的存檔<b>沒有被刪除或覆蓋</b>，並已另外備份一份。</p>
+        <p id="load-error-reason" style="color: #facc15; font-size: 0.85em; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 6px; word-break: break-all;"></p>
+        <p id="load-error-hint" style="color: #9ca3af; font-size: 0.85em;"></p>
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 12px;">
+            <button class="sys-btn" style="border-color: #4ade80; color: #4ade80;" onclick="retryLoadAfterFailure()">🔄 重新整理再試一次（建議）</button>
+            <button class="sys-btn" onclick="showRawSaveForCopy()">📋 顯示原始存檔代碼（複製保存）</button>
+            <textarea id="load-error-raw" inputmode="none" style="display: none; width: 100%; height: 90px; background: #0b0f19; color: #9ca3af; font-size: 0.7em; border-radius: 6px; border: 1px solid var(--panel-border);"></textarea>
+            <button id="load-error-newgame" class="sys-btn" style="border-color: rgba(239,68,68,0.5); color: #ef4444;" onclick="abandonSaveAndStartNew()">🗑️ 放棄這個存檔，開新角色</button>
+        </div>
+    </div>
 </div>
 
 <!-- 開場性別選擇：第一次進入世界（沒有存檔）時由 main.js 的 startGame() 顯示，選完才開始遊戲 -->
@@ -529,8 +706,51 @@
     </div>
 </div>
 
+<!-- ==================== 洞府主畫面（第 31 節）====================
+     #app-stage 依背景圖 images/home-bg.jpg（704×1520）的比例固定縮放，所有疊加元素以「圖片座標 ÷ 圖片尺寸」的 % 定位，
+     任何螢幕都與圖上畫好的框、按鈕對齊。尺寸由 home-ui.js 的 layoutStage() 計算。
+     底部導覽切換 body 的 data-tab：home（洞府，只顯示背景熱點）／cultivate／battle／sect／world（在 #tab-sheet 顯示對應面板） -->
+<div id="app-stage">
+    <img id="stage-bg" src="images/home-bg.jpg" alt="">
+
+    <!-- 頂部 HUD：疊在圖上的頭像框、名字框、兩個資源框內 -->
+    <img id="hud-avatar" alt="">
+    <div id="hud-name">
+        <div class="hud-name-line"><span id="hud-player-name">韓立</span></div>
+        <div id="hud-realm" class="hud-realm">凡人 1階</div>
+        <div class="hud-level-line"><span id="hud-level">Lv.1</span><span class="hud-mini-bar"><span id="hud-level-bar"></span></span></div>
+        <div class="hud-power">戰力 <span id="hud-power">5</span></div>
+    </div>
+    <div id="hud-coins" class="hud-pill-text" title="靈石">0</div>
+    <div id="hud-rep" class="hud-pill-text" title="聲望">0</div>
+    <div id="hud-stats">
+        <div class="hud-bar-row"><span class="hud-bar-icon">❤️</span><span class="hud-bar-label">氣血</span><span class="hud-bar hp"><span id="hud-hp-bar"></span><em id="hud-hp-text">100/100</em></span></div>
+        <div class="hud-bar-row"><span class="hud-bar-icon">💧</span><span class="hud-bar-label">靈力</span><span class="hud-bar mp"><span id="hud-mp-bar"></span><em id="hud-mp-text">100/100</em></span></div>
+        <div class="hud-bar-row"><span class="hud-bar-icon">🔥</span><span class="hud-bar-label">修為</span><span class="hud-bar exp"><span id="hud-exp-bar"></span><em id="hud-exp-text">0%</em></span></div>
+        <div class="hud-rate">修煉效率：<b id="hud-rate">100%</b></div>
+    </div>
+
+    <!-- 洞府：背景建築熱點（牌匾），只在洞府分頁顯示 -->
+    <div id="home-hotspots">
+        <button class="hotspot" style="left:33.38%; top:21.71%; width:23.44%; height:15.13%;" onclick="openAscensionPlatform()"><span id="plaque-ascend" class="plaque plaque-left">升仙台</span></button>
+        <button class="hotspot" style="left:51.14%; top:43.75%; width:15.63%; height:7.57%;" onclick="openActivity('auction')"><span class="plaque plaque-right">領物閣</span></button>
+        <button class="hotspot" style="left:21.31%; top:50.99%; width:24.86%; height:12.17%;" onclick="switchTab('sect')"><span class="plaque plaque-left">宗門</span></button>
+        <button class="hotspot" style="left:66.76%; top:54.93%; width:19.89%; height:6.58%;" onclick="openServantModal()"><span class="plaque plaque-top">僕從小屋</span></button>
+    </div>
+
+    <!-- 圖上已畫好的側邊按鈕：只放透明點擊區 -->
+    <button class="stage-btn" style="left:3.13%; top:68.75%; width:9.94%; height:5.72%;" onclick="openQuestModal()" aria-label="任務"></button>
+    <button class="stage-btn" style="left:3.13%; top:75.66%; width:9.94%; height:5.72%;" onclick="openBagModal()" aria-label="背包"></button>
+    <button class="stage-btn" style="left:3.13%; top:82.57%; width:9.94%; height:5.72%;" onclick="showUnderConstruction('郵件')" aria-label="郵件"></button>
+    <button class="stage-btn" style="left:85.80%; top:76.97%; width:12.22%; height:5.39%;" onclick="openShopModal()" aria-label="特惠商城"></button>
+    <button class="stage-btn" style="left:85.80%; top:83.42%; width:12.22%; height:5.39%;" onclick="showUnderConstruction('充值')" aria-label="充值"></button>
+
+    <!-- 分頁內容區：在底部導覽與頂部 HUD 之間，顯示原本的各個面板（依 data-tab 篩選） -->
+    <div id="tab-sheet">
+        <div class="sheet-head"><span id="sheet-title">修仙</span><button class="sheet-close" onclick="switchTab('home')" aria-label="回到洞府">✕</button></div>
+        <div id="sheet-body">
 <div id="game-container">
-    <div id="header" class="panel">
+    <div id="header" class="panel" data-tab="cultivate">
         <div>
             <div>境界：<span id="realm-display" style="color: var(--accent); font-weight: bold;">凡人 1階</span></div>
             <div style="margin-top: 5px;">等級：<span id="level-display" style="color: var(--accent);">Lv.1 (0.0%)</span></div>
@@ -561,8 +781,7 @@
         <div id="combat-status">當前狀態：在宗門 靜修 (安全區)</div>
     </div>
 
-    <div>
-        <div class="panel" style="margin-bottom: 20px;">
+        <div class="panel" data-tab="cultivate" style="margin-bottom: 20px;">
             <div class="panel-title">
                 修士道號：<span id="player-name-display" style="color: var(--accent);">韓立</span>
             </div>
@@ -624,12 +843,12 @@
             </div>
         </div>
 
-        <div class="panel">
+        <div class="panel" data-tab="world battle">
             <div class="panel-title">修仙地圖</div>
-            <button class="sys-btn drawer-toggle" onclick="toggleDrawer('drawer-map', this)">
+            <button class="sys-btn drawer-toggle open" onclick="toggleDrawer('drawer-map', this)">
                 🗺️ 展開選單 <span class="drawer-arrow">▾</span>
             </button>
-            <div id="drawer-map" class="drawer-body">
+            <div id="drawer-map" class="drawer-body open">
                 <button class="sys-btn" onclick="openMapCategoryModal(0)">📍 第一區：宗門 (安全區)</button>
                 <button class="sys-btn" onclick="openMapCategoryModal(1)">📍 第二區：野外歷練區</button>
                 <button class="sys-btn" onclick="openMapCategoryModal(2)">📍 第三區：開放世界大區域</button>
@@ -637,10 +856,9 @@
                 <button class="sys-btn" onclick="openMapCategoryModal(4)">📍 第五區：諸天至高戰場</button>
             </div>
         </div>
-    </div>
 
-    <!-- 中間欄位：包含玩家與怪物圖像的戰鬥實況 -->
-    <div class="panel">
+    <!-- 戰鬥分頁：玩家與怪物圖像的戰鬥實況＋渡劫＋日誌 -->
+    <div id="battle-panel" class="panel" data-tab="battle">
         <div class="panel-title">⚔️ 仙魔戰場實況</div>
         <div id="combat-visual-panel">
             <div class="battle-view-grid">
@@ -672,12 +890,12 @@
         <div id="log"></div>
     </div>
 
-    <div class="panel">
+    <div class="panel" data-tab="sect">
         <div class="panel-title">宗門與設施</div>
-        <button class="sys-btn drawer-toggle" onclick="toggleDrawer('drawer-facility', this)">
+        <button class="sys-btn drawer-toggle open" onclick="toggleDrawer('drawer-facility', this)">
             ⛩️ 展開選單 <span class="drawer-arrow">▾</span>
         </button>
-        <div id="drawer-facility" class="drawer-body">
+        <div id="drawer-facility" class="drawer-body open">
         <button class="sect-btn" onclick="openSectModal()">⛩️ 尋訪仙門 (加入/切換)</button>
         <button class="shop-btn" onclick="openShopModal()">💊 丹藥堂 (買賣丹藥)</button>
         <button class="sys-btn" style="border-color: rgba(250, 204, 21, 0.4); color: #facc15;" onclick="openBagModal()">🎒 修仙背包 (道具/裝備)</button>
@@ -693,13 +911,16 @@
         <button id="btn-forbidden-alchemy" class="shop-btn" style="border-color:#f472b6; color:#f472b6; display: none;" onclick="openAlchemyModal()">🧪 煉丹房 (丹藥煉製)</button>
         <button id="btn-sect-talisman" class="equip-btn" style="border-color:#a78bfa; color:#a78bfa; display: none;" onclick="openTalismanModal()">🔮 符寶坊 (煉製與鑲嵌)</button>
         </div>
+    </div>
 
+    <!-- 世界分頁：活動＋命運與系統（地圖面板也掛在世界分頁） -->
+    <div class="panel" data-tab="world">
         <!-- 活動：按鈕與解鎖狀態由 activity.js 依聲望/境界即時產生 -->
-        <div class="panel-title" style="margin-top: 20px;">活動</div>
-        <button class="sys-btn drawer-toggle" style="border-color: rgba(34,211,238,0.45); color: #22d3ee;" onclick="toggleDrawer('drawer-activity', this)">
+        <div class="panel-title">活動</div>
+        <button class="sys-btn drawer-toggle open" style="border-color: rgba(34,211,238,0.45); color: #22d3ee;" onclick="toggleDrawer('drawer-activity', this)">
             🎪 展開選單 <span class="drawer-arrow">▾</span>
         </button>
-        <div id="drawer-activity" class="drawer-body">
+        <div id="drawer-activity" class="drawer-body open">
             <div id="activity-list"></div>
         </div>
 
@@ -730,6 +951,20 @@
         </div>
     </div>
 </div>
+        </div><!-- /#sheet-body -->
+    </div><!-- /#tab-sheet -->
+
+    <!-- 底部導覽（圖上已畫好圖示，這裡是透明點擊區＋選中光暈） -->
+    <nav id="bottom-nav">
+        <button class="nav-btn" data-nav="cultivate" style="left:2.84%; top:90.66%; width:16.34%; height:8.68%;" onclick="switchTab('cultivate')" aria-label="修仙"></button>
+        <button class="nav-btn" data-nav="battle" style="left:21.59%; top:90.66%; width:16.34%; height:8.68%;" onclick="switchTab('battle')" aria-label="戰鬥"></button>
+        <button class="nav-btn nav-home" data-nav="home" style="left:40.91%; top:88.29%; width:18.47%; height:11.05%;" onclick="switchTab('home')" aria-label="洞府"></button>
+        <button class="nav-btn" data-nav="sect" style="left:62.22%; top:90.66%; width:16.34%; height:8.68%;" onclick="switchTab('sect')" aria-label="宗門"></button>
+        <button class="nav-btn" data-nav="world" style="left:81.25%; top:90.66%; width:16.34%; height:8.68%;" onclick="switchTab('world')" aria-label="世界"></button>
+    </nav>
+
+    <div id="stage-toast"></div>
+</div><!-- /#app-stage -->
 
 <!-- 彈出視窗群組 -->
 <!-- 修改道號（player-profile.js，取代舊版 prompt()） -->
@@ -1105,53 +1340,56 @@
     載入順序具有依賴性（設定資料 -> 執行狀態 -> 功能模組 -> 進入點），請勿任意調換。
     詳細的檔案關聯說明請見 ARCHITECTURE.md。
 -->
-<script src="data/config-realms.js"></script>
-<script src="data/config-level.js"></script>
-<script src="data/config-lifespan.js"></script>
-<script src="data/config-maps.js"></script>
-<script src="data/config-sects.js"></script>
-<script src="data/config-lingbao.js"></script>
-<script src="data/config-shop.js"></script>
-<script src="data/config-beasts.js"></script>
-<script src="data/config-servants.js"></script>
-<script src="data/config-equipment.js"></script>
-<script src="data/config-tribulation.js"></script>
-<script src="data/config-quests.js"></script>
-<script src="data/config-activities.js"></script>
-<script src="data/config-daily-quests.js"></script>
-<script src="data/config-elements.js"></script>
-<script src="data/config-merit.js"></script>
-<script src="data/config-talisman.js"></script>
-<script src="data/state.js"></script>
-<script src="data/stats.js"></script>
-<script src="data/elements.js"></script>
-<script src="data/ui.js"></script>
-<script src="data/map.js"></script>
-<script src="data/combat.js"></script>
-<script src="data/leveling.js"></script>
-<script src="data/lifespan.js"></script>
-<script src="data/tribulation.js"></script>
-<script src="data/sect.js"></script>
-<script src="data/shop.js"></script>
-<script src="data/bag.js"></script>
-<script src="data/equipment.js"></script>
-<script src="data/lingbao-shop.js"></script>
-<script src="data/servant.js"></script>
-<script src="data/quest.js"></script>
-<script src="data/activity.js"></script>
-<script src="data/daily-quest.js"></script>
-<script src="data/auction.js"></script>
-<script src="data/merit.js"></script>
-<script src="data/talisman.js"></script>
-<script src="data/field.js"></script>
-<script src="data/beast-combat.js"></script>
-<script src="data/beast.js"></script>
-<script src="data/library.js"></script>
-<script src="data/alchemy.js"></script>
-<script src="data/player-profile.js"></script>
-<script src="data/save.js"></script>
-<script src="data/title-screen.js"></script>
-<script src="data/main.js"></script>
+<!-- ⚠️ 版本號 ?v=：每次發佈（推上 GitHub Pages）前要把所有 ?v= 改成新的值（全部取代即可）。
+     GitHub Pages 會快取檔案約 10 分鐘，沒改版本號時玩家可能拿到「舊 index.html＋新 JS」而讀檔失敗。見 ARCHITECTURE.md 第 30 節 -->
+<script src="data/config-realms.js?v=20260924a"></script>
+<script src="data/config-level.js?v=20260924a"></script>
+<script src="data/config-lifespan.js?v=20260924a"></script>
+<script src="data/config-maps.js?v=20260924a"></script>
+<script src="data/config-sects.js?v=20260924a"></script>
+<script src="data/config-lingbao.js?v=20260924a"></script>
+<script src="data/config-shop.js?v=20260924a"></script>
+<script src="data/config-beasts.js?v=20260924a"></script>
+<script src="data/config-servants.js?v=20260924a"></script>
+<script src="data/config-equipment.js?v=20260924a"></script>
+<script src="data/config-tribulation.js?v=20260924a"></script>
+<script src="data/config-quests.js?v=20260924a"></script>
+<script src="data/config-activities.js?v=20260924a"></script>
+<script src="data/config-daily-quests.js?v=20260924a"></script>
+<script src="data/config-elements.js?v=20260924a"></script>
+<script src="data/config-merit.js?v=20260924a"></script>
+<script src="data/config-talisman.js?v=20260924a"></script>
+<script src="data/state.js?v=20260924a"></script>
+<script src="data/stats.js?v=20260924a"></script>
+<script src="data/elements.js?v=20260924a"></script>
+<script src="data/ui.js?v=20260924a"></script>
+<script src="data/map.js?v=20260924a"></script>
+<script src="data/combat.js?v=20260924a"></script>
+<script src="data/leveling.js?v=20260924a"></script>
+<script src="data/lifespan.js?v=20260924a"></script>
+<script src="data/tribulation.js?v=20260924a"></script>
+<script src="data/sect.js?v=20260924a"></script>
+<script src="data/shop.js?v=20260924a"></script>
+<script src="data/bag.js?v=20260924a"></script>
+<script src="data/equipment.js?v=20260924a"></script>
+<script src="data/lingbao-shop.js?v=20260924a"></script>
+<script src="data/servant.js?v=20260924a"></script>
+<script src="data/quest.js?v=20260924a"></script>
+<script src="data/activity.js?v=20260924a"></script>
+<script src="data/daily-quest.js?v=20260924a"></script>
+<script src="data/auction.js?v=20260924a"></script>
+<script src="data/merit.js?v=20260924a"></script>
+<script src="data/talisman.js?v=20260924a"></script>
+<script src="data/field.js?v=20260924a"></script>
+<script src="data/beast-combat.js?v=20260924a"></script>
+<script src="data/beast.js?v=20260924a"></script>
+<script src="data/library.js?v=20260924a"></script>
+<script src="data/alchemy.js?v=20260924a"></script>
+<script src="data/player-profile.js?v=20260924a"></script>
+<script src="data/save.js?v=20260924a"></script>
+<script src="data/home-ui.js?v=20260924a"></script>
+<script src="data/title-screen.js?v=20260924a"></script>
+<script src="data/main.js?v=20260924a"></script>
 
 </body>
 </html>

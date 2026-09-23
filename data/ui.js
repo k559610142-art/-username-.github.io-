@@ -187,6 +187,7 @@ function updateUI() {
     renderSkillList();
     updateStudyCountsUI();
     updateCombatVisualPanel();
+    updateHomeHud();   // 洞府主畫面的 HUD（home-ui.js）
 }
 
 // 修為圓滿時顯示渡劫按鈕；渡劫進行中則改為狀態提示並鎖住按鈕
