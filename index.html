@@ -294,6 +294,7 @@
             background: rgba(0, 0, 0, 0.22);
         }
         .drawer-body.open { display: block; }
+        .library-drawer-toggle { width: 100%; margin: 12px 0 8px; font-size: 1.05em; border-color: rgba(192, 132, 252, 0.6); color: #c084fc; }
 
         /* ========== 依品級批次刪除（背包裝備 / 僕從） ========== */
         .bulk-bar {
@@ -904,8 +905,12 @@
 <div id="library-modal" class="modal-bg">
     <div class="modal-content" style="border-color: #c084fc;">
         <h2 style="text-align: center; color: #c084fc; margin-top: 0;">📚 宗門 - 藏書閣</h2>
-        <p style="text-align: center; color: #9ca3af; font-size: 0.9em;">消耗【武學積分】參悟上古古籍，永久提升屬性！（每種書籍學習上限 100 次）</p>
-        <h3 style="text-align: center; color: #c084fc; margin: 20px 0 4px;">📖 第一階段・四維古籍</h3>
+        <p style="text-align: center; color: #9ca3af; font-size: 0.9em;">參悟上古古籍，永久提升修為！點選下方階段展開可學習的秘笈。</p>
+        <button class="sys-btn drawer-toggle library-drawer-toggle" onclick="toggleDrawer('drawer-library-1', this)">
+            📖 第一階段・四維古籍 <span class="drawer-arrow">▾</span>
+        </button>
+        <div id="drawer-library-1" class="drawer-body">
+        <p style="text-align: center; color: #9ca3af; font-size: 0.85em; margin: 4px 0;">消耗【武學積分】永久提升四維（每種書籍學習上限 100 次）</p>
         <div class="grid-container" style="margin-top: 12px;">
             <div class="card">
                 <h3>《力道真解》</h3>
@@ -952,9 +957,14 @@
                 </div>
             </div>
         </div>
-        <h3 style="text-align: center; color: #c084fc; margin: 28px 0 4px;">📜 第二階段・屬性秘典</h3>
-        <!-- 內容由 library.js 的 renderElementBooks() 產生（解鎖提示、持有資源、八本秘典卡片） -->
-        <div id="element-book-section"></div>
+        </div>
+        <button class="sys-btn drawer-toggle library-drawer-toggle" onclick="toggleDrawer('drawer-library-2', this)">
+            📜 第二階段・屬性秘典 <span class="drawer-arrow">▾</span>
+        </button>
+        <div id="drawer-library-2" class="drawer-body">
+            <!-- 內容由 library.js 的 renderElementBooks() 產生（解鎖提示、持有資源、八本秘典卡片） -->
+            <div id="element-book-section"></div>
+        </div>
         <button class="close-btn" onclick="closeModal('library-modal')">離開</button>
     </div>
 </div>

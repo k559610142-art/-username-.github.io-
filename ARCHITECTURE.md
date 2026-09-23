@@ -294,6 +294,8 @@ combatTick() 每秒執行 [combat.js]
 - **抽屜式區塊**：`ui.js` 的 `toggleDrawer(id, btn)` 切換 `.drawer-body.open`。
   「命運與系統」拆成【存檔管理】與【命運抉擇】兩個抽屜，兩者**預設收合**，
   用意是把「轉世輪迴／完全重置」與日常存檔操作隔開，避免誤觸。
+  藏書閣視窗內也用同一套抽屜：「第一階段・四維古籍」(`#drawer-library-1`) 與「第二階段・屬性秘典」(`#drawer-library-2`)，
+  兩者**預設收合**，點選才展開可學習的秘笈；按鈕樣式為 `.library-drawer-toggle`。關閉視窗再開啟會維持上次的展開狀態。
 - **依品級批次刪除**：`ui.js` 的 `renderBulkDeleteBar()` 產生共用工具列，
   搭配 `getCheckedBulkQualities()` / `toggleAllBulkQualities()`。目前兩處使用：
   - 背包裝備 → `bag.js` 的 `bulkDeleteEquipment()`（品級取自 `equipQualities`，**只刪背包內、不動已穿戴的**）
@@ -793,7 +795,7 @@ combatTick() 每秒執行 [combat.js]
   - 各項加成**相乘**（例：本命金＋重擊時 ×1.1×1.1）。本命五行取自 `getPlayerElement()`，沒穿裝備（`null`）則五行秘典不生效。
   - 心魔是鏡像玩家的 `getPlayerCombatAttrs()`，因此也帶相同的秘典加成（渡劫勝負仍由擲骰決定，只影響過程）。
   - 靈寵攻擊不經 `resolveHit()`，不吃秘典加成。
-- **介面**：`index.html` 的 `#library-modal` 分成「第一階段・四維古籍」（靜態 HTML）與「第二階段・屬性秘典」（`#element-book-section`，
+- **介面**：`index.html` 的 `#library-modal` 分成兩個預設收合的抽屜（第 9 節）：「第一階段・四維古籍」（`#drawer-library-1`，靜態 HTML）與「第二階段・屬性秘典」（`#drawer-library-2` 內的 `#element-book-section`，
   由 `renderElementBooks()` 在開啟視窗與每次參悟後重繪，並列出目前持有的武學積分／靈草／靈石）。
   **新增秘典只要在 `elementBooks` 加一筆**；若要新增新的效果類型，需同時在 `getElementBookBonus()` 的預設值與 `resolveHit()` 的套用處加上。
 
