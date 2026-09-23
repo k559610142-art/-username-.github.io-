@@ -1001,7 +1001,7 @@ combatTick() 每秒執行 [combat.js]
 （以 8 種舊存檔形態測試目前程式皆可正常讀取；移除 `#age-display` 即可重現同一錯誤。）
 
 ### 1. 發佈版本號（防止新舊檔案混用）
-- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260924c`）。
+- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260924d`）。
 - **每次推上 GitHub Pages 前，把所有 `?v=` 全部取代成新值**（例：日期＋序號）。新 index.html 會指向新網址的 JS，不會再拿到快取的舊檔。
 - 新增 `data/*.js` 時也要記得帶上 `?v=`。
 
@@ -1072,24 +1072,22 @@ combatTick() 每秒執行 [combat.js]
 
 - **入口**：點洞府左上的頭像（`#hud-avatar`）→ `openAvatarModal()` 開啟 `#avatar-modal`，列出全部頭像（已解鎖／使用中／鎖定與條件、目前進度）。
 - **不分性別**，所有頭像男女修都能用；`player.avatarId = null` 時依性別顯示預設的韓立／南宮婉（`getPlayerAvatar()`）。
-- **解鎖**：`checkAvatarUnlocks()` 由 `updateUI()` 每次呼叫，達成條件就把 id 加進 `player.unlockedAvatars` 並寫一筆日誌；
-  **解鎖後永久保留**（轉世重置境界／等級也不會失去；選用中的頭像也保留）。條件只看「是否達到」，不會扣聲望。
+- **解鎖方式：花靈石購買**。除了預設的韓立／南宮婉，其餘 10 個頭像都是 `unlock: { type: "coins", value: AVATAR_UNLOCK_COINS }`，
+  目前 **每個 100,000 靈石**（`config-avatars.js` 的 `AVATAR_UNLOCK_COINS`，改這一個常數即可全部調價；個別頭像也可寫不同 `value`）。
+  - 在選擇視窗點未解鎖的頭像 → `buyAvatar(id)`：靈石不足會提示；足夠則 `confirm` 後扣款、加進 `player.unlockedAvatars` 並**立即換上**。
+  - 已解鎖的不會重複扣款；**解鎖後永久保留**（轉世也不會失去；選用中的頭像也保留）。
+  - 卡片顯示「💰 100,000 靈石解鎖」，靈石不足時轉紅並註明。
 
-  | 頭像 | id | 解鎖條件 |
-  |---|---|---|
-  | 韓立／南宮婉 | `male` / `female` | 一開始就有 |
-  | 執扇仙子 | `fan-fairy` | 境界達【築基】 |
-  | 琵琶仙子 | `pipa-fairy` | 人物等級 Lv.30 |
-  | 花仙童女 | `flower-girl` | 聲望 1,000 |
-  | 藍衣少年 | `blue-youth` | 境界達【金丹】 |
-  | 星海客 | `starsea` | 聲望 10,000 |
-  | 銀髮劍仙 | `silver-swordswoman` | 境界達【元嬰】 |
-  | 妖妖 | `yaoyao` | 人物等級 Lv.200 |
-  | 羅峰 | `luofeng` | 境界達【化神】 |
-  | 姜太虛 | `jiang-taixu` | 累計渡劫成功 5 次 |
-  | 金龍帝君 | `golden-emperor` | 境界達【仙人初境】 |
+  | 頭像 | id |
+  |---|---|
+  | 韓立／南宮婉（預設，免費） | `male` / `female` |
+  | 執扇仙子、琵琶仙子、花仙童女 | `fan-fairy` / `pipa-fairy` / `flower-girl` |
+  | 藍衣少年、星海客、銀髮劍仙 | `blue-youth` / `starsea` / `silver-swordswoman` |
+  | 妖妖、羅峰、姜太虛、金龍帝君 | `yaoyao` / `luofeng` / `jiang-taixu` / `golden-emperor` |
 
-- **條件類型**（`checkAvatarCondition()`）：`realm`（境界索引）、`level`、`reputation`、`tribulation`。要新增類型時在這個函式加一個 case。
+- **條件類型**（`checkAvatarCondition()`）：`coins`（購買）之外，程式仍支援「達成即自動解鎖」的 `realm`／`level`／`reputation`／`tribulation`，
+  由 `updateUI()` 呼叫的 `checkAvatarUnlocks()` 判定（`coins` 類型會被略過，一定要玩家自己買）。之後想讓特定頭像改回成就解鎖，改該筆的 `unlock` 即可。
+  ※ 改版前曾短暫使用成就解鎖；當時已自動解鎖的頭像記錄在存檔的 `unlockedAvatars`，會維持已解鎖。
 - **新增頭像**：圖片裁成正方形（建議 256×256、臉部置中）放進 `images/avatars/`，在 `config-avatars.js` 的 `avatarList` 加一筆。
   `id` 會寫進存檔，**上線後不要改名**（改名會讓已解鎖／使用中的紀錄失效，退回預設頭像）。
 - **圖片處理紀錄**：`images/avatars/` 的圖是用 .NET System.Drawing 從玩家提供的原圖依臉部位置裁正方形、縮成 256×256（JPEG 品質 90）。

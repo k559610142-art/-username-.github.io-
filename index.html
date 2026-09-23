@@ -541,6 +541,9 @@
         .avatar-card.in-use { border-color: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
         .avatar-card.in-use img { border-color: var(--accent); }
         .avatar-card.locked { cursor: not-allowed; opacity: 0.85; }
+        .avatar-card.buyable { cursor: pointer; }
+        .avatar-card.buyable:hover { border-color: #facc15; }
+        .avatar-status.buyable { color: #facc15; }
         .avatar-card.locked img { filter: grayscale(1) brightness(0.45); }
         .avatar-name { font-weight: bold; font-size: 0.9em; color: #fde68a; }
         .avatar-status { font-size: 0.72em; color: #9ca3af; line-height: 1.35; }
@@ -1124,7 +1127,7 @@
 <div id="avatar-modal" class="modal-bg" onclick="if (event.target === this) closeModal('avatar-modal')">
     <div class="modal-content" style="max-width: 560px; border-color: var(--accent); text-align: center;">
         <h2 style="color: var(--accent); margin-top: 0;">🎭 更換頭像</h2>
-        <p style="color: #9ca3af; font-size: 0.85em;">達成條件即可解鎖，解鎖後永久可用（轉世也不會失去）。<span id="avatar-count"></span></p>
+        <p style="color: #9ca3af; font-size: 0.85em;">點未解鎖的頭像可花費靈石解鎖，解鎖後永久可用（轉世也不會失去）。<span id="avatar-count"></span></p>
         <div id="avatar-list"></div>
         <button class="close-btn" onclick="closeModal('avatar-modal')">離開</button>
     </div>
@@ -1372,56 +1375,56 @@
 -->
 <!-- ⚠️ 版本號 ?v=：每次發佈（推上 GitHub Pages）前要把所有 ?v= 改成新的值（全部取代即可）。
      GitHub Pages 會快取檔案約 10 分鐘，沒改版本號時玩家可能拿到「舊 index.html＋新 JS」而讀檔失敗。見 ARCHITECTURE.md 第 30 節 -->
-<script src="data/config-realms.js?v=20260924c"></script>
-<script src="data/config-level.js?v=20260924c"></script>
-<script src="data/config-lifespan.js?v=20260924c"></script>
-<script src="data/config-maps.js?v=20260924c"></script>
-<script src="data/config-sects.js?v=20260924c"></script>
-<script src="data/config-lingbao.js?v=20260924c"></script>
-<script src="data/config-shop.js?v=20260924c"></script>
-<script src="data/config-beasts.js?v=20260924c"></script>
-<script src="data/config-servants.js?v=20260924c"></script>
-<script src="data/config-equipment.js?v=20260924c"></script>
-<script src="data/config-tribulation.js?v=20260924c"></script>
-<script src="data/config-quests.js?v=20260924c"></script>
-<script src="data/config-activities.js?v=20260924c"></script>
-<script src="data/config-daily-quests.js?v=20260924c"></script>
-<script src="data/config-elements.js?v=20260924c"></script>
-<script src="data/config-merit.js?v=20260924c"></script>
-<script src="data/config-talisman.js?v=20260924c"></script>
-<script src="data/config-avatars.js?v=20260924c"></script>
-<script src="data/state.js?v=20260924c"></script>
-<script src="data/stats.js?v=20260924c"></script>
-<script src="data/elements.js?v=20260924c"></script>
-<script src="data/ui.js?v=20260924c"></script>
-<script src="data/map.js?v=20260924c"></script>
-<script src="data/combat.js?v=20260924c"></script>
-<script src="data/leveling.js?v=20260924c"></script>
-<script src="data/lifespan.js?v=20260924c"></script>
-<script src="data/tribulation.js?v=20260924c"></script>
-<script src="data/sect.js?v=20260924c"></script>
-<script src="data/shop.js?v=20260924c"></script>
-<script src="data/bag.js?v=20260924c"></script>
-<script src="data/equipment.js?v=20260924c"></script>
-<script src="data/lingbao-shop.js?v=20260924c"></script>
-<script src="data/servant.js?v=20260924c"></script>
-<script src="data/quest.js?v=20260924c"></script>
-<script src="data/activity.js?v=20260924c"></script>
-<script src="data/daily-quest.js?v=20260924c"></script>
-<script src="data/auction.js?v=20260924c"></script>
-<script src="data/merit.js?v=20260924c"></script>
-<script src="data/talisman.js?v=20260924c"></script>
-<script src="data/field.js?v=20260924c"></script>
-<script src="data/beast-combat.js?v=20260924c"></script>
-<script src="data/beast.js?v=20260924c"></script>
-<script src="data/library.js?v=20260924c"></script>
-<script src="data/alchemy.js?v=20260924c"></script>
-<script src="data/player-profile.js?v=20260924c"></script>
-<script src="data/save.js?v=20260924c"></script>
-<script src="data/home-ui.js?v=20260924c"></script>
-<script src="data/avatar.js?v=20260924c"></script>
-<script src="data/title-screen.js?v=20260924c"></script>
-<script src="data/main.js?v=20260924c"></script>
+<script src="data/config-realms.js?v=20260924d"></script>
+<script src="data/config-level.js?v=20260924d"></script>
+<script src="data/config-lifespan.js?v=20260924d"></script>
+<script src="data/config-maps.js?v=20260924d"></script>
+<script src="data/config-sects.js?v=20260924d"></script>
+<script src="data/config-lingbao.js?v=20260924d"></script>
+<script src="data/config-shop.js?v=20260924d"></script>
+<script src="data/config-beasts.js?v=20260924d"></script>
+<script src="data/config-servants.js?v=20260924d"></script>
+<script src="data/config-equipment.js?v=20260924d"></script>
+<script src="data/config-tribulation.js?v=20260924d"></script>
+<script src="data/config-quests.js?v=20260924d"></script>
+<script src="data/config-activities.js?v=20260924d"></script>
+<script src="data/config-daily-quests.js?v=20260924d"></script>
+<script src="data/config-elements.js?v=20260924d"></script>
+<script src="data/config-merit.js?v=20260924d"></script>
+<script src="data/config-talisman.js?v=20260924d"></script>
+<script src="data/config-avatars.js?v=20260924d"></script>
+<script src="data/state.js?v=20260924d"></script>
+<script src="data/stats.js?v=20260924d"></script>
+<script src="data/elements.js?v=20260924d"></script>
+<script src="data/ui.js?v=20260924d"></script>
+<script src="data/map.js?v=20260924d"></script>
+<script src="data/combat.js?v=20260924d"></script>
+<script src="data/leveling.js?v=20260924d"></script>
+<script src="data/lifespan.js?v=20260924d"></script>
+<script src="data/tribulation.js?v=20260924d"></script>
+<script src="data/sect.js?v=20260924d"></script>
+<script src="data/shop.js?v=20260924d"></script>
+<script src="data/bag.js?v=20260924d"></script>
+<script src="data/equipment.js?v=20260924d"></script>
+<script src="data/lingbao-shop.js?v=20260924d"></script>
+<script src="data/servant.js?v=20260924d"></script>
+<script src="data/quest.js?v=20260924d"></script>
+<script src="data/activity.js?v=20260924d"></script>
+<script src="data/daily-quest.js?v=20260924d"></script>
+<script src="data/auction.js?v=20260924d"></script>
+<script src="data/merit.js?v=20260924d"></script>
+<script src="data/talisman.js?v=20260924d"></script>
+<script src="data/field.js?v=20260924d"></script>
+<script src="data/beast-combat.js?v=20260924d"></script>
+<script src="data/beast.js?v=20260924d"></script>
+<script src="data/library.js?v=20260924d"></script>
+<script src="data/alchemy.js?v=20260924d"></script>
+<script src="data/player-profile.js?v=20260924d"></script>
+<script src="data/save.js?v=20260924d"></script>
+<script src="data/home-ui.js?v=20260924d"></script>
+<script src="data/avatar.js?v=20260924d"></script>
+<script src="data/title-screen.js?v=20260924d"></script>
+<script src="data/main.js?v=20260924d"></script>
 
 </body>
 </html>

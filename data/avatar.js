@@ -17,6 +17,7 @@ function isAvatarUnlocked(av) {
 function checkAvatarCondition(unlock) {
     let v = unlock.value;
     switch (unlock.type) {
+        case "coins":       return { ok: player.coins >= v, text: `${v.toLocaleString()} 靈石解鎖`, now: `${player.coins.toLocaleString()} 靈石` };
         case "realm":       return { ok: player.realmIndex >= v, text: `境界達【${realms[v]}】`, now: realms[player.realmIndex] };
         case "level":       return { ok: player.level >= v, text: `人物等級 Lv.${v.toLocaleString()}`, now: `Lv.${player.level.toLocaleString()}` };
         case "reputation":  return { ok: (player.reputation || 0) >= v, text: `聲望達 ${v.toLocaleString()}`, now: (player.reputation || 0).toLocaleString() };
@@ -30,6 +31,7 @@ function checkAvatarUnlocks() {
     if (!Array.isArray(player.unlockedAvatars)) player.unlockedAvatars = [];
     avatarList.forEach(av => {
         if (!av.unlock || player.unlockedAvatars.includes(av.id)) return;
+        if (av.unlock.type === "coins") return;   // 靈石解鎖要玩家自己購買（buyAvatar），不自動解鎖
         if (checkAvatarCondition(av.unlock).ok) {
             player.unlockedAvatars.push(av.id);
             addLog(`🎭 解鎖新頭像【${av.name}】！點洞府左上的頭像即可更換。`, "level-up");
@@ -53,20 +55,44 @@ function renderAvatarModal() {
     container.innerHTML = avatarList.map(av => {
         let unlocked = isAvatarUnlocked(av);
         let inUse = current && current.id === av.id;
-        let status;
-        if (inUse) status = `<span class="avatar-status in-use">使用中</span>`;
-        else if (unlocked) status = `<span class="avatar-status">點擊更換</span>`;
-        else {
+        let buyable = !unlocked && av.unlock.type === "coins";
+        let status, action;
+        if (inUse) { status = `<span class="avatar-status in-use">使用中</span>`; action = `onclick="selectAvatar('${av.id}')"`; }
+        else if (unlocked) { status = `<span class="avatar-status">點擊更換</span>`; action = `onclick="selectAvatar('${av.id}')"`; }
+        else if (buyable) {
+            let enough = player.coins >= av.unlock.value;
+            status = `<span class="avatar-status ${enough ? 'buyable' : 'locked'}">💰 ${av.unlock.value.toLocaleString()} 靈石解鎖${enough ? '' : '<br><small>靈石不足</small>'}</span>`;
+            action = `onclick="buyAvatar('${av.id}')"`;
+        } else {
             let c = checkAvatarCondition(av.unlock);
             status = `<span class="avatar-status locked">🔒 ${c.text}<br><small>目前：${c.now}</small></span>`;
+            action = 'disabled';
         }
         return `
-            <button class="avatar-card ${inUse ? 'in-use' : ''} ${unlocked ? '' : 'locked'}" ${unlocked ? `onclick="selectAvatar('${av.id}')"` : 'disabled'}>
+            <button class="avatar-card ${inUse ? 'in-use' : ''} ${unlocked ? '' : 'locked'} ${buyable ? 'buyable' : ''}" ${action}>
                 <img src="${av.img}" alt="${av.name}" style="object-position: ${av.pos};">
                 <span class="avatar-name">${av.name}</span>
                 ${status}
             </button>`;
     }).join("");
+}
+
+// 花靈石解鎖頭像（unlock.type === "coins"）：扣款、永久解鎖並立即換上
+function buyAvatar(id) {
+    let av = avatarList.find(a => a.id === id);
+    if (!av || isAvatarUnlocked(av) || !av.unlock || av.unlock.type !== "coins") return;
+    let cost = av.unlock.value;
+    if (player.coins < cost) {
+        alert(`靈石不足！解鎖頭像【${av.name}】需要 ${cost.toLocaleString()} 靈石（目前 ${player.coins.toLocaleString()}）。`);
+        return;
+    }
+    if (!confirm(`確定花費 ${cost.toLocaleString()} 靈石解鎖頭像【${av.name}】嗎？\n解鎖後永久可用，轉世也不會失去。`)) return;
+
+    player.coins -= cost;
+    if (!Array.isArray(player.unlockedAvatars)) player.unlockedAvatars = [];
+    player.unlockedAvatars.push(av.id);
+    addLog(`🎭 花費 ${cost.toLocaleString()} 靈石解鎖頭像【${av.name}】！`, "level-up");
+    selectAvatar(av.id);   // 解鎖後直接換上（內含重繪、updateUI 與存檔）
 }
 
 function selectAvatar(id) {
