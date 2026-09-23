@@ -69,9 +69,10 @@ function renderBag() {
         player.equipInventory.forEach(eq => {
             parts.push(`
                 <div class="card" style="border-color: var(--equip-color);">
-                    <h3 class="quality-${eq.quality}">${eq.name}</h3>
+                    <h3 class="quality-${eq.quality}">${formatEquipLevel(eq)}${eq.name}</h3>
                     <p style="font-size: 0.85em; color: #9ca3af;">品質: <span class="quality-${eq.quality}">${eq.quality}</span> | 屬性: <span class="elem-${eq.element}">${eq.element}</span></p>
                     <p style="font-size: 0.8em; color: #facc15;">加成: ${formatEquipStats(eq.stats)}</p>
+                    ${formatSockets(eq)}
                     <button class="equip-btn" onclick="equipItem('${eq.id}')">穿戴裝備</button>
                     <button style="border-color: #ef4444; color: #ef4444; margin-top: 5px; background: rgba(239,68,68,0.1);" onclick="deleteEquipFromInventory('${eq.id}')">毀棄裝備</button>
                 </div>`);

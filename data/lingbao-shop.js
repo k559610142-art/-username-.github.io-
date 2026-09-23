@@ -64,14 +64,14 @@ function buyLingbaoItem(itemId) {
     player.lingbaoSold.push(item.id);
 
     if (item.type === 'equip') {
-        player.equipInventory.push({
+        player.equipInventory.push(ensureSockets({   // 靈寶閣寶物皆為橙色：隨機 1~3 孔（神器除外）
             id: Date.now() + "_" + Math.random().toString(36).slice(2, 10),
             name: item.itemData.name,
             category: item.itemData.category,
             quality: item.itemData.quality,
             element: item.itemData.element,
             stats: Object.assign({}, item.itemData.stats)
-        });
+        }));
         addLog(`💎 於靈寶閣兌換戰略級寶物：【${item.name}】！已放入背包。`, "equip");
     } else {
         if (!player.learnedSkills) player.learnedSkills = [];

@@ -13,6 +13,15 @@ const MAX_EQUIP_INVENTORY = 100;
 // 不可在鍛造閣打造的部位（神器只能於靈寶閣高級宗門兌換）
 const NON_FORGEABLE_SLOTS = ["神器"];
 
+// ---- 裝備等級（鍛造閣）----
+// 每件鍛造裝備有等級 eq.level：穿戴需人物等級 ≥ 裝備等級；四維 = 等級 × EQUIP_LEVEL_STAT_MULT × 品質倍率（equipQualities.mult）
+//   例：1000 等橙裝 = 1000 × 5 × 8 = 4 萬（與靈寶閣高級寶物相當）
+// 可鍛造的最高等級依「目前所屬宗門」的階段：初級 100、中級 500、高級 1000
+const EQUIP_LEVELS = [10, 50, 100, 200, 300, 400, 500, 700, 800, 1000];
+const EQUIP_LEVEL_STAT_MULT = 5;
+const FORGE_LEVEL_CAP_BY_TIER = { 1: 100, 2: 500, 3: 1000 };
+const FORGE_COST = 10000;   // 每次鍛造的靈石（不分等級）
+
 // 五行屬性列表（鍛造隨機抽取）
 const wuxingElements = ["金", "木", "水", "火", "土"];
 

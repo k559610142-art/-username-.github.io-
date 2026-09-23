@@ -69,14 +69,15 @@ function rollAuctionEquip() {
         id: Date.now() + "_" + Math.floor(Math.random() * 100000),
         price: Math.floor(800 * qualityObj.mult * (player.realmIndex + 1)),
         sold: false,
-        equip: {
+        // 橙裝上架時就決定孔數（talisman.js），買家看得到
+        equip: ensureSockets({
             id: Date.now() + "_" + Math.floor(Math.random() * 100000),
             name: slotName,
             category: category,
             quality: qualityObj.name,
             element: element,
             stats: stats
-        }
+        })
     };
 }
 
@@ -97,7 +98,7 @@ function buyAuctionItem(itemId) {
 
     player.coins -= item.price;
     item.sold = true;
-    player.equipInventory.push(item.equip);
+    player.equipInventory.push(item.equip);   // 孔位在上架時就決定；更新前上架的舊商品沒有孔，也不補
 
     addLog(`🏺 於千寶閣以 ${item.price.toLocaleString()} 靈石標下【${item.equip.quality}·${item.equip.element}屬性】的【${item.equip.name}】！`, "equip");
     renderAuction();
@@ -153,6 +154,7 @@ function renderAuction() {
                 <h3 class="quality-${eq.quality}">${eq.name}</h3>
                 <p style="font-size: 0.82em; color: #9ca3af;">品質: <span class="quality-${eq.quality}">${eq.quality}</span> | 屬性: <span class="elem-${eq.element}">${eq.element}</span></p>
                 <p style="font-size: 0.78em; color: #facc15;">加成: ${formatEquipStats(eq.stats)}</p>
+                ${formatSockets(eq)}
                 <p style="font-size: 0.85em; color: var(--accent); margin: 6px 0;">價格：${item.price.toLocaleString()} 靈石</p>
                 <button class="shop-btn" ${item.sold ? 'disabled' : ''} onclick="buyAuctionItem('${item.id}')">
                     ${item.sold ? '已售出' : '標下'}

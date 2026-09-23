@@ -2,6 +2,13 @@
 
 const EQUIP_CATEGORY_NAMES = { weapon: '武器', armor: '防具', accessory: '飾品', artifact: '神器' };
 
+// 裝備名稱前的等級標籤（沒有等級的舊裝備不顯示），人物等級不足時標紅
+function formatEquipLevel(eq) {
+    if (!eq || !eq.level) return "";
+    let ok = player.level >= eq.level;
+    return `<span style="color: ${ok ? '#9ca3af' : '#ef4444'}; font-size: 0.8em;">Lv.${eq.level}</span> `;
+}
+
 function initForgeSelect() {
     const select = document.getElementById('forge-type-select');
     select.innerHTML = "";
@@ -31,9 +38,10 @@ function renderLingbaoUI() {
         if (eq) {
             container.innerHTML += `
                 <div class="card" style="border-color: var(--equip-color);">
-                    <h3 class="quality-${eq.quality}">${eq.name}</h3>
+                    <h3 class="quality-${eq.quality}">${formatEquipLevel(eq)}${eq.name}</h3>
                     <p style="font-size:0.85em; color:#9ca3af;">品質：<span class="quality-${eq.quality}">${eq.quality}</span> | 屬性：<span class="elem-${eq.element}">${eq.element}</span></p>
                     <p style="font-size:0.8em; color:#facc15;">加成: ${formatEquipStats(eq.stats)}</p>
+                    ${formatSockets(eq)}
                     <button class="sys-btn" onclick="unequipItem('${eqName}')">卸下裝備</button>
                 </div>`;
         } else {
@@ -152,6 +160,11 @@ function equipItem(equipId) {
 
     let item = player.equipInventory[index];
     let slotName = item.name;
+    // 裝備等級：人物等級不足無法穿戴（舊裝備、千寶閣、靈寶閣沒有 level，不受限）
+    if (item.level && player.level < item.level) {
+        alert(`人物等級不足！【Lv.${item.level} ${item.name}】需要人物等級 ${item.level}（目前 Lv.${player.level}）。`);
+        return;
+    }
     // 舊版靈寶閣「降魔伏虎杖」的部位「杖」不在 equipTypes 內，穿上會破壞靈根判定
     if (!(slotName in equipTypes)) {
         alert(`【${item.name}】的部位已停用，無法穿戴。可在背包中毀棄。`);
@@ -183,20 +196,44 @@ function unequipItem(slotName) {
     updateUI();
 }
 
-function openForgeModal() {
-    if (!checkSectJoined()) return;
-    document.getElementById('forge-modal').style.display = 'flex';
+// 目前所屬宗門可鍛造的最高裝備等級（初級 100／中級 500／高級 1000）
+function getForgeLevelCap() {
+    return FORGE_LEVEL_CAP_BY_TIER[getSectTier()] || FORGE_LEVEL_CAP_BY_TIER[1];
 }
 
-const FORGE_COST = 1000;
+// 鍛造閣的等級下拉選單：只列出目前宗門可打造的等級，預設選最高的
+function renderForgeLevelSelect() {
+    const select = document.getElementById('forge-level-select');
+    if (!select) return;
+    let cap = getForgeLevelCap();
+    let prev = parseInt(select.value);
+    let levels = EQUIP_LEVELS.filter(l => l <= cap);
+    select.innerHTML = levels.map(l => `<option value="${l}">${l} 等（需人物 Lv.${l}）</option>`).join("");
+    select.value = levels.includes(prev) ? prev : levels[levels.length - 1];
+    document.getElementById('forge-level-hint').innerText =
+        `目前宗門（${SECT_TIER_NAMES[getSectTier()]}）最高可鍛造 ${cap} 等；初級宗門 100 等、中級 500 等、高級 1000 等`;
+}
+
+function openForgeModal() {
+    if (!checkSectJoined()) return;
+    renderForgeLevelSelect();
+    document.getElementById('forge-modal').style.display = 'flex';
+}
 
 // qty：1、10 或 'max'（靈石與背包空位允許的最多次數）
 function forgeEquipment(qty = 1) {
     if (player.coins < FORGE_COST) {
-        alert(`靈石不足 ${FORGE_COST}！無法打造裝備。`);
+        alert(`靈石不足 ${FORGE_COST.toLocaleString()}！無法打造裝備。`);
         return;
     }
     if (!hasEquipInventorySpace()) return;
+
+    let level = parseInt(document.getElementById('forge-level-select').value);
+    if (!EQUIP_LEVELS.includes(level) || level > getForgeLevelCap()) {
+        alert(`目前宗門最高只能鍛造 ${getForgeLevelCap()} 等裝備！`);
+        renderForgeLevelSelect();
+        return;
+    }
 
     let affordable = Math.min(Math.floor(player.coins / FORGE_COST), MAX_EQUIP_INVENTORY - player.equipInventory.length);
     let n = resolveBatchCount(qty, affordable, "鍛造");
@@ -204,16 +241,16 @@ function forgeEquipment(qty = 1) {
 
     let name = document.getElementById('forge-type-select').value;
     let results = [];
-    for (let i = 0; i < n; i++) results.push(forgeOneEquipment(name));
+    for (let i = 0; i < n; i++) results.push(forgeOneEquipment(name, level));
 
     addDailyProgress('forge', n);
     if (n === 1) {
         let eq = results[0];
-        addLog(`⚒️ 鍛造閣開爐成功！獲得【${eq.quality}·${eq.element}屬性】的【${eq.name}】！`, "equip");
+        addLog(`⚒️ 鍛造閣開爐成功！獲得【Lv.${level}·${eq.quality}·${eq.element}屬性】的【${eq.name}】！`, "equip");
     } else {
         let byQuality = equipQualities.map(q => [q.name, results.filter(r => r.quality === q.name).length]).filter(([, c]) => c > 0);
         let byElement = wuxingElements.map(e => [e, results.filter(r => r.element === e).length]).filter(([, c]) => c > 0);
-        addLog(`⚒️ 鍛造閣連續開爐 ${n} 次，打造【${name}】×${n}（消耗 ${(n * FORGE_COST).toLocaleString()} 靈石）！`
+        addLog(`⚒️ 鍛造閣連續開爐 ${n} 次，打造【Lv.${level} ${name}】×${n}（消耗 ${(n * FORGE_COST).toLocaleString()} 靈石）！`
             + `品質：${byQuality.map(([q, c]) => `<span class="quality-${q}">${q}</span>×${c}`).join('、')}；`
             + `五行：${byElement.map(([e, c]) => `<span class="elem-${e}">${e}</span>×${c}`).join('、')}`, "equip");
     }
@@ -239,8 +276,8 @@ function generateEquipStats(category, qualityObj, baseBonus) {
     return stats;
 }
 
-// 打造一件裝備並放進背包（扣靈石），回傳新裝備
-function forgeOneEquipment(name) {
+// 打造一件指定等級的裝備並放進背包（扣靈石），回傳新裝備
+function forgeOneEquipment(name, level) {
     player.coins -= FORGE_COST;
     let category = equipTypes[name];
 
@@ -252,18 +289,20 @@ function forgeOneEquipment(name) {
     else if (qRand < 0.65) qualityObj = equipQualities[1];
 
     let elem = wuxingElements[Math.floor(Math.random() * wuxingElements.length)];
-    let statsBonus = generateEquipStats(category, qualityObj, (player.realmIndex + 1) * 10 * qualityObj.mult);
+    let statsBonus = generateEquipStats(category, qualityObj, level * EQUIP_LEVEL_STAT_MULT * qualityObj.mult);
 
     let newEquip = {
         // 連續開爐會在同一毫秒產生多件，隨機段需夠長以免 id 重複
         id: Date.now() + "_" + Math.random().toString(36).slice(2, 10),
         name: name,
         category: category,
+        level: level,          // 裝備等級：穿戴需人物等級 ≥ level
         quality: qualityObj.name,
         element: elem,
         stats: statsBonus
     };
 
+    ensureSockets(newEquip);   // 橙裝隨機 1~3 孔（talisman.js）
     player.equipInventory.push(newEquip);
     return newEquip;
 }

@@ -209,6 +209,11 @@ function migrateRealmExp() {
     if (player.pendingTribulation && player.exp > getNextExp()) player.exp = getNextExp();
 }
 
+// 符寶系統：只補上 talismans 欄位。舊裝備「不補孔」——只有更新後新鍛造／購買／兌換的橙裝才有孔
+function migrateEquipSockets() {
+    if (!player.talismans || typeof player.talismans !== 'object') player.talismans = {};
+}
+
 function applySaveData(data) {
     player = Object.assign(JSON.parse(DEFAULT_PLAYER_JSON), data);
     if (!player.gender) player.gender = "male";
@@ -227,6 +232,7 @@ function applySaveData(data) {
     migrateProgressionFields(data);
     migrateLegacySkills();
     migrateRealmExp();
+    migrateEquipSockets();
 
     // 換了一份存檔，原本進行中的戰鬥、渡劫、身上狀態都不該延續
     enemies = [];

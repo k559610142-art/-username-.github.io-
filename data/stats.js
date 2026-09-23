@@ -11,6 +11,9 @@ function getEquipBonus() {
         if (eq && eq.stats) {
             EQUIP_STAT_KEYS.forEach(k => { bonus[k] += eq.stats[k] || 0; });
         }
+        // 橙裝孔位上鑲嵌的符寶（talisman.js）
+        let socket = getSocketStats(eq);
+        for (let k in socket) bonus[k] = (bonus[k] || 0) + socket[k];
     }
     return bonus;
 }

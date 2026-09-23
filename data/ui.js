@@ -29,10 +29,11 @@ function updateSectFacilitiesUI() {
     const forbiddenLibrary = document.getElementById('btn-forbidden-library');
     const forbiddenForge = document.getElementById('btn-forbidden-forge');
     const forbiddenAlchemy = document.getElementById('btn-forbidden-alchemy');
+    const talismanBtn = document.getElementById('btn-sect-talisman');
 
     // 身在宗門時，所有宗門設施一律開放
     const display = isInSect() ? 'block' : 'none';
-    [questBtn, fieldBtn, beastBtn, forbiddenLingbao, forbiddenLibrary, forbiddenForge, forbiddenAlchemy]
+    [questBtn, fieldBtn, beastBtn, forbiddenLingbao, forbiddenLibrary, forbiddenForge, forbiddenAlchemy, talismanBtn]
         .forEach(btn => { btn.style.display = display; });
 }
 
