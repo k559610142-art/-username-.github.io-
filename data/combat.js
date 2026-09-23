@@ -123,7 +123,7 @@ function combatTick() {
         enemies = enemies.filter(e => {
             if (e.hp <= 0) {
                 expEarned += player.currentMap.expRate * 15;
-                coinsEarned += player.currentMap.diff * (Math.floor(Math.random() * 5) + 8);
+                coinsEarned += rollKillCoins();
                 repEarned += rollKillReputation();
                 killedCount++;
                 return false;
@@ -171,6 +171,13 @@ function combatTick() {
         }
         updateUI();
     }
+}
+
+// 擊殺一隻妖獸的靈石：該地圖的 coins ±20%（數值表與每小時上限見 config-maps.js）
+function rollKillCoins() {
+    let base = player.currentMap.coins;
+    if (typeof base !== 'number') base = player.currentMap.diff * 10;   // 保險：舊資料沒有 coins 時沿用舊公式
+    return Math.floor(base * (0.8 + Math.random() * 0.4));
 }
 
 // 擊殺一隻妖獸的聲望：依所在地圖分類隨機 1 ~ 上限（見 config-maps.js 的 REPUTATION_MAX_BY_MAP_CATEGORY）

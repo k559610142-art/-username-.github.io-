@@ -4,33 +4,42 @@
 // 舊版的「洞府 / 弟子居」「演武學宮」「後山禁地」已合併進來，舊存檔由 save.js 的 migrateCurrentMap() 轉換
 const SECT_MAP_NAME = "宗門";
 
+// ⚠️ coins = 每擊殺一隻的「平均」靈石（實際為 ±20% 隨機，見 combat.js 的 rollKillCoins）。
+//    舊版用 diff × (8~12) 計算，難度一放大靈石就爆量（混沌初界每小時 22 億），因此改為各地圖獨立設定。
+//    換算方式：滿速掛機每小時約 KILLS_PER_HOUR_ESTIMATE 隻 → 每小時靈石 ≈ coins × 1160。
+//    調整靈石產出時只要改這裡的 coins，不要再動 diff（diff 只決定怪物強度與經驗/聲望以外的難度感）。
+const KILLS_PER_HOUR_ESTIMATE = 1160;   // 實測值：波次之間有 5 秒刷新，滿速約每秒 0.32 隻
+
 const maps = [
     { category: "一、宗門 (安全區)", isSafe: true, items: [
-        { name: SECT_MAP_NAME, expRate: 3, diff: 1 }
+        { name: SECT_MAP_NAME, expRate: 3, diff: 1, coins: 0 }
     ]},
     { category: "二、野外歷練 (戰鬥區)", isSafe: false, items: [
-        { name: "靈山大川", expRate: 8, diff: 2 },
-        { name: "深淵險地", expRate: 20, diff: 8 },
-        { name: "上古遺跡", expRate: 50, diff: 25 }
+        //                                                      coins   ≈ 每小時上限
+        { name: "靈山大川", expRate: 8, diff: 2, coins: 20 },        //   2.3 萬
+        { name: "深淵險地", expRate: 20, diff: 8, coins: 80 },       //   9.3 萬
+        { name: "上古遺跡", expRate: 50, diff: 25, coins: 250 }      //  29 萬
     ]},
     { category: "三、開放世界大區域 (高難度戰鬥)", isSafe: false, items: [
-        { name: "天南", expRate: 100, diff: 100 },
-        { name: "亂星海", expRate: 300, diff: 400 },
-        { name: "鬼谷八荒", expRate: 1000, diff: 2000 }
+        { name: "天南", expRate: 100, diff: 100, coins: 1000 },      // 116 萬
+        { name: "亂星海", expRate: 300, diff: 400, coins: 1650 },    // 191 萬（上限 200 萬）
+        { name: "鬼谷八荒", expRate: 1000, diff: 2000, coins: 2450 } // 284 萬（上限 300 萬）
     ]},
     { category: "四、禁區 (仙人解鎖·高難)", isSafe: false, items: [
-        { name: "荒古禁地", expRate: 3000, diff: 5000, minRealm: 10, minStat: 500 },
-        { name: "太初古礦", expRate: 4000, diff: 7000, minRealm: 10, minStat: 500 },
-        { name: "上蒼（葬天島）", expRate: 5000, diff: 10000, minRealm: 10, minStat: 500 },
-        { name: "不死山", expRate: 6000, diff: 13000, minRealm: 10, minStat: 500 },
-        { name: "神墟", expRate: 7000, diff: 16000, minRealm: 10, minStat: 500 },
-        { name: "仙陵", expRate: 8000, diff: 20000, minRealm: 10, minStat: 500 },
-        { name: "冥界", expRate: 9000, diff: 25000, minRealm: 10, minStat: 500 }
+        { name: "荒古禁地", expRate: 3000, diff: 5000, coins: 3350, minRealm: 10, minStat: 500 },      // 389 萬（上限 400 萬）
+        { name: "太初古礦", expRate: 4000, diff: 7000, coins: 4200, minRealm: 10, minStat: 500 },      // 487 萬（上限 500 萬）
+        { name: "上蒼（葬天島）", expRate: 5000, diff: 10000, coins: 6900, minRealm: 10, minStat: 500 }, // 800 萬
+        { name: "不死山", expRate: 6000, diff: 13000, coins: 7300, minRealm: 10, minStat: 500 },       // 847 萬
+        { name: "神墟", expRate: 7000, diff: 16000, coins: 7750, minRealm: 10, minStat: 500 },         // 899 萬
+        { name: "仙陵", expRate: 8000, diff: 20000, coins: 8200, minRealm: 10, minStat: 500 },         // 951 萬
+        { name: "冥界", expRate: 9000, diff: 25000, coins: 8400, minRealm: 10, minStat: 500 }          // 974 萬（上限 1000 萬）
     ]},
+    // 上蒼之後（含諸天戰場）一律維持在每小時 800～1000 萬，不再隨難度放大；
+    // 這幾張圖的差異改由經驗與聲望體現，靈石封頂。
     { category: "五、諸天至高戰場 (頂級戰場·極難)", isSafe: false, items: [
-        { name: "仙界戰場", expRate: 15000, diff: 50000, minRealm: 10, minStat: 5000, isTopBattle: true },
-        { name: "萬界戰場", expRate: 25000, diff: 90000, minRealm: 10, minStat: 5000, isTopBattle: true },
-        { name: "混沌初界", expRate: 50000, diff: 200000, minRealm: 10, minStat: 5000, isTopBattle: true }
+        { name: "仙界戰場", expRate: 15000, diff: 50000, coins: 8400, minRealm: 10, minStat: 5000, isTopBattle: true },   // 974 萬
+        { name: "萬界戰場", expRate: 25000, diff: 90000, coins: 8400, minRealm: 10, minStat: 5000, isTopBattle: true },   // 974 萬
+        { name: "混沌初界", expRate: 50000, diff: 200000, coins: 8400, minRealm: 10, minStat: 5000, isTopBattle: true }   // 974 萬
     ]}
 ];
 
@@ -43,10 +52,15 @@ const REPUTATION_MAX_BY_MAP_CATEGORY = {
     4: 100    // 五、諸天至高戰場
 };
 
+// 離線掛機的「每秒戰鬥次數」：離線收益 = 離線秒數 × 此係數 × 每次的經驗/靈石。
+// ⚠️ 舊值 0.7 等於假設離線每秒殺 0.7 隻，但線上滿速也只有每秒 0.32 隻，
+//    造成離線收益是線上的 2.16 倍（關掉遊戲比掛機划算）。改為 0.3 後離線約為線上的 93%。
+const OFFLINE_COMBAT_RATE = 0.3;
+
 // 離線掛機的聲望倍率：離線每個戰鬥 tick 以「該區平均聲望 × 此倍率」計算。
-// 0.3 是實測值：線上滿速掛機每秒約 0.31 隻（波次之間有 5 秒刷新），離線換算約每秒 0.21 隻，
-// 約為線上的 6 成。調高這個值會讓離線比線上划算，改動前請重新實測。
-const OFFLINE_REPUTATION_RATE = 0.3;
+// 0.7 × OFFLINE_COMBAT_RATE(0.3) ≈ 每秒 0.21 隻，約為線上的 65%（聲望刻意比線上少）。
+// 改動前請重新實測，兩個係數要一起看。
+const OFFLINE_REPUTATION_RATE = 0.7;
 
 // 野外遭遇怪物隨機顯示的圖示
 const monsterIcons = ["🐺", "🐅", "🐍", "🦇", "🦂", "👹", "👻", "🐉", "🦅", "🕷️"];

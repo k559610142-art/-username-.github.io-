@@ -29,9 +29,10 @@ function calcOfflineProgress() {
             ? `🧘‍♂️ 離線於【${player.currentMap.name}】靜修 ${Math.floor(offlineSeconds / 60)} 分鐘，但修為已圓滿待渡劫，未能再累積經驗。`
             : `🧘‍♂️ 離線於【${player.currentMap.name}】靜修打坐 ${Math.floor(offlineSeconds / 60)} 分鐘，獲得 ${Math.floor(gained)} 點經驗！`;
     } else {
-        let combatTicks = Math.floor(offlineSeconds * 0.7);
+        // OFFLINE_COMBAT_RATE = 離線每秒的戰鬥次數（見 config-maps.js，刻意低於線上滿速的每秒 0.32 隻）
+        let combatTicks = Math.floor(offlineSeconds * OFFLINE_COMBAT_RATE);
         expEarned = combatTicks * (player.currentMap.expRate * 15);
-        coinsEarned = combatTicks * (player.currentMap.diff * 10);
+        coinsEarned = combatTicks * (typeof player.currentMap.coins === 'number' ? player.currentMap.coins : player.currentMap.diff * 10);
 
         let gained = gainExp(expEarned) || 0;
         player.coins += coinsEarned;

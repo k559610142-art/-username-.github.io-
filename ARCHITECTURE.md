@@ -58,7 +58,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 1 | `config-realms.js` | `realms` 境界名稱陣列 | 無 | `stats.js`(getNextExp)、`ui.js`、`leveling.js` |
 | 2 | `config-level.js` | `MAX_PLAYER_LEVEL`、`LEVEL_UP_*` 成長值、`LEVEL_EXP_SEGMENTS` 經驗曲線 | 無 | `stats.js`(getLevelExpNeeded、getMaxHp/getMaxMp)、`leveling.js`(gainLevelExp)、`ui.js` |
 | 3 | `config-lifespan.js` | `lifespanByRealm` 各境界壽元增加量與死亡折壽、歲月流逝常數 `LIFESPAN_AGING_MINUTES`/`LIFESPAN_DANGER_MULT`/`LIFESPAN_TRIBULATION_MULT`/`LIFESPAN_OFFLINE_RATE`/`LIFESPAN_FLOOR_DEATHS` | 無 | `lifespan.js`、`leveling.js`(轉世重設壽元) |
-| 4 | `config-maps.js` | `SECT_MAP_NAME`（"宗門"，唯一安全區的名稱）、`maps` 地圖資料、`REPUTATION_MAX_BY_MAP_CATEGORY`（各區擊殺聲望上限）、`OFFLINE_REPUTATION_RATE`、`monsterIcons` | 無 | `state.js`、`map.js`(isInSect)、`combat.js`、`ui.js`、`save.js`(migrateCurrentMap) |
+| 4 | `config-maps.js` | `SECT_MAP_NAME`（"宗門"，唯一安全區的名稱）、`maps` 地圖資料（含各圖 `coins` 每隻靈石）、`KILLS_PER_HOUR_ESTIMATE`、`REPUTATION_MAX_BY_MAP_CATEGORY`（各區擊殺聲望上限）、`OFFLINE_COMBAT_RATE`/`OFFLINE_REPUTATION_RATE`、`monsterIcons` | 無 | `state.js`、`map.js`(isInSect)、`combat.js`、`ui.js`、`save.js`(migrateCurrentMap) |
 | 5 | `config-sects.js` | `sectData` 宗門與技能表、`SECT_SKILL_BONUS`、`SECT_TIER_NAMES`、`findSectByName()`；尾端迴圈替每招補上 `tier`/`mult` | 無 | `sect.js`、`stats.js`(getSectTier/getAllSkills)、`ui.js`、`save.js`(重新綁定宗門) |
 | 6 | `config-lingbao.js` | `legacySkillAdjustments` 舊版禁術下修數值、`lingbaoTierCosts` 各階段兌換價格、`lingbaoShopItems` 三階段戰略級寶物與武學 | 無 | `lingbao-shop.js`、`equipment.js`(五行說明列固定屬性裝備) |
 | 7 | `config-shop.js` | `shopItems` 丹藥堂商品、`shopSections` 分區、`POTION_COOLDOWN_SECONDS` 丹藥冷卻、`SHOP_MAX_BUY_QTY` 單次購買上限(9999) | 無 | `shop.js`、`bag.js`、`combat.js`(自動補血補魔) |
@@ -704,7 +704,7 @@ combatTick() 每秒執行 [combat.js]
 |---|---|---|
 | 野外擊殺妖獸 | **每殺一隻隨機 1 ~ 該區上限**（`rollKillReputation()`，上限見下表） | `combat.js` |
 | 每日任務 | 普通 20／困難 50／艱鉅 120 | `config-daily-quests.js` 的 `dailyQuestRewards` |
-| 離線掛機（野外） | 戰鬥 tick 數 × 該區平均聲望 × `OFFLINE_REPUTATION_RATE`(0.3)，約為線上的 **65%** | `save.js` 的 `calcOfflineProgress()` |
+| 離線掛機（野外） | 戰鬥 tick 數 × 該區平均聲望 × `OFFLINE_REPUTATION_RATE`(0.7)，約為線上的 **65%** | `save.js` 的 `calcOfflineProgress()` |
 
 擊殺聲望依**所在地圖分類**給，設定在 `config-maps.js` 的 `REPUTATION_MAX_BY_MAP_CATEGORY`（key 為 `maps` 的索引）：
 
@@ -717,9 +717,43 @@ combatTick() 每秒執行 [combat.js]
 
 - 舊版不分地圖一律「每殺 1 隻 = 1 點」，導致低難度地圖刷聲望效率最高；改成分區後高難度地圖才划算。
 - 門派任務、僕從派遣**不給聲望**（獎勵只有靈石／獸丹／靈草／武學積分，見 `config-quests.js`）。
-- **離線掛機也給聲望**，但刻意比線上少：離線以「戰鬥 tick 數（離線秒數 ×0.7）× 該區平均聲望 × 0.3」計算。
-  實測線上滿速掛機每秒約 0.31 隻（波次之間有 5 秒刷新），離線換算約每秒 0.21 隻，比值穩定在 0.65～0.67。
-  ⚠️ `OFFLINE_REPUTATION_RATE` 調高到 0.5 以上時，離線反而會比線上划算（實測 0.5 時離線略高於線上），修改前請重新實測。
+- **離線掛機也給聲望**，但刻意比線上少：離線以「戰鬥 tick 數（離線秒數 × `OFFLINE_COMBAT_RATE` 0.3）× 該區平均聲望 × `OFFLINE_REPUTATION_RATE` 0.7」計算，
+  換算約每秒 0.21 隻，實測穩定在線上的 0.64～0.68。
+  ⚠️ 兩個係數要一起看：`OFFLINE_COMBAT_RATE` 從 0.7 降到 0.3 時，聲望倍率必須由 0.3 調高到 0.7 才能維持 65%。修改任一個都要重新實測。
   離線待在安全區（宗門）不給聲望。
 - 消耗：靈寶閣兌換（初級 1 萬／中級 10 萬／高級 50 萬）、千寶閣壽元丹（1,000 ~ 10,000）；
   活動解鎖門檻見第 10 節（每日任務 1,000、千寶閣 5,000、秘境 5,000、獵殺邪修 8,000、世界BOSS 10,000）。
+
+## 23. 靈石
+
+- **擊殺掉落**：每隻 = 該地圖的 `coins` ±20%（`combat.js` 的 `rollKillCoins()`，數值表在 `config-maps.js` 的 `maps`）。
+  ⚠️ 舊版是 `diff × (8~12)`，難度一放大靈石就爆量（混沌初界每小時 22.9 億，而靈寶閣最貴的寶物才 100 萬），
+  因此改為**各地圖獨立設定 `coins`，不再跟 `diff` 連動**。調整產出只要改 `coins`。
+- **換算**：滿速掛機每小時約 `KILLS_PER_HOUR_ESTIMATE`(1160) 隻（波次之間有 5 秒刷新，實測每秒 0.32 隻），
+  所以「每小時靈石 ≈ coins × 1160」。
+
+  | 地圖 | coins/隻 | 線上每小時（實測峰值） | 設計上限 |
+  |---|---|---|---|
+  | 靈山大川 | 20 | 2.3 萬 | — |
+  | 深淵險地 | 80 | 9.5 萬 | — |
+  | 上古遺跡 | 250 | 30 萬 | — |
+  | 天南 | 1,000 | 118 萬 | — |
+  | 亂星海 | 1,650 | 198 萬 | 200 萬 |
+  | 鬼谷八荒 | 2,450 | 297 萬 | 300 萬 |
+  | 荒古禁地 | 3,350 | 386 萬 | 400 萬 |
+  | 太初古礦 | 4,200 | 486 萬 | 500 萬 |
+  | 上蒼（葬天島） | 6,900 | 795 萬 | 800～1000 萬 |
+  | 不死山 | 7,300 | 861 萬 | 〃 |
+  | 神墟 | 7,750 | 898 萬 | 〃 |
+  | 仙陵 | 8,200 | 936 萬 | 〃 |
+  | 冥界 | 8,400 | 985 萬 | 〃 |
+  | 仙界戰場 / 萬界戰場 / 混沌初界 | 8,400 | 949～970 萬 | 〃（封頂） |
+
+- **上蒼之後靈石封頂**在每小時 800～1000 萬，不再隨難度放大；高階地圖的差異改由**經驗與聲望**體現。
+  新增地圖時請照這個原則設 `coins`，並實測 3 次以上取峰值確認沒有破上限（隨機 ±20% 會讓單次結果浮動約 ±2%）。
+- **離線掛機**：`save.js` 的 `calcOfflineProgress()` 以「離線秒數 × `OFFLINE_COMBAT_RATE`(0.3) × 該圖 coins」計算，
+  實測約為線上的 0.89～0.97。⚠️ 舊值 0.7 會讓離線收益是線上的 2.16 倍（關掉遊戲比掛機划算）。
+  這個係數同時影響離線的經驗、靈石、僕從救援與聲望（聲望另乘 `OFFLINE_REPUTATION_RATE`）。
+- 主要消耗：鍛造 1,000／次、丹藥 40～500、靈寵 1～5 萬、壽元丹 1～10 萬、靈寶閣 10 萬～100 萬。
+  ⚠️ 後期靈石仍遠多於消耗，真正的瓶頸是聲望（高級靈寶閣需 50 萬聲望）。若要讓靈石一直有意義，
+  需要讓後期消耗（鍛造、丹藥、壽元丹）隨境界提高，而不是再調高產出。
