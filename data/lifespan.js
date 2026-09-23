@@ -86,7 +86,10 @@ function gainRealmLifespan() {
 // 回傳 true 代表壽元耗盡、遊戲結束，呼叫端應立即中止後續流程。
 function handlePlayerDeath() {
     let cost = getDeathLifespanCost();
+    let before = player.lifespan;
     player.lifespan = Math.max(0, player.lifespan - cost);
+    // 折壽也算進年齡（重傷折壽 = 老了 N 歲），年齡與損失的壽元完全成正比
+    player.age = (player.age || LIFESPAN_START_AGE) + (before - player.lifespan);
     killAllBeasts();
 
     if (player.lifespan <= 0) {

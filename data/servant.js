@@ -11,6 +11,19 @@ function getAssignedServantCount() {
     return player.servants.filter(s => s.quest).length;
 }
 
+// 派遣此僕從跑一趟任務的靈石花費（依品質，見 config-servants.js）
+function getServantTripCost(servant) {
+    return SERVANT_TRIP_COST[servant.quality] || 0;
+}
+
+// 開始新的一趟：付得起就扣靈石並回傳 true
+function payServantTrip(servant) {
+    let cost = getServantTripCost(servant);
+    if (player.coins < cost) return false;
+    player.coins -= cost;
+    return true;
+}
+
 // ⚠️ 僕從數量沒有上限（長期掛機可累積上千名），一律先組好整段 HTML 再一次寫入。
 // 不可在迴圈內使用 container.innerHTML +=：每次都會重新解析整個列表，600 名僕從就會卡住約 12 秒。
 function renderServants() {
@@ -27,6 +40,9 @@ function renderServants() {
 
     parts.push(`<div style="grid-column: 1 / -1; text-align: center; color: var(--accent); font-size: 0.9em;">
         目前派遣中：${assignedCount} / ${MAX_ASSIGNED_SERVANTS} 名（每位僕從可負責不同任務，且不受你所在地點限制）｜僕從 ${player.servants.length} / ${MAX_SERVANTS} 名${player.servants.length >= MAX_SERVANTS ? '（已滿，野外不會再收留新僕從）' : ''}
+        <div style="font-size: 0.85em; color: #9ca3af; margin-top: 4px;">
+            每趟任務開始時依品質支付靈石：${servantQualities.map(q => `<span class="quality-${q.name}">${q.name}</span> ${SERVANT_TRIP_COST[q.name]}`).join("／")}（靈石不足時僕從會停工）
+        </div>
     </div>`);
 
     // 依品級一鍵解僱
@@ -41,21 +57,22 @@ function renderServants() {
         "※ 正在執行任務的僕從一併解僱，其任務會中止"
     ));
 
-    // 任務選項每位僕從都一樣，只算一次
-    let questOptions = Object.keys(questData).map(questId => {
+    // 任務選項只算一次；限定品質的任務（例：礦脈採礦限傳說）只出現在符合的僕從選單
+    let questOptions = getAvailableQuestIds(tier).map(questId => {
         let def = getQuestDef(questId, tier);
-        return { questId, label: `${def.icon} ${def.name}（${formatQuestRewards(def)}）` };
+        return { questId, def, label: `${def.icon} ${def.name}（${formatQuestRewards(def)}${def.duration ? `｜${def.duration} 秒` : ''}）` };
     });
 
     // 派遣中的僕從排在最前面，方便管理
     let sorted = player.servants.filter(s => s.quest).concat(player.servants.filter(s => !s.quest));
 
     sorted.forEach(s => {
-        let options = `<option value="">— 不指派 —</option>` + questOptions.map(o =>
-            `<option value="${o.questId}" ${s.quest === o.questId ? 'selected' : ''}>${o.label}</option>`
-        ).join("");
+        let options = `<option value="">— 不指派 —</option>` + questOptions
+            .filter(o => canServantTakeQuest(s, o.def))
+            .map(o => `<option value="${o.questId}" ${s.quest === o.questId ? 'selected' : ''}>${o.label}</option>`)
+            .join("");
 
-        let percent = Math.floor(((s.timer || 0) / QUEST_REQUIRED_PROGRESS) * 100);
+        let percent = Math.floor(((s.timer || 0) / getQuestRequiredProgress(getQuestDef(s.quest, tier))) * 100);
         let statusText = s.quest
             ? `<p style="font-size: 0.8em; color: #4ade80; margin: 6px 0;">執行中・進度 ${percent}%</p>`
             : `<p style="font-size: 0.8em; color: #6b7280; margin: 6px 0;">閒置中</p>`;
@@ -64,7 +81,7 @@ function renderServants() {
             <div class="card" style="border-color: var(--servant-color);">
                 <h3 class="quality-${s.quality}">${s.name}</h3>
                 <p style="font-size: 0.85em; margin: 5px 0; color:#9ca3af;">品質：<span class="quality-${s.quality}">${s.quality}</span></p>
-                <p style="font-size: 0.85em; color: #facc15; margin-bottom: 8px;">任務效率：x${s.mult}</p>
+                <p style="font-size: 0.85em; color: #facc15; margin-bottom: 8px;">任務效率：x${s.mult}｜每趟 ${getServantTripCost(s)} 靈石</p>
                 <select onchange="assignServantQuest('${s.id}', this.value)"
                         style="width: 100%; background: #0b0f19; color: #fff; padding: 6px; border-radius: 6px; border: 1px solid var(--panel-border); font-size: 0.82em;">
                     ${options}
@@ -91,10 +108,24 @@ function assignServantQuest(servantId, questId) {
         }
         let def = getQuestDef(questId, getSectTier());
         if (!def) return;
+        if (!canServantTakeQuest(servant, def)) {
+            alert(`【${def.name}】只有${def.requiredQuality}品質的僕從才能執行！`);
+            renderServants();
+            return;
+        }
+        if (servant.quest === questId) { renderServants(); return; }
 
-        if (servant.quest !== questId) servant.timer = 0;
+        // 換任務或從閒置出發都是新的一趟：先付這趟的靈石
+        let cost = getServantTripCost(servant);
+        if (!payServantTrip(servant)) {
+            alert(`靈石不足！派遣【${servant.quality}】僕從每趟需要 ${cost} 靈石（目前 ${player.coins.toLocaleString()}）。`);
+            renderServants();
+            return;
+        }
+        servant.timer = 0;
         servant.quest = questId;
-        addLog(`🤝 指派僕從【${servant.name}】負責【${def.name}】，每次完成可得 ${formatQuestRewards(def)}。`, "servant");
+        addLog(`🤝 指派僕從【${servant.name}】負責【${def.name}】（每趟 ${cost} 靈石），每次完成可得 ${formatQuestRewards(def)}。`, "servant");
+        updateUI();
     } else {
         servant.quest = null;
         servant.timer = 0;
@@ -141,16 +172,26 @@ function tickServantQuests() {
 
     player.servants.forEach(s => {
         if (!s.quest) return;
-        s.timer = (s.timer || 0) + QUEST_PROGRESS_PER_TICK * s.mult;
+        let def = getQuestDef(s.quest, tier);
+        // 換了宗門後任務不存在或品質不符 → 回到閒置
+        if (!canServantTakeQuest(s, def)) { s.quest = null; s.timer = 0; anyCompleted = true; return; }
 
-        while (s.timer >= QUEST_REQUIRED_PROGRESS) {
-            s.timer -= QUEST_REQUIRED_PROGRESS;
-            let def = getQuestDef(s.quest, tier);
-            if (!def) { s.quest = null; break; }
-            grantQuestRewards(def);
+        s.timer = (s.timer || 0) + getQuestSpeed(def, s);
+        let required = getQuestRequiredProgress(def);
+
+        while (s.quest && s.timer >= required) {
+            s.timer -= required;
+            let got = grantQuestRewards(def);
             addDailyProgress('sectQuest');
-            addLog(`${def.icon} 僕從【${s.name}】完成【${def.name}】：獲得 ${formatQuestRewards(def)}`, "servant");
+            addLog(`${def.icon} 僕從【${s.name}】完成【${def.name}】：獲得 ${got}`, "servant");
             anyCompleted = true;
+
+            // 接著出發下一趟：付不起靈石就停工
+            if (!payServantTrip(s)) {
+                addLog(`💸 靈石不足 ${getServantTripCost(s)}，僕從【${s.name}】停止【${def.name}】，回到閒置。`, "system");
+                s.quest = null;
+                s.timer = 0;
+            }
         }
     });
 

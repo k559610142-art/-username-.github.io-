@@ -21,16 +21,21 @@ function combatTick() {
 
     // 玩家親自執行的門派任務：必須待在宗門
     if (player.activeQuest && isInSect()) {
-        player.questTimer += QUEST_PROGRESS_PER_TICK;
-        if (player.questTimer >= QUEST_REQUIRED_PROGRESS) {
-            player.questTimer -= QUEST_REQUIRED_PROGRESS;
-            let def = getQuestDef(player.activeQuest, getSectTier());
-            if (def) {
-                grantQuestRewards(def);
+        let def = getQuestDef(player.activeQuest, getSectTier());
+        // 任務在目前宗門等級不存在，或限定僕從執行（例：換了宗門）→ 自動中止
+        if (!def || def.requiredQuality) {
+            player.activeQuest = null;
+            player.questTimer = 0;
+        } else {
+            player.questTimer += getQuestSpeed(def, null);
+            let required = getQuestRequiredProgress(def);
+            if (player.questTimer >= required) {
+                player.questTimer -= required;
+                let got = grantQuestRewards(def);
                 addDailyProgress('sectQuest');
-                addLog(`${def.icon} 任務完成【${def.name}】：獲得 ${formatQuestRewards(def)}`, "quest");
+                addLog(`${def.icon} 任務完成【${def.name}】：獲得 ${got}`, "quest");
+                updateUI();
             }
-            updateUI();
         }
     }
 

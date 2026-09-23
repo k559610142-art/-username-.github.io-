@@ -15,6 +15,7 @@ let player = {
     studyCounts: { str: 0, con: 0, int: 0, spr: 0 },
     elementStudy: {},            // 藏書閣第二階段屬性秘典的參悟次數 { metal, wood, ... }（library.js 的 elementBooks）
     spiritGrass: 0, beastCore: 0, martialPoints: 0,
+    ore: 0,                      // 礦石：礦脈採礦（傳說僕從）取得
     herbs: { mortal: 0, high: 0, epic: 0, immortal: 0 },
     bag: {},
     equipInventory: [],

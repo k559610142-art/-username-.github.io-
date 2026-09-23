@@ -156,6 +156,7 @@ function updateUI() {
     document.getElementById('res-grass').innerText = player.spiritGrass;
     document.getElementById('res-beastcore').innerText = player.beastCore;
     document.getElementById('res-martial').innerText = player.martialPoints;
+    document.getElementById('res-ore').innerText = (player.ore || 0).toLocaleString();
     document.getElementById('res-merit').innerText = (player.merit || 0).toLocaleString();
     document.getElementById('res-butian').innerText = (player.butianStones || 0).toLocaleString();
     document.getElementById('res-breakpill').innerText = (player.breakPills || 0).toLocaleString();
