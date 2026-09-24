@@ -1,6 +1,6 @@
-// 洞府主畫面（ARCHITECTURE.md 第 31 節）
-// 背景圖 images/home-bg.jpg 已畫好頭像框、名字框、資源框、側邊按鈕與底部導覽；
-// 這裡負責：舞台等比縮放、HUD 數值、底部導覽分頁切換、建築熱點與「興建中」提示。
+// 洞府主畫面（ARCHITECTURE.md 第 31、34 節）
+// 手機版背景圖 images/home-bg.jpg、PC 版 images/home-bg-pc.jpg，圖上已畫好頭像框、名字框、資源框、按鈕與導覽；
+// 這裡負責：舞台縮放與手機／PC 切換、PC 版按鈕產生、HUD 數值、分頁切換、建築熱點與「興建中」提示。
 
 const STAGE_IMG_W = 704;    // 背景圖原始尺寸（換圖時要一起改，並重新量 index.html 內各元素的 % 座標）
 const STAGE_IMG_H = 1520;
@@ -8,40 +8,71 @@ const STAGE_IMG_H = 1520;
 const TAB_TITLES = { cultivate: "修仙", battle: "戰鬥", sect: "宗門", world: "世界" };
 
 // 版面（顯示尺寸在 settings.js 設定，第 34 節）：
-//   phone：舞台滿版填滿（最寬 9:16），背景圖以 fill 伸縮，疊加元素都是 % 座標所以仍對齊；#tab-sheet 蓋在舞台上
-//   pc   ：16:9 畫框，左邊是完整比例的洞府圖、右邊是分頁面板（#tab-sheet 搬到舞台外）
+//   phone：#app-stage（直式圖）滿版填滿（最寬 9:16），背景圖以 fill 伸縮，疊加元素都是 % 座標所以仍對齊
+//   pc   ：#pc-stage（橫式圖 home-bg-pc.jpg，config-home-pc.js）等比塞進視窗，#app-stage 隱藏
+// #tab-sheet 只有一份，搬到目前使用的舞台內（只搬 DOM 節點，id 與事件不變）
 // --u = 每個圖片像素對應的螢幕像素（字級與間距用），舞台被壓扁時取寬高較小的比例，文字不會溢出
 function layoutStage() {
     const frame = document.getElementById('app-frame');
     const stage = document.getElementById('app-stage');
+    const pcStage = document.getElementById('pc-stage');
     const sheet = document.getElementById('tab-sheet');
-    if (!frame || !stage || !sheet) return;
+    if (!frame || !stage || !pcStage || !sheet) return;
     const vw = window.innerWidth, vh = window.innerHeight;
     const pc = resolveDisplayLayout(vw, vh) === 'pc';
     document.body.classList.toggle('layout-pc', pc);
 
-    let fw, fh, sw, sh;
+    let w, h, target, imgW, imgH;
     if (pc) {
-        fw = vw; fh = vw * 9 / 16;
-        if (fh > vh) { fh = vh; fw = vh * 16 / 9; }
-        sh = fh; sw = fh * STAGE_IMG_W / STAGE_IMG_H;
-        if (sheet.parentNode !== frame) frame.appendChild(sheet);
+        w = vw; h = vw * PC_STAGE_IMG_H / PC_STAGE_IMG_W;
+        if (h > vh) { h = vh; w = vh * PC_STAGE_IMG_W / PC_STAGE_IMG_H; }
+        target = pcStage; imgW = PC_STAGE_IMG_W; imgH = PC_STAGE_IMG_H;
+        if (sheet.parentNode !== pcStage) pcStage.appendChild(sheet);
     } else {
-        sh = vh; sw = Math.min(vw, vh * 9 / 16);
-        fw = sw; fh = sh;
+        h = vh; w = Math.min(vw, vh * 9 / 16);
+        target = stage; imgW = STAGE_IMG_W; imgH = STAGE_IMG_H;
         if (sheet.parentNode !== stage) stage.insertBefore(sheet, document.getElementById('bottom-nav'));
     }
-    frame.style.width = fw + 'px';
-    frame.style.height = fh + 'px';
-    stage.style.width = sw + 'px';
-    stage.style.height = sh + 'px';
-    stage.style.setProperty('--u', Math.min(sw / STAGE_IMG_W, sh / STAGE_IMG_H) + 'px');
+    frame.style.width = w + 'px';
+    frame.style.height = h + 'px';
+    target.style.width = w + 'px';
+    target.style.height = h + 'px';
+    target.style.setProperty('--u', Math.min(w / imgW, h / imgH) + 'px');
+}
 
-    // PC 版右側面板一定要有內容：停在洞府時改顯示上次的分頁（預設戰鬥）
-    if (pc && document.body.dataset.tab === 'home') switchTab('home');
+// PC 版舞台：依 config-home-pc.js 產生按鈕、建築熱點與牌匾，並把分頁面板放到 PC_SHEET_RECT
+function renderPcStage() {
+    const pct = (v, total) => (v / total * 100).toFixed(3) + '%';
+    const place = (el, r) => {
+        el.style.left = pct(r[0], PC_STAGE_IMG_W);
+        el.style.top = pct(r[1], PC_STAGE_IMG_H);
+        el.style.width = pct(r[2], PC_STAGE_IMG_W);
+        el.style.height = pct(r[3], PC_STAGE_IMG_H);
+    };
+    const hotspots = document.getElementById('pc-hotspots');
+    const buttons = document.getElementById('pc-buttons');
+    if (!hotspots || !buttons) return;
+    hotspots.innerHTML = '';
+    buttons.innerHTML = '';
+    pcStageButtons.forEach(b => {
+        if (b.enabled === false) return;
+        const el = document.createElement('button');
+        el.className = b.kind === 'hotspot' ? 'hotspot' : (b.nav ? 'stage-btn nav-btn' : 'stage-btn');
+        if (b.nav) el.dataset.nav = b.nav;
+        el.setAttribute('aria-label', b.label);
+        el.setAttribute('onclick', b.action);
+        place(el, b.rect);
+        if (b.plaque) el.innerHTML = `<span id="pc-plaque-${b.id}" class="plaque plaque-${b.plaque}">${b.label}</span>`;
+        (b.kind === 'hotspot' ? hotspots : buttons).appendChild(el);
+    });
+    document.documentElement.style.setProperty('--pc-sheet-left', pct(PC_SHEET_RECT[0], PC_STAGE_IMG_W));
+    document.documentElement.style.setProperty('--pc-sheet-top', pct(PC_SHEET_RECT[1], PC_STAGE_IMG_H));
+    document.documentElement.style.setProperty('--pc-sheet-width', pct(PC_SHEET_RECT[2], PC_STAGE_IMG_W));
+    document.documentElement.style.setProperty('--pc-sheet-height', pct(PC_SHEET_RECT[3], PC_STAGE_IMG_H));
 }
 
 function initHomeUi() {
+    renderPcStage();
     layoutStage();
     window.addEventListener('resize', layoutStage);
     window.addEventListener('orientationchange', layoutStage);
@@ -49,13 +80,10 @@ function initHomeUi() {
 }
 
 // 底部導覽：home（洞府）只顯示背景與熱點；其他分頁在 #tab-sheet 顯示 data-tab 相符的面板
-// PC 版洞府熱點一直可見，按「洞府」改為停留在上次的分頁
-let lastSheetTab = 'battle';
+// 手機版與 PC 版的導覽按鈕都帶 .nav-btn[data-nav]，一起更新選中光暈
 function switchTab(tab) {
-    if (tab === 'home' && document.body.classList.contains('layout-pc')) tab = lastSheetTab;
-    if (TAB_TITLES[tab]) lastSheetTab = tab;
     document.body.dataset.tab = tab;
-    document.querySelectorAll('#bottom-nav .nav-btn').forEach(btn => {
+    document.querySelectorAll('.nav-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.nav === tab);
     });
     if (TAB_TITLES[tab]) {
@@ -103,24 +131,25 @@ function getCultivationRate() {
 }
 
 // 由 ui.js 的 updateUI() 每次呼叫：把數值寫進疊在圖上的 HUD
+// 手機版 id 為 hud-xxx，PC 版為 pc-hud-xxx（index.html 的 #pc-stage），兩邊同時寫入，切換版面不必重算
 function updateHomeHud() {
-    const set = (id, text) => { const el = document.getElementById(id); if (el) el.innerText = text; };
-    const width = (id, pct) => { const el = document.getElementById(id); if (el) el.style.width = Math.max(0, Math.min(100, pct)) + '%'; };
+    const both = id => [document.getElementById(id), document.getElementById('pc-' + id)].filter(Boolean);
+    const set = (id, text) => both(id).forEach(el => { el.innerText = text; });
+    const width = (id, pct) => both(id).forEach(el => { el.style.width = Math.max(0, Math.min(100, pct)) + '%'; });
 
-    const avatar = document.getElementById('hud-avatar');
     const avatarInfo = getPlayerAvatar();   // 玩家選用的頭像（avatar.js），點頭像可更換
-    if (avatar && avatar.getAttribute('src') !== avatarInfo.img) {
+    both('hud-avatar').forEach(avatar => {
+        if (avatar.getAttribute('src') === avatarInfo.img) return;
         avatar.setAttribute('src', avatarInfo.img);
         avatar.style.objectPosition = avatarInfo.pos;
-    }
+    });
 
     set('hud-player-name', player.name);
     set('hud-realm', `${realms[player.realmIndex]} ${player.stage}階${player.pendingTribulation ? '・待渡劫' : ''}${player.weakened ? '・虛弱' : ''}`);
-    const realmBadge = document.getElementById('hud-realm');
-    if (realmBadge) {
+    both('hud-realm').forEach(realmBadge => {
         realmBadge.classList.toggle('weak', !!player.weakened);
         realmBadge.title = player.weakened ? `虛弱：攻擊、氣血與靈力上限 -${Math.round((1 - WEAKNESS_STAT_MULT) * 100)}%，修回 10 階後解除` : '';
-    }
+    });
     let levelPct = player.level >= MAX_PLAYER_LEVEL ? 100 : player.levelExp / getLevelExpNeeded(player.level) * 100;
     set('hud-level', `Lv.${player.level.toLocaleString()}`);
     width('hud-level-bar', levelPct);
@@ -128,6 +157,7 @@ function updateHomeHud() {
 
     set('hud-coins', formatShortNumber(player.coins));
     set('hud-rep', formatShortNumber(player.reputation || 0));   // 圖上的「仙玉」欄位改顯示聲望
+    set('hud-core', formatShortNumber(player.beastCore || 0));   // 只有 PC 版有這一欄（元寶圖示的資源框）
 
     width('hud-hp-bar', player.hp / player.maxHp * 100);
     set('hud-hp-text', `${formatShortNumber(player.hp)}/${formatShortNumber(player.maxHp)}`);
@@ -139,6 +169,7 @@ function updateHomeHud() {
     set('hud-rate', `${Math.round(getCultivationRate() * 100)}%`);
 
     // 待渡劫時升仙台牌匾亮紅點
-    const plaque = document.getElementById('plaque-ascend');
-    if (plaque) plaque.classList.toggle('alert', !!player.pendingTribulation);
+    [document.getElementById('plaque-ascend'), document.getElementById('pc-plaque-ascend')].forEach(plaque => {
+        if (plaque) plaque.classList.toggle('alert', !!player.pendingTribulation);
+    });
 }

@@ -613,16 +613,67 @@
         .settings-option.active { background: rgba(240, 213, 136, 0.12); color: #e5e7eb; font-weight: normal; border-color: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
         .settings-option.active b { color: var(--accent); }
 
-        /* ---- PC 16:9 版面（第 34 節）：左邊洞府圖、右邊分頁面板（#tab-sheet 由 layoutStage() 搬到 #app-frame 內）---- */
-        body.layout-pc #home-hotspots { display: block !important; }   /* 洞府熱點一直可點 */
-        body.layout-pc #tab-sheet {
-            display: flex !important; position: relative; left: auto; top: auto;
-            flex: 1; width: auto; height: 100%; min-width: 0;
-            border-radius: 0; border-width: 0 0 0 1px; box-shadow: none;
-            font-size: 15px;
+        /* ---- PC 16:9 版面（第 34 節）：整面橫式圖 #pc-stage，--u = 螢幕像素 ÷ 圖上像素（1376 寬）----
+           HUD 座標是 home-bg-pc.jpg 上的「像素 ÷ 1376（橫）或 768（縱）」；按鈕位置在 config-home-pc.js */
+        #pc-stage { display: none; position: relative; flex: none; overflow: hidden; --u: 0.93px; font-size: calc(var(--u) * 14); }
+        body.layout-pc #pc-stage { display: block; }
+        body.layout-pc #app-stage { display: none; }
+        body.layout-pc::before { background-image: url("images/home-bg-pc.jpg"); }
+        #pc-stage-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: fill; user-select: none; pointer-events: none; }
+        #pc-hud-avatar {
+            position: absolute; left: 1.890%; top: 3.255%; width: 7.558%; height: 13.542%;
+            border-radius: 50%; object-fit: cover; cursor: pointer; transition: box-shadow 0.2s;
         }
-        body.layout-pc .sheet-close { display: none; }
-        body.layout-pc #tab-sheet #log { height: 38vh; }
+        #pc-hud-avatar:hover { box-shadow: 0 0 18px rgba(253, 230, 138, 0.8); }
+        #pc-hud-name {
+            position: absolute; left: 9.811%; top: 4.948%; width: 10.392%; height: 10.938%;
+            display: flex; flex-direction: column; justify-content: center; gap: calc(var(--u) * 3);
+            padding-left: calc(var(--u) * 6); box-sizing: border-box; color: #f5e6c4; text-shadow: 0 1px 3px #000; overflow: hidden;
+        }
+        #pc-hud-player-name { font-size: calc(var(--u) * 18); font-weight: bold; color: #fde68a; white-space: nowrap; }
+        #pc-stage .hud-realm { font-size: calc(var(--u) * 12); padding: 0 calc(var(--u) * 7); border-radius: calc(var(--u) * 8); white-space: nowrap; }
+        .pc-level-line { display: flex; align-items: center; gap: calc(var(--u) * 5); font-size: calc(var(--u) * 12); }
+        .pc-level-line .hud-mini-bar { height: calc(var(--u) * 5); margin-right: calc(var(--u) * 4); }
+        #pc-hud-level-bar { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #f59e0b, #fde68a); }
+        .pc-power { font-size: calc(var(--u) * 11); color: #cbd5e1; }
+        .pc-pill {
+            position: absolute; top: 1.563%; height: 2.995%; display: flex; align-items: center;
+            font-size: calc(var(--u) * 14); font-weight: bold; color: #fef3c7; text-shadow: 0 1px 3px #000; white-space: nowrap; overflow: hidden;
+        }
+        #pc-hud-coins { left: 78.343%; width: 4.506%; }
+        #pc-hud-core  { left: 86.337%; width: 3.634%; color: #fdba74; }
+        #pc-hud-rep   { left: 94.186%; width: 3.706%; color: #c4b5fd; }
+        .pc-pill-cover { background: #1b2130; border-radius: calc(var(--u) * 6); padding-left: calc(var(--u) * 3); box-sizing: border-box; }   /* 蓋掉圖上的假數字 */
+        .pc-stat-label {
+            position: absolute; left: 85.974%; width: 2.253%; height: 2.344%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: calc(var(--u) * 11); color: #fcd34d; background: #1c212b;
+        }
+        .pc-stat-bar { position: absolute; left: 88.590%; width: 8.358%; height: 1.432%; border-radius: calc(var(--u) * 6); overflow: hidden; background: rgba(0,0,0,0.55); }
+        .pc-stat-bar > span { display: block; height: 100%; width: 0; }
+        .pc-stat-bar.hp > span { background: linear-gradient(90deg, #7f1d1d, #ef4444); }
+        .pc-stat-bar.mp > span { background: linear-gradient(90deg, #1e3a8a, #3b82f6); }
+        .pc-stat-bar.exp > span { background: linear-gradient(90deg, #92400e, #f59e0b); }
+        .pc-stat-bar > em {
+            position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+            font-style: normal; font-size: calc(var(--u) * 10); color: #f9fafb; text-shadow: 0 1px 2px #000; white-space: nowrap;
+        }
+        #pc-hud-rate-line {
+            position: absolute; left: 84.666%; top: 20.573%; width: 14.026%; height: 3.516%;
+            display: flex; align-items: center; justify-content: center; font-size: calc(var(--u) * 12); color: #cbd5e1;
+        }
+        #pc-hud-rate-line b { color: #4ade80; }
+        #pc-hotspots, #pc-buttons { position: absolute; inset: 0; pointer-events: none; }
+        #pc-buttons { z-index: 6; }
+        #pc-hotspots .hotspot, #pc-buttons .stage-btn { pointer-events: auto; }
+        #pc-buttons .stage-btn { border-radius: calc(var(--u) * 14); }
+        body:not([data-tab="home"]) #pc-hotspots { display: none; }
+        /* PC 版分頁面板：位置由 config-home-pc.js 的 PC_SHEET_RECT 換算成 --pc-sheet-* */
+        body.layout-pc #tab-sheet {
+            left: var(--pc-sheet-left); top: var(--pc-sheet-top); width: var(--pc-sheet-width); height: var(--pc-sheet-height);
+            font-size: 15px; border-radius: 14px;
+        }
+        body.layout-pc #tab-sheet #log { height: 34vh; }
         body.layout-pc #tab-sheet .grid-container { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
         .hud-rate b { color: #4ade80; }
 
@@ -1021,8 +1072,39 @@
         <button class="nav-btn" data-nav="world" style="left:81.25%; top:90.66%; width:16.34%; height:8.68%;" onclick="switchTab('world')" aria-label="世界"></button>
     </nav>
 
-    <div id="stage-toast"></div>
+
 </div><!-- /#app-stage -->
+
+<!-- ==================== 洞府・PC 版（第 34 節）====================
+     背景圖 images/home-bg-pc.jpg（1376×768），HUD 以「圖上座標 ÷ 1376 或 768」的 % 定位；
+     按鈕與建築熱點由 home-ui.js 的 renderPcStage() 依 config-home-pc.js 產生；分頁面板 #tab-sheet 在 PC 版時搬進這裡。
+     id 一律是手機版的 hud-xxx 加上 pc- 前綴，updateHomeHud() 同時寫入兩邊。 -->
+<div id="pc-stage">
+    <img id="pc-stage-bg" src="images/home-bg-pc.jpg" alt="">
+    <img id="pc-hud-avatar" alt="更換頭像" title="點擊更換頭像" onclick="openAvatarModal()">
+    <div id="pc-hud-name">
+        <span id="pc-hud-player-name">韓立</span>
+        <span id="pc-hud-realm" class="hud-realm">凡人 1階</span>
+        <div class="pc-level-line"><span id="pc-hud-level">Lv.1</span><span class="hud-mini-bar"><span id="pc-hud-level-bar"></span></span></div>
+        <div class="pc-power">戰力 <span id="pc-hud-power">5</span></div>
+    </div>
+    <div id="pc-hud-coins" class="pc-pill" title="靈石">0</div>
+    <div id="pc-hud-core" class="pc-pill" title="獸丹">0</div>
+    <div id="pc-hud-rep" class="pc-pill pc-pill-cover" title="聲望">0</div>
+    <!-- 狀態框：圖上的標籤寫「體力／靈力／仙力」，用 .pc-stat-label 蓋成遊戲用語 -->
+    <span class="pc-stat-label" style="top: 9.245%;">氣血</span>
+    <span class="pc-stat-label" style="top: 13.151%;">靈力</span>
+    <span class="pc-stat-label" style="top: 17.057%;">修為</span>
+    <span class="pc-stat-bar hp"  style="top: 9.766%;"><span id="pc-hud-hp-bar"></span><em id="pc-hud-hp-text">100/100</em></span>
+    <span class="pc-stat-bar mp"  style="top: 13.672%;"><span id="pc-hud-mp-bar"></span><em id="pc-hud-mp-text">100/100</em></span>
+    <span class="pc-stat-bar exp" style="top: 17.578%;"><span id="pc-hud-exp-bar"></span><em id="pc-hud-exp-text">0%</em></span>
+    <div id="pc-hud-rate-line">修煉效率：<b id="pc-hud-rate">100%</b></div>
+
+    <div id="pc-hotspots"></div>
+    <div id="pc-buttons"></div>
+</div><!-- /#pc-stage -->
+
+<div id="stage-toast"></div>
 </div><!-- /#app-frame -->
 
 <!-- 彈出視窗群組 -->
@@ -1421,57 +1503,58 @@
 -->
 <!-- ⚠️ 版本號 ?v=：每次發佈（推上 GitHub Pages）前要把所有 ?v= 改成新的值（全部取代即可）。
      GitHub Pages 會快取檔案約 10 分鐘，沒改版本號時玩家可能拿到「舊 index.html＋新 JS」而讀檔失敗。見 ARCHITECTURE.md 第 30 節 -->
-<script src="data/config-realms.js?v=20260924k"></script>
-<script src="data/config-level.js?v=20260924k"></script>
-<script src="data/config-lifespan.js?v=20260924k"></script>
-<script src="data/config-maps.js?v=20260924k"></script>
-<script src="data/config-sects.js?v=20260924k"></script>
-<script src="data/config-lingbao.js?v=20260924k"></script>
-<script src="data/config-shop.js?v=20260924k"></script>
-<script src="data/config-beasts.js?v=20260924k"></script>
-<script src="data/config-servants.js?v=20260924k"></script>
-<script src="data/config-equipment.js?v=20260924k"></script>
-<script src="data/config-tribulation.js?v=20260924k"></script>
-<script src="data/config-quests.js?v=20260924k"></script>
-<script src="data/config-activities.js?v=20260924k"></script>
-<script src="data/config-daily-quests.js?v=20260924k"></script>
-<script src="data/config-elements.js?v=20260924k"></script>
-<script src="data/config-merit.js?v=20260924k"></script>
-<script src="data/config-talisman.js?v=20260924k"></script>
-<script src="data/config-avatars.js?v=20260924k"></script>
-<script src="data/state.js?v=20260924k"></script>
-<script src="data/stats.js?v=20260924k"></script>
-<script src="data/elements.js?v=20260924k"></script>
-<script src="data/ui.js?v=20260924k"></script>
-<script src="data/map.js?v=20260924k"></script>
-<script src="data/combat.js?v=20260924k"></script>
-<script src="data/leveling.js?v=20260924k"></script>
-<script src="data/lifespan.js?v=20260924k"></script>
-<script src="data/tribulation.js?v=20260924k"></script>
-<script src="data/sect.js?v=20260924k"></script>
-<script src="data/shop.js?v=20260924k"></script>
-<script src="data/bag.js?v=20260924k"></script>
-<script src="data/equipment.js?v=20260924k"></script>
-<script src="data/lingbao-shop.js?v=20260924k"></script>
-<script src="data/servant.js?v=20260924k"></script>
-<script src="data/quest.js?v=20260924k"></script>
-<script src="data/activity.js?v=20260924k"></script>
-<script src="data/daily-quest.js?v=20260924k"></script>
-<script src="data/auction.js?v=20260924k"></script>
-<script src="data/merit.js?v=20260924k"></script>
-<script src="data/talisman.js?v=20260924k"></script>
-<script src="data/field.js?v=20260924k"></script>
-<script src="data/beast-combat.js?v=20260924k"></script>
-<script src="data/beast.js?v=20260924k"></script>
-<script src="data/library.js?v=20260924k"></script>
-<script src="data/alchemy.js?v=20260924k"></script>
-<script src="data/player-profile.js?v=20260924k"></script>
-<script src="data/save.js?v=20260924k"></script>
-<script src="data/home-ui.js?v=20260924k"></script>
-<script src="data/settings.js?v=20260924k"></script>
-<script src="data/avatar.js?v=20260924k"></script>
-<script src="data/title-screen.js?v=20260924k"></script>
-<script src="data/main.js?v=20260924k"></script>
+<script src="data/config-realms.js?v=20260924l"></script>
+<script src="data/config-level.js?v=20260924l"></script>
+<script src="data/config-lifespan.js?v=20260924l"></script>
+<script src="data/config-maps.js?v=20260924l"></script>
+<script src="data/config-sects.js?v=20260924l"></script>
+<script src="data/config-lingbao.js?v=20260924l"></script>
+<script src="data/config-shop.js?v=20260924l"></script>
+<script src="data/config-beasts.js?v=20260924l"></script>
+<script src="data/config-servants.js?v=20260924l"></script>
+<script src="data/config-equipment.js?v=20260924l"></script>
+<script src="data/config-tribulation.js?v=20260924l"></script>
+<script src="data/config-quests.js?v=20260924l"></script>
+<script src="data/config-activities.js?v=20260924l"></script>
+<script src="data/config-daily-quests.js?v=20260924l"></script>
+<script src="data/config-elements.js?v=20260924l"></script>
+<script src="data/config-merit.js?v=20260924l"></script>
+<script src="data/config-talisman.js?v=20260924l"></script>
+<script src="data/config-avatars.js?v=20260924l"></script>
+<script src="data/state.js?v=20260924l"></script>
+<script src="data/stats.js?v=20260924l"></script>
+<script src="data/elements.js?v=20260924l"></script>
+<script src="data/ui.js?v=20260924l"></script>
+<script src="data/map.js?v=20260924l"></script>
+<script src="data/combat.js?v=20260924l"></script>
+<script src="data/leveling.js?v=20260924l"></script>
+<script src="data/lifespan.js?v=20260924l"></script>
+<script src="data/tribulation.js?v=20260924l"></script>
+<script src="data/sect.js?v=20260924l"></script>
+<script src="data/shop.js?v=20260924l"></script>
+<script src="data/bag.js?v=20260924l"></script>
+<script src="data/equipment.js?v=20260924l"></script>
+<script src="data/lingbao-shop.js?v=20260924l"></script>
+<script src="data/servant.js?v=20260924l"></script>
+<script src="data/quest.js?v=20260924l"></script>
+<script src="data/activity.js?v=20260924l"></script>
+<script src="data/daily-quest.js?v=20260924l"></script>
+<script src="data/auction.js?v=20260924l"></script>
+<script src="data/merit.js?v=20260924l"></script>
+<script src="data/talisman.js?v=20260924l"></script>
+<script src="data/field.js?v=20260924l"></script>
+<script src="data/beast-combat.js?v=20260924l"></script>
+<script src="data/beast.js?v=20260924l"></script>
+<script src="data/library.js?v=20260924l"></script>
+<script src="data/alchemy.js?v=20260924l"></script>
+<script src="data/player-profile.js?v=20260924l"></script>
+<script src="data/save.js?v=20260924l"></script>
+<script src="data/config-home-pc.js?v=20260924l"></script>
+<script src="data/home-ui.js?v=20260924l"></script>
+<script src="data/settings.js?v=20260924l"></script>
+<script src="data/avatar.js?v=20260924l"></script>
+<script src="data/title-screen.js?v=20260924l"></script>
+<script src="data/main.js?v=20260924l"></script>
 
 </body>
 </html>
