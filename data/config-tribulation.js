@@ -34,6 +34,12 @@ const HEART_DEMON_SKILL_CHANCE = 0.4;
 // 渡劫失敗時損失的靈石比例
 const TRIBULATION_FAIL_COIN_LOSS = 0.1;
 
+// 渡劫失敗：小境界掉落的階數（10 階 → 7 階，大境界不會倒退），同時扣回這幾階升階時加的四維與魅力
+const TRIBULATION_FAIL_STAGE_DROP = 3;
+
+// 虛弱：渡劫失敗後，直到小境界重新升回 10 階前，攻擊力（物理／術法）、氣血上限、靈力上限 × 此倍率（-30%）
+const WEAKNESS_STAT_MULT = 0.7;
+
 // 心魔技能：
 //   預設為傷害型，mult = 攻擊力倍率
 //   type "drain" 會額外吸取玩家靈力（drain = 吸取最大靈力的比例）

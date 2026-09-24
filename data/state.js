@@ -41,6 +41,7 @@ let player = {
     reincarnations: 0,
     reincarnateBonus: { hp: 0, mp: 0 },   // 轉世保留的氣血／靈力上限（前世上限的 REINCARNATE_KEEP_RATE）
     pendingTribulation: false,   // 小境界已滿 10 階，修為暫停、等待渡劫
+    weakened: false,             // 虛弱：渡劫失敗後直到升回 10 階前，攻擊與氣血／靈力上限 -30%（stats.js 的 getWeaknessMult）
     tribulationCount: 0,         // 累計渡劫成功次數
 
     // 活動：每日任務與千寶閣（皆以時間戳判斷是否該刷新）

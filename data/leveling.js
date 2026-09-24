@@ -52,6 +52,11 @@ function gainExp(amount) {
 
         addDailyProgress('breakthrough');
         addLog(`✨ 修為精進，達到【${realms[player.realmIndex]} ${player.stage}階】！四維屬性 +5，魅力 +2。`, "level-up");
+        // 渡劫失敗造成的虛弱：重新修回 10 階即解除
+        if (player.weakened && player.stage >= 10) {
+            player.weakened = false;
+            addLog(`🌟 道基重固，重回【${realms[player.realmIndex]} 10階】，「虛弱」狀態解除！`, "level-up");
+        }
 
         player.hp = getMaxHp();
         player.mp = getMaxMp();
@@ -129,6 +134,7 @@ function triggerReincarnate() {
         `・壽元回到凡人的 ${lifespanByRealm[0].gain} 年\n` +
         `此操作無法復原，是否確定輪迴？`)) {
         // 先記下此世的數值，再依比例保留（上一世留下的部分已包含在內，會自然累積）
+        player.weakened = false;   // 轉世洗去虛弱，且保留值以未虛弱的上限計算
         let oldStats = player.stats;
         let keptHp = Math.floor(getMaxHp() * REINCARNATE_KEEP_RATE);
         let keptMp = Math.floor(getMaxMp() * REINCARNATE_KEEP_RATE);

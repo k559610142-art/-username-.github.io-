@@ -89,7 +89,12 @@ function updateHomeHud() {
     }
 
     set('hud-player-name', player.name);
-    set('hud-realm', `${realms[player.realmIndex]} ${player.stage}階${player.pendingTribulation ? '・待渡劫' : ''}`);
+    set('hud-realm', `${realms[player.realmIndex]} ${player.stage}階${player.pendingTribulation ? '・待渡劫' : ''}${player.weakened ? '・虛弱' : ''}`);
+    const realmBadge = document.getElementById('hud-realm');
+    if (realmBadge) {
+        realmBadge.classList.toggle('weak', !!player.weakened);
+        realmBadge.title = player.weakened ? `虛弱：攻擊、氣血與靈力上限 -${Math.round((1 - WEAKNESS_STAT_MULT) * 100)}%，修回 10 階後解除` : '';
+    }
     let levelPct = player.level >= MAX_PLAYER_LEVEL ? 100 : player.levelExp / getLevelExpNeeded(player.level) * 100;
     set('hud-level', `Lv.${player.level.toLocaleString()}`);
     width('hud-level-bar', levelPct);

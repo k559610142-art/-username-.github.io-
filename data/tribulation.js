@@ -56,7 +56,8 @@ function triggerTribulation() {
         + (chance.hasPill ? `・🔮 破障丹 +${formatChance(chance.pill)}（將服用 1 顆，剩 ${player.breakPills - 1} 顆；心魔戰力 -10%）\n` : '')
         + (tips ? `\n提升勝算：${tips}\n` : '')
         + `\n心魔戰力 ${demonPower.toLocaleString()}／氣血 ${demonHp.toLocaleString()}，會施展魔功並吸取靈力。\n`
-        + `渡劫失敗會重傷跌回安全區並折壽 ${getDeathLifespanCost()} 年（剩餘 ${formatLifespan(player.lifespan)} 年，渡劫期間歲月流逝加快），靈寵也會陣亡。\n\n是否開始渡劫？`
+        + `渡劫失敗會重傷跌回安全區並折壽 ${getDeathLifespanCost()} 年（剩餘 ${formatLifespan(player.lifespan)} 年，渡劫期間歲月流逝加快），靈寵也會陣亡；\n`
+        + `且境界跌落 ${TRIBULATION_FAIL_STAGE_DROP} 階（10 階 → ${10 - TRIBULATION_FAIL_STAGE_DROP} 階），陷入「虛弱」（攻擊、氣血與靈力上限 -${Math.round((1 - WEAKNESS_STAT_MULT) * 100)}%）直到修回 10 階。\n\n是否開始渡劫？`
     )) return;
 
     if (chance.hasPill) {
@@ -177,6 +178,18 @@ function resolvePlayerFall() {
     endTribulation(false);
 }
 
+// 渡劫失敗的境界懲罰：小境界掉 TRIBULATION_FAIL_STAGE_DROP 階（不低於 1 階，大境界不倒退）、修為歸零、
+// 扣回這幾階升階時加的屬性（每階四維 +5、魅力 +2，見 leveling.js 的 gainExp），並進入虛弱
+function applyTribulationFailDrop() {
+    let drop = Math.min(TRIBULATION_FAIL_STAGE_DROP, player.stage - 1);
+    player.stage -= drop;
+    player.exp = 0;
+    player.pendingTribulation = false;   // 不再是 10 階圓滿，要重新修回 10 階才能再渡劫
+    ['str', 'con', 'int', 'spr'].forEach(k => { player.stats[k] = Math.max(1, player.stats[k] - 5 * drop); });
+    player.stats.cha = Math.max(1, player.stats.cha - 2 * drop);
+    player.weakened = true;
+}
+
 function endTribulation(success) {
     inTribulation = false;
     heartDemon = null;
@@ -192,10 +205,13 @@ function endTribulation(success) {
     } else {
         // 渡劫失敗視同死亡：折壽並使靈寵陣亡，壽元耗盡則遊戲結束
         if (handlePlayerDeath()) return;
-        player.hp = 1;
         let lostCoins = Math.floor(player.coins * TRIBULATION_FAIL_COIN_LOSS);
         player.coins -= lostCoins;
-        addLog(`💀 【渡劫失敗】心魔反噬，你身受重傷跌落凡塵，遺失了 ${lostCoins.toLocaleString()} 靈石。療傷後可再次挑戰天劫！`, "combat");
+        let fromStage = player.stage;
+        applyTribulationFailDrop();
+        player.hp = 1;
+        addLog(`💀 【渡劫失敗】心魔反噬，你身受重傷跌落凡塵，遺失了 ${lostCoins.toLocaleString()} 靈石。`, "combat");
+        addLog(`📉 道基受損，境界跌落【${realms[player.realmIndex]} ${fromStage}階 → ${player.stage}階】，並陷入「虛弱」：攻擊、氣血與靈力上限 -${Math.round((1 - WEAKNESS_STAT_MULT) * 100)}%，直到重新修回 10 階才會恢復。`, "combat");
         changeMap(0, 0);
         updateUI();
     }

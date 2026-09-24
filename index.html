@@ -563,6 +563,8 @@
             border: 1px solid rgba(240, 213, 136, 0.6); border-radius: calc(var(--u) * 12);
             background: rgba(120, 53, 15, 0.55); color: #fcd34d;
         }
+        .hud-realm.weak { color: #fecaca; border-color: rgba(239, 68, 68, 0.8); background: rgba(127, 29, 29, 0.7); }
+        .weak-tag { font-size: 0.8em; color: #fecaca; background: rgba(127, 29, 29, 0.7); border: 1px solid rgba(239, 68, 68, 0.7); border-radius: 4px; padding: 0 4px; }
         .hud-level-line { display: flex; align-items: center; gap: calc(var(--u) * 6); font-size: calc(var(--u) * 17); }
         .hud-mini-bar { flex: 1; height: calc(var(--u) * 7); background: rgba(0,0,0,0.6); border-radius: 4px; overflow: hidden; margin-right: calc(var(--u) * 10); }
         #hud-level-bar { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #f59e0b, #fde68a); }
@@ -1375,56 +1377,56 @@
 -->
 <!-- ⚠️ 版本號 ?v=：每次發佈（推上 GitHub Pages）前要把所有 ?v= 改成新的值（全部取代即可）。
      GitHub Pages 會快取檔案約 10 分鐘，沒改版本號時玩家可能拿到「舊 index.html＋新 JS」而讀檔失敗。見 ARCHITECTURE.md 第 30 節 -->
-<script src="data/config-realms.js?v=20260924g"></script>
-<script src="data/config-level.js?v=20260924g"></script>
-<script src="data/config-lifespan.js?v=20260924g"></script>
-<script src="data/config-maps.js?v=20260924g"></script>
-<script src="data/config-sects.js?v=20260924g"></script>
-<script src="data/config-lingbao.js?v=20260924g"></script>
-<script src="data/config-shop.js?v=20260924g"></script>
-<script src="data/config-beasts.js?v=20260924g"></script>
-<script src="data/config-servants.js?v=20260924g"></script>
-<script src="data/config-equipment.js?v=20260924g"></script>
-<script src="data/config-tribulation.js?v=20260924g"></script>
-<script src="data/config-quests.js?v=20260924g"></script>
-<script src="data/config-activities.js?v=20260924g"></script>
-<script src="data/config-daily-quests.js?v=20260924g"></script>
-<script src="data/config-elements.js?v=20260924g"></script>
-<script src="data/config-merit.js?v=20260924g"></script>
-<script src="data/config-talisman.js?v=20260924g"></script>
-<script src="data/config-avatars.js?v=20260924g"></script>
-<script src="data/state.js?v=20260924g"></script>
-<script src="data/stats.js?v=20260924g"></script>
-<script src="data/elements.js?v=20260924g"></script>
-<script src="data/ui.js?v=20260924g"></script>
-<script src="data/map.js?v=20260924g"></script>
-<script src="data/combat.js?v=20260924g"></script>
-<script src="data/leveling.js?v=20260924g"></script>
-<script src="data/lifespan.js?v=20260924g"></script>
-<script src="data/tribulation.js?v=20260924g"></script>
-<script src="data/sect.js?v=20260924g"></script>
-<script src="data/shop.js?v=20260924g"></script>
-<script src="data/bag.js?v=20260924g"></script>
-<script src="data/equipment.js?v=20260924g"></script>
-<script src="data/lingbao-shop.js?v=20260924g"></script>
-<script src="data/servant.js?v=20260924g"></script>
-<script src="data/quest.js?v=20260924g"></script>
-<script src="data/activity.js?v=20260924g"></script>
-<script src="data/daily-quest.js?v=20260924g"></script>
-<script src="data/auction.js?v=20260924g"></script>
-<script src="data/merit.js?v=20260924g"></script>
-<script src="data/talisman.js?v=20260924g"></script>
-<script src="data/field.js?v=20260924g"></script>
-<script src="data/beast-combat.js?v=20260924g"></script>
-<script src="data/beast.js?v=20260924g"></script>
-<script src="data/library.js?v=20260924g"></script>
-<script src="data/alchemy.js?v=20260924g"></script>
-<script src="data/player-profile.js?v=20260924g"></script>
-<script src="data/save.js?v=20260924g"></script>
-<script src="data/home-ui.js?v=20260924g"></script>
-<script src="data/avatar.js?v=20260924g"></script>
-<script src="data/title-screen.js?v=20260924g"></script>
-<script src="data/main.js?v=20260924g"></script>
+<script src="data/config-realms.js?v=20260924h"></script>
+<script src="data/config-level.js?v=20260924h"></script>
+<script src="data/config-lifespan.js?v=20260924h"></script>
+<script src="data/config-maps.js?v=20260924h"></script>
+<script src="data/config-sects.js?v=20260924h"></script>
+<script src="data/config-lingbao.js?v=20260924h"></script>
+<script src="data/config-shop.js?v=20260924h"></script>
+<script src="data/config-beasts.js?v=20260924h"></script>
+<script src="data/config-servants.js?v=20260924h"></script>
+<script src="data/config-equipment.js?v=20260924h"></script>
+<script src="data/config-tribulation.js?v=20260924h"></script>
+<script src="data/config-quests.js?v=20260924h"></script>
+<script src="data/config-activities.js?v=20260924h"></script>
+<script src="data/config-daily-quests.js?v=20260924h"></script>
+<script src="data/config-elements.js?v=20260924h"></script>
+<script src="data/config-merit.js?v=20260924h"></script>
+<script src="data/config-talisman.js?v=20260924h"></script>
+<script src="data/config-avatars.js?v=20260924h"></script>
+<script src="data/state.js?v=20260924h"></script>
+<script src="data/stats.js?v=20260924h"></script>
+<script src="data/elements.js?v=20260924h"></script>
+<script src="data/ui.js?v=20260924h"></script>
+<script src="data/map.js?v=20260924h"></script>
+<script src="data/combat.js?v=20260924h"></script>
+<script src="data/leveling.js?v=20260924h"></script>
+<script src="data/lifespan.js?v=20260924h"></script>
+<script src="data/tribulation.js?v=20260924h"></script>
+<script src="data/sect.js?v=20260924h"></script>
+<script src="data/shop.js?v=20260924h"></script>
+<script src="data/bag.js?v=20260924h"></script>
+<script src="data/equipment.js?v=20260924h"></script>
+<script src="data/lingbao-shop.js?v=20260924h"></script>
+<script src="data/servant.js?v=20260924h"></script>
+<script src="data/quest.js?v=20260924h"></script>
+<script src="data/activity.js?v=20260924h"></script>
+<script src="data/daily-quest.js?v=20260924h"></script>
+<script src="data/auction.js?v=20260924h"></script>
+<script src="data/merit.js?v=20260924h"></script>
+<script src="data/talisman.js?v=20260924h"></script>
+<script src="data/field.js?v=20260924h"></script>
+<script src="data/beast-combat.js?v=20260924h"></script>
+<script src="data/beast.js?v=20260924h"></script>
+<script src="data/library.js?v=20260924h"></script>
+<script src="data/alchemy.js?v=20260924h"></script>
+<script src="data/player-profile.js?v=20260924h"></script>
+<script src="data/save.js?v=20260924h"></script>
+<script src="data/home-ui.js?v=20260924h"></script>
+<script src="data/avatar.js?v=20260924h"></script>
+<script src="data/title-screen.js?v=20260924h"></script>
+<script src="data/main.js?v=20260924h"></script>
 
 </body>
 </html>

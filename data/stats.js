@@ -137,6 +137,11 @@ function getBasePower() {
     return base;
 }
 
+// 虛弱（渡劫失敗後、升回 10 階前）：攻擊與氣血／靈力上限的倍率，見 config-tribulation.js
+function getWeaknessMult() {
+    return player.weakened ? WEAKNESS_STAT_MULT : 1;
+}
+
 function getPhysAttack() {
     let eqBonus = getEquipBonus();
     let totalStr = player.stats.str + eqBonus.str;
@@ -144,7 +149,7 @@ function getPhysAttack() {
     base *= getRootBonus().atkMult;
     if (player.buffTimer > 0) base *= player.buffMult;
     if (petBuffTimer > 0) base *= petBuffMult;
-    return Math.floor(base);
+    return Math.floor(base * getWeaknessMult());
 }
 
 function getMagAttack() {
@@ -154,7 +159,7 @@ function getMagAttack() {
     base *= getRootBonus().atkMult;
     if (player.buffTimer > 0) base *= player.buffMult;
     if (petBuffTimer > 0) base *= petBuffMult;
-    return Math.floor(base);
+    return Math.floor(base * getWeaknessMult());
 }
 
 function getMaxHp() {
@@ -164,13 +169,13 @@ function getMaxHp() {
     totalCon *= root.conMult;
     let baseHp = Math.floor(getBasePower() * 20 * (player.sect ? player.sect.powerMult : 1.0) + (totalCon * 10));
     baseHp = Math.floor(baseHp * root.hpMult);
-    return baseHp + (player.level - 1) * LEVEL_UP_HP_GAIN + getReincarnateBonus().hp;
+    return Math.floor((baseHp + (player.level - 1) * LEVEL_UP_HP_GAIN + getReincarnateBonus().hp) * getWeaknessMult());
 }
 
 function getMaxMp() {
     let eqBonus = getEquipBonus();
     let totalSpr = player.stats.spr + eqBonus.spr;
-    return Math.floor(50 + (totalSpr * 10)) + (player.level - 1) * LEVEL_UP_MP_GAIN + getReincarnateBonus().mp;
+    return Math.floor((Math.floor(50 + (totalSpr * 10)) + (player.level - 1) * LEVEL_UP_MP_GAIN + getReincarnateBonus().mp) * getWeaknessMult());
 }
 
 // 轉世保留的氣血／靈力上限（leveling.js 的 triggerReincarnate 寫入），舊存檔沒有此欄位視為 0

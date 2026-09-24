@@ -50,7 +50,7 @@ function updateCombatVisualPanel() {
     document.getElementById('battle-player-name').innerText = (player.name || (player.gender === 'female' ? "南宮婉" : "韓立"))
         + (playerElem ? `【${playerElem}】` : '');
     let playerSt = formatStatus(playerStatus);
-    document.getElementById('battle-player-hp').innerText = `氣血: ${Math.floor(player.hp)}/${player.maxHp}${playerSt ? ' ' + playerSt : ''}`;
+    document.getElementById('battle-player-hp').innerText = `氣血: ${Math.floor(player.hp)}/${player.maxHp}${playerSt ? ' ' + playerSt : ''}${player.weakened ? ' 😵虛弱' : ''}`;
 
     const avatarContainer = document.getElementById('battle-player-icon');
     const avatar = getPlayerAvatar();   // 玩家選用的頭像（avatar.js），未選則依性別
@@ -115,7 +115,10 @@ function updateUI() {
     if (player.hp > player.maxHp) player.hp = player.maxHp;
     if (player.mp > player.maxMp) player.mp = player.maxMp;
 
-    document.getElementById('realm-display').innerText = `${realms[player.realmIndex]} ${player.stage}階`;
+    const realmEl = document.getElementById('realm-display');
+    realmEl.innerText = `${realms[player.realmIndex]} ${player.stage}階`;
+    // 渡劫失敗的虛弱狀態（stats.js 的 getWeaknessMult）
+    if (player.weakened) realmEl.innerHTML += ` <span class="weak-tag" title="攻擊、氣血與靈力上限 -${Math.round((1 - WEAKNESS_STAT_MULT) * 100)}%，修回 10 階後解除">虛弱 -${Math.round((1 - WEAKNESS_STAT_MULT) * 100)}%</span>`;
     let levelPct = player.level >= MAX_PLAYER_LEVEL ? 100 : Math.min(player.levelExp / getLevelExpNeeded(player.level) * 100, 100);
     document.getElementById('level-display').innerText = `Lv.${player.level.toLocaleString()} (${levelPct.toFixed(1)}%)`;
     let lifespanEl = document.getElementById('lifespan-display');
