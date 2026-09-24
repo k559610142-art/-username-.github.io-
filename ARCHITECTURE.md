@@ -1001,7 +1001,7 @@ combatTick() 每秒執行 [combat.js]
 （以 8 種舊存檔形態測試目前程式皆可正常讀取；移除 `#age-display` 即可重現同一錯誤。）
 
 ### 1. 發佈版本號（防止新舊檔案混用）
-- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260924d`）。
+- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260924g`）。
 - **每次推上 GitHub Pages 前，把所有 `?v=` 全部取代成新值**（例：日期＋序號）。新 index.html 會指向新網址的 JS，不會再拿到快取的舊檔。
 - 新增 `data/*.js` 時也要記得帶上 `?v=`。
 
@@ -1073,17 +1073,18 @@ combatTick() 每秒執行 [combat.js]
 - **入口**：點洞府左上的頭像（`#hud-avatar`）→ `openAvatarModal()` 開啟 `#avatar-modal`，列出全部頭像（已解鎖／使用中／鎖定與條件、目前進度）。
 - **不分性別**，所有頭像男女修都能用；`player.avatarId = null` 時依性別顯示預設的韓立／南宮婉（`getPlayerAvatar()`）。
 - **解鎖方式：花靈石購買**。除了預設的韓立／南宮婉，其餘 10 個頭像都是 `unlock: { type: "coins", value: AVATAR_UNLOCK_COINS }`，
-  目前 **每個 100,000 靈石**（`config-avatars.js` 的 `AVATAR_UNLOCK_COINS`，改這一個常數即可全部調價；個別頭像也可寫不同 `value`）。
+  目前 **每個 10,000,000 靈石（1000 萬）**（`config-avatars.js` 的 `AVATAR_UNLOCK_COINS`，改這一個常數即可全部調價；個別頭像也可寫不同 `value`）。
   - 在選擇視窗點未解鎖的頭像 → `buyAvatar(id)`：靈石不足會提示；足夠則 `confirm` 後扣款、加進 `player.unlockedAvatars` 並**立即換上**。
   - 已解鎖的不會重複扣款；**解鎖後永久保留**（轉世也不會失去；選用中的頭像也保留）。
-  - 卡片顯示「💰 100,000 靈石解鎖」，靈石不足時轉紅並註明。
+  - 卡片顯示「💰 10,000,000 靈石解鎖」，靈石不足時轉紅並註明。
+  - 價格參考：線上掛機每小時靈石約 2 萬（野外初期）～1000 萬（禁區以上封頂，第 23 節），所以一個頭像約是後期 1 小時的收入。
 
   | 頭像 | id |
   |---|---|
   | 韓立／南宮婉（預設，免費） | `male` / `female` |
   | 執扇仙子、琵琶仙子、花仙童女 | `fan-fairy` / `pipa-fairy` / `flower-girl` |
-  | 藍衣少年、星海客、銀髮劍仙 | `blue-youth` / `starsea` / `silver-swordswoman` |
-  | 妖妖、羅峰、姜太虛、金龍帝君 | `yaoyao` / `luofeng` / `jiang-taixu` / `golden-emperor` |
+  | 藍衣少年、亂星海大善人、銀髮劍仙 | `blue-youth` / `starsea` / `silver-swordswoman` |
+  | 妖妖、羅峰、姜太虛、少年人皇 石昊 | `yaoyao` / `luofeng` / `jiang-taixu` / `golden-emperor` |
 
 - **條件類型**（`checkAvatarCondition()`）：`coins`（購買）之外，程式仍支援「達成即自動解鎖」的 `realm`／`level`／`reputation`／`tribulation`，
   由 `updateUI()` 呼叫的 `checkAvatarUnlocks()` 判定（`coins` 類型會被略過，一定要玩家自己買）。之後想讓特定頭像改回成就解鎖，改該筆的 `unlock` 即可。

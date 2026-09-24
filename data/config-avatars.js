@@ -10,7 +10,7 @@
 //   { type: "level", value: N }               人物等級 ≥ N
 //   { type: "reputation", value: N }          聲望 ≥ N（只看是否達到，不會扣除）
 //   { type: "tribulation", value: N }         累計渡劫成功 ≥ N 次
-const AVATAR_UNLOCK_COINS = 100000;   // 每個頭像的解鎖價格（靈石）
+const AVATAR_UNLOCK_COINS = 10000000;   // 每個頭像的解鎖價格（靈石，1000 萬）
 // 新增頭像：把圖放進 images/avatars/，在這裡加一筆即可（id 不可與既有重複，存檔以 id 記錄）。
 const avatarList = [
     { id: "male",              name: "韓立",     img: "images/avatar-male.jpg",                     pos: "49% center", unlock: null },
@@ -19,10 +19,10 @@ const avatarList = [
     { id: "pipa-fairy",        name: "琵琶仙子", img: "images/avatars/avatar-pipa-fairy.jpg",        pos: "center", unlock: { type: "coins", value: AVATAR_UNLOCK_COINS } },
     { id: "flower-girl",       name: "花仙童女", img: "images/avatars/avatar-flower-girl.jpg",       pos: "center", unlock: { type: "coins", value: AVATAR_UNLOCK_COINS } },
     { id: "blue-youth",        name: "藍衣少年", img: "images/avatars/avatar-blue-youth.jpg",        pos: "center", unlock: { type: "coins", value: AVATAR_UNLOCK_COINS } },
-    { id: "starsea",           name: "星海客",   img: "images/avatars/avatar-starsea.jpg",           pos: "center", unlock: { type: "coins", value: AVATAR_UNLOCK_COINS } },
+    { id: "starsea",           name: "亂星海大善人", img: "images/avatars/avatar-starsea.jpg",           pos: "center", unlock: { type: "coins", value: AVATAR_UNLOCK_COINS } },
     { id: "silver-swordswoman",name: "銀髮劍仙", img: "images/avatars/avatar-silver-swordswoman.jpg",pos: "center", unlock: { type: "coins", value: AVATAR_UNLOCK_COINS } },
     { id: "yaoyao",            name: "妖妖",     img: "images/avatars/avatar-yaoyao.jpg",            pos: "center", unlock: { type: "coins", value: AVATAR_UNLOCK_COINS } },
     { id: "luofeng",           name: "羅峰",     img: "images/avatars/avatar-luofeng.jpg",           pos: "center", unlock: { type: "coins", value: AVATAR_UNLOCK_COINS } },
     { id: "jiang-taixu",       name: "姜太虛",   img: "images/avatars/avatar-jiang-taixu.jpg",       pos: "center", unlock: { type: "coins", value: AVATAR_UNLOCK_COINS } },
-    { id: "golden-emperor",    name: "金龍帝君", img: "images/avatars/avatar-golden-emperor.jpg",    pos: "center", unlock: { type: "coins", value: AVATAR_UNLOCK_COINS } }
+    { id: "golden-emperor",    name: "少年人皇 石昊", img: "images/avatars/avatar-golden-emperor.jpg",    pos: "center", unlock: { type: "coins", value: AVATAR_UNLOCK_COINS } }
 ];
