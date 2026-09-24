@@ -7,16 +7,38 @@ const STAGE_IMG_H = 1520;
 
 const TAB_TITLES = { cultivate: "修仙", battle: "戰鬥", sect: "宗門", world: "世界" };
 
-// 依視窗大小等比縮放舞台（完整顯示整張圖，多出的邊用模糊背景補），並設定 --u = 每個圖片像素對應的螢幕像素
+// 版面（顯示尺寸在 settings.js 設定，第 34 節）：
+//   phone：舞台滿版填滿（最寬 9:16），背景圖以 fill 伸縮，疊加元素都是 % 座標所以仍對齊；#tab-sheet 蓋在舞台上
+//   pc   ：16:9 畫框，左邊是完整比例的洞府圖、右邊是分頁面板（#tab-sheet 搬到舞台外）
+// --u = 每個圖片像素對應的螢幕像素（字級與間距用），舞台被壓扁時取寬高較小的比例，文字不會溢出
 function layoutStage() {
+    const frame = document.getElementById('app-frame');
     const stage = document.getElementById('app-stage');
-    if (!stage) return;
+    const sheet = document.getElementById('tab-sheet');
+    if (!frame || !stage || !sheet) return;
     const vw = window.innerWidth, vh = window.innerHeight;
-    let w = vw, h = vw * STAGE_IMG_H / STAGE_IMG_W;
-    if (h > vh) { h = vh; w = vh * STAGE_IMG_W / STAGE_IMG_H; }
-    stage.style.width = w + 'px';
-    stage.style.height = h + 'px';
-    stage.style.setProperty('--u', (w / STAGE_IMG_W) + 'px');
+    const pc = resolveDisplayLayout(vw, vh) === 'pc';
+    document.body.classList.toggle('layout-pc', pc);
+
+    let fw, fh, sw, sh;
+    if (pc) {
+        fw = vw; fh = vw * 9 / 16;
+        if (fh > vh) { fh = vh; fw = vh * 16 / 9; }
+        sh = fh; sw = fh * STAGE_IMG_W / STAGE_IMG_H;
+        if (sheet.parentNode !== frame) frame.appendChild(sheet);
+    } else {
+        sh = vh; sw = Math.min(vw, vh * 9 / 16);
+        fw = sw; fh = sh;
+        if (sheet.parentNode !== stage) stage.insertBefore(sheet, document.getElementById('bottom-nav'));
+    }
+    frame.style.width = fw + 'px';
+    frame.style.height = fh + 'px';
+    stage.style.width = sw + 'px';
+    stage.style.height = sh + 'px';
+    stage.style.setProperty('--u', Math.min(sw / STAGE_IMG_W, sh / STAGE_IMG_H) + 'px');
+
+    // PC 版右側面板一定要有內容：停在洞府時改顯示上次的分頁（預設戰鬥）
+    if (pc && document.body.dataset.tab === 'home') switchTab('home');
 }
 
 function initHomeUi() {
@@ -27,7 +49,11 @@ function initHomeUi() {
 }
 
 // 底部導覽：home（洞府）只顯示背景與熱點；其他分頁在 #tab-sheet 顯示 data-tab 相符的面板
+// PC 版洞府熱點一直可見，按「洞府」改為停留在上次的分頁
+let lastSheetTab = 'battle';
 function switchTab(tab) {
+    if (tab === 'home' && document.body.classList.contains('layout-pc')) tab = lastSheetTab;
+    if (TAB_TITLES[tab]) lastSheetTab = tab;
     document.body.dataset.tab = tab;
     document.querySelectorAll('#bottom-nav .nav-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.nav === tab);

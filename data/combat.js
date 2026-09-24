@@ -4,6 +4,9 @@ function combatTick() {
     if (potionCooldownHp > 0) potionCooldownHp--;
     if (potionCooldownMp > 0) potionCooldownMp--;
 
+    // 分頁在背景被瀏覽器放慢／暫停時，補發沒跑到的秒數（離線公式，見 save.js）
+    checkBackgroundCatchUp();
+
     if (gameOver || player.hp <= 0) return;
 
     // 歲月流逝：每秒依所在地危險度消耗壽元（觸及底線後停止，見 lifespan.js）

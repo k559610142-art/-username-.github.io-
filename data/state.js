@@ -70,6 +70,8 @@ let tribulationFatedWin = false;   // 開打時依勝算擲出的天命（true =
 let potionCooldownHp = 0;    // 氣血類藥品剩餘冷卻秒數
 let potionCooldownMp = 0;    // 靈力類藥品剩餘冷卻秒數
 let gameOver = false;        // 壽元耗盡：停止戰鬥與存檔，等待重新載入
+let lastTickAt = 0;          // 上一次 combatTick 的時間（背景補發用，save.js 的 checkBackgroundCatchUp）
+let missedTickMs = 0;        // 背景期間被瀏覽器延後、尚未補發的毫秒數
 let playerStatus = { frozen: 0, burn: null, poison: null };   // 玩家身上的凍結/燒傷/中毒（elements.js）
 
 // 靈寵輔助效果（木：攻擊增益／土：減傷／水：持續回復），皆以回合數倒數

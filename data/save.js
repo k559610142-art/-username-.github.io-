@@ -14,6 +14,40 @@ function calcOfflineProgress() {
 
     if (offlineSeconds < 10) return; // 離線小於10秒不觸發
 
+    let msg = settleIdleSeconds(offlineSeconds, "離線");
+    player.lastSaveTime = Date.now();
+    addLog(`🌙 ${msg}`, "system");
+    setTimeout(() => { alert(`【離線掛機收益結算】\n${msg}`); }, 500);
+}
+
+// 背景補發：分頁縮小／切到其他 App／鎖螢幕時，瀏覽器會放慢甚至暫停 setInterval，
+// combatTick() 每秒呼叫本函式，偵測兩次 tick 的間隔，把沒跑到的秒數以離線公式補發（不重複計算已跑過的 tick）。
+// 間隔 ≤ BACKGROUND_TICK_SLACK_MS 視為正常抖動不計；累積滿 BACKGROUND_SETTLE_MIN_SECONDS 秒才結算一次，避免日誌洗版。
+const BACKGROUND_TICK_SLACK_MS = 1500;
+const BACKGROUND_SETTLE_MIN_SECONDS = 10;
+
+function checkBackgroundCatchUp() {
+    let now = Date.now();
+    let prev = lastTickAt;
+    lastTickAt = now;
+    if (!prev) return;
+    let gap = now - prev;
+    if (gap > BACKGROUND_TICK_SLACK_MS) missedTickMs += gap - 1000;
+
+    // 渡劫中、已死亡或遊戲結束時不補發（渡劫數秒內就會分出勝負），丟棄累積的時間
+    if (gameOver || inTribulation || player.hp <= 0) { missedTickMs = 0; return; }
+
+    let seconds = Math.floor(missedTickMs / 1000);
+    if (seconds < BACKGROUND_SETTLE_MIN_SECONDS) return;
+    missedTickMs -= seconds * 1000;
+    seconds = Math.min(seconds, 86400);   // 與離線上限相同
+    addLog(`🌙 ${settleIdleSeconds(seconds, "背景掛機時")}`, "system");
+    updateUI();
+}
+
+// 離線／背景共用的收益結算：依秒數給經驗、靈石、聲望、功德、救僕從，並扣壽元與靈寵維持費；回傳結算說明
+// label 只影響文字（"離線"／"背景掛機時"）
+function settleIdleSeconds(offlineSeconds, label) {
     let expEarned = 0;
     let coinsEarned = 0;
     let msg = "";
@@ -26,8 +60,8 @@ function calcOfflineProgress() {
         expEarned = ticks * (player.currentMap.expRate * 50);
         let gained = gainExp(expEarned) || 0;
         msg = wasPending
-            ? `🧘‍♂️ 離線於【${player.currentMap.name}】靜修 ${Math.floor(offlineSeconds / 60)} 分鐘，但修為已圓滿待渡劫，未能再累積經驗。`
-            : `🧘‍♂️ 離線於【${player.currentMap.name}】靜修打坐 ${Math.floor(offlineSeconds / 60)} 分鐘，獲得 ${Math.floor(gained)} 點經驗！`;
+            ? `🧘‍♂️ ${label}於【${player.currentMap.name}】靜修 ${formatIdleDuration(offlineSeconds)}，但修為已圓滿待渡劫，未能再累積經驗。`
+            : `🧘‍♂️ ${label}於【${player.currentMap.name}】靜修打坐 ${formatIdleDuration(offlineSeconds)}，獲得 ${Math.floor(gained)} 點經驗！`;
     } else {
         // OFFLINE_COMBAT_RATE = 離線每秒的戰鬥次數（見 config-maps.js，刻意低於線上滿速的每秒 0.32 隻）
         let combatTicks = Math.floor(offlineSeconds * OFFLINE_COMBAT_RATE);
@@ -60,7 +94,7 @@ function calcOfflineProgress() {
         }
 
         let expText = wasPending ? "修為已滿(待渡劫，無經驗)" : `${Math.floor(gained)} 經驗`;
-        msg = `⚔️ 離線於【${player.currentMap.name}】歷練 ${Math.floor(offlineSeconds / 60)} 分鐘，獲得 ${expText}、${coinsEarned.toLocaleString()} 靈石與 ${repEarned.toLocaleString()} 點聲望`
+        msg = `⚔️ ${label}於【${player.currentMap.name}】歷練 ${formatIdleDuration(offlineSeconds)}，獲得 ${expText}、${coinsEarned.toLocaleString()} 靈石與 ${repEarned.toLocaleString()} 點聲望`
             + (meritEarned > 0 ? `、${meritEarned.toLocaleString()} 點功德` : '')
             + (rescuedCount > 0 ? `，並拯救了 ${rescuedCount} 名受困修士！` : '！');
     }
@@ -73,9 +107,11 @@ function calcOfflineProgress() {
     let upkeepText = settleOfflineBeastUpkeep(offlineSeconds);
     if (upkeepText) msg += `\n${upkeepText}`;
 
-    player.lastSaveTime = Date.now();
-    addLog(`🌙 ${msg}`, "system");
-    setTimeout(() => { alert(`【離線掛機收益結算】\n${msg}`); }, 500);
+    return msg;
+}
+
+function formatIdleDuration(seconds) {
+    return seconds < 60 ? `${seconds} 秒` : `${Math.floor(seconds / 60)} 分鐘`;
 }
 
 // 舊存檔相容：早期版本是「一份 activeQuest + assignedServantIds 共同加速」，

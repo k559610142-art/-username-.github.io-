@@ -43,9 +43,10 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
   merit.js            功德系統：獵殺邪修、功德兌換七彩補天石、購買破障丹（第 27 節）
   talisman.js         符寶坊：礦石煉製符寶、橙裝孔位鑲嵌／打掉（第 28 節）
   player-profile.js   玩家道號修改
-  save.js             本地存檔/讀檔/匯出入/離線掛機結算/重置/舊存檔相容
+  save.js             本地存檔/讀檔/匯出入/離線掛機結算＋背景補發（第 33 節）/重置/舊存檔相容
   avatar.js           頭像更換：解鎖判定、選擇視窗（設定在 config-avatars.js，第 32 節）
-  home-ui.js          洞府主畫面：舞台等比縮放、HUD 數值、底部導覽分頁、建築熱點、興建中提示（第 31 節）
+  home-ui.js          洞府主畫面：舞台縮放（手機／PC 版面）、HUD 數值、底部導覽分頁、建築熱點、興建中提示（第 31 節）
+  settings.js         設定視窗（洞府右上 ⚙️）：顯示尺寸 手機 9:16／PC 16:9／自動、全螢幕（第 34 節）
   title-screen.js     遊戲主頁（標題畫面）與進入世界
   main.js             initGame()/startGame() 與 window.onload，遊戲啟動進入點
 ```
@@ -84,7 +85,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 15a | `config-merit.js` | 邪修 `EVIL_SPAWN_CHANCE`/`EVIL_POWER_MULT`/`EVIL_MERIT_MIN`/`EVIL_MERIT_MAX`/`EVIL_ICON`、兌換 `MERIT_PER_BUTIAN_STONE`/`BREAK_PILL_STONE_COST`、破障丹效果 `BREAK_PILL_DEMON_POWER_MULT`/`BREAK_PILL_CHANCE_BONUS`/`BREAK_PILL_MAX_CHANCE`、`preciousItems`(顯示資料) | 無 | `merit.js`、`combat.js`(邪修生成)、`save.js`(離線功德)、`tribulation.js`(破障丹)、`bag.js`、`ui.js` |
 | 15c | `config-avatars.js` | `avatarList`（頭像 id／名稱／圖片／裁切位置／解鎖條件） | 無 | `avatar.js` |
 | 15b | `config-talisman.js` | 孔位 `SOCKET_QUALITY`/`SOCKET_MIN`/`SOCKET_MAX`、`talismanTypes`(11 種)、`talismanGrades`(下/中/上品的效果與出現機率)、`TALISMAN_CRAFT_COST`(每次 500 礦石＋5 萬靈石) | 無 | `talisman.js` |
-| 16 | `state.js` | `player`（含 `lingbaoSold`、渡劫失敗虛弱 `weakened`、頭像 `avatarId`/`unlockedAvatars`、礦石 `ore`、符寶 `talismans`、藏書閣屬性秘典次數 `elementStudy`、轉世保留的上限 `reincarnateBonus`、年齡 `age`、功德系統 `merit`/`butianStones`/`breakPills`/`evilKills`）、`DEFAULT_PLAYER_JSON`（全新角色預設值快照，讀檔/匯入的合併基底）、`enemies`（每隻帶 `attrs`/`status`）、`respawnTimer`、`safeZoneTimer`；不存檔的執行期狀態：`inTribulation`/`heartDemon`/`tribulationFatedWin`/丹藥冷卻/`gameOver`/`playerStatus`(玩家身上的凍結/燒傷/中毒)/靈寵輔助計時(`petBuff*`/`petShield*`/`petRegen*`) | **`maps`**（必須排在 config-maps.js 之後） | 幾乎所有檔案都會讀寫 `player` |
+| 16 | `state.js` | `player`（含 `lingbaoSold`、渡劫失敗虛弱 `weakened`、頭像 `avatarId`/`unlockedAvatars`、礦石 `ore`、符寶 `talismans`、藏書閣屬性秘典次數 `elementStudy`、轉世保留的上限 `reincarnateBonus`、年齡 `age`、功德系統 `merit`/`butianStones`/`breakPills`/`evilKills`）、`DEFAULT_PLAYER_JSON`（全新角色預設值快照，讀檔/匯入的合併基底）、`enemies`（每隻帶 `attrs`/`status`）、`respawnTimer`、`safeZoneTimer`；不存檔的執行期狀態：`inTribulation`/`heartDemon`/`tribulationFatedWin`/丹藥冷卻/`gameOver`/背景補發 `lastTickAt`/`missedTickMs`/`playerStatus`(玩家身上的凍結/燒傷/中毒)/靈寵輔助計時(`petBuff*`/`petShield*`/`petRegen*`) | **`maps`**（必須排在 config-maps.js 之後） | 幾乎所有檔案都會讀寫 `player` |
 | 17 | `stats.js` | `EQUIP_STAT_KEYS`、`getEquipBonus`(四維＋減傷/閃避/屬性傷害)/`getElementCounts`/`getSpiritRoots`(靈根判定)/`getRootBonus`(靈根加成總和)/`getPlayerElement`(本命五行，五行相剋用)/`getRealmStageExp`(依 realmPacing 換算每階經驗基數，有快取)/`getNextExp`/`getLevelExpNeeded`/`hasLiveBeast`(出戰中才算，呼叫 beast-combat.js 的 isBeastActive)/`getBasePower`/`getPhysAttack`/`getMagAttack`/`getMaxHp`/`getMaxMp`(兩者皆加上轉世保留值)/`getReincarnateBonus`/`getSectTier`/`getAllSkills` | `player`、`realms`、`sectData`、`LEVEL_*`、`equipTypes`/`WUXING_COUNTERS`、靈寵輔助計時 | `ui.js`、`combat.js`、`leveling.js`、`tribulation.js`、`beast-combat.js` 等幾乎全部功能檔 |
 | 18 | `elements.js` | `newStatus`/`getPlayerCombatAttrs`(含 `element`)/`getWuxingCounterMult`/`withSkillEffect`/`getMapCategoryIndex`/`rollMonsterAttrs`/`resolveHit`/`addDotStack`/`tickStatus`/`formatStatus`/`summarizeTags`/`formatEquipStats` | `config-elements.js`、`stats.js`(getEquipBonus/getPlayerElement)、`library.js`(getElementBookBonus)、`wuxingElements`、`maps`、`playerStatus` | `combat.js`、`tribulation.js`、`ui.js`、`bag.js`/`equipment.js`/`auction.js`/`lingbao-shop.js`(裝備屬性文字) |
 | 19 | `ui.js` | 常數 `PLAYER_AVATARS`（頭像 `img`（本地 images/avatar-*.jpg）/裁切位置 `pos`/預設道號，洞府頭像框、戰鬥實況、性別選擇共用；性別選擇視窗的兩張 `<img>` 寫在 index.html，換圖時要一起改）、`updateUI`/`updateCombatVisualPanel`/`formatWuxingCounterTip`/`updateTribulationUI`/`updatePotionCooldownUI`/`updateStudyCountsUI`/`renderSkillList`/`addLog`/`refreshCombatStatusText`/`updateAutoSettings`/`syncAutoSettingsUI`/`updateSectFacilitiesUI`/`closeModal`/`toggleDrawer`/`formatCountdown`/`resolveBatchCount`(×1/×10/最高 共用)/批次刪除工具 `renderBulkDeleteBar`/`getCheckedBulkQualities`/`toggleAllBulkQualities` | `player`、`realms`、`stats.js` 的計算函式、`lifespan.js`(getDeathLifespanCost) | 幾乎所有功能檔在資料變動後都會呼叫 `updateUI()`/`addLog()` |
@@ -111,9 +112,10 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 38 | `library.js` | 第一階段 `STUDY_COST`/`STUDY_GAIN`/`STUDY_MAX_COUNT`、`openLibraryModal`/`studyBook`；第二階段屬性秘典（第 24 節）`ELEMENT_BOOK_TIER`/`ELEMENT_BOOK_GAIN`/`ELEMENT_BOOK_MAX`/`ELEMENT_BOOK_COST`/`elementBooks`、`isElementBookUnlocked`/`getElementBookBonus`/`formatElementBookPercent`/`renderElementBooks`/`studyElementBook` | `player.studyCounts`/`elementStudy`/`martialPoints`/`spiritGrass`/`coins`/`stats`/`sectSkills`、`SECT_TIER_NAMES`、`ui.js`(resolveBatchCount) | HTML 按鈕（僅在「宗門」顯示）、`elements.js`(getPlayerCombatAttrs 呼叫 getElementBookBonus) |
 | 39 | `alchemy.js` | `pillRecipes`、`openAlchemyModal`/`craftPill` | `player.herbs`/`stats`/`coins`、`ui.js`(resolveBatchCount) | HTML 按鈕（僅在「宗門」顯示） |
 | 40 | `player-profile.js` | `PLAYER_NAME_MAX_LENGTH`、`sanitizePlayerName`(移除 HTML 特殊字元，讀檔/匯入也套用)/`changePlayerName`(開啟 #name-modal)/`confirmPlayerName` | `player.name` | HTML 按鈕、`save.js`(applySaveData) |
-| 41 | `save.js` | `calcOfflineProgress`(結尾結算離線靈寵維持費 settleOfflineBeastUpkeep)/`saveLocal`/`loadLocal`/`applySaveData`(讀檔與匯入共用)/`resetGameCompletely` + 舊存檔相容 `migrateServantAssignments`/`migrateEquipmentSlots`/`migrateActivityFields`/`migrateCurrentMap`/`migrateProgressionFields`/`migrateLegacySkills`(舊禁術下修＋已兌換武學耗魔同步)/`migrateRealmExp`(經驗曲線改版：待渡劫者修為壓回滿格)/`migrateEquipSockets`(只補 talismans 欄位) + 讀檔失敗保護 `saveLoadFailed`/`reportLoadFailure`/`retryLoadAfterFailure`/`showRawSaveForCopy`/`abandonSaveAndStartNew`（第 30 節） + 離線斬殺邪修的功德 + `reloadLocalSave`(選單按鈕，無存檔時給提示) + 存檔代碼（常數 `SAVE_CODE_PREFIX`="FS2:"、兩段式確認暫存 `pendingImportData`；編解碼皆為 async）`encodeSaveCode`/`decodeSaveCode`/`bytesToBase64`/`base64ToBytes`/`pipeBytes`/`openSaveCodeModal`/`setSaveCodeStatus`/`exportSave`/`selectSaveCodeText`/`copySaveCode`/`downloadSaveCode`/`importSave`/`pasteSaveCodeFromClipboard`/`importSaveFromFile`/`confirmImportSave`/`resetImportConfirm` | `player`（整包序列化進 `localStorage`）、`maps`(migrateCurrentMap)、`legacySkillAdjustments`/`lingbaoShopItems`(migrateLegacySkills)、`leveling.js`(gainExp)、`combat.js`(tryRescueServant)、`lifespan.js`、`beast-combat.js`(createBeast)、`ui.js` | `main.js`(啟動時 loadLocal)、`main.js`(initGame 內每 30 秒 saveLocal) |
+| 41 | `save.js` | `calcOfflineProgress`(讀檔時的離線結算，呼叫 settleIdleSeconds)/`settleIdleSeconds`(離線與背景共用的收益結算，含 settleOfflineBeastUpkeep 靈寵維持費)/`formatIdleDuration`/背景補發 `checkBackgroundCatchUp`＋常數 `BACKGROUND_TICK_SLACK_MS`/`BACKGROUND_SETTLE_MIN_SECONDS`（第 33 節）/`saveLocal`/`loadLocal`/`applySaveData`(讀檔與匯入共用)/`resetGameCompletely` + 舊存檔相容 `migrateServantAssignments`/`migrateEquipmentSlots`/`migrateActivityFields`/`migrateCurrentMap`/`migrateProgressionFields`/`migrateLegacySkills`(舊禁術下修＋已兌換武學耗魔同步)/`migrateRealmExp`(經驗曲線改版：待渡劫者修為壓回滿格)/`migrateEquipSockets`(只補 talismans 欄位) + 讀檔失敗保護 `saveLoadFailed`/`reportLoadFailure`/`retryLoadAfterFailure`/`showRawSaveForCopy`/`abandonSaveAndStartNew`（第 30 節） + 離線斬殺邪修的功德 + `reloadLocalSave`(選單按鈕，無存檔時給提示) + 存檔代碼（常數 `SAVE_CODE_PREFIX`="FS2:"、兩段式確認暫存 `pendingImportData`；編解碼皆為 async）`encodeSaveCode`/`decodeSaveCode`/`bytesToBase64`/`base64ToBytes`/`pipeBytes`/`openSaveCodeModal`/`setSaveCodeStatus`/`exportSave`/`selectSaveCodeText`/`copySaveCode`/`downloadSaveCode`/`importSave`/`pasteSaveCodeFromClipboard`/`importSaveFromFile`/`confirmImportSave`/`resetImportConfirm` | `player`（整包序列化進 `localStorage`）、`maps`(migrateCurrentMap)、`legacySkillAdjustments`/`lingbaoShopItems`(migrateLegacySkills)、`leveling.js`(gainExp)、`combat.js`(tryRescueServant)、`lifespan.js`、`beast-combat.js`(createBeast)、`ui.js` | `main.js`(啟動時 loadLocal)、`main.js`(initGame 內每 30 秒 saveLocal) |
 | 41b | `avatar.js` | `getPlayerAvatar`/`isAvatarUnlocked`/`checkAvatarCondition`/`checkAvatarUnlocks`/`openAvatarModal`/`renderAvatarModal`/`selectAvatar` | `avatarList`、`player.avatarId`/`unlockedAvatars`/`gender`/`realmIndex`/`level`/`reputation`/`tribulationCount`、`realms` | `ui.js`(updateUI 呼叫 checkAvatarUnlocks；戰鬥實況頭像)、`home-ui.js`(頭像框)、HTML 頭像點擊 |
-| 41a | `home-ui.js` | `STAGE_IMG_W`/`STAGE_IMG_H`、`TAB_TITLES`、`layoutStage`/`initHomeUi`/`switchTab`/`showStageToast`/`showUnderConstruction`/`openAscensionPlatform`/`formatShortNumber`/`getCultivationRate`/`updateHomeHud` | `player`、`realms`、`PLAYER_AVATARS`、`stats.js`、`tribulation.js`(triggerTribulation)、`activity.js`(openActivity) | `ui.js`(updateUI 結尾呼叫 updateHomeHud)、`main.js`(onload 呼叫 initHomeUi)、HTML 熱點與底部導覽 |
+| 41c | `settings.js` | `DISPLAY_MODE_KEY`(localStorage 鍵)/`DISPLAY_MODES`/`AUTO_PC_MIN_WIDTH`/`AUTO_PC_MIN_RATIO`、`getDisplayMode`/`resolveDisplayLayout`(回傳 'phone'／'pc')/`setDisplayMode`/`openSettingsModal`/`renderSettingsModal`/`isFullscreen`/`toggleFullscreen`；頂層註冊 `fullscreenchange` 監聽（只綁函式，載入順序不影響） | `home-ui.js`(layoutStage)、`#settings-modal` DOM、`localStorage` | `home-ui.js`(layoutStage 呼叫 resolveDisplayLayout)、HTML ⚙️ 設定按鈕 |
+| 41a | `home-ui.js` | `STAGE_IMG_W`/`STAGE_IMG_H`、`TAB_TITLES`、`lastSheetTab`(PC 版按洞府時停留的分頁)、`layoutStage`(手機／PC 版面，第 34 節)/`initHomeUi`/`switchTab`/`showStageToast`/`showUnderConstruction`/`openAscensionPlatform`/`formatShortNumber`/`getCultivationRate`/`updateHomeHud` | `player`、`realms`、`PLAYER_AVATARS`、`stats.js`、`tribulation.js`(triggerTribulation)、`activity.js`(openActivity) | `ui.js`(updateUI 結尾呼叫 updateHomeHud)、`main.js`(onload 呼叫 initHomeUi)、HTML 熱點與底部導覽 |
 | 42 | `title-screen.js` | `TITLE_HOTSPOTS`(光環座標)/`currentTitleHotspot`/`positionTitleHotspot`/`enterWorld`/`initTitleScreen`、旗標 `worldEntered` | `main.js`(startGame)、`#title-screen` DOM | `main.js`(onload 呼叫 initTitleScreen)、標題頁按鈕 |
 | 43 | `main.js` | `initGame`(含每 30 秒存檔與切到背景時存檔)/`startGame`(讀檔失敗時不進入開新角色)/`chooseGender`/`window.onload`、旗標 `gameStarted` | 幾乎全部模組（啟動流程的膠水程式碼） | 瀏覽器 `onload`、`title-screen.js`(enterWorld 呼叫 startGame) |
 
@@ -152,6 +154,7 @@ initGame() [main.js]
         └─ setInterval(saveLocal, 30000)   [save.js]    ← 自動存檔
 
 combatTick() 每秒執行 [combat.js]
+        ├─ checkBackgroundCatchUp() [save.js]：分頁在背景被放慢／暫停時，把沒跑到的秒數以離線公式補發（第 33 節）
         ├─ 安全區：回血回魔、每 5 秒 gainExp() [leveling.js]
         ├─ 野外：玩家狀態結算(燒傷/中毒/凍結) → 攻擊/技能（每擊經 resolveHit() [elements.js]）
         │        → 靈寵協助 petAssistTick() [beast-combat.js] → 怪物狀態結算 → 擊殺結算 → 怪物逐隻反擊（同樣經 resolveHit()）
@@ -202,6 +205,7 @@ combatTick() 每秒執行 [combat.js]
 | `enterWorld` | `data/title-screen.js` |
 | `retryLoadAfterFailure`, `showRawSaveForCopy`, `abandonSaveAndStartNew`（讀檔失敗視窗） | `data/save.js` |
 | `switchTab`, `openAscensionPlatform`, `showUnderConstruction`（洞府主畫面） | `data/home-ui.js` |
+| `openSettingsModal`（洞府右上 ⚙️）、`setDisplayMode(mode)`、`toggleFullscreen`（後兩者由 `renderSettingsModal()` 動態產生） | `data/settings.js` |
 | `openAvatarModal`（點洞府頭像）、`selectAvatar(id)`（選擇視窗內動態產生） | `data/avatar.js` |
 | `chooseGender` | `data/main.js` |
 
@@ -599,7 +603,7 @@ combatTick() 每秒執行 [combat.js]
 
   - 線上：`combat.js` 的 `combatTick()` 每秒呼叫 `tickBeastUpkeep()`（在渡劫接管之前，所以渡劫中也計費）。
     付不起（靈石或獸丹任一不足）→ `restBeastForUpkeep()` 自動召回休息並寫日誌，不會部分扣款。
-  - 離線：`calcOfflineProgress()` 結尾呼叫 `settleOfflineBeastUpkeep(秒數)`，在離線靈石入帳後逐次扣，付不起就從那一刻召回；
+  - 離線／背景補發：`settleIdleSeconds()` 結尾呼叫 `settleOfflineBeastUpkeep(秒數)`，在離線靈石入帳後逐次扣，付不起就從那一刻召回；
     離線經驗加成以離線**開始時**的出戰狀態計算（簡化）。
   - 靈獸園可手動「召回休息／出戰」（`toggleBeastActive()`）；休息中不收費、不給被動、不出手、不累積經驗。
     計時存在靈寵身上，召回只是暫停，再出戰時接續，**反覆切換無法躲費用**。出戰前會檢查付得起一次費用。
@@ -1029,7 +1033,7 @@ combatTick() 每秒執行 [combat.js]
 （以 8 種舊存檔形態測試目前程式皆可正常讀取；移除 `#age-display` 即可重現同一錯誤。）
 
 ### 1. 發佈版本號（防止新舊檔案混用）
-- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260924i`）。
+- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260924k`）。
 - **每次推上 GitHub Pages 前，把所有 `?v=` 全部取代成新值**（例：日期＋序號）。新 index.html 會指向新網址的 JS，不會再拿到快取的舊檔。
 - 新增 `data/*.js` 時也要記得帶上 `?v=`。
 
@@ -1052,9 +1056,10 @@ combatTick() 每秒執行 [combat.js]
 程式只負責把即時數值疊進框裡，並在圖上的按鈕位置放透明點擊區。
 
 ### 舞台與對齊
-- `#app-stage`：`home-ui.js` 的 `layoutStage()` 依視窗大小**等比縮放**（完整顯示整張圖，contain），置中；
-  寬螢幕（電腦）兩側由 `body::before` 用同一張圖放大模糊補底。視窗縮放、轉向時重算。
-- CSS 變數 `--u` = 舞台寬 ÷ 704，字級與間距一律 `calc(var(--u) * 圖上像素)`，縮放後比例不變。
+- `#app-frame`（外框，fixed 置中）包住 `#app-stage`（舞台，relative）。`home-ui.js` 的 `layoutStage()` 依**顯示尺寸設定**（第 34 節）計算：
+  手機版舞台滿版填滿（最寬 9:16，背景圖 `object-fit: fill` 伸縮）；PC 版為 16:9 外框，舞台保持原圖比例在左、分頁面板在右。
+  多出的邊由 `body::before` 用同一張圖放大模糊補底。視窗縮放、轉向、進出全螢幕時重算。
+- CSS 變數 `--u` = min(舞台寬 ÷ 704, 舞台高 ÷ 1520)，字級與間距一律 `calc(var(--u) * 圖上像素)`（舞台被壓扁時取較小值，文字不溢出）。
 - 疊加元素的 `left/top/width/height` 一律寫成「**圖上座標 ÷ 704（橫向）或 ÷ 1520（縱向）**」的百分比。
   ⚠️ **換背景圖時**：要改 `STAGE_IMG_W`/`STAGE_IMG_H`，並重新量 index.html 內所有 `%` 座標（HUD、熱點、側邊按鈕、底部導覽、`#tab-sheet`）。
 
@@ -1066,7 +1071,7 @@ combatTick() 每秒執行 [combat.js]
 | `#hud-name` | 名字框 (159,47) | 道號、境界階數（待渡劫會標示）、Lv 與等級進度條、戰力 |
 | `#hud-coins` | 左資源框（元寶） | 靈石（`formatShortNumber`：萬／億縮寫） |
 | `#hud-rep` | 右資源框（圖上原為「仙玉」） | **聲望** |
-| `#hud-stats` | 資源框下方（新增的半透明面板） | 氣血／靈力／修為條、修煉效率（`getCultivationRate()` = 宗門經驗倍率 × 靈寵加成） |
+| `#hud-stats` | 資源框下方（新增的半透明面板） | 氣血／靈力／修為條、修煉效率（`getCultivationRate()` = 宗門經驗倍率 × 靈寵加成）；最下列左側 `#btn-settings`「⚙️ 設定」開啟設定視窗（第 34 節） |
 | 熱點「升仙台」 | 寶塔 | `openAscensionPlatform()`：待渡劫時 `triggerTribulation()`，否則提示修為進度；待渡劫時牌匾亮紅點 |
 | 熱點「領物閣」 | 山中發光洞口 | `openActivity('auction')`（千寶閣，未解鎖會提示條件） |
 | 熱點「宗門」 | 左側山門 | 切到宗門分頁 |
@@ -1091,7 +1096,7 @@ combatTick() 每秒執行 [combat.js]
 - **新增面板**：放進 `#game-container` 並加上 `data-tab="分頁名"` 即可。
 
 ### 其他
-- 標題畫面期間 `body.title-mode` 會隱藏 `#app-stage`。`main.js` 的 `window.onload` 先 `initHomeUi()` 再 `initTitleScreen()`。
+- 標題畫面期間 `body.title-mode` 會隱藏 `#app-frame`。`main.js` 的 `window.onload` 先 `initHomeUi()` 再 `initTitleScreen()`。
 - `updateUI()` 結尾呼叫 `updateHomeHud()`，所以 HUD 與原面板永遠同步。
 - 彈出視窗（`.modal-bg`，z-index 100）仍是全螢幕，蓋在舞台上方。
 - 背景圖只有 704 寬，在高解析手機上會略微放大；若之後有更大的同構圖，直接替換並依上方警語重新量座標即可。
@@ -1123,3 +1128,44 @@ combatTick() 每秒執行 [combat.js]
   三位仙子取自三聯圖（解析度較高），妖妖的原圖只有 225×225，放大後較模糊，有更清楚的圖可直接替換同檔名。
 - **顯示位置**：洞府頭像框（`home-ui.js`）、戰鬥分頁的戰場實況（`ui.js` 的 `updateCombatVisualPanel`）都用 `getPlayerAvatar()`；
   開場性別選擇視窗仍固定顯示韓立／南宮婉。
+
+## 33. 背景掛機補發（縮小視窗／切 App／鎖螢幕）
+
+**問題（2026-09-24 實測）**：遊戲靠 `setInterval(combatTick, 1000)` 推進，瀏覽器會節流背景分頁的計時器——
+App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；一般 Chrome 背景 5 分鐘後可能降到每分鐘 1 次；手機切 App／鎖屏通常完全暫停。
+而離線結算只在讀檔時執行，所以回到畫面後這段損失**不會補回**。
+
+**做法**（`save.js`）：
+- `combatTick()` 開頭呼叫 `checkBackgroundCatchUp()`：記下每次 tick 的時間 `lastTickAt`，兩次間隔超過 `BACKGROUND_TICK_SLACK_MS`(1500ms)
+  就把「間隔 − 1 秒」累積到 `missedTickMs`（只算沒跑到的時間，已執行的 tick 不重複計）。
+- 累積滿 `BACKGROUND_SETTLE_MIN_SECONDS`(10) 秒就以 `settleIdleSeconds(秒數, "背景掛機時")` 補發，只寫日誌、不跳 alert；單次上限 24 小時（同離線）。
+- `settleIdleSeconds()` 是從 `calcOfflineProgress()` 抽出的共用結算：經驗、靈石、聲望、功德、救僕從、壽元流逝（×`LIFESPAN_OFFLINE_RATE`）、靈寵維持費，
+  **公式與離線掛機完全相同**，改離線收益時兩者同步生效。
+- 渡劫中、已死亡、`gameOver` 時不補發，並丟棄累積時間。
+- 與讀檔離線結算不會重複：切到背景時 `visibilitychange` 會存檔更新 `lastSaveTime`；
+  若分頁在背景被瀏覽器結束，下次讀檔從該時間算離線；若分頁恢復執行，則由背景補發處理。
+- 附帶效果：`alert`/`confirm` 視窗開著時 JS 會暫停，關閉後這段時間也會被補發（視同時間流逝）。
+- 目前離線／背景補發**不推進門派任務與僕從任務**（沿用原本離線結算的行為）。
+
+## 34. 設定：顯示尺寸與全螢幕（`settings.js`）
+
+入口：洞府 HUD 右上面板最下列的「⚙️ 設定」（`#btn-settings` → `openSettingsModal()` → `#settings-modal`）。
+
+| 選項 | 版面（`resolveDisplayLayout()`） | 說明 |
+|---|---|---|
+| 📱 手機 9:16 | `phone` | 舞台高 = 視窗高、寬 = min(視窗寬, 高 × 9/16)：手機上**滿版**；電腦上是置中的 9:16 直式畫面。背景圖伸縮填滿（真實手機約 9:19.5，變形很小；純 9:16 會壓扁約 18%），疊加元素都是 % 座標所以仍對齊 |
+| 🖥️ PC 16:9 | `pc` | 16:9 外框等比塞進視窗；左邊舞台保持原圖比例（高 = 外框高），右邊是分頁面板 |
+| 自動尺寸（預設） | 視窗寬 ≥ `AUTO_PC_MIN_WIDTH`(900) 且寬高比 ≥ `AUTO_PC_MIN_RATIO`(1.2) → `pc`，否則 `phone` | 設定視窗會標示目前實際使用哪一種 |
+| ⛶ 全螢幕 | （開關，不是版面） | `toggleFullscreen()` 用 Fullscreen API（含 webkit 前綴）；不支援時（iPhone Safari）提示改用「加入主畫面」。進出全螢幕觸發 resize，版面自動重算；按 Esc 離開時 `fullscreenchange` 會更新按鈕狀態 |
+
+- **儲存**：`localStorage['xiuxian_display_mode']`（`phone`／`pc`／`auto`），讀寫都包 try/catch，讀不到就用 `auto`。
+  屬於**裝置偏好，不寫進遊戲存檔**，所以匯入別台的存檔不會改變版面。全螢幕狀態不儲存（瀏覽器規定必須由使用者點擊觸發）。
+- **PC 版實作**（`home-ui.js` 的 `layoutStage()` ＋ index.html 的 `body.layout-pc` 樣式）：
+  - `body.layout-pc` 時把 `#tab-sheet` 用 `appendChild` 搬到 `#app-frame`（舞台右側）；切回手機版時搬回 `#app-stage`（`#bottom-nav` 之前）。
+    只是搬動 DOM 節點，所有 id 與事件不變，`updateUI()` 照常寫入。
+  - 洞府熱點一直顯示（右側面板不會蓋住圖）；分頁面板的 ✕ 關閉鈕隱藏。
+  - 右側面板一定要有內容：PC 版按「洞府」或停在洞府時，改顯示上次的分頁（`lastSheetTab`，預設戰鬥）。
+  - 面板字級 15px、卡片最小寬 170px、日誌高 38vh（覆蓋第 31 節手機分頁的設定）。
+- ⚠️ 全域樣式 `button.active` 會把按鈕底色改成金色，新的 `.xxx.active` 按鈕樣式要自己覆蓋 `background`/`color`（`.settings-option.active` 即是）。
+- 驗證紀錄（2026-09-24）：1280×720 自動 → PC（外框 1280×720、舞台 333×720、面板在右）；375×812 自動 → 手機滿版 375×812、無水平捲動；
+  1280×720 強制手機 → 置中 405×720。全螢幕需使用者手勢，未自動化測試。
