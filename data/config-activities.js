@@ -18,7 +18,7 @@ const activityData = [
 
     // 懸賞榜（天／地／人榜）＋野外修士＋善惡值，見 merit.js／bounty.js；改成 implemented: false 即可整體暫停
     { id: "evil", name: "獵殺邪修", icon: "🗡️", minRep: 8000, minRealmIndex: 3,
-      implemented: true, openFn: "openEvilHuntModal",
+      implemented: true, openFn: "openEvilHallScene",   // 先進殺手殿堂場景，點匾額才開懸賞榜（merit.js）
       desc: "懸賞榜・每 4 小時刷新 6 名" },
 
     { id: "demon", name: "域外天魔", icon: "👹", minRep: 10000, minRealmIndex: 8,

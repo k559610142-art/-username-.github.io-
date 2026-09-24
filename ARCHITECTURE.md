@@ -17,6 +17,7 @@ images/               圖片素材
   avatar-male.jpg     男修頭像（韓立，597×335 橫式）
   avatar-female.jpg   女修頭像（南宮婉，599×333 橫式）
                       ※ 頭像原本放在外部圖床 postimg.cc，已改為本地檔案；橫式圖裁成圓形時依 PLAYER_AVATARS.pos 對準臉部
+  evil-hall.jpg       殺手殿堂場景背景（937×625，玩家提供；獵殺邪修入口，見第 27 節）
   avatars/            可解鎖更換的頭像（256×256 正方形、臉部置中，由玩家提供的原圖裁切縮小），見第 32 節
   cover.jpg           主頁封面・橫式（1264x843），電腦與橫向螢幕使用
   cover-portrait.jpg  主頁封面・直式（960x1920），手機直向使用（由橫式圖重新構圖而成）
@@ -113,7 +114,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 32 | `activity.js` | `renderActivityList`/`getActivityLockReason`/`openActivity` | `activityData`、`player.reputation`/`realmIndex` | `ui.js`(updateUI 每秒重繪) |
 | 33 | `daily-quest.js` | `openDailyQuestModal`/`renderDailyQuests`/`claimDailyQuest`/`claimAllDailyQuests`/`addDailyProgress`/`refreshDailyQuestsIfDue` | `config-daily-quests.js`、`player.daily*` | 各功能的 `addDailyProgress()` 埋點 |
 | 34 | `auction.js` | `openAuctionModal`/`refreshAuctionIfDue`/`rollAuctionItem`/`rollAuctionEquip`/`getAuctionItemInfo`/`canPayAuctionItem`/`buyAuctionItem`(紫／橙商品先判定搶拍)/`getRivalBid`/`completeAuctionPurchase`(裝備與壽元丹共用的成交)/搶拍 `auctionBidItemId`/`openAuctionBid`/`renderAuctionBid`/`raiseAuctionBid`/`giveUpAuctionBid`/`renderAuction`/`renderAuctionBuyArea`/`renderAuctionLifePillCard` | `auctionQualityOdds`、`auctionLifePills`、`AUCTION_RIVAL_*`/`auctionRivalNames`、`equipQualities`、`player.auctionItems`/`coins`/`reputation`/`lifespan`、`merit.js`(renderPreciousSection 嵌在商品下方) | `activity.js`(千寶閣按鈕)、`merit.js`(購買後重繪) |
-| 34a | `merit.js` | `isEvilHuntUnlocked`/`isMeritSystemOpen`(暫停開關)/陣營 `getPlayerFaction`/`getOpposingFaction`/`getFactionLabel`/善惡 `getKarmaState`/`formatKarmaTag`/`addKarma`/野外修士 `rollFieldMerit`/`onCultivatorKilled`/`settleMeritStones`(功德自動凝結補天石)/`openEvilHuntModal`/`renderEvilHunt`/`renderPreciousSection`/`buyBreakPill` | `config-merit.js`、`activityData`、`activity.js`(getActivityLockReason)、`sectData`(findSectByName)、`spells.js`(getSpell)、`player.merit`/`butianStones`/`breakPills`/`evilKills`/`karma`、`ui.js`(resolveBatchCount)、`auction.js`(renderAuction)、`bounty.js`(renderBountyBoard) | `combat.js`、`save.js`、`auction.js`、`bounty.js`、`ui.js`/`home-ui.js`(善惡標籤)、`activity.js`(獵殺邪修按鈕 openFn) |
+| 34a | `merit.js` | `isEvilHuntUnlocked`/`isMeritSystemOpen`(暫停開關)/陣營 `getPlayerFaction`/`getOpposingFaction`/`getFactionLabel`/善惡 `getKarmaState`/`formatKarmaTag`/`addKarma`/野外修士 `rollFieldMerit`/`onCultivatorKilled`/`settleMeritStones`(功德自動凝結補天石)/殺手殿堂場景 `openEvilHallScene`/`closeEvilHallScene`/`openEvilHuntModal`/`renderEvilHunt`/`renderPreciousSection`/`buyBreakPill` | `config-merit.js`、`activityData`、`activity.js`(getActivityLockReason)、`sectData`(findSectByName)、`spells.js`(getSpell)、`player.merit`/`butianStones`/`breakPills`/`evilKills`/`karma`、`ui.js`(resolveBatchCount)、`auction.js`(renderAuction)、`bounty.js`(renderBountyBoard) | `combat.js`、`save.js`、`auction.js`、`bounty.js`、`ui.js`/`home-ui.js`(善惡標籤)、`activity.js`(獵殺邪修按鈕 openFn) |
 | 34c | `bounty.js` | `getBountyRefSectMult`/`getBountyStats`/`getBountyNpc`/`getBountyIcon`/`refreshBountyIfDue`/`rollBountyBoard`/`getActiveBounty`/`acceptBounty`/`abandonBounty`/`renderBountyBoard`、對決 `tryStartBountyDuel`/`startBountyDuel`/`clearDuelDebuffs`/`getDuelWeakenMult`/`getDuelArmorMult`/`bountyDuelTick`/`endBountyDuel` | `config-bounty.js`、`realms`、`wuxingElements`/`MONSTER_AFFIX_TYPES`、`elements.js`、`combat.js`(playerAttackTurn/checkAutoHealAndMana/applyRootRegen/onPlayerKilledInField)、`beast-combat.js`、`merit.js`(陣營、善惡、settleMeritStones) | `combat.js`、`merit.js`(renderEvilHunt)、`stats.js`/`elements.js`(負面狀態)、`map.js`、`save.js`、`ui.js`(戰鬥實況)、`tribulation.js`(對決中不能渡劫) |
 | 34b | `talisman.js` | `talismanKey`/`getTalismanType`/`getTalismanGrade`/`getTalismanValue`/`formatTalisman`/`ensureSockets`(橙裝開孔，可重複呼叫)/`getSocketStats`/`formatSockets`/`findEquipById`/`openTalismanModal`/`renderTalismanWorkshop`/`renderSocketCard`/`craftTalisman`/`inlayTalisman`/`removeTalisman` | `config-talisman.js`、`equipTypes`、`player.talismans`/`ore`/`coins`/`equipment`/`equipInventory`、`ui.js`(resolveBatchCount)、`sect.js`(checkSectJoined) | `stats.js`(getEquipBonus 加總符寶)、`equipment.js`/`auction.js`/`lingbao-shop.js`(取得橙裝時 ensureSockets)、`bag.js`/`equipment.js`/`auction.js`(formatSockets 顯示)、`save.js`(migrateEquipSockets)、HTML 符寶坊按鈕 |
 | 35 | `field.js` | `herbRecipes`、`openFieldModal`/`plantHerb` | `player.spiritGrass`/`player.herbs`/`player.coins`、`ui.js`(resolveBatchCount) | HTML 按鈕（僅在「宗門」顯示） |
@@ -216,7 +217,7 @@ combatTick() 每秒執行 [combat.js]
 | `openAuctionModal`, `buyAuctionItem`、搶拍視窗內的 `raiseAuctionBid(step)`/`giveUpAuctionBid`（動態產生） | `data/auction.js` |
 | `acceptBounty(id)`, `abandonBounty`（懸賞榜卡片，由 `renderBountyBoard()` 動態產生） | `data/bounty.js` |
 | `openTalismanModal`、`craftTalisman(qty)`（隨機煉製）、`inlayTalisman(equipId, idx)`、`removeTalisman(equipId, idx)`（後三者由 `renderTalismanWorkshop()` 動態產生） | `data/talisman.js` |
-| `buyBreakPill`（千寶閣珍貴物資區，動態產生；舊的 `exchangeMeritForStone` 已移除，功德改為自動凝結）、`openEvilHuntModal`（經由 `openActivity('evil')`） | `data/merit.js` |
+| `buyBreakPill`（千寶閣珍貴物資區，動態產生；舊的 `exchangeMeritForStone` 已移除，功德改為自動凝結）、`openEvilHallScene`（經由 `openActivity('evil')`，開殺手殿堂場景）、`openEvilHuntModal`（場景中央「殺手殿堂」匾額）、`closeEvilHallScene`（場景「↩ 離開」） | `data/merit.js` |
 | `enterWorld` | `data/title-screen.js` |
 | `retryLoadAfterFailure`, `showRawSaveForCopy`, `abandonSaveAndStartNew`（讀檔失敗視窗） | `data/save.js` |
 | `switchTab`（手機洞府左側「任務」= `switchTab('task')`）, `openWorldTab`（手機／PC 的「世界」導覽：切到世界分頁並跳出修仙地圖）, `openAscensionPlatform`, `showUnderConstruction`（洞府主畫面；手機與 PC 的「情緣」也是它）, `openSystemModal`（命運與系統彈窗：手機丹藥堂上方齒輪、設定視窗內按鈕） | `data/home-ui.js` |
@@ -414,11 +415,13 @@ combatTick() 每秒執行 [combat.js]
 
   | 壽元丹 | 品質 | 續命 | 每欄上架機率 | 靈石 | 聲望 |
   |---|---|---|---|---|---|
-  | 普通壽元丹 | 白色 | +10 年 | 10% | 10,000 | 1,000 |
-  | 一紋壽元丹 | 綠色 | +20 年 | 8% | 20,000 | 2,000 |
-  | 二紋壽元丹 | 藍色 | +30 年 | 5% | 50,000 | 3,000 |
-  | 三紋壽元丹 | 紫色 | +50 年 | 3% | 80,000 | 5,000 |
-  | 四紋壽元丹 | 橙色 | +100 年 | 1% | 100,000 | 10,000 |
+  | 普通壽元丹 | 白色 | +10 年 | 10% | 100,000 | 50 |
+  | 一紋壽元丹 | 綠色 | +20 年 | 8% | 200,000 | 50 |
+  | 二紋壽元丹 | 藍色 | +30 年 | 5% | 500,000 | 50 |
+  | 三紋壽元丹 | 紫色 | +50 年 | 3% | 1,000,000 | 50 |
+  | 四紋壽元丹 | 橙色 | +100 年 | 1% | 10,000,000 | 200 |
+
+  （2026-09-25 調價：靈石大幅提高、聲望大幅降低。價格在上架時寫進商品的 `price`/`repPrice`，**已上架的舊商品維持舊價，下次刷新才套用新價**。）
 
   合計每欄 27% 為壽元丹、73% 為裝備（10 萬次抽樣實測吻合）。
 
@@ -1016,6 +1019,11 @@ combatTick() 每秒執行 [combat.js]
 - **開放狀態**：2026-09-25 起 `config-activities.js` 的 `evil` 為 `implemented: true`。改回 `false` 即整體暫停：
   `isEvilHuntUnlocked()` 回傳 false（野外不出現修士、離線不累積功德、懸賞遇不到），`isMeritSystemOpen()` 為 false 時千寶閣**不顯示珍貴物資區**、渡劫**不提醒破障丹**。
 - **解鎖**：活動選單「獵殺邪修」，聲望 8,000＋金丹（`isEvilHuntUnlocked()` 走 `getActivityLockReason()`）。
+- **殺手殿堂場景**（2026-09-25）：活動「獵殺邪修」的 `openFn` 是 `openEvilHallScene()`，先開全螢幕場景 `#evil-hall-scene`
+  （背景 `images/evil-hall.jpg`，937×625，玩家提供的洞窟浮台圖，`object-fit: cover` 置中），畫面正中央是 CSS 畫的橫式匾額「殺手殿堂」（`.evil-hall-plaque`，楷體金字、紅色呼吸光暈），
+  **點匾額才 `openEvilHuntModal()`** 開懸賞榜；左上「↩ 離開」= `closeEvilHallScene()`。
+  因為 cover 是置中裁切，圖片正中央永遠落在畫面正中央，所以匾額直接用 `left/top: 50%`，不需要像標題頁那樣換算座標。
+  `#evil-hall-scene` 在 DOM 中排在 `#evil-hunt-modal` **之前**（兩者 z-index 都是 100），懸賞榜才會疊在場景上面。
 
 ### 陣營（正派／邪派）
 - `getPlayerFaction()`：已拜入的每個宗門算 `FACTION_SECT_WEIGHT`(5) 分、每招學會的仙法算 1 分，依陣營加總；**邪派分數高於正派才是邪派**，同分（含散修）算正派。
@@ -1101,7 +1109,7 @@ combatTick() 每秒執行 [combat.js]
 （以 8 種舊存檔形態測試目前程式皆可正常讀取；移除 `#age-display` 即可重現同一錯誤。）
 
 ### 1. 發佈版本號（防止新舊檔案混用）
-- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260925j`）。
+- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260925l`）。
 - **每次推上 GitHub Pages 前，把所有 `?v=` 全部取代成新值**（例：日期＋序號）。新 index.html 會指向新網址的 JS，不會再拿到快取的舊檔。
 - 新增 `data/*.js` 時也要記得帶上 `?v=`。
 

@@ -88,6 +88,15 @@ function settleMeritStones() {
 }
 
 // ---- 獵殺邪修（活動選單的視窗）：陣營與善惡說明 + 懸賞榜（bounty.js）----
+// 殺手殿堂場景（活動「獵殺邪修」的入口）：全螢幕背景圖＋中央匾額，點匾額開啟懸賞榜 openEvilHuntModal()
+function openEvilHallScene() {
+    document.getElementById('evil-hall-scene').style.display = 'block';
+}
+
+function closeEvilHallScene() {
+    document.getElementById('evil-hall-scene').style.display = 'none';
+}
+
 function openEvilHuntModal() {
     refreshBountyIfDue();
     renderEvilHunt();
