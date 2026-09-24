@@ -10,14 +10,16 @@ function newStatus() {
 function getPlayerCombatAttrs() {
     let b = getEquipBonus();
     let r = getRootBonus();
+    let a = getSpellAuraBonus();   // 仙法被動光環（spells.js），與裝備、靈根一起套上限
+    const cap = (v, max) => Math.max(0, Math.min(max, v));
     return {
-        def: Math.min(DEF_CAP, b.def + r.def),
-        eva: Math.min(EVA_CAP, b.eva),
-        ice: Math.min(AFFIX_CAP, b.ice + r.ice),
-        fire: Math.min(AFFIX_CAP, b.fire + r.fire),
-        poison: Math.min(AFFIX_CAP, b.poison + r.poison),
-        metal: Math.min(AFFIX_CAP, b.metal + r.metal),
-        thunder: Math.min(AFFIX_CAP, b.thunder + r.thunder),
+        def: cap(b.def + r.def + a.def, DEF_CAP),
+        eva: cap(b.eva + a.eva, EVA_CAP),
+        ice: cap(b.ice + r.ice + a.ice, AFFIX_CAP),
+        fire: cap(b.fire + r.fire + a.fire, AFFIX_CAP),
+        poison: cap(b.poison + r.poison + a.poison, AFFIX_CAP),
+        metal: cap(b.metal + r.metal + a.metal, AFFIX_CAP),
+        thunder: cap(b.thunder + r.thunder + a.thunder, AFFIX_CAP),
         element: getPlayerElement(),
         // 以下由靈根提供（怪物沒有這些欄位，會取 resolveHit 內的預設值）
         freezeResist: r.freezeResist,

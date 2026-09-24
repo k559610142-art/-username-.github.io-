@@ -226,6 +226,7 @@ function playerAttackTurn(availableSkills, targets, tags) {
         let r = resolveHit(dmg, { attrs, power: getPhysAttack() }, { attrs: target.attrs || {}, status: target.status || newStatus() });
         target.hp -= r.dmg;
         r.tags.forEach(t => tags.push(t));
+        return r.dmg;
     };
 
     if (availableSkills.length > 0 && Math.random() < 0.4) {
@@ -237,20 +238,43 @@ function playerAttackTurn(availableSkills, targets, tags) {
             let skillDmg = (skill.dmgType === 'mag' ? getMagAttack() * skill.mult : getPhysAttack() * skill.mult)
                 * getRootBonus().skillMult;
             let attrs = withSkillEffect(baseAttrs, skill);
+            let cost = ` (消耗 ${skill.mpCost} MP`;
+            // 魔功反噬：扣最大氣血的 hpCost 比例，不會因此死亡（仙法，spells.js）
+            if (skill.hpCost) {
+                let lost = Math.min(Math.max(0, player.hp - 1), Math.floor(player.maxHp * skill.hpCost));
+                player.hp -= lost;
+                cost += `，反噬 ${lost.toLocaleString()} 氣血`;
+            }
+            cost += `)`;
+            let dealt = 0;
 
             if (skill.type === "aoe") {
-                addLog(skill.msg + ` (消耗 ${skill.mpCost} MP)`, "skill");
-                targets.forEach(e => hitTarget(e, skillDmg, attrs));
+                addLog(skill.msg + cost, "skill");
+                targets.forEach(e => { dealt += hitTarget(e, skillDmg, attrs); });
             } else if (skill.type === "heal") {
                 player.hp = Math.min(player.maxHp, player.hp + player.maxHp * skill.mult);
-                addLog(skill.msg + ` (消耗 ${skill.mpCost} MP)`, "heal");
+                addLog(skill.msg + cost, "heal");
             } else if (skill.type === "buff") {
                 player.buffTimer = skill.duration;
                 player.buffMult = skill.mult;
-                addLog(skill.msg + ` (消耗 ${skill.mpCost} MP)`, "skill");
+                addLog(skill.msg + cost, "skill");
+            } else if (skill.type === "shield") {
+                // 守護：與靈寵土屬性共用減傷狀態，取較高值（applyPetDamageReduction 套用）
+                petShieldRate = petShieldTimer > 0 ? Math.max(petShieldRate, skill.reduce) : skill.reduce;
+                petShieldTimer = Math.max(petShieldTimer, skill.duration);
+                addLog(skill.msg + cost + ` 受到傷害 -${Math.round(petShieldRate * 100)}%`, "skill");
+            } else if (skill.type === "control") {
+                // 牽制：造成傷害並以 freeze 機率定身（沿用冰凍狀態）
+                let ctrlAttrs = Object.assign({}, attrs, { ice: Math.max(attrs.ice || 0, skill.freeze * 100) });
+                addLog(skill.msg + cost, "skill");
+                (skill.aoe ? targets : [targets[0]]).forEach(e => { dealt += hitTarget(e, skillDmg, ctrlAttrs); });
             } else {
-                addLog(skill.msg + ` (消耗 ${skill.mpCost} MP)`, "skill");
-                hitTarget(targets[0], skillDmg, attrs);
+                addLog(skill.msg + cost, "skill");
+                dealt += hitTarget(targets[0], skillDmg, attrs);
+            }
+            // 吸血（木、血屬性仙法）
+            if (skill.lifesteal && dealt > 0) {
+                player.hp = Math.min(player.maxHp, player.hp + dealt * skill.lifesteal);
             }
         } else {
             addLog(`💦 靈力不足 (需 ${skill.mpCost} MP)，無法施展【${skill.name}】，改以普通攻擊迎敵！`, "skill");

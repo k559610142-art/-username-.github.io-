@@ -603,6 +603,35 @@
             border: 1px solid rgba(240, 213, 136, 0.6); border-radius: calc(var(--u) * 10); box-shadow: none; transform: none;
         }
         #btn-settings:hover { box-shadow: 0 0 10px rgba(253, 230, 138, 0.5); transform: none; }
+        /* ---- 武學密典（spells.js）：金色 = 已學會、灰色 = 未學會 ---- */
+        .spell-summary { text-align: center; color: #fcd34d; font-size: 0.9em; margin-bottom: 8px; }
+        .spell-slots { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 10px; }
+        .spell-slot {
+            position: relative; min-width: 120px; padding: 6px 22px 6px 26px; font-size: 0.82em; text-align: center;
+            border: 1px dashed rgba(245, 158, 11, 0.45); border-radius: 8px; color: #6b7280; background: rgba(0,0,0,0.25);
+        }
+        .spell-slot.filled { border-style: solid; color: #fde68a; background: rgba(245, 158, 11, 0.12); }
+        .spell-slot-no { position: absolute; left: 6px; top: 50%; transform: translateY(-50%); font-size: 0.85em; color: #f59e0b; }
+        .spell-slot-x { position: absolute; right: 2px; top: 50%; transform: translateY(-50%); width: auto; margin: 0; padding: 0 5px; font-size: 0.9em; background: transparent; border: none; color: #f87171; box-shadow: none; }
+        .spell-filter-row { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 5px; }
+        .spell-chip { width: auto; margin: 0; padding: 3px 9px; font-size: 0.78em; border-radius: 12px; background: rgba(18,24,38,0.6); border: 1px solid rgba(255,255,255,0.12); color: #cbd5e1; }
+        .spell-chip.on { background: rgba(245, 158, 11, 0.2); border-color: #f59e0b; color: #fde68a; font-weight: normal; }
+        .spell-count { font-size: 0.78em; color: #6b7280; margin: 6px 0; }
+        .spell-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; max-height: 46vh; overflow-y: auto; padding-right: 2px; }
+        .spell-card {
+            display: flex; flex-direction: column; align-items: flex-start; gap: 2px; margin: 0; padding: 7px 9px; text-align: left;
+            background: rgba(40, 40, 46, 0.55); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #6b7280;
+        }
+        .spell-card .spell-card-name { font-weight: bold; font-size: 0.9em; }
+        .spell-card .spell-card-meta { font-size: 0.72em; }
+        .spell-card.learned { background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.55); color: #fde68a; }
+        .spell-card.selected { box-shadow: 0 0 0 2px #f59e0b; }
+        .spell-detail { border: 1px solid rgba(245, 158, 11, 0.5); border-radius: 10px; padding: 10px 12px; margin: 8px 0; background: rgba(20, 16, 8, 0.6); }
+        .spell-detail-title { font-size: 1.1em; font-weight: bold; }
+        .spell-detail-tags { font-size: 0.78em; color: #9ca3af; margin: 3px 0 6px; }
+        .spell-detail-desc { font-size: 0.88em; color: #e5e7eb; line-height: 1.6; }
+        .spell-detail-note { font-size: 0.82em; color: #9ca3af; margin: 6px 0 0; }
+        .spell-detail .sys-btn { margin-top: 8px; }
         /* 設定視窗的選項（settings.js） */
         .settings-option {
             display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
@@ -913,6 +942,7 @@
             <div id="skill-list" style="font-size: 0.9em; color: #c084fc; background: rgba(192, 132, 252, 0.05); padding: 8px; border-radius: 6px; border: 1px dashed rgba(192, 132, 252, 0.2);">
                 尚未領悟門派技能。
             </div>
+            <button class="sys-btn" style="margin-top: 8px; border-color: #f59e0b; color: #fcd34d;" onclick="openSpellModal()">📜 武學密典（仙法技能格）</button>
 
             <div style="font-size: 0.8em; color: #9ca3af; text-align: center; margin-top: 10px; margin-bottom: 10px;">
                 (輪迴次數: <span id="reincarnate-count" style="color:var(--reincarnate-color);">0</span>)
@@ -1108,6 +1138,15 @@
 </div><!-- /#app-frame -->
 
 <!-- 彈出視窗群組 -->
+<!-- 武學密典（spells.js）：技能格、篩選與 200 種仙法收錄，內容由 renderSpellModal() 產生 -->
+<div id="spell-modal" class="modal-bg">
+    <div class="modal-content" style="max-width: 900px; border-color: #f59e0b;">
+        <h2 style="color: #fcd34d; margin-top: 0; text-align: center;">📜 武學密典</h2>
+        <p style="color: #9ca3af; font-size: 0.85em; text-align: center; margin-top: 0;">不分流派，任何人皆可修習。主動仙法放入技能格才會在戰鬥中施放（每 100 級多開一格）；🌟 被動光環學會即永久生效。魔功威力較強，但施放時會反噬氣血。</p>
+        <div id="spell-modal-body"></div>
+        <button class="close-btn" onclick="closeModal('spell-modal')">離開</button>
+    </div>
+</div>
 <!-- 設定（settings.js）：顯示尺寸與全螢幕，選項由 renderSettingsModal() 產生 -->
 <div id="settings-modal" class="modal-bg">
     <div class="modal-content" style="max-width: 420px; text-align: center; border-color: var(--accent);">
@@ -1503,58 +1542,60 @@
 -->
 <!-- ⚠️ 版本號 ?v=：每次發佈（推上 GitHub Pages）前要把所有 ?v= 改成新的值（全部取代即可）。
      GitHub Pages 會快取檔案約 10 分鐘，沒改版本號時玩家可能拿到「舊 index.html＋新 JS」而讀檔失敗。見 ARCHITECTURE.md 第 30 節 -->
-<script src="data/config-realms.js?v=20260924r"></script>
-<script src="data/config-level.js?v=20260924r"></script>
-<script src="data/config-lifespan.js?v=20260924r"></script>
-<script src="data/config-maps.js?v=20260924r"></script>
-<script src="data/config-sects.js?v=20260924r"></script>
-<script src="data/config-lingbao.js?v=20260924r"></script>
-<script src="data/config-shop.js?v=20260924r"></script>
-<script src="data/config-beasts.js?v=20260924r"></script>
-<script src="data/config-servants.js?v=20260924r"></script>
-<script src="data/config-equipment.js?v=20260924r"></script>
-<script src="data/config-tribulation.js?v=20260924r"></script>
-<script src="data/config-quests.js?v=20260924r"></script>
-<script src="data/config-activities.js?v=20260924r"></script>
-<script src="data/config-daily-quests.js?v=20260924r"></script>
-<script src="data/config-elements.js?v=20260924r"></script>
-<script src="data/config-merit.js?v=20260924r"></script>
-<script src="data/config-talisman.js?v=20260924r"></script>
-<script src="data/config-avatars.js?v=20260924r"></script>
-<script src="data/state.js?v=20260924r"></script>
-<script src="data/stats.js?v=20260924r"></script>
-<script src="data/elements.js?v=20260924r"></script>
-<script src="data/ui.js?v=20260924r"></script>
-<script src="data/map.js?v=20260924r"></script>
-<script src="data/combat.js?v=20260924r"></script>
-<script src="data/leveling.js?v=20260924r"></script>
-<script src="data/lifespan.js?v=20260924r"></script>
-<script src="data/tribulation.js?v=20260924r"></script>
-<script src="data/sect.js?v=20260924r"></script>
-<script src="data/shop.js?v=20260924r"></script>
-<script src="data/bag.js?v=20260924r"></script>
-<script src="data/equipment.js?v=20260924r"></script>
-<script src="data/lingbao-shop.js?v=20260924r"></script>
-<script src="data/servant.js?v=20260924r"></script>
-<script src="data/quest.js?v=20260924r"></script>
-<script src="data/activity.js?v=20260924r"></script>
-<script src="data/daily-quest.js?v=20260924r"></script>
-<script src="data/auction.js?v=20260924r"></script>
-<script src="data/merit.js?v=20260924r"></script>
-<script src="data/talisman.js?v=20260924r"></script>
-<script src="data/field.js?v=20260924r"></script>
-<script src="data/beast-combat.js?v=20260924r"></script>
-<script src="data/beast.js?v=20260924r"></script>
-<script src="data/library.js?v=20260924r"></script>
-<script src="data/alchemy.js?v=20260924r"></script>
-<script src="data/player-profile.js?v=20260924r"></script>
-<script src="data/save.js?v=20260924r"></script>
-<script src="data/config-home-pc.js?v=20260924r"></script>
-<script src="data/home-ui.js?v=20260924r"></script>
-<script src="data/settings.js?v=20260924r"></script>
-<script src="data/avatar.js?v=20260924r"></script>
-<script src="data/title-screen.js?v=20260924r"></script>
-<script src="data/main.js?v=20260924r"></script>
+<script src="data/config-realms.js?v=20260924s"></script>
+<script src="data/config-level.js?v=20260924s"></script>
+<script src="data/config-lifespan.js?v=20260924s"></script>
+<script src="data/config-maps.js?v=20260924s"></script>
+<script src="data/config-sects.js?v=20260924s"></script>
+<script src="data/config-lingbao.js?v=20260924s"></script>
+<script src="data/config-shop.js?v=20260924s"></script>
+<script src="data/config-beasts.js?v=20260924s"></script>
+<script src="data/config-servants.js?v=20260924s"></script>
+<script src="data/config-equipment.js?v=20260924s"></script>
+<script src="data/config-tribulation.js?v=20260924s"></script>
+<script src="data/config-quests.js?v=20260924s"></script>
+<script src="data/config-activities.js?v=20260924s"></script>
+<script src="data/config-daily-quests.js?v=20260924s"></script>
+<script src="data/config-elements.js?v=20260924s"></script>
+<script src="data/config-merit.js?v=20260924s"></script>
+<script src="data/config-talisman.js?v=20260924s"></script>
+<script src="data/config-avatars.js?v=20260924s"></script>
+<script src="data/config-spells.js?v=20260924s"></script>
+<script src="data/state.js?v=20260924s"></script>
+<script src="data/stats.js?v=20260924s"></script>
+<script src="data/elements.js?v=20260924s"></script>
+<script src="data/ui.js?v=20260924s"></script>
+<script src="data/map.js?v=20260924s"></script>
+<script src="data/combat.js?v=20260924s"></script>
+<script src="data/leveling.js?v=20260924s"></script>
+<script src="data/lifespan.js?v=20260924s"></script>
+<script src="data/tribulation.js?v=20260924s"></script>
+<script src="data/sect.js?v=20260924s"></script>
+<script src="data/shop.js?v=20260924s"></script>
+<script src="data/bag.js?v=20260924s"></script>
+<script src="data/equipment.js?v=20260924s"></script>
+<script src="data/lingbao-shop.js?v=20260924s"></script>
+<script src="data/servant.js?v=20260924s"></script>
+<script src="data/quest.js?v=20260924s"></script>
+<script src="data/activity.js?v=20260924s"></script>
+<script src="data/daily-quest.js?v=20260924s"></script>
+<script src="data/auction.js?v=20260924s"></script>
+<script src="data/merit.js?v=20260924s"></script>
+<script src="data/talisman.js?v=20260924s"></script>
+<script src="data/field.js?v=20260924s"></script>
+<script src="data/beast-combat.js?v=20260924s"></script>
+<script src="data/spells.js?v=20260924s"></script>
+<script src="data/beast.js?v=20260924s"></script>
+<script src="data/library.js?v=20260924s"></script>
+<script src="data/alchemy.js?v=20260924s"></script>
+<script src="data/player-profile.js?v=20260924s"></script>
+<script src="data/save.js?v=20260924s"></script>
+<script src="data/config-home-pc.js?v=20260924s"></script>
+<script src="data/home-ui.js?v=20260924s"></script>
+<script src="data/settings.js?v=20260924s"></script>
+<script src="data/avatar.js?v=20260924s"></script>
+<script src="data/title-screen.js?v=20260924s"></script>
+<script src="data/main.js?v=20260924s"></script>
 
 </body>
 </html>

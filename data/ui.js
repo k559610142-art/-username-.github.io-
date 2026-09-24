@@ -241,9 +241,9 @@ function renderSkillList() {
 
     let html = "";
     skills.forEach(sk => {
-        let typeName = {"single":"單體", "aoe":"範圍", "heal":"補血", "buff":"增益"}[sk.type];
-        let source = sk.tier ? SECT_TIER_NAMES[sk.tier] : "靈寶閣";
-        let detail = (sk.type === "single" || sk.type === "aoe")
+        let typeName = {"single":"單體", "aoe":"範圍", "heal":"補血", "buff":"增益", "shield":"守護", "control":"牽制"}[sk.type];
+        let source = sk.tier ? SECT_TIER_NAMES[sk.tier] : sk.isSpell ? "仙法" : "靈寶閣";
+        let detail = (sk.type === "single" || sk.type === "aoe" || sk.type === "control")
             ? `${typeName}・${sk.dmgType === 'mag' ? '悟性' : '力量'}・威力 ${Math.round(sk.mult * 100)}%`
             : typeName;
         if (sk.effect) detail += `・${combatAttrInfo[sk.effect.type].icon}${Math.round(sk.effect.chance * 100)}%`;

@@ -147,6 +147,7 @@ function getPhysAttack() {
     let totalStr = player.stats.str + eqBonus.str;
     let base = getBasePower() * (player.sect ? player.sect.powerMult : 1.0) + (totalStr * 5);
     base *= getRootBonus().atkMult;
+    base *= Math.max(0.1, 1 + getSpellAuraBonus().physPct);   // 仙法被動光環（spells.js）
     if (player.buffTimer > 0) base *= player.buffMult;
     if (petBuffTimer > 0) base *= petBuffMult;
     return Math.floor(base * getWeaknessMult());
@@ -157,6 +158,7 @@ function getMagAttack() {
     let totalInt = player.stats.int + eqBonus.int;
     let base = getBasePower() * (player.sect ? player.sect.powerMult : 1.0) + (totalInt * 5);
     base *= getRootBonus().atkMult;
+    base *= Math.max(0.1, 1 + getSpellAuraBonus().magPct);   // 仙法被動光環（spells.js）
     if (player.buffTimer > 0) base *= player.buffMult;
     if (petBuffTimer > 0) base *= petBuffMult;
     return Math.floor(base * getWeaknessMult());
@@ -168,14 +170,15 @@ function getMaxHp() {
     let root = getRootBonus();
     totalCon *= root.conMult;
     let baseHp = Math.floor(getBasePower() * 20 * (player.sect ? player.sect.powerMult : 1.0) + (totalCon * 10));
-    baseHp = Math.floor(baseHp * root.hpMult);
+    baseHp = Math.floor(baseHp * root.hpMult * Math.max(0.1, 1 + getSpellAuraBonus().hpPct));
     return Math.floor((baseHp + (player.level - 1) * LEVEL_UP_HP_GAIN + getReincarnateBonus().hp) * getWeaknessMult());
 }
 
 function getMaxMp() {
     let eqBonus = getEquipBonus();
     let totalSpr = player.stats.spr + eqBonus.spr;
-    return Math.floor((Math.floor(50 + (totalSpr * 10)) + (player.level - 1) * LEVEL_UP_MP_GAIN + getReincarnateBonus().mp) * getWeaknessMult());
+    let baseMp = Math.floor((50 + totalSpr * 10) * Math.max(0.1, 1 + getSpellAuraBonus().mpPct));
+    return Math.floor((baseMp + (player.level - 1) * LEVEL_UP_MP_GAIN + getReincarnateBonus().mp) * getWeaknessMult());
 }
 
 // 轉世保留的氣血／靈力上限（leveling.js 的 triggerReincarnate 寫入），舊存檔沒有此欄位視為 0
@@ -199,5 +202,7 @@ function getAllSkills() {
         if (sect) skills = skills.concat(sect.skills);
     }
     if (player.learnedSkills) skills = skills.concat(player.learnedSkills);
+    // 技能格內的主動仙法（spells.js）
+    skills = skills.concat(getEquippedSpells().map(spellToCombatSkill));
     return skills;
 }

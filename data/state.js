@@ -37,6 +37,8 @@ let player = {
     sect: null, buffTimer: 0, buffMult: 1,
     sectSkills: { 1: null, 2: null, 3: null },   // 各階段已拜入（並學得技能）的宗門名稱，選定後鎖定
     learnedSkills: [],
+    spells: [],                  // 已學會的仙法 id（config-spells.js／spells.js，目前尚無取得方式）
+    spellSlots: [],              // 技能格內的主動仙法 id（格數依人物等級）
     lingbaoSold: [],             // 靈寶閣已兌換（售出）的唯一性商品 id，售出後永不補貨
     reincarnations: 0,
     reincarnateBonus: { hp: 0, mp: 0 },   // 轉世保留的氣血／靈力上限（前世上限的 REINCARNATE_KEEP_RATE）
