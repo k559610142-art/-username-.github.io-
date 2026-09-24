@@ -217,6 +217,8 @@ function migrateProgressionFields(savedData) {
 
 function resetGameCompletely() {
     if (confirm("確定要完全重置遊戲嗎？這將清除所有存檔進度！")) {
+        // 重新整理時會觸發 pagehide／visibilitychange 自動存檔（main.js），不擋住的話目前角色又會被寫回去
+        gameOver = true;
         localStorage.removeItem('xiuxian_save');
         location.reload();
     }

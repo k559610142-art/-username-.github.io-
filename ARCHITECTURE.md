@@ -1036,7 +1036,7 @@ combatTick() 每秒執行 [combat.js]
 （以 8 種舊存檔形態測試目前程式皆可正常讀取；移除 `#age-display` 即可重現同一錯誤。）
 
 ### 1. 發佈版本號（防止新舊檔案混用）
-- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260924l`）。
+- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260924m`）。
 - **每次推上 GitHub Pages 前，把所有 `?v=` 全部取代成新值**（例：日期＋序號）。新 index.html 會指向新網址的 JS，不會再拿到快取的舊檔。
 - 新增 `data/*.js` 時也要記得帶上 `?v=`。
 
@@ -1052,6 +1052,13 @@ combatTick() 每秒執行 [combat.js]
   - 若頁面是舊版 index.html（沒有這個視窗），退回用 `alert` 說明，寫入一樣被封鎖。
 - `main.js` 的 `startGame()`：`loadLocal()` 失敗且 `saveLoadFailed` 時直接返回，**絕不自動進入開新角色**。
 - ⚠️ 新增讀檔邏輯時，任何「可能覆蓋存檔」的路徑都要先檢查 `saveLoadFailed`。
+
+### 3. 刪除存檔後重新整理（事故紀錄 2026-09-24）
+- `main.js` 在切到背景（`visibilitychange`）與離開頁面（`pagehide`）時會自動 `saveLocal()`。
+  `location.reload()` 本身就會觸發 `pagehide`，所以「刪存檔 → reload」會在離開前把目前角色**寫回去**——
+  曾造成「🔄 遊戲重新開始（完全重置）」按了沒有重置。
+- 規則：**任何刪除存檔的路徑，都要先設 `gameOver = true` 再 `removeItem`**（`saveLocal()` 看到 `gameOver` 就不寫入）。
+  目前的 `resetGameCompletely()`（save.js）與 `triggerLifespanGameOver()`（lifespan.js）都已這樣做。
 
 ## 31. 洞府主畫面（舞台版面）
 
