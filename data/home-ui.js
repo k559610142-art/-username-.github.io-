@@ -5,7 +5,7 @@
 const STAGE_IMG_W = 704;    // 背景圖原始尺寸（換圖時要一起改，並重新量 index.html 內各元素的 % 座標）
 const STAGE_IMG_H = 1520;
 
-const TAB_TITLES = { cultivate: "修仙", battle: "戰鬥", sect: "宗門", world: "世界" };
+const TAB_TITLES = { cultivate: "修仙", battle: "戰鬥", sect: "宗門", task: "任務", world: "世界" };
 
 // 版面（顯示尺寸在 settings.js 設定，第 34 節）：
 //   phone：#app-stage（直式圖）滿版填滿（最寬 9:16），背景圖以 fill 伸縮，疊加元素都是 % 座標所以仍對齊
@@ -96,6 +96,11 @@ function switchTab(tab) {
 function openWorldTab() {
     switchTab('world');
     openWorldMapModal();
+}
+
+// 命運與系統（存檔管理、轉世、重置）：手機洞府丹藥堂上方的齒輪、設定視窗內的按鈕
+function openSystemModal() {
+    document.getElementById('system-modal').style.display = 'flex';
 }
 
 // 圖上有、遊戲尚未實作的功能（郵件、充值…）
