@@ -51,9 +51,22 @@ function settleIdleSeconds(offlineSeconds, label) {
     let expEarned = 0;
     let coinsEarned = 0;
     let msg = "";
+    let prefix = "";
 
     // 修為已圓滿待渡劫時，離線期間同樣無法再累積經驗
     let wasPending = player.pendingTribulation;
+
+    // 依實力估算野外戰鬥：撐不住就退回宗門靜修；打得慢則按比例降低戰鬥次數（防止進高階地圖後直接離線刷收益）
+    let est = null;
+    if (!player.currentMapIsSafe) {
+        est = estimateIdleCombat();
+        if (!est.survivable) {
+            let fromName = player.currentMap.name;
+            player.currentMap = maps[0].items[0];
+            player.currentMapIsSafe = maps[0].isSafe;
+            prefix = `⚠️ 以目前實力無法在【${fromName}】久留（一波妖獸約造成 ${formatShortNumber(est.waveDamage)} 傷害，氣血上限 ${formatShortNumber(est.maxHp)}），已退回【${player.currentMap.name}】靜修。\n`;
+        }
+    }
 
     if (player.currentMapIsSafe) {
         let ticks = Math.floor(offlineSeconds / 5);
@@ -64,7 +77,8 @@ function settleIdleSeconds(offlineSeconds, label) {
             : `🧘‍♂️ ${label}於【${player.currentMap.name}】靜修打坐 ${formatIdleDuration(offlineSeconds)}，獲得 ${Math.floor(gained)} 點經驗！`;
     } else {
         // OFFLINE_COMBAT_RATE = 離線每秒的戰鬥次數（見 config-maps.js，刻意低於線上滿速的每秒 0.32 隻）
-        let combatTicks = Math.floor(offlineSeconds * OFFLINE_COMBAT_RATE);
+        // 再乘上實力效率 est.rateMult（能秒殺 = 1；打得越久越低）
+        let combatTicks = Math.floor(offlineSeconds * OFFLINE_COMBAT_RATE * est.rateMult);
         expEarned = combatTicks * (player.currentMap.expRate * 15);
         coinsEarned = combatTicks * (typeof player.currentMap.coins === 'number' ? player.currentMap.coins : player.currentMap.diff * 10);
 
@@ -97,7 +111,11 @@ function settleIdleSeconds(offlineSeconds, label) {
         msg = `⚔️ ${label}於【${player.currentMap.name}】歷練 ${formatIdleDuration(offlineSeconds)}，獲得 ${expText}、${coinsEarned.toLocaleString()} 靈石與 ${repEarned.toLocaleString()} 點聲望`
             + (meritEarned > 0 ? `、${meritEarned.toLocaleString()} 點功德` : '')
             + (rescuedCount > 0 ? `，並拯救了 ${rescuedCount} 名受困修士！` : '！');
+        if (est.rateMult < 0.995) {
+            msg += `\n⚔️ 以目前實力約需 ${est.hits.toFixed(1)} 擊才能斬殺一隻，戰鬥效率 ${Math.round(est.rateMult * 100)}%（能一擊斬殺時為 100%）。`;
+        }
     }
+    msg = prefix + msg;
 
     // 離線期間的歲月流逝（半速，同樣受底線保護）
     let aged = ageLifespan(offlineSeconds, LIFESPAN_OFFLINE_RATE);
@@ -108,6 +126,38 @@ function settleIdleSeconds(offlineSeconds, label) {
     if (upkeepText) msg += `\n${upkeepText}`;
 
     return msg;
+}
+
+// 離線／背景的野外戰鬥估算（與 combat.js 的實際規則對應，只取期望值、不擲骰）：
+//   妖獸：氣血 = 難度 × 500、攻擊 = 難度 × 50，減傷／閃避依地圖分類（monsterAttrsByMapCategory）
+//   hits      = 普攻殺一隻平均要出手幾次 = 無條件進位(妖獸氣血 ÷ (玩家物理攻擊 × (1 − 妖獸減傷))) ÷ 未閃避率
+//               （差一點血也要再打一下，所以要進位；實測與模擬誤差約 ±2%）
+//   rateMult  = 每秒擊殺相對「一擊斬殺」的比例。一波平均 IDLE_WAVE_AVG_MONSTERS 隻、普攻一次打一隻，
+//               波與波之間固定 IDLE_WAVE_GAP_TICKS 秒（刷新 5 秒＋生成 1 秒）：
+//               每秒擊殺 = N ÷ (GAP + N × hits)，除以「一擊斬殺」時的值即為 rateMult
+//   waveDamage = 一波（N 隻依序擊殺）期間妖獸打在玩家身上的總傷害：第 k 隻會出手 k×hits−1 次
+//   survivable = waveDamage < 氣血上限（線上還有自動補血，這裡只擋「一波就會被打死」的情況）
+// 技能、屬性傷害、靈寵協助都不計，所以估算偏保守（實際通常略快）。
+function estimateIdleCombat() {
+    let map = player.currentMap;
+    let mAttrs = monsterAttrsByMapCategory[getMapCategoryIndex(map.name)] || monsterAttrsByMapCategory[1];
+    let monsterHp = map.diff * 500;
+    let monsterAtk = map.diff * 50;
+    let dmgPerHit = Math.max(1, getPhysAttack() * (1 - mAttrs.def / 100));
+    let hits = Math.ceil(monsterHp / dmgPerHit) / (1 - mAttrs.eva / 100);
+
+    let n = IDLE_WAVE_AVG_MONSTERS, gap = IDLE_WAVE_GAP_TICKS;
+    let minHits = 1 / (1 - mAttrs.eva / 100);   // 一擊斬殺時（只受閃避影響）＝ 效率 100%，與舊版離線收益相同
+    let rateMult = Math.min(1, (gap + n * minHits) / (gap + n * hits));
+
+    let pAttrs = getPlayerCombatAttrs();
+    let hitTaken = monsterAtk * (1 - pAttrs.eva / 100) * (1 - pAttrs.def / 100);
+    let monsterTurns = 0;
+    for (let k = 1; k <= n; k++) monsterTurns += Math.max(0, k * hits - 1);
+    let waveDamage = hitTaken * monsterTurns;
+    let maxHp = getMaxHp();
+
+    return { hits, rateMult, waveDamage, maxHp, survivable: waveDamage < maxHp };
 }
 
 function formatIdleDuration(seconds) {

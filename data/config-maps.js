@@ -56,6 +56,9 @@ const REPUTATION_MAX_BY_MAP_CATEGORY = {
 // ⚠️ 舊值 0.7 等於假設離線每秒殺 0.7 隻，但線上滿速也只有每秒 0.32 隻，
 //    造成離線收益是線上的 2.16 倍（關掉遊戲比掛機划算）。改為 0.3 後離線約為線上的 93%。
 const OFFLINE_COMBAT_RATE = 0.3;
+// 離線／背景依實力估算戰鬥效率用（save.js 的 estimateIdleCombat）：一波平均隻數（1～5 隻）、波與波之間的秒數（刷新 5＋生成 1）
+const IDLE_WAVE_AVG_MONSTERS = 3;
+const IDLE_WAVE_GAP_TICKS = 6;
 
 // 離線掛機的聲望倍率：離線每個戰鬥 tick 以「該區平均聲望 × 此倍率」計算。
 // 0.7 × OFFLINE_COMBAT_RATE(0.3) ≈ 每秒 0.21 隻，約為線上的 65%（聲望刻意比線上少）。

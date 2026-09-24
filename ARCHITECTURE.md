@@ -71,7 +71,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 1 | `config-realms.js` | `realms` 境界名稱陣列、修煉節奏表 `realmPacing`（每境界目標時數/主要地圖/估算加成）、`REALM_PACING_KILLS_PER_SEC` | 無（`realmPacing.map` 是地圖名稱字串，執行期才查 `maps`） | `stats.js`(getRealmStageExp/getNextExp)、`lifespan.js`(getAgingHours)、`ui.js`、`leveling.js` |
 | 2 | `config-level.js` | `MAX_PLAYER_LEVEL`、`LEVEL_UP_*` 成長值、`LEVEL_EXP_SEGMENTS` 經驗曲線 | 無 | `stats.js`(getLevelExpNeeded、getMaxHp/getMaxMp)、`leveling.js`(gainLevelExp)、`ui.js` |
 | 3 | `config-lifespan.js` | `lifespanByRealm` 各境界壽元增加量與死亡折壽、歲月流逝常數 `LIFESPAN_MIN_AGING_HOURS`/`LIFESPAN_PACE_MULT`/`LIFESPAN_DANGER_MULT`/`LIFESPAN_TRIBULATION_MULT`/`LIFESPAN_OFFLINE_RATE`/`LIFESPAN_FLOOR_DEATHS`、起始年齡 `LIFESPAN_START_AGE` | 無 | `lifespan.js`、`leveling.js`(轉世重設壽元與年齡)、`ui.js`(年齡顯示) |
-| 4 | `config-maps.js` | `SECT_MAP_NAME`（"宗門"，唯一安全區的名稱）、`maps` 地圖資料（含各圖 `coins` 每隻靈石）、`KILLS_PER_HOUR_ESTIMATE`、`REPUTATION_MAX_BY_MAP_CATEGORY`（各區擊殺聲望上限）、`OFFLINE_COMBAT_RATE`/`OFFLINE_REPUTATION_RATE`、`monsterIcons` | 無 | `state.js`、`map.js`(isInSect)、`combat.js`、`ui.js`、`save.js`(migrateCurrentMap) |
+| 4 | `config-maps.js` | `SECT_MAP_NAME`（"宗門"，唯一安全區的名稱）、`maps` 地圖資料（含各圖 `coins` 每隻靈石）、`KILLS_PER_HOUR_ESTIMATE`、`REPUTATION_MAX_BY_MAP_CATEGORY`（各區擊殺聲望上限）、`OFFLINE_COMBAT_RATE`/`OFFLINE_REPUTATION_RATE`、離線實力估算 `IDLE_WAVE_AVG_MONSTERS`/`IDLE_WAVE_GAP_TICKS`、`monsterIcons` | 無 | `state.js`、`map.js`(isInSect)、`combat.js`、`ui.js`、`save.js`(migrateCurrentMap) |
 | 5 | `config-sects.js` | `sectData` 宗門與技能表、`SECT_SKILL_BONUS`、`SECT_TIER_NAMES`、`findSectByName()`；尾端迴圈替每招補上 `tier`/`mult` | 無 | `sect.js`、`stats.js`(getSectTier/getAllSkills)、`ui.js`、`save.js`(重新綁定宗門) |
 | 6 | `config-lingbao.js` | `legacySkillAdjustments` 舊版禁術下修數值、`lingbaoTierCosts` 各階段兌換價格、`lingbaoShopItems` 三階段戰略級寶物與武學 | 無 | `lingbao-shop.js`、`equipment.js`(五行說明列固定屬性裝備) |
 | 7 | `config-shop.js` | `shopItems` 丹藥堂商品、`shopSections` 分區、`POTION_COOLDOWN_SECONDS` 丹藥冷卻、`SHOP_MAX_BUY_QTY` 單次購買上限(9999) | 無 | `shop.js`、`bag.js`、`combat.js`(自動補血補魔) |
@@ -86,7 +86,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 15a | `config-merit.js` | 邪修 `EVIL_SPAWN_CHANCE`/`EVIL_POWER_MULT`/`EVIL_MERIT_MIN`/`EVIL_MERIT_MAX`/`EVIL_ICON`、兌換 `MERIT_PER_BUTIAN_STONE`/`BREAK_PILL_STONE_COST`、破障丹效果 `BREAK_PILL_DEMON_POWER_MULT`/`BREAK_PILL_CHANCE_BONUS`/`BREAK_PILL_MAX_CHANCE`、`preciousItems`(顯示資料) | 無 | `merit.js`、`combat.js`(邪修生成)、`save.js`(離線功德)、`tribulation.js`(破障丹)、`bag.js`、`ui.js` |
 | 15d | `config-home-pc.js` | PC 版洞府：`PC_STAGE_IMG_W`/`PC_STAGE_IMG_H`(1376×768)、分頁面板位置 `PC_SHEET_RECT`、按鈕與建築熱點表 `pcStageButtons`（圖上座標、功能 action、牌匾、nav、enabled） | 無（action 是字串，點擊時才呼叫各模組函式） | `home-ui.js`(renderPcStage/layoutStage) |
 | 15c | `config-avatars.js` | `avatarList`（頭像 id／名稱／圖片／裁切位置／解鎖條件） | 無 | `avatar.js` |
-| 15b | `config-talisman.js` | 孔位 `SOCKET_QUALITY`/`SOCKET_MIN`/`SOCKET_MAX`、`talismanTypes`(11 種)、`talismanGrades`(下/中/上品的效果與出現機率)、`TALISMAN_CRAFT_COST`(每次 500 礦石＋5 萬靈石) | 無 | `talisman.js` |
+| 15b | `config-talisman.js` | 孔位 `SOCKET_QUALITY`/`SOCKET_MIN`/`SOCKET_MAX`、`talismanTypes`(11 種)、`talismanGrades`(下/中/上品的效果與出現機率)、`TALISMAN_CRAFT_COST`(每次 500 礦石＋100 萬靈石) | 無 | `talisman.js` |
 | 16 | `state.js` | `player`（含 `lingbaoSold`、渡劫失敗虛弱 `weakened`、頭像 `avatarId`/`unlockedAvatars`、礦石 `ore`、符寶 `talismans`、藏書閣屬性秘典次數 `elementStudy`、轉世保留的上限 `reincarnateBonus`、年齡 `age`、功德系統 `merit`/`butianStones`/`breakPills`/`evilKills`）、`DEFAULT_PLAYER_JSON`（全新角色預設值快照，讀檔/匯入的合併基底）、`enemies`（每隻帶 `attrs`/`status`）、`respawnTimer`、`safeZoneTimer`；不存檔的執行期狀態：`inTribulation`/`heartDemon`/`tribulationFatedWin`/丹藥冷卻/`gameOver`/背景補發 `lastTickAt`/`missedTickMs`/`playerStatus`(玩家身上的凍結/燒傷/中毒)/靈寵輔助計時(`petBuff*`/`petShield*`/`petRegen*`) | **`maps`**（必須排在 config-maps.js 之後） | 幾乎所有檔案都會讀寫 `player` |
 | 17 | `stats.js` | `EQUIP_STAT_KEYS`、`getEquipBonus`(四維＋減傷/閃避/屬性傷害)/`getElementCounts`/`getSpiritRoots`(靈根判定)/`getRootBonus`(靈根加成總和)/`getPlayerElement`(本命五行，五行相剋用)/`getRealmStageExp`(依 realmPacing 換算每階經驗基數，有快取)/`getNextExp`/`getLevelExpNeeded`/`hasLiveBeast`(出戰中才算，呼叫 beast-combat.js 的 isBeastActive)/`getBasePower`/`getPhysAttack`/`getMagAttack`/`getMaxHp`/`getMaxMp`(兩者皆加上轉世保留值)/`getReincarnateBonus`/`getSectTier`/`getAllSkills` | `player`、`realms`、`sectData`、`LEVEL_*`、`equipTypes`/`WUXING_COUNTERS`、靈寵輔助計時 | `ui.js`、`combat.js`、`leveling.js`、`tribulation.js`、`beast-combat.js` 等幾乎全部功能檔 |
 | 18 | `elements.js` | `newStatus`/`getPlayerCombatAttrs`(含 `element`)/`getWuxingCounterMult`/`withSkillEffect`/`getMapCategoryIndex`/`rollMonsterAttrs`/`resolveHit`/`addDotStack`/`tickStatus`/`formatStatus`/`summarizeTags`/`formatEquipStats` | `config-elements.js`、`stats.js`(getEquipBonus/getPlayerElement)、`library.js`(getElementBookBonus)、`wuxingElements`、`maps`、`playerStatus` | `combat.js`、`tribulation.js`、`ui.js`、`bag.js`/`equipment.js`/`auction.js`/`lingbao-shop.js`(裝備屬性文字) |
@@ -114,7 +114,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 38 | `library.js` | 第一階段 `STUDY_COST`/`STUDY_GAIN`/`STUDY_MAX_COUNT`、`openLibraryModal`/`studyBook`；第二階段屬性秘典（第 24 節）`ELEMENT_BOOK_TIER`/`ELEMENT_BOOK_GAIN`/`ELEMENT_BOOK_MAX`/`ELEMENT_BOOK_COST`/`elementBooks`、`isElementBookUnlocked`/`getElementBookBonus`/`formatElementBookPercent`/`renderElementBooks`/`studyElementBook` | `player.studyCounts`/`elementStudy`/`martialPoints`/`spiritGrass`/`coins`/`stats`/`sectSkills`、`SECT_TIER_NAMES`、`ui.js`(resolveBatchCount) | HTML 按鈕（僅在「宗門」顯示）、`elements.js`(getPlayerCombatAttrs 呼叫 getElementBookBonus) |
 | 39 | `alchemy.js` | `pillRecipes`、`openAlchemyModal`/`craftPill` | `player.herbs`/`stats`/`coins`、`ui.js`(resolveBatchCount) | HTML 按鈕（僅在「宗門」顯示） |
 | 40 | `player-profile.js` | `PLAYER_NAME_MAX_LENGTH`、`sanitizePlayerName`(移除 HTML 特殊字元，讀檔/匯入也套用)/`changePlayerName`(開啟 #name-modal)/`confirmPlayerName` | `player.name` | HTML 按鈕、`save.js`(applySaveData) |
-| 41 | `save.js` | `calcOfflineProgress`(讀檔時的離線結算，呼叫 settleIdleSeconds)/`settleIdleSeconds`(離線與背景共用的收益結算，含 settleOfflineBeastUpkeep 靈寵維持費)/`formatIdleDuration`/背景補發 `checkBackgroundCatchUp`＋常數 `BACKGROUND_TICK_SLACK_MS`/`BACKGROUND_SETTLE_MIN_SECONDS`（第 33 節）/`saveLocal`/`loadLocal`/`applySaveData`(讀檔與匯入共用)/`resetGameCompletely` + 舊存檔相容 `migrateServantAssignments`/`migrateEquipmentSlots`/`migrateActivityFields`/`migrateCurrentMap`/`migrateProgressionFields`/`migrateLegacySkills`(舊禁術下修＋已兌換武學耗魔同步)/`migrateRealmExp`(經驗曲線改版：待渡劫者修為壓回滿格)/`migrateEquipSockets`(只補 talismans 欄位) + 讀檔失敗保護 `saveLoadFailed`/`reportLoadFailure`/`retryLoadAfterFailure`/`showRawSaveForCopy`/`abandonSaveAndStartNew`（第 30 節） + 離線斬殺邪修的功德 + `reloadLocalSave`(選單按鈕，無存檔時給提示) + 存檔代碼（常數 `SAVE_CODE_PREFIX`="FS2:"、兩段式確認暫存 `pendingImportData`；編解碼皆為 async）`encodeSaveCode`/`decodeSaveCode`/`bytesToBase64`/`base64ToBytes`/`pipeBytes`/`openSaveCodeModal`/`setSaveCodeStatus`/`exportSave`/`selectSaveCodeText`/`copySaveCode`/`downloadSaveCode`/`importSave`/`pasteSaveCodeFromClipboard`/`importSaveFromFile`/`confirmImportSave`/`resetImportConfirm` | `player`（整包序列化進 `localStorage`）、`maps`(migrateCurrentMap)、`legacySkillAdjustments`/`lingbaoShopItems`(migrateLegacySkills)、`leveling.js`(gainExp)、`combat.js`(tryRescueServant)、`lifespan.js`、`beast-combat.js`(createBeast)、`ui.js` | `main.js`(啟動時 loadLocal)、`main.js`(initGame 內每 30 秒 saveLocal) |
+| 41 | `save.js` | `calcOfflineProgress`(讀檔時的離線結算，呼叫 settleIdleSeconds)/`settleIdleSeconds`(離線與背景共用的收益結算，含 settleOfflineBeastUpkeep 靈寵維持費)/`estimateIdleCombat`(依實力估算離線戰鬥效率與能否存活)/`formatIdleDuration`/背景補發 `checkBackgroundCatchUp`＋常數 `BACKGROUND_TICK_SLACK_MS`/`BACKGROUND_SETTLE_MIN_SECONDS`（第 33 節）/`saveLocal`/`loadLocal`/`applySaveData`(讀檔與匯入共用)/`resetGameCompletely` + 舊存檔相容 `migrateServantAssignments`/`migrateEquipmentSlots`/`migrateActivityFields`/`migrateCurrentMap`/`migrateProgressionFields`/`migrateLegacySkills`(舊禁術下修＋已兌換武學耗魔同步)/`migrateRealmExp`(經驗曲線改版：待渡劫者修為壓回滿格)/`migrateEquipSockets`(只補 talismans 欄位) + 讀檔失敗保護 `saveLoadFailed`/`reportLoadFailure`/`retryLoadAfterFailure`/`showRawSaveForCopy`/`abandonSaveAndStartNew`（第 30 節） + 離線斬殺邪修的功德 + `reloadLocalSave`(選單按鈕，無存檔時給提示) + 存檔代碼（常數 `SAVE_CODE_PREFIX`="FS2:"、兩段式確認暫存 `pendingImportData`；編解碼皆為 async）`encodeSaveCode`/`decodeSaveCode`/`bytesToBase64`/`base64ToBytes`/`pipeBytes`/`openSaveCodeModal`/`setSaveCodeStatus`/`exportSave`/`selectSaveCodeText`/`copySaveCode`/`downloadSaveCode`/`importSave`/`pasteSaveCodeFromClipboard`/`importSaveFromFile`/`confirmImportSave`/`resetImportConfirm` | `player`（整包序列化進 `localStorage`）、`maps`(migrateCurrentMap)、`legacySkillAdjustments`/`lingbaoShopItems`(migrateLegacySkills)、`leveling.js`(gainExp)、`combat.js`(tryRescueServant)、`lifespan.js`、`beast-combat.js`(createBeast)、`ui.js` | `main.js`(啟動時 loadLocal)、`main.js`(initGame 內每 30 秒 saveLocal) |
 | 41b | `avatar.js` | `getPlayerAvatar`/`isAvatarUnlocked`/`checkAvatarCondition`/`checkAvatarUnlocks`/`openAvatarModal`/`renderAvatarModal`/`selectAvatar` | `avatarList`、`player.avatarId`/`unlockedAvatars`/`gender`/`realmIndex`/`level`/`reputation`/`tribulationCount`、`realms` | `ui.js`(updateUI 呼叫 checkAvatarUnlocks；戰鬥實況頭像)、`home-ui.js`(頭像框)、HTML 頭像點擊 |
 | 41c | `settings.js` | `DISPLAY_MODE_KEY`(localStorage 鍵)/`DISPLAY_MODES`/`AUTO_PC_MIN_WIDTH`/`AUTO_PC_MIN_RATIO`、`getDisplayMode`/`resolveDisplayLayout`(回傳 'phone'／'pc')/`setDisplayMode`/`openSettingsModal`/`renderSettingsModal`/`isFullscreen`/`toggleFullscreen`；頂層註冊 `fullscreenchange` 監聽（只綁函式，載入順序不影響） | `home-ui.js`(layoutStage)、`#settings-modal` DOM、`localStorage` | `home-ui.js`(layoutStage 呼叫 resolveDisplayLayout)、HTML ⚙️ 設定按鈕 |
 | 41a | `home-ui.js` | `STAGE_IMG_W`/`STAGE_IMG_H`、`TAB_TITLES`、`layoutStage`(手機／PC 版面切換，第 34 節)/`renderPcStage`(依 config-home-pc.js 產生 PC 版按鈕與熱點)/`initHomeUi`/`switchTab`/`showStageToast`/`showUnderConstruction`/`openAscensionPlatform`/`formatShortNumber`/`getCultivationRate`/`updateHomeHud`(同時寫入手機版 hud-xxx 與 PC 版 pc-hud-xxx) | `player`、`realms`、`PLAYER_AVATARS`、`stats.js`、`tribulation.js`(triggerTribulation)、`activity.js`(openActivity)、`config-home-pc.js`、`settings.js`(resolveDisplayLayout) | `ui.js`(updateUI 結尾呼叫 updateHomeHud)、`main.js`(onload 呼叫 initHomeUi)、HTML 熱點與底部導覽 |
@@ -872,7 +872,8 @@ combatTick() 每秒執行 [combat.js]
 - **離線掛機**：`save.js` 的 `calcOfflineProgress()` 以「離線秒數 × `OFFLINE_COMBAT_RATE`(0.3) × 該圖 coins」計算，
   實測約為線上的 0.89～0.97。⚠️ 舊值 0.7 會讓離線收益是線上的 2.16 倍（關掉遊戲比掛機划算）。
   這個係數同時影響離線的經驗、靈石、僕從救援與聲望（聲望另乘 `OFFLINE_REPUTATION_RATE`）。
-- 主要消耗：鍛造 10,000／次、符寶煉製 5 萬／次、僕從派遣 50～300／趟、丹藥 40～500、靈寵 1～5 萬、壽元丹 1～10 萬、靈寶閣 10 萬～100 萬。
+  2026-09-24 起再乘上**實力效率**（`estimateIdleCombat()`，見第 33 節），打不過的地圖不再給滿額離線收益。
+- 主要消耗：鍛造 10,000／次、符寶煉製 100 萬／次、僕從派遣 50～300／趟、丹藥 40～500、靈寵 1～5 萬、壽元丹 1～10 萬、靈寶閣 10 萬～100 萬。
   ⚠️ 後期靈石仍遠多於消耗，真正的瓶頸是聲望（高級靈寶閣需 50 萬聲望）。若要讓靈石一直有意義，
   需要讓後期消耗（鍛造、丹藥、壽元丹）隨境界提高，而不是再調高產出。
 
@@ -997,7 +998,7 @@ combatTick() 每秒執行 [combat.js]
   - **日後新增任何取得裝備的管道，都要對新裝備呼叫 `ensureSockets()`。**
 - **符寶種類**（`talismanTypes`，11 種）：四維符 `str/con/int/spr`（加固定點數）、戰鬥屬性符 `def/eva/ice/fire/poison/metal/thunder`（加 %）。
 - **煉製一律隨機**（`craftTalisman(qty)` → `rollTalisman()`）：無法指定種類或品階；種類 11 選 1 平均，品階依 `chance`。
-  每次成本固定 `TALISMAN_CRAFT_COST` = **500 礦石＋50,000 靈石**，支援 ×1／×10／最高，日誌彙整煉出的種類與數量。
+  每次成本固定 `TALISMAN_CRAFT_COST` = **500 礦石＋1,000,000 靈石**（2026-09-24 由 5 萬調高），支援 ×1／×10／最高，日誌彙整煉出的種類與數量。
 
   | 品階 | 四維符 | 屬性符 | 出現機率（暫定） |
   |---|---|---|---|
@@ -1036,7 +1037,7 @@ combatTick() 每秒執行 [combat.js]
 （以 8 種舊存檔形態測試目前程式皆可正常讀取；移除 `#age-display` 即可重現同一錯誤。）
 
 ### 1. 發佈版本號（防止新舊檔案混用）
-- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260924o`）。
+- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260924r`）。
 - **每次推上 GitHub Pages 前，把所有 `?v=` 全部取代成新值**（例：日期＋序號）。新 index.html 會指向新網址的 JS，不會再拿到快取的舊檔。
 - 新增 `data/*.js` 時也要記得帶上 `?v=`。
 
@@ -1157,6 +1158,33 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
   若分頁在背景被瀏覽器結束，下次讀檔從該時間算離線；若分頁恢復執行，則由背景補發處理。
 - 附帶效果：`alert`/`confirm` 視窗開著時 JS 會暫停，關閉後這段時間也會被補發（視同時間流逝）。
 - 目前離線／背景補發**不推進門派任務與僕從任務**（沿用原本離線結算的行為）。
+
+### 離線／背景的實力判定（`save.js` 的 `estimateIdleCombat()`，2026-09-24）
+**問題**：舊版離線固定每秒 0.3 隻、也不會死，不看實力。開放世界（天南／亂星海／鬼谷八荒）沒有進入門檻，
+新角色走進鬼谷八荒後立刻關網頁，離線 24 小時可拿約 3.9 億基礎經驗（線上第一秒就會戰死）；背景補發共用同一公式，一樣可被利用。
+
+**戰鬥實測（2026-09-24，用 combatTick 模擬 3 萬秒、角色不會死）**：每秒擊殺上限被「每波後刷新 5 秒＋生成 1 秒」卡住，
+一擊斬殺時約 0.33 隻（有群攻技能約 0.38 隻）；普攻一次只打第一隻，所以需要多下才殺得死時掉得很快：
+
+| 殺一隻需要 | 每秒擊殺 | 每隻平均存活（含排隊） |
+|---|---|---|
+| 一擊 | 0.33 | 2.5 秒 |
+| 約 2 下 | 0.24 | 5 秒 |
+| 約 3 下 | 0.19 | 8 秒 |
+| 約 6 下 | 0.12 | 16 秒 |
+| 約 11 下 | 0.07 | 28 秒 |
+
+→ 修煉節奏表（`realmPacing`）、壽元流逝、每小時靈石估算都假設「一擊斬殺」；實力超過一擊斬殺後，再變強也不會在同一張地圖更快，戰力的作用是解鎖更高倍率的地圖。
+
+**做法**：野外離線／背景補發時，`settleIdleSeconds()` 先呼叫 `estimateIdleCombat()`（只取期望值，不擲骰）：
+- **擊數** `hits` = 無條件進位(妖獸氣血 ÷ (玩家物理攻擊 × (1 − 妖獸減傷))) ÷ 未閃避率。妖獸氣血 = 難度 × 500、攻擊 = 難度 × 50，減傷／閃避取自 `monsterAttrsByMapCategory`。
+- **效率** `rateMult` = (GAP + N × 一擊所需) ÷ (GAP + N × hits)，N = `IDLE_WAVE_AVG_MONSTERS`(3)、GAP = `IDLE_WAVE_GAP_TICKS`(6)（`config-maps.js`）。
+  離線戰鬥次數 = 秒數 × `OFFLINE_COMBAT_RATE` × `rateMult`。**一擊斬殺時 = 100%，和舊版離線收益完全相同**。
+- **撐不撐得住**：一波（3 隻依序擊殺）期間妖獸共出手 Σ(k × hits − 1) 次，乘上「妖獸攻擊 × 玩家未閃避率 × (1 − 玩家減傷)」＝ `waveDamage`；
+  ≥ 氣血上限 → 判定無法久留：**把玩家移回宗門**，整段改以宗門靜修結算（不扣死亡折壽），訊息註明原因。
+  線上還有自動補血，這裡只擋「一波就被打死」的情況。
+- 效率 < 100% 時結算訊息會加一行「約需 X 擊才能斬殺一隻，戰鬥效率 Y%」。
+- 不計技能、屬性傷害、靈寵協助，估算偏保守。與實際 combatTick 模擬比對（天南／冥界，多種攻擊力）：效率誤差約 ±2%。
 
 ## 34. 設定：顯示尺寸與全螢幕（`settings.js`）＋ PC 版洞府
 

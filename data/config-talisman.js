@@ -22,7 +22,7 @@ const talismanTypes = [
 ];
 
 // 煉製：一律隨機（種類 11 選 1 平均、品階依 chance），無法指定；每煉 1 枚的成本固定
-const TALISMAN_CRAFT_COST = { ore: 500, coins: 50000 };
+const TALISMAN_CRAFT_COST = { ore: 500, coins: 1000000 };   // 500 礦石＋100 萬靈石（2026-09-24 由 5 萬調高）
 
 // 品階：效果與出現機率（chance 合計 1）
 //   flat = 四維符的點數；pct = 戰鬥屬性符的 %
