@@ -23,7 +23,7 @@ images/               圖片素材
 data/                 所有遊戲邏輯與資料，依「設定資料 / 執行狀態 / 功能模組 / 進入點」分層
   config-*.js         純資料表（原則上不含函式、無副作用），可視為遊戲的「設計數值表」：
                       realms / level / lifespan / maps / sects / lingbao / shop / beasts /
-                      servants / equipment / tribulation / quests / activities / daily-quests / elements / merit / talisman / avatars / home-pc / spells
+                      servants / equipment / tribulation / quests / activities / daily-quests / elements / merit / bounty / talisman / avatars / home-pc / spells
                       （config-realms.js 另含修煉節奏表 realmPacing，經驗門檻與壽元流逝都由它換算，見第 26 節）
                       （config-sects.js 例外：尾端有一段迴圈補上技能倍率，並提供 findSectByName()）
   state.js            執行期間的可變全域狀態（player、enemies、靈寵輔助效果計時…）
@@ -41,8 +41,9 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
                       （library.js 另含第二階段屬性秘典，並提供戰鬥用的 getElementBookBonus()）
   activity.js         活動選單：統一把關各活動的解鎖條件（聲望＋境界）
   daily-quest.js      每日任務（每 4 小時刷新 10 項）
-  auction.js          千寶閣拍賣場（每 3 小時刷新 5 件商品，含壽元丹）＋常駐珍貴物資區
-  merit.js            功德系統：獵殺邪修、功德兌換七彩補天石、購買破障丹（第 27 節）
+  auction.js          千寶閣拍賣場（每 3 小時刷新 5 件商品，含壽元丹；紫／橙商品可能遇到搶拍）＋常駐珍貴物資區
+  merit.js            功德、陣營（正／邪）、善惡值、野外修士、功德自動凝結七彩補天石、購買破障丹（第 27 節）
+  bounty.js           懸賞榜（天／地／人榜）與一對一懸賞對決（第 36 節）
   talisman.js         符寶坊：礦石煉製符寶、橙裝孔位鑲嵌／打掉（第 28 節）
   player-profile.js   玩家道號修改
   save.js             本地存檔/讀檔/匯出入/離線掛機結算＋背景補發（第 33 節）/重置/舊存檔相容
@@ -74,7 +75,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 2 | `config-level.js` | `MAX_PLAYER_LEVEL`、`LEVEL_UP_*` 成長值、`LEVEL_EXP_SEGMENTS` 經驗曲線 | 無 | `stats.js`(getLevelExpNeeded、getMaxHp/getMaxMp)、`leveling.js`(gainLevelExp)、`ui.js` |
 | 3 | `config-lifespan.js` | `lifespanByRealm` 各境界壽元增加量與死亡折壽、歲月流逝常數 `LIFESPAN_MIN_AGING_HOURS`/`LIFESPAN_PACE_MULT`/`LIFESPAN_DANGER_MULT`/`LIFESPAN_TRIBULATION_MULT`/`LIFESPAN_OFFLINE_RATE`/`LIFESPAN_FLOOR_DEATHS`、起始年齡 `LIFESPAN_START_AGE` | 無 | `lifespan.js`、`leveling.js`(轉世重設壽元與年齡)、`ui.js`(年齡顯示) |
 | 4 | `config-maps.js` | `SECT_MAP_NAME`（"宗門"，唯一安全區的名稱）、`maps` 地圖資料（含各圖 `coins` 每隻靈石）、`KILLS_PER_HOUR_ESTIMATE`、`REPUTATION_MAX_BY_MAP_CATEGORY`（各區擊殺聲望上限）、`OFFLINE_COMBAT_RATE`/`OFFLINE_REPUTATION_RATE`、離線實力估算 `IDLE_WAVE_AVG_MONSTERS`/`IDLE_WAVE_GAP_TICKS`、`monsterIcons` | 無 | `state.js`、`map.js`(isInSect)、`combat.js`、`ui.js`、`save.js`(migrateCurrentMap) |
-| 5 | `config-sects.js` | `sectData` 宗門與技能表、`SECT_SKILL_BONUS`、`SECT_TIER_NAMES`、`findSectByName()`；尾端迴圈替每招補上 `tier`/`mult` | 無 | `sect.js`、`stats.js`(getSectTier/getAllSkills)、`ui.js`、`save.js`(重新綁定宗門) |
+| 5 | `config-sects.js` | `sectData` 宗門與技能表（宗門可選填 `faction: "邪"`，目前只有天魔教；沒寫 = 正）、`SECT_SKILL_BONUS`、`SECT_TIER_NAMES`、`findSectByName()`；尾端迴圈替每招補上 `tier`/`mult` | 無 | `sect.js`、`stats.js`(getSectTier/getAllSkills)、`ui.js`、`save.js`(重新綁定宗門)、`merit.js`(getPlayerFaction) |
 | 6 | `config-lingbao.js` | `legacySkillAdjustments` 舊版禁術下修數值、`lingbaoTierCosts` 各階段兌換價格、`lingbaoShopItems` 三階段戰略級寶物與武學 | 無 | `lingbao-shop.js`、`equipment.js`(五行說明列固定屬性裝備) |
 | 7 | `config-shop.js` | `shopItems` 丹藥堂商品、`shopSections` 分區、`POTION_COOLDOWN_SECONDS` 丹藥冷卻、`SHOP_MAX_BUY_QTY` 單次購買上限(9999) | 無 | `shop.js`、`bag.js`、`combat.js`(自動補血補魔) |
 | 8 | `config-beasts.js` | `beastData` 靈寵兌換與被動、`BEAST_REVIVE_COST_CORE`、維持費 `BEAST_UPKEEP_INTERVAL`/`beastUpkeepTiers`（第 16 節）、`BEAST_SKILL_LEVELS`、`BEAST_SKILL_CHANCE`、`beastElementInfo`、`beastSkillTree` | 無 | `beast.js`、`beast-combat.js`、`save.js`(舊存檔轉換) |
@@ -83,19 +84,20 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 11 | `config-tribulation.js` | 渡劫門檻、勝算常數 `TRIBULATION_*`（含合體期起加劇 `TRIBULATION_HARD_REALM_INDEX`/`TRIBULATION_HARD_PENALTY_PER_REALM`/`TRIBULATION_HARD_PENALTY_MAX`）、心魔倍率與技能 | 無 | `leveling.js`、`tribulation.js`、`save.js` |
 | 12 | `config-quests.js` | `questData` 門派任務（可選欄位：範圍獎勵 `[min,max]`、`requiredQuality`、`duration`；某等級可不填）、`questRewardInfo` 獎勵名稱與對應欄位（含礦石 `ore`）、`QUEST_*` 進度常數、`MAX_ASSIGNED_SERVANTS` | 無 | `quest.js`、`servant.js`、`combat.js` |
 | 13 | `config-activities.js` | `activityData` 活動清單與解鎖條件 | 無 | `activity.js` |
-| 14 | `config-daily-quests.js` | 每日任務 `DAILY_REFRESH_HOURS`/`DAILY_QUEST_COUNT`/`dailyQuestPool`/`dailyQuestRewards`、千寶閣 `AUCTION_*`、`auctionQualityOdds`、`auctionLifePills`(壽元丹) | 無 | `daily-quest.js`、`auction.js` |
+| 14 | `config-daily-quests.js` | 每日任務 `DAILY_REFRESH_HOURS`/`DAILY_QUEST_COUNT`/`dailyQuestPool`/`dailyQuestRewards`、千寶閣 `AUCTION_*`（含搶拍 `AUCTION_RIVAL_CHANCE`/`AUCTION_RIVAL_MAX_MULT_MIN`/`AUCTION_RIVAL_MAX_MULT_MAX`/`AUCTION_BID_STEPS`）、`auctionRivalNames`、`auctionQualityOdds`、`auctionLifePills`(壽元丹) | 無 | `daily-quest.js`、`auction.js` |
 | 15 | `config-elements.js` | 戰鬥屬性上限 `DEF_CAP`/`EVA_CAP`/`AFFIX_CAP`、效果常數（凍結/燒傷/中毒/金重擊/雷擊 `THUNDER_BONUS`）、`combatAttrInfo`、`AFFIX_TYPES`(玩家武器)/`MONSTER_AFFIX_TYPES`(怪物異屬性：冰/毒/雷)、五行相剋 `WUXING_COUNTERS`/`WUXING_COUNTER_BONUS`/`WUXING_COUNTERED_PENALTY`、`monsterAttrsByMapCategory` | 無 | `elements.js`、`stats.js`(getPlayerElement)、`ui.js`、`equipment.js`(鍛造屬性、五行說明視窗) |
-| 15a | `config-merit.js` | 邪修 `EVIL_SPAWN_CHANCE`/`EVIL_POWER_MULT`/`EVIL_MERIT_MIN`/`EVIL_MERIT_MAX`/`EVIL_ICON`、兌換 `MERIT_PER_BUTIAN_STONE`/`BREAK_PILL_STONE_COST`、破障丹效果 `BREAK_PILL_DEMON_POWER_MULT`/`BREAK_PILL_CHANCE_BONUS`/`BREAK_PILL_MAX_CHANCE`、`preciousItems`(顯示資料) | 無 | `merit.js`、`combat.js`(邪修生成)、`save.js`(離線功德)、`tribulation.js`(破障丹)、`bag.js`、`ui.js` |
+| 15a | `config-merit.js` | 陣營 `FACTION_SECT_WEIGHT`、善惡 `KARMA_MAX`/`KARMA_GOOD_THRESHOLD`/`KARMA_EVIL_THRESHOLD`/`KARMA_PER_FIELD_KILL`/`KARMA_PER_AMBUSH_KILL`、野外修士 `FIELD_CULTIVATOR_WAVE_CHANCE`/`FIELD_CULTIVATOR_POWER_MULT`/`FIELD_MERIT_MIN`/`FIELD_MERIT_MAX`/`CULTIVATOR_ICONS`、暗殺者 `AMBUSH_WAVE_CHANCE`/`AMBUSH_POWER_MULT`/`AMBUSH_ICON`、自動凝結 `MERIT_PER_BUTIAN_STONE`(30,000)、`BREAK_PILL_STONE_COST`、破障丹效果 `BREAK_PILL_DEMON_POWER_MULT`/`BREAK_PILL_CHANCE_BONUS`/`BREAK_PILL_MAX_CHANCE`、`preciousItems`(顯示資料) | 無 | `merit.js`、`combat.js`(野外修士／暗殺者生成)、`save.js`(離線功德)、`tribulation.js`(破障丹)、`bag.js`、`ui.js` |
+| 15f | `config-bounty.js` | 懸賞榜：`BOUNTY_REFRESH_HOURS`/`BOUNTY_ENCOUNTER_CHANCE`/`BOUNTY_MERIT_MIN`/`BOUNTY_MERIT_MAX`/`BOUNTY_REALM_OFFSET_MIN`/`BOUNTY_REALM_OFFSET_MAX`/`BOUNTY_MAX_TURNS`、參考戰力 `BOUNTY_REF_SECT_MULT`/`BOUNTY_TIAN_MULT`、`BOUNTY_RANKS`(天／地／人榜)/`BOUNTY_RANK_ORDER`、武學 `bountySkills`/`BOUNTY_SKILL_SETS`、名冊 `bountyRoster`(邪 30／正 30)/`BOUNTY_ICONS` | 無 | `bounty.js` |
 | 15e | `config-spells.js` | 仙法資料：`SPELL_EVIL_POWER`/`SPELL_SLOT_LEVEL_STEP`/`SPELL_GRADES`/`SPELL_ROLES`/`SPELL_GRADE_STATS`(各品階數值)/`SPELL_AURA_LABELS`/`spellAttributes`(10 屬性、每品 6 招名稱)/`spellUltimates`(20 絕學) | 無 | `spells.js` |
 | 15d | `config-home-pc.js` | PC 版洞府：`PC_STAGE_IMG_W`/`PC_STAGE_IMG_H`(1376×768)、分頁面板位置 `PC_SHEET_RECT`、按鈕與建築熱點表 `pcStageButtons`（圖上座標、功能 action、牌匾、nav、enabled） | 無（action 是字串，點擊時才呼叫各模組函式） | `home-ui.js`(renderPcStage/layoutStage) |
 | 15c | `config-avatars.js` | `avatarList`（頭像 id／名稱／圖片／裁切位置／解鎖條件） | 無 | `avatar.js` |
 | 15b | `config-talisman.js` | 孔位 `SOCKET_QUALITY`/`SOCKET_MIN`/`SOCKET_MAX`、`talismanTypes`(11 種)、`talismanGrades`(下/中/上品的效果與出現機率)、`TALISMAN_CRAFT_COST`(每次 500 礦石＋100 萬靈石) | 無 | `talisman.js` |
-| 16 | `state.js` | `player`（含 `lingbaoSold`、仙法 `spells`/`spellSlots`、渡劫失敗虛弱 `weakened`、頭像 `avatarId`/`unlockedAvatars`、礦石 `ore`、符寶 `talismans`、藏書閣屬性秘典次數 `elementStudy`、轉世保留的上限 `reincarnateBonus`、年齡 `age`、功德系統 `merit`/`butianStones`/`breakPills`/`evilKills`）、`DEFAULT_PLAYER_JSON`（全新角色預設值快照，讀檔/匯入的合併基底）、`enemies`（每隻帶 `attrs`/`status`）、`respawnTimer`、`safeZoneTimer`；不存檔的執行期狀態：`inTribulation`/`heartDemon`/`tribulationFatedWin`/丹藥冷卻/`gameOver`/背景補發 `lastTickAt`/`missedTickMs`/`playerStatus`(玩家身上的凍結/燒傷/中毒)/靈寵輔助計時(`petBuff*`/`petShield*`/`petRegen*`) | **`maps`**（必須排在 config-maps.js 之後） | 幾乎所有檔案都會讀寫 `player` |
-| 17 | `stats.js` | `EQUIP_STAT_KEYS`、`getEquipBonus`(四維＋減傷/閃避/屬性傷害)/`getElementCounts`/`getSpiritRoots`(靈根判定)/`getRootBonus`(靈根加成總和)/`getPlayerElement`(本命五行，五行相剋用)/`getRealmStageExp`(依 realmPacing 換算每階經驗基數，有快取)/`getNextExp`/`getLevelExpNeeded`/`hasLiveBeast`(出戰中才算，呼叫 beast-combat.js 的 isBeastActive)/`getBasePower`/`getPhysAttack`/`getMagAttack`/`getMaxHp`/`getMaxMp`(兩者皆加上轉世保留值)/`getReincarnateBonus`/`getSectTier`/`getAllSkills` | `player`、`realms`、`sectData`、`LEVEL_*`、`equipTypes`/`WUXING_COUNTERS`、靈寵輔助計時 | `ui.js`、`combat.js`、`leveling.js`、`tribulation.js`、`beast-combat.js` 等幾乎全部功能檔 |
-| 18 | `elements.js` | `newStatus`/`getPlayerCombatAttrs`(含 `element`)/`getWuxingCounterMult`/`withSkillEffect`/`getMapCategoryIndex`/`rollMonsterAttrs`/`resolveHit`/`addDotStack`/`tickStatus`/`formatStatus`/`summarizeTags`/`formatEquipStats` | `config-elements.js`、`stats.js`(getEquipBonus/getPlayerElement)、`library.js`(getElementBookBonus)、`wuxingElements`、`maps`、`playerStatus` | `combat.js`、`tribulation.js`、`ui.js`、`bag.js`/`equipment.js`/`auction.js`/`lingbao-shop.js`(裝備屬性文字) |
-| 19 | `ui.js` | 常數 `PLAYER_AVATARS`（頭像 `img`（本地 images/avatar-*.jpg）/裁切位置 `pos`/預設道號，洞府頭像框、戰鬥實況、性別選擇共用；性別選擇視窗的兩張 `<img>` 寫在 index.html，換圖時要一起改）、`updateUI`/`updateCombatVisualPanel`/`formatWuxingCounterTip`/`updateTribulationUI`/`updatePotionCooldownUI`/`updateStudyCountsUI`/`renderSkillList`/`addLog`/`refreshCombatStatusText`/`updateAutoSettings`/`syncAutoSettingsUI`/`updateSectFacilitiesUI`/`closeModal`/`toggleDrawer`/`formatCountdown`/`resolveBatchCount`(×1/×10/最高 共用)/批次刪除工具 `renderBulkDeleteBar`/`getCheckedBulkQualities`/`toggleAllBulkQualities` | `player`、`realms`、`stats.js` 的計算函式、`lifespan.js`(getDeathLifespanCost) | 幾乎所有功能檔在資料變動後都會呼叫 `updateUI()`/`addLog()` |
-| 20 | `map.js` | `isInSect`(是否身在宗門)/`openMapCategoryModal`/`selectMap`/`changeMap` | `maps`、`SECT_MAP_NAME`、`player`、`ui.js` | `ui.js`(updateSectFacilitiesUI)、`combat.js`/`quest.js`(門派任務須在宗門)、HTML 按鈕；changeMap 離開宗門時呼叫 `quest.js` 的 stopQuest |
-| 21 | `combat.js` | `combatTick`/`playerAttackTurn`(普攻/技能出手，渡劫共用；技能類型 single/aoe/heal/buff＋仙法的 shield 守護／control 牽制，並處理魔功 hpCost 反噬與 lifesteal 吸血)/`onPlayerKilledInField`/`checkAutoHealAndMana`/`tryRescueServant` | `player`、`enemies`、`shopItems`、`servantQualities`、`servantNames`、`stats.js`、`elements.js`(resolveHit/tickStatus)、`leveling.js`(gainExp)、`beast-combat.js`(petAssistTick/applyPetDamageReduction/tickBeastUpkeep 每秒維持費計時)、`lifespan.js`(handlePlayerDeath)、`map.js`(changeMap 死亡回城)、`merit.js`(isEvilHuntUnlocked/rollEvilMerit，邪修生成與功德)、`config-merit.js` | `main.js`(setInterval 每秒呼叫) |
+| 16 | `state.js` | `player`（含 `lingbaoSold`、仙法 `spells`/`spellSlots`、渡劫失敗虛弱 `weakened`、頭像 `avatarId`/`unlockedAvatars`、礦石 `ore`、符寶 `talismans`、藏書閣屬性秘典次數 `elementStudy`、轉世保留的上限 `reincarnateBonus`、年齡 `age`、功德系統 `merit`/`butianStones`/`breakPills`/`evilKills`、善惡 `karma`、懸賞榜 `bountyBoard`/`bountyRefreshAt`/`bountyFaction`/`activeBountyId`/`bountyKills`）、`DEFAULT_PLAYER_JSON`（全新角色預設值快照，讀檔/匯入的合併基底）、`enemies`（每隻帶 `attrs`/`status`；野外修士另帶 `cultivator`("正"/"邪")/`ambush`）、`respawnTimer`、`safeZoneTimer`；不存檔的執行期狀態：`inTribulation`/`heartDemon`/`tribulationFatedWin`/懸賞對決 `inBountyDuel`/`duelOpponent`/`duelWeakenTimer`/`duelWeakenMult`/`duelSilenceTimer`/`duelArmorTimer`/丹藥冷卻/`gameOver`/背景補發 `lastTickAt`/`missedTickMs`/`playerStatus`(玩家身上的凍結/燒傷/中毒)/靈寵輔助計時(`petBuff*`/`petShield*`/`petRegen*`) | **`maps`**（必須排在 config-maps.js 之後） | 幾乎所有檔案都會讀寫 `player` |
+| 17 | `stats.js` | `EQUIP_STAT_KEYS`、`getEquipBonus`(四維＋減傷/閃避/屬性傷害)/`getElementCounts`/`getSpiritRoots`(靈根判定)/`getRootBonus`(靈根加成總和)/`getPlayerElement`(本命五行，五行相剋用)/`getRealmStageExp`(依 realmPacing 換算每階經驗基數，有快取)/`getNextExp`/`getLevelExpNeeded`/`hasLiveBeast`(出戰中才算，呼叫 beast-combat.js 的 isBeastActive)/`getBasePower`/`getPhysAttack`/`getMagAttack`(兩者皆乘上懸賞對決的化功 `getDuelWeakenMult()`)/`getMaxHp`/`getMaxMp`(兩者皆加上轉世保留值)/`getReincarnateBonus`/`getSectTier`/`getAllSkills` | `player`、`realms`、`sectData`、`LEVEL_*`、`equipTypes`/`WUXING_COUNTERS`、靈寵輔助計時、`bounty.js`(getDuelWeakenMult) | `ui.js`、`combat.js`、`leveling.js`、`tribulation.js`、`beast-combat.js` 等幾乎全部功能檔 |
+| 18 | `elements.js` | `newStatus`/`getPlayerCombatAttrs`(含 `element`；懸賞對決被破甲時減傷／閃避 × `getDuelArmorMult()`)/`getWuxingCounterMult`/`withSkillEffect`/`getMapCategoryIndex`/`rollMonsterAttrs`/`resolveHit`/`addDotStack`/`tickStatus`/`formatStatus`/`summarizeTags`/`formatEquipStats` | `config-elements.js`、`stats.js`(getEquipBonus/getPlayerElement)、`library.js`(getElementBookBonus)、`wuxingElements`、`maps`、`playerStatus` | `combat.js`、`tribulation.js`、`ui.js`、`bag.js`/`equipment.js`/`auction.js`/`lingbao-shop.js`(裝備屬性文字) |
+| 19 | `ui.js` | 常數 `PLAYER_AVATARS`（頭像 `img`（本地 images/avatar-*.jpg）/裁切位置 `pos`/預設道號，洞府頭像框、戰鬥實況、性別選擇共用；性別選擇視窗的兩張 `<img>` 寫在 index.html，換圖時要一起改）、`updateUI`/`updateCombatVisualPanel`/`formatWuxingCounterTip`/`updateTribulationUI`/`updatePotionCooldownUI`/`updateStudyCountsUI`/`openSkillModal`/`renderSkillList`/`addLog`/`refreshCombatStatusText`/`updateAutoSettings`/`syncAutoSettingsUI`/`updateSectFacilitiesUI`/`closeModal`/`toggleDrawer`/`formatCountdown`/`resolveBatchCount`(×1/×10/最高 共用)/批次刪除工具 `renderBulkDeleteBar`/`getCheckedBulkQualities`/`toggleAllBulkQualities` | `player`、`realms`、`stats.js` 的計算函式、`lifespan.js`(getDeathLifespanCost) | 幾乎所有功能檔在資料變動後都會呼叫 `updateUI()`/`addLog()` |
+| 20 | `map.js` | `isInSect`(是否身在宗門)/`openWorldMapModal`(修仙地圖彈窗，顯示目前所在)/`openMapCategoryModal`/`selectMap`(選定後關閉兩層地圖彈窗)/`changeMap`(懸賞對決中換地圖 = `endBountyDuel("flee")` 逃離) | `maps`、`SECT_MAP_NAME`、`player`、`ui.js`、`bounty.js` | `ui.js`(updateSectFacilitiesUI)、`combat.js`/`quest.js`(門派任務須在宗門)、HTML 按鈕；changeMap 離開宗門時呼叫 `quest.js` 的 stopQuest |
+| 21 | `combat.js` | `combatTick`/`playerAttackTurn`(普攻/技能出手，渡劫共用；技能類型 single/aoe/heal/buff＋仙法的 shield 守護／control 牽制，並處理魔功 hpCost 反噬與 lifesteal 吸血)/`onPlayerKilledInField`/`checkAutoHealAndMana`/`tryRescueServant` | `player`、`enemies`、`shopItems`、`servantQualities`、`servantNames`、`stats.js`、`elements.js`(resolveHit/tickStatus)、`leveling.js`(gainExp)、`beast-combat.js`(petAssistTick/applyPetDamageReduction/tickBeastUpkeep 每秒維持費計時)、`lifespan.js`(handlePlayerDeath)、`map.js`(changeMap 死亡回城)、`merit.js`(isEvilHuntUnlocked/getKarmaState/onCultivatorKilled/settleMeritStones，野外修士與暗殺者)、`config-merit.js`、`bounty.js`(對決中由 bountyDuelTick 接管；刷新新一波前呼叫 tryStartBountyDuel) | `main.js`(setInterval 每秒呼叫)、`bounty.js`(對決落敗呼叫 onPlayerKilledInField、playerAttackTurn) |
 | 22 | `leveling.js` | `REINCARNATE_KEEP_RATE`(轉世保留比例 5%)、`gainExp`/`gainLevelExp`/`advanceRealm`/`triggerReincarnate`（規則見第 25 節） | `realms`、`player`、`stats.js`、`ui.js`(updateSectFacilitiesUI)、`beast-combat.js`(gainBeastExp)、`lifespan.js`(gainRealmLifespan) | `combat.js`、`tribulation.js`、`save.js`、HTML 輪迴按鈕 |
 | 23 | `lifespan.js` | `getDeathLifespanCost`/`formatLifespan`/`getLifespanFloor`/`getAgingHours`(依 realmPacing 算出一境界壽元可撐時數)/`getAgingMultiplier`/`getAgingPerMinute`/`ageLifespan`(同時增加年齡 `player.age`)/`checkLifespanWarnings`(提示旗標 `lifespanWarned`，不存檔)/`getInitialLifespanForRealm`/`gainRealmLifespan`/`handlePlayerDeath`/`triggerLifespanGameOver` | `lifespanByRealm`、`LIFESPAN_*`、`player`、`inTribulation`、`elements.js`(getMapCategoryIndex)、`beast-combat.js`(killAllBeasts) | `combat.js`(每秒 ageLifespan、死亡)、`tribulation.js`(死亡)、`leveling.js`(突破)、`save.js`(離線流逝、舊存檔)、`ui.js`、`auction.js` |
 | 24 | `tribulation.js` | `getTribulationChance`/`getTribulationHardPenalty`(合體期起勝算扣除量)/`formatChance`/`triggerTribulation`/`tribulationTick`/`resolvePlayerFall`/`endTribulation` | `player`、`config-tribulation.js`、`config-merit.js`(破障丹)、`player.breakPills`、`shopItems`(丹藥加成)、`sectData`(技能加成)、`stats.js`、`elements.js`、`combat.js`(playerAttackTurn)、`beast-combat.js`、`lifespan.js`、`leveling.js`(advanceRealm) | `combat.js`(渡劫中接管 tick)、`ui.js`(按鈕顯示勝算)、HTML 渡劫按鈕 |
@@ -108,8 +110,9 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 31 | `quest.js` | `openQuestModal`/`renderQuestButtons`/`startQuest`/`stopQuest`/`updateQuestUI` + 共用任務函式 `getQuestDef`/`getAvailableQuestIds`/`getQuestRequiredProgress`/`getQuestSpeed`/`canServantTakeQuest`/`formatQuestRewards`/`grantQuestRewards`(回傳實際獲得文字) | `questData`(config-quests.js)、`player.activeQuest`、`stats.js`(getSectTier)、`map.js`(isInSect) | `combat.js`(玩家任務結算)、`servant.js`(僕從任務結算)、`map.js`(離開宗門時中斷) |
 | 32 | `activity.js` | `renderActivityList`/`getActivityLockReason`/`openActivity` | `activityData`、`player.reputation`/`realmIndex` | `ui.js`(updateUI 每秒重繪) |
 | 33 | `daily-quest.js` | `openDailyQuestModal`/`renderDailyQuests`/`claimDailyQuest`/`claimAllDailyQuests`/`addDailyProgress`/`refreshDailyQuestsIfDue` | `config-daily-quests.js`、`player.daily*` | 各功能的 `addDailyProgress()` 埋點 |
-| 34 | `auction.js` | `openAuctionModal`/`refreshAuctionIfDue`/`rollAuctionItem`/`rollAuctionEquip`/`buyAuctionItem`(壽元丹轉交 `buyAuctionLifePill`)/`buyAuctionLifePill`/`renderAuction`/`renderAuctionLifePillCard` | `auctionQualityOdds`、`auctionLifePills`、`equipQualities`、`player.auctionItems`/`coins`/`reputation`/`lifespan`、`merit.js`(renderPreciousSection 嵌在商品下方) | `activity.js`(千寶閣按鈕)、`merit.js`(兌換/購買後重繪) |
-| 34a | `merit.js` | `isEvilHuntUnlocked`/`isMeritSystemOpen`(暫停開關)/`rollEvilMerit`/`openEvilHuntModal`/`renderEvilHunt`/`renderPreciousSection`/`exchangeMeritForStone`/`buyBreakPill` | `config-merit.js`、`activityData`、`activity.js`(getActivityLockReason)、`player.merit`/`butianStones`/`breakPills`/`evilKills`、`ui.js`(resolveBatchCount)、`auction.js`(renderAuction) | `combat.js`、`save.js`、`auction.js`、`activity.js`(獵殺邪修按鈕 openFn) |
+| 34 | `auction.js` | `openAuctionModal`/`refreshAuctionIfDue`/`rollAuctionItem`/`rollAuctionEquip`/`getAuctionItemInfo`/`canPayAuctionItem`/`buyAuctionItem`(紫／橙商品先判定搶拍)/`getRivalBid`/`completeAuctionPurchase`(裝備與壽元丹共用的成交)/搶拍 `auctionBidItemId`/`openAuctionBid`/`renderAuctionBid`/`raiseAuctionBid`/`giveUpAuctionBid`/`renderAuction`/`renderAuctionBuyArea`/`renderAuctionLifePillCard` | `auctionQualityOdds`、`auctionLifePills`、`AUCTION_RIVAL_*`/`auctionRivalNames`、`equipQualities`、`player.auctionItems`/`coins`/`reputation`/`lifespan`、`merit.js`(renderPreciousSection 嵌在商品下方) | `activity.js`(千寶閣按鈕)、`merit.js`(購買後重繪) |
+| 34a | `merit.js` | `isEvilHuntUnlocked`/`isMeritSystemOpen`(暫停開關)/陣營 `getPlayerFaction`/`getOpposingFaction`/`getFactionLabel`/善惡 `getKarmaState`/`formatKarmaTag`/`addKarma`/野外修士 `rollFieldMerit`/`onCultivatorKilled`/`settleMeritStones`(功德自動凝結補天石)/`openEvilHuntModal`/`renderEvilHunt`/`renderPreciousSection`/`buyBreakPill` | `config-merit.js`、`activityData`、`activity.js`(getActivityLockReason)、`sectData`(findSectByName)、`spells.js`(getSpell)、`player.merit`/`butianStones`/`breakPills`/`evilKills`/`karma`、`ui.js`(resolveBatchCount)、`auction.js`(renderAuction)、`bounty.js`(renderBountyBoard) | `combat.js`、`save.js`、`auction.js`、`bounty.js`、`ui.js`/`home-ui.js`(善惡標籤)、`activity.js`(獵殺邪修按鈕 openFn) |
+| 34c | `bounty.js` | `getBountyRefSectMult`/`getBountyStats`/`getBountyNpc`/`getBountyIcon`/`refreshBountyIfDue`/`rollBountyBoard`/`getActiveBounty`/`acceptBounty`/`abandonBounty`/`renderBountyBoard`、對決 `tryStartBountyDuel`/`startBountyDuel`/`clearDuelDebuffs`/`getDuelWeakenMult`/`getDuelArmorMult`/`bountyDuelTick`/`endBountyDuel` | `config-bounty.js`、`realms`、`wuxingElements`/`MONSTER_AFFIX_TYPES`、`elements.js`、`combat.js`(playerAttackTurn/checkAutoHealAndMana/applyRootRegen/onPlayerKilledInField)、`beast-combat.js`、`merit.js`(陣營、善惡、settleMeritStones) | `combat.js`、`merit.js`(renderEvilHunt)、`stats.js`/`elements.js`(負面狀態)、`map.js`、`save.js`、`ui.js`(戰鬥實況)、`tribulation.js`(對決中不能渡劫) |
 | 34b | `talisman.js` | `talismanKey`/`getTalismanType`/`getTalismanGrade`/`getTalismanValue`/`formatTalisman`/`ensureSockets`(橙裝開孔，可重複呼叫)/`getSocketStats`/`formatSockets`/`findEquipById`/`openTalismanModal`/`renderTalismanWorkshop`/`renderSocketCard`/`craftTalisman`/`inlayTalisman`/`removeTalisman` | `config-talisman.js`、`equipTypes`、`player.talismans`/`ore`/`coins`/`equipment`/`equipInventory`、`ui.js`(resolveBatchCount)、`sect.js`(checkSectJoined) | `stats.js`(getEquipBonus 加總符寶)、`equipment.js`/`auction.js`/`lingbao-shop.js`(取得橙裝時 ensureSockets)、`bag.js`/`equipment.js`/`auction.js`(formatSockets 顯示)、`save.js`(migrateEquipSockets)、HTML 符寶坊按鈕 |
 | 35 | `field.js` | `herbRecipes`、`openFieldModal`/`plantHerb` | `player.spiritGrass`/`player.herbs`/`player.coins`、`ui.js`(resolveBatchCount) | HTML 按鈕（僅在「宗門」顯示） |
 | 36 | `beast-combat.js` | `createBeast`/`getBeastName`/`isBeastActive`(存活且出戰中)/維持費 `getBeastUpkeep`/`payBeastUpkeep`/`restBeastForUpkeep`/`tickBeastUpkeep`/`settleOfflineBeastUpkeep`/`getBeastSkill`/`describeBeastSkill`/`gainBeastExp`/`killAllBeasts`/`applyPetDamageReduction`/`petAssistTick` | `beastData`、`beastSkillTree`、`beastUpkeepTiers`/`BEAST_UPKEEP_INTERVAL`、`player.beasts`/`level`/`coins`/`beastCore`、`stats.js`(getLevelExpNeeded/getPhysAttack)、`beast.js`(renderBeasts，靈獸園開著時重繪) | `leveling.js`(gainExp)、`combat.js`(每秒 tickBeastUpkeep)/`tribulation.js`(每回合)、`lifespan.js`(死亡)、`stats.js`(hasLiveBeast)、`beast.js`、`save.js`(離線維持費) |
@@ -118,10 +121,10 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 38 | `library.js` | 第一階段 `STUDY_COST`/`STUDY_GAIN`/`STUDY_MAX_COUNT`、`openLibraryModal`/`studyBook`；第二階段屬性秘典（第 24 節）`ELEMENT_BOOK_TIER`/`ELEMENT_BOOK_GAIN`/`ELEMENT_BOOK_MAX`/`ELEMENT_BOOK_COST`/`elementBooks`、`isElementBookUnlocked`/`getElementBookBonus`/`formatElementBookPercent`/`renderElementBooks`/`studyElementBook` | `player.studyCounts`/`elementStudy`/`martialPoints`/`spiritGrass`/`coins`/`stats`/`sectSkills`、`SECT_TIER_NAMES`、`ui.js`(resolveBatchCount) | HTML 按鈕（僅在「宗門」顯示）、`elements.js`(getPlayerCombatAttrs 呼叫 getElementBookBonus) |
 | 39 | `alchemy.js` | `pillRecipes`、`openAlchemyModal`/`craftPill` | `player.herbs`/`stats`/`coins`、`ui.js`(resolveBatchCount) | HTML 按鈕（僅在「宗門」顯示） |
 | 40 | `player-profile.js` | `PLAYER_NAME_MAX_LENGTH`、`sanitizePlayerName`(移除 HTML 特殊字元，讀檔/匯入也套用)/`changePlayerName`(開啟 #name-modal)/`confirmPlayerName` | `player.name` | HTML 按鈕、`save.js`(applySaveData) |
-| 41 | `save.js` | `calcOfflineProgress`(讀檔時的離線結算，呼叫 settleIdleSeconds)/`settleIdleSeconds`(離線與背景共用的收益結算，含 settleOfflineBeastUpkeep 靈寵維持費)/`estimateIdleCombat`(依實力估算離線戰鬥效率與能否存活)/`formatIdleDuration`/背景補發 `checkBackgroundCatchUp`＋常數 `BACKGROUND_TICK_SLACK_MS`/`BACKGROUND_SETTLE_MIN_SECONDS`（第 33 節）/`saveLocal`/`loadLocal`/`applySaveData`(讀檔與匯入共用)/`resetGameCompletely` + 舊存檔相容 `migrateServantAssignments`/`migrateEquipmentSlots`/`migrateActivityFields`/`migrateCurrentMap`/`migrateProgressionFields`/`migrateLegacySkills`(舊禁術下修＋已兌換武學耗魔同步)/`migrateRealmExp`(經驗曲線改版：待渡劫者修為壓回滿格)/`migrateEquipSockets`(只補 talismans 欄位) + 讀檔失敗保護 `saveLoadFailed`/`reportLoadFailure`/`retryLoadAfterFailure`/`showRawSaveForCopy`/`abandonSaveAndStartNew`（第 30 節） + 離線斬殺邪修的功德 + `reloadLocalSave`(選單按鈕，無存檔時給提示) + 存檔代碼（常數 `SAVE_CODE_PREFIX`="FS2:"、兩段式確認暫存 `pendingImportData`；編解碼皆為 async）`encodeSaveCode`/`decodeSaveCode`/`bytesToBase64`/`base64ToBytes`/`pipeBytes`/`openSaveCodeModal`/`setSaveCodeStatus`/`exportSave`/`selectSaveCodeText`/`copySaveCode`/`downloadSaveCode`/`importSave`/`pasteSaveCodeFromClipboard`/`importSaveFromFile`/`confirmImportSave`/`resetImportConfirm` | `player`（整包序列化進 `localStorage`）、`maps`(migrateCurrentMap)、`legacySkillAdjustments`/`lingbaoShopItems`(migrateLegacySkills)、`leveling.js`(gainExp)、`combat.js`(tryRescueServant)、`lifespan.js`、`beast-combat.js`(createBeast)、`ui.js` | `main.js`(啟動時 loadLocal)、`main.js`(initGame 內每 30 秒 saveLocal) |
+| 41 | `save.js` | `calcOfflineProgress`(讀檔時的離線結算，呼叫 settleIdleSeconds)/`settleIdleSeconds`(離線與背景共用的收益結算，含 settleOfflineBeastUpkeep 靈寵維持費)/`estimateIdleCombat`(依實力估算離線戰鬥效率與能否存活)/`formatIdleDuration`/背景補發 `checkBackgroundCatchUp`＋常數 `BACKGROUND_TICK_SLACK_MS`/`BACKGROUND_SETTLE_MIN_SECONDS`（第 33 節）/`saveLocal`/`loadLocal`/`applySaveData`(讀檔與匯入共用)/`resetGameCompletely` + 舊存檔相容 `migrateServantAssignments`/`migrateEquipmentSlots`/`migrateActivityFields`/`migrateCurrentMap`/`migrateProgressionFields`/`migrateLegacySkills`(舊禁術下修＋已兌換武學耗魔同步)/`migrateRealmExp`(經驗曲線改版：待渡劫者修為壓回滿格)/`migrateEquipSockets`(只補 talismans 欄位) + 讀檔失敗保護 `saveLoadFailed`/`reportLoadFailure`/`retryLoadAfterFailure`/`showRawSaveForCopy`/`abandonSaveAndStartNew`（第 30 節） + 離線斬殺野外修士的功德（讀檔時也呼叫 `settleMeritStones()`）+ 讀檔時清除懸賞對決狀態 + `reloadLocalSave`(選單按鈕，無存檔時給提示) + 存檔代碼（常數 `SAVE_CODE_PREFIX`="FS2:"、兩段式確認暫存 `pendingImportData`；編解碼皆為 async）`encodeSaveCode`/`decodeSaveCode`/`bytesToBase64`/`base64ToBytes`/`pipeBytes`/`openSaveCodeModal`/`setSaveCodeStatus`/`exportSave`/`selectSaveCodeText`/`copySaveCode`/`downloadSaveCode`/`importSave`/`pasteSaveCodeFromClipboard`/`importSaveFromFile`/`confirmImportSave`/`resetImportConfirm` | `player`（整包序列化進 `localStorage`）、`maps`(migrateCurrentMap)、`legacySkillAdjustments`/`lingbaoShopItems`(migrateLegacySkills)、`leveling.js`(gainExp)、`combat.js`(tryRescueServant)、`lifespan.js`、`beast-combat.js`(createBeast)、`ui.js` | `main.js`(啟動時 loadLocal)、`main.js`(initGame 內每 30 秒 saveLocal) |
 | 41b | `avatar.js` | `getPlayerAvatar`/`isAvatarUnlocked`/`checkAvatarCondition`/`checkAvatarUnlocks`/`openAvatarModal`/`renderAvatarModal`/`selectAvatar` | `avatarList`、`player.avatarId`/`unlockedAvatars`/`gender`/`realmIndex`/`level`/`reputation`/`tribulationCount`、`realms` | `ui.js`(updateUI 呼叫 checkAvatarUnlocks；戰鬥實況頭像)、`home-ui.js`(頭像框)、HTML 頭像點擊 |
 | 41c | `settings.js` | `DISPLAY_MODE_KEY`(localStorage 鍵)/`DISPLAY_MODES`/`AUTO_PC_MIN_WIDTH`/`AUTO_PC_MIN_RATIO`、`getDisplayMode`/`resolveDisplayLayout`(回傳 'phone'／'pc')/`setDisplayMode`/`openSettingsModal`/`renderSettingsModal`/`isFullscreen`/`toggleFullscreen`；頂層註冊 `fullscreenchange` 監聽（只綁函式，載入順序不影響） | `home-ui.js`(layoutStage)、`#settings-modal` DOM、`localStorage` | `home-ui.js`(layoutStage 呼叫 resolveDisplayLayout)、HTML ⚙️ 設定按鈕 |
-| 41a | `home-ui.js` | `STAGE_IMG_W`/`STAGE_IMG_H`、`TAB_TITLES`、`layoutStage`(手機／PC 版面切換，第 34 節)/`renderPcStage`(依 config-home-pc.js 產生 PC 版按鈕與熱點)/`initHomeUi`/`switchTab`/`showStageToast`/`showUnderConstruction`/`openAscensionPlatform`/`formatShortNumber`/`getCultivationRate`/`updateHomeHud`(同時寫入手機版 hud-xxx 與 PC 版 pc-hud-xxx) | `player`、`realms`、`PLAYER_AVATARS`、`stats.js`、`tribulation.js`(triggerTribulation)、`activity.js`(openActivity)、`config-home-pc.js`、`settings.js`(resolveDisplayLayout) | `ui.js`(updateUI 結尾呼叫 updateHomeHud)、`main.js`(onload 呼叫 initHomeUi)、HTML 熱點與底部導覽 |
+| 41a | `home-ui.js` | `STAGE_IMG_W`/`STAGE_IMG_H`、`TAB_TITLES`、`layoutStage`(手機／PC 版面切換，第 34 節)/`renderPcStage`(依 config-home-pc.js 產生 PC 版按鈕與熱點)/`initHomeUi`/`switchTab`/`openWorldTab`/`showStageToast`/`showUnderConstruction`/`openAscensionPlatform`/`formatShortNumber`/`getCultivationRate`/`updateHomeHud`(同時寫入手機版 hud-xxx 與 PC 版 pc-hud-xxx) | `player`、`realms`、`PLAYER_AVATARS`、`stats.js`、`tribulation.js`(triggerTribulation)、`activity.js`(openActivity)、`config-home-pc.js`、`settings.js`(resolveDisplayLayout) | `ui.js`(updateUI 結尾呼叫 updateHomeHud)、`main.js`(onload 呼叫 initHomeUi)、HTML 熱點與底部導覽 |
 | 42 | `title-screen.js` | `TITLE_HOTSPOTS`(光環座標)/`currentTitleHotspot`/`positionTitleHotspot`/`enterWorld`/`initTitleScreen`、旗標 `worldEntered` | `main.js`(startGame)、`#title-screen` DOM | `main.js`(onload 呼叫 initTitleScreen)、標題頁按鈕 |
 | 43 | `main.js` | `initGame`(含每 30 秒存檔與切到背景時存檔)/`startGame`(讀檔失敗時不進入開新角色)/`chooseGender`/`window.onload`、旗標 `gameStarted` | 幾乎全部模組（啟動流程的膠水程式碼） | 瀏覽器 `onload`、`title-screen.js`(enterWorld 呼叫 startGame) |
 
@@ -161,6 +164,8 @@ initGame() [main.js]
 
 combatTick() 每秒執行 [combat.js]
         ├─ checkBackgroundCatchUp() [save.js]：分頁在背景被放慢／暫停時，把沒跑到的秒數以離線公式補發（第 33 節）
+        ├─ 渡劫中 → tribulationTick() [tribulation.js]；懸賞對決中 → bountyDuelTick() [bounty.js]（兩者都接管整個 tick）
+        ├─ 野外刷新新一波前：tryStartBountyDuel() [bounty.js] 已接取懸賞時有機率遇上目標（第 36 節）
         ├─ 安全區：回血回魔、每 5 秒 gainExp() [leveling.js]
         ├─ 野外：玩家狀態結算(燒傷/中毒/凍結) → 攻擊/技能（每擊經 resolveHit() [elements.js]）
         │        → 靈寵協助 petAssistTick() [beast-combat.js] → 怪物狀態結算 → 擊殺結算 → 怪物逐隻反擊（同樣經 resolveHit()）
@@ -183,7 +188,8 @@ combatTick() 每秒執行 [combat.js]
 |---|---|
 | `changePlayerName`, `confirmPlayerName` | `data/player-profile.js` |
 | `openEquipmentModal`, `unequipItem`, `equipItem`, `forgeEquipment` | `data/equipment.js` |
-| `openMapCategoryModal`, `selectMap` | `data/map.js` |
+| `openWorldMapModal`（修仙地圖彈窗：世界分頁按鈕、PC 傳送門）, `openMapCategoryModal`, `selectMap` | `data/map.js` |
+| `openSkillModal`（修仙分頁「⚔️ 當前可用技能」） | `data/ui.js` |
 | `openSectModal`, `joinSect` | `data/sect.js` |
 | `openShopModal`, `buyShopItem` | `data/shop.js` |
 | `openBagModal`, `useItemFromBag`, `deleteItemFromBag`, `deleteEquipFromInventory` | `data/bag.js` |
@@ -205,12 +211,13 @@ combatTick() 每秒執行 [combat.js]
 | `bulkDismissServants`, `assignServantQuest` | `data/servant.js` |
 | `openActivity` | `data/activity.js` |
 | `openDailyQuestModal`, `claimDailyQuest`, `claimAllDailyQuests` | `data/daily-quest.js` |
-| `openAuctionModal`, `buyAuctionItem` | `data/auction.js` |
+| `openAuctionModal`, `buyAuctionItem`、搶拍視窗內的 `raiseAuctionBid(step)`/`giveUpAuctionBid`（動態產生） | `data/auction.js` |
+| `acceptBounty(id)`, `abandonBounty`（懸賞榜卡片，由 `renderBountyBoard()` 動態產生） | `data/bounty.js` |
 | `openTalismanModal`、`craftTalisman(qty)`（隨機煉製）、`inlayTalisman(equipId, idx)`、`removeTalisman(equipId, idx)`（後三者由 `renderTalismanWorkshop()` 動態產生） | `data/talisman.js` |
-| `exchangeMeritForStone`, `buyBreakPill`（千寶閣珍貴物資區，動態產生）、`openEvilHuntModal`（經由 `openActivity('evil')`） | `data/merit.js` |
+| `buyBreakPill`（千寶閣珍貴物資區，動態產生；舊的 `exchangeMeritForStone` 已移除，功德改為自動凝結）、`openEvilHuntModal`（經由 `openActivity('evil')`） | `data/merit.js` |
 | `enterWorld` | `data/title-screen.js` |
 | `retryLoadAfterFailure`, `showRawSaveForCopy`, `abandonSaveAndStartNew`（讀檔失敗視窗） | `data/save.js` |
-| `switchTab`, `openAscensionPlatform`, `showUnderConstruction`（洞府主畫面） | `data/home-ui.js` |
+| `switchTab`, `openWorldTab`（「世界」導覽／PC 福袋：切到世界分頁並跳出修仙地圖）, `openAscensionPlatform`, `showUnderConstruction`（洞府主畫面；手機底部「情緣」也是它） | `data/home-ui.js` |
 | PC 版洞府的所有按鈕與建築熱點（onclick 字串寫在 `config-home-pc.js` 的 `pcStageButtons[].action`，改名函式時要一起改） | 各功能檔 |
 | `openSettingsModal`（洞府右上 ⚙️、PC 版「設置」）、`setDisplayMode(mode)`、`toggleFullscreen`（後兩者由 `renderSettingsModal()` 動態產生） | `data/settings.js` |
 | `openSpellModal`（修仙分頁「📜 武學密典」）、`setSpellFilter`/`selectSpell`/`equipSpell`/`unequipSpell`（密典內動態產生） | `data/spells.js` |
@@ -340,9 +347,8 @@ combatTick() 每秒執行 [combat.js]
 - **僕從 id**：`tryRescueServant()` 產生 `時間戳_8 碼隨機英數`。離線結算會在同一毫秒內救出多名僕從，
   舊版只用 0～999 的隨機數，id 可能重複，重複時解僱一名會連帶刪掉另一名。
 
-- **技能面板位置**：「當前可用技能」(`#skill-list`) 放在**左欄角色面板、「🛡️ 角色裝備與狀態」按鈕正下方**
-  （四維屬性 `.stat-grid` → 裝備按鈕 → 技能面板 → 輪迴次數），不在右側設施欄。內容由 `ui.js` 的 `renderSkillList()` 以 `getElementById` 填入，
-  搬移 DOM 位置不需改 JS，只要保留 `id="skill-list"`。
+- **技能面板位置**（2026-09-25 改）：修仙分頁「🛡️ 角色裝備與狀態」下方只放一顆「⚔️ 當前可用技能」按鈕，**點擊才彈出** `#skill-modal`（`ui.js` 的 `openSkillModal()`）。
+  清單 `#skill-list` 搬進彈窗內，內容仍由 `renderSkillList()` 以 `getElementById` 填入（`updateUI()` 每秒照常重繪），只要保留 `id="skill-list"`。
 - **抽屜式區塊**：`ui.js` 的 `toggleDrawer(id, btn)` 切換 `.drawer-body.open`。
   「命運與系統」拆成【存檔管理】與【命運抉擇】兩個抽屜，兩者**預設收合**，
   用意是把「轉世輪迴／完全重置」與日常存檔操作隔開，避免誤觸。
@@ -382,7 +388,7 @@ combatTick() 每秒執行 [combat.js]
 | 每日任務 | 1,000 | 無 | ✅ 已實作（每 4 小時刷新 10 項） |
 | 千寶閣（拍賣場） | 5,000 | 無 | ✅ 已實作（每 3 小時刷新 5 件） |
 | 秘境 | 5,000 | 煉虛 | ⏳ 敬請期待 |
-| 獵殺邪修 | 8,000 | 金丹 | ⏸️ 已實作但**暫停開放**（`implemented: false`，仍需調整；見第 27 節） |
+| 獵殺邪修 | 8,000 | 金丹 | ✅ 已開放（2026-09-25）：懸賞榜每 4 小時刷新 6 名＋野外修士＋善惡值（第 27、36 節） |
 | 域外天魔（世界BOSS） | 10,000 | 大乘 | ⏳ 敬請期待 |
 
 - **解鎖判定**一律走 `getActivityLockReason()`，未達標會說明缺什麼；
@@ -413,6 +419,15 @@ combatTick() 每秒執行 [combat.js]
   | 四紋壽元丹 | 橙色 | +100 年 | 1% | 100,000 | 10,000 |
 
   合計每欄 27% 為壽元丹、73% 為裝備（10 萬次抽樣實測吻合）。
+
+- **搶拍**（2026-09-25，`auction.js`，設定在 `config-daily-quests.js`）：紫色／橙色的商品（裝備或壽元丹）第一次按「標下」時，
+  依 `AUCTION_RIVAL_CHANCE`（紫 30%、橙 50%）擲一次是否有其他客人競拍。結果存進商品 `item.rival = { name, max, out }`（沒有對手則為 `null`），
+  **重新整理、關閉視窗都不會重擲**（無法用重開來躲對手）。
+  - 有對手時，對手先出價「底價 +10%」，開啟 `#auction-bid-modal`；競價紀錄存在 `item.bid = { current, leader, history }`。
+  - 玩家按「加價 10%／30%」（`raiseAuctionBid(step)`，以**底價**為基準計算加價幅度），出價前會檢查付不付得起。
+    對手的隱藏心理價位 `max` = 底價 × 1.1～2.0（`AUCTION_RIVAL_MAX_MULT_MIN/MAX`）：跟價後仍在心理價位內就跟（固定 +10%），否則退出，玩家以最後出價得標（`completeAuctionPurchase`）。
+  - 「放棄」（`giveUpAuctionBid`）：商品標記 `sold` 並記錄 `soldTo`，卡片顯示「已被 X 標走」。「暫時離開」只關視窗，卡片會顯示「⚔️ 競拍中」，可再按「繼續競拍」。
+  - 壽元丹的**聲望價格不隨競價增加**，只有靈石會被抬高。白／綠／藍品質沒有搶拍。
 
 ## 11. 遊戲主頁（標題畫面）
 
@@ -967,21 +982,35 @@ combatTick() 每秒執行 [combat.js]
 
 ## 27. 功德系統（獵殺邪修／七彩補天石／破障丹）
 
-設定在 `config-merit.js`，邏輯在 `merit.js`。流程：**斬殺邪修 → 功德 → 七彩補天石 → 千寶閣珍貴物資（破障丹）**。功德只能兌換道具。
+設定在 `config-merit.js`，邏輯在 `merit.js`（懸賞榜在 `bounty.js`，第 36 節）。
+流程：**斬殺敵對陣營修士 → 功德 → 滿 30,000 自動凝結七彩補天石 → 千寶閣珍貴物資（破障丹）**。功德只能換道具。
 
-- ⏸️ **目前暫停開放**：`config-activities.js` 的 `evil` 設為 `implemented: false`（活動選單顯示「敬請期待」）。
-  暫停期間 `isEvilHuntUnlocked()` 一律回傳 false（野外不出現邪修、離線不累積功德），
-  `isMeritSystemOpen()` 為 false 時千寶閣**不顯示珍貴物資區**、渡劫確認視窗**不提醒破障丹**（避免引導去買拿不到的東西）；
-  已持有的破障丹仍會在渡劫時生效。**調整完成後把 `implemented` 改回 `true` 即全部開放**，不需改其他程式。
-- **獵殺邪修**（活動選單，聲望 8,000＋金丹解鎖，`isEvilHuntUnlocked()` 走 `getActivityLockReason()`）：
-  - 解鎖後，`combat.js` 刷怪時每隻有 `EVIL_SPAWN_CHANCE`(1.6%) 機率是邪修（`isEvil: true`、圖示 `EVIL_ICON` 🧛、氣血與攻擊 ×`EVIL_POWER_MULT` 1.5）。
-    戰鬥實況標題會顯示「邪修×N」，遭遇與斬殺都有日誌。
-  - 斬殺一名得 `EVIL_MERIT_MIN`～`EVIL_MERIT_MAX`（1～10）功德，並累計 `player.evilKills`。
-  - 離線（野外）：戰鬥 tick 數 × `EVIL_SPAWN_CHANCE` 名邪修 × 平均 5.5 功德（`save.js` 的 `calcOfflineProgress()`）。
-  - 產量目標：**線上每小時約 100 功德**（每小時約 1,152 隻 × 1.6% ≈ 18 名邪修 × 5.5）≈ 每小時 1 顆補天石 ≈ 每 5 小時 1 顆破障丹。
-    要調整產量改 `EVIL_SPAWN_CHANCE`（每 1% 約 63 功德/小時）。
-  - 活動按鈕開啟 `#evil-hunt-modal`（`renderEvilHunt()`）：說明、持有數量、累計斬殺數，以及前往千寶閣的按鈕。
-- **七彩補天石**：`player.butianStones`，在千寶閣以 `MERIT_PER_BUTIAN_STONE`(100) 功德兌換 1 顆（`exchangeMeritForStone(qty)`，×1/×10/最高）。
+- **開放狀態**：2026-09-25 起 `config-activities.js` 的 `evil` 為 `implemented: true`。改回 `false` 即整體暫停：
+  `isEvilHuntUnlocked()` 回傳 false（野外不出現修士、離線不累積功德、懸賞遇不到），`isMeritSystemOpen()` 為 false 時千寶閣**不顯示珍貴物資區**、渡劫**不提醒破障丹**。
+- **解鎖**：活動選單「獵殺邪修」，聲望 8,000＋金丹（`isEvilHuntUnlocked()` 走 `getActivityLockReason()`）。
+
+### 陣營（正派／邪派）
+- `getPlayerFaction()`：已拜入的每個宗門算 `FACTION_SECT_WEIGHT`(5) 分、每招學會的仙法算 1 分，依陣營加總；**邪派分數高於正派才是邪派**，同分（含散修）算正派。
+  宗門陣營寫在 `config-sects.js` 的 `faction`（目前只有**天魔教**是 `"邪"`，其他沒寫 = 正）；仙法陣營取 `config-spells.js` 的 `faction`。
+- 正派玩家的懸賞榜列邪修、邪派玩家列正道修士。**兩者都拿功德**，只有說法不同（邪派的日誌寫「吸取對方功德」）。
+
+### 善惡值
+- `player.karma`：-3000～+3000（`KARMA_MAX`），新角色 0，轉世不重置。介面只顯示 **善（藍）／中立（灰）／惡（紅）**：≥ `KARMA_GOOD_THRESHOLD`(1000) 為善、≤ `KARMA_EVIL_THRESHOLD`(-1000) 為惡。
+  顯示位置：洞府 HUD 道號旁（`#hud-karma`／`#pc-hud-karma`）、修仙分頁資源列（`#karma-display`）、獵殺邪修視窗。
+- **殺邪派人士 → 善（+）、殺正派人士 → 惡（−）**（`addKarma()`，跨過門檻時寫日誌）：野外修士 ±5、暗殺者 ±10、懸賞人物 人／地／天榜 ±30／60／100（`BOUNTY_RANKS[].karma`）。
+- **暗殺**：善 → 邪派刺客、惡 → 正道獵魔人，野外每波有 `AMBUSH_WAVE_CHANCE`(4%) 混入一名（`AMBUSH_ICON` 🥷，氣血與攻擊 ×`AMBUSH_POWER_MULT` 3）。中立時不會出現。
+- 離線與背景補發**不計善惡值**、不會遇到暗殺者。
+
+### 野外修士（取代舊版「每隻 1.6% 是邪修」）
+- 野外修士**不是妖獸**：`combat.js` 每刷新一波，有 `FIELD_CULTIVATOR_WAVE_CHANCE`(5%) 混入**一名**，正道／魔道各半（圖示 `CULTIVATOR_ICONS` 🧙／🧛，氣血與攻擊 ×1.5）。
+  敵人物件帶 `cultivator: "正"/"邪"`、暗殺者另帶 `ambush: true`；戰鬥實況標題顯示「修士×N」。
+- 斬殺時 `onCultivatorKilled()`：改善惡值、`evilKills` +1；**只有敵對陣營給功德** `FIELD_MERIT_MIN`～`FIELD_MERIT_MAX`(1～10)，同陣營不給（日誌註明）。
+- 離線（野外）：波數（戰鬥 tick ÷ `IDLE_WAVE_AVG_MONSTERS`）× 5% × 一半敵對 × 平均 5.5 功德，每小時約 50 功德。
+- ⚠️ 功德改成 3 萬凝結一顆補天石後，野外修士（1～10）只是零頭，**補天石的主要來源是懸賞榜**（1～3000，平均 1,500，約 20 名換一顆）。
+
+### 七彩補天石與破障丹
+- **七彩補天石**：`player.butianStones`。身上功德每滿 `MERIT_PER_BUTIAN_STONE`(30,000) **自動凝結**一顆（`settleMeritStones()`，在野外斬殺修士、懸賞伏誅、離線結算、讀檔時呼叫）。
+  ⚠️ 舊版是千寶閣按鈕「100 功德換 1 顆」（`exchangeMeritForStone`，已移除）。
 - **破障丹**：`player.breakPills`，在千寶閣以 `BREAK_PILL_STONE_COST`(5) 顆補天石購買（`buyBreakPill(qty)`）。
   渡劫時若持有會**自動服用 1 顆**：心魔戰力 ×`BREAK_PILL_DEMON_POWER_MULT`(0.9)、勝算 +`BREAK_PILL_CHANCE_BONUS`(10%)、上限提高到 `BREAK_PILL_MAX_CHANCE`(90%)。見第 7 節。
 - **千寶閣珍貴物資區**：`renderPreciousSection()` 嵌在 `renderAuction()` 的商品下方，**常駐、不佔每 3 小時刷新的 5 格**。
@@ -989,7 +1018,7 @@ combatTick() 每秒執行 [combat.js]
 - **七彩發光外觀**：`index.html` 的 `.rainbow-text`（漸層流動文字）與 `.rainbow-glow`（卡片框線與光暈循環變色），
   用於千寶閣珍貴物資、背包、角色資源列、獵殺邪修視窗；`prefers-reduced-motion` 時停用動畫。顯示資料在 `preciousItems`。
 - **背包**：`renderBag()` 會列出補天石與破障丹（七彩卡片、不能直接使用）；角色面板資源列也顯示功德／補天石／破障丹。
-- **存檔**：`merit`/`butianStones`/`breakPills`/`evilKills` 都在 `player` 上，舊存檔由 `DEFAULT_PLAYER_JSON` 補 0；轉世不重置。
+- **存檔**：`merit`/`butianStones`/`breakPills`/`evilKills`/`karma` 與懸賞榜欄位都在 `player` 上，舊存檔由 `DEFAULT_PLAYER_JSON` 補預設值；轉世不重置。
 
 ## 28. 符寶與鑲嵌孔（符寶坊）
 
@@ -1042,7 +1071,7 @@ combatTick() 每秒執行 [combat.js]
 （以 8 種舊存檔形態測試目前程式皆可正常讀取；移除 `#age-display` 即可重現同一錯誤。）
 
 ### 1. 發佈版本號（防止新舊檔案混用）
-- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260924s`）。
+- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260925c`）。
 - **每次推上 GitHub Pages 前，把所有 `?v=` 全部取代成新值**（例：日期＋序號）。新 index.html 會指向新網址的 JS，不會再拿到快取的舊檔。
 - 新增 `data/*.js` 時也要記得帶上 `?v=`。
 
@@ -1090,13 +1119,13 @@ combatTick() 每秒執行 [combat.js]
 | `#hud-rep` | 右資源框（圖上原為「仙玉」） | **聲望** |
 | `#hud-stats` | 資源框下方（新增的半透明面板） | 氣血／靈力／修為條、修煉效率（`getCultivationRate()` = 宗門經驗倍率 × 靈寵加成）；最下列左側 `#btn-settings`「⚙️ 設定」開啟設定視窗（第 34 節） |
 | 熱點「升仙台」 | 寶塔 | `openAscensionPlatform()`：待渡劫時 `triggerTribulation()`，否則提示修為進度；待渡劫時牌匾亮紅點 |
-| 熱點「領物閣」 | 山中發光洞口 | `openActivity('auction')`（千寶閣，未解鎖會提示條件） |
+| 熱點「千寶閣」（舊牌匾名「領物閣」，2026-09-25 改名） | 山中發光洞口 | `openActivity('auction')`（千寶閣，未解鎖會提示條件） |
 | 熱點「宗門」 | 左側山門 | 切到宗門分頁 |
 | 熱點「僕從小屋」 | 右側屋舍 | `openServantModal()` |
 | 側邊「任務」「背包」 | 左側 | `openQuestModal()`、`openBagModal()` |
 | 側邊「特惠商城」 | 右側 | `openShopModal()`（丹藥堂） |
 | 側邊「郵件」「充值」 | 左／右 | 遊戲沒有對應功能 → `showUnderConstruction()` 顯示「興建中」 |
-| 底部導覽 | 修仙／戰鬥／洞府／宗門／世界 | `switchTab()`；選中的按鈕有金色光暈（`.nav-btn.active`） |
+| 底部導覽 | 修仙／戰鬥／洞府／**情緣**／世界 | 修仙、戰鬥、洞府為 `switchTab()`；選中的按鈕有金色光暈（`.nav-btn.active`）。<br>**情緣**：圖上原字「宗門」用 `.nav-label-cover`（深色底＋楷體字，位置相對於按鈕）蓋掉改寫，點擊 `showUnderConstruction('情緣')`，沒有 `data-nav`。宗門分頁改由洞府的「宗門」山門熱點進入。<br>**世界**：`openWorldTab()` = 切到世界分頁並跳出修仙地圖彈窗 |
 
 ### 分頁（底部導覽）
 - `switchTab(tab)` 設定 `body[data-tab]`：`home`（洞府）只顯示背景與熱點；其他分頁在 `#tab-sheet`（圖上 y 212～1372 之間）顯示面板。
@@ -1105,11 +1134,14 @@ combatTick() 每秒執行 [combat.js]
   | 分頁 | 面板 |
   |---|---|
   | 修仙 `cultivate` | `#header`（境界、壽命、狀態條等詳細資訊）、修士面板（四維、戰鬥屬性、裝備、技能、自動輔助、資源） |
-  | 戰鬥 `battle` | 戰場實況＋渡劫按鈕＋日誌（`#battle-panel`，排在最前）、修仙地圖 |
-  | 宗門 `sect` | 宗門與設施 |
-  | 世界 `world` | 修仙地圖、活動、命運與系統（存檔、轉世、重置） |
+  | 戰鬥 `battle` | 戰場實況＋渡劫按鈕＋日誌（`#battle-panel`）——**不再有修仙地圖** |
+  | 宗門 `sect` | 宗門與設施（入口：洞府「宗門」山門熱點） |
+  | 世界 `world` | 「🗺️ 修仙地圖」按鈕、活動、命運與系統（存檔、轉世、重置） |
 
-- 分頁內的地圖、設施、活動抽屜**預設展開**（分頁本身就是選單）；存檔管理與命運抉擇仍預設收合。
+- **修仙地圖**（2026-09-25 改）：不再是分頁內的面板，改成獨立彈窗 `#world-map-modal`（五個區域按鈕＋目前所在，`map.js` 的 `openWorldMapModal()`）。
+  開啟方式：點「世界」導覽（手機）／「福袋」（PC）時自動跳出、世界分頁頂端的按鈕、PC 版傳送門熱點。
+  `#world-map-modal` 在 DOM 中排在 `#map-category-modal` **之前**，選區域時的地圖清單才會疊在上面；`selectMap()` 選定後兩層一起關閉。
+- 分頁內的設施、活動抽屜**預設展開**（分頁本身就是選單）；存檔管理與命運抉擇仍預設收合。
 - **新增面板**：放進 `#game-container` 並加上 `data-tab="分頁名"` 即可。
 
 ### 其他
@@ -1232,11 +1264,11 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
   | 中央山門（「宗門」） | 宗門分頁 |
   | 右側屋舍（「僕從小屋」） | `openServantModal()` |
   | 左側樓閣（「煉丹房」） | `openAlchemyModal()` |
-  | 傳送門（圖上已有牌匾） | `openMapCategoryModal()` |
-  | 湖中光環（「領物閣」） | `openActivity('auction')` |
+  | 傳送門（圖上已有牌匾） | `openWorldMapModal()`（修仙地圖彈窗；舊版呼叫 `openMapCategoryModal()` 沒帶參數會出錯，已修正） |
+  | 湖中光環（「千寶閣」，舊名領物閣） | `openActivity('auction')` |
   | 左側 信件／背包／設置 | 興建中／`openBagModal()`／`openSettingsModal()` |
   | 右下 修煉加速／信件 | 興建中 |
-  | 右下 修仕／戰鬥／洞府／福袋 | 修仙／戰鬥／洞府（關閉面板）／**世界**分頁（福袋暫作世界入口） |
+  | 右下 修仕／戰鬥／洞府／福袋 | 修仙／戰鬥／洞府（關閉面板）／**世界**（福袋暫作世界入口，`openWorldTab()`：切到世界分頁並跳出修仙地圖，與手機版相同） |
 
 - **分頁面板**：位置在 `PC_SHEET_RECT`（圖上 (300,40) 845×625，避開左上 HUD、右上狀態框與底部按鈕），
   `renderPcStage()` 換算成 CSS 變數 `--pc-sheet-left/top/width/height`。開啟時隱藏建築熱點，按鈕仍可點；✕ 或「洞府」關閉。
@@ -1302,3 +1334,50 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
 ### 待決定
 - 取得方式（購買／掉落／千寶閣／參悟）。之後只要把 id 寫進 `player.spells` 即可學會。
 - 被動光環目前**全部學會即全部生效**，200 種全學的疊加還沒做平衡；若要限制可改成光環也要放格子。
+
+## 36. 懸賞榜與懸賞對決（`config-bounty.js`、`bounty.js`）
+
+入口：活動「獵殺邪修」→ `#evil-hunt-modal`（標題依陣營顯示「獵殺邪修・懸賞榜」或「截殺正道・懸賞榜」）。陣營、善惡、功德規則見第 27 節。
+
+### 榜單
+- 每 `BOUNTY_REFRESH_HOURS`(4) 小時刷新（`refreshBountyIfDue()`，以 `player.bountyRefreshAt` 時間戳判斷，同千寶閣），每期 6 名：**天榜 1、地榜 2、人榜 3**。
+  列的是**敵對陣營**：正派看邪修、邪派看正道修士（`player.bountyFaction` 記錄榜單陣營，玩家陣營改變時立即重抽）。刷新時未完成的懸賞一併作廢。
+- 名冊 `bountyRoster`：邪修 30 名、正道 30 名，**男女各半**，有姓名與稱號；同一期不重複。`id` 寫進存檔，上線後不要改。
+- 每名的**境界 = 玩家目前位置 −0.8～+1 境隨機**（`BOUNTY_REALM_OFFSET_MIN`/`MAX`，2026-09-25 由 ±1 改）：
+  把境界換成「大境界 × 10 + (小境界 − 1)」的連續位置，以 **0.1 境 = 1 階**為單位在 −8～+10 階之間平均隨機，再換回大境界＋小境界（頭尾夾在凡人 1 階～混沌道祖 10 階）。
+  例：玩家金丹 5 階 → 築基 7 階～元嬰 5 階。五行與異屬性（冰／毒／雷）、武學組合也隨機（見下方）。
+- 卡片顯示：榜別、姓名、稱號、性別、境界階數、攻擊與氣血（標示是「你的幾倍」，≥1.5 倍紅、≥0.8 倍黃、其餘綠）、減傷閃避異屬性、武學。
+- 存檔：`bountyBoard = [{ id, npcId, faction, rank, realmIndex, stage, element, affix, skills, status: "open"/"done" }]`。
+
+### 接取與遭遇
+- 點「📜 接取懸賞」（`acceptBounty(id)`）→ `player.activeBountyId`。**同時只能追蹤一名**，改接別人會 `confirm`；可「放棄懸賞」（`abandonBounty()`，對決中不可）。
+- 接取後在野外（非安全區）每刷新一波前，`combat.js` 呼叫 `tryStartBountyDuel()`：`BOUNTY_ENCOUNTER_CHANCE`(8%) 遇上 → 本波不刷妖獸，改為一對一對決（約 1～3 分鐘遇上一次）。
+- 只在線上發生：離線、背景補發都不會遇上（對決中背景補發也暫停並丟棄累積時間）。
+
+### 對決（`bountyDuelTick()`，結構同 `tribulationTick()`）
+- `combatTick()` 在 `inBountyDuel` 時整個交給 `bountyDuelTick()`：自動補給 → 玩家狀態 → 出手（`playerAttackTurn`，被封印時只能普攻）→ 靈寵 → 對手狀態 → 對手出手（經 `resolveHit()`）。**勝負完全靠實戰，沒有擲骰**。
+- **對手數值**（`getBountyStats()`）：攻擊 = 同境界同階數「修為圓滿」的基礎戰力（與 `getBasePower()` 同一條曲線）× 該境界一般宗門倍率（`BOUNTY_REF_SECT_MULT`：凡俗 1.2／修真 2.5／至高 5.0）× `BOUNTY_TIAN_MULT`(1.0) × 榜別比例（天 1.0／地 0.8／人 0.6）；氣血 = 攻擊 × 20。
+  減傷／閃避：天 22/13、地 16/9、人 11/5；異屬性觸發率 35/25/15%；每回合施展武學機率 50/42/35%。
+- **武學**（`bountySkills`，`BOUNTY_SKILL_SETS`）：
+  - 邪修必帶【血魔噬心】（攻擊 ×1.8，**吸血**＝實際傷害 100% 回血）與【奪魄退魔】（攻擊 ×1.2，**吸走你最大靈力 25%**），再從化功（你的攻擊 ×0.7 三回合）、攝魂魔音（封印兩回合）、蝕骨毒功（疊 2 層中毒）、玄冥寒掌（凍結）、破甲魔爪（你的減傷閃避減半三回合）隨機 2 招。
+  - 正道修士必帶【回春訣】（回復 10% 氣血）與【誅邪劍氣】（攻擊 ×2.0），再從鎮魔印（封印）、定身咒（凍結）、天罡破邪（化功）、神霄雷罰（破甲）隨機 2 招。
+  - 負面狀態存在 `state.js`（`duelWeakenTimer`/`duelSilenceTimer`/`duelArmorTimer`，不存檔），以**你的回合**倒數；化功由 `stats.js` 的攻擊公式乘 `getDuelWeakenMult()`，破甲由 `getPlayerCombatAttrs()` 乘 `getDuelArmorMult()`。對決結束即清除。
+- **結果**（`endBountyDuel(result)`）：
+  - `win`：懸賞標記 `done`、功德 +`BOUNTY_MERIT_MIN`～`BOUNTY_MERIT_MAX`（**1～3000，不論強弱**）、善惡依榜別加減、`bountyKills`/`evilKills` +1，接著 `settleMeritStones()`。
+  - `lose`：**視同野外戰死**（呼叫 `onPlayerKilledInField()`：折壽、靈寵陣亡、遺失 10% 靈石、回宗門），懸賞保留可再遇上。
+  - `escape`：超過 `BOUNTY_MAX_TURNS`(150) 回合對方遁走，懸賞保留。
+  - `flee`：對決中換地圖（`map.js` 的 `changeMap()`）＝逃離，懸賞保留。
+- 對決中不能渡劫（`triggerTribulation()` 會擋）；渡劫中也不會遇上懸賞。戰鬥實況面板顯示對手榜別、姓名、稱號、氣血、回合數與你身上的負面狀態。
+
+### 難度驗證（2026-09-25）
+以 `bountyDuelTick()` 實際模擬（化神 5 階、戰力 ×2.5 的宗門、無靈根光環技能，對手同境界同階數，每組 200 場）：
+
+| 玩家配置 | 天榜 | 地榜 | 人榜 |
+|---|---|---|---|
+| 無裝備 | 0% | 4～7% | 100% |
+| 減傷 30%、閃避 15% | 0～1% | 56% | 100% |
+| 減傷 60%、閃避 40%（上限） | 25～36% | 100% | 100% |
+
+- 勝率曲線很陡（數值型戰鬥的特性），天榜在同境界需要「減傷閃避拉滿＋一點運氣」；再加靈根、仙法光環、符寶、技能會更穩。
+- ⚠️ 每差 1 境戰力約差 10 倍：+1 境的天榜幾乎打不贏；最低的 −0.8 境只有約 1/7 實力，很輕鬆。上表是「同境界同階數」的情況，實際勝率依抽到的位置浮動。
+- 調難度：整體改 `BOUNTY_TIAN_MULT`；個別榜改 `BOUNTY_RANKS` 的 `ratio`/`def`/`eva`；武學強度改 `bountySkills`。改完請重跑模擬。

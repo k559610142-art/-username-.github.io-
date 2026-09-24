@@ -38,6 +38,18 @@ const auctionQualityOdds = [
     { quality: "白色", chance: 0.10 }
 ];
 
+// 搶拍（auction.js）：紫／橙品質的商品（裝備或壽元丹）按下「標下」時，擲一次是否有其他客人競拍同一件商品；
+// 結果存進商品（item.rival），重新整理或關掉視窗都不會重擲。對手有隱藏的心理價位（底價 × MIN~MAX），
+// 玩家每次加價後，對手只要還在心理價位內就會跟價；超過就退出、由玩家以最後出價得標。玩家放棄則商品被對手標走。
+const AUCTION_RIVAL_CHANCE = { "紫色": 0.3, "橙色": 0.5 };
+const AUCTION_RIVAL_MAX_MULT_MIN = 1.1;
+const AUCTION_RIVAL_MAX_MULT_MAX = 2.0;
+const AUCTION_BID_STEPS = [0.1, 0.3];   // 加價按鈕：底價的 10%／30%（對手跟價一律加 10%）
+const auctionRivalNames = [
+    "天星宗長老", "萬寶樓掌櫃", "落雲宗少主", "黃楓谷師叔", "掩月宗仙子", "星宮執事",
+    "蒙面散修", "亂星海海商", "九國盟使者", "陰羅宗護法", "御靈宗弟子", "神秘黑袍客"
+];
+
 // 千寶閣的壽元丹：每個商品欄位依下列機率「先」判定是否上架壽元丹（合計 27%），
 // 沒抽中才改上架裝備。購買需同時支付靈石與聲望，標下後立即服用增加壽元。
 const auctionLifePills = [

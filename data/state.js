@@ -8,10 +8,16 @@ let player = {
     age: 16,                     // 年齡（歲），隨歲月流逝增加（LIFESPAN_START_AGE 起算）
     avatarId: null,              // 目前使用的頭像（config-avatars.js 的 id；null = 依性別預設）
     unlockedAvatars: [],         // 已解鎖的頭像 id，永久保留（avatar.js）
-    merit: 0,                    // 功德：獵殺邪修取得，只能兌換七彩補天石（merit.js）
+    merit: 0,                    // 功德：斬殺敵對陣營修士取得，滿 MERIT_PER_BUTIAN_STONE 自動凝結七彩補天石（merit.js）
     butianStones: 0,             // 七彩補天石：千寶閣珍貴物資的貨幣
     breakPills: 0,               // 破障丹：渡劫時自動服用
-    evilKills: 0,                // 累計斬殺邪修數
+    evilKills: 0,                // 累計斬殺修士數（野外修士、暗殺者、懸賞人物）
+    karma: 0,                    // 善惡值 -3000 ~ 3000（介面只顯示善／中立／惡，merit.js）
+    bountyBoard: [],             // 當期懸賞榜 6 名（bounty.js）
+    bountyRefreshAt: 0,          // 懸賞榜下次刷新的時間戳
+    bountyFaction: null,         // 目前榜單列的是哪個陣營（"正"/"邪"），陣營改變時重抽
+    activeBountyId: null,        // 已接取、追蹤中的懸賞
+    bountyKills: 0,              // 累計懸賞伏誅數
     hp: 100, maxHp: 100, mp: 100, maxMp: 100, coins: 0, reputation: 0,
     stats: { str: 10, con: 10, int: 10, spr: 10, cha: 10 },
     studyCounts: { str: 0, con: 0, int: 0, spr: 0 },
@@ -69,6 +75,11 @@ let safeZoneTimer = 0;
 let inTribulation = false;   // 是否正在與心魔對決
 let heartDemon = null;       // 心魔實體 { name, icon, hp, maxHp, attack, buffTimer, buffMult }
 let tribulationFatedWin = false;   // 開打時依勝算擲出的天命（true = 此次渡劫必定成功）
+let inBountyDuel = false;    // 是否正在與懸賞人物一對一對決（bounty.js）
+let duelOpponent = null;     // 懸賞對決的對手 { name, title, icon, hp, maxHp, attack, attrs, status, skills, ... }
+let duelWeakenTimer = 0, duelWeakenMult = 1;   // 對手的「化功」：你的攻擊 × duelWeakenMult（以你的回合數倒數）
+let duelSilenceTimer = 0;    // 對手的「封印」：只能普攻
+let duelArmorTimer = 0;      // 對手的「破甲」：你的減傷與閃避減半
 let potionCooldownHp = 0;    // 氣血類藥品剩餘冷卻秒數
 let potionCooldownMp = 0;    // 靈力類藥品剩餘冷卻秒數
 let gameOver = false;        // 壽元耗盡：停止戰鬥與存檔，等待重新載入

@@ -92,6 +92,12 @@ function switchTab(tab) {
     }
 }
 
+// 「世界」導覽（手機底部「世界」、PC 版「福袋」）：切到世界分頁並跳出修仙地圖（map.js）
+function openWorldTab() {
+    switchTab('world');
+    openWorldMapModal();
+}
+
 // 圖上有、遊戲尚未實作的功能（郵件、充值…）
 let stageToastTimer = null;
 function showStageToast(msg) {
@@ -145,6 +151,11 @@ function updateHomeHud() {
     });
 
     set('hud-player-name', player.name);
+    let karma = getKarmaState();   // 善惡標籤（merit.js）：善藍、惡紅、中立灰
+    both('hud-karma').forEach(el => {
+        el.innerText = karma.label;
+        el.className = `karma-tag karma-${karma.key}`;
+    });
     set('hud-realm', `${realms[player.realmIndex]} ${player.stage}階${player.pendingTribulation ? '・待渡劫' : ''}${player.weakened ? '・虛弱' : ''}`);
     both('hud-realm').forEach(realmBadge => {
         realmBadge.classList.toggle('weak', !!player.weakened);

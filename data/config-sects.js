@@ -47,7 +47,8 @@ const sectData = [
         { name: "御獸仙宗", buff: "經驗x1.2, 戰力x2.2", expMult: 1.2, powerMult: 2.2,
           skills: [{name:"獸王怒", type:"single", dmgType:"phys", mpCost:105, msg:"激發【獸王怒】，猛撲撕咬強敵！"},
                    {name:"萬獸奔騰", type:"aoe", dmgType:"mag", mpCost:150, msg:"召喚靈獸【萬獸奔騰】踐踏敵人！"}] },
-        { name: "天魔教", buff: "經驗x1.5, 戰力x3.5", expMult: 1.5, powerMult: 3.5,
+        // faction: 陣營（沒寫 = 正），用於判定玩家屬於正派或邪派（merit.js 的 getPlayerFaction）
+        { name: "天魔教", faction: "邪", buff: "經驗x1.5, 戰力x3.5", expMult: 1.5, powerMult: 3.5,
           skills: [{name:"噬血斬", type:"single", dmgType:"phys", mpCost:105, msg:"【噬血斬】劈出，魔氣滔天！"},
                    {name:"天魔解體", type:"aoe", dmgType:"mag", mpCost:150, msg:"【天魔解體大法】！魔氣爆散吞噬群敵！"}] }
     ]},

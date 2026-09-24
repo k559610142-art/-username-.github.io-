@@ -230,6 +230,17 @@
         
         .reincarnate-btn { border-color: rgba(232, 121, 249, 0.6); color: var(--reincarnate-color); font-weight: bold; }
         .reincarnate-btn:hover { background: rgba(232, 121, 249, 0.2); border-color: var(--reincarnate-color); box-shadow: 0 0 12px rgba(232, 121, 249, 0.5); }
+        /* ========== 善惡標籤、懸賞榜、千寶閣搶拍（merit.js／bounty.js／auction.js）========== */
+        .karma-tag { display: inline-block; padding: 0 6px; border-radius: 4px; font-size: 0.85em; font-weight: bold; border: 1px solid currentColor; line-height: 1.4; }
+        .karma-good { color: #60a5fa; }
+        .karma-evil { color: #f87171; }
+        .karma-neutral { color: #9ca3af; }
+        .bounty-card { text-align: center; }
+        .bounty-rank { font-weight: bold; font-size: 0.9em; letter-spacing: 2px; }
+        .evil-hunt-rules { text-align: left; font-size: 0.82em; color: #d1d5db; background: rgba(0,0,0,0.25); border-radius: 8px; padding: 6px 12px; margin: 6px 0; }
+        .evil-hunt-rules summary { cursor: pointer; color: var(--accent); }
+        .evil-hunt-rules p { margin: 6px 0; line-height: 1.6; }
+        .auction-bid-log { background: rgba(0,0,0,0.3); border-radius: 8px; padding: 8px 12px; font-size: 0.85em; color: #d1d5db; text-align: left; min-height: 3em; }
         /* ========== 七彩發光（七彩補天石、破障丹等珍貴道具）========== */
         .rainbow-text {
             background: linear-gradient(90deg, #ff6b6b, #ffc36b, #fff36b, #6bff95, #6be4ff, #8b8bff, #e56bff, #ff6b6b);
@@ -744,6 +755,15 @@
         .nav-btn { pointer-events: auto; border-radius: calc(var(--u) * 16); }
         .nav-btn.active { box-shadow: inset 0 0 0 2px rgba(253, 230, 138, 0.75), 0 0 18px rgba(253, 230, 138, 0.55); background: rgba(253, 230, 138, 0.08); }
         .nav-btn.nav-home { border-radius: 50%; }
+        /* 底部導覽改名：深色底蓋掉圖上的字（「宗門」→「情緣」），位置相對於該導覽按鈕 */
+        .nav-label-cover {
+            position: absolute; left: 18%; top: 60%; width: 64%; height: 30%;
+            display: flex; align-items: center; justify-content: center;
+            background: #1d2025; border-radius: calc(var(--u) * 6);
+            color: #e6d6b0; font-family: "KaiTi", "DFKai-SB", "BiauKai", serif; font-weight: normal;
+            font-size: calc(var(--u) * 27); letter-spacing: calc(var(--u) * 2); text-shadow: 0 1px 2px #000;
+            pointer-events: none;
+        }
 
         /* ---- 分頁內容區：放原本的各個面板 ---- */
         #tab-sheet {
@@ -854,7 +874,7 @@
     <!-- 頂部 HUD：疊在圖上的頭像框、名字框、兩個資源框內 -->
     <img id="hud-avatar" alt="更換頭像" title="點擊更換頭像" onclick="openAvatarModal()">
     <div id="hud-name">
-        <div class="hud-name-line"><span id="hud-player-name">韓立</span></div>
+        <div class="hud-name-line"><span id="hud-player-name">韓立</span> <span id="hud-karma" class="karma-tag karma-neutral">中立</span></div>
         <div id="hud-realm" class="hud-realm">凡人 1階</div>
         <div class="hud-level-line"><span id="hud-level">Lv.1</span><span class="hud-mini-bar"><span id="hud-level-bar"></span></span></div>
         <div class="hud-power">戰力 <span id="hud-power">5</span></div>
@@ -871,7 +891,7 @@
     <!-- 洞府：背景建築熱點（牌匾），只在洞府分頁顯示 -->
     <div id="home-hotspots">
         <button class="hotspot" style="left:33.38%; top:21.71%; width:23.44%; height:15.13%;" onclick="openAscensionPlatform()"><span id="plaque-ascend" class="plaque plaque-left">升仙台</span></button>
-        <button class="hotspot" style="left:51.14%; top:43.75%; width:15.63%; height:7.57%;" onclick="openActivity('auction')"><span class="plaque plaque-right">領物閣</span></button>
+        <button class="hotspot" style="left:51.14%; top:43.75%; width:15.63%; height:7.57%;" onclick="openActivity('auction')"><span class="plaque plaque-right">千寶閣</span></button>
         <button class="hotspot" style="left:21.31%; top:50.99%; width:24.86%; height:12.17%;" onclick="switchTab('sect')"><span class="plaque plaque-left">宗門</span></button>
         <button class="hotspot" style="left:66.76%; top:54.93%; width:19.89%; height:6.58%;" onclick="openServantModal()"><span class="plaque plaque-top">僕從小屋</span></button>
     </div>
@@ -937,11 +957,8 @@
 
             <button class="equip-btn" onclick="openEquipmentModal()" style="margin-top: 10px; font-weight: bold;">🛡️ 角色裝備與狀態</button>
 
-            <!-- 技能面板緊接在「角色裝備與狀態」按鈕下方 -->
-            <div class="panel-title" style="margin-top: 12px;">當前可用技能</div>
-            <div id="skill-list" style="font-size: 0.9em; color: #c084fc; background: rgba(192, 132, 252, 0.05); padding: 8px; border-radius: 6px; border: 1px dashed rgba(192, 132, 252, 0.2);">
-                尚未領悟門派技能。
-            </div>
+            <!-- 當前可用技能：點按鈕才彈出 #skill-modal（內容仍由 ui.js 的 renderSkillList() 寫入 #skill-list） -->
+            <button class="sys-btn" style="margin-top: 8px; border-color: #c084fc; color: #c084fc;" onclick="openSkillModal()">⚔️ 當前可用技能</button>
             <button class="sys-btn" style="margin-top: 8px; border-color: #f59e0b; color: #fcd34d;" onclick="openSpellModal()">📜 武學密典（仙法技能格）</button>
 
             <div style="font-size: 0.8em; color: #9ca3af; text-align: center; margin-top: 10px; margin-bottom: 10px;">
@@ -972,6 +989,7 @@
                 <div class="stat-item">獸丹 <span id="res-beastcore">0</span></div>
                 <div class="stat-item">武學積分 <span id="res-martial">0</span></div>
                 <div class="stat-item">⛏️礦石 <span id="res-ore">0</span></div>
+                <div class="stat-item">☯️善惡 <span id="karma-display"></span></div>
                 <div class="stat-item">🙏功德 <span id="res-merit">0</span></div>
                 <div class="stat-item"><span class="rainbow-text">💎七彩補天石</span> <span id="res-butian">0</span></div>
                 <div class="stat-item"><span class="rainbow-text">🔮破障丹</span> <span id="res-breakpill">0</span></div>
@@ -979,20 +997,6 @@
                 <div class="stat-item">上品靈草 <span id="herb-high">0</span></div>
                 <div class="stat-item">極品靈草 <span id="herb-epic">0</span></div>
                 <div class="stat-item">仙品靈草 <span id="herb-immortal">0</span></div>
-            </div>
-        </div>
-
-        <div class="panel" data-tab="world battle">
-            <div class="panel-title">修仙地圖</div>
-            <button class="sys-btn drawer-toggle open" onclick="toggleDrawer('drawer-map', this)">
-                🗺️ 展開選單 <span class="drawer-arrow">▾</span>
-            </button>
-            <div id="drawer-map" class="drawer-body open">
-                <button class="sys-btn" onclick="openMapCategoryModal(0)">📍 第一區：宗門 (安全區)</button>
-                <button class="sys-btn" onclick="openMapCategoryModal(1)">📍 第二區：野外歷練區</button>
-                <button class="sys-btn" onclick="openMapCategoryModal(2)">📍 第三區：開放世界大區域</button>
-                <button class="sys-btn" onclick="openMapCategoryModal(3)">📍 第四區：上古禁區 (高難)</button>
-                <button class="sys-btn" onclick="openMapCategoryModal(4)">📍 第五區：諸天至高戰場</button>
             </div>
         </div>
 
@@ -1052,10 +1056,12 @@
         </div>
     </div>
 
-    <!-- 世界分頁：活動＋命運與系統（地圖面板也掛在世界分頁） -->
+    <!-- 世界分頁：修仙地圖入口＋活動＋命運與系統（修仙地圖本身是獨立彈窗 #world-map-modal，點「世界」導覽時自動跳出） -->
     <div class="panel" data-tab="world">
+        <button class="sys-btn" style="border-color: var(--accent); color: var(--accent); font-weight: bold;" onclick="openWorldMapModal()">🗺️ 修仙地圖</button>
+
         <!-- 活動：按鈕與解鎖狀態由 activity.js 依聲望/境界即時產生 -->
-        <div class="panel-title">活動</div>
+        <div class="panel-title" style="margin-top: 18px;">活動</div>
         <button class="sys-btn drawer-toggle open" style="border-color: rgba(34,211,238,0.45); color: #22d3ee;" onclick="toggleDrawer('drawer-activity', this)">
             🎪 展開選單 <span class="drawer-arrow">▾</span>
         </button>
@@ -1098,8 +1104,9 @@
         <button class="nav-btn" data-nav="cultivate" style="left:2.84%; top:90.66%; width:16.34%; height:8.68%;" onclick="switchTab('cultivate')" aria-label="修仙"></button>
         <button class="nav-btn" data-nav="battle" style="left:21.59%; top:90.66%; width:16.34%; height:8.68%;" onclick="switchTab('battle')" aria-label="戰鬥"></button>
         <button class="nav-btn nav-home" data-nav="home" style="left:40.91%; top:88.29%; width:18.47%; height:11.05%;" onclick="switchTab('home')" aria-label="洞府"></button>
-        <button class="nav-btn" data-nav="sect" style="left:62.22%; top:90.66%; width:16.34%; height:8.68%;" onclick="switchTab('sect')" aria-label="宗門"></button>
-        <button class="nav-btn" data-nav="world" style="left:81.25%; top:90.66%; width:16.34%; height:8.68%;" onclick="switchTab('world')" aria-label="世界"></button>
+        <!-- 圖上原為「宗門」，改為「情緣」（施工中）；.nav-label-cover 蓋掉圖上的字。宗門分頁改由洞府的「宗門」山門熱點進入 -->
+        <button class="nav-btn" style="left:62.22%; top:90.66%; width:16.34%; height:8.68%;" onclick="showUnderConstruction('情緣')" aria-label="情緣"><span class="nav-label-cover">情緣</span></button>
+        <button class="nav-btn" data-nav="world" style="left:81.25%; top:90.66%; width:16.34%; height:8.68%;" onclick="openWorldTab()" aria-label="世界"></button>
     </nav>
 
 
@@ -1113,7 +1120,7 @@
     <img id="pc-stage-bg" src="images/home-bg-pc.jpg" alt="">
     <img id="pc-hud-avatar" alt="更換頭像" title="點擊更換頭像" onclick="openAvatarModal()">
     <div id="pc-hud-name">
-        <span id="pc-hud-player-name">韓立</span>
+        <span><span id="pc-hud-player-name">韓立</span> <span id="pc-hud-karma" class="karma-tag karma-neutral">中立</span></span>
         <span id="pc-hud-realm" class="hud-realm">凡人 1階</span>
         <div class="pc-level-line"><span id="pc-hud-level">Lv.1</span><span class="hud-mini-bar"><span id="pc-hud-level-bar"></span></span></div>
         <div class="pc-power">戰力 <span id="pc-hud-power">5</span></div>
@@ -1190,6 +1197,32 @@
         <!-- 不設 accept：部分 Android 會把 .txt 標成其他類型，限制後反而選不到檔案 -->
         <input type="file" id="save-code-file" onchange="importSaveFromFile(this)" hidden>
         <button class="close-btn" style="margin-top: 12px;" onclick="closeModal('save-code-modal')">關閉</button>
+    </div>
+</div>
+
+<!-- 修仙地圖（獨立彈窗）：點「世界」導覽、世界分頁的按鈕、PC 版傳送門開啟（map.js 的 openWorldMapModal）。
+     必須排在 #map-category-modal 之前，選區域時的地圖清單才會疊在上面 -->
+<div id="world-map-modal" class="modal-bg" onclick="if (event.target === this) closeModal('world-map-modal')">
+    <div class="modal-content" style="border-color: var(--accent); text-align: center; max-width: 480px;">
+        <h2 style="color: var(--accent); margin-top: 0;">🗺️ 修仙地圖</h2>
+        <p id="world-map-current" style="color: #9ca3af; font-size: 0.88em;"></p>
+        <button class="sys-btn" onclick="openMapCategoryModal(0)">📍 第一區：宗門 (安全區)</button>
+        <button class="sys-btn" onclick="openMapCategoryModal(1)">📍 第二區：野外歷練區</button>
+        <button class="sys-btn" onclick="openMapCategoryModal(2)">📍 第三區：開放世界大區域</button>
+        <button class="sys-btn" onclick="openMapCategoryModal(3)">📍 第四區：上古禁區 (高難)</button>
+        <button class="sys-btn" onclick="openMapCategoryModal(4)">📍 第五區：諸天至高戰場</button>
+        <button class="close-btn" onclick="closeModal('world-map-modal')">關閉</button>
+    </div>
+</div>
+
+<!-- 當前可用技能：修仙分頁「⚔️ 當前可用技能」按鈕開啟（ui.js 的 openSkillModal），清單由 renderSkillList() 寫入 #skill-list -->
+<div id="skill-modal" class="modal-bg" onclick="if (event.target === this) closeModal('skill-modal')">
+    <div class="modal-content" style="border-color: #c084fc; max-width: 480px;">
+        <h2 style="text-align: center; color: #c084fc; margin-top: 0;">⚔️ 當前可用技能</h2>
+        <div id="skill-list" style="font-size: 0.9em; color: #c084fc; background: rgba(192, 132, 252, 0.05); padding: 8px; border-radius: 6px; border: 1px dashed rgba(192, 132, 252, 0.2);">
+            尚未領悟門派技能。
+        </div>
+        <button class="close-btn" onclick="closeModal('skill-modal')">關閉</button>
     </div>
 </div>
 
@@ -1309,10 +1342,10 @@
     </div>
 </div>
 
-<!-- 獵殺邪修：說明與功德統計，內容由 data/merit.js 的 renderEvilHunt() 產生 -->
+<!-- 獵殺邪修：陣營／善惡／功德＋懸賞榜，內容由 data/merit.js 的 renderEvilHunt()（榜單為 bounty.js 的 renderBountyBoard()）產生 -->
 <div id="evil-hunt-modal" class="modal-bg">
     <div class="modal-content" style="border-color: #f87171; text-align: center;">
-        <h2 style="color: #f87171; margin-top: 0;">🗡️ 獵殺邪修</h2>
+        <h2 id="evil-hunt-title" style="color: #f87171; margin-top: 0;">🗡️ 獵殺邪修・懸賞榜</h2>
         <div id="evil-hunt-container" style="margin: 12px 0;"></div>
         <button class="close-btn" onclick="closeModal('evil-hunt-modal')">離開</button>
     </div>
@@ -1325,6 +1358,15 @@
         <p style="color: #9ca3af; font-size: 0.88em;">天下奇珍匯聚之所，過時不候。</p>
         <div id="auction-container" style="margin: 16px 0;"></div>
         <button class="close-btn" onclick="closeModal('auction-modal')">離開</button>
+    </div>
+</div>
+
+<!-- 千寶閣搶拍：內容由 data/auction.js 的 renderAuctionBid() 產生；關閉視窗不算放棄，可從商品卡片「繼續競拍」 -->
+<div id="auction-bid-modal" class="modal-bg">
+    <div class="modal-content" style="border-color: #fb923c; text-align: center; max-width: 480px;">
+        <h2 style="color: #fb923c; margin-top: 0;">⚔️ 搶拍</h2>
+        <div id="auction-bid-container" style="margin: 12px 0;"></div>
+        <button class="close-btn" onclick="closeModal('auction-bid-modal')">暫時離開</button>
     </div>
 </div>
 
@@ -1542,60 +1584,62 @@
 -->
 <!-- ⚠️ 版本號 ?v=：每次發佈（推上 GitHub Pages）前要把所有 ?v= 改成新的值（全部取代即可）。
      GitHub Pages 會快取檔案約 10 分鐘，沒改版本號時玩家可能拿到「舊 index.html＋新 JS」而讀檔失敗。見 ARCHITECTURE.md 第 30 節 -->
-<script src="data/config-realms.js?v=20260924s"></script>
-<script src="data/config-level.js?v=20260924s"></script>
-<script src="data/config-lifespan.js?v=20260924s"></script>
-<script src="data/config-maps.js?v=20260924s"></script>
-<script src="data/config-sects.js?v=20260924s"></script>
-<script src="data/config-lingbao.js?v=20260924s"></script>
-<script src="data/config-shop.js?v=20260924s"></script>
-<script src="data/config-beasts.js?v=20260924s"></script>
-<script src="data/config-servants.js?v=20260924s"></script>
-<script src="data/config-equipment.js?v=20260924s"></script>
-<script src="data/config-tribulation.js?v=20260924s"></script>
-<script src="data/config-quests.js?v=20260924s"></script>
-<script src="data/config-activities.js?v=20260924s"></script>
-<script src="data/config-daily-quests.js?v=20260924s"></script>
-<script src="data/config-elements.js?v=20260924s"></script>
-<script src="data/config-merit.js?v=20260924s"></script>
-<script src="data/config-talisman.js?v=20260924s"></script>
-<script src="data/config-avatars.js?v=20260924s"></script>
-<script src="data/config-spells.js?v=20260924s"></script>
-<script src="data/state.js?v=20260924s"></script>
-<script src="data/stats.js?v=20260924s"></script>
-<script src="data/elements.js?v=20260924s"></script>
-<script src="data/ui.js?v=20260924s"></script>
-<script src="data/map.js?v=20260924s"></script>
-<script src="data/combat.js?v=20260924s"></script>
-<script src="data/leveling.js?v=20260924s"></script>
-<script src="data/lifespan.js?v=20260924s"></script>
-<script src="data/tribulation.js?v=20260924s"></script>
-<script src="data/sect.js?v=20260924s"></script>
-<script src="data/shop.js?v=20260924s"></script>
-<script src="data/bag.js?v=20260924s"></script>
-<script src="data/equipment.js?v=20260924s"></script>
-<script src="data/lingbao-shop.js?v=20260924s"></script>
-<script src="data/servant.js?v=20260924s"></script>
-<script src="data/quest.js?v=20260924s"></script>
-<script src="data/activity.js?v=20260924s"></script>
-<script src="data/daily-quest.js?v=20260924s"></script>
-<script src="data/auction.js?v=20260924s"></script>
-<script src="data/merit.js?v=20260924s"></script>
-<script src="data/talisman.js?v=20260924s"></script>
-<script src="data/field.js?v=20260924s"></script>
-<script src="data/beast-combat.js?v=20260924s"></script>
-<script src="data/spells.js?v=20260924s"></script>
-<script src="data/beast.js?v=20260924s"></script>
-<script src="data/library.js?v=20260924s"></script>
-<script src="data/alchemy.js?v=20260924s"></script>
-<script src="data/player-profile.js?v=20260924s"></script>
-<script src="data/save.js?v=20260924s"></script>
-<script src="data/config-home-pc.js?v=20260924s"></script>
-<script src="data/home-ui.js?v=20260924s"></script>
-<script src="data/settings.js?v=20260924s"></script>
-<script src="data/avatar.js?v=20260924s"></script>
-<script src="data/title-screen.js?v=20260924s"></script>
-<script src="data/main.js?v=20260924s"></script>
+<script src="data/config-realms.js?v=20260925c"></script>
+<script src="data/config-level.js?v=20260925c"></script>
+<script src="data/config-lifespan.js?v=20260925c"></script>
+<script src="data/config-maps.js?v=20260925c"></script>
+<script src="data/config-sects.js?v=20260925c"></script>
+<script src="data/config-lingbao.js?v=20260925c"></script>
+<script src="data/config-shop.js?v=20260925c"></script>
+<script src="data/config-beasts.js?v=20260925c"></script>
+<script src="data/config-servants.js?v=20260925c"></script>
+<script src="data/config-equipment.js?v=20260925c"></script>
+<script src="data/config-tribulation.js?v=20260925c"></script>
+<script src="data/config-quests.js?v=20260925c"></script>
+<script src="data/config-activities.js?v=20260925c"></script>
+<script src="data/config-daily-quests.js?v=20260925c"></script>
+<script src="data/config-elements.js?v=20260925c"></script>
+<script src="data/config-merit.js?v=20260925c"></script>
+<script src="data/config-bounty.js?v=20260925c"></script>
+<script src="data/config-talisman.js?v=20260925c"></script>
+<script src="data/config-avatars.js?v=20260925c"></script>
+<script src="data/config-spells.js?v=20260925c"></script>
+<script src="data/state.js?v=20260925c"></script>
+<script src="data/stats.js?v=20260925c"></script>
+<script src="data/elements.js?v=20260925c"></script>
+<script src="data/ui.js?v=20260925c"></script>
+<script src="data/map.js?v=20260925c"></script>
+<script src="data/combat.js?v=20260925c"></script>
+<script src="data/leveling.js?v=20260925c"></script>
+<script src="data/lifespan.js?v=20260925c"></script>
+<script src="data/tribulation.js?v=20260925c"></script>
+<script src="data/sect.js?v=20260925c"></script>
+<script src="data/shop.js?v=20260925c"></script>
+<script src="data/bag.js?v=20260925c"></script>
+<script src="data/equipment.js?v=20260925c"></script>
+<script src="data/lingbao-shop.js?v=20260925c"></script>
+<script src="data/servant.js?v=20260925c"></script>
+<script src="data/quest.js?v=20260925c"></script>
+<script src="data/activity.js?v=20260925c"></script>
+<script src="data/daily-quest.js?v=20260925c"></script>
+<script src="data/auction.js?v=20260925c"></script>
+<script src="data/merit.js?v=20260925c"></script>
+<script src="data/bounty.js?v=20260925c"></script>
+<script src="data/talisman.js?v=20260925c"></script>
+<script src="data/field.js?v=20260925c"></script>
+<script src="data/beast-combat.js?v=20260925c"></script>
+<script src="data/spells.js?v=20260925c"></script>
+<script src="data/beast.js?v=20260925c"></script>
+<script src="data/library.js?v=20260925c"></script>
+<script src="data/alchemy.js?v=20260925c"></script>
+<script src="data/player-profile.js?v=20260925c"></script>
+<script src="data/save.js?v=20260925c"></script>
+<script src="data/config-home-pc.js?v=20260925c"></script>
+<script src="data/home-ui.js?v=20260925c"></script>
+<script src="data/settings.js?v=20260925c"></script>
+<script src="data/avatar.js?v=20260925c"></script>
+<script src="data/title-screen.js?v=20260925c"></script>
+<script src="data/main.js?v=20260925c"></script>
 
 </body>
 </html>

@@ -44,6 +44,7 @@ function triggerTribulation() {
         return;
     }
     if (inTribulation) return;
+    if (inBountyDuel) { alert("正在與懸賞人物對決，無法分心渡劫！"); return; }
 
     let chance = getTribulationChance();
     let demonPower = Math.floor(getPhysAttack() * HEART_DEMON_POWER_MULT * (1 + chance.hard) * (chance.hasPill ? BREAK_PILL_DEMON_POWER_MULT : 1));

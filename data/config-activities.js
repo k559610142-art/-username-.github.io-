@@ -16,10 +16,10 @@ const activityData = [
       implemented: false,
       desc: "煉虛以上開放" },
 
-    // ⏸️ 暫停開放（仍需調整）：功能已實作於 merit.js，改回 implemented: true 即可開放
+    // 懸賞榜（天／地／人榜）＋野外修士＋善惡值，見 merit.js／bounty.js；改成 implemented: false 即可整體暫停
     { id: "evil", name: "獵殺邪修", icon: "🗡️", minRep: 8000, minRealmIndex: 3,
-      implemented: false, openFn: "openEvilHuntModal",
-      desc: "金丹以上開放" },
+      implemented: true, openFn: "openEvilHuntModal",
+      desc: "懸賞榜・每 4 小時刷新 6 名" },
 
     { id: "demon", name: "域外天魔", icon: "👹", minRep: 10000, minRealmIndex: 8,
       implemented: false,

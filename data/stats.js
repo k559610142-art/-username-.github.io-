@@ -150,6 +150,7 @@ function getPhysAttack() {
     base *= Math.max(0.1, 1 + getSpellAuraBonus().physPct);   // 仙法被動光環（spells.js）
     if (player.buffTimer > 0) base *= player.buffMult;
     if (petBuffTimer > 0) base *= petBuffMult;
+    base *= getDuelWeakenMult();   // 懸賞對決中被「化功」（bounty.js）
     return Math.floor(base * getWeaknessMult());
 }
 
@@ -161,6 +162,7 @@ function getMagAttack() {
     base *= Math.max(0.1, 1 + getSpellAuraBonus().magPct);   // 仙法被動光環（spells.js）
     if (player.buffTimer > 0) base *= player.buffMult;
     if (petBuffTimer > 0) base *= petBuffMult;
+    base *= getDuelWeakenMult();   // 懸賞對決中被「化功」（bounty.js）
     return Math.floor(base * getWeaknessMult());
 }
 

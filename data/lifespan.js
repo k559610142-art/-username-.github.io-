@@ -104,6 +104,8 @@ function triggerLifespanGameOver() {
     gameOver = true;
     inTribulation = false;
     heartDemon = null;
+    inBountyDuel = false;
+    duelOpponent = null;
     enemies = [];
     localStorage.removeItem('xiuxian_save');
     addLog(`💀 壽元耗盡，身死道消……`, "combat");

@@ -34,8 +34,8 @@ function checkBackgroundCatchUp() {
     let gap = now - prev;
     if (gap > BACKGROUND_TICK_SLACK_MS) missedTickMs += gap - 1000;
 
-    // 渡劫中、已死亡或遊戲結束時不補發（渡劫數秒內就會分出勝負），丟棄累積的時間
-    if (gameOver || inTribulation || player.hp <= 0) { missedTickMs = 0; return; }
+    // 渡劫／懸賞對決中、已死亡或遊戲結束時不補發（對決數十秒內就會分出勝負），丟棄累積的時間
+    if (gameOver || inTribulation || inBountyDuel || player.hp <= 0) { missedTickMs = 0; return; }
 
     let seconds = Math.floor(missedTickMs / 1000);
     if (seconds < BACKGROUND_SETTLE_MIN_SECONDS) return;
@@ -98,13 +98,15 @@ function settleIdleSeconds(offlineSeconds, label) {
             if (Math.random() < 0.05 && tryRescueServant()) rescuedCount++;
         }
 
-        // 離線斬殺邪修：戰鬥 tick 數 × 邪修出現機率，每名給平均功德（需已解鎖獵殺邪修）
+        // 離線斬殺野外修士：波數（戰鬥 tick ÷ 每波平均隻數）× 出現機率，其中一半是敵對陣營、給平均功德（需已解鎖獵殺邪修）
+        // 離線不計善惡值、不會遇到暗殺者與懸賞人物（對決只在線上發生）
         let meritEarned = 0;
         if (isEvilHuntUnlocked()) {
-            let evilKills = Math.floor(combatTicks * EVIL_SPAWN_CHANCE);
-            meritEarned = Math.floor(evilKills * (EVIL_MERIT_MIN + EVIL_MERIT_MAX) / 2);
-            player.evilKills = (player.evilKills || 0) + evilKills;
+            let cultivators = Math.floor(combatTicks / IDLE_WAVE_AVG_MONSTERS * FIELD_CULTIVATOR_WAVE_CHANCE);
+            meritEarned = Math.floor(cultivators * 0.5 * (FIELD_MERIT_MIN + FIELD_MERIT_MAX) / 2);
+            player.evilKills = (player.evilKills || 0) + cultivators;
             player.merit = (player.merit || 0) + meritEarned;
+            settleMeritStones();
         }
 
         let expText = wasPending ? "修為已滿(待渡劫，無經驗)" : `${Math.floor(gained)} 經驗`;
@@ -334,8 +336,13 @@ function applySaveData(data) {
     respawnTimer = 0;
     inTribulation = false;
     heartDemon = null;
+    inBountyDuel = false;
+    duelOpponent = null;
+    clearDuelDebuffs();
     playerStatus = newStatus();
 
+    // 功德改為滿 MERIT_PER_BUTIAN_STONE 自動凝結（舊存檔若已超過，讀檔時直接凝結）
+    settleMeritStones();
     calcOfflineProgress();
     updateUI();
     updateSectFacilitiesUI();

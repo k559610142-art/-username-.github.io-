@@ -12,9 +12,10 @@ function getPlayerCombatAttrs() {
     let r = getRootBonus();
     let a = getSpellAuraBonus();   // 仙法被動光環（spells.js），與裝備、靈根一起套上限
     const cap = (v, max) => Math.max(0, Math.min(max, v));
+    let armor = getDuelArmorMult();   // 懸賞對決中被「破甲」：減傷與閃避減半（bounty.js）
     return {
-        def: cap(b.def + r.def + a.def, DEF_CAP),
-        eva: cap(b.eva + a.eva, EVA_CAP),
+        def: cap(b.def + r.def + a.def, DEF_CAP) * armor,
+        eva: cap(b.eva + a.eva, EVA_CAP) * armor,
         ice: cap(b.ice + r.ice + a.ice, AFFIX_CAP),
         fire: cap(b.fire + r.fire + a.fire, AFFIX_CAP),
         poison: cap(b.poison + r.poison + a.poison, AFFIX_CAP),

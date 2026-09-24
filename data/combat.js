@@ -22,6 +22,11 @@ function combatTick() {
         tribulationTick();
         return;
     }
+    // 懸賞對決期間由 bounty.js 接管（同樣暫停刷怪與任務流程）
+    if (inBountyDuel) {
+        bountyDuelTick();
+        return;
+    }
 
     checkAutoHealAndMana();
 
@@ -78,22 +83,40 @@ function combatTick() {
             return;
         }
 
+        // 已接取懸賞時，有機率遇上目標而進入一對一對決（bounty.js），本波不刷妖獸
+        if (tryStartBountyDuel()) return;
+
         let count = Math.floor(Math.random() * 5) + 1;
         let enemyBasePower = player.currentMap.diff * 50;
-        // 獵殺邪修解鎖後，每隻有 EVIL_SPAWN_CHANCE 機率換成邪修（較強，斬殺得功德，見 merit.js）
-        let evilOpen = isEvilHuntUnlocked();
-        let evilCount = 0;
         for (let i = 0; i < count; i++) {
-            let isEvil = evilOpen && Math.random() < EVIL_SPAWN_CHANCE;
-            let power = enemyBasePower * (isEvil ? EVIL_POWER_MULT : 1);
-            let icon = isEvil ? EVIL_ICON : monsterIcons[Math.floor(Math.random() * monsterIcons.length)];
-            if (isEvil) evilCount++;
-            enemies.push({ hp: power * 10, maxHp: power * 10, attack: power, icon: icon, isEvil: isEvil,
+            enemies.push({ hp: enemyBasePower * 10, maxHp: enemyBasePower * 10, attack: enemyBasePower,
+                           icon: monsterIcons[Math.floor(Math.random() * monsterIcons.length)],
                            attrs: rollMonsterAttrs(), status: newStatus() });
+        }
+        // 獵殺邪修解鎖後：每波有機率混入一名野外修士（正道／魔道各半），善／惡時另有機率混入暗殺者（merit.js）
+        let extraText = [];
+        if (isEvilHuntUnlocked()) {
+            let addCultivator = (faction, ambush) => {
+                let power = enemyBasePower * (ambush ? AMBUSH_POWER_MULT : FIELD_CULTIVATOR_POWER_MULT);
+                enemies.push({ hp: power * 10, maxHp: power * 10, attack: power,
+                               icon: ambush ? AMBUSH_ICON : CULTIVATOR_ICONS[faction], cultivator: faction, ambush: ambush,
+                               attrs: rollMonsterAttrs(), status: newStatus() });
+            };
+            if (Math.random() < FIELD_CULTIVATOR_WAVE_CHANCE) {
+                let faction = Math.random() < 0.5 ? "正" : "邪";
+                addCultivator(faction, false);
+                extraText.push(`一名${CULTIVATOR_ICONS[faction]}${faction === "邪" ? "魔道" : "正道"}修士`);
+            }
+            let karma = getKarmaState().key;
+            if (karma !== "neutral" && Math.random() < AMBUSH_WAVE_CHANCE) {
+                let faction = karma === "good" ? "邪" : "正";
+                addCultivator(faction, true);
+                extraText.push(`一名${AMBUSH_ICON}${faction === "邪" ? "邪派刺客（衝著你的善名而來）" : "正道獵魔人（前來為民除害）"}`);
+            }
         }
         document.getElementById('combat-status').innerText = `⚔️ 遭遇 ${count} 隻妖獸！戰鬥中！`;
         document.getElementById('combat-status').style.color = '#f87171';
-        addLog(`⚠️ 遭遇 ${count} 隻強大的妖獸/禁區強者攔路！${evilCount > 0 ? `其中混有 ${evilCount} 名${EVIL_ICON}邪修！` : ''}`, "combat");
+        addLog(`⚠️ 遭遇 ${count} 隻強大的妖獸/禁區強者攔路！${extraText.length ? `其中還有${extraText.join("、")}！` : ''}`, "combat");
         updateCombatVisualPanel();
     } else {
         // ---- 玩家回合：先結算自身的燒傷/中毒，被凍結則本回合無法出手 ----
@@ -136,8 +159,7 @@ function combatTick() {
         let coinsEarned = 0;
         let repEarned = 0;
         let killedCount = 0;
-        let evilKilled = 0;
-        let meritEarned = 0;
+        let slainCultivators = [];
 
         enemies = enemies.filter(e => {
             if (e.hp <= 0) {
@@ -145,7 +167,7 @@ function combatTick() {
                 coinsEarned += rollKillCoins();
                 repEarned += rollKillReputation();
                 killedCount++;
-                if (e.isEvil) { evilKilled++; meritEarned += rollEvilMerit(); }
+                if (e.cultivator) slainCultivators.push(e);
                 return false;
             }
             return true;
@@ -155,12 +177,19 @@ function combatTick() {
             let gainedExp = gainExp(expEarned) || 0;
             player.coins += coinsEarned;
             player.reputation = (player.reputation || 0) + repEarned;
-            player.merit = (player.merit || 0) + meritEarned;
-            player.evilKills = (player.evilKills || 0) + evilKilled;
             addDailyProgress('kill', killedCount);
             let expText = (player.pendingTribulation && gainedExp === 0) ? "修為已滿(待渡劫)" : `${Math.floor(gainedExp)} 經驗`;
             addLog(`斬殺敵手，獲得 ${expText}, ${coinsEarned} 靈石 與 ${repEarned} 點聲望！`, "combat");
-            if (evilKilled > 0) addLog(`🙏 斬除 ${evilKilled} 名${EVIL_ICON}邪修，積累 ${meritEarned} 點功德！（目前 ${player.merit.toLocaleString()}）`, "level-up");
+            // 斬殺修士：善惡值變化，敵對陣營另給功德（merit.js 的 onCultivatorKilled）
+            slainCultivators.forEach(e => {
+                let who = e.ambush ? (e.cultivator === "邪" ? "邪派刺客" : "正道獵魔人") : (e.cultivator === "邪" ? "魔道修士" : "正道修士");
+                let merit = onCultivatorKilled(e.cultivator, e.ambush);
+                player.merit = (player.merit || 0) + merit;
+                addLog(merit > 0
+                    ? `🙏 斬殺${e.icon}${who}，${getPlayerFaction() === "邪" ? "吸取" : "積累"} ${merit} 點功德！（目前 ${player.merit.toLocaleString()}）`
+                    : `🗡️ 斬殺${e.icon}${who}（同為${getFactionLabel(e.cultivator)}，不得功德）`, merit > 0 ? "level-up" : "combat");
+            });
+            if (slainCultivators.length > 0) settleMeritStones();
             for(let k = 0; k < killedCount; k++) {
                 tryRescueServant();
             }

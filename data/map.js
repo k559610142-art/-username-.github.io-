@@ -5,6 +5,13 @@ function isInSect() {
     return !!player.currentMap && player.currentMap.name === SECT_MAP_NAME;
 }
 
+// 修仙地圖（獨立彈窗 #world-map-modal）：列出五個區域，點選後開啟該區的地圖清單
+function openWorldMapModal() {
+    let cur = document.getElementById('world-map-current');
+    if (cur) cur.innerText = `目前所在：${player.currentMap.name}${player.currentMapIsSafe ? '（安全區）' : ''}`;
+    document.getElementById('world-map-modal').style.display = 'flex';
+}
+
 function openMapCategoryModal(catIndex) {
     let cat = maps[catIndex];
     document.getElementById('map-modal-title').innerText = cat.category;
@@ -29,6 +36,7 @@ function openMapCategoryModal(catIndex) {
 function selectMap(cIndex, iIndex) {
     changeMap(cIndex, iIndex);
     closeModal('map-category-modal');
+    closeModal('world-map-modal');
 }
 
 function changeMap(cIndex, iIndex) {
@@ -48,6 +56,8 @@ function changeMap(cIndex, iIndex) {
         }
     }
 
+    // 懸賞對決中換地圖＝逃離對決（懸賞保留，bounty.js）
+    if (inBountyDuel) endBountyDuel("flee");
     if (enemies.length > 0) {
         addLog("🏃 捨棄戰鬥，逃往其他區域！", "combat");
         enemies = [];

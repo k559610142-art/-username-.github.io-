@@ -62,6 +62,14 @@ function updateCombatVisualPanel() {
         let demonSt = formatStatus(heartDemon.status);
         document.getElementById('battle-enemy-info').innerText = `氣血: ${Math.floor(heartDemon.hp)}/${heartDemon.maxHp}${demonSt ? ' ' + demonSt : ''}`;
         document.getElementById('battle-action-desc').innerText = `☯️ 渡劫中！正在與心魔生死對決...`;
+    } else if (inBountyDuel && duelOpponent) {
+        let o = duelOpponent;
+        let debuffs = [duelWeakenTimer > 0 ? '化功' : '', duelSilenceTimer > 0 ? '封印' : '', duelArmorTimer > 0 ? '破甲' : ''].filter(Boolean);
+        document.getElementById('battle-enemy-title').innerText = `${BOUNTY_RANKS[o.rank].name}・${o.name}`;
+        document.getElementById('battle-enemy-icon').innerText = o.icon;
+        let oppSt = formatStatus(o.status);
+        document.getElementById('battle-enemy-info').innerText = `氣血: ${Math.floor(o.hp).toLocaleString()}/${o.maxHp.toLocaleString()}${oppSt ? ' ' + oppSt : ''}\n「${o.title}」五行 ${o.attrs.element}｜第 ${o.turn}/${BOUNTY_MAX_TURNS} 回合`;
+        document.getElementById('battle-action-desc').innerText = `⚔️ 懸賞對決中！${debuffs.length ? `你身中：${debuffs.join('、')}` : '生死一線，全力以赴！'}`;
     } else if (player.currentMapIsSafe) {
         document.getElementById('battle-enemy-title').innerText = "安全區域";
         document.getElementById('battle-enemy-icon').innerText = "🕊️";
@@ -79,8 +87,8 @@ function updateCombatVisualPanel() {
             totalEnemyHp += e.hp;
             totalMaxEnemyHp += e.maxHp;
         });
-        let evilN = enemies.filter(e => e.isEvil).length;
-        document.getElementById('battle-enemy-title').innerText = `上古巨獸 (${enemies.length}隻${evilN ? `｜${EVIL_ICON}邪修×${evilN}` : ''})`;
+        let cultN = enemies.filter(e => e.cultivator).length;
+        document.getElementById('battle-enemy-title').innerText = `上古巨獸 (${enemies.length}隻${cultN ? `｜修士×${cultN}` : ''})`;
         document.getElementById('battle-enemy-icon').innerText = enemies[0].icon || "🐉";
         // 彙整全體怪物身上的狀態：凍結隻數、燒傷/中毒總層數
         let frozenN = enemies.filter(e => e.status && e.status.frozen > 0).length;
@@ -163,6 +171,7 @@ function updateUI() {
     document.getElementById('res-martial').innerText = player.martialPoints;
     document.getElementById('res-ore').innerText = (player.ore || 0).toLocaleString();
     document.getElementById('res-merit').innerText = (player.merit || 0).toLocaleString();
+    document.getElementById('karma-display').innerHTML = formatKarmaTag();   // 善惡只顯示善／中立／惡（merit.js）
     document.getElementById('res-butian').innerText = (player.butianStones || 0).toLocaleString();
     document.getElementById('res-breakpill').innerText = (player.breakPills || 0).toLocaleString();
     document.getElementById('herb-mortal').innerText = player.herbs.mortal;
@@ -229,6 +238,12 @@ function updateStudyCountsUI() {
     if (document.getElementById('study-count-con')) document.getElementById('study-count-con').innerText = `已學習: ${player.studyCounts.con} / 100`;
     if (document.getElementById('study-count-int')) document.getElementById('study-count-int').innerText = `已學習: ${player.studyCounts.int} / 100`;
     if (document.getElementById('study-count-spr')) document.getElementById('study-count-spr').innerText = `已學習: ${player.studyCounts.spr} / 100`;
+}
+
+// 修仙分頁「⚔️ 當前可用技能」按鈕：彈出 #skill-modal
+function openSkillModal() {
+    renderSkillList();
+    document.getElementById('skill-modal').style.display = 'flex';
 }
 
 function renderSkillList() {
