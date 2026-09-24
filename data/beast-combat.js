@@ -1,8 +1,79 @@
-// 靈寵的成長與戰鬥：經驗/升級、陣亡、每回合協助出手、輔助效果（增益/減傷/持續回復）
+// 靈寵的成長與戰鬥：經驗/升級、陣亡、出戰維持費、每回合協助出手、輔助效果（增益/減傷/持續回復）
 // 設定數值見 config-beasts.js；兌換、復活、選技能的彈窗在 beast.js。
 
 function createBeast(id) {
-    return { id: id, level: 1, exp: 0, alive: true, skills: BEAST_SKILL_LEVELS.map(() => null) };
+    return { id: id, level: 1, exp: 0, alive: true, active: true, upkeepTimer: 0, skills: BEAST_SKILL_LEVELS.map(() => null) };
+}
+
+function getBeastName(b) {
+    let info = beastData.find(d => d.id === b.id);
+    return info ? info.name : b.id;
+}
+
+// 出戰中＝存活且未召回休息；只有出戰中的靈寵會提供被動、協助出手、累積經驗與支付維持費
+function isBeastActive(b) {
+    return b.alive && b.active !== false;
+}
+
+// 依靈寵等級取得每 BEAST_UPKEEP_INTERVAL 秒的維持費 { coins, core }
+function getBeastUpkeep(level) {
+    return beastUpkeepTiers.find(t => level <= t.maxLevel) || beastUpkeepTiers[beastUpkeepTiers.length - 1];
+}
+
+// 支付一次維持費；付不起回傳 false（不扣任何資源）
+function payBeastUpkeep(b) {
+    let cost = getBeastUpkeep(b.level);
+    if (player.coins < cost.coins || player.beastCore < cost.core) return false;
+    player.coins -= cost.coins;
+    player.beastCore -= cost.core;
+    return true;
+}
+
+function restBeastForUpkeep(b) {
+    let cost = getBeastUpkeep(b.level);
+    b.active = false;
+    b.upkeepTimer = 0;
+    addLog(`🐾 靈石或獸丹不足（需 ${cost.coins.toLocaleString()} 靈石＋${cost.core.toLocaleString()} 獸丹），靈寵【${getBeastName(b)}】已自動召回靈獸園休息。`, "combat");
+}
+
+// 由 combatTick() 每秒呼叫：各出戰靈寵各自計時，滿 BEAST_UPKEEP_INTERVAL 秒扣一次維持費
+// （計時存在靈寵身上，召回後暫停、再出戰時接續，避免反覆切換躲費用）
+function tickBeastUpkeep() {
+    let changed = false;
+    player.beasts.forEach(b => {
+        if (!isBeastActive(b)) return;
+        b.upkeepTimer = (b.upkeepTimer || 0) + 1;
+        if (b.upkeepTimer < BEAST_UPKEEP_INTERVAL) return;
+        b.upkeepTimer = 0;
+        if (!payBeastUpkeep(b)) restBeastForUpkeep(b);
+        changed = true;
+    });
+    if (changed && document.getElementById('beast-modal').style.display === 'flex') renderBeasts();
+}
+
+// 離線結算：依離線秒數逐次扣費，付不起就從那一刻起召回休息；回傳結算說明文字（無出戰靈寵時為空字串）
+function settleOfflineBeastUpkeep(seconds) {
+    let totalCoins = 0, totalCore = 0, rested = [];
+    player.beasts.forEach(b => {
+        if (!isBeastActive(b)) return;
+        let elapsed = (b.upkeepTimer || 0) + seconds;
+        let times = Math.floor(elapsed / BEAST_UPKEEP_INTERVAL);
+        b.upkeepTimer = elapsed % BEAST_UPKEEP_INTERVAL;
+        let cost = getBeastUpkeep(b.level);
+        for (let i = 0; i < times; i++) {
+            if (!payBeastUpkeep(b)) {
+                b.active = false;
+                b.upkeepTimer = 0;
+                rested.push(getBeastName(b));
+                break;
+            }
+            totalCoins += cost.coins;
+            totalCore += cost.core;
+        }
+    });
+    if (totalCoins === 0 && rested.length === 0) return '';
+    return `🐾 靈寵維持費共 ${totalCoins.toLocaleString()} 靈石＋${totalCore.toLocaleString()} 獸丹`
+        + (rested.length > 0 ? `；資源不足，【${rested.join('、')}】已召回休息。` : '。');
 }
 
 // 靈寵第 slot 格選了 element 屬性時學到的技能
@@ -22,11 +93,11 @@ function describeBeastSkill(sk) {
     return parts.join('、');
 }
 
-// 與人物共用經驗來源；等級不可超過人物等級，已陣亡的靈寵不累積經驗
+// 與人物共用經驗來源；等級不可超過人物等級，已陣亡或休息中的靈寵不累積經驗
 function gainBeastExp(amount) {
     if (!(amount > 0)) return;
     player.beasts.forEach(b => {
-        if (!b.alive || b.level >= player.level) return;
+        if (!isBeastActive(b) || b.level >= player.level) return;
         let info = beastData.find(d => d.id === b.id);
         let startLevel = b.level;
         b.exp += amount;
@@ -71,7 +142,7 @@ function petAssistTick(targets) {
     }
 
     player.beasts.forEach(b => {
-        if (!b.alive) return;
+        if (!isBeastActive(b)) return;
         let learned = b.skills.map((elem, slot) => elem ? getBeastSkill(elem, slot) : null).filter(Boolean);
         if (learned.length === 0 || Math.random() >= BEAST_SKILL_CHANCE) return;
 

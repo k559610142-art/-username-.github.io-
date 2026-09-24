@@ -1,6 +1,7 @@
 // 渡劫：小境界滿 10 階後，擊敗心魔才能晉升下一個大境界
 // 勝敗由開打前的「勝算」擲骰決定（基礎 60%，丹藥與宗門技能最多各 +10%，上限 80%；
-// 持有破障丹時自動服用 1 顆：再 +10%、上限 90%、心魔戰力 -10%，見 config-merit.js），
+// 持有破障丹時自動服用 1 顆：再 +10%、上限 90%、心魔戰力 -10%，見 config-merit.js；
+// 合體期起每高一境基礎再 -5%、最多 -30%，見 getTribulationHardPenalty()），
 // 戰鬥過程照常進行；若戰況與天命相反，會在關鍵一刻以「絕處逢生／心魔反噬」收尾。
 // 數值見 config-tribulation.js
 
@@ -23,8 +24,16 @@ function getTribulationChance() {
     let pill = hasPill ? BREAK_PILL_CHANCE_BONUS : 0;
     let cap = hasPill ? BREAK_PILL_MAX_CHANCE : TRIBULATION_MAX_CHANCE;
 
-    let total = Math.min(cap, TRIBULATION_BASE_CHANCE + potion + skill + pill);
-    return { total, cap, base: TRIBULATION_BASE_CHANCE, potion, skill, pill, hasPill, openTiers: openTiers.length, learnedTiers: learnedTiers.length };
+    let hard = getTribulationHardPenalty();
+    let total = Math.max(0, Math.min(cap, TRIBULATION_BASE_CHANCE - hard + potion + skill + pill));
+    return { total, cap, base: TRIBULATION_BASE_CHANCE, hard, potion, skill, pill, hasPill, openTiers: openTiers.length, learnedTiers: learnedTiers.length };
+}
+
+// 合體期起天劫加劇：基礎勝算的扣除量（未達合體為 0）
+function getTribulationHardPenalty() {
+    if (player.realmIndex < TRIBULATION_HARD_REALM_INDEX) return 0;
+    let steps = player.realmIndex - TRIBULATION_HARD_REALM_INDEX + 1;
+    return Math.min(TRIBULATION_HARD_PENALTY_MAX, steps * TRIBULATION_HARD_PENALTY_PER_REALM);
 }
 
 function formatChance(rate) { return `${Math.round(rate * 100)}%`; }
@@ -37,7 +46,7 @@ function triggerTribulation() {
     if (inTribulation) return;
 
     let chance = getTribulationChance();
-    let demonPower = Math.floor(getPhysAttack() * HEART_DEMON_POWER_MULT * (chance.hasPill ? BREAK_PILL_DEMON_POWER_MULT : 1));
+    let demonPower = Math.floor(getPhysAttack() * HEART_DEMON_POWER_MULT * (1 + chance.hard) * (chance.hasPill ? BREAK_PILL_DEMON_POWER_MULT : 1));
     let demonHp = Math.floor(getMaxHp() * HEART_DEMON_HP_MULT);
 
     let tips = "";
@@ -51,6 +60,7 @@ function triggerTribulation() {
         `即將渡劫，晉升【${realms[player.realmIndex + 1]}】！\n\n`
         + `【渡劫勝算：${formatChance(chance.total)}】（上限 ${formatChance(chance.cap)}）\n`
         + `・基礎 ${formatChance(chance.base)}\n`
+        + (chance.hard > 0 ? `・⚡ 合體期後天劫加劇 -${formatChance(chance.hard)}（心魔戰力 +${formatChance(chance.hard)}）\n` : '')
         + `・丹藥準備 +${formatChance(chance.potion)}\n`
         + `・宗門技能 +${formatChance(chance.skill)}（已學 ${chance.learnedTiers} / ${chance.openTiers} 階）\n`
         + (chance.hasPill ? `・🔮 破障丹 +${formatChance(chance.pill)}（將服用 1 顆，剩 ${player.breakPills - 1} 顆；心魔戰力 -10%）\n` : '')

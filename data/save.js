@@ -69,6 +69,10 @@ function calcOfflineProgress() {
     let aged = ageLifespan(offlineSeconds, LIFESPAN_OFFLINE_RATE);
     if (aged >= 1) msg += `\n⏳ 歲月流逝，壽元減少 ${formatLifespan(aged)} 年（剩餘 ${formatLifespan(player.lifespan)} 年）。`;
 
+    // 離線期間的靈寵維持費（在離線靈石入帳後結算；經驗加成以離線開始時的出戰狀態計）
+    let upkeepText = settleOfflineBeastUpkeep(offlineSeconds);
+    if (upkeepText) msg += `\n${upkeepText}`;
+
     player.lastSaveTime = Date.now();
     addLog(`🌙 ${msg}`, "system");
     setTimeout(() => { alert(`【離線掛機收益結算】\n${msg}`); }, 500);
@@ -169,6 +173,8 @@ function migrateProgressionFields(savedData) {
         if (typeof b.level !== 'number') b.level = 1;
         if (typeof b.exp !== 'number') b.exp = 0;
         if (typeof b.alive !== 'boolean') b.alive = true;
+        if (typeof b.active !== 'boolean') b.active = true;   // 維持費改版前的靈寵預設出戰中
+        if (typeof b.upkeepTimer !== 'number') b.upkeepTimer = 0;
         return b;
     });
 }

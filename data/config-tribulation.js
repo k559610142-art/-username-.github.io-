@@ -19,6 +19,14 @@ const TRIBULATION_POTION_FULL_STOCK = 3.0;
 const TRIBULATION_SKILL_BONUS = 0.10;
 const TRIBULATION_MAX_CHANCE = 0.80;
 
+// 合體期起天劫加劇：從 TRIBULATION_HARD_REALM_INDEX（7 =【合體】，即「合體 → 大乘」）開始，
+// 每高一個大境界，基礎勝算再 -TRIBULATION_HARD_PENALTY_PER_REALM，最多扣到 TRIBULATION_HARD_PENALTY_MAX；
+// 心魔戰力同步 ×(1 + 扣除量)，戰鬥觀感也更凶險。
+//   合體 -5%、大乘 -10%、渡劫 -15%、仙人初境 -20%、天仙 -25%、真仙起 -30%
+const TRIBULATION_HARD_REALM_INDEX = 7;
+const TRIBULATION_HARD_PENALTY_PER_REALM = 0.05;
+const TRIBULATION_HARD_PENALTY_MAX = 0.30;
+
 // 心魔戰力＝玩家的 100%（天命已在開打前決定，數值只影響戰鬥過程的觀感，設成勢均力敵）
 const HEART_DEMON_POWER_MULT = 1.0;
 

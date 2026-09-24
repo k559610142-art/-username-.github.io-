@@ -121,9 +121,9 @@ function getLevelExpNeeded(level) {
     return Math.floor(coef * Math.pow(level, 1.5));
 }
 
-// 是否擁有「存活中」的指定靈寵（死亡的靈寵不提供被動加成）
+// 是否擁有「出戰中」的指定靈寵（死亡或召回休息的靈寵不提供被動加成，見 beast-combat.js 的 isBeastActive）
 function hasLiveBeast(id) {
-    return player.beasts.some(b => b.id === id && b.alive);
+    return player.beasts.some(b => b.id === id && isBeastActive(b));
 }
 
 function getBasePower() {
