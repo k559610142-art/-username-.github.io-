@@ -37,11 +37,12 @@ function renderLingbaoUI() {
         let eq = player.equipment[eqName];
         if (eq) {
             container.innerHTML += `
-                <div class="card" style="border-color: var(--equip-color);">
+                <div class="${getEquipCardClass(eq)}" style="border-color: var(--equip-color);">
                     <h3 class="quality-${eq.quality}">${formatEquipLevel(eq)}${eq.name}</h3>
-                    <p style="font-size:0.85em; color:#9ca3af;">品質：<span class="quality-${eq.quality}">${eq.quality}</span> | 屬性：<span class="elem-${eq.element}">${eq.element}</span></p>
+                    <p style="font-size:0.85em; color:#9ca3af;">品質：<span class="quality-${eq.quality}">${formatQualityLabel(eq.quality)}</span> | 屬性：<span class="elem-${eq.element}">${eq.element}</span></p>
                     <p style="font-size:0.8em; color:#facc15;">加成: ${formatEquipStats(eq.stats)}</p>
                     ${formatSockets(eq)}
+                    ${formatArtifactSkill(eq)}
                     <button class="sys-btn" onclick="unequipItem('${eqName}')">卸下裝備</button>
                 </div>`;
         } else {

@@ -116,7 +116,10 @@ function tribulationTick() {
 
     let tags = [];
     if (selfTick.frozen) addLog(`❄️ 你被心魔凍結，本回合無法行動！`, "combat");
-    else playerAttackTurn(getAllSkills(), [heartDemon], tags);
+    else {
+        playerAttackTurn(getAllSkills(), [heartDemon], tags);
+        artifactSkillTurn([heartDemon], tags);   // 神器專屬技能（artifact.js）
+    }
 
     // 靈寵協助（渡劫為一對一，群體技能也只打在心魔身上）
     petAssistTick([heartDemon]);

@@ -132,6 +132,7 @@ function combatTick() {
             addLog(`❄️ 你被凍結，本回合無法行動！`, "combat");
         } else {
             playerAttackTurn(getAllSkills(), enemies, playerTags);
+            artifactSkillTurn(enemies, playerTags);   // 神器專屬技能（artifact.js）
         }
 
         // 存活的靈寵各自判定是否出手協助

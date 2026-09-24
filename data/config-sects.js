@@ -30,7 +30,7 @@ const sectData = [
         { name: "全真教", buff: "經驗x1.3, 戰力x1.0", expMult: 1.3, powerMult: 1.0,
           skills: [{name:"全真劍法", type:"single", dmgType:"phys", mpCost:60, msg:"【全真劍法】靈動飄逸刺向敵人！"},
                    {name:"先天功", type:"single", dmgType:"mag", mpCost:75, msg:"運轉【先天功】，先天罡氣破空而至！"}] },
-        { name: "皇朝", buff: "經驗x1.2, 戰力x1.2", expMult: 1.2, powerMult: 1.2,
+        { name: "皇朝", faction: "邪", buff: "經驗x1.2, 戰力x1.2", expMult: 1.2, powerMult: 1.2,
           skills: [{name:"真龍拳", type:"single", dmgType:"phys", mpCost:75, msg:"攜帶帝王之氣，【真龍拳】震撼全場！"},
                    {name:"皇極經世", type:"aoe", dmgType:"mag", mpCost:90, msg:"【皇極經世】大範圍威壓掃過群敵！"}] }
     ]},
@@ -64,7 +64,11 @@ const sectData = [
                    {name:"上清雷法", type:"single", dmgType:"mag", mpCost:180, msg:"引動九天【上清雷法】轟殺至強敵手！"}] },
         { name: "萬界仙門", buff: "經驗x5.0, 戰力x5.0", expMult: 5.0, powerMult: 5.0,
           skills: [{name:"萬界穿梭", type:"single", dmgType:"phys", mpCost:180, msg:"掌控【萬界穿梭】奧義，自虛空中一擊斃敵！"},
-                   {name:"諸天寂滅", type:"aoe", dmgType:"mag", mpCost:300, msg:"打出【諸天寂滅】掌印，萬法歸宗！"}] }
+                   {name:"諸天寂滅", type:"aoe", dmgType:"mag", mpCost:300, msg:"打出【諸天寂滅】掌印，萬法歸宗！"}] },
+        // 九幽黃泉：至高聖地唯一的邪派（2026-09-25 新增），戰力偏高、經驗中等
+        { name: "九幽黃泉", faction: "邪", buff: "經驗x3.5, 戰力x5.5", expMult: 3.5, powerMult: 5.5,
+          skills: [{name:"九幽冥掌", type:"single", dmgType:"phys", mpCost:210, msg:"一掌拍出九幽之氣，【九幽冥掌】直貫敵心！"},
+                   {name:"黃泉引魂", type:"aoe", dmgType:"mag", mpCost:270, msg:"黃泉之水倒灌人間，【黃泉引魂】拘走群敵魂魄！"}] }
     ]}
 ];
 

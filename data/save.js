@@ -330,6 +330,7 @@ function applySaveData(data) {
     migrateLegacySkills();
     migrateRealmExp();
     migrateEquipSockets();
+    migrateArtifactIds();   // 更新前兌換的神器補上 lingbaoId（artifact.js）
 
     // 換了一份存檔，原本進行中的戰鬥、渡劫、身上狀態都不該延續
     enemies = [];

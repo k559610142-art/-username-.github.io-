@@ -13,7 +13,7 @@ index.html            唯一的 HTML 進入點：畫面結構、CSS（含手機 
                       ※ 檔名必須是 index.html（GitHub Pages 只把 index.html 當作預設首頁）
 images/               圖片素材
   home-bg.jpg         洞府主畫面背景・手機版（704×1520，頭像框／資源框／側邊按鈕／底部導覽已畫在圖上，見第 31 節）
-  home-bg-pc.jpg      洞府主畫面背景・PC 版（1376×768，玩家提供；上方五顆導覽鈕已用程式修圖移除，見第 34 節）
+  home-bg-pc.jpg      洞府主畫面背景・PC 版（1376×768，玩家提供；上方五顆導覽鈕已用程式修圖移除；傳送門牌匾抹除、右下改字為情緣／世界，見第 34 節）
   avatar-male.jpg     男修頭像（韓立，597×335 橫式）
   avatar-female.jpg   女修頭像（南宮婉，599×333 橫式）
                       ※ 頭像原本放在外部圖床 postimg.cc，已改為本地檔案；橫式圖裁成圓形時依 PLAYER_AVATARS.pos 對準臉部
@@ -35,6 +35,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
   lifespan.js         壽元：突破增加、死亡扣除、耗盡時遊戲結束
   beast-combat.js     靈寵的經驗/升級、陣亡、戰鬥中協助出手
   spells.js           仙法（200 種不分流派武學）：組出清單、被動光環加成、技能格、武學密典彈窗（第 35 節）
+  artifact.js         神器專屬技能：戰鬥中觸發、卡片顯示、舊神器補 lingbaoId（第 18 節）
   sect.js / shop.js / bag.js / equipment.js / lingbao-shop.js /
   servant.js / quest.js / field.js / beast.js / library.js / alchemy.js
                       每個彈出視窗(modal) 對應一支檔案，管理該功能的渲染與互動
@@ -75,8 +76,8 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 2 | `config-level.js` | `MAX_PLAYER_LEVEL`、`LEVEL_UP_*` 成長值、`LEVEL_EXP_SEGMENTS` 經驗曲線 | 無 | `stats.js`(getLevelExpNeeded、getMaxHp/getMaxMp)、`leveling.js`(gainLevelExp)、`ui.js` |
 | 3 | `config-lifespan.js` | `lifespanByRealm` 各境界壽元增加量與死亡折壽、歲月流逝常數 `LIFESPAN_MIN_AGING_HOURS`/`LIFESPAN_PACE_MULT`/`LIFESPAN_DANGER_MULT`/`LIFESPAN_TRIBULATION_MULT`/`LIFESPAN_OFFLINE_RATE`/`LIFESPAN_FLOOR_DEATHS`、起始年齡 `LIFESPAN_START_AGE` | 無 | `lifespan.js`、`leveling.js`(轉世重設壽元與年齡)、`ui.js`(年齡顯示) |
 | 4 | `config-maps.js` | `SECT_MAP_NAME`（"宗門"，唯一安全區的名稱）、`maps` 地圖資料（含各圖 `coins` 每隻靈石）、`KILLS_PER_HOUR_ESTIMATE`、`REPUTATION_MAX_BY_MAP_CATEGORY`（各區擊殺聲望上限）、`OFFLINE_COMBAT_RATE`/`OFFLINE_REPUTATION_RATE`、離線實力估算 `IDLE_WAVE_AVG_MONSTERS`/`IDLE_WAVE_GAP_TICKS`、`monsterIcons` | 無 | `state.js`、`map.js`(isInSect)、`combat.js`、`ui.js`、`save.js`(migrateCurrentMap) |
-| 5 | `config-sects.js` | `sectData` 宗門與技能表（宗門可選填 `faction: "邪"`，目前只有天魔教；沒寫 = 正）、`SECT_SKILL_BONUS`、`SECT_TIER_NAMES`、`findSectByName()`；尾端迴圈替每招補上 `tier`/`mult` | 無 | `sect.js`、`stats.js`(getSectTier/getAllSkills)、`ui.js`、`save.js`(重新綁定宗門)、`merit.js`(getPlayerFaction) |
-| 6 | `config-lingbao.js` | `legacySkillAdjustments` 舊版禁術下修數值、`lingbaoTierCosts` 各階段兌換價格、`lingbaoShopItems` 三階段戰略級寶物與武學 | 無 | `lingbao-shop.js`、`equipment.js`(五行說明列固定屬性裝備) |
+| 5 | `config-sects.js` | `sectData` 宗門與技能表（宗門可選填 `faction: "邪"`，目前為皇朝、天魔教、九幽黃泉；沒寫 = 正）、`SECT_SKILL_BONUS`、`SECT_TIER_NAMES`、`findSectByName()`；尾端迴圈替每招補上 `tier`/`mult` | 無 | `sect.js`、`stats.js`(getSectTier/getAllSkills)、`ui.js`、`save.js`(重新綁定宗門)、`merit.js`(getPlayerFaction) |
+| 6 | `config-lingbao.js` | `legacySkillAdjustments` 舊版禁術下修數值、`artifactSkills` 神器專屬技能（key = 商品 id）、`lingbaoTierCosts` 各階段兌換價格、`lingbaoShopItems` 三階段戰略級寶物與武學 | 無 | `lingbao-shop.js`、`equipment.js`(五行說明列固定屬性裝備)、`artifact.js` |
 | 7 | `config-shop.js` | `shopItems` 丹藥堂商品、`shopSections` 分區、`POTION_COOLDOWN_SECONDS` 丹藥冷卻、`SHOP_MAX_BUY_QTY` 單次購買上限(9999) | 無 | `shop.js`、`bag.js`、`combat.js`(自動補血補魔) |
 | 8 | `config-beasts.js` | `beastData` 靈寵兌換與被動、`BEAST_REVIVE_COST_CORE`、維持費 `BEAST_UPKEEP_INTERVAL`/`beastUpkeepTiers`（第 16 節）、`BEAST_SKILL_LEVELS`、`BEAST_SKILL_CHANCE`、`beastElementInfo`、`beastSkillTree` | 無 | `beast.js`、`beast-combat.js`、`save.js`(舊存檔轉換) |
 | 9 | `config-servants.js` | `MAX_SERVANTS`、`servantQualities`、`SERVANT_TRIP_COST`(每趟任務靈石花費)、`servantNames` | 無 | `combat.js`(tryRescueServant)、`servant.js`(派遣花費) |
@@ -105,7 +106,8 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 26 | `shop.js` | `openShopModal`/`renderShop`/`renderShopCard`/`getShopQty`/`setShopQty`/`setShopQtyMax`/`updateShopTotal`/`buyShopItem` | `shopItems`、`player`、`sect.js`(checkSectJoined) | HTML 按鈕、`bag.js` 顯示已購買道具 |
 | 27 | `bag.js` | `openBagModal`/`hasEquipInventorySpace`(背包上限檢查，鍛造/千寶閣/靈寶閣/卸下裝備共用)/`renderBag`/`useItemFromBag`/`deleteItemFromBag`/`deleteEquipFromInventory`/`bulkDeleteEquipment` | `shopItems`、`player.bag`、`player.equipInventory` | `equipment.js`(equipItem 後呼叫 renderBag) |
 | 28 | `equipment.js` | `EQUIP_CATEGORY_NAMES`(部位分類中文名)、`formatEquipLevel`/`getForgeLevelCap`/`renderForgeLevelSelect`(裝備等級，第 29 節)、`initForgeSelect`/`openEquipmentModal`/`renderLingbaoUI`(注意：命名沿用舊碼，實際是角色裝備列表)/`openWuxingInfo`/`equipItem`/`unequipItem`/`openForgeModal`/`forgeEquipment`/`forgeOneEquipment`/`generateEquipStats`(鍛造與千寶閣共用的屬性產生)、常數 `FORGE_COST`（已移到 config-equipment.js） | `equipTypes`、`wuxingElements`、`wuxingArrayEffects`、`equipQualities`、`lingbaoShopItems`(說明視窗列固定屬性裝備)、`player.equipment`、`player.equipInventory`、`ui.js`(resolveBatchCount) | `bag.js`(equipItem)、`sect.js`(forge 需拜入宗門) |
-| 29 | `lingbao-shop.js` | `openLingbaoShopModal`/`renderLingbaoShopUI`/`buyLingbaoItem(itemId)` | `lingbaoShopItems`、`lingbaoTierCosts`、`player.sectSkills`/`lingbaoSold`/`coins`/`reputation`/`equipInventory`/`learnedSkills`、`bag.js`(hasEquipInventorySpace) | HTML 按鈕（僅在「宗門」顯示） |
+| 29a | `artifact.js` | `getArtifactItem`/`getArtifactSkill`/`getEquippedArtifactSkill`/`formatQualityLabel`(七彩 → 造化神器・七彩)/`getEquipCardClass`(七彩外框)/`formatArtifactSkill`(卡片顯示)/`artifactSkillTurn`(戰鬥中觸發)/`migrateArtifactIds`(舊神器補 `lingbaoId`、品質改七彩) | `artifactSkills`/`lingbaoShopItems`、`equipTypes`、`player.equipment`/`equipInventory`、`elements.js`(resolveHit)、`stats.js`(攻擊力)、靈寵減傷計時 `petShieldRate/Timer` | `combat.js`/`tribulation.js`/`bounty.js`(出手後呼叫)、`bag.js`/`equipment.js`(卡片)、`save.js`(applySaveData) |
+| 29 | `lingbao-shop.js` | `openLingbaoShopModal`/`renderLingbaoShopUI`(神器卡片列出專屬技能)/`buyLingbaoItem(itemId)`(裝備另存 `lingbaoId`) | `lingbaoShopItems`、`lingbaoTierCosts`、`player.sectSkills`/`lingbaoSold`/`coins`/`reputation`/`equipInventory`/`learnedSkills`、`bag.js`(hasEquipInventorySpace) | HTML 按鈕（僅在「宗門」顯示） |
 | 30 | `servant.js` | `openServantModal`/`renderServants`/`assignServantQuest`/`dismissServant`/`bulkDismissServants`/`tickServantQuests`/`getAssignedServantCount`/`getServantTripCost`/`payServantTrip` | `questData`、`SERVANT_TRIP_COST`、`player.servants`(每位自帶 `quest`/`timer`)/`coins`、`quest.js` 的任務與獎勵函式 | `combat.js`(每 tick 呼叫 tickServantQuests)、`quest.js`(顯示派遣狀態) |
 | 31 | `quest.js` | `openQuestModal`/`renderQuestButtons`/`startQuest`/`stopQuest`/`updateQuestUI` + 共用任務函式 `getQuestDef`/`getAvailableQuestIds`/`getQuestRequiredProgress`/`getQuestSpeed`/`canServantTakeQuest`/`formatQuestRewards`/`grantQuestRewards`(回傳實際獲得文字) | `questData`(config-quests.js)、`player.activeQuest`、`stats.js`(getSectTier)、`map.js`(isInSect) | `combat.js`(玩家任務結算)、`servant.js`(僕從任務結算)、`map.js`(離開宗門時中斷) |
 | 32 | `activity.js` | `renderActivityList`/`getActivityLockReason`/`openActivity` | `activityData`、`player.reputation`/`realmIndex` | `ui.js`(updateUI 每秒重繪) |
@@ -121,7 +123,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 38 | `library.js` | 第一階段 `STUDY_COST`/`STUDY_GAIN`/`STUDY_MAX_COUNT`、`openLibraryModal`/`studyBook`；第二階段屬性秘典（第 24 節）`ELEMENT_BOOK_TIER`/`ELEMENT_BOOK_GAIN`/`ELEMENT_BOOK_MAX`/`ELEMENT_BOOK_COST`/`elementBooks`、`isElementBookUnlocked`/`getElementBookBonus`/`formatElementBookPercent`/`renderElementBooks`/`studyElementBook` | `player.studyCounts`/`elementStudy`/`martialPoints`/`spiritGrass`/`coins`/`stats`/`sectSkills`、`SECT_TIER_NAMES`、`ui.js`(resolveBatchCount) | HTML 按鈕（僅在「宗門」顯示）、`elements.js`(getPlayerCombatAttrs 呼叫 getElementBookBonus) |
 | 39 | `alchemy.js` | `pillRecipes`、`openAlchemyModal`/`craftPill` | `player.herbs`/`stats`/`coins`、`ui.js`(resolveBatchCount) | HTML 按鈕（僅在「宗門」顯示） |
 | 40 | `player-profile.js` | `PLAYER_NAME_MAX_LENGTH`、`sanitizePlayerName`(移除 HTML 特殊字元，讀檔/匯入也套用)/`changePlayerName`(開啟 #name-modal)/`confirmPlayerName` | `player.name` | HTML 按鈕、`save.js`(applySaveData) |
-| 41 | `save.js` | `calcOfflineProgress`(讀檔時的離線結算，呼叫 settleIdleSeconds)/`settleIdleSeconds`(離線與背景共用的收益結算，含 settleOfflineBeastUpkeep 靈寵維持費)/`estimateIdleCombat`(依實力估算離線戰鬥效率與能否存活)/`formatIdleDuration`/背景補發 `checkBackgroundCatchUp`＋常數 `BACKGROUND_TICK_SLACK_MS`/`BACKGROUND_SETTLE_MIN_SECONDS`（第 33 節）/`saveLocal`/`loadLocal`/`applySaveData`(讀檔與匯入共用)/`resetGameCompletely` + 舊存檔相容 `migrateServantAssignments`/`migrateEquipmentSlots`/`migrateActivityFields`/`migrateCurrentMap`/`migrateProgressionFields`/`migrateLegacySkills`(舊禁術下修＋已兌換武學耗魔同步)/`migrateRealmExp`(經驗曲線改版：待渡劫者修為壓回滿格)/`migrateEquipSockets`(只補 talismans 欄位) + 讀檔失敗保護 `saveLoadFailed`/`reportLoadFailure`/`retryLoadAfterFailure`/`showRawSaveForCopy`/`abandonSaveAndStartNew`（第 30 節） + 離線斬殺野外修士的功德（讀檔時也呼叫 `settleMeritStones()`）+ 讀檔時清除懸賞對決狀態 + `reloadLocalSave`(選單按鈕，無存檔時給提示) + 存檔代碼（常數 `SAVE_CODE_PREFIX`="FS2:"、兩段式確認暫存 `pendingImportData`；編解碼皆為 async）`encodeSaveCode`/`decodeSaveCode`/`bytesToBase64`/`base64ToBytes`/`pipeBytes`/`openSaveCodeModal`/`setSaveCodeStatus`/`exportSave`/`selectSaveCodeText`/`copySaveCode`/`downloadSaveCode`/`importSave`/`pasteSaveCodeFromClipboard`/`importSaveFromFile`/`confirmImportSave`/`resetImportConfirm` | `player`（整包序列化進 `localStorage`）、`maps`(migrateCurrentMap)、`legacySkillAdjustments`/`lingbaoShopItems`(migrateLegacySkills)、`leveling.js`(gainExp)、`combat.js`(tryRescueServant)、`lifespan.js`、`beast-combat.js`(createBeast)、`ui.js` | `main.js`(啟動時 loadLocal)、`main.js`(initGame 內每 30 秒 saveLocal) |
+| 41 | `save.js` | `calcOfflineProgress`(讀檔時的離線結算，呼叫 settleIdleSeconds)/`settleIdleSeconds`(離線與背景共用的收益結算，含 settleOfflineBeastUpkeep 靈寵維持費)/`estimateIdleCombat`(依實力估算離線戰鬥效率與能否存活)/`formatIdleDuration`/背景補發 `checkBackgroundCatchUp`＋常數 `BACKGROUND_TICK_SLACK_MS`/`BACKGROUND_SETTLE_MIN_SECONDS`（第 33 節）/`saveLocal`/`loadLocal`/`applySaveData`(讀檔與匯入共用)/`resetGameCompletely` + 舊存檔相容 `migrateServantAssignments`/`migrateEquipmentSlots`/`migrateActivityFields`/`migrateCurrentMap`/`migrateProgressionFields`/`migrateLegacySkills`(舊禁術下修＋已兌換武學耗魔同步)/`migrateRealmExp`(經驗曲線改版：待渡劫者修為壓回滿格)/`migrateEquipSockets`(只補 talismans 欄位)/`migrateArtifactIds`(在 artifact.js，舊神器補 lingbaoId) + 讀檔失敗保護 `saveLoadFailed`/`reportLoadFailure`/`retryLoadAfterFailure`/`showRawSaveForCopy`/`abandonSaveAndStartNew`（第 30 節） + 離線斬殺野外修士的功德（讀檔時也呼叫 `settleMeritStones()`）+ 讀檔時清除懸賞對決狀態 + `reloadLocalSave`(選單按鈕，無存檔時給提示) + 存檔代碼（常數 `SAVE_CODE_PREFIX`="FS2:"、兩段式確認暫存 `pendingImportData`；編解碼皆為 async）`encodeSaveCode`/`decodeSaveCode`/`bytesToBase64`/`base64ToBytes`/`pipeBytes`/`openSaveCodeModal`/`setSaveCodeStatus`/`exportSave`/`selectSaveCodeText`/`copySaveCode`/`downloadSaveCode`/`importSave`/`pasteSaveCodeFromClipboard`/`importSaveFromFile`/`confirmImportSave`/`resetImportConfirm` | `player`（整包序列化進 `localStorage`）、`maps`(migrateCurrentMap)、`legacySkillAdjustments`/`lingbaoShopItems`(migrateLegacySkills)、`leveling.js`(gainExp)、`combat.js`(tryRescueServant)、`lifespan.js`、`beast-combat.js`(createBeast)、`ui.js` | `main.js`(啟動時 loadLocal)、`main.js`(initGame 內每 30 秒 saveLocal) |
 | 41b | `avatar.js` | `getPlayerAvatar`/`isAvatarUnlocked`/`checkAvatarCondition`/`checkAvatarUnlocks`/`openAvatarModal`/`renderAvatarModal`/`selectAvatar` | `avatarList`、`player.avatarId`/`unlockedAvatars`/`gender`/`realmIndex`/`level`/`reputation`/`tribulationCount`、`realms` | `ui.js`(updateUI 呼叫 checkAvatarUnlocks；戰鬥實況頭像)、`home-ui.js`(頭像框)、HTML 頭像點擊 |
 | 41c | `settings.js` | `DISPLAY_MODE_KEY`(localStorage 鍵)/`DISPLAY_MODES`/`AUTO_PC_MIN_WIDTH`/`AUTO_PC_MIN_RATIO`、`getDisplayMode`/`resolveDisplayLayout`(回傳 'phone'／'pc')/`setDisplayMode`/`openSettingsModal`/`renderSettingsModal`/`isFullscreen`/`toggleFullscreen`；頂層註冊 `fullscreenchange` 監聽（只綁函式，載入順序不影響） | `home-ui.js`(layoutStage)、`#settings-modal` DOM、`localStorage` | `home-ui.js`(layoutStage 呼叫 resolveDisplayLayout)、HTML ⚙️ 設定按鈕 |
 | 41a | `home-ui.js` | `STAGE_IMG_W`/`STAGE_IMG_H`、`TAB_TITLES`、`layoutStage`(手機／PC 版面切換，第 34 節)/`renderPcStage`(依 config-home-pc.js 產生 PC 版按鈕與熱點)/`initHomeUi`/`switchTab`/`openWorldTab`/`showStageToast`/`showUnderConstruction`/`openAscensionPlatform`/`formatShortNumber`/`getCultivationRate`/`updateHomeHud`(同時寫入手機版 hud-xxx 與 PC 版 pc-hud-xxx) | `player`、`realms`、`PLAYER_AVATARS`、`stats.js`、`tribulation.js`(triggerTribulation)、`activity.js`(openActivity)、`config-home-pc.js`、`settings.js`(resolveDisplayLayout) | `ui.js`(updateUI 結尾呼叫 updateHomeHud)、`main.js`(onload 呼叫 initHomeUi)、HTML 熱點與底部導覽 |
@@ -188,7 +190,7 @@ combatTick() 每秒執行 [combat.js]
 |---|---|
 | `changePlayerName`, `confirmPlayerName` | `data/player-profile.js` |
 | `openEquipmentModal`, `unequipItem`, `equipItem`, `forgeEquipment` | `data/equipment.js` |
-| `openWorldMapModal`（修仙地圖彈窗：世界分頁按鈕、PC 傳送門）, `openMapCategoryModal`, `selectMap` | `data/map.js` |
+| `openWorldMapModal`（修仙地圖彈窗：世界分頁按鈕）, `openMapCategoryModal`, `selectMap` | `data/map.js` |
 | `openSkillModal`（修仙分頁「⚔️ 當前可用技能」） | `data/ui.js` |
 | `openSectModal`, `joinSect` | `data/sect.js` |
 | `openShopModal`, `buyShopItem` | `data/shop.js` |
@@ -217,7 +219,7 @@ combatTick() 每秒執行 [combat.js]
 | `buyBreakPill`（千寶閣珍貴物資區，動態產生；舊的 `exchangeMeritForStone` 已移除，功德改為自動凝結）、`openEvilHuntModal`（經由 `openActivity('evil')`） | `data/merit.js` |
 | `enterWorld` | `data/title-screen.js` |
 | `retryLoadAfterFailure`, `showRawSaveForCopy`, `abandonSaveAndStartNew`（讀檔失敗視窗） | `data/save.js` |
-| `switchTab`, `openWorldTab`（「世界」導覽／PC 福袋：切到世界分頁並跳出修仙地圖）, `openAscensionPlatform`, `showUnderConstruction`（洞府主畫面；手機底部「情緣」也是它） | `data/home-ui.js` |
+| `switchTab`, `openWorldTab`（手機／PC 的「世界」導覽：切到世界分頁並跳出修仙地圖）, `openAscensionPlatform`, `showUnderConstruction`（洞府主畫面；手機與 PC 的「情緣」也是它） | `data/home-ui.js` |
 | PC 版洞府的所有按鈕與建築熱點（onclick 字串寫在 `config-home-pc.js` 的 `pcStageButtons[].action`，改名函式時要一起改） | 各功能檔 |
 | `openSettingsModal`（洞府右上 ⚙️、PC 版「設置」）、`setDisplayMode(mode)`、`toggleFullscreen`（後兩者由 `renderSettingsModal()` 動態產生） | `data/settings.js` |
 | `openSpellModal`（修仙分頁「📜 武學密典」）、`setSpellFilter`/`selectSpell`/`equipSpell`/`unequipSpell`（密典內動態產生） | `data/spells.js` |
@@ -714,7 +716,7 @@ combatTick() 每秒執行 [combat.js]
 
 ## 18. 靈寶閣（三階段戰略級寶物）
 
-- 商品在 `config-lingbao.js`：三個階段（初級／中級／高級宗門）各 **2 件寶物＋2 部武學**，高級宗門另有 5 件神器，共 17 件。
+- 商品在 `config-lingbao.js`：三個階段（初級／中級／高級宗門）各 **2 件寶物＋2 部武學**，高級宗門另有 6 件神器（各有專屬技能，見下方）。
 - **兌換條件**：必須已拜入該階段的宗門（`player.sectSkills[tier]`），並**同時**支付靈石與聲望：
 
   | 階段 | 靈石 | 聲望 |
@@ -728,6 +730,10 @@ combatTick() 每秒執行 [combat.js]
   盔甲：赤焰護心甲 → 玄武鎮獄甲），武學倍率逐階提高（初級 180～200% → 中級 260～350% → 高級 400～600%）。
   **新增或調整商品時請維持這個原則**。
 - **神器**（`category: "artifact"`）：共 6 件，全部在高級宗門靈寶閣兌換（價格同高級階段、各自唯一），裝在神器欄、不計入五行與靈根判定。
+  **品質為「造化神器・七彩」**（2026-09-25 由橙色改）：`quality: ARTIFACT_QUALITY`（"七彩"），顯示文字 `ARTIFACT_QUALITY_LABEL`，常數在 `config-lingbao.js`。
+  - 樣式：`index.html` 的 `.quality-七彩`（七彩流動文字，同 `.rainbow-text`）；背包、角色裝備欄的卡片用 `getEquipCardClass()` 加上 `.rainbow-glow` 七彩外框，品質文字經 `formatQualityLabel()`（皆在 `artifact.js`）。
+  - 「七彩」不在 `equipQualities` 內：**不會出現在依品級批次刪除的選項**（防誤刪）、不開鑲嵌孔（`ensureSockets` 本來就跳過神器）。
+  - 舊存檔的橙色神器由 `migrateArtifactIds()` 讀檔時改成七彩。
   神器欄只有一格，所以各件**走不同路線**（四維總量都約 8 萬、戰鬥屬性約 30～40 點），避免任何一件完全取代其他件：
 
   | 神器 | id | 定位 | 屬性 |
@@ -740,6 +746,28 @@ combatTick() 每秒執行 [combat.js]
   | 無始鐘（一見無始道成空） | `lb3_artifact_wushi` | 極致閃避 | 四維各 1.8 萬、閃避 25%、減傷 10% |
 
   新增神器時請比照這個預算，並在描述寫明定位。
+
+### 神器專屬技能（2026-09-25，`config-lingbao.js` 的 `artifactSkills`、邏輯在 `artifact.js`）
+- **觸發**：裝備在神器欄時，玩家每回合出手（`playerAttackTurn`）之後呼叫 `artifactSkillTurn(targets, tags)`，依 `chance` 額外發動一次。
+  野外（`combat.js`）、渡劫（`tribulation.js`）、懸賞對決（`bounty.js`）都會觸發。**不耗靈力**、不佔宗門技能的 40% 判定；
+  懸賞對決的「封印」擋不住（屬於法寶不是武學），但**被凍結的回合不會發動**。
+
+  | 神器 | 技能 | 機率 | 效果 |
+  |---|---|---|---|
+  | 混沌鐘 | 鐘鎮諸天 | 18% | 全體物理攻擊 ×2.5，40% 凍結 |
+  | 三世銅棺 | 三世輪迴 | 20% | 受到傷害 -50% 持續 2 回合（共用 `petShieldRate/Timer`，取較高值）＋回復 12% 氣血 |
+  | 荒天帝大羅劍胎 | 一劍破天險，帝威嚇世間 | 18% | 單體物理攻擊 ×2.5，必定重擊（實際 ×5） |
+  | 萬物母氣鼎 | 萬物母氣 | 18% | 全體物理攻擊 ×1.8 並必定燒傷，回復 8% 氣血與 8% 靈力 |
+  | 吞天魔罐 | 吞天噬地 | 18% | 單體術法攻擊 ×3.0 並必定中毒，吸取傷害 30% 回血 |
+  | 無始鐘 | 一見無始道成空 | 18% | 單體術法攻擊 ×1.5，所有敵人凍結 1 回合（下一次無法出手） |
+
+- **欄位**：`target`(single/aoe/self)、`dmgType`、`mult`、`attrs`（該擊額外屬性，與身上取較高，例 `metal: 100` 必定重擊）、`heal`/`mpHeal`/`lifesteal`、`shield`、`freezeAll`，見 `config-lingbao.js` 註解。每擊都走 `resolveHit()`（受對方閃避、減傷、五行影響）。
+- **辨識是哪一件神器**：裝備物件的 `name` 一律是部位名「神器」，所以兌換時（`buyLingbaoItem`）另存 `lingbaoId`（商品 id）。
+  更新前兌換的神器沒有這個欄位，`save.js` 讀檔／匯入時呼叫 `migrateArtifactIds()`：依「四維與戰鬥屬性完全相同」比對 `lingbaoShopItems` 補上
+  （⚠️ 若之後改了神器屬性，舊神器會比對不到而沒有技能——改屬性時要保留舊值的對照，或改用其他方式補 id）。
+- **顯示**：背包、角色裝備欄的卡片以 `formatArtifactSkill(eq)` 顯示神器全名與專屬技能；靈寶閣商品卡片也列出技能。
+- 心魔是鏡像玩家的戰鬥屬性，但**不會**使用玩家的神器技能。
+
 - 裝備兌換前會檢查背包空位（`hasEquipInventorySpace()`），不足時不扣資源。
 - 舊版靈寶閣商品（降魔伏虎杖、紫電青霜劍〔舊〕、太素霓裳羽衣、神魔九變、大羅天經）已下架；
   已購買的玩家仍保有物品與技能（技能存在 `learnedSkills` 內，技能列表標示為「[靈寶閣]」）。
@@ -991,7 +1019,9 @@ combatTick() 每秒執行 [combat.js]
 
 ### 陣營（正派／邪派）
 - `getPlayerFaction()`：已拜入的每個宗門算 `FACTION_SECT_WEIGHT`(5) 分、每招學會的仙法算 1 分，依陣營加總；**邪派分數高於正派才是邪派**，同分（含散修）算正派。
-  宗門陣營寫在 `config-sects.js` 的 `faction`（目前只有**天魔教**是 `"邪"`，其他沒寫 = 正）；仙法陣營取 `config-spells.js` 的 `faction`。
+  宗門陣營寫在 `config-sects.js` 的 `faction`（目前 `"邪"` 為凡俗的**皇朝**、修真的**天魔教**、至高的**九幽黃泉**，其他沒寫 = 正）；仙法陣營取 `config-spells.js` 的 `faction`。
+  宗門列表卡片會標示「正派／邪派（影響懸賞榜陣營）」（`sect.js` 的 `renderSects()`）；獵殺邪修視窗的規則說明也依 `faction` 自動列出邪派宗門。
+  ⚠️ 每個宗門權重相同，所以「一邪一正」會同分而算正派，要當邪派得拜入較多邪派宗門（或學較多魔功）。
 - 正派玩家的懸賞榜列邪修、邪派玩家列正道修士。**兩者都拿功德**，只有說法不同（邪派的日誌寫「吸取對方功德」）。
 
 ### 善惡值
@@ -1071,7 +1101,7 @@ combatTick() 每秒執行 [combat.js]
 （以 8 種舊存檔形態測試目前程式皆可正常讀取；移除 `#age-display` 即可重現同一錯誤。）
 
 ### 1. 發佈版本號（防止新舊檔案混用）
-- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260925c`）。
+- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260925h`）。
 - **每次推上 GitHub Pages 前，把所有 `?v=` 全部取代成新值**（例：日期＋序號）。新 index.html 會指向新網址的 JS，不會再拿到快取的舊檔。
 - 新增 `data/*.js` 時也要記得帶上 `?v=`。
 
@@ -1123,7 +1153,7 @@ combatTick() 每秒執行 [combat.js]
 | 熱點「宗門」 | 左側山門 | 切到宗門分頁 |
 | 熱點「僕從小屋」 | 右側屋舍 | `openServantModal()` |
 | 側邊「任務」「背包」 | 左側 | `openQuestModal()`、`openBagModal()` |
-| 側邊「特惠商城」 | 右側 | `openShopModal()`（丹藥堂） |
+| 側邊「丹藥堂」（圖上原字「特惠商城」，2026-09-25 改名） | 右側 | `openShopModal()`（丹藥堂）。按鈕內的 `.nav-label-cover.stage-label-cover` 以深色圓角底＋楷體字蓋掉圖上的字（蓋字區比按鈕寬，向兩側延伸）。PC 版圖上沒有這顆按鈕 |
 | 側邊「郵件」「充值」 | 左／右 | 遊戲沒有對應功能 → `showUnderConstruction()` 顯示「興建中」 |
 | 底部導覽 | 修仙／戰鬥／洞府／**情緣**／世界 | 修仙、戰鬥、洞府為 `switchTab()`；選中的按鈕有金色光暈（`.nav-btn.active`）。<br>**情緣**：圖上原字「宗門」用 `.nav-label-cover`（深色底＋楷體字，位置相對於按鈕）蓋掉改寫，點擊 `showUnderConstruction('情緣')`，沒有 `data-nav`。宗門分頁改由洞府的「宗門」山門熱點進入。<br>**世界**：`openWorldTab()` = 切到世界分頁並跳出修仙地圖彈窗 |
 
@@ -1139,7 +1169,7 @@ combatTick() 每秒執行 [combat.js]
   | 世界 `world` | 「🗺️ 修仙地圖」按鈕、活動、命運與系統（存檔、轉世、重置） |
 
 - **修仙地圖**（2026-09-25 改）：不再是分頁內的面板，改成獨立彈窗 `#world-map-modal`（五個區域按鈕＋目前所在，`map.js` 的 `openWorldMapModal()`）。
-  開啟方式：點「世界」導覽（手機）／「福袋」（PC）時自動跳出、世界分頁頂端的按鈕、PC 版傳送門熱點。
+  開啟方式：點「世界」導覽（手機底部、PC 右下）時自動跳出、世界分頁頂端的按鈕。（PC 版傳送門熱點已移除）
   `#world-map-modal` 在 DOM 中排在 `#map-category-modal` **之前**，選區域時的地圖清單才會疊在上面；`selectMap()` 選定後兩層一起關閉。
 - 分頁內的設施、活動抽屜**預設展開**（分頁本身就是選單）；存檔管理與命運抉擇仍預設收合。
 - **新增面板**：放進 `#game-container` 並加上 `data-tab="分頁名"` 即可。
@@ -1264,17 +1294,23 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
   | 中央山門（「宗門」） | 宗門分頁 |
   | 右側屋舍（「僕從小屋」） | `openServantModal()` |
   | 左側樓閣（「煉丹房」） | `openAlchemyModal()` |
-  | 傳送門（圖上已有牌匾） | `openWorldMapModal()`（修仙地圖彈窗；舊版呼叫 `openMapCategoryModal()` 沒帶參數會出錯，已修正） |
+  | ~~傳送門~~ | 2026-09-25 牌匾已從圖上抹除，`pcStageButtons` 的 `portal` 設為 `enabled: false`（不產生熱點）；修仙地圖改由「世界」開啟 |
   | 湖中光環（「千寶閣」，舊名領物閣） | `openActivity('auction')` |
   | 左側 信件／背包／設置 | 興建中／`openBagModal()`／`openSettingsModal()` |
-  | 右下 修煉加速／信件 | 興建中 |
-  | 右下 修仕／戰鬥／洞府／福袋 | 修仙／戰鬥／洞府（關閉面板）／**世界**（福袋暫作世界入口，`openWorldTab()`：切到世界分頁並跳出修仙地圖，與手機版相同） |
+  | 右下 **情緣**（圖上原字「修煉加速」，已改畫）／信件 | `showUnderConstruction('情緣')`／興建中 |
+  | 右下 修仕／戰鬥／洞府／**世界**（圖上原字「福袋」，已改畫） | 修仙／戰鬥／洞府（關閉面板）／`openWorldTab()`：切到世界分頁並跳出修仙地圖（與手機版相同） |
 
 - **分頁面板**：位置在 `PC_SHEET_RECT`（圖上 (300,40) 845×625，避開左上 HUD、右上狀態框與底部按鈕），
   `renderPcStage()` 換算成 CSS 變數 `--pc-sheet-left/top/width/height`。開啟時隱藏建築熱點，按鈕仍可點；✕ 或「洞府」關閉。
   面板字級 15px、卡片最小寬 170px、日誌高 34vh。
 - **圖片處理紀錄**：原圖上方有五顆導覽圓鈕，以 System.Drawing 將圓形區域用周圍像素反覆平均填補（調和填補＋輕微雜訊）移除，
   「修仙」「洞府」原位置因鄰近鳳凰翅膀留有淡光暈，正常大小不明顯。圖上的紅點與右下「修仕」錯字保留（畫死在圖上）。
+  **2026-09-25 第二次修圖**（腳本以 System.Drawing＋C# 執行，原始圖備份不在專案內）：
+  - 「修煉加速」→「情緣」、「福袋」→「世界」：先以調和填補（1500 次迭代＋±5 雜訊）抹掉原字，再用標楷體（DFKai-SB）粗體 25px、上淺下深金色漸層＋深色描邊畫上新字，仿原圖按鈕字樣。
+  - 左側「傳送門」直式牌匾整塊抹除（圖上 (266,518) 45×132）：底色用調和填補確保邊緣連續，再疊上從左側 100px 外、右側 45px 外取樣的紋理細節（減去 7×7 局部平均，強度 0.9），看起來是一片雲霧。
+    左側取樣避開了旁邊小樓的窗戶（第一次取樣只往左 45px，會把窗戶複製一份）。
+  - ⚠️ PowerShell 5.1 以 ANSI 讀腳本：含中文的 `.ps1` 必須存成 **UTF-8 BOM**，否則 C# 中文註解與字串會變亂碼、甚至讓程式碼解析錯誤。
+  - 換圖後 `index.html` 內兩處 `home-bg-pc.jpg` 加上 `?v=`（`#pc-stage-bg` 與 `body.layout-pc::before`），避免快取到舊圖；**之後再改這張圖也要更新這兩處的版本號**。
   ⚠️ 換 PC 圖時要改 `PC_STAGE_IMG_W/H`、重量 `pcStageButtons`／`PC_SHEET_RECT` 與 index.html `#pc-stage` 內 HUD 的 % 座標。
 - ⚠️ 全域樣式 `button.active` 會把按鈕底色改成金色，新的 `.xxx.active` 按鈕樣式要自己覆蓋 `background`/`color`（`.settings-option.active` 即是）。
 - 驗證紀錄（2026-09-24）：1376×768 自動 → PC 版滿框，HUD 與圖上框對齊（放大檢查）、9 個按鈕＋6 個熱點、戰鬥分頁面板與「洞府」關閉、「設置」開設定；
@@ -1338,6 +1374,7 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
 ## 36. 懸賞榜與懸賞對決（`config-bounty.js`、`bounty.js`）
 
 入口：活動「獵殺邪修」→ `#evil-hunt-modal`（標題依陣營顯示「獵殺邪修・懸賞榜」或「截殺正道・懸賞榜」）。陣營、善惡、功德規則見第 27 節。
+視窗內容（`renderEvilHunt()`）：陣營／善惡／功德／補天石／破障丹 → 規則說明（可收合）→ 懸賞榜 → 累計斬殺數。2026-09-25 起**不再有「前往千寶閣」按鈕**。
 
 ### 榜單
 - 每 `BOUNTY_REFRESH_HOURS`(4) 小時刷新（`refreshBountyIfDue()`，以 `player.bountyRefreshAt` 時間戳判斷，同千寶閣），每期 6 名：**天榜 1、地榜 2、人榜 3**。

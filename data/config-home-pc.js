@@ -19,7 +19,8 @@ const pcStageButtons = [
     { id: 'sect',     kind: 'hotspot', label: '宗門',     rect: [520, 435, 140, 125], plaque: 'left',  action: "switchTab('sect')" },
     { id: 'servant',  kind: 'hotspot', label: '僕從小屋', rect: [790, 475, 110, 70],  plaque: 'top',   action: "openServantModal()" },
     { id: 'alchemy',  kind: 'hotspot', label: '煉丹房',   rect: [140, 365, 125, 100], plaque: 'right', action: "openAlchemyModal()" },
-    { id: 'portal',   kind: 'hotspot', label: '傳送門',   rect: [268, 525, 40, 115],                   action: "openWorldMapModal()" },   // 圖上已有牌匾
+    // 傳送門：2026-09-25 已從圖上抹掉牌匾字樣，熱點一併停用（修仙地圖改由「世界」開啟）
+    { id: 'portal',   kind: 'hotspot', label: '傳送門',   rect: [268, 525, 40, 115], enabled: false,   action: "openWorldMapModal()" },
     { id: 'auction',  kind: 'hotspot', label: '千寶閣',   rect: [712, 610, 110, 95],  plaque: 'right', action: "openActivity('auction')" },
 
     // ---- 左側按鈕 ----
@@ -28,10 +29,10 @@ const pcStageButtons = [
     { id: 'settings',  kind: 'button', label: '設置',     rect: [18, 668, 64, 84],   action: "openSettingsModal()" },
 
     // ---- 右下按鈕（底部導覽）----
-    { id: 'boost',     kind: 'button', label: '修煉加速', rect: [1278, 575, 80, 77],  action: "showUnderConstruction('修煉加速')" },
+    { id: 'boost',     kind: 'button', label: '情緣',     rect: [1278, 575, 80, 77],  action: "showUnderConstruction('情緣')" },   // 圖上原字「修煉加速」已改畫成「情緣」
     { id: 'mail',      kind: 'button', label: '信件',     rect: [900, 680, 58, 72],   action: "showUnderConstruction('信件')" },
     { id: 'nav-cultivate', kind: 'button', label: '修仙', rect: [985, 680, 57, 72],   action: "switchTab('cultivate')", nav: 'cultivate' },
     { id: 'nav-battle',    kind: 'button', label: '戰鬥', rect: [1080, 680, 58, 72],  action: "switchTab('battle')",    nav: 'battle' },
     { id: 'nav-home',      kind: 'button', label: '洞府', rect: [1162, 640, 92, 112], action: "switchTab('home')",      nav: 'home' },
-    { id: 'nav-world',     kind: 'button', label: '福袋', rect: [1282, 668, 68, 84],  action: "openWorldTab()",         nav: 'world' }   // 圖上是福袋，暫作「世界」入口（同手機版：開世界分頁並跳出修仙地圖）
+    { id: 'nav-world',     kind: 'button', label: '世界', rect: [1282, 668, 68, 84],  action: "openWorldTab()",         nav: 'world' }   // 圖上原字「福袋」已改畫成「世界」（同手機版：開世界分頁並跳出修仙地圖）
 ];

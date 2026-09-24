@@ -20,8 +20,11 @@ function renderLingbaoShopUI() {
 
         let cards = lingbaoShopItems.filter(i => i.tier === tier).map(item => {
             let isSold = sold.includes(item.id);
+            let artSkill = artifactSkills[item.id];
             let detail = item.type === 'equip'
-                ? `<p style="font-size: 0.8em; color: #facc15;">【${item.itemData.name}】<span class="elem-${item.itemData.element}">${item.itemData.element}</span>｜${formatEquipStats(item.itemData.stats)}</p>`
+                ? (artSkill ? `<p style="font-size: 0.8em; margin: 2px 0;"><span class="quality-${item.itemData.quality}">${formatQualityLabel(item.itemData.quality)}</span></p>` : '')
+                  + `<p style="font-size: 0.8em; color: #facc15;">【${item.itemData.name}】<span class="elem-${item.itemData.element}">${item.itemData.element}</span>｜${formatEquipStats(item.itemData.stats)}</p>`
+                  + (artSkill ? `<p style="font-size: 0.78em; color: #fca5a5;">專屬技能【${artSkill.name}】：${artSkill.desc}</p>` : '')
                 : `<p style="font-size: 0.8em; color: #c084fc;">耗魔 ${item.skillData.mpCost}</p>`;
             let btnText = isSold ? '已兌換（不再補貨）' : (sectName ? '兌換' : '未拜入此階段宗門');
             return `
@@ -70,7 +73,8 @@ function buyLingbaoItem(itemId) {
             category: item.itemData.category,
             quality: item.itemData.quality,
             element: item.itemData.element,
-            stats: Object.assign({}, item.itemData.stats)
+            stats: Object.assign({}, item.itemData.stats),
+            lingbaoId: item.id   // 來源商品 id：神器靠它找到專屬技能（artifact.js）
         }));
         addLog(`💎 於靈寶閣兌換戰略級寶物：【${item.name}】！已放入背包。`, "equip");
     } else {

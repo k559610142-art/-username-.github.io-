@@ -49,6 +49,7 @@ function renderSects() {
             catHtml += `
                 <div class="card" style="border-color: ${isCurrent ? 'var(--sect-color)' : (isOwnSect ? 'rgba(74,222,128,0.5)' : 'rgba(255,255,255,0.08)')}; opacity: ${isLocked ? 0.5 : 1};">
                     <h3>${sect.name}${isOwnSect && !isCurrent ? ' <span style="font-size:0.7em; color:#4ade80;">(已選定)</span>' : ''}</h3>
+                    <p style="font-size: 0.78em; margin: 0; color: ${sect.faction === '邪' ? '#f87171' : '#60a5fa'};">${sect.faction === '邪' ? '邪派' : '正派'}（影響懸賞榜陣營）</p>
                     <p style="font-size: 0.85em; color: #9ca3af;">加成: ${sect.buff}</p>
                     <p style="font-size: 0.78em; color: #c084fc; text-align: left;">${SECT_TIER_NAMES[cat.tier]}技能：<br>${skillLines}</p>
                     <button class="sect-btn ${isCurrent ? 'active' : ''}" ${disabled ? 'disabled' : ''} onclick="joinSect('${sect.name}')">${btnText}</button>

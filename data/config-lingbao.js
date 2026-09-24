@@ -14,6 +14,39 @@ const legacySkillAdjustments = {
     "神魔九變": { mult: 1.5, duration: 3, mpCost: 150, msg: "發動宗門禁術【神魔九變】，戰力暴漲 1.5 倍！" }
 };
 
+// ---- 神器品質：造化神器・七彩（高於橙色，不在 equipQualities 內，所以不會被依品級批次刪除、不開鑲嵌孔）----
+const ARTIFACT_QUALITY = "七彩";
+const ARTIFACT_QUALITY_LABEL = "造化神器・七彩";
+
+// ---- 神器專屬技能（key = lingbaoShopItems 的 id，邏輯在 artifact.js 的 artifactSkillTurn）----
+// 裝備在神器欄時，每回合玩家出手後有 chance 機率「額外」發動一次（不耗靈力、不佔宗門技能的 40% 判定、被封印也能發動，被凍結則不行）
+//   target：single 打第一個存活目標／aoe 打全部／self 只作用於自身
+//   dmgType：phys 物理攻擊、mag 術法攻擊；mult：攻擊力倍率
+//   attrs：這一擊額外帶的戰鬥屬性（%，與身上屬性取較高者，例 metal: 100 = 必定重擊）
+//   heal／mpHeal：回復最大氣血／靈力的比例；lifesteal：以實際傷害的比例回血
+//   shield：{ reduce, duration } 受到傷害減免（與靈寵土屬性、仙法守護共用，取較高值）
+//   freezeAll：讓所有存活目標凍結 1 回合（下一次無法出手）
+const artifactSkills = {
+    lb3_artifact:          { name: "鐘鎮諸天",       chance: 0.18, target: "aoe",    dmgType: "phys", mult: 2.5, attrs: { ice: 40 },
+                             desc: "18% 機率：鐘聲震盪，對全體造成物理攻擊 250% 傷害，40% 機率凍結。",
+                             msg: "🔔 混沌鐘長鳴，【鐘鎮諸天】音波橫掃八方！" },
+    lb3_artifact_coffin:   { name: "三世輪迴",       chance: 0.20, target: "self",   shield: { reduce: 0.5, duration: 2 }, heal: 0.12,
+                             desc: "20% 機率：銅棺護體，受到傷害 -50% 持續 2 回合，並回復 12% 氣血。",
+                             msg: "⚰️ 三世銅棺橫空，【三世輪迴】之力護住肉身！" },
+    lb3_artifact_sword:    { name: "一劍破天險，帝威嚇世間", chance: 0.18, target: "single", dmgType: "phys", mult: 2.5, attrs: { metal: 100 },
+                             desc: "18% 機率：單體物理攻擊 250% 傷害，必定重擊（實際 500%）。",
+                             msg: "🗡️ 大羅劍胎出鞘，【一劍破天險，帝威嚇世間】！" },
+    lb3_artifact_cauldron: { name: "萬物母氣",       chance: 0.18, target: "aoe",    dmgType: "phys", mult: 1.8, attrs: { fire: 100 }, heal: 0.08, mpHeal: 0.08,
+                             desc: "18% 機率：全體物理攻擊 180% 傷害並必定燒傷，同時回復 8% 氣血與 8% 靈力。",
+                             msg: "🔥 萬物母氣鼎傾覆，【萬物母氣】焚天煮海！" },
+    lb3_artifact_jar:      { name: "吞天噬地",       chance: 0.18, target: "single", dmgType: "mag",  mult: 3.0, attrs: { poison: 100 }, lifesteal: 0.3,
+                             desc: "18% 機率：單體術法攻擊 300% 傷害並必定中毒，吸取傷害 30% 回復氣血。",
+                             msg: "🏺 吞天魔罐張口，【吞天噬地】煉化敵手精元！" },
+    lb3_artifact_wushi:    { name: "一見無始道成空", chance: 0.18, target: "single", dmgType: "mag",  mult: 1.5, freezeAll: true,
+                             desc: "18% 機率：單體術法攻擊 150% 傷害，並讓所有敵人凍結 1 回合（下一次無法出手）。",
+                             msg: "🔔 無始鐘聲迴盪，【一見無始道成空】，萬法皆寂！" }
+};
+
 const lingbaoTierCosts = {
     1: { coins: 100000,  rep: 10000 },    // 初級宗門：靈石 10 萬 + 聲望 1 萬
     2: { coins: 500000,  rep: 100000 },   // 中級宗門：靈石 50 萬 + 聲望 10 萬
@@ -63,29 +96,29 @@ const lingbaoShopItems = [
                   stats: { str: 30000, spr: 15000, metal: 25, ice: 15, fire: 20 } },
       desc: "誅仙四劍之首，劍氣所至萬物皆斬，兼具重擊、凍結與燒傷。" },
     { id: "lb3_artifact", tier: 3, type: "equip", name: "神器・混沌鐘",
-      itemData: { name: "神器", category: "artifact", quality: "橙色", element: "土",
+      itemData: { name: "神器", category: "artifact", quality: "七彩", element: "土",
                   stats: { str: 20000, con: 20000, int: 20000, spr: 20000, def: 20, eva: 10 } },
       desc: "開天闢地之神器，鐘聲鎮壓諸天。可裝備於神器欄（不影響五行/靈根）。" },
     // 以下五件神器與混沌鐘同價、同為唯一性；神器欄只有一格，因此各走不同路線
     // （四維總量皆約 8 萬，戰鬥屬性約 30～40 點，避免任何一件完全取代其他件）
     { id: "lb3_artifact_coffin", tier: 3, type: "equip", name: "神器・三世銅棺",
-      itemData: { name: "神器", category: "artifact", quality: "橙色", element: "土",
+      itemData: { name: "神器", category: "artifact", quality: "七彩", element: "土",
                   stats: { str: 10000, con: 45000, int: 10000, spr: 15000, def: 30, eva: 5 } },
       desc: "九龍拉棺橫渡星空，棺中藏三世輪迴之秘。極致守護：體質與減傷冠絕諸器。" },
     { id: "lb3_artifact_sword", tier: 3, type: "equip", name: "神器・荒天帝大羅劍胎",
-      itemData: { name: "神器", category: "artifact", quality: "橙色", element: "金",
+      itemData: { name: "神器", category: "artifact", quality: "七彩", element: "金",
                   stats: { str: 45000, con: 10000, int: 10000, spr: 15000, metal: 25, thunder: 15 } },
-      desc: "荒天帝以大羅劍胎獨斷萬古，一劍光寒十九洲。極致物理：力量、重擊與雷擊。" },
+      desc: "荒天帝以大羅劍胎獨斷萬古，一劍破天險，帝威嚇世間。極致物理：力量、重擊與雷擊。" },
     { id: "lb3_artifact_cauldron", tier: 3, type: "equip", name: "神器・萬物母氣鼎",
-      itemData: { name: "神器", category: "artifact", quality: "橙色", element: "火",
+      itemData: { name: "神器", category: "artifact", quality: "七彩", element: "火",
                   stats: { str: 22000, con: 22000, int: 22000, spr: 22000, def: 10, fire: 20 } },
       desc: "天帝鼎，以萬物母氣所鑄，鼎壓萬古、鎮殺諸天。四維均衡最高，兼具燒傷。" },
     { id: "lb3_artifact_jar", tier: 3, type: "equip", name: "神器・吞天魔罐",
-      itemData: { name: "神器", category: "artifact", quality: "橙色", element: "水",
+      itemData: { name: "神器", category: "artifact", quality: "七彩", element: "水",
                   stats: { str: 10000, con: 10000, int: 45000, spr: 15000, poison: 25, ice: 15 } },
       desc: "狠人大帝之器，罐口一開可吞天噬地、煉化萬物。極致術法：悟性、中毒與凍結。" },
     { id: "lb3_artifact_wushi", tier: 3, type: "equip", name: "神器・無始鐘",
-      itemData: { name: "神器", category: "artifact", quality: "橙色", element: "金",
+      itemData: { name: "神器", category: "artifact", quality: "七彩", element: "金",
                   stats: { str: 18000, con: 18000, int: 18000, spr: 18000, eva: 25, def: 10 } },
       desc: "無始大帝之鐘，「一見無始道成空」。鐘聲迴盪，萬法難侵：閃避冠絕諸器。" },
     { id: "lb3_skill_ice", tier: 3, type: "skill", name: "武學《太虛寒獄》",

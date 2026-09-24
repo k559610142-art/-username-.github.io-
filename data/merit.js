@@ -118,7 +118,7 @@ function renderEvilHunt() {
         </div>
         <details class="evil-hunt-rules">
             <summary>📜 規則說明</summary>
-            <p>・陣營依所屬宗門與學會的仙法判定（天魔教與邪道魔功偏邪派），你是<b>${getFactionLabel(faction)}</b>，懸賞榜列出的是 <b>${getFactionLabel(foe)}</b> 人物。</p>
+            <p>・陣營依所屬宗門與學會的仙法判定（${sectData.flatMap(c => c.items).filter(s => s.faction === "邪").map(s => s.name).join('、')}與邪道魔功偏邪派），你是<b>${getFactionLabel(faction)}</b>，懸賞榜列出的是 <b>${getFactionLabel(foe)}</b> 人物。</p>
             <p>・懸賞榜每 ${BOUNTY_REFRESH_HOURS} 小時刷新 6 名（天榜 1、地榜 2、人榜 3），境界在你目前境界的 ${BOUNTY_REALM_OFFSET_MIN}～+${BOUNTY_REALM_OFFSET_MAX} 境之間隨機（0.1 境 = 1 階）。<b>點擊「接取」後</b>，在野外歷練時才有機會遇上對方並展開一對一對決；斬殺可${meritWord} ${BOUNTY_MERIT_MIN}～${BOUNTY_MERIT_MAX.toLocaleString()}（不論強弱）。落敗視同戰死，懸賞保留可再挑戰。</p>
             <p>・天榜比心魔更強，擅長吸血、退魔（吸走靈力）與各種削弱武學；地榜約天榜 8 成、人榜約 6 成實力。</p>
             <p>・野外偶爾會遇到正道或魔道修士（不是每波都有）：斬殺敵對陣營可得 ${FIELD_MERIT_MIN}～${FIELD_MERIT_MAX} 功德，同陣營不給功德。</p>
@@ -126,8 +126,7 @@ function renderEvilHunt() {
             <p>・身上功德每滿 ${MERIT_PER_BUTIAN_STONE.toLocaleString()} 自動凝結 1 顆七彩補天石，可到千寶閣購買破障丹（渡劫勝算 +10%）。</p>
         </details>
         ${renderBountyBoard()}
-        <p style="color: #9ca3af; font-size: 0.8em; margin-top: 10px;">累計斬殺修士 ${(player.evilKills || 0).toLocaleString()} 名｜懸賞伏誅 ${(player.bountyKills || 0).toLocaleString()} 名</p>
-        <button class="sys-btn" style="border-color: var(--accent); color: var(--accent);" onclick="closeModal('evil-hunt-modal'); openActivity('auction');">🏺 前往千寶閣</button>`;
+        <p style="color: #9ca3af; font-size: 0.8em; margin-top: 10px;">累計斬殺修士 ${(player.evilKills || 0).toLocaleString()} 名｜懸賞伏誅 ${(player.bountyKills || 0).toLocaleString()} 名</p>`;
 }
 
 // ---- 千寶閣「珍貴物資」區（由 auction.js 的 renderAuction 嵌入）----

@@ -220,6 +220,7 @@ function bountyDuelTick() {
     } else {
         if (duelSilenceTimer > 0) addLog(`🔇 你被封印，只能以普通攻擊迎敵！`, "combat");
         playerAttackTurn(duelSilenceTimer > 0 ? [] : getAllSkills(), [opp], tags);
+        artifactSkillTurn([opp], tags);   // 神器專屬技能：屬於法寶，封印擋不住（artifact.js）
     }
     // 負面狀態以「你的回合」計算持續時間
     if (duelWeakenTimer > 0) duelWeakenTimer--;
