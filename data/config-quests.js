@@ -41,4 +41,4 @@ const questRewardInfo = {
 
 const QUEST_REQUIRED_PROGRESS = 30;    // 完成一次任務所需進度
 const QUEST_PROGRESS_PER_TICK = 1.5;   // 每秒累積的基礎進度（僕從再乘上自身效率 mult）
-const MAX_ASSIGNED_SERVANTS = 3;       // 可同時派遣執行任務的僕從上限
+const MAX_ASSIGNED_SERVANTS = 10;      // 可同時派遣執行任務的僕從上限

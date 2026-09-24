@@ -15,7 +15,7 @@ const BEAST_REVIVE_COST_CORE = 5000;
 
 // 靈寵維持費：每隻「出戰中」（存活且未召回休息）的靈寵，每出戰滿 BEAST_UPKEEP_INTERVAL 秒扣一次，
 // 費用依該靈寵的等級決定（maxLevel 以下適用該檔）。付不起時該靈寵自動召回休息，不再提供被動與協助。
-const BEAST_UPKEEP_INTERVAL = 60;
+const BEAST_UPKEEP_INTERVAL = 600;   // 10 分鐘
 const beastUpkeepTiers = [
     { maxLevel: 99,       coins: 2000,  core: 50 },    // Lv100 以前
     { maxLevel: 299,      coins: 5000,  core: 100 },   // Lv300 以前

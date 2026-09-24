@@ -12,7 +12,7 @@ function combatTick() {
     // 歲月流逝：每秒依所在地危險度消耗壽元（觸及底線後停止，見 lifespan.js）
     ageLifespan(1);
 
-    // 出戰靈寵每 60 秒扣維持費（渡劫中同樣計費，付不起自動召回，見 beast-combat.js）
+    // 出戰靈寵每 BEAST_UPKEEP_INTERVAL 秒扣維持費（渡劫中同樣計費，付不起自動召回，見 beast-combat.js）
     tickBeastUpkeep();
 
     if (player.buffTimer > 0) player.buffTimer--;

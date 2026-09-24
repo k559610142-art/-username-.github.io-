@@ -460,7 +460,7 @@ combatTick() 每秒執行 [combat.js]
 
 - 僕從資料結構：`{ id, name, quality, mult, quest, timer }`；`quest` 是任務代號（或 `null` 表示閒置），
   `timer` 是該僕從自己的進度，因此多名僕從可同時跑**不同**任務、互不干擾。
-- 同時派遣上限為 `MAX_ASSIGNED_SERVANTS`(3)；僅在「從閒置變成接任務」時檢查，單純更換任務不受限。
+- 同時派遣上限為 `MAX_ASSIGNED_SERVANTS`(10，2026-09-24 由 3 調高)；僅在「從閒置變成接任務」時檢查，單純更換任務不受限。
 - 完成一次任務所需時間 = `QUEST_REQUIRED_PROGRESS / QUEST_PROGRESS_PER_TICK` = 20 秒（僕從再除以效率 `mult`）
   （舊版 UI 寫「基礎30秒」是錯的，實際是 20 秒；現在由程式自動算出顯示）。
   有 `duration` 的任務為**固定秒數、不受僕從效率影響**（`getQuestRequiredProgress()`/`getQuestSpeed()`）。
@@ -594,10 +594,10 @@ combatTick() 每秒執行 [combat.js]
   青蒼狼 3000 + 30000、九幽蛟龍 5000 + 50000。被動加成（經驗/戰力）只在靈寵**出戰中**（存活且未召回休息）時生效（`hasLiveBeast()` → `isBeastActive()`）。
 - 資料結構：`player.beasts = [{ id, level, exp, alive, active, upkeepTimer, skills }]`，`skills` 為 6 格、存放已選的五行屬性（或 `null`）。
   舊存檔的字串陣列（`['fox', ...]`）由 `migrateProgressionFields()` 轉成 Lv1 靈寵；缺 `active`/`upkeepTimer` 的補成出戰中、計時 0。
-- **維持費（出戰／休息）**：每隻出戰中的靈寵各自計時（`b.upkeepTimer`，隨存檔保存），每滿 `BEAST_UPKEEP_INTERVAL`(60) 秒扣一次，
+- **維持費（出戰／休息）**：每隻出戰中的靈寵各自計時（`b.upkeepTimer`，隨存檔保存），每滿 `BEAST_UPKEEP_INTERVAL`(600 秒＝10 分鐘；2026-09-24 由 60 秒調整) 扣一次，
   費用依**該靈寵的等級**查 `beastUpkeepTiers`：
 
-  | 靈寵等級 | 每 60 秒 |
+  | 靈寵等級 | 每 600 秒 |
   |---|---|
   | Lv1～99 | 2,000 靈石＋50 獸丹 |
   | Lv100～299 | 5,000 靈石＋100 獸丹 |
@@ -1036,7 +1036,7 @@ combatTick() 每秒執行 [combat.js]
 （以 8 種舊存檔形態測試目前程式皆可正常讀取；移除 `#age-display` 即可重現同一錯誤。）
 
 ### 1. 發佈版本號（防止新舊檔案混用）
-- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260924m`）。
+- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260924o`）。
 - **每次推上 GitHub Pages 前，把所有 `?v=` 全部取代成新值**（例：日期＋序號）。新 index.html 會指向新網址的 JS，不會再拿到快取的舊檔。
 - 新增 `data/*.js` 時也要記得帶上 `?v=`。
 
