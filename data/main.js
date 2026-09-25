@@ -13,6 +13,7 @@ function initGame() {
     // 只靠 30 秒自動存檔會遺失最後一段進度（重新開啟時像是「讀檔失敗、進度倒退」）
     document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') saveLocal(); });
     window.addEventListener('pagehide', saveLocal);
+    startLeaderboardSync();   // 天下戰力榜：定時上傳戰力（leaderboard.js，未設定 Firebase 時不動作）
 }
 
 // 由標題畫面的 enterWorld() 呼叫（title-screen.js）
