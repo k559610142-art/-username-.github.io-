@@ -341,6 +341,8 @@ function applySaveData(data) {
     migrateArtifactIds();   // 更新前兌換的神器補上 lingbaoId（artifact.js）
     migrateGearIds();       // 舊裝備依「部位＋五行」對應到圖鑑，數值不變（gear.js）
     migrateGearCodex();     // 持有的圖鑑裝備補記進天磯錄、補齊新欄位（codex.js）
+    migrateStrangeFires();  // 未命名的異火補抽成天下異火（strange-fire.js）
+    if (!Array.isArray(player.partners)) player.partners = [];   // 夥伴（partner.js）
 
     // 換了一份存檔，原本進行中的戰鬥、渡劫、身上狀態都不該延續
     enemies = [];

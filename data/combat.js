@@ -138,6 +138,7 @@ function combatTick() {
             playerAttackTurn(getAllSkills(), enemies, playerTags);
             artifactSkillTurn(enemies, playerTags);   // 神器專屬技能（artifact.js）
             professionSkillTurn(enemies, playerTags); // 職業技能（profession.js）
+            partnerSkillTurn(enemies, playerTags);    // 出戰夥伴絕學（partner.js）
         }
 
         // 存活的靈寵各自判定是否出手協助

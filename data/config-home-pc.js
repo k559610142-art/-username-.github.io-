@@ -30,7 +30,7 @@ const pcStageButtons = [
     { id: 'settings',  kind: 'button', label: '設置',     rect: [18, 668, 64, 84],   action: "openSettingsModal()" },
 
     // ---- 右下按鈕（底部導覽）----
-    { id: 'boost',     kind: 'button', label: '情緣',     rect: [1278, 575, 80, 77],  action: "showUnderConstruction('情緣')" },   // 圖上原字「修煉加速」已改畫成「情緣」
+    { id: 'boost',     kind: 'button', label: '情緣',     rect: [1278, 575, 80, 77],  action: "openPartnerModal()" },   // 圖上原字「修煉加速」已改畫成「情緣」；夥伴系統（partner.js）
     { id: 'mail',      kind: 'button', label: '信件',     rect: [900, 680, 58, 72],   action: "showUnderConstruction('信件')" },
     { id: 'nav-cultivate', kind: 'button', label: '修仙', rect: [985, 680, 57, 72],   action: "switchTab('cultivate')", nav: 'cultivate' },
     { id: 'nav-battle',    kind: 'button', label: '戰鬥', rect: [1080, 680, 58, 72],  action: "switchTab('battle')",    nav: 'battle' },

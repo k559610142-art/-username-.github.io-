@@ -121,6 +121,7 @@ function tribulationTick() {
         playerAttackTurn(getAllSkills(), [heartDemon], tags);
         artifactSkillTurn([heartDemon], tags);   // 神器專屬技能（artifact.js）
         professionSkillTurn([heartDemon], tags); // 職業技能（profession.js）
+        partnerSkillTurn([heartDemon], tags);    // 出戰夥伴絕學（partner.js）
     }
 
     // 靈寵協助（渡劫為一對一，群體技能也只打在心魔身上）

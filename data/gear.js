@@ -125,6 +125,8 @@ function getBonusTotals() {
     add(getSetBonusTotals());
     add(getTitleBonusTotals());
     add(getProfessionPassive());
+    add(getStrangeFireBonusTotals());   // 天下異火收錄加成（strange-fire.js）
+    add(getPartnerBonusTotals());       // 出戰夥伴被動（partner.js）
     return t;
 }
 

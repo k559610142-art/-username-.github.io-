@@ -93,6 +93,10 @@ function renderBag() {
             </div>`);
     }
 
+    // 異火碎片／異火（strange-fire.js）
+    let fireCards = renderStrangeFireCards();
+    if (fireCards) { hasItems = true; parts.push(fireCards); }
+
     [["butianStone", player.butianStones], ["breakPill", player.breakPills]].forEach(([key, count]) => {
         if (!(count > 0)) return;
         hasItems = true;

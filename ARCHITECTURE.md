@@ -28,7 +28,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
   config-*.js         純資料表（原則上不含函式、無副作用），可視為遊戲的「設計數值表」：
                       realms / level / lifespan / maps / sects / lingbao / shop / beasts /
                       servants / equipment / tribulation / quests / activities / daily-quests / elements / merit / bounty / talisman / avatars / home-pc / spells /
-                      gear-catalog / gear / enhance / sets / profession / titles（裝備系統，第 37 節）
+                      gear-catalog / gear / enhance / sets / profession / titles（裝備系統，第 37 節）/ strange-fire（天下異火 50 種，第 38 節）/ partners（情緣夥伴，第 39 節）
                       （config-gear-catalog.js 由 tools/csv-to-js.ps1 自動產生，請改 CSV）
                       （config-realms.js 另含修煉節奏表 realmPacing，經驗門檻與壽元流逝都由它換算，見第 26 節）
                       （config-sects.js 例外：尾端有一段迴圈補上技能倍率，並提供 findSectByName()）
@@ -55,6 +55,8 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
   gear.js             裝備圖鑑 850 種：產生裝備、隨機詞條、特效、套裝、加成彙總、奪寶掉落、舊裝備轉換（第 37 節）
   enhance.js          強化／進化（白金）／分解／星允鐵與碎鐵／暫存區／千寶閣星允鐵（第 37 節）
   profession.js       職業（劍修等 6 種）：主修、熟練度 10 階、被動、職業技能（第 37 節）
+  strange-fire.js     異火碎片與天下異火：取得、隨機合成、收錄加成、秘境減傷、背包卡片、天磯錄「異火」分頁（第 38 節）
+  partner.js          情緣・夥伴：結識、出戰、被動加成、戰鬥絕學、情緣視窗（第 39 節）
   codex.js            天磯錄：收藏紀錄、56 個稱號、器錄／套裝／稱號／職業視窗（第 37 節）
   player-profile.js   玩家道號修改
   save.js             本地存檔/讀檔/匯出入/離線掛機結算＋背景補發（第 33 節）/重置/舊存檔相容
@@ -81,6 +83,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 - `spells.js` 載入時會立即組出 `spellList`，讀取 `config-spells.js` 的常數，所以必須排在 `config-spells.js` 之後。
 - `gear.js` 載入時會立即展開 `gearList`／`gearById`／`gearBySlot`，讀取 `config-gear-catalog.js` 與 `config-equipment.js`（`equipTypes`），所以必須排在兩者之後。
   其餘新檔（`config-gear/enhance/sets/profession/titles.js`、`enhance.js`、`profession.js`、`codex.js`）只宣告常數與函式，排在 `gear.js` 附近即可。
+- `strange-fire.js`、`partner.js` 載入時會建 `strangeFireById`／`partnerById`，必須分別排在 `config-strange-fire.js`、`config-partners.js` 之後。
 
 | # | 檔案 | 責任 | 依賴（讀取哪些全域） | 被誰依賴 / 誰會呼叫它 |
 |---|------|------|----------------------|------------------------|
@@ -110,8 +113,10 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 15i | `config-enhance.js` | 隨機詞條 `GEAR_SUB_COUNT`/`GEAR_SUB_QUALITY_SCALE`/`gearSubAffixes`、強化 `ENHANCE_*`、進化 `EVOLVE_*`、分解 `DECOMPOSE_*`/`SHARDS_PER_IRON`、暫存區 `GEAR_STASH_MAX`、星允鐵來源 `IRON_*` | 無 | `gear.js`、`enhance.js`、`combat.js`/`bounty.js`/`servant.js`(星允鐵) |
 | 15j | `config-sets.js` | `GEAR_SET_MIN_QUALITY`、`gearSets`(30 組：主題＋五行)、`gearSetThemes`(2/4/6 件加成) | 無 | `gear.js`、`codex.js` |
 | 15k | `config-profession.js` | `PROFESSION_SWITCH_COST`、`PROF_MAP_MULT`/`PROF_BOUNTY_GAIN`/`PROF_OFFLINE_RATE`、`PROF_RANK_EXP`/`PROF_WEAPON_BONUS`、`professions`(6 職業：階名、被動、技能) | 無 | `profession.js` |
+| 15m | `config-strange-fire.js` | 異火（第 38 節）：`STRANGE_FIRE_SHARDS_PER_FIRE`(100 片合 1 朵)/`STRANGE_FIRE_REALM_REDUCE`(每朵秘境受傷 -3%)/`STRANGE_FIRE_REALM_REDUCE_MAX`(上限 30%)、品階 `STRANGE_FIRE_TIERS`(weight/color)、`strangeFireItems`(碎片與異火的顯示資料)、`strangeFireList`(50 種：id/name/tier/origin/desc/bonus；檔尾有新增模板) | 無 | `strange-fire.js` |
+| 15n | `config-partners.js` | 夥伴（第 39 節）：`PARTNER_TIERS`(評級門檻與數值建議)、`PARTNER_POWER_LABELS`(六維名稱)、`partnerList`(26 位：出處、世界、巔峰、六維戰力、分析、被動、絕學；檔尾有新增模板) | 無 | `partner.js` |
 | 15l | `config-titles.js` | `titleList`（56 個稱號：條件 cond、加成 bonus） | 無 | `codex.js` |
-| 16 | `state.js` | `player`（含裝備系統 `starIron`/`ironShards`/`gearStash`/`ironShop`/`ironUsed`/`maxEnhance`/`gearCodex`/`titles`/`activeTitle`/`profession`/`profSwitched`/`proficiency`（第 37 節）、`lingbaoSold`、仙法 `spells`/`spellSlots`、渡劫失敗虛弱 `weakened`、頭像 `avatarId`/`unlockedAvatars`、礦石 `ore`、符寶 `talismans`、藏書閣屬性秘典次數 `elementStudy`、轉世保留的上限 `reincarnateBonus`、年齡 `age`、功德系統 `merit`/`butianStones`/`breakPills`/`evilKills`、善惡 `karma`、懸賞榜 `bountyBoard`/`bountyRefreshAt`/`bountyFaction`/`activeBountyId`/`bountyKills`）、`DEFAULT_PLAYER_JSON`（全新角色預設值快照，讀檔/匯入的合併基底）、`enemies`（每隻帶 `attrs`/`status`；野外修士另帶 `cultivator`("正"/"邪")/`ambush`）、`respawnTimer`、`safeZoneTimer`；不存檔的執行期狀態：`inTribulation`/`heartDemon`/`tribulationFatedWin`/懸賞對決 `inBountyDuel`/`duelOpponent`/`duelWeakenTimer`/`duelWeakenMult`/`duelSilenceTimer`/`duelArmorTimer`/丹藥冷卻/`gameOver`/背景補發 `lastTickAt`/`missedTickMs`/`playerStatus`(玩家身上的凍結/燒傷/中毒)/靈寵輔助計時(`petBuff*`/`petShield*`/`petRegen*`) | **`maps`**（必須排在 config-maps.js 之後） | 幾乎所有檔案都會讀寫 `player` |
+| 16 | `state.js` | `player`（含裝備系統 `starIron`/`ironShards`/`gearStash`/`ironShop`/`ironUsed`/`maxEnhance`/`gearCodex`/`titles`/`activeTitle`/`profession`/`profSwitched`/`proficiency`（第 37 節）、`lingbaoSold`、仙法 `spells`/`spellSlots`、渡劫失敗虛弱 `weakened`、頭像 `avatarId`/`unlockedAvatars`、礦石 `ore`、符寶 `talismans`、異火 `fireShards`/`strangeFires`/`fireCollection`（第 38 節）、夥伴 `partners`/`activePartner`（第 39 節）、藏書閣屬性秘典次數 `elementStudy`、轉世保留的上限 `reincarnateBonus`、年齡 `age`、功德系統 `merit`/`butianStones`/`breakPills`/`evilKills`、善惡 `karma`、懸賞榜 `bountyBoard`/`bountyRefreshAt`/`bountyFaction`/`activeBountyId`/`bountyKills`）、`DEFAULT_PLAYER_JSON`（全新角色預設值快照，讀檔/匯入的合併基底）、`enemies`（每隻帶 `attrs`/`status`；野外修士另帶 `cultivator`("正"/"邪")/`ambush`）、`respawnTimer`、`safeZoneTimer`；不存檔的執行期狀態：`inTribulation`/`heartDemon`/`tribulationFatedWin`/懸賞對決 `inBountyDuel`/`duelOpponent`/`duelWeakenTimer`/`duelWeakenMult`/`duelSilenceTimer`/`duelArmorTimer`/丹藥冷卻/`gameOver`/背景補發 `lastTickAt`/`missedTickMs`/`playerStatus`(玩家身上的凍結/燒傷/中毒)/靈寵輔助計時(`petBuff*`/`petShield*`/`petRegen*`) | **`maps`**（必須排在 config-maps.js 之後） | 幾乎所有檔案都會讀寫 `player` |
 | 17 | `stats.js` | `EQUIP_STAT_KEYS`/`BASE_STAT_KEYS`、`getEquipBonus`(四維＋減傷/閃避/屬性傷害；四維 × 強化倍率與主修武器加成，再加 gear.js `getBonusTotals` 的詞條／套裝／稱號／職業)/`getElementCounts`/`getSpiritRoots`(靈根判定)/`getRootBonus`(靈根加成總和)/`getPlayerElement`(本命五行，五行相剋用)/`getRealmStageExp`(依 realmPacing 換算每階經驗基數，有快取)/`getNextExp`/`getLevelExpNeeded`/`hasLiveBeast`(出戰中才算，呼叫 beast-combat.js 的 isBeastActive)/`getBasePower`/`getPhysAttack`/`getMagAttack`(兩者皆乘上懸賞對決的化功 `getDuelWeakenMult()` 與 `getGearPctBonus`)/`getMaxHp`(乘 `getGearPctBonus('hp')`)/`getMaxMp`(兩者皆加上轉世保留值)/`getReincarnateBonus`/`getSectTier`/`getAllSkills` | `player`、`realms`、`sectData`、`LEVEL_*`、`equipTypes`/`WUXING_COUNTERS`、靈寵輔助計時、`bounty.js`(getDuelWeakenMult) | `ui.js`、`combat.js`、`leveling.js`、`tribulation.js`、`beast-combat.js` 等幾乎全部功能檔 |
 | 18 | `elements.js` | `newStatus`/`getPlayerCombatAttrs`(含 `element`；懸賞對決被破甲時減傷／閃避 × `getDuelArmorMult()`；裝備特效的護體／先手盾／定神／破甲／洞察／剋敵／寒徹／焚燼／蝕骨欄位與套裝提高的上限)/`getWuxingCounterMult`/`withSkillEffect`/`getMapCategoryIndex`/`rollMonsterAttrs`/`resolveHit`/`addDotStack`/`tickStatus`/`formatStatus`/`summarizeTags`/`formatEquipStats` | `config-elements.js`、`stats.js`(getEquipBonus/getPlayerElement)、`library.js`(getElementBookBonus)、`wuxingElements`、`maps`、`playerStatus` | `combat.js`、`tribulation.js`、`ui.js`、`bag.js`/`equipment.js`/`auction.js`/`lingbao-shop.js`(裝備屬性文字) |
 | 19 | `ui.js` | 常數 `PLAYER_AVATARS`（頭像 `img`（本地 images/avatar-*.jpg）/裁切位置 `pos`/預設道號，洞府頭像框、戰鬥實況、性別選擇共用；性別選擇視窗的兩張 `<img>` 寫在 index.html，換圖時要一起改）、`updateUI`/`updateCombatVisualPanel`/`formatWuxingCounterTip`/`updateTribulationUI`/`updatePotionCooldownUI`/`updateStudyCountsUI`/`openSkillModal`/`renderSkillList`/`addLog`/`refreshCombatStatusText`/`updateAutoSettings`/`syncAutoSettingsUI`/`updateSectFacilitiesUI`/`closeModal`/`toggleDrawer`/`formatCountdown`/`resolveBatchCount`(×1/×10/最高 共用)/批次刪除工具 `renderBulkDeleteBar`/`getCheckedBulkQualities`/`toggleAllBulkQualities` | `player`、`realms`、`stats.js` 的計算函式、`lifespan.js`(getDeathLifespanCost) | 幾乎所有功能檔在資料變動後都會呼叫 `updateUI()`/`addLog()` |
@@ -136,8 +141,10 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 34b | `talisman.js` | `talismanKey`/`getTalismanType`/`getTalismanGrade`/`getTalismanValue`/`formatTalisman`/`ensureSockets`(橙裝開孔，可重複呼叫)/`getSocketStats`/`formatSockets`/`findEquipById`/`openTalismanModal`/`renderTalismanWorkshop`/`renderSocketCard`/`craftTalisman`/`inlayTalisman`/`removeTalisman` | `config-talisman.js`、`equipTypes`、`player.talismans`/`ore`/`coins`/`equipment`/`equipInventory`、`ui.js`(resolveBatchCount)、`sect.js`(checkSectJoined) | `stats.js`(getEquipBonus 加總符寶)、`equipment.js`/`auction.js`/`lingbao-shop.js`(取得橙裝時 ensureSockets)、`bag.js`/`equipment.js`/`auction.js`(formatSockets 顯示)、`save.js`(migrateEquipSockets)、HTML 符寶坊按鈕 |
 | 34d | `gear.js` | **載入時執行** 展開 `gearList`/`gearById`/`gearBySlot`；`getGearDef`/`getQualityObj`/`getCraftChannel`/`pickGearDef`/`buildGearStats`/`createGearEquip`（鍛造、千寶閣、奪寶共用）、隨機詞條 `rollGearSubs`/`formatGearSubs`/`getGearSubTotals`、加成彙總 `getBonusTotals`（詞條＋套裝＋稱號＋職業）/`getGearPctBonus`、套裝 `getEquippedSetCounts`/`resolveSetTier`/`getSetBonusTotals`/`formatSetInfo`/`hasSetSpecial`、強化倍率 `getEnhanceMult`/`getEquipEffectiveStats`、奪寶 `tryLootDrop`、顯示 `getEquipDisplayName`/`formatEquipTitle`/`formatEquipDetails`/`formatGearSubline`/`describeGearEffect`/`formatGearEffect`、特效 `getGearEffects`/`gearFx`、每波狀態 `gearWaveRound`/`gearFirstStrikeUsed`/`gearUndyingUsed`/`gearDodgeStrikeReady`/`resetGearWave`、戰鬥 `getGearHitMult`/`applyGearHitChain`/`applyGearDefense`/`applyGearRegen`/`tryGearUndying`、舊存檔 `migrateGearIds` | `config-gear*.js`、`config-enhance.js`、`config-sets.js`、`equipTypes`/`equipQualities`/`EQUIP_LEVELS`、`lingbaoShopItems`、`talisman.js`(ensureSockets)、`codex.js`、`profession.js`、`enhance.js`(receiveLootEquip) | `equipment.js`/`auction.js`(產生裝備)、`stats.js`/`elements.js`/`combat.js`/`tribulation.js`/`bounty.js`(加成與特效)、`bag.js`/`equipment.js`/`auction.js`/`talisman.js`(卡片)、`save.js` |
 | 34e | `enhance.js` | `randInt`、星允鐵 `addStarIron`/`addIronShards`、`locateEquip`/`removeLocatedEquip`、強化 `getEnhanceInfo`/`canEvolve`/`enhanceEquipId`/`openEnhanceModal`/`renderEnhanceModal`/`getEvolveStatRatio`/`enhanceEquip`/`promptEvolveEquip`(+20 系統通知)/`evolveEquip(skipConfirm)`、分解 `getDecomposeYield`/`formatDecomposeYield`/`decomposeEquip`/`bulkDecomposeEquipment`、暫存區 `isGearStashFull`/`receiveLootEquip`/`enforceGearStashLimit`/`moveStashToBag`/`deleteStashEquip`/`renderStashSection`、`refreshEquipViews`、千寶閣 `getIronShopState`/`renderIronShopSection`/`buyStarIron`/`rollIronBagItem` | `config-enhance.js`、`gear.js`、`codex.js`(checkTitleUnlocks、稱號強化成功率)、`map.js`(changeMap)、`ui.js` | `bag.js`/`equipment.js`(按鈕與暫存區)、`auction.js`、`combat.js`/`bounty.js`/`servant.js`(星允鐵)、`map.js`/`save.js`(暫存區滿) |
+| 34h | `strange-fire.js` | 異火（第 38 節）：**載入時**建 `strangeFireById`；`addFireShards(n, source)`(取得碎片，供未來秘境掉落呼叫)/`rollStrangeFire`/`gainStrangeFire`/`craftStrangeFire(qty)`(合成，數字或 'max')/`getStrangeFireRealmReduction`(秘境受傷減免比例)/`getStrangeFireBonusTotals`(收錄加成)/`countCollectedFires`/`migrateStrangeFires`(舊存檔)/`renderStrangeFireCards`(背包卡片)/`renderCodexFires`(天磯錄分頁) | `config-strange-fire.js`、`player.fireShards`/`strangeFires`/`fireCollection`、`codex.js`(describeTitleBonus、openCodexModal)、`ui.js` | `bag.js`(renderBag)、`gear.js`(getBonusTotals)、`codex.js`(異火分頁、頂端統計)、`save.js`(applySaveData)；未來秘境（掉落、受擊減傷） |
+| 34i | `partner.js` | 夥伴（第 39 節）：**載入時**建 `partnerById`；`getPartnerPowerAvg`/`getPartnerTier`/`isPartnerMet`/`meetPartner(id, source)`(供未來秘境呼叫)/`getActivePartner`/`setActivePartner`/`getPartnerBonusTotals`/`partnerSkillTurn`、視窗 `partnerFilter`/`openPartnerModal`/`setPartnerFilter`/`formatPartnerOrigin`/`renderPartnerCard`/`renderPartnerModal` | `config-partners.js`、`player.partners`/`activePartner`、`artifact.js`(castProcSkill)、`codex.js`(describeTitleBonus)、`ui.js` | `gear.js`(getBonusTotals)、`combat.js`/`tribulation.js`/`bounty.js`(出手後 partnerSkillTurn)、HTML 手機「情緣」導覽、`config-home-pc.js`(PC 情緣按鈕) |
 | 34f | `profession.js` | `getProfession`/`getProfRank`/`getProfRankName`/`getProfessionPassive`/`getProfWeaponMult`/`gainProficiency`/`gainKillProficiency`/`professionSkillTurn`/`formatProfessionTag`/`chooseProfession`/`renderProfessionTab` | `config-profession.js`、`artifact.js`(castProcSkill)、`elements.js`(getMapCategoryIndex)、`codex.js` | `stats.js`(主修武器加成)、`gear.js`(被動)、`combat.js`/`tribulation.js`/`bounty.js`(職業技能、熟練度)、`save.js`(離線熟練度)、`codex.js` |
-| 34g | `codex.js` | 收藏 `recordGearCollected`/`migrateGearCodex`/`hasCollected`/`getOpenGear`/`countCollected`/`countCollectedQuality`、稱號 `getTitleName`/`isTitleConditionMet`/`describeTitleCondition`/`describeTitleBonus`/`getTitleBonusTotals`/`checkTitleUnlocks`/`getNameTag`/`setActiveTitle`、視窗 `codexTab`/`codexSlot`/`openCodexModal`/`setCodexTab`/`setCodexSlot`/`renderCodexModal`/`CODEX_QUALITIES`/`renderCodexGear`/`renderCodexSets`/`renderCodexTitles` | `config-titles.js`、`gear.js`、`profession.js`、`merit.js`(getKarmaState)、`stats.js`(getSectTier) | `gear.js`(收藏、稱號加成)、`enhance.js`、`profession.js`、`ui.js`(updateUI 每秒 checkTitleUnlocks)、`home-ui.js`(道號旁標籤)、`save.js`、HTML 天磯錄熱點 |
+| 34g | `codex.js` | 收藏 `recordGearCollected`/`migrateGearCodex`/`hasCollected`/`getOpenGear`/`countCollected`/`countCollectedQuality`、稱號 `getTitleName`/`isTitleConditionMet`/`describeTitleCondition`/`describeTitleBonus`/`getTitleBonusTotals`/`checkTitleUnlocks`/`getNameTag`/`setActiveTitle`、視窗 `codexTab`/`codexSlot`/`openCodexModal`/`setCodexTab`/`setCodexSlot`/`renderCodexModal`/`CODEX_QUALITIES`/`renderCodexGear`/`renderCodexSets`/`renderCodexTitles`（異火分頁在 strange-fire.js） | `config-titles.js`、`gear.js`、`profession.js`、`strange-fire.js`(renderCodexFires/countCollectedFires)、`merit.js`(getKarmaState)、`stats.js`(getSectTier) | `gear.js`(收藏、稱號加成)、`enhance.js`、`profession.js`、`ui.js`(updateUI 每秒 checkTitleUnlocks)、`home-ui.js`(道號旁標籤)、`save.js`、HTML 天磯錄熱點 |
 | 35 | `field.js` | `herbRecipes`、`openFieldModal`/`plantHerb` | `player.spiritGrass`/`player.herbs`/`player.coins`、`ui.js`(resolveBatchCount) | HTML 按鈕（僅在「宗門」顯示） |
 | 36 | `beast-combat.js` | `createBeast`/`getBeastName`/`isBeastActive`(存活且出戰中)/維持費 `getBeastUpkeep`/`payBeastUpkeep`/`restBeastForUpkeep`/`tickBeastUpkeep`/`settleOfflineBeastUpkeep`/`getBeastSkill`/`describeBeastSkill`/`gainBeastExp`/`killAllBeasts`/`applyPetDamageReduction`/`petAssistTick` | `beastData`、`beastSkillTree`、`beastUpkeepTiers`/`BEAST_UPKEEP_INTERVAL`、`player.beasts`/`level`/`coins`/`beastCore`、`stats.js`(getLevelExpNeeded/getPhysAttack)、`beast.js`(renderBeasts，靈獸園開著時重繪) | `leveling.js`(gainExp)、`combat.js`(每秒 tickBeastUpkeep)/`tribulation.js`(每回合)、`lifespan.js`(死亡)、`stats.js`(hasLiveBeast)、`beast.js`、`save.js`(離線維持費) |
 | 36a | `spells.js` | **載入時執行** IIFE 組出 `spellList`(200 招)/`spellById`；`getSpell`/`isSpellLearned`/`getSpellSlotCount`/`getEquippedSpells`/`getSpellAuraBonus`(被動光環加總)/`spellToCombatSkill`/`getSpellTypeLabel`/`describeSpell`、密典 `spellFilter`/`spellSelectedId`/`openSpellModal`/`setSpellFilter`/`selectSpell`/`renderSpellModal`/`equipSpell`/`unequipSpell` | `config-spells.js`（**必須排在它之後**）、`player.spells`/`spellSlots`/`level`、`ui.js`(addLog/updateUI) | `stats.js`(getPhysAttack/getMagAttack/getMaxHp/getMaxMp 乘光環、getAllSkills 加技能格仙法)、`elements.js`(getPlayerCombatAttrs 加光環)、HTML 密典按鈕 |
@@ -241,7 +248,9 @@ combatTick() 每秒執行 [combat.js]
 | `buyBreakPill`（千寶閣珍貴物資區，動態產生；舊的 `exchangeMeritForStone` 已移除，功德改為自動凝結）、`openEvilHallScene`（經由 `openActivity('evil')`，開殺手殿堂場景）、`openEvilHuntModal`（場景中央「殺手殿堂」匾額）、`closeEvilHallScene`（場景「↩ 離開」） | `data/merit.js` |
 | `enterWorld` | `data/title-screen.js` |
 | `retryLoadAfterFailure`, `showRawSaveForCopy`, `abandonSaveAndStartNew`（讀檔失敗視窗） | `data/save.js` |
-| `switchTab`（手機洞府左側「任務」= `switchTab('task')`）, `openWorldTab`（手機／PC 的「世界」導覽：切到世界分頁並跳出修仙地圖）, `openAscensionPlatform`, `showUnderConstruction`（洞府主畫面；手機與 PC 的「情緣」也是它）, `openSystemModal`（命運與系統彈窗：手機丹藥堂上方齒輪、設定視窗內按鈕） | `data/home-ui.js` |
+| `switchTab`（手機洞府左側「任務」= `switchTab('task')`）, `openWorldTab`（手機／PC 的「世界」導覽：切到世界分頁並跳出修仙地圖）, `openAscensionPlatform`, `showUnderConstruction`（洞府主畫面尚未實作的按鈕）, `openSystemModal`（命運與系統彈窗：手機丹藥堂上方齒輪、設定視窗內按鈕） | `data/home-ui.js` |
+| `openPartnerModal`（手機與 PC 的「情緣」）、`setPartnerFilter(f)`、`setActivePartner(id)`（情緣視窗內） | `data/partner.js` |
+| `craftStrangeFire(qty)`（背包異火碎片卡片）、`openCodexModal('fires')`（背包異火卡片「查看異火榜」） | `data/strange-fire.js`／`data/codex.js` |
 | PC 版洞府的所有按鈕與建築熱點（onclick 字串寫在 `config-home-pc.js` 的 `pcStageButtons[].action`，改名函式時要一起改） | 各功能檔 |
 | `openSettingsModal`（洞府右上 ⚙️、PC 版「設置」）、`setDisplayMode(mode)`、`toggleFullscreen`（後兩者由 `renderSettingsModal()` 動態產生） | `data/settings.js` |
 | `openSpellModal`（修仙分頁「📜 武學密典」）、`setSpellFilter`/`selectSpell`/`equipSpell`/`unequipSpell`（密典內動態產生） | `data/spells.js` |
@@ -1145,7 +1154,7 @@ combatTick() 每秒執行 [combat.js]
 （以 8 種舊存檔形態測試目前程式皆可正常讀取；移除 `#age-display` 即可重現同一錯誤。）
 
 ### 1. 發佈版本號（防止新舊檔案混用）
-- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260926e`）。
+- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260926i`）。
 - **每次推上 GitHub Pages 前，把所有 `?v=` 全部取代成新值**（例：日期＋序號）。新 index.html 會指向新網址的 JS，不會再拿到快取的舊檔。
 - 新增 `data/*.js` 時也要記得帶上 `?v=`。
 
@@ -1201,7 +1210,7 @@ combatTick() 每秒執行 [combat.js]
 | 側邊「丹藥堂」（圖上原字「特惠商城」，2026-09-25 改名） | 右側 | `openShopModal()`（丹藥堂）。按鈕內的 `.nav-label-cover.stage-label-cover` 以深色圓角底＋楷體字蓋掉圖上的字（蓋字區比按鈕寬，向兩側延伸）。PC 版圖上沒有這顆按鈕 |
 | 側邊齒輪「系統」`#stage-gear-btn`（2026-09-25 新增） | 右側、丹藥堂正上方 (615,1073) 62×62 | **圖上沒有，程式畫的**：深底金框圓鈕＋⚙️，下方 `.stage-label-cover` 寫「系統」。點擊 `openSystemModal()` 開啟 `#system-modal`（命運與系統：存檔管理＋命運抉擇兩個抽屜）。`#system-modal` 在 DOM 中排在 `#save-code-modal` 之前，匯出／匯入存檔視窗才會疊在上面 |
 | 側邊「郵件」「充值」 | 左／右 | 遊戲沒有對應功能 → `showUnderConstruction()` 顯示「興建中」 |
-| 底部導覽 | 修仙／戰鬥／洞府／**情緣**／世界 | 修仙、戰鬥、洞府為 `switchTab()`；選中的按鈕有金色光暈（`.nav-btn.active`）。<br>**情緣**：圖上原字「宗門」用 `.nav-label-cover`（深色底＋楷體字，位置相對於按鈕）蓋掉改寫，點擊 `showUnderConstruction('情緣')`，沒有 `data-nav`。宗門分頁改由洞府的「宗門」山門熱點進入。<br>**世界**：`openWorldTab()` = 切到世界分頁並跳出修仙地圖彈窗 |
+| 底部導覽 | 修仙／戰鬥／洞府／**情緣**／世界 | 修仙、戰鬥、洞府為 `switchTab()`；選中的按鈕有金色光暈（`.nav-btn.active`）。<br>**情緣**：圖上原字「宗門」用 `.nav-label-cover`（深色底＋楷體字，位置相對於按鈕）蓋掉改寫，點擊 `openPartnerModal()`（情緣・夥伴，第 39 節），沒有 `data-nav`。宗門分頁改由洞府的「宗門」山門熱點進入。<br>**世界**：`openWorldTab()` = 切到世界分頁並跳出修仙地圖彈窗 |
 
 ### 分頁（底部導覽）
 - `switchTab(tab)` 設定 `body[data-tab]`：`home`（洞府）只顯示背景與熱點；其他分頁在 `#tab-sheet`（圖上 y 212～1372 之間）顯示面板。
@@ -1348,7 +1357,7 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
   | 湖中光環（「千寶閣」，舊名領物閣） | `openActivity('auction')` |
   | 寶塔右側尖峰（「天磯錄」，2026-09-26） | `openCodexModal()`，圖上 (760,160) 120×130 |
   | 左側 信件／背包／設置 | 興建中／`openBagModal()`／`openSettingsModal()` |
-  | 右下 **情緣**（圖上原字「修煉加速」，已改畫）／信件 | `showUnderConstruction('情緣')`／興建中 |
+  | 右下 **情緣**（圖上原字「修煉加速」，已改畫）／信件 | `openPartnerModal()`（第 39 節）／興建中 |
   | 右下 修仕／戰鬥／洞府／**世界**（圖上原字「福袋」，已改畫） | 修仙／戰鬥／洞府（關閉面板）／`openWorldTab()`：切到世界分頁並跳出修仙地圖（與手機版相同） |
 
 - **分頁面板**：位置在 `PC_SHEET_RECT`（圖上 (300,40) 845×625，避開左上 HUD、右上狀態框與底部按鈕），
@@ -1520,7 +1529,7 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
 - 聚財只影響線上野外靈石；離線不套用。
 
 ### 加成彙總 `getBonusTotals()`（gear.js）
-隨機詞條＋套裝＋稱號＋職業被動全部用同一組 key 加總，各處只讀這一個函式：
+隨機詞條＋套裝＋稱號＋職業被動＋天下異火收錄（第 38 節）＋出戰夥伴被動（第 39 節）全部用同一組 key 加總，各處只讀這一個函式：
 `statPct/strPct…` 四維 %（`getEquipBonus` 以「本身＋裝備」總量計）、`atkPct/physPct/magPct/hpPct`（`getGearPctBonus` → stats.js）、
 `def/eva/…` 百分點、`cap:屬性` 上限、`fx:特效名`（併入 `getGearEffects`，不受特效上限）、`elemDmg:五行`、`elemBoost:屬性`、`enhanceChance`、`special:名稱`。
 
@@ -1561,7 +1570,8 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
 
 ### 天磯錄（`codex.js`，入口：洞府寶塔右側山峰，手機熱點與 PC `pcStageButtons` 的 `codex`）
 - 收藏以「種」計：`player.gearCodex[gearId]` 記錄取得過的品級；取得任何圖鑑裝備時由 `createGearEquip`／進化呼叫 `recordGearCollected`，舊存檔讀檔時 `migrateGearCodex` 補記。
-- 分頁：器錄（依部位，未取得顯示「？？？」＋ 6 顆品級星）、套裝、稱號、職業。
+- 分頁：器錄（依部位，未取得顯示「？？？」＋ 6 顆品級星）、套裝、**異火**（天下異火榜，`strange-fire.js` 的 `renderCodexFires`，第 38 節）、稱號、職業。
+- `describeTitleBonus()` 是稱號、異火、夥伴共用的加成文字函式；新增 bonus key 時要在它的 `labels` 補上中文名。
 - **稱號** 56 個（`config-titles.js`：收藏 8、分類部位 9、五行 5、品級強化 9、境界 10、宗門職位 6、其他 3、帝級職業 6）。
   `updateUI()` 每秒 `checkTitleUnlocks()`；加成永久生效、全部疊加（`getTitleBonusTotals`）；可選一個顯示在道號旁（`player.activeTitle`，`'prof'` = 顯示職業階級，`getNameTag` → HUD `#hud-title`/`#pc-hud-title`）。
   「全收」類條件一律不含尚未開放的秘境裝備。宗門職位稱號名稱帶目前宗門（`{sect}`），加成用「技能傷害」（遊戲沒有區分宗門技能）。
@@ -1576,3 +1586,53 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
 - 17 格穿滿帶特效的橙裝在野外跑 200 回合：追擊、橫掃、反震、閃擊反擊、回復、套裝之怒、職業技能皆有觸發，無錯誤。
 - 強化到 +20 → 進化白金（四維 ×1.5、4 條詞條）；稱號自動解鎖；背包滿時奪寶 → 碎鐵／暫存區，暫存區滿被送回宗門且不能進野外。
 - 舊存檔（無新欄位、無 gearId）讀檔正常；懸賞對決、渡劫、離線結算皆無錯誤。
+## 38. 異火碎片與天下異火（`config-strange-fire.js`、`strange-fire.js`；2026-09-26）
+
+- **取得碎片**：異火碎片預定由**秘境**掉落。秘境尚未開放（第 37 節 `realm` 管道 `locked: true`），目前遊戲內沒有取得管道。
+  秘境實作時，掉落處呼叫 `addFireShards(數量, "來源文字")`（有來源文字時會寫日誌）。
+- **合成**：背包的異火碎片卡片有「合成 ×1／合成 最高」按鈕 → `craftStrangeFire(qty)`，每 `STRANGE_FIRE_SHARDS_PER_FIRE`(100) 片合成 1 朵，
+  **隨機抽一種天下異火**（`rollStrangeFire`）：先依 `STRANGE_FIRE_TIERS` 的 weight 抽品階，再從該品階平均抽一種。
+
+  | 品階 | 種數 | 機率 | 單種加成量級 |
+  |---|---|---|---|
+  | 帝焰 | 2 | 1.5% | 攻擊／術法 +5% 級 |
+  | 神焰 | 6 | 6.5% | 3～4% 級 |
+  | 天焰 | 10 | 14% | 1.5～3% 級 |
+  | 地焰 | 14 | 28% | 1～2% 級 |
+  | 靈焰 | 18 | 50% | 0.5～1% 級 |
+
+- **兩種效果，計算方式不同**：
+  1. **秘境減傷**看「總朵數」`player.strangeFires`（含重複）：每朵 `STRANGE_FIRE_REALM_REDUCE`(3%)，上限 `STRANGE_FIRE_REALM_REDUCE_MAX`(30%)，`getStrangeFireRealmReduction()`。
+     ⚠️ **秘境尚未實作，所以減傷目前還沒有生效**。實作秘境時，秘境裡玩家受到的傷害要乘上 `(1 - getStrangeFireRealmReduction())`，只在秘境生效。
+  2. **永久加成**看「收錄種類」`player.fireCollection`：每種收錄後加成一次，重複取得不疊加（`getStrangeFireBonusTotals`，併入 `gear.js` 的 `getBonusTotals`）。
+     50 種全收的總量：攻擊 +11%、術法攻擊 +8.5%、物理攻擊 +5%、四維 +4.5%、氣血 +8%，外加各屬性傷害與特效。
+- **收錄榜**：天磯錄「🔥 異火」分頁（`renderCodexFires`）依品階列出，未收錄顯示「？？？」＋出處＋加成（讓玩家知道在收什麼）；天磯錄頂端統計也列出異火收錄數。
+- **存檔**：`player.fireShards`、`player.strangeFires`、`player.fireCollection`（`state.js`）。轉世不會重置。
+  `migrateStrangeFires()`（`save.js` 讀檔時）：舊版合成的「未命名」異火（總朵數 > 收錄次數合計），差額補抽成具名異火。
+- **資料**：`strangeFireList` 的 `id`（f01～f50）寫進存檔，**上線後不可改 id、不可刪**；名稱、描述、加成可改。檔尾有新增模板。
+  bonus key 與稱號相同（見 `config-titles.js` 開頭），新 key 要在 `codex.js` 的 `describeTitleBonus` 補中文名。
+- **顯示**：背包（`renderStrangeFireCards()`，兩者皆為 0 時不顯示；異火卡片有「查看異火榜」按鈕 → `openCodexModal('fires')`）。
+- 載入順序：`config-strange-fire.js` 放在 `config-spells.js` 之後、`strange-fire.js` 放在 `talisman.js` 之後。`strange-fire.js` 載入時會建 `strangeFireById`（只讀同組設定檔），其餘沒有順序限制。
+
+## 39. 情緣・諸天夥伴（`config-partners.js`、`partner.js`；2026-09-26）
+
+- **入口**：洞府底部導覽「情緣」（手機 `index.html` 的 nav 按鈕、PC `config-home-pc.js` 的 `boost` 按鈕）→ `openPartnerModal()`，視窗 `#partner-modal`。
+- **人物**：26 位名動諸天的高手，每位都標註來歷：
+  - `native: true`（本界人物，出自《凡人修仙傳》）：
+    - 「亂星海第一大善人」風希（id `dashanren`）：九級化形妖獸裂風獸，反派，評級尊者。
+    - 厲飛雨（id `lifeiyu`）：死後輪迴，於靈界轉世為魔界天煞聖皇石空徹（石穿空之父），戰力以轉世後計，評級尊者。
+    （2026-09-26 依玩家提供的原著設定修正；id 不變，舊存檔不受影響）
+  - 羅峰（id `luofeng`）：稱號由「時間領主」改為「渾源領主」（人稱羅城主），戰力以渾源領主時期計，綜合 97.7，為目前最高（2026-09-26 玩家修正）。
+  - 其餘皆為 **🌌 域外神明**，卡片寫「來自《作品》（作者）的某世界」：蕭炎、林動、牧塵（天蠶土豆）、辰南、葉凡、狠人大帝、無始大帝、段德、鬥戰聖皇、虛空大帝、恆宇大帝、青帝、西皇母、阿彌陀佛大帝、石昊（辰東）、唐三（唐家三少）、羅峰、秦羽、林雷（我吃西紅柿）、王林、孟浩、白小純（耳根）、張小凡（蕭鼎）、李七夜（厭筆蕭生）。
+- **戰力分析**：六維 0～100（攻伐、防禦、身法、神通、底蘊、成長），**平均值**決定評級（`PARTNER_TIERS`：至高 ≥95、帝境 ≥90、尊者 ≥82、天驕），卡片顯示長條圖、綜合戰力、巔峰境界與文字分析。
+  視窗註明「戰力分析與評級為本遊戲設定，僅供娛樂」。分析文字為自行撰寫的概述，不引用原著原文。
+- **取得**：預定於**秘境**相遇結識（秘境尚未開放，目前沒有取得管道）。秘境實作時呼叫 `meetPartner(id, "來源文字")`，重複結識回傳 false。
+  未結識的夥伴仍完整顯示資料，按鈕為「未結識・秘境中有緣相遇」。
+- **出戰**：同時只能一位（`player.activePartner`，`setActivePartner` 切換出戰／休息）。
+  - 被動：`passive` 併入 `gear.js` 的 `getBonusTotals`（`getPartnerBonusTotals`），只有出戰中的夥伴生效。
+  - 招牌絕學：玩家每回合出手後 `partnerSkillTurn(targets, tags)` 依 `skill.chance` 發動，由 `artifact.js` 的 `castProcSkill` 執行（欄位同神器技能），**傷害以主人的攻擊力為基準**。
+    野外（`combat.js`）、渡劫（`tribulation.js`）、懸賞對決（`bounty.js`，封印擋不住）都會觸發；被凍結的回合不會發動（在玩家出手的分支內）。
+  - 數值平衡：依評級（至高 18%・×3.0／帝境 17%・×2.6／尊者 16%・×2.2／天驕 15%・×1.8 左右；群體技倍率較低、附帶效果的倍率也較低），與神器技能同一量級。
+- **存檔**：`player.partners`（已結識 id 陣列）、`player.activePartner`（`state.js`）。轉世不會重置。讀檔時 `save.js` 確保 `partners` 是陣列。
+- **新增夥伴**：照 `config-partners.js` 檔尾的模板複製一段；`id` 寫進存檔，上線後不可改。評級由六維平均自動算出，被動與絕學請對照 `PARTNER_TIERS` 的 `hint` 維持平衡。
+- 載入順序：`config-partners.js` 在 `config-strange-fire.js` 之後、`partner.js` 在 `strange-fire.js` 之後。`partner.js` 載入時會建 `partnerById`（只讀 `partnerList`）。

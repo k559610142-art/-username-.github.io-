@@ -223,6 +223,7 @@ function bountyDuelTick() {
         playerAttackTurn(duelSilenceTimer > 0 ? [] : getAllSkills(), [opp], tags);
         artifactSkillTurn([opp], tags);   // 神器專屬技能：屬於法寶，封印擋不住（artifact.js）
         professionSkillTurn([opp], tags); // 職業技能（profession.js）
+        partnerSkillTurn([opp], tags);    // 出戰夥伴絕學（partner.js）：夥伴不受封印影響
     }
     // 負面狀態以「你的回合」計算持續時間
     if (duelWeakenTimer > 0) duelWeakenTimer--;

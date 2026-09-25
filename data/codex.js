@@ -87,9 +87,14 @@ function describeTitleCondition(c) {
 }
 
 function describeTitleBonus(bonus) {
+    // 稱號、天下異火（strange-fire.js）、夥伴（partner.js）共用
     let labels = { statPct: '四維', atkPct: '攻擊', hpPct: '氣血', sprPct: '靈力', def: '減傷', eva: '閃避', enhanceChance: '強化成功率',
+                   physPct: '物理攻擊', magPct: '術法攻擊', strPct: '力量', conPct: '體質', intPct: '悟性', chaPct: '魅力',
                    ice: '冰傷', fire: '火傷', poison: '毒傷', metal: '金傷', thunder: '雷傷',
-                   'fx:聚財': '野外靈石', 'fx:悟道': '修為', 'fx:積德': '功德', 'fx:法爆': '技能傷害' };
+                   'fx:聚財': '野外靈石', 'fx:悟道': '修為', 'fx:積德': '功德', 'fx:法爆': '技能傷害',
+                   'fx:焚燼': '燒傷傷害', 'fx:蝕骨': '中毒傷害', 'fx:回春': '每回合回復氣血', 'fx:回靈': '每回合回復靈力',
+                   'fx:吸血': '吸血', 'fx:丹心': '丹藥回復量', 'fx:獸魂': '靈寵傷害', 'fx:追擊': '追擊機率', 'fx:疾風': '再動機率',
+                   'fx:斬殺': '斬殺傷害', 'fx:延壽': '戰死折壽減免', 'fx:剋敵': '五行剋制傷害', 'fx:首擊': '首擊傷害' };
     return Object.keys(bonus).map(k => {
         let v = bonus[k];
         let label = labels[k] || (k.startsWith('elemDmg:') ? `本命五行為${k.slice(8)}時傷害` : k);
@@ -148,16 +153,17 @@ function setCodexSlot(slot) { codexSlot = slot; renderCodexModal(); }
 function renderCodexModal() {
     let box = document.getElementById('codex-container');
     if (!box || document.getElementById('codex-modal').style.display !== 'flex') return;
-    let tabs = [['gear', '📜 器錄'], ['sets', '❖ 套裝'], ['titles', '🏅 稱號'], ['prof', '⚔️ 職業']]
+    let tabs = [['gear', '📜 器錄'], ['sets', '❖ 套裝'], ['fires', '🔥 異火'], ['titles', '🏅 稱號'], ['prof', '⚔️ 職業']]
         .map(([k, label]) => `<button class="codex-tab${codexTab === k ? ' active' : ''}" onclick="setCodexTab('${k}')">${label}</button>`).join('');
     let body = codexTab === 'sets' ? renderCodexSets()
+             : codexTab === 'fires' ? renderCodexFires()   // strange-fire.js
              : codexTab === 'titles' ? renderCodexTitles()
              : codexTab === 'prof' ? renderProfessionTab()
              : renderCodexGear();
     box.innerHTML = `
         <p style="text-align: center; color: #9ca3af; font-size: 0.85em; margin: 0 0 8px;">
             收藏 <b style="color: var(--accent);">${countCollected()}</b> / ${gearList.length} 種（秘境 ${gearList.length - getOpenGear().length} 種尚未開放）｜
-            紫 ${countCollectedQuality('紫色')}｜橙 ${countCollectedQuality('橙色')}｜<span class="quality-白金">白金 ${countCollectedQuality(PLATINUM_QUALITY.name)}</span>｜稱號 ${(player.titles || []).length} / ${titleList.length}
+            紫 ${countCollectedQuality('紫色')}｜橙 ${countCollectedQuality('橙色')}｜<span class="quality-白金">白金 ${countCollectedQuality(PLATINUM_QUALITY.name)}</span>｜異火 ${countCollectedFires()} / ${strangeFireList.length}｜稱號 ${(player.titles || []).length} / ${titleList.length}
         </p>
         <div class="codex-tabs">${tabs}</div>
         ${body}`;

@@ -25,6 +25,11 @@ let player = {
     spiritGrass: 0, beastCore: 0, martialPoints: 0,
     ore: 0,                      // 礦石：礦脈採礦（傳說僕從）取得，用於符寶坊煉製符寶
     talismans: {},               // 持有的符寶 { "種類_品階": 數量 }（talisman.js）
+    fireShards: 0,               // 異火碎片：未來秘境掉落，每 STRANGE_FIRE_SHARDS_PER_FIRE 片合成 1 朵異火（strange-fire.js）
+    strangeFires: 0,             // 異火總朵數（含重複）：降低秘境中受到的傷害
+    fireCollection: {},          // 天下異火收錄 { 異火 id: 取得次數 }，每種永久加成一次（config-strange-fire.js）
+    partners: [],                // 已結識的夥伴 id（情緣系統，partner.js）
+    activePartner: null,         // 出戰中的夥伴 id
     // 裝備系統（第 37 節）
     starIron: 0,                 // 星允鐵：強化／進化用（enhance.js）
     ironShards: 0,               // 碎鐵：分解白～紫取得，每 SHARDS_PER_IRON 個自動合成 1 顆星允鐵
