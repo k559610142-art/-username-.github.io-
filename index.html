@@ -753,7 +753,7 @@
         #pc-stage { display: none; position: relative; flex: none; overflow: hidden; --u: 0.93px; font-size: calc(var(--u) * 14); }
         body.layout-pc #pc-stage { display: block; }
         body.layout-pc #app-stage { display: none; }
-        body.layout-pc::before { background-image: url("images/home-bg-pc.jpg?v=20260926l"); }
+        body.layout-pc::before { background-image: url("images/home-bg-pc.jpg?v=20260926m"); }
         #pc-stage-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: fill; user-select: none; pointer-events: none; }
         #pc-hud-avatar {
             position: absolute; left: 1.890%; top: 3.255%; width: 7.558%; height: 13.542%;
@@ -997,7 +997,7 @@
     <div id="home-hotspots">
         <button class="hotspot" style="left:33.38%; top:21.71%; width:23.44%; height:15.13%;" onclick="openAscensionPlatform()"><span id="plaque-ascend" class="plaque plaque-left">升仙台</span></button>
         <button class="hotspot" style="left:51.14%; top:43.75%; width:15.63%; height:7.57%;" onclick="openActivity('auction')"><span class="plaque plaque-right">千寶閣</span></button>
-        <button class="hotspot" style="left:21.31%; top:50.99%; width:24.86%; height:12.17%;" onclick="switchTab('sect')"><span class="plaque plaque-left">宗門</span></button>
+        <button class="hotspot" style="left:21.31%; top:50.99%; width:24.86%; height:12.17%;" onclick="returnToSect()"><span class="plaque plaque-left">宗門</span></button>
         <button class="hotspot" style="left:66.76%; top:54.93%; width:19.89%; height:6.58%;" onclick="openServantModal()"><span class="plaque plaque-top">僕從小屋</span></button>
         <!-- 天磯錄：寶塔右側尖峰（圖上約 430,300～570,470），codex.js -->
         <button class="hotspot" style="left:61.08%; top:19.74%; width:19.89%; height:11.18%;" onclick="openCodexModal()"><span class="plaque plaque-right">天磯錄</span></button>
@@ -1202,7 +1202,7 @@
      按鈕與建築熱點由 home-ui.js 的 renderPcStage() 依 config-home-pc.js 產生；分頁面板 #tab-sheet 在 PC 版時搬進這裡。
      id 一律是手機版的 hud-xxx 加上 pc- 前綴，updateHomeHud() 同時寫入兩邊。 -->
 <div id="pc-stage">
-    <img id="pc-stage-bg" src="images/home-bg-pc.jpg?v=20260926l" alt="">
+    <img id="pc-stage-bg" src="images/home-bg-pc.jpg?v=20260926m" alt="">
     <img id="pc-hud-avatar" alt="更換頭像" title="點擊更換頭像" onclick="openAvatarModal()">
     <img id="pc-hud-avatar-frame" alt="">
     <div id="pc-hud-name">
@@ -1329,7 +1329,7 @@
     <div class="modal-content" style="border-color: var(--accent); text-align: center; max-width: 480px;">
         <h2 style="color: var(--accent); margin-top: 0;">🗺️ 修仙地圖</h2>
         <p id="world-map-current" style="color: #9ca3af; font-size: 0.88em;"></p>
-        <button class="sys-btn" onclick="openMapCategoryModal(0)">📍 第一區：宗門 (安全區)</button>
+        <button class="sys-btn" onclick="openMapCategoryModal(0)">📍 第一區：城鎮 (安全區)</button>
         <button class="sys-btn" onclick="openMapCategoryModal(1)">📍 第二區：野外歷練區</button>
         <button class="sys-btn" onclick="openMapCategoryModal(2)">📍 第三區：開放世界大區域</button>
         <button class="sys-btn" onclick="openMapCategoryModal(3)">📍 第四區：上古禁區 (高難)</button>
@@ -1471,7 +1471,7 @@
 <!-- 殺手殿堂場景：活動「獵殺邪修」先進這一頁（merit.js 的 openEvilHallScene），點中央匾額才開 #evil-hunt-modal。
      必須排在 #evil-hunt-modal 之前，懸賞榜視窗才會疊在場景上面 -->
 <div id="evil-hall-scene">
-    <img class="evil-hall-bg" src="images/evil-hall.jpg?v=20260926l" alt="">
+    <img class="evil-hall-bg" src="images/evil-hall.jpg?v=20260926m" alt="">
     <button class="evil-hall-back" onclick="closeEvilHallScene()">↩ 離開</button>
     <button class="evil-hall-plaque" onclick="openEvilHuntModal()" aria-label="殺手殿堂（開啟懸賞榜）">殺手殿堂</button>
 </div>
@@ -1743,78 +1743,78 @@
 
 <!-- ⚠️ 版本號 ?v=：每次發佈（推上 GitHub Pages）前要把所有 ?v= 改成新的值（全部取代即可）。
      GitHub Pages 會快取檔案約 10 分鐘，沒改版本號時玩家可能拿到「舊 index.html＋新 JS」而讀檔失敗。見 ARCHITECTURE.md 第 30 節 -->
-<script src="data/config-realms.js?v=20260926l"></script>
-<script src="data/config-level.js?v=20260926l"></script>
-<script src="data/config-lifespan.js?v=20260926l"></script>
-<script src="data/config-maps.js?v=20260926l"></script>
-<script src="data/config-sects.js?v=20260926l"></script>
-<script src="data/config-lingbao.js?v=20260926l"></script>
-<script src="data/config-shop.js?v=20260926l"></script>
-<script src="data/config-beasts.js?v=20260926l"></script>
-<script src="data/config-servants.js?v=20260926l"></script>
-<script src="data/config-equipment.js?v=20260926l"></script>
-<script src="data/config-gear-catalog.js?v=20260926l"></script>
-<script src="data/config-gear.js?v=20260926l"></script>
-<script src="data/config-enhance.js?v=20260926l"></script>
-<script src="data/config-sets.js?v=20260926l"></script>
-<script src="data/config-profession.js?v=20260926l"></script>
-<script src="data/config-titles.js?v=20260926l"></script>
-<script src="data/config-tribulation.js?v=20260926l"></script>
-<script src="data/config-quests.js?v=20260926l"></script>
-<script src="data/config-activities.js?v=20260926l"></script>
-<script src="data/config-daily-quests.js?v=20260926l"></script>
-<script src="data/config-elements.js?v=20260926l"></script>
-<script src="data/config-merit.js?v=20260926l"></script>
-<script src="data/config-bounty.js?v=20260926l"></script>
-<script src="data/config-talisman.js?v=20260926l"></script>
-<script src="data/config-avatars.js?v=20260926l"></script>
-<script src="data/config-avatar-frames.js?v=20260926l"></script>
-<script src="data/config-spells.js?v=20260926l"></script>
-<script src="data/config-strange-fire.js?v=20260926l"></script>
-<script src="data/config-partners.js?v=20260926l"></script>
-<script src="data/state.js?v=20260926l"></script>
-<script src="data/stats.js?v=20260926l"></script>
-<script src="data/elements.js?v=20260926l"></script>
-<script src="data/ui.js?v=20260926l"></script>
-<script src="data/map.js?v=20260926l"></script>
-<script src="data/combat.js?v=20260926l"></script>
-<script src="data/leveling.js?v=20260926l"></script>
-<script src="data/lifespan.js?v=20260926l"></script>
-<script src="data/tribulation.js?v=20260926l"></script>
-<script src="data/sect.js?v=20260926l"></script>
-<script src="data/shop.js?v=20260926l"></script>
-<script src="data/bag.js?v=20260926l"></script>
-<script src="data/equipment.js?v=20260926l"></script>
-<script src="data/gear.js?v=20260926l"></script>
-<script src="data/enhance.js?v=20260926l"></script>
-<script src="data/profession.js?v=20260926l"></script>
-<script src="data/codex.js?v=20260926l"></script>
-<script src="data/lingbao-shop.js?v=20260926l"></script>
-<script src="data/artifact.js?v=20260926l"></script>
-<script src="data/servant.js?v=20260926l"></script>
-<script src="data/quest.js?v=20260926l"></script>
-<script src="data/activity.js?v=20260926l"></script>
-<script src="data/daily-quest.js?v=20260926l"></script>
-<script src="data/auction.js?v=20260926l"></script>
-<script src="data/merit.js?v=20260926l"></script>
-<script src="data/bounty.js?v=20260926l"></script>
-<script src="data/talisman.js?v=20260926l"></script>
-<script src="data/strange-fire.js?v=20260926l"></script>
-<script src="data/partner.js?v=20260926l"></script>
-<script src="data/field.js?v=20260926l"></script>
-<script src="data/beast-combat.js?v=20260926l"></script>
-<script src="data/spells.js?v=20260926l"></script>
-<script src="data/beast.js?v=20260926l"></script>
-<script src="data/library.js?v=20260926l"></script>
-<script src="data/alchemy.js?v=20260926l"></script>
-<script src="data/player-profile.js?v=20260926l"></script>
-<script src="data/save.js?v=20260926l"></script>
-<script src="data/config-home-pc.js?v=20260926l"></script>
-<script src="data/home-ui.js?v=20260926l"></script>
-<script src="data/settings.js?v=20260926l"></script>
-<script src="data/avatar.js?v=20260926l"></script>
-<script src="data/title-screen.js?v=20260926l"></script>
-<script src="data/main.js?v=20260926l"></script>
+<script src="data/config-realms.js?v=20260926m"></script>
+<script src="data/config-level.js?v=20260926m"></script>
+<script src="data/config-lifespan.js?v=20260926m"></script>
+<script src="data/config-maps.js?v=20260926m"></script>
+<script src="data/config-sects.js?v=20260926m"></script>
+<script src="data/config-lingbao.js?v=20260926m"></script>
+<script src="data/config-shop.js?v=20260926m"></script>
+<script src="data/config-beasts.js?v=20260926m"></script>
+<script src="data/config-servants.js?v=20260926m"></script>
+<script src="data/config-equipment.js?v=20260926m"></script>
+<script src="data/config-gear-catalog.js?v=20260926m"></script>
+<script src="data/config-gear.js?v=20260926m"></script>
+<script src="data/config-enhance.js?v=20260926m"></script>
+<script src="data/config-sets.js?v=20260926m"></script>
+<script src="data/config-profession.js?v=20260926m"></script>
+<script src="data/config-titles.js?v=20260926m"></script>
+<script src="data/config-tribulation.js?v=20260926m"></script>
+<script src="data/config-quests.js?v=20260926m"></script>
+<script src="data/config-activities.js?v=20260926m"></script>
+<script src="data/config-daily-quests.js?v=20260926m"></script>
+<script src="data/config-elements.js?v=20260926m"></script>
+<script src="data/config-merit.js?v=20260926m"></script>
+<script src="data/config-bounty.js?v=20260926m"></script>
+<script src="data/config-talisman.js?v=20260926m"></script>
+<script src="data/config-avatars.js?v=20260926m"></script>
+<script src="data/config-avatar-frames.js?v=20260926m"></script>
+<script src="data/config-spells.js?v=20260926m"></script>
+<script src="data/config-strange-fire.js?v=20260926m"></script>
+<script src="data/config-partners.js?v=20260926m"></script>
+<script src="data/state.js?v=20260926m"></script>
+<script src="data/stats.js?v=20260926m"></script>
+<script src="data/elements.js?v=20260926m"></script>
+<script src="data/ui.js?v=20260926m"></script>
+<script src="data/map.js?v=20260926m"></script>
+<script src="data/combat.js?v=20260926m"></script>
+<script src="data/leveling.js?v=20260926m"></script>
+<script src="data/lifespan.js?v=20260926m"></script>
+<script src="data/tribulation.js?v=20260926m"></script>
+<script src="data/sect.js?v=20260926m"></script>
+<script src="data/shop.js?v=20260926m"></script>
+<script src="data/bag.js?v=20260926m"></script>
+<script src="data/equipment.js?v=20260926m"></script>
+<script src="data/gear.js?v=20260926m"></script>
+<script src="data/enhance.js?v=20260926m"></script>
+<script src="data/profession.js?v=20260926m"></script>
+<script src="data/codex.js?v=20260926m"></script>
+<script src="data/lingbao-shop.js?v=20260926m"></script>
+<script src="data/artifact.js?v=20260926m"></script>
+<script src="data/servant.js?v=20260926m"></script>
+<script src="data/quest.js?v=20260926m"></script>
+<script src="data/activity.js?v=20260926m"></script>
+<script src="data/daily-quest.js?v=20260926m"></script>
+<script src="data/auction.js?v=20260926m"></script>
+<script src="data/merit.js?v=20260926m"></script>
+<script src="data/bounty.js?v=20260926m"></script>
+<script src="data/talisman.js?v=20260926m"></script>
+<script src="data/strange-fire.js?v=20260926m"></script>
+<script src="data/partner.js?v=20260926m"></script>
+<script src="data/field.js?v=20260926m"></script>
+<script src="data/beast-combat.js?v=20260926m"></script>
+<script src="data/spells.js?v=20260926m"></script>
+<script src="data/beast.js?v=20260926m"></script>
+<script src="data/library.js?v=20260926m"></script>
+<script src="data/alchemy.js?v=20260926m"></script>
+<script src="data/player-profile.js?v=20260926m"></script>
+<script src="data/save.js?v=20260926m"></script>
+<script src="data/config-home-pc.js?v=20260926m"></script>
+<script src="data/home-ui.js?v=20260926m"></script>
+<script src="data/settings.js?v=20260926m"></script>
+<script src="data/avatar.js?v=20260926m"></script>
+<script src="data/title-screen.js?v=20260926m"></script>
+<script src="data/main.js?v=20260926m"></script>
 
 </body>
 </html>

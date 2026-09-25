@@ -19,6 +19,7 @@ function openMapCategoryModal(catIndex) {
     container.innerHTML = "";
 
     cat.items.forEach((item, iIndex) => {
+        if (item.hidden) return;   // 宗門不列在修仙地圖（按洞府的「宗門」回去）
         let isCurrent = player.currentMap.name === item.name;
         container.innerHTML += `
             <div class="card" style="border-color: ${isCurrent ? 'var(--accent)' : 'rgba(255,255,255,0.08)'};">
@@ -31,6 +32,12 @@ function openMapCategoryModal(catIndex) {
     });
 
     document.getElementById('map-category-modal').style.display = 'flex';
+}
+
+// 洞府的「宗門」（手機熱點、PC pcStageButtons）：不在宗門就先傳送回宗門，再打開宗門分頁
+function returnToSect() {
+    if (!isInSect()) changeMap(0, 0);   // maps[0].items[0] = 宗門
+    switchTab('sect');
 }
 
 function selectMap(cIndex, iIndex) {

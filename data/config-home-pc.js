@@ -16,7 +16,7 @@ const PC_SHEET_RECT = [300, 40, 845, 625];
 const pcStageButtons = [
     // ---- 建築（牌匾由程式加上）----
     { id: 'ascend',   kind: 'hotspot', label: '升仙台',   rect: [600, 150, 125, 165], plaque: 'left',  action: "openAscensionPlatform()" },
-    { id: 'sect',     kind: 'hotspot', label: '宗門',     rect: [520, 435, 140, 125], plaque: 'left',  action: "switchTab('sect')" },
+    { id: 'sect',     kind: 'hotspot', label: '宗門',     rect: [520, 435, 140, 125], plaque: 'left',  action: "returnToSect()" },   // 不在宗門會先傳送回宗門（map.js）
     { id: 'servant',  kind: 'hotspot', label: '僕從小屋', rect: [790, 475, 110, 70],  plaque: 'top',   action: "openServantModal()" },
     { id: 'alchemy',  kind: 'hotspot', label: '煉丹房',   rect: [140, 365, 125, 100], plaque: 'right', action: "openAlchemyModal()" },
     // 傳送門：2026-09-25 已從圖上抹掉牌匾字樣，熱點一併停用（修仙地圖改由「世界」開啟）

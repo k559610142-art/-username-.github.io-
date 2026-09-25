@@ -11,8 +11,13 @@ const SECT_MAP_NAME = "宗門";
 const KILLS_PER_HOUR_ESTIMATE = 1160;   // 實測值：波次之間有 5 秒刷新，滿速約每秒 0.32 隻
 
 const maps = [
-    { category: "一、宗門 (安全區)", isSafe: true, items: [
-        { name: SECT_MAP_NAME, expRate: 3, diff: 1, coins: 0 }
+    // 第一區「城鎮」（安全區）。⚠️ items[0] 必須是宗門：死亡回城、渡劫失敗、暫存區滿等都用 changeMap(0, 0)／maps[0].items[0] 代表宗門。
+    // 宗門標 hidden，不列在修仙地圖裡，只能按洞府的「宗門」回去（map.js 的 returnToSect）。
+    // 城鎮是安全區、可打坐，但不是宗門，宗門設施不能用（isInSect 只認 SECT_MAP_NAME）。
+    { category: "一、城鎮 (安全區)", isSafe: true, items: [
+        { name: SECT_MAP_NAME, expRate: 3, diff: 1, coins: 0, hidden: true },
+        { name: "天南城", expRate: 3, diff: 1, coins: 0 },
+        { name: "天星城", expRate: 3, diff: 1, coins: 0 }   // 亂星海的主城；第三區已有戰鬥地圖「亂星海」，名稱不可重複
     ]},
     { category: "二、野外歷練 (戰鬥區)", isSafe: false, items: [
         //                                                      coins   ≈ 每小時上限
