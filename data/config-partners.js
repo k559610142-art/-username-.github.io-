@@ -52,6 +52,23 @@ const partnerList = [
                  desc: "16%：單體物理 220% 傷害", msg: "😈 天煞聖皇石空徹魔威滔天，【天煞魔威】碾壓而下！" }
     },
     {
+        // 2026-09-26 玩家指定：韓立（道祖）、南宮婉（大羅境）
+        id: "hanli", name: "韓立", title: "道祖", work: "凡人修仙傳", author: "忘語", world: "人界 → 靈界 → 仙界", peak: "道祖", native: true,
+        power: { atk: 95, def: 96, spd: 94, mag: 96, found: 98, grow: 97 },
+        analysis: "資質平平的凡人出身，卻憑極致的謹慎與掌天瓶一路逆襲，自人界、靈界修至仙界，終成道祖。煉丹、法寶、神識、肉身面面俱到，從不打沒把握的仗，出手則必定穩中求勝。",
+        passive: { atkPct: 0.04, statPct: 0.03, "fx:丹心": 0.20 },
+        skill: { name: "青竹蜂雲劍陣", chance: 0.18, target: "aoe", dmgType: "phys", mult: 2.4, attrs: { thunder: 100 },
+                 desc: "18%：全體物理 240% 傷害並必定雷擊", msg: "⚡ 道祖韓立袖袍一揮，【青竹蜂雲劍陣】挾辟邪神雷橫掃八方！" }
+    },
+    {
+        id: "nangongwan", name: "南宮婉", title: "大羅仙子", work: "凡人修仙傳", author: "忘語", world: "人界・掩月宗 → 仙界", peak: "大羅境", native: true,
+        power: { atk: 88, def: 90, spd: 92, mag: 95, found: 92, grow: 93 },
+        analysis: "掩月宗出身，修素女輪迴功，與韓立結為道侶。心性堅韌、功法玄妙，飛升仙界後修至大羅境；術法與身法見長，攻守之間兼具柔韌與後勁。",
+        passive: { magPct: 0.03, eva: 2, "fx:回靈": 0.015 },
+        skill: { name: "素女輪迴", chance: 0.17, target: "aoe", dmgType: "mag", mult: 2.2, heal: 0.08,
+                 desc: "17%：全體術法 220% 傷害，主人回復 8% 氣血", msg: "🌸 南宮婉運轉【素女輪迴】，月華流轉、生生不息！" }
+    },
+    {
         id: "chennan", name: "辰南", title: "至高逆天", work: "神墓", author: "辰東", world: "神墓世界・天界", peak: "至高逆天",
         power: { atk: 98, def: 96, spd: 95, mag: 97, found: 96, grow: 98 },
         analysis: "自神墓中復甦的逆天者，歷經萬劫而不滅；攻防俱臻極致，意志與成長性驚人，面對強敵反而愈戰愈強。",
