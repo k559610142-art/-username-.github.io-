@@ -1135,7 +1135,7 @@ combatTick() 每秒執行 [combat.js]
 （以 8 種舊存檔形態測試目前程式皆可正常讀取；移除 `#age-display` 即可重現同一錯誤。）
 
 ### 1. 發佈版本號（防止新舊檔案混用）
-- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260926a`）。
+- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260926b`）。
 - **每次推上 GitHub Pages 前，把所有 `?v=` 全部取代成新值**（例：日期＋序號）。新 index.html 會指向新網址的 JS，不會再拿到快取的舊檔。
 - 新增 `data/*.js` 時也要記得帶上 `?v=`。
 
@@ -1182,7 +1182,7 @@ combatTick() 每秒執行 [combat.js]
 | `#hud-coins` | 左資源框（元寶） | 靈石（`formatShortNumber`：萬／億縮寫） |
 | `#hud-rep` | 右資源框（圖上原為「仙玉」） | **聲望** |
 | `#hud-stats` | 資源框下方（新增的半透明面板） | 氣血／靈力／修為條、修煉效率（`getCultivationRate()` = 宗門經驗倍率 × 靈寵加成）；最下列左側 `#btn-settings`「⚙️ 設定」開啟設定視窗（第 34 節） |
-| 熱點「升仙台」 | 寶塔 | `openAscensionPlatform()`：待渡劫時 `triggerTribulation()`，否則提示修為進度；待渡劫時牌匾亮紅點 |
+| 熱點「升仙台」 | 寶塔 | `openAscensionPlatform()`：待渡劫時 `triggerTribulation()`，**確認開始後自動切到戰鬥分頁**（取消則留在洞府，2026-09-26）；否則提示修為進度；待渡劫時牌匾亮紅點 |
 | 熱點「千寶閣」（舊牌匾名「領物閣」，2026-09-25 改名） | 山中發光洞口 | `openActivity('auction')`（千寶閣，未解鎖會提示條件） |
 | 熱點「宗門」 | 左側山門 | 切到宗門分頁 |
 | 熱點「僕從小屋」 | 右側屋舍 | `openServantModal()` |
@@ -1330,7 +1330,7 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
 
   | 圖上 | 功能 |
   |---|---|
-  | 寶塔（牌匾「升仙台」） | `openAscensionPlatform()`（待渡劫亮紅點，`#pc-plaque-ascend`） |
+  | 寶塔（牌匾「升仙台」） | `openAscensionPlatform()`（待渡劫亮紅點，`#pc-plaque-ascend`；確認渡劫後切到戰鬥分頁） |
   | 中央山門（「宗門」） | 宗門分頁 |
   | 右側屋舍（「僕從小屋」） | `openServantModal()` |
   | 左側樓閣（「煉丹房」） | `openAlchemyModal()` |

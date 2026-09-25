@@ -119,9 +119,13 @@ function showUnderConstruction(name) {
 
 // 升仙台：修為圓滿時渡劫；否則提示進度（轉世在「世界」分頁的命運抉擇）
 function openAscensionPlatform() {
-    if (player.pendingTribulation) { triggerTribulation(); return; }
+    if (player.pendingTribulation) {
+        triggerTribulation();
+        if (inTribulation) switchTab('battle');   // 確認渡劫後直接跳到戰鬥分頁看心魔對決（取消則留在洞府）
+        return;
+    }
     let pct = Math.min(100, player.exp / getNextExp() * 100);
-    let tip = player.realmIndex >= 10 ? "（已可於「世界 → 命運抉擇」轉世輪迴）" : "";
+    let tip = player.realmIndex >= 10 ? "（已可於「⚙️ 系統 → 命運抉擇」轉世輪迴）" : "";
     showStageToast(`☁️ ${realms[player.realmIndex]} ${player.stage}階・修為 ${pct.toFixed(1)}%，圓滿後方可渡劫${tip}`);
 }
 
