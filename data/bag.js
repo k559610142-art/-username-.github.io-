@@ -10,6 +10,32 @@ function hasEquipInventorySpace() {
     return false;
 }
 
+// ---- 裝備鎖定（eq.locked，隨裝備物件存檔）----
+// 鎖定中的裝備不能毀棄、分解，一鍵刪除／分解也會略過；穿戴中的裝備同樣不能刪除（須先卸下）
+function isEquipLocked(eq) {
+    return !!(eq && eq.locked);
+}
+
+function toggleEquipLock(equipId) {
+    let loc = locateEquip(equipId);
+    if (!loc) return;
+    loc.eq.locked = !loc.eq.locked;
+    addLog(`${loc.eq.locked ? '🔒 鎖定' : '🔓 解除鎖定'}了裝備【${getEquipDisplayName(loc.eq)}】。`, "equip");
+    refreshEquipViews();
+}
+
+function formatLockButton(eq) {
+    return `<button class="sys-btn" style="${eq.locked ? 'border-color: #facc15; color: #facc15;' : ''}" onclick="toggleEquipLock('${eq.id}')">${eq.locked ? '🔒 已鎖定（點擊解鎖）' : '🔓 鎖定'}</button>`;
+}
+
+// 刪除／分解前的共用檢查：鎖定中或穿戴中回傳 false 並提示
+function canRemoveEquip(loc) {
+    if (!loc) return false;
+    if (loc.where === 'equipped') { alert('穿戴中的裝備無法刪除或分解，請先卸下。'); return false; }
+    if (isEquipLocked(loc.eq)) { alert(`【${getEquipDisplayName(loc.eq)}】已鎖定，請先解除鎖定。`); return false; }
+    return true;
+}
+
 // ⚠️ 背包裝備數量沒有上限，比照 renderServants() 先組好整段 HTML 再一次寫入，避免裝備多時卡住
 function renderBag() {
     const container = document.getElementById('bag-list-container');
@@ -24,14 +50,14 @@ function renderBag() {
     // 依品級一鍵刪除裝備（只作用於背包內未穿戴的裝備）
     if (player.equipInventory && player.equipInventory.length > 0) {
         let counts = {};
-        player.equipInventory.forEach(eq => { counts[eq.quality] = (counts[eq.quality] || 0) + 1; });
+        player.equipInventory.forEach(eq => { if (!isEquipLocked(eq)) counts[eq.quality] = (counts[eq.quality] || 0) + 1; });
         parts.push(renderBulkDeleteBar(
             "一鍵刪除／分解裝備（依品級）",
             "bulk-equip-quality",
             equipQualities.map(q => q.name),
             counts,
             "bulkDeleteEquipment",
-            `※ 只作用於背包內的裝備，已穿戴的不受影響。分解只處理白～紫（得碎鐵，每 ${SHARDS_PER_IRON} 個合成 1 顆星允鐵），橙色請逐件分解`,
+            `※ 只作用於背包內未鎖定的裝備（數量不含鎖定），已穿戴、🔒 鎖定的不受影響。分解只處理白～紫（得碎鐵，每 ${SHARDS_PER_IRON} 個合成 1 顆星允鐵），橙色請逐件分解`,
             `<button class="sys-btn" onclick="bulkDecomposeEquipment()">分解勾選品級</button>`
         ));
     }
@@ -81,6 +107,7 @@ function renderBag() {
     if (player.equipInventory && player.equipInventory.length > 0) {
         hasItems = true;
         player.equipInventory.forEach(eq => {
+            let locked = isEquipLocked(eq);
             parts.push(`
                 <div class="${getEquipCardClass(eq)}" style="border-color: var(--equip-color);">
                     <h3 class="quality-${eq.quality}">${formatEquipTitle(eq)}</h3>
@@ -88,11 +115,12 @@ function renderBag() {
                     ${formatEquipDetails(eq)}
                     ${formatArtifactSkill(eq)}
                     <button class="equip-btn" onclick="equipItem('${eq.id}')">穿戴裝備</button>
+                    ${formatLockButton(eq)}
                     ${ENHANCE_CAP[eq.quality] ? `<div class="batch-btns">
                         <button class="sys-btn" onclick="openEnhanceModal('${eq.id}')">🔨 強化</button>
-                        <button class="sys-btn" onclick="decomposeEquip('${eq.id}')">分解</button>
+                        <button class="sys-btn" ${locked ? 'disabled' : ''} onclick="decomposeEquip('${eq.id}')">分解</button>
                     </div>` : ''}
-                    <button style="border-color: #ef4444; color: #ef4444; margin-top: 5px; background: rgba(239,68,68,0.1);" onclick="deleteEquipFromInventory('${eq.id}')">毀棄裝備</button>
+                    <button ${locked ? 'disabled' : ''} style="border-color: #ef4444; color: #ef4444; margin-top: 5px; background: rgba(239,68,68,0.1);${locked ? ' opacity: 0.4;' : ''}" onclick="deleteEquipFromInventory('${eq.id}')">毀棄裝備</button>
                 </div>`);
         });
     }
@@ -139,17 +167,17 @@ function deleteItemFromBag(itemId) {
     }
 }
 
-// 一鍵刪除：把背包內所有勾選品級的裝備一次清掉（已穿戴的不受影響）
+// 一鍵刪除：把背包內所有勾選品級的裝備一次清掉（已穿戴、鎖定中的不受影響）
 function bulkDeleteEquipment() {
     let selected = getCheckedBulkQualities('bulk-equip-quality');
     if (selected.length === 0) { alert("請先勾選要刪除的品級！"); return; }
 
-    let targets = player.equipInventory.filter(eq => selected.includes(eq.quality));
-    if (targets.length === 0) { alert("背包內沒有符合勾選品級的裝備。"); return; }
+    let targets = player.equipInventory.filter(eq => selected.includes(eq.quality) && !isEquipLocked(eq));
+    if (targets.length === 0) { alert("背包內沒有符合勾選品級且未鎖定的裝備。"); return; }
 
-    if (!confirm(`確定要刪除背包內 ${targets.length} 件【${selected.join('、')}】裝備嗎？\n此操作無法復原。`)) return;
+    if (!confirm(`確定要刪除背包內 ${targets.length} 件【${selected.join('、')}】裝備嗎？（🔒 鎖定的不會刪除）\n此操作無法復原。`)) return;
 
-    player.equipInventory = player.equipInventory.filter(eq => !selected.includes(eq.quality));
+    player.equipInventory = player.equipInventory.filter(eq => !targets.includes(eq));
     addLog(`🗑️ 一鍵刪除了 ${targets.length} 件裝備（${selected.join('、')}）。`, "equip");
     renderBag();
     updateUI();
@@ -159,6 +187,7 @@ function deleteEquipFromInventory(equipId) {
     let index = player.equipInventory.findIndex(e => e.id === equipId);
     if (index === -1) return;
     let item = player.equipInventory[index];
+    if (!canRemoveEquip({ eq: item, where: 'inventory', index })) return;
     if (confirm(`確定要毀棄裝備【${item.quality}·${getEquipDisplayName(item)}】嗎？`)) {
         player.equipInventory.splice(index, 1);
         addLog(`🗑️ 毀棄了裝備【${getEquipDisplayName(item)}】。`, "equip");

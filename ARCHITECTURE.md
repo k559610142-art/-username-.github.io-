@@ -89,7 +89,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 3 | `config-lifespan.js` | `lifespanByRealm` 各境界壽元增加量與死亡折壽、歲月流逝常數 `LIFESPAN_MIN_AGING_HOURS`/`LIFESPAN_PACE_MULT`/`LIFESPAN_DANGER_MULT`/`LIFESPAN_TRIBULATION_MULT`/`LIFESPAN_OFFLINE_RATE`/`LIFESPAN_FLOOR_DEATHS`、起始年齡 `LIFESPAN_START_AGE` | 無 | `lifespan.js`、`leveling.js`(轉世重設壽元與年齡)、`ui.js`(年齡顯示) |
 | 4 | `config-maps.js` | `SECT_MAP_NAME`（"宗門"，唯一安全區的名稱）、`maps` 地圖資料（含各圖 `coins` 每隻靈石）、`KILLS_PER_HOUR_ESTIMATE`、`REPUTATION_MAX_BY_MAP_CATEGORY`（各區擊殺聲望上限）、`OFFLINE_COMBAT_RATE`/`OFFLINE_REPUTATION_RATE`、離線實力估算 `IDLE_WAVE_AVG_MONSTERS`/`IDLE_WAVE_GAP_TICKS`、`monsterIcons` | 無 | `state.js`、`map.js`(isInSect)、`combat.js`、`ui.js`、`save.js`(migrateCurrentMap) |
 | 5 | `config-sects.js` | `sectData` 宗門與技能表（宗門可選填 `faction: "邪"`，目前為皇朝、天魔教、九幽黃泉；沒寫 = 正）、`SECT_SKILL_BONUS`、`SECT_TIER_NAMES`、`findSectByName()`；尾端迴圈替每招補上 `tier`/`mult` | 無 | `sect.js`、`stats.js`(getSectTier/getAllSkills)、`ui.js`、`save.js`(重新綁定宗門)、`merit.js`(getPlayerFaction) |
-| 6 | `config-lingbao.js` | `legacySkillAdjustments` 舊版禁術下修數值、`artifactSkills` 神器專屬技能（key = 商品 id）、`lingbaoTierCosts` 各階段兌換價格、`lingbaoShopItems` 三階段戰略級寶物與武學 | 無 | `lingbao-shop.js`、`equipment.js`(五行說明列固定屬性裝備)、`artifact.js` |
+| 6 | `config-lingbao.js` | `legacySkillAdjustments` 舊版禁術下修數值、`artifactSkills` 神器專屬技能（key = 商品 id）、`lingbaoTierCosts` 各階段兌換價格、`ARTIFACT_COST_COINS` 神器靈石價（1 億）、`lingbaoShopItems` 三階段戰略級寶物與武學 | 無 | `lingbao-shop.js`、`equipment.js`(五行說明列固定屬性裝備)、`artifact.js` |
 | 7 | `config-shop.js` | `shopItems` 丹藥堂商品、`shopSections` 分區、`POTION_COOLDOWN_SECONDS` 丹藥冷卻、`SHOP_MAX_BUY_QTY` 單次購買上限(9999) | 無 | `shop.js`、`bag.js`、`combat.js`(自動補血補魔) |
 | 8 | `config-beasts.js` | `beastData` 靈寵兌換與被動、`BEAST_REVIVE_COST_CORE`、維持費 `BEAST_UPKEEP_INTERVAL`/`beastUpkeepTiers`（第 16 節）、`BEAST_SKILL_LEVELS`、`BEAST_SKILL_CHANCE`、`beastElementInfo`、`beastSkillTree` | 無 | `beast.js`、`beast-combat.js`、`save.js`(舊存檔轉換) |
 | 9 | `config-servants.js` | `MAX_SERVANTS`、`servantQualities`、`SERVANT_TRIP_COST`(每趟任務靈石花費)、`servantNames` | 無 | `combat.js`(tryRescueServant)、`servant.js`(派遣花費) |
@@ -122,10 +122,10 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 24 | `tribulation.js` | `getTribulationChance`/`getTribulationHardPenalty`(合體期起勝算扣除量)/`formatChance`/`triggerTribulation`/`tribulationTick`/`resolvePlayerFall`/`endTribulation` | `player`、`config-tribulation.js`、`config-merit.js`(破障丹)、`player.breakPills`、`shopItems`(丹藥加成)、`sectData`(技能加成)、`stats.js`、`elements.js`、`combat.js`(playerAttackTurn)、`beast-combat.js`、`lifespan.js`、`leveling.js`(advanceRealm) | `combat.js`(渡劫中接管 tick)、`ui.js`(按鈕顯示勝算)、HTML 渡劫按鈕 |
 | 25 | `sect.js` | `checkSectJoined`/`openSectModal`/`renderSects`/`joinSect` | `sectData`、`player.sect`/`sectSkills` | 幾乎所有「需拜入宗門才能使用」的彈窗（shop/servant/field/beast/lingbao-shop/library/forge/alchemy）都會先呼叫 `checkSectJoined()` |
 | 26 | `shop.js` | `openShopModal`/`renderShop`/`renderShopCard`/`getShopQty`/`setShopQty`/`setShopQtyMax`/`updateShopTotal`/`buyShopItem` | `shopItems`、`player`、`sect.js`(checkSectJoined) | HTML 按鈕、`bag.js` 顯示已購買道具 |
-| 27 | `bag.js` | `openBagModal`/`hasEquipInventorySpace`(背包上限檢查，鍛造/千寶閣/靈寶閣/卸下裝備共用)/`renderBag`/`useItemFromBag`/`deleteItemFromBag`/`deleteEquipFromInventory`/`bulkDeleteEquipment`（卡片另有強化／分解按鈕、頂端暫存區與星允鐵，enhance.js） | `shopItems`、`player.bag`、`player.equipInventory` | `equipment.js`(equipItem 後呼叫 renderBag) |
+| 27 | `bag.js` | `openBagModal`/`hasEquipInventorySpace`(背包上限檢查，鍛造/千寶閣/靈寶閣/卸下裝備共用)/`renderBag`/`useItemFromBag`/`deleteItemFromBag`/`deleteEquipFromInventory`/`bulkDeleteEquipment`、裝備鎖定 `isEquipLocked`/`toggleEquipLock`/`formatLockButton`/`canRemoveEquip`（第 9 節）（卡片另有強化／分解按鈕、頂端暫存區與星允鐵，enhance.js） | `shopItems`、`player.bag`、`player.equipInventory`、`enhance.js`(locateEquip/refreshEquipViews) | `equipment.js`(equipItem 後呼叫 renderBag；裝備卡片鎖定鈕)、`enhance.js`(分解／暫存區毀棄前呼叫 canRemoveEquip、一鍵分解略過鎖定) |
 | 28 | `equipment.js` | `EQUIP_CATEGORY_NAMES`(部位分類中文名)、`formatEquipLevel`/`getForgeLevelCap`/`renderForgeLevelSelect`(裝備等級，第 29 節)、`initForgeSelect`/`openEquipmentModal`/`renderLingbaoUI`(注意：命名沿用舊碼，實際是角色裝備列表)/`openWuxingInfo`/`equipItem`/`unequipItem`/`openForgeModal`/`forgeEquipment`/`forgeOneEquipment`(從該等級的可製作清單抽一種，gear.js)、常數 `FORGE_COST`（已移到 config-equipment.js）；舊的 `generateEquipStats` 已移除，改用 gear.js 的 `buildGearStats` | `equipTypes`、`wuxingElements`、`wuxingArrayEffects`、`equipQualities`、`lingbaoShopItems`(說明視窗列固定屬性裝備)、`player.equipment`、`player.equipInventory`、`ui.js`(resolveBatchCount) | `bag.js`(equipItem)、`sect.js`(forge 需拜入宗門) |
 | 29a | `artifact.js` | `getArtifactItem`/`getArtifactSkill`/`getEquippedArtifactSkill`/`formatQualityLabel`(七彩 → 造化神器・七彩、白金 → 白金・先天道器)/`getEquipCardClass`(七彩外框)/`formatArtifactSkill`(卡片顯示)/`artifactSkillTurn`(戰鬥中觸發)/`castProcSkill`(依機率自動發動的技能，神器與職業技能共用)/`migrateArtifactIds`(舊神器補 `lingbaoId`、品質改七彩) | `artifactSkills`/`lingbaoShopItems`、`equipTypes`、`player.equipment`/`equipInventory`、`elements.js`(resolveHit)、`stats.js`(攻擊力)、靈寵減傷計時 `petShieldRate/Timer` | `combat.js`/`tribulation.js`/`bounty.js`(出手後呼叫)、`bag.js`/`equipment.js`(卡片)、`save.js`(applySaveData) |
-| 29 | `lingbao-shop.js` | `openLingbaoShopModal`/`renderLingbaoShopUI`(神器卡片列出專屬技能)/`buyLingbaoItem(itemId)`(裝備另存 `lingbaoId`) | `lingbaoShopItems`、`lingbaoTierCosts`、`player.sectSkills`/`lingbaoSold`/`coins`/`reputation`/`equipInventory`/`learnedSkills`、`bag.js`(hasEquipInventorySpace) | HTML 按鈕（僅在「宗門」顯示） |
+| 29 | `lingbao-shop.js` | `openLingbaoShopModal`/`renderLingbaoShopUI`(神器卡片列出專屬技能與價格)/`isArtifactItem`/`getLingbaoCost(item)`(單件價格，神器另計)/`buyLingbaoItem(itemId)`(裝備另存 `lingbaoId`) | `lingbaoShopItems`、`lingbaoTierCosts`、`ARTIFACT_COST_COINS`、`player.sectSkills`/`lingbaoSold`/`coins`/`reputation`/`equipInventory`/`learnedSkills`、`bag.js`(hasEquipInventorySpace) | HTML 按鈕（僅在「宗門」顯示） |
 | 30 | `servant.js` | `openServantModal`/`renderServants`/`assignServantQuest`/`dismissServant`/`bulkDismissServants`/`tickServantQuests`/`getAssignedServantCount`/`getServantTripCost`/`payServantTrip`（礦脈採礦每趟 2% 挖到星允鐵，enhance.js） | `questData`、`SERVANT_TRIP_COST`、`player.servants`(每位自帶 `quest`/`timer`)/`coins`、`quest.js` 的任務與獎勵函式 | `combat.js`(每 tick 呼叫 tickServantQuests)、`quest.js`(顯示派遣狀態) |
 | 31 | `quest.js` | `openQuestModal`/`renderQuestButtons`/`startQuest`/`stopQuest`/`updateQuestUI` + 共用任務函式 `getQuestDef`/`getAvailableQuestIds`/`getQuestRequiredProgress`/`getQuestSpeed`/`canServantTakeQuest`/`formatQuestRewards`/`grantQuestRewards`(回傳實際獲得文字) | `questData`(config-quests.js)、`player.activeQuest`、`stats.js`(getSectTier)、`map.js`(isInSect) | `combat.js`(玩家任務結算)、`servant.js`(僕從任務結算)、`map.js`(離開宗門時中斷) |
 | 32 | `activity.js` | `renderActivityList`/`getActivityLockReason`/`openActivity` | `activityData`、`player.reputation`/`realmIndex` | `ui.js`(updateUI 每秒重繪) |
@@ -216,7 +216,7 @@ combatTick() 每秒執行 [combat.js]
 | `openSkillModal`（修仙分頁「⚔️ 當前可用技能」） | `data/ui.js` |
 | `openSectModal`, `joinSect` | `data/sect.js` |
 | `openShopModal`, `buyShopItem` | `data/shop.js` |
-| `openBagModal`, `useItemFromBag`, `deleteItemFromBag`, `deleteEquipFromInventory` | `data/bag.js` |
+| `openBagModal`, `useItemFromBag`, `deleteItemFromBag`, `deleteEquipFromInventory`, `toggleEquipLock(id)`（背包、暫存區、角色裝備卡片的 🔓/🔒 按鈕） | `data/bag.js` |
 | `openServantModal`, `dismissServant` | `data/servant.js` |
 | `openQuestModal`（任務分頁「📜 門派任務」、宗門分頁按鈕）, `startQuest`, `stopQuest` | `data/quest.js` |
 | `openFieldModal`, `plantHerb` | `data/field.js` |
@@ -383,8 +383,14 @@ combatTick() 每秒執行 [combat.js]
   兩者**預設收合**，點選才展開可學習的秘笈；按鈕樣式為 `.library-drawer-toggle`。關閉視窗再開啟會維持上次的展開狀態。
 - **依品級批次刪除**：`ui.js` 的 `renderBulkDeleteBar()` 產生共用工具列，
   搭配 `getCheckedBulkQualities()` / `toggleAllBulkQualities()`。目前兩處使用：
-  - 背包裝備 → `bag.js` 的 `bulkDeleteEquipment()`（品級取自 `equipQualities`，**只刪背包內、不動已穿戴的**）
+  - 背包裝備 → `bag.js` 的 `bulkDeleteEquipment()`（品級取自 `equipQualities`，**只刪背包內、不動已穿戴與鎖定的**；勾選框旁的數量不含鎖定）
   - 僕從小屋 → `servant.js` 的 `bulkDismissServants()`（品級取自 `servantQualities`，會一併中止其任務）
+- **裝備鎖定**（2026-09-26）：裝備物件的 `eq.locked`（true = 鎖定，隨裝備存檔，舊裝備沒有此欄位 = 未鎖定）。
+  背包、暫存區、角色裝備視窗的每張卡片都有 `formatLockButton(eq)` 產生的「🔓 鎖定／🔒 已鎖定」按鈕 → `toggleEquipLock(id)`（用 `locateEquip` 找三處）；
+  `formatEquipTitle()` 在名稱後加 🔒。穿戴、卸下、強化、進化不受鎖定影響，鎖定狀態跟著裝備走。
+  **不能刪除的規則**（鎖定中＋穿戴中）集中在 `bag.js` 的 `canRemoveEquip(loc)`：`deleteEquipFromInventory`、`decomposeEquip`、`deleteStashEquip` 開頭都先呼叫；
+  一鍵刪除／一鍵分解則在篩選時用 `isEquipLocked()` 略過。鎖定時卡片上的分解／毀棄按鈕為 disabled。
+  **日後新增任何會移除玩家裝備的功能（出售、獻祭、合成材料…），都要先過 `canRemoveEquip()` 或略過 `isEquipLocked()` 的裝備。**
 - **神器欄位**：`equipTypes` 新增 `"神器": "artifact"`。三個相關注意事項：
   1. `NON_FORGEABLE_SLOTS` 讓鍛造閣選單排除神器（神器只能在靈寶閣高級宗門兌換，見第 18 節）。
   2. `getElementCounts()` 會**濾掉 artifact 分類**再統計，神器不影響靈根判定。
@@ -752,12 +758,16 @@ combatTick() 每秒執行 [combat.js]
   | 初級宗門 | 100,000 | 10,000 |
   | 中級宗門 | 500,000 | 100,000 |
   | 高級宗門 | 1,000,000 | 500,000 |
+  | 神器（高級宗門） | **100,000,000**（`ARTIFACT_COST_COINS`，2026-09-26 由 100 萬改） | 500,000 |
+
+  價格一律經 `lingbao-shop.js` 的 `getLingbaoCost(item)` 取得（神器用 `isArtifactItem` 判斷，靈石換成 `ARTIFACT_COST_COINS`、聲望沿用階段價）；
+  高級宗門標題列註明「神器另計」，神器卡片另外顯示自己的價格。
 
 - **唯一性**：兌換後 id 記入 `player.lingbaoSold`，該商品永久顯示「已兌換（不再補貨）」。轉世輪迴不會重置。
 - **品階保證「高一階一定更好」**：同部位裝備每一項數值都更高（劍：玄鐵重劍 → 紫電青霜劍 → 誅仙劍；
   盔甲：赤焰護心甲 → 玄武鎮獄甲），武學倍率逐階提高（初級 180～200% → 中級 260～350% → 高級 400～600%）。
   **新增或調整商品時請維持這個原則**。
-- **神器**（`category: "artifact"`）：共 6 件，全部在高級宗門靈寶閣兌換（價格同高級階段、各自唯一），裝在神器欄、不計入五行與靈根判定。
+- **神器**（`category: "artifact"`）：共 6 件，全部在高級宗門靈寶閣兌換（每件 1 億靈石＋50 萬聲望、各自唯一），裝在神器欄、不計入五行與靈根判定。
   **品質為「造化神器・七彩」**（2026-09-25 由橙色改）：`quality: ARTIFACT_QUALITY`（"七彩"），顯示文字 `ARTIFACT_QUALITY_LABEL`，常數在 `config-lingbao.js`。
   - 樣式：`index.html` 的 `.quality-七彩`（七彩流動文字，同 `.rainbow-text`）；背包、角色裝備欄的卡片用 `getEquipCardClass()` 加上 `.rainbow-glow` 七彩外框，品質文字經 `formatQualityLabel()`（皆在 `artifact.js`）。
   - 「七彩」不在 `equipQualities` 內：**不會出現在依品級批次刪除的選項**（防誤刪）、不開鑲嵌孔（`ensureSockets` 本來就跳過神器）。
@@ -1135,7 +1145,7 @@ combatTick() 每秒執行 [combat.js]
 （以 8 種舊存檔形態測試目前程式皆可正常讀取；移除 `#age-display` 即可重現同一錯誤。）
 
 ### 1. 發佈版本號（防止新舊檔案混用）
-- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260926b`）。
+- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260926d`）。
 - **每次推上 GitHub Pages 前，把所有 `?v=` 全部取代成新值**（例：日期＋序號）。新 index.html 會指向新網址的 JS，不會再拿到快取的舊檔。
 - 新增 `data/*.js` 時也要記得帶上 `?v=`。
 
@@ -1519,7 +1529,7 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
 - 每次花費：星允鐵 = 目標等級 × 係數（白 1 綠 1 藍 2 紫 3 橙 5）、靈石 = 目標等級 × 5 萬；+11 起有成功率（90%→30%），
   **失敗不掉級不毀裝**，同一級每失敗一次 +5%（`eq.enhancePity`，成功歸零）。期望花費：紫 +15 約 410 顆、橙 +20 約 1,630 顆。
 - 進化：橙色 +20 ＋ 300 星允鐵 ＋ 1,000 萬靈石 → 白金，四維 ×1.5、主詞條換白金值、多抽 1 條詞條、保留 +20。
-- 分解：白～紫 → 碎鐵（10/20/40/80，每 500 自動合成 1 顆星允鐵，可一鍵分解勾選品級）；橙 3 顆、白金 15 顆星允鐵，**只能逐件手動**（白金要按兩次確認）。穿戴中的不能分解。
+- 分解：白～紫 → 碎鐵（10/20/40/80，每 500 自動合成 1 顆星允鐵，可一鍵分解勾選品級）；橙 3 顆、白金 15 顆星允鐵，**只能逐件手動**（白金要按兩次確認）。穿戴中、🔒 鎖定中的不能分解（一鍵分解會略過鎖定，見第 9 節「裝備鎖定」）。
 
 ### 暫存區（`player.gearStash`，上限 50）
 - 只有**奪寶掉落**走 `receiveLootEquip()`：背包有空位 → 背包；背包滿 → 橙色以下自動分解成碎鐵、橙色以上進暫存區。

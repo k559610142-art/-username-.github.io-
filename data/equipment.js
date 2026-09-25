@@ -43,6 +43,7 @@ function renderLingbaoUI() {
                     ${formatEquipDetails(eq)}
                     ${formatArtifactSkill(eq)}
                     ${ENHANCE_CAP[eq.quality] ? `<button class="sys-btn" onclick="openEnhanceModal('${eq.id}')">🔨 強化</button>` : ''}
+                    ${formatLockButton(eq)}
                     <button class="sys-btn" onclick="unequipItem('${eqName}')">卸下裝備</button>
                 </div>`;
         } else {

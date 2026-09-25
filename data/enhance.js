@@ -189,10 +189,10 @@ function formatDecomposeYield(y) {
     return y.iron ? `🌠 星允鐵 ×${y.iron}` : `🔩 碎鐵 ×${y.shards}`;
 }
 
-// 手動分解一件（背包或暫存區；穿戴中的要先卸下）。白金要按兩次確認
+// 手動分解一件（背包或暫存區；穿戴中的要先卸下、鎖定中的要先解鎖）。白金要按兩次確認
 function decomposeEquip(equipId) {
     let loc = locateEquip(equipId);
-    if (!loc || loc.where === 'equipped') return;
+    if (!canRemoveEquip(loc)) return;
     let eq = loc.eq;
     if (eq.category === 'artifact') { alert('神器無法分解。'); return; }
     let y = getDecomposeYield(eq);
@@ -208,12 +208,12 @@ function decomposeEquip(equipId) {
     updateUI();
 }
 
-// 依勾選品級一鍵分解（只作用於背包；橙色以上不會出現在選項中）
+// 依勾選品級一鍵分解（只作用於背包、略過鎖定；橙色以上不會出現在選項中）
 function bulkDecomposeEquipment() {
     let selected = getCheckedBulkQualities('bulk-equip-quality').filter(q => DECOMPOSE_SHARDS[q]);
     if (selected.length === 0) { alert("請先勾選要分解的品級（白～紫；橙色以上請逐件手動分解）！"); return; }
-    let targets = player.equipInventory.filter(eq => selected.includes(eq.quality) && eq.category !== 'artifact');
-    if (targets.length === 0) { alert("背包內沒有符合勾選品級的裝備。"); return; }
+    let targets = player.equipInventory.filter(eq => selected.includes(eq.quality) && eq.category !== 'artifact' && !isEquipLocked(eq));
+    if (targets.length === 0) { alert("背包內沒有符合勾選品級且未鎖定的裝備。"); return; }
     let shards = targets.reduce((s, eq) => s + getDecomposeYield(eq).shards, 0);
     if (!confirm(`確定分解背包內 ${targets.length} 件【${selected.join('、')}】裝備？\n可得 🔩 碎鐵 ×${shards}（每 ${SHARDS_PER_IRON} 個合成 1 顆星允鐵）。`)) return;
     player.equipInventory = player.equipInventory.filter(eq => !targets.includes(eq));
@@ -274,6 +274,7 @@ function deleteStashEquip(equipId) {
     let j = (player.gearStash || []).findIndex(e => e.id === equipId);
     if (j === -1) return;
     let eq = player.gearStash[j];
+    if (!canRemoveEquip({ eq, where: 'stash', index: j })) return;
     if (!confirm(`確定毀棄暫存區的【${eq.quality}·${getEquipDisplayName(eq)}】嗎？（毀棄不會得到星允鐵，建議改用分解）`)) return;
     player.gearStash.splice(j, 1);
     addLog(`🗑️ 毀棄了暫存區的【${getEquipDisplayName(eq)}】。`, "equip");
@@ -285,15 +286,19 @@ function deleteStashEquip(equipId) {
 function renderStashSection() {
     let stash = player.gearStash || [];
     if (stash.length === 0) return '';
-    let cards = stash.map(eq => `
+    let cards = stash.map(eq => {
+        let locked = isEquipLocked(eq);
+        return `
         <div class="${getEquipCardClass(eq)}" style="border-color: #fb923c;">
             <h3 class="quality-${eq.quality}">${formatEquipTitle(eq)}</h3>
             <p style="font-size: 0.85em; color: #9ca3af;">${formatGearSubline(eq)} | <span class="quality-${eq.quality}">${formatQualityLabel(eq.quality)}</span> | 屬性: <span class="elem-${eq.element}">${eq.element}</span></p>
             ${formatEquipDetails(eq)}
             <button class="equip-btn" onclick="moveStashToBag('${eq.id}')">移入背包</button>
-            <button class="sys-btn" onclick="decomposeEquip('${eq.id}')">分解（${formatDecomposeYield(getDecomposeYield(eq))}）</button>
-            <button style="border-color: #ef4444; color: #ef4444; margin-top: 5px; background: rgba(239,68,68,0.1);" onclick="deleteStashEquip('${eq.id}')">毀棄</button>
-        </div>`).join('');
+            ${formatLockButton(eq)}
+            <button class="sys-btn" ${locked ? 'disabled' : ''} onclick="decomposeEquip('${eq.id}')">分解（${formatDecomposeYield(getDecomposeYield(eq))}）</button>
+            <button ${locked ? 'disabled' : ''} style="border-color: #ef4444; color: #ef4444; margin-top: 5px; background: rgba(239,68,68,0.1);${locked ? ' opacity: 0.4;' : ''}" onclick="deleteStashEquip('${eq.id}')">毀棄</button>
+        </div>`;
+    }).join('');
     let full = isGearStashFull();
     return `<div style="grid-column: 1 / -1; text-align: center; font-size: 0.9em; color: ${full ? '#ef4444' : '#fb923c'};">
                 📦 暫存區：${stash.length} / ${GEAR_STASH_MAX} 件${full ? '（已滿，處理完之前無法外出練功）' : '（背包滿時新掉落的橙色以上裝備）'}

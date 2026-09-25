@@ -7,6 +7,16 @@ function openLingbaoShopModal() {
     renderLingbaoShopUI();
 }
 
+function isArtifactItem(item) {
+    return item.type === 'equip' && item.itemData.category === 'artifact';
+}
+
+// 單件商品的兌換價格：依階段固定，神器的靈石另計（ARTIFACT_COST_COINS）
+function getLingbaoCost(item) {
+    let cost = lingbaoTierCosts[item.tier];
+    return isArtifactItem(item) ? { coins: ARTIFACT_COST_COINS, rep: cost.rep } : cost;
+}
+
 function renderLingbaoShopUI() {
     const container = document.getElementById('lingbao-shop-container');
     let sold = player.lingbaoSold || [];
@@ -25,6 +35,7 @@ function renderLingbaoShopUI() {
                 ? (artSkill ? `<p style="font-size: 0.8em; margin: 2px 0;"><span class="quality-${item.itemData.quality}">${formatQualityLabel(item.itemData.quality)}</span></p>` : '')
                   + `<p style="font-size: 0.8em; color: #facc15;">【${item.itemData.name}】<span class="elem-${item.itemData.element}">${item.itemData.element}</span>｜${formatEquipStats(item.itemData.stats)}</p>`
                   + (artSkill ? `<p style="font-size: 0.78em; color: #fca5a5;">專屬技能【${artSkill.name}】：${artSkill.desc}</p>` : '')
+                  + (isArtifactItem(item) ? `<p style="font-size: 0.8em; color: #facc15;">兌換：${getLingbaoCost(item).coins.toLocaleString()} 靈石 ＋ ${getLingbaoCost(item).rep.toLocaleString()} 聲望</p>` : '')
                 : `<p style="font-size: 0.8em; color: #c084fc;">耗魔 ${item.skillData.mpCost}</p>`;
             let btnText = isSold ? '已兌換（不再補貨）' : (sectName ? '兌換' : '未拜入此階段宗門');
             return `
@@ -38,7 +49,7 @@ function renderLingbaoShopUI() {
 
         return `<div class="map-category">
             <h4 style="color: var(--accent); margin-bottom: 6px;">${SECT_TIER_NAMES[tier]}宗門寶物 ${header}</h4>
-            <p style="font-size: 0.82em; color: #facc15; margin: 0 0 10px;">每件兌換：${cost.coins.toLocaleString()} 靈石 ＋ ${cost.rep.toLocaleString()} 聲望</p>
+            <p style="font-size: 0.82em; color: #facc15; margin: 0 0 10px;">每件兌換：${cost.coins.toLocaleString()} 靈石 ＋ ${cost.rep.toLocaleString()} 聲望${lingbaoShopItems.some(i => i.tier === tier && isArtifactItem(i)) ? `（神器另計：${ARTIFACT_COST_COINS.toLocaleString()} 靈石）` : ''}</p>
             <div class="grid-container">${cards}</div>
         </div>`;
     }).join('');
@@ -54,7 +65,7 @@ function buyLingbaoItem(itemId) {
         return;
     }
 
-    let cost = lingbaoTierCosts[item.tier];
+    let cost = getLingbaoCost(item);
     if (player.coins < cost.coins || (player.reputation || 0) < cost.rep) {
         alert(`資源不足！兌換【${item.name}】需要 ${cost.coins.toLocaleString()} 靈石 + ${cost.rep.toLocaleString()} 聲望。\n你目前有 ${player.coins.toLocaleString()} 靈石、${(player.reputation || 0).toLocaleString()} 聲望。`);
         return;

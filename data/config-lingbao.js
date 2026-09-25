@@ -53,6 +53,9 @@ const lingbaoTierCosts = {
     3: { coins: 1000000, rep: 500000 }    // 高級宗門：靈石 100 萬 + 聲望 50 萬
 };
 
+// 神器（category: "artifact"）另計靈石價格，聲望仍用所屬階段的 lingbaoTierCosts（lingbao-shop.js 的 getLingbaoCost）
+const ARTIFACT_COST_COINS = 100000000;   // 1 億靈石
+
 const lingbaoShopItems = [
     // ---- 初級宗門 ----
     { id: "lb1_sword", tier: 1, type: "equip", name: "玄鐵重劍",

@@ -229,7 +229,8 @@ function getEquipDisplayName(eq) {
 // 卡片標題：「Lv.500 太白劍 +12」
 function formatEquipTitle(eq) {
     let plus = eq && eq.enhance ? ` <span class="enhance-tag">+${eq.enhance}</span>` : '';
-    return `${formatEquipLevel(eq)}${getEquipDisplayName(eq)}${plus}`;
+    let lock = eq && eq.locked ? ' <span title="已鎖定">🔒</span>' : '';
+    return `${formatEquipLevel(eq)}${getEquipDisplayName(eq)}${plus}${lock}`;
 }
 
 // 卡片的屬性、詞條、特效、孔位（背包、角色裝備欄、千寶閣、強化視窗共用）
