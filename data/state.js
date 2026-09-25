@@ -8,6 +8,8 @@ let player = {
     age: 16,                     // 年齡（歲），隨歲月流逝增加（LIFESPAN_START_AGE 起算）
     avatarId: null,              // 目前使用的頭像（config-avatars.js 的 id；null = 依性別預設）
     unlockedAvatars: [],         // 已解鎖的頭像 id，永久保留（avatar.js）
+    avatarFrameId: null,         // 配戴中的頭像光環 id（config-avatar-frames.js；null = 不戴）
+    unlockedFrames: [],          // 已解鎖的頭像光環 id，永久保留
     merit: 0,                    // 功德：斬殺敵對陣營修士取得，滿 MERIT_PER_BUTIAN_STONE 自動凝結七彩補天石（merit.js）
     butianStones: 0,             // 七彩補天石：千寶閣珍貴物資的貨幣
     breakPills: 0,               // 破障丹：渡劫時自動服用

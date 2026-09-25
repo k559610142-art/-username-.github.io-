@@ -148,6 +148,27 @@ function getCultivationRate() {
     return mult;
 }
 
+// 洞府頭像的位置（舞台的 %：left, top, width, height）⚠️ 必須與 index.html 的 #hud-avatar／#pc-hud-avatar CSS 同步
+const HUD_AVATAR_BOXES = { 'hud-avatar': [3.98, 2.24, 17.61, 8.16], 'pc-hud-avatar': [1.890, 3.255, 7.558, 13.542] };
+
+// 頭像光環（avatar.js 的 getPlayerFrame）：#hud-avatar-frame／#pc-hud-avatar-frame 依頭像方框換算位置，讓框內的洞對準頭像
+function updateHudAvatarFrames() {
+    const fr = getPlayerFrame();
+    for (let id in HUD_AVATAR_BOXES) {
+        const el = document.getElementById(id + '-frame');
+        if (!el) continue;
+        if (!fr) { el.style.display = 'none'; continue; }
+        const [l, t, w, h] = HUD_AVATAR_BOXES[id];
+        const b = getFrameOverlayBox(fr);
+        if (el.getAttribute('src') !== fr.img) el.setAttribute('src', fr.img);
+        el.style.display = 'block';
+        el.style.left = (l + w * b.left / 100) + '%';
+        el.style.top = (t + h * b.top / 100) + '%';
+        el.style.width = (w * b.size / 100) + '%';
+        el.style.height = (h * b.size / 100) + '%';
+    }
+}
+
 // 由 ui.js 的 updateUI() 每次呼叫：把數值寫進疊在圖上的 HUD
 // 手機版 id 為 hud-xxx，PC 版為 pc-hud-xxx（index.html 的 #pc-stage），兩邊同時寫入，切換版面不必重算
 function updateHomeHud() {
@@ -161,6 +182,7 @@ function updateHomeHud() {
         avatar.setAttribute('src', avatarInfo.img);
         avatar.style.objectPosition = avatarInfo.pos;
     });
+    updateHudAvatarFrames();
 
     set('hud-player-name', player.name);
     let nameTag = getNameTag();   // 稱號或職業階級（codex.js）

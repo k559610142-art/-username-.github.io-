@@ -54,7 +54,13 @@ function updateCombatVisualPanel() {
 
     const avatarContainer = document.getElementById('battle-player-icon');
     const avatar = getPlayerAvatar();   // 玩家選用的頭像（avatar.js），未選則依性別
-    avatarContainer.innerHTML = `<img src="${avatar.img}" alt="${player.name}" style="width: 60px; height: 60px; object-fit: cover; object-position: ${avatar.pos}; border-radius: 50%; border: 2px solid var(--accent); box-shadow: 0 0 10px var(--accent-glow);">`;
+    // 帶頭像光環（avatar.js）；大小由 CSS 的 #battle-player-icon .framed-avatar 決定（手機版會縮小）。
+    // 內容沒變就不重寫，避免每秒重新載入圖片
+    const battleAvatarHtml = renderFramedAvatar(avatar, getPlayerFrame(), '60px', 'battle-avatar');
+    if (avatarContainer.dataset.html !== battleAvatarHtml) {
+        avatarContainer.innerHTML = battleAvatarHtml;
+        avatarContainer.dataset.html = battleAvatarHtml;
+    }
 
     if (inTribulation && heartDemon) {
         document.getElementById('battle-enemy-title').innerText = "心魔";
