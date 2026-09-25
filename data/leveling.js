@@ -56,7 +56,7 @@ function gainExp(amount) {
         // 渡劫失敗造成的虛弱：重新修回 10 階即解除
         if (player.weakened && player.stage >= 10) {
             player.weakened = false;
-            addLog(`🌟 道基重固，重回【${realms[player.realmIndex]} 10階】，「虛弱」狀態解除！`, "level-up");
+            addLog(`🌟 道基重固，重回【${realms[player.realmIndex]} 10階】，「虛弱」狀態解除！戰力會隨修為進度回升，10 階修為修滿即完全恢復。`, "level-up");
         }
 
         player.hp = getMaxHp();
