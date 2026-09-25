@@ -227,6 +227,98 @@ const partnerList = [
         passive: { statPct: 0.03, "fx:悟道": 0.10 },
         skill: { name: "萬古一擊", chance: 0.18, target: "single", dmgType: "mag", mult: 3.0,
                  desc: "18%：單體術法 300% 傷害", msg: "🌌 李七夜淡然出手，【萬古一擊】早已算盡一切！" }
+    },
+
+    // ---- 2026-09-26 玩家指定新增 ----
+    {
+        id: "hong", name: "洪", title: "永恆真神", work: "吞噬星空2", author: "我吃西紅柿", world: "吞噬星空世界", peak: "永恆真神境",
+        power: { atk: 96, def: 95, spd: 94, mag: 96, found: 97, grow: 95 },
+        analysis: "地球人族的傳奇強者，羅峰的前輩，也是人族撐起一片天的支柱。道心沉穩、底蘊深厚，攻守之間毫無破綻，踏入永恆真神境後更是穩如磐石。",
+        passive: { atkPct: 0.04, statPct: 0.03 },
+        skill: { name: "永恆神威", chance: 0.18, target: "single", dmgType: "phys", mult: 3.0,
+                 desc: "18%：單體物理 300% 傷害", msg: "🌟 永恆真神洪踏步而出，【永恆神威】鎮壓一切！" }
+    },
+    {
+        id: "leishen", name: "雷神", title: "永恆真神", work: "吞噬星空2", author: "我吃西紅柿", world: "吞噬星空世界", peak: "永恆真神境",
+        power: { atk: 97, def: 93, spd: 96, mag: 96, found: 94, grow: 94 },
+        analysis: "與洪同為地球人族的頂尖強者，雷電之道登峰造極，出手迅疾如雷、攻勢狂暴；踏入永恆真神境後，一身雷霆足以撕裂星空。",
+        passive: { thunder: 4, atkPct: 0.04 },
+        skill: { name: "雷神之怒", chance: 0.18, target: "aoe", dmgType: "mag", mult: 2.4, attrs: { thunder: 100 },
+                 desc: "18%：全體術法 240% 傷害並必定雷擊", msg: "⚡ 雷神怒喝一聲，【雷神之怒】萬雷齊落！" }
+    },
+    {
+        id: "huoyuhao", name: "霍雨浩", title: "情緒之神", work: "斗羅大陸II絕世唐門", author: "唐家三少", world: "斗羅大陸（萬年後）", peak: "情緒之神",
+        power: { atk: 88, def: 86, spd: 90, mag: 96, found: 92, grow: 94 },
+        analysis: "精神系的絕世天才，身懷靈眸與冰碧帝皇蠍雙武魂，擅長精神探測、共享與極寒控場，以智取勝；成神後執掌情緒神位，精神攻擊更是防不勝防。",
+        passive: { magPct: 0.03, ice: 2, intPct: 0.02 },
+        skill: { name: "冰碧帝皇蠍・極致之冰", chance: 0.17, target: "aoe", dmgType: "mag", mult: 2.0, attrs: { ice: 100 },
+                 desc: "17%：全體術法 200% 傷害並必定凍結", msg: "❄️ 情緒之神霍雨浩喚出冰碧帝皇蠍，【極致之冰】冰封全場！" }
+    },
+    {
+        id: "tangwulin", name: "唐舞麟", title: "毀滅之神", work: "斗羅大陸IV終極斗羅", author: "唐家三少", world: "斗羅大陸", peak: "毀滅之神",
+        power: { atk: 96, def: 95, spd: 91, mag: 92, found: 94, grow: 94 },
+        analysis: "身具金龍王血脈，肉身力量與防禦驚人，近身搏殺勢不可擋；執掌毀滅神位後，攻勢帶著毀天滅地的霸道，是正面強攻的代表。",
+        passive: { physPct: 0.04, hpPct: 0.02 },
+        skill: { name: "金龍王・毀滅", chance: 0.17, target: "single", dmgType: "phys", mult: 2.6,
+                 desc: "17%：單體物理 260% 傷害", msg: "🐲 毀滅之神唐舞麟金龍王血脈沸騰，【毀滅】一擊轟落！" }
+    },
+    {
+        id: "guyuena", name: "古月娜", title: "生命之神", work: "斗羅大陸IV終極斗羅", author: "唐家三少", world: "斗羅大陸", peak: "生命之神",
+        power: { atk: 90, def: 94, spd: 92, mag: 96, found: 95, grow: 93 },
+        analysis: "銀龍王轉生，掌握龍族元素之力，術法變化萬千；執掌生命神位後生機源源不絕，既能以元素壓制敵手，也能護持同伴不倒。",
+        passive: { hpPct: 0.03, "fx:回春": 0.015, magPct: 0.02 },
+        skill: { name: "銀龍王・生命之光", chance: 0.17, target: "aoe", dmgType: "mag", mult: 2.0, heal: 0.12,
+                 desc: "17%：全體術法 200% 傷害，主人回復 12% 氣血", msg: "🌙 生命之神古月娜銀龍現形，【生命之光】普照四方！" }
+    },
+    {
+        id: "tangxuanyu", name: "唐軒宇", title: "創世之神", work: "斗羅大陸IV終極斗羅", author: "唐家三少", world: "斗羅大陸", peak: "創世之神",
+        power: { atk: 96, def: 95, spd: 94, mag: 97, found: 96, grow: 98 },
+        analysis: "唐舞麟與古月娜之子，同時繼承金、銀龍王兩脈的血統與天賦，成長性冠絕同代；最終成就創世之神，攻伐、術法與底蘊都站上斗羅世界的頂點。",
+        passive: { statPct: 0.03, atkPct: 0.04 },
+        skill: { name: "創世", chance: 0.18, target: "aoe", dmgType: "mag", mult: 2.4, heal: 0.08,
+                 desc: "18%：全體術法 240% 傷害，主人回復 8% 氣血", msg: "🌈 創世之神唐軒宇抬手，【創世】之光開闢天地！" }
+    },
+
+    // ---- 天驕級（綜合 < 82）----
+    {
+        id: "aosika", name: "奧斯卡", title: "香腸大師", work: "斗羅大陸", author: "唐家三少", world: "斗羅大陸", peak: "（以史萊克七怪時期計）",
+        power: { atk: 60, def: 72, spd: 70, mag: 78, found: 80, grow: 82 },
+        analysis: "食物系輔助魂師，恢復大香腸能在戰鬥中迅速回血回魂力，是史萊克七怪的補給核心；本身幾乎沒有攻擊力，但有他在，隊伍就不容易倒下。",
+        passive: { "fx:丹心": 0.20, hpPct: 0.02 },
+        skill: { name: "恢復大香腸", chance: 0.15, target: "self", heal: 0.12, mpHeal: 0.08,
+                 desc: "15%：主人回復 12% 氣血與 8% 靈力", msg: "🌭 奧斯卡念出咒語，一根【恢復大香腸】塞進你嘴裡！" }
+    },
+    {
+        id: "mahongjun", name: "馬紅俊", title: "邪火鳳凰", work: "斗羅大陸", author: "唐家三少", world: "斗羅大陸", peak: "（以史萊克七怪時期計）",
+        power: { atk: 84, def: 70, spd: 72, mag: 82, found: 72, grow: 80 },
+        analysis: "武魂邪火鳳凰，火焰攻擊範圍大、殺傷力強，是史萊克七怪中的火力輸出；性格衝動，防禦與身法是明顯短板。",
+        passive: { fire: 2, "fx:焚燼": 0.20 },
+        skill: { name: "鳳凰火線", chance: 0.15, target: "aoe", dmgType: "mag", mult: 1.6, attrs: { fire: 100 },
+                 desc: "15%：全體術法 160% 傷害並必定燒傷", msg: "🔥 馬紅俊邪火鳳凰附體，【鳳凰火線】橫掃戰場！" }
+    },
+    {
+        id: "ningrongrong", name: "寧榮榮", title: "七寶琉璃", work: "斗羅大陸", author: "唐家三少", world: "斗羅大陸・七寶琉璃宗", peak: "（以史萊克七怪時期計）",
+        power: { atk: 50, def: 70, spd: 72, mag: 86, found: 90, grow: 84 },
+        analysis: "七寶琉璃宗的小公主，武魂七寶琉璃塔是頂級輔助武魂，能全面增幅隊友的力量、速度與魂力；自身戰鬥力薄弱，但出身宗門底蘊深厚。",
+        passive: { statPct: 0.03 },
+        skill: { name: "七寶琉璃塔", chance: 0.15, target: "self", mpHeal: 0.10, shield: { reduce: 0.25, duration: 2 },
+                 desc: "15%：主人回復 10% 靈力，受到傷害 -25% 持續 2 回合", msg: "🗼 寧榮榮祭起【七寶琉璃塔】，寶光加持周身！" }
+    },
+    {
+        id: "xiaoyixian", name: "小醫仙", title: "厄難毒體", work: "鬥破蒼穹", author: "天蠶土豆", world: "鬥氣大陸", peak: "厄難毒體",
+        power: { atk: 70, def: 72, spd: 78, mag: 88, found: 80, grow: 84 },
+        analysis: "身懷厄難毒體，萬毒不侵且能以毒殺人於無形；本性善良卻背負毒體之苦，毒功一旦全力施展，範圍殺傷極為可怕，近身防禦則較弱。",
+        passive: { poison: 3, "fx:蝕骨": 0.20 },
+        skill: { name: "厄難毒霧", chance: 0.15, target: "aoe", dmgType: "mag", mult: 1.6, attrs: { poison: 100 },
+                 desc: "15%：全體術法 160% 傷害並必定中毒", msg: "☠️ 小醫仙厄難毒體發作，【厄難毒霧】瀰漫四野！" }
+    },
+    {
+        id: "ziling", name: "紫靈", title: "妙音仙子", work: "凡人修仙傳", author: "忘語", world: "人界・亂星海妙音門", peak: "（以亂星海時期計）", native: true,
+        power: { atk: 72, def: 74, spd: 86, mag: 82, found: 78, grow: 80 },
+        analysis: "亂星海妙音門出身的絕色女修，心思縝密、善於周旋，身法與幻惑之術見長，擅長牽制與脫身；正面攻伐不算突出。",
+        passive: { eva: 2, chaPct: 0.03 },
+        skill: { name: "妙音鎖魂", chance: 0.15, target: "single", dmgType: "mag", mult: 1.4, freezeAll: true,
+                 desc: "15%：單體術法 140% 傷害，所有敵人凍結 1 回合", msg: "🎶 紫靈輕撥琴弦，【妙音鎖魂】令群敵心神失守！" }
     }
 ];
 
