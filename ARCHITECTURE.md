@@ -137,7 +137,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 17 | `stats.js` | `EQUIP_STAT_KEYS`/`BASE_STAT_KEYS`、`getEquipBonus`(四維＋減傷/閃避/屬性傷害；四維 × 強化倍率與主修武器加成，再加 gear.js `getBonusTotals` 的詞條／套裝／稱號／職業)/`getElementCounts`/`getSpiritRoots`(靈根判定)/`getRootBonus`(靈根加成總和)/`getPlayerElement`(本命五行，五行相剋用)/`getRealmStageExp`(依 realmPacing 換算每階經驗基數，有快取)/`getNextExp`/`getLevelExpNeeded`/`hasLiveBeast`(出戰中才算，呼叫 beast-combat.js 的 isBeastActive)/`getBasePower`/`getPhysAttack`/`getMagAttack`(兩者皆乘上懸賞對決的化功 `getDuelWeakenMult()` 與 `getGearPctBonus`)/`getMaxHp`(乘 `getGearPctBonus('hp')`)/`getMaxMp`(兩者皆加上轉世保留值)/`getReincarnateBonus`/`getSectTier`/`getAllSkills` | `player`、`realms`、`sectData`、`LEVEL_*`、`equipTypes`/`WUXING_COUNTERS`、靈寵輔助計時、`bounty.js`(getDuelWeakenMult) | `ui.js`、`combat.js`、`leveling.js`、`tribulation.js`、`beast-combat.js` 等幾乎全部功能檔 |
 | 18 | `elements.js` | `newStatus`/`getPlayerCombatAttrs`(含 `element`；懸賞對決被破甲時減傷／閃避 × `getDuelArmorMult()`；裝備特效的護體／先手盾／定神／破甲／洞察／剋敵／寒徹／焚燼／蝕骨欄位與套裝提高的上限)/`getWuxingCounterMult`/`withSkillEffect`/`getMapCategoryIndex`/`rollMonsterAttrs`/`resolveHit`/`addDotStack`/`tickStatus`/`formatStatus`/`summarizeTags`/`formatEquipStats` | `config-elements.js`、`stats.js`(getEquipBonus/getPlayerElement)、`library.js`(getElementBookBonus)、`wuxingElements`、`maps`、`playerStatus` | `combat.js`、`tribulation.js`、`ui.js`、`bag.js`/`equipment.js`/`auction.js`/`lingbao-shop.js`(裝備屬性文字) |
 | 19 | `ui.js` | 常數 `PLAYER_AVATARS`（頭像 `img`（本地 images/avatar-*.jpg）/裁切位置 `pos`/預設道號，洞府頭像框、戰鬥實況、性別選擇共用；性別選擇視窗的兩張 `<img>` 寫在 index.html，換圖時要一起改）、`updateUI`/`updateCombatVisualPanel`/`formatWuxingCounterTip`/`updateTribulationUI`/`updatePotionCooldownUI`/`updateStudyCountsUI`/`openSkillModal`/`renderSkillList`/`addLog`/`refreshCombatStatusText`/`updateAutoSettings`/`syncAutoSettingsUI`/`updateSectFacilitiesUI`/`closeModal`/`toggleDrawer`/`formatCountdown`/`resolveBatchCount`(×1/×10/最高 共用)/批次刪除工具 `renderBulkDeleteBar`/`getCheckedBulkQualities`/`toggleAllBulkQualities` | `player`、`realms`、`stats.js` 的計算函式、`lifespan.js`(getDeathLifespanCost) | 幾乎所有功能檔在資料變動後都會呼叫 `updateUI()`/`addLog()` |
-| 20 | `map.js` | `isInSect`(是否身在宗門)/`returnToSect`(洞府「宗門」：傳送回宗門並開宗門分頁，第 20 節)/`openWorldMapModal`(修仙地圖彈窗，顯示目前所在)/`renderTownTeleports`(第一區城鎮傳送點卡片)/`goToTown(i)`(傳送並進入城內場景)/`openMapCategoryModal`(略過 `hidden` 的宗門)/`selectMap`(選定後關閉兩層地圖彈窗)/`changeMap`(懸賞對決中換地圖 = `endBountyDuel("flee")` 逃離；暫存區滿時不能進野外，enhance.js) | `maps`、`SECT_MAP_NAME`、`player`、`ui.js`、`bounty.js` | `ui.js`(updateSectFacilitiesUI)、`combat.js`/`quest.js`(門派任務須在宗門)、HTML 按鈕；changeMap 離開宗門時呼叫 `quest.js` 的 stopQuest |
+| 20 | `map.js` | `isInSect`(是否身在宗門)/`returnToSect`(洞府「宗門」：傳送回宗門並開宗門分頁，第 20 節)/`openWorldMapModal`(修仙地圖彈窗，顯示目前所在)/`renderTownTeleports`(城鎮傳送點卡片)/`goToTown(i)`(傳送並進入城內場景)/`openMapCategoryModal`(略過 `hidden` 的宗門)/`selectMap`(選定後關閉兩層地圖彈窗)/`changeMap`(懸賞對決中換地圖 = `endBountyDuel("flee")` 逃離；暫存區滿時不能進野外，enhance.js) | `maps`、`SECT_MAP_NAME`、`player`、`ui.js`、`bounty.js` | `ui.js`(updateSectFacilitiesUI)、`combat.js`/`quest.js`(門派任務須在宗門)、HTML 按鈕；changeMap 離開宗門時呼叫 `quest.js` 的 stopQuest |
 | 21 | `combat.js` | `combatTick`/`playerAttackTurn`(普攻/技能出手，渡劫共用；技能類型 single/aoe/heal/buff＋仙法的 shield 守護／control 牽制，並處理魔功 hpCost 反噬與 lifesteal 吸血)/`onPlayerKilledInField`/`checkAutoHealAndMana`/`tryRescueServant` | `player`、`enemies`、`shopItems`、`servantQualities`、`servantNames`、`stats.js`、`elements.js`(resolveHit/tickStatus)、`leveling.js`(gainExp)、`beast-combat.js`(petAssistTick/applyPetDamageReduction/tickBeastUpkeep 每秒維持費計時)、`lifespan.js`(handlePlayerDeath)、`map.js`(changeMap 死亡回城)、`merit.js`(isEvilHuntUnlocked/getKarmaState/onCultivatorKilled/settleMeritStones，野外修士與暗殺者)、`config-merit.js`、`bounty.js`(對決中由 bountyDuelTick 接管；刷新新一波前呼叫 tryStartBountyDuel)、裝備系統（gear.js 特效／套裝／奪寶、enhance.js 星允鐵與暫存區、profession.js 職業技能與熟練度，第 37 節） | `main.js`(setInterval 每秒呼叫)、`bounty.js`(對決落敗呼叫 onPlayerKilledInField、playerAttackTurn) |
 | 22 | `leveling.js` | `REINCARNATE_KEEP_RATE`(轉世保留比例 5%)、`gainExp`/`gainLevelExp`/`advanceRealm`/`triggerReincarnate`（規則見第 25 節） | `realms`、`player`、`stats.js`、`ui.js`(updateSectFacilitiesUI)、`beast-combat.js`(gainBeastExp)、`lifespan.js`(gainRealmLifespan) | `combat.js`、`tribulation.js`、`save.js`、HTML 輪迴按鈕 |
 | 23 | `lifespan.js` | `getDeathLifespanCost`/`formatLifespan`/`getLifespanFloor`/`getAgingHours`(依 realmPacing 算出一境界壽元可撐時數)/`getAgingMultiplier`/`getAgingPerMinute`/`ageLifespan`(同時增加年齡 `player.age`)/`checkLifespanWarnings`(提示旗標 `lifespanWarned`，不存檔)/`getInitialLifespanForRealm`/`gainRealmLifespan`/`handlePlayerDeath`/`triggerLifespanGameOver` | `lifespanByRealm`、`LIFESPAN_*`、`player`、`inTribulation`、`elements.js`(getMapCategoryIndex)、`beast-combat.js`(killAllBeasts) | `combat.js`(每秒 ageLifespan、死亡)、`tribulation.js`(死亡)、`leveling.js`(突破)、`save.js`(離線流逝、舊存檔)、`ui.js`、`auction.js` |
@@ -754,10 +754,10 @@ combatTick() 每秒執行 [combat.js]
 
   | 地圖分類 | 減傷 | 閃避 | 帶異屬性的機率 | 觸發率 |
   |---|---|---|---|---|
-  | 二、野外歷練 | 0% | 2% | 30% | 5% |
-  | 三、開放世界 | 5% | 4% | 50% | 10% |
-  | 四、上古禁區 | 10% | 6% | 70% | 15% |
-  | 五、諸天戰場 | 15% | 8% | 90% | 20% |
+  | 一、野外歷練 | 0% | 2% | 30% | 5% |
+  | 二、開放世界 | 5% | 4% | 50% | 10% |
+  | 三、上古禁區 | 10% | 6% | 70% | 15% |
+  | 四、諸天戰場 | 15% | 8% | 90% | 20% |
 
   - 每隻怪物隨機一種**五行**（ttrs.element，五種機率相同）。
   - 怪物的**異屬性**只會是冰／毒／雷（`MONSTER_AFFIX_TYPES`），不再帶火傷、金傷（火、金已屬於五行）；玩家武器仍可帶全部五種。
@@ -884,18 +884,20 @@ combatTick() 每秒執行 [combat.js]
 - **仍使用原生對話框的地方**（在 App 內建瀏覽器可能失效）：拜入宗門、渡劫、靈寶閣兌換、轉世、完全重置等的 `confirm()` 確認，
   以及各處資源不足的 `alert()` 提示。若玩家回報這些按鈕在 LINE 內沒反應，比照本節改為視窗內確認。
 
-## 20. 宗門地圖與城鎮（第一區）
+## 20. 宗門地圖與城鎮（城鎮區，不編號）
 
-- **2026-09-26 改版：第一區改名「一、城鎮 (安全區)」**，修仙地圖只列出 **天南城**、**天星城**（亂星海的主城；第三區已有戰鬥地圖「亂星海」，地圖名稱不可重複，所以城鎮叫天星城）。
+- **2026-09-26 改版：第一區改名「一、城鎮 (安全區)」**，修仙地圖只列出 **天南城**、**天星城**（亂星海的主城；第二區已有戰鬥地圖「亂星海」，地圖名稱不可重複，所以城鎮叫天星城）。
+- **2026-09-27 戰鬥區重新編號**：城鎮拿掉「一、」改為「城鎮 (安全區)」；戰鬥區依序改為 **第一區 野外歷練／第二區 開放世界／第三區 上古禁區／第四區 諸天至高戰場**（`config-maps.js` 的 `category` 與 `index.html` 修仙地圖按鈕）。
+  只改顯示文字，`maps` 索引不變（城鎮 0、戰鬥區 1～4），`category` 字串只用於標題顯示（`map.js`、`sect.js`），不影響存檔。
   - 城鎮是安全區、可打坐（經驗倍率 ×3，同宗門），但**不是宗門**，宗門設施不能用（`isInSect()` 只認 `SECT_MAP_NAME`）；離開宗門到城鎮也會中斷親自執行的門派任務。
   - **宗門不列在修仙地圖**：`maps[0].items[0]` 仍是宗門，但標 `hidden: true`，`openMapCategoryModal` 會略過。
     ⚠️ **宗門必須維持在 `maps[0].items[0]`**：死亡回城（combat.js）、渡劫失敗（tribulation.js）、暫存區滿（enhance.js）都用 `changeMap(0, 0)`，讀檔找不到地圖時（save.js）也退回 `maps[0].items[0]`。
   - **回宗門的方式**：洞府的「宗門」（手機熱點、PC `pcStageButtons` 的 `sect`）改呼叫 `map.js` 的 `returnToSect()`：不在宗門就先 `changeMap(0, 0)` 傳送回去，再打開宗門分頁；已在宗門則只開分頁。
     懸賞對決中按宗門 = 逃離對決（`changeMap` 的既有行為）。
   - 地圖分類索引不變（城鎮仍是索引 0），`REPUTATION_MAX_BY_MAP_CATEGORY`、`getMapCategoryIndex` 不受影響。
-  - **城鎮傳送點（2026-09-26）**：修仙地圖視窗的第一區不再是按鈕，而是直接列出城鎮卡片（`#world-map-towns`，`map.js` 的 `renderTownTeleports()`，
+  - **城鎮傳送點（2026-09-26）**：修仙地圖視窗的城鎮區不再是按鈕，而是直接列出城鎮卡片（`#world-map-towns`，`map.js` 的 `renderTownTeleports()`，
     `openWorldMapModal` 每次開啟時重繪）：兩欄並排，有 `thumb` 顯示縮圖、沒有則顯示 🏯 佔位，點擊即 `selectMap(0, i)` 傳送；目前所在的城鎮標「📍 當前所在」且不可點。
-    第二～五區仍是按鈕 → `openMapCategoryModal`。
+    第一～四區（戰鬥區，maps 索引 1～4）仍是按鈕 → `openMapCategoryModal`。
   - **城內場景（第二頁面，2026-09-26）**：城鎮卡片改呼叫 `goToTown(i)`：不在該城就先 `selectMap` 傳送，
     該城在 `config-towns.js` 有場景就開啟 `#town-scene`（`town.js` 的 `openTownScene`）；已在城內也能點卡片直接進城（卡片標「點擊進城」）。
     - 目前只有**天星城**（「天星城・坊市」）。傳送點：右側雕花石拱門 = **天星賭坊**（`openCasinoModal()`，第 40 節；橫圖 rect [1150,140,270,430]、直式 [470,600,234,700]）。
@@ -974,10 +976,10 @@ combatTick() 每秒執行 [combat.js]
 
 | 地圖分類 | 每隻聲望 | 平均 |
 |---|---|---|
-| 二、野外歷練 | 1 ~ 3 | 2 |
-| 三、開放世界 | 1 ~ 10 | 5.5 |
-| 四、上古禁區 | 1 ~ 30 | 15.5 |
-| 五、諸天戰場 | 1 ~ 100 | 50.5 |
+| 一、野外歷練 | 1 ~ 3 | 2 |
+| 二、開放世界 | 1 ~ 10 | 5.5 |
+| 三、上古禁區 | 1 ~ 30 | 15.5 |
+| 四、諸天戰場 | 1 ~ 100 | 50.5 |
 
 - 舊版不分地圖一律「每殺 1 隻 = 1 點」，導致低難度地圖刷聲望效率最高；改成分區後高難度地圖才划算。
 - 門派任務、僕從派遣**不給聲望**（獎勵只有道具：獸丹／靈草／武學積分／礦石，初級打掃另給 50 靈石，見 `config-quests.js`）。
@@ -1205,7 +1207,7 @@ combatTick() 每秒執行 [combat.js]
 （以 8 種舊存檔形態測試目前程式皆可正常讀取；移除 `#age-display` 即可重現同一錯誤。）
 
 ### 1. 發佈版本號（防止新舊檔案混用）
-- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260927g`）。
+- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260927h`）。
 - **每次推上 GitHub Pages 前，把所有 `?v=` 全部取代成新值**（例：日期＋序號）。新 index.html 會指向新網址的 JS，不會再拿到快取的舊檔。
 - 新增 `data/*.js` 時也要記得帶上 `?v=`。
 

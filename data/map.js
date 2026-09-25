@@ -13,7 +13,7 @@ function openWorldMapModal() {
     document.getElementById('world-map-modal').style.display = 'flex';
 }
 
-// 第一區城鎮：直接在修仙地圖顯示傳送點卡片（有 thumb 顯示縮圖），點擊即傳送；宗門（hidden）不列
+// 城鎮（不編號）：直接在修仙地圖顯示傳送點卡片（有 thumb 顯示縮圖），點擊即傳送；宗門（hidden）不列
 function renderTownTeleports() {
     const box = document.getElementById('world-map-towns');
     if (!box) return;

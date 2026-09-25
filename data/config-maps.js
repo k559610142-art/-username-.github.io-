@@ -12,26 +12,26 @@ const SECT_MAP_NAME = "宗門";
 const KILLS_PER_HOUR_ESTIMATE = 1160;   // 實測值：波次之間有 5 秒刷新，滿速約每秒 0.32 隻
 
 const maps = [
-    // 第一區「城鎮」（安全區）。⚠️ items[0] 必須是宗門：死亡回城、渡劫失敗、暫存區滿等都用 changeMap(0, 0)／maps[0].items[0] 代表宗門。
+    // 城鎮（安全區，不編號；戰鬥區為第一～四區）。⚠️ items[0] 必須是宗門：死亡回城、渡劫失敗、暫存區滿等都用 changeMap(0, 0)／maps[0].items[0] 代表宗門。
     // 宗門標 hidden，不列在修仙地圖裡，只能按洞府的「宗門」回去（map.js 的 returnToSect）。
     // 城鎮是安全區、可打坐，但不是宗門，宗門設施不能用（isInSect 只認 SECT_MAP_NAME）。
-    { category: "一、城鎮 (安全區)", isSafe: true, items: [
+    { category: "城鎮 (安全區)", isSafe: true, items: [
         { name: SECT_MAP_NAME, expRate: 3, diff: 1, coins: 0, hidden: true },
         { name: "天南城", expRate: 3, diff: 1, coins: 0 },
-        { name: "天星城", expRate: 3, diff: 1, coins: 0, thumb: "images/maps/tianxing-city.jpg" }   // 亂星海的主城；第三區已有戰鬥地圖「亂星海」，名稱不可重複
+        { name: "天星城", expRate: 3, diff: 1, coins: 0, thumb: "images/maps/tianxing-city.jpg" }   // 亂星海的主城；第二區已有戰鬥地圖「亂星海」，名稱不可重複
     ]},
-    { category: "二、野外歷練 (戰鬥區)", isSafe: false, items: [
+    { category: "一、野外歷練 (戰鬥區)", isSafe: false, items: [
         //                                                      coins   ≈ 每小時上限
         { name: "靈山大川", expRate: 8, diff: 2, coins: 20 },        //   2.3 萬
         { name: "深淵險地", expRate: 20, diff: 8, coins: 80 },       //   9.3 萬
         { name: "上古遺跡", expRate: 50, diff: 25, coins: 250 }      //  29 萬
     ]},
-    { category: "三、開放世界大區域 (高難度戰鬥)", isSafe: false, items: [
+    { category: "二、開放世界大區域 (高難度戰鬥)", isSafe: false, items: [
         { name: "天南", expRate: 100, diff: 100, coins: 1000 },      // 116 萬
         { name: "亂星海", expRate: 300, diff: 400, coins: 1650 },    // 191 萬（上限 200 萬）
         { name: "鬼谷八荒", expRate: 1000, diff: 2000, coins: 2450 } // 284 萬（上限 300 萬）
     ]},
-    { category: "四、禁區 (仙人解鎖·高難)", isSafe: false, items: [
+    { category: "三、禁區 (仙人解鎖·高難)", isSafe: false, items: [
         { name: "荒古禁地", expRate: 3000, diff: 5000, coins: 3350, minRealm: 10, minStat: 500 },      // 389 萬（上限 400 萬）
         { name: "太初古礦", expRate: 4000, diff: 7000, coins: 4200, minRealm: 10, minStat: 500 },      // 487 萬（上限 500 萬）
         { name: "上蒼（葬天島）", expRate: 5000, diff: 10000, coins: 6900, minRealm: 10, minStat: 500 }, // 800 萬
@@ -42,7 +42,7 @@ const maps = [
     ]},
     // 上蒼之後（含諸天戰場）一律維持在每小時 800～1000 萬，不再隨難度放大；
     // 這幾張圖的差異改由經驗與聲望體現，靈石封頂。
-    { category: "五、諸天至高戰場 (頂級戰場·極難)", isSafe: false, items: [
+    { category: "四、諸天至高戰場 (頂級戰場·極難)", isSafe: false, items: [
         { name: "仙界戰場", expRate: 15000, diff: 50000, coins: 8400, minRealm: 10, minStat: 5000, isTopBattle: true },   // 974 萬
         { name: "萬界戰場", expRate: 25000, diff: 90000, coins: 8400, minRealm: 10, minStat: 5000, isTopBattle: true },   // 974 萬
         { name: "混沌初界", expRate: 50000, diff: 200000, coins: 8400, minRealm: 10, minStat: 5000, isTopBattle: true }   // 974 萬
@@ -52,10 +52,10 @@ const maps = [
 // 每擊殺一隻妖獸獲得的聲望：依地圖分類（maps 的索引）隨機 1 ~ 上限，難度越高聲望越多。
 // 安全區（索引 0）不會戰鬥，沒有對應值；找不到時退回 1 點。
 const REPUTATION_MAX_BY_MAP_CATEGORY = {
-    1: 3,     // 二、野外歷練
-    2: 10,    // 三、開放世界
-    3: 30,    // 四、上古禁區
-    4: 100    // 五、諸天至高戰場
+    1: 3,     // 一、野外歷練
+    2: 10,    // 二、開放世界
+    3: 30,    // 三、上古禁區
+    4: 100    // 四、諸天至高戰場
 };
 
 // 離線掛機的「每秒戰鬥次數」：離線收益 = 離線秒數 × 此係數 × 每次的經驗/靈石。

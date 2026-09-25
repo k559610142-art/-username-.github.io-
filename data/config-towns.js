@@ -1,6 +1,6 @@
 // 城內場景（第二頁面，ARCHITECTURE.md 第 20 節）；邏輯在 town.js
 // 在修仙地圖點有場景的城鎮 → 傳送過去並開啟全螢幕城內畫面；畫面上的「傳送點」（hotspots）點擊後執行 action
-// key = 城鎮地圖名稱（config-maps.js 第一區的 name）
+// key = 城鎮地圖名稱（config-maps.js 城鎮區的 name）
 //
 // img        = 場景圖（images/towns/），imgW／imgH = 圖的原始像素，用來換算傳送點位置
 // portrait   = 選填：手機直式專用圖 { img, imgW, imgH, hotspots }（建議 9:19.5，例 1080×2340）
