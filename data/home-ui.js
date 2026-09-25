@@ -21,6 +21,9 @@ function layoutStage() {
     const vw = window.innerWidth, vh = window.innerHeight;
     const pc = resolveDisplayLayout(vw, vh) === 'pc';
     document.body.classList.toggle('layout-pc', pc);
+    // 寬螢幕（自動尺寸會選 PC）卻被設成手機版時，顯示明顯的「切換回 PC 版」按鈕；手機版的 ⚙️ 設定鈕太小，玩家常找不到
+    const switchBtn = document.getElementById('layout-switch-btn');
+    if (switchBtn) switchBtn.classList.toggle('show', !pc && vw >= AUTO_PC_MIN_WIDTH && vw / vh >= AUTO_PC_MIN_RATIO);
 
     let w, h, target, imgW, imgH;
     if (pc) {
