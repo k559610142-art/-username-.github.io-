@@ -84,7 +84,7 @@ function settleMeritStones() {
     if (n <= 0) return 0;
     player.merit -= n * MERIT_PER_BUTIAN_STONE;
     player.butianStones = (player.butianStones || 0) + n;
-    addLog(`💎 功德圓滿，${(n * MERIT_PER_BUTIAN_STONE).toLocaleString()} 點功德凝結為 ${n} 顆【七彩補天石】！（持有 ${player.butianStones} 顆）`, "level-up");
+    addLog(`💎 功德圓滿，${(n * MERIT_PER_BUTIAN_STONE).toWan()} 點功德凝結為 ${n} 顆【七彩補天石】！（持有 ${player.butianStones} 顆）`, "level-up");
     return n;
 }
 
@@ -122,21 +122,21 @@ function renderEvilHunt() {
         <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 20px; margin-bottom: 10px; font-size: 0.92em;">
             <span>陣營 <b style="color: ${faction === "邪" ? '#f87171' : '#60a5fa'};">${getFactionLabel(faction)}</b></span>
             <span>善惡 ${formatKarmaTag()}</span>
-            <span>🙏 功德 <b style="color: #facc15;">${(player.merit || 0).toLocaleString()}</b> / ${MERIT_PER_BUTIAN_STONE.toLocaleString()}</span>
-            <span class="rainbow-text">💎 七彩補天石 ${(player.butianStones || 0).toLocaleString()}</span>
-            <span class="rainbow-text">🔮 破障丹 ${(player.breakPills || 0).toLocaleString()}</span>
+            <span>🙏 功德 <b style="color: #facc15;">${(player.merit || 0).toWan()}</b> / ${MERIT_PER_BUTIAN_STONE.toWan()}</span>
+            <span class="rainbow-text">💎 七彩補天石 ${(player.butianStones || 0).toWan()}</span>
+            <span class="rainbow-text">🔮 破障丹 ${(player.breakPills || 0).toWan()}</span>
         </div>
         <details class="evil-hunt-rules">
             <summary>📜 規則說明</summary>
             <p>・陣營依所屬宗門與學會的仙法判定（${sectData.flatMap(c => c.items).filter(s => s.faction === "邪").map(s => s.name).join('、')}與邪道魔功偏邪派），你是<b>${getFactionLabel(faction)}</b>，懸賞榜列出的是 <b>${getFactionLabel(foe)}</b> 人物。</p>
-            <p>・懸賞榜每 ${BOUNTY_REFRESH_HOURS} 小時刷新 6 名（天榜 1、地榜 2、人榜 3），境界在你目前境界的 ${BOUNTY_REALM_OFFSET_MIN}～+${BOUNTY_REALM_OFFSET_MAX} 境之間隨機（0.1 境 = 1 階）。<b>點擊「接取」後</b>，在野外歷練時才有機會遇上對方並展開一對一對決；斬殺可${meritWord} ${BOUNTY_MERIT_MIN}～${BOUNTY_MERIT_MAX.toLocaleString()}（不論強弱）。落敗視同戰死，懸賞保留可再挑戰。</p>
+            <p>・懸賞榜每 ${BOUNTY_REFRESH_HOURS} 小時刷新 6 名（天榜 1、地榜 2、人榜 3），境界在你目前境界的 ${BOUNTY_REALM_OFFSET_MIN}～+${BOUNTY_REALM_OFFSET_MAX} 境之間隨機（0.1 境 = 1 階）。<b>點擊「接取」後</b>，在野外歷練時才有機會遇上對方並展開一對一對決；斬殺可${meritWord} ${BOUNTY_MERIT_MIN}～${BOUNTY_MERIT_MAX.toWan()}（不論強弱）。落敗視同戰死，懸賞保留可再挑戰。</p>
             <p>・天榜比心魔更強，擅長吸血、退魔（吸走靈力）與各種削弱武學；地榜約天榜 8 成、人榜約 6 成實力。</p>
             <p>・野外偶爾會遇到正道或魔道修士（不是每波都有）：斬殺敵對陣營可得 ${FIELD_MERIT_MIN}～${FIELD_MERIT_MAX} 功德，同陣營不給功德。</p>
             <p>・善惡：殺邪派人士偏「善」、殺正派人士偏「惡」。${ambushText}</p>
-            <p>・身上功德每滿 ${MERIT_PER_BUTIAN_STONE.toLocaleString()} 自動凝結 1 顆七彩補天石，可到千寶閣購買破障丹（渡劫勝算 +10%）。</p>
+            <p>・身上功德每滿 ${MERIT_PER_BUTIAN_STONE.toWan()} 自動凝結 1 顆七彩補天石，可到千寶閣購買破障丹（渡劫勝算 +10%）。</p>
         </details>
         ${renderBountyBoard()}
-        <p style="color: #9ca3af; font-size: 0.8em; margin-top: 10px;">累計斬殺修士 ${(player.evilKills || 0).toLocaleString()} 名｜懸賞伏誅 ${(player.bountyKills || 0).toLocaleString()} 名</p>`;
+        <p style="color: #9ca3af; font-size: 0.8em; margin-top: 10px;">累計斬殺修士 ${(player.evilKills || 0).toWan()} 名｜懸賞伏誅 ${(player.bountyKills || 0).toWan()} 名</p>`;
 }
 
 // ---- 千寶閣「珍貴物資」區（由 auction.js 的 renderAuction 嵌入）----
@@ -148,13 +148,13 @@ function renderPreciousSection() {
     return `
         <h3 class="rainbow-text" style="margin: 22px 0 6px;">✨ 珍貴物資（常駐）</h3>
         <p style="color: #9ca3af; font-size: 0.82em; margin: 0 0 10px;">
-            持有：🙏 功德 <b style="color: #facc15;">${(player.merit || 0).toLocaleString()}</b> / ${MERIT_PER_BUTIAN_STONE.toLocaleString()}｜💎 七彩補天石 <b>${player.butianStones.toLocaleString()}</b>｜🔮 破障丹 <b>${player.breakPills.toLocaleString()}</b>
+            持有：🙏 功德 <b style="color: #facc15;">${(player.merit || 0).toWan()}</b> / ${MERIT_PER_BUTIAN_STONE.toWan()}｜💎 七彩補天石 <b>${player.butianStones.toWan()}</b>｜🔮 破障丹 <b>${player.breakPills.toWan()}</b>
         </p>
         <div class="grid-container">
             <div class="card rainbow-glow">
                 <h3 class="rainbow-text">${stone.icon} ${stone.name}</h3>
                 <p style="font-size: 0.8em; color: #9ca3af;">${stone.desc}</p>
-                <p style="font-size: 0.85em; color: var(--accent); margin: 6px 0;">功德滿 ${MERIT_PER_BUTIAN_STONE.toLocaleString()} 自動凝結</p>
+                <p style="font-size: 0.85em; color: var(--accent); margin: 6px 0;">功德滿 ${MERIT_PER_BUTIAN_STONE.toWan()} 自動凝結</p>
             </div>
             <div class="card rainbow-glow">
                 <h3 class="rainbow-text">${pill.icon} ${pill.name}</h3>

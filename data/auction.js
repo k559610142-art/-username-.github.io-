@@ -87,14 +87,14 @@ function getAuctionItemInfo(item) {
 function canPayAuctionItem(item, price) {
     if (item.kind === "lifePill" || item.kind === "ironBag") {
         if (player.coins < price || (player.reputation || 0) < item.repPrice) {
-            alert(`資源不足！\n需要 ${price.toLocaleString()} 靈石 + ${item.repPrice.toLocaleString()} 聲望。\n你目前有 ${player.coins.toLocaleString()} 靈石、${(player.reputation || 0).toLocaleString()} 聲望。`);
+            alert(`資源不足！\n需要 ${price.toWan()} 靈石 + ${item.repPrice.toWan()} 聲望。\n你目前有 ${player.coins.toWan()} 靈石、${(player.reputation || 0).toWan()} 聲望。`);
             return false;
         }
         return true;
     }
     if (!hasEquipInventorySpace()) return false;
     if (player.coins < price) {
-        alert(`靈石不足！\n需要 ${price.toLocaleString()} 靈石，你目前只有 ${player.coins.toLocaleString()} 靈石。`);
+        alert(`靈石不足！\n需要 ${price.toWan()} 靈石，你目前只有 ${player.coins.toWan()} 靈石。`);
         return false;
     }
     return true;
@@ -116,7 +116,7 @@ function buyAuctionItem(itemId) {
         if (item.rival) {
             // 對手搶先出價（底價 +10%）
             item.bid = { current: getRivalBid(item, item.price), leader: "rival",
-                         history: [`${item.rival.name}：「這件我要了！」出價 ${getRivalBid(item, item.price).toLocaleString()}`] };
+                         history: [`${item.rival.name}：「這件我要了！」出價 ${getRivalBid(item, item.price).toWan()}`] };
         }
     }
     if (item.rival && !item.rival.out) {
@@ -140,14 +140,14 @@ function completeAuctionPurchase(item, price) {
         const pill = auctionLifePills.find(p => p.id === item.pillId);
         player.reputation -= item.repPrice;
         player.lifespan += pill.years;
-        addLog(`🏺 ${contested}於千寶閣以 ${price.toLocaleString()} 靈石標下【${pill.name}】並當場服下，續命 ${pill.years} 年！（剩餘壽元 ${formatLifespan(player.lifespan)} 年）`, "heal");
+        addLog(`🏺 ${contested}於千寶閣以 ${price.toWan()} 靈石標下【${pill.name}】並當場服下，續命 ${pill.years} 年！（剩餘壽元 ${formatLifespan(player.lifespan)} 年）`, "heal");
     } else if (item.kind === "ironBag") {
         player.reputation -= item.repPrice;
         player.starIron = (player.starIron || 0) + item.amount;
-        addLog(`🏺 於千寶閣以 ${price.toLocaleString()} 靈石＋${item.repPrice.toLocaleString()} 聲望購得【星允鐵袋】，星允鐵 +${item.amount}！（持有 ${player.starIron.toLocaleString()}）`, "level-up");
+        addLog(`🏺 於千寶閣以 ${price.toWan()} 靈石＋${item.repPrice.toWan()} 聲望購得【星允鐵袋】，星允鐵 +${item.amount}！（持有 ${player.starIron.toWan()}）`, "level-up");
     } else {
         player.equipInventory.push(item.equip);   // 孔位在上架時就決定；更新前上架的舊商品沒有孔，也不補
-        addLog(`🏺 ${contested}於千寶閣以 ${price.toLocaleString()} 靈石標下【${item.equip.quality}·${item.equip.element}屬性】的【${getEquipDisplayName(item.equip)}】！`, "equip");
+        addLog(`🏺 ${contested}於千寶閣以 ${price.toWan()} 靈石標下【${item.equip.quality}·${item.equip.element}屬性】的【${getEquipDisplayName(item.equip)}】！`, "equip");
     }
     renderAuction();
     updateUI();
@@ -172,14 +172,14 @@ function renderAuctionBid() {
     const leaderText = bid.leader === "player" ? `<b style="color:#4ade80;">你</b>` : `<b style="color:#f87171;">${item.rival.name}</b>`;
     const stepBtns = AUCTION_BID_STEPS.map(step => {
         let next = bid.current + Math.ceil(item.price * step);
-        return `<button class="shop-btn" ${player.coins < next ? 'disabled' : ''} onclick="raiseAuctionBid(${step})">加價 ${Math.round(step * 100)}%（出價 ${next.toLocaleString()}）</button>`;
+        return `<button class="shop-btn" ${player.coins < next ? 'disabled' : ''} onclick="raiseAuctionBid(${step})">加價 ${Math.round(step * 100)}%（出價 ${next.toWan()}）</button>`;
     }).join('');
     container.innerHTML = `
         <h3 class="quality-${info.quality}" style="margin: 0 0 6px;">${info.name}</h3>
-        <p style="color: #9ca3af; font-size: 0.85em; margin: 0;">底價 ${item.price.toLocaleString()} 靈石${item.kind === "lifePill" ? ` + ${item.repPrice.toLocaleString()} 聲望（聲望不隨競價增加）` : ''}</p>
-        <p style="font-size: 1.1em; margin: 10px 0;">目前最高出價：<b style="color: var(--accent);">${bid.current.toLocaleString()}</b> 靈石（領先：${leaderText}）</p>
+        <p style="color: #9ca3af; font-size: 0.85em; margin: 0;">底價 ${item.price.toWan()} 靈石${item.kind === "lifePill" ? ` + ${item.repPrice.toWan()} 聲望（聲望不隨競價增加）` : ''}</p>
+        <p style="font-size: 1.1em; margin: 10px 0;">目前最高出價：<b style="color: var(--accent);">${bid.current.toWan()}</b> 靈石（領先：${leaderText}）</p>
         <div class="auction-bid-log">${bid.history.slice(-6).map(h => `<div>${h}</div>`).join('')}</div>
-        <p style="color: #9ca3af; font-size: 0.8em;">持有靈石 ${player.coins.toLocaleString()}</p>
+        <p style="color: #9ca3af; font-size: 0.8em;">持有靈石 ${player.coins.toWan()}</p>
         <div class="batch-btns">${stepBtns}</div>
         <button class="sys-btn" style="margin-top: 8px; border-color: #f87171; color: #f87171;" onclick="giveUpAuctionBid()">放棄（讓給對方）</button>`;
 }
@@ -192,13 +192,13 @@ function raiseAuctionBid(step) {
     if (!canPayAuctionItem(item, next)) return;
     item.bid.current = next;
     item.bid.leader = "player";
-    item.bid.history.push(`你：出價 ${next.toLocaleString()}`);
+    item.bid.history.push(`你：出價 ${next.toWan()}`);
 
     let rivalNext = getRivalBid(item, next);
     if (rivalNext <= item.rival.max) {
         item.bid.current = rivalNext;
         item.bid.leader = "rival";
-        item.bid.history.push(`${item.rival.name}：冷笑一聲，跟價 ${rivalNext.toLocaleString()}`);
+        item.bid.history.push(`${item.rival.name}：冷笑一聲，跟價 ${rivalNext.toWan()}`);
         renderAuctionBid();
         renderAuction();
         return;
@@ -215,7 +215,7 @@ function giveUpAuctionBid() {
     if (!item || item.sold || !item.rival) return;
     item.sold = true;
     item.soldTo = item.rival.name;
-    addLog(`🏺 你放棄競拍，${getAuctionItemInfo(item).name}被${item.rival.name}以 ${item.bid.current.toLocaleString()} 靈石標走了。`, "system");
+    addLog(`🏺 你放棄競拍，${getAuctionItemInfo(item).name}被${item.rival.name}以 ${item.bid.current.toWan()} 靈石標走了。`, "system");
     closeModal('auction-bid-modal');
     renderAuction();
 }
@@ -223,9 +223,9 @@ function giveUpAuctionBid() {
 // 商品卡片的競拍狀態列與按鈕（搶拍進行中／被對手標走）
 function renderAuctionBuyArea(item, buyLabel) {
     let status = '';
-    if (item.soldTo) status = `<p style="font-size: 0.78em; color: #f87171; margin: 2px 0;">已被 ${item.soldTo} 以 ${item.bid.current.toLocaleString()} 靈石標走</p>`;
+    if (item.soldTo) status = `<p style="font-size: 0.78em; color: #f87171; margin: 2px 0;">已被 ${item.soldTo} 以 ${item.bid.current.toWan()} 靈石標走</p>`;
     else if (!item.sold && item.rival && !item.rival.out && item.bid) {
-        status = `<p style="font-size: 0.78em; color: #fb923c; margin: 2px 0;">⚔️ ${item.rival.name} 正在競拍！目前出價 ${item.bid.current.toLocaleString()}（${item.bid.leader === 'player' ? '你領先' : '對方領先'}）</p>`;
+        status = `<p style="font-size: 0.78em; color: #fb923c; margin: 2px 0;">⚔️ ${item.rival.name} 正在競拍！目前出價 ${item.bid.current.toWan()}（${item.bid.leader === 'player' ? '你領先' : '對方領先'}）</p>`;
         buyLabel = '繼續競拍';
     } else if (!item.sold && AUCTION_RIVAL_CHANCE[getAuctionItemInfo(item).quality] && item.rival === undefined) {
         status = `<p style="font-size: 0.75em; color: #9ca3af; margin: 2px 0;">珍品：可能有其他客人搶拍</p>`;
@@ -244,7 +244,7 @@ function renderAuctionLifePillCard(item) {
                 <h3 class="quality-${pill.quality}">⏳ ${pill.name}</h3>
                 <p style="font-size: 0.82em; color: #9ca3af;">品質: <span class="quality-${pill.quality}">${pill.quality}</span></p>
                 <p style="font-size: 0.78em; color: #4ade80;">效果: 立即續命 +${pill.years} 年</p>
-                <p style="font-size: 0.85em; color: var(--accent); margin: 6px 0;">價格：${item.price.toLocaleString()} 靈石 + ${item.repPrice.toLocaleString()} 聲望</p>
+                <p style="font-size: 0.85em; color: var(--accent); margin: 6px 0;">價格：${item.price.toWan()} 靈石 + ${item.repPrice.toWan()} 聲望</p>
                 ${renderAuctionBuyArea(item, '標下並服用')}
             </div>`;
 }
@@ -261,7 +261,7 @@ function renderAuction() {
             <div class="card" style="border-color: ${item.sold ? 'rgba(255,255,255,0.07)' : 'var(--accent)'}; opacity: ${item.sold ? 0.45 : 1};">
                 <h3 style="color: var(--accent);">🌠 星允鐵袋</h3>
                 <p style="font-size: 0.78em; color: #4ade80;">內含星允鐵 ×${item.amount}（強化裝備用）</p>
-                <p style="font-size: 0.85em; color: var(--accent); margin: 6px 0;">價格：${item.price.toLocaleString()} 靈石 + ${item.repPrice.toLocaleString()} 聲望</p>
+                <p style="font-size: 0.85em; color: var(--accent); margin: 6px 0;">價格：${item.price.toWan()} 靈石 + ${item.repPrice.toWan()} 聲望</p>
                 ${renderAuctionBuyArea(item, '購買')}
             </div>`;
         const eq = item.equip;
@@ -270,7 +270,7 @@ function renderAuction() {
                 <h3 class="quality-${eq.quality}">${formatEquipTitle(eq)}</h3>
                 <p style="font-size: 0.82em; color: #9ca3af;">${formatGearSubline(eq)} | <span class="quality-${eq.quality}">${eq.quality}</span> | 屬性: <span class="elem-${eq.element}">${eq.element}</span></p>
                 ${formatEquipDetails(eq)}
-                <p style="font-size: 0.85em; color: var(--accent); margin: 6px 0;">價格：${item.price.toLocaleString()} 靈石</p>
+                <p style="font-size: 0.85em; color: var(--accent); margin: 6px 0;">價格：${item.price.toWan()} 靈石</p>
                 ${renderAuctionBuyArea(item, '標下')}
             </div>`;
     }).join("");

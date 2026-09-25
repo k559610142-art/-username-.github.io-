@@ -69,17 +69,17 @@ function castProcSkill(sk, targets, tags) {
     if (sk.lifesteal && dealt > 0) {
         let heal = Math.min(player.maxHp - player.hp, dealt * sk.lifesteal);
         player.hp += heal;
-        if (heal > 0) extra.push(`吸取 ${Math.floor(heal).toLocaleString()} 氣血`);
+        if (heal > 0) extra.push(`吸取 ${Math.floor(heal).toWan()} 氣血`);
     }
     if (sk.heal) {
         let heal = Math.min(player.maxHp - player.hp, player.maxHp * sk.heal);
         player.hp += heal;
-        if (heal > 0) extra.push(`回復 ${Math.floor(heal).toLocaleString()} 氣血`);
+        if (heal > 0) extra.push(`回復 ${Math.floor(heal).toWan()} 氣血`);
     }
     if (sk.mpHeal) {
         let mp = Math.min(player.maxMp - player.mp, player.maxMp * sk.mpHeal);
         player.mp += mp;
-        if (mp > 0) extra.push(`回復 ${Math.floor(mp).toLocaleString()} 靈力`);
+        if (mp > 0) extra.push(`回復 ${Math.floor(mp).toWan()} 靈力`);
     }
     if (sk.shield) {
         // 與靈寵土屬性、仙法守護共用減傷狀態，取較高值（applyPetDamageReduction 套用）
@@ -88,7 +88,7 @@ function castProcSkill(sk, targets, tags) {
         extra.push(`受到傷害 -${Math.round(petShieldRate * 100)}%`);
     }
     if (sk.freezeAll) extra.push(`敵方全體凍結`);
-    addLog(`${sk.msg}${dealt > 0 ? ` 造成 ${dealt.toLocaleString()} 傷害` : ''}${extra.length ? `（${extra.join('、')}）` : ''}`, "skill");
+    addLog(`${sk.msg}${dealt > 0 ? ` 造成 ${dealt.toWan()} 傷害` : ''}${extra.length ? `（${extra.join('、')}）` : ''}`, "skill");
 }
 
 // 舊存檔相容（讀檔／匯入時執行）：

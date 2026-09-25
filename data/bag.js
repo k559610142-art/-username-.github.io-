@@ -88,8 +88,8 @@ function renderBag() {
         hasItems = true;
         parts.push(`
             <div class="card" style="border-color: var(--accent);">
-                <h3 style="color: var(--accent);">🌠 星允鐵 <span style="font-size:0.8em;">(x${(player.starIron || 0).toLocaleString()})</span></h3>
-                <p style="font-size: 0.85em; color: #9ca3af;">強化裝備的寶物。🔩 碎鐵 ${(player.ironShards || 0).toLocaleString()} / ${SHARDS_PER_IRON}（滿了自動熔鑄 1 顆）</p>
+                <h3 style="color: var(--accent);">🌠 星允鐵 <span style="font-size:0.8em;">(x${(player.starIron || 0).toWan()})</span></h3>
+                <p style="font-size: 0.85em; color: #9ca3af;">強化裝備的寶物。🔩 碎鐵 ${(player.ironShards || 0).toWan()} / ${SHARDS_PER_IRON}（滿了自動熔鑄 1 顆）</p>
             </div>`);
     }
 
@@ -103,7 +103,7 @@ function renderBag() {
         let item = preciousItems[key];
         parts.push(`
             <div class="card rainbow-glow">
-                <h3 class="rainbow-text">${item.icon} ${item.name} <span style="font-size:0.8em;">(x${count.toLocaleString()})</span></h3>
+                <h3 class="rainbow-text">${item.icon} ${item.name} <span style="font-size:0.8em;">(x${count.toWan()})</span></h3>
                 <p style="font-size: 0.85em; color: #9ca3af;">${item.desc}</p>
             </div>`);
     });

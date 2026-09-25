@@ -31,6 +31,6 @@ function craftPill(type, qty = 1) {
     player.coins -= r.coins * n;
     player.stats[r.stat] += r.gain * n;
     addDailyProgress('craft', n);
-    addLog(`🧪 煉製並服用 ${n} 顆【${r.name}】，${r.statName} +${(r.gain * n).toLocaleString()}！`, "heal");
+    addLog(`🧪 煉製並服用 ${n} 顆【${r.name}】，${r.statName} +${(r.gain * n).toWan()}！`, "heal");
     updateUI();
 }

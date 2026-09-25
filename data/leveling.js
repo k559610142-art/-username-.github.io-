@@ -160,7 +160,7 @@ function triggerReincarnate() {
         player.elementStudy = {};
         player.hp = getMaxHp();
         player.mp = getMaxMp();
-        addLog(`🌀 成功轉世輪迴！第 ${player.reincarnations} 次輪迴，前世修為化為 ${pct}% 的底蘊（氣血上限 +${keptHp.toLocaleString()}、靈力上限 +${keptMp.toLocaleString()}），其餘盡數遺忘。`, "reincarnate");
+        addLog(`🌀 成功轉世輪迴！第 ${player.reincarnations} 次輪迴，前世修為化為 ${pct}% 的底蘊（氣血上限 +${keptHp.toWan()}、靈力上限 +${keptMp.toWan()}），其餘盡數遺忘。`, "reincarnate");
         updateUI();
         updateSectFacilitiesUI();
     }

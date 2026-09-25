@@ -225,7 +225,7 @@ function openForgeModal() {
 // qty：1、10 或 'max'（靈石與背包空位允許的最多次數）
 function forgeEquipment(qty = 1) {
     if (player.coins < FORGE_COST) {
-        alert(`靈石不足 ${FORGE_COST.toLocaleString()}！無法打造裝備。`);
+        alert(`靈石不足 ${FORGE_COST.toWan()}！無法打造裝備。`);
         return;
     }
     if (!hasEquipInventorySpace()) return;
@@ -253,7 +253,7 @@ function forgeEquipment(qty = 1) {
         let byQuality = equipQualities.map(q => [q.name, results.filter(r => r.quality === q.name).length]).filter(([, c]) => c > 0);
         let byElement = wuxingElements.map(e => [e, results.filter(r => r.element === e).length]).filter(([, c]) => c > 0);
         let best = results.filter(r => r.quality === '橙色').map(getEquipDisplayName);
-        addLog(`⚒️ 鍛造閣連續開爐 ${n} 次，打造【Lv.${level} ${name}】×${n}（消耗 ${(n * FORGE_COST).toLocaleString()} 靈石）！`
+        addLog(`⚒️ 鍛造閣連續開爐 ${n} 次，打造【Lv.${level} ${name}】×${n}（消耗 ${(n * FORGE_COST).toWan()} 靈石）！`
             + `品質：${byQuality.map(([q, c]) => `<span class="quality-${q}">${q}</span>×${c}`).join('、')}；`
             + `五行：${byElement.map(([e, c]) => `<span class="elem-${e}">${e}</span>×${c}`).join('、')}`
             + (best.length ? `；橙色：<span class="quality-橙色">${best.join('、')}</span>` : ''), "equip");

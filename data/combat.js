@@ -127,7 +127,7 @@ function combatTick() {
         let selfTick = tickStatus(playerStatus);
         if (selfTick.dot > 0) {
             player.hp -= selfTick.dot;
-            addLog(`🩸 身上的${formatStatus(playerStatus) || '異常狀態'}發作，損失 ${selfTick.dot.toLocaleString()} 點氣血！`, "combat");
+            addLog(`🩸 身上的${formatStatus(playerStatus) || '異常狀態'}發作，損失 ${selfTick.dot.toWan()} 點氣血！`, "combat");
             if (player.hp <= 0 && !tryGearUndying()) { onPlayerKilledInField(); return; }
         }
 
@@ -157,8 +157,8 @@ function combatTick() {
         if (playerTags.length > 0 || dotTotal > 0 || regen > 0) {
             let parts = [];
             if (playerTags.length > 0) parts.push(summarizeTags(playerTags, "💨被閃避"));
-            if (dotTotal > 0) parts.push(`持續傷害 ${dotTotal.toLocaleString()}`);
-            if (regen > 0) parts.push(`🌿回復 ${regen.toLocaleString()}`);
+            if (dotTotal > 0) parts.push(`持續傷害 ${dotTotal.toWan()}`);
+            if (regen > 0) parts.push(`🌿回復 ${regen.toWan()}`);
             addLog(`✨ 屬性效果：${parts.join("｜")}`, "skill");
         }
 
@@ -189,6 +189,7 @@ function combatTick() {
             player.coins += coinsEarned;
             player.reputation = (player.reputation || 0) + repEarned;
             addDailyProgress('kill', killedCount);
+            onPartnerFieldKills(killedCount);   // 情緣任務的野外擊殺／並肩擊殺（partner.js）
             gainKillProficiency(killedCount);   // 主修職業熟練度（profession.js）
             let expText = (player.pendingTribulation && gainedExp === 0) ? "修為已滿(待渡劫)" : `${Math.floor(gainedExp)} 經驗`;
             addLog(`斬殺敵手，獲得 ${expText}, ${coinsEarned} 靈石 與 ${repEarned} 點聲望！`, "combat");
@@ -198,7 +199,7 @@ function combatTick() {
                 let merit = onCultivatorKilled(e.cultivator, e.ambush);
                 player.merit = (player.merit || 0) + merit;
                 addLog(merit > 0
-                    ? `🙏 斬殺${e.icon}${who}，${getPlayerFaction() === "邪" ? "吸取" : "積累"} ${merit} 點功德！（目前 ${player.merit.toLocaleString()}）`
+                    ? `🙏 斬殺${e.icon}${who}，${getPlayerFaction() === "邪" ? "吸取" : "積累"} ${merit} 點功德！（目前 ${player.merit.toWan()}）`
                     : `🗡️ 斬殺${e.icon}${who}（同為${getFactionLabel(e.cultivator)}，不得功德）`, merit > 0 ? "level-up" : "combat");
                 // 星允鐵與奪寶（enhance.js／gear.js）：暗殺者必掉星允鐵；野外修士只有敵對陣營才有
                 if (e.ambush) {
@@ -306,7 +307,7 @@ function playerAttackTurn(availableSkills, targets, tags, isExtra) {
             if (skill.hpCost) {
                 let lost = Math.min(Math.max(0, player.hp - 1), Math.floor(player.maxHp * skill.hpCost));
                 player.hp -= lost;
-                cost += `，反噬 ${lost.toLocaleString()} 氣血`;
+                cost += `，反噬 ${lost.toWan()} 氣血`;
             }
             cost += `)`;
             let dealt = 0;

@@ -25,7 +25,7 @@ function renderBeasts() {
             <div class="card" style="border-color: #fb923c;">
                 <h3 style="color: #fb923c;">${info.name}</h3>
                 <p style="font-size: 0.85em; color: #9ca3af;">${info.desc}</p>
-                <p style="font-size: 0.8em; color: #facc15;">消耗: ${info.costCore.toLocaleString()} 獸丹 + ${finalCoins.toLocaleString()} 靈石 ${discountMult < 1 ? `(魅力折扣 ${(discountMult*10).toFixed(1)}折)` : ''}</p>
+                <p style="font-size: 0.8em; color: #facc15;">消耗: ${info.costCore.toWan()} 獸丹 + ${finalCoins.toWan()} 靈石 ${discountMult < 1 ? `(魅力折扣 ${(discountMult*10).toFixed(1)}折)` : ''}</p>
                 <button class="sys-btn" onclick="tameBeast('${info.id}')">兌換靈寵 (Lv.1)</button>
             </div>`;
         }
@@ -33,13 +33,13 @@ function renderBeasts() {
         let need = getLevelExpNeeded(b.level);
         let expText = b.level >= player.level
             ? `<span style="color:#fb923c;">已達人物等級上限</span>`
-            : `經驗 ${Math.floor(b.exp).toLocaleString()} / ${need.toLocaleString()}`;
+            : `經驗 ${Math.floor(b.exp).toWan()} / ${need.toWan()}`;
         let active = isBeastActive(b);
         let status = !b.alive
             ? `<span style="color:#ef4444;">已陣亡</span>`
             : active ? `<span style="color:#4ade80;">協戰中</span>` : `<span style="color:#9ca3af;">休息中</span>`;
         let upkeep = getBeastUpkeep(b.level);
-        let upkeepText = `維持費：每 ${BEAST_UPKEEP_INTERVAL} 秒 ${upkeep.coins.toLocaleString()} 靈石＋${upkeep.core.toLocaleString()} 獸丹`
+        let upkeepText = `維持費：每 ${BEAST_UPKEEP_INTERVAL} 秒 ${upkeep.coins.toWan()} 靈石＋${upkeep.core.toWan()} 獸丹`
             + (active ? '' : '（休息中不收取）');
         let toggleBtn = !b.alive ? ''
             : active ? `<button class="sys-btn" style="border-color:#9ca3af; color:#9ca3af;" onclick="toggleBeastActive('${b.id}')">召回休息</button>`
@@ -69,7 +69,7 @@ function renderBeasts() {
                 <p style="font-size: 0.8em; color: #9ca3af;">被動：${info.passive}${!b.alive ? '（陣亡中失效）' : active ? '' : '（休息中失效）'}</p>
                 <p style="font-size: 0.8em; color: #facc15;">${upkeepText}</p>
                 ${toggleBtn}
-                ${b.alive ? '' : `<button class="sys-btn" style="border-color:#ef4444; color:#ef4444;" onclick="reviveBeast('${b.id}')">復活 (${BEAST_REVIVE_COST_CORE.toLocaleString()} 獸丹)</button>`}
+                ${b.alive ? '' : `<button class="sys-btn" style="border-color:#ef4444; color:#ef4444;" onclick="reviveBeast('${b.id}')">復活 (${BEAST_REVIVE_COST_CORE.toWan()} 獸丹)</button>`}
                 <div style="text-align:left; font-size:0.78em;">${slots}</div>
             </div>`;
     }).join('');
@@ -85,11 +85,11 @@ function tameBeast(id) {
         player.coins -= finalCoins;
         player.beasts.push(createBeast(id));
         let upkeep = getBeastUpkeep(1);
-        addLog(`🐾 成功兌換靈寵【${info.name}】（Lv.1）！於 Lv${BEAST_SKILL_LEVELS[0]} 可領悟第一招技能。出戰中每 ${BEAST_UPKEEP_INTERVAL} 秒消耗 ${upkeep.coins.toLocaleString()} 靈石＋${upkeep.core.toLocaleString()} 獸丹。`, "system");
+        addLog(`🐾 成功兌換靈寵【${info.name}】（Lv.1）！於 Lv${BEAST_SKILL_LEVELS[0]} 可領悟第一招技能。出戰中每 ${BEAST_UPKEEP_INTERVAL} 秒消耗 ${upkeep.coins.toWan()} 靈石＋${upkeep.core.toWan()} 獸丹。`, "system");
         renderBeasts();
         updateUI();
     } else {
-        alert(`資源不足！需要 ${info.costCore.toLocaleString()} 獸丹與 ${finalCoins.toLocaleString()} 靈石。`);
+        alert(`資源不足！需要 ${info.costCore.toWan()} 獸丹與 ${finalCoins.toWan()} 靈石。`);
     }
 }
 
@@ -97,13 +97,13 @@ function reviveBeast(id) {
     let b = player.beasts.find(x => x.id === id);
     if (!b || b.alive) return;
     if (player.beastCore < BEAST_REVIVE_COST_CORE) {
-        alert(`獸丹不足！復活需要 ${BEAST_REVIVE_COST_CORE.toLocaleString()} 獸丹。`);
+        alert(`獸丹不足！復活需要 ${BEAST_REVIVE_COST_CORE.toWan()} 獸丹。`);
         return;
     }
     player.beastCore -= BEAST_REVIVE_COST_CORE;
     b.alive = true;
     let info = beastData.find(d => d.id === id);
-    addLog(`🐾 耗費 ${BEAST_REVIVE_COST_CORE.toLocaleString()} 獸丹，靈寵【${info.name}】重獲新生！`, "system");
+    addLog(`🐾 耗費 ${BEAST_REVIVE_COST_CORE.toWan()} 獸丹，靈寵【${info.name}】重獲新生！`, "system");
     renderBeasts();
     updateUI();
 }
@@ -115,11 +115,11 @@ function toggleBeastActive(id) {
     if (!isBeastActive(b)) {
         let cost = getBeastUpkeep(b.level);
         if (player.coins < cost.coins || player.beastCore < cost.core) {
-            alert(`資源不足！出戰需能支付維持費：每 ${BEAST_UPKEEP_INTERVAL} 秒 ${cost.coins.toLocaleString()} 靈石＋${cost.core.toLocaleString()} 獸丹。`);
+            alert(`資源不足！出戰需能支付維持費：每 ${BEAST_UPKEEP_INTERVAL} 秒 ${cost.coins.toWan()} 靈石＋${cost.core.toWan()} 獸丹。`);
             return;
         }
         b.active = true;
-        addLog(`🐾 靈寵【${getBeastName(b)}】出戰！每 ${BEAST_UPKEEP_INTERVAL} 秒消耗 ${cost.coins.toLocaleString()} 靈石＋${cost.core.toLocaleString()} 獸丹。`, "system");
+        addLog(`🐾 靈寵【${getBeastName(b)}】出戰！每 ${BEAST_UPKEEP_INTERVAL} 秒消耗 ${cost.coins.toWan()} 靈石＋${cost.core.toWan()} 獸丹。`, "system");
     } else {
         b.active = false;
         addLog(`🐾 靈寵【${getBeastName(b)}】已召回靈獸園休息，暫停收取維持費。`, "system");

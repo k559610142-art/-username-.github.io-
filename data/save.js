@@ -118,8 +118,8 @@ function settleIdleSeconds(offlineSeconds, label) {
         }
 
         let expText = wasPending ? "修為已滿(待渡劫，無經驗)" : `${Math.floor(gained)} 經驗`;
-        msg = `⚔️ ${label}於【${player.currentMap.name}】歷練 ${formatIdleDuration(offlineSeconds)}，獲得 ${expText}、${coinsEarned.toLocaleString()} 靈石與 ${repEarned.toLocaleString()} 點聲望`
-            + (meritEarned > 0 ? `、${meritEarned.toLocaleString()} 點功德` : '')
+        msg = `⚔️ ${label}於【${player.currentMap.name}】歷練 ${formatIdleDuration(offlineSeconds)}，獲得 ${expText}、${coinsEarned.toWan()} 靈石與 ${repEarned.toWan()} 點聲望`
+            + (meritEarned > 0 ? `、${meritEarned.toWan()} 點功德` : '')
             + (rescuedCount > 0 ? `，並拯救了 ${rescuedCount} 名受困修士！` : '！');
         if (est.rateMult < 0.995) {
             msg += `\n⚔️ 以目前實力約需 ${est.hits.toFixed(1)} 擊才能斬殺一隻，戰鬥效率 ${Math.round(est.rateMult * 100)}%（能一擊斬殺時為 100%）。`;
@@ -342,7 +342,7 @@ function applySaveData(data) {
     migrateGearIds();       // 舊裝備依「部位＋五行」對應到圖鑑，數值不變（gear.js）
     migrateGearCodex();     // 持有的圖鑑裝備補記進天磯錄、補齊新欄位（codex.js）
     migrateStrangeFires();  // 未命名的異火補抽成天下異火（strange-fire.js）
-    if (!Array.isArray(player.partners)) player.partners = [];   // 夥伴（partner.js）
+    migratePartners();      // 夥伴：舊版單人出戰轉為隊伍、補齊好感欄位（partner.js）
 
     // 換了一份存檔，原本進行中的戰鬥、渡劫、身上狀態都不該延續
     enemies = [];
@@ -547,7 +547,7 @@ async function exportSave() {
     try {
         player.lastSaveTime = Date.now();
         box.value = await encodeSaveCode(player);
-        setSaveCodeStatus(`代碼長度：${box.value.length.toLocaleString()} 字${box.value.startsWith(SAVE_CODE_PREFIX) ? '（已壓縮）' : ''}`, "ok");
+        setSaveCodeStatus(`代碼長度：${box.value.length.toWan()} 字${box.value.startsWith(SAVE_CODE_PREFIX) ? '（已壓縮）' : ''}`, "ok");
     } catch(e) {
         setSaveCodeStatus("匯出存檔失敗：" + e.message, "error");
     }

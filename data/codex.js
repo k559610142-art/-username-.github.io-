@@ -80,16 +80,16 @@ function describeTitleCondition(c) {
         case 'quality': return `收藏${c.value} ${c.count} 種（目前 ${countCollectedQuality(c.value)}）`;
         case 'wearPlatinum': return `同時穿戴 ${c.value} 件白金`;
         case 'enhance': return `任一裝備強化到 +${c.value}`;
-        case 'ironUsed': return `累計使用 ${c.value.toLocaleString()} 星允鐵（目前 ${(player.ironUsed || 0).toLocaleString()}）`;
+        case 'ironUsed': return `累計使用 ${c.value.toWan()} 星允鐵（目前 ${(player.ironUsed || 0).toWan()}）`;
         case 'realm': return `境界達到【${realms[c.value]}】`;
         case 'sect': return `${SECT_TIER_NAMES[c.tier]}宗門以上${c.realm > 0 ? `＋境界【${realms[c.realm]}】` : ''}`;
         case 'karma': return c.value === 'good' ? '善惡值達「善」' : '善惡值達「惡」';
         case 'bountyKills': return `懸賞伏誅 ${c.value} 名（目前 ${player.bountyKills || 0}）`;
         case 'profRank': return `${getProfession(c.value).name}練到第 ${c.rank} 階`;
-        case 'casinoStones': return `天星賭坊累計切石 ${c.value} 顆（目前 ${((player.casino || {}).stones || 0).toLocaleString()}）`;
+        case 'casinoStones': return `天星賭坊累計切石 ${c.value} 顆（目前 ${((player.casino || {}).stones || 0).toWan()}）`;
         case 'casinoFire': return `天星賭坊切出整朵異火`;
         case 'casinoTriple': return `天星賭坊押中指定豹子`;
-        case 'casinoBigWin': return `天星賭坊擲骰單把淨贏 ${c.value.toLocaleString()} 靈石`;
+        case 'casinoBigWin': return `天星賭坊擲骰單把淨贏 ${c.value.toWan()} 靈石`;
     }
     return '';
 }

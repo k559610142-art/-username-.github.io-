@@ -372,6 +372,10 @@
             background: transparent; border: none; border-radius: 12px; cursor: pointer;
         }
         .town-hotspot:hover { background: rgba(253, 230, 138, 0.12); box-shadow: 0 0 18px rgba(253, 230, 138, 0.45); }
+        /* 場景人偶（config-towns.js 的 figures）：腳下加陰影讓它「站」在地上 */
+        .town-figure { position: absolute; object-fit: contain; pointer-events: none; user-select: none; filter: drop-shadow(4px 6px 5px rgba(0, 0, 0, 0.45)); }
+        .town-figure.clickable { pointer-events: auto; cursor: pointer; }
+        .town-figure.clickable:hover { filter: drop-shadow(0 0 10px rgba(253, 230, 138, 0.8)); }
         .town-plaque {
             padding: 4px 12px; white-space: nowrap; font-family: "KaiTi", "DFKai-SB", "BiauKai", "STKaiti", serif; font-weight: bold;
             font-size: clamp(14px, 2.2vmin, 22px); letter-spacing: 0.15em; color: #fde68a; text-shadow: 0 1px 2px #000;
@@ -448,6 +452,21 @@
         .partner-bar-fill { height: 100%; border-radius: 3px; }
         .partner-analysis { font-size: 0.8em; color: #d1d5db; margin: 4px 0; line-height: 1.5; }
         .partner-effect { font-size: 0.78em; color: #4ade80; margin: 2px 0; }
+        /* 好感度區塊與對話 */
+        .bond-box { margin-top: 8px; padding: 8px; border: 1px solid rgba(244, 114, 182, 0.35); border-radius: 8px; background: rgba(244, 114, 182, 0.06); }
+        .bond-head { display: flex; justify-content: space-between; font-size: 0.85em; color: #f9a8d4; font-weight: bold; }
+        .bond-head span { color: #d1d5db; font-weight: normal; }
+        .bond-track { margin: 4px 0 6px; }
+        .bond-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+        .bond-actions .sys-btn, .bond-box > .sys-btn { margin: 0; padding: 6px 4px; font-size: 0.8em; }
+        .bond-box > .sys-btn { margin-top: 6px; width: 100%; }
+        .bond-quest { margin-top: 6px; font-size: 0.76em; color: #e5e7eb; line-height: 1.5; }
+        .bond-quest .sys-btn { display: inline-block; width: auto; margin: 2px 0 0 4px; padding: 3px 10px; font-size: 1em; }
+        .partner-line { font-size: 0.95em; color: #fde68a; line-height: 1.6; margin: 6px 0; text-align: left; }
+        .partner-note { font-size: 0.85em; color: #f9a8d4; margin-top: 10px; }
+        .partner-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .partner-choices .sys-btn { margin: 0; font-size: 1.05em; font-weight: bold; border-color: #f472b6; color: #f9a8d4; }
+        @media (max-width: 520px) { #partner-container .grid-container { grid-template-columns: 1fr; } }   /* 夥伴卡內容多，手機單欄 */
         .codex-star { color: #374151; font-size: 0.9em; }
         .codex-star.on { text-shadow: 0 0 6px currentColor; }
         /* 造化神器（七彩品質，config-lingbao.js 的 ARTIFACT_QUALITY）：七彩流動文字，外觀同 .rainbow-text */
@@ -835,7 +854,7 @@
         #pc-stage { display: none; position: relative; flex: none; overflow: hidden; --u: 0.93px; font-size: calc(var(--u) * 14); }
         body.layout-pc #pc-stage { display: block; }
         body.layout-pc #app-stage { display: none; }
-        body.layout-pc::before { background-image: url("images/home-bg-pc.jpg?v=20260926x"); }
+        body.layout-pc::before { background-image: url("images/home-bg-pc.jpg?v=20260927g"); }
         #pc-stage-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: fill; user-select: none; pointer-events: none; }
         #pc-hud-avatar {
             position: absolute; left: 1.890%; top: 3.255%; width: 7.558%; height: 13.542%;
@@ -1284,7 +1303,7 @@
      按鈕與建築熱點由 home-ui.js 的 renderPcStage() 依 config-home-pc.js 產生；分頁面板 #tab-sheet 在 PC 版時搬進這裡。
      id 一律是手機版的 hud-xxx 加上 pc- 前綴，updateHomeHud() 同時寫入兩邊。 -->
 <div id="pc-stage">
-    <img id="pc-stage-bg" src="images/home-bg-pc.jpg?v=20260926x" alt="">
+    <img id="pc-stage-bg" src="images/home-bg-pc.jpg?v=20260927g" alt="">
     <img id="pc-hud-avatar" alt="更換頭像" title="點擊更換頭像" onclick="openAvatarModal()">
     <img id="pc-hud-avatar-frame" alt="">
     <div id="pc-hud-name">
@@ -1568,7 +1587,7 @@
 </div>
 
 <div id="evil-hall-scene">
-    <img class="evil-hall-bg" src="images/evil-hall.jpg?v=20260926x" alt="">
+    <img class="evil-hall-bg" src="images/evil-hall.jpg?v=20260927g" alt="">
     <button class="evil-hall-back" onclick="closeEvilHallScene()">↩ 離開</button>
     <button class="evil-hall-plaque" onclick="openEvilHuntModal()" aria-label="殺手殿堂（開啟懸賞榜）">殺手殿堂</button>
 </div>
@@ -1839,6 +1858,24 @@
     </div>
 </div>
 
+<!-- 夥伴對話（partner.js 的 showPartnerDialog）：結識、每日問候的台詞；必須排在 #partner-modal 之後才會疊在上面 -->
+<div id="partner-dialog-modal" class="modal-bg" onclick="if (event.target === this) closePartnerDialog()">
+    <div class="modal-content" style="border-color: #f472b6; max-width: 440px; text-align: center;">
+        <div id="partner-dialog-body"></div>
+        <input type="hidden" id="partner-dialog-after">
+        <div id="partner-dialog-actions"></div><!-- 「好」或選項按鈕（是／否），由 showPartnerDialog 產生 -->
+    </div>
+</div>
+
+<!-- 夥伴彩蛋影片（partner.js 的 playPartnerVideo）：風希跳舞 -->
+<div id="partner-video-modal" class="modal-bg" onclick="if (event.target === this) closePartnerVideo()">
+    <div class="modal-content" style="border-color: #f472b6; max-width: 760px; padding: 14px; text-align: center;">
+        <h3 id="partner-video-title" style="color: #f9a8d4; margin: 0 0 8px;"></h3>
+        <video id="partner-video" controls playsinline preload="none" style="width: 100%; max-height: 70vh; border-radius: 8px; background: #000;"></video>
+        <button class="sys-btn" style="border-color: #f472b6; color: #f472b6;" onclick="closePartnerVideo()">關閉</button>
+    </div>
+</div>
+
 <div id="codex-modal" class="modal-bg" onclick="if (event.target === this) closeModal('codex-modal')">
     <div class="modal-content" style="border-color: var(--accent);">
         <h2 style="color: var(--accent); margin-top: 0; text-align: center;">📜 天磯錄</h2>
@@ -1849,82 +1886,83 @@
 
 <!-- ⚠️ 版本號 ?v=：每次發佈（推上 GitHub Pages）前要把所有 ?v= 改成新的值（全部取代即可）。
      GitHub Pages 會快取檔案約 10 分鐘，沒改版本號時玩家可能拿到「舊 index.html＋新 JS」而讀檔失敗。見 ARCHITECTURE.md 第 30 節 -->
-<script src="data/config-realms.js?v=20260926x"></script>
-<script src="data/config-level.js?v=20260926x"></script>
-<script src="data/config-lifespan.js?v=20260926x"></script>
-<script src="data/config-maps.js?v=20260926x"></script>
-<script src="data/config-sects.js?v=20260926x"></script>
-<script src="data/config-lingbao.js?v=20260926x"></script>
-<script src="data/config-shop.js?v=20260926x"></script>
-<script src="data/config-beasts.js?v=20260926x"></script>
-<script src="data/config-servants.js?v=20260926x"></script>
-<script src="data/config-equipment.js?v=20260926x"></script>
-<script src="data/config-gear-catalog.js?v=20260926x"></script>
-<script src="data/config-gear.js?v=20260926x"></script>
-<script src="data/config-enhance.js?v=20260926x"></script>
-<script src="data/config-sets.js?v=20260926x"></script>
-<script src="data/config-profession.js?v=20260926x"></script>
-<script src="data/config-titles.js?v=20260926x"></script>
-<script src="data/config-tribulation.js?v=20260926x"></script>
-<script src="data/config-quests.js?v=20260926x"></script>
-<script src="data/config-activities.js?v=20260926x"></script>
-<script src="data/config-daily-quests.js?v=20260926x"></script>
-<script src="data/config-elements.js?v=20260926x"></script>
-<script src="data/config-merit.js?v=20260926x"></script>
-<script src="data/config-bounty.js?v=20260926x"></script>
-<script src="data/config-talisman.js?v=20260926x"></script>
-<script src="data/config-avatars.js?v=20260926x"></script>
-<script src="data/config-avatar-frames.js?v=20260926x"></script>
-<script src="data/config-spells.js?v=20260926x"></script>
-<script src="data/config-strange-fire.js?v=20260926x"></script>
-<script src="data/config-partners.js?v=20260926x"></script>
-<script src="data/config-towns.js?v=20260926x"></script>
-<script src="data/config-casino.js?v=20260926x"></script>
-<script src="data/state.js?v=20260926x"></script>
-<script src="data/stats.js?v=20260926x"></script>
-<script src="data/elements.js?v=20260926x"></script>
-<script src="data/ui.js?v=20260926x"></script>
-<script src="data/map.js?v=20260926x"></script>
-<script src="data/town.js?v=20260926x"></script>
-<script src="data/casino.js?v=20260926x"></script>
-<script src="data/combat.js?v=20260926x"></script>
-<script src="data/leveling.js?v=20260926x"></script>
-<script src="data/lifespan.js?v=20260926x"></script>
-<script src="data/tribulation.js?v=20260926x"></script>
-<script src="data/sect.js?v=20260926x"></script>
-<script src="data/shop.js?v=20260926x"></script>
-<script src="data/bag.js?v=20260926x"></script>
-<script src="data/equipment.js?v=20260926x"></script>
-<script src="data/gear.js?v=20260926x"></script>
-<script src="data/enhance.js?v=20260926x"></script>
-<script src="data/profession.js?v=20260926x"></script>
-<script src="data/codex.js?v=20260926x"></script>
-<script src="data/lingbao-shop.js?v=20260926x"></script>
-<script src="data/artifact.js?v=20260926x"></script>
-<script src="data/servant.js?v=20260926x"></script>
-<script src="data/quest.js?v=20260926x"></script>
-<script src="data/activity.js?v=20260926x"></script>
-<script src="data/daily-quest.js?v=20260926x"></script>
-<script src="data/auction.js?v=20260926x"></script>
-<script src="data/merit.js?v=20260926x"></script>
-<script src="data/bounty.js?v=20260926x"></script>
-<script src="data/talisman.js?v=20260926x"></script>
-<script src="data/strange-fire.js?v=20260926x"></script>
-<script src="data/partner.js?v=20260926x"></script>
-<script src="data/field.js?v=20260926x"></script>
-<script src="data/beast-combat.js?v=20260926x"></script>
-<script src="data/spells.js?v=20260926x"></script>
-<script src="data/beast.js?v=20260926x"></script>
-<script src="data/library.js?v=20260926x"></script>
-<script src="data/alchemy.js?v=20260926x"></script>
-<script src="data/player-profile.js?v=20260926x"></script>
-<script src="data/save.js?v=20260926x"></script>
-<script src="data/config-home-pc.js?v=20260926x"></script>
-<script src="data/home-ui.js?v=20260926x"></script>
-<script src="data/settings.js?v=20260926x"></script>
-<script src="data/avatar.js?v=20260926x"></script>
-<script src="data/title-screen.js?v=20260926x"></script>
-<script src="data/main.js?v=20260926x"></script>
+<script src="data/format.js?v=20260927g"></script>
+<script src="data/config-realms.js?v=20260927g"></script>
+<script src="data/config-level.js?v=20260927g"></script>
+<script src="data/config-lifespan.js?v=20260927g"></script>
+<script src="data/config-maps.js?v=20260927g"></script>
+<script src="data/config-sects.js?v=20260927g"></script>
+<script src="data/config-lingbao.js?v=20260927g"></script>
+<script src="data/config-shop.js?v=20260927g"></script>
+<script src="data/config-beasts.js?v=20260927g"></script>
+<script src="data/config-servants.js?v=20260927g"></script>
+<script src="data/config-equipment.js?v=20260927g"></script>
+<script src="data/config-gear-catalog.js?v=20260927g"></script>
+<script src="data/config-gear.js?v=20260927g"></script>
+<script src="data/config-enhance.js?v=20260927g"></script>
+<script src="data/config-sets.js?v=20260927g"></script>
+<script src="data/config-profession.js?v=20260927g"></script>
+<script src="data/config-titles.js?v=20260927g"></script>
+<script src="data/config-tribulation.js?v=20260927g"></script>
+<script src="data/config-quests.js?v=20260927g"></script>
+<script src="data/config-activities.js?v=20260927g"></script>
+<script src="data/config-daily-quests.js?v=20260927g"></script>
+<script src="data/config-elements.js?v=20260927g"></script>
+<script src="data/config-merit.js?v=20260927g"></script>
+<script src="data/config-bounty.js?v=20260927g"></script>
+<script src="data/config-talisman.js?v=20260927g"></script>
+<script src="data/config-avatars.js?v=20260927g"></script>
+<script src="data/config-avatar-frames.js?v=20260927g"></script>
+<script src="data/config-spells.js?v=20260927g"></script>
+<script src="data/config-strange-fire.js?v=20260927g"></script>
+<script src="data/config-partners.js?v=20260927g"></script>
+<script src="data/config-towns.js?v=20260927g"></script>
+<script src="data/config-casino.js?v=20260927g"></script>
+<script src="data/state.js?v=20260927g"></script>
+<script src="data/stats.js?v=20260927g"></script>
+<script src="data/elements.js?v=20260927g"></script>
+<script src="data/ui.js?v=20260927g"></script>
+<script src="data/map.js?v=20260927g"></script>
+<script src="data/town.js?v=20260927g"></script>
+<script src="data/casino.js?v=20260927g"></script>
+<script src="data/combat.js?v=20260927g"></script>
+<script src="data/leveling.js?v=20260927g"></script>
+<script src="data/lifespan.js?v=20260927g"></script>
+<script src="data/tribulation.js?v=20260927g"></script>
+<script src="data/sect.js?v=20260927g"></script>
+<script src="data/shop.js?v=20260927g"></script>
+<script src="data/bag.js?v=20260927g"></script>
+<script src="data/equipment.js?v=20260927g"></script>
+<script src="data/gear.js?v=20260927g"></script>
+<script src="data/enhance.js?v=20260927g"></script>
+<script src="data/profession.js?v=20260927g"></script>
+<script src="data/codex.js?v=20260927g"></script>
+<script src="data/lingbao-shop.js?v=20260927g"></script>
+<script src="data/artifact.js?v=20260927g"></script>
+<script src="data/servant.js?v=20260927g"></script>
+<script src="data/quest.js?v=20260927g"></script>
+<script src="data/activity.js?v=20260927g"></script>
+<script src="data/daily-quest.js?v=20260927g"></script>
+<script src="data/auction.js?v=20260927g"></script>
+<script src="data/merit.js?v=20260927g"></script>
+<script src="data/bounty.js?v=20260927g"></script>
+<script src="data/talisman.js?v=20260927g"></script>
+<script src="data/strange-fire.js?v=20260927g"></script>
+<script src="data/partner.js?v=20260927g"></script>
+<script src="data/field.js?v=20260927g"></script>
+<script src="data/beast-combat.js?v=20260927g"></script>
+<script src="data/spells.js?v=20260927g"></script>
+<script src="data/beast.js?v=20260927g"></script>
+<script src="data/library.js?v=20260927g"></script>
+<script src="data/alchemy.js?v=20260927g"></script>
+<script src="data/player-profile.js?v=20260927g"></script>
+<script src="data/save.js?v=20260927g"></script>
+<script src="data/config-home-pc.js?v=20260927g"></script>
+<script src="data/home-ui.js?v=20260927g"></script>
+<script src="data/settings.js?v=20260927g"></script>
+<script src="data/avatar.js?v=20260927g"></script>
+<script src="data/title-screen.js?v=20260927g"></script>
+<script src="data/main.js?v=20260927g"></script>
 
 </body>
 </html>

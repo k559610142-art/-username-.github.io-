@@ -8,7 +8,7 @@ function getDeathLifespanCost() {
 
 // 壽元可能有小數（自然流逝），顯示時一律取整數
 function formatLifespan(years) {
-    return Math.floor(years).toLocaleString();
+    return Math.floor(years).toWan();
 }
 
 // ---- 歲月流逝 ----
@@ -79,7 +79,7 @@ function gainRealmLifespan() {
     let row = lifespanByRealm[player.realmIndex];
     if (!row) return;
     player.lifespan += row.gain;
-    addLog(`⏳ 晉升【${row.realm}】，壽元增加 ${row.gain.toLocaleString()} 年！（剩餘 ${formatLifespan(player.lifespan)} 年，此境界每死亡一次折壽 ${row.deathCost} 年）`, "level-up");
+    addLog(`⏳ 晉升【${row.realm}】，壽元增加 ${row.gain.toWan()} 年！（剩餘 ${formatLifespan(player.lifespan)} 年，此境界每死亡一次折壽 ${row.deathCost} 年）`, "level-up");
 }
 
 // 玩家死亡（野外戰死、渡劫失敗）時呼叫：扣壽元、所有靈寵陣亡。

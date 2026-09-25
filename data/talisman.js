@@ -18,7 +18,7 @@ function formatTalisman(type, grade) {
     let t = getTalismanType(type), g = getTalismanGrade(grade);
     if (!t || !g) return "未知符寶";
     let v = getTalismanValue(type, grade);
-    return `${t.icon}${g.name}${t.name}（${t.kind === "flat" ? `+${v.toLocaleString()}` : `+${v}%`}）`;
+    return `${t.icon}${g.name}${t.name}（${t.kind === "flat" ? `+${v.toWan()}` : `+${v}%`}）`;
 }
 
 // ---- 孔位 ----
@@ -73,10 +73,10 @@ function renderTalismanWorkshop() {
     // 煉製區：種類與品階全部隨機，只選次數
     let c = TALISMAN_CRAFT_COST;
     let gradeText = talismanGrades.map(g =>
-        `${g.name} ${Math.round(g.chance * 100)}%（四維 +${g.flat.toLocaleString()}／屬性 +${g.pct}%）`).join("｜");
+        `${g.name} ${Math.round(g.chance * 100)}%（四維 +${g.flat.toWan()}／屬性 +${g.pct}%）`).join("｜");
     let craftCard = `
         <div class="card" style="max-width: 460px; margin: 0 auto;">
-            <p style="font-size: 0.85em; color: var(--accent); margin: 4px 0;">每次煉製：${c.ore} 礦石 ＋ ${c.coins.toLocaleString()} 靈石</p>
+            <p style="font-size: 0.85em; color: var(--accent); margin: 4px 0;">每次煉製：${c.ore} 礦石 ＋ ${c.coins.toWan()} 靈石</p>
             <p style="font-size: 0.8em; color: #9ca3af; margin: 4px 0;">種類（${talismanTypes.length} 種）與品階全部隨機，無法指定</p>
             <p style="font-size: 0.78em; color: #9ca3af; margin: 4px 0;">${gradeText}</p>
             <div class="batch-btns">
@@ -101,7 +101,7 @@ function renderTalismanWorkshop() {
 
     container.innerHTML = `
         <p style="color: #9ca3af; font-size: 0.85em;">
-            持有：⛏️ 礦石 <b style="color: var(--accent);">${(player.ore || 0).toLocaleString()}</b>｜靈石 <b style="color: var(--accent);">${player.coins.toLocaleString()}</b>
+            持有：⛏️ 礦石 <b style="color: var(--accent);">${(player.ore || 0).toWan()}</b>｜靈石 <b style="color: var(--accent);">${player.coins.toWan()}</b>
         </p>
         <h3 style="color: #c084fc; margin: 14px 0 6px;">🔥 煉製符寶（隨機）</h3>
         ${craftCard}
@@ -153,7 +153,7 @@ function craftTalisman(qty = 1) {
     let c = TALISMAN_CRAFT_COST;
     let affordable = Math.min(Math.floor((player.ore || 0) / c.ore), Math.floor(player.coins / c.coins));
     if (affordable <= 0) {
-        alert(`資源不足！煉製 1 次需要 ${c.ore} 礦石 + ${c.coins.toLocaleString()} 靈石。\n礦石可派遣傳說僕從執行「礦脈採礦」取得。`);
+        alert(`資源不足！煉製 1 次需要 ${c.ore} 礦石 + ${c.coins.toWan()} 靈石。\n礦石可派遣傳說僕從執行「礦脈採礦」取得。`);
         return;
     }
     let n = resolveBatchCount(qty, affordable, "煉製");
@@ -170,7 +170,7 @@ function craftTalisman(qty = 1) {
         got[key] = (got[key] || 0) + 1;
     }
     let summary = Object.keys(got).map(k => { let [type, grade] = k.split("_"); return `${formatTalisman(type, +grade)}×${got[k]}`; }).join("、");
-    addLog(`🔥 於符寶坊煉製 ${n} 次（消耗 ${(c.ore * n).toLocaleString()} 礦石、${(c.coins * n).toLocaleString()} 靈石），煉成：${summary}`, "equip");
+    addLog(`🔥 於符寶坊煉製 ${n} 次（消耗 ${(c.ore * n).toWan()} 礦石、${(c.coins * n).toWan()} 靈石），煉成：${summary}`, "equip");
     renderTalismanWorkshop();
     updateUI();
 }

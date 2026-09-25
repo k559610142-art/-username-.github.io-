@@ -37,6 +37,6 @@ const BREAK_PILL_MAX_CHANCE = 0.90;        // 服用後勝算上限由 80% 提�
 
 // 珍貴道具的顯示資料（背包、千寶閣共用；外觀為七彩發光）
 const preciousItems = {
-    butianStone: { name: "七彩補天石", icon: "💎", desc: `女媧補天遺落的奇石，七彩流轉。身上功德每滿 ${MERIT_PER_BUTIAN_STONE.toLocaleString()} 自動凝結一顆，可於千寶閣購買珍貴物資。` },
+    butianStone: { name: "七彩補天石", icon: "💎", desc: `女媧補天遺落的奇石，七彩流轉。身上功德每滿 ${MERIT_PER_BUTIAN_STONE.toWan()} 自動凝結一顆，可於千寶閣購買珍貴物資。` },
     breakPill:   { name: "破障丹",     icon: "🔮", desc: "渡劫時自動服用 1 顆：心魔戰力 -10%，渡劫勝算 +10%（上限由 80% 提高到 90%）。" }
 };

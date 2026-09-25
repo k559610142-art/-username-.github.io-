@@ -10,7 +10,7 @@ function addFireShards(n, source) {
     n = Math.floor(n);
     if (!(n > 0)) return 0;
     player.fireShards = (player.fireShards || 0) + n;
-    if (source) addLog(`🔥 ${source}，獲得異火碎片 ×${n}！（持有 ${player.fireShards.toLocaleString()}）`, "level-up");
+    if (source) addLog(`🔥 ${source}，獲得異火碎片 ×${n}！（持有 ${player.fireShards.toWan()}）`, "level-up");
     return n;
 }
 
@@ -37,7 +37,7 @@ function gainStrangeFire(fire) {
 function craftStrangeFire(qty) {
     let possible = Math.floor((player.fireShards || 0) / STRANGE_FIRE_SHARDS_PER_FIRE);
     if (possible <= 0) {
-        alert(`異火碎片不足！合成 1 朵異火需要 ${STRANGE_FIRE_SHARDS_PER_FIRE} 片（目前 ${(player.fireShards || 0).toLocaleString()} 片）。`);
+        alert(`異火碎片不足！合成 1 朵異火需要 ${STRANGE_FIRE_SHARDS_PER_FIRE} 片（目前 ${(player.fireShards || 0).toWan()} 片）。`);
         return;
     }
     let n = qty === 'max' ? possible : Math.min(qty, possible);
@@ -52,7 +52,7 @@ function craftStrangeFire(qty) {
     // 日誌：單朵寫名字；多朵依品階統計，並列出新收錄的
     let summary = n === 1 ? `【${got[0].tier}・${got[0].name}】`
         : Object.keys(STRANGE_FIRE_TIERS).map(t => [t, got.filter(f => f.tier === t).length]).filter(([, c]) => c > 0).map(([t, c]) => `${t} ×${c}`).join('、');
-    addLog(`☄️ ${(n * STRANGE_FIRE_SHARDS_PER_FIRE).toLocaleString()} 片異火碎片重燃，合成異火 ${summary}！`
+    addLog(`☄️ ${(n * STRANGE_FIRE_SHARDS_PER_FIRE).toWan()} 片異火碎片重燃，合成異火 ${summary}！`
         + (fresh.length === 1 ? `新收錄【${fresh[0].name}】：${describeTitleBonus(fresh[0].bonus)}！` : '')
         + (fresh.length > 1 ? `新收錄 ${fresh.length} 種：${fresh.map(f => f.name).join('、')}（加成見天磯錄）！` : '')
         + `（秘境受到傷害 -${Math.round(getStrangeFireRealmReduction() * 100)}%）`, "level-up");
@@ -98,7 +98,7 @@ function renderStrangeFireCards() {
     let cards = [];
     if (shards > 0) cards.push(`
         <div class="card" style="border-color: #f97316;">
-            <h3 style="color: #f97316;">${shard.icon} ${shard.name} <span style="font-size:0.8em;">(x${shards.toLocaleString()})</span></h3>
+            <h3 style="color: #f97316;">${shard.icon} ${shard.name} <span style="font-size:0.8em;">(x${shards.toWan()})</span></h3>
             <p style="font-size: 0.85em; color: #9ca3af;">${shard.desc}</p>
             <p style="font-size: 0.85em; color: #f97316;">可合成 ${possible} 朵（${shards % STRANGE_FIRE_SHARDS_PER_FIRE} / ${STRANGE_FIRE_SHARDS_PER_FIRE}）</p>
             <div class="batch-btns">
@@ -108,7 +108,7 @@ function renderStrangeFireCards() {
         </div>`);
     if (fires > 0) cards.push(`
         <div class="card" style="border-color: #ef4444;">
-            <h3 style="color: #ef4444;">${fire.icon} ${fire.name} <span style="font-size:0.8em;">(x${fires.toLocaleString()})</span></h3>
+            <h3 style="color: #ef4444;">${fire.icon} ${fire.name} <span style="font-size:0.8em;">(x${fires.toWan()})</span></h3>
             <p style="font-size: 0.85em; color: #9ca3af;">${fire.desc}</p>
             <p style="font-size: 0.85em; color: #ef4444;">目前秘境受到傷害 -${Math.round(getStrangeFireRealmReduction() * 100)}%${getStrangeFireRealmReduction() >= STRANGE_FIRE_REALM_REDUCE_MAX ? '（已達上限）' : ''}｜已收錄 ${countCollectedFires()} / ${strangeFireList.length} 種</p>
             <button class="sys-btn" onclick="openCodexModal('fires')">📜 查看異火榜（天磯錄）</button>
@@ -137,7 +137,7 @@ function renderCodexFires() {
         return `<h4 style="color: ${color}; margin: 12px 0 6px;">${tier}（${got} / ${list.length}）</h4><div class="codex-grid">${cards}</div>`;
     }).join('');
     return `<p style="color: #9ca3af; font-size: 0.82em; text-align: center;">
-            天下異火 <b style="color: var(--accent);">${countCollectedFires()}</b> / ${strangeFireList.length} 種｜持有 ${(player.strangeFires || 0).toLocaleString()} 朵｜碎片 ${(player.fireShards || 0).toLocaleString()}<br>
+            天下異火 <b style="color: var(--accent);">${countCollectedFires()}</b> / ${strangeFireList.length} 種｜持有 ${(player.strangeFires || 0).toWan()} 朵｜碎片 ${(player.fireShards || 0).toWan()}<br>
             每種收錄後永久加成一次（重複不疊加）；每 ${STRANGE_FIRE_SHARDS_PER_FIRE} 片碎片合成 1 朵，品階機率：${odds}<br>
             異火碎片於秘境取得（秘境尚未開放）</p>${sections}`;
 }

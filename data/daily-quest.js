@@ -72,7 +72,7 @@ function claimDailyQuest(index) {
     player.martialPoints += reward.martialPoints;
     q.claimed = true;
 
-    addLog(`📅 完成每日任務【${def.name}】：獲得 ${reward.coins.toLocaleString()} 靈石、${reward.reputation} 聲望、${reward.martialPoints} 武學積分`, "quest");
+    addLog(`📅 完成每日任務【${def.name}】：獲得 ${reward.coins.toWan()} 靈石、${reward.reputation} 聲望、${reward.martialPoints} 武學積分`, "quest");
     renderDailyQuests();
     updateUI();
 }
@@ -94,7 +94,7 @@ function claimAllDailyQuests() {
     player.reputation = (player.reputation || 0) + rep;
     player.martialPoints += mp;
 
-    addLog(`📅 一次領取 ${ready.length} 項每日任務獎勵：${coins.toLocaleString()} 靈石、${rep} 聲望、${mp} 武學積分`, "quest");
+    addLog(`📅 一次領取 ${ready.length} 項每日任務獎勵：${coins.toWan()} 靈石、${rep} 聲望、${mp} 武學積分`, "quest");
     renderDailyQuests();
     updateUI();
 }
@@ -126,7 +126,7 @@ function renderDailyQuests() {
                     <div class="bar-text" style="line-height: 14px; font-size: 0.72em;">${q.progress} / ${q.target}</div>
                 </div>
                 <p style="font-size: 0.76em; color: #4ade80; margin: 4px 0;">
-                    獎勵：${reward.coins.toLocaleString()} 靈石、${reward.reputation} 聲望、${reward.martialPoints} 武學積分
+                    獎勵：${reward.coins.toWan()} 靈石、${reward.reputation} 聲望、${reward.martialPoints} 武學積分
                 </p>
                 <button class="sys-btn" ${(!complete || q.claimed) ? 'disabled' : ''} onclick="claimDailyQuest(${i})">
                     ${q.claimed ? '✅ 已領取' : (complete ? '🎁 領取獎勵' : '進行中')}

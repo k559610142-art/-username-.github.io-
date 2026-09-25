@@ -85,8 +85,8 @@ function renderElementBooks() {
     if (!container) return;
     let c = ELEMENT_BOOK_COST;
     let intro = `<p style="text-align: center; color: #9ca3af; font-size: 0.85em; margin: 4px 0;">
-        每次參悟消耗 ${c.martialPoints} 武學積分 + ${c.spiritGrass} 株靈草 + ${c.coins.toLocaleString()} 靈石，
-        該屬性傷害 +${(ELEMENT_BOOK_GAIN * 100).toFixed(2)}%（每本上限 ${ELEMENT_BOOK_MAX.toLocaleString()} 次 = ${formatElementBookPercent(ELEMENT_BOOK_MAX)}）</p>`;
+        每次參悟消耗 ${c.martialPoints} 武學積分 + ${c.spiritGrass} 株靈草 + ${c.coins.toWan()} 靈石，
+        該屬性傷害 +${(ELEMENT_BOOK_GAIN * 100).toFixed(2)}%（每本上限 ${ELEMENT_BOOK_MAX.toWan()} 次 = ${formatElementBookPercent(ELEMENT_BOOK_MAX)}）</p>`;
 
     if (!isElementBookUnlocked()) {
         container.innerHTML = intro + `<p style="text-align: center; color: #f87171; font-size: 0.9em;">🔒 需先拜入【${SECT_TIER_NAMES[ELEMENT_BOOK_TIER]}】宗門，方可參悟屬性秘典。</p>`;
@@ -94,7 +94,7 @@ function renderElementBooks() {
     }
 
     let owned = `<p style="text-align: center; color: #facc15; font-size: 0.85em; margin: 4px 0;">
-        目前持有：武學積分 ${player.martialPoints.toLocaleString()}｜靈草 ${player.spiritGrass.toLocaleString()}｜靈石 ${player.coins.toLocaleString()}</p>`;
+        目前持有：武學積分 ${player.martialPoints.toWan()}｜靈草 ${player.spiritGrass.toWan()}｜靈石 ${player.coins.toWan()}</p>`;
     let lv = player.elementStudy || {};
     let cards = elementBooks.map(book => {
         let level = lv[book.key] || 0;
@@ -109,7 +109,7 @@ function renderElementBooks() {
         return `<div class="card">
                 <h3>${book.icon} ${book.name}</h3>
                 <p style="font-size: 0.85em; color: #9ca3af;">${book.desc}</p>
-                <p style="font-size: 0.85em; color: var(--accent);">已學習: ${level.toLocaleString()} / ${ELEMENT_BOOK_MAX.toLocaleString()}</p>
+                <p style="font-size: 0.85em; color: var(--accent);">已學習: ${level.toWan()} / ${ELEMENT_BOOK_MAX.toWan()}</p>
                 <p style="font-size: 0.85em; color: #4ade80;">目前加成 ${formatElementBookPercent(level)}</p>
                 ${buttons}
             </div>`;
@@ -139,7 +139,7 @@ function studyElementBook(key, qty = 1) {
         Math.floor(player.spiritGrass / c.spiritGrass),
         Math.floor(player.coins / c.coins));
     if (affordable <= 0) {
-        alert(`資源不足！參悟 1 次需要 ${c.martialPoints} 武學積分 + ${c.spiritGrass} 株靈草 + ${c.coins.toLocaleString()} 靈石。`);
+        alert(`資源不足！參悟 1 次需要 ${c.martialPoints} 武學積分 + ${c.spiritGrass} 株靈草 + ${c.coins.toWan()} 靈石。`);
         return;
     }
     let n = resolveBatchCount(qty, affordable, "參悟");

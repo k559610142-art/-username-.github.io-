@@ -118,7 +118,7 @@ function assignServantQuest(servantId, questId) {
         // 換任務或從閒置出發都是新的一趟：先付這趟的靈石
         let cost = getServantTripCost(servant);
         if (!payServantTrip(servant)) {
-            alert(`靈石不足！派遣【${servant.quality}】僕從每趟需要 ${cost} 靈石（目前 ${player.coins.toLocaleString()}）。`);
+            alert(`靈石不足！派遣【${servant.quality}】僕從每趟需要 ${cost} 靈石（目前 ${player.coins.toWan()}）。`);
             renderServants();
             return;
         }

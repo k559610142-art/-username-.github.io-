@@ -35,7 +35,7 @@ function renderLingbaoShopUI() {
                 ? (artSkill ? `<p style="font-size: 0.8em; margin: 2px 0;"><span class="quality-${item.itemData.quality}">${formatQualityLabel(item.itemData.quality)}</span></p>` : '')
                   + `<p style="font-size: 0.8em; color: #facc15;">【${item.itemData.name}】<span class="elem-${item.itemData.element}">${item.itemData.element}</span>｜${formatEquipStats(item.itemData.stats)}</p>`
                   + (artSkill ? `<p style="font-size: 0.78em; color: #fca5a5;">專屬技能【${artSkill.name}】：${artSkill.desc}</p>` : '')
-                  + (isArtifactItem(item) ? `<p style="font-size: 0.8em; color: #facc15;">兌換：${getLingbaoCost(item).coins.toLocaleString()} 靈石 ＋ ${getLingbaoCost(item).rep.toLocaleString()} 聲望</p>` : '')
+                  + (isArtifactItem(item) ? `<p style="font-size: 0.8em; color: #facc15;">兌換：${getLingbaoCost(item).coins.toWan()} 靈石 ＋ ${getLingbaoCost(item).rep.toWan()} 聲望</p>` : '')
                 : `<p style="font-size: 0.8em; color: #c084fc;">耗魔 ${item.skillData.mpCost}</p>`;
             let btnText = isSold ? '已兌換（不再補貨）' : (sectName ? '兌換' : '未拜入此階段宗門');
             return `
@@ -49,7 +49,7 @@ function renderLingbaoShopUI() {
 
         return `<div class="map-category">
             <h4 style="color: var(--accent); margin-bottom: 6px;">${SECT_TIER_NAMES[tier]}宗門寶物 ${header}</h4>
-            <p style="font-size: 0.82em; color: #facc15; margin: 0 0 10px;">每件兌換：${cost.coins.toLocaleString()} 靈石 ＋ ${cost.rep.toLocaleString()} 聲望${lingbaoShopItems.some(i => i.tier === tier && isArtifactItem(i)) ? `（神器另計：${ARTIFACT_COST_COINS.toLocaleString()} 靈石）` : ''}</p>
+            <p style="font-size: 0.82em; color: #facc15; margin: 0 0 10px;">每件兌換：${cost.coins.toWan()} 靈石 ＋ ${cost.rep.toWan()} 聲望${lingbaoShopItems.some(i => i.tier === tier && isArtifactItem(i)) ? `（神器另計：${ARTIFACT_COST_COINS.toWan()} 靈石）` : ''}</p>
             <div class="grid-container">${cards}</div>
         </div>`;
     }).join('');
@@ -67,11 +67,11 @@ function buyLingbaoItem(itemId) {
 
     let cost = getLingbaoCost(item);
     if (player.coins < cost.coins || (player.reputation || 0) < cost.rep) {
-        alert(`資源不足！兌換【${item.name}】需要 ${cost.coins.toLocaleString()} 靈石 + ${cost.rep.toLocaleString()} 聲望。\n你目前有 ${player.coins.toLocaleString()} 靈石、${(player.reputation || 0).toLocaleString()} 聲望。`);
+        alert(`資源不足！兌換【${item.name}】需要 ${cost.coins.toWan()} 靈石 + ${cost.rep.toWan()} 聲望。\n你目前有 ${player.coins.toWan()} 靈石、${(player.reputation || 0).toWan()} 聲望。`);
         return;
     }
     if (item.type === 'equip' && !hasEquipInventorySpace()) return;
-    if (!confirm(`確定以 ${cost.coins.toLocaleString()} 靈石 + ${cost.rep.toLocaleString()} 聲望 兌換【${item.name}】嗎？\n此為唯一性寶物，兌換後不會再補貨。`)) return;
+    if (!confirm(`確定以 ${cost.coins.toWan()} 靈石 + ${cost.rep.toWan()} 聲望 兌換【${item.name}】嗎？\n此為唯一性寶物，兌換後不會再補貨。`)) return;
 
     player.coins -= cost.coins;
     player.reputation -= cost.rep;

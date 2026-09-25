@@ -33,7 +33,7 @@ function restBeastForUpkeep(b) {
     let cost = getBeastUpkeep(b.level);
     b.active = false;
     b.upkeepTimer = 0;
-    addLog(`🐾 靈石或獸丹不足（需 ${cost.coins.toLocaleString()} 靈石＋${cost.core.toLocaleString()} 獸丹），靈寵【${getBeastName(b)}】已自動召回靈獸園休息。`, "combat");
+    addLog(`🐾 靈石或獸丹不足（需 ${cost.coins.toWan()} 靈石＋${cost.core.toWan()} 獸丹），靈寵【${getBeastName(b)}】已自動召回靈獸園休息。`, "combat");
 }
 
 // 由 combatTick() 每秒呼叫：各出戰靈寵各自計時，滿 BEAST_UPKEEP_INTERVAL 秒扣一次維持費
@@ -72,7 +72,7 @@ function settleOfflineBeastUpkeep(seconds) {
         }
     });
     if (totalCoins === 0 && rested.length === 0) return '';
-    return `🐾 靈寵維持費共 ${totalCoins.toLocaleString()} 靈石＋${totalCore.toLocaleString()} 獸丹`
+    return `🐾 靈寵維持費共 ${totalCoins.toWan()} 靈石＋${totalCore.toWan()} 獸丹`
         + (rested.length > 0 ? `；資源不足，【${rested.join('、')}】已召回休息。` : '。');
 }
 
@@ -156,7 +156,7 @@ function petAssistTick(targets) {
             let dmg = Math.floor(getPhysAttack() * sk.mult * (1 + gearFx("獸魂")));   // 獸魂（裝備特效，gear.js）
             if (sk.kind === "aoe") living.forEach(t => t.hp -= dmg);
             else living[0].hp -= dmg;
-            addLog(`${who} 施展【${sk.name}】，造成 ${dmg.toLocaleString()} 點${sk.kind === "aoe" ? "群體" : ""}傷害！`, "skill");
+            addLog(`${who} 施展【${sk.name}】，造成 ${dmg.toWan()} 點${sk.kind === "aoe" ? "群體" : ""}傷害！`, "skill");
         } else if (sk.kind === "buff") {
             petBuffMult = petBuffTimer > 0 ? Math.max(petBuffMult, sk.mult) : sk.mult;
             petBuffTimer = Math.max(petBuffTimer, sk.duration);

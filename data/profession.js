@@ -75,10 +75,10 @@ function chooseProfession(id) {
     if (!p || player.profession === id) return;
     let paid = !!player.profSwitched;
     if (paid) {
-        if (player.coins < PROFESSION_SWITCH_COST) { alert(`改修職業需要 ${PROFESSION_SWITCH_COST.toLocaleString()} 靈石！`); return; }
-        if (!confirm(`花費 ${PROFESSION_SWITCH_COST.toLocaleString()} 靈石改修【${p.name}】？\n原職業的熟練度會保留，換回來不會歸零。`)) return;
+        if (player.coins < PROFESSION_SWITCH_COST) { alert(`改修職業需要 ${PROFESSION_SWITCH_COST.toWan()} 靈石！`); return; }
+        if (!confirm(`花費 ${PROFESSION_SWITCH_COST.toWan()} 靈石改修【${p.name}】？\n原職業的熟練度會保留，換回來不會歸零。`)) return;
         player.coins -= PROFESSION_SWITCH_COST;
-    } else if (!confirm(`選擇【${p.name}】作為主修職業？（第一次免費，之後改修每次 ${PROFESSION_SWITCH_COST.toLocaleString()} 靈石）`)) return;
+    } else if (!confirm(`選擇【${p.name}】作為主修職業？（第一次免費，之後改修每次 ${PROFESSION_SWITCH_COST.toWan()} 靈石）`)) return;
     player.profession = id;
     player.profSwitched = true;
     addLog(`${p.icon} 你開始主修【${p.name}】，目前階級「${getProfRankName(id)}」。`, "level-up");
@@ -97,11 +97,11 @@ function renderProfessionTab() {
         return `
             <div class="card" style="border-color: ${isMain ? 'var(--accent)' : 'rgba(255,255,255,0.08)'}; text-align: left;">
                 <h3 style="text-align: center; color: ${isMain ? 'var(--accent)' : '#fff'};">${p.icon} ${p.name}（${p.slot}）${isMain ? '・主修中' : ''}</h3>
-                <p style="font-size: 0.85em;">階級：<b>${p.ranks[rank - 1]}</b>（第 ${rank} 階）｜熟練度 ${exp.toLocaleString()}${next ? ` / ${next.toLocaleString()}` : '（已滿階）'}</p>
+                <p style="font-size: 0.85em;">階級：<b>${p.ranks[rank - 1]}</b>（第 ${rank} 階）｜熟練度 ${exp.toWan()}${next ? ` / ${next.toWan()}` : '（已滿階）'}</p>
                 <p style="font-size: 0.8em; color: #9ca3af;">主修時：${p.slot}的四維 +${Math.round(PROF_WEAPON_BONUS[rank - 1] * 100)}%、${p.passive.label} +${+(p.passive.per * rank * 100).toFixed(1)}%</p>
                 <div style="font-size: 0.78em; margin: 4px 0;">${skills}</div>
                 <p style="font-size: 0.72em; color: #6b7280;">階級：${p.ranks.join(' → ')}</p>
-                <button class="sys-btn" ${isMain ? 'disabled' : ''} onclick="chooseProfession('${p.id}')">${isMain ? '主修中' : (player.profSwitched ? `改修（${PROFESSION_SWITCH_COST.toLocaleString()} 靈石）` : '選為主修（免費）')}</button>
+                <button class="sys-btn" ${isMain ? 'disabled' : ''} onclick="chooseProfession('${p.id}')">${isMain ? '主修中' : (player.profSwitched ? `改修（${PROFESSION_SWITCH_COST.toWan()} 靈石）` : '選為主修（免費）')}</button>
             </div>`;
     }).join('');
     return `<p style="color: #9ca3af; font-size: 0.82em; text-align: center;">只有主修職業會累積熟練度：野外每擊殺一隻 +1 × 地圖倍率（野外 1、開放世界 2、上古禁區 3、諸天戰場 4），懸賞伏誅 +${PROF_BOUNTY_GAIN}，離線 ×${PROF_OFFLINE_RATE}。</p>

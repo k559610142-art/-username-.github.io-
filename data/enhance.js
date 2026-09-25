@@ -13,7 +13,7 @@ function addStarIron(n, source) {
     let got = Math.floor(n * (1 + gearFx("尋鐵")));
     if (got <= 0) return 0;
     player.starIron = (player.starIron || 0) + got;
-    if (source) addLog(`🌠 ${source}，獲得星允鐵 ×${got}！（持有 ${player.starIron.toLocaleString()}）`, "level-up");
+    if (source) addLog(`🌠 ${source}，獲得星允鐵 ×${got}！（持有 ${player.starIron.toWan()}）`, "level-up");
     return got;
 }
 
@@ -24,7 +24,7 @@ function addIronShards(n) {
     if (made > 0) {
         player.ironShards -= made * SHARDS_PER_IRON;
         player.starIron = (player.starIron || 0) + made;
-        addLog(`🔩 碎鐵熔鑄成 ${made} 顆星允鐵！（持有 ${player.starIron.toLocaleString()}）`, "level-up");
+        addLog(`🔩 碎鐵熔鑄成 ${made} 顆星允鐵！（持有 ${player.starIron.toWan()}）`, "level-up");
     }
 }
 
@@ -87,7 +87,7 @@ function renderEnhanceModal() {
     if (canEvolve(eq)) {
         let ok = iron >= EVOLVE_IRON && player.coins >= EVOLVE_COINS;
         action = `<p style="color: #e5e7eb;">已達 +${EVOLVE_LEVEL}，可進化為 <span class="quality-白金">${PLATINUM_QUALITY.label}</span>：四維倍率 ×${getEvolveStatRatio()}、特效 ×2、多一條隨機詞條</p>
-                  <p>花費：🌠 ${EVOLVE_IRON} 星允鐵 ＋ ${EVOLVE_COINS.toLocaleString()} 靈石</p>
+                  <p>花費：🌠 ${EVOLVE_IRON} 星允鐵 ＋ ${EVOLVE_COINS.toWan()} 靈石</p>
                   <button class="sys-btn" ${ok ? '' : 'disabled'} onclick="evolveEquip()">✨ 進化為先天道器</button>`;
     } else if (info.maxed) {
         action = `<p style="color: #9ca3af;">已達此品級強化上限 +${info.cap}</p>`;
@@ -95,7 +95,7 @@ function renderEnhanceModal() {
         let ok = iron >= info.iron && player.coins >= info.coins;
         action = `<p>強化到 <b>+${info.target}</b>：成功率 <b style="color: ${info.chance >= 1 ? '#4ade80' : '#facc15'};">${Math.round(info.chance * 100)}%</b>`
                + (eq.enhancePity ? `（基礎 ${Math.round(info.base * 100)}%，保底 +${Math.round(eq.enhancePity * ENHANCE_PITY_STEP * 100)}%）` : '') + `</p>
-                  <p>每次花費：🌠 ${info.iron} 星允鐵 ＋ ${info.coins.toLocaleString()} 靈石（失敗也扣，但不會掉級）</p>
+                  <p>每次花費：🌠 ${info.iron} 星允鐵 ＋ ${info.coins.toWan()} 靈石（失敗也扣，但不會掉級）</p>
                   <div class="batch-btns">
                       <button class="sys-btn" ${ok ? '' : 'disabled'} onclick="enhanceEquip(false)">強化一次</button>
                       <button class="sys-btn" ${ok ? '' : 'disabled'} onclick="enhanceEquip(true)">強化到成功為止</button>
@@ -107,7 +107,7 @@ function renderEnhanceModal() {
             <p style="font-size: 0.85em; color: #9ca3af;">${formatGearSubline(eq)} | <span class="quality-${eq.quality}">${formatQualityLabel(eq.quality)}</span> | 強化 ${info.cur} / ${info.cap}</p>
             ${formatEquipDetails(eq)}
         </div>
-        <p style="color: #9ca3af; font-size: 0.85em;">持有：🌠 星允鐵 <b style="color: var(--accent);">${iron.toLocaleString()}</b>｜🔩 碎鐵 ${(player.ironShards || 0).toLocaleString()} / ${SHARDS_PER_IRON}｜靈石 ${player.coins.toLocaleString()}</p>
+        <p style="color: #9ca3af; font-size: 0.85em;">持有：🌠 星允鐵 <b style="color: var(--accent);">${iron.toWan()}</b>｜🔩 碎鐵 ${(player.ironShards || 0).toWan()} / ${SHARDS_PER_IRON}｜靈石 ${player.coins.toWan()}</p>
         ${action}
         <p style="color: #6b7280; font-size: 0.75em;">每 +1 四維 +${Math.round(ENHANCE_STAT_PER_LEVEL * 100)}%；上限 白綠 +10、藍 +12、紫 +15、橙 +20。+11 起有成功率，每失敗一次同一級成功率 +${Math.round(ENHANCE_PITY_STEP * 100)}%。</p>`;
 }
@@ -143,8 +143,8 @@ function enhanceEquip(untilSuccess) {
     if (tries === 0) { alert('星允鐵或靈石不足！'); return; }
     let name = getEquipDisplayName(eq);
     addLog(success
-        ? `🔨 強化成功！【${name}】提升至 +${eq.enhance}（${tries} 次，消耗 ${spentIron} 星允鐵、${spentCoins.toLocaleString()} 靈石）`
-        : `🔨 強化失敗…【${name}】維持 +${eq.enhance || 0}（${tries} 次，消耗 ${spentIron} 星允鐵、${spentCoins.toLocaleString()} 靈石；下次成功率提高）`,
+        ? `🔨 強化成功！【${name}】提升至 +${eq.enhance}（${tries} 次，消耗 ${spentIron} 星允鐵、${spentCoins.toWan()} 靈石）`
+        : `🔨 強化失敗…【${name}】維持 +${eq.enhance || 0}（${tries} 次，消耗 ${spentIron} 星允鐵、${spentCoins.toWan()} 靈石；下次成功率提高）`,
         success ? "level-up" : "system");
     checkTitleUnlocks();
     renderEnhanceModal();
@@ -157,10 +157,10 @@ function enhanceEquip(untilSuccess) {
 function promptEvolveEquip(eq) {
     let name = getEquipDisplayName(eq);
     addLog(`✨ 【${name}】已強化至 +${EVOLVE_LEVEL}，可進化為${PLATINUM_QUALITY.label}！`, "level-up");
-    let cost = `🌠 ${EVOLVE_IRON} 星允鐵＋${EVOLVE_COINS.toLocaleString()} 靈石`;
+    let cost = `🌠 ${EVOLVE_IRON} 星允鐵＋${EVOLVE_COINS.toWan()} 靈石`;
     let lacks = [];
-    if ((player.starIron || 0) < EVOLVE_IRON) lacks.push(`星允鐵 ${(player.starIron || 0).toLocaleString()} / ${EVOLVE_IRON}`);
-    if (player.coins < EVOLVE_COINS) lacks.push(`靈石 ${player.coins.toLocaleString()} / ${EVOLVE_COINS.toLocaleString()}`);
+    if ((player.starIron || 0) < EVOLVE_IRON) lacks.push(`星允鐵 ${(player.starIron || 0).toWan()} / ${EVOLVE_IRON}`);
+    if (player.coins < EVOLVE_COINS) lacks.push(`靈石 ${player.coins.toWan()} / ${EVOLVE_COINS.toWan()}`);
     if (lacks.length > 0) {
         alert(`✨ 系統通知：【${name}】已強化至 +${EVOLVE_LEVEL}，可進化為${PLATINUM_QUALITY.label}！\n進化需要 ${cost}，目前不足：\n${lacks.join('\n')}\n\n資源備齊後，可在強化視窗按「進化為先天道器」。`);
         return;
@@ -177,7 +177,7 @@ function evolveEquip(skipConfirm) {
     if (!loc || !canEvolve(loc.eq)) return;
     let eq = loc.eq;
     if (player.starIron < EVOLVE_IRON || player.coins < EVOLVE_COINS) { alert('星允鐵或靈石不足！'); return; }
-    if (!skipConfirm && !confirm(`確定花費 ${EVOLVE_IRON} 星允鐵＋${EVOLVE_COINS.toLocaleString()} 靈石，將【${getEquipDisplayName(eq)}】進化為先天道器？`)) return;
+    if (!skipConfirm && !confirm(`確定花費 ${EVOLVE_IRON} 星允鐵＋${EVOLVE_COINS.toWan()} 靈石，將【${getEquipDisplayName(eq)}】進化為先天道器？`)) return;
     player.starIron -= EVOLVE_IRON;
     player.coins -= EVOLVE_COINS;
     player.ironUsed = (player.ironUsed || 0) + EVOLVE_IRON;
@@ -349,7 +349,7 @@ function renderIronShopSection() {
             <div class="card" style="border-color: var(--accent);">
                 <h3 style="color: var(--accent);">🌠 星允鐵</h3>
                 <p style="font-size: 0.8em; color: #9ca3af;">強化裝備的寶物。也可從礦脈採礦、獵殺邪修取得，或分解裝備的碎鐵熔鑄。</p>
-                <p style="font-size: 0.85em; color: var(--accent); margin: 6px 0;">每顆 ${IRON_AUCTION_PRICE.toLocaleString()} 靈石｜今日剩 ${left} / ${IRON_AUCTION_DAILY_LIMIT} 顆｜持有 ${(player.starIron || 0).toLocaleString()}</p>
+                <p style="font-size: 0.85em; color: var(--accent); margin: 6px 0;">每顆 ${IRON_AUCTION_PRICE.toWan()} 靈石｜今日剩 ${left} / ${IRON_AUCTION_DAILY_LIMIT} 顆｜持有 ${(player.starIron || 0).toWan()}</p>
                 <div class="batch-btns">
                     <button class="sys-btn" ${affordable < 1 ? 'disabled' : ''} onclick="buyStarIron(1)">×1</button>
                     <button class="sys-btn" ${affordable < 1 ? 'disabled' : ''} onclick="buyStarIron('max')">最高</button>
@@ -366,7 +366,7 @@ function buyStarIron(qty) {
     player.coins -= n * IRON_AUCTION_PRICE;
     st.bought += n;
     player.starIron = (player.starIron || 0) + n;
-    addLog(`🌠 於千寶閣以 ${(n * IRON_AUCTION_PRICE).toLocaleString()} 靈石購得星允鐵 ×${n}。`, "system");
+    addLog(`🌠 於千寶閣以 ${(n * IRON_AUCTION_PRICE).toWan()} 靈石購得星允鐵 ×${n}。`, "system");
     renderAuction();
     updateUI();
 }

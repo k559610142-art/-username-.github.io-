@@ -3,7 +3,7 @@
 // 回傳未達成的條件說明；已解鎖則回傳 null
 function getActivityLockReason(act) {
     if ((player.reputation || 0) < act.minRep) {
-        return `聲望不足（需 ${act.minRep.toLocaleString()}，目前 ${(player.reputation || 0).toLocaleString()}）`;
+        return `聲望不足（需 ${act.minRep.toWan()}，目前 ${(player.reputation || 0).toWan()}）`;
     }
     if (player.realmIndex < act.minRealmIndex) {
         return `境界不足（需【${realms[act.minRealmIndex]}】以上）`;
@@ -37,7 +37,7 @@ function openActivity(id) {
 
     const lock = getActivityLockReason(act);
     if (lock) {
-        alert(`【${act.name}】尚未開啟\n\n${lock}\n\n開啟條件：聲望 ${act.minRep.toLocaleString()}`
+        alert(`【${act.name}】尚未開啟\n\n${lock}\n\n開啟條件：聲望 ${act.minRep.toWan()}`
             + (act.minRealmIndex > 0 ? `、境界【${realms[act.minRealmIndex]}】以上` : ""));
         return;
     }

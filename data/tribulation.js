@@ -66,7 +66,7 @@ function triggerTribulation() {
         + `・宗門技能 +${formatChance(chance.skill)}（已學 ${chance.learnedTiers} / ${chance.openTiers} 階）\n`
         + (chance.hasPill ? `・🔮 破障丹 +${formatChance(chance.pill)}（將服用 1 顆，剩 ${player.breakPills - 1} 顆；心魔戰力 -10%）\n` : '')
         + (tips ? `\n提升勝算：${tips}\n` : '')
-        + `\n心魔戰力 ${demonPower.toLocaleString()}／氣血 ${demonHp.toLocaleString()}，會施展魔功並吸取靈力。\n`
+        + `\n心魔戰力 ${demonPower.toWan()}／氣血 ${demonHp.toWan()}，會施展魔功並吸取靈力。\n`
         + `渡劫失敗會重傷跌回安全區並折壽 ${getDeathLifespanCost()} 年（剩餘 ${formatLifespan(player.lifespan)} 年，渡劫期間歲月流逝加快），靈寵也會陣亡；\n`
         + `且境界跌落 ${TRIBULATION_FAIL_STAGE_DROP} 階（10 階 → ${10 - TRIBULATION_FAIL_STAGE_DROP} 階），陷入「虛弱」（攻擊、氣血與靈力上限 -${Math.round((1 - WEAKNESS_STAT_MULT) * 100)}%）直到修回 10 階。\n\n是否開始渡劫？`
     )) return;
@@ -95,7 +95,7 @@ function triggerTribulation() {
     playerStatus = newStatus();
     resetGearWave();   // 首擊、先手盾（gear.js）
 
-    addLog(`☯️ 【渡劫開始】天地變色，心魔自你識海中走出，化作與你一模一樣的魔身！（勝算 ${formatChance(chance.total)}｜戰力 ${demonPower.toLocaleString()}／氣血 ${demonHp.toLocaleString()}）`, "reincarnate");
+    addLog(`☯️ 【渡劫開始】天地變色，心魔自你識海中走出，化作與你一模一樣的魔身！（勝算 ${formatChance(chance.total)}｜戰力 ${demonPower.toWan()}／氣血 ${demonHp.toWan()}）`, "reincarnate");
     document.getElementById('combat-status').innerText = `☯️ 渡劫中：與心魔生死對決！`;
     document.getElementById('combat-status').style.color = 'var(--reincarnate-color)';
     updateUI();
@@ -111,7 +111,7 @@ function tribulationTick() {
     let selfTick = tickStatus(playerStatus);
     if (selfTick.dot > 0) {
         player.hp -= selfTick.dot;
-        addLog(`🩸 身上的異常狀態發作，損失 ${selfTick.dot.toLocaleString()} 點氣血！`, "combat");
+        addLog(`🩸 身上的異常狀態發作，損失 ${selfTick.dot.toWan()} 點氣血！`, "combat");
         if (player.hp <= 0 && !tryGearUndying()) { resolvePlayerFall(); return; }
     }
 
@@ -133,8 +133,8 @@ function tribulationTick() {
     let regen = applyRootRegen() + applyGearRegen();
     if (tags.length > 0 || demonTick.dot > 0 || regen > 0) {
         addLog(`✨ 屬性效果：${[tags.length ? summarizeTags(tags, "💨被心魔閃避") : '',
-            demonTick.dot ? `心魔受持續傷害 ${demonTick.dot.toLocaleString()}` : '',
-            regen ? `🌿回復 ${regen.toLocaleString()}` : ''].filter(Boolean).join("｜")}`, "skill");
+            demonTick.dot ? `心魔受持續傷害 ${demonTick.dot.toWan()}` : '',
+            regen ? `🌿回復 ${regen.toWan()}` : ''].filter(Boolean).join("｜")}`, "skill");
     }
 
     if (heartDemon.hp <= 0) {
@@ -228,7 +228,7 @@ function endTribulation(success) {
         let fromStage = player.stage;
         applyTribulationFailDrop();
         player.hp = 1;
-        addLog(`💀 【渡劫失敗】心魔反噬，你身受重傷跌落凡塵，遺失了 ${lostCoins.toLocaleString()} 靈石。`, "combat");
+        addLog(`💀 【渡劫失敗】心魔反噬，你身受重傷跌落凡塵，遺失了 ${lostCoins.toWan()} 靈石。`, "combat");
         addLog(`📉 道基受損，境界跌落【${realms[player.realmIndex]} ${fromStage}階 → ${player.stage}階】，並陷入「虛弱」：攻擊、氣血與靈力上限 -${Math.round((1 - WEAKNESS_STAT_MULT) * 100)}%，直到重新修回 10 階才會恢復。`, "combat");
         changeMap(0, 0);
         updateUI();

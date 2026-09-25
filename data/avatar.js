@@ -17,10 +17,10 @@ function isAvatarUnlocked(av) {
 function checkAvatarCondition(unlock) {
     let v = unlock.value;
     switch (unlock.type) {
-        case "coins":       return { ok: player.coins >= v, text: `${v.toLocaleString()} 靈石解鎖`, now: `${player.coins.toLocaleString()} 靈石` };
+        case "coins":       return { ok: player.coins >= v, text: `${v.toWan()} 靈石解鎖`, now: `${player.coins.toWan()} 靈石` };
         case "realm":       return { ok: player.realmIndex >= v, text: `境界達【${realms[v]}】`, now: realms[player.realmIndex] };
-        case "level":       return { ok: player.level >= v, text: `人物等級 Lv.${v.toLocaleString()}`, now: `Lv.${player.level.toLocaleString()}` };
-        case "reputation":  return { ok: (player.reputation || 0) >= v, text: `聲望達 ${v.toLocaleString()}`, now: (player.reputation || 0).toLocaleString() };
+        case "level":       return { ok: player.level >= v, text: `人物等級 Lv.${v.toWan()}`, now: `Lv.${player.level.toWan()}` };
+        case "reputation":  return { ok: (player.reputation || 0) >= v, text: `聲望達 ${v.toWan()}`, now: (player.reputation || 0).toWan() };
         case "tribulation": return { ok: (player.tribulationCount || 0) >= v, text: `累計渡劫成功 ${v} 次`, now: `${player.tribulationCount || 0} 次` };
         default:            return { ok: false, text: "未知條件", now: "" };
     }
@@ -63,7 +63,7 @@ function renderAvatarModal() {
         else if (unlocked) { status = `<span class="avatar-status">點擊更換</span>`; action = `onclick="selectAvatar('${av.id}')"`; }
         else if (buyable) {
             let enough = player.coins >= av.unlock.value;
-            status = `<span class="avatar-status ${enough ? 'buyable' : 'locked'}">💰 ${av.unlock.value.toLocaleString()} 靈石解鎖${enough ? '' : '<br><small>靈石不足</small>'}</span>`;
+            status = `<span class="avatar-status ${enough ? 'buyable' : 'locked'}">💰 ${av.unlock.value.toWan()} 靈石解鎖${enough ? '' : '<br><small>靈石不足</small>'}</span>`;
             action = `onclick="buyAvatar('${av.id}')"`;
         } else {
             let c = checkAvatarCondition(av.unlock);
@@ -85,15 +85,15 @@ function buyAvatar(id) {
     if (!av || isAvatarUnlocked(av) || !av.unlock || av.unlock.type !== "coins") return;
     let cost = av.unlock.value;
     if (player.coins < cost) {
-        alert(`靈石不足！解鎖頭像【${av.name}】需要 ${cost.toLocaleString()} 靈石（目前 ${player.coins.toLocaleString()}）。`);
+        alert(`靈石不足！解鎖頭像【${av.name}】需要 ${cost.toWan()} 靈石（目前 ${player.coins.toWan()}）。`);
         return;
     }
-    if (!confirm(`確定花費 ${cost.toLocaleString()} 靈石解鎖頭像【${av.name}】嗎？\n解鎖後永久可用，轉世也不會失去。`)) return;
+    if (!confirm(`確定花費 ${cost.toWan()} 靈石解鎖頭像【${av.name}】嗎？\n解鎖後永久可用，轉世也不會失去。`)) return;
 
     player.coins -= cost;
     if (!Array.isArray(player.unlockedAvatars)) player.unlockedAvatars = [];
     player.unlockedAvatars.push(av.id);
-    addLog(`🎭 花費 ${cost.toLocaleString()} 靈石解鎖頭像【${av.name}】！`, "level-up");
+    addLog(`🎭 花費 ${cost.toWan()} 靈石解鎖頭像【${av.name}】！`, "level-up");
     selectAvatar(av.id);   // 解鎖後直接換上（內含重繪、updateUI 與存檔）
 }
 
@@ -171,7 +171,7 @@ function renderFrameList() {
         else if (unlocked) { status = `<span class="avatar-status">點擊配戴</span>`; action = `onclick="selectFrame('${fr.id}')"`; }
         else if (buyable) {
             let enough = player.coins >= fr.unlock.value;
-            status = `<span class="avatar-status ${enough ? 'buyable' : 'locked'}">💰 ${fr.unlock.value.toLocaleString()} 靈石${enough ? '' : '<br><small>靈石不足</small>'}</span>`;
+            status = `<span class="avatar-status ${enough ? 'buyable' : 'locked'}">💰 ${fr.unlock.value.toWan()} 靈石${enough ? '' : '<br><small>靈石不足</small>'}</span>`;
             action = `onclick="buyFrame('${fr.id}')"`;
         } else {
             let c = checkAvatarCondition(fr.unlock);
@@ -202,13 +202,13 @@ function buyFrame(id) {
     if (!fr || isFrameUnlocked(fr) || !fr.unlock || fr.unlock.type !== "coins") return;
     let cost = fr.unlock.value;
     if (player.coins < cost) {
-        alert(`靈石不足！解鎖頭像光環【${fr.name}】需要 ${cost.toLocaleString()} 靈石（目前 ${player.coins.toLocaleString()}）。`);
+        alert(`靈石不足！解鎖頭像光環【${fr.name}】需要 ${cost.toWan()} 靈石（目前 ${player.coins.toWan()}）。`);
         return;
     }
-    if (!confirm(`確定花費 ${cost.toLocaleString()} 靈石解鎖頭像光環【${fr.name}】嗎？\n解鎖後永久可用，轉世也不會失去。`)) return;
+    if (!confirm(`確定花費 ${cost.toWan()} 靈石解鎖頭像光環【${fr.name}】嗎？\n解鎖後永久可用，轉世也不會失去。`)) return;
     player.coins -= cost;
     if (!Array.isArray(player.unlockedFrames)) player.unlockedFrames = [];
     player.unlockedFrames.push(fr.id);
-    addLog(`💫 花費 ${cost.toLocaleString()} 靈石解鎖頭像光環【${fr.name}】！`, "level-up");
+    addLog(`💫 花費 ${cost.toWan()} 靈石解鎖頭像光環【${fr.name}】！`, "level-up");
     selectFrame(fr.id);
 }

@@ -20,16 +20,21 @@ images/               圖片素材
   evil-hall.jpg       殺手殿堂場景背景（937×625，玩家提供；獵殺邪修入口，見第 27 節）
   avatars/            可解鎖更換的頭像（256×256 正方形、臉部置中，由玩家提供的原圖裁切縮小），見第 32 節
   towns/              城內場景圖（玩家提供，第 20 節）：tianxing-market.jpg 天星城坊市橫圖（1582×672）、
-                      tianxing-market-portrait.jpg 手機直式（704×1520，9:19.4）
+                      tianxing-market-portrait.jpg 手機直式（704×1520，9:19.4）、
+                      npc-fengxi.png 亂星海第一大善人・風希人偶（252×400 透明 PNG，由玩家提供的插畫手動描邊去背）
   maps/               修仙地圖卡片縮圖（config-maps.js 的 thumb）：tianxing-city.jpg 天星城（720×381，玩家提供，第 20 節）
   frames/             頭像光環 frame-01～25.png（透明 PNG，約 125～160px，由玩家提供的頭像框展示圖裁切去背），見第 32 節
   cover.jpg           主頁封面・橫式（1264x843），電腦與橫向螢幕使用
   cover-portrait.jpg  主頁封面・直式（960x1920），手機直向使用（由橫式圖重新構圖而成）
+videos/               影片：fengxi-dance.mp4 風希跳舞彩蛋（1280×720、17 秒、3.9 MB，玩家提供，第 39 節）
 tools/                不會被遊戲載入的維護工具
   裝備清單-850種.csv   850 種裝備的來源資料（Excel 可開啟；UTF-8 BOM），改完執行下一行的腳本
   csv-to-js.ps1       把 CSV 轉成 data/config-gear-catalog.js（powershell -ExecutionPolicy Bypass -File tools\csv-to-js.ps1）
+  cut-figure.ps1      以手描外框去背（-Src 圖 -OutPng 輸出 -Preview 預覽 -PointsFile 外框點檔；點檔每行 "x,y"，空白行分隔，第一組外框、其餘為挖掉的洞）
+  cut-figure-points-fengxi.txt  風希人偶的外框點（原圖 768×1376，玩家提供的插畫）
   cut-avatar-frames.ps1  從頭像框展示圖裁出 25 個光環並去背、量內圈（-Src 圖檔 -OutDir 輸出資料夾；格線座標寫死在檔內，見第 32 節）
 data/                 所有遊戲邏輯與資料，依「設定資料 / 執行狀態 / 功能模組 / 進入點」分層
+  format.js           數字顯示格式 fmtNum()／xxx.toWan()：1 萬以上用中文單位（1000萬、1.5億），**第一個載入**（第 41 節）
   config-*.js         純資料表（原則上不含函式、無副作用），可視為遊戲的「設計數值表」：
                       realms / level / lifespan / maps / sects / lingbao / shop / beasts /
                       servants / equipment / tribulation / quests / activities / daily-quests / elements / merit / bounty / talisman / avatars / home-pc / spells /
@@ -84,6 +89,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 （函式宣告會先被瀏覽器解析完成，實際呼叫要等到 `window.onload` 之後才發生）。
 但以下兩個檔案在載入當下就會**立即執行頂層程式碼**，因此順序不可調換：
 
+- `format.js` 必須是**第一個**：它定義 `fmtNum` 與 `Number.prototype.toWan`，而 config 檔載入時就會呼叫 `.toWan()`（例：`config-merit.js` 的說明文字）。
 - `config-maps.js` 必須在 `state.js` 之前載入：`state.js` 的 `player.currentMap` 直接讀取 `maps[0].items[0]`。
 - `main.js` 必須放在最後：它的 `window.onload` 內會呼叫幾乎所有模組的函式，需確保全部腳本都已解析完成。
 - `config-sects.js` 尾端也有頂層迴圈（替技能補 `tier`/`mult`），但只讀取同檔的常數，放在哪都安全。
@@ -94,6 +100,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 
 | # | 檔案 | 責任 | 依賴（讀取哪些全域） | 被誰依賴 / 誰會呼叫它 |
 |---|------|------|----------------------|------------------------|
+| 0 | `format.js` | `fmtNum(n)`（1 萬以下千分位；以上 萬／億／兆，小數依大小 2／1／0 位、尾端 0 省略、不加逗號）、`Number.prototype.toWan`／`String.prototype.toWan`（不可列舉） | 無 | 幾乎所有檔案顯示數字時的 `.toWan()` |
 | 1 | `config-realms.js` | `realms` 境界名稱陣列、修煉節奏表 `realmPacing`（每境界目標時數/主要地圖/估算加成）、`REALM_PACING_KILLS_PER_SEC` | 無（`realmPacing.map` 是地圖名稱字串，執行期才查 `maps`） | `stats.js`(getRealmStageExp/getNextExp)、`lifespan.js`(getAgingHours)、`ui.js`、`leveling.js` |
 | 2 | `config-level.js` | `MAX_PLAYER_LEVEL`、`LEVEL_UP_*` 成長值、`LEVEL_EXP_SEGMENTS` 經驗曲線 | 無 | `stats.js`(getLevelExpNeeded、getMaxHp/getMaxMp)、`leveling.js`(gainLevelExp)、`ui.js` |
 | 3 | `config-lifespan.js` | `lifespanByRealm` 各境界壽元增加量與死亡折壽、歲月流逝常數 `LIFESPAN_MIN_AGING_HOURS`/`LIFESPAN_PACE_MULT`/`LIFESPAN_DANGER_MULT`/`LIFESPAN_TRIBULATION_MULT`/`LIFESPAN_OFFLINE_RATE`/`LIFESPAN_FLOOR_DEATHS`、起始年齡 `LIFESPAN_START_AGE` | 無 | `lifespan.js`、`leveling.js`(轉世重設壽元與年齡)、`ui.js`(年齡顯示) |
@@ -122,11 +129,11 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 15j | `config-sets.js` | `GEAR_SET_MIN_QUALITY`、`gearSets`(30 組：主題＋五行)、`gearSetThemes`(2/4/6 件加成) | 無 | `gear.js`、`codex.js` |
 | 15k | `config-profession.js` | `PROFESSION_SWITCH_COST`、`PROF_MAP_MULT`/`PROF_BOUNTY_GAIN`/`PROF_OFFLINE_RATE`、`PROF_RANK_EXP`/`PROF_WEAPON_BONUS`、`professions`(6 職業：階名、被動、技能) | 無 | `profession.js` |
 | 15m | `config-strange-fire.js` | 異火（第 38 節）：`STRANGE_FIRE_SHARDS_PER_FIRE`(100 片合 1 朵)/`STRANGE_FIRE_REALM_REDUCE`(每朵秘境受傷 -3%)/`STRANGE_FIRE_REALM_REDUCE_MAX`(上限 30%)、品階 `STRANGE_FIRE_TIERS`(weight/color)、`strangeFireItems`(碎片與異火的顯示資料)、`strangeFireList`(50 種：id/name/tier/origin/desc/bonus；檔尾有新增模板) | 無 | `strange-fire.js` |
-| 15o | `config-towns.js` | `townScenes`（key = 城鎮地圖名稱：title、img、imgW／imgH、選填 `portrait`（手機直式圖，自有 img／imgW／imgH／hotspots）、`hotspots` 傳送點 `{ id, label, rect:[x,y,w,h] 圖上像素, action, enabled }`；檔內有模板） | 無 | `town.js`、`map.js`(hasTownScene) |
+| 15o | `config-towns.js` | `townScenes`（key = 城鎮地圖名稱：title、img、imgW／imgH、選填 `portrait`（手機直式圖，自有 img／imgW／imgH／hotspots／figures）、`figures` 場景人偶 `{ id, name, img, rect, action? }`、`hotspots` 傳送點 `{ id, label, rect:[x,y,w,h] 圖上像素, action, enabled }`；檔內有模板） | 無 | `town.js`、`map.js`(hasTownScene) |
 | 15n | `config-partners.js` | 夥伴（第 39 節）：`PARTNER_TIERS`(評級門檻與數值建議)、`PARTNER_POWER_LABELS`(六維名稱)、`partnerList`(39 位：出處、世界、巔峰、六維戰力、分析、被動、絕學；檔尾有新增模板) | 無 | `partner.js` |
 | 15l | `config-titles.js` | `titleList`（60 個稱號：條件 cond、加成 bonus；含 4 個賭運稱號） | 無 | `codex.js`、`casino.js`(紀錄頁列出賭運稱號) |
 | 15p | `config-casino.js` | 天星賭坊（第 40 節）：`CASINO_TOWN`、每日上限 `CASINO_DAILY_LIMIT_BY_REALM`、`CASINO_DICE_MAX_RATIO`/`CASINO_DICE_MIN_BET`/`CASINO_CONFIRM_RATIO`、`casinoStones`(三種隕石：價格、結果權重表)、`CASINO_VALUE`(估值)、`CASINO_CUT_LINES`、擲骰 `CASINO_DICE_BETS`/`CASINO_TOTAL_PAYOUT`/`CASINO_DICE_FACES` | 無 | `casino.js` |
-| 16 | `state.js` | `player`（含裝備系統 `starIron`/`ironShards`/`gearStash`/`ironShop`/`ironUsed`/`maxEnhance`/`gearCodex`/`titles`/`activeTitle`/`profession`/`profSwitched`/`proficiency`（第 37 節）、`lingbaoSold`、仙法 `spells`/`spellSlots`、渡劫失敗虛弱 `weakened`、頭像 `avatarId`/`unlockedAvatars`、頭像光環 `avatarFrameId`/`unlockedFrames`、礦石 `ore`、符寶 `talismans`、異火 `fireShards`/`strangeFires`/`fireCollection`（第 38 節）、天星賭坊 `casino`（第 40 節）、夥伴 `partners`/`activePartner`（第 39 節）、藏書閣屬性秘典次數 `elementStudy`、轉世保留的上限 `reincarnateBonus`、年齡 `age`、功德系統 `merit`/`butianStones`/`breakPills`/`evilKills`、善惡 `karma`、懸賞榜 `bountyBoard`/`bountyRefreshAt`/`bountyFaction`/`activeBountyId`/`bountyKills`）、`DEFAULT_PLAYER_JSON`（全新角色預設值快照，讀檔/匯入的合併基底）、`enemies`（每隻帶 `attrs`/`status`；野外修士另帶 `cultivator`("正"/"邪")/`ambush`）、`respawnTimer`、`safeZoneTimer`；不存檔的執行期狀態：`inTribulation`/`heartDemon`/`tribulationFatedWin`/懸賞對決 `inBountyDuel`/`duelOpponent`/`duelWeakenTimer`/`duelWeakenMult`/`duelSilenceTimer`/`duelArmorTimer`/丹藥冷卻/`gameOver`/背景補發 `lastTickAt`/`missedTickMs`/`playerStatus`(玩家身上的凍結/燒傷/中毒)/靈寵輔助計時(`petBuff*`/`petShield*`/`petRegen*`) | **`maps`**（必須排在 config-maps.js 之後） | 幾乎所有檔案都會讀寫 `player` |
+| 16 | `state.js` | `player`（含裝備系統 `starIron`/`ironShards`/`gearStash`/`ironShop`/`ironUsed`/`maxEnhance`/`gearCodex`/`titles`/`activeTitle`/`profession`/`profSwitched`/`proficiency`（第 37 節）、`lingbaoSold`、仙法 `spells`/`spellSlots`、渡劫失敗虛弱 `weakened`、頭像 `avatarId`/`unlockedAvatars`、頭像光環 `avatarFrameId`/`unlockedFrames`、礦石 `ore`、符寶 `talismans`、異火 `fireShards`/`strangeFires`/`fireCollection`（第 38 節）、天星賭坊 `casino`（第 40 節）、夥伴 `partners`/`partnerTeam`/`partnerBond`/`fieldKills`（第 39 節）、藏書閣屬性秘典次數 `elementStudy`、轉世保留的上限 `reincarnateBonus`、年齡 `age`、功德系統 `merit`/`butianStones`/`breakPills`/`evilKills`、善惡 `karma`、懸賞榜 `bountyBoard`/`bountyRefreshAt`/`bountyFaction`/`activeBountyId`/`bountyKills`）、`DEFAULT_PLAYER_JSON`（全新角色預設值快照，讀檔/匯入的合併基底）、`enemies`（每隻帶 `attrs`/`status`；野外修士另帶 `cultivator`("正"/"邪")/`ambush`）、`respawnTimer`、`safeZoneTimer`；不存檔的執行期狀態：`inTribulation`/`heartDemon`/`tribulationFatedWin`/懸賞對決 `inBountyDuel`/`duelOpponent`/`duelWeakenTimer`/`duelWeakenMult`/`duelSilenceTimer`/`duelArmorTimer`/丹藥冷卻/`gameOver`/背景補發 `lastTickAt`/`missedTickMs`/`playerStatus`(玩家身上的凍結/燒傷/中毒)/靈寵輔助計時(`petBuff*`/`petShield*`/`petRegen*`) | **`maps`**（必須排在 config-maps.js 之後） | 幾乎所有檔案都會讀寫 `player` |
 | 17 | `stats.js` | `EQUIP_STAT_KEYS`/`BASE_STAT_KEYS`、`getEquipBonus`(四維＋減傷/閃避/屬性傷害；四維 × 強化倍率與主修武器加成，再加 gear.js `getBonusTotals` 的詞條／套裝／稱號／職業)/`getElementCounts`/`getSpiritRoots`(靈根判定)/`getRootBonus`(靈根加成總和)/`getPlayerElement`(本命五行，五行相剋用)/`getRealmStageExp`(依 realmPacing 換算每階經驗基數，有快取)/`getNextExp`/`getLevelExpNeeded`/`hasLiveBeast`(出戰中才算，呼叫 beast-combat.js 的 isBeastActive)/`getBasePower`/`getPhysAttack`/`getMagAttack`(兩者皆乘上懸賞對決的化功 `getDuelWeakenMult()` 與 `getGearPctBonus`)/`getMaxHp`(乘 `getGearPctBonus('hp')`)/`getMaxMp`(兩者皆加上轉世保留值)/`getReincarnateBonus`/`getSectTier`/`getAllSkills` | `player`、`realms`、`sectData`、`LEVEL_*`、`equipTypes`/`WUXING_COUNTERS`、靈寵輔助計時、`bounty.js`(getDuelWeakenMult) | `ui.js`、`combat.js`、`leveling.js`、`tribulation.js`、`beast-combat.js` 等幾乎全部功能檔 |
 | 18 | `elements.js` | `newStatus`/`getPlayerCombatAttrs`(含 `element`；懸賞對決被破甲時減傷／閃避 × `getDuelArmorMult()`；裝備特效的護體／先手盾／定神／破甲／洞察／剋敵／寒徹／焚燼／蝕骨欄位與套裝提高的上限)/`getWuxingCounterMult`/`withSkillEffect`/`getMapCategoryIndex`/`rollMonsterAttrs`/`resolveHit`/`addDotStack`/`tickStatus`/`formatStatus`/`summarizeTags`/`formatEquipStats` | `config-elements.js`、`stats.js`(getEquipBonus/getPlayerElement)、`library.js`(getElementBookBonus)、`wuxingElements`、`maps`、`playerStatus` | `combat.js`、`tribulation.js`、`ui.js`、`bag.js`/`equipment.js`/`auction.js`/`lingbao-shop.js`(裝備屬性文字) |
 | 19 | `ui.js` | 常數 `PLAYER_AVATARS`（頭像 `img`（本地 images/avatar-*.jpg）/裁切位置 `pos`/預設道號，洞府頭像框、戰鬥實況、性別選擇共用；性別選擇視窗的兩張 `<img>` 寫在 index.html，換圖時要一起改）、`updateUI`/`updateCombatVisualPanel`/`formatWuxingCounterTip`/`updateTribulationUI`/`updatePotionCooldownUI`/`updateStudyCountsUI`/`openSkillModal`/`renderSkillList`/`addLog`/`refreshCombatStatusText`/`updateAutoSettings`/`syncAutoSettingsUI`/`updateSectFacilitiesUI`/`closeModal`/`toggleDrawer`/`formatCountdown`/`resolveBatchCount`(×1/×10/最高 共用)/批次刪除工具 `renderBulkDeleteBar`/`getCheckedBulkQualities`/`toggleAllBulkQualities` | `player`、`realms`、`stats.js` 的計算函式、`lifespan.js`(getDeathLifespanCost) | 幾乎所有功能檔在資料變動後都會呼叫 `updateUI()`/`addLog()` |
@@ -153,8 +160,8 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 34e | `enhance.js` | `randInt`、星允鐵 `addStarIron`/`addIronShards`、`locateEquip`/`removeLocatedEquip`、強化 `getEnhanceInfo`/`canEvolve`/`enhanceEquipId`/`openEnhanceModal`/`renderEnhanceModal`/`getEvolveStatRatio`/`enhanceEquip`/`promptEvolveEquip`(+20 系統通知)/`evolveEquip(skipConfirm)`、分解 `getDecomposeYield`/`formatDecomposeYield`/`decomposeEquip`/`bulkDecomposeEquipment`、暫存區 `isGearStashFull`/`receiveLootEquip`/`enforceGearStashLimit`/`moveStashToBag`/`deleteStashEquip`/`renderStashSection`、`refreshEquipViews`、千寶閣 `getIronShopState`/`renderIronShopSection`/`buyStarIron`/`rollIronBagItem` | `config-enhance.js`、`gear.js`、`codex.js`(checkTitleUnlocks、稱號強化成功率)、`map.js`(changeMap)、`ui.js` | `bag.js`/`equipment.js`(按鈕與暫存區)、`auction.js`、`combat.js`/`bounty.js`/`servant.js`(星允鐵)、`map.js`/`save.js`(暫存區滿) |
 | 34h | `strange-fire.js` | 異火（第 38 節）：**載入時**建 `strangeFireById`；`addFireShards(n, source)`(取得碎片，供未來秘境掉落呼叫)/`rollStrangeFire`/`gainStrangeFire`/`craftStrangeFire(qty)`(合成，數字或 'max')/`getStrangeFireRealmReduction`(秘境受傷減免比例)/`getStrangeFireBonusTotals`(收錄加成)/`countCollectedFires`/`migrateStrangeFires`(舊存檔)/`renderStrangeFireCards`(背包卡片)/`renderCodexFires`(天磯錄分頁) | `config-strange-fire.js`、`player.fireShards`/`strangeFires`/`fireCollection`、`codex.js`(describeTitleBonus、openCodexModal)、`ui.js` | `bag.js`(renderBag)、`gear.js`(getBonusTotals)、`codex.js`(異火分頁、頂端統計)、`save.js`(applySaveData)；未來秘境（掉落、受擊減傷） |
 | 34k | `casino.js` | 天星賭坊（第 40 節）：狀態 `casinoTab`/`casinoBusy`/`casinoResultHtml`/`casinoDice`；`getCasinoState`(跨日重置)/`getCasinoDailyLimit`/`getCasinoRemaining`/`getDiceMaxBet`/`isInCasinoTown`/`checkCasinoSpend`(城鎮、靈石、上限、大額確認)/`recordCasino`；隕石 `randCasino`/`rollStoneOutcome`/`grantStoneOutcome`/`cutStone(id, count)`；擲骰 `setDiceType`/`setDicePick`/`setDiceTotal`/`setDiceAmount`/`addDiceAmount`/`setDiceMax`/`getDicePayout`/`describeDiceBet`/`judgeDice`/`rollDice`；視窗 `openCasinoModal`/`setCasinoTab`/`renderCasino`/`renderCasinoStones`/`renderCasinoDice`/`renderCasinoRecord` | `config-casino.js`、`player.casino`/`coins`/`ore`/`realmIndex`/`currentMap`、`enhance.js`(addStarIron/addIronShards)、`strange-fire.js`(addFireShards/rollStrangeFire/gainStrangeFire)、`gear.js`(tryLootDrop 的 casinoPurple/casinoOrange)、`codex.js`(checkTitleUnlocks/describeTitle*)、`ui.js` | `config-towns.js`(天星城石拱門傳送點)、`codex.js`(賭運稱號條件讀 player.casino) |
-| 34j | `town.js` | 城內場景：`currentTownScene`/`currentTownView`/`hasTownScene`/`pickTownView`(直向用 portrait)/`openTownScene(name)`/`closeTownScene`/`applyTownView(recenter)`(換圖＋重排)/`renderTownHotspots(view)`/`layoutTownScene(recenter)`；頂層註冊 resize 監聽與 `initTownScenePan`（滾輪左右平移、拖曳平移、`?townedit=1` 座標工具），只綁事件、無其他副作用 | `config-towns.js`、`#town-scene` DOM | `map.js`(goToTown／renderTownTeleports)、HTML 離開按鈕、傳送點 action |
-| 34i | `partner.js` | 夥伴（第 39 節）：**載入時**建 `partnerById`；`getPartnerPowerAvg`/`getPartnerTier`/`isPartnerMet`/`meetPartner(id, source)`(供未來秘境呼叫)/`getActivePartner`/`setActivePartner`/`getPartnerBonusTotals`/`partnerSkillTurn`、視窗 `partnerFilter`/`openPartnerModal`/`setPartnerFilter`/`formatPartnerOrigin`/`renderPartnerCard`/`renderPartnerModal` | `config-partners.js`、`player.partners`/`activePartner`、`artifact.js`(castProcSkill)、`codex.js`(describeTitleBonus)、`ui.js` | `gear.js`(getBonusTotals)、`combat.js`/`tribulation.js`/`bounty.js`(出手後 partnerSkillTurn)、HTML 手機「情緣」導覽、`config-home-pc.js`(PC 情緣按鈕) |
+| 34j | `town.js` | 城內場景：`currentTownScene`/`currentTownView`/`hasTownScene`/`pickTownView`(直向用 portrait)/`openTownScene(name)`/`closeTownScene`/`applyTownView(recenter)`(換圖＋重排)/`renderTownHotspots(view)`(人偶＋傳送點)/`layoutTownScene(recenter)`；頂層註冊 resize 監聽與 `initTownScenePan`（滾輪左右平移、拖曳平移、`?townedit=1` 座標工具），只綁事件、無其他副作用 | `config-towns.js`、`#town-scene` DOM | `map.js`(goToTown／renderTownTeleports)、HTML 離開按鈕、傳送點 action |
+| 34i | `partner.js` | 夥伴（第 39 節）：**載入時**建 `partnerById`；`getPartnerPowerAvg`/`getPartnerTier`/`isPartnerMet`；好感 `getBond`/`getBondLevel`/`getBondLevelName`(LV5 道侶／結拜)/`addBond`/`reduceBond`/`nextBondMin`/`todayKey`/`greetPartner`/`pickGreetLine`/`getGiftCost`/`getGiftsLeft`/`giftPartner`；情緣任務 `getQuestStat`/`describeBondQuest`/`acceptBondQuest`/`getBondQuestProgress`/`claimBondQuest`/`abandonBondQuest`/`onPartnerFieldKills`；結識 `meetPartner`/`talkToPartner`(場景人偶)；彩蛋 `askPartnerEaster`/`answerPartnerEaster`/`playPartnerVideo`/`getPlayedSeconds`/`onPartnerVideoEnded`/`closePartnerVideo`、狀態 `partnerVideoCtx`；隊伍 `getPartnerTeam`/`isInTeam`/`togglePartnerTeam`/`getPartnerBonusTotals`/`partnerSkillTurn`/`migratePartners`；對話 `showPartnerDialog(p, lines, note, afterId, choices)`/`closePartnerDialog`；視窗 `partnerFilter`/`openPartnerModal(focusId)`/`setPartnerFilter`/`formatPartnerOrigin`/`renderBondSection`/`renderPartnerCard`/`renderPartnerModal` | `config-partners.js`、`player.partners`/`partnerTeam`/`partnerBond`/`fieldKills`/`evilKills`/`bountyKills`/`gender`/`coins`、`artifact.js`(castProcSkill)、`codex.js`(describeTitleBonus)、`ui.js` | `gear.js`(getBonusTotals)、`combat.js`(partnerSkillTurn、擊殺後 onPartnerFieldKills)/`tribulation.js`/`bounty.js`、`save.js`(migratePartners)、`config-towns.js`(風希人偶 talkToPartner)、HTML 情緣導覽與對話框 |
 | 34f | `profession.js` | `getProfession`/`getProfRank`/`getProfRankName`/`getProfessionPassive`/`getProfWeaponMult`/`gainProficiency`/`gainKillProficiency`/`professionSkillTurn`/`formatProfessionTag`/`chooseProfession`/`renderProfessionTab` | `config-profession.js`、`artifact.js`(castProcSkill)、`elements.js`(getMapCategoryIndex)、`codex.js` | `stats.js`(主修武器加成)、`gear.js`(被動)、`combat.js`/`tribulation.js`/`bounty.js`(職業技能、熟練度)、`save.js`(離線熟練度)、`codex.js` |
 | 34g | `codex.js` | 收藏 `recordGearCollected`/`migrateGearCodex`/`hasCollected`/`getOpenGear`/`countCollected`/`countCollectedQuality`、稱號 `getTitleName`/`isTitleConditionMet`/`describeTitleCondition`/`describeTitleBonus`/`getTitleBonusTotals`/`checkTitleUnlocks`/`getNameTag`/`setActiveTitle`、視窗 `codexTab`/`codexSlot`/`openCodexModal`/`setCodexTab`/`setCodexSlot`/`renderCodexModal`/`CODEX_QUALITIES`/`renderCodexGear`/`renderCodexSets`/`renderCodexTitles`（異火分頁在 strange-fire.js） | `config-titles.js`、`gear.js`、`profession.js`、`strange-fire.js`(renderCodexFires/countCollectedFires)、`merit.js`(getKarmaState)、`stats.js`(getSectTier) | `gear.js`(收藏、稱號加成)、`enhance.js`、`profession.js`、`ui.js`(updateUI 每秒 checkTitleUnlocks)、`home-ui.js`(道號旁標籤)、`save.js`、HTML 天磯錄熱點 |
 | 35 | `field.js` | `herbRecipes`、`openFieldModal`/`plantHerb` | `player.spiritGrass`/`player.herbs`/`player.coins`、`ui.js`(resolveBatchCount) | HTML 按鈕（僅在「宗門」顯示） |
@@ -261,7 +268,7 @@ combatTick() 每秒執行 [combat.js]
 | `enterWorld` | `data/title-screen.js` |
 | `retryLoadAfterFailure`, `showRawSaveForCopy`, `abandonSaveAndStartNew`（讀檔失敗視窗） | `data/save.js` |
 | `switchTab`（手機洞府左側「任務」= `switchTab('task')`）, `openWorldTab`（手機／PC 的「世界」導覽：切到世界分頁並跳出修仙地圖）, `openAscensionPlatform`, `showUnderConstruction`（洞府主畫面尚未實作的按鈕）, `openSystemModal`（命運與系統彈窗：手機丹藥堂上方齒輪、設定視窗內按鈕） | `data/home-ui.js` |
-| `openPartnerModal`（手機與 PC 的「情緣」）、`setPartnerFilter(f)`、`setActivePartner(id)`（情緣視窗內） | `data/partner.js` |
+| `openPartnerModal`（手機與 PC 的「情緣」）、`setPartnerFilter(f)`、`greetPartner(id)`／`giftPartner(id)`／`acceptBondQuest(id)`／`claimBondQuest(id)`／`abandonBondQuest(id)`／`togglePartnerTeam(id)`（情緣視窗內）、`closePartnerDialog`／`answerPartnerEaster(id, yes)`（對話框）、`closePartnerVideo`（彩蛋影片）、`talkToPartner(id)`（坊市人偶） | `data/partner.js` |
 | `craftStrangeFire(qty)`（背包異火碎片卡片）、`openCodexModal('fires')`（背包異火卡片「查看異火榜」） | `data/strange-fire.js`／`data/codex.js` |
 | PC 版洞府的所有按鈕與建築熱點（onclick 字串寫在 `config-home-pc.js` 的 `pcStageButtons[].action`，改名函式時要一起改） | 各功能檔 |
 | `openSettingsModal`（洞府右上 ⚙️、PC 版「設置」）、`setDisplayMode(mode)`、`toggleFullscreen`（後兩者由 `renderSettingsModal()` 動態產生） | `data/settings.js` |
@@ -892,6 +899,12 @@ combatTick() 每秒執行 [combat.js]
   - **城內場景（第二頁面，2026-09-26）**：城鎮卡片改呼叫 `goToTown(i)`：不在該城就先 `selectMap` 傳送，
     該城在 `config-towns.js` 有場景就開啟 `#town-scene`（`town.js` 的 `openTownScene`）；已在城內也能點卡片直接進城（卡片標「點擊進城」）。
     - 目前只有**天星城**（「天星城・坊市」）。傳送點：右側雕花石拱門 = **天星賭坊**（`openCasinoModal()`，第 40 節；橫圖 rect [1150,140,270,430]、直式 [470,600,234,700]）。
+    - **場景人偶**（`figures`，2026-09-26）：透明 PNG 擺在圖上當裝飾，座標同樣是圖上像素（rect 寬高比要和圖片一致，底邊 = 腳下位置），
+      畫在傳送點底下、預設不可點（加 `action` 才可點，滑過發光）；CSS `.town-figure` 加腳下陰影。
+      目前：**亂星海第一大善人・風希**（id `fengxi`，第 39 節夥伴 `dashanren` 同一人；**可點**：第一次結識、之後每日問候），紅色小攤車左側的街面上（橫圖 [862,446,95,150]、直式 [226,1110,126,200]，大小以攤車高度為基準）。
+      人偶圖由玩家提供的插畫（有完整街景背景）以 `tools/cut-figure.ps1` 手描外框去背：含椅子與木台、不含後方燭台與右下木箱，
+      椅子扶手與靠背的鏤空處另外挖洞，避免透出原圖背景的路人。
+      ※ 木台銘牌上印著原圖的「蒼龍使者」字樣（遊戲中約 10 像素高，看不清楚）；2026-09-27 依玩家指定，人物設定為風希。
     - 城名：左上「↩ 離開」下方，**直書**（`writing-mode: vertical-rl`）墨色底金邊，仿天星城縮圖的書法題字。
     - **兩張圖**：橫圖 `images/towns/tianxing-market.jpg`（1582×672，約 2.35:1，電腦與橫向）、直式 `portrait`（`tianxing-market-portrait.jpg`，704×1520，手機直向剛好滿版）。
       `town.js` 的 `pickTownView` 依畫面方向選圖（寬 < 高且有 portrait → 直式），轉向（resize）時 `applyTownView` 自動換圖並重排。
@@ -1192,7 +1205,7 @@ combatTick() 每秒執行 [combat.js]
 （以 8 種舊存檔形態測試目前程式皆可正常讀取；移除 `#age-display` 即可重現同一錯誤。）
 
 ### 1. 發佈版本號（防止新舊檔案混用）
-- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260926x`）。
+- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260927g`）。
 - **每次推上 GitHub Pages 前，把所有 `?v=` 全部取代成新值**（例：日期＋序號）。新 index.html 會指向新網址的 JS，不會再拿到快取的舊檔。
 - 新增 `data/*.js` 時也要記得帶上 `?v=`。
 
@@ -1685,7 +1698,7 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
 - **顯示**：背包（`renderStrangeFireCards()`，兩者皆為 0 時不顯示；異火卡片有「查看異火榜」按鈕 → `openCodexModal('fires')`）。
 - 載入順序：`config-strange-fire.js` 放在 `config-spells.js` 之後、`strange-fire.js` 放在 `talisman.js` 之後。`strange-fire.js` 載入時會建 `strangeFireById`（只讀同組設定檔），其餘沒有順序限制。
 
-## 39. 情緣・諸天夥伴（`config-partners.js`、`partner.js`；2026-09-26）
+## 39. 情緣・諸天夥伴（`config-partners.js`、`partner.js`；2026-09-26，好感度與隊伍 2026-09-27）
 
 - **入口**：洞府底部導覽「情緣」（手機 `index.html` 的 nav 按鈕、PC `config-home-pc.js` 的 `boost` 按鈕）→ `openPartnerModal()`，視窗 `#partner-modal`。
 - **人物**：39 位名動諸天的高手（至高 11、帝境 17、尊者 6、天驕 5），每位都標註來歷：
@@ -1701,14 +1714,42 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
     天驕級的絕學以輔助、回復或 1.4～1.6 倍群體為主，強度明顯低於上位夥伴。
 - **戰力分析**：六維 0～100（攻伐、防禦、身法、神通、底蘊、成長），**平均值**決定評級（`PARTNER_TIERS`：至高 ≥95、帝境 ≥90、尊者 ≥82、天驕），卡片顯示長條圖、綜合戰力、巔峰境界與文字分析。
   視窗註明「戰力分析與評級為本遊戲設定，僅供娛樂」。分析文字為自行撰寫的概述，不引用原著原文。
-- **取得**：預定於**秘境**相遇結識（秘境尚未開放，目前沒有取得管道）。秘境實作時呼叫 `meetPartner(id, "來源文字")`，重複結識回傳 false。
-  未結識的夥伴仍完整顯示資料，按鈕為「未結識・秘境中有緣相遇」。
-- **出戰**：同時只能一位（`player.activePartner`，`setActivePartner` 切換出戰／休息）。
-  - 被動：`passive` 併入 `gear.js` 的 `getBonusTotals`（`getPartnerBonusTotals`），只有出戰中的夥伴生效。
-  - 招牌絕學：玩家每回合出手後 `partnerSkillTurn(targets, tags)` 依 `skill.chance` 發動，由 `artifact.js` 的 `castProcSkill` 執行（欄位同神器技能），**傷害以主人的攻擊力為基準**。
+- **取得（結識）**：
+  - **風希是玩家第一個結識的夥伴**（`first: true`）：天星城坊市的風希人偶（`config-towns.js` 的 figures，`action: "talkToPartner('dashanren')"`）
+    第一次點 → `meetPartner` 結識並跳出專屬相遇台詞（`lines.meet`），關閉對話框後打開情緣視窗並捲到他；之後每天第一次點 = 每日問候。
+  - **彩蛋（2026-09-27）**：當天已問候過後再點風希人偶 → `askPartnerEaster`：「你想看我跳支舞嗎？」是／否（`partner.easter`）。
+    **否** → `reduceBond` 好感 -1、他說「哼！不識好歹……」（💔 反感；降到熟識以下會自動離隊）；**是** → `playPartnerVideo` 在 `#partner-video-modal` 播放 `videos/fengxi-dance.mp4`（關閉時暫停）。
+    **看影片的規則**（`partnerVideoCtx`）：完整看完（`ended` 且實際播放 ≥ 90%，`getPlayedSeconds` 加總 `video.played`，拖曳跳過的不算）→ **只有第一次**好感 +5（`bond.danceWatched` 記錄）並顯示「怎麼樣，風某的舞姿不錯吧？」；
+    **沒看完就關掉**（含拖到最後）→ 和選否一樣好感 -1、「看到一半就走？不給面子！」。
+    每次點都會問，選否或沒看完可以一直扣（最低 0）。對話框支援選項按鈕：`showPartnerDialog` 的第 5 個參數 `choices`。
+  - 其他人預定於**秘境**相遇（秘境尚未開放）。秘境實作時呼叫 `meetPartner(id, "來源文字")`，重複結識回傳 false。
+  - 未結識的夥伴仍完整顯示資料；風希顯示「可在天星城坊市遇見他」，其他人「秘境中有緣相遇」。
+- **好感度（2026-09-27）**：每位夥伴各自累積好感點數 → 等級 `PARTNER_BOND_LEVELS`：
+
+  | 等級 | 名稱 | 所需好感 |
+  |---|---|---|
+  | LV1 | 初識 | 0（結識時） |
+  | LV2 | 略有好感 | 100 |
+  | LV3 | 友好 | 300 |
+  | LV4 | **熟識**（可邀請入隊） | 700 |
+  | LV5 | **道侶**（與玩家異性）／**結拜**（同性） | 1,500（上限） |
+
+  - LV5 名稱依 `partner.gender`（`"f"` = 女，省略 = 男；目前女性：狠人大帝、西皇母、古月娜、南宮婉、小醫仙、寧榮榮、紫靈）與 `player.gender` 判定（`getBondLevelName`）。
+  - **每日問候** `greetPartner`：每位每天一次 +20，跳出台詞對話框（有 `lines.greet[等級]` 用專屬台詞，否則用 `PARTNER_GREET_LINES`，`{me}` = 玩家道號）。
+  - **贈禮** `giftPartner`：每次 +15，花靈石 `PARTNER_GIFT_COST`（天驕 10 萬／尊者 50 萬／帝境 200 萬／至高 500 萬），每位每天 5 次。
+  - **情緣任務**（`PARTNER_BOND_QUESTS`，依目前等級接取，每位同時一個，完成後領取大量好感）：
+    LV1「並肩歷練」野外擊殺 300（+80）→ LV2「斬妖除魔」斬殺修士 10（+150）→ LV3「共赴懸賞」懸賞伏誅 3（+250）→ LV4「生死與共」帶他在隊伍中擊殺 1,000（+500）。
+    進度 = 接取後的增量：`player.fieldKills`（`combat.js` 擊殺後呼叫 `onPartnerFieldKills`，只算線上）、`evilKills`、`bountyKills`、各夥伴的 `teamKills`（只有在隊伍中才累計）。
+  - 光靠問候＋每日贈禮約 7～8 天到熟識，情緣任務可大幅縮短。
+- **隊伍**（取代舊版單人出戰）：好感 LV4「熟識」才能 `togglePartnerTeam` 邀請入隊，**最多 `PARTNER_TEAM_MAX`(2) 名**（`player.partnerTeam`）。
+  - 被動：隊伍中每位的 `passive` 都併入 `getBonusTotals`（`getPartnerBonusTotals`）；**LV5 ×1.2**。
+  - 招牌絕學：玩家每回合出手後 `partnerSkillTurn` 讓隊伍中每位各自依 `skill.chance`（**LV5 +2%**）判定，由 `artifact.js` 的 `castProcSkill` 執行，**傷害以主人的攻擊力為基準**。
     野外（`combat.js`）、渡劫（`tribulation.js`）、懸賞對決（`bounty.js`，封印擋不住）都會觸發；被凍結的回合不會發動（在玩家出手的分支內）。
-  - 數值平衡：依評級（至高 18%・×3.0／帝境 17%・×2.6／尊者 16%・×2.2／天驕 15%・×1.8 左右；群體技倍率較低、附帶效果的倍率也較低），與神器技能同一量級。
-- **存檔**：`player.partners`（已結識 id 陣列）、`player.activePartner`（`state.js`）。轉世不會重置。讀檔時 `save.js` 確保 `partners` 是陣列。
+  - 數值平衡：依評級（至高 18%・×3.0／帝境 17%・×2.6／尊者 16%・×2.2／天驕 15%・×1.8 左右；群體技倍率較低、附帶效果的倍率也較低），與神器技能同一量級。兩人同時入隊約是舊版單人出戰的兩倍戰力。
+- **情緣視窗**：分頁 全部／已結識／隊伍／各評級；已結識的排前面。已結識的卡片下方有好感區塊（等級、進度條、問候、贈禮、情緣任務、入隊／離隊）。
+  `openPartnerModal(id)` 帶 id 時切到「已結識」並捲到該卡片。對話框 `#partner-dialog-modal`（`showPartnerDialog`／`closePartnerDialog`）。
+- **存檔**：`player.partners`（已結識）、`player.partnerTeam`（隊伍）、`player.partnerBond`（`{ id: { pts, greet, giftDate, gifts, quest: { lv, base }, teamKills, danceWatched } }`）、`player.fieldKills`（`state.js`）。轉世不會重置。
+  讀檔時 `save.js` 呼叫 `migratePartners()`：補齊欄位；舊版 `activePartner`（單人出戰）若好感已達熟識則放進隊伍，然後刪除該欄位。
 - **新增夥伴**：照 `config-partners.js` 檔尾的模板複製一段；`id` 寫進存檔，上線後不可改。評級由六維平均自動算出，被動與絕學請對照 `PARTNER_TIERS` 的 `hint` 維持平衡。
 - 載入順序：`config-partners.js` 在 `config-strange-fire.js` 之後、`partner.js` 在 `strange-fire.js` 之後。`partner.js` 載入時會建 `partnerById`（只讀 `partnerList`）。
 ## 40. 天星賭坊（`config-casino.js`、`casino.js`；2026-09-26）
@@ -1750,3 +1791,23 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
 | 一擲千金 | 擲骰單把淨贏 ≥ 1 億（`casinoBigWin`） | 野外靈石 +2% |
 
 - 圖示：隕石用 🌑／🌗／☄️（2026-09-26 原本的 🪨 在部分裝置顯示成方框，已換掉；新增 emoji 時避免太新的字元）。
+
+## 41. 數字顯示格式（`format.js`；2026-09-27）
+
+- **起因**：玩家反映「10,000,000」這種金額太長不好讀。全遊戲原本用 `.toLocaleString()` 加千分位（約 260 處，分散在 33 個檔案）。
+- **做法**：新增 `data/format.js`（第一個載入），定義 `fmtNum(n)`，並替 `Number.prototype`／`String.prototype` 加上不可列舉的 `toWan()`；
+  全部 `.toLocaleString()` 一次換成 `.toWan()`，所以金額、價格、經驗、戰力、數量等大數字都統一格式。
+
+  | 數值 | 顯示 |
+  |---|---|
+  | 9,999 以下 | 照舊千分位：`9,999` |
+  | 1 萬～1 億 | `1萬`、`1.5萬`、`12.35萬`、`123.5萬`、`1000萬`、`1235萬` |
+  | 1 億～1 兆 | `1億`、`1.5億`、`12.35億`、`500億` |
+  | 1 兆以上 | `3兆` |
+
+  小數位數：該單位下的值 < 100 → 2 位、< 1000 → 1 位、其餘整數；尾端 0 省略；**不加千分位逗號**（`1000萬` 而不是 `1,000萬`）；進位滿 1 萬會升單位（`9999.99萬` → `1億`）；負數保留負號。
+- **注意**：
+  - **新寫的顯示一律用 `.toWan()` 或 `fmtNum()`**，不要再用 `.toLocaleString()`（`format.js` 內部除外）。
+  - 顯示是近似值（例 123,456,789 → `1.23億`）；需要精確數字的地方（輸入框的 value、存檔）本來就用原始數字，不受影響。
+  - 洞府 HUD 另有 `home-ui.js` 的 `formatShortNumber`（1 位小數，版面較窄），維持不變。
+  - `String.prototype.toWan` 是保險：萬一對字串呼叫，數字字串照樣格式化、非數字原樣回傳，不會報錯。

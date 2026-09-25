@@ -212,7 +212,7 @@ function bountyDuelTick() {
     let selfTick = tickStatus(playerStatus);
     if (selfTick.dot > 0) {
         player.hp -= selfTick.dot;
-        addLog(`🩸 身上的異常狀態發作，損失 ${selfTick.dot.toLocaleString()} 點氣血！`, "combat");
+        addLog(`🩸 身上的異常狀態發作，損失 ${selfTick.dot.toWan()} 點氣血！`, "combat");
         if (player.hp <= 0 && !tryGearUndying()) { endBountyDuel("lose"); return; }
     }
     let tags = [];
@@ -237,8 +237,8 @@ function bountyDuelTick() {
     let regen = applyRootRegen() + applyGearRegen();
     if (tags.length > 0 || oppTick.dot > 0 || regen > 0) {
         addLog(`✨ 屬性效果：${[tags.length ? summarizeTags(tags, `💨被${opp.name}閃避`) : '',
-            oppTick.dot ? `${opp.name}受持續傷害 ${oppTick.dot.toLocaleString()}` : '',
-            regen ? `🌿回復 ${regen.toLocaleString()}` : ''].filter(Boolean).join("｜")}`, "skill");
+            oppTick.dot ? `${opp.name}受持續傷害 ${oppTick.dot.toWan()}` : '',
+            regen ? `🌿回復 ${regen.toWan()}` : ''].filter(Boolean).join("｜")}`, "skill");
     }
     if (opp.hp <= 0) { endBountyDuel("win"); return; }
     if (opp.turn >= BOUNTY_MAX_TURNS) { endBountyDuel("escape"); return; }
@@ -307,8 +307,8 @@ function endBountyDuel(result) {
         player.bountyKills = (player.bountyKills || 0) + 1;
         player.evilKills = (player.evilKills || 0) + 1;
         addKarma(opp.faction === "邪" ? rank.karma : -rank.karma);
-        let how = getPlayerFaction() === "邪" ? `吸取其一身功德 ${merit.toLocaleString()} 點` : `積累功德 ${merit.toLocaleString()} 點`;
-        addLog(`🏆 【懸賞伏誅】${rank.name}「${opp.title}」${opp.name}授首！${how}！（目前 ${player.merit.toLocaleString()}）`, "level-up");
+        let how = getPlayerFaction() === "邪" ? `吸取其一身功德 ${merit.toWan()} 點` : `積累功德 ${merit.toWan()} 點`;
+        addLog(`🏆 【懸賞伏誅】${rank.name}「${opp.title}」${opp.name}授首！${how}！（目前 ${player.merit.toWan()}）`, "level-up");
         settleMeritStones();
         // 星允鐵與奪寶（enhance.js／gear.js）：依榜給星允鐵、必掉一件奪寶裝備
         let ironRange = IRON_BOUNTY_AMOUNT[opp.rank];

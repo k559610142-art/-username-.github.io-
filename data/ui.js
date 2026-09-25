@@ -74,7 +74,7 @@ function updateCombatVisualPanel() {
         document.getElementById('battle-enemy-title').innerText = `${BOUNTY_RANKS[o.rank].name}・${o.name}`;
         document.getElementById('battle-enemy-icon').innerText = o.icon;
         let oppSt = formatStatus(o.status);
-        document.getElementById('battle-enemy-info').innerText = `氣血: ${Math.floor(o.hp).toLocaleString()}/${o.maxHp.toLocaleString()}${oppSt ? ' ' + oppSt : ''}\n「${o.title}」五行 ${o.attrs.element}｜第 ${o.turn}/${BOUNTY_MAX_TURNS} 回合`;
+        document.getElementById('battle-enemy-info').innerText = `氣血: ${Math.floor(o.hp).toWan()}/${o.maxHp.toWan()}${oppSt ? ' ' + oppSt : ''}\n「${o.title}」五行 ${o.attrs.element}｜第 ${o.turn}/${BOUNTY_MAX_TURNS} 回合`;
         document.getElementById('battle-action-desc').innerText = `⚔️ 懸賞對決中！${debuffs.length ? `你身中：${debuffs.join('、')}` : '生死一線，全力以赴！'}`;
     } else if (player.currentMapIsSafe) {
         document.getElementById('battle-enemy-title').innerText = "安全區域";
@@ -134,7 +134,7 @@ function updateUI() {
     // 渡劫失敗的虛弱狀態（stats.js 的 getWeaknessMult）
     if (player.weakened) realmEl.innerHTML += ` <span class="weak-tag" title="攻擊、氣血與靈力上限 -${Math.round((1 - WEAKNESS_STAT_MULT) * 100)}%，修回 10 階後解除">虛弱 -${Math.round((1 - WEAKNESS_STAT_MULT) * 100)}%</span>`;
     let levelPct = player.level >= MAX_PLAYER_LEVEL ? 100 : Math.min(player.levelExp / getLevelExpNeeded(player.level) * 100, 100);
-    document.getElementById('level-display').innerText = `Lv.${player.level.toLocaleString()} (${levelPct.toFixed(1)}%)`;
+    document.getElementById('level-display').innerText = `Lv.${player.level.toWan()} (${levelPct.toFixed(1)}%)`;
     let lifespanEl = document.getElementById('lifespan-display');
     let atFloor = player.lifespan <= getLifespanFloor();
     let perMin = getAgingPerMinute();
@@ -144,15 +144,15 @@ function updateUI() {
     document.getElementById('age-display').innerText = `${formatLifespan(player.age || LIFESPAN_START_AGE)} 歲`;
     let rateEl = document.getElementById('lifespan-rate');
     // 後期境界流逝很慢（每分鐘不到 0.1 年），改以「年/時」顯示
-    let rateText = perMin >= 10 ? `${Math.round(perMin).toLocaleString()}年/分`
+    let rateText = perMin >= 10 ? `${Math.round(perMin).toWan()}年/分`
                  : perMin >= 0.1 ? `${perMin.toFixed(1)}年/分`
                  : `${(perMin * 60).toFixed(1)}年/時`;
     rateEl.innerText = atFloor ? '（歲月已止）' : `⌛-${rateText}`;
     rateEl.style.color = atFloor ? '#ef4444' : (getAgingMultiplier() > 1 ? '#fb923c' : '#9ca3af');
-    document.getElementById('power-display').innerText = getPhysAttack().toLocaleString();
+    document.getElementById('power-display').innerText = getPhysAttack().toWan();
     document.getElementById('sect-display').innerText = player.sect ? player.sect.name : "散修 (無技能)";
-    document.getElementById('coins-display').innerText = player.coins.toLocaleString();
-    document.getElementById('reputation-display').innerText = (player.reputation || 0).toLocaleString();
+    document.getElementById('coins-display').innerText = player.coins.toWan();
+    document.getElementById('reputation-display').innerText = (player.reputation || 0).toWan();
 
     let eqBonus = getEquipBonus();
     document.getElementById('stat-str').innerText = `${player.stats.str} (+${eqBonus.str})`;
@@ -175,12 +175,12 @@ function updateUI() {
     document.getElementById('res-grass').innerText = player.spiritGrass;
     document.getElementById('res-beastcore').innerText = player.beastCore;
     document.getElementById('res-martial').innerText = player.martialPoints;
-    document.getElementById('res-ore').innerText = (player.ore || 0).toLocaleString();
-    document.getElementById('res-merit').innerText = (player.merit || 0).toLocaleString();
+    document.getElementById('res-ore').innerText = (player.ore || 0).toWan();
+    document.getElementById('res-merit').innerText = (player.merit || 0).toWan();
     document.getElementById('karma-display').innerHTML = formatKarmaTag();   // 善惡只顯示善／中立／惡（merit.js）
-    document.getElementById('res-butian').innerText = (player.butianStones || 0).toLocaleString();
-    document.getElementById('res-breakpill').innerText = (player.breakPills || 0).toLocaleString();
-    document.getElementById('res-iron').innerText = (player.starIron || 0).toLocaleString();   // 星允鐵（enhance.js）
+    document.getElementById('res-butian').innerText = (player.butianStones || 0).toWan();
+    document.getElementById('res-breakpill').innerText = (player.breakPills || 0).toWan();
+    document.getElementById('res-iron').innerText = (player.starIron || 0).toWan();   // 星允鐵（enhance.js）
     document.getElementById('herb-mortal').innerText = player.herbs.mortal;
     document.getElementById('herb-high').innerText = player.herbs.high;
     document.getElementById('herb-epic').innerText = player.herbs.epic;
@@ -189,8 +189,8 @@ function updateUI() {
     let expPercent = Math.min((player.exp / getNextExp()) * 100, 100);
     document.getElementById('exp-bar').style.width = expPercent + '%';
     document.getElementById('exp-text').innerText = player.pendingTribulation
-        ? `⚡ 修為圓滿・待渡劫 (${Math.floor(player.exp).toLocaleString()} / ${getNextExp().toLocaleString()})`
-        : `${Math.floor(player.exp).toLocaleString()} / ${getNextExp().toLocaleString()}`;
+        ? `⚡ 修為圓滿・待渡劫 (${Math.floor(player.exp).toWan()} / ${getNextExp().toWan()})`
+        : `${Math.floor(player.exp).toWan()} / ${getNextExp().toWan()}`;
 
     updateTribulationUI();
     updatePotionCooldownUI();
@@ -220,7 +220,7 @@ function updateTribulationUI() {
     if (inTribulation) {
         btn.style.display = 'block';
         btn.disabled = true;
-        btn.innerText = `☯️ 渡劫中…心魔氣血 ${heartDemon ? Math.floor(heartDemon.hp).toLocaleString() : 0}`;
+        btn.innerText = `☯️ 渡劫中…心魔氣血 ${heartDemon ? Math.floor(heartDemon.hp).toWan() : 0}`;
     } else if (player.pendingTribulation) {
         btn.style.display = 'block';
         btn.disabled = false;

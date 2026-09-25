@@ -72,7 +72,7 @@ function updateShopTotal(id) {
     if (!item || !display) return;
     let qty = getShopQty(id);
     let total = item.cost * qty;
-    display.innerText = `合計: ${total.toLocaleString()} 靈石`;
+    display.innerText = `合計: ${total.toWan()} 靈石`;
     display.style.color = (qty > 0 && player.coins >= total) ? '#4ade80' : '#f87171';
 }
 
@@ -85,14 +85,14 @@ function buyShopItem(id) {
 
     let totalCost = item.cost * qty;
     if (player.coins < totalCost) {
-        alert(`靈石不足！\n購買【${item.name}】x${qty} 需要 ${totalCost.toLocaleString()} 靈石，你目前只有 ${player.coins.toLocaleString()} 靈石。`);
+        alert(`靈石不足！\n購買【${item.name}】x${qty} 需要 ${totalCost.toWan()} 靈石，你目前只有 ${player.coins.toWan()} 靈石。`);
         return;
     }
 
     player.coins -= totalCost;
     player.bag[id] = (player.bag[id] || 0) + qty;
     addDailyProgress('buy', qty);
-    addLog(`🛒 購買了【${item.name}】x${qty}，花費 ${totalCost.toLocaleString()} 靈石，已存入背包。`, "system");
+    addLog(`🛒 購買了【${item.name}】x${qty}，花費 ${totalCost.toWan()} 靈石，已存入背包。`, "system");
     updateShopTotal(id);
     updateUI();
 }

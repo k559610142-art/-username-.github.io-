@@ -137,7 +137,7 @@ function formatShortNumber(n) {
     n = Math.floor(n || 0);
     if (n >= 1e8) return (n / 1e8).toFixed(n >= 1e10 ? 0 : 1) + "億";
     if (n >= 1e4) return (n / 1e4).toFixed(n >= 1e6 ? 0 : 1) + "萬";
-    return n.toLocaleString();
+    return n.toWan();
 }
 
 // 修煉效率：宗門經驗倍率 × 靈寵經驗加成（與 leveling.js 的 gainExp 相同）
@@ -198,7 +198,7 @@ function updateHomeHud() {
         realmBadge.title = player.weakened ? `虛弱：攻擊、氣血與靈力上限 -${Math.round((1 - WEAKNESS_STAT_MULT) * 100)}%，修回 10 階後解除` : '';
     });
     let levelPct = player.level >= MAX_PLAYER_LEVEL ? 100 : player.levelExp / getLevelExpNeeded(player.level) * 100;
-    set('hud-level', `Lv.${player.level.toLocaleString()}`);
+    set('hud-level', `Lv.${player.level.toWan()}`);
     width('hud-level-bar', levelPct);
     set('hud-power', formatShortNumber(getPhysAttack()));
 

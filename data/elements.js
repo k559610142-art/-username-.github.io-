@@ -183,7 +183,7 @@ function summarizeTags(tags, dodgeLabel) {
 // 裝備屬性文字（背包、裝備欄、千寶閣、靈寶閣共用），只列出非 0 的項目
 function formatEquipStats(stats) {
     let base = [["str", "力量"], ["con", "體質"], ["int", "悟性"], ["spr", "靈力"], ["cha", "魅力"]]
-        .filter(([k]) => stats[k]).map(([k, label]) => `${label}+${stats[k].toLocaleString()}`);
+        .filter(([k]) => stats[k]).map(([k, label]) => `${label}+${stats[k].toWan()}`);
     let attrs = ["def", "eva"].concat(AFFIX_TYPES)
         .filter(k => stats[k]).map(k => `${combatAttrInfo[k].icon}${combatAttrInfo[k].label}+${stats[k]}%`);
     return base.concat(attrs).join("、") || "無";

@@ -49,7 +49,14 @@ function applyTownView(recenter) {
 function renderTownHotspots(view) {
     const layer = document.getElementById('town-scene-hotspots');
     const pct = (v, total) => (v / total * 100).toFixed(3) + '%';
-    layer.innerHTML = (view.hotspots || []).filter(h => h.enabled !== false).map(h => {
+    // 人偶（figures）畫在傳送點底下；有 action 的才可點
+    const figures = (view.figures || []).filter(f => f.enabled !== false).map(f => {
+        const [x, y, w, hh] = f.rect;
+        const click = f.action ? `onclick="${f.action}" class="town-figure clickable"` : 'class="town-figure"';
+        return `<img ${click} src="${f.img}" alt="${f.name || ''}" title="${f.name || ''}"
+                    style="left: ${pct(x, view.imgW)}; top: ${pct(y, view.imgH)}; width: ${pct(w, view.imgW)}; height: ${pct(hh, view.imgH)};">`;
+    }).join('');
+    layer.innerHTML = figures + (view.hotspots || []).filter(h => h.enabled !== false).map(h => {
         const [x, y, w, hh] = h.rect;
         return `<button class="town-hotspot" style="left: ${pct(x, view.imgW)}; top: ${pct(y, view.imgH)}; width: ${pct(w, view.imgW)}; height: ${pct(hh, view.imgH)};"
                     onclick="${h.action}" aria-label="${h.label}"><span class="town-plaque">${h.label}</span></button>`;

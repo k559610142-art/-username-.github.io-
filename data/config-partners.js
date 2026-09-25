@@ -1,6 +1,8 @@
 // 夥伴（情緣系統，ARCHITECTURE.md 第 39 節）；邏輯在 partner.js
 // - 名動諸天的高手，多數是「域外神明」（來自其他作品的世界），於秘境中相遇後結識（秘境尚未開放，相遇時呼叫 meetPartner）
-// - 結識後可選一位「出戰」：passive 被動加成生效（併入 gear.js 的 getBonusTotals），戰鬥中每回合依 skill.chance 發動招牌絕學
+//   例外：first: true 的風希在天星城坊市點人偶結識（玩家第一個結識的夥伴）
+// - 結識後從好感 LV1「初識」開始，問候／贈禮／情緣任務提升；達 LV4「熟識」才能邀請入隊（最多 2 名）
+//   隊伍中的夥伴：passive 被動加成生效（併入 gear.js 的 getBonusTotals），戰鬥中每回合依 skill.chance 發動招牌絕學
 // - 絕學欄位同神器技能（config-lingbao.js 的 artifactSkills，由 artifact.js 的 castProcSkill 執行），傷害以「主人」的攻擊力為基準
 // - 戰力分析 power：六維 0～100（攻伐 atk、防禦 def、身法 spd、神通 mag、底蘊 found、成長 grow），平均值決定評級 PARTNER_TIERS
 //   ⚠️ 戰力數值與評級為本遊戲設定，只作娛樂，並非原著官方設定
@@ -15,6 +17,43 @@ const PARTNER_TIERS = [
 ];
 
 const PARTNER_POWER_LABELS = { atk: "攻伐", def: "防禦", spd: "身法", mag: "神通", found: "底蘊", grow: "成長" };
+
+// ---- 好感度（2026-09-27）----
+// 等級依累積好感點數判定；LV5 名稱依雙方性別：異性「道侶」、同性「結拜」（partner.gender：f = 女，省略 = 男）
+const PARTNER_BOND_LEVELS = [
+    { lv: 1, name: "初識",     min: 0 },
+    { lv: 2, name: "略有好感", min: 100 },
+    { lv: 3, name: "友好",     min: 300 },
+    { lv: 4, name: "熟識",     min: 700 },    // 達到才能邀請入隊
+    { lv: 5, name: "道侶|結拜", min: 1500 }   // 最高級；"|" 前 = 異性、後 = 同性
+];
+const PARTNER_BOND_MAX = 1500;
+const PARTNER_TEAM_MAX = 2;            // 隊伍最多同時邀請幾名夥伴
+const PARTNER_TEAM_MIN_LV = 4;         // 好感度幾級才能入隊（熟識）
+const PARTNER_GREET_PTS = 20;          // 每日問候（每位每天一次）
+const PARTNER_GIFT_PTS = 15;           // 每次贈禮
+const PARTNER_GIFT_DAILY = 5;          // 每位每天最多贈禮次數
+const PARTNER_GIFT_COST = { "天驕": 100000, "尊者": 500000, "帝境": 2000000, "至高": 5000000 };   // 每次贈禮的靈石（依評級）
+const PARTNER_LV5_PASSIVE_MULT = 1.2;  // LV5 被動加成倍率
+const PARTNER_LV5_SKILL_BONUS = 0.02;  // LV5 絕學發動機率加成
+
+// 情緣任務：依「目前好感等級」接取對應任務，完成後一次加大量好感（每位夥伴各自進行，同時只能接一個）
+//   stat = 追蹤的累計數值；teamKills 只計算「該夥伴在隊伍中」時的野外擊殺
+const PARTNER_BOND_QUESTS = {
+    1: { name: "並肩歷練", stat: "fieldKills", target: 300,  reward: 80,  desc: "在野外擊殺 {n} 隻妖獸，讓{who}見識你的身手" },
+    2: { name: "斬妖除魔", stat: "evilKills",  target: 10,   reward: 150, desc: "斬殺 {n} 名野外修士或刺客" },
+    3: { name: "共赴懸賞", stat: "bountyKills", target: 3,   reward: 250, desc: "懸賞伏誅 {n} 名，{who}想看看你的膽識" },
+    4: { name: "生死與共", stat: "teamKills",  target: 1000, reward: 500, desc: "帶著{who}在隊伍中並肩擊殺 {n} 隻妖獸" }
+};
+
+// 通用問候台詞（沒有專屬台詞的夥伴使用），依好感等級；{me} = 玩家道號
+const PARTNER_GREET_LINES = {
+    1: ["道友有禮了。", "我們見過？……嗯，是有些印象。", "有事嗎？沒事我先忙了。"],
+    2: ["{me}，今日氣色不錯。", "又來了？坐吧。", "聽說你最近修為又有精進。"],
+    3: ["{me}！正想找你喝兩杯。", "有你這位朋友，倒也不算寂寞。", "若有需要幫忙之處，儘管開口。"],
+    4: ["{me}，外頭有什麼好玩的，帶我一起去。", "你我之間，不必客氣。", "若遇強敵，我替你擋著。"],
+    5: ["此生能與你同行，是我的造化。", "{me}，無論天涯海角，我都陪你走下去。", "有你在，便無所懼。"]
+};
 
 const partnerList = [
     {
@@ -35,7 +74,22 @@ const partnerList = [
     },
     {
         // 「亂星海第一大善人」：九級化形妖獸風希（裂風獸），反派
-        id: "dashanren", name: "風希", title: "亂星海第一大善人", work: "凡人修仙傳", author: "忘語", world: "人界・亂星海", peak: "九級化形妖獸（裂風獸）", native: true,
+        id: "dashanren", name: "風希", first: true,   // 玩家第一個結識的夥伴：天星城坊市點人偶結識（town.js 的 figures action）
+        // 彩蛋：當天已問候後再點坊市人偶 → 問「想看我跳支舞嗎？」
+        //   否、或影片沒看完就關掉 = 好感 -noPenalty（反感）；是且完整看完（實際播放 ≥ 90%）= 只有第一次好感 +firstWatchBonus
+        easter: { ask: "你想看我跳支舞嗎？", yes: "嘿嘿，看好了！", no: "哼！不識好歹……", noPenalty: 1, video: "videos/fengxi-dance.mp4",
+                  quit: "看到一半就走？不給面子！", watched: "怎麼樣，風某的舞姿不錯吧？", firstWatchBonus: 5 },
+        lines: {
+            meet: ["喲，這位道友面生得很……", "在下風希，人稱「亂星海第一大善人」。這天星城坊市，就沒有我風某不知道的事。", "你我今日有緣，往後在亂星海遇上麻煩，報我的名號便是。"],
+            greet: {
+                1: ["大善人今日心情好，不收你問路錢。", "天星賭坊的石頭？嘿，十塊有九塊是廢料。"],
+                2: ["又是你？看來風某這張臉還挺討喜。", "亂星海的妖獸最近不安分，出門小心些。"],
+                3: ["你這人倒也有趣，比那些正道偽君子順眼多了。", "想知道誰在坊市暗中收購妖丹？問我就對了。"],
+                4: ["走吧，風某陪你去殺個痛快。", "大善人只對自己人善，你算一個。"],
+                5: ["這亂星海，有你我二人便足矣。", "往後誰敢動你，先問過我風希。"]
+            }
+        },
+        title: "亂星海第一大善人", work: "凡人修仙傳", author: "忘語", world: "人界・亂星海", peak: "九級化形妖獸（裂風獸）", native: true,
         power: { atk: 85, def: 82, spd: 92, mag: 82, found: 80, grow: 78 },
         analysis: "裂風獸化形的九級妖獸，以「亂星海第一大善人」自居，實為盤踞亂星海的反派。本體風屬天賦極強，來去如風、攻勢凌厲，速度是最大的倚仗；妖獸肉身也頗為強橫，但境界止於人界巔峰，面對域外神明底蘊不足。",
         passive: { eva: 3, "fx:疾風": 0.03 },
@@ -61,7 +115,7 @@ const partnerList = [
                  desc: "18%：全體物理 240% 傷害並必定雷擊", msg: "⚡ 道祖韓立袖袍一揮，【青竹蜂雲劍陣】挾辟邪神雷橫掃八方！" }
     },
     {
-        id: "nangongwan", name: "南宮婉", title: "大羅仙子", work: "凡人修仙傳", author: "忘語", world: "人界・掩月宗 → 仙界", peak: "大羅境", native: true,
+        id: "nangongwan", gender: "f", name: "南宮婉", title: "大羅仙子", work: "凡人修仙傳", author: "忘語", world: "人界・掩月宗 → 仙界", peak: "大羅境", native: true,
         power: { atk: 88, def: 90, spd: 92, mag: 95, found: 92, grow: 93 },
         analysis: "掩月宗出身，修素女輪迴功，與韓立結為道侶。心性堅韌、功法玄妙，飛升仙界後修至大羅境；術法與身法見長，攻守之間兼具柔韌與後勁。",
         passive: { magPct: 0.03, eva: 2, "fx:回靈": 0.015 },
@@ -101,7 +155,7 @@ const partnerList = [
                  desc: "18%：單體物理 300% 傷害，主人回復 6% 氣血", msg: "✊ 葉天帝聖體金光大盛，【聖體鎮世】一拳轟出！" }
     },
     {
-        id: "hengren", name: "狠人大帝", title: "狠人", work: "遮天", author: "辰東", world: "遮天世界", peak: "大帝",
+        id: "hengren", gender: "f", name: "狠人大帝", title: "狠人", work: "遮天", author: "辰東", world: "遮天世界", peak: "大帝",
         power: { atk: 98, def: 94, spd: 92, mag: 98, found: 95, grow: 97 },
         analysis: "出身卑微而以狠絕之心登頂，吞天魔罐在手，擅吞噬萬法與生機；攻伐與術法皆處於頂端，對敵從不留餘地。",
         passive: { magPct: 0.05, poison: 2 },
@@ -157,7 +211,7 @@ const partnerList = [
                  desc: "17%：全體術法 220% 傷害，主人回復 10% 氣血", msg: "🪷 青帝身後混沌青蓮綻放，【青蓮綻世】生滅一念！" }
     },
     {
-        id: "xihuangmu", name: "西皇母", title: "西皇", work: "遮天", author: "辰東", world: "遮天世界", peak: "大帝",
+        id: "xihuangmu", gender: "f", name: "西皇母", title: "西皇", work: "遮天", author: "辰東", world: "遮天世界", peak: "大帝",
         power: { atk: 90, def: 94, spd: 90, mag: 95, found: 94, grow: 92 },
         analysis: "女帝之一，手持西皇塔，攻守平衡、術法精深，擅以守為攻、後發制人。",
         passive: { def: 2, magPct: 0.03 },
@@ -280,7 +334,7 @@ const partnerList = [
                  desc: "17%：單體物理 260% 傷害", msg: "🐲 毀滅之神唐舞麟金龍王血脈沸騰，【毀滅】一擊轟落！" }
     },
     {
-        id: "guyuena", name: "古月娜", title: "生命之神", work: "斗羅大陸IV終極斗羅", author: "唐家三少", world: "斗羅大陸", peak: "生命之神",
+        id: "guyuena", gender: "f", name: "古月娜", title: "生命之神", work: "斗羅大陸IV終極斗羅", author: "唐家三少", world: "斗羅大陸", peak: "生命之神",
         power: { atk: 90, def: 94, spd: 92, mag: 96, found: 95, grow: 93 },
         analysis: "銀龍王轉生，掌握龍族元素之力，術法變化萬千；執掌生命神位後生機源源不絕，既能以元素壓制敵手，也能護持同伴不倒。",
         passive: { hpPct: 0.03, "fx:回春": 0.015, magPct: 0.02 },
@@ -314,7 +368,7 @@ const partnerList = [
                  desc: "15%：全體術法 160% 傷害並必定燒傷", msg: "🔥 馬紅俊邪火鳳凰附體，【鳳凰火線】橫掃戰場！" }
     },
     {
-        id: "ningrongrong", name: "寧榮榮", title: "七寶琉璃", work: "斗羅大陸", author: "唐家三少", world: "斗羅大陸・七寶琉璃宗", peak: "（以史萊克七怪時期計）",
+        id: "ningrongrong", gender: "f", name: "寧榮榮", title: "七寶琉璃", work: "斗羅大陸", author: "唐家三少", world: "斗羅大陸・七寶琉璃宗", peak: "（以史萊克七怪時期計）",
         power: { atk: 50, def: 70, spd: 72, mag: 86, found: 90, grow: 84 },
         analysis: "七寶琉璃宗的小公主，武魂七寶琉璃塔是頂級輔助武魂，能全面增幅隊友的力量、速度與魂力；自身戰鬥力薄弱，但出身宗門底蘊深厚。",
         passive: { statPct: 0.03 },
@@ -322,7 +376,7 @@ const partnerList = [
                  desc: "15%：主人回復 10% 靈力，受到傷害 -25% 持續 2 回合", msg: "🗼 寧榮榮祭起【七寶琉璃塔】，寶光加持周身！" }
     },
     {
-        id: "xiaoyixian", name: "小醫仙", title: "厄難毒體", work: "鬥破蒼穹", author: "天蠶土豆", world: "鬥氣大陸", peak: "厄難毒體",
+        id: "xiaoyixian", gender: "f", name: "小醫仙", title: "厄難毒體", work: "鬥破蒼穹", author: "天蠶土豆", world: "鬥氣大陸", peak: "厄難毒體",
         power: { atk: 70, def: 72, spd: 78, mag: 88, found: 80, grow: 84 },
         analysis: "身懷厄難毒體，萬毒不侵且能以毒殺人於無形；本性善良卻背負毒體之苦，毒功一旦全力施展，範圍殺傷極為可怕，近身防禦則較弱。",
         passive: { poison: 3, "fx:蝕骨": 0.20 },
@@ -330,7 +384,7 @@ const partnerList = [
                  desc: "15%：全體術法 160% 傷害並必定中毒", msg: "☠️ 小醫仙厄難毒體發作，【厄難毒霧】瀰漫四野！" }
     },
     {
-        id: "ziling", name: "紫靈", title: "妙音仙子", work: "凡人修仙傳", author: "忘語", world: "人界・亂星海妙音門", peak: "（以亂星海時期計）", native: true,
+        id: "ziling", gender: "f", name: "紫靈", title: "妙音仙子", work: "凡人修仙傳", author: "忘語", world: "人界・亂星海妙音門", peak: "（以亂星海時期計）", native: true,
         power: { atk: 72, def: 74, spd: 86, mag: 82, found: 78, grow: 80 },
         analysis: "亂星海妙音門出身的絕色女修，心思縝密、善於周旋，身法與幻惑之術見長，擅長牽制與脫身；正面攻伐不算突出。",
         passive: { eva: 2, chaPct: 0.03 },
@@ -343,6 +397,8 @@ const partnerList = [
 // {
 //     id: "英文代號", name: "名字", title: "稱號", work: "作品名", author: "作者", world: "出身世界", peak: "巔峰境界",
 //     native: true,   // 只有出身本界（凡人修仙傳）才加；其他作品的角色省略 = 域外神明
+//     gender: "f",    // 女性才加（好感 LV5 名稱：與玩家異性「道侶」、同性「結拜」）；省略 = 男
+//     lines: { meet: ["結識台詞"], greet: { 1: ["LV1 問候台詞"], 2: [...], ... } },   // 選填，沒有就用 PARTNER_GREET_LINES
 //     power: { atk: 90, def: 90, spd: 90, mag: 90, found: 90, grow: 90 },   // 平均決定評級，對照 PARTNER_TIERS
 //     analysis: "戰力分析：長處、短板、打法（自己的文字）",
 //     passive: { atkPct: 0.03 },   // key 同稱號 bonus，見 config-titles.js 開頭

@@ -32,7 +32,9 @@ let player = {
     fireCollection: {},          // 天下異火收錄 { 異火 id: 取得次數 }，每種永久加成一次（config-strange-fire.js）
     casino: {},                  // 天星賭坊紀錄（今日下注／輸贏、累計切石／擲骰等，casino.js 的 getCasinoState 補齊欄位）
     partners: [],                // 已結識的夥伴 id（情緣系統，partner.js）
-    activePartner: null,         // 出戰中的夥伴 id
+    partnerTeam: [],             // 隊伍中的夥伴 id（最多 PARTNER_TEAM_MAX 名，好感需達「熟識」）
+    partnerBond: {},             // 各夥伴好感度 { id: { pts, greet, giftDate, gifts, quest, teamKills } }
+    fieldKills: 0,               // 累計野外擊殺（情緣任務用）
     // 裝備系統（第 37 節）
     starIron: 0,                 // 星允鐵：強化／進化用（enhance.js）
     ironShards: 0,               // 碎鐵：分解白～紫取得，每 SHARDS_PER_IRON 個自動合成 1 顆星允鐵
