@@ -60,6 +60,10 @@ function isTitleConditionMet(c) {
         case 'karma': return getKarmaState().key === c.value;
         case 'bountyKills': return (player.bountyKills || 0) >= c.value;
         case 'profRank': return getProfRank(c.value) >= c.rank;
+        case 'casinoStones': return ((player.casino || {}).stones || 0) >= c.value;
+        case 'casinoFire': return ((player.casino || {}).fires || 0) >= c.value;
+        case 'casinoTriple': return ((player.casino || {}).triples || 0) >= c.value;
+        case 'casinoBigWin': return ((player.casino || {}).maxDiceWin || 0) >= c.value;
     }
     return false;
 }
@@ -82,6 +86,10 @@ function describeTitleCondition(c) {
         case 'karma': return c.value === 'good' ? '善惡值達「善」' : '善惡值達「惡」';
         case 'bountyKills': return `懸賞伏誅 ${c.value} 名（目前 ${player.bountyKills || 0}）`;
         case 'profRank': return `${getProfession(c.value).name}練到第 ${c.rank} 階`;
+        case 'casinoStones': return `天星賭坊累計切石 ${c.value} 顆（目前 ${((player.casino || {}).stones || 0).toLocaleString()}）`;
+        case 'casinoFire': return `天星賭坊切出整朵異火`;
+        case 'casinoTriple': return `天星賭坊押中指定豹子`;
+        case 'casinoBigWin': return `天星賭坊擲骰單把淨贏 ${c.value.toLocaleString()} 靈石`;
     }
     return '';
 }
@@ -94,7 +102,7 @@ function describeTitleBonus(bonus) {
                    'fx:聚財': '野外靈石', 'fx:悟道': '修為', 'fx:積德': '功德', 'fx:法爆': '技能傷害',
                    'fx:焚燼': '燒傷傷害', 'fx:蝕骨': '中毒傷害', 'fx:回春': '每回合回復氣血', 'fx:回靈': '每回合回復靈力',
                    'fx:吸血': '吸血', 'fx:丹心': '丹藥回復量', 'fx:獸魂': '靈寵傷害', 'fx:追擊': '追擊機率', 'fx:疾風': '再動機率',
-                   'fx:斬殺': '斬殺傷害', 'fx:延壽': '戰死折壽減免', 'fx:剋敵': '五行剋制傷害', 'fx:首擊': '首擊傷害' };
+                   'fx:斬殺': '斬殺傷害', 'fx:延壽': '戰死折壽減免', 'fx:剋敵': '五行剋制傷害', 'fx:首擊': '首擊傷害', 'fx:奪寶': '裝備掉落率' };
     return Object.keys(bonus).map(k => {
         let v = bonus[k];
         let label = labels[k] || (k.startsWith('elemDmg:') ? `本命五行為${k.slice(8)}時傷害` : k);

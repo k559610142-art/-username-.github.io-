@@ -30,6 +30,7 @@ let player = {
     fireShards: 0,               // 異火碎片：未來秘境掉落，每 STRANGE_FIRE_SHARDS_PER_FIRE 片合成 1 朵異火（strange-fire.js）
     strangeFires: 0,             // 異火總朵數（含重複）：降低秘境中受到的傷害
     fireCollection: {},          // 天下異火收錄 { 異火 id: 取得次數 }，每種永久加成一次（config-strange-fire.js）
+    casino: {},                  // 天星賭坊紀錄（今日下注／輸贏、累計切石／擲骰等，casino.js 的 getCasinoState 補齊欄位）
     partners: [],                // 已結識的夥伴 id（情緣系統，partner.js）
     activePartner: null,         // 出戰中的夥伴 id
     // 裝備系統（第 37 節）

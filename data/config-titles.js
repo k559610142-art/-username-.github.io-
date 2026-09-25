@@ -1,4 +1,4 @@
-// 稱號（ARCHITECTURE.md 第 37 節）：50 個＋6 個帝級職業成就，達成後永久保留、加成全部疊加；可選一個顯示在道號旁
+// 稱號（ARCHITECTURE.md 第 37 節）：50 個＋6 個帝級職業成就＋4 個賭運（第 40 節），達成後永久保留、加成全部疊加；可選一個顯示在道號旁
 // 判定與介面在 codex.js。bonus 的 key 同 gear.js 的 getBonusTotals：
 //   statPct 四維 %、atkPct 攻擊 %、hpPct 氣血 %、def/eva/ice/… 百分點、fx:特效名（聚財 靈石、悟道 修為、積德 功德、法爆 技能傷害…）、
 //   elemDmg:五行 本命五行為該五行時傷害 %、enhanceChance 強化成功率
@@ -7,6 +7,7 @@
 //   category／slot／element（該分類全收）、quality（收藏該品級 N 種）、wearPlatinum（同時穿 N 件白金）、
 //   enhance（強化到 +N）、ironUsed（累計用掉 N 星允鐵）、realm（境界 index）、sect（宗門階段＋境界）、karma、bountyKills、profRank（職業 id 達 N 階）
 //   sect 稱號的名稱會自動帶上目前的宗門名（{sect}）
+//   賭運（player.casino）：casinoStones（累計切石 N 顆）、casinoFire（切出整朵異火 N 次）、casinoTriple（押中指定豹子 N 次）、casinoBigWin（擲骰單把淨贏 ≥ N）
 
 const titleList = [
     // ---- 收藏（8）----
@@ -72,5 +73,10 @@ const titleList = [
     { id: "profFan",   name: "風帝", cond: { type: "profRank", value: "fan",   rank: 10 }, bonus: { atkPct: 0.02 } },
     { id: "profBow",   name: "弓帝", cond: { type: "profRank", value: "bow",   rank: 10 }, bonus: { atkPct: 0.02 } },
     { id: "profFlute", name: "樂帝", cond: { type: "profRank", value: "flute", rank: 10 }, bonus: { atkPct: 0.02 } },
-    { id: "profBrush", name: "符祖", cond: { type: "profRank", value: "brush", rank: 10 }, bonus: { atkPct: 0.02 } }
+    { id: "profBrush", name: "符祖", cond: { type: "profRank", value: "brush", rank: 10 }, bonus: { atkPct: 0.02 } },
+    // ---- 賭運（天星賭坊，casino.js，4）----
+    { id: "casinoStone100", name: "賭石大家", cond: { type: "casinoStones", value: 100 },      bonus: { "fx:聚財": 0.02 } },
+    { id: "casinoFire",     name: "天選之人", cond: { type: "casinoFire", value: 1 },          bonus: { "fx:奪寶": 0.10 } },
+    { id: "casinoTriple",   name: "豹子頭",   cond: { type: "casinoTriple", value: 1 },        bonus: { statPct: 0.01 } },
+    { id: "casinoBigWin",   name: "一擲千金", cond: { type: "casinoBigWin", value: 100000000 }, bonus: { "fx:聚財": 0.02 } }
 ];

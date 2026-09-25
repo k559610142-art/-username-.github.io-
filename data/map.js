@@ -20,10 +20,21 @@ function renderTownTeleports() {
     box.innerHTML = maps[0].items.map((item, i) => {
         if (item.hidden) return '';
         let isCurrent = player.currentMap.name === item.name;
+        let scene = hasTownScene(item.name);   // 有城內場景（config-towns.js）：已在城內也能點，直接進城
         let pic = item.thumb ? `<img class="map-thumb" src="${item.thumb}" alt="${item.name}">` : `<span class="town-thumb-empty">🏯</span>`;
-        return `<button class="town-card${isCurrent ? ' current' : ''}" ${isCurrent ? '' : `onclick="selectMap(0, ${i})"`}>
-            ${pic}<b>${item.name}</b><small>${isCurrent ? '📍 當前所在' : '✨ 點擊傳送'}</small></button>`;
+        let tip = isCurrent ? (scene ? '📍 當前所在・點擊進城' : '📍 當前所在') : (scene ? '✨ 點擊傳送並進城' : '✨ 點擊傳送');
+        let clickable = !isCurrent || scene;
+        return `<button class="town-card${isCurrent ? ' current' : ''}${scene ? ' has-scene' : ''}" ${clickable ? `onclick="goToTown(${i})"` : ''}>
+            ${pic}<b>${item.name}</b><small>${tip}</small></button>`;
     }).join('');
+}
+
+// 點城鎮傳送點：不在該城就傳送過去；有城內場景（town.js）就開啟城內畫面
+function goToTown(i) {
+    let item = maps[0].items[i];
+    if (player.currentMap.name !== item.name) selectMap(0, i);
+    else closeModal('world-map-modal');
+    if (player.currentMap.name === item.name && hasTownScene(item.name)) openTownScene(item.name);
 }
 
 function openMapCategoryModal(catIndex) {

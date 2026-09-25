@@ -40,7 +40,9 @@ const LOOT_DROP = {
     ambush:     { chance: 0.10, odds: { "藍色": 0.50, "紫色": 0.40, "橙色": 0.10 } },                 // 暗殺者
     ren:        { chance: 1,    odds: { "藍色": 0.60, "紫色": 0.35, "橙色": 0.05 } },                 // 懸賞伏誅・人榜
     di:         { chance: 1,    odds: { "紫色": 0.70, "橙色": 0.30 } },                               // 懸賞伏誅・地榜
-    tian:       { chance: 1,    odds: { "橙色": 1 } }                                                 // 懸賞伏誅・天榜
+    tian:       { chance: 1,    odds: { "橙色": 1 } },                                                // 懸賞伏誅・天榜
+    casinoPurple: { chance: 1,  odds: { "紫色": 1 } },                                                // 天星賭坊・切出紫裝（casino.js）
+    casinoOrange: { chance: 1,  odds: { "橙色": 1 } }                                                 // 天星賭坊・切出橙裝
 };
 
 // 第六品級：白金（先天道器）。只能由橙色 +20 進化（強化系統上線後開放），不在 equipQualities 內
