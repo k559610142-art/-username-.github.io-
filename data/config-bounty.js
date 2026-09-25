@@ -2,6 +2,8 @@
 // 正派玩家看到 6 名邪修、邪派玩家看到 6 名正道修士；接取後在野外歷練時才有機率遇上，進入一對一對決
 
 const BOUNTY_REFRESH_HOURS = 4;          // 每 4 小時刷新一次榜單（比照千寶閣，以時間戳判斷）
+const BOUNTY_PAID_REFRESH_COST = 100000; // 花靈石立即刷新榜單（不改變定時刷新的時間）
+const BOUNTY_PAID_REFRESH_DAILY = 5;     // 每日可付費刷新次數（與千寶閣分開計）
 const BOUNTY_ENCOUNTER_CHANCE = 0.08;    // 接取後，野外每刷新一波時遇上目標的機率（約 1～3 分鐘）
 const BOUNTY_MERIT_MIN = 1;              // 斬殺懸賞人物的功德：1 ~ 3000，不論強弱
 const BOUNTY_MERIT_MAX = 3000;

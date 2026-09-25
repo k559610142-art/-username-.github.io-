@@ -81,6 +81,7 @@ let player = {
     dailyStats: {},              // 當期各類型累計次數（刷新時清空）
     auctionItems: [],            // 千寶閣當期 5 件商品
     auctionRefreshAt: 0,         // 千寶閣下次上架的時間戳
+    paidRefresh: {},             // 今日付費刷新次數 { date: 當地日期字串, auction, bounty }（activity.js 的 getPaidRefreshState）
     autoHp: { enabled: false, threshold: 50 },
     autoMp: { enabled: false, threshold: 30 },
     lastSaveTime: Date.now()

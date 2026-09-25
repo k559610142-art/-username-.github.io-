@@ -28,6 +28,8 @@ const dailyQuestRewards = [
 // --- 千寶閣（拍賣場）---
 const AUCTION_REFRESH_HOURS = 3;   // 每 3 小時刷新
 const AUCTION_ITEM_COUNT = 5;      // 每次只刷新 5 件商品
+const AUCTION_PAID_REFRESH_COST = 100000;   // 花靈石立即刷新（不改變定時刷新的時間）
+const AUCTION_PAID_REFRESH_DAILY = 5;       // 每日可付費刷新次數（與懸賞榜分開計）
 
 // 拍賣場的品質機率（由高到低累進判斷），比鍛造閣更容易出高品質
 const auctionQualityOdds = [

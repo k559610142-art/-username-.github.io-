@@ -34,6 +34,7 @@ function getBountyIcon(entry) {
 function refreshBountyIfDue(force) {
     let foe = getOpposingFaction(getPlayerFaction());
     let now = Date.now();
+    player.bountyRefreshAt = clampRefreshAt(player.bountyRefreshAt, BOUNTY_REFRESH_HOURS);   // 時間軸保護（ui.js）
     let factionChanged = player.bountyFaction && player.bountyFaction !== foe;
     if (!force && !factionChanged && player.bountyRefreshAt && now < player.bountyRefreshAt
         && Array.isArray(player.bountyBoard) && player.bountyBoard.length > 0) {
@@ -47,6 +48,19 @@ function refreshBountyIfDue(force) {
         ? `📜 你的陣營已改變，懸賞榜改列 ${getFactionLabel(foe)} 人物！`
         : `📜 懸賞榜已更新，${player.bountyBoard.length} 名${getFactionLabel(foe)}人物上榜！`, "system");
     return true;
+}
+
+// 付費立即刷新：重抽 6 名（追蹤中的懸賞會取消），定時刷新的時間軸不變
+function paidRefreshBounty() {
+    if (inBountyDuel) { alert("對決進行中，無法刷新懸賞榜！"); return; }
+    if (getActiveBounty() && !confirm("刷新後，目前追蹤中的懸賞會一併取消。確定要刷新嗎？")) return;
+    if (!payForRefresh('bounty', BOUNTY_PAID_REFRESH_COST, BOUNTY_PAID_REFRESH_DAILY, '懸賞榜')) return;
+    let keepAt = player.bountyRefreshAt;
+    refreshBountyIfDue(true);
+    if (keepAt > Date.now()) player.bountyRefreshAt = keepAt;
+    addLog(`💰 花費 ${BOUNTY_PAID_REFRESH_COST.toWan()} 靈石，懸賞榜提前換上新名單。`, "system");
+    updateUI();
+    renderEvilHunt();
 }
 
 function rollBountyBoard(faction) {
@@ -143,6 +157,7 @@ function renderBountyBoard() {
             <span style="color: #9ca3af;">每 ${BOUNTY_REFRESH_HOURS} 小時刷新</span>
             <span style="color: var(--accent);">下次刷新：${formatCountdown(player.bountyRefreshAt - Date.now())}</span>
         </div>
+        ${renderPaidRefreshButton('bounty', BOUNTY_PAID_REFRESH_COST, BOUNTY_PAID_REFRESH_DAILY, 'paidRefreshBounty')}
         <div class="grid-container">${cards}</div>`;
 }
 

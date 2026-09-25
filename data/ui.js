@@ -314,6 +314,14 @@ function resolveBatchCount(qty, affordable, actionName) {
 }
 
 // 把剩餘毫秒數格式化成「3 小時 12 分」，供每日任務／千寶閣倒數使用
+// 刷新時間軸保護（千寶閣／懸賞榜／每日任務）：存檔轉移到時鐘不同的裝置、或系統時間被調過，
+// 「下次刷新」的時間戳可能遠在未來（倒數出現幾百小時、長時間不刷新）。超過一個週期就壓回「現在 + 一個週期」；
+// 非數字（壞掉的存檔）視為 0 = 立即刷新。
+function clampRefreshAt(at, hours) {
+    if (typeof at !== 'number' || !isFinite(at)) return 0;
+    return Math.min(at, Date.now() + hours * 3600 * 1000);
+}
+
 function formatCountdown(ms) {
     if (!ms || ms <= 0) return "即將刷新";
     const totalMinutes = Math.floor(ms / 60000);

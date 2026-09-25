@@ -31,6 +31,42 @@ function renderActivityList() {
     }).join("");
 }
 
+// ---- 付費立即刷新（千寶閣、懸賞榜共用）----
+// 每日次數用「當地日期字串」判斷換日，不用時間戳：存檔轉移到其他裝置時不會算錯。kind：'auction'／'bounty'
+function getPaidRefreshState() {
+    const today = new Date().toDateString();
+    if (!player.paidRefresh || typeof player.paidRefresh !== 'object' || player.paidRefresh.date !== today) {
+        player.paidRefresh = { date: today };
+    }
+    return player.paidRefresh;
+}
+
+function getPaidRefreshLeft(kind, limit) {
+    return Math.max(0, limit - (getPaidRefreshState()[kind] || 0));
+}
+
+// 檢查次數與靈石並扣款；成功回傳 true
+function payForRefresh(kind, cost, limit, name) {
+    if (getPaidRefreshLeft(kind, limit) <= 0) {
+        alert(`【${name}】今日刷新次數已用完（每日 ${limit} 次），明天再來吧！`);
+        return false;
+    }
+    if ((player.coins || 0) < cost) {
+        alert(`靈石不足！立即刷新【${name}】需要 ${cost.toWan()} 靈石。`);
+        return false;
+    }
+    player.coins -= cost;
+    const state = getPaidRefreshState();
+    state[kind] = (state[kind] || 0) + 1;
+    return true;
+}
+
+function renderPaidRefreshButton(kind, cost, limit, fnName) {
+    const left = getPaidRefreshLeft(kind, limit);
+    return `<button class="sys-btn" style="margin: 0 0 14px;" ${left <= 0 ? 'disabled' : ''} onclick="${fnName}()">
+        🔄 立即刷新（${cost.toWan()} 靈石｜今日剩 ${left}/${limit} 次）</button>`;
+}
+
 function openActivity(id) {
     const act = activityData.find(a => a.id === id);
     if (!act) return;

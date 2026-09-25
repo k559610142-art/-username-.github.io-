@@ -12,8 +12,8 @@ function refreshDailyQuestsIfDue(force) {
     const now = Date.now();
     // 縮短刷新間隔（12 → 4 小時）時，舊存檔的 dailyRefreshAt 仍是照舊間隔算的，
     // 不修掉的話玩家得先等完舊的一輪。超出新間隔就直接壓回上限。
-    let maxRefreshAt = now + DAILY_REFRESH_HOURS * 3600 * 1000;
-    if (player.dailyRefreshAt > maxRefreshAt) player.dailyRefreshAt = maxRefreshAt;
+    // 同一個保護也處理存檔轉移／系統時間被調過造成的時間軸異常（ui.js 的 clampRefreshAt）
+    player.dailyRefreshAt = clampRefreshAt(player.dailyRefreshAt, DAILY_REFRESH_HOURS);
 
     if (!force && player.dailyRefreshAt && now < player.dailyRefreshAt
         && Array.isArray(player.dailyQuests) && player.dailyQuests.length > 0) {

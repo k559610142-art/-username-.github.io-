@@ -11,6 +11,7 @@ function openAuctionModal() {
 
 function refreshAuctionIfDue(force) {
     const now = Date.now();
+    player.auctionRefreshAt = clampRefreshAt(player.auctionRefreshAt, AUCTION_REFRESH_HOURS);   // 時間軸保護（ui.js）
     if (!force && player.auctionRefreshAt && now < player.auctionRefreshAt
         && Array.isArray(player.auctionItems) && player.auctionItems.length > 0) {
         return false;
@@ -24,6 +25,18 @@ function refreshAuctionIfDue(force) {
 
     addLog(`🏺 千寶閣已上架 ${AUCTION_ITEM_COUNT} 件新商品！`, "system");
     return true;
+}
+
+// 付費立即刷新：換一批商品，但定時刷新的時間軸不變（下次上架時間照舊）
+function paidRefreshAuction() {
+    if (auctionBidItemId) { alert("搶拍進行中，無法刷新商品！"); return; }
+    if (!payForRefresh('auction', AUCTION_PAID_REFRESH_COST, AUCTION_PAID_REFRESH_DAILY, '千寶閣')) return;
+    const keepAt = player.auctionRefreshAt;
+    refreshAuctionIfDue(true);
+    if (keepAt > Date.now()) player.auctionRefreshAt = keepAt;
+    addLog(`💰 花費 ${AUCTION_PAID_REFRESH_COST.toWan()} 靈石請千寶閣提前換貨。`, "system");
+    updateUI();
+    renderAuction();
 }
 
 // 每個商品欄位先判定是否上架壽元丹（auctionLifePills 的機率），沒抽中才上架裝備
@@ -280,6 +293,7 @@ function renderAuction() {
             <span style="color: #9ca3af;">每 ${AUCTION_REFRESH_HOURS} 小時上架 ${AUCTION_ITEM_COUNT} 件商品</span>
             <span style="color: var(--accent);">下次上架：${formatCountdown(player.auctionRefreshAt - Date.now())}</span>
         </div>
+        ${renderPaidRefreshButton('auction', AUCTION_PAID_REFRESH_COST, AUCTION_PAID_REFRESH_DAILY, 'paidRefreshAuction')}
         <div class="grid-container">${cards}</div>
         ${renderIronShopSection()}
         ${renderPreciousSection()}`;
