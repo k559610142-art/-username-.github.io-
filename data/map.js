@@ -9,7 +9,21 @@ function isInSect() {
 function openWorldMapModal() {
     let cur = document.getElementById('world-map-current');
     if (cur) cur.innerText = `目前所在：${player.currentMap.name}${player.currentMapIsSafe ? '（安全區）' : ''}`;
+    renderTownTeleports();
     document.getElementById('world-map-modal').style.display = 'flex';
+}
+
+// 第一區城鎮：直接在修仙地圖顯示傳送點卡片（有 thumb 顯示縮圖），點擊即傳送；宗門（hidden）不列
+function renderTownTeleports() {
+    const box = document.getElementById('world-map-towns');
+    if (!box) return;
+    box.innerHTML = maps[0].items.map((item, i) => {
+        if (item.hidden) return '';
+        let isCurrent = player.currentMap.name === item.name;
+        let pic = item.thumb ? `<img class="map-thumb" src="${item.thumb}" alt="${item.name}">` : `<span class="town-thumb-empty">🏯</span>`;
+        return `<button class="town-card${isCurrent ? ' current' : ''}" ${isCurrent ? '' : `onclick="selectMap(0, ${i})"`}>
+            ${pic}<b>${item.name}</b><small>${isCurrent ? '📍 當前所在' : '✨ 點擊傳送'}</small></button>`;
+    }).join('');
 }
 
 function openMapCategoryModal(catIndex) {
