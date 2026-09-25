@@ -167,6 +167,7 @@ function startBountyDuel(entry) {
     respawnTimer = 0;
     clearDuelDebuffs();
     playerStatus = newStatus();
+    resetGearWave();   // 首擊、先手盾（gear.js）
     inBountyDuel = true;
     duelOpponent = {
         entryId: entry.id,
@@ -212,7 +213,7 @@ function bountyDuelTick() {
     if (selfTick.dot > 0) {
         player.hp -= selfTick.dot;
         addLog(`🩸 身上的異常狀態發作，損失 ${selfTick.dot.toLocaleString()} 點氣血！`, "combat");
-        if (player.hp <= 0) { endBountyDuel("lose"); return; }
+        if (player.hp <= 0 && !tryGearUndying()) { endBountyDuel("lose"); return; }
     }
     let tags = [];
     if (selfTick.frozen) {
@@ -221,6 +222,7 @@ function bountyDuelTick() {
         if (duelSilenceTimer > 0) addLog(`🔇 你被封印，只能以普通攻擊迎敵！`, "combat");
         playerAttackTurn(duelSilenceTimer > 0 ? [] : getAllSkills(), [opp], tags);
         artifactSkillTurn([opp], tags);   // 神器專屬技能：屬於法寶，封印擋不住（artifact.js）
+        professionSkillTurn([opp], tags); // 職業技能（profession.js）
     }
     // 負面狀態以「你的回合」計算持續時間
     if (duelWeakenTimer > 0) duelWeakenTimer--;
@@ -231,11 +233,11 @@ function bountyDuelTick() {
 
     let oppTick = tickStatus(opp.status);
     opp.hp -= oppTick.dot;
-    let regen = applyRootRegen();
+    let regen = applyRootRegen() + applyGearRegen();
     if (tags.length > 0 || oppTick.dot > 0 || regen > 0) {
         addLog(`✨ 屬性效果：${[tags.length ? summarizeTags(tags, `💨被${opp.name}閃避`) : '',
             oppTick.dot ? `${opp.name}受持續傷害 ${oppTick.dot.toLocaleString()}` : '',
-            regen ? `🌿靈根回復 ${regen.toLocaleString()}` : ''].filter(Boolean).join("｜")}`, "skill");
+            regen ? `🌿回復 ${regen.toLocaleString()}` : ''].filter(Boolean).join("｜")}`, "skill");
     }
     if (opp.hp <= 0) { endBountyDuel("win"); return; }
     if (opp.turn >= BOUNTY_MAX_TURNS) { endBountyDuel("escape"); return; }
@@ -268,7 +270,8 @@ function bountyDuelTick() {
     }
 
     let r = resolveHit(opp.attack * dmgMult, { attrs: opp.attrs, power: opp.attack }, { attrs: getPlayerCombatAttrs(), status: playerStatus });
-    let dealt = applyPetDamageReduction(r.dmg);
+    // 施展武學時算術法、一般攻擊算物理（金身／化勁）；反震、閃擊反擊（gear.js）
+    let dealt = applyPetDamageReduction(applyGearDefense(r, opp, !!sk, r.tags));
     player.hp -= dealt;
     if (sk && dealt > 0) {
         if (sk.type === "lifesteal") opp.hp = Math.min(opp.maxHp, opp.hp + dealt * sk.steal);
@@ -279,7 +282,7 @@ function bountyDuelTick() {
     }
     if (r.tags.length > 0) addLog(`${opp.icon} ${opp.name}攻勢：${summarizeTags(r.tags, "💨你閃避了")}`, "combat");
 
-    if (player.hp <= 0) { endBountyDuel("lose"); return; }
+    if (player.hp <= 0 && !tryGearUndying()) { endBountyDuel("lose"); return; }
     updateUI();
 }
 
@@ -297,7 +300,8 @@ function endBountyDuel(result) {
     if (result === "win") {
         if (entry) entry.status = "done";
         if (player.activeBountyId === opp.entryId) player.activeBountyId = null;
-        let merit = BOUNTY_MERIT_MIN + Math.floor(Math.random() * (BOUNTY_MERIT_MAX - BOUNTY_MERIT_MIN + 1));
+        let merit = Math.floor((BOUNTY_MERIT_MIN + Math.floor(Math.random() * (BOUNTY_MERIT_MAX - BOUNTY_MERIT_MIN + 1)))
+                               * (1 + gearFx("積德")));   // 積德（裝備特效，gear.js）
         player.merit = (player.merit || 0) + merit;
         player.bountyKills = (player.bountyKills || 0) + 1;
         player.evilKills = (player.evilKills || 0) + 1;
@@ -305,6 +309,12 @@ function endBountyDuel(result) {
         let how = getPlayerFaction() === "邪" ? `吸取其一身功德 ${merit.toLocaleString()} 點` : `積累功德 ${merit.toLocaleString()} 點`;
         addLog(`🏆 【懸賞伏誅】${rank.name}「${opp.title}」${opp.name}授首！${how}！（目前 ${player.merit.toLocaleString()}）`, "level-up");
         settleMeritStones();
+        // 星允鐵與奪寶（enhance.js／gear.js）：依榜給星允鐵、必掉一件奪寶裝備
+        let ironRange = IRON_BOUNTY_AMOUNT[opp.rank];
+        if (ironRange) addStarIron(randInt(ironRange[0], ironRange[1]), `從${opp.name}的遺物中取得星允鐵`);
+        gainProficiency(PROF_BOUNTY_GAIN);   // 主修職業熟練度（profession.js）
+        let loot = tryLootDrop(opp.rank);
+        if (loot) addLog(loot, "equip");
         respawnTimer = 3;
         refreshCombatStatusText();
         updateUI();

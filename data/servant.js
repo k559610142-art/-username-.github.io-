@@ -185,6 +185,10 @@ function tickServantQuests() {
             addDailyProgress('sectQuest');
             addLog(`${def.icon} 僕從【${s.name}】完成【${def.name}】：獲得 ${got}`, "servant");
             anyCompleted = true;
+            // 礦脈採礦偶爾挖到星允鐵（enhance.js）
+            if (s.quest === 'mine' && Math.random() < IRON_MINE_CHANCE) {
+                addStarIron(randInt(IRON_MINE_AMOUNT[0], IRON_MINE_AMOUNT[1]), `僕從【${s.name}】在礦脈深處挖到星允鐵`);
+            }
 
             // 接著出發下一趟：付不起靈石就停工
             if (!payServantTrip(s)) {

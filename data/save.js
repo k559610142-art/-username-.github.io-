@@ -58,6 +58,13 @@ function settleIdleSeconds(offlineSeconds, label) {
 
     // 依實力估算野外戰鬥：撐不住就退回宗門靜修；打得慢則按比例降低戰鬥次數（防止進高階地圖後直接離線刷收益）
     let est = null;
+    // 暫存區滿了不能外出練功（enhance.js）：離線期間改在宗門靜修，沒有野外收益
+    if (!player.currentMapIsSafe && isGearStashFull()) {
+        let fromName = player.currentMap.name;
+        player.currentMap = maps[0].items[0];
+        player.currentMapIsSafe = maps[0].isSafe;
+        prefix = `📦 暫存區已滿，無法在【${fromName}】歷練，已退回【${player.currentMap.name}】靜修（請先處理暫存區的裝備）。\n`;
+    }
     if (!player.currentMapIsSafe) {
         est = estimateIdleCombat();
         if (!est.survivable) {
@@ -84,6 +91,7 @@ function settleIdleSeconds(offlineSeconds, label) {
 
         let gained = gainExp(expEarned) || 0;
         player.coins += coinsEarned;
+        gainKillProficiency(combatTicks * PROF_OFFLINE_RATE);   // 主修職業熟練度（離線打折，profession.js）
 
         // 離線聲望：以該區「平均擊殺聲望 × OFFLINE_REPUTATION_RATE」計算，刻意低於線上掛機
         let repMax = REPUTATION_MAX_BY_MAP_CATEGORY[getMapCategoryIndex(player.currentMap.name)] || 1;
@@ -331,6 +339,8 @@ function applySaveData(data) {
     migrateRealmExp();
     migrateEquipSockets();
     migrateArtifactIds();   // 更新前兌換的神器補上 lingbaoId（artifact.js）
+    migrateGearIds();       // 舊裝備依「部位＋五行」對應到圖鑑，數值不變（gear.js）
+    migrateGearCodex();     // 持有的圖鑑裝備補記進天磯錄、補齊新欄位（codex.js）
 
     // 換了一份存檔，原本進行中的戰鬥、渡劫、身上狀態都不該延續
     enemies = [];

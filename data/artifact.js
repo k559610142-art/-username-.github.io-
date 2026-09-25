@@ -17,9 +17,11 @@ function getEquippedArtifactSkill() {
     return slot ? getArtifactSkill(player.equipment[slot]) : null;
 }
 
-// 品質顯示文字：神器的「七彩」顯示為「造化神器・七彩」，其餘照原名
+// 品質顯示文字：神器的「七彩」顯示為「造化神器・七彩」、白金顯示為「白金・先天道器」（config-gear.js），其餘照原名
 function formatQualityLabel(quality) {
-    return quality === ARTIFACT_QUALITY ? ARTIFACT_QUALITY_LABEL : quality;
+    if (quality === ARTIFACT_QUALITY) return ARTIFACT_QUALITY_LABEL;
+    if (quality === PLATINUM_QUALITY.name) return PLATINUM_QUALITY.label;
+    return quality;
 }
 
 // 裝備卡片的外框：造化神器用七彩發光框（index.html 的 .rainbow-glow）
@@ -41,6 +43,11 @@ function formatArtifactSkill(eq) {
 function artifactSkillTurn(targets, tags) {
     let sk = getEquippedArtifactSkill();
     if (!sk || Math.random() >= sk.chance) return;
+    castProcSkill(sk, targets, tags);
+}
+
+// 依機率自動發動的技能（神器專屬技能、職業技能 profession.js 共用），欄位見 config-lingbao.js 的 artifactSkills
+function castProcSkill(sk, targets, tags) {
     let alive = targets.filter(t => t.hp > 0);
     if (sk.target !== 'self' && alive.length === 0) return;
 

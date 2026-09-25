@@ -67,8 +67,9 @@ function isElementBookUnlocked() {
 function getElementBookBonus() {
     let lv = player.elementStudy || {};
     let bonus = { wuxing: {}, metal: 0, fire: 0, ice: 0, thunder: 0, poison: 0 };
+    let boost = 1 + gearFx("通玄");   // 通玄（裝備特效，gear.js）
     elementBooks.forEach(book => {
-        let v = (lv[book.key] || 0) * ELEMENT_BOOK_GAIN;
+        let v = (lv[book.key] || 0) * ELEMENT_BOOK_GAIN * boost;
         if (book.wuxing) bonus.wuxing[book.wuxing] = v;
         if (book.effect) bonus[book.effect] = v;
     });

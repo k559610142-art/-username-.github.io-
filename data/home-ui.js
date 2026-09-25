@@ -156,6 +156,8 @@ function updateHomeHud() {
     });
 
     set('hud-player-name', player.name);
+    let nameTag = getNameTag();   // 稱號或職業階級（codex.js）
+    both('hud-title').forEach(el => { el.innerText = nameTag; el.style.display = nameTag ? '' : 'none'; });
     let karma = getKarmaState();   // 善惡標籤（merit.js）：善藍、惡紅、中立灰
     both('hud-karma').forEach(el => {
         el.innerText = karma.label;

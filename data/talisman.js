@@ -131,7 +131,7 @@ function renderSocketCard(eq, isEquipped, ownedOptions) {
            </div>`).join("");
     return `
         <div class="card" style="border-color: var(--equip-color); text-align: left;">
-            <h3 class="quality-${eq.quality}" style="text-align: center;">${formatEquipLevel(eq)}${eq.name}${isEquipped ? '（穿戴中）' : ''}</h3>
+            <h3 class="quality-${eq.quality}" style="text-align: center;">${formatEquipTitle(eq)}${isEquipped ? '（穿戴中）' : ''}</h3>
             <p style="font-size: 0.78em; color: #9ca3af; text-align: center;">屬性：<span class="elem-${eq.element}">${eq.element}</span>｜${eq.sockets.length} 孔</p>
             ${slots}
         </div>`;
@@ -186,7 +186,7 @@ function inlayTalisman(equipId, socketIndex) {
     player.talismans[key]--;
     if (player.talismans[key] <= 0) delete player.talismans[key];
     eq.sockets[socketIndex] = { type: type, grade: +grade };
-    addLog(`💠 將【${formatTalisman(type, +grade)}】鑲嵌到【${eq.quality}·${eq.name}】！`, "equip");
+    addLog(`💠 將【${formatTalisman(type, +grade)}】鑲嵌到【${eq.quality}·${getEquipDisplayName(eq)}】！`, "equip");
     renderTalismanWorkshop();
     updateUI();
 }
@@ -198,7 +198,7 @@ function removeTalisman(equipId, socketIndex) {
     let s = eq.sockets[socketIndex];
     if (!confirm(`確定要打掉【${formatTalisman(s.type, s.grade)}】嗎？\n打掉後符寶會碎裂消失，無法取回。`)) return;
     eq.sockets[socketIndex] = null;
-    addLog(`💥 打掉了【${eq.name}】上的【${formatTalisman(s.type, s.grade)}】，符寶碎裂消散。`, "equip");
+    addLog(`💥 打掉了【${getEquipDisplayName(eq)}】上的【${formatTalisman(s.type, s.grade)}】，符寶碎裂消散。`, "equip");
     renderTalismanWorkshop();
     updateUI();
 }

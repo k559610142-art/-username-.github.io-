@@ -26,14 +26,19 @@ function renderBag() {
         let counts = {};
         player.equipInventory.forEach(eq => { counts[eq.quality] = (counts[eq.quality] || 0) + 1; });
         parts.push(renderBulkDeleteBar(
-            "一鍵刪除裝備（依品級）",
+            "一鍵刪除／分解裝備（依品級）",
             "bulk-equip-quality",
             equipQualities.map(q => q.name),
             counts,
             "bulkDeleteEquipment",
-            "※ 只會刪除背包內的裝備，已穿戴的不受影響"
+            `※ 只作用於背包內的裝備，已穿戴的不受影響。分解只處理白～紫（得碎鐵，每 ${SHARDS_PER_IRON} 個合成 1 顆星允鐵），橙色請逐件分解`,
+            `<button class="sys-btn" onclick="bulkDecomposeEquipment()">分解勾選品級</button>`
         ));
     }
+
+    // 暫存區（enhance.js）：背包滿時新掉落的橙色以上裝備
+    parts.push(renderStashSection());
+    if ((player.gearStash || []).length > 0) hasItems = true;
 
     for (let itemId in player.bag) {
         let count = player.bag[itemId];
@@ -53,6 +58,15 @@ function renderBag() {
     }
 
     // 珍貴道具（七彩補天石、破障丹）：七彩發光外觀，不能直接使用（補天石於千寶閣消費、破障丹渡劫時自動服用）
+    if ((player.starIron || 0) > 0 || (player.ironShards || 0) > 0) {
+        hasItems = true;
+        parts.push(`
+            <div class="card" style="border-color: var(--accent);">
+                <h3 style="color: var(--accent);">🌠 星允鐵 <span style="font-size:0.8em;">(x${(player.starIron || 0).toLocaleString()})</span></h3>
+                <p style="font-size: 0.85em; color: #9ca3af;">強化裝備的寶物。🔩 碎鐵 ${(player.ironShards || 0).toLocaleString()} / ${SHARDS_PER_IRON}（滿了自動熔鑄 1 顆）</p>
+            </div>`);
+    }
+
     [["butianStone", player.butianStones], ["breakPill", player.breakPills]].forEach(([key, count]) => {
         if (!(count > 0)) return;
         hasItems = true;
@@ -69,12 +83,15 @@ function renderBag() {
         player.equipInventory.forEach(eq => {
             parts.push(`
                 <div class="${getEquipCardClass(eq)}" style="border-color: var(--equip-color);">
-                    <h3 class="quality-${eq.quality}">${formatEquipLevel(eq)}${eq.name}</h3>
-                    <p style="font-size: 0.85em; color: #9ca3af;">品質: <span class="quality-${eq.quality}">${formatQualityLabel(eq.quality)}</span> | 屬性: <span class="elem-${eq.element}">${eq.element}</span></p>
-                    <p style="font-size: 0.8em; color: #facc15;">加成: ${formatEquipStats(eq.stats)}</p>
-                    ${formatSockets(eq)}
+                    <h3 class="quality-${eq.quality}">${formatEquipTitle(eq)}</h3>
+                    <p style="font-size: 0.85em; color: #9ca3af;">${formatGearSubline(eq)} | <span class="quality-${eq.quality}">${formatQualityLabel(eq.quality)}</span> | 屬性: <span class="elem-${eq.element}">${eq.element}</span></p>
+                    ${formatEquipDetails(eq)}
                     ${formatArtifactSkill(eq)}
                     <button class="equip-btn" onclick="equipItem('${eq.id}')">穿戴裝備</button>
+                    ${ENHANCE_CAP[eq.quality] ? `<div class="batch-btns">
+                        <button class="sys-btn" onclick="openEnhanceModal('${eq.id}')">🔨 強化</button>
+                        <button class="sys-btn" onclick="decomposeEquip('${eq.id}')">分解</button>
+                    </div>` : ''}
                     <button style="border-color: #ef4444; color: #ef4444; margin-top: 5px; background: rgba(239,68,68,0.1);" onclick="deleteEquipFromInventory('${eq.id}')">毀棄裝備</button>
                 </div>`);
         });
@@ -93,13 +110,13 @@ function useItemFromBag(itemId) {
     if (shopItem.type === 'heal') {
         if (potionCooldownHp > 0) { alert(`氣血類丹藥冷卻中，尚需 ${potionCooldownHp} 秒才能再次服用。`); return; }
         if (player.hp >= player.maxHp) { alert("氣血已滿，無需使用！"); return; }
-        player.hp = Math.min(player.maxHp, player.hp + player.maxHp * shopItem.amount);
+        player.hp = Math.min(player.maxHp, player.hp + player.maxHp * shopItem.amount * (1 + gearFx("丹心")));
         potionCooldownHp = POTION_COOLDOWN_SECONDS;
         addLog(`🎒 從背包使用【${shopItem.name}】，氣血回復 ${Math.round(shopItem.amount * 100)}%！`, "heal");
     } else if (shopItem.type === 'mp') {
         if (potionCooldownMp > 0) { alert(`靈力類丹藥冷卻中，尚需 ${potionCooldownMp} 秒才能再次服用。`); return; }
         if (player.mp >= player.maxMp) { alert("靈力已滿，無需使用！"); return; }
-        player.mp = Math.min(player.maxMp, player.mp + player.maxMp * shopItem.amount);
+        player.mp = Math.min(player.maxMp, player.mp + player.maxMp * shopItem.amount * (1 + gearFx("丹心")));
         potionCooldownMp = POTION_COOLDOWN_SECONDS;
         addLog(`🎒 從背包使用【${shopItem.name}】，靈力回復 ${Math.round(shopItem.amount * 100)}%！`, "skill");
     }
@@ -142,9 +159,9 @@ function deleteEquipFromInventory(equipId) {
     let index = player.equipInventory.findIndex(e => e.id === equipId);
     if (index === -1) return;
     let item = player.equipInventory[index];
-    if (confirm(`確定要毀棄裝備【${item.quality}·${item.name}】嗎？`)) {
+    if (confirm(`確定要毀棄裝備【${item.quality}·${getEquipDisplayName(item)}】嗎？`)) {
         player.equipInventory.splice(index, 1);
-        addLog(`🗑️ 毀棄了裝備【${item.name}】。`, "equip");
+        addLog(`🗑️ 毀棄了裝備【${getEquipDisplayName(item)}】。`, "equip");
         renderBag();
     }
 }

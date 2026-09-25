@@ -25,6 +25,19 @@ let player = {
     spiritGrass: 0, beastCore: 0, martialPoints: 0,
     ore: 0,                      // 礦石：礦脈採礦（傳說僕從）取得，用於符寶坊煉製符寶
     talismans: {},               // 持有的符寶 { "種類_品階": 數量 }（talisman.js）
+    // 裝備系統（第 37 節）
+    starIron: 0,                 // 星允鐵：強化／進化用（enhance.js）
+    ironShards: 0,               // 碎鐵：分解白～紫取得，每 SHARDS_PER_IRON 個自動合成 1 顆星允鐵
+    gearStash: [],               // 暫存區：背包滿時新掉落的橙色以上裝備（上限 GEAR_STASH_MAX，滿了不能外出練功）
+    ironShop: null,              // 千寶閣星允鐵每日限購 { date, bought }
+    ironUsed: 0,                 // 累計用掉的星允鐵（稱號用）
+    maxEnhance: 0,               // 達過的最高強化等級（稱號用）
+    gearCodex: {},               // 天磯錄收藏 { gearId: [取得過的品級, …] }（codex.js）
+    titles: [],                  // 已達成的稱號 id（codex.js）
+    activeTitle: null,           // 顯示在道號旁的稱號 id
+    profession: null,            // 主修職業 id（profession.js）
+    profSwitched: false,         // 是否已選過主修（第一次免費，之後改修要付靈石）
+    proficiency: {},             // 各職業熟練度 { sword: 12345, … }
     herbs: { mortal: 0, high: 0, epic: 0, immortal: 0 },
     bag: {},
     equipInventory: [],

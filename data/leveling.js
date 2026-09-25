@@ -8,6 +8,7 @@ function gainExp(amount) {
     let finalAmount = amount * (player.sect ? player.sect.expMult : 1.0);
     if (hasLiveBeast('fox')) finalAmount *= 1.1;
     if (hasLiveBeast('dragon')) finalAmount *= 1.2;
+    finalAmount *= 1 + gearFx("悟道");   // 悟道（裝備特效，gear.js）
 
     gainLevelExp(finalAmount);
     gainBeastExp(finalAmount);

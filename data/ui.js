@@ -174,6 +174,7 @@ function updateUI() {
     document.getElementById('karma-display').innerHTML = formatKarmaTag();   // 善惡只顯示善／中立／惡（merit.js）
     document.getElementById('res-butian').innerText = (player.butianStones || 0).toLocaleString();
     document.getElementById('res-breakpill').innerText = (player.breakPills || 0).toLocaleString();
+    document.getElementById('res-iron').innerText = (player.starIron || 0).toLocaleString();   // 星允鐵（enhance.js）
     document.getElementById('herb-mortal').innerText = player.herbs.mortal;
     document.getElementById('herb-high').innerText = player.herbs.high;
     document.getElementById('herb-epic').innerText = player.herbs.epic;
@@ -201,6 +202,7 @@ function updateUI() {
     updateStudyCountsUI();
     updateCombatVisualPanel();
     checkAvatarUnlocks();   // 達成條件的頭像自動解鎖（avatar.js）
+    checkTitleUnlocks();    // 達成條件的稱號（codex.js）
     updateHomeHud();   // 洞府主畫面的 HUD（home-ui.js）
 }
 
@@ -337,7 +339,8 @@ function toggleAllBulkQualities(className) {
 
 // 產生「依品級勾選 + 刪除」的工具列
 // qualityNames: 品級名稱陣列；counts: { 品級: 數量 }
-function renderBulkDeleteBar(title, className, qualityNames, counts, deleteFn, note) {
+// extraButtons：額外按鈕的 HTML（例：背包的「分解勾選品級」）
+function renderBulkDeleteBar(title, className, qualityNames, counts, deleteFn, note, extraButtons = '') {
     const boxes = qualityNames.map(name =>
         `<label><input type="checkbox" class="${className}" value="${name}">
             <span class="quality-${name}">${name}</span> (${counts[name] || 0})</label>`
@@ -349,6 +352,7 @@ function renderBulkDeleteBar(title, className, qualityNames, counts, deleteFn, n
             <div class="bulk-actions">
                 <button class="sys-btn" onclick="toggleAllBulkQualities('${className}')">全選 / 全不選</button>
                 <button style="border-color:#ef4444; color:#ef4444; background:rgba(239,68,68,0.12);" onclick="${deleteFn}()">刪除勾選品級</button>
+                ${extraButtons}
             </div>
             <div style="font-size:0.75em; color:#6b7280; text-align:center; margin-top:6px;">${note}</div>
         </div>`;

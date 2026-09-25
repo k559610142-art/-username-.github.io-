@@ -3,18 +3,31 @@
 // 加總所有已穿戴裝備的屬性：四維＋魅力，以及戰鬥屬性（減傷/閃避/冰火毒金雷，單位 %，見 config-elements.js）
 const EQUIP_STAT_KEYS = ["str", "con", "int", "spr", "cha", "def", "eva", "ice", "fire", "poison", "metal", "thunder"];
 
+const BASE_STAT_KEYS = ["str", "con", "int", "spr", "cha"];
+
 function getEquipBonus() {
     let bonus = {};
     EQUIP_STAT_KEYS.forEach(k => { bonus[k] = 0; });
     for (let key in player.equipment) {
         let eq = player.equipment[key];
         if (eq && eq.stats) {
-            EQUIP_STAT_KEYS.forEach(k => { bonus[k] += eq.stats[k] || 0; });
+            let m = getEnhanceMult(eq) * getProfWeaponMult(key);   // 強化：四維 × (1 + 等級 × 5%)（gear.js）；主修職業的武器另有加成（profession.js）
+            EQUIP_STAT_KEYS.forEach(k => {
+                let v = eq.stats[k] || 0;
+                bonus[k] += BASE_STAT_KEYS.includes(k) ? Math.floor(v * m) : v;
+            });
         }
         // 橙裝孔位上鑲嵌的符寶（talisman.js）
         let socket = getSocketStats(eq);
         for (let k in socket) bonus[k] = (bonus[k] || 0) + socket[k];
     }
+    // 隨機詞條、套裝、稱號、職業被動（gear.js 的 getBonusTotals）：戰鬥屬性直接加；四維 % 以「本身＋裝備」的總量計
+    let extra = getBonusTotals();
+    ["def", "eva", "ice", "fire", "poison", "metal", "thunder"].forEach(k => { if (extra[k]) bonus[k] += extra[k]; });
+    BASE_STAT_KEYS.forEach(k => {
+        let pct = (extra[k + "Pct"] || 0) + (k !== "cha" ? extra.statPct || 0 : 0);
+        if (pct) bonus[k] += Math.floor(((player.stats[k] || 0) + bonus[k]) * pct);
+    });
     return bonus;
 }
 
@@ -148,6 +161,7 @@ function getPhysAttack() {
     let base = getBasePower() * (player.sect ? player.sect.powerMult : 1.0) + (totalStr * 5);
     base *= getRootBonus().atkMult;
     base *= Math.max(0.1, 1 + getSpellAuraBonus().physPct);   // 仙法被動光環（spells.js）
+    base *= 1 + getGearPctBonus('phys');   // 裝備詞條、套裝、稱號、職業的攻擊 %（gear.js）
     if (player.buffTimer > 0) base *= player.buffMult;
     if (petBuffTimer > 0) base *= petBuffMult;
     base *= getDuelWeakenMult();   // 懸賞對決中被「化功」（bounty.js）
@@ -160,6 +174,7 @@ function getMagAttack() {
     let base = getBasePower() * (player.sect ? player.sect.powerMult : 1.0) + (totalInt * 5);
     base *= getRootBonus().atkMult;
     base *= Math.max(0.1, 1 + getSpellAuraBonus().magPct);   // 仙法被動光環（spells.js）
+    base *= 1 + getGearPctBonus('mag');   // 裝備詞條、套裝、稱號、職業的攻擊 %（gear.js）
     if (player.buffTimer > 0) base *= player.buffMult;
     if (petBuffTimer > 0) base *= petBuffMult;
     base *= getDuelWeakenMult();   // 懸賞對決中被「化功」（bounty.js）
@@ -172,7 +187,7 @@ function getMaxHp() {
     let root = getRootBonus();
     totalCon *= root.conMult;
     let baseHp = Math.floor(getBasePower() * 20 * (player.sect ? player.sect.powerMult : 1.0) + (totalCon * 10));
-    baseHp = Math.floor(baseHp * root.hpMult * Math.max(0.1, 1 + getSpellAuraBonus().hpPct));
+    baseHp = Math.floor(baseHp * root.hpMult * Math.max(0.1, 1 + getSpellAuraBonus().hpPct) * (1 + getGearPctBonus('hp')));
     return Math.floor((baseHp + (player.level - 1) * LEVEL_UP_HP_GAIN + getReincarnateBonus().hp) * getWeaknessMult());
 }
 

@@ -85,7 +85,7 @@ function gainRealmLifespan() {
 // 玩家死亡（野外戰死、渡劫失敗）時呼叫：扣壽元、所有靈寵陣亡。
 // 回傳 true 代表壽元耗盡、遊戲結束，呼叫端應立即中止後續流程。
 function handlePlayerDeath() {
-    let cost = getDeathLifespanCost();
+    let cost = Math.ceil(getDeathLifespanCost() * (1 - gearFx("延壽")));   // 延壽（裝備特效，gear.js）
     let before = player.lifespan;
     player.lifespan = Math.max(0, player.lifespan - cost);
     // 折壽也算進年齡（重傷折壽 = 老了 N 歲），年齡與損失的壽元完全成正比

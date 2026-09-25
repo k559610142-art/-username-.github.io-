@@ -13,22 +13,35 @@ function getPlayerCombatAttrs() {
     let a = getSpellAuraBonus();   // 仙法被動光環（spells.js），與裝備、靈根一起套上限
     const cap = (v, max) => Math.max(0, Math.min(max, v));
     let armor = getDuelArmorMult();   // 懸賞對決中被「破甲」：減傷與閃避減半（bounty.js）
+    // 裝備特效（gear.js）：護體（低血量）、先手盾（每波前 2 回合）加減傷，一起套上限
+    let fx = getGearEffects();
+    let gearDef = (fx["護體"] && player.hp < player.maxHp * 0.3 ? fx["護體"] : 0)
+                + (fx["先手盾"] && gearWaveRound <= 2 ? fx["先手盾"] : 0);
+    let extra = getBonusTotals();   // 套裝可提高上限（cap:屬性，gear.js）
+    let capOf = (k, base) => base + (extra["cap:" + k] || 0);
     return {
-        def: cap(b.def + r.def + a.def, DEF_CAP) * armor,
-        eva: cap(b.eva + a.eva, EVA_CAP) * armor,
-        ice: cap(b.ice + r.ice + a.ice, AFFIX_CAP),
-        fire: cap(b.fire + r.fire + a.fire, AFFIX_CAP),
-        poison: cap(b.poison + r.poison + a.poison, AFFIX_CAP),
-        metal: cap(b.metal + r.metal + a.metal, AFFIX_CAP),
-        thunder: cap(b.thunder + r.thunder + a.thunder, AFFIX_CAP),
+        def: cap(b.def + r.def + a.def + gearDef, capOf("def", DEF_CAP)) * armor,
+        eva: cap(b.eva + a.eva, capOf("eva", EVA_CAP)) * armor,
+        ice: cap(b.ice + r.ice + a.ice, capOf("ice", AFFIX_CAP)),
+        fire: cap(b.fire + r.fire + a.fire, capOf("fire", AFFIX_CAP)),
+        poison: cap(b.poison + r.poison + a.poison, capOf("poison", AFFIX_CAP)),
+        metal: cap(b.metal + r.metal + a.metal, capOf("metal", AFFIX_CAP)),
+        thunder: cap(b.thunder + r.thunder + a.thunder, capOf("thunder", AFFIX_CAP)),
         element: getPlayerElement(),
         // 以下由靈根提供（怪物沒有這些欄位，會取 resolveHit 內的預設值）
-        freezeResist: r.freezeResist,
+        freezeResist: 1 - (1 - (r.freezeResist || 0)) * (1 - (fx["定神"] || 0)),   // 靈根與「定神」特效相乘疊加
         burnMax: r.burnMax,
         poisonMax: r.poisonMax,
         ignoreCounter: r.ignoreCounter,
         // 藏書閣屬性秘典的傷害加成（library.js），怪物沒有此欄位
-        book: getElementBookBonus()
+        book: getElementBookBonus(),
+        // 裝備特效（gear.js），怪物沒有這些欄位（視為 0）
+        armorPen: fx["破甲"] || 0,
+        evaPen: fx["洞察"] || 0,
+        counterBonus: fx["剋敵"] || 0,
+        frozenBonus: fx["寒徹"] || 0,
+        burnBonus: fx["焚燼"] || 0,
+        poisonBonus: fx["蝕骨"] || 0
     };
 }
 
@@ -69,7 +82,8 @@ function rollMonsterAttrs() {
 // 回傳 { dmg, tags }，tags 為本次觸發的效果（供日誌彙整），呼叫端自行扣 hp
 function resolveHit(rawDmg, attacker, defender) {
     let tags = [];
-    if (defender.attrs.eva > 0 && Math.random() < defender.attrs.eva / 100) {
+    let eva = (defender.attrs.eva || 0) - (attacker.attrs.evaPen || 0);   // 洞察：無視部分閃避
+    if (eva > 0 && Math.random() < eva / 100) {
         return { dmg: 0, tags: ["dodge"] };
     }
 
@@ -80,6 +94,8 @@ function resolveHit(rawDmg, attacker, defender) {
         if (attacker.attrs.element) dmg *= 1 + (book.wuxing[attacker.attrs.element] || 0);
         if (defender.status && defender.status.frozen > 0) dmg *= 1 + book.ice;
     }
+    // 寒徹：對凍結中的目標傷害提高（裝備特效）
+    if (attacker.attrs.frozenBonus && defender.status && defender.status.frozen > 0) dmg *= 1 + attacker.attrs.frozenBonus;
     if (attacker.attrs.metal > 0 && Math.random() < attacker.attrs.metal / 100) {
         dmg *= (1 + METAL_BONUS) * (1 + (book ? book.metal : 0));
         tags.push("metal");
@@ -95,9 +111,10 @@ function resolveHit(rawDmg, attacker, defender) {
         : getWuxingCounterMult(attacker.attrs.element, defender.attrs.element);
     if (wx.tag) {
         dmg *= wx.mult;
+        if (wx.tag === "counter") dmg *= 1 + (attacker.attrs.counterBonus || 0);   // 剋敵（裝備特效）
         tags.push(wx.tag);
     }
-    if (!thunder) dmg *= 1 - (defender.attrs.def || 0) / 100;
+    if (!thunder) dmg *= 1 - Math.max(0, (defender.attrs.def || 0) - (attacker.attrs.armorPen || 0)) / 100;   // 破甲：無視部分減傷
 
     let st = defender.status;
     // 冰靈根等提供的 freezeResist 會折減「被凍結」的機率
@@ -108,12 +125,12 @@ function resolveHit(rawDmg, attacker, defender) {
     }
     if (attacker.attrs.fire > 0 && Math.random() < attacker.attrs.fire / 100) {
         st.burn = addDotStack(st.burn, attacker.attrs.burnMax || BURN_MAX_STACKS, BURN_TURNS,
-            attacker.power * BURN_RATE * (1 + (book ? book.fire : 0)));
+            attacker.power * BURN_RATE * (1 + (book ? book.fire : 0)) * (1 + (attacker.attrs.burnBonus || 0)));
         tags.push("fire");
     }
     if (attacker.attrs.poison > 0 && Math.random() < attacker.attrs.poison / 100) {
         st.poison = addDotStack(st.poison, attacker.attrs.poisonMax || POISON_MAX_STACKS, POISON_TURNS,
-            attacker.power * POISON_RATE * (1 + (book ? book.poison : 0)));
+            attacker.power * POISON_RATE * (1 + (book ? book.poison : 0)) * (1 + (attacker.attrs.poisonBonus || 0)));
         tags.push("poison");
     }
     return { dmg: Math.floor(dmg), tags };
@@ -153,7 +170,11 @@ function formatStatus(st) {
 // 把一回合內的觸發標籤彙整成一小段日誌文字，例：「❄️凍結×1 🔥燒傷×2 💨被閃避×1 ☯️五行剋制×3」
 function summarizeTags(tags, dodgeLabel) {
     let names = { ice: "❄️凍結", fire: "🔥燒傷", poison: "☠️中毒", metal: "⚔️重擊", thunder: "⚡雷擊",
-                  counter: "☯️五行剋制", countered: "☯️五行被剋", dodge: dodgeLabel };
+                  counter: "☯️五行剋制", countered: "☯️五行被剋", dodge: dodgeLabel,
+                  // 裝備特效（gear.js）
+                  chase: "✦追擊", cleave: "✦橫掃", haste: "✦疾風", poisonBurst: "✦毒爆", reflect: "✦反震", counterHit: "✦閃擊反擊",
+                  // 套裝特殊效果
+                  rage: "❖套裝之怒", echo: "❖技能連發" };
     let counts = {};
     tags.forEach(t => { counts[t] = (counts[t] || 0) + 1; });
     return Object.keys(counts).map(t => `${names[t]}${counts[t] > 1 ? '×' + counts[t] : ''}`).join(" ");

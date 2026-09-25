@@ -43,6 +43,7 @@ function rollAuctionItem() {
             };
         }
     }
+    if (Math.random() < IRON_BAG_CHANCE) return rollIronBagItem();   // 星允鐵袋（enhance.js）
     return rollAuctionEquip();
 }
 
@@ -57,28 +58,18 @@ function rollAuctionEquip() {
     }
     const qualityObj = equipQualities.find(q => q.name === qualityName);
 
-    // 只從可鍛造部位中挑選（神器不在拍賣場流通）
+    // 只從可鍛造部位中挑選（神器不在拍賣場流通），再從該部位的「拍賣」清單抽一種（gear.js）
     const slots = Object.keys(equipTypes).filter(name => !NON_FORGEABLE_SLOTS.includes(name));
     const slotName = slots[Math.floor(Math.random() * slots.length)];
-    const category = equipTypes[slotName];
-    const element = wuxingElements[Math.floor(Math.random() * wuxingElements.length)];
-
-    // 比照鍛造閣公式（含減傷/閃避/屬性傷害），但四維整體高一成，凸顯拍賣場的價值
-    const stats = generateEquipStats(category, qualityObj, Math.floor((player.realmIndex + 1) * 11 * qualityObj.mult));
+    const def = pickGearDef(slotName, 'auction');
 
     return {
         id: Date.now() + "_" + Math.floor(Math.random() * 100000),
         price: Math.floor(800 * qualityObj.mult * (player.realmIndex + 1)),
         sold: false,
-        // 橙裝上架時就決定孔數（talisman.js），買家看得到
-        equip: ensureSockets({
-            id: Date.now() + "_" + Math.floor(Math.random() * 100000),
-            name: slotName,
-            category: category,
-            quality: qualityObj.name,
-            element: element,
-            stats: stats
-        })
+        // 四維基數依境界；拍賣屬外界管道，buildGearStats 會再 × GEAR_EXTERNAL_MULT（≈ 舊版的「高一成」）
+        // 橙裝上架時就決定孔數（createGearEquip → ensureSockets），買家看得到
+        equip: createGearEquip(def, qualityObj, Math.floor((player.realmIndex + 1) * 10 * qualityObj.mult), null)
     };
 }
 
@@ -88,12 +79,13 @@ function getAuctionItemInfo(item) {
         const pill = auctionLifePills.find(p => p.id === item.pillId);
         return { quality: pill ? pill.quality : "白色", name: pill ? pill.name : "壽元丹" };
     }
-    return { quality: item.equip.quality, name: `${item.equip.quality}·${item.equip.element}屬性【${item.equip.name}】` };
+    if (item.kind === "ironBag") return { quality: "星允鐵", name: `星允鐵袋（${item.amount} 顆）` };   // 不在搶拍品質內
+    return { quality: item.equip.quality, name: `${item.equip.quality}·${item.equip.element}屬性【${getEquipDisplayName(item.equip)}】` };
 }
 
 // 付款前的檢查（背包空位、靈石、聲望）；price 為實際成交價（競拍後可能高於底價）
 function canPayAuctionItem(item, price) {
-    if (item.kind === "lifePill") {
+    if (item.kind === "lifePill" || item.kind === "ironBag") {
         if (player.coins < price || (player.reputation || 0) < item.repPrice) {
             alert(`資源不足！\n需要 ${price.toLocaleString()} 靈石 + ${item.repPrice.toLocaleString()} 聲望。\n你目前有 ${player.coins.toLocaleString()} 靈石、${(player.reputation || 0).toLocaleString()} 聲望。`);
             return false;
@@ -149,9 +141,13 @@ function completeAuctionPurchase(item, price) {
         player.reputation -= item.repPrice;
         player.lifespan += pill.years;
         addLog(`🏺 ${contested}於千寶閣以 ${price.toLocaleString()} 靈石標下【${pill.name}】並當場服下，續命 ${pill.years} 年！（剩餘壽元 ${formatLifespan(player.lifespan)} 年）`, "heal");
+    } else if (item.kind === "ironBag") {
+        player.reputation -= item.repPrice;
+        player.starIron = (player.starIron || 0) + item.amount;
+        addLog(`🏺 於千寶閣以 ${price.toLocaleString()} 靈石＋${item.repPrice.toLocaleString()} 聲望購得【星允鐵袋】，星允鐵 +${item.amount}！（持有 ${player.starIron.toLocaleString()}）`, "level-up");
     } else {
         player.equipInventory.push(item.equip);   // 孔位在上架時就決定；更新前上架的舊商品沒有孔，也不補
-        addLog(`🏺 ${contested}於千寶閣以 ${price.toLocaleString()} 靈石標下【${item.equip.quality}·${item.equip.element}屬性】的【${item.equip.name}】！`, "equip");
+        addLog(`🏺 ${contested}於千寶閣以 ${price.toLocaleString()} 靈石標下【${item.equip.quality}·${item.equip.element}屬性】的【${getEquipDisplayName(item.equip)}】！`, "equip");
     }
     renderAuction();
     updateUI();
@@ -261,13 +257,19 @@ function renderAuction() {
 
     const cards = player.auctionItems.map(item => {
         if (item.kind === "lifePill") return renderAuctionLifePillCard(item);
+        if (item.kind === "ironBag") return `
+            <div class="card" style="border-color: ${item.sold ? 'rgba(255,255,255,0.07)' : 'var(--accent)'}; opacity: ${item.sold ? 0.45 : 1};">
+                <h3 style="color: var(--accent);">🌠 星允鐵袋</h3>
+                <p style="font-size: 0.78em; color: #4ade80;">內含星允鐵 ×${item.amount}（強化裝備用）</p>
+                <p style="font-size: 0.85em; color: var(--accent); margin: 6px 0;">價格：${item.price.toLocaleString()} 靈石 + ${item.repPrice.toLocaleString()} 聲望</p>
+                ${renderAuctionBuyArea(item, '購買')}
+            </div>`;
         const eq = item.equip;
         return `
             <div class="card" style="border-color: ${item.sold ? 'rgba(255,255,255,0.07)' : 'var(--accent)'}; opacity: ${item.sold ? 0.45 : 1};">
-                <h3 class="quality-${eq.quality}">${eq.name}</h3>
-                <p style="font-size: 0.82em; color: #9ca3af;">品質: <span class="quality-${eq.quality}">${eq.quality}</span> | 屬性: <span class="elem-${eq.element}">${eq.element}</span></p>
-                <p style="font-size: 0.78em; color: #facc15;">加成: ${formatEquipStats(eq.stats)}</p>
-                ${formatSockets(eq)}
+                <h3 class="quality-${eq.quality}">${formatEquipTitle(eq)}</h3>
+                <p style="font-size: 0.82em; color: #9ca3af;">${formatGearSubline(eq)} | <span class="quality-${eq.quality}">${eq.quality}</span> | 屬性: <span class="elem-${eq.element}">${eq.element}</span></p>
+                ${formatEquipDetails(eq)}
                 <p style="font-size: 0.85em; color: var(--accent); margin: 6px 0;">價格：${item.price.toLocaleString()} 靈石</p>
                 ${renderAuctionBuyArea(item, '標下')}
             </div>`;
@@ -279,5 +281,6 @@ function renderAuction() {
             <span style="color: var(--accent);">下次上架：${formatCountdown(player.auctionRefreshAt - Date.now())}</span>
         </div>
         <div class="grid-container">${cards}</div>
+        ${renderIronShopSection()}
         ${renderPreciousSection()}`;
 }

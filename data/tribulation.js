@@ -93,6 +93,7 @@ function triggerTribulation() {
         status: newStatus()
     };
     playerStatus = newStatus();
+    resetGearWave();   // 首擊、先手盾（gear.js）
 
     addLog(`☯️ 【渡劫開始】天地變色，心魔自你識海中走出，化作與你一模一樣的魔身！（勝算 ${formatChance(chance.total)}｜戰力 ${demonPower.toLocaleString()}／氣血 ${demonHp.toLocaleString()}）`, "reincarnate");
     document.getElementById('combat-status').innerText = `☯️ 渡劫中：與心魔生死對決！`;
@@ -111,7 +112,7 @@ function tribulationTick() {
     if (selfTick.dot > 0) {
         player.hp -= selfTick.dot;
         addLog(`🩸 身上的異常狀態發作，損失 ${selfTick.dot.toLocaleString()} 點氣血！`, "combat");
-        if (player.hp <= 0) { resolvePlayerFall(); return; }
+        if (player.hp <= 0 && !tryGearUndying()) { resolvePlayerFall(); return; }
     }
 
     let tags = [];
@@ -119,6 +120,7 @@ function tribulationTick() {
     else {
         playerAttackTurn(getAllSkills(), [heartDemon], tags);
         artifactSkillTurn([heartDemon], tags);   // 神器專屬技能（artifact.js）
+        professionSkillTurn([heartDemon], tags); // 職業技能（profession.js）
     }
 
     // 靈寵協助（渡劫為一對一，群體技能也只打在心魔身上）
@@ -127,11 +129,11 @@ function tribulationTick() {
     // 心魔身上的燒傷/中毒發作
     let demonTick = tickStatus(heartDemon.status);
     heartDemon.hp -= demonTick.dot;
-    let regen = applyRootRegen();
+    let regen = applyRootRegen() + applyGearRegen();
     if (tags.length > 0 || demonTick.dot > 0 || regen > 0) {
         addLog(`✨ 屬性效果：${[tags.length ? summarizeTags(tags, "💨被心魔閃避") : '',
             demonTick.dot ? `心魔受持續傷害 ${demonTick.dot.toLocaleString()}` : '',
-            regen ? `🌿靈根回復 ${regen.toLocaleString()}` : ''].filter(Boolean).join("｜")}`, "skill");
+            regen ? `🌿回復 ${regen.toLocaleString()}` : ''].filter(Boolean).join("｜")}`, "skill");
     }
 
     if (heartDemon.hp <= 0) {
@@ -173,10 +175,11 @@ function tribulationTick() {
 
     // 心魔是你的鏡像，帶有與你相同的減傷/閃避/屬性傷害
     let r = resolveHit(demonDmg, { attrs: heartDemon.attrs, power: heartDemon.attack }, { attrs: getPlayerCombatAttrs(), status: playerStatus });
+    let taken = applyGearDefense(r, heartDemon, true, r.tags);   // 心魔的魔功算術法（化勁）；反震、閃擊反擊（gear.js）
     if (r.tags.length > 0) addLog(`🧍 心魔攻勢：${summarizeTags(r.tags, "💨你閃避了")}`, "combat");
-    player.hp -= applyPetDamageReduction(r.dmg);
+    player.hp -= applyPetDamageReduction(taken);
 
-    if (player.hp <= 0) { resolvePlayerFall(); return; }
+    if (player.hp <= 0 && !tryGearUndying()) { resolvePlayerFall(); return; }
 
     updateUI();
 }

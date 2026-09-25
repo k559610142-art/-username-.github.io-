@@ -22,6 +22,7 @@ const pcStageButtons = [
     // 傳送門：2026-09-25 已從圖上抹掉牌匾字樣，熱點一併停用（修仙地圖改由「世界」開啟）
     { id: 'portal',   kind: 'hotspot', label: '傳送門',   rect: [268, 525, 40, 115], enabled: false,   action: "openWorldMapModal()" },
     { id: 'auction',  kind: 'hotspot', label: '千寶閣',   rect: [712, 610, 110, 95],  plaque: 'right', action: "openActivity('auction')" },
+    { id: 'codex',    kind: 'hotspot', label: '天磯錄',   rect: [760, 160, 120, 130], plaque: 'right', action: "openCodexModal()" },   // 寶塔右側尖峰（codex.js）
 
     // ---- 左側按鈕 ----
     { id: 'mail-left', kind: 'button', label: '信件',     rect: [18, 460, 64, 85],   action: "showUnderConstruction('信件')" },

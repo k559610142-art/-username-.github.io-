@@ -65,7 +65,8 @@ function addKarma(delta) {
 
 // ---- 野外修士 ----
 function rollFieldMerit() {
-    return FIELD_MERIT_MIN + Math.floor(Math.random() * (FIELD_MERIT_MAX - FIELD_MERIT_MIN + 1));
+    let merit = FIELD_MERIT_MIN + Math.floor(Math.random() * (FIELD_MERIT_MAX - FIELD_MERIT_MIN + 1));
+    return Math.floor(merit * (1 + gearFx("積德")));   // 積德（裝備特效，gear.js）
 }
 
 // 斬殺一名修士（野外修士、暗殺者；懸賞人物另由 bounty.js 結算）：

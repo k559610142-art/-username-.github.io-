@@ -55,6 +55,11 @@ function changeMap(cIndex, iIndex) {
             return;
         }
     }
+    // 暫存區滿了不能外出練功（enhance.js）
+    if (!maps[cIndex].isSafe && isGearStashFull()) {
+        alert(`暫存區已滿（${GEAR_STASH_MAX}/${GEAR_STASH_MAX}）！\n請先到背包處理暫存區的橙色裝備（移入背包、分解或毀棄），才能外出練功。`);
+        return;
+    }
 
     // 懸賞對決中換地圖＝逃離對決（懸賞保留，bounty.js）
     if (inBountyDuel) endBountyDuel("flee");

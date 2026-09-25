@@ -38,11 +38,11 @@ function renderLingbaoUI() {
         if (eq) {
             container.innerHTML += `
                 <div class="${getEquipCardClass(eq)}" style="border-color: var(--equip-color);">
-                    <h3 class="quality-${eq.quality}">${formatEquipLevel(eq)}${eq.name}</h3>
-                    <p style="font-size:0.85em; color:#9ca3af;">品質：<span class="quality-${eq.quality}">${formatQualityLabel(eq.quality)}</span> | 屬性：<span class="elem-${eq.element}">${eq.element}</span></p>
-                    <p style="font-size:0.8em; color:#facc15;">加成: ${formatEquipStats(eq.stats)}</p>
-                    ${formatSockets(eq)}
+                    <h3 class="quality-${eq.quality}">${formatEquipTitle(eq)}</h3>
+                    <p style="font-size:0.85em; color:#9ca3af;">${formatGearSubline(eq)} | <span class="quality-${eq.quality}">${formatQualityLabel(eq.quality)}</span> | 屬性：<span class="elem-${eq.element}">${eq.element}</span></p>
+                    ${formatEquipDetails(eq)}
                     ${formatArtifactSkill(eq)}
+                    ${ENHANCE_CAP[eq.quality] ? `<button class="sys-btn" onclick="openEnhanceModal('${eq.id}')">🔨 強化</button>` : ''}
                     <button class="sys-btn" onclick="unequipItem('${eqName}')">卸下裝備</button>
                 </div>`;
         } else {
@@ -147,8 +147,8 @@ function openWuxingInfo() {
         <p style="color:#9ca3af;">※ 靈根提供的屬性傷害與減傷會和裝備加總後一起套上限（屬性傷害 ${AFFIX_CAP}%、減傷 ${DEF_CAP}%）。</p>
 
         <h4 class="wuxing-info-h">如何湊齊</h4>
-        <p>・<strong>鍛造閣</strong>：屬性隨機，可用「最高」一次大量開爐，再挑出同屬性的保留，其餘在背包依品級一鍵刪除。<br>
-        ・<strong>千寶閣</strong>：屬性隨機、品質較高，適合補齊缺的部位。<br>
+        <p>・<strong>鍛造閣</strong>：每次從該等級的可製作清單隨機打出一種裝備，每種裝備的五行固定（清單中五行各佔一份），可用「最高」一次大量開爐，再挑出需要的保留，其餘在背包依品級一鍵刪除。<br>
+        ・<strong>千寶閣</strong>：拍賣限定的裝備，四維比可製作的高 15%、品質較高，適合補齊缺的部位。<br>
         ・<strong>靈寶閣</strong>：屬性固定 — ${fixedEquips}。<br>
         ・背包上限 ${MAX_EQUIP_INVENTORY} 件，湊裝前記得先清出空間。</p>`;
 
@@ -163,7 +163,7 @@ function equipItem(equipId) {
     let slotName = item.name;
     // 裝備等級：人物等級不足無法穿戴（舊裝備、千寶閣、靈寶閣沒有 level，不受限）
     if (item.level && player.level < item.level) {
-        alert(`人物等級不足！【Lv.${item.level} ${item.name}】需要人物等級 ${item.level}（目前 Lv.${player.level}）。`);
+        alert(`人物等級不足！【Lv.${item.level} ${getEquipDisplayName(item)}】需要人物等級 ${item.level}（目前 Lv.${player.level}）。`);
         return;
     }
     // 舊版靈寶閣「降魔伏虎杖」的部位「杖」不在 equipTypes 內，穿上會破壞靈根判定
@@ -179,7 +179,7 @@ function equipItem(equipId) {
     player.equipment[slotName] = item;
     player.equipInventory.splice(index, 1);
 
-    addLog(`🛡️ 成功裝備【${item.quality}·${item.element}屬性】的【${item.name}】！`, "equip");
+    addLog(`🛡️ 成功裝備【${item.quality}·${item.element}屬性】的【${getEquipDisplayName(item)}】！`, "equip");
     renderBag();
     updateUI();
 }
@@ -247,40 +247,23 @@ function forgeEquipment(qty = 1) {
     addDailyProgress('forge', n);
     if (n === 1) {
         let eq = results[0];
-        addLog(`⚒️ 鍛造閣開爐成功！獲得【Lv.${level}·${eq.quality}·${eq.element}屬性】的【${eq.name}】！`, "equip");
+        addLog(`⚒️ 鍛造閣開爐成功！獲得【Lv.${level}·<span class="quality-${eq.quality}">${eq.quality}</span>·${eq.element}屬性】的【${getEquipDisplayName(eq)}】！`, "equip");
     } else {
         let byQuality = equipQualities.map(q => [q.name, results.filter(r => r.quality === q.name).length]).filter(([, c]) => c > 0);
         let byElement = wuxingElements.map(e => [e, results.filter(r => r.element === e).length]).filter(([, c]) => c > 0);
+        let best = results.filter(r => r.quality === '橙色').map(getEquipDisplayName);
         addLog(`⚒️ 鍛造閣連續開爐 ${n} 次，打造【Lv.${level} ${name}】×${n}（消耗 ${(n * FORGE_COST).toLocaleString()} 靈石）！`
             + `品質：${byQuality.map(([q, c]) => `<span class="quality-${q}">${q}</span>×${c}`).join('、')}；`
-            + `五行：${byElement.map(([e, c]) => `<span class="elem-${e}">${e}</span>×${c}`).join('、')}`, "equip");
+            + `五行：${byElement.map(([e, c]) => `<span class="elem-${e}">${e}</span>×${c}`).join('、')}`
+            + (best.length ? `；橙色：<span class="quality-橙色">${best.join('、')}</span>` : ''), "equip");
     }
     updateUI();
 }
 
-// 依部位分類與品質產生裝備屬性（鍛造閣與千寶閣共用）
-//   武器：力量、靈力 + 隨機一種屬性傷害（冰/火/毒/金/雷）
-//   防具：體質 + 減傷
-//   飾品：悟性、靈力、魅力 + 閃避
-function generateEquipStats(category, qualityObj, baseBonus) {
-    let stats = { str: 0, con: 0, int: 0, spr: 0, cha: 0 };
-    if (category === 'weapon') {
-        stats.str = baseBonus; stats.spr = baseBonus;
-        stats[AFFIX_TYPES[Math.floor(Math.random() * AFFIX_TYPES.length)]] = qualityObj.affix;
-    } else if (category === 'armor') {
-        stats.con = baseBonus * 2;
-        stats.def = qualityObj.def;
-    } else {
-        stats.int = baseBonus; stats.spr = baseBonus; stats.cha = Math.floor(baseBonus / 2);
-        stats.eva = qualityObj.eva;
-    }
-    return stats;
-}
-
 // 打造一件指定等級的裝備並放進背包（扣靈石），回傳新裝備
+// 從該等級對應的可製作清單（凡俗／修真／至高，gear.js 的 getCraftChannel）隨機抽一種，五行跟著那一種裝備
 function forgeOneEquipment(name, level) {
     player.coins -= FORGE_COST;
-    let category = equipTypes[name];
 
     let qRand = Math.random();
     let qualityObj = equipQualities[0];
@@ -289,21 +272,8 @@ function forgeOneEquipment(name, level) {
     else if (qRand < 0.35) qualityObj = equipQualities[2];
     else if (qRand < 0.65) qualityObj = equipQualities[1];
 
-    let elem = wuxingElements[Math.floor(Math.random() * wuxingElements.length)];
-    let statsBonus = generateEquipStats(category, qualityObj, level * EQUIP_LEVEL_STAT_MULT * qualityObj.mult);
-
-    let newEquip = {
-        // 連續開爐會在同一毫秒產生多件，隨機段需夠長以免 id 重複
-        id: Date.now() + "_" + Math.random().toString(36).slice(2, 10),
-        name: name,
-        category: category,
-        level: level,          // 裝備等級：穿戴需人物等級 ≥ level
-        quality: qualityObj.name,
-        element: elem,
-        stats: statsBonus
-    };
-
-    ensureSockets(newEquip);   // 橙裝隨機 1~3 孔（talisman.js）
+    let def = pickGearDef(name, getCraftChannel(level));
+    let newEquip = createGearEquip(def, qualityObj, level * EQUIP_LEVEL_STAT_MULT * qualityObj.mult, level);
     player.equipInventory.push(newEquip);
     return newEquip;
 }

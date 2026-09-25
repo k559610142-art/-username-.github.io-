@@ -20,7 +20,7 @@ function getQuestRequiredProgress(def) {
 // 每秒進度：玩家本人為基礎值；僕從乘上自身效率（固定耗時的任務不受效率影響）
 function getQuestSpeed(def, servant) {
     if (!servant || (def && def.duration)) return QUEST_PROGRESS_PER_TICK;
-    return QUEST_PROGRESS_PER_TICK * servant.mult;
+    return QUEST_PROGRESS_PER_TICK * servant.mult * (1 + gearFx("役使"));   // 役使（裝備特效，gear.js）
 }
 
 // 此僕從能否接這個任務（requiredQuality 限定品質）

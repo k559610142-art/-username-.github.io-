@@ -53,6 +53,9 @@ function combatTick() {
     // 僕從各自執行被指派的任務（不受玩家所在地點限制）
     tickServantQuests();
 
+    // 暫存區滿了不能待在野外（enhance.js），直接送回宗門
+    enforceGearStashLimit();
+
     if (player.currentMapIsSafe) {
         playerStatus = newStatus();   // 回到安全區即解除凍結、燒傷、中毒
         let healRate = 0.1 * getRootBonus().healMult;
@@ -88,6 +91,7 @@ function combatTick() {
 
         let count = Math.floor(Math.random() * 5) + 1;
         let enemyBasePower = player.currentMap.diff * 50;
+        resetGearWave();   // 首擊、先手盾以「每波」計算（gear.js）
         for (let i = 0; i < count; i++) {
             enemies.push({ hp: enemyBasePower * 10, maxHp: enemyBasePower * 10, attack: enemyBasePower,
                            icon: monsterIcons[Math.floor(Math.random() * monsterIcons.length)],
@@ -124,7 +128,7 @@ function combatTick() {
         if (selfTick.dot > 0) {
             player.hp -= selfTick.dot;
             addLog(`🩸 身上的${formatStatus(playerStatus) || '異常狀態'}發作，損失 ${selfTick.dot.toLocaleString()} 點氣血！`, "combat");
-            if (player.hp <= 0) { onPlayerKilledInField(); return; }
+            if (player.hp <= 0 && !tryGearUndying()) { onPlayerKilledInField(); return; }
         }
 
         let playerTags = [];
@@ -133,6 +137,7 @@ function combatTick() {
         } else {
             playerAttackTurn(getAllSkills(), enemies, playerTags);
             artifactSkillTurn(enemies, playerTags);   // 神器專屬技能（artifact.js）
+            professionSkillTurn(enemies, playerTags); // 職業技能（profession.js）
         }
 
         // 存活的靈寵各自判定是否出手協助
@@ -147,12 +152,12 @@ function combatTick() {
             dotTotal += t.dot;
             e.skipTurn = t.frozen;
         });
-        let regen = applyRootRegen();
+        let regen = applyRootRegen() + applyGearRegen();
         if (playerTags.length > 0 || dotTotal > 0 || regen > 0) {
             let parts = [];
             if (playerTags.length > 0) parts.push(summarizeTags(playerTags, "💨被閃避"));
             if (dotTotal > 0) parts.push(`持續傷害 ${dotTotal.toLocaleString()}`);
-            if (regen > 0) parts.push(`🌿靈根回復 ${regen.toLocaleString()}`);
+            if (regen > 0) parts.push(`🌿回復 ${regen.toLocaleString()}`);
             addLog(`✨ 屬性效果：${parts.join("｜")}`, "skill");
         }
 
@@ -175,10 +180,15 @@ function combatTick() {
         });
 
         if (expEarned > 0) {
+            let fx = getGearEffects();
+            coinsEarned = Math.floor(coinsEarned * (1 + (fx["聚財"] || 0)));   // 聚財（裝備特效）
+            // 噬魂（裝備特效）：每擊殺一隻回復一定比例氣血
+            if (fx["噬魂"] && player.hp > 0) player.hp = Math.min(player.maxHp, player.hp + player.maxHp * fx["噬魂"] * killedCount);
             let gainedExp = gainExp(expEarned) || 0;
             player.coins += coinsEarned;
             player.reputation = (player.reputation || 0) + repEarned;
             addDailyProgress('kill', killedCount);
+            gainKillProficiency(killedCount);   // 主修職業熟練度（profession.js）
             let expText = (player.pendingTribulation && gainedExp === 0) ? "修為已滿(待渡劫)" : `${Math.floor(gainedExp)} 經驗`;
             addLog(`斬殺敵手，獲得 ${expText}, ${coinsEarned} 靈石 與 ${repEarned} 點聲望！`, "combat");
             // 斬殺修士：善惡值變化，敵對陣營另給功德（merit.js 的 onCultivatorKilled）
@@ -189,6 +199,16 @@ function combatTick() {
                 addLog(merit > 0
                     ? `🙏 斬殺${e.icon}${who}，${getPlayerFaction() === "邪" ? "吸取" : "積累"} ${merit} 點功德！（目前 ${player.merit.toLocaleString()}）`
                     : `🗡️ 斬殺${e.icon}${who}（同為${getFactionLabel(e.cultivator)}，不得功德）`, merit > 0 ? "level-up" : "combat");
+                // 星允鐵與奪寶（enhance.js／gear.js）：暗殺者必掉星允鐵；野外修士只有敵對陣營才有
+                if (e.ambush) {
+                    addStarIron(randInt(IRON_AMBUSH_AMOUNT[0], IRON_AMBUSH_AMOUNT[1]), `從${who}身上搜出星允鐵`);
+                    let loot = tryLootDrop('ambush');
+                    if (loot) addLog(loot, "equip");
+                } else if (merit > 0) {
+                    if (Math.random() < IRON_FIELD_CULTIVATOR_CHANCE) addStarIron(1, `從${who}身上搜出星允鐵`);
+                    let loot = tryLootDrop('cultivator');
+                    if (loot) addLog(loot, "equip");
+                }
             });
             if (slainCultivators.length > 0) settleMeritStones();
             for(let k = 0; k < killedCount; k++) {
@@ -207,9 +227,11 @@ function combatTick() {
             let enemyTags = [];
             let frozenCount = 0;
             enemies.forEach(e => {
+                if (e.hp <= 0) return;   // 被反震／閃擊反擊打倒的，下一回合才結算擊殺
                 if (e.skipTurn) { frozenCount++; return; }
                 let r = resolveHit(e.attack, { attrs: e.attrs || {}, power: e.attack }, playerDef);
-                totalDmg += r.dmg;
+                // 裝備特效：妖獸為物理、修士為術法（金身／化勁）；反震、閃擊反擊（gear.js）
+                totalDmg += applyGearDefense(r, e, !!e.cultivator, r.tags);
                 enemyTags = enemyTags.concat(r.tags);
             });
             player.hp -= applyPetDamageReduction(totalDmg);
@@ -220,7 +242,7 @@ function combatTick() {
                 addLog(`⚠️ ${parts.join("｜")}`, "combat");
             }
 
-            if (player.hp <= 0) { onPlayerKilledInField(); return; }
+            if (player.hp <= 0 && !tryGearUndying()) { onPlayerKilledInField(); return; }
         }
         updateUI();
     }
@@ -249,26 +271,36 @@ function applyRootRegen() {
 }
 
 // 玩家本回合出手（普攻或技能）；每一擊都經過 resolveHit()，觸發的效果標籤推進 tags
-function playerAttackTurn(availableSkills, targets, tags) {
+// 裝備特效（gear.js）：首擊／燃魂／斬殺（每擊倍率）、冰封／連雷／毒爆（命中連鎖）、法爆、聚靈、吸血、追擊、橫掃、疾風
+//   isExtra：疾風觸發的第二次出手（不會再觸發疾風）
+function playerAttackTurn(availableSkills, targets, tags, isExtra) {
+    if (!isExtra) gearWaveRound++;
+    let fx = getGearEffects();
     let usedSkill = false;
+    let dealtTotal = 0;
     let baseAttrs = getPlayerCombatAttrs();
+    let firstAlive = () => targets.find(t => t.hp > 0) || targets[0];
     let hitTarget = (target, dmg, attrs) => {
-        let r = resolveHit(dmg, { attrs, power: getPhysAttack() }, { attrs: target.attrs || {}, status: target.status || newStatus() });
+        if (!target) return 0;
+        let r = resolveHit(dmg * getGearHitMult(fx, target), { attrs, power: getPhysAttack() }, { attrs: target.attrs || {}, status: target.status || newStatus() });
         target.hp -= r.dmg;
         r.tags.forEach(t => tags.push(t));
-        return r.dmg;
+        let dealt = r.dmg + applyGearHitChain(fx, target, targets, r, tags);
+        dealtTotal += dealt;
+        return dealt;
     };
 
     if (availableSkills.length > 0 && Math.random() < 0.4) {
         let skill = availableSkills[Math.floor(Math.random() * availableSkills.length)];
-        if (player.mp >= skill.mpCost) {
-            player.mp -= skill.mpCost;
+        let mpCost = Math.ceil(skill.mpCost * (1 - (fx["聚靈"] || 0)));   // 聚靈：技能耗魔降低
+        if (player.mp >= mpCost) {
+            player.mp -= mpCost;
             usedSkill = true;
 
             let skillDmg = (skill.dmgType === 'mag' ? getMagAttack() * skill.mult : getPhysAttack() * skill.mult)
-                * getRootBonus().skillMult;
+                * getRootBonus().skillMult * (1 + (fx["法爆"] || 0));
             let attrs = withSkillEffect(baseAttrs, skill);
-            let cost = ` (消耗 ${skill.mpCost} MP`;
+            let cost = ` (消耗 ${mpCost} MP`;
             // 魔功反噬：扣最大氣血的 hpCost 比例，不會因此死亡（仙法，spells.js）
             if (skill.hpCost) {
                 let lost = Math.min(Math.max(0, player.hp - 1), Math.floor(player.maxHp * skill.hpCost));
@@ -277,10 +309,11 @@ function playerAttackTurn(availableSkills, targets, tags) {
             }
             cost += `)`;
             let dealt = 0;
+            let skillHits = null;   // 造成傷害的技能：記下出手方式，套裝「連發」時再打一次
 
             if (skill.type === "aoe") {
                 addLog(skill.msg + cost, "skill");
-                targets.forEach(e => { dealt += hitTarget(e, skillDmg, attrs); });
+                skillHits = () => targets.forEach(e => { dealt += hitTarget(e, skillDmg, attrs); });
             } else if (skill.type === "heal") {
                 player.hp = Math.min(player.maxHp, player.hp + player.maxHp * skill.mult);
                 addLog(skill.msg + cost, "heal");
@@ -297,21 +330,53 @@ function playerAttackTurn(availableSkills, targets, tags) {
                 // 牽制：造成傷害並以 freeze 機率定身（沿用冰凍狀態）
                 let ctrlAttrs = Object.assign({}, attrs, { ice: Math.max(attrs.ice || 0, skill.freeze * 100) });
                 addLog(skill.msg + cost, "skill");
-                (skill.aoe ? targets : [targets[0]]).forEach(e => { dealt += hitTarget(e, skillDmg, ctrlAttrs); });
+                skillHits = () => (skill.aoe ? targets : [firstAlive()]).forEach(e => { dealt += hitTarget(e, skillDmg, ctrlAttrs); });
             } else {
                 addLog(skill.msg + cost, "skill");
-                dealt += hitTarget(targets[0], skillDmg, attrs);
+                skillHits = () => { dealt += hitTarget(firstAlive(), skillDmg, attrs); };
+            }
+            if (skillHits) {
+                skillHits();
+                // 套裝（法攻 6 件）：技能 15% 機率連發一次
+                if (hasSetSpecial("echo") && Math.random() < 0.15 && targets.some(t => t.hp > 0)) { tags.push("echo"); skillHits(); }
             }
             // 吸血（木、血屬性仙法）
             if (skill.lifesteal && dealt > 0) {
                 player.hp = Math.min(player.maxHp, player.hp + dealt * skill.lifesteal);
             }
         } else {
-            addLog(`💦 靈力不足 (需 ${skill.mpCost} MP)，無法施展【${skill.name}】，改以普通攻擊迎敵！`, "skill");
+            addLog(`💦 靈力不足 (需 ${mpCost} MP)，無法施展【${skill.name}】，改以普通攻擊迎敵！`, "skill");
         }
     }
 
-    if (!usedSkill) hitTarget(targets[0], getPhysAttack(), baseAttrs);
+    if (!usedSkill) {
+        let main = firstAlive();
+        hitTarget(main, getPhysAttack(), baseAttrs);
+        // 套裝（物攻 6 件）：普攻 15% 機率觸發「○○之怒」全體 ×1.5
+        if (hasSetSpecial("rage") && Math.random() < 0.15 && targets.some(t => t.hp > 0)) {
+            targets.filter(t => t.hp > 0).forEach(t => hitTarget(t, getPhysAttack() * 1.5, baseAttrs));
+            tags.push("rage");
+        }
+        // 橫掃：普攻波及其他敵人
+        if (fx["橫掃"] && Math.random() < fx["橫掃"]) {
+            let others = targets.filter(t => t !== main && t.hp > 0);
+            if (others.length) { others.forEach(t => hitTarget(t, getPhysAttack() * 0.4, baseAttrs)); tags.push("cleave"); }
+        }
+    }
+    // 追擊：追加一次攻擊 ×0.6
+    if (fx["追擊"] && Math.random() < fx["追擊"] && targets.some(t => t.hp > 0)) {
+        hitTarget(firstAlive(), getPhysAttack() * 0.6, baseAttrs);
+        tags.push("chase");
+    }
+    // 吸血（裝備特效）：本回合造成傷害的一定比例回復氣血
+    if (fx["吸血"] && dealtTotal > 0 && player.hp > 0) {
+        player.hp = Math.min(player.maxHp, player.hp + dealtTotal * fx["吸血"]);
+    }
+    // 疾風：本回合再出手一次（不會連鎖）
+    if (!isExtra && fx["疾風"] && Math.random() < fx["疾風"] && targets.some(t => t.hp > 0)) {
+        tags.push("haste");
+        playerAttackTurn(availableSkills, targets, tags, true);
+    }
 }
 
 // 野外戰死：折壽、靈寵陣亡、損失靈石並被送回宗門
@@ -343,7 +408,7 @@ function checkAutoHealAndMana() {
             if (bagItem) {
                 player.bag[bagItem.id]--;
                 if (player.bag[bagItem.id] <= 0) delete player.bag[bagItem.id];
-                player.hp = Math.min(player.maxHp, player.hp + player.maxHp * bagItem.amount);
+                player.hp = Math.min(player.maxHp, player.hp + player.maxHp * bagItem.amount * (1 + gearFx("丹心")));
                 potionCooldownHp = POTION_COOLDOWN_SECONDS;
                 addDailyProgress('potion');
                 addLog(`⚡ [自動補血] 服用背包中的【${bagItem.name}】，氣血回復 ${Math.round(bagItem.amount * 100)}%！`, "heal");
@@ -353,7 +418,7 @@ function checkAutoHealAndMana() {
                     .sort((a, b) => b.amount - a.amount)[0];
                 if (buyItem) {
                     player.coins -= buyItem.cost;
-                    player.hp = Math.min(player.maxHp, player.hp + player.maxHp * buyItem.amount);
+                    player.hp = Math.min(player.maxHp, player.hp + player.maxHp * buyItem.amount * (1 + gearFx("丹心")));
                     potionCooldownHp = POTION_COOLDOWN_SECONDS;
                 addDailyProgress('potion');
                     addLog(`⚡ [自動補血] 自動購買並服下【${buyItem.name}】，氣血回復 ${Math.round(buyItem.amount * 100)}%！`, "heal");
@@ -372,7 +437,7 @@ function checkAutoHealAndMana() {
             if (bagItem) {
                 player.bag[bagItem.id]--;
                 if (player.bag[bagItem.id] <= 0) delete player.bag[bagItem.id];
-                player.mp = Math.min(player.maxMp, player.mp + player.maxMp * bagItem.amount);
+                player.mp = Math.min(player.maxMp, player.mp + player.maxMp * bagItem.amount * (1 + gearFx("丹心")));
                 potionCooldownMp = POTION_COOLDOWN_SECONDS;
                 addDailyProgress('potion');
                 addLog(`✨ [自動補魔] 服用背包中的【${bagItem.name}】，靈力回復 ${Math.round(bagItem.amount * 100)}%！`, "skill");
@@ -382,7 +447,7 @@ function checkAutoHealAndMana() {
                     .sort((a, b) => b.amount - a.amount)[0];
                 if (buyItem) {
                     player.coins -= buyItem.cost;
-                    player.mp = Math.min(player.maxMp, player.mp + player.maxMp * buyItem.amount);
+                    player.mp = Math.min(player.maxMp, player.mp + player.maxMp * buyItem.amount * (1 + gearFx("丹心")));
                     potionCooldownMp = POTION_COOLDOWN_SECONDS;
                 addDailyProgress('potion');
                     addLog(`✨ [自動補魔] 自動購買並服下【${buyItem.name}】，靈力回復 ${Math.round(buyItem.amount * 100)}%！`, "skill");
