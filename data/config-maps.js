@@ -5,6 +5,7 @@
 // 舊版的「洞府 / 弟子居」「演武學宮」「後山禁地」已合併進來，舊存檔由 save.js 的 migrateCurrentMap() 轉換
 const SECT_MAP_NAME = "宗門";
 
+// monsterAtk／monsterHp（選填）= 直接指定妖獸攻擊／氣血；沒填就用 攻擊 = diff × 50、氣血 = diff × 500（combat.js 的 getMapMonsterStats）
 // ⚠️ coins = 每擊殺一隻的「平均」靈石（實際為 ±20% 隨機，見 combat.js 的 rollKillCoins）。
 //    舊版用 diff × (8~12) 計算，難度一放大靈石就爆量（混沌初界每小時 22 億），因此改為各地圖獨立設定。
 //    換算方式：滿速掛機每小時約 KILLS_PER_HOUR_ESTIMATE 隻 → 每小時靈石 ≈ coins × 1160。
@@ -32,9 +33,9 @@ const maps = [
         { name: "鬼谷八荒", expRate: 1000, diff: 2000, coins: 2450 } // 284 萬（上限 300 萬）
     ]},
     { category: "三、上古禁區 (煉虛解鎖·高難)", isSafe: false, items: [
-        { name: "荒古禁地", expRate: 3000, diff: 800000, coins: 3350, minRealm: 6, minStat: 2000 },      // 389 萬（上限 400 萬）
-        { name: "太初古礦", expRate: 4000, diff: 5000000, coins: 4200, minRealm: 6, minStat: 2000 },      // 487 萬（上限 500 萬）
-        { name: "上蒼（葬天島）", expRate: 5000, diff: 10000000, coins: 6900, minRealm: 6, minStat: 2000 } // 800 萬
+        { name: "荒古禁地", expRate: 3000, diff: 800000, monsterAtk: 30000000, monsterHp: 500000000, coins: 3350, minRealm: 6, minStat: 2000 },      // 389 萬（上限 400 萬）
+        { name: "太初古礦", expRate: 4000, diff: 5000000, monsterAtk: 350000000, monsterHp: 3500000000, coins: 4200, minRealm: 6, minStat: 2000 },      // 487 萬（上限 500 萬）
+        { name: "上蒼（葬天島）", expRate: 5000, diff: 10000000, monsterAtk: 750000000, monsterHp: 7500000000, coins: 6900, minRealm: 6, minStat: 2000 } // 800 萬
     ]},
     // 第四區由原禁區後半拆出（2026-09-27），數值與第三區共用同一組分類倍率
     { category: "四、幽冥禁域 (仙人解鎖·高難)", isSafe: false, items: [

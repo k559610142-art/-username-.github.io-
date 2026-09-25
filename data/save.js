@@ -139,7 +139,7 @@ function settleIdleSeconds(offlineSeconds, label) {
 }
 
 // 離線／背景的野外戰鬥估算（與 combat.js 的實際規則對應，只取期望值、不擲骰）：
-//   妖獸：氣血 = 難度 × 500、攻擊 = 難度 × 50，減傷／閃避依地圖分類（monsterAttrsByMapCategory）
+//   妖獸：氣血／攻擊取 getMapMonsterStats（預設 難度 × 500／× 50，地圖可自訂），減傷／閃避依地圖分類（monsterAttrsByMapCategory）
 //   hits      = 普攻殺一隻平均要出手幾次 = 無條件進位(妖獸氣血 ÷ (玩家物理攻擊 × (1 − 妖獸減傷))) ÷ 未閃避率
 //               （差一點血也要再打一下，所以要進位；實測與模擬誤差約 ±2%）
 //   rateMult  = 每秒擊殺相對「一擊斬殺」的比例。一波平均 IDLE_WAVE_AVG_MONSTERS 隻、普攻一次打一隻，
@@ -151,8 +151,9 @@ function settleIdleSeconds(offlineSeconds, label) {
 function estimateIdleCombat() {
     let map = player.currentMap;
     let mAttrs = monsterAttrsByMapCategory[getMapCategoryIndex(map.name)] || monsterAttrsByMapCategory[1];
-    let monsterHp = map.diff * 500;
-    let monsterAtk = map.diff * 50;
+    let ms = getMapMonsterStats(map);
+    let monsterHp = ms.hp;
+    let monsterAtk = ms.atk;
     let dmgPerHit = Math.max(1, getPhysAttack() * (1 - mAttrs.def / 100));
     let hits = Math.ceil(monsterHp / dmgPerHit) / (1 - mAttrs.eva / 100);
 

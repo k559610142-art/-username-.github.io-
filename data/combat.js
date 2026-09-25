@@ -90,10 +90,10 @@ function combatTick() {
         if (tryStartBountyDuel()) return;
 
         let count = Math.floor(Math.random() * 5) + 1;
-        let enemyBasePower = player.currentMap.diff * 50;
+        let ms = getMapMonsterStats(player.currentMap);
         resetGearWave();   // 首擊、先手盾以「每波」計算（gear.js）
         for (let i = 0; i < count; i++) {
-            enemies.push({ hp: enemyBasePower * 10, maxHp: enemyBasePower * 10, attack: enemyBasePower,
+            enemies.push({ hp: ms.hp, maxHp: ms.hp, attack: ms.atk,
                            icon: monsterIcons[Math.floor(Math.random() * monsterIcons.length)],
                            attrs: rollMonsterAttrs(), status: newStatus() });
         }
@@ -101,8 +101,8 @@ function combatTick() {
         let extraText = [];
         if (isEvilHuntUnlocked()) {
             let addCultivator = (faction, ambush) => {
-                let power = enemyBasePower * (ambush ? AMBUSH_POWER_MULT : FIELD_CULTIVATOR_POWER_MULT);
-                enemies.push({ hp: power * 10, maxHp: power * 10, attack: power,
+                let mult = ambush ? AMBUSH_POWER_MULT : FIELD_CULTIVATOR_POWER_MULT;
+                enemies.push({ hp: ms.hp * mult, maxHp: ms.hp * mult, attack: ms.atk * mult,
                                icon: ambush ? AMBUSH_ICON : CULTIVATOR_ICONS[faction], cultivator: faction, ambush: ambush,
                                attrs: rollMonsterAttrs(), status: newStatus() });
             };
@@ -248,6 +248,14 @@ function combatTick() {
         }
         updateUI();
     }
+}
+
+// 妖獸的攻擊與氣血：預設 攻擊 = 難度 × 50、氣血 = 攻擊 × 10；地圖可用 monsterAtk／monsterHp 直接指定（config-maps.js）
+// 野外修士／暗殺者再乘上各自倍率；離線估算（save.js 的 estimateIdleCombat）也用這裡
+function getMapMonsterStats(map) {
+    let atk = typeof map.monsterAtk === 'number' ? map.monsterAtk : map.diff * 50;
+    let hp = typeof map.monsterHp === 'number' ? map.monsterHp : map.diff * 500;
+    return { atk, hp };
 }
 
 // 擊殺一隻妖獸的靈石：該地圖的 coins ±20%（數值表與每小時上限見 config-maps.js）
