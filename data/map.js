@@ -51,7 +51,7 @@ function openMapCategoryModal(catIndex) {
                 ${item.thumb ? `<img class="map-thumb" src="${item.thumb}" alt="${item.name}">` : ''}
                 <h3 style="color: ${isCurrent ? 'var(--accent)' : '#fff'};">${item.name}</h3>
                 <p style="font-size:0.85em; color:#9ca3af;">經驗倍率: x${item.expRate} | 難度: ${item.diff}</p>
-                ${item.minRealm ? `<p style="font-size:0.8em; color:#f87171;">限制：仙人初境以上</p>` : ''}
+                ${item.minRealm ? `<p style="font-size:0.8em; color:#f87171;">限制：${realms[item.minRealm]}以上</p>` : ''}
                 <button class="sys-btn ${isCurrent ? 'active' : ''}" onclick="selectMap(${catIndex}, ${iIndex})">${isCurrent ? '當前所在區域' : '前往此區域'}</button>
             </div>
         `;
@@ -77,7 +77,7 @@ function changeMap(cIndex, iIndex) {
 
     if (targetMap.minRealm) {
         if (player.realmIndex < targetMap.minRealm) {
-            alert(`進入【${targetMap.name}】失敗！您的境界未達【仙人初境】。`);
+            alert(`進入【${targetMap.name}】失敗！您的境界未達【${realms[targetMap.minRealm]}】。`);
             return;
         }
     }

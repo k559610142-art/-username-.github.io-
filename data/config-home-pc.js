@@ -25,7 +25,7 @@ const pcStageButtons = [
     { id: 'codex',    kind: 'hotspot', label: '天磯錄',   rect: [760, 160, 120, 130], plaque: 'right', action: "openCodexModal()" },   // 寶塔右側尖峰（codex.js）
 
     // ---- 左側按鈕 ----
-    { id: 'mail-left', kind: 'button', label: '信件',     rect: [18, 460, 64, 85],   action: "showUnderConstruction('信件')" },
+    { id: 'task',      kind: 'button', label: '任務',     rect: [18, 460, 64, 85],   action: "switchTab('task')", nav: 'task' },   // 圖上原字「信件」已改畫成「任務」（2026-09-27）；同手機版左側「任務」
     { id: 'bag',       kind: 'button', label: '背包',     rect: [18, 580, 64, 82],   action: "openBagModal()" },
     { id: 'settings',  kind: 'button', label: '設置',     rect: [18, 668, 64, 84],   action: "openSettingsModal()" },
 
