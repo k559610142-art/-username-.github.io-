@@ -19,6 +19,7 @@ images/               圖片素材
                       ※ 頭像原本放在外部圖床 postimg.cc，已改為本地檔案；橫式圖裁成圓形時依 PLAYER_AVATARS.pos 對準臉部
   evil-hall.jpg       殺手殿堂場景背景（937×625，玩家提供；獵殺邪修入口，見第 27 節）
   avatars/            可解鎖更換的頭像（256×256 正方形、臉部置中，由玩家提供的原圖裁切縮小），見第 32 節
+  maps/               修仙地圖卡片縮圖（config-maps.js 的 thumb）：tianxing-city.jpg 天星城（720×381，玩家提供，第 20 節）
   frames/             頭像光環 frame-01～25.png（透明 PNG，約 125～160px，由玩家提供的頭像框展示圖裁切去背），見第 32 節
   cover.jpg           主頁封面・橫式（1264x843），電腦與橫向螢幕使用
   cover-portrait.jpg  主頁封面・直式（960x1920），手機直向使用（由橫式圖重新構圖而成）
@@ -877,6 +878,8 @@ combatTick() 每秒執行 [combat.js]
   - **回宗門的方式**：洞府的「宗門」（手機熱點、PC `pcStageButtons` 的 `sect`）改呼叫 `map.js` 的 `returnToSect()`：不在宗門就先 `changeMap(0, 0)` 傳送回去，再打開宗門分頁；已在宗門則只開分頁。
     懸賞對決中按宗門 = 逃離對決（`changeMap` 的既有行為）。
   - 地圖分類索引不變（城鎮仍是索引 0），`REPUTATION_MAX_BY_MAP_CATEGORY`、`getMapCategoryIndex` 不受影響。
+  - **地圖縮圖**：地圖項目可加選填欄位 `thumb`（圖片路徑），`openMapCategoryModal` 會在卡片最上方顯示（`.map-thumb`，16:9 裁切）。
+    目前只有天星城（`images/maps/tianxing-city.jpg`，玩家提供的圖縮成 720px 寬、JPEG 品質 85）。其他地圖要加圖：圖放 `images/maps/`，該筆加 `thumb` 即可。
 
 - 舊版第一區有三張安全區地圖，設施分散：「洞府 / 弟子居」(經驗 ×1，無設施)、「演武學宮」(×1.5，門派任務／靈田／靈獸園)、
   「後山禁地」(×3，靈寶閣／藏書閣／鍛造閣／煉丹房)。現已**合併為單一地圖「宗門」**（`config-maps.js` 的 `SECT_MAP_NAME`），
@@ -1165,7 +1168,7 @@ combatTick() 每秒執行 [combat.js]
 （以 8 種舊存檔形態測試目前程式皆可正常讀取；移除 `#age-display` 即可重現同一錯誤。）
 
 ### 1. 發佈版本號（防止新舊檔案混用）
-- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260926n`）。
+- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260926o`）。
 - **每次推上 GitHub Pages 前，把所有 `?v=` 全部取代成新值**（例：日期＋序號）。新 index.html 會指向新網址的 JS，不會再拿到快取的舊檔。
 - 新增 `data/*.js` 時也要記得帶上 `?v=`。
 

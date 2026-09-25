@@ -23,6 +23,7 @@ function openMapCategoryModal(catIndex) {
         let isCurrent = player.currentMap.name === item.name;
         container.innerHTML += `
             <div class="card" style="border-color: ${isCurrent ? 'var(--accent)' : 'rgba(255,255,255,0.08)'};">
+                ${item.thumb ? `<img class="map-thumb" src="${item.thumb}" alt="${item.name}">` : ''}
                 <h3 style="color: ${isCurrent ? 'var(--accent)' : '#fff'};">${item.name}</h3>
                 <p style="font-size:0.85em; color:#9ca3af;">經驗倍率: x${item.expRate} | 難度: ${item.diff}</p>
                 ${item.minRealm ? `<p style="font-size:0.8em; color:#f87171;">限制：仙人初境以上</p>` : ''}
