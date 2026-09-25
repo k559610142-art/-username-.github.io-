@@ -283,7 +283,7 @@ combatTick() 每秒執行 [combat.js]
 | `openEnhanceModal(id)`（背包、角色裝備卡片「🔨 強化」）、`enhanceEquip(untilSuccess)`/`evolveEquip`（強化視窗內）、`decomposeEquip(id)`、`bulkDecomposeEquipment`、`moveStashToBag(id)`/`deleteStashEquip(id)`（暫存區）、`buyStarIron(qty)`（千寶閣） | `data/enhance.js` |
 | `openCodexModal(tab)`（洞府寶塔右側山峰「天磯錄」，手機熱點與 PC 的 `pcStageButtons`）、`setCodexTab`/`setCodexSlot`/`setActiveTitle`（視窗內動態產生） | `data/codex.js` |
 | `chooseProfession(id)`（天磯錄「職業」分頁） | `data/profession.js` |
-| `openLeaderboardModal`（洞府 HUD 手機 `#hud-name`／PC `#pc-hud-name` 的「戰力 🏆」）、`refreshLeaderboard(true)`（榜單視窗「重新整理」） | `data/leaderboard.js` |
+| `openLeaderboardModal`（洞府 HUD 手機 `#hud-name`／PC `#pc-hud-name` 的「戰力 🏆」、洞府「大道石碑」熱點：手機寫在 index.html、PC 在 `pcStageButtons` 的 `stele`）、`refreshLeaderboard(true)`（榜單視窗「重新整理」） | `data/leaderboard.js` |
 | `chooseGender` | `data/main.js` |
 
 ## 5. 新增功能的建議流程
@@ -1246,7 +1246,7 @@ combatTick() 每秒執行 [combat.js]
 （以 8 種舊存檔形態測試目前程式皆可正常讀取；移除 `#age-display` 即可重現同一錯誤。）
 
 ### 1. 發佈版本號（防止新舊檔案混用）
-- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260928c`）。
+- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260928d`）。
 - **每次推上 GitHub Pages 前，把所有 `?v=` 全部取代成新值**（例：日期＋序號）。新 index.html 會指向新網址的 JS，不會再拿到快取的舊檔。
 - 新增 `data/*.js` 時也要記得帶上 `?v=`。
 
@@ -1298,6 +1298,7 @@ combatTick() 每秒執行 [combat.js]
 | 熱點「宗門」 | 左側山門 | 切到宗門分頁 |
 | 熱點「僕從小屋」 | 右側屋舍 | `openServantModal()` |
 | 熱點「天磯錄」（2026-09-26） | 寶塔右側尖峰 (430,300) 140×170 | `openCodexModal()`（第 37 節） |
+| 熱點「大道石碑」（2026-09-28） | 升仙台與天磯錄之間 (396,380) 38×144；圖上沒畫，石碑由 `.plaque-stele` 畫出 | `openLeaderboardModal()`（第 42 節） |
 | 側邊「任務」「背包」 | 左側 | 任務 = `switchTab('task')` 開啟任務分頁（宗門任務＋活動，2026-09-25 改；原本直接開門派任務彈窗）；背包 = `openBagModal()` |
 | 側邊「丹藥堂」（圖上原字「特惠商城」，2026-09-25 改名） | 右側 | `openShopModal()`（丹藥堂）。按鈕內的 `.nav-label-cover.stage-label-cover` 以深色圓角底＋楷體字蓋掉圖上的字（蓋字區比按鈕寬，向兩側延伸）。PC 版圖上沒有這顆按鈕 |
 | 側邊齒輪「系統」`#stage-gear-btn`（2026-09-25 新增） | 右側、丹藥堂正上方 (615,1073) 62×62 | **圖上沒有，程式畫的**：深底金框圓鈕＋⚙️，下方 `.stage-label-cover` 寫「系統」。點擊 `openSystemModal()` 開啟 `#system-modal`（命運與系統：存檔管理＋命運抉擇兩個抽屜）。`#system-modal` 在 DOM 中排在 `#save-code-modal` 之前，匯出／匯入存檔視窗才會疊在上面 |
@@ -1481,6 +1482,7 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
   | ~~傳送門~~ | 2026-09-25 牌匾已從圖上抹除，`pcStageButtons` 的 `portal` 設為 `enabled: false`（不產生熱點）；修仙地圖改由「世界」開啟 |
   | 湖中光環（「千寶閣」，舊名領物閣） | `openActivity('auction')` |
   | 寶塔右側尖峰（「天磯錄」，2026-09-26） | `openCodexModal()`，圖上 (760,160) 120×130 |
+  | 升仙台與天磯錄之間（「大道石碑」，2026-09-28，`plaque: 'stele'`） | `openLeaderboardModal()`，圖上 (724,185) 34×125 |
   | 左側 **任務**（圖上原字「信件」，2026-09-27 已改畫）／背包／設置 | `switchTab('task')`（任務分頁：門派任務＋活動，同手機版左側「任務」；`nav: 'task'` 亮選中光暈）／`openBagModal()`／`openSettingsModal()` |
   | 右下 **情緣**（圖上原字「修煉加速」，已改畫）／信件 | `openPartnerModal()`（第 39 節）／興建中 |
   | 右下 修仕／戰鬥／洞府／**世界**（圖上原字「福袋」，已改畫） | 修仙／戰鬥／洞府（關閉面板）／`openWorldTab()`：切到世界分頁並跳出修仙地圖（與手機版相同） |
@@ -1902,7 +1904,10 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
 - 已知現象：換裝置／清除瀏覽器資料／無痕視窗會拿到新 uid → 同一角色可能有多筆；舊筆不會自動刪除（顯示「N 天前」更新時間讓人分辨）。需要時可在 Firebase 主控台手動刪除。
 
 ### 畫面
-- 入口：洞府 HUD 的「戰力 N 🏆」（手機 `#hud-name .hud-power`、PC `#pc-hud-name .pc-power`，class `lb-entry`；padding＋負 margin 放大點擊範圍）。
+- 入口：
+  - 洞府 HUD 的「戰力 N 🏆」（手機 `#hud-name .hud-power`、PC `#pc-hud-name .pc-power`，class `lb-entry`；padding＋負 margin 放大點擊範圍）。
+  - 洞府「大道石碑」熱點（2026-09-28）：升仙台與天磯錄之間。背景圖上沒有石碑，由牌匾樣式 `.plaque-stele`（index.html，灰石漸層、圓頂、金字，置中於熱點）畫出；
+    手機座標在 index.html `#home-hotspots`（第 31 節表格），PC 在 `config-home-pc.js` 的 `stele`（第 34 節表格）。
 - 視窗 `#leaderboard-modal`：自己的戰力與名次（未進前 100 顯示「未進前 100 名」）、前 100 名（前三名獎牌、自己那列 `.lb-self` 高亮、境界階數／等級／宗門、多久前更新）、重新整理（冷卻 10 秒）。
 - 其他玩家的道號／宗門一律經 `lbEscape()` 才插入 innerHTML（資料來自網路，不能信任）。
 - 額度估算（Spark 免費：每日 5 萬讀、2 萬寫）：每位在線玩家每小時 12 次寫入 → 約 1,600 玩家小時／日；每開一次榜單約 100 次讀取 → 約 500 次開榜／日。玩家變多時先調長 `LEADERBOARD_UPLOAD_INTERVAL_MS` 或調小 `LEADERBOARD_TOP_N`。
