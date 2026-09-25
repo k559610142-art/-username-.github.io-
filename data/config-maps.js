@@ -32,23 +32,23 @@ const maps = [
         { name: "鬼谷八荒", expRate: 1000, diff: 2000, coins: 2450 } // 284 萬（上限 300 萬）
     ]},
     { category: "三、上古禁區 (煉虛解鎖·高難)", isSafe: false, items: [
-        { name: "荒古禁地", expRate: 3000, diff: 5000, coins: 3350, minRealm: 6, minStat: 2000 },      // 389 萬（上限 400 萬）
-        { name: "太初古礦", expRate: 4000, diff: 7000, coins: 4200, minRealm: 6, minStat: 2000 },      // 487 萬（上限 500 萬）
-        { name: "上蒼（葬天島）", expRate: 5000, diff: 10000, coins: 6900, minRealm: 6, minStat: 2000 } // 800 萬
+        { name: "荒古禁地", expRate: 3000, diff: 800000, coins: 3350, minRealm: 6, minStat: 2000 },      // 389 萬（上限 400 萬）
+        { name: "太初古礦", expRate: 4000, diff: 5000000, coins: 4200, minRealm: 6, minStat: 2000 },      // 487 萬（上限 500 萬）
+        { name: "上蒼（葬天島）", expRate: 5000, diff: 10000000, coins: 6900, minRealm: 6, minStat: 2000 } // 800 萬
     ]},
     // 第四區由原禁區後半拆出（2026-09-27），數值與第三區共用同一組分類倍率
     { category: "四、幽冥禁域 (仙人解鎖·高難)", isSafe: false, items: [
-        { name: "不死山", expRate: 6000, diff: 13000, coins: 7300, minRealm: 10, minStat: 5000 },       // 847 萬
-        { name: "神墟", expRate: 7000, diff: 16000, coins: 7750, minRealm: 10, minStat: 5000 },         // 899 萬
-        { name: "仙陵", expRate: 8000, diff: 20000, coins: 8200, minRealm: 10, minStat: 5000 },         // 951 萬
-        { name: "冥界", expRate: 9000, diff: 25000, coins: 8400, minRealm: 10, minStat: 5000 }         // 974 萬（上限 1000 萬）
+        { name: "不死山", expRate: 6000, diff: 200000000, coins: 7300, minRealm: 10, minStat: 5000 },       // 847 萬
+        { name: "神墟", expRate: 7000, diff: 300000000, coins: 7750, minRealm: 10, minStat: 5000 },         // 899 萬
+        { name: "仙陵", expRate: 8000, diff: 800000000, coins: 8200, minRealm: 10, minStat: 5000 },         // 951 萬
+        { name: "冥界", expRate: 9000, diff: 1500000000, coins: 8400, minRealm: 10, minStat: 5000 }         // 974 萬（上限 1000 萬）
     ]},
     // 上蒼之後（含諸天戰場）一律維持在每小時 800～1000 萬，不再隨難度放大；
     // 這幾張圖的差異改由經驗與聲望體現，靈石封頂。
     { category: "五、諸天至高戰場 (頂級戰場·極難)", isSafe: false, items: [
-        { name: "仙界戰場", expRate: 15000, diff: 50000, coins: 8400, minRealm: 10, minStat: 10000, isTopBattle: true },   // 974 萬
-        { name: "萬界戰場", expRate: 25000, diff: 90000, coins: 8400, minRealm: 10, minStat: 10000, isTopBattle: true },   // 974 萬
-        { name: "混沌初界", expRate: 50000, diff: 200000, coins: 8400, minRealm: 10, minStat: 10000, isTopBattle: true }   // 974 萬
+        { name: "仙界戰場", expRate: 15000, diff: 3000000000, coins: 8400, minRealm: 10, minStat: 10000, isTopBattle: true },   // 974 萬
+        { name: "萬界戰場", expRate: 25000, diff: 5000000000, coins: 8400, minRealm: 10, minStat: 10000, isTopBattle: true },   // 974 萬
+        { name: "混沌初界", expRate: 50000, diff: 10000000000, coins: 8400, minRealm: 10, minStat: 10000, isTopBattle: true }   // 974 萬
     ]}
 ];
 

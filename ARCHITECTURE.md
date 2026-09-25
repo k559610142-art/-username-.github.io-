@@ -26,7 +26,7 @@ images/               圖片素材
   frames/             頭像光環 frame-01～25.png（透明 PNG，約 125～160px，由玩家提供的頭像框展示圖裁切去背），見第 32 節
   cover.jpg           主頁封面・橫式（1264x843），電腦與橫向螢幕使用
   cover-portrait.jpg  主頁封面・直式（960x1920），手機直向使用（由橫式圖重新構圖而成）
-videos/               影片：fengxi-dance.mp4 風希跳舞彩蛋（1280×720、17 秒、3.9 MB，玩家提供，第 39 節）
+videos/               影片：fengxi-dance.mp4 風希跳舞彩蛋（玩家提供；2026-09-27 壓成 854×480、18 秒、約 0.52 Mbps＋AAC 64k 單聲道、1.35 MB，第 39 節）
 tools/                不會被遊戲載入的維護工具
   裝備清單-850種.csv   850 種裝備的來源資料（Excel 可開啟；UTF-8 BOM），改完執行下一行的腳本
   csv-to-js.ps1       把 CSV 轉成 data/config-gear-catalog.js（powershell -ExecutionPolicy Bypass -File tools\csv-to-js.ps1）
@@ -898,6 +898,12 @@ combatTick() 每秒執行 [combat.js]
 - **2026-09-27 第三區進入門檻降為煉虛**：荒古禁地／太初古礦／上蒼（葬天島）的 `minRealm` 由 10（仙人初境）改為 **6（煉虛）**，四維 `minStat` 由 500 提高為 **2000**；第四、五區仍是仙人初境。第四區幽冥禁域四維同日由 500 提高為 **5000**；第五區諸天至高戰場由 5000 提高為 **10000**。
   `map.js` 的卡片「限制：」與進入失敗提示改用 `realms[minRealm]` 顯示，不再寫死「仙人初境」——之後調整門檻只改 `config-maps.js` 即可。
   ⚠️ 第 26 節的 `realmPacing` 仍以「煉虛～渡劫在鬼谷八荒（expRate 1000）」估算經驗，玩家若提早進荒古禁地（expRate 3000）這幾個境界會修得比目標快。
+- **2026-09-27 第三～五區怪物加強**：玩家反映怪物過弱（煉虛玩家攻擊約千萬級，舊荒古禁地怪物氣血才 250 萬，一刀一隻），
+  第三～五區 `diff` 改為玩家指定值（舊值 → 新值）：荒古禁地 5千→**80萬**、太初古礦 7千→**500萬**、上蒼 1萬→**1000萬**、
+  不死山 1.3萬→**2億**、神墟 1.6萬→**3億**、仙陵 2萬→**8億**、冥界 2.5萬→**15億**、仙界戰場 5萬→**30億**、萬界戰場 9萬→**50億**、混沌初界 20萬→**100億**。
+  （同日先調過兩版較低的數值才定案。怪物氣血最高 = 100億 × 500 = 5 兆，仍在 JS 安全整數範圍內。）
+  野外修士／暗殺者以 diff 為基準一起變強；靈石 `coins`、經驗 `expRate` 不受影響；離線估算（`estimateIdleCombat`）自動依新 diff 計算。
+  （曾評估過依對應境界把 diff 拉到 24 萬～480 兆的方案，玩家選擇自訂上列數值。）
   - 城鎮是安全區、可打坐（經驗倍率 ×3，同宗門），但**不是宗門**，宗門設施不能用（`isInSect()` 只認 `SECT_MAP_NAME`）；離開宗門到城鎮也會中斷親自執行的門派任務。
   - **宗門不列在修仙地圖**：`maps[0].items[0]` 仍是宗門，但標 `hidden: true`，`openMapCategoryModal` 會略過。
     ⚠️ **宗門必須維持在 `maps[0].items[0]`**：死亡回城（combat.js）、渡劫失敗（tribulation.js）、暫存區滿（enhance.js）都用 `changeMap(0, 0)`，讀檔找不到地圖時（save.js）也退回 `maps[0].items[0]`。
@@ -1217,7 +1223,7 @@ combatTick() 每秒執行 [combat.js]
 （以 8 種舊存檔形態測試目前程式皆可正常讀取；移除 `#age-display` 即可重現同一錯誤。）
 
 ### 1. 發佈版本號（防止新舊檔案混用）
-- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260927m`）。
+- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260927t`）。
 - **每次推上 GitHub Pages 前，把所有 `?v=` 全部取代成新值**（例：日期＋序號）。新 index.html 會指向新網址的 JS，不會再拿到快取的舊檔。
 - 新增 `data/*.js` 時也要記得帶上 `?v=`。
 
@@ -1736,6 +1742,14 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
     **看影片的規則**（`partnerVideoCtx`）：完整看完（`ended` 且實際播放 ≥ 90%，`getPlayedSeconds` 加總 `video.played`，拖曳跳過的不算）→ **只有第一次**好感 +5（`bond.danceWatched` 記錄）並顯示「怎麼樣，風某的舞姿不錯吧？」；
     **沒看完就關掉**（含拖到最後）→ 和選否一樣好感 -1、「看到一半就走？不給面子！」。
     每次點都會問，選否或沒看完可以一直扣（最低 0）。對話框支援選項按鈕：`showPartnerDialog` 的第 5 個參數 `choices`。
+  - **影片卡頓修正（2026-09-27）**：實測 GitHub Pages 下載影片約 0.8 Mbps，低於影片碼率約 1.9 Mbps，直接串流會邊播邊停。
+    改為 `preloadPartnerVideo(src)` 用 `fetch` 把整部影片下載成 Blob（`partnerVideoCache`，同一次遊戲再看不重下載），`askPartnerEaster` 問問題時就開始下載；
+    `playPartnerVideo` 在 `#partner-video-status` 顯示「影片載入中… xx%」，下載完 `onPartnerVideoReady` 才以物件網址播放（播放期間不需網路）；fetch 失敗（如 file://）退回直接播原網址；
+    手機擋掉非點擊當下的有聲播放時提示「請按播放鍵」。
+    ⚠️ 不要改回「先 play 再 pause 等緩衝」：Chrome 在影片暫停時會停止下載（networkState IDLE），進度卡住；`canplaythrough` 在慢網路也估得太樂觀（1 Mbps 模擬仍卡 4 次）。
+    同日也把影片壓小：原檔 1280×720／1.78 Mbps／3.9 MB → 854×480／0.52 Mbps／1.35 MB（畫面比對 PSNR 37 dB），慢網路的等待時間約剩 1/3。
+    轉檔**不需要 ffmpeg**：用 Windows 內建 Media Foundation（PowerShell 呼叫 WinRT `Windows.Media.Transcoding.MediaTranscoder`，H.264 Main），
+    但它輸出的 `moov` 在檔尾，要再把 `moov` 搬到 `mdat` 前面並把 `stco`/`co64` 的偏移量加上 moov 大小（faststart），直接串流時才能邊下邊播。轉檔腳本不在專案內。
   - 其他人預定於**秘境**相遇（秘境尚未開放）。秘境實作時呼叫 `meetPartner(id, "來源文字")`，重複結識回傳 false。
   - 未結識的夥伴仍完整顯示資料；風希顯示「可在天星城坊市遇見他」，其他人「秘境中有緣相遇」。
 - **好感度（2026-09-27）**：每位夥伴各自累積好感點數 → 等級 `PARTNER_BOND_LEVELS`：

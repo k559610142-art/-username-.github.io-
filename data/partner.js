@@ -226,6 +226,7 @@ function talkToPartner(id) {
 function askPartnerEaster(id) {
     let p = partnerById[id];
     if (!p || !p.easter) return;
+    preloadPartnerVideo(p.easter.video);   // 玩家考慮「是／否」時先在背景下載影片
     showPartnerDialog(p, [p.easter.ask], '', null, [
         { label: '是', action: `answerPartnerEaster('${id}', true)` },
         { label: '否', action: `answerPartnerEaster('${id}', false)` }
@@ -251,15 +252,77 @@ function answerPartnerEaster(id, yes) {
 let partnerVideoCtx = null;
 const PARTNER_VIDEO_WATCH_RATIO = 0.9;   // 實際播放過的長度 ≥ 90% 才算看完（避免直接拖到最後）
 
+// 影片放在 GitHub Pages，網路慢時下載速度（實測約 0.8 Mbps）低於影片碼率（約 1.9 Mbps）→ 邊播邊停像卡住。
+// 做法：問彩蛋時就用 fetch 把整部影片下載成 Blob（顯示進度 %），下載完才從記憶體播放，播放中完全不需要網路。
+// ⚠️ 不能用「先 play 再 pause 等緩衝」：Chrome 在影片暫停時會自己停止下載（networkState = IDLE），進度卡住不動；
+//    canplaythrough 在慢網路下也估得太樂觀（實測 1 Mbps 照樣卡 4 次）。
+// 下載好的 Blob 留在 partnerVideoCache，同一次遊戲再看不用重新下載；fetch 失敗（例如直接開 file://）就退回直接播放原網址。
+const partnerVideoCache = {};   // src → { url 物件網址, loaded, total, done, failed }
+
+function preloadPartnerVideo(src) {
+    if (!src || partnerVideoCache[src]) return;
+    let c = partnerVideoCache[src] = { url: null, loaded: 0, total: 0, done: false, failed: false };
+    fetch(src).then(async res => {
+        if (!res.ok) throw new Error(res.status);
+        c.total = Number(res.headers.get('content-length')) || 0;
+        let chunks = [];
+        if (res.body && res.body.getReader) {
+            const reader = res.body.getReader();
+            for (;;) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                chunks.push(value);
+                c.loaded += value.length;
+                updatePartnerVideoLoading(src);
+            }
+        } else chunks.push(new Uint8Array(await res.arrayBuffer()));
+        c.url = URL.createObjectURL(new Blob(chunks, { type: 'video/mp4' }));
+        c.done = true;
+    }).catch(() => { c.failed = true; }).then(() => onPartnerVideoReady(src));
+}
+
+let partnerVideoPending = null;   // 等待下載完成、準備播放的影片 src
+
+function setPartnerVideoStatus(text) {
+    const el = document.getElementById('partner-video-status');
+    if (!el) return;
+    el.innerText = text || '';
+    el.style.display = text ? 'block' : 'none';
+}
+
+function updatePartnerVideoLoading(src) {
+    if (partnerVideoPending !== src) return;
+    let c = partnerVideoCache[src];
+    let pct = c.total ? Math.min(99, Math.floor(c.loaded / c.total * 100)) : 0;
+    setPartnerVideoStatus(`⏳ 影片載入中… ${c.total ? pct + '%' : (c.loaded / 1048576).toFixed(1) + ' MB'}（載完才播放，避免卡頓）`);
+}
+
+function onPartnerVideoReady(src) {
+    if (partnerVideoPending !== src) return;
+    partnerVideoPending = null;
+    let c = partnerVideoCache[src];
+    const v = document.getElementById('partner-video');
+    v.src = c.done ? c.url : src;
+    v.currentTime = 0;
+    setPartnerVideoStatus('');
+    let p = v.play();
+    // 手機瀏覽器可能擋掉非點擊當下的有聲播放 → 提示玩家自己按播放
+    if (p && p.catch) p.catch(() => setPartnerVideoStatus('▶️ 影片已載入，請按播放鍵'));
+}
+
 function playPartnerVideo(src, title) {
     const v = document.getElementById('partner-video');
     document.getElementById('partner-video-title').innerText = title || '';
-    v.src = src;
     v.onended = onPartnerVideoEnded;
+    v.pause();
+    v.removeAttribute('src');
+    v.load();
     document.getElementById('partner-video-modal').style.display = 'flex';
-    v.currentTime = 0;
-    let p = v.play();
-    if (p && p.catch) p.catch(() => {});   // 瀏覽器擋自動播放時，玩家可自己按播放
+    preloadPartnerVideo(src);
+    partnerVideoPending = src;
+    let c = partnerVideoCache[src];
+    if (c.done || c.failed) onPartnerVideoReady(src);
+    else updatePartnerVideoLoading(src);
 }
 
 // 實際播放過的秒數（played 各區段加總，拖曳跳過的部分不算）
@@ -291,6 +354,8 @@ function onPartnerVideoEnded() {
 // 關閉影片：彩蛋影片還沒看完就關掉 → 和選「否」一樣反感扣好感
 function closePartnerVideo() {
     const v = document.getElementById('partner-video');
+    partnerVideoPending = null;
+    setPartnerVideoStatus('');
     v.pause();
     closeModal('partner-video-modal');
     let ctx = partnerVideoCtx;
