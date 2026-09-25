@@ -150,15 +150,34 @@ function enhanceEquip(untilSuccess) {
     renderEnhanceModal();
     refreshEquipViews();
     updateUI();
+    if (success && canEvolve(eq)) promptEvolveEquip(eq);
+}
+
+// 強化剛達 +EVOLVE_LEVEL（橙色）時的系統通知：詢問是否進化為先天道器；資源不足則提示還缺多少
+function promptEvolveEquip(eq) {
+    let name = getEquipDisplayName(eq);
+    addLog(`✨ 【${name}】已強化至 +${EVOLVE_LEVEL}，可進化為${PLATINUM_QUALITY.label}！`, "level-up");
+    let cost = `🌠 ${EVOLVE_IRON} 星允鐵＋${EVOLVE_COINS.toLocaleString()} 靈石`;
+    let lacks = [];
+    if ((player.starIron || 0) < EVOLVE_IRON) lacks.push(`星允鐵 ${(player.starIron || 0).toLocaleString()} / ${EVOLVE_IRON}`);
+    if (player.coins < EVOLVE_COINS) lacks.push(`靈石 ${player.coins.toLocaleString()} / ${EVOLVE_COINS.toLocaleString()}`);
+    if (lacks.length > 0) {
+        alert(`✨ 系統通知：【${name}】已強化至 +${EVOLVE_LEVEL}，可進化為${PLATINUM_QUALITY.label}！\n進化需要 ${cost}，目前不足：\n${lacks.join('\n')}\n\n資源備齊後，可在強化視窗按「進化為先天道器」。`);
+        return;
+    }
+    if (confirm(`✨ 系統通知：【${name}】已強化至 +${EVOLVE_LEVEL}！\n是否花費 ${cost}，進階為${PLATINUM_QUALITY.label}？\n（四維 ×${getEvolveStatRatio()}、特效 ×2、多一條隨機詞條）\n\n選「取消」可稍後在強化視窗進化。`)) {
+        evolveEquip(true);
+    }
 }
 
 // 橙色 +20 → 白金：四維依倍率放大、主詞條改白金數值、多抽 1 條隨機詞條
-function evolveEquip() {
+// skipConfirm：由 promptEvolveEquip 的系統通知確認過，不再重複詢問
+function evolveEquip(skipConfirm) {
     let loc = locateEquip(enhanceEquipId);
     if (!loc || !canEvolve(loc.eq)) return;
     let eq = loc.eq;
     if (player.starIron < EVOLVE_IRON || player.coins < EVOLVE_COINS) { alert('星允鐵或靈石不足！'); return; }
-    if (!confirm(`確定花費 ${EVOLVE_IRON} 星允鐵＋${EVOLVE_COINS.toLocaleString()} 靈石，將【${getEquipDisplayName(eq)}】進化為先天道器？`)) return;
+    if (!skipConfirm && !confirm(`確定花費 ${EVOLVE_IRON} 星允鐵＋${EVOLVE_COINS.toLocaleString()} 靈石，將【${getEquipDisplayName(eq)}】進化為先天道器？`)) return;
     player.starIron -= EVOLVE_IRON;
     player.coins -= EVOLVE_COINS;
     player.ironUsed = (player.ironUsed || 0) + EVOLVE_IRON;
