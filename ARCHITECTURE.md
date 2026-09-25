@@ -1109,7 +1109,7 @@ combatTick() 每秒執行 [combat.js]
 （以 8 種舊存檔形態測試目前程式皆可正常讀取；移除 `#age-display` 即可重現同一錯誤。）
 
 ### 1. 發佈版本號（防止新舊檔案混用）
-- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260925l`）。
+- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260925m`）。
 - **每次推上 GitHub Pages 前，把所有 `?v=` 全部取代成新值**（例：日期＋序號）。新 index.html 會指向新網址的 JS，不會再拿到快取的舊檔。
 - 新增 `data/*.js` 時也要記得帶上 `?v=`。
 
@@ -1204,8 +1204,10 @@ combatTick() 每秒執行 [combat.js]
   | 頭像 | id |
   |---|---|
   | 韓立／南宮婉（預設，免費） | `male` / `female` |
-  | 執扇仙子、琵琶仙子、花仙童女 | `fan-fairy` / `pipa-fairy` / `flower-girl` |
-  | 藍衣少年、亂星海大善人、銀髮劍仙 | `blue-youth` / `starsea` / `silver-swordswoman` |
+  | 執扇仙子、琵琶仙子、茵茵（舊名花仙童女） | `fan-fairy` / `pipa-fairy` / `flower-girl` |
+  | 葉凡（舊名藍衣少年）、亂星海大善人、銀髮劍仙 | `blue-youth` / `starsea` / `silver-swordswoman` |
+
+  ※ 改名只改 `name`，**`id` 不可改**（存檔的 `avatarId`／`unlockedAvatars` 記的是 id，改了會讓已購買的頭像失效）。
   | 妖妖、羅峰、姜太虛、少年人皇 石昊 | `yaoyao` / `luofeng` / `jiang-taixu` / `golden-emperor` |
 
 - **條件類型**（`checkAvatarCondition()`）：`coins`（購買）之外，程式仍支援「達成即自動解鎖」的 `realm`／`level`／`reputation`／`tribulation`，
