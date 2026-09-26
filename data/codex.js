@@ -179,6 +179,17 @@ function renderCodexModal() {
 
 const CODEX_QUALITIES = ["白色", "綠色", "藍色", "紫色", "橙色", "白金"];
 
+// 六顆星：取得過該品級就點亮，顏色依序 s0～s5（index.html 的 .codex-star.on.sN，第 48 節）
+function formatCodexStars(got) {
+    return CODEX_QUALITIES.map((q, i) =>
+        `<span class="codex-star${got.includes(q) ? ` on s${i}` : ''}" title="${q}${got.includes(q) ? '（已取得）' : '（未取得）'}">★</span>`).join('');
+}
+
+function formatCodexStarLegend() {
+    return `<div class="codex-star-legend">星星＝取得過的品級：${CODEX_QUALITIES.map((q, i) =>
+        `<span class="item"><span class="codex-star on s${i}">★</span>${q.replace('色', '')}</span>`).join('')}</div>`;
+}
+
 function renderCodexGear() {
     let slots = Object.keys(gearBySlot).map(s => {
         let got = gearBySlot[s].filter(hasCollected).length;
@@ -186,7 +197,7 @@ function renderCodexGear() {
     }).join('');
     let cards = gearBySlot[codexSlot].map(def => {
         let got = (player.gearCodex || {})[def.id] || [];
-        let stars = CODEX_QUALITIES.map(q => `<span class="codex-star${got.includes(q) ? ' on quality-' + q : ''}" title="${q}">★</span>`).join('');
+        let stars = formatCodexStars(got);
         let ch = GEAR_CHANNELS[def.channel];
         if (!got.length) {
             return `<div class="codex-card unknown">
@@ -199,7 +210,7 @@ function renderCodexGear() {
             <small style="color: #a5f3fc;">✦ ${def.effect}：${describeGearEffect(def.effect, '紫色')}（紫色）</small>
             <div>${stars}</div></div>`;
     }).join('');
-    return `<div class="codex-slots">${slots}</div><div class="codex-grid">${cards}</div>`;
+    return `<div class="codex-slots">${slots}</div>${formatCodexStarLegend()}<div class="codex-grid">${cards}</div>`;
 }
 
 function renderCodexSets() {
