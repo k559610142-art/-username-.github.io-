@@ -123,7 +123,9 @@ const DefenseBattle = (() => {
     };
 
     // ================== 開啟／載入 ==================
-    function open() {
+    let realmId = 'motu';
+    function open(id) {
+        realmId = id || 'motu';
         opened = true;
         $('defense-scene').style.display = 'block';
         $('defense-result').classList.remove('on');
@@ -193,14 +195,24 @@ const DefenseBattle = (() => {
     }
 
     function start() {
+        // 每日次數：真正開始守城時才扣（secret-realm.js）
+        if (!useSecretRealmAttempt(realmId)) {
+            $('defense-loading').classList.add('on');
+            $('defense-load-status').textContent = `❌ 今日 ${SECRET_REALM_DAILY_ATTEMPTS} 次挑戰已用完，明日再來`;
+            return;
+        }
+        if (typeof refreshSecretRealmEnterLabel === 'function') refreshSecretRealmEnterLabel();
         DEFENSE_CLIPS.forEach(c => {
             const el = clipEls[c.id];
             if (el.src !== blobUrls[c.id]) el.src = blobUrls[c.id];
             el.pause(); el.classList.remove('on'); el.playbackRate = baseRate;
         });
-        D.active = true; D.kills = 0; parts = []; caption = null;
+        D.active = true; D.kills = 0; D.cleared = 0; D.lost = false; D.partnerMet = false;
+        D.gain = { coins: 0, merit: 0, shards: 0, iron: 0, gear: [], titles: [], partners: [] };
+        D.titlesBefore = (player.titles || []).slice();
+        parts = []; caption = null;
         $('defense-wavebox').style.visibility = 'visible';
-        feed('🏯 妖潮壓境！死守天南城，共 100 波', 'wave');
+        feed(`🏯 妖潮壓境！死守天南城，共 ${D.total} 波（今日剩 ${getSecretRealmAttemptsLeft(realmId)} 次）`, 'wave');
         setWave(1);
         playClip(spec.clip);
     }
@@ -208,6 +220,8 @@ const DefenseBattle = (() => {
     // ================== 波次與影片切換 ==================
     function setWave(w) {
         D.wave = w; spec = waveSpec(w);
+        spec.result = simulateWave(w);                  // 這一波守不守得住（以玩家當下數值，在背後打一場）
+        spec.realmLabel = waveRealmLabel(w);
         $('defense-vwrap').style.filter = spec.th.filter;
         updateWaveBox();
         $('defense-bn1').textContent = spec.boss ? `第 ${w} 波・首領來襲` : `第 ${w} 波`;
@@ -215,7 +229,8 @@ const DefenseBattle = (() => {
         $('defense-bn2').style.color = spec.boss ? '#f87171' : spec.th.c;
         const bn = $('defense-banner'); bn.classList.add('on');
         clearTimeout(setWave.t); setWave.t = setTimeout(() => bn.classList.remove('on'), 1600);
-        feed(spec.boss ? `👹 第 ${w} 波・首領【${spec.bossName}】來襲！` : `🌊 第 ${w} 波・${spec.th.name}妖潮來襲！`, 'wave');
+        feed(spec.boss ? `👹 第 ${w} 波・首領【${spec.bossName}】來襲！（${spec.realmLabel}）` : `🌊 第 ${w} 波・${spec.th.name}妖潮（${spec.realmLabel}）`, 'wave');
+        if (!spec.result.win) feed(spec.result.timeout ? '⚠️ 妖潮源源不絕，久戰難下……' : '⚠️ 妖潮勢大，城牆岌岌可危……', 'kill');
         weatherAcc = 0;
     }
     function updateWaveBox() {
@@ -223,7 +238,97 @@ const DefenseBattle = (() => {
         $('defense-wave-total').textContent = D.total;
         $('defense-kill-no').textContent = `斬殺 ${D.kills.toWan()}`;
         $('defense-wave-fill').style.width = `${D.wave / D.total * 100}%`;
-        $('defense-theme').innerHTML = `🎬 ${clipOf(spec.clip).name}・<span style="color:${spec.th.c}">${spec.th.icon} ${spec.th.name}</span>`;
+        $('defense-theme').innerHTML = `🎬 ${clipOf(spec.clip).name}・<span style="color:${spec.th.c}">${spec.th.icon} ${spec.th.name}</span>`
+            + (spec.realmLabel ? `<br>強度：${spec.realmLabel}` : '');
+    }
+
+    // ================== 獎勵（每守住一波立即發放，config-defense.js 的 DEFENSE_REWARDS）==================
+    const R = DEFENSE_REWARDS;
+    const randInt = ([a, b]) => a + Math.floor(Math.random() * (b - a + 1));
+    // 靈石 = 等強度境界的主要練功地圖掛機 coinMinutes 分鐘的收入（config-realms.js 的 realmPacing → 該地圖 coins × 每小時擊殺數）
+    function waveCoins(w) {
+        let r = 0;
+        for (let i = 0; i < realms.length; i++) if (realmAtk(i, 1) <= waveAtk(w)) r = i;
+        const pace = realmPacing[Math.min(r, realmPacing.length - 1)];
+        let coins = 0;
+        maps.forEach(cat => cat.items.forEach(m => { if (m.name === pace.map) coins = m.coins; }));
+        return Math.floor(coins * KILLS_PER_HOUR_ESTIMATE / 60 * R.coinMinutes * (w % DEFENSE_BOSS_EVERY === 0 ? 3 : 1));
+    }
+    function rollQuality(w) {
+        const band = R.gearOdds.filter(b => w >= b.from).pop();
+        let r = Math.random(), acc = 0;
+        for (const q in band.odds) { acc += band.odds[q]; if (r < acc) return q; }
+        return Object.keys(band.odds).pop();
+    }
+    // setPiece：秘境套裝部件（一次一件）；否則器錄武器／防具（奪寶、拍賣、可製作管道，不含秘境）
+    function dropGear(w, setPiece) {
+        const pool = setPiece ? gearList.filter(d => d.channel === 'realm' && d.set)
+                              : gearList.filter(d => (d.category === 'weapon' || d.category === 'armor') && d.channel !== 'realm');
+        const def = pool[Math.floor(Math.random() * pool.length)];
+        const qualityObj = getQualityObj(rollQuality(w));
+        const levels = EQUIP_LEVELS.filter(l => l <= player.level);
+        const level = levels.length ? levels[levels.length - 1] : EQUIP_LEVELS[0];
+        const eq = createGearEquip(def, qualityObj, level * EQUIP_LEVEL_STAT_MULT * qualityObj.mult, level);
+        const where = receiveLootEquip(eq);   // 背包滿：白～紫自動分解、橙色進暫存區（enhance.js）
+        const text = `${setPiece ? '❖' : '⚔️'}【Lv.${level}·${eq.quality}·${getEquipDisplayName(eq)}${def.set ? `（${def.set}套）` : ''}】`;
+        D.gain.gear.push(text);
+        feed(`🎁 獲得${text}（${where}）`, 'kill');
+    }
+    function grantWave(w) {
+        const boss = w % DEFENSE_BOSS_EVERY === 0, g = D.gain;
+        const coins = waveCoins(w); player.coins += coins; g.coins += coins;
+        const merit = randInt(boss ? R.bossMerit : R.merit); player.merit = (player.merit || 0) + merit; g.merit += merit;
+        if (boss || Math.random() < R.shardChance) g.shards += addFireShards(randInt(boss ? R.bossShard : R.shard));
+        if (boss || Math.random() < R.ironChance) g.iron += addStarIron(randInt(boss ? R.bossIron : R.iron));
+        if (Math.random() < R.gearChance) dropGear(w, false);
+        if (boss || (w >= 20 && Math.random() < R.setChance)) dropGear(w, true);
+        // 天驕級夥伴：守住第 partnerFromWave 波起，每波有機率遇見一位尚未結識的（每次守城最多 1 位）
+        if (w >= R.partnerFromWave && !D.partnerMet && Math.random() < R.partnerChance) {
+            const pool = partnerList.filter(p => getPartnerTier(p).name === '天驕' && !isPartnerMet(p.id));
+            if (pool.length) {
+                const p = pool[Math.floor(Math.random() * pool.length)];
+                meetPartner(p.id, `於秘境「魔屠天南」第 ${w} 波並肩守城`);
+                D.partnerMet = true; g.partners.push(`${p.title}・${p.name}`);
+                feed(`💞 天驕【${p.title}・${p.name}】前來助陣，結識了！`, 'kill');
+            }
+        }
+        D.cleared = w;
+        if (w > (player.defenseBest || 0)) { player.defenseBest = w; checkTitleUnlocks(); }
+        if (boss) settleMeritStones();   // 功德滿額自動凝結七彩補天石（merit.js）
+    }
+    function rewardSummaryHtml() {
+        const g = D.gain;
+        const newTitles = (player.titles || []).filter(id => !D.titlesBefore.includes(id))
+            .map(id => titleList.find(t => t.id === id)).filter(Boolean).map(t => `「${getTitleName(t)}」`);
+        const rows = [
+            `💎 靈石 ${g.coins.toWan()}`, `☯️ 功德 ${g.merit.toWan()}`,
+            g.shards ? `🔥 異火碎片 ×${g.shards}` : '', g.iron ? `🌠 星允鐵 ×${g.iron}` : '',
+            g.gear.length ? `⚔️ 裝備 ${g.gear.length} 件` : '',
+            newTitles.length ? `🏅 新稱號 ${newTitles.join('、')}` : '',
+            g.partners.length ? `💞 結識 ${g.partners.join('、')}` : ''
+        ].filter(Boolean);
+        return rows.join('<br>');
+    }
+    // 結束（勝或敗）：結算畫面＋遊戲日誌（道具分頁）一筆彙整
+    function settle(win) {
+        D.active = false;
+        $('defense-result-title').textContent = win ? '守城成功' : '天南失守';
+        $('defense-result-title').style.color = win ? '' : '#fca5a5';
+        const head = win ? `守住全部 ${D.total} 波妖潮` : `守住 ${D.cleared} 波，第 ${D.wave} 波失守`;
+        $('defense-result-sum').innerHTML = `${head}<br>斬殺 ${D.kills.toWan()} 隻妖魔<br><br>${D.cleared ? rewardSummaryHtml() : '（未守住任何一波，沒有獎勵）'}`
+            + `<br><span style="color:#9ca3af;font-size:0.85em">歷史最高：第 ${player.defenseBest || 0} 波</span>`;
+        $('defense-result').classList.add('on');
+        feed(win ? `🏆 守城成功！共斬殺 ${D.kills.toWan()} 隻妖魔` : `💀 第 ${D.wave} 波失守……`, 'kill');
+        logRun(win);
+        updateUI();
+    }
+    function logRun(win) {
+        if (!D.gain) return;
+        const g = D.gain;
+        addLog(`🏯 秘境「魔屠天南」${win ? '守城成功' : `守住 ${D.cleared} 波`}：靈石 ${g.coins.toWan()}、功德 ${g.merit.toWan()}`
+            + `${g.shards ? `、異火碎片 ×${g.shards}` : ''}${g.iron ? `、星允鐵 ×${g.iron}` : ''}${g.gear.length ? `、裝備 ${g.gear.length} 件` : ''}`
+            + `${g.partners.length ? `、結識 ${g.partners.join('、')}` : ''}`, 'level-up', true, 'item');
+        D.gain = null;   // 只記一次（離開時不重複）
     }
     function playClip(id) {
         const next = clipEls[id], prev = video;
@@ -231,12 +336,6 @@ const DefenseBattle = (() => {
         next.classList.add('on');
         if (prev && prev !== next) { prev.classList.remove('on'); setTimeout(() => { if (prev !== video) prev.pause(); }, 700); }
         video = next; fired.clear();
-    }
-    function finish() {
-        D.active = false;
-        $('defense-result-sum').innerHTML = `守住 ${D.total} 波妖潮<br>斬殺 ${D.kills.toWan()} 隻妖魔`;
-        $('defense-result').classList.add('on');
-        feed(`🏆 守城成功！共斬殺 ${D.kills.toWan()} 隻妖魔`, 'kill');
     }
 
     // ================== 戰況文字 ==================
@@ -447,9 +546,12 @@ const DefenseBattle = (() => {
         const real = Math.min(0.05, (now - last) / 1000); last = now;
         if (D.active && video) {
             const t = video.currentTime, dur = video.duration || 99;
-            if (t >= dur - DEFENSE_CLIP_FADE || video.ended) {   // 快播完：接下一波（另一支影片交叉淡入）
+            if (!spec.result.win && t >= dur * DEFENSE_LOSE_AT) {   // 守不住：播到一半城牆失守（在終結技之前）
+                punch = 0.08; flash = 0.5; settle(false);
+            } else if (t >= dur - DEFENSE_CLIP_FADE || video.ended) {   // 守住：發這一波的獎勵，接下一波（另一支影片交叉淡入）
+                grantWave(D.wave);
                 if (D.wave < D.total) { setWave(D.wave + 1); playClip(spec.clip); }
-                else finish();
+                else settle(true);
             }
             const trim = clipOf(spec.clip).trim, tt = video.currentTime;
             CUES[spec.clip].forEach(([raw, run], i) => {
@@ -467,7 +569,8 @@ const DefenseBattle = (() => {
     }
 
     function close() {
-        if (D.active && !confirm('確定要離開嗎？本次守城進度不會保留。')) return;
+        if (D.active && !confirm(`確定要離開嗎？\n已守住的 ${D.cleared || 0} 波獎勵會保留，但今日這次挑戰次數已使用。`)) return;
+        if (D.active) logRun(false);
         opened = false; D.active = false;
         if (aborter) aborter.abort();
         if (rafId) cancelAnimationFrame(rafId); rafId = 0;
@@ -501,10 +604,12 @@ const DefenseBattle = (() => {
         return maxParts;
     }
 
-    return { open, close, setSpeed, retry: startLoading, waveSpec, _sim, _state: () => ({ D, spec, parts: parts.length, video: video && video.dataset.clip }) };
+    return { open, close, setSpeed, retry: startLoading, waveSpec, waveAtk, waveRealmLabel, waveEnemy, simulateWave, _sim,
+             _grantWave: grantWave, _settle: settle, _setWave: setWave,   // 測試用：直接發某一波的獎勵／結算／切波（不播影片）
+             _state: () => ({ D, spec, parts: parts.length, video: video && video.dataset.clip }) };
 })();
 
 // ---- onclick 用（index.html #defense-scene、secret-realm.js）----
-function openDefenseBattle() { DefenseBattle.open(); }
+function openDefenseBattle(realmId) { DefenseBattle.open(realmId); }
 function closeDefenseBattle() { DefenseBattle.close(); }
 function setDefenseSpeed(r) { DefenseBattle.setSpeed(r); }

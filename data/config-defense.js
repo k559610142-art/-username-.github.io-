@@ -62,12 +62,15 @@ const DEFENSE_MILESTONES = [
     { wave: 90, realm: 15 }    // 混沌道祖
 ];
 const DEFENSE_MILESTONE_STAGE = 10;
-// 每波妖潮的戰鬥屬性：氣血 = 攻擊 × 20（同懸賞人物）；首領波攻擊 × BOSS_ATK、氣血 × BOSS_HP
-const DEFENSE_ENEMY = { hpPerAtk: 20, bossAtk: 1.5, bossHp: 3, def: [15, 35], eva: [8, 20], affix: [10, 35] };   // [第 1 波, 第 100 波] 線性
+// 每波妖潮的戰鬥屬性：氣血 = 攻擊 × 20（同懸賞人物）；首領波攻擊 × bossAtk、氣血 × bossHp
+// 首領不另外加強（= 1）：里程碑「第 10 波 = 合體 10 階」就是首領本身的強度；首領波以加倍獎勵、必掉套裝部件區隔
+// （2026-09-27 測試：首領攻 ×1.5、血 ×3 時，每個境界 10 階的玩家都卡在自己境界的首領波，違背里程碑，已取消）
+const DEFENSE_ENEMY = { hpPerAtk: 20, bossAtk: 1, bossHp: 1, def: [15, 35], eva: [8, 20], affix: [10, 35] };   // [第 1 波, 第 100 波] 線性
 // 勝負（defense.js 的 simulateWave）：以玩家當下真實的攻擊、氣血、減傷、閃避、五行與異屬性，用 resolveHit 在背後打一場；
 // 玩家每回合傷害 = max(物攻, 術攻) × PLAYER_SKILL_MULT（武學、技能的平均加成）；超過 MAX_ROUNDS 回合未分勝負算失守
 const DEFENSE_PLAYER_SKILL_MULT = 1.3;
-const DEFENSE_MAX_ROUNDS = 60;
+const DEFENSE_MAX_ROUNDS = 150;       // 同懸賞對決（BOUNTY_MAX_TURNS）；60 回合時首領波（氣血 ×3）幾乎都逾時，減傷閃避完全沒作用
+const DEFENSE_LOSE_AT = 0.45;        // 守不住的那一波：影片播到 45%（終結技之前）時判定失守
 
 // ==================== 次數與獎勵 ====================
 // 每日次數：config-secret-realms.js 的 SECRET_REALM_DAILY_ATTEMPTS（每個秘境各自計算，開始守城時扣 1 次）
@@ -88,5 +91,5 @@ const DEFENSE_REWARDS = {
     partnerFromWave: 51,             // 守住第 51 波起，每守住一波有機率遇見尚未結識的天驕級夥伴（每次守城最多 1 位）
     partnerChance: 0.04
 };
-// 稱號門檻（config-titles.js 的 defenseWave 條件，依歷史最高守住波數 player.defenseBest）
+// 稱號：config-titles.js 的 defenseWave 條件（10／30／50／80／100 波，依歷史最高守住波數 player.defenseBest）
 
