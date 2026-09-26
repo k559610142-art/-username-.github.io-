@@ -281,14 +281,56 @@ function renderSkillList() {
 let fieldLogMuted = false;
 const FIELD_MUTED_LOG_TYPES = ["normal", "combat", "skill", "heal"];
 
-function addLog(msg, type = "normal", force = false) {
+// 日誌分頁（2026-09-28）：戰鬥／道具／僕從三個分頁各自保留最新 LOG_MAX_ENTRIES 則，互不擠掉。
+// 分頁由 addLog 的第 4 個參數 channel 指定；沒給就依 type 決定（LOG_CHANNEL_BY_TYPE），其餘一律進「戰鬥」（含系統、任務、升級）。
+const LOG_CHANNELS = ["battle", "item", "servant"];
+const LOG_CHANNEL_BY_TYPE = { servant: "servant", equip: "item" };
+const LOG_MAX_ENTRIES = 50;
+const LOG_TAB_STORAGE_KEY = "xiuxian_log_tab";
+let activeLogTab = "battle";
+let logUnread = { battle: 0, item: 0, servant: 0 };
+
+function addLog(msg, type = "normal", force = false, channel = null) {
     if (fieldLogMuted && !force && FIELD_MUTED_LOG_TYPES.includes(type)) return;
-    const logBox = document.getElementById('log');
+    if (!LOG_CHANNELS.includes(channel)) channel = LOG_CHANNEL_BY_TYPE[type] || "battle";
+    const logBox = document.getElementById(`log-${channel}`);
+    if (!logBox) return;
     const entry = document.createElement('div');
     entry.className = `log-entry ${type}`;
     entry.innerHTML = `[${new Date().toLocaleTimeString('zh-TW', { hour12: false })}] ${msg}`;
     logBox.prepend(entry);
-    if (logBox.children.length > 50) logBox.removeChild(logBox.lastChild);
+    if (logBox.children.length > LOG_MAX_ENTRIES) logBox.removeChild(logBox.lastChild);
+    if (channel !== activeLogTab) {
+        logUnread[channel]++;
+        renderLogBadge(channel);
+    }
+}
+
+function renderLogBadge(channel) {
+    const badge = document.getElementById(`log-badge-${channel}`);
+    if (!badge) return;
+    const n = logUnread[channel];
+    badge.textContent = n > 0 ? (n > 99 ? "99+" : String(n)) : "";
+}
+
+// 切換日誌分頁；選擇記在 localStorage（裝置偏好，不進存檔）
+function switchLogTab(channel) {
+    if (!LOG_CHANNELS.includes(channel)) channel = "battle";
+    activeLogTab = channel;
+    document.querySelectorAll('.log-tab').forEach(btn => btn.classList.toggle('active', btn.dataset.logTab === channel));
+    LOG_CHANNELS.forEach(c => {
+        const box = document.getElementById(`log-${c}`);
+        if (box) box.classList.toggle('active', c === channel);
+    });
+    logUnread[channel] = 0;
+    renderLogBadge(channel);
+    try { localStorage.setItem(LOG_TAB_STORAGE_KEY, channel); } catch (e) {}
+}
+
+function restoreLogTab() {
+    let saved = null;
+    try { saved = localStorage.getItem(LOG_TAB_STORAGE_KEY); } catch (e) {}
+    switchLogTab(saved || "battle");
 }
 
 // 依目前所在地圖重設頂部「當前狀態」列（切換地圖、渡劫結束後呼叫）

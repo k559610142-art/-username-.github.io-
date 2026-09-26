@@ -47,5 +47,6 @@ function chooseGender(gender) {
 
 window.onload = function() {
     initHomeUi();       // 洞府主畫面：舞台縮放與預設分頁（home-ui.js）
+    restoreLogTab();    // 歷練日誌：還原上次選的分頁（ui.js）
     initTitleScreen();
 };

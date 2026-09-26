@@ -29,6 +29,6 @@ function plantHerb(type, qty = 1) {
     player.coins -= r.coins * n;
     player.herbs[type] += n;
     addDailyProgress('plant', n);
-    addLog(`🌾 消耗 ${(r.grass * n).toWan()} 株靈草與 ${(r.coins * n).toWan()} 靈石，在靈田收穫了 ${n} 株【${r.name}靈草】！`, "system");
+    addLog(`🌾 消耗 ${(r.grass * n).toWan()} 株靈草與 ${(r.coins * n).toWan()} 靈石，在靈田收穫了 ${n} 株【${r.name}靈草】！`, "system", false, "item");
     updateUI();
 }

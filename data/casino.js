@@ -120,7 +120,7 @@ function cutStone(stoneId, count) {
     recordCasino(cost, gain, best.value > 0 ? `${stone.name}：${best.plain}` : '');
 
     let summary = count === 1 ? results[0].plain : results.map(r => r.plain).join('、');
-    addLog(`☄️ 天星賭坊切開 ${count} 顆${stone.name}（${cost.toWan()} 靈石）：${summary}`, results.some(r => r.rare) ? "level-up" : "system");
+    addLog(`☄️ 天星賭坊切開 ${count} 顆${stone.name}（${cost.toWan()} 靈石）：${summary}`, results.some(r => r.rare) ? "level-up" : "system", false, "item");
     checkTitleUnlocks();
     updateUI();
 

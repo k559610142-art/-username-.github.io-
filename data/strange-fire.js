@@ -10,7 +10,7 @@ function addFireShards(n, source) {
     n = Math.floor(n);
     if (!(n > 0)) return 0;
     player.fireShards = (player.fireShards || 0) + n;
-    if (source) addLog(`🔥 ${source}，獲得異火碎片 ×${n}！（持有 ${player.fireShards.toWan()}）`, "level-up");
+    if (source) addLog(`🔥 ${source}，獲得異火碎片 ×${n}！（持有 ${player.fireShards.toWan()}）`, "level-up", false, "item");
     return n;
 }
 

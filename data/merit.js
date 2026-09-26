@@ -84,7 +84,7 @@ function settleMeritStones() {
     if (n <= 0) return 0;
     player.merit -= n * MERIT_PER_BUTIAN_STONE;
     player.butianStones = (player.butianStones || 0) + n;
-    addLog(`💎 功德圓滿，${(n * MERIT_PER_BUTIAN_STONE).toWan()} 點功德凝結為 ${n} 顆【七彩補天石】！（持有 ${player.butianStones} 顆）`, "level-up");
+    addLog(`💎 功德圓滿，${(n * MERIT_PER_BUTIAN_STONE).toWan()} 點功德凝結為 ${n} 顆【七彩補天石】！（持有 ${player.butianStones} 顆）`, "level-up", false, "item");
     return n;
 }
 
@@ -180,7 +180,7 @@ function buyBreakPill(qty = 1) {
     if (!n) return;
     player.butianStones -= BREAK_PILL_STONE_COST * n;
     player.breakPills += n;
-    addLog(`🔮 於千寶閣以 ${BREAK_PILL_STONE_COST * n} 顆七彩補天石購得 ${n} 顆【破障丹】！渡劫時將自動服用。`, "level-up");
+    addLog(`🔮 於千寶閣以 ${BREAK_PILL_STONE_COST * n} 顆七彩補天石購得 ${n} 顆【破障丹】！渡劫時將自動服用。`, "level-up", false, "item");
     renderAuction();
     updateUI();
 }

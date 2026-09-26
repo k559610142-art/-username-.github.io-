@@ -1,5 +1,6 @@
 // 僕從小屋：每位僕從可各自被指派到不同的門派任務，並獨立累積進度
-// 僕從資料結構：{ id, name, quality, mult, quest: 任務代號或 null, timer: 進度 }
+// 僕從資料結構：{ id, name, quality, mult, quest: 任務代號或 null, timer: 進度, locked: 鎖定（可省略 = 未鎖定） }
+// 僕從相關日誌一律寫進「🤝 僕從」日誌分頁（type "servant"，ui.js 的 LOG_CHANNEL_BY_TYPE）
 
 function openServantModal() {
     if (!checkSectJoined()) return;
@@ -45,16 +46,16 @@ function renderServants() {
         </div>
     </div>`);
 
-    // 依品級一鍵解僱
+    // 依品級一鍵解僱（數量不含鎖定的僕從）
     let counts = {};
-    player.servants.forEach(s => { counts[s.quality] = (counts[s.quality] || 0) + 1; });
+    player.servants.forEach(s => { if (!s.locked) counts[s.quality] = (counts[s.quality] || 0) + 1; });
     parts.push(renderBulkDeleteBar(
         "一鍵解僱僕從（依品級）",
         "bulk-servant-quality",
         servantQualities.map(q => q.name),
         counts,
         "bulkDismissServants",
-        "※ 正在執行任務的僕從一併解僱，其任務會中止"
+        "※ 正在執行任務的僕從一併解僱，其任務會中止；🔒 鎖定的僕從不會被解僱"
     ));
 
     // 任務選項只算一次；限定品質的任務（例：礦脈採礦限傳說）只出現在符合的僕從選單
@@ -79,7 +80,7 @@ function renderServants() {
 
         parts.push(`
             <div class="card" style="border-color: var(--servant-color);">
-                <h3 class="quality-${s.quality}">${s.name}</h3>
+                <h3 class="quality-${s.quality}">${s.name}${s.locked ? ' 🔒' : ''}</h3>
                 <p style="font-size: 0.85em; margin: 5px 0; color:#9ca3af;">品質：<span class="quality-${s.quality}">${s.quality}</span></p>
                 <p style="font-size: 0.85em; color: #facc15; margin-bottom: 8px;">任務效率：x${s.mult}｜每趟 ${getServantTripCost(s)} 靈石</p>
                 <select onchange="assignServantQuest('${s.id}', this.value)"
@@ -87,7 +88,8 @@ function renderServants() {
                     ${options}
                 </select>
                 ${statusText}
-                <button style="border-color: #ef4444; color: #ef4444; background: rgba(239,68,68,0.1);" onclick="dismissServant('${s.id}')">解僱僕從</button>
+                <button onclick="toggleServantLock('${s.id}')">${s.locked ? '🔒 已鎖定' : '🔓 鎖定'}</button>
+                <button style="border-color: #ef4444; color: #ef4444; background: rgba(239,68,68,0.1);" onclick="dismissServant('${s.id}')" ${s.locked ? 'disabled title="已鎖定，解鎖後才能解僱"' : ''}>解僱僕從</button>
             </div>`);
     });
 
@@ -129,7 +131,7 @@ function assignServantQuest(servantId, questId) {
     } else {
         servant.quest = null;
         servant.timer = 0;
-        addLog(`🤝 召回了僕從【${servant.name}】，暫停其任務。`, "system");
+        addLog(`🤝 召回了僕從【${servant.name}】，暫停其任務。`, "servant");
     }
 
     renderServants();
@@ -141,26 +143,41 @@ function bulkDismissServants() {
     let selected = getCheckedBulkQualities('bulk-servant-quality');
     if (selected.length === 0) { alert("請先勾選要解僱的品級！"); return; }
 
-    let targets = player.servants.filter(s => selected.includes(s.quality));
-    if (targets.length === 0) { alert("沒有符合勾選品級的僕從。"); return; }
+    // 鎖定的僕從一律略過
+    let targets = player.servants.filter(s => selected.includes(s.quality) && !s.locked);
+    if (targets.length === 0) { alert("沒有符合勾選品級、且未鎖定的僕從。"); return; }
 
     let working = targets.filter(s => s.quest).length;
     let warn = working > 0 ? `\n（其中 ${working} 名正在執行任務，解僱後任務將中止）` : "";
-    if (!confirm(`確定要解僱 ${targets.length} 名【${selected.join('、')}】僕從嗎？${warn}\n此操作無法復原。`)) return;
+    let lockedSkipped = player.servants.filter(s => selected.includes(s.quality) && s.locked).length;
+    let lockNote = lockedSkipped > 0 ? `\n（另有 ${lockedSkipped} 名已鎖定，不會被解僱）` : "";
+    if (!confirm(`確定要解僱 ${targets.length} 名【${selected.join('、')}】僕從嗎？${warn}${lockNote}\n此操作無法復原。`)) return;
 
-    player.servants = player.servants.filter(s => !selected.includes(s.quality));
-    addLog(`🗑️ 一鍵解僱了 ${targets.length} 名僕從（${selected.join('、')}）。`, "system");
+    let targetIds = new Set(targets.map(s => s.id));
+    player.servants = player.servants.filter(s => !targetIds.has(s.id));
+    addLog(`🗑️ 一鍵解僱了 ${targets.length} 名僕從（${selected.join('、')}）${lockedSkipped > 0 ? `，略過 ${lockedSkipped} 名鎖定` : ''}。`, "servant");
     renderServants();
     updateQuestUI();
     updateUI();
 }
 
 function dismissServant(servantId) {
-    if (!confirm("確定要解僱此僕從嗎？")) return;
+    let servant = player.servants.find(s => s.id === servantId);
+    if (!servant) return;
+    if (servant.locked) { alert(`僕從【${servant.name}】已鎖定，請先解除鎖定再解僱。`); return; }
+    if (!confirm(`確定要解僱僕從【${servant.name}】嗎？`)) return;
     player.servants = player.servants.filter(s => s.id !== servantId);
-    addLog(`解僱了僕從。`, "system");
+    addLog(`解僱了僕從【${servant.name}】。`, "servant");
     renderServants();
     updateQuestUI();
+}
+
+// 鎖定／解鎖僕從：鎖定後無法單獨解僱，一鍵解僱也會略過（避免誤刪）
+function toggleServantLock(servantId) {
+    let servant = player.servants.find(s => s.id === servantId);
+    if (!servant) return;
+    servant.locked = !servant.locked;
+    renderServants();
 }
 
 // 由 combatTick() 每秒呼叫：每位有任務的僕從各自累積進度並結算獎勵
@@ -192,7 +209,7 @@ function tickServantQuests() {
 
             // 接著出發下一趟：付不起靈石就停工
             if (!payServantTrip(s)) {
-                addLog(`💸 靈石不足 ${getServantTripCost(s)}，僕從【${s.name}】停止【${def.name}】，回到閒置。`, "system");
+                addLog(`💸 靈石不足 ${getServantTripCost(s)}，僕從【${s.name}】停止【${def.name}】，回到閒置。`, "servant");
                 s.quest = null;
                 s.timer = 0;
             }

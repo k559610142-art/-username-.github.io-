@@ -13,7 +13,7 @@ function addStarIron(n, source) {
     let got = Math.floor(n * (1 + gearFx("尋鐵")));
     if (got <= 0) return 0;
     player.starIron = (player.starIron || 0) + got;
-    if (source) addLog(`🌠 ${source}，獲得星允鐵 ×${got}！（持有 ${player.starIron.toWan()}）`, "level-up");
+    if (source) addLog(`🌠 ${source}，獲得星允鐵 ×${got}！（持有 ${player.starIron.toWan()}）`, "level-up", false, "item");
     return got;
 }
 
@@ -366,7 +366,7 @@ function buyStarIron(qty) {
     player.coins -= n * IRON_AUCTION_PRICE;
     st.bought += n;
     player.starIron = (player.starIron || 0) + n;
-    addLog(`🌠 於千寶閣以 ${(n * IRON_AUCTION_PRICE).toWan()} 靈石購得星允鐵 ×${n}。`, "system");
+    addLog(`🌠 於千寶閣以 ${(n * IRON_AUCTION_PRICE).toWan()} 靈石購得星允鐵 ×${n}。`, "system", false, "item");
     renderAuction();
     updateUI();
 }
