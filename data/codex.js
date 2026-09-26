@@ -29,6 +29,12 @@ function getOpenGear() {
     return gearList.filter(d => !GEAR_CHANNELS[d.channel].locked);
 }
 
+// 收藏類稱號（codexAll／codexPlatinumAll／category／slot／element）的範圍：固定不含秘境裝備。
+// 2026-09-27 秘境管道解鎖（魔屠天南掉落）後仍維持原門檻，避免舊稱號突然變難（第 49 節）
+function getTitleGear() {
+    return getOpenGear().filter(d => d.channel !== 'realm');
+}
+
 function countCollected() {
     return Object.keys(player.gearCodex || {}).filter(id => (player.gearCodex[id] || []).length > 0).length;
 }
@@ -43,7 +49,7 @@ function getTitleName(t) {
 }
 
 function isTitleConditionMet(c) {
-    let open = () => getOpenGear();
+    let open = () => getTitleGear();
     switch (c.type) {
         case 'codex': return countCollected() >= c.value;
         case 'codexAll': return open().every(hasCollected);
@@ -64,6 +70,7 @@ function isTitleConditionMet(c) {
         case 'casinoFire': return ((player.casino || {}).fires || 0) >= c.value;
         case 'casinoTriple': return ((player.casino || {}).triples || 0) >= c.value;
         case 'casinoBigWin': return ((player.casino || {}).maxDiceWin || 0) >= c.value;
+        case 'defenseWave': return (player.defenseBest || 0) >= c.value;   // 魔屠天南最高守住波數（defense.js）
     }
     return false;
 }
@@ -72,8 +79,8 @@ function isTitleConditionMet(c) {
 function describeTitleCondition(c) {
     switch (c.type) {
         case 'codex': return `天磯錄收藏 ${c.value} 種（目前 ${countCollected()}）`;
-        case 'codexAll': return `收齊所有已開放的裝備（${getOpenGear().filter(hasCollected).length} / ${getOpenGear().length}）`;
-        case 'codexPlatinumAll': return `所有已開放的裝備都收到白金`;
+        case 'codexAll': return `收齊所有裝備，不含秘境（${getTitleGear().filter(hasCollected).length} / ${getTitleGear().length}）`;
+        case 'codexPlatinumAll': return `所有裝備都收到白金（不含秘境）`;
         case 'category': return `${EQUIP_CATEGORY_NAMES[c.value]}全收（不含秘境）`;
         case 'slot': return `${c.value}全收（不含秘境）`;
         case 'element': return `${c.value}屬性裝備全收（不含秘境）`;
@@ -90,6 +97,7 @@ function describeTitleCondition(c) {
         case 'casinoFire': return `天星賭坊切出整朵異火`;
         case 'casinoTriple': return `天星賭坊押中指定豹子`;
         case 'casinoBigWin': return `天星賭坊擲骰單把淨贏 ${c.value.toWan()} 靈石`;
+        case 'defenseWave': return `秘境「魔屠天南」守住第 ${c.value} 波（最高 ${player.defenseBest || 0}）`;
     }
     return '';
 }
@@ -170,7 +178,7 @@ function renderCodexModal() {
              : renderCodexGear();
     box.innerHTML = `
         <p style="text-align: center; color: #9ca3af; font-size: 0.85em; margin: 0 0 8px;">
-            收藏 <b style="color: var(--accent);">${countCollected()}</b> / ${gearList.length} 種（秘境 ${gearList.length - getOpenGear().length} 種尚未開放）｜
+            收藏 <b style="color: var(--accent);">${countCollected()}</b> / ${gearList.length} 種${gearList.length > getOpenGear().length ? `（${gearList.length - getOpenGear().length} 種尚未開放）` : ''}｜
             紫 ${countCollectedQuality('紫色')}｜橙 ${countCollectedQuality('橙色')}｜<span class="quality-白金">白金 ${countCollectedQuality(PLATINUM_QUALITY.name)}</span>｜異火 ${countCollectedFires()} / ${strangeFireList.length}｜稱號 ${(player.titles || []).length} / ${titleList.length}
         </p>
         <div class="codex-tabs">${tabs}</div>
@@ -215,7 +223,7 @@ function renderCodexGear() {
 
 function renderCodexSets() {
     let counts = getEquippedSetCounts();
-    return `<p style="color: #9ca3af; font-size: 0.82em; text-align: center;">套裝都在秘境（尚未開放）。只計算紫色以上的件數。</p>
+    return `<p style="color: #9ca3af; font-size: 0.82em; text-align: center;">套裝都在秘境（秘境「魔屠天南」守城掉落部件，一次一件）。只計算紫色以上的件數。</p>
         <div class="grid-container">${Object.keys(gearSets).map(name => {
             let set = gearSets[name];
             let pieces = gearList.filter(d => d.set === name);

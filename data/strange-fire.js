@@ -139,5 +139,5 @@ function renderCodexFires() {
     return `<p style="color: #9ca3af; font-size: 0.82em; text-align: center;">
             天下異火 <b style="color: var(--accent);">${countCollectedFires()}</b> / ${strangeFireList.length} 種｜持有 ${(player.strangeFires || 0).toWan()} 朵｜碎片 ${(player.fireShards || 0).toWan()}<br>
             每種收錄後永久加成一次（重複不疊加）；每 ${STRANGE_FIRE_SHARDS_PER_FIRE} 片碎片合成 1 朵，品階機率：${odds}<br>
-            異火碎片於秘境取得（秘境尚未開放）</p>${sections}`;
+            異火碎片於秘境取得（目前：秘境「魔屠天南」守城）</p>${sections}`;
 }

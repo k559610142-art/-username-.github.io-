@@ -390,6 +390,47 @@ const partnerList = [
         passive: { eva: 2, chaPct: 0.03 },
         skill: { name: "妙音鎖魂", chance: 0.15, target: "single", dmgType: "mag", mult: 1.4, freezeAll: true,
                  desc: "15%：單體術法 140% 傷害，所有敵人凍結 1 回合", msg: "🎶 紫靈輕撥琴弦，【妙音鎖魂】令群敵心神失守！" }
+    },
+    // ---- 天驕級・吞噬星空（2026-09-27 玩家指定新增 5 位，秘境「魔屠天南」第 51 波起有緣相遇；皆以地球時期計）----
+    {
+        id: "xuxin", gender: "f", name: "徐欣", title: "星空伴侶", work: "吞噬星空", author: "我吃西紅柿", world: "吞噬星空・地球", peak: "（以地球時期計）",
+        power: { atk: 55, def: 66, spd: 70, mag: 74, found: 78, grow: 84 },
+        analysis: "羅峰青梅竹馬的戀人，溫柔堅韌、總在後方支撐對方；本身戰力不高，擅長照料與療傷，讓身邊的人在苦戰中撐得更久。",
+        passive: { hpPct: 0.02, "fx:丹心": 0.15 },
+        skill: { name: "守望之心", chance: 0.15, target: "self", heal: 0.10, shield: { reduce: 0.2, duration: 2 },
+                 desc: "15%：主人回復 10% 氣血，受到傷害 -20% 持續 2 回合", msg: "💗 徐欣默默守在身後，【守望之心】撫平你的傷勢！" }
+    },
+    {
+        id: "qinshuang", gender: "f", name: "秦霜", title: "冰雪戰神", work: "吞噬星空", author: "我吃西紅柿", world: "吞噬星空・地球", peak: "（以地球時期計）",
+        power: { atk: 80, def: 70, spd: 80, mag: 68, found: 72, grow: 76 },
+        analysis: "冷艷果決的女武者，出手乾淨俐落、以快制敵，是早期少數能獨當一面的強者；招式偏重攻勢，久戰與防守略顯吃力。",
+        passive: { atkPct: 0.02, ice: 1 },
+        skill: { name: "霜月斬", chance: 0.15, target: "single", dmgType: "phys", mult: 1.8, attrs: { ice: 100 },
+                 desc: "15%：單體物理 180% 傷害並必定凍結", msg: "❄️ 秦霜身形一閃，【霜月斬】寒光封住敵人！" }
+    },
+    {
+        id: "babata", name: "巴巴塔", title: "智能導師", work: "吞噬星空", author: "我吃西紅柿", world: "吞噬星空・原始宇宙", peak: "（以地球時期計）",
+        power: { atk: 40, def: 60, spd: 70, mag: 90, found: 92, grow: 88 },
+        analysis: "寄居在戒指中的智能生命，見識廣博、話多嘴碎，能替主人分析敵情、規劃修行；幾乎沒有正面戰力，勝在知識與眼界。",
+        passive: { "fx:悟道": 0.03, intPct: 0.02 },   // 修為 +3%、悟性 +2%
+        skill: { name: "弱點分析", chance: 0.15, target: "single", dmgType: "mag", mult: 1.5, mpHeal: 0.06,
+                 desc: "15%：單體術法 150% 傷害，主人回復 6% 靈力", msg: "💍 巴巴塔嘮叨著算出破綻：「打這裡！」【弱點分析】正中要害！" }
+    },
+    {
+        id: "jinjiao", name: "金角巨獸", title: "吞噬分身", work: "吞噬星空", author: "我吃西紅柿", world: "吞噬星空・原始宇宙", peak: "（以行星級時期計）",
+        power: { atk: 86, def: 88, spd: 66, mag: 70, found: 80, grow: 86 },
+        analysis: "吞噬萬物成長的上古巨獸，軀體堅不可摧、力大無窮，衝鋒時如山崩；身法笨重、神通單一，是純粹的正面肉搏型。",
+        passive: { def: 2, hpPct: 0.02 },
+        skill: { name: "巨獸踐踏", chance: 0.15, target: "aoe", dmgType: "phys", mult: 1.6,
+                 desc: "15%：全體物理 160% 傷害", msg: "🦏 金角巨獸仰天咆哮，【巨獸踐踏】震裂大地！" }
+    },
+    {
+        id: "moyunteng", name: "摩雲藤", title: "吞噬之藤", work: "吞噬星空", author: "我吃西紅柿", world: "吞噬星空・原始宇宙", peak: "（以地球時期計）",
+        power: { atk: 72, def: 80, spd: 60, mag: 82, found: 76, grow: 90 },
+        analysis: "能吞噬生機、不斷蔓生的奇異藤蔓，生命力頑強、越打越難纏；行動遲緩，但一旦纏上敵人便很難掙脫。",
+        passive: { hpPct: 0.02, poison: 1 },
+        skill: { name: "吞噬生機", chance: 0.15, target: "single", dmgType: "mag", mult: 1.5, lifesteal: 0.3,
+                 desc: "15%：單體術法 150% 傷害，30% 轉為主人氣血", msg: "🌿 摩雲藤纏上敵人，【吞噬生機】汲取其精元！" }
     }
 ];
 

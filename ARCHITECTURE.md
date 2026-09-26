@@ -18,7 +18,8 @@ images/               圖片素材
   avatar-female.jpg   女修頭像（南宮婉，599×333 橫式）
                       ※ 頭像原本放在外部圖床 postimg.cc，已改為本地檔案；橫式圖裁成圓形時依 PLAYER_AVATARS.pos 對準臉部
   evil-hall.jpg       殺手殿堂場景背景（937×625，玩家提供；獵殺邪修入口，見第 27 節）
-  secret/             秘境海報（config-secret-realms.js 的 img，第 43 節）：zhenmo-tower.jpg 鎮魔塔（768×1365，9:16，玩家提供的水墨海報，圖上已有標題與標語）
+  secret/             秘境海報（config-secret-realms.js 的 img，第 43 節）：zhenmo-tower.jpg 鎮魔塔（768×1365，9:16，玩家提供的水墨海報，圖上已有標題與標語）、
+                      motu-tiannan.jpg 魔屠天南手機版（852×1846）／motu-tiannan-pc.jpg PC 版（1024×1536），玩家提供的 webp 以瀏覽器轉 JPG（圖上無字，標題由程式疊上，第 49 節）
   avatars/            可解鎖更換的頭像（256×256 正方形、臉部置中，由玩家提供的原圖裁切縮小），見第 32 節
   towns/              城內場景圖（玩家提供，第 20 節）：tianxing-market.jpg 天星城坊市橫圖（1582×672）、
                       tianxing-market-portrait.jpg 手機直式（704×1520，9:19.4）、
@@ -29,6 +30,8 @@ images/               圖片素材
   cover.jpg           主頁封面・橫式（1264x843），電腦與橫向螢幕使用
   cover-portrait.jpg  主頁封面・直式（960x1920），手機直向使用（由橫式圖重新構圖而成）
 videos/               影片：fengxi-dance.mp4 風希跳舞彩蛋（玩家提供；2026-09-27 壓成 854×480、18 秒、約 0.52 Mbps＋AAC 64k 單聲道、1.35 MB，第 39 節）
+  defense/            死守天南城背景影片（第 49 節）：battle.mp4 城牆雷戰（10.97 秒、2.75 MB）、flame.mp4 佛焰金身（8.8 秒、2.38 MB）、sword.mp4 巨劍劍氣（8.73 秒、2.34 MB），
+                      皆 720×1280、H.264、無聲、頭尾淡入淡出（trim 0.6）；原始檔 v1c771…mp4／Pippit_0926_BuddhaFlame.mp4／Pippit_0926_GiantSwordAura.mp4（1080×1920、10～18 MB）仍在 videos/
 tools/                不會被遊戲載入的維護工具
   裝備清單-850種.csv   850 種裝備的來源資料（Excel 可開啟；UTF-8 BOM），改完執行下一行的腳本
   csv-to-js.ps1       把 CSV 轉成 data/config-gear-catalog.js（powershell -ExecutionPolicy Bypass -File tools\csv-to-js.ps1）
@@ -41,7 +44,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
   config-*.js         純資料表（原則上不含函式、無副作用），可視為遊戲的「設計數值表」：
                       realms / level / lifespan / maps / sects / lingbao / shop / beasts /
                       servants / equipment / tribulation / quests / activities / daily-quests / elements / merit / bounty / talisman / avatars / home-pc / spells /
-                      gear-catalog / gear / enhance / sets / profession / titles（裝備系統，第 37 節）/ strange-fire（天下異火 50 種，第 38 節）/ partners（情緣夥伴，第 39 節）/ towns（城內場景，第 20 節）/ leaderboard（天下戰力榜 Firebase 設定，第 42 節）/ secret-realms（秘境列表，第 43 節）
+                      gear-catalog / gear / enhance / sets / profession / titles（裝備系統，第 37 節）/ strange-fire（天下異火 50 種，第 38 節）/ partners（情緣夥伴，第 39 節）/ towns（城內場景，第 20 節）/ leaderboard（天下戰力榜 Firebase 設定，第 42 節）/ secret-realms（秘境列表，第 43 節）/ defense（死守天南城 100 波，第 49 節）
                       （config-gear-catalog.js 由 tools/csv-to-js.ps1 自動產生，請改 CSV）
                       （config-realms.js 另含修煉節奏表 realmPacing，經驗門檻與壽元流逝都由它換算，見第 26 節）
                       （config-sects.js 例外：尾端有一段迴圈補上技能倍率，並提供 findSectByName()）
@@ -77,7 +80,8 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
   save.js             本地存檔/讀檔/匯出入/離線掛機結算＋背景補發（第 33 節）/重置/舊存檔相容
   avatar.js           頭像更換：解鎖判定、選擇視窗（設定在 config-avatars.js，第 32 節）
   leaderboard.js      天下戰力榜：定時上傳戰力到 Firebase Firestore、榜單視窗（第 42 節）
-  secret-realm.js     秘境入口：秘境列表、全螢幕秘境場景（海報）、挑戰說明視窗（第 43 節；玩法尚未實作）
+  secret-realm.js     秘境入口：秘境列表、全螢幕秘境場景（海報）、挑戰說明視窗（第 43 節；鎮魔塔玩法尚未實作）
+  defense.js          魔屠天南・死守天南城：影片預載＋預計秒數、三支影片輪流、100 波特效演出（第 49 節）
   home-ui.js          洞府主畫面：舞台縮放（手機／PC 版面）、HUD 數值、底部導覽分頁、建築熱點、興建中提示（第 31 節）
   settings.js         設定視窗（洞府右上 ⚙️）：顯示尺寸 手機 9:16／PC 16:9／自動、全螢幕（第 34 節）、字級 小／中／大（第 45 節）
   title-screen.js     遊戲主頁（標題畫面）與進入世界
@@ -102,6 +106,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 - `gear.js` 載入時會立即展開 `gearList`／`gearById`／`gearBySlot`，讀取 `config-gear-catalog.js` 與 `config-equipment.js`（`equipTypes`），所以必須排在兩者之後。
   其餘新檔（`config-gear/enhance/sets/profession/titles.js`、`enhance.js`、`profession.js`、`codex.js`）只宣告常數與函式，排在 `gear.js` 附近即可。
 - `strange-fire.js`、`partner.js` 載入時會建 `strangeFireById`／`partnerById`，必須分別排在 `config-strange-fire.js`、`config-partners.js` 之後。
+- `defense.js` 載入時就建立 `DefenseBattle`（讀 `DEFENSE_*` 常數），必須排在 `config-defense.js` 之後；它在 DOMContentLoaded 抓 `#defense-vwrap` 的影片元素。
 
 | # | 檔案 | 責任 | 依賴（讀取哪些全域） | 被誰依賴 / 誰會呼叫它 |
 |---|------|------|----------------------|------------------------|
@@ -139,7 +144,8 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 15l | `config-titles.js` | `titleList`（60 個稱號：條件 cond、加成 bonus；含 4 個賭運稱號） | 無 | `codex.js`、`casino.js`(紀錄頁列出賭運稱號) |
 | 15p | `config-casino.js` | 天星賭坊（第 40 節）：`CASINO_TOWN`、每日上限 `CASINO_DAILY_LIMIT_BY_REALM`、`CASINO_DICE_MAX_RATIO`/`CASINO_DICE_MIN_BET`/`CASINO_CONFIRM_RATIO`、`casinoStones`(三種隕石：價格、結果權重表)、`CASINO_VALUE`(估值)、`CASINO_CUT_LINES`、擲骰 `CASINO_DICE_BETS`/`CASINO_TOTAL_PAYOUT`/`CASINO_DICE_FACES` | 無 | `casino.js` |
 | 15q | `config-leaderboard.js` | 天下戰力榜（第 42 節）：`LEADERBOARD_FIREBASE_CONFIG`（null = 不啟用、不連網）、`LEADERBOARD_SDK_BASE`、`LEADERBOARD_COLLECTION`、`LEADERBOARD_UPLOAD_INTERVAL_MS`(5 分)/`LEADERBOARD_FIRST_UPLOAD_DELAY_MS`(15 秒)/`LEADERBOARD_MIN_GAP_MS`(60 秒，須與 tools/firestore.rules 一致)/`LEADERBOARD_TOP_N`(100)/`LEADERBOARD_REFRESH_COOLDOWN_MS` | 無 | `leaderboard.js` |
-| 15r | `config-secret-realms.js` | 秘境（第 43 節）：`SECRET_REALM_DAILY_ATTEMPTS`(預定每日 5 次)、`secretRealmList`（id／name／img／minRealmIndex／implemented／tagline／desc／rewards 預定獎勵） | 無 | `secret-realm.js` |
+| 15r | `config-secret-realms.js` | 秘境（第 43 節）：`SECRET_REALM_DAILY_ATTEMPTS`(預定每日 5 次)、`secretRealmList`（id／name／img／minRealmIndex／implemented／tagline／desc／rewards 預定獎勵；選填 size／imgPc／sizePc／sceneTitle／sceneSub／enterLabel／enterPos／mode） | 無 | `secret-realm.js` |
+| 15s | `config-defense.js` | 死守天南城（第 49 節）：`DEFENSE_TOTAL_WAVES`(100)／`DEFENSE_BOSS_EVERY`(10)／`DEFENSE_CLIP_FADE`、`DEFENSE_CLIPS`（id／name／src／zoom／trim／sizeHint）、`DEFENSE_THEMES`(10 主題)、`DEFENSE_BOSSES`、`DEFENSE_OPENERS`、`DEFENSE_CAMERAS` | 無 | `defense.js` |
 | 16 | `state.js` | `player`（含裝備系統 `starIron`/`ironShards`/`gearStash`/`ironShop`/`ironUsed`/`maxEnhance`/`gearCodex`/`titles`/`activeTitle`/`profession`/`profSwitched`/`proficiency`（第 37 節）、`lingbaoSold`、仙法 `spells`/`spellSlots`、渡劫失敗虛弱 `weakened`、頭像 `avatarId`/`unlockedAvatars`、頭像光環 `avatarFrameId`/`unlockedFrames`、礦石 `ore`、符寶 `talismans`、異火 `fireShards`/`strangeFires`/`fireCollection`（第 38 節）、天星賭坊 `casino`（第 40 節）、夥伴 `partners`/`partnerTeam`/`partnerBond`/`fieldKills`（第 39 節）、藏書閣屬性秘典次數 `elementStudy`、轉世保留的上限 `reincarnateBonus`、年齡 `age`、功德系統 `merit`/`butianStones`/`breakPills`/`evilKills`、善惡 `karma`、懸賞榜 `bountyBoard`/`bountyRefreshAt`/`bountyFaction`/`activeBountyId`/`bountyKills`、付費刷新次數 `paidRefresh`、線上實戰證明 `idleProvenMap`（第 33 節））、`DEFAULT_PLAYER_JSON`（全新角色預設值快照，讀檔/匯入的合併基底）、`enemies`（每隻帶 `attrs`/`status`；野外修士另帶 `cultivator`("正"/"邪")/`ambush`）、`respawnTimer`、`safeZoneTimer`；不存檔的執行期狀態：`inTribulation`/`heartDemon`/`tribulationFatedWin`/懸賞對決 `inBountyDuel`/`duelOpponent`/`duelWeakenTimer`/`duelWeakenMult`/`duelSilenceTimer`/`duelArmorTimer`/丹藥冷卻/`gameOver`/背景補發 `lastTickAt`/`missedTickMs`/線上實戰秒數 `fieldOnlineTicks`/日誌彙總 `waveSummary`/`meditateSummary`/`playerStatus`(玩家身上的凍結/燒傷/中毒)/靈寵輔助計時(`petBuff*`/`petShield*`/`petRegen*`) | **`maps`**（必須排在 config-maps.js 之後） | 幾乎所有檔案都會讀寫 `player` |
 | 17 | `stats.js` | `EQUIP_STAT_KEYS`/`BASE_STAT_KEYS`、`getEquipBonus`(四維＋減傷/閃避/屬性傷害；四維 × 強化倍率與主修武器加成，再加 gear.js `getBonusTotals` 的詞條／套裝／稱號／職業)/`getElementCounts`/`getSpiritRoots`(靈根判定)/`getRootBonus`(靈根加成總和)/`getPlayerElement`(本命五行，五行相剋用)/`getRealmStageExp`(依 realmPacing 換算每階經驗基數，有快取)/`getNextExp`/`getLevelExpNeeded`/`hasLiveBeast`(出戰中才算，呼叫 beast-combat.js 的 isBeastActive)/`getBasePower`/`getPhysAttack`/`getMagAttack`(兩者皆乘上懸賞對決的化功 `getDuelWeakenMult()` 與 `getGearPctBonus`)/`getMaxHp`(乘 `getGearPctBonus('hp')`)/`getMaxMp`(兩者皆加上轉世保留值)/`getReincarnateBonus`/`getSectTier`/`getAllSkills` | `player`、`realms`、`sectData`、`LEVEL_*`、`equipTypes`/`WUXING_COUNTERS`、靈寵輔助計時、`bounty.js`(getDuelWeakenMult) | `ui.js`、`combat.js`、`leveling.js`、`tribulation.js`、`beast-combat.js` 等幾乎全部功能檔 |
 | 18 | `elements.js` | `newStatus`/`getPlayerCombatAttrs`(含 `element`；懸賞對決被破甲時減傷／閃避 × `getDuelArmorMult()`；裝備特效的護體／先手盾／定神／破甲／洞察／剋敵／寒徹／焚燼／蝕骨欄位與套裝提高的上限)/`getWuxingCounterMult`/`withSkillEffect`/`getMapCategoryIndex`/`rollMonsterAttrs`/`resolveHit`/`addDotStack`/`tickStatus`/`formatStatus`/`summarizeTags`/`formatEquipStats` | `config-elements.js`、`stats.js`(getEquipBonus/getPlayerElement)、`library.js`(getElementBookBonus)、`wuxingElements`、`maps`、`playerStatus` | `combat.js`、`tribulation.js`、`ui.js`、`bag.js`/`equipment.js`/`auction.js`/`lingbao-shop.js`(裝備屬性文字) |
@@ -181,7 +187,8 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 41 | `save.js` | `calcOfflineProgress`(讀檔時的離線結算，呼叫 settleIdleSeconds)/`settleIdleSeconds`(離線與背景共用的收益結算，含 settleOfflineBeastUpkeep 靈寵維持費)/`estimateIdleCombat`(依實力估算離線戰鬥效率與能否存活)/`formatIdleDuration`/背景補發 `checkBackgroundCatchUp`＋常數 `BACKGROUND_TICK_SLACK_MS`/`BACKGROUND_SETTLE_MIN_SECONDS`（第 33 節）/`saveLocal`/`loadLocal`/`applySaveData`(讀檔與匯入共用)/`resetGameCompletely` + 舊存檔相容 `migrateServantAssignments`/`migrateEquipmentSlots`/`migrateActivityFields`/`migrateCurrentMap`/`migrateProgressionFields`/`migrateLegacySkills`(舊禁術下修＋已兌換武學耗魔同步)/`migrateRealmExp`(經驗曲線改版：待渡劫者修為壓回滿格)/`migrateEquipSockets`(只補 talismans 欄位)/`migrateArtifactIds`(在 artifact.js，舊神器補 lingbaoId) + 讀檔失敗保護 `saveLoadFailed`/`reportLoadFailure`/`retryLoadAfterFailure`/`showRawSaveForCopy`/`abandonSaveAndStartNew`（第 30 節） + 離線斬殺野外修士的功德（讀檔時也呼叫 `settleMeritStones()`）+ 讀檔時清除懸賞對決狀態 + `reloadLocalSave`(選單按鈕，無存檔時給提示) + 存檔代碼（常數 `SAVE_CODE_PREFIX`="FS2:"、兩段式確認暫存 `pendingImportData`；編解碼皆為 async）`encodeSaveCode`/`decodeSaveCode`/`bytesToBase64`/`base64ToBytes`/`pipeBytes`/`openSaveCodeModal`/`setSaveCodeStatus`/`exportSave`/`selectSaveCodeText`/`copySaveCode`/`downloadSaveCode`/`importSave`/`pasteSaveCodeFromClipboard`/`importSaveFromFile`/`confirmImportSave`/`resetImportConfirm` | `player`（整包序列化進 `localStorage`）、`maps`(migrateCurrentMap)、`legacySkillAdjustments`/`lingbaoShopItems`(migrateLegacySkills)、`leveling.js`(gainExp)、`combat.js`(tryRescueServant)、`lifespan.js`、`beast-combat.js`(createBeast)、`ui.js` | `main.js`(啟動時 loadLocal)、`main.js`(initGame 內每 30 秒 saveLocal) |
 | 41b | `avatar.js` | `getPlayerAvatar`/`isAvatarUnlocked`/`checkAvatarCondition`/`checkAvatarUnlocks`/`openAvatarModal`/`renderAvatarModal`/`buyAvatar`/`selectAvatar`；頭像光環 `isFrameUnlocked`/`getPlayerFrame`/`checkFrameUnlocks`/`getFrameOverlayBox`/`renderFramedAvatar`/`renderFrameList`/`selectFrame`/`buyFrame` | `avatarList`、`avatarFrameList`/`AVATAR_FRAME_HOLE_FIT`、`player.avatarId`/`unlockedAvatars`/`avatarFrameId`/`unlockedFrames`/`gender`/`realmIndex`/`level`/`reputation`/`tribulationCount`、`realms` | `ui.js`(updateUI 呼叫 checkAvatarUnlocks；戰鬥實況頭像 renderFramedAvatar)、`home-ui.js`(頭像框、`updateHudAvatarFrames`)、HTML 頭像點擊與選擇視窗 |
 | 41d | `leaderboard.js` | 天下戰力榜（第 42 節）：狀態 `lbBackend`/`lbLastUploadAt`/`lbLastRefreshAt`/`lbRows`/`lbError`；`isLeaderboardConfigured`/`getRankPower`(= getPhysAttack 扣掉禁術、靈寵增益、對決化功等暫時倍率)/`lbLoadScript`/`initLeaderboardBackend`(動態載入 Firebase compat SDK＋匿名登入，回傳 `{db, uid}`)/`uploadLeaderboard`/`startLeaderboardSync`/`fetchLeaderboard`/`openLeaderboardModal`/`refreshLeaderboard(manual)`/`lbEscape`/`lbTimeAgo`/`renderLeaderboard(loading)` | `config-leaderboard.js`、`stats.js`(getPhysAttack)、`bounty.js`(getDuelWeakenMult)、`player`/`petBuffTimer`/`petBuffMult`/`gameOver`、`save.js`(saveLoadFailed)、`main.js`(gameStarted)、`player-profile.js`(sanitizePlayerName)、`realms`、全域 `firebase`（CDN 動態載入） | `main.js`(initGame 呼叫 startLeaderboardSync)、HTML 洞府 HUD「戰力 🏆」 |
-| 41e | `secret-realm.js` | 秘境入口（第 43 節）：`currentSecretRealm`、`getSecretRealm`/`openSecretRealmModal`/`renderSecretRealmList`/`openSecretRealmScene(id)`/`closeSecretRealmScene`(回到列表)/`challengeSecretRealm`(顯示預定玩法與獎勵) | `config-secret-realms.js`、`realms`、`player.realmIndex`、`ui.js`(closeModal) | `activity.js`(活動「秘境」的 openFn)、HTML 秘境卡片與場景按鈕 |
+| 41e | `secret-realm.js` | 秘境入口（第 43 節）：`currentSecretRealm`、`getSecretRealm`/`openSecretRealmModal`/`renderSecretRealmList`/`openSecretRealmScene(id)`/`closeSecretRealmScene`(回到列表)/`challengeSecretRealm`(顯示預定玩法與獎勵；`mode: 'defense'` 改呼叫 `openDefenseBattle`) | `config-secret-realms.js`、`realms`、`player.realmIndex`、`ui.js`(closeModal)、`defense.js` | `activity.js`(活動「秘境」的 openFn)、HTML 秘境卡片與場景按鈕 |
+| 41f | `defense.js` | 死守天南城（第 49 節）：`DefenseBattle`（內部函式全包在裡面，對外只有 open／close／setSpeed／retry／waveSpec 與測試用 `_sim`／`_state`）、全域 `openDefenseBattle`/`closeDefenseBattle`/`setDefenseSpeed` | `config-defense.js`、`format.js`(toWan)、`#defense-scene` DOM | `secret-realm.js`(challengeSecretRealm)、HTML 守城畫面按鈕 |
 | 41c | `settings.js` | `DISPLAY_MODE_KEY`(localStorage 鍵)/`DISPLAY_MODES`/`AUTO_PC_MIN_WIDTH`/`AUTO_PC_MIN_RATIO`、`getDisplayMode`/`resolveDisplayLayout`(回傳 'phone'／'pc')/`setDisplayMode`/字級 `FONT_SCALE_KEY`/`FONT_SCALES`/`getFontScaleId`/`applyFontScale`/`setFontScale`（第 45 節）/`openSettingsModal`/`renderSettingsModal`/`isFullscreen`/`toggleFullscreen`；頂層註冊 `fullscreenchange` 監聽（只綁函式，載入順序不影響） | `home-ui.js`(layoutStage)、`#settings-modal` DOM、`localStorage` | `home-ui.js`(layoutStage 呼叫 resolveDisplayLayout)、HTML ⚙️ 設定按鈕 |
 | 41a | `home-ui.js` | `STAGE_IMG_W`/`STAGE_IMG_H`、`TAB_TITLES`(修仙／戰鬥／宗門／任務／世界)、`layoutStage`(手機／PC 版面切換，並控制寬螢幕用手機版時的「切換回 PC 版」按鈕，第 34 節)/`renderPcStage`(依 config-home-pc.js 產生 PC 版按鈕與熱點)/`initHomeUi`/`switchTab`/`openWorldTab`/`showStageToast`/`showHudResourceInfo`(資源框點擊說明，第 47 節)/`showUnderConstruction`/`openAscensionPlatform`/`openSystemModal`(命運與系統彈窗)/`formatShortNumber`/`getCultivationRate`/`updateHomeHud`(同時寫入手機版 hud-xxx 與 PC 版 pc-hud-xxx) | `player`、`realms`、`PLAYER_AVATARS`、`stats.js`、`tribulation.js`(triggerTribulation)、`activity.js`(openActivity)、`config-home-pc.js`、`settings.js`(resolveDisplayLayout) | `ui.js`(updateUI 結尾呼叫 updateHomeHud)、`main.js`(onload 呼叫 initHomeUi)、HTML 熱點與底部導覽 |
 | 42 | `title-screen.js` | `TITLE_HOTSPOTS`(光環座標)/`currentTitleHotspot`/`positionTitleHotspot`/`enterWorld`/`initTitleScreen`、旗標 `worldEntered` | `main.js`(startGame)、`#title-screen` DOM | `main.js`(onload 呼叫 initTitleScreen)、標題頁按鈕 |
@@ -290,7 +297,8 @@ combatTick() 每秒執行 [combat.js]
 | `openCodexModal(tab)`（洞府寶塔右側山峰「天磯錄」，手機熱點與 PC 的 `pcStageButtons`）、`setCodexTab`/`setCodexSlot`/`setActiveTitle`（視窗內動態產生） | `data/codex.js` |
 | `chooseProfession(id)`（天磯錄「職業」分頁） | `data/profession.js` |
 | `openLeaderboardModal`（洞府 HUD 手機 `#hud-name`／PC `#pc-hud-name` 的「戰力 🏆」、洞府「大道石碑」熱點：手機寫在 index.html、PC 在 `pcStageButtons` 的 `stele`）、`refreshLeaderboard(true)`（榜單視窗「重新整理」） | `data/leaderboard.js` |
-| `openSecretRealmModal`（經由 `openActivity('secret')`）、`openSecretRealmScene(id)`（秘境卡片，動態產生）、`closeSecretRealmScene`（場景「↩ 離開」）、`challengeSecretRealm`（場景「⚔️ 入塔挑戰」） | `data/secret-realm.js` |
+| `openSecretRealmModal`（經由 `openActivity('secret')`）、`openSecretRealmScene(id)`（秘境卡片，動態產生）、`closeSecretRealmScene`（場景「↩ 離開」）、`challengeSecretRealm`（場景「⚔️ 入塔挑戰」／「⚔️ 死守天南城」） | `data/secret-realm.js` |
+| `closeDefenseBattle`（守城「↩ 離開」與結算「↩ 返回秘境」）、`setDefenseSpeed(1/2/4)`、`DefenseBattle.retry()`（載入失敗「🔄 重新載入」） | `data/defense.js` |
 | `chooseGender` | `data/main.js` |
 
 ## 5. 新增功能的建議流程
@@ -1262,7 +1270,7 @@ combatTick() 每秒執行 [combat.js]
 （以 8 種舊存檔形態測試目前程式皆可正常讀取；移除 `#age-display` 即可重現同一錯誤。）
 
 ### 1. 發佈版本號（防止新舊檔案混用）
-- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260928o`）。
+- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260928q`）。
 - **每次推上 GitHub Pages 前，把所有 `?v=` 全部取代成新值**（例：日期＋序號）。新 index.html 會指向新網址的 JS，不會再拿到快取的舊檔。
 - 新增 `data/*.js` 時也要記得帶上 `?v=`。
 
@@ -1975,6 +1983,9 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
   所以手機（上下留一點邊）與 PC（左右模糊）都不會裁掉圖上的標題與標語。「入塔挑戰」按鈕在海報內以 % 定位（右側山崖、靠右 4%、高 64%），
   字級 `clamp(14px, min(2.6vh, 4.4vw), 26px)`，窄螢幕不會超出海報（實測 375 寬手機）。
 - 海報圖由 `openSecretRealmScene(id)` 依 `secretRealmList[].img` 換上，**新增秘境只要在 config 加一筆**（建議 9:16 直式海報，重要內容放中間）。
+- **2026-09-27 起海報比例可逐秘境設定**：`size: [寬, 高]` 寫進場景的 CSS 變數 `--pw`／`--ph`（沒填 = 768×1365）；有 `imgPc` 且視窗寬 > 高時改用 PC 版海報（`sizePc`）。
+  `sceneTitle`／`sceneSub` 在海報上疊標題（`#secret-realm-title`，海報沒有字時用）；`enterLabel` 換按鈕文字；`enterPos: 'bottom'` 按鈕移到海報下方置中（`.secret-enter.bottom`）；
+  `mode: 'defense'` 時按鈕直接 `openDefenseBattle()`（第 49 節），不顯示說明視窗。
   說明視窗必須排在場景 DOM 之後才疊得上去。
 - **已決定、待實作的設計**（記在 config）：
   - 鎮魔塔獎勵：異火碎片（`addFireShards`）、秘境裝備與套裝（gear.js 的 `realm` 管道，目前 `locked: true`）、結識諸天夥伴（`meetPartner`）、靈石／星允鐵等基本資源。
@@ -2051,3 +2062,31 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
   s5 白金 = 青→粉→金的七彩漸層流光（`rainbow-shift` 動畫，減少動態時停止）。點亮的星放大 1.12 倍；未點亮 `#374151`。
 - 器錄分頁的部位按鈕下方有圖例 `formatCodexStarLegend()`：「星星＝取得過的品級：★白 ★綠 ★藍 ★紫 ★橙 ★白金」。
 - 星星的 title 會寫「（已取得）／（未取得）」。
+
+## 49. 秘境「魔屠天南」・死守天南城 100 波（`config-defense.js`、`defense.js`；2026-09-27）
+
+- **入口**（照鎮魔塔）：活動「🌀 秘境」→ 列表卡片「魔屠天南」→ 全螢幕海報場景（手機版／PC 版海報，標題「魔屠天南」＋「死守天南城・共 100 波」由程式疊上，第 43 節）
+  → 海報下方「⚔️ 死守天南城」→ `challengeSecretRealm()` 見 `mode: 'defense'` → `openDefenseBattle()`。開放境界同鎮魔塔（煉虛，`minRealmIndex: 6`）。
+- **守城畫面** `#defense-scene`（z-index 101，疊在秘境場景上）：9:16 舞台 `#defense-stage` 置中，四周用 PC 海報模糊鋪滿。
+  舞台內：三支 `<video data-clip>`（`#defense-vwrap`，色調 filter 與鏡頭 transform 套在外框）、特效畫布 `#defense-fx`、左上「↩ 離開」＋速度 ×1/×2/×4、右上波數框、中央波次橫幅、左下戰況（最多 4 則）。
+- **載入與預計秒數**（`startLoading`）：以 `fetch` 串流下載三支影片，邊下載邊累計位元組；每 0.25 秒更新進度條與「⏳ 影片載入中，預計約 N 秒後開始」。
+  速度 = 本次下載量 ÷ 經過時間（資料不足 150 KB 或 0.5 秒時，先用 `navigator.connection.downlink` 估算；都沒有就顯示「計算所需時間…」），剩餘秒數 = 未下載量 ÷ 速度。
+  下載完轉成 blob 網址留在記憶體（`blobUrls`），**同一次遊戲再進入不必重新下載**（顯示「影片已就緒」直接開始）。失敗顯示錯誤與「🔄 重新載入」。
+  實測（本機以 fetch 限速每秒 5 MB 模擬，共 39.3 MB）：第 1 秒預估「約 7 秒」，實際 8 秒完成，之後每秒遞減 1。
+- **100 波組合**（`waveSpec(w)`）：主題 `DEFENSE_THEMES[(w-1)%10]`（色調、天氣、法術外觀、終結技）、影片 `DEFENSE_CLIPS[(w-1)%3]`（與主題錯開 → 30 種搭配）、
+  變化 v = ⌊(w-1)/10⌋（0～9）決定開場招式（`DEFENSE_OPENERS`）、鏡頭（`DEFENSE_CAMERAS`）、慢動作與招式名稱（v ≥ 5 的終結技加「・極」）。
+  每 10 波首領（`DEFENSE_BOSSES` 依序 10 名）。驗證：100 組 (主題, v) 與 100 組招式名稱都不重複、相鄰兩波主題必不同；三支影片場次 34／33／33。
+- **影片輪播**：每支播到剩 `DEFENSE_CLIP_FADE`（0.6）秒時 `setWave(下一波)`＋`playClip`（新影片從 0 秒播放並淡入、舊的淡出後暫停）。第 100 波播完 → 結算「守城成功」（守住波數、斬殺數）＋「↩ 返回秘境」。
+  中途「↩ 離開」會 confirm（進度不保留），並中止下載（AbortController）。**目前沒有獎勵、沒有每日次數**（玩家尚未決定），`rewards: []`。
+- **時間軸**（`CUES`，以原片秒數撰寫，實際 = 秒數 − `trim`）：雷戰 0.75 開場／3.9 護體／5.1 劍氣／6.6 劍指法術／7.9 魔將化煙（慢動作）／8.9 終結技；
+  佛焰 0.2 法陣／2.8 佛掌／4.9 千手／7.1 掌擊／7.7 業火；巨劍 0.2 巨劍降世／2.6 貫地／3.1 法相／4.5 金環／5.9 光柱／6.9 光爆／8.5 雲開見日。
+  轉檔後的影片從原片 0.6 秒開始（頭尾交叉淡入淡出做無縫循環），`trim` 要設 0.6；原檔 `trim: 0`。**換影片檔時務必同步改 trim**，否則特效會早／晚 0.6 秒。
+- **浮水印**：三支 Pippit 影片左上角有浮水印，靠 `zoom`（雷戰 1.08、佛焰／巨劍 1.16）放大裁掉；鏡頭運動只會再放大，不會低於 zoom。
+- **避免命名衝突**：`defense.js` 內部的 `draw`／`feed`／`kill`／`ring`／`burst` 等全部包在 `DefenseBattle` 閉包裡；對外全域只有 `DefenseBattle`、`openDefenseBattle`、`closeDefenseBattle`、`setDefenseSpeed`。
+  `DefenseBattle._sim(w, 秒數)` 可在不播影片的情況下跑某一波的時間軸（測試用，會改動目前狀態）。驗證：100 波各跑 11.5 秒無錯誤，同時粒子最多約 240 個。
+- **影片轉檔（瀏覽器，不需 ffmpeg）**：
+  - 即時錄影（`MediaRecorder`＋畫布）需要瀏覽器面板全程顯示，Claude 桌面版的預覽面板隱藏時只錄得到 1 格，**不可靠**；錄出的是分段 MP4（mvhd 長度 0），還要另外補 `mehd` 才讀得到長度。
+  - 改用**逐格轉檔**：逐格 seek → 畫到 720×1280 畫布（最後 0.6 秒與開頭疊合）→ WebCodecs `VideoEncoder`（avc1.640028、2 Mbps、每 30 格一個關鍵格）→ 自組標準 MP4（ftyp＋mdat＋moov），與面板是否顯示無關。
+  - 本機預覽伺服器必須支援 HTTP Range，影片才能 seek（沒有 Range 時 currentTime 永遠停在 0）。
+  - 2026-09-27 以此法轉出佛焰（264 格、2.38 MB）與巨劍（262 格、2.34 MB），各約 3 分鐘；與原片同時間點比對差異 8～17（不相干畫面 99～134），trim 0.6 對齊正確。
+- 三支合計約 7.5 MB（手機 4G 約 5～15 秒）。videos/ 內的原始大檔（10～18 MB）遊戲不會載入，若不需要保留可以不推上 GitHub。

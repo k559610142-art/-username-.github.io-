@@ -11,7 +11,7 @@ const GEAR_CHANNELS = {
     craft3:  { label: "可製作・至高宗門", short: "至高宗門", minLevel: 700, maxLevel: 1000 },
     loot:    { label: "外界・奪寶", short: "奪寶", external: true },
     auction: { label: "外界・拍賣", short: "拍賣", external: true },
-    realm:   { label: "外界・秘境", short: "秘境", external: true, locked: true }
+    realm:   { label: "外界・秘境", short: "秘境", external: true }   // 2026-09-27 解鎖：秘境「魔屠天南」掉落（defense.js，第 49 節）
 };
 const GEAR_EXTERNAL_MULT = 1.15;
 
