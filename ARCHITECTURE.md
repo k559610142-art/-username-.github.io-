@@ -475,7 +475,8 @@ combatTick() 每秒執行 [combat.js]
   每次 10 萬靈石（`AUCTION_PAID_REFRESH_COST`／`BOUNTY_PAID_REFRESH_COST`）、每日各 5 次（`*_PAID_REFRESH_DAILY`，兩邊分開計）。
   - 共用函式在 `activity.js`：`getPaidRefreshState`/`getPaidRefreshLeft`/`payForRefresh`/`renderPaidRefreshButton`；
     次數存 `player.paidRefresh = { date, auction, bounty }`，以**當地日期字串**（`toDateString`）換日，不用時間戳，存檔轉移不會錯亂。
-  - `paidRefreshAuction()`（auction.js）：搶拍中不能刷新。`paidRefreshBounty()`（bounty.js）：對決中不能刷新；追蹤中的懸賞會先 `confirm`，刷新後取消。
+  - `paidRefreshAuction()`（auction.js）：搶拍視窗開著時不能刷新（看 `#auction-bid-modal` 是否顯示；
+    ⚠️ 不能用 `auctionBidItemId` 判斷，它在搶拍結束後不會清空——2026-09-28 曾因此造成「搶拍過一次後永遠無法付費刷新」）。`paidRefreshBounty()`（bounty.js）：對決中不能刷新；追蹤中的懸賞會先 `confirm`，刷新後取消。
   - 付費刷新**不改變定時刷新的時間軸**：刷新前記下 `*RefreshAt`，刷新後還原（下次定時刷新照舊）。
 - **每日任務進度**：任務池剛好 10 項且每次全用上，各自隨機難度（普通/困難/艱鉅）。
   進度靠各功能呼叫 `addDailyProgress(type, n)` 累加，目前已接上的埋點：
@@ -1247,7 +1248,7 @@ combatTick() 每秒執行 [combat.js]
 （以 8 種舊存檔形態測試目前程式皆可正常讀取；移除 `#age-display` 即可重現同一錯誤。）
 
 ### 1. 發佈版本號（防止新舊檔案混用）
-- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260928f`）。
+- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260928g`）。
 - **每次推上 GitHub Pages 前，把所有 `?v=` 全部取代成新值**（例：日期＋序號）。新 index.html 會指向新網址的 JS，不會再拿到快取的舊檔。
 - 新增 `data/*.js` 時也要記得帶上 `?v=`。
 
@@ -1461,6 +1462,7 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
 - 一波結束寫一則彙總：「⚔️ N 回合擊退 M 名敵手，獲得 經驗、靈石、聲望」（`waveSummary`，state.js；`addLog(..., true)` 強制顯示）。
   一般遭遇不再寫「遭遇 N 隻妖獸」，只有混入野外修士／暗殺者時才提示。
 - 戰死：`onPlayerKilledInField()` 開頭先解除靜音，戰死／折壽／靈寵陣亡訊息一定顯示。渡劫、懸賞對決不受影響（仍逐回合顯示）。
+  套裝「護住心脈」（gear.js `tryGearUndying`）用 `force` 顯示。換地圖（map.js `changeMap`）會清掉 `waveSummary` 與 `meditateSummary`。
 - 安全區打坐：經驗仍每 5 秒入帳，日誌每 `MEDITATE_LOG_SECONDS`（30）秒彙總一則（`meditateSummary`，state.js）。
 - 實測：打坐 120 秒日誌 4 則（原 24 則）；野外掛機約每分鐘 5.5 則。
 - ⚠️ 新增野外戰鬥中「一定要讓玩家看到」的訊息時，type 用 `level-up`／`equip`／`system`，或傳 `force = true`。
@@ -1920,7 +1922,9 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
 ### 資料流
 - `initGame()`（main.js）→ `startLeaderboardSync()`：進遊戲 15 秒後上傳一次，之後在線時每 5 分鐘一次。
 - 打開榜單（`openLeaderboardModal`）→ `refreshLeaderboard()`：先 `uploadLeaderboard()`（距上次 < 60 秒自動略過），再讀前 100 名（依 power 由高到低）。
-- Firebase SDK（compat 版，`LEADERBOARD_SDK_BASE`）在第一次需要時才用 `<script>` 動態載入，失敗會在下次重試；上傳失敗只 `console.warn`，不影響遊戲。
+- Firebase SDK（compat 版，`LEADERBOARD_SDK_BASE`）在第一次需要時才用 `<script>` 動態載入，app／auth／firestore 三支**逐一檢查、缺哪支補哪支**（避免上次只載入一半），失敗會在下次重試；上傳失敗只 `console.warn`，不影響遊戲。
+- 斷線時 Firestore 的 `set()` 要等連回伺服器才完成：開榜單時上傳與讀取各用 `lbWithTimeout()` 最多等 `LEADERBOARD_TIMEOUT_MS`(8 秒)，逾時顯示「連線失敗」，不會卡在「讀取中」。
+- 2026-09-28 以線上真實資料（39 名玩家，境界 0～15）檢查規則的戰力上限：最高只用到上限的 0.00008%，正常玩家不會被擋。
 - 集合 `leaderboard`，**文件 id = 匿名登入 uid**（存在瀏覽器 IndexedDB，同一瀏覽器永遠同一筆）。欄位：
   `name`(道號，sanitizePlayerName)、`power`、`realm`(realmIndex)、`stage`、`level`、`sect`(宗門名稱，可空)、`updatedAt`(伺服器時間)。
 - 不上傳的情況：`gameOver`、`saveLoadFailed`（讀檔失敗時畫面上的角色不是真的）、尚未 `gameStarted`。

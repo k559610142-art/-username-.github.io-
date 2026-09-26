@@ -105,6 +105,8 @@ function changeMap(cIndex, iIndex) {
     player.currentMapIsSafe = maps[cIndex].isSafe;
     safeZoneTimer = 0;
     fieldOnlineTicks = 0;   // 線上實戰證明重新計算（combat.js）
+    meditateSummary = { seconds: 0, exp: 0 };   // 打坐日誌彙總重新累計，避免下次回宗門把上一趟的經驗算進來
+    waveSummary = null;
 
     updateSectFacilitiesUI();
 

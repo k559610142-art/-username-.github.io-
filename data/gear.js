@@ -310,7 +310,7 @@ function tryGearUndying() {
     if (player.hp > 0 || gearUndyingUsed || !hasSetSpecial("undying")) return false;
     gearUndyingUsed = true;
     player.hp = 1;
-    addLog(`🛡️ 套裝之力護住心脈，你以 1 點氣血撐了下來！（本波戰鬥限一次）`, "heal");
+    addLog(`🛡️ 套裝之力護住心脈，你以 1 點氣血撐了下來！（本波戰鬥限一次）`, "heal", true);   // 野外回合日誌靜音時也要顯示（ui.js）
     return true;
 }
 

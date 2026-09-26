@@ -21,3 +21,4 @@ const LEADERBOARD_FIRST_UPLOAD_DELAY_MS = 15 * 1000;   // 進入遊戲 15 秒後
 const LEADERBOARD_MIN_GAP_MS = 60 * 1000;              // 兩次上傳至少間隔 60 秒（規則同樣限制，改這裡要一起改規則）
 const LEADERBOARD_TOP_N = 100;                          // 榜單顯示前 N 名（規則限制單次最多讀 100 筆）
 const LEADERBOARD_REFRESH_COOLDOWN_MS = 10 * 1000;     // 視窗內「重新整理」按鈕冷卻
+const LEADERBOARD_TIMEOUT_MS = 8 * 1000;               // 開榜單時上傳／讀取最多等幾毫秒（斷線時不會卡在「讀取中」）

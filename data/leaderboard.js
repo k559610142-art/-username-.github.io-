@@ -35,10 +35,14 @@ function initLeaderboardBackend() {
     if (!isLeaderboardConfigured()) return Promise.reject(new Error("戰力榜尚未開通"));
     if (lbBackend) return lbBackend;
     lbBackend = (async () => {
-        if (typeof firebase === 'undefined') {
-            for (const f of ['app', 'auth', 'firestore']) {
-                await lbLoadScript(`${LEADERBOARD_SDK_BASE}/firebase-${f}-compat.js`);
-            }
+        // 逐一檢查三個 SDK 是否已載入（上次可能只載入一半就斷線），缺哪個補哪個
+        const loaded = {
+            app: () => typeof firebase !== 'undefined',
+            auth: () => typeof firebase !== 'undefined' && typeof firebase.auth === 'function',
+            firestore: () => typeof firebase !== 'undefined' && typeof firebase.firestore === 'function'
+        };
+        for (const f of ['app', 'auth', 'firestore']) {
+            if (!loaded[f]()) await lbLoadScript(`${LEADERBOARD_SDK_BASE}/firebase-${f}-compat.js`);
         }
         if (!firebase.apps.length) firebase.initializeApp(LEADERBOARD_FIREBASE_CONFIG);
         const auth = firebase.auth();
@@ -98,13 +102,22 @@ async function refreshLeaderboard(manual) {
     lbError = "";
     renderLeaderboard(true);
     try {
-        await uploadLeaderboard();   // 先交自己的最新戰力，名次才準（60 秒內已上傳過會自動略過）
-        lbRows = await fetchLeaderboard();
+        // 先交自己的最新戰力，名次才準（60 秒內已上傳過會自動略過）。
+        // 斷線時 Firestore 的寫入要等連回伺服器才會完成，最多等 LEADERBOARD_TIMEOUT_MS，避免視窗卡在「讀取中」
+        await lbWithTimeout(uploadLeaderboard()).catch(() => {});
+        lbRows = await lbWithTimeout(fetchLeaderboard());
     } catch (e) {
         console.warn("戰力榜讀取失敗：", e);
         lbError = "連線失敗，請稍後再試。";
     }
     renderLeaderboard(false);
+}
+
+function lbWithTimeout(promise) {
+    return Promise.race([
+        promise,
+        new Promise((_, reject) => setTimeout(() => reject(new Error("連線逾時")), LEADERBOARD_TIMEOUT_MS))
+    ]);
 }
 
 function lbEscape(s) {
