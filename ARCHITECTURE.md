@@ -47,7 +47,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
   state.js            執行期間的可變全域狀態（player、enemies、靈寵輔助效果計時…）
   stats.js            屬性/戰力/等級經驗門檻計算的純函式，以及 getAllSkills()
   elements.js         戰鬥屬性引擎：減傷、閃避、屬性傷害（冰凍/燒傷/中毒/金重擊/雷擊）、五行相剋與持續傷害
-  ui.js               畫面渲染共用函式（頂部狀態列、戰鬥實況、日誌與日誌分頁（第 44 節）、彈窗開關）
+  ui.js               畫面渲染共用函式（頂部狀態列、戰鬥實況、日誌與日誌分頁（第 44 節）、彈窗開關與右上角 ✕（第 46 節））
   map.js / combat.js / leveling.js / tribulation.js
                       地圖切換、戰鬥 tick、境界與人物等級成長、渡劫
   lifespan.js         壽元：突破增加、死亡扣除、耗盡時遊戲結束
@@ -78,7 +78,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
   leaderboard.js      天下戰力榜：定時上傳戰力到 Firebase Firestore、榜單視窗（第 42 節）
   secret-realm.js     秘境入口：秘境列表、全螢幕秘境場景（海報）、挑戰說明視窗（第 43 節；玩法尚未實作）
   home-ui.js          洞府主畫面：舞台縮放（手機／PC 版面）、HUD 數值、底部導覽分頁、建築熱點、興建中提示（第 31 節）
-  settings.js         設定視窗（洞府右上 ⚙️）：顯示尺寸 手機 9:16／PC 16:9／自動、全螢幕（第 34 節）
+  settings.js         設定視窗（洞府右上 ⚙️）：顯示尺寸 手機 9:16／PC 16:9／自動、全螢幕（第 34 節）、字級 小／中／大（第 45 節）
   title-screen.js     遊戲主頁（標題畫面）與進入世界
   main.js             initGame()/startGame() 與 window.onload，遊戲啟動進入點
 ```
@@ -142,7 +142,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 16 | `state.js` | `player`（含裝備系統 `starIron`/`ironShards`/`gearStash`/`ironShop`/`ironUsed`/`maxEnhance`/`gearCodex`/`titles`/`activeTitle`/`profession`/`profSwitched`/`proficiency`（第 37 節）、`lingbaoSold`、仙法 `spells`/`spellSlots`、渡劫失敗虛弱 `weakened`、頭像 `avatarId`/`unlockedAvatars`、頭像光環 `avatarFrameId`/`unlockedFrames`、礦石 `ore`、符寶 `talismans`、異火 `fireShards`/`strangeFires`/`fireCollection`（第 38 節）、天星賭坊 `casino`（第 40 節）、夥伴 `partners`/`partnerTeam`/`partnerBond`/`fieldKills`（第 39 節）、藏書閣屬性秘典次數 `elementStudy`、轉世保留的上限 `reincarnateBonus`、年齡 `age`、功德系統 `merit`/`butianStones`/`breakPills`/`evilKills`、善惡 `karma`、懸賞榜 `bountyBoard`/`bountyRefreshAt`/`bountyFaction`/`activeBountyId`/`bountyKills`、付費刷新次數 `paidRefresh`、線上實戰證明 `idleProvenMap`（第 33 節））、`DEFAULT_PLAYER_JSON`（全新角色預設值快照，讀檔/匯入的合併基底）、`enemies`（每隻帶 `attrs`/`status`；野外修士另帶 `cultivator`("正"/"邪")/`ambush`）、`respawnTimer`、`safeZoneTimer`；不存檔的執行期狀態：`inTribulation`/`heartDemon`/`tribulationFatedWin`/懸賞對決 `inBountyDuel`/`duelOpponent`/`duelWeakenTimer`/`duelWeakenMult`/`duelSilenceTimer`/`duelArmorTimer`/丹藥冷卻/`gameOver`/背景補發 `lastTickAt`/`missedTickMs`/線上實戰秒數 `fieldOnlineTicks`/日誌彙總 `waveSummary`/`meditateSummary`/`playerStatus`(玩家身上的凍結/燒傷/中毒)/靈寵輔助計時(`petBuff*`/`petShield*`/`petRegen*`) | **`maps`**（必須排在 config-maps.js 之後） | 幾乎所有檔案都會讀寫 `player` |
 | 17 | `stats.js` | `EQUIP_STAT_KEYS`/`BASE_STAT_KEYS`、`getEquipBonus`(四維＋減傷/閃避/屬性傷害；四維 × 強化倍率與主修武器加成，再加 gear.js `getBonusTotals` 的詞條／套裝／稱號／職業)/`getElementCounts`/`getSpiritRoots`(靈根判定)/`getRootBonus`(靈根加成總和)/`getPlayerElement`(本命五行，五行相剋用)/`getRealmStageExp`(依 realmPacing 換算每階經驗基數，有快取)/`getNextExp`/`getLevelExpNeeded`/`hasLiveBeast`(出戰中才算，呼叫 beast-combat.js 的 isBeastActive)/`getBasePower`/`getPhysAttack`/`getMagAttack`(兩者皆乘上懸賞對決的化功 `getDuelWeakenMult()` 與 `getGearPctBonus`)/`getMaxHp`(乘 `getGearPctBonus('hp')`)/`getMaxMp`(兩者皆加上轉世保留值)/`getReincarnateBonus`/`getSectTier`/`getAllSkills` | `player`、`realms`、`sectData`、`LEVEL_*`、`equipTypes`/`WUXING_COUNTERS`、靈寵輔助計時、`bounty.js`(getDuelWeakenMult) | `ui.js`、`combat.js`、`leveling.js`、`tribulation.js`、`beast-combat.js` 等幾乎全部功能檔 |
 | 18 | `elements.js` | `newStatus`/`getPlayerCombatAttrs`(含 `element`；懸賞對決被破甲時減傷／閃避 × `getDuelArmorMult()`；裝備特效的護體／先手盾／定神／破甲／洞察／剋敵／寒徹／焚燼／蝕骨欄位與套裝提高的上限)/`getWuxingCounterMult`/`withSkillEffect`/`getMapCategoryIndex`/`rollMonsterAttrs`/`resolveHit`/`addDotStack`/`tickStatus`/`formatStatus`/`summarizeTags`/`formatEquipStats` | `config-elements.js`、`stats.js`(getEquipBonus/getPlayerElement)、`library.js`(getElementBookBonus)、`wuxingElements`、`maps`、`playerStatus` | `combat.js`、`tribulation.js`、`ui.js`、`bag.js`/`equipment.js`/`auction.js`/`lingbao-shop.js`(裝備屬性文字) |
-| 19 | `ui.js` | 常數 `PLAYER_AVATARS`（頭像 `img`（本地 images/avatar-*.jpg）/裁切位置 `pos`/預設道號，洞府頭像框、戰鬥實況、性別選擇共用；性別選擇視窗的兩張 `<img>` 寫在 index.html，換圖時要一起改）、`updateUI`/`updateCombatVisualPanel`/`formatWuxingCounterTip`/`updateTribulationUI`/`updatePotionCooldownUI`/`updateStudyCountsUI`/`openSkillModal`/`renderSkillList`/`addLog(msg, type, force, channel)`(野外回合中依 `fieldLogMuted`／`FIELD_MUTED_LOG_TYPES` 略過逐回合訊息；依 `channel`／`LOG_CHANNEL_BY_TYPE` 寫入戰鬥／道具／僕從分頁，第 44 節)/`switchLogTab`/`restoreLogTab`/`renderLogBadge`/`refreshCombatStatusText`/`updateAutoSettings`/`syncAutoSettingsUI`/`updateSectFacilitiesUI`/`closeModal`/`toggleDrawer`/`formatCountdown`/`clampRefreshAt`(刷新時間軸保護，第 10 節)/`resolveBatchCount`(×1/×10/最高 共用)/批次刪除工具 `renderBulkDeleteBar`/`getCheckedBulkQualities`/`toggleAllBulkQualities` | `player`、`realms`、`stats.js` 的計算函式、`lifespan.js`(getDeathLifespanCost) | 幾乎所有功能檔在資料變動後都會呼叫 `updateUI()`/`addLog()` |
+| 19 | `ui.js` | 常數 `PLAYER_AVATARS`（頭像 `img`（本地 images/avatar-*.jpg）/裁切位置 `pos`/預設道號，洞府頭像框、戰鬥實況、性別選擇共用；性別選擇視窗的兩張 `<img>` 寫在 index.html，換圖時要一起改）、`updateUI`/`updateCombatVisualPanel`/`formatWuxingCounterTip`/`updateTribulationUI`/`updatePotionCooldownUI`/`updateStudyCountsUI`/`openSkillModal`/`renderSkillList`/`addLog(msg, type, force, channel)`(野外回合中依 `fieldLogMuted`／`FIELD_MUTED_LOG_TYPES` 略過逐回合訊息；依 `channel`／`LOG_CHANNEL_BY_TYPE` 寫入戰鬥／道具／僕從分頁，第 44 節)/`switchLogTab`/`restoreLogTab`/`renderLogBadge`/`initModalTopClose`(彈窗右上角 ✕，第 46 節)/`refreshCombatStatusText`/`updateAutoSettings`/`syncAutoSettingsUI`/`updateSectFacilitiesUI`/`closeModal`/`toggleDrawer`/`formatCountdown`/`clampRefreshAt`(刷新時間軸保護，第 10 節)/`resolveBatchCount`(×1/×10/最高 共用)/批次刪除工具 `renderBulkDeleteBar`/`getCheckedBulkQualities`/`toggleAllBulkQualities` | `player`、`realms`、`stats.js` 的計算函式、`lifespan.js`(getDeathLifespanCost) | 幾乎所有功能檔在資料變動後都會呼叫 `updateUI()`/`addLog()` |
 | 20 | `map.js` | `isInSect`(是否身在宗門)/`returnToSect`(洞府「宗門」：傳送回宗門並開宗門分頁，第 20 節)/`openWorldMapModal`(修仙地圖彈窗，顯示目前所在)/`renderTownTeleports`(城鎮傳送點卡片)/`goToTown(i)`(傳送並進入城內場景)/`openMapCategoryModal`(略過 `hidden` 的宗門)/`selectMap`(選定後關閉兩層地圖彈窗)/`changeMap`(懸賞對決中換地圖 = `endBountyDuel("flee")` 逃離；暫存區滿時不能進野外，enhance.js) | `maps`、`SECT_MAP_NAME`、`player`、`ui.js`、`bounty.js` | `ui.js`(updateSectFacilitiesUI)、`combat.js`/`quest.js`(門派任務須在宗門)、HTML 按鈕；changeMap 離開宗門時呼叫 `quest.js` 的 stopQuest |
 | 21 | `combat.js` | `combatTick`/`fieldCombatRound`(野外一回合，日誌靜音、波末彙總、收益 × KILL_REWARD_MULT，第 33 節末)/`playerAttackTurn`(普攻/技能出手，渡劫共用；技能類型 single/aoe/heal/buff＋仙法的 shield 守護／control 牽制，並處理魔功 hpCost 反噬與 lifesteal 吸血)/`onPlayerKilledInField`/`checkAutoHealAndMana`/`tryRescueServant`/`getMapMonsterStats(map)`(妖獸攻擊／氣血，地圖可自訂 monsterAtk／monsterHp，save.js 離線估算也用) | `player`、`enemies`、`shopItems`、`servantQualities`、`servantNames`、`stats.js`、`elements.js`(resolveHit/tickStatus)、`leveling.js`(gainExp)、`beast-combat.js`(petAssistTick/applyPetDamageReduction/tickBeastUpkeep 每秒維持費計時)、`lifespan.js`(handlePlayerDeath)、`map.js`(changeMap 死亡回城)、`merit.js`(isEvilHuntUnlocked/getKarmaState/onCultivatorKilled/settleMeritStones，野外修士與暗殺者)、`config-merit.js`、`bounty.js`(對決中由 bountyDuelTick 接管；刷新新一波前呼叫 tryStartBountyDuel)、裝備系統（gear.js 特效／套裝／奪寶、enhance.js 星允鐵與暫存區、profession.js 職業技能與熟練度，第 37 節） | `main.js`(setInterval 每秒呼叫)、`bounty.js`(對決落敗呼叫 onPlayerKilledInField、playerAttackTurn) |
 | 22 | `leveling.js` | `REINCARNATE_KEEP_RATE`(轉世保留比例 5%)、`gainExp`/`gainLevelExp`/`advanceRealm`/`triggerReincarnate`（規則見第 25 節） | `realms`、`player`、`stats.js`、`ui.js`(updateSectFacilitiesUI)、`beast-combat.js`(gainBeastExp)、`lifespan.js`(gainRealmLifespan) | `combat.js`、`tribulation.js`、`save.js`、HTML 輪迴按鈕 |
@@ -181,10 +181,10 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 41b | `avatar.js` | `getPlayerAvatar`/`isAvatarUnlocked`/`checkAvatarCondition`/`checkAvatarUnlocks`/`openAvatarModal`/`renderAvatarModal`/`buyAvatar`/`selectAvatar`；頭像光環 `isFrameUnlocked`/`getPlayerFrame`/`checkFrameUnlocks`/`getFrameOverlayBox`/`renderFramedAvatar`/`renderFrameList`/`selectFrame`/`buyFrame` | `avatarList`、`avatarFrameList`/`AVATAR_FRAME_HOLE_FIT`、`player.avatarId`/`unlockedAvatars`/`avatarFrameId`/`unlockedFrames`/`gender`/`realmIndex`/`level`/`reputation`/`tribulationCount`、`realms` | `ui.js`(updateUI 呼叫 checkAvatarUnlocks；戰鬥實況頭像 renderFramedAvatar)、`home-ui.js`(頭像框、`updateHudAvatarFrames`)、HTML 頭像點擊與選擇視窗 |
 | 41d | `leaderboard.js` | 天下戰力榜（第 42 節）：狀態 `lbBackend`/`lbLastUploadAt`/`lbLastRefreshAt`/`lbRows`/`lbError`；`isLeaderboardConfigured`/`getRankPower`(= getPhysAttack 扣掉禁術、靈寵增益、對決化功等暫時倍率)/`lbLoadScript`/`initLeaderboardBackend`(動態載入 Firebase compat SDK＋匿名登入，回傳 `{db, uid}`)/`uploadLeaderboard`/`startLeaderboardSync`/`fetchLeaderboard`/`openLeaderboardModal`/`refreshLeaderboard(manual)`/`lbEscape`/`lbTimeAgo`/`renderLeaderboard(loading)` | `config-leaderboard.js`、`stats.js`(getPhysAttack)、`bounty.js`(getDuelWeakenMult)、`player`/`petBuffTimer`/`petBuffMult`/`gameOver`、`save.js`(saveLoadFailed)、`main.js`(gameStarted)、`player-profile.js`(sanitizePlayerName)、`realms`、全域 `firebase`（CDN 動態載入） | `main.js`(initGame 呼叫 startLeaderboardSync)、HTML 洞府 HUD「戰力 🏆」 |
 | 41e | `secret-realm.js` | 秘境入口（第 43 節）：`currentSecretRealm`、`getSecretRealm`/`openSecretRealmModal`/`renderSecretRealmList`/`openSecretRealmScene(id)`/`closeSecretRealmScene`(回到列表)/`challengeSecretRealm`(顯示預定玩法與獎勵) | `config-secret-realms.js`、`realms`、`player.realmIndex`、`ui.js`(closeModal) | `activity.js`(活動「秘境」的 openFn)、HTML 秘境卡片與場景按鈕 |
-| 41c | `settings.js` | `DISPLAY_MODE_KEY`(localStorage 鍵)/`DISPLAY_MODES`/`AUTO_PC_MIN_WIDTH`/`AUTO_PC_MIN_RATIO`、`getDisplayMode`/`resolveDisplayLayout`(回傳 'phone'／'pc')/`setDisplayMode`/`openSettingsModal`/`renderSettingsModal`/`isFullscreen`/`toggleFullscreen`；頂層註冊 `fullscreenchange` 監聽（只綁函式，載入順序不影響） | `home-ui.js`(layoutStage)、`#settings-modal` DOM、`localStorage` | `home-ui.js`(layoutStage 呼叫 resolveDisplayLayout)、HTML ⚙️ 設定按鈕 |
-| 41a | `home-ui.js` | `STAGE_IMG_W`/`STAGE_IMG_H`、`TAB_TITLES`(修仙／戰鬥／宗門／任務／世界)、`layoutStage`(手機／PC 版面切換，並控制寬螢幕用手機版時的「切換回 PC 版」按鈕，第 34 節)/`renderPcStage`(依 config-home-pc.js 產生 PC 版按鈕與熱點)/`initHomeUi`/`switchTab`/`openWorldTab`/`showStageToast`/`showUnderConstruction`/`openAscensionPlatform`/`openSystemModal`(命運與系統彈窗)/`formatShortNumber`/`getCultivationRate`/`updateHomeHud`(同時寫入手機版 hud-xxx 與 PC 版 pc-hud-xxx) | `player`、`realms`、`PLAYER_AVATARS`、`stats.js`、`tribulation.js`(triggerTribulation)、`activity.js`(openActivity)、`config-home-pc.js`、`settings.js`(resolveDisplayLayout) | `ui.js`(updateUI 結尾呼叫 updateHomeHud)、`main.js`(onload 呼叫 initHomeUi)、HTML 熱點與底部導覽 |
+| 41c | `settings.js` | `DISPLAY_MODE_KEY`(localStorage 鍵)/`DISPLAY_MODES`/`AUTO_PC_MIN_WIDTH`/`AUTO_PC_MIN_RATIO`、`getDisplayMode`/`resolveDisplayLayout`(回傳 'phone'／'pc')/`setDisplayMode`/字級 `FONT_SCALE_KEY`/`FONT_SCALES`/`getFontScaleId`/`applyFontScale`/`setFontScale`（第 45 節）/`openSettingsModal`/`renderSettingsModal`/`isFullscreen`/`toggleFullscreen`；頂層註冊 `fullscreenchange` 監聽（只綁函式，載入順序不影響） | `home-ui.js`(layoutStage)、`#settings-modal` DOM、`localStorage` | `home-ui.js`(layoutStage 呼叫 resolveDisplayLayout)、HTML ⚙️ 設定按鈕 |
+| 41a | `home-ui.js` | `STAGE_IMG_W`/`STAGE_IMG_H`、`TAB_TITLES`(修仙／戰鬥／宗門／任務／世界)、`layoutStage`(手機／PC 版面切換，並控制寬螢幕用手機版時的「切換回 PC 版」按鈕，第 34 節)/`renderPcStage`(依 config-home-pc.js 產生 PC 版按鈕與熱點)/`initHomeUi`/`switchTab`/`openWorldTab`/`showStageToast`/`showHudResourceInfo`(資源框點擊說明，第 47 節)/`showUnderConstruction`/`openAscensionPlatform`/`openSystemModal`(命運與系統彈窗)/`formatShortNumber`/`getCultivationRate`/`updateHomeHud`(同時寫入手機版 hud-xxx 與 PC 版 pc-hud-xxx) | `player`、`realms`、`PLAYER_AVATARS`、`stats.js`、`tribulation.js`(triggerTribulation)、`activity.js`(openActivity)、`config-home-pc.js`、`settings.js`(resolveDisplayLayout) | `ui.js`(updateUI 結尾呼叫 updateHomeHud)、`main.js`(onload 呼叫 initHomeUi)、HTML 熱點與底部導覽 |
 | 42 | `title-screen.js` | `TITLE_HOTSPOTS`(光環座標)/`currentTitleHotspot`/`positionTitleHotspot`/`enterWorld`/`initTitleScreen`、旗標 `worldEntered` | `main.js`(startGame)、`#title-screen` DOM | `main.js`(onload 呼叫 initTitleScreen)、標題頁按鈕 |
-| 43 | `main.js` | `initGame`(含每 30 秒存檔與切到背景時存檔、啟動戰力榜定時上傳)/`startGame`(讀檔失敗時不進入開新角色)/`chooseGender`/`window.onload`(另呼叫 `restoreLogTab()` 還原日誌分頁，第 44 節)、旗標 `gameStarted` | 幾乎全部模組（啟動流程的膠水程式碼） | 瀏覽器 `onload`、`title-screen.js`(enterWorld 呼叫 startGame) |
+| 43 | `main.js` | `initGame`(含每 30 秒存檔與切到背景時存檔、啟動戰力榜定時上傳)/`startGame`(讀檔失敗時不進入開新角色)/`chooseGender`/`window.onload`(另呼叫 `applyFontScale()` 套用字級（第 45 節）、`initModalTopClose()` 加彈窗 ✕（第 46 節）與 `restoreLogTab()` 還原日誌分頁（第 44 節）)、旗標 `gameStarted` | 幾乎全部模組（啟動流程的膠水程式碼） | 瀏覽器 `onload`、`title-screen.js`(enterWorld 呼叫 startGame) |
 
 ## 3. 資料流總覽（文字版流程圖）
 
@@ -282,7 +282,7 @@ combatTick() 每秒執行 [combat.js]
 | `openPartnerModal`（手機與 PC 的「情緣」）、`setPartnerFilter(f)`、`greetPartner(id)`／`giftPartner(id)`／`acceptBondQuest(id)`／`claimBondQuest(id)`／`abandonBondQuest(id)`／`togglePartnerTeam(id)`（情緣視窗內）、`closePartnerDialog`／`answerPartnerEaster(id, yes)`（對話框）、`closePartnerVideo`（彩蛋影片）、`talkToPartner(id)`（坊市人偶） | `data/partner.js` |
 | `craftStrangeFire(qty)`（背包異火碎片卡片）、`openCodexModal('fires')`（背包異火卡片「查看異火榜」） | `data/strange-fire.js`／`data/codex.js` |
 | PC 版洞府的所有按鈕與建築熱點（onclick 字串寫在 `config-home-pc.js` 的 `pcStageButtons[].action`，改名函式時要一起改） | 各功能檔 |
-| `openSettingsModal`（洞府右上 ⚙️、PC 版「設置」）、`setDisplayMode(mode)`、`toggleFullscreen`（後兩者由 `renderSettingsModal()` 動態產生） | `data/settings.js` |
+| `openSettingsModal`（洞府右上 ⚙️、PC 版「設置」）、`setDisplayMode(mode)`、`toggleFullscreen`、`setFontScale('s'/'m'/'l')`（後三者由 `renderSettingsModal()` 動態產生） | `data/settings.js` |
 | `openSpellModal`（修仙分頁「📜 武學密典」）、`setSpellFilter`/`selectSpell`/`equipSpell`/`unequipSpell`（密典內動態產生） | `data/spells.js` |
 | `openAvatarModal`（點洞府頭像）、`selectAvatar(id)`（選擇視窗內動態產生） | `data/avatar.js` |
 | `openEnhanceModal(id)`（背包、角色裝備卡片「🔨 強化」）、`enhanceEquip(untilSuccess)`/`evolveEquip`（強化視窗內）、`decomposeEquip(id)`、`bulkDecomposeEquipment`、`moveStashToBag(id)`/`deleteStashEquip(id)`（暫存區）、`buyStarIron(qty)`（千寶閣） | `data/enhance.js` |
@@ -1258,7 +1258,7 @@ combatTick() 每秒執行 [combat.js]
 （以 8 種舊存檔形態測試目前程式皆可正常讀取；移除 `#age-display` 即可重現同一錯誤。）
 
 ### 1. 發佈版本號（防止新舊檔案混用）
-- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260928i`）。
+- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260928m`）。
 - **每次推上 GitHub Pages 前，把所有 `?v=` 全部取代成新值**（例：日期＋序號）。新 index.html 會指向新網址的 JS，不會再拿到快取的舊檔。
 - 新增 `data/*.js` 時也要記得帶上 `?v=`。
 
@@ -1302,8 +1302,8 @@ combatTick() 每秒執行 [combat.js]
 |---|---|---|
 | `#hud-avatar` | 頭像框 (28,34) 124×124 | 玩家頭像（`getPlayerAvatar()`：玩家選用的頭像，未選則依性別），蓋住圖上的預設頭像；**點擊開啟更換頭像視窗**（第 32 節） |
 | `#hud-name` | 名字框 (159,47) | 道號、境界階數（待渡劫會標示）、Lv 與等級進度條、戰力 |
-| `#hud-coins` | 左資源框（元寶） | 靈石（`formatShortNumber`：萬／億縮寫） |
-| `#hud-rep` | 右資源框（圖上原為「仙玉」） | **聲望** |
+| `#hud-coins` | 左資源框（元寶） | 靈石（`formatShortNumber`：萬／億縮寫）；圖示上蓋「靈石」標籤，點擊顯示說明（第 47 節） |
+| `#hud-rep` | 右資源框（圖上原為「仙玉」，寶石圖示） | **聲望**；圖示上蓋「聲望」標籤，點擊顯示說明（第 47 節） |
 | `#hud-stats` | 資源框下方（新增的半透明面板） | 氣血／靈力／修為條、修煉效率（`getCultivationRate()` = 宗門經驗倍率 × 靈寵加成）；最下列左側 `#btn-settings`「⚙️ 設定」開啟設定視窗（第 34 節） |
 | 熱點「升仙台」 | 寶塔 | `openAscensionPlatform()`：待渡劫時 `triggerTribulation()`，**確認開始後自動切到戰鬥分頁**（取消則留在洞府，2026-09-26）；否則提示修為進度；待渡劫時牌匾亮紅點 |
 | 熱點「千寶閣」（舊牌匾名「領物閣」，2026-09-25 改名） | 山中發光洞口 | `openActivity('auction')`（千寶閣，未解鎖會提示條件） |
@@ -1466,6 +1466,8 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
 - 改刷新秒數時只要改 `MONSTER_RESPAWN_SECONDS`，補償倍率會自動重算。
 
 ### 日誌減量（2026-09-28，`ui.js` 的 `fieldLogMuted`）
+> **2026-09-28 稍後已關閉**：日誌分頁（第 44 節）上線後，玩家要求戰鬥分頁加回細節，`ui.js` 的 `FIELD_LOG_DETAIL = true` 讓下面的靜音不生效，
+> 每波也重新寫「⚠️ 遭遇 N 隻妖獸攔路！」。波末彙總與打坐彙總照舊保留。改回 `false` 即恢復本節的減量行為（程式都還在）。
 - 野外戰鬥回合（`combat.js` 的 `fieldCombatRound()`，由 `combatTick()` 以 `try/finally` 包住）期間 `fieldLogMuted = true`：
   type 為 `normal`／`combat`／`skill`／`heal`（`FIELD_MUTED_LOG_TYPES`）的逐回合訊息（出手、技能、屬性效果、妖獸攻勢、凍結、持續傷害）不寫入。
   掉寶 `equip`、功德與升級 `level-up`、`system`、`quest`、`servant` 照常即時顯示。
@@ -1507,7 +1509,7 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
   |---|---|---|
   | `#pc-hud-avatar` | 頭像框內圓 (26,25) 104×104 | 玩家頭像，點擊更換 |
   | `#pc-hud-name` | 名字框 (135,38) 143×84 | 道號、境界（虛弱變紅）、Lv 與進度條、戰力 |
-  | `#pc-hud-coins` | 第 1 個資源框（藍晶） | 靈石 |
+  | `#pc-hud-coins` | 第 1 個資源框（藍晶） | 靈石（三格都有名稱標籤蓋在圖示上、點擊顯示說明，第 47 節） |
   | `#pc-hud-core` | 第 2 個資源框（元寶） | **獸丹**（只有 PC 版顯示，靈寵維持費要看） |
   | `#pc-hud-rep` | 第 3 個資源框（藍鑽） | 聲望；`.pc-pill-cover` 深色底蓋掉圖上的假數字「5.366」 |
   | `.pc-stat-label` ×3 | 狀態框標籤 (1183,71/101/131) | 深色底蓋掉圖上的「體力／靈力／仙力」，改寫氣血／靈力／修為 |
@@ -1535,7 +1537,7 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
 
 - **分頁面板**：位置在 `PC_SHEET_RECT`（圖上 (300,40) 845×625，避開左上 HUD、右上狀態框與底部按鈕），
   `renderPcStage()` 換算成 CSS 變數 `--pc-sheet-left/top/width/height`。開啟時隱藏建築熱點，按鈕仍可點；✕ 或「洞府」關閉。
-  面板字級 15px、卡片最小寬 170px、日誌高 34vh。
+  面板字級 17px × `--ui-scale`（2026-09-28 由 15px 調大，第 45 節）、卡片最小寬 170px、日誌高 34vh。
 - **圖片處理紀錄**：原圖上方有五顆導覽圓鈕，以 System.Drawing 將圓形區域用周圍像素反覆平均填補（調和填補＋輕微雜訊）移除，
   「修仙」「洞府」原位置因鄰近鳳凰翅膀留有淡光暈，正常大小不明顯。圖上的紅點與右下「修仕」錯字保留（畫死在圖上）。
   **2026-09-25 第二次修圖**（腳本以 System.Drawing＋C# 執行，原始圖備份不在專案內）：
@@ -1983,7 +1985,9 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
   1. 有傳 `channel`（`LOG_CHANNELS` 之一）就用它；
   2. 否則查 `LOG_CHANNEL_BY_TYPE`：`servant` → 僕從、`equip` → 道具；
   3. 其餘（combat／skill／heal／system／quest／level-up／reincarnate…）→ 戰鬥。
-  `type` 仍只決定顏色；每則訊息只進一個分頁。各分頁各自保留最新 `LOG_MAX_ENTRIES`（50）則，僕從洗版不會擠掉戰鬥訊息。
+  `type` 仍只決定顏色；每則訊息只進一個分頁。各分頁各自保留最新 `LOG_MAX_ENTRIES[分頁]` 則（戰鬥 150、道具 50、僕從 50），僕從洗版不會擠掉戰鬥訊息。
+- **戰鬥細節**：`FIELD_LOG_DETAIL = true`（ui.js）→ 野外逐回合的技能、屬性效果、妖獸攻勢、凍結、持續傷害都會寫進戰鬥分頁（一般攻擊本來就不寫），
+  另有每波遭遇與波末彙總。戰鬥分頁因此保留 150 則。見第 33 節末。
 - **道具分頁**：`equip` 類（掉寶、鍛造、分解、千寶閣／靈寶閣裝備、符寶）自動進入；另外這些呼叫明確傳 `channel = "item"`：
   星允鐵 `addStarIron`（enhance.js，含僕從挖礦）、千寶閣星允鐵（enhance.js）、星允鐵袋與壽元丹（auction.js）、異火碎片 `addFireShards`、
   丹藥堂購買（shop.js）、七彩補天石凝結與破障丹（merit.js）、靈田收穫（field.js）、賭坊切石（casino.js）。
@@ -1992,6 +1996,44 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
 - **未讀數**：寫入非目前分頁時 `logUnread[channel]++`，分頁鈕上的紅色 `.log-tab-badge` 顯示數量（>99 顯示 99+），切換過去歸零。
 - **記住選擇**：`switchLogTab()` 寫入 `localStorage['xiuxian_log_tab']`（裝置偏好、不進存檔，try/catch）；`main.js` 的 `window.onload` 呼叫 `restoreLogTab()` 還原。
 - **字級**（玩家反映太小）：改前實測手機 `#tab-sheet` 14px × `#log` 0.82em（≤900px media）= **11.48px**，PC 面板 15px × 0.85em = 12.75px；
-  改為 `.log-box { font-size: 1em; line-height: 1.55 }` → 手機 **14px**、PC **15px**（其他面板文字未改）。
+  現在 `.log-box { font-size: 0.94em }` → 手機約 **15px**、PC 約 **16px**（字級「中」；整體字級見第 45 節）。
 - 驗證紀錄（2026-09-28，本機 PowerShell 靜態伺服器）：戰鬥／系統訊息進戰鬥、星允鐵與掉寶進道具並顯示未讀 2、一鍵解僱日誌進僕從；
   點分頁鈕時按鈕與顯示框一致；鎖定僕從後單獨解僱被擋、一鍵解僱只刪未鎖定的；Console 無錯誤。
+
+## 45. 介面字級（`--ui-scale`、設定視窗「字級」；2026-09-28）
+
+- **基準字級**（字級「中」）：分頁面板 `#tab-sheet` 手機 **16px**（原 14px）、PC **17px**（原 15px）；所有彈窗 `.modal-content` **16px**（原本繼承 body 16px，現在明寫）。
+  面板內大多用 em，會一起等比放大；日誌 0.94em ≈ 15px。
+- **字級設定**：`:root { --ui-scale: 1 }`，上面三處都寫成 `calc(基準px * var(--ui-scale))`。
+  settings.js 的 `FONT_SCALES`：小 0.875（14px）／中 1（16px，預設）／大 1.125（18px）；`setFontScale(id)` 存 `localStorage['xiuxian_font_scale']`（裝置偏好、不進存檔），
+  `applyFontScale()` 設定 CSS 變數，`main.js` 的 `window.onload` 開頭呼叫。設定視窗 `#settings-font-scales` 由 `renderSettingsModal()` 產生三顆按鈕。
+- **洞府 HUD 不跟字級設定走**（被背景圖上的框限制），改成**最小 11px**：手機 `.hud-realm`／`.hud-level-line`／`.hud-power`／`#hud-stats`／`.hud-bar > em`／`#btn-settings`
+  用 `max(11px, calc(var(--u) * N))`，血條高度 `max(14px, …)`、標籤寬 `max(24px, …)`；`#hud-name > *` 行高 1.15 才塞得進名字框。
+  PC 版只調 `.pc-power`、`.pc-stat-label`（最小 11px）；PC 狀態條內的數字 `.pc-stat-bar > em` 仍是 10u（條高只有約 10px，放大會被裁切）。
+  改前 390px 寬手機實測：戰力／等級約 8～9px、血條數字 7.8px。
+- 驗證紀錄：390×844、360×740 手機，以「混沌道祖 10階／戰力 9999.9兆／9999.9兆/9999.9兆」測試，血條數字剛好不溢出、名字框上下只超出約 4px（仍在圖框內）；
+  小／中／大切換後面板、彈窗、日誌字級正確，HUD 維持 11px；Console 無錯誤。
+- ⚠️ 新增面板或彈窗時字級請用 em，才會跟著字級設定縮放；不要寫死 px。
+
+## 46. 彈窗右上角 ✕（`ui.js` 的 `initModalTopClose`；2026-09-28）
+
+- 玩家反映：所有彈窗的「關閉／離開」都在最下方，內容長（情緣約 14,800px、靈寶閣、宗門、天磯錄…）要捲到底才能關。
+- `main.js` 的 `window.onload` 呼叫 `initModalTopClose()`：替每個 `.modal-bg > .modal-content` 最前面插入
+  `.modal-top-close-wrap`（`position: sticky; top: 0; height: 0`，不佔版面）＋ `.modal-top-close` 圓形 ✕（34px，絕對定位在右上角）。
+  捲動時 ✕ 一直留在視窗右上角（實測捲動 1500px 後位置不變）。
+- **✕ 等同按底部的關閉鈕**：`onclick` 會去點該視窗最後一個 `.close-btn` 或 `[data-modal-close]`，所以每個視窗原本的關閉行為
+  （例如千寶閣搶拍的「暫時離開」、影片的 `closePartnerVideo()` 會停止播放）都不變。
+  「修改道號」的「取消」與風希影片的「關閉」不是 `.close-btn`，已加上 `data-modal-close`。
+- 沒有關閉鈕的視窗**刻意不加**：讀檔失敗 `#load-error-modal`（必須三選一）、選性別 `#gender-modal`、情緣對話 `#partner-dialog-modal`（由對話按鈕結束）。目前共 35 個視窗有 ✕。
+- ⚠️ 新增彈窗時：底部關閉鈕用 `class="close-btn"`（或加 `data-modal-close`），就會自動有 ✕；不要直接改寫整個 `.modal-content` 的 innerHTML，否則 ✕ 會被清掉。
+
+## 47. 洞府資源框標籤與說明（2026-09-28）
+
+- 玩家問「右上角寶石是什麼」：手機版右資源框的寶石圖示其實是**聲望**（圖上原為「仙玉」），PC 版三格（藍晶／元寶／藍鑽）又是另一種對應，容易搞混。
+- **標籤**：`.hud-pill-text::before`／`.pc-pill::before` 以 `content: attr(title)` 顯示「靈石／聲望／獸丹」，絕對定位在資源框左邊（`right: 100%`），
+  深色圓角底**蓋住圖上的圖示**，數字維持原本寬度。數字仍由 `updateHomeHud()` 以 innerText 寫入，不影響 ::before。
+  資源框原本的 `overflow: hidden` 改成 `overflow: visible` + `clip-path: inset(-4px 0 -4px -60px)`：只裁右側（數字過長仍被截），左側讓標籤伸出去。
+  ⚠️ `.pc-pill` 的主規則在後面，overflow／clip-path 要寫在它自己的規則裡，否則會被蓋回 hidden。
+- **點擊說明**：資源框 `onclick="showHudResourceInfo('coins'|'rep'|'core')"`（home-ui.js，`HUD_RESOURCE_INFO`），用 `showStageToast` 顯示「💰 靈石 完整數字｜用途」。
+  電腦滑鼠停留仍有 title 提示。
+- 驗證：390×844 手機「靈石 123萬／聲望 5.6萬」、1376×768 PC「靈石 123萬／獸丹 3,450／聲望 5.6萬」都完整顯示；Console 無錯誤。

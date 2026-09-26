@@ -25,6 +25,31 @@ function resolveDisplayLayout(vw, vh) {
     return (vw >= AUTO_PC_MIN_WIDTH && vw / vh >= AUTO_PC_MIN_RATIO) ? 'pc' : 'phone';
 }
 
+// 字級（2026-09-28，第 45 節）：改 :root 的 --ui-scale，放大分頁面板與彈窗；洞府 HUD 不受影響
+const FONT_SCALE_KEY = 'xiuxian_font_scale';
+const FONT_SCALES = [
+    { id: 's', label: '小', scale: 0.875, px: 14 },
+    { id: 'm', label: '中', scale: 1,     px: 16 },
+    { id: 'l', label: '大', scale: 1.125, px: 18 }
+];
+
+function getFontScaleId() {
+    let id = null;
+    try { id = localStorage.getItem(FONT_SCALE_KEY); } catch (e) {}
+    return FONT_SCALES.some(f => f.id === id) ? id : 'm';
+}
+
+function applyFontScale() {
+    let f = FONT_SCALES.find(x => x.id === getFontScaleId());
+    document.documentElement.style.setProperty('--ui-scale', f.scale);
+}
+
+function setFontScale(id) {
+    try { localStorage.setItem(FONT_SCALE_KEY, id); } catch (e) {}
+    applyFontScale();
+    renderSettingsModal();
+}
+
 function setDisplayMode(mode) {
     try { localStorage.setItem(DISPLAY_MODE_KEY, mode); } catch (e) {}
     layoutStage();
@@ -52,6 +77,15 @@ function renderSettingsModal() {
         + `<button class="settings-option${isFullscreen() ? ' active' : ''}" onclick="toggleFullscreen()">
             <b>⛶ 全螢幕</b><small>${isFullscreen() ? '已開啟，再按一次（或按 Esc）離開' : '隱藏瀏覽器網址列與工具列'}</small>
         </button>`;
+
+    const fontBox = document.getElementById('settings-font-scales');
+    if (fontBox) {
+        let fid = getFontScaleId();
+        fontBox.innerHTML = FONT_SCALES.map(f => `
+            <button class="settings-option${f.id === fid ? ' active' : ''}" onclick="setFontScale('${f.id}')">
+                <b>${f.label}</b><small>${f.px}px</small>
+            </button>`).join('');
+    }
 }
 
 function toggleFullscreen() {

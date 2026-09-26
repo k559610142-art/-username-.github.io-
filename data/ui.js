@@ -278,6 +278,9 @@ function renderSkillList() {
 // 日誌減量（2026-09-28）：野外戰鬥回合進行中（combat.js 的 fieldCombatRound）設為 true，
 // 逐回合的出手、技能、屬性效果、妖獸攻勢等訊息（type 在 FIELD_MUTED_LOG_TYPES）不寫入，改由每波結束的彙總取代。
 // 掉寶（equip）、功德／升級（level-up）、任務（quest）、系統（system）照常即時顯示；需要強制顯示時傳 force = true。
+// 2026-09-28 玩家要求加回戰鬥細節：日誌已分頁（戰鬥／道具／僕從），逐回合訊息只會擠在戰鬥分頁，
+// 所以 FIELD_LOG_DETAIL = true 時不再靜音；改回 false 即恢復「只寫每波彙總」。
+const FIELD_LOG_DETAIL = true;
 let fieldLogMuted = false;
 const FIELD_MUTED_LOG_TYPES = ["normal", "combat", "skill", "heal"];
 
@@ -285,13 +288,14 @@ const FIELD_MUTED_LOG_TYPES = ["normal", "combat", "skill", "heal"];
 // 分頁由 addLog 的第 4 個參數 channel 指定；沒給就依 type 決定（LOG_CHANNEL_BY_TYPE），其餘一律進「戰鬥」（含系統、任務、升級）。
 const LOG_CHANNELS = ["battle", "item", "servant"];
 const LOG_CHANNEL_BY_TYPE = { servant: "servant", equip: "item" };
-const LOG_MAX_ENTRIES = 50;
+// 各分頁保留筆數：戰鬥分頁含逐回合細節，保留較多
+const LOG_MAX_ENTRIES = { battle: 150, item: 50, servant: 50 };
 const LOG_TAB_STORAGE_KEY = "xiuxian_log_tab";
 let activeLogTab = "battle";
 let logUnread = { battle: 0, item: 0, servant: 0 };
 
 function addLog(msg, type = "normal", force = false, channel = null) {
-    if (fieldLogMuted && !force && FIELD_MUTED_LOG_TYPES.includes(type)) return;
+    if (fieldLogMuted && !FIELD_LOG_DETAIL && !force && FIELD_MUTED_LOG_TYPES.includes(type)) return;
     if (!LOG_CHANNELS.includes(channel)) channel = LOG_CHANNEL_BY_TYPE[type] || "battle";
     const logBox = document.getElementById(`log-${channel}`);
     if (!logBox) return;
@@ -299,7 +303,7 @@ function addLog(msg, type = "normal", force = false, channel = null) {
     entry.className = `log-entry ${type}`;
     entry.innerHTML = `[${new Date().toLocaleTimeString('zh-TW', { hour12: false })}] ${msg}`;
     logBox.prepend(entry);
-    if (logBox.children.length > LOG_MAX_ENTRIES) logBox.removeChild(logBox.lastChild);
+    if (logBox.children.length > LOG_MAX_ENTRIES[channel]) logBox.removeChild(logBox.lastChild);
     if (channel !== activeLogTab) {
         logUnread[channel]++;
         renderLogBadge(channel);
@@ -346,6 +350,22 @@ function refreshCombatStatusText() {
 }
 
 function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+// 彈窗右上角 ✕（2026-09-28）：啟動時替每個 .modal-content 插入一顆，按下去等同按底部的關閉鈕
+// （最後一個 .close-btn 或 [data-modal-close]），所以各視窗原本的關閉行為不變。
+// 沒有關閉鈕的視窗（讀檔失敗、選性別、情緣對話）不會加。
+function initModalTopClose() {
+    document.querySelectorAll('.modal-bg > .modal-content').forEach(mc => {
+        if (mc.querySelector('.modal-top-close')) return;
+        const src = [...mc.querySelectorAll('.close-btn, [data-modal-close]')].pop();
+        if (!src) return;
+        const wrap = document.createElement('div');
+        wrap.className = 'modal-top-close-wrap';
+        wrap.innerHTML = '<button class="modal-top-close" title="關閉" aria-label="關閉">✕</button>';
+        wrap.firstChild.onclick = () => src.click();
+        mc.prepend(wrap);
+    });
+}
 
 // 批次操作（藏書閣／煉丹房／鍛造閣／宗門靈田的 ×1、×10、最高）共用：
 // qty 為 1、10 或 'max'；affordable 為目前資源（與上限）允許的最多次數。

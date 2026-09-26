@@ -131,8 +131,9 @@ function combatTick() {
         }
         document.getElementById('combat-status').innerText = `⚔️ 遭遇 ${count} 隻妖獸！戰鬥中！`;
         document.getElementById('combat-status').style.color = '#f87171';
-        // 日誌減量：一般妖獸不另寫遭遇訊息（波末彙總會寫），混入修士／暗殺者時才提示
+        // 戰鬥細節開啟時（ui.js 的 FIELD_LOG_DETAIL）每波都寫遭遇；關閉時只在混入修士／暗殺者時提示
         if (extraText.length) addLog(`⚠️ 遭遇 ${count} 隻妖獸攔路，其中還有${extraText.join("、")}！`, "combat");
+        else if (FIELD_LOG_DETAIL) addLog(`⚠️ 遭遇 ${count} 隻妖獸攔路！`, "combat");
         updateCombatVisualPanel();
     } else {
         // 野外戰鬥回合：逐回合訊息不寫日誌（ui.js 的 fieldLogMuted），一波結束寫一則彙總

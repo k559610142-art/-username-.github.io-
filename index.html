@@ -23,6 +23,9 @@
             --reputation-color: #f472b6;
             --charm-color: #fb7185;
             --btn-hover: rgba(240, 213, 136, 0.15);
+            /* 介面字級倍率：設定視窗「字級 小／中／大」改這個值（settings.js 的 applyFontScale，第 45 節）。
+               套用在分頁面板 #tab-sheet 與所有彈窗 .modal-content；洞府 HUD 受背景圖的框限制，不跟著放大 */
+            --ui-scale: 1;
         }
 
         body {
@@ -269,7 +272,7 @@
         .log-box {
             height: 290px;
             overflow-y: auto;
-            font-size: 1em;
+            font-size: 0.94em;   /* 面板 16px → 約 15px（第 45 節） */
             line-height: 1.55;
             display: flex;
             flex-direction: column-reverse;
@@ -370,13 +373,22 @@
         #secret-realm-scene .secret-enter:hover { transform: translateY(-50%) scale(1.05); }
         @media (prefers-reduced-motion: reduce) { #secret-realm-scene .secret-enter { animation: none; } }
         .secret-reward { padding: 6px 10px; margin: 4px 0; border-radius: 6px; background: rgba(255, 255, 255, 0.05); color: #e5e7eb; }
-        .modal-content { background: #131c2e; border: 1px solid var(--panel-border); border-radius: 12px; padding: 25px; width: 80%; max-width: 900px; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
+        .modal-content { background: #131c2e; border: 1px solid var(--panel-border); border-radius: 12px; padding: 25px; width: 80%; max-width: 900px; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.8); font-size: calc(16px * var(--ui-scale)); }
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 15px; margin-bottom: 20px; }
         .card { border: 1px solid rgba(255,255,255,0.08); padding: 15px; border-radius: 8px; text-align: center; background: rgba(18, 24, 38, 0.6); transition: transform 0.2s; }
         .card:hover { border-color: var(--panel-border); transform: translateY(-2px); }
         .card h3 { margin-top: 0; margin-bottom: 8px; font-size: 1.1em; }
         .close-btn { width: auto; padding: 10px 35px; margin: 0 auto; display: block; border-color: #ef4444; color: #ef4444; background: rgba(239, 68, 68, 0.1); }
         .close-btn:hover { background: rgba(239, 68, 68, 0.25); border-color: #ef4444; box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
+        /* 彈窗右上角 ✕（ui.js 的 initModalTopClose 自動插入，第 46 節）：高度 0 的 sticky 外框，捲動時 ✕ 一直留在右上角 */
+        .modal-top-close-wrap { position: sticky; top: 0; height: 0; z-index: 10; }
+        .modal-top-close {
+            position: absolute; top: 0; right: 0; width: 34px; height: 34px; margin: 0; padding: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; line-height: 1; border-radius: 50%;
+            background: rgba(19, 28, 46, 0.95); color: #fca5a5; border: 1px solid #ef4444; box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+        }
+        .modal-top-close:hover { transform: none; background: rgba(127, 29, 29, 0.95); color: #fff; }
         
         .auto-settings { font-size: 0.85em; background: rgba(15, 20, 32, 0.6); padding: 10px; border-radius: 6px; margin-top: 12px; border: 1px solid rgba(255,255,255,0.05); }
         .auto-settings label { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; cursor: pointer; }
@@ -523,8 +535,22 @@
         .partner-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
         .partner-choices .sys-btn { margin: 0; font-size: 1.05em; font-weight: bold; border-color: #f472b6; color: #f9a8d4; }
         @media (max-width: 520px) { #partner-container .grid-container { grid-template-columns: 1fr; } }   /* 夥伴卡內容多，手機單欄 */
-        .codex-star { color: #374151; font-size: 0.9em; }
-        .codex-star.on { text-shadow: 0 0 6px currentColor; }
+        /* 天磯錄星星（codex.js 的 formatCodexStars，第 48 節）：未點亮暗灰；點亮後依品級 s0～s5 各一色 */
+        .codex-star { display: inline-block; color: #374151; font-size: 1em; margin: 0 1px; }
+        .codex-star.on { transform: scale(1.12); }
+        .codex-star.on.s0 { color: #e2e8f0; text-shadow: 0 0 5px rgba(226, 232, 240, 0.7); }   /* 白：月白 */
+        .codex-star.on.s1 { color: #4ade80; text-shadow: 0 0 6px rgba(74, 222, 128, 0.7); }    /* 綠：翠綠 */
+        .codex-star.on.s2 { color: #38bdf8; text-shadow: 0 0 6px rgba(56, 189, 248, 0.7); }    /* 藍：天藍 */
+        .codex-star.on.s3 { color: #c084fc; text-shadow: 0 0 7px rgba(192, 132, 252, 0.8); }   /* 紫：紫霞 */
+        .codex-star.on.s4 { color: #fb923c; text-shadow: 0 0 8px rgba(251, 146, 60, 0.85); }  /* 橙：赤金 */
+        .codex-star.on.s5 {                                                                   /* 白金：七彩流光 */
+            background: linear-gradient(90deg, #67e8f9, #f0abfc, #fde68a, #67e8f9);
+            background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
+            filter: drop-shadow(0 0 4px rgba(240, 171, 252, 0.9)); animation: rainbow-shift 3s linear infinite;
+        }
+        .codex-star-legend { text-align: center; font-size: 0.85em; color: #9ca3af; margin: 0 0 8px; }
+        .codex-star-legend span.item { margin: 0 5px; white-space: nowrap; }
+        @media (prefers-reduced-motion: reduce) { .codex-star.on.s5 { animation: none; } }
         /* 造化神器（七彩品質，config-lingbao.js 的 ARTIFACT_QUALITY）：七彩流動文字，外觀同 .rainbow-text */
         .quality-七彩 {
             background: linear-gradient(90deg, #ff6b6b, #ffc36b, #fff36b, #6bff95, #6be4ff, #8b8bff, #e56bff, #ff6b6b);
@@ -676,7 +702,7 @@
             .monster-avatar { font-size: 2.2em; }
             #battle-player-icon .framed-avatar { width: 48px !important; height: 48px !important; }
 
-            .log-box { height: 210px; font-size: 1em; }
+            .log-box { height: 210px; font-size: 0.94em; }
             .log-tab { padding: 8px 2px; margin: 0; }
 
             /* 觸控友善：加大按鈕點擊範圍，並取消 hover 位移（手機無滑鼠指標） */
@@ -824,23 +850,35 @@
             padding-left: calc(var(--u) * 10); box-sizing: border-box;
             color: #f5e6c4; text-shadow: 0 1px 3px #000;
         }
+        #hud-name > * { line-height: 1.15; }   /* 小字最小 11px 後四行才塞得進圖上的名字框（第 45 節） */
         #hud-player-name { font-size: calc(var(--u) * 26); font-weight: bold; color: #fde68a; }
         .hud-realm {
             align-self: flex-start;
-            font-size: calc(var(--u) * 17); padding: 0 calc(var(--u) * 10);
+            font-size: max(11px, calc(var(--u) * 17)); padding: 0 calc(var(--u) * 10);
             border: 1px solid rgba(240, 213, 136, 0.6); border-radius: calc(var(--u) * 12);
             background: rgba(120, 53, 15, 0.55); color: #fcd34d;
         }
         .hud-realm.weak { color: #fecaca; border-color: rgba(239, 68, 68, 0.8); background: rgba(127, 29, 29, 0.7); }
         .weak-tag { font-size: 0.8em; color: #fecaca; background: rgba(127, 29, 29, 0.7); border: 1px solid rgba(239, 68, 68, 0.7); border-radius: 4px; padding: 0 4px; }
-        .hud-level-line { display: flex; align-items: center; gap: calc(var(--u) * 6); font-size: calc(var(--u) * 17); }
+        /* HUD 小字最小 11px（2026-09-28，第 45 節）：390px 寬手機原本只有 8～9px；大螢幕仍依 --u 等比放大 */
+        .hud-level-line { display: flex; align-items: center; gap: calc(var(--u) * 6); font-size: max(11px, calc(var(--u) * 17)); }
         .hud-mini-bar { flex: 1; height: calc(var(--u) * 7); background: rgba(0,0,0,0.6); border-radius: 4px; overflow: hidden; margin-right: calc(var(--u) * 10); }
         #hud-level-bar { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #f59e0b, #fde68a); }
-        .hud-power { font-size: calc(var(--u) * 15); color: #cbd5e1; }
+        .hud-power { font-size: max(11px, calc(var(--u) * 15)); color: #cbd5e1; }
         .hud-pill-text {
             position: absolute; height: 2.37%; display: flex; align-items: center;
             font-size: calc(var(--u) * 21); font-weight: bold; color: #fef3c7; text-shadow: 0 1px 3px #000;
             white-space: nowrap; overflow: hidden;
+        }
+        /* 資源名稱（第 47 節）：用 title 當標籤，數字仍由 updateHomeHud 以 innerText 寫入，不會蓋掉 ::before。
+           標籤蓋在資源框左邊的圖示上（圖上的寶石圖示看不出是聲望），數字維持原本的寬度；
+           overflow 改用 clip-path 只裁右側，標籤才能伸到框的左邊 */
+        .hud-pill-text, .pc-pill { cursor: pointer; overflow: visible; clip-path: inset(-4px 0 -4px -60px); }
+        .hud-pill-text::before, .pc-pill::before {
+            content: attr(title); position: absolute; right: 100%; top: 50%; transform: translateY(-50%);
+            padding: 1px 3px; border-radius: 4px; background: rgba(27, 33, 48, 0.92);
+            font-weight: normal; line-height: 1.2; color: #fcd34d; white-space: nowrap;
+            font-size: max(10px, calc(var(--u) * 15));
         }
         #hud-coins { left: 61.2%; top: 2.76%; width: 14.5%; }
         #hud-rep { left: 83.9%; top: 2.76%; width: 14.2%; color: #c4b5fd; }
@@ -849,21 +887,21 @@
             padding: calc(var(--u) * 8) calc(var(--u) * 12); box-sizing: border-box;
             background: linear-gradient(180deg, rgba(10, 14, 26, 0.82), rgba(10, 14, 26, 0.68));
             border: 1px solid rgba(240, 213, 136, 0.45); border-radius: calc(var(--u) * 14);
-            color: #e5e7eb; font-size: calc(var(--u) * 16);
+            color: #e5e7eb; font-size: max(11px, calc(var(--u) * 16));
         }
         .hud-bar-row { display: flex; align-items: center; gap: calc(var(--u) * 6); margin: calc(var(--u) * 4) 0; }
-        .hud-bar-icon { width: calc(var(--u) * 22); text-align: center; }
-        .hud-bar-label { width: calc(var(--u) * 36); color: #fcd34d; }
-        .hud-bar { position: relative; flex: 1; height: calc(var(--u) * 20); background: rgba(0,0,0,0.65); border-radius: calc(var(--u) * 10); overflow: hidden; border: 1px solid rgba(255,255,255,0.12); }
+        .hud-bar-icon { width: max(13px, calc(var(--u) * 22)); text-align: center; }
+        .hud-bar-label { width: max(24px, calc(var(--u) * 36)); color: #fcd34d; }
+        .hud-bar { position: relative; flex: 1; height: max(14px, calc(var(--u) * 20)); background: rgba(0,0,0,0.65); border-radius: calc(var(--u) * 10); overflow: hidden; border: 1px solid rgba(255,255,255,0.12); }
         .hud-bar > span { display: block; height: 100%; width: 0; }
         .hud-bar.hp > span { background: linear-gradient(90deg, #7f1d1d, #ef4444); }
         .hud-bar.mp > span { background: linear-gradient(90deg, #1e3a8a, #3b82f6); }
         .hud-bar.exp > span { background: linear-gradient(90deg, #92400e, #f59e0b); }
-        .hud-bar > em { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-style: normal; font-size: calc(var(--u) * 14); text-shadow: 0 1px 2px #000; white-space: nowrap; }
+        .hud-bar > em { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-style: normal; font-size: max(11px, calc(var(--u) * 14)); text-shadow: 0 1px 2px #000; white-space: nowrap; }
         .hud-rate { display: flex; align-items: center; justify-content: space-between; margin-top: calc(var(--u) * 4); color: #cbd5e1; }
         #btn-settings {
             width: auto; margin: 0; padding: calc(var(--u) * 2) calc(var(--u) * 10);
-            font-size: calc(var(--u) * 15); color: #fde68a; background: rgba(40, 24, 10, 0.85);
+            font-size: max(11px, calc(var(--u) * 15)); color: #fde68a; background: rgba(40, 24, 10, 0.85);
             border: 1px solid rgba(240, 213, 136, 0.6); border-radius: calc(var(--u) * 10); box-shadow: none; transform: none;
         }
         #btn-settings:hover { box-shadow: 0 0 10px rgba(253, 230, 138, 0.5); transform: none; }
@@ -903,6 +941,8 @@
             background: rgba(18, 24, 38, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: #e5e7eb;
         }
         .settings-option small { color: #9ca3af; font-size: 0.8em; }
+        .settings-font-row { display: flex; gap: 8px; }
+        .settings-font-row .settings-option { flex: 1; align-items: center; text-align: center; }
         .settings-option.active { background: rgba(240, 213, 136, 0.12); color: #e5e7eb; font-weight: normal; border-color: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
         .settings-option.active b { color: var(--accent); }
 
@@ -911,7 +951,7 @@
         #pc-stage { display: none; position: relative; flex: none; overflow: hidden; --u: 0.93px; font-size: calc(var(--u) * 14); }
         body.layout-pc #pc-stage { display: block; }
         body.layout-pc #app-stage { display: none; }
-        body.layout-pc::before { background-image: url("images/home-bg-pc.jpg?v=20260928i"); }
+        body.layout-pc::before { background-image: url("images/home-bg-pc.jpg?v=20260928n"); }
         #pc-stage-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: fill; user-select: none; pointer-events: none; }
         #pc-hud-avatar {
             position: absolute; left: 1.890%; top: 3.255%; width: 7.558%; height: 13.542%;
@@ -928,10 +968,11 @@
         .pc-level-line { display: flex; align-items: center; gap: calc(var(--u) * 5); font-size: calc(var(--u) * 12); }
         .pc-level-line .hud-mini-bar { height: calc(var(--u) * 5); margin-right: calc(var(--u) * 4); }
         #pc-hud-level-bar { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #f59e0b, #fde68a); }
-        .pc-power { font-size: calc(var(--u) * 11); color: #cbd5e1; }
+        .pc-power { font-size: max(11px, calc(var(--u) * 11)); color: #cbd5e1; }
         .pc-pill {
             position: absolute; top: 1.563%; height: 2.995%; display: flex; align-items: center;
-            font-size: calc(var(--u) * 14); font-weight: bold; color: #fef3c7; text-shadow: 0 1px 3px #000; white-space: nowrap; overflow: hidden;
+            font-size: calc(var(--u) * 14); font-weight: bold; color: #fef3c7; text-shadow: 0 1px 3px #000; white-space: nowrap;
+            overflow: visible; clip-path: inset(-4px 0 -4px -60px);   /* 同手機版：資源名稱標籤伸到左邊圖示上（第 47 節） */
         }
         #pc-hud-coins { left: 78.343%; width: 4.506%; }
         #pc-hud-core  { left: 86.337%; width: 3.634%; color: #fdba74; }
@@ -940,7 +981,7 @@
         .pc-stat-label {
             position: absolute; left: 85.974%; width: 2.253%; height: 2.344%;
             display: flex; align-items: center; justify-content: center;
-            font-size: calc(var(--u) * 11); color: #fcd34d; background: #1c212b;
+            font-size: max(11px, calc(var(--u) * 11)); color: #fcd34d; background: #1c212b;
         }
         .pc-stat-bar { position: absolute; left: 88.590%; width: 8.358%; height: 1.432%; border-radius: calc(var(--u) * 6); overflow: hidden; background: rgba(0,0,0,0.55); }
         .pc-stat-bar > span { display: block; height: 100%; width: 0; }
@@ -964,7 +1005,7 @@
         /* PC 版分頁面板：位置由 config-home-pc.js 的 PC_SHEET_RECT 換算成 --pc-sheet-* */
         body.layout-pc #tab-sheet {
             left: var(--pc-sheet-left); top: var(--pc-sheet-top); width: var(--pc-sheet-width); height: var(--pc-sheet-height);
-            font-size: 15px; border-radius: 14px;
+            font-size: calc(17px * var(--ui-scale)); border-radius: 14px;
         }
         body.layout-pc #tab-sheet .log-box { height: 34vh; }
         body.layout-pc #tab-sheet .grid-container { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
@@ -1043,7 +1084,7 @@
             background: rgba(10, 14, 24, 0.94);
             border: 1px solid rgba(240, 213, 136, 0.5); border-radius: calc(var(--u) * 18);
             box-shadow: 0 0 30px rgba(0,0,0,0.8);
-            font-size: 14px;
+            font-size: calc(16px * var(--ui-scale));   /* 2026-09-28 由 14px 調大，第 45 節 */
         }
         body:not([data-tab="home"]) #tab-sheet { display: flex; }
         .sheet-head {
@@ -1167,8 +1208,8 @@
         <div class="hud-level-line"><span id="hud-level">Lv.1</span><span class="hud-mini-bar"><span id="hud-level-bar"></span></span></div>
         <div class="hud-power lb-entry" onclick="openLeaderboardModal()" title="天下戰力榜">戰力 <span id="hud-power">5</span> 🏆</div>
     </div>
-    <div id="hud-coins" class="hud-pill-text" title="靈石">0</div>
-    <div id="hud-rep" class="hud-pill-text" title="聲望">0</div>
+    <div id="hud-coins" class="hud-pill-text" title="靈石" onclick="showHudResourceInfo('coins')">0</div>
+    <div id="hud-rep" class="hud-pill-text" title="聲望" onclick="showHudResourceInfo('rep')">0</div>
     <div id="hud-stats">
         <div class="hud-bar-row"><span class="hud-bar-icon">❤️</span><span class="hud-bar-label">氣血</span><span class="hud-bar hp"><span id="hud-hp-bar"></span><em id="hud-hp-text">100/100</em></span></div>
         <div class="hud-bar-row"><span class="hud-bar-icon">💧</span><span class="hud-bar-label">靈力</span><span class="hud-bar mp"><span id="hud-mp-bar"></span><em id="hud-mp-text">100/100</em></span></div>
@@ -1395,7 +1436,7 @@
      按鈕與建築熱點由 home-ui.js 的 renderPcStage() 依 config-home-pc.js 產生；分頁面板 #tab-sheet 在 PC 版時搬進這裡。
      id 一律是手機版的 hud-xxx 加上 pc- 前綴，updateHomeHud() 同時寫入兩邊。 -->
 <div id="pc-stage">
-    <img id="pc-stage-bg" src="images/home-bg-pc.jpg?v=20260928i" alt="">
+    <img id="pc-stage-bg" src="images/home-bg-pc.jpg?v=20260928n" alt="">
     <img id="pc-hud-avatar" alt="更換頭像" title="點擊更換頭像" onclick="openAvatarModal()">
     <img id="pc-hud-avatar-frame" alt="">
     <div id="pc-hud-name">
@@ -1404,9 +1445,9 @@
         <div class="pc-level-line"><span id="pc-hud-level">Lv.1</span><span class="hud-mini-bar"><span id="pc-hud-level-bar"></span></span></div>
         <div class="pc-power lb-entry" onclick="openLeaderboardModal()" title="天下戰力榜">戰力 <span id="pc-hud-power">5</span> 🏆</div>
     </div>
-    <div id="pc-hud-coins" class="pc-pill" title="靈石">0</div>
-    <div id="pc-hud-core" class="pc-pill" title="獸丹">0</div>
-    <div id="pc-hud-rep" class="pc-pill pc-pill-cover" title="聲望">0</div>
+    <div id="pc-hud-coins" class="pc-pill" title="靈石" onclick="showHudResourceInfo('coins')">0</div>
+    <div id="pc-hud-core" class="pc-pill" title="獸丹" onclick="showHudResourceInfo('core')">0</div>
+    <div id="pc-hud-rep" class="pc-pill pc-pill-cover" title="聲望" onclick="showHudResourceInfo('rep')">0</div>
     <!-- 狀態框：圖上的標籤寫「體力／靈力／仙力」，用 .pc-stat-label 蓋成遊戲用語 -->
     <span class="pc-stat-label" style="top: 9.245%;">氣血</span>
     <span class="pc-stat-label" style="top: 13.151%;">靈力</span>
@@ -1450,7 +1491,9 @@
         <h2 style="color: var(--accent); margin-top: 0;">⚙️ 設定</h2>
         <div class="panel-title" style="text-align: left;">顯示尺寸</div>
         <div id="settings-display-modes"></div>
-        <p style="color: #6b7280; font-size: 0.78em;">顯示尺寸只記在這台裝置，不影響遊戲存檔。</p>
+        <div class="panel-title" style="text-align: left;">字級</div>
+        <div id="settings-font-scales" class="settings-font-row"></div>
+        <p style="color: #6b7280; font-size: 0.8em;">顯示尺寸與字級只記在這台裝置，不影響遊戲存檔。</p>
         <button class="sys-btn" onclick="closeModal('settings-modal'); openSystemModal()">⚙️ 命運與系統（存檔／轉世／重置）</button>
         <button class="close-btn" onclick="closeModal('settings-modal')">關閉</button>
     </div>
@@ -1497,7 +1540,7 @@
                placeholder="最多 12 個字" onkeydown="if (event.key === 'Enter') confirmPlayerName()">
         <div id="name-status" style="color: #ef4444; font-size: 0.85em; min-height: 1.3em; margin: 6px 0;"></div>
         <div class="batch-btns">
-            <button class="sys-btn" onclick="closeModal('name-modal')">取消</button>
+            <button class="sys-btn" data-modal-close onclick="closeModal('name-modal')">取消</button>
             <button class="sys-btn" onclick="confirmPlayerName()">✅ 確認</button>
         </div>
     </div>
@@ -1689,7 +1732,7 @@
 </div>
 
 <div id="evil-hall-scene">
-    <img class="evil-hall-bg" src="images/evil-hall.jpg?v=20260928i" alt="">
+    <img class="evil-hall-bg" src="images/evil-hall.jpg?v=20260928n" alt="">
     <button class="evil-hall-back" onclick="closeEvilHallScene()">↩ 離開</button>
     <button class="evil-hall-plaque" onclick="openEvilHuntModal()" aria-label="殺手殿堂（開啟懸賞榜）">殺手殿堂</button>
 </div>
@@ -2001,7 +2044,7 @@
         <h3 id="partner-video-title" style="color: #f9a8d4; margin: 0 0 8px;"></h3>
         <video id="partner-video" controls playsinline preload="none" style="width: 100%; max-height: 70vh; border-radius: 8px; background: #000;"></video>
         <div id="partner-video-status" style="display: none; color: #f9a8d4; font-size: 0.9em; margin-top: 6px;"></div>
-        <button class="sys-btn" style="border-color: #f472b6; color: #f472b6;" onclick="closePartnerVideo()">關閉</button>
+        <button class="sys-btn" data-modal-close style="border-color: #f472b6; color: #f472b6;" onclick="closePartnerVideo()">關閉</button>
     </div>
 </div>
 
@@ -2015,87 +2058,87 @@
 
 <!-- ⚠️ 版本號 ?v=：每次發佈（推上 GitHub Pages）前要把所有 ?v= 改成新的值（全部取代即可）。
      GitHub Pages 會快取檔案約 10 分鐘，沒改版本號時玩家可能拿到「舊 index.html＋新 JS」而讀檔失敗。見 ARCHITECTURE.md 第 30 節 -->
-<script src="data/format.js?v=20260928i"></script>
-<script src="data/config-realms.js?v=20260928i"></script>
-<script src="data/config-level.js?v=20260928i"></script>
-<script src="data/config-lifespan.js?v=20260928i"></script>
-<script src="data/config-maps.js?v=20260928i"></script>
-<script src="data/config-sects.js?v=20260928i"></script>
-<script src="data/config-lingbao.js?v=20260928i"></script>
-<script src="data/config-shop.js?v=20260928i"></script>
-<script src="data/config-beasts.js?v=20260928i"></script>
-<script src="data/config-servants.js?v=20260928i"></script>
-<script src="data/config-equipment.js?v=20260928i"></script>
-<script src="data/config-gear-catalog.js?v=20260928i"></script>
-<script src="data/config-gear.js?v=20260928i"></script>
-<script src="data/config-enhance.js?v=20260928i"></script>
-<script src="data/config-sets.js?v=20260928i"></script>
-<script src="data/config-profession.js?v=20260928i"></script>
-<script src="data/config-titles.js?v=20260928i"></script>
-<script src="data/config-tribulation.js?v=20260928i"></script>
-<script src="data/config-quests.js?v=20260928i"></script>
-<script src="data/config-activities.js?v=20260928i"></script>
-<script src="data/config-daily-quests.js?v=20260928i"></script>
-<script src="data/config-elements.js?v=20260928i"></script>
-<script src="data/config-merit.js?v=20260928i"></script>
-<script src="data/config-bounty.js?v=20260928i"></script>
-<script src="data/config-talisman.js?v=20260928i"></script>
-<script src="data/config-avatars.js?v=20260928i"></script>
-<script src="data/config-avatar-frames.js?v=20260928i"></script>
-<script src="data/config-spells.js?v=20260928i"></script>
-<script src="data/config-strange-fire.js?v=20260928i"></script>
-<script src="data/config-partners.js?v=20260928i"></script>
-<script src="data/config-towns.js?v=20260928i"></script>
-<script src="data/config-casino.js?v=20260928i"></script>
-<script src="data/config-leaderboard.js?v=20260928i"></script>
-<script src="data/config-secret-realms.js?v=20260928i"></script>
-<script src="data/state.js?v=20260928i"></script>
-<script src="data/stats.js?v=20260928i"></script>
-<script src="data/elements.js?v=20260928i"></script>
-<script src="data/ui.js?v=20260928i"></script>
-<script src="data/map.js?v=20260928i"></script>
-<script src="data/town.js?v=20260928i"></script>
-<script src="data/casino.js?v=20260928i"></script>
-<script src="data/combat.js?v=20260928i"></script>
-<script src="data/leveling.js?v=20260928i"></script>
-<script src="data/lifespan.js?v=20260928i"></script>
-<script src="data/tribulation.js?v=20260928i"></script>
-<script src="data/sect.js?v=20260928i"></script>
-<script src="data/shop.js?v=20260928i"></script>
-<script src="data/bag.js?v=20260928i"></script>
-<script src="data/equipment.js?v=20260928i"></script>
-<script src="data/gear.js?v=20260928i"></script>
-<script src="data/enhance.js?v=20260928i"></script>
-<script src="data/profession.js?v=20260928i"></script>
-<script src="data/codex.js?v=20260928i"></script>
-<script src="data/lingbao-shop.js?v=20260928i"></script>
-<script src="data/artifact.js?v=20260928i"></script>
-<script src="data/servant.js?v=20260928i"></script>
-<script src="data/quest.js?v=20260928i"></script>
-<script src="data/activity.js?v=20260928i"></script>
-<script src="data/daily-quest.js?v=20260928i"></script>
-<script src="data/auction.js?v=20260928i"></script>
-<script src="data/merit.js?v=20260928i"></script>
-<script src="data/bounty.js?v=20260928i"></script>
-<script src="data/talisman.js?v=20260928i"></script>
-<script src="data/strange-fire.js?v=20260928i"></script>
-<script src="data/partner.js?v=20260928i"></script>
-<script src="data/field.js?v=20260928i"></script>
-<script src="data/beast-combat.js?v=20260928i"></script>
-<script src="data/spells.js?v=20260928i"></script>
-<script src="data/beast.js?v=20260928i"></script>
-<script src="data/library.js?v=20260928i"></script>
-<script src="data/alchemy.js?v=20260928i"></script>
-<script src="data/player-profile.js?v=20260928i"></script>
-<script src="data/save.js?v=20260928i"></script>
-<script src="data/config-home-pc.js?v=20260928i"></script>
-<script src="data/home-ui.js?v=20260928i"></script>
-<script src="data/settings.js?v=20260928i"></script>
-<script src="data/avatar.js?v=20260928i"></script>
-<script src="data/leaderboard.js?v=20260928i"></script>
-<script src="data/secret-realm.js?v=20260928i"></script>
-<script src="data/title-screen.js?v=20260928i"></script>
-<script src="data/main.js?v=20260928i"></script>
+<script src="data/format.js?v=20260928n"></script>
+<script src="data/config-realms.js?v=20260928n"></script>
+<script src="data/config-level.js?v=20260928n"></script>
+<script src="data/config-lifespan.js?v=20260928n"></script>
+<script src="data/config-maps.js?v=20260928n"></script>
+<script src="data/config-sects.js?v=20260928n"></script>
+<script src="data/config-lingbao.js?v=20260928n"></script>
+<script src="data/config-shop.js?v=20260928n"></script>
+<script src="data/config-beasts.js?v=20260928n"></script>
+<script src="data/config-servants.js?v=20260928n"></script>
+<script src="data/config-equipment.js?v=20260928n"></script>
+<script src="data/config-gear-catalog.js?v=20260928n"></script>
+<script src="data/config-gear.js?v=20260928n"></script>
+<script src="data/config-enhance.js?v=20260928n"></script>
+<script src="data/config-sets.js?v=20260928n"></script>
+<script src="data/config-profession.js?v=20260928n"></script>
+<script src="data/config-titles.js?v=20260928n"></script>
+<script src="data/config-tribulation.js?v=20260928n"></script>
+<script src="data/config-quests.js?v=20260928n"></script>
+<script src="data/config-activities.js?v=20260928n"></script>
+<script src="data/config-daily-quests.js?v=20260928n"></script>
+<script src="data/config-elements.js?v=20260928n"></script>
+<script src="data/config-merit.js?v=20260928n"></script>
+<script src="data/config-bounty.js?v=20260928n"></script>
+<script src="data/config-talisman.js?v=20260928n"></script>
+<script src="data/config-avatars.js?v=20260928n"></script>
+<script src="data/config-avatar-frames.js?v=20260928n"></script>
+<script src="data/config-spells.js?v=20260928n"></script>
+<script src="data/config-strange-fire.js?v=20260928n"></script>
+<script src="data/config-partners.js?v=20260928n"></script>
+<script src="data/config-towns.js?v=20260928n"></script>
+<script src="data/config-casino.js?v=20260928n"></script>
+<script src="data/config-leaderboard.js?v=20260928n"></script>
+<script src="data/config-secret-realms.js?v=20260928n"></script>
+<script src="data/state.js?v=20260928n"></script>
+<script src="data/stats.js?v=20260928n"></script>
+<script src="data/elements.js?v=20260928n"></script>
+<script src="data/ui.js?v=20260928n"></script>
+<script src="data/map.js?v=20260928n"></script>
+<script src="data/town.js?v=20260928n"></script>
+<script src="data/casino.js?v=20260928n"></script>
+<script src="data/combat.js?v=20260928n"></script>
+<script src="data/leveling.js?v=20260928n"></script>
+<script src="data/lifespan.js?v=20260928n"></script>
+<script src="data/tribulation.js?v=20260928n"></script>
+<script src="data/sect.js?v=20260928n"></script>
+<script src="data/shop.js?v=20260928n"></script>
+<script src="data/bag.js?v=20260928n"></script>
+<script src="data/equipment.js?v=20260928n"></script>
+<script src="data/gear.js?v=20260928n"></script>
+<script src="data/enhance.js?v=20260928n"></script>
+<script src="data/profession.js?v=20260928n"></script>
+<script src="data/codex.js?v=20260928n"></script>
+<script src="data/lingbao-shop.js?v=20260928n"></script>
+<script src="data/artifact.js?v=20260928n"></script>
+<script src="data/servant.js?v=20260928n"></script>
+<script src="data/quest.js?v=20260928n"></script>
+<script src="data/activity.js?v=20260928n"></script>
+<script src="data/daily-quest.js?v=20260928n"></script>
+<script src="data/auction.js?v=20260928n"></script>
+<script src="data/merit.js?v=20260928n"></script>
+<script src="data/bounty.js?v=20260928n"></script>
+<script src="data/talisman.js?v=20260928n"></script>
+<script src="data/strange-fire.js?v=20260928n"></script>
+<script src="data/partner.js?v=20260928n"></script>
+<script src="data/field.js?v=20260928n"></script>
+<script src="data/beast-combat.js?v=20260928n"></script>
+<script src="data/spells.js?v=20260928n"></script>
+<script src="data/beast.js?v=20260928n"></script>
+<script src="data/library.js?v=20260928n"></script>
+<script src="data/alchemy.js?v=20260928n"></script>
+<script src="data/player-profile.js?v=20260928n"></script>
+<script src="data/save.js?v=20260928n"></script>
+<script src="data/config-home-pc.js?v=20260928n"></script>
+<script src="data/home-ui.js?v=20260928n"></script>
+<script src="data/settings.js?v=20260928n"></script>
+<script src="data/avatar.js?v=20260928n"></script>
+<script src="data/leaderboard.js?v=20260928n"></script>
+<script src="data/secret-realm.js?v=20260928n"></script>
+<script src="data/title-screen.js?v=20260928n"></script>
+<script src="data/main.js?v=20260928n"></script>
 
 </body>
 </html>

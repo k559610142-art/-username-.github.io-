@@ -116,6 +116,17 @@ function showStageToast(msg) {
     clearTimeout(stageToastTimer);
     stageToastTimer = setTimeout(() => el.classList.remove('show'), 1800);
 }
+// 點洞府右上資源框：顯示資源名稱、完整數字與用途（手機沒有滑鼠停留的 title 提示）
+const HUD_RESOURCE_INFO = {
+    coins: { icon: '💰', name: '靈石', get: () => player.coins, use: '購物、鍛造、派遣' },
+    rep:   { icon: '💎', name: '聲望', get: () => player.reputation || 0, use: '解鎖活動、兌換' },
+    core:  { icon: '🔮', name: '獸丹', get: () => player.beastCore || 0, use: '靈寵兌換與維持費' }
+};
+function showHudResourceInfo(key) {
+    const r = HUD_RESOURCE_INFO[key];
+    if (!r) return;
+    showStageToast(`${r.icon} ${r.name} ${fmtNum(r.get())}｜${r.use}`);
+}
 function showUnderConstruction(name) {
     showStageToast(`🏗️【${name}】興建中，敬請期待！`);
 }
