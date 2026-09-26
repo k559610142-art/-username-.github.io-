@@ -2140,6 +2140,8 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
   **網頁公開沒關係，權限全部由 Firestore 規則把關**：只有 `admins/{uid}` 存在的 Google 帳號能刪除、封鎖、讀完整榜單；其他人打開只看得到公開前 100 名（唯讀、按鈕停用）。
 - **開通步驟（作者做一次，主控台操作）**：
   1. Firebase 主控台 → Authentication → 登入方式 → 啟用 **Google**（匿名登入保持啟用）。授權網域要有 GitHub Pages 網域與 `localhost`。
+     （2026-09-27 已完成：Google 已啟用；授權網域已加入 `k559610142-art.github.io`。匿名登入不檢查授權網域，Google 登入會，
+     缺少時 gm.html 登入會出現 `auth/unauthorized-domain`。GM 頁網址：`https://k559610142-art.github.io/-username-.github.io-/gm.html`）
   2. 整份貼上新版 `tools/firestore.rules` → 發布。
   3. 打開 `gm.html` → 「Google 登入」→ 頁面顯示你的 uid（可複製）。
   4. Firestore → 資料 → 開始集合 `admins` → 文件 ID = 上一步的 uid（欄位隨意）→ 儲存。重新整理 gm.html，上方顯示「管理者」即完成。
