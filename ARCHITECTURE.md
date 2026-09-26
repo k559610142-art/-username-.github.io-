@@ -8,7 +8,8 @@
 ## 1. 專案結構
 
 ```
-index.html            唯一的 HTML 進入點：畫面結構、CSS（含手機 RWD，見第 6 節）、
+gm.html               戰力榜 GM 後台（第 50 節）：只有 Firestore admins 名單內的 Google 帳號能刪除／封鎖；不是遊戲頁面，遊戲內沒有連結
+index.html            唯一的遊戲 HTML 進入點：畫面結構、CSS（含手機 RWD，見第 6 節）、
                       彈窗(modal) DOM、<script src> 載入清單
                       ※ 檔名必須是 index.html（GitHub Pages 只把 index.html 當作預設首頁）
 images/               圖片素材
@@ -37,7 +38,7 @@ tools/                不會被遊戲載入的維護工具
   csv-to-js.ps1       把 CSV 轉成 data/config-gear-catalog.js（powershell -ExecutionPolicy Bypass -File tools\csv-to-js.ps1）
   cut-figure.ps1      以手描外框去背（-Src 圖 -OutPng 輸出 -Preview 預覽 -PointsFile 外框點檔；點檔每行 "x,y"，空白行分隔，第一組外框、其餘為挖掉的洞）
   cut-figure-points-fengxi.txt  風希人偶的外框點（原圖 768×1376，玩家提供的插畫）
-  firestore.rules     天下戰力榜的 Firestore 安全規則（貼到 Firebase 主控台，第 42 節）
+  firestore.rules     天下戰力榜＋GM 後台的 Firestore 安全規則（貼到 Firebase 主控台，第 42、50 節）
   cut-avatar-frames.ps1  從頭像框展示圖裁出 25 個光環並去背、量內圈（-Src 圖檔 -OutDir 輸出資料夾；格線座標寫死在檔內，見第 32 節）
 data/                 所有遊戲邏輯與資料，依「設定資料 / 執行狀態 / 功能模組 / 進入點」分層
   format.js           數字顯示格式 fmtNum()／xxx.toWan()：1 萬以上用中文單位（1000萬、1.5億），**第一個載入**（第 41 節）
@@ -143,7 +144,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 15n | `config-partners.js` | 夥伴（第 39 節）：`PARTNER_TIERS`(評級門檻與數值建議)、`PARTNER_POWER_LABELS`(六維名稱)、`partnerList`(39 位：出處、世界、巔峰、六維戰力、分析、被動、絕學；檔尾有新增模板) | 無 | `partner.js` |
 | 15l | `config-titles.js` | `titleList`（60 個稱號：條件 cond、加成 bonus；含 4 個賭運稱號） | 無 | `codex.js`、`casino.js`(紀錄頁列出賭運稱號) |
 | 15p | `config-casino.js` | 天星賭坊（第 40 節）：`CASINO_TOWN`、每日上限 `CASINO_DAILY_LIMIT_BY_REALM`、`CASINO_DICE_MAX_RATIO`/`CASINO_DICE_MIN_BET`/`CASINO_CONFIRM_RATIO`、`casinoStones`(三種隕石：價格、結果權重表)、`CASINO_VALUE`(估值)、`CASINO_CUT_LINES`、擲骰 `CASINO_DICE_BETS`/`CASINO_TOTAL_PAYOUT`/`CASINO_DICE_FACES` | 無 | `casino.js` |
-| 15q | `config-leaderboard.js` | 天下戰力榜（第 42 節）：`LEADERBOARD_FIREBASE_CONFIG`（null = 不啟用、不連網）、`LEADERBOARD_SDK_BASE`、`LEADERBOARD_COLLECTION`、`LEADERBOARD_UPLOAD_INTERVAL_MS`(5 分)/`LEADERBOARD_FIRST_UPLOAD_DELAY_MS`(15 秒)/`LEADERBOARD_MIN_GAP_MS`(60 秒，須與 tools/firestore.rules 一致)/`LEADERBOARD_TOP_N`(100)/`LEADERBOARD_REFRESH_COOLDOWN_MS` | 無 | `leaderboard.js` |
+| 15q | `config-leaderboard.js` | 天下戰力榜（第 42 節）：`LEADERBOARD_FIREBASE_CONFIG`（null = 不啟用、不連網）、`LEADERBOARD_SDK_BASE`、`LEADERBOARD_COLLECTION`、`LEADERBOARD_BANNED_COLLECTION`(banned)/`LEADERBOARD_ADMINS_COLLECTION`(admins，第 50 節)、`LEADERBOARD_UPLOAD_INTERVAL_MS`(5 分)/`LEADERBOARD_FIRST_UPLOAD_DELAY_MS`(15 秒)/`LEADERBOARD_MIN_GAP_MS`(60 秒，須與 tools/firestore.rules 一致)/`LEADERBOARD_TOP_N`(100)/`LEADERBOARD_REFRESH_COOLDOWN_MS` | 無 | `leaderboard.js` |
 | 15r | `config-secret-realms.js` | 秘境（第 43 節）：`SECRET_REALM_DAILY_ATTEMPTS`(預定每日 5 次)、`secretRealmList`（id／name／img／minRealmIndex／implemented／tagline／desc／rewards 預定獎勵；選填 size／imgPc／sizePc／sceneTitle／sceneSub／enterLabel／enterPos／mode） | 無 | `secret-realm.js` |
 | 15s | `config-defense.js` | 死守天南城（第 49 節）：`DEFENSE_TOTAL_WAVES`(100)／`DEFENSE_BOSS_EVERY`(10)／`DEFENSE_CLIP_FADE`、`DEFENSE_CLIPS`（id／name／src／zoom／trim／sizeHint）、`DEFENSE_THEMES`(10 主題)、`DEFENSE_BOSSES`、`DEFENSE_OPENERS`、`DEFENSE_CAMERAS`、強度 `DEFENSE_MILESTONES`/`DEFENSE_MILESTONE_STAGE`/`DEFENSE_ENEMY`、勝負 `DEFENSE_PLAYER_SKILL_MULT`/`DEFENSE_MAX_ROUNDS`/`DEFENSE_LOSE_AT`、獎勵 `DEFENSE_REWARDS` | 無 | `defense.js` |
 | 16 | `state.js` | `player`（含裝備系統 `starIron`/`ironShards`/`gearStash`/`ironShop`/`ironUsed`/`maxEnhance`/`gearCodex`/`titles`/`activeTitle`/`profession`/`profSwitched`/`proficiency`（第 37 節）、`lingbaoSold`、仙法 `spells`/`spellSlots`、渡劫失敗虛弱 `weakened`、頭像 `avatarId`/`unlockedAvatars`、頭像光環 `avatarFrameId`/`unlockedFrames`、礦石 `ore`、符寶 `talismans`、異火 `fireShards`/`strangeFires`/`fireCollection`（第 38 節）、天星賭坊 `casino`（第 40 節）、夥伴 `partners`/`partnerTeam`/`partnerBond`/`fieldKills`（第 39 節）、藏書閣屬性秘典次數 `elementStudy`、轉世保留的上限 `reincarnateBonus`、年齡 `age`、功德系統 `merit`/`butianStones`/`breakPills`/`evilKills`、善惡 `karma`、懸賞榜 `bountyBoard`/`bountyRefreshAt`/`bountyFaction`/`activeBountyId`/`bountyKills`、付費刷新次數 `paidRefresh`、線上實戰證明 `idleProvenMap`（第 33 節））、`DEFAULT_PLAYER_JSON`（全新角色預設值快照，讀檔/匯入的合併基底）、`enemies`（每隻帶 `attrs`/`status`；野外修士另帶 `cultivator`("正"/"邪")/`ambush`）、`respawnTimer`、`safeZoneTimer`；不存檔的執行期狀態：`inTribulation`/`heartDemon`/`tribulationFatedWin`/懸賞對決 `inBountyDuel`/`duelOpponent`/`duelWeakenTimer`/`duelWeakenMult`/`duelSilenceTimer`/`duelArmorTimer`/丹藥冷卻/`gameOver`/背景補發 `lastTickAt`/`missedTickMs`/線上實戰秒數 `fieldOnlineTicks`/日誌彙總 `waveSummary`/`meditateSummary`/`playerStatus`(玩家身上的凍結/燒傷/中毒)/靈寵輔助計時(`petBuff*`/`petShield*`/`petRegen*`) | **`maps`**（必須排在 config-maps.js 之後） | 幾乎所有檔案都會讀寫 `player` |
@@ -186,7 +187,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 40 | `player-profile.js` | `PLAYER_NAME_MAX_LENGTH`、`sanitizePlayerName`(移除 HTML 特殊字元，讀檔/匯入也套用)/`changePlayerName`(開啟 #name-modal)/`confirmPlayerName` | `player.name` | HTML 按鈕、`save.js`(applySaveData) |
 | 41 | `save.js` | `calcOfflineProgress`(讀檔時的離線結算，呼叫 settleIdleSeconds)/`settleIdleSeconds`(離線與背景共用的收益結算，含 settleOfflineBeastUpkeep 靈寵維持費)/`estimateIdleCombat`(依實力估算離線戰鬥效率與能否存活)/`formatIdleDuration`/背景補發 `checkBackgroundCatchUp`＋常數 `BACKGROUND_TICK_SLACK_MS`/`BACKGROUND_SETTLE_MIN_SECONDS`（第 33 節）/`saveLocal`/`loadLocal`/`applySaveData`(讀檔與匯入共用)/`resetGameCompletely` + 舊存檔相容 `migrateServantAssignments`/`migrateEquipmentSlots`/`migrateActivityFields`/`migrateCurrentMap`/`migrateProgressionFields`/`migrateLegacySkills`(舊禁術下修＋已兌換武學耗魔同步)/`migrateRealmExp`(經驗曲線改版：待渡劫者修為壓回滿格)/`migrateEquipSockets`(只補 talismans 欄位)/`migrateArtifactIds`(在 artifact.js，舊神器補 lingbaoId) + 讀檔失敗保護 `saveLoadFailed`/`reportLoadFailure`/`retryLoadAfterFailure`/`showRawSaveForCopy`/`abandonSaveAndStartNew`（第 30 節） + 離線斬殺野外修士的功德（讀檔時也呼叫 `settleMeritStones()`）+ 讀檔時清除懸賞對決狀態 + `reloadLocalSave`(選單按鈕，無存檔時給提示) + 存檔代碼（常數 `SAVE_CODE_PREFIX`="FS2:"、兩段式確認暫存 `pendingImportData`；編解碼皆為 async）`encodeSaveCode`/`decodeSaveCode`/`bytesToBase64`/`base64ToBytes`/`pipeBytes`/`openSaveCodeModal`/`setSaveCodeStatus`/`exportSave`/`selectSaveCodeText`/`copySaveCode`/`downloadSaveCode`/`importSave`/`pasteSaveCodeFromClipboard`/`importSaveFromFile`/`confirmImportSave`/`resetImportConfirm` | `player`（整包序列化進 `localStorage`）、`maps`(migrateCurrentMap)、`legacySkillAdjustments`/`lingbaoShopItems`(migrateLegacySkills)、`leveling.js`(gainExp)、`combat.js`(tryRescueServant)、`lifespan.js`、`beast-combat.js`(createBeast)、`ui.js` | `main.js`(啟動時 loadLocal)、`main.js`(initGame 內每 30 秒 saveLocal) |
 | 41b | `avatar.js` | `getPlayerAvatar`/`isAvatarUnlocked`/`checkAvatarCondition`/`checkAvatarUnlocks`/`openAvatarModal`/`renderAvatarModal`/`buyAvatar`/`selectAvatar`；頭像光環 `isFrameUnlocked`/`getPlayerFrame`/`checkFrameUnlocks`/`getFrameOverlayBox`/`renderFramedAvatar`/`renderFrameList`/`selectFrame`/`buyFrame` | `avatarList`、`avatarFrameList`/`AVATAR_FRAME_HOLE_FIT`、`player.avatarId`/`unlockedAvatars`/`avatarFrameId`/`unlockedFrames`/`gender`/`realmIndex`/`level`/`reputation`/`tribulationCount`、`realms` | `ui.js`(updateUI 呼叫 checkAvatarUnlocks；戰鬥實況頭像 renderFramedAvatar)、`home-ui.js`(頭像框、`updateHudAvatarFrames`)、HTML 頭像點擊與選擇視窗 |
-| 41d | `leaderboard.js` | 天下戰力榜（第 42 節）：狀態 `lbBackend`/`lbLastUploadAt`/`lbLastRefreshAt`/`lbRows`/`lbError`；`isLeaderboardConfigured`/`getRankPower`(= getPhysAttack 扣掉禁術、靈寵增益、對決化功等暫時倍率)/`lbLoadScript`/`initLeaderboardBackend`(動態載入 Firebase compat SDK＋匿名登入，回傳 `{db, uid}`)/`uploadLeaderboard`/`startLeaderboardSync`/`fetchLeaderboard`/`openLeaderboardModal`/`refreshLeaderboard(manual)`/`lbEscape`/`lbTimeAgo`/`renderLeaderboard(loading)` | `config-leaderboard.js`、`stats.js`(getPhysAttack)、`bounty.js`(getDuelWeakenMult)、`player`/`petBuffTimer`/`petBuffMult`/`gameOver`、`save.js`(saveLoadFailed)、`main.js`(gameStarted)、`player-profile.js`(sanitizePlayerName)、`realms`、全域 `firebase`（CDN 動態載入） | `main.js`(initGame 呼叫 startLeaderboardSync)、HTML 洞府 HUD「戰力 🏆」 |
+| 41d | `leaderboard.js` | 天下戰力榜（第 42 節）：狀態 `lbBackend`/`lbLastUploadAt`/`lbLastRefreshAt`/`lbRows`/`lbError`/`lbBanned`(被 GM 封鎖)；`checkLeaderboardBan`(上傳前查 banned/{uid}，第 50 節)；`isLeaderboardConfigured`/`getRankPower`(= getPhysAttack 扣掉禁術、靈寵增益、對決化功等暫時倍率)/`lbLoadScript`/`initLeaderboardBackend`(動態載入 Firebase compat SDK＋匿名登入，回傳 `{db, uid}`)/`uploadLeaderboard`/`startLeaderboardSync`/`fetchLeaderboard`/`openLeaderboardModal`/`refreshLeaderboard(manual)`/`lbEscape`/`lbTimeAgo`/`renderLeaderboard(loading)` | `config-leaderboard.js`、`stats.js`(getPhysAttack)、`bounty.js`(getDuelWeakenMult)、`player`/`petBuffTimer`/`petBuffMult`/`gameOver`、`save.js`(saveLoadFailed)、`main.js`(gameStarted)、`player-profile.js`(sanitizePlayerName)、`realms`、全域 `firebase`（CDN 動態載入） | `main.js`(initGame 呼叫 startLeaderboardSync)、HTML 洞府 HUD「戰力 🏆」 |
 | 41e | `secret-realm.js` | 秘境入口（第 43 節）：`currentSecretRealm`、`getSecretRealm`/`openSecretRealmModal`/`renderSecretRealmList`/`openSecretRealmScene(id)`/`closeSecretRealmScene`(回到列表)/`challengeSecretRealm`(顯示預定玩法與獎勵；`mode: 'defense'` 改呼叫 `openDefenseBattle`)、每日次數 `getSecretRealmDaily`/`getSecretRealmAttemptsLeft`/`useSecretRealmAttempt`/`refreshSecretRealmEnterLabel` | `config-secret-realms.js`、`realms`、`player.realmIndex`、`ui.js`(closeModal)、`defense.js` | `activity.js`(活動「秘境」的 openFn)、HTML 秘境卡片與場景按鈕 |
 | 41f | `defense.js` | 死守天南城（第 49 節）：`DefenseBattle`（內部函式全包在裡面，對外 open／close／setSpeed／retry／waveSpec／waveAtk／waveRealmLabel／waveEnemy／simulateWave 與測試用 `_sim`／`_grantWave`／`_settle`／`_setWave`／`_state`）、全域 `openDefenseBattle(realmId)`/`closeDefenseBattle`/`setDefenseSpeed` | `config-defense.js`、`format.js`(toWan)、`#defense-scene` DOM、`bounty.js`(getBountyRefSectMult)、`elements.js`(resolveHit/tickStatus/newStatus)、`stats.js`、獎勵用的 gear.js／enhance.js(receiveLootEquip／addStarIron)／strange-fire.js／merit.js／partner.js／codex.js(checkTitleUnlocks)、`secret-realm.js`(次數) | `secret-realm.js`(challengeSecretRealm)、HTML 守城畫面按鈕 |
 | 41c | `settings.js` | `DISPLAY_MODE_KEY`(localStorage 鍵)/`DISPLAY_MODES`/`AUTO_PC_MIN_WIDTH`/`AUTO_PC_MIN_RATIO`、`getDisplayMode`/`resolveDisplayLayout`(回傳 'phone'／'pc')/`setDisplayMode`/字級 `FONT_SCALE_KEY`/`FONT_SCALES`/`getFontScaleId`/`applyFontScale`/`setFontScale`（第 45 節）/`openSettingsModal`/`renderSettingsModal`/`isFullscreen`/`toggleFullscreen`；頂層註冊 `fullscreenchange` 監聽（只綁函式，載入順序不影響） | `home-ui.js`(layoutStage)、`#settings-modal` DOM、`localStorage` | `home-ui.js`(layoutStage 呼叫 resolveDisplayLayout)、HTML ⚙️ 設定按鈕 |
@@ -1270,7 +1271,7 @@ combatTick() 每秒執行 [combat.js]
 （以 8 種舊存檔形態測試目前程式皆可正常讀取；移除 `#age-display` 即可重現同一錯誤。）
 
 ### 1. 發佈版本號（防止新舊檔案混用）
-- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260928s`）。
+- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260928t`）。
 - **每次推上 GitHub Pages 前，把所有 `?v=` 全部取代成新值**（例：日期＋序號）。新 index.html 會指向新網址的 JS，不會再拿到快取的舊檔。
 - 新增 `data/*.js` 時也要記得帶上 `?v=`。
 
@@ -1960,12 +1961,14 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
 - 若日後改了戰力公式（例如改成物攻法攻取高），只改 `getRankPower()` 即可；規則的上限也要檢查是否仍合理。
 
 ### 基本防作弊（`tools/firestore.rules`）
-- 只能寫自己 uid 的那筆；不能刪除；讀取單次最多 100 筆（保護免費額度）。
+- 只能寫自己 uid 的那筆；玩家不能刪除（管理者可以，第 50 節）；讀取單次最多 100 筆（保護免費額度，管理者不限）。
 - 欄位白名單與型別／範圍：道號 1～12 字、宗門 ≤ 20 字、境界 0～15、階 1～10、等級 1～10000。
-- 戰力上限 `10^(境界+9)`（凡人 10 億、煉氣 100 億…）：只擋明顯亂填的天文數字。
+- 戰力上限（2026-09-27 收緊）＝ `10^境界 × 階 × 7 × 200 ＋ 等級 × 20 萬`（基礎值 200 倍＋裝備額度）。原本的 `10^(境界+9)` 太寬，
+  曾讓「化神 3 階、Lv.10000、戰力 63 兆（基礎值 3000 萬倍）」通過；新上限下線上其餘 99 位正常玩家最高只用到 4.66%。細節見第 50 節。
+- 被 GM 封鎖（`banned/{uid}` 存在）的 uid 不能再建立／更新紀錄；遊戲 `checkLeaderboardBan()` 查到被封就停止上傳，榜單視窗顯示「已被移出戰力榜」。
 - 同一筆兩次寫入至少間隔 60 秒（`updatedAt` 必須等於伺服器時間）。
 - **限制**：戰力在玩家端計算，會改存檔的人仍可灌分；要更嚴格得改成雲端函式重算（需付費方案），目前不做。
-- 已知現象：換裝置／清除瀏覽器資料／無痕視窗會拿到新 uid → 同一角色可能有多筆；舊筆不會自動刪除（顯示「N 天前」更新時間讓人分辨）。需要時可在 Firebase 主控台手動刪除。
+- 已知現象：換裝置／清除瀏覽器資料／無痕視窗會拿到新 uid → 同一角色可能有多筆；舊筆不會自動刪除（顯示「N 天前」更新時間讓人分辨）。可用 GM 後台（第 50 節）刪除重複或久未更新的紀錄。
 
 ### 畫面
 - 入口：
@@ -2130,3 +2133,32 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
   - 本機預覽伺服器必須支援 HTTP Range，影片才能 seek（沒有 Range 時 currentTime 永遠停在 0）。
   - 2026-09-27 以此法轉出佛焰（264 格、2.38 MB）與巨劍（262 格、2.34 MB），各約 3 分鐘；與原片同時間點比對差異 8～17（不相干畫面 99～134），trim 0.6 對齊正確。
 - 三支合計約 7.5 MB（手機 4G 約 5～15 秒）。videos/ 內的原始大檔（10～18 MB）遊戲不會載入，若不需要保留可以不推上 GitHub。
+
+## 50. 戰力榜 GM 後台與防作弊（`gm.html`、`tools/firestore.rules`；2026-09-27）
+
+- **目的**：作者（管理者）刪除／封鎖戰力榜上的異常資料。`gm.html` 放在網站根目錄（GitHub Pages 網址 `/gm.html`），遊戲內沒有連結，`<meta name="robots" content="noindex">`。
+  **網頁公開沒關係，權限全部由 Firestore 規則把關**：只有 `admins/{uid}` 存在的 Google 帳號能刪除、封鎖、讀完整榜單；其他人打開只看得到公開前 100 名（唯讀、按鈕停用）。
+- **開通步驟（作者做一次，主控台操作）**：
+  1. Firebase 主控台 → Authentication → 登入方式 → 啟用 **Google**（匿名登入保持啟用）。授權網域要有 GitHub Pages 網域與 `localhost`。
+  2. 整份貼上新版 `tools/firestore.rules` → 發布。
+  3. 打開 `gm.html` → 「Google 登入」→ 頁面顯示你的 uid（可複製）。
+  4. Firestore → 資料 → 開始集合 `admins` → 文件 ID = 上一步的 uid（欄位隨意）→ 儲存。重新整理 gm.html，上方顯示「管理者」即完成。
+  - 管理者名單只能在主控台新增（規則 `admins` 一律不可寫），所以不需要把 uid 或 email 寫進程式碼。
+- **GM 登入與遊戲分開**：gm.html 用 `firebase.initializeApp(設定, 'gm')` 的獨立 app 名稱，登入狀態分開保存；
+  在同一個瀏覽器登入 GM 不會讓遊戲的匿名 uid 被換掉（否則榜上會多一筆）。gm.html 直接載入 `data/config-realms.js`（境界名稱）與 `data/config-leaderboard.js`（Firebase 設定、集合名稱）。
+- **功能**：
+  - 📋 戰力榜：管理者一次讀 1000 筆（依戰力排序）。每筆算出「基礎值倍率」（戰力 ÷ 7×階×10^境界）與「佔規則上限 %」，自動標記：
+    🔴 超過規則上限（新規則下已無法再上傳，但舊資料仍在榜上）、🟡 佔上限 ≥ 15% 或 等級 >（境界+1）× 1500、灰「重複」（道號＋境界＋階＋等級＋戰力完全相同，保留最新一筆）、灰「N 天未更新」。
+    可篩選；逐筆「刪除」「封鎖」、勾選批次、一鍵「封鎖全部超標」「刪除久未更新」（天數可設，預設 14）。所有破壞性操作都會 confirm／prompt 原因。
+  - ⛔ 黑名單：`banned/{uid}` = { name, realm, stage, level, power（封鎖時的快照）, reason, bannedBy, bannedAt }；可解除封鎖。封鎖＝寫黑名單＋刪榜單紀錄（同一個批次）。
+  - 🛡️ 自動巡檢：**頁面開著時**每 N 分鐘（預設 10）重讀榜單 → 🔴 自動封鎖＋移除（原因「自動巡檢：超過規則上限」）→ 可選同時刪久未更新；🟡 只標記不處理。
+  - 批次寫入每 400 筆一批（Firestore 單批上限 500）。
+- **真正的「關掉網頁也定時執行」**需要伺服器排程（Firebase Cloud Functions，需升級 Blaze 付費方案），目前不做。新規則已在寫入時擋下超標資料，巡檢主要清理舊資料與重複紀錄。
+- **防作弊能力與限制**：
+  - 擋得住：直接改存檔／主控台灌出不合理戰力（超過基礎值 200 倍＋等級額度）、被封鎖的 uid 再上傳、60 秒內重複上傳、亂塞欄位。
+  - 擋不住：同時偽造境界、階數與戰力（在上限內灌分）；被封後清除瀏覽器資料換新匿名 uid 重新上傳（需再封一次）。
+  - 進一步可做（未實作）：Firebase **App Check**（reCAPTCHA，擋掉不是從遊戲網頁發出的請求）；Cloud Functions 在伺服器端依存檔重算戰力（需付費方案）。
+- **門檻校準**（2026-09-27 讀取線上前 100 名）：正常玩家基礎值倍率 0.72～9.3（天仙 10 階、至高宗門＋裝備最高），作弊資料「大鵰俠」化神 3 階 Lv.10000 戰力 63 兆 = 3000 萬倍；
+  新上限只擋下這一筆。另有大量預設道號「韓立」（41 筆）「南宮婉」（13 筆），多為停在凡人 1 階的新手殘留紀錄，不是作弊，可用「刪除久未更新」清理。
+  ⚠️ 日後新增大幅提高戰力的系統（例如更強的稱號、夥伴、異火加成）後，請用 GM 後台看「佔上限 %」最高值，必要時同步調整規則與 gm.html 的 `CAP_BASE_MULT`／`CAP_PER_LEVEL`。
+- 驗證紀錄：本機未登入唯讀模式讀到 100 筆，正確標出唯一的超標資料、無誤標，管理按鈕停用，Console 無錯誤。管理者操作（刪除／封鎖／巡檢）需作者完成開通步驟後在線上測試。

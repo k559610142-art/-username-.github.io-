@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>戰力榜 GM 後台</title>
+<!-- GM 管理頁（ARCHITECTURE.md 第 50 節）：只有 Firestore admins/{uid} 名單內的 Google 帳號能刪除／封鎖／讀完整榜單。
+     網頁本身公開沒關係，權限由 tools/firestore.rules 把關；非管理者只看得到公開的前 100 名（唯讀）。 -->
+<style>
+    :root { --bg: #0b0f19; --panel: #131c2e; --line: #26324a; --text: #e5e7eb; --muted: #9ca3af; --accent: #f0d588;
+            --red: #f87171; --red-bg: rgba(248,113,113,0.12); --yellow: #fbbf24; --yellow-bg: rgba(251,191,36,0.10); --green: #4ade80; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: "Microsoft JhengHei", system-ui, sans-serif; font-size: 15px; }
+    header { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 12px 16px; background: var(--panel); border-bottom: 1px solid var(--line); }
+    header h1 { font-size: 18px; margin: 0; color: var(--accent); letter-spacing: 2px; }
+    header .spacer { flex: 1; }
+    .who { font-size: 13px; color: var(--muted); }
+    .who b { color: var(--text); }
+    .badge { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 12px; font-weight: bold; }
+    .badge.admin { background: rgba(74,222,128,0.15); color: var(--green); }
+    .badge.guest { background: rgba(156,163,175,0.15); color: var(--muted); }
+    button { font-family: inherit; font-size: 14px; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--line); background: #1b2740; color: var(--text); cursor: pointer; }
+    button:hover:not(:disabled) { border-color: var(--accent); }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+    button.primary { background: #7c5a12; border-color: var(--accent); color: #fef3c7; }
+    button.danger { background: rgba(185,28,28,0.25); border-color: var(--red); color: #fecaca; }
+    main { padding: 16px; max-width: 1280px; margin: 0 auto; }
+    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-bottom: 14px; }
+    .card h2 { font-size: 16px; margin: 0 0 10px; color: var(--accent); }
+    .setup ol { margin: 6px 0 0; padding-left: 20px; line-height: 1.8; }
+    .setup code { background: #0b1220; padding: 1px 6px; border-radius: 4px; color: var(--accent); word-break: break-all; }
+    .tabs { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+    .tabs button.on { border-color: var(--accent); color: var(--accent); }
+    .stats { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+    .stat { background: #0f1729; border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; min-width: 110px; }
+    .stat b { display: block; font-size: 20px; }
+    .stat small { color: var(--muted); }
+    .stat.red b { color: var(--red); } .stat.yellow b { color: var(--yellow); }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
+    .toolbar label { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 4px; }
+    .toolbar input[type=number] { width: 64px; background: #0b1220; color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 4px; }
+    select { background: #0b1220; color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 5px; font-family: inherit; }
+    .tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { padding: 7px 8px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; }
+    th { background: #0f1729; color: var(--muted); font-weight: normal; position: sticky; top: 0; }
+    td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    tr.red td { background: var(--red-bg); }
+    tr.yellow td { background: var(--yellow-bg); }
+    .flag { display: inline-block; margin: 1px 3px 1px 0; padding: 0 6px; border-radius: 8px; font-size: 12px; }
+    .flag.red { background: rgba(248,113,113,0.2); color: var(--red); }
+    .flag.yellow { background: rgba(251,191,36,0.18); color: var(--yellow); }
+    .flag.grey { background: rgba(156,163,175,0.18); color: var(--muted); }
+    .uid { font-family: Consolas, monospace; color: var(--muted); font-size: 12px; }
+    .rowbtns button { padding: 3px 8px; font-size: 12px; margin-right: 4px; }
+    #log { max-height: 220px; overflow-y: auto; font-family: Consolas, monospace; font-size: 12px; color: var(--muted); line-height: 1.6; }
+    #log .ok { color: var(--green); } #log .err { color: var(--red); } #log .warn { color: var(--yellow); }
+    .note { font-size: 13px; color: var(--muted); line-height: 1.7; }
+    @media (max-width: 600px) { main { padding: 10px; } header { padding: 10px; } }
+</style>
+</head>
+<body>
+<header>
+    <h1>⚙️ 戰力榜 GM 後台</h1>
+    <span class="spacer"></span>
+    <span class="who" id="who">載入中…</span>
+    <button id="btn-login" class="primary" hidden>Google 登入</button>
+    <button id="btn-logout" hidden>登出</button>
+</header>
+
+<main>
+    <div class="card setup" id="setup" hidden>
+        <h2>尚未取得管理權限</h2>
+        <div class="note" id="setup-body"></div>
+    </div>
+
+    <div class="tabs">
+        <button data-tab="board" class="on">📋 戰力榜</button>
+        <button data-tab="bans">⛔ 黑名單</button>
+        <button data-tab="patrol">🛡️ 自動巡檢</button>
+    </div>
+
+    <!-- 戰力榜 -->
+    <section id="tab-board">
+        <div class="stats" id="stats"></div>
+        <div class="toolbar">
+            <button id="btn-reload">🔄 重新讀取</button>
+            <label>顯示 <select id="filter">
+                <option value="all">全部</option>
+                <option value="flagged">有標記的</option>
+                <option value="red">🔴 超過上限</option>
+                <option value="yellow">🟡 數值偏高／等級異常</option>
+                <option value="dup">重複紀錄</option>
+                <option value="stale">久未更新</option>
+            </select></label>
+            <label>久未更新＝<input type="number" id="stale-days" value="14" min="1"> 天</label>
+            <span class="spacer" style="flex:1"></span>
+            <button id="btn-del-selected" class="danger admin-only">🗑️ 刪除勾選</button>
+            <button id="btn-ban-selected" class="danger admin-only">⛔ 封鎖勾選</button>
+            <button id="btn-ban-red" class="danger admin-only">⛔ 封鎖全部超標</button>
+            <button id="btn-del-stale" class="danger admin-only">🧹 刪除久未更新</button>
+        </div>
+        <div class="tablewrap"><table>
+            <thead><tr>
+                <th><input type="checkbox" id="chk-all"></th><th>#</th><th>道號</th><th>境界</th><th>等級</th><th>宗門</th>
+                <th class="num">戰力</th><th class="num">基礎值倍率</th><th class="num">佔上限</th><th>更新</th><th>標記</th><th>uid</th><th class="admin-only">操作</th>
+            </tr></thead>
+            <tbody id="rows"><tr><td colspan="13" class="note">讀取中…</td></tr></tbody>
+        </table></div>
+        <p class="note">
+            基礎值 = 同境界同階修為圓滿的基礎戰力（7 × 階 × 10^境界）。規則上限 = 基礎值 × 200 ＋ 等級 × 20 萬（與 <code>tools/firestore.rules</code> 相同）。<br>
+            🔴 超過上限：新規則下已無法再上傳，但既有資料仍在榜上，需要手動（或巡檢）清除。🟡 佔上限 15% 以上（2026-09-27 正常玩家最高約 4.7%），或等級明顯高於境界，建議人工確認。
+        </p>
+    </section>
+
+    <!-- 黑名單 -->
+    <section id="tab-bans" hidden>
+        <div class="toolbar"><button id="btn-reload-bans">🔄 重新讀取</button></div>
+        <div class="tablewrap"><table>
+            <thead><tr><th>道號（封鎖時）</th><th>境界</th><th class="num">戰力</th><th>原因</th><th>封鎖時間</th><th>uid</th><th>操作</th></tr></thead>
+            <tbody id="ban-rows"><tr><td colspan="7" class="note">登入管理者後才能查看。</td></tr></tbody>
+        </table></div>
+        <p class="note">被封鎖的 uid 不能再上傳（規則擋下），遊戲內戰力榜會顯示「已被移出戰力榜」。玩家若清除瀏覽器資料會換成新的匿名 uid，需要再封一次。</p>
+    </section>
+
+    <!-- 自動巡檢 -->
+    <section id="tab-patrol" hidden>
+        <div class="card">
+            <h2>🛡️ 自動巡檢（本頁開著時才會執行）</h2>
+            <div class="toolbar">
+                <label><input type="checkbox" id="patrol-on" class="admin-only"> 啟用</label>
+                <label>每 <input type="number" id="patrol-min" value="10" min="1"> 分鐘</label>
+                <label><input type="checkbox" id="patrol-stale"> 同時刪除久未更新的紀錄</label>
+                <button id="btn-patrol-now" class="admin-only">▶ 立即巡檢一次</button>
+            </div>
+            <p class="note">
+                每次巡檢：重新讀取完整榜單 → 🔴 超過上限的紀錄自動「封鎖＋移除」（原因記為「自動巡檢：超過規則上限」）→ 勾選時再刪除久未更新的紀錄。🟡 只標記、不自動處理。<br>
+                真正「關掉網頁也會定時執行」需要伺服器排程（Firebase Cloud Functions，需升級 Blaze 付費方案），目前不做；新規則已擋下超標上傳，巡檢主要清理舊資料。
+            </p>
+        </div>
+    </section>
+
+    <div class="card">
+        <h2>操作紀錄</h2>
+        <div id="log"></div>
+    </div>
+</main>
+
+<script src="data/config-realms.js"></script>
+<script src="data/config-leaderboard.js"></script>
+<script>
+// ================== 設定（與 tools/firestore.rules 保持一致）==================
+const CAP_BASE_MULT = 200;       // 規則：基礎值 × 200
+const CAP_PER_LEVEL = 200000;    // 規則：＋ 等級 × 20 萬
+const WARN_USE = 0.15;           // 佔上限 15% 以上標黃
+const LEVEL_WARN_PER_REALM = 1500;   // 等級 > (境界+1) × 1500 標「等級與境界不符」（2026-09-27：天仙 5676 級正常、化神 10000 級異常）
+const FULL_LIMIT = 1000;         // 管理者一次讀取的筆數
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const fmt = n => { n = Number(n) || 0; const u = [['兆', 1e12], ['億', 1e8], ['萬', 1e4]]; for (const [s, v] of u) if (n >= v) return (n / v).toFixed(n / v >= 100 ? 0 : 2).replace(/\.?0+$/, '') + s; return n.toLocaleString(); };
+let app, auth, db, user = null, isAdmin = false, rows = [], bans = [], patrolTimer = null;
+
+function log(msg, cls) {
+    const d = document.createElement('div'); d.className = cls || '';
+    d.textContent = `[${new Date().toLocaleTimeString('zh-TW', { hour12: false })}] ${msg}`;
+    $('log').prepend(d);
+}
+
+function loadScript(src) {
+    return new Promise((ok, bad) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = () => bad(new Error('無法載入 ' + src)); document.head.appendChild(s); });
+}
+
+async function init() {
+    if (!LEADERBOARD_FIREBASE_CONFIG) { $('who').textContent = '戰力榜尚未開通（config-leaderboard.js）'; return; }
+    for (const f of ['app', 'auth', 'firestore']) await loadScript(`${LEADERBOARD_SDK_BASE}/firebase-${f}-compat.js`);
+    // 用獨立的 app 名稱：登入狀態與遊戲的匿名帳號分開保存，GM 登入不會讓遊戲換成新的 uid（榜上多一筆）
+    app = firebase.initializeApp(LEADERBOARD_FIREBASE_CONFIG, 'gm');
+    auth = app.auth(); db = app.firestore();
+    auth.onAuthStateChanged(onAuth);
+}
+
+async function onAuth(u) {
+    user = u && !u.isAnonymous ? u : null;
+    isAdmin = false;
+    if (user) {
+        try { isAdmin = (await db.collection(LEADERBOARD_ADMINS_COLLECTION).doc(user.uid).get()).exists; }
+        catch (e) { log('檢查管理者權限失敗：' + e.message + '（規則可能尚未發布新版）', 'warn'); }
+    }
+    renderAuth();
+    await reloadBoard();
+    if (isAdmin) await reloadBans();
+}
+
+function renderAuth() {
+    $('btn-login').hidden = !!user; $('btn-logout').hidden = !user;
+    $('who').innerHTML = user
+        ? `<b>${esc(user.displayName || user.email || '已登入')}</b> <span class="badge ${isAdmin ? 'admin' : 'guest'}">${isAdmin ? '管理者' : '非管理者・唯讀'}</span>`
+        : '<span class="badge guest">未登入・唯讀（只顯示公開前 100 名）</span>';
+    document.querySelectorAll('.admin-only').forEach(el => { el.disabled = !isAdmin; });
+    const setup = $('setup');
+    setup.hidden = isAdmin;
+    $('setup-body').innerHTML = !user
+        ? '請先按上方的「Google 登入」。第一次設定的步驟會在登入後顯示。'
+        : `你的 Google 登入 uid：<code>${esc(user.uid)}</code> <button onclick="navigator.clipboard.writeText('${esc(user.uid)}').then(()=>log('已複製 uid','ok'))">複製</button>
+           <ol>
+             <li>Firebase 主控台 → Firestore Database → 資料 → 「開始集合」，集合 ID 填 <code>${LEADERBOARD_ADMINS_COLLECTION}</code>。</li>
+             <li>文件 ID 貼上上面的 uid，欄位隨意（例如 <code>note</code> = <code>GM</code>）→ 儲存。</li>
+             <li>確認 Firestore → 規則 已貼上專案內最新的 <code>tools/firestore.rules</code> 並「發布」。</li>
+             <li>回到本頁按 F5 重新整理，上方顯示「管理者」即完成。</li>
+           </ol>`;
+}
+
+// ================== 榜單 ==================
+function analyze(r) {
+    const realm = Number(r.realm) || 0, stage = Number(r.stage) || 1, level = Number(r.level) || 1, power = Number(r.power) || 0;
+    const base = 7 * stage * Math.pow(10, realm);
+    const cap = base * CAP_BASE_MULT + level * CAP_PER_LEVEL;
+    const ms = r.updatedAt && r.updatedAt.toMillis ? r.updatedAt.toMillis() : 0;
+    const days = ms ? (Date.now() - ms) / 86400000 : 999;
+    const flags = [];
+    const use = power / cap;
+    if (use > 1) flags.push(['red', `超過上限 ${Math.round(use * 100).toLocaleString()}%`]);
+    else if (use >= WARN_USE) flags.push(['yellow', `佔上限 ${Math.round(use * 100)}%`]);
+    if (level > (realm + 1) * LEVEL_WARN_PER_REALM) flags.push(['yellow', '等級與境界不符']);
+    return Object.assign(r, { _realm: realm, _stage: stage, _level: level, _power: power, _ratio: power / base, _use: use, _days: days, _flags: flags,
+                              _red: use > 1, _yellow: !(use > 1) && flags.length > 0 });
+}
+
+function markDuplicates() {
+    // 同道號＋境界＋階＋等級＋戰力完全一樣的多筆（多半是同一人換瀏覽器／清資料留下的舊紀錄）：保留最新一筆，其餘標「重複」
+    const groups = {};
+    rows.forEach(r => { const k = [r.name, r._realm, r._stage, r._level, r._power].join('|'); (groups[k] = groups[k] || []).push(r); });
+    Object.values(groups).forEach(g => {
+        if (g.length < 2) return;
+        g.sort((a, b) => a._days - b._days).slice(1).forEach(r => { r._dup = true; r._flags.push(['grey', `重複（共 ${g.length} 筆）`]); });
+    });
+}
+
+async function reloadBoard() {
+    if (!db) return;
+    $('rows').innerHTML = '<tr><td colspan="13" class="note">讀取中…</td></tr>';
+    try {
+        const snap = await db.collection(LEADERBOARD_COLLECTION).orderBy('power', 'desc').limit(isAdmin ? FULL_LIMIT : 100).get();
+        rows = snap.docs.map(d => analyze(Object.assign({ id: d.id }, d.data())));
+        markDuplicates();
+        log(`讀取榜單 ${rows.length} 筆${isAdmin ? '' : '（非管理者只能讀前 100 名）'}`, 'ok');
+    } catch (e) { rows = []; log('讀取榜單失敗：' + e.message, 'err'); }
+    renderBoard();
+}
+
+function staleDays() { return Math.max(1, Number($('stale-days').value) || 14); }
+
+function renderBoard() {
+    const sd = staleDays();
+    rows.forEach(r => { r._stale = r._days >= sd; });
+    const f = $('filter').value;
+    const shown = rows.filter(r => f === 'all' ? true : f === 'flagged' ? (r._flags.length || r._stale) : f === 'red' ? r._red
+                                  : f === 'yellow' ? r._yellow : f === 'dup' ? r._dup : r._stale);
+    $('stats').innerHTML = [
+        ['', rows.length, '筆紀錄'], ['red', rows.filter(r => r._red).length, '🔴 超過上限'], ['yellow', rows.filter(r => r._yellow).length, '🟡 偏高／異常'],
+        ['', rows.filter(r => r._dup).length, '重複'], ['', rows.filter(r => r._stale).length, `${sd} 天未更新`]
+    ].map(([c, n, t]) => `<div class="stat ${c}"><b>${n}</b><small>${t}</small></div>`).join('');
+    $('rows').innerHTML = shown.length ? shown.map(r => {
+        const i = rows.indexOf(r) + 1;
+        const flags = r._flags.map(([c, t]) => `<span class="flag ${c}">${esc(t)}</span>`).join('') + (r._stale ? `<span class="flag grey">${Math.floor(r._days)} 天未更新</span>` : '');
+        return `<tr class="${r._red ? 'red' : r._yellow ? 'yellow' : ''}">
+            <td><input type="checkbox" class="chk" value="${esc(r.id)}"></td><td>${i}</td><td>${esc(r.name)}</td>
+            <td>${esc(realms[r._realm] || '？')} ${r._stage} 階</td><td>${r._level}</td><td>${esc(r.sect || '')}</td>
+            <td class="num">${fmt(r._power)}</td><td class="num">${r._ratio >= 1000 ? fmt(Math.round(r._ratio)) : r._ratio.toFixed(1)}×</td>
+            <td class="num">${r._use >= 10 ? fmt(Math.round(r._use * 100)) : (r._use * 100).toFixed(1)}%</td>
+            <td>${r._days >= 999 ? '—' : r._days < 1 ? Math.round(r._days * 24) + ' 小時前' : Math.floor(r._days) + ' 天前'}</td>
+            <td>${flags}</td><td class="uid">${esc(r.id.slice(0, 10))}…</td>
+            <td class="rowbtns admin-only-cell">${isAdmin ? `<button class="danger" onclick="delOne('${esc(r.id)}')">刪除</button><button class="danger" onclick="banOne('${esc(r.id)}')">封鎖</button>` : '—'}</td>
+        </tr>`;
+    }).join('') : '<tr><td colspan="13" class="note">沒有符合的紀錄。</td></tr>';
+    $('chk-all').checked = false;
+}
+
+// ================== 刪除與封鎖（Firestore 批次一次最多 500 筆操作）==================
+async function commitInChunks(ops) {
+    for (let i = 0; i < ops.length; i += 400) {
+        const b = db.batch();
+        ops.slice(i, i + 400).forEach(fn => fn(b));
+        await b.commit();
+    }
+}
+async function deleteIds(ids, why) {
+    if (!ids.length) return;
+    await commitInChunks(ids.map(id => b => b.delete(db.collection(LEADERBOARD_COLLECTION).doc(id))));
+    log(`已刪除 ${ids.length} 筆（${why}）`, 'ok');
+}
+async function banIds(ids, reason) {
+    if (!ids.length) return;
+    const byId = Object.fromEntries(rows.map(r => [r.id, r]));
+    const ops = [];
+    ids.forEach(id => {
+        const r = byId[id] || {};
+        ops.push(b => b.set(db.collection(LEADERBOARD_BANNED_COLLECTION).doc(id), {
+            name: String(r.name || ''), realm: Number(r.realm) || 0, stage: Number(r.stage) || 1, level: Number(r.level) || 1, power: Number(r.power) || 0,
+            reason: String(reason || ''), bannedBy: user.uid, bannedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }));
+        ops.push(b => b.delete(db.collection(LEADERBOARD_COLLECTION).doc(id)));
+    });
+    await commitInChunks(ops);
+    log(`已封鎖並移除 ${ids.length} 筆（原因：${reason}）`, 'ok');
+}
+function selectedIds() { return [...document.querySelectorAll('.chk:checked')].map(c => c.value); }
+async function guarded(fn) {
+    if (!isAdmin) { log('需要管理者權限', 'err'); return; }
+    try { await fn(); } catch (e) { log('操作失敗：' + e.message, 'err'); }
+    await reloadBoard(); await reloadBans();
+}
+window.delOne = id => { const r = rows.find(x => x.id === id); if (confirm(`刪除「${r ? r.name : id}」這筆紀錄？\n（玩家下次上線會重新上傳；要永久阻擋請用「封鎖」）`)) guarded(() => deleteIds([id], '手動')); };
+window.banOne = id => {
+    const r = rows.find(x => x.id === id);
+    const reason = prompt(`封鎖「${r ? r.name : id}」並移出戰力榜。\n請輸入原因（會記在黑名單）：`, r && r._red ? '戰力超過規則上限' : '');
+    if (reason !== null) guarded(() => banIds([id], reason || '手動封鎖'));
+};
+
+// ================== 黑名單 ==================
+async function reloadBans() {
+    if (!isAdmin) { $('ban-rows').innerHTML = '<tr><td colspan="7" class="note">登入管理者後才能查看。</td></tr>'; return; }
+    try {
+        const snap = await db.collection(LEADERBOARD_BANNED_COLLECTION).orderBy('bannedAt', 'desc').get();
+        bans = snap.docs.map(d => Object.assign({ id: d.id }, d.data()));
+    } catch (e) { bans = []; log('讀取黑名單失敗：' + e.message, 'err'); }
+    $('ban-rows').innerHTML = bans.length ? bans.map(b => `<tr>
+        <td>${esc(b.name)}</td><td>${esc(realms[b.realm] || '？')} ${Number(b.stage) || 1} 階</td><td class="num">${fmt(b.power)}</td>
+        <td>${esc(b.reason)}</td><td>${b.bannedAt && b.bannedAt.toDate ? b.bannedAt.toDate().toLocaleString('zh-TW', { hour12: false }) : ''}</td>
+        <td class="uid">${esc(b.id)}</td><td><button onclick="unban('${esc(b.id)}')">解除封鎖</button></td></tr>`).join('')
+        : '<tr><td colspan="7" class="note">黑名單是空的。</td></tr>';
+}
+window.unban = id => {
+    const b = bans.find(x => x.id === id);
+    if (!confirm(`解除「${b ? b.name : id}」的封鎖？\n（玩家下次上線會重新上傳戰力）`)) return;
+    guarded(async () => { await db.collection(LEADERBOARD_BANNED_COLLECTION).doc(id).delete(); log(`已解除封鎖 ${b ? b.name : id}`, 'ok'); });
+};
+
+// ================== 自動巡檢（本頁開著時）==================
+async function patrol() {
+    if (!isAdmin) return;
+    log('▶ 自動巡檢開始', 'warn');
+    await reloadBoard();
+    const red = rows.filter(r => r._red).map(r => r.id);
+    const stale = $('patrol-stale').checked ? rows.filter(r => r._stale && !r._red).map(r => r.id) : [];
+    try {
+        if (red.length) await banIds(red, '自動巡檢：超過規則上限');
+        if (stale.length) await deleteIds(stale, `自動巡檢：${staleDays()} 天未更新`);
+        if (!red.length && !stale.length) log('巡檢完成：沒有需要處理的紀錄', 'ok');
+    } catch (e) { log('巡檢失敗：' + e.message, 'err'); }
+    await reloadBoard(); await reloadBans();
+}
+function setPatrol(on) {
+    clearInterval(patrolTimer); patrolTimer = null;
+    if (on) {
+        const min = Math.max(1, Number($('patrol-min').value) || 10);
+        patrolTimer = setInterval(patrol, min * 60000);
+        log(`自動巡檢已啟用：每 ${min} 分鐘一次（關閉本頁即停止）`, 'ok');
+        patrol();
+    } else log('自動巡檢已停用');
+}
+
+// ================== 事件 ==================
+document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
+    document.querySelectorAll('.tabs button').forEach(x => x.classList.toggle('on', x === b));
+    ['board', 'bans', 'patrol'].forEach(t => { $('tab-' + t).hidden = t !== b.dataset.tab; });
+});
+$('btn-login').onclick = () => auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e => log('登入失敗：' + e.message + '（主控台需啟用 Google 登入方式）', 'err'));
+$('btn-logout').onclick = () => { setPatrol(false); $('patrol-on').checked = false; auth.signOut(); };
+$('btn-reload').onclick = reloadBoard;
+$('btn-reload-bans').onclick = reloadBans;
+$('filter').onchange = renderBoard;
+$('stale-days').onchange = renderBoard;
+$('chk-all').onchange = e => document.querySelectorAll('.chk').forEach(c => { c.checked = e.target.checked; });
+$('btn-del-selected').onclick = () => { const ids = selectedIds(); if (ids.length && confirm(`刪除勾選的 ${ids.length} 筆紀錄？`)) guarded(() => deleteIds(ids, '手動勾選')); };
+$('btn-ban-selected').onclick = () => {
+    const ids = selectedIds(); if (!ids.length) return;
+    const reason = prompt(`封鎖勾選的 ${ids.length} 筆並移出戰力榜，請輸入原因：`, '');
+    if (reason !== null) guarded(() => banIds(ids, reason || '手動封鎖'));
+};
+$('btn-ban-red').onclick = () => { const ids = rows.filter(r => r._red).map(r => r.id); if (!ids.length) return log('沒有超過上限的紀錄', 'ok');
+    if (confirm(`封鎖並移除全部 ${ids.length} 筆超過上限的紀錄？`)) guarded(() => banIds(ids, '戰力超過規則上限')); };
+$('btn-del-stale').onclick = () => { const ids = rows.filter(r => r._stale).map(r => r.id); if (!ids.length) return log(`沒有 ${staleDays()} 天未更新的紀錄`, 'ok');
+    if (confirm(`刪除 ${ids.length} 筆 ${staleDays()} 天以上未更新的紀錄？（不封鎖，玩家回來會重新上傳）`)) guarded(() => deleteIds(ids, `${staleDays()} 天未更新`)); };
+$('patrol-on').onchange = e => setPatrol(e.target.checked);
+$('btn-patrol-now').onclick = patrol;
+
+init().catch(e => { $('who').textContent = '初始化失敗：' + e.message; log(e.message, 'err'); });
+</script>
+</body>
+</html>

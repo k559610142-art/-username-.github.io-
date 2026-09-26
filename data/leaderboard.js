@@ -7,6 +7,7 @@ let lbLastUploadAt = 0;
 let lbLastRefreshAt = 0;
 let lbRows = null;             // 最近一次讀到的榜單
 let lbError = "";
+let lbBanned = null;           // null = 尚未查過；true = 被 GM 封鎖（banned/{uid}，第 50 節），不再上傳
 
 function isLeaderboardConfigured() {
     return !!(LEADERBOARD_FIREBASE_CONFIG && LEADERBOARD_FIREBASE_CONFIG.apiKey);
@@ -58,10 +59,12 @@ function initLeaderboardBackend() {
 // 上傳自己的戰力；遊戲結束、讀檔失敗（角色不是真的）或距上次不到 60 秒時不上傳
 async function uploadLeaderboard() {
     if (!isLeaderboardConfigured() || !gameStarted || gameOver || saveLoadFailed) return;
-    if (Date.now() - lbLastUploadAt < LEADERBOARD_MIN_GAP_MS) return;
+    if (lbBanned || Date.now() - lbLastUploadAt < LEADERBOARD_MIN_GAP_MS) return;
     lbLastUploadAt = Date.now();
     try {
         const { db, uid } = await initLeaderboardBackend();
+        if (lbBanned === null) await checkLeaderboardBan(db, uid);
+        if (lbBanned) return;
         await db.collection(LEADERBOARD_COLLECTION).doc(uid).set({
             name: sanitizePlayerName(player.name) || "無名修士",
             power: getRankPower(),
@@ -73,6 +76,16 @@ async function uploadLeaderboard() {
         });
     } catch (e) {
         console.warn("戰力榜上傳失敗：", e);
+    }
+}
+
+// 查自己有沒有被 GM 封鎖（規則允許玩家讀自己的 banned/{uid}）；查不到（斷線等）先當作沒被封，下次再查
+async function checkLeaderboardBan(db, uid) {
+    try {
+        const snap = await db.collection(LEADERBOARD_BANNED_COLLECTION).doc(uid).get();
+        lbBanned = snap.exists;
+    } catch (e) {
+        console.warn("戰力榜黑名單查詢失敗：", e);
     }
 }
 
@@ -150,6 +163,7 @@ function renderLeaderboard(loading) {
         html += idx >= 0 ? `　目前第 <b>${idx + 1}</b> 名` : `　未進前 ${LEADERBOARD_TOP_N} 名`;
     }
     html += `</div>`;
+    if (lbBanned) html += `<p class="lb-note" style="color:#f87171;">⛔ 你的戰力紀錄因資料異常已被移出戰力榜，無法再上榜。</p>`;
     if (loading) html += `<p class="lb-note">讀取中…</p>`;
     if (lbError) html += `<p class="lb-note" style="color:#f87171;">${lbError}</p>`;
 
