@@ -13,6 +13,11 @@ function openWorldMapModal() {
     document.getElementById('world-map-modal').style.display = 'flex';
 }
 
+// 地圖縮圖：女修且有 thumbFemale 時用女版，否則用 thumb（config-maps.js）
+function getMapThumb(item) {
+    return (player.gender === 'female' && item.thumbFemale) ? item.thumbFemale : item.thumb;
+}
+
 // 城鎮（不編號）：直接在修仙地圖顯示傳送點卡片（有 thumb 顯示縮圖），點擊即傳送；宗門（hidden）不列
 function renderTownTeleports() {
     const box = document.getElementById('world-map-towns');
@@ -21,7 +26,8 @@ function renderTownTeleports() {
         if (item.hidden) return '';
         let isCurrent = player.currentMap.name === item.name;
         let scene = hasTownScene(item.name);   // 有城內場景（config-towns.js）：已在城內也能點，直接進城
-        let pic = item.thumb ? `<img class="map-thumb" src="${item.thumb}" alt="${item.name}">` : `<span class="town-thumb-empty">🏯</span>`;
+        let thumb = getMapThumb(item);
+        let pic = thumb ? `<img class="map-thumb" src="${thumb}" alt="${item.name}">` : `<span class="town-thumb-empty">🏯</span>`;
         let tip = isCurrent ? (scene ? '📍 當前所在・點擊進城' : '📍 當前所在') : (scene ? '✨ 點擊傳送並進城' : '✨ 點擊傳送');
         let clickable = !isCurrent || scene;
         return `<button class="town-card${isCurrent ? ' current' : ''}${scene ? ' has-scene' : ''}" ${clickable ? `onclick="goToTown(${i})"` : ''}>
@@ -48,7 +54,7 @@ function openMapCategoryModal(catIndex) {
         let isCurrent = player.currentMap.name === item.name;
         container.innerHTML += `
             <div class="card" style="border-color: ${isCurrent ? 'var(--accent)' : 'rgba(255,255,255,0.08)'};">
-                ${item.thumb ? `<img class="map-thumb" src="${item.thumb}" alt="${item.name}">` : ''}
+                ${getMapThumb(item) ? `<img class="map-thumb" src="${getMapThumb(item)}" alt="${item.name}">` : ''}
                 <h3 style="color: ${isCurrent ? 'var(--accent)' : '#fff'};">${item.name}</h3>
                 <p style="font-size:0.85em; color:#9ca3af;">經驗倍率: x${item.expRate} | 難度: ${item.diff}</p>
                 ${item.minRealm ? `<p style="font-size:0.8em; color:#f87171;">限制：${realms[item.minRealm]}以上</p>` : ''}

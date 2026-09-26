@@ -23,7 +23,8 @@ images/               圖片素材
   towns/              城內場景圖（玩家提供，第 20 節）：tianxing-market.jpg 天星城坊市橫圖（1582×672）、
                       tianxing-market-portrait.jpg 手機直式（704×1520，9:19.4）、
                       npc-fengxi.png 亂星海第一大善人・風希人偶（252×400 透明 PNG，由玩家提供的插畫手動描邊去背）
-  maps/               修仙地圖卡片縮圖（config-maps.js 的 thumb）：tianxing-city.jpg 天星城（720×381，玩家提供，第 20 節）
+  maps/               修仙地圖卡片縮圖（config-maps.js 的 thumb）：tianxing-city.jpg 天星城（720×381，玩家提供，第 20 節）、
+                      tiannan-city-male.jpg／tiannan-city-female.jpg 天南城（720×405，玩家提供，依玩家性別顯示，第 20 節）
   frames/             頭像光環 frame-01～25.png（透明 PNG，約 125～160px，由玩家提供的頭像框展示圖裁切去背），見第 32 節
   cover.jpg           主頁封面・橫式（1264x843），電腦與橫向螢幕使用
   cover-portrait.jpg  主頁封面・直式（960x1920），手機直向使用（由橫式圖重新構圖而成）
@@ -143,7 +144,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 17 | `stats.js` | `EQUIP_STAT_KEYS`/`BASE_STAT_KEYS`、`getEquipBonus`(四維＋減傷/閃避/屬性傷害；四維 × 強化倍率與主修武器加成，再加 gear.js `getBonusTotals` 的詞條／套裝／稱號／職業)/`getElementCounts`/`getSpiritRoots`(靈根判定)/`getRootBonus`(靈根加成總和)/`getPlayerElement`(本命五行，五行相剋用)/`getRealmStageExp`(依 realmPacing 換算每階經驗基數，有快取)/`getNextExp`/`getLevelExpNeeded`/`hasLiveBeast`(出戰中才算，呼叫 beast-combat.js 的 isBeastActive)/`getBasePower`/`getPhysAttack`/`getMagAttack`(兩者皆乘上懸賞對決的化功 `getDuelWeakenMult()` 與 `getGearPctBonus`)/`getMaxHp`(乘 `getGearPctBonus('hp')`)/`getMaxMp`(兩者皆加上轉世保留值)/`getReincarnateBonus`/`getSectTier`/`getAllSkills` | `player`、`realms`、`sectData`、`LEVEL_*`、`equipTypes`/`WUXING_COUNTERS`、靈寵輔助計時、`bounty.js`(getDuelWeakenMult) | `ui.js`、`combat.js`、`leveling.js`、`tribulation.js`、`beast-combat.js` 等幾乎全部功能檔 |
 | 18 | `elements.js` | `newStatus`/`getPlayerCombatAttrs`(含 `element`；懸賞對決被破甲時減傷／閃避 × `getDuelArmorMult()`；裝備特效的護體／先手盾／定神／破甲／洞察／剋敵／寒徹／焚燼／蝕骨欄位與套裝提高的上限)/`getWuxingCounterMult`/`withSkillEffect`/`getMapCategoryIndex`/`rollMonsterAttrs`/`resolveHit`/`addDotStack`/`tickStatus`/`formatStatus`/`summarizeTags`/`formatEquipStats` | `config-elements.js`、`stats.js`(getEquipBonus/getPlayerElement)、`library.js`(getElementBookBonus)、`wuxingElements`、`maps`、`playerStatus` | `combat.js`、`tribulation.js`、`ui.js`、`bag.js`/`equipment.js`/`auction.js`/`lingbao-shop.js`(裝備屬性文字) |
 | 19 | `ui.js` | 常數 `PLAYER_AVATARS`（頭像 `img`（本地 images/avatar-*.jpg）/裁切位置 `pos`/預設道號，洞府頭像框、戰鬥實況、性別選擇共用；性別選擇視窗的兩張 `<img>` 寫在 index.html，換圖時要一起改）、`updateUI`/`updateCombatVisualPanel`/`formatWuxingCounterTip`/`updateTribulationUI`/`updatePotionCooldownUI`/`updateStudyCountsUI`/`openSkillModal`/`renderSkillList`/`addLog(msg, type, force, channel)`(野外回合中依 `fieldLogMuted`／`FIELD_MUTED_LOG_TYPES` 略過逐回合訊息；依 `channel`／`LOG_CHANNEL_BY_TYPE` 寫入戰鬥／道具／僕從分頁，第 44 節)/`switchLogTab`/`restoreLogTab`/`renderLogBadge`/`initModalTopClose`(彈窗右上角 ✕，第 46 節)/`refreshCombatStatusText`/`updateAutoSettings`/`syncAutoSettingsUI`/`updateSectFacilitiesUI`/`closeModal`/`toggleDrawer`/`formatCountdown`/`clampRefreshAt`(刷新時間軸保護，第 10 節)/`resolveBatchCount`(×1/×10/最高 共用)/批次刪除工具 `renderBulkDeleteBar`/`getCheckedBulkQualities`/`toggleAllBulkQualities` | `player`、`realms`、`stats.js` 的計算函式、`lifespan.js`(getDeathLifespanCost) | 幾乎所有功能檔在資料變動後都會呼叫 `updateUI()`/`addLog()` |
-| 20 | `map.js` | `isInSect`(是否身在宗門)/`returnToSect`(洞府「宗門」：傳送回宗門並開宗門分頁，第 20 節)/`openWorldMapModal`(修仙地圖彈窗，顯示目前所在)/`renderTownTeleports`(城鎮傳送點卡片)/`goToTown(i)`(傳送並進入城內場景)/`openMapCategoryModal`(略過 `hidden` 的宗門)/`selectMap`(選定後關閉兩層地圖彈窗)/`changeMap`(懸賞對決中換地圖 = `endBountyDuel("flee")` 逃離；暫存區滿時不能進野外，enhance.js) | `maps`、`SECT_MAP_NAME`、`player`、`ui.js`、`bounty.js` | `ui.js`(updateSectFacilitiesUI)、`combat.js`/`quest.js`(門派任務須在宗門)、HTML 按鈕；changeMap 離開宗門時呼叫 `quest.js` 的 stopQuest |
+| 20 | `map.js` | `isInSect`(是否身在宗門)/`returnToSect`(洞府「宗門」：傳送回宗門並開宗門分頁，第 20 節)/`openWorldMapModal`(修仙地圖彈窗，顯示目前所在)/`getMapThumb`(縮圖依性別選 `thumb`／`thumbFemale`)/`renderTownTeleports`(城鎮傳送點卡片)/`goToTown(i)`(傳送並進入城內場景)/`openMapCategoryModal`(略過 `hidden` 的宗門)/`selectMap`(選定後關閉兩層地圖彈窗)/`changeMap`(懸賞對決中換地圖 = `endBountyDuel("flee")` 逃離；暫存區滿時不能進野外，enhance.js) | `maps`、`SECT_MAP_NAME`、`player`、`ui.js`、`bounty.js` | `ui.js`(updateSectFacilitiesUI)、`combat.js`/`quest.js`(門派任務須在宗門)、HTML 按鈕；changeMap 離開宗門時呼叫 `quest.js` 的 stopQuest |
 | 21 | `combat.js` | `combatTick`/`fieldCombatRound`(野外一回合，日誌靜音、波末彙總、收益 × KILL_REWARD_MULT，第 33 節末)/`playerAttackTurn`(普攻/技能出手，渡劫共用；技能類型 single/aoe/heal/buff＋仙法的 shield 守護／control 牽制，並處理魔功 hpCost 反噬與 lifesteal 吸血)/`onPlayerKilledInField`/`checkAutoHealAndMana`/`tryRescueServant`/`getMapMonsterStats(map)`(妖獸攻擊／氣血，地圖可自訂 monsterAtk／monsterHp，save.js 離線估算也用) | `player`、`enemies`、`shopItems`、`servantQualities`、`servantNames`、`stats.js`、`elements.js`(resolveHit/tickStatus)、`leveling.js`(gainExp)、`beast-combat.js`(petAssistTick/applyPetDamageReduction/tickBeastUpkeep 每秒維持費計時)、`lifespan.js`(handlePlayerDeath)、`map.js`(changeMap 死亡回城)、`merit.js`(isEvilHuntUnlocked/getKarmaState/onCultivatorKilled/settleMeritStones，野外修士與暗殺者)、`config-merit.js`、`bounty.js`(對決中由 bountyDuelTick 接管；刷新新一波前呼叫 tryStartBountyDuel)、裝備系統（gear.js 特效／套裝／奪寶、enhance.js 星允鐵與暫存區、profession.js 職業技能與熟練度，第 37 節） | `main.js`(setInterval 每秒呼叫)、`bounty.js`(對決落敗呼叫 onPlayerKilledInField、playerAttackTurn) |
 | 22 | `leveling.js` | `REINCARNATE_KEEP_RATE`(轉世保留比例 5%)、`gainExp`/`gainLevelExp`/`advanceRealm`/`triggerReincarnate`（規則見第 25 節） | `realms`、`player`、`stats.js`、`ui.js`(updateSectFacilitiesUI)、`beast-combat.js`(gainBeastExp)、`lifespan.js`(gainRealmLifespan) | `combat.js`、`tribulation.js`、`save.js`、HTML 輪迴按鈕 |
 | 23 | `lifespan.js` | `getDeathLifespanCost`/`formatLifespan`/`getLifespanFloor`/`getAgingHours`(依 realmPacing 算出一境界壽元可撐時數)/`getAgingMultiplier`/`getAgingPerMinute`/`ageLifespan`(同時增加年齡 `player.age`)/`checkLifespanWarnings`(提示旗標 `lifespanWarned`，不存檔)/`getInitialLifespanForRealm`/`gainRealmLifespan`/`handlePlayerDeath`/`triggerLifespanGameOver` | `lifespanByRealm`、`LIFESPAN_*`、`player`、`inTribulation`、`elements.js`(getMapCategoryIndex)、`beast-combat.js`(killAllBeasts) | `combat.js`(每秒 ageLifespan、死亡)、`tribulation.js`(死亡)、`leveling.js`(突破)、`save.js`(離線流逝、舊存檔)、`ui.js`、`auction.js` |
@@ -967,7 +968,10 @@ combatTick() 每秒執行 [combat.js]
     - `#town-scene` 的 z-index 為 90，低於彈窗（`.modal-bg` 100），所以從傳送點開啟的視窗會疊在城內畫面上。
     - 新增其他城的場景：圖放 `images/towns/`，在 `townScenes` 以城鎮地圖名稱加一筆即可（天南城目前沒有場景，點卡片仍只傳送）。
   - **地圖縮圖**：地圖項目可加選填欄位 `thumb`（圖片路徑），城鎮傳送點與 `openMapCategoryModal` 的卡片都會顯示在最上方（`.map-thumb`，16:9 裁切）。
-    目前只有天星城（`images/maps/tianxing-city.jpg`，玩家提供的圖縮成 720px 寬、JPEG 品質 85）。其他地圖要加圖：圖放 `images/maps/`，該筆加 `thumb` 即可。
+    目前有天星城（`images/maps/tianxing-city.jpg`）與天南城，都是玩家提供的圖縮成 720px 寬、JPEG 品質 85。其他地圖要加圖：圖放 `images/maps/`，該筆加 `thumb` 即可。
+  - **依性別換縮圖**（2026-09-28）：地圖可再加選填 `thumbFemale`，`map.js` 的 `getMapThumb(item)` 在 `player.gender === 'female'` 且有 `thumbFemale` 時用女版，否則用 `thumb`
+    （城鎮傳送點卡片與 `openMapCategoryModal` 都走它）。天南城：男修 `tiannan-city-male.jpg`（白衣男修御劍俯瞰天南城）、女修 `tiannan-city-female.jpg`（紅白衣女修），
+    原圖 1672×941 → 720×405，各約 120 KB。
 
 - 舊版第一區有三張安全區地圖，設施分散：「洞府 / 弟子居」(經驗 ×1，無設施)、「演武學宮」(×1.5，門派任務／靈田／靈獸園)、
   「後山禁地」(×3，靈寶閣／藏書閣／鍛造閣／煉丹房)。現已**合併為單一地圖「宗門」**（`config-maps.js` 的 `SECT_MAP_NAME`），
@@ -1258,7 +1262,7 @@ combatTick() 每秒執行 [combat.js]
 （以 8 種舊存檔形態測試目前程式皆可正常讀取；移除 `#age-display` 即可重現同一錯誤。）
 
 ### 1. 發佈版本號（防止新舊檔案混用）
-- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260928n`）。
+- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20260928o`）。
 - **每次推上 GitHub Pages 前，把所有 `?v=` 全部取代成新值**（例：日期＋序號）。新 index.html 會指向新網址的 JS，不會再拿到快取的舊檔。
 - 新增 `data/*.js` 時也要記得帶上 `?v=`。
 

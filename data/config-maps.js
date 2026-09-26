@@ -1,5 +1,6 @@
 // 地圖區域資料：分類、安全區標記、經驗倍率、難度、進入限制
 // thumb（選填）= 修仙地圖卡片上的縮圖（images/maps/，建議 720px 寬的橫圖），沒有就只顯示文字
+// thumbFemale（選填）= 女修玩家看到的縮圖（沒填就男女都用 thumb；map.js 的 getMapThumb）
 
 // 宗門（唯一的安全區）：待在這裡時，所有宗門設施（任務/靈田/靈獸園/靈寶閣/藏書閣/鍛造閣/煉丹房）都可使用
 // 舊版的「洞府 / 弟子居」「演武學宮」「後山禁地」已合併進來，舊存檔由 save.js 的 migrateCurrentMap() 轉換
@@ -19,7 +20,8 @@ const maps = [
     // 城鎮是安全區、可打坐，但不是宗門，宗門設施不能用（isInSect 只認 SECT_MAP_NAME）。
     { category: "城鎮 (安全區)", isSafe: true, items: [
         { name: SECT_MAP_NAME, expRate: 3, diff: 1, coins: 0, hidden: true },
-        { name: "天南城", expRate: 3, diff: 1, coins: 0 },
+        { name: "天南城", expRate: 3, diff: 1, coins: 0,   // 縮圖：御劍俯瞰天南城，男修／女修各一張
+          thumb: "images/maps/tiannan-city-male.jpg", thumbFemale: "images/maps/tiannan-city-female.jpg" },
         { name: "天星城", expRate: 3, diff: 1, coins: 0, thumb: "images/maps/tianxing-city.jpg" }   // 亂星海的主城；第二區已有戰鬥地圖「亂星海」，名稱不可重複
     ]},
     { category: "一、野外歷練 (戰鬥區)", isSafe: false, items: [
