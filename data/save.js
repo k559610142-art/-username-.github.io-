@@ -67,6 +67,9 @@ function settleIdleSeconds(offlineSeconds, label) {
     }
     if (!player.currentMapIsSafe) {
         est = estimateIdleCombat();
+        // 估算不計自動補血、吸血、回血、護盾、靈寵，常把線上打得過的玩家誤判成撐不住（曾造成「縮小畫面回來人在宗門」）。
+        // 線上已在這張地圖實際撐過 IDLE_PROVEN_SECONDS 秒（combat.js 記錄的 idleProvenMap）就信任玩家，留在原地結算。
+        if (!est.survivable && player.idleProvenMap === player.currentMap.name) est.survivable = true;
         if (!est.survivable) {
             let fromName = player.currentMap.name;
             player.currentMap = maps[0].items[0];
@@ -143,7 +146,7 @@ function settleIdleSeconds(offlineSeconds, label) {
 //   hits      = 普攻殺一隻平均要出手幾次 = 無條件進位(妖獸氣血 ÷ (玩家物理攻擊 × (1 − 妖獸減傷))) ÷ 未閃避率
 //               （差一點血也要再打一下，所以要進位；實測與模擬誤差約 ±2%）
 //   rateMult  = 每秒擊殺相對「一擊斬殺」的比例。一波平均 IDLE_WAVE_AVG_MONSTERS 隻、普攻一次打一隻，
-//               波與波之間固定 IDLE_WAVE_GAP_TICKS 秒（刷新 5 秒＋生成 1 秒）：
+//               波與波之間固定 IDLE_WAVE_GAP_TICKS 秒（刷新 MONSTER_RESPAWN_SECONDS 秒＋生成 1 秒）：
 //               每秒擊殺 = N ÷ (GAP + N × hits)，除以「一擊斬殺」時的值即為 rateMult
 //   waveDamage = 一波（N 隻依序擊殺）期間妖獸打在玩家身上的總傷害：第 k 隻會出手 k×hits−1 次
 //   survivable = waveDamage < 氣血上限（線上還有自動補血，這裡只擋「一波就會被打死」的情況）

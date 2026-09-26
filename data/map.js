@@ -104,6 +104,7 @@ function changeMap(cIndex, iIndex) {
     player.currentMap = targetMap;
     player.currentMapIsSafe = maps[cIndex].isSafe;
     safeZoneTimer = 0;
+    fieldOnlineTicks = 0;   // 線上實戰證明重新計算（combat.js）
 
     updateSectFacilitiesUI();
 

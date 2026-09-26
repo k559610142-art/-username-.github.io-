@@ -166,7 +166,8 @@ function renderBountyBoard() {
 function tryStartBountyDuel() {
     if (inBountyDuel || inTribulation || player.currentMapIsSafe) return false;
     let entry = getActiveBounty();
-    if (!entry || Math.random() >= BOUNTY_ENCOUNTER_CHANCE) return false;
+    // 每波機率乘 KILL_REWARD_MULT：怪物刷新變慢、波數變少，遇上的平均時間維持原設計（config-maps.js）
+    if (!entry || Math.random() >= BOUNTY_ENCOUNTER_CHANCE * KILL_REWARD_MULT) return false;
     startBountyDuel(entry);
     return true;
 }

@@ -66,16 +66,25 @@ function combatTick() {
         safeZoneTimer++;
         if (safeZoneTimer >= 5) {
             safeZoneTimer = 0;
-            let expEarned = gainExp(player.currentMap.expRate * 50) || 0;
-            if (player.pendingTribulation && expEarned === 0) {
-                addLog(`🧘‍♂️ 打坐調息中…但修為已然圓滿，唯有渡劫方能更進一步。`);
-            } else {
-                addLog(`🧘‍♂️ 於安全區打坐 5 秒，吸收天地靈氣，獲得 ${Math.floor(expEarned)} 點經驗。`);
+            meditateSummary.exp += gainExp(player.currentMap.expRate * 50) || 0;
+            meditateSummary.seconds += 5;
+            // 日誌減量：經驗仍每 5 秒入帳，日誌每 MEDITATE_LOG_SECONDS 秒彙總一則
+            if (meditateSummary.seconds >= MEDITATE_LOG_SECONDS) {
+                if (player.pendingTribulation && meditateSummary.exp === 0) {
+                    addLog(`🧘‍♂️ 打坐調息中…但修為已然圓滿，唯有渡劫方能更進一步。`);
+                } else {
+                    addLog(`🧘‍♂️ 於安全區打坐 ${meditateSummary.seconds} 秒，吸收天地靈氣，獲得 ${Math.floor(meditateSummary.exp).toWan()} 點經驗。`);
+                }
+                meditateSummary = { seconds: 0, exp: 0 };
             }
         }
         updateUI();
         return;
     }
+
+    // 線上實戰證明（背景／離線結算用，save.js）：同一張野外地圖連續撐過 IDLE_PROVEN_SECONDS 秒就記下這張地圖
+    fieldOnlineTicks++;
+    if (fieldOnlineTicks >= IDLE_PROVEN_SECONDS) player.idleProvenMap = player.currentMap.name;
 
     if (enemies.length === 0) {
         if (respawnTimer > 0) {
@@ -92,6 +101,7 @@ function combatTick() {
         let count = Math.floor(Math.random() * 5) + 1;
         let ms = getMapMonsterStats(player.currentMap);
         resetGearWave();   // 首擊、先手盾以「每波」計算（gear.js）
+        waveSummary = { kills: 0, exp: 0, coins: 0, rep: 0, rounds: 0 };
         for (let i = 0; i < count; i++) {
             enemies.push({ hp: ms.hp, maxHp: ms.hp, attack: ms.atk,
                            icon: monsterIcons[Math.floor(Math.random() * monsterIcons.length)],
@@ -106,13 +116,14 @@ function combatTick() {
                                icon: ambush ? AMBUSH_ICON : CULTIVATOR_ICONS[faction], cultivator: faction, ambush: ambush,
                                attrs: rollMonsterAttrs(), status: newStatus() });
             };
-            if (Math.random() < FIELD_CULTIVATOR_WAVE_CHANCE) {
+            // 每波機率乘 KILL_REWARD_MULT：刷新變慢、波數變少，每小時遇到的次數維持原設計（config-maps.js）
+            if (Math.random() < FIELD_CULTIVATOR_WAVE_CHANCE * KILL_REWARD_MULT) {
                 let faction = Math.random() < 0.5 ? "正" : "邪";
                 addCultivator(faction, false);
                 extraText.push(`一名${CULTIVATOR_ICONS[faction]}${faction === "邪" ? "魔道" : "正道"}修士`);
             }
             let karma = getKarmaState().key;
-            if (karma !== "neutral" && Math.random() < AMBUSH_WAVE_CHANCE) {
+            if (karma !== "neutral" && Math.random() < AMBUSH_WAVE_CHANCE * KILL_REWARD_MULT) {
                 let faction = karma === "good" ? "邪" : "正";
                 addCultivator(faction, true);
                 extraText.push(`一名${AMBUSH_ICON}${faction === "邪" ? "邪派刺客（衝著你的善名而來）" : "正道獵魔人（前來為民除害）"}`);
@@ -120,134 +131,159 @@ function combatTick() {
         }
         document.getElementById('combat-status').innerText = `⚔️ 遭遇 ${count} 隻妖獸！戰鬥中！`;
         document.getElementById('combat-status').style.color = '#f87171';
-        addLog(`⚠️ 遭遇 ${count} 隻強大的妖獸/禁區強者攔路！${extraText.length ? `其中還有${extraText.join("、")}！` : ''}`, "combat");
+        // 日誌減量：一般妖獸不另寫遭遇訊息（波末彙總會寫），混入修士／暗殺者時才提示
+        if (extraText.length) addLog(`⚠️ 遭遇 ${count} 隻妖獸攔路，其中還有${extraText.join("、")}！`, "combat");
         updateCombatVisualPanel();
     } else {
-        // ---- 玩家回合：先結算自身的燒傷/中毒，被凍結則本回合無法出手 ----
-        let selfTick = tickStatus(playerStatus);
-        if (selfTick.dot > 0) {
-            player.hp -= selfTick.dot;
-            addLog(`🩸 身上的${formatStatus(playerStatus) || '異常狀態'}發作，損失 ${selfTick.dot.toWan()} 點氣血！`, "combat");
-            if (player.hp <= 0 && !tryGearUndying()) { onPlayerKilledInField(); return; }
-        }
-
-        let playerTags = [];
-        if (selfTick.frozen) {
-            addLog(`❄️ 你被凍結，本回合無法行動！`, "combat");
-        } else {
-            playerAttackTurn(getAllSkills(), enemies, playerTags);
-            artifactSkillTurn(enemies, playerTags);   // 神器專屬技能（artifact.js）
-            professionSkillTurn(enemies, playerTags); // 職業技能（profession.js）
-            partnerSkillTurn(enemies, playerTags);    // 出戰夥伴絕學（partner.js）
-        }
-
-        // 存活的靈寵各自判定是否出手協助
-        petAssistTick(enemies);
-
-        // ---- 怪物身上的燒傷/中毒發作，並記錄誰被凍結 ----
-        let dotTotal = 0;
-        enemies.forEach(e => {
-            if (e.hp <= 0) return;
-            let t = tickStatus(e.status);
-            e.hp -= t.dot;
-            dotTotal += t.dot;
-            e.skipTurn = t.frozen;
-        });
-        let regen = applyRootRegen() + applyGearRegen();
-        if (playerTags.length > 0 || dotTotal > 0 || regen > 0) {
-            let parts = [];
-            if (playerTags.length > 0) parts.push(summarizeTags(playerTags, "💨被閃避"));
-            if (dotTotal > 0) parts.push(`持續傷害 ${dotTotal.toWan()}`);
-            if (regen > 0) parts.push(`🌿回復 ${regen.toWan()}`);
-            addLog(`✨ 屬性效果：${parts.join("｜")}`, "skill");
-        }
-
-        let expEarned = 0;
-        let coinsEarned = 0;
-        let repEarned = 0;
-        let killedCount = 0;
-        let slainCultivators = [];
-
-        enemies = enemies.filter(e => {
-            if (e.hp <= 0) {
-                expEarned += player.currentMap.expRate * 15;
-                coinsEarned += rollKillCoins();
-                repEarned += rollKillReputation();
-                killedCount++;
-                if (e.cultivator) slainCultivators.push(e);
-                return false;
-            }
-            return true;
-        });
-
-        if (expEarned > 0) {
-            let fx = getGearEffects();
-            coinsEarned = Math.floor(coinsEarned * (1 + (fx["聚財"] || 0)));   // 聚財（裝備特效）
-            // 噬魂（裝備特效）：每擊殺一隻回復一定比例氣血
-            if (fx["噬魂"] && player.hp > 0) player.hp = Math.min(player.maxHp, player.hp + player.maxHp * fx["噬魂"] * killedCount);
-            let gainedExp = gainExp(expEarned) || 0;
-            player.coins += coinsEarned;
-            player.reputation = (player.reputation || 0) + repEarned;
-            addDailyProgress('kill', killedCount);
-            onPartnerFieldKills(killedCount);   // 情緣任務的野外擊殺／並肩擊殺（partner.js）
-            gainKillProficiency(killedCount);   // 主修職業熟練度（profession.js）
-            let expText = (player.pendingTribulation && gainedExp === 0) ? "修為已滿(待渡劫)" : `${Math.floor(gainedExp)} 經驗`;
-            addLog(`斬殺敵手，獲得 ${expText}, ${coinsEarned} 靈石 與 ${repEarned} 點聲望！`, "combat");
-            // 斬殺修士：善惡值變化，敵對陣營另給功德（merit.js 的 onCultivatorKilled）
-            slainCultivators.forEach(e => {
-                let who = e.ambush ? (e.cultivator === "邪" ? "邪派刺客" : "正道獵魔人") : (e.cultivator === "邪" ? "魔道修士" : "正道修士");
-                let merit = onCultivatorKilled(e.cultivator, e.ambush);
-                player.merit = (player.merit || 0) + merit;
-                addLog(merit > 0
-                    ? `🙏 斬殺${e.icon}${who}，${getPlayerFaction() === "邪" ? "吸取" : "積累"} ${merit} 點功德！（目前 ${player.merit.toWan()}）`
-                    : `🗡️ 斬殺${e.icon}${who}（同為${getFactionLabel(e.cultivator)}，不得功德）`, merit > 0 ? "level-up" : "combat");
-                // 星允鐵與奪寶（enhance.js／gear.js）：暗殺者必掉星允鐵；野外修士只有敵對陣營才有
-                if (e.ambush) {
-                    addStarIron(randInt(IRON_AMBUSH_AMOUNT[0], IRON_AMBUSH_AMOUNT[1]), `從${who}身上搜出星允鐵`);
-                    let loot = tryLootDrop('ambush');
-                    if (loot) addLog(loot, "equip");
-                } else if (merit > 0) {
-                    if (Math.random() < IRON_FIELD_CULTIVATOR_CHANCE) addStarIron(1, `從${who}身上搜出星允鐵`);
-                    let loot = tryLootDrop('cultivator');
-                    if (loot) addLog(loot, "equip");
-                }
-            });
-            if (slainCultivators.length > 0) settleMeritStones();
-            for(let k = 0; k < killedCount; k++) {
-                tryRescueServant();
-            }
-        }
-
-        if (enemies.length === 0) {
-            respawnTimer = 5;
-            document.getElementById('combat-status').innerText = `⚔️ 敵方全滅！5秒後刷新下一波怪物...`;
-            document.getElementById('combat-status').style.color = '#fb923c';
-        } else {
-            // ---- 怪物回合：每隻各自命中判定（玩家的閃避/減傷生效，怪物的屬性傷害可施加在玩家身上）----
-            let playerDef = { attrs: getPlayerCombatAttrs(), status: playerStatus };
-            let totalDmg = 0;
-            let enemyTags = [];
-            let frozenCount = 0;
-            enemies.forEach(e => {
-                if (e.hp <= 0) return;   // 被反震／閃擊反擊打倒的，下一回合才結算擊殺
-                if (e.skipTurn) { frozenCount++; return; }
-                let r = resolveHit(e.attack, { attrs: e.attrs || {}, power: e.attack }, playerDef);
-                // 裝備特效：妖獸為物理、修士為術法（金身／化勁）；反震、閃擊反擊（gear.js）
-                totalDmg += applyGearDefense(r, e, !!e.cultivator, r.tags);
-                enemyTags = enemyTags.concat(r.tags);
-            });
-            player.hp -= applyPetDamageReduction(totalDmg);
-            if (enemyTags.length > 0 || frozenCount > 0) {
-                let parts = [];
-                if (frozenCount > 0) parts.push(`${frozenCount} 隻妖獸被凍結無法出手`);
-                if (enemyTags.length > 0) parts.push(`妖獸攻勢：${summarizeTags(enemyTags, "💨你閃避了")}`);
-                addLog(`⚠️ ${parts.join("｜")}`, "combat");
-            }
-
-            if (player.hp <= 0 && !tryGearUndying()) { onPlayerKilledInField(); return; }
-        }
-        updateUI();
+        // 野外戰鬥回合：逐回合訊息不寫日誌（ui.js 的 fieldLogMuted），一波結束寫一則彙總
+        fieldLogMuted = true;
+        try { fieldCombatRound(); } finally { fieldLogMuted = false; }
     }
+}
+
+function fieldCombatRound() {
+    // ---- 玩家回合：先結算自身的燒傷/中毒，被凍結則本回合無法出手 ----
+    let selfTick = tickStatus(playerStatus);
+    if (selfTick.dot > 0) {
+        player.hp -= selfTick.dot;
+        addLog(`🩸 身上的${formatStatus(playerStatus) || '異常狀態'}發作，損失 ${selfTick.dot.toWan()} 點氣血！`, "combat");
+        if (player.hp <= 0 && !tryGearUndying()) { player.idleProvenMap = null; onPlayerKilledInField(); return; }
+    }
+
+    let playerTags = [];
+    if (selfTick.frozen) {
+        addLog(`❄️ 你被凍結，本回合無法行動！`, "combat");
+    } else {
+        playerAttackTurn(getAllSkills(), enemies, playerTags);
+        artifactSkillTurn(enemies, playerTags);   // 神器專屬技能（artifact.js）
+        professionSkillTurn(enemies, playerTags); // 職業技能（profession.js）
+        partnerSkillTurn(enemies, playerTags);    // 出戰夥伴絕學（partner.js）
+    }
+
+    // 存活的靈寵各自判定是否出手協助
+    petAssistTick(enemies);
+
+    // ---- 怪物身上的燒傷/中毒發作，並記錄誰被凍結 ----
+    let dotTotal = 0;
+    enemies.forEach(e => {
+        if (e.hp <= 0) return;
+        let t = tickStatus(e.status);
+        e.hp -= t.dot;
+        dotTotal += t.dot;
+        e.skipTurn = t.frozen;
+    });
+    let regen = applyRootRegen() + applyGearRegen();
+    if (playerTags.length > 0 || dotTotal > 0 || regen > 0) {
+        let parts = [];
+        if (playerTags.length > 0) parts.push(summarizeTags(playerTags, "💨被閃避"));
+        if (dotTotal > 0) parts.push(`持續傷害 ${dotTotal.toWan()}`);
+        if (regen > 0) parts.push(`🌿回復 ${regen.toWan()}`);
+        addLog(`✨ 屬性效果：${parts.join("｜")}`, "skill");
+    }
+
+    let expEarned = 0;
+    let coinsEarned = 0;
+    let repEarned = 0;
+    let killedCount = 0;
+    let slainCultivators = [];
+
+    enemies = enemies.filter(e => {
+        if (e.hp <= 0) {
+            expEarned += player.currentMap.expRate * 15;
+            coinsEarned += rollKillCoins();
+            repEarned += rollKillReputation();
+            killedCount++;
+            if (e.cultivator) slainCultivators.push(e);
+            return false;
+        }
+        return true;
+    });
+
+    if (expEarned > 0) {
+        let fx = getGearEffects();
+        // 刷新變慢的補償（config-maps.js 的 KILL_REWARD_MULT）：每隻的經驗／靈石／聲望／熟練度加成，每小時收益維持原設計
+        expEarned *= KILL_REWARD_MULT;
+        coinsEarned = Math.floor(coinsEarned * KILL_REWARD_MULT * (1 + (fx["聚財"] || 0)));   // 聚財（裝備特效）
+        repEarned = Math.round(repEarned * KILL_REWARD_MULT);
+        // 噬魂（裝備特效）：每擊殺一隻回復一定比例氣血
+        if (fx["噬魂"] && player.hp > 0) player.hp = Math.min(player.maxHp, player.hp + player.maxHp * fx["噬魂"] * killedCount);
+        let gainedExp = gainExp(expEarned) || 0;
+        player.coins += coinsEarned;
+        player.reputation = (player.reputation || 0) + repEarned;
+        addDailyProgress('kill', killedCount);
+        onPartnerFieldKills(killedCount);   // 情緣任務的野外擊殺／並肩擊殺（partner.js）
+        gainKillProficiency(killedCount * KILL_REWARD_MULT);   // 主修職業熟練度（profession.js）
+        if (waveSummary) {
+            waveSummary.kills += killedCount;
+            waveSummary.exp += gainedExp;
+            waveSummary.coins += coinsEarned;
+            waveSummary.rep += repEarned;
+        }
+        // 斬殺修士：善惡值變化，敵對陣營另給功德（merit.js 的 onCultivatorKilled）
+        slainCultivators.forEach(e => {
+            let who = e.ambush ? (e.cultivator === "邪" ? "邪派刺客" : "正道獵魔人") : (e.cultivator === "邪" ? "魔道修士" : "正道修士");
+            let merit = onCultivatorKilled(e.cultivator, e.ambush);
+            player.merit = (player.merit || 0) + merit;
+            addLog(merit > 0
+                ? `🙏 斬殺${e.icon}${who}，${getPlayerFaction() === "邪" ? "吸取" : "積累"} ${merit} 點功德！（目前 ${player.merit.toWan()}）`
+                : `🗡️ 斬殺${e.icon}${who}（同為${getFactionLabel(e.cultivator)}，不得功德）`, merit > 0 ? "level-up" : "combat");
+            // 星允鐵與奪寶（enhance.js／gear.js）：暗殺者必掉星允鐵；野外修士只有敵對陣營才有
+            if (e.ambush) {
+                addStarIron(randInt(IRON_AMBUSH_AMOUNT[0], IRON_AMBUSH_AMOUNT[1]), `從${who}身上搜出星允鐵`);
+                let loot = tryLootDrop('ambush');
+                if (loot) addLog(loot, "equip");
+            } else if (merit > 0) {
+                if (Math.random() < IRON_FIELD_CULTIVATOR_CHANCE) addStarIron(1, `從${who}身上搜出星允鐵`);
+                let loot = tryLootDrop('cultivator');
+                if (loot) addLog(loot, "equip");
+            }
+        });
+        if (slainCultivators.length > 0) settleMeritStones();
+        // 救援判定次數同樣乘補償倍率（小數部分以機率補一次），每小時救到的人數維持原設計
+        let rescueRolls = killedCount * KILL_REWARD_MULT;
+        rescueRolls = Math.floor(rescueRolls) + (Math.random() < rescueRolls % 1 ? 1 : 0);
+        for (let k = 0; k < rescueRolls; k++) {
+            tryRescueServant();
+        }
+    }
+    if (waveSummary) waveSummary.rounds++;
+
+    if (enemies.length === 0) {
+        respawnTimer = MONSTER_RESPAWN_SECONDS;
+        document.getElementById('combat-status').innerText = `⚔️ 敵方全滅！${MONSTER_RESPAWN_SECONDS}秒後刷新下一波怪物...`;
+        document.getElementById('combat-status').style.color = '#fb923c';
+        // 日誌減量：一波一則彙總（取代逐回合的出手／斬殺訊息）
+        if (waveSummary && waveSummary.kills > 0) {
+            let s = waveSummary;
+            let expText = (player.pendingTribulation && s.exp === 0) ? "修為已滿(待渡劫)" : `${Math.floor(s.exp).toWan()} 經驗`;
+            addLog(`⚔️ ${s.rounds} 回合擊退 ${s.kills} 名敵手，獲得 ${expText}、${s.coins.toWan()} 靈石、${s.rep.toWan()} 聲望。`, "combat", true);
+        }
+        waveSummary = null;
+    } else {
+        // ---- 怪物回合：每隻各自命中判定（玩家的閃避/減傷生效，怪物的屬性傷害可施加在玩家身上）----
+        let playerDef = { attrs: getPlayerCombatAttrs(), status: playerStatus };
+        let totalDmg = 0;
+        let enemyTags = [];
+        let frozenCount = 0;
+        enemies.forEach(e => {
+            if (e.hp <= 0) return;   // 被反震／閃擊反擊打倒的，下一回合才結算擊殺
+            if (e.skipTurn) { frozenCount++; return; }
+            let r = resolveHit(e.attack, { attrs: e.attrs || {}, power: e.attack }, playerDef);
+            // 裝備特效：妖獸為物理、修士為術法（金身／化勁）；反震、閃擊反擊（gear.js）
+            totalDmg += applyGearDefense(r, e, !!e.cultivator, r.tags);
+            enemyTags = enemyTags.concat(r.tags);
+        });
+        player.hp -= applyPetDamageReduction(totalDmg);
+        if (enemyTags.length > 0 || frozenCount > 0) {
+            let parts = [];
+            if (frozenCount > 0) parts.push(`${frozenCount} 隻妖獸被凍結無法出手`);
+            if (enemyTags.length > 0) parts.push(`妖獸攻勢：${summarizeTags(enemyTags, "💨你閃避了")}`);
+            addLog(`⚠️ ${parts.join("｜")}`, "combat");
+        }
+
+        if (player.hp <= 0 && !tryGearUndying()) { player.idleProvenMap = null; onPlayerKilledInField(); return; }
+    }
+    updateUI();
 }
 
 // 妖獸的攻擊與氣血：預設 攻擊 = 難度 × 50、氣血 = 攻擊 × 10；地圖可用 monsterAtk／monsterHp 直接指定（config-maps.js）
@@ -391,6 +427,8 @@ function playerAttackTurn(availableSkills, targets, tags, isExtra) {
 
 // 野外戰死：折壽、靈寵陣亡、損失靈石並被送回宗門
 function onPlayerKilledInField() {
+    fieldLogMuted = false;   // 戰死、折壽、靈寵陣亡等訊息一定要顯示（野外回合中日誌是靜音的，ui.js）
+    waveSummary = null;
     playerStatus = newStatus();
     if (handlePlayerDeath()) return;
     player.hp = 1;

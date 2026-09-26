@@ -148,6 +148,8 @@ function triggerReincarnate() {
         player.level = 1;
         player.levelExp = 0;
         player.pendingTribulation = false;
+        player.idleProvenMap = null;   // 實力大減，線上實戰證明作廢（save.js 背景／離線結算）
+        fieldOnlineTicks = 0;
         player.lifespan = lifespanByRealm[0].gain;
         player.age = LIFESPAN_START_AGE;
         player.stats = { str: keep(oldStats.str), con: keep(oldStats.con), int: keep(oldStats.int), spr: keep(oldStats.spr), cha: keep(oldStats.cha) };

@@ -81,6 +81,7 @@ let player = {
     dailyStats: {},              // 當期各類型累計次數（刷新時清空）
     auctionItems: [],            // 千寶閣當期 5 件商品
     auctionRefreshAt: 0,         // 千寶閣下次上架的時間戳
+    idleProvenMap: null,         // 線上實際撐過 IDLE_PROVEN_SECONDS 秒的野外地圖名稱；背景／離線結算信任此圖打得過（被妖獸打死時清除）
     paidRefresh: {},             // 今日付費刷新次數 { date: 當地日期字串, auction, bounty }（activity.js 的 getPaidRefreshState）
     autoHp: { enabled: false, threshold: 50 },
     autoMp: { enabled: false, threshold: 30 },
@@ -109,6 +110,9 @@ let potionCooldownMp = 0;    // 靈力類藥品剩餘冷卻秒數
 let gameOver = false;        // 壽元耗盡：停止戰鬥與存檔，等待重新載入
 let lastTickAt = 0;          // 上一次 combatTick 的時間（背景補發用，save.js 的 checkBackgroundCatchUp）
 let missedTickMs = 0;        // 背景期間被瀏覽器延後、尚未補發的毫秒數
+let waveSummary = null;      // 本波戰鬥累計 { kills, exp, coins, rep, rounds }，一波結束寫一則彙總日誌（combat.js）
+let meditateSummary = { seconds: 0, exp: 0 };   // 安全區打坐累計，每 MEDITATE_LOG_SECONDS 秒寫一則日誌（combat.js）
+let fieldOnlineTicks = 0;   // 在目前野外地圖實際戰鬥的秒數（換地圖歸零；滿 IDLE_PROVEN_SECONDS 記入 player.idleProvenMap）
 let playerStatus = { frozen: 0, burn: null, poison: null };   // 玩家身上的凍結/燒傷/中毒（elements.js）
 
 // 靈寵輔助效果（木：攻擊增益／土：減傷／水：持續回復），皆以回合數倒數

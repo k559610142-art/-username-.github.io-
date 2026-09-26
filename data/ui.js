@@ -275,7 +275,14 @@ function renderSkillList() {
     document.getElementById('skill-list').innerHTML = html;
 }
 
-function addLog(msg, type = "normal") {
+// 日誌減量（2026-09-28）：野外戰鬥回合進行中（combat.js 的 fieldCombatRound）設為 true，
+// 逐回合的出手、技能、屬性效果、妖獸攻勢等訊息（type 在 FIELD_MUTED_LOG_TYPES）不寫入，改由每波結束的彙總取代。
+// 掉寶（equip）、功德／升級（level-up）、任務（quest）、系統（system）照常即時顯示；需要強制顯示時傳 force = true。
+let fieldLogMuted = false;
+const FIELD_MUTED_LOG_TYPES = ["normal", "combat", "skill", "heal"];
+
+function addLog(msg, type = "normal", force = false) {
+    if (fieldLogMuted && !force && FIELD_MUTED_LOG_TYPES.includes(type)) return;
     const logBox = document.getElementById('log');
     const entry = document.createElement('div');
     entry.className = `log-entry ${type}`;

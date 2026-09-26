@@ -11,6 +11,7 @@ const SECT_MAP_NAME = "宗門";
 //    換算方式：滿速掛機每小時約 KILLS_PER_HOUR_ESTIMATE 隻 → 每小時靈石 ≈ coins × 1160。
 //    調整靈石產出時只要改這裡的 coins，不要再動 diff（diff 只決定怪物強度與經驗/聲望以外的難度感）。
 const KILLS_PER_HOUR_ESTIMATE = 1160;   // 實測值：波次之間有 5 秒刷新，滿速約每秒 0.32 隻
+                                        // （2026-09-28 刷新改 10 秒後實際擊殺變少，但每隻收益乘 KILL_REWARD_MULT，換算成「等效擊殺」仍是此值）
 
 const maps = [
     // 城鎮（安全區，不編號；戰鬥區為第一～五區）。⚠️ items[0] 必須是宗門：死亡回城、渡劫失敗、暫存區滿等都用 changeMap(0, 0)／maps[0].items[0] 代表宗門。
@@ -67,9 +68,21 @@ const REPUTATION_MAX_BY_MAP_CATEGORY = {
 // ⚠️ 舊值 0.7 等於假設離線每秒殺 0.7 隻，但線上滿速也只有每秒 0.32 隻，
 //    造成離線收益是線上的 2.16 倍（關掉遊戲比掛機划算）。改為 0.3 後離線約為線上的 93%。
 const OFFLINE_COMBAT_RATE = 0.3;
-// 離線／背景依實力估算戰鬥效率用（save.js 的 estimateIdleCombat）：一波平均隻數（1～5 隻）、波與波之間的秒數（刷新 5＋生成 1）
+// 安全區打坐：經驗仍每 5 秒入帳，日誌每這麼多秒才彙總一則（2026-09-28 日誌減量）
+const MEDITATE_LOG_SECONDS = 30;
+// 野外一波全滅後，等多少秒刷新下一波（2026-09-28 由 5 秒改為 10 秒，減少戰鬥節奏與日誌量）
+const MONSTER_RESPAWN_SECONDS = 10;
+// 離線／背景依實力估算戰鬥效率用（save.js 的 estimateIdleCombat）：一波平均隻數（1～5 隻）、波與波之間的秒數（刷新＋生成 1 秒）
 const IDLE_WAVE_AVG_MONSTERS = 3;
-const IDLE_WAVE_GAP_TICKS = 6;
+const IDLE_WAVE_GAP_TICKS = MONSTER_RESPAWN_SECONDS + 1;
+// 刷新變慢的補償：一擊斬殺時每秒擊殺 = 3 ÷ (GAP + 3)，原設計（刷新 5 秒）為 3 ÷ 9；
+// 每隻的經驗／靈石／聲望／熟練度，以及「每波」的遭遇機率（野外修士、暗殺者、懸賞人物）都乘上此倍率，
+// 讓每小時收益與修煉節奏（realmPacing、KILLS_PER_HOUR_ESTIMATE、離線公式）維持刷新 5 秒時的設計值。
+// 目前 10 秒 → (11 + 3) ÷ (6 + 3) ≈ 1.556。
+const KILL_REWARD_MULT = (IDLE_WAVE_GAP_TICKS + IDLE_WAVE_AVG_MONSTERS) / (6 + IDLE_WAVE_AVG_MONSTERS);
+// 線上實戰證明：在同一張野外地圖「線上實際戰鬥」連續撐過這麼多秒沒被妖獸打死，背景／離線結算就信任玩家打得過，
+// 即使 estimateIdleCombat 判定一波撐不住（它不計自動補血、吸血、回血、護盾、靈寵），也不再把玩家送回宗門（save.js）
+const IDLE_PROVEN_SECONDS = 60;
 
 // 離線掛機的聲望倍率：離線每個戰鬥 tick 以「該區平均聲望 × 此倍率」計算。
 // 0.7 × OFFLINE_COMBAT_RATE(0.3) ≈ 每秒 0.21 隻，約為線上的 65%（聲望刻意比線上少）。
