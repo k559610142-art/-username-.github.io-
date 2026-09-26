@@ -37,7 +37,7 @@ const DefenseBattle = (() => {
         const base = Math.pow(10, r) * 5 * s + (r === 0 ? 1 : 2 * Math.pow(10, r)) * s;
         return base * getBountyRefSectMult(r);
     }
-    const MILES = DEFENSE_MILESTONES.map(m => ({ w: m.wave, a: realmAtk(m.realm, DEFENSE_MILESTONE_STAGE) }));
+    const MILES = DEFENSE_MILESTONES.map(m => ({ w: m.wave, a: realmAtk(m.realm, m.stage || DEFENSE_MILESTONE_STAGE) }));
     // 第 w 波的基準攻擊：里程碑之間等比例遞增；最後一個里程碑之後沿用最後一段的每波倍率
     function waveAtk(w) {
         for (let i = 0; i < MILES.length - 1; i++) {
@@ -49,12 +49,16 @@ const DefenseBattle = (() => {
     }
     // 換算成「相當於某境界某階」（顯示用）；超過混沌道祖 10 階顯示倍數
     function waveRealmLabel(w) {
+        // 里程碑波次直接顯示指定的境界（某境界 10 階與下一境界 1 階數值相同，比對會混淆）
+        const ms = DEFENSE_MILESTONES.find(m => m.wave === w);
+        if (ms) return `${realms[ms.realm]} ${ms.stage || DEFENSE_MILESTONE_STAGE} 階`;
         const atk = waveAtk(w), top = realmAtk(realms.length - 1, 10);
         if (atk > top * 1.05) return `${realms[realms.length - 1]} 10 階 ×${(atk / top).toFixed(1)}`;
         let best = null;
-        for (let r = 0; r < realms.length; r++) for (let s = 1; s <= 10; s++) {
+        for (let r = DEFENSE_MILESTONES[0].realm; r < realms.length; r++) for (let s = 1; s <= 10; s++) {   // 從第 1 波的境界（煉虛）起算
             const v = realmAtk(r, s);
-            if (v <= atk * 1.001 && (!best || v > best.v)) best = { r, s, v };
+            // 數值相同時保留較低境界的 10 階（例：合體 10 階 = 大乘 1 階，顯示合體 10 階）
+            if (v <= atk * 1.001 && (!best || v > best.v * 1.001)) best = { r, s, v };
         }
         return best ? `${realms[best.r]} ${best.s} 階` : `${realms[0]} 1 階`;
     }

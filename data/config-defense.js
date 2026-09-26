@@ -49,8 +49,9 @@ const DEFENSE_CAMERAS = ['靜止', '推近', '橫移', '拉遠', '傾斜'];
 // ==================== 強度（2026-09-27 玩家指定）====================
 // 里程碑：第 N 波 = 某境界 10 階的修士（數值同懸賞天榜：config-bounty.js 的 getBountyStats 曲線 × 該境界一般宗門倍率）。
 // 里程碑之間以等比例（每波同倍率）平滑遞增；第 91～100 波沿用 80→90 波的倍率繼續往上（超越混沌道祖 10 階）。
+// stage 選填（沒填 = DEFENSE_MILESTONE_STAGE 10 階）
 const DEFENSE_MILESTONES = [
-    { wave: 1,  realm: 6 },    // 煉虛 10 階
+    { wave: 1,  realm: 6, stage: 1 },   // 煉虛 1 階（2026-09-27 由 10 階改：秘境從煉虛 1 階就能進，原本前段一波都守不住）
     { wave: 10, realm: 7 },    // 合體
     { wave: 20, realm: 8 },    // 大乘
     { wave: 30, realm: 9 },    // 渡劫
