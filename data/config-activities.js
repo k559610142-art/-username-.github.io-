@@ -12,9 +12,10 @@ const activityData = [
       implemented: true, openFn: "openAuctionModal",
       desc: "拍賣場・每 3 小時刷新 5 件商品" },
 
+    // 秘境列表與場景（secret-realm.js）；各秘境玩法是否開放看 config-secret-realms.js 的 implemented
     { id: "secret", name: "秘境", icon: "🌀", minRep: 5000, minRealmIndex: 6,
-      implemented: false,
-      desc: "煉虛以上開放" },
+      implemented: true, openFn: "openSecretRealmModal",
+      desc: "鎮魔塔・煉虛以上開放" },
 
     // 懸賞榜（天／地／人榜）＋野外修士＋善惡值，見 merit.js／bounty.js；改成 implemented: false 即可整體暫停
     { id: "evil", name: "獵殺邪修", icon: "🗡️", minRep: 8000, minRealmIndex: 3,
