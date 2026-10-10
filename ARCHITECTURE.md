@@ -1636,7 +1636,7 @@ combatTick() 每秒執行 [combat.js]
 （以 8 種舊存檔形態測試目前程式皆可正常讀取；移除 `#age-display` 即可重現同一錯誤。）
 
 ### 1. 發佈版本號（防止新舊檔案混用）
-- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20261005DE`，gm.html 同；2026-10-01 起 Service Worker 也以這個版本號區分快取，換版本號＝玩家下次開啟時自動換新快取，第 64 節）。
+- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20261005DF`，gm.html 同；2026-10-01 起 Service Worker 也以這個版本號區分快取，換版本號＝玩家下次開啟時自動換新快取，第 64 節）。
 - **每次推上 GitHub Pages 前，把所有 `?v=` 全部取代成新值**（例：日期＋序號）。新 index.html 會指向新網址的 JS，不會再拿到快取的舊檔。**gm.html 也有 `?v=`（2026-09-28 起），要一起改。**
 - 新增 `data/*.js` 時也要記得帶上 `?v=`。
 - **2026-10-03 起（第 72 節）**：網站可改由 GitHub Actions 發佈建置後的 `dist/`：`index.html` 的 data 腳本被換成單一 `data/game.js?v=版本`、gm.html 換成 `data/gm-lib.js?v=版本`，版本號沿用 index.html 的 `?v=`（所有 `?v=` 必須一致，否則建置失敗）。
@@ -4262,6 +4262,14 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
     `rewards.spell`→`grantMailSpell`（指定 id，已學會就改同品階未學會的隨機一招；`"random:品階"`＝該品階未學會的隨機一招；全學會則只寫日誌）。文字 `mailPartnerName`／`mailSpellText` 在 config-mailbox.js，遊戲與 gm.html 共用。**這是絕學目前唯一的取得方式**。
   - 驗證（本機 Playwright）：靈石 100 萬＋太古 Lv.5000＋蕭炎＋太初劍道一次入帳；再寄同樣的夥伴與功法 → 好感 +300、改學到另一招絕學；隨機上品正確；不認得的 id 不動作；v5 可領、v6 提示更新。
     gm.html 對象、預覽、未擊殺時停用皆正確，Console 無錯誤。
+
+- **單次傷害不設上限（2026-10-10，版本 `20261005DF`，使用者：「世界 Boss 改不設定傷害限制，玩家打多少算多少」）**：
+  - config-world-boss.js：`WB.cap` 0（＝不設上限）；新增 `WB.stateCap` 10000000（`wboss/state.cap` 欄位照寫這個數字，換隻規則仍要求它，只是紀錄）、`WB.suspectDmg` 9000000（GM 可疑門檻）。
+  - world-boss.js：`wbCap()` 在 cap 為 0 時回傳 Infinity，`wbCapText()` 顯示「單次傷害不設上限，打多少算多少」；戰鬥進度條改為「本次傷害佔開打時 Boss 剩餘血量的比例」（`f.hp0`）；結算照實送出。
+    **過渡**：雲端規則還是舊版時，超過 1000 萬的戰果會被拒 → `wbEndFight` 自動改以 `WB.stateCap` 重送，並顯示「伺服器尚未更新，暫時以舊上限計入」。
+  - tools/firestore.rules：傷害紀錄的 `total <= 10000000`、`dd <= 10000000` 拿掉（其餘：次數、間隔、Boss 扣血對帳、封鎖照舊）。⚠️ **要貼到 Firebase 主控台發布才會不設上限**。
+  - gm.html：狀態列與手動開啟顯示「單次上限 不設」，寫入的 cap 改 `WB.stateCap`；可疑仍標「單次 ≥ 900 萬」（超過模擬極限），**不設上限後作弊者可一次打很高，要靠 GM 審核封鎖**（封鎖不會補回 Boss 血量）。
+  - 驗證（Firebase 模擬器＋遊戲）：新規則 5000 萬全額計入、Boss 4 億 → 3.5 億；舊規則自動改以 1000 萬計入並提示；Console 無錯誤。
 
 ## 76. 背景音樂（`bgm.js`；2026-10-04，版本 `20261005BC`）
 

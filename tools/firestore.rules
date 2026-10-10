@@ -386,7 +386,7 @@ service cloud.firestore {
       function wbRunCreateOk(bid) {
         let d = request.resource.data;
         return wbRunCommon(bid) && d.n == 1 && d.dayN == 1
-          && d.total >= 0 && d.total <= 10000000
+          && d.total >= 0   // 單次傷害不設上限（2026-10-10；原本 <= 10000000）
           && (d.eff == 0 || d.eff == 1)
           && wbHpAfterOk(d.total);
       }
@@ -395,7 +395,7 @@ service cloud.firestore {
         let d = request.resource.data;
         let dd = d.total - o.total;
         return wbRunCommon(bid) && d.n == o.n + 1 && request.time >= o.lastAt + duration.value(60, 's')
-          && dd >= 0 && dd <= 10000000
+          && dd >= 0   // 單次傷害不設上限（2026-10-10；原本 <= 10000000）
           && (d.eff == o.eff || d.eff == o.eff + 1)
           && ((d.day == o.day && d.dayN == o.dayN + 1 && d.dayN <= 3) || (d.day != o.day && d.dayN == 1))
           && wbHpAfterOk(dd);
