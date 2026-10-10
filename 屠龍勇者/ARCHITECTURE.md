@@ -30,6 +30,7 @@
 | `data/ui-create.js` | 標題畫面、**人物選單**（`openCharSelect`，第 25 節）、創角（選職業、配點、取名） |
 | `data/raid.js` | **團隊副本**：`RAIDS`（6 個副本）、團戰模擬 `raidSimulate`、獎勵 `raidApplyReward`／`raidClaim`、隊伍大廳（Supabase `raid_rooms`／`raid_members`）、重播畫面；載入時把 `raid` 加進 `TABS`／`PANEL_FNS`（第 30 節） |
 | `data/chat.js` | **聊天**：世界／隊伍頻道、`renderChat`、`chatFetch`（分頁開著時每 4 秒抓新訊息）、`chatSend`、`chatOpen`；載入時把 `chat` 加進 `TABS`／`PANEL_FNS`（第 32 節） |
+| `data/clan.js` | **血盟**：`myClan`／`myClanRole`、`clanLoad`、建立／加入／審核／踢人／任命／讓位／退出／解散（都呼叫 Supabase `clan_*` 函式）、`renderClan`；載入時把 `clan` 加進 `TABS`／`PANEL_FNS`（第 33 節） |
 | `data/codex.js` | 裝備圖鑑分頁 `renderCodex`（全部道具的分類、品質、屬性、取得方式；第 20 節），載入時把 `codex` 加進 `TABS`／`PANEL_FNS` |
 | `data/ui-frame.js` | 主畫面外框：畫面尺寸模式 `displayMode`／`setDisplayMode`、`layoutFrame` 縮放、左右柱抽屜、紅藍法球、底部 6 格快捷（第 15、16 節） |
 | `data/ui-scene.js` | 中間即時地圖：俯視格子地圖、角色上下左右尋怪、怪物遊走、傷害飄字、村莊建築（第 17 節） |
@@ -44,7 +45,7 @@
 
 ## 2. 載入順序與依賴
 
-`config → classes → skills → items → monsters → zones → quests → resonance → player → enchant → affix → craft → maps → combat → town → save → cloud → offline → ui → ui-create → ui-panels → codex → raid → chat → ui-frame → ui-scene → pwa → main`
+`config → classes → skills → items → monsters → zones → quests → resonance → player → enchant → affix → craft → maps → combat → town → save → cloud → offline → ui → ui-create → ui-panels → codex → raid → clan → chat → ui-frame → ui-scene → pwa → main`
 
 - 上層資料檔（config～quests）只在「載入時」用到更前面的檔案；quests 載入時會把獎勵裝備與任務道具寫進 `ITEMS`，所以要在 items 之後。
 - resonance 載入時要改 `ITEMS`（含任務武器）、`MONSTERS` 掉落、`RECIPES`，所以在 quests 之後；`findSkill`（skills.js）在執行期才呼叫它的 `findResonanceSkill`。
@@ -53,7 +54,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261010j`）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261010k`）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
   整個遊戲載不起來（看起來像「存檔壞掉」，其實存檔還在），`20261009u` 修復時採用較新的 `20261009t` 那一邊。
   SW 依版本號快取 JS，**沒換版本號，已安裝 App 的玩家會一直跑舊程式**。
@@ -898,6 +899,9 @@ powershell -ExecutionPolicy Bypass -File tools\cut-sprites.ps1 -Spec tools\sprit
 - 使用者要求：B 計畫（多人掛機 RPG）的「聊天」。
 - **頻道**：🌏 世界（所有登入玩家）、🐉 隊伍（`room:<隊伍id>`，只有團隊副本隊員；沒隊伍時按鈕鎖住，離開隊伍自動切回世界）。隊伍大廳有「💬 隊伍聊天」按鈕（`chatOpen('room')`）。
 - **入口**：右柱抽屜「💬 聊天」（`DRAWERS.right`）；需要雲端且已登入。
+- **聊天框**（2026-10-10，版本 `20261010k`，使用者反映「PC 版沒有聊天框」）：左下角的戰鬥訊息框 `#log-pop`（骷髏頭開關）改成兩個分頁「📜 戰鬥訊息／💬 聊天」（`setLogPopTab`，記在 `dragonSlayer_logTab`），PC 與手機共用。
+  聊天分頁 `renderPopChat` 畫在 `#pop-chat`（靜態元素，不隨分頁重畫），有頻道切換、訊息列表 `#pop-chat-list`、輸入框 `#pop-chat-input`；`chatRenderList` 同時更新兩個列表。框開著且在聊天分頁時也會每 4 秒抓新訊息。
+- **PC 入口**：底部 12 格已滿，`PC_SLOTS` 在地圖左側加三顆圓鈕（`side: true`，有深色圓底）：🐉 團隊副本（y 300）、💬 聊天（y 366）、🏰 血盟（y 432），x 104，寬高 58（原圖座標）。
 - **規則（伺服器）** `dragon_chat`：每則 1～100 字（控制字元換成空白、前後空白去掉）、每人 3 秒一則（trigger `too fast`）、伺服器時間；
   每次發言有 5% 機率順手刪掉 3 天前的訊息。RLS：世界頻道所有登入者可讀；隊伍頻道只有隊員（`raid_is_member`）可讀可寫；
   只能用自己的 user_id 發言；被封鎖（`dragon_bans`）或禁言中（`dragon_mutes.until > now()`）不能發言；只有管理者能刪除。
@@ -907,4 +911,21 @@ powershell -ExecutionPolicy Bypass -File tools\cut-sprites.ps1 -Spec tools\sprit
 - **管理頁** `gm.html` 「💬 聊天」分頁：最近 200 則（世界＋所有隊伍，顯示帳號 Email），每則可刪除、禁言（輸入小時數與原因）／解除禁言；下方列出禁言中的帳號。
 - **驗證**：本機 PostgreSQL 16：世界／隊伍可見範圍、非隊員不能讀寫隊伍頻道、3 秒冷卻、冒名被拒、超過 100 字被拒、禁言者被拒、非管理者刪不掉、管理者可刪。
   Playwright＋假伺服器兩台裝置：互相看到訊息、HTML 被跳脫、冷卻提示、打字中畫面重畫草稿與焦點保留、建隊後隊伍頻道可用、管理頁刪除與禁言；Console 無錯誤。
+
+## 33. 血盟（2026-10-10，版本 `20261010k`；`clan.js`、`tools/supabase.sql` 血盟段）
+
+- 使用者要求：B 計畫的「血盟」。入口：手機左柱抽屜「🏰 血盟」、PC 地圖左側 🏰。
+- **規則（全部在伺服器函式裡，玩家不能直接寫表）**：`dragon_clans`（名稱 2～12 字、不分大小寫唯一，徽章，公告 ≤200 字，加入方式 open／approve，人數）、
+  `dragon_clan_members`（主鍵 user_id＝**一個帳號只能在一個血盟**；role leader／officer／member；最近用的角色名、職業、等級、最後上線）、`dragon_clan_apps`（入盟申請，附言 ≤60 字）。
+  函式（security definer，都檢查已登入、沒被封鎖）：`clan_create`（Lv.15 以上）、`clan_join`（open 直接加入／approve 送申請，同時最多申請 3 個）、`clan_cancel_app`、
+  `clan_decide`（盟主／副盟主審核）、`clan_kick`（盟主可踢副盟主與盟員；副盟主只能踢盟員）、`clan_set_role`（盟主任命／取消副盟主）、`clan_transfer`（讓位，自己變副盟主）、
+  `clan_leave`（盟主有其他成員時要先讓位；只剩自己＝解散）、`clan_disband`、`clan_update`（公告：盟主＋副盟主；加入方式與徽章：盟主）、`clan_touch`（更新自己的角色名、等級、上線時間）。上限 50 人。
+  RLS：血盟與成員所有登入者可讀；申請只有本人與該盟盟主／副盟主可讀；insert／update／delete 權限全部收回。
+- **遊戲端**：建立要 20,000 金幣（`CLAN_COST`，遊戲扣，伺服器不檢查）。登入時 `clanLoad(true)` 背景讀自己的血盟；第一次打開分頁讀完整資料（成員、申請或血盟列表）。
+  沒有血盟：血盟列表（搜尋、加入／申請／取消申請）＋建立表單（名稱、12 種徽章、加入方式）。有血盟：名稱、人數、職位、💬 血盟聊天、公告（盟主／副盟主可編輯）、入盟申請（同意／拒絕）、
+  成員（依職位、等級排序；按權限顯示任命、讓位、請出）、盟主設定（徽章、加入方式、解散）。伺服器錯誤訊息轉成中文（`CLAN_ERRORS`）。
+- **血盟聊天**：`dragon_chat` 頻道加 `clan:<血盟id>`，只有該盟成員可讀可寫（`dragon_my_clan()`）。聊天分頁與聊天框都有「🏰 血盟」。
+- **團隊副本加成**：`raid_members.clan_id`（加入隊伍時有血盟才帶）→ 隊長開戰時放進結果 `members[].clan` → 領獎時同血盟（含自己）2 人以上，經驗、金幣 ×1.1（`CLAN_RAID_BONUS`），結算畫面顯示「🏰 血盟加成」。
+- **驗證**：本機 PostgreSQL 16：等級不足、名稱重複、已有血盟、直接寫表被拒、申請／審核、權限（盟員不能踢、副盟主不能踢盟主）、盟主要先讓位、讓位、退出後看不到血盟聊天、解散。
+  **真實伺服器**（使用者已執行 SQL）Playwright 兩台：建盟扣金幣、列表看得到、申請、審核同意、任命副盟主、PC 聊天框血盟頻道發言對方看得到、同血盟兩人打地龍各拿到加成（clanBonus 2）、退出與解散；網路與 Console 無錯誤。
 

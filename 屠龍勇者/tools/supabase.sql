@@ -452,3 +452,241 @@ grant select, insert, delete on public.dragon_chat to authenticated;
 grant usage on sequence public.dragon_chat_id_seq to authenticated;
 grant select, insert, update, delete on public.dragon_mutes to authenticated;
 grant execute on function public.dragon_is_muted() to authenticated;
+
+-- ═════════ 血盟（ARCHITECTURE.md 第 33 節）═════════
+-- 一個帳號同時只能在一個血盟。所有修改都透過下面的 clan_* 函式（security definer，規則在函式裡檢查），玩家不能直接改表。
+create table if not exists public.dragon_clans (
+    id           uuid        primary key default gen_random_uuid(),
+    name         text        not null check (char_length(name) between 2 and 12),
+    icon         text        not null default '🛡️' check (char_length(icon) <= 8),
+    leader       uuid        references auth.users (id) on delete set null,
+    notice       text        not null default '' check (char_length(notice) <= 200),
+    join_mode    text        not null default 'approve' check (join_mode in ('open', 'approve')),
+    member_count int         not null default 0,
+    created_at   timestamptz not null default now()
+);
+create unique index if not exists dragon_clans_name_idx on public.dragon_clans (lower(name));
+
+create table if not exists public.dragon_clan_members (
+    user_id   uuid        primary key references auth.users (id) on delete cascade,
+    clan_id   uuid        not null references public.dragon_clans (id) on delete cascade,
+    role      text        not null default 'member' check (role in ('leader', 'officer', 'member')),
+    name      text        check (char_length(name) <= 40),   -- 最近一次用的角色名、職業、等級
+    cls       text        check (char_length(cls) <= 20),
+    lv        int,
+    joined_at timestamptz not null default now(),
+    last_seen timestamptz not null default now()
+);
+create index if not exists dragon_clan_members_clan_idx on public.dragon_clan_members (clan_id);
+
+create table if not exists public.dragon_clan_apps (
+    clan_id uuid        not null references public.dragon_clans (id) on delete cascade,
+    user_id uuid        not null references auth.users (id) on delete cascade,
+    name    text        check (char_length(name) <= 40),
+    cls     text        check (char_length(cls) <= 20),
+    lv      int,
+    msg     text        not null default '' check (char_length(msg) <= 60),
+    at      timestamptz not null default now(),
+    primary key (clan_id, user_id)
+);
+
+-- 團隊副本：記下隊員加入時的血盟（同血盟 2 人以上有獎勵加成）
+alter table public.raid_members add column if not exists clan_id uuid;
+
+create or replace function public.dragon_my_clan() returns uuid
+language sql stable security definer set search_path = '' as $$
+    select clan_id from public.dragon_clan_members where user_id = auth.uid();
+$$;
+
+create or replace function public.clan_recount(c uuid) returns void
+language sql security definer set search_path = '' as $$
+    update public.dragon_clans set member_count = (select count(*) from public.dragon_clan_members m where m.clan_id = c) where id = c;
+$$;
+
+-- 共用檢查：登入、沒被封鎖；回傳呼叫者在血盟裡的資料（沒有血盟時 clan_id 為 null）
+create or replace function public.clan_me() returns public.dragon_clan_members
+language plpgsql stable security definer set search_path = '' as $$
+declare r public.dragon_clan_members;
+begin
+    if auth.uid() is null then raise exception 'not logged in'; end if;
+    if public.dragon_is_banned() then raise exception 'banned'; end if;
+    select * into r from public.dragon_clan_members where user_id = auth.uid();
+    return r;
+end $$;
+
+create or replace function public.clan_create(p_name text, p_icon text, p_mode text, p_cname text, p_cls text, p_lv int) returns uuid
+language plpgsql security definer set search_path = '' as $$
+declare me public.dragon_clan_members := public.clan_me(); c uuid; n text := btrim(regexp_replace(coalesce(p_name, ''), '\s+', ' ', 'g'));
+begin
+    if me.clan_id is not null then raise exception 'already in clan'; end if;
+    if char_length(n) < 2 or char_length(n) > 12 then raise exception 'bad name'; end if;
+    if coalesce(p_lv, 0) < 15 then raise exception 'level too low'; end if;
+    if exists (select 1 from public.dragon_clans where lower(name) = lower(n)) then raise exception 'name taken'; end if;
+    insert into public.dragon_clans (name, icon, leader, join_mode) values (n, left(coalesce(nullif(p_icon, ''), '🛡️'), 8), auth.uid(), case when p_mode = 'open' then 'open' else 'approve' end) returning id into c;
+    insert into public.dragon_clan_members (user_id, clan_id, role, name, cls, lv) values (auth.uid(), c, 'leader', left(p_cname, 40), left(p_cls, 20), p_lv);
+    delete from public.dragon_clan_apps where user_id = auth.uid();
+    perform public.clan_recount(c);
+    return c;
+end $$;
+
+-- 加入：自由加入的血盟直接加入（回傳 joined），申請制送出申請（回傳 applied）
+create or replace function public.clan_join(p_clan uuid, p_msg text, p_cname text, p_cls text, p_lv int) returns text
+language plpgsql security definer set search_path = '' as $$
+declare me public.dragon_clan_members := public.clan_me(); cl public.dragon_clans;
+begin
+    if me.clan_id is not null then raise exception 'already in clan'; end if;
+    select * into cl from public.dragon_clans where id = p_clan for update;
+    if cl.id is null then raise exception 'no clan'; end if;
+    if cl.member_count >= 50 then raise exception 'clan full'; end if;
+    if cl.join_mode = 'open' then
+        insert into public.dragon_clan_members (user_id, clan_id, role, name, cls, lv) values (auth.uid(), p_clan, 'member', left(p_cname, 40), left(p_cls, 20), p_lv);
+        delete from public.dragon_clan_apps where user_id = auth.uid();
+        perform public.clan_recount(p_clan);
+        return 'joined';
+    end if;
+    if (select count(*) from public.dragon_clan_apps where user_id = auth.uid() and clan_id <> p_clan) >= 3 then raise exception 'too many apps'; end if;
+    insert into public.dragon_clan_apps (clan_id, user_id, name, cls, lv, msg) values (p_clan, auth.uid(), left(p_cname, 40), left(p_cls, 20), p_lv, left(coalesce(p_msg, ''), 60))
+        on conflict (clan_id, user_id) do update set name = excluded.name, cls = excluded.cls, lv = excluded.lv, msg = excluded.msg, at = now();
+    return 'applied';
+end $$;
+
+create or replace function public.clan_cancel_app(p_clan uuid) returns void
+language sql security definer set search_path = '' as $$
+    delete from public.dragon_clan_apps where clan_id = p_clan and user_id = auth.uid();
+$$;
+
+-- 盟主／副盟主審核申請
+create or replace function public.clan_decide(p_user uuid, p_accept boolean) returns void
+language plpgsql security definer set search_path = '' as $$
+declare me public.dragon_clan_members := public.clan_me(); ap public.dragon_clan_apps; cnt int;
+begin
+    if me.role is null or me.role = 'member' then raise exception 'no permission'; end if;
+    select * into ap from public.dragon_clan_apps where clan_id = me.clan_id and user_id = p_user;
+    if ap.user_id is null then raise exception 'no application'; end if;
+    if p_accept then
+        if exists (select 1 from public.dragon_clan_members where user_id = p_user) then
+            delete from public.dragon_clan_apps where user_id = p_user;
+            raise exception 'already in clan';
+        end if;
+        select member_count into cnt from public.dragon_clans where id = me.clan_id for update;
+        if cnt >= 50 then raise exception 'clan full'; end if;
+        insert into public.dragon_clan_members (user_id, clan_id, role, name, cls, lv) values (p_user, me.clan_id, 'member', ap.name, ap.cls, ap.lv);
+        delete from public.dragon_clan_apps where user_id = p_user;
+        perform public.clan_recount(me.clan_id);
+    else
+        delete from public.dragon_clan_apps where clan_id = me.clan_id and user_id = p_user;
+    end if;
+end $$;
+
+-- 踢人：盟主可踢副盟主與盟員；副盟主只能踢盟員
+create or replace function public.clan_kick(p_user uuid) returns void
+language plpgsql security definer set search_path = '' as $$
+declare me public.dragon_clan_members := public.clan_me(); t public.dragon_clan_members;
+begin
+    select * into t from public.dragon_clan_members where user_id = p_user and clan_id = me.clan_id;
+    if t.user_id is null or p_user = auth.uid() then raise exception 'no member'; end if;
+    if not (me.role = 'leader' or (me.role = 'officer' and t.role = 'member')) then raise exception 'no permission'; end if;
+    delete from public.dragon_clan_members where user_id = p_user;
+    perform public.clan_recount(me.clan_id);
+end $$;
+
+-- 盟主：任命／取消副盟主
+create or replace function public.clan_set_role(p_user uuid, p_role text) returns void
+language plpgsql security definer set search_path = '' as $$
+declare me public.dragon_clan_members := public.clan_me();
+begin
+    if me.role is distinct from 'leader' or p_role not in ('officer', 'member') or p_user = auth.uid() then raise exception 'no permission'; end if;
+    update public.dragon_clan_members set role = p_role where user_id = p_user and clan_id = me.clan_id;
+    if not found then raise exception 'no member'; end if;
+end $$;
+
+-- 盟主：讓位（自己變副盟主）
+create or replace function public.clan_transfer(p_user uuid) returns void
+language plpgsql security definer set search_path = '' as $$
+declare me public.dragon_clan_members := public.clan_me();
+begin
+    if me.role is distinct from 'leader' or p_user = auth.uid() then raise exception 'no permission'; end if;
+    update public.dragon_clan_members set role = 'leader' where user_id = p_user and clan_id = me.clan_id;
+    if not found then raise exception 'no member'; end if;
+    update public.dragon_clan_members set role = 'officer' where user_id = auth.uid();
+    update public.dragon_clans set leader = p_user where id = me.clan_id;
+end $$;
+
+-- 退出：盟主要先讓位；只剩自己時退出＝解散
+create or replace function public.clan_leave() returns void
+language plpgsql security definer set search_path = '' as $$
+declare me public.dragon_clan_members;
+begin
+    if auth.uid() is null then raise exception 'not logged in'; end if;
+    select * into me from public.dragon_clan_members where user_id = auth.uid();
+    if me.user_id is null then return; end if;
+    if me.role = 'leader' then
+        if (select count(*) from public.dragon_clan_members where clan_id = me.clan_id) > 1 then raise exception 'transfer first'; end if;
+        delete from public.dragon_clans where id = me.clan_id;
+        return;
+    end if;
+    delete from public.dragon_clan_members where user_id = auth.uid();
+    perform public.clan_recount(me.clan_id);
+end $$;
+
+create or replace function public.clan_disband() returns void
+language plpgsql security definer set search_path = '' as $$
+declare me public.dragon_clan_members := public.clan_me();
+begin
+    if me.role is distinct from 'leader' then raise exception 'no permission'; end if;
+    delete from public.dragon_clans where id = me.clan_id;
+end $$;
+
+-- 公告（盟主、副盟主）；加入方式與徽章（盟主）
+create or replace function public.clan_update(p_notice text, p_mode text, p_icon text) returns void
+language plpgsql security definer set search_path = '' as $$
+declare me public.dragon_clan_members := public.clan_me();
+begin
+    if me.role is null or me.role = 'member' then raise exception 'no permission'; end if;
+    if p_notice is not null then update public.dragon_clans set notice = left(btrim(p_notice), 200) where id = me.clan_id; end if;
+    if me.role = 'leader' then
+        if p_mode in ('open', 'approve') then update public.dragon_clans set join_mode = p_mode where id = me.clan_id; end if;
+        if nullif(p_icon, '') is not null then update public.dragon_clans set icon = left(p_icon, 8) where id = me.clan_id; end if;
+    end if;
+end $$;
+
+-- 更新自己在血盟名單上的角色名、等級、最後上線
+create or replace function public.clan_touch(p_cname text, p_cls text, p_lv int) returns void
+language sql security definer set search_path = '' as $$
+    update public.dragon_clan_members set name = left(p_cname, 40), cls = left(p_cls, 20), lv = p_lv, last_seen = now() where user_id = auth.uid();
+$$;
+
+alter table public.dragon_clans enable row level security;
+alter table public.dragon_clan_members enable row level security;
+alter table public.dragon_clan_apps enable row level security;
+drop policy if exists "dragon_clans_select" on public.dragon_clans;
+drop policy if exists "dragon_clan_members_select" on public.dragon_clan_members;
+drop policy if exists "dragon_clan_apps_select" on public.dragon_clan_apps;
+create policy "dragon_clans_select" on public.dragon_clans for select to authenticated using (true);
+create policy "dragon_clan_members_select" on public.dragon_clan_members for select to authenticated using (true);
+create policy "dragon_clan_apps_select" on public.dragon_clan_apps for select to authenticated using (
+    user_id = (select auth.uid())
+    or exists (select 1 from public.dragon_clan_members m where m.user_id = (select auth.uid()) and m.clan_id = dragon_clan_apps.clan_id and m.role in ('leader', 'officer')));
+revoke all on public.dragon_clans, public.dragon_clan_members, public.dragon_clan_apps from anon;
+revoke insert, update, delete on public.dragon_clans, public.dragon_clan_members, public.dragon_clan_apps from authenticated;
+grant select on public.dragon_clans, public.dragon_clan_members, public.dragon_clan_apps to authenticated;
+revoke execute on function public.clan_recount(uuid) from public, anon, authenticated;
+grant execute on function public.dragon_my_clan(), public.clan_create(text, text, text, text, text, int), public.clan_join(uuid, text, text, text, int),
+    public.clan_cancel_app(uuid), public.clan_decide(uuid, boolean), public.clan_kick(uuid), public.clan_set_role(uuid, text), public.clan_transfer(uuid),
+    public.clan_leave(), public.clan_disband(), public.clan_update(text, text, text), public.clan_touch(text, text, int) to authenticated;
+
+-- 聊天加上血盟頻道 clan:<血盟id>（只有該血盟成員）
+alter table public.dragon_chat drop constraint if exists dragon_chat_channel_check;
+alter table public.dragon_chat add constraint dragon_chat_channel_check check (channel = 'world' or channel ~ '^(room|clan):[0-9a-f-]{36}$');
+drop policy if exists "dragon_chat_select" on public.dragon_chat;
+drop policy if exists "dragon_chat_insert" on public.dragon_chat;
+create policy "dragon_chat_select" on public.dragon_chat for select to authenticated using (
+    channel = 'world'
+    or (channel like 'room:%' and public.raid_is_member(substr(channel, 6)::uuid))
+    or (channel like 'clan:%' and public.dragon_my_clan() = substr(channel, 6)::uuid)
+    or public.dragon_is_admin());
+create policy "dragon_chat_insert" on public.dragon_chat for insert to authenticated with check (
+    (select auth.uid()) = user_id and not public.dragon_is_banned() and not public.dragon_is_muted()
+    and (channel = 'world'
+        or (channel like 'room:%' and public.raid_is_member(substr(channel, 6)::uuid))
+        or (channel like 'clan:%' and public.dragon_my_clan() = substr(channel, 6)::uuid)));

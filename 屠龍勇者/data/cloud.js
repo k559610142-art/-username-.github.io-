@@ -101,6 +101,7 @@ async function cloudOnSignedIn(u, silent) {
     const r = await cloudSync();
     if (!silent && r) showToast(r);
     raidResume();   // 團隊副本：回到原本的隊伍、補領離線時打完的獎勵（raid.js）
+    clanLoad(true); // 血盟：背景讀自己的血盟（聊天頻道、團隊副本加成要用；clan.js）
 }
 
 // 有沒有被管理者封鎖（dragon_bans 自己那一列；被封鎖的人看得到原因）。封鎖中：不上傳、不能組隊，本機照常遊玩
@@ -499,6 +500,7 @@ async function cloudDoSignOut() {
     cloudLs(CLOUD_OWNER_KEY, null);
     cloudLs(CLOUD_SEEN_KEY, null);
     cloudUser = null; cloudBan = null; cloudBanShown = false;
+    myClan = null; myClanRole = null; clanLoaded = false; clanViewLoaded = false; clanList = null;
     cloudKnown = {}; cloudDirty = new Set(); cloudConflict = {}; cloudError = '';
     showTitle();
     showToast('已登出');

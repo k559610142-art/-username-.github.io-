@@ -88,7 +88,7 @@ function raidSimulate(def, list) {
             const st = calcStats();
             p.hp = st.maxHp; p.mp = st.maxMp;   // 進副本前補滿
             return {
-                i, uid: x.uid, name: p.name, cls: p.cls, lv: p.lv, p, alive: true, dmg: 0, heal: 0, maxHp: st.maxHp,
+                i, uid: x.uid, clan: x.clan || null, name: p.name, cls: p.cls, lv: p.lv, p, alive: true, dmg: 0, heal: 0, maxHp: st.maxHp,
                 hunt: { state: 'fight', timer: 0, mon: boss, mobs: [boss], pCd: rand(200, 1200), joinCd: 1e15, potCd: 0, warned: {} },
                 deaths: p.deaths, inv0: raidConsumables(p), say: -99999,
             };
@@ -198,7 +198,7 @@ function raidSimulate(def, list) {
                 const d = m.inv0[id] - (now[id] || 0);
                 if (d > 0) used[id] = d;
             }
-            return { uid: m.uid, name: m.name, cls: m.cls, lv: m.lv, maxHp: m.maxHp, dmg: Math.round(m.dmg), heal: Math.round(m.heal), died: !m.alive, used };
+            return { uid: m.uid, clan: m.clan, name: m.name, cls: m.cls, lv: m.lv, maxHp: m.maxHp, dmg: Math.round(m.dmg), heal: Math.round(m.heal), died: !m.alive, used };
         });
         return {
             v: 1, raid: def.id, n: list.length, win, ms: t, enraged,
@@ -242,7 +242,11 @@ function raidApplyReward(res, uid, runKey) {
     const out = { win: res.win, exp: 0, gold: 0, items: [], used: me.used };
     for (const id in me.used) consumeItem(id, Math.min(me.used[id], countItem(id)));
     if (!res.win || !def) { addLog(`🐉 團隊副本：討伐${res.boss.name}失敗`, 'warn'); return out; }
-    const boss = makeMonster(def.boss), share = raidShare(res.n);
+    // 血盟加成：同血盟 2 人以上（包含自己）經驗、金幣各 +10%（clan.js）
+    const clanN = me.clan ? res.members.filter(m => m.clan === me.clan).length : 0;
+    const bonus = clanN >= 2 ? 1 + CLAN_RAID_BONUS : 1;
+    if (bonus > 1) out.clanBonus = clanN;
+    const boss = makeMonster(def.boss), share = raidShare(res.n) * bonus;
     out.exp = Math.max(1, Math.floor(boss.exp * def.reward * share * EXP_RATE * huntExpRate(player.lv)));
     out.gold = Math.round(rand(boss.gold[0], boss.gold[1]) * def.reward * share);
     player.gold += out.gold;
@@ -358,7 +362,9 @@ async function raidCreate(raidId) {
 }
 
 function raidMemberRow(roomId) {
-    return { room_id: roomId, user_id: cloudUser.id, name: player.name, cls: player.cls, lv: player.lv, char_id: cloudCharId({ player }), ready_round: 0, snap: null };
+    const row = { room_id: roomId, user_id: cloudUser.id, name: player.name, cls: player.cls, lv: player.lv, char_id: cloudCharId({ player }), ready_round: 0, snap: null };
+    if (myClan) row.clan_id = myClan.id;   // 血盟加成用（clan.js）
+    return row;
 }
 
 async function raidJoinCode() {
@@ -524,7 +530,7 @@ async function raidStart() {
             const why = raidBlockReason(def, m.snap);
             if (why) throw new Error(`${m.name}：${why}`);
         }
-        const res = raidSimulate(def, ready.map(m => ({ uid: m.user_id, name: m.name, snap: m.snap })));
+        const res = raidSimulate(def, ready.map(m => ({ uid: m.user_id, name: m.name, snap: m.snap, clan: m.clan_id || null })));
         await raidQ(cloudSb.from('raid_rooms').update({ status: 'fighting', result: res }).eq('id', raidRoom.id).eq('status', 'open'));
         raidMsg = '';
     } catch (e) { raidMsg = '⚠️ ' + raidErr(e); }
@@ -677,7 +683,7 @@ function raidRewardHtml(r) {
     if (!r) return '<p class="muted">（這場的獎勵已經領過，或你沒有參加這場）</p>';
     const used = Object.keys(r.used || {}).map(id => `${ITEMS[id] ? ITEMS[id].name : id} ×${r.used[id]}`).join('、');
     if (!r.win) return `<p>沒有獲得獎勵。${used ? `<br><small class="muted">消耗：${esc(used)}</small>` : ''}</p>`;
-    return `<p>經驗 +${fmt(r.exp)}、金幣 +${fmt(r.gold)}</p>${r.items.length ? `<p>${r.items.map(esc).join('<br>')}</p>` : ''}
+    return `<p>經驗 +${fmt(r.exp)}、金幣 +${fmt(r.gold)}${r.clanBonus ? `<br><small class="good">🏰 血盟加成 +${CLAN_RAID_BONUS * 100}%（同血盟 ${r.clanBonus} 人）</small>` : ''}</p>${r.items.length ? `<p>${r.items.map(esc).join('<br>')}</p>` : ''}
         ${r.title ? '<p class="good">👑 獲得稱號「屠龍勇者」！</p>' : ''}${used ? `<small class="muted">消耗：${esc(used)}</small>` : ''}`;
 }
 
