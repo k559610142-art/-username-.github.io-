@@ -5,8 +5,8 @@
 
 // ⚠️ 兩個設定都填好才啟用；空字串＝不載入 SDK、不連網、標題畫面沒有登入按鈕
 // （Project URL 與 publishable／anon key 本來就是公開的，可以放在程式裡）
-const CLOUD_SUPABASE_URL = '';
-const CLOUD_SUPABASE_KEY = '';
+const CLOUD_SUPABASE_URL = 'https://bzozxhkalyuijsrqkmto.supabase.co';   // 2026-10-10 開通（專案 dragon-slayer，東京）
+const CLOUD_SUPABASE_KEY = 'sb_publishable_Huf2gR7MAeBCFhlhQ3DjFA_k0R5PBDZ';
 const CLOUD_GOOGLE = false;          // 啟用 Google 登入（要先在 Supabase 主控台設定 Google 提供者）
 const CLOUD_SDK_URL = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js';
 const CLOUD_TABLE = 'dragon_saves';
