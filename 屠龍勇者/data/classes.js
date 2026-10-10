@@ -110,6 +110,15 @@ const CLASSES = {
         base: { str: 16, dex: 12, con: 15, int: 8, wis: 8, cha: 8 },
         hp: [15, 19], mp: [0, 1], startHp: 19, startMp: 1, mr: 0, spDiv: 12, mpRegenK: 0.3,
         weapons: ['axe', 'twohand', 'sword', 'blunt'], shield: true, start: ['handAxe', 'leatherArmor', 'woodShield'],
+        // 人物模型：tools/cut-sprites.py 依 tools/sprite-src/warrior-*.json 切出（2026-10-10）
+        sprite: {
+            drawH: 48, charH: 113,
+            walk:   { src: 'images/sprites/warrior-walk.png',   cellW: 102, cellH: 131, frames: { down: 5, right: 5, up: 5 }, ms: 120 },
+            attack: { src: 'images/sprites/warrior-attack.png', cellW: 173, cellH: 142, frames: { down: 6, right: 6, up: 6 }, ms: 70 },
+            cast:   { src: 'images/sprites/warrior-cast.png',   cellW: 195, cellH: 174, frames: { down: 6, right: 6, up: 6 }, ms: 90 },
+            hit:    { src: 'images/sprites/warrior-hit.png',    cellW: 125, cellH: 138, frames: { down: 3, right: 3, up: 3 }, ms: 90 },
+        },
+        art: 'images/classes/warrior.jpg',
     },
     gunner: {
         name: '槍手', icon: '🔫',
