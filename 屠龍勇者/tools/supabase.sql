@@ -381,3 +381,74 @@ grant execute on function public.dragon_is_admin(), public.dragon_is_banned() to
 
 -- 設定管理者（把 Email 換成你在遊戲裡註冊的帳號，在 SQL Editor 單獨執行這一行）：
 -- insert into public.dragon_admins select id from auth.users where email = '你的Email' on conflict do nothing;
+
+-- ═════════ 聊天（ARCHITECTURE.md 第 32 節）═════════
+-- 頻道：world＝世界（所有登入玩家）、room:<隊伍id>＝團隊副本隊伍（只有隊員）。每則 1～100 字、每人 3 秒一則、保留 3 天。
+-- 被封鎖（dragon_bans）或禁言中（dragon_mutes）不能發言；管理者可以刪訊息、禁言。
+create table if not exists public.dragon_chat (
+    id      bigserial   primary key,
+    channel text        not null check (channel = 'world' or channel ~ '^room:[0-9a-f-]{36}$'),
+    user_id uuid        not null default auth.uid() references auth.users (id) on delete cascade,
+    name    text        not null check (char_length(name) between 1 and 40),   -- 發言時的角色名、職業、等級
+    cls     text        check (char_length(cls) <= 20),
+    lv      int,
+    text    text        not null check (char_length(text) between 1 and 100),
+    at      timestamptz not null default now()
+);
+create index if not exists dragon_chat_channel_idx on public.dragon_chat (channel, id desc);
+create index if not exists dragon_chat_at_idx on public.dragon_chat (at);
+
+create table if not exists public.dragon_mutes (
+    user_id  uuid        primary key references auth.users (id) on delete cascade,
+    email    text,
+    reason   text        check (char_length(reason) <= 200),
+    until    timestamptz not null,
+    by_email text,
+    at       timestamptz not null default now()
+);
+
+create or replace function public.dragon_is_muted() returns boolean
+language sql stable security definer set search_path = '' as $$
+    select exists (select 1 from public.dragon_mutes m where m.user_id = auth.uid() and m.until > now());
+$$;
+
+-- 發言：伺服器時間、3 秒冷卻；偶爾順手刪掉 3 天前的訊息
+create or replace function public.dragon_chat_before_insert() returns trigger
+language plpgsql security definer set search_path = '' as $$
+begin
+    new.at := now();
+    new.text := btrim(regexp_replace(new.text, '[[:cntrl:]]', ' ', 'g'));
+    if char_length(new.text) = 0 then raise exception 'empty message'; end if;
+    if exists (select 1 from public.dragon_chat c where c.user_id = new.user_id and c.at > now() - interval '3 seconds') then
+        raise exception 'too fast';
+    end if;
+    if random() < 0.05 then delete from public.dragon_chat where at < now() - interval '3 days'; end if;
+    return new;
+end $$;
+
+drop trigger if exists dragon_chat_before_insert on public.dragon_chat;
+create trigger dragon_chat_before_insert before insert on public.dragon_chat for each row execute function public.dragon_chat_before_insert();
+
+alter table public.dragon_chat enable row level security;
+alter table public.dragon_mutes enable row level security;
+
+drop policy if exists "dragon_chat_select" on public.dragon_chat;
+drop policy if exists "dragon_chat_insert" on public.dragon_chat;
+drop policy if exists "dragon_chat_delete" on public.dragon_chat;
+create policy "dragon_chat_select" on public.dragon_chat for select to authenticated using (
+    channel = 'world' or (channel like 'room:%' and public.raid_is_member(substr(channel, 6)::uuid)) or public.dragon_is_admin());
+create policy "dragon_chat_insert" on public.dragon_chat for insert to authenticated with check (
+    (select auth.uid()) = user_id and not public.dragon_is_banned() and not public.dragon_is_muted()
+    and (channel = 'world' or (channel like 'room:%' and public.raid_is_member(substr(channel, 6)::uuid))));
+create policy "dragon_chat_delete" on public.dragon_chat for delete to authenticated using (public.dragon_is_admin());
+
+drop policy if exists "dragon_mutes_select" on public.dragon_mutes;
+drop policy if exists "dragon_mutes_admin" on public.dragon_mutes;
+create policy "dragon_mutes_select" on public.dragon_mutes for select to authenticated using ((select auth.uid()) = user_id or public.dragon_is_admin());   -- 被禁言的人看得到到期時間
+create policy "dragon_mutes_admin" on public.dragon_mutes for all to authenticated using (public.dragon_is_admin()) with check (public.dragon_is_admin());
+
+revoke all on public.dragon_chat, public.dragon_mutes from anon;
+grant select, insert, delete on public.dragon_chat to authenticated;
+grant usage on sequence public.dragon_chat_id_seq to authenticated;
+grant select, insert, update, delete on public.dragon_mutes to authenticated;
+grant execute on function public.dragon_is_muted() to authenticated;

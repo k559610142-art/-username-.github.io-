@@ -29,6 +29,7 @@
 | `data/ui.js` | `$`、`esc`、`showScreen`、`bar`、狀態列 `renderStatus`、`showToast`、`openDialog/gameAlert/gameConfirm` |
 | `data/ui-create.js` | 標題畫面、**人物選單**（`openCharSelect`，第 25 節）、創角（選職業、配點、取名） |
 | `data/raid.js` | **團隊副本**：`RAIDS`（6 個副本）、團戰模擬 `raidSimulate`、獎勵 `raidApplyReward`／`raidClaim`、隊伍大廳（Supabase `raid_rooms`／`raid_members`）、重播畫面；載入時把 `raid` 加進 `TABS`／`PANEL_FNS`（第 30 節） |
+| `data/chat.js` | **聊天**：世界／隊伍頻道、`renderChat`、`chatFetch`（分頁開著時每 4 秒抓新訊息）、`chatSend`、`chatOpen`；載入時把 `chat` 加進 `TABS`／`PANEL_FNS`（第 32 節） |
 | `data/codex.js` | 裝備圖鑑分頁 `renderCodex`（全部道具的分類、品質、屬性、取得方式；第 20 節），載入時把 `codex` 加進 `TABS`／`PANEL_FNS` |
 | `data/ui-frame.js` | 主畫面外框：畫面尺寸模式 `displayMode`／`setDisplayMode`、`layoutFrame` 縮放、左右柱抽屜、紅藍法球、底部 6 格快捷（第 15、16 節） |
 | `data/ui-scene.js` | 中間即時地圖：俯視格子地圖、角色上下左右尋怪、怪物遊走、傷害飄字、村莊建築（第 17 節） |
@@ -43,7 +44,7 @@
 
 ## 2. 載入順序與依賴
 
-`config → classes → skills → items → monsters → zones → quests → resonance → player → enchant → affix → craft → maps → combat → town → save → cloud → offline → ui → ui-create → ui-panels → codex → raid → ui-frame → ui-scene → pwa → main`
+`config → classes → skills → items → monsters → zones → quests → resonance → player → enchant → affix → craft → maps → combat → town → save → cloud → offline → ui → ui-create → ui-panels → codex → raid → chat → ui-frame → ui-scene → pwa → main`
 
 - 上層資料檔（config～quests）只在「載入時」用到更前面的檔案；quests 載入時會把獎勵裝備與任務道具寫進 `ITEMS`，所以要在 items 之後。
 - resonance 載入時要改 `ITEMS`（含任務武器）、`MONSTERS` 掉落、`RECIPES`，所以在 quests 之後；`findSkill`（skills.js）在執行期才呼叫它的 `findResonanceSkill`。
@@ -52,7 +53,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261010i`）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261010j`）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
   整個遊戲載不起來（看起來像「存檔壞掉」，其實存檔還在），`20261009u` 修復時採用較新的 `20261009t` 那一邊。
   SW 依版本號快取 JS，**沒換版本號，已安裝 App 的玩家會一直跑舊程式**。
@@ -891,4 +892,19 @@ powershell -ExecutionPolicy Bypass -File tools\cut-sprites.ps1 -Spec tools\sprit
   **真實伺服器（2026-10-10，使用者已重跑 SQL 並把 k559610142@gmail.com 設為管理者）**：測試帳號上傳正常存檔再上傳改檔存檔 → 兩次都存成功、玩家讀不到歷程與異常、不能自己封鎖；
   使用者在 gm.html 看到標記並封鎖 → 該帳號上傳存檔與建立隊伍都被 RLS 拒絕（403），看得到封鎖原因。測試帳號 dragon-cheat-test@example.com 需在 Users 刪除（刪帳號會連帶刪掉它的歷程、標記、封鎖）。
   Playwright＋假伺服器：管理頁登入、可疑紀錄、歷程、封鎖（玩家端立刻顯示停權、團隊副本鎖住、重新整理仍停權）、解除封鎖；Console 無錯誤。
+
+## 32. 聊天（2026-10-10，版本 `20261010j`；`chat.js`、`tools/supabase.sql` 聊天段、`gm.html` 聊天分頁）
+
+- 使用者要求：B 計畫（多人掛機 RPG）的「聊天」。
+- **頻道**：🌏 世界（所有登入玩家）、🐉 隊伍（`room:<隊伍id>`，只有團隊副本隊員；沒隊伍時按鈕鎖住，離開隊伍自動切回世界）。隊伍大廳有「💬 隊伍聊天」按鈕（`chatOpen('room')`）。
+- **入口**：右柱抽屜「💬 聊天」（`DRAWERS.right`）；需要雲端且已登入。
+- **規則（伺服器）** `dragon_chat`：每則 1～100 字（控制字元換成空白、前後空白去掉）、每人 3 秒一則（trigger `too fast`）、伺服器時間；
+  每次發言有 5% 機率順手刪掉 3 天前的訊息。RLS：世界頻道所有登入者可讀；隊伍頻道只有隊員（`raid_is_member`）可讀可寫；
+  只能用自己的 user_id 發言；被封鎖（`dragon_bans`）或禁言中（`dragon_mutes.until > now()`）不能發言；只有管理者能刪除。
+- **遊戲端**：只在聊天分頁開著、頁面在前景時每 `CHAT_POLL_MS`（4 秒）抓比手上最新更新的訊息（`id > 最後一則`），每頻道留 60 則；沒開聊天時不連網。
+  發言帶目前角色的名字、職業、等級。訊息一律 `esc` 顯示。新訊息只更新 `#chat-list`（不重畫整個分頁）；整個分頁重畫時保留草稿 `chatDraft` 與輸入框焦點，打到一半的字不會不見。
+  Enter 送出（輸入法選字中的 Enter 不送）；本機也擋 3 秒冷卻。被禁言時輸入框換成「禁言中，到 …」（`chatCheckMute`，第一次開聊天與發言被拒時查詢）。
+- **管理頁** `gm.html` 「💬 聊天」分頁：最近 200 則（世界＋所有隊伍，顯示帳號 Email），每則可刪除、禁言（輸入小時數與原因）／解除禁言；下方列出禁言中的帳號。
+- **驗證**：本機 PostgreSQL 16：世界／隊伍可見範圍、非隊員不能讀寫隊伍頻道、3 秒冷卻、冒名被拒、超過 100 字被拒、禁言者被拒、非管理者刪不掉、管理者可刪。
+  Playwright＋假伺服器兩台裝置：互相看到訊息、HTML 被跳脫、冷卻提示、打字中畫面重畫草稿與焦點保留、建隊後隊伍頻道可用、管理頁刪除與禁言；Console 無錯誤。
 
