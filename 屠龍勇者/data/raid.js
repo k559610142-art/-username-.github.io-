@@ -389,7 +389,9 @@ async function raidJoin(roomId) {
         const def = RAID_BY_ID[room.raid];
         const why = def ? raidBlockReason(def) : '未知的副本';
         if (why) throw new Error(why);
-        await raidQ(cloudSb.from('raid_members').upsert(raidMemberRow(room.id)));
+        // 用 insert（不用 upsert）：upsert 會連帶檢查「看得到這一列」，加入前還不是隊員會被 RLS 擋下。已經在隊伍裡（主鍵重複）就當作加入成功
+        const ins = await cloudTimeout(cloudSb.from('raid_members').insert(raidMemberRow(room.id)));
+        if (ins.error && ins.error.code !== '23505') throw ins.error;
         await raidEnter(room.id);
         raidMsg = '';
         showToast('已加入隊伍');

@@ -51,7 +51,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261010g`）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261010h`）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
   整個遊戲載不起來（看起來像「存檔壞掉」，其實存檔還在），`20261009u` 修復時採用較新的 `20261009t` 那一邊。
   SW 依版本號快取 JS，**沒換版本號，已安裝 App 的玩家會一直跑舊程式**。
@@ -775,6 +775,9 @@ powershell -ExecutionPolicy Bypass -File tools\cut-sprites.ps1 -Spec tools\sprit
 ## 29. 帳號登入與雲端存檔（2026-10-10，版本 `20261010f`；`cloud.js`、`tools/supabase.sql`）
 
 - 使用者要求：往多人連線發展的第一步，先做「帳號登入＋雲端存檔」，後端用 **Supabase 免費方案**（與修仙的 Firebase 分開，不吃修仙的額度）。
+- **目前狀態（2026-10-10 開通，版本 `20261010h`）**：Supabase 專案 `dragon-slayer`（組織 k559610142，Free，Northeast Asia (Tokyo)，`https://bzozxhkalyuijsrqkmto.supabase.co`）；
+  建立時 Security：Enable Data API ✅、Automatically expose new tables ⬜（權限由 supabase.sql 的 grant 決定）、Enable automatic RLS ✅；`tools/supabase.sql` 已執行；Confirm email 已關閉（`mailer_autoconfirm: true`）。
+  實測（真實伺服器，Playwright 三台裝置）：註冊即登入、存檔上傳、只讀得到自己的存檔、建隊、房號／公開列表加入、準備、開打、三人領獎全部正常；測試資料已刪除（測試帳號 `dragon-test-*@example.com` 需在主控台 Authentication → Users 手動刪除）。
 - **開關**：`cloud.js` 頂端 `CLOUD_SUPABASE_URL`、`CLOUD_SUPABASE_KEY`（Project URL 與 publishable／anon key，本來就公開）。任一個空字串＝完全不啟用：不載入 SDK、不連網、標題畫面沒有「☁️」按鈕、設定分頁沒有雲端區塊。
   `CLOUD_GOOGLE`＝顯示「使用 Google 登入」（要先在 Supabase 主控台 Authentication → Providers 設定 Google）。
 - **SDK**：`@supabase/supabase-js` UMD 版（`CLOUD_SDK_URL`，jsDelivr 固定版本），`initCloud`（main.js 啟動時呼叫）動態載入；登入狀態由 SDK 存在 `dragonSlayer_auth`。sw.js 不攔外部網域，離線時雲端功能失效但遊戲照常。
@@ -826,7 +829,7 @@ powershell -ExecutionPolicy Bypass -File tools\cut-sprites.ps1 -Spec tools\sprit
   首領 HP 再乘 `raidPartyHp(n) = 0.6 + 0.4n`（1 人 ×1、8 人 ×3.8）。冷卻 `player.raidCd[id]`（真實時間，**只有勝利才進冷卻**），與單人龍穴的 `dragonCd` 分開。
 - **流程**：
   1. 建立隊伍 `raidCreate`：`raid_rooms` 一列（6 碼房號 `code`，字元不含 0/O/1/I；重複就換）＋隊長自己的 `raid_members`。
-  2. 加入：輸入房號 `raidJoinCode`（大小寫都可以）或公開列表 `raidLoadList`（2 小時內、同版本、招募中，最多 20 隊）。**遊戲版本 `version` 必須相同**。隊長可切換公開／不公開、請人出隊。
+  2. 加入（**用 insert，不能用 upsert**：upsert 的 ON CONFLICT 會連帶套用 SELECT 規則，加入前還不是隊員 → `new row violates row-level security policy`，2026-10-10 真實伺服器實測發現；主鍵重複＝已在隊伍裡，當作成功）：輸入房號 `raidJoinCode`（大小寫都可以）或公開列表 `raidLoadList`（2 小時內、同版本、招募中，最多 20 隊）。**遊戲版本 `version` 必須相同**。隊長可切換公開／不公開、請人出隊。
   3. 準備 `raidToggleReady`：要在村莊；上傳整份角色快照 `snap`（倉庫拿掉）與 `ready_round = room.round`。準備後換裝要重新準備才會反映。
   4. 開始 `raidStart`（隊長，全員準備好）：讀最新快照 → **在隊長的瀏覽器跑 `raidSimulate`** → `update status='fighting', result=…`（伺服器 trigger 寫 `started_at`）。
   5. 每個人（包含隊長）`raidRefresh` 看到結果就**立刻領獎** `raidClaim`，然後依 `started_at` 播放重播（`RAID_REPLAY_SPEED` 2 倍速，所有人看到同一刻；可「⏩ 直接看結果」）。
