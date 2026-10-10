@@ -1636,7 +1636,7 @@ combatTick() 每秒執行 [combat.js]
 （以 8 種舊存檔形態測試目前程式皆可正常讀取；移除 `#age-display` 即可重現同一錯誤。）
 
 ### 1. 發佈版本號（防止新舊檔案混用）
-- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20261005DD`，gm.html 同；2026-10-01 起 Service Worker 也以這個版本號區分快取，換版本號＝玩家下次開啟時自動換新快取，第 64 節）。
+- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20261005DE`，gm.html 同；2026-10-01 起 Service Worker 也以這個版本號區分快取，換版本號＝玩家下次開啟時自動換新快取，第 64 節）。
 - **每次推上 GitHub Pages 前，把所有 `?v=` 全部取代成新值**（例：日期＋序號）。新 index.html 會指向新網址的 JS，不會再拿到快取的舊檔。**gm.html 也有 `?v=`（2026-09-28 起），要一起改。**
 - 新增 `data/*.js` 時也要記得帶上 `?v=`。
 - **2026-10-03 起（第 72 節）**：網站可改由 GitHub Actions 發佈建置後的 `dist/`：`index.html` 的 data 腳本被換成單一 `data/game.js?v=版本`、gm.html 換成 `data/gm-lib.js?v=版本`，版本號沿用 index.html 的 `?v=`（所有 `?v=` 必須一致，否則建置失敗）。
@@ -3354,6 +3354,7 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
 - **讀信快取**（2026-10-09，版本 `20261005CZ`，節省讀取額度）：localStorage `MAIL_CACHE_KEY`（`xiuxian_mail_cache`）＝`{ uid, at, pending, checked }`，**不存信件內容**（獎勵一律以雲端為準）。
   - `mbCheckedIds`（確認過還沒領的信）跨重新整理保留，不再每次開遊戲重查領取紀錄。
   - 開遊戲第一次讀信 `refreshMailbox('startup')`：上次讀信在 `MAIL_STARTUP_CACHE_MS`（30 分鐘）內、而且當時沒有待領的信 → 略過（玩家狂按重新整理不再每次讀信）。打開信箱（`refreshMailbox(false)`）3 分鐘（`LEADERBOARD_AUTO_REFRESH_MS`）內讀過不重讀，按「🔄 重新整理」照樣讀。
+- **夥伴、功法也能寄**（2026-10-10，版本 `20261005DE`，`MAIL_SCHEMA_VERSION` 5）：`rewards.partner`、`rewards.spell`，目前只有 gm.html 世界 Boss 分頁的「最後一擊獎勵」會寄（第 75 節）。
 - **GM 權限也能寄**（2026-10-04，版本 `20261005AV`）：`rewards.gm`（true 授予／false 撤銷），只限寄給指定 uid 的信，見第 74 節「GM 測試人物」。
 - **先天資質也能寄**（2026-09-28，版本 `20260929x`，使用者要求）：`rewards.aptitude = { root: { group, id? 或 elems? }, physique: id }`。
   - GM：「⛩️ 先天靈根」選單列出全部 48 種（有 pick 的組逐一列、五行組合的組列出所有組合：天 5、雙 10、三 10、四 5、五 1），「⛩️ 先天體質」列出 24 種；gm.html 因此多載入 `config-aptitude.js`（只有常數）。
@@ -4252,6 +4253,15 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
   - **新增種類：先天・遠古、一般先天**（同日，版本 `20261005CV`，使用者：「世界 Boss 名次獎勵新增（先天・遠古裝備）、先天裝備」）：分段表多一欄「種類」（`MAIL_PRIMAL_GEAR_KINDS`，新增分段預設一般先天），
     `rewards.gear` 的 key 改為「等級_種類」（`wbgPlan`、`wbgKindText`；舊格式只寫等級仍視為太古）。卡片標題、內文預設、說明一併改。
     驗證：gm.html 預覽各分段種類正確；遊戲領取 `{ "5000_2", "3500_1", "1500_0", "2500", "1500_7" }` 得 太古 ×2（5 條全天級）、遠古（4 條全地級、四維 ×1.1）、一般先天（4 條一般分級），種類 7 被忽略；Console 無錯誤。
+
+- **最後一擊獎勵（2026-10-10，版本 `20261005DE`，使用者：「Boss 獎勵新增一條最後擊殺玩家的獨立獎勵，可以發放裝備、夥伴、功法或靈石」）**：
+  - gm.html「⚔️ 世界 Boss」新增卡片「🗡️ 最後一擊獎勵」：對象依「傷害紀錄審核」選的那隻——目前這隻＝`wboss/state` 的 `lastUid`／`lastName`（`killedAt` 有值）；上一隻＝`prev.lastUid`（`prev.killed`），道號從上一隻的傷害紀錄找。沒被打死就停用寄出鈕。
+  - 可合併：💎 靈石（萬）、⚔️ 先天裝備（等級＋太古／遠古／先天＋件數，同名次獎勵的 `rewards.gear`）、💞 夥伴（依評級分組的 44 位）、📜 功法（隨機下品／中品／上品／絕學，或指定 20 招絕學之一）。
+    寄一封個人信（`v: 5`、24 小時過期）；同一隻寄過會提醒（localStorage `wbLastSent_{bid}`）。函式 `wblTarget`／`wblInit`／`wblCollect`／`wblRender`，gm.html 多載入 config-partners.js、config-spells.js（只有資料）。
+  - 遊戲端（第 56 節 `MAIL_SCHEMA_VERSION` 5）：`rewards.partner`→`grantMailPartner`（未結識＝`meetPartner`；已結識＝`addBond` +`MAIL_PARTNER_DUP_BOND` 300）；
+    `rewards.spell`→`grantMailSpell`（指定 id，已學會就改同品階未學會的隨機一招；`"random:品階"`＝該品階未學會的隨機一招；全學會則只寫日誌）。文字 `mailPartnerName`／`mailSpellText` 在 config-mailbox.js，遊戲與 gm.html 共用。**這是絕學目前唯一的取得方式**。
+  - 驗證（本機 Playwright）：靈石 100 萬＋太古 Lv.5000＋蕭炎＋太初劍道一次入帳；再寄同樣的夥伴與功法 → 好感 +300、改學到另一招絕學；隨機上品正確；不認得的 id 不動作；v5 可領、v6 提示更新。
+    gm.html 對象、預覽、未擊殺時停用皆正確，Console 無錯誤。
 
 ## 76. 背景音樂（`bgm.js`；2026-10-04，版本 `20261005BC`）
 

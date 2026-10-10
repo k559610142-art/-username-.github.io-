@@ -328,6 +328,29 @@
             <p class="note">每人一封個人信（仙府信箱，24 小時內要領，逾時自動刪除）。裝備：同等級圖紙鍛造的橙裝 → 依種類套用 太古（詞條全天級取上限、多 1 條、四維 ×1.2）／遠古（詞條至少地級、四維 ×1.1）／一般先天（不加）→ 白金先天道器（+0、多 1 條、種族特效、傳奇威能）。
                 玩家要更新到新版遊戲才領得到（舊版會提示重新整理，信件保留）。同一隻寄過會提醒，避免重複寄。</p>
         </div>
+        <div class="card">
+            <h2>🗡️ 最後一擊獎勵（獨立發放）</h2>
+            <p class="note">對象＝上方「傷害紀錄審核」選的那隻（目前這隻／上一隻）打出最後一擊的玩家；Boss 沒被打死就沒有對象。下面各項可以只填一種，也可以合併在同一封信。</p>
+            <div id="wbl-target" class="note">登入管理者後才能查看。</div>
+            <div class="row" style="margin-top:8px;">
+                <label>💎 靈石 <input type="number" id="wbl-coins" min="0" value="0" style="width:90px"> 萬</label>
+                <label>⚔️ 先天裝備 <select id="wbl-gear-level"><option value="">不給</option></select></label>
+                <select id="wbl-gear-kind"></select>
+                <label>× <input type="number" id="wbl-gear-n" min="1" max="20" value="1" style="width:50px"> 件</label>
+            </div>
+            <div class="row" style="margin-top:8px;">
+                <label>💞 夥伴 <select id="wbl-partner"><option value="">不給</option></select></label>
+                <label>📜 功法 <select id="wbl-spell"><option value="">不給</option></select></label>
+            </div>
+            <div class="row" style="margin-top:8px;">
+                <label>標題 <input id="wbl-title" style="width:220px" value="世界 Boss 最後一擊獎勵"></label>
+                <label>內文 <input id="wbl-body" style="width:360px" value="道友斬下域外天魔最後一擊，威震三界，特賜重寶！"></label>
+            </div>
+            <p id="wbl-preview" class="note">獎勵：—</p>
+            <button id="wbl-send">📮 寄出最後一擊獎勵</button>
+            <p class="note">一封個人信（24 小時內要領）。夥伴：還沒結識＝直接結識；已結識＝改得好感 +300。功法：指定的那招已學會＝改從同品階還沒學會的隨機一招；該品階全學會＝沒有效果。
+                玩家要更新到新版遊戲才領得到（舊版會提示重新整理，信件保留）。同一隻寄過會提醒，避免重複寄。</p>
+        </div>
     </section>
 
     <!-- 修仙留言板（data/msgboard.js，ARCHITECTURE.md 第 57 節）：刪除留言、禁言 -->
@@ -355,19 +378,22 @@
     </div>
 </main>
 
-<script src="data/config-realms.js?v=20261005DD"></script>
+<script src="data/config-realms.js?v=20261005DE"></script>
 <!-- 數值重做新制（2026-09-28 上線）：戰力上限、一般玩家倍率、守城妖潮強度都用新制算法（config-numeric.js／numeric.js 只宣告常數與函式） -->
-<script src="data/config-numeric.js?v=20261005DD"></script>
-<script src="data/numeric.js?v=20261005DD"></script>
-<script src="data/config-leaderboard.js?v=20261005DD"></script>
-<script src="data/config-mailbox.js?v=20261005DD"></script>
+<script src="data/config-numeric.js?v=20261005DE"></script>
+<script src="data/numeric.js?v=20261005DE"></script>
+<script src="data/config-leaderboard.js?v=20261005DE"></script>
+<script src="data/config-mailbox.js?v=20261005DE"></script>
 <!-- 發放獎勵的先天資質選單（config-aptitude.js 只有常數） -->
-<script src="data/config-aptitude.js?v=20261005DD"></script>
+<script src="data/config-aptitude.js?v=20261005DE"></script>
 <!-- 守城審核：該波妖潮強度 defenseWaveAtk（config-defense.js）需要 bounty.js 的 getBountyRefSectMult（只宣告常數與函式，不會執行遊戲邏輯） -->
-<script src="data/config-bounty.js?v=20261005DD"></script>
-<script src="data/bounty.js?v=20261005DD"></script>
-<script src="data/config-defense.js?v=20261005DD"></script>
-<script src="data/config-world-boss.js?v=20261005DD"></script>
+<script src="data/config-bounty.js?v=20261005DE"></script>
+<script src="data/bounty.js?v=20261005DE"></script>
+<script src="data/config-defense.js?v=20261005DE"></script>
+<script src="data/config-world-boss.js?v=20261005DE"></script>
+<!-- 最後一擊獎勵的夥伴、功法選單（兩支都只有常數與資料） -->
+<script src="data/config-partners.js?v=20261005DE"></script>
+<script src="data/config-spells.js?v=20261005DE"></script>
 <script>
 // ================== 設定（與 tools/firestore.rules 保持一致）==================
 // 新制戰力上限（與 tools/firestore.rules 相同）：400 ＋ 境界 × 40；理論最高約佔 40～46%
@@ -920,6 +946,8 @@ function rwFormat(r) {
     const apt = r.aptitude || {};
     if (apt.root && rwRootName(apt.root)) parts.push(`⛩️靈根【${rwRootName(apt.root)}】`);
     if (apt.physique && rwPhysName(apt.physique)) parts.push(`⛩️體質【${rwPhysName(apt.physique)}】`);
+    if (r.partner) parts.push(`💞夥伴【${mailPartnerName(r.partner) || r.partner}】`);
+    if (r.spell) parts.push(`📜${mailSpellText(r.spell) || r.spell}`);
     if (r.gm === true) parts.push('🛡️授予 GM 權限');
     if (r.gm === false) parts.push('🛡️撤銷 GM 權限');
     return parts.join('、') || '（無）';
@@ -1133,6 +1161,7 @@ async function reloadWboss() {
         <td class="rowbtns"><button class="danger" onclick="wbBan('${esc(r.id)}')">封鎖</button><button onclick="wbDel('${esc(r.id)}')">刪除紀錄</button></td></tr>`).join('')
         : '<tr><td colspan="8" class="note">沒有紀錄。</td></tr>';
     wbgRender();
+    wblRender();
 }
 // ---- 名次獎勵：先天裝備（太古／遠古／一般先天，2026-10-09；遊戲端 mailbox.js 的 rewards.gear → gear.js 的 createPrimalPlatinumGear）----
 let wbgTiers = WB_GIFT_TIERS.map(t => Object.assign({}, t));
@@ -1195,6 +1224,71 @@ $('wbg-send').onclick = async () => {
     if (typeof reloadRewards === 'function') reloadRewards();
 };
 wbgRender();
+
+// ---- 最後一擊獎勵（2026-10-10）：靈石／先天裝備／夥伴／功法，寄給最後一擊的玩家（遊戲端 mailbox.js 的 grantMailPartner／grantMailSpell）----
+// 對象：目前這隻＝wboss/state 的 lastUid／lastName（killedAt 有值才算）；上一隻＝prev.lastUid（prev.killed），道號從上一隻的傷害紀錄找
+function wblTarget() {
+    const st = wbSt;
+    if (!st) return null;
+    if ($('wb-which').value === 'prev') {
+        const p = st.prev;
+        if (!p || !p.killed || !p.lastUid) return null;
+        const r = wbRows.find(x => x.id === p.lastUid);
+        return { bid: p.bid, uid: p.lastUid, name: r ? r.name : '' };
+    }
+    if (!st.killedAt || !st.lastUid) return null;
+    return { bid: st.bid, uid: st.lastUid, name: st.lastName || '' };
+}
+function wblPartnerTier(p) {
+    const v = Object.values(p.power || {}), avg = v.reduce((a, b) => a + b, 0) / Math.max(1, v.length);
+    return PARTNER_TIERS.find(t => avg >= t.min) || PARTNER_TIERS[PARTNER_TIERS.length - 1];
+}
+function wblInit() {
+    $('wbl-gear-level').innerHTML += MAIL_PRIMAL_GEAR_LEVELS.map(l => `<option value="${l}">Lv.${l}</option>`).join('');
+    $('wbl-gear-kind').innerHTML = MAIL_PRIMAL_GEAR_KINDS.map(k => `<option value="${k.a}">${k.icon} ${k.name}</option>`).join('');
+    $('wbl-partner').innerHTML += PARTNER_TIERS.map(t => `<optgroup label="${esc(t.name)}">${partnerList.filter(p => wblPartnerTier(p) === t)
+        .map(p => `<option value="${esc(p.id)}">${esc(p.title)}・${esc(p.name)}</option>`).join('')}</optgroup>`).join('');
+    $('wbl-spell').innerHTML += `<optgroup label="隨機（從玩家還沒學會的抽）">${Object.keys(SPELL_GRADES).map(g => `<option value="${MAIL_SPELL_RANDOM_PREFIX}${g}">隨機${SPELL_GRADES[g].name}功法</option>`).join('')}</optgroup>`
+        + `<optgroup label="指定絕學">${spellUltimates.map(u => `<option value="${esc(u.id)}">${esc(u.name)}（${esc(u.faction)}）</option>`).join('')}</optgroup>`;
+    ['wbl-coins', 'wbl-gear-level', 'wbl-gear-kind', 'wbl-gear-n', 'wbl-partner', 'wbl-spell'].forEach(id => { $(id).onchange = $(id).oninput = wblRender; });
+}
+function wblCollect() {
+    const r = {}, coins = Math.floor(Number($('wbl-coins').value) || 0);
+    if (coins > 0) r.coins = Math.min(coins * 10000, MAIL_REWARD_MAX);
+    const lv = $('wbl-gear-level').value, n = Math.max(1, Math.min(20, Math.floor(Number($('wbl-gear-n').value) || 1)));
+    if (lv) r.gear = { [`${lv}_${$('wbl-gear-kind').value}`]: n };
+    if ($('wbl-partner').value) r.partner = $('wbl-partner').value;
+    if ($('wbl-spell').value) r.spell = $('wbl-spell').value;
+    return r;
+}
+function wblRender() {
+    const t = wblTarget();
+    $('wbl-target').innerHTML = !isAdmin ? '登入管理者後才能查看。' : t
+        ? `最後一擊：<b>${esc(t.name || '（道號未知）')}</b>　uid <code>${esc(t.uid)}</code>（bid ${esc(t.bid)}）`
+        : '這隻 Boss 還沒被打死（或沒有最後一擊紀錄），沒有可寄的對象。';
+    $('wbl-preview').textContent = '獎勵：' + rwFormat(wblCollect());
+    $('wbl-send').disabled = !t;
+}
+$('wbl-send').onclick = async () => {
+    if (!isAdmin) return log('需要管理者權限', 'err');
+    const t = wblTarget(), r = wblCollect();
+    if (!t) return alert('沒有最後一擊的玩家。');
+    if (!Object.keys(r).length) return alert('請至少選一種獎勵。');
+    const key = 'wbLastSent_' + t.bid;
+    let sent = null; try { sent = localStorage.getItem(key); } catch (e) {}
+    if (sent && !confirm(`這隻 Boss（bid ${t.bid}）已在 ${sent} 寄過最後一擊獎勵，確定要再寄一次？`)) return;
+    if (!confirm(`寄出最後一擊獎勵給「${t.name || t.uid}」？\n${rwFormat(r)}\n信件 ${MAIL_LIFETIME_HOURS} 小時內要領，逾時自動刪除。`)) return;
+    try {
+        await db.collection(MAIL_COLLECTION).add({ to: t.uid, title: $('wbl-title').value.trim() || '世界 Boss 最後一擊獎勵', body: $('wbl-body').value.trim(),
+            rewards: r, v: 5, expiresAt: firebase.firestore.Timestamp.fromMillis(Date.now() + MAIL_LIFETIME_HOURS * 3600000),
+            createdBy: user.uid, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+        try { localStorage.setItem(key, new Date().toLocaleString('zh-TW', { hour12: false })); } catch (e) {}
+        log(`已寄出最後一擊獎勵給 ${t.name || t.uid}：${rwFormat(r)}`, 'ok');
+        if (typeof reloadRewards === 'function') reloadRewards();
+    } catch (e) { log('寄出最後一擊獎勵失敗：' + e.message, 'err'); }
+};
+wblInit();
+wblRender();
 window.wbBan = id => {
     const r = wbRows.find(x => x.id === id); if (!r) return;
     if (!confirm(`封鎖「${r.name}」？\n不能再挑戰世界 Boss、不能領獎（也會擋下戰力榜、寄售、留言），並刪除這筆傷害紀錄。`)) return;
