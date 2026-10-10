@@ -43,7 +43,7 @@
 | `gm.html` | **管理頁**（不是遊戲的一部分）：可疑紀錄、玩家存檔歷程、封鎖／解除封鎖；載入 config／classes／cloud.js 取得 Supabase 設定（第 31 節） |
 | `manifest.json` | App 名稱、圖示、`scope: ./`（只涵蓋本資料夾） |
 | `sw.js` | Service Worker，快取名稱 `dragon-` 開頭（第 12 節） |
-| `images/` | App 圖示：`icon-192/512.png`、`icon-maskable-512.png`、`apple-touch-icon.png`；主畫面外框 `frame.jpg`（第 15 節）、PC 橫式外框 `frame-pc.jpg`＋遮罩 `frame-pc-mask.png`（第 19 節）；`sprites/` 人物模型、`classes/` 職業立繪（第 18 節）；`maps/ruins.jpg` 野外地圖背景、`maps/village.webp` 村莊背景（第 17 節） |
+| `images/` | App 圖示：`icon-192/512.png`、`icon-maskable-512.png`、`apple-touch-icon.png`；主畫面外框 `frame.jpg`（第 15 節）、PC 橫式外框 `frame-pc.jpg`＋遮罩 `frame-pc-mask.png`（第 19 節）；`sprites/` 人物模型、`classes/` 職業立繪與十二職業合照 `all.jpg`（第 18 節）；`maps/ruins.jpg` 野外地圖背景、`maps/village.webp` 村莊背景（第 17 節） |
 | `tools/` | 開發工具（遊戲不載入）：`supabase.sql` 雲端存檔與團隊副本的資料表、RLS 規則（貼到 Supabase SQL Editor，第 29 節）；`cut-sprites.ps1` 切人物動作表、`sprite-src/` 原圖與裁切規格（第 18.1 節） |
 
 ## 2. 載入順序與依賴
@@ -57,7 +57,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261010p`）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261010q`）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
   整個遊戲載不起來（看起來像「存檔壞掉」，其實存檔還在），`20261009u` 修復時採用較新的 `20261009t` 那一邊。
   SW 依版本號快取 JS，**沒換版本號，已安裝 App 的玩家會一直跑舊程式**。
@@ -542,6 +542,10 @@ kills, deaths, settings, created, raidCd{副本id:真實時間}, raidRuns[領過
   受傷 x 172／378／565～735、y 630／786／946～1108；怒吼 x 878／1052／1240／1440／1625／1810～1998、y 578／782／936～1110（第 1 列前兩格 y 從 640 起，避開標題字）。
 - 四份都用 `"bodyH": 135`（縮放 0.837）。攻擊用 `"glow": "warm", "holes": 120`（金色刀光淡出、去掉刀光圍住的灰底）；
   怒吼再加 `"glowSat": 8, "glowSmooth": 26`（火焰外圍的淡紅霧也當光暈，不留暗紅硬邊）。
+
+**十二職業合照**（2026-10-10，版本 `20261010q`）：`images/classes/all.jpg`（1400×1045，392KB），顯示在創角畫面 `#screen-create` 職業按鈕上方（`<img class="class-group">`，`?v=1`，也在 `sw.js` 預先快取）。
+使用者提供兩張合照各少一個職業（一張缺修羅、一張缺法師），以缺修羅那張為底，用 PIL 把另一張的修羅（臉中心 1360,490）縮成 0.85 倍、貼在惡魔與王族之間（臉中心 1215,488），
+多邊形遮罩羽化 14px，惡魔手爪、王族、槍手和槍畫成前景遮罩蓋回去，看起來修羅站在他們後面。要換圖直接覆蓋檔案並把 `?v=` 加一。
 
 ### 18.1 切圖工具 `tools/cut-sprites.ps1`
 
