@@ -101,6 +101,7 @@ function toggleLogDrawer() {
     try { localStorage.setItem(LOG_OPEN_KEY, logDrawerOpen ? '1' : '0'); } catch (e) { }
     lastLogRendered = 0;
     renderLogPop();
+    if (logDrawerOpen) renderPopChat();   // 聊天分頁（chat.js）
 }
 function renderLogPop() {
     const pop = $('log-pop'), btn = $('skull-log');
@@ -113,7 +114,7 @@ function renderLogPop() {
         pop.style.bottom = Math.round(fr.getBoundingClientRect().bottom - ctrl.getBoundingClientRect().top + 4) + 'px';
     } else pop.style.bottom = '';
     const logBox = $('hunt-log');
-    if (!logDrawerOpen || !logBox || lastLogRendered === logSeq) return;
+    if (!logDrawerOpen || !logBox || logPopTab === 'chat' || lastLogRendered === logSeq) return;
     lastLogRendered = logSeq;
     logBox.innerHTML = gameLog.slice(-30).map(l => `<div class="log-line ${l.cls}">${esc(l.msg)}</div>`).join('');
     logBox.scrollTop = logBox.scrollHeight;

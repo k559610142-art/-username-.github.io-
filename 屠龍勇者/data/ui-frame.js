@@ -44,6 +44,10 @@ const PC_SLOTS = [
     { icon: '📖', name: '裝備圖鑑', tab: 'codex', ...PC_SQ(11) },
     { icon: '🗺️', name: '地圖', tab: 'map', x: 1487, y: 933, w: 66, h: 66, round: true },
     { icon: '⚙️', name: '設定', tab: 'set', x: 1583, y: 933, w: 66, h: 66, round: true },
+    // 多人功能（2026-10-10，底部格子已滿，放在地圖左側；第 32 節）
+    { icon: '🐉', name: '團隊副本', tab: 'raid', x: 104, y: 300, w: 58, h: 58, round: true, side: true },
+    { icon: '💬', name: '聊天', tab: 'chat', x: 104, y: 366, w: 58, h: 58, round: true, side: true },
+    { icon: '🏰', name: '血盟', tab: 'clan', x: 104, y: 432, w: 58, h: 58, round: true, side: true },
 ];
 function isPcFrame() { return displayMode === 'pc'; }
 function currentSlotDefs() { return isPcFrame() ? PC_SLOTS : SLOT_DEFS; }
@@ -175,7 +179,7 @@ function renderSlots(force) {
         const pos = pc
             ? `left:calc(var(--s) * ${d.x}px);top:calc(var(--s) * ${d.y}px);width:calc(var(--s) * ${d.w}px);height:calc(var(--s) * ${d.h}px)`
             : `left:calc(var(--s) * ${SLOT_X[i] - SLOT_X[0]}px)`;
-        return `<button class="slot ${d.round ? 'round' : ''} ${d.tab === currentTab ? 'active' : ''} ${empty ? 'empty' : ''}" style="${pos}"
+        return `<button class="slot ${d.round ? 'round' : ''} ${d.side ? 'side' : ''} ${d.tab === currentTab ? 'active' : ''} ${empty ? 'empty' : ''}" style="${pos}"
             onclick="slotClick(${i})" title="${d.name}" aria-label="${d.name}">${icon}${d.count ? `<b>${n > 999 ? '999+' : n}</b>` : ''}</button>`;
     }).join('');
 }

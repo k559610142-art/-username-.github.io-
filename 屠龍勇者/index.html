@@ -319,6 +319,8 @@
     #frame.pc .orb span { font-size: 13px; }
     #frame.pc #slots { left: 0; top: 0; width: 100%; height: 100%; bottom: auto; pointer-events: none; }
     #frame.pc .slot { pointer-events: auto; font-size: calc(var(--s) * 34px); }
+    #frame.pc .slot.side { background: #1a1410d9; border: 1px solid #5a4028; border-radius: 50%; box-shadow: 0 0 8px #000a; }
+    #frame.pc .slot.side.active { border-color: var(--gold); }
     #frame.pc .slot.round { border-radius: 50%; }
     #frame.pc .skill-bar { right: calc(var(--s) * 250px); bottom: calc(var(--s) * 40px); gap: 10px; }
     #frame.pc .skill-bar .sk { width: 52px; height: 52px; }
@@ -353,6 +355,16 @@
     .log-pop.open { transform: none; opacity: 1; visibility: visible; }
     .log-pop-head { display: flex; align-items: center; justify-content: space-between; padding: 4px 8px; font-size: 12px; color: var(--gold); border-bottom: 1px solid #3a2a1e; }
     .log-pop-head button { padding: 1px 8px; }
+    .lp-tabs { display: flex; gap: 4px; }
+    .log-pop-head .lp-tab { background: transparent; border: 1px solid transparent; color: var(--muted); font-size: 12px; padding: 1px 8px; }
+    .log-pop-head .lp-tab.on { color: var(--gold); border-color: #5a4028; background: #3a2a1e; }
+    .pop-chat { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 4px; padding: 4px 6px 6px; }
+    .pop-chat .chips { gap: 4px; }
+    .pop-chat .chip-btn { padding: 1px 8px; font-size: 11px; }
+    .pop-chat .chat-list { flex: 1; height: auto; min-height: 0; font-size: 12px; padding: 4px 6px; }
+    .pop-chat .chat-input-row input { font-size: 13px; padding: 4px 6px; }
+    .pop-chat .chat-input-row button { padding: 3px 10px; font-size: 13px; }
+    .pop-chat .muted { font-size: 12px; }
     .log-pop .log { flex: 1; height: auto; min-height: 0; overflow-y: auto; font-size: 12px; line-height: 1.4; padding: 4px 8px; margin: 0; border: 0; background: transparent; }
     #frame.pc .skull-log { left: calc(var(--s) * 5px); bottom: calc(var(--s) * 6px); width: calc(var(--s) * 95px); height: calc(var(--s) * 100px); }
     #frame.pc .log-pop { left: calc(var(--s) * 92px); right: auto; width: calc(var(--s) * 760px); bottom: calc(var(--s) * 290px); height: calc(var(--s) * 330px); }
@@ -626,7 +638,7 @@
             <!-- 底部中間骷髏頭＝開始／停止掛機：眼睛黑＝沒在掛機、紅光＝掛機中（ARCHITECTURE.md 第 15 節） -->
             <!-- 左下（紅球下方）骷髏頭＝戰鬥訊息抽屜開關；抽屜從下往上滑出 -->
             <button id="skull-log" class="skull-log" onclick="toggleLogDrawer()" title="戰鬥訊息" aria-label="戰鬥訊息"><span>📜</span></button>
-            <div id="log-pop" class="log-pop"><div class="log-pop-head"><span>📜 戰鬥訊息</span><button class="mini secondary" onclick="toggleLogDrawer()">✕</button></div><div id="hunt-log" class="log"></div></div>
+            <div id="log-pop" class="log-pop"><div class="log-pop-head"><span class="lp-tabs"><button id="lp-tab-log" class="lp-tab on" onclick="setLogPopTab('log')">📜 戰鬥訊息</button><button id="lp-tab-chat" class="lp-tab" onclick="setLogPopTab('chat')">💬 聊天</button></span><button class="mini secondary" onclick="toggleLogDrawer()">✕</button></div><div id="hunt-log" class="log"></div><div id="pop-chat" class="pop-chat hidden"></div></div>
             <button id="skull-hunt" class="skull-hunt" onclick="skullHuntClick()" aria-label="開始掛機"><i class="eye l"></i><i class="eye r"></i></button>
         </div>
         <!-- PC 16:9 版面的右側欄（其他分頁顯示在這裡） -->

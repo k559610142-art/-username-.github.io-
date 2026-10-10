@@ -16,6 +16,9 @@ let chatLoading = false;
 let chatErr = '';
 let chatMute = null;           // 自己被禁言：{ until, reason }
 let chatMuteChecked = false;
+const LOG_TAB_KEY = 'dragonSlayer_logTab';
+let logPopTab = 'log';      // 左下角訊息框：log 戰鬥訊息／chat 聊天
+try { if (localStorage.getItem(LOG_TAB_KEY) === 'chat') logPopTab = 'chat'; } catch (e) { }
 
 function chatRoomChannel() { return raidRoom ? 'room:' + raidRoom.id : null; }
 function chatValid(c) { return c === 'world' || (c && (c === chatRoomChannel() || c === clanChannel())); }
@@ -30,8 +33,62 @@ function chatOpen(ch) {
 
 function chatSwitch(ch) {
     chatChannel = ch === 'room' ? (chatRoomChannel() || 'world') : ch === 'clan' ? (clanChannel() || 'world') : 'world';
-    renderPanel();
+    if (currentTab === 'chat') renderPanel();
+    renderPopChat();
     chatFetch();
+}
+
+// ───────── 左下角訊息框的聊天分頁（PC 與手機共用；框是 index.html 的靜態元素，不隨分頁重畫）─────────
+function chatPopOpen() { return typeof logDrawerOpen !== 'undefined' && logDrawerOpen && logPopTab === 'chat'; }
+
+function setLogPopTab(t) {
+    logPopTab = t === 'chat' ? 'chat' : 'log';
+    try { localStorage.setItem(LOG_TAB_KEY, logPopTab); } catch (e) { }
+    syncLogPopTab();
+    if (logPopTab === 'chat') { renderPopChat(); chatFetch(); }
+    else { lastLogRendered = 0; renderLogPop(); }
+}
+
+function syncLogPopTab() {
+    const log = document.getElementById('hunt-log'), pc = document.getElementById('pop-chat');
+    if (!log || !pc) return;
+    log.classList.toggle('hidden', logPopTab === 'chat');
+    pc.classList.toggle('hidden', logPopTab !== 'chat');
+    const a = document.getElementById('lp-tab-log'), b = document.getElementById('lp-tab-chat');
+    if (a) a.classList.toggle('on', logPopTab === 'log');
+    if (b) b.classList.toggle('on', logPopTab === 'chat');
+}
+
+function chatChipsHtml() {
+    const room = chatRoomChannel(), clan = clanChannel();
+    return `<div class="chips"><button class="chip-btn ${chatChannel === 'world' ? 'active' : ''}" onclick="chatSwitch('world')">🌏 世界</button>
+        <button class="chip-btn ${room && chatChannel === room ? 'active' : ''}" onclick="chatSwitch('room')" ${room ? '' : 'disabled title="加入團隊副本隊伍後才能用"'}>🐉 隊伍</button>
+        <button class="chip-btn ${clan && chatChannel === clan ? 'active' : ''}" onclick="chatSwitch('clan')" ${clan ? '' : 'disabled title="加入血盟後才能用"'}>🏰 血盟</button></div>`;
+}
+
+function chatBlockedText() {
+    return cloudBan ? '帳號已停權，無法發言' : chatMute && Date.parse(chatMute.until) > Date.now() ? `禁言中，到 ${new Date(chatMute.until).toLocaleString('zh-TW', { hour12: false })}` : '';
+}
+
+function chatPlaceholder() { return chatChannel === 'world' ? '對全世界說…' : chatChannel.startsWith('clan:') ? '對血盟說…' : '對隊友說…'; }
+
+function renderPopChat() {
+    const box = document.getElementById('pop-chat');
+    if (!box) return;
+    syncLogPopTab();
+    if (logPopTab !== 'chat') return;
+    if (!isCloudConfigured() || !cloudLoggedIn()) { box.innerHTML = '<div class="muted">登入帳號後才能聊天（標題畫面「☁️ 登入／註冊」）。</div>'; return; }
+    if (!chatValid(chatChannel)) chatChannel = 'world';
+    const keep = document.getElementById('pop-chat-input'), draft = keep ? keep.value : '';
+    const blocked = chatBlockedText();
+    box.innerHTML = `${chatChipsHtml()}<div id="pop-chat-list" class="chat-list">${chatListHtml()}</div>
+        ${blocked ? `<div class="muted">⛔ ${esc(blocked)}</div>` : `<div class="chat-input-row"><input type="text" id="pop-chat-input" maxlength="${CHAT_MAX_LEN}" placeholder="${chatPlaceholder()}" autocomplete="off"
+            onkeydown="chatKey(event,'pop-chat-input')"><button onclick="chatSend('pop-chat-input')">發送</button></div>`}`;
+    const el = document.getElementById('pop-chat-input');
+    if (el) el.value = draft;
+    const list = document.getElementById('pop-chat-list');
+    if (list) list.scrollTop = list.scrollHeight;
+    if (!chatMsgs[chatChannel]) chatFetch();
 }
 
 async function chatFetch() {
@@ -63,8 +120,8 @@ async function chatCheckMute() {
     } catch (e) { chatMute = null; }
 }
 
-async function chatSend() {
-    const el = document.getElementById('chat-input');
+async function chatSend(inputId = 'chat-input') {
+    const el = document.getElementById(inputId);
     const text = ((el && el.value) || '').replace(/\s+/g, ' ').trim().slice(0, CHAT_MAX_LEN);
     if (!text || !chatReady() || !player) return;
     if (cloudBan) { showToast('帳號已停權，無法發言'); return; }
@@ -73,7 +130,7 @@ async function chatSend() {
     chatLastSent = Date.now();
     try {
         await raidQ(cloudSb.from('dragon_chat').insert({ channel: chatChannel, user_id: cloudUser.id, name: player.name, cls: player.cls, lv: player.lv, text }));
-        chatDraft = '';
+        if (inputId === 'chat-input') chatDraft = '';
         if (el) el.value = '';
         chatFetch();
     } catch (e) {
@@ -87,8 +144,9 @@ async function chatSend() {
     }
 }
 
-function chatKey(ev) {
-    if (ev.key === 'Enter' && !ev.isComposing) { ev.preventDefault(); chatSend(); }
+function chatKey(ev, inputId) {
+    ev.stopPropagation();   // 打字時不要觸發地圖的 WASD／方向鍵移動
+    if (ev.key === 'Enter' && !ev.isComposing) { ev.preventDefault(); chatSend(inputId || 'chat-input'); }
 }
 
 function chatTime(at) {
@@ -111,11 +169,13 @@ function chatListHtml() {
 
 // 只更新訊息列表（不重畫整個分頁，打到一半的字不會不見）
 function chatRenderList() {
-    const box = document.getElementById('chat-list');
-    if (!box) return;
-    const atBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 40;
-    box.innerHTML = chatListHtml();
-    if (atBottom) box.scrollTop = box.scrollHeight;
+    for (const id of ['chat-list', 'pop-chat-list']) {
+        const box = document.getElementById(id);
+        if (!box) continue;
+        const atBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 40;
+        box.innerHTML = chatListHtml();
+        if (atBottom) box.scrollTop = box.scrollHeight;
+    }
 }
 
 function renderChat() {
@@ -125,13 +185,10 @@ function renderChat() {
     if (!chatValid(chatChannel)) chatChannel = 'world';
     // 分頁重畫（例如打怪時畫面更新）前輸入框有焦點，畫完要還回去
     const hadFocus = !!(document.activeElement && document.activeElement.id === 'chat-input');
-    const room = chatRoomChannel();
-    const chips = `<div class="chips"><button class="chip-btn ${chatChannel === 'world' ? 'active' : ''}" onclick="chatSwitch('world')">🌏 世界</button>
-        <button class="chip-btn ${room && chatChannel === room ? 'active' : ''}" onclick="chatSwitch('room')" ${room ? '' : 'disabled title="加入團隊副本隊伍後才能用"'}>🐉 隊伍</button>
-        <button class="chip-btn ${clanChannel() && chatChannel === clanChannel() ? 'active' : ''}" onclick="chatSwitch('clan')" ${clanChannel() ? '' : 'disabled title="加入血盟後才能用"'}>🏰 血盟</button></div>`;
-    const blocked = cloudBan ? '帳號已停權，無法發言' : chatMute && Date.parse(chatMute.until) > Date.now() ? `禁言中，到 ${new Date(chatMute.until).toLocaleString('zh-TW', { hour12: false })}` : '';
+    const chips = chatChipsHtml();
+    const blocked = chatBlockedText();
     const input = blocked ? `<div class="muted">⛔ ${esc(blocked)}</div>`
-        : `<div class="chat-input-row"><input type="text" id="chat-input" maxlength="${CHAT_MAX_LEN}" placeholder="${chatChannel === 'world' ? '對全世界說…' : chatChannel.startsWith('clan:') ? '對血盟說…' : '對隊友說…'}" value="${esc(chatDraft)}"
+        : `<div class="chat-input-row"><input type="text" id="chat-input" maxlength="${CHAT_MAX_LEN}" placeholder="${chatPlaceholder()}" value="${esc(chatDraft)}"
             oninput="chatDraft = this.value" onkeydown="chatKey(event)" autocomplete="off">
             <button onclick="chatSend()">發送</button></div>`;
     if (!chatMsgs[chatChannel]) setTimeout(chatFetch, 0);
@@ -147,7 +204,7 @@ function renderChat() {
 }
 
 setInterval(() => {
-    if (typeof currentTab !== 'undefined' && currentTab === 'chat' && player && !document.hidden && !SIM_MODE) chatFetch();
+    if (typeof currentTab !== 'undefined' && (currentTab === 'chat' || chatPopOpen()) && player && !document.hidden && !SIM_MODE) chatFetch();
 }, CHAT_POLL_MS);
 
 TABS.chat = ['💬', '聊天'];
