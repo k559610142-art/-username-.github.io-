@@ -35,6 +35,7 @@
 | `data/ui-panels.js` | 主畫面 8 個分頁（狩獵／地圖／人物狀態／背包／技能／任務／村莊／設定）、道具對話框、衝裝選擇、匯出入 |
 | `data/pwa.js` | PWA：註冊 SW、安裝說明 `openInstallGuide`、新版本提示、持久儲存（第 12 節） |
 | `data/main.js` | 主迴圈 `gameTick`（每 100ms）、繼續遊戲、啟動（呼叫 `initPwa`） |
+| `gm.html` | **管理頁**（不是遊戲的一部分）：可疑紀錄、玩家存檔歷程、封鎖／解除封鎖；載入 config／classes／cloud.js 取得 Supabase 設定（第 31 節） |
 | `manifest.json` | App 名稱、圖示、`scope: ./`（只涵蓋本資料夾） |
 | `sw.js` | Service Worker，快取名稱 `dragon-` 開頭（第 12 節） |
 | `images/` | App 圖示：`icon-192/512.png`、`icon-maskable-512.png`、`apple-touch-icon.png`；主畫面外框 `frame.jpg`（第 15 節）、PC 橫式外框 `frame-pc.jpg`＋遮罩 `frame-pc-mask.png`（第 19 節）；`sprites/` 人物模型、`classes/` 職業立繪（第 18 節）；`maps/ruins.jpg` 野外地圖背景、`maps/village.webp` 村莊背景（第 17 節） |
@@ -51,7 +52,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261010h`）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261010i`）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
   整個遊戲載不起來（看起來像「存檔壞掉」，其實存檔還在），`20261009u` 修復時採用較新的 `20261009t` 那一邊。
   SW 依版本號快取 JS，**沒換版本號，已安裝 App 的玩家會一直跑舊程式**。
@@ -858,4 +859,34 @@ powershell -ExecutionPolicy Bypass -File tools\cut-sprites.ps1 -Spec tools\sprit
   需求等級時 2 人大多失敗、**4 人：地龍、飛龍、格爾莫斯、瑟拉恩、維斯塔爾全勝，莫爾加斯約一半**；8 人全部全勝，戰鬥約 3～4 分鐘（重播 1.5～2 分鐘）。
 - **驗證**：Playwright＋假 Supabase（Node 端共用資料，模擬 trigger）三台裝置：建隊、房號加入（小寫也可）、公開列表加入、沒準備時不能開始、全員準備、開戰、
   三人同步重播與結果、三人都拿到經驗金幣並扣藥水、重複整理不會重領、再打一場要重新準備（冷卻中準備不了）、請出隊員、解散隊伍；Console 無錯誤。
+
+## 31. 抓改檔與封鎖帳號（2026-10-10，版本 `20261010i`；`tools/supabase.sql` 最後一段、`gm.html`）
+
+- 使用者要求：記錄每次存檔的等級與金幣變化，異常就標記，加上封鎖帳號。
+- **全部在伺服器做**：`dragon_saves` 的 AFTER INSERT/UPDATE trigger `dragon_saves_audit`（security definer）從上傳的 jsonb 算出數值寫 `dragon_save_log`、判斷異常寫 `dragon_flags`，玩家端跳不過也看不到。
+  trigger 內部錯誤一律包在 exception 裡（記成 `parse`），**不會擋住正常存檔**。
+- **歷程** `dragon_save_log`：每次上傳一筆（user_id、slot、角色建立時間 `char_created`、名字、職業、Lv、總經驗 `total_exp`、金幣、client_t、伺服器時間 `at`、flags），每個欄位留最近 200 筆。
+  `dragon_profiles`：帳號 Email（取自登入 token）、最後角色名、最後上傳時間。
+- **異常規則**（`dragon_flags.kind`；同一角色同一種、24 小時內未處理的不重複記）：
+  - `exp_rate`：和同一角色上一筆比，每小時總經驗增加 > 2000 ×((上一筆等級+5)²+1)× 狩獵遞減（時間最少算 0.5 小時）。
+    第一次上傳的角色：從角色建立時間算，Lv.20 以上且總經驗 > 2000×226×小時＋10 萬。
+    參考實測（各等級最好的地圖、裝備＋6、10 分鐘模擬換算）：每小時經驗約「(等級²+1)×遞減」的 100～600 倍，門檻約是正常最快的 5～10 倍以上。
+  - `gold_rate`：每小時金幣增加 > max(30 萬, 3000 ×((等級+5)²+1))。正常掛機約「(等級²+1)」的 5～215 倍；大量賣裝備也可能觸發，要人工判斷。
+  - `stat`：任一基礎能力值 > 40（上限 35＋萬能藥 5）；`elixir`：萬能藥 > 5；`enchant`：背包／倉庫／裝備任一強化 > +15；`level`：等級 < 1 或 > 99；`gold_negative`：金幣 < 0。
+  - `clock`：存檔時間 client_t 比伺服器快 10 分鐘以上（改裝置時間刷離線收益、冷卻）。
+  - 改規則：改 `tools/supabase.sql` 的 `dragon_saves_audit`，請使用者重新執行整份 SQL。
+- **封鎖** `dragon_bans`（user_id、email、reason、by_email）：`dragon_is_banned()` 為真時，`dragon_saves` insert/update、`raid_rooms` insert、`raid_members` insert 的 RLS 都拒絕（同名規則在 SQL 最後一段重建）。
+  被封鎖的人仍可讀自己的存檔與自己的封鎖原因，本機照常單機遊玩。
+  遊戲端 `cloudCheckBan()`（cloud.js）：登入後先查；上傳被 RLS（42501）擋下時再查。封鎖中 `cloudBan` 有值 → 不同步、不上傳、狀態「⛔ 帳號已停權」、跳一次說明對話框；團隊副本分頁顯示停權（`raidReady` 為 false）。
+- **管理者** `dragon_admins`：只能在 SQL Editor 手動加入：
+  `insert into public.dragon_admins select id from auth.users where email = '管理者Email' on conflict do nothing;`
+  `dragon_is_admin()` 為真時可讀 `dragon_save_log`、`dragon_profiles`、所有人的 `dragon_saves`，可改 `dragon_flags`（標記已處理）、新增刪除 `dragon_bans`。
+- **管理頁** `屠龍勇者/gm.html`（網址 `<網站>/屠龍勇者/gm.html`，`noindex`）：用遊戲帳號登入（登入狀態存在 `dragonSlayer_gm_auth`，和遊戲分開）。
+  分頁：⚠️ 可疑紀錄（可勾「顯示已處理」；每列：歷程／已處理／封鎖）、👥 玩家（搜尋 Email 或角色名；點角色看歷程）、⛔ 封鎖名單（解除封鎖）。
+  歷程視窗：最近 80 筆上傳，列出總經驗、金幣、與上一筆的變化與間隔、異常標籤。封鎖原因玩家看得到。
+- **限制**：只能事後發現，擋不住「慢慢改」；存檔仍由玩家端產生。真正防止要把戰鬥搬到伺服器（之後的交易所前必做）。
+- **驗證**：本機 PostgreSQL 16（模擬 auth.uid／auth.jwt）：SQL 可重複執行；正常成長（Lv10→12、1 小時）不標記；
+  改檔（Lv12→40、金幣 1 億、能力 50、強化 +20、萬能藥 9、時間快 1 小時）一次標出 6 種；新角色 0.5 小時 Lv.50 標記；格式錯誤只記 parse、存檔照常寫入；
+  玩家讀不到歷程與異常；非管理者不能封鎖；被封鎖者不能上傳、不能建隊、看得到原因。
+  Playwright＋假伺服器：管理頁登入、可疑紀錄、歷程、封鎖（玩家端立刻顯示停權、團隊副本鎖住、重新整理仍停權）、解除封鎖；Console 無錯誤。
 
