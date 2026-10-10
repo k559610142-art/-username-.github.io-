@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # 屠龍勇者：切人物動作表（ARCHITECTURE.md 第 18.2 節）。Linux／Mac 用；Windows 原本的 cut-sprites.ps1 仍可用。
-# 適用「深灰（中性灰）格子背景＋有顏色的角色」的動作表（法師 2026-10-10）。需要 Pillow：pip install pillow
+# 適用「深灰（中性灰）格子背景＋有顏色的角色」的動作表（法師、戰士 2026-10-10）。需要 Pillow：pip install pillow
 #
 #   python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json [--preview 預覽.png]
 #
@@ -9,7 +9,10 @@
 #   tol 背景容差（亮度差，預設 20）、inset 裁切框內縮（避開格線，預設 3）、pad 輸出四周留白（預設 4）、
 #   bodyH 指定原圖身高（不指定就用 down／right 各格量到的中位數；同一角色各動作用同一個值，切換動作時大小才一致）、
 #   shadow 地面陰影：比背景暗、中性灰的點也當背景（預設 true）、
-#   glow 光暈模式：從背景往內遇到平滑、偏藍、比背景亮的點（疊在灰底上的魔法光暈）改成半透明，碰到輪廓線停（施法、攻擊用）、
+#   glow 光暈模式：從背景往內遇到平滑、比背景亮的光暈點改成半透明，碰到輪廓線停（true／"blue" 藍光、"warm" 火焰與金光、"any" 兩種都算）、
+#   glowSat 暖色光暈的最低飽和度（RGB 最大最小差，預設 60；火焰外圍有淡紅霧時用 8）、
+#   glowSmooth 光暈「平滑」的門檻（和上下左右的最大色差，預設 14；火焰紋理粗用 26）、
+#   holes 被刀光、光環圍住的背景：面積 ≥ 這個像素數的「像背景」區塊也當背景（0＝不處理）、
 #   dirs.down／right／up：每格 [x, y, w, h]（照播放順序；可寫 {"r": [...], "flip": true} 左右鏡像）。
 # 去背：每格以四周邊框的中位數當背景色，從邊緣洪水填滿「中性灰（RGB 最大最小差 ≤ 14）且接近背景亮度」的點；
 #   與背景相鄰、色差不大的點給半透明並扣掉背景色（藍色光暈自然淡出）；碰到邊緣的小碎塊去掉。
@@ -22,7 +25,7 @@ def load(path):
     with open(path, encoding='utf-8') as f:
         return json.load(f)
 
-def cut_cell(sheet, box, tol, inset, shadow, glow=False):
+def cut_cell(sheet, box, tol, inset, shadow, glow=False, holes=0, glow_sat=60, glow_smooth=14):
     x, y, w, h = box[:4]
     im = sheet.crop((x + inset, y + inset, x + w - inset, y + h - inset)).convert('RGB')
     W, H = im.size
@@ -42,12 +45,15 @@ def cut_cell(sheet, box, tol, inset, shadow, glow=False):
         for a, b in ((i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1)):
             if 0 <= a < W and 0 <= b < H:
                 n = px[a, b]
-                if max(abs(c[0] - n[0]), abs(c[1] - n[1]), abs(c[2] - n[2])) > 14: return False
+                if max(abs(c[0] - n[0]), abs(c[1] - n[1]), abs(c[2] - n[2])) > glow_smooth: return False
         return True
     def glowlike(i, j):
         # 光暈：疊在灰底上的半透明藍光——平滑、比背景亮或差不多、偏藍（不是角色的輪廓線與花紋）
         c = px[i, j]
-        return glow and c[2] >= c[0] + 4 and bg - 8 <= lum(c) <= bg + 150 and smooth(i, j)
+        if not glow or not (bg - 8 <= lum(c) <= bg + 150) or not smooth(i, j): return False
+        blue = c[2] >= c[0] + 4
+        warm = c[0] >= c[2] + max(4, glow_sat * 0.4) and max(c) - min(c) >= glow_sat   # 火焰、金光：飽和的暖色（紅比藍多的門檻隨 glowSat 調整）
+        return blue if glow in (True, 'blue') else warm if glow == 'warm' else (blue or warm)
     isglow = [[False] * H for _ in range(W)]
     # 洪水填滿背景
     isbg = [[False] * H for _ in range(W)]
@@ -64,6 +70,20 @@ def cut_cell(sheet, box, tol, inset, shadow, glow=False):
             if 0 <= a < W and 0 <= b < H and not isbg[a][b] and not isglow[a][b]:
                 if bglike(px[a, b]): isbg[a][b] = True; q.append((a, b))
                 elif glowlike(a, b): isglow[a][b] = True; q.append((a, b))
+    # 被刀光、光環圍住的大塊背景（洪水填滿碰不到）：面積 ≥ holes 的「像背景」區塊也當背景
+    if holes:
+        seen = [[False] * H for _ in range(W)]
+        for i in range(W):
+            for j in range(H):
+                if isbg[i][j] or isglow[i][j] or seen[i][j] or not bglike(px[i, j]): continue
+                comp = []; q = deque([(i, j)]); seen[i][j] = True
+                while q:
+                    a, b = q.popleft(); comp.append((a, b))
+                    for c, d in ((a + 1, b), (a - 1, b), (a, b + 1), (a, b - 1)):
+                        if 0 <= c < W and 0 <= d < H and not seen[c][d] and not isbg[c][d] and bglike(px[c, d]):
+                            seen[c][d] = True; q.append((c, d))
+                if len(comp) >= holes:
+                    for a, b in comp: isbg[a][b] = True
     out = Image.new('RGBA', (W, H), (0, 0, 0, 0))
     op = out.load()
     for i in range(W):
@@ -132,7 +152,7 @@ def main():
         cells[d] = []
         for c in s['dirs'][d]:
             box = c['r'] if isinstance(c, dict) else c
-            img = cut_cell(sheet, box, tol, inset, s.get('shadow', True), s.get('glow', False))
+            img = cut_cell(sheet, box, tol, inset, s.get('shadow', True), s.get('glow', False), s.get('holes', 0), s.get('glowSat', 60), s.get('glowSmooth', 14))
             if isinstance(c, dict) and c.get('flip'): img = img.transpose(Image.FLIP_LEFT_RIGHT)
             cells[d].append(img)
     ms = {d: [measure(im) for im in cells[d]] for d in cells}
