@@ -298,7 +298,7 @@
             <label>開始時間 <input type="datetime-local" id="wb-start">（留空＝立即；以這台電腦的時間為準）</label>
             <button id="wb-open">⚔️ 開啟</button>
             <button id="wb-end" class="danger">⏹ 結束目前這隻</button>
-            <p class="note">開啟會立刻取代目前這隻（目前這隻記為「上一隻」，參加者仍可在結束 24 小時後領獎）。填了開始時間＝預約：玩家先看到「尚未開放（還有多久）」，時間到才能挑戰。單次傷害上限固定 1000 萬（不看總血量）。</p>
+            <p class="note">開啟會立刻取代目前這隻（目前這隻記為「上一隻」，參加者仍可在結束 24 小時後領獎）。填了開始時間＝預約：玩家先看到「尚未開放（還有多久）」，時間到才能挑戰。單次傷害不設上限（2026-10-10 起，玩家打多少算多少）。</p>
         </div>
         <div class="card">
             <h2>🔍 傷害紀錄審核 <select id="wb-which"><option value="cur">目前這隻</option><option value="prev">上一隻</option></select></h2>
@@ -306,7 +306,7 @@
                 <thead><tr><th>道號</th><th>境界</th><th>次數</th><th>⭐有效</th><th>累計傷害</th><th>可疑</th><th>uid</th><th>操作</th></tr></thead>
                 <tbody id="wb-rows"><tr><td colspan="8" class="note">登入管理者後才能查看。</td></tr></tbody>
             </table></div>
-            <p class="note">可疑：單次 ≥ 900 萬（接近上限，超過模擬極限約 829 萬）、大乘以下單次 ≥ 600 萬（大乘極限頂配約 553 萬）、兩次挑戰間隔紀錄小於 60 秒（不該發生）。⭐有效＝撐滿 30 回合的次數。封鎖＝寫入黑名單（不能再挑戰、不能領獎），並刪除這筆傷害紀錄（Boss 已扣的血不會補回）。</p>
+            <p class="note">可疑：單次 ≥ 900 萬（超過模擬極限約 829 萬；2026-10-10 起不設上限，打得再高都會計入，請特別留意）、大乘以下單次 ≥ 600 萬（大乘極限頂配約 553 萬）、兩次挑戰間隔紀錄小於 60 秒（不該發生）。⭐有效＝撐滿 30 回合的次數。封鎖＝寫入黑名單（不能再挑戰、不能領獎），並刪除這筆傷害紀錄（Boss 已扣的血不會補回）。</p>
         </div>
         <div class="card">
             <h2>🎁 名次獎勵：先天裝備（太古／遠古／一般先天，部位隨機）</h2>
@@ -378,22 +378,22 @@
     </div>
 </main>
 
-<script src="data/config-realms.js?v=20261005DE"></script>
+<script src="data/config-realms.js?v=20261005DF"></script>
 <!-- 數值重做新制（2026-09-28 上線）：戰力上限、一般玩家倍率、守城妖潮強度都用新制算法（config-numeric.js／numeric.js 只宣告常數與函式） -->
-<script src="data/config-numeric.js?v=20261005DE"></script>
-<script src="data/numeric.js?v=20261005DE"></script>
-<script src="data/config-leaderboard.js?v=20261005DE"></script>
-<script src="data/config-mailbox.js?v=20261005DE"></script>
+<script src="data/config-numeric.js?v=20261005DF"></script>
+<script src="data/numeric.js?v=20261005DF"></script>
+<script src="data/config-leaderboard.js?v=20261005DF"></script>
+<script src="data/config-mailbox.js?v=20261005DF"></script>
 <!-- 發放獎勵的先天資質選單（config-aptitude.js 只有常數） -->
-<script src="data/config-aptitude.js?v=20261005DE"></script>
+<script src="data/config-aptitude.js?v=20261005DF"></script>
 <!-- 守城審核：該波妖潮強度 defenseWaveAtk（config-defense.js）需要 bounty.js 的 getBountyRefSectMult（只宣告常數與函式，不會執行遊戲邏輯） -->
-<script src="data/config-bounty.js?v=20261005DE"></script>
-<script src="data/bounty.js?v=20261005DE"></script>
-<script src="data/config-defense.js?v=20261005DE"></script>
-<script src="data/config-world-boss.js?v=20261005DE"></script>
+<script src="data/config-bounty.js?v=20261005DF"></script>
+<script src="data/bounty.js?v=20261005DF"></script>
+<script src="data/config-defense.js?v=20261005DF"></script>
+<script src="data/config-world-boss.js?v=20261005DF"></script>
 <!-- 最後一擊獎勵的夥伴、功法選單（兩支都只有常數與資料） -->
-<script src="data/config-partners.js?v=20261005DE"></script>
-<script src="data/config-spells.js?v=20261005DE"></script>
+<script src="data/config-partners.js?v=20261005DF"></script>
+<script src="data/config-spells.js?v=20261005DF"></script>
 <script>
 // ================== 設定（與 tools/firestore.rules 保持一致）==================
 // 新制戰力上限（與 tools/firestore.rules 相同）：400 ＋ 境界 × 40；理論最高約佔 40～46%
@@ -1143,13 +1143,13 @@ async function reloadWboss() {
     } catch (e) { log('讀取世界 Boss 失敗：' + e.message + '（規則可能尚未發布新版）', 'err'); return; }
     const st = wbSt, now = Date.now();
     $('wb-state').innerHTML = !st ? '目前沒有世界 Boss（每週六 20:00 玩家第一次打開時自動建立）。' : `
-        <b>${esc((WB_BOSSES[(st.bossIdx || 0) % WB_BOSSES.length] || {}).name || '')}</b>（bid ${esc(st.bid)}）｜血量 ${fmt(st.hp)} / ${fmt(st.maxHp)}（${(st.hp / Math.max(1, st.maxHp) * 100).toFixed(1)}%）｜單次上限 ${fmt(WB.cap)}<br>
+        <b>${esc((WB_BOSSES[(st.bossIdx || 0) % WB_BOSSES.length] || {}).name || '')}</b>（bid ${esc(st.bid)}）｜血量 ${fmt(st.hp)} / ${fmt(st.maxHp)}（${(st.hp / Math.max(1, st.maxHp) * 100).toFixed(1)}%）｜單次上限 ${WB.cap > 0 ? fmt(WB.cap) : '不設'}<br>
         ${wbDt(st.startAt)} ～ ${wbDt(st.endAt)}｜${st.killedAt ? `💀 ${wbDt(st.killedAt)} 被擊敗（最後一擊：${esc(st.lastName)}）` : now < wbMsOf(st.startAt) ? '⏳ 預約中（尚未開始）' : now < wbMsOf(st.endAt) ? '⚔️ 進行中' : '⌛ 已結束'}<br>
         上一隻：${st.prev ? `bid ${esc(st.prev.bid)}、血量 ${fmt(st.prev.maxHp)}、${st.prev.killed ? '被擊敗' : '未擊敗'}、${wbDt(st.prev.endAt)} 結束` : '無'}`;
-    // 可疑門檻（2026-10-09 上限改固定 1000 萬後）：模擬 30 回合極限頂配 混沌道祖 最高約 829 萬、大乘約 553 萬（ARCHITECTURE.md 第 75 節）
+    // 可疑門檻（WB.suspectDmg；2026-10-10 起不設上限）：模擬 30 回合極限頂配 混沌道祖 最高約 829 萬、大乘約 553 萬（ARCHITECTURE.md 第 75 節）
     wbRows.forEach(r => {
         const f = [];
-        if ((r.hist || []).some(h => h.d >= WB.cap * 0.9)) f.push('單次 ≥ 900 萬');
+        if ((r.hist || []).some(h => h.d >= WB.suspectDmg)) f.push('單次 ≥ 900 萬');
         if ((r.hist || []).some(h => (h.r != null ? h.r : r.realm || 0) <= 8 && h.d >= 6000000)) f.push('大乘以下單次 ≥ 600 萬');
         const h = (r.hist || []).map(x => x.t).sort((a, b) => a - b);
         for (let i = 1; i < h.length; i++) if (h[i] - h[i - 1] < WB.gapSec * 1000) { f.push('間隔過短'); break; }
@@ -1318,10 +1318,10 @@ $('wb-open').onclick = async () => {
     if (!(start > 0)) return alert('開始時間格式不對。');
     if (start < Date.now() - 60000) return alert('開始時間已經過了，請留空（立即）或填之後的時間。');
     const whenTxt = startIn ? `${new Date(start).toLocaleString('zh-TW', { hour12: false })} 開始` : '立即開始';
-    if (!confirm(`開啟【${WB_BOSSES[+$('wb-boss').value].name}】？\n${whenTxt}、持續 ${hours} 小時\n總血量 ${fmt(hp)}、單次上限 ${fmt(WB.cap)}`)) return;
+    if (!confirm(`開啟【${WB_BOSSES[+$('wb-boss').value].name}】？\n${whenTxt}、持續 ${hours} 小時\n總血量 ${fmt(hp)}、單次上限 ${WB.cap > 0 ? fmt(WB.cap) : '不設'}`)) return;
     try {
         const ref = db.collection(WB_STATE_COLLECTION).doc('state'), old = (await ref.get()).data() || null, now = Date.now();
-        await ref.set({ bid: 'gm' + now, bossIdx: +$('wb-boss').value, maxHp: hp, hp, cap: WB.cap,
+        await ref.set({ bid: 'gm' + now, bossIdx: +$('wb-boss').value, maxHp: hp, hp, cap: WB.stateCap,
             startAt: firebase.firestore.Timestamp.fromMillis(start), endAt: firebase.firestore.Timestamp.fromMillis(start + hours * 3600000),
             killedAt: null, lastUid: '', lastName: '',
             prev: old ? { bid: old.bid, maxHp: old.maxHp, killed: !!old.killedAt, endAt: old.endAt, lastUid: old.lastUid || '' } : null });
