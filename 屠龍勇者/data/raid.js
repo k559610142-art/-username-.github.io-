@@ -68,7 +68,8 @@ function raidBlockReason(def, p = player) {
 
 // ───────── 團戰模擬（隊長的瀏覽器執行）─────────
 // list：[{ uid, name, snap }]；回傳可以重播的結果。全程 SIM_MODE，結束後還原所有全域狀態
-function raidSimulate(def, list) {
+// opts（世界首領用，wb.js）：{ boss: 指定的怪物物件, limitMs: 戰鬥時間上限 }
+function raidSimulate(def, list, opts = {}) {
     const keep = { player, hunt, session, walkHome, gameNow, log: gameLog.slice(), logSeq };
     SIM_MODE = true;
     session = { start: gameNow, kills: 0, exp: 0, gold: 0 };   // onKill（反擊打倒首領）會用到
@@ -78,7 +79,10 @@ function raidSimulate(def, list) {
     const events = [], frames = [];
     const ev = (msg, cls = '') => { if (events.length < 600) events.push([t, msg, cls]); };
     try {
-        const n = list.length, boss = raidBoss(def, n);
+        const n = list.length, boss = opts.boss || raidBoss(def, n);
+        const limit = opts.limitMs || RAID_LIMIT_MS;
+        if (boss.atkCd == null) boss.atkCd = boss.spd;
+        if (boss.stunUntil == null) boss.stunUntil = 0;
         const ms = list.map((x, i) => {
             const p = migrateSave({ player: JSON.parse(JSON.stringify(x.snap)) });
             p.buffs = {}; p.cds = {}; p.mapRun = null; p.hunting = true;
@@ -103,7 +107,7 @@ function raidSimulate(def, list) {
         ev(`🐉 ${boss.name}（Lv.${boss.lv}）出現了！HP ${fmt(boss.maxHp)}`, 'boss');
         frame();
         let target = null, retarget = 0, breathIn = rand(RAID_BREATH_CD[0], RAID_BREATH_CD[1]), tele = 0, enraged = false, win = false;
-        while (t < RAID_LIMIT_MS) {
+        while (t < limit) {
             t += TICK_MS;
             gameNow = t0 + t;
             // 隊員行動
@@ -134,7 +138,7 @@ function raidSimulate(def, list) {
             if (boss.hp <= 0) { win = true; break; }
             if (!alive().length) break;
             // 狂暴
-            if (!enraged && t >= RAID_ENRAGE_MS) {
+            if (!enraged && t >= RAID_ENRAGE_MS && limit > RAID_ENRAGE_MS) {
                 enraged = true;
                 boss.dmg = boss.dmg.map(v => Math.round(v * 1.5));
                 if (boss.magic) boss.magic = Object.assign({}, boss.magic, { dmg: boss.magic.dmg.map(v => Math.round(v * 1.5)) });

@@ -728,3 +728,147 @@ language sql stable security definer set search_path = '' as $$
 $$;
 revoke execute on function public.dragon_leaderboard(text, text, int) from public, anon;
 grant execute on function public.dragon_leaderboard(text, text, int) to authenticated;
+
+-- ═════════ 世界首領（ARCHITECTURE.md 第 35 節）═════════
+-- 全服共用一條血。每個帳號每天（台灣時間）3 次挑戰；每次 60 秒戰鬥由玩家端模擬，伺服器依「雲端存檔最高等級」限制單次傷害上限：
+--   上限 = 4 ×（1500 + 70 × 等級）（2026-10-10 實測各等級最強職業 60 秒約 1300 + 65 × 等級），超過的部分截掉並記可疑紀錄（dragon_flags kind = wb_dmg）。
+-- 首領 HP = 6000 × max(3, 近 3 天有上傳存檔的帳號數)，最長 48 小時；被打倒或時間到 30 分鐘後自動出現下一隻（有人查詢時才建立，不需要排程）。
+-- 所有存取都透過 wb_* 函式。
+create table if not exists public.dragon_wb (
+    id          bigserial   primary key,
+    kind        text        not null,
+    name        text        not null,
+    icon        text        not null,
+    max_hp      bigint      not null,
+    hp          bigint      not null,
+    started_at  timestamptz not null default now(),
+    ends_at     timestamptz not null,
+    killed_at   timestamptz,
+    killer      uuid,
+    killer_name text
+);
+create table if not exists public.dragon_wb_hits (
+    id      bigserial   primary key,
+    wb_id   bigint      not null references public.dragon_wb (id) on delete cascade,
+    user_id uuid        not null references auth.users (id) on delete cascade,
+    name    text,
+    cls     text,
+    lv      int,
+    dmg     bigint      not null,
+    at      timestamptz not null default now()
+);
+create index if not exists dragon_wb_hits_idx on public.dragon_wb_hits (wb_id, user_id);
+create index if not exists dragon_wb_hits_user_idx on public.dragon_wb_hits (user_id, at desc);
+create table if not exists public.dragon_wb_claims (
+    wb_id   bigint      not null references public.dragon_wb (id) on delete cascade,
+    user_id uuid        not null references auth.users (id) on delete cascade,
+    at      timestamptz not null default now(),
+    primary key (wb_id, user_id)
+);
+alter table public.dragon_wb enable row level security;
+alter table public.dragon_wb_hits enable row level security;
+alter table public.dragon_wb_claims enable row level security;
+revoke all on public.dragon_wb, public.dragon_wb_hits, public.dragon_wb_claims from anon, authenticated;
+
+create or replace function public.wb_day_start() returns timestamptz
+language sql stable set search_path = '' as $$
+    select (date_trunc('day', now() at time zone 'Asia/Taipei')) at time zone 'Asia/Taipei';
+$$;
+
+-- 目前的首領（必要時建立下一隻）＋自己今天剩幾次、對這隻打了多少
+create or replace function public.wb_current() returns json
+language plpgsql security definer set search_path = '' as $$
+declare w public.dragon_wb; ended timestamptz; k text; kinds text[] := array['drake', 'balrog', 'frost', 'lich', 'roc'];
+    names text[] := array['遠古地龍・格蘭卡', '炎魔・巴洛格', '冰霜巨龍・希琳', '不死君王・莫德', '風暴巨鷹・奧拉'];
+    icons text[] := array['🐲', '🔥', '🐉', '💀', '🦅']; i int; act int; used int := 0; mine bigint := 0;
+begin
+    if auth.uid() is null then raise exception 'not logged in'; end if;
+    perform pg_advisory_xact_lock(7713001);
+    select * into w from public.dragon_wb order by id desc limit 1;
+    ended := case when w.id is null then null when w.killed_at is not null then w.killed_at when w.ends_at < now() then w.ends_at else null end;
+    if w.id is null or (ended is not null and now() >= ended + interval '30 minutes') then
+        i := (coalesce(w.id, 0) % 5) + 1;
+        select count(distinct user_id) into act from public.dragon_saves where updated_at > now() - interval '3 days';
+        insert into public.dragon_wb (kind, name, icon, max_hp, hp, ends_at)
+            values (kinds[i], names[i], icons[i], 6000 * greatest(3, act), 6000 * greatest(3, act), now() + interval '48 hours') returning * into w;
+        ended := null;
+        delete from public.dragon_wb where started_at < now() - interval '30 days';
+    end if;
+    select count(*) into used from public.dragon_wb_hits where user_id = auth.uid() and at >= public.wb_day_start();
+    select coalesce(sum(dmg), 0) into mine from public.dragon_wb_hits where user_id = auth.uid() and wb_id = w.id;
+    return json_build_object('id', w.id, 'kind', w.kind, 'name', w.name, 'icon', w.icon, 'max_hp', w.max_hp, 'hp', w.hp,
+        'started_at', w.started_at, 'ends_at', w.ends_at, 'killed_at', w.killed_at, 'killer_name', w.killer_name,
+        'ended', ended is not null, 'next_at', case when ended is not null then ended + interval '30 minutes' end,
+        'now', now(), 'attempts_left', greatest(0, 3 - used), 'my_dmg', mine,
+        'participants', (select count(distinct user_id) from public.dragon_wb_hits where wb_id = w.id));
+end $$;
+
+-- 送出一次挑戰的傷害
+create or replace function public.wb_attack(p_wb bigint, p_dmg bigint, p_name text, p_cls text) returns json
+language plpgsql security definer set search_path = '' as $$
+declare w public.dragon_wb; lv int; used int; cap bigint; d bigint; v_email text := auth.jwt() ->> 'email';
+begin
+    if auth.uid() is null then raise exception 'not logged in'; end if;
+    if public.dragon_is_banned() then raise exception 'banned'; end if;
+    select * into w from public.dragon_wb where id = p_wb for update;
+    if w.id is null or w.hp <= 0 or w.killed_at is not null or w.ends_at < now() then raise exception 'boss gone'; end if;
+    select max(s.lv) into lv from public.dragon_saves s where s.user_id = auth.uid();
+    if lv is null then raise exception 'no cloud save'; end if;
+    select count(*) into used from public.dragon_wb_hits where user_id = auth.uid() and at >= public.wb_day_start();
+    if used >= 3 then raise exception 'no attempts'; end if;
+    cap := 4 * (1500 + 70 * lv);
+    d := least(greatest(coalesce(p_dmg, 0), 0), cap);
+    if p_dmg > cap then
+        insert into public.dragon_flags (user_id, email, slot, name, lv, kind, detail)
+            values (auth.uid(), v_email, 0, left(p_name, 40), lv, 'wb_dmg', format('世界首領單次傷害 %s，超過上限 %s（Lv.%s）', p_dmg, cap, lv));
+    end if;
+    d := least(d, w.hp);
+    update public.dragon_wb set hp = hp - d,
+        killed_at = case when hp - d <= 0 then now() end,
+        killer = case when hp - d <= 0 then auth.uid() end,
+        killer_name = case when hp - d <= 0 then left(p_name, 40) end
+        where id = w.id returning * into w;
+    insert into public.dragon_wb_hits (wb_id, user_id, name, cls, lv, dmg) values (w.id, auth.uid(), left(p_name, 40), left(p_cls, 20), lv, d);
+    return json_build_object('dmg', d, 'hp', w.hp, 'killed', w.killed_at is not null, 'attempts_left', greatest(0, 2 - used), 'capped', p_dmg > cap);
+end $$;
+
+-- 傷害排行：前 20 名＋自己
+create or replace function public.wb_rank(p_wb bigint) returns table (rk bigint, name text, cls text, lv int, dmg bigint, is_me boolean)
+language sql stable security definer set search_path = '' as $$
+    with s as (
+        select user_id, sum(h.dmg) as dmg, (array_agg(h.name order by h.id desc))[1] as name, (array_agg(h.cls order by h.id desc))[1] as cls, max(h.lv) as lv
+        from public.dragon_wb_hits h where h.wb_id = p_wb group by user_id
+    ), r as (select row_number() over (order by dmg desc, name) as rk, * from s)
+    select rk, name, cls, lv, dmg::bigint, user_id = auth.uid() from r where rk <= 20 or user_id = auth.uid() order by rk;
+$$;
+
+-- 領獎：首領結束（打倒或時間到）後，有打過的人各領一次；回傳名次等資料，獎勵內容由遊戲依此計算
+create or replace function public.wb_claim(p_wb bigint) returns json
+language plpgsql security definer set search_path = '' as $$
+declare w public.dragon_wb; mine bigint; total bigint; rnk bigint; n int;
+begin
+    if auth.uid() is null then raise exception 'not logged in'; end if;
+    select * into w from public.dragon_wb where id = p_wb;
+    if w.id is null then raise exception 'boss gone'; end if;
+    if w.killed_at is null and w.ends_at >= now() then raise exception 'not ended'; end if;
+    select coalesce(sum(dmg), 0) into mine from public.dragon_wb_hits where wb_id = p_wb and user_id = auth.uid();
+    if mine <= 0 then raise exception 'not participated'; end if;
+    insert into public.dragon_wb_claims (wb_id, user_id) values (p_wb, auth.uid());   -- 主鍵重複＝已領過
+    select coalesce(sum(dmg), 0), count(distinct user_id) into total, n from public.dragon_wb_hits where wb_id = p_wb;
+    select count(*) + 1 into rnk from (select user_id, sum(dmg) d from public.dragon_wb_hits where wb_id = p_wb group by user_id) x where x.d > mine;
+    return json_build_object('wb', p_wb, 'name', w.name, 'icon', w.icon, 'killed', w.killed_at is not null, 'killer_me', w.killer = auth.uid(),
+        'my_dmg', mine, 'total', total, 'rank', rnk, 'participants', n);
+end $$;
+
+-- 還沒領獎的已結束首領（最近 7 天）
+create or replace function public.wb_unclaimed() returns table (id bigint, name text, icon text)
+language sql stable security definer set search_path = '' as $$
+    select w.id, w.name, w.icon from public.dragon_wb w
+    where (w.killed_at is not null or w.ends_at < now()) and w.started_at > now() - interval '7 days'
+      and exists (select 1 from public.dragon_wb_hits h where h.wb_id = w.id and h.user_id = auth.uid())
+      and not exists (select 1 from public.dragon_wb_claims c where c.wb_id = w.id and c.user_id = auth.uid())
+    order by w.id desc;
+$$;
+
+revoke execute on function public.wb_current(), public.wb_attack(bigint, bigint, text, text), public.wb_rank(bigint), public.wb_claim(bigint), public.wb_unclaimed() from public, anon;
+grant execute on function public.wb_current(), public.wb_attack(bigint, bigint, text, text), public.wb_rank(bigint), public.wb_claim(bigint), public.wb_unclaimed() to authenticated;

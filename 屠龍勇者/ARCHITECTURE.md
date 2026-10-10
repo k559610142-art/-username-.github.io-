@@ -32,6 +32,7 @@
 | `data/chat.js` | **聊天**：世界／隊伍頻道、`renderChat`、`chatFetch`（分頁開著時每 4 秒抓新訊息）、`chatSend`、`chatOpen`；載入時把 `chat` 加進 `TABS`／`PANEL_FNS`（第 32 節） |
 | `data/clan.js` | **血盟**：`myClan`／`myClanRole`、`clanLoad`、建立／加入／審核／踢人／任命／讓位／退出／解散（都呼叫 Supabase `clan_*` 函式）、`renderClan`；載入時把 `clan` 加進 `TABS`／`PANEL_FNS`（第 33 節） |
 | `data/rank.js` | **排行榜**：`RANK_KINDS`（等級／屠龍／永夜之塔／擊殺／血盟）、`rankLoad`（呼叫 Supabase `dragon_leaderboard`，同一榜 1 分鐘快取）、`renderRank`；載入時把 `rank` 加進 `TABS`／`PANEL_FNS`（第 34 節） |
+| `data/wb.js` | **世界首領**：`WB_KINDS`（5 隻首領的種族與招式）、`wbLoad`、`wbAttack`（60 秒模擬→`wb_attack`）、`wbClaim`／`wbReward`（領獎）、`renderWb`；載入時把 `wb` 加進 `TABS`／`PANEL_FNS`（第 35 節） |
 | `data/codex.js` | 裝備圖鑑分頁 `renderCodex`（全部道具的分類、品質、屬性、取得方式；第 20 節），載入時把 `codex` 加進 `TABS`／`PANEL_FNS` |
 | `data/ui-frame.js` | 主畫面外框：畫面尺寸模式 `displayMode`／`setDisplayMode`、`layoutFrame` 縮放、左右柱抽屜、紅藍法球、底部 6 格快捷（第 15、16 節） |
 | `data/ui-scene.js` | 中間即時地圖：俯視格子地圖、角色上下左右尋怪、怪物遊走、傷害飄字、村莊建築（第 17 節） |
@@ -46,7 +47,7 @@
 
 ## 2. 載入順序與依賴
 
-`config → classes → skills → items → monsters → zones → quests → resonance → player → enchant → affix → craft → maps → combat → town → save → cloud → offline → ui → ui-create → ui-panels → codex → raid → clan → chat → rank → ui-frame → ui-scene → pwa → main`
+`config → classes → skills → items → monsters → zones → quests → resonance → player → enchant → affix → craft → maps → combat → town → save → cloud → offline → ui → ui-create → ui-panels → codex → raid → clan → chat → rank → wb → ui-frame → ui-scene → pwa → main`
 
 - 上層資料檔（config～quests）只在「載入時」用到更前面的檔案；quests 載入時會把獎勵裝備與任務道具寫進 `ITEMS`，所以要在 items 之後。
 - resonance 載入時要改 `ITEMS`（含任務武器）、`MONSTERS` 掉落、`RECIPES`，所以在 quests 之後；`findSkill`（skills.js）在執行期才呼叫它的 `findResonanceSkill`。
@@ -55,7 +56,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261010l`）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261010m`）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
   整個遊戲載不起來（看起來像「存檔壞掉」，其實存檔還在），`20261009u` 修復時採用較新的 `20261009t` 那一邊。
   SW 依版本號快取 JS，**沒換版本號，已安裝 App 的玩家會一直跑舊程式**。
@@ -944,4 +945,26 @@ powershell -ExecutionPolicy Bypass -File tools\cut-sprites.ps1 -Spec tools\sprit
 - **畫面**：五個榜的切換鈕、等級榜可選職業、前 50 名（🥇🥈🥉）、自己的角色金框；不在前 50 名時下方列出「你的角色」名次。同一個榜 1 分鐘內再看用快取，「🔄 重新整理」強制重讀。
 - **驗證**：本機 PostgreSQL 16（排名、職業篩選、封鎖排除、只取前 1 名仍回傳自己、血盟榜、匿名不能呼叫）；
   **真實伺服器** Playwright 兩台（PC＋手機）：五個榜的數值與順序正確、職業篩選、自己的角色標示；網路與 Console 無錯誤。測試存檔已刪除。
+
+## 35. 世界首領（2026-10-10，版本 `20261010m`；`wb.js`、`tools/supabase.sql` 世界首領段）
+
+- 使用者要求：B 計畫的「世界首領」。入口：手機右柱抽屜「👹 世界首領」、PC 地圖左側最上面 👹（`PC_SLOTS` side，y 168）。
+- **伺服器**（`dragon_wb`、`dragon_wb_hits`、`dragon_wb_claims`，玩家不能直接讀寫，全部經過函式）：
+  - `wb_current()`：回傳目前首領、自己今天剩幾次、對這隻造成的傷害、參戰人數；沒有首領或上一隻結束（打倒或 48 小時到）滿 30 分鐘時建立下一隻（advisory lock 防重複）。
+    輪替 drake 遠古地龍・格蘭卡 🐲 → balrog 炎魔・巴洛格 🔥 → frost 冰霜巨龍・希琳 🐉 → lich 不死君王・莫德 💀 → roc 風暴巨鷹・奧拉 🦅。
+    HP = 6000 × max(3, 近 3 天有上傳存檔的帳號數)。順手刪 30 天前的首領。
+  - `wb_attack(p_wb, p_dmg, p_name, p_cls)`：檢查登入、未封鎖、首領還活著、**有雲端存檔**（等級取雲端存檔最高等級）、今天（台灣時間零點起，`wb_day_start`）未滿 3 次；
+    單次傷害上限 4 ×（1500 + 70 × 等級），超過截掉並寫 `dragon_flags`（`wb_dmg`，管理頁顯示「世界首領傷害超過上限」）；扣血（鎖列），歸零時記最後一擊。
+    上限依據：2026-10-10 實測 12 職業、裝備＋10、對 Lv+3 首領 60 秒，各等級最高傷害約 1300 + 65 × 等級。
+  - `wb_rank(p_wb)`：傷害合計前 20 名＋自己（不回傳 user_id）。`wb_unclaimed()`：最近 7 天已結束、自己打過、還沒領的首領。
+  - `wb_claim(p_wb)`：首領結束後才能領，每人每隻一次（`dragon_wb_claims` 主鍵），回傳自己傷害、總傷害、名次、人數、是否打倒、是否最後一擊。
+- **遊戲端**：挑戰前先存檔並上傳（上限用雲端等級）；`wbMakeBoss` 依挑戰者等級做首領（Lv+3、血量無限、傷害 ×1.3、AC−10、25% 機率放範圍魔法；地龍與冰龍是龍族、炎魔是惡魔、莫德是不死系），
+  用 `raidSimulate(…, { boss, limitMs: 60000 })` 模擬 60 秒（1 人；有全體吐息；倒下就結束，不扣經驗），把傷害送伺服器，扣掉用掉的藥水與彈藥；畫面顯示這次傷害、消耗與最後 10 則戰鬥訊息。
+  分頁開著時每 15 秒更新（倒數用伺服器時間）。
+- **獎勵**（`wbReward`，發給領獎時正在玩的角色）：占比 share = 自己傷害／總傷害；打倒 ×1、時間到 ×0.3。
+  經驗 = 升級所需經驗 ×（0.03 + 0.3 × share）× 狩獵遞減；金幣 =（20,000 + 300,000 × share）；打倒時：第 1 名萬能藥、第 2～3 名祝福武器卷、最後一擊祝福防具卷。
+- **`raidSimulate` 擴充**：第三個參數 `opts`（`boss` 指定怪物物件、`limitMs` 時間上限；上限不到 4 分鐘就不會狂暴）。團隊副本不受影響。
+- **驗證**：本機 PostgreSQL 16（建立首領、無存檔被拒、上限截斷與可疑紀錄、第 4 次被拒、未結束不能領、重複領被拒、30 分鐘後換下一隻、不能直接讀表）。
+  **真實伺服器**（2026-10-10，使用第一隻首領測試）：兩個測試帳號用遊戲畫面各挑戰一次（共用血條 18,000 → 14,651、排行、次數剩 2、扣藥水），第三個 Lv99 測試帳號以上限傷害打倒；
+  兩人領獎（第 2、3 名：經驗、金幣、祝福武器卷）、重複領被拒；結束畫面顯示最後一擊與下一隻倒數。Console 只有預期中的重複領獎 409。
 
