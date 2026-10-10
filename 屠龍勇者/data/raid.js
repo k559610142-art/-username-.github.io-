@@ -304,7 +304,7 @@ let raidMsg = '';
 let raidPick = 'drake';    // 建立隊伍時選的副本
 let raidReplay = null;     // { res, key, start, claimed, reward }
 
-function raidReady() { return isCloudConfigured() && cloudLoggedIn(); }
+function raidReady() { return isCloudConfigured() && cloudLoggedIn() && !cloudBan; }
 function raidRunKey(room) { return `${room.id}:${room.round}`; }
 function raidIsLeader() { return !!(raidRoom && cloudUser && raidRoom.leader === cloudUser.id); }
 function raidMe() { return cloudUser ? raidMembers.find(m => m.user_id === cloudUser.id) : null; }
@@ -570,6 +570,7 @@ function renderRaid() {
     if (!isCloudConfigured()) return `<div class="panel notice">團隊副本需要雲端伺服器，目前尚未開通。</div>`;
     if (!cloudLoggedIn()) return `<div class="panel notice">團隊副本要先登入帳號（和朋友組隊需要知道你是誰）。
         <div class="btn-row"><button onclick="cloudLoginFromGame()">☁️ 回標題畫面登入</button></div></div>`;
+    if (cloudBan) return `<div class="panel notice">⛔ 帳號已被管理者停權，無法使用團隊副本。<br><small>原因：${esc(cloudBan.reason || '（未填寫）')}</small></div>`;
     if (!raidRoom) raidResume();
     const msg = raidMsg ? `<div class="panel notice">${esc(raidMsg)}</div>` : '';
     if (raidRoom && raidReplay) return msg + raidReplayHtml();

@@ -178,3 +178,206 @@ create policy "raid_members_delete" on public.raid_members for delete to authent
 revoke all on public.raid_rooms, public.raid_members from anon;
 grant select, insert, update, delete on public.raid_rooms, public.raid_members to authenticated;
 grant execute on function public.raid_is_member(uuid) to authenticated;
+
+-- ═════════ 抓改檔與封鎖（ARCHITECTURE.md 第 31 節）═════════
+-- 每次雲端存檔，伺服器自動記一筆歷程（等級、總經驗、金幣、伺服器時間），和上一筆比較，太誇張就寫進 dragon_flags 給管理者看。
+-- 玩家改不到這些表；檢查在伺服器的 trigger 裡做，玩家端跳不過。被封鎖的帳號不能再上傳存檔、建立或加入團隊副本。
+
+create table if not exists public.dragon_admins (
+    user_id uuid primary key references auth.users (id) on delete cascade   -- 管理者（只能在 SQL Editor 手動新增，見文件）
+);
+
+create table if not exists public.dragon_bans (
+    user_id  uuid        primary key references auth.users (id) on delete cascade,
+    email    text,
+    reason   text        check (char_length(reason) <= 200),
+    by_email text,
+    at       timestamptz not null default now()
+);
+
+create table if not exists public.dragon_profiles (   -- 帳號 Email 與最後上傳時間（管理頁顯示用）
+    user_id   uuid        primary key references auth.users (id) on delete cascade,
+    email     text,
+    last_name text,
+    last_seen timestamptz not null default now()
+);
+
+create table if not exists public.dragon_save_log (
+    id           bigserial   primary key,
+    user_id      uuid        not null references auth.users (id) on delete cascade,
+    slot         smallint    not null,
+    char_created bigint,                  -- 角色的建立時間（辨認是不是同一個角色）
+    name         text,
+    cls          text,
+    lv           int,
+    total_exp    numeric,                 -- 從 1 級開始累積的總經驗
+    gold         numeric,
+    client_t     bigint,
+    at           timestamptz not null default now(),   -- 伺服器時間
+    flags        text[]
+);
+create index if not exists dragon_save_log_idx on public.dragon_save_log (user_id, slot, id desc);
+
+create table if not exists public.dragon_flags (
+    id       bigserial   primary key,
+    user_id  uuid        not null references auth.users (id) on delete cascade,
+    email    text,
+    slot     smallint,
+    name     text,
+    lv       int,
+    kind     text        not null,        -- exp_rate / gold_rate / stat / elixir / enchant / level / gold_negative / clock / parse
+    detail   text,
+    at       timestamptz not null default now(),
+    resolved boolean     not null default false
+);
+create index if not exists dragon_flags_open_idx on public.dragon_flags (resolved, at desc);
+
+-- 升到下一級需要的經驗（與 data/config.js 的 expToNext 相同）
+create or replace function public.dragon_exp_to_next(l int) returns numeric
+language sql immutable set search_path = '' as $$
+    select case
+        when l <= 0 then 0
+        when l <= 5 then (array[125, 175, 200, 250, 546])[l]
+        when l <= 44 then power(l + 1, 4) - power(l, 4)
+        when l = 45 then 729360 when l = 46 then 1508416 when l = 47 then 3495263 when l = 48 then 9912189
+        else 36065092 end::numeric;
+$$;
+
+create or replace function public.dragon_total_exp(l int, e numeric) returns numeric
+language sql immutable set search_path = '' as $$
+    select coalesce((select sum(public.dragon_exp_to_next(g)) from generate_series(1, l - 1) g), 0) + coalesce(e, 0);
+$$;
+
+-- 65 級起狩獵經驗遞減（與 config.js huntExpRate 相同）
+create or replace function public.dragon_hunt_rate(l int) returns numeric
+language sql immutable set search_path = '' as $$
+    select case when l < 65 then 1 when l < 70 then 0.5 when l < 75 then 0.25 when l < 79 then 0.125 when l < 80 then 0.0625
+        when l < 82 then 1.0 / 32 when l < 84 then 1.0 / 64 when l < 86 then 1.0 / 128 when l < 87 then 1.0 / 256 else 1.0 / 512 end;
+$$;
+
+create or replace function public.dragon_is_admin() returns boolean
+language sql stable security definer set search_path = '' as $$
+    select exists (select 1 from public.dragon_admins a where a.user_id = auth.uid());
+$$;
+
+create or replace function public.dragon_is_banned() returns boolean
+language sql stable security definer set search_path = '' as $$
+    select exists (select 1 from public.dragon_bans b where b.user_id = auth.uid());
+$$;
+
+-- 存檔歷程與異常偵測。門檻（2026-10-10 實測：各等級最快練功速度約「(等級²+1)×遞減」的 100～600 倍／小時，金幣約 5～215 倍）：
+--   經驗：每小時增加 > 2000 ×((等級+5)²+1)× 遞減 → exp_rate（約正常最快的 5～10 倍以上）
+--   金幣：每小時增加 > max(300,000, 3000 ×((等級+5)²+1)) → gold_rate（賣大量裝備也可能觸發，要人工判斷）
+--   時間至少算 0.5 小時（打完龍、領團隊副本獎勵的瞬間增加不會誤判）；第一次上傳的角色用「建立時間到現在」計算
+--   絕對檢查：等級 > 99、基礎能力值 > 40、萬能藥 > 5、強化 > +15、金幣 < 0、存檔時間比伺服器快 10 分鐘以上
+create or replace function public.dragon_saves_audit() returns trigger
+language plpgsql security definer set search_path = '' as $$
+declare
+    p jsonb := new.data -> 'player';
+    v_lv int; v_exp numeric; v_gold numeric; v_created bigint; v_total numeric;
+    prev record; hrs numeric; unit numeric; lim numeric; f text[] := '{}'; d text[] := '{}'; k int;
+    v_email text := auth.jwt() ->> 'email';
+begin
+    begin
+        v_lv := coalesce((p ->> 'lv')::int, 1);
+        v_exp := coalesce((p ->> 'exp')::numeric, 0);
+        v_gold := coalesce((p ->> 'gold')::numeric, 0);
+        v_created := (p ->> 'created')::numeric::bigint;
+        v_total := public.dragon_total_exp(least(greatest(v_lv, 1), 120), v_exp);
+        if v_lv > 99 or v_lv < 1 then f := array_append(f, 'level'); d := array_append(d, format('等級 %s', v_lv)); end if;
+        if v_gold < 0 then f := array_append(f, 'gold_negative'); d := array_append(d, format('金幣 %s', v_gold)); end if;
+        if (select max(value::numeric) from jsonb_each_text(coalesce(p -> 'stats', '{}'::jsonb))) > 40 then
+            f := array_append(f, 'stat'); d := array_append(d, ('能力值 ' || (p -> 'stats')::text));
+        end if;
+        if coalesce((p ->> 'elixirs')::int, 0) > 5 then f := array_append(f, 'elixir'); d := array_append(d, format('萬能藥 %s 瓶', p ->> 'elixirs')); end if;
+        select max((x ->> 'ench')::int) into k from (
+            select jsonb_array_elements(coalesce(p -> 'inv', '[]'::jsonb)) x
+            union all select jsonb_array_elements(coalesce(p -> 'storage', '[]'::jsonb))
+            union all select value from jsonb_each(coalesce(p -> 'equip', '{}'::jsonb))) s;
+        if k > 15 then f := array_append(f, 'enchant'); d := array_append(d, format('裝備強化 +%s', k)); end if;
+        if new.client_t > (extract(epoch from now()) * 1000 + 600000) then
+            f := array_append(f, 'clock'); d := array_append(d, format('存檔時間比伺服器快 %s 分鐘（可能改了裝置時間）', round((new.client_t - extract(epoch from now()) * 1000) / 60000)));
+        end if;
+        -- 和這個角色上一筆比較
+        select * into prev from public.dragon_save_log l
+            where l.user_id = new.user_id and l.slot = new.slot and l.char_created is not distinct from v_created
+            order by l.id desc limit 1;
+        if found then
+            hrs := greatest(extract(epoch from now() - prev.at) / 3600, 0.5);
+            unit := (power(prev.lv + 5, 2) + 1);
+            lim := 2000 * unit * public.dragon_hunt_rate(prev.lv) * hrs;
+            if v_total - prev.total_exp > lim then
+                f := array_append(f, 'exp_rate'); d := array_append(d, format('%s 小時內經驗 +%s（Lv.%s→%s，上限約 %s）', round(hrs, 2), round(v_total - prev.total_exp), prev.lv, v_lv, round(lim)));
+            end if;
+            lim := greatest(300000, 3000 * unit) * hrs;
+            if v_gold - prev.gold > lim then
+                f := array_append(f, 'gold_rate'); d := array_append(d, format('%s 小時內金幣 +%s（上限約 %s）', round(hrs, 2), round(v_gold - prev.gold), round(lim)));
+            end if;
+        elsif v_created is not null and v_created > 0 then
+            hrs := greatest((extract(epoch from now()) * 1000 - v_created) / 3600000, 0.5);
+            lim := 2000 * 226 * hrs + 100000;   -- 新角色：用 Lv.10 的上限估算（前期升級最快）
+            if v_total > lim and v_lv >= 20 then
+                f := array_append(f, 'exp_rate'); d := array_append(d, format('角色建立 %s 小時就有 Lv.%s（總經驗 %s）', round(hrs, 2), v_lv, round(v_total)));
+            end if;
+        end if;
+    exception when others then
+        f := array_append(f, 'parse'); d := array_append(d, ('存檔格式無法解析：' || sqlerrm));
+    end;
+
+    insert into public.dragon_save_log (user_id, slot, char_created, name, cls, lv, total_exp, gold, client_t, flags)
+        values (new.user_id, new.slot, v_created, new.name, new.cls, v_lv, v_total, v_gold, new.client_t, nullif(f, '{}'));
+    -- 每個欄位只留最近 200 筆
+    delete from public.dragon_save_log l where l.user_id = new.user_id and l.slot = new.slot
+        and l.id < (select id from public.dragon_save_log x where x.user_id = new.user_id and x.slot = new.slot order by x.id desc offset 199 limit 1);
+    insert into public.dragon_profiles (user_id, email, last_name, last_seen) values (new.user_id, v_email, new.name, now())
+        on conflict (user_id) do update set email = coalesce(excluded.email, public.dragon_profiles.email), last_name = excluded.last_name, last_seen = now();
+    -- 同一種異常、同一角色，24 小時內還沒處理的就不重複記
+    for k in 1 .. coalesce(array_length(f, 1), 0) loop
+        if not exists (select 1 from public.dragon_flags x where x.user_id = new.user_id and x.slot = new.slot and x.kind = f[k]
+                and not x.resolved and x.at > now() - interval '24 hours') then
+            insert into public.dragon_flags (user_id, email, slot, name, lv, kind, detail) values (new.user_id, v_email, new.slot, new.name, v_lv, f[k], d[k]);
+        end if;
+    end loop;
+    return null;
+end $$;
+
+drop trigger if exists dragon_saves_audit on public.dragon_saves;
+create trigger dragon_saves_audit after insert or update on public.dragon_saves for each row execute function public.dragon_saves_audit();
+
+alter table public.dragon_admins enable row level security;
+alter table public.dragon_bans enable row level security;
+alter table public.dragon_profiles enable row level security;
+alter table public.dragon_save_log enable row level security;
+alter table public.dragon_flags enable row level security;
+
+drop policy if exists "dragon_bans_select" on public.dragon_bans;
+drop policy if exists "dragon_bans_admin" on public.dragon_bans;
+drop policy if exists "dragon_profiles_admin" on public.dragon_profiles;
+drop policy if exists "dragon_save_log_admin" on public.dragon_save_log;
+drop policy if exists "dragon_flags_admin" on public.dragon_flags;
+drop policy if exists "dragon_saves_select_admin" on public.dragon_saves;
+create policy "dragon_bans_select" on public.dragon_bans for select to authenticated using ((select auth.uid()) = user_id or public.dragon_is_admin());   -- 被封鎖的人看得到自己的原因
+create policy "dragon_bans_admin" on public.dragon_bans for all to authenticated using (public.dragon_is_admin()) with check (public.dragon_is_admin());
+create policy "dragon_profiles_admin" on public.dragon_profiles for select to authenticated using (public.dragon_is_admin());
+create policy "dragon_save_log_admin" on public.dragon_save_log for select to authenticated using (public.dragon_is_admin());
+create policy "dragon_flags_admin" on public.dragon_flags for all to authenticated using (public.dragon_is_admin()) with check (public.dragon_is_admin());
+create policy "dragon_saves_select_admin" on public.dragon_saves for select to authenticated using (public.dragon_is_admin());   -- 管理者可以查看任何人的存檔
+
+-- 被封鎖：不能上傳存檔、不能建立或加入團隊副本（取代前面同名的規則）
+drop policy if exists "dragon_saves_insert_own" on public.dragon_saves;
+drop policy if exists "dragon_saves_update_own" on public.dragon_saves;
+create policy "dragon_saves_insert_own" on public.dragon_saves for insert to authenticated with check ((select auth.uid()) = user_id and not public.dragon_is_banned());
+create policy "dragon_saves_update_own" on public.dragon_saves for update to authenticated using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id and not public.dragon_is_banned());
+drop policy if exists "raid_rooms_insert" on public.raid_rooms;
+create policy "raid_rooms_insert" on public.raid_rooms for insert to authenticated with check ((select auth.uid()) = leader and not public.dragon_is_banned());
+drop policy if exists "raid_members_insert" on public.raid_members;
+create policy "raid_members_insert" on public.raid_members for insert to authenticated with check ((select auth.uid()) = user_id and not public.dragon_is_banned());
+
+revoke all on public.dragon_admins, public.dragon_bans, public.dragon_profiles, public.dragon_save_log, public.dragon_flags from anon;
+grant select on public.dragon_profiles, public.dragon_save_log to authenticated;
+grant select, insert, update, delete on public.dragon_bans, public.dragon_flags to authenticated;
+grant usage on sequence public.dragon_flags_id_seq to authenticated;
+grant execute on function public.dragon_is_admin(), public.dragon_is_banned() to authenticated;
+
+-- 設定管理者（把 Email 換成你在遊戲裡註冊的帳號，在 SQL Editor 單獨執行這一行）：
+-- insert into public.dragon_admins select id from auth.users where email = '你的Email' on conflict do nothing;

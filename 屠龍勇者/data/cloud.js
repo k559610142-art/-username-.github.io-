@@ -20,6 +20,7 @@ const CLOUD_TIMEOUT_MS = 10 * 1000;
 
 let cloudSb = null;          // Supabase client
 let cloudUser = null;        // { id, email }
+let cloudBan = null;         // 被管理者封鎖：{ reason, at }（第 31 節）；封鎖中不上傳
 let cloudReady = false;      // 已經讀過登入狀態
 let cloudBusy = false;       // 同步中
 let cloudKnown = {};         // slot → 雲端那筆的 client_t（null＝雲端沒有）；上傳時用來檢查有沒有被別台裝置改過
@@ -96,9 +97,27 @@ async function initCloud() {
 async function cloudOnSignedIn(u, silent) {
     cloudUser = { id: u.id, email: u.email || '' };
     renderCloudEntry();
+    if (await cloudCheckBan()) return;
     const r = await cloudSync();
     if (!silent && r) showToast(r);
     raidResume();   // 團隊副本：回到原本的隊伍、補領離線時打完的獎勵（raid.js）
+}
+
+// 有沒有被管理者封鎖（dragon_bans 自己那一列；被封鎖的人看得到原因）。封鎖中：不上傳、不能組隊，本機照常遊玩
+let cloudBanShown = false;
+async function cloudCheckBan() {
+    if (!cloudLoggedIn()) return false;
+    try {
+        const { data, error } = await cloudTimeout(cloudSb.from('dragon_bans').select('reason, at').eq('user_id', cloudUser.id).maybeSingle());
+        if (error) throw error;
+        cloudBan = data || null;
+    } catch (e) { console.warn('查詢封鎖狀態失敗', e); }
+    renderCloudEntry();
+    if (cloudBan && !cloudBanShown) {
+        cloudBanShown = true;
+        gameAlert('⛔ 帳號已停權', `這個帳號被管理者停權，無法使用雲端存檔與團隊副本。\n原因：${cloudBan.reason || '（未填寫）'}\n\n角色仍可以在這台裝置上單機遊玩。如有疑問請聯絡管理者。`);
+    }
+    return !!cloudBan;
 }
 
 // ───────── 登入後合併：本機角色與雲端角色 ─────────
@@ -117,7 +136,7 @@ function cloudReadLocal(i) {
 }
 
 async function cloudSync() {
-    if (!cloudLoggedIn() || cloudBusy) return '';
+    if (!cloudLoggedIn() || cloudBusy || cloudBan) return '';
     cloudBusy = true;
     cloudError = '';
     renderCloudEntry();
@@ -254,7 +273,7 @@ function cloudAutoPush() {
 // 上傳所有有記號的欄位；force＝不管間隔（同步、手動、離開畫面時）。回傳是否全部成功
 let cloudFlushing = null;   // 上傳進行中（避免同時跑兩次）
 async function cloudFlush(force) {
-    if (!cloudLoggedIn() || !cloudDirty.size) return true;
+    if (!cloudLoggedIn() || !cloudDirty.size || cloudBan) return true;
     if (cloudFlushing) { await cloudFlushing.catch(() => { }); if (!cloudDirty.size) return true; }
     if (!force && Date.now() - cloudLastPush < CLOUD_PUSH_MS) return false;
     cloudFlushing = cloudFlushRun();
@@ -273,6 +292,7 @@ async function cloudFlushRun() {
             ok = false;
             cloudError = cloudErrText(e);
             console.warn('雲端上傳失敗', e);
+            if (e && e.code === '42501' && await cloudCheckBan()) break;   // 被 RLS 擋下：可能剛被封鎖
         }
     }
     if (ok) { cloudError = ''; cloudLastSync = Date.now(); }
@@ -429,6 +449,7 @@ async function cloudSignInGoogle() {
 
 function cloudStatusText() {
     if (!cloudLoggedIn()) return '';
+    if (cloudBan) return '⛔ 帳號已停權';
     if (cloudBusy) return '同步中…';
     if (Object.keys(cloudConflict).length) return '⚠️ 有角色的雲端進度衝突';
     if (cloudError) return '⚠️ ' + cloudError;
@@ -477,7 +498,7 @@ async function cloudDoSignOut() {
     for (let i = 0; i < MAX_SLOTS; i++) cloudLs(slotKey(i), null);
     cloudLs(CLOUD_OWNER_KEY, null);
     cloudLs(CLOUD_SEEN_KEY, null);
-    cloudUser = null;
+    cloudUser = null; cloudBan = null; cloudBanShown = false;
     cloudKnown = {}; cloudDirty = new Set(); cloudConflict = {}; cloudError = '';
     showTitle();
     showToast('已登出');
