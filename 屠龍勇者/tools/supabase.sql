@@ -690,3 +690,41 @@ create policy "dragon_chat_insert" on public.dragon_chat for insert to authentic
     and (channel = 'world'
         or (channel like 'room:%' and public.raid_is_member(substr(channel, 6)::uuid))
         or (channel like 'clan:%' and public.dragon_my_clan() = substr(channel, 6)::uuid)));
+
+-- ═════════ 排行榜（ARCHITECTURE.md 第 34 節）═════════
+-- 直接用雲端存檔 dragon_saves 計算（玩家不用另外上傳）；被封鎖的帳號不上榜。回傳前 p_limit 名＋呼叫者自己的角色（is_me），不回傳 user_id。
+-- p_kind：level 等級（同等級比總經驗）、dragon 四大龍討伐次數、tower 永夜之塔最高通過樓層、kills 擊殺數、clan 血盟（人數、平均等級）
+create or replace function public.dragon_leaderboard(p_kind text, p_cls text default null, p_limit int default 50)
+returns table (rk bigint, name text, cls text, lv int, val numeric, clan text, is_me boolean)
+language sql stable security definer set search_path = '' as $$
+    with base as (
+        select s.user_id, s.name, s.cls, s.lv, s.data -> 'player' as p,
+               (select c.icon || ' ' || c.name from public.dragon_clan_members m join public.dragon_clans c on c.id = m.clan_id where m.user_id = s.user_id) as clan
+        from public.dragon_saves s
+        where not exists (select 1 from public.dragon_bans b where b.user_id = s.user_id)
+          and (p_cls is null or p_cls = '' or s.cls = p_cls)
+    ), scored as (
+        select user_id, name, cls, lv, clan,
+            case p_kind
+                when 'dragon' then coalesce((select sum(value::numeric) from jsonb_each_text(coalesce(p -> 'dragons', '{}'::jsonb))), 0)
+                when 'tower' then coalesce((select max(k::int) from jsonb_object_keys(coalesce(p -> 'towerCleared', '{}'::jsonb)) k where k ~ '^[0-9]+$'), 0)
+                when 'kills' then coalesce((p ->> 'kills')::numeric, 0)
+                else public.dragon_total_exp(least(greatest(coalesce(lv, 1), 1), 120), coalesce((p ->> 'exp')::numeric, 0))
+            end as val
+        from base
+    ), ranked as (
+        select row_number() over (order by val desc, lv desc, name) as rk, user_id, name, cls, lv, val, clan from scored where val > 0
+    )
+    select rk, name, cls, lv, val, clan, user_id = auth.uid() as is_me from ranked
+    where p_kind <> 'clan' and (rk <= least(greatest(p_limit, 1), 100) or user_id = auth.uid())
+    union all
+    select row_number() over (order by c.member_count desc, avg_lv desc, c.name), c.icon || ' ' || c.name, null, c.member_count, round(avg_lv, 1), null,
+           exists (select 1 from public.dragon_clan_members m where m.clan_id = c.id and m.user_id = auth.uid())
+    from public.dragon_clans c
+    cross join lateral (select coalesce(avg(m.lv), 0) as avg_lv from public.dragon_clan_members m where m.clan_id = c.id) a
+    where p_kind = 'clan'
+    order by 1
+    limit 120;
+$$;
+revoke execute on function public.dragon_leaderboard(text, text, int) from public, anon;
+grant execute on function public.dragon_leaderboard(text, text, int) to authenticated;
