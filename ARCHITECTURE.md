@@ -1636,7 +1636,7 @@ combatTick() 每秒執行 [combat.js]
 （以 8 種舊存檔形態測試目前程式皆可正常讀取；移除 `#age-display` 即可重現同一錯誤。）
 
 ### 1. 發佈版本號（防止新舊檔案混用）
-- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20261005DI`，gm.html 同；2026-10-01 起 Service Worker 也以這個版本號區分快取，換版本號＝玩家下次開啟時自動換新快取，第 64 節）。
+- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20261005DJ`，gm.html 同；2026-10-01 起 Service Worker 也以這個版本號區分快取，換版本號＝玩家下次開啟時自動換新快取，第 64 節）。
 - **每次推上 GitHub Pages 前，把所有 `?v=` 全部取代成新值**（例：日期＋序號）。新 index.html 會指向新網址的 JS，不會再拿到快取的舊檔。**gm.html 也有 `?v=`（2026-09-28 起），要一起改。**
 - 新增 `data/*.js` 時也要記得帶上 `?v=`。
 - **2026-10-03 起（第 72 節）**：網站可改由 GitHub Actions 發佈建置後的 `dist/`：`index.html` 的 data 腳本被換成單一 `data/game.js?v=版本`、gm.html 換成 `data/gm-lib.js?v=版本`，版本號沿用 index.html 的 `?v=`（所有 `?v=` 必須一致，否則建置失敗）。
@@ -3628,7 +3628,7 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
 - **野外種族比例**（2026-10-03，第 66 節第 2 期）：`fieldRaceCounts` 改依地圖出沒組合的權重（`fieldMonsterPool`），不再是全部 7 種平均；斬妖錄、離線擊殺與法寶掉落跟著變。
 - **日後新增來源**（符寶、法寶、裝備特效）一律加在 `race.js` 的 `getRaceDmgBonus()` 裡再套上限；新增敵人時記得給 `attrs.race`（沒有＝人修）。
 
-- **神族 `god`**（2026-10-10，第 75 節世界 Boss 羅峰）：只做顯示用的種族，不在 `RACE_KEYS`、沒有特性，玩家的剋制對它無效。
+- **神族 `god`**（2026-10-10，第 75 節世界 Boss 羅峰）：不在 `RACE_KEYS`（玩家的剋制對它無效）；特性 `RACE_TRAITS.god`＝必定暴擊（`alwaysCrit`）＋必定連擊（`alwaysCombo`，目前只有世界 Boss 讀）＋無視防禦（`ignoreDef`）。
 
 ## 63. 奇遇・異界空間（`config-encounter.js`、`encounter.js`；2026-10-01，版本 `20261004q`）
 
@@ -4292,6 +4292,12 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
 
 - **羅峰改「神族」（2026-10-10，版本 `20261005DI`，使用者：「種族／屬性 魔修・金 改神族」）**：config-race.js 的 `RACES` 新增 `god`（✨神族）。**只用於顯示**：不在 `RACE_KEYS`，所以沒有斬妖錄、剋制符／法寶／裝備特效，
   玩家對各族的剋制加成對神族無效（`resolveHit` 的 `raceDmg[race] || 0`）；也沒有 `RACE_TRAITS`（原本魔修的「攻擊吸血 10%」沒了）。Boss 的攻擊改為物理（世界 Boss 只有 demon／heart 用術法）。屬性仍是金。
+
+- **神族特性：必定暴擊＋連擊、無視防禦（2026-10-10，版本 `20261005DJ`，使用者：「Boss 的種族特性 每次攻擊必定暴擊＋連擊、無視防禦」）**：
+  - config-race.js `RACE_TRAITS.god = { alwaysCrit, alwaysCombo, ignoreDef }`；race.js 的 `applyRaceTraits` 把三個旗標放進敵人 attrs。
+  - elements.js `resolveHit`：`attrs.alwaysCrit` 必定暴擊（×`NV2.critDmg` 2）；`attrs.ignoreDef` 跳過玩家防禦／魔防（閃避照常判定）。
+  - world-boss.js `wbRound`：`E.attrs.alwaysCombo` 時 Boss 每回合多打一下（兩下各自判定閃避，合併演出，tag 加 combo）。世界 Boss 視窗在介紹下方顯示「✨神族特性：…（可以閃避）」。
+  - 平衡（本機模擬，新角色、防禦 500）：Boss 單次反擊平均 0.45 → 5.53（約 12 倍）；撐的回合 八岐大蛇 19.9 → 羅峰 **5.2**。羅峰一回合 0.667 秒，所以多數人約 3～4 秒就倒下、看不完 20 秒動畫，也很難拿 ⭐有效挑戰。
 
 ## 76. 背景音樂（`bgm.js`；2026-10-04，版本 `20261005BC`）
 

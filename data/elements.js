@@ -221,12 +221,12 @@ function resolveHit(rawDmg, attacker, defender) {
     // 新制：暴擊（attrs.crit 為機率 0～0.3）；術法攻擊用魔法暴擊 magCrit（悟性，第 66 節第 4 期 A；敵人沒有 magCrit 就用 crit）
     const mag = attacker.dmgType === 'mag';
     const critRate = mag && typeof attacker.attrs.magCrit === 'number' ? attacker.attrs.magCrit : attacker.attrs.crit;
-    if (critRate > 0 && Math.random() < critRate) {
+    if (attacker.attrs.alwaysCrit || (critRate > 0 && Math.random() < critRate)) {   // alwaysCrit：神族必定暴擊（race.js）
         dmg *= attacker.attrs.critDmg || NV2.critDmg;   // 玩家的暴擊倍率可被天賦提高（第 68 節）
         tags.push("crit");
     }
     const preDef = dmg;   // 防禦前的傷害
-    if (!thunder && !darkHit) {   // 雷擊、暗蝕無視防禦；破甲：無視部分防禦
+    if (!thunder && !darkHit && !attacker.attrs.ignoreDef) {   // 雷擊、暗蝕、神族（ignoreDef）無視防禦；破甲：無視部分防禦
         const pen = attacker.attrs.armorPen || 0;
         const da = defender.attrs;
         if (da.isPlayer) dmg *= defMult((mag ? (da.mdef || 0) : (da.def || 0)) - pen);   // 玩家：防禦／魔防點數，《天堂2》式（第 66 節）

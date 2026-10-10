@@ -32,7 +32,10 @@ const RACE_TRAITS = {
     beast: { hpMult: 1.1, desc: "氣血 +10%" },
     ghost: { eva: 5, poisonImmune: true, desc: "閃避 +5、不會中毒" },
     demon: { lifesteal: 0.1, desc: "攻擊時吸取造成傷害的 10% 化為氣血" },
-    heart: { desc: "與你一模一樣的鏡像，沒有額外特性" }
+    heart: { desc: "與你一模一樣的鏡像，沒有額外特性" },
+    // 神族（2026-10-10 使用者：「Boss 的種族特性：每次攻擊必定暴擊＋連擊、無視防禦」；目前只有世界 Boss 羅峰）：
+    //   alwaysCrit 每次攻擊必定暴擊、alwaysCombo 每回合必定連擊（多打一下）、ignoreDef 無視玩家的防禦／魔防（閃避照常判定）
+    god: { alwaysCrit: true, alwaysCombo: true, ignoreDef: true, desc: "每次攻擊必定暴擊＋連擊、無視防禦" }
 };
 
 // C 剋制法寶（第 4 期，2026-09-30；race.js 的 raceTreasure*）：角色裝備視窗的「法寶欄」2 格，穿上才生效（使用者選 2 格）

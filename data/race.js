@@ -12,6 +12,9 @@ function applyRaceTraits(attrs) {
     if (t.eva) attrs.eva = (attrs.eva || 0) + t.eva;
     if (t.poisonImmune) attrs.poisonImmune = true;
     if (t.lifesteal) attrs.lifesteal = t.lifesteal;
+    if (t.alwaysCrit) attrs.alwaysCrit = true;     // 神族：必定暴擊（elements.js 的 resolveHit）
+    if (t.alwaysCombo) attrs.alwaysCombo = true;   // 神族：必定連擊（目前只有世界 Boss 的 wbRound 會讀）
+    if (t.ignoreDef) attrs.ignoreDef = true;       // 神族：無視防禦（resolveHit）
     return attrs;
 }
 // 魔修吸血：敵人打中玩家 dealt 點後回復的氣血（沒有吸血回傳 0）
