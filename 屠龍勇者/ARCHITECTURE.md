@@ -31,6 +31,7 @@
 | `data/raid.js` | **團隊副本**：`RAIDS`（6 個副本）、團戰模擬 `raidSimulate`、獎勵 `raidApplyReward`／`raidClaim`、隊伍大廳（Supabase `raid_rooms`／`raid_members`）、重播畫面；載入時把 `raid` 加進 `TABS`／`PANEL_FNS`（第 30 節） |
 | `data/chat.js` | **聊天**：世界／隊伍頻道、`renderChat`、`chatFetch`（分頁開著時每 4 秒抓新訊息）、`chatSend`、`chatOpen`；載入時把 `chat` 加進 `TABS`／`PANEL_FNS`（第 32 節） |
 | `data/clan.js` | **血盟**：`myClan`／`myClanRole`、`clanLoad`、建立／加入／審核／踢人／任命／讓位／退出／解散（都呼叫 Supabase `clan_*` 函式）、`renderClan`；載入時把 `clan` 加進 `TABS`／`PANEL_FNS`（第 33 節） |
+| `data/rank.js` | **排行榜**：`RANK_KINDS`（等級／屠龍／永夜之塔／擊殺／血盟）、`rankLoad`（呼叫 Supabase `dragon_leaderboard`，同一榜 1 分鐘快取）、`renderRank`；載入時把 `rank` 加進 `TABS`／`PANEL_FNS`（第 34 節） |
 | `data/codex.js` | 裝備圖鑑分頁 `renderCodex`（全部道具的分類、品質、屬性、取得方式；第 20 節），載入時把 `codex` 加進 `TABS`／`PANEL_FNS` |
 | `data/ui-frame.js` | 主畫面外框：畫面尺寸模式 `displayMode`／`setDisplayMode`、`layoutFrame` 縮放、左右柱抽屜、紅藍法球、底部 6 格快捷（第 15、16 節） |
 | `data/ui-scene.js` | 中間即時地圖：俯視格子地圖、角色上下左右尋怪、怪物遊走、傷害飄字、村莊建築（第 17 節） |
@@ -45,7 +46,7 @@
 
 ## 2. 載入順序與依賴
 
-`config → classes → skills → items → monsters → zones → quests → resonance → player → enchant → affix → craft → maps → combat → town → save → cloud → offline → ui → ui-create → ui-panels → codex → raid → clan → chat → ui-frame → ui-scene → pwa → main`
+`config → classes → skills → items → monsters → zones → quests → resonance → player → enchant → affix → craft → maps → combat → town → save → cloud → offline → ui → ui-create → ui-panels → codex → raid → clan → chat → rank → ui-frame → ui-scene → pwa → main`
 
 - 上層資料檔（config～quests）只在「載入時」用到更前面的檔案；quests 載入時會把獎勵裝備與任務道具寫進 `ITEMS`，所以要在 items 之後。
 - resonance 載入時要改 `ITEMS`（含任務武器）、`MONSTERS` 掉落、`RECIPES`，所以在 quests 之後；`findSkill`（skills.js）在執行期才呼叫它的 `findResonanceSkill`。
@@ -54,7 +55,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261010k`）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261010l`）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
   整個遊戲載不起來（看起來像「存檔壞掉」，其實存檔還在），`20261009u` 修復時採用較新的 `20261009t` 那一邊。
   SW 依版本號快取 JS，**沒換版本號，已安裝 App 的玩家會一直跑舊程式**。
@@ -928,4 +929,19 @@ powershell -ExecutionPolicy Bypass -File tools\cut-sprites.ps1 -Spec tools\sprit
 - **團隊副本加成**：`raid_members.clan_id`（加入隊伍時有血盟才帶）→ 隊長開戰時放進結果 `members[].clan` → 領獎時同血盟（含自己）2 人以上，經驗、金幣 ×1.1（`CLAN_RAID_BONUS`），結算畫面顯示「🏰 血盟加成」。
 - **驗證**：本機 PostgreSQL 16：等級不足、名稱重複、已有血盟、直接寫表被拒、申請／審核、權限（盟員不能踢、副盟主不能踢盟主）、盟主要先讓位、讓位、退出後看不到血盟聊天、解散。
   **真實伺服器**（使用者已執行 SQL）Playwright 兩台：建盟扣金幣、列表看得到、申請、審核同意、任命副盟主、PC 聊天框血盟頻道發言對方看得到、同血盟兩人打地龍各拿到加成（clanBonus 2）、退出與解散；網路與 Console 無錯誤。
+
+## 34. 排行榜（2026-10-10，版本 `20261010l`；`rank.js`、`tools/supabase.sql` 排行榜段）
+
+- 使用者要求：B 計畫的「排行榜」。入口：手機右柱抽屜「🏆 排行榜」、PC 地圖左側最上面 🏆（`PC_SLOTS` side，y 234）。
+- **資料來源**：伺服器函式 `dragon_leaderboard(p_kind, p_cls, p_limit)`（security definer）直接從 `dragon_saves` 的存檔計算，玩家不用另外上傳；被封鎖（`dragon_bans`）的帳號排除。
+  回傳前 `p_limit`（最多 100）名＋呼叫者自己的角色（`is_me`），**不回傳 user_id**；只有登入者能呼叫。每個角色（帳號×欄位）一列，角色旁顯示所屬血盟。
+  - `level`：總經驗（`dragon_total_exp`），可用 `p_cls` 篩選職業。
+  - `dragon`：`player.dragons` 各龍討伐次數總和（單人龍穴＋團隊副本）。
+  - `tower`：`player.towerCleared` 最大的樓層（只記守關首領樓層：10、20…）。
+  - `kills`：`player.kills`。
+  - `clan`：血盟依人數、平均等級排序（`lv` 欄位放人數、`val` 放平均等級）。
+  同分依等級、名字排序。值為 0 的不上榜。
+- **畫面**：五個榜的切換鈕、等級榜可選職業、前 50 名（🥇🥈🥉）、自己的角色金框；不在前 50 名時下方列出「你的角色」名次。同一個榜 1 分鐘內再看用快取，「🔄 重新整理」強制重讀。
+- **驗證**：本機 PostgreSQL 16（排名、職業篩選、封鎖排除、只取前 1 名仍回傳自己、血盟榜、匿名不能呼叫）；
+  **真實伺服器** Playwright 兩台（PC＋手機）：五個榜的數值與順序正確、職業篩選、自己的角色標示；網路與 Console 無錯誤。測試存檔已刪除。
 
