@@ -46,10 +46,12 @@ function marketGiveItem(it) {
 }
 
 // ───────── 交貨：把伺服器記帳的道具、金幣加進目前角色 ─────────
-let marketPendingBusy = false;
+let marketPendingBusy = false, marketDeliverAt = 0;
+const MARKET_DELIVER_MS = 3 * 60 * 1000;   // 遊戲進行中每 3 分鐘查一次有沒有賣出
 async function marketDeliver(silent) {
     if (!isCloudConfigured() || !cloudLoggedIn() || !player || cloudBan || marketPendingBusy) return;
     marketPendingBusy = true;
+    marketDeliverAt = Date.now();
     try {
         const p = await marketRpc('market_pending');
         if (!player.marketGot) player.marketGot = [];
@@ -88,6 +90,7 @@ async function marketDeliver(silent) {
 async function marketLoad() {
     if (!isCloudConfigured() || !cloudLoggedIn()) return;
     marketErr = '';
+    if (marketView === 'mine') await marketDeliver(true);   // 看「我的上架」時順便入帳
     try {
         if (marketView === 'buy') marketRows = await marketRpc('market_browse', { p_cat: marketCat || null, p_q: marketQ.trim() || null, p_sort: marketSort, p_offset: marketPage * 50 });
         else if (marketView === 'mine') marketMine = await marketRpc('market_mine');
@@ -185,14 +188,13 @@ function renderMarket() {
     if (!cloudLoggedIn()) return `<div class="panel notice">交易所要先登入帳號。
         <div class="btn-row"><button onclick="cloudLoginFromGame()">☁️ 回標題畫面登入</button></div></div>`;
     if (cloudBan) return `<div class="panel notice">⛔ 帳號已被管理者停權，無法使用交易所。</div>`;
-    if (!marketDeliveredOnce) { marketDeliveredOnce = true; marketDeliver(true); }
+    if (Date.now() - marketDeliverAt > 20000) marketDeliver(true);   // 打開交易所時入帳（20 秒內不重複查）
     const tabs = `<div class="chips">${[['buy', '🛍️ 購買'], ['sell', '🏷️ 出售'], ['mine', '📋 我的上架']].map(([v, n]) =>
         `<button class="chip-btn ${marketView === v ? 'active' : ''}" onclick="marketSetView('${v}')">${n}</button>`).join('')}</div>`;
     const town = inTown() ? '' : `<div class="panel notice">交易所在村莊裡，可以瀏覽，但要回到村莊才能購買、上架、下架。</div>`;
     const err = marketErr ? `<div class="panel notice">⚠️ ${esc(marketErr)}</div>` : '';
     return tabs + town + err + (marketView === 'sell' ? marketSellHtml() : marketView === 'mine' ? marketMineHtml() : marketBuyHtml());
 }
-let marketDeliveredOnce = false;
 
 function marketBuyHtml() {
     if (marketRows === null) setTimeout(marketLoad, 0);
@@ -246,6 +248,10 @@ function marketMineHtml() {
         <button class="mini secondary" onclick="marketDeliver(false).then(marketLoad)">🔄 重新整理</button></div>
         <div class="list">${rows || '<p class="muted">你目前沒有上架的商品。</p>'}</div></div>`;
 }
+
+setInterval(() => {
+    if (player && !document.hidden && !SIM_MODE && Date.now() - marketDeliverAt > MARKET_DELIVER_MS) marketDeliver(true).then(() => { if (currentTab === 'market') marketLoad(); });
+}, 30 * 1000);
 
 TABS.market = ['🏪', '交易所'];
 PANEL_FNS.market = renderMarket;

@@ -33,6 +33,7 @@
 | `data/clan.js` | **血盟**：`myClan`／`myClanRole`、`clanLoad`、建立／加入／審核／踢人／任命／讓位／退出／解散（都呼叫 Supabase `clan_*` 函式）、`renderClan`；載入時把 `clan` 加進 `TABS`／`PANEL_FNS`（第 33 節） |
 | `data/rank.js` | **排行榜**：`RANK_KINDS`（等級／屠龍／永夜之塔／擊殺／血盟）、`rankLoad`（呼叫 Supabase `dragon_leaderboard`，同一榜 1 分鐘快取）、`renderRank`；載入時把 `rank` 加進 `TABS`／`PANEL_FNS`（第 34 節） |
 | `data/wb.js` | **世界首領**：`WB_KINDS`（5 隻首領的種族與招式）、`wbLoad`、`wbAttack`（60 秒模擬→`wb_attack`）、`wbClaim`／`wbReward`（領獎）、`renderWb`；載入時把 `wb` 加進 `TABS`／`PANEL_FNS`（第 35 節） |
+| `data/market.js` | **交易所**：寄賣、瀏覽／搜尋／購買、出售、我的上架、交貨 `marketDeliver`（兩段式＋`player.marketGot`）、`marketGiveItem`；載入時把 `market` 加進 `TABS`／`PANEL_FNS`（第 36 節） |
 | `data/codex.js` | 裝備圖鑑分頁 `renderCodex`（全部道具的分類、品質、屬性、取得方式；第 20 節），載入時把 `codex` 加進 `TABS`／`PANEL_FNS` |
 | `data/ui-frame.js` | 主畫面外框：畫面尺寸模式 `displayMode`／`setDisplayMode`、`layoutFrame` 縮放、左右柱抽屜、紅藍法球、底部 6 格快捷（第 15、16 節） |
 | `data/ui-scene.js` | 中間即時地圖：俯視格子地圖、角色上下左右尋怪、怪物遊走、傷害飄字、村莊建築（第 17 節） |
@@ -47,7 +48,7 @@
 
 ## 2. 載入順序與依賴
 
-`config → classes → skills → items → monsters → zones → quests → resonance → player → enchant → affix → craft → maps → combat → town → save → cloud → offline → ui → ui-create → ui-panels → codex → raid → clan → chat → rank → wb → ui-frame → ui-scene → pwa → main`
+`config → classes → skills → items → monsters → zones → quests → resonance → player → enchant → affix → craft → maps → combat → town → save → cloud → offline → ui → ui-create → ui-panels → codex → raid → clan → chat → rank → wb → market → ui-frame → ui-scene → pwa → main`
 
 - 上層資料檔（config～quests）只在「載入時」用到更前面的檔案；quests 載入時會把獎勵裝備與任務道具寫進 `ITEMS`，所以要在 items 之後。
 - resonance 載入時要改 `ITEMS`（含任務武器）、`MONSTERS` 掉落、`RECIPES`，所以在 quests 之後；`findSkill`（skills.js）在執行期才呼叫它的 `findResonanceSkill`。
@@ -56,7 +57,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261010m`）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261010n`）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
   整個遊戲載不起來（看起來像「存檔壞掉」，其實存檔還在），`20261009u` 修復時採用較新的 `20261009t` 那一邊。
   SW 依版本號快取 JS，**沒換版本號，已安裝 App 的玩家會一直跑舊程式**。
@@ -193,7 +194,7 @@
 
 `name, cls, lv, exp, gold, stats, statPoints, elixirs, baseHp, baseMp, hp, mp, inv, equip, storage, nextUid,
 buffs{key:{src,id,until}}, cds{技能id:到期}, loc{type,id,floor}, hunting, towerMax, towerCleared, dragons, dragonCd,
-kills, deaths, settings, created, raidCd{副本id:真實時間}, raidRuns[領過獎勵的場次]`（後兩個是團隊副本，第 30 節；舊存檔沒有也沒關係）
+kills, deaths, settings, created, raidCd{副本id:真實時間}, raidRuns[領過獎勵的場次], marketGot[已入帳的交易所編號 b123／s456]`（後兩個是團隊副本，第 30 節；舊存檔沒有也沒關係）
 
 ## 11. 尚未實作（之後可做）
 
@@ -967,4 +968,25 @@ powershell -ExecutionPolicy Bypass -File tools\cut-sprites.ps1 -Spec tools\sprit
 - **驗證**：本機 PostgreSQL 16（建立首領、無存檔被拒、上限截斷與可疑紀錄、第 4 次被拒、未結束不能領、重複領被拒、30 分鐘後換下一隻、不能直接讀表）。
   **真實伺服器**（2026-10-10，使用第一隻首領測試）：兩個測試帳號用遊戲畫面各挑戰一次（共用血條 18,000 → 14,651、排行、次數剩 2、扣藥水），第三個 Lv99 測試帳號以上限傷害打倒；
   兩人領獎（第 2、3 名：經驗、金幣、祝福武器卷）、重複領被拒；結束畫面顯示最後一擊與下一隻倒數。Console 只有預期中的重複領獎 409。
+
+## 36. 交易所（2026-10-10，版本 `20261010n`；`market.js`、`tools/supabase.sql` 交易所段）
+
+- 使用者要求：B 計畫的「交易所」。入口：村莊頁「🏪 交易所」按鈕（PC 用底部 🏘️）、手機左柱抽屜、背包道具視窗「🏪 上架」（在村莊、已登入、可交易時）。
+- **寄賣制**（`dragon_market`，玩家不能直接讀寫，全部經過函式）：
+  - `market_list(p_slot, p_item, p_price, …)`：檢查未封鎖、價格 1～20 億、不是任務道具、強化 ≤ +15、上架中未滿 10 件、同一件沒有重複上架；
+    **這件道具（同 uid、同 id、數量夠）必須在賣家該欄位的雲端存檔背包裡**。上架 48 小時，手續費 5%（無條件進位）。順手刪 30 天前已結清的紀錄。
+  - `market_browse(p_cat, p_q, p_sort, p_offset)`：上架中且未過期，分類、名稱搜尋（ilike）、最新／價格低→高／高→低，每頁 50；不回傳賣家 id（`is_mine`）。
+  - `market_buy(p_id, p_slot, …)`：鎖列；不能買自己的；**買家該欄位雲端存檔的金幣要夠**；改成 sold。回傳道具 JSON 與價格。
+  - `market_cancel(p_id)`：賣家把上架中（含過期）的取回。`market_mine()`：我的上架中＋7 天內賣出。
+  - `market_pending()`／`market_ack(買到的 id[], 賣出的 id[])`：兩段式交貨（`buyer_got`／`seller_got`）。
+  - 防複製 trigger `dragon_market_audit`（dragon_saves AFTER INSERT/UPDATE）：上架超過 1 分鐘、上架中或已賣出的**裝備**（item 有 ench 欄位）又出現在賣家同欄位的背包 → `dragon_flags` `market_dupe`（管理頁「交易所疑似複製道具」）。
+    藥水等堆疊道具可以只賣一部分（同一疊留在背包是正常的），所以不檢查。
+- **遊戲端**：購買、上架前先 `saveGame`＋`cloudFlush`（伺服器以雲端存檔為準）。上架成功才從背包拿走（堆疊可只賣一部分），買到後扣金幣再交貨。
+  `marketDeliver`：讀 `market_pending`，買到的道具用 `marketGiveItem`（裝備保留品質、詞綴、地圖詞綴等所有欄位）、賣出的錢扣手續費入帳，`player.marketGot` 記已入帳編號（最多 200 筆）→ 存檔、上傳後 `market_ack`；
+  就算 ack 沒送到，下次也不會重複入帳。時機：進入角色（`continueGame`）、打開交易所（20 秒內不重複）、看「我的上架」、遊戲中每 3 分鐘。
+  在野外可以瀏覽，購買／上架／下架要在村莊。
+- **限制**：只檢查「上架當下雲端存檔裡有這件道具」與「購買當下雲端存檔金幣夠」，小心慢慢改檔的人仍可能混過，要靠管理頁歷程追查。真正杜絕要把戰鬥、掉落搬到伺服器。
+- **驗證**：本機 PostgreSQL 16（不在存檔／數量不足／價格錯被拒、重複上架、無存檔／金幣不足／已賣出／買自己的被拒、交貨與確認、下架、不能直接讀表、裝備複製標記、堆疊部分出售不誤判）。
+  **真實伺服器** Playwright 兩台：上架稀有 +5 武士刀與 20 瓶治癒藥水（背包剩 10 瓶）、買家瀏覽與分類篩選、購買後扣 88,000、拿到的武士刀詞綴完全相同、
+  賣家看「我的上架」入帳 83,600、下架取回藥水、再次入帳不重複；網路與 Console 無錯誤。測試存檔已刪除。
 
