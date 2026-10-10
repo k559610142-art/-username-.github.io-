@@ -65,6 +65,7 @@
         <div class="row tabs">
             <button data-tab="flags" onclick="gmTab('flags')">⚠️ 可疑紀錄</button>
             <button data-tab="players" onclick="gmTab('players')">👥 玩家</button>
+            <button data-tab="chat" onclick="gmTab('chat')">💬 聊天</button>
             <button data-tab="bans" onclick="gmTab('bans')">⛔ 封鎖名單</button>
             <button class="secondary" onclick="gmLoad()">🔄 重新整理</button>
         </div>
@@ -73,13 +74,13 @@
 </div>
 <div id="modal" class="hidden" onclick="if (event.target === this) gmClose()"><div class="box" id="modal-box"></div></div>
 
-<script src="data/config.js?v=20261010i"></script>
-<script src="data/classes.js?v=20261010i"></script>
-<script src="data/cloud.js?v=20261010i"></script>
+<script src="data/config.js?v=20261010j"></script>
+<script src="data/classes.js?v=20261010j"></script>
+<script src="data/cloud.js?v=20261010j"></script>
 <script>
 const KIND_NAMES = { exp_rate: '經驗暴增', gold_rate: '金幣暴增', stat: '能力值超過上限', elixir: '萬能藥超量', enchant: '強化超過 +15', level: '等級異常', gold_negative: '金幣為負', clock: '裝置時間異常', parse: '存檔格式異常' };
 let sb = null, me = null, tab = 'flags', showResolved = false, playerQuery = '';
-let flags = [], profiles = [], saves = [], bans = [];
+let flags = [], profiles = [], saves = [], bans = [], chats = [], mutes = [];
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -131,6 +132,10 @@ async function gmLoad() {
             let qq = sb.from('dragon_flags').select('*').order('at', { ascending: false }).limit(200);
             if (!showResolved) qq = qq.eq('resolved', false);
             flags = await q(qq);
+        } else if (tab === 'chat') {
+            chats = await q(sb.from('dragon_chat').select('*').order('id', { ascending: false }).limit(200));
+            mutes = await q(sb.from('dragon_mutes').select('*').order('at', { ascending: false }));
+            profiles = await q(sb.from('dragon_profiles').select('user_id, email').limit(1000));
         } else if (tab === 'players') {
             profiles = await q(sb.from('dragon_profiles').select('*').order('last_seen', { ascending: false }).limit(500));
             saves = await q(sb.from('dragon_saves').select('user_id, slot, name, cls, lv, updated_at').order('updated_at', { ascending: false }).limit(1000));
@@ -164,6 +169,17 @@ function gmRender() {
             <span class="muted">共 ${profiles.length} 個帳號（點角色看存檔歷程）</span></div>
             <div class="table-wrap"><table><tr><th>帳號</th><th>最後上傳</th><th>角色</th><th></th></tr>${rows}</table></div>`;
         const el = $('pq'); if (el) el.setSelectionRange(el.value.length, el.value.length);
+    } else if (tab === 'chat') {
+        const emailOf = uid => (profiles.find(p => p.user_id === uid) || {}).email || '';
+        const muted = uid => mutes.find(m => m.user_id === uid && new Date(m.until) > new Date());
+        const muteBtn = (uid, email) => muted(uid) ? `<button class="mini secondary" onclick="gmUnmute('${uid}')">解除禁言</button>`
+            : `<button class="mini danger" onclick="gmMute('${uid}', '${esc(email)}')">禁言</button>`;
+        const rows = chats.map(c => `<tr><td>${t(c.at)}</td><td>${c.channel === 'world' ? '世界' : '隊伍'}</td><td>${esc(c.name)} <span class="muted">Lv.${c.lv ?? '?'}</span><br><small class="muted">${esc(emailOf(c.user_id))}</small></td>
+            <td style="word-break:break-word">${esc(c.text)}</td><td><div class="row"><button class="mini secondary" onclick="gmDelChat(${c.id})">刪除</button>${muteBtn(c.user_id, emailOf(c.user_id))}</div></td></tr>`).join('');
+        const ml = mutes.filter(m => new Date(m.until) > new Date()).map(m => `<tr><td>${esc(m.email)}</td><td>${t(m.until)}</td><td>${esc(m.reason)}</td><td><button class="mini secondary" onclick="gmUnmute('${m.user_id}')">解除禁言</button></td></tr>`).join('');
+        $('view').innerHTML = `<p class="muted" style="margin-top:0">最近 200 則（世界＋所有隊伍；訊息 3 天後自動刪除）。禁言期間不能發言，但可以正常遊玩。</p>
+            ${rows ? `<div class="table-wrap"><table><tr><th>時間</th><th>頻道</th><th>發言者</th><th>內容</th><th></th></tr>${rows}</table></div>` : '<p class="muted">還沒有訊息。</p>'}
+            <h3>禁言中</h3>${ml ? `<div class="table-wrap"><table><tr><th>帳號</th><th>到期</th><th>原因</th><th></th></tr>${ml}</table></div>` : '<p class="muted">沒有人被禁言。</p>'}`;
     } else {
         const rows = bans.map(b => `<tr><td>${t(b.at)}</td><td>${esc(b.email)}</td><td>${esc(b.reason)}</td><td>${esc(b.by_email)}</td><td><button class="mini secondary" onclick="gmUnban('${b.user_id}')">解除封鎖</button></td></tr>`).join('');
         $('view').innerHTML = rows ? `<div class="table-wrap"><table><tr><th>時間</th><th>帳號</th><th>原因</th><th>處理人</th><th></th></tr>${rows}</table></div>` : '<p class="muted">沒有被封鎖的帳號。</p>';
@@ -201,6 +217,27 @@ async function gmBan(uid, email) {
     try { await q(sb.from('dragon_bans').insert({ user_id: uid, email, reason: reason.slice(0, 200), by_email: me.email })); }
     catch (e) { alert('封鎖失敗：' + e.message); }
     gmClose(); gmLoad();
+}
+
+async function gmDelChat(id) {
+    if (!confirm('刪除這則訊息？')) return;
+    try { await q(sb.from('dragon_chat').delete().eq('id', id)); } catch (e) { alert('刪除失敗：' + e.message); }
+    gmLoad();
+}
+
+async function gmMute(uid, email) {
+    const h = prompt(`禁言 ${email || uid} 幾小時？（例如 1、24、168＝一週）`, '24');
+    if (h == null) return;
+    const hours = Math.max(0.1, Number(h) || 24);
+    const reason = prompt('禁言原因（玩家看不到，自己記錄用）：', '不當發言') || '';
+    try { await q(sb.from('dragon_mutes').upsert({ user_id: uid, email, reason: reason.slice(0, 200), until: new Date(Date.now() + hours * 3600e3).toISOString(), by_email: me.email })); }
+    catch (e) { alert('禁言失敗：' + e.message); }
+    gmLoad();
+}
+
+async function gmUnmute(uid) {
+    try { await q(sb.from('dragon_mutes').delete().eq('user_id', uid)); } catch (e) { alert('解除失敗：' + e.message); }
+    gmLoad();
 }
 
 async function gmUnban(uid) {

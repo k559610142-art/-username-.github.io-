@@ -629,6 +629,7 @@ function raidLobbyHtml() {
             <button onclick="raidToggleReady()" ${raidBusy ? 'disabled' : ''}>${mine ? '取消準備' : '✅ 準備'}</button>
             ${leader ? `<button onclick="raidStart()" ${!allReady || raidBusy ? 'disabled' : ''}>⚔️ 開始</button>
                 <button class="secondary" onclick="raidTogglePublic()">${r.is_public ? '改為不公開' : '改為公開'}</button>` : ''}
+            <button class="secondary" onclick="chatOpen('room')">💬 隊伍聊天</button>
             <button class="danger" onclick="raidLeave()">${leader ? '解散隊伍' : '離開隊伍'}</button></div>
             <small class="muted">按「準備」會記錄你目前的能力、裝備、技能與藥水（要在村莊）。戰鬥中會自動喝水、施法；用掉的藥水會從背包扣除。
             ${leader ? '全員準備好後就能開始。' : '等隊長開始。'}</small></div>`;
