@@ -1,0 +1,257 @@
+// 屠龍勇者：交易所（ARCHITECTURE.md 第 36 節）
+// 依賴 player、items、affix（品質名稱）、ui-panels（itemDescHtml／itemClass、TABS／PANEL_FNS）、cloud。
+// 寄賣制：在村莊把背包道具標價上架（伺服器確認道具在雲端存檔裡），別人用金幣買（伺服器確認買家雲端存檔的金幣夠），成交收 5% 手續費。
+// 交貨兩段式：伺服器先記帳（market_pending），遊戲把道具／金幣加進角色、存檔後再確認（market_ack）；
+// player.marketGot 記已入帳的編號，就算確認沒送到也不會重複領。
+
+const MARKET_FEE = 0.05;
+const MARKET_MAX = 10;
+const MARKET_CATS = [['', '全部'], ['weapon', '武器'], ['armor', '防具'], ['potion', '藥水'], ['scroll', '卷軸'], ['currency', '通貨'], ['map', '地圖'], ['material', '材料'], ['elixir', '萬能藥'], ['ammo', '彈藥']];
+
+let marketView = 'buy', marketCat = '', marketQ = '', marketSort = 'new', marketPage = 0;
+let marketRows = null, marketMine = null, marketBusy = false, marketErr = '', marketSellUid = null;
+
+function marketErrText(e) {
+    const m = String((e && e.message) || e || '');
+    const map = {
+        'item not in cloud save': '雲端存檔裡找不到這件道具（請稍等幾秒再試，或到設定「☁️ 立即上傳」）',
+        'not enough gold': '金幣不足（以雲端存檔為準，剛賺的錢要等上傳）', 'no cloud save': '雲端還沒有這個角色的存檔',
+        'not available': '這件商品已經賣出、下架或過期了', 'own listing': '不能買自己上架的東西', 'too many listings': `同時最多上架 ${MARKET_MAX} 件`,
+        'already listed': '這件道具已經在上架中', 'bad price': '價格要在 1～20 億之間', 'not tradeable': '這件道具不能交易', banned: '帳號已停權',
+    };
+    for (const k in map) if (m.includes(k)) return map[k];
+    return cloudErrText(e);
+}
+
+async function marketRpc(fn, args) {
+    const r = await cloudTimeout(cloudSb.rpc(fn, args || {}));
+    if (r.error) throw r.error;
+    return r.data;
+}
+
+function marketTradeable(inst) {
+    const d = ITEMS[inst.id];
+    return d && d.cat !== 'quest' && !(inst.ench > 15);
+}
+
+function marketRender() { if (typeof currentTab !== 'undefined' && currentTab === 'market' && player && !SIM_MODE) renderPanel(); }
+
+// 把交易所的道具實體放進背包（裝備保留品質、詞綴、地圖詞綴等所有欄位；堆疊道具直接加數量）
+function marketGiveItem(it) {
+    const d = ITEMS[it.id];
+    if (!d) return null;
+    const inst = addItem(it.id, it.n || 1, it.ench || 0);
+    if (inst && !isStackable(d)) for (const k in it) if (!['uid', 'id', 'n', 'ench'].includes(k)) inst[k] = JSON.parse(JSON.stringify(it[k]));
+    return inst;
+}
+
+// ───────── 交貨：把伺服器記帳的道具、金幣加進目前角色 ─────────
+let marketPendingBusy = false, marketDeliverAt = 0;
+const MARKET_DELIVER_MS = 3 * 60 * 1000;   // 遊戲進行中每 3 分鐘查一次有沒有賣出
+async function marketDeliver(silent) {
+    if (!isCloudConfigured() || !cloudLoggedIn() || !player || cloudBan || marketPendingBusy) return;
+    marketPendingBusy = true;
+    marketDeliverAt = Date.now();
+    try {
+        const p = await marketRpc('market_pending');
+        if (!player.marketGot) player.marketGot = [];
+        const got = player.marketGot, ackB = [], ackS = [], msgs = [];
+        for (const b of p.bought || []) {
+            const key = 'b' + b.id;
+            if (!got.includes(key)) {
+                marketGiveItem(b.item);
+                got.push(key);
+                msgs.push(`🛍️ 買到 ${b.name}`);
+            }
+            ackB.push(b.id);
+        }
+        for (const s of p.sold || []) {
+            const key = 's' + s.id;
+            if (!got.includes(key)) {
+                const net = s.price - s.fee;
+                player.gold += net;
+                got.push(key);
+                msgs.push(`💰 ${s.name} 賣給 ${s.buyer_name || '玩家'}，入帳 ${fmt(net)}（手續費 ${fmt(s.fee)}）`);
+            }
+            ackS.push(s.id);
+        }
+        while (got.length > 200) got.shift();
+        if (msgs.length) {
+            msgs.forEach(m => addLog(m, 'loot'));
+            saveGame(); refreshUI();
+            if (!silent || msgs.length) showToast(msgs.length > 1 ? `交易所：${msgs.length} 筆交易入帳` : msgs[0], 3000);
+        }
+        if (ackB.length || ackS.length) { await cloudFlush(true); await marketRpc('market_ack', { p_bought: ackB, p_sold: ackS }); }
+    } catch (e) { if (!silent) showToast('交易所：' + marketErrText(e)); }
+    marketPendingBusy = false;
+}
+
+// ───────── 讀資料 ─────────
+async function marketLoad() {
+    if (!isCloudConfigured() || !cloudLoggedIn()) return;
+    marketErr = '';
+    if (marketView === 'mine') await marketDeliver(true);   // 看「我的上架」時順便入帳
+    try {
+        if (marketView === 'buy') marketRows = await marketRpc('market_browse', { p_cat: marketCat || null, p_q: marketQ.trim() || null, p_sort: marketSort, p_offset: marketPage * 50 });
+        else if (marketView === 'mine') marketMine = await marketRpc('market_mine');
+    } catch (e) { marketErr = marketErrText(e); }
+    marketRender();
+}
+
+function marketSetView(v) { marketView = v; marketSellUid = null; marketRows = null; marketMine = null; renderPanel(); marketLoad(); }
+function marketSetCat(c) { marketCat = c; marketPage = 0; marketRows = null; renderPanel(); marketLoad(); }
+function marketSetSort(s) { marketSort = s; marketPage = 0; marketLoad(); }
+function marketSearch() { marketQ = ((document.getElementById('market-q') || {}).value || ''); marketPage = 0; marketLoad(); }
+function marketSearchKey(ev) { ev.stopPropagation(); if (ev.key === 'Enter' && !ev.isComposing) marketSearch(); }
+function marketPageGo(d) { marketPage = Math.max(0, marketPage + d); marketLoad(); }
+
+// ───────── 購買 ─────────
+function marketInfo(id) {
+    const r = (marketRows || []).find(x => x.id === id);
+    if (!r) return;
+    const inst = Object.assign({ uid: 0 }, r.item);
+    const btns = r.is_mine ? [{ text: '關閉', cls: 'secondary' }]
+        : [{ text: '取消', cls: 'secondary' }, { text: `購買（💰${fmt(r.price)}）`, onClick: () => marketBuy(id) }];
+    openDialog(`${itemName(inst)}${r.n > 1 ? ' ×' + fmt(r.n) : ''}`, `${itemDescHtml(inst)}<p>賣家：${esc(r.seller_name || '?')}｜售價 💰${fmt(r.price)}</p>${r.is_mine ? '<p class="muted">這是你上架的商品。</p>' : ''}`, btns);
+}
+
+async function marketBuy(id) {
+    const r = (marketRows || []).find(x => x.id === id);
+    if (!r || marketBusy) return;
+    if (!inTown()) { showToast('要在村莊裡才能使用交易所'); return; }
+    if (player.gold < r.price) { showToast('金幣不足'); return; }
+    marketBusy = true;
+    try {
+        saveGame();
+        await cloudFlush(true);   // 伺服器用雲端存檔的金幣檢查
+        const res = await marketRpc('market_buy', { p_id: id, p_slot: currentSlot, p_buyer_name: player.name });
+        player.gold -= res.price;
+        addLog(`🛍️ 交易所購買 ${res.name}（-${fmt(res.price)} 金幣）`, 'sys');
+        saveGame();
+        await marketDeliver(true);   // 把道具交給自己
+        showToast(`買到了 ${res.name}！`);
+    } catch (e) { showToast(marketErrText(e)); }
+    marketBusy = false;
+    marketLoad();
+}
+
+// ───────── 出售 ─────────
+function marketOpenSell(uid) { closeDialog(); marketView = 'sell'; marketSellUid = uid; switchTab('market'); }
+function marketPickSell(uid) { marketSellUid = uid; renderPanel(); }
+
+async function marketListItem() {
+    const inst = findInv(marketSellUid);
+    if (!inst || marketBusy) return;
+    if (!inTown()) { showToast('要在村莊裡才能使用交易所'); return; }
+    const price = Math.floor(Number((document.getElementById('market-price') || {}).value) || 0);
+    const n = isStackable(ITEMS[inst.id]) ? clamp(Math.floor(Number((document.getElementById('market-n') || {}).value) || 1), 1, inst.n) : 1;
+    if (price < 1 || price > 2e9) { showToast('請輸入 1～20 億的價格'); return; }
+    if (!marketTradeable(inst)) { showToast('這件道具不能交易'); return; }
+    const item = JSON.parse(JSON.stringify(inst)); item.n = n;
+    const name = itemName(inst) + (n > 1 ? ' ×' + n : '');
+    gameConfirm('上架', `以 💰${fmt(price)} 上架「${name}」？\n成交後收 5% 手續費（${fmt(Math.ceil(price * MARKET_FEE))}），實收 ${fmt(price - Math.ceil(price * MARKET_FEE))}。上架 48 小時，期間可以下架取回。`, async () => {
+        marketBusy = true;
+        try {
+            saveGame();
+            await cloudFlush(true);   // 伺服器確認道具在雲端存檔裡
+            await marketRpc('market_list', { p_slot: currentSlot, p_item: item, p_price: price, p_seller_name: player.name, p_name: name, p_cat: ITEMS[inst.id].cat });
+            // 上架成功才從背包拿走
+            if (n >= inst.n) removeInst(inst.uid); else inst.n -= n;
+            addLog(`🏪 上架 ${name}（💰${fmt(price)}）`, 'sys');
+            saveGame(); await cloudFlush(true); refreshUI();
+            showToast('已上架');
+            marketSellUid = null;
+        } catch (e) { showToast(marketErrText(e)); }
+        marketBusy = false;
+        marketRender();
+    }, '上架');
+}
+
+async function marketCancel(id) {
+    if (marketBusy) return;
+    if (!inTown()) { showToast('要在村莊裡才能下架取回'); return; }
+    marketBusy = true;
+    try {
+        const r = await marketRpc('market_cancel', { p_id: id });
+        marketGiveItem(r.item);
+        addLog(`🏪 下架取回 ${r.name}`, 'sys');
+        saveGame(); await cloudFlush(true); refreshUI();
+        showToast('已下架，道具回到背包');
+    } catch (e) { showToast(marketErrText(e)); }
+    marketBusy = false;
+    marketLoad();
+}
+
+// ───────── 畫面 ─────────
+function renderMarket() {
+    if (!isCloudConfigured()) return `<div class="panel notice">交易所需要雲端伺服器，目前尚未開通。</div>`;
+    if (!cloudLoggedIn()) return `<div class="panel notice">交易所要先登入帳號。
+        <div class="btn-row"><button onclick="cloudLoginFromGame()">☁️ 回標題畫面登入</button></div></div>`;
+    if (cloudBan) return `<div class="panel notice">⛔ 帳號已被管理者停權，無法使用交易所。</div>`;
+    if (Date.now() - marketDeliverAt > 20000) marketDeliver(true);   // 打開交易所時入帳（20 秒內不重複查）
+    const tabs = `<div class="chips">${[['buy', '🛍️ 購買'], ['sell', '🏷️ 出售'], ['mine', '📋 我的上架']].map(([v, n]) =>
+        `<button class="chip-btn ${marketView === v ? 'active' : ''}" onclick="marketSetView('${v}')">${n}</button>`).join('')}</div>`;
+    const town = inTown() ? '' : `<div class="panel notice">交易所在村莊裡，可以瀏覽，但要回到村莊才能購買、上架、下架。</div>`;
+    const err = marketErr ? `<div class="panel notice">⚠️ ${esc(marketErr)}</div>` : '';
+    return tabs + town + err + (marketView === 'sell' ? marketSellHtml() : marketView === 'mine' ? marketMineHtml() : marketBuyHtml());
+}
+
+function marketBuyHtml() {
+    if (marketRows === null) setTimeout(marketLoad, 0);
+    const cats = `<div class="chips">${MARKET_CATS.map(([c, n]) => `<button class="chip-btn ${marketCat === c ? 'active' : ''}" onclick="marketSetCat('${c}')">${n}</button>`).join('')}</div>`;
+    const rows = marketRows === null ? '<p class="muted">讀取中…</p>' : marketRows.length ? marketRows.map(r => {
+        const inst = Object.assign({ uid: 0 }, r.item);
+        return `<div class="list-row"><div class="clickable" onclick="marketInfo(${r.id})"><b class="${itemClass(inst)}">${esc(itemName(inst))}${r.n > 1 ? ' ×' + fmt(r.n) : ''}</b>
+            <small>賣家 ${esc(r.seller_name || '?')}${r.is_mine ? '（你）' : ''}｜${agoText(Date.parse(r.listed_at))}上架</small></div>
+            <button class="mini" onclick="marketInfo(${r.id})" ${r.is_mine ? 'disabled' : ''}>💰${fmt(r.price)}</button></div>`;
+    }).join('') : '<p class="muted">沒有符合的商品。</p>';
+    const pager = marketRows && (marketPage > 0 || marketRows.length >= 50) ? `<div class="btn-row"><button class="mini secondary" onclick="marketPageGo(-1)" ${marketPage ? '' : 'disabled'}>上一頁</button>
+        <span class="muted">第 ${marketPage + 1} 頁</span><button class="mini secondary" onclick="marketPageGo(1)" ${marketRows.length >= 50 ? '' : 'disabled'}>下一頁</button></div>` : '';
+    return `<div class="panel">${cats}
+        <div class="btn-row"><input type="text" id="market-q" placeholder="搜尋道具名稱" value="${esc(marketQ)}" onkeydown="marketSearchKey(event)" style="flex:1;min-width:0">
+            <button class="mini" onclick="marketSearch()">搜尋</button>
+            <select onchange="marketSetSort(this.value)"><option value="new" ${marketSort === 'new' ? 'selected' : ''}>最新</option>
+                <option value="price" ${marketSort === 'price' ? 'selected' : ''}>價格低→高</option><option value="price_desc" ${marketSort === 'price_desc' ? 'selected' : ''}>價格高→低</option></select></div>
+        <div class="list">${rows}</div>${pager}
+        <small class="muted">你的金幣：💰${fmt(player.gold)}。買到的道具直接放進目前角色的背包。</small></div>`;
+}
+
+function marketSellHtml() {
+    const inst = marketSellUid != null ? findInv(marketSellUid) : null;
+    if (inst) {
+        const d = ITEMS[inst.id], stack = isStackable(d);
+        const ref = sellPriceOf(inst.id);
+        return `<div class="panel"><h4>🏷️ 上架 <span class="${itemClass(inst)}">${esc(itemName(inst))}</span>${inst.n > 1 ? ' ×' + fmt(inst.n) : ''}</h4>
+            ${itemDescHtml(inst)}
+            ${stack ? `<label class="set-row"><span>數量（最多 ${fmt(inst.n)}）</span><input type="number" id="market-n" min="1" max="${inst.n}" value="${inst.n}" style="width:100px"></label>` : ''}
+            <label class="set-row"><span>總價（金幣）</span><input type="number" id="market-price" min="1" max="2000000000" value="${Math.max(1, ref * (stack ? inst.n : 1) * 2)}" style="width:140px"></label>
+            <small class="muted">參考：商店回收價每個 ${fmt(ref)}。成交收 5% 手續費；上架 48 小時，沒賣掉可以在「我的上架」取回。</small>
+            <div class="btn-row"><button onclick="marketListItem()" ${marketBusy ? 'disabled' : ''}>上架</button><button class="secondary" onclick="marketPickSell(null)">換一件</button></div></div>`;
+    }
+    const list = sortedInv(player.inv).filter(marketTradeable).map(x => `<button class="item-row" onclick="marketPickSell(${x.uid})">
+        <span class="${itemClass(x)}">${esc(itemName(x))}</span><span class="muted">${x.n > 1 ? '×' + fmt(x.n) : ''}</span></button>`).join('');
+    return `<div class="panel"><h4>選擇要上架的道具</h4><small class="muted">只能賣背包裡的道具（穿在身上的要先卸下）；任務道具不能交易。同時最多上架 ${MARKET_MAX} 件。</small>
+        <div class="list">${list || '<p class="muted">背包裡沒有可以交易的道具。</p>'}</div></div>`;
+}
+
+function marketMineHtml() {
+    if (marketMine === null) { setTimeout(marketLoad, 0); return '<div class="panel muted">讀取中…</div>'; }
+    const now = Date.now();
+    const rows = marketMine.map(r => {
+        const inst = Object.assign({ uid: 0 }, r.item), expired = r.state === 'active' && Date.parse(r.expires_at) <= now;
+        const status = r.state === 'sold' ? `<span class="good">已賣給 ${esc(r.buyer_name || '玩家')}（實收 ${fmt(r.price - r.fee)}）</span>`
+            : expired ? '<span class="warn">已過期，請取回</span>' : `上架中・剩 ${fmtDuration(Date.parse(r.expires_at) - now)}`;
+        return `<div class="list-row"><div><b class="${itemClass(inst)}">${esc(itemName(inst))}${r.n > 1 ? ' ×' + fmt(r.n) : ''}</b><small>💰${fmt(r.price)}｜${status}</small></div>
+            ${r.state === 'active' ? `<button class="mini secondary" onclick="marketCancel(${r.id})">${expired ? '取回' : '下架'}</button>` : ''}</div>`;
+    }).join('');
+    return `<div class="panel"><div class="row-between"><small class="muted">賣出的金幣會自動加進目前的角色（打開交易所或登入時）。</small>
+        <button class="mini secondary" onclick="marketDeliver(false).then(marketLoad)">🔄 重新整理</button></div>
+        <div class="list">${rows || '<p class="muted">你目前沒有上架的商品。</p>'}</div></div>`;
+}
+
+setInterval(() => {
+    if (player && !document.hidden && !SIM_MODE && Date.now() - marketDeliverAt > MARKET_DELIVER_MS) marketDeliver(true).then(() => { if (currentTab === 'market') marketLoad(); });
+}, 30 * 1000);
+
+TABS.market = ['🏪', '交易所'];
+PANEL_FNS.market = renderMarket;
