@@ -460,6 +460,7 @@ function openItemDialog(uid) {
     if (d.scroll === 'enchant') btns.push({ text: '選擇裝備', onClick: () => openEnchantPicker(uid) });
     if (d.scroll === 'home') btns.push({ text: '使用', onClick: () => { if (!currentZone()) showToast('你已經在村莊裡'); else useHomeScroll(''); } });
     if (d.cat === 'elixir') btns.push({ text: '使用', onClick: () => openElixirDialog() });
+    if (!slot && isCloudConfigured() && cloudLoggedIn() && inTown() && marketTradeable(inst)) btns.push({ text: '🏪 上架', cls: 'secondary', onClick: () => marketOpenSell(uid) });
     if (!slot) btns.push({ text: '丟棄', cls: 'danger', onClick: () => gameConfirm('丟棄道具', `確定丟棄 ${itemName(inst)}${inst.n > 1 ? ' ×' + inst.n : ''}？丟掉就找不回來了。`, () => { removeInst(uid); saveGame(); refreshUI(); }, '丟棄') });
     btns.push({ text: '關閉', cls: 'secondary' });
     openDialog(itemName(inst) + (inst.n > 1 ? ` ×${fmt(inst.n)}` : ''), itemDescHtml(inst) + (slot ? '' : compareHtml(inst)), btns);
@@ -561,7 +562,7 @@ function renderTown() {
     }
     const t = currentTown();
     let h = `<div class="panel"><div class="loc">${t.icon} ${t.name}</div><small class="muted">村莊等級 ${t.tier}：越大的城鎮賣的東西越多。</small>
-        ${isCloudConfigured() ? `<div class="btn-row"><button class="secondary" onclick="switchTab('raid')">🐉 團隊副本（和朋友組隊打龍）</button></div>` : ''}</div>`;
+        ${isCloudConfigured() ? `<div class="btn-row"><button class="secondary" onclick="switchTab('raid')">🐉 團隊副本（和朋友組隊打龍）</button><button class="secondary" onclick="switchTab('market')">🏪 交易所</button></div>` : ''}</div>`;
     h += `<div class="chips">${TOWN_SUBS.map(([id, n]) => `<button class="chip-btn ${townSub === id ? 'active' : ''}" onclick="setTownSub('${id}')">${n}</button>`).join('')}</div>`;
     return h + ({ shop: renderShop, sell: renderSell, storage: renderStorage, craft: renderCraft, inn: renderInn }[townSub])();
 }

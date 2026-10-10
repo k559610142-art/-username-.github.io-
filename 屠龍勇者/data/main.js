@@ -45,6 +45,7 @@ function continueGame() {
     const report = away >= OFFLINE_MIN_MS ? applyOffline(away) : null;
     enterGame();
     if (report) showOfflineReport(report);
+    marketDeliver(true);   // 交易所：離線時買到的道具、賣出的金幣（market.js）
 }
 
 window.addEventListener('DOMContentLoaded', () => {
