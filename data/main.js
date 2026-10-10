@@ -3,6 +3,7 @@
 let gameStarted = false;
 
 function initGame() {
+    claimActiveTab();   // 多開保護：宣告這個分頁是現在玩的，其他分頁停止存檔（save.js）
     initForgeSelect();
     syncAutoSettingsUI();
     updateUI();
