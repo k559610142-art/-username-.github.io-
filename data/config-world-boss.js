@@ -106,6 +106,11 @@ const WB_BOSSES = [
         auras: [{ name: "宇宙領域", player: { atk: 0.05 }, self: { def: 5 } }],
         videos: ["videos/world-boss/luofeng.mp4"],
         videoLoopFrom: 0,
+        // 絕招字幕（2026-10-10 使用者：「絕招加上字幕 宇宙寂滅」）：動畫 17 秒起雙劍落下、19 秒星旋爆開 → 四字逐字蹦出，「滅」震動＋白光並寫進戰況
+        videoLines: [
+            [{ at: 17.0, end: 20.0, text: "宇", cls: "chant" }, { at: 17.4, end: 20.0, text: "宙", cls: "chant" },
+             { at: 17.8, end: 20.0, text: "寂", cls: "chant" }, { at: 18.3, end: 20.0, text: "滅!", cls: "chant", hit: true, log: "💥 羅峰施展絕招【宇宙寂滅】！" }]
+        ],
         roundMs: 667
     }
 ];
