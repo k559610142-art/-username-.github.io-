@@ -94,5 +94,18 @@ const WB_BOSSES = [
         ],
         // 使用者選「戰鬥時間跟著動畫走」：三段共 10＋10＋20 秒，一回合 1.34 秒，30 回合約 40 秒＝三段動畫剛好播完一輪；有動畫的 Boss 不能加速（隱藏 ×1／×2／×4）
         roundMs: 1340
+    },
+    {
+        // 2026-10-10 使用者提供兩部影片：「兩部影片做成一個動畫，世界 Boss 宇宙領主-羅峰專用動畫」。
+        //   第 2 部（20 秒）的前 10 秒就是第 1 部（逐秒比對 PSNR 約 44 dB），所以動畫＝第 2 部整支（開場 10 秒＋出劍 10 秒），轉成 854×480 → luofeng.mp4（約 3.3 MB）；
+        //   Boss 圖是動畫第 1.5 秒的畫面。一回合 667 毫秒，30 回合約 20 秒＝動畫剛好播完一次（最後是雙劍合擊）；倒下提早結束則播到哪停到哪
+        name: "羅峰", title: "宇宙領主", img: "images/zhenmo/boss-luofeng.jpg", imgPos: "50% 30%", race: "demon", element: "金",
+        def: 24, eva: 14, affix: "metal", affixVal: 20, atkMult: 1, icon: "🌌",
+        intro: "掌中握星河、披風藏萬界的宇宙領主，一念之間星辰崩滅，諸天修士須合力方能撼動。",
+        skills: ["宇宙之心", "星河劍域", "渾源一劍", "領主降臨"],
+        auras: [{ name: "宇宙領域", player: { atk: 0.05 }, self: { def: 5 } }],
+        videos: ["videos/world-boss/luofeng.mp4"],
+        videoLoopFrom: 0,
+        roundMs: 667
     }
 ];

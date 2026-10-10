@@ -214,7 +214,7 @@ async function startWorldBossFight() {
     (B.auras || []).forEach(a => wbLog(`🌀 ${B.name}展開光環${describeAura(a)}`, 'boss'));
     wbFight.tid = setTimeout(wbStep, 700);
 }
-// ---- Boss 專屬動畫（B.videos 依序播，播完從 B.videoLoopFrom 循環，直到戰鬥結束；不能跳過。目前只有 OP王 有）----
+// ---- Boss 專屬動畫（B.videos 依序播，播完從 B.videoLoopFrom 循環，直到戰鬥結束；不能跳過。目前 OP王、羅峰 有）----
 // 每個不同的檔案一個 <video>（開戰就預載），同一個檔案重播只把 currentTime 歸 0，換支時才切換顯示，銜接不會黑一下。
 // 開戰是玩家點擊的當下就呼叫 play()（手機才允許有聲播放）；被擋就改靜音播。載入失敗就留著 Boss 圖。
 let wbOp = null;   // { list, loopFrom, idx, els: { src: video }, cur }
