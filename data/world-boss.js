@@ -139,6 +139,7 @@ function renderWorldBoss() {
             <div class="wb-banner-text"><b>${wbEsc(B.name)}</b><span>${wbEsc(B.title)}・${raceTag(B.race)}</span></div>
         </div>
         <p class="lb-note" style="text-align:left;">${wbEsc(B.intro)}</p>
+        ${raceTrait(B.race).alwaysCrit ? `<p class="lb-note" style="text-align:left; color:#fca5a5;">${raceTag(B.race)}特性：${wbEsc(raceTrait(B.race).desc)}（可以閃避）</p>` : ''}
         <div class="wb-hp"><div class="wb-hp-fill" style="width:${pct}%"></div><span>${inf ? '∞ 血量無限・依累計傷害排名' : `${fmtNum(Math.max(0, st.hp))} / ${fmtNum(st.maxHp)}`}</span></div>
         <p class="wb-status">${status}</p>${nextLine}
         <div class="wb-me">
@@ -311,6 +312,14 @@ function wbRound(instant) {
     if (et.dot) { f.dealt += et.dot; if (!instant) wbPop('boss', et.dot, 'dot'); }
     if (!et.frozen) {
         const hit = resolveHit(E.atk, { attrs: E.attrs, power: E.atk, dmgType: f.eType }, { attrs: P.attrs, status: P.st });
+        // 神族必定連擊（race.js 的 alwaysCombo）：同一回合再打一下，兩下合併演出
+        if (E.attrs.alwaysCombo) {
+            const h2 = resolveHit(E.atk, { attrs: E.attrs, power: E.atk, dmgType: f.eType }, { attrs: P.attrs, status: P.st });
+            if (!h2.tags.includes('dodge')) {
+                if (hit.tags.includes('dodge')) { hit.dmg = 0; hit.tags = hit.tags.filter(t => t !== 'dodge'); }
+                hit.dmg += h2.dmg; hit.tags = [...new Set(hit.tags.concat(h2.tags, ['combo']))];
+            }
+        }
         hit.dmg *= auraCurseMult(f.aura);
         if (!instant) f.shownHp = P.hp;   // 氣血條等 Boss 的攻擊演出到了才扣
         P.hp -= hit.dmg;
