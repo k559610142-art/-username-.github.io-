@@ -872,3 +872,145 @@ $$;
 
 revoke execute on function public.wb_current(), public.wb_attack(bigint, bigint, text, text), public.wb_rank(bigint), public.wb_claim(bigint), public.wb_unclaimed() from public, anon;
 grant execute on function public.wb_current(), public.wb_attack(bigint, bigint, text, text), public.wb_rank(bigint), public.wb_claim(bigint), public.wb_unclaimed() to authenticated;
+
+-- ═════════ 交易所（ARCHITECTURE.md 第 36 節）═════════
+-- 寄賣制：賣家上架道具（伺服器確認這件道具真的在他雲端存檔的背包裡）→ 買家付錢（伺服器確認買家雲端存檔的金幣夠）→
+-- 買家領道具、賣家領錢（扣 5% 手續費）。交貨用「記帳＋確認」兩段式（buyer_got／seller_got），網路中斷不會遺失。
+-- 每人最多 10 件上架、48 小時；賣出或上架中的裝備又出現在賣家存檔裡 → 可疑紀錄 market_dupe（複製道具）。所有存取經過 market_* 函式。
+create table if not exists public.dragon_market (
+    id          bigserial   primary key,
+    seller      uuid        not null references auth.users (id) on delete cascade,
+    seller_name text,
+    slot        smallint    not null,
+    item        jsonb       not null check (pg_column_size(item) < 4000),
+    item_id     text        not null,
+    uid         int         not null,
+    n           int         not null check (n >= 1),
+    cat         text,
+    name        text        check (char_length(name) <= 60),
+    price       bigint      not null check (price between 1 and 2000000000),
+    fee         bigint      not null,
+    state       text        not null default 'active' check (state in ('active', 'sold', 'cancelled')),
+    buyer       uuid        references auth.users (id) on delete set null,
+    buyer_name  text,
+    buyer_got   boolean     not null default false,
+    seller_got  boolean     not null default false,
+    listed_at   timestamptz not null default now(),
+    expires_at  timestamptz not null,
+    sold_at     timestamptz
+);
+create index if not exists dragon_market_active_idx on public.dragon_market (state, expires_at);
+create index if not exists dragon_market_seller_idx on public.dragon_market (seller, state);
+create index if not exists dragon_market_buyer_idx on public.dragon_market (buyer) where buyer is not null;
+alter table public.dragon_market enable row level security;
+revoke all on public.dragon_market from anon, authenticated;
+
+create or replace function public.market_list(p_slot int, p_item jsonb, p_price bigint, p_seller_name text, p_name text, p_cat text) returns bigint
+language plpgsql security definer set search_path = '' as $$
+declare inv jsonb; it jsonb; v_uid int := (p_item ->> 'uid')::int; v_id text := p_item ->> 'id'; v_n int := greatest(coalesce((p_item ->> 'n')::int, 1), 1); r bigint;
+begin
+    if auth.uid() is null then raise exception 'not logged in'; end if;
+    if public.dragon_is_banned() then raise exception 'banned'; end if;
+    if p_price is null or p_price < 1 or p_price > 2000000000 then raise exception 'bad price'; end if;
+    if p_cat = 'quest' or v_id is null or v_uid is null then raise exception 'not tradeable'; end if;
+    if coalesce((p_item ->> 'ench')::int, 0) > 15 then raise exception 'not tradeable'; end if;
+    if (select count(*) from public.dragon_market where seller = auth.uid() and state = 'active') >= 10 then raise exception 'too many listings'; end if;
+    if exists (select 1 from public.dragon_market where seller = auth.uid() and slot = p_slot and uid = v_uid and state = 'active') then raise exception 'already listed'; end if;
+    -- 這件道具（同 uid、同種類、數量夠）要在雲端存檔的背包裡
+    select data -> 'player' -> 'inv' into inv from public.dragon_saves where user_id = auth.uid() and slot = p_slot;
+    select x into it from jsonb_array_elements(coalesce(inv, '[]'::jsonb)) x where (x ->> 'uid')::int = v_uid and x ->> 'id' = v_id limit 1;
+    if it is null or coalesce((it ->> 'n')::int, 1) < v_n then raise exception 'item not in cloud save'; end if;
+    delete from public.dragon_market where state <> 'active' and buyer_got and seller_got and listed_at < now() - interval '30 days';
+    delete from public.dragon_market where state = 'cancelled' and listed_at < now() - interval '30 days';
+    insert into public.dragon_market (seller, seller_name, slot, item, item_id, uid, n, cat, name, price, fee, expires_at)
+        values (auth.uid(), left(p_seller_name, 40), p_slot, p_item, v_id, v_uid, v_n, left(p_cat, 20), left(p_name, 60), p_price, ceil(p_price * 0.05), now() + interval '48 hours')
+        returning id into r;
+    return r;
+end $$;
+
+create or replace function public.market_browse(p_cat text, p_q text, p_sort text, p_offset int)
+returns table (id bigint, item jsonb, n int, cat text, name text, price bigint, seller_name text, listed_at timestamptz, expires_at timestamptz, is_mine boolean)
+language sql stable security definer set search_path = '' as $$
+    select m.id, m.item, m.n, m.cat, m.name, m.price, m.seller_name, m.listed_at, m.expires_at, m.seller = auth.uid()
+    from public.dragon_market m
+    where m.state = 'active' and m.expires_at > now() and auth.uid() is not null
+      and (p_cat is null or p_cat = '' or m.cat = p_cat)
+      and (p_q is null or p_q = '' or m.name ilike '%' || p_q || '%')
+    order by case when p_sort = 'price' then m.price end asc, case when p_sort = 'price_desc' then m.price end desc, m.id desc
+    limit 50 offset greatest(coalesce(p_offset, 0), 0);
+$$;
+
+create or replace function public.market_buy(p_id bigint, p_slot int, p_buyer_name text) returns json
+language plpgsql security definer set search_path = '' as $$
+declare m public.dragon_market; g numeric;
+begin
+    if auth.uid() is null then raise exception 'not logged in'; end if;
+    if public.dragon_is_banned() then raise exception 'banned'; end if;
+    select * into m from public.dragon_market where id = p_id for update;
+    if m.id is null or m.state <> 'active' or m.expires_at <= now() then raise exception 'not available'; end if;
+    if m.seller = auth.uid() then raise exception 'own listing'; end if;
+    select (data -> 'player' ->> 'gold')::numeric into g from public.dragon_saves where user_id = auth.uid() and slot = p_slot;
+    if g is null then raise exception 'no cloud save'; end if;
+    if g < m.price then raise exception 'not enough gold'; end if;
+    update public.dragon_market set state = 'sold', buyer = auth.uid(), buyer_name = left(p_buyer_name, 40), sold_at = now() where id = p_id;
+    return json_build_object('id', m.id, 'item', m.item, 'price', m.price, 'name', m.name);
+end $$;
+
+create or replace function public.market_cancel(p_id bigint) returns json
+language plpgsql security definer set search_path = '' as $$
+declare m public.dragon_market;
+begin
+    select * into m from public.dragon_market where id = p_id and seller = auth.uid() for update;
+    if m.id is null or m.state <> 'active' then raise exception 'not available'; end if;
+    update public.dragon_market set state = 'cancelled' where id = p_id;
+    return json_build_object('id', m.id, 'item', m.item, 'name', m.name);
+end $$;
+
+-- 待交貨：我買到還沒領的道具、我賣出還沒領的錢
+create or replace function public.market_pending() returns json
+language sql stable security definer set search_path = '' as $$
+    select json_build_object(
+        'bought', coalesce((select json_agg(json_build_object('id', id, 'item', item, 'name', name, 'price', price) order by id) from public.dragon_market where buyer = auth.uid() and state = 'sold' and not buyer_got), '[]'::json),
+        'sold', coalesce((select json_agg(json_build_object('id', id, 'name', name, 'price', price, 'fee', fee, 'buyer_name', buyer_name) order by id) from public.dragon_market where seller = auth.uid() and state = 'sold' and not seller_got), '[]'::json));
+$$;
+
+create or replace function public.market_ack(p_bought bigint[], p_sold bigint[]) returns void
+language sql security definer set search_path = '' as $$
+    update public.dragon_market set buyer_got = true where buyer = auth.uid() and id = any(coalesce(p_bought, '{}'));
+    update public.dragon_market set seller_got = true where seller = auth.uid() and id = any(coalesce(p_sold, '{}'));
+$$;
+
+-- 我的上架（上架中、已過期待取回、最近賣出）
+create or replace function public.market_mine() returns table (id bigint, item jsonb, n int, name text, price bigint, fee bigint, state text, buyer_name text, listed_at timestamptz, expires_at timestamptz, sold_at timestamptz)
+language sql stable security definer set search_path = '' as $$
+    select id, item, n, name, price, fee, state, buyer_name, listed_at, expires_at, sold_at from public.dragon_market
+    where seller = auth.uid() and (state = 'active' or (state = 'sold' and sold_at > now() - interval '7 days'))
+    order by state, id desc limit 50;
+$$;
+
+-- 防複製：上架中或已賣出的道具又出現在賣家同一個欄位的存檔裡（上架超過 1 分鐘後）
+create or replace function public.dragon_market_audit() returns trigger
+language plpgsql security definer set search_path = '' as $$
+declare m record; v_email text := auth.jwt() ->> 'email';
+begin
+    for m in select mk.id, mk.uid, mk.item_id, mk.name, mk.state from public.dragon_market mk
+        where mk.seller = new.user_id and mk.slot = new.slot and mk.state in ('active', 'sold') and mk.listed_at < now() - interval '1 minute'
+          and mk.listed_at > now() - interval '30 days'
+          and mk.item ? 'ench'   -- 只查裝備這類單件道具（藥水等堆疊道具可以只賣一部分，同一疊留在背包是正常的）
+    loop
+        if exists (select 1 from jsonb_array_elements(coalesce(new.data -> 'player' -> 'inv', '[]'::jsonb)) x where (x ->> 'uid')::int = m.uid and x ->> 'id' = m.item_id)
+           and not exists (select 1 from public.dragon_flags f where f.user_id = new.user_id and f.kind = 'market_dupe' and f.detail like '%#' || m.id || '%') then
+            insert into public.dragon_flags (user_id, email, slot, name, lv, kind, detail)
+                values (new.user_id, v_email, new.slot, new.name, new.lv, 'market_dupe', format('交易所 #%s「%s」（%s）上架後仍留在背包裡，可能複製道具', m.id, m.name, case when m.state = 'sold' then '已賣出' else '上架中' end));
+        end if;
+    end loop;
+    return null;
+exception when others then return null;
+end $$;
+drop trigger if exists dragon_market_audit on public.dragon_saves;
+create trigger dragon_market_audit after insert or update on public.dragon_saves for each row execute function public.dragon_market_audit();
+
+revoke execute on function public.market_list(int, jsonb, bigint, text, text, text), public.market_browse(text, text, text, int), public.market_buy(bigint, int, text),
+    public.market_cancel(bigint), public.market_pending(), public.market_ack(bigint[], bigint[]), public.market_mine() from public, anon;
+grant execute on function public.market_list(int, jsonb, bigint, text, text, text), public.market_browse(text, text, text, int), public.market_buy(bigint, int, text),
+    public.market_cancel(bigint), public.market_pending(), public.market_ack(bigint[], bigint[]), public.market_mine() to authenticated;
