@@ -293,7 +293,7 @@
         <div class="card">
             <h2>🛠️ 手動開一隻</h2>
             <label>Boss <select id="wb-boss"></select></label>
-            <label>總血量 <input type="number" id="wb-hp" value="40000" min="1"> 萬</label>
+            <label>總血量 <input type="number" id="wb-hp" value="40000" min="1"> 萬</label><span class="note">（血量無限模式下只是紀錄，玩家打不死）</span>
             <label>持續 <input type="number" id="wb-hours" value="24" min="1" max="168"> 小時</label>
             <label>開始時間 <input type="datetime-local" id="wb-start">（留空＝立即；以這台電腦的時間為準）</label>
             <button id="wb-open">⚔️ 開啟</button>
@@ -378,22 +378,22 @@
     </div>
 </main>
 
-<script src="data/config-realms.js?v=20261005DF"></script>
+<script src="data/config-realms.js?v=20261005DG"></script>
 <!-- 數值重做新制（2026-09-28 上線）：戰力上限、一般玩家倍率、守城妖潮強度都用新制算法（config-numeric.js／numeric.js 只宣告常數與函式） -->
-<script src="data/config-numeric.js?v=20261005DF"></script>
-<script src="data/numeric.js?v=20261005DF"></script>
-<script src="data/config-leaderboard.js?v=20261005DF"></script>
-<script src="data/config-mailbox.js?v=20261005DF"></script>
+<script src="data/config-numeric.js?v=20261005DG"></script>
+<script src="data/numeric.js?v=20261005DG"></script>
+<script src="data/config-leaderboard.js?v=20261005DG"></script>
+<script src="data/config-mailbox.js?v=20261005DG"></script>
 <!-- 發放獎勵的先天資質選單（config-aptitude.js 只有常數） -->
-<script src="data/config-aptitude.js?v=20261005DF"></script>
+<script src="data/config-aptitude.js?v=20261005DG"></script>
 <!-- 守城審核：該波妖潮強度 defenseWaveAtk（config-defense.js）需要 bounty.js 的 getBountyRefSectMult（只宣告常數與函式，不會執行遊戲邏輯） -->
-<script src="data/config-bounty.js?v=20261005DF"></script>
-<script src="data/bounty.js?v=20261005DF"></script>
-<script src="data/config-defense.js?v=20261005DF"></script>
-<script src="data/config-world-boss.js?v=20261005DF"></script>
+<script src="data/config-bounty.js?v=20261005DG"></script>
+<script src="data/bounty.js?v=20261005DG"></script>
+<script src="data/config-defense.js?v=20261005DG"></script>
+<script src="data/config-world-boss.js?v=20261005DG"></script>
 <!-- 最後一擊獎勵的夥伴、功法選單（兩支都只有常數與資料） -->
-<script src="data/config-partners.js?v=20261005DF"></script>
-<script src="data/config-spells.js?v=20261005DF"></script>
+<script src="data/config-partners.js?v=20261005DG"></script>
+<script src="data/config-spells.js?v=20261005DG"></script>
 <script>
 // ================== 設定（與 tools/firestore.rules 保持一致）==================
 // 新制戰力上限（與 tools/firestore.rules 相同）：400 ＋ 境界 × 40；理論最高約佔 40～46%
@@ -1143,7 +1143,7 @@ async function reloadWboss() {
     } catch (e) { log('讀取世界 Boss 失敗：' + e.message + '（規則可能尚未發布新版）', 'err'); return; }
     const st = wbSt, now = Date.now();
     $('wb-state').innerHTML = !st ? '目前沒有世界 Boss（每週六 20:00 玩家第一次打開時自動建立）。' : `
-        <b>${esc((WB_BOSSES[(st.bossIdx || 0) % WB_BOSSES.length] || {}).name || '')}</b>（bid ${esc(st.bid)}）｜血量 ${fmt(st.hp)} / ${fmt(st.maxHp)}（${(st.hp / Math.max(1, st.maxHp) * 100).toFixed(1)}%）｜單次上限 ${WB.cap > 0 ? fmt(WB.cap) : '不設'}<br>
+        <b>${esc((WB_BOSSES[(st.bossIdx || 0) % WB_BOSSES.length] || {}).name || '')}</b>（bid ${esc(st.bid)}）｜血量 ${WB.infiniteHp && !st.killedAt ? '∞ 無限（玩家端不扣血）' : `${fmt(st.hp)} / ${fmt(st.maxHp)}（${(st.hp / Math.max(1, st.maxHp) * 100).toFixed(1)}%）`}｜單次上限 ${WB.cap > 0 ? fmt(WB.cap) : '不設'}<br>
         ${wbDt(st.startAt)} ～ ${wbDt(st.endAt)}｜${st.killedAt ? `💀 ${wbDt(st.killedAt)} 被擊敗（最後一擊：${esc(st.lastName)}）` : now < wbMsOf(st.startAt) ? '⏳ 預約中（尚未開始）' : now < wbMsOf(st.endAt) ? '⚔️ 進行中' : '⌛ 已結束'}<br>
         上一隻：${st.prev ? `bid ${esc(st.prev.bid)}、血量 ${fmt(st.prev.maxHp)}、${st.prev.killed ? '被擊敗' : '未擊敗'}、${wbDt(st.prev.endAt)} 結束` : '無'}`;
     // 可疑門檻（WB.suspectDmg；2026-10-10 起不設上限）：模擬 30 回合極限頂配 混沌道祖 最高約 829 萬、大乘約 553 萬（ARCHITECTURE.md 第 75 節）
@@ -1265,6 +1265,7 @@ function wblRender() {
     const t = wblTarget();
     $('wbl-target').innerHTML = !isAdmin ? '登入管理者後才能查看。' : t
         ? `最後一擊：<b>${esc(t.name || '（道號未知）')}</b>　uid <code>${esc(t.uid)}</code>（bid ${esc(t.bid)}）`
+        : WB.infiniteHp ? '目前是「血量無限」模式（config-world-boss.js 的 WB.infiniteHp），Boss 不會被擊敗、沒有最後一擊；可改用上面的名次獎勵，或在「📮 發放獎勵」寄給指定 uid。'
         : '這隻 Boss 還沒被打死（或沒有最後一擊紀錄），沒有可寄的對象。';
     $('wbl-preview').textContent = '獎勵：' + rwFormat(wblCollect());
     $('wbl-send').disabled = !t;

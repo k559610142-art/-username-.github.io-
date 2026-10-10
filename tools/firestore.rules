@@ -381,7 +381,8 @@ service cloud.firestore {
       function wbHpAfterOk(dd) {
         let st = wbSt();
         let after = wbStAfter();
-        return (st.hp - dd > 0 && after.hp == st.hp - dd) || (st.hp - dd <= 0 && after.hp == 0);
+        // 2026-10-10 世界 Boss 血量無限（config-world-boss.js 的 WB.infiniteHp）：允許不扣血（交易後血量 ＝ 交易前）
+        return (st.hp - dd > 0 && after.hp == st.hp - dd) || (st.hp - dd <= 0 && after.hp == 0) || after.hp == st.hp;
       }
       function wbRunCreateOk(bid) {
         let d = request.resource.data;

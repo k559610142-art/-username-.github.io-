@@ -124,7 +124,8 @@ function renderWorldBoss() {
         return;
     }
     const B = wbBossDef(st), active = wbIsActive(st, now);
-    const pct = st.maxHp > 0 ? Math.max(0, st.hp / st.maxHp * 100) : 0;
+    const inf = WB.infiniteHp && !st.killedAt;   // 血量無限（已被擊敗的舊 Boss 照實顯示）
+    const pct = inf ? 100 : st.maxHp > 0 ? Math.max(0, st.hp / st.maxHp * 100) : 0;
     const status = st.killedAt ? `💀 已被擊敗${st.lastName ? `（最後一擊：${wbEsc(st.lastName)}）` : ''}`
         : now < wbMs(st.startAt) ? `尚未開放（${wbFmtLeft(wbMs(st.startAt) - now)} 後）`
         : active ? `⚔️ 討伐中・剩 ${wbFmtLeft(wbMs(st.endAt) - now)}` : '⌛ 討伐時間已結束';
@@ -138,7 +139,7 @@ function renderWorldBoss() {
             <div class="wb-banner-text"><b>${wbEsc(B.name)}</b><span>${wbEsc(B.title)}・${raceTag(B.race)}</span></div>
         </div>
         <p class="lb-note" style="text-align:left;">${wbEsc(B.intro)}</p>
-        <div class="wb-hp"><div class="wb-hp-fill" style="width:${pct}%"></div><span>${fmtNum(Math.max(0, st.hp))} / ${fmtNum(st.maxHp)}</span></div>
+        <div class="wb-hp"><div class="wb-hp-fill" style="width:${pct}%"></div><span>${inf ? '∞ 血量無限・依累計傷害排名' : `${fmtNum(Math.max(0, st.hp))} / ${fmtNum(st.maxHp)}`}</span></div>
         <p class="wb-status">${status}</p>${nextLine}
         <div class="wb-me">
             <div>今日次數 <b>${left}/${WB.dailyMax}</b></div>
@@ -163,7 +164,7 @@ function wbRulesHtml() {
         <p>・每週六 20:00～週日 20:00 開放（GM 也可能臨時開放），全服共用一條血量。</p>
         <p>・每天 ${WB.dailyMax} 次、每次 ${WB.rounds} 回合或倒下為止，兩次至少間隔 ${WB.gapSec} 秒；倒下不扣壽元。Boss 強度跟著你的境界調整。</p>
         <p>・${wbCapText()}；撐滿 ${WB.rounds} 回合沒倒下記一次 ⭐有效挑戰。排名依累計傷害（相同並列）。</p>
-        <p>・參加獎（打過就有）：💎 每小時收入 ×${r.coinsH} 靈石、🌀 洗煉石 ${r.refine}、🌠 星允鐵 ${r.iron}、${formatCraftGain(r.craft)}；Boss 被打死全服 ×${WB.killMult}。</p>
+        <p>・參加獎（打過就有）：💎 每小時收入 ×${r.coinsH} 靈石、🌀 洗煉石 ${r.refine}、🌠 星允鐵 ${r.iron}、${formatCraftGain(r.craft)}${WB.infiniteHp ? '' : `；Boss 被打死全服 ×${WB.killMult}`}。</p>${WB.infiniteHp ? '<p>・Boss 血量無限，不會被擊敗；排名只看累計傷害。</p>' : ''}
         <p>・外觀稱號：第 1 名【誅天第一】、前 10 名【誅魔先鋒】、最後一擊【斬魔一擊】。</p>
         <p>・Boss 結束 24 小時後才能領獎（管理者審核期間）；存檔驗證異常或被封鎖的帳號不能參加與領獎。</p></details>`;
 }
@@ -372,8 +373,10 @@ function wbUpdateBars() {
     const dealt = wbScore(f), $ = id => document.getElementById(id);
     // 有上限：進度條＝本次傷害 / 上限；不設上限：進度條＝本次傷害佔開打時 Boss 剩餘血量的比例
     const capped = isFinite(f.cap);
-    $('wb-fight-dmg-fill').style.width = `${Math.min(100, dealt / (capped ? Math.max(1, f.cap) : f.hp0) * 100)}%`;
+    // 血量無限：進度條＝已打回合數 / 總回合
+    $('wb-fight-dmg-fill').style.width = `${Math.min(100, WB.infiniteHp ? f.round / WB.rounds * 100 : dealt / (capped ? Math.max(1, f.cap) : f.hp0) * 100)}%`;
     $('wb-fight-dmg').textContent = capped ? `本次傷害 ${fmtNum(Math.min(dealt, f.cap))} / 上限 ${fmtNum(f.cap)}${wbSurvived(f) ? ' ⭐' : ''}`
+        : WB.infiniteHp ? `本次傷害 ${fmtNum(dealt)}${wbSurvived(f) ? ' ⭐' : ''}`
         : `本次傷害 ${fmtNum(dealt)}（Boss 剩餘血量的 ${(Math.min(1, dealt / f.hp0) * 100).toFixed(1)}%）${wbSurvived(f) ? ' ⭐' : ''}`;
     const hp = f.shownHp != null && !f.over ? f.shownHp : f.p.hp;   // Boss 反擊演出前先顯示扣血前的氣血（wbRound）
     $('wb-fight-me-fill').style.width = `${Math.max(0, hp / f.p.max) * 100}%`;
@@ -415,10 +418,10 @@ async function wbEndFight(reason) {
         let sent = d, r;
         try { r = await wbSubmit(f.bid, d, star); }
         catch (e) {
-            // 雲端規則還是舊版（單次上限 1000 萬）時，超過的戰果會被拒絕 → 改以舊上限重送一次
-            if (!(e && e.code === 'permission-denied' && d > WB.stateCap)) throw e;
-            sent = WB.stateCap;
-            r = await wbSubmit(f.bid, sent, star);
+            // 雲端規則還是舊版（單次上限 1000 萬、一定要扣 Boss 血）時會被拒絕 → 改用舊做法（舊上限＋扣血）重送一次
+            if (!(e && e.code === 'permission-denied' && (WB.infiniteHp || d > WB.stateCap))) throw e;
+            sent = Math.min(d, WB.stateCap);
+            r = await wbSubmit(f.bid, sent, star, true);
         }
         msg = `<p class="zm-reward">✅ 已計入：${fmtNum(sent)}${sent < d ? '（伺服器尚未更新，暫時以舊上限計入）' : ''}${star ? '（⭐有效挑戰）' : ''}${r.killed ? '<br>💀 你給了 Boss 最後一擊！' : ''}</p>`;
         addLog(`⚔️ 世界 Boss【${f.B.name}】：造成 ${fmtNum(sent)} 傷害${star ? '（⭐有效挑戰）' : ''}${r.killed ? '，給了最後一擊！' : ''}`, 'level-up', true, 'item');
@@ -432,7 +435,8 @@ async function wbEndFight(reason) {
     endBody.innerHTML = `<div class="big">${reason}</div><p>本次傷害 ${fmtNum(raw)}${raw > f.cap ? `（計入上限 ${fmtNum(f.cap)}）` : ''}</p>${msg}`;
     wbTopAt = 0;   // 下次開視窗重讀排行
 }
-async function wbSubmit(bid, d, star) {
+// legacy：舊版雲端規則的做法（一定扣 Boss 血）；平常血量無限時不更新 Boss（規則允許交易後血量不變）
+async function wbSubmit(bid, d, star, legacy) {
     const { db, uid } = await lbWithTimeout(initLeaderboardBackend());
     const sref = db.collection(WB_STATE_COLLECTION).doc('state'), mref = wbRunRef(db, bid, uid);
     let killed = false;
@@ -453,7 +457,7 @@ async function wbSubmit(bid, d, star) {
             total: (old ? old.total : 0) + dd, eff: (old ? old.eff : 0) + (star ? 1 : 0), n: (old ? old.n : 0) + 1,
             day, dayN: old && old.day === day ? old.dayN + 1 : 1, lastAt: firebase.firestore.FieldValue.serverTimestamp(), hist
         });
-        if (dd > 0) {   // 傷害 0 時 Boss 不更新（規則：扣血必須讓血量變少）
+        if (dd > 0 && (legacy || !WB.infiniteHp)) {   // 傷害 0 或血量無限時 Boss 不更新（規則：扣血必須讓血量變少）
             const hp = Math.max(0, st.hp - dd);
             const upd = { hp };
             if (hp === 0) { killed = true; Object.assign(upd, { killedAt: firebase.firestore.FieldValue.serverTimestamp(), lastUid: uid, lastName: sanitizePlayerName(player.name) || '無名修士' }); }
