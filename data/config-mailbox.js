@@ -18,7 +18,7 @@ const MAIL_CACHE_KEY = 'xiuxian_mail_cache';     // localStorage：{ uid, at, pe
 // 獎勵格式版本：GM 寄出時寫進信件／兌換碼的 v；遊戲只領 v ≤ 本值的，比較新的會提示「請重新整理遊戲」而不建立領取紀錄
 //   （2026-09-28 事故：玩家用還沒支援「先天資質」的舊版遊戲領了資質信，領取紀錄建立了卻沒有效果，那封信也不能再領）
 //   1 = 數量／圖紙／僕從；2 = 加上先天資質。新增獎勵種類時 +1
-const MAIL_SCHEMA_VERSION = 4;   // 3＝可寄 GM 權限（rewards.gm，2026-10-04）；4＝先天・太古裝備（rewards.gear，2026-10-09）
+const MAIL_SCHEMA_VERSION = 5;   // 3＝可寄 GM 權限（rewards.gm，2026-10-04）；4＝先天・太古裝備（rewards.gear，2026-10-09）；5＝夥伴、功法（rewards.partner／rewards.spell，2026-10-10 世界 Boss 最後一擊獎勵）
 
 // 獎勵：rewards = { coins: 1000000, butianStones: 5, …, blueprints: { "劍_1500": 1 }, servants: { "傳說": 1 } }
 // 數量型：field = 加到 player 的欄位（星允鐵直接加數量，不套「尋鐵」加成）
@@ -59,3 +59,24 @@ const MAIL_PRESETS = [
 ];
 // 單一數量的安全上限（防 GM 手誤多打幾個 0；玩家端超過就以上限計）
 const MAIL_REWARD_MAX = 1e12;
+
+// ---- 夥伴與功法獎勵（2026-10-10，世界 Boss 最後一擊獎勵；ARCHITECTURE.md 第 75 節）----
+// rewards.partner = 夥伴 id（config-partners.js 的 partnerList）：還沒結識＝直接結識；已結識＝改得好感 MAIL_PARTNER_DUP_BOND
+// rewards.spell   = 仙法 id（例 law-sword），或 "random:品階"（low／mid／high／ultimate）＝從還沒學會的該品階隨機一招；
+//                   指定的那招已學會 → 改從同品階還沒學會的隨機一招；該品階全學會 → 沒有獎勵（日誌說明）
+// 下面兩個函式遊戲與 gm.html 共用（兩邊都有載入 config-partners.js、config-spells.js）
+const MAIL_PARTNER_DUP_BOND = 300;
+const MAIL_SPELL_RANDOM_PREFIX = "random:";
+function mailPartnerName(id) {
+    const p = (typeof partnerList !== 'undefined' ? partnerList : []).find(x => x.id === id);
+    return p ? `${p.title}・${p.name}` : '';
+}
+function mailSpellText(v) {
+    v = String(v || '');
+    if (v.startsWith(MAIL_SPELL_RANDOM_PREFIX)) {
+        const g = SPELL_GRADES[v.slice(MAIL_SPELL_RANDOM_PREFIX.length)];
+        return g ? `隨機一門未學會的${g.name}功法` : '';
+    }
+    const s = (typeof spellById !== 'undefined' && spellById[v]) || (typeof spellUltimates !== 'undefined' ? spellUltimates.find(x => x.id === v) : null);
+    return s ? `${s.grade ? SPELL_GRADES[s.grade].name : '絕學'}功法【${s.name}】` : '';
+}

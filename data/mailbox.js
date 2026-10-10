@@ -116,6 +116,8 @@ function formatMailRewards(r) {
     const rd = apt.root && describeRoot(apt.root), pd = apt.physique && describePhysique(apt.physique);
     if (rd) parts.push(`⛩️ 先天靈根【${rd.name}】`);
     if (pd) parts.push(`⛩️ 先天體質【${pd.name}】`);
+    if (r.partner && mailPartnerName(r.partner)) parts.push(`💞 夥伴【${mailPartnerName(r.partner)}】`);
+    if (r.spell && mailSpellText(r.spell)) parts.push(`📜 ${mailSpellText(r.spell)}`);
     if (r.gm === true) parts.push('🛡️ GM 權限（任意進出地圖）');
     if (r.gm === false) parts.push('🛡️ 撤銷 GM 權限');
     return parts.join('、') || '（無獎勵）';
@@ -167,8 +169,35 @@ function grantMailRewards(r, personal) {
         }
     });
     if (mbGearEntries(r).length && typeof checkTitleUnlocks === 'function') checkTitleUnlocks();
+    if (r.partner) grantMailPartner(r.partner);
+    if (r.spell) grantMailSpell(r.spell);
     // 先天資質：已測過的跳出比較讓玩家選；還沒測的存起來，測試時直接採用（aptitude.js）
     if (r.aptitude) setTimeout(() => offerAptitudeGift(r.aptitude), 300);
+}
+// 夥伴獎勵（rewards.partner，config-mailbox.js 說明）：未結識＝結識；已結識＝好感 +MAIL_PARTNER_DUP_BOND
+function grantMailPartner(id) {
+    const p = partnerById[id];
+    if (!p) return;
+    if (meetPartner(id, '仙府來信')) return;
+    // 已結識：addBond 自己會寫「好感 +N」或升級日誌；好感已滿時另外說明
+    if (!addBond(id, MAIL_PARTNER_DUP_BOND, '仙府來信（已結識，改得好感）')) addLog(`💞 已結識【${p.title}・${p.name}】且好感已達上限，這份夥伴獎勵沒有效果。`, "system", false, "item");
+}
+// 功法獎勵（rewards.spell）：指定 id 或 "random:品階"；已學會改從同品階未學會的隨機一招
+function grantMailSpell(v) {
+    v = String(v);
+    let grade = v.startsWith(MAIL_SPELL_RANDOM_PREFIX) ? v.slice(MAIL_SPELL_RANDOM_PREFIX.length) : null;
+    let s = grade ? null : spellById[v];
+    if (!grade && !s) return;
+    if (s && isSpellLearned(s.id)) { grade = s.grade; s = null; }
+    if (!s) {
+        if (!SPELL_GRADES[grade]) return;
+        const pool = spellList.filter(x => x.grade === grade && !isSpellLearned(x.id));
+        if (!pool.length) { addLog(`📜 ${SPELL_GRADES[grade].name}功法已全數習得，這份功法獎勵沒有可學的招式。`, "system", false, "item"); return; }
+        s = pool[Math.floor(Math.random() * pool.length)];
+    }
+    if (!Array.isArray(player.spells)) player.spells = [];
+    player.spells.push(s.id);
+    addLog(`📜 仙府賜下秘典，習得${SPELL_GRADES[s.grade].name}功法【${s.name}】（${s.attrName}・${SPELL_ROLES[s.role].name}）！`, "level-up", false, "item");
 }
 // 同 combat.js 的 tryRescueServant 產生的僕從格式
 function createMailServant(quality) {
