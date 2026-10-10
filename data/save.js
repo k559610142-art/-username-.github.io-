@@ -477,9 +477,47 @@ async function resetGameCompletely() {
     }
 }
 
+// ---- 多開保護（2026-10-10，ARCHITECTURE.md 第 30 節）----
+// 同一個瀏覽器開兩個遊戲分頁時共用同一份存檔：舊分頁的定時存檔會把新分頁剛領到的東西蓋掉
+// （玩家回報「世界 Boss 獎勵信領取後沒有裝備」，實測重現）。
+// 做法：進入遊戲時寫入 ACTIVE_TAB_KEY 宣告「我是現在的分頁」；其他分頁收到 storage 事件就停止存檔、蓋上暫停畫面，要繼續就重新整理（重新讀最新存檔，再變成現在的分頁）
+const ACTIVE_TAB_KEY = 'xiuxian_active_tab';
+const TAB_ID = Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+let saveSuperseded = false;
+function claimActiveTab() {
+    try { localStorage.setItem(ACTIVE_TAB_KEY, TAB_ID + '|' + Date.now()); } catch (e) { /* 存不了就不保護 */ }
+}
+function isOtherTabActive() {
+    let cur = null;
+    try { cur = localStorage.getItem(ACTIVE_TAB_KEY); } catch (e) { return false; }
+    return !!cur && cur.split('|')[0] !== TAB_ID;
+}
+function onOtherTabActive(e) {
+    if (e.key !== ACTIVE_TAB_KEY || !e.newValue || e.newValue.split('|')[0] === TAB_ID) return;
+    if (!gameStarted || saveSuperseded) return;
+    saveSuperseded = true;
+    showTabSupersededNotice();
+}
+window.addEventListener('storage', onOtherTabActive);
+function showTabSupersededNotice() {
+    if (document.getElementById('tab-superseded')) return;
+    const d = document.createElement('div');
+    d.id = 'tab-superseded';
+    d.style.cssText = 'position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:16px;';
+    d.innerHTML = `<div style="max-width:420px;background:#1f2937;border:1px solid #facc15;border-radius:12px;padding:20px;color:#e5e7eb;text-align:center;line-height:1.6;">
+        <h3 style="margin:0 0 8px;color:#facc15;">⏸️ 遊戲已在其他分頁開啟</h3>
+        <p style="margin:0 0 14px;font-size:.92em;">同時開兩個遊戲分頁，舊分頁存檔會蓋掉新分頁的進度（例如剛領的信件獎勵）。<br>這個分頁已<b>停止存檔</b>，請關閉它；要在這裡繼續玩，請按下方按鈕重新載入最新進度。</p>
+        <button class="sys-btn" id="tab-superseded-reload">🔄 在這個分頁繼續</button></div>`;
+    document.body.appendChild(d);
+    document.getElementById('tab-superseded-reload').addEventListener('click', () => location.reload());
+}
+
 function saveLocal() {
     if (gameOver) return;   // 壽元耗盡後存檔已清除，不可再寫回
     if (saveLoadFailed) return;   // 讀檔失敗期間禁止寫入，保護原本的存檔
+    if (saveSuperseded) return;   // 其他分頁正在玩（多開保護），這個分頁不能寫入
+    // 手機瀏覽器把分頁放到背景時可能收不到 storage 事件：存檔前再確認一次自己還是現在的分頁
+    if (gameStarted && isOtherTabActive()) { saveSuperseded = true; showTabSupersededNotice(); return; }
     player.lastSaveTime = Date.now();
     if (typeof tgSaveStamp === 'function') tgSaveStamp();   // 伺服器時間戳（timeguard.js，離線結算用）
     localStorage.setItem('xiuxian_save', igPrepareSave());   // 帶簽章＋合理性檢查（integrity.js，第 72 節）

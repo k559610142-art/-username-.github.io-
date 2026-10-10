@@ -183,6 +183,7 @@ function createMailServant(quality) {
 async function claimMail(id) {
     const m = mbMails.find(x => x.id === id);
     if (!m) return;
+    if (saveSuperseded) { showTabSupersededNotice(); return; }   // 這個分頁已停止存檔，領了會存不進去（save.js 多開保護）
     if (isMailTooNew(m)) { gameAlert('這封信的獎勵需要新版遊戲才能領取。\n請重新整理頁面（電腦按 Ctrl＋F5）後再領，信件會保留。'); return; }
     const space = checkMailRewardSpace(m.rewards);
     if (space) { gameAlert(space); return; }
@@ -220,6 +221,7 @@ async function redeemCode() {
     const input = document.getElementById('redeem-code-input');
     const code = normalizeRedeemCode(input && input.value);
     if (!code) return;
+    if (saveSuperseded) { showTabSupersededNotice(); return; }   // 多開保護（save.js）
     if (!/^[A-Z0-9_-]{3,40}$/.test(code)) { gameAlert('兌換碼格式不正確（英文、數字、- 或 _，3～40 字）。'); return; }
     let db, uid, info;
     try {
