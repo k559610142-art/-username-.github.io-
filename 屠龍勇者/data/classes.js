@@ -47,6 +47,14 @@ const CLASSES = {
         base: { str: 8, dex: 7, con: 12, int: 12, wis: 12, cha: 8 },
         hp: [5, 8], mp: [6, 9], startHp: 10, startMp: 8, mr: 15, spDiv: 4, mpRegenK: 1,
         weapons: ['dagger', 'staff'], shield: true, start: ['oakWand', 'leatherArmor'],
+        sprite: {
+            drawH: 48, charH: 113,
+            walk:   { src: 'images/sprites/mage-walk.png',   cellW: 121, cellH: 127, frames: { down: 5, right: 5, up: 5 }, ms: 120 },
+            attack: { src: 'images/sprites/mage-attack.png', cellW: 132, cellH: 127, frames: { down: 3, right: 4, up: 7 }, ms: 80 },
+            cast:   { src: 'images/sprites/mage-cast.png',   cellW: 130, cellH: 126, frames: { down: 3, right: 8, up: 8 }, ms: 90 },
+            hit:    { src: 'images/sprites/mage-hit.png',    cellW: 127, cellH: 123, frames: { down: 3, right: 3, up: 3 }, ms: 90 },
+        },
+        art: 'images/classes/mage.jpg',
     },
     elf: {
         name: '妖精', icon: '🧝',
