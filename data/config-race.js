@@ -7,7 +7,9 @@ const RACES = {
     beast: { name: "妖獸", icon: "🐉", desc: "天地間的飛禽走獸修煉成精，體魄強橫。" },
     ghost: { name: "鬼物", icon: "👻", desc: "幽冥陰魂、殭屍屍王，來去如煙、百毒不侵。" },
     demon: { name: "魔修", icon: "😈", desc: "修煉魔功的邪道之人，嗜血好殺。" },
-    heart: { name: "心魔", icon: "🌀", desc: "修士心中的執念與妄想，化形為與你一模一樣的魔身。" }
+    heart: { name: "心魔", icon: "🌀", desc: "修士心中的執念與妄想，化形為與你一模一樣的魔身。" },
+    // 2026-10-10 使用者：世界 Boss 羅峰「改神族」。只用於顯示：不在 RACE_KEYS（沒有斬妖錄、剋制符／法寶／裝備特效，玩家的種族剋制對神族無效），沒有種族特性
+    god:   { name: "神族", icon: "✨", desc: "域外神明，超脫諸族之上，世間沒有剋制祂的手段。" }
 };
 const RACE_KEYS = ["beast", "ghost", "demon", "heart"];
 const RACE_DMG_CAP = 0.5;   // 對同一族的剋制加成合計上限 +50%
