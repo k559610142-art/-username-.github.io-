@@ -46,12 +46,13 @@ function raidBoss(def, n) {
 
 function raidConsumables(p) {
     const m = {};
-    for (const x of p.inv) if (isOfflineConsumable(x.id)) m[x.id] = (m[x.id] || 0) + x.n;
+    for (const x of p.inv) if (isOfflineConsumable(x.id) || x.id === 'magicCrystal') m[x.id] = (m[x.id] || 0) + x.n;
     return m;
 }
 
 // 隊伍快照：整份角色，倉庫不需要（也比較小）
 function raidSnapshot() {
+    dollSummonTick();
     const p = JSON.parse(JSON.stringify(player));
     p.storage = [];
     return p;
@@ -210,7 +211,7 @@ function raidSimulate(def, list, opts = {}) {
                 if (d > 0) used[id] = d;
             }
             return { uid: m.uid, clan: m.clan, name: m.name, cls: m.cls, lv: m.lv, maxHp: m.maxHp, dmg: Math.round(m.dmg), heal: Math.round(m.heal), died: !m.alive, used,
-                dollLocks: dollSimulationLocks(m.doll0, m.p.dollState), doll: dollEquipped(m.p), dollMs: m.dollMs };
+                dollLocks: dollSimulationLocks(m.doll0, m.p.dollState), doll: dollEquipped(m.p), dollMs: m.dollMs, dollSummonUntil: m.p.dollSummonUntil };
         });
         return {
             v: 1, raid: def.id, n: list.length, win, ms: t, enraged,
@@ -255,7 +256,11 @@ function raidApplyReward(res, uid, runKey) {
     const def = RAID_BY_ID[res.raid];
     const out = { win: res.win, exp: 0, gold: 0, items: [], used: me.used };
     dollApplySimulation(me.dollLocks, me.dollMs, me.doll || null);
-    for (const id in me.used) consumeItem(id, Math.min(me.used[id], countItem(id)));
+    for (const id in me.used) {
+        const n = Math.min(me.used[id], countItem(id));
+        if (id === 'magicCrystal') dollConsumeCrystals(n); else consumeItem(id, n);
+    }
+    dollApplySummonResult(me.dollSummonUntil);
     if (!res.win || !def) { addLog(`🐉 團隊副本：討伐${res.boss.name}失敗`, 'warn'); return out; }
     // 血盟加成：同血盟 2 人以上（包含自己）經驗、金幣各 +10%（clan.js）
     const clanN = me.clan ? res.members.filter(m => m.clan === me.clan).length : 0;

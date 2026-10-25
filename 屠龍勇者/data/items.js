@@ -389,6 +389,7 @@ const ITEMS = {
     drakeFang:     { name: '地龍之牙',       cat: 'material', wt: 5, sell: 2500 },
     pirateTreasure: { name: '海賊的寶箱',    cat: 'material', wt: 5, sell: 4000 },
     wyvernWing:    { name: '飛龍之翼',       cat: 'material', wt: 5, sell: 5000 },
+    magicCrystal:  { name: '魔法結晶', cat: 'material', wt: 0, sell: 0, desc: '在娃娃商人處分解傳說品質裝備取得，每件50個。娃娃相關材料，目前先開放取得與保存。' },
     frostCrystal:  { name: '寒冰結晶',       cat: 'material', wt: 5, sell: 6500 },
     ifritFlame:    { name: '伊弗利特之焰',   cat: 'material', wt: 5, sell: 8000 },
     forgottenRelic: { name: '遺忘的聖物',    cat: 'material', wt: 5, sell: 10000 },

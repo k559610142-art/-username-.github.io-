@@ -145,7 +145,7 @@ function migrateSave(data) {
     }
     if (!p.towerKills || typeof p.towerKills !== 'object' || Array.isArray(p.towerKills)) p.towerKills = {};
     p.towerMax = clamp(p.towerMax | 0, 1, 100);
-    // schema 10：各款娃娃共用冷卻與出場累積時間；舊檔預設空，不影響道具。
+    // schema 10／12：娃娃能力與共用召喚到期時間；舊檔尚未付費，首次召喚扣料。
     dollStateNormalize(p);
     p.settings = Object.assign(JSON.parse(JSON.stringify(DEFAULT_SETTINGS)), p.settings || {});
     // schema 8：指定自動販賣清單；舊檔預設空，去除不存在或不能回收的道具。

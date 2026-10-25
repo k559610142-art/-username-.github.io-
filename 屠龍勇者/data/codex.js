@@ -79,6 +79,7 @@ function codexSources(id) {
         for (const c in CLASS_QUESTS) CLASS_QUESTS[c].forEach(q => { if (q.reward && q.reward.item) add(q.reward.item, `任務：${CLASSES[c].name}「${q.title}」`); });
     }
     const d = ITEMS[id], list = [];
+    if (id === 'magicCrystal') list.push('娃娃商人：每件傳說品質裝備分解取得50個');
     if (d.cat === 'map') {
         const zs = mapZones(), need = zs[Math.min(d.tier, zs.length) - 1].lv[0];
         list.push(`掉落：Lv.${need} 以上的怪物 ${MAP_DROP_P * 100}%、異界裡 ${MAP_DROP_IN_MAP_P * 100}%（T${Math.max(1, d.tier - 1)}～T${Math.min(MAP_TIERS, d.tier + 1)} 異界）`);

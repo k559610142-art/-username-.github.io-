@@ -680,7 +680,7 @@ function sceneHuntReady() {
 // 娃娃只跟隨、不碰撞也不參戰；位置屬場景狀態，不寫入角色存檔。
 function sceneDollTick(dt) {
     const it = player.equip.doll, def = it && ITEMS[it.id], doll = def && DOLLS[def.doll], pl = scene.pl;
-    if (!doll || player.hp <= 0) { scene.doll = null; return; }
+    if (!doll || !dollIsSummoned() || player.hp <= 0) { scene.doll = null; return; }
     let d = scene.doll;
     if (!d || d.uid !== it.uid || Math.hypot(d.rx - pl.rx, d.ry - pl.ry) > 8) {
         const spot = [[0, 1], [1, 0], [-1, 0], [0, -1]].map(([x, y]) => [pl.x + x, pl.y + y])

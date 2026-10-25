@@ -84,6 +84,7 @@ function applyOffline(awayMs, paidMs = Infinity) {   // paidMs：伺服器用鑽
     if (!player || !player.hunting || player.loc.type !== 'zone') return null;
     const z = currentZone();
     if (!z || z.type === 'dragon') return null;
+    dollSummonTick();   // 先依真實已過時間結算召喚費，避免抽樣倍率重複扣料。
     const capped = Math.min(awayMs, OFFLINE_MAX_MS, paidMs);
     let eff = capped * OFFLINE_RATE;
     const s = measureHunt(Math.min(OFFLINE_SAMPLE_MS, eff));

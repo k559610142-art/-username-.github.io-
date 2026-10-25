@@ -162,6 +162,7 @@
 | `tools/test-boss-dodge-boundary.js` | 紅圈閃避區界／分區／繞路限制、無路原地承傷且持續掛機隔離回歸（第148節） |
 | `tools/test-loot-auto-sell.js` | 指定自動販賣清單、確認／取消、舊檔轉換、本機與後端入帳／收據重送與失敗還原隔離測試（第146節） |
 | `images/sprites/morph/aden-glory-swordsman-v1/`、`tools/sprite-src/morph/aden-glory-swordsman-v1/`、`tools/test-aden-glory-swordsman-morph.js` | m15原始參考／提示詞與圖集打包、專屬動畫、卷軸隔離驗證（第160節） |
+| `tools/test-doll-dismantle.js`、`images/icons/items/magicCrystal-v1.png`、`tools/icon-src/magic-crystal-v1/` | 娃娃商人傳說裝備分解隔離測試、魔法結晶圖示／原稿／提示詞（第162節） |
 | `tools/test-dolls.js` | 21款娃娃道具／裝卸／跟隨／存檔隔離測試（第154節） |
 | `data/doll-abilities.js` | 21款娃娃基本能力、被動、冷卻／出場時間與觸發狀態（第157節） |
 | `tools/test-doll-abilities.js` | 21款數值、實際戰鬥／藥水、冷卻存檔、範圍防重複與模擬隔離（第157節） |
@@ -185,7 +186,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025aq`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025ar`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3354,3 +3355,13 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 世界地圖：`tower`、`ivory` 兩個地標拿掉 `target`（原本走路是走到傳送師面前，現在那裡沒有東西），只能直接傳送。選到永夜之塔時說明區多一個樓層輸入框（`#atlas-tower-floor`，1～`towerMax`，預設最高樓層）、逐層規則與下一層條件（`towerNeedText`）、守關首領復活倒數（`towerBossStatusHtml`）。
 - `atlasTravel`：**先讀樓層再呼叫 `atlasSelect`**（它會重畫說明區、輸入框回到預設值）；樓層夾在 1～`towerMax`，填錯或 0 用最高樓層。人在塔裡也能用世界地圖換樓層（照收傳送費），同一層會提示「已經在 NF」。確認視窗與紀錄顯示樓層。
 - 驗證：瀏覽器（面板隱藏，用最小 scene 物件）選 20F→20F、填 99→35F（上限）、同層被擋、野外 NPC 只剩毒霧巢穴入口，Console 無錯誤；test-atlas-travel、test-tower-floors、check.ps1 通過。
+
+
+## 162. 娃娃商人分解傳說裝備取得魔法結晶（2026-10-25，版本 `20261025ar`）
+
+- 使用者要求只分解傳說裝備，於娃娃商人操作，並明確選定每件固定50個魔法結晶。本次不加入娃娃召喚耗材、升階或合成，也不改既有GM限購T4商店規則；分解不需要GM。
+- items新增magicCrystal：material，可堆疊、重量0、回收價0，不上商店或怪物掉落，道具總數458。沿現有inv／storage道具結構保存，不新增player欄位、SAVE_SCHEMA保持11。內建image_gen製作專用藍紫結晶，128px RGBA圖示images/icons/items/magicCrystal-v1.png，原稿／完整提示詞tools/icon-src/magic-crystal-v1；icons.ITEM_IMG接圖、sw預載，圖鑑列來源。
+- doll-shop.js新增DOLL_DISMANTLE_CRYSTALS=50、dollShopTab與setDollShopTab、dollLegendGear、renderDollDismantle、dollDismantleHere、dollDismantle；renderDollShop上方切換購買／分解。只列背包n=1且q=legend的weapon／armor（含飾品），不是以基底售價或圖鑑品級判斷傳說；鎖定項目列出但禁用。已裝備不在背包，不可分解。逐件gameConfirm顯示完整裝備名、強化／詞綴／附魔消失與50結晶。
+- 確認前後皆驗證人在村莊、town面板娃娃商人分解頁、同角色、同UID原實體、仍為傳說且未鎖定；JSON快照阻擋確認期間裝備屬性改變。先成功加入結晶才移除來源，避免發放失敗時損失裝備；同回呼重送因來源已消失而不重領。材料數量檢查安全整數與溢位，不給金幣；saveGame／refreshUI沿既有本機與雲端存檔流程。
+- 未修改SQL或正式後端目錄；魔法結晶目前供背包／角色倉庫保存，共用倉庫／交易所仍受伺服器既有目錄限制，若後續要支援需另獲准同步目錄。
+- test-doll-dismantle使用真實函式與隔離記憶體驗傳說篩選／飾品、一般玩家、鎖定與已裝備阻擋、取消／確認50／疊100、發放失敗保留來源、同回呼不重領、確認中改品質／強化／鎖定／移出或裝備／離村／換頁／換角色阻擋、加密保存與T4商店保留。test-item-art同步458道具／290張新PNG，與item-lock／town-doll-shop回歸通過。未開關瀏覽器或操作正式存檔，待使用者實玩確認後提交。

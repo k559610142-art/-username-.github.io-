@@ -46,7 +46,7 @@ function createPlayer(name, cls, stats) {
         baseHp: c.startHp + conHpBonus(stats.con), baseMp: c.startMp + wisMpBonus(stats.wis),
         hp: 1, mp: 0,
         inv: [], equip: {}, storage: [], nextUid: 1,
-        buffs: {}, cds: {}, dollState: {},
+        buffs: {}, cds: {}, dollState: {}, dollSummonUntil: 0,
         loc: { type: 'town', id: 'talking' }, hunting: false,
         towerMax: 1, towerKills: {}, towerRule: 2, towerCleared: {}, towerBossCd: {}, dragons: {}, dragonCd: {},
         kills: 0, deaths: 0,
@@ -132,6 +132,7 @@ function equipItem(uid, silent) {
     if (err) { if (!silent) showToast(err); return false; }
     let slot = def.cat === 'doll' ? 'doll' : def.cat === 'weapon' ? 'weapon' : def.slot;
     if (slot === 'ring') slot = !player.equip.ring1 ? 'ring1' : (!player.equip.ring2 ? 'ring2' : 'ring1');
+    if (slot === 'doll' && !dollStartSummon()) return false;
     if (slot === 'weapon' && WEAPON_TYPES[def.type].two && player.equip.shield) unequipSlot('shield');
     if (slot === 'shield' && player.equip.weapon && WEAPON_TYPES[ITEMS[player.equip.weapon.id].type].two) unequipSlot('weapon');
     if (player.equip[slot]) unequipSlot(slot);
@@ -279,7 +280,7 @@ function defenseOf(st) { return 10 - st.ac; }
 function calcStats() {
     const p = player, c = CLASSES[p.cls], fx = {}, now = gameNow;
     const doll = dollEquipped(p);
-    if (doll) addFx(fx, DOLL_ABILITIES[doll].fx);
+    if (doll && dollIsSummoned(p)) addFx(fx, DOLL_ABILITIES[doll].fx);
     let weaponEnch = 0;
     for (const slot of SLOT_KEYS) {
         const it = p.equip[slot];

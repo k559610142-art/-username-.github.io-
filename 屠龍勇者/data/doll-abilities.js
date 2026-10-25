@@ -23,6 +23,52 @@ const DOLL_ABILITIES = {
     'little-demon': { fx: { dmg: 6, weight: 500 }, base: '傷害 +6、負重 +500', name: '吞噬精氣', desc: '攻擊命中時10%機率吸取HP 25，不超過該次實際傷害。' },
 };
 const dollRuntime = new WeakMap();
+const DOLL_SUMMON_COST = 50, DOLL_SUMMON_MS = 30 * 60 * 1000;
+function dollIsSummoned(p = player) { return !!(dollEquipped(p) && p.dollSummonUntil > gameNow); }
+function dollConsumeCrystals(n) {
+    if (!Number.isSafeInteger(n) || n < 0 || countItem('magicCrystal') < n) return false;
+    let left = n;
+    for (const it of player.inv.slice()) {
+        if (it.id !== 'magicCrystal' || left <= 0) continue;
+        const take = Math.min(left, it.n); it.n -= take; left -= take;
+        if (it.n <= 0) removeInst(it.uid);
+    }
+    return left === 0;
+}
+function dollRecallForCrystals() {
+    if (!dollEquipped()) return;
+    player.dollSummonUntil = 0;
+    unequipSlot('doll');
+    if (typeof scene !== 'undefined' && scene) scene.doll = null;
+    addLog('🧚 魔法結晶不足50個，娃娃已收回背包，能力解除。', 'sys');
+    if (!SIM_MODE) { showToast('魔法結晶不足，娃娃已收回'); saveGame(); refreshUI(); }
+}
+function dollSummonTick() {
+    if (!dollEquipped()) return false;
+    if (dollIsSummoned()) return true;
+    const until = player.dollSummonUntil || 0;
+    const periods = until > 0 ? Math.floor((gameNow - until) / DOLL_SUMMON_MS) + 1 : 1;
+    const count = countItem('magicCrystal');
+    const paid = Number.isSafeInteger(count) && count >= 0 ? Math.min(periods, Math.floor(count / DOLL_SUMMON_COST)) : 0;
+    if (paid > 0 && dollConsumeCrystals(paid * DOLL_SUMMON_COST)) {
+        player.dollSummonUntil = (until || gameNow) + paid * DOLL_SUMMON_MS;
+        addLog('🧚 娃娃續召，消耗魔法結晶 ×' + paid * DOLL_SUMMON_COST, 'sys');
+    }
+    if (!dollIsSummoned()) { dollRecallForCrystals(); return false; }
+    if (!SIM_MODE) saveGame();
+    return true;
+}
+function dollStartSummon() {
+    if (dollEquipped()) dollSummonTick();
+    if (player.dollSummonUntil > gameNow) return true;
+    if (!dollConsumeCrystals(DOLL_SUMMON_COST)) { if (!SIM_MODE) showToast('召喚娃娃需要50個魔法結晶'); return false; }
+    player.dollSummonUntil = gameNow + DOLL_SUMMON_MS;
+    addLog('🧚 召喚娃娃，消耗魔法結晶 ×50，維持30分鐘。', 'sys');
+    return true;
+}
+function dollApplySummonResult(until) {
+    if (Number.isFinite(until) && until > gameNow) player.dollSummonUntil = Math.max(player.dollSummonUntil || 0, Math.min(until, gameNow + DOLL_SUMMON_MS));
+}
 for (const id in DOLL_ABILITIES) {
     const a = DOLL_ABILITIES[id];
     ITEMS['doll_' + id].desc = a.base + '。' + a.name + '：' + a.desc + ' 僅出場娃娃生效，卸下移除；換裝不重置冷卻。';
@@ -44,11 +90,12 @@ function dollStateNormalize(p) {
             readyAt: a.cd && Number.isFinite(s.readyAt) ? clamp(s.readyAt, 0, gameNow + a.cd) : 0 };
     }
     p.dollState = next;
+    p.dollSummonUntil = Number.isFinite(p.dollSummonUntil) ? clamp(p.dollSummonUntil, 0, gameNow + DOLL_SUMMON_MS) : 0;
 }
 function dollResetTransient() { if (player) dollRuntime.delete(player); }
 function dollContext() {
     const id = dollEquipped();
-    if (!id || player.hp <= 0) { if (player) dollRuntime.delete(player); return null; }
+    if (!id || !dollIsSummoned() || player.hp <= 0) { if (player) dollRuntime.delete(player); return null; }
     let r = dollRuntime.get(player);
     const uid = player.equip.doll.uid;
     if (!r || r.id !== id || r.uid !== uid) { r = { id, uid, until: 0, shield: 0, hotLeft: 0, hotAcc: 0 }; dollRuntime.set(player, r); }
@@ -80,6 +127,7 @@ function dollLowHp(st) {
     else if (r.id === 'black-tortoise') dollTrigger(r);
 }
 function dollAbilityTick(dt) {
+    if (!dollSummonTick()) return;
     const r = dollContext();
     if (!r) return;
     const a = DOLL_ABILITIES[r.id], step = Math.max(0, dt);
@@ -163,7 +211,7 @@ function dollStatusInfo() {
     else if (s.readyAt > gameNow) text = '冷卻' + Math.ceil((s.readyAt - gameNow) / 1000) + '秒';
     else if (a.period) text = Math.ceil((a.period - s.elapsed) / 1000) + '秒';
     else if (a.cd) text = '待命';
-    return { id: r.id, name: DOLLS[r.id].name + '・' + a.name + '：' + a.base + '。' + a.desc + (r.noticeUntil > gameNow ? ' ' + r.notice : ''), text, on };
+    return { id: r.id, name: DOLLS[r.id].name + '・' + a.name + '：' + a.base + '。' + a.desc + ' 召喚剩餘' + Math.ceil((player.dollSummonUntil - gameNow) / 1000) + '秒；每30分鐘消耗50個魔法結晶。' + (r.noticeUntil > gameNow ? ' ' + r.notice : ''), text, on };
 }
 // 模擬不直接改真實角色；只在收益正式入帳時帶回已觸發的冷卻。
 function dollSimulationLocks(before, after) {
