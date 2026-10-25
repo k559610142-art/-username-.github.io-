@@ -178,7 +178,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025aa`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025ab`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3232,3 +3232,11 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - icons.js buffIconsHtml新增passive_shuraBlood臨時格，使用既有shuraBlood技能圖、藍底及on發光，下方文字血戰，title／點擊顯示生效中與原技能說明；只在已學會且修羅適用、HP>0並低於calcStats().maxHp的50%時顯示，不新增buff或倒數。回血至50%以上或死亡即移除。更新仍沿setHtmlStable。
 - tools/test-shura-blood-status.js實測傷害加成差8、吸血差5%、200傷實回10HP、剛好50%不觸發／回血消失／未學／異職／死亡不顯示；buff-groups回歸通過。隔離瀏覽器PC／390px手機臨時區顯示、實點效果提示、回血移除正常，Console無error／warn。
 - 最終check.ps1 ALL CHECKS PASSED、48檔混淆479KB建置通過；待使用者實玩確認後commit。
+
+## 151. 點版本號查看更新內容（2026-10-25，版本 `20261025ab`）
+
+- 使用者要求標題下方目前版本號可點開本次更新。index.html的#version改成語意button並保留原位置，設定頁角色區版本號也改成同樣入口；version-link輕量文字鈕、虛線底線與鍵盤焦點提示。
+- ui-create.js新增GAME_UPDATES（新版置頂的玩家用版本／條目陣列）及頂層openUpdateNotes，使用既有openDialog顯示本次及近期更新，內容跳脫HTML、可捲動關閉，不需登入、不讀寫存檔、不連外。未加遊戲檔案或改載入順序。
+- 首批紀錄含ab版本入口、aa血戰、z瞬移補血、y紅圈區界、x洗鍊上限、w彈藥與v自訂自動販賣；之後每次更新要在GAME_UPDATES最上方新增當版紀錄，版本與GAME_VERSION一致，舊紀錄保留。
+- 隔離瀏覽器實點標題版號、設定版號、開關與手機390px，最新／近期內容正確，Console無error／warn；check.ps1 ALL CHECKS PASSED。
+- 48檔混淆480KB建置通過，openUpdateNotes已公開供事件呼叫；待使用者實玩確認後commit。

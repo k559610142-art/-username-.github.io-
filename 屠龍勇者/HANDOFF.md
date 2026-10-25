@@ -5,6 +5,8 @@
 
 ## 1. 現況
 
+- **20261025ab：點擊版本號查看更新內容（第151節）**。標題畫面版號與設定角色區版號皆可點，遊戲內視窗列本次與近期更新（ab～v）。ui-create.js的GAME_UPDATES之後換版需新版置頂補玩家用條目。PC／手機實點標題及設定開關、內容與Console無error／warn，check.ps1通過；48檔混淆480KB建置通過，待Ctrl+F5→標題底部版號→看更新／關閉，遊戲設定頁也可開，實玩確認後commit。
+
 - **20261025aa：血戰觸發顯示於臨時區（第150節）**。確認原本已實裝：傷害+8、吸血+5%，實測200傷回10HP；新增已學修羅HP低於50%時臨時區發光血戰圖示，點擊看生效與說明，回血50%以上／死亡移除。不改能力／存檔。單測與buff-groups、PC／手機實點、Console無error／warn通過；check.ps1 ALL CHECKS PASSED及48檔混淆479KB通過，待Ctrl+F5→已學血戰修羅→低血時看臨時血戰、點說明、回血過半確認消失，實玩確認後commit。
 
 - **20261025z：自動瞬移後先喝水、不連飛（第149節）**。hunt.teleRecover記憶體恢復階段，先依原喝水CD補至喝水／瞬移設定較高門檻，再尋怪，期間不再自動瞬移；缺藥走原autoHome、自動喝水關閉不強制喝。不改存檔／SQL／手動瞬移。新隔離測試及potion-delay／offline-drops／server-loot-client回歸、瀏覽器Console無error／warn通過。check.ps1 ALL CHECKS PASSED及48檔混淆479KB通過，待Ctrl+F5→開啟治癒藥水與瞬移卷軸自動→低血逃生應只飛一次後先補血→補好再找怪，實玩確認後commit。
