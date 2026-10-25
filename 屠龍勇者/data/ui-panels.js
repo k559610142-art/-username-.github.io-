@@ -975,6 +975,39 @@ function renderInn() {
 }
 
 // ───────── 設定 ─────────
+let lootAutoDrawerOpen = false;
+function toggleLootAutoDrawer() { lootAutoDrawerOpen = !lootAutoDrawerOpen; renderPanel(); }
+function lootAutoDrawerHtml() {
+    if (!lootAutoDrawerOpen) return '';
+    const list = player.settings.lootAutoSell || [], names = new Set(list.map(id => ITEMS[id] && ITEMS[id].name)), seen = new Set();
+    const bag = player.inv.filter(it => {
+        const d = ITEMS[it.id];
+        if (!d || instSellPrice(it) <= 0 || names.has(d.name) || seen.has(d.name)) return false;
+        seen.add(d.name); return true;
+    });
+    const selected = list.filter(id => ITEMS[id]).map(id => `<div class="loot-auto-row"><span>${itemIconHtml(id)}<span>${esc(ITEMS[id].name)}</span></span><button class="mini secondary" onclick="lootAutoRemove('${id}')">移除</button></div>`).join('');
+    const choices = bag.map(it => `<div class="loot-auto-row"><span>${itemIconHtml(it.id)}<span>${esc(ITEMS[it.id].name)}</span></span><button class="mini" onclick="lootAutoAdd(${it.uid})">新增</button></div>`).join('');
+    return `<div class="loot-auto-drawer"><small class="muted">新增只設定未來掉落，不會賣掉背包現有物品。同名以道具本名判定，不分品質或詞綴；清單優先於保留設定。</small>
+        <h5>自動販賣清單（${list.length}）</h5><div class="loot-auto-list">${selected || '<p class="muted">尚未加入道具</p>'}</div>
+        <h5>從背包新增</h5><div class="loot-auto-list">${choices || '<p class="muted">沒有可新增的道具（無回收價的道具不列入）</p>'}</div></div>`;
+}
+function lootAutoAdd(uid) {
+    const owner = player, it = findInv(uid);
+    if (!it || !ITEMS[it.id] || instSellPrice(it) <= 0) return;
+    const id = it.id, name = ITEMS[id].name;
+    if ((owner.settings.lootAutoSell || []).some(k => ITEMS[k] && ITEMS[k].name === name)) return;
+    gameConfirm('加入自動販賣', `將「${name}」加入自動販賣？\n之後打到同名道具，不論品質，包含傳說、保留詞綴與共鳴，都會直接按商店回收價換成金幣，不再詢問。\n背包目前的物品不會被賣掉；可隨時從清單移除。`, () => {
+        if (player !== owner || !owner.inv.some(x => x.id === id && instSellPrice(x) > 0)) return;
+        const list = owner.settings.lootAutoSell || [];
+        if (list.some(k => ITEMS[k] && ITEMS[k].name === name)) return;
+        owner.settings.lootAutoSell = list.concat(id);
+        saveGame(); renderPanel(); showToast(`已設定自動販賣：${name}`);
+    }, '確認加入');
+}
+function lootAutoRemove(id) {
+    player.settings.lootAutoSell = (player.settings.lootAutoSell || []).filter(k => k !== id);
+    saveGame(); renderPanel();
+}
 function renderSettings() {
     const s = player.settings;
     const num = (key, label, min, max) => `<label class="set-row"><span>${label}</span><input type="number" min="${min}" max="${max}" value="${s[key]}" onchange="setSettingNum('${key}',this.value,${min},${max})"></label>`;
@@ -993,7 +1026,8 @@ function renderSettings() {
             ${num('healPct', 'HP 低於 % 施放治癒魔法', 5, 95)}
             ${chk('autoDodge', '首領大招自動閃避（走出紅圈）')}
         </div>
-        <div class="panel"><h4>🎒 戰利品過濾</h4>
+        <div class="panel"><div class="loot-filter-head"><h4>🎒 戰利品過濾</h4><button class="mini secondary" aria-expanded="${lootAutoDrawerOpen}" onclick="toggleLootAutoDrawer()">自動販賣 ${lootAutoDrawerOpen ? '▴' : '▾'}</button></div>
+            ${lootAutoDrawerHtml()}
             <label class="set-row"><span>撿到裝備時</span><select onchange="setSettingNum('lootFilter',this.value,0,3)">
                 ${LOOT_FILTERS.map((n, i) => `<option value="${i}" ${s.lootFilter === i ? 'selected' : ''}>${n}</option>`).join('')}</select></label>
             <small class="muted">被過濾的裝備會直接換成金幣，不進背包、不佔負重。武士刀、精靈之弓、能力戒指這類商店沒賣的稀有基底也一樣照品質賣出（勾選的保留詞綴除外）。</small>

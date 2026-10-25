@@ -154,6 +154,7 @@
 | `manifest.json` | App 名稱、圖示、`scope: ./`（只涵蓋本資料夾） |
 | `sw.js` | Service Worker，快取名稱 `dragon-` 開頭（第 12 節） |
 | `images/` | `icons/` 圖片圖示（藥水 `potion-*.jpg`、技能 `sk/`，第 41 節）；App 圖示：`icon-192/512.png`、`icon-maskable-512.png`、`apple-touch-icon.png`；主畫面外框 `frame-nopillar.png`（去掉拱門與左右石柱，第 54 節；`frame-notop.jpg`、原版 `frame.jpg` 保留；第 15 節）、PC 橫式外框 `frame-pc.jpg`＋遮罩 `frame-pc-mask.png`（第 19 節）；`sprites/` 人物模型、`classes/` 職業立繪、十二職業合照 `all.jpg` 、創角舞台去背圖 `classes/stage/`（合照中的人）與 `classes/hero/`（立繪全身像）（第 18 節）；`maps/ruins.jpg` 野外地圖背景、`maps/tower.jpg` 永夜之塔通用地圖（第 52 節）、`npc/tower-keeper.png`／`ivory-keeper.png`＋`-face.jpg` 永夜之塔／暮光法師塔傳送師（第 55、56 節）、`maps/village.webp` 村莊背景（第 17 節）、`maps/wild.jpg`＋`wild-mini.jpg` 低語海岸大地圖與小地圖（第 45 節；12 個地圖合併、6016×4768＝188×149 格，第 67 節）、`wild-occ.png` 遮擋深度圖（第 46 節） |
+| `tools/test-loot-auto-sell.js` | 指定自動販賣清單、確認／取消、舊檔轉換、本機與後端入帳／收據重送與失敗還原隔離測試（第146節） |
 | `tools/test-shop-buy.js` | 自訂購買數量隔離測試：整數／金額驗證、金幣與負重、裝備逐件建立、離村拒絕舊視窗（第 75 節；不發佈） |
 | `tools/test-log-drawer.js` | 訊息框定位回歸測試：PC 頂端樓層按鈕不推高訊息框、手機避開操作列（第 76 節；不發佈） |
 | `tools/test-loot-log.js` | 掉落紀錄隔離整合測試：實際掉落／超重／自動賣出／任務／地圖、分頁與模擬隔離（第 77 節；不發佈） |
@@ -174,7 +175,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025u`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025v`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3181,3 +3182,13 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 刪除角色確認文字改成「登入中的話，雲端的這個角色也會一起刪除」（原本建議先匯出）；`pwa.js` 的 iPhone 主畫面版提示改成「登入同一個帳號，角色會從雲端下載」。
 - 驗證：check.ps1 通過；本機建測試角色開設定頁，沒有手動存檔／匯出／匯入，雲端存檔與角色區正常，測完已刪除測試角色。
 - **PC 底部 💾 手動存檔方格也拿掉**（同日 `20261025u`，使用者要求）：`ui-frame.js` 的 `PC_SLOTS` 刪除該格，📜 任務／🎒 背包移到 `PC_SQ(9)`／`PC_SQ(10)`，📖 圖鑑維持 `PC_SQ(11)`，`PC_SQ(8)` 空著（功能鈕仍緊貼右邊地圖排程圓鈕）。驗證：PC 模式元素位置依序為快捷欄→空格→任務→背包→圖鑑，畫面上沒有手動存檔。
+
+## 146. 指定同名道具自動販賣抽屜（2026-10-25，版本 `20261025v`，schema 8）
+
+- 使用者指定設定頁「戰利品過濾」標題右側小抽屜，列背包道具新增至販賣清單，可移除；新增不販賣現有背包。已明確同意改存檔，並選定「加入時確認一次，之後同名包含傳說／保留詞綴／共鳴直接賣」。
+- `DEFAULT_SETTINGS.lootAutoSell`為道具ID陣列；SAVE_SCHEMA 7→8，migrateSave為舊檔補空陣列、去重並移除不存在／不可回收ID；武防普通價零但品質價有效的ID保留。沿加密存檔與雲端保存，不改SQL。
+- `lootAutoSellHit(inst)`位於affix.js，以ITEMS道具本名比對清單，忽略品質／隨機名稱，售價須大於0，sellLocked物品不適用。明確清單先於lootFiltered保留規則，只在新掉落路徑使用，不擴大回收頁一鍵賣出範圍。
+- combat.rollDrops與loot.lootApply均先查明確清單，按instSellPrice×數量換金幣、不進背包／不占負重，寫掉落紀錄與掛機金幣。後端沿原子收據寫入，失敗還原與重送不重複入帳；非當前角色使用目標自己的設定。
+- `ui-panels.js`新增lootAutoDrawerOpen、toggleLootAutoDrawer／lootAutoDrawerHtml／lootAutoAdd／lootAutoRemove。抽屜預設收合，列表按道具本名去重，限高捲動；無回收價物品不列入。新增一律gameConfirm明確警示特殊品質與保留設定會被覆蓋，確認時重查角色與背包，不新增、不消耗原物品；移除立即存檔。所有事件僅頂層函式＋字面值。CSS在index.html，無新遊戲檔案或載入順序變更。
+- 測試：test-loot-auto-sell、server-loot-client、loot-log、item-lock通過；實際隔離瀏覽器PC／390px手機點抽屜、新增取消／確認、原背包30瓶不變、移除與收合通過，無橫向溢出或Console error／warn，不讀寫真實存檔／不連正式後端。
+- 最終check.ps1 ALL CHECKS PASSED、48檔混淆478KB建置通過；待使用者實玩確認後commit。

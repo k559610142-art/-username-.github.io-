@@ -146,9 +146,9 @@ function lootApply(result) {
             if (!d || !Number.isSafeInteger(it.n) || it.n < 1) throw Error('不正確的後端物品');
             if (it.questMax) it.n = Math.min(it.n, Math.max(0, it.questMax - countItem(it.id)));
             delete it.questMax; if (!it.n) continue;
-            if (lootFiltered(it, target.settings.lootFilter)) {
+            if (lootAutoSellHit(it) || lootFiltered(it, target.settings.lootFilter)) {
                 const gold = instSellPrice(it) * it.n; target.gold += gold;
-                messages.push([`🪙 自動賣出 ${itemName(it)}（+${fmt(gold)}）`, 'loot']); continue;
+                messages.push([`🪙 自動賣出 ${itemName(it)} ×${it.n}（+${fmt(gold)}）`, 'loot']); continue;
             }
             if (invWeight() + (d.wt || 0) * it.n > calcStats().weightMax) { messages.push([`⚠️ 負重已滿，${d.name}撿不起來`, 'warn']); continue; }
             marketGiveItem(it);

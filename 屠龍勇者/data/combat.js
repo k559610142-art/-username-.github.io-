@@ -715,11 +715,12 @@ function rollDrops(mon, z) {
         if (gear && q === false) { give(rollCurrency(mon.lv), null); return; }   // 裝備消失，改掉 1 個通貨
         // 裝備先擲品質；被戰利品過濾擋下的直接自動賣掉（不進背包、不佔負重）
         const rolled = gear ? applyAffixes({ uid: 0, id, n: 1, ench: 0 }, q, mon.lv) : null;
-        if (rolled && lootFiltered(rolled, player.settings.lootFilter)) {
-            const g = instSellPrice(rolled) * n;
+        const saleItem = rolled || { id, n };
+        if (lootAutoSellHit(saleItem) || (rolled && lootFiltered(rolled, player.settings.lootFilter))) {
+            const g = instSellPrice(saleItem) * n;
             player.gold += g;
             if (session) session.gold += g;
-            addLootLog(`🪙 自動賣出 ${rolled.q ? `【${QUALITY[rolled.q].name}】` : ''}${itemName(rolled)}（+${fmt(g)}）`, 'loot');
+            addLootLog(`🪙 自動賣出 ${saleItem.q ? `【${QUALITY[saleItem.q].name}】` : ''}${itemName(saleItem)} ×${n}（+${fmt(g)}）`, 'loot');
             return;
         }
         if (invWeight() + d.wt * n > st.weightMax) { addLog(`⚠️ 負重已滿，${d.name}撿不起來`, 'warn'); return; }

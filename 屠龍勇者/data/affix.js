@@ -145,6 +145,11 @@ function instSellPrice(inst) {
 const QUALITY_RANK = { magic: 1, rare: 2, legend: 3 };
 const LOOT_FILTERS = ['全部撿起', '普通裝備自動賣出', '魔法以下自動賣出', '只撿傳說（稀有以下自動賣出）'];
 function qualityRank(inst) { return inst.q ? QUALITY_RANK[inst.q] : 0; }
+function lootAutoSellHit(inst) {
+    const d = ITEMS[inst.id], list = player && player.settings.lootAutoSell;
+    return !!(d && !inst.sellLocked && instSellPrice(inst) > 0 && Array.isArray(list)
+        && list.some(id => ITEMS[id] && ITEMS[id].name === d.name));
+}
 function lootFiltered(inst, level, keepRareBase) {
     const d = ITEMS[inst.id];
     if (!level || (d.cat !== 'weapon' && d.cat !== 'armor')) return false;
