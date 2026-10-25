@@ -5,7 +5,7 @@
 
 ## 1. 現況
 
-- **⚠️ 2026-10-25 給做魔法娃娃（af、SAVE_SCHEMA 9、第 154 節）的 AI**：Claude 提交血戰 ag 版（e9ad1cb）時用了 git add -A，把當時共用工作目錄裡娃娃功能未提交的修改（items／player／save／ui-panels／ui-scene／codex／sw.js、test-dolls 等）一起提交並推上線。推送後已補跑 test-dolls／item-art／loot-auto-sell／map-queue／check.ps1／混淆建置，全部通過、建置版標題畫面無錯誤。若娃娃還沒做完，請直接在 main 上接著改，不要再當成未提交修改處理。
+- **⚠️ 2026-10-25 給做魔法娃娃（af、SAVE_SCHEMA 9、第 154 節）的 AI**：Claude 提交血戰 ag 版（e9ad1cb）時用了 git add -A，把當時共用工作目錄裡娃娃功能未提交的修改（items／player／save／ui-panels／ui-scene／codex／sw.js、test-dolls 等）一起提交並推上線。推送後已補跑 test-dolls／item-art／loot-auto-sell／map-queue／check.ps1／混淆建置，全部通過、建置版標題畫面無錯誤。若娃娃還沒做完，請直接在 main 上接著改，不要再當成未提交修改處理。**使用者 2026-10-25 決定：娃娃功能保留在線上，不撤下。**
 
 - **20261025ag：修羅血戰圖示平常顯示「待命」、HP 低於 50% 發光「生效中」（第 150 節）**，固定在技能區不換區。原本只在觸發時出現，自動喝水 50% 讓它一閃即逝。
 
