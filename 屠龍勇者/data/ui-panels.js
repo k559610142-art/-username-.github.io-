@@ -347,6 +347,23 @@ function charGearHtml() {
             <div class="cv-info"><small>${SLOTS[slot]}</small><span class="cv-n ${q}">${esc(d.name)}</span><span class="cv-a">${charGearBrief(d, it)}</span></div></button>`;
     }).join('');
 }
+// 娃娃與傭兵先開放展示欄，能力與裝備玩法待確認。
+function charCompanionsHtml() {
+    return `<aside class="cv-companions" aria-label="娃娃與傭兵展示">
+        <section class="cv-companion cv-doll">
+            <h4>魔法娃娃</h4>
+            <div class="cv-companion-art"><img src="images/sprites/dolls/companions-v1/frost-dragon/frames/walk-down-02.png" alt="冰霜幼龍外觀展示"></div>
+            <b class="cv-companion-name">冰霜幼龍</b><small class="cv-companion-tag">外觀展示・尚未開放</small>
+            <div class="cv-companion-desc"><b>效果介紹</b><p>能力效果尚未定案。</p><small>僅出場的娃娃提供加成，收回後不生效。</small></div>
+        </section>
+        <section class="cv-companion cv-mercenary">
+            <h4>傭兵</h4>
+            <div class="cv-companion-art"><img src="images/classes/stage/knight.webp" alt="騎士傭兵示意外觀"></div>
+            <b class="cv-companion-name">騎士</b><small class="cv-companion-tag">示意外觀・尚未開放</small>
+            <div class="cv-companion-desc"><b>效果介紹</b><p>戰鬥方式與能力待設定。</p><small>目前尚未提供裝備或出戰功能。</small></div>
+        </section>
+    </aside>`;
+}
 // 「詳細屬性」：全部戰鬥數值；「冒險紀錄」：擊殺、死亡、永夜之塔、四大龍、稱號
 function charDetailDialog() {
     const st = calcStats();
@@ -381,7 +398,7 @@ function renderChar() {
                 <div class="cv-stage"><img src="${heroSrc(player.cls)}" alt="${c.name}" onerror="this.src='${c.art || ''}'"><span class="cv-circle"></span></div>
                 <div class="cv-foot"><span>等級 <b>${player.lv}</b></span><span>職業 <b>${c.name}</b></span><span>經驗 <b class="gold">${expPct}%</b></span></div>
             </div>
-            <div class="cv-box cv-gear">${charGearHtml()}</div>
+            <div class="cv-box cv-equipment"><div class="cv-gear">${charGearHtml()}</div>${charCompanionsHtml()}</div>
             <div class="cv-box cv-stats">
                 <h4>人物屬性</h4>
                 <div class="cv-rows">${rows.map(([k, v]) => `<div class="cv-row"><span>${k}</span>${String(v).startsWith('<b') ? v : `<b>${v}</b>`}</div>`).join('')}</div>

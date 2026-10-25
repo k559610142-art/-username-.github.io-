@@ -174,7 +174,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025p`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025q`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -1752,6 +1752,7 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
   - **中**：12 格裝備（`SLOT_KEYS` 順序、兩欄），`charGearHtml`：圖示框的邊框顏色＝品質（`q-magic`／`q-rare`／`q-legend`，普通米白），共鳴裝備用 `RES_IMG` 的圖片，其他用部位 emoji `CHAR_SLOT_EMOJI`；
     左下角是強化值，右邊是部位、裝備本名（完整名稱「傳說・血月 …」放在 `title`）、`charGearBrief` 列兩項重點屬性。點擊開 `openItemDialog`；空格是虛線框加「未裝備」。
   - **右**：人物屬性（傷害加成、防禦、HP、MP、命中、爆擊、閃避、MR、攻擊間隔、負重），兩顆按鈕：「詳細屬性」`charDetailDialog`（全部戰鬥數值＋經驗）、「冒險紀錄」`charRecordDialog`（擊殺、死亡、永夜之塔、四大龍、稱號）。
+- 20261025q：中欄改為左側單欄裝備、右側上娃娃／下傭兵展示；新版配置與窄畫面規則見第142節，取代下方舊版欄寬／裝備兩欄敘述。
 - 視窗下方保留原本的「能力值」面板（配點 ＋ 按鈕、萬能藥）。原本的「戰鬥數值」「裝備」「冒險紀錄」面板與職業橫幅圖已移除（內容搬進視窗與兩個對話框）。
 - **一律左中右三欄**（`20261016i`／`j`，使用者回報「跟樣本不一樣、不是三欄並排」，原本窄畫面是上下排）。`.cv` 是 `container-type: inline-size`：
   - 容器寬 ≥ 700px：三欄 34%／中間／30%，裝備兩欄、圖示 46px。PC 16:9 時 `renderPanel` 給 `#overlay` 加 `.wide`（只有人物狀態），視窗放大到整個地圖範圍（約 900px）→ 這一版。
@@ -3153,3 +3154,11 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 共鳴 5%：`RES_MAP_BOSS_P` 存在後端目錄 `resMapBossP`，所以要重新產生並執行 `loot-catalog.sql`（版本 `20261025p-47626192162a`）。圖鑑文字自動顯示 5%。
 - **部署順序**：Supabase SQL Editor 先執行 `tools/loot-rates.sql`，再執行 `tools/loot-catalog.sql`。沒執行前線上掉寶仍是舊機率（前端改版不影響後端結果）。
 - 驗證：PGlite 抽 2 萬次 一般 普通40.6／魔法9.9／稀有5.2／傳說0.9／消失43.3、首領 50.3／14.7／7.9／2.2／25.0；`loot_gear` 消失改通貨 43.7%、藥水不受影響；前端 10 萬次分佈相同；test-loot-log 加「品質 false → 無裝備、多 1 個通貨」；test-server-loot-db／integration／client、loot-news、loot-batch、check.ps1、建置通過。
+
+## 142. 人物狀態娃娃／傭兵展示欄（2026-10-25，版本 `20261025q`）
+
+- 使用者確認截圖模板：裝備清單右側空白區，上方魔法娃娃、下方傭兵，各含圖片、名稱、效果介紹。`ui-panels.js` 新增 `charCompanionsHtml`，由 `renderChar` 放入 `.cv-equipment`，不增加檔案或script。
+- 寬版三欄28%／中間／24%；中欄左側12件裝備單欄，右側兩張金邊暗色卡。容器小於700px保留原緊湊三欄，展示欄移到三欄下方，上娃娃／下傭兵，不壓縮原裝備與屬性。
+- 娃娃使用現有冰霜幼龍正面單格，傭兵以現有原創騎士stage圖示意；兩張圖片加入SW預載。正式卡片標示尚未開放，效果尚未定案，不套用樣本提案的經驗／回魔或協戰能力。
+- 只完成展示介面，尚無裝備／出戰／跟隨／取得或能力加成；不新增player欄位、不改SAVE_SCHEMA或SQL。第115.3節暫不開放玩法決定仍有效，僅本次明確授權的展示介面先接入。
+- 驗證：check.ps1 ALL CHECKS PASSED、48檔混淆478KB通過；隔離記憶體角色1120px／390px實際renderChar，12格裝備與兩張卡片、圖片載入及無橫向溢出通過，Console無error／warn。待使用者實玩確認後commit。
