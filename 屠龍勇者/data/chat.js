@@ -117,8 +117,7 @@ async function chatFetch() {
             ? await raidQ(q.gt('id', list[list.length - 1].id).order('id', { ascending: true }).limit(50))
             : (await raidQ(q.order('id', { ascending: false }).limit(CHAT_SHOW))).reverse();
         if (rows.length && chatMsgs[ch]) chatTouch();   // 有人說話（不是第一次載入）：回到 4 秒
-        const news = ch === 'world' && chatNewsOn() ? await chatNewsFetch() : false;
-        if (rows.length || !chatMsgs[ch] || news) {
+        if (rows.length || !chatMsgs[ch]) {
             chatMsgs[ch] = list.concat(rows).slice(-CHAT_SHOW);
             chatRenderList();
         }
@@ -132,8 +131,8 @@ async function chatFetch() {
 
 // ───────── 全服掉寶公告（ARCHITECTURE.md 第 139 節）─────────
 // 伺服器結算掉寶時把傳說品質／共鳴裝備寫進 dragon_loot_news（tools/loot-news.sql，玩家不能自己寫）；
-// 世界頻道抓聊天時順便抓（同一個輪詢，不另外連網），依時間混在聊天裡顯示。設定 lootNews 可關（關掉就不抓）。
-// 新公告另外在地圖上方跑馬燈播一次（newsBannerPush）；沒開世界頻道時每 NEWS_POLL_MS 背景抓一次（只抓比手上新的，通常回空陣列）。
+// 2026-10-25（20261025ak）起只在地圖上方跑馬燈播，不再混進聊天世界頻道（使用者要求）；背景每 30 秒抓一次。設定 lootNews 可關（關掉就不抓）。
+// 新公告在地圖上方跑馬燈播一次（newsBannerPush）；每 NEWS_POLL_MS 背景抓一次（只抓比手上新的）。
 const NEWS_POLL_MS = 30000;
 let chatNews = null;           // 公告陣列（舊→新）
 let chatNewsOff = false;       // 伺服器還沒裝 loot-news.sql：這次遊戲不再抓
@@ -161,15 +160,13 @@ async function chatNewsFetch() {
 function setLootNews(on) {
     player.settings.lootNews = !!on;
     saveGame();
-    chatRenderList();
     if (!on) newsBannerClear();
-    if (on && chatShown()) chatFetch();
+    else chatNewsAt = 0;   // 重新打開：下一輪背景輪詢馬上抓
 }
-// 背景輪詢：聊天世界頻道開著時由 chatFetch 順便抓，這裡不重複
+// 背景輪詢（聊天開不開都一樣，公告只給跑馬燈用）
 setInterval(() => {
     if (!chatNewsOn() || !chatReady() || document.hidden || SIM_MODE || !cloudCanCall()) return;
-    if (chatShown() && chatChannel === 'world') return;
-    if (Date.now() - chatNewsAt >= NEWS_POLL_MS) chatNewsFetch().then(changed => { if (changed && chatShown()) chatRenderList(); });
+    if (Date.now() - chatNewsAt >= NEWS_POLL_MS) chatNewsFetch();
 }, 5000);
 
 // ───────── 地圖上方跑馬燈（#news-banner，index.html 樣式）─────────
@@ -221,13 +218,6 @@ function newsBannerNext() {
     const a = el.animate([{ transform: `translateX(${bw}px)` }, { transform: `translateX(${-mw}px)` }], { duration: (bw + mw) / NEWS_BANNER_SPEED * 1000, easing: 'linear' });
     newsPlaying = a;
     a.onfinish = () => { if (newsPlaying === a) newsBannerNext(); };
-}
-function chatNewsHtml(m) {
-    const d = ITEMS[m.item], c = CLASSES[m.cls] || {}, q = m.q && QUALITY[m.q];
-    const res = d && d.res, cls = q ? q.cls : res ? RES_TIERS[res.tier].cls : '';
-    const name = `${q ? `【${q.name}】` : ''}${res ? '🌟' : ''}${d ? d.name : m.item}`;
-    return `<div class="chat-line chat-news"><span class="chat-time">${chatTime(m.at)}</span>
-        <span class="chat-text">📢 ${c.icon || ''}<b>${esc(m.name)}</b><small> Lv.${m.lv || '?'}</small> 獲得了 <b class="${cls}">${esc(name)}</b>！</span></div>`;
 }
 
 async function chatCheckMute() {
@@ -339,13 +329,10 @@ function chatTime(at) {
 
 function chatListHtml() {
     if (chatErr) return `<div class="muted">⚠️ ${esc(chatErr)}</div>`;
-    let list = chatMsgs[chatChannel];
+    const list = chatMsgs[chatChannel];
     if (!list) return '<div class="muted">讀取中…</div>';
-    if (chatChannel === 'world' && chatNewsOn() && chatNews && chatNews.length)   // 掉寶公告依時間混進世界頻道
-        list = list.concat(chatNews.map(n => Object.assign({ news: true }, n))).sort((a, b) => Date.parse(a.at) - Date.parse(b.at)).slice(-CHAT_SHOW);
     if (!list.length) return `<div class="muted">還沒有人說話，打個招呼吧！</div>`;
     return list.map(m => {
-        if (m.news) return chatNewsHtml(m);
         const c = CLASSES[m.cls] || {}, mine = cloudUser && m.user_id === cloudUser.id;
         return `<div class="chat-line ${mine ? 'mine' : ''}"><span class="chat-time">${chatTime(m.at)}</span>
             <b class="chat-name">${c.icon || ''}${esc(m.name)}<small> Lv.${m.lv || '?'}</small></b><span class="chat-text">${esc(m.text)}</span></div>`;
@@ -385,7 +372,7 @@ function renderChat() {
         if (el && hadFocus) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
     }, 0);
     return `<div class="panel chat-panel">${chips}<div id="chat-list" class="chat-list">${chatListHtml()}</div>${input}
-        ${chatChannel === 'world' ? `<label class="set-row"><span>📢 顯示全服掉寶公告（傳說品質、共鳴裝備）</span><input type="checkbox" ${player && player.settings.lootNews !== false ? 'checked' : ''} onchange="setLootNews(this.checked)"></label>` : ''}
+        ${chatChannel === 'world' ? `<label class="set-row"><span>📢 地圖上方跑馬燈顯示全服掉寶公告（傳說品質、共鳴裝備）</span><input type="checkbox" ${player && player.settings.lootNews !== false ? 'checked' : ''} onchange="setLootNews(this.checked)"></label>` : ''}
         <small class="muted">${chatChannel === 'world' ? '所有玩家都看得到。' : chatChannel.startsWith('clan:') ? '只有血盟成員看得到。' : '只有隊伍裡的人看得到。'}每則最多 ${CHAT_MAX_LEN} 字、3 秒一則，訊息保留 3 天。請友善發言，管理者可以禁言。</small></div>`;
 }
 

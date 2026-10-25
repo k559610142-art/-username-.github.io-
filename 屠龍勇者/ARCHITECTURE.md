@@ -181,7 +181,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025ai`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025ak`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3149,6 +3149,7 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
   **背景輪詢**：沒開世界頻道時每 30 秒（`NEWS_POLL_MS`）抓一次比手上新的公告（通常回空陣列），頁面在背景、離線模擬、伺服器忙碌退避、關掉 `lootNews` 時不抓；世界頻道開著時由 `chatFetch` 順便抓，不重複（`chatNewsBusy` 防同時兩次）。關掉開關會清掉跑馬燈。
   驗證：手機與 PC 16:9 實際進遊戲看位置、假 Supabase 確認只播新公告、關閉後隱藏；check.ps1、test-loot-news、test-server-loot-client 通過。
 
+- **只留跑馬燈（2026-10-25，版本 `20261025ak`，使用者要求「掉寶公告只要顯示就好，不要在聊天畫面顯示」）**：`chatListHtml` 不再把 `chatNews` 混進世界頻道、刪除 `chatNewsHtml`；`chatFetch` 不再順便抓公告，改由背景輪詢每 30 秒抓一次（聊天開不開都一樣），新公告照舊 `newsBannerPush` 播跑馬燈。設定 `lootNews` 文字改「地圖上方跑馬燈顯示全服掉寶公告」（設定頁與聊天世界頻道下方各一）。index.html 的 `.chat-news` 樣式留著未用。
 ## 140. 鋼鐵狂戰士藍變專屬外觀（2026-10-25，版本20261025m）
 
 完成時共享工作目錄續版20261025n，其他對話修改保留；n版自動檢查與48檔混淆476KB建置亦通過。
