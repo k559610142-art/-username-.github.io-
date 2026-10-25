@@ -207,6 +207,8 @@ const TOWN_NPCS = [
       names: { talking: '葛蘭', gludio: '托爾', giran: '布洛克', aden: '巴恩' } },
     { role: '傳送師', icon: '🧙‍♀️', x: 14, y: 16, act: () => openWorldAtlas(),
       names: { talking: '露娜', gludio: '希雅', giran: '伊芙', aden: '星語者' } },
+    { role: '娃娃商人', icon: '🧚', x: 20, y: 14, act: () => openDollShop(),
+      names: { talking: '露米', gludio: '露米', giran: '露米', aden: '露米' } },
     { role: '任務',  icon: '🧓', x: 11, y: 15, act: () => switchTab('quest'),
       names: { talking: '賽恩長老', gludio: '亞瑟隊長', giran: '諾亞祭司', aden: '騎士團長' } },
 ];

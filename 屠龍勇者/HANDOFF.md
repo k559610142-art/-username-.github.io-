@@ -5,6 +5,10 @@
 
 ## 1. 現況
 
+- **ah 驗證結果**：tools/check.ps1 顯示 ALL CHECKS PASSED（50檔語法、49個script版本一致）；49檔正式混淆建置491KB通過，git diff --check無錯誤。所有測試僅使用隔離記憶體／PGlite，未操作正式錢包或玩家存檔。
+
+- **20261025ah：四城NPC分散、可走通路與GM娃娃商店（第155節）**。各城七名NPC分散設施前，新增娃娃商人露米；21款各預設500鑽，一般玩家只看、GM確認購買後伺服器扣鑽送共用倉庫，能力待定、schema9不變。使用者明確同意新增tools/doll-shop.sql；**尚未在正式Supabase安裝，必須由使用者自行執行該SQL**（需既有vault／vault-v2及dragon_is_admin）。隔離VM與PGlite驗NPC皆可到達、權限／21款／扣鑽入庫／重試不重扣／錯價／不足／滿倉；娃娃與物品圖、倉庫、傳送門回歸。不啟動或關閉任何瀏覽器，原生canvas正式sceneDraw四城圖檢視。待SQL安裝→Ctrl+F5→四城點地走到NPC→露米商店21款500→普通玩家不能買→GM買一隻→共用倉庫取出→背包裝備跟隨，使用者實玩確認後才commit；未提交或推送。
+
 - **⚠️ 2026-10-25 給做魔法娃娃（af、SAVE_SCHEMA 9、第 154 節）的 AI**：Claude 提交血戰 ag 版（e9ad1cb）時用了 git add -A，把當時共用工作目錄裡娃娃功能未提交的修改（items／player／save／ui-panels／ui-scene／codex／sw.js、test-dolls 等）一起提交並推上線。推送後已補跑 test-dolls／item-art／loot-auto-sell／map-queue／check.ps1／混淆建置，全部通過、建置版標題畫面無錯誤。若娃娃還沒做完，請直接在 main 上接著改，不要再當成未提交修改處理。**使用者 2026-10-25 決定：娃娃功能保留在線上，不撤下。**
 
 - **20261025ag：修羅血戰圖示平常顯示「待命」、HP 低於 50% 發光「生效中」（第 150 節）**，固定在技能區不換區。原本只在觸發時出現，自動喝水 50% 讓它一閃即逝。

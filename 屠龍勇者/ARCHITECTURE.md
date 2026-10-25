@@ -137,6 +137,8 @@
 | `tools/auction.sql` | 使用者同意新增的拍賣資料表／鑽石託管RPC；由使用者自行貼到Supabase安裝，不改既有SQL |
 | `tools/test-auction-db.js`／`tools/test-auction-client.js` | 隔離PGlite後端交易／輪次／權限與客戶端費用／確認／門檻檢查 |
 | `data/vault.js` | 帳號共用倉庫、鑽石（每日登入、掉落）、離線掛機扣鑽石（第 38 節） |
+| `data/doll-shop.js`、`tools/doll-shop.sql` | GM 限購娃娃商店、伺服器扣鑽與共用倉庫交付（第155節） |
+| `tools/test-town-doll-shop.js`、`tools/test-doll-shop-db.js` | 村莊 NPC 可達性、商店權限／重試與隔離資料庫交易測試（第155節） |
 | `data/presence.js` | 村莊看得到其他在線玩家（Supabase Realtime presence／broadcast）、點人聊天／邀請組隊（第 39 節） |
 | `data/codex.js` | 裝備圖鑑分頁 `renderCodex`（全部道具的分類、品質、屬性、取得方式；第 20 節），載入時把 `codex` 加進 `TABS`／`PANEL_FNS` |
 | `data/ui-frame.js` | 主畫面外框：畫面尺寸模式 `displayMode`／`setDisplayMode`、`layoutFrame` 縮放、左右柱抽屜、紅藍法球、底部 6 格快捷（第 15、16 節） |
@@ -168,7 +170,7 @@
 
 ## 2. 載入順序與依賴
 
-`config → classes → skills → items → spellbook → monsters → zones → quests → resonance → boss-enchant → boss-vfx → world-vfx → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → codex → raid → clan → chat → rank → wb → market → vault → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → pwa → loot → main`
+`config → classes → skills → items → spellbook → monsters → zones → quests → resonance → boss-enchant → boss-vfx → world-vfx → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → pwa → loot → main`
 
 - 上層資料檔（config～quests）只在「載入時」用到更前面的檔案；quests 載入時會把獎勵裝備與任務道具寫進 `ITEMS`，所以要在 items 之後。
 - resonance 載入時要改 `ITEMS`（含任務武器）、`MONSTERS` 掉落、`RECIPES`，所以在 quests 之後；`findSkill`（skills.js）在執行期才呼叫它的 `findResonanceSkill`。
@@ -179,7 +181,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025ag`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025ah`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3275,3 +3277,11 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - tools/test-dolls.js禁止真實存檔／網路：21款道具、GM自發／無權限阻擋、UI裝卸回呼、單槽換裝／原物品回背包、每款裝前後calcStats完全相同、加密schema9與schema8舊檔、重複UID防護、背包／圖鑑／圖片、跟隨／瞬移／死亡移除通過。test-item-art同步457件且原289張128px新圖不變；test-map-queue與test-loot-auto-sell同步schema9斷言，這兩者與item-lock／server-loot-client回歸通過。
 - 遵使用者要求不啟動或關閉瀏覽器。使用bundled @napi-rs/canvas直接呼叫正式sceneDrawDoll繪製21×4方向×4格共336次（84次左鏡像），本機PNG檢視確認；未操作桌面App、未讀寫正式角色／連外。實際遊戲UI仍待使用者自行驗收。
 - 最終check.ps1 ALL CHECKS PASSED、48檔混淆488KB建置通過，openDollPicker／equipDollBtn已公開供事件使用；待使用者實玩確認後commit。
+
+## 155. 村莊 NPC 分散與 GM 娃娃商店（2026-10-25，版本 `20261025ah`）
+
+- 使用者改為開放21款娃娃上架，每隻預設500鑽、只有GM可購買，一般玩家可瀏覽；明確同意新增tools/doll-shop.sql，購買送帳號共用倉庫，由使用者自行在Supabase執行。
+- scene-art新增SCENE_TOWN_NPC_SPOTS，四座村莊各配置七位NPC至不同設施前，沿既有石板廣場打通連接中央道路及NPC前方的可走格；NPC自身仍阻擋。SCENE_TOWN_ROLES／TOWN_NPCS新增娃娃商人露米，沿用現有原創精靈圖，點名牌開商店。ui-panels的TOWN_SUBS與兩處renderTown同步註冊dollShop。
+- 新doll-shop.js在vault後、auction前載入。DOLL_SHOP_PRICE預設500，dollShopCatalog／dollShopUser／dollShopBusy／dollShopErr與dollShopRequests是工作階段狀態；openDollShop／renderDollShop／dollShopLoad／dollShopCanBuy／dollShopRefresh／dollShopBuy／dollShopPurchase處理商品、GM權限、確認與購買。切換帳號後不能沿用原GM狀態；失敗重試沿用同商品請求UUID，成功才清除，重新載入頁面後不保留。能力仍待定，SAVE_SCHEMA仍9。
+- SQL建立dragon_doll_shop_catalog／dragon_doll_shop_orders及doll_shop_status／doll_shop_buy。RLS拒絕直接讀寫商品／訂單表，status供瀏覽；buy再驗auth.uid與dragon_is_admin、商品／價格、200格倉庫容量及餘額，同帳號沿用倉庫advisory lock，單一交易扣伺服器錢包、寫鑽石紀錄、交付一隻娃娃{id,n:1,ench:0}。同帳號同請求UUID只交付一次。重跑安裝保留已調整售價；沿用共用倉庫取出費用。未更新其他SQL或正式後端目錄，其他功能仍依既有目錄限制。
+- Node VM測試四城七名NPC前方皆可尋路到達、21商品／普通玩家拒購／GM確認／斷線重試同UUID／帳號隔離；PGlite隔離資料庫測重跑、一般玩家與匿名禁購、21款各500、扣鑽／交付／重試不重扣、錯價／未知物品／不足／倉庫滿，並回歸娃娃、道具圖、共用倉庫與傳送門。未開關瀏覽器，原生canvas呼叫正式sceneDraw繪製四城檢視；正式SQL安裝與遊戲實玩待使用者執行確認。
