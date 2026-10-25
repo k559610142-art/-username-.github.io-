@@ -245,38 +245,14 @@ function changeFloorBtn(d) { changeFloor(d); refreshUI(); }
 // ───────── 地圖 ─────────
 function renderMap() { return mapDevicePanelHtml(); }
 
-// ───────── 傳送師 NPC（大地圖，第 55、56 節）：永夜之塔＝紫霧遺跡最左上角、暮光法師塔＝腐朽礦坑・深層 ─────────
-// SCENE_BGS.wild.fieldNpcs 的 to＝要送去的地圖；地圖清單「前往傳送師」先飛到 NPC 面前，跟他說話才進去
+// ───────── 野外入口 NPC（大地圖，第 55、56 節）：目前只剩毒霧巢穴入口；永夜之塔／暮光法師塔傳送師 2026-10-25 移除（第 161 節）─────────
+// SCENE_BGS.wild.fieldNpcs 的 to＝要送去的地圖
 function keeperNpc(to) { return (SCENE_BGS.wild.fieldNpcs || []).find(n => n.to === to); }
 // 角色在大地圖上、站在傳送師附近（5 格內）
 function keeperNear(to) {
     const n = keeperNpc(to);
     return !!(n && scene && scene.bg === SCENE_BGS.wild && player.loc.type === 'zone' && scene.key === sceneKey()
         && Math.abs(scene.pl.x - n.x) + Math.abs(scene.pl.y - n.y) <= 5);
-}
-// 地圖清單「前往傳送師」：從村莊免費飛到傳送師面前（不開始掛機），提示點名牌對話
-function travelToKeeper(to) {
-    if (!inTown()) { showToast('要在村莊裡才能找傳送師'); return; }
-    const n = keeperNpc(to);
-    player.loc = { type: 'zone', id: n.zone };
-    sceneSpawnAt = n.front;
-    session = null;
-    if (player.hunting) stopHunt();
-    addLog(`🌀 飛到${ZONE_BY_ID[n.zone].name}的${n.name}面前`, 'sys');
-    openTabs = []; currentTab = 'hunt';
-    renderTabs(); refreshUI();
-    showToast(`點「${n.name}」的名牌跟他說話`, 3000);
-}
-function openKeeper(to) {
-    const n = keeperNpc(to);
-    if (!keeperNear(to)) { showToast('走近一點才能跟傳送師說話'); return; }
-    const z = ZONE_BY_ID[to], tower = z.type === 'tower', max = player.towerMax;
-    openDialog(n.name, `
-        <div class="npc-talk"><img src="${n.face}" alt="" class="npc-face"><p class="npc-say">「${n.say}」</p></div>
-        <p>建議 Lv.${z.lv[0]}～${z.lv[1]}・傳送費 💰${fmt(z.fee)}${tower ? `・已開放到 ${max}F` : ''}</p>
-        ${tower ? `<p class="tower-pick">樓層 <input id="tower-floor" type="number" min="1" max="${max}" value="${max}"> / ${max}F</p>
-            <small class="muted">只能一層一層往上：一般樓層在該層擊殺 ${fmt(TOWER_FLOOR_KILLS)} 隻、10、20…樓擊敗守關首領，才開放上一層。${max < 100 ? `下一層：需${towerNeedText(max)}` : ''}</small><br>${towerBossStatusHtml()}` : ''}`,
-        [{ text: '不了', cls: 'secondary' }, { text: `進入${z.name}`, keep: true, onClick: () => keeperGo(to) }]);
 }
 function openVenomNestEntrance() {
     if (!keeperNear('venomNest')) { showToast('走近毒霧巢穴入口才能進入'); return; }
@@ -286,13 +262,7 @@ function openVenomNestEntrance() {
         enterZoneFromKeeper('venomNest');
     }, '進入巢穴');
 }
-// 對話框「進入」：先讀樓層再關對話框（openDialog 預設先關掉才呼叫 onClick）
-function keeperGo(to) {
-    const inp = $('tower-floor'), v = inp ? parseInt(inp.value, 10) || 1 : 0;
-    closeDialog();
-    enterZoneFromKeeper(to, v);
-}
-// 跟傳送師說話進去：跟村莊傳送一樣收傳送費、開始掛機（travelZone 要在村莊才行，這裡另外處理）
+// 從野外入口進去：跟村莊傳送一樣收傳送費、開始掛機（travelZone 要在村莊才行，這裡另外處理）
 function enterZoneFromKeeper(to, floor) {
     const z = ZONE_BY_ID[to];
     if (player.gold < z.fee) { showToast(`金幣不足（傳送費 ${fmt(z.fee)}）`); return; }
@@ -301,7 +271,7 @@ function enterZoneFromKeeper(to, floor) {
     player.loc = { type: 'zone', id: to };
     if (z.type === 'tower') player.loc.floor = clamp(floor || 1, 1, player.towerMax);
     session = null;
-    addLog(`🌀 傳送師把你送進${zoneTitle()}`, 'sys');
+    addLog(`🌀 進入${zoneTitle()}`, 'sys');
     startHunt();
     openTabs = []; currentTab = 'hunt';
     renderTabs(); refreshUI();

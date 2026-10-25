@@ -4,7 +4,7 @@ const ATLAS_POINTS = SCENE_WORLD_TILES.filter((r, i, a) => a.findIndex(q => q.zo
 })).concat([
     { id: 'talking', kind: 'town', x: 9, y: 55 }, { id: 'gludio', kind: 'town', x: 35, y: 55 },
     { id: 'giran', kind: 'town', x: 54, y: 45 }, { id: 'aden', kind: 'town', x: 84, y: 20 },
-    { id: 'tower', kind: 'zone', x: 7, y: 23, target: [18, 18] }, { id: 'ivory', kind: 'zone', x: 64, y: 95, target: [110, 126] },
+    { id: 'tower', kind: 'zone', x: 7, y: 23 }, { id: 'ivory', kind: 'zone', x: 64, y: 95 },   // 傳送師移除後只能直接傳送（第 161 節）
     { id: 'venomNest', kind: 'zone', x: 164.5 / 188 * 100, y: 125.5 / 149 * 100, target: [164, 127], entrance: true, art: 'images/maps/rework/venom-entrance-v1.png' },
     { id: 'lairAntharas', kind: 'zone', x: 66, y: 72 }, { id: 'lairFafurion', kind: 'zone', x: 7, y: 44 },
     { id: 'lairLindvior', kind: 'zone', x: 86, y: 6 }, { id: 'lairValakas', kind: 'zone', x: 94, y: 44 },
@@ -53,12 +53,15 @@ function atlasSelect(index) {
     atlasSelected = index; $('atlas-location').value = String(index);
     const root = $('world-atlas');
     root.querySelectorAll('.atlas-pin').forEach((el, i) => el.classList.toggle('selected', i === index));
-    const z = p.kind === 'zone' && ZONE_BY_ID[p.id], here = player.loc.type === p.kind && player.loc.id === p.id;
+    const z = p.kind === 'zone' && ZONE_BY_ID[p.id], tower = z && z.type === 'tower', max = player.towerMax;
+    const here = player.loc.type === p.kind && player.loc.id === p.id && !tower;   // 人在塔裡也能用地圖換樓層
     const walk = p.target && scene && scene.bg && scene.bg.big;
     const sub = p.kind === 'town' ? '安全城鎮' : z && z.lv ? `建議 Lv.${z.lv[0]}～${z.lv[1]}` : '副本入口';
     const fee = atlasTravelFee(p), why = z ? zoneBlockReason(z) : '';
-    const hint = `傳送費 💰${fmt(fee)}。${p.kind === 'town' ? '依目前城鎮或所在地的回城村莊計算城鎮級差。' : z.type === 'tower' ? '直接傳送至 1F，其他樓層仍依原解鎖規則。' : '直接傳送抵達，進入限制維持原設定。'}${why ? ' ' + why : ''}`;
-    $('atlas-detail').innerHTML = `<small>${here ? '目前所在地' : p.kind === 'town' ? '城鎮' : '探索地點'}</small><h3>${atlasPointName(p)}</h3><strong>${sub}</strong><p>${hint}</p><button class="atlas-go" onclick="atlasTravel(${index})" ${here || why ? 'disabled' : ''}>${here ? '目前所在地' : '傳送前往'}</button>${walk ? `<button class="atlas-go secondary" onclick="atlasWalkTo(${index})">步行${p.entrance || p.id === 'tower' || p.id === 'ivory' ? '至入口' : '前往'}</button>` : ''}`;
+    const hint = `傳送費 💰${fmt(fee)}。${p.kind === 'town' ? '依目前城鎮或所在地的回城村莊計算城鎮級差。' : tower ? `可直接傳送到已開放的任何樓層（目前開放到 ${max}F）。` : '直接傳送抵達，進入限制維持原設定。'}${why ? ' ' + why : ''}`;
+    const floorPick = tower ? `<p class="tower-pick">樓層 <input id="atlas-tower-floor" type="number" min="1" max="${max}" value="${max}"> / ${max}F</p>
+        <small class="muted">只能一層一層往上：一般樓層在該層擊殺 ${fmt(TOWER_FLOOR_KILLS)} 隻、10、20…樓擊敗守關首領，才開放上一層。${max < 100 ? `下一層：需${towerNeedText(max)}` : ''}</small><br>${towerBossStatusHtml()}` : '';
+    $('atlas-detail').innerHTML = `<small>${here ? '目前所在地' : p.kind === 'town' ? '城鎮' : '探索地點'}</small><h3>${atlasPointName(p)}</h3><strong>${sub}</strong><p>${hint}</p>${floorPick}<button class="atlas-go" onclick="atlasTravel(${index})" ${here || why ? 'disabled' : ''}>${here ? '目前所在地' : '傳送前往'}</button>${walk ? `<button class="atlas-go secondary" onclick="atlasWalkTo(${index})">步行${p.entrance || p.id === 'tower' || p.id === 'ivory' ? '至入口' : '前往'}</button>` : ''}`;
 }
 function atlasTravelFee(p) {
     if (p.kind === 'zone') return ZONE_BY_ID[p.id].fee;
@@ -68,14 +71,16 @@ function atlasTravelFee(p) {
 function atlasTravel(index) {
     const p = ATLAS_POINTS[index];
     if (!p || !player || !scene || walkHome || player.hp <= 0) return;
+    const fi = atlasSelected === index && $('atlas-tower-floor'), picked = fi ? parseInt(fi.value, 10) : NaN;   // 先讀樓層：atlasSelect 會重畫說明區、輸入框回到預設
     atlasSelect(index);
-    if (player.loc.type === p.kind && player.loc.id === p.id) { showToast('已經在這個地點'); return; }
-    const z = p.kind === 'zone' && ZONE_BY_ID[p.id], why = z && zoneBlockReason(z), fee = atlasTravelFee(p);
+    const z = p.kind === 'zone' && ZONE_BY_ID[p.id], why = z && zoneBlockReason(z), fee = atlasTravelFee(p), tower = z && z.type === 'tower';
+    const floor = tower ? clamp(picked || player.towerMax, 1, player.towerMax) : 0;
+    if (player.loc.type === p.kind && player.loc.id === p.id && (!tower || player.loc.floor === floor)) { showToast(tower ? `已經在 ${floor}F` : '已經在這個地點'); return; }
     if (why) { showToast(why); return; }
     if (player.gold < fee) { showToast(`金幣不足（傳送費 ${fmt(fee)}）`); return; }
     const owner = player, origin = JSON.stringify(player.loc), run = player.mapRun;
     closeWorldAtlas();
-    gameConfirm('世界地圖傳送', `傳送到${atlasPointName(p)}，費用 ${fmt(fee)} 金幣。${run ? '\n離開會關閉目前異界地圖，地圖排程將暫停。' : ''}`, () => {
+    gameConfirm('世界地圖傳送', `傳送到${atlasPointName(p)}${tower ? ` ${floor}F` : ''}，費用 ${fmt(fee)} 金幣。${run ? '\n離開會關閉目前異界地圖，地圖排程將暫停。' : ''}`, () => {
         if (player !== owner || JSON.stringify(player.loc) !== origin || player.mapRun !== run || walkHome || player.hp <= 0) { showToast('角色或所在地已變更，請重新選擇目的地'); return; }
         const blocked = z && zoneBlockReason(z);
         if (blocked) { showToast(blocked); return; }
@@ -84,10 +89,10 @@ function atlasTravel(index) {
         endMapRun('世界地圖傳送離開異界');
         player.gold -= fee;
         player.loc = { type: p.kind, id: p.id };
-        if (z && z.type === 'tower') player.loc.floor = 1;
+        if (tower) player.loc.floor = clamp(floor, 1, player.towerMax);
         scene = null; sceneSpawnAt = null; session = null;
         openTabs = []; currentTab = 'hunt';
-        addLog(`🌀 世界地圖傳送到${atlasPointName(p)}`, 'sys');
+        addLog(`🌀 世界地圖傳送到${atlasPointName(p)}${tower ? ` ${player.loc.floor}F` : ''}`, 'sys');
         saveGame(); renderTabs(); refreshUI();
     }, '傳送前往');
 }

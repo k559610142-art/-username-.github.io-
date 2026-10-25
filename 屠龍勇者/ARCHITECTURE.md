@@ -185,7 +185,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025ap`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025aq`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -1966,6 +1966,7 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
   - 一次性 PowerShell＋C# 產生，沒有留腳本；驗證用合成圖（外框＋遮罩疊在地圖上）與手機截圖。
 
 ## 55. 永夜之塔傳送師（大地圖紫霧遺跡最左上角；2026-10-19，版本 `20261019f`）
+- **⚠️ 2026-10-25 已移除（第 161 節）**：永夜之塔傳送師拿掉，改由世界地圖直接傳送並選樓層。以下為歷史紀錄。
 
 - 使用者要求：「大地圖紫霧遺跡最左上角新增 NPC 永夜之塔傳送師；地圖使用永夜之塔會飛到傳送師面前，跟傳送師講話可以選擇要不要進入永夜之塔」，給了一張森林裡黑袍老法師的立繪。
 - 圖：原圖存 `tools/sprite-src/tower-keeper-src.jpg`；`tools/stage/npc-cut.ps1` 去背 → `images/npc/tower-keeper.png`（266×360）＋對話頭像 `tower-keeper-face.jpg`。
@@ -1982,6 +1983,7 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 驗證（手機 375 寬）：永夜王都按「前往傳送師」→ 出生在 6,8、地圖紫霧遺跡、沒有掛機、看得到傳送師與名牌；點名牌開對話框；按進入 → 永夜之塔 11F、扣 1,000、開始掛機；Console 無錯誤。
 
 ## 56. 暮光法師塔傳送師＋傳送師程式通用化（腐朽礦坑・深層；2026-10-19，版本 `20261019h`）
+- **⚠️ 2026-10-25 已移除（第 161 節）**：暮光法師塔傳送師拿掉，改由世界地圖直接傳送；`openKeeper`／`keeperGo`／`travelToKeeper` 已刪除，`keeperNpc`／`keeperNear`／`enterZoneFromKeeper` 留給毒霧巢穴入口用。以下為歷史紀錄。
 
 - 使用者給白袍老法師立繪＋PC 截圖（紅圈）：「新增暮光法師塔傳送 NPC，地點塗上紅圈處」。紅圈在深層石拱右邊草坡上那根大腿骨旁邊（右下有肋骨）＝格子 132,98（草坡擋格 [127,93,132,98] 的角，NPC 站的格子本來就不能走），落點 131,100。
 - 圖：`tools/sprite-src/ivory-keeper-src.jpg` → `images/npc/ivory-keeper.png`（243×360）＋`ivory-keeper-face.jpg`。白袍是淺色，`npc-cut.ps1` 新增：
@@ -3345,3 +3347,10 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - tools/test-aden-glory-swordsman-morph.js驗證Lv14拒絕不扣卷、Lv15使用、卷軸扣量與上次選擇、四向命中／MISS／施法／受傷／到期與其他變身、PNG尺寸／RGBA／36格／快取引用。測試不讀寫真實存檔或連線，不開關瀏覽器；待使用者實玩確認後commit。
 
 第160節驗證：prepare.py通過36格不重複／RGBA／留邊／圖集逐格對應；test-aden-glory-swordsman-morph及test-morph-level-lock通過，後者補正各系別應持武器fixture（GM仍受武器限制），不改遊戲規則。原生canvas正式sceneDraw渲染四方向四動作16組檢視；check.ps1 ALL CHECKS PASSED、50檔混淆500KB通過，未啟動或關閉瀏覽器。
+
+## 161. 移除兩座塔的野外傳送師，世界地圖直接傳送並選樓層（2026-10-25，版本 `20261025aq`；`world-atlas.js` 的 `atlasSelect`／`atlasTravel`）
+- 使用者要求：「不要 NPC，世界地圖傳送時直接選樓層，移除紫霧遺跡的傳送師」，接著補「移除法師塔野外的傳送師」。原因是第 159 節改成逐層解鎖後，世界地圖固定送到 1F、紫霧遺跡傳送師才能選樓層，兩個入口規則不同。
+- 野外 NPC：`scene-art.js`（目前生效的 `SCENE_ART_BGS.wild`）和 `ui-scene.js`（舊 `SCENE_BGS.wild`）的 `fieldNpcs` 拿掉永夜之塔、暮光法師塔傳送師，只剩毒霧巢穴入口。圖檔 `images/npc/tower-keeper*`、`ivory-keeper*` 留著未用。
+- 世界地圖：`tower`、`ivory` 兩個地標拿掉 `target`（原本走路是走到傳送師面前，現在那裡沒有東西），只能直接傳送。選到永夜之塔時說明區多一個樓層輸入框（`#atlas-tower-floor`，1～`towerMax`，預設最高樓層）、逐層規則與下一層條件（`towerNeedText`）、守關首領復活倒數（`towerBossStatusHtml`）。
+- `atlasTravel`：**先讀樓層再呼叫 `atlasSelect`**（它會重畫說明區、輸入框回到預設值）；樓層夾在 1～`towerMax`，填錯或 0 用最高樓層。人在塔裡也能用世界地圖換樓層（照收傳送費），同一層會提示「已經在 NF」。確認視窗與紀錄顯示樓層。
+- 驗證：瀏覽器（面板隱藏，用最小 scene 物件）選 20F→20F、填 99→35F（上限）、同層被擋、野外 NPC 只剩毒霧巢穴入口，Console 無錯誤；test-atlas-travel、test-tower-floors、check.ps1 通過。
