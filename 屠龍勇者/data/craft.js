@@ -93,6 +93,13 @@ function rollCurrency(lv) {
 }
 
 // 改造視窗：上面是裝備現況，下面列出全部通貨（數量、能不能用）
+function craftAffixMaxText(x, a) {
+    const d = affixDef(a.k), lg = a.lg && LEGEND_AFFIXES.find(l => l.k === a.k);
+    if (!d) return '';
+    const hi = Math.min(d.cap || Infinity, Math.max(d.min, d.max(craftIl(x))) * (lg ? lg.mul : 1));
+    const max = d.pct ? Math.round(hi * 100) + '%' : Math.max(d.min, Math.round(hi));
+    return `（最高 +${max}）`;
+}
 function openCraftDialog(uid) {
     const x = findAnyInst(uid);
     if (!x) return;
@@ -103,7 +110,7 @@ function openCraftDialog(uid) {
         return `<button class="craft-cur ${ok ? '' : 'off'}" onclick="craftUseBtn('${cid}',${uid})" ${ok ? '' : 'disabled'}>
             <span class="cc-i">${cid === 'curAwaken' ? itemIconHtml(cid) : c.icon}</span><span class="cc-n"><span class="cur-${cid}">${c.name}</span> <b>×${fmt(n)}</b></span><small>${isMap ? MAP_CURRENCY[cid].desc : c.desc}</small></button>`;
     }).join('');
-    openDialog('🔮 通貨改造', `<div class="craft-item">${itemDescHtml(x)}</div><div class="craft-list">${rows}</div>`,
+    openDialog('🔮 通貨改造', `<div class="craft-item">${itemDescHtml(x, true)}</div><div class="craft-list">${rows}</div>`,
         [{ text: '關閉', cls: 'secondary', onClick: () => refreshUI() }]);
     $('dialog-layer').querySelector('h3').innerHTML = `🔮 <span class="${itemClass(x)}">${esc(itemName(x))}</span>`;
 }
