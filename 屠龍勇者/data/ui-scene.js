@@ -586,7 +586,7 @@ function freeTile(x, y) {
 }
 
 // BFS：從 (sx,sy) 走到任一目標格旁邊（上下左右相鄰）的最短路徑
-function findPath(sx, sy, tx, ty, adjacent) {
+function findPath(sx, sy, tx, ty, adjacent, stayZone = false) {
     const mw = scene.mw, key = (x, y) => y * mw + x;
     const prev = new Map([[key(sx, sy), -1]]);
     const q = [[sx, sy]];
@@ -601,7 +601,7 @@ function findPath(sx, sy, tx, ty, adjacent) {
         }
         for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
             const nx = x + dx, ny = y + dy, nk = key(nx, ny);
-            if (prev.has(nk) || !freeTileFor(nx, ny, tx, ty)) continue;
+            if (prev.has(nk) || !freeTileFor(nx, ny, tx, ty) || (stayZone && !inHuntZone(nx, ny))) continue;
             prev.set(nk, key(x, y));
             q.push([nx, ny]);
             if (prev.size > (scene.bg && scene.bg.big ? scene.mw * scene.mh : 1000)) return [];   // 大地圖：點小地圖可以走很遠
@@ -916,11 +916,13 @@ function sceneTeleTick(dt) {
     let best = null;
     for (let dy = -4; dy <= 4; dy++) for (let dx = -4; dx <= 4; dx++) {
         const x = pl.x + dx, y = pl.y + dy;
-        if (Math.hypot(x - c.x, y - c.y) <= c.r + 0.4 || !freeTileFor(x, y)) continue;
-        const path = findPath(pl.x, pl.y, x, y, false);
+        if (Math.hypot(x - c.x, y - c.y) <= c.r + 0.4 || !freeTileFor(x, y) || !inHuntZone(x, y)) continue;
+        const path = findPath(pl.x, pl.y, x, y, false, true);
         if (path.length && (!best || path.length < best.length)) best = path;
     }
-    if (best) { pl.path = best; scene.dodging = true; }
+    // 找不到區內安全路線就留在原地扛傷害，不讓自動追怪接手走出紅圈或跨區。
+    pl.path = best || [];
+    scene.dodging = true;
 }
 
 // big：升級等大字；crit：爆擊傷害（紅色大字、出現時先彈大再縮回，停留久一點）

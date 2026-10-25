@@ -5,6 +5,10 @@
 
 ## 1. 現況
 
+- **20261025y：首領紅圈自動閃避不跨區界（第148節）**。目標與整條BFS路線限制當前地圖／分區；無安全路徑清掉舊路線、原地承傷，預警解除後恢復移動，不停掛機。不改手動移動、傷害或存檔。邊界／同名分區／繞路／原地實扣25傷且持續掛機／獨立地圖測試與射程、後端掉寶回歸通過；隔離瀏覽器Console無error／warn。check.ps1 ALL CHECKS PASSED及48檔混淆478KB通過，待使用者Ctrl+F5→開自動閃避→在區界打首領，確認只往區內閃、無路則扛傷而不跨區停掛機，實玩確認後才commit。
+
+- **20261025x：洗鍊視窗顯示每條屬性最高值（第147節）**。現值旁加最高值，依物品等級、傳說倍率、攻速cap與覺醒規則計算，只改通貨改造顯示、不改數值／機率／存檔。PC／手機隔離視窗、實點淬鍊3→2、各詞綴／等級上界、Console無error／warn及check.ps1／48檔混淆478KB通過。待Ctrl+F5→村莊鍛造→裝備改造→選有詞綴裝備→確認每條有最高值，洗鍊後仍顯示，實玩確認後commit。
+
 - **2026-10-25：gm.html「排除」失敗修正（第 111 節）**。使用者已執行 tools/flag-trust.sql（表已建立），但按排除出現 permission denied：upsert 需要 UPDATE 權限。已在 flag-trust.sql 補 grant update；**待使用者在 Supabase 執行 `grant update on public.dragon_trusted to authenticated;`（或重跑整份 flag-trust.sql）**。
 
 - **20261025w：自動販賣支援四種彈藥（第146.1節）**。箭／銀箭／子彈／銀子彈回收價0仍能新增，確認明示0金幣；未來同名掉落直接處理不進背包，原物品保留，讀檔清單保留。schema8不變、不改SQL／售價。四彈藥本機／後端／讀檔與server-loot-client回歸、PC／手機實點、Console無error／warn、check.ps1及48檔混淆478KB通過。待Ctrl+F5→設定→自動販賣→背包有彈藥時新增→確認0金幣提醒，實玩確認後commit。

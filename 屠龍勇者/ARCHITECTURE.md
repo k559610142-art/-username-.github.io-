@@ -154,6 +154,7 @@
 | `manifest.json` | App 名稱、圖示、`scope: ./`（只涵蓋本資料夾） |
 | `sw.js` | Service Worker，快取名稱 `dragon-` 開頭（第 12 節） |
 | `images/` | `icons/` 圖片圖示（藥水 `potion-*.jpg`、技能 `sk/`，第 41 節）；App 圖示：`icon-192/512.png`、`icon-maskable-512.png`、`apple-touch-icon.png`；主畫面外框 `frame-nopillar.png`（去掉拱門與左右石柱，第 54 節；`frame-notop.jpg`、原版 `frame.jpg` 保留；第 15 節）、PC 橫式外框 `frame-pc.jpg`＋遮罩 `frame-pc-mask.png`（第 19 節）；`sprites/` 人物模型、`classes/` 職業立繪、十二職業合照 `all.jpg` 、創角舞台去背圖 `classes/stage/`（合照中的人）與 `classes/hero/`（立繪全身像）（第 18 節）；`maps/ruins.jpg` 野外地圖背景、`maps/tower.jpg` 永夜之塔通用地圖（第 52 節）、`npc/tower-keeper.png`／`ivory-keeper.png`＋`-face.jpg` 永夜之塔／暮光法師塔傳送師（第 55、56 節）、`maps/village.webp` 村莊背景（第 17 節）、`maps/wild.jpg`＋`wild-mini.jpg` 低語海岸大地圖與小地圖（第 45 節；12 個地圖合併、6016×4768＝188×149 格，第 67 節）、`wild-occ.png` 遮擋深度圖（第 46 節） |
+| `tools/test-boss-dodge-boundary.js` | 紅圈閃避區界／分區／繞路限制、無路原地承傷且持續掛機隔離回歸（第148節） |
 | `tools/test-loot-auto-sell.js` | 指定自動販賣清單、確認／取消、舊檔轉換、本機與後端入帳／收據重送與失敗還原隔離測試（第146節） |
 | `tools/test-shop-buy.js` | 自訂購買數量隔離測試：整數／金額驗證、金幣與負重、裝備逐件建立、離村拒絕舊視窗（第 75 節；不發佈） |
 | `tools/test-log-drawer.js` | 訊息框定位回歸測試：PC 頂端樓層按鈕不推高訊息框、手機避開操作列（第 76 節；不發佈） |
@@ -175,7 +176,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025w`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025y`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3199,3 +3200,17 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 使用者要求箭矢與子彈能加入。箭／銀箭／子彈／銀子彈單個回收價均為0，對ammo類別放寬清單列出、新增確認、掉落比對與migrateSave過濾；schema仍8，讀回不清掉彈藥設定。
 - 確認視窗明示回收0金幣，往後同名掉落不進背包／不加金幣，原有彈藥不受影響；其他無回收價道具維持不列入，不調整商店價格或SQL。
 - test-loot-auto-sell補四種彈藥新增、原物品保留、本機掉落0金幣、讀檔保留與後端掉落測試通過，server-loot-client回歸通過；PC／手機實點子彈新增取消／確認（0金幣提醒）／移除／收合正常，Console無error／warn。check.ps1與48檔混淆478KB建置通過。
+
+## 147. 通貨洗鍊顯示屬性最大值（2026-10-25，版本 `20261025x`）
+
+- 使用者回報鍛造材料洗鍊看不到上限。openCraftDialog改呼叫itemDescHtml(x,true)，每條詞綴現值後顯示「最高 +N／N%」；一般背包道具說明維持原顯示。
+- craft.js新增craftAffixMaxText(x,a)，沿craftIl物品等級（無il用目前角色等級）、affixDef上限、LEGEND_AFFIXES倍率與cap，按rollAffixValue同樣四捨五入計算，不呼叫亂數、不改實際玩法或存檔。包含一般／傳說／覺醒詞綴，攻速最多5%。
+- 隔離瀏覽器PC／390px手機改造視窗確認il43力量最高3、傷害5、吸血2%、爆擊4%，實點淬鍊石3→2且最高值保留；一般道具說明不受影響。逐一檢查所有一般／特殊詞綴及傳說倍率於il1／43／70／110的上界格式，Console無error／warn，check.ps1與48檔混淆478KB通過。待使用者實玩確認後commit。
+
+## 148. 首領自動閃避不跨地圖邊界（2026-10-25，版本 `20261025y`）
+
+- 使用者回報首領紅圈自動閃避跨出地圖而停止掛機，要求不往邊界地圖跑、無法閃避時扛傷害。
+- ui-scene.js的findPath新增可選stayZone=false，只有sceneTeleTick閃避使用true，每一步均需inHuntZone；安全目標格也需在本區。同地圖不同區塊依既有_regOf限制，不能先跨區再繞回。其他手動點地面／小地圖尋路維持原行為。
+- 無區內安全路徑時清空目前路線並維持scene.dodging至預警解除，阻止自動追怪接手；hunt.tele.dodged仍按實際位置回報false，bossSkillTick照常扣傷害。預警解除即清除狀態、恢復掛機移動，不改傷害／反應時間／背景離線閃避機率或存檔。
+- 新tools/test-boss-dodge-boundary.js驗證區內可閃／同名地圖分區／需跨區繞路被拒／無路清舊路線原地扛25傷且掛機持續／解除後恢復／獨立地圖實際邊緣，weapon-range及server-loot-client回歸通過；隔離瀏覽器實際sceneTeleTick／bossSkillTick相同情境通過，Console無error／warn。
+- 最終check.ps1 ALL CHECKS PASSED、48檔混淆478KB建置通過；待使用者實玩確認後commit。
