@@ -101,7 +101,7 @@ function vaultHtml() {
         <div class="list-row"><div>💰 倉庫金幣：<b>${fmt(vaultData.gold)}</b></div>
         <div class="row"><input id="vault-gold" type="number" min="1" placeholder="金額" style="width:110px">
         <button class="mini" onclick="vaultGold(1)" ${vaultBusy ? 'disabled' : ''}>存入</button><button class="mini secondary" onclick="vaultGold(-1)" ${vaultBusy ? 'disabled' : ''}>取出</button></div></div></div>
-        <h4>🏦 共用倉庫</h4><div class="list">${items}</div><h4>🎒 背包</h4><div class="list">${inv}</div>`;
+        <h4>🏦 共用倉庫</h4><div class="list storage-list">${items}</div><h4>🎒 背包</h4><div class="list storage-list">${inv}</div>`;
 }
 
 async function vaultRun(fn) {

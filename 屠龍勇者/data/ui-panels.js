@@ -923,7 +923,7 @@ function renderStorage() {
     const sto = groupInv(sortedInv(player.storage)).map(g => groupRowHtml(g, `${qtyInputHtml('wd-q-' + g.x.uid, g.n)}<button class="mini" onclick="withdrawN(${g.x.uid},'wd-q-${g.x.uid}')">取出</button>`)).join('') || '<p class="muted">倉庫是空的</p>';
     const tabs = `<div class="chips"><button class="chip-btn ${storageMode === 'char' ? 'active' : ''}" onclick="setStorageMode('char')">📦 角色倉庫</button><button class="chip-btn ${storageMode === 'vault' ? 'active' : ''}" onclick="setStorageMode('vault')">🏦 帳號共用倉庫</button></div>`;
     if (storageMode === 'vault') return tabs + vaultHtml();
-    return tabs + `<h4>📦 角色倉庫（${player.storage.length} 格，只有這個角色能用）</h4><div class="list">${sto}</div><h4>🎒 背包</h4><div class="list">${inv}</div>`;
+    return tabs + `<h4>📦 角色倉庫（${player.storage.length} 格，只有這個角色能用）</h4><div class="list storage-list">${sto}</div><h4>🎒 背包</h4><div class="list storage-list">${inv}</div>`;
 }
 
 // 鍛造 NPC：🔨 裝備鍛造（配方）／🗺️ 地圖打造（用通貨改造異界地圖，craft.js openCraftDialog）

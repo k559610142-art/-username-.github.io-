@@ -178,7 +178,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025ac`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025ad`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3248,3 +3248,10 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 手動暫停、死亡、缺藥／超重／無彈藥、回村傳送門、離開原異界與已取消／完成不自動開始；缺補給會改成對應暫停原因，需補給後自行繼續。關閉遊戲期間不執行排程，不改schema／SQL。
 - test-map-queue補加密重登自動恢復、等離線處理／後端、無重複扣卷、舊版暫停原因、手動暫停／死亡／缺藥例外；順便同步既有schema斷言至已使用的8。隔離瀏覽器PC／手機重登剩42怪／bossHp1234／待用1卷均保留並呈執行中，Console無error／warn。
 - 最終check.ps1 ALL CHECKS PASSED、48檔混淆480KB建置及map-portal／offline-drops／server-loot-client回歸通過；待使用者實玩確認後commit。
+
+## 153. 倉庫道具清單左右兩欄（2026-10-25，版本 `20261025ad`）
+
+- 使用者明確選每列左右各一件道具以縮短捲動，不是左倉庫右背包。renderStorage及vaultHtml的倉庫／背包清單增加storage-list，只限倉庫頁；角色倉庫與帳號共用倉庫共用兩欄CSS，其他清單不變。
+- .storage-list使用repeat(2,minmax(0,1fr))，道具卡內資訊上方、數量框與存入／取出鈕下方靠右；名稱換行、30px圖示、空清單跨兩欄。保留原合併、數量、手續費、負重、存取流程與存檔，不改SQL或schema。
+- 隔離瀏覽器PC與390px手機確認同列左右兩件、無橫向溢出，實點角色倉庫存5瓶／取2瓶後背包27／倉庫3；共用倉庫使用記憶體假資料確認兩清單套版，不連正式後端。Console無error／warn，check.ps1通過。
+- 48檔混淆480KB建置通過；待使用者實玩確認後commit。
