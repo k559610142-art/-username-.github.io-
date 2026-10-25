@@ -358,7 +358,7 @@ const ITEMS = {
     homeScroll:    { name: '回家卷軸',     cat: 'scroll', scroll: 'home', wt: 1, price: 40, tier: 1, desc: '立即回到該地區的村莊' },
     teleScroll:    { name: '瞬間移動卷軸', cat: 'scroll', scroll: 'tele', wt: 1, price: 60, tier: 1, desc: '脫離目前的戰鬥（可在設定中自動使用）' },
     reviveScroll:  { name: '復活卷軸',     cat: 'scroll', scroll: 'revive', wt: 1, price: 3000, tier: 3, desc: '死亡時自動使用，不損失經驗' },
-    polyScroll:    { name: '變形卷軸',     cat: 'scroll', buff: 'morph', morph: 'wolfRanger', sec: 1800, wt: 1, price: 500, tier: 1, desc: '使用後選擇變身對象，變身 30 分鐘；等級越高能變的越強（死亡解除）' },
+    polyScroll:    { name: '變形卷軸',     cat: 'scroll', buff: 'morph', morph: 'wolfRanger', sec: 1800, wt: 1, price: 10000, sell: 150, tier: 1, desc: '使用後選擇變身對象，變身 30 分鐘；等級越高能變的越強（死亡解除）' },
     // 2026-10-18 起商店不賣（只有怪物掉落），回收價維持原本的 30%
     weaponScroll:  { name: '對武器施法的卷軸', cat: 'scroll', scroll: 'enchant', target: 'weapon', bless: 0, wt: 1, sell: 2400, desc: '武器 +1，超過安定值可能蒸發' },
     armorScroll:   { name: '對盔甲施法的卷軸', cat: 'scroll', scroll: 'enchant', target: 'armor', bless: 0, wt: 1, sell: 1200, desc: '防具 +1，超過安定值可能蒸發' },

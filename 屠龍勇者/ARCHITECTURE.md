@@ -190,7 +190,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261026c`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261026d`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -321,6 +321,7 @@
 - 衝裝（`enchant.js`）：強化值 < 安定值必定成功（祝福卷 +1～3）；≥ 安定值成功率 `0.5/(超出+1.25)`（40%→22%→15%…），
   失敗**蒸發**；詛咒卷 -1；飾品不能強化；上限 +15。武器每 +1 傷害 +1，防具每 +1 AC -1。
 - 商店依村莊 `tier` 販售（低語海岸 1、古魯丁 2、奇岩 3、亞丁 4）；回收價 = 售價 30% 或 `sell`。
+- 20261026d：各村商店重新販售變形卷軸polyScroll，每張10,000金幣，tier1；原回收價150固定保存，不隨新售價提高。見第167節。
 - 商店各商品保留快捷數量，另有「自訂」購買數量、即時總價與依金幣／負重計算的上限（20261021e，第 75 節）；購買端拒絕非法整數及溢位。
 - **裝備比較**（2026-10-09，`ui-panels.js` 的 `compareHtml`）：背包點武器／防具時，視窗下方「⚖️ 與裝備中比較」。
   `statsWithEquip` 暫時把這件放進對應部位算 `calcStats` 再還原（不動存檔）；雙手武器會模擬卸下盾牌、盾會卸下雙手武器（並提示），戒指兩格各比一次。
@@ -2559,7 +2560,7 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 ## 88. 變形卷軸（2026-10-22，版本 `20261022c` 加入、`20261022d` 改成天堂式選變身對象；`items.js` 的 `MORPHS`／`MORPH_FORMS`、`ui-panels.js` 的 `openMorphPicker`、`ui-scene.js` 的 `playerSprite`）
 
 - 使用者先要求「新增道具 變形卷軸」（c 版：讀了固定變成巡守妖魔神射），再要求「變身卷軸用統一外觀，點選後跳出變身選項，參考天堂變身卷軸設計」（d 版）。
-- 道具 `polyScroll` 只有一種：卷軸類、`buff: 'morph'`、`morph: 'wolfRanger'`（統一外觀用的圖）、30 分鐘（`sec` 1800）、重 1、原定價500、tier 1，所有職業都能用。20261022w依使用者要求暫停NPC商店販售，shopItemIds排除polyScroll，商品列表／直接購買／自訂購買入口共用此限制；既有卷軸使用、定價與回收價不改，未調整玩家交易所。
+- 道具 `polyScroll` 只有一種：卷軸類、`buff: 'morph'`、`morph: 'wolfRanger'`（統一外觀用的圖）、30 分鐘（`sec` 1800）、重 1、原定價500、tier 1，所有職業都能用。20261022w依使用者要求暫停NPC商店販售，shopItemIds排除polyScroll，商品列表／直接購買／自訂購買入口共用此限制；既有卷軸使用、定價與回收價不改，未調整玩家交易所。20261026d依使用者要求重新開放NPC商店、每張10,000金幣，回收仍150（第167節）。
 - **選變身對象**（參考天堂：讀卷軸後選要變的怪物，等級到了才能變，越高級越強）：背包「使用」、快捷欄點一下、`quickPotion` 都改成開 `openMorphPicker` 視窗，列出 `MORPH_FORMS` 9 種（名稱、需求等級、效果）；等級不夠的變灰不能點；目前變身中的那個金框、上次選的標「上次」。
   點選 → `morphPick(id)` → `usePotion('polyScroll', id)`；等級不夠或沒選對象時**不扣卷軸**。變身中視窗多一個「解除變身」（`morphCancel`，不扣卷軸）。
 
@@ -3413,3 +3414,12 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - `cloudFlushRun` 上傳拿到 `42501` → `cloudRlsBlocked()` 依序判斷：① `cloudCheckBan`（停權，原本的提示）② `online_ping` 回 false＝別台使用中 → `onlineKicked`（原本「已在其他裝置登入」）③ `auth.getUser()` 回 401／403 或 session／jwt／expired 錯誤＝登入已作廢 → `cloudSessionExpired`：存檔、回標題、這台登出，提示「登入已失效…請在標題畫面重新登入，登入後會自動上傳」④ 登入正常（例如別台心跳剛逾時）→ 不登出、清掉這格 10 分鐘的暫停，下一輪再傳；心跳或 getUser 連不上 → 不下判斷。
 - `onlineKicked` 的登出流程抽成 `cloudLocalSignOut(title, msg)` 共用。登出後角色仍在本機，重新登入的合併流程會把較新的本機進度上傳。
 - 測試：`tools/test-cloud-rls-blocked.js`（模擬伺服器）；test-server-loot-client／vault-v2-client／auction-client／clan-character-client／loot-batch 回歸通過。真正的被擋情境要上線後實際遇到才看得到。
+
+
+## 167. 變身卷軸重新上架與定價（2026-10-26，版本 `20261026d`）
+
+- 使用者要求變身卷軸開放、每張定價一萬金幣。ITEMS.polyScroll.price由500改10000、tier1不變；shopItemIds移除polyScroll排除，四村一般商店卷軸分類皆可購買，快捷數量及自訂購買共用shopCost／buyItem，仍檢查金幣與負重。
+- sell明定150保存原500×30%回收價，避免調整購買價格連帶提高既有卷軸回收／自動販賣收益；變身對象／能力／30分鐘時效／圖片／掉落不改。沒有新增欄位、schema12不變，不改SQL或伺服器目錄，script載入順序不變。
+- 驗證使用既有test-shop-buy及隔離VM實際各村購買／自訂數量、金幣不足不扣款；不開關瀏覽器、不讀寫正式角色。待使用者重新整理到d→任一村商店→卷軸→變形卷軸10,000→購買一張，確認扣10,000且增加一張；使用者確認後才提交。
+
+第167節驗證：既有shop-buy及隔離四村單張10000／自訂3張30000／不足9999不扣款／原回收150通過；check.ps1 ALL CHECKS PASSED（51檔、50script同d）、50檔正式混淆505KB成功、git diff --check通過。實玩待使用者確認。

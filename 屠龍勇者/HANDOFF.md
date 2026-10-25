@@ -5,6 +5,12 @@
 
 ## 1. 現況
 
+- **20261026d驗證完成**：既有shop-buy測試及隔離四村單張10000／自訂3張30000／不足9999不扣款／回收150保留通過；check.ps1 ALL CHECKS PASSED（51檔、50script同d）、正式混淆505KB成功、git diff --check通過。不開關瀏覽器；待實玩確認後提交。
+
+
+- **20261026d：變身卷軸重新上架，每張10,000金幣（第167節）**。四村NPC一般商店卷軸分類開放polyScroll，快捷／自訂購買共用定價；sell明定150保持原回收價，避免既有物品收益連帶上升。變身／時效不改，schema12／SQL不變。未開關瀏覽器。待重新整理確認d→任一村商店→卷軸→變形卷軸10,000→買1張扣10,000、背包加1，實玩確認後才commit。
+
+
 - **20261026c：存檔上傳被 RLS 擋下時自動判斷（第 166 節）**：停權／別台使用中／登入已失效（自動登出並提示重新登入）／登入正常（下一輪再傳）。起因是使用者看到 dragon_saves RLS 錯誤。
 
 - **20261026b驗證完成**：prepare.py驗36格不重複／RGBA／透明留邊與圖集一致；test-ivory-archmage-morph／test-morph-level-lock／test-item-art通過。四方向四動作motion-preview.gif已檢視；側向及施法雙杖已透過image_gen修正，初稿及完整repair-prompts.json保留。check.ps1 ALL CHECKS PASSED（51檔、50script同b）、正式混淆504KB成功、git diff --check無錯誤。沒有開關任何瀏覽器、未動真實角色或正式後端；尚待使用者實玩確認，未由本助手提交或推送。
