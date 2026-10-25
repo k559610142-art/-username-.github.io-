@@ -186,7 +186,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025ar`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025at`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -1132,6 +1132,7 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 「已擁有」即時計算背包＋倉庫＋裝備中，**不另存收集進度、不改存檔結構**。
 - 之後可做：製作清單（鍛造配方一覽、材料是否足夠）、收集進度與獎勵（需要存檔欄位）。
 
+- **搜尋修正（2026-10-25，版本 `20261025at`，使用者回報「搜尋不能正常打中文」）**：① 搜尋框 `oninput` 每打一字就 `renderPanel` 整個重畫、換掉輸入框，中文輸入法組字被打斷 → `setCodexQuery(q, ev)` 在 `ev.isComposing` 時不重畫，`oncompositionend` 再更新，查詢字沒變就略過（Firefox 選字後會多送一次 input）。② 魔法娃娃（`doll`）、異界地圖（`map`）不在 `CAT_NAMES`，`codexKind` 回傳 undefined，只要有搜尋字 `.includes` 就當掉、清單完全不篩選 → `codexKind` 改用 `CAT_NAMES[cat] || CODEX_EXTRA_KIND[cat] || ''`（`CODEX_EXTRA_KIND`：異界地圖、魔法娃娃）。驗證：模擬注音組字時搜尋框不換、選「長」篩成 12 件、「娃娃」21 件、「異界」15 件。
 ## 21. 暗黑式刷寶：品質與隨機詞綴（`affix.js`；2026-10-09，版本 `20261009m`，存檔 schema 2）
 
 - 道具實體新增欄位（只有怪物掉落的武器／防具會有；商店、鍛造、任務獎勵都是普通）：

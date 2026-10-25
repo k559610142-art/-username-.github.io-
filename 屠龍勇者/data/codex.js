@@ -48,8 +48,10 @@ function codexIcon(d) {
 function codexKind(d) {
     if (d.cat === 'weapon') return WEAPON_TYPES[d.type].name + (WEAPON_TYPES[d.type].two ? '（雙手）' : '');
     if (d.cat === 'armor') return SLOTS[d.slot === 'ring' ? 'ring1' : d.slot];
-    return CAT_NAMES[d.cat];
+    // 異界地圖、魔法娃娃不在 CAT_NAMES：原本回傳 undefined，搜尋時 .includes 當掉、清單不會篩選（2026-10-25 修）
+    return CAT_NAMES[d.cat] || CODEX_EXTRA_KIND[d.cat] || '';
 }
+const CODEX_EXTRA_KIND = { map: '異界地圖', doll: '魔法娃娃' };
 const CODEX_ORDER = ['weapon', 'armor', 'acc', 'use', 'book', 'currency', 'map', 'doll', 'material'];
 
 // 全部道具 id（第一次打開時建立，依分類→品質→名稱排序）
@@ -186,7 +188,7 @@ function renderCodex() {
     let h = `<div class="panel codex-top">
         <div class="chips">${CODEX_CATS.map(([id, n]) => `<button class="chip-btn ${codexCat === id ? 'active' : ''}" onclick="setCodexCat('${id}')">${n}</button>`).join('')}</div>
         <div class="codex-filter">
-            <input id="codex-q" type="search" placeholder="🔍 輸入名稱或種類…" value="${esc(codexQuery)}" oninput="setCodexQuery(this.value)">
+            <input id="codex-q" type="search" placeholder="🔍 輸入名稱或種類…" value="${esc(codexQuery)}" oninput="setCodexQuery(this.value, event)" oncompositionend="setCodexQuery(this.value)">
             <select onchange="setCodexGrade(this.value)"><option value="all">全部品質</option>
                 ${CODEX_GRADES.map(g => `<option value="${g.id}" ${codexGrade === g.id ? 'selected' : ''}>${g.name}</option>`).join('')}</select>
         </div>
@@ -204,7 +206,10 @@ function renderCodex() {
 
 function setCodexCat(c) { codexCat = c; codexSel = null; renderPanel(); }
 function setCodexGrade(g) { codexGrade = g; codexSel = null; renderPanel(); }
-function setCodexQuery(q) {
+// 中文等輸入法組字中（isComposing）不重畫：重畫會換掉搜尋框、打斷選字（2026-10-25 使用者回報不能打中文）；選完字 compositionend 再更新。
+// Firefox 在 compositionend 之後還會送一次 input，查詢字沒變就略過
+function setCodexQuery(q, ev) {
+    if ((ev && ev.isComposing) || q === codexQuery) return;
     codexQuery = q;
     codexSel = null;
     renderPanel();
