@@ -65,6 +65,7 @@
 | `AGENTS.md`、`HANDOFF.md`、`AI_HANDOFF.min.md` | **給 AI 的文件**（遊戲不載入）：`AGENTS.md` 任何 AI 通用的工作規則與獨立發佈流程；`HANDOFF.md` 目前進度、待辦、使用者的決定、環境、常用操作；`AI_HANDOFF.min.md` 給其他 AI 的壓縮版全貌（規則＋檔案＋核心公式＋現況，整份貼給新 AI 即可接手）。換 AI 接手時靠這三份，要保持最新。`CLAUDE.md`／`GEMINI.md` 只是各 AI 自動讀的入口（`GEMINI.md` 用 `@./AGENTS.md` 匯入） |
 | `Gemini改遊戲.bat`、`ChatGPT改遊戲.bat` | 雙擊啟動：本機伺服器 8790＋開瀏覽器＋Gemini CLI（`--approval-mode auto_edit`）／OpenAI Codex CLI（自動讀 `AGENTS.md`）；PATH 補 node、npm、GitHub Desktop 的 git |
 | `tools/build.js` | **發佈用建置＋混淆**（第 60 節）：42 支 `data/*.js` 接成一支 `data/game.js` 包進函式範圍＋terser 混淆、gm.html 用的接成 `data/gm-lib.js`。由根目錄 `tools/build.js`（GitHub Actions）呼叫 `buildDragon`，開發與測試照舊用原始檔 |
+| `tools/test-pwa-update.js` | 更新偵測隔離DOM／網路測試：開發與正式合併版、節流、離線／錯誤／版本排序與按下才刷新（第164節） |
 | `tools/check.ps1` | 改完的自動檢查：JS 語法（`node --check`）、`index.html` 所有 `?v=` 等於 `GAME_VERSION`、每個 `data/*.js` 都有載入、沒有衝突標記；通過印 `ALL CHECKS PASSED` |
 | `index.html` | 版面、全部 CSS、三個畫面（title／create／game）、`<script>` 載入 |
 | `data/config.js` | 版本號、存檔 key、各種常數、遊戲時鐘 `gameNow`、`rand/chance/clamp/fmt`、**天堂經驗表** `expToNext`／`huntExpRate`／`deathLossRate`、經驗倍率 `EXP_RATE`、離線收益常數、`SIM_MODE` |
@@ -187,7 +188,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025at`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261026a`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -401,7 +402,7 @@ kills, deaths, settings（含 skillSlots 技能欄 8 格）, created, skills[已
 - 快取：頁面網路優先；帶 `?v=` 的 JS 快取優先（`dragon-core-版本`，新版啟用時刪舊版）；圖示、manifest 先給快取再背景更新（`dragon-assets`）。
   同網域 `caches` 是共用的，所以名稱一律 `dragon-` 開頭；修仙 SW 只清 `fanchen-core-`，兩邊不會互刪。
 - 安裝時預先抓 `index.html` 及裡面所有 `data/*.js?v=`，第一次離線開也完整。
-- 新版本：每 30 分鐘與切回前景時抓 `index.html` 比對 `config.js?v=`，不同就在畫面下方顯示「🔄 有新版本，點此更新」（存檔後重新整理）。
+- 新版本（20261026a）：啟動、前景每分鐘、切回畫面／視窗focus／恢復連線時抓index.html（no-store），辨識開發config.js與正式合併game.js版號；只有較新版本才顯示「🔄 有新的更新檔（v版本），點此更新」。按下才存檔並重新整理，不強制更新，詳第164節。
 - 安裝入口：標題畫面與「⚙️ 設定」的「📲 安裝到主畫面」→ `openInstallGuide`（Chrome／Edge 直接跳系統安裝視窗；iPhone 顯示 Safari 加入主畫面步驟；LINE 等內建瀏覽器提示改用一般瀏覽器）。
 - iPhone 主畫面版與 Safari 存檔分開，第一次從主畫面開且沒存檔時提醒一次（`dragonSlayer_pwa_hint`）。
 - 圖示由 PowerShell `System.Drawing` 產生（紅底金框「屠龍」二字），要換圖直接覆蓋 `images/` 同檔名即可。
@@ -3381,3 +3382,14 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - test-doll-summon-cost驗49不足／首次50／共用時間／精確到期／不重扣／不足收回且繼續掛機／加密重登／跨期／未裝備不扣／多疊支付／schema11轉換／離線量測還原／團戰記帳與重複結算防重扣。既有娃娃／能力／排程／自動販賣測試更新schema12及召喚材料fixture。未開關瀏覽器或操作正式存檔，待使用者實玩確認。
 
 第163節驗證：召喚／21款能力／分解／T4商店／地圖排程／自動販賣／離線掉落／喝水／後端掉寶／458道具圖片／隔離倉庫回歸通過；真實applyOffline不按收入倍率多扣、模擬不扣真實材料、主迴圈已付一期團戰不重扣。check.ps1 ALL CHECKS PASSED（51檔、50script同au）、50檔正式混淆503KB通過。實玩仍待使用者確認。
+
+
+## 164. 伺服器更新提示（2026-10-26，版本 `20261026a`）
+
+- 使用者要求伺服器更新後玩家畫面顯示新的更新檔。既有pwa.js只每30分鐘檢查且只解析data/config.js，正式build.js會合併成data/game.js，導致偵測漏掉正式版；改為同時辨識兩種script入口。
+- PWA_UPDATE_CHECK_MS改60秒，initPwa啟動立即檢查；visibilitychange前景／window focus／online也檢查。隱藏或離線不送請求，pwaCheckBusy避免並行，真實網路時鐘pwaLastCheck節流15秒；no-store與10秒AbortController逾時，HTTP失敗／例外靜默，下次重試。這是更新網路輪詢，沿原本Date.now，不使用會被戰鬥模擬推進的gameNow。
+- 新pwaNewerVersion嚴格解析YYYYMMDD加小寫字母，日期優先、字尾26進位，z→aa正確；同版／舊版／無效版號不提示。showUpdateBanner只留一個button，追蹤更晚版本；文字「有新的更新檔」含版號，aria-live提示，CSS限制手機寬度且可換行。提示持續保留不自動消失；沒有自動重載、沒有關閉視窗。玩家按下才沿既有saveGame／location.reload，disabled防連點。
+- 只改pwa／更新紀錄／版號與提示CSS，無存檔schema／SQL／SW快取策略改動，載入順序不變。舊客戶端必須先載入本版一次，後續更新才有每分鐘與合併版辨識；這次部署無法回寫已開啟的舊JS。
+- tools/test-pwa-update.js用真實pwa.js與假的DOM／fetch／時間，測開發版及正式game.js、新版提示／同舊版拒絕／z-aa／啟動每分鐘及事件／隱藏離線／HTTP失敗與斷線後重試／請求防重入／提示不重複不強制重載／先儲存後刷新且不連點；可另傳正式建置路徑核對其index入口。測試不開關瀏覽器、不操作正式存檔或後端。
+
+第164節驗證：test-pwa-update含正式建置index通過；check.ps1 ALL CHECKS PASSED（51檔、50script同20261026a）、50檔正式混淆504KB通過，git diff --check無錯誤。未開關瀏覽器，實玩提示待後續新版上線驗收。
