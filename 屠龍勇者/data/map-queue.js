@@ -22,7 +22,7 @@ function mapQueueNormalize(p) {
     q.active = q.active === true;
     const wasRunning = q.state === 'running';
     q.state = ['idle', 'paused', 'done'].includes(q.state) ? q.state : 'paused';
-    q.reason = wasRunning ? '重新進入角色，請按繼續' : String(q.reason || '');
+    q.reason = wasRunning ? '重新登入，等待自動接續' : String(q.reason || '');
     if (q.active || wasRunning) p.hunting = false;
     if (q.active && (!q.slots[q.index] || !(p.mapRun || p.mapPortal) || (p.mapRun || p.mapPortal).queueSlot !== q.index)) {
         q.active = false; q.state = 'paused'; q.reason = '目前地圖已關閉，請確認後繼續';
@@ -156,7 +156,17 @@ function mapQueueCancel() {
 }
 function mapQueueTick() {
     const q = player && player.mapQueue;
-    if (SIM_MODE || !q || q.state !== 'running') return;
+    if (SIM_MODE || !q) return;
+    // 讀檔先停止離線模擬，正式上線且連線就緒後，接回仍在野外的原排程地圖。
+    if (q.state === 'paused' && ['重新登入，等待自動接續', '重新進入角色，請按繼續'].includes(q.reason)
+        && q.active && player.mapRun && player.mapRun.queueSlot === q.index && inMapRun() && player.hp > 0 && !walkHome) {
+        if (offlineHold || !['legacy', 'active'].includes(lootMode) || !lootCanPlay()) return;
+        const why = mapQueueSupplyReason();
+        if (why) { q.reason = why; saveGame(); return; }
+        mapQueueStart();
+        return;
+    }
+    if (q.state !== 'running') return;
     if (q.active) {
         if (!player.mapRun && !player.mapPortal) mapQueueLost('目前地圖已關閉');
         else if (player.mapPortal || !player.hunting) mapQueueAutoPause('已回村或停止掛機，請按繼續');

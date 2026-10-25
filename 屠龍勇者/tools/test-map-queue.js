@@ -27,7 +27,7 @@ function setSlot(i,x,n) {
  nodes['map-queue-select-'+i]={value:String(x.uid)};nodes['map-queue-qty-'+i]={value:String(n)};mapQueueSet(i);
 }
 function finish() {assert(inMapRun());mapOnKill({mapBoss:true});assert(inTown());mapQueueTick();}
-assert.equal(SAVE_SCHEMA,7);
+assert.equal(SAVE_SCHEMA,8);
 // ① 3張T1刷完才到1張T2；每次只消耗預先選定的一張，完成後停止。
 resetQueue();const first=maps(1,3),second=maps(2,1);
 setSlot(0,first[0],3);setSlot(1,second[0],1);
@@ -75,10 +75,19 @@ player.inv=player.inv.filter(x=>!ITEMS[x.id].heal);finish();assert.equal(player.
 resetQueue();const supply=maps(1,2);setSlot(0,supply[0],2);mapQueueStart();player.inv=player.inv.filter(x=>!ITEMS[x.id].heal);finish();
 assert.equal(player.mapQueue.state,'paused');assert(findInv(supply[1].uid));assert.equal(player.mapRun,null);
 resetQueue();const offline=maps(1,1);setSlot(0,offline[0],1);lootMode='blocked';mapQueueStart();assert(findInv(offline[0].uid));assert.equal(player.mapQueue.state,'idle');lootMode='legacy';
-// ⑨ 真實加密存檔往返：排程與剩餘次數保留，讀檔暫停、不自動消耗；schema6舊檔無排程。
+// ⑨ 真實加密存檔往返：排程與剩餘次數保留，讀檔等候連線後自動接續、不重複消耗；schema6舊檔無排程。
 resetQueue();const reload=maps(1,3);setSlot(0,reload[0],3);mapQueueStart();player.mapRun.left=42;saveGame();
 player=guardWrap(migrateSave(saveParse(saved)));assert.equal(player.mapQueue.state,'paused');assert(!player.hunting);assert.equal(player.mapQueue.slots[0].uids.length,2);assert.equal(player.mapRun.left,42);
-mapQueueStart();assert(player.hunting);assert.equal(player.mapQueue.slots[0].uids.length,2);assert.equal(player.mapRun.left,42);
+
+offlineHold=true;mapQueueTick();assert(!player.hunting,'離線處理中不先執行');offlineHold=false;
+lootMode='checking';mapQueueTick();assert(!player.hunting,'等後端連線');lootMode='legacy';
+mapQueueTick();assert(player.hunting);assert.equal(player.mapQueue.state,'running');assert.equal(player.mapQueue.slots[0].uids.length,2);assert.equal(player.mapRun.left,42);
+const afterResume=player.inv.length;mapQueueTick();assert.equal(player.inv.length,afterResume,'自動接續不扣第二張');
+mapQueuePause();saveGame();player=guardWrap(migrateSave(saveParse(saved)));mapQueueTick();assert(!player.hunting,'手動暫停不自動恢復');mapQueueStart();
+saveGame();player=guardWrap(migrateSave(saveParse(saved)));player.mapQueue.reason='重新進入角色，請按繼續';mapQueueTick();assert(player.hunting,'舊版重登暫停也可接續');
+saveGame();player=guardWrap(migrateSave(saveParse(saved)));const hp=player.hp;player.hp=0;mapQueueTick();assert(!player.hunting,'死亡不自動恢復');player.hp=hp;
+const supplyInv=player.inv;player.inv=player.inv.filter(x=>!ITEMS[x.id].heal);mapQueueTick();assert.equal(player.mapQueue.reason,'藥水用完，請先補給');assert(!player.hunting);player.inv=supplyInv;mapQueueStart();
+
 const legacy=JSON.parse(JSON.stringify(player));delete legacy.mapQueue;assert.equal(migrateSave({schema:6,player:legacy}).mapQueue,null);
 // ⑩ 模擬模式不執行下一張，也不更動排程計數；異常存檔去掉重複uid／第6格。
 const raw=JSON.parse(JSON.stringify(player));raw.mapQueue.slots.push(...Array(5).fill(raw.mapQueue.slots[0]));mapQueueNormalize(raw);assert.equal(raw.mapQueue.slots.length,5);
@@ -97,5 +106,5 @@ mapQueueStart();assert.equal(player.mapQueue.state,'done');
 resetQueue();for(let i=0;i<5;i++){const xs=maps(i+1,1);setSlot(i,xs[0],1);}mapQueueStart();
 for(let i=0;i<5;i++){assert.equal(player.mapRun.t,i+1);finish();}
 assert.equal(player.mapQueue.state,'done');assert(player.mapQueue.slots.every(s=>s.done===1));
-console.log('PASS：3+1順序、5格數量與排序、暫停／繼續／取消、死亡與回卷、缺卷／改造／補給／連線、手動開圖隔離、加密存檔遷移與讀回暫停、模擬不刷下一張。');
+console.log('PASS：3+1順序、5格數量與排序、暫停／繼續／取消、死亡與回卷、缺卷／改造／補給／連線、手動開圖隔離、加密存檔遷移與重登自動接續／不重扣卷、等連線與離線處理、手動暫停／死亡／缺藥例外、模擬不刷下一張。');
 `,ctx);

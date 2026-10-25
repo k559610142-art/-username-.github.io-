@@ -178,7 +178,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025ab`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025ac`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3240,3 +3240,11 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 首批紀錄含ab版本入口、aa血戰、z瞬移補血、y紅圈區界、x洗鍊上限、w彈藥與v自訂自動販賣；之後每次更新要在GAME_UPDATES最上方新增當版紀錄，版本與GAME_VERSION一致，舊紀錄保留。
 - 隔離瀏覽器實點標題版號、設定版號、開關與手機390px，最新／近期內容正確，Console無error／warn；check.ps1 ALL CHECKS PASSED。
 - 48檔混淆480KB建置通過，openUpdateNotes已公開供事件呼叫；待使用者實玩確認後commit。
+
+## 152. 重登後自動接續野外未完成地圖排程（2026-10-25，版本 `20261025ac`）
+
+- 使用者要求未完成排程重登後在野外自動繼續。取代第126節「重新登入必須手動繼續」規則：normalize仍先轉paused、hunting=false避免直接結算排程離線收益，但running來源reason改成重新登入等待自動接續。
+- mapQueueTick辨識此reason（兼容舊版重新進入角色請按繼續），僅active且mapRun.queueSlot匹配、仍在原異界野外、存活且未步行回村時接續；等待offlineHold解除及後端legacy／active就緒，重查補給後沿mapQueueStart啟動掛機。保留mapRun剩怪／bossHp與待用卷，不重開地圖、不再次扣卷。
+- 手動暫停、死亡、缺藥／超重／無彈藥、回村傳送門、離開原異界與已取消／完成不自動開始；缺補給會改成對應暫停原因，需補給後自行繼續。關閉遊戲期間不執行排程，不改schema／SQL。
+- test-map-queue補加密重登自動恢復、等離線處理／後端、無重複扣卷、舊版暫停原因、手動暫停／死亡／缺藥例外；順便同步既有schema斷言至已使用的8。隔離瀏覽器PC／手機重登剩42怪／bossHp1234／待用1卷均保留並呈執行中，Console無error／warn。
+- 最終check.ps1 ALL CHECKS PASSED、48檔混淆480KB建置及map-portal／offline-drops／server-loot-client回歸通過；待使用者實玩確認後commit。

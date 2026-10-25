@@ -5,6 +5,8 @@
 
 ## 1. 現況
 
+- **20261025ac：重登自動接續野外未完成地圖排程（第152節）**。running讀檔先停離線處理，mapQueueTick等後端就緒後自動接原異界；原怪數／bossHp保留、不多扣卷。兼容舊版重登暫停原因，手動暫停／死亡／補給不足／回村不自動執行。不改schema或SQL，更新紀錄新增ac。test-map-queue與隔離PC／手機加密重登（42怪、bossHp1234、剩1卷）、Console無error／warn通過；check.ps1 ALL CHECKS PASSED、48檔混淆480KB及map-portal／offline-drops／server-loot-client回歸通過，待Ctrl+F5→執行排程中重登→原野外自動接續，實玩確認後commit。
+
 - **20261025ab：點擊版本號查看更新內容（第151節）**。標題畫面版號與設定角色區版號皆可點，遊戲內視窗列本次與近期更新（ab～v）。ui-create.js的GAME_UPDATES之後換版需新版置頂補玩家用條目。PC／手機實點標題及設定開關、內容與Console無error／warn，check.ps1通過；48檔混淆480KB建置通過，待Ctrl+F5→標題底部版號→看更新／關閉，遊戲設定頁也可開，實玩確認後commit。
 
 - **20261025aa：血戰觸發顯示於臨時區（第150節）**。確認原本已實裝：傷害+8、吸血+5%，實測200傷回10HP；新增已學修羅HP低於50%時臨時區發光血戰圖示，點擊看生效與說明，回血50%以上／死亡移除。不改能力／存檔。單測與buff-groups、PC／手機實點、Console無error／warn通過；check.ps1 ALL CHECKS PASSED及48檔混淆479KB通過，待Ctrl+F5→已學血戰修羅→低血時看臨時血戰、點說明、回血過半確認消失，實玩確認後commit。
