@@ -15,7 +15,7 @@ function dollLegendGear(it) {
 }
 function renderDollDismantle() {
     const list = player.inv.filter(dollLegendGear);
-    return `<div class="panel"><b>分解傳說裝備</b><p>每件傳說品質裝備可分解成 ${DOLL_DISMANTLE_CRYSTALS} 個魔法結晶。裝備及其強化、詞綴與附魔會消失。</p><small class="muted">只接受背包內的傳說武器、防具及飾品；已裝備的不列出，鎖定的不能分解。魔法結晶目前先開放取得與保存。</small><p>${itemThumbHtml('magicCrystal')}持有魔法結晶：${fmt(countItem('magicCrystal'))}</p></div><div class="list storage-list">${list.map(it => `<div class="list-row"><div class="item-info">${itemThumbHtml(it.id)}<b class="${itemClass(it)}">${esc(itemName(it))}</b><small>魔法結晶 ×${DOLL_DISMANTLE_CRYSTALS}${it.sellLocked ? '・已鎖定' : ''}</small></div><button class="mini" ${it.sellLocked ? 'disabled' : ''} onclick="dollDismantle(${it.uid})">分解</button></div>`).join('') || '<p class="muted">背包沒有可列出的傳說裝備。</p>'}</div>`;
+    return `<div class="panel"><b>分解傳說裝備</b><p>每件傳說品質裝備可分解成 ${DOLL_DISMANTLE_CRYSTALS} 個魔法結晶。裝備及其強化、詞綴與附魔會消失。</p><small class="muted">只接受背包內的傳說武器、防具及飾品；已裝備的不列出，鎖定的不能分解。召喚娃娃需50個結晶，每30分鐘自動扣料續召，不足時收回。</small><p>${itemThumbHtml('magicCrystal')}持有魔法結晶：${fmt(countItem('magicCrystal'))}</p></div><div class="list storage-list">${list.map(it => `<div class="list-row"><div class="item-info">${itemThumbHtml(it.id)}<b class="${itemClass(it)}">${esc(itemName(it))}</b><small>魔法結晶 ×${DOLL_DISMANTLE_CRYSTALS}${it.sellLocked ? '・已鎖定' : ''}</small></div><button class="mini" ${it.sellLocked ? 'disabled' : ''} onclick="dollDismantle(${it.uid})">分解</button></div>`).join('') || '<p class="muted">背包沒有可列出的傳說裝備。</p>'}</div>`;
 }
 function dollDismantleHere() { return player && inTown() && tabOpen('town') && townSub === 'dollShop' && dollShopTab === 'dismantle'; }
 function dollDismantle(uid) {

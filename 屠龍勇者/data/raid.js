@@ -258,9 +258,9 @@ function raidApplyReward(res, uid, runKey) {
     dollApplySimulation(me.dollLocks, me.dollMs, me.doll || null);
     for (const id in me.used) {
         const n = Math.min(me.used[id], countItem(id));
-        if (id === 'magicCrystal') dollConsumeCrystals(n); else consumeItem(id, n);
+        if (id !== 'magicCrystal') consumeItem(id, n);
     }
-    dollApplySummonResult(me.dollSummonUntil);
+    dollApplySummonResult(me.dollSummonUntil, me.used.magicCrystal || 0);
     if (!res.win || !def) { addLog(`🐉 團隊副本：討伐${res.boss.name}失敗`, 'warn'); return out; }
     // 血盟加成：同血盟 2 人以上（包含自己）經驗、金幣各 +10%（clan.js）
     const clanN = me.clan ? res.members.filter(m => m.clan === me.clan).length : 0;

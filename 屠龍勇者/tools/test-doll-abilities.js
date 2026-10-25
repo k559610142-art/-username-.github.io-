@@ -5,7 +5,7 @@ function freshDoll(id) {
     SIM_MODE=true; createPlayer('娃娃能力測試','knight',CLASSES.knight.base); SIM_MODE=false;
     gameNow=1000000; hunt=null; scene=null; gameLog.length=0;
     const base=calcStats();
-    if(id){const x=addItem('doll_'+id);equipItem(x.uid);}
+    if(id){addItem('magicCrystal',100000);const x=addItem('doll_'+id);equipItem(x.uid);}
     player.hp=calcStats().maxHp;player.mp=calcStats().maxMp;
     return base;
 }

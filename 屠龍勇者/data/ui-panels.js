@@ -326,7 +326,7 @@ function charCompanionsHtml() {
             <h4>魔法娃娃</h4>
             ${doll ? `<div class="cv-companion-art"><img src="${doll.art}" alt="${esc(doll.name)}"></div><b class="cv-companion-name ${itemClass(it)}">${esc(doll.name)}</b><button class="mini secondary" onclick="openItemDialog(${it.uid})">查看／卸下</button>` : '<div class="cv-companion-art cv-companion-empty"><span>未裝備娃娃</span></div>'}
             <button class="mini" onclick="openDollPicker()">${doll ? '更換娃娃' : '選擇娃娃'}</button>
-            <div class="cv-companion-desc"><b>效果介紹</b>${doll ? dollAbilityHtml(it.id) : '<p class="muted">尚無裝備效果</p>'}</div>
+            <div class="cv-companion-desc"><b>效果介紹</b>${doll ? dollAbilityHtml(it.id) + `<p class="muted">召喚剩餘 ${fmtBuffTime(Math.max(0, Math.ceil(((player.dollSummonUntil || 0) - gameNow) / 1000)))}</p>` : '<p class="muted">尚無裝備效果</p>'}<small>召喚消耗50個魔法結晶，每30分鐘自動扣50個續召；不足時自動收回。</small></div>
         </section>
         <section class="cv-companion cv-mercenary">
             <h4>傭兵</h4>
@@ -337,7 +337,7 @@ function charCompanionsHtml() {
 }
 function openDollPicker() {
     const list = player.inv.filter(x => ITEMS[x.id].cat === 'doll');
-    openDialog('選擇娃娃', `<div class="list">${list.map(x => `<div class="list-row"><div class="item-info">${itemThumbHtml(x.id)}<b class="${itemClass(x)}">${esc(itemName(x))}</b>${dollAbilityHtml(x.id)}</div><button class="mini" onclick="equipDollBtn(${x.uid})">裝備</button></div>`).join('') || '<p class="muted">背包沒有娃娃，目前由 GM 發放或娃娃商人限 GM 購買。</p>'}</div>`);
+    openDialog('選擇娃娃', `<p>召喚消耗50個魔法結晶，維持30分鐘，到期自動扣料續召；不足時收回。已付費時間內更換不重扣。</p><p>背包魔法結晶：${fmt(countItem('magicCrystal'))}・已付費剩餘 ${fmtBuffTime(Math.max(0, Math.ceil(((player.dollSummonUntil || 0) - gameNow) / 1000)))}</p><div class="list">${list.map(x => `<div class="list-row"><div class="item-info">${itemThumbHtml(x.id)}<b class="${itemClass(x)}">${esc(itemName(x))}</b>${dollAbilityHtml(x.id)}</div><button class="mini" onclick="equipDollBtn(${x.uid})">召喚</button></div>`).join('') || '<p class="muted">背包沒有娃娃，目前由 GM 發放或娃娃商人限 GM 購買。</p>'}</div>`);
 }
 function equipDollBtn(uid) {
     const it = findInv(uid);

@@ -156,6 +156,7 @@
 | `manifest.json` | App 名稱、圖示、`scope: ./`（只涵蓋本資料夾） |
 | `sw.js` | Service Worker，快取名稱 `dragon-` 開頭（第 12 節） |
 | `images/` | `icons/` 圖片圖示（藥水 `potion-*.jpg`、技能 `sk/`，第 41 節）；App 圖示：`icon-192/512.png`、`icon-maskable-512.png`、`apple-touch-icon.png`；主畫面外框 `frame-nopillar.png`（去掉拱門與左右石柱，第 54 節；`frame-notop.jpg`、原版 `frame.jpg` 保留；第 15 節）、PC 橫式外框 `frame-pc.jpg`＋遮罩 `frame-pc-mask.png`（第 19 節）；`sprites/` 人物模型、`classes/` 職業立繪、十二職業合照 `all.jpg` 、創角舞台去背圖 `classes/stage/`（合照中的人）與 `classes/hero/`（立繪全身像）（第 18 節）；`maps/ruins.jpg` 野外地圖背景、`maps/tower.jpg` 永夜之塔通用地圖（第 52 節）、`npc/tower-keeper.png`／`ivory-keeper.png`＋`-face.jpg` 永夜之塔／暮光法師塔傳送師（第 55、56 節）、`maps/village.webp` 村莊背景（第 17 節）、`maps/wild.jpg`＋`wild-mini.jpg` 低語海岸大地圖與小地圖（第 45 節；12 個地圖合併、6016×4768＝188×149 格，第 67 節）、`wild-occ.png` 遮擋深度圖（第 46 節） |
+| `tools/test-doll-summon-cost.js` | 娃娃召喚扣料、30分鐘續召、舊檔／重登／換裝、離線與團戰隔離測試（第163節） |
 | `tools/test-tower-floors.js` | 永夜之塔逐層解鎖：1000 隻解鎖、首領樓層、不能跳層、舊存檔重置只做一次、進度文字（第159節） |
 | `tools/test-shura-blood-status.js` | 血戰傷害／實際吸血／50%門檻／技能區待命與生效中發光隔離測試（第150節） |
 | `tools/test-auto-tele-heal.js` | 自動瞬移一次後補血、喝水延遲／搜尋暫緩／恢復掛機與缺水回家隔離回歸（第149節） |
@@ -376,6 +377,8 @@
 - 原表缺的 21、43 級依 (n+1)⁴ − n⁴ 規律補上（39,775、329,295）；原表 27 級總經驗 14656 為筆誤，應為 614,656。
 
 ## 10. 存檔欄位（`player`）
+
+- schema 12（20261025au）：經使用者同意新增dollSummonUntil，共用召喚付費到期時間；舊檔補0，首次檢查支付50結晶或收回，見第163節。
 
 - schema 10（20261025al）：使用者明確同意新增dollState，各娃娃種類共用{elapsed:出場累積毫秒,readyAt:遊戲時鐘冷卻到期}；舊檔補空、只保留合法種類與有限範圍值，見第157節。
 
@@ -3366,3 +3369,15 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 確認前後皆驗證人在村莊、town面板娃娃商人分解頁、同角色、同UID原實體、仍為傳說且未鎖定；JSON快照阻擋確認期間裝備屬性改變。先成功加入結晶才移除來源，避免發放失敗時損失裝備；同回呼重送因來源已消失而不重領。材料數量檢查安全整數與溢位，不給金幣；saveGame／refreshUI沿既有本機與雲端存檔流程。
 - 未修改SQL或正式後端目錄；魔法結晶目前供背包／角色倉庫保存，共用倉庫／交易所仍受伺服器既有目錄限制，若後續要支援需另獲准同步目錄。
 - test-doll-dismantle使用真實函式與隔離記憶體驗傳說篩選／飾品、一般玩家、鎖定與已裝備阻擋、取消／確認50／疊100、發放失敗保留來源、同回呼不重領、確認中改品質／強化／鎖定／移出或裝備／離村／換頁／換角色阻擋、加密保存與T4商店保留。test-item-art同步458道具／290張新PNG，與item-lock／town-doll-shop回歸通過。未開關瀏覽器或操作正式存檔，待使用者實玩確認後提交。
+
+
+## 163. 娃娃召喚與魔法結晶續召（2026-10-25，版本 `20261025au`，schema 12）
+
+- 使用者指定首次召喚50魔法結晶、每30分鐘自動再扣50，不足時收回娃娃並解除能力，明確同意schema11→12及舊存檔轉換。createPlayer新增dollSummonUntil=0；migrateSave沿dollStateNormalize補0，清除非有限數並限制最遠gameNow＋30分鐘，不送舊裝備免費時間。無SQL或載入順序變動。
+- doll-abilities新增DOLL_SUMMON_COST／DOLL_SUMMON_MS、dollIsSummoned、dollConsumeCrystals、dollStartSummon、dollSummonTick、dollRecallForCrystals、dollApplySummonResult。equipItem裝娃娃前先支付，材料只取背包，可跨疊扣除；不足50不裝備、不扣部分材料，GM相同。單一到期時間由所有娃娃共用；已付期間換裝／手動收回再裝／重登不重扣、不重置，手動收回不暫停已付時間。
+- dollAbilityTick每次先處理續召；到期恰滿50就續30分鐘，未到期即使剩0仍生效。跨背景／重登多個週期依gameNow補扣；只付得起過去週期但不夠當期時扣已經過期間後收回。未裝備時不自動扣料，再召喚過期者僅從當下新付一期，不補未出場時段。
+- 不足時unequipSlot將原娃娃完整退回背包，清短暫能力與scene.doll，clampHpMp並保存／刷新；hunting不改。calcStats、dollContext、sceneDollTick皆要求付費有效，過期未續前沒有加成／觸發／跟隨。人物卡、選擇、道具、商人及版本更新說明費用與到期，狀態提示含剩餘時間。
+- applyOffline在抽樣前按真實經過時間處理續費；magicCrystal不列入離線消耗品倍率，避免收入抽樣放大費用。measureHunt完整還原玩家與短暫狀態，不扣真實結晶；離線戰鬥收益仍沿既有抽樣估算。raidSnapshot先處理真實到期，raidConsumables記錄模擬結晶用量；成功團戰／世界首領結算才支付新增一期並合併付費時間，主迴圈已付同一期不重扣，無結晶不延長。
+- test-doll-summon-cost驗49不足／首次50／共用時間／精確到期／不重扣／不足收回且繼續掛機／加密重登／跨期／未裝備不扣／多疊支付／schema11轉換／離線量測還原／團戰記帳與重複結算防重扣。既有娃娃／能力／排程／自動販賣測試更新schema12及召喚材料fixture。未開關瀏覽器或操作正式存檔，待使用者實玩確認。
+
+第163節驗證：召喚／21款能力／分解／T4商店／地圖排程／自動販賣／離線掉落／喝水／後端掉寶／458道具圖片／隔離倉庫回歸通過；真實applyOffline不按收入倍率多扣、模擬不扣真實材料、主迴圈已付一期團戰不重扣。check.ps1 ALL CHECKS PASSED（51檔、50script同au）、50檔正式混淆503KB通過。實玩仍待使用者確認。

@@ -26,7 +26,8 @@ const dollRuntime = new WeakMap();
 const DOLL_SUMMON_COST = 50, DOLL_SUMMON_MS = 30 * 60 * 1000;
 function dollIsSummoned(p = player) { return !!(dollEquipped(p) && p.dollSummonUntil > gameNow); }
 function dollConsumeCrystals(n) {
-    if (!Number.isSafeInteger(n) || n < 0 || countItem('magicCrystal') < n) return false;
+    const count = countItem('magicCrystal');
+    if (!Number.isSafeInteger(n) || n < 0 || !Number.isSafeInteger(count) || count < n || player.inv.some(it => it.id === 'magicCrystal' && (!Number.isSafeInteger(it.n) || it.n < 0))) return false;
     let left = n;
     for (const it of player.inv.slice()) {
         if (it.id !== 'magicCrystal' || left <= 0) continue;
@@ -66,12 +67,17 @@ function dollStartSummon() {
     addLog('🧚 召喚娃娃，消耗魔法結晶 ×50，維持30分鐘。', 'sys');
     return true;
 }
-function dollApplySummonResult(until) {
-    if (Number.isFinite(until) && until > gameNow) player.dollSummonUntil = Math.max(player.dollSummonUntil || 0, Math.min(until, gameNow + DOLL_SUMMON_MS));
+function dollApplySummonResult(until, used = 0) {
+    if (!Number.isFinite(until) || until <= gameNow || !Number.isSafeInteger(used) || used < DOLL_SUMMON_COST) return;
+    until = Math.min(until, gameNow + DOLL_SUMMON_MS);
+    const current = player.dollSummonUntil || gameNow;
+    const periods = Math.min(Math.ceil((until - current) / DOLL_SUMMON_MS), Math.floor(used / DOLL_SUMMON_COST));
+    // 等待副本／世界首領回應時，主迴圈可能已續召；同一期不重複收費。
+    if (periods > 0 && dollConsumeCrystals(periods * DOLL_SUMMON_COST)) player.dollSummonUntil = until;
 }
 for (const id in DOLL_ABILITIES) {
     const a = DOLL_ABILITIES[id];
-    ITEMS['doll_' + id].desc = a.base + '。' + a.name + '：' + a.desc + ' 僅出場娃娃生效，卸下移除；換裝不重置冷卻。';
+    ITEMS['doll_' + id].desc = a.base + '。' + a.name + '：' + a.desc + ' 僅出場娃娃生效，卸下移除；換裝不重置冷卻。召喚需50個魔法結晶，每30分鐘自動扣50個續召，不足時收回。';
 }
 function dollEquipped(p = player) {
     const it = p && p.equip.doll, d = it && ITEMS[it.id];
@@ -202,7 +208,7 @@ function dollStatusInfo() {
     const r = dollContext();
     if (!r) return null;
     const a = DOLL_ABILITIES[r.id], s = player.dollState[r.id] || { elapsed: 0, readyAt: 0 };
-    let text = '出場', on = false;
+    let text = fmtBuffTime(Math.max(0, Math.ceil((player.dollSummonUntil - gameNow) / 1000))), on = false;
     if (r.until > gameNow && (r.shield > 0 || a.reduction || r.hotLeft > 0)) {
         text = Math.ceil((r.until - gameNow) / 1000) + '秒'; on = true;
         if (r.shield > 0) text += '／盾' + r.shield;
