@@ -174,7 +174,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025q`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025r`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3162,3 +3162,9 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 娃娃使用現有冰霜幼龍正面單格，傭兵以現有原創騎士stage圖示意；兩張圖片加入SW預載。正式卡片標示尚未開放，效果尚未定案，不套用樣本提案的經驗／回魔或協戰能力。
 - 只完成展示介面，尚無裝備／出戰／跟隨／取得或能力加成；不新增player欄位、不改SAVE_SCHEMA或SQL。第115.3節暫不開放玩法決定仍有效，僅本次明確授權的展示介面先接入。
 - 驗證：check.ps1 ALL CHECKS PASSED、48檔混淆478KB通過；隔離記憶體角色1120px／390px實際renderChar，12格裝備與兩張卡片、圖片載入及無橫向溢出通過，Console無error／warn。待使用者實玩確認後commit。
+
+## 143. 修正外框黑底與CSS圖片網址（2026-10-25，版本 `20261025r`）
+
+- q版批次換版誤刪六處CSS圖片url的右括號，並吞掉border-image-source的分號，導致PC外框／遮罩與手機框架、封面失效。補回全部符號，保留娃娃／傭兵欄位。
+- 版本替換只匹配版本字串，不包含網址後的括號或分號；外框驗收需實際檢查computed backgroundImage／maskImage／borderImageSource，不能只看人物狀態子面板。
+- 驗證：PC背景／遮罩、手機border-image／疊圖computed style均恢復有效URL，完整PC畫面截圖確認、人物展示PC／手機回歸及Console無error／warn，check.ps1與48檔混淆建置通過。

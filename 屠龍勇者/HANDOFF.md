@@ -5,6 +5,8 @@
 
 ## 1. 現況
 
+- **20261025r：修復q版外框變黑（第143節）**。換版腳本誤吞CSS圖片url右括號／分號；補回封面、手機border-image／疊圖、PC外框／雙mask共六處，娃娃傭兵欄保留。check.ps1 ALL CHECKS PASSED、48檔混淆478KB通過；隔離瀏覽器驗證PC背景與mask、手機border-image與疊圖computed style非none，人物展示PC／手機回歸及Console無error／warn。待使用者Ctrl+F5確認底部外框與法球恢復後commit。
+
 - **20261025q：人物狀態新增娃娃／傭兵展示欄（第142節）**。依使用者確認模板，裝備清單右側上娃娃、下傭兵，含圖／名稱／效果介紹；窄畫面移到原三欄下方。現有冰霜幼龍與騎士stage圖示意，清楚標示尚未開放／效果待定；不改存檔、能力、召喚或SQL。check.ps1 ALL CHECKS PASSED、48檔混淆478KB建置通過；隔離記憶體角色PC1120px／手機390px確認12裝備欄、兩卡圖片、無橫向溢出及Console error／warn，未讀寫真實存檔或連外。待使用者Ctrl+F5→人物狀態→確認裝備清單右側上娃娃下傭兵、圖與介紹；手機確認三欄下方上下兩卡，實玩確認後才commit。
 
 - **20261025p：降低裝備掉落品質＋共鳴 5%（第 141 節）**。使用者定：一般怪 普通40／魔法10／稀有5／傳說1、首領 普通50／魔法15／稀有8／傳說2，其餘裝備消失改掉 1 個通貨；隨機裝備同表；異界首領共鳴 10%→5%。使用者已於 2026-10-25 在 Supabase 執行 tools/loot-rates.sql 與 tools/loot-catalog.sql；loot_status 確認 rules=20261025p-47626192162a、enabled=true（已生效）。
