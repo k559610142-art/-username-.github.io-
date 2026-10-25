@@ -5,6 +5,12 @@
 
 ## 1. 現況
 
+- **20261026b驗證完成**：prepare.py驗36格不重複／RGBA／透明留邊與圖集一致；test-ivory-archmage-morph／test-morph-level-lock／test-item-art通過。四方向四動作motion-preview.gif已檢視；側向及施法雙杖已透過image_gen修正，初稿及完整repair-prompts.json保留。check.ps1 ALL CHECKS PASSED（51檔、50script同b）、正式混淆504KB成功、git diff --check無錯誤。沒有開關任何瀏覽器、未動真實角色或正式後端；尚待使用者實玩確認，未由本助手提交或推送。
+
+
+- **20261026b：象牙塔高階秘術師（藍變）專屬外觀（第165節）**。四張原始參考在桌面變身人物，已完整保存；內建image_gen製作三向36格、深藍法袍冰晶杖，修正側向與重複法杖。m19原已在變身卷軸，這次接專屬動畫，不新增同名項目；Lv15、命中1／SP2／回魔2／MR5、一張30分鐘與武器／GM規則不變，schema12／SQL不改。原稿／提示詞／打包腳本／腳點註冊及動作預覽保存。不開關瀏覽器。待使用者重新整理確認b→背包變身卷軸→法杖系→象牙塔高階秘術師→四方向走路／攻擊／施法／受傷，實玩確認後才commit。
+
+
 - **20261026a驗證完成**：test-pwa-update（含真實正式build的index）通過，check.ps1 ALL CHECKS PASSED（51檔語法、50script同版）、正式混淆504KB成功、git diff --check通過。未開關瀏覽器／未讀寫正式存檔；尚待使用者實玩確認。本助手未執行提交或推送；製作中共用目錄已出現外部提交fe19b5e（更），包含本次程式，保留其提交，後補的驗證文件尚未提交。
 
 

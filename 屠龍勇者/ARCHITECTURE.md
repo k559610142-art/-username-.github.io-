@@ -65,6 +65,7 @@
 | `AGENTS.md`、`HANDOFF.md`、`AI_HANDOFF.min.md` | **給 AI 的文件**（遊戲不載入）：`AGENTS.md` 任何 AI 通用的工作規則與獨立發佈流程；`HANDOFF.md` 目前進度、待辦、使用者的決定、環境、常用操作；`AI_HANDOFF.min.md` 給其他 AI 的壓縮版全貌（規則＋檔案＋核心公式＋現況，整份貼給新 AI 即可接手）。換 AI 接手時靠這三份，要保持最新。`CLAUDE.md`／`GEMINI.md` 只是各 AI 自動讀的入口（`GEMINI.md` 用 `@./AGENTS.md` 匯入） |
 | `Gemini改遊戲.bat`、`ChatGPT改遊戲.bat` | 雙擊啟動：本機伺服器 8790＋開瀏覽器＋Gemini CLI（`--approval-mode auto_edit`）／OpenAI Codex CLI（自動讀 `AGENTS.md`）；PATH 補 node、npm、GitHub Desktop 的 git |
 | `tools/build.js` | **發佈用建置＋混淆**（第 60 節）：42 支 `data/*.js` 接成一支 `data/game.js` 包進函式範圍＋terser 混淆、gm.html 用的接成 `data/gm-lib.js`。由根目錄 `tools/build.js`（GitHub Actions）呼叫 `buildDragon`，開發與測試照舊用原始檔 |
+| `images/sprites/morph/ivory-archmage-v1/`、`tools/sprite-src/morph/ivory-archmage-v1/`、`tools/test-ivory-archmage-morph.js` | m19象牙塔高階秘術師原稿／生成提示詞、RGBA圖集與打包／四向動畫預覽／卷軸隔離驗證（第165節） |
 | `tools/test-pwa-update.js` | 更新偵測隔離DOM／網路測試：開發與正式合併版、節流、離線／錯誤／版本排序與按下才刷新（第164節） |
 | `tools/check.ps1` | 改完的自動檢查：JS 語法（`node --check`）、`index.html` 所有 `?v=` 等於 `GAME_VERSION`、每個 `data/*.js` 都有載入、沒有衝突標記；通過印 `ALL CHECKS PASSED` |
 | `index.html` | 版面、全部 CSS、三個畫面（title／create／game）、`<script>` 載入 |
@@ -188,7 +189,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261026a`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261026b`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -585,6 +586,8 @@ kills, deaths, settings（含 skillSlots 技能欄 8 格）, created, skills[已
 - 迴圈：`requestAnimationFrame`，只在狩獵畫面顯示時跑（`huntVisible()`），分頁隱藏時不更新；canvas 依 `devicePixelRatio` 調整解析度。
 
 ## 18. 人物模型與職業立繪
+
+- 20261026b：m19象牙塔高階秘術師專屬三向四動作與變身卷軸接線，見第165節。
 
 - 20261025ap：m15亞丁榮耀劍士專屬三向四動作與變身卷軸接線，見第160節。
 
@@ -3393,3 +3396,13 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - tools/test-pwa-update.js用真實pwa.js與假的DOM／fetch／時間，測開發版及正式game.js、新版提示／同舊版拒絕／z-aa／啟動每分鐘及事件／隱藏離線／HTTP失敗與斷線後重試／請求防重入／提示不重複不強制重載／先儲存後刷新且不連點；可另傳正式建置路徑核對其index入口。測試不開關瀏覽器、不操作正式存檔或後端。
 
 第164節驗證：test-pwa-update含正式建置index通過；check.ps1 ALL CHECKS PASSED（51檔、50script同20261026a）、50檔正式混淆504KB通過，git diff --check無錯誤。未開關瀏覽器，實玩提示待後續新版上線驗收。
+
+
+## 165. 象牙塔高階秘術師藍變專屬外觀（2026-10-26，版本 `20261026b`）
+
+- 使用者要求依19.jpg及19-1／19-2／19-3.jfif製作變身並加入卷軸；三張動作圖實際位於桌面「變身人物」資料夾，四張原稿保存在tools/sprite-src/morph/ivory-archmage-v1。內建image_gen重新生成深藍星紋尖帽／銀邊法袍／金符文垂布／腰間書與藥瓶／冰晶法杖，三向各12格透明動作，完整提示詞prompts.json保留。
+- ITEMS既有MORPH_FORMS.m19接MORPHS.ivoryArchmage，不重複新增變身或卷軸種類。維持法杖系藍變Lv15、命中1／SP2／回魔2／MR5，無傷害／攻速加成；原單手武器與GM等級規則不變，一張polyScroll30分鐘。無SQL／schema變更（仍12），script順序不變。
+- 圖集images/sprites/morph/ivory-archmage-v1：384×320格，foot192／270、charH160、drawH48，down／right／up三列、left鏡射；walk4×130ms、attack4×140ms、cast2×220ms、hit2×150ms，共36獨立格。SW預載四PNG；prepare.py保留裁切框與腳點、移除格外無關碎片、打包manifest／audit／contact；preview.py輸出四向motion-preview.gif，不改原始參考或生成原稿。
+- tools/test-ivory-archmage-morph.js隔離驗Lv14拒絕不扣卷／Lv15使用、能力表不變、卷軸扣量與上次選擇、四向命中／MISS／施法／受傷、動作互斥／到期／其他變身、RGBA尺寸與36格來源、SW引用。測試不開關瀏覽器、不操作正式存檔／後端。使用者驗收：重新整理到b→變身卷軸→法杖系→象牙塔高階秘術師→走四方向、攻擊、施法、受傷，確認後才提交。
+
+第165節驗證：生成初稿、側向修正、施法雙法杖修正與完整repair-prompts.json保存。prepare.py通過36格不重複／RGBA留邊／圖集對應；卷軸m19與32款等級、458道具圖片回歸通過，四向四動作GIF檢視。check.ps1 ALL CHECKS PASSED（51檔、50script同20261026b）、50檔正式混淆504KB成功；未開關瀏覽器，實玩待使用者確認。

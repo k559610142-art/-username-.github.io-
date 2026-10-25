@@ -1,0 +1,685 @@
+{
+  "id": "ivory-archmage-v1",
+  "name": "象牙塔高階秘術師（藍變）",
+  "form": "m19",
+  "rows": [
+    "down",
+    "right",
+    "up"
+  ],
+  "left": "mirror right",
+  "cellW": 384,
+  "cellH": 320,
+  "footAnchor": [
+    192,
+    270
+  ],
+  "charH": 160,
+  "drawH": 48,
+  "actions": {
+    "walk": {
+      "src": "images/sprites/morph/ivory-archmage-v1/walk.png",
+      "cellW": 384,
+      "cellH": 320,
+      "frames": {
+        "down": 4,
+        "right": 4,
+        "up": 4
+      },
+      "ms": 130,
+      "cells": [
+        {
+          "direction": "down",
+          "frame": 0,
+          "file": "frames/walk-down-01.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            0,
+            0,
+            384,
+            341
+          ],
+          "sourceFoot": [
+            198.5,
+            335
+          ],
+          "sourceBodyHeight": 294.0
+        },
+        {
+          "direction": "down",
+          "frame": 1,
+          "file": "frames/walk-down-02.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            384,
+            0,
+            768,
+            341
+          ],
+          "sourceFoot": [
+            578.0,
+            333
+          ],
+          "sourceBodyHeight": 294.0
+        },
+        {
+          "direction": "down",
+          "frame": 2,
+          "file": "frames/walk-down-03.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            768,
+            0,
+            1152,
+            341
+          ],
+          "sourceFoot": [
+            965.0,
+            336
+          ],
+          "sourceBodyHeight": 294.0
+        },
+        {
+          "direction": "down",
+          "frame": 3,
+          "file": "frames/walk-down-04.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            1152,
+            0,
+            1536,
+            341
+          ],
+          "sourceFoot": [
+            1347.0,
+            336
+          ],
+          "sourceBodyHeight": 294.0
+        },
+        {
+          "direction": "right",
+          "frame": 0,
+          "file": "frames/walk-right-01.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            0,
+            0,
+            362,
+            362
+          ],
+          "sourceFoot": [
+            193.0,
+            361
+          ],
+          "sourceBodyHeight": 299.5
+        },
+        {
+          "direction": "right",
+          "frame": 1,
+          "file": "frames/walk-right-02.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            362,
+            0,
+            724,
+            362
+          ],
+          "sourceFoot": [
+            565.5,
+            360
+          ],
+          "sourceBodyHeight": 299.5
+        },
+        {
+          "direction": "right",
+          "frame": 2,
+          "file": "frames/walk-right-03.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            724,
+            0,
+            1086,
+            362
+          ],
+          "sourceFoot": [
+            932.0,
+            360
+          ],
+          "sourceBodyHeight": 299.5
+        },
+        {
+          "direction": "right",
+          "frame": 3,
+          "file": "frames/walk-right-04.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            1086,
+            0,
+            1448,
+            362
+          ],
+          "sourceFoot": [
+            1294.5,
+            360
+          ],
+          "sourceBodyHeight": 299.5
+        },
+        {
+          "direction": "up",
+          "frame": 0,
+          "file": "frames/walk-up-01.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            0,
+            0,
+            363,
+            361
+          ],
+          "sourceFoot": [
+            202.5,
+            346
+          ],
+          "sourceBodyHeight": 292.0
+        },
+        {
+          "direction": "up",
+          "frame": 1,
+          "file": "frames/walk-up-02.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            363,
+            0,
+            726,
+            361
+          ],
+          "sourceFoot": [
+            569.0,
+            347
+          ],
+          "sourceBodyHeight": 292.0
+        },
+        {
+          "direction": "up",
+          "frame": 2,
+          "file": "frames/walk-up-03.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            726,
+            0,
+            1088,
+            361
+          ],
+          "sourceFoot": [
+            926.0,
+            346
+          ],
+          "sourceBodyHeight": 292.0
+        },
+        {
+          "direction": "up",
+          "frame": 3,
+          "file": "frames/walk-up-04.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            1088,
+            0,
+            1451,
+            361
+          ],
+          "sourceFoot": [
+            1284.5,
+            353
+          ],
+          "sourceBodyHeight": 292.0
+        }
+      ]
+    },
+    "attack": {
+      "src": "images/sprites/morph/ivory-archmage-v1/attack.png",
+      "cellW": 384,
+      "cellH": 320,
+      "frames": {
+        "down": 4,
+        "right": 4,
+        "up": 4
+      },
+      "ms": 140,
+      "cells": [
+        {
+          "direction": "down",
+          "frame": 0,
+          "file": "frames/attack-down-01.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            0,
+            341,
+            384,
+            683
+          ],
+          "sourceFoot": [
+            199.5,
+            669
+          ],
+          "sourceBodyHeight": 294.0
+        },
+        {
+          "direction": "down",
+          "frame": 1,
+          "file": "frames/attack-down-02.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            384,
+            341,
+            848,
+            683
+          ],
+          "sourceFoot": [
+            564.0,
+            665
+          ],
+          "sourceBodyHeight": 294.0
+        },
+        {
+          "direction": "down",
+          "frame": 2,
+          "file": "frames/attack-down-03.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            768,
+            341,
+            1232,
+            683
+          ],
+          "sourceFoot": [
+            948.0,
+            669
+          ],
+          "sourceBodyHeight": 294.0
+        },
+        {
+          "direction": "down",
+          "frame": 3,
+          "file": "frames/attack-down-04.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            1152,
+            341,
+            1536,
+            683
+          ],
+          "sourceFoot": [
+            1360.0,
+            671
+          ],
+          "sourceBodyHeight": 294.0
+        },
+        {
+          "direction": "right",
+          "frame": 0,
+          "file": "frames/attack-right-01.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            0,
+            362,
+            362,
+            724
+          ],
+          "sourceFoot": [
+            188.5,
+            723
+          ],
+          "sourceBodyHeight": 299.5
+        },
+        {
+          "direction": "right",
+          "frame": 1,
+          "file": "frames/attack-right-02.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            362,
+            362,
+            799,
+            724
+          ],
+          "sourceFoot": [
+            553.5,
+            723
+          ],
+          "sourceBodyHeight": 299.5
+        },
+        {
+          "direction": "right",
+          "frame": 2,
+          "file": "frames/attack-right-03.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            724,
+            362,
+            1161,
+            724
+          ],
+          "sourceFoot": [
+            922.0,
+            723
+          ],
+          "sourceBodyHeight": 299.5
+        },
+        {
+          "direction": "right",
+          "frame": 3,
+          "file": "frames/attack-right-04.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            1086,
+            362,
+            1448,
+            724
+          ],
+          "sourceFoot": [
+            1269.5,
+            722
+          ],
+          "sourceBodyHeight": 299.5
+        },
+        {
+          "direction": "up",
+          "frame": 0,
+          "file": "frames/attack-up-01.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            0,
+            361,
+            363,
+            723
+          ],
+          "sourceFoot": [
+            208.5,
+            694
+          ],
+          "sourceBodyHeight": 292.0
+        },
+        {
+          "direction": "up",
+          "frame": 1,
+          "file": "frames/attack-up-02.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            363,
+            361,
+            801,
+            723
+          ],
+          "sourceFoot": [
+            564.0,
+            692
+          ],
+          "sourceBodyHeight": 292.0
+        },
+        {
+          "direction": "up",
+          "frame": 2,
+          "file": "frames/attack-up-03.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            726,
+            361,
+            1164,
+            723
+          ],
+          "sourceFoot": [
+            906.5,
+            694
+          ],
+          "sourceBodyHeight": 292.0
+        },
+        {
+          "direction": "up",
+          "frame": 3,
+          "file": "frames/attack-up-04.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            1088,
+            361,
+            1451,
+            723
+          ],
+          "sourceFoot": [
+            1306.5,
+            697
+          ],
+          "sourceBodyHeight": 292.0
+        }
+      ]
+    },
+    "cast": {
+      "src": "images/sprites/morph/ivory-archmage-v1/cast.png",
+      "cellW": 384,
+      "cellH": 320,
+      "frames": {
+        "down": 2,
+        "right": 2,
+        "up": 2
+      },
+      "ms": 220,
+      "cells": [
+        {
+          "direction": "down",
+          "frame": 0,
+          "file": "frames/cast-down-01.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            0,
+            683,
+            384,
+            1024
+          ],
+          "sourceFoot": [
+            202.0,
+            990
+          ],
+          "sourceBodyHeight": 294.0
+        },
+        {
+          "direction": "down",
+          "frame": 1,
+          "file": "frames/cast-down-02.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            384,
+            683,
+            768,
+            1024
+          ],
+          "sourceFoot": [
+            579.0,
+            991
+          ],
+          "sourceBodyHeight": 294.0
+        },
+        {
+          "direction": "right",
+          "frame": 0,
+          "file": "frames/cast-right-01.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            0,
+            724,
+            362,
+            1086
+          ],
+          "sourceFoot": [
+            207.5,
+            1083
+          ],
+          "sourceBodyHeight": 299.5
+        },
+        {
+          "direction": "right",
+          "frame": 1,
+          "file": "frames/cast-right-02.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            362,
+            724,
+            724,
+            1086
+          ],
+          "sourceFoot": [
+            571.0,
+            1082
+          ],
+          "sourceBodyHeight": 299.5
+        },
+        {
+          "direction": "up",
+          "frame": 0,
+          "file": "frames/cast-up-01.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            0,
+            723,
+            363,
+            1084
+          ],
+          "sourceFoot": [
+            215.0,
+            1036
+          ],
+          "sourceBodyHeight": 292.0
+        },
+        {
+          "direction": "up",
+          "frame": 1,
+          "file": "frames/cast-up-02.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            363,
+            723,
+            726,
+            1084
+          ],
+          "sourceFoot": [
+            568.5,
+            1037
+          ],
+          "sourceBodyHeight": 292.0
+        }
+      ]
+    },
+    "hit": {
+      "src": "images/sprites/morph/ivory-archmage-v1/hit.png",
+      "cellW": 384,
+      "cellH": 320,
+      "frames": {
+        "down": 2,
+        "right": 2,
+        "up": 2
+      },
+      "ms": 150,
+      "cells": [
+        {
+          "direction": "down",
+          "frame": 0,
+          "file": "frames/hit-down-01.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            768,
+            683,
+            1152,
+            1024
+          ],
+          "sourceFoot": [
+            975.5,
+            989
+          ],
+          "sourceBodyHeight": 294.0
+        },
+        {
+          "direction": "down",
+          "frame": 1,
+          "file": "frames/hit-down-02.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            1152,
+            683,
+            1536,
+            1024
+          ],
+          "sourceFoot": [
+            1343.5,
+            989
+          ],
+          "sourceBodyHeight": 294.0
+        },
+        {
+          "direction": "right",
+          "frame": 0,
+          "file": "frames/hit-right-01.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            724,
+            724,
+            1086,
+            1086
+          ],
+          "sourceFoot": [
+            932.5,
+            1082
+          ],
+          "sourceBodyHeight": 299.5
+        },
+        {
+          "direction": "right",
+          "frame": 1,
+          "file": "frames/hit-right-02.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            1086,
+            724,
+            1448,
+            1086
+          ],
+          "sourceFoot": [
+            1296.5,
+            1084
+          ],
+          "sourceBodyHeight": 299.5
+        },
+        {
+          "direction": "up",
+          "frame": 0,
+          "file": "frames/hit-up-01.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            726,
+            723,
+            1088,
+            1084
+          ],
+          "sourceFoot": [
+            930.5,
+            1040
+          ],
+          "sourceBodyHeight": 292.0
+        },
+        {
+          "direction": "up",
+          "frame": 1,
+          "file": "frames/hit-up-02.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            1088,
+            723,
+            1451,
+            1084
+          ],
+          "sourceFoot": [
+            1297.5,
+            1042
+          ],
+          "sourceBodyHeight": 292.0
+        }
+      ]
+    }
+  }
+}

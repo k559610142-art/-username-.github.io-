@@ -1,0 +1,14 @@
+{
+  "tool": "built-in image_gen",
+  "transparent_background": true,
+  "prompts": [
+    {
+      "direction": "right-side-repair",
+      "prompt": "Edit this 4-column 3-row character animation sheet. Change ONLY direction: rotate the blue hooded mage to a clear SCREEN-RIGHT SIDE PROFILE in ALL TWELVE poses, nose and gaze pointing strictly right, narrow side-on shoulder silhouette and robe, staff in profile. Preserve matching costume, staff, magic, the exact 12 action types and 4x3 layout. Four walking, four attack phases, two casting, two hit poses. TRUE fully transparent background. No checkerboard, no haze background, no labels, generous transparent gutters around every pose and magic tip; keep entire sprite and effects inside its cell. Do not let projectile cross neighboring cell. Original pixel art. Output transparent PNG."
+    },
+    {
+      "direction": "right-staff-repair",
+      "prompt": "Edit ONLY the two spellcasting sprites at BOTTOM ROW COLUMN 1 and BOTTOM ROW COLUMN 2 of this 4x3 sprite sheet: each erroneously has TWO crystal staffs. Remove the extra upright staff on the RIGHT side of each of those two sprites, including its crystal and shaft. Keep exactly ONE staff, the diagonal staff held in the hand on LEFT side of each sprite. Keep the other hand casting magic. Preserve EVERY other sprite, every pixel of costume, layout, pose scale, genuine transparent background. Do not add anything. No text or checkerboard. This is a surgical correction of duplicate staff only."
+    }
+  ]
+}
