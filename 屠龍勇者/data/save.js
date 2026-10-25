@@ -157,6 +157,10 @@ function migrateSave(data) {
     p.inv = (p.inv || []).filter(valid);
     p.storage = p.storage.filter(valid);
     for (const k in p.equip) if (!valid(p.equip[k])) delete p.equip[k];
+    // schema 9：娃娃專用裝備欄。舊檔維持空欄，無效或與其他容器重複的實體不當作裝備。
+    const doll = p.equip.doll;
+    if (doll && (ITEMS[doll.id].cat !== 'doll' || !Number.isSafeInteger(doll.uid) || doll.uid < 1 || doll.n !== 1
+        || [...p.inv, ...p.storage, ...Object.entries(p.equip).filter(([k]) => k !== 'doll').map(([, x]) => x)].some(x => x && x.uid === doll.uid))) delete p.equip.doll;
     // schema 3：異界地圖（舊的自由開關詞綴 mapMods 移除）
     delete p.mapMods;
     if (p.mapRun && (!ZONE_BY_ID[p.mapRun.zone] || !Array.isArray(p.mapRun.mods))) p.mapRun = null;

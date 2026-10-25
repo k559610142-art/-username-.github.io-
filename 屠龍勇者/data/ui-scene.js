@@ -679,6 +679,49 @@ function sceneHuntReady() {
 }
 
 // ───────── 每幀更新 ─────────
+// 娃娃只跟隨、不碰撞也不參戰；位置屬場景狀態，不寫入角色存檔。
+function sceneDollTick(dt) {
+    const it = player.equip.doll, def = it && ITEMS[it.id], doll = def && DOLLS[def.doll], pl = scene.pl;
+    if (!doll || player.hp <= 0) { scene.doll = null; return; }
+    let d = scene.doll;
+    if (!d || d.uid !== it.uid || Math.hypot(d.rx - pl.rx, d.ry - pl.ry) > 8) {
+        const spot = [[0, 1], [1, 0], [-1, 0], [0, -1]].map(([x, y]) => [pl.x + x, pl.y + y])
+            .find(([x, y]) => freeTileFor(x, y) && inHuntZone(x, y)) || [pl.x, pl.y];
+        scene.doll = d = { uid: it.uid, id: def.doll, rx: spot[0], ry: spot[1], dir: pl.dir || 'down', path: [], clock: 0, moving: false };
+    }
+    if (!d.path.length && Math.hypot(d.rx - pl.rx, d.ry - pl.ry) > 1.6) {
+        d.path = findPath(Math.round(d.rx), Math.round(d.ry), pl.x, pl.y, true, true);
+    }
+    d.moving = false;
+    if (!d.path.length) return;
+    const [x, y] = d.path[0];
+    if (!freeTileFor(x, y) || !inHuntZone(x, y)) { d.path = []; return; }
+    const dx = x - d.rx, dy = y - d.ry, dist = Math.hypot(dx, dy), step = PLAYER_SPEED * 1.15 * dt / 1000;
+    d.dir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up');
+    d.moving = dist > 0.01;
+    if (dist <= step) { d.rx = x; d.ry = y; d.path.shift(); }
+    else { d.rx += dx / dist * step; d.ry += dy / dist * step; }
+    if (d.moving) d.clock += dt;
+}
+function sceneDrawDoll(ctx, camX, camY) {
+    const d = scene.doll, it = player.equip.doll;
+    if (!d || !it || d.uid !== it.uid || player.hp <= 0) return;
+    const def = DOLLS[d.id], img = def && spriteImage(def.src);
+    if (!img) return;
+    const px = d.rx * TILE - camX + TILE / 2, py = d.ry * TILE - camY + TILE / 2;
+    const row = { down: 0, right: 1, up: 2 }[d.dir === 'left' ? 'right' : d.dir];
+    const frame = d.moving ? Math.floor(d.clock / 145) % 4 : 2, k = 24 / 160;
+    const dx = px - 128 * k, dy = py + 14 - 200 * k, dw = 256 * k, dh = 240 * k;
+    ctx.fillStyle = 'rgba(0,0,0,0.25)'; ctx.beginPath(); ctx.ellipse(px, py + 12, 7, 2.5, 0, 0, Math.PI * 2); ctx.fill();
+    const body = () => {
+        ctx.save();
+        if (d.dir === 'left') { ctx.translate(px, 0); ctx.scale(-1, 1); ctx.translate(-px, 0); }
+        ctx.drawImage(img, frame * 256, row * 240, 256, 240, dx, dy, dw, dh);
+        ctx.restore();
+    };
+    body();
+    if (drawOccPatch(ctx, dx, dy, dx + dw, py + 16, d.ry, camX, camY)) { ctx.globalAlpha = OCC_GHOST; body(); ctx.globalAlpha = 1; }
+}
 function sceneUpdate(dt) {
     const pl = scene.pl, inZone = player.loc.type === 'zone', fighting = inZone && player.hunting && hunt && hunt.state === 'fight' && hunt.mon;
 
@@ -837,6 +880,7 @@ function sceneUpdate(dt) {
     } else { pl.rx += (pl.x - pl.rx) * 0.5; pl.ry += (pl.y - pl.ry) * 0.5; }
     for (const m of scene.mons) { m.rx += (m.x - m.rx) * Math.min(1, dt / 150); m.ry += (m.y - m.ry) * Math.min(1, dt / 150); }
 
+    sceneDollTick(dt);
     sceneReadEvents();
     for (const f of scene.floats) f.t += dt;
     scene.floats = scene.floats.filter(f => f.t < f.dur);
@@ -1227,6 +1271,7 @@ function sceneDraw(ctx, W, H) {
     };
     const actors = scene.mons.map(m => ({ y: m.ry, draw: () => drawMon(m) }));
     actors.push({ y: pl.ry + 0.01, draw: drawPlayer });
+    if (scene.doll) actors.push({ y: scene.doll.ry, draw: () => sceneDrawDoll(ctx, camX, camY) });
     if (player.loc.type === 'town') for (const key in presOthers) { const o = presOthers[key]; actors.push({ y: o.ry, draw: () => presDraw(ctx, o, camX, camY, labels) }); }   // 其他在線玩家（presence.js）
     if (player.loc.type === 'town') for (const n of townNpcList(scene.bg)) actors.push({ y: n.y, draw: () => {
         const sx = n.x * TILE - camX + TILE / 2, sy = n.y * TILE - camY + TILE / 2;

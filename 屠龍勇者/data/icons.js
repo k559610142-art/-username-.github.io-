@@ -272,6 +272,7 @@ function itemIconOf(id) {
 }
 function itemIconHtml(id, frame) {
     const d = ITEMS[id];
+    if (d && d.doll && DOLLS[d.doll]) return `<span class="ico ico-img"><img src="${DOLLS[d.doll].art}" alt="" draggable="false"></span>`;
     // 依圖鑑的基底品級發光；詞綴品質另算，消耗品與技能圖不套用。
     const glow = d && (d.cat === 'weapon' || d.cat === 'armor') && codexGradeOf(id).id === 'legend';
     if (ITEM_IMG[id]) return imgIconHtml('items/' + ITEM_IMG[id], frame, 'png', glow ? 'legend-glow' : '');
@@ -306,11 +307,13 @@ function buffIconsHtml() {
         const name = b.name || (sk || ITEMS[b.id] ? buffName(b) : k);
         add(buffStatusGroup(b), k, color, name, ico, fmtBuffTime(sec), sec <= 10 ? 'low' : '');
     });
-    // 血戰是低血量即時被動，不寫入有倒數的buff；觸發時顯示在臨時區。
+    // 血戰是低血量即時被動，不寫入有倒數的buff。2026-10-25（20261025ag）起學會就固定顯示在技能區：
+    // 平常「待命」、HP 低於 50% 發光「生效中」，不換區（自動喝水門檻常是 50%，只在觸發時出現會一閃即逝看不到）。
     const blood = learnedSkills().find(s => s.id === 'shuraBlood');
-    if (blood && player.hp > 0 && player.hp < calcStats().maxHp * 0.5) {
-        add('temp', 'passive_shuraBlood', 'skill', '血戰（生效中）：' + blood.desc,
-            skillIconHtml(blood, 'skill'), '血戰', 'on');
+    if (blood && player.hp > 0) {
+        const on = player.hp < calcStats().maxHp * 0.5;
+        add('skill', 'passive_shuraBlood', 'skill', `血戰（${on ? '生效中' : '待命：HP 低於 50% 觸發'}）：` + blood.desc,
+            skillIconHtml(blood, 'skill'), on ? '生效中' : '待命', on ? 'on' : '');
     }
     // 共鳴視為裝備提供的技能；生效時依原始持續時間分類，不重複顯示。
     equippedRes.forEach(id => {

@@ -102,9 +102,9 @@ function consumeItem(id, n = 1) {
     if (it.n <= 0) removeInst(it.uid);
     return true;
 }
-function equippedList() { return SLOT_KEYS.map(k => player.equip[k]).filter(Boolean); }
+function equippedList() { return SLOT_KEYS.concat('doll').map(k => player.equip[k]).filter(Boolean); }
 function findAnyInst(uid) { return findInv(uid) || equippedList().find(x => x.uid === uid) || null; }
-function slotOfEquipped(uid) { return SLOT_KEYS.find(k => player.equip[k] && player.equip[k].uid === uid) || null; }
+function slotOfEquipped(uid) { return SLOT_KEYS.concat('doll').find(k => player.equip[k] && player.equip[k].uid === uid) || null; }
 function invWeight() {
     return [...player.inv, ...equippedList()].reduce((a, x) => a + (ITEMS[x.id].wt || 0) * x.n, 0);
 }
@@ -127,10 +127,10 @@ function equipItem(uid, silent) {
     const it = findInv(uid);
     if (!it) return false;
     const def = ITEMS[it.id];
-    if (def.cat !== 'weapon' && def.cat !== 'armor') return false;
+    if (def.cat !== 'weapon' && def.cat !== 'armor' && def.cat !== 'doll') return false;
     const err = canEquip(def);
     if (err) { if (!silent) showToast(err); return false; }
-    let slot = def.cat === 'weapon' ? 'weapon' : def.slot;
+    let slot = def.cat === 'doll' ? 'doll' : def.cat === 'weapon' ? 'weapon' : def.slot;
     if (slot === 'ring') slot = !player.equip.ring1 ? 'ring1' : (!player.equip.ring2 ? 'ring2' : 'ring1');
     if (slot === 'weapon' && WEAPON_TYPES[def.type].two && player.equip.shield) unequipSlot('shield');
     if (slot === 'shield' && player.equip.weapon && WEAPON_TYPES[ITEMS[player.equip.weapon.id].type].two) unequipSlot('weapon');

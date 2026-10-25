@@ -10,4 +10,19 @@ for (const [, file] of fs.readFileSync(path.join(root, 'index.html'), 'utf8').ma
     if (file === 'data/main.js' || file === 'data/pwa.js') continue;
     vm.runInContext(fs.readFileSync(path.join(root, file), 'utf8'), ctx, { filename: file });
 }
-vm.runInContext("\nSIM_MODE=true;createPlayer('血戰測試','shura',CLASSES.shura.base);SIM_MODE=false;\nplayer.lv=48;player.baseHp=1000;player.skills=['shuraBlood'];player.equip={};player.buffs={};\nplayer.hp=500;const normal=calcStats();assert(!buffIconsHtml().includes('passive_shuraBlood'),'剛好50%不觸發');\nplayer.hp=499;const low=calcStats();assert.equal(low.dmgBonus-normal.dmgBonus,8);assert.equal(low.lifesteal-normal.lifesteal,.05);\nlet html=buffIconsHtml();assert(html.split('data-group=\"temp\"')[1].includes('passive_shuraBlood'));assert(html.includes('血戰（生效中）'));assert(html.includes('吸血 5%'));\nlifeSteal(200,low);assert.equal(player.hp,509,'實際傷害吸血回10HP');assert(!buffIconsHtml().includes('passive_shuraBlood'),'回血越過門檻立即移除');\nplayer.hp=499;player.skills=[];assert(!buffIconsHtml().includes('passive_shuraBlood'));assert.equal(calcStats().dmgBonus,normal.dmgBonus);\nplayer.skills=['shuraBlood'];player.cls='knight';assert(!buffIconsHtml().includes('passive_shuraBlood'),'其他職業不顯示');\nplayer.cls='shura';player.hp=0;assert(!buffIconsHtml().includes('passive_shuraBlood'),'死亡不顯示');\nconsole.log('PASS: implemented damage +8, lifesteal +5%, actual healing, exact HP threshold, temporary status, recover/remove, unlearned/wrong class/death');\n",ctx);
+vm.runInContext(String.raw`
+SIM_MODE=true;createPlayer('血戰測試','shura',CLASSES.shura.base);SIM_MODE=false;
+player.lv=48;player.baseHp=1000;player.skills=['shuraBlood'];player.equip={};player.buffs={};
+// 血戰圖示固定在技能區（20261025ag）：待命不發光、生效中發光
+const bloodIn = (html, group) => html.split('data-group="' + group + '"')[1].split('data-group=')[0].includes('passive_shuraBlood');
+const bloodOn = html => html.includes('class="bf bf-skill on" data-status="passive_shuraBlood"');
+player.hp=500;const normal=calcStats();let html=buffIconsHtml();
+assert(bloodIn(html,'skill'),'剛好50%：技能區待命');assert(html.includes('>待命<'));assert(!bloodOn(html),'待命不發光');assert(!bloodIn(html,'temp'));
+player.hp=499;const low=calcStats();assert.equal(low.dmgBonus-normal.dmgBonus,8);assert.equal(low.lifesteal-normal.lifesteal,.05);
+html=buffIconsHtml();assert(bloodIn(html,'skill'),'生效中仍在技能區不換區');assert(bloodOn(html),'生效中發光');assert(html.includes('>生效中<'));assert(html.includes('血戰（生效中）'));assert(html.includes('吸血 5%'));
+lifeSteal(200,low);assert.equal(player.hp,509,'實際傷害吸血回10HP');html=buffIconsHtml();assert(html.includes('>待命<')&&!bloodOn(html),'回血越過門檻立即回到待命');
+player.hp=499;player.skills=[];assert(!buffIconsHtml().includes('passive_shuraBlood'),'沒學不顯示');assert.equal(calcStats().dmgBonus,normal.dmgBonus);
+player.skills=['shuraBlood'];player.cls='knight';assert(!buffIconsHtml().includes('passive_shuraBlood'),'其他職業不顯示');
+player.cls='shura';player.hp=0;assert(!buffIconsHtml().includes('passive_shuraBlood'),'死亡不顯示');
+console.log('PASS: damage +8, lifesteal +5%, actual healing, exact HP threshold, idle/active in skill group, glow, back to idle, unlearned/wrong class/death');
+`,ctx);

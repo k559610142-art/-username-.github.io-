@@ -2,7 +2,7 @@
 // 列出遊戲裡所有道具（任務收集品除外）：分類、品質、能力值、取得方式（商店／怪物掉落／鍛造／職業任務），
 // 「已擁有」看背包＋裝備＋倉庫，不另存進度（不改存檔結構）。
 const CODEX_CATS = [
-    ['all', '全部'], ['weapon', '武器'], ['armor', '防具'], ['acc', '飾品'], ['use', '消耗品'], ['book', '魔法書'], ['currency', '通貨'], ['map', '地圖'], ['material', '材料'],
+    ['all', '全部'], ['weapon', '武器'], ['armor', '防具'], ['acc', '飾品'], ['use', '消耗品'], ['book', '魔法書'], ['currency', '通貨'], ['map', '地圖'], ['doll', '娃娃'], ['material', '材料'],
 ];
 const CODEX_ACC_SLOTS = ['amulet', 'ring', 'belt'];
 // 品質：商店買得到＝一般；其他依回收價分級
@@ -20,6 +20,7 @@ const CODEX_CAT_ICONS = { potion: '🧪', scroll: '📜', ammo: '➶', elixir: '
 let codexCat = 'all', codexGrade = 'all', codexQuery = '', codexSel = null;
 
 function codexGroup(d) {
+    if (d.cat === 'doll') return 'doll';
     if (d.cat === 'weapon') return 'weapon';
     if (d.cat === 'armor') return CODEX_ACC_SLOTS.includes(d.slot) ? 'acc' : 'armor';
     if (d.cat === 'material') return 'material';
@@ -49,7 +50,7 @@ function codexKind(d) {
     if (d.cat === 'armor') return SLOTS[d.slot === 'ring' ? 'ring1' : d.slot];
     return CAT_NAMES[d.cat];
 }
-const CODEX_ORDER = ['weapon', 'armor', 'acc', 'use', 'book', 'currency', 'map', 'material'];
+const CODEX_ORDER = ['weapon', 'armor', 'acc', 'use', 'book', 'currency', 'map', 'doll', 'material'];
 
 // 全部道具 id（第一次打開時建立，依分類→品質→名稱排序）
 let codexIdsCache = null;
@@ -83,6 +84,7 @@ function codexSources(id) {
         list.push(`掉落：Lv.${need} 以上的怪物 ${MAP_DROP_P * 100}%、異界裡 ${MAP_DROP_IN_MAP_P * 100}%（T${Math.max(1, d.tier - 1)}～T${Math.min(MAP_TIERS, d.tier + 1)} 異界）`);
         if (d.tier > 1) list.push(`通關獎勵：T${Math.max(1, d.tier - 2)}～T${d.tier} 異界首領`);
     }
+    if (d.cat === 'doll') list.push('GM 發放測試；目前不由商店或怪物掉落取得，能力待定');
     if (d.soulEnchant) list.push('封存：村莊鍛造師使用永夜之魂 ×1＋500,000 金幣，取出武器的「' + BOSS_ENCHANTS[d.soulEnchant].name + '」附魔');
     if (d.cat === 'currency') list.push(`掉落：${CURRENCY[id].minLv ? `Lv.${CURRENCY[id].minLv} 以上的怪物` : '所有怪物'} ${Math.round(CURRENCY_DROP_P * 100)}%（首領 ${Math.round(CURRENCY_BOSS_P * 100)}%，${CURRENCY[id].w < 0.3 ? '極稀有' : CURRENCY[id].w < 3 ? '稀有' : '常見'}）`);
     if (d.price) {

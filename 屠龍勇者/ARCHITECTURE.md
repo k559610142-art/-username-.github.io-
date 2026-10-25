@@ -154,10 +154,11 @@
 | `manifest.json` | App 名稱、圖示、`scope: ./`（只涵蓋本資料夾） |
 | `sw.js` | Service Worker，快取名稱 `dragon-` 開頭（第 12 節） |
 | `images/` | `icons/` 圖片圖示（藥水 `potion-*.jpg`、技能 `sk/`，第 41 節）；App 圖示：`icon-192/512.png`、`icon-maskable-512.png`、`apple-touch-icon.png`；主畫面外框 `frame-nopillar.png`（去掉拱門與左右石柱，第 54 節；`frame-notop.jpg`、原版 `frame.jpg` 保留；第 15 節）、PC 橫式外框 `frame-pc.jpg`＋遮罩 `frame-pc-mask.png`（第 19 節）；`sprites/` 人物模型、`classes/` 職業立繪、十二職業合照 `all.jpg` 、創角舞台去背圖 `classes/stage/`（合照中的人）與 `classes/hero/`（立繪全身像）（第 18 節）；`maps/ruins.jpg` 野外地圖背景、`maps/tower.jpg` 永夜之塔通用地圖（第 52 節）、`npc/tower-keeper.png`／`ivory-keeper.png`＋`-face.jpg` 永夜之塔／暮光法師塔傳送師（第 55、56 節）、`maps/village.webp` 村莊背景（第 17 節）、`maps/wild.jpg`＋`wild-mini.jpg` 低語海岸大地圖與小地圖（第 45 節；12 個地圖合併、6016×4768＝188×149 格，第 67 節）、`wild-occ.png` 遮擋深度圖（第 46 節） |
-| `tools/test-shura-blood-status.js` | 血戰傷害／實際吸血／50%門檻／臨時狀態與回血移除隔離測試（第150節） |
+| `tools/test-shura-blood-status.js` | 血戰傷害／實際吸血／50%門檻／技能區待命與生效中發光隔離測試（第150節） |
 | `tools/test-auto-tele-heal.js` | 自動瞬移一次後補血、喝水延遲／搜尋暫緩／恢復掛機與缺水回家隔離回歸（第149節） |
 | `tools/test-boss-dodge-boundary.js` | 紅圈閃避區界／分區／繞路限制、無路原地承傷且持續掛機隔離回歸（第148節） |
 | `tools/test-loot-auto-sell.js` | 指定自動販賣清單、確認／取消、舊檔轉換、本機與後端入帳／收據重送與失敗還原隔離測試（第146節） |
+| `tools/test-dolls.js` | 21款娃娃道具／裝卸／跟隨／存檔隔離測試（第154節） |
 | `tools/test-shop-buy.js` | 自訂購買數量隔離測試：整數／金額驗證、金幣與負重、裝備逐件建立、離村拒絕舊視窗（第 75 節；不發佈） |
 | `tools/test-log-drawer.js` | 訊息框定位回歸測試：PC 頂端樓層按鈕不推高訊息框、手機避開操作列（第 76 節；不發佈） |
 | `tools/test-loot-log.js` | 掉落紀錄隔離整合測試：實際掉落／超重／自動賣出／任務／地圖、分頁與模擬隔離（第 77 節；不發佈） |
@@ -178,7 +179,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025ae`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025ag`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3239,6 +3240,7 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - tools/test-shura-blood-status.js實測傷害加成差8、吸血差5%、200傷實回10HP、剛好50%不觸發／回血消失／未學／異職／死亡不顯示；buff-groups回歸通過。隔離瀏覽器PC／390px手機臨時區顯示、實點效果提示、回血移除正常，Console無error／warn。
 - 最終check.ps1 ALL CHECKS PASSED、48檔混淆479KB建置通過；待使用者實玩確認後commit。
 
+- **改成平常就顯示（2026-10-25，版本 `20261025ag`，使用者要求）**：使用者回報畫面看不到血戰。原因是自動喝水預設 `potionPct: 50`，HP 一低於一半就補回去，圖示一閃即逝。改成學會就固定顯示在**技能區**（不再放臨時區、也不換區）：HP ≥ 50% 文字「待命」、不發光；HP < 50% 加 `on` 發光、文字「生效中」，title／點擊說明同步。沒學、其他職業、死亡（hp 0）仍不顯示。test-shura-blood-status 改測技能區待命／生效中發光／回血回到待命；GAME_UPDATES 加 ag 紀錄。
 ## 151. 點版本號查看更新內容（2026-10-25，版本 `20261025ab`）
 
 - 使用者要求標題下方目前版本號可點開本次更新。index.html的#version改成語意button並保留原位置，設定頁角色區版本號也改成同樣入口；version-link輕量文字鈕、虛線底線與鍵盤焦點提示。
@@ -3261,3 +3263,15 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - .storage-list使用repeat(2,minmax(0,1fr))，道具卡內資訊上方、數量框與存入／取出鈕下方靠右；名稱換行、30px圖示、空清單跨兩欄。保留原合併、數量、手續費、負重、存取流程與存檔，不改SQL或schema。
 - 隔離瀏覽器PC與390px手機確認同列左右兩件、無橫向溢出，實點角色倉庫存5瓶／取2瓶後背包27／倉庫3；共用倉庫使用記憶體假資料確認兩清單套版，不連正式後端。Console無error／warn，check.ps1通過。
 - 48檔混淆480KB建置通過；待使用者實玩確認後commit。
+
+## 154. 魔法娃娃第一階段：道具、單隻裝備與跟隨（2026-10-25，版本 `20261025af`，schema 9）
+
+- 使用者已明確同意新增裝備欄與舊存檔轉換，並選擇先做道具／裝卸／跟隨、能力待定、GM發放測試，不進商店或怪物掉落。取代第115.3節玩法暫不接入決定；21款原T0～T4名單不變，不實作能力。
+- items.js新增DOLLS表（id／name／quality／src／art），由既有總manifest的21款與品質產生靜態資料；ITEMS新增doll_角色id，共21件cat=doll，獨立實體不可堆疊、wt0／sell0、不設定price。CAT_NAMES.doll，正式道具數436→457。未新增遊戲JS檔，不改載入順序。
+- 裝備放player.equip.doll。equipItem接受doll並使用單一doll槽；equippedList／slotOfEquipped／findAnyInst納入該槽，換裝先將原娃娃回背包，unequipSlot沿既有流程。calcStats仍只讀原12格裝備，不把娃娃當武防，沒有任何能力加成。SAVE_SCHEMA 8→9，migrateSave讓舊檔保持空槽，清除無效娃娃或與其他容器重複UID的裝備引用；沿用guard動態equip簽章與加密存檔。
+- ui-panels的charCompanionsHtml保留既定裝備清單右側上娃娃／下傭兵位置；未裝備不顯示圖片，已裝備才顯示該娃娃原圖／名稱／品質與能力待定。新增openDollPicker／equipDollBtn，背包新增娃娃分類，openItemDialog支援裝卸；傭兵仍空欄。icons的itemIconHtml直接使用既有正面單格，圖鑑新增娃娃分類及GM測試取得說明。
+- ui-scene新增sceneDollTick／sceneDrawDoll；位置與路線存在scene.doll而非存檔，不擋路、不引怪、不攻擊。區內可行路線追隨、四方向（左鏡像）、走動4格×145ms／停止中間格、drawH24為角色約一半，加入y深度排序與場景遮擋。距離>8格（瞬移）或換裝時重置到角色附近合法格；換場景重建，卸下／死亡時移除。原素材不修改，SW預載21張動畫與21張正面單格。
+- GM測試先用遊戲聊天 /give 冰霜幼龍 1（不填Email，需已認證GM）等現有自發指令，依ITEMS名稱或doll_id搜尋。這次不改tools SQL或正式後端目錄；管理頁／指定Email／共用倉庫與交易等需要後端認得新ID的功能，需日後獲准同步目錄後才開放，不宣稱已部署。角色倉庫沿本機存取可用。
+- tools/test-dolls.js禁止真實存檔／網路：21款道具、GM自發／無權限阻擋、UI裝卸回呼、單槽換裝／原物品回背包、每款裝前後calcStats完全相同、加密schema9與schema8舊檔、重複UID防護、背包／圖鑑／圖片、跟隨／瞬移／死亡移除通過。test-item-art同步457件且原289張128px新圖不變；test-map-queue與test-loot-auto-sell同步schema9斷言，這兩者與item-lock／server-loot-client回歸通過。
+- 遵使用者要求不啟動或關閉瀏覽器。使用bundled @napi-rs/canvas直接呼叫正式sceneDrawDoll繪製21×4方向×4格共336次（84次左鏡像），本機PNG檢視確認；未操作桌面App、未讀寫正式角色／連外。實際遊戲UI仍待使用者自行驗收。
+- 最終check.ps1 ALL CHECKS PASSED、48檔混淆488KB建置通過，openDollPicker／equipDollBtn已公開供事件使用；待使用者實玩確認後commit。

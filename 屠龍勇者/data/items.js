@@ -423,3 +423,138 @@ const RECIPES = [
 
 function isStackable(def) { return ['potion', 'scroll', 'ammo', 'material', 'elixir', 'quest', 'currency', 'book'].includes(def.cat); }
 function sellPriceOf(id) { const d = ITEMS[id]; return d.sell != null ? d.sell : Math.floor((d.price || 0) * 0.3); }
+
+// 魔法娃娃第一階段：GM發放測試，單隻裝備與跟隨；能力尚未設定。
+const DOLLS = {
+    "skeleton-knight": {
+        "name": "骷髏小騎士",
+        "quality": "T4",
+        "src": "images/sprites/dolls/companions-v1/skeleton-knight/walk.png",
+        "art": "images/sprites/dolls/companions-v1/skeleton-knight/frames/walk-down-02.png"
+    },
+    "frost-dragon": {
+        "name": "冰霜幼龍",
+        "quality": "T2",
+        "src": "images/sprites/dolls/companions-v1/frost-dragon/walk.png",
+        "art": "images/sprites/dolls/companions-v1/frost-dragon/frames/walk-down-02.png"
+    },
+    "forest-sprite": {
+        "name": "森林小精靈",
+        "quality": "T3",
+        "src": "images/sprites/dolls/companions-v1/forest-sprite/walk.png",
+        "art": "images/sprites/dolls/companions-v1/forest-sprite/frames/walk-down-02.png"
+    },
+    "lava-hound": {
+        "name": "熔岩魔犬",
+        "quality": "T3",
+        "src": "images/sprites/dolls/companions-v1/lava-hound/walk.png",
+        "art": "images/sprites/dolls/companions-v1/lava-hound/frames/walk-down-02.png"
+    },
+    "forest-deer": {
+        "name": "森靈幼鹿",
+        "quality": "T4",
+        "src": "images/sprites/dolls/companions-v1/forest-deer/walk.png",
+        "art": "images/sprites/dolls/companions-v1/forest-deer/frames/walk-down-02.png"
+    },
+    "star-fox": {
+        "name": "星辰靈狐",
+        "quality": "T3",
+        "src": "images/sprites/dolls/companions-v1/star-fox/walk.png",
+        "art": "images/sprites/dolls/companions-v1/star-fox/frames/walk-down-02.png"
+    },
+    "mushroom-rabbit": {
+        "name": "蘑菇燈兔",
+        "quality": "T4",
+        "src": "images/sprites/dolls/companions-v1/mushroom-rabbit/walk.png",
+        "art": "images/sprites/dolls/companions-v1/mushroom-rabbit/frames/walk-down-02.png"
+    },
+    "tidal-dragon": {
+        "name": "潮汐幼龍",
+        "quality": "T3",
+        "src": "images/sprites/dolls/companions-v1/tidal-dragon/walk.png",
+        "art": "images/sprites/dolls/companions-v1/tidal-dragon/frames/walk-down-02.png"
+    },
+    "snow-owl": {
+        "name": "霜羽貓頭鷹",
+        "quality": "T4",
+        "src": "images/sprites/dolls/companions-v1/snow-owl/walk.png",
+        "art": "images/sprites/dolls/companions-v1/snow-owl/frames/walk-down-02.png"
+    },
+    "flower-rabbit": {
+        "name": "花翼仙兔",
+        "quality": "T2",
+        "src": "images/sprites/dolls/companions-v1/flower-rabbit/walk.png",
+        "art": "images/sprites/dolls/companions-v1/flower-rabbit/frames/walk-down-02.png"
+    },
+    "steam-squirrel": {
+        "name": "蒸氣松鼠",
+        "quality": "T4",
+        "src": "images/sprites/dolls/companions-v1/steam-squirrel/walk.png",
+        "art": "images/sprites/dolls/companions-v1/steam-squirrel/frames/walk-down-02.png"
+    },
+    "golden-griffin": {
+        "name": "黃金獅鷲",
+        "quality": "T2",
+        "src": "images/sprites/dolls/companions-v1/golden-griffin/walk.png",
+        "art": "images/sprites/dolls/companions-v1/golden-griffin/frames/walk-down-02.png"
+    },
+    "crystal-turtle": {
+        "name": "紫晶靈龜",
+        "quality": "T2",
+        "src": "images/sprites/dolls/companions-v1/crystal-turtle/walk.png",
+        "art": "images/sprites/dolls/companions-v1/crystal-turtle/frames/walk-down-02.png"
+    },
+    "white-tiger": {
+        "name": "白虎",
+        "quality": "T1",
+        "src": "images/sprites/dolls/companions-v1/white-tiger/walk.png",
+        "art": "images/sprites/dolls/companions-v1/white-tiger/frames/walk-down-02.png"
+    },
+    "azure-dragon": {
+        "name": "青龍",
+        "quality": "T1",
+        "src": "images/sprites/dolls/companions-v1/azure-dragon/walk.png",
+        "art": "images/sprites/dolls/companions-v1/azure-dragon/frames/walk-down-02.png"
+    },
+    "vermillion-bird": {
+        "name": "朱雀",
+        "quality": "T1",
+        "src": "images/sprites/dolls/companions-v1/vermillion-bird/walk.png",
+        "art": "images/sprites/dolls/companions-v1/vermillion-bird/frames/walk-down-02.png"
+    },
+    "golden-dragon": {
+        "name": "金龍",
+        "quality": "T0",
+        "src": "images/sprites/dolls/companions-v1/golden-dragon/walk.png",
+        "art": "images/sprites/dolls/companions-v1/golden-dragon/frames/walk-down-02.png"
+    },
+    "phoenix": {
+        "name": "鳳凰",
+        "quality": "T0",
+        "src": "images/sprites/dolls/companions-v1/phoenix/walk.png",
+        "art": "images/sprites/dolls/companions-v1/phoenix/frames/walk-down-02.png"
+    },
+    "black-tortoise": {
+        "name": "玄武",
+        "quality": "T1",
+        "src": "images/sprites/dolls/companions-v1/black-tortoise/walk.png",
+        "art": "images/sprites/dolls/companions-v1/black-tortoise/frames/walk-down-02.png"
+    },
+    "qilin": {
+        "name": "麒麟",
+        "quality": "T0",
+        "src": "images/sprites/dolls/companions-v1/qilin/walk.png",
+        "art": "images/sprites/dolls/companions-v1/qilin/frames/walk-down-02.png"
+    },
+    "little-demon": {
+        "name": "饕餮",
+        "quality": "T0",
+        "src": "images/sprites/dolls/companions-v1/little-demon/walk.png",
+        "art": "images/sprites/dolls/companions-v1/little-demon/frames/walk-down-02.png"
+    }
+};
+for (const id in DOLLS) {
+    const d = DOLLS[id];
+    ITEMS['doll_' + id] = { name: d.name, cat: 'doll', doll: id, wt: 0, sell: 0, desc: '魔法娃娃（' + d.quality + '）：裝備後跟隨角色，一次限一隻。能力尚未設定，目前不提供加成；由GM發放測試。' };
+}
+CAT_NAMES.doll = '魔法娃娃';

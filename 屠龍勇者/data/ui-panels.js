@@ -349,11 +349,13 @@ function charGearHtml() {
 }
 // 娃娃與傭兵先開放展示欄，能力與裝備玩法待確認。
 function charCompanionsHtml() {
+    const it = player.equip.doll, d = it && ITEMS[it.id], doll = d && DOLLS[d.doll];
     return `<aside class="cv-companions" aria-label="娃娃與傭兵欄位">
         <section class="cv-companion cv-doll">
             <h4>魔法娃娃</h4>
-            <div class="cv-companion-art cv-companion-empty"><span>未裝備娃娃</span></div>
-            <div class="cv-companion-desc"><b>效果介紹</b><p class="muted">尚無裝備效果</p></div>
+            ${doll ? `<div class="cv-companion-art"><img src="${doll.art}" alt="${esc(doll.name)}"></div><b class="cv-companion-name">${esc(doll.name)}（${doll.quality}）</b><button class="mini secondary" onclick="openItemDialog(${it.uid})">查看／卸下</button>` : '<div class="cv-companion-art cv-companion-empty"><span>未裝備娃娃</span></div>'}
+            <button class="mini" onclick="openDollPicker()">${doll ? '更換娃娃' : '選擇娃娃'}</button>
+            <div class="cv-companion-desc"><b>效果介紹</b><p class="muted">${doll ? '已出場跟隨，能力尚未設定' : '尚無裝備效果'}</p></div>
         </section>
         <section class="cv-companion cv-mercenary">
             <h4>傭兵</h4>
@@ -361,6 +363,15 @@ function charCompanionsHtml() {
             <div class="cv-companion-desc"><b>效果介紹</b><p class="muted">尚無裝備效果</p></div>
         </section>
     </aside>`;
+}
+function openDollPicker() {
+    const list = player.inv.filter(x => ITEMS[x.id].cat === 'doll');
+    openDialog('選擇娃娃', `<div class="list">${list.map(x => `<div class="list-row"><div class="item-info">${itemThumbHtml(x.id)}${esc(itemName(x))} <small>${DOLLS[ITEMS[x.id].doll].quality}・能力待定</small></div><button class="mini" onclick="equipDollBtn(${x.uid})">裝備</button></div>`).join('') || '<p class="muted">背包沒有娃娃，目前由 GM 發放測試。</p>'}</div>`);
+}
+function equipDollBtn(uid) {
+    const it = findInv(uid);
+    if (!it || ITEMS[it.id].cat !== 'doll') return;
+    if (equipItem(uid)) { closeDialog(); saveGame(); refreshUI(); }
 }
 // 「詳細屬性」：全部戰鬥數值；「冒險紀錄」：擊殺、死亡、永夜之塔、四大龍、稱號
 function charDetailDialog() {
@@ -417,8 +428,8 @@ function renderChar() {
 function addStatBtn(k) { addStatPoint(k); saveGame(); refreshUI(); }
 
 // ───────── 背包 ─────────
-const BAG_FILTERS = [['all', '全部'], ['gear', '裝備'], ['potion', '藥水'], ['scroll', '卷軸'], ['book', '魔法書'], ['map', '地圖'], ['other', '其他']];
-const CAT_ORDER = ['quest', 'map', 'weapon', 'armor', 'potion', 'scroll', 'book', 'currency', 'ammo', 'elixir', 'material'];
+const BAG_FILTERS = [['all', '全部'], ['gear', '裝備'], ['potion', '藥水'], ['scroll', '卷軸'], ['book', '魔法書'], ['map', '地圖'], ['doll', '娃娃'], ['other', '其他']];
+const CAT_ORDER = ['quest', 'map', 'weapon', 'armor', 'doll', 'potion', 'scroll', 'book', 'currency', 'ammo', 'elixir', 'material'];
 
 function bagMatch(def) {
     if (bagFilter === 'all') return true;
@@ -605,7 +616,7 @@ function openItemDialog(uid) {
     const inst = findAnyInst(uid);
     if (!inst) return;
     const d = ITEMS[inst.id], slot = slotOfEquipped(uid), btns = [];
-    if (d.cat === 'weapon' || d.cat === 'armor') {
+    if (d.cat === 'weapon' || d.cat === 'armor' || d.cat === 'doll') {
         btns.push(slot
             ? { text: '卸下', onClick: () => { unequipSlot(slot); saveGame(); refreshUI(); } }
             : { text: '裝備', onClick: () => { if (equipItem(uid)) showToast(`裝備了 ${itemName(inst)}`); saveGame(); refreshUI(); } });
