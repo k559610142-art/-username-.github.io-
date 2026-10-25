@@ -183,7 +183,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025al`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025am`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3313,3 +3313,11 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 模擬：measureHunt完整還原dollState及正在生效的runtime，回傳實際觸發的剩餘冷卻；離線收益正式入帳才合併冷卻與有效出場時間。raidSimulate結果帶各隊員doll／dollMs／dollLocks；副本入帳與世界首領成功結算才套用，沿既有防重領。合併只延長而不縮短現有冷卻，出場時間歸參戰娃娃而非領獎時新換的娃娃。離線收益仍沿既有抽樣估算法，非逐秒重播。
 - 顯示：人物娃娃卡／選擇／背包道具介紹／商店／圖鑑列完整基本能力及被動；沿品質顏色且無名稱T字尾。icons的buffIconsHtml將娃娃放臨時區，顯示恢復倒數／待命／觸發發光／持續秒數與盾量／冷卻。dollNotify寫doll類別紀錄，sceneReadEvents在角色頭上顯示被動名與實際恢復／追加傷害。其餘新全域函式：dollEquipped／dollAbilityHtml／dollResetTransient／dollContext／dollSaved／dollRestore／dollTrigger／dollLowHp／dollPotion／dollKillGold／dollStatusInfo／dollSimulationLocks／dollApplySimulation。
 - tools/test-doll-abilities.js使用真實遊戲函式隔離測試全部21款數值／卸下、加密舊新存檔、每款定時恢復與換裝保留、實際藥水／持續回血／盾／減傷、鳳凰普通攻擊與首領紅圈免死及同款換裝重登CD、白虎追獵重置、實際範圍法術與多段物理只觸發一次、共鳴排除、實傷吸血、金幣、量測還原護盾、團戰剩餘冷卻。既有dolls／map-queue／loot-auto-sell同步schema10。未讀寫正式存檔、未開關瀏覽器，實際遊戲介面待使用者驗收。
+
+
+## 158. 娃娃商店僅販售T4（2026-10-25，版本 `20261025am`）
+
+- 使用者將販售規則改為僅T4，每隻固定500鑽；T0～T3不販賣。保留既定GM限購、共用倉庫交付與既有娃娃／能力，schema10不變。
+- doll-shop.js的renderDollShop只列五款T4：骷髏小騎士、森靈幼鹿、蘑菇燈兔、霜羽貓頭鷹、蒸氣松鼠。新增dollShopProduct驗證本機品質T4且伺服器商品價500；dollShopBuy與dollShopPurchase同步檢查，直接呼叫亦不能買其他品質或改價。即使後端尚為舊21款清單，介面也只列五款。
+- tools/doll-shop.sql沿用已獲准的商店檔更新：重跑將T4啟售且價格設500、其餘停售，保留商品／歷史訂單及既有娃娃；status與buy再限制quality=T4／price=500／enabled，手動啟用其他品質也不會放行。歷史成功訂單同UUID重試仍只回原收據，不再發貨扣款。使用者須自行在Supabase重跑此SQL，本機未連正式後端。
+- 隔離VM測舊21款伺服器清單只顯示五款、T0～T3無法確認或直接購買；PGlite測五款全可購、每款500、其他四品質拒絕、重試不重扣／不足／滿倉／重跑恢復固定售價。check.ps1 ALL CHECKS PASSED，未開關瀏覽器；待SQL安裝及使用者實玩確認後commit。

@@ -27,12 +27,12 @@ async function main(){
  const query=async(s,a=[])=>(await db.query(s,a)).rows;
  const as=async uid=>db.exec('reset role;set role authenticated;select set_config(\'request.jwt.claim.sub\',\''+uid+'\',false)');
  const buy=async(id,price,key)=>(await query('select public.doll_shop_buy($1,$2,$3) v',[id,price,key]))[0].v;
- const id='doll_frost-dragon',key='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
- await as(pl);assert.equal((await query('select public.doll_shop_status() v'))[0].v.items.length,21);assert.equal((await query('select public.doll_shop_status() v'))[0].v.canBuy,false);await assert.rejects(()=>buy(id,500,key),/not admin/);
+ const id='doll_skeleton-knight',key='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
+ await as(pl);assert.equal((await query('select public.doll_shop_status() v'))[0].v.items.length,5);assert.equal((await query('select public.doll_shop_status() v'))[0].v.canBuy,false);await assert.rejects(()=>buy(id,500,key),/not admin/);
  await assert.rejects(()=>query('select * from public.dragon_doll_shop_catalog'),/permission denied/);
  await db.exec('reset role;set role anon');assert.equal((await query('select public.doll_shop_status() v'))[0].v.canBuy,false);await assert.rejects(()=>buy(id,500,key),/permission denied/);
  await db.exec('reset role');await query('insert into public.dragon_wallet(user_id,diamonds)values($1,1000)',[gm]);
- await as(gm);let status=(await query('select public.doll_shop_status() v'))[0].v;assert(status.canBuy);assert(status.items.every(x=>x.price===500));
+ await as(gm);let status=(await query('select public.doll_shop_status() v'))[0].v;assert(status.canBuy);assert.equal(status.items.length,5);assert(status.items.every(x=>x.quality==='T4'));for(const blocked of ['doll_phoenix','doll_white-tiger','doll_frost-dragon','doll_forest-sprite'])await assert.rejects(()=>buy(blocked,500,'ffffffff-ffff-4fff-8fff-ffffffffffff'),/unknown doll/);assert(status.items.every(x=>x.price===500));
  let r=await buy(id,500,key);assert.equal(r.diamonds,500);const vaultId=r.vaultId;
  r=await buy(id,500,key);assert.equal(r.diamonds,500);assert.equal(r.vaultId,vaultId);await assert.rejects(()=>buy('doll_white-tiger',500,key),/request mismatch/);
  await assert.rejects(()=>buy(id,1,'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb'),/price changed/);
@@ -42,12 +42,12 @@ async function main(){
  let items=await query('select item from public.dragon_vault_items order by id');assert.deepEqual(items[0].item,{id,n:1,ench:0});
  await query('update public.dragon_wallet set diamonds=20000 where user_id=$1',[gm]);
  await as(gm);for(let i=0;i<status.items.length;i++){const k='dddddddd-dddd-4ddd-8ddd-'+String(i).padStart(12,'0');await buy(status.items[i].id,500,k);}
- await db.exec('reset role');assert.equal((await query('select count(*)::int n from public.dragon_doll_shop_orders'))[0].n,23);assert.equal((await query('select diamonds from public.dragon_wallet where user_id=$1',[gm]))[0].diamonds,9500);
- await query('insert into public.dragon_vault_items(user_id,from_slot,uid,item_id,item,name) select $1,-1,0,$2,$3,$4 from generate_series(1,177)',[gm,id,{id,n:1,ench:0},'test']);
+ await db.exec('reset role');assert.equal((await query('select count(*)::int n from public.dragon_doll_shop_orders'))[0].n,7);assert.equal((await query('select diamonds from public.dragon_wallet where user_id=$1',[gm]))[0].diamonds,17500);
+ await query('insert into public.dragon_vault_items(user_id,from_slot,uid,item_id,item,name) select $1,-1,0,$2,$3,$4 from generate_series(1,193)',[gm,id,{id,n:1,ench:0},'test']);
  await as(gm);await assert.rejects(()=>buy(id,500,'eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee'),/vault full/);
- await db.exec('reset role');assert.equal((await query('select diamonds from public.dragon_wallet where user_id=$1',[gm]))[0].diamonds,9500);
- await query('update public.dragon_doll_shop_catalog set price=600 where id=$1',[id]);await db.exec(sql);assert.equal((await query('select price from public.dragon_doll_shop_catalog where id=$1',[id]))[0].price,600,'重跑保留管理者調整價格');
- console.log('PASS DB: rerunnable / 21 products / default500 / player-anon denied / GM purchase / vault item / repeat request / price and unknown-item checks / insufficient funds / full vault rollback / all21 purchase');
+ await db.exec('reset role');assert.equal((await query('select diamonds from public.dragon_wallet where user_id=$1',[gm]))[0].diamonds,17500);
+ await query('update public.dragon_doll_shop_catalog set price=600 where id=$1',[id]);await db.exec(sql);assert.equal((await query('select price from public.dragon_doll_shop_catalog where id=$1',[id]))[0].price,500,'重跑恢復固定500鑽');
+ console.log('PASS DB: rerunnable / 5 T4 products / fixed500 / player-anon denied / GM purchase / vault item / repeat request / price and unknown-item checks / insufficient funds / full vault rollback / all5 purchase / T0-T3 blocked');
  await db.close();
 }
 main().catch(e=>{console.error(e);process.exit(1);});

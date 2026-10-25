@@ -1,4 +1,4 @@
--- 娃娃商店：使用者同意新增；由使用者貼到Supabase執行，可重跑。
+-- 娃娃商店：僅販售T4，每隻固定500鑽；由使用者貼到Supabase執行，可重跑。
 -- 先有vault.sql／vault-v2.sql與dragon_is_admin。一般玩家僅能查看，購買限定GM。
 -- 娃娃直接放共用倉庫，沿既有vault_take2取出，不修改雲端角色／既有掉寶目錄。
 begin;
@@ -28,6 +28,8 @@ insert into public.dragon_doll_shop_catalog(id,name,quality) values
 ('doll_qilin','麒麟','T0'),
 ('doll_little-demon','饕餮','T0')
 on conflict(id) do update set name=excluded.name,quality=excluded.quality;
+-- 保留商品／歷史訂單，不刪除既有娃娃；套用最新販售規則。
+update public.dragon_doll_shop_catalog set enabled=(quality='T4'),price=case when quality='T4' then 500 else price end;
 create table if not exists public.dragon_doll_shop_orders (
  user_id uuid not null references auth.users(id) on delete cascade, request_id uuid not null,
  item_id text not null, price int not null check(price>0), vault_id bigint not null, at timestamptz not null default now(),
@@ -41,7 +43,7 @@ language sql stable security definer set search_path='' as $$
  select jsonb_build_object('canBuy',case when auth.uid() is not null then coalesce(public.dragon_is_admin(),false) else false end,
   'diamonds',coalesce((select diamonds from public.dragon_wallet where user_id=auth.uid()),0),
   'items',coalesce((select jsonb_agg(jsonb_build_object('id',id,'name',name,'quality',quality,'price',price) order by quality,id)
-   from public.dragon_doll_shop_catalog where enabled),'[]'::jsonb));
+   from public.dragon_doll_shop_catalog where enabled and quality='T4' and price=500),'[]'::jsonb));
 $$;
 create or replace function public.doll_shop_buy(p_item text,p_price int,p_request uuid) returns jsonb
 language plpgsql security definer set search_path='' as $$
@@ -57,7 +59,7 @@ begin
   return jsonb_build_object('ok',true,'name',(select name from public.dragon_doll_shop_catalog where id=prior.item_id),
    'item',prior.item_id,'vaultId',prior.vault_id,'diamonds',coalesce((select diamonds from public.dragon_wallet where user_id=u),0));
  end if;
- select * into product from public.dragon_doll_shop_catalog where id=p_item and enabled for share;
+ select * into product from public.dragon_doll_shop_catalog where id=p_item and enabled and quality='T4' and price=500 for share;
  if not found then raise exception 'unknown doll'; end if;
  if p_price is distinct from product.price then raise exception 'price changed'; end if;
  select count(*) into used from public.dragon_vault_items where user_id=u and taken_at is null;

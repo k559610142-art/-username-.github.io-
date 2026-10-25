@@ -5,13 +5,18 @@ const dollShopRequests = new Map();
 function openDollShop() { openTownSub('dollShop'); dollShopLoad(); }
 function dollShopRefresh() { if (player && tabOpen('town') && townSub === 'dollShop') renderPanel(); }
 function dollShopCanBuy() { return !!(cloudLoggedIn() && !cloudBan && dollShopUser === cloudUser.id && dollShopCatalog && dollShopCatalog.canBuy); }
+function dollShopProduct(id) {
+    const d = ITEMS[id];
+    if (!d || !DOLLS[d.doll] || DOLLS[d.doll].quality !== 'T4') return null;
+    return dollShopCatalog && dollShopCatalog.items.find(x => x.id === id && x.price === DOLL_SHOP_PRICE);
+}
 function renderDollShop() {
-    const rows = Object.entries(DOLLS).map(([key, d]) => {
-        const id = 'doll_' + key, product = dollShopCatalog && dollShopCatalog.items.find(x => x.id === id);
-        const price = product ? product.price : DOLL_SHOP_PRICE;
+    const rows = Object.entries(DOLLS).filter(([, d]) => d.quality === 'T4').map(([key, d]) => {
+        const id = 'doll_' + key, product = dollShopProduct(id);
+        const price = DOLL_SHOP_PRICE;
         return `<div class="list-row"><div class="item-info">${itemThumbHtml(id)}<b class="${itemClass({id})}">${esc(d.name)}</b><small>💎 ${fmt(price)}</small>${dollAbilityHtml(id)}</div><button class="mini" onclick="dollShopBuy('${id}')" ${dollShopBusy || !dollShopCanBuy() || !product ? 'disabled' : ''}>購買</button></div>`;
     }).join('');
-    return `<div class="panel"><b>🧚 娃娃商人・露米</b><p>目前僅 GM 可以購買，一般玩家可查看商品。每次購買一隻，請至帳號共用倉庫取出（沿用倉庫取出費用）。</p><small class="muted">一次僅出場一隻並提供能力。持有鑽石：💎 ${diaCount == null ? '—' : fmt(diaCount)}</small>${dollShopErr ? `<p class="bad">${esc(dollShopErr)}</p>` : ''}<button class="mini secondary" onclick="dollShopLoad()">重新讀取</button></div><div class="list storage-list">${rows}</div>`;
+    return `<div class="panel"><b>🧚 娃娃商人・露米</b><p>僅販售 T4 娃娃，每隻 500 鑽石。目前僅 GM 可以購買，一般玩家可查看商品。每次購買一隻，請至帳號共用倉庫取出（沿用倉庫取出費用）。</p><small class="muted">一次僅出場一隻並提供能力。持有鑽石：💎 ${diaCount == null ? '—' : fmt(diaCount)}</small>${dollShopErr ? `<p class="bad">${esc(dollShopErr)}</p>` : ''}<button class="mini secondary" onclick="dollShopLoad()">重新讀取</button></div><div class="list storage-list">${rows}</div>`;
 }
 async function dollShopLoad() {
     const uid = cloudUser && cloudUser.id || '';
@@ -30,7 +35,7 @@ async function dollShopLoad() {
 }
 function dollShopBuy(id) {
     if (!inTown() || !dollShopCanBuy() || dollShopBusy) return;
-    const p = dollShopCatalog.items.find(x => x.id === id);
+    const p = dollShopProduct(id);
     if (!p || !ITEMS[id] || ITEMS[id].cat !== 'doll') return;
     const owner = player, uid = cloudUser.id;
     gameConfirm('購買魔法娃娃', `花費 ${p.price} 鑽石購買「${p.name}」？\n購買後放入帳號共用倉庫。`, () => {
@@ -38,7 +43,7 @@ function dollShopBuy(id) {
     }, '確認購買');
 }
 async function dollShopPurchase(id, price, uid) {
-    if (dollShopBusy || !inTown() || !dollShopCanBuy() || cloudUser.id !== uid) return;
+    if (dollShopBusy || !inTown() || !dollShopCanBuy() || cloudUser.id !== uid || price !== DOLL_SHOP_PRICE || !dollShopProduct(id)) return;
     const key = uid + '|' + id;
     if (!dollShopRequests.has(key)) dollShopRequests.set(key, crypto.randomUUID());
     dollShopBusy = true; dollShopErr = ''; dollShopRefresh();
