@@ -16,6 +16,7 @@ async function main(){
  create function public.dragon_is_admin() returns boolean language sql security definer as $$select exists(select 1 from public.dragon_admins where user_id=auth.uid())$$;
  grant execute on function public.dragon_is_admin() to authenticated;
  create table public.dragon_vault_items(id bigserial primary key,user_id uuid not null references auth.users(id),from_slot smallint not null,uid int not null,item_id text not null,item jsonb not null,name text,put_at timestamptz not null default now(),taken_at timestamptz);
+ create table public.dragon_vault(user_id uuid primary key references auth.users(id),gold bigint not null default 0 check(gold>=0));
  create table public.dragon_loot_catalog(id int primary key,version text,data jsonb);
  insert into public.dragon_loot_catalog values(1,'t','{"items":{"redPotion":{"name":"治癒藥水","cat":"potion","stack":true},"dagger":{"name":"匕首","cat":"weapon","stack":false},"q_bone":{"name":"骨頭","cat":"quest","stack":true}}}');
  `);
@@ -52,6 +53,20 @@ async function main(){
  await assert.rejects(()=>give(pl,'redPotion',1,''),/vault full/);
  const log=await query('select by_email,to_email,item_id,n from public.dragon_gm_give_log order by id');
  assert.equal(log.length,6);assert.deepEqual(log[0],{by_email:'gm@test.com',to_email:'Player@Test.com',item_id:'redPotion',n:500});
+ // 發金幣：進共用倉庫金幣、累加、記錄 $gold；格數滿了也能發（金幣不佔格）
+ const gold=async(...a)=>(await query('select public.gm_give_gold($1,$2,$3) v',a))[0].v;
+ r=await gold('PLAYER@test.com',1000000,'活動');assert.deepEqual(r,{ok:true,email:'Player@Test.com',gold:1000000,total:1000000});
+ r=await gold(pl,2500,'補償');assert.equal(r.total,1002500);
+ r=await gold(gm,7,'自己');assert.equal(r.total,7);
+ await assert.rejects(()=>gold(pl,0,''),/bad amount/);
+ await assert.rejects(()=>gold(pl,1000000001,''),/bad amount/);
+ await assert.rejects(()=>gold('who@test.com',1,''),/no such player/);
+ const glog=await query("select to_email,item_id,n,reason from public.dragon_gm_give_log where item_id='$gold' order by id");
+ assert.deepEqual(glog[0],{to_email:'Player@Test.com',item_id:'$gold',n:1000000,reason:'活動'});assert.equal(glog.length,3);
+ await as(pl);
+ await assert.rejects(()=>gold(pl,1,''),/not admin/);
+ await db.exec('reset role');
+ assert.equal((await query(`select gold::int g from public.dragon_vault where user_id='${pl}'`))[0].g,1002500);
  console.log('gm-give.sql tests passed');
 }
 main().catch(e=>{console.error(e);process.exit(1);});

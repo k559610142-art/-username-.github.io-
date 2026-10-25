@@ -1,6 +1,6 @@
 -- 黑暗大陸：GM 發放道具（2026-10-24，ARCHITECTURE.md 第 128 節）——貼到 Supabase SQL Editor 執行一次即可（可重複執行）
 -- 需要先執行過 supabase.sql（dragon_admins／dragon_is_admin／dragon_profiles）、vault.sql（共用倉庫）、server-loot-install.sql（dragon_loot_catalog 道具目錄）。
--- 發放方式：只有管理者能呼叫；道具直接放進「對方帳號的共用倉庫」，對方在村莊倉庫 → 共用倉庫取出（取出照常收 100 金幣手續費）。
+-- 發放方式（道具 gm_give_item；金幣 gm_give_gold 進共用倉庫金幣，見檔案下方）：只有管理者能呼叫；道具直接放進「對方帳號的共用倉庫」，對方在村莊倉庫 → 共用倉庫取出（取出照常收 100 金幣手續費）。
 --   道具 id 以伺服器的 dragon_loot_catalog 為準（新道具要先重跑 server-loot-install.sql 更新目錄才能發）；任務道具不能發。
 --   可堆疊道具（藥水、卷軸、材料…）一次 1～99999 個、放成一格；裝備一次 1～50 件、每件一格、+0、普通品質。共用倉庫上限 200 格照算。
 --   from_slot = -1、uid = 0：不屬於任何角色存檔，不會被「存入後仍留在角色身上」(vault_dupe) 誤判。每次發放記在 dragon_gm_give_log。
@@ -63,8 +63,32 @@ begin
     return jsonb_build_object('ok', true, 'email', v_email, 'item', p_item, 'name', v_name, 'n', p_n, 'rows', v_rows, 'free', 200 - v_used - v_rows);
 end $$;
 
-revoke execute on function public.gm_item_list(), public.gm_give_item(text, text, int, text) from public, anon;
-grant execute on function public.gm_item_list(), public.gm_give_item(text, text, int, text) to authenticated;
+-- 發金幣（2026-10-25 加）：加進對方帳號共用倉庫的金幣（dragon_vault.gold），對方在共用倉庫取出（取出照常收 100 手續費）。
+--   一次 1～1,000,000,000；紀錄同樣寫 dragon_gm_give_log，item_id 固定 '$gold'、n＝金額。
+create or replace function public.gm_give_gold(p_target text, p_gold int, p_reason text) returns jsonb
+language plpgsql security definer set search_path = '' as $$
+declare v_user uuid; v_email text; v_total bigint;
+begin
+    if not public.dragon_is_admin() then raise exception 'not admin'; end if;
+    p_target := btrim(coalesce(p_target, ''));
+    if p_target ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' then
+        select u.id, u.email into v_user, v_email from auth.users u where u.id = p_target::uuid;
+    else
+        select u.id, u.email into v_user, v_email from auth.users u where lower(u.email) = lower(p_target) limit 1;
+    end if;
+    if v_user is null then raise exception 'no such player' using hint = 'gm_give_target'; end if;
+    if p_gold is null or p_gold < 1 or p_gold > 1000000000 then raise exception 'bad amount' using hint = 'gm_give_amount'; end if;
+    perform pg_advisory_xact_lock(7713100, hashtext(v_user::text));   -- 和共用倉庫存取同一把鎖
+    insert into public.dragon_vault (user_id, gold) values (v_user, p_gold)
+        on conflict (user_id) do update set gold = public.dragon_vault.gold + excluded.gold
+        returning gold into v_total;
+    insert into public.dragon_gm_give_log (by_user, by_email, to_user, to_email, item_id, n, reason)
+        values (auth.uid(), auth.jwt() ->> 'email', v_user, v_email, '$gold', p_gold, left(coalesce(p_reason, ''), 200));
+    return jsonb_build_object('ok', true, 'email', v_email, 'gold', p_gold, 'total', v_total);
+end $$;
+
+revoke execute on function public.gm_item_list(), public.gm_give_item(text, text, int, text), public.gm_give_gold(text, int, text) from public, anon;
+grant execute on function public.gm_item_list(), public.gm_give_item(text, text, int, text), public.gm_give_gold(text, int, text) to authenticated;
 
 -- 查最近的發放紀錄：
 -- select at, by_email, to_email, item_id, n, reason from public.dragon_gm_give_log order by id desc limit 50;
