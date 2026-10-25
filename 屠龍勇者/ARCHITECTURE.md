@@ -154,6 +154,7 @@
 | `manifest.json` | App 名稱、圖示、`scope: ./`（只涵蓋本資料夾） |
 | `sw.js` | Service Worker，快取名稱 `dragon-` 開頭（第 12 節） |
 | `images/` | `icons/` 圖片圖示（藥水 `potion-*.jpg`、技能 `sk/`，第 41 節）；App 圖示：`icon-192/512.png`、`icon-maskable-512.png`、`apple-touch-icon.png`；主畫面外框 `frame-nopillar.png`（去掉拱門與左右石柱，第 54 節；`frame-notop.jpg`、原版 `frame.jpg` 保留；第 15 節）、PC 橫式外框 `frame-pc.jpg`＋遮罩 `frame-pc-mask.png`（第 19 節）；`sprites/` 人物模型、`classes/` 職業立繪、十二職業合照 `all.jpg` 、創角舞台去背圖 `classes/stage/`（合照中的人）與 `classes/hero/`（立繪全身像）（第 18 節）；`maps/ruins.jpg` 野外地圖背景、`maps/tower.jpg` 永夜之塔通用地圖（第 52 節）、`npc/tower-keeper.png`／`ivory-keeper.png`＋`-face.jpg` 永夜之塔／暮光法師塔傳送師（第 55、56 節）、`maps/village.webp` 村莊背景（第 17 節）、`maps/wild.jpg`＋`wild-mini.jpg` 低語海岸大地圖與小地圖（第 45 節；12 個地圖合併、6016×4768＝188×149 格，第 67 節）、`wild-occ.png` 遮擋深度圖（第 46 節） |
+| `tools/test-shura-blood-status.js` | 血戰傷害／實際吸血／50%門檻／臨時狀態與回血移除隔離測試（第150節） |
 | `tools/test-auto-tele-heal.js` | 自動瞬移一次後補血、喝水延遲／搜尋暫緩／恢復掛機與缺水回家隔離回歸（第149節） |
 | `tools/test-boss-dodge-boundary.js` | 紅圈閃避區界／分區／繞路限制、無路原地承傷且持續掛機隔離回歸（第148節） |
 | `tools/test-loot-auto-sell.js` | 指定自動販賣清單、確認／取消、舊檔轉換、本機與後端入帳／收據重送與失敗還原隔離測試（第146節） |
@@ -177,7 +178,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025z`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025aa`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3223,4 +3224,11 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - huntTick在尋怪前也處理teleRecover補給；自動喝水開啟且還有藥時暫緩尋怪，依原0.8秒共用喝水延遲補血，達門檻清除狀態後恢復尋怪。缺藥依原autoHome處理，沒開自動喝水不強制喝，低血恢復前仍不連飛。龍穴瞬移回村、手動卷軸操作維持原流程。
 - 只改戰鬥記憶體hunt，不加player或schema、不改SQL；離線及副本已有hunt隔離與potReadyAt還原流程。
 - tools/test-auto-tele-heal.js測試低血只飛一次／喝水CD／尋怪期間補血／恢復後尋怪／下次真正危險可再飛／自動喝水關閉／缺藥回家通過；potion-delay、offline-drops、server-loot-client回歸通過。隔離瀏覽器實際autoSupport與huntTick同情境通過，Console無error／warn。
+- 最終check.ps1 ALL CHECKS PASSED、48檔混淆479KB建置通過；待使用者實玩確認後commit。
+
+## 150. 血戰觸發顯示於臨時狀態（2026-10-25，版本 `20261025aa`）
+
+- 使用者要求確認修羅血戰有無實裝，並讓觸發效果出現在技能狀態欄臨時區。既有calcStats已依已學會且職業適用之被動，在HP嚴格低於50%時加dmg8／lifesteal0.05；physicalAttack傷害使用dmgBonus，lifeSteal實際按傷害比例回復。本次不調整數值／學習門檻／存檔。
+- icons.js buffIconsHtml新增passive_shuraBlood臨時格，使用既有shuraBlood技能圖、藍底及on發光，下方文字血戰，title／點擊顯示生效中與原技能說明；只在已學會且修羅適用、HP>0並低於calcStats().maxHp的50%時顯示，不新增buff或倒數。回血至50%以上或死亡即移除。更新仍沿setHtmlStable。
+- tools/test-shura-blood-status.js實測傷害加成差8、吸血差5%、200傷實回10HP、剛好50%不觸發／回血消失／未學／異職／死亡不顯示；buff-groups回歸通過。隔離瀏覽器PC／390px手機臨時區顯示、實點效果提示、回血移除正常，Console無error／warn。
 - 最終check.ps1 ALL CHECKS PASSED、48檔混淆479KB建置通過；待使用者實玩確認後commit。

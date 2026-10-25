@@ -306,6 +306,12 @@ function buffIconsHtml() {
         const name = b.name || (sk || ITEMS[b.id] ? buffName(b) : k);
         add(buffStatusGroup(b), k, color, name, ico, fmtBuffTime(sec), sec <= 10 ? 'low' : '');
     });
+    // 血戰是低血量即時被動，不寫入有倒數的buff；觸發時顯示在臨時區。
+    const blood = learnedSkills().find(s => s.id === 'shuraBlood');
+    if (blood && player.hp > 0 && player.hp < calcStats().maxHp * 0.5) {
+        add('temp', 'passive_shuraBlood', 'skill', '血戰（生效中）：' + blood.desc,
+            skillIconHtml(blood, 'skill'), '血戰', 'on');
+    }
     // 共鳴視為裝備提供的技能；生效時依原始持續時間分類，不重複顯示。
     equippedRes.forEach(id => {
         const r = ITEMS[id].res, left = Math.ceil(((player.cds['res_' + id] || 0) - now) / 1000), act = player.buffs['res_' + id];

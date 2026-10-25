@@ -1053,7 +1053,7 @@ function renderSettings() {
                 <button class="secondary" onclick="backToTitle()">回標題畫面</button>
                 <button class="danger" onclick="confirmDeleteChar()">刪除角色</button>
             </div>
-            <small class="muted">${GAME_TITLE} v${GAME_VERSION}</small>
+            <button type="button" class="version-link muted" onclick="openUpdateNotes()" title="查看更新內容">${GAME_TITLE} v${GAME_VERSION}</button>
         </div>`;
 }
 

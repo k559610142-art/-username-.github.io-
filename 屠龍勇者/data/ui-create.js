@@ -3,6 +3,21 @@ let createState = null;
 let createSlot = 0;   // 新角色要放進哪個欄位
 let selSlot = 0;      // 人物選單目前選中的欄位
 
+// 更新版本時在最上方新增玩家可讀的更新紀錄。
+const GAME_UPDATES = [
+    { version: '20261025ab', items: ['版本號現在可以點擊，查看本次及近期更新內容。'] },
+    { version: '20261025aa', items: ['修羅血戰觸發時，臨時狀態區會顯示發光圖示；點擊可看效果，回血至50%以上後消失。'] },
+    { version: '20261025z', items: ['自動瞬移後優先喝水補血，補到設定門檻再尋怪，避免低血量連續瞬移。'] },
+    { version: '20261025y', items: ['首領紅圈自動閃避不再跨出目前區域；沒有安全路線時留在原地承受傷害。'] },
+    { version: '20261025x', items: ['裝備改造視窗顯示每條詞綴可洗到的最高值，包含傳說與覺醒詞綴。'] },
+    { version: '20261025w', items: ['箭、銀箭、子彈、銀子彈可加入自動販賣；回收價為0金幣，確認時會提醒。'] },
+    { version: '20261025v', items: ['戰利品過濾新增自動販賣抽屜，可從背包選擇同名道具自動回收，並隨角色保存清單。', '加入清單時確認一次，之後同名掉落不論品質、保留詞綴或共鳴都直接回收；不影響背包現有物品。'] },
+];
+function openUpdateNotes() {
+    const html = GAME_UPDATES.map((u, i) => `<section><h4>${i === 0 ? '本次更新' : '近期更新'} · v${esc(u.version)}</h4><ul>${u.items.map(t => `<li>${esc(t)}</li>`).join('')}</ul></section>`).join('');
+    openDialog(`更新內容 · v${GAME_VERSION}`, html, [{ text: '關閉', cls: 'secondary' }]);
+}
+
 function showTitle() {
     $('version').textContent = 'v' + GAME_VERSION;
     const note = window.__wiped ? '🧹 遊戲已正式上線，測試期的角色已清除，歡迎重新開始冒險！' : TEST_NOTICE;
