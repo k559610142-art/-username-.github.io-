@@ -281,7 +281,8 @@ async function chatCommand(text) {
     const email = args.find(a => a.includes('@'));
     const rest = args.filter(a => a !== email);
     const item = rest[0], n = rest[1] == null ? 1 : Number(rest[1]);
-    if (!item) { gameAlert('GM 指令', '/give 道具id或名稱 [數量] [對方Email]\n不填 Email＝發給自己目前的角色（放進背包）\n填 Email＝放進對方帳號的共用倉庫'); return false; }
+    if (!item) { gameAlert('GM 指令', '/give 道具id或名稱 [數量] [對方Email]\n不填 Email＝發給自己目前的角色（放進背包）\n填 Email＝放進對方帳號的共用倉庫\n\n/give 金幣 金額 [對方Email]\n金幣一律加進共用倉庫（不填 Email＝自己的帳號），到村莊倉庫取出'); return false; }
+    if (GM_GOLD_WORDS.includes(item.toLowerCase())) return gmGiveGold(n, email);
     const ids = gmFindItem(item);
     if (ids.length !== 1) { gameAlert('找不到唯一的道具', ids.length ? `「${item}」符合多個道具，請改用 id：\n${ids.map(id => `${id}　${ITEMS[id].name}`).join('\n')}` : `沒有「${item}」這個道具`); return false; }
     const id = ids[0], d = ITEMS[id], max = isStackable(d) ? GM_GIVE_MAX_STACK : GM_GIVE_MAX_EQUIP;
@@ -302,6 +303,24 @@ async function chatCommand(text) {
         const m = String((e && e.message) || e);
         showToast('發放失敗：' + (/no such player/.test(m) ? '找不到這個 Email 的帳號' : /unknown item/.test(m) ? '伺服器道具目錄沒有這個道具（或是任務道具）'
             : /vault full/.test(m) ? '對方共用倉庫格數不夠' : /not admin/.test(m) ? '伺服器不承認 GM 權限' : /gm_give_item|function/.test(m) ? '伺服器還沒安裝 tools/gm-give.sql' : cloudErrText(e)));
+        return false;
+    }
+}
+
+// /give 金幣 金額 [Email]：伺服器 gm_give_gold 加進共用倉庫金幣並記錄（tools/gm-give.sql）；不直接改角色金幣，避免存檔簽章／金幣暴增誤判
+const GM_GOLD_WORDS = ['金幣', 'gold', '$gold'], GM_GIVE_MAX_GOLD = 1000000000;   // 和 gm-give.sql 的上限一致
+async function gmGiveGold(n, email) {
+    if (!Number.isSafeInteger(n) || n < 1 || n > GM_GIVE_MAX_GOLD) { showToast(`金額要是 1～${fmt(GM_GIVE_MAX_GOLD)} 的整數`); return false; }
+    if (!email && !cloudLoggedIn()) { showToast('要先登入雲端帳號才能發金幣'); return false; }
+    try {
+        const { data, error } = await cloudTimeout(cloudSb.rpc('gm_give_gold', { p_target: email || cloudUser.id, p_gold: n, p_reason: '遊戲內 /give' }));
+        if (error) throw error;
+        showToast(`GM：💰${fmt(data.gold)} 已加進 ${data.email} 的共用倉庫（倉庫金幣共 ${fmt(data.total)}）`);
+        return true;
+    } catch (e) {
+        const m = String((e && e.message) || e);
+        showToast('發放失敗：' + (/no such player/.test(m) ? '找不到這個 Email 的帳號' : /not admin/.test(m) ? '伺服器不承認 GM 權限'
+            : /gm_give_gold|function/.test(m) ? '伺服器還沒更新 tools/gm-give.sql' : cloudErrText(e)));
         return false;
     }
 }

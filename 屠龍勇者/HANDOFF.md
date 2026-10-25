@@ -5,6 +5,8 @@
 
 ## 1. 現況
 
+- **20261025ae：GM 發金幣（第 128 節）**。管理頁 🎁 視窗「💰 金幣」與 `/give 金幣 金額 [Email]`，金幣加進帳號共用倉庫並記在 dragon_gm_give_log（item_id `$gold`）。**待使用者在 Supabase 重新執行 tools/gm-give.sql**。
+
 - **20261025ad：倉庫清單每列左右兩件（第153節）**。使用者選每列兩件；角色／共用倉庫及倉庫頁背包皆套用storage-list兩欄，資訊上／數量存取按鈕下，名稱換行，減少下滑。存取／合併／費用不變，無schema／SQL。PC／390px手機實點存5取2、共用倉庫假資料排版、無橫向溢出與Console error／warn，check.ps1通過；48檔混淆480KB建置通過，待Ctrl+F5→倉庫→確認左右兩件與數量操作，實玩確認後commit。
 
 - **20261025ac：重登自動接續野外未完成地圖排程（第152節）**。running讀檔先停離線處理，mapQueueTick等後端就緒後自動接原異界；原怪數／bossHp保留、不多扣卷。兼容舊版重登暫停原因，手動暫停／死亡／補給不足／回村不自動執行。不改schema或SQL，更新紀錄新增ac。test-map-queue與隔離PC／手機加密重登（42怪、bossHp1234、剩1卷）、Console無error／warn通過；check.ps1 ALL CHECKS PASSED、48檔混淆480KB及map-portal／offline-drops／server-loot-client回歸通過，待Ctrl+F5→執行排程中重登→原野外自動接續，實玩確認後commit。

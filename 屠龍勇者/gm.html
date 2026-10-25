@@ -240,12 +240,16 @@ async function gmGive(uid, email) {
     } catch (e) { $('modal-box').innerHTML = `<p class="bad">讀取失敗：${esc(e.message)}</p><p class="muted">如果是第一次用，請先在 Supabase SQL Editor 執行 tools/gm-give.sql。</p><button onclick="gmClose()">關閉</button>`; return; }
     const opts = Object.entries(gmItems).filter(([, d]) => d.cat !== 'quest').sort((a, b) => a[1].name.localeCompare(b[1].name, 'zh-Hant'))
         .map(([id, d]) => `<option value="${esc(id)}">${esc(d.name)}（${esc(d.cat)}${d.stack ? '・可堆疊' : ''}）</option>`).join('');
-    const rows = log.map(r => `<tr><td>${t(r.at)}</td><td>${esc((gmItems[r.item_id] || {}).name || r.item_id)}</td><td class="num">${n(r.n)}</td><td>${esc(r.reason)}</td><td>${esc(r.by_email)}</td></tr>`).join('');
-    $('modal-box').innerHTML = `<div class="row" style="justify-content:space-between"><h3 style="margin:0">🎁 發放道具給 ${esc(email || uid)}</h3><button class="mini secondary" onclick="gmClose()">關閉</button></div>
+    const rows = log.map(r => `<tr><td>${t(r.at)}</td><td>${r.item_id === '$gold' ? '💰 金幣' : esc((gmItems[r.item_id] || {}).name || r.item_id)}</td><td class="num">${n(r.n)}</td><td>${esc(r.reason)}</td><td>${esc(r.by_email)}</td></tr>`).join('');
+    $('modal-box').innerHTML = `<div class="row" style="justify-content:space-between"><h3 style="margin:0">🎁 發放道具／金幣給 ${esc(email || uid)}</h3><button class="mini secondary" onclick="gmClose()">關閉</button></div>
         <p class="muted">道具會放進對方帳號的「共用倉庫」，對方到村莊倉庫 → 共用倉庫取出（取出照常收 100 金幣手續費）。可堆疊道具一次 1～99999 個占 1 格；裝備一次 1～50 件、每件 1 格、+0 普通品質；共用倉庫上限 200 格。</p>
         <div class="row"><input id="gv-item" list="gv-items" placeholder="道具 id（可打名稱搜尋）" style="min-width:260px"><datalist id="gv-items">${opts}</datalist>
             <input id="gv-n" type="number" min="1" value="1" style="width:100px"><input id="gv-reason" type="text" placeholder="原因（記錄用）" value="活動獎勵">
             <button onclick="gmGiveSend('${uid}', '${esc(email || '')}')">發放</button></div>
+        <div class="row"><span>💰 金幣</span><input id="gv-gold" type="number" min="1" max="1000000000" placeholder="金額（1～10 億）" style="width:180px">
+            <input id="gv-greason" type="text" placeholder="原因（記錄用）" value="活動獎勵">
+            <button onclick="gmGoldSend('${uid}', '${esc(email || '')}')">發金幣</button></div>
+        <p class="muted">金幣加進對方帳號共用倉庫的金幣，不佔格子；對方在共用倉庫取出（照常收 100 手續費）。</p>
         <p id="gv-msg" class="muted"></p>
         <h3>最近發放紀錄</h3>${rows ? `<div class="table-wrap"><table><tr><th>時間</th><th>道具</th><th>數量</th><th>原因</th><th>處理人</th></tr>${rows}</table></div>` : '<p class="muted">還沒有發放過。</p>'}`;
 }
@@ -261,6 +265,21 @@ async function gmGiveSend(uid, email) {
     } catch (e) {
         const m = e.message || '';
         $('gv-msg').innerHTML = `<span class="bad">失敗：${esc(/vault full/.test(m) ? '對方共用倉庫格數不夠' : /bad amount/.test(m) ? '數量超過上限' : /unknown item/.test(m) ? '道具目錄沒有這個道具' : m)}</span>`;
+    }
+}
+
+// 發金幣（tools/gm-give.sql 的 gm_give_gold）：加進對方帳號共用倉庫的金幣
+async function gmGoldSend(uid, email) {
+    const g = Number($('gv-gold').value);
+    if (!Number.isInteger(g) || g < 1 || g > 1e9) { $('gv-msg').innerHTML = '<span class="bad">金額要是 1～1,000,000,000 的整數</span>'; return; }
+    $('gv-msg').textContent = '發放中…';
+    try {
+        const r = await q(sb.rpc('gm_give_gold', { p_target: uid, p_gold: g, p_reason: $('gv-greason').value.slice(0, 200) }));
+        await gmGive(uid, email);
+        $('gv-msg').innerHTML = `<span class="good">完成：💰${n(r.gold)} 已加進 ${esc(r.email)} 的共用倉庫（倉庫金幣共 ${n(r.total)}）</span>`;
+    } catch (e) {
+        const m = e.message || '';
+        $('gv-msg').innerHTML = `<span class="bad">失敗：${esc(/bad amount/.test(m) ? '金額超過上限' : /gm_give_gold|function/.test(m) ? '伺服器還沒更新：請在 Supabase 重新執行 tools/gm-give.sql' : m)}</span>`;
     }
 }
 

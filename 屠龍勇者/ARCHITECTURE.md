@@ -178,7 +178,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025ad`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025ae`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3030,6 +3030,12 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - **SQL `tools/gm-give.sql`（使用者自己在 Supabase SQL Editor 執行，可重複執行）**：`dragon_gm_give_log` 發放紀錄（RLS 只有管理者看得到）、`gm_item_list()` 道具清單、`gm_give_item(p_target, p_item, p_n, p_reason)`（p_target＝user_id 或 Email，不分大小寫）。非管理者 `not admin`；道具以 `dragon_loot_catalog` 為準（新道具要先重跑 server-loot-install／loot-catalog 才能發），任務道具拒絕；可堆疊 1 格、裝備每件 1 格；共用倉庫 200 格上限照算（`vault full`）。插入的列 `from_slot = -1`、`uid = 0`，不會被 vault_dupe 誤判；與共用倉庫存取用同一把 advisory lock。
 - 測試：`tools/test-gm-give.js`（PGlite 隔離，只在記憶體）驗證一般玩家被拒、看不到紀錄、Email 大小寫、堆疊／裝備格數、上限、任務道具、找不到帳號、倉庫滿、紀錄內容、可重複安裝。瀏覽器用記憶體角色＋模擬 GM 驗證指令（一般玩家被擋、自己背包 +10 藥水、+3 匕首、數量上限、找不到道具、說明、指定 Email 的 RPC 參數與錯誤訊息、登出後失效），gm.html 用假 sb 驗證發放視窗，Console 無錯誤；沒有連正式後端。
 
+- **發金幣（2026-10-25，版本 `20261025ae`，使用者要求管理頁和 /give 都要、金幣進共用倉庫並記錄）**：
+  - SQL：`gm-give.sql` 新增 `gm_give_gold(p_target, p_gold, p_reason)`（管理者限定；對象同樣可填 user_id 或 Email；一次 1～1,000,000,000；同一把倉庫鎖），金額加進 `dragon_vault.gold`（沒有就新建），紀錄寫 `dragon_gm_give_log`，`item_id = '$gold'`、`n`＝金額；回傳 `{ ok, email, gold, total }`。金幣不佔共用倉庫格數，滿 200 格也能發。
+  - 遊戲：`/give 金幣 金額 [Email]`（也接受 `gold`、`$gold`），`chat.js` 的 `gmGiveGold`（`GM_GOLD_WORDS`、`GM_GIVE_MAX_GOLD`）。**不填 Email 也是走伺服器、進自己帳號的共用倉庫**（不像道具直接放背包），因為直接改角色金幣會碰到存檔簽章與「金幣暴增」判定；要先登入雲端。
+  - 管理頁：🎁 視窗標題改「發放道具／金幣」，多一排「💰 金幣」金額＋原因＋「發金幣」（`gmGoldSend`），紀錄表 `$gold` 顯示「💰 金幣」。
+  - 測試：test-gm-give 加發金幣（Email 大小寫、累加、發給自己、0／超過 10 億拒絕、找不到帳號、一般玩家被拒、紀錄內容、倉庫金幣數）；瀏覽器以模擬 RPC 測 /give 四種情況與管理頁視窗，Console 無錯誤。
+  - **部署**：使用者要在 Supabase SQL Editor 重新執行整份 `tools/gm-give.sql`（可重複執行）。
 ## 129. PC 底部上排：任務、背包移到右邊，左邊 2 格改快捷欄（2026-10-24，版本 `20261024ai`；`ui-frame.js` 的 `PC_SLOTS`、`hotbar.js` 的 `barPcPos`、`player.js` 的 `BAR_N`／`defaultBar`）
 
 - 使用者嫌 PC 底部上排太亂：✨ 技能右邊的 📜 任務、🎒 背包換到右邊，空出來的兩格也做成快捷鍵。
