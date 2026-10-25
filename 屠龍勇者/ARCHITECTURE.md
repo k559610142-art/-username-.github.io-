@@ -66,6 +66,7 @@
 | `Gemini改遊戲.bat`、`ChatGPT改遊戲.bat` | 雙擊啟動：本機伺服器 8790＋開瀏覽器＋Gemini CLI（`--approval-mode auto_edit`）／OpenAI Codex CLI（自動讀 `AGENTS.md`）；PATH 補 node、npm、GitHub Desktop 的 git |
 | `tools/build.js` | **發佈用建置＋混淆**（第 60 節）：42 支 `data/*.js` 接成一支 `data/game.js` 包進函式範圍＋terser 混淆、gm.html 用的接成 `data/gm-lib.js`。由根目錄 `tools/build.js`（GitHub Actions）呼叫 `buildDragon`，開發與測試照舊用原始檔 |
 | `images/sprites/morph/ivory-archmage-v1/`、`tools/sprite-src/morph/ivory-archmage-v1/`、`tools/test-ivory-archmage-morph.js` | m19象牙塔高階秘術師原稿／生成提示詞、RGBA圖集與打包／四向動畫預覽／卷軸隔離驗證（第165節） |
+| `images/sprites/morph/shura-monk-v1/`、`tools/sprite-src/morph/shura-monk-v1/`、`tools/test-shura-monk-morph.js` | m22修羅破戒僧原稿／生成提示詞、透明圖集／腳點打包／四向預覽與卷軸隔離驗證（第168節） |
 | `tools/test-pwa-update.js` | 更新偵測隔離DOM／網路測試：開發與正式合併版、節流、離線／錯誤／版本排序與按下才刷新（第164節） |
 | `tools/check.ps1` | 改完的自動檢查：JS 語法（`node --check`）、`index.html` 所有 `?v=` 等於 `GAME_VERSION`、每個 `data/*.js` 都有載入、沒有衝突標記；通過印 `ALL CHECKS PASSED` |
 | `index.html` | 版面、全部 CSS、三個畫面（title／create／game）、`<script>` 載入 |
@@ -190,7 +191,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261026d`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261026e`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -588,6 +589,8 @@ kills, deaths, settings（含 skillSlots 技能欄 8 格）, created, skills[已
 - 迴圈：`requestAnimationFrame`，只在狩獵畫面顯示時跑（`huntVisible()`），分頁隱藏時不更新；canvas 依 `devicePixelRatio` 調整解析度。
 
 ## 18. 人物模型與職業立繪
+
+- 20261026e：m22修羅破戒僧專屬三向四動作與變身卷軸接線，見第168節。
 
 - 20261026b：m19象牙塔高階秘術師專屬三向四動作與變身卷軸接線，見第165節。
 
@@ -3423,3 +3426,13 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 驗證使用既有test-shop-buy及隔離VM實際各村購買／自訂數量、金幣不足不扣款；不開關瀏覽器、不讀寫正式角色。待使用者重新整理到d→任一村商店→卷軸→變形卷軸10,000→購買一張，確認扣10,000且增加一張；使用者確認後才提交。
 
 第167節驗證：既有shop-buy及隔離四村單張10000／自訂3張30000／不足9999不扣款／原回收150通過；check.ps1 ALL CHECKS PASSED（51檔、50script同d）、50檔正式混淆505KB成功、git diff --check通過。實玩待使用者確認。
+
+
+## 168. 修羅破戒僧藍變專屬外觀（2026-10-26，版本 `20261026e`）
+
+- 使用者提供22.jpg與22-1／22-2／22-3.jfif要求製作變身並接卷軸；三張動作參考實際在桌面變身人物資料夾，四張原稿完整保存於tools/sprite-src/morph/shura-monk-v1。內建image_gen重新製作光頭／黑佛珠／單肩鐵甲／刺青／雙鐵拳套短鏈／酒紅腰布／裹腿赤足，藍白拳勁與聚氣；prompts.json保存完整三向提示詞。
+- 既有MORPH_FORMS.m22接MORPHS.shuraMonk，不新增同名項目。維持藍變拳套系Lv15、命中2／傷害2／攻速6%／爆擊2%，空手僅既有建議、不加武器限制，GM等級規則、一張polyScroll30分鐘不變；沿d版每張10000金幣購買，不改SQL／schema12或載入順序。
+- 圖集images/sprites/morph/shura-monk-v1：384×320格、foot192／270、charH160／drawH48；down／right／up三列、left鏡射，walk4×130ms、attack4×140ms、cast2×220ms、hit2×150ms，共36獨立RGBA格。SW預載四PNG；prepare.py保存裁切框／腳底、以深色衣物及暖色皮膚註冊角色大小、去格外碎片並打包manifest／audit／contact，preview.py輸出四向motion-preview.gif。
+- tools/test-shura-monk-morph.js驗真實卷軸扣量／上次選擇、Lv14拒絕不扣／Lv15使用、原能力表、四向命中／MISS／施法／受傷與互斥／到期、其他變身不受影響、RGBA尺寸與36格來源、SW預載；不開關任何瀏覽器、不操作正式角色或後端。使用者實玩流程：重新整理到e→變身卷軸→拳套系→修羅破戒僧→四方向走路／攻擊／聚氣／受傷，確認後才提交。
+
+第168節驗證：保留右向初稿及image_gen側向修正／repair-prompts，prepare.py通過36格RGBA、不重複、透明留邊與圖集逐格對應。m22卷軸／32款等級／458道具圖片／商店購買回歸通過；原生canvas正式sceneDraw四方向四動作16次真實sprite繪圖與預覽檢視，game-render.png保留來源資料夾。check.ps1 ALL CHECKS PASSED（51檔、50script同20261026e）、正式混淆506KB成功、git diff --check通過。未開關瀏覽器、未操作正式存檔或後端；實玩待使用者確認。

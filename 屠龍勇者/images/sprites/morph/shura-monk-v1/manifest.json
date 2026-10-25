@@ -1,0 +1,685 @@
+{
+  "id": "shura-monk-v1",
+  "name": "修羅破戒僧（藍變）",
+  "form": "m22",
+  "rows": [
+    "down",
+    "right",
+    "up"
+  ],
+  "left": "mirror right",
+  "cellW": 384,
+  "cellH": 320,
+  "footAnchor": [
+    192,
+    270
+  ],
+  "charH": 160,
+  "drawH": 48,
+  "actions": {
+    "walk": {
+      "src": "images/sprites/morph/shura-monk-v1/walk.png",
+      "cellW": 384,
+      "cellH": 320,
+      "frames": {
+        "down": 4,
+        "right": 4,
+        "up": 4
+      },
+      "ms": 130,
+      "cells": [
+        {
+          "direction": "down",
+          "frame": 0,
+          "file": "frames/walk-down-01.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            0,
+            0,
+            363,
+            361
+          ],
+          "sourceFoot": [
+            157.0,
+            355
+          ],
+          "sourceBodyHeight": 334.5
+        },
+        {
+          "direction": "down",
+          "frame": 1,
+          "file": "frames/walk-down-02.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            363,
+            0,
+            726,
+            361
+          ],
+          "sourceFoot": [
+            558.5,
+            353
+          ],
+          "sourceBodyHeight": 334.5
+        },
+        {
+          "direction": "down",
+          "frame": 2,
+          "file": "frames/walk-down-03.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            726,
+            0,
+            1088,
+            361
+          ],
+          "sourceFoot": [
+            927.0,
+            353
+          ],
+          "sourceBodyHeight": 334.5
+        },
+        {
+          "direction": "down",
+          "frame": 3,
+          "file": "frames/walk-down-04.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            1088,
+            0,
+            1451,
+            361
+          ],
+          "sourceFoot": [
+            1285.5,
+            352
+          ],
+          "sourceBodyHeight": 334.5
+        },
+        {
+          "direction": "right",
+          "frame": 0,
+          "file": "frames/walk-right-01.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            0,
+            0,
+            384,
+            341
+          ],
+          "sourceFoot": [
+            193.5,
+            339
+          ],
+          "sourceBodyHeight": 323.5
+        },
+        {
+          "direction": "right",
+          "frame": 1,
+          "file": "frames/walk-right-02.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            384,
+            0,
+            768,
+            341
+          ],
+          "sourceFoot": [
+            575.5,
+            339
+          ],
+          "sourceBodyHeight": 323.5
+        },
+        {
+          "direction": "right",
+          "frame": 2,
+          "file": "frames/walk-right-03.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            768,
+            0,
+            1152,
+            341
+          ],
+          "sourceFoot": [
+            959.5,
+            339
+          ],
+          "sourceBodyHeight": 323.5
+        },
+        {
+          "direction": "right",
+          "frame": 3,
+          "file": "frames/walk-right-04.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            1152,
+            0,
+            1536,
+            341
+          ],
+          "sourceFoot": [
+            1349.5,
+            338
+          ],
+          "sourceBodyHeight": 323.5
+        },
+        {
+          "direction": "up",
+          "frame": 0,
+          "file": "frames/walk-up-01.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            0,
+            0,
+            363,
+            361
+          ],
+          "sourceFoot": [
+            182.5,
+            350
+          ],
+          "sourceBodyHeight": 327.0
+        },
+        {
+          "direction": "up",
+          "frame": 1,
+          "file": "frames/walk-up-02.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            363,
+            0,
+            726,
+            361
+          ],
+          "sourceFoot": [
+            535.5,
+            356
+          ],
+          "sourceBodyHeight": 327.0
+        },
+        {
+          "direction": "up",
+          "frame": 2,
+          "file": "frames/walk-up-03.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            726,
+            0,
+            1088,
+            361
+          ],
+          "sourceFoot": [
+            922.5,
+            356
+          ],
+          "sourceBodyHeight": 327.0
+        },
+        {
+          "direction": "up",
+          "frame": 3,
+          "file": "frames/walk-up-04.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            1088,
+            0,
+            1451,
+            361
+          ],
+          "sourceFoot": [
+            1262.0,
+            356
+          ],
+          "sourceBodyHeight": 327.0
+        }
+      ]
+    },
+    "attack": {
+      "src": "images/sprites/morph/shura-monk-v1/attack.png",
+      "cellW": 384,
+      "cellH": 320,
+      "frames": {
+        "down": 4,
+        "right": 4,
+        "up": 4
+      },
+      "ms": 140,
+      "cells": [
+        {
+          "direction": "down",
+          "frame": 0,
+          "file": "frames/attack-down-01.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            0,
+            361,
+            363,
+            723
+          ],
+          "sourceFoot": [
+            181.0,
+            693
+          ],
+          "sourceBodyHeight": 334.5
+        },
+        {
+          "direction": "down",
+          "frame": 1,
+          "file": "frames/attack-down-02.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            363,
+            361,
+            801,
+            723
+          ],
+          "sourceFoot": [
+            633.5,
+            712
+          ],
+          "sourceBodyHeight": 334.5
+        },
+        {
+          "direction": "down",
+          "frame": 2,
+          "file": "frames/attack-down-03.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            726,
+            361,
+            1164,
+            723
+          ],
+          "sourceFoot": [
+            992.0,
+            713
+          ],
+          "sourceBodyHeight": 334.5
+        },
+        {
+          "direction": "down",
+          "frame": 3,
+          "file": "frames/attack-down-04.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            1088,
+            361,
+            1451,
+            723
+          ],
+          "sourceFoot": [
+            1269.0,
+            700
+          ],
+          "sourceBodyHeight": 334.5
+        },
+        {
+          "direction": "right",
+          "frame": 0,
+          "file": "frames/attack-right-01.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            0,
+            341,
+            384,
+            683
+          ],
+          "sourceFoot": [
+            191.5,
+            681
+          ],
+          "sourceBodyHeight": 323.5
+        },
+        {
+          "direction": "right",
+          "frame": 1,
+          "file": "frames/attack-right-02.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            384,
+            341,
+            848,
+            683
+          ],
+          "sourceFoot": [
+            645.0,
+            681
+          ],
+          "sourceBodyHeight": 323.5
+        },
+        {
+          "direction": "right",
+          "frame": 2,
+          "file": "frames/attack-right-03.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            768,
+            341,
+            1232,
+            683
+          ],
+          "sourceFoot": [
+            1040.0,
+            681
+          ],
+          "sourceBodyHeight": 323.5
+        },
+        {
+          "direction": "right",
+          "frame": 3,
+          "file": "frames/attack-right-04.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            1152,
+            341,
+            1536,
+            683
+          ],
+          "sourceFoot": [
+            1343.5,
+            681
+          ],
+          "sourceBodyHeight": 323.5
+        },
+        {
+          "direction": "up",
+          "frame": 0,
+          "file": "frames/attack-up-01.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            0,
+            361,
+            363,
+            723
+          ],
+          "sourceFoot": [
+            181.0,
+            707
+          ],
+          "sourceBodyHeight": 327.0
+        },
+        {
+          "direction": "up",
+          "frame": 1,
+          "file": "frames/attack-up-02.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            363,
+            361,
+            801,
+            723
+          ],
+          "sourceFoot": [
+            622.5,
+            711
+          ],
+          "sourceBodyHeight": 327.0
+        },
+        {
+          "direction": "up",
+          "frame": 2,
+          "file": "frames/attack-up-03.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            726,
+            361,
+            1164,
+            723
+          ],
+          "sourceFoot": [
+            999.5,
+            704
+          ],
+          "sourceBodyHeight": 327.0
+        },
+        {
+          "direction": "up",
+          "frame": 3,
+          "file": "frames/attack-up-04.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            1088,
+            361,
+            1451,
+            723
+          ],
+          "sourceFoot": [
+            1269.0,
+            711
+          ],
+          "sourceBodyHeight": 327.0
+        }
+      ]
+    },
+    "cast": {
+      "src": "images/sprites/morph/shura-monk-v1/cast.png",
+      "cellW": 384,
+      "cellH": 320,
+      "frames": {
+        "down": 2,
+        "right": 2,
+        "up": 2
+      },
+      "ms": 220,
+      "cells": [
+        {
+          "direction": "down",
+          "frame": 0,
+          "file": "frames/cast-down-01.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            0,
+            723,
+            363,
+            1084
+          ],
+          "sourceFoot": [
+            181.0,
+            1049
+          ],
+          "sourceBodyHeight": 334.5
+        },
+        {
+          "direction": "down",
+          "frame": 1,
+          "file": "frames/cast-down-02.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            363,
+            723,
+            726,
+            1084
+          ],
+          "sourceFoot": [
+            544.0,
+            1042
+          ],
+          "sourceBodyHeight": 334.5
+        },
+        {
+          "direction": "right",
+          "frame": 0,
+          "file": "frames/cast-right-01.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            0,
+            683,
+            384,
+            1024
+          ],
+          "sourceFoot": [
+            191.5,
+            1013
+          ],
+          "sourceBodyHeight": 323.5
+        },
+        {
+          "direction": "right",
+          "frame": 1,
+          "file": "frames/cast-right-02.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            384,
+            683,
+            768,
+            1024
+          ],
+          "sourceFoot": [
+            575.5,
+            1013
+          ],
+          "sourceBodyHeight": 323.5
+        },
+        {
+          "direction": "up",
+          "frame": 0,
+          "file": "frames/cast-up-01.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            0,
+            723,
+            363,
+            1084
+          ],
+          "sourceFoot": [
+            186.0,
+            1052
+          ],
+          "sourceBodyHeight": 327.0
+        },
+        {
+          "direction": "up",
+          "frame": 1,
+          "file": "frames/cast-up-02.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            363,
+            723,
+            726,
+            1084
+          ],
+          "sourceFoot": [
+            544.0,
+            1052
+          ],
+          "sourceBodyHeight": 327.0
+        }
+      ]
+    },
+    "hit": {
+      "src": "images/sprites/morph/shura-monk-v1/hit.png",
+      "cellW": 384,
+      "cellH": 320,
+      "frames": {
+        "down": 2,
+        "right": 2,
+        "up": 2
+      },
+      "ms": 150,
+      "cells": [
+        {
+          "direction": "down",
+          "frame": 0,
+          "file": "frames/hit-down-01.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            726,
+            723,
+            1088,
+            1084
+          ],
+          "sourceFoot": [
+            842.5,
+            1063
+          ],
+          "sourceBodyHeight": 334.5
+        },
+        {
+          "direction": "down",
+          "frame": 1,
+          "file": "frames/hit-down-02.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            1088,
+            723,
+            1451,
+            1084
+          ],
+          "sourceFoot": [
+            1269.0,
+            1048
+          ],
+          "sourceBodyHeight": 334.5
+        },
+        {
+          "direction": "right",
+          "frame": 0,
+          "file": "frames/hit-right-01.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            768,
+            683,
+            1152,
+            1024
+          ],
+          "sourceFoot": [
+            959.5,
+            1012
+          ],
+          "sourceBodyHeight": 323.5
+        },
+        {
+          "direction": "right",
+          "frame": 1,
+          "file": "frames/hit-right-02.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            1152,
+            683,
+            1536,
+            1024
+          ],
+          "sourceFoot": [
+            1343.5,
+            1013
+          ],
+          "sourceBodyHeight": 323.5
+        },
+        {
+          "direction": "up",
+          "frame": 0,
+          "file": "frames/hit-up-01.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            726,
+            723,
+            1088,
+            1084
+          ],
+          "sourceFoot": [
+            892.5,
+            1052
+          ],
+          "sourceBodyHeight": 327.0
+        },
+        {
+          "direction": "up",
+          "frame": 1,
+          "file": "frames/hit-up-02.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            1088,
+            723,
+            1451,
+            1084
+          ],
+          "sourceFoot": [
+            1269.0,
+            1050
+          ],
+          "sourceBodyHeight": 327.0
+        }
+      ]
+    }
+  }
+}
