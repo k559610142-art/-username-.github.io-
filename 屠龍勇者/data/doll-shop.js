@@ -9,7 +9,7 @@ function renderDollShop() {
     const rows = Object.entries(DOLLS).map(([key, d]) => {
         const id = 'doll_' + key, product = dollShopCatalog && dollShopCatalog.items.find(x => x.id === id);
         const price = product ? product.price : DOLL_SHOP_PRICE;
-        return `<div class="list-row"><div class="item-info">${itemThumbHtml(id)}<b>${esc(d.name)}</b><small>${d.quality}・能力待定・💎 ${fmt(price)}</small></div><button class="mini" onclick="dollShopBuy('${id}')" ${dollShopBusy || !dollShopCanBuy() || !product ? 'disabled' : ''}>購買</button></div>`;
+        return `<div class="list-row"><div class="item-info">${itemThumbHtml(id)}<b class="${itemClass({id})}">${esc(d.name)}</b><small>能力待定・💎 ${fmt(price)}</small></div><button class="mini" onclick="dollShopBuy('${id}')" ${dollShopBusy || !dollShopCanBuy() || !product ? 'disabled' : ''}>購買</button></div>`;
     }).join('');
     return `<div class="panel"><b>🧚 娃娃商人・露米</b><p>目前僅 GM 可以購買，一般玩家可查看商品。每次購買一隻，請至帳號共用倉庫取出（沿用倉庫取出費用）。</p><small class="muted">娃娃能力尚未設定。持有鑽石：💎 ${diaCount == null ? '—' : fmt(diaCount)}</small>${dollShopErr ? `<p class="bad">${esc(dollShopErr)}</p>` : ''}<button class="mini secondary" onclick="dollShopLoad()">重新讀取</button></div><div class="list storage-list">${rows}</div>`;
 }

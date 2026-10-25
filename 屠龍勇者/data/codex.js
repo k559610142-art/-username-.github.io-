@@ -162,7 +162,7 @@ function codexDetailHtml(id) {
     <div class="codex-detail">
         <div class="codex-art ${g.cls}">${codexIcon(d)}</div>
         <div class="codex-info">
-            <div class="codex-name ${g.cls}">${esc(d.name)}</div>
+            <div class="codex-name ${d.cat === 'doll' ? itemClass({id}) : g.cls}">${esc(d.name)}</div>
             <div class="codex-tags"><span class="codex-grade ${g.cls}">${g.name}</span><span class="muted">${codexKind(d)}</span>
                 ${own ? `<span class="good">已擁有 ×${fmt(own)}</span>` : '<span class="muted">未擁有</span>'}</div>
             ${d.classes ? `<div class="codex-cls">限定職業：${d.classes.map(c => CLASSES[c].name).join('、')}</div>` : ''}
@@ -193,7 +193,7 @@ function renderCodex() {
     h += `<div class="codex-list" id="codex-list">` + (list.map(id => {
         const d = ITEMS[id], g = codexGradeOf(id);
         return `<button class="codex-row ${id === codexSel ? 'active' : ''} ${codexOwned(id) ? 'owned' : ''}" onclick="selectCodex('${id}')">
-            <span class="codex-ico ${g.cls}">${codexIcon(d)}</span><span class="codex-n ${g.cls}">${d.res ? '🌟' : ''}${esc(d.name)}</span>
+            <span class="codex-ico ${g.cls}">${codexIcon(d)}</span><span class="codex-n ${d.cat === 'doll' ? itemClass({id}) : g.cls}">${d.res ? '🌟' : ''}${esc(d.name)}</span>
             <span class="${g.cls}">${g.name}</span><span class="muted">${codexKind(d)}</span></button>`;
     }).join('') || '<p class="muted">找不到符合的道具</p>') + `</div>`;
     h += `<div class="codex-foot muted">共 ${list.length} 件（全部 ${total} 件，已擁有 ${owned} 件）</div>`;

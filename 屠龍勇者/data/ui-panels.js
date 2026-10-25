@@ -353,7 +353,7 @@ function charCompanionsHtml() {
     return `<aside class="cv-companions" aria-label="娃娃與傭兵欄位">
         <section class="cv-companion cv-doll">
             <h4>魔法娃娃</h4>
-            ${doll ? `<div class="cv-companion-art"><img src="${doll.art}" alt="${esc(doll.name)}"></div><b class="cv-companion-name">${esc(doll.name)}（${doll.quality}）</b><button class="mini secondary" onclick="openItemDialog(${it.uid})">查看／卸下</button>` : '<div class="cv-companion-art cv-companion-empty"><span>未裝備娃娃</span></div>'}
+            ${doll ? `<div class="cv-companion-art"><img src="${doll.art}" alt="${esc(doll.name)}"></div><b class="cv-companion-name ${itemClass(it)}">${esc(doll.name)}</b><button class="mini secondary" onclick="openItemDialog(${it.uid})">查看／卸下</button>` : '<div class="cv-companion-art cv-companion-empty"><span>未裝備娃娃</span></div>'}
             <button class="mini" onclick="openDollPicker()">${doll ? '更換娃娃' : '選擇娃娃'}</button>
             <div class="cv-companion-desc"><b>效果介紹</b><p class="muted">${doll ? '已出場跟隨，能力尚未設定' : '尚無裝備效果'}</p></div>
         </section>
@@ -366,7 +366,7 @@ function charCompanionsHtml() {
 }
 function openDollPicker() {
     const list = player.inv.filter(x => ITEMS[x.id].cat === 'doll');
-    openDialog('選擇娃娃', `<div class="list">${list.map(x => `<div class="list-row"><div class="item-info">${itemThumbHtml(x.id)}${esc(itemName(x))} <small>${DOLLS[ITEMS[x.id].doll].quality}・能力待定</small></div><button class="mini" onclick="equipDollBtn(${x.uid})">裝備</button></div>`).join('') || '<p class="muted">背包沒有娃娃，目前由 GM 發放測試。</p>'}</div>`);
+    openDialog('選擇娃娃', `<div class="list">${list.map(x => `<div class="list-row"><div class="item-info">${itemThumbHtml(x.id)}<b class="${itemClass(x)}">${esc(itemName(x))}</b> <small>能力待定</small></div><button class="mini" onclick="equipDollBtn(${x.uid})">裝備</button></div>`).join('') || '<p class="muted">背包沒有娃娃，目前由 GM 發放測試。</p>'}</div>`);
 }
 function equipDollBtn(uid) {
     const it = findInv(uid);
@@ -440,6 +440,7 @@ function bagMatch(def) {
 
 function itemClass(inst) {
     const d = ITEMS[inst.id];
+    if (d.cat === 'doll' && DOLLS[d.doll]) return 'doll-' + DOLLS[d.doll].quality;
     if (d.safe >= 0 && (inst.ench || 0) > d.safe) return 'ench-hi';
     if ((inst.ench || 0) < 0) return 'cursed';
     if (inst.q) return QUALITY[inst.q].cls;

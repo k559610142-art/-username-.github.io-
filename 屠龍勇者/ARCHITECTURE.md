@@ -181,7 +181,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025ah`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025ai`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3285,3 +3285,9 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 新doll-shop.js在vault後、auction前載入。DOLL_SHOP_PRICE預設500，dollShopCatalog／dollShopUser／dollShopBusy／dollShopErr與dollShopRequests是工作階段狀態；openDollShop／renderDollShop／dollShopLoad／dollShopCanBuy／dollShopRefresh／dollShopBuy／dollShopPurchase處理商品、GM權限、確認與購買。切換帳號後不能沿用原GM狀態；失敗重試沿用同商品請求UUID，成功才清除，重新載入頁面後不保留。能力仍待定，SAVE_SCHEMA仍9。
 - SQL建立dragon_doll_shop_catalog／dragon_doll_shop_orders及doll_shop_status／doll_shop_buy。RLS拒絕直接讀寫商品／訂單表，status供瀏覽；buy再驗auth.uid與dragon_is_admin、商品／價格、200格倉庫容量及餘額，同帳號沿用倉庫advisory lock，單一交易扣伺服器錢包、寫鑽石紀錄、交付一隻娃娃{id,n:1,ench:0}。同帳號同請求UUID只交付一次。重跑安裝保留已調整售價；沿用共用倉庫取出費用。未更新其他SQL或正式後端目錄，其他功能仍依既有目錄限制。
 - Node VM測試四城七名NPC前方皆可尋路到達、21商品／普通玩家拒購／GM確認／斷線重試同UUID／帳號隔離；PGlite隔離資料庫測重跑、一般玩家與匿名禁購、21款各500、扣鑽／交付／重試不重扣、錯價／未知物品／不足／倉庫滿，並回歸娃娃、道具圖、共用倉庫與傳送門。未開關瀏覽器，原生canvas呼叫正式sceneDraw繪製四城檢視；正式SQL安裝與遊戲實玩待使用者執行確認。
+
+## 156. 娃娃名稱品質顏色（2026-10-25，版本 `20261025ai`）
+
+- 依使用者指定：T0七彩流光、T1紅、T2黃、T3紫、T4藍；index.html新增doll-T0～doll-T4樣式，T0沿用curFlow動畫，減少動態效果設定下停用動畫。
+- ui-panels的itemClass優先由DOLLS品質回傳娃娃樣式，套用背包與倉庫既有名稱元件；人物charCompanionsHtml、選擇娃娃、doll-shop商品與codex清單／介紹名稱同步使用。移除人物卡括號T階級及選擇／商店名稱旁品質文字，內部品質與道具名稱不變，能力／存檔／SQL不改。
+- 未啟動或關閉瀏覽器，沿既有娃娃與商店隔離測試、check.ps1及正式混淆建置驗證；實際流光與顏色待使用者遊戲內驗收。
