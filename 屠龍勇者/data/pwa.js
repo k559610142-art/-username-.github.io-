@@ -1,10 +1,11 @@
 // 屠龍勇者：PWA（ARCHITECTURE.md 第 12 節）—— 註冊 Service Worker、安裝說明、新版本提示、持久儲存
 // main.js 啟動時呼叫 initPwa()；設定分頁「📲 安裝到主畫面」→ openInstallGuide()
-// 新版本：每 30 分鐘與切回前景時抓 index.html 比對 ?v=，有新版在畫面下方顯示「🔄 有新版本，點此更新」（讓玩家自己按）
+// 新版本：啟動、每分鐘、回前景／恢復連線時檢查開發版與正式合併版，玩家點提示才更新。
 
-const PWA_UPDATE_CHECK_MS = 30 * 60 * 1000;
+const PWA_UPDATE_CHECK_MS = 60 * 1000;
 let pwaInstallEvent = null;   // Android／電腦 Chrome、Edge 的安裝事件，按按鈕時才跳出
-let pwaLastCheck = 0;
+let pwaLastCheck = -Infinity;
+let pwaCheckBusy = false;
 
 function isStandaloneApp() {
     return (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
@@ -30,6 +31,9 @@ function initPwa() {
     } catch (e) {}
     setInterval(checkNewVersion, PWA_UPDATE_CHECK_MS);
     document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') checkNewVersion(); });
+    window.addEventListener('focus', checkNewVersion);
+    window.addEventListener('online', checkNewVersion);
+    checkNewVersion();
     // iPhone 主畫面版與 Safari 的存檔是分開的：第一次從主畫面開、沒有存檔時提醒一次
     try {
         if (isStandaloneApp() && pwaIsIOS() && !hasSave() && !localStorage.getItem('dragonSlayer_pwa_hint')) {
@@ -39,24 +43,47 @@ function initPwa() {
     } catch (e) {}
 }
 
-// 抓最新的 index.html 比對版本號（至少間隔 5 分鐘）
+// z後延伸aa，不能直接按字串比較；忽略較舊快取或回退頁面。
+function pwaNewerVersion(ver, current) {
+    const a = /^(\d{8})([a-z]+)$/.exec(ver), b = /^(\d{8})([a-z]+)$/.exec(current);
+    if (!a || !b) return false;
+    const seq = s => Array.from(s).reduce((n, c) => n * 26 + c.charCodeAt(0) - 96, 0);
+    return a[1] > b[1] || (a[1] === b[1] && seq(a[2]) > seq(b[2]));
+}
+// 網路輪詢用真實時間節流，不跟隨戰鬥模擬時鐘；前景最多每15秒一次。
 async function checkNewVersion() {
-    if (Date.now() - pwaLastCheck < 5 * 60 * 1000) return;
+    if (document.visibilityState === 'hidden' || navigator.onLine === false || pwaCheckBusy || Date.now() - pwaLastCheck < 15000) return;
     pwaLastCheck = Date.now();
+    pwaCheckBusy = true;
+    const abort = new AbortController(), timeout = setTimeout(() => abort.abort(), 10000);
     try {
-        const html = await (await fetch('index.html', { cache: 'no-cache' })).text();
-        const m = html.match(/data\/config\.js\?v=([^"'&]+)/);
-        if (m && m[1] !== GAME_VERSION) showUpdateBanner(m[1]);
-    } catch (e) {}
+        const res = await fetch('index.html', { cache: 'no-store', signal: abort.signal });
+        if (!res.ok) return;
+        const html = await res.text();
+        const m = html.match(/<script\b[^>]*\bsrc=["']data\/(?:config|game)\.js\?v=(\d{8}[a-z]+)["']/i);
+        if (m && pwaNewerVersion(m[1], GAME_VERSION)) showUpdateBanner(m[1]);
+    } catch (e) {} finally { clearTimeout(timeout); pwaCheckBusy = false; }
 }
 
 function showUpdateBanner(ver) {
-    if ($('pwa-update')) return;
+    const old = $('pwa-update');
+    if (old) {
+        if (!old.disabled && pwaNewerVersion(ver, old.dataset.version)) {
+            old.dataset.version = ver;
+            old.textContent = `🔄 有新的更新檔（v${ver}），點此更新`;
+            old.title = `新版本 ${ver}；點擊後儲存並重新載入`;
+        }
+        return;
+    }
     const b = document.createElement('button');
     b.id = 'pwa-update';
-    b.textContent = '🔄 有新版本，點此更新';
-    b.title = `新版本 ${ver}`;
+    b.type = 'button';
+    b.dataset.version = ver;
+    b.setAttribute('aria-live', 'polite');
+    b.textContent = `🔄 有新的更新檔（v${ver}），點此更新`;
+    b.title = `新版本 ${ver}；點擊後儲存並重新載入`;
     b.onclick = () => {
+        if (b.disabled) return;
         b.disabled = true;
         b.textContent = '更新中…';
         saveGame();
