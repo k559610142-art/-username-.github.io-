@@ -13,6 +13,7 @@ function gameTick() {
     // 分頁在背景被瀏覽器暫停太久（或電腦休眠）：用離線收益補上這段時間（要登入、扣鑽石）
     if (gap >= OFFLINE_MIN_MS && offlineEligible()) { offlineSettle(gap); return; }
     cleanBuffs();
+    dollAbilityTick(dt);
     regenAcc += dt;
     if (regenAcc >= REGEN_MS) { regenAcc -= REGEN_MS; regenTick(); }
     walkTick();

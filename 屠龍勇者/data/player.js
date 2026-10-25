@@ -46,7 +46,7 @@ function createPlayer(name, cls, stats) {
         baseHp: c.startHp + conHpBonus(stats.con), baseMp: c.startMp + wisMpBonus(stats.wis),
         hp: 1, mp: 0,
         inv: [], equip: {}, storage: [], nextUid: 1,
-        buffs: {}, cds: {},
+        buffs: {}, cds: {}, dollState: {},
         loc: { type: 'town', id: 'talking' }, hunting: false,
         towerMax: 10, towerCleared: {}, towerBossCd: {}, dragons: {}, dragonCd: {},
         kills: 0, deaths: 0,
@@ -137,6 +137,7 @@ function equipItem(uid, silent) {
     if (player.equip[slot]) unequipSlot(slot);
     removeInst(uid);
     player.equip[slot] = it;
+    if (slot === 'doll') dollResetTransient();
     clampHpMp();
     return true;
 }
@@ -145,6 +146,7 @@ function unequipSlot(slot) {
     const it = player.equip[slot];
     if (!it) return;
     delete player.equip[slot];
+    if (slot === 'doll') dollResetTransient();
     player.inv.push(it);
     clampHpMp();
 }
@@ -276,6 +278,8 @@ function defenseOf(st) { return 10 - st.ac; }
 
 function calcStats() {
     const p = player, c = CLASSES[p.cls], fx = {}, now = gameNow;
+    const doll = dollEquipped(p);
+    if (doll) addFx(fx, DOLL_ABILITIES[doll].fx);
     let weaponEnch = 0;
     for (const slot of SLOT_KEYS) {
         const it = p.equip[slot];

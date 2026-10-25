@@ -27,7 +27,7 @@ function setSlot(i,x,n) {
  nodes['map-queue-select-'+i]={value:String(x.uid)};nodes['map-queue-qty-'+i]={value:String(n)};mapQueueSet(i);
 }
 function finish() {assert(inMapRun());mapOnKill({mapBoss:true});assert(inTown());mapQueueTick();}
-assert.equal(SAVE_SCHEMA,9);
+assert.equal(SAVE_SCHEMA,10);
 // ① 3張T1刷完才到1張T2；每次只消耗預先選定的一張，完成後停止。
 resetQueue();const first=maps(1,3),second=maps(2,1);
 setSlot(0,first[0],3);setSlot(1,second[0],1);

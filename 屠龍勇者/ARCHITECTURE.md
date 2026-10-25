@@ -161,6 +161,8 @@
 | `tools/test-boss-dodge-boundary.js` | 紅圈閃避區界／分區／繞路限制、無路原地承傷且持續掛機隔離回歸（第148節） |
 | `tools/test-loot-auto-sell.js` | 指定自動販賣清單、確認／取消、舊檔轉換、本機與後端入帳／收據重送與失敗還原隔離測試（第146節） |
 | `tools/test-dolls.js` | 21款娃娃道具／裝卸／跟隨／存檔隔離測試（第154節） |
+| `data/doll-abilities.js` | 21款娃娃基本能力、被動、冷卻／出場時間與觸發狀態（第157節） |
+| `tools/test-doll-abilities.js` | 21款數值、實際戰鬥／藥水、冷卻存檔、範圍防重複與模擬隔離（第157節） |
 | `tools/test-shop-buy.js` | 自訂購買數量隔離測試：整數／金額驗證、金幣與負重、裝備逐件建立、離村拒絕舊視窗（第 75 節；不發佈） |
 | `tools/test-log-drawer.js` | 訊息框定位回歸測試：PC 頂端樓層按鈕不推高訊息框、手機避開操作列（第 76 節；不發佈） |
 | `tools/test-loot-log.js` | 掉落紀錄隔離整合測試：實際掉落／超重／自動賣出／任務／地圖、分頁與模擬隔離（第 77 節；不發佈） |
@@ -170,7 +172,7 @@
 
 ## 2. 載入順序與依賴
 
-`config → classes → skills → items → spellbook → monsters → zones → quests → resonance → boss-enchant → boss-vfx → world-vfx → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → pwa → loot → main`
+`config → classes → skills → items → spellbook → monsters → zones → quests → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → pwa → loot → main`
 
 - 上層資料檔（config～quests）只在「載入時」用到更前面的檔案；quests 載入時會把獎勵裝備與任務道具寫進 `ITEMS`，所以要在 items 之後。
 - resonance 載入時要改 `ITEMS`（含任務武器）、`MONSTERS` 掉落、`RECIPES`，所以在 quests 之後；`findSkill`（skills.js）在執行期才呼叫它的 `findResonanceSkill`。
@@ -181,7 +183,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025ak`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025al`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -211,6 +213,8 @@
   - 怪物種族標籤（`monsters.js` 的 `MONSTER_TAGS`）：`human` 人型、`demon` 惡魔、`holy` 神聖；不死系沿用 `undead`。剋制加成同時作用在物理與魔法傷害。
 
 ## 5. 能力計算（`calcStats`）
+
+- 20261025al：calcStats納入單一已裝備娃娃的DOLL_ABILITIES.fx；被動固定減傷也反映在reduce。詳見第157節。
 
 | 數值 | 公式 |
 |---|---|
@@ -369,6 +373,8 @@
 - 原表缺的 21、43 級依 (n+1)⁴ − n⁴ 規律補上（39,775、329,295）；原表 27 級總經驗 14656 為筆誤，應為 614,656。
 
 ## 10. 存檔欄位（`player`）
+
+- schema 10（20261025al）：使用者明確同意新增dollState，各娃娃種類共用{elapsed:出場累積毫秒,readyAt:遊戲時鐘冷卻到期}；舊檔補空、只保留合法種類與有限範圍值，見第157節。
 
 - schema 7（20261024t）：新增`mapQueue`（預設null），目前排程地圖`mapRun`／`mapPortal`可帶`queueSlot`。使用者明確同意此存檔變更；轉換與恢復規則見第126節。
 
@@ -3292,3 +3298,18 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 依使用者指定：T0七彩流光、T1紅、T2黃、T3紫、T4藍；index.html新增doll-T0～doll-T4樣式，T0沿用curFlow動畫，減少動態效果設定下停用動畫。
 - ui-panels的itemClass優先由DOLLS品質回傳娃娃樣式，套用背包與倉庫既有名稱元件；人物charCompanionsHtml、選擇娃娃、doll-shop商品與codex清單／介紹名稱同步使用。移除人物卡括號T階級及選擇／商店名稱旁品質文字，內部品質與道具名稱不變，能力／存檔／SQL不改。
 - 未啟動或關閉瀏覽器，沿既有娃娃與商店隔離測試、check.ps1及正式混淆建置驗證；實際流光與顏色待使用者遊戲內驗收。
+
+
+## 157. 21款娃娃融合能力與觸發狀態（2026-10-25，版本 `20261025al`，schema 10）
+
+- 最終check.ps1 ALL CHECKS PASSED（51檔／50script／al），50檔正式混淆建置498KB通過；製作中另一項更新佔用ak，改用al避免版本倒退，不覆蓋該項改動。
+
+- 使用者採用兩項基本能力＋一項特色被動的完整21款融合表，並明確同意SAVE_SCHEMA 9→10及舊檔轉換。能力表以data/doll-abilities.js的DOLL_ABILITIES為唯一來源，品質名單／售價／取得限制不變，沒有修改SQL。新檔在world-vfx後、player前載入，僅載入時依賴ITEMS／DOLLS，執行期才讀player與戰鬥函式；初始化補齊21款ITEMS.desc。
+- 常駐：calcStats將已裝備娃娃fx納入既有HP／MP／AC／命中／傷害／SP／MR／閃避／負重／經驗／金幣計算；靈龜減傷2、麒麟減傷5由reduce生效，所有傷害入口照原流程先扣reduce。只算單一equip.doll，不堆疊其他持有娃娃。裝卸仍clampHpMp，不能用裝卸回血。
+- 攻擊：physicalAttack與castSpell接入dollAttackMult／dollOnHit。魔犬20、獅鷲30、金龍60（首領／龍90）為5%追加固定傷害；朱雀只限非共鳴傷害法術5%追加40。每次施法／物理技能共享scope，範圍／多段最多擲一次；普攻每次可擲一次。追加傷害不呼叫原攻擊、吸血或共鳴命中流程，DOT／反傷／共鳴／附魔傷害不觸發娃娃。饕餮10%回HP最多25且不超過該次實際基礎傷害，不含過量傷害；白虎同一主目標連攻5秒加8%，停攻3秒、換目標或裝卸重置追獵。
+- 防禦：monsterAttack、bossSkillTick與團戰吐息統一dollTakeDamage，骨盾10%減10；冰霜受擊後10%觸發10%減傷5秒／CD20秒（不回溯降低觸發那次傷害）；靈狐HP嚴格低於40%獲盾50／5秒／CD45秒；玄武同門檻減傷15%／6秒／CD30秒，初次致命傷不先觸發低血保護；鳳凰致命傷先免死並回最大HP20%，CD600秒，之後才判onDeath。效果到期不再減傷；卸下或死亡移除臨時效果。
+- 補給：dollAbilityTick由主迴圈／離線量測／團戰逐步呼叫，只累積存活且出場時間，不按登入間隔補發。幼鹿32秒HP25、貓頭鷹64秒MP10、精靈32秒HP20／MP4、潮汐64秒MP15、青龍64秒MP22，恢復不超上限，屬絕對恢復不受負重自然恢復門檻影響。松鼠HP藥水量×1.1四捨五入；花兔喝藥觸發每秒HP6共5秒／CD10秒，換下中止；蘑菇兔普通怪擊殺10%加該隻實際金幣20%取整，首領／龍除外。
+- 存檔：createPlayer預設dollState={}；dollStateNormalize由migrateSave呼叫，只保留21款白名單、各{elapsed,readyAt}有限非負數；elapsed小於週期、readyAt不超gameNow＋該技能CD。每角色、每種類共用，換同款另一隻也不重置，冷卻離線可自然經過；出場恢復進度僅實際出場累積，舊檔從0開始。dollRuntime為WeakMap，保存短暫護盾／減傷／追獵／持續回血／提示，不入存檔；裝卸或重登清除短暫效果，保留累積與冷卻。
+- 模擬：measureHunt完整還原dollState及正在生效的runtime，回傳實際觸發的剩餘冷卻；離線收益正式入帳才合併冷卻與有效出場時間。raidSimulate結果帶各隊員doll／dollMs／dollLocks；副本入帳與世界首領成功結算才套用，沿既有防重領。合併只延長而不縮短現有冷卻，出場時間歸參戰娃娃而非領獎時新換的娃娃。離線收益仍沿既有抽樣估算法，非逐秒重播。
+- 顯示：人物娃娃卡／選擇／背包道具介紹／商店／圖鑑列完整基本能力及被動；沿品質顏色且無名稱T字尾。icons的buffIconsHtml將娃娃放臨時區，顯示恢復倒數／待命／觸發發光／持續秒數與盾量／冷卻。dollNotify寫doll類別紀錄，sceneReadEvents在角色頭上顯示被動名與實際恢復／追加傷害。其餘新全域函式：dollEquipped／dollAbilityHtml／dollResetTransient／dollContext／dollSaved／dollRestore／dollTrigger／dollLowHp／dollPotion／dollKillGold／dollStatusInfo／dollSimulationLocks／dollApplySimulation。
+- tools/test-doll-abilities.js使用真實遊戲函式隔離測試全部21款數值／卸下、加密舊新存檔、每款定時恢復與換裝保留、實際藥水／持續回血／盾／減傷、鳳凰普通攻擊與首領紅圈免死及同款換裝重登CD、白虎追獵重置、實際範圍法術與多段物理只觸發一次、共鳴排除、實傷吸血、金幣、量測還原護盾、團戰剩餘冷卻。既有dolls／map-queue／loot-auto-sell同步schema10。未讀寫正式存檔、未開關瀏覽器，實際遊戲介面待使用者驗收。

@@ -1017,6 +1017,7 @@ function sceneReadEvents() {
     let castNow = false, missNow = false;
     for (const l of gameLog) {
         if (l.seq <= scene.lastSeq) continue;
+        if (l.cls === 'doll') addFloat(pl.rx, pl.ry - .7, l.msg.replace('🧚 ', ''), '#86e4ff');
         if (l.cls === 'crit' && l.msg.includes('爆擊')) scene.critNext = true;   // 反擊也用 crit 樣式，但不是爆擊
         if (l.cls === 'miss') {
             if (l.msg.includes('沒有命中') && e) { addFloat(e.rx, e.ry, 'MISS', '#9a9a9a'); missNow = true; }

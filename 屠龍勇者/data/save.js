@@ -136,6 +136,8 @@ function migrateSave(data) {
     const fresh = { statPoints: 0, elixirs: 0, storage: [], buffs: {}, cds: {}, towerMax: 10, towerCleared: {}, towerBossCd: {}, dragons: {}, dragonCd: {}, kills: 0, deaths: 0, mapRun: null, mapPortal: null,
         quests: { ch: 0, active: false, prog: 0, bossDone: false } };
     for (const k in fresh) if (p[k] == null) p[k] = fresh[k];
+    // schema 10：各款娃娃共用冷卻與出場累積時間；舊檔預設空，不影響道具。
+    dollStateNormalize(p);
     p.settings = Object.assign(JSON.parse(JSON.stringify(DEFAULT_SETTINGS)), p.settings || {});
     // schema 8：指定自動販賣清單；舊檔預設空，去除不存在或不能回收的道具。
     p.settings.lootAutoSell = [...new Set((Array.isArray(p.settings.lootAutoSell) ? p.settings.lootAutoSell : [])

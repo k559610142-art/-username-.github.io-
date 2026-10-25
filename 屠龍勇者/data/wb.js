@@ -78,6 +78,7 @@ async function wbAttack() {
         const r = await wbRpc('wb_attack', { p_wb: w.id, p_dmg: Math.round(me.dmg), p_name: player.name, p_cls: player.cls });
         // 戰鬥中用掉的藥水、彈藥照扣
         for (const id in me.used) consumeItem(id, Math.min(me.used[id], countItem(id)));
+        dollApplySimulation(me.dollLocks, me.dollMs, me.doll || null);
         addLog(`👹 挑戰世界首領「${w.name}」：造成 ${fmt(r.dmg)} 傷害${r.killed ? '，給了最後一擊！' : ''}`, r.killed ? 'boss' : 'sys');
         saveGame(); refreshUI();
         wbLast = { dmg: me.dmg, applied: r.dmg, died: me.died, used: me.used, killed: r.killed, capped: r.capped, events: res.events.slice(-10) };

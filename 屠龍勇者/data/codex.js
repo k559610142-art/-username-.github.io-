@@ -84,7 +84,7 @@ function codexSources(id) {
         list.push(`掉落：Lv.${need} 以上的怪物 ${MAP_DROP_P * 100}%、異界裡 ${MAP_DROP_IN_MAP_P * 100}%（T${Math.max(1, d.tier - 1)}～T${Math.min(MAP_TIERS, d.tier + 1)} 異界）`);
         if (d.tier > 1) list.push(`通關獎勵：T${Math.max(1, d.tier - 2)}～T${d.tier} 異界首領`);
     }
-    if (d.cat === 'doll') list.push('GM 發放測試；目前不由商店或怪物掉落取得，能力待定');
+    if (d.cat === 'doll') list.push('GM 發放，或娃娃商人限 GM 以鑽石購買後到共用倉庫領取；怪物不掉落');
     if (d.soulEnchant) list.push('封存：村莊鍛造師使用永夜之魂 ×1＋500,000 金幣，取出武器的「' + BOSS_ENCHANTS[d.soulEnchant].name + '」附魔');
     if (d.cat === 'currency') list.push(`掉落：${CURRENCY[id].minLv ? `Lv.${CURRENCY[id].minLv} 以上的怪物` : '所有怪物'} ${Math.round(CURRENCY_DROP_P * 100)}%（首領 ${Math.round(CURRENCY_BOSS_P * 100)}%，${CURRENCY[id].w < 0.3 ? '極稀有' : CURRENCY[id].w < 3 ? '稀有' : '常見'}）`);
     if (d.price) {
@@ -163,6 +163,7 @@ function codexDetailHtml(id) {
         <div class="codex-art ${g.cls}">${codexIcon(d)}</div>
         <div class="codex-info">
             <div class="codex-name ${d.cat === 'doll' ? itemClass({id}) : g.cls}">${esc(d.name)}</div>
+            ${d.cat === 'doll' ? dollAbilityHtml(id) : ''}
             <div class="codex-tags"><span class="codex-grade ${g.cls}">${g.name}</span><span class="muted">${codexKind(d)}</span>
                 ${own ? `<span class="good">已擁有 ×${fmt(own)}</span>` : '<span class="muted">未擁有</span>'}</div>
             ${d.classes ? `<div class="codex-cls">限定職業：${d.classes.map(c => CLASSES[c].name).join('、')}</div>` : ''}

@@ -101,7 +101,7 @@ function usePotion(id, form) {
     if (d.cat === 'potion') potReadyAt = gameNow + POTION_CD_MS;
     if (d.heal) {
         const st = calcStats(), before = player.hp;
-        player.hp = Math.min(st.maxHp, player.hp + rand(d.heal[0], d.heal[1]));
+        player.hp = Math.min(st.maxHp, player.hp + dollPotion(rand(d.heal[0], d.heal[1])));
         addLog(`🧪 ${d.short || d.name}：HP +${player.hp - before}`, 'heal');
     }
     if (d.buff) {
@@ -273,7 +273,7 @@ function bossSkillTick(dt) {
         let dmg = Math.round(rand(m.dmg[0], m.dmg[1]) * TELE_MUL) - st.reduce;
         dmg = Math.max(1, dmg);
         dmg = bossEnchantAbsorb(Math.max(1, Math.round(bossEnchantEnemyDamage(m, dmg))));
-        player.hp -= dmg;
+        dmg = dollTakeDamage(dmg, st);
         addLog(`💥 ${m.name}的「${t.name}」命中！你受到 ${dmg} 傷害`, 'hurt');
         if (player.hp <= 0) onDeath(m);
         else resonanceOnHurt(st);
@@ -513,9 +513,12 @@ function castSpell(k, st) {
     if (!k.id.startsWith('res_')) hunt.pCd = st.castMs;   // 攻擊魔法用施法間隔（不看武器）；共鳴觸發的不影響出手計時
     // 範圍魔法：打全部圍上來的怪
     const targets = k.aoe ? mobTargets() : [hunt.mon];
+    const dollScope = {};
     const parts = targets.map(m => {
-        const d = magicDamage(k.dmg, k.spK, st, k.undeadMul, m);
+        const d = Math.max(1, Math.round(magicDamage(k.dmg, k.spK, st, k.undeadMul, m) * (!k.id.startsWith('res_') ? dollAttackMult(m) : 1)));
+        const dealt = Math.min(Math.max(0, m.hp), d);
         m.hp -= d;
+        if (!k.id.startsWith('res_')) dollOnHit(m, dealt, true, dollScope);
         lifeSteal(d, st);
         return `${m.name} ${d}`;
     });
@@ -608,8 +611,12 @@ function physicalAttack(st, mult, opt, mon = hunt.mon) {
         total += Math.max(1, Math.round(d));
     }
     const label = opt.label ? `「${opt.label}」` : '你';
+    const dollMult = !opt.res ? dollAttackMult(mon) : 1;
     if (!hits) { addLog(`${label}沒有命中`, 'miss'); return true; }
+    total = Math.max(1, Math.round(total * dollMult));
+    const dealt = Math.min(Math.max(0, mon.hp), total);
     mon.hp -= total;
+    if (!opt.res) dollOnHit(mon, dealt, false, opt);
     lifeSteal(total, st);
     if (st.weapon && st.weapon.drain) player.mp = Math.min(st.maxMp, player.mp + rand(st.weapon.drain[0], st.weapon.drain[1]));
     if (!opt.res) { resonanceOnHit(); bossEnchantHit(mon, st); }   // 共鳴武器：觸發／累積共鳴值（共鳴技能本身的攻擊不算）
@@ -638,7 +645,7 @@ function monsterAttack(st, mon) {
         dmg -= a;
     }
     dmg = bossEnchantAbsorb(Math.max(0, Math.round(bossEnchantEnemyDamage(mon, dmg))));
-    player.hp -= dmg;
+    dmg = dollTakeDamage(dmg, st);
     worldVfxEnemy(mon, magic);
     addLog(magic ? `${mon.name}施放「${mon.magic.name}」，你受到 ${dmg} 傷害` : `${mon.name}攻擊，你受到 ${dmg} 傷害`, 'hurt');
     if (player.hp <= 0) { onDeath(mon); return; }
@@ -666,6 +673,7 @@ function onKill(mon) {
     let gold = Math.round(rand(mon.gold[0], mon.gold[1]) * mb);
     if (player.cls === 'royal') gold = Math.round(gold * (1 + Math.max(0, st.cha - 10) * 0.03));
     gold = Math.round(gold * (1 + st.goldPct));   // 特殊詞綴「金幣加成」
+    gold = dollKillGold(mon, gold);
     player.gold += gold;
     player.kills++;
     session.kills++;
@@ -778,6 +786,7 @@ function checkAutoHome() {
 }
 
 function onDeath(killer) {
+    dollResetTransient();
     const z = currentZone(), mon = killer || (hunt && hunt.mon);
     player.deaths++;
     let msg = `💀 你被${mon ? mon.name : '敵人'}擊倒了…`;

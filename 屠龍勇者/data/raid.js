@@ -94,7 +94,7 @@ function raidSimulate(def, list, opts = {}) {
             return {
                 i, uid: x.uid, clan: x.clan || null, name: p.name, cls: p.cls, lv: p.lv, p, alive: true, dmg: 0, heal: 0, maxHp: st.maxHp,
                 hunt: { state: 'fight', timer: 0, mon: boss, mobs: [boss], pCd: rand(200, 1200), joinCd: 1e15, warned: {} },
-                deaths: p.deaths, inv0: raidConsumables(p), say: -99999,
+                deaths: p.deaths, inv0: raidConsumables(p), doll0: JSON.parse(JSON.stringify(p.dollState)), dollMs: 0, say: -99999,
             };
         });
         const alive = () => ms.filter(m => m.alive);
@@ -114,6 +114,8 @@ function raidSimulate(def, list, opts = {}) {
             for (const m of ms) {
                 if (!m.alive) continue;
                 player = m.p; hunt = m.hunt;
+                dollAbilityTick(TICK_MS);
+                m.dollMs += TICK_MS;
                 if (!player.hunting || !hunt) continue;   // 彈藥用完等：停在旁邊
                 const st = calcStats();
                 autoSupport(st);
@@ -183,7 +185,7 @@ function raidSimulate(def, list, opts = {}) {
                         d = Math.max(0, Math.round(d - st.reduce));
                         if (st.absorb && player.mp > 0) { const a = Math.min(player.mp, Math.floor(d * st.absorb)); player.mp -= a; d -= a; }
                         d = bossEnchantAbsorb(Math.max(0, Math.round(bossEnchantEnemyDamage(boss, d))));
-                        player.hp -= d;
+                        d = dollTakeDamage(d, st);
                         hit++;
                         if (player.hp <= 0) down(m, `「${name}」`);
                     }
@@ -207,7 +209,8 @@ function raidSimulate(def, list, opts = {}) {
                 const d = m.inv0[id] - (now[id] || 0);
                 if (d > 0) used[id] = d;
             }
-            return { uid: m.uid, clan: m.clan, name: m.name, cls: m.cls, lv: m.lv, maxHp: m.maxHp, dmg: Math.round(m.dmg), heal: Math.round(m.heal), died: !m.alive, used };
+            return { uid: m.uid, clan: m.clan, name: m.name, cls: m.cls, lv: m.lv, maxHp: m.maxHp, dmg: Math.round(m.dmg), heal: Math.round(m.heal), died: !m.alive, used,
+                dollLocks: dollSimulationLocks(m.doll0, m.p.dollState), doll: dollEquipped(m.p), dollMs: m.dollMs };
         });
         return {
             v: 1, raid: def.id, n: list.length, win, ms: t, enraged,
@@ -251,6 +254,7 @@ function raidApplyReward(res, uid, runKey) {
     if (player.raidRuns.length > 30) player.raidRuns.shift();
     const def = RAID_BY_ID[res.raid];
     const out = { win: res.win, exp: 0, gold: 0, items: [], used: me.used };
+    dollApplySimulation(me.dollLocks, me.dollMs, me.doll || null);
     for (const id in me.used) consumeItem(id, Math.min(me.used[id], countItem(id)));
     if (!res.win || !def) { addLog(`🐉 團隊副本：討伐${res.boss.name}失敗`, 'warn'); return out; }
     // 血盟加成：同血盟 2 人以上（包含自己）經驗、金幣各 +10%（clan.js）

@@ -299,6 +299,8 @@ function buffIconsHtml() {
     const add = (group, key, color, name, ico, text, cls = '') => {
         groups[group].push({ key, html: `<div class="bf bf-${color} ${cls}" data-status="${esc(key)}" title="${esc(name)}" onclick="buffTip('${esc(name)}')">${ico}<span class="bf-time">${text}</span></div>` });
     };
+    const doll = dollStatusInfo();
+    if (doll) add('temp', 'doll_' + doll.id, 'skill', doll.name, itemIconHtml('doll_' + doll.id), doll.text, doll.on ? 'on' : '');
     // 共鳴觸發的增益（res_裝備id）：裝備還穿著就不另外多一格，改在下面那件裝備的圖示上發光＋顯示秒數（避免同一張圖出現兩次）
     Object.keys(player.buffs).filter(k => player.buffs[k].until > now && !(k.startsWith('res_') && equippedRes.includes(k.slice(4)))).forEach(k => {
         const b = player.buffs[k], sec = Math.ceil((b.until - now) / 1000), sk = b.src === 'skill' && findSkill(b.id);

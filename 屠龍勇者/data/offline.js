@@ -36,7 +36,8 @@ function consumableCounts() {
 function measureHunt(sampleMs) {
     const snap = JSON.stringify(player);
     // 遊戲訊息要整份備份：訊息滿 120 行時模擬會把舊訊息擠掉，只切回長度會留下模擬的訊息（編號比 logSeq 大，地圖每幀重讀 → 頭頂一直冒 LEVEL UP）
-    const saved = { hunt, session, walkHome, gameNow, potReadyAt, log: gameLog.slice(), logSeq };
+    const saved = { hunt, session, walkHome, gameNow, potReadyAt, log: gameLog.slice(), logSeq,
+        doll: dollRuntime.get(player) && { ...dollRuntime.get(player) } };
     const before = { exp: totalExpOf(player), gold: player.gold, kills: player.kills, deaths: player.deaths, items: consumableCounts() };
     SIM_MODE = true;
     hunt = null; walkHome = null;
@@ -48,6 +49,7 @@ function measureHunt(sampleMs) {
         while (t < sampleMs) {
             const expNow = totalExpOf(player);
             gameNow += 100; t += 100;
+            dollAbilityTick(100);
             huntTick(100);
             cleanBuffs();
             if (t % REGEN_MS === 0) regenTick();
@@ -65,9 +67,11 @@ function measureHunt(sampleMs) {
             gold: player.gold - before.gold,
             kills: player.kills - before.kills,
             drops: offlineDrops.filter(offlineDropAllowed),
+            dollLocks: dollSimulationLocks(JSON.parse(snap).dollState || {}, player.dollState),
         };
     } finally {
         player = guardWrap(JSON.parse(snap));   // 還原成新物件：重新套上數值偽裝（guard.js）
+        if (saved.doll) dollRuntime.set(player, saved.doll);
         hunt = saved.hunt; session = saved.session; walkHome = saved.walkHome; gameNow = saved.gameNow; potReadyAt = saved.potReadyAt;   // 模擬裡喝的水不能把喝水延遲帶到真實時間（第 113 節）
         gameLog.length = 0; gameLog.push(...saved.log); logSeq = saved.logSeq;
         offlineDrops = null;
@@ -98,6 +102,7 @@ function applyOffline(awayMs, paidMs = Infinity) {   // paidMs：伺服器用鑽
     if ((s.died || s.ended) && eff >= s.ms) { eff = s.ms; end = s.died ? 'died' : 'home'; }
 
     const k = eff / s.ms;
+    if (eff > 0) dollApplySimulation(s.dollLocks, eff);
     const lv0 = player.lv;
     const exp = Math.floor(s.exp * k), gold = Math.floor(s.gold * k), kills = Math.floor(s.kills * k);
     const usedText = [];

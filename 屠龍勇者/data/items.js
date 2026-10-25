@@ -424,7 +424,7 @@ const RECIPES = [
 function isStackable(def) { return ['potion', 'scroll', 'ammo', 'material', 'elixir', 'quest', 'currency', 'book'].includes(def.cat); }
 function sellPriceOf(id) { const d = ITEMS[id]; return d.sell != null ? d.sell : Math.floor((d.price || 0) * 0.3); }
 
-// 魔法娃娃第一階段：GM發放測試，單隻裝備與跟隨；能力尚未設定。
+// 魔法娃娃：單隻裝備與跟隨；完整能力由後載入的doll-abilities.js補上。
 const DOLLS = {
     "skeleton-knight": {
         "name": "骷髏小騎士",
@@ -555,6 +555,6 @@ const DOLLS = {
 };
 for (const id in DOLLS) {
     const d = DOLLS[id];
-    ITEMS['doll_' + id] = { name: d.name, cat: 'doll', doll: id, wt: 0, sell: 0, desc: '魔法娃娃（' + d.quality + '）：裝備後跟隨角色，一次限一隻。能力尚未設定，目前不提供加成；由GM發放測試。' };
+    ITEMS['doll_' + id] = { name: d.name, cat: 'doll', doll: id, wt: 0, sell: 0, desc: '魔法娃娃：裝備後跟隨角色，一次限一隻；能力詳見效果介紹。' };
 }
 CAT_NAMES.doll = '魔法娃娃';
