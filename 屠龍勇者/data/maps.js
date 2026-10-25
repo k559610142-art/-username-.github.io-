@@ -259,7 +259,11 @@ function abandonMapBtn() {
 }
 // 異界進度（狩獵畫面左上，每 250ms 更新）
 function mapProgressText() {
-    if (!inMapRun()) return '';
+    if (!inMapRun()) {   // 永夜之塔：最高樓層顯示解鎖進度（第 159 節）
+        const z = currentZone(), f = player.loc.floor;
+        if (!z || z.type !== 'tower' || !f || f !== player.towerMax || f >= 100) return '';
+        return f % 10 === 0 ? `🏛️ ${f}F：擊敗守關首領解鎖 ${f + 1}F` : `🏛️ ${f}F 擊殺 ${fmt(Math.min(player.towerKills[f] || 0, TOWER_FLOOR_KILLS))}/${fmt(TOWER_FLOOR_KILLS)}`;
+    }
     const r = player.mapRun;
     return `🌀 T${r.t} ${r.left > 0 ? `剩 ${fmt(r.left)}/${fmt(r.total)}` : '首領現身！'}${r.mods.length ? `　${r.mods.map(k => MAP_MODS[k].icon).join('')} +${Math.round(mapBonusOf(r.mods) * 100)}%` : ''}`;
 }

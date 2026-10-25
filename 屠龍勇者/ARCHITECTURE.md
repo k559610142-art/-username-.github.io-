@@ -156,6 +156,7 @@
 | `manifest.json` | App 名稱、圖示、`scope: ./`（只涵蓋本資料夾） |
 | `sw.js` | Service Worker，快取名稱 `dragon-` 開頭（第 12 節） |
 | `images/` | `icons/` 圖片圖示（藥水 `potion-*.jpg`、技能 `sk/`，第 41 節）；App 圖示：`icon-192/512.png`、`icon-maskable-512.png`、`apple-touch-icon.png`；主畫面外框 `frame-nopillar.png`（去掉拱門與左右石柱，第 54 節；`frame-notop.jpg`、原版 `frame.jpg` 保留；第 15 節）、PC 橫式外框 `frame-pc.jpg`＋遮罩 `frame-pc-mask.png`（第 19 節）；`sprites/` 人物模型、`classes/` 職業立繪、十二職業合照 `all.jpg` 、創角舞台去背圖 `classes/stage/`（合照中的人）與 `classes/hero/`（立繪全身像）（第 18 節）；`maps/ruins.jpg` 野外地圖背景、`maps/tower.jpg` 永夜之塔通用地圖（第 52 節）、`npc/tower-keeper.png`／`ivory-keeper.png`＋`-face.jpg` 永夜之塔／暮光法師塔傳送師（第 55、56 節）、`maps/village.webp` 村莊背景（第 17 節）、`maps/wild.jpg`＋`wild-mini.jpg` 低語海岸大地圖與小地圖（第 45 節；12 個地圖合併、6016×4768＝188×149 格，第 67 節）、`wild-occ.png` 遮擋深度圖（第 46 節） |
+| `tools/test-tower-floors.js` | 永夜之塔逐層解鎖：1000 隻解鎖、首領樓層、不能跳層、舊存檔重置只做一次、進度文字（第159節） |
 | `tools/test-shura-blood-status.js` | 血戰傷害／實際吸血／50%門檻／技能區待命與生效中發光隔離測試（第150節） |
 | `tools/test-auto-tele-heal.js` | 自動瞬移一次後補血、喝水延遲／搜尋暫緩／恢復掛機與缺水回家隔離回歸（第149節） |
 | `tools/test-boss-dodge-boundary.js` | 紅圈閃避區界／分區／繞路限制、無路原地承傷且持續掛機隔離回歸（第148節） |
@@ -183,7 +184,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025am`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025ao`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3321,3 +3322,13 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - doll-shop.js的renderDollShop只列五款T4：骷髏小騎士、森靈幼鹿、蘑菇燈兔、霜羽貓頭鷹、蒸氣松鼠。新增dollShopProduct驗證本機品質T4且伺服器商品價500；dollShopBuy與dollShopPurchase同步檢查，直接呼叫亦不能買其他品質或改價。即使後端尚為舊21款清單，介面也只列五款。
 - tools/doll-shop.sql沿用已獲准的商店檔更新：重跑將T4啟售且價格設500、其餘停售，保留商品／歷史訂單及既有娃娃；status與buy再限制quality=T4／price=500／enabled，手動啟用其他品質也不會放行。歷史成功訂單同UUID重試仍只回原收據，不再發貨扣款。使用者須自行在Supabase重跑此SQL，本機未連正式後端。
 - 隔離VM測舊21款伺服器清單只顯示五款、T0～T3無法確認或直接購買；PGlite測五款全可購、每款500、其他四品質拒絕、重試不重扣／不足／滿倉／重跑恢復固定售價。check.ps1 ALL CHECKS PASSED，未開關瀏覽器；待SQL安裝及使用者實玩確認後commit。
+
+## 159. 永夜之塔逐層解鎖：每層 1000 隻、首領樓層打首領（2026-10-25，版本 `20261025ao`，存檔 schema 11；`combat.js` 的 `TOWER_FLOOR_KILLS`／`towerNeedText`／`towerUnlock`）
+- 使用者要求「只能一層一層打上去，每一層打滿 1000 隻怪物才能移動到下一層，不能再一次到 boss 樓層打 boss」。使用者選定：**所有舊角色重置回 1F**、**首領樓層（10、20…100F）打倒守關首領就能上樓**（首領活著時那層只生首領，不用打 1000 隻）、**擊殺數累積不歸零**（離開、下線、死亡都保留）。
+- 舊規則：一開始可到 10F，打倒 10F 首領一次解鎖到 20F，以此類推；解鎖範圍內可直接傳送到任何樓層（所以能直衝首領樓層）。
+- 新欄位：`player.towerKills`（{ 樓層: 擊殺數 }，守關首領也算 1 隻）、`player.towerRule = 2`（已套用新規則的標記）。新角色 `towerMax: 1`。
+- 解鎖：`onKill` 在塔裡每殺一隻 `towerKills[樓層]` +1；一般樓層滿 `TOWER_FLOOR_KILLS`（1000）呼叫 `towerUnlock(f)` → `towerMax = f + 1`（只會往上一層、最高 100）；首領樓層只有打倒守關首領（`mon.towerFloor`）才 `towerUnlock`，原本「+10 層」移除。首領 6 小時復活、`towerCleared`／`towerBossCd` 照舊。
+- 舊存檔（`migrateSave`）：`towerRule !== 2` → `towerMax = 1`、清空 `towerKills`／`towerCleared`／`towerBossCd`，人在塔裡就移到 1F，再設 `towerRule = 2`。**用 player 欄位標記、不比 schema**：舊版遊戲讀寫後 schema 會變回 10，但 player 裡的欄位會保留，才不會重複重置。排行榜的永夜之塔名次（看 `towerCleared`）也跟著從頭算。
+- 畫面：上樓被擋時提示還差什麼（「需先在 5F 擊殺 1,000 隻（目前 321）」或「需先擊敗 10F 的守關首領」）；傳送師樓層預設填最高樓層並說明規則與下一層條件；狩獵畫面 `#map-prog`（`mapProgressText`）在最高樓層顯示「🏛️ 5F 擊殺 321/1,000」或「🏛️ 10F：擊敗守關首領解鎖 11F」。
+- 伺服器不用改：`loot_spawn` 本來就以雲端存檔的 `towerMax` 擋樓層（`loot floor locked`），`towerMax` 在生怪資格欄位裡，解鎖後會先上傳。擊殺數在前端計算（跟原本解鎖首領一樣信任存檔＋簽章）。
+- 測試：`tools/test-tower-floors.js`。

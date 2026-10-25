@@ -69,11 +69,22 @@ function startWalkHome() {
 }
 function cancelWalk() { walkHome = null; addLog('取消步行', 'sys'); }
 
+// 永夜之塔逐層解鎖（2026-10-25，版本 20261025ao，第 159 節，使用者要求）：只能一層一層往上，
+// 一般樓層在該層累積擊殺 TOWER_FLOOR_KILLS 隻（player.towerKills[樓層]，離開／下線／死亡都不歸零）解鎖上一層；10、20…100 樓擊敗守關首領解鎖
+const TOWER_FLOOR_KILLS = 1000;
+function towerNeedText(f) {
+    return f % 10 === 0 ? `擊敗 ${f}F 的守關首領` : `在 ${f}F 擊殺 ${fmt(TOWER_FLOOR_KILLS)} 隻（目前 ${fmt(player.towerKills[f] || 0)}）`;
+}
+function towerUnlock(f) {
+    if (f >= 100 || f + 1 <= player.towerMax) return;
+    player.towerMax = f + 1;
+    addLog(`🏛️ 解鎖永夜之塔 ${f + 1}F！`, 'rare');
+}
 function changeFloor(delta) {
     const z = currentZone();
     if (!z || z.type !== 'tower') return;
     const f = player.loc.floor + delta;
-    if (f < 1 || f > player.towerMax) { showToast(f > player.towerMax ? `需先擊敗 ${player.towerMax}F 的守關首領` : '已經是最底層'); return; }
+    if (f < 1 || f > player.towerMax) { showToast(f > player.towerMax ? (f > 100 ? '已經是最頂層' : `需先${towerNeedText(player.towerMax)}`) : '已經是最底層', 3000); return; }
     player.loc.floor = f;
     if (hunt) leaveFight(800);
     addLog(`🏛️ 移動到永夜之塔 ${f}F`, 'sys');
@@ -691,12 +702,16 @@ function onKill(mon) {
     questOnKill(mon, z);
     if (mapOnKill(mon)) return;   // 異界：計數；打倒異界首領＝通關、回村
 
+    if (z && z.type === 'tower' && player.loc.floor) {   // 逐層解鎖：這層累積擊殺（守關首領也算 1 隻）
+        const f = player.loc.floor;
+        player.towerKills[f] = (player.towerKills[f] || 0) + 1;
+        if (f % 10 !== 0 && player.towerKills[f] >= TOWER_FLOOR_KILLS) towerUnlock(f);
+    }
     if (mon.towerFloor) {
         player.towerCleared[mon.towerFloor] = true;
         player.towerBossCd[mon.towerFloor] = Date.now() + TOWER_BOSS_RESPAWN_H * 3600 * 1000;
         addLog(`🏛️ ${mon.baseName}將在 ${TOWER_BOSS_RESPAWN_H} 小時後復活`, 'sys');
-        const next = Math.min(100, mon.towerFloor + 10);
-        if (next > player.towerMax) { player.towerMax = next; addLog(`🏛️ 解鎖永夜之塔 ${next}F！`, 'rare'); }
+        towerUnlock(mon.towerFloor);   // 首領樓層：打倒守關首領就能上下一層（原本一次解鎖 10 層）
     }
     if (mon.dragon) {
         const first = !player.dragons[mon.id];

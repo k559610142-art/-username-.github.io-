@@ -133,9 +133,18 @@ function saveGame(force) {
 function migrateSave(data) {
     const p = data.player;
     // 補齊新版才有的欄位
-    const fresh = { statPoints: 0, elixirs: 0, storage: [], buffs: {}, cds: {}, towerMax: 10, towerCleared: {}, towerBossCd: {}, dragons: {}, dragonCd: {}, kills: 0, deaths: 0, mapRun: null, mapPortal: null,
+    const fresh = { statPoints: 0, elixirs: 0, storage: [], buffs: {}, cds: {}, towerMax: 1, towerKills: {}, towerCleared: {}, towerBossCd: {}, dragons: {}, dragonCd: {}, kills: 0, deaths: 0, mapRun: null, mapPortal: null,
         quests: { ch: 0, active: false, prog: 0, bossDone: false } };
     for (const k in fresh) if (p[k] == null) p[k] = fresh[k];
+    // schema 11（2026-10-25，第 159 節）：永夜之塔改逐層解鎖，使用者決定所有舊角色重置回 1F（towerRule 2 之前的存檔做一次）。
+    // 用 player.towerRule 標記而不是比 schema：舊版遊戲讀寫後 schema 會變回舊值，但 player 裡的欄位會保留，才不會重複重置
+    if (p.towerRule !== 2) {
+        p.towerMax = 1; p.towerKills = {}; p.towerCleared = {}; p.towerBossCd = {}; p.towerRule = 2;
+        const lz = p.loc && ZONE_BY_ID[p.loc.id];
+        if (lz && lz.type === 'tower') p.loc.floor = 1;
+    }
+    if (!p.towerKills || typeof p.towerKills !== 'object' || Array.isArray(p.towerKills)) p.towerKills = {};
+    p.towerMax = clamp(p.towerMax | 0, 1, 100);
     // schema 10：各款娃娃共用冷卻與出場累積時間；舊檔預設空，不影響道具。
     dollStateNormalize(p);
     p.settings = Object.assign(JSON.parse(JSON.stringify(DEFAULT_SETTINGS)), p.settings || {});

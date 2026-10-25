@@ -274,7 +274,8 @@ function openKeeper(to) {
     openDialog(n.name, `
         <div class="npc-talk"><img src="${n.face}" alt="" class="npc-face"><p class="npc-say">「${n.say}」</p></div>
         <p>建議 Lv.${z.lv[0]}～${z.lv[1]}・傳送費 💰${fmt(z.fee)}${tower ? `・已開放到 ${max}F` : ''}</p>
-        ${tower ? `<p class="tower-pick">樓層 <input id="tower-floor" type="number" min="1" max="${max}" value="${Math.max(1, max - 9)}"> / ${max}F</p>${towerBossStatusHtml()}` : ''}`,
+        ${tower ? `<p class="tower-pick">樓層 <input id="tower-floor" type="number" min="1" max="${max}" value="${max}"> / ${max}F</p>
+            <small class="muted">只能一層一層往上：一般樓層在該層擊殺 ${fmt(TOWER_FLOOR_KILLS)} 隻、10、20…樓擊敗守關首領，才開放上一層。${max < 100 ? `下一層：需${towerNeedText(max)}` : ''}</small><br>${towerBossStatusHtml()}` : ''}`,
         [{ text: '不了', cls: 'secondary' }, { text: `進入${z.name}`, keep: true, onClick: () => keeperGo(to) }]);
 }
 function openVenomNestEntrance() {
