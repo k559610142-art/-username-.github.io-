@@ -1024,7 +1024,6 @@ function renderSettings() {
 
 function setSettingNum(key, v, min, max) { player.settings[key] = clamp(parseInt(v, 10) || min, min, max); saveGame(); }
 function setSettingBool(key, v) { player.settings[key] = !!v; saveGame(); }
-function manualSave() { saveGame(); showToast('已存檔'); }
 
 // 匯出／匯入存檔按鈕 2026-10-25 移除（使用者要求只保留雲端存檔，第 145 節）；save.js 的 exportSaveText／importSaveText 保留未用
 
