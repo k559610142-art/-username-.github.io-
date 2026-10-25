@@ -1,0 +1,685 @@
+{
+  "id": "aden-glory-swordsman-v1",
+  "name": "亞丁榮耀劍士（藍變）",
+  "form": "m15",
+  "rows": [
+    "down",
+    "right",
+    "up"
+  ],
+  "left": "mirror right",
+  "cellW": 384,
+  "cellH": 320,
+  "footAnchor": [
+    192,
+    270
+  ],
+  "charH": 160,
+  "drawH": 48,
+  "actions": {
+    "walk": {
+      "src": "images/sprites/morph/aden-glory-swordsman-v1/walk.png",
+      "cellW": 384,
+      "cellH": 320,
+      "frames": {
+        "down": 4,
+        "right": 4,
+        "up": 4
+      },
+      "ms": 130,
+      "cells": [
+        {
+          "direction": "down",
+          "frame": 0,
+          "file": "frames/walk-down-01.png",
+          "source": "down-repaired.png",
+          "sourceRect": [
+            0,
+            0,
+            362,
+            362
+          ],
+          "sourceFoot": [
+            184,
+            362
+          ],
+          "sourceBodyHeight": 268.0
+        },
+        {
+          "direction": "down",
+          "frame": 1,
+          "file": "frames/walk-down-02.png",
+          "source": "down-repaired.png",
+          "sourceRect": [
+            362,
+            0,
+            724,
+            362
+          ],
+          "sourceFoot": [
+            540,
+            362
+          ],
+          "sourceBodyHeight": 268.0
+        },
+        {
+          "direction": "down",
+          "frame": 2,
+          "file": "frames/walk-down-03.png",
+          "source": "down-repaired.png",
+          "sourceRect": [
+            724,
+            0,
+            1086,
+            362
+          ],
+          "sourceFoot": [
+            924,
+            362
+          ],
+          "sourceBodyHeight": 268.0
+        },
+        {
+          "direction": "down",
+          "frame": 3,
+          "file": "frames/walk-down-04.png",
+          "source": "down-repaired.png",
+          "sourceRect": [
+            1086,
+            0,
+            1448,
+            362
+          ],
+          "sourceFoot": [
+            1278,
+            362
+          ],
+          "sourceBodyHeight": 268.0
+        },
+        {
+          "direction": "right",
+          "frame": 0,
+          "file": "frames/walk-right-01.png",
+          "source": "right-repaired.png",
+          "sourceRect": [
+            0,
+            0,
+            362,
+            362
+          ],
+          "sourceFoot": [
+            198,
+            343
+          ],
+          "sourceBodyHeight": 221.5
+        },
+        {
+          "direction": "right",
+          "frame": 1,
+          "file": "frames/walk-right-02.png",
+          "source": "right-repaired.png",
+          "sourceRect": [
+            362,
+            0,
+            724,
+            362
+          ],
+          "sourceFoot": [
+            560,
+            341
+          ],
+          "sourceBodyHeight": 221.5
+        },
+        {
+          "direction": "right",
+          "frame": 2,
+          "file": "frames/walk-right-03.png",
+          "source": "right-repaired.png",
+          "sourceRect": [
+            724,
+            0,
+            1086,
+            362
+          ],
+          "sourceFoot": [
+            920,
+            341
+          ],
+          "sourceBodyHeight": 221.5
+        },
+        {
+          "direction": "right",
+          "frame": 3,
+          "file": "frames/walk-right-04.png",
+          "source": "right-repaired.png",
+          "sourceRect": [
+            1086,
+            0,
+            1448,
+            362
+          ],
+          "sourceFoot": [
+            1256,
+            341
+          ],
+          "sourceBodyHeight": 221.5
+        },
+        {
+          "direction": "up",
+          "frame": 0,
+          "file": "frames/walk-up-01.png",
+          "source": "up-final.png",
+          "sourceRect": [
+            0,
+            0,
+            362,
+            362
+          ],
+          "sourceFoot": [
+            205,
+            354
+          ],
+          "sourceBodyHeight": 229.5
+        },
+        {
+          "direction": "up",
+          "frame": 1,
+          "file": "frames/walk-up-02.png",
+          "source": "up-final.png",
+          "sourceRect": [
+            362,
+            0,
+            724,
+            362
+          ],
+          "sourceFoot": [
+            554,
+            355
+          ],
+          "sourceBodyHeight": 229.5
+        },
+        {
+          "direction": "up",
+          "frame": 2,
+          "file": "frames/walk-up-03.png",
+          "source": "up-final.png",
+          "sourceRect": [
+            724,
+            0,
+            1086,
+            362
+          ],
+          "sourceFoot": [
+            894,
+            356
+          ],
+          "sourceBodyHeight": 229.5
+        },
+        {
+          "direction": "up",
+          "frame": 3,
+          "file": "frames/walk-up-04.png",
+          "source": "up-final.png",
+          "sourceRect": [
+            1086,
+            0,
+            1448,
+            362
+          ],
+          "sourceFoot": [
+            1288,
+            355
+          ],
+          "sourceBodyHeight": 229.5
+        }
+      ]
+    },
+    "attack": {
+      "src": "images/sprites/morph/aden-glory-swordsman-v1/attack.png",
+      "cellW": 384,
+      "cellH": 320,
+      "frames": {
+        "down": 4,
+        "right": 4,
+        "up": 4
+      },
+      "ms": 140,
+      "cells": [
+        {
+          "direction": "down",
+          "frame": 0,
+          "file": "frames/attack-down-01.png",
+          "source": "down-repaired.png",
+          "sourceRect": [
+            0,
+            362,
+            362,
+            724
+          ],
+          "sourceFoot": [
+            184,
+            708
+          ],
+          "sourceBodyHeight": 268.0
+        },
+        {
+          "direction": "down",
+          "frame": 1,
+          "file": "frames/attack-down-02.png",
+          "source": "down-repaired.png",
+          "sourceRect": [
+            362,
+            362,
+            789,
+            724
+          ],
+          "sourceFoot": [
+            566,
+            688
+          ],
+          "sourceBodyHeight": 268.0
+        },
+        {
+          "direction": "down",
+          "frame": 2,
+          "file": "frames/attack-down-03.png",
+          "source": "down-repaired.png",
+          "sourceRect": [
+            724,
+            362,
+            1151,
+            724
+          ],
+          "sourceFoot": [
+            942,
+            694
+          ],
+          "sourceBodyHeight": 268.0
+        },
+        {
+          "direction": "down",
+          "frame": 3,
+          "file": "frames/attack-down-04.png",
+          "source": "down-repaired.png",
+          "sourceRect": [
+            1086,
+            362,
+            1448,
+            724
+          ],
+          "sourceFoot": [
+            1270,
+            709
+          ],
+          "sourceBodyHeight": 268.0
+        },
+        {
+          "direction": "right",
+          "frame": 0,
+          "file": "frames/attack-right-01.png",
+          "source": "right-repaired.png",
+          "sourceRect": [
+            0,
+            362,
+            362,
+            724
+          ],
+          "sourceFoot": [
+            191,
+            689
+          ],
+          "sourceBodyHeight": 221.5
+        },
+        {
+          "direction": "right",
+          "frame": 1,
+          "file": "frames/attack-right-02.png",
+          "source": "right-repaired.png",
+          "sourceRect": [
+            362,
+            362,
+            724,
+            724
+          ],
+          "sourceFoot": [
+            541,
+            690
+          ],
+          "sourceBodyHeight": 221.5
+        },
+        {
+          "direction": "right",
+          "frame": 2,
+          "file": "frames/attack-right-03.png",
+          "source": "right-repaired.png",
+          "sourceRect": [
+            724,
+            362,
+            1086,
+            724
+          ],
+          "sourceFoot": [
+            908,
+            690
+          ],
+          "sourceBodyHeight": 221.5
+        },
+        {
+          "direction": "right",
+          "frame": 3,
+          "file": "frames/attack-right-04.png",
+          "source": "right-repaired.png",
+          "sourceRect": [
+            1086,
+            362,
+            1448,
+            724
+          ],
+          "sourceFoot": [
+            1270,
+            690
+          ],
+          "sourceBodyHeight": 221.5
+        },
+        {
+          "direction": "up",
+          "frame": 0,
+          "file": "frames/attack-up-01.png",
+          "source": "up-final.png",
+          "sourceRect": [
+            0,
+            362,
+            362,
+            724
+          ],
+          "sourceFoot": [
+            206,
+            687
+          ],
+          "sourceBodyHeight": 229.5
+        },
+        {
+          "direction": "up",
+          "frame": 1,
+          "file": "frames/attack-up-02.png",
+          "source": "up-final.png",
+          "sourceRect": [
+            362,
+            362,
+            789,
+            724
+          ],
+          "sourceFoot": [
+            534,
+            684
+          ],
+          "sourceBodyHeight": 229.5
+        },
+        {
+          "direction": "up",
+          "frame": 2,
+          "file": "frames/attack-up-03.png",
+          "source": "up-final.png",
+          "sourceRect": [
+            724,
+            362,
+            1151,
+            724
+          ],
+          "sourceFoot": [
+            914,
+            687
+          ],
+          "sourceBodyHeight": 229.5
+        },
+        {
+          "direction": "up",
+          "frame": 3,
+          "file": "frames/attack-up-04.png",
+          "source": "up-final.png",
+          "sourceRect": [
+            1086,
+            362,
+            1448,
+            724
+          ],
+          "sourceFoot": [
+            1250,
+            690
+          ],
+          "sourceBodyHeight": 229.5
+        }
+      ]
+    },
+    "cast": {
+      "src": "images/sprites/morph/aden-glory-swordsman-v1/cast.png",
+      "cellW": 384,
+      "cellH": 320,
+      "frames": {
+        "down": 2,
+        "right": 2,
+        "up": 2
+      },
+      "ms": 220,
+      "cells": [
+        {
+          "direction": "down",
+          "frame": 0,
+          "file": "frames/cast-down-01.png",
+          "source": "down-repaired.png",
+          "sourceRect": [
+            0,
+            724,
+            362,
+            1086
+          ],
+          "sourceFoot": [
+            202,
+            1030
+          ],
+          "sourceBodyHeight": 268.0
+        },
+        {
+          "direction": "down",
+          "frame": 1,
+          "file": "frames/cast-down-02.png",
+          "source": "down-repaired.png",
+          "sourceRect": [
+            362,
+            724,
+            724,
+            1086
+          ],
+          "sourceFoot": [
+            564,
+            1025
+          ],
+          "sourceBodyHeight": 268.0
+        },
+        {
+          "direction": "right",
+          "frame": 0,
+          "file": "frames/cast-right-01.png",
+          "source": "right-repaired.png",
+          "sourceRect": [
+            0,
+            724,
+            362,
+            1086
+          ],
+          "sourceFoot": [
+            198,
+            1009
+          ],
+          "sourceBodyHeight": 221.5
+        },
+        {
+          "direction": "right",
+          "frame": 1,
+          "file": "frames/cast-right-02.png",
+          "source": "right-repaired.png",
+          "sourceRect": [
+            362,
+            724,
+            814,
+            1086
+          ],
+          "sourceFoot": [
+            559,
+            1007
+          ],
+          "sourceBodyHeight": 221.5
+        },
+        {
+          "direction": "up",
+          "frame": 0,
+          "file": "frames/cast-up-01.png",
+          "source": "up-final.png",
+          "sourceRect": [
+            0,
+            724,
+            362,
+            1086
+          ],
+          "sourceFoot": [
+            210,
+            1018
+          ],
+          "sourceBodyHeight": 229.5
+        },
+        {
+          "direction": "up",
+          "frame": 1,
+          "file": "frames/cast-up-02.png",
+          "source": "up-final.png",
+          "sourceRect": [
+            362,
+            724,
+            724,
+            1086
+          ],
+          "sourceFoot": [
+            552,
+            1020
+          ],
+          "sourceBodyHeight": 229.5
+        }
+      ]
+    },
+    "hit": {
+      "src": "images/sprites/morph/aden-glory-swordsman-v1/hit.png",
+      "cellW": 384,
+      "cellH": 320,
+      "frames": {
+        "down": 2,
+        "right": 2,
+        "up": 2
+      },
+      "ms": 150,
+      "cells": [
+        {
+          "direction": "down",
+          "frame": 0,
+          "file": "frames/hit-down-01.png",
+          "source": "down-repaired.png",
+          "sourceRect": [
+            724,
+            724,
+            1086,
+            1086
+          ],
+          "sourceFoot": [
+            922,
+            1039
+          ],
+          "sourceBodyHeight": 268.0
+        },
+        {
+          "direction": "down",
+          "frame": 1,
+          "file": "frames/hit-down-02.png",
+          "source": "down-repaired.png",
+          "sourceRect": [
+            1086,
+            724,
+            1448,
+            1086
+          ],
+          "sourceFoot": [
+            1282,
+            1022
+          ],
+          "sourceBodyHeight": 268.0
+        },
+        {
+          "direction": "right",
+          "frame": 0,
+          "file": "frames/hit-right-01.png",
+          "source": "right-repaired.png",
+          "sourceRect": [
+            724,
+            724,
+            1086,
+            1086
+          ],
+          "sourceFoot": [
+            937,
+            1004
+          ],
+          "sourceBodyHeight": 221.5
+        },
+        {
+          "direction": "right",
+          "frame": 1,
+          "file": "frames/hit-right-02.png",
+          "source": "right-repaired.png",
+          "sourceRect": [
+            1086,
+            724,
+            1448,
+            1086
+          ],
+          "sourceFoot": [
+            1272,
+            1005
+          ],
+          "sourceBodyHeight": 221.5
+        },
+        {
+          "direction": "up",
+          "frame": 0,
+          "file": "frames/hit-up-01.png",
+          "source": "up-final.png",
+          "sourceRect": [
+            724,
+            724,
+            1086,
+            1086
+          ],
+          "sourceFoot": [
+            895,
+            1021
+          ],
+          "sourceBodyHeight": 229.5
+        },
+        {
+          "direction": "up",
+          "frame": 1,
+          "file": "frames/hit-up-02.png",
+          "source": "up-final.png",
+          "sourceRect": [
+            1086,
+            724,
+            1448,
+            1086
+          ],
+          "sourceFoot": [
+            1268,
+            1021
+          ],
+          "sourceBodyHeight": 229.5
+        }
+      ]
+    }
+  }
+}

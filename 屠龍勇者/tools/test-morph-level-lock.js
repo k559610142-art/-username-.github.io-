@@ -16,9 +16,16 @@ vm.runInContext(String.raw`
 SIM_MODE=true; sfx=()=>{}; refreshUI=()=>{}; showToast=()=>{};
 let dialog=''; openDialog=(title, html)=>{dialog=html;};
 createPlayer('變身等級鎖測試','knight',CLASSES.knight.base);addItem('polyScroll',100);
+// 等級測試也要提供現行系別要求的武器；GM僅豁免等級，不豁免武器。
+function armForForm(f) {
+ const type=(MORPH_GROUPS[f.group].need || ['sword'])[0];
+ const id=Object.keys(ITEMS).find(id=>ITEMS[id].cat==='weapon'&&ITEMS[id].type===type);
+ const it=addItem(id);removeInst(it.uid);player.equip.weapon=it;
+}
 assert.equal(MORPH_LV_FREE,false);
 cloudSb=null;cloudUser=null;
 for (const f of MORPH_FORMS) {
+ armForForm(f);
  player.lv=f.lv-1;assert(!morphLvOk(f));
  const before=countItem('polyScroll'), buff=JSON.stringify(player.buffs.morph);
  assert(usePotion('polyScroll',f.id).includes('需要 Lv.'));assert.equal(countItem('polyScroll'),before);assert.equal(JSON.stringify(player.buffs.morph),buff);
@@ -31,7 +38,7 @@ player.settings.lastMorph='m32';const before=countItem('polyScroll');assert(useP
 // 既有伺服器RPC確認GM，低等角色32款全開。
 cloudUser={id:'gm-test'};cloudSb={rpc:async name=>{assert.equal(name,'dragon_is_admin');return {data:true,error:null};}};
 await cloudCheckMorphAdmin();assert(morphGmOk());
-for (const f of MORPH_FORMS) {assert(morphLvOk(f));assert.equal(usePotion('polyScroll',f.id),'');}
+for (const f of MORPH_FORMS) {armForForm(f);assert(morphLvOk(f));assert.equal(usePotion('polyScroll',f.id),'');}
 openMorphPicker();assert(dialog.includes('GM：不限變身等級'));assert(!dialog.includes('disabled onclick="morphPick(\'m32\')"'));
 // 換帳號、登出、封鎖不能沿用前一個GM。
 cloudUser={id:'normal-test'};assert(!morphGmOk());assert(!morphLvOk(MORPH_BY_ID.m32));

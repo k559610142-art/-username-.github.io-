@@ -161,6 +161,7 @@
 | `tools/test-auto-tele-heal.js` | 自動瞬移一次後補血、喝水延遲／搜尋暫緩／恢復掛機與缺水回家隔離回歸（第149節） |
 | `tools/test-boss-dodge-boundary.js` | 紅圈閃避區界／分區／繞路限制、無路原地承傷且持續掛機隔離回歸（第148節） |
 | `tools/test-loot-auto-sell.js` | 指定自動販賣清單、確認／取消、舊檔轉換、本機與後端入帳／收據重送與失敗還原隔離測試（第146節） |
+| `images/sprites/morph/aden-glory-swordsman-v1/`、`tools/sprite-src/morph/aden-glory-swordsman-v1/`、`tools/test-aden-glory-swordsman-morph.js` | m15原始參考／提示詞與圖集打包、專屬動畫、卷軸隔離驗證（第160節） |
 | `tools/test-dolls.js` | 21款娃娃道具／裝卸／跟隨／存檔隔離測試（第154節） |
 | `data/doll-abilities.js` | 21款娃娃基本能力、被動、冷卻／出場時間與觸發狀態（第157節） |
 | `tools/test-doll-abilities.js` | 21款數值、實際戰鬥／藥水、冷卻存檔、範圍防重複與模擬隔離（第157節） |
@@ -184,7 +185,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025ao`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025ap`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -579,6 +580,8 @@ kills, deaths, settings（含 skillSlots 技能欄 8 格）, created, skills[已
 - 迴圈：`requestAnimationFrame`，只在狩獵畫面顯示時跑（`huntVisible()`），分頁隱藏時不更新；canvas 依 `devicePixelRatio` 調整解析度。
 
 ## 18. 人物模型與職業立繪
+
+- 20261025ap：m15亞丁榮耀劍士專屬三向四動作與變身卷軸接線，見第160節。
 
 - 20261025m：m12鋼鐵狂戰士專屬三向四動作圖集，來源／腳底註冊與36格驗證見第140節。
 
@@ -3332,3 +3335,13 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 畫面：上樓被擋時提示還差什麼（「需先在 5F 擊殺 1,000 隻（目前 321）」或「需先擊敗 10F 的守關首領」）；傳送師樓層預設填最高樓層並說明規則與下一層條件；狩獵畫面 `#map-prog`（`mapProgressText`）在最高樓層顯示「🏛️ 5F 擊殺 321/1,000」或「🏛️ 10F：擊敗守關首領解鎖 11F」。
 - 伺服器不用改：`loot_spawn` 本來就以雲端存檔的 `towerMax` 擋樓層（`loot floor locked`），`towerMax` 在生怪資格欄位裡，解鎖後會先上傳。擊殺數在前端計算（跟原本解鎖首領一樣信任存檔＋簽章）。
 - 測試：`tools/test-tower-floors.js`。
+
+
+## 160. 亞丁榮耀劍士藍變專屬外觀（2026-10-25，版本 `20261025ap`）
+
+- 使用者提供15.jpg及15-1／15-2／15-3.jfif，原稿完整保存於tools/sprite-src/morph/aden-glory-swordsman-v1。使用內建image_gen依銀甲／藍色十字戰袍／藍白羽飾／單手長劍製作三方向各12格，修正參考背面部分動作錯轉正面，保存完整生成與修正提示詞／原圖，不覆寫原始素材。
+- data/items.js新增MORPHS.adenGlorySwordsman，既有m15.sprite接入，不重複新增變身；維持單手劍系、藍變Lv15、命中3／傷害2／攻速9%、單手武器限制與GM等級豁免，一張變身卷軸30分鐘。此次不改SQL或存檔；共用目錄同期永夜之塔使用schema11／ao，保留其改動，本功能由暫定an改用ap。
+- images/sprites/morph/aden-glory-swordsman-v1圖集384×320格、foot192／270、charH160、drawH48；down／right／up三列，left鏡射。walk4×130ms、attack4×140ms、cast2×220ms、hit2×150ms，共36格。sw.js預載四張圖集；script順序不變。prepare.py保留來源rect／foot、manifest／audit、單格圖與contact；preview.py產生四方向動畫預覽。
+- tools/test-aden-glory-swordsman-morph.js驗證Lv14拒絕不扣卷、Lv15使用、卷軸扣量與上次選擇、四向命中／MISS／施法／受傷／到期與其他變身、PNG尺寸／RGBA／36格／快取引用。測試不讀寫真實存檔或連線，不開關瀏覽器；待使用者實玩確認後commit。
+
+第160節驗證：prepare.py通過36格不重複／RGBA／留邊／圖集逐格對應；test-aden-glory-swordsman-morph及test-morph-level-lock通過，後者補正各系別應持武器fixture（GM仍受武器限制），不改遊戲規則。原生canvas正式sceneDraw渲染四方向四動作16組檢視；check.ps1 ALL CHECKS PASSED、50檔混淆500KB通過，未啟動或關閉瀏覽器。
