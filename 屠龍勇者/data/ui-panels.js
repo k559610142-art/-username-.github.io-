@@ -1012,12 +1012,7 @@ function renderSettings() {
             <small class="muted">安裝後有自己的圖示、全螢幕開啟，沒網路也能玩。</small>
         </div>
         ${cloudSettingsHtml()}
-        <div class="panel"><h4>💾 存檔</h4>
-            <div class="btn-row">
-                <button onclick="manualSave()">手動存檔</button>
-                <button class="secondary" onclick="openExport()">匯出存檔</button>
-                <button class="secondary" onclick="openImport()">匯入存檔</button>
-            </div>
+        <div class="panel"><h4>👥 角色</h4>
             <div class="btn-row">
                 <button onclick="openCharSelect()">👥 人物選單（切換角色）</button>
                 <button class="secondary" onclick="backToTitle()">回標題畫面</button>
@@ -1031,25 +1026,7 @@ function setSettingNum(key, v, min, max) { player.settings[key] = clamp(parseInt
 function setSettingBool(key, v) { player.settings[key] = !!v; saveGame(); }
 function manualSave() { saveGame(); showToast('已存檔'); }
 
-function openExport() {
-    openDialog('匯出存檔', `<p>複製下面的文字保存，換裝置時用「匯入存檔」貼上。</p><textarea id="export-text" readonly>${exportSaveText()}</textarea>`,
-        [{ text: '複製', keep: true, onClick: copyExport }, { text: '關閉', cls: 'secondary' }]);
-}
-function copyExport() {
-    const ta = $('export-text');
-    ta.select();
-    try { navigator.clipboard.writeText(ta.value).then(() => showToast('已複製')); } catch (e) { document.execCommand('copy'); showToast('已複製'); }
-}
-function openImport() {
-    openDialog('匯入存檔', `<p>貼上匯出的存檔文字（會覆蓋目前角色）。</p><textarea id="import-text"></textarea>`,
-        [{ text: '取消', cls: 'secondary' }, { text: '匯入', keep: true, onClick: doImport }]);
-}
-function doImport() {
-    const text = $('import-text').value;
-    hunt = null; session = null; walkHome = null;
-    if (importSaveText(text)) { closeDialog(); showToast('匯入成功'); enterGame(); }
-    else showToast('存檔文字無效');
-}
+// 匯出／匯入存檔按鈕 2026-10-25 移除（使用者要求只保留雲端存檔，第 145 節）；save.js 的 exportSaveText／importSaveText 保留未用
 
 function backToTitle() {
     saveGame();
@@ -1060,7 +1037,7 @@ function backToTitle() {
 }
 
 function confirmDeleteChar() {
-    gameConfirm('刪除角色', `「${player.name}」與所有道具會永久刪除，無法復原！（其他角色不受影響）\n建議先「匯出存檔」備份。確定刪除？`, () => {
+    gameConfirm('刪除角色', `「${player.name}」與所有道具會永久刪除，無法復原！（其他角色不受影響）\n登入中的話，雲端的這個角色也會一起刪除。確定刪除？`, () => {
         deleteSave();
         hunt = null; session = null; walkHome = null;
         player = null;

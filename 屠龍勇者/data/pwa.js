@@ -34,7 +34,7 @@ function initPwa() {
     try {
         if (isStandaloneApp() && pwaIsIOS() && !hasSave() && !localStorage.getItem('dragonSlayer_pwa_hint')) {
             localStorage.setItem('dragonSlayer_pwa_hint', '1');
-            setTimeout(() => gameAlert('📲 歡迎使用主畫面版', 'iPhone 的主畫面版和 Safari 的存檔是分開的。\n如果你在 Safari 已經有角色：先在 Safari 的「⚙️ 設定 → 匯出存檔」複製文字，\n再回到這裡建立畫面的「⚙️ 設定 → 匯入存檔」貼上。\n（要先進遊戲才看得到設定，可以先建一個暫時角色再匯入覆蓋）'), 1200);
+            setTimeout(() => gameAlert('📲 歡迎使用主畫面版', 'iPhone 的主畫面版和 Safari 的存檔是分開的。\n如果你在 Safari 已經有角色：在標題畫面按「☁️ 登入／註冊」，登入同一個帳號，角色會從雲端下載。'), 1200);
         }
     } catch (e) {}
 }
@@ -78,7 +78,7 @@ async function openInstallGuide() {
     if (pwaInAppBrowser()) {
         msg = '目前是在 LINE／Facebook 等 App 內建的瀏覽器，無法安裝。\n\n請按右上角「⋯」選「用預設瀏覽器開啟」（iPhone 用 Safari、Android 用 Chrome），再按一次「📲 安裝到主畫面」。';
     } else if (pwaIsIOS()) {
-        msg = 'iPhone／iPad 安裝方式（請用 Safari）：\n1. 按畫面下方的「分享」按鈕（方框加向上箭頭）\n2. 往下找「加入主畫面」\n3. 按右上角「新增」\n\n⚠️ 主畫面版和 Safari 的存檔是分開的：安裝前先到「⚙️ 設定 → 匯出存檔」複製文字，打開主畫面版後再「匯入存檔」。';
+        msg = 'iPhone／iPad 安裝方式（請用 Safari）：\n1. 按畫面下方的「分享」按鈕（方框加向上箭頭）\n2. 往下找「加入主畫面」\n3. 按右上角「新增」\n\n⚠️ 主畫面版和 Safari 的存檔是分開的：安裝前先登入雲端帳號，打開主畫面版後登入同一個帳號，角色會從雲端下載。';
     } else {
         msg = '安裝方式：\n・Android Chrome：按右上角「⋮」→「安裝應用程式」或「加到主畫面」\n・電腦 Chrome／Edge：網址列右側的安裝圖示，或選單 →「安裝黑暗大陸」\n\n找不到安裝選項的話，可能是瀏覽器還在準備，玩一下再試一次。';
     }
