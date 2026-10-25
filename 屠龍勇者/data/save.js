@@ -139,7 +139,7 @@ function migrateSave(data) {
     p.settings = Object.assign(JSON.parse(JSON.stringify(DEFAULT_SETTINGS)), p.settings || {});
     // schema 8：指定自動販賣清單；舊檔預設空，去除不存在或不能回收的道具。
     p.settings.lootAutoSell = [...new Set((Array.isArray(p.settings.lootAutoSell) ? p.settings.lootAutoSell : [])
-        .filter(id => typeof id === 'string' && ITEMS[id] && (sellPriceOf(id) > 0 || ['weapon', 'armor'].includes(ITEMS[id].cat))))];
+        .filter(id => typeof id === 'string' && ITEMS[id] && (sellPriceOf(id) > 0 || ['weapon', 'armor', 'ammo'].includes(ITEMS[id].cat))))];
     // 2026-10-15：技能改成用魔法書學（player.skills）＋技能欄（settings.skillSlots）。
     // 舊存檔沒有 skills：照舊規則（等級到就會）把這個職業該會的全部學好；技能欄依舊的自動開關（settings.skills=false 的不放）排好
     if (!Array.isArray(p.skills)) {

@@ -175,7 +175,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025v`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025w`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3192,3 +3192,9 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - `ui-panels.js`新增lootAutoDrawerOpen、toggleLootAutoDrawer／lootAutoDrawerHtml／lootAutoAdd／lootAutoRemove。抽屜預設收合，列表按道具本名去重，限高捲動；無回收價物品不列入。新增一律gameConfirm明確警示特殊品質與保留設定會被覆蓋，確認時重查角色與背包，不新增、不消耗原物品；移除立即存檔。所有事件僅頂層函式＋字面值。CSS在index.html，無新遊戲檔案或載入順序變更。
 - 測試：test-loot-auto-sell、server-loot-client、loot-log、item-lock通過；實際隔離瀏覽器PC／390px手機點抽屜、新增取消／確認、原背包30瓶不變、移除與收合通過，無橫向溢出或Console error／warn，不讀寫真實存檔／不連正式後端。
 - 最終check.ps1 ALL CHECKS PASSED、48檔混淆478KB建置通過；待使用者實玩確認後commit。
+
+### 146.1 彈藥可加入自動販賣（2026-10-25，版本 `20261025w`）
+
+- 使用者要求箭矢與子彈能加入。箭／銀箭／子彈／銀子彈單個回收價均為0，對ammo類別放寬清單列出、新增確認、掉落比對與migrateSave過濾；schema仍8，讀回不清掉彈藥設定。
+- 確認視窗明示回收0金幣，往後同名掉落不進背包／不加金幣，原有彈藥不受影響；其他無回收價道具維持不列入，不調整商店價格或SQL。
+- test-loot-auto-sell補四種彈藥新增、原物品保留、本機掉落0金幣、讀檔保留與後端掉落測試通過，server-loot-client回歸通過；PC／手機實點子彈新增取消／確認（0金幣提醒）／移除／收合正常，Console無error／warn。check.ps1與48檔混淆478KB建置通過。

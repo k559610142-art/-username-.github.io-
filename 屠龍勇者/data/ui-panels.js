@@ -982,22 +982,23 @@ function lootAutoDrawerHtml() {
     const list = player.settings.lootAutoSell || [], names = new Set(list.map(id => ITEMS[id] && ITEMS[id].name)), seen = new Set();
     const bag = player.inv.filter(it => {
         const d = ITEMS[it.id];
-        if (!d || instSellPrice(it) <= 0 || names.has(d.name) || seen.has(d.name)) return false;
+        if (!d || (d.cat !== 'ammo' && instSellPrice(it) <= 0) || names.has(d.name) || seen.has(d.name)) return false;
         seen.add(d.name); return true;
     });
     const selected = list.filter(id => ITEMS[id]).map(id => `<div class="loot-auto-row"><span>${itemIconHtml(id)}<span>${esc(ITEMS[id].name)}</span></span><button class="mini secondary" onclick="lootAutoRemove('${id}')">移除</button></div>`).join('');
     const choices = bag.map(it => `<div class="loot-auto-row"><span>${itemIconHtml(it.id)}<span>${esc(ITEMS[it.id].name)}</span></span><button class="mini" onclick="lootAutoAdd(${it.uid})">新增</button></div>`).join('');
     return `<div class="loot-auto-drawer"><small class="muted">新增只設定未來掉落，不會賣掉背包現有物品。同名以道具本名判定，不分品質或詞綴；清單優先於保留設定。</small>
         <h5>自動販賣清單（${list.length}）</h5><div class="loot-auto-list">${selected || '<p class="muted">尚未加入道具</p>'}</div>
-        <h5>從背包新增</h5><div class="loot-auto-list">${choices || '<p class="muted">沒有可新增的道具（無回收價的道具不列入）</p>'}</div></div>`;
+        <h5>從背包新增</h5><div class="loot-auto-list">${choices || '<p class="muted">沒有可新增的道具（彈藥可加入，其餘須有回收價）</p>'}</div></div>`;
 }
 function lootAutoAdd(uid) {
     const owner = player, it = findInv(uid);
-    if (!it || !ITEMS[it.id] || instSellPrice(it) <= 0) return;
+    if (!it || !ITEMS[it.id] || (ITEMS[it.id].cat !== 'ammo' && instSellPrice(it) <= 0)) return;
     const id = it.id, name = ITEMS[id].name;
+    const priceNote = ITEMS[id].cat === 'ammo' && instSellPrice(it) === 0 ? '\n此彈藥的商店回收價為 0 金幣，之後同名掉落會直接處理，不進背包，也不增加金幣。' : '';
     if ((owner.settings.lootAutoSell || []).some(k => ITEMS[k] && ITEMS[k].name === name)) return;
-    gameConfirm('加入自動販賣', `將「${name}」加入自動販賣？\n之後打到同名道具，不論品質，包含傳說、保留詞綴與共鳴，都會直接按商店回收價換成金幣，不再詢問。\n背包目前的物品不會被賣掉；可隨時從清單移除。`, () => {
-        if (player !== owner || !owner.inv.some(x => x.id === id && instSellPrice(x) > 0)) return;
+    gameConfirm('加入自動販賣', `將「${name}」加入自動販賣？${priceNote}\n之後打到同名道具，不論品質，包含傳說、保留詞綴與共鳴，都會直接按商店回收價換成金幣，不再詢問。\n背包目前的物品不會被賣掉；可隨時從清單移除。`, () => {
+        if (player !== owner || !owner.inv.some(x => x.id === id && (ITEMS[id].cat === 'ammo' || instSellPrice(x) > 0))) return;
         const list = owner.settings.lootAutoSell || [];
         if (list.some(k => ITEMS[k] && ITEMS[k].name === name)) return;
         owner.settings.lootAutoSell = list.concat(id);

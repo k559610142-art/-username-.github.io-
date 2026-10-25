@@ -34,5 +34,19 @@ const decoded=saveParse(localStorage.getItem(slotKey(0)));assert.equal(decoded.s
 const first=player;currentSlot=1;SIM_MODE=true;createPlayer('其他角色','mage',CLASSES.mage.base);SIM_MODE=false;playerOwner=uid;saveGame();const second=player,goldSecond=second.gold;
 assert(lootApply({...result,cursor:2}));assert.equal(player,second);assert.equal(second.gold,goldSecond,'其他角色金幣不變');
 assert.equal(saveParse(localStorage.getItem(slotKey(0))).player.gold,after+sellPriceOf('redPotion')*4+instSellPrice(special),'非當前角色使用自己的清單');
+
+currentSlot=0;player=first;lootMode='legacy';cloudLoggedIn=()=>false;player.settings.lootFilter=0;player.settings.lootAutoSell=[];
+saveGame=()=>{};gameConfirm=(title,msg,yes)=>{assert(msg.includes('0 金幣'));confirmSale=yes;};
+for(const id of ['arrow','silverArrow','bullet','silverBullet']) {
+    const ammo=addItem(id,100),count=countItem(id),g=player.gold;
+    assert.equal(sellPriceOf(id),0);lootAutoAdd(ammo.uid);confirmSale();assert(player.settings.lootAutoSell.includes(id));
+    assert.equal(countItem(id),count);assert(lootAutoSellHit({id,n:10}));
+    rollDrops({lv:1,boss:false,drops:[{id,p:1,n:[10,10]}]},{drops:[]});
+    assert.equal(countItem(id),count);assert.equal(player.gold,g);assert(lootLog.at(-1).msg.includes('×10'));
+}
+const ammoSave=migrateSave({schema:8,player:JSON.parse(JSON.stringify(player))});assert.equal(ammoSave.settings.lootAutoSell.length,4,'彈藥讀檔保留');
+cloudLoggedIn=()=>true;playerOwner=uid;saveGame=saveReal;saveGame();const ammoGold=player.gold,ammoCount=countItem('bullet');
+const cursor=saveParse(localStorage.getItem(slotKey(0))).lootCursor||0;
+assert(lootApply({slot:0,char:lootChar(),cursor:cursor+1,items:[{id:'bullet',n:50}]}));assert.equal(player.gold,ammoGold);assert.equal(countItem('bullet'),ammoCount);
 console.log('PASS: confirmation, cancel, inventory unchanged, remove, local sale quantity, special override, locks, schema migration, backend sale, replay, rollback, encrypted persistence and other slot isolation');
 `,ctx);
