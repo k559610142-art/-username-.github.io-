@@ -168,7 +168,7 @@ RECIPES.push(
 );
 
 // 異界首領：依地圖階級掉一件共鳴裝備（T1～5 稀有、T6～10 英雄以下、T11～14 傳說以下、T15 全部）
-const RES_MAP_BOSS_P = 0.1;
+const RES_MAP_BOSS_P = 0.05;   // 2026-10-25 由 10% 降為 5%
 function resMaxTierForMap(t) { return t <= 5 ? 1 : t <= 10 ? 2 : t <= 14 ? 3 : 4; }
 
 // ───────── 戰鬥（combat.js 呼叫）─────────

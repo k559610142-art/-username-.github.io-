@@ -62,12 +62,14 @@ function rollAffixValue(k, il, mul = 1) {
     return Math.max(a.min, Math.round(a.min + Math.random() * (hi - a.min)));
 }
 
-// 掉落時擲品質：boss 掉的品質比較好；guaranteed 表示至少魔法（隨機裝備掉落）
+// 掉落時擲品質（2026-10-25 起，後端 loot_quality 同步）：
+// 一般怪 普通 40／魔法 10／稀有 5／傳說 1、首領 普通 50／魔法 15／稀有 8／傳說 2；其餘回傳 false＝裝備消失、改掉 1 個通貨
+// guaranteed 只給命運石用（至少魔法）
 function rollQuality(boss, guaranteed) {
     const r = Math.random();
-    if (boss) return r < 0.10 ? 'legend' : r < 0.45 ? 'rare' : 'magic';
     if (guaranteed) return r < 0.04 ? 'legend' : r < 0.25 ? 'rare' : 'magic';
-    return r < 0.02 ? 'legend' : r < 0.12 ? 'rare' : r < 0.40 ? 'magic' : null;
+    if (boss) return r < 0.02 ? 'legend' : r < 0.10 ? 'rare' : r < 0.25 ? 'magic' : r < 0.75 ? null : false;
+    return r < 0.01 ? 'legend' : r < 0.06 ? 'rare' : r < 0.16 ? 'magic' : r < 0.56 ? null : false;
 }
 
 // 給道具實體加上品質與詞綴

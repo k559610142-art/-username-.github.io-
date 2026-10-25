@@ -5,6 +5,8 @@
 
 ## 1. 現況
 
+- **20261025p：降低裝備掉落品質＋共鳴 5%（第 141 節）**。使用者定：一般怪 普通40／魔法10／稀有5／傳說1、首領 普通50／魔法15／稀有8／傳說2，其餘裝備消失改掉 1 個通貨；隨機裝備同表；異界首領共鳴 10%→5%。**待使用者在 Supabase SQL Editor 先執行 tools/loot-rates.sql，再執行 tools/loot-catalog.sql（20261025p-47626192162a），線上才生效。**
+
 鋼鐵狂戰士完成檢查時共享工作目錄已續版20261025n；保留其他對話修改，n版check.ps1與48檔混淆476KB建置亦通過。
 
 - **20261025m：鋼鐵狂戰士專屬藍變外觀（第140節）**。使用者12號四張參考原樣保存在tools/sprite-src/morph/steel-berserker-v1，內建image_gen製作三向36格、四動作，左向鏡射；m12接上steelBerserker並由SW預載。保留Lv15／原能力／武器建議／GM豁免，仍32款、schema7。test-steel-berserker-morph與pirate回歸通過、check.ps1 ALL CHECKS PASSED、48檔混淆打包通過；隔離瀏覽器實點卷軸扣1、四方向四動作及遊戲尺寸繪製，Console無error／warn，未讀寫真實角色或連外。完整提示詞prompts-final.json、prepare／preview、manifest／audit與動畫預覽均保留。**待使用者實玩確認後才commit**：Ctrl+F5→使用變形卷軸→雙手劍系→鋼鐵狂戰士（Lv15）→走動、攻擊並看背面／側面外觀。共享目錄其他對話的掉寶公告修改保留。

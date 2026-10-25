@@ -174,7 +174,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025o`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025p`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -1119,12 +1119,12 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 道具實體新增欄位（只有怪物掉落的武器／防具會有；商店、鍛造、任務獎勵都是普通）：
   `q` 品質（`magic` 魔法藍／`rare` 稀有黃／`legend` 傳說橘）、`af` 詞綴 `[{k, v, lg?}]`、`il` 物品等級（掉落怪物等級）、`nm` 名稱前綴。
   `SAVE_SCHEMA` 2；`migrateSave` 把不認得的品質／詞綴清掉（舊存檔沒有這些欄位，直接當普通裝備）。
-- 品質機率 `rollQuality`：一般怪指定掉落 普通 60%／魔法 28%／稀有 10%／傳說 2%；首領 魔法 55%／稀有 35%／傳說 10%；
-  隨機裝備（至少魔法）魔法 75%／稀有 21%／傳說 4%。詞綴條數：魔法 1～2、稀有 3～4、傳說 4＋1 條傳說詞綴（數值 ×2～2.5，名稱「傳說・死神 長劍」）。
+- 品質機率 `rollQuality`（2026-10-25 `20261025p` 起降低，第 141 節）：一般怪 普通 40%／魔法 10%／稀有 5%／傳說 1%，其餘 44% 裝備消失改掉 1 個通貨；首領 普通 50%／魔法 15%／稀有 8%／傳說 2%，其餘 25% 改掉通貨（舊：一般 60／28／10／2、首領 55／35／10）；
+  隨機裝備也套用同一張表（舊：至少魔法 75／21／4）；`guaranteed`（魔法 75%／稀有 21%／傳說 4%）現在只給命運石用。詞綴條數：魔法 1～2、稀有 3～4、傳說 4＋1 條傳說詞綴（數值 ×2～2.5，名稱「傳說・死神 長劍」）。
 - 詞綴 `AFFIXES`（19 種，數值上限隨物品等級成長）：五維、命中、傷害、爆擊%、攻速%、吸血%、HP、MP、AC、MR、回血、回魔、SP、減傷、閃避%；
   `slots` 限制可出現的部位（例如攻速只在武器／手套、AC 只在防具）。`calcStats` 把已裝備道具的 `affixFx` 加進 fx。
 - 名稱 `qualityName`：魔法＝第一條詞綴的前綴（「銳利的長劍」）、稀有＝「「血月」長劍」、傳說＝「傳說・稱號 名稱」；`itemClass` 顯示品質顏色。
-- **隨機裝備掉落**：每隻一般怪 1.5%（`RANDOM_EQUIP_P`）、首領 50% 掉一件 `randomEquipFor(怪物等級)`（回收價 ≤ 等級 × 600、非職業限定的武器／防具），至少魔法品質。
+- **隨機裝備掉落**：每隻一般怪 1.5%（`RANDOM_EQUIP_P`）、首領 50% 掉一件 `randomEquipFor(怪物等級)`（回收價 ≤ 等級 × 600、非職業限定的武器／防具），品質同上表（可能普通或消失改通貨）。
 - 售價 `instSellPrice`：基本回收價（至少 50）× 品質倍率（魔法 1.5、稀有 3、傳說 8）＋ 詞綴數 × 物品等級 × 10。有品質的道具賣出前會確認。
 - **戰利品過濾**（2026-10-09）：設定 `lootFilter`（預設 1）：0 全部撿起、1 普通裝備自動賣出、2 魔法以下自動賣出、3 只撿傳說。
   `rollDrops` 的 `give` 先擲品質（`applyAffixes` 在暫存物件上），`lootFiltered` 判定要擋就直接 `instSellPrice` 換金幣（記入本次掛機金幣、訊息 🪙），不進背包、不佔負重。
@@ -1285,7 +1285,7 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 | 傳說 | 屠龍劍（charge）、死亡騎士的烈炎之劍（proc）、風之弓（proc）＋12 把職業第 4 章任務武器（每職業一把，cd／proc／charge 各有） | 既有來源 |
 | 神話 | **大地裂斧**（charge）、**潮汐之杖**（cd）、**颶風之弓**（proc）、**熾焰魔劍**（proc） | 四大龍各 6%，或鍛造：基底武器＋該龍之鱗×5＋高階材料×2～4＋💰80,000 |
 
-- **異界首領**：`RES_MAP_BOSS_P` 10%（× 地圖獎勵加成）掉一把隨機共鳴武器，階級上限 `resMaxTierForMap`：T1～5 稀有、T6～10 英雄、T11～14 傳說、T15 神話。
+- **異界首領**：`RES_MAP_BOSS_P` 5%（2026-10-25 由 10% 降低）（× 地圖獎勵加成）掉一把隨機共鳴武器，階級上限 `resMaxTierForMap`：T1～5 稀有、T6～10 英雄、T11～14 傳說、T15 神話。
 - 共鳴武器不會出現在暗黑式隨機裝備掉落（`randomEquipFor` 排除 `res`），戰利品過濾也不會賣掉（沒有商店價）。
 - 介面：道具說明與圖鑑多一個「🌟 共鳴」框（`resonanceHtml`：名稱、觸發方式、效果、職業共鳴）；圖鑑清單名稱前加 🌟、取得方式多列異界首領；
   狩獵畫面增益列最後顯示 `resonanceChip`（冷卻倒數／觸發機率／共鳴值 n/N，✦＝職業共鳴中）。
@@ -3144,3 +3144,12 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - tools/sprite-src/morph/steel-berserker-v1/prepare.py與preview.py沿既有RGBA打包／腳底註冊流程，保存36個不重複格、來源rect／foot、manifest／audit、contact及motion-preview。tools/test-steel-berserker-morph.js驗證Lv14拒絕不扣卷／Lv15使用、四向命中與MISS／施法／受傷、到期沿上次選擇、RGBA圖集與其他變身回歸。tools/steel-berserker-preview.html僅記憶體存檔、拒絕連外，使用實際sceneDraw及卷軸選單。
 
 第140節驗證：36格透明邊界／腳底註冊與圖集對應檢查通過，steel-berserker及pirate回歸通過；check.ps1 ALL CHECKS PASSED、48檔混淆475KB打包通過。隔離瀏覽器實點m12卷軸4→3張、四方向四動作及48實際尺寸／96放大檢查，實際attack560ms與目標扣血正常，Console無error／warn。待使用者實玩驗收後commit。
+
+## 141. 降低裝備掉落品質＋共鳴 5%（2026-10-25，版本 `20261025p`；`affix.js` 的 `rollQuality`、`combat.js` 的 `rollDrops`、SQL `tools/loot-rates.sql`）
+- 使用者要求降低掉寶：品質表見第 21 節。比例加總不到 100% 的部分，使用者選「裝備有掉出來，但直接消失、整體掉寶量跟著降」，並「剩下可以改掉通貨」→ 消失時改掉 1 個通貨（`rollCurrency(怪物等級)`，Lv.70 以下不會出命運的覺醒石）。
+- 只影響武器／防具：怪物指定掉落、隨機裝備（含精英必掉）都擲同一張表；藥水、材料、卷軸、彈藥等非裝備不擲品質。共鳴裝備不擲品質（固定普通、不會消失）。命運石維持 75／21／4。
+- 前端：`rollQuality(boss, false)` 回傳 `false`＝消失，`rollDrops` 的 `give` 遇到裝備 `q === false` 改呼叫 `give(rollCurrency(lv))`（只在本機掉寶／離線模擬時用）。
+- 後端：`loot_quality` 回傳 `'gone'`；新增 `loot_currency(c,lv,n)`（依目錄 currency 權重與 minLv 抽 1 種）、`loot_gear(c,id,n,boss,lv)`（回傳 jsonb 陣列：非裝備原樣、裝備擲品質、gone 改通貨），`loot_roll` 的指定掉落與隨機裝備都改呼叫 `loot_gear`。`server-loot.sql` 已同步，`tools/loot-rates.sql` 是只更新這四個函式的差異檔。
+- 共鳴 5%：`RES_MAP_BOSS_P` 存在後端目錄 `resMapBossP`，所以要重新產生並執行 `loot-catalog.sql`（版本 `20261025p-47626192162a`）。圖鑑文字自動顯示 5%。
+- **部署順序**：Supabase SQL Editor 先執行 `tools/loot-rates.sql`，再執行 `tools/loot-catalog.sql`。沒執行前線上掉寶仍是舊機率（前端改版不影響後端結果）。
+- 驗證：PGlite 抽 2 萬次 一般 普通40.6／魔法9.9／稀有5.2／傳說0.9／消失43.3、首領 50.3／14.7／7.9／2.2／25.0；`loot_gear` 消失改通貨 43.7%、藥水不受影響；前端 10 萬次分佈相同；test-loot-log 加「品質 false → 無裝備、多 1 個通貨」；test-server-loot-db／integration／client、loot-news、loot-batch、check.ps1、建置通過。

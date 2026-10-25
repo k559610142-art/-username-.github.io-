@@ -711,8 +711,10 @@ function rollDrops(mon, z) {
         const d = ITEMS[id];
         const n = nRange ? rand(nRange[0], nRange[1]) : 1;
         const gear = d.cat === 'weapon' || d.cat === 'armor';
+        if (gear && q === undefined) q = rollQuality(mon.boss, false);
+        if (gear && q === false) { give(rollCurrency(mon.lv), null); return; }   // 裝備消失，改掉 1 個通貨
         // 裝備先擲品質；被戰利品過濾擋下的直接自動賣掉（不進背包、不佔負重）
-        const rolled = gear ? applyAffixes({ uid: 0, id, n: 1, ench: 0 }, q === undefined ? rollQuality(mon.boss, false) : q, mon.lv) : null;
+        const rolled = gear ? applyAffixes({ uid: 0, id, n: 1, ench: 0 }, q, mon.lv) : null;
         if (rolled && lootFiltered(rolled, player.settings.lootFilter)) {
             const g = instSellPrice(rolled) * n;
             player.gold += g;
@@ -742,7 +744,7 @@ function rollDrops(mon, z) {
     }
     // 製作通貨（craft.js）：一般怪 3%、首領 60%
     if (chance((mon.boss ? CURRENCY_BOSS_P : CURRENCY_DROP_P) * qm)) give(rollCurrency(mon.lv), mon.boss ? [1, 3] : null);
-    // 隨機裝備掉落（至少魔法品質）：一般怪 1.5%、首領 50%、精英怪必掉
+    // 隨機裝備掉落：一般怪 1.5%、首領 50%、精英怪必掉（品質同上，也可能消失改掉通貨）
     rollMapDrop(mon, qm);   // 異界地圖掉落（maps.js）
     const book = rollBookDrop(mon);   // 高級魔法書／技能書（spellbook.js）
     if (book) give(book, null);
@@ -753,7 +755,7 @@ function rollDrops(mon, z) {
     }
     if (mon.elite || chance((mon.boss ? 0.5 : RANDOM_EQUIP_P) * qm)) {
         const id = randomEquipFor(mon.lv);
-        if (id) give(id, null, rollQuality(mon.boss, true));
+        if (id) give(id, null);
     }
 }
 const RANDOM_EQUIP_P = 0.015;

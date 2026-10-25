@@ -38,6 +38,9 @@ assert(!gameLog.some(l=>l.msg.includes('自動賣出')),'自動賣出不可混�
 player.settings.lootFilter=0; rollQuality=()=> 'legend';
 rollDrops({...mon,drops:[{id:weapon,p:1}]},{drops:[]});
 assert.equal(lootLog.at(-1).cls,'boss'); assert(lootLog.at(-1).msg.includes('傳說'));
+{ rollQuality=()=>false; const nW=countItem(weapon), nC=player.inv.filter(x=>ITEMS[x.id].cat==='currency').length;
+  rollDrops({...mon,drops:[{id:weapon,p:1}]},{drops:[]});
+  assert.equal(countItem(weapon),nW,'品質 false＝裝備消失'); assert.equal(player.inv.filter(x=>ITEMS[x.id].cat==='currency').length,nC+1,'消失改掉 1 個通貨'); }
 rollQuality=oldQuality; rollMapDrop=oldMapDrop;
 giveMap(1,null); assert(lootLog.at(-1).msg.includes('異界地圖 T1'));
 const state={active:true}, qid=Object.keys(ITEMS).find(id=>ITEMS[id].cat==='quest');

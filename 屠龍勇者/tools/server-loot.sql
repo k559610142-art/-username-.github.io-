@@ -42,9 +42,23 @@ $$;
 create or replace function public.loot_int(lo int,hi int) returns int language sql volatile set search_path='' as $$ select lo+floor(random()*(hi-lo+1))::int; $$;
 create or replace function public.loot_quality(boss boolean,guaranteed boolean) returns text language plpgsql volatile set search_path='' as $$
 declare r numeric:=random();begin
- if boss then return case when r<0.10 then 'legend' when r<0.45 then 'rare' else 'magic' end; end if;
+ -- 2026-10-25（20261025p）：一般怪 普通40／魔法10／稀有5／傳說1、首領 普通50／魔法15／稀有8／傳說2，其餘 'gone'＝裝備消失改掉 1 個通貨
+ if boss then return case when r<0.02 then 'legend' when r<0.10 then 'rare' when r<0.25 then 'magic' when r<0.75 then null else 'gone' end; end if;
  if guaranteed then return case when r<0.04 then 'legend' when r<0.25 then 'rare' else 'magic' end; end if;
- return case when r<0.02 then 'legend' when r<0.12 then 'rare' when r<0.40 then 'magic' else null end;
+ return case when r<0.01 then 'legend' when r<0.06 then 'rare' when r<0.16 then 'magic' when r<0.56 then null else 'gone' end;
+end $$;
+create or replace function public.loot_currency(c jsonb,lv int,n int) returns jsonb language plpgsql volatile set search_path='' as $$
+declare dr jsonb;r numeric;total numeric;begin
+ select sum((v->>'w')::numeric) into total from jsonb_array_elements(c->'currency') v where coalesce((v->>'minLv')::int,0)<=lv;r:=random()*total;
+ for dr in select * from jsonb_array_elements(c->'currency') v where coalesce((v->>'minLv')::int,0)<=lv loop r:=r-(dr->>'w')::numeric;if r<0 then return public.loot_item(c,dr->>'id',n,null,lv);end if;end loop;
+ return null;
+end $$;
+create or replace function public.loot_gear(c jsonb,id text,n int,boss boolean,lv int) returns jsonb language plpgsql volatile set search_path='' as $$
+declare q text;g jsonb;begin
+ if c->'items'->id->>'cat' not in ('weapon','armor') then return jsonb_build_array(public.loot_item(c,id,n,null,lv));end if;
+ q:=public.loot_quality(boss,false);
+ if q='gone' then g:=public.loot_currency(c,lv,1);return case when g is null then '[]'::jsonb else jsonb_build_array(g) end;end if;
+ return jsonb_build_array(public.loot_item(c,id,n,q,lv));
 end $$;
 create or replace function public.loot_item(c jsonb,id text,n int,q text,lv int) returns jsonb language plpgsql volatile set search_path='' as $$
 declare d jsonb:=c->'items'->id; it jsonb:=jsonb_build_object('id',id,'n',n,'ench',0); pool jsonb; af jsonb:='[]'; k text; a jsonb; l jsonb; value numeric; hi numeric; mul numeric; cnt int; nm text;
@@ -88,7 +102,7 @@ begin
   if boss and dr ? 'monsterRule' and c->'items'->id->>'cat'='material' then prob:=(c->>'bossMaterialP')::numeric;elsif prob<1 then prob:=prob*qm;end if;
   if random()<prob then
    n:=case when dr ? 'n' then public.loot_int((dr->'n'->>0)::int,(dr->'n'->>1)::int) else 1 end;
-   q:=public.loot_quality(boss,false);out:=out||jsonb_build_array(public.loot_item(c,id,n,q,lv));
+   out:=out||public.loot_gear(c,id,n,boss,lv);
   end if;
  end loop;
  if random()<(case when boss then 0.6 else 0.03 end)*qm then
@@ -114,7 +128,7 @@ begin
  end if;
  if coalesce((m->>'elite')::boolean,false) or random()<(case when boss then 0.5 else 0.015 end)*qm then
   select jsonb_agg(key) into pool from jsonb_each(c->'items') where value->>'cat' in ('weapon','armor') and not(value ? 'classes') and not(value ? 'res') and (value->>'sellValue')::numeric<=greatest(300,lv*600);
-  if jsonb_array_length(pool)>0 then out:=out||jsonb_build_array(public.loot_item(c,public.loot_pick(pool)#>>'{}',1,public.loot_quality(boss,true),lv));end if;
+  if jsonb_array_length(pool)>0 then out:=out||public.loot_gear(c,public.loot_pick(pool)#>>'{}',1,boss,lv);end if;
  end if;
  g:=c->'quests'->(p->>'cls')->coalesce((p->'quests'->>'ch')::int,0);
  if coalesce((p->'quests'->>'active')::boolean,false) and g->>'type'='collect' and g->>'zone'=z->>'id' then
@@ -272,7 +286,7 @@ drop trigger if exists dragon_loot_save_guard on public.dragon_saves;
 create trigger dragon_loot_save_guard before insert or update on public.dragon_saves for each row execute function public.dragon_loot_save_guard();
 
 -- 內部函式全部撤銷預設PUBLIC執行權，只有五個具帳號檢查的RPC及狀態查詢開放。
-revoke all on function public.loot_pick(jsonb),public.loot_int(int,int),public.loot_quality(boolean,boolean),public.loot_item(jsonb,text,int,text,int),public.loot_map(jsonb,int),public.loot_roll(jsonb,jsonb),public.loot_player(int,text),public.dragon_loot_save_guard() from public,anon,authenticated;
+revoke all on function public.loot_pick(jsonb),public.loot_int(int,int),public.loot_quality(boolean,boolean),public.loot_currency(jsonb,int,int),public.loot_gear(jsonb,text,int,boolean,int),public.loot_item(jsonb,text,int,text,int),public.loot_map(jsonb,int),public.loot_roll(jsonb,jsonb),public.loot_player(int,text),public.dragon_loot_save_guard() from public,anon,authenticated;
 revoke all on function public.loot_status(),public.loot_spawn(int,text,uuid,boolean,text),public.loot_finish(uuid),public.loot_raid(int,text,uuid,int),public.loot_pending(int,text) from public,anon,authenticated;
 grant execute on function public.loot_status() to anon,authenticated;
 grant execute on function public.loot_spawn(int,text,uuid,boolean,text),public.loot_finish(uuid),public.loot_raid(int,text,uuid,int),public.loot_pending(int,text) to authenticated;
