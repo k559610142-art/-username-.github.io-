@@ -349,18 +349,16 @@ function charGearHtml() {
 }
 // 娃娃與傭兵先開放展示欄，能力與裝備玩法待確認。
 function charCompanionsHtml() {
-    return `<aside class="cv-companions" aria-label="娃娃與傭兵展示">
+    return `<aside class="cv-companions" aria-label="娃娃與傭兵欄位">
         <section class="cv-companion cv-doll">
             <h4>魔法娃娃</h4>
-            <div class="cv-companion-art"><img src="images/sprites/dolls/companions-v1/frost-dragon/frames/walk-down-02.png" alt="冰霜幼龍外觀展示"></div>
-            <b class="cv-companion-name">冰霜幼龍</b><small class="cv-companion-tag">外觀展示・尚未開放</small>
-            <div class="cv-companion-desc"><b>效果介紹</b><p>能力效果尚未定案。</p><small>僅出場的娃娃提供加成，收回後不生效。</small></div>
+            <div class="cv-companion-art cv-companion-empty"><span>未裝備娃娃</span></div>
+            <div class="cv-companion-desc"><b>效果介紹</b><p class="muted">尚無裝備效果</p></div>
         </section>
         <section class="cv-companion cv-mercenary">
             <h4>傭兵</h4>
-            <div class="cv-companion-art"><img src="images/classes/stage/knight.webp" alt="騎士傭兵示意外觀"></div>
-            <b class="cv-companion-name">騎士</b><small class="cv-companion-tag">示意外觀・尚未開放</small>
-            <div class="cv-companion-desc"><b>效果介紹</b><p>戰鬥方式與能力待設定。</p><small>目前尚未提供裝備或出戰功能。</small></div>
+            <div class="cv-companion-art cv-companion-empty"><span>未裝備傭兵</span></div>
+            <div class="cv-companion-desc"><b>效果介紹</b><p class="muted">尚無裝備效果</p></div>
         </section>
     </aside>`;
 }

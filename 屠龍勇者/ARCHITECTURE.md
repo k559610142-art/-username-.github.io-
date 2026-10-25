@@ -174,7 +174,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025r`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025s`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3168,3 +3168,9 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - q版批次換版誤刪六處CSS圖片url的右括號，並吞掉border-image-source的分號，導致PC外框／遮罩與手機框架、封面失效。補回全部符號，保留娃娃／傭兵欄位。
 - 版本替換只匹配版本字串，不包含網址後的括號或分號；外框驗收需實際檢查computed backgroundImage／maskImage／borderImageSource，不能只看人物狀態子面板。
 - 驗證：PC背景／遮罩、手機border-image／疊圖computed style均恢復有效URL，完整PC畫面截圖確認、人物展示PC／手機回歸及Console無error／warn，check.ps1與48檔混淆建置通過。
+
+## 144. 娃娃傭兵固定右側與未裝備空欄（2026-10-25，版本 `20261025s`）
+
+- 使用者要求嚴格依模板：娃娃／傭兵固定在裝備清單右側，上娃娃下傭兵。移除小於700px時display:contents與移到下排規則；窄版仍在中欄右側，以緊湊字級顯示，不另移下方。取代第142節窄版規則。
+- 正式娃娃與傭兵尚無裝備資料，charCompanionsHtml一律顯示未裝備娃娃／未裝備傭兵與尚無裝備效果；移除預設冰霜幼龍及騎士圖片、名稱及介紹，不虛構已裝備狀態。不改存檔或能力。
+- 驗證：實際人物狀態視窗switchTab、PC1120px與390px緊湊布局，卡片固定裝備右側／12格裝備／零預設圖片／無橫向溢出、Console無error或warn；外框有效，check.ps1與48檔混淆477KB建置通過。
