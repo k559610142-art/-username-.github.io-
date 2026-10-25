@@ -5,6 +5,8 @@
 
 ## 1. 現況
 
+- **20261026c：存檔上傳被 RLS 擋下時自動判斷（第 166 節）**：停權／別台使用中／登入已失效（自動登出並提示重新登入）／登入正常（下一輪再傳）。起因是使用者看到 dragon_saves RLS 錯誤。
+
 - **20261026b驗證完成**：prepare.py驗36格不重複／RGBA／透明留邊與圖集一致；test-ivory-archmage-morph／test-morph-level-lock／test-item-art通過。四方向四動作motion-preview.gif已檢視；側向及施法雙杖已透過image_gen修正，初稿及完整repair-prompts.json保留。check.ps1 ALL CHECKS PASSED（51檔、50script同b）、正式混淆504KB成功、git diff --check無錯誤。沒有開關任何瀏覽器、未動真實角色或正式後端；尚待使用者實玩確認，未由本助手提交或推送。
 
 

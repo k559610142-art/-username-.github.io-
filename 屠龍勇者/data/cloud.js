@@ -192,6 +192,32 @@ document.addEventListener('visibilitychange', () => { if (!document.hidden) onli
 
 // 被別台強制登入：這台存檔、回標題、登出（角色留在本機）
 async function onlineKicked() {
+    await cloudLocalSignOut('已在其他裝置登入', '這個帳號在另一台裝置登入了，這台已自動登出（角色留在這台，重新登入後會同步）。\n如果不是你本人，請馬上改密碼。');
+}
+// 這台的登入已被伺服器作廢（別台按了「強制登入」會登出其他所有裝置；手上的登入憑證還沒過期，看起來仍是登入中）
+async function cloudSessionExpired() {
+    await cloudLocalSignOut('登入已失效', '這台的雲端登入已經失效，雲端存檔沒辦法上傳。\n可能是在其他裝置按了「強制登入」，或登出了所有裝置。\n\n角色進度都留在這台，請在標題畫面按「☁️ 登入／註冊」重新登入，登入後會自動上傳。');
+}
+// 存檔上傳被 RLS 擋下（dragon_is_banned：停權／這次登入已被作廢／帳號在別台使用中，tools/single-login.sql）：判斷是哪一種並提示。
+// 回傳 true＝已處理（停止這一輪上傳）；連不上伺服器時不下判斷，下次再試（2026-10-26，第 166 節）
+let cloudRlsBusy = false;
+async function cloudRlsBlocked() {
+    if (cloudRlsBusy || !cloudLoggedIn()) return true;
+    cloudRlsBusy = true;
+    try {
+        if (await cloudCheckBan()) return true;   // 停權：cloudCheckBan 已提示
+        let ping;
+        try { ping = await cloudTimeout(cloudSb.rpc('online_ping')); } catch (e) { return false; }
+        if (!ping.error && ping.data === false) { await onlineKicked(); return true; }   // 帳號在別台使用中
+        // 問登入伺服器這次登入還在不在（session 被刪掉會回 403 session_not_found）
+        let u;
+        try { u = await cloudTimeout(cloudSb.auth.getUser()); } catch (e) { return false; }
+        const err = u && u.error;
+        if (err && (err.status === 401 || err.status === 403 || /session|jwt|expired/i.test(err.code || err.message || ''))) { await cloudSessionExpired(); return true; }
+        return false;   // 登入正常：可能剛好別台心跳剛逾時，下一輪再傳
+    } finally { cloudRlsBusy = false; }
+}
+async function cloudLocalSignOut(title, msg) {
     if (!cloudUser) return;
     onlineStop();
     if (player) {
@@ -203,7 +229,7 @@ async function onlineKicked() {
     cloudSigningOut = true;
     try { await cloudTimeout(cloudSb.auth.signOut({ scope: 'local' })); } catch (e) { } finally { cloudSigningOut = false; }
     renderCloudEntry(); cloudRefreshScreen();
-    gameAlert('已在其他裝置登入', '這個帳號在另一台裝置登入了，這台已自動登出（角色留在這台，重新登入後會同步）。\n如果不是你本人，請馬上改密碼。');
+    gameAlert(title, msg);
 }
 
 // 登入被拒：先不登出，讓玩家選「取消」（登出這台）或「強制登入」
@@ -516,7 +542,10 @@ async function cloudFlushRun() {
             cloudError = cloudErrText(e);
             console.warn('雲端上傳失敗', e);
             if (!cloudBusyErr(e)) cloudSlotHold[i] = Date.now() + CLOUD_REJECT_HOLD_MS;
-            if (e && e.code === '42501' && await cloudCheckBan()) break;   // 被 RLS 擋下：可能剛被封鎖
+            if (e && e.code === '42501') {   // 被 RLS 擋下：停權、登入失效或別台使用中（cloudRlsBlocked）
+                if (await cloudRlsBlocked()) break;
+                delete cloudSlotHold[i];   // 登入正常（可能是別台心跳剛逾時）：不用等 10 分鐘，下一輪再傳
+            }
         }
     }
     if (ok) { cloudError = ''; cloudLastSync = Date.now(); }

@@ -159,6 +159,7 @@
 | `sw.js` | Service Worker，快取名稱 `dragon-` 開頭（第 12 節） |
 | `images/` | `icons/` 圖片圖示（藥水 `potion-*.jpg`、技能 `sk/`，第 41 節）；App 圖示：`icon-192/512.png`、`icon-maskable-512.png`、`apple-touch-icon.png`；主畫面外框 `frame-nopillar.png`（去掉拱門與左右石柱，第 54 節；`frame-notop.jpg`、原版 `frame.jpg` 保留；第 15 節）、PC 橫式外框 `frame-pc.jpg`＋遮罩 `frame-pc-mask.png`（第 19 節）；`sprites/` 人物模型、`classes/` 職業立繪、十二職業合照 `all.jpg` 、創角舞台去背圖 `classes/stage/`（合照中的人）與 `classes/hero/`（立繪全身像）（第 18 節）；`maps/ruins.jpg` 野外地圖背景、`maps/tower.jpg` 永夜之塔通用地圖（第 52 節）、`npc/tower-keeper.png`／`ivory-keeper.png`＋`-face.jpg` 永夜之塔／暮光法師塔傳送師（第 55、56 節）、`maps/village.webp` 村莊背景（第 17 節）、`maps/wild.jpg`＋`wild-mini.jpg` 低語海岸大地圖與小地圖（第 45 節；12 個地圖合併、6016×4768＝188×149 格，第 67 節）、`wild-occ.png` 遮擋深度圖（第 46 節） |
 | `tools/test-doll-summon-cost.js` | 娃娃召喚扣料、30分鐘續召、舊檔／重登／換裝、離線與團戰隔離測試（第163節） |
+| `tools/test-cloud-rls-blocked.js` | 存檔上傳被 RLS 擋下的自動判斷：停權／別台使用中／登入失效／登入正常／連不上（第166節） |
 | `tools/test-tower-floors.js` | 永夜之塔逐層解鎖：1000 隻解鎖、首領樓層、不能跳層、舊存檔重置只做一次、進度文字（第159節） |
 | `tools/test-shura-blood-status.js` | 血戰傷害／實際吸血／50%門檻／技能區待命與生效中發光隔離測試（第150節） |
 | `tools/test-auto-tele-heal.js` | 自動瞬移一次後補血、喝水延遲／搜尋暫緩／恢復掛機與缺水回家隔離回歸（第149節） |
@@ -189,7 +190,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261026b`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261026c`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3406,3 +3407,9 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - tools/test-ivory-archmage-morph.js隔離驗Lv14拒絕不扣卷／Lv15使用、能力表不變、卷軸扣量與上次選擇、四向命中／MISS／施法／受傷、動作互斥／到期／其他變身、RGBA尺寸與36格來源、SW引用。測試不開關瀏覽器、不操作正式存檔／後端。使用者驗收：重新整理到b→變身卷軸→法杖系→象牙塔高階秘術師→走四方向、攻擊、施法、受傷，確認後才提交。
 
 第165節驗證：生成初稿、側向修正、施法雙法杖修正與完整repair-prompts.json保存。prepare.py通過36格不重複／RGBA留邊／圖集對應；卷軸m19與32款等級、458道具圖片回歸通過，四向四動作GIF檢視。check.ps1 ALL CHECKS PASSED（51檔、50script同20261026b）、50檔正式混淆504KB成功；未開關瀏覽器，實玩待使用者確認。
+
+## 166. 存檔上傳被擋時自動判斷原因（2026-10-26，版本 `20261026c`；`cloud.js` 的 `cloudRlsBlocked`／`cloudSessionExpired`／`cloudLocalSignOut`）
+- 使用者回報設定頁狀態顯示「⚠️ new row violates row-level security policy for table "dragon_saves"」。`dragon_saves` 的 insert／update RLS 要求 `not dragon_is_banned()`，它在三種情況成立（`tools/single-login.sql`）：帳號在 `dragon_bans`、這次登入的 session 已不在 `auth.sessions`（別台按「強制登入」會登出其他所有裝置，這台的 JWT 還沒過期所以看起來仍是登入中）、同帳號別的 session 90 秒內有心跳。原本只查停權，其他兩種只顯示原始錯誤、每 10 分鐘重試一次。
+- `cloudFlushRun` 上傳拿到 `42501` → `cloudRlsBlocked()` 依序判斷：① `cloudCheckBan`（停權，原本的提示）② `online_ping` 回 false＝別台使用中 → `onlineKicked`（原本「已在其他裝置登入」）③ `auth.getUser()` 回 401／403 或 session／jwt／expired 錯誤＝登入已作廢 → `cloudSessionExpired`：存檔、回標題、這台登出，提示「登入已失效…請在標題畫面重新登入，登入後會自動上傳」④ 登入正常（例如別台心跳剛逾時）→ 不登出、清掉這格 10 分鐘的暫停，下一輪再傳；心跳或 getUser 連不上 → 不下判斷。
+- `onlineKicked` 的登出流程抽成 `cloudLocalSignOut(title, msg)` 共用。登出後角色仍在本機，重新登入的合併流程會把較新的本機進度上傳。
+- 測試：`tools/test-cloud-rls-blocked.js`（模擬伺服器）；test-server-loot-client／vault-v2-client／auction-client／clan-character-client／loot-batch 回歸通過。真正的被擋情境要上線後實際遇到才看得到。
