@@ -17,7 +17,7 @@ create table if not exists public.dragon_trusted (
 );
 alter table public.dragon_trusted enable row level security;
 revoke all on public.dragon_trusted from anon;
-grant select, insert, delete on public.dragon_trusted to authenticated;
+grant select, insert, update, delete on public.dragon_trusted to authenticated;   -- update：gm.html 用 upsert，PostgreSQL 的 on conflict do update 需要（2026-10-25 補）
 drop policy if exists "dragon_trusted_admin" on public.dragon_trusted;
 create policy "dragon_trusted_admin" on public.dragon_trusted for all to authenticated using (public.dragon_is_admin()) with check (public.dragon_is_admin());
 

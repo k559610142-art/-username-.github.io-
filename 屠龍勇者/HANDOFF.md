@@ -5,6 +5,8 @@
 
 ## 1. 現況
 
+- **2026-10-25：gm.html「排除」失敗修正（第 111 節）**。使用者已執行 tools/flag-trust.sql（表已建立），但按排除出現 permission denied：upsert 需要 UPDATE 權限。已在 flag-trust.sql 補 grant update；**待使用者在 Supabase 執行 `grant update on public.dragon_trusted to authenticated;`（或重跑整份 flag-trust.sql）**。
+
 - **20261025w：自動販賣支援四種彈藥（第146.1節）**。箭／銀箭／子彈／銀子彈回收價0仍能新增，確認明示0金幣；未來同名掉落直接處理不進背包，原物品保留，讀檔清單保留。schema8不變、不改SQL／售價。四彈藥本機／後端／讀檔與server-loot-client回歸、PC／手機實點、Console無error／warn、check.ps1及48檔混淆478KB通過。待Ctrl+F5→設定→自動販賣→背包有彈藥時新增→確認0金幣提醒，實玩確認後commit。
 
 - **20261025v：戰利品過濾右側新增自動販賣抽屜（第146節，schema8，使用者已同意）**。背包道具按本名新增、確認一次後未來同名不論傳說／保留詞綴／共鳴直接按回收價賣；原背包不動，可移除。已補舊檔轉換，不改SQL。本機／後端收據、重送／失敗還原／其他角色隔離及loot-log／item-lock回歸通過；PC／手機實點抽屜取消／確認／移除／收合、背包30瓶不變，Console無error／warn。check.ps1 ALL CHECKS PASSED、48檔混淆478KB建置通過，待使用者Ctrl+F5→設定→戰利品過濾右側「自動販賣」→新增→確認提示→確認後看清單及原物品仍在→再打到同名看掉落紀錄自動賣出→移除確認恢復撿取，實玩確認後才commit。

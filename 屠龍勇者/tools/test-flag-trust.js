@@ -43,7 +43,8 @@ const { PGlite } = require(process.env.LOOT_TEST_RUNTIME || path.join(require('o
     await upload(false);
     assert.equal(await flagN(), 2, '超過 24 小時再記一筆'); assert.equal(await hold(), true);
     // ② 管理者按「排除」：加入信任名單＋全部標已處理 → 不擋、不再記，歷程照記
-    await asAdmin("insert into public.dragon_trusted(user_id,email,reason,by_email) values($1,'player@x','手機時間不準','admin@x')", [P]);
+    // 和 gm.html 一樣用 upsert（PostgREST 產生 on conflict do update，需要 update 權限）
+    await asAdmin("insert into public.dragon_trusted(user_id,email,reason,by_email) values($1,'player@x','手機時間不準','admin@x') on conflict(user_id) do update set email=excluded.email,reason=excluded.reason,by_email=excluded.by_email", [P]);
     await asAdmin('update public.dragon_flags set resolved=true where user_id=$1', [P]);
     await db.query("update public.dragon_flags set at = now() - interval '25 hours' where user_id=$1", [P]);
     const log0 = Number((await db.query('select count(*) c from public.dragon_save_log where user_id=$1', [P])).rows[0].c);
