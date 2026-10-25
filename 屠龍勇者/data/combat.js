@@ -136,16 +136,18 @@ function braveItemFor(cls) {
 // 自動補給：只用快捷欄裡開了「自動」的道具（2026-10-15，第 40 節）。治癒藥水格開自動＝跟以前一樣從身上所有治癒藥水挑合適的
 function autoSupport(st) {
     const s = player.settings, z = currentZone(), auto = barAutoItemIds();
-    if (auto.has('teleScroll') && !s.noTele && player.hp < st.maxHp * s.telePct / 100 && countItem('teleScroll') > 0) {
+    if (hunt && hunt.teleRecover && player.hp >= st.maxHp * Math.max(s.potionPct, s.telePct) / 100) hunt.teleRecover = false;
+    if (!(hunt && hunt.teleRecover) && auto.has('teleScroll') && !s.noTele && player.hp < st.maxHp * s.telePct / 100 && countItem('teleScroll') > 0) {
         consumeItem('teleScroll');
         if (z.type === 'dragon') { addLog('📜 使用瞬間移動卷軸逃離巢穴', 'sys'); moveToTown(z.town); return; }
         leaveFight(1500);
+        hunt.teleRecover = true;   // 脫戰後先補血，不連續消耗瞬移卷軸
         const moved = typeof sceneTeleport === 'function' && sceneTeleport();   // 地圖畫面開著：傳到別的地方（ui-scene.js，第 51 節）
         addLog(moved ? '📜 使用瞬間移動卷軸，傳送到別的地方' : '📜 使用瞬間移動卷軸脫離戰鬥', 'sys');
         return;
     }
     if (!potionReady()) return;
-    if (barHealAuto() && player.hp < st.maxHp * s.potionPct / 100) {
+    if (barHealAuto() && player.hp < st.maxHp && ((hunt && hunt.teleRecover) || player.hp < st.maxHp * s.potionPct / 100)) {
         const id = choosePotion(st);
         if (id) { usePotion(id); return; }
         if (s.autoHome && useHomeScroll('藥水用完')) return;
@@ -168,6 +170,11 @@ function huntTick(dt) {
     }
     if (!hunt) { startHunt(); if (!hunt) return; }
     if (hunt.lootWait) return;
+    if (hunt.teleRecover) {
+        autoSupport(calcStats());
+        if (!player.hunting || !hunt) return;
+        if (hunt.teleRecover && barHealAuto() && healPotionCount() > 0) return;   // 等喝水延遲，補好再找怪
+    }
     if (hunt.state === 'search') {
         hunt.timer -= dt;
         if (hunt.timer <= 0 && sceneHuntReady()) spawnMonster();   // 地圖畫面開著：角色走到怪旁邊才開打（ui-scene.js）

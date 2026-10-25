@@ -154,6 +154,7 @@
 | `manifest.json` | App 名稱、圖示、`scope: ./`（只涵蓋本資料夾） |
 | `sw.js` | Service Worker，快取名稱 `dragon-` 開頭（第 12 節） |
 | `images/` | `icons/` 圖片圖示（藥水 `potion-*.jpg`、技能 `sk/`，第 41 節）；App 圖示：`icon-192/512.png`、`icon-maskable-512.png`、`apple-touch-icon.png`；主畫面外框 `frame-nopillar.png`（去掉拱門與左右石柱，第 54 節；`frame-notop.jpg`、原版 `frame.jpg` 保留；第 15 節）、PC 橫式外框 `frame-pc.jpg`＋遮罩 `frame-pc-mask.png`（第 19 節）；`sprites/` 人物模型、`classes/` 職業立繪、十二職業合照 `all.jpg` 、創角舞台去背圖 `classes/stage/`（合照中的人）與 `classes/hero/`（立繪全身像）（第 18 節）；`maps/ruins.jpg` 野外地圖背景、`maps/tower.jpg` 永夜之塔通用地圖（第 52 節）、`npc/tower-keeper.png`／`ivory-keeper.png`＋`-face.jpg` 永夜之塔／暮光法師塔傳送師（第 55、56 節）、`maps/village.webp` 村莊背景（第 17 節）、`maps/wild.jpg`＋`wild-mini.jpg` 低語海岸大地圖與小地圖（第 45 節；12 個地圖合併、6016×4768＝188×149 格，第 67 節）、`wild-occ.png` 遮擋深度圖（第 46 節） |
+| `tools/test-auto-tele-heal.js` | 自動瞬移一次後補血、喝水延遲／搜尋暫緩／恢復掛機與缺水回家隔離回歸（第149節） |
 | `tools/test-boss-dodge-boundary.js` | 紅圈閃避區界／分區／繞路限制、無路原地承傷且持續掛機隔離回歸（第148節） |
 | `tools/test-loot-auto-sell.js` | 指定自動販賣清單、確認／取消、舊檔轉換、本機與後端入帳／收據重送與失敗還原隔離測試（第146節） |
 | `tools/test-shop-buy.js` | 自訂購買數量隔離測試：整數／金額驗證、金幣與負重、裝備逐件建立、離村拒絕舊視窗（第 75 節；不發佈） |
@@ -176,7 +177,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025y`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261025z`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3214,3 +3215,12 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 無區內安全路徑時清空目前路線並維持scene.dodging至預警解除，阻止自動追怪接手；hunt.tele.dodged仍按實際位置回報false，bossSkillTick照常扣傷害。預警解除即清除狀態、恢復掛機移動，不改傷害／反應時間／背景離線閃避機率或存檔。
 - 新tools/test-boss-dodge-boundary.js驗證區內可閃／同名地圖分區／需跨區繞路被拒／無路清舊路線原地扛25傷且掛機持續／解除後恢復／獨立地圖實際邊緣，weapon-range及server-loot-client回歸通過；隔離瀏覽器實際sceneTeleTick／bossSkillTick相同情境通過，Console無error／warn。
 - 最終check.ps1 ALL CHECKS PASSED、48檔混淆478KB建置通過；待使用者實玩確認後commit。
+
+## 149. 自動瞬移後先喝水，不連續瞬移（2026-10-25，版本 `20261025z`）
+
+- 使用者回報被首領打低血後一直飛，要求自動瞬移後先喝水、不連飛。原因autoSupport先判定瞬移且return，而huntTick尋怪階段不跑補給，低血量回戰後再觸發瞬移。
+- 自動瞬移leaveFight後在記憶體hunt設teleRecover；期間阻擋再次自動瞬移，優先依快捷欄自動治癒藥水喝水。恢復目標為potionPct與telePct較高者，避免補血門檻低於瞬移門檻又立刻飛。
+- huntTick在尋怪前也處理teleRecover補給；自動喝水開啟且還有藥時暫緩尋怪，依原0.8秒共用喝水延遲補血，達門檻清除狀態後恢復尋怪。缺藥依原autoHome處理，沒開自動喝水不強制喝，低血恢復前仍不連飛。龍穴瞬移回村、手動卷軸操作維持原流程。
+- 只改戰鬥記憶體hunt，不加player或schema、不改SQL；離線及副本已有hunt隔離與potReadyAt還原流程。
+- tools/test-auto-tele-heal.js測試低血只飛一次／喝水CD／尋怪期間補血／恢復後尋怪／下次真正危險可再飛／自動喝水關閉／缺藥回家通過；potion-delay、offline-drops、server-loot-client回歸通過。隔離瀏覽器實際autoSupport與huntTick同情境通過，Console無error／warn。
+- 最終check.ps1 ALL CHECKS PASSED、48檔混淆479KB建置通過；待使用者實玩確認後commit。
