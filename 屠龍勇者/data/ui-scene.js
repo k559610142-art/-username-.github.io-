@@ -344,6 +344,7 @@ function themeFor() {
     if (z.bg && SCENE_BGS[z.bg] && SCENE_BGS[z.bg].big) return { ...SCENE_THEMES.field, bg: z.bg };   // 大地圖（含地監黃沙王陵的外圍）
     if (z.type === 'dragon') return { ...SCENE_THEMES.dragon, bg: SCENE_DRAGON_BGS[z.id] };
     if (z.type === 'tower') return { ...SCENE_THEMES.tower, bg: 'art-tower' };
+    if (z.id === 'venomNest') return { ...SCENE_THEMES.cave, bg: 'art-venom-nest' };
     if (z.id === 'ivory') return { ...SCENE_THEMES.ivory, bg: 'art-ivory' };
     if (z.type === 'field') return z.bg ? { ...SCENE_THEMES.field, bg: z.bg } : SCENE_THEMES.field;   // z.bg：這張野外用自己的背景圖（大地圖）
     return SCENE_THEMES[z.scene] || SCENE_THEMES.dungeon;
