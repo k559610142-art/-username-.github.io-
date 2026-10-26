@@ -176,7 +176,7 @@
 | `tools/test-log-drawer.js` | 訊息框定位回歸測試：PC 頂端樓層按鈕不推高訊息框、手機避開操作列（第 76 節；不發佈） |
 | `tools/test-loot-log.js` | 掉落紀錄隔離整合測試：實際掉落／超重／自動賣出／任務／地圖、分頁與模擬隔離（第 77 節；不發佈） |
 | `sounds/` | 音效 mp3（23 個，Freesound CC0＋Mixkit 免費授權），來源與用途在 `sounds/CREDITS.md`（第 44 節） |
-| `music/` | 背景音樂 m4a（AAC 128kbps）：`field1.m4a`／`field2.m4a`＝使用者給的「遊戲音樂」「遊戲音樂2」（野外）、`town1.m4a`＝「城鎮音樂」（村莊）（第 44 節） |
+| `music/` | 背景音樂 m4a（AAC 128kbps）與 mp3：`field1.m4a`／`field2.m4a`＝使用者給的「遊戲音樂」「遊戲音樂2」（野外）、`town1.m4a`＝「城鎮音樂」（村莊）、`seafoam-and-embers.mp3`＝使用者提供的〈Seafoam and Embers〉（野外），另有 `recluse.mp3`／`town-market-stargaze.mp3`／`lanterns-by-the-pier.mp3`（野外，第 44.1、171、172 節） |
 | `tools/` | 開發工具（遊戲不載入）：`supabase.sql` 雲端存檔與團隊副本的資料表、RLS 規則（貼到 Supabase SQL Editor，第 29 節）；`anticheat.sql` 交易所門檻＋雲端存檔簽章＋改檔標記（第 60 節，也附在 `supabase.sql` 最後）；`client-version.sql` 擋舊版遊戲上傳（第 29 節「刪除角色」，也附在 `supabase.sql` 最後）；`vault.sql` 共用倉庫／鑽石／離線掛機（第 38 節）；`wipe.sql` 正式上線刪檔用（第 37 節）；`cut-sprites.ps1` 切人物動作表、`sprite-src/` 原圖與裁切規格（第 18.1 節）；`stage/npc-cut.ps1` 野外 NPC 去背（第 55 節）；`cut-icons.ps1` 切技能圖示大圖、`icon-src/` 原圖（第 41 節）；`bigmap/` 大地圖的原圖（含南排 `mine.jpg` 礦坑、`dragon-cave.jpg` 龍窟）、拼圖 `build-map.ps1`、可走範圍與遮擋設定 `walk.json`、檢查圖 `check-mask.ps1`、遮擋深度圖 `build-occ.ps1`（第 45、46 節） |
 
 ## 2. 載入順序與依賴
@@ -192,7 +192,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261026g`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261026i`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3459,3 +3459,17 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
   - `chat.js` `NEWS_POLL_MS` 30 秒 → 2 分鐘：跑馬燈公告最多晚 2 分鐘出現。
   - `cloud.js` `ONLINE_BEAT_MS` 30 秒 → 60 秒：被別台強制登入後，這台最多 60 秒才被踢回標題。**不能超過 90 秒**（`tools/single-login.sql` 的 `online_claim`／`online_ping`／`dragon_is_banned` 以 90 秒沒心跳算離線，拉太長會讓同帳號雙開判定失效）。切回前景仍立即送一次。
 - 合計背景請求每人每小時約 440 → 約 230。未做：第二步 `loot_spawn` 一次領多組怪（要改 SQL，另議）；存檔上傳 60 秒未改。無 SQL、存檔結構、載入順序變更。
+
+
+## 171. 野外新增 Seafoam and Embers 背景音樂（2026-10-26，版本 `20261026h`）
+
+- 使用者提供桌面 Seafoam_and_Embers.mp3，原樣複製至 music/seafoam-and-embers.mp3（2,847,412 bytes），來源原檔保留，SHA256 比對一致。
+- BGM_LISTS.field 在原 field1／field2 後加入此曲，三首播完依序輪替，首次仍隨機選曲；所有野外狩獵地圖沿用同組曲單。村莊曲單、淡入淡出、手機解鎖與音量設定沿用既有邏輯。
+- 不新增全域函式、不改載入順序、schema 或 SQL；music/ 沿用 SW 直接網路串流規則。待使用者實際聆聽確認後提交。
+
+
+## 172. 野外曲單擴充為六首（2026-10-26，版本 `20261026i`）
+
+- 使用者提供 01 - Recluse.mp3、16 - Town Market Stargaze.mp3、Lanterns_by_the_Pier.mp3，原樣複製為 music/recluse.mp3、town-market-stargaze.mp3、lanterns-by-the-pier.mp3；原檔保留，SHA256 逐檔一致。
+- BGM_LISTS.field 接在 Seafoam and Embers 後，依序為 field1、field2、Seafoam and Embers、Recluse、Town Market Stargaze、Lanterns by the Pier，共六首循環，首次仍隨機。村莊維持 town1，沿用淡入淡出、音量、前景與手機解鎖。
+- 無新全域函式、載入順序、schema 或 SQL 變更；音檔沿用 music/ 網路串流。待使用者實際聆聽驗收後提交。

@@ -1,10 +1,10 @@
-// 屠龍勇者：背景音樂（music/*.m4a）。依賴 sfx.js（共用 AudioContext，第一次點擊後才能出聲）
-// 野外（player.loc.type === 'zone'）兩首輪流、村莊（'town'）一首循環，換區時淡出再淡入；標題畫面、頁面在背景時淡出暫停。
+// 屠龍勇者：背景音樂（music/）。依賴 sfx.js（共用 AudioContext，第一次點擊後才能出聲）
+// 野外（player.loc.type === 'zone'）六首輪流、村莊（'town'）一首循環，換區時淡出再淡入；標題畫面、頁面在背景時淡出暫停。
 // 用 <audio> 串流（不用整首下載完才播），接進 Web Audio 的 GainNode 控制音量（iOS 不能直接改 audio.volume）。
 // 開關與音量是這台裝置的設定（localStorage），在「設定 → 🔊 音效」調整。
 const BGM_KEY = 'dragonSlayer_bgm';
 const BGM_LISTS = {
-    field: ['music/field1.m4a', 'music/field2.m4a'],   // 使用者給的「遊戲音樂」「遊戲音樂2」
+    field: ['music/field1.m4a', 'music/field2.m4a', 'music/seafoam-and-embers.mp3', 'music/recluse.mp3', 'music/town-market-stargaze.mp3', 'music/lanterns-by-the-pier.mp3'],   // 使用者給的「遊戲音樂」「遊戲音樂2」「Seafoam and Embers」「Recluse」「Town Market Stargaze」「Lanterns by the Pier」
     town: ['music/town1.m4a'],                         // 「城鎮音樂」
 };
 const BGM_FADE = 1.5;   // 淡入淡出秒數
