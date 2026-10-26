@@ -38,7 +38,7 @@ const RESONANCE = {
     darkClaw:      { tier: 1, cls: ['shura', 'darkelf'], trigger: 'proc', p: 0.1, name: '暗影撕裂', kind: 'strike', mult: 1, hits: 2, desc: '連撕 2 下' },
     darkDual:      { tier: 1, cls: ['darkelf'], trigger: 'proc', p: 0.1, name: '雙影斬', kind: 'strike', mult: 0.9, hits: 2, spread: true, desc: '雙影分斬 2 個敵人' },
     manaWand:      { tier: 1, cls: ['mage', 'angel'], trigger: 'charge', n: 12, name: '法力回流', kind: 'buff', sec: 20, fx: { mpRegen: 8, sp: 2 }, desc: '20 秒內回魔 +8、SP +2' },
-    pirateCannon:  { tier: 1, cls: ['gunner'], trigger: 'cd', cd: 14, name: '砲擊', kind: 'strike', mult: 1.8, aoe: true, desc: '範圍：1.8 倍砲擊所有敵人' },
+    pirateCannon:  { tier: 1, cls: ['gunner'], trigger: 'cd', cd: 14, name: '砲擊', kind: 'strike', mult: 1.8, aoe: true, screen: true, desc: '畫面範圍：對施放時目前地圖畫面內的所有怪物，各造成 1.8 倍物理傷害；包含尚未參戰的怪物。離線／副本無地圖畫面時打參戰目標' },
     // 英雄共鳴（Lv.45～70 的首領、永夜之塔）
     magicSniper:   { tier: 2, cls: ['gunner'], trigger: 'cd', cd: 12, name: '魔導彈', kind: 'spell', dmg: [40, 70], spK: 1.5, desc: '魔導彈（魔法）重創目標' },
     iceQueenStaff: { tier: 2, cls: ['mage'], trigger: 'cd', cd: 10, name: '冰封領域', kind: 'spell', dmg: [45, 80], spK: 1.8, aoe: true, desc: '範圍：冰封所有敵人（魔法）' },
@@ -246,7 +246,7 @@ function castResonance(id, st) {
     if (r.cd) player.cds['res_' + id] = gameNow + r.cd * 1000;   // cd 型與 lowhp 型的冷卻
     if (r.kind === 'strike') {
         if (!fightAlive()) return;
-        Object.assign(k, { mult: r.mult * b, hits: r.hits, aoe: r.aoe, spread: r.spread, stun: r.stun, ignoreAc: r.ignoreAc, undeadMul: r.undeadMul });
+        Object.assign(k, { mult: r.mult * b, hits: r.hits, aoe: r.aoe, screen: r.screen, spread: r.spread, stun: r.stun, ignoreAc: r.ignoreAc, undeadMul: r.undeadMul });
         if (r.magic) k.magic = { dmg: r.magic.dmg.map(v => Math.round(v * b)), spK: r.magic.spK * b };
         doStrike(k, st);
     } else if (r.kind === 'spell') {

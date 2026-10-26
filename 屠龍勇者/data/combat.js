@@ -540,13 +540,14 @@ function castSpell(k, st) {
 }
 
 function doStrike(k, st) {
+    if (k.screen) { screenCannonStrike(k, st); return; }
     const bossAction = !k.id.startsWith('res_');
     if (bossAction) bossEnchantBegin();
     try {
         useSkillCost(k);
         worldVfxSkill(k, hunt.mon);
         const opt = { ignoreAc: k.ignoreAc, undeadMul: k.undeadMul, label: k.name, res: k.id.startsWith('res_') };
-        const targets = mobTargets();
+        const targets = k.screenTargets || mobTargets();
         const hit = k.aoe ? targets : [hunt.mon];
         if (k.aoe && targets.length > 1) addLog(`💥 ${k.name}（範圍）`, 'magic');
         for (let i = 0; i < (k.hits || 1); i++) {
@@ -565,6 +566,36 @@ function doStrike(k, st) {
         }
         if (k.stun) for (const m of hit) { m.stunUntil = gameNow + k.stun; addLog(`${m.name}被暈眩了`, 'magic'); }
     } finally { if (bossAction) bossEnchantEnd(st); }
+}
+
+async function screenCannonStrike(k, st) {
+    const visuals = typeof sceneScreenTargets === 'function' ? sceneScreenTargets() : null;
+    if (!visuals) { doStrike({ ...k, screen: false }, st); return; }   // 離線／副本沒有畫面時沿用參戰目標
+    const h = hunt, p = player, sc = scene, weapon = player.equip.weapon;
+    if (!h || h.screenCannonBusy || !visuals.length || h.state !== 'fight') return;
+    h.screenCannonBusy = true;
+    try {
+        const budget = inMapRun() ? Math.max(0, player.mapRun.left - h.mobs.filter(m => !m.mapBoss && m.hp > 0).length) : 30;
+        const idle = visuals.filter(m => !m.inst).slice(0, budget);
+        if (idle.length && lootActive()) {
+            if (!await lootScreenMobs(idle, h, sc)) {
+                if (hunt !== h || player !== p || !p.hunting || scene !== sc) return;
+                // 新SQL尚未安裝／連線失敗時仍只打有憑證的怪，不在本機造掉寶怪。
+            }
+        } else if (idle.length && !lootRequired()) {
+            for (const m of idle) {
+                if (inMapRun() && player.mapRun.left <= h.mobs.filter(v => !v.mapBoss && v.hp > 0).length) break;
+                const mon = currentZone().type === 'tower' ? makeTowerMonster(player.loc.floor, false) : makeMonster(m.mid);
+                if (!mon) continue;
+                addMob(mon); m.inst = mon; m.lastHp = mon.hp;
+            }
+        }
+        if (hunt !== h || player !== p || !p.hunting || h.state !== 'fight' || !h.mon || scene !== sc || player.equip.weapon !== weapon || document.hidden) return;
+        const targets = [...new Set(visuals.filter(m => !m.dead && m.inst && h.mobs.includes(m.inst) && m.inst.hp > 0).map(m => m.inst))];
+        if (!targets.length) return;
+        doStrike({ ...k, screen: false, screenTargets: targets }, st);
+        if (hunt === h && p.hunting) reapMobs();
+    } finally { h.screenCannonBusy = false; }
 }
 
 function pickAmmo(type, mon = hunt.mon) {

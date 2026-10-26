@@ -897,6 +897,17 @@ function sceneUpdate(dt) {
 //   目標打不到、身邊有打得到的 → 改打身邊最近的；鎖定後 RELOCK_MS 都沒出手 → 重新鎖定最近的怪，還是打不到就把牠移到角色旁邊
 const RELOCK_MS = 5000;
 function sceneFightMons() { return scene.mons.filter(m => !m.dead && m.inst && hunt.mobs.includes(m.inst) && m.inst.hp > 0); }
+
+// 施放當下的地圖畫面：用怪物腳底中心判定，不受面板或特效遮擋影響。
+function sceneScreenTargets() {
+    const cv = $('scene-canvas');
+    if (SIM_MODE || document.hidden || !scene || scene.key !== sceneKey() || !scene.cam || !cv || !huntVisible() || !(gameNow - (scene.tickAt || 0) < 500) || scene.worldOpen) return null;
+    const r = cv.getBoundingClientRect(), z = scene.zoom || 1;
+    const left = Math.max(0, -r.left) / z + scene.cam.x, right = Math.min(r.width, window.innerWidth - r.left) / z + scene.cam.x;
+    const top = Math.max(0, -r.top) / z + scene.cam.y, bottom = Math.min(r.height, window.innerHeight - r.top) / z + scene.cam.y;
+    return scene.mons.filter(m => !m.dead && (!m.inst || hunt.mobs.includes(m.inst) && m.inst.hp > 0) && inHuntZone(m.x, m.y)
+        && (m.rx + .5) * TILE >= left && (m.rx + .5) * TILE < right && (m.ry + .5) * TILE >= top && (m.ry + .5) * TILE < bottom);
+}
 function sceneDist(m) { return Math.abs(m.x - scene.pl.x) + Math.abs(m.y - scene.pl.y); }
 function sceneCanHit(m) { const r = sceneReach(m); return weaponIsRanged() ? r.weapon : r.melee; }
 function sceneLock(m) {
