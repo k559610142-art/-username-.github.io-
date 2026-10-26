@@ -775,7 +775,7 @@ function shortDesc(d) {
 function shopInfo(id) { const d = ITEMS[id]; openDialog(d.name, itemDescHtml({ id, n: 1, ench: 0, ...((d.cat === 'weapon' || d.cat === 'armor') ? { il: SHOP_EQUIP_IL } : {}) }), [{ text: '關閉', cls: 'secondary' }]); }
 
 // 一鍵賣出：背包裡品質低於 level 的一般貨裝備（沒強化、不含稀有基底；撿到時的戰利品過濾則連稀有基底也賣）
-function bulkSellList(level) { return player.inv.filter(x => !x.sellLocked && lootFiltered(x, level, true) &&!(x.ench > 0) && !x.bossEnchant); }
+function bulkSellList(level) { return player.inv.filter(x => sellCategoryMatch(x) && !x.sellLocked && lootFiltered(x, level, true) &&!(x.ench > 0) && !x.bossEnchant); }
 function bulkSellBtn(level) {
     if (!inTown()) return;
     const list = bulkSellList(level);
@@ -842,15 +842,28 @@ function toggleItemLock(uid, grouped = false) {
 }
 
 // 勾選賣出（第 106 節）：每列勾選框，勾好一次賣出（整疊）；換頁、賣掉後不存在的編號自動拿掉。合併的列一次勾整組（第 122 節）
+const SELL_CATEGORIES = [['all', '全部'], ['map', '地圖'], ['gear', '裝備'], ['book', '技能書'], ['item', '道具']];
+let sellCategory = 'all';
 let sellPick = new Set();
+function sellCategoryMatch(x) {
+    const cat = ITEMS[x.id].cat;
+    if (sellCategory === 'all') return true;
+    if (sellCategory === 'gear') return ['weapon', 'armor'].includes(cat);
+    if (sellCategory === 'item') return !['map', 'weapon', 'armor', 'book'].includes(cat);
+    return cat === sellCategory;
+}
+function setSellCategory(cat) {
+    if (!SELL_CATEGORIES.some(c => c[0] === cat)) return;
+    sellCategory = cat; sellPick.clear(); renderPanel();
+}
 function sellPickToggle(uid) {
-    if (!findInv(uid) || findInv(uid).sellLocked) return;
+    if (!findInv(uid) || findInv(uid).sellLocked || !sellCategoryMatch(findInv(uid))) return;
     const x = findInv(uid), g = x && invGroupOf(player.inv, x), uids = g ? g.uids : [uid], on = !uids.every(u => sellPick.has(u));
     for (const u of uids) if (on) sellPick.add(u); else sellPick.delete(u);
     renderPanel();
 }
-function sellPickAll(on) { sellPick = new Set(on ? player.inv.filter(x => !x.sellLocked && instSellPrice(x) > 0).map(x => x.uid) : []); renderPanel(); }
-function sellPickedList() { return player.inv.filter(x => !x.sellLocked && sellPick.has(x.uid) && instSellPrice(x) > 0); }
+function sellPickAll(on) { sellPick = new Set(on ? player.inv.filter(x => sellCategoryMatch(x) && !x.sellLocked && instSellPrice(x) > 0).map(x => x.uid) : []); renderPanel(); }
+function sellPickedList() { return player.inv.filter(x => sellCategoryMatch(x) && !x.sellLocked && sellPick.has(x.uid) && instSellPrice(x) > 0); }
 function sellPicked() {
     if (!inTown()) return;
     const list = sellPickedList();
@@ -870,11 +883,12 @@ function sellPicked() {
 }
 
 function renderSell() {
-    const list = sortedInv(player.inv).filter(x => instSellPrice(x) > 0);
+    const list = sortedInv(player.inv).filter(x => sellCategoryMatch(x) && instSellPrice(x) > 0);
     const n1 = bulkSellList(1).length, n2 = bulkSellList(2).length;
     for (const uid of [...sellPick]) if (!list.some(x => x.uid === uid && !x.sellLocked)) sellPick.delete(uid);
     const picked = sellPickedList(), pickedGold = picked.reduce((a, x) => a + instSellPrice(x) * x.n, 0), available = list.filter(x => !x.sellLocked), allOn = available.length > 0 && picked.length === available.length;
-    return `<div class="panel"><small class="muted">裝備中的道具不會出現在這裡；🔒 鎖定物品不會被全選或賣出。</small>
+    const tabs = `<div class="chips">${SELL_CATEGORIES.map(([id, name]) => `<button class="chip-btn ${sellCategory === id ? 'active' : ''}" onclick="setSellCategory('${id}')">${name}</button>`).join('')}</div>`;
+    return tabs + `<div class="panel"><small class="muted">全選與批次賣出只處理目前分類。裝備中的道具不會出現在這裡；🔒 鎖定物品不會被全選或賣出。</small>
         <div class="btn-row"><button class="secondary" onclick="bulkSellBtn(1)" ${n1 ? '' : 'disabled'}>🪙 賣出普通裝備（${n1}）</button>
         <button class="secondary" onclick="bulkSellBtn(2)" ${n2 ? '' : 'disabled'}>🪙 賣出魔法以下（${n2}）</button></div>
         <div class="btn-row sell-pick-bar"><label class="sell-pick-all"><input type="checkbox" ${allOn ? 'checked' : ''} ${available.length ? '' : 'disabled'} onclick="sellPickAll(${allOn ? 'false' : 'true'})"> 全選</label>
@@ -883,7 +897,7 @@ function renderSell() {
             return groupRowHtml(g, `${itemLockButton(x, true)}${qtyInputHtml(qid, g.n, 1)}<button class="mini" ${x.sellLocked ? 'disabled' : ''} onclick="sellN(${x.uid},'${qid}')">賣出</button>`, {
                 cls: on ? ' picked' : '', sub: `<small>單價 💰${fmt(instSellPrice(x))}</small>`,
                 pre: `<input type="checkbox" class="sell-pick" ${x.sellLocked ? 'disabled' : ''} ${on ? 'checked' : ''} onclick="sellPickToggle(${x.uid})" aria-label="勾選 ${esc(itemName(x))}">` });
-        }).join('') || '<p class="muted">沒有可以賣的東西</p>') + `</div>`;
+        }).join('') || '<p class="muted">此分類沒有可以賣的物品</p>') + `</div>`;
 }
 
 // 依數量賣出（合併的列：可堆疊拆數量、不可堆疊賣前 n 件）；有品質／強化／附魔或高價的先確認

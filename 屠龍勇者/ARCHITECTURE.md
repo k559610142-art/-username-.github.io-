@@ -189,6 +189,8 @@
 
 | `images/sprites/morph/wild-blood-wolf-v1/`、`tools/sprite-src/morph/wild-blood-wolf-v1/`、`tools/test-wild-blood-wolf-morph.js` | m25血狼狂戰透明動畫、原始參考／提示詞／打包與卷軸驗證（第180節） |
 
+| `tools/test-sell-category.js` | 回收NPC分類／全選範圍／切換清勾選與回收入帳隔離測試（第181節） |
+
 ## 2. 載入順序與依賴
 
 `config → classes → skills → items → spellbook → monsters → zones → quests → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → pwa → loot → main`
@@ -202,7 +204,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261026r`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261026s`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3551,3 +3553,11 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - tools/test-wild-blood-wolf-morph.js隔離驗實際卷軸、等級／扣量／上次選擇／到期、原能力與四向戰鬥動作。不開關遊戲瀏覽器、不碰正式角色或後端；待使用者實玩確認後提交。
 
 第180節最終驗證：36格RGBA唯一／透明留邊／腳底註冊／圖集逐格一致通過；m25真實卷軸及32款等級／商店回歸、原生Canvas正式sceneDraw四方向四動作16組通過，contact及game-render已檢視。check.ps1 ALL CHECKS PASSED（51檔、50script同r）、git diff --check通過；正式50檔混淆514KB成功，四圖集發佈檔逐byte一致。未開關瀏覽器或操作正式角色／後端，待使用者實玩確認後提交。
+
+## 181. 回收NPC物品分類（2026-10-26，版本 `20261026s`）
+
+- ui-panels.js新增SELL_CATEGORIES、sellCategory、sellCategoryMatch／setSellCategory，提供全部／地圖／裝備／技能書／道具頁籤。預設全部；地圖cat=map，裝備weapon／armor（含飾品），技能書book，其餘歸道具。沿chips既有手機換行樣式，無新增script或存檔欄位，schema12／SQL不變。
+- renderSell、全選／單項勾選／sellPickedList及bulkSellList依目前分類篩選；切換分類清空勾選，鎖定／售價／裝備中排除／數量及高價確認沿原規則。批次賣出只處理目前分類；其他分類不會被隱藏勾選售出。
+- tools/test-sell-category.js隔離驗四分類與全部、全選不跨類、鎖定防賣、切類清選、確認期間切類、實際賣圖入帳；既有test-item-lock.js回歸通過。check.ps1 ALL CHECKS PASSED（51檔／50script同s）。不開關瀏覽器或操作正式角色；待使用者實玩確認後提交。
+
+回收分類s版最終驗證：正式50檔混淆515KB成功，setSellCategory事件函式公開，git diff --check通過；待使用者實機確認。
