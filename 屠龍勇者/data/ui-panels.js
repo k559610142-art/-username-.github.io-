@@ -160,9 +160,14 @@ function renderLogPop() {
     if (btn) btn.classList.toggle('open', logDrawerOpen);
     // PC 固定在左下；手機狩獵時貼在底部操作列上方，其他分頁用 CSS 預設位置
     const ctrl = document.querySelector('#panel .hunt-ctrl'), fr = $('frame');
-    if (!isPcFrame() && logDrawerOpen && ctrl && fr && ctrl.offsetParent) {
-        pop.style.bottom = Math.round(fr.getBoundingClientRect().bottom - ctrl.getBoundingClientRect().top + 4) + 'px';
-    } else pop.style.bottom = '';
+    if (!isPcFrame() && logDrawerOpen && fr) {
+        const r = fr.getBoundingClientRect();
+        const base = ctrl && ctrl.offsetParent ? r.bottom - ctrl.getBoundingClientRect().top + 4 : r.width * 655 / 1342;
+        // 矮螢幕仍保留訊息空間，避免操作列把整個視窗推到外框上方。
+        const bottom = Math.round(Math.min(Math.max(8, base), Math.max(8, r.height - 228)));
+        pop.style.bottom = bottom + 'px';
+        pop.style.height = Math.min(300, Math.max(0, r.height - bottom - 8)) + 'px';
+    } else { pop.style.bottom = ''; pop.style.height = ''; }
     if (logPopTab === 'loot') { renderLootLog(); return; }
     const logBox = $('hunt-log');
     if (!logDrawerOpen || !logBox || logPopTab === 'chat' || lastLogRendered === logSeq) return;

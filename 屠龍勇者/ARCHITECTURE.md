@@ -192,7 +192,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261026i`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261026j`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3473,3 +3473,11 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 使用者提供 01 - Recluse.mp3、16 - Town Market Stargaze.mp3、Lanterns_by_the_Pier.mp3，原樣複製為 music/recluse.mp3、town-market-stargaze.mp3、lanterns-by-the-pier.mp3；原檔保留，SHA256 逐檔一致。
 - BGM_LISTS.field 接在 Seafoam and Embers 後，依序為 field1、field2、Seafoam and Embers、Recluse、Town Market Stargaze、Lanterns by the Pier，共六首循環，首次仍隨機。村莊維持 town1，沿用淡入淡出、音量、前景與手機解鎖。
 - 無新全域函式、載入順序、schema 或 SQL 變更；音檔沿用 music/ 網路串流。待使用者實際聆聽驗收後提交。
+
+
+## 173. 手機聊天訊息區高度修正（2026-10-26，版本 `20261026j`）
+
+- 使用者截圖確認訊息視窗已開啟，但聊天分頁列表被擠成細線。原高度按外框縮放為約125px，標題換行、頻道與輸入列吃完可用空間。
+- renderLogPop 手機開啟時以外框實際可用高度設定最高300px，底部優先避開操作列；矮螢幕預留220px訊息框並讓頂緣至少8px，必要時覆蓋操作列。沒有操作列時依底部外框比例定位。關閉或PC清除暫時高度／位置，PC原CSS不變。
+- 手機左右邊距12px，標題／頻道／輸入列不壓縮，pop-chat限制內容在框內，列表可捲動。戰鬥訊息與掉落紀錄共用改善；不改聊天資料、輪詢、SQL、schema、全域函式或載入順序。
+- tools/test-log-drawer.js增加手機高度、矮螢幕頂緣、切回PC與關閉清除高度回歸。定位／掉落紀錄／手機抽屜回歸及check.ps1、git diff --check通過；實機聊天顯示仍待使用者驗收；未開關遊戲瀏覽器或操作正式角色。

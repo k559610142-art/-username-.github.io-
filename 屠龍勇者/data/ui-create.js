@@ -5,6 +5,7 @@ let selSlot = 0;      // 人物選單目前選中的欄位
 
 // 更新版本時在最上方新增玩家可讀的更新紀錄。
 const GAME_UPDATES = [
+    { version: '20261026j', items: ['修正手機訊息視窗的聊天列表被擠成細線：增加視窗高度，矮螢幕也保持在畫面內，頻道與輸入列正常顯示。'] },
     { version: '20261026i', items: ['野外背景音樂再加入〈Recluse〉、〈Town Market Stargaze〉與〈Lanterns by the Pier〉，共六首輪流播放。'] },
     { version: '20261026h', items: ['野外背景音樂加入〈Seafoam and Embers〉，與原有兩首音樂輪流播放。'] },
     { version: '20261026f', items: ['手機版上方狀態列與下方兩排快捷欄新增抽屜按鈕，可各自一鍵收合／展開，收合不影響自動施放；記住這台裝置的收合偏好。'] },
