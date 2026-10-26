@@ -65,7 +65,7 @@ const RESONANCE = {
     // 十二職業傳說代表武器補齊專屬共鳴（20261022a）；沿用命中、冷卻與職業加成規則。
     eclipseDual: { tier: 3, cls: ['darkelf'], trigger: 'charge', n: 12, name: '蝕月連舞', kind: 'strike', mult: 1.2, hits: 4, spread: true, desc: '蝕月刃影連斬 4 下，每下 1.2 倍，分散斬向敵人' },
     rakshasaClaw: { tier: 3, cls: ['shura'], trigger: 'proc', p: 0.12, name: '羅剎裂魂', kind: 'strike', mult: 1.2, hits: 3, desc: '羅剎爪影連撕目標 3 下，每下 1.2 倍傷害' },
-    starfallGun: { tier: 3, cls: ['gunner'], trigger: 'cd', cd: 12, name: '星隕轟擊', kind: 'strike', mult: 1.8, magic: { dmg: [35, 65], spK: 1 }, aoe: true, desc: '範圍：1.8 倍砲擊，加上 35～65＋SP 的星隕魔法傷害' },
+    starfallGun: { tier: 3, cls: ['gunner'], trigger: 'cd', cd: 12, name: '星隕轟擊', kind: 'strike', mult: 1.8, magic: { dmg: [35, 65], spK: 1 }, aoe: true, screen: true, desc: '畫面範圍：對目前地圖畫面內所有怪物造成 1.8 倍砲擊，加上 35～65＋SP 的星隕魔法傷害，包含尚未參戰者；離線／副本無地圖畫面時打參戰目標' },
     thunderRuneSword: { tier: 3, cls: ['magicfighter'], trigger: 'charge', n: 12, name: '雷霆崩解', kind: 'strike', mult: 1.4, magic: { dmg: [35, 65], spK: 1.5 }, aoe: true, stun: 700, desc: '範圍：1.4 倍雷刃＋35～65＋SP×1.5 魔法傷害，暈眩 0.7 秒' },
     dawnJudgmentHammer: { tier: 3, cls: ['paladin'], trigger: 'cd', cd: 12, name: '黎明審判', kind: 'spell', dmg: [80, 125], spK: 2, undeadMul: 2, aoe: true, desc: '範圍：80～125＋SP×2 神聖魔法傷害，對不死系 ×2' },
     seraphSpear: { tier: 3, cls: ['angel'], trigger: 'cd', cd: 10, name: '熾天聖裁', kind: 'spell', dmg: [75, 120], spK: 2.2, undeadMul: 1.5, aoe: true, desc: '範圍：75～120＋SP×2.2 聖光傷害，對不死系 ×1.5' },
@@ -242,6 +242,7 @@ function resonanceReady() {
 // 把共鳴效果轉成職業技能格式，交給 castSpell／doStrike／castHeal／castBuff（不耗 MP）
 function castResonance(id, st) {
     const r = ITEMS[id].res, b = resCls(r).includes(player.cls) ? RES_CLASS_BONUS : 1;
+    if (r.screen && hunt && hunt.screenAttackBusy) return;   // 等上一招領完憑證，不空耗本招冷卻。
     const k = { id: 'res_' + id, name: `共鳴・${r.name}`, mp: 0 };
     if (r.cd) player.cds['res_' + id] = gameNow + r.cd * 1000;   // cd 型與 lowhp 型的冷卻
     if (r.kind === 'strike') {

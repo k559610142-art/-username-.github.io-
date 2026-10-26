@@ -179,6 +179,8 @@
 | `music/` | 背景音樂 m4a（AAC 128kbps）與 mp3：`field1.m4a`／`field2.m4a`＝使用者給的「遊戲音樂」「遊戲音樂2」（野外）、`town1.m4a`＝「城鎮音樂」（村莊）、`seafoam-and-embers.mp3`＝使用者提供的〈Seafoam and Embers〉（野外），另有 `recluse.mp3`／`town-market-stargaze.mp3`／`lanterns-by-the-pier.mp3`（野外，第 44.1、171、172 節） |
 | `tools/` | 開發工具（遊戲不載入）：`supabase.sql` 雲端存檔與團隊副本的資料表、RLS 規則（貼到 Supabase SQL Editor，第 29 節）；`anticheat.sql` 交易所門檻＋雲端存檔簽章＋改檔標記（第 60 節，也附在 `supabase.sql` 最後）；`client-version.sql` 擋舊版遊戲上傳（第 29 節「刪除角色」，也附在 `supabase.sql` 最後）；`vault.sql` 共用倉庫／鑽石／離線掛機（第 38 節）；`wipe.sql` 正式上線刪檔用（第 37 節）；`cut-sprites.ps1` 切人物動作表、`sprite-src/` 原圖與裁切規格（第 18.1 節）；`stage/npc-cut.ps1` 野外 NPC 去背（第 55 節）；`cut-icons.ps1` 切技能圖示大圖、`icon-src/` 原圖（第 41 節）；`bigmap/` 大地圖的原圖（含南排 `mine.jpg` 礦坑、`dragon-cave.jpg` 龍窟）、拼圖 `build-map.ps1`、可走範圍與遮擋設定 `walk.json`、檢查圖 `check-mask.ps1`、遮擋深度圖 `build-occ.ps1`（第 45、46 節） |
 
+| `tools/loot-screen.sql`、`tools/test-loot-screen-db.js`、`tools/test-screen-cannon.js` | 五招畫面範圍攻擊的批次怪物憑證RPC、隔離資料庫與客戶端回歸（第175節） |
+
 ## 2. 載入順序與依賴
 
 `config → classes → skills → items → spellbook → monsters → zones → quests → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → pwa → loot → main`
@@ -192,7 +194,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261026k`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261026m`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3487,3 +3489,14 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 
 - 使用者指定三重矢改為單一目標。skills.js的elfTriple移除spread，沿用doStrike單體多段判定，三箭集中原目標，不再分散其他怪；說明同步改為「對單一目標連射 3 箭」。
 - 等級35、MP10、每箭倍率1、三箭與冷卻5秒不變；不改其他技能、全域函式、載入順序、schema或SQL。待使用者實玩確認後提交。
+
+
+## 175. 五招畫面範圍攻擊與批次怪物憑證（2026-10-26，版本 `20261026m`）
+
+- 使用者同意新增SQL，砲擊改為施放當下的地圖畫面內所有怪物；追加星隕轟擊、冰雪暴、雷電風暴、流星雨同規則。畫面外、已死與其他區域怪物不選；以怪物腳底中心落在canvas與瀏覽器可見範圍交集判定，不因面板遮擋而移除；不等於整張大地圖。
+- 砲擊0MP／14秒／1.8倍（原槍手職業共鳴倍率照舊）；星隕轟擊0MP／12秒／1.8倍＋35～65＋SP魔法（原職業倍率照舊）；冰雪暴30MP／8秒、雷電風暴38MP／4秒、流星雨45MP／10秒。三魔法基礎傷害與SP係數不變。說明明確標示畫面範圍與尚未參戰怪物。其他範圍技能仍只打參戰目標；三重矢仍單體。
+- 新全域sceneScreenTargets（ui-scene.js）取施放時快照；screenAreaAttack（combat.js）先扣MP／CD／GCD、非同步領憑證後以screenTargets傳回原castSpell／doStrike，screenPaid避免重扣。hunt.screenAttackBusy防重入；無畫面、SIM或副本仍用參戰集合，不改離線收益。舊技能只依aoe挑mobTargets，不套用新畫面選取。
+- 新全域lootScreenMobs（loot.js）每次最多30隻尚未參戰怪用一個loot_spawn_screen RPC取得；暫時斷線同key重試一次。已參戰怪重用原憑證。綁定到原畫面身體、直接addMob（新怪不按大怪群弱化），並由原傷害／reapMobs／onKill／loot_finish_batch入帳；受傷未死者會加入戰鬥。畫面外既有戰鬥怪不受五招傷害。原一般拉怪數上限不改，但此五招可拉入超過一般上限的畫面怪；物理砲擊每個目標照原physicalAttack扣彈藥／判命中，魔法沿原必中規則。
+- 等回應期間切角色／換地圖／停止掛機／戰鬥已結束或換武器均不施加延遲傷害；無法領憑證或未安裝SQL時提示，僅攻擊畫面內已參戰怪，不退回本機造掉寶。異界最多加入目前剩餘擊殺需求扣除存活參戰怪後的數量；不多生首領、不超額推進任務。
+- SQL tools/loot-screen.sql：新增私有RLS表dragon_loot_screen_batches、四參數舊砲擊相容入口與五參數loot_spawn_screen（p_skill指定五招）。每批1～30、未結算上限64；沿loot_player驗證登入／停權／存檔／地圖／樓層／合法怪物，帳號鎖與每招原冷卻限流、異界剩餘量、伺服器精英資格及原版本掉寶context。同request_id完整驗角色／地點／目標／技能，重送（含已結算後）回原結果不重抽；收據保留3天，呼叫時清自己逾期資料。新SQL可重跑，也可升級早期只有砲擊的版本；不覆寫既有loot_spawn／loot_finish_batch。
+- 無SAVE_SCHEMA／player欄位／既有SQL／cloud.js設定／載入順序變更；只新增專用SQL，必須由使用者在Supabase自行執行後再發佈遊戲。本助手未操作正式後端。實機五招傷害／浮字／掉寶與手機PC範圍仍待使用者驗收。

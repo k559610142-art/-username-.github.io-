@@ -116,7 +116,7 @@ async function lootSpawn(join = false, mid = null, sceneTarget = null) {
     } finally { h.lootWait = false; }
 }
 // 全畫面砲擊：一個RPC領取畫面中尚未參戰怪物的憑證；暫時斷線以同key重試一次。
-async function lootScreenMobs(visuals, h, sc) {
+async function lootScreenMobs(visuals, h, sc, skill = 'res_pirateCannon') {
     if (!lootCanPlay() || hunt !== h || h.lootWait || !cloudCanCall()) return false;
     const p = player, slot = currentSlot, char = lootChar(), zone = p.loc.id, floor = p.loc.floor;
     const request = { key: crypto.randomUUID(), visuals: visuals.slice(0, 30) };
@@ -125,7 +125,7 @@ async function lootScreenMobs(visuals, h, sc) {
         if (!lootCloudFresh(slot)) { saveGame(); if (!await cloudSyncedSlot(slot)) throw Error('請先完成雲端同步'); }
         if (player !== p || hunt !== h || scene !== sc || !p.hunting || h.state !== 'fight') return false;
         const mids = request.visuals.map(m => currentZone().type === 'tower' ? 'tower' : m.mid);
-        const args = { p_slot: slot, p_char: char, p_key: request.key, p_mids: mids };
+        const args = { p_slot: slot, p_char: char, p_key: request.key, p_mids: mids, p_skill: skill };
         let rows;
         try { rows = await marketRpc('loot_spawn_screen', args); }
         catch (e) { if (!lootTransient(e) || player !== p || hunt !== h || scene !== sc || !p.hunting || h.state !== 'fight') throw e; rows = await marketRpc('loot_spawn_screen', args); }
@@ -142,8 +142,8 @@ async function lootScreenMobs(visuals, h, sc) {
     } catch (e) {
         h.lootReleased = false;
         const msg = String(e && e.message || e);
-        if (/loot_spawn_screen|schema cache|does not exist/.test(msg)) lootNotice('⚠️ 請先安裝畫面砲擊SQL；目前只攻擊已參戰怪物');
-        else { lootNotice('⏳ 畫面砲擊憑證待重試，目前只攻擊已參戰怪物'); if (/encounters full/.test(msg)) lootSettleNow(); }
+        if (/loot_spawn_screen|schema cache|does not exist/.test(msg)) lootNotice('⚠️ 請先安裝畫面範圍SQL；目前只攻擊已參戰怪物');
+        else { lootNotice('⏳ 畫面範圍憑證待重試，目前只攻擊已參戰怪物'); if (/encounters full/.test(msg)) lootSettleNow(); }
         return false;
     } finally { h.lootWait = false; }
 }

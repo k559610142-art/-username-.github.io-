@@ -45,15 +45,15 @@ const MAGIC = [
     { id: 'iceLance',   tier: 6, name: '冰矛',       mp: 22, type: 'spell', cd: 6, dmg: [44, 72], spK: 2.5, desc: '高階冰屬性魔法' },
     { id: 'bodyBless',  tier: 6, name: '體魄強健術', mp: 18, type: 'buff', sec: 600, fx: { hp: 60, con: 1 }, desc: 'HP 上限 +60、體質 +1（10 分鐘）' },
     // 7 級
-    { id: 'blizzard',   tier: 7, name: '冰雪暴',     mp: 30, type: 'spell', cd: 8, dmg: [50, 80], spK: 2.5, aoe: true, desc: '範圍：冰雪覆蓋所有敵人' },
+    { id: 'blizzard',   tier: 7, name: '冰雪暴',     mp: 30, type: 'spell', cd: 8, dmg: [50, 80], spK: 2.5, aoe: true, screen: true, desc: '畫面範圍：冰雪覆蓋目前地圖畫面內所有怪物，包含尚未參戰者；離線／副本無地圖畫面時打參戰目標' },
     { id: 'tornado',    tier: 7, name: '龍捲風',     mp: 28, type: 'spell', dmg: [45, 75], spK: 2.3, aoe: true, cd: 3, desc: '範圍：龍捲風捲起所有敵人（冷卻 3 秒）' },
     { id: 'mageBarrier', tier: 7, name: '魔法屏障',  mp: 25, type: 'buff', sec: 300, fx: { mr: 20, reduce: 3 }, desc: 'MR +20、減傷 3' },
     // 8 級
     { id: 'fullHeal',   tier: 8, name: '全部治癒術', mp: 40, type: 'heal', heal: [200, 260], spK: 5, desc: '回復極大量 HP' },
-    { id: 'thunderStorm', tier: 8, name: '雷電風暴', mp: 38, type: 'spell', dmg: [70, 110], spK: 2.8, aoe: true, cd: 4, desc: '範圍：雷電打向所有敵人（冷卻 4 秒）' },
+    { id: 'thunderStorm', tier: 8, name: '雷電風暴', mp: 38, type: 'spell', dmg: [70, 110], spK: 2.8, aoe: true, screen: true, cd: 4, desc: '畫面範圍：雷電打向目前地圖畫面內所有怪物，包含尚未參戰者（冷卻 4 秒）；離線／副本無地圖畫面時打參戰目標' },
     { id: 'holyBarrier', tier: 8, name: '聖結界',    mp: 35, type: 'buff', sec: 120, fx: { reduce: 6, mr: 10 }, desc: '減傷 6、MR +10（2 分鐘）' },
     // 9 級
-    { id: 'meteor',     tier: 9, name: '流星雨',     mp: 45, type: 'spell', cd: 10, dmg: [85, 135], spK: 3, aoe: true, desc: '範圍：隕石打向所有敵人' },
+    { id: 'meteor',     tier: 9, name: '流星雨',     mp: 45, type: 'spell', cd: 10, dmg: [85, 135], spK: 3, aoe: true, screen: true, desc: '畫面範圍：隕石打向目前地圖畫面內所有怪物，包含尚未參戰者；離線／副本無地圖畫面時打參戰目標' },
     { id: 'disintegrate', tier: 9, name: '究極光裂術', mp: 50, type: 'spell', dmg: [150, 220], spK: 3.5, cd: 6, desc: '單體最強光屬性魔法（冷卻 6 秒）' },
     { id: 'absBarrier', tier: 9, name: '絕對屏障',   mp: 40, type: 'buff', sec: 15, cd: 90, fx: { reduce: 20 }, desc: '15 秒內減傷 20（冷卻 90 秒）' },
     // 10 級

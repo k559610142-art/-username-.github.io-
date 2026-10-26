@@ -519,11 +519,12 @@ function magicDamage(base, spK, st, undeadMul, mon = hunt.mon) {
 }
 
 function castSpell(k, st) {
-    useSkillCost(k);
+    if (k.screen) { screenAreaAttack(k, st); return; }
+    if (!k.screenPaid) useSkillCost(k);
     hunt.lastAtkAt = gameNow;
     if (!k.id.startsWith('res_')) hunt.pCd = st.castMs;   // 攻擊魔法用施法間隔（不看武器）；共鳴觸發的不影響出手計時
     // 範圍魔法：打全部圍上來的怪
-    const targets = k.aoe ? mobTargets() : [hunt.mon];
+    const targets = k.screenTargets || (k.aoe ? mobTargets() : [hunt.mon]);
     const dollScope = {};
     const parts = targets.map(m => {
         const d = Math.max(1, Math.round(magicDamage(k.dmg, k.spK, st, k.undeadMul, m) * (!k.id.startsWith('res_') ? dollAttackMult(m) : 1)));
@@ -540,11 +541,11 @@ function castSpell(k, st) {
 }
 
 function doStrike(k, st) {
-    if (k.screen) { screenCannonStrike(k, st); return; }
+    if (k.screen) { screenAreaAttack(k, st); return; }
     const bossAction = !k.id.startsWith('res_');
     if (bossAction) bossEnchantBegin();
     try {
-        useSkillCost(k);
+        if (!k.screenPaid) useSkillCost(k);
         worldVfxSkill(k, hunt.mon);
         const opt = { ignoreAc: k.ignoreAc, undeadMul: k.undeadMul, label: k.name, res: k.id.startsWith('res_') };
         const targets = k.screenTargets || mobTargets();
@@ -568,17 +569,20 @@ function doStrike(k, st) {
     } finally { if (bossAction) bossEnchantEnd(st); }
 }
 
-async function screenCannonStrike(k, st) {
+async function screenAreaAttack(k, st) {
+    const attack = k.type === 'spell' ? castSpell : doStrike;
     const visuals = typeof sceneScreenTargets === 'function' ? sceneScreenTargets() : null;
-    if (!visuals) { doStrike({ ...k, screen: false }, st); return; }   // 離線／副本沒有畫面時沿用參戰目標
+    if (!visuals) { attack({ ...k, screen: false }, st); return; }   // 離線／副本沒有畫面時沿用參戰目標
     const h = hunt, p = player, sc = scene, weapon = player.equip.weapon;
-    if (!h || h.screenCannonBusy || !visuals.length || h.state !== 'fight') return;
-    h.screenCannonBusy = true;
+    if (!h || h.screenAttackBusy || !visuals.length || h.state !== 'fight') return;
+    h.screenAttackBusy = true;
+    useSkillCost(k);   // 先扣耗魔與冷卻，等憑證期間不會重複施放或透支MP。
+    if (k.type === 'spell') { h.lastAtkAt = gameNow; h.pCd = st.castMs; }
     try {
         const budget = inMapRun() ? Math.max(0, player.mapRun.left - h.mobs.filter(m => !m.mapBoss && m.hp > 0).length) : 30;
         const idle = visuals.filter(m => !m.inst).slice(0, budget);
         if (idle.length && lootActive()) {
-            if (!await lootScreenMobs(idle, h, sc)) {
+            if (!await lootScreenMobs(idle, h, sc, k.id)) {
                 if (hunt !== h || player !== p || !p.hunting || scene !== sc) return;
                 // 新SQL尚未安裝／連線失敗時仍只打有憑證的怪，不在本機造掉寶怪。
             }
@@ -593,9 +597,9 @@ async function screenCannonStrike(k, st) {
         if (hunt !== h || player !== p || !p.hunting || h.state !== 'fight' || !h.mon || scene !== sc || player.equip.weapon !== weapon || document.hidden) return;
         const targets = [...new Set(visuals.filter(m => !m.dead && m.inst && h.mobs.includes(m.inst) && m.inst.hp > 0).map(m => m.inst))];
         if (!targets.length) return;
-        doStrike({ ...k, screen: false, screenTargets: targets }, st);
+        attack({ ...k, screen: false, screenPaid: true, screenTargets: targets }, st);
         if (hunt === h && p.hunting) reapMobs();
-    } finally { h.screenCannonBusy = false; }
+    } finally { h.screenAttackBusy = false; }
 }
 
 function pickAmmo(type, mon = hunt.mon) {

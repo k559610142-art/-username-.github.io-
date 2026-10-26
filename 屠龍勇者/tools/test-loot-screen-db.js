@@ -35,5 +35,10 @@ const { PGlite } = require(process.env.LOOT_TEST_RUNTIME || path.join(require('o
  const award=(await db.query('select public.loot_finish_batch($1,$2) as v',[crypto.randomUUID(),rows.map(r=>r.ticket)])).rows[0].v;
  assert.equal(award.cursor,1);await db.exec('reset role');assert.deepEqual(await run(key,mids),rows,'settled replay must not reroll');
  await db.exec('set role authenticated');await assert.rejects(()=>db.query('select * from public.dragon_loot_screen_batches'),/permission denied/);await db.exec('reset role');
+ const skillRun=async(skill)=>{await db.exec('set role authenticated');try{return(await db.query('select public.loot_spawn_screen(0,$1,$2,$3,$4) as v',[ch,crypto.randomUUID(),['goblin'],skill])).rows[0].v}finally{await db.exec('reset role')}};
+ for(const skill of ['blizzard','thunderStorm','meteor','res_starfallGun']){assert.equal((await skillRun(skill)).length,1);await assert.rejects(()=>skillRun(skill),/cooldown/)}
+ await assert.rejects(()=>skillRun('invalid'),/invalid screen skill/);
+ await db.exec("update public.dragon_loot_screen_batches set created_at=clock_timestamp()-interval '5 seconds' where skill='thunderStorm'");
+ assert.equal((await skillRun('thunderStorm')).length,1,'雷電4秒CD不受砲擊14秒影響');
  await db.close();console.log('PASS screen SQL: repeat install / batch3 / stable replay after settle / cooldown / invalid IDs / size limit / receipt / RLS');
 })().catch(e=>{console.error(e);process.exit(1)});
