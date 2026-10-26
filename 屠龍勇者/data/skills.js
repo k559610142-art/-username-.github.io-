@@ -111,7 +111,7 @@ const SKILLS = {
         { id: 'elfWind',   name: '風之神射', lv: 15, mp: 10, type: 'buff', sec: 300, fx: { hit: 6, dmg: 3 }, desc: '命中 +6、傷害 +3' },
         { id: 'elfEarth',  name: '大地屏障', lv: 25, mp: 10, type: 'buff', sec: 300, fx: { ac: 5 }, desc: '防禦 +5' },
         { id: 'elfBless',  name: '精靈祝福', lv: 30, type: 'passive', fx: { dodge: 0.05, hit: 2 }, desc: '被動：閃避 +5%、命中 +2' },
-        { id: 'elfTriple', name: '三重矢',   lv: 35, mp: 10, type: 'strike', mult: 1, hits: 3, spread: true, cd: 5, desc: '連射 3 箭，分散射向不同敵人' },
+        { id: 'elfTriple', name: '三重矢',   lv: 35, mp: 10, type: 'strike', mult: 1, hits: 3, cd: 5, desc: '對單一目標連射 3 箭' },
         { id: 'elfSpring', name: '生命之泉', lv: 45, mp: 15, type: 'buff', sec: 300, fx: { hpRegen: 8 }, desc: '回血 +8／5 秒' },
         { id: 'elfStorm',  name: '暴風神射', lv: 52, mp: 15, type: 'strike', mult: 1.1, hits: 4, spread: true, cd: 8, desc: '連射 4 箭，分散射向不同敵人' },
         { id: 'elfFire',   name: '烈炎之魂', lv: 60, mp: 20, type: 'buff', sec: 300, fx: { dmg: 6 }, desc: '傷害 +6' },
