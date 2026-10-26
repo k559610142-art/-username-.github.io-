@@ -11,6 +11,7 @@
 | `images/icons/items/curAwaken-v1.png`、`tools/icon-src/items/awakening-stone-v1/` | 命運的覺醒石專屬虹彩晶石圖示，128px透明PNG；原稿、完整image_gen提示詞與尺寸輸出腳本（第80節） |
 | `data/map-queue.js` | 五格異界地圖排程：卷軸張數、順序、開始／暫停／取消、通關換圖、存檔轉換與進度面板（第126節） |
 | `tools/test-map-queue.js`、`tools/map-queue-preview.html` | 排程隔離測試與PC／手機實際外框預覽，不讀寫正式存檔、不連正式後端（第126節） |
+| `tools/test-map-skip-boss.js` | 地圖排程「怪物清空後不打首領」隔離測試（第184節） |
 | `tools/test-morph-level-lock.js`、`tools/morph-level-lock-preview.html` | 變身等級門檻／GM豁免、拒絕不扣卷、帳號切換與RPC失敗的隔離測試及預覽（第125節） |
 | `tools/test-item-lock.js`、`tools/item-lock-preview.html` | 物品防賣鎖隔離測試與記憶體預覽：鎖定、全選、三種賣出、存檔遷移與倉庫合併（第124節） |
 |---|---|
@@ -191,6 +192,8 @@
 
 | `tools/test-sell-category.js` | 回收NPC分類／全選範圍／切換清勾選與回收入帳隔離測試（第181節） |
 
+| `tools/magic-crit-affixes.sql`、`tools/test-critical-stats.js`、`tools/test-critical-db.js` | 三項爆擊詞綴增量SQL與傷害／隔離資料庫測試（第182節） |
+
 ## 2. 載入順序與依賴
 
 `config → classes → skills → items → spellbook → monsters → zones → quests → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → pwa → loot → main`
@@ -204,7 +207,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261026s`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261026v`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -251,7 +254,7 @@
 | 回血／5 秒 | 1 + 等級/8 + max(0, 體質-12) + 增益；村莊 ×3；負重 > 50% 不回 |
 | 回魔／5 秒 | 1 + 等級/12 + (精神-10)×mpRegenK + 增益；村莊 ×3；**負重 70% 以上不回**（2026-10-19 版本 `20261019l` 使用者要求；`WEIGHT_NO_MP_REGEN` 0.7，原本跟回血一樣超過 50% 就停） |
 | 負重上限 | 1200 + (力量 + 體質) × 80 + 等級 × 20 + 裝備 `weight`（2026-10-16 起，版本 `20261016d`；原本 (力量 + 體質) × 100，1～50 級不會成長）。Gemini 提案、使用者選「A＋B」：公式加底值與等級成長（A），彈藥重量降為 1/5（箭／銀箭 0.02、子彈／銀子彈 0.03）＋腰帶加負重上限（B）：皮帶 +300、修羅腰帶 +500、泰坦腰帶 +800、巨人王腰帶 +1200（`weight` 在 `FX_KEYS`，道具說明與圖鑑顯示「負重上限 +N」） |
-| 爆擊 | 5% + 武器 + 增益（×1.5 傷害） |
+| 物爆／魔爆 | 物爆5%＋武器＋詞綴／增益；魔爆0%＋裝備／詞綴／增益。雙爆傷基礎150%＋各自爆傷加成，第182節 |
 | 閃避 | (敏捷-12)×1% + 增益，上限 50% |
 | 吸血 | 武器／防具／技能 `lifesteal` 加總，造成傷害 × 比例轉為 HP（物理與魔法都算） |
 
@@ -3561,3 +3564,32 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - tools/test-sell-category.js隔離驗四分類與全部、全選不跨類、鎖定防賣、切類清選、確認期間切類、實際賣圖入帳；既有test-item-lock.js回歸通過。check.ps1 ALL CHECKS PASSED（51檔／50script同s）。不開關瀏覽器或操作正式角色；待使用者實玩確認後提交。
 
 回收分類s版最終驗證：正式50檔混淆515KB成功，setSellCategory事件函式公開，git diff --check通過；待使用者實機確認。
+
+## 182. 物爆／魔爆與爆傷屬性（2026-10-26，版本 `20261026t`）
+
+- 使用者確認：原爆擊改物爆，保留crit內部代號／舊裝備值；新增magicCrit（魔爆）、critDmg（物爆傷害加成）、magicCritDmg（魔爆傷害加成）。沿既有af[{k,v}]與AFFIXES動態存讀，不新增存檔欄位或遷移，schema12不變，不重抽舊裝備。
+- 魔爆基礎0%，物爆仍基礎5%；雙爆擊倍率基礎150%，爆傷+10%為160%，各件加總。calcStats的critDmg／magicCritDmg是含基礎的最終倍率。物爆只影響physicalAttack；magicDamage獨立判魔爆、顯示魔爆訊息，所有純法術與混合技能的附加魔傷均共用（含畫面範圍／離線／副本），物理段不受魔爆影響。
+- 新詞綴限武器／手套／戒指／項鍊，魔爆最低1%、上限2%＋il/2500；雙爆傷最低3%、上限5%＋il/1000（il20=7%、il43=9.3%，沿既有rollAffixValue整百分點四捨五入）。只加入一般詞綴池，不新增傳說專屬詞綴。裝備詳情／比較／人物主面板與詳細屬性顯示四項；物爆名稱同步變身能力說明。
+- 使用者同意產生SQL：tools/magic-crit-affixes.sql為增量更新，只合併新三詞綴與允許部位，不重匯整份目錄、不改品質機率／價格／舊傳說／其他物品資料。舊規則先保留dragon_loot_rules供舊憑證；交易鎖住單例目錄、版本尾碼防重跑。**使用者自行在Supabase執行，尚未執行；執行後線上掉落才有新詞綴**。原loot-catalog.sql／server-loot-install.sql未修改。
+- tools/test-critical-stats.js驗雙爆分離、100→175魔傷／100→160物傷、基礎／裝備加總／詞綴顯示與舊存檔；tools/test-critical-db.js以隔離PGlite驗增量更新、重跑、部位及舊規則／品質／價格保留。screen-cannon／shop-buy／item-lock／morph-level-lock回歸通過，check.ps1 ALL CHECKS PASSED（51檔／50script同t），正式50檔混淆516KB成功。未開關瀏覽器或碰正式角色，待實玩確認後提交。
+
+## 183. 人物面板縮窄裝備區、顯露立繪（2026-10-26，版本 `20261026t`）
+
+- 依使用者截圖，index.html的cv-body寬版立繪28%→36%、窄版22%→30%，從裝備中欄移出寬度。寬版cv-equipment的裝備清單限制200px，其餘給右側娃娃／傭兵；既有裝備名稱省略與點擊詳情保留。
+- 窄版立繪原按高度放大且max-width:none導致人物兩側裁掉，改width/max-width100%＋object-fit:contain，在立繪欄內完整縮放。娃娃／傭兵仍固定裝備右側、屬性欄不移動。不改存檔或能力，沿既有container響應。
+- 不開關使用者瀏覽器；程式與正式建置通過，視覺需使用者本機驗收：人物狀態→確認立繪完整、裝備無多餘黑底→點裝備詳情→手機窄版及PC檢查。
+
+## 184. 地圖排程「怪物清空後不打首領」（2026-10-26，版本 `20261026u`）
+
+- 使用者要求地圖排程新增判定選項：怪物清空後遇到首領可以不打（勾選框），直接回程、重開下一張地圖。
+- 勾選框在地圖排程分頁說明欄下方「👹 怪物清空後不打首領，直接回村換下一張（沒有通關獎勵）」，`onchange="mapQueueSetSkipBoss(this.checked)"`。設定存在 `player.settings.mapSkipBoss`（DEFAULT_SETTINGS 沒有此鍵＝false，不改 player.js／schema），取消排程也保留，執行中隨時可切換。
+- `maps.js` `mapOnKill`：`r.left` 減到 0 時先呼叫 `mapQueueSkipBoss(r)`；成立就回傳 true（同通關路徑，onKill 直接返回），不印「首領即將現身」、不生首領。
+- `map-queue.js` `mapQueueSkipBoss(r)`：只在非 SIM_MODE、勾選、排程 running、active、`r===player.mapRun`、`r.queueSlot===q.index`、`r.left<=0` 時成立 → 該格 `skipped++`、`q.active=false`、`player.mapRun=null`、記錄「依排程設定不打首領」、`moveToTown(zone.town)`。**不呼叫 completeMap**：沒有通關地圖獎勵、不算完成次數。下一輪 `mapQueueTick` 照原規則（在村莊、補給、後端就緒）開同格下一張或下一格。
+- `mapQueueTick` 在 active 分支最前面也檢查（首領已現身才勾選、或重登接續時 left 已是 0）：狩獵中且在原異界就同樣回村。
+- 槽位新增 `skipped`（`mapQueueNormalize` 轉非負整數、舊檔補 0），`mapQueueRowStatus` 總張數含略過，顯示「略過首領 N 次」。
+- 不觸發：手動開的地圖（無 queueSlot）、排程暫停／完成、離線模擬。後端掉寶：清完怪立即離開、不向伺服器要首領；地圖關閉後雲端存檔照常同步。無 SQL、存檔 schema、載入順序變更。
+- 測試 `tools/test-map-skip-boss.js`：預設照打首領；勾選後回村、無通關獎勵、計略過、下一輪開下一張直到完成；首領已現身才勾也會回村；手動開圖／暫停／SIM 不觸發；存檔遷移保留 skipped 與勾選；勾選框狀態。test-map-queue／map-portal／offline-drops／server-loot-client 回歸通過；隔離瀏覽器（8791）手機畫面勾選後 settings 寫入、Console 無錯誤。
+
+## 185. 物爆標籤改物爆率（2026-10-26，版本 `20261026v`）
+
+- 依使用者要求，AFFIXES.crit、裝備詳情／比較、人物主面板／詳細屬性、變身能力說明的物爆改為物爆率。物爆傷害名稱、crit代號與傷害／機率不變，不改schema／SQL。保留u版地圖排程修改及其暫存區；待使用者驗收後提交。

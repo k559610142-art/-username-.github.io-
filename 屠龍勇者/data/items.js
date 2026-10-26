@@ -232,7 +232,7 @@ const MORPH_FORMS = [
 });
 function morphFxText(fx) {
     const pct = v => `${Math.round(v * 100)}%`;
-    const L = { hit: ['命中', v => v], dmg: ['傷害', v => v], spdMul: ['攻速', pct], dodge: ['閃避', pct], crit: ['爆擊', pct], lifesteal: ['吸血', pct],
+    const L = { hit: ['命中', v => v], dmg: ['傷害', v => v], spdMul: ['攻速', pct], dodge: ['閃避', pct], crit: ['物爆率', pct], lifesteal: ['吸血', pct],
         ac: ['防禦', v => v], hp: ['HP', v => v], sp: ['SP', v => v], mpRegen: ['回魔', v => v], mr: ['MR', v => v] };
     return Object.keys(L).filter(k => fx[k]).map(k => `${L[k][0]} ${fx[k] > 0 ? '+' : ''}${L[k][1](fx[k])}`).join('、');
 }

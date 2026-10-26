@@ -355,7 +355,7 @@ function charDetailDialog() {
     const st = calcStats();
     const rows = [
         ['傷害加成', '+' + st.dmgBonus], ['命中', st.hit], ['SP', st.sp], ['防禦', defenseOf(st)], ['MR', st.mr],
-        ['爆擊', Math.round(st.crit * 100) + '%'], ['閃避', Math.round(st.dodge * 100) + '%'], ['減傷', st.reduce], ['吸血', Math.round(st.lifesteal * 100) + '%'],
+        ['物爆率', Math.round(st.crit * 100) + '%'], ['魔爆', Math.round(st.magicCrit * 100) + '%'], ['物爆傷害', Math.round(st.critDmg * 100) + '%'], ['魔爆傷害', Math.round(st.magicCritDmg * 100) + '%'], ['閃避', Math.round(st.dodge * 100) + '%'], ['減傷', st.reduce], ['吸血', Math.round(st.lifesteal * 100) + '%'],
         ['攻擊間隔', (st.atkMs / 1000).toFixed(2) + ' 秒'], ['施法間隔', (st.castMs / 1000).toFixed(2) + ' 秒'], ['回血／5秒', st.hpRegen], ['回魔／5秒', st.mpRegen],
         ['負重', `${Math.floor(invWeight())} / ${st.weightMax}`], ['經驗', `${fmt(player.exp)} / ${fmt(expToNext(player.lv))}`],
     ];
@@ -373,7 +373,7 @@ function renderChar() {
     const expPct = player.lv >= MAX_LEVEL ? 100 : Math.floor(player.exp / expToNext(player.lv) * 1000) / 10;
     const rows = [
         ['傷害加成', '+' + st.dmgBonus], ['防禦', defenseOf(st)], ['HP', `<b class="hp">${player.hp} / ${st.maxHp}</b>`], ['MP', `<b class="mp">${player.mp} / ${st.maxMp}</b>`],
-        ['命中', st.hit], ['爆擊', Math.round(st.crit * 100) + '%'], ['閃避', Math.round(st.dodge * 100) + '%'], ['MR', st.mr],
+        ['命中', st.hit], ['物爆率', Math.round(st.crit * 100) + '%'], ['魔爆', Math.round(st.magicCrit * 100) + '%'], ['物爆傷害', Math.round(st.critDmg * 100) + '%'], ['魔爆傷害', Math.round(st.magicCritDmg * 100) + '%'], ['閃避', Math.round(st.dodge * 100) + '%'], ['MR', st.mr],
         ['攻擊間隔', (st.atkMs / 1000).toFixed(2) + ' 秒'], ['負重', `${fmt(Math.floor(invWeight()))} / ${fmt(st.weightMax)}`],
     ];
     let h = `<div class="cv"><div class="cv-win">
@@ -493,7 +493,7 @@ function itemDescHtml(inst, showAffixMax = false) {
         L.push(`攻擊間隔：${(weaponBaseMs(d.type) / 1000).toFixed(2)} 秒（不喝水；綠水、勇水各 ×1.33 倍速，精靈餅乾 ×1.15）`);
         if (d.hit) L.push(`命中 +${d.hit}`);
         if (d.sp) L.push(`SP +${d.sp}`);
-        if (d.crit) L.push(`爆擊 +${Math.round(d.crit * 100)}%`);
+        if (d.crit) L.push(`物爆率 +${Math.round(d.crit * 100)}%`);
         if (d.silver) L.push('銀製：對不死系額外傷害');
         if (d.dragon) L.push(`對龍族傷害 ×${d.dragon}`);
         if (WEAPON_TYPES[d.type].double) L.push(`雙擊率 ${WEAPON_TYPES[d.type].double * 100}%`);
@@ -511,13 +511,14 @@ function itemDescHtml(inst, showAffixMax = false) {
         if (d.reduce) L.push(`減傷 ${d.reduce}`);
         if (d.hit) L.push(`命中 +${d.hit}`);
         if (d.dmg) L.push(`傷害 +${d.dmg}`);
-        if (d.crit) L.push(`爆擊 +${Math.round(d.crit * 100)}%`);
+        if (d.crit) L.push(`物爆率 +${Math.round(d.crit * 100)}%`);
         if (d.dodge) L.push(`閃避 +${Math.round(d.dodge * 100)}%`);
         if (d.lifesteal) L.push(`吸血 +${Math.round(d.lifesteal * 100)}%`);
         if (d.hpRegen) L.push(`回血 +${d.hpRegen}`);
         if (d.mpRegen) L.push(`回魔 +${d.mpRegen}`);
         if (d.haste) L.push('加速效果');
     }
+    for (const [key, label] of [['magicCrit', '魔爆'], ['critDmg', '物爆傷害'], ['magicCritDmg', '魔爆傷害']]) if (d[key]) L.push(`${label} +${Math.round(d[key] * 100)}%`);
     if (d.cat === 'weapon' || d.cat === 'armor') L.push(d.safe >= 0 ? `安定值 +${d.safe}` : '不可強化');
     if (d.heal) L.push(`回復 HP ${d.heal[0]}～${d.heal[1]}`);
     if (d.buff) L.push(`${BUFF_DEFS[d.buff].name}效果 ${d.sec / 60} 分鐘`);
@@ -541,7 +542,7 @@ function itemDescHtml(inst, showAffixMax = false) {
 // 模擬「換上這件」後的 calcStats，和目前比較；戒指兩格都比；雙手武器會把盾卸下、盾會把雙手武器卸下（同 equipItem）
 const COMPARE_ROWS = [
     ['avgS', '平均傷害（小型）', 1], ['avgL', '平均傷害（大型）', 1], ['atkMs', '攻擊間隔（秒）', -1, v => (v / 1000).toFixed(2)],
-    ['hit', '命中', 1], ['crit', '爆擊', 1, v => Math.round(v * 100) + '%'], ['def', '防禦', 1], ['mr', 'MR', 1],
+    ['hit', '命中', 1], ['crit', '物爆率', 1, v => Math.round(v * 100) + '%'], ['magicCrit', '魔爆', 1, v => Math.round(v * 100) + '%'], ['critDmg', '物爆傷害', 1, v => Math.round(v * 100) + '%'], ['magicCritDmg', '魔爆傷害', 1, v => Math.round(v * 100) + '%'], ['def', '防禦', 1], ['mr', 'MR', 1],
     ['maxHp', 'HP 上限', 1], ['maxMp', 'MP 上限', 1], ['sp', 'SP', 1], ['reduce', '減傷', 1], ['dodge', '閃避', 1, v => Math.round(v * 100) + '%'],
     ['lifesteal', '吸血', 1, v => Math.round(v * 100) + '%'], ['hpRegen', '回血', 1], ['mpRegen', '回魔', 1],
     ['str', '力量', 1], ['dex', '敏捷', 1], ['con', '體質', 1], ['int', '智力', 1], ['wis', '精神', 1], ['weightMax', '負重上限', 1],

@@ -160,6 +160,7 @@ function mapOnKill(mon) {
     if (mon.mapBoss) { completeMap(); return true; }
     if (r.left > 0) {
         r.left--;
+        if (r.left === 0 && mapQueueSkipBoss(r)) return true;   // 地圖排程勾選「不打首領」：直接回村（map-queue.js）
         if (r.left === 0) addLog('🌀 異界的怪物清空了……異界首領即將現身！', 'boss');
     }
     return false;

@@ -258,7 +258,7 @@ function defaultSkillSlots(p = player, skip = {}) {
 }
 
 // ───────── 能力計算 ─────────
-const FX_KEYS = ['ac', 'hit', 'dmg', 'sp', 'mr', 'crit', 'dodge', 'reduce', 'double', 'absorb', 'counter', 'hpRegen', 'mpRegen',
+const FX_KEYS = ['ac', 'hit', 'dmg', 'sp', 'mr', 'crit', 'magicCrit', 'critDmg', 'magicCritDmg', 'dodge', 'reduce', 'double', 'absorb', 'counter', 'hpRegen', 'mpRegen',
     'dmgSp', 'spdMul', 'lifesteal', 'hp', 'mp', 'haste', 'brave', 'wise', 'weight',
     'bossDmg', 'expPct', 'goldPct', 'thorns', ...STAT_KEYS];   // 第二行：特殊詞綴（affix.js SPECIAL_AFFIXES）
 // 攻速規則：見 calcStats 的 atkMs／castMs（天堂式：綠水、勇水 ×1.33，精靈餅乾 ×1.15）
@@ -286,7 +286,7 @@ function calcStats() {
         const it = p.equip[slot];
         if (!it) continue;
         const d = ITEMS[it.id];
-        if (d.cat === 'weapon') { weaponEnch = it.ench || 0; addFx(fx, { sp: d.sp, lifesteal: d.lifesteal }); continue; }
+        if (d.cat === 'weapon') { weaponEnch = it.ench || 0; addFx(fx, { sp: d.sp, lifesteal: d.lifesteal, magicCrit: d.magicCrit, critDmg: d.critDmg, magicCritDmg: d.magicCritDmg }); continue; }
         addFx(fx, d);
         if (d.safe >= 0) fx.ac = (fx.ac || 0) + (it.ench || 0);
     }
@@ -325,6 +325,9 @@ function calcStats() {
         ac: 10 - Math.max(0, Math.floor((s.dex - 9) / 3)) - Math.floor(p.lv / 10) - (fx.ac || 0),
         mr: c.mr + Math.max(0, s.wis - 10) * 2 + (fx.mr || 0),
         crit: 0.05 + ((w && w.crit) || 0) + (fx.crit || 0),
+        magicCrit: fx.magicCrit || 0,
+        critDmg: 1.5 + (fx.critDmg || 0),
+        magicCritDmg: 1.5 + (fx.magicCritDmg || 0),
         dodge: clamp(Math.max(0, s.dex - 12) * 0.01 + (fx.dodge || 0), 0, 0.5),
         reduce: fx.reduce || 0,
         double: (wt.double || 0) + (fx.double || 0),

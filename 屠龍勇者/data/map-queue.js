@@ -16,7 +16,8 @@ function mapQueueNormalize(p) {
             seen.add(u); return true;
         });
         return { key: s.key, name: String(s.name || '異界地圖'), uids,
-            done: Math.max(0, Math.floor(Number(s.done) || 0)), failed: Math.max(0, Math.floor(Number(s.failed) || 0)) };
+            done: Math.max(0, Math.floor(Number(s.done) || 0)), failed: Math.max(0, Math.floor(Number(s.failed) || 0)),
+            skipped: Math.max(0, Math.floor(Number(s.skipped) || 0)) };
     });
     q.index = clamp(Math.floor(Number(q.index) || 0), 0, MAP_QUEUE_MAX);
     q.active = q.active === true;
@@ -56,7 +57,7 @@ function mapQueueSet(index) {
     const key = mapKindKey(x), g = mapQueueChoices(index).find(g => mapKindKey(g.x) === key);
     if (!g || !Number.isSafeInteger(n) || n < 1 || n > g.count) { showToast('張數需為整數，且不能超過背包持有數量'); return; }
     const uids = player.inv.filter(x => ITEMS[x.id].cat === 'map' && mapKindKey(x) === key).slice(0, n).map(x => x.uid);
-    q.slots[index] = { key, name: itemName(x) + '・' + mapZoneFor(ITEMS[x.id].tier).name, uids, done: 0, failed: 0 };
+    q.slots[index] = { key, name: itemName(x) + '・' + mapZoneFor(ITEMS[x.id].tier).name, uids, done: 0, failed: 0, skipped: 0 };
     saveGame(); refreshUI();
 }
 function mapQueueSelectChanged(index) {
@@ -98,6 +99,25 @@ function mapQueueCompleted(r) {
     const s = q.slots[q.index];
     if (s) s.done++;
     q.active = false;
+}
+// 「怪物清空後不打首領」（第184節）：勾選存在 player.settings.mapSkipBoss（取消排程也保留），執行中隨時可切換。
+// 排程中的地圖怪物清空（或接續時首領已現身）→ 不打首領、地圖關閉不給通關獎勵、直接回村，下一輪 mapQueueTick 開下一張。
+function mapQueueSkipBossOn() { return !!(player && player.settings.mapSkipBoss); }
+function mapQueueSetSkipBoss(on) {
+    player.settings.mapSkipBoss = !!on;
+    saveGame();
+    showToast(on ? '📋 排程地圖清完怪物後不打首領，直接回村換下一張' : '📋 排程地圖清完怪物後照常挑戰首領');
+}
+function mapQueueSkipBoss(r) {
+    const q = player && player.mapQueue;
+    if (SIM_MODE || !mapQueueSkipBossOn() || !q || q.state !== 'running' || !q.active || !r || r !== player.mapRun || r.queueSlot !== q.index || r.left > 0) return false;
+    const s = q.slots[q.index], z = ZONE_BY_ID[r.zone];
+    if (s) s.skipped++;
+    q.active = false;
+    player.mapRun = null;
+    addLog(`📋 ${r.name}的怪物已清空，依排程設定不打首領，直接回村換下一張`, 'boss');
+    moveToTown(z.town);
+    return true;
 }
 function mapQueueSupplyReason() {
     if (barHealAuto() && healPotionCount() === 0) return '藥水用完，請先補給';
@@ -168,6 +188,7 @@ function mapQueueTick() {
     }
     if (q.state !== 'running') return;
     if (q.active) {
+        if (player.mapRun && player.hunting && inMapRun() && mapQueueSkipBoss(player.mapRun)) { saveGame(); return; }   // 中途才勾選、或接續時首領已現身
         if (!player.mapRun && !player.mapPortal) mapQueueLost('目前地圖已關閉');
         else if (player.mapPortal || !player.hunting) mapQueueAutoPause('已回村或停止掛機，請按繼續');
         else if (!inMapRun()) { mapQueueAutoPause('已離開排程異界區域'); stopHunt(); }
@@ -204,7 +225,7 @@ function mapQueueLiveHtml() {
 function mapQueueRowStatus(i) {
     const q = mapQueueGet(), s = q.slots[i];
     const active = q.active && q.index === i;
-    return s ? `共 ${s.done + s.failed + s.uids.length + (active ? 1 : 0)} 張・完成 ${s.done} 次${s.failed ? `・中斷 ${s.failed} 次` : ''}・${active ? '進行中 1 張・' : ''}待刷 ${s.uids.length} 張` : '尚未安排';
+    return s ? `共 ${s.done + s.failed + s.skipped + s.uids.length + (active ? 1 : 0)} 張・完成 ${s.done} 次${s.skipped ? `・略過首領 ${s.skipped} 次` : ''}${s.failed ? `・中斷 ${s.failed} 次` : ''}・${active ? '進行中 1 張・' : ''}待刷 ${s.uids.length} 張` : '尚未安排';
 }
 function updateMapQueueLive() {
     const el = $('map-queue-live');
@@ -214,7 +235,8 @@ function updateMapQueueLive() {
 }
 function renderMapQueue() {
     const q = mapQueueGet(), editable = q.state === 'idle';
-    let h = `<div class="panel"><small>最多安排 5 種地圖，依第 1～5 格順序刷完。相同區域、階級、品質與詞綴的卷軸可放多張；每次進圖才扣 1 張。</small><small class="muted">死亡、回村或補給不足會暫停；重開遊戲保留排程，需按繼續。取消不會扣掉未使用的卷軸。</small></div><div id="map-queue-live" class="panel">${mapQueueLiveHtml()}</div>`;
+    let h = `<div class="panel"><small>最多安排 5 種地圖，依第 1～5 格順序刷完。相同區域、階級、品質與詞綴的卷軸可放多張；每次進圖才扣 1 張。</small><small class="muted">死亡、回村或補給不足會暫停；重開遊戲保留排程，需按繼續。取消不會扣掉未使用的卷軸。</small>
+        <label class="set-row"><span>👹 怪物清空後不打首領，直接回村換下一張（沒有通關獎勵）</span><input type="checkbox" ${mapQueueSkipBossOn() ? 'checked' : ''} onchange="mapQueueSetSkipBoss(this.checked)"></label></div><div id="map-queue-live" class="panel">${mapQueueLiveHtml()}</div>`;
     for (let i = 0; i < MAP_QUEUE_MAX; i++) {
         const s = q.slots[i], groups = mapQueueChoices(i);
         h += `<div class="panel map-queue-row"><b>地圖 ${i + 1}${s ? '：<span class="' + ((QUALITY[s.key.split('|')[1]] || {}).cls || '') + '">' + esc(s.name) + '</span>' : ''}</b><small id="map-queue-status-${i}">${esc(mapQueueRowStatus(i))}</small>

@@ -13,7 +13,10 @@ const AFFIXES = {
     wis:       { name: '精神',   pre: '虔誠的', min: 1, max: il => 1 + il / 25 },
     hit:       { name: '命中',   pre: '精準的', min: 1, max: il => 2 + il / 10 },
     dmg:       { name: '傷害',   pre: '銳利的', min: 1, max: il => 1 + il / 12, slots: ['weapon', 'gloves', 'ring', 'amulet'] },
-    crit:      { name: '爆擊',   pre: '致命的', min: 0.01, max: il => 0.02 + il / 2500, pct: true, slots: ['weapon', 'gloves', 'ring', 'amulet'] },
+    crit:      { name: '物爆率',   pre: '致命的', min: 0.01, max: il => 0.02 + il / 2500, pct: true, slots: ['weapon', 'gloves', 'ring', 'amulet'] },
+    magicCrit: { name: '魔爆', pre: '秘法致命的', min: 0.01, max: il => 0.02 + il / 2500, pct: true, slots: ['weapon', 'gloves', 'ring', 'amulet'] },
+    critDmg: { name: '物爆傷害', pre: '碎裂的', min: 0.03, max: il => 0.05 + il / 1000, pct: true, slots: ['weapon', 'gloves', 'ring', 'amulet'] },
+    magicCritDmg: { name: '魔爆傷害', pre: '秘法毀滅的', min: 0.03, max: il => 0.05 + il / 1000, pct: true, slots: ['weapon', 'gloves', 'ring', 'amulet'] },
     // 攻速每條最多 5%（cap，2026-10-24 使用者要求，傳說「疾風」也一樣；疾風身上幾件都只算一條，見 affixFx／galeFx）
     spdMul:    { name: '攻速',   pre: '迅捷的', min: 0.02, max: il => 0.03 + il / 1000, cap: 0.05, pct: true, slots: ['weapon', 'gloves'] },
     lifesteal: { name: '吸血',   pre: '嗜血的', min: 0.01, max: il => 0.01 + il / 4000, pct: true, slots: ['weapon', 'ring', 'amulet'] },

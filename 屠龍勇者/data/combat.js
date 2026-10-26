@@ -515,6 +515,10 @@ function magicDamage(base, spK, st, undeadMul, mon = hunt.mon) {
     if (mon.undead && undeadMul) d *= undeadMul;
     d *= slayerMult(mon) * bossDmgMult(mon, st);
     d *= 1 - clamp(mon.mr, 0, 100) / 200;
+    if (st.magicCrit > 0 && chance(st.magicCrit)) {
+        d *= st.magicCritDmg == null ? 1.5 : st.magicCritDmg;
+        addLog(`✨ 對${mon.name}觸發魔爆！`, 'magic');
+    }
     return Math.max(1, Math.round(d));
 }
 
@@ -653,7 +657,7 @@ function physicalAttack(st, mult, opt, mon = hunt.mon) {
         if (mon.dragon && st.weapon && st.weapon.dragon) d *= st.weapon.dragon;
         d *= slayerMult(mon) * bossDmgMult(mon, st);
         d *= mult;
-        if (chance(st.crit)) { d *= 1.5; crit = true; }
+        if (chance(st.crit)) { d *= st.critDmg == null ? 1.5 : st.critDmg; crit = true; }
         total += Math.max(1, Math.round(d));
     }
     const label = opt.label ? `「${opt.label}」` : '你';
