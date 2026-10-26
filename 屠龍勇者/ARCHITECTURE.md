@@ -191,7 +191,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261026e`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261026g`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3436,3 +3436,12 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - tools/test-shura-monk-morph.js驗真實卷軸扣量／上次選擇、Lv14拒絕不扣／Lv15使用、原能力表、四向命中／MISS／施法／受傷與互斥／到期、其他變身不受影響、RGBA尺寸與36格來源、SW預載；不開關任何瀏覽器、不操作正式角色或後端。使用者實玩流程：重新整理到e→變身卷軸→拳套系→修羅破戒僧→四方向走路／攻擊／聚氣／受傷，確認後才提交。
 
 第168節驗證：保留右向初稿及image_gen側向修正／repair-prompts，prepare.py通過36格RGBA、不重複、透明留邊與圖集逐格對應。m22卷軸／32款等級／458道具圖片／商店購買回歸通過；原生canvas正式sceneDraw四方向四動作16次真實sprite繪圖與預覽檢視，game-render.png保留來源資料夾。check.ps1 ALL CHECKS PASSED（51檔、50script同20261026e）、正式混淆506KB成功、git diff --check通過。未開關瀏覽器、未操作正式存檔或後端；實玩待使用者確認。
+
+## 170. 降低背景輪詢以減少 Log Ingestion（2026-10-26，版本 `20261026g`）
+
+- 使用者看 Supabase Pro 用量：日誌擷取 4.5／20 GB（23%，標「即將推出」尚未計費），要求再降。Supabase 每一個 API 請求記一筆日誌，所以降請求次數。
+- 每個在線玩家的固定背景請求（每小時）原本約：`loot_status` 120、跑馬燈公告 120、`online_ping` 120、存檔上傳約 60、交易所入帳 20。使用者選第一步：
+  - `loot.js` 定時 `lootProbe`：`lootMode==='active'` 時每 `LOOT_PROBE_MS`＝5 分鐘；還在確認／連不上（`checking`／`blocked`）時仍每 `LOOT_PROBE_WAIT_MS`＝30 秒，掛機不會因此多停。暫時性錯誤 5 秒後重查不變。管理者停用後端掉寶，最慢 5 分鐘後客戶端才改一般掉寶。
+  - `chat.js` `NEWS_POLL_MS` 30 秒 → 2 分鐘：跑馬燈公告最多晚 2 分鐘出現。
+  - `cloud.js` `ONLINE_BEAT_MS` 30 秒 → 60 秒：被別台強制登入後，這台最多 60 秒才被踢回標題。**不能超過 90 秒**（`tools/single-login.sql` 的 `online_claim`／`online_ping`／`dragon_is_banned` 以 90 秒沒心跳算離線，拉太長會讓同帳號雙開判定失效）。切回前景仍立即送一次。
+- 合計背景請求每人每小時約 440 → 約 230。未做：第二步 `loot_spawn` 一次領多組怪（要改 SQL，另議）；存檔上傳 60 秒未改。無 SQL、存檔結構、載入順序變更。

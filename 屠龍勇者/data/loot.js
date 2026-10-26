@@ -6,6 +6,8 @@ const LOOT_FORCE_LOCAL = false;   // 2026-10-23 l 版開、n 版關（第 105、
 let lootMode = 'legacy', lootBusy = false, lootProbeAt = 0, lootNoticeAt = 0, lootPendingAt = 0, lootSyncFailAt = 0;
 // 批次結算（第 104 節，tools/loot-batch.sql）：擊殺先排隊，同一角色滿 10 隻或最早那隻等了 30 秒才一起結算（一批最多 50 隻）
 const LOOT_BATCH_N = 10, LOOT_BATCH_MS = 30000, LOOT_BATCH_MAX = 50;
+// 定時查後端掉寶狀態（loot_status）：正常運作時只是確認管理者有沒有停用，5 分鐘一次；還沒確認／連不上時 30 秒一次，掛機才不會停太久（第 170 節，降 Log Ingestion）
+const LOOT_PROBE_MS = 5 * 60 * 1000, LOOT_PROBE_WAIT_MS = 30000;
 let lootFlushWanted = false;
 let lootBatchMissing = false;   // 伺服器還沒執行 loot-batch.sql（找不到 loot_finish_batch）：改回一隻一隻結算，先推遊戲也不會卡住   // 停止掛機、離開畫面、使用倉庫／交易所前：不等湊滿，下次就結算
 function lootActive() { return !SIM_MODE && lootMode === 'active'; }
@@ -63,7 +65,7 @@ async function lootProbe() {
 function lootStart() {
     if (!isCloudConfigured() || LOOT_FORCE_LOCAL) return;   // lootMode 維持 legacy
     lootMode = 'checking';
-    setInterval(() => { if (!cloudCanCall()) return; if (gameNow >= lootProbeAt) { lootProbeAt = gameNow + 30000; lootProbe(); } lootPump(); }, 5000);   // 伺服器忙碌退避中先不查（cloud.js，第 102 節）
+    setInterval(() => { if (!cloudCanCall()) return; if (gameNow >= lootProbeAt) { lootProbeAt = gameNow + (lootMode === 'active' ? LOOT_PROBE_MS : LOOT_PROBE_WAIT_MS); lootProbe(); } lootPump(); }, 5000);   // 伺服器忙碌退避中先不查（cloud.js，第 102 節）
     lootProbe();
 }
 async function lootSpawn(join = false, mid = null, sceneTarget = null) {

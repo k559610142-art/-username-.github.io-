@@ -155,7 +155,7 @@ window.addEventListener('storage', e => {
 // ───────── 單一裝置登入（tools/single-login.sql；ARCHITECTURE.md 第 29 節）─────────
 // 帳號在別台裝置使用中（90 秒內有心跳）→ 拒絕這次登入，可選「強制登入」（登出其他所有裝置後接手）；
 // 登入後每 30 秒心跳，被別台強制登入搶走就把這台登出。伺服器還沒執行 single-login.sql、或網路錯誤時不擋（照舊可以玩）。
-const ONLINE_BEAT_MS = 30 * 1000;
+const ONLINE_BEAT_MS = 60 * 1000;   // 2026-10-26 由 30 秒改 60 秒（第 170 節）；伺服器 90 秒沒心跳才算離線，不能再拉長
 let onlineTimer = null, onlineBlocked = false;
 
 function onlineDevice() {

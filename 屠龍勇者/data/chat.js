@@ -133,7 +133,7 @@ async function chatFetch() {
 // 伺服器結算掉寶時把傳說品質／共鳴裝備寫進 dragon_loot_news（tools/loot-news.sql，玩家不能自己寫）；
 // 2026-10-25（20261025ak）起只在地圖上方跑馬燈播，不再混進聊天世界頻道（使用者要求）；背景每 30 秒抓一次。設定 lootNews 可關（關掉就不抓）。
 // 新公告在地圖上方跑馬燈播一次（newsBannerPush）；每 NEWS_POLL_MS 背景抓一次（只抓比手上新的）。
-const NEWS_POLL_MS = 30000;
+const NEWS_POLL_MS = 2 * 60 * 1000;   // 2026-10-26 由 30 秒改 2 分鐘（第 170 節，降 Log Ingestion）
 let chatNews = null;           // 公告陣列（舊→新）
 let chatNewsOff = false;       // 伺服器還沒裝 loot-news.sql：這次遊戲不再抓
 let chatNewsBusy = false, chatNewsAt = 0;
