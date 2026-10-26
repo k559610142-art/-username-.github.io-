@@ -1,6 +1,6 @@
-// 異界地圖排程：最多五種地圖，各列依張數刷完才換下一列（第126節）。
+// 異界地圖排程：最多六種地圖，各列依張數刷完才換下一列（第126節）。
 // 載入於ui-frame後；maps／combat只在執行期呼叫本檔，排程不參與離線模擬。
-const MAP_QUEUE_MAX = 5;
+const MAP_QUEUE_MAX = 6;
 function mapQueueGet() {
     if (!player.mapQueue) player.mapQueue = { slots: [], state: 'idle', index: 0, active: false, reason: '' };
     return player.mapQueue;
@@ -235,15 +235,15 @@ function updateMapQueueLive() {
 }
 function renderMapQueue() {
     const q = mapQueueGet(), editable = q.state === 'idle';
-    let h = `<div class="panel"><small>最多安排 5 種地圖，依第 1～5 格順序刷完。相同區域、階級、品質與詞綴的卷軸可放多張；每次進圖才扣 1 張。</small><small class="muted">死亡、回村或補給不足會暫停；重開遊戲保留排程，需按繼續。取消不會扣掉未使用的卷軸。</small>
-        <label class="set-row"><span>👹 怪物清空後不打首領，直接回村換下一張（沒有通關獎勵）</span><input type="checkbox" ${mapQueueSkipBossOn() ? 'checked' : ''} onchange="mapQueueSetSkipBoss(this.checked)"></label></div><div id="map-queue-live" class="panel">${mapQueueLiveHtml()}</div>`;
+    let h = `<div class="panel"><small>最多安排 6 種地圖，依第 1～6 格順序刷完。相同區域、階級、品質與詞綴的卷軸可放多張；每次進圖才扣 1 張。</small><small class="muted">死亡、回村或補給不足會暫停；重開遊戲保留排程，需按繼續。取消不會扣掉未使用的卷軸。</small>
+        <label class="set-row"><span>👹 怪物清空後不打首領，直接回村換下一張（沒有通關獎勵）</span><input type="checkbox" ${mapQueueSkipBossOn() ? 'checked' : ''} onchange="mapQueueSetSkipBoss(this.checked)"></label></div><div id="map-queue-live" class="panel">${mapQueueLiveHtml()}</div><div class="map-queue-grid">`;
     for (let i = 0; i < MAP_QUEUE_MAX; i++) {
         const s = q.slots[i], groups = mapQueueChoices(i);
         h += `<div class="panel map-queue-row"><b>地圖 ${i + 1}${s ? '：<span class="' + ((QUALITY[s.key.split('|')[1]] || {}).cls || '') + '">' + esc(s.name) + '</span>' : ''}</b><small id="map-queue-status-${i}">${esc(mapQueueRowStatus(i))}</small>
             <fieldset ${editable ? '' : 'disabled hidden'}><input type="hidden" id="map-queue-select-${i}" value="${s && groups.find(g => mapKindKey(g.x) === s.key) ? groups.find(g => mapKindKey(g.x) === s.key).x.uid : ''}"><button id="map-queue-pick-${i}" class="map-queue-picker secondary" aria-label="地圖 ${i + 1}" onclick="mapQueueChoose(${i})">${s ? '<span class="' + ((QUALITY[s.key.split('|')[1]] || {}).cls || '') + '">' + esc(s.name) + '</span>' : '選擇背包地圖'} ▾</button>
             <div class="btn-row"><input id="map-queue-qty-${i}" type="number" inputmode="numeric" min="1" value="${s ? Math.max(1, s.uids.length) : 1}" aria-label="地圖 ${i + 1} 張數"><span>張</span><button class="mini" onclick="mapQueueSet(${i})">設定</button><button class="mini secondary" onclick="mapQueueMove(${i},-1)" ${i ? '' : 'disabled'}>↑</button><button class="mini secondary" onclick="mapQueueMove(${i},1)" ${i < MAP_QUEUE_MAX - 1 ? '' : 'disabled'}>↓</button><button class="mini secondary" onclick="mapQueueRemove(${i})">清空</button></div></fieldset></div>`;
     }
-    return h + '<small class="muted">開始後要更換地圖或張數，請先取消排程再重新設定。排程中的卷軸請留在背包。</small>';
+    return h + '</div><small class="muted">開始後要更換地圖或張數，請先取消排程再重新設定。排程中的卷軸請留在背包。</small>';
 }
 TABS.mapQueue = ['📋', '地圖排程'];
 PANEL_FNS.mapQueue = renderMapQueue;

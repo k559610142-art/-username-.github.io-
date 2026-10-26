@@ -27,7 +27,7 @@ function setSlot(i,x,n) {
  nodes['map-queue-select-'+i]={value:String(x.uid)};nodes['map-queue-qty-'+i]={value:String(n)};mapQueueSet(i);
 }
 function finish() {assert(inMapRun());mapOnKill({mapBoss:true});assert(inTown());mapQueueTick();}
-assert.equal(SAVE_SCHEMA,12);
+assert.equal(SAVE_SCHEMA,13);
 // ① 3張T1刷完才到1張T2；每次只消耗預先選定的一張，完成後停止。
 resetQueue();const first=maps(1,3),second=maps(2,1);
 setSlot(0,first[0],3);setSlot(1,second[0],1);
@@ -53,11 +53,11 @@ mapQueueStart();assert(inMapRun());assert.equal(player.mapRun.left,19);assert.eq
 // ④ 死亡失去當前一張，排程暫停；剩下的卷不會自動扣。
 onDeath();assert(inTown());assert.equal(player.mapQueue.state,'paused');assert(!player.mapQueue.active);assert(findInv(portals[1].uid));assert.equal(player.mapQueue.slots[0].failed,1);
 mapQueueTick();assert.equal(player.mapRun,null);mapQueueStart();assert(inMapRun());assert(!findInv(portals[1].uid));
-// ⑤ 數量驗證、最多5種、不重複、排列與清空。
+// ⑤ 數量驗證、最多6種、不重複、排列與清空。
 resetQueue();const kinds=[];for(let i=1;i<=6;i++)kinds.push(maps(i,2));
 for(const n of [0,-1,1.5,3,NaN,Infinity]) {setSlot(0,kinds[0][0],n);assert.equal(mapQueueGet().slots.length,0);}
-for(let i=0;i<5;i++)setSlot(i,kinds[i][0],2);
-setSlot(5,kinds[5][0],1);assert.equal(mapQueueGet().slots.length,5);
+for(let i=0;i<6;i++)setSlot(i,kinds[i][0],2);
+setSlot(6,kinds[5][0],1);assert.equal(mapQueueGet().slots.length,6);
 setSlot(1,kinds[0][0],1);assert.equal(player.mapQueue.slots[1].key,mapKindKey(kinds[1][0]));
 mapQueueMove(0,1);assert.equal(player.mapQueue.slots[0].key,mapKindKey(kinds[1][0]));mapQueueRemove(0);assert.equal(player.mapQueue.slots[0],null);
 assert(renderMapQueue().includes('地圖 5'));assert(PC_SLOTS.some(x=>x.tab==='mapQueue'));assert(DRAWERS.right.some(x=>x[0]==='mapQueue'));
@@ -90,7 +90,7 @@ const supplyInv=player.inv;player.inv=player.inv.filter(x=>!ITEMS[x.id].heal);ma
 
 const legacy=JSON.parse(JSON.stringify(player));delete legacy.mapQueue;assert.equal(migrateSave({schema:6,player:legacy}).mapQueue,null);
 // ⑩ 模擬模式不執行下一張，也不更動排程計數；異常存檔去掉重複uid／第6格。
-const raw=JSON.parse(JSON.stringify(player));raw.mapQueue.slots.push(...Array(5).fill(raw.mapQueue.slots[0]));mapQueueNormalize(raw);assert.equal(raw.mapQueue.slots.length,5);
+const raw=JSON.parse(JSON.stringify(player));raw.mapQueue.slots.push(...Array(5).fill(raw.mapQueue.slots[0]));mapQueueNormalize(raw);assert.equal(raw.mapQueue.slots.length,6);
 const ids=raw.mapQueue.slots.flatMap(s=>s?s.uids:[]);assert.equal(new Set(ids).size,ids.length);
 SIM_MODE=true;const snap=JSON.stringify(player.mapQueue);mapQueueTick();mapQueueCompleted(player.mapRun);assert.equal(JSON.stringify(player.mapQueue),snap);SIM_MODE=false;
 
@@ -103,8 +103,14 @@ stopHunt();assert.equal(player.mapQueue.state,'paused');mapQueueStart();onDeath(
 mapQueueStart();assert.equal(player.mapQueue.state,'done');
 
 // ⑬ 五個不同地圖都能依序完成，第六種不會排入。
-resetQueue();for(let i=0;i<5;i++){const xs=maps(i+1,1);setSlot(i,xs[0],1);}mapQueueStart();
-for(let i=0;i<5;i++){assert.equal(player.mapRun.t,i+1);finish();}
+resetQueue();for(let i=0;i<6;i++){const xs=maps(i+1,1);setSlot(i,xs[0],1);}mapQueueStart();
+for(let i=0;i<6;i++){assert.equal(player.mapRun.t,i+1);finish();}
 assert.equal(player.mapQueue.state,'done');assert(player.mapQueue.slots.every(s=>s.done===1));
-console.log('PASS：3+1順序、5格數量與排序、暫停／繼續／取消、死亡與回卷、缺卷／改造／補給／連線、手動開圖隔離、加密存檔遷移與重登自動接續／不重扣卷、等連線與離線處理、手動暫停／死亡／缺藥例外、模擬不刷下一張。');
+// schema12五格舊排程保留原五格與張數，第六格為空；新版第六格可存讀。
+resetQueue();for(let i=0;i<5;i++){const xs=maps(i+1,1);setSlot(i,xs[0],1);}
+const legacyFive=JSON.parse(JSON.stringify(player)), beforeFive=JSON.stringify(legacyFive.mapQueue.slots);
+const upgraded=migrateSave({schema:12,player:legacyFive});assert.equal(upgraded.mapQueue.slots.length,6);assert.equal(upgraded.mapQueue.slots[5],null);assert.equal(JSON.stringify(upgraded.mapQueue.slots.slice(0,5)),beforeFive);
+const sixth=maps(6,1);setSlot(5,sixth[0],1);const sixSaved=migrateSave({schema:13,player:JSON.parse(JSON.stringify(player))});assert.equal(sixSaved.mapQueue.slots[5].uids[0],sixth[0].uid);
+const grid=renderMapQueue();assert(grid.includes('class="map-queue-grid"'));assert(grid.includes('地圖 6'));assert.equal((grid.match(/class="panel map-queue-row"/g)||[]).length,6);
+console.log('PASS：3+1順序、6格數量與排序、暫停／繼續／取消、死亡與回卷、缺卷／改造／補給／連線、手動開圖隔離、加密存檔遷移與重登自動接續／不重扣卷、等連線與離線處理、手動暫停／死亡／缺藥例外、模擬不刷下一張。');
 `,ctx);

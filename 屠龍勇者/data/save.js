@@ -193,6 +193,10 @@ function migrateSave(data) {
     if (p.loc.type === 'zone' && !ZONE_BY_ID[p.loc.id]) p.loc = { type: 'town', id: 'talking' };
     if (p.loc.type === 'town' && !TOWNS[p.loc.id]) p.loc = { type: 'town', id: 'talking' };
     // schema 7：地圖排程舊檔預設空；讀回時暫停，避免登入後直接消耗卷軸。
+    // schema 13：五格排程擴充六格；只補尾端空格，不動原進度與預選卷軸。
+    if ((data.schema || 0) < 13 && p.mapQueue && Array.isArray(p.mapQueue.slots)) {
+        while (p.mapQueue.slots.length < 6) p.mapQueue.slots.push(null);
+    }
     mapQueueNormalize(p);
     return p;
 }

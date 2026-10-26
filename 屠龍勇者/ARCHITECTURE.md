@@ -207,7 +207,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261026v`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261026w`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3593,3 +3593,10 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 ## 185. 物爆標籤改物爆率（2026-10-26，版本 `20261026v`）
 
 - 依使用者要求，AFFIXES.crit、裝備詳情／比較、人物主面板／詳細屬性、變身能力說明的物爆改為物爆率。物爆傷害名稱、crit代號與傷害／機率不變，不改schema／SQL。保留u版地圖排程修改及其暫存區；待使用者驗收後提交。
+
+## 186. 地圖排程六格雙欄（2026-10-26，版本 `20261026w`，schema13）
+
+- 使用者截圖指定雙欄順序，另明確同意由五格增加六格及存檔規則變更。MAP_QUEUE_MAX=6、介面說明第1～6格，沿原執行／選擇／排序／清空／狀態更新迴圈；不改刷圖與略過首領規則。
+- renderMapQueue以map-queue-grid包住六張卡片，CSS repeat(2,minmax(0,1fr))、間距8px；第一列1／2、第二列3／4、第三列5／6。卡片10px內距、標題14px／進度12px、地圖名稱可換行、數量與設定按鈕可換行，不產生單列大片空白。控制區仍在上方。
+- SAVE_SCHEMA12→13；migrateSave對舊mapQueue.slots尾端補null到六格，再走mapQueueNormalize，保留原五格、預選uid與進度；新第六格沿現有結構保存。無SQL或後端設定改動。舊版只能讀五格，因此驗收須先更新w。
+- test-map-queue.js更新六格與schema13，增加schema12五格遷移／第六格存讀／六卡HTML測試；六格依序完成、原排程回歸與test-map-skip-boss皆通過。check.ps1 ALL CHECKS PASSED（51檔／50script同w）、git diff --check通過。未開關瀏覽器或操作正式角色；待實機驗收後提交。
