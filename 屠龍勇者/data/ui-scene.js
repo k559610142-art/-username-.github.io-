@@ -191,6 +191,7 @@ const TOWN_BG = { gludio: 'ash', giran: 'darkgold', aden: 'aden' };
 
 // 村莊 NPC：站在廣場上，頭上名牌顯示「名字＋功能」，點 NPC 或名牌打開設施；names 依村莊 id
 const TOWN_NPCS = [
+    { role: '鑑定台', icon: '🔍', x: 18, y: 11, act: () => openTownSub('identify'), names: { talking: '鑑定台', gludio: '鑑定台', giran: '鑑定台', aden: '鑑定台' } },
     { role: '商店',  icon: '👩‍💼', x: 12, y: 12, act: () => openTownSub('shop'),
       names: { talking: '艾琳', gludio: '雷文', giran: '薩拉', aden: '塞琳' } },
     { role: '回收',  icon: '🧔', x: 16, y: 12, act: () => openTownSub('sell'),

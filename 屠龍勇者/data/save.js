@@ -197,6 +197,15 @@ function migrateSave(data) {
     if ((data.schema || 0) < 13 && p.mapQueue && Array.isArray(p.mapQueue.slots)) {
         while (p.mapQueue.slots.length < 6) p.mapQueue.slots.push(null);
     }
+    // schema14：舊圖不改品質；傳奇財寶圖保留鑑定狀態與六條詞綴。
+    for (const it of [...p.inv, ...p.storage]) {
+        if (isTreasureMap(it)) {
+            const mods = [...new Set((it.mm || []).filter(k => MAP_MODS[k]))];
+            if (it.unidentified === true || mods.length !== 6) { it.unidentified = true; delete it.mm; delete it.nm; }
+            else { it.mm = mods; delete it.unidentified; }
+        } else delete it.unidentified;
+    }
+    for (const r of [p.mapRun, p.mapPortal]) if (r) r.treasure = r.treasure === true && r.q === 'legend' && r.t >= 8;
     mapQueueNormalize(p);
     return p;
 }

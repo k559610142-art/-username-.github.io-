@@ -31,7 +31,7 @@ function mapQueueNormalize(p) {
 }
 function mapQueueChoices(index) {
     const q = mapQueueGet(), used = new Set(q.slots.filter((s, i) => s && i !== index).map(s => s.key));
-    return groupMaps(player.inv.filter(x => ITEMS[x.id] && ITEMS[x.id].cat === 'map')).filter(g => !used.has(mapKindKey(g.x)));
+    return groupMaps(player.inv.filter(x => ITEMS[x.id] && ITEMS[x.id].cat === 'map' && x.unidentified !== true)).filter(g => !used.has(mapKindKey(g.x)));
 }
 function mapQueueChoose(index) {
     if (mapQueueGet().state !== 'idle') return;
@@ -204,7 +204,7 @@ function mapQueueTick() {
     if (why) { mapQueueAutoPause(why); saveGame(); return; }
     if (!lootCanPlay()) { mapQueueAutoPause('後端掉寶連線尚未就緒，請稍後繼續'); saveGame(); return; }
     const s = q.slots[q.index], uid = s.uids[0], x = findInv(uid);
-    if (!x || !ITEMS[x.id] || ITEMS[x.id].cat !== 'map' || mapKindKey(x) !== s.key) {
+    if (!x || x.unidentified === true || !ITEMS[x.id] || ITEMS[x.id].cat !== 'map' || mapKindKey(x) !== s.key) {
         mapQueueAutoPause('安排的卷軸已不在背包或已被改造，請取消後重新安排'); saveGame(); return;
     }
     q.active = true;

@@ -20,7 +20,7 @@ function lootSnapKey(p) {
     if (!p) return '';
     const mr = p.mapRun, q = p.quests || {};
     return JSON.stringify([p.cls, p.lv, p.loc && [p.loc.type, p.loc.id, p.loc.floor], p.towerMax, p.towerCleared, p.towerBossCd, p.dragons, p.dragonCd,
-        mr ? [mr.zone, mr.t, mr.mods, mr.left <= 0] : null, [q.ch, q.active, q.bossDone, q.prog]]);
+        mr ? [mr.zone, mr.t, mr.mods, mr.treasure === true, mr.left <= 0] : null, [q.ch, q.active, q.bossDone, q.prog]]);
 }
 // 這一格的雲端存檔已經有角色、生怪資格欄位也跟目前一樣（cloud.js 上傳成功時記 cloudSnapKey）
 function lootCloudFresh(slot) { return cloudKnown[slot] != null && !cloudConflict[slot] && cloudSnapKey[slot] === lootSnapKey(player); }

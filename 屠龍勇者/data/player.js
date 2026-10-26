@@ -111,6 +111,7 @@ function invWeight() {
 function itemName(inst) {
     const d = ITEMS[inst.id];
     const e = inst.ench ? (inst.ench > 0 ? '+' : '') + inst.ench + ' ' : '';
+    if (d.cat === 'map' && inst.q === 'legend') return `傳奇財寶地圖 T${d.tier}${inst.unidentified ? '（未鑑定）' : ''}`;
     return e + qualityName(inst, d.name);   // 魔法／稀有／傳說品質的名稱（affix.js）
 }
 

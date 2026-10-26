@@ -6,6 +6,21 @@
 // 怪物總數＝200～300 × 數量倍率（成群 +50%、大軍 +100%…，最多 ×3）；殺光後出現異界首領，打倒就通關、掉地圖並回村。
 // 戰鬥中所有「地圖詞綴」只在異界裡生效（mapModsOn），離線收益也會推進異界進度。
 const MAP_TIERS = 15;
+const TREASURE_MAP_DROP_P = 0.01;
+function isTreasureMap(x) { return !!(x && ITEMS[x.id] && ITEMS[x.id].cat === 'map' && ITEMS[x.id].tier >= 8 && x.q === 'legend'); }
+function treasureMapActive() { return !!(inMapRun() && player.mapRun.treasure); }
+function identifyMap(uid) {
+    if (!inTown()) { showToast('請回村莊使用鑑定台'); return; }
+    const x = findInv(uid);
+    if (!isTreasureMap(x) || x.unidentified !== true) { showToast('這不是未鑑定財寶地圖'); return; }
+    x.mm = rollMapMods(6); delete x.unidentified; delete x.nm;
+    addLog(`🔍 鑑定完成：${itemName(x)}（6條詞綴）`, 'boss');
+    saveGame(); refreshUI();
+}
+function renderIdentify() {
+    const list = player.inv.filter(x => isTreasureMap(x) && x.unidentified === true);
+    return '<div class="panel">🔍 鑑定台：免費鑑定傳奇財寶地圖，隨機取得6條不重複詞綴；鑑定後不能用通貨改造。</div><div class="list">' + (list.map(x => `<div class="list-row"><div class="item-info"><b class="q-legend">${esc(itemName(x))}</b></div><button class="mini" onclick="identifyMap(${x.uid})">鑑定</button></div>`).join('') || '<p class="muted">沒有未鑑定的財寶地圖</p>') + '</div>';
+}
 const MAP_MODS = {
     tough:  { name: '強壯', icon: '💪', desc: '怪物 HP +40%', bonus: 0.15 },
     savage: { name: '兇猛', icon: '🩸', desc: '怪物傷害 +30%', bonus: 0.2 },
@@ -47,6 +62,8 @@ function setMapQuality(x, q, mods) {
 }
 function makeMapItem(t, q) {
     const x = { uid: player.nextUid++, id: 'map' + clamp(t, 1, MAP_TIERS), n: 1, ench: 0 };
+    if (q === 'legend' && ITEMS[x.id].tier < 8) q = null;
+    if (q === 'legend' || (q === undefined && ITEMS[x.id].tier >= 8 && chance(TREASURE_MAP_DROP_P))) { x.q = 'legend'; x.unidentified = true; return x; }
     if (q === undefined) { const r = Math.random(); q = r < 0.5 ? null : r < 0.85 ? 'magic' : 'rare'; }
     if (q) setMapQuality(x, q, rollMapMods(q === 'magic' ? rand(1, 2) : rand(3, 4)));
     return x;
@@ -60,7 +77,7 @@ function giveMap(t, q, why) {
 }
 // 相同的地圖（同階、同品質、同詞綴、同名稱）在清單裡疊成一列「×N」（2026-10-16 使用者要求）；
 // 存檔裡仍是一張一個實體，開啟／出售／改造／上架都只動其中一張，所以其他功能不用改
-function mapKindKey(x) { return [x.id, x.q || '', (x.mm || []).slice().sort().join(','), x.nm || ''].join('|'); }
+function mapKindKey(x) { return [x.id, x.q || '', (x.mm || []).slice().sort().join(','), x.nm || ''].join('|') + (x.unidentified === true ? '|unidentified' : ''); }
 function groupMaps(list) {
     const out = [], by = {};
     for (const x of list) { const k = mapKindKey(x); if (by[k]) by[k].count++; else { by[k] = { x, count: 1 }; out.push(by[k]); } }
@@ -89,9 +106,14 @@ function mapDescHtml(x) {
     const same = findInv(x.uid) ? mapCountSame(x) : 1;
     const L = [`<small class="muted">異界地圖・T${t}${same > 1 ? `　背包裡同樣的共 ${same} 張` : ''}</small>`, `地區：${z.icon} ${z.name}（建議 Lv.${z.lv[0]}～${z.lv[1]}）${t > mapZones().length ? '<span class="warn">　怪物強化 ×1.4</span>' : ''}`,
         `怪物數量：200～300 隻${mapQtyOf(mods) > 1 ? ` <b class="warn">×${mapQtyOf(mods)}</b>` : ''}，殺光後出現異界首領`];
-    if (x.q) L.push(`<b class="${QUALITY[x.q].cls}">${QUALITY[x.q].name}地圖</b>　<span class="good">獎勵 +${Math.round(mapBonusOf(mods) * 100)}%</span>`);
+    if (isTreasureMap(x)) {
+        L.push('<b class="q-legend">傳奇財寶地圖</b>', x.unidentified ? '未鑑定：請到村莊鑑定台，鑑定前不能開啟或排程。' : '已鑑定：6條固定詞綴。');
+        L.push('只掉通貨：掉落機率為正常3倍（最高100%），數量2倍；不可使用任何通貨改造。');
+        if (x.unidentified) return L.join('<br>');
+    }
+    if (x.q && !isTreasureMap(x)) L.push(`<b class="${QUALITY[x.q].cls}">${QUALITY[x.q].name}地圖</b>　<span class="good">獎勵 +${Math.round(mapBonusOf(mods) * 100)}%</span>`);
     for (const k of mods) L.push(`<span class="q-magic">◆ ${MAP_MODS[k].icon} ${MAP_MODS[k].name}：${MAP_MODS[k].desc}</span>`);
-    L.push('<small class="muted">獎勵加成作用在經驗、金幣與所有掉落機率。可用通貨改造（🔮）。</small>');
+    L.push('<small class="muted">獎勵加成作用在經驗、金幣與所有掉落機率。' + (isTreasureMap(x) ? '傳奇地圖不可用通貨改造。' : '可用通貨改造（🔮）。') + '</small>');
     return L.join('<br>');
 }
 
@@ -103,10 +125,11 @@ function openMap(uid, queued = false) {
     if (player.mapPortal) { showToast('村莊還有異界傳送門開著，先回去或關閉它'); return; }
     const x = findInv(uid);
     if (!x || ITEMS[x.id].cat !== 'map') return;
+    if (x.unidentified === true) { showToast('請先到村莊鑑定台鑑定地圖'); return; }
     const t = ITEMS[x.id].tier, z = mapZoneFor(t), mods = (x.mm || []).slice();
     removeInst(uid);
     const total = Math.round(rand(200, 300) * mapQtyOf(mods));
-    player.mapRun = { t, zone: z.id, mods, q: x.q || null, name: itemName(x), total, left: total, boss: false };
+    player.mapRun = { t, zone: z.id, mods, q: x.q || null, name: itemName(x), total, left: total, boss: false, treasure: isTreasureMap(x) };
     if (queued) player.mapRun.queueSlot = player.mapQueue.index;
     player.loc = { type: 'zone', id: z.id, floor: 1 };
     addLog(`🌀 開啟${itemName(x)}：${z.name}的異界（${total} 隻怪物${mods.length ? `、獎勵 +${Math.round(mapBonusOf(mods) * 100)}%` : ''}）`, 'boss');
@@ -171,7 +194,7 @@ function completeMap() {
     player.mapRun = null;
     addLog(`🏆 通關 ${r.name}！`, 'boss');
     // 通關獎勵：1 張地圖（同階 55%、高一階 35%、高兩階 10%），另有 50% 再一張同階以下
-    if (!lootActive()) {
+    if (!lootActive() && !r.treasure) {
         const up = Math.random(), t2 = r.t + (up < 0.55 ? 0 : up < 0.9 ? 1 : 2);
         giveMap(Math.min(MAP_TIERS, t2), undefined, '通關獎勵');
         if (chance(0.5)) giveMap(Math.max(1, r.t - rand(0, 1)), undefined, '通關獎勵');
@@ -251,7 +274,7 @@ function mapDevicePanelHtml() {
         const t = ITEMS[x.id].tier, mods = x.mm || [];
         return `<div class="list-row"><div><b class="${itemClass(x)}">${esc(itemName(x))}</b>${count > 1 ? ` <span class="muted">×${count}</span>` : ''}
             <small>${mapZoneFor(t).name}${mods.length ? '　' + mods.map(k => MAP_MODS[k].icon).join('') + ` 獎勵 +${Math.round(mapBonusOf(mods) * 100)}%` : ''}${mapQtyOf(mods) > 1 ? `　怪物 ×${mapQtyOf(mods)}` : ''}</small></div>
-            <div class="qty-btns"><button class="mini secondary" onclick="openItemDialog(${x.uid})">詳情</button><button class="mini" onclick="openMap(${x.uid})" ${inTown() && !r && !pt ? '' : 'disabled'}>開啟</button></div></div>`;
+            <div class="qty-btns"><button class="mini secondary" onclick="openItemDialog(${x.uid})">詳情</button><button class="mini" onclick="openMap(${x.uid})" ${inTown() && !r && !pt && !x.unidentified ? '' : 'disabled'}>開啟</button></div></div>`;
     }).join('')}</div>` : '<small class="muted">還沒有異界地圖。打怪有機率掉落（一般地圖每隻 0.4%、異界裡 1.5%），通關異界首領必掉。</small>';
     return h + `<small class="muted">在村莊放入地圖開啟異界：200～300 隻怪（數量詞綴最多 ×3），殺光後打倒異界首領即通關。中途用回家卷軸回村會留下一次性傳送門，可以補給完再回去；步行回村、死亡或放棄，地圖就會消失。</small></div>`;
 }

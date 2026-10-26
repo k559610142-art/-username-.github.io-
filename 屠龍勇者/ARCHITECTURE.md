@@ -194,6 +194,8 @@
 
 | `tools/magic-crit-affixes.sql`、`tools/test-critical-stats.js`、`tools/test-critical-db.js` | 三項爆擊詞綴增量SQL與傷害／隔離資料庫測試（第182節） |
 
+| `tools/treasure-maps.sql`、`tools/test-treasure-maps.js`、`tools/test-treasure-maps-db.js` | 傳奇財寶圖後端更新、鑑定／通貨限制／掉落與隔離資料庫測試（第187節） |
+
 ## 2. 載入順序與依賴
 
 `config → classes → skills → items → spellbook → monsters → zones → quests → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → pwa → loot → main`
@@ -207,7 +209,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261026w`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027a`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3600,3 +3602,15 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - renderMapQueue以map-queue-grid包住六張卡片，CSS repeat(2,minmax(0,1fr))、間距8px；第一列1／2、第二列3／4、第三列5／6。卡片10px內距、標題14px／進度12px、地圖名稱可換行、數量與設定按鈕可換行，不產生單列大片空白。控制區仍在上方。
 - SAVE_SCHEMA12→13；migrateSave對舊mapQueue.slots尾端補null到六格，再走mapQueueNormalize，保留原五格、預選uid與進度；新第六格沿現有結構保存。無SQL或後端設定改動。舊版只能讀五格，因此驗收須先更新w。
 - test-map-queue.js更新六格與schema13，增加schema12五格遷移／第六格存讀／六卡HTML測試；六格依序完成、原排程回歸與test-map-skip-boss皆通過。check.ps1 ALL CHECKS PASSED（51檔／50script同w）、git diff --check通過。未開關瀏覽器或操作正式角色；待實機驗收後提交。
+
+## 187. 傳奇財寶地圖與村莊鑑定台（2026-10-27，版本 `20261027a`，schema14）
+
+- 使用者明確同意存檔與SQL修改；規則：T8～T15掉落地圖有1%成傳奇財寶圖，不新增地區／道具ID，沿map8～map15、q=legend，掉落帶unidentified:true且不產生mm／nm。普通圖機率與詞綴不變；白／魔法／稀有舊圖不轉傳奇。
+- maps.js新增TREASURE_MAP_DROP_P、isTreasureMap／treasureMapActive／identifyMap／renderIdentify。四村免費鑑定，只處理背包未鑑定傳奇圖；rollMapMods(6)從現有8詞抽6條不重複，移除unidentified，鑑定後不可重抽。不加新的傳奇專屬詞綴。保留階級區域、怪物數量、詞綴經驗／金幣獎勵。
+- 未鑑定圖itemName顯示「傳奇財寶地圖 Tn（未鑑定）」；詳情明示規則，背包不提供開啟按鈕／異界裝置停用開啟，openMap入口拒絕且不扣卷。排程候選排除未鑑定，執行時亦重查；mapKindKey只對未鑑定加尾碼，普通與既有排程key完全保留。
+- craft.currencyCan／useCurrency對q=legend的地圖一律拒絕所有通貨（含剝離、淬鍊及覺醒），鑑定前後相同，不扣通貨。鑑定後正常開圖／排程，mapRun.treasure=true經回卷／存讀保留，lootSnapKey納入旗標。
+- 財寶圖rollDrops直接走獨立通貨分支並return：一般怪與精英原3%×地圖詞綴倍率×3，數量原1×2；首領原60%×詞綴倍率×3、最高100%，數量原1～3×2（2／4／6）。保留原通貨權重與minLv。不抽裝備／共鳴／材料／書／地圖／任務物品，通關亦不給額外地圖；不將裝備自動回收為金幣。擊殺經驗／金幣與現有離線掉落種類限制沿舊規則。
+- ui-panels村莊新增identify分頁／NPC說話，TOWN_NPCS新增鑑定台，SCENE_TOWN_ROLES／四村spots新增[18,11]，沿原創forge素材展示工具站；角色出生可達每村8位設施前方。無新遊戲JS檔或載入順序變動。
+- SAVE_SCHEMA13→14：migrateSave保留合法傳奇圖6條唯一詞綴；未鑑定或缺6詞者維持未鑑定並清詞綴，普通圖不增加狀態；mapRun／mapPortal只保留qlegend且T8以上的treasure旗標。沿既有JSON實體傳遞，倉庫／交易保留狀態，不重抽舊裝。
+- tools/treasure-maps.sql為獨立可重跑遷移：更新loot_map的1%未鑑定圖；loot_treasure_currency供loot_roll財寶分支使用；以現有函式定義增量為loot_spawn與loot_spawn_screen的憑證context加入已驗qlegend／T8／6詞的treasure旗標，保留現有權限與其他邏輯，結構不符中止。原SQL不覆寫。**由使用者自行貼Supabase執行，未執行前線上不會掉傳奇圖且不具財寶掉落規則；先執行本SQL再更新遊戲。日後重裝舊server-loot／loot-screen須再跑本檔。**
+- 驗證：test-treasure-maps涵蓋T8～15未鑑定／免費六詞不重鑑／所有通貨拒絕／存讀／只掉2倍通貨／無通關地圖；test-treasure-maps-db以PGlite跑真實後端＋遷移兩次，10000次掉圖約1%、T7不掉傳奇、10000次一般通貨約9%且n2、首領100%與n2／4／6、普通與畫面憑證帶旗標。四村8設施可達、六格排程／略首領／商店／雙爆／全畫面／離線掉落回歸通過。check.ps1 ALL CHECKS PASSED（51檔／50script同20261027a）、git diff --check、正式50檔混淆519KB與identifyMap事件公開通過。未開關瀏覽器、未操作正式角色或後端；待使用者實玩確認後提交。
