@@ -528,6 +528,7 @@ function itemDescHtml(inst, showAffixMax = false) {
     if (bossHtml) L.push(bossHtml);
     if (d.res) L.push(resonanceHtml(d));   // 共鳴武器（resonance.js）
     if (d.cat === 'book') L.push(bookInfoHtml(d));   // 魔法書：技能內容、能不能學（spellbook.js）
+    if (!inst.q && inst.il && (d.cat === 'weapon' || d.cat === 'armor')) L.push(`<small class="muted">物品等級 ${inst.il}</small>`);
     if (inst.q) {   // 暗黑式詞綴
         L.push(`<b class="${QUALITY[inst.q].cls}">${QUALITY[inst.q].name}品質</b><small class="muted">（物品等級 ${inst.il || 1}）</small>`);
         for (const a of inst.af || []) L.push(`<span class="${a.sx ? 'q-special' : a.lg ? 'q-legend' : 'q-magic'}">${a.sx ? '💠' : '◆'} ${affixText(a)}${a.sx ? '（覺醒）' : a.lg ? '（傳說）' : ''}</span>${showAffixMax ? ` <small class="muted">${craftAffixMaxText(inst, a)}</small>` : ''}`);
@@ -757,7 +758,7 @@ function renderShop() {
         const d = ITEMS[id];
         const usable = !d.classes || d.classes.includes(player.cls);
         const qty = d.cat === 'ammo' ? [100, 1000, 10000] : isStackable(d) ? [1, 10, 100] : [1];
-        return `<div class="list-row ${usable ? '' : 'locked'}"><div onclick="shopInfo('${id}')" class="clickable item-info">${itemThumbHtml(id)}<b>${d.name}</b><small>${shopPriceText(id)}｜${shortDesc(d)}</small></div>
+        return `<div class="list-row ${usable ? '' : 'locked'}"><div onclick="shopInfo('${id}')" class="clickable item-info">${itemThumbHtml(id)}<b>${d.name}</b><small>${shopPriceText(id)}｜${shortDesc(d)}${d.cat === 'weapon' || d.cat === 'armor' ? `｜物品等級 ${SHOP_EQUIP_IL}` : ''}</small></div>
             <div class="qty-btns">${qty.map(n => `<button class="mini" onclick="buyItem('${id}',${n})" ${player.gold < shopCost(id, n) ? 'disabled' : ''}>×${n}</button>`).join('')}<button class="mini secondary" onclick="openShopBuy('${id}')">自訂</button></div></div>`;
     }).join('') + `</div>`;
 }
@@ -771,7 +772,7 @@ function shortDesc(d) {
     return d.desc || CAT_NAMES[d.cat];
 }
 
-function shopInfo(id) { openDialog(ITEMS[id].name, itemDescHtml({ id, n: 1, ench: 0 }), [{ text: '關閉', cls: 'secondary' }]); }
+function shopInfo(id) { const d = ITEMS[id]; openDialog(d.name, itemDescHtml({ id, n: 1, ench: 0, ...((d.cat === 'weapon' || d.cat === 'armor') ? { il: SHOP_EQUIP_IL } : {}) }), [{ text: '關閉', cls: 'secondary' }]); }
 
 // 一鍵賣出：背包裡品質低於 level 的一般貨裝備（沒強化、不含稀有基底；撿到時的戰利品過濾則連稀有基底也賣）
 function bulkSellList(level) { return player.inv.filter(x => !x.sellLocked && lootFiltered(x, level, true) &&!(x.ench > 0) && !x.bossEnchant); }

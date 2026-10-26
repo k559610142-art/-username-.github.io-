@@ -181,6 +181,10 @@
 
 | `tools/loot-screen.sql`、`tools/test-loot-screen-db.js`、`tools/test-screen-cannon.js` | 五招畫面範圍攻擊的批次怪物憑證RPC、隔離資料庫與客戶端回歸（第175節） |
 
+| `images/maps/rework/venom-nest-v1.jpg`、`tools/map-src/venom-nest-v1/`、`tools/test-venom-nest-map.js` | 毒霧巢穴專屬地圖、參考／imagegen原稿與提示詞、行走標定與隔離驗證（第176節） |
+
+| `tools/test-market-level.js` | 交易所裝備基底等級的清單／詳情／舊裝備顯示隔離回歸（第178節） |
+
 ## 2. 載入順序與依賴
 
 `config → classes → skills → items → spellbook → monsters → zones → quests → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → pwa → loot → main`
@@ -194,7 +198,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261026m`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261026p`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -1224,7 +1228,7 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
   後端掉寶要使用者在 Supabase 依序執行 `tools/awaken-stone.sql`、`tools/loot-catalog.sql` 才會掉覺醒石（`catalog.currency` 依權重與 minLv）。
 
 - 掉落：每隻怪 3%（`CURRENCY_DROP_P`）、首領 60%（`CURRENCY_BOSS_P`，1～3 顆），依權重 `rollCurrency`。實測約每 100 隻 3 顆。
-- 物品等級 `craftIl`：有 `il` 用 `il`，商店／任務裝沒有就用玩家等級。傳說裝備只能用淬鍊石。
+- 物品等級 `craftIl`：有 `il` 用 `il`；20261026o起新購商店裝固定記錄il20，任務／舊裝沒有il仍用玩家等級（第177節）。傳說裝備只能用淬鍊石。
 - 介面：**2026-10-12 起改到村莊鍛造 NPC →「🔮 裝備改造」**（`renderGearForge`，列身上與背包的武器、防具和持有通貨，版本 `20261012m`），「🔮 改造」開 `openCraftDialog`（上方裝備詞綴、下方全部通貨與數量，不能用的變灰），點一顆就套用並重畫視窗；背包裝備、地圖、通貨的道具視窗不再有改造相關按鈕（版本 `20261012o` 起連「找鍛造 NPC」提示按鈕也移除）。
   圖鑑新增「通貨」分類，取得方式顯示掉落機率。
 
@@ -3500,3 +3504,26 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 等回應期間切角色／換地圖／停止掛機／戰鬥已結束或換武器均不施加延遲傷害；無法領憑證或未安裝SQL時提示，僅攻擊畫面內已參戰怪，不退回本機造掉寶。異界最多加入目前剩餘擊殺需求扣除存活參戰怪後的數量；不多生首領、不超額推進任務。
 - SQL tools/loot-screen.sql：新增私有RLS表dragon_loot_screen_batches、四參數舊砲擊相容入口與五參數loot_spawn_screen（p_skill指定五招）。每批1～30、未結算上限64；沿loot_player驗證登入／停權／存檔／地圖／樓層／合法怪物，帳號鎖與每招原冷卻限流、異界剩餘量、伺服器精英資格及原版本掉寶context。同request_id完整驗角色／地點／目標／技能，重送（含已結算後）回原結果不重抽；收據保留3天，呼叫時清自己逾期資料。新SQL可重跑，也可升級早期只有砲擊的版本；不覆寫既有loot_spawn／loot_finish_batch。
 - 無SAVE_SCHEMA／player欄位／既有SQL／cloud.js設定／載入順序變更；只新增專用SQL，必須由使用者在Supabase自行執行後再發佈遊戲。本助手未操作正式後端。實機五招傷害／浮字／掉寶與手機PC範圍仍待使用者驗收。
+
+
+## 176. 毒霧巢穴專屬地圖（2026-10-26，版本 `20261026n`）
+
+- 使用者提供毒池／紫霧／獸骨／蛛卵／吊橋圖片作主題參考，內建image_gen生成原創1536×1024圖，不直接使用參考圖當遊戲背景。原稿source.png、reference.jpg、完整PROMPT.txt保留於tools/map-src/venom-nest-v1；prepare.ps1只打包JPEG92品質，成品images/maps/rework/venom-nest-v1.jpg，來源不覆寫。
+- SCENE_ART_BGS新增art-venom-nest，48×32格、出生[9,24]（西南石台）；ui-scene.themeFor只對venomNest選此圖。六處區域為西南入口石台、西北獸骨平台、西側小平台、中央交會平台、東北蛛卵巢與東南菌菇平台，經石路及吊橋連通。圖上的巢卵、獸骨與菌菇是地景，不是額外BOSS／NPC／可互動設施。
+- layout.json保存平台多邊形與通道中心線；prepare-layout.js以32像素格中心掃描，產生walk.json共58個逐列矩形／356可走格，並驗所有地面連通、六個地標可達、指定毒池／洞壁不可走。SCENE_ART_BGS.walk採同資料，不增加通用polygon行走邏輯；walk-preview.png為除錯疊圖，不發佈。
+- 毒池、洞壁、裝飾邊緣不配置行走；生怪沿原huntSpots／spawnMapMon只在連通可走區。現有Lv38～48／600金幣／毒霧獵蛛與蛇女、巨蠍／0.8%劇毒蛛后／noMap／掉落不變；只是專屬場景替代通用cave，不改玩家存檔、SQL、戰鬥數值或載入順序。sw.js預載新JPEG，其他場景不變。
+- tools/test-venom-nest-map.js使用真實buildScene與findPath，驗356格全連通／六地標／毒池阻擋／100次生怪可達／入場及掉落設定／其他塔場景；不讀寫正式存檔、不連線。舊test-poison-enchant.js硬編schema7已過時，本次僅在記憶體調整其斷言為目前schema12執行，既有毒傷與洞口入場回歸通過，不修改其原檔。check.ps1 ALL CHECKS PASSED（51檔、50script同n）；仍待使用者手機／PC實際進洞驗收。
+
+
+## 177. 新購商店裝備固定物品等級20（2026-10-26，版本 `20261026o`）
+
+- 使用者明確選擇「固定物品等級20」。town.js新增SHOP_EQUIP_IL=20，buyItem成功購入武器／防具（含飾品）後只替此次新建實體設定既有il欄位，快捷及自訂數量共用。角色等級1或85、任意村莊均為20，原庫存不回改。
+- 商店清單／shopInfo與普通裝備詳情顯示物品等級；有品質的裝備沿原顯示，不重複。craftIl原本優先使用il，因此點化／重鑄／晉升／混沌／淬鍊等維持20，不隨玩家升級增加。已有高等掉落與舊裝、售價、數量、負重、藥水／彈藥／卷軸等不變。
+- 使用原有可選裝備il欄位，不新增player欄位、不改SAVE_SCHEMA12／SQL／載入順序。tools/test-shop-buy.js擴充四村、角色1／85、全販售裝備雙件購入、原il85不受影響、通貨改造保持20／不能覺醒、藥水不帶il、商店與詳情顯示；既有購買回歸通過。待使用者實玩確認後提交。
+
+
+## 178. 玩家交易所顯示裝備基底等級（2026-10-26，版本 `20261026p`）
+
+- 使用者確認「基底等級」就是裝備本身記錄的物品等級il。market.js新增marketBaseLevelText：只有武器／防具（含飾品）顯示，il為正安全整數時顯示該值；缺少或非法值一律「基底等級 未記錄」，不套用買賣家角色等級，也不推測舊商店裝。
+- 購買清單、販售候選清單、我的上架列出基底等級；新增marketItemDescHtml沿用itemDescHtml，只把等級標示替換成基底等級（普通裝也顯示），用在商品詳情與上架表單，避免重複等級文字。非裝備不顯示此欄。
+- 純顯示，既有商品il／價格／名稱／交易數量／RPC／SQL／存檔schema12及載入順序不變。tools/test-market-level.js隔離驗五處顯示、普通20／稀有85／舊裝未記錄、非裝備無欄、非法值不直接插HTML、商品資料不變。與test-shop-buy及check.ps1一起驗證，實機仍待使用者確認。

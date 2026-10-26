@@ -51,6 +51,7 @@ function travelZone(zoneId, floor) {
 }
 
 // ───────── 商店 ─────────
+const SHOP_EQUIP_IL = 20;
 function shopItemIds() {
     const tier = currentTown().tier;
     // 魔法書只賣自己職業學得會的（spellbook.js）
@@ -74,7 +75,11 @@ function buyItem(id, n) {
     if (player.gold < cost) { showToast('金幣不足'); return; }
     if (invWeight() + d.wt * n > calcStats().weightMax) { showToast('負重不足，背不動了'); return; }
     player.gold -= cost;
+    const first = player.inv.length;
     addItem(id, n);
+    if (d.cat === 'weapon' || d.cat === 'armor') {
+        for (let i = first; i < player.inv.length; i++) player.inv[i].il = SHOP_EQUIP_IL;
+    }
     showToast(`購買 ${d.name} ×${n}（-${fmt(cost)}）`);
     sfx('coin');
     refreshUI();

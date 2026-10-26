@@ -60,5 +60,23 @@ assert.equal(shopCost('arrow',300),30); assert.equal(shopPriceText('arrow'),'�
 shopCat=SHOP_CATS.find(c=>c[2]&&c[2].includes('ammo'))[0]; player.gold=100000;
 const ammoHtml=renderShop(); assert(ammoHtml.includes("buyItem('arrow',100)") && ammoHtml.includes("buyItem('arrow',10000)") && !ammoHtml.includes("buyItem('arrow',1)"));
 assert.equal(shopUnit(id),1);
+// 商店裝備固定20；低等與高等角色、四村、多件購買及後續通貨改造皆一致。
+for (const town of Object.keys(TOWNS)) for (const lv of [1, 85]) {
+    player.loc={type:'town',id:town}; player.lv=lv; player.inv=[]; player.gold=100000000;
+    const old={uid:player.nextUid++,id:weapon,n:1,ench:0,il:85}; player.inv.push(old);
+    const gear=shopItemIds().filter(id=>ITEMS[id].cat==='weapon'||ITEMS[id].cat==='armor');
+    for (const gid of gear) {
+        player.inv=[old]; const start=player.inv.length;
+        assert.equal(buyItem(gid,2),true); const boughtGear=player.inv.slice(start);
+        assert.equal(boughtGear.length,2); assert(boughtGear.every(x=>x.il===20)); assert.equal(old.il,85);
+        const it=boughtGear[0]; assert.equal(craftIl(it),20); assert(itemDescHtml(it).includes('物品等級 20'));
+        CURRENCY.curAug.use(it); assert.equal(it.il,20); assert.equal(craftIl(it),20);
+        CURRENCY.curAlt.use(it); CURRENCY.curRegal.use(it); CURRENCY.curChaos.use(it); CURRENCY.curTemper.use(it);
+        assert.equal(it.il,20); assert.equal(currencyCan('curAwaken',it),false);
+    }
+}
+player.inv=[];player.gold=100000;buyItem(id,1);assert(!('il' in player.inv[0]),'藥水不新增裝備等級');
+shopCat='gear';assert(renderShop().includes('物品等級 20'));
+shopInfo(weapon);assert(dialog.html.includes('物品等級 20'),'商店詳情與購買一致');
 console.log('PASS：自訂 37 個、裝備逐件購買、金幣／負重限制、最大可買數量、負數／小數／非有限值／溢位拒絕、離村防重用、箭矢／子彈 100 個一單位。');
 `, ctx);
