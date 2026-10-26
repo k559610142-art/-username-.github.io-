@@ -1,0 +1,685 @@
+{
+  "id": "windwood-ironwall-v1",
+  "name": "風木鐵壁重裝兵（藍變）",
+  "form": "m28",
+  "rows": [
+    "down",
+    "right",
+    "up"
+  ],
+  "left": "mirror right",
+  "cellW": 384,
+  "cellH": 320,
+  "footAnchor": [
+    192,
+    270
+  ],
+  "charH": 160,
+  "drawH": 48,
+  "actions": {
+    "walk": {
+      "src": "images/sprites/morph/windwood-ironwall-v1/walk.png",
+      "cellW": 384,
+      "cellH": 320,
+      "frames": {
+        "down": 4,
+        "right": 4,
+        "up": 4
+      },
+      "ms": 130,
+      "cells": [
+        {
+          "direction": "down",
+          "frame": 0,
+          "file": "frames/walk-down-01.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            0,
+            0,
+            384,
+            341
+          ],
+          "sourceFoot": [
+            229.5,
+            325
+          ],
+          "sourceBodyHeight": 290.5
+        },
+        {
+          "direction": "down",
+          "frame": 1,
+          "file": "frames/walk-down-02.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            384,
+            0,
+            768,
+            341
+          ],
+          "sourceFoot": [
+            560.0,
+            325
+          ],
+          "sourceBodyHeight": 290.5
+        },
+        {
+          "direction": "down",
+          "frame": 2,
+          "file": "frames/walk-down-03.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            768,
+            0,
+            1152,
+            341
+          ],
+          "sourceFoot": [
+            949.5,
+            327
+          ],
+          "sourceBodyHeight": 290.5
+        },
+        {
+          "direction": "down",
+          "frame": 3,
+          "file": "frames/walk-down-04.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            1152,
+            0,
+            1536,
+            341
+          ],
+          "sourceFoot": [
+            1345.0,
+            324
+          ],
+          "sourceBodyHeight": 290.5
+        },
+        {
+          "direction": "right",
+          "frame": 0,
+          "file": "frames/walk-right-01.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            0,
+            0,
+            384,
+            341
+          ],
+          "sourceFoot": [
+            215.0,
+            333
+          ],
+          "sourceBodyHeight": 294.5
+        },
+        {
+          "direction": "right",
+          "frame": 1,
+          "file": "frames/walk-right-02.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            384,
+            0,
+            768,
+            341
+          ],
+          "sourceFoot": [
+            591.0,
+            339
+          ],
+          "sourceBodyHeight": 294.5
+        },
+        {
+          "direction": "right",
+          "frame": 2,
+          "file": "frames/walk-right-03.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            768,
+            0,
+            1152,
+            341
+          ],
+          "sourceFoot": [
+            978.0,
+            336
+          ],
+          "sourceBodyHeight": 294.5
+        },
+        {
+          "direction": "right",
+          "frame": 3,
+          "file": "frames/walk-right-04.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            1152,
+            0,
+            1536,
+            341
+          ],
+          "sourceFoot": [
+            1367.5,
+            338
+          ],
+          "sourceBodyHeight": 294.5
+        },
+        {
+          "direction": "up",
+          "frame": 0,
+          "file": "frames/walk-up-01.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            0,
+            0,
+            384,
+            341
+          ],
+          "sourceFoot": [
+            215.5,
+            317
+          ],
+          "sourceBodyHeight": 308.5
+        },
+        {
+          "direction": "up",
+          "frame": 1,
+          "file": "frames/walk-up-02.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            384,
+            0,
+            768,
+            341
+          ],
+          "sourceFoot": [
+            593.5,
+            316
+          ],
+          "sourceBodyHeight": 308.5
+        },
+        {
+          "direction": "up",
+          "frame": 2,
+          "file": "frames/walk-up-03.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            768,
+            0,
+            1152,
+            341
+          ],
+          "sourceFoot": [
+            981.5,
+            317
+          ],
+          "sourceBodyHeight": 308.5
+        },
+        {
+          "direction": "up",
+          "frame": 3,
+          "file": "frames/walk-up-04.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            1152,
+            0,
+            1536,
+            341
+          ],
+          "sourceFoot": [
+            1372.0,
+            316
+          ],
+          "sourceBodyHeight": 308.5
+        }
+      ]
+    },
+    "attack": {
+      "src": "images/sprites/morph/windwood-ironwall-v1/attack.png",
+      "cellW": 384,
+      "cellH": 320,
+      "frames": {
+        "down": 4,
+        "right": 4,
+        "up": 4
+      },
+      "ms": 140,
+      "cells": [
+        {
+          "direction": "down",
+          "frame": 0,
+          "file": "frames/attack-down-01.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            0,
+            341,
+            384,
+            683
+          ],
+          "sourceFoot": [
+            192.5,
+            678
+          ],
+          "sourceBodyHeight": 290.5
+        },
+        {
+          "direction": "down",
+          "frame": 1,
+          "file": "frames/attack-down-02.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            384,
+            341,
+            768,
+            683
+          ],
+          "sourceFoot": [
+            577.0,
+            676
+          ],
+          "sourceBodyHeight": 290.5
+        },
+        {
+          "direction": "down",
+          "frame": 2,
+          "file": "frames/attack-down-03.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            768,
+            341,
+            1152,
+            683
+          ],
+          "sourceFoot": [
+            959.5,
+            660
+          ],
+          "sourceBodyHeight": 290.5
+        },
+        {
+          "direction": "down",
+          "frame": 3,
+          "file": "frames/attack-down-04.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            1152,
+            341,
+            1536,
+            683
+          ],
+          "sourceFoot": [
+            1343.5,
+            663
+          ],
+          "sourceBodyHeight": 290.5
+        },
+        {
+          "direction": "right",
+          "frame": 0,
+          "file": "frames/attack-right-01.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            0,
+            341,
+            384,
+            683
+          ],
+          "sourceFoot": [
+            199.0,
+            678
+          ],
+          "sourceBodyHeight": 294.5
+        },
+        {
+          "direction": "right",
+          "frame": 1,
+          "file": "frames/attack-right-02.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            384,
+            341,
+            768,
+            683
+          ],
+          "sourceFoot": [
+            579.5,
+            677
+          ],
+          "sourceBodyHeight": 294.5
+        },
+        {
+          "direction": "right",
+          "frame": 2,
+          "file": "frames/attack-right-03.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            768,
+            341,
+            1152,
+            683
+          ],
+          "sourceFoot": [
+            959.5,
+            659
+          ],
+          "sourceBodyHeight": 294.5
+        },
+        {
+          "direction": "right",
+          "frame": 3,
+          "file": "frames/attack-right-04.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            1152,
+            341,
+            1536,
+            683
+          ],
+          "sourceFoot": [
+            1346.5,
+            659
+          ],
+          "sourceBodyHeight": 294.5
+        },
+        {
+          "direction": "up",
+          "frame": 0,
+          "file": "frames/attack-up-01.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            0,
+            341,
+            384,
+            683
+          ],
+          "sourceFoot": [
+            196.0,
+            670
+          ],
+          "sourceBodyHeight": 308.5
+        },
+        {
+          "direction": "up",
+          "frame": 1,
+          "file": "frames/attack-up-02.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            384,
+            341,
+            768,
+            683
+          ],
+          "sourceFoot": [
+            576.0,
+            670
+          ],
+          "sourceBodyHeight": 308.5
+        },
+        {
+          "direction": "up",
+          "frame": 2,
+          "file": "frames/attack-up-03.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            768,
+            341,
+            1152,
+            683
+          ],
+          "sourceFoot": [
+            959.5,
+            670
+          ],
+          "sourceBodyHeight": 308.5
+        },
+        {
+          "direction": "up",
+          "frame": 3,
+          "file": "frames/attack-up-04.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            1152,
+            341,
+            1536,
+            683
+          ],
+          "sourceFoot": [
+            1353.0,
+            671
+          ],
+          "sourceBodyHeight": 308.5
+        }
+      ]
+    },
+    "cast": {
+      "src": "images/sprites/morph/windwood-ironwall-v1/cast.png",
+      "cellW": 384,
+      "cellH": 320,
+      "frames": {
+        "down": 2,
+        "right": 2,
+        "up": 2
+      },
+      "ms": 220,
+      "cells": [
+        {
+          "direction": "down",
+          "frame": 0,
+          "file": "frames/cast-down-01.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            0,
+            683,
+            384,
+            1024
+          ],
+          "sourceFoot": [
+            195.5,
+            1004
+          ],
+          "sourceBodyHeight": 290.5
+        },
+        {
+          "direction": "down",
+          "frame": 1,
+          "file": "frames/cast-down-02.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            384,
+            683,
+            768,
+            1024
+          ],
+          "sourceFoot": [
+            578.0,
+            1004
+          ],
+          "sourceBodyHeight": 290.5
+        },
+        {
+          "direction": "right",
+          "frame": 0,
+          "file": "frames/cast-right-01.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            0,
+            683,
+            384,
+            1024
+          ],
+          "sourceFoot": [
+            191.5,
+            975
+          ],
+          "sourceBodyHeight": 294.5
+        },
+        {
+          "direction": "right",
+          "frame": 1,
+          "file": "frames/cast-right-02.png",
+          "source": "right-initial.png",
+          "sourceRect": [
+            0,
+            665,
+            384,
+            1024
+          ],
+          "sourceFoot": [
+            194.5,
+            1001
+          ],
+          "sourceBodyHeight": 294.5
+        },
+        {
+          "direction": "up",
+          "frame": 0,
+          "file": "frames/cast-up-01.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            0,
+            683,
+            384,
+            1024
+          ],
+          "sourceFoot": [
+            196.5,
+            1011
+          ],
+          "sourceBodyHeight": 308.5
+        },
+        {
+          "direction": "up",
+          "frame": 1,
+          "file": "frames/cast-up-02.png",
+          "source": "up-initial.png",
+          "sourceRect": [
+            0,
+            665,
+            384,
+            1024
+          ],
+          "sourceFoot": [
+            197.5,
+            1010
+          ],
+          "sourceBodyHeight": 308.5
+        }
+      ]
+    },
+    "hit": {
+      "src": "images/sprites/morph/windwood-ironwall-v1/hit.png",
+      "cellW": 384,
+      "cellH": 320,
+      "frames": {
+        "down": 2,
+        "right": 2,
+        "up": 2
+      },
+      "ms": 150,
+      "cells": [
+        {
+          "direction": "down",
+          "frame": 0,
+          "file": "frames/hit-down-01.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            768,
+            683,
+            1152,
+            1024
+          ],
+          "sourceFoot": [
+            959.5,
+            1002
+          ],
+          "sourceBodyHeight": 290.5
+        },
+        {
+          "direction": "down",
+          "frame": 1,
+          "file": "frames/hit-down-02.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            1152,
+            683,
+            1536,
+            1024
+          ],
+          "sourceFoot": [
+            1339.0,
+            1001
+          ],
+          "sourceBodyHeight": 290.5
+        },
+        {
+          "direction": "right",
+          "frame": 0,
+          "file": "frames/hit-right-01.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            768,
+            683,
+            1152,
+            1024
+          ],
+          "sourceFoot": [
+            969.0,
+            977
+          ],
+          "sourceBodyHeight": 294.5
+        },
+        {
+          "direction": "right",
+          "frame": 1,
+          "file": "frames/hit-right-02.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            1152,
+            683,
+            1536,
+            1024
+          ],
+          "sourceFoot": [
+            1343.5,
+            975
+          ],
+          "sourceBodyHeight": 294.5
+        },
+        {
+          "direction": "up",
+          "frame": 0,
+          "file": "frames/hit-up-01.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            768,
+            683,
+            1152,
+            1024
+          ],
+          "sourceFoot": [
+            959.5,
+            1011
+          ],
+          "sourceBodyHeight": 308.5
+        },
+        {
+          "direction": "up",
+          "frame": 1,
+          "file": "frames/hit-up-02.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            1152,
+            683,
+            1536,
+            1024
+          ],
+          "sourceFoot": [
+            1366.5,
+            1012
+          ],
+          "sourceBodyHeight": 308.5
+        }
+      ]
+    }
+  }
+}

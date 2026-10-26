@@ -18,6 +18,10 @@ assert.equal(MORPH_BY_ID.m28.group,'shield');assert.equal(MORPH_BY_ID.m28.lv,15)
 assert.equal(MORPH_BY_ID.m28.fx.hit,2);assert.equal(MORPH_BY_ID.m28.fx.dmg,1);assert(Math.abs(MORPH_BY_ID.m28.fx.spdMul-.03)<1e-9);assert.equal(MORPH_BY_ID.m28.fx.ac,2);assert.equal(MORPH_BY_ID.m28.fx.hp,40);
 assert.equal(MORPH_BY_ID.m10.sprite,'brudikaShadow');
 assert.equal(morphWeaponErr(MORPH_BY_ID.m28),'');
+const twoHand = Object.keys(ITEMS).find(id => ITEMS[id].cat === 'weapon' && WEAPON_TYPES[ITEMS[id].type].two);
+player.equip.weapon={uid:999999,id:twoHand,n:1,ench:0};
+assert(usePotion('polyScroll','m28'),'雙手武器不能使用劍盾變身');assert.equal(countItem('polyScroll'),scrolls);
+player.equip.weapon=null;
 unequipSlot('weapon');
 assert.equal(usePotion('polyScroll','m28'),'');assert.equal(countItem('polyScroll'),scrolls-1);
 assert.equal(player.buffs.morph.form,'m28');assert.equal(player.settings.lastMorph,'m28');

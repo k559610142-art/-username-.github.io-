@@ -43,6 +43,20 @@ def main():
             specs[direction].append({'rect': rect, 'foot': [rect[0]+fx, rect[1]+bottom+1], 'body': bottom-int(ys.min())+1})
         body = float(np.median([c['body'] for c in specs[direction][:4]]))
         for c in specs[direction]: c['body'] = body
+    # 側／背面第10格漏畫武器，排除；改用初稿中有完整錘盾的聚氣格。
+    # 只挑選、裁切及腳底註冊既有生成分鏡，不補畫或變形角色。
+    for direction in ['right', 'up']:
+        key = direction+'-initial.png'
+        src = Image.open(ROOT/key).convert('RGBA'); sources[key] = src
+        w, h = src.size
+        rect = [0, round(2*h/3)-18, round(w/4), h]
+        rgba = np.array(src.crop(rect)); rgb = rgba[:, :, :3].astype(int)
+        mask = (rgba[:, :, 3] > 220) & (rgb.max(axis=2) < 150)
+        mask[:, :round(mask.shape[1]*.22)] = False
+        mask[:, round(mask.shape[1]*.78):] = False
+        ys, xs = np.nonzero(mask); bottom = int(np.quantile(ys, .995))
+        feet = xs[ys >= bottom-24]; fx = float((int(feet.min())+int(feet.max()))/2)
+        specs[direction][9] = {'rect': rect, 'foot': [fx, rect[1]+bottom+1], 'body': specs[direction][8]['body'], 'source': key}
     (ROOT/'registration.json').write_text(json.dumps(specs, indent=2)+'\n', encoding='utf-8')
     manifest = {'id': 'windwood-ironwall-v1', 'name': '風木鐵壁重裝兵（藍變）', 'form': 'm28',
                 'rows': DIRS, 'left': 'mirror right', 'cellW': 384, 'cellH': 320,
@@ -58,7 +72,8 @@ def main():
             for f in range(n):
                 i = f if action == 'walk' else 4+f if action == 'attack' else 8+f if action == 'cast' else 10+f
                 cfg = specs[direction][i]
-                crop = isolate(sources[direction].crop(cfg['rect']))
+                source = cfg.get('source', direction)
+                crop = isolate(sources[source].crop(cfg['rect']))
                 bb = crop.getbbox(); assert bb
                 scale = 160/cfg['body']
                 crop = crop.crop(bb)
@@ -74,7 +89,7 @@ def main():
                 sheet.alpha_composite(cell, (f*384, di*320))
                 contact.alpha_composite(cell, (f*384, (ai*3+di)*320))
                 info = {'direction': direction, 'frame': f, 'file': 'frames/'+filename,
-                        'source': direction+'-generated.png', 'sourceRect': cfg['rect'], 'sourceFoot': cfg['foot'], 'sourceBodyHeight': cfg['body']}
+                        'source': cfg.get('source', direction+'-generated.png'), 'sourceRect': cfg['rect'], 'sourceFoot': cfg['foot'], 'sourceBodyHeight': cfg['body']}
                 meta['cells'].append(info); audit.append(dict(info, bounds=cell.getbbox()))
         sheet.save(OUT/(action+'.png'), optimize=True)
         manifest['actions'][action] = meta

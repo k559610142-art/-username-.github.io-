@@ -185,6 +185,8 @@
 
 | `tools/test-market-level.js` | 交易所裝備基底等級的清單／詳情／舊裝備顯示隔離回歸（第178節） |
 
+| `images/sprites/morph/windwood-ironwall-v1/`、`tools/sprite-src/morph/windwood-ironwall-v1/`、`tools/test-windwood-ironwall-morph.js` | m28鐵壁重裝兵透明動畫、完整參考／提示詞／打包與隔離卷軸驗證（第179節） |
+
 ## 2. 載入順序與依賴
 
 `config → classes → skills → items → spellbook → monsters → zones → quests → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → pwa → loot → main`
@@ -198,7 +200,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261026p`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261026q`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3527,3 +3529,14 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 使用者確認「基底等級」就是裝備本身記錄的物品等級il。market.js新增marketBaseLevelText：只有武器／防具（含飾品）顯示，il為正安全整數時顯示該值；缺少或非法值一律「基底等級 未記錄」，不套用買賣家角色等級，也不推測舊商店裝。
 - 購買清單、販售候選清單、我的上架列出基底等級；新增marketItemDescHtml沿用itemDescHtml，只把等級標示替換成基底等級（普通裝也顯示），用在商品詳情與上架表單，避免重複等級文字。非裝備不顯示此欄。
 - 純顯示，既有商品il／價格／名稱／交易數量／RPC／SQL／存檔schema12及載入順序不變。tools/test-market-level.js隔離驗五處顯示、普通20／稀有85／舊裝未記錄、非裝備無欄、非法值不直接插HTML、商品資料不變。與test-shop-buy及check.ps1一起驗證，實機仍待使用者確認。
+
+
+## 179. 風木鐵壁重裝兵藍變專屬動畫（2026-10-26，版本 `20261026q`）
+
+- 使用者提供28.jpg與28-1／28-2／28-3.jfif，動作圖實際位於Desktop/變身人物，四張原樣保存tools/sprite-src/morph/windwood-ironwall-v1。兩張動作參考是背面，內建image_gen依角色設定生成正／右／背12格，保留深色重甲、青銅邊、深綠披風、樹與白狼紋大盾、釘頭錘。
+- 三方向生成原稿／右背初稿／修正稿與完整prompts.json／repair-prompts.json保存。右背第10格聚氣漏武器，打包排除，第二格聚氣改取初稿中完整錘盾的第9格，audit明記來源；不把空手漏畫格接入遊戲。prepare.py／registration.json保存每格來源rect、腳底與縮放，36格RGBA皆不重複、留邊完整、圖集逐格對應通過。
+- MORPHS.windwoodIronwall採384×320格、foot[192,270]、charH160／drawH48。walk4×130ms、attack4×140ms、cast2×220ms、hit2×150ms；down／right／up三列，left沿既有鏡射。既有MORPH_FORMS.m28接專屬sprite，不新增同名或第33款。
+- 維持既有劍盾系藍變Lv15、命中2／傷害1／防禦2／HP40／攻速3%，單手武器規則與GM等級豁免不變；一張polyScroll30分鐘、原商店售價10000不變。不改SQL、存檔schema12或script載入順序。sw.js預載四張新圖集。
+- tools/test-windwood-ironwall-morph.js使用真實卷軸驗Lv14拒絕不扣／Lv15成功／雙手武器拒絕／扣量與上次選擇／到期／能力不變／四向攻擊命中與MISS、施法與受擊、動作互斥及其他變身。preview.py產生四向動作GIF；render.js以原生Canvas實跑正式sceneDraw四方向四動作16組，game-render.png保存於來源資料夾。不開關遊戲瀏覽器或操作正式存檔／後端；實機驗收後才提交。
+
+第179節最終驗證：36格RGBA唯一／留邊／腳底註冊／逐格圖集比對、卷軸m28與32款等級／商店回歸通過，原生Canvas正式sceneDraw四向四動作16組及contact／動作GIF已檢視；check.ps1 ALL CHECKS PASSED（51檔／50script同q）、git diff --check通過。正式50檔混淆514KB成功，四張發佈圖集逐byte一致。未開關瀏覽器或操作正式角色／後端，待使用者實玩確認後提交。

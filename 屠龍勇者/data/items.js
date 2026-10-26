@@ -47,6 +47,13 @@ const BUFF_DEFS = {
 // 變身外觀（變形卷軸的 morph 欄位；ui-scene.js 的 playerSprite 在變身中改用這組圖）
 // 格式同 classes.js 的 sprite，多一個 foot：腳底在格子裡的位置（素材下方留了箭光空間，不能用格子底部當腳底）
 const MORPHS = {
+    windwoodIronwall: {
+        name: '風木鐵壁重裝兵', drawH: 48, charH: 160, foot: [192, 270],
+        walk: { src: 'images/sprites/morph/windwood-ironwall-v1/walk.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 130 },
+        attack: { src: 'images/sprites/morph/windwood-ironwall-v1/attack.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 140 },
+        cast: { src: 'images/sprites/morph/windwood-ironwall-v1/cast.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 220 },
+        hit: { src: 'images/sprites/morph/windwood-ironwall-v1/hit.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 150 },
+    },
     shuraMonk: {
         name: '修羅破戒僧', drawH: 48, charH: 160, foot: [192, 270],
         walk:   { src: 'images/sprites/morph/shura-monk-v1/walk.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 130 },
@@ -209,7 +216,7 @@ const MORPH_FORMS = [
     ['m19', '象牙塔高階秘術師', 'staff', 'blue', 'ivoryArchmage'], ['m20', '深淵羊魔・巴風特使徒', 'staff', 'red'], ['m21', '大魔導士・巴列斯真身', 'staff', 'purple'],
     ['m22', '修羅破戒僧', 'fist', 'blue', 'shuraMonk'], ['m23', '熔岩碎骨鬥士', 'fist', 'red'], ['m24', '霸天雷神拳皇', 'fist', 'purple'],
     ['m25', '荒野血狼狂戰', 'claw', 'blue'], ['m26', '暗夜血族撕裂者', 'claw', 'red'], ['m27', '裂空魔龍爪皇', 'claw', 'purple', 'riftDragon'],
-    ['m28', '風木鐵壁重裝兵', 'shield', 'blue'], ['m29', '薔薇聖殿十字軍', 'shield', 'red'], ['m30', '不滅黃金守護神・宙斯盾', 'shield', 'gold'],
+    ['m28', '風木鐵壁重裝兵', 'shield', 'blue', 'windwoodIronwall'], ['m29', '薔薇聖殿十字軍', 'shield', 'red'], ['m30', '不滅黃金守護神・宙斯盾', 'shield', 'gold'],
 ].map(([id, name, group, tier, sprite]) => {
     const t = MORPH_TIERS[tier], fx = MORPH_GROUPS[group].fx(t, MORPH_TIER_K[tier]);
     if (fx.spdMul > MORPH_SPD_MAX) fx.spdMul = MORPH_SPD_MAX;
