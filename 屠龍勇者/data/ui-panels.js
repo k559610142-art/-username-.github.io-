@@ -131,12 +131,12 @@ function renderHunt() {
 
 // 中間的即時地圖（ui-scene.js 畫在 canvas 上）＋下方操作列、補給、精簡訊息
 function huntViewHtml(title) {
-    return `<div class="hunt-view ${inTown() ? 'in-town' : ''}">
+    return `<div class="hunt-view ${inTown() ? 'in-town' : ''} ${mobileDrawerFold.bottom ? 'mobile-shortcuts-folded' : ''}">
         <div class="scene-wrap">
             <canvas id="scene-canvas" onclick="sceneClick(event)"></canvas>
             <div class="scene-top">${title}</div>
-            <div id="hunt-buffs" class="buffs scene-buffs"></div>
-            <div id="skill-bar" class="skill-bar"></div>
+            <div id="mobile-status-drawer" class="mobile-status-drawer ${mobileDrawerFold.top ? 'folded' : ''}"><div id="hunt-buffs" class="buffs scene-buffs"></div>${mobileDrawerButtonHtml('top')}</div>
+            <div id="skill-bar" class="skill-bar ${mobileDrawerFold.bottom ? 'folded' : ''}"></div>
         </div>
         <div class="hunt-ctrl">
             <div class="btn-row scene-btns" id="hunt-btns"></div>
@@ -201,6 +201,7 @@ function huntButtonsHtml() {
 }
 
 function updateHuntLive() {
+    syncMobileDrawers();
     const btns = $('hunt-btns');
     if (btns) {
         const sig = [isPcFrame(), inTown(), player.hunting, !!walkHome, countItem('homeScroll'), player.loc.floor, barEditMode].join('|');

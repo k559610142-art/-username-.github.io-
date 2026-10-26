@@ -4,6 +4,37 @@
 //   PC：底部骷髏頭左邊 0～7（鍵盤 1～8）、右邊 8～15（Q E R F Z X C V）、上排原本藥水卷軸的 6 格 16～21、上排最左邊 2 格 22～23
 
 // 圖示在 icons.js（skillIconHtml／itemIconHtml，第 41 節）
+// 手機顯示偏好存在裝置，不進角色存檔；0展開、1收合，上下各一位。
+const MOBILE_DRAWER_KEY = 'dragonSlayer_mobileDrawers';
+let mobileDrawerFold = { top: false, bottom: false };
+try {
+    const v = localStorage.getItem(MOBILE_DRAWER_KEY);
+    if (/^[01]{2}$/.test(v)) mobileDrawerFold = { top: v[0] === '1', bottom: v[1] === '1' };
+} catch (e) {}
+function mobileDrawerButtonHtml(part) {
+    const folded = mobileDrawerFold[part], label = part === 'top' ? '狀態列' : '快捷欄';
+    return `<button type="button" id="mobile-${part}-toggle" class="mobile-drawer-toggle" aria-expanded="${!folded}" aria-controls="${part === 'top' ? 'hunt-buffs' : 'mobile-shortcuts-body'}" onclick="toggleMobileDrawer('${part}')">${folded ? '◀ 展開' : '▶ 收合'}${label}</button>`;
+}
+function syncMobileDrawers() {
+    const bottom = $('skill-bar'), top = $('mobile-status-drawer'), view = bottom && bottom.closest('.hunt-view');
+    if (top) top.classList.toggle('folded', mobileDrawerFold.top);
+    if (bottom) bottom.classList.toggle('folded', mobileDrawerFold.bottom);
+    if (view) view.classList.toggle('mobile-shortcuts-folded', mobileDrawerFold.bottom);
+    for (const part of ['top', 'bottom']) {
+        const b = $('mobile-' + part + '-toggle');
+        if (!b) continue;
+        const folded = mobileDrawerFold[part], text = (folded ? '◀ 展開' : '▶ 收合') + (part === 'top' ? '狀態列' : '快捷欄');
+        if (b.textContent !== text) b.textContent = text;
+        b.setAttribute('aria-expanded', String(!folded));
+    }
+}
+function toggleMobileDrawer(part) {
+    if (isPcFrame() || !['top', 'bottom'].includes(part)) return;
+    mobileDrawerFold[part] = !mobileDrawerFold[part];
+    try { localStorage.setItem(MOBILE_DRAWER_KEY, (mobileDrawerFold.top ? '1' : '0') + (mobileDrawerFold.bottom ? '1' : '0')); } catch (e) {}
+    if (part === 'bottom' && mobileDrawerFold.bottom) barEditMode = false;
+    updateHuntLive();
+}
 function barName(id) { return SKILL_BY_ID[id] ? SKILL_BY_ID[id].name : ITEMS[id] ? ITEMS[id].name : ''; }
 function barKeyLabel(i) { return i < BAR_KEYS.length ? BAR_KEYS[i].toUpperCase() : ''; }
 
@@ -66,7 +97,7 @@ function renderHotbar() {
         const i = from + k, id = player.settings.bar[i].id;
         return `<div class="sk-cell">${barSlotHtml(i)}<div class="sk-name">${esc(barName(id)) || ' '}</div></div>`;
     }).join('')}</div>`;
-    set(mapBar, row(0) + row(8));
+    set(mapBar, mobileDrawerButtonHtml('bottom') + `<div id="mobile-shortcuts-body" class="mobile-shortcuts-body">${row(0) + row(8)}</div>`);
 }
 
 // ───────── 使用、切換自動、放置 ─────────

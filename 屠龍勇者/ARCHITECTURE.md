@@ -67,6 +67,7 @@
 | `tools/build.js` | **發佈用建置＋混淆**（第 60 節）：42 支 `data/*.js` 接成一支 `data/game.js` 包進函式範圍＋terser 混淆、gm.html 用的接成 `data/gm-lib.js`。由根目錄 `tools/build.js`（GitHub Actions）呼叫 `buildDragon`，開發與測試照舊用原始檔 |
 | `images/sprites/morph/ivory-archmage-v1/`、`tools/sprite-src/morph/ivory-archmage-v1/`、`tools/test-ivory-archmage-morph.js` | m19象牙塔高階秘術師原稿／生成提示詞、RGBA圖集與打包／四向動畫預覽／卷軸隔離驗證（第165節） |
 | `images/sprites/morph/shura-monk-v1/`、`tools/sprite-src/morph/shura-monk-v1/`、`tools/test-shura-monk-morph.js` | m22修羅破戒僧原稿／生成提示詞、透明圖集／腳點打包／四向預覽與卷軸隔離驗證（第168節） |
+| `tools/test-mobile-drawers.js` | 手機上下狀態／快捷抽屜、獨立收合／裝置偏好／PC與村莊隔離驗證（第169節） |
 | `tools/test-pwa-update.js` | 更新偵測隔離DOM／網路測試：開發與正式合併版、節流、離線／錯誤／版本排序與按下才刷新（第164節） |
 | `tools/check.ps1` | 改完的自動檢查：JS 語法（`node --check`）、`index.html` 所有 `?v=` 等於 `GAME_VERSION`、每個 `data/*.js` 都有載入、沒有衝突標記；通過印 `ALL CHECKS PASSED` |
 | `index.html` | 版面、全部 CSS、三個畫面（title／create／game）、`<script>` 載入 |
@@ -1675,6 +1676,8 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 
 
 ## 40. 天堂式技能：魔法 1～10 級、魔法書、技能欄（2026-10-15，版本 `20261015d`；`skills.js`、`spellbook.js`）
+
+- 20261026f手機上下顯示抽屜，收合狀態／下方兩排快捷、裝置偏好及PC隔離見第169節。
 
 - 使用者要求：移植天堂 1 的技能設定——共用魔法分 1～10 級＋各職業技能；**用魔法書學**；技能**放進面板欄位（下拉選單）才會自動施放**；被動技能學會就生效。
 - **共用魔法 `MAGIC`**（34 招，`tier` 1～10）：光箭、初級治癒術、保護罩、神聖武器／冰箭、風刃、鎧甲護持、冥想術／中級治癒術、火焰箭、極光雷電、敏捷術／
@@ -3436,6 +3439,17 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - tools/test-shura-monk-morph.js驗真實卷軸扣量／上次選擇、Lv14拒絕不扣／Lv15使用、原能力表、四向命中／MISS／施法／受傷與互斥／到期、其他變身不受影響、RGBA尺寸與36格來源、SW預載；不開關任何瀏覽器、不操作正式角色或後端。使用者實玩流程：重新整理到e→變身卷軸→拳套系→修羅破戒僧→四方向走路／攻擊／聚氣／受傷，確認後才提交。
 
 第168節驗證：保留右向初稿及image_gen側向修正／repair-prompts，prepare.py通過36格RGBA、不重複、透明留邊與圖集逐格對應。m22卷軸／32款等級／458道具圖片／商店購買回歸通過；原生canvas正式sceneDraw四方向四動作16次真實sprite繪圖與預覽檢視，game-render.png保留來源資料夾。check.ps1 ALL CHECKS PASSED（51檔、50script同20261026e）、正式混淆506KB成功、git diff --check通過。未開關瀏覽器、未操作正式存檔或後端；實玩待使用者確認。
+
+
+## 169. 手機上下狀態與快捷抽屜（2026-10-26，版本 `20261026f`）
+
+- 使用者依手機截圖要求上下快捷增加抽屜按鈕、一鍵隱藏。上方技能／道具／臨時狀態列共用一個「收合狀態列」按鈕，下方兩排快捷共用「收合快捷欄」，可獨立收合，留下小型「展開」把手。只適用非PC外框，PC原24格及狀態列照常顯示；村莊仍不顯示下方戰鬥快捷。
+- hotbar.js新增MOBILE_DRAWER_KEY／mobileDrawerFold、mobileDrawerButtonHtml／syncMobileDrawers／toggleMobileDrawer。偏好存這台裝置localStorage的dragonSlayer_mobileDrawers，兩字元0展開／1收合，非法值用00，不進player、schema12不變，無SQL或載入順序變更。上下預設展開，刷新／換地圖／切分頁沿用偏好，切回PC不套用手機隱藏CSS；再回手機保留。
+- ui-panels.huntViewHtml在hunt-buffs外加mobile-status-drawer與上方把手，skill-bar內由renderHotbar放下方把手及mobile-shortcuts-body。updateHuntLive先同步class／aria-expanded／文字，原增益倒數及快捷刷新維持；CSS只隱藏對應內容，仍保留展開按鈕，不移除技能／自動設定或停止掛機。收合下方時結束快捷編輯模式；回家／編輯等hunt-ctrl同步降至40px位置，展開時移到兩排及把手上方，避免空出大片區塊。
+- CSS以#frame:not(.pc)限定，頂部狀態wrapper沿原top24／left6／right6，狀態可橫滑；把手有button語意、aria-controls與aria-expanded、可觸控，容器透明區域不擋地圖點擊。PC wrapper為display:contents，原scene-buffs絕對位置與底部hotbar不變。
+- tools/test-mobile-drawers.js使用真實UI函式與隔離DOM／偏好，驗獨立開關／ARIA／保留格子／刷新及換圖狀態／角色與自動設定不變／退出編輯／PC24格／村莊／重新載入偏好。未開關瀏覽器或修改真實存檔。待使用者重新整理到f→手機狩獵→上下各按收合／展開→確認地圖露出、掛機自動技能繼續→切分頁或重開仍記住→切PC確認原欄位正常，實玩確認後才提交。
+
+第169節驗證：test-mobile-drawers、既有娃娃UI與buff-groups通過；check.ps1 ALL CHECKS PASSED（51檔、50script同20261026f），正式混淆507KB成功、toggleMobileDrawer公開供事件呼叫；git diff --check無錯誤。遵使用者偏好未開關瀏覽器，手機觸控與實際版面待使用者確認。
 
 ## 170. 降低背景輪詢以減少 Log Ingestion（2026-10-26，版本 `20261026g`）
 
