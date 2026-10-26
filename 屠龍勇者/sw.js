@@ -33,6 +33,7 @@ self.addEventListener('install', event => {
         await Promise.all(['images/sprites/morph/windwood-ironwall-v1/walk.png', 'images/sprites/morph/windwood-ironwall-v1/attack.png', 'images/sprites/morph/windwood-ironwall-v1/cast.png', 'images/sprites/morph/windwood-ironwall-v1/hit.png'].map(u => ironwallAssets.add(u).catch(() => {})));
         const bloodWolfAssets = await caches.open(ASSETS);
         await Promise.all(['images/sprites/morph/wild-blood-wolf-v1/walk.png', 'images/sprites/morph/wild-blood-wolf-v1/attack.png', 'images/sprites/morph/wild-blood-wolf-v1/cast.png', 'images/sprites/morph/wild-blood-wolf-v1/hit.png'].map(u => bloodWolfAssets.add(u).catch(() => {})));
+        await (await caches.open(ASSETS)).add('images/buildings/identify-station-v1.png').catch(() => {});
         await self.skipWaiting();
     })());
 });

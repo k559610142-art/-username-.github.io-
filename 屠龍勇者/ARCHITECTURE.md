@@ -196,6 +196,8 @@
 
 | `tools/treasure-maps.sql`、`tools/test-treasure-maps.js`、`tools/test-treasure-maps-db.js` | 傳奇財寶圖後端更新、鑑定／通貨限制／掉落與隔離資料庫測試（第187節） |
 
+| `images/buildings/identify-station-v1.png`、`tools/scene-rework/identify-station-v1/` | 鑑定台原創建築圖片、生成原稿與提示詞（第188節） |
+
 ## 2. 載入順序與依賴
 
 `config → classes → skills → items → spellbook → monsters → zones → quests → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → pwa → loot → main`
@@ -209,7 +211,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027a`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027b`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3614,3 +3616,11 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - SAVE_SCHEMA13→14：migrateSave保留合法傳奇圖6條唯一詞綴；未鑑定或缺6詞者維持未鑑定並清詞綴，普通圖不增加狀態；mapRun／mapPortal只保留qlegend且T8以上的treasure旗標。沿既有JSON實體傳遞，倉庫／交易保留狀態，不重抽舊裝。
 - tools/treasure-maps.sql為獨立可重跑遷移：更新loot_map的1%未鑑定圖；loot_treasure_currency供loot_roll財寶分支使用；以現有函式定義增量為loot_spawn與loot_spawn_screen的憑證context加入已驗qlegend／T8／6詞的treasure旗標，保留現有權限與其他邏輯，結構不符中止。原SQL不覆寫。**由使用者自行貼Supabase執行，未執行前線上不會掉傳奇圖且不具財寶掉落規則；先執行本SQL再更新遊戲。日後重裝舊server-loot／loot-screen須再跑本檔。**
 - 驗證：test-treasure-maps涵蓋T8～15未鑑定／免費六詞不重鑑／所有通貨拒絕／存讀／只掉2倍通貨／無通關地圖；test-treasure-maps-db以PGlite跑真實後端＋遷移兩次，10000次掉圖約1%、T7不掉傳奇、10000次一般通貨約9%且n2、首領100%與n2／4／6、普通與畫面憑證帶旗標。四村8設施可達、六格排程／略首領／商店／雙爆／全畫面／離線掉落回歸通過。check.ps1 ALL CHECKS PASSED（51檔／50script同20261027a）、git diff --check、正式50檔混淆519KB與identifyMap事件公開通過。未開關瀏覽器、未操作正式角色或後端；待使用者實玩確認後提交。
+
+## 188. 鑑定台建築造型（2026-10-27，版本 `20261027b`）
+
+- 使用者要求鑑定台改為建築物，不使用人形NPC。內建image_gen製作石造台座、木屋頂與藍水晶的原創透明鑑定亭，成品images/buildings/identify-station-v1.png；生成原稿及完整prompt.txt保存tools/scene-rework/identify-station-v1。
+- SCENE_TOWN_ROLES鑑定台改identify專用造型，四村指定建築圖、h2.4格；TOWN_NPCS後備配置同圖，原[18,11]位置、鑑定名牌／點擊動作／行走阻擋不變。其他商人不變，sw.js預載建築圖，無schema14或SQL變動。
+- 四村8設施位置／前方可達與鑑定台專用圖路徑／高度驗證通過，check.ps1 ALL CHECKS PASSED；不開關使用者瀏覽器或碰正式存檔，待使用者重新整理b確認建築顯示與鑑定功能後提交。
+
+鑑定台b版最終驗證：生成圖已檢視為無人物的亭式建築，1254×1254 RGBA真透明；四村專用圖／可達性、check.ps1、git diff --check通過，正式50檔混淆519KB及建築圖發佈逐byte一致通過。待使用者實機驗收。
