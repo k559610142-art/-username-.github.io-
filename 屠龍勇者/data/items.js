@@ -54,6 +54,13 @@ const MORPHS = {
         cast: { src: 'images/sprites/morph/windwood-ironwall-v1/cast.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 220 },
         hit: { src: 'images/sprites/morph/windwood-ironwall-v1/hit.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 150 },
     },
+    wildBloodWolf: {
+        name: '荒野血狼狂戰', drawH: 48, charH: 160, foot: [192, 270],
+        walk:   { src: 'images/sprites/morph/wild-blood-wolf-v1/walk.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 130 },
+        attack: { src: 'images/sprites/morph/wild-blood-wolf-v1/attack.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 140 },
+        cast:   { src: 'images/sprites/morph/wild-blood-wolf-v1/cast.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 220 },
+        hit:    { src: 'images/sprites/morph/wild-blood-wolf-v1/hit.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 150 },
+    },
     shuraMonk: {
         name: '修羅破戒僧', drawH: 48, charH: 160, foot: [192, 270],
         walk:   { src: 'images/sprites/morph/shura-monk-v1/walk.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 130 },
@@ -215,7 +222,7 @@ const MORPH_FORMS = [
     ['m15', '亞丁榮耀劍士', 'sword', 'blue', 'adenGlorySwordsman'], ['m16', '烈焰死亡騎士', 'sword', 'red', 'flameDeathKnight'], ['m17', '雷霆黑騎士統領', 'sword', 'purple'], ['m18', '神聖裁決劍聖', 'sword', 'gold'],
     ['m19', '象牙塔高階秘術師', 'staff', 'blue', 'ivoryArchmage'], ['m20', '深淵羊魔・巴風特使徒', 'staff', 'red'], ['m21', '大魔導士・巴列斯真身', 'staff', 'purple'],
     ['m22', '修羅破戒僧', 'fist', 'blue', 'shuraMonk'], ['m23', '熔岩碎骨鬥士', 'fist', 'red'], ['m24', '霸天雷神拳皇', 'fist', 'purple'],
-    ['m25', '荒野血狼狂戰', 'claw', 'blue'], ['m26', '暗夜血族撕裂者', 'claw', 'red'], ['m27', '裂空魔龍爪皇', 'claw', 'purple', 'riftDragon'],
+    ['m25', '荒野血狼狂戰', 'claw', 'blue', 'wildBloodWolf'], ['m26', '暗夜血族撕裂者', 'claw', 'red'], ['m27', '裂空魔龍爪皇', 'claw', 'purple', 'riftDragon'],
     ['m28', '風木鐵壁重裝兵', 'shield', 'blue', 'windwoodIronwall'], ['m29', '薔薇聖殿十字軍', 'shield', 'red'], ['m30', '不滅黃金守護神・宙斯盾', 'shield', 'gold'],
 ].map(([id, name, group, tier, sprite]) => {
     const t = MORPH_TIERS[tier], fx = MORPH_GROUPS[group].fx(t, MORPH_TIER_K[tier]);

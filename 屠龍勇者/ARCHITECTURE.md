@@ -187,6 +187,8 @@
 
 | `images/sprites/morph/windwood-ironwall-v1/`、`tools/sprite-src/morph/windwood-ironwall-v1/`、`tools/test-windwood-ironwall-morph.js` | m28鐵壁重裝兵透明動畫、完整參考／提示詞／打包與隔離卷軸驗證（第179節） |
 
+| `images/sprites/morph/wild-blood-wolf-v1/`、`tools/sprite-src/morph/wild-blood-wolf-v1/`、`tools/test-wild-blood-wolf-morph.js` | m25血狼狂戰透明動畫、原始參考／提示詞／打包與卷軸驗證（第180節） |
+
 ## 2. 載入順序與依賴
 
 `config → classes → skills → items → spellbook → monsters → zones → quests → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → pwa → loot → main`
@@ -200,7 +202,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261026q`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261026r`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3540,3 +3542,12 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - tools/test-windwood-ironwall-morph.js使用真實卷軸驗Lv14拒絕不扣／Lv15成功／雙手武器拒絕／扣量與上次選擇／到期／能力不變／四向攻擊命中與MISS、施法與受擊、動作互斥及其他變身。preview.py產生四向動作GIF；render.js以原生Canvas實跑正式sceneDraw四方向四動作16組，game-render.png保存於來源資料夾。不開關遊戲瀏覽器或操作正式存檔／後端；實機驗收後才提交。
 
 第179節最終驗證：36格RGBA唯一／留邊／腳底註冊／逐格圖集比對、卷軸m28與32款等級／商店回歸通過，原生Canvas正式sceneDraw四向四動作16組及contact／動作GIF已檢視；check.ps1 ALL CHECKS PASSED（51檔／50script同q）、git diff --check通過。正式50檔混淆514KB成功，四張發佈圖集逐byte一致。未開關瀏覽器或操作正式角色／後端，待使用者實玩確認後提交。
+
+## 180. 荒野血狼狂戰藍變專屬動畫（2026-10-26，版本 `20261026r`）
+
+- 依使用者25.jpg、25-1／25-2／25-3.jfif，內建image_gen製作正／右／背三向透明36格。保留人類狼首皮兜帽、狼皮披風、刺青胸膛、鐵甲與雙鋼爪、紅爪痕及藍焰；背面全程朝後。四張原稿及三向完整prompts.json保留於tools/sprite-src/morph/wild-blood-wolf-v1。
+- 既有m25接MORPHS.wildBloodWolf，不新增同名或第33款；Lv15、命中2／傷害2／攻速6%／爆擊1%／吸血1%，原武器與GM規則、卷軸一張30分鐘／10000金幣不變。無存檔schema12／SQL變更、無script載入順序變更。
+- 圖集384×320、foot[192,270]、charH160／drawH48；walk4×130ms、attack4×140ms、cast2×220ms、hit2×150ms；三列down／right／up，左向鏡射。SW預載四張圖集；prepare.py保存腳底註冊／manifest／audit，preview.py及render.js輸出動作與正式sceneDraw預覽。
+- tools/test-wild-blood-wolf-morph.js隔離驗實際卷軸、等級／扣量／上次選擇／到期、原能力與四向戰鬥動作。不開關遊戲瀏覽器、不碰正式角色或後端；待使用者實玩確認後提交。
+
+第180節最終驗證：36格RGBA唯一／透明留邊／腳底註冊／圖集逐格一致通過；m25真實卷軸及32款等級／商店回歸、原生Canvas正式sceneDraw四方向四動作16組通過，contact及game-render已檢視。check.ps1 ALL CHECKS PASSED（51檔、50script同r）、git diff --check通過；正式50檔混淆514KB成功，四圖集發佈檔逐byte一致。未開關瀏覽器或操作正式角色／後端，待使用者實玩確認後提交。

@@ -1,0 +1,685 @@
+{
+  "id": "wild-blood-wolf-v1",
+  "name": "荒野血狼狂戰（藍變）",
+  "form": "m25",
+  "rows": [
+    "down",
+    "right",
+    "up"
+  ],
+  "left": "mirror right",
+  "cellW": 384,
+  "cellH": 320,
+  "footAnchor": [
+    192,
+    270
+  ],
+  "charH": 160,
+  "drawH": 48,
+  "actions": {
+    "walk": {
+      "src": "images/sprites/morph/wild-blood-wolf-v1/walk.png",
+      "cellW": 384,
+      "cellH": 320,
+      "frames": {
+        "down": 4,
+        "right": 4,
+        "up": 4
+      },
+      "ms": 130,
+      "cells": [
+        {
+          "direction": "down",
+          "frame": 0,
+          "file": "frames/walk-down-01.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            0,
+            0,
+            384,
+            352
+          ],
+          "sourceFoot": [
+            196.0,
+            337
+          ],
+          "sourceBodyHeight": 320.0
+        },
+        {
+          "direction": "down",
+          "frame": 1,
+          "file": "frames/walk-down-02.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            384,
+            0,
+            768,
+            352
+          ],
+          "sourceFoot": [
+            599.5,
+            340
+          ],
+          "sourceBodyHeight": 320.0
+        },
+        {
+          "direction": "down",
+          "frame": 2,
+          "file": "frames/walk-down-03.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            768,
+            0,
+            1152,
+            352
+          ],
+          "sourceFoot": [
+            1027.0,
+            339
+          ],
+          "sourceBodyHeight": 320.0
+        },
+        {
+          "direction": "down",
+          "frame": 3,
+          "file": "frames/walk-down-04.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            1152,
+            0,
+            1536,
+            352
+          ],
+          "sourceFoot": [
+            1381.0,
+            340
+          ],
+          "sourceBodyHeight": 320.0
+        },
+        {
+          "direction": "right",
+          "frame": 0,
+          "file": "frames/walk-right-01.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            0,
+            0,
+            384,
+            352
+          ],
+          "sourceFoot": [
+            191.5,
+            339
+          ],
+          "sourceBodyHeight": 319.0
+        },
+        {
+          "direction": "right",
+          "frame": 1,
+          "file": "frames/walk-right-02.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            384,
+            0,
+            768,
+            352
+          ],
+          "sourceFoot": [
+            581.5,
+            337
+          ],
+          "sourceBodyHeight": 319.0
+        },
+        {
+          "direction": "right",
+          "frame": 2,
+          "file": "frames/walk-right-03.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            768,
+            0,
+            1152,
+            352
+          ],
+          "sourceFoot": [
+            959.5,
+            336
+          ],
+          "sourceBodyHeight": 319.0
+        },
+        {
+          "direction": "right",
+          "frame": 3,
+          "file": "frames/walk-right-04.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            1152,
+            0,
+            1536,
+            352
+          ],
+          "sourceFoot": [
+            1343.5,
+            337
+          ],
+          "sourceBodyHeight": 319.0
+        },
+        {
+          "direction": "up",
+          "frame": 0,
+          "file": "frames/walk-up-01.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            0,
+            0,
+            384,
+            352
+          ],
+          "sourceFoot": [
+            209.0,
+            343
+          ],
+          "sourceBodyHeight": 315.5
+        },
+        {
+          "direction": "up",
+          "frame": 1,
+          "file": "frames/walk-up-02.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            384,
+            0,
+            768,
+            352
+          ],
+          "sourceFoot": [
+            611.0,
+            340
+          ],
+          "sourceBodyHeight": 315.5
+        },
+        {
+          "direction": "up",
+          "frame": 2,
+          "file": "frames/walk-up-03.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            768,
+            0,
+            1152,
+            352
+          ],
+          "sourceFoot": [
+            1000.5,
+            334
+          ],
+          "sourceBodyHeight": 315.5
+        },
+        {
+          "direction": "up",
+          "frame": 3,
+          "file": "frames/walk-up-04.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            1152,
+            0,
+            1536,
+            352
+          ],
+          "sourceFoot": [
+            1402.5,
+            343
+          ],
+          "sourceBodyHeight": 315.5
+        }
+      ]
+    },
+    "attack": {
+      "src": "images/sprites/morph/wild-blood-wolf-v1/attack.png",
+      "cellW": 384,
+      "cellH": 320,
+      "frames": {
+        "down": 4,
+        "right": 4,
+        "up": 4
+      },
+      "ms": 140,
+      "cells": [
+        {
+          "direction": "down",
+          "frame": 0,
+          "file": "frames/attack-down-01.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            0,
+            352,
+            384,
+            684
+          ],
+          "sourceFoot": [
+            191.5,
+            659
+          ],
+          "sourceBodyHeight": 320.0
+        },
+        {
+          "direction": "down",
+          "frame": 1,
+          "file": "frames/attack-down-02.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            384,
+            352,
+            768,
+            684
+          ],
+          "sourceFoot": [
+            576.0,
+            657
+          ],
+          "sourceBodyHeight": 320.0
+        },
+        {
+          "direction": "down",
+          "frame": 2,
+          "file": "frames/attack-down-03.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            768,
+            352,
+            1152,
+            684
+          ],
+          "sourceFoot": [
+            996.0,
+            663
+          ],
+          "sourceBodyHeight": 320.0
+        },
+        {
+          "direction": "down",
+          "frame": 3,
+          "file": "frames/attack-down-04.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            1152,
+            352,
+            1536,
+            684
+          ],
+          "sourceFoot": [
+            1343.5,
+            660
+          ],
+          "sourceBodyHeight": 320.0
+        },
+        {
+          "direction": "right",
+          "frame": 0,
+          "file": "frames/attack-right-01.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            0,
+            352,
+            384,
+            684
+          ],
+          "sourceFoot": [
+            250.0,
+            667
+          ],
+          "sourceBodyHeight": 319.0
+        },
+        {
+          "direction": "right",
+          "frame": 1,
+          "file": "frames/attack-right-02.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            384,
+            352,
+            768,
+            684
+          ],
+          "sourceFoot": [
+            642.5,
+            668
+          ],
+          "sourceBodyHeight": 319.0
+        },
+        {
+          "direction": "right",
+          "frame": 2,
+          "file": "frames/attack-right-03.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            768,
+            352,
+            1152,
+            684
+          ],
+          "sourceFoot": [
+            997.5,
+            668
+          ],
+          "sourceBodyHeight": 319.0
+        },
+        {
+          "direction": "right",
+          "frame": 3,
+          "file": "frames/attack-right-04.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            1152,
+            352,
+            1536,
+            684
+          ],
+          "sourceFoot": [
+            1343.5,
+            670
+          ],
+          "sourceBodyHeight": 319.0
+        },
+        {
+          "direction": "up",
+          "frame": 0,
+          "file": "frames/attack-up-01.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            0,
+            352,
+            384,
+            684
+          ],
+          "sourceFoot": [
+            197.5,
+            660
+          ],
+          "sourceBodyHeight": 315.5
+        },
+        {
+          "direction": "up",
+          "frame": 1,
+          "file": "frames/attack-up-02.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            384,
+            352,
+            768,
+            684
+          ],
+          "sourceFoot": [
+            580.5,
+            648
+          ],
+          "sourceBodyHeight": 315.5
+        },
+        {
+          "direction": "up",
+          "frame": 2,
+          "file": "frames/attack-up-03.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            768,
+            352,
+            1152,
+            684
+          ],
+          "sourceFoot": [
+            974.0,
+            660
+          ],
+          "sourceBodyHeight": 315.5
+        },
+        {
+          "direction": "up",
+          "frame": 3,
+          "file": "frames/attack-up-04.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            1152,
+            352,
+            1536,
+            684
+          ],
+          "sourceFoot": [
+            1304.5,
+            667
+          ],
+          "sourceBodyHeight": 315.5
+        }
+      ]
+    },
+    "cast": {
+      "src": "images/sprites/morph/wild-blood-wolf-v1/cast.png",
+      "cellW": 384,
+      "cellH": 320,
+      "frames": {
+        "down": 2,
+        "right": 2,
+        "up": 2
+      },
+      "ms": 220,
+      "cells": [
+        {
+          "direction": "down",
+          "frame": 0,
+          "file": "frames/cast-down-01.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            0,
+            684,
+            384,
+            1024
+          ],
+          "sourceFoot": [
+            191.5,
+            998
+          ],
+          "sourceBodyHeight": 320.0
+        },
+        {
+          "direction": "down",
+          "frame": 1,
+          "file": "frames/cast-down-02.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            384,
+            684,
+            768,
+            1024
+          ],
+          "sourceFoot": [
+            575.5,
+            997
+          ],
+          "sourceBodyHeight": 320.0
+        },
+        {
+          "direction": "right",
+          "frame": 0,
+          "file": "frames/cast-right-01.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            0,
+            684,
+            384,
+            1024
+          ],
+          "sourceFoot": [
+            191.5,
+            1001
+          ],
+          "sourceBodyHeight": 319.0
+        },
+        {
+          "direction": "right",
+          "frame": 1,
+          "file": "frames/cast-right-02.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            384,
+            684,
+            768,
+            1024
+          ],
+          "sourceFoot": [
+            575.5,
+            997
+          ],
+          "sourceBodyHeight": 319.0
+        },
+        {
+          "direction": "up",
+          "frame": 0,
+          "file": "frames/cast-up-01.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            0,
+            684,
+            384,
+            1024
+          ],
+          "sourceFoot": [
+            194.0,
+            991
+          ],
+          "sourceBodyHeight": 315.5
+        },
+        {
+          "direction": "up",
+          "frame": 1,
+          "file": "frames/cast-up-02.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            384,
+            684,
+            768,
+            1024
+          ],
+          "sourceFoot": [
+            579.0,
+            992
+          ],
+          "sourceBodyHeight": 315.5
+        }
+      ]
+    },
+    "hit": {
+      "src": "images/sprites/morph/wild-blood-wolf-v1/hit.png",
+      "cellW": 384,
+      "cellH": 320,
+      "frames": {
+        "down": 2,
+        "right": 2,
+        "up": 2
+      },
+      "ms": 150,
+      "cells": [
+        {
+          "direction": "down",
+          "frame": 0,
+          "file": "frames/hit-down-01.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            768,
+            684,
+            1152,
+            1024
+          ],
+          "sourceFoot": [
+            962.5,
+            1005
+          ],
+          "sourceBodyHeight": 320.0
+        },
+        {
+          "direction": "down",
+          "frame": 1,
+          "file": "frames/hit-down-02.png",
+          "source": "down-generated.png",
+          "sourceRect": [
+            1152,
+            684,
+            1536,
+            1024
+          ],
+          "sourceFoot": [
+            1346.5,
+            1000
+          ],
+          "sourceBodyHeight": 320.0
+        },
+        {
+          "direction": "right",
+          "frame": 0,
+          "file": "frames/hit-right-01.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            768,
+            684,
+            1152,
+            1024
+          ],
+          "sourceFoot": [
+            936.0,
+            1002
+          ],
+          "sourceBodyHeight": 319.0
+        },
+        {
+          "direction": "right",
+          "frame": 1,
+          "file": "frames/hit-right-02.png",
+          "source": "right-generated.png",
+          "sourceRect": [
+            1152,
+            684,
+            1536,
+            1024
+          ],
+          "sourceFoot": [
+            1343.5,
+            996
+          ],
+          "sourceBodyHeight": 319.0
+        },
+        {
+          "direction": "up",
+          "frame": 0,
+          "file": "frames/hit-up-01.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            768,
+            684,
+            1152,
+            1024
+          ],
+          "sourceFoot": [
+            962.5,
+            992
+          ],
+          "sourceBodyHeight": 315.5
+        },
+        {
+          "direction": "up",
+          "frame": 1,
+          "file": "frames/hit-up-02.png",
+          "source": "up-generated.png",
+          "sourceRect": [
+            1152,
+            684,
+            1536,
+            1024
+          ],
+          "sourceFoot": [
+            1347.0,
+            989
+          ],
+          "sourceBodyHeight": 315.5
+        }
+      ]
+    }
+  }
+}
