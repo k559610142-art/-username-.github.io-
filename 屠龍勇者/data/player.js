@@ -17,6 +17,7 @@ function addLootLog(msg, cls = 'loot') {
 }
 
 const DEFAULT_SETTINGS = {
+    towerAutoUp: false,              // 塔內達標後自動上樓，預設停留本層
     potionOn: true, potionPct: 50,   // HP 低於 % 自動喝水
     healPct: 60,                      // HP 低於 % 自動施放治癒魔法
     teleOn: false, telePct: 15,       // HP 低於 % 自動瞬移脫戰

@@ -72,6 +72,25 @@ function cancelWalk() { walkHome = null; addLog('取消步行', 'sys'); }
 // 永夜之塔逐層解鎖（2026-10-25，版本 20261025ao，第 159 節，使用者要求）：只能一層一層往上，
 // 一般樓層在該層累積擊殺 TOWER_FLOOR_KILLS 隻（player.towerKills[樓層]，離開／下線／死亡都不歸零）解鎖上一層；10、20…100 樓擊敗守關首領解鎖
 const TOWER_FLOOR_KILLS = 1000;
+function towerAutoUpHtml() {
+    const on = player.settings.towerAutoUp === true;
+    return `<span class="tower-auto-options"><button class="${on ? 'secondary' : ''}" onclick="setTowerAutoUp(false)">${on ? '' : '✔ '}停留本層</button><button class="${on ? '' : 'secondary'}" onclick="setTowerAutoUp(true)">${on ? '✔ ' : ''}滿額自動上樓</button></span>`;
+}
+function setTowerAutoUp(on) {
+    player.settings.towerAutoUp = on === true;
+    saveGame(); refreshUI();
+    const detail = $('atlas-detail');
+    if (detail) detail.querySelectorAll('.tower-auto-options').forEach(el => { el.outerHTML = towerAutoUpHtml(); });
+    showToast(on ? '永夜之塔達標後自動上樓；首領層需擊敗守關首領' : '永夜之塔達標後停留本層');
+}
+function towerAutoUpTick() {
+    if (SIM_MODE || !player || !player.settings.towerAutoUp || !player.hunting || player.hp <= 0 || walkHome || inMapRun()) return;
+    const z = currentZone(), f = player.loc.floor;
+    if (!z || z.type !== 'tower' || !f || f >= 100 || player.towerMax <= f) return;
+    if (f % 10 === 0 ? !player.towerCleared[f] : (player.towerKills[f] || 0) < TOWER_FLOOR_KILLS) return;
+    changeFloor(1);
+    saveGame();
+}
 function towerNeedText(f) {
     return f % 10 === 0 ? `擊敗 ${f}F 的守關首領` : `在 ${f}F 擊殺 ${fmt(TOWER_FLOOR_KILLS)} 隻（目前 ${fmt(player.towerKills[f] || 0)}）`;
 }

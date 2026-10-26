@@ -18,6 +18,7 @@ function gameTick() {
     if (regenAcc >= REGEN_MS) { regenAcc -= REGEN_MS; regenTick(); }
     walkTick();
     huntTick(dt);
+    towerAutoUpTick();
     mapQueueTick();
     uiAcc += dt;
     if (uiAcc >= 250) {

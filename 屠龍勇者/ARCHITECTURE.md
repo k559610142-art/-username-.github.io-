@@ -211,7 +211,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027b`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027c`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3624,3 +3624,10 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 四村8設施位置／前方可達與鑑定台專用圖路徑／高度驗證通過，check.ps1 ALL CHECKS PASSED；不開關使用者瀏覽器或碰正式存檔，待使用者重新整理b確認建築顯示與鑑定功能後提交。
 
 鑑定台b版最終驗證：生成圖已檢視為無人物的亭式建築，1254×1254 RGBA真透明；四村專用圖／可達性、check.ps1、git diff --check通過，正式50檔混淆519KB及建築圖發佈逐byte一致通過。待使用者實機驗收。
+
+## 189. 永夜之塔自動上樓／停留（2026-10-27，版本 `20261027c`，schema15）
+
+- 使用者明確同意保存選擇。DEFAULT_SETTINGS新增towerAutoUp:false，預設停留本層；SAVE_SCHEMA14→15，migrateSave沿預設合併並只保留明確true，不清除既有樓層／擊殺／首領進度。無SQL變更。
+- combat.js新增towerAutoUpHtml／setTowerAutoUp／towerAutoUpTick。塔內PC／手機操作列與世界地圖塔資訊提供停留本層／滿額自動上樓，頂層停留。HTML事件只傳true／false字面值；set保存、更新操作列與已開atlas選項，操作列重繪signature納入設定。
+- main.gameTick在huntTick完成後呼叫towerAutoUpTick，再執行mapQueueTick，避免同一輪reapMobs／範圍擊殺尚未結算就切樓。僅線上正式掛機／存活／未步行且非異界時作用；一般層累積1000隻且上一層已解鎖，首領層towerCleared且上一層已解鎖才changeFloor(1)。每tick至多上一層、不跳鎖定層，100F不移動；沿原leaveFight清除舊怪並繼續尋怪，保存新樓層。既有已達標樓層重新選自動後亦可上樓。
+- test-tower-floors.js擴充999／1000邊界、自動／停留、首領門檻、100F、停止／SIM、舊檔預設與保存；原逐層解鎖／不重置／進度與六格排程、財寶圖回歸通過。check.ps1 ALL CHECKS PASSED（51檔／50script同c）、正式50檔混淆520KB與setTowerAutoUp公開成功，git diff --check通過。不開關瀏覽器或碰正式角色，待實玩後提交。

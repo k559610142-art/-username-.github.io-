@@ -60,7 +60,7 @@ function atlasSelect(index) {
     const fee = atlasTravelFee(p), why = z ? zoneBlockReason(z) : '';
     const hint = `傳送費 💰${fmt(fee)}。${p.kind === 'town' ? '依目前城鎮或所在地的回城村莊計算城鎮級差。' : tower ? `可直接傳送到已開放的任何樓層（目前開放到 ${max}F）。` : '直接傳送抵達，進入限制維持原設定。'}${why ? ' ' + why : ''}`;
     const floorPick = tower ? `<p class="tower-pick">樓層 <input id="atlas-tower-floor" type="number" min="1" max="${max}" value="${max}"> / ${max}F</p>
-        <small class="muted">只能一層一層往上：一般樓層在該層擊殺 ${fmt(TOWER_FLOOR_KILLS)} 隻、10、20…樓擊敗守關首領，才開放上一層。${max < 100 ? `下一層：需${towerNeedText(max)}` : ''}</small><br>${towerBossStatusHtml()}` : '';
+        <small class="muted">只能一層一層往上：一般樓層在該層擊殺 ${fmt(TOWER_FLOOR_KILLS)} 隻、10、20…樓擊敗守關首領，才開放上一層。${max < 100 ? `下一層：需${towerNeedText(max)}` : ''}</small><br>${towerBossStatusHtml()}<div>${towerAutoUpHtml()}</div>` : '';
     $('atlas-detail').innerHTML = `<small>${here ? '目前所在地' : p.kind === 'town' ? '城鎮' : '探索地點'}</small><h3>${atlasPointName(p)}</h3><strong>${sub}</strong><p>${hint}</p>${floorPick}<button class="atlas-go" onclick="atlasTravel(${index})" ${here || why ? 'disabled' : ''}>${here ? '目前所在地' : '傳送前往'}</button>${walk ? `<button class="atlas-go secondary" onclick="atlasWalkTo(${index})">步行${p.entrance || p.id === 'tower' || p.id === 'ivory' ? '至入口' : '前往'}</button>` : ''}`;
 }
 function atlasTravelFee(p) {
