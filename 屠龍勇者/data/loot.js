@@ -240,10 +240,11 @@ async function lootPump() {
                 if (Date.now() - lootSyncFailAt < 60000) return;
                 throw Error('雲端存檔尚未同步');
             }
+            let receipt = null;
             if (job.kind === 'raid') await marketRpc('loot_raid', { p_slot:job.slot,p_char:job.char,p_room:job.room,p_round:job.round });
             else {
                 const tickets = lootJobs().filter(j => j.batch === job.batch).map(j => j.ticket);
-                try { if (lootBatchMissing) throw Error('loot_finish_batch missing'); await marketRpc('loot_finish_batch', { p_batch:job.batch,p_tickets:tickets }); }
+                try { if (lootBatchMissing) throw Error('loot_finish_batch missing'); receipt = await marketRpc('loot_finish_batch', { p_batch:job.batch,p_tickets:tickets }); }
                 catch (e) {
                     if (!/loot_finish_batch|PGRST202|Could not find the function/i.test(String((e && (e.message || e.code)) || e))) throw e;
                     lootBatchMissing = true;   // 舊版伺服器：逐張結算
@@ -254,8 +255,12 @@ async function lootPump() {
                 }
             }
             if (!cloudUser || cloudUser.id !== uid) return;
-            const pending = await marketRpc('loot_pending', { p_slot:job.slot,p_char:job.char });
-            for (const r of pending) if (!lootApply(r)) throw Error('掉寶收據需要同步，請到設定確認雲端進度');
+            // 批次結算本身就回傳收據（第 192 節）：序號接得上就直接入帳、全作廢的空批不用查，省一次 loot_pending；
+            // 序號跳號（前面還有團隊副本／世界首領收據沒領）、團隊副本、舊伺服器逐張結算才照舊查全部待領
+            if (!(receipt && (receipt.empty === true || (receipt.cursor != null && lootApply(receipt))))) {
+                const pending = await marketRpc('loot_pending', { p_slot:job.slot,p_char:job.char });
+                for (const r of pending) if (!lootApply(r)) throw Error('掉寶收據需要同步，請到設定確認雲端進度');
+            }
             // 合併讀取，避免await期間新擊殺進佇列後被舊快照覆蓋。
             lootStore(lootJobs().filter(j => job.kind === 'kill' ? j.batch !== job.batch : j.key !== job.key));
             lootSyncFailAt = 0;   // 整筆成功才重設（網路一直不通時 60 秒後仍會提示）

@@ -3,12 +3,14 @@
 // 頻道：world 世界、room:<隊伍id> 隊伍（只有團隊副本隊員）。資料在 Supabase dragon_chat；每則 1～100 字、每人 3 秒一則、保留 3 天（規則在 tools/supabase.sql）。
 // 聊天分頁（或左下角聊天框）開著時才抓新訊息（只抓比手上最新一則更新的），沒開時不連網。
 // 抓的間隔依活躍程度（省 Supabase 傳輸量，2026-10-19）：最近 1 分鐘有新訊息／自己打字／剛打開 → 4 秒；安靜 1～5 分鐘 → 10 秒；更久 → 30 秒。
+// 安靜滿 10 分鐘就暫停抓（第 192 節，降 Log Ingestion）：列表底下顯示 💤，點／觸碰聊天區或打字就恢復。
 
 const CHAT_MAX_LEN = 100;
 const CHAT_COOLDOWN_MS = 3000;
 const CHAT_POLL_MS = 4000;
 const CHAT_POLL_IDLE_MS = 10000;
 const CHAT_POLL_AWAY_MS = 30000;
+const CHAT_SLEEP_MS = 10 * 60 * 1000;
 const CHAT_SHOW = 60;          // 每個頻道畫面上留幾則
 
 let chatChannel = 'world';
@@ -20,7 +22,9 @@ let chatErr = '';
 let chatMute = null;           // 自己被禁言：{ until, reason }
 let chatMuteChecked = false;
 let chatActiveAt = 0, chatPollAt = 0;   // 最近一次「有動靜」的時間、上次抓的時間
-function chatTouch() { chatActiveAt = Date.now(); }
+let chatWasShown = false, chatSleepShown = false;   // 上一輪聊天是否開著、💤 是否已畫出
+function chatTouch() { const wake = chatAsleep(); chatActiveAt = Date.now(); if (wake) { chatSleepShown = false; chatRenderList(); } }
+function chatAsleep() { return chatWasShown && Date.now() - chatActiveAt >= CHAT_SLEEP_MS; }   // 聊天剛打開時（下一輪計時器才記成開著）不算閒置
 function chatPollGap() {
     const idle = Date.now() - chatActiveAt;
     return idle < 60 * 1000 ? CHAT_POLL_MS : idle < 5 * 60 * 1000 ? CHAT_POLL_IDLE_MS : CHAT_POLL_AWAY_MS;
@@ -331,12 +335,13 @@ function chatListHtml() {
     if (chatErr) return `<div class="muted">⚠️ ${esc(chatErr)}</div>`;
     const list = chatMsgs[chatChannel];
     if (!list) return '<div class="muted">讀取中…</div>';
-    if (!list.length) return `<div class="muted">還沒有人說話，打個招呼吧！</div>`;
+    const sleep = chatAsleep() ? `<div class="muted chat-sleep">💤 10 分鐘沒有動靜，已暫停更新。點一下聊天區就會繼續接收新訊息。</div>` : '';
+    if (!list.length) return `<div class="muted">還沒有人說話，打個招呼吧！</div>` + sleep;
     return list.map(m => {
         const c = CLASSES[m.cls] || {}, mine = cloudUser && m.user_id === cloudUser.id;
         return `<div class="chat-line ${mine ? 'mine' : ''}"><span class="chat-time">${chatTime(m.at)}</span>
             <b class="chat-name">${c.icon || ''}${esc(m.name)}<small> Lv.${m.lv || '?'}</small></b><span class="chat-text">${esc(m.text)}</span></div>`;
-    }).join('');
+    }).join('') + sleep;
 }
 
 // 只更新訊息列表（不重畫整個分頁，打到一半的字不會不見）
@@ -377,8 +382,21 @@ function renderChat() {
 }
 
 function chatShown() { return typeof currentTab !== 'undefined' && (tabOpen('chat') || chatPopOpen()) && player && !document.hidden && !SIM_MODE; }
-setInterval(() => { if (chatShown() && cloudCanCall() && Date.now() - chatPollAt >= chatPollGap()) chatFetch(); }, 2000);   // 伺服器忙碌退避中不抓（cloud.js）
-document.addEventListener('visibilitychange', () => { if (chatShown()) chatFetch(); });   // 從背景切回來馬上抓一次
+setInterval(() => {
+    const shown = chatShown();
+    if (shown && !chatWasShown) chatTouch();   // 剛打開聊天分頁／聊天框（不管從哪個按鈕開）算有動靜
+    chatWasShown = shown;
+    if (!shown) return;
+    if (chatAsleep()) { if (!chatSleepShown) { chatSleepShown = true; chatRenderList(); } return; }   // 閒置太久：顯示 💤、不再抓
+    chatSleepShown = false;
+    if (cloudCanCall() && Date.now() - chatPollAt >= chatPollGap()) chatFetch();   // 伺服器忙碌退避中不抓（cloud.js）
+}, 2000);
+document.addEventListener('visibilitychange', () => { if (chatShown() && !chatAsleep()) chatFetch(); });   // 從背景切回來馬上抓一次（已暫停就不抓）
+// 點／觸碰聊天區任一處（訊息列表、頻道按鈕、輸入框）恢復更新
+document.addEventListener('pointerdown', e => {
+    if (!chatAsleep() || !e.target || !e.target.closest || !e.target.closest('#pop-chat, .chat-panel')) return;
+    chatTouch(); chatFetch();
+}, true);
 
 TABS.chat = ['💬', '聊天'];
 PANEL_FNS.chat = renderChat;

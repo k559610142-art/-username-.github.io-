@@ -211,7 +211,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027e`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027f`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3643,3 +3643,11 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - **B**：`LOOT_BATCH_N` 10 → 30、`LOOT_BATCH_MS` 30 秒 → 60 秒（`LOOT_BATCH_MAX` 50 不變）。停止掛機、離開畫面、倉庫／交易所前 `lootSettleNow` 照舊立即結算。伺服器 `loot_spawn` 的未結算上限 64（10 分鐘內，`tools/loot-batch.sql`／`loot-screen.sql`）：排隊最多 29＋畫面五招一次 30 隻仍低於 64；碰到 `loot encounters full` 原本就會 `lootSettleNow`。每人每小時約 -70 個請求（結算與結算後查收據各一半）。
 - 合計每人每小時約 950 → 770。未做（要改 SQL，另議）：C 一次領多隻怪憑證（約 -400）、D 結算直接回傳收據（約 -50）；E 聊天框閒置停抓。
 - 無 SQL、存檔結構、載入順序變更。
+
+## 192. 結算收據直接入帳、聊天閒置 10 分鐘暫停（2026-10-27，版本 `20261027f`；`loot.js` 的 `lootPump`、`chat.js` 的 `CHAT_SLEEP_MS`／`chatAsleep`／`chatWasShown`）
+
+- 接第 191 節，使用者選 D＋E。**兩項都不用改 SQL**：`loot_finish_batch`（`tools/loot-batch.sql`）本來就回傳整張收據 `{id,cursor,items,diamonds,char,slot}`（重送回同一張，全作廢回 `{empty:true}`），只是遊戲端沒用、每批結算後又查一次 `loot_pending`。
+- **D**（`lootPump`）：結算回傳有 `cursor` 時直接 `lootApply(receipt)`；`lootApply` 回 true（剛好下一號，或已入帳過）就不查 `loot_pending`。回 false（序號跳號：前面還有團隊副本／世界首領的收據沒領、或存檔欄位／角色對不上）、團隊副本 `loot_raid`、舊伺服器逐張 `loot_finish`、回傳缺 `cursor` 時，照舊查全部待領並逐張套用。`{empty:true}` 不查。定時補領（5 分鐘）不變。每人每小時約 -50 個請求。
+- **E**（`chat.js`）：聊天分頁或左下角聊天框開著、`chatActiveAt` 超過 `CHAT_SLEEP_MS`＝10 分鐘沒有動靜 → `chatAsleep()`，計時器不再抓，列表底下顯示「💤 已暫停更新」（`.chat-sleep`）。恢復：在 `#pop-chat`／`.chat-panel` 內任何 pointerdown（捕獲階段）、打字（`chatKey`）、切頻道、重新打開聊天。`chatWasShown` 記上一輪是否開著，從關到開（不管從哪個按鈕開、從背景切回來）自動算一次動靜；沒開著時 `chatAsleep()` 一律 false，不會剛打開就出現 💤。已暫停時切回前景不抓。收到別人新訊息仍會延長（只在醒著時才抓得到）。開著聊天框掛機的玩家，10 分鐘後聊天請求歸零（原本每小時 120）。
+- 測試：`test-server-loot-client.js` 加收據直接入帳／跳號才查／空批不查。check.ps1、混淆建置、loot-batch／vault-v2-client 等回歸通過；瀏覽器確認 v20261027f、💤 顯示與恢復判定、Console 無錯誤（沒登入，未實際收發聊天）。無 SQL、存檔結構、載入順序變更。
+- 剩下未做：C 一次領多隻怪憑證（約 -400，要新 SQL）。

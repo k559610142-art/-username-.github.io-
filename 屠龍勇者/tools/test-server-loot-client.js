@@ -87,11 +87,25 @@ async function main(){await vm.runInContext(String.raw`(async()=>{
   lootBatchMissing=false;lootPendingAt=gameNow+300000;lootStore([{key:'x1',kind:'kill',ticket:'x1',slot:0,char,at:Date.now()},{key:'x2',kind:'kill',ticket:'x2',slot:0,char,at:Date.now()}]);lootFlushWanted=true;await lootPump();
   assert.equal(lootBatchMissing,true,'伺服器沒有批次函式');assert.deepEqual([...fins],['x1','x2'],'改回逐張結算');assert.equal(lootJobs().length,0,'作廢的略過、佇列清空');
   lootStore([{key:'x3',kind:'kill',ticket:'x3',slot:0,char,at:Date.now()}]);await lootPump();assert.equal(lootJobs().length,0,'之後不等湊滿');lootBatchMissing=false;}
+ // 第192節：批次結算回傳的收據序號接得上就直接入帳，不再查 loot_pending；跳號才查；全作廢的空批也不查
+ {const cur=Number(saveParse(localStorage.getItem(slotKey(currentSlot))).lootCursor)||0;let pend=0,ret=null;
+  marketRpc=async(fn,args)=>{if(fn==='loot_finish_batch')return Object.assign({id:args.p_batch},ret);if(fn==='loot_pending'){pend++;return [];}return true;};
+  lootPendingAt=gameNow+300000;const c0=countItem('redPotion');
+  ret={cursor:cur+1,items:[{id:'redPotion',n:2}],diamonds:null,char,slot:currentSlot};
+  lootStore([{key:'d1',kind:'kill',ticket:'d1',slot:currentSlot,char,at:Date.now()}]);lootFlushWanted=true;await lootPump();
+  assert.equal(pend,0,'收據接得上不查 loot_pending');assert.equal(countItem('redPotion'),c0+2,'直接入帳');assert.equal(lootJobs().length,0);
+  assert.equal(Number(saveParse(localStorage.getItem(slotKey(currentSlot))).lootCursor),cur+1);
+  ret={cursor:cur+3,items:[],char,slot:currentSlot};
+  lootStore([{key:'d2',kind:'kill',ticket:'d2',slot:currentSlot,char,at:Date.now()}]);lootFlushWanted=true;await lootPump();
+  assert.equal(pend,1,'序號跳號才查 loot_pending');
+  ret={empty:true};
+  lootStore([{key:'d3',kind:'kill',ticket:'d3',slot:currentSlot,char,at:Date.now()}]);lootFlushWanted=true;await lootPump();
+  assert.equal(pend,1,'空批不查');assert.equal(lootJobs().length,0);}
  {let calls=0;marketRpc=async()=>{calls++;return [];};cloudBackoffUntil=Date.now()+20000;hunt.state='search';hunt.timer=0;await lootSpawn();
   assert.equal(calls,0,'退避中不呼叫伺服器');assert.equal(player.hunting,true);assert(hunt.timer>=15000,'等退避結束再找怪');lootStore([{key:'b2',kind:'kill',ticket:'b2',slot:0,char}]);await lootPump();assert.equal(calls,0,'退避中不結算');cloudBackoffUntil=0;lootStore([]);}
  let spawnCalls=0;cloudFlush=async()=>{cloudUser={id:'other'};return true;};marketRpc=async()=>{spawnCalls++;};
  await lootSpawn();assert.equal(spawnCalls,0,'await期間換帳號不得繼續發怪');
  cloudUser=null;assert.equal(lootCanPlay(),false,'未登入不能進入線上掉寶');
- console.log('PASS：原子收據、重領／順序／角色、儲存失敗回復、後端詞綴、過濾、非當前角色入帳、佇列競態、斷線重試及SIM隔離、網路暫斷只暫停掛機、生怪欄位沒變不重傳存檔、伺服器忙碌時退避、停用時改一般掉寶不卡住、批次結算與少釋放、舊伺服器自動逐張結算。');
+ console.log('PASS：原子收據、重領／順序／角色、儲存失敗回復、後端詞綴、過濾、非當前角色入帳、佇列競態、斷線重試及SIM隔離、網路暫斷只暫停掛機、生怪欄位沒變不重傳存檔、伺服器忙碌時退避、停用時改一般掉寶不卡住、批次結算與少釋放、舊伺服器自動逐張結算、結算收據直接入帳。');
 })()`,ctx);}
 main().catch(e=>{console.error(e);process.exitCode=1;});
