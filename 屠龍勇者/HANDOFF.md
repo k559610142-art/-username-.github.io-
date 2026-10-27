@@ -5,6 +5,8 @@
 
 ## 1. 現況
 
+- **20261027u：赤影暗殺者紅變專屬動畫（第207節）**。使用者9.jpg原稿保存，內建image_gen三向36格黑紅忍裝／長紅巾／雙短刃；m09接獨立圖集，Lv35與原加成／武器規則／32款數量／卷軸費用維持，schema19與SQL不變。生成原稿／提示詞、prepare.js／registration／contact／game-render在tools/sprite-src/morph/crimson-shadow-assassin-v1。卷軸／等級／32款門檻、36格／16組正式繪圖、check.ps1 ALL CHECKS PASSED、diff與51檔548KB混淆成功，4圖集發佈逐byte一致。瀏覽器側面攻擊與背面施法正常，Console無error／warn，實拍browser-preview.png。外部提交8ca4ad1已包含遊戲接線，本助手未提交，剩驗證文件／預覽待提交；待使用者重新整理u→變形卷軸雙刀系赤影暗殺者→四方向行走／攻擊／施法／受傷驗收。
+
 - **20261027t：六位傭兵模型（第206節）**。使用者授權開始模型；原創男女／孩童／青年／中年六位，三方向四動作，左鏡射；人物欄／管理全身像及地圖真實模型接線。內建image_gen原稿／方向與留白修正提示詞保存tools/sprite-src/mercenary/companions-v1，6位216格／24圖集與6人物像完成，alpha分離避免等分線裁腳／武器。216格RGBA／唯一性／圖集逐byte、96組真實Canvas、原傭兵／任務／符石回歸、check.ps1 ALL CHECKS PASSED、diff與51檔547KB正式建置通過，30張發佈PNG逐byte一致。瀏覽器6／6載入，地圖／管理／手機人物欄正常，375px無橫溢出、Console無error／warn。schema19與玩法不變；動畫預覽tools/mercenary-models-preview.html、模型總覽contact.png及實拍保存來源資料夾。待重新整理t→已有傭兵出戰跟隨→狩獵檢查走路／攻擊／符石施法／受傷→人物與管理造型→手機；使用者確認後才提交，未操作正式角色／後端。
 
 - **20261027s：傭兵團試煉取得（第205節，使用者同意schema19）**。團長接取後擊殺任意怪物5000，回報等機率獲六職業之一Lv.1空技能空裝備傭兵，取得後任務隱藏；死亡／放棄可重接。死亡原傭兵可復活（取消任務），領新者才替換死亡者；放棄活傭兵原裝備與符石退背包、不重複返還。進度存mercQuest並轉舊檔，SIM／離線不計，符石取得不加入。隔離任務／存讀／六類抽取、原傭兵／符石圖示回歸、check.ps1 ALL CHECKS PASSED、diff與正式51檔混淆通過；瀏覽器接任務→5000→隨機領取→隱藏→放棄→重現全流程正常、Console無error／warn。待重新整理s→團長接任務→殺5000→回報→檢查新傭兵及任務隱藏→死亡或放棄可重接；使用者確認後提交，未操作正式角色或後端。

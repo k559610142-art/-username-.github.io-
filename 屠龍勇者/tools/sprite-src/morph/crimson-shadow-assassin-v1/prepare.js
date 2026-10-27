@@ -68,7 +68,7 @@ async function main(){
  const cv=createCanvas(960,760),g=cv.getContext('2d');g.fillStyle='#171914';g.fillRect(0,0,960,760);g.fillStyle='#edc8ad';g.font='bold 25px Microsoft JhengHei';g.fillText('赤影暗殺者 · 紅變專屬動畫',24,36);
  const labels={walk:'走路',attack:'雙刃攻擊',cast:'聚氣施法',hit:'受傷'},dn={down:'正面',right:'側面',up:'背面'};
  for(let d=0;d<3;d++)for(const[a,[action,cfg]]of Object.entries(actions).entries()){
-  const f=action==='attack'?2:action==='cast'?1:0,x=a*240,y=55+d*230;g.fillStyle='#292b24';g.fillRect(x+5,y,230,222);g.drawImage(await loadImage(path.join(out,'frames',action+'-'+dirs[d]+'-'+String(f+1).padStart(2,'0')+'.png')),x+14,y+6,211,176);g.font='16px Microsoft JhengHei';g.fillStyle='#e6ccb5';g.textAlign='center';g.fillText(dn[dirs[d]]+'・'+labels[action],x+120,y+204);
+  const f=action==='attack'?2:action==='cast'?1:0,x=a*240,y=55+d*230;g.fillStyle='#292b24';g.fillRect(x+5,y,230,222);const preview=await sharp(path.join(out,'frames',action+'-'+dirs[d]+'-'+String(f+1).padStart(2,'0')+'.png')).trim({background:'#00000000',threshold:10}).resize(220,180,{fit:'contain',background:'#00000000'}).png().toBuffer();g.drawImage(await loadImage(preview),x+10,y+5,220,180);g.font='16px Microsoft JhengHei';g.fillStyle='#e6ccb5';g.textAlign='center';g.fillText(dn[dirs[d]]+'・'+labels[action],x+120,y+204);
  }
  fs.writeFileSync(path.join(source,'contact.png'),cv.toBuffer('image/png'));console.log('PASS：赤影暗殺者36格透明獨立動作／腳底註冊／4圖集／來源與總覽');
 }

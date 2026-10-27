@@ -73,6 +73,7 @@
 | `tools/test-mercenary-quest.js` | 傭兵5000擊殺任務、隨機取得／放棄返還／schema19與隔離預覽驗證（第205節） |
 | `images/sprites/mercenary/companions-v1/`、`tools/sprite-src/mercenary/companions-v1/` | 六位傭兵三向四動作圖集／人物像、image_gen原稿／提示詞／來源／腳底註冊與總覽（第206節） |
 | `tools/prepare-mercenary-models.js`、`tools/test-mercenary-models.js`、`tools/mercenary-models-preview.html` | 傭兵模型切格打包／216格素材與96組正式繪圖驗證、動作／方向／實際大小預覽（第206節） |
+| `images/sprites/morph/crimson-shadow-assassin-v1/`、`tools/sprite-src/morph/crimson-shadow-assassin-v1/`、`tools/crimson-assassin-morph-preview.html`、`tools/test-crimson-assassin-morph.js` | 09赤影暗殺者紅變36格透明動作／原稿提示詞／打包／卷軸及正式繪圖驗證（第207節） |
 | `tools/check.ps1` | 改完的自動檢查：JS 語法（`node --check`）、`index.html` 所有 `?v=` 等於 `GAME_VERSION`、每個 `data/*.js` 都有載入、沒有衝突標記；通過印 `ALL CHECKS PASSED` |
 | `images/icons/items/mercRune-v1/`、`tools/icon-src/mercenary-runes-v1/` | 50款獨立傭兵符石透明PNG、image_gen原稿／完整提示詞／來源與總覽（第203節） |
 | `tools/prepare-mercenary-runes.js`、`tools/test-mercenary-rune-art.js`、`tools/mercenary-runes-preview.html` | 符石等比縮圖／透明與唯一性檢查、正式UI接線驗證及128／48／32px獨立素材預覽（第203節） |
@@ -221,7 +222,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027t`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027u`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3794,3 +3795,11 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - data/mercenary.js新增MERC_MODELS與mercPlayAnim，模型圖集使用既有spriteImage／preloadSprite／animDir。動畫僅放mercRuntime WeakMap，gameNow計時；普攻及物理符石attack、其他成功技能cast，實際扣血hit（不打斷正在攻擊／施法）。不改傷害、攻速、技能耗魔、任務或掉落。
 - sceneMercTick記方向／預載，sceneDrawMerc依模型圖集繪圖，停留用中間走路格、移動輪播、向左鏡射、保持場景y排序與遮擋半透明、血條與七階名牌。圖片載入前沿用菱形後備。人物欄與管理加獨立全身像，死亡灰階；空欄不顯示假模型。sw預載24圖集及6人物像，schema19／載入順序／裝備任意武器規則不變。
 - tools/mercenary-models-preview.html為純素材動畫預覽，支援四動作／四方向／暫停與地圖比例；tools/test-mercenary-models.js檢216RGBA、唯一性與圖集一致，實際呼叫sceneDrawMerc驗四向四動作96組，輸出game-render各角色圖。全部216格透明／不重複、圖集與單格逐byte一致、96組正式Canvas繪圖、施法優先／SIM隔離與原傭兵／5000任務／符石圖示回歸通過。check.ps1 ALL CHECKS PASSED（含CSS圖片語法）、git diff --check通過；正式51檔547KB混淆成功，24圖集＋6人物像發佈逐byte一致（9462KB）。瀏覽器6／6模型、側面攻擊／地圖出戰／管理全身像／手機人物欄圖片載入正常，375px無橫溢出、Console無error／warn，map-preview／manager-preview／character-mobile實拍保存。待使用者實玩驗收後提交。
+
+
+## 207. 赤影暗殺者紅變專屬動畫（2026-10-27，版本 `20261027u`）
+
+- 使用者提供Desktop/變身人物/9.jpg，原樣保存tools/sprite-src/morph/crimson-shadow-assassin-v1/reference-09.jpg。內建image_gen依黑紅兜帽蒙面忍裝、長紅巾、雙紅鋼短刃製作正／右／背各12格透明動作，保留完整prompts.json、sources.json及生成原稿；不使用圖上的標題／白底／地面塵土。
+- prepare.js沿既有alpha輪廓分離／保留原色與邊緣alpha／等比縮放及腳底註冊流程，輸出36個RGBA獨立分鏡、walk4／attack4／cast2／hit2三列圖集、manifest／registration、人物像與contact總覽。cell384×320，foot[192,270]、charH160／drawH48，ms130／140／220／150；左向沿既有鏡射。
+- MORPHS.crimsonShadowAssassin接既有MORPH_FORMS.m09，不新增變身數量。維持紅變Lv35、命中3／傷害3／攻速10%／閃避3%、雙刀系既有武器規則與GM豁免、卷軸30分鐘及商店10000金幣。schema19／SQL／載入順序不變，SW預載4圖集。
+- test-crimson-assassin-morph驗等級34不扣卷／35可用、專屬圖／加成／32款、命中／MISS／受傷不打斷攻擊／施法／到期與沿用上次選擇；另驗36圖RGBA／透明／唯一／圖集逐byte一致，原生Canvas呼叫正式sceneDraw四向四動作16組輸出game-render.png。preview提供真實卷軸、逐格／循環、四向四動作與實際大小，僅記憶體角色／禁止連外。驗證完成：36格RGBA透明／唯一／圖集逐byte、原生Canvas正式sceneDraw16組、卷軸／等級／32款GM與一般帳號門檻通過；check.ps1 ALL CHECKS PASSED（含CSS圖片網址）、git diff --check通過；正式51檔548KB混淆成功，4張發佈圖集逐byte一致。隔離瀏覽器側面攻擊第3格與背面施法第2格／440ms正常、Console無error／warn，browser-preview.png保存。未操作正式存檔／後端；待使用者重新整理u→變形卷軸→雙刀系赤影暗殺者→四方向與動作確認。外部提交8ca4ad1已包含遊戲接線，本助手未提交，後續驗證文件與預覽仍待提交。
