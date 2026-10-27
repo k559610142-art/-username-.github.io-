@@ -266,6 +266,7 @@ ITEM_IMG.spiderVenom = 'spiderVenom-v1';
 ITEM_IMG.soul_spiderVenom = 'soul_spiderVenom-v1';
 ITEM_IMG.polyScroll = 'polyScroll-v2';   // 使用者選 B 紫晶幻化；舊圖保留
 ITEM_IMG.magicCrystal = 'magicCrystal-v1';
+for (const id in MERC_RUNES) ITEM_IMG['mercRune_' + id] = 'mercRune-v1/' + id;
 function itemIconOf(id) {
     if (ITEM_ICON[id]) return ITEM_ICON[id];
     const d = ITEMS[id] || {};

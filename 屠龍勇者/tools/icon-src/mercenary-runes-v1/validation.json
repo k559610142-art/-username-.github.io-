@@ -1,0 +1,502 @@
+[
+  {
+    "id": "wolf",
+    "name": "靈狼契約",
+    "group": "summon",
+    "width": 128,
+    "height": 128,
+    "transparent": 6650,
+    "visible": 9301,
+    "sha256": "3a7abb7f28ca419bf7bee16b952db6d3187f491b15284fd71dc6c6ded378aabf"
+  },
+  {
+    "id": "golem",
+    "name": "石衛契約",
+    "group": "summon",
+    "width": 128,
+    "height": 128,
+    "transparent": 6043,
+    "visible": 9897,
+    "sha256": "aca08b631a6e5ae6c66623fa389700d967003015f3ad04bd43261183f46383e0"
+  },
+  {
+    "id": "butterfly",
+    "name": "靈蝶契約",
+    "group": "summon",
+    "width": 128,
+    "height": 128,
+    "transparent": 7495,
+    "visible": 8476,
+    "sha256": "fc2e57598c9bf92bfe26570d4df85f93c98987fc2d98fe1b14bb6a7ab2d6e920"
+  },
+  {
+    "id": "hawk",
+    "name": "風鷹契約",
+    "group": "summon",
+    "width": 128,
+    "height": 128,
+    "transparent": 7444,
+    "visible": 8506,
+    "sha256": "98c23383696563be5a55aa3d58cfe48252ab99ec5b39684df71b00e18c62854d"
+  },
+  {
+    "id": "flameSpirit",
+    "name": "火靈契約",
+    "group": "summon",
+    "width": 128,
+    "height": 128,
+    "transparent": 7615,
+    "visible": 8321,
+    "sha256": "b2bcc735e3b3512bd0bffe1b81793cab46f37605274f439df26aa13286970e0e"
+  },
+  {
+    "id": "iceSpirit",
+    "name": "冰靈契約",
+    "group": "summon",
+    "width": 128,
+    "height": 128,
+    "transparent": 7104,
+    "visible": 8844,
+    "sha256": "861b296434284ffbc6bf6bd8e6f8775f730fe874a1aad84e2b104a575975586a"
+  },
+  {
+    "id": "thunderSpirit",
+    "name": "雷靈契約",
+    "group": "summon",
+    "width": 128,
+    "height": 128,
+    "transparent": 6849,
+    "visible": 9110,
+    "sha256": "a7af6555236bc2b765f8108efd8d4a5143c72fb9fd7e15c15b63a1c09069fd42"
+  },
+  {
+    "id": "treeSpirit",
+    "name": "樹靈契約",
+    "group": "summon",
+    "width": 128,
+    "height": 128,
+    "transparent": 8112,
+    "visible": 7838,
+    "sha256": "296428d998965fce27313dde53be0c906a1f606966e521109cf75d0ac651d0c0"
+  },
+  {
+    "id": "swarm",
+    "name": "蟲群契約",
+    "group": "summon",
+    "width": 128,
+    "height": 128,
+    "transparent": 6689,
+    "visible": 9259,
+    "sha256": "f2cb98478cebe064aa1db398dfb64a33ce7c89b987406ad0dd449eb63d2bb86d"
+  },
+  {
+    "id": "cover",
+    "name": "護衛",
+    "group": "guard",
+    "width": 128,
+    "height": 128,
+    "transparent": 6725,
+    "visible": 9209,
+    "sha256": "3f340988806bdcd43465c8fe18ed1492553608ca4dbc0dc567bc6739631405ef"
+  },
+  {
+    "id": "shield",
+    "name": "堅壁護盾",
+    "group": "guard",
+    "width": 128,
+    "height": 128,
+    "transparent": 6692,
+    "visible": 9273,
+    "sha256": "6ea14f4f11c0bffeb1fa3521909addd840ea9c5e8d200c797cebe89319805431"
+  },
+  {
+    "id": "taunt",
+    "name": "挑釁",
+    "group": "guard",
+    "width": 128,
+    "height": 128,
+    "transparent": 6114,
+    "visible": 9820,
+    "sha256": "2ee886986aaa86bca683659803ac88d5aeb9959b35a06da095960c5302f3c284"
+  },
+  {
+    "id": "iron",
+    "name": "鋼鐵壁壘",
+    "group": "guard",
+    "width": 128,
+    "height": 128,
+    "transparent": 6075,
+    "visible": 9845,
+    "sha256": "25864e40ba2fa4af4053f1c2a85dbdf41852efea34c5659d19b823971e8967d3"
+  },
+  {
+    "id": "ward",
+    "name": "魔法結界",
+    "group": "guard",
+    "width": 128,
+    "height": 128,
+    "transparent": 7096,
+    "visible": 8855,
+    "sha256": "f41c95abd34348c33a6edf9166306cad4827fb063ff49face42aa1165112d6b5"
+  },
+  {
+    "id": "thorn",
+    "name": "荊棘守護",
+    "group": "guard",
+    "width": 128,
+    "height": 128,
+    "transparent": 6588,
+    "visible": 9369,
+    "sha256": "bb041d4fc0ee855883144819072d1651ab2ebede18b1931ce62772af06357b44"
+  },
+  {
+    "id": "sacrifice",
+    "name": "挺身保護",
+    "group": "guard",
+    "width": 128,
+    "height": 128,
+    "transparent": 7329,
+    "visible": 8618,
+    "sha256": "a41c00223a9eab84951d8a98bad6f47d3bbd033612b3b85cae3e38689ac1641e"
+  },
+  {
+    "id": "barrier",
+    "name": "團隊屏障",
+    "group": "guard",
+    "width": 128,
+    "height": 128,
+    "transparent": 6126,
+    "visible": 9817,
+    "sha256": "92abf4831149ba2e0a1daa24f9ad4a40cd7562f926f5c7a2e4ae82ddb16b49e1"
+  },
+  {
+    "id": "heal",
+    "name": "急救之光",
+    "group": "support",
+    "width": 128,
+    "height": 128,
+    "transparent": 6929,
+    "visible": 9019,
+    "sha256": "0248fe4921c137e15bd94b88bf2e0578bb1740fbea53b6f911eb633a45e8a0d6"
+  },
+  {
+    "id": "renew",
+    "name": "回春祝福",
+    "group": "support",
+    "width": 128,
+    "height": 128,
+    "transparent": 6271,
+    "visible": 9684,
+    "sha256": "2ccc92bcdbb53c22b9ac7f0111a5209214dbc4b7f24f43b1a1dc57f272359f71"
+  },
+  {
+    "id": "mend",
+    "name": "共鳴療癒",
+    "group": "support",
+    "width": 128,
+    "height": 128,
+    "transparent": 7957,
+    "visible": 8019,
+    "sha256": "f96cf1318429fdc4f20c39358ac6f5de7c3b88ad99b8845db56c6a301da312bb"
+  },
+  {
+    "id": "haste",
+    "name": "進軍鼓舞",
+    "group": "support",
+    "width": 128,
+    "height": 128,
+    "transparent": 6387,
+    "visible": 9530,
+    "sha256": "2cedb5b737b0f8eb0931b6ed3ec5f430d87b8a189e19b6cf1b9d4b73495450ee"
+  },
+  {
+    "id": "might",
+    "name": "力量祝福",
+    "group": "support",
+    "width": 128,
+    "height": 128,
+    "transparent": 6437,
+    "visible": 9516,
+    "sha256": "8ebeee5532f33bdec1d2ff958dc3cebf064a576234f7abf4a3d1709b5d457665"
+  },
+  {
+    "id": "focus",
+    "name": "專注祝福",
+    "group": "support",
+    "width": 128,
+    "height": 128,
+    "transparent": 7053,
+    "visible": 8907,
+    "sha256": "ebffc36bcee8dbfd7b7f2e1a9b735bd521fb3206d55e9b89522304be7b7a7f37"
+  },
+  {
+    "id": "mana",
+    "name": "魔力贈禮",
+    "group": "support",
+    "width": 128,
+    "height": 128,
+    "transparent": 7730,
+    "visible": 8240,
+    "sha256": "58a3440f9e2dca10a8b35f3f079a7bbdcb7aabd68446f8fbb793af521a927908"
+  },
+  {
+    "id": "purify",
+    "name": "淨化之光",
+    "group": "support",
+    "width": 128,
+    "height": 128,
+    "transparent": 6651,
+    "visible": 9283,
+    "sha256": "bde9e83e7d92bf9e20f372fc7f9f505d4f33879845a31ad338766048f4674268"
+  },
+  {
+    "id": "rally",
+    "name": "戰地整備",
+    "group": "support",
+    "width": 128,
+    "height": 128,
+    "transparent": 6385,
+    "visible": 9558,
+    "sha256": "7483d14bca23775c649d2f1e3d66ff456bc22c6f77e4b06875dc6cd0ddcbd2a7"
+  },
+  {
+    "id": "heavy",
+    "name": "重擊",
+    "group": "battle",
+    "width": 128,
+    "height": 128,
+    "transparent": 7250,
+    "visible": 8697,
+    "sha256": "38eeb15589dbf6910456b0e9b3b5ac2810edf962fed07524f5b789a0dc0bd0c1"
+  },
+  {
+    "id": "sweep",
+    "name": "橫掃",
+    "group": "battle",
+    "width": 128,
+    "height": 128,
+    "transparent": 7689,
+    "visible": 8253,
+    "sha256": "a69d22788826000b24af1cb801c7c5c4ac9d690840d81897b10f627ec26dc50c"
+  },
+  {
+    "id": "pierce",
+    "name": "破甲刺擊",
+    "group": "battle",
+    "width": 128,
+    "height": 128,
+    "transparent": 6882,
+    "visible": 9079,
+    "sha256": "3d0260191df7cabe3cde0cf446a7b683b1b27c06e73ccea84700ca4fd01e26b6"
+  },
+  {
+    "id": "flurry",
+    "name": "連環突擊",
+    "group": "battle",
+    "width": 128,
+    "height": 128,
+    "transparent": 6605,
+    "visible": 9335,
+    "sha256": "ddd234da0890df2fde75b4aa07aa465af65a85a775ea16ebc240b4dce348f046"
+  },
+  {
+    "id": "execute",
+    "name": "終結斬",
+    "group": "battle",
+    "width": 128,
+    "height": 128,
+    "transparent": 6114,
+    "visible": 9797,
+    "sha256": "aeb550e50a2c431adc13b79ec3833660e11a60c1daf48836a7ea5575d6afe89a"
+  },
+  {
+    "id": "bleed",
+    "name": "撕裂",
+    "group": "battle",
+    "width": 128,
+    "height": 128,
+    "transparent": 6518,
+    "visible": 9407,
+    "sha256": "2aa73fa8eecb83a93ff7d1a18d003bbd3fbb1958388cedab5b2dc7909558b4e8"
+  },
+  {
+    "id": "bash",
+    "name": "震盪擊",
+    "group": "battle",
+    "width": 128,
+    "height": 128,
+    "transparent": 6968,
+    "visible": 8999,
+    "sha256": "ee27c08a4b90b377f9f4c63e36a0c6e5acd9b05af4d31f9cf7acbe3272428c1b"
+  },
+  {
+    "id": "siphon",
+    "name": "汲血斬",
+    "group": "battle",
+    "width": 128,
+    "height": 128,
+    "transparent": 7178,
+    "visible": 8780,
+    "sha256": "f639cb23075ae91210700abb0056fbae744a24d9f3704792694b22af2fc21449"
+  },
+  {
+    "id": "selfHeal",
+    "name": "自我療癒",
+    "group": "survival",
+    "width": 128,
+    "height": 128,
+    "transparent": 7313,
+    "visible": 8658,
+    "sha256": "909920cc09436731d181814d692d144f142c4088525114ace9d9a0df4e23f05f"
+  },
+  {
+    "id": "evasion",
+    "name": "靈巧步伐",
+    "group": "survival",
+    "width": 128,
+    "height": 128,
+    "transparent": 6700,
+    "visible": 9248,
+    "sha256": "5a3a0df3d54b94ffa6820a0615ea290098a73582e0ac84710317dd5354b11964"
+  },
+  {
+    "id": "meditate",
+    "name": "冥想",
+    "group": "survival",
+    "width": 128,
+    "height": 128,
+    "transparent": 8465,
+    "visible": 7509,
+    "sha256": "c42691191a68a50453138eaaae3a3ae887ec15cd19c8bd689168149b7755e59c"
+  },
+  {
+    "id": "cleanse",
+    "name": "淨身",
+    "group": "survival",
+    "width": 128,
+    "height": 128,
+    "transparent": 6582,
+    "visible": 9368,
+    "sha256": "f5a7be66c85ee5bee4c383f16dabca1055256ec179fa909331b95ae94e589567"
+  },
+  {
+    "id": "fortify",
+    "name": "生命強韌",
+    "group": "survival",
+    "width": 128,
+    "height": 128,
+    "transparent": 5608,
+    "visible": 10323,
+    "sha256": "6f5984da2e8351d732767ff0aa8b184a05b68315e2fc1cee89be75e64ab5d810"
+  },
+  {
+    "id": "recover",
+    "name": "自然復甦",
+    "group": "survival",
+    "width": 128,
+    "height": 128,
+    "transparent": 7979,
+    "visible": 7965,
+    "sha256": "1fb0db30c91ea725b60673b9be59cccf3fe4278582a9bea3ff191af62430cc29"
+  },
+  {
+    "id": "lastStand",
+    "name": "背水一戰",
+    "group": "survival",
+    "width": 128,
+    "height": 128,
+    "transparent": 6033,
+    "visible": 9907,
+    "sha256": "f9d325d583e9cbc2ada7c5fef0a581e9a6685687d4c27c2c31643d4c33701944"
+  },
+  {
+    "id": "balance",
+    "name": "生命轉魔",
+    "group": "survival",
+    "width": 128,
+    "height": 128,
+    "transparent": 7187,
+    "visible": 8785,
+    "sha256": "83f2c3e0b66429bff3dede53d0d7afd6c94a88d21ffc4d807c4a64990763c623"
+  },
+  {
+    "id": "firebolt",
+    "name": "火焰彈",
+    "group": "arcane",
+    "width": 128,
+    "height": 128,
+    "transparent": 6471,
+    "visible": 9485,
+    "sha256": "389ad71675a02ca113a73827bd42cc38cb7efb127ef1761d44d699854b4a787e"
+  },
+  {
+    "id": "frost",
+    "name": "冰霜束縛",
+    "group": "arcane",
+    "width": 128,
+    "height": 128,
+    "transparent": 6861,
+    "visible": 9107,
+    "sha256": "3fd20f376dd7046ac9282f22dc4073ad2536a163d1e10d75dd87bcc55fab5308"
+  },
+  {
+    "id": "lightning",
+    "name": "雷電衝擊",
+    "group": "arcane",
+    "width": 128,
+    "height": 128,
+    "transparent": 6895,
+    "visible": 9068,
+    "sha256": "a135c23ddd22fabc3edecd57418ce0a58dae47cc0d57c2c0211510b2db930cb4"
+  },
+  {
+    "id": "nova",
+    "name": "烈焰新星",
+    "group": "arcane",
+    "width": 128,
+    "height": 128,
+    "transparent": 5132,
+    "visible": 10786,
+    "sha256": "6544b11e3759695d995d7174fd54fa10a9db33e61490d6666289dff4264d064a"
+  },
+  {
+    "id": "poison",
+    "name": "腐蝕毒霧",
+    "group": "arcane",
+    "width": 128,
+    "height": 128,
+    "transparent": 7161,
+    "visible": 8792,
+    "sha256": "076291094889cb5352abd722836adde25605648d50657bf9bf3283b35b3f93eb"
+  },
+  {
+    "id": "chain",
+    "name": "連鎖雷光",
+    "group": "arcane",
+    "width": 128,
+    "height": 128,
+    "transparent": 6182,
+    "visible": 9753,
+    "sha256": "52bf67b8df0a55dbcfb4020ff1c65f3bd69f0f0cd2b0413bc4bf27ca258b8641"
+  },
+  {
+    "id": "silence",
+    "name": "衰弱咒印",
+    "group": "arcane",
+    "width": 128,
+    "height": 128,
+    "transparent": 6372,
+    "visible": 9575,
+    "sha256": "561dde31af536b05a0c9509da41f95d2f1830bd1567f74546d960bbb10145669"
+  },
+  {
+    "id": "star",
+    "name": "星辰墜落",
+    "group": "arcane",
+    "width": 128,
+    "height": 128,
+    "transparent": 7710,
+    "visible": 8280,
+    "sha256": "42cd0d42e12e7793be151ef77218c2ff1f712028c2342b6c6962054ff40d1ecd"
+  }
+]

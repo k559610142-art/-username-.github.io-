@@ -71,6 +71,8 @@
 | `tools/test-mobile-drawers.js` | 手機上下狀態／快捷抽屜、獨立收合／裝置偏好／PC與村莊隔離驗證（第169節） |
 | `tools/test-pwa-update.js` | 更新偵測隔離DOM／網路測試：開發與正式合併版、節流、離線／錯誤／版本排序與按下才刷新（第164節） |
 | `tools/check.ps1` | 改完的自動檢查：JS 語法（`node --check`）、`index.html` 所有 `?v=` 等於 `GAME_VERSION`、每個 `data/*.js` 都有載入、沒有衝突標記；通過印 `ALL CHECKS PASSED` |
+| `images/icons/items/mercRune-v1/`、`tools/icon-src/mercenary-runes-v1/` | 50款獨立傭兵符石透明PNG、image_gen原稿／完整提示詞／來源與總覽（第203節） |
+| `tools/prepare-mercenary-runes.js`、`tools/test-mercenary-rune-art.js`、`tools/mercenary-runes-preview.html` | 符石等比縮圖／透明與唯一性檢查、正式UI接線驗證及128／48／32px獨立素材預覽（第203節） |
 | `index.html` | 版面、全部 CSS、三個畫面（title／create／game）、`<script>` 載入 |
 | `data/config.js` | 版本號、存檔 key、各種常數、遊戲時鐘 `gameNow`、`rand/chance/clamp/fmt`、**天堂經驗表** `expToNext`／`huntExpRate`／`deathLossRate`、經驗倍率 `EXP_RATE`、離線收益常數、`SIM_MODE` |
 | `data/classes.js` | `STAT_KEYS`、`STAT_NAMES`、創角規則、`CLASSES`（12 職業，含 `slayer` 種族剋制） |
@@ -216,7 +218,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027p`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027q`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3753,3 +3755,12 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 使用者進一步指定傭兵不可購買。移除團長六職業招募商品、mercHire與MERC_HIRE_COST，空傭兵欄顯示不可購買／取得方式待開放。NPC招呼與死亡訊息不再引導雇傭新人。第197／198節10萬招募設定由本節取代。
 - 保留六職業定義、單一持有／召喚、現有傭兵管理／技能／裝備／出戰／戰鬥與復活；復活每級1000金幣維持，不自行增加免費招募或掉落取得。schema18／SQL不變。
 - test-mercenary與隔離預覽改直接建立記憶體測試角色，正式遊戲沒有此入口；測試購買函式／價格常數不存在、招募商品消失、空欄不可購買與原戰鬥／復活回歸通過；check.ps1 ALL CHECKS PASSED、git diff --check通過，51檔正式混淆543KB成功。隔離瀏覽器0招募／0購買按鈕、空欄提示正常、Console無error／warn，待使用者實玩確認後提交。
+
+
+## 203. 傭兵50款獨立符石圖案（2026-10-27，版本 `20261027q`）
+
+- 使用內建image_gen逐顆製作50款原創符石，六類以紫／藍／金／紅／綠／青石面辨識，各技能有獨立銀白刻印；每顆原稿與完整提示詞保留於tools/icon-src/mercenary-runes-v1，來源記於sources.json。
+- images/icons/items/mercRune-v1每技能一張128×128透明PNG。prepare-mercenary-runes.js只做等比縮放，檢查透明通道／非空／唯一雜湊，產生validation.json與contact.png總覽。不覆寫其他素材，tools素材不進正式建置。
+- icons.js在既有ITEM_IMG加入50種mercRune_映射；背包、道具詳情、圖鑑與配置選擇器沿用同張獨立圖。mercRuneBoardHtml的四孔以圖片取代原CSS刻字晶石，保留空孔、兩欄石板、分類光暈與拆換操作；新CSS merc-rune-art，沒有新增全域函式或載入順序。sw.js預載50張圖。
+- tools/mercenary-runes-preview.html可切128／48／32px預覽，不載入角色。test-mercenary-rune-art驗50圖RGBA／尺寸／唯一性與正式道具、圖鑑及石板接線；test-item-art更新508道具／340張專用PNG。schema18、技能效果、不可購買及傭兵模型不變，取得方式仍待決定。
+- 驗證：50張RGBA／非空／透明／唯一性、508道具圖片與原傭兵50技能回歸通過；check.ps1 ALL CHECKS PASSED、git diff --check通過，正式51檔混淆543KB成功、50張發佈PNG逐byte一致。瀏覽器50／50載入，32px縮圖與四孔鑲嵌正常，375px兩欄且scrollWidth=375，三張鑲嵌圖載入成功、Console無error／warn；board-preview.png／board-mobile.png保留。未操作正式角色或後端，待使用者實玩確認後提交。

@@ -1,0 +1,355 @@
+{
+  "tool": "built-in image_gen",
+  "entries": [
+    {
+      "id": "wolf",
+      "name": "靈狼契約",
+      "group": "summon",
+      "motif": "front-facing white wolf head",
+      "prompt": "Use case: stylized-concept. Create ONE original dark fantasy RPG inventory icon, a single enchanted skill rune stone for 'Spirit Wolf Covenant'. Centered upright octagonal amethyst-purple stone tablet with chipped dark stone bevels and a large, unmistakable luminous silver WHITE WOLF HEAD silhouette engraved into its face. Front view, simple bold emblem that remains readable at 40 pixels. Premium hand-painted 3D game item art, realistic stone texture, purple inner light, restrained silver edge inlay. Entire object occupies 80% of square canvas, all edges intact, generous transparent margin, crisp silhouette. Truly transparent background, no scene, no ground plane, no frame around the canvas, no text, letters, numbers, logo, watermark or UI. Exactly one stone and one wolf emblem. Do not imitate any commercial game."
+    },
+    {
+      "id": "golem",
+      "name": "石衛契約",
+      "group": "summon",
+      "motif": "massive angular stone golem face with blocklike jaw",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 石衛契約. A single upright roughly octagonal enchanted amethyst purple mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: massive angular stone golem face with blocklike jaw. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained amethyst purple inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "butterfly",
+      "name": "靈蝶契約",
+      "group": "summon",
+      "motif": "delicate luminous butterfly with four symmetrical wings",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 靈蝶契約. A single upright roughly octagonal enchanted amethyst purple mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: delicate luminous butterfly with four symmetrical wings. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained amethyst purple inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "hawk",
+      "name": "風鷹契約",
+      "group": "summon",
+      "motif": "eagle silhouette with widely spread pointed wings",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 風鷹契約. A single upright roughly octagonal enchanted amethyst purple mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: eagle silhouette with widely spread pointed wings. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained amethyst purple inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "flameSpirit",
+      "name": "火靈契約",
+      "group": "summon",
+      "motif": "small round flame spirit face within a curling flame",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 火靈契約. A single upright roughly octagonal enchanted amethyst purple mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: small round flame spirit face within a curling flame. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained amethyst purple inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "iceSpirit",
+      "name": "冰靈契約",
+      "group": "summon",
+      "motif": "angular ice spirit mask crowned by three icy crystal spikes",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 冰靈契約. A single upright roughly octagonal enchanted amethyst purple mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: angular ice spirit mask crowned by three icy crystal spikes. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained amethyst purple inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "thunderSpirit",
+      "name": "雷靈契約",
+      "group": "summon",
+      "motif": "orb spirit surrounded by a jagged lightning halo",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 雷靈契約. A single upright roughly octagonal enchanted amethyst purple mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: orb spirit surrounded by a jagged lightning halo. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained amethyst purple inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "treeSpirit",
+      "name": "樹靈契約",
+      "group": "summon",
+      "motif": "ancient tree face with antlerlike branching boughs",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 樹靈契約. A single upright roughly octagonal enchanted amethyst purple mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: ancient tree face with antlerlike branching boughs. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained amethyst purple inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "swarm",
+      "name": "蟲群契約",
+      "group": "summon",
+      "motif": "three beetles arranged in a triangular swarm",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 蟲群契約. A single upright roughly octagonal enchanted amethyst purple mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: three beetles arranged in a triangular swarm. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained amethyst purple inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "cover",
+      "name": "護衛",
+      "group": "guard",
+      "motif": "a protective gauntleted hand cupping a small human silhouette",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 護衛. A single upright roughly octagonal enchanted deep sapphire blue mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: a protective gauntleted hand cupping a small human silhouette. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained deep sapphire blue inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "shield",
+      "name": "堅壁護盾",
+      "group": "guard",
+      "motif": "a thick broad heraldic shield with a central raised boss",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 堅壁護盾. A single upright roughly octagonal enchanted deep sapphire blue mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: a thick broad heraldic shield with a central raised boss. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained deep sapphire blue inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "taunt",
+      "name": "挑釁",
+      "group": "guard",
+      "motif": "a roaring lion face with an open mouth and flaring mane",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 挑釁. A single upright roughly octagonal enchanted deep sapphire blue mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: a roaring lion face with an open mouth and flaring mane. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained deep sapphire blue inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "iron",
+      "name": "鋼鐵壁壘",
+      "group": "guard",
+      "motif": "a fortified stone wall with three iron battlements",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 鋼鐵壁壘. A single upright roughly octagonal enchanted deep sapphire blue mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: a fortified stone wall with three iron battlements. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained deep sapphire blue inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "ward",
+      "name": "魔法結界",
+      "group": "guard",
+      "motif": "a radiant protective dome enclosing a small star",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 魔法結界. A single upright roughly octagonal enchanted deep sapphire blue mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: a radiant protective dome enclosing a small star. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained deep sapphire blue inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "thorn",
+      "name": "荊棘守護",
+      "group": "guard",
+      "motif": "a circular crown of sharp thorns around a small shield",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 荊棘守護. A single upright roughly octagonal enchanted deep sapphire blue mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: a circular crown of sharp thorns around a small shield. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained deep sapphire blue inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "sacrifice",
+      "name": "挺身保護",
+      "group": "guard",
+      "motif": "one large defender silhouette standing before a smaller companion",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 挺身保護. A single upright roughly octagonal enchanted deep sapphire blue mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: one large defender silhouette standing before a smaller companion. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained deep sapphire blue inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "barrier",
+      "name": "團隊屏障",
+      "group": "guard",
+      "motif": "two overlapping shields under one arched protective halo",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 團隊屏障. A single upright roughly octagonal enchanted deep sapphire blue mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: two overlapping shields under one arched protective halo. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained deep sapphire blue inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "heal",
+      "name": "急救之光",
+      "group": "support",
+      "motif": "an open palm holding one bright four-point healing star",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 急救之光. A single upright roughly octagonal enchanted warm amber gold mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: an open palm holding one bright four-point healing star. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained warm amber gold inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "renew",
+      "name": "回春祝福",
+      "group": "support",
+      "motif": "two new leaves emerging from a curved restorative light ring",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 回春祝福. A single upright roughly octagonal enchanted warm amber gold mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: two new leaves emerging from a curved restorative light ring. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained warm amber gold inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "mend",
+      "name": "共鳴療癒",
+      "group": "support",
+      "motif": "two open palms joined by a radiant heart-shaped light",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 共鳴療癒. A single upright roughly octagonal enchanted warm amber gold mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: two open palms joined by a radiant heart-shaped light. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained warm amber gold inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "haste",
+      "name": "進軍鼓舞",
+      "group": "support",
+      "motif": "a winged boot with three clear forward motion strokes",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 進軍鼓舞. A single upright roughly octagonal enchanted warm amber gold mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: a winged boot with three clear forward motion strokes. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained warm amber gold inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "might",
+      "name": "力量祝福",
+      "group": "support",
+      "motif": "a clenched armored fist surrounded by a sunburst",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 力量祝福. A single upright roughly octagonal enchanted warm amber gold mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: a clenched armored fist surrounded by a sunburst. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained warm amber gold inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "focus",
+      "name": "專注祝福",
+      "group": "support",
+      "motif": "a single all-seeing eye inside a simple aiming circle",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 專注祝福. A single upright roughly octagonal enchanted warm amber gold mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: a single all-seeing eye inside a simple aiming circle. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained warm amber gold inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "mana",
+      "name": "魔力贈禮",
+      "group": "support",
+      "motif": "an open hand offering a suspended luminous teardrop",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 魔力贈禮. A single upright roughly octagonal enchanted warm amber gold mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: an open hand offering a suspended luminous teardrop. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained warm amber gold inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "purify",
+      "name": "淨化之光",
+      "group": "support",
+      "motif": "a brilliant sun breaking through two separated dark chain links",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 淨化之光. A single upright roughly octagonal enchanted warm amber gold mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: a brilliant sun breaking through two separated dark chain links. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained warm amber gold inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "rally",
+      "name": "戰地整備",
+      "group": "support",
+      "motif": "a field medicine satchel with a heart-shaped clasp and one small water droplet",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 戰地整備. A single upright roughly octagonal enchanted warm amber gold mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: a field medicine satchel with a heart-shaped clasp and one small water droplet. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained warm amber gold inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "heavy",
+      "name": "重擊",
+      "group": "battle",
+      "motif": "a heavy war hammer striking one bold impact burst",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 重擊. A single upright roughly octagonal enchanted ruby crimson red mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: a heavy war hammer striking one bold impact burst. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained ruby crimson red inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "sweep",
+      "name": "橫掃",
+      "group": "battle",
+      "motif": "a curved sweeping blade with a broad crescent motion arc",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 橫掃. A single upright roughly octagonal enchanted ruby crimson red mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: a curved sweeping blade with a broad crescent motion arc. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained ruby crimson red inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "pierce",
+      "name": "破甲刺擊",
+      "group": "battle",
+      "motif": "a spearhead piercing a visibly cracked metal breastplate",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 破甲刺擊. A single upright roughly octagonal enchanted ruby crimson red mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: a spearhead piercing a visibly cracked metal breastplate. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained ruby crimson red inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "flurry",
+      "name": "連環突擊",
+      "group": "battle",
+      "motif": "three parallel sharp dagger blades converging forward",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 連環突擊. A single upright roughly octagonal enchanted ruby crimson red mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: three parallel sharp dagger blades converging forward. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained ruby crimson red inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "execute",
+      "name": "終結斬",
+      "group": "battle",
+      "motif": "a descending executioner axe over a broken crown",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 終結斬. A single upright roughly octagonal enchanted ruby crimson red mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: a descending executioner axe over a broken crown. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained ruby crimson red inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "bleed",
+      "name": "撕裂",
+      "group": "battle",
+      "motif": "three diagonal claw slashes with a single falling blood drop",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 撕裂. A single upright roughly octagonal enchanted ruby crimson red mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: three diagonal claw slashes with a single falling blood drop. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained ruby crimson red inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "bash",
+      "name": "震盪擊",
+      "group": "battle",
+      "motif": "a spiked mace head surrounded by two concentric shock rings",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 震盪擊. A single upright roughly octagonal enchanted ruby crimson red mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: a spiked mace head surrounded by two concentric shock rings. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained ruby crimson red inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "siphon",
+      "name": "汲血斬",
+      "group": "battle",
+      "motif": "a curved blade curling around one large blood drop",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 汲血斬. A single upright roughly octagonal enchanted ruby crimson red mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: a curved blade curling around one large blood drop. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained ruby crimson red inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "selfHeal",
+      "name": "自我療癒",
+      "group": "survival",
+      "motif": "two protective hands cupping a small heart",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 自我療癒. A single upright roughly octagonal enchanted emerald jade green mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: two protective hands cupping a small heart. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained emerald jade green inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "evasion",
+      "name": "靈巧步伐",
+      "group": "survival",
+      "motif": "a pair of light footprints curving around an incoming arrow",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 靈巧步伐. A single upright roughly octagonal enchanted emerald jade green mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: a pair of light footprints curving around an incoming arrow. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained emerald jade green inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "meditate",
+      "name": "冥想",
+      "group": "survival",
+      "motif": "a seated meditating silhouette beneath a small crescent moon",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 冥想. A single upright roughly octagonal enchanted emerald jade green mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: a seated meditating silhouette beneath a small crescent moon. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained emerald jade green inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "cleanse",
+      "name": "淨身",
+      "group": "survival",
+      "motif": "one large clear water droplet washing away a small dark stain",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 淨身. A single upright roughly octagonal enchanted emerald jade green mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: one large clear water droplet washing away a small dark stain. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained emerald jade green inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "fortify",
+      "name": "生命強韌",
+      "group": "survival",
+      "motif": "a sturdy heart wrapped in a thick band of armor",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 生命強韌. A single upright roughly octagonal enchanted emerald jade green mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: a sturdy heart wrapped in a thick band of armor. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained emerald jade green inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "recover",
+      "name": "自然復甦",
+      "group": "survival",
+      "motif": "a fern frond curling around a renewing spiral",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 自然復甦. A single upright roughly octagonal enchanted emerald jade green mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: a fern frond curling around a renewing spiral. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained emerald jade green inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "lastStand",
+      "name": "背水一戰",
+      "group": "survival",
+      "motif": "a cracked shield still standing upright before a burning ember",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 背水一戰. A single upright roughly octagonal enchanted emerald jade green mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: a cracked shield still standing upright before a burning ember. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained emerald jade green inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "balance",
+      "name": "生命轉魔",
+      "group": "survival",
+      "motif": "a heart and a crescent moon connected by two circular exchange arrows",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 生命轉魔. A single upright roughly octagonal enchanted emerald jade green mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: a heart and a crescent moon connected by two circular exchange arrows. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained emerald jade green inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "firebolt",
+      "name": "火焰彈",
+      "group": "arcane",
+      "motif": "one flaming projectile with a large flame-shaped tail",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 火焰彈. A single upright roughly octagonal enchanted turquoise cyan mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: one flaming projectile with a large flame-shaped tail. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained turquoise cyan inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "frost",
+      "name": "冰霜束縛",
+      "group": "arcane",
+      "motif": "two icy chain links joined to a six-point snowflake",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 冰霜束縛. A single upright roughly octagonal enchanted turquoise cyan mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: two icy chain links joined to a six-point snowflake. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained turquoise cyan inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "lightning",
+      "name": "雷電衝擊",
+      "group": "arcane",
+      "motif": "one thick zigzag lightning bolt splitting a small stone",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 雷電衝擊. A single upright roughly octagonal enchanted turquoise cyan mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: one thick zigzag lightning bolt splitting a small stone. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained turquoise cyan inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "nova",
+      "name": "烈焰新星",
+      "group": "arcane",
+      "motif": "a circular explosion with eight flame-shaped outward rays",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 烈焰新星. A single upright roughly octagonal enchanted turquoise cyan mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: a circular explosion with eight flame-shaped outward rays. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained turquoise cyan inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "poison",
+      "name": "腐蝕毒霧",
+      "group": "arcane",
+      "motif": "a skull dissolving into three curling toxic vapor trails",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 腐蝕毒霧. A single upright roughly octagonal enchanted turquoise cyan mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: a skull dissolving into three curling toxic vapor trails. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained turquoise cyan inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "chain",
+      "name": "連鎖雷光",
+      "group": "arcane",
+      "motif": "three bright orbs connected by two zigzag lightning branches",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 連鎖雷光. A single upright roughly octagonal enchanted turquoise cyan mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: three bright orbs connected by two zigzag lightning branches. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained turquoise cyan inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "silence",
+      "name": "衰弱咒印",
+      "group": "arcane",
+      "motif": "a downward-pointing broken sword enclosed by a dark crescent",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 衰弱咒印. A single upright roughly octagonal enchanted turquoise cyan mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: a downward-pointing broken sword enclosed by a dark crescent. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained turquoise cyan inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    },
+    {
+      "id": "star",
+      "name": "星辰墜落",
+      "group": "arcane",
+      "motif": "a large five-point falling star with a long diagonal comet tail",
+      "prompt": "Use case: stylized-concept. Asset: ONE original dark fantasy RPG skill rune inventory icon called 星辰墜落. A single upright roughly octagonal enchanted turquoise cyan mineral stone tablet, chipped dark stone bevel, subtle silver metal edge inlay. Its face has ONE large unmistakable luminous ivory-silver emblem: a large five-point falling star with a long diagonal comet tail. Keep the emblem bold, simplified and readable at 40 pixels; this central motif is the primary subject, not ornamental background. Premium hand-painted 3D fantasy item art, crystalline stone texture, restrained turquoise cyan inner glow, front-facing view, visually centered with complete intact silhouette. One stone fills 78 to 82 percent of square canvas, with transparent margins on all four sides. Background genuinely transparent, no environment, no ground plane, no canvas border, no letters, numbers, words, UI, watermark or logo. Exactly ONE icon, no sheet or collage. Do not imitate commercial game assets."
+    }
+  ]
+}

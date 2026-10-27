@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><base href="../"><meta name="viewport" content="width=device-width,initial-scale=1"><title>傭兵50款獨立符石圖案</title>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:24px;background:#171914;color:#e5ddc6;font-family:"Microsoft JhengHei",sans-serif}h1{font-size:24px;margin:0 0 8px}p{color:#b5b6a5;font-size:13px}nav{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}button{padding:8px 12px;background:#36382e;color:#e5ddc6;border:1px solid #777561;border-radius:5px;cursor:pointer}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}.card{background:linear-gradient(135deg,#414237,#292b24);border:1px solid #555747;border-radius:8px;padding:12px;text-align:center;box-shadow:inset 0 1px 1px #b5b09b33,0 3px 5px #0008}.art{height:132px;display:flex;align-items:center;justify-content:center}.art img{width:var(--rune-size,128px);height:var(--rune-size,128px);object-fit:contain}.card b,.card small{display:block}.card b{font-size:14px}.card small{margin-top:6px;font-size:11px;color:var(--color)}.hint{padding:8px;border-left:3px solid #8f9973;background:#292d23}
+</style></head><body><h1>傭兵技能符石 · 50款獨立圖案</h1><p>原創透明PNG｜六類技能各自獨立標記｜僅素材預覽，不讀取遊戲角色，不連正式後端</p><nav><button onclick="runePreviewSize(128)">128px原尺寸</button><button onclick="runePreviewSize(48)">48px鑲嵌大小</button><button onclick="runePreviewSize(32)">32px背包大小</button></nav><div id="rune-art-grid" class="grid"></div><p id="rune-status" class="hint">載入圖案…</p>
+<script>
+function runePreviewSize(size){document.documentElement.style.setProperty('--rune-size',size+'px');}
+(async()=>{
+ const names={summon:'召喚',guard:'守護',support:'補助',battle:'戰鬥',survival:'生存',arcane:'秘術'},colors={summon:'#b991f0',guard:'#74adf5',support:'#e2c870',battle:'#ef8980',survival:'#80c99b',arcane:'#7bd9e9'};
+ const manifest=await(await fetch('tools/icon-src/mercenary-runes-v1/manifest.json')).json();let loaded=0,failed=0;
+ const status=()=>{document.getElementById('rune-status').textContent='已載入 '+loaded+'／50 張'+(failed?'，缺圖 '+failed+' 張':'');};
+ for(const e of manifest.entries){const card=document.createElement('article');card.className='card';card.style.setProperty('--color',colors[e.group]);const art=document.createElement('div');art.className='art';const img=document.createElement('img');img.alt=e.name;img.src='images/icons/items/mercRune-v1/'+e.id+'.png';img.onload=()=>{loaded++;status();};img.onerror=()=>{failed++;status();};art.append(img);const name=document.createElement('b');name.textContent=e.name;const group=document.createElement('small');group.textContent=names[e.group]+'系';card.append(art,name,group);document.getElementById('rune-art-grid').append(card);}
+})().catch(e=>{document.getElementById('rune-status').textContent='載入失敗：'+e.message;console.error(e);});
+</script></body></html>
