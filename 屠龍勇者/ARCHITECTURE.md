@@ -216,7 +216,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027o`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027p`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3747,3 +3747,9 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 移除團長符石補給清單／分類按鈕、購買函式mercBuyRune、篩選函式mercChooseGroup及MERC_RUNE_COST／mercRuneGroup；一般商店原本就沒有符石售價，亦不可購買。NPC招呼及空符石選擇器不再引導購買，圖鑑改不可購買／取得方式待開放。
 - 保留50種符石定義、玩家已持有／已配置符石、四格石板與拆換／戰鬥；未自行加入掉落或其他取得途徑，取得方式待使用者決定。schema18／SQL不變。第197節符石1000金幣暫定販售被本節取代。
 - test-mercenary改用記憶體道具測配置，補單傭兵重複招募拒絕、UI無販售／購買函式不存在、一般商店50符石均不列出回歸通過；check.ps1 ALL CHECKS PASSED、git diff --check通過，51檔正式混淆544KB成功。隔離瀏覽器確認6個職業招募選項、0個購買按鈕、Console無error／warn；待使用者實玩確認後提交。
+
+## 202. 傭兵本體不可購買（2026-10-27，版本 `20261027p`）
+
+- 使用者進一步指定傭兵不可購買。移除團長六職業招募商品、mercHire與MERC_HIRE_COST，空傭兵欄顯示不可購買／取得方式待開放。NPC招呼與死亡訊息不再引導雇傭新人。第197／198節10萬招募設定由本節取代。
+- 保留六職業定義、單一持有／召喚、現有傭兵管理／技能／裝備／出戰／戰鬥與復活；復活每級1000金幣維持，不自行增加免費招募或掉落取得。schema18／SQL不變。
+- test-mercenary與隔離預覽改直接建立記憶體測試角色，正式遊戲沒有此入口；測試購買函式／價格常數不存在、招募商品消失、空欄不可購買與原戰鬥／復活回歸。待使用者實玩確認後提交。

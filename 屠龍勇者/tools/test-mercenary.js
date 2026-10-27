@@ -21,12 +21,13 @@ saveGame=()=>{}; refreshUI=()=>{}; showToast=()=>{}; closeDialog=()=>{}; sfx=()=
 let dialog='', confirmFn=null; openDialog=(title,html)=>{dialog=html;}; gameConfirm=(title,text,fn)=>{confirmFn=fn;};
 function setup(cls='spirit') {
  createPlayer('傭兵測試','knight',CLASSES.knight.base); player.lv=30; player.gold=1000000;
- mercPanelOpen=false; mercHire(cls); assert(confirmFn); const fn=confirmFn; fn(); const m=player.mercenary;
- assert(m); assert(renderMercenary().includes('C級傭兵')); fn(); assert.equal(player.mercenary,m); assert.equal(player.gold,900000); assert.equal(m.lv,1); assert(m.skills.every(x=>!x));
- const beforeHire=player.gold;mercHire('war');assert.equal(player.mercenary,m);assert.equal(player.gold,beforeHire);
+ mercPanelOpen=false;
+ const m=player.mercenary={cls,lv:1,exp:0,hp:1,mp:0,cds:{},equip:{},skills:['','','',''],dead:false,active:false};
+ const st=mercStats(m);m.hp=st.hp;m.mp=st.mp;
+ assert(renderMercenary().includes('C級傭兵'));assert.equal(player.gold,1000000);
  m.active=true; return m;
 }
-assert.equal(MERC_HIRE_COST,100000);
+assert.equal(typeof mercHire,'undefined');assert.equal(typeof MERC_HIRE_COST,'undefined');
 for(const [lv,id] of [[1,'c'],[29,'c'],[30,'b'],[40,'b'],[41,'a'],[50,'a'],[51,'s'],[60,'s'],[61,'ss'],[70,'ss'],[71,'sss'],[80,'sss'],[81,'legend'],[99,'legend']]) {
  assert.equal(mercRank({lv}).id,id); assert(mercNameHtml({cls:'spirit',lv}).includes('merc-grade-'+id));
 }
@@ -79,7 +80,7 @@ chance=()=>false; assert.equal(mercTakeDamage(0),0);mercTakeDamage(100000);asser
 const beforeRevive=player.gold;mercRevive();confirmFn();assert(!m.dead);assert.equal(m.lv,8);assert.equal(player.gold,beforeRevive-8000);confirmFn();assert.equal(player.gold,beforeRevive-8000);
 // 野外不可收回／換裝／拆符石；缺錢不買；SIM不參戰或取得經驗。
 player.loc={type:'zone',id:'island'};const was=m.active;mercToggle();assert.equal(m.active,was);const n=held.n;mercSetRune(0,'heal');assert.equal(held.n,n);
-player.loc={type:'town',id:'talking'};player.gold=0;assert.equal(typeof mercBuyRune,'undefined');assert.equal(countItem('mercRune_wolf'),0);assert(!renderMercenary().includes('符石補給'));assert(!renderMercenary().includes('>購買</button>'));for(const id of Object.keys(MERC_RUNES))assert(!shopItemIds().includes('mercRune_'+id));
+player.loc={type:'town',id:'talking'};player.gold=0;assert.equal(typeof mercBuyRune,'undefined');assert.equal(countItem('mercRune_wolf'),0);assert(!renderMercenary().includes('符石補給'));assert(!renderMercenary().includes('>購買</button>'));assert(!renderMercenary().includes('雇傭（'));assert(!renderMercenary().includes('傭兵團長・招募'));const owned=player.mercenary;player.mercenary=null;assert(renderMercenary().includes('傭兵不可購買'));assert(!renderMercenary().includes('mercHire('));player.mercenary=owned;for(const id of Object.keys(MERC_RUNES))assert(!shopItemIds().includes('mercRune_'+id));
 m.active=true;SIM_MODE=true;assert.equal(mercActive(),null);const ex=m.exp;mercGainExp(9999);assert.equal(m.exp,ex);SIM_MODE=false;
 mercGainExp(99999);assert(m.lv>8&&m.lv<=player.lv);
 // 跟隨位置與原娃娃獨立，瞬移後回合法格；真實Canvas介面可繪製。

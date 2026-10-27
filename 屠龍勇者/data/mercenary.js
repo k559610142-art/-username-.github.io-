@@ -8,7 +8,7 @@ const MERC_CLASSES = {
     arcane: { name: '秘法使', person: '諾亞', sex: '男', age: '孩童', hp: 105, mp: 145, atk: 7, magic: 19, def: 1, regen: 4 },
 };
 const MERC_SLOTS = ['weapon', 'shield', 'helm', 'armor', 'tshirt', 'cloak', 'gloves', 'boots'];
-const MERC_HIRE_COST = 100000, MERC_REVIVE_COST = 1000;
+const MERC_REVIVE_COST = 1000;
 const MERC_GROUPS = { summon: '召喚', guard: '守護', support: '補助', battle: '戰鬥', survival: '生存', arcane: '秘術' };
 const MERC_RUNES = {};
 // id、名稱、效果種類、MP、冷卻秒、倍率／數值、持續秒。
@@ -122,7 +122,7 @@ function mercGainExp(n) {
 function mercDie() {
     const m = player.mercenary; if (!m || m.dead) return;
     m.dead = true; m.active = false; m.hp = 0; m.mp = 0; m.equip = {}; m.skills = ['', '', '', '']; m.cds = {}; mercRuntime.delete(m);
-    addLog('⚑ 傭兵陣亡！身上裝備與技能永久消失，請找傭兵團長復活或雇傭新人。', 'warn');
+    addLog('⚑ 傭兵陣亡！身上裝備與技能永久消失，請找傭兵團長復活。', 'warn');
     if (!SIM_MODE) saveGame();
 }
 function mercTakeDamage(value) {
@@ -243,16 +243,6 @@ function mercTick(dt) {
 }
 function mercTownReady() { return !!(player && inTown() && !SIM_MODE); }
 function mercRefresh() { saveGame(); refreshUI(); if (typeof mercPanelOpen !== 'undefined' && mercPanelOpen) openMercenary(); }
-function mercHire(cls) {
-    if (!mercTownReady() || !MERC_CLASSES[cls] || player.mercenary && !player.mercenary.dead) return;
-    const owner = player, previous = player.mercenary;
-    gameConfirm('雇傭傭兵', '花費' + fmt(MERC_HIRE_COST) + '金幣雇傭Lv.1「' + MERC_CLASSES[cls].name + '」？' + (previous ? '原死亡傭兵將被替換，原等級不保留。' : ''), () => {
-        if (player !== owner || !mercTownReady() || player.mercenary !== previous || player.gold < MERC_HIRE_COST) { showToast('條件已改變或金幣不足'); return; }
-        player.gold -= MERC_HIRE_COST;
-        const m = player.mercenary = { cls, lv: 1, exp: 0, hp: 1, mp: 0, cds: {}, equip: {}, skills: ['', '', '', ''], dead: false, active: false };
-        const st = mercStats(m); m.hp = st.hp; m.mp = st.mp; mercRefresh();
-    }, '雇傭');
-}
 function mercRevive() {
     const m = player.mercenary; if (!mercTownReady() || !m || !m.dead) return;
     const owner = player, cost = m.lv * MERC_REVIVE_COST;
@@ -300,7 +290,7 @@ function mercPickEquip(slot) {
 }
 function mercCardHtml() {
     const m = player.mercenary, c = m && MERC_CLASSES[m.cls];
-    return '<div class="cv-companion-art cv-companion-empty"><span>' + (c ? mercNameHtml(m) + '<br>Lv.' + m.lv + (m.dead ? ' 陣亡' : m.active ? ' 出戰中' : ' 待命') + '<br>HP ' + Math.ceil(m.hp) + '／MP ' + Math.ceil(m.mp) : '未雇傭傭兵') + '</span></div><button class="mini" onclick="openMercenary()">管理傭兵</button><div class="cv-companion-desc"><small>與娃娃獨立，可同時出戰。四格符石自由搭配。</small></div>';
+    return '<div class="cv-companion-art cv-companion-empty"><span>' + (c ? mercNameHtml(m) + '<br>Lv.' + m.lv + (m.dead ? ' 陣亡' : m.active ? ' 出戰中' : ' 待命') + '<br>HP ' + Math.ceil(m.hp) + '／MP ' + Math.ceil(m.mp) : '未持有傭兵') + '</span></div><button class="mini" onclick="openMercenary()">管理傭兵</button><div class="cv-companion-desc"><small>與娃娃獨立，可同時出戰。四格符石自由搭配。</small></div>';
 }
 function mercRuneBoardHtml(m, town) {
     const marks = { summon: '召', guard: '守', support: '輔', battle: '戰', survival: '生', arcane: '秘' };
@@ -311,14 +301,14 @@ function mercRuneBoardHtml(m, town) {
 }
 function renderMercenary() {
     const m = player.mercenary, c = m && MERC_CLASSES[m.cls], town = mercTownReady();
-    let h = '<div class="panel"><p>六職業共用50種符石，同時只能召喚一名傭兵。在村莊招募、配置與調整出戰。</p><p class="bad">死亡永久失去身上全部裝備與已配置符石；背包物品不受影響。復活保留等級。</p><details><summary>戰鬥與裝備規則</summary><small>不限制武器職業，雙手武器與盾牌互斥。一般掛機生效；離線／團隊副本／世界首領暫不參戰。遠程武器不耗玩家彈藥，裝備共鳴與BOSS附魔暫不觸發。技能依四格順序判斷，每秒最多一招；召喚物最多2隻。框架先用跟隨標記呈現。</small></details></div>';
+    let h = '<div class="panel"><p>六職業共用50種符石，同時只能召喚一名傭兵。在村莊配置與調整出戰，傭兵不可購買。</p><p class="bad">死亡永久失去身上全部裝備與已配置符石；背包物品不受影響。復活保留等級。</p><details><summary>戰鬥與裝備規則</summary><small>不限制武器職業，雙手武器與盾牌互斥。一般掛機生效；離線／團隊副本／世界首領暫不參戰。遠程武器不耗玩家彈藥，裝備共鳴與BOSS附魔暫不觸發。技能依四格順序判斷，每秒最多一招；召喚物最多2隻。框架先用跟隨標記呈現。</small></details></div>';
     if (m) {
         const st = mercStats(m);
         h += '<div class="panel"><b>' + mercNameHtml(m) + '</b>（' + c.sex + '／' + c.age + '）<p>Lv.' + m.lv + '｜經驗 ' + fmt(m.exp) + '／' + fmt(mercExpNeed(m)) + '<br>HP ' + Math.ceil(m.hp) + '／' + st.hp + '　MP ' + Math.ceil(m.mp) + '／' + st.mp + '<br>物攻' + Math.round(st.atk) + '／魔攻' + Math.round(st.magic) + '／防禦' + st.def + '／魔防' + st.mr + '</p>' + (m.dead ? '<button onclick="mercRevive()" ' + (!town ? 'disabled' : '') + '>復活（' + fmt(m.lv * MERC_REVIVE_COST) + '金幣）</button>' : '<button onclick="mercToggle()" ' + (!town ? 'disabled' : '') + '>' + (m.active ? '收回傭兵' : '傭兵出戰') + '</button>') + '</div>';
         h += mercRuneBoardHtml(m, town);
         h += '<h4>傭兵裝備</h4><div class="merc-grid">' + MERC_SLOTS.map(slot => '<div class="panel"><b>' + SLOTS[slot] + '：' + (m.equip[slot] ? esc(itemName(m.equip[slot])) : '空白') + '</b><button onclick="mercPickEquip(\'' + slot + '\')" ' + (!town || m.dead ? 'disabled' : '') + '>選擇</button>' + (m.equip[slot] ? '<button onclick="mercUnequip(\'' + slot + '\')" ' + (!town || m.dead ? 'disabled' : '') + '>卸下</button>' : '') + '</div>').join('') + '</div>';
     }
-    if (!m || m.dead) h += '<h4>傭兵團長・招募</h4><div class="merc-grid">' + Object.entries(MERC_CLASSES).map(([id,x]) => '<div class="panel"><b>' + mercNameHtml({ cls: id, lv: 1 }) + '</b><small>' + x.sex + '／' + x.age + '｜初始Lv.1｜HP ' + x.hp + '／MP ' + x.mp + '</small><button onclick="mercHire(\'' + id + '\')" ' + (!town ? 'disabled' : '') + '>雇傭（' + fmt(MERC_HIRE_COST) + '金幣）</button></div>').join('') + '</div>';
+    if (!m) h += '<div class="panel"><p>尚未持有傭兵。傭兵不可購買，取得方式待開放。</p></div>';
     return h;
 }
 function sceneMercTick(dt) {
