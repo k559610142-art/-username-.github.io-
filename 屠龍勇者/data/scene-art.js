@@ -14,7 +14,7 @@ const SCENE_WORLD_WALK = SCENE_WORLD_TILES.flatMap(r => {
     const [x0, y0, x1, y1] = r.rect;
     return [[x0 + 12, y0 + 10, x1 - 12, y1 - 10], [x0, r.y - 2, x1, r.y + 2], [r.x - 2, y0, r.x + 2, y1]];
 });
-const SCENE_TOWN_ROLES = [['商店', 'shop'], ['回收', 'sell'], ['倉庫', 'storage'], ['鍛造', 'forge'], ['旅館', 'inn'], ['傳送師', 'teleport'], ['娃娃商人', 'doll'], ['鑑定台', 'identify']];
+const SCENE_TOWN_ROLES = [['商店', 'shop'], ['回收', 'sell'], ['倉庫', 'storage'], ['鍛造', 'forge'], ['旅館', 'inn'], ['傳送師', 'teleport'], ['娃娃商人', 'doll'], ['鑑定台', 'identify'], ['傭兵團長', 'mercenary']];
 const SCENE_ART_BGS = {
     wild: { src: SCENE_ART_ROOT + 'world-play.jpg', mini: SCENE_ART_ROOT + 'world-mini.jpg', w: 188, h: 149, start: [23, 92], big: true,
         walk: SCENE_WORLD_WALK, block: [], regions: SCENE_WORLD_TILES,
@@ -29,12 +29,12 @@ const SCENE_TOWN_NPC_SPOTS = {
     giran: [[25, 7], [5, 7], [11, 6], [25, 13], [8, 14], [16, 3], [21, 6]],
     aden: [[24, 7], [4, 10], [26, 12], [5, 14], [8, 6], [15, 3], [22, 5]],
 };
-for (const spots of Object.values(SCENE_TOWN_NPC_SPOTS)) spots.push([18, 11]);
+for (const spots of Object.values(SCENE_TOWN_NPC_SPOTS)) spots.push([18, 11], [12, 13]);
 for (const [id, key] of [['talking', 'village'], ['gludio', 'ash'], ['giran', 'darkgold'], ['aden', 'aden']]) {
     SCENE_ART_BGS[key] = { src: SCENE_ART_ROOT + 'town-' + id + '.jpg', w: 30, h: 18, start: [15, 14],
         walk: [[3, 8, 26, 15], [14, 1, 16, 16], [1, 9, 28, 12], ...SCENE_TOWN_NPC_SPOTS[id].flatMap(([x, y]) => [[x, y, x, y + 1], [Math.min(x, 15), y + 1, Math.max(x, 15), y + 1]])], block: [],
         npcs: SCENE_TOWN_ROLES.map(([role, art], i) => ({ role, x: SCENE_TOWN_NPC_SPOTS[id][i][0], y: SCENE_TOWN_NPC_SPOTS[id][i][1], painted: false, h: art === 'identify' ? 2.4 : 1.65,
-            img: art === 'identify' ? 'images/buildings/identify-station-v1.png' : art === 'doll' ? 'images/classes/stage/elf.webp' : 'images/npc/rework/npc-' + art + '.png' })),
+            img: art === 'mercenary' ? 'images/npc/rework/npc-forge.png' : art === 'identify' ? 'images/buildings/identify-station-v1.png' : art === 'doll' ? 'images/classes/stage/elf.webp' : 'images/npc/rework/npc-' + art + '.png' })),
         lights: [[4, 8, 100], [25, 8, 100], [15, 3, 80]],
     };
 }

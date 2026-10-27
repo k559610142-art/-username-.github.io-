@@ -457,7 +457,7 @@ const RECIPES = [
     { out: 'dragonScaleMail', gold: 30000, need: { plateMail: 1, antharasScale: 2, fafurionScale: 2, lindviorScale: 2, valakasScale: 2 } },
 ];
 
-function isStackable(def) { return ['potion', 'scroll', 'ammo', 'material', 'elixir', 'quest', 'currency', 'book'].includes(def.cat); }
+function isStackable(def) { return ['potion', 'scroll', 'ammo', 'material', 'elixir', 'quest', 'currency', 'book', 'mercRune'].includes(def.cat); }
 function sellPriceOf(id) { const d = ITEMS[id]; return d.sell != null ? d.sell : Math.floor((d.price || 0) * 0.3); }
 
 // 魔法娃娃：單隻裝備與跟隨；完整能力由後載入的doll-abilities.js補上。

@@ -191,6 +191,7 @@ const TOWN_BG = { gludio: 'ash', giran: 'darkgold', aden: 'aden' };
 
 // 村莊 NPC：站在廣場上，頭上名牌顯示「名字＋功能」，點 NPC 或名牌打開設施；names 依村莊 id
 const TOWN_NPCS = [
+    { role: '傭兵團長', icon: '⚑', x: 12, y: 13, act: () => openTownSub('mercenary'), names: { talking: '傭兵團長', gludio: '傭兵團長', giran: '傭兵團長', aden: '傭兵團長' } },
     { role: '鑑定台', icon: '🔍', img: 'images/buildings/identify-station-v1.png', h: 2.4, x: 18, y: 11, act: () => openTownSub('identify'), names: { talking: '鑑定台', gludio: '鑑定台', giran: '鑑定台', aden: '鑑定台' } },
     { role: '商店',  icon: '👩‍💼', x: 12, y: 12, act: () => openTownSub('shop'),
       names: { talking: '艾琳', gludio: '雷文', giran: '薩拉', aden: '塞琳' } },
@@ -881,6 +882,7 @@ function sceneUpdate(dt) {
     for (const m of scene.mons) { m.rx += (m.x - m.rx) * Math.min(1, dt / 150); m.ry += (m.y - m.ry) * Math.min(1, dt / 150); }
 
     sceneDollTick(dt);
+    sceneMercTick(dt);
     sceneReadEvents();
     for (const f of scene.floats) f.t += dt;
     scene.floats = scene.floats.filter(f => f.t < f.dur);
@@ -1283,6 +1285,7 @@ function sceneDraw(ctx, W, H) {
     };
     const actors = scene.mons.map(m => ({ y: m.ry, draw: () => drawMon(m) }));
     actors.push({ y: pl.ry + 0.01, draw: drawPlayer });
+    if (scene.mercenary) actors.push({ y: scene.mercenary.ry, draw: () => sceneDrawMerc(ctx, camX, camY) });
     if (scene.doll) actors.push({ y: scene.doll.ry, draw: () => sceneDrawDoll(ctx, camX, camY) });
     if (player.loc.type === 'town') for (const key in presOthers) { const o = presOthers[key]; actors.push({ y: o.ry, draw: () => presDraw(ctx, o, camX, camY, labels) }); }   // 其他在線玩家（presence.js）
     if (player.loc.type === 'town') for (const n of townNpcList(scene.bg)) actors.push({ y: n.y, draw: () => {

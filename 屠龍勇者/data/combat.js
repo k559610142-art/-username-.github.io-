@@ -213,6 +213,7 @@ function huntTick(dt) {
     const st = calcStats();
     autoSupport(st);
     if (!player.hunting || !hunt || hunt.state !== 'fight') return;
+    mercTick(dt);
     bossEnchantTick(st);
     reapMobs();
     if (!fightAlive()) return;
@@ -235,7 +236,7 @@ function huntTick(dt) {
         m.atkCd -= dt;
         if (m.atkCd > 0) continue;
         if (!mobInReach(m)) { m.atkCd = 200; continue; }   // 還沒走到角色旁邊
-        m.atkCd =(m === hunt.mon ? m.spd : m.spd * MOB_SIDE_SLOW) * bossEnchantAttackFactor(m);
+        m.atkCd =(m === hunt.mon ? m.spd : m.spd * MOB_SIDE_SLOW) * bossEnchantAttackFactor(m) * (m.mercEffect === 'slow' && m.mercUntil > gameNow ? (m.boss ? 1.05 : 1.2) : 1);
         if (gameNow >= m.stunUntil) monsterAttack(calcStats(), m);
         if (!fightAlive()) return;
     }
@@ -303,7 +304,7 @@ function bossSkillTick(dt) {
         let dmg = Math.round(rand(m.dmg[0], m.dmg[1]) * TELE_MUL) - st.reduce;
         dmg = Math.max(1, dmg);
         dmg = bossEnchantAbsorb(Math.max(1, Math.round(bossEnchantEnemyDamage(m, dmg))));
-        dmg = dollTakeDamage(dmg, st);
+        dmg = dollTakeDamage(mercProtect(dmg, true), st);
         addLog(`💥 ${m.name}的「${t.name}」命中！你受到 ${dmg} 傷害`, 'hurt');
         if (player.hp <= 0) onDeath(m);
         else resonanceOnHurt(st);
@@ -712,6 +713,7 @@ function physicalAttack(st, mult, opt, mon = hunt.mon) {
 }
 
 function monsterAttack(st, mon) {
+    if (mercEnemyAttack(mon)) return;
     const magic = mon.magic && chance(mon.magic.p);
     let dmg;
     if (magic) {
@@ -723,6 +725,7 @@ function monsterAttack(st, mon) {
         dmg = rand(mon.dmg[0], mon.dmg[1]);
         if (st.ac < 0) dmg -= rand(0, Math.floor(-st.ac / 5));   // AC 負值越多，額外減傷越多
     }
+    if (mon.mercEffect === 'weaken' && mon.mercUntil > gameNow) dmg *= mon.boss ? .95 : .85;
     dmg = Math.max(0, Math.round(dmg - st.reduce));
     if (st.absorb && player.mp > 0) {
         const a = Math.min(player.mp, Math.floor(dmg * st.absorb));
@@ -730,7 +733,7 @@ function monsterAttack(st, mon) {
         dmg -= a;
     }
     dmg = bossEnchantAbsorb(Math.max(0, Math.round(bossEnchantEnemyDamage(mon, dmg))));
-    dmg = dollTakeDamage(dmg, st);
+    dmg = dollTakeDamage(mercProtect(dmg), st);
     worldVfxEnemy(mon, magic);
     addLog(magic ? `${mon.name}施放「${mon.magic.name}」，你受到 ${dmg} 傷害` : `${mon.name}攻擊，你受到 ${dmg} 傷害`, 'hurt');
     if (player.hp <= 0) { onDeath(mon); return; }
@@ -772,6 +775,7 @@ function onKill(mon) {
     sfx('mon-die');
     if (!lootRequired()) diaRoll(mon);   // 後端模式連同物品一併結算鑽石
     gainExp(exp);
+    mercGainExp(exp);
     rollDrops(mon, z);
     questOnKill(mon, z);
     if (mapOnKill(mon)) return;   // 異界：計數；打倒異界首領＝通關、回村

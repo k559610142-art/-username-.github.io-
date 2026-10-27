@@ -14,6 +14,7 @@ function gameTick() {
     if (gap >= OFFLINE_MIN_MS && offlineEligible()) { offlineSettle(gap); return; }
     cleanBuffs();
     dollAbilityTick(dt);
+    if (!hunt || hunt.state !== 'fight') mercTick(dt);
     regenAcc += dt;
     if (regenAcc >= REGEN_MS) { regenAcc -= REGEN_MS; regenTick(); }
     walkTick();

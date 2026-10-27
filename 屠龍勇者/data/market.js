@@ -38,7 +38,7 @@ async function marketRpc(fn, args) {
 
 function marketTradeable(inst) {
     const d = ITEMS[inst.id];
-    return d && d.cat !== 'quest' && !(inst.ench > 15);
+    return d && d.cat !== 'quest' && d.cat !== 'mercRune' && !(inst.ench > 15);
 }
 
 function marketRender() { if (typeof currentTab !== 'undefined' && tabOpen('market') && player && !SIM_MODE) renderPanel(); }

@@ -171,6 +171,8 @@
 | `images/sprites/morph/aden-glory-swordsman-v1/`、`tools/sprite-src/morph/aden-glory-swordsman-v1/`、`tools/test-aden-glory-swordsman-morph.js` | m15原始參考／提示詞與圖集打包、專屬動畫、卷軸隔離驗證（第160節） |
 | `tools/test-doll-dismantle.js`、`images/icons/items/magicCrystal-v1.png`、`tools/icon-src/magic-crystal-v1/` | 娃娃商人傳說裝備分解隔離測試、魔法結晶圖示／原稿／提示詞（第162節） |
 | `tools/test-dolls.js` | 21款娃娃道具／裝卸／跟隨／存檔隔離測試（第154節） |
+| `data/mercenary.js` | 獨立傭兵：六職業、50符石、招募／復活、四格技能／12格裝備、跟隨標記與戰鬥（第197節） |
+| `tools/test-mercenary.js`、`tools/mercenary-preview.html` | 傭兵隔離回歸／記憶體瀏覽器預覽，不連正式後端 |
 | `data/doll-abilities.js` | 21款娃娃基本能力、被動、冷卻／出場時間與觸發狀態（第157節） |
 | `tools/test-doll-abilities.js` | 21款數值、實際戰鬥／藥水、冷卻存檔、範圍防重複與模擬隔離（第157節） |
 | `tools/test-hotbar-extra.js` | 32格快捷舊檔遷移、PC／手機展開收合與手動自動回歸（第196節） |
@@ -202,18 +204,19 @@
 
 ## 2. 載入順序與依賴
 
-`config → classes → skills → items → spellbook → monsters → zones → quests → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → pwa → loot → main`
+`config → classes → skills → items → spellbook → monsters → zones → quests → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → pwa → loot → main`
 
 - 上層資料檔（config～quests）只在「載入時」用到更前面的檔案；quests 載入時會把獎勵裝備與任務道具寫進 `ITEMS`，所以要在 items 之後。
 - resonance 載入時要改 `ITEMS`（含任務武器）、`MONSTERS` 掉落、`RECIPES`，所以在 quests 之後；`findSkill`（skills.js）在執行期才呼叫它的 `findResonanceSkill`。
 - boss-enchant 在 resonance 後、player 前載入；載入時使用 ITEMS、TOWER_BOSS_MATERIALS，產生 25 種 soul_材料id 封魂石。玩家、戰鬥與介面只在執行期使用。
+- mercenary在doll-abilities後、player前載入；載入時新增ITEMS的50種mercRune與CAT_NAMES，依賴items；其餘玩家／詞綴／UI／場景函式只在執行期使用。
 - player 之後的檔案互相呼叫（例如 combat 呼叫 `refreshUI`、town 呼叫 `startHunt`），都發生在執行期，全部載完才會跑，所以沒問題。
 - map-queue.js在ui-frame後、icons前載入，載入時使用TABS／PANEL_FNS註冊分頁；maps／combat／save在執行期呼叫排程函式，main啟動前已全部載入。
 - 新檔案依它「載入時」需要的東西插入；只在執行期用到的不影響順序。
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027j`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027l`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3681,3 +3684,45 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - hotbar第一排右側小箭頭toggleBarExtra控制新增index24～31；PC以浮動第二排向上展開（疊在上方操作列前景，收起即可還原），手機第一排上方浮出8格。原PC24格、手機原兩排16格位置與內容不變。新增格沿用放置／手動／長按／下拉自動，不配新鍵盤鍵，收起仍自動。
 - 新全域barExtraOpen、toggleBarExtra、barExtraToggleHtml；裝置偏好dragonSlayer_barExtra記錄展開狀態，不加入角色欄位；barPcPos新增24～31為pc-extra-row內相對座標。index.html新增箭頭及浮動列CSS；技能頁說明同步，載入順序／SQL不變。
 - tools/test-hotbar-extra.js隔離驗24→32保留、新格空白、加密存讀、手動／自動／技能搬移、收起仍自動、PC／手機展開收合與村莊隱藏、事件與原位置通過；彈藥／附魔回歸通過。check.ps1 ALL CHECKS PASSED、git diff --check通過，正式50檔混淆523KB成功、toggleBarExtra已公開。未操作正式角色；待使用者實玩確認後提交。
+
+## 197. 傭兵系統框架（2026-10-27，版本 `20261027k`，schema18）
+
+### 使用者決定與第一版範圍
+
+- 六獨立職業：契靈師／壁壘衛士／祈願使／征戰者／荒野行者／秘法使，男女及年輕／中年／孩童各有名單；人物模型最後討論，現以菱形名牌／血條跟隨標記呈現，未新增角色美術。
+- 初始Lv.1，有HP／MP與12格裝備；全部職業可用任意武器，不受玩家職業裝備限制，但雙手武器不能配盾。無天生技能；六類50符石共用，4格配置，同招不能重複。拆換先消耗新符石，再退回舊符石；拆下回玩家背包。
+- 同時持有／出戰一位，與娃娃獨立且可同時存在。傭兵死亡清空身上裝備及4格符石，永久消失；玩家背包／倉庫／娃娃不受影響。團長復活保留等級／經驗，滿HP／MP但待命；也可換雇Lv.1新人，舊死亡傭兵被替換。
+- 費用為框架暫定值（另已詢問使用者，可再調整）：招募10,000，復活每級1,000，符石每顆1,000金幣。四村增加傭兵團長（12,13）與相鄰可走道路，沿用既有鍛造NPC圖作設施暫代；人物既有傭兵欄可開管理，村莊有團長分頁。
+- 僅村莊可招募／復活、交付／卸下裝備與配置／拆換符石、出戰／收回；鎖定裝備先解鎖。招募／換雇及復活使用gameConfirm，確認時重查角色、原傭兵與金幣，防重複扣款。裝備物件移出玩家背包，保留UID／強化／詞綴；卸下原樣回背包，不複製。裝備共鳴與BOSS附魔資料保留，框架不觸發；遠程武器不吃玩家彈藥。
+
+### 存檔與資料
+
+- player.mercenary預設null；持有時為{cls,lv,exp,hp,mp,dead,active,equip,skills,cds}。SAVE_SCHEMA17→18，使用者已同意；migrateSave在清理玩家容器後mercNormalize，舊檔補null，驗六職業、四個合法不重複符石、12格裝備／UID不與玩家物品重複，死亡狀態強制清空裝備技能。冷卻以gameNow保存並夾回技能最大值。
+- 新ITEMS mercRune_技能id共50種，cat=mercRune，可堆疊、重量0.1、回收0；背包其他類與圖鑑可看取得說明。交易所禁上架新符石；未改SQL／Supabase目錄，不宣稱後端支援新符石交易、共用倉庫或GM郵寄。原物品目錄與正式設定不動。
+- 常數MERC_CLASSES／MERC_GROUPS／MERC_RUNES／MERC_RUNE_ROWS、MERC_HIRE_COST／MERC_REVIVE_COST／MERC_RUNE_COST；mercRuntime WeakMap放短期增益、盾、召喚物、持續傷害、普攻／技能／回復時點；mercRuneGroup與mercPanelOpen為UI狀態，場景位置不入存檔。
+
+### 戰鬥與成長
+
+- huntTick在玩家行動前mercTick，之後原reapMobs結算；傭兵普通／技能／召喚物傷害不另擲掉落，擊殺只入帳一次。onKill額外mercGainExp，不分走玩家經驗；升級門檻100＋Lv²×30，等級不超過玩家，升級滿HP／MP。
+- 一般怪每次攻擊有25%選傭兵，挑釁期間65%；使用傭兵自己的防禦／MR／閃避／盾。首領未躲開紅圈也傷傭兵，護衛／挺身保護分擔玩家傷害，團隊屏障雙方各有護盾。怪物緩速／衰弱首領效果減半，首領免暈眩。
+- 傭兵依4格順序自動選第一招符合條件且MP足夠／冷卻好的技能，每秒最多一招，普攻獨立。治療／回魔依低血／低魔門檻，淨化只在有對應負面狀態時使用（現有敵人大多沒有可淨化狀態）；無狀態時不浪費MP。
+- 召喚物最多2隻，新召喚替換最早者；每2秒攻擊或治療，具持續時間。範圍技能僅目前戰鬥集合最多3隻，不拉全畫面怪；DoT每秒一次，離開目前怪群不繼續攻擊。傷害物理扣怪防禦／魔法計MR，未加玩家爆擊、吸血或BOSS附魔連鎖。
+- 基礎HP每級+18、MP每級+8，物魔傷害每級+2；職業起始值見MERC_CLASSES。契靈師召喚效力×1.2，祈願使治療×1.2，荒野行者基礎閃避8%與回血每秒3，其餘每秒1；每秒回魔依職業。裝備基本屬性與詞綴進傭兵計算，不套用玩家職業被動。
+- SIM_MODE不參戰／不獲經驗／不代擋／不給玩家增益，離線量測與團隊副本／世界首領維持既有流程。這三項未納入本次一般掛機框架，UI有提示。未操作正式角色或後端。
+
+### 接線與驗證
+
+- 主函式：mercActive／mercState／mercBuff／mercStats／mercNormalize／mercExpNeed／mercGainExp／mercDie／mercTakeDamage／mercEnemyAttack／mercProtect／mercPlayerFx／mercHit／mercCast／mercTick。
+- UI函式：mercRuneText／mercTownReady／mercRefresh／mercHire／mercRevive／mercToggle／mercBuyRune／mercSetRune／mercEquip／mercUnequip／openMercenary／mercChooseGroup／mercPickRune／mercPickEquip／mercCardHtml／renderMercenary；onclick只傳字面值或UID，不放player。
+- sceneMercTick／sceneDrawMerc：與娃娃分開追蹤，合法格尋路、距離>8瞬移重置、深度排序；以名稱／HP條和召喚光點呈現。main在非戰鬥時推進回復，combat在戰鬥推進；calcStats只加入傭兵當前支援增益。
+- tools/test-mercenary.js：六職業、50符石逐一施放／扣魔／冷卻、所有武器可交付、鎖定保護、符石拆換與重複配置拒絕、死亡僅損傭兵身上物品、復活保級與防重複、缺錢／離村拒絕、舊檔／加密存讀、SIM隔離、真實huntTick擊殺單次入帳、跟隨／瞬移／Canvas與四村設施及事件檢查。
+- 娃娃／21款能力／四村NPC可達、彈藥、快捷32格、BOSS附魔回歸；舊娃娃測試schema斷言更新18、設施數更新9。隔離瀏覽器實測PC／手機招募→配置符石→交付長劍→出戰，Console無error／warn；未連正式後端。check.ps1 ALL CHECKS PASSED、git diff --check通過，正式51檔混淆543KB成功，事件函式公開。待使用者實玩驗收後提交。
+
+197節符石分類：召喚9（靈狼／石衛／靈蝶／風鷹／火靈／冰靈／雷靈／樹靈／蟲群契約）；守護8（護衛／堅壁護盾／挑釁／鋼鐵壁壘／魔法結界／荊棘守護／挺身保護／團隊屏障）；補助9（急救之光／回春祝福／共鳴療癒／進軍鼓舞／力量祝福／專注祝福／魔力贈禮／淨化之光／戰地整備）；戰鬥8（重擊／橫掃／破甲刺擊／連環突擊／終結斬／撕裂／震盪擊／汲血斬）；生存8（自我療癒／靈巧步伐／冥想／淨身／生命強韌／自然復甦／背水一戰／生命轉魔）；秘術8（火焰彈／冰霜束縛／雷電衝擊／烈焰新星／腐蝕毒霧／連鎖雷光／衰弱咒印／星辰墜落），合計50。
+
+## 198. 傭兵等級階級與10萬招募費（2026-10-27，版本 `20261027l`）
+
+- 使用者指定招募「10,0000」解讀為100,000金幣，MERC_HIRE_COST改100000；招募按鈕／確認與實際扣款共用常數。復活每級1000及符石1000維持前版暫定值。既有傭兵不補扣費。
+- MERC_RANKS／mercRank／mercNameHtml依傭兵等級即時計算：1～29白C、30～40藍B、41～50紫A、51～60紅S、61～70金SS、71～80金色紅閃點SSS、81以上七彩流轉傳奇。僅顯示，不改能力、升級、死亡或復活規則。
+- 團長招募／管理、人物傭兵卡與地圖跟隨名稱／標記同步。HTML以merc-grade-*配CSS，SSS紅點動畫、傳奇文字漸層流轉；Canvas用gameNow推進紅點／七彩漸層。減少動態偏好停用CSS動畫。
+- schema18不變、無SQL／新角色美術，階級不存入角色，復活保級自然保留階級。test-mercenary補全部門檻兩側、各階人物／管理HTML與Canvas繪圖及10萬招募防重複扣款通過。check.ps1 ALL CHECKS PASSED、git diff --check通過；正式51檔混淆543KB成功。隔離瀏覽器確認七階顏色／動畫，Console無error／warn；待使用者實玩確認後提交。

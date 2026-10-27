@@ -46,7 +46,7 @@ function createPlayer(name, cls, stats) {
         stats: { ...stats }, statPoints: 0, elixirs: 0,
         baseHp: c.startHp + conHpBonus(stats.con), baseMp: c.startMp + wisMpBonus(stats.wis),
         hp: 1, mp: 0,
-        ammoId: '', inv: [], equip: {}, storage: [], nextUid: 1,
+        mercenary: null, ammoId: '', inv: [], equip: {}, storage: [], nextUid: 1,
         buffs: {}, cds: {}, dollState: {}, dollSummonUntil: 0,
         loc: { type: 'town', id: 'talking' }, hunting: false,
         towerMax: 1, towerKills: {}, towerRule: 2, towerCleared: {}, towerBossCd: {}, dragons: {}, dragonCd: {},
@@ -283,6 +283,7 @@ function calcStats() {
     const p = player, c = CLASSES[p.cls], fx = {}, now = gameNow;
     const doll = dollEquipped(p);
     if (doll && dollIsSummoned(p)) addFx(fx, DOLL_ABILITIES[doll].fx);
+    addFx(fx, mercPlayerFx());
     let weaponEnch = 0;
     for (const slot of SLOT_KEYS) {
         const it = p.equip[slot];

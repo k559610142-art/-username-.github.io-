@@ -352,8 +352,7 @@ function charCompanionsHtml() {
         </section>
         <section class="cv-companion cv-mercenary">
             <h4>傭兵</h4>
-            <div class="cv-companion-art cv-companion-empty"><span>未裝備傭兵</span></div>
-            <div class="cv-companion-desc"><b>效果介紹</b><p class="muted">尚無裝備效果</p></div>
+            ${mercCardHtml()}
         </section>
     </aside>`;
 }
@@ -422,12 +421,12 @@ function addStatBtn(k) { addStatPoint(k); saveGame(); refreshUI(); }
 
 // ───────── 背包 ─────────
 const BAG_FILTERS = [['all', '全部'], ['gear', '裝備'], ['potion', '藥水'], ['scroll', '卷軸'], ['book', '魔法書'], ['map', '地圖'], ['doll', '娃娃'], ['other', '其他']];
-const CAT_ORDER = ['quest', 'map', 'weapon', 'armor', 'doll', 'potion', 'scroll', 'book', 'currency', 'ammo', 'elixir', 'material'];
+const CAT_ORDER = ['mercRune', 'quest', 'map', 'weapon', 'armor', 'doll', 'potion', 'scroll', 'book', 'currency', 'ammo', 'elixir', 'material'];
 
 function bagMatch(def) {
     if (bagFilter === 'all') return true;
     if (bagFilter === 'gear') return def.cat === 'weapon' || def.cat === 'armor';
-    if (bagFilter === 'other') return ['ammo', 'elixir', 'material', 'quest', 'currency'].includes(def.cat);
+    if (bagFilter === 'other') return ['mercRune', 'ammo', 'elixir', 'material', 'quest', 'currency'].includes(def.cat);
     return def.cat === bagFilter;
 }
 
@@ -538,6 +537,7 @@ function itemDescHtml(inst, showAffixMax = false) {
     if (d.cat === 'weapon' || d.cat === 'armor') L.push(d.safe >= 0 ? `安定值 +${d.safe}` : '不可強化');
     if (d.heal) L.push(`回復 HP ${d.heal[0]}～${d.heal[1]}`);
     if (d.buff) L.push(`${BUFF_DEFS[d.buff].name}效果 ${d.sec / 60} 分鐘`);
+    if (d.rune) L.push(mercRuneText(d.rune));
     if (d.cat === 'ammo') L.push(`傷害 +${d.dmg}${d.silver ? '，對不死系額外傷害' : ''}`);
     if (d.classes) L.push(`限定：${d.classes.map(c => CLASSES[c].name).join('、')}`);
     if (d.desc) L.push(d.desc);
@@ -739,13 +739,13 @@ function renderQuest() {
 
 // ───────── 村莊 ─────────
 // NPC 對話框的招呼語
-const NPC_LINES = { identify: '將未鑑定財寶地圖交給鑑定台，免費揭露六條詞綴。', dollShop: '也可以在這裡分解傳說裝備，每件取得50個魔法結晶。歡迎挑選魔法娃娃。僅販售 T4 娃娃，每隻 500 鑽石，目前僅開放 GM 測試購買，購買後請到共用倉庫領取。', shop: '歡迎光臨！武器、藥水、卷軸應有盡有，慢慢挑。', sell: '有用不到的東西嗎？我全部收購。', storage: '要寄放什麼東西嗎？角色倉庫和帳號共用倉庫都在這裡。',
+const NPC_LINES = { mercenary: '招募與復活傭兵，補給六類技能符石。傭兵陣亡將失去身上裝備與技能。', identify: '將未鑑定財寶地圖交給鑑定台，免費揭露六條詞綴。', dollShop: '也可以在這裡分解傳說裝備，每件取得50個魔法結晶。歡迎挑選魔法娃娃。僅販售 T4 娃娃，每隻 500 鑽石，目前僅開放 GM 測試購買，購買後請到共用倉庫領取。', shop: '歡迎光臨！武器、藥水、卷軸應有盡有，慢慢挑。', sell: '有用不到的東西嗎？我全部收購。', storage: '要寄放什麼東西嗎？角色倉庫和帳號共用倉庫都在這裡。',
     craft: '帶齊材料來，我幫你打造最好的裝備。', inn: '旅途辛苦了，住一晚好好休息吧。' };
 // 商店分類（renderShop）：武器裝備（含彈藥）、藥水、卷軸，其他類別放「其他」
 const SHOP_CATS = [['gear', '⚔️ 武器裝備', ['weapon', 'armor', 'ammo']], ['potion', '🧪 藥水', ['potion', 'elixir']], ['scroll', '📜 卷軸', ['scroll']], ['book', '📖 魔法書', ['book']]];
 let townNpcNow = null, shopCat = 'gear';
 function setShopCat(c) { shopCat = c; renderPanel(); }
-const TOWN_SUBS = [['shop', '🏪 商店'], ['sell', '💰 回收'], ['storage', '📦 倉庫'], ['craft', '🔨 鍛造'], ['inn', '🛏️ 旅館'], ['dollShop', '🧚 娃娃商人'], ['identify', '🔍 鑑定台']];
+const TOWN_SUBS = [['mercenary', '⚑ 傭兵團長'], ['shop', '🏪 商店'], ['sell', '💰 回收'], ['storage', '📦 倉庫'], ['craft', '🔨 鍛造'], ['inn', '🛏️ 旅館'], ['dollShop', '🧚 娃娃商人'], ['identify', '🔍 鑑定台']];
 
 function renderTown() {
     if (!inTown()) {
@@ -755,13 +755,13 @@ function renderTown() {
     }
     if (townNpcNow) {   // NPC 專用對話框：只顯示這位 NPC 的功能（2026-10-12 使用者要求）
         const say = NPC_LINES[townSub] || '';
-        return `<div class="panel npc-say">「${say}」</div>` + ({ shop: renderShop, sell: renderSell, storage: renderStorage, craft: renderCraft, inn: renderInn, dollShop: renderDollShop, identify: renderIdentify }[townSub])();
+        return `<div class="panel npc-say">「${say}」</div>` + ({ shop: renderShop, sell: renderSell, storage: renderStorage, craft: renderCraft, inn: renderInn, dollShop: renderDollShop, identify: renderIdentify, mercenary: renderMercenary }[townSub])();
     }
     const t = currentTown();
     let h = `<div class="panel"><div class="loc">${t.icon} ${t.name}</div><small class="muted">村莊等級 ${t.tier}：越大的城鎮賣的東西越多。</small>
         ${isCloudConfigured() ? `<div class="btn-row"><button class="secondary" onclick="switchTab('raid')">🐉 團隊副本（和朋友組隊打龍）</button><button class="secondary" onclick="switchTab('market')">🏪 交易所</button></div>` : ''}</div>`;
     h += `<div class="chips">${TOWN_SUBS.map(([id, n]) => `<button class="chip-btn ${townSub === id ? 'active' : ''}" onclick="setTownSub('${id}')">${n}</button>`).join('')}</div>`;
-    return h + ({ shop: renderShop, sell: renderSell, storage: renderStorage, craft: renderCraft, inn: renderInn, dollShop: renderDollShop, identify: renderIdentify }[townSub])();
+    return h + ({ shop: renderShop, sell: renderSell, storage: renderStorage, craft: renderCraft, inn: renderInn, dollShop: renderDollShop, identify: renderIdentify, mercenary: renderMercenary }[townSub])();
 }
 
 function setTownSub(s) { townSub = s; renderPanel(); if (s === 'dollShop') dollShopLoad(); }
