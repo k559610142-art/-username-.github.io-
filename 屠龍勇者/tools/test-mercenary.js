@@ -36,6 +36,20 @@ let m=setup(); const uid=addItem('longSword').uid, gold=player.gold;
 mercEquip(uid,'weapon'); assert(!findInv(uid)); assert.equal(m.equip.weapon.uid,uid); mercUnequip('weapon'); assert(findInv(uid));
 // 不受玩家／傭兵職業與武器種類限制；雙手武器和盾牌仍互斥。
 for(const [id,d] of Object.entries(ITEMS).filter(([,d])=>d.cat==='weapon')) { const it=addItem(id);mercEquip(it.uid,'weapon');assert.equal(m.equip.weapon.uid,it.uid);mercUnequip('weapon'); }
+assert.equal(MERC_SLOTS.length,8);
+for(const slot of ['amulet','ring1','ring2','belt']) {
+ const id=Object.keys(ITEMS).find(id=>ITEMS[id].cat==='armor'&&ITEMS[id].slot===(slot.startsWith('ring')?'ring':slot));
+ const it=addItem(id);mercEquip(it.uid,slot);assert(findInv(it.uid));assert(!m.equip[slot]);
+ it.ench=3;it.q='rare';it.af=[];it.il=40;it.sellLocked=true;removeInst(it.uid);m.equip[slot]=it;
+}
+const gearBefore=Object.values(m.equip).map(it=>JSON.stringify(it)), playerSlotsBefore=JSON.stringify(player.equip);
+const statsWithoutRetired=mercStats(m);const migrated=guardWrap(migrateSave({schema:18,player:JSON.parse(JSON.stringify(player))}));
+assert.equal(Object.keys(migrated.mercenary.equip).length,0);assert.equal(JSON.stringify(migrated.equip),playerSlotsBefore);
+for(const raw of gearBefore) {const it=JSON.parse(raw);assert.equal(JSON.stringify(migrated.inv.find(x=>x.uid===it.uid)),raw);}
+const repeat=migrateSave({schema:18,player:migrated});for(const raw of gearBefore){const uid=JSON.parse(raw).uid;assert.equal(repeat.inv.filter(x=>x.uid===uid).length,1);}
+assert.equal(JSON.stringify(mercStats(m)),JSON.stringify(statsWithoutRetired));
+player=migrated;m=player.mercenary;const html=renderMercenary();for(const slot of ['amulet','ring1','ring2','belt']) assert(!html.includes('mercPickEquip(\''+slot+'\')'));
+assert.equal(SLOT_KEYS.length,12);
 const locked=addItem('longSword');locked.sellLocked=true;mercEquip(locked.uid,'weapon');assert(findInv(locked.uid));
 for(const id of Object.keys(MERC_RUNES)) {
  const before=countItem('mercRune_'+id); mercBuyRune(id); assert.equal(countItem('mercRune_'+id),before+1);

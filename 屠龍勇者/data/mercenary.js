@@ -7,6 +7,7 @@ const MERC_CLASSES = {
     wild: { name: '荒野行者', person: '莉雅', sex: '女', age: '年輕', hp: 170, mp: 85, atk: 12, magic: 9, def: 4, regen: 3 },
     arcane: { name: '秘法使', person: '諾亞', sex: '男', age: '孩童', hp: 105, mp: 145, atk: 7, magic: 19, def: 1, regen: 4 },
 };
+const MERC_SLOTS = ['weapon', 'shield', 'helm', 'armor', 'tshirt', 'cloak', 'gloves', 'boots'];
 const MERC_HIRE_COST = 100000, MERC_REVIVE_COST = 1000, MERC_RUNE_COST = 1000;
 const MERC_GROUPS = { summon: '召喚', guard: '守護', support: '補助', battle: '戰鬥', survival: '生存', arcane: '秘術' };
 const MERC_RUNES = {};
@@ -73,7 +74,8 @@ function mercState(m = player.mercenary) {
 function mercBuff(id, m = player.mercenary) { const b = m && mercState(m).buffs[id]; return b && b.until > gameNow ? b.power : 0; }
 function mercStats(m = player.mercenary) {
     const c = MERC_CLASSES[m.cls], fx = {}, w = m.equip.weapon, d = w && ITEMS[w.id];
-    for (const [slot, it] of Object.entries(m.equip)) {
+    for (const slot of MERC_SLOTS) {
+        const it = m.equip[slot]; if (!it) continue;
         const def = ITEMS[it.id]; if (!def) continue;
         addFx(fx, affixFx(it));
         if (slot !== 'weapon') { addFx(fx, def); fx.ac = (fx.ac || 0) + (it.ench || 0); }
@@ -96,8 +98,10 @@ function mercNormalize(p) {
     const used = new Set([...p.inv, ...p.storage, ...Object.values(p.equip)].map(x => x.uid));
     for (const slot of Object.keys(m.equip)) {
         const it = m.equip[slot], d = it && ITEMS[it.id], want = slot.startsWith('ring') ? 'ring' : slot;
-        if (!SLOT_KEYS.includes(slot) || !d || (slot === 'weapon' ? d.cat !== 'weapon' : d.cat !== 'armor' || d.slot !== want) || it.n !== 1 || !Number.isSafeInteger(it.uid) || it.uid <= 0 || used.has(it.uid)) { delete m.equip[slot]; continue; }
+        if ((!MERC_SLOTS.includes(slot) && !['amulet', 'ring1', 'ring2', 'belt'].includes(slot)) || !d || (slot === 'weapon' ? d.cat !== 'weapon' : d.cat !== 'armor' || d.slot !== want) || it.n !== 1 || !Number.isSafeInteger(it.uid) || it.uid <= 0 || used.has(it.uid)) { delete m.equip[slot]; continue; }
         used.add(it.uid); p.nextUid = Math.max(p.nextUid, it.uid + 1);
+        // 舊版取消的四個飾品槽原樣退回背包；死亡傭兵不恢復已失去物品。
+        if (!MERC_SLOTS.includes(slot)) { if (!m.dead) p.inv.push(it); delete m.equip[slot]; }
     }
     const seen = new Set();
     m.skills = Array.from({ length: 4 }, (_, i) => { const id = Array.isArray(m.skills) && m.skills[i]; if (!MERC_RUNES[id] || seen.has(id)) return ''; seen.add(id); return id; });
@@ -275,14 +279,14 @@ function mercSetRune(slot, id) {
 }
 function mercEquip(uid, slot) {
     const m = player.mercenary, it = findInv(uid), d = it && ITEMS[it.id];
-    if (!mercTownReady() || !m || m.dead || !d || !SLOT_KEYS.includes(slot) || it.sellLocked || (slot === 'weapon' ? d.cat !== 'weapon' : d.cat !== 'armor' || d.slot !== (slot.startsWith('ring') ? 'ring' : slot))) return;
+    if (!mercTownReady() || !m || m.dead || !d || !MERC_SLOTS.includes(slot) || it.sellLocked || (slot === 'weapon' ? d.cat !== 'weapon' : d.cat !== 'armor' || d.slot !== (slot.startsWith('ring') ? 'ring' : slot))) return;
     if (slot === 'shield' && m.equip.weapon && WEAPON_TYPES[ITEMS[m.equip.weapon.id].type].two) { showToast('雙手武器不能搭配盾牌'); return; }
     if (slot === 'weapon' && WEAPON_TYPES[d.type].two && m.equip.shield) { player.inv.push(m.equip.shield); delete m.equip.shield; }
     if (m.equip[slot]) player.inv.push(m.equip[slot]); removeInst(uid); m.equip[slot] = it;
     const st = mercStats(m); m.hp = Math.min(m.hp, st.hp); m.mp = Math.min(m.mp, st.mp); mercRefresh();
 }
 function mercUnequip(slot) {
-    const m = player.mercenary; if (!mercTownReady() || !m || m.dead || !SLOT_KEYS.includes(slot) || !m.equip[slot]) return;
+    const m = player.mercenary; if (!mercTownReady() || !m || m.dead || !MERC_SLOTS.includes(slot) || !m.equip[slot]) return;
     player.inv.push(m.equip[slot]); delete m.equip[slot]; const st = mercStats(m); m.hp = Math.min(m.hp, st.hp); m.mp = Math.min(m.mp, st.mp); mercRefresh();
 }
 let mercPanelOpen = false;
@@ -296,7 +300,7 @@ function mercPickRune(slot) {
 }
 function mercPickEquip(slot) {
     mercPanelOpen = true;
-    if (!mercTownReady() || !SLOT_KEYS.includes(slot)) return;
+    if (!mercTownReady() || !MERC_SLOTS.includes(slot)) return;
     const rows = player.inv.filter(x => { const d = ITEMS[x.id]; return !x.sellLocked && (slot === 'weapon' ? d.cat === 'weapon' : d.cat === 'armor' && d.slot === (slot.startsWith('ring') ? 'ring' : slot)); }).map(x => '<div class="list-row"><div><b>' + esc(itemName(x)) + '</b><small>' + esc(itemDescHtml(x).replace(/<[^>]*>/g,' ')) + '</small></div><button onclick="mercEquip(' + x.uid + ',\'' + slot + '\')">交付</button></div>').join('');
     openDialog('傭兵裝備・' + SLOTS[slot], '<p class="bad">交付後傭兵死亡會永久失去此裝備。鎖定物品須先解鎖。</p><div class="list">' + (rows || '背包沒有可用裝備。') + '</div>', [{ text: '返回', onClick: openMercenary }]);
 }
@@ -304,14 +308,21 @@ function mercCardHtml() {
     const m = player.mercenary, c = m && MERC_CLASSES[m.cls];
     return '<div class="cv-companion-art cv-companion-empty"><span>' + (c ? mercNameHtml(m) + '<br>Lv.' + m.lv + (m.dead ? ' 陣亡' : m.active ? ' 出戰中' : ' 待命') + '<br>HP ' + Math.ceil(m.hp) + '／MP ' + Math.ceil(m.mp) : '未雇傭傭兵') + '</span></div><button class="mini" onclick="openMercenary()">管理傭兵</button><div class="cv-companion-desc"><small>與娃娃獨立，可同時出戰。四格符石自由搭配。</small></div>';
 }
+function mercRuneBoardHtml(m, town) {
+    const marks = { summon: '召', guard: '守', support: '輔', battle: '戰', survival: '生', arcane: '秘' };
+    return '<section class="merc-rune-board" aria-label="四格技能符石鑲嵌石板"><header><span aria-hidden="true">◆</span><h4>四格技能符石</h4><span aria-hidden="true">◆</span></header><p class="merc-board-hint">點擊凹槽鑲嵌符石・依序施放</p><div class="merc-rune-sockets">' + m.skills.map((id, i) => {
+        const rune = MERC_RUNES[id], locked = !town || m.dead, name = rune ? rune.name : '空白凹槽';
+        return '<article class="merc-socket-card ' + (rune ? 'filled rune-' + rune.group : 'vacant') + '"><span class="merc-socket-number">' + ['Ⅰ','Ⅱ','Ⅲ','Ⅳ'][i] + '</span><button type="button" class="merc-socket" onclick="mercPickRune(' + i + ')" aria-label="第' + (i + 1) + '格：' + esc(name) + '，' + (rune ? '替換符石' : '選擇符石') + '" ' + (locked ? 'disabled' : '') + '><span class="merc-socket-rim" aria-hidden="true">' + (rune ? '<span class="merc-gem"><span>' + marks[rune.group] + '</span></span>' : '<span class="merc-socket-empty">＋</span>') + '</span></button><b class="merc-socket-name">' + esc(name) + '</b><small class="merc-socket-type">' + (rune ? MERC_GROUPS[rune.group] + '系・已鑲嵌' : '尚未鑲嵌') + '</small>' + (rune ? '<small class="merc-socket-cost">MP ' + rune.mp + ' · 冷卻 ' + rune.cd + ' 秒</small><details class="merc-rune-detail"><summary>效果說明</summary><small>' + esc(mercRuneText(id)) + '</small></details><button type="button" class="merc-rune-remove" onclick="mercSetRune(' + i + ',\'\')" ' + (locked ? 'disabled' : '') + '>拆回背包</button>' : '<small class="merc-socket-help">點擊上方孔位放入技能</small>') + '</article>';
+    }).join('') + '</div></section>';
+}
 function renderMercenary() {
     const m = player.mercenary, c = m && MERC_CLASSES[m.cls], town = mercTownReady();
     let h = '<div class="panel"><p>六職業共用50種符石，一次持有一位。在村莊招募、配置與調整出戰。</p><p class="bad">死亡永久失去身上全部裝備與已配置符石；背包物品不受影響。復活保留等級。</p><details><summary>戰鬥與裝備規則</summary><small>不限制武器職業，雙手武器與盾牌互斥。一般掛機生效；離線／團隊副本／世界首領暫不參戰。遠程武器不耗玩家彈藥，裝備共鳴與BOSS附魔暫不觸發。技能依四格順序判斷，每秒最多一招；召喚物最多2隻。框架先用跟隨標記呈現。</small></details></div>';
     if (m) {
         const st = mercStats(m);
         h += '<div class="panel"><b>' + mercNameHtml(m) + '</b>（' + c.sex + '／' + c.age + '）<p>Lv.' + m.lv + '｜經驗 ' + fmt(m.exp) + '／' + fmt(mercExpNeed(m)) + '<br>HP ' + Math.ceil(m.hp) + '／' + st.hp + '　MP ' + Math.ceil(m.mp) + '／' + st.mp + '<br>物攻' + Math.round(st.atk) + '／魔攻' + Math.round(st.magic) + '／防禦' + st.def + '／魔防' + st.mr + '</p>' + (m.dead ? '<button onclick="mercRevive()" ' + (!town ? 'disabled' : '') + '>復活（' + fmt(m.lv * MERC_REVIVE_COST) + '金幣）</button>' : '<button onclick="mercToggle()" ' + (!town ? 'disabled' : '') + '>' + (m.active ? '收回傭兵' : '傭兵出戰') + '</button>') + '</div>';
-        h += '<h4>四格技能符石</h4><div class="merc-grid">' + m.skills.map((id,i) => '<div class="panel"><b>第' + (i + 1) + '格：' + (id ? esc(MERC_RUNES[id].name) : '空白') + '</b><small>' + esc(mercRuneText(id)) + '</small><button onclick="mercPickRune(' + i + ')" ' + (!town || m.dead ? 'disabled' : '') + '>選擇／替換</button>' + (id ? '<button onclick="mercSetRune(' + i + ',\'\')" ' + (!town || m.dead ? 'disabled' : '') + '>拆回背包</button>' : '') + '</div>').join('') + '</div>';
-        h += '<h4>傭兵裝備</h4><div class="merc-grid">' + SLOT_KEYS.map(slot => '<div class="panel"><b>' + SLOTS[slot] + '：' + (m.equip[slot] ? esc(itemName(m.equip[slot])) : '空白') + '</b><button onclick="mercPickEquip(\'' + slot + '\')" ' + (!town || m.dead ? 'disabled' : '') + '>選擇</button>' + (m.equip[slot] ? '<button onclick="mercUnequip(\'' + slot + '\')" ' + (!town || m.dead ? 'disabled' : '') + '>卸下</button>' : '') + '</div>').join('') + '</div>';
+        h += mercRuneBoardHtml(m, town);
+        h += '<h4>傭兵裝備</h4><div class="merc-grid">' + MERC_SLOTS.map(slot => '<div class="panel"><b>' + SLOTS[slot] + '：' + (m.equip[slot] ? esc(itemName(m.equip[slot])) : '空白') + '</b><button onclick="mercPickEquip(\'' + slot + '\')" ' + (!town || m.dead ? 'disabled' : '') + '>選擇</button>' + (m.equip[slot] ? '<button onclick="mercUnequip(\'' + slot + '\')" ' + (!town || m.dead ? 'disabled' : '') + '>卸下</button>' : '') + '</div>').join('') + '</div>';
     }
     if (!m || m.dead) h += '<h4>傭兵團長・招募</h4><div class="merc-grid">' + Object.entries(MERC_CLASSES).map(([id,x]) => '<div class="panel"><b>' + mercNameHtml({ cls: id, lv: 1 }) + '</b><small>' + x.sex + '／' + x.age + '｜初始Lv.1｜HP ' + x.hp + '／MP ' + x.mp + '</small><button onclick="mercHire(\'' + id + '\')" ' + (!town ? 'disabled' : '') + '>雇傭（' + fmt(MERC_HIRE_COST) + '金幣）</button></div>').join('') + '</div>';
     h += '<h4>傭兵團長・符石補給（每顆' + fmt(MERC_RUNE_COST) + '金幣）</h4><div class="chips">' + Object.entries(MERC_GROUPS).map(([id,n]) => '<button onclick="mercChooseGroup(\'' + id + '\')">' + n + '</button>').join('') + '</div><div class="list">' + Object.values(MERC_RUNES).filter(x => x.group === mercRuneGroup).map(s => '<div class="list-row"><div><b>' + esc(s.name) + '</b><small>' + esc(mercRuneText(s.id)) + '</small></div><button onclick="mercBuyRune(\'' + s.id + '\')" ' + (!town ? 'disabled' : '') + '>購買</button></div>').join('') + '</div>';

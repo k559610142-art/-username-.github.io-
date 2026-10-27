@@ -216,7 +216,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027l`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027n`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3726,3 +3726,17 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - MERC_RANKS／mercRank／mercNameHtml依傭兵等級即時計算：1～29白C、30～40藍B、41～50紫A、51～60紅S、61～70金SS、71～80金色紅閃點SSS、81以上七彩流轉傳奇。僅顯示，不改能力、升級、死亡或復活規則。
 - 團長招募／管理、人物傭兵卡與地圖跟隨名稱／標記同步。HTML以merc-grade-*配CSS，SSS紅點動畫、傳奇文字漸層流轉；Canvas用gameNow推進紅點／七彩漸層。減少動態偏好停用CSS動畫。
 - schema18不變、無SQL／新角色美術，階級不存入角色，復活保級自然保留階級。test-mercenary補全部門檻兩側、各階人物／管理HTML與Canvas繪圖及10萬招募防重複扣款通過。check.ps1 ALL CHECKS PASSED、git diff --check通過；正式51檔混淆543KB成功。隔離瀏覽器確認七階顏色／動畫，Console無error／warn；待使用者實玩確認後提交。
+
+## 199. 傭兵移除飾品裝備欄（2026-10-27，版本 `20261027m`）
+
+- 使用者取消傭兵項鍊、兩個戒指與腰帶，取代第197節12格設定。MERC_SLOTS獨立白名單只含weapon／shield／helm／armor／tshirt／cloak／gloves／boots，共8格；玩家SLOT_KEYS仍12格不變。
+- mercStats／mercEquip／mercUnequip／mercPickEquip／renderMercenary均限定MERC_SLOTS，取消部位不能交付、不顯示也不計能力。無新增角色欄位，schema18／SQL不變。
+- mercNormalize沿既有讀檔正規化處理舊版合法amulet／ring1／ring2／belt：活傭兵原物件退回玩家背包，保留UID／強化／品質／詞綴／物品等級／鎖定，並移除傭兵欄位；與玩家容器重複UID不複製，nextUid繼續保護，重登不重退。死亡傭兵維持永久損失規則，不恢復物品。
+- test-mercenary補8格／玩家12格、四飾品拒絕交付、舊物件原樣退回及重讀不複製、UI不列取消部位；沿用招募／50符石／死亡／復活及娃娃回歸通過。check.ps1 ALL CHECKS PASSED、git diff --check通過，正式51檔混淆544KB成功；隔離瀏覽器確認管理介面僅8格、現有屬性區塊正常，Console無error／warn。待使用者實玩確認後提交。
+
+## 200. 傭兵四格技能石板鑲嵌介面（2026-10-27，版本 `20261027n`）
+
+- 使用者確認僅改四格技能區。mercRuneBoardHtml取代renderMercenary原技能文字卡；石紋底座、四凹槽以兩欄兩列排列，空孔有刻痕加號、已配置符石呈切面晶石。序號Ⅰ～Ⅳ保留優先順序。
+- 六類以召／守／輔／戰／生／秘刻字及紫／藍／金／紅／綠／青辨識，旁列名稱、分類、MP與CD；效果說明用details展開，符石下方保留拆回背包。孔位仍呼叫mercPickRune，拆除仍走mercSetRune；離村／陣亡維持disabled。事件只傳字面槽位，不改玩法。
+- 美術使用CSS漸層石紋、內陰影凹槽及clip-path晶體，不新增圖片素材；八格裝備與管理介面其他區塊不變。新增函式mercRuneBoardHtml，CSS限制merc-rune-*／merc-socket-*／merc-gem，不影響其他系統。schema18／SQL／載入順序不變。
+- tools/mercenary-preview.html加記憶體鑲嵌展示：先招募，再以正式mercSetRune配置靈狼／護盾／火焰彈，第四格留空；禁止連正式後端。原傭兵回歸通過。隔離瀏覽器實測點空孔→鑲入→拆回背包，375px手機兩欄且無橫向溢出，Console無error／warn；check.ps1 ALL CHECKS PASSED、git diff --check通過，正式51檔混淆545KB成功。待使用者實玩驗收後提交。
