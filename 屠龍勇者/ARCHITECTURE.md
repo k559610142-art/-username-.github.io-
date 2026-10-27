@@ -211,7 +211,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027d`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027e`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3635,3 +3635,11 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 ## 190. 手機MR與負重移到右上黑底（2026-10-27，版本 `20261027d`）
 
 - 依使用者第二張圖紅圈，僅frame:not(.pc)覆寫hud-mr定位，MR與負重上下排列在MP法球上方右側黑底（frame右90s、底568s附近），不再覆蓋MP。沿原hud-stats即時數值、縮放與pointer-events:none；PC位置與數值計算不變，無schema15／SQL變更。待手機驗收。
+
+## 191. 掉寶結算放寬批次、定時補領收據改 5 分鐘（2026-10-27，版本 `20261027e`；`loot.js` 的 `LOOT_BATCH_N`／`LOOT_BATCH_MS`／`LOOT_PENDING_MS`）
+
+- 起因：使用者 10/23 升 Supabase Pro 後，Log Ingestion 到 10/27 已 6.43／20 GB（約每天 1.4 GB，月底估 40 GB 以上，「UPCOMING」尚未計費）。全面檢查後，每位掛機玩家每小時約 900～1000 個請求，七、八成是後端掉寶（遇怪 `loot_spawn`、加入戰鬥再一次 `loot_spawn`、結算、`loot_pending`）。使用者選 A＋B 兩個不改 SQL 的項目先做。
+- **A**：`lootPump` 尾端的定時 `loot_pending`（回應遺失時補領）由每 30 秒改 `LOOT_PENDING_MS`＝5 分鐘。每批 `loot_finish_batch` 之後本來就會查一次 `loot_pending`，正常掉寶不受影響；只有回應遺失的那批最慢 5 分鐘才補到。每人每小時約 -110 個請求。
+- **B**：`LOOT_BATCH_N` 10 → 30、`LOOT_BATCH_MS` 30 秒 → 60 秒（`LOOT_BATCH_MAX` 50 不變）。停止掛機、離開畫面、倉庫／交易所前 `lootSettleNow` 照舊立即結算。伺服器 `loot_spawn` 的未結算上限 64（10 分鐘內，`tools/loot-batch.sql`／`loot-screen.sql`）：排隊最多 29＋畫面五招一次 30 隻仍低於 64；碰到 `loot encounters full` 原本就會 `lootSettleNow`。每人每小時約 -70 個請求（結算與結算後查收據各一半）。
+- 合計每人每小時約 950 → 770。未做（要改 SQL，另議）：C 一次領多隻怪憑證（約 -400）、D 結算直接回傳收據（約 -50）；E 聊天框閒置停抓。
+- 無 SQL、存檔結構、載入順序變更。

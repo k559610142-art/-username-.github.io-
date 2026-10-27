@@ -65,19 +65,19 @@ async function main(){await vm.runInContext(String.raw`(async()=>{
   player.lv+=1;hunt.state='search';await lootSpawn();assert.equal(ups,2,'等級變了要重傳');player.lv-=1;
   lootStore([{key:'k1',kind:'kill',ticket:'k1',slot:0,char}]);let fin=0;
   marketRpc=async fn=>{if(fn==='loot_finish_batch')fin++;return fn==='loot_pending'?[]:{};};lootPendingAt=gameNow+30000;
-  await lootPump();assert.equal(fin,1);assert.equal(ups,2,'結算不上傳');cloudSyncedSlot=so;}
- // 第104節：擊殺排隊、滿 10 隻或 30 秒才批次結算；重送用同一批次編號；每次掛機只釋放一次
+  await lootPump();assert.equal(fin,1);assert.equal(LOOT_PENDING_MS,300000,'定時補領收據 5 分鐘');assert.equal(ups,2,'結算不上傳');cloudSyncedSlot=so;}
+ // 第104節（第191節放寬）：擊殺排隊、滿 30 隻或 60 秒才批次結算；重送用同一批次編號；每次掛機只釋放一次
  {const calls=[];let fail=false;marketRpc=async(fn,args)=>{calls.push([fn,args]);if(fn==='loot_finish_batch'){if(fail)throw Error('Failed to fetch');return {};}return fn==='loot_pending'?[]:true;};
   lootPendingAt=gameNow+300000;lootStore([]);const now=Date.now();
-  for(let i=0;i<9;i++)lootStore([...lootJobs(),{key:'k'+i,kind:'kill',ticket:'t'+i,slot:0,char,at:now}]);
-  await lootPump();assert.equal(calls.filter(c=>c[0]==='loot_finish_batch').length,0,'9 隻、未滿 30 秒不結算');
-  lootStore([...lootJobs(),{key:'k9',kind:'kill',ticket:'t9',slot:0,char,at:now}]);fail=true;await lootPump();
-  const first=calls.filter(c=>c[0]==='loot_finish_batch');assert.equal(first.length,1);assert.equal(first[0][1].p_tickets.length,10,'滿 10 隻一次結算');
-  assert.equal(lootJobs().length,10,'失敗時佇列保留');fail=false;lootSyncFailAt=0;await lootPump();
+  for(let i=0;i<29;i++)lootStore([...lootJobs(),{key:'k'+i,kind:'kill',ticket:'t'+i,slot:0,char,at:now}]);
+  await lootPump();assert.equal(calls.filter(c=>c[0]==='loot_finish_batch').length,0,'29 隻、未滿 60 秒不結算');
+  lootStore([...lootJobs(),{key:'k29',kind:'kill',ticket:'t29',slot:0,char,at:now}]);fail=true;await lootPump();
+  const first=calls.filter(c=>c[0]==='loot_finish_batch');assert.equal(first.length,1);assert.equal(first[0][1].p_tickets.length,30,'滿 30 隻一次結算');
+  assert.equal(lootJobs().length,30,'失敗時佇列保留');fail=false;lootSyncFailAt=0;await lootPump();
   const all=calls.filter(c=>c[0]==='loot_finish_batch');assert.equal(all[1][1].p_batch,all[0][1].p_batch,'重送用同一批次編號');assert.equal(lootJobs().length,0,'成功後清掉');
   lootStore([{key:'s1',kind:'kill',ticket:'s1',slot:0,char,at:now}]);lootSettleNow();await new Promise(r=>setTimeout(r,0));while(lootBusy)await new Promise(r=>setTimeout(r,1));
   assert.equal(lootJobs().length,0,'要求馬上結算時不等湊滿');
-  lootStore([{key:'o1',kind:'kill',ticket:'o1',slot:0,char,at:now-31000}]);await lootPump();assert.equal(lootJobs().length,0,'超過 30 秒就結算');
+  lootStore([{key:'o1',kind:'kill',ticket:'o1',slot:0,char,at:now-59000}]);await lootPump();assert.equal(lootJobs().length,1,'未滿 60 秒不結算');lootStore([{key:'o1',kind:'kill',ticket:'o1',slot:0,char,at:now-61000}]);await lootPump();assert.equal(lootJobs().length,0,'超過 60 秒就結算');
   calls.length=0;marketRpc=async(fn)=>{calls.push([fn]);return fn==='loot_spawn'?[{ticket:crypto.randomUUID(),monster:makeMonster('goblin')}]:true;};
   hunt={state:'search',mobs:[],mon:null,warned:{}};player.hunting=true;await lootSpawn();hunt.state='search';await lootSpawn();
   assert.equal(calls.filter(c=>c[0]==='loot_release').length,1,'同一次掛機只釋放一次');assert.equal(calls.filter(c=>c[0]==='loot_spawn').length,2);

@@ -4,8 +4,10 @@ const LOOT_PROTOCOL = 1;
 // 緊急開關（第 103 節）：Supabase 卡死、連 SQL 都執行不了時，改成 true 推上線，遊戲就不再找後端掉寶、改用一般掉寶，玩家可以照常掛機。恢復後改回 false
 const LOOT_FORCE_LOCAL = false;   // 2026-10-23 l 版開、n 版關（第 105、107 節）
 let lootMode = 'legacy', lootBusy = false, lootProbeAt = 0, lootNoticeAt = 0, lootPendingAt = 0, lootSyncFailAt = 0;
-// 批次結算（第 104 節，tools/loot-batch.sql）：擊殺先排隊，同一角色滿 10 隻或最早那隻等了 30 秒才一起結算（一批最多 50 隻）
-const LOOT_BATCH_N = 10, LOOT_BATCH_MS = 30000, LOOT_BATCH_MAX = 50;
+// 批次結算（第 104 節，tools/loot-batch.sql）：擊殺先排隊，同一角色滿 30 隻或最早那隻等了 60 秒才一起結算（一批最多 50 隻；2026-10-27 由 10 隻／30 秒放寬，第 191 節，降 Log Ingestion）
+const LOOT_BATCH_N = 30, LOOT_BATCH_MS = 60000, LOOT_BATCH_MAX = 50;
+// 定時補領收據（回應遺失時才需要）：每批結算後本來就會查一次，定時的只是保險，5 分鐘一次（原本 30 秒，第 191 節）
+const LOOT_PENDING_MS = 5 * 60 * 1000;
 // 定時查後端掉寶狀態（loot_status）：正常運作時只是確認管理者有沒有停用，5 分鐘一次；還沒確認／連不上時 30 秒一次，掛機才不會停太久（第 170 節，降 Log Ingestion）
 const LOOT_PROBE_MS = 5 * 60 * 1000, LOOT_PROBE_WAIT_MS = 30000;
 let lootFlushWanted = false;
@@ -260,7 +262,7 @@ async function lootPump() {
         }
         // 回應遺失後，後端已決定的獎勵仍可按原順序補領。
         if (player && playerOwner === uid && gameNow >= lootPendingAt) {
-            lootPendingAt = gameNow + 30000;
+            lootPendingAt = gameNow + LOOT_PENDING_MS;
             const char = lootChar(), slot = currentSlot;
             const pending = await marketRpc('loot_pending', { p_slot:slot,p_char:char });
             if (!cloudUser || cloudUser.id !== uid) return;
