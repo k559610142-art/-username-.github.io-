@@ -1,0 +1,64 @@
+{
+  "id": "spirit",
+  "name": "璃音・契靈師",
+  "cellW": 384,
+  "cellH": 320,
+  "foot": [
+    192,
+    282
+  ],
+  "charH": 160,
+  "drawH": 36,
+  "rows": [
+    "down",
+    "right",
+    "up"
+  ],
+  "left": "mirror right",
+  "actions": {
+    "walk": {
+      "src": "images/sprites/mercenary/companions-v1/spirit/walk.png",
+      "cellW": 384,
+      "cellH": 320,
+      "frames": {
+        "down": 4,
+        "right": 4,
+        "up": 4
+      },
+      "ms": 130
+    },
+    "attack": {
+      "src": "images/sprites/mercenary/companions-v1/spirit/attack.png",
+      "cellW": 384,
+      "cellH": 320,
+      "frames": {
+        "down": 4,
+        "right": 4,
+        "up": 4
+      },
+      "ms": 140
+    },
+    "cast": {
+      "src": "images/sprites/mercenary/companions-v1/spirit/cast.png",
+      "cellW": 384,
+      "cellH": 320,
+      "frames": {
+        "down": 2,
+        "right": 2,
+        "up": 2
+      },
+      "ms": 220
+    },
+    "hit": {
+      "src": "images/sprites/mercenary/companions-v1/spirit/hit.png",
+      "cellW": 384,
+      "cellH": 320,
+      "frames": {
+        "down": 2,
+        "right": 2,
+        "up": 2
+      },
+      "ms": 150
+    }
+  }
+}

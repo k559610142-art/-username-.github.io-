@@ -1,0 +1,38 @@
+{
+  "spirit": {
+    "down": "C:\\Users\\User\\.codex\\generated_images\\01a17d1b-07f5-7542-b5c7-c6720a79124b\\exec-8f2952db-850e-4832-b67f-28e3cb34c2a8.png",
+    "right": "C:\\Users\\User\\.codex\\generated_images\\01a17d1b-07f5-7542-b5c7-c6720a79124b\\exec-ddf122df-03cc-42e3-8342-3f8b4418b164.png",
+    "up": "C:\\Users\\User\\.codex\\generated_images\\01a17d1b-07f5-7542-b5c7-c6720a79124b\\exec-b2bc9c54-4650-43f5-997b-b5361218b466.png",
+    "downInitial": "C:\\Users\\User\\.codex\\generated_images\\01a17d1b-07f5-7542-b5c7-c6720a79124b\\exec-8aa94c3d-8b0a-4837-8fc8-807ec8d5cea6.png"
+  },
+  "war": {
+    "down": "C:\\Users\\User\\.codex\\generated_images\\01a17d1b-07f5-7542-b5c7-c6720a79124b\\exec-70523622-e503-4053-98c8-4abfe2e8951d.png",
+    "right": "C:\\Users\\User\\.codex\\generated_images\\01a17d1b-07f5-7542-b5c7-c6720a79124b\\exec-a7251979-dbd4-4d35-a4e4-d246bf0793bf.png",
+    "up": "C:\\Users\\User\\.codex\\generated_images\\01a17d1b-07f5-7542-b5c7-c6720a79124b\\exec-d1585d6b-c185-4c53-ba42-5448f13f9033.png",
+    "downInitial": "C:\\Users\\User\\.codex\\generated_images\\01a17d1b-07f5-7542-b5c7-c6720a79124b\\exec-bbd5110c-ccd3-464a-94f6-47b99c925e21.png"
+  },
+  "bulwark": {
+    "down": "C:\\Users\\User\\.codex\\generated_images\\01a17d1b-07f5-7542-b5c7-c6720a79124b\\exec-7a0e198b-2456-45f2-839b-55cf1d3a89fd.png",
+    "right": "C:\\Users\\User\\.codex\\generated_images\\01a17d1b-07f5-7542-b5c7-c6720a79124b\\exec-04d3791a-3a2e-42ef-906f-50f5d3b6535e.png",
+    "up": "C:\\Users\\User\\.codex\\generated_images\\01a17d1b-07f5-7542-b5c7-c6720a79124b\\exec-d0fdfe7e-ddfe-422f-ad67-eaea2704593a.png",
+    "downInitial": "C:\\Users\\User\\.codex\\generated_images\\01a17d1b-07f5-7542-b5c7-c6720a79124b\\exec-8e7fc5ab-27d3-4cde-ba92-eab9d2e33468.png"
+  },
+  "wild": {
+    "down": "C:\\Users\\User\\.codex\\generated_images\\01a17d1b-07f5-7542-b5c7-c6720a79124b\\exec-7603467e-60a9-49d7-a2aa-f1a84cf56951.png",
+    "right": "C:\\Users\\User\\.codex\\generated_images\\01a17d1b-07f5-7542-b5c7-c6720a79124b\\exec-4c308dc5-17e0-4808-b579-5b9dd66d3702.png",
+    "up": "C:\\Users\\User\\.codex\\generated_images\\01a17d1b-07f5-7542-b5c7-c6720a79124b\\exec-33f92b18-2223-4ec6-95de-696fcec6f01f.png",
+    "downInitial": "C:\\Users\\User\\.codex\\generated_images\\01a17d1b-07f5-7542-b5c7-c6720a79124b\\exec-0aca9334-2572-4807-9b9f-f753ef66714e.png"
+  },
+  "wish": {
+    "down": "C:\\Users\\User\\.codex\\generated_images\\01a17d1b-07f5-7542-b5c7-c6720a79124b\\exec-9b15fbb6-6763-486b-843b-b37d1cc95979.png",
+    "right": "C:\\Users\\User\\.codex\\generated_images\\01a17d1b-07f5-7542-b5c7-c6720a79124b\\exec-dea8e321-d579-4621-b024-f8dc2ad297fe.png",
+    "up": "C:\\Users\\User\\.codex\\generated_images\\01a17d1b-07f5-7542-b5c7-c6720a79124b\\exec-e21b1f70-2da7-4416-beb9-b57d31e2770c.png",
+    "downInitial": "C:\\Users\\User\\.codex\\generated_images\\01a17d1b-07f5-7542-b5c7-c6720a79124b\\exec-7b00062b-0881-44fb-866a-2ae62a89ebf5.png"
+  },
+  "arcane": {
+    "down": "C:\\Users\\User\\.codex\\generated_images\\01a17d1b-07f5-7542-b5c7-c6720a79124b\\exec-4123e3bf-1dde-4bc1-9b44-c9d3604bc71f.png",
+    "up": "C:\\Users\\User\\.codex\\generated_images\\01a17d1b-07f5-7542-b5c7-c6720a79124b\\exec-4ef627fd-25c9-4c73-b4ce-828d24ff9bb7.png",
+    "right": "C:\\Users\\User\\.codex\\generated_images\\01a17d1b-07f5-7542-b5c7-c6720a79124b\\exec-97528dcb-38a0-43b0-872f-13e68f1aa229.png",
+    "downInitial": "C:\\Users\\User\\.codex\\generated_images\\01a17d1b-07f5-7542-b5c7-c6720a79124b\\exec-0f8b85cb-8307-424d-8670-9b03071d5241.png"
+  }
+}

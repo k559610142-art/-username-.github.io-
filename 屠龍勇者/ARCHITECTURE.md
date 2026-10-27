@@ -71,6 +71,8 @@
 | `tools/test-mobile-drawers.js` | 手機上下狀態／快捷抽屜、獨立收合／裝置偏好／PC與村莊隔離驗證（第169節） |
 | `tools/test-pwa-update.js` | 更新偵測隔離DOM／網路測試：開發與正式合併版、節流、離線／錯誤／版本排序與按下才刷新（第164節） |
 | `tools/test-mercenary-quest.js` | 傭兵5000擊殺任務、隨機取得／放棄返還／schema19與隔離預覽驗證（第205節） |
+| `images/sprites/mercenary/companions-v1/`、`tools/sprite-src/mercenary/companions-v1/` | 六位傭兵三向四動作圖集／人物像、image_gen原稿／提示詞／來源／腳底註冊與總覽（第206節） |
+| `tools/prepare-mercenary-models.js`、`tools/test-mercenary-models.js`、`tools/mercenary-models-preview.html` | 傭兵模型切格打包／216格素材與96組正式繪圖驗證、動作／方向／實際大小預覽（第206節） |
 | `tools/check.ps1` | 改完的自動檢查：JS 語法（`node --check`）、`index.html` 所有 `?v=` 等於 `GAME_VERSION`、每個 `data/*.js` 都有載入、沒有衝突標記；通過印 `ALL CHECKS PASSED` |
 | `images/icons/items/mercRune-v1/`、`tools/icon-src/mercenary-runes-v1/` | 50款獨立傭兵符石透明PNG、image_gen原稿／完整提示詞／來源與總覽（第203節） |
 | `tools/prepare-mercenary-runes.js`、`tools/test-mercenary-rune-art.js`、`tools/mercenary-runes-preview.html` | 符石等比縮圖／透明與唯一性檢查、正式UI接線驗證及128／48／32px獨立素材預覽（第203節） |
@@ -219,7 +221,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027s`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027t`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3783,3 +3785,12 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 新常數MERC_QUEST_KILLS，函式mercQuestNormalize／mercQuestAccept／mercQuestOnKill／mercQuestClaim／mercDismiss／mercQuestHtml。combat.onKill既有去重後增加任務計數（所有目前一般狩獵擊殺含首領／異界），SIM不計、離線／團隊／世界首領不計；完成提示並保存，其餘進度沿既有自動存檔。NPC招呼／管理同步顯示。
 - tools/test-mercenary-quest.js為隔離任務／六職業抽取／返還／存讀與正式onKill回歸；tools/mercenary-preview.html新增記憶體任務4999／擊殺1測試按鈕，正式遊戲沒有此入口。
 - 驗證：任務5000邊界／六類抽取／放棄退回不複製／死亡重接與復活取消／延遲確認／schema19加密存讀、原50技能與符石圖示回歸通過；check.ps1 ALL CHECKS PASSED、git diff --check通過，正式51檔混淆成功。隔離瀏覽器實際接取→4999→5000→確認隨機領取（Lv.1征戰者）→任務隱藏→放棄確認→任務重現，Console無error／warn，截圖tools/mercenary-quest-20261027s.png。待使用者實玩後提交。
+
+
+## 206. 六位傭兵模型與動畫（2026-10-27，版本 `20261027t`）
+
+- 使用者授權開始傭兵模型。沿六職業男女與年齡定義，原創璃音銀髮紫披風女孩／雷恩禿頭短鬚重甲盾錘中年男性／米菈紅棕髮白金法袍中年女性／凱洛黑髮紅巾黑甲青年／莉雅銅紅馬尾綠披風皮甲女遊俠／諾亞藍髮眼鏡藍衣男孩。內建image_gen正／右／背三向各12動作，向左鏡射；人物與原稿不得用商業角色素材。
+- 原稿、方向與留白修正提示詞、來源在tools/sprite-src/mercenary/companions-v1。prepare-mercenary-models.js沿既有模型流程依alpha輪廓分離相鄰分鏡（保留原色與邊緣alpha，秘法使背面用較高門檻分開相連光暈），再等比縮放／腳底註冊，輸出每位walk4／attack4／cast2／hit2共36格、三列圖集及portrait；共6位216格。統一cell384×320、foot[192,282]、charH160；地圖成人46px、孩童36px。不動原圖素材。
+- data/mercenary.js新增MERC_MODELS與mercPlayAnim，模型圖集使用既有spriteImage／preloadSprite／animDir。動畫僅放mercRuntime WeakMap，gameNow計時；普攻及物理符石attack、其他成功技能cast，實際扣血hit（不打斷正在攻擊／施法）。不改傷害、攻速、技能耗魔、任務或掉落。
+- sceneMercTick記方向／預載，sceneDrawMerc依模型圖集繪圖，停留用中間走路格、移動輪播、向左鏡射、保持場景y排序與遮擋半透明、血條與七階名牌。圖片載入前沿用菱形後備。人物欄與管理加獨立全身像，死亡灰階；空欄不顯示假模型。sw預載24圖集及6人物像，schema19／載入順序／裝備任意武器規則不變。
+- tools/mercenary-models-preview.html為純素材動畫預覽，支援四動作／四方向／暫停與地圖比例；tools/test-mercenary-models.js檢216RGBA、唯一性與圖集一致，實際呼叫sceneDrawMerc驗四向四動作96組，輸出game-render各角色圖。全部216格透明／不重複、圖集與單格逐byte一致、96組正式Canvas繪圖、施法優先／SIM隔離與原傭兵／5000任務／符石圖示回歸通過。check.ps1 ALL CHECKS PASSED（含CSS圖片語法）、git diff --check通過；正式51檔547KB混淆成功，24圖集＋6人物像發佈逐byte一致（9462KB）。瀏覽器6／6模型、側面攻擊／地圖出戰／管理全身像／手機人物欄圖片載入正常，375px無橫溢出、Console無error／warn，map-preview／manager-preview／character-mobile實拍保存。待使用者實玩驗收後提交。

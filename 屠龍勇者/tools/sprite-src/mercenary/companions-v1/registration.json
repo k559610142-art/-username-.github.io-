@@ -1,0 +1,4970 @@
+[
+  {
+    "id": "spirit",
+    "dir": "down",
+    "action": "walk",
+    "frame": 0,
+    "source": "spirit\\down-generated.png",
+    "rect": {
+      "left": 134,
+      "top": 31,
+      "width": 201,
+      "height": 307
+    },
+    "sourceFoot": [
+      103.5,
+      306
+    ],
+    "scale": 0.5211726384364821,
+    "offset": [
+      138,
+      123
+    ],
+    "sha256": "1559ccf518ade13437fdde5d79ac08c05dda157b85e7d36e0848a33466f70f05"
+  },
+  {
+    "id": "spirit",
+    "dir": "down",
+    "action": "walk",
+    "frame": 1,
+    "source": "spirit\\down-generated.png",
+    "rect": {
+      "left": 495,
+      "top": 29,
+      "width": 212,
+      "height": 310
+    },
+    "sourceFoot": [
+      97,
+      309
+    ],
+    "scale": 0.5211726384364821,
+    "offset": [
+      141,
+      121
+    ],
+    "sha256": "e2742f3f105ee1049ac3ba9973c770fc3d6ce0f486e958e8e809dc0f43eb39cc"
+  },
+  {
+    "id": "spirit",
+    "dir": "down",
+    "action": "walk",
+    "frame": 2,
+    "source": "spirit\\down-generated.png",
+    "rect": {
+      "left": 857,
+      "top": 31,
+      "width": 212,
+      "height": 307
+    },
+    "sourceFoot": [
+      115.5,
+      306
+    ],
+    "scale": 0.5211726384364821,
+    "offset": [
+      132,
+      123
+    ],
+    "sha256": "50144d8e798c51001889cfef9e6e4849377af0608c141b7eb61500546b47e57c"
+  },
+  {
+    "id": "spirit",
+    "dir": "down",
+    "action": "walk",
+    "frame": 3,
+    "source": "spirit\\down-generated.png",
+    "rect": {
+      "left": 1238,
+      "top": 31,
+      "width": 193,
+      "height": 308
+    },
+    "sourceFoot": [
+      97.5,
+      307
+    ],
+    "scale": 0.5211726384364821,
+    "offset": [
+      141,
+      122
+    ],
+    "sha256": "cdeff8007b8676f0e3471a308e2e2829a8830a9e5761a6e9bb9fef5244b44adb"
+  },
+  {
+    "id": "spirit",
+    "dir": "right",
+    "action": "walk",
+    "frame": 0,
+    "source": "spirit\\right-generated.png",
+    "rect": {
+      "left": 76,
+      "top": 29,
+      "width": 263,
+      "height": 299
+    },
+    "sourceFoot": [
+      139,
+      298
+    ],
+    "scale": 0.5369127516778524,
+    "offset": [
+      117,
+      123
+    ],
+    "sha256": "239d298b8c92376ca74ecb50643b119611f428485ac5b256bcfc0811056651f1"
+  },
+  {
+    "id": "spirit",
+    "dir": "right",
+    "action": "walk",
+    "frame": 1,
+    "source": "spirit\\right-generated.png",
+    "rect": {
+      "left": 461,
+      "top": 27,
+      "width": 250,
+      "height": 302
+    },
+    "sourceFoot": [
+      131,
+      301
+    ],
+    "scale": 0.5369127516778524,
+    "offset": [
+      122,
+      120
+    ],
+    "sha256": "68d0e7c555da3364bd612361f07444b81d9d8e4432217834ccf4bd91d36a158c"
+  },
+  {
+    "id": "spirit",
+    "dir": "right",
+    "action": "walk",
+    "frame": 2,
+    "source": "spirit\\right-generated.png",
+    "rect": {
+      "left": 827,
+      "top": 29,
+      "width": 247,
+      "height": 300
+    },
+    "sourceFoot": [
+      124,
+      299
+    ],
+    "scale": 0.5369127516778524,
+    "offset": [
+      125,
+      122
+    ],
+    "sha256": "ced1eec0d87ed9ce0bea94f647cf93709e2cca7bf167bb71048108b7927c7911"
+  },
+  {
+    "id": "spirit",
+    "dir": "right",
+    "action": "walk",
+    "frame": 3,
+    "source": "spirit\\right-generated.png",
+    "rect": {
+      "left": 1210,
+      "top": 28,
+      "width": 266,
+      "height": 298
+    },
+    "sourceFoot": [
+      135.5,
+      297
+    ],
+    "scale": 0.5369127516778524,
+    "offset": [
+      119,
+      123
+    ],
+    "sha256": "e6aa395f9f35e3363a50a8e7768c723dc3d7b8e861328bf8fbf2d69e437c893a"
+  },
+  {
+    "id": "spirit",
+    "dir": "up",
+    "action": "walk",
+    "frame": 0,
+    "source": "spirit\\up-generated.png",
+    "rect": {
+      "left": 109,
+      "top": 25,
+      "width": 229,
+      "height": 314
+    },
+    "sourceFoot": [
+      87,
+      313
+    ],
+    "scale": 0.5111821086261981,
+    "offset": [
+      148,
+      122
+    ],
+    "sha256": "83a4f0f230c1e11eae44c751f3325be329179cd03f9ece565fb1c9c86d83d559"
+  },
+  {
+    "id": "spirit",
+    "dir": "up",
+    "action": "walk",
+    "frame": 1,
+    "source": "spirit\\up-generated.png",
+    "rect": {
+      "left": 474,
+      "top": 25,
+      "width": 237,
+      "height": 323
+    },
+    "sourceFoot": [
+      105,
+      322
+    ],
+    "scale": 0.5111821086261981,
+    "offset": [
+      139,
+      117
+    ],
+    "sha256": "d8d595780fe8ad8903e70fc318db9bffc8537a29acf19262c7b675d36ce63c25"
+  },
+  {
+    "id": "spirit",
+    "dir": "up",
+    "action": "walk",
+    "frame": 2,
+    "source": "spirit\\up-generated.png",
+    "rect": {
+      "left": 825,
+      "top": 39,
+      "width": 254,
+      "height": 310
+    },
+    "sourceFoot": [
+      126,
+      308
+    ],
+    "scale": 0.5111821086261981,
+    "offset": [
+      128,
+      125
+    ],
+    "sha256": "704d415846f10f3cd685d852dfaec30c65f46bd5195fc61833c102e45e88699d"
+  },
+  {
+    "id": "spirit",
+    "dir": "up",
+    "action": "walk",
+    "frame": 3,
+    "source": "spirit\\up-generated.png",
+    "rect": {
+      "left": 1188,
+      "top": 34,
+      "width": 268,
+      "height": 314
+    },
+    "sourceFoot": [
+      120,
+      313
+    ],
+    "scale": 0.5111821086261981,
+    "offset": [
+      131,
+      122
+    ],
+    "sha256": "7849a565aa1a5460c8c6b531765ea7f6d652d421777808c8ac0f29bd7ec0774e"
+  },
+  {
+    "id": "spirit",
+    "dir": "down",
+    "action": "attack",
+    "frame": 0,
+    "source": "spirit\\down-generated.png",
+    "rect": {
+      "left": 107,
+      "top": 344,
+      "width": 251,
+      "height": 320
+    },
+    "sourceFoot": [
+      125,
+      319
+    ],
+    "scale": 0.5211726384364821,
+    "offset": [
+      127,
+      116
+    ],
+    "sha256": "2584b73719ef81732857859acb649e7e7a33598d51c0988f92722ef932bfd082"
+  },
+  {
+    "id": "spirit",
+    "dir": "down",
+    "action": "attack",
+    "frame": 1,
+    "source": "spirit\\down-generated.png",
+    "rect": {
+      "left": 459,
+      "top": 378,
+      "width": 266,
+      "height": 289
+    },
+    "sourceFoot": [
+      89.5,
+      288
+    ],
+    "scale": 0.5211726384364821,
+    "offset": [
+      146,
+      132
+    ],
+    "sha256": "c9353bd46057dec4a3b51fe56cc0e48675a2e3270d9218cf03967b316303e2ba"
+  },
+  {
+    "id": "spirit",
+    "dir": "down",
+    "action": "attack",
+    "frame": 2,
+    "source": "spirit\\down-generated.png",
+    "rect": {
+      "left": 808,
+      "top": 378,
+      "width": 296,
+      "height": 290
+    },
+    "sourceFoot": [
+      101.5,
+      288
+    ],
+    "scale": 0.5211726384364821,
+    "offset": [
+      140,
+      132
+    ],
+    "sha256": "73a40f64219504296c2893e63fe199cc9d0e797ab5a1fac195915a76d01c1f66"
+  },
+  {
+    "id": "spirit",
+    "dir": "down",
+    "action": "attack",
+    "frame": 3,
+    "source": "spirit\\down-generated.png",
+    "rect": {
+      "left": 1196,
+      "top": 378,
+      "width": 286,
+      "height": 289
+    },
+    "sourceFoot": [
+      71.5,
+      288
+    ],
+    "scale": 0.5211726384364821,
+    "offset": [
+      155,
+      132
+    ],
+    "sha256": "612fbb5a4590b3ea0dfb11b49036ef17336d6c43d91a98d9c357481d9ef21a46"
+  },
+  {
+    "id": "spirit",
+    "dir": "right",
+    "action": "attack",
+    "frame": 0,
+    "source": "spirit\\right-generated.png",
+    "rect": {
+      "left": 52,
+      "top": 337,
+      "width": 282,
+      "height": 324
+    },
+    "sourceFoot": [
+      140.5,
+      323
+    ],
+    "scale": 0.5369127516778524,
+    "offset": [
+      117,
+      109
+    ],
+    "sha256": "d11fadf75cf494369e2440f5707c4d82b631dc751bd79bffd1c801da2ff852d4"
+  },
+  {
+    "id": "spirit",
+    "dir": "right",
+    "action": "attack",
+    "frame": 1,
+    "source": "spirit\\right-generated.png",
+    "rect": {
+      "left": 428,
+      "top": 395,
+      "width": 335,
+      "height": 266
+    },
+    "sourceFoot": [
+      151.5,
+      265
+    ],
+    "scale": 0.5369127516778524,
+    "offset": [
+      111,
+      140
+    ],
+    "sha256": "d0224a70130d6e02e5f320bd0c98ca7d64cdbedc6a0099adf84a915fe9e94a16"
+  },
+  {
+    "id": "spirit",
+    "dir": "right",
+    "action": "attack",
+    "frame": 2,
+    "source": "spirit\\right-generated.png",
+    "rect": {
+      "left": 774,
+      "top": 379,
+      "width": 464,
+      "height": 285
+    },
+    "sourceFoot": [
+      241,
+      276
+    ],
+    "scale": 0.5369127516778524,
+    "offset": [
+      63,
+      134
+    ],
+    "sha256": "8733cc1a03a6ccaacb6f8941e6a9763af6fc9ea1c2712be970d0372a7ddbaf52"
+  },
+  {
+    "id": "spirit",
+    "dir": "right",
+    "action": "attack",
+    "frame": 3,
+    "source": "spirit\\right-generated.png",
+    "rect": {
+      "left": 1208,
+      "top": 391,
+      "width": 319,
+      "height": 270
+    },
+    "sourceFoot": [
+      162,
+      269
+    ],
+    "scale": 0.5369127516778524,
+    "offset": [
+      105,
+      138
+    ],
+    "sha256": "ce77de0e4e9f2b08592294901de5e0f8bf330a654fed65714635ccc7fedd845c"
+  },
+  {
+    "id": "spirit",
+    "dir": "up",
+    "action": "attack",
+    "frame": 0,
+    "source": "spirit\\up-generated.png",
+    "rect": {
+      "left": 51,
+      "top": 360,
+      "width": 308,
+      "height": 310
+    },
+    "sourceFoot": [
+      235,
+      306
+    ],
+    "scale": 0.5111821086261981,
+    "offset": [
+      72,
+      126
+    ],
+    "sha256": "52393deb57a22b4148a13a5a91171c8f8ec9b37711e21a1516540f57cd6faaec"
+  },
+  {
+    "id": "spirit",
+    "dir": "up",
+    "action": "attack",
+    "frame": 1,
+    "source": "spirit\\up-generated.png",
+    "rect": {
+      "left": 420,
+      "top": 399,
+      "width": 320,
+      "height": 271
+    },
+    "sourceFoot": [
+      143.5,
+      266
+    ],
+    "scale": 0.5111821086261981,
+    "offset": [
+      119,
+      146
+    ],
+    "sha256": "1f484c9e7e952124ddf31f0648f5d5708fb35efe1d6c5bc10ba99d7e0ba51ecc"
+  },
+  {
+    "id": "spirit",
+    "dir": "up",
+    "action": "attack",
+    "frame": 2,
+    "source": "spirit\\up-generated.png",
+    "rect": {
+      "left": 782,
+      "top": 399,
+      "width": 408,
+      "height": 269
+    },
+    "sourceFoot": [
+      156,
+      266
+    ],
+    "scale": 0.5111821086261981,
+    "offset": [
+      112,
+      147
+    ],
+    "sha256": "3abf165c5f4922c664aeb83f47aa1aecdb985bb8e1316e3a90cc4011a4101ced"
+  },
+  {
+    "id": "spirit",
+    "dir": "up",
+    "action": "attack",
+    "frame": 3,
+    "source": "spirit\\up-generated.png",
+    "rect": {
+      "left": 1187,
+      "top": 381,
+      "width": 297,
+      "height": 286
+    },
+    "sourceFoot": [
+      140,
+      285
+    ],
+    "scale": 0.5111821086261981,
+    "offset": [
+      121,
+      137
+    ],
+    "sha256": "1da92777df1d242a0d1de6e2dc0ff14e07431414c2ebc21c0067606e7e3b0f0b"
+  },
+  {
+    "id": "spirit",
+    "dir": "down",
+    "action": "cast",
+    "frame": 0,
+    "source": "spirit\\down-generated.png",
+    "rect": {
+      "left": 97,
+      "top": 665,
+      "width": 269,
+      "height": 332
+    },
+    "sourceFoot": [
+      142,
+      331
+    ],
+    "scale": 0.5211726384364821,
+    "offset": [
+      119,
+      110
+    ],
+    "sha256": "6af31b008c1f376bbb5c37cfe5f7f836e369ffa43d73956e56dc71cd5f53a833"
+  },
+  {
+    "id": "spirit",
+    "dir": "down",
+    "action": "cast",
+    "frame": 1,
+    "source": "spirit\\down-generated.png",
+    "rect": {
+      "left": 472,
+      "top": 673,
+      "width": 264,
+      "height": 324
+    },
+    "sourceFoot": [
+      119.5,
+      324
+    ],
+    "scale": 0.5211726384364821,
+    "offset": [
+      130,
+      114
+    ],
+    "sha256": "176d85236cc2cd43bf1fe6160a8932f5a5e69d7241c87f191e2ce31d8895409f"
+  },
+  {
+    "id": "spirit",
+    "dir": "right",
+    "action": "cast",
+    "frame": 0,
+    "source": "spirit\\right-generated.png",
+    "rect": {
+      "left": 92,
+      "top": 659,
+      "width": 255,
+      "height": 347
+    },
+    "sourceFoot": [
+      127,
+      346
+    ],
+    "scale": 0.5369127516778524,
+    "offset": [
+      124,
+      96
+    ],
+    "sha256": "18644ac13f603b4a9668f84f3e5e2899c8c3c07b1c2d94f0e6837d625b4f55a4"
+  },
+  {
+    "id": "spirit",
+    "dir": "right",
+    "action": "cast",
+    "frame": 1,
+    "source": "spirit\\right-generated.png",
+    "rect": {
+      "left": 447,
+      "top": 651,
+      "width": 277,
+      "height": 355
+    },
+    "sourceFoot": [
+      153,
+      354
+    ],
+    "scale": 0.5369127516778524,
+    "offset": [
+      110,
+      92
+    ],
+    "sha256": "2182d9a1ecbe1a47bed7cf00e80aa9b23bb89c8ad261ca9d6897bc3bc7e5656d"
+  },
+  {
+    "id": "spirit",
+    "dir": "up",
+    "action": "cast",
+    "frame": 0,
+    "source": "spirit\\up-generated.png",
+    "rect": {
+      "left": 82,
+      "top": 667,
+      "width": 242,
+      "height": 343
+    },
+    "sourceFoot": [
+      120,
+      342
+    ],
+    "scale": 0.5111821086261981,
+    "offset": [
+      131,
+      108
+    ],
+    "sha256": "db86db26f6cfb430255e1e14ccc943a1700f52c24a70471adc4112a304bf2674"
+  },
+  {
+    "id": "spirit",
+    "dir": "up",
+    "action": "cast",
+    "frame": 1,
+    "source": "spirit\\up-generated.png",
+    "rect": {
+      "left": 446,
+      "top": 660,
+      "width": 276,
+      "height": 347
+    },
+    "sourceFoot": [
+      138.5,
+      346
+    ],
+    "scale": 0.5111821086261981,
+    "offset": [
+      121,
+      105
+    ],
+    "sha256": "d1d5ff999f36fe8019eb8ecb87a420a4f5a6b7a173acd67bb21d44feb43b1fa9"
+  },
+  {
+    "id": "spirit",
+    "dir": "down",
+    "action": "hit",
+    "frame": 0,
+    "source": "spirit\\down-generated.png",
+    "rect": {
+      "left": 868,
+      "top": 723,
+      "width": 213,
+      "height": 275
+    },
+    "sourceFoot": [
+      52.5,
+      274
+    ],
+    "scale": 0.5211726384364821,
+    "offset": [
+      165,
+      139
+    ],
+    "sha256": "d3962ad87d20093a6eb3921180ac9eb430e2c9c317886dd339efb0a31505c068"
+  },
+  {
+    "id": "spirit",
+    "dir": "down",
+    "action": "hit",
+    "frame": 1,
+    "source": "spirit\\down-generated.png",
+    "rect": {
+      "left": 1242,
+      "top": 719,
+      "width": 200,
+      "height": 279
+    },
+    "sourceFoot": [
+      55,
+      278
+    ],
+    "scale": 0.5211726384364821,
+    "offset": [
+      164,
+      137
+    ],
+    "sha256": "fcb198ea446377707b8103876d19e0090a8000420e590b864c5e2d2767402885"
+  },
+  {
+    "id": "spirit",
+    "dir": "right",
+    "action": "hit",
+    "frame": 0,
+    "source": "spirit\\right-generated.png",
+    "rect": {
+      "left": 809,
+      "top": 743,
+      "width": 314,
+      "height": 258
+    },
+    "sourceFoot": [
+      156,
+      257
+    ],
+    "scale": 0.5369127516778524,
+    "offset": [
+      108,
+      145
+    ],
+    "sha256": "700bcb32901ae6571788ca17c1e72496162af327d54a74ec672e7dc16a3d0496"
+  },
+  {
+    "id": "spirit",
+    "dir": "right",
+    "action": "hit",
+    "frame": 1,
+    "source": "spirit\\right-generated.png",
+    "rect": {
+      "left": 1210,
+      "top": 741,
+      "width": 291,
+      "height": 256
+    },
+    "sourceFoot": [
+      137,
+      255
+    ],
+    "scale": 0.5369127516778524,
+    "offset": [
+      118,
+      146
+    ],
+    "sha256": "3f736b217f753228f6cd4aadd4251ef53fc784e4d3e5fb3a41d80e302f91b23d"
+  },
+  {
+    "id": "spirit",
+    "dir": "up",
+    "action": "hit",
+    "frame": 0,
+    "source": "spirit\\up-generated.png",
+    "rect": {
+      "left": 812,
+      "top": 733,
+      "width": 261,
+      "height": 260
+    },
+    "sourceFoot": [
+      138.5,
+      259
+    ],
+    "scale": 0.5111821086261981,
+    "offset": [
+      121,
+      150
+    ],
+    "sha256": "a2886bed25bc04fc784e4062240c276bce17301487078780215be7473ac63787"
+  },
+  {
+    "id": "spirit",
+    "dir": "up",
+    "action": "hit",
+    "frame": 1,
+    "source": "spirit\\up-generated.png",
+    "rect": {
+      "left": 1207,
+      "top": 744,
+      "width": 273,
+      "height": 261
+    },
+    "sourceFoot": [
+      132,
+      260
+    ],
+    "scale": 0.5111821086261981,
+    "offset": [
+      125,
+      149
+    ],
+    "sha256": "85ebb4b96ff5bcea7f1848fbe8621a0996473a58db99c6fc0d1892c32fc17988"
+  },
+  {
+    "id": "bulwark",
+    "dir": "down",
+    "action": "walk",
+    "frame": 0,
+    "source": "bulwark\\down-generated.png",
+    "rect": {
+      "left": 68,
+      "top": 23,
+      "width": 273,
+      "height": 296
+    },
+    "sourceFoot": [
+      123,
+      294
+    ],
+    "scale": 0.5387205387205387,
+    "offset": [
+      126,
+      124
+    ],
+    "sha256": "cb20a4e7af918b22dff9d31cf6b6f476fcaf43496fc86c021000641481d57063"
+  },
+  {
+    "id": "bulwark",
+    "dir": "down",
+    "action": "walk",
+    "frame": 1,
+    "source": "bulwark\\down-generated.png",
+    "rect": {
+      "left": 457,
+      "top": 23,
+      "width": 256,
+      "height": 296
+    },
+    "sourceFoot": [
+      108.5,
+      294
+    ],
+    "scale": 0.5387205387205387,
+    "offset": [
+      134,
+      124
+    ],
+    "sha256": "26e7d8989fd48b4665269d4e3b9002304a8dd8395fab4d5af43104402cbff14d"
+  },
+  {
+    "id": "bulwark",
+    "dir": "down",
+    "action": "walk",
+    "frame": 2,
+    "source": "bulwark\\down-generated.png",
+    "rect": {
+      "left": 826,
+      "top": 23,
+      "width": 254,
+      "height": 298
+    },
+    "sourceFoot": [
+      109.5,
+      297
+    ],
+    "scale": 0.5387205387205387,
+    "offset": [
+      134,
+      122
+    ],
+    "sha256": "ed518ae193a1f42805a26d7301bb0087e8dbc6a8fd87e6120de19fe00d3470fe"
+  },
+  {
+    "id": "bulwark",
+    "dir": "down",
+    "action": "walk",
+    "frame": 3,
+    "source": "bulwark\\down-generated.png",
+    "rect": {
+      "left": 1208,
+      "top": 22,
+      "width": 256,
+      "height": 300
+    },
+    "sourceFoot": [
+      111.5,
+      299
+    ],
+    "scale": 0.5387205387205387,
+    "offset": [
+      132,
+      121
+    ],
+    "sha256": "85f29f998211c0c93163c059cc852049918356d18b1e5a3b815632f7c66ebe11"
+  },
+  {
+    "id": "bulwark",
+    "dir": "right",
+    "action": "walk",
+    "frame": 0,
+    "source": "bulwark\\right-generated.png",
+    "rect": {
+      "left": 39,
+      "top": 36,
+      "width": 316,
+      "height": 296
+    },
+    "sourceFoot": [
+      200,
+      295
+    ],
+    "scale": 0.547945205479452,
+    "offset": [
+      83,
+      121
+    ],
+    "sha256": "328ab79875c9a418d627d924afc06254a2ad8d3a467e56804930aefbedf8c6cc"
+  },
+  {
+    "id": "bulwark",
+    "dir": "right",
+    "action": "walk",
+    "frame": 1,
+    "source": "bulwark\\right-generated.png",
+    "rect": {
+      "left": 445,
+      "top": 36,
+      "width": 274,
+      "height": 294
+    },
+    "sourceFoot": [
+      147.5,
+      293
+    ],
+    "scale": 0.547945205479452,
+    "offset": [
+      111,
+      122
+    ],
+    "sha256": "61f31e441325294f0e1511dd9b2b66b0b9fea51d95194f634593881fe1ada130"
+  },
+  {
+    "id": "bulwark",
+    "dir": "right",
+    "action": "walk",
+    "frame": 2,
+    "source": "bulwark\\right-generated.png",
+    "rect": {
+      "left": 830,
+      "top": 40,
+      "width": 267,
+      "height": 290
+    },
+    "sourceFoot": [
+      142,
+      289
+    ],
+    "scale": 0.547945205479452,
+    "offset": [
+      114,
+      124
+    ],
+    "sha256": "a7abe752e21a8eaa327c082322221e5882a17b0a9072344edbd22a0ce3ab86d3"
+  },
+  {
+    "id": "bulwark",
+    "dir": "right",
+    "action": "walk",
+    "frame": 3,
+    "source": "bulwark\\right-generated.png",
+    "rect": {
+      "left": 1210,
+      "top": 39,
+      "width": 273,
+      "height": 290
+    },
+    "sourceFoot": [
+      144.5,
+      288
+    ],
+    "scale": 0.547945205479452,
+    "offset": [
+      113,
+      125
+    ],
+    "sha256": "7f4ceb7f50810bdce21d7c92919b5d606479002377a036ea223d2c58c18675f9"
+  },
+  {
+    "id": "bulwark",
+    "dir": "up",
+    "action": "walk",
+    "frame": 0,
+    "source": "bulwark\\up-generated.png",
+    "rect": {
+      "left": 82,
+      "top": 26,
+      "width": 259,
+      "height": 297
+    },
+    "sourceFoot": [
+      149.5,
+      296
+    ],
+    "scale": 0.5423728813559322,
+    "offset": [
+      111,
+      122
+    ],
+    "sha256": "d226e83fe4f3f3239820c2246315b60d0f347b905178ffbdc37280e59344c019"
+  },
+  {
+    "id": "bulwark",
+    "dir": "up",
+    "action": "walk",
+    "frame": 1,
+    "source": "bulwark\\up-generated.png",
+    "rect": {
+      "left": 470,
+      "top": 28,
+      "width": 253,
+      "height": 293
+    },
+    "sourceFoot": [
+      139,
+      292
+    ],
+    "scale": 0.5423728813559322,
+    "offset": [
+      117,
+      124
+    ],
+    "sha256": "69afe5bdc085881e17f1cbbaa7fe8c9a45ee41add8838bc447380482732625cf"
+  },
+  {
+    "id": "bulwark",
+    "dir": "up",
+    "action": "walk",
+    "frame": 2,
+    "source": "bulwark\\up-generated.png",
+    "rect": {
+      "left": 848,
+      "top": 26,
+      "width": 243,
+      "height": 297
+    },
+    "sourceFoot": [
+      135,
+      296
+    ],
+    "scale": 0.5423728813559322,
+    "offset": [
+      119,
+      121
+    ],
+    "sha256": "ab00e8667ddb8fd0183eb0af6af0c74ca63d8f8719900b54943238fd7855a7ae"
+  },
+  {
+    "id": "bulwark",
+    "dir": "up",
+    "action": "walk",
+    "frame": 3,
+    "source": "bulwark\\up-generated.png",
+    "rect": {
+      "left": 1231,
+      "top": 26,
+      "width": 249,
+      "height": 297
+    },
+    "sourceFoot": [
+      138,
+      296
+    ],
+    "scale": 0.5423728813559322,
+    "offset": [
+      117,
+      122
+    ],
+    "sha256": "9331db703eb850a35889396ea668cdbe775a86ab688b1c43c601e0ad81ae95d5"
+  },
+  {
+    "id": "bulwark",
+    "dir": "down",
+    "action": "attack",
+    "frame": 0,
+    "source": "bulwark\\down-generated.png",
+    "rect": {
+      "left": 71,
+      "top": 338,
+      "width": 276,
+      "height": 318
+    },
+    "sourceFoot": [
+      137.5,
+      317
+    ],
+    "scale": 0.5387205387205387,
+    "offset": [
+      118,
+      111
+    ],
+    "sha256": "2a82bad87eb06936d936a860c46b171ae2c7eac1a68e5d7baf011223c4210604"
+  },
+  {
+    "id": "bulwark",
+    "dir": "down",
+    "action": "attack",
+    "frame": 1,
+    "source": "bulwark\\down-generated.png",
+    "rect": {
+      "left": 462,
+      "top": 335,
+      "width": 261,
+      "height": 322
+    },
+    "sourceFoot": [
+      196.5,
+      321
+    ],
+    "scale": 0.5387205387205387,
+    "offset": [
+      86,
+      109
+    ],
+    "sha256": "921307d363286726450077988be6eeb030f436cd48c2c56b454b0522fa01c799"
+  },
+  {
+    "id": "bulwark",
+    "dir": "down",
+    "action": "attack",
+    "frame": 2,
+    "source": "bulwark\\down-generated.png",
+    "rect": {
+      "left": 821,
+      "top": 402,
+      "width": 280,
+      "height": 256
+    },
+    "sourceFoot": [
+      77.5,
+      255
+    ],
+    "scale": 0.5387205387205387,
+    "offset": [
+      150,
+      145
+    ],
+    "sha256": "63669c7f4d35956aa50e9a28fe89af4c57d471893cd63d8fd3474302e2cd312e"
+  },
+  {
+    "id": "bulwark",
+    "dir": "down",
+    "action": "attack",
+    "frame": 3,
+    "source": "bulwark\\down-generated.png",
+    "rect": {
+      "left": 1188,
+      "top": 399,
+      "width": 289,
+      "height": 263
+    },
+    "sourceFoot": [
+      145.5,
+      262
+    ],
+    "scale": 0.5387205387205387,
+    "offset": [
+      114,
+      141
+    ],
+    "sha256": "06a654e82906cf0ba54332311692d40e23025cbfb6c47007b674b144990e9aac"
+  },
+  {
+    "id": "bulwark",
+    "dir": "right",
+    "action": "attack",
+    "frame": 0,
+    "source": "bulwark\\right-generated.png",
+    "rect": {
+      "left": 40,
+      "top": 331,
+      "width": 313,
+      "height": 331
+    },
+    "sourceFoot": [
+      72,
+      330
+    ],
+    "scale": 0.547945205479452,
+    "offset": [
+      153,
+      101
+    ],
+    "sha256": "be139bc9e56f24591a0c09947d747d49fee1d74629fbe89318f440493784a953"
+  },
+  {
+    "id": "bulwark",
+    "dir": "right",
+    "action": "attack",
+    "frame": 1,
+    "source": "bulwark\\right-generated.png",
+    "rect": {
+      "left": 413,
+      "top": 395,
+      "width": 386,
+      "height": 258
+    },
+    "sourceFoot": [
+      254.5,
+      255
+    ],
+    "scale": 0.547945205479452,
+    "offset": [
+      53,
+      142
+    ],
+    "sha256": "f6ca59e5a11a87ff0b2c5af02f523c8a4bad0a2b8eb7da61e8ff1717d21d2483"
+  },
+  {
+    "id": "bulwark",
+    "dir": "right",
+    "action": "attack",
+    "frame": 2,
+    "source": "bulwark\\right-generated.png",
+    "rect": {
+      "left": 817,
+      "top": 409,
+      "width": 421,
+      "height": 246
+    },
+    "sourceFoot": [
+      251.5,
+      242
+    ],
+    "scale": 0.547945205479452,
+    "offset": [
+      54,
+      149
+    ],
+    "sha256": "338378f0ce0b6c15f8b3ee5da6560214f0240d2e8dfcbe0f57fa05bbcaf7709f"
+  },
+  {
+    "id": "bulwark",
+    "dir": "right",
+    "action": "attack",
+    "frame": 3,
+    "source": "bulwark\\right-generated.png",
+    "rect": {
+      "left": 1213,
+      "top": 393,
+      "width": 278,
+      "height": 267
+    },
+    "sourceFoot": [
+      141.5,
+      266
+    ],
+    "scale": 0.547945205479452,
+    "offset": [
+      115,
+      136
+    ],
+    "sha256": "9f46013a42cdcdf674ec27340a4b5f6678f61ba0891a11172e0748e766be6ff4"
+  },
+  {
+    "id": "bulwark",
+    "dir": "up",
+    "action": "attack",
+    "frame": 0,
+    "source": "bulwark\\up-generated.png",
+    "rect": {
+      "left": 70,
+      "top": 339,
+      "width": 260,
+      "height": 333
+    },
+    "sourceFoot": [
+      66.5,
+      332
+    ],
+    "scale": 0.5423728813559322,
+    "offset": [
+      156,
+      102
+    ],
+    "sha256": "60cba4379a17a84989e7df1a9317b462767e55df523b29a1a2986a1abe8731dd"
+  },
+  {
+    "id": "bulwark",
+    "dir": "up",
+    "action": "attack",
+    "frame": 1,
+    "source": "bulwark\\up-generated.png",
+    "rect": {
+      "left": 456,
+      "top": 341,
+      "width": 272,
+      "height": 315
+    },
+    "sourceFoot": [
+      66,
+      314
+    ],
+    "scale": 0.5423728813559322,
+    "offset": [
+      156,
+      112
+    ],
+    "sha256": "c337e82c528f0988b5243a7ab0fb53e64cca410af3662c059e0edd1cd8d30839"
+  },
+  {
+    "id": "bulwark",
+    "dir": "up",
+    "action": "attack",
+    "frame": 2,
+    "source": "bulwark\\up-generated.png",
+    "rect": {
+      "left": 797,
+      "top": 398,
+      "width": 368,
+      "height": 267
+    },
+    "sourceFoot": [
+      246.5,
+      265
+    ],
+    "scale": 0.5423728813559322,
+    "offset": [
+      58,
+      139
+    ],
+    "sha256": "27bffe229547be4a974688f8e7fa38c56781fe26a12cffe3a6b49c1ef104c8b5"
+  },
+  {
+    "id": "bulwark",
+    "dir": "up",
+    "action": "attack",
+    "frame": 3,
+    "source": "bulwark\\up-generated.png",
+    "rect": {
+      "left": 1225,
+      "top": 400,
+      "width": 273,
+      "height": 268
+    },
+    "sourceFoot": [
+      65,
+      267
+    ],
+    "scale": 0.5423728813559322,
+    "offset": [
+      157,
+      137
+    ],
+    "sha256": "b5d1fe79eded1283a2c365d0703161e5ca1c176457b03b37da7b5cd0f634fe16"
+  },
+  {
+    "id": "bulwark",
+    "dir": "down",
+    "action": "cast",
+    "frame": 0,
+    "source": "bulwark\\down-generated.png",
+    "rect": {
+      "left": 47,
+      "top": 712,
+      "width": 277,
+      "height": 271
+    },
+    "sourceFoot": [
+      73.5,
+      269
+    ],
+    "scale": 0.5387205387205387,
+    "offset": [
+      153,
+      137
+    ],
+    "sha256": "1ebb00ccaaa8902ecf96057cfce26135c1a862da7f6f9219a6efc3c702335439"
+  },
+  {
+    "id": "bulwark",
+    "dir": "down",
+    "action": "cast",
+    "frame": 1,
+    "source": "bulwark\\down-generated.png",
+    "rect": {
+      "left": 444,
+      "top": 655,
+      "width": 280,
+      "height": 335
+    },
+    "sourceFoot": [
+      139.5,
+      334
+    ],
+    "scale": 0.5387205387205387,
+    "offset": [
+      117,
+      102
+    ],
+    "sha256": "6cacee0c0da800a28f0cec88c3c815db0020691b08c1ffce5e9518550c3eb53f"
+  },
+  {
+    "id": "bulwark",
+    "dir": "right",
+    "action": "cast",
+    "frame": 0,
+    "source": "bulwark\\right-generated.png",
+    "rect": {
+      "left": 50,
+      "top": 712,
+      "width": 333,
+      "height": 278
+    },
+    "sourceFoot": [
+      166,
+      277
+    ],
+    "scale": 0.547945205479452,
+    "offset": [
+      101,
+      130
+    ],
+    "sha256": "ea14cf3c7bbb5ebbff6e1a7469f31c204089e32c57e30eb386e9a17503767a68"
+  },
+  {
+    "id": "bulwark",
+    "dir": "right",
+    "action": "cast",
+    "frame": 1,
+    "source": "bulwark\\right-generated.png",
+    "rect": {
+      "left": 437,
+      "top": 636,
+      "width": 304,
+      "height": 355
+    },
+    "sourceFoot": [
+      79,
+      354
+    ],
+    "scale": 0.547945205479452,
+    "offset": [
+      149,
+      88
+    ],
+    "sha256": "12b8e312ca390dbc1ac8810de466d508abb46a18989f111c309233e412a69b5b"
+  },
+  {
+    "id": "bulwark",
+    "dir": "up",
+    "action": "cast",
+    "frame": 0,
+    "source": "bulwark\\up-generated.png",
+    "rect": {
+      "left": 74,
+      "top": 657,
+      "width": 262,
+      "height": 335
+    },
+    "sourceFoot": [
+      130.5,
+      320
+    ],
+    "scale": 0.5423728813559322,
+    "offset": [
+      121,
+      108
+    ],
+    "sha256": "8bc2e4f77e35a3d07f429b54f664bd670de96f2cb90f6af7b08c6fa5eeb49d5a"
+  },
+  {
+    "id": "bulwark",
+    "dir": "up",
+    "action": "cast",
+    "frame": 1,
+    "source": "bulwark\\up-generated.png",
+    "rect": {
+      "left": 471,
+      "top": 633,
+      "width": 253,
+      "height": 362
+    },
+    "sourceFoot": [
+      126,
+      360
+    ],
+    "scale": 0.5423728813559322,
+    "offset": [
+      124,
+      87
+    ],
+    "sha256": "38953f46a3aaafd6301a3e81ef43b85f579402d2638e8bbccacc9bc9307bb7fb"
+  },
+  {
+    "id": "bulwark",
+    "dir": "down",
+    "action": "hit",
+    "frame": 0,
+    "source": "bulwark\\down-generated.png",
+    "rect": {
+      "left": 810,
+      "top": 737,
+      "width": 284,
+      "height": 252
+    },
+    "sourceFoot": [
+      209,
+      251
+    ],
+    "scale": 0.5387205387205387,
+    "offset": [
+      79,
+      147
+    ],
+    "sha256": "8c2e61ef6446ce220cdbb31948048671b327dfed987e1379848406155f22c815"
+  },
+  {
+    "id": "bulwark",
+    "dir": "down",
+    "action": "hit",
+    "frame": 1,
+    "source": "bulwark\\down-generated.png",
+    "rect": {
+      "left": 1204,
+      "top": 705,
+      "width": 272,
+      "height": 281
+    },
+    "sourceFoot": [
+      135.5,
+      280
+    ],
+    "scale": 0.5387205387205387,
+    "offset": [
+      119,
+      132
+    ],
+    "sha256": "5105b3b84315a0c8c7a031ac7e591dc0599405819729770dcb013e3f246fb5d1"
+  },
+  {
+    "id": "bulwark",
+    "dir": "right",
+    "action": "hit",
+    "frame": 0,
+    "source": "bulwark\\right-generated.png",
+    "rect": {
+      "left": 812,
+      "top": 715,
+      "width": 324,
+      "height": 272
+    },
+    "sourceFoot": [
+      191.5,
+      271
+    ],
+    "scale": 0.547945205479452,
+    "offset": [
+      88,
+      134
+    ],
+    "sha256": "cf4ab61163b47175b3b538b43af83bff57eacf803b01e0f1ead80787f7aa489f"
+  },
+  {
+    "id": "bulwark",
+    "dir": "right",
+    "action": "hit",
+    "frame": 1,
+    "source": "bulwark\\right-generated.png",
+    "rect": {
+      "left": 1196,
+      "top": 728,
+      "width": 297,
+      "height": 263
+    },
+    "sourceFoot": [
+      90.5,
+      261
+    ],
+    "scale": 0.547945205479452,
+    "offset": [
+      143,
+      139
+    ],
+    "sha256": "fa4b2f944afc282d6cc4764465675cc042f2f6874cc4524780f88b5413c16b78"
+  },
+  {
+    "id": "bulwark",
+    "dir": "up",
+    "action": "hit",
+    "frame": 0,
+    "source": "bulwark\\up-generated.png",
+    "rect": {
+      "left": 818,
+      "top": 750,
+      "width": 317,
+      "height": 235
+    },
+    "sourceFoot": [
+      212,
+      234
+    ],
+    "scale": 0.5423728813559322,
+    "offset": [
+      77,
+      155
+    ],
+    "sha256": "8150f18fb44d80f12fccd76bd86372b81eac187adcd27b914478f24648110903"
+  },
+  {
+    "id": "bulwark",
+    "dir": "up",
+    "action": "hit",
+    "frame": 1,
+    "source": "bulwark\\up-generated.png",
+    "rect": {
+      "left": 1227,
+      "top": 734,
+      "width": 267,
+      "height": 260
+    },
+    "sourceFoot": [
+      64,
+      259
+    ],
+    "scale": 0.5423728813559322,
+    "offset": [
+      158,
+      142
+    ],
+    "sha256": "d01cd1c8d059408f9444fc86cfaa7e40e004d0007f0a4313822d0d6858b48a94"
+  },
+  {
+    "id": "wish",
+    "dir": "down",
+    "action": "walk",
+    "frame": 0,
+    "source": "wish\\down-generated.png",
+    "rect": {
+      "left": 113,
+      "top": 11,
+      "width": 188,
+      "height": 327
+    },
+    "sourceFoot": [
+      93.5,
+      326
+    ],
+    "scale": 0.4892966360856269,
+    "offset": [
+      146,
+      123
+    ],
+    "sha256": "da08045af8d668798b01223f165c3d5509c586b371d931d883b94d60382705f2"
+  },
+  {
+    "id": "wish",
+    "dir": "down",
+    "action": "walk",
+    "frame": 1,
+    "source": "wish\\down-generated.png",
+    "rect": {
+      "left": 489,
+      "top": 10,
+      "width": 166,
+      "height": 328
+    },
+    "sourceFoot": [
+      93,
+      327
+    ],
+    "scale": 0.4892966360856269,
+    "offset": [
+      146,
+      122
+    ],
+    "sha256": "4174bf187030031137615f9f41db32a948e92e001d0cd9a4dacbcf0fefb2326e"
+  },
+  {
+    "id": "wish",
+    "dir": "down",
+    "action": "walk",
+    "frame": 2,
+    "source": "wish\\down-generated.png",
+    "rect": {
+      "left": 869,
+      "top": 9,
+      "width": 174,
+      "height": 330
+    },
+    "sourceFoot": [
+      90.5,
+      329
+    ],
+    "scale": 0.4892966360856269,
+    "offset": [
+      148,
+      121
+    ],
+    "sha256": "a9f904aa9933111f95e0580d6d406da447c255ac807aa415e60123ce2675c0d2"
+  },
+  {
+    "id": "wish",
+    "dir": "down",
+    "action": "walk",
+    "frame": 3,
+    "source": "wish\\down-generated.png",
+    "rect": {
+      "left": 1249,
+      "top": 10,
+      "width": 176,
+      "height": 329
+    },
+    "sourceFoot": [
+      88,
+      328
+    ],
+    "scale": 0.4892966360856269,
+    "offset": [
+      149,
+      122
+    ],
+    "sha256": "8e7ca206279dabc9b6a55aeef2a8297ddc6c613736907e89c8790b17b4302f7b"
+  },
+  {
+    "id": "wish",
+    "dir": "right",
+    "action": "walk",
+    "frame": 0,
+    "source": "wish\\right-generated.png",
+    "rect": {
+      "left": 76,
+      "top": 21,
+      "width": 271,
+      "height": 304
+    },
+    "sourceFoot": [
+      126.5,
+      303
+    ],
+    "scale": 0.528052805280528,
+    "offset": [
+      125,
+      122
+    ],
+    "sha256": "7adbbcad12e2807341ddd59062f37c493b72ff10700cbb39be2cc34db50f01ba"
+  },
+  {
+    "id": "wish",
+    "dir": "right",
+    "action": "walk",
+    "frame": 1,
+    "source": "wish\\right-generated.png",
+    "rect": {
+      "left": 456,
+      "top": 21,
+      "width": 243,
+      "height": 304
+    },
+    "sourceFoot": [
+      121,
+      303
+    ],
+    "scale": 0.528052805280528,
+    "offset": [
+      128,
+      122
+    ],
+    "sha256": "d004b620a0332ec1dd03e7c66404bbcffb4ec7198878e95f58f2cba0fe8e22b9"
+  },
+  {
+    "id": "wish",
+    "dir": "right",
+    "action": "walk",
+    "frame": 2,
+    "source": "wish\\right-generated.png",
+    "rect": {
+      "left": 813,
+      "top": 20,
+      "width": 246,
+      "height": 305
+    },
+    "sourceFoot": [
+      107,
+      304
+    ],
+    "scale": 0.528052805280528,
+    "offset": [
+      135,
+      122
+    ],
+    "sha256": "9956d4062dc0a2307db9f1e2ff6dd3d0df82bce479f5f8e276ce6688cef10c2d"
+  },
+  {
+    "id": "wish",
+    "dir": "right",
+    "action": "walk",
+    "frame": 3,
+    "source": "wish\\right-generated.png",
+    "rect": {
+      "left": 1204,
+      "top": 23,
+      "width": 229,
+      "height": 301
+    },
+    "sourceFoot": [
+      114,
+      300
+    ],
+    "scale": 0.528052805280528,
+    "offset": [
+      132,
+      124
+    ],
+    "sha256": "594ff23a75aa0c339838307fdca0c10ba21e563b28d41979fbd07b053a1c4f98"
+  },
+  {
+    "id": "wish",
+    "dir": "up",
+    "action": "walk",
+    "frame": 0,
+    "source": "wish\\up-generated.png",
+    "rect": {
+      "left": 121,
+      "top": 12,
+      "width": 182,
+      "height": 319
+    },
+    "sourceFoot": [
+      97,
+      317
+    ],
+    "scale": 0.5015673981191222,
+    "offset": [
+      143,
+      124
+    ],
+    "sha256": "60825464f953692775dfad938d8ca201c7897a0f6a35e43c115d34c2711e3cb6"
+  },
+  {
+    "id": "wish",
+    "dir": "up",
+    "action": "walk",
+    "frame": 1,
+    "source": "wish\\up-generated.png",
+    "rect": {
+      "left": 492,
+      "top": 12,
+      "width": 173,
+      "height": 322
+    },
+    "sourceFoot": [
+      89,
+      321
+    ],
+    "scale": 0.5015673981191222,
+    "offset": [
+      147,
+      122
+    ],
+    "sha256": "cfaeeb94c669903010acc26c12e00e5eb2f17da3838466b6b1b0817d62621d86"
+  },
+  {
+    "id": "wish",
+    "dir": "up",
+    "action": "walk",
+    "frame": 2,
+    "source": "wish\\up-generated.png",
+    "rect": {
+      "left": 872,
+      "top": 11,
+      "width": 198,
+      "height": 322
+    },
+    "sourceFoot": [
+      81.5,
+      320
+    ],
+    "scale": 0.5015673981191222,
+    "offset": [
+      151,
+      121
+    ],
+    "sha256": "50435ad3f422e1e641499f74c3ad6db6e57598526cd8617c24f9383a3c744a1e"
+  },
+  {
+    "id": "wish",
+    "dir": "up",
+    "action": "walk",
+    "frame": 3,
+    "source": "wish\\up-generated.png",
+    "rect": {
+      "left": 1257,
+      "top": 10,
+      "width": 177,
+      "height": 322
+    },
+    "sourceFoot": [
+      83.5,
+      320
+    ],
+    "scale": 0.5015673981191222,
+    "offset": [
+      150,
+      122
+    ],
+    "sha256": "5d044fbc9512b0de602deddfd048a32155140ea480084c24a5b246c61c1fc96a"
+  },
+  {
+    "id": "wish",
+    "dir": "down",
+    "action": "attack",
+    "frame": 0,
+    "source": "wish\\down-generated.png",
+    "rect": {
+      "left": 86,
+      "top": 343,
+      "width": 248,
+      "height": 332
+    },
+    "sourceFoot": [
+      128.5,
+      331
+    ],
+    "scale": 0.4892966360856269,
+    "offset": [
+      129,
+      120
+    ],
+    "sha256": "6f2f6b085c330bb6c807721520db16e96201a00c37467b067194d8e5f2b56d3e"
+  },
+  {
+    "id": "wish",
+    "dir": "down",
+    "action": "attack",
+    "frame": 1,
+    "source": "wish\\down-generated.png",
+    "rect": {
+      "left": 483,
+      "top": 346,
+      "width": 233,
+      "height": 327
+    },
+    "sourceFoot": [
+      91,
+      325
+    ],
+    "scale": 0.4892966360856269,
+    "offset": [
+      148,
+      123
+    ],
+    "sha256": "5a31e4777f38c788a27a7f269a1c383d8b6a07f353a672e386e45d3f04f87baa"
+  },
+  {
+    "id": "wish",
+    "dir": "down",
+    "action": "attack",
+    "frame": 2,
+    "source": "wish\\down-generated.png",
+    "rect": {
+      "left": 823,
+      "top": 369,
+      "width": 326,
+      "height": 312
+    },
+    "sourceFoot": [
+      143,
+      311
+    ],
+    "scale": 0.4892966360856269,
+    "offset": [
+      122,
+      130
+    ],
+    "sha256": "2ef67a890ac23430009f138cec611ba0c6f920a8cab0ee72b06e597f0a17a5c7"
+  },
+  {
+    "id": "wish",
+    "dir": "down",
+    "action": "attack",
+    "frame": 3,
+    "source": "wish\\down-generated.png",
+    "rect": {
+      "left": 1178,
+      "top": 367,
+      "width": 309,
+      "height": 309
+    },
+    "sourceFoot": [
+      168,
+      308
+    ],
+    "scale": 0.4892966360856269,
+    "offset": [
+      110,
+      132
+    ],
+    "sha256": "abd60c790a467d9d6836b935e70c8bd35ec519059b16db015117bfd4df328748"
+  },
+  {
+    "id": "wish",
+    "dir": "right",
+    "action": "attack",
+    "frame": 0,
+    "source": "wish\\right-generated.png",
+    "rect": {
+      "left": 69,
+      "top": 324,
+      "width": 270,
+      "height": 336
+    },
+    "sourceFoot": [
+      59.5,
+      332
+    ],
+    "scale": 0.528052805280528,
+    "offset": [
+      161,
+      108
+    ],
+    "sha256": "e8cb256dc1bcf17bb315bce0531a038d4b2669ce55ac3df4ae9c28faff0b58b9"
+  },
+  {
+    "id": "wish",
+    "dir": "right",
+    "action": "attack",
+    "frame": 1,
+    "source": "wish\\right-generated.png",
+    "rect": {
+      "left": 423,
+      "top": 374,
+      "width": 348,
+      "height": 287
+    },
+    "sourceFoot": [
+      173,
+      285
+    ],
+    "scale": 0.528052805280528,
+    "offset": [
+      101,
+      132
+    ],
+    "sha256": "a096e9b922e4bce2a166f870c954d769a8ae1b5da292d748a869b685098457d1"
+  },
+  {
+    "id": "wish",
+    "dir": "right",
+    "action": "attack",
+    "frame": 2,
+    "source": "wish\\right-generated.png",
+    "rect": {
+      "left": 786,
+      "top": 389,
+      "width": 406,
+      "height": 271
+    },
+    "sourceFoot": [
+      233,
+      267
+    ],
+    "scale": 0.528052805280528,
+    "offset": [
+      69,
+      141
+    ],
+    "sha256": "5f7bea2f771a5feec688215ebf11787b4b43d1b99f786062c23d48cc95234479"
+  },
+  {
+    "id": "wish",
+    "dir": "right",
+    "action": "attack",
+    "frame": 3,
+    "source": "wish\\right-generated.png",
+    "rect": {
+      "left": 1233,
+      "top": 376,
+      "width": 255,
+      "height": 283
+    },
+    "sourceFoot": [
+      126.5,
+      282
+    ],
+    "scale": 0.528052805280528,
+    "offset": [
+      125,
+      133
+    ],
+    "sha256": "1c3650559429fb4d582261a6b60d292cb7a6ac835ae246e2f0ab97dbb8c79d74"
+  },
+  {
+    "id": "wish",
+    "dir": "up",
+    "action": "attack",
+    "frame": 0,
+    "source": "wish\\up-generated.png",
+    "rect": {
+      "left": 106,
+      "top": 351,
+      "width": 232,
+      "height": 307
+    },
+    "sourceFoot": [
+      107.5,
+      306
+    ],
+    "scale": 0.5015673981191222,
+    "offset": [
+      139,
+      129
+    ],
+    "sha256": "75bd217215ba8c73b05cc0b719cdabcacaa610b8650c72f95460540667d5fce8"
+  },
+  {
+    "id": "wish",
+    "dir": "up",
+    "action": "attack",
+    "frame": 1,
+    "source": "wish\\up-generated.png",
+    "rect": {
+      "left": 459,
+      "top": 338,
+      "width": 255,
+      "height": 321
+    },
+    "sourceFoot": [
+      115.5,
+      320
+    ],
+    "scale": 0.5015673981191222,
+    "offset": [
+      134,
+      122
+    ],
+    "sha256": "fee26c210c02c19dcb77a54c69414c41f1b6015e46dec7fd302a636b7fdcf713"
+  },
+  {
+    "id": "wish",
+    "dir": "up",
+    "action": "attack",
+    "frame": 2,
+    "source": "wish\\up-generated.png",
+    "rect": {
+      "left": 810,
+      "top": 381,
+      "width": 333,
+      "height": 279
+    },
+    "sourceFoot": [
+      136.5,
+      278
+    ],
+    "scale": 0.5015673981191222,
+    "offset": [
+      124,
+      143
+    ],
+    "sha256": "7ee5a39eec3602656645ae2b773486d18dd129cf2b64d90d7a7b02d627d3c899"
+  },
+  {
+    "id": "wish",
+    "dir": "up",
+    "action": "attack",
+    "frame": 3,
+    "source": "wish\\up-generated.png",
+    "rect": {
+      "left": 1181,
+      "top": 382,
+      "width": 309,
+      "height": 279
+    },
+    "sourceFoot": [
+      189.5,
+      278
+    ],
+    "scale": 0.5015673981191222,
+    "offset": [
+      97,
+      143
+    ],
+    "sha256": "376c252b5c57332b06f3465f46dc39b4f76313c5e9249b122e1152290589501d"
+  },
+  {
+    "id": "wish",
+    "dir": "down",
+    "action": "cast",
+    "frame": 0,
+    "source": "wish\\down-generated.png",
+    "rect": {
+      "left": 97,
+      "top": 674,
+      "width": 256,
+      "height": 339
+    },
+    "sourceFoot": [
+      111,
+      339
+    ],
+    "scale": 0.4892966360856269,
+    "offset": [
+      140,
+      117
+    ],
+    "sha256": "644006678761c36130cf6c9f674a60051b307a272efcac60dbf9b88129c22452"
+  },
+  {
+    "id": "wish",
+    "dir": "down",
+    "action": "cast",
+    "frame": 1,
+    "source": "wish\\down-generated.png",
+    "rect": {
+      "left": 495,
+      "top": 684,
+      "width": 227,
+      "height": 329
+    },
+    "sourceFoot": [
+      92.5,
+      327
+    ],
+    "scale": 0.4892966360856269,
+    "offset": [
+      147,
+      122
+    ],
+    "sha256": "f197936761639fe0169e72b6ca57be4cf6cad64e01808a4acd37e1b2fd783fcd"
+  },
+  {
+    "id": "wish",
+    "dir": "right",
+    "action": "cast",
+    "frame": 0,
+    "source": "wish\\right-generated.png",
+    "rect": {
+      "left": 79,
+      "top": 648,
+      "width": 277,
+      "height": 357
+    },
+    "sourceFoot": [
+      149.5,
+      355
+    ],
+    "scale": 0.528052805280528,
+    "offset": [
+      113,
+      95
+    ],
+    "sha256": "921c24e5922d490ab78a9b947cdb306cc9287e5c7cd0130f9cbdf9cdf25b95ba"
+  },
+  {
+    "id": "wish",
+    "dir": "right",
+    "action": "cast",
+    "frame": 1,
+    "source": "wish\\right-generated.png",
+    "rect": {
+      "left": 464,
+      "top": 674,
+      "width": 312,
+      "height": 328
+    },
+    "sourceFoot": [
+      148,
+      326
+    ],
+    "scale": 0.528052805280528,
+    "offset": [
+      114,
+      110
+    ],
+    "sha256": "d594bb0f9edf45942e6d43832d30d55ac3e4abae6c838d35cffccd4e97c56349"
+  },
+  {
+    "id": "wish",
+    "dir": "up",
+    "action": "cast",
+    "frame": 0,
+    "source": "wish\\up-generated.png",
+    "rect": {
+      "left": 115,
+      "top": 637,
+      "width": 241,
+      "height": 362
+    },
+    "sourceFoot": [
+      110,
+      361
+    ],
+    "scale": 0.5015673981191222,
+    "offset": [
+      137,
+      101
+    ],
+    "sha256": "91d2e83e0ee1a2ddaa51473a89df9ebc1f3b7c0daf575f2e128eac1ba32c3679"
+  },
+  {
+    "id": "wish",
+    "dir": "up",
+    "action": "cast",
+    "frame": 1,
+    "source": "wish\\up-generated.png",
+    "rect": {
+      "left": 479,
+      "top": 650,
+      "width": 247,
+      "height": 349
+    },
+    "sourceFoot": [
+      114,
+      348
+    ],
+    "scale": 0.5015673981191222,
+    "offset": [
+      135,
+      107
+    ],
+    "sha256": "1b7814a3cbd514781170056efbb4c25ecc36d9051d280eea18e4ed96594c743a"
+  },
+  {
+    "id": "wish",
+    "dir": "down",
+    "action": "hit",
+    "frame": 0,
+    "source": "wish\\down-generated.png",
+    "rect": {
+      "left": 869,
+      "top": 711,
+      "width": 187,
+      "height": 297
+    },
+    "sourceFoot": [
+      87.5,
+      297
+    ],
+    "scale": 0.4892966360856269,
+    "offset": [
+      149,
+      137
+    ],
+    "sha256": "7f4861abf1621aa176a4c7725092edfa890c5cf67048c4892e7e370ede5db004"
+  },
+  {
+    "id": "wish",
+    "dir": "down",
+    "action": "hit",
+    "frame": 1,
+    "source": "wish\\down-generated.png",
+    "rect": {
+      "left": 1256,
+      "top": 705,
+      "width": 192,
+      "height": 308
+    },
+    "sourceFoot": [
+      98,
+      307
+    ],
+    "scale": 0.4892966360856269,
+    "offset": [
+      145,
+      132
+    ],
+    "sha256": "ab38dea702a3c2848ad0a2ba028a805d24b1afb4305afd3a8ed14c654c221668"
+  },
+  {
+    "id": "wish",
+    "dir": "right",
+    "action": "hit",
+    "frame": 0,
+    "source": "wish\\right-generated.png",
+    "rect": {
+      "left": 834,
+      "top": 714,
+      "width": 221,
+      "height": 285
+    },
+    "sourceFoot": [
+      115.5,
+      282
+    ],
+    "scale": 0.528052805280528,
+    "offset": [
+      132,
+      135
+    ],
+    "sha256": "9cbbba38252cd373baa7da8cbe4f179c136e5a6f08c2aa794a23b764bcd43e18"
+  },
+  {
+    "id": "wish",
+    "dir": "right",
+    "action": "hit",
+    "frame": 1,
+    "source": "wish\\right-generated.png",
+    "rect": {
+      "left": 1211,
+      "top": 723,
+      "width": 242,
+      "height": 274
+    },
+    "sourceFoot": [
+      120.5,
+      272
+    ],
+    "scale": 0.528052805280528,
+    "offset": [
+      129,
+      139
+    ],
+    "sha256": "5dc6debce3414e3fb9279be2c765e6b0b91a7288fc494913760bea4350b80b81"
+  },
+  {
+    "id": "wish",
+    "dir": "up",
+    "action": "hit",
+    "frame": 0,
+    "source": "wish\\up-generated.png",
+    "rect": {
+      "left": 835,
+      "top": 697,
+      "width": 236,
+      "height": 300
+    },
+    "sourceFoot": [
+      153,
+      299
+    ],
+    "scale": 0.5015673981191222,
+    "offset": [
+      116,
+      133
+    ],
+    "sha256": "1b8869c8ad81d6719d54bd712de5cfbc94d5bf4148efcc5e4bfe19f0c90716e9"
+  },
+  {
+    "id": "wish",
+    "dir": "up",
+    "action": "hit",
+    "frame": 1,
+    "source": "wish\\up-generated.png",
+    "rect": {
+      "left": 1248,
+      "top": 675,
+      "width": 185,
+      "height": 324
+    },
+    "sourceFoot": [
+      93.5,
+      323
+    ],
+    "scale": 0.5015673981191222,
+    "offset": [
+      145,
+      122
+    ],
+    "sha256": "6696994f4027c7e8643f93bcc5a510a618f18e49598565e212c7c75768e3cf88"
+  },
+  {
+    "id": "war",
+    "dir": "down",
+    "action": "walk",
+    "frame": 0,
+    "source": "war\\down-generated.png",
+    "rect": {
+      "left": 93,
+      "top": 31,
+      "width": 287,
+      "height": 299
+    },
+    "sourceFoot": [
+      147.5,
+      298
+    ],
+    "scale": 0.5387205387205387,
+    "offset": [
+      113,
+      121
+    ],
+    "sha256": "14314aa261619ac9212eef78d54e290e08849fa04b5668db85b07fb35d0c1478"
+  },
+  {
+    "id": "war",
+    "dir": "down",
+    "action": "walk",
+    "frame": 1,
+    "source": "war\\down-generated.png",
+    "rect": {
+      "left": 446,
+      "top": 31,
+      "width": 288,
+      "height": 298
+    },
+    "sourceFoot": [
+      145.5,
+      296
+    ],
+    "scale": 0.5387205387205387,
+    "offset": [
+      114,
+      123
+    ],
+    "sha256": "1a0c21ada67596675115848d8b496711b69f2104d817d0a07cfe8e63a145a5cc"
+  },
+  {
+    "id": "war",
+    "dir": "down",
+    "action": "walk",
+    "frame": 2,
+    "source": "war\\down-generated.png",
+    "rect": {
+      "left": 797,
+      "top": 31,
+      "width": 290,
+      "height": 298
+    },
+    "sourceFoot": [
+      144,
+      297
+    ],
+    "scale": 0.5387205387205387,
+    "offset": [
+      114,
+      122
+    ],
+    "sha256": "dd98157e8b1c7a2bd959e5c14cabe1294a490b1b07ef8a57a87afe0a00c609c6"
+  },
+  {
+    "id": "war",
+    "dir": "down",
+    "action": "walk",
+    "frame": 3,
+    "source": "war\\down-generated.png",
+    "rect": {
+      "left": 1150,
+      "top": 31,
+      "width": 293,
+      "height": 298
+    },
+    "sourceFoot": [
+      142.5,
+      297
+    ],
+    "scale": 0.5387205387205387,
+    "offset": [
+      115,
+      122
+    ],
+    "sha256": "f97c924a6778e160188aac0bdf54402e6ff7711e902e833ad30dbc74eb7ac353"
+  },
+  {
+    "id": "war",
+    "dir": "right",
+    "action": "walk",
+    "frame": 0,
+    "source": "war\\right-generated.png",
+    "rect": {
+      "left": 58,
+      "top": 20,
+      "width": 309,
+      "height": 301
+    },
+    "sourceFoot": [
+      161.5,
+      300
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      106,
+      122
+    ],
+    "sha256": "ce933a640482683e553f10a006c7ed36cdf5269257466a530e12d515b8bbcd24"
+  },
+  {
+    "id": "war",
+    "dir": "right",
+    "action": "walk",
+    "frame": 1,
+    "source": "war\\right-generated.png",
+    "rect": {
+      "left": 433,
+      "top": 21,
+      "width": 296,
+      "height": 302
+    },
+    "sourceFoot": [
+      153.5,
+      301
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      110,
+      121
+    ],
+    "sha256": "21eeeaca1cff46835927668cb859987d37ac8f6236226360416d4c56507a58fe"
+  },
+  {
+    "id": "war",
+    "dir": "right",
+    "action": "walk",
+    "frame": 2,
+    "source": "war\\right-generated.png",
+    "rect": {
+      "left": 792,
+      "top": 22,
+      "width": 284,
+      "height": 299
+    },
+    "sourceFoot": [
+      147.5,
+      298
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      114,
+      123
+    ],
+    "sha256": "2d1f3d37b479637ac12dfee56774da107493eee737a60ecf6133750222501ea1"
+  },
+  {
+    "id": "war",
+    "dir": "right",
+    "action": "walk",
+    "frame": 3,
+    "source": "war\\right-generated.png",
+    "rect": {
+      "left": 1166,
+      "top": 20,
+      "width": 293,
+      "height": 300
+    },
+    "sourceFoot": [
+      146,
+      299
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      114,
+      122
+    ],
+    "sha256": "e5c600b91150ba665147281cba50645640023079351e000fac410cbdb8ddc6ca"
+  },
+  {
+    "id": "war",
+    "dir": "up",
+    "action": "walk",
+    "frame": 0,
+    "source": "war\\up-generated.png",
+    "rect": {
+      "left": 83,
+      "top": 20,
+      "width": 306,
+      "height": 295
+    },
+    "sourceFoot": [
+      167.5,
+      293
+    ],
+    "scale": 0.5460750853242321,
+    "offset": [
+      101,
+      122
+    ],
+    "sha256": "2744c81b1fda2d7aaedbb911de250ffee1bbd736b32350c3ccf8a5252e83b4fd"
+  },
+  {
+    "id": "war",
+    "dir": "up",
+    "action": "walk",
+    "frame": 1,
+    "source": "war\\up-generated.png",
+    "rect": {
+      "left": 474,
+      "top": 22,
+      "width": 250,
+      "height": 294
+    },
+    "sourceFoot": [
+      121.5,
+      291
+    ],
+    "scale": 0.5460750853242321,
+    "offset": [
+      126,
+      123
+    ],
+    "sha256": "397ce16a37f5179580efebdfa2dec4e2d53dd26b3de55f88c6e80c57bdc7d2a6"
+  },
+  {
+    "id": "war",
+    "dir": "up",
+    "action": "walk",
+    "frame": 2,
+    "source": "war\\up-generated.png",
+    "rect": {
+      "left": 827,
+      "top": 20,
+      "width": 278,
+      "height": 296
+    },
+    "sourceFoot": [
+      146,
+      294
+    ],
+    "scale": 0.5460750853242321,
+    "offset": [
+      112,
+      122
+    ],
+    "sha256": "e3db5a4ea55047731b26454e3067aa5ff7a30fc76e113969dc369d7a64aa568e"
+  },
+  {
+    "id": "war",
+    "dir": "up",
+    "action": "walk",
+    "frame": 3,
+    "source": "war\\up-generated.png",
+    "rect": {
+      "left": 1193,
+      "top": 22,
+      "width": 283,
+      "height": 287
+    },
+    "sourceFoot": [
+      149.5,
+      286
+    ],
+    "scale": 0.5460750853242321,
+    "offset": [
+      110,
+      126
+    ],
+    "sha256": "e4a5e9985695cc7b40266377a8aa5ba3937badd52d41b857c45cef1127796db6"
+  },
+  {
+    "id": "war",
+    "dir": "down",
+    "action": "attack",
+    "frame": 0,
+    "source": "war\\down-generated.png",
+    "rect": {
+      "left": 99,
+      "top": 350,
+      "width": 282,
+      "height": 317
+    },
+    "sourceFoot": [
+      206.5,
+      296
+    ],
+    "scale": 0.5387205387205387,
+    "offset": [
+      81,
+      123
+    ],
+    "sha256": "fb191443384ca3271a624f4fd5afb85c02e27f76fae969523f83f163b07529f2"
+  },
+  {
+    "id": "war",
+    "dir": "down",
+    "action": "attack",
+    "frame": 1,
+    "source": "war\\down-generated.png",
+    "rect": {
+      "left": 466,
+      "top": 349,
+      "width": 276,
+      "height": 318
+    },
+    "sourceFoot": [
+      208,
+      299
+    ],
+    "scale": 0.5387205387205387,
+    "offset": [
+      80,
+      121
+    ],
+    "sha256": "82d501ebc35e913ce995bfd901cbcbf0d16cff0544a25807c484f2b7d2d99c83"
+  },
+  {
+    "id": "war",
+    "dir": "down",
+    "action": "attack",
+    "frame": 2,
+    "source": "war\\down-generated.png",
+    "rect": {
+      "left": 794,
+      "top": 386,
+      "width": 289,
+      "height": 284
+    },
+    "sourceFoot": [
+      88,
+      283
+    ],
+    "scale": 0.5387205387205387,
+    "offset": [
+      145,
+      130
+    ],
+    "sha256": "61f738111a214173014dacbb048c6386ac82397831c781490e8145bbb2559926"
+  },
+  {
+    "id": "war",
+    "dir": "down",
+    "action": "attack",
+    "frame": 3,
+    "source": "war\\down-generated.png",
+    "rect": {
+      "left": 1137,
+      "top": 392,
+      "width": 325,
+      "height": 275
+    },
+    "sourceFoot": [
+      97.5,
+      274
+    ],
+    "scale": 0.5387205387205387,
+    "offset": [
+      139,
+      135
+    ],
+    "sha256": "e9a06873de02371011e9dfe61afe7ae3de7f08283b80c659f39cf895cba934a7"
+  },
+  {
+    "id": "war",
+    "dir": "right",
+    "action": "attack",
+    "frame": 0,
+    "source": "war\\right-generated.png",
+    "rect": {
+      "left": 47,
+      "top": 348,
+      "width": 305,
+      "height": 294
+    },
+    "sourceFoot": [
+      152,
+      293
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      111,
+      125
+    ],
+    "sha256": "ca1a2a76cf942ff6e53b0c89662c2294b8136a3186b7dda30a6ef65a34b43db8"
+  },
+  {
+    "id": "war",
+    "dir": "right",
+    "action": "attack",
+    "frame": 1,
+    "source": "war\\right-generated.png",
+    "rect": {
+      "left": 432,
+      "top": 343,
+      "width": 284,
+      "height": 302
+    },
+    "sourceFoot": [
+      60.5,
+      301
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      160,
+      121
+    ],
+    "sha256": "3b5c8062ba2cddeab3db5b9bda50197035dcabe9381554cf7f63a159d79c78f9"
+  },
+  {
+    "id": "war",
+    "dir": "right",
+    "action": "attack",
+    "frame": 2,
+    "source": "war\\right-generated.png",
+    "rect": {
+      "left": 766,
+      "top": 389,
+      "width": 433,
+      "height": 257
+    },
+    "sourceFoot": [
+      290,
+      250
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      37,
+      149
+    ],
+    "sha256": "c4f6fd5b616fececf337de83410f9c332aa3a75078528531d7488f651b0cdf54"
+  },
+  {
+    "id": "war",
+    "dir": "right",
+    "action": "attack",
+    "frame": 3,
+    "source": "war\\right-generated.png",
+    "rect": {
+      "left": 1194,
+      "top": 379,
+      "width": 330,
+      "height": 272
+    },
+    "sourceFoot": [
+      234.5,
+      260
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      67,
+      143
+    ],
+    "sha256": "f12bb8c30e98f52715fdbc247e02d8472ef1f291d57cef77b06f743120a412fb"
+  },
+  {
+    "id": "war",
+    "dir": "up",
+    "action": "attack",
+    "frame": 0,
+    "source": "war\\up-generated.png",
+    "rect": {
+      "left": 78,
+      "top": 309,
+      "width": 246,
+      "height": 338
+    },
+    "sourceFoot": [
+      58,
+      324
+    ],
+    "scale": 0.5460750853242321,
+    "offset": [
+      160,
+      106
+    ],
+    "sha256": "e9692995f6b855776b98206782813b9e16f0c83a982eb1345e30b24e95ffdfc7"
+  },
+  {
+    "id": "war",
+    "dir": "up",
+    "action": "attack",
+    "frame": 1,
+    "source": "war\\up-generated.png",
+    "rect": {
+      "left": 443,
+      "top": 328,
+      "width": 318,
+      "height": 320
+    },
+    "sourceFoot": [
+      74.5,
+      319
+    ],
+    "scale": 0.5460750853242321,
+    "offset": [
+      151,
+      108
+    ],
+    "sha256": "9196e35141c8f606fabde2539c78c868597d0b469e2db538c02548709abc108e"
+  },
+  {
+    "id": "war",
+    "dir": "up",
+    "action": "attack",
+    "frame": 2,
+    "source": "war\\up-generated.png",
+    "rect": {
+      "left": 810,
+      "top": 370,
+      "width": 424,
+      "height": 283
+    },
+    "sourceFoot": [
+      87,
+      281
+    ],
+    "scale": 0.5460750853242321,
+    "offset": [
+      145,
+      129
+    ],
+    "sha256": "74bccf35e6031e084f49817d958df1ce601df102f4959e97db13e3a7ed727a5d"
+  },
+  {
+    "id": "war",
+    "dir": "up",
+    "action": "attack",
+    "frame": 3,
+    "source": "war\\up-generated.png",
+    "rect": {
+      "left": 1246,
+      "top": 379,
+      "width": 270,
+      "height": 278
+    },
+    "sourceFoot": [
+      189.5,
+      260
+    ],
+    "scale": 0.5460750853242321,
+    "offset": [
+      89,
+      141
+    ],
+    "sha256": "d934f8c35407fcb1cb5c9f9bc959d65f2e833be0ed2624c82a8b0f6896132838"
+  },
+  {
+    "id": "war",
+    "dir": "down",
+    "action": "cast",
+    "frame": 0,
+    "source": "war\\down-generated.png",
+    "rect": {
+      "left": 117,
+      "top": 599,
+      "width": 279,
+      "height": 398
+    },
+    "sourceFoot": [
+      180,
+      397
+    ],
+    "scale": 0.5387205387205387,
+    "offset": [
+      95,
+      68
+    ],
+    "sha256": "d3ee000ac79c737ce8d2a1f24bc0e47b3dd2b5752094e414740c4c873fca96f9"
+  },
+  {
+    "id": "war",
+    "dir": "down",
+    "action": "cast",
+    "frame": 1,
+    "source": "war\\down-generated.png",
+    "rect": {
+      "left": 490,
+      "top": 606,
+      "width": 256,
+      "height": 392
+    },
+    "sourceFoot": [
+      174.5,
+      391
+    ],
+    "scale": 0.5387205387205387,
+    "offset": [
+      99,
+      71
+    ],
+    "sha256": "4f7c3749b916274c004202b7a2c20da98960a0ccfb0f798f36573eac06ec2906"
+  },
+  {
+    "id": "war",
+    "dir": "right",
+    "action": "cast",
+    "frame": 0,
+    "source": "war\\right-generated.png",
+    "rect": {
+      "left": 53,
+      "top": 606,
+      "width": 285,
+      "height": 399
+    },
+    "sourceFoot": [
+      75,
+      397
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      152,
+      70
+    ],
+    "sha256": "9d67f7b972096a52254353237992fea9d2cb2355c4cdade12f8e708d78effef9"
+  },
+  {
+    "id": "war",
+    "dir": "right",
+    "action": "cast",
+    "frame": 1,
+    "source": "war\\right-generated.png",
+    "rect": {
+      "left": 432,
+      "top": 655,
+      "width": 285,
+      "height": 351
+    },
+    "sourceFoot": [
+      70.5,
+      350
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      154,
+      95
+    ],
+    "sha256": "ff91958ddf2179a7b123ac4a71d63d30ba12ad6ce2fd092467a0b9d73afd6d3f"
+  },
+  {
+    "id": "war",
+    "dir": "up",
+    "action": "cast",
+    "frame": 0,
+    "source": "war\\up-generated.png",
+    "rect": {
+      "left": 90,
+      "top": 621,
+      "width": 291,
+      "height": 378
+    },
+    "sourceFoot": [
+      197.5,
+      377
+    ],
+    "scale": 0.5460750853242321,
+    "offset": [
+      84,
+      77
+    ],
+    "sha256": "dedc20daf7f75cd2975b828deb6dc7d7850f2b2e73581afa92993c9f9b475a35"
+  },
+  {
+    "id": "war",
+    "dir": "up",
+    "action": "cast",
+    "frame": 1,
+    "source": "war\\up-generated.png",
+    "rect": {
+      "left": 467,
+      "top": 621,
+      "width": 305,
+      "height": 380
+    },
+    "sourceFoot": [
+      143,
+      379
+    ],
+    "scale": 0.5460750853242321,
+    "offset": [
+      114,
+      75
+    ],
+    "sha256": "e4107c59279d69755669d5c3ca05a84f9bc3a80816330adafbddcc560d79f2ac"
+  },
+  {
+    "id": "war",
+    "dir": "down",
+    "action": "hit",
+    "frame": 0,
+    "source": "war\\down-generated.png",
+    "rect": {
+      "left": 792,
+      "top": 738,
+      "width": 308,
+      "height": 248
+    },
+    "sourceFoot": [
+      237,
+      246
+    ],
+    "scale": 0.5387205387205387,
+    "offset": [
+      64,
+      149
+    ],
+    "sha256": "be1c2ed06c18d821c996f25da7dc5a7623bdbf780799915adac04e0a44fd77b4"
+  },
+  {
+    "id": "war",
+    "dir": "down",
+    "action": "hit",
+    "frame": 1,
+    "source": "war\\down-generated.png",
+    "rect": {
+      "left": 1133,
+      "top": 732,
+      "width": 334,
+      "height": 258
+    },
+    "sourceFoot": [
+      104,
+      257
+    ],
+    "scale": 0.5387205387205387,
+    "offset": [
+      136,
+      144
+    ],
+    "sha256": "fc975b014bb8d20d37ce9818fb4dc1ebb97210d50bd91f3f2d7bc02439641797"
+  },
+  {
+    "id": "war",
+    "dir": "right",
+    "action": "hit",
+    "frame": 0,
+    "source": "war\\right-generated.png",
+    "rect": {
+      "left": 812,
+      "top": 742,
+      "width": 271,
+      "height": 256
+    },
+    "sourceFoot": [
+      62.5,
+      255
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      159,
+      146
+    ],
+    "sha256": "827aa0377f5cac43234ae99f659a5ef6933b117ac7893d2151f58971c8a807e3"
+  },
+  {
+    "id": "war",
+    "dir": "right",
+    "action": "hit",
+    "frame": 1,
+    "source": "war\\right-generated.png",
+    "rect": {
+      "left": 1166,
+      "top": 738,
+      "width": 322,
+      "height": 261
+    },
+    "sourceFoot": [
+      70.5,
+      260
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      155,
+      143
+    ],
+    "sha256": "691a0a9d193bcf837b003c058529e127d15a427b52d0677b8c85aa4c1213b04f"
+  },
+  {
+    "id": "war",
+    "dir": "up",
+    "action": "hit",
+    "frame": 0,
+    "source": "war\\up-generated.png",
+    "rect": {
+      "left": 824,
+      "top": 748,
+      "width": 282,
+      "height": 239
+    },
+    "sourceFoot": [
+      118,
+      237
+    ],
+    "scale": 0.5460750853242321,
+    "offset": [
+      128,
+      153
+    ],
+    "sha256": "8a544cacfb2472740647625414ba6552912fac0c9c2f075b0743656930bf1c2a"
+  },
+  {
+    "id": "war",
+    "dir": "up",
+    "action": "hit",
+    "frame": 1,
+    "source": "war\\up-generated.png",
+    "rect": {
+      "left": 1178,
+      "top": 732,
+      "width": 324,
+      "height": 260
+    },
+    "sourceFoot": [
+      161.5,
+      259
+    ],
+    "scale": 0.5460750853242321,
+    "offset": [
+      104,
+      141
+    ],
+    "sha256": "b20b817b1456bbe89a4e6df5982578c931f3b10fc7841e89d979f1826ec696a4"
+  },
+  {
+    "id": "wild",
+    "dir": "down",
+    "action": "walk",
+    "frame": 0,
+    "source": "wild\\down-generated.png",
+    "rect": {
+      "left": 107,
+      "top": 16,
+      "width": 190,
+      "height": 321
+    },
+    "sourceFoot": [
+      102.5,
+      320
+    ],
+    "scale": 0.5,
+    "offset": [
+      141,
+      122
+    ],
+    "sha256": "d41c46db6cf2ac1efcf555835543160b76e437b21894ce7725b8fb123fac5330"
+  },
+  {
+    "id": "wild",
+    "dir": "down",
+    "action": "walk",
+    "frame": 1,
+    "source": "wild\\down-generated.png",
+    "rect": {
+      "left": 496,
+      "top": 15,
+      "width": 186,
+      "height": 321
+    },
+    "sourceFoot": [
+      92,
+      321
+    ],
+    "scale": 0.5,
+    "offset": [
+      146,
+      122
+    ],
+    "sha256": "d3a61127786f3235e7cc97e9889648140c36b7ddf6a6e9e5ad8e4e126c05b303"
+  },
+  {
+    "id": "wild",
+    "dir": "down",
+    "action": "walk",
+    "frame": 2,
+    "source": "wild\\down-generated.png",
+    "rect": {
+      "left": 852,
+      "top": 16,
+      "width": 204,
+      "height": 321
+    },
+    "sourceFoot": [
+      104,
+      320
+    ],
+    "scale": 0.5,
+    "offset": [
+      141,
+      122
+    ],
+    "sha256": "0a62693605f32182fef0f766a05df75bd631aca0587e438d29240e0acdd20cb0"
+  },
+  {
+    "id": "wild",
+    "dir": "down",
+    "action": "walk",
+    "frame": 3,
+    "source": "wild\\down-generated.png",
+    "rect": {
+      "left": 1240,
+      "top": 16,
+      "width": 196,
+      "height": 321
+    },
+    "sourceFoot": [
+      109.5,
+      320
+    ],
+    "scale": 0.5,
+    "offset": [
+      137,
+      122
+    ],
+    "sha256": "d724170f4d5d2faa02ec258001fb77ef4ad8b7866f56d4528acdb1a8a6e2adf1"
+  },
+  {
+    "id": "wild",
+    "dir": "right",
+    "action": "walk",
+    "frame": 0,
+    "source": "wild\\right-generated.png",
+    "rect": {
+      "left": 61,
+      "top": 30,
+      "width": 234,
+      "height": 300
+    },
+    "sourceFoot": [
+      116.5,
+      299
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      130,
+      122
+    ],
+    "sha256": "2501b3498e4f8f3f2e8a68f5792cb8a86babd21480b045843236a1f856e7f9a8"
+  },
+  {
+    "id": "wild",
+    "dir": "right",
+    "action": "walk",
+    "frame": 1,
+    "source": "wild\\right-generated.png",
+    "rect": {
+      "left": 455,
+      "top": 31,
+      "width": 227,
+      "height": 299
+    },
+    "sourceFoot": [
+      113,
+      297
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      132,
+      123
+    ],
+    "sha256": "b11bf642ed5197bfdbefd274625db7ae76e63e1175c560f476c841964a392ea8"
+  },
+  {
+    "id": "wild",
+    "dir": "right",
+    "action": "walk",
+    "frame": 2,
+    "source": "wild\\right-generated.png",
+    "rect": {
+      "left": 825,
+      "top": 30,
+      "width": 240,
+      "height": 303
+    },
+    "sourceFoot": [
+      119.5,
+      302
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      129,
+      121
+    ],
+    "sha256": "71330928440bb73aa6a85f634b563dcde9460a1fdebec86743a646a396d3bea2"
+  },
+  {
+    "id": "wild",
+    "dir": "right",
+    "action": "walk",
+    "frame": 3,
+    "source": "wild\\right-generated.png",
+    "rect": {
+      "left": 1212,
+      "top": 30,
+      "width": 234,
+      "height": 299
+    },
+    "sourceFoot": [
+      117.5,
+      297
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      129,
+      123
+    ],
+    "sha256": "1edd32a7d550028ca5c3dc164ae21482505085e0d5a22084e1379477656361bc"
+  },
+  {
+    "id": "wild",
+    "dir": "up",
+    "action": "walk",
+    "frame": 0,
+    "source": "wild\\up-generated.png",
+    "rect": {
+      "left": 101,
+      "top": 15,
+      "width": 207,
+      "height": 311
+    },
+    "sourceFoot": [
+      114,
+      310
+    ],
+    "scale": 0.5047318611987381,
+    "offset": [
+      134,
+      126
+    ],
+    "sha256": "cdf80970dd83f50d99cce8081f9acc2c7096e49625b7c3edb071119ab1e4bdda"
+  },
+  {
+    "id": "wild",
+    "dir": "up",
+    "action": "walk",
+    "frame": 1,
+    "source": "wild\\up-generated.png",
+    "rect": {
+      "left": 493,
+      "top": 15,
+      "width": 187,
+      "height": 319
+    },
+    "sourceFoot": [
+      98,
+      318
+    ],
+    "scale": 0.5047318611987381,
+    "offset": [
+      143,
+      122
+    ],
+    "sha256": "0cd166422bd9cefb88f790b7d8fb6b2e52da7d5d61fb2d7b24ab01a10fbe0f5d"
+  },
+  {
+    "id": "wild",
+    "dir": "up",
+    "action": "walk",
+    "frame": 2,
+    "source": "wild\\up-generated.png",
+    "rect": {
+      "left": 856,
+      "top": 15,
+      "width": 191,
+      "height": 317
+    },
+    "sourceFoot": [
+      98,
+      315
+    ],
+    "scale": 0.5047318611987381,
+    "offset": [
+      143,
+      124
+    ],
+    "sha256": "b64c630942a31d70ce67f9c977329553e50e64d435a586839842b45dce3a62b0"
+  },
+  {
+    "id": "wild",
+    "dir": "up",
+    "action": "walk",
+    "frame": 3,
+    "source": "wild\\up-generated.png",
+    "rect": {
+      "left": 1243,
+      "top": 16,
+      "width": 184,
+      "height": 318
+    },
+    "sourceFoot": [
+      94.5,
+      317
+    ],
+    "scale": 0.5047318611987381,
+    "offset": [
+      144,
+      122
+    ],
+    "sha256": "d4beb41c5619f7e4487d2a2d97142f87a59cb5399f669053fcf64b0c063d9469"
+  },
+  {
+    "id": "wild",
+    "dir": "down",
+    "action": "attack",
+    "frame": 0,
+    "source": "wild\\down-generated.png",
+    "rect": {
+      "left": 101,
+      "top": 361,
+      "width": 238,
+      "height": 301
+    },
+    "sourceFoot": [
+      53,
+      299
+    ],
+    "scale": 0.5,
+    "offset": [
+      166,
+      133
+    ],
+    "sha256": "ad3be8a744bb0f86b74c9a44ddd606a206df593ccaec6000bdbe56cde6a115fe"
+  },
+  {
+    "id": "wild",
+    "dir": "down",
+    "action": "attack",
+    "frame": 1,
+    "source": "wild\\down-generated.png",
+    "rect": {
+      "left": 488,
+      "top": 358,
+      "width": 224,
+      "height": 303
+    },
+    "sourceFoot": [
+      48.5,
+      302
+    ],
+    "scale": 0.5,
+    "offset": [
+      168,
+      132
+    ],
+    "sha256": "816d960179c9dacfa8c7b84f2b28eac5d529725f4806eb418bbc249b5c3feabb"
+  },
+  {
+    "id": "wild",
+    "dir": "down",
+    "action": "attack",
+    "frame": 2,
+    "source": "wild\\down-generated.png",
+    "rect": {
+      "left": 859,
+      "top": 355,
+      "width": 239,
+      "height": 306
+    },
+    "sourceFoot": [
+      59.5,
+      305
+    ],
+    "scale": 0.5,
+    "offset": [
+      162,
+      130
+    ],
+    "sha256": "a7cbc015715a9433d1b7fa232614fe6a3580e25d788d651d51181f2c7b54bed9"
+  },
+  {
+    "id": "wild",
+    "dir": "down",
+    "action": "attack",
+    "frame": 3,
+    "source": "wild\\down-generated.png",
+    "rect": {
+      "left": 1218,
+      "top": 358,
+      "width": 244,
+      "height": 303
+    },
+    "sourceFoot": [
+      78.5,
+      302
+    ],
+    "scale": 0.5,
+    "offset": [
+      153,
+      131
+    ],
+    "sha256": "51ad736cbe4319d6128f726a6b1858e4cc375893b92ca05cf5c76346c30ad2d4"
+  },
+  {
+    "id": "wild",
+    "dir": "right",
+    "action": "attack",
+    "frame": 0,
+    "source": "wild\\right-generated.png",
+    "rect": {
+      "left": 54,
+      "top": 346,
+      "width": 284,
+      "height": 327
+    },
+    "sourceFoot": [
+      209.5,
+      312
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      80,
+      115
+    ],
+    "sha256": "78342907043c3955560ecd0997390ec2ff6928e4ba82f8dd8d7b02861d614f38"
+  },
+  {
+    "id": "wild",
+    "dir": "right",
+    "action": "attack",
+    "frame": 1,
+    "source": "wild\\right-generated.png",
+    "rect": {
+      "left": 435,
+      "top": 343,
+      "width": 292,
+      "height": 341
+    },
+    "sourceFoot": [
+      84.5,
+      333
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      147,
+      104
+    ],
+    "sha256": "929c6aa03e6951489914aba70242d6c22aaef37373e444132d0d25f09cae50f8"
+  },
+  {
+    "id": "wild",
+    "dir": "right",
+    "action": "attack",
+    "frame": 2,
+    "source": "wild\\right-generated.png",
+    "rect": {
+      "left": 813,
+      "top": 350,
+      "width": 323,
+      "height": 320
+    },
+    "sourceFoot": [
+      215,
+      310
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      77,
+      116
+    ],
+    "sha256": "c2d9f7630cd99764c06220ee31b65a06624a3362b999acf159c86f11ad06e712"
+  },
+  {
+    "id": "wild",
+    "dir": "right",
+    "action": "attack",
+    "frame": 3,
+    "source": "wild\\right-generated.png",
+    "rect": {
+      "left": 1199,
+      "top": 354,
+      "width": 278,
+      "height": 315
+    },
+    "sourceFoot": [
+      138.5,
+      313
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      118,
+      115
+    ],
+    "sha256": "ad0ffb24613e6aaefe04970c264d719e2b5de309b991be10e47ea904aeeb7858"
+  },
+  {
+    "id": "wild",
+    "dir": "up",
+    "action": "attack",
+    "frame": 0,
+    "source": "wild\\up-generated.png",
+    "rect": {
+      "left": 101,
+      "top": 338,
+      "width": 258,
+      "height": 329
+    },
+    "sourceFoot": [
+      63.5,
+      328
+    ],
+    "scale": 0.5047318611987381,
+    "offset": [
+      160,
+      116
+    ],
+    "sha256": "093af2d41ef219b0e7e0c251846c10974fcdfa80adeaf17884dbeab59610cdeb"
+  },
+  {
+    "id": "wild",
+    "dir": "up",
+    "action": "attack",
+    "frame": 1,
+    "source": "wild\\up-generated.png",
+    "rect": {
+      "left": 473,
+      "top": 345,
+      "width": 246,
+      "height": 324
+    },
+    "sourceFoot": [
+      62.5,
+      322
+    ],
+    "scale": 0.5047318611987381,
+    "offset": [
+      161,
+      119
+    ],
+    "sha256": "14263cc7bfe704e713eb238502a5fa768d5f391e6e88f6806496be6b9625bb83"
+  },
+  {
+    "id": "wild",
+    "dir": "up",
+    "action": "attack",
+    "frame": 2,
+    "source": "wild\\up-generated.png",
+    "rect": {
+      "left": 816,
+      "top": 336,
+      "width": 317,
+      "height": 333
+    },
+    "sourceFoot": [
+      124,
+      332
+    ],
+    "scale": 0.5047318611987381,
+    "offset": [
+      129,
+      115
+    ],
+    "sha256": "412363816bc3d1fac1302f975f7c0e31fd3bad51ebf07f8da50323cac7b211be"
+  },
+  {
+    "id": "wild",
+    "dir": "up",
+    "action": "attack",
+    "frame": 3,
+    "source": "wild\\up-generated.png",
+    "rect": {
+      "left": 1255,
+      "top": 357,
+      "width": 229,
+      "height": 312
+    },
+    "sourceFoot": [
+      65,
+      311
+    ],
+    "scale": 0.5047318611987381,
+    "offset": [
+      160,
+      126
+    ],
+    "sha256": "dc45f4856fc6a358e5f47659dd8dedcf06a62340cab294b19c640623850658b1"
+  },
+  {
+    "id": "wild",
+    "dir": "down",
+    "action": "cast",
+    "frame": 0,
+    "source": "wild\\down-generated.png",
+    "rect": {
+      "left": 93,
+      "top": 680,
+      "width": 230,
+      "height": 306
+    },
+    "sourceFoot": [
+      58.5,
+      304
+    ],
+    "scale": 0.5,
+    "offset": [
+      163,
+      131
+    ],
+    "sha256": "f758b416eaee1213cb819cda5ecbb3547178f42baa49d1128a99339135f3ed65"
+  },
+  {
+    "id": "wild",
+    "dir": "down",
+    "action": "cast",
+    "frame": 1,
+    "source": "wild\\down-generated.png",
+    "rect": {
+      "left": 464,
+      "top": 681,
+      "width": 231,
+      "height": 303
+    },
+    "sourceFoot": [
+      67.5,
+      302
+    ],
+    "scale": 0.5,
+    "offset": [
+      159,
+      132
+    ],
+    "sha256": "e80dd28fed61faa4274737fbf076a5d6b9239139174ebc90d8fe8deca336a069"
+  },
+  {
+    "id": "wild",
+    "dir": "right",
+    "action": "cast",
+    "frame": 0,
+    "source": "wild\\right-generated.png",
+    "rect": {
+      "left": 45,
+      "top": 684,
+      "width": 288,
+      "height": 313
+    },
+    "sourceFoot": [
+      143.5,
+      312
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      115,
+      116
+    ],
+    "sha256": "5a5413ef2e12f4f0023c6f169bc0d801e5347fbb8cdd441bba9091f40e8a37e1"
+  },
+  {
+    "id": "wild",
+    "dir": "right",
+    "action": "cast",
+    "frame": 1,
+    "source": "wild\\right-generated.png",
+    "rect": {
+      "left": 443,
+      "top": 659,
+      "width": 289,
+      "height": 338
+    },
+    "sourceFoot": [
+      151,
+      337
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      111,
+      102
+    ],
+    "sha256": "061e55b76ba3ff151ac3179237be8be2b7c775e1f61c18706aff6b1d2882df87"
+  },
+  {
+    "id": "wild",
+    "dir": "up",
+    "action": "cast",
+    "frame": 0,
+    "source": "wild\\up-generated.png",
+    "rect": {
+      "left": 95,
+      "top": 665,
+      "width": 241,
+      "height": 338
+    },
+    "sourceFoot": [
+      143,
+      337
+    ],
+    "scale": 0.5047318611987381,
+    "offset": [
+      120,
+      112
+    ],
+    "sha256": "23622992b30fba75a866b4730872c6477e998ad97b39a5133371e9e38cc7db1e"
+  },
+  {
+    "id": "wild",
+    "dir": "up",
+    "action": "cast",
+    "frame": 1,
+    "source": "wild\\up-generated.png",
+    "rect": {
+      "left": 480,
+      "top": 662,
+      "width": 236,
+      "height": 341
+    },
+    "sourceFoot": [
+      77.5,
+      340
+    ],
+    "scale": 0.5047318611987381,
+    "offset": [
+      153,
+      111
+    ],
+    "sha256": "f12271cd34597cdf9f42540ed400cbd399ad0b419b86ffb1b0806a81200edf25"
+  },
+  {
+    "id": "wild",
+    "dir": "down",
+    "action": "hit",
+    "frame": 0,
+    "source": "wild\\down-generated.png",
+    "rect": {
+      "left": 875,
+      "top": 686,
+      "width": 206,
+      "height": 299
+    },
+    "sourceFoot": [
+      45,
+      298
+    ],
+    "scale": 0.5,
+    "offset": [
+      170,
+      134
+    ],
+    "sha256": "4726d9786111f832ca857f3870ea4b70b18c0ea2e2c08705c0858f9b781c2a6c"
+  },
+  {
+    "id": "wild",
+    "dir": "down",
+    "action": "hit",
+    "frame": 1,
+    "source": "wild\\down-generated.png",
+    "rect": {
+      "left": 1251,
+      "top": 684,
+      "width": 185,
+      "height": 301
+    },
+    "sourceFoot": [
+      47,
+      300
+    ],
+    "scale": 0.5,
+    "offset": [
+      169,
+      132
+    ],
+    "sha256": "7f608267756211a7ca9d553bbf8e056034128c92296bfbfa109ad612874de76d"
+  },
+  {
+    "id": "wild",
+    "dir": "right",
+    "action": "hit",
+    "frame": 0,
+    "source": "wild\\right-generated.png",
+    "rect": {
+      "left": 828,
+      "top": 698,
+      "width": 275,
+      "height": 299
+    },
+    "sourceFoot": [
+      137,
+      298
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      119,
+      123
+    ],
+    "sha256": "cdcde0a5ef02929dbc885dd1d7c48a08475b48530c1ea884399ccc6c2e390f13"
+  },
+  {
+    "id": "wild",
+    "dir": "right",
+    "action": "hit",
+    "frame": 1,
+    "source": "wild\\right-generated.png",
+    "rect": {
+      "left": 1203,
+      "top": 700,
+      "width": 268,
+      "height": 292
+    },
+    "sourceFoot": [
+      135,
+      291
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      120,
+      126
+    ],
+    "sha256": "227b9a27ad70567b0c43a7487c8cd0ec8072852c901e410811acf76c53c405d5"
+  },
+  {
+    "id": "wild",
+    "dir": "up",
+    "action": "hit",
+    "frame": 0,
+    "source": "wild\\up-generated.png",
+    "rect": {
+      "left": 865,
+      "top": 722,
+      "width": 250,
+      "height": 274
+    },
+    "sourceFoot": [
+      62.5,
+      273
+    ],
+    "scale": 0.5047318611987381,
+    "offset": [
+      160,
+      145
+    ],
+    "sha256": "0ca7fbcba48d321b50866e1e5c97e73e7a9cfc2a9f6eaf12180945aea1761471"
+  },
+  {
+    "id": "wild",
+    "dir": "up",
+    "action": "hit",
+    "frame": 1,
+    "source": "wild\\up-generated.png",
+    "rect": {
+      "left": 1239,
+      "top": 682,
+      "width": 221,
+      "height": 322
+    },
+    "sourceFoot": [
+      83,
+      321
+    ],
+    "scale": 0.5047318611987381,
+    "offset": [
+      150,
+      120
+    ],
+    "sha256": "7d90a77a729f87c23608db9baa0543ee4fbfed872acadf0492059cd588709ca7"
+  },
+  {
+    "id": "arcane",
+    "dir": "down",
+    "action": "walk",
+    "frame": 0,
+    "source": "arcane\\down-generated.png",
+    "rect": {
+      "left": 92,
+      "top": 23,
+      "width": 270,
+      "height": 340
+    },
+    "sourceFoot": [
+      126,
+      337
+    ],
+    "scale": 0.47058823529411764,
+    "offset": [
+      133,
+      123
+    ],
+    "sha256": "0c3f750dd1b04c6ea93e18d8b55b0951fd00b573266cae624ea4a5781390886c"
+  },
+  {
+    "id": "arcane",
+    "dir": "down",
+    "action": "walk",
+    "frame": 1,
+    "source": "arcane\\down-generated.png",
+    "rect": {
+      "left": 465,
+      "top": 22,
+      "width": 240,
+      "height": 340
+    },
+    "sourceFoot": [
+      115,
+      339
+    ],
+    "scale": 0.47058823529411764,
+    "offset": [
+      139,
+      123
+    ],
+    "sha256": "0990ea697a5a4b2addd473b52878609cf854ef86ac5c4887a8508705458e59ab"
+  },
+  {
+    "id": "arcane",
+    "dir": "down",
+    "action": "walk",
+    "frame": 2,
+    "source": "arcane\\down-generated.png",
+    "rect": {
+      "left": 832,
+      "top": 22,
+      "width": 252,
+      "height": 343
+    },
+    "sourceFoot": [
+      128.5,
+      341
+    ],
+    "scale": 0.47058823529411764,
+    "offset": [
+      132,
+      122
+    ],
+    "sha256": "cb588504200b0f6eb2778270bd9625827ceba395510d84156461619c880f3e0e"
+  },
+  {
+    "id": "arcane",
+    "dir": "down",
+    "action": "walk",
+    "frame": 3,
+    "source": "arcane\\down-generated.png",
+    "rect": {
+      "left": 1207,
+      "top": 23,
+      "width": 246,
+      "height": 341
+    },
+    "sourceFoot": [
+      110,
+      340
+    ],
+    "scale": 0.47058823529411764,
+    "offset": [
+      141,
+      122
+    ],
+    "sha256": "957e8820969e75e397d8247a045e8eab34f154ed5b8a559309652641967e6495"
+  },
+  {
+    "id": "arcane",
+    "dir": "right",
+    "action": "walk",
+    "frame": 0,
+    "source": "arcane\\right-generated.png",
+    "rect": {
+      "left": 98,
+      "top": 24,
+      "width": 237,
+      "height": 316
+    },
+    "sourceFoot": [
+      126,
+      315
+    ],
+    "scale": 0.5095541401273885,
+    "offset": [
+      128,
+      122
+    ],
+    "sha256": "ffd3b165f816b9097df0bc84b1f31831b709843799fd5dea01d7be13497ae1b2"
+  },
+  {
+    "id": "arcane",
+    "dir": "right",
+    "action": "walk",
+    "frame": 1,
+    "source": "arcane\\right-generated.png",
+    "rect": {
+      "left": 450,
+      "top": 24,
+      "width": 237,
+      "height": 315
+    },
+    "sourceFoot": [
+      133,
+      314
+    ],
+    "scale": 0.5095541401273885,
+    "offset": [
+      125,
+      122
+    ],
+    "sha256": "82394c4eac2f91b2fae8016a1c3a0742bdcfcec1e5509b7f32011e0806051268"
+  },
+  {
+    "id": "arcane",
+    "dir": "right",
+    "action": "walk",
+    "frame": 2,
+    "source": "arcane\\right-generated.png",
+    "rect": {
+      "left": 822,
+      "top": 25,
+      "width": 252,
+      "height": 314
+    },
+    "sourceFoot": [
+      130.5,
+      313
+    ],
+    "scale": 0.5095541401273885,
+    "offset": [
+      126,
+      123
+    ],
+    "sha256": "76f27b9e0c11c68c2c149b11e1d8efe22464c356188fee7e47849456d41f8146"
+  },
+  {
+    "id": "arcane",
+    "dir": "right",
+    "action": "walk",
+    "frame": 3,
+    "source": "arcane\\right-generated.png",
+    "rect": {
+      "left": 1200,
+      "top": 24,
+      "width": 248,
+      "height": 316
+    },
+    "sourceFoot": [
+      134.5,
+      315
+    ],
+    "scale": 0.5095541401273885,
+    "offset": [
+      124,
+      121
+    ],
+    "sha256": "e0336be6b45c41afd29f07defda37489ba8529e7e031c4a6f4e43f57db96513e"
+  },
+  {
+    "id": "arcane",
+    "dir": "up",
+    "action": "walk",
+    "frame": 0,
+    "source": "arcane\\up-generated.png",
+    "rect": {
+      "left": 80,
+      "top": 27,
+      "width": 254,
+      "height": 308
+    },
+    "sourceFoot": [
+      127,
+      306
+    ],
+    "scale": 0.5298013245033113,
+    "offset": [
+      125,
+      120
+    ],
+    "sha256": "8ce1755825eb47d12aeb36830e0701a16796abf467d85890d8720904957a0cbf"
+  },
+  {
+    "id": "arcane",
+    "dir": "up",
+    "action": "walk",
+    "frame": 1,
+    "source": "arcane\\up-generated.png",
+    "rect": {
+      "left": 494,
+      "top": 28,
+      "width": 201,
+      "height": 305
+    },
+    "sourceFoot": [
+      79.5,
+      302
+    ],
+    "scale": 0.5298013245033113,
+    "offset": [
+      150,
+      122
+    ],
+    "sha256": "58613162e27e8d3b33b593962201ba3bb75a89d2c54bb7919cfaa0608d33d6e4"
+  },
+  {
+    "id": "arcane",
+    "dir": "up",
+    "action": "walk",
+    "frame": 2,
+    "source": "arcane\\up-generated.png",
+    "rect": {
+      "left": 818,
+      "top": 26,
+      "width": 257,
+      "height": 303
+    },
+    "sourceFoot": [
+      133.5,
+      302
+    ],
+    "scale": 0.5298013245033113,
+    "offset": [
+      121,
+      123
+    ],
+    "sha256": "93801a03e1b78cdb14814b42fba11e0a8471127a7378cc8f4be3c5b593181bbf"
+  },
+  {
+    "id": "arcane",
+    "dir": "up",
+    "action": "walk",
+    "frame": 3,
+    "source": "arcane\\up-generated.png",
+    "rect": {
+      "left": 1238,
+      "top": 28,
+      "width": 219,
+      "height": 300
+    },
+    "sourceFoot": [
+      85.5,
+      298
+    ],
+    "scale": 0.5298013245033113,
+    "offset": [
+      147,
+      124
+    ],
+    "sha256": "1a844493b9c19612c8f078a9e9d38f45a613ee0729ede1888308e7b004c2b178"
+  },
+  {
+    "id": "arcane",
+    "dir": "down",
+    "action": "attack",
+    "frame": 0,
+    "source": "arcane\\down-generated.png",
+    "rect": {
+      "left": 84,
+      "top": 379,
+      "width": 288,
+      "height": 299
+    },
+    "sourceFoot": [
+      141.5,
+      298
+    ],
+    "scale": 0.47058823529411764,
+    "offset": [
+      126,
+      142
+    ],
+    "sha256": "0353865eacbc52b7fd0a948727af939e8da611c859c2865c0bb290e37a6c36d4"
+  },
+  {
+    "id": "arcane",
+    "dir": "down",
+    "action": "attack",
+    "frame": 1,
+    "source": "arcane\\down-generated.png",
+    "rect": {
+      "left": 453,
+      "top": 378,
+      "width": 271,
+      "height": 304
+    },
+    "sourceFoot": [
+      135,
+      299
+    ],
+    "scale": 0.47058823529411764,
+    "offset": [
+      129,
+      141
+    ],
+    "sha256": "ab23ad3de7de941d1c443e04faebef2edb5af59efc9b0444f56e2229cfbde490"
+  },
+  {
+    "id": "arcane",
+    "dir": "down",
+    "action": "attack",
+    "frame": 2,
+    "source": "arcane\\down-generated.png",
+    "rect": {
+      "left": 773,
+      "top": 380,
+      "width": 328,
+      "height": 303
+    },
+    "sourceFoot": [
+      170.5,
+      302
+    ],
+    "scale": 0.47058823529411764,
+    "offset": [
+      112,
+      140
+    ],
+    "sha256": "1c3b26e87e8a3b8083422be7219cc65a3f02b1117bf4f8be07f62009caadb59b"
+  },
+  {
+    "id": "arcane",
+    "dir": "down",
+    "action": "attack",
+    "frame": 3,
+    "source": "arcane\\down-generated.png",
+    "rect": {
+      "left": 1166,
+      "top": 378,
+      "width": 300,
+      "height": 305
+    },
+    "sourceFoot": [
+      157.5,
+      303
+    ],
+    "scale": 0.47058823529411764,
+    "offset": [
+      118,
+      139
+    ],
+    "sha256": "884f77a01c1451d9677447e300c14f40c5774baebaeb37b095f5f2a50224f06d"
+  },
+  {
+    "id": "arcane",
+    "dir": "right",
+    "action": "attack",
+    "frame": 0,
+    "source": "arcane\\right-generated.png",
+    "rect": {
+      "left": 58,
+      "top": 365,
+      "width": 262,
+      "height": 300
+    },
+    "sourceFoot": [
+      130.5,
+      299
+    ],
+    "scale": 0.5095541401273885,
+    "offset": [
+      127,
+      130
+    ],
+    "sha256": "e9249eae5048bc6a8f4da5f30f0e6eb59c6d28b067553da03a52562f96cc5be6"
+  },
+  {
+    "id": "arcane",
+    "dir": "right",
+    "action": "attack",
+    "frame": 1,
+    "source": "arcane\\right-generated.png",
+    "rect": {
+      "left": 437,
+      "top": 363,
+      "width": 331,
+      "height": 301
+    },
+    "sourceFoot": [
+      153,
+      300
+    ],
+    "scale": 0.5095541401273885,
+    "offset": [
+      115,
+      129
+    ],
+    "sha256": "bf7a3d63afc86f609008e8fdc67553015bf2f060716f9ebd02ca209030d193d2"
+  },
+  {
+    "id": "arcane",
+    "dir": "right",
+    "action": "attack",
+    "frame": 2,
+    "source": "arcane\\right-generated.png",
+    "rect": {
+      "left": 788,
+      "top": 368,
+      "width": 397,
+      "height": 300
+    },
+    "sourceFoot": [
+      89.5,
+      299
+    ],
+    "scale": 0.5095541401273885,
+    "offset": [
+      147,
+      130
+    ],
+    "sha256": "9d864d12f7f2f5d894aeb8efa190a7c7a0efae1bbe816183b622c83522a5a399"
+  },
+  {
+    "id": "arcane",
+    "dir": "right",
+    "action": "attack",
+    "frame": 3,
+    "source": "arcane\\right-generated.png",
+    "rect": {
+      "left": 1199,
+      "top": 364,
+      "width": 306,
+      "height": 306
+    },
+    "sourceFoot": [
+      151,
+      304
+    ],
+    "scale": 0.5095541401273885,
+    "offset": [
+      115,
+      127
+    ],
+    "sha256": "0ff053dc3cd68ca9bbc5968e85f4c11050be1d82f5a36b0e3b3d923a4f554724"
+  },
+  {
+    "id": "arcane",
+    "dir": "up",
+    "action": "attack",
+    "frame": 0,
+    "source": "arcane\\up-generated.png",
+    "rect": {
+      "left": 70,
+      "top": 350,
+      "width": 290,
+      "height": 312
+    },
+    "sourceFoot": [
+      92.5,
+      311
+    ],
+    "scale": 0.5298013245033113,
+    "offset": [
+      143,
+      118
+    ],
+    "sha256": "7a41936fc6b8fe4ea8381c3b3bf718e212d8e528e187c891d0f2ba30cb6ff43e"
+  },
+  {
+    "id": "arcane",
+    "dir": "up",
+    "action": "attack",
+    "frame": 1,
+    "source": "arcane\\up-generated.png",
+    "rect": {
+      "left": 459,
+      "top": 368,
+      "width": 279,
+      "height": 288
+    },
+    "sourceFoot": [
+      124,
+      287
+    ],
+    "scale": 0.5298013245033113,
+    "offset": [
+      126,
+      130
+    ],
+    "sha256": "7247ad4c10ab1a4ac014652f3e6c851f825fd3177b37d44e9b99af33a3b357b6"
+  },
+  {
+    "id": "arcane",
+    "dir": "up",
+    "action": "attack",
+    "frame": 2,
+    "source": "arcane\\up-generated.png",
+    "rect": {
+      "left": 804,
+      "top": 368,
+      "width": 305,
+      "height": 293
+    },
+    "sourceFoot": [
+      145,
+      292
+    ],
+    "scale": 0.5298013245033113,
+    "offset": [
+      115,
+      127
+    ],
+    "sha256": "dfbcabd779385c194a490174e4fd2e3ce40cb1e83ce96f0cc76d1f3ac4199886"
+  },
+  {
+    "id": "arcane",
+    "dir": "up",
+    "action": "attack",
+    "frame": 3,
+    "source": "arcane\\up-generated.png",
+    "rect": {
+      "left": 1199,
+      "top": 370,
+      "width": 300,
+      "height": 300
+    },
+    "sourceFoot": [
+      151.5,
+      299
+    ],
+    "scale": 0.5298013245033113,
+    "offset": [
+      112,
+      124
+    ],
+    "sha256": "f7246a7ef976b0827fb656c3bdf54cf7250d4540035b4bc2f1550f2bb8b5393f"
+  },
+  {
+    "id": "arcane",
+    "dir": "down",
+    "action": "cast",
+    "frame": 0,
+    "source": "arcane\\down-generated.png",
+    "rect": {
+      "left": 81,
+      "top": 693,
+      "width": 293,
+      "height": 310
+    },
+    "sourceFoot": [
+      147,
+      309
+    ],
+    "scale": 0.47058823529411764,
+    "offset": [
+      123,
+      137
+    ],
+    "sha256": "b849c7de826d0b56b59e81f4befa4be47eda7d3872cdb9959b030899f9e4ff99"
+  },
+  {
+    "id": "arcane",
+    "dir": "down",
+    "action": "cast",
+    "frame": 1,
+    "source": "arcane\\down-generated.png",
+    "rect": {
+      "left": 422,
+      "top": 679,
+      "width": 298,
+      "height": 326
+    },
+    "sourceFoot": [
+      168,
+      325
+    ],
+    "scale": 0.47058823529411764,
+    "offset": [
+      113,
+      129
+    ],
+    "sha256": "5491c3e00bd2fe840ceb6e7eead85e01fe5f7fcfc57cbba1e66b2601dd3f5386"
+  },
+  {
+    "id": "arcane",
+    "dir": "right",
+    "action": "cast",
+    "frame": 0,
+    "source": "arcane\\right-generated.png",
+    "rect": {
+      "left": 62,
+      "top": 689,
+      "width": 271,
+      "height": 311
+    },
+    "sourceFoot": [
+      159,
+      310
+    ],
+    "scale": 0.5095541401273885,
+    "offset": [
+      111,
+      124
+    ],
+    "sha256": "8fcd660463fc0abe437047e38c397f711ab024db685f9aad91967f11de27e1aa"
+  },
+  {
+    "id": "arcane",
+    "dir": "right",
+    "action": "cast",
+    "frame": 1,
+    "source": "arcane\\right-generated.png",
+    "rect": {
+      "left": 430,
+      "top": 661,
+      "width": 311,
+      "height": 341
+    },
+    "sourceFoot": [
+      92.5,
+      339
+    ],
+    "scale": 0.5095541401273885,
+    "offset": [
+      145,
+      109
+    ],
+    "sha256": "557be0d0e59e20cca545926eb86eeede7d2b8daa7da836e24408496c32c218bc"
+  },
+  {
+    "id": "arcane",
+    "dir": "up",
+    "action": "cast",
+    "frame": 0,
+    "source": "arcane\\up-generated.png",
+    "rect": {
+      "left": 81,
+      "top": 703,
+      "width": 238,
+      "height": 301
+    },
+    "sourceFoot": [
+      169,
+      299
+    ],
+    "scale": 0.5298013245033113,
+    "offset": [
+      103,
+      124
+    ],
+    "sha256": "120b6f6c25f959b4e31672148794a474da58aa5850743649427927d311bdef11"
+  },
+  {
+    "id": "arcane",
+    "dir": "up",
+    "action": "cast",
+    "frame": 1,
+    "source": "arcane\\up-generated.png",
+    "rect": {
+      "left": 431,
+      "top": 651,
+      "width": 274,
+      "height": 352
+    },
+    "sourceFoot": [
+      140.5,
+      351
+    ],
+    "scale": 0.5298013245033113,
+    "offset": [
+      118,
+      96
+    ],
+    "sha256": "c96ef503b45cd152f3a66d17090b6b315b8a37540180551a3b4f17c689e70767"
+  },
+  {
+    "id": "arcane",
+    "dir": "down",
+    "action": "hit",
+    "frame": 0,
+    "source": "arcane\\down-generated.png",
+    "rect": {
+      "left": 821,
+      "top": 726,
+      "width": 265,
+      "height": 276
+    },
+    "sourceFoot": [
+      184.5,
+      275
+    ],
+    "scale": 0.47058823529411764,
+    "offset": [
+      105,
+      153
+    ],
+    "sha256": "49edfb1e90d855317b0723fe191fe9782cb709033ba2aec0fd7bd5c904fcfceb"
+  },
+  {
+    "id": "arcane",
+    "dir": "down",
+    "action": "hit",
+    "frame": 1,
+    "source": "arcane\\down-generated.png",
+    "rect": {
+      "left": 1193,
+      "top": 724,
+      "width": 270,
+      "height": 281
+    },
+    "sourceFoot": [
+      138.5,
+      280
+    ],
+    "scale": 0.47058823529411764,
+    "offset": [
+      127,
+      150
+    ],
+    "sha256": "21102ee6fcb4b824ffc441dde9a270fbe57214096500de77ee7b871a6ba9ea9f"
+  },
+  {
+    "id": "arcane",
+    "dir": "right",
+    "action": "hit",
+    "frame": 0,
+    "source": "arcane\\right-generated.png",
+    "rect": {
+      "left": 815,
+      "top": 717,
+      "width": 267,
+      "height": 278
+    },
+    "sourceFoot": [
+      90.5,
+      277
+    ],
+    "scale": 0.5095541401273885,
+    "offset": [
+      146,
+      141
+    ],
+    "sha256": "60d30d42ccff855211801df8b2d7258cb0ac8bbeabfbe24cc9fe542994f8223d"
+  },
+  {
+    "id": "arcane",
+    "dir": "right",
+    "action": "hit",
+    "frame": 1,
+    "source": "arcane\\right-generated.png",
+    "rect": {
+      "left": 1199,
+      "top": 703,
+      "width": 251,
+      "height": 292
+    },
+    "sourceFoot": [
+      125,
+      292
+    ],
+    "scale": 0.5095541401273885,
+    "offset": [
+      128,
+      133
+    ],
+    "sha256": "b899314322a15db6be4fda0367389ed2c37e8fee2e295b72d9b8c7be6a3dd695"
+  },
+  {
+    "id": "arcane",
+    "dir": "up",
+    "action": "hit",
+    "frame": 0,
+    "source": "arcane\\up-generated.png",
+    "rect": {
+      "left": 817,
+      "top": 726,
+      "width": 282,
+      "height": 268
+    },
+    "sourceFoot": [
+      129,
+      267
+    ],
+    "scale": 0.5298013245033113,
+    "offset": [
+      124,
+      141
+    ],
+    "sha256": "d5731cb513fba5bce36c4c22bb3807ff2c23d0ac61746832765eeca2b955f677"
+  },
+  {
+    "id": "arcane",
+    "dir": "up",
+    "action": "hit",
+    "frame": 1,
+    "source": "arcane\\up-generated.png",
+    "rect": {
+      "left": 1206,
+      "top": 705,
+      "width": 269,
+      "height": 299
+    },
+    "sourceFoot": [
+      110,
+      297
+    ],
+    "scale": 0.5298013245033113,
+    "offset": [
+      134,
+      125
+    ],
+    "sha256": "0f999c6bb104513095e28568b68c3657d0d15259a5895368c437712d6a083ca6"
+  }
+]
