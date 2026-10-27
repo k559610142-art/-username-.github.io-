@@ -218,7 +218,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027q`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027r`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3764,3 +3764,10 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - icons.js在既有ITEM_IMG加入50種mercRune_映射；背包、道具詳情、圖鑑與配置選擇器沿用同張獨立圖。mercRuneBoardHtml的四孔以圖片取代原CSS刻字晶石，保留空孔、兩欄石板、分類光暈與拆換操作；新CSS merc-rune-art，沒有新增全域函式或載入順序。sw.js預載50張圖。
 - tools/mercenary-runes-preview.html可切128／48／32px預覽，不載入角色。test-mercenary-rune-art驗50圖RGBA／尺寸／唯一性與正式道具、圖鑑及石板接線；test-item-art更新508道具／340張專用PNG。schema18、技能效果、不可購買及傭兵模型不變，取得方式仍待決定。
 - 驗證：50張RGBA／非空／透明／唯一性、508道具圖片與原傭兵50技能回歸通過；check.ps1 ALL CHECKS PASSED、git diff --check通過，正式51檔混淆543KB成功、50張發佈PNG逐byte一致。瀏覽器50／50載入，32px縮圖與四孔鑲嵌正常，375px兩欄且scrollWidth=375，三張鑲嵌圖載入成功、Console無error／warn；board-preview.png／board-mobile.png保留。未操作正式角色或後端，待使用者實玩確認後提交。
+
+
+## 204. 恢復外框與法球底圖（2026-10-27，版本 `20261027r`）
+
+- 使用者回報原圖消失。q版批次替換版本時再次誤吞6處CSS url右括號及border-image-source分號，造成封面、手機框架／疊圖、PC背景／遮罩失效；補回6處完整語法，保留原始圖片及既有配置。
+- 換版僅替換精確版本字串；tools/check.ps1新增CSS url閉合與border-image-source分號檢查，防止同類損壞。沒有玩法／存檔schema18／載入順序變更。
+- 驗證：check.ps1 ALL CHECKS PASSED（含新CSS檢查）、git diff --check通過；正式51檔543KB混淆成功。隔離瀏覽器PC背景／遮罩、手機borderImageSource／疊圖與封面computed style均為有效URL，PC骷髏／紅藍球恢復，Console無error／warn；實拍tools/frame-restored-20261027r.png。未讀寫正式角色或後端，待使用者實玩確認後提交。

@@ -5,6 +5,8 @@
 
 ## 1. 現況
 
+- **20261027r：恢復外框／法球底圖（第204節）**。修正q換版誤刪6處CSS圖片url括號及border-image-source分號；封面／手機框架與疊圖／PC背景與遮罩恢復，原圖片未修改。check.ps1增加CSS圖片語法檢查。schema18不變；瀏覽器PC骷髏／法球恢復，手機框架與封面CSS有效，Console無error／warn，check.ps1 ALL CHECKS PASSED、diff檢查與51檔543KB正式建置通過；實拍tools/frame-restored-20261027r.png。待使用者重新整理r確認原本骷髏外框及紅藍球，確認後提交。
+
 - **20261027q：傭兵50款獨立符石圖案（第203節）**。內建image_gen逐顆原創，六色石面／獨立銀白刻印，50張128px透明PNG接背包／圖鑑／配置清單及四孔石板；原稿／提示詞／總覽與PC手機實拍保留tools/icon-src/mercenary-runes-v1。schema18、技能、不可購買與取得待決定均不變。50圖透明／唯一性、508道具及傭兵回歸、check.ps1 ALL CHECKS PASSED、git diff --check通過；正式51檔543KB及50圖逐byte檢查成功，瀏覽器50／50載入、375px無橫溢出、Console無error／warn。待實玩：重新整理q→圖鑑傭兵符石檢查獨立圖案→已有傭兵管理四孔鑲嵌／替換／拆回→手機檢查；也可開tools/mercenary-runes-preview.html看50款總覽。使用者確認後才提交，尚未提交／推送。
 
 - **20261027p：傭兵本體不可購買（第202節）**。使用者指定傭兵也不能買；移除6職業招募商品／mercHire／招募價格，空欄顯示不可購買、取得方式待開放；NPC／死亡訊息不再指引雇傭。已有傭兵仍可管理／召喚／戰鬥／復活，單一召喚、符石不可買維持。無schema18／SQL變更；測試與預覽僅在記憶體建立測試傭兵，正式不加免費取得。原傭兵回歸、check.ps1 ALL CHECKS PASSED、git diff --check通過，51檔混淆543KB成功；瀏覽器0招募／0購買按鈕及空欄提示正常、Console無error／warn。待重新整理p→團長無招募商品→既有傭兵功能保留，確認後提交。

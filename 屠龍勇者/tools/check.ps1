@@ -36,7 +36,17 @@ if (-not $m.Success) { Fail 'GAME_VERSION not found in data/config.js' } else {
   }
 }
 
-# 4. Merge-conflict markers
+# 4. CSS image URLs must close before a declaration or line ends
+$style = [regex]::Match($html, '(?s)<style>(.*?)</style>').Groups[1].Value
+if ([regex]::IsMatch($style, 'url\([^\)\r\n;{}]*(?:[\r\n;{}]|$)')) {
+  Fail 'index.html CSS image url() is missing its closing parenthesis'
+}
+if ([regex]::IsMatch($style, 'border-image-source\s*:\s*url\([^)]*\)\s*\r?\n\s*border-image-slice')) {
+  Fail 'index.html border-image-source is missing its semicolon'
+}
+Write-Host '[ok] CSS image URL delimiters checked'
+
+# 5. Merge-conflict markers
 $texts = Get-ChildItem $root -Recurse -File -Include *.js, *.html, *.css, *.json, *.md |
   Where-Object { $_.FullName -notmatch '\\(node_modules|\.git|\.claude)\\' }
 foreach ($f in $texts) {
