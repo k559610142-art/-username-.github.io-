@@ -211,7 +211,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027f`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027g`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3296,7 +3296,7 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 
 - 使用者要求標題下方目前版本號可點開本次更新。index.html的#version改成語意button並保留原位置，設定頁角色區版本號也改成同樣入口；version-link輕量文字鈕、虛線底線與鍵盤焦點提示。
 - ui-create.js新增GAME_UPDATES（新版置頂的玩家用版本／條目陣列）及頂層openUpdateNotes，使用既有openDialog顯示本次及近期更新，內容跳脫HTML、可捲動關閉，不需登入、不讀寫存檔、不連外。未加遊戲檔案或改載入順序。
-- 首批紀錄含ab版本入口、aa血戰、z瞬移補血、y紅圈區界、x洗鍊上限、w彈藥與v自訂自動販賣；之後每次更新要在GAME_UPDATES最上方新增當版紀錄，版本與GAME_VERSION一致，舊紀錄保留。
+- 首批紀錄含ab版本入口、aa血戰、z瞬移補血、y紅圈區界、x洗鍊上限、w彈藥與v自訂自動販賣；之後每次更新要在GAME_UPDATES最上方新增當版紀錄（只寫遊戲相關，系統類不寫，第 193 節），版本與GAME_VERSION一致，舊紀錄保留。
 - 隔離瀏覽器實點標題版號、設定版號、開關與手機390px，最新／近期內容正確，Console無error／warn；check.ps1 ALL CHECKS PASSED。
 - 48檔混淆480KB建置通過，openUpdateNotes已公開供事件呼叫；待使用者實玩確認後commit。
 
@@ -3651,3 +3651,9 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - **E**（`chat.js`）：聊天分頁或左下角聊天框開著、`chatActiveAt` 超過 `CHAT_SLEEP_MS`＝10 分鐘沒有動靜 → `chatAsleep()`，計時器不再抓，列表底下顯示「💤 已暫停更新」（`.chat-sleep`）。恢復：在 `#pop-chat`／`.chat-panel` 內任何 pointerdown（捕獲階段）、打字（`chatKey`）、切頻道、重新打開聊天。`chatWasShown` 記上一輪是否開著，從關到開（不管從哪個按鈕開、從背景切回來）自動算一次動靜；沒開著時 `chatAsleep()` 一律 false，不會剛打開就出現 💤。已暫停時切回前景不抓。收到別人新訊息仍會延長（只在醒著時才抓得到）。開著聊天框掛機的玩家，10 分鐘後聊天請求歸零（原本每小時 120）。
 - 測試：`test-server-loot-client.js` 加收據直接入帳／跳號才查／空批不查。check.ps1、混淆建置、loot-batch／vault-v2-client 等回歸通過；瀏覽器確認 v20261027f、💤 顯示與恢復判定、Console 無錯誤（沒登入，未實際收發聊天）。無 SQL、存檔結構、載入順序變更。
 - 剩下未做：C 一次領多隻怪憑證（約 -400，要新 SQL）。
+
+## 193. 更新日誌只公開遊戲內容（2026-10-27，版本 `20261027g`；`ui-create.js` 的 `GAME_UPDATES`／`openUpdateNotes`）
+
+- 使用者規定：**系統類更新不公開，遊戲相關才寫進 `GAME_UPDATES`**。系統類＝伺服器、雲端存檔、防作弊、效能、請求減量、更新檢查、連線行為（例如掉寶結算方式、聊天閒置暫停輪詢）；遊戲相關＝玩法、數值、技能、地圖、道具、怪物、外觀、介面操作。純系統的版本就不新增條目。
+- 已移除的舊條目：27g 前的 27f（結算直接入帳、聊天 💤）、27e（結算批次）、26c（上傳被擋判斷原因）、26a（新版提示）。
+- `openUpdateNotes`：最上面那筆的版本等於 `GAME_VERSION` 才標「本次更新」，否則全部標「近期更新」（純系統版本不會把舊條目誤標成本次）。
