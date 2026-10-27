@@ -625,11 +625,26 @@ async function screenAreaAttack(k, st) {
     } finally { h.screenAttackBusy = false; }
 }
 
+function weaponAmmoType() {
+    const w = player && player.equip.weapon, d = w && ITEMS[w.id];
+    return d && WEAPON_TYPES[d.type].ammo || '';
+}
+function autoBuyAmmo() {
+    if (SIM_MODE) return false;   // 離線量測／團戰模擬不購物，沿用原本消耗品結算。
+    const id = player.ammoId, d = ITEMS[id];
+    if (!d || d.cat !== 'ammo' || !weaponAmmoType() || d.ammo !== weaponAmmoType() || countItem(id) > 1) return false;
+    const cost = shopCost(id, 1000);
+    if (player.gold < cost) return false;
+    addItem(id, 1000);
+    player.gold -= cost;
+    if (!SIM_MODE) addLog('🏹 自動購買 ' + d.name + ' ×1,000（-' + fmt(cost) + ' 金幣）', 'sys');
+    return true;
+}
 function pickAmmo(type, mon = hunt.mon) {
-    const list = player.inv.filter(x => ITEMS[x.id].cat === 'ammo' && ITEMS[x.id].ammo === type);
-    if (!list.length) return null;
-    // 打不死系優先用銀製彈藥
-    return (mon.undead && list.find(x => ITEMS[x.id].silver)) || list.find(x => !ITEMS[x.id].silver) || list[0];
+    const id = player.ammoId, d = ITEMS[id];
+    if (!d || d.cat !== 'ammo' || d.ammo !== type || type !== weaponAmmoType()) return null;
+    autoBuyAmmo();
+    return player.inv.find(x => x.id === id && x.n > 0) || null;
 }
 
 function outOfAmmo() {
@@ -661,6 +676,7 @@ function physicalAttack(st, mult, opt, mon = hunt.mon) {
         if (!ammo) { outOfAmmo(); return false; }
         ammoDef = ITEMS[ammo.id];
         consumeItem(ammo.id);
+        autoBuyAmmo();
     }
     const swings = chance(st.double) ? 2 : 1;
     const def = opt.ignoreAc ? 0 : 10 - mon.ac;

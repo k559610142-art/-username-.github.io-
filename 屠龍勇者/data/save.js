@@ -136,6 +136,13 @@ function migrateSave(data) {
     const fresh = { statPoints: 0, elixirs: 0, storage: [], buffs: {}, cds: {}, towerMax: 1, towerKills: {}, towerCleared: {}, towerBossCd: {}, dragons: {}, dragonCd: {}, kills: 0, deaths: 0, mapRun: null, mapPortal: null,
         quests: { ch: 0, active: false, prog: 0, bossDone: false } };
     for (const k in fresh) if (p[k] == null) p[k] = fresh[k];
+    // schema16：彈藥選擇保存在角色；舊檔依目前武器選背包的普通彈藥優先。
+    if (p.ammoId == null) {
+        const w = p.equip && p.equip.weapon, type = w && WEAPON_TYPES[ITEMS[w.id].type].ammo;
+        const list = p.inv.filter(x => ITEMS[x.id] && ITEMS[x.id].cat === 'ammo' && ITEMS[x.id].ammo === type);
+        p.ammoId = ((list.find(x => !ITEMS[x.id].silver) || list[0]) || {}).id || '';
+    }
+    if (typeof p.ammoId !== 'string' || !ITEMS[p.ammoId] || ITEMS[p.ammoId].cat !== 'ammo') p.ammoId = '';
     // schema 11（2026-10-25，第 159 節）：永夜之塔改逐層解鎖，使用者決定所有舊角色重置回 1F（towerRule 2 之前的存檔做一次）。
     // 用 player.towerRule 標記而不是比 schema：舊版遊戲讀寫後 schema 會變回舊值，但 player 裡的欄位會保留，才不會重複重置
     if (p.towerRule !== 2) {

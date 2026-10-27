@@ -88,7 +88,7 @@
 | `data/craft.js` | 製作通貨 `CURRENCY`（8 種，載入時併入 `ITEMS`）、`useCurrency`、改造視窗 `openCraftDialog`；通貨用在地圖時轉給 maps.js 的 `MAP_CURRENCY`（第 23 節） |
 | `data/maps.js` | 異界地圖 T1～T15：地圖道具、`MAP_MODS`、`openMap`／`mapOnKill`／`completeMap`／`endMapRun`、回卷傳送門 `mapPortalOpen`／`enterMapPortal`（第 114 節）、`applyMapMods`、`mapBonus`、地圖掉落、異界裝置面板（第 24 節） |
 | `data/enchant.js` | 衝裝規則 `doEnchant`、成功率、可強化目標 |
-| `data/combat.js` | 掛機戰鬥：`hunt` 狀態、尋怪、玩家行動、怪物攻擊、掉落、死亡、自動補給、回家、步行、自然回復 |
+| `data/combat.js` | 彈藥欄／自動補彈weaponAmmoType／autoBuyAmmo／pickAmmo（第195節）；掛機戰鬥：`hunt` 狀態、尋怪、玩家行動、怪物攻擊、掉落、死亡、自動補給、回家、步行、自然回復 |
 | `data/town.js` | 村莊設施：傳送、商店、回收、旅館、倉庫、鍛造；龍穴進入條件 |
 | `data/guard.js` | **防改檔**（第 60 節）：本機存檔加密＋簽章 `saveEncode`／`saveDecode`／`saveParse`／`saveFormatMigrate`、雲端存檔簽章 `guardCloudSig`／`guardSaveCanon`／`guardCheckCloud`、記憶體數值偽裝 `guardWrap`、改檔標記 `guardFlag`（`player.integrity`） |
 | `data/save.js` | 存讀檔（本機文字一律經過 guard.js 加解密）、舊存檔補欄位（`migrateSave`）、匯出／匯入、`lastSaveAt`；**多角色欄位** `currentSlot`／`slotKey`／`readSlotSummary`（第 25 節） |
@@ -154,7 +154,7 @@
 | `scene-art.css` | 世界總覽視窗樣式；下方骷髏造型沿用 index.html |
 | `images/maps/rework/`、`images/monsters/rework/`、`images/npc/rework/` | 本次原創場景／塔怪／城鎮 NPC 圖片；原稿及提示詞在 tools/scene-rework（第 86 節） |
 | `data/ui-scene.js` | 中間即時地圖：俯視格子地圖、角色上下左右尋怪、怪物遊走、傷害飄字、村莊建築（第 17 節） |
-| `data/ui-panels.js` | 主畫面 8 個分頁（狩獵／地圖／人物狀態／背包／技能／任務／村莊／設定）、道具對話框、衝裝選擇、匯出入 |
+| `data/ui-panels.js` | 武器消耗品charAmmoHtml／openAmmoPicker／selectAmmo（第195節）；主畫面 8 個分頁（狩獵／地圖／人物狀態／背包／技能／任務／村莊／設定）、道具對話框、衝裝選擇、匯出入 |
 | `data/pwa.js` | PWA：註冊 SW、安裝說明 `openInstallGuide`、新版本提示、持久儲存（第 12 節） |
 | `data/main.js` | 主迴圈 `gameTick`（每 100ms）、繼續遊戲、啟動（呼叫 `initPwa`） |
 | `gm.html` | **管理頁**（不是遊戲的一部分）：可疑紀錄、玩家存檔歷程、封鎖／解除封鎖、🎁 發放道具（第 128 節）；載入 config／classes／cloud.js 取得 Supabase 設定（第 31 節） |
@@ -173,6 +173,7 @@
 | `tools/test-dolls.js` | 21款娃娃道具／裝卸／跟隨／存檔隔離測試（第154節） |
 | `data/doll-abilities.js` | 21款娃娃基本能力、被動、冷卻／出場時間與觸發狀態（第157節） |
 | `tools/test-doll-abilities.js` | 21款數值、實際戰鬥／藥水、冷卻存檔、範圍防重複與模擬隔離（第157節） |
+| `tools/test-ammo-slot.js` | 武器消耗品欄、四種彈藥補購／配對、舊檔及回家／停掛隔離測試（第195節） |
 | `tools/test-shop-buy.js` | 自訂購買數量隔離測試：整數／金額驗證、金幣與負重、裝備逐件建立、離村拒絕舊視窗（第 75 節；不發佈） |
 | `tools/test-log-drawer.js` | 訊息框定位回歸測試：PC 頂端樓層按鈕不推高訊息框、手機避開操作列（第 76 節；不發佈） |
 | `tools/test-loot-log.js` | 掉落紀錄隔離整合測試：實際掉落／超重／自動賣出／任務／地圖、分頁與模擬隔離（第 77 節；不發佈） |
@@ -211,7 +212,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027h`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027i`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3663,3 +3664,12 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 使用者確認：封存消耗永夜之魂 ×5＋500,000 金幣；裝回消耗對應封魂石 ×1＋永夜之魂 ×1＋500,000 金幣，仍必定成功。取代第68節原費用。
 - 鍛造師按鈕、確認視窗、道具說明、圖鑑同步；缺料不扣金幣或封魂石，原武器強化／詞綴／共鳴保留。
 - 不改存檔結構、SQL或掉落率。26種附魔往返與缺料不扣款隔離回歸通過；check.ps1 ALL CHECKS PASSED、git diff --check通過。待使用者實玩確認後提交。
+
+## 195. 武器消耗品欄與自動補彈（2026-10-27，版本 `20261027i`，schema16）
+
+- 使用者同意存檔調整與缺錢沿用回家／停掛。人物裝備武器右側新增消耗品格；弓選箭／銀箭、槍選子彈／銀子彈，其他武器禁用。選擇器只列背包對應種類，背包彈藥詳情也可裝卸。
+- player.ammoId記錄選定道具ID，數量仍放背包，避免重複計負重；新角色沿用起始彈藥，migrateSave替舊角色依目前武器選背包普通彈藥優先，保留舊物品／進度，非法ID清空。換不符武器時欄位停用，不消耗也不補購。
+- weaponAmmoType讀目前武器；pickAmmo只使用選定種類，取消不死怪自動切銀彈；實際攻擊前／消耗後autoBuyAmmo在剩餘≤1時以shopCost購買同種類1000個（箭100／銀箭400／子彈400／銀子彈1000金幣），足額一次扣款，不回村，仍計背包負重。缺錢不買，用完最後一發沿用outOfAmmo。空欄不自行選彈。
+- SIM_MODE不購物，離線量測與團戰沿原消耗品流程，避免抽樣補購造成離線數量與扣款失真；正式掛機才自動購買。
+- charGearHtml武器列包cv-weapon-row，旁接charAmmoHtml；openAmmoPicker／selectAmmo重查武器與背包，事件只傳字面ID；狩獵補給數量改顯示選定彈藥。載入順序不變，SQL不變。
+- tools/test-ammo-slot.js隔離測四種彈藥配對、實際攻擊2→1→1001、金幣、防重購、缺錢耗盡、不切銀箭、禁用、舊檔／加密存讀與UI事件；附魔及商店回歸通過。check.ps1 ALL CHECKS PASSED、git diff --check通過；正式50檔混淆522KB成功，openAmmoPicker／selectAmmo已公開。待使用者實玩驗收。

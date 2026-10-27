@@ -46,7 +46,7 @@ function createPlayer(name, cls, stats) {
         stats: { ...stats }, statPoints: 0, elixirs: 0,
         baseHp: c.startHp + conHpBonus(stats.con), baseMp: c.startMp + wisMpBonus(stats.wis),
         hp: 1, mp: 0,
-        inv: [], equip: {}, storage: [], nextUid: 1,
+        ammoId: '', inv: [], equip: {}, storage: [], nextUid: 1,
         buffs: {}, cds: {}, dollState: {}, dollSummonUntil: 0,
         loc: { type: 'town', id: 'talking' }, hunting: false,
         towerMax: 1, towerKills: {}, towerRule: 2, towerCleared: {}, towerBossCd: {}, dragons: {}, dragonCd: {},
@@ -63,7 +63,7 @@ function createPlayer(name, cls, stats) {
     c.start.forEach(id => { const it = addItem(id, 1); equipItem(it.uid, true); });
     addItem('redPotion', 30);
     addItem('homeScroll', 3);
-    if (c.ammo) addItem(c.ammo, 500);
+    if (c.ammo) { addItem(c.ammo, 500); player.ammoId = c.ammo; }
     const st = calcStats();
     player.hp = st.maxHp;
     player.mp = st.maxMp;

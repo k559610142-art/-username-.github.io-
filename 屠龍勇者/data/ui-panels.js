@@ -231,7 +231,7 @@ function updateHuntLive() {
     if (ses && !inTown()) {
         const st = calcStats();
         const supplies = [`💊 藥水 ${healPotionCount()}`, `📜 回家 ${countItem('homeScroll')}`, `🌀 瞬移 ${countItem('teleScroll')}`];
-        if (st.ranged) supplies.push(`🏹 彈藥 ${player.inv.filter(x => ITEMS[x.id].ammo === st.weaponType.ammo).reduce((a, x) => a + x.n, 0)}`);
+        if (st.ranged) supplies.push(`🏹 彈藥 ${(ITEMS[player.ammoId] && ITEMS[player.ammoId].ammo === st.weaponType.ammo ? countItem(player.ammoId) : 0)}`);
         let line = '';
         if (session) {
             const hrs = Math.max(1 / 60, (gameNow - session.start) / 3600000);
@@ -322,7 +322,23 @@ function charGearHtml() {
         // 名稱只顯示裝備本名（品質看顏色），完整名稱（傳說・血月 …）放 title，免得窄格子只看到前綴
         return `<button class="cv-slot" onclick="openItemDialog(${it.uid})" title="${esc(itemName(it))}"><span class="cv-ico ${q}">${ico}${it.ench ? `<b class="cv-en">${it.ench > 0 ? '+' : ''}${it.ench}</b>` : ''}</span>
             <div class="cv-info"><small>${SLOTS[slot]}</small><span class="cv-n ${q}">${esc(d.name)}</span><span class="cv-a">${charGearBrief(d, it)}</span></div></button>`;
-    }).join('');
+    }).map((html, i) => SLOT_KEYS[i] === 'weapon' ? '<div class="cv-weapon-row">' + html + charAmmoHtml() + '</div>' : html).join('');
+}
+function charAmmoHtml() {
+    const type = weaponAmmoType(), id = player.ammoId, d = ITEMS[id], active = type && d && d.ammo === type;
+    return '<button class="cv-slot cv-ammo" onclick="openAmmoPicker()" ' + (!type ? 'disabled' : '') + '><span class="cv-ico">' + (active ? itemIconHtml(id) : '🏹') + '</span><div class="cv-info"><small>武器消耗品</small><span class="cv-n">' + (active ? esc(d.name) + ' ×' + fmt(countItem(id)) : type ? '未裝備' : '限弓／槍') + '</span></div></button>';
+}
+function openAmmoPicker() {
+    const type = weaponAmmoType();
+    if (!type) { showToast('只有裝備弓或槍才能使用武器消耗品欄'); return; }
+    const list = player.inv.filter(x => ITEMS[x.id].cat === 'ammo' && ITEMS[x.id].ammo === type);
+    openDialog('武器消耗品', '<p>只消耗選定種類，剩1個時自動購買同種類1,000個並扣金幣；金幣不足沿用原本彈藥用完的回家／停掛規則。</p><div class="list">' + list.map(x => '<div class="list-row"><div>' + itemIconHtml(x.id) + esc(ITEMS[x.id].name) + ' ×' + fmt(x.n) + '<small>自動購買1,000個：' + fmt(shopCost(x.id, 1000)) + '金幣</small></div><button onclick="selectAmmo(\'' + x.id + '\')">裝備</button></div>').join('') + (list.length ? '' : '<p>背包沒有對應彈藥，請先到商店購買。</p>') + '</div>', [{ text: '卸下', onClick: () => selectAmmo('') }, { text: '關閉', cls: 'secondary' }]);
+}
+function selectAmmo(id) {
+    const type = weaponAmmoType(), d = ITEMS[id];
+    if (!type || (id && (!d || d.cat !== 'ammo' || d.ammo !== type || !countItem(id)))) { showToast('武器或彈藥不符合，請重新選擇'); return; }
+    player.ammoId = id;
+    closeDialog(); saveGame(); refreshUI();
 }
 // 娃娃與傭兵先開放展示欄，能力與裝備玩法待確認。
 function charCompanionsHtml() {
@@ -601,6 +617,7 @@ function openItemDialog(uid) {
             ? { text: '卸下', onClick: () => { unequipSlot(slot); saveGame(); refreshUI(); } }
             : { text: '裝備', onClick: () => { if (equipItem(uid)) showToast(`裝備了 ${itemName(inst)}`); saveGame(); refreshUI(); } });
     }
+    if (d.cat === 'ammo') btns.push({ text: player.ammoId === inst.id ? '卸下彈藥' : '裝備彈藥', onClick: () => selectAmmo(player.ammoId === inst.id ? '' : inst.id) });
     if (d.cat === 'map') {
         if (inTown() && !player.mapRun && !player.mapPortal && !inst.unidentified) btns.push({ text: '🌀 開啟', onClick: () => openMap(uid) });
     }
