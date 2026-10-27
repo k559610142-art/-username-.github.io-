@@ -96,6 +96,13 @@ const MORPHS = {
         cast:   { src: 'images/sprites/morph/shadow-pirate-gunner-v1/cast.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 220 },
         hit:    { src: 'images/sprites/morph/shadow-pirate-gunner-v1/hit.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 150 },
     },
+    crimsonShadowAssassin: {
+        name: '赤影暗殺者', drawH: 48, charH: 160, foot: [192, 270],
+        walk:   { src: 'images/sprites/morph/crimson-shadow-assassin-v1/walk.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 130 },
+        attack: { src: 'images/sprites/morph/crimson-shadow-assassin-v1/attack.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 140 },
+        cast:   { src: 'images/sprites/morph/crimson-shadow-assassin-v1/cast.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 220 },
+        hit:    { src: 'images/sprites/morph/crimson-shadow-assassin-v1/hit.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 150 },
+    },
     silentCaveAssassin: {
         name: '沉默洞穴刺客', drawH: 48, charH: 160, foot: [192, 270],
         walk:   { src: 'images/sprites/morph/silent-cave-assassin-v1/walk.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 130 },
@@ -217,7 +224,7 @@ const MORPH_FORMS = [
     ['m32', '霜獄幽冥魔皇', 'melee', 'gold', 'frostNetherEmperor'],
     ['m01', '巡守妖魔神射', 'bow', 'blue', 'wolfRanger'], ['m02', '月光精靈巡林者', 'bow', 'red', 'moonRanger'], ['m03', '冥火骷髏神射', 'bow', 'purple', 'hellfireArcher'], ['m04', '蒼穹女武神・艾爾', 'bow', 'gold', 'skyValkyrie'],
     ['m05', '矮人蒸氣火銃兵', 'gun', 'blue', 'dwarfGunner'], ['m06', '暗影海盜雙槍客', 'gun', 'red', 'shadowPirateGunner'], ['m07', '魔導審判狙擊手', 'gun', 'purple'],
-    ['m08', '沉默洞穴刺客', 'dual', 'blue', 'silentCaveAssassin'], ['m09', '赤影暗殺者', 'dual', 'red'], ['m10', '布魯迪卡之影', 'dual', 'purple', 'brudikaShadow'], ['m11', '深淵雙刃魔神', 'dual', 'gold'],
+    ['m08', '沉默洞穴刺客', 'dual', 'blue', 'silentCaveAssassin'], ['m09', '赤影暗殺者', 'dual', 'red', 'crimsonShadowAssassin'], ['m10', '布魯迪卡之影', 'dual', 'purple', 'brudikaShadow'], ['m11', '深淵雙刃魔神', 'dual', 'gold'],
     ['m12', '鋼鐵狂戰士', 'great', 'blue', 'steelBerserker'], ['m13', '冥皇處刑者', 'great', 'red'], ['m14', '煉獄魔劍尊・巴拉卡', 'great', 'purple'],
     ['m15', '亞丁榮耀劍士', 'sword', 'blue', 'adenGlorySwordsman'], ['m16', '烈焰死亡騎士', 'sword', 'red', 'flameDeathKnight'], ['m17', '雷霆黑騎士統領', 'sword', 'purple'], ['m18', '神聖裁決劍聖', 'sword', 'gold'],
     ['m19', '象牙塔高階秘術師', 'staff', 'blue', 'ivoryArchmage'], ['m20', '深淵羊魔・巴風特使徒', 'staff', 'red'], ['m21', '大魔導士・巴列斯真身', 'staff', 'purple'],
