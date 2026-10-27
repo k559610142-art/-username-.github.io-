@@ -61,7 +61,7 @@ for (const id in BOSS_ENCHANTS) {
     const r = BOSS_ENCHANTS[id];
     r.cost = id.endsWith('Scale') ? 5000000 : id.startsWith('tower') ? (TOWER_BOSS_MATERIALS.indexOf(id) < 5 ? 2000000 : 4000000) : 1000000;
     ITEMS['soul_' + id] = { name: r.name + '封魂石', cat: 'material', wt: 1, sell: 0, soulEnchant: id,
-        desc: '封存「' + r.name + '」的力量。在村莊鍛造師裝回武器，費用 500,000 金幣，成功後消耗此石。' };
+        desc: '封存「' + r.name + '」的力量。在村莊鍛造師裝回武器，消耗永夜之魂 ×1＋500,000 金幣，成功後消耗此石。' };
 }
 
 function bossEnchantInfo(id) {
@@ -76,7 +76,7 @@ function bossEnchantItemHtml(inst) {
     const d = ITEMS[inst.id];
     if (d.soulEnchant) return bossEnchantInfo(d.soulEnchant);
     if (BOSS_ENCHANTS[inst.id]) return bossEnchantInfo(inst.id) + '<small>附魔材料 ×1＋💰' + fmt(BOSS_ENCHANTS[inst.id].cost) + '；村莊鍛造師辦理，必定成功。</small>';
-    if (inst.id === 'towerSoul') return '<small>封魂材料：永夜之魂 ×1＋💰500,000，將武器附魔取出成對應技能封魂石；裝回另收 💰500,000。</small>';
+    if (inst.id === 'towerSoul') return '<small>封魂材料：永夜之魂 ×5＋💰500,000，將武器附魔取出成對應技能封魂石；裝回另需永夜之魂 ×1＋💰500,000。</small>';
     return inst.bossEnchant ? bossEnchantInfo(inst.bossEnchant) : '';
 }
 function bossEnchantWeapons() { return [...player.inv, ...equippedList()].filter(x => ITEMS[x.id].cat === 'weapon'); }
@@ -90,7 +90,7 @@ function renderBossEnchantForge() {
         (slotOfEquipped(x.uid) ? ' <small class="good">裝備中</small>' : '') + '<small>目前附魔：' +
         (BOSS_ENCHANTS[x.bossEnchant] ? esc(BOSS_ENCHANTS[x.bossEnchant].name) : '無') + '</small></div><button onclick="openBossEnchantWeapon(' + x.uid + ')">選擇</button></div>').join('');
     return '<div class="panel"><h4>🔱 BOSS 附魔與封魂</h4><p>每把武器限一種附魔，必定成功。更換會覆蓋原附魔；想保留請先封魂。</p>' +
-        '<small>一般 BOSS：100 萬｜塔 10～50F：200 萬｜塔 60～100F：400 萬｜四龍：500 萬。封魂、裝回各 50 萬。</small><h4>🎬 特效預覽（不消耗材料）</h4>' + bossVfxPreviewButtons() + '</div><div class="list">' +
+        '<small>一般 BOSS：100 萬｜塔 10～50F：200 萬｜塔 60～100F：400 萬｜四龍：500 萬。封魂需永夜之魂 ×5，裝回需封魂石 ×1＋永夜之魂 ×1；各收 50 萬。</small><h4>🎬 特效預覽（不消耗材料）</h4>' + bossVfxPreviewButtons() + '</div><div class="list">' +
         (rows || '<p class="muted">背包與身上沒有武器。</p>') + '</div>';
 }
 function openBossEnchantWeapon(uid) {
@@ -101,10 +101,10 @@ function openBossEnchantWeapon(uid) {
         const r = BOSS_ENCHANTS[id], n = countItem(id), stones = countItem('soul_' + id);
         return '<details class="panel"><summary>' + esc(r.name) + '｜' + esc(ITEMS[id].name) + ' ×' + n + (stones ? '｜封魂石 ×' + stones : '') + '</summary>' + bossEnchantInfo(id) +
             '<div class="btn-row"><button onclick="bossEnchantAsk(' + uid + ',\'' + id + '\',false)" ' + (!n || player.gold < r.cost || it.bossEnchant === id ? 'disabled' : '') + '>材料附魔（💰' + fmt(r.cost) + '）</button>' +
-            '<button onclick="bossEnchantAsk(' + uid + ',\'' + id + '\',true)" ' + (!stones || player.gold < BOSS_ENCHANT_SOUL_COST || it.bossEnchant === id ? 'disabled' : '') + '>封魂石裝回（💰500,000）</button></div></details>';
+            '<button onclick="bossEnchantAsk(' + uid + ',\'' + id + '\',true)" ' + (!stones || !countItem('towerSoul') || player.gold < BOSS_ENCHANT_SOUL_COST || it.bossEnchant === id ? 'disabled' : '') + '>封魂石裝回（永夜之魂 ×1＋💰500,000）</button></div></details>';
     }).join('');
     openDialog('🔱 ' + itemName(it), '<p>目前：' + (current ? esc(current.name) : '尚無附魔') + '</p>' + (current ? bossEnchantInfo(it.bossEnchant) +
-        '<button onclick="bossEnchantSealAsk(' + uid + ')" ' + (!countItem('towerSoul') || player.gold < BOSS_ENCHANT_SOUL_COST ? 'disabled' : '') + '>封存（永夜之魂 ×1＋💰500,000）</button><p class="muted">封魂後武器保留，附魔變成對應封魂石。</p>' : '') + rows, [{ text: '關閉', cls: 'secondary' }]);
+        '<button onclick="bossEnchantSealAsk(' + uid + ')" ' + (countItem('towerSoul') < 5 || player.gold < BOSS_ENCHANT_SOUL_COST ? 'disabled' : '') + '>封存（永夜之魂 ×5＋💰500,000）</button><p class="muted">封魂後武器保留，附魔變成對應封魂石。</p>' : '') + rows, [{ text: '關閉', cls: 'secondary' }]);
 }
 function bossEnchantApply(uid, id, stone, expected) {
     const err = bossEnchantForgeError(uid), r = BOSS_ENCHANTS[id];
@@ -113,7 +113,9 @@ function bossEnchantApply(uid, id, stone, expected) {
     if ((it.bossEnchant || '') !== expected) return '武器附魔已改變，請重新選擇';
     if (it.bossEnchant === id) return '這把武器已經有相同附魔';
     if (player.gold < cost) return '金幣不足';
+    if (stone && !countItem('towerSoul')) return '缺少永夜之魂';
     if (!consumeItem(mat)) return '缺少' + ITEMS[mat].name;
+    if (stone) consumeItem('towerSoul');
     player.gold -= cost;
     it.bossEnchant = id;
     addLog('🔱 ' + itemName(it) + '附魔「' + r.name + '」（-' + fmt(cost) + ' 金幣）', 'sys');
@@ -123,7 +125,7 @@ function bossEnchantAsk(uid, id, stone) {
     const err = bossEnchantForgeError(uid), r = BOSS_ENCHANTS[id];
     if (err || !r) { showToast(err || '找不到附魔'); return; }
     const owner = player, it = findAnyInst(uid), expected = it.bossEnchant || '', cost = stone ? BOSS_ENCHANT_SOUL_COST : r.cost;
-    gameConfirm(stone ? '裝回封魂石' : 'BOSS 附魔', '消耗 ' + ITEMS[stone ? 'soul_' + id : id].name + ' ×1＋' + fmt(cost) + ' 金幣，將「' + r.name + '」附到 ' + itemName(it) + '。' +
+    gameConfirm(stone ? '裝回封魂石' : 'BOSS 附魔', '消耗 ' + ITEMS[stone ? 'soul_' + id : id].name + ' ×1＋' + (stone ? '永夜之魂 ×1＋' : '') + fmt(cost) + ' 金幣，將「' + r.name + '」附到 ' + itemName(it) + '。' +
         (expected ? '原附魔會被覆蓋且無法取回，若要保留請先封魂。' : '') + '必定成功。', () => {
         if (player !== owner) { showToast('角色已切換，請重新操作'); return; }
         const e = bossEnchantApply(uid, id, stone, expected);
@@ -137,8 +139,8 @@ function bossEnchantSeal(uid, expected) {
     const it = findAnyInst(uid), id = it.bossEnchant;
     if (!BOSS_ENCHANTS[id] || id !== expected) return '武器附魔已改變，請重新選擇';
     if (player.gold < BOSS_ENCHANT_SOUL_COST) return '金幣不足';
-    // 永夜之魂與封魂石重量相同；先完成所有檢查，再同步移轉，沒有非同步空窗。
-    if (!consumeItem('towerSoul')) return '缺少永夜之魂';
+    // 先完成所有檢查，再同步移轉，沒有非同步空窗。
+    if (!consumeItem('towerSoul', 5)) return '永夜之魂不足（需要 5 個）';
     player.gold -= BOSS_ENCHANT_SOUL_COST;
     delete it.bossEnchant;
     addItem('soul_' + id);
@@ -150,7 +152,7 @@ function bossEnchantSealAsk(uid) {
     if (err) { showToast(err); return; }
     const owner = player, it = findAnyInst(uid), id = it.bossEnchant;
     if (!BOSS_ENCHANTS[id]) return;
-    gameConfirm('封存 BOSS 附魔', '消耗永夜之魂 ×1＋500,000 金幣，移除武器附魔並獲得「' + ITEMS['soul_' + id].name + '」。武器、強化、詞綴與共鳴保留。', () => {
+    gameConfirm('封存 BOSS 附魔', '消耗永夜之魂 ×5＋500,000 金幣，移除武器附魔並獲得「' + ITEMS['soul_' + id].name + '」。武器、強化、詞綴與共鳴保留。', () => {
         if (player !== owner) { showToast('角色已切換，請重新操作'); return; }
         const e = bossEnchantSeal(uid, id);
         if (e) { showToast(e); return; }
@@ -162,7 +164,7 @@ function openBossSoulPicker(uid) {
     if (!stone || !ITEMS[stone.id].soulEnchant) return;
     if (!inTown()) { showToast('回到村莊鍛造師才能裝回封魂石'); return; }
     const id = ITEMS[stone.id].soulEnchant;
-    const rows = bossEnchantWeapons().map(x => '<div class="list-row"><b>' + esc(itemName(x)) + '</b><button onclick="bossEnchantAsk(' + x.uid + ',\'' + id + '\',true)">裝回（💰500,000）</button></div>').join('');
+    const rows = bossEnchantWeapons().map(x => '<div class="list-row"><b>' + esc(itemName(x)) + '</b><button onclick="bossEnchantAsk(' + x.uid + ',\'' + id + '\',true)">裝回（永夜之魂 ×1＋💰500,000）</button></div>').join('');
     openDialog(ITEMS[stone.id].name, bossEnchantInfo(id) + '<p>選擇武器；成功後消耗一個封魂石。</p>' + (rows || '<p>沒有武器。</p>'), [{ text: '關閉', cls: 'secondary' }]);
 }
 

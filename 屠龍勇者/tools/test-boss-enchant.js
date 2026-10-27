@@ -41,12 +41,12 @@ for (const id in BOSS_ENCHANTS) {
     assert.equal(bossEnchantApply(w.uid, id, false, ''), '');
     assert.equal(w.bossEnchant, id); assert.equal(countItem(id), 0); assert.equal(player.gold, gold - r.cost);
     const preserved = JSON.stringify({ id: w.id, uid: w.uid, ench: w.ench });
-    addItem('towerSoul'); const beforeSeal = player.gold;
+    addItem('towerSoul', 5); const beforeSeal = player.gold;
     assert.equal(bossEnchantSeal(w.uid, id), '');
     assert.equal(countItem('towerSoul'), 0); assert.equal(countItem('soul_' + id), 1); assert.equal(w.bossEnchant, undefined);
     assert.equal(player.gold, beforeSeal - 500000); assert.equal(JSON.stringify({ id: w.id, uid: w.uid, ench: w.ench }), preserved);
     assert(bossEnchantSeal(w.uid, id)); assert.equal(countItem('soul_' + id), 1);
-    assert.equal(bossEnchantApply(w.uid, id, true, ''), ''); assert.equal(countItem('soul_' + id), 0);
+    addItem('towerSoul'); assert.equal(bossEnchantApply(w.uid, id, true, ''), ''); assert.equal(countItem('towerSoul'), 0); assert.equal(countItem('soul_' + id), 0);
     assert(bossEnchantApply(w.uid, id, true, '')); // 重複確認不能再扣款或複製
     assert.equal(player.gold, beforeSeal - 1000000);
     assert(itemDescHtml(w).includes(r.name)); assert(bulkSellList(3).every(x => x.uid !== w.uid));
@@ -65,8 +65,16 @@ assert(bossEnchantApply(w.uid, 'treantHeart', false, '')); assert.equal(player.g
 addItem('treantHeart'); player.gold = 0; assert(bossEnchantApply(w.uid, 'treantHeart', false, '')); assert.equal(countItem('treantHeart'), 1);
 player.gold = gold; player.loc = { type: 'zone', id: 'island' }; assert(bossEnchantApply(w.uid, 'treantHeart', false, '')); assert.equal(countItem('treantHeart'), 1);
 player.loc = { type: 'town', id: 'talking' }; assert(bossEnchantApply(999999, 'treantHeart', false, ''));
+// 封存少於5魂、裝回缺魂或缺石時，材料與金幣均保留。
+w.bossEnchant = 'treantHeart'; addItem('towerSoul', 4);
+assert(bossEnchantSeal(w.uid, 'treantHeart')); assert.equal(countItem('towerSoul'), 4); assert.equal(player.gold, gold); assert.equal(w.bossEnchant, 'treantHeart');
+consumeItem('towerSoul', 4); delete w.bossEnchant; addItem('soul_treantHeart');
+assert(bossEnchantApply(w.uid, 'treantHeart', true, '')); assert.equal(countItem('soul_treantHeart'), 1); assert.equal(player.gold, gold);
+consumeItem('soul_treantHeart'); addItem('towerSoul');
+assert(bossEnchantApply(w.uid, 'treantHeart', true, '')); assert.equal(countItem('towerSoul'), 1); assert.equal(player.gold, gold);
+consumeItem('towerSoul');
 // 品質、強化值、詞綴及共鳴不被封魂改寫；舊存檔與新存檔遷移。
-w.ench = 6; w.q = 'rare'; w.af = []; addItem('towerSoul'); w.bossEnchant = 'treantHeart';
+w.ench = 6; w.q = 'rare'; w.af = []; addItem('towerSoul', 5); w.bossEnchant = 'treantHeart';
 assert.equal(bossEnchantSeal(w.uid, 'treantHeart'), ''); assert.equal(w.ench, 6); assert.equal(w.q, 'rare');
 let copy = migrateSave({ schema: 4, player: JSON.parse(JSON.stringify(player)) }); assert(copy.equip.weapon); assert(copy.inv.some(x => ITEMS[x.id].soulEnchant));
 w.bossEnchant = 'treantHeart'; copy = migrateSave({ schema: 5, player: JSON.parse(JSON.stringify(player)) }); assert.equal(copy.equip.weapon.bossEnchant, 'treantHeart');
