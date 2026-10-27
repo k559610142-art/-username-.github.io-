@@ -1,8 +1,20 @@
 // 屠龍勇者：快捷欄（ARCHITECTURE.md 第 40 節）（依賴 player、combat、ui、ui-panels、ui-frame）
-// 24 格 player.settings.bar，每格放技能或道具：點一下＝手動使用、按住往下拉再放開＝切換自動、點空格／長按／右鍵＝選要放什麼。
+// 32 格 player.settings.bar，每格放技能或道具：點一下＝手動使用、按住往下拉再放開＝切換自動、點空格／長按／右鍵＝選要放什麼。
 //   手機：地圖下方兩排（0～7、8～15；村莊裡不顯示）
 //   PC：底部骷髏頭左邊 0～7（鍵盤 1～8）、右邊 8～15（Q E R F Z X C V）、上排原本藥水卷軸的 6 格 16～21、上排最左邊 2 格 22～23
 
+// 新8格（24～31）由第一排旁箭頭展開；顯示偏好只存在裝置。
+let barExtraOpen = false;
+try { barExtraOpen = localStorage.getItem('dragonSlayer_barExtra') === '1'; } catch (e) {}
+function toggleBarExtra() {
+    barDragEnd();
+    barExtraOpen = !barExtraOpen;
+    try { localStorage.setItem('dragonSlayer_barExtra', barExtraOpen ? '1' : '0'); } catch (e) {}
+    renderHotbar();
+}
+function barExtraToggleHtml() {
+    return '<button type="button" class="bar-extra-toggle" onclick="toggleBarExtra()" aria-expanded="' + barExtraOpen + '" aria-controls="bar-extra-row" aria-label="' + (barExtraOpen ? '收起新增快捷欄' : '展開新增8格快捷欄') + '">' + (barExtraOpen ? '▼' : '▲') + '</button>';
+}
 // 圖示在 icons.js（skillIconHtml／itemIconHtml，第 41 節）
 // 手機顯示偏好存在裝置，不進角色存檔；0展開、1收合，上下各一位。
 const MOBILE_DRAWER_KEY = 'dragonSlayer_mobileDrawers';
@@ -73,6 +85,7 @@ function barPcPos(i) {
     const P = (x, y, w, h) => `left:calc(var(--s) * ${x}px);top:calc(var(--s) * ${y}px);width:calc(var(--s) * ${w}px);height:calc(var(--s) * ${h}px)`;
     if (i < 8) return P(318 + i * 72, 1036, 62, 62);
     if (i < 16) return P(1114 + (i - 8) * 72, 1036, 62, 62);
+    if (i >= 24) return P(8 + (i - 24) * 72, 8, 62, 62);
     if (i >= 22) return P(590 + (i - 22) * 70, 936, 62, 60);
     return P(590 + (i - 14) * 70, 936, 62, 60);
 }
@@ -86,7 +99,7 @@ function renderHotbar() {
         setHtmlStable(el, html);   // 冷卻秒數、數量常變：只改變動的節點，圖示不重建（2026-10-19 手機一直閃，ui.js）
     };
     if (isPcFrame()) {
-        set(pcBox, player.settings.bar.map((b, i) => barSlotHtml(i, 'abs', barPcPos(i))).join(''));
+        set(pcBox, player.settings.bar.slice(0, 24).map((b, i) => barSlotHtml(i, 'abs', barPcPos(i))).join('') + barExtraToggleHtml() + (barExtraOpen ? '<div id="bar-extra-row" class="pc-extra-row">' + Array.from({ length: 8 }, (_, k) => barSlotHtml(24 + k, 'abs extra-slot', barPcPos(24 + k))).join('') + '</div>' : ''));
         set(mapBar, '');
         return;
     }
@@ -97,7 +110,7 @@ function renderHotbar() {
         const i = from + k, id = player.settings.bar[i].id;
         return `<div class="sk-cell">${barSlotHtml(i)}<div class="sk-name">${esc(barName(id)) || ' '}</div></div>`;
     }).join('')}</div>`;
-    set(mapBar, mobileDrawerButtonHtml('bottom') + `<div id="mobile-shortcuts-body" class="mobile-shortcuts-body">${row(0) + row(8)}</div>`);
+    set(mapBar, mobileDrawerButtonHtml('bottom') + `<div id="mobile-shortcuts-body" class="mobile-shortcuts-body">${'<div class="mobile-extra-anchor">' + row(0) + barExtraToggleHtml() + (barExtraOpen ? '<div id="bar-extra-row" class="mobile-extra-row">' + row(24) + '</div>' : '') + '</div>' + row(8)}</div>`);
 }
 
 // ───────── 使用、切換自動、放置 ─────────

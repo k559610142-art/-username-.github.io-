@@ -173,6 +173,7 @@
 | `tools/test-dolls.js` | 21款娃娃道具／裝卸／跟隨／存檔隔離測試（第154節） |
 | `data/doll-abilities.js` | 21款娃娃基本能力、被動、冷卻／出場時間與觸發狀態（第157節） |
 | `tools/test-doll-abilities.js` | 21款數值、實際戰鬥／藥水、冷卻存檔、範圍防重複與模擬隔離（第157節） |
+| `tools/test-hotbar-extra.js` | 32格快捷舊檔遷移、PC／手機展開收合與手動自動回歸（第196節） |
 | `tools/test-ammo-slot.js` | 武器消耗品欄、四種彈藥補購／配對、舊檔及回家／停掛隔離測試（第195節） |
 | `tools/test-shop-buy.js` | 自訂購買數量隔離測試：整數／金額驗證、金幣與負重、裝備逐件建立、離村拒絕舊視窗（第 75 節；不發佈） |
 | `tools/test-log-drawer.js` | 訊息框定位回歸測試：PC 頂端樓層按鈕不推高訊息框、手機避開操作列（第 76 節；不發佈） |
@@ -212,7 +213,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027i`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027j`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3673,3 +3674,10 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - SIM_MODE不購物，離線量測與團戰沿原消耗品流程，避免抽樣補購造成離線數量與扣款失真；正式掛機才自動購買。
 - charGearHtml武器列包cv-weapon-row，旁接charAmmoHtml；openAmmoPicker／selectAmmo重查武器與背包，事件只傳字面ID；狩獵補給數量改顯示選定彈藥。載入順序不變，SQL不變。
 - tools/test-ammo-slot.js隔離測四種彈藥配對、實際攻擊2→1→1001、金幣、防重購、缺錢耗盡、不切銀箭、禁用、舊檔／加密存讀與UI事件；附魔及商店回歸通過。check.ps1 ALL CHECKS PASSED、git diff --check通過；正式50檔混淆522KB成功，openAmmoPicker／selectAmmo已公開。待使用者實玩驗收。
+
+## 196. 快捷欄新增8格箭頭展開（2026-10-27，版本 `20261027j`，schema17）
+
+- 使用者選全新8格並明確同意24→32存檔擴充。BAR_N改32，defaultBar末尾補8個獨立空白物件，save.migrateSave透過normalizeBar保留原24格id／自動設定，尾端補空；新版32格照原設定存讀。
+- hotbar第一排右側小箭頭toggleBarExtra控制新增index24～31；PC以浮動第二排向上展開（疊在上方操作列前景，收起即可還原），手機第一排上方浮出8格。原PC24格、手機原兩排16格位置與內容不變。新增格沿用放置／手動／長按／下拉自動，不配新鍵盤鍵，收起仍自動。
+- 新全域barExtraOpen、toggleBarExtra、barExtraToggleHtml；裝置偏好dragonSlayer_barExtra記錄展開狀態，不加入角色欄位；barPcPos新增24～31為pc-extra-row內相對座標。index.html新增箭頭及浮動列CSS；技能頁說明同步，載入順序／SQL不變。
+- tools/test-hotbar-extra.js隔離驗24→32保留、新格空白、加密存讀、手動／自動／技能搬移、收起仍自動、PC／手機展開收合與村莊隱藏、事件與原位置通過；彈藥／附魔回歸通過。check.ps1 ALL CHECKS PASSED、git diff --check通過，正式50檔混淆523KB成功、toggleBarExtra已公開。未操作正式角色；待使用者實玩確認後提交。

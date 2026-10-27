@@ -171,6 +171,7 @@ function migrateSave(data) {
     while (p.settings.skillSlots.length < SKILL_SLOTS) p.settings.skillSlots.push('');
     // 2026-10-15：快捷欄 bar（技能＋道具、各格自動開關）。舊存檔：第一排＝原本技能欄（自動），補給依舊的自動補給設定
     if (!Array.isArray(p.settings.bar) || !p.settings.bar.length) p.settings.bar = defaultBar(p, p.settings.skillSlots);
+    // schema17：保留原24格，尾端補8格空白；新版32格照原設定存讀。
     normalizeBar(p);
     // 移除已不存在的道具，避免舊存檔讓遊戲壞掉
     const valid = x => x && ITEMS[x.id];
