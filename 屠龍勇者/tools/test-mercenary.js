@@ -23,6 +23,7 @@ function setup(cls='spirit') {
  createPlayer('傭兵測試','knight',CLASSES.knight.base); player.lv=30; player.gold=1000000;
  mercPanelOpen=false; mercHire(cls); assert(confirmFn); const fn=confirmFn; fn(); const m=player.mercenary;
  assert(m); assert(renderMercenary().includes('C級傭兵')); fn(); assert.equal(player.mercenary,m); assert.equal(player.gold,900000); assert.equal(m.lv,1); assert(m.skills.every(x=>!x));
+ const beforeHire=player.gold;mercHire('war');assert.equal(player.mercenary,m);assert.equal(player.gold,beforeHire);
  m.active=true; return m;
 }
 assert.equal(MERC_HIRE_COST,100000);
@@ -52,7 +53,7 @@ player=migrated;m=player.mercenary;const html=renderMercenary();for(const slot o
 assert.equal(SLOT_KEYS.length,12);
 const locked=addItem('longSword');locked.sellLocked=true;mercEquip(locked.uid,'weapon');assert(findInv(locked.uid));
 for(const id of Object.keys(MERC_RUNES)) {
- const before=countItem('mercRune_'+id); mercBuyRune(id); assert.equal(countItem('mercRune_'+id),before+1);
+ const before=countItem('mercRune_'+id); addItem('mercRune_'+id); assert.equal(countItem('mercRune_'+id),before+1);
  mercSetRune(0,id);assert.equal(m.skills[0],id);assert.equal(countItem('mercRune_'+id),before);
  mercSetRune(0,'');assert.equal(countItem('mercRune_'+id),before+1);
 }
@@ -72,13 +73,13 @@ for(const id of Object.keys(MERC_RUNES)) {
  gameNow+=1000;mercTick(1000);assert(Number.isFinite(m.hp)&&Number.isFinite(m.mp));
 }
 // 真實戰鬥hook、傭兵死亡與不可恢復的損失，不刪玩家背包或娃娃。
-m=setup('war'); const weapon=addItem('longSword'); mercEquip(weapon.uid,'weapon'); mercBuyRune('heavy');mercSetRune(0,'heavy');
+m=setup('war'); const weapon=addItem('longSword'); mercEquip(weapon.uid,'weapon'); addItem('mercRune_heavy');mercSetRune(0,'heavy');
 const held=addItem('mercRune_heal',2);m.lv=8;m.exp=37;const invBefore=JSON.stringify(player.inv), dollBefore=player.equip.doll;
 chance=()=>false; assert.equal(mercTakeDamage(0),0);mercTakeDamage(100000);assert(m.dead);assert(!m.active);assert.deepEqual(Object.keys(m.equip),[]);assert(m.skills.every(x=>!x));assert.equal(m.lv,8);assert.equal(JSON.stringify(player.inv),invBefore);assert.equal(player.equip.doll,dollBefore);
 const beforeRevive=player.gold;mercRevive();confirmFn();assert(!m.dead);assert.equal(m.lv,8);assert.equal(player.gold,beforeRevive-8000);confirmFn();assert.equal(player.gold,beforeRevive-8000);
 // 野外不可收回／換裝／拆符石；缺錢不買；SIM不參戰或取得經驗。
 player.loc={type:'zone',id:'island'};const was=m.active;mercToggle();assert.equal(m.active,was);const n=held.n;mercSetRune(0,'heal');assert.equal(held.n,n);
-player.loc={type:'town',id:'talking'};player.gold=0;mercBuyRune('wolf');assert.equal(countItem('mercRune_wolf'),0);
+player.loc={type:'town',id:'talking'};player.gold=0;assert.equal(typeof mercBuyRune,'undefined');assert.equal(countItem('mercRune_wolf'),0);assert(!renderMercenary().includes('符石補給'));assert(!renderMercenary().includes('>購買</button>'));for(const id of Object.keys(MERC_RUNES))assert(!shopItemIds().includes('mercRune_'+id));
 m.active=true;SIM_MODE=true;assert.equal(mercActive(),null);const ex=m.exp;mercGainExp(9999);assert.equal(m.exp,ex);SIM_MODE=false;
 mercGainExp(99999);assert(m.lv>8&&m.lv<=player.lv);
 // 跟隨位置與原娃娃獨立，瞬移後回合法格；真實Canvas介面可繪製。
@@ -87,7 +88,7 @@ sceneMercTick(100);assert(scene.mercenary);assert(scene.doll.sentinel);scene.mer
 const paint=new Proxy({}, {get:(o,k)=>o[k]||(k==='createLinearGradient'?(()=>({addColorStop(){}})):(()=>{})),set:(o,k,v)=>(o[k]=v,true)});for(const lv of [1,30,41,51,61,71,81]){m.lv=lv;sceneDrawMerc(paint,0,0);assert(renderMercenary().includes(mercRank(m).name));assert(mercCardHtml().includes('merc-grade-'+mercRank(m).id));}
 // 四村9設施都有位置且可走到；事件不能引用player。
 for(const [id,key] of [['talking','village'],['gludio','ash'],['giran','darkgold'],['aden','aden']]) {const bg=SCENE_ART_BGS[key];assert.equal(bg.npcs.length,9);assert(bg.npcs.some(n=>n.role==='傭兵團長'));}
-player.loc={type:'town',id:'talking'};openMercenary();assert(dialog.includes('傭兵團長'));for(const x of dialog.matchAll(/onclick="([^"]+)"/g)){assert(!x[1].includes('player'));new Function(x[1]);}
+player.loc={type:'town',id:'talking'};openMercenary();assert(dialog.includes('四格技能符石'));for(const x of dialog.matchAll(/onclick="([^"]+)"/g)){assert(!x[1].includes('player'));new Function(x[1]);}
 // 正式huntTick由傭兵擊殺，沿原reapMobs入帳且只結算一次。
 m=setup('war');player.loc={type:'zone',id:'island'};player.hunting=true;scene=null;
 lootRequired=()=>false;diaRoll=()=>{};rollDrops=()=>{};questOnKill=()=>{};mapOnKill=()=>false;

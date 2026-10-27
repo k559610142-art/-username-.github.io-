@@ -69,7 +69,7 @@ function codexIds() {
 // 取得方式：商店、怪物掉落、永夜之塔首領、一般怪物、鍛造、職業任務
 let codexSrcCache = null;
 function codexSources(id) {
-    if (ITEMS[id] && ITEMS[id].rune) return ['傭兵團長：每顆' + fmt(MERC_RUNE_COST) + '金幣；配置四格、可拆回背包；傭兵死亡失去已配置符石'];
+    if (ITEMS[id] && ITEMS[id].rune) return ['不可購買；取得方式待開放。可配置四格、拆回背包；傭兵死亡失去已配置符石'];
     if (!codexSrcCache) {
         const S = codexSrcCache = {};
         const add = (k, s) => { (S[k] = S[k] || []).push(s); };

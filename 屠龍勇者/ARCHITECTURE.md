@@ -216,7 +216,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027n`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027o`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3740,3 +3740,10 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 六類以召／守／輔／戰／生／秘刻字及紫／藍／金／紅／綠／青辨識，旁列名稱、分類、MP與CD；效果說明用details展開，符石下方保留拆回背包。孔位仍呼叫mercPickRune，拆除仍走mercSetRune；離村／陣亡維持disabled。事件只傳字面槽位，不改玩法。
 - 美術使用CSS漸層石紋、內陰影凹槽及clip-path晶體，不新增圖片素材；八格裝備與管理介面其他區塊不變。新增函式mercRuneBoardHtml，CSS限制merc-rune-*／merc-socket-*／merc-gem，不影響其他系統。schema18／SQL／載入順序不變。
 - tools/mercenary-preview.html加記憶體鑲嵌展示：先招募，再以正式mercSetRune配置靈狼／護盾／火焰彈，第四格留空；禁止連正式後端。原傭兵回歸通過。隔離瀏覽器實測點空孔→鑲入→拆回背包，375px手機兩欄且無橫向溢出，Console無error／warn；check.ps1 ALL CHECKS PASSED、git diff --check通過，正式51檔混淆545KB成功。待使用者實玩驗收後提交。
+
+## 201. 傭兵限一名、移除符石販售（2026-10-27，版本 `20261027o`）
+
+- 使用者指定每次只召喚一名傭兵、技能不能購買。沿原單一player.mercenary與active開關，只出戰一位；活傭兵存在時mercHire拒絕再雇傭，不重複扣金幣。UI明示同時只能召喚一名。
+- 移除團長符石補給清單／分類按鈕、購買函式mercBuyRune、篩選函式mercChooseGroup及MERC_RUNE_COST／mercRuneGroup；一般商店原本就沒有符石售價，亦不可購買。NPC招呼及空符石選擇器不再引導購買，圖鑑改不可購買／取得方式待開放。
+- 保留50種符石定義、玩家已持有／已配置符石、四格石板與拆換／戰鬥；未自行加入掉落或其他取得途徑，取得方式待使用者決定。schema18／SQL不變。第197節符石1000金幣暫定販售被本節取代。
+- test-mercenary改用記憶體道具測配置，補單傭兵重複招募拒絕、UI無販售／購買函式不存在、一般商店50符石均不列出回歸通過；check.ps1 ALL CHECKS PASSED、git diff --check通過，51檔正式混淆544KB成功。隔離瀏覽器確認6個職業招募選項、0個購買按鈕、Console無error／warn；待使用者實玩確認後提交。
