@@ -70,6 +70,7 @@
 | `images/sprites/morph/shura-monk-v1/`、`tools/sprite-src/morph/shura-monk-v1/`、`tools/test-shura-monk-morph.js` | m22修羅破戒僧原稿／生成提示詞、透明圖集／腳點打包／四向預覽與卷軸隔離驗證（第168節） |
 | `tools/test-mobile-drawers.js` | 手機上下狀態／快捷抽屜、獨立收合／裝置偏好／PC與村莊隔離驗證（第169節） |
 | `tools/test-pwa-update.js` | 更新偵測隔離DOM／網路測試：開發與正式合併版、節流、離線／錯誤／版本排序與按下才刷新（第164節） |
+| `tools/test-mercenary-quest.js` | 傭兵5000擊殺任務、隨機取得／放棄返還／schema19與隔離預覽驗證（第205節） |
 | `tools/check.ps1` | 改完的自動檢查：JS 語法（`node --check`）、`index.html` 所有 `?v=` 等於 `GAME_VERSION`、每個 `data/*.js` 都有載入、沒有衝突標記；通過印 `ALL CHECKS PASSED` |
 | `images/icons/items/mercRune-v1/`、`tools/icon-src/mercenary-runes-v1/` | 50款獨立傭兵符石透明PNG、image_gen原稿／完整提示詞／來源與總覽（第203節） |
 | `tools/prepare-mercenary-runes.js`、`tools/test-mercenary-rune-art.js`、`tools/mercenary-runes-preview.html` | 符石等比縮圖／透明與唯一性檢查、正式UI接線驗證及128／48／32px獨立素材預覽（第203節） |
@@ -218,7 +219,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027r`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027s`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3771,3 +3772,14 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 使用者回報原圖消失。q版批次替換版本時再次誤吞6處CSS url右括號及border-image-source分號，造成封面、手機框架／疊圖、PC背景／遮罩失效；補回6處完整語法，保留原始圖片及既有配置。
 - 換版僅替換精確版本字串；tools/check.ps1新增CSS url閉合與border-image-source分號檢查，防止同類損壞。沒有玩法／存檔schema18／載入順序變更。
 - 驗證：check.ps1 ALL CHECKS PASSED（含新CSS檢查）、git diff --check通過；正式51檔543KB混淆成功。隔離瀏覽器PC背景／遮罩、手機borderImageSource／疊圖與封面computed style均為有效URL，PC骷髏／紅藍球恢復，Console無error／warn；實拍tools/frame-restored-20261027r.png。未讀寫正式角色或後端，待使用者實玩確認後提交。
+
+
+## 205. 傭兵團試煉取得與放棄（2026-10-27，版本 `20261027s`，schema19）
+
+- 使用者指定團長接任務，接取後擊殺任意怪物5000隻、回團長處隨機領取六職業之一（等機率），新傭兵Lv.1／空4技能／空裝備／滿HPMP待命；無購買費用，符石取得方式留待後續。活傭兵持有時完全隱藏任務；死亡或放棄可重接，每次重接從0計。
+- 死亡後舊傭兵仍保留可復活；領新傭兵確認時明示永久替換舊死亡者。復活保級並取消進行中的取得任務；延遲領獎確認重查玩家／原傭兵／任務物件、村莊與進度，拒絕重領及復活後替換。
+- mercDismiss在村莊確認放棄，活傭兵身上8部位原實體退背包（保留UID、強化、詞綴、鎖定等），4符石各退一顆；死亡已失去物品不恢復。確認重查玩家／原傭兵／村莊，避免重複返還，清除短期狀態與任務進度。
+- 使用者已同意新增存檔與轉換。SAVE_SCHEMA18→19，player.mercQuest={active:false,kills:0}，migrateSave在傭兵正規化後mercQuestNormalize，舊檔補未接取、有效進度保留並夾0～5000，活傭兵清空隱藏；既有角色及傭兵不重置。無SQL／載入順序變更。
+- 新常數MERC_QUEST_KILLS，函式mercQuestNormalize／mercQuestAccept／mercQuestOnKill／mercQuestClaim／mercDismiss／mercQuestHtml。combat.onKill既有去重後增加任務計數（所有目前一般狩獵擊殺含首領／異界），SIM不計、離線／團隊／世界首領不計；完成提示並保存，其餘進度沿既有自動存檔。NPC招呼／管理同步顯示。
+- tools/test-mercenary-quest.js為隔離任務／六職業抽取／返還／存讀與正式onKill回歸；tools/mercenary-preview.html新增記憶體任務4999／擊殺1測試按鈕，正式遊戲沒有此入口。
+- 驗證：任務5000邊界／六類抽取／放棄退回不複製／死亡重接與復活取消／延遲確認／schema19加密存讀、原50技能與符石圖示回歸通過；check.ps1 ALL CHECKS PASSED、git diff --check通過，正式51檔混淆成功。隔離瀏覽器實際接取→4999→5000→確認隨機領取（Lv.1征戰者）→任務隱藏→放棄確認→任務重現，Console無error／warn，截圖tools/mercenary-quest-20261027s.png。待使用者實玩後提交。

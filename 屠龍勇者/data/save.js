@@ -193,6 +193,8 @@ function migrateSave(data) {
     [...p.inv, ...p.storage, ...Object.values(p.equip)].forEach(fixQ);
     // schema18：舊角色未雇傭；先清理玩家容器，再驗證傭兵裝備的UID。
     mercNormalize(p);
+    // schema19：舊角色任務未接；保留合法進度，活傭兵持有時隱藏並清空任務。
+    mercQuestNormalize(p);
     // schema 6：舊物品預設未鎖定；僅保留明確的鎖定旗標（背包、倉庫、已裝備）。
     for (const it of [...p.inv, ...p.storage, ...Object.values(p.equip)]) {
         if (it.sellLocked !== true) delete it.sellLocked;

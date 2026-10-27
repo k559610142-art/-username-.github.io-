@@ -776,6 +776,7 @@ function onKill(mon) {
     if (!lootRequired()) diaRoll(mon);   // 後端模式連同物品一併結算鑽石
     gainExp(exp);
     mercGainExp(exp);
+    mercQuestOnKill();
     rollDrops(mon, z);
     questOnKill(mon, z);
     if (mapOnKill(mon)) return;   // 異界：計數；打倒異界首領＝通關、回村

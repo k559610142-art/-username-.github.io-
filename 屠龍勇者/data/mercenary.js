@@ -9,6 +9,52 @@ const MERC_CLASSES = {
 };
 const MERC_SLOTS = ['weapon', 'shield', 'helm', 'armor', 'tshirt', 'cloak', 'gloves', 'boots'];
 const MERC_REVIVE_COST = 1000;
+const MERC_QUEST_KILLS = 5000;
+function mercQuestNormalize(p) {
+    const q = p.mercQuest;
+    p.mercQuest = { active: !!(q && q.active === true), kills: q && Number.isFinite(q.kills) ? clamp(Math.floor(q.kills), 0, MERC_QUEST_KILLS) : 0 };
+    if (!p.mercQuest.active || p.mercenary && !p.mercenary.dead) p.mercQuest = { active: false, kills: 0 };
+}
+function mercQuestAccept() {
+    if (!mercTownReady() || player.mercenary && !player.mercenary.dead || player.mercQuest.active) return;
+    player.mercQuest = { active: true, kills: 0 }; mercRefresh();
+}
+function mercQuestOnKill() {
+    const q = player.mercQuest;
+    if (SIM_MODE || !q || !q.active || player.mercenary && !player.mercenary.dead || q.kills >= MERC_QUEST_KILLS) return;
+    q.kills++;
+    if (q.kills === MERC_QUEST_KILLS) { addLog('⚑ 傭兵團試煉完成！請回村莊找傭兵團長領取隨機傭兵。', 'sys'); saveGame(); }
+}
+function mercQuestClaim() {
+    const owner = player, q = player.mercQuest, previous = player.mercenary;
+    if (!mercTownReady() || !q.active || q.kills < MERC_QUEST_KILLS || previous && !previous.dead) return;
+    gameConfirm('領取隨機傭兵', '隨機獲得六職業之一的Lv.1傭兵，四格技能為空。' + (previous ? '原本陣亡傭兵將被替換，無法再復活。' : ''), () => {
+        if (player !== owner || !mercTownReady() || player.mercQuest !== q || !q.active || q.kills < MERC_QUEST_KILLS || player.mercenary !== previous || previous && !previous.dead) return;
+        q.active = false; q.kills = 0;
+        const keys = Object.keys(MERC_CLASSES), cls = keys[rand(0, keys.length - 1)];
+        const m = { cls, lv: 1, exp: 0, hp: 1, mp: 0, dead: false, active: false, equip: {}, skills: ['', '', '', ''], cds: {} };
+        if (previous) mercRuntime.delete(previous);
+        player.mercenary = m; const st = mercStats(m); m.hp = st.hp; m.mp = st.mp;
+        addLog('⚑ 完成傭兵團試煉，獲得' + MERC_CLASSES[cls].person + '・' + MERC_CLASSES[cls].name + '！', 'sys'); mercRefresh();
+    }, '隨機領取');
+}
+function mercDismiss() {
+    const owner = player, m = player.mercenary;
+    if (!mercTownReady() || !m) return;
+    gameConfirm('放棄傭兵', '放棄後無法復原此傭兵的等級；身上裝備與符石退回背包，陣亡時已失去的物品不恢復。之後可重新接取傭兵團試煉，任務進度重新計算。', () => {
+        if (player !== owner || !mercTownReady() || player.mercenary !== m) return;
+        if (!m.dead) {
+            for (const slot of MERC_SLOTS) if (m.equip[slot]) player.inv.push(m.equip[slot]);
+            for (const id of m.skills) if (MERC_RUNES[id]) addItem('mercRune_' + id);
+        }
+        mercRuntime.delete(m); player.mercenary = null; player.mercQuest = { active: false, kills: 0 }; mercRefresh();
+    }, '放棄傭兵');
+}
+function mercQuestHtml() {
+    if (player.mercenary && !player.mercenary.dead) return '';
+    const q = player.mercQuest, town = mercTownReady();
+    return '<div class="panel"><h4>傭兵團試煉</h4><p>接取後擊殺任意怪物' + fmt(MERC_QUEST_KILLS) + '隻，回團長處隨機獲得六職業之一的Lv.1傭兵。每種職業機率相同。</p>' + (q.active ? '<p>討伐進度：' + fmt(q.kills) + '／' + fmt(MERC_QUEST_KILLS) + '</p>' + (q.kills >= MERC_QUEST_KILLS ? '<button onclick="mercQuestClaim()" ' + (!town ? 'disabled' : '') + '>領取隨機傭兵</button>' : '<small>任務進行中，完成後請回報團長。離線收益不累積進度。</small>') : '<button onclick="mercQuestAccept()" ' + (!town ? 'disabled' : '') + '>接取傭兵任務</button>') + '</div>';
+}
 const MERC_GROUPS = { summon: '召喚', guard: '守護', support: '補助', battle: '戰鬥', survival: '生存', arcane: '秘術' };
 const MERC_RUNES = {};
 // id、名稱、效果種類、MP、冷卻秒、倍率／數值、持續秒。
@@ -121,8 +167,9 @@ function mercGainExp(n) {
 }
 function mercDie() {
     const m = player.mercenary; if (!m || m.dead) return;
+    player.mercQuest = { active: false, kills: 0 };
     m.dead = true; m.active = false; m.hp = 0; m.mp = 0; m.equip = {}; m.skills = ['', '', '', '']; m.cds = {}; mercRuntime.delete(m);
-    addLog('⚑ 傭兵陣亡！身上裝備與技能永久消失，請找傭兵團長復活。', 'warn');
+    addLog('⚑ 傭兵陣亡！身上裝備與技能永久消失，請找傭兵團長復活，或接任務取得新傭兵。', 'warn');
     if (!SIM_MODE) saveGame();
 }
 function mercTakeDamage(value) {
@@ -246,8 +293,9 @@ function mercRefresh() { saveGame(); refreshUI(); if (typeof mercPanelOpen !== '
 function mercRevive() {
     const m = player.mercenary; if (!mercTownReady() || !m || !m.dead) return;
     const owner = player, cost = m.lv * MERC_REVIVE_COST;
-    gameConfirm('復活傭兵', '花費' + fmt(cost) + '金幣復活，保留Lv.' + m.lv + '，失去的裝備與技能不恢復。', () => {
+    gameConfirm('復活傭兵', '花費' + fmt(cost) + '金幣復活，保留Lv.' + m.lv + '，失去的裝備與技能不恢復。復活後會取消進行中的傭兵取得任務。', () => {
         if (player !== owner || !mercTownReady() || player.mercenary !== m || !m.dead || player.gold < cost) return;
+        player.mercQuest = { active: false, kills: 0 };
         player.gold -= cost; m.dead = false; m.active = false; const st = mercStats(m); m.hp = st.hp; m.mp = st.mp; mercRuntime.delete(m); mercRefresh();
     }, '復活');
 }
@@ -301,13 +349,15 @@ function mercRuneBoardHtml(m, town) {
 function renderMercenary() {
     const m = player.mercenary, c = m && MERC_CLASSES[m.cls], town = mercTownReady();
     let h = '<div class="panel"><p>六職業共用50種符石，同時只能召喚一名傭兵。在村莊配置與調整出戰，傭兵不可購買。</p><p class="bad">死亡永久失去身上全部裝備與已配置符石；背包物品不受影響。復活保留等級。</p><details><summary>戰鬥與裝備規則</summary><small>不限制武器職業，雙手武器與盾牌互斥。一般掛機生效；離線／團隊副本／世界首領暫不參戰。遠程武器不耗玩家彈藥，裝備共鳴與BOSS附魔暫不觸發。技能依四格順序判斷，每秒最多一招；召喚物最多2隻。框架先用跟隨標記呈現。</small></details></div>';
+    h += mercQuestHtml();
     if (m) {
         const st = mercStats(m);
         h += '<div class="panel"><b>' + mercNameHtml(m) + '</b>（' + c.sex + '／' + c.age + '）<p>Lv.' + m.lv + '｜經驗 ' + fmt(m.exp) + '／' + fmt(mercExpNeed(m)) + '<br>HP ' + Math.ceil(m.hp) + '／' + st.hp + '　MP ' + Math.ceil(m.mp) + '／' + st.mp + '<br>物攻' + Math.round(st.atk) + '／魔攻' + Math.round(st.magic) + '／防禦' + st.def + '／魔防' + st.mr + '</p>' + (m.dead ? '<button onclick="mercRevive()" ' + (!town ? 'disabled' : '') + '>復活（' + fmt(m.lv * MERC_REVIVE_COST) + '金幣）</button>' : '<button onclick="mercToggle()" ' + (!town ? 'disabled' : '') + '>' + (m.active ? '收回傭兵' : '傭兵出戰') + '</button>') + '</div>';
+        h += '<button onclick="mercDismiss()" ' + (!town ? 'disabled' : '') + '>放棄傭兵</button>';
         h += mercRuneBoardHtml(m, town);
         h += '<h4>傭兵裝備</h4><div class="merc-grid">' + MERC_SLOTS.map(slot => '<div class="panel"><b>' + SLOTS[slot] + '：' + (m.equip[slot] ? esc(itemName(m.equip[slot])) : '空白') + '</b><button onclick="mercPickEquip(\'' + slot + '\')" ' + (!town || m.dead ? 'disabled' : '') + '>選擇</button>' + (m.equip[slot] ? '<button onclick="mercUnequip(\'' + slot + '\')" ' + (!town || m.dead ? 'disabled' : '') + '>卸下</button>' : '') + '</div>').join('') + '</div>';
     }
-    if (!m) h += '<div class="panel"><p>尚未持有傭兵。傭兵不可購買，取得方式待開放。</p></div>';
+    if (!m) h += '<div class="panel"><p>尚未持有傭兵。請向傭兵團長接取任務，完成後領取隨機傭兵。</p></div>';
     return h;
 }
 function sceneMercTick(dt) {
