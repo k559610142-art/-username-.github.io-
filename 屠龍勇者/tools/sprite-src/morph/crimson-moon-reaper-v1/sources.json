@@ -1,0 +1,17 @@
+{
+  "form": "m34",
+  "name": "緋月收魂姬",
+  "reference": "reference-concept.png",
+  "tool": "built-in image_gen",
+  "sheets": [
+    "down-generated.png",
+    "right-generated.png",
+    "up-generated.png"
+  ],
+  "originals": [],
+  "prompts": "prompts.json",
+  "repairs": null,
+  "processing": "prepare.js: alpha component isolation, proportional resize, foot registration; no substitute poses",
+  "frames": "build/frames",
+  "runtime": "images/sprites/morph/crimson-moon-reaper-v1"
+}

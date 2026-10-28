@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "prompt": "Repair this existing 4-column 3-row game sprite sheet. Preserve EXACTLY the twelve poses, skeletal blue-hood grave warden identity, SAME long two-handed single-crescent scythe, camera and direction in each frame. CRITICAL: each ENTIRE figure including blade, shaft tip, cloak and effects must be 65% of current size within its OWN CELL, centered and aligned at same foot baseline. Add very generous empty transparent gutters ALL sides, including top border: do not cut off scythe or boots. Remove ANY gray/brown backdrop completely. Output genuine RGBA transparent background, NO gradient, NO checkerboard. Remove detached background particles, keep only compact blue slash trails. No floor/shadow/grid/text. Do not change twelve original poses or weapon into another type.",
+  "outputs": [
+    {
+      "direction": "down",
+      "hint": "Generated images are saved to C:\\Users\\User\\.codex\\generated_images\\01a181ea-5149-7790-aa5f-096924f006a1 as C:\\Users\\User\\.codex\\generated_images\\01a181ea-5149-7790-aa5f-096924f006a1\\exec-86a169fe-37fb-4624-aafb-e515e2081718.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "direction": "right",
+      "hint": "Generated images are saved to C:\\Users\\User\\.codex\\generated_images\\01a181ea-5149-7790-aa5f-096924f006a1 as C:\\Users\\User\\.codex\\generated_images\\01a181ea-5149-7790-aa5f-096924f006a1\\exec-618c767f-4531-4545-8d28-b913f7c68ed6.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "direction": "up",
+      "hint": "Generated images are saved to C:\\Users\\User\\.codex\\generated_images\\01a181ea-5149-7790-aa5f-096924f006a1 as C:\\Users\\User\\.codex\\generated_images\\01a181ea-5149-7790-aa5f-096924f006a1\\exec-da42855e-3fec-455b-987a-e4ff488980b4.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    }
+  ]
+}

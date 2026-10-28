@@ -1,0 +1,38 @@
+[
+  {
+    "key": "azureGraveWarden",
+    "dir": "azure-grave-warden-v1",
+    "id": "m33",
+    "name": "蒼骨巡墓者",
+    "tier": "blue",
+    "ref": "exec-ac76f5ac-7b9d-4b01-92d3-7455a728c24e.png",
+    "identity": "Lean skeletal grave warden: ivory skull, pale blue eyes, torn dark navy hood and ragged cloak, weathered chainmail, battered silver pauldrons, leather armored boots, long worn iron scythe with ONE silver crescent blade and a small blue rune."
+  },
+  {
+    "key": "crimsonMoonReaper",
+    "dir": "crimson-moon-reaper-v1",
+    "id": "m34",
+    "name": "緋月收魂姬",
+    "tier": "red",
+    "ref": "exec-a7d19c8c-2861-438c-90c4-9bc2ab942dd7.png",
+    "identity": "Adult female vampire reaper, pale face, long silver hair, black and antique-gold plate armor, burgundy split battle coat and cape, red gemstone accents, armored boots. Giant long black-shaft scythe with ONE crimson crescent blade and a red gem socket. Mature fierce face and elegant athletic silhouette; no sexualization."
+  },
+  {
+    "key": "voidSoulExecutioner",
+    "dir": "void-soul-executioner-v1",
+    "id": "m35",
+    "name": "虛空斷魂使",
+    "tier": "purple",
+    "ref": "exec-926dbecb-03ec-4ac1-8758-5f9957b76c12.png",
+    "identity": "Tall faceless hooded reaper with two narrow violet eye slits, angular obsidian plate armor with violet crystal seams, jagged asymmetrical pauldrons, torn black-purple spectral cape, armored boots, huge black-shaft scythe with ONE violet crystal crescent blade."
+  },
+  {
+    "key": "underworldEndSovereign",
+    "dir": "underworld-end-sovereign-v1",
+    "id": "m36",
+    "name": "冥界終焉君主",
+    "tier": "gold",
+    "ref": "exec-e04d6439-0409-4a2e-9a5a-0aa8eefd2c41.png",
+    "identity": "Regal underworld death lord, ivory skull mask, black horned gold crown, ornate black-and-gold ribbed ceremonial plate armor, emerald chest jewel, black royal mantle edged in gold, armored feet, TWO symmetrical compact skeletal golden blade-wings with green soul energy. ONE giant black-shaft gold crescent scythe with emerald socket."
+  }
+]

@@ -1,0 +1,21 @@
+{
+  "form": "m33",
+  "name": "蒼骨巡墓者",
+  "reference": "reference-concept.png",
+  "tool": "built-in image_gen",
+  "sheets": [
+    "down-generated.png",
+    "right-generated.png",
+    "up-generated.png"
+  ],
+  "originals": [
+    "down-initial.png",
+    "right-initial.png",
+    "up-initial.png"
+  ],
+  "prompts": "prompts.json",
+  "repairs": "repair-prompts.json",
+  "processing": "prepare.js: alpha component isolation, proportional resize, foot registration; no substitute poses",
+  "frames": "build/frames",
+  "runtime": "images/sprites/morph/azure-grave-warden-v1"
+}

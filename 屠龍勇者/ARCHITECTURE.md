@@ -6,6 +6,8 @@
 ## 1. 專案結構
 
 | 檔案 | 內容 |
+| `images/sprites/morph/{azure-grave-warden,crimson-moon-reaper,void-soul-executioner,underworld-end-sovereign}-v1/`、`tools/sprite-src/morph/`對應同名目錄 | 四款鐮刀系144格透明動畫與原概念／concept-prompt.txt／分鏡／prompts及repair-prompts／sources.json／prepare.js／註冊／實拍（第222節） |
+| `tools/sprite-src/morph/scythe-forms-v1.json`、`tools/prepare-scythe-morphs.js`、`tools/test-scythe-morphs.js`、`tools/scythe-morphs-preview.html`、`tools/scythe-morphs-contact.png`、`tools/scythe-morphs-picker-mobile.png` | 四階名稱／ID素材對照、打包總覽與實際卷軸／64組renderer隔離驗證及瀏覽器預覽（第222節） |
 | `tools/gm-resource-audit.sql`、`tools/test-gm-resource-audit.js`、`tools/gm-resource-audit-preview.html` | GM交易／共用倉庫合法增量核對、60分鐘時間差／首領兩倍上限與隔離資料庫／介面驗證；實拍tools/gm-resource-audit-pc.png、gm-resource-history-pc.png／-mobile.png（第221節） |
 | `images/sprites/morph/abyss-goat-envoy-v1/`、`tools/sprite-src/morph/abyss-goat-envoy-v1/`、`tools/goat-envoy-morph-preview.html`、`tools/test-goat-envoy-morph.js` | 20深淵羊魔・巴風特使徒紅變：四參考／36格透明動畫／註冊／卷軸與renderer隔離驗證（第220節） |
 | `images/sprites/morph/abyss-dual-demon-v1/`、`tools/sprite-src/morph/abyss-dual-demon-v1/`、`tools/abyss-demon-morph-preview.html`、`tools/test-abyss-demon-morph.js` | 11深淵雙刃魔神金變：36格透明動畫、原稿／提示詞／註冊、真實卷軸與renderer隔離驗證（第219節） |
@@ -236,7 +238,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261028o`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261028p`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3934,3 +3936,12 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - wb_attack cap由4×(1500+70×Lv)改8×，Lv55＝42800，超限仍截斷並記wb_dmg，三次／日、登入／封鎖、首領剩血限制維持。原可疑紀錄不清除，既有倉庫未留金流無法補查；不是放行整個帳號或移除防複製。
 - gm.html新增gmResources／gmResourceRows，可疑列「資金／物資」查同帳號最近100筆、列各分身與物資來源欄位／成交及淨額；歷程加已核實淨轉移欄。未安裝SQL顯示可讀錯誤。GM三個script版本與index／config同步o，系統更新不加玩家GAME_UPDATES。tools/gm-resource-audit-preview.html讀正式GM程式、假資料且CSP禁止連外；不登入不接正式資料。
 - 驗證：新PGlite真實RPC測試通過：同帳號分身千萬金幣／物資、真實賣款／混入額外2000萬只扣合法部分、跨分身重複／假成交、失敗無紀錄、46／60／61分鐘、能力照查、RLS／內部權限、首領24240完整及42800截斷／每日三次、重裝不清舊紀錄。原vault-v2／market-v2測試在記憶體追加新SQL後回歸全過（原檔未改）。check.ps1 ALL CHECKS PASSED、diff檢查與52檔572KB正式遊戲／GM混淆及GM內嵌語法通過，驗證副本已刪。隔離瀏覽器PC資金物資中文來源／歷程淨轉移與375px橫向表格正常，Console無error／warn；實拍gm-resource-audit-pc.png、gm-resource-history-pc.png及-mobile.png。待使用者先在Supabase執行tools/gm-resource-audit.sql→刷新o的GM→資金／物資與歷程→同帳號本尊存款、分身領款並上傳確認不標金幣暴增；舊46分鐘及首領舊紀錄核對後可手動已處理。使用者驗收後才commit，未commit／推送。
+
+## 222. 四款鐮刀系變身（2026-10-28，版本 `20261028p`）
+
+- 使用者先看四款內建image_gen原創概念後要求開始製作變身檔；新增m33蒼骨巡墓者／m34緋月收魂姬／m35虛空斷魂使／m36冥界終焉君主，藍／紅／紫／金四階，32→36款。新增MORPH_GROUPS.scythe，建議武器鐮刀（沿近戰系建議、不加強制武器限制），fx只沿階級基本命中／傷害／攻速：2／2／6%、3／3／10%、5／5／15%、7／7／20%，等級15／35／52／70。無額外爆擊吸血等加成，沿原GM等級豁免／卷軸30分鐘及10000金幣。
+- 新增MORPHS.azureGraveWarden／crimsonMoonReaper／voidSoulExecutioner／underworldEndSovereign，各依已確認概念製作正／右／背三向36格：walk4×130ms／attack4×140ms／cast2×220ms／hit2×150ms，左鏡像。384×320，foot[192,270]，charH160／drawH48；16圖集共144格。長柄單刃鐮刀在四動作持握，方向維持、預留刀刃與披風／骨翼邊界。
+- 概念、生成原稿與完整提示詞保留tools/sprite-src/morph對應v1目錄；各prepare.js用alpha隔離、等比例縮放與腳點註冊，單格留來源build/frames，不放公開images；公開僅四圖集／portrait／manifest。tools/sprite-src/morph/scythe-forms-v1.json是四款ID／階級／路徑／概念來源對照，tools/prepare-scythe-morphs.js逐款打包並產總覽。
+- ui-panels原選單自動依MORPH_GROUPS列新鐮刀系、原人物／場景沿sprite欄讀新模型，無新script。SW預載16圖集；GAME_UPDATES新增p。只新增既有morph.form可用ID，不加存檔欄位；schema20／SQL／載入順序不變，保留o GM更新。
+- tools/scythe-morphs-preview.html記憶體角色、禁止連外，可切四款／四方向／四動作／逐格與實際大小，真實卷軸入口；tools/test-scythe-morphs.js驗四階門檻不扣卷、36款與舊外觀／schema、基礎加成、真實事件命中／MISS／施法／受傷不中斷／到期、144格RGBA透明／唯一／圖集來源一致、正式sceneDraw四款四向四動作64組。
+- 驗證：四款144格RGBA透明／唯一／來源逐byte、16圖集預載、真實sceneDraw四款四向四動作64組、四階門檻／卷軸扣量／舊變身／schema／攻擊MISS／施法／受傷不中斷／到期與上次選擇通過；原等級／GM豁免／登出換帳號回歸亦通過（舊測試輸出文字仍寫32款，實際遍歷目前36款）。check.ps1 ALL CHECKS PASSED、diff檢查及52檔575KB正式混淆語法／16PNG發佈逐byte一致通過，臨時驗證副本已刪。瀏覽器四款攻擊／背面施法／左鏡射與375px手機四階選單正常，手機選金變卷軸99→98、48px行走播放，Console無error／warn；逐款browser-attack／cast實拍存來源，總覽tools/scythe-morphs-contact.png及手機tools/scythe-morphs-picker-mobile.png。待使用者刷新p→變形卷軸→鐮刀系→按等級選四款→觀察四向走路／揮鐮／施法／受傷，確認後才commit；未commit／推送。

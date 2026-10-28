@@ -96,6 +96,34 @@ const MORPHS = {
         cast:   { src: 'images/sprites/morph/shadow-pirate-gunner-v1/cast.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 220 },
         hit:    { src: 'images/sprites/morph/shadow-pirate-gunner-v1/hit.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 150 },
     },
+    azureGraveWarden: {
+        name: '蒼骨巡墓者', drawH: 48, charH: 160, foot: [192, 270],
+        walk: { src: 'images/sprites/morph/azure-grave-warden-v1/walk.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 130 },
+        attack: { src: 'images/sprites/morph/azure-grave-warden-v1/attack.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 140 },
+        cast: { src: 'images/sprites/morph/azure-grave-warden-v1/cast.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 220 },
+        hit: { src: 'images/sprites/morph/azure-grave-warden-v1/hit.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 150 },
+    },
+    crimsonMoonReaper: {
+        name: '緋月收魂姬', drawH: 48, charH: 160, foot: [192, 270],
+        walk: { src: 'images/sprites/morph/crimson-moon-reaper-v1/walk.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 130 },
+        attack: { src: 'images/sprites/morph/crimson-moon-reaper-v1/attack.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 140 },
+        cast: { src: 'images/sprites/morph/crimson-moon-reaper-v1/cast.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 220 },
+        hit: { src: 'images/sprites/morph/crimson-moon-reaper-v1/hit.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 150 },
+    },
+    voidSoulExecutioner: {
+        name: '虛空斷魂使', drawH: 48, charH: 160, foot: [192, 270],
+        walk: { src: 'images/sprites/morph/void-soul-executioner-v1/walk.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 130 },
+        attack: { src: 'images/sprites/morph/void-soul-executioner-v1/attack.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 140 },
+        cast: { src: 'images/sprites/morph/void-soul-executioner-v1/cast.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 220 },
+        hit: { src: 'images/sprites/morph/void-soul-executioner-v1/hit.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 150 },
+    },
+    underworldEndSovereign: {
+        name: '冥界終焉君主', drawH: 48, charH: 160, foot: [192, 270],
+        walk: { src: 'images/sprites/morph/underworld-end-sovereign-v1/walk.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 130 },
+        attack: { src: 'images/sprites/morph/underworld-end-sovereign-v1/attack.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 140 },
+        cast: { src: 'images/sprites/morph/underworld-end-sovereign-v1/cast.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 220 },
+        hit: { src: 'images/sprites/morph/underworld-end-sovereign-v1/hit.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 150 },
+    },
     abyssGoatEnvoy: {
         name: '深淵羊魔・巴風特使徒', drawH: 48, charH: 160, foot: [192, 270],
         walk: { src: 'images/sprites/morph/abyss-goat-envoy-v1/walk.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 130 },
@@ -222,6 +250,7 @@ function morphLvOk(f) { return MORPH_LV_FREE || morphGmOk() || player.lv >= f.lv
 // 武器限制（2026-10-24 使用者要求，morphWeaponErr）：need＝一定要裝這類武器才能變（弓手系要弓、槍手系要槍）；
 // oneHand＝單手武器系列，拿雙手武器（WEAPON_TYPES 的 two：雙手劍、矛、弓、槍、鋼爪、雙刀、鐮刀）不能變
 const MORPH_GROUPS = {
+    scythe: { name: '鐮刀系', weapon: '鐮刀', fx: t => ({ hit: t.hit, dmg: t.dmg, spdMul: t.spd }) },
     melee:  { name: '近戰通用系', weapon: '近戰武器通用', fx: t => ({ hit: t.hit, dmg: t.dmg, spdMul: t.spd }) },
     bow:    { name: '弓手系', weapon: '弓',     need: ['bow'], fx: (t, k) => ({ hit: t.hit + k, dmg: t.dmg, spdMul: t.spd }) },
     gun:    { name: '槍手系', weapon: '槍',     need: ['gun'], fx: (t, k) => ({ hit: t.hit + k, dmg: t.dmg + 1, spdMul: t.spd - 0.02 }) },
@@ -234,6 +263,10 @@ const MORPH_GROUPS = {
     shield: { name: '劍盾系', weapon: '單手劍＋盾', oneHand: true, fx: (t, k) => ({ hit: t.hit, dmg: t.dmg - 1, ac: [2, 3, 4, 6][k - 1], hp: [40, 80, 120, 200][k - 1], spdMul: t.spd - 0.03 }) },
 };
 const MORPH_FORMS = [
+    ['m33', '蒼骨巡墓者', 'scythe', 'blue', 'azureGraveWarden'],
+    ['m34', '緋月收魂姬', 'scythe', 'red', 'crimsonMoonReaper'],
+    ['m35', '虛空斷魂使', 'scythe', 'purple', 'voidSoulExecutioner'],
+    ['m36', '冥界終焉君主', 'scythe', 'gold', 'underworldEndSovereign'],
     ['m31', '煉獄雷霆魔皇', 'melee', 'gold', 'infernalThunderEmperor'],
     ['m32', '霜獄幽冥魔皇', 'melee', 'gold', 'frostNetherEmperor'],
     ['m01', '巡守妖魔神射', 'bow', 'blue', 'wolfRanger'], ['m02', '月光精靈巡林者', 'bow', 'red', 'moonRanger'], ['m03', '冥火骷髏神射', 'bow', 'purple', 'hellfireArcher'], ['m04', '蒼穹女武神・艾爾', 'bow', 'gold', 'skyValkyrie'],

@@ -7,7 +7,7 @@
 
 const MARKET_FEE = 0.05;
 const MARKET_MAX = 10;
-const MARKET_CATS = [['', '全部'], ['weapon', '武器'], ['armor', '防具'], ['potion', '藥水'], ['scroll', '卷軸'], ['book', '技能書'], ['currency', '通貨'], ['map', '地圖'], ['material', '材料'], ['elixir', '萬能藥'], ['ammo', '彈藥']];
+const MARKET_CATS = [['', '全部'], ['weapon', '武器'], ['armor', '防具'], ['potion', '藥水'], ['scroll', '卷軸'], ['book', '技能書'], ['currency', '通貨'], ['map', '地圖'], ['material', '材料'], ['elixir', '萬能藥'], ['ammo', '彈藥'], ['mercRune', '傭兵符石']];
 
 let marketView = 'buy', marketCat = '', marketQ = '', marketSort = 'new', marketPage = 0;
 let marketRows = null, marketMine = null, marketBusy = false, marketErr = '', marketSellUid = null;
@@ -39,6 +39,11 @@ async function marketRpc(fn, args) {
 function marketTradeable(inst) {
     const d = ITEMS[inst.id];
     return d && d.cat !== 'quest' && d.cat !== 'mercRune' && !(inst.ench > 15);
+}
+// 交易所可上架：傭兵符石只開放交易所買賣（使用者 2026-10-28），共用倉庫／拍賣仍用 marketTradeable 排除
+function marketSellable(inst) {
+    const d = ITEMS[inst.id];
+    return !!d && (marketTradeable(inst) || d.cat === 'mercRune');
 }
 
 function marketRender() { if (typeof currentTab !== 'undefined' && tabOpen('market') && player && !SIM_MODE) renderPanel(); }
@@ -175,7 +180,7 @@ async function marketListItem() {
     const price = Math.floor(Number((document.getElementById('market-price') || {}).value) || 0);
     const n = isStackable(ITEMS[inst.id]) ? clamp(Math.floor(Number((document.getElementById('market-n') || {}).value) || 1), 1, inst.n) : 1;
     if (price < 1 || price > 2e9) { showToast('請輸入 1～20 億的價格'); return; }
-    if (!marketTradeable(inst)) { showToast('這件道具不能交易'); return; }
+    if (!marketSellable(inst)) { showToast('這件道具不能交易'); return; }
     const uid = inst.uid, name = itemName(inst) + (n > 1 ? ' ×' + n : '');
     gameConfirm('上架', `以 💰${fmt(price)} 上架「${name}」？\n成交後收 5% 手續費（${fmt(Math.ceil(price * MARKET_FEE))}），實收 ${fmt(price - Math.ceil(price * MARKET_FEE))}。上架 48 小時，期間可以下架取回。`, async () => {
         marketBusy = true;
@@ -260,7 +265,7 @@ function marketSellHtml() {
             <small class="muted">參考：商店回收價每個 ${fmt(ref)}。成交收 5% 手續費；上架 48 小時，沒賣掉可以在「我的上架」取回。</small>
             <div class="btn-row"><button onclick="marketListItem()" ${marketBusy ? 'disabled' : ''}>上架</button><button class="secondary" onclick="marketPickSell(null)">換一件</button></div></div>`;
     }
-    const list = sortedInv(player.inv).filter(marketTradeable).map(x => `<button class="item-row" onclick="marketPickSell(${x.uid})">
+    const list = sortedInv(player.inv).filter(marketSellable).map(x => `<button class="item-row" onclick="marketPickSell(${x.uid})">
         <span class="item-face">${itemIconHtml(x.id)}<span><span class="${itemClass(x)}">${esc(itemName(x))}</span>${marketBaseLevelText(x) ? `<small>${marketBaseLevelText(x)}</small>` : ''}</span></span><span class="muted">${x.n > 1 ? '×' + fmt(x.n) : ''}</span></button>`).join('');
     return `<div class="panel"><h4>選擇要上架的道具</h4><small class="muted">只能賣背包裡的道具（穿在身上的要先卸下）；任務道具不能交易。同時最多上架 ${MARKET_MAX} 件。</small>
         <div class="list">${list || '<p class="muted">背包裡沒有可以交易的道具。</p>'}</div></div>`;

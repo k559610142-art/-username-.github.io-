@@ -1,0 +1,865 @@
+{
+  "id": "crimson-moon-reaper-v1",
+  "form": "m34",
+  "name": "緋月收魂姬（紅變）",
+  "rows": [
+    "down",
+    "right",
+    "up"
+  ],
+  "left": "mirror right",
+  "cellW": 384,
+  "cellH": 320,
+  "footAnchor": [
+    192,
+    270
+  ],
+  "charH": 160,
+  "drawH": 48,
+  "actions": {
+    "walk": {
+      "src": "images/sprites/morph/crimson-moon-reaper-v1/walk.png",
+      "cellW": 384,
+      "cellH": 320,
+      "frames": {
+        "down": 4,
+        "right": 4,
+        "up": 4
+      },
+      "ms": 130,
+      "cells": [
+        {
+          "direction": "down",
+          "frame": 0,
+          "file": "frames/walk-down-01.png",
+          "source": "down-generated.png",
+          "sourceRect": {
+            "left": 40,
+            "top": 9,
+            "width": 315,
+            "height": 346
+          },
+          "sourceFoot": [
+            182.5,
+            354
+          ],
+          "scale": 0.46511627906976744,
+          "offset": [
+            126,
+            110
+          ],
+          "sha256": "2a770286c7897b849913a32576d36c8c246758a468803a9fd2385025f15bb076"
+        },
+        {
+          "direction": "down",
+          "frame": 1,
+          "file": "frames/walk-down-02.png",
+          "source": "down-generated.png",
+          "sourceRect": {
+            "left": 406,
+            "top": 9,
+            "width": 276,
+            "height": 341
+          },
+          "sourceFoot": [
+            546.5,
+            349
+          ],
+          "scale": 0.46511627906976744,
+          "offset": [
+            127,
+            112
+          ],
+          "sha256": "a793a92e0a06549ffe2be01cef3f528b790d114d2f19779ec52f20afae8289b5"
+        },
+        {
+          "direction": "down",
+          "frame": 2,
+          "file": "frames/walk-down-03.png",
+          "source": "down-generated.png",
+          "sourceRect": {
+            "left": 763,
+            "top": 9,
+            "width": 293,
+            "height": 345
+          },
+          "sourceFoot": [
+            905.5,
+            353
+          ],
+          "scale": 0.46511627906976744,
+          "offset": [
+            126,
+            110
+          ],
+          "sha256": "39bb90fdb8e581e0dceb1a9470519d2e2c2909ba1351e8f4951e371e162ed64c"
+        },
+        {
+          "direction": "down",
+          "frame": 3,
+          "file": "frames/walk-down-04.png",
+          "source": "down-generated.png",
+          "sourceRect": {
+            "left": 1121,
+            "top": 9,
+            "width": 306,
+            "height": 345
+          },
+          "sourceFoot": [
+            1268.5,
+            353
+          ],
+          "scale": 0.46511627906976744,
+          "offset": [
+            123,
+            110
+          ],
+          "sha256": "f3b83e2d425474621aef60c0d6b71cb4b626291e77679293010edaf983436abb"
+        },
+        {
+          "direction": "right",
+          "frame": 0,
+          "file": "frames/walk-right-01.png",
+          "source": "right-generated.png",
+          "sourceRect": {
+            "left": 24,
+            "top": 24,
+            "width": 364,
+            "height": 300
+          },
+          "sourceFoot": [
+            235.5,
+            323
+          ],
+          "scale": 0.5405405405405406,
+          "offset": [
+            78,
+            108
+          ],
+          "sha256": "8131d83d780cd484763a464f8691487c7e15a9be048f39682ac5b314e6f75314"
+        },
+        {
+          "direction": "right",
+          "frame": 1,
+          "file": "frames/walk-right-02.png",
+          "source": "right-generated.png",
+          "sourceRect": {
+            "left": 410,
+            "top": 37,
+            "width": 359,
+            "height": 287
+          },
+          "sourceFoot": [
+            613,
+            323
+          ],
+          "scale": 0.5405405405405406,
+          "offset": [
+            83,
+            116
+          ],
+          "sha256": "06e2e91330d2a3d4d1b43f507ceebe824e53c08d8547b2e16421aee00dc0bb06"
+        },
+        {
+          "direction": "right",
+          "frame": 2,
+          "file": "frames/walk-right-03.png",
+          "source": "right-generated.png",
+          "sourceRect": {
+            "left": 796,
+            "top": 30,
+            "width": 352,
+            "height": 294
+          },
+          "sourceFoot": [
+            993.5,
+            323
+          ],
+          "scale": 0.5405405405405406,
+          "offset": [
+            85,
+            112
+          ],
+          "sha256": "bd42598f81267f21011a0345a441aa6a0a8ce9772b12953798c6b34e1ea7551f"
+        },
+        {
+          "direction": "right",
+          "frame": 3,
+          "file": "frames/walk-right-04.png",
+          "source": "right-generated.png",
+          "sourceRect": {
+            "left": 1175,
+            "top": 27,
+            "width": 349,
+            "height": 297
+          },
+          "sourceFoot": [
+            1380.5,
+            323
+          ],
+          "scale": 0.5405405405405406,
+          "offset": [
+            81,
+            110
+          ],
+          "sha256": "7a82e320933c5d0e6c3c58efac4e158bcba0d594b2a3e4e17e135782739723df"
+        },
+        {
+          "direction": "up",
+          "frame": 0,
+          "file": "frames/walk-up-01.png",
+          "source": "up-generated.png",
+          "sourceRect": {
+            "left": 54,
+            "top": 11,
+            "width": 288,
+            "height": 321
+          },
+          "sourceFoot": [
+            204.5,
+            330
+          ],
+          "scale": 0.48632218844984804,
+          "offset": [
+            120,
+            115
+          ],
+          "sha256": "5c4cb6f01d04ed65f6e291cf980922a9214ac0f351651bad1a3aed899b671603"
+        },
+        {
+          "direction": "up",
+          "frame": 1,
+          "file": "frames/walk-up-02.png",
+          "source": "up-generated.png",
+          "sourceRect": {
+            "left": 402,
+            "top": 7,
+            "width": 317,
+            "height": 331
+          },
+          "sourceFoot": [
+            570.5,
+            337
+          ],
+          "scale": 0.48632218844984804,
+          "offset": [
+            110,
+            110
+          ],
+          "sha256": "00f4e15e1a692310fbcde36c2b28cafcaa1e86dce2124ae8231e1adb1c2e269c"
+        },
+        {
+          "direction": "up",
+          "frame": 2,
+          "file": "frames/walk-up-03.png",
+          "source": "up-generated.png",
+          "sourceRect": {
+            "left": 799,
+            "top": 7,
+            "width": 271,
+            "height": 332
+          },
+          "sourceFoot": [
+            929.5,
+            338
+          ],
+          "scale": 0.48632218844984804,
+          "offset": [
+            129,
+            110
+          ],
+          "sha256": "a821c16606a3a599cd1ac3e754b078fca39759b2a1c8bce3ad2dff6cefea2994"
+        },
+        {
+          "direction": "up",
+          "frame": 3,
+          "file": "frames/walk-up-04.png",
+          "source": "up-generated.png",
+          "sourceRect": {
+            "left": 1158,
+            "top": 8,
+            "width": 315,
+            "height": 332
+          },
+          "sourceFoot": [
+            1299.5,
+            339
+          ],
+          "scale": 0.48632218844984804,
+          "offset": [
+            124,
+            109
+          ],
+          "sha256": "52882a2c3f6fb639262106ac0b35bbcbe3928d7ab5fac9010d58077c9583a6e6"
+        }
+      ]
+    },
+    "attack": {
+      "src": "images/sprites/morph/crimson-moon-reaper-v1/attack.png",
+      "cellW": 384,
+      "cellH": 320,
+      "frames": {
+        "down": 4,
+        "right": 4,
+        "up": 4
+      },
+      "ms": 140,
+      "cells": [
+        {
+          "direction": "down",
+          "frame": 0,
+          "file": "frames/attack-down-01.png",
+          "source": "down-generated.png",
+          "sourceRect": {
+            "left": 20,
+            "top": 347,
+            "width": 315,
+            "height": 358
+          },
+          "sourceFoot": [
+            175,
+            704
+          ],
+          "scale": 0.46511627906976744,
+          "offset": [
+            120,
+            105
+          ],
+          "sha256": "dc89768db9b6b42a3a670f0d073c36c3fd9d063d5e2ba819dea7b553d7619377"
+        },
+        {
+          "direction": "down",
+          "frame": 1,
+          "file": "frames/attack-down-02.png",
+          "source": "down-generated.png",
+          "sourceRect": {
+            "left": 362,
+            "top": 381,
+            "width": 399,
+            "height": 324
+          },
+          "sourceFoot": [
+            543,
+            703
+          ],
+          "scale": 0.46511627906976744,
+          "offset": [
+            108,
+            120
+          ],
+          "sha256": "e0a8765368460a29254e1c60784bacc031a12768fc4e229b6b27fdc25346a2b7"
+        },
+        {
+          "direction": "down",
+          "frame": 2,
+          "file": "frames/attack-down-03.png",
+          "source": "down-generated.png",
+          "sourceRect": {
+            "left": 728,
+            "top": 388,
+            "width": 359,
+            "height": 324
+          },
+          "sourceFoot": [
+            852,
+            711
+          ],
+          "scale": 0.46511627906976744,
+          "offset": [
+            135,
+            120
+          ],
+          "sha256": "82fd987ca2f44c4b1a69583b361e05a066036754cfb2fd5fbb578acf9cd0a34b"
+        },
+        {
+          "direction": "down",
+          "frame": 3,
+          "file": "frames/attack-down-04.png",
+          "source": "down-generated.png",
+          "sourceRect": {
+            "left": 1101,
+            "top": 374,
+            "width": 338,
+            "height": 338
+          },
+          "sourceFoot": [
+            1244.5,
+            711
+          ],
+          "scale": 0.46511627906976744,
+          "offset": [
+            125,
+            114
+          ],
+          "sha256": "b052a2ae0c72529b2ecc0b11daee7494c33c293648995451b5cb3769c17093a8"
+        },
+        {
+          "direction": "right",
+          "frame": 0,
+          "file": "frames/attack-right-01.png",
+          "source": "right-generated.png",
+          "sourceRect": {
+            "left": 21,
+            "top": 346,
+            "width": 329,
+            "height": 314
+          },
+          "sourceFoot": [
+            151.5,
+            658
+          ],
+          "scale": 0.5405405405405406,
+          "offset": [
+            123,
+            102
+          ],
+          "sha256": "7a2abce8f2f0b609f7e81ad67e31ff877a2ff164c82cd9bf524ddc38750d6e56"
+        },
+        {
+          "direction": "right",
+          "frame": 1,
+          "file": "frames/attack-right-02.png",
+          "source": "right-generated.png",
+          "sourceRect": {
+            "left": 370,
+            "top": 403,
+            "width": 492,
+            "height": 252
+          },
+          "sourceFoot": [
+            584,
+            654
+          ],
+          "scale": 0.5405405405405406,
+          "offset": [
+            77,
+            135
+          ],
+          "sha256": "d58321a6e9e9c83b3e3bcee351ddd73824f377e43ed247464e22bb7d030b1a1b"
+        },
+        {
+          "direction": "right",
+          "frame": 2,
+          "file": "frames/attack-right-03.png",
+          "source": "right-generated.png",
+          "sourceRect": {
+            "left": 810,
+            "top": 442,
+            "width": 468,
+            "height": 218
+          },
+          "sourceFoot": [
+            1042.5,
+            655
+          ],
+          "scale": 0.5405405405405406,
+          "offset": [
+            66,
+            155
+          ],
+          "sha256": "c73602758199a30758cfa35b9b8a66d82a873cbdb58fc051a4d2348dd06c1b3d"
+        },
+        {
+          "direction": "right",
+          "frame": 3,
+          "file": "frames/attack-right-04.png",
+          "source": "right-generated.png",
+          "sourceRect": {
+            "left": 1251,
+            "top": 362,
+            "width": 275,
+            "height": 298
+          },
+          "sourceFoot": [
+            1383.5,
+            659
+          ],
+          "scale": 0.5405405405405406,
+          "offset": [
+            120,
+            109
+          ],
+          "sha256": "f5602b21b327691911649d0ac1f6af1fb1c9bb7d4fe1bb9734609671b118c8fc"
+        },
+        {
+          "direction": "up",
+          "frame": 0,
+          "file": "frames/attack-up-01.png",
+          "source": "up-generated.png",
+          "sourceRect": {
+            "left": 55,
+            "top": 338,
+            "width": 262,
+            "height": 330
+          },
+          "sourceFoot": [
+            163.5,
+            665
+          ],
+          "scale": 0.48632218844984804,
+          "offset": [
+            140,
+            111
+          ],
+          "sha256": "b9e53abe82fde9efd6352b0bb2cd389d073548288ff13e757731810c071a6b29"
+        },
+        {
+          "direction": "up",
+          "frame": 1,
+          "file": "frames/attack-up-02.png",
+          "source": "up-generated.png",
+          "sourceRect": {
+            "left": 358,
+            "top": 362,
+            "width": 391,
+            "height": 306
+          },
+          "sourceFoot": [
+            491.5,
+            665
+          ],
+          "scale": 0.48632218844984804,
+          "offset": [
+            127,
+            123
+          ],
+          "sha256": "ecb0af294b0b30b46321d3fef3a7f0e173e61c61b0bc49ee20d81f6224811856"
+        },
+        {
+          "direction": "up",
+          "frame": 2,
+          "file": "frames/attack-up-03.png",
+          "source": "up-generated.png",
+          "sourceRect": {
+            "left": 776,
+            "top": 440,
+            "width": 396,
+            "height": 228
+          },
+          "sourceFoot": [
+            954,
+            666
+          ],
+          "scale": 0.48632218844984804,
+          "offset": [
+            106,
+            160
+          ],
+          "sha256": "d994f1eb841c7920814daaf9bde5e6f9b36f93580916e50278763c67accc49f7"
+        },
+        {
+          "direction": "up",
+          "frame": 3,
+          "file": "frames/attack-up-04.png",
+          "source": "up-generated.png",
+          "sourceRect": {
+            "left": 1179,
+            "top": 432,
+            "width": 356,
+            "height": 238
+          },
+          "sourceFoot": [
+            1350,
+            664
+          ],
+          "scale": 0.48632218844984804,
+          "offset": [
+            109,
+            158
+          ],
+          "sha256": "850bc449bb0c112a4cc7fe089de18496f9f92e1c5ce0cc3fa3489011e093ce4b"
+        }
+      ]
+    },
+    "cast": {
+      "src": "images/sprites/morph/crimson-moon-reaper-v1/cast.png",
+      "cellW": 384,
+      "cellH": 320,
+      "frames": {
+        "down": 2,
+        "right": 2,
+        "up": 2
+      },
+      "ms": 220,
+      "cells": [
+        {
+          "direction": "down",
+          "frame": 0,
+          "file": "frames/cast-down-01.png",
+          "source": "down-generated.png",
+          "sourceRect": {
+            "left": 22,
+            "top": 707,
+            "width": 327,
+            "height": 365
+          },
+          "sourceFoot": [
+            176,
+            1071
+          ],
+          "scale": 0.46511627906976744,
+          "offset": [
+            120,
+            101
+          ],
+          "sha256": "f4d5f52b562e551ab12793ce92717711e46f0d2322a1e04ecf1cc08b7b6f9269"
+        },
+        {
+          "direction": "down",
+          "frame": 1,
+          "file": "frames/cast-down-02.png",
+          "source": "down-generated.png",
+          "sourceRect": {
+            "left": 369,
+            "top": 713,
+            "width": 353,
+            "height": 360
+          },
+          "sourceFoot": [
+            541.5,
+            1073
+          ],
+          "scale": 0.46511627906976744,
+          "offset": [
+            112,
+            103
+          ],
+          "sha256": "601795545f8ed04de608fd5172656a38615fac504cb22da9a235fe024c16a062"
+        },
+        {
+          "direction": "right",
+          "frame": 0,
+          "file": "frames/cast-right-01.png",
+          "source": "right-generated.png",
+          "sourceRect": {
+            "left": 15,
+            "top": 677,
+            "width": 383,
+            "height": 294
+          },
+          "sourceFoot": [
+            189.5,
+            970
+          ],
+          "scale": 0.5405405405405406,
+          "offset": [
+            98,
+            112
+          ],
+          "sha256": "a128d3640cb27310c97e6ddddfd1461fcbf4ba6e1d821449e6156ef0603bd6b5"
+        },
+        {
+          "direction": "right",
+          "frame": 1,
+          "file": "frames/cast-right-02.png",
+          "source": "right-generated.png",
+          "sourceRect": {
+            "left": 370,
+            "top": 716,
+            "width": 476,
+            "height": 254
+          },
+          "sourceFoot": [
+            571,
+            969
+          ],
+          "scale": 0.5405405405405406,
+          "offset": [
+            84,
+            134
+          ],
+          "sha256": "8c0c90eb71f1ba4b418f65ee95d430a03acd451f5c7d95e22a523dc1978f4de7"
+        },
+        {
+          "direction": "up",
+          "frame": 0,
+          "file": "frames/cast-up-01.png",
+          "source": "up-generated.png",
+          "sourceRect": {
+            "left": 28,
+            "top": 673,
+            "width": 308,
+            "height": 336
+          },
+          "sourceFoot": [
+            189.5,
+            1008
+          ],
+          "scale": 0.48632218844984804,
+          "offset": [
+            114,
+            107
+          ],
+          "sha256": "4a5655fd6f6b49bc067ea1e3ecfdde636cfde917d9a41b6bad6da4a43cc60c3a"
+        },
+        {
+          "direction": "up",
+          "frame": 1,
+          "file": "frames/cast-up-02.png",
+          "source": "up-generated.png",
+          "sourceRect": {
+            "left": 412,
+            "top": 673,
+            "width": 331,
+            "height": 337
+          },
+          "sourceFoot": [
+            584,
+            1009
+          ],
+          "scale": 0.48632218844984804,
+          "offset": [
+            108,
+            107
+          ],
+          "sha256": "6502298d141c21f3feafb6faec277d8e161f8ace99556002fe3abe921c12b150"
+        }
+      ]
+    },
+    "hit": {
+      "src": "images/sprites/morph/crimson-moon-reaper-v1/hit.png",
+      "cellW": 384,
+      "cellH": 320,
+      "frames": {
+        "down": 2,
+        "right": 2,
+        "up": 2
+      },
+      "ms": 150,
+      "cells": [
+        {
+          "direction": "down",
+          "frame": 0,
+          "file": "frames/hit-down-01.png",
+          "source": "down-generated.png",
+          "sourceRect": {
+            "left": 740,
+            "top": 726,
+            "width": 326,
+            "height": 340
+          },
+          "sourceFoot": [
+            904.5,
+            1065
+          ],
+          "scale": 0.46511627906976744,
+          "offset": [
+            115,
+            112
+          ],
+          "sha256": "daf644d1148ec546f0d1ab354819be998cb3a2d56de6ab3d66b14e109657d557"
+        },
+        {
+          "direction": "down",
+          "frame": 1,
+          "file": "frames/hit-down-02.png",
+          "source": "down-generated.png",
+          "sourceRect": {
+            "left": 1106,
+            "top": 711,
+            "width": 333,
+            "height": 362
+          },
+          "sourceFoot": [
+            1242.5,
+            1072
+          ],
+          "scale": 0.46511627906976744,
+          "offset": [
+            129,
+            102
+          ],
+          "sha256": "bec8dc7328db25ac99c208499471b346bdd51cdd51f0ed01f794557cc8202dde"
+        },
+        {
+          "direction": "right",
+          "frame": 0,
+          "file": "frames/hit-right-01.png",
+          "source": "right-generated.png",
+          "sourceRect": {
+            "left": 832,
+            "top": 701,
+            "width": 350,
+            "height": 269
+          },
+          "sourceFoot": [
+            1023,
+            968
+          ],
+          "scale": 0.5405405405405406,
+          "offset": [
+            89,
+            126
+          ],
+          "sha256": "1ce1acb655c71a5fc0b48eee1ed4e52799fea2a4af4efb1f6f598a3ade5d6726"
+        },
+        {
+          "direction": "right",
+          "frame": 1,
+          "file": "frames/hit-right-02.png",
+          "source": "right-generated.png",
+          "sourceRect": {
+            "left": 1188,
+            "top": 686,
+            "width": 340,
+            "height": 286
+          },
+          "sourceFoot": [
+            1379.5,
+            970
+          ],
+          "scale": 0.5405405405405406,
+          "offset": [
+            90,
+            117
+          ],
+          "sha256": "7abc3e0d79a300d40c04d724c0746fbf13663e8f1666fb2cf9ff8ec8d32ac4bf"
+        },
+        {
+          "direction": "up",
+          "frame": 0,
+          "file": "frames/hit-up-01.png",
+          "source": "up-generated.png",
+          "sourceRect": {
+            "left": 786,
+            "top": 754,
+            "width": 355,
+            "height": 250
+          },
+          "sourceFoot": [
+            940,
+            1001
+          ],
+          "scale": 0.48632218844984804,
+          "offset": [
+            117,
+            151
+          ],
+          "sha256": "bf5e1867aab414666b4c4d217d8ba92f17a7b49bf7fc88633dffbe6c0fa7769a"
+        },
+        {
+          "direction": "up",
+          "frame": 1,
+          "file": "frames/hit-up-02.png",
+          "source": "up-generated.png",
+          "sourceRect": {
+            "left": 1178,
+            "top": 750,
+            "width": 355,
+            "height": 253
+          },
+          "sourceFoot": [
+            1255,
+            1001
+          ],
+          "scale": 0.48632218844984804,
+          "offset": [
+            155,
+            148
+          ],
+          "sha256": "4c50df7703d40aa4903f3d7fb7adc6c5f5e5765380850b288ed13cfb6ee80612"
+        }
+      ]
+    }
+  }
+}

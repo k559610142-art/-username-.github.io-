@@ -632,7 +632,7 @@ function openItemDialog(uid) {
     if (d.scroll === 'home') btns.push({ text: '使用', onClick: () => { if (!currentZone()) showToast('你已經在村莊裡'); else useHomeScroll(''); } });
     if (d.cat === 'elixir') btns.push({ text: '使用', onClick: () => openElixirDialog() });
     if (d.cat === 'book' && !bookLearnError(d)) btns.push({ text: '📖 學習', onClick: () => learnBook(uid) });   // 魔法書（spellbook.js）
-    if (!slot && isCloudConfigured() && cloudLoggedIn() && inTown() && marketTradeable(inst)) btns.push({ text: '🏪 上架', cls: 'secondary', onClick: () => marketOpenSell(uid) });
+    if (!slot && isCloudConfigured() && cloudLoggedIn() && inTown() && marketSellable(inst)) btns.push({ text: '🏪 上架', cls: 'secondary', onClick: () => marketOpenSell(uid) });
     if (!slot) btns.push({ text: '丟棄', cls: 'danger', onClick: () => gameConfirm('丟棄道具', `確定丟棄 ${itemName(inst)}${inst.n > 1 ? ' ×' + inst.n : ''}？丟掉就找不回來了。`, () => { removeInst(uid); saveGame(); refreshUI(); }, '丟棄') });
     btns.push({ text: '關閉', cls: 'secondary' });
     openDialog(itemName(inst) + (inst.n > 1 ? ` ×${fmt(inst.n)}` : ''), itemDescHtml(inst) + (bagIsStored(inst) ? '<p class="good">已存於專用收納頁，不計背包負重，可直接使用。</p>' : '') + (slot ? '' : compareHtml(inst)), btns);

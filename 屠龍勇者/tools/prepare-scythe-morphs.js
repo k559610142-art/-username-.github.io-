@@ -1,0 +1,4 @@
+const fs=require('fs'),path=require('path'),cp=require('child_process');
+const specs=JSON.parse(fs.readFileSync(path.join(__dirname,'sprite-src/morph/scythe-forms-v1.json'),'utf8'));
+for(const x of specs)cp.execFileSync(process.execPath,[path.join(__dirname,'sprite-src/morph',x.dir,'prepare.js')],{stdio:'inherit'});
+(async()=>{const runtime=path.join(process.env.USERPROFILE,'.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules');const sharp=require(path.join(runtime,'sharp'));const pieces=await Promise.all(specs.map(async(x,i)=>({input:await sharp(path.join(__dirname,'sprite-src/morph',x.dir,'contact.png')).resize(720,570).png().toBuffer(),left:i%2*720,top:Math.floor(i/2)*570})));await sharp({create:{width:1440,height:1140,channels:4,background:'#171914'}}).composite(pieces).png().toFile(path.join(__dirname,'scythe-morphs-contact.png'));console.log('PASS：四款總覽完成');})().catch(e=>{console.error(e);process.exit(1);});

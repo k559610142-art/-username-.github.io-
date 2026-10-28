@@ -1,0 +1,10 @@
+{
+  "tool": "built-in image_gen",
+  "prompt": "Repair ONLY the layout of this 4x3 RIGHT-facing purple void reaper sprite sheet. Preserve twelve poses, original hooded faceless character, purple armor/cape, SAME ONE two-handed long scythe and right-facing direction. Shrink each individual FULL sprite to 65% current size INSIDE its OWN existing cell, centered with consistent feet alignment. Add very large TRANSPARENT gutters on ALL four sides of EVERY sprite; especially column4 scythe currently clipped at right canvas edge, restore complete blade tip and give a visible clear margin. Preserve full shaft, cape, blade, two hands and boots. Remove stray floating particles, retain compact violet action trail. Actual transparent alpha background, no scenery, no grid/borders/labels. Exactly twelve complete distinct figures.",
+  "outputs": [
+    {
+      "direction": "right",
+      "hint": "Generated images are saved to C:\\Users\\User\\.codex\\generated_images\\01a181ea-5149-7790-aa5f-096924f006a1 as C:\\Users\\User\\.codex\\generated_images\\01a181ea-5149-7790-aa5f-096924f006a1\\exec-289e7d72-fb39-4dc9-ab3a-9bb2d738c675.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    }
+  ]
+}
