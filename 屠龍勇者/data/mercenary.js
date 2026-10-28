@@ -395,6 +395,18 @@ function mercCast(id, mon) {
     }
     addLog('⚑ ' + MERC_CLASSES[m.cls].person + '使用「' + s.name + '」', 'sys'); return true;
 }
+function mercAutoPotion(m = mercActive()) {
+    if(!m||m!==mercActive()||SIM_MODE||!player.hunting||inTown()||m.hp<=0||!barHealAuto())return false;
+    const st=mercStats(m),r=mercState(m);
+    if(m.hp>=st.hp||m.hp>=st.hp*player.settings.potionPct/100)return false;
+    if(r.potionAt-gameNow>POTION_CD_MS)r.potionAt=0;
+    if(r.potionAt>gameNow)return false;
+    const id=choosePotion({maxHp:st.hp},m.hp);if(!id||!consumeItem(id))return false;
+    r.potionAt=gameNow+POTION_CD_MS;
+    const before=m.hp;m.hp=Math.min(st.hp,m.hp+rand(...ITEMS[id].heal));
+    addLog('🧪 傭兵飲用'+(ITEMS[id].short||ITEMS[id].name)+'：HP +'+(m.hp-before)+'（扣玩家藥水1瓶）','heal');
+    return true;
+}
 function mercTick(dt) {
     const m = mercActive(); if (!m) return;
     const r = mercState(m), st = mercStats(m);
@@ -407,6 +419,7 @@ function mercTick(dt) {
         if (s.kind === 'hot') player.hp = Math.min(calcStats().maxHp, player.hp + Math.round(st.magic * s.power * st.heal));
     }
     if (!player.hunting) return;
+    mercAutoPotion(m);
     for (const id of mercSkillOrder(m)) {
         const s=MERC_RUNES[id];
         const target=s && mercAttackKind(s.kind) && mon ? [mon,...hunt.mobs.filter(x=>x!==mon)].find(x=>x.hp>0 && mercInRange(x,mercSkillRange(s))) : mon;
@@ -488,7 +501,7 @@ function mercRuneBoardHtml(m, town) {
 }
 function renderMercenary() {
     const m = player.mercenary, c = m && MERC_CLASSES[m.cls], town = mercTownReady();
-    let h = '<div class="panel"><p>六職業共用50種符石，同時只能召喚一名傭兵。在村莊配置與調整出戰，傭兵不可購買。</p><p class="bad">死亡永久失去身上全部裝備與已配置符石；背包物品不受影響。復活保留等級。</p><details><summary>戰鬥與裝備規則</summary><small>不限制武器職業，雙手武器與盾牌互斥。一般掛機生效；離線／團隊副本／世界首領暫不參戰。遠程武器不耗玩家彈藥，裝備共鳴與BOSS附魔暫不觸發。技能優先救命治療、淨化、一般治療與多怪群攻；同類依四格順序，每秒最多一招。近戰1格、弓槍8格、魔法與召喚攻擊4格，障礙物會阻擋。召喚物最多2隻。毒系／冰系指定怪物魔法命中附加中毒6秒／緩速4秒，淨化可解除；毒傷最低保留1HP，回村清除。</small></details></div>';
+    let h = '<div class="panel"><p>六職業共用50種符石，同時只能召喚一名傭兵。在村莊配置與調整出戰，傭兵不可購買。</p><p>出戰掛機時，傭兵沿用玩家快捷欄的自動補血開關與HP門檻，共用背包治癒藥水，每瓶只補傭兵並扣玩家1瓶；各自喝水延遲0.8秒。</p><p class="bad">死亡永久失去身上全部裝備與已配置符石；背包物品不受影響。復活保留等級。</p><details><summary>戰鬥與裝備規則</summary><small>不限制武器職業，雙手武器與盾牌互斥。一般掛機生效；離線／團隊副本／世界首領暫不參戰。遠程武器不耗玩家彈藥，裝備共鳴與BOSS附魔暫不觸發。技能優先救命治療、淨化、一般治療與多怪群攻；同類依四格順序，每秒最多一招。近戰1格、弓槍8格、魔法與召喚攻擊4格，障礙物會阻擋。召喚物最多2隻。毒系／冰系指定怪物魔法命中附加中毒6秒／緩速4秒，淨化可解除；毒傷最低保留1HP，回村清除。</small></details></div>';
     h += mercQuestHtml();
     if (m) {
         const st = mercStats(m);

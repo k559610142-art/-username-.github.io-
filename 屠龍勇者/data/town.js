@@ -73,7 +73,7 @@ function buyItem(id, n) {
     const cost = shopCost(id, n);
     if (!Number.isSafeInteger(cost)) { showToast('購買數量太大'); return; }
     if (player.gold < cost) { showToast('金幣不足'); return; }
-    if (invWeight() + d.wt * n > calcStats().weightMax) { showToast('負重不足，背不動了'); return; }
+    if (!bagCanReceive(id,n)) { showToast('負重不足，背不動了'); return; }
     player.gold -= cost;
     const first = player.inv.length;
     addItem(id, n);
@@ -90,9 +90,9 @@ function shopBuyLimit(id) {
     const d = ITEMS[id];
     if (!d || !inTown() || !shopItemIds().includes(id)) return 0;
     // 以「一單位」（彈藥 100 個）來算，避免小數單價的浮點誤差
-    const weight = invWeight(), maxWeight = calcStats().weightMax, unit = shopUnit(id), price = shopCost(id, unit), wt = d.wt * unit;
+    const weight = invWeight(), maxWeight = calcStats().weightMax, unit = shopUnit(id), price = shopCost(id, unit), wt = bagIncomingWeight(id,unit);
     let n = Math.max(0, Math.min(Math.floor(player.gold / price), Math.floor(Number.MAX_SAFE_INTEGER / price / unit), wt > 0 ? Math.floor((maxWeight - weight) / wt) : Number.MAX_SAFE_INTEGER));
-    if (n > 0 && weight + wt * n > maxWeight) n--;
+    if (wt > 0 && n > 0 && weight + wt * n > maxWeight) n--;
     return n * unit;
 }
 function shopBuyQuantity() {
@@ -142,8 +142,9 @@ function innRest() {
 function moveInst(uid, from, to) {
     const it = removeInst(uid, from);
     if (!it) return;
+    if(to===player.inv)bagPlaceNew(it);else delete it.bagStored;
     const def = ITEMS[it.id];
-    const same = isStackable(def) && to.find(x => x.id === it.id);
+    const same = isStackable(def) && to.find(x => x.id === it.id && bagIsStored(x)===bagIsStored(it));
     if (same) { same.n += it.n; if (it.sellLocked) same.sellLocked = true; } else to.push(it);
 }
 // 依數量搬（合併的列，ui-panels.js groupInv；第 122 節）：一疊只搬 n 個（剩下的留原處）、不可堆疊搬前 n 件
@@ -152,8 +153,9 @@ function moveQty(uid, n, from, to) {
     if (!it) return;
     if (!isStackable(ITEMS[it.id]) || n >= it.n) { moveInst(uid, from, to); return; }
     it.n -= n;
-    const same = to.find(x => x.id === it.id);
-    if (same) { same.n += n; if (it.sellLocked) same.sellLocked = true; } else to.push({ ...it, uid: player.nextUid++, n });
+    const stored=to===player.inv&&!!bagStorageKind(it.id),same=to.find(x=>x.id===it.id&&bagIsStored(x)===stored);
+    if(same){same.n+=n;if(it.sellLocked)same.sellLocked=true;}
+    else {const moved={...it,uid:player.nextUid++,n};if(stored)bagPlaceNew(moved);else delete moved.bagStored;to.push(moved);}
 }
 function moveGroupN(uid, qid, from, to, check) {
     if (!inTown()) return;
@@ -169,8 +171,8 @@ function moveGroupN(uid, qid, from, to, check) {
 function depositN(uid, qid) { moveGroupN(uid, qid, player.inv, player.storage); }
 function withdrawN(uid, qid) {
     moveGroupN(uid, qid, player.storage, player.inv, picks => {
-        const wt = picks.reduce((a, [u, k]) => a + ITEMS[findInv(u, player.storage).id].wt * k, 0);
-        if (invWeight() + wt > calcStats().weightMax) { showToast('負重不足'); return false; }
+        const wt = picks.reduce((a, [u, k]) => a + bagIncomingWeight(findInv(u, player.storage).id,k), 0);
+        if (wt > 0 && invWeight() + wt > calcStats().weightMax) { showToast('負重不足'); return false; }
         return true;
     });
 }

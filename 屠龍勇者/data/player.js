@@ -76,15 +76,18 @@ function addItem(id, n = 1, ench = 0, list = player.inv) {
     const def = ITEMS[id];
     if (!def) return null;
     if (isStackable(def)) {
-        let it = list.find(x => x.id === id);
+        const stored=list===player.inv && !!bagStorageKind(id);
+        let it = list.find(x => x.id === id && bagIsStored(x)===stored);
         if (it) { it.n += n; return it; }
         it = { uid: player.nextUid++, id, n };
+        if(stored)bagPlaceNew(it);
         list.push(it);
         return it;
     }
     let last = null;
     for (let i = 0; i < n; i++) {
         last = { uid: player.nextUid++, id, n: 1, ench };
+        if(list===player.inv)bagPlaceNew(last);
         list.push(last);
     }
     return last;
@@ -97,17 +100,19 @@ function removeInst(uid, list = player.inv) {
 }
 function countItem(id) { return player.inv.reduce((a, x) => a + (x.id === id ? x.n : 0), 0); }
 function consumeItem(id, n = 1) {
-    const it = player.inv.find(x => x.id === id);
-    if (!it || it.n < n) return false;
-    it.n -= n;
-    if (it.n <= 0) removeInst(it.uid);
+    if(!Number.isSafeInteger(n)||n<1||countItem(id)<n)return false;
+    for(const it of player.inv.filter(x=>x.id===id)){
+        const take=Math.min(it.n,n);it.n-=take;n-=take;
+        if(it.n<=0)removeInst(it.uid);
+        if(!n)break;
+    }
     return true;
 }
 function equippedList() { return SLOT_KEYS.concat('doll').map(k => player.equip[k]).filter(Boolean); }
 function findAnyInst(uid) { return findInv(uid) || equippedList().find(x => x.uid === uid) || null; }
 function slotOfEquipped(uid) { return SLOT_KEYS.concat('doll').find(k => player.equip[k] && player.equip[k].uid === uid) || null; }
 function invWeight() {
-    return [...player.inv, ...equippedList()].reduce((a, x) => a + (ITEMS[x.id].wt || 0) * x.n, 0);
+    return [...player.inv.filter(x=>!bagIsStored(x)), ...equippedList()].reduce((a, x) => a + (ITEMS[x.id].wt || 0) * x.n, 0);
 }
 function itemName(inst) {
     const d = ITEMS[inst.id];

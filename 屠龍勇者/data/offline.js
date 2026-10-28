@@ -164,13 +164,13 @@ function offlineGiveDrops(drops, k) {
         for (let c = 0; c < copies; c++) {
             if (r.map) {
                 const id = 'map' + r.map;
-                if (invWeight() + (ITEMS[id].wt || 0) > st.weightMax) { skipped++; continue; }
+                if (!bagCanReceive(id,1,st.weightMax)) { skipped++; continue; }
                 player.inv.push(makeMapItem(r.map, null));
                 got[id] = (got[id] || 0) + 1; names[id] = ITEMS[id].name;
                 continue;
             }
             const d = ITEMS[r.id], n = r.n || 1;
-            if (invWeight() + (d.wt || 0) * n > st.weightMax) { skipped += n; continue; }
+            if (!bagCanReceive(r.id,n,st.weightMax)) { skipped += n; continue; }
             addItem(r.id, n, 0);
             got[r.id] = (got[r.id] || 0) + n; names[r.id] = d.short || d.name;
         }

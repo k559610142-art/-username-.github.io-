@@ -186,7 +186,7 @@ function lootApply(result) {
                 const gold = instSellPrice(it) * it.n; target.gold += gold;
                 messages.push([`🪙 自動賣出 ${itemName(it)} ×${it.n}（+${fmt(gold)}）`, 'loot']); continue;
             }
-            if (invWeight() + (d.wt || 0) * it.n > calcStats().weightMax) { messages.push([`⚠️ 負重已滿，${d.name}撿不起來`, 'warn']); continue; }
+            if (!bagCanReceive(it.id,it.n)) { messages.push([`⚠️ 負重已滿，${d.name}撿不起來`, 'warn']); continue; }
             marketGiveItem(it);
             messages.push([`🎁 獲得 ${itemName(it)} ×${it.n}`, it.q === 'legend' ? 'boss' : it.q ? 'rare' : 'loot']);
         }

@@ -191,6 +191,8 @@ function migrateSave(data) {
     // schema 2：詞綴品質不認得（例如之後刪掉的品質）就當普通裝備
     const fixQ = x => { if (x.q && !QUALITY[x.q]) { delete x.q; delete x.af; delete x.nm; } if (x.af) x.af = x.af.filter(a => affixDef(a.k)); };   // 含特殊詞綴（affix.js SPECIAL_AFFIXES）
     [...p.inv, ...p.storage, ...Object.values(p.equip)].forEach(fixQ);
+    // schema20：背包專用收納位置；舊物品不自動搬移，非法位置旗標清除。
+    bagStorageNormalize(p);
     // schema18：舊角色未雇傭；先清理玩家容器，再驗證傭兵裝備的UID。
     mercNormalize(p);
     // schema19：舊角色任務未接；保留合法進度，活傭兵持有時隱藏並清空任務。

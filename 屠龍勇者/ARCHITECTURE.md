@@ -214,9 +214,12 @@
 
 | `tools/test-boss-dodge-companions.js` | 玩家／傭兵紅圈場景移動、獨立傷害與堵路／無路／手動隔離回歸（第213節） |
 
+| `data/bag-storage.js`、`tools/test-bag-storage.js`、`tools/bag-storage-preview.html` | 五種背包專用收納、位置／重量／自動歸位、固定格位與地圖階級、隔離測試／預覽（第214節） |
+| `tools/test-mercenary-potions.js` | 傭兵共用玩家藥水、開關／門檻／選藥與延遲隔離測試（第215節） |
+
 ## 2. 載入順序與依賴
 
-`config → classes → skills → items → spellbook → monsters → zones → quests → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → pwa → loot → main`
+`config → classes → skills → items → spellbook → monsters → zones → quests → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → bag-storage → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → pwa → loot → main`
 
 - 上層資料檔（config～quests）只在「載入時」用到更前面的檔案；quests 載入時會把獎勵裝備與任務道具寫進 `ITEMS`，所以要在 items 之後。
 - resonance 載入時要改 `ITEMS`（含任務武器）、`MONSTERS` 掉落、`RECIPES`，所以在 quests 之後；`findSkill`（skills.js）在執行期才呼叫它的 `findResonanceSkill`。
@@ -224,11 +227,12 @@
 - mercenary在doll-abilities後、player前載入；載入時新增ITEMS的50種mercRune與CAT_NAMES，依賴items；其餘玩家／詞綴／UI／場景函式只在執行期使用。
 - player 之後的檔案互相呼叫（例如 combat 呼叫 `refreshUI`、town 呼叫 `startHunt`），都發生在執行期，全部載完才會跑，所以沒問題。
 - map-queue.js在ui-frame後、icons前載入，載入時使用TABS／PANEL_FNS註冊分頁；maps／combat／save在執行期呼叫排程函式，main啟動前已全部載入。
+- bag-storage在ui-panels後、codex前載入；載入時只定義分頁常數與函式，物品分類依賴ITEMS／BOSS_ENCHANTS／MERC_RUNES，玩家／掉落／UI在執行期使用。
 - 新檔案依它「載入時」需要的東西插入；只在執行期用到的不影響順序。
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261028g`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261028i`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3859,3 +3863,18 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - bossSkillTick在有效即時場景按雙方實際rx／ry獨立結算，不使用玩家是否躲開決定傭兵是否吃圈；玩家躲開但傭兵在圈內仍受傷，反向亦然。共用原傷害骰值，傭兵走自己的減傷／閃避／盾；玩家附魔吸收盾只保護玩家，不再先扣玩家盾再傳給傭兵。既有護衛／挺身保護的代擋仍照常。背景／離線沿原玩家自動60%／關閉20%及傭兵參戰隔離。
 - GAME_UPDATES加入g；tools/test-boss-dodge-companions.js驗真實sceneUpdate含60fps、雙方出圈後停留／結束恢復、四種圈內外組合、實際座標優先於舊dodged旗標、手動／設定、堵路重找／無路承傷／障礙解除重試及背景／SIM。tools/mercenary-preview.html新增雙方紅圈閃避按鈕與圈內外／HP結算顯示，記憶體角色且禁止連外。
 - 驗證完成：check.ps1 ALL CHECKS PASSED、雙方紅圈新測試（含玩家盾只保護玩家與傭兵全路徑區界）、原邊界／50符石／六項技能／武器射程／26附魔回歸通過；21娃娃及能力回歸僅在記憶體把已知過時schema18預期改為19後通過，原測試檔未改。51檔564KB正式混淆與語法成功、diff檢查通過。瀏覽器PC／手機版實際紅圈從雙方圈內移到圈外，結算玩家10000→10000、傭兵632→632，Console無error／warn；實拍tools/boss-dodge-companions-pc.png及-mobile.png。未操作正式角色／後端；待使用者刷新g實玩確認後提交。
+
+## 214. POE式背包專用收納頁（2026-10-28，版本 `20261028h`，schema20）
+
+- 使用者確認新增獨立收納位置，收納後零負重；五類為9製作通貨、T1～T15異界／財寶地圖、6衝裝卷軸、26個BOSS附魔材料（含永夜之魂）、50傭兵符石。一般藥水、回家／瞬移卷、普通材料／魔法結晶及封魂石不納入。全部圖示沿用原創素材，參考分類與固定格位，未複製POE商業圖片。
+- 使用者進一步選擇收納物可直接鍛造／衝裝／配置／開圖，且新取得同類物品自動歸位。以道具實體bagStored:true記錄獨立位置，同一UID仍只在原player.inv保存一份，背包清單排除已收納者；保留所有舊功能對相同UID的操作與雲端簽章容器，避免額外複製或扣兩份物品，不改SQL／guardSaveCanon。invWeight只計未收納與已穿裝備；存檔schema19→20，migrateSave呼叫bagStorageNormalize，保留合法旗標、清除不適用物品與NPC倉庫／裝備上的旗標，舊物品不自動移動／不重置，可一鍵收納。
+- 新data/bag-storage.js在ui-panels後、codex前載入：BAG_STASH_PAGES、暫存bagStashPage／bagStashTier／bagStashQuality；bagStorageKind／bagIsStored／bagPlaceNew／bagIncomingWeight／bagCanReceive／bagStorageNormalize處理分類與位置；bagSetPage／bagStoreAll／bagStore／bagChooseWithdraw／bagWithdraw／bagSetTier／bagSetQuality／bagOpenStored／bagStashSlot／bagStorageHtml處理介面及搬移。取回可選數量且先檢查負重／整數／現有數量，保留鎖定，分疊分配新UID；部分取回不與不同鎖定／位置混成一疊；整理背包沿原規則合併同位置並以防賣鎖優先保護。
+- addItem及makeMapItem自動歸位；consumeItem先驗總量再跨背包／收納疊原子扣除，缺料不扣；bagTidy只合併相同位置。marketGiveItem不複製來源位置旗標，收貨依本端分類歸位；傳統NPC倉庫搬入清旗標、取出重分配，保留原鎖定。combat／loot收據／offline／town購買負重入口使用bagCanReceive與bagIncomingWeight，收納物即使背包已超重仍可入帳；非收納物仍受原重量限制。自動販賣與各NPC既有操作保持原流程，可直接操作收納物。
+- 通貨／卷軸／材料固定圖示格＋總量，0數量保留暗格；符石按六系排列；地圖先T1～T15再品質，按mapKindKey＋鎖定分組，詞綴／未鑑定／品質／UID不變，點開確實的首張。多疊同種物品提供明細選擇，不把鎖定混掉。手機一般3欄、地圖2欄，頁籤可換行。
+- tools/test-bag-storage.js驗五類白名單／新物零重／全量與部分搬移無複製／跨位置扣料原子性／整理／舊檔與加密／地圖與直接衝裝符石排程；tools/bag-storage-preview.html純記憶體角色與禁止連外，用正式背包渲染。驗證：新收納測試（含正式收據超重入帳／重送／寫檔失敗回復與NPC部分搬移）、新傭兵藥水／原50符石／六項技能／財寶／收據／商店／離線／26附魔／射程／NPC回收通過。舊排程schema15及指定回收schema12預期僅記憶體改20後通過，原檔不變。check.ps1 ALL CHECKS PASSED、git diff --check、52檔570KB正式混淆及語法通過。PC一鍵收納負重433→213、取回17張卷軸使收納220→203／負重213→230；375px三欄通貨、二欄地圖、50符石／26材料正常、無橫溢出、缺圖0、Console無error／warn。實拍tools/bag-storage-pc.png、-mobile.png、-maps-pc.png、-maps-mobile.png。未操作正式角色／後端，使用者刷新i實玩確認後提交。
+
+## 215. 傭兵共用玩家補血藥水（2026-10-28，版本 `20261028i`，schema20不變）
+
+- 使用者指定喝水扣玩家現有藥水，並選沿用玩家自動補血開關／HP百分比門檻／藥水種類。新增mercAutoPotion，正式出戰掛機、非村莊／死亡／待命／SIM時，HP低於玩家settings.potionPct且快捷欄barHealAuto開啟才喝；沿用choosePotion依傭兵缺血量選現有治癒藥水。choosePotion新增可選hp參數，原玩家行為不變。
+- 每次consumeItem(id,1)成功後只回復傭兵，最高不超過mercStats.hp，不套玩家娃娃藥水加成，不新增藥水或MP恢復；紀錄明示傭兵喝水與扣1瓶。玩家autoSupport在戰鬥先執行，共用最後一瓶不重複使用。各自遵守POTION_CD_MS=800ms，傭兵potionAt放既有mercRuntime WeakMap，不寫存檔；不改玩家potReadyAt，超過一次長度的冷卻會校正，SIM／離線／團戰沿原傭兵隔離。
+- 傭兵管理說明與設定HP門檻標籤同步，GAME_UPDATES加入i並保留h收納。tools/test-mercenary-potions.js驗正式mercTick、只補傭兵／扣玩家一瓶、門檻與種類、800ms、最後一瓶及各隔離；tools/mercenary-preview.html新增共用藥水測試按鈕與前後數量／雙方HP。驗證：新藥水測試、原玩家喝水延遲及瞬移補血、原傭兵與六項技能回歸通過。PC正式共用藥水30→29、傭兵HP158→174、玩家10000→10000；375px手機29→28、傭兵158→176、玩家不變，Console無error／warn；實拍tools/mercenary-potions-pc.png及-mobile.png。i版check.ps1與52檔570KB混淆通過。待使用者刷新i→自動補血開啟→傭兵受傷低於設定門檻→確認補血並扣玩家藥水，確認後提交。

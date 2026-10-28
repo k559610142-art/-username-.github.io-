@@ -61,7 +61,7 @@ function setMapQuality(x, q, mods) {
     return x;
 }
 function makeMapItem(t, q) {
-    const x = { uid: player.nextUid++, id: 'map' + clamp(t, 1, MAP_TIERS), n: 1, ench: 0 };
+    const x = bagPlaceNew({ uid: player.nextUid++, id: 'map' + clamp(t, 1, MAP_TIERS), n: 1, ench: 0 });
     if (q === 'legend' && ITEMS[x.id].tier < 8) q = null;
     if (q === 'legend' || (q === undefined && ITEMS[x.id].tier >= 8 && chance(TREASURE_MAP_DROP_P))) { x.q = 'legend'; x.unidentified = true; return x; }
     if (q === undefined) { const r = Math.random(); q = r < 0.5 ? null : r < 0.85 ? 'magic' : 'rare'; }

@@ -150,10 +150,10 @@ function healPotionIds() { return Object.keys(ITEMS).filter(id => ITEMS[id].heal
 function healPotionCount() { return healPotionIds().reduce((a, id) => a + countItem(id), 0); }
 
 // 選「回復量不超過缺血量」裡最大的；都太大就用最小的
-function choosePotion(st) {
+function choosePotion(st, hp = player.hp) {
     const ids = healPotionIds().sort((a, b) => ITEMS[a].heal[1] - ITEMS[b].heal[1]);
     if (!ids.length) return null;
-    const missing = st.maxHp - player.hp;
+    const missing = st.maxHp - hp;
     let pick = ids[0];
     for (const id of ids) if ((ITEMS[id].heal[0] + ITEMS[id].heal[1]) / 2 <= missing) pick = id;
     return pick;
@@ -841,7 +841,7 @@ function rollDrops(mon, z, raid = false) {
             addLootLog(`🪙 自動賣出 ${saleItem.q ? `【${QUALITY[saleItem.q].name}】` : ''}${itemName(saleItem)} ×${n}（+${fmt(g)}）`, 'loot');
             return;
         }
-        if (invWeight() + d.wt * n > st.weightMax) { addLog(`⚠️ 負重已滿，${d.name}撿不起來`, 'warn'); return; }
+        if (!bagCanReceive(id,n,st.weightMax)) { addLog(`⚠️ 負重已滿，${d.name}撿不起來`, 'warn'); return; }
         const inst = addItem(id, n);
         if (rolled && inst) for (const k of ['q', 'af', 'il', 'nm']) if (rolled[k] != null) inst[k] = rolled[k];
         if (SIM_MODE && offlineDrops && inst) offlineDrops.push({ id, n, q: inst.q || null });   // 離線模擬：記下掉落（offline.js，第 108 節）

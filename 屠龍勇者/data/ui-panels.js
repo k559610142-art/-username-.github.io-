@@ -450,9 +450,11 @@ function renderBag() {
     const st = calcStats(), w = invWeight();
     let h = `<div class="panel">${bar(w, st.weightMax, 'wt', `負重 ${Math.floor(w)} / ${st.weightMax}`)}
         <small class="muted">超過 50% 不會自然回復；點道具可裝備、使用或衝裝。</small></div>`;
+    h+='<div class="bag-page-tabs">'+[['bag','背包'],...BAG_STASH_PAGES].map(([id,n])=>'<button class="chip-btn '+(bagStashPage===id?'active':'')+'" onclick="bagSetPage(\''+id+'\')">'+n+'</button>').join('')+'</div><div class="btn-row"><button class="secondary mini" onclick="bagStoreAll()">一鍵收納</button><small class="muted">新取得的同類物品自動歸位，可直接使用。</small></div>';
+    if(bagStashPage!=='bag')return h+bagStorageHtml();
     h += `<div class="chips">${BAG_FILTERS.map(([id, n]) => `<button class="chip-btn ${bagFilter === id ? 'active' : ''}" onclick="setBagFilter('${id}')">${n}</button>`).join('')}</div>`;
     h += `<div class="btn-row"><button class="secondary mini" onclick="bagTidy()">🧹 整理背包</button></div>`;
-    const list = player.inv.filter(x => bagMatch(ITEMS[x.id]));   // 照背包實際順序（新撿的在最後），按「整理」才排列
+    const list = player.inv.filter(x => !bagIsStored(x)&&bagMatch(ITEMS[x.id]));   // 收納與背包是不同位置，保留同一物品UID。
     // 相同的異界地圖疊成一列（maps.js mapKindKey），點開的是第一張
     const rows = [], mapRow = {};
     for (const x of list) {
@@ -478,7 +480,7 @@ function bagTidy() {
     // 合併相同的可堆疊道具
     const merged = [];
     for (const x of player.inv) {
-        const same = isStackable(ITEMS[x.id]) && merged.find(y => y.id === x.id && (y.ench || 0) === (x.ench || 0));
+        const same = isStackable(ITEMS[x.id]) && merged.find(y => y.id === x.id && (y.ench || 0) === (x.ench || 0) && bagIsStored(y)===bagIsStored(x));
         if (same) { same.n += x.n; if (x.sellLocked) same.sellLocked = true; } else merged.push(x);
     }
     merged.sort((a, b) => {
@@ -612,6 +614,7 @@ function openItemDialog(uid) {
     const inst = findAnyInst(uid);
     if (!inst) return;
     const d = ITEMS[inst.id], slot = slotOfEquipped(uid), btns = [];
+    if(!slot&&bagStorageKind(inst.id))btns.push(bagIsStored(inst)?{text:'取回背包',cls:'secondary',onClick:()=>bagChooseWithdraw(uid)}:{text:'移入收納頁',cls:'secondary',onClick:()=>bagStore(uid)});
     if (d.cat === 'weapon' || d.cat === 'armor' || d.cat === 'doll') {
         btns.push(slot
             ? { text: '卸下', onClick: () => { unequipSlot(slot); saveGame(); refreshUI(); } }
@@ -632,7 +635,7 @@ function openItemDialog(uid) {
     if (!slot && isCloudConfigured() && cloudLoggedIn() && inTown() && marketTradeable(inst)) btns.push({ text: '🏪 上架', cls: 'secondary', onClick: () => marketOpenSell(uid) });
     if (!slot) btns.push({ text: '丟棄', cls: 'danger', onClick: () => gameConfirm('丟棄道具', `確定丟棄 ${itemName(inst)}${inst.n > 1 ? ' ×' + inst.n : ''}？丟掉就找不回來了。`, () => { removeInst(uid); saveGame(); refreshUI(); }, '丟棄') });
     btns.push({ text: '關閉', cls: 'secondary' });
-    openDialog(itemName(inst) + (inst.n > 1 ? ` ×${fmt(inst.n)}` : ''), itemDescHtml(inst) + (slot ? '' : compareHtml(inst)), btns);
+    openDialog(itemName(inst) + (inst.n > 1 ? ` ×${fmt(inst.n)}` : ''), itemDescHtml(inst) + (bagIsStored(inst) ? '<p class="good">已存於專用收納頁，不計背包負重，可直接使用。</p>' : '') + (slot ? '' : compareHtml(inst)), btns);
 }
 
 function openEnchantPicker(scrollUid) {
@@ -1045,7 +1048,7 @@ function renderSettings() {
         ${worldVfxSettingsHtml()}
         <div class="panel"><h4>💊 自動補給</h4>
             <small class="muted">要不要自動喝藥水、自動用瞬移卷軸，改在快捷欄：把道具放進格子、<b>往下拉</b>開啟自動（暖黃光框）。</small>
-            ${num('potionPct', 'HP 低於 % 喝治癒藥水', 5, 95)}
+            ${num('potionPct', '玩家／傭兵 HP 低於 % 喝治癒藥水', 5, 95)}
             ${num('healPct', 'HP 低於 % 施放治癒魔法', 5, 95)}
             ${chk('autoDodge', '首領大招自動閃避（走出紅圈）')}
         </div>
