@@ -5,6 +5,8 @@
 
 ## 1. 現況
 
+- **20261028l（含k）：傭兵攻防與底部狀態（第217～218節）**。使用者選裝備為主，六職業等級攻防改小幅成長，Lv49空裝契靈師18物攻／27魔攻／5防禦／19魔防，HPMP維持；魔杖強化補魔攻，管理頁新增基礎／裝備／增益明細。使用者明確選技能圖示、召喚剩餘秒數與增益文字全移底部HPMP下方，地圖不留原狀態列及黑塊，寵物與特效保留，技能冷卻／增益秒數沿e隱藏。schema20／SQL不變。新攻防／狀態測試、原傭兵／技能／72格召喚圖集／共用藥水／首領閃避回歸通過；check.ps1 ALL CHECKS PASSED、diff檢查及52檔571KB正式混淆語法通過，臨時驗證副本已刪。PC／375px手機實際顯示圖示、靈狼17秒及兩項增益，HPMP分開、地圖無黑塊，Console無error／warn；實拍tools/mercenary-stats-pc.png、mercenary-status-pc.png及-mobile.png。待使用者刷新l→傭兵出戰施法→檢查底部三類狀態／地圖腳下無黑塊→管理攻防來源看空裝與裝備數值，確認後才commit；未commit／推送。
+
 - **20261028j：資料夾清理（第216節）**。使用者要求照建議全部清：tools/.verify-* 8 份副本（2.8 GB）丟回收筒；git 刪舊野外／村莊／塔地圖、黑暗妖精 v2～v5、boss-enchants、frame-pc-slim、塔傳送師圖、character-status-v1、AI_HANDOFF.min.md；images/sprites 的 frames／preview／contact 約 100 MB 搬到 tools/sprite-src/…/build/（娃娃 walk-down-02 與 manifest.json 留原處）；sw.js 不預載舊村莊圖。test-dwarf-morph／test-crimson-assassin-morph 有既有的遊戲邏輯斷言失敗（與清理無關，待修）。**驗證副本用完就刪。**
 
 - **20261028i：傭兵共用玩家補血藥水（第215節）**。使用者選沿玩家快捷自動補血開關／HP百分比門檻／選藥，共用實際背包存量，每喝一瓶只補傭兵、扣玩家一瓶；各自800ms，玩家先補，SIM／待命／死亡／停掛／村莊不耗。runtime短期冷卻，不另改schema20；保留h背包收納。新藥水／收納與原傭兵／玩家延遲／瞬移補血通過。PC實際藥水30→29、傭兵HP158→174、玩家HP不變；375px手機29→28、傭兵158→176，Console無error／warn。實拍tools/mercenary-potions-pc.png及-mobile.png。check.ps1 ALL CHECKS PASSED、52檔570KB混淆／語法及diff通過；待刷新i→開玩家自動補血→傭兵HP低於門檻→確認扣同一背包藥水、只補傭兵，實玩確認後提交。

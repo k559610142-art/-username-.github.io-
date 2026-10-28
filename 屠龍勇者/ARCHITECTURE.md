@@ -215,6 +215,7 @@
 | `tools/test-boss-dodge-companions.js` | 玩家／傭兵紅圈場景移動、獨立傷害與堵路／無路／手動隔離回歸（第213節） |
 
 | `data/bag-storage.js`、`tools/test-bag-storage.js`、`tools/bag-storage-preview.html` | 五種背包專用收納、位置／重量／自動歸位、固定格位與地圖階級、隔離測試／預覽（第214節） |
+| `tools/test-mercenary-stats.js`、`tools/mercenary-stats-pc.png`、`tools/mercenary-status-pc.png`、`tools/mercenary-status-mobile.png` | 傭兵攻防來源／裝備與底部狀態隔離驗證（第217～218節） |
 | `tools/test-mercenary-potions.js` | 傭兵共用玩家藥水、開關／門檻／選藥與延遲隔離測試（第215節） |
 
 ## 2. 載入順序與依賴
@@ -232,7 +233,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261028j`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261028l`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3890,3 +3891,17 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
   - 留在原處：娃娃 `dolls/companions-v1/*/frames/walk-down-02.png`（`items.js` 拿來當道具圖）、所有 `manifest.json`／`*-manifest.json`（`tools/test-*-morph.js` 與預覽頁會讀）。
   - `tools/test-mercenary-models.js` 改讀 `tools/sprite-src/mercenary/companions-v1/<id>/build/frames`。重跑 `prepare-mercenary-models.js` 等製作腳本仍會把影格寫回 `images/sprites`，跑完要再搬到 `build/`。
 - 驗證：check.ps1 通過；傭兵模型、hellfire、windwood 測試通過；`test-dwarf-morph`／`test-crimson-assassin-morph` 在遊戲邏輯斷言（數量 20≠5／19）失敗，發生在讀圖之前、與清理無關，是既有的過時測試。瀏覽器抓遍所有程式提到的 316 個圖檔網址，只有上述被覆蓋的舊字面值不存在，實際 `SCENE_BGS` 都指向新圖，無 404。
+
+## 217. 傭兵攻防改以裝備為主（2026-10-28，版本 `20261028k`）
+
+- 使用者確認等級僅小幅增加攻防。mercStats的基礎物攻＝職業物攻＋floor((Lv−1)/5)、魔攻＝職業魔攻＋floor((Lv−1)/4)、防禦＝職業防禦＋floor((Lv−1)/10)、魔防＝10＋floor((Lv−1)/5)。Lv49空裝契靈師物攻18／魔攻27／防禦5／魔防19；HP／MP成長維持。
+- 武器平均傷害／強化／裝備詞綴與增益另外加總；魔杖每強化1額外增加1魔攻。mercStats新增base／gear／buffs來源資料；頂層mercStatsHtml在管理頁提供可展開來源表，實際戰鬥沿用同一公式。schema20／SQL／script順序不變。
+- test-mercenary-stats驗六職業五等級空裝、Lv49數值、武器／魔杖／防具／強化／增益、實際傷害及卸裝。黑塊是Canvas繼承符石黑底色造成的增益文字，後續l版把整列改由DOM顯示。
+
+## 218. 傭兵狀態移到底部（2026-10-28，版本 `20261028l`）
+
+- 使用者確認技能圖示、召喚剩餘時間、增益文字全部移到傭兵HP／MP下方。新增#merc-status、merc-hud-runes／icon／text及頂層mercHudHtml；renderStatus每250ms用setHtmlStable更新。PC左320s、頂端接HP／MP底部270s；手機左90s、接530s底部，狀態往下排，避免長文字向上蓋住血魔。
+- sceneDrawMercEffects移除符石列／增益負面文字及寵物名稱倒數，保留召喚寵物與技能特效。底部顯示已配置圖示、有效召喚倒數、有效增益／護盾值與負面名稱；無出戰傭兵隱藏。維持e版不顯示技能冷卻秒數／增益秒數；管理頁原計時維持。
+- 隔離預覽新增49級空裝／增益／召喚狀態入口；test-mercenary-stats與test-mercenary-summon-art驗地圖無殘留文字、底部圖示／召喚秒數／增益／護盾與過期隱藏。schema20／SQL／script順序不變。
+
+- l版驗證：check.ps1 ALL CHECKS PASSED，攻防／HUD與原傭兵／技能／召喚圖集／共用藥水／雙方閃避測試通過；52檔571KB正式混淆語法通過、臨時副本已清除。PC與375px手機確認血魔下方顯示三類狀態、地圖無殘留黑塊，Console無error／warn；實拍tools/mercenary-stats-pc.png與mercenary-status-pc.png／-mobile.png。待使用者實玩驗收再提交。

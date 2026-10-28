@@ -44,6 +44,8 @@ function bar(cur, max, cls, label) {
 function renderStatus() {
     if (!player || SIM_MODE || !$('hud-stats')) return;
     mercUpdateLive();
+    const mercStatus=$('merc-status'),mercStatusHtml=mercHudHtml();
+    if(mercStatus){mercStatus.hidden=!mercStatusHtml;setHtmlStable(mercStatus,mercStatusHtml);}
     const mercVitals = $('merc-vitals'), merc = player.mercenary;
     if (mercVitals) {
         mercVitals.hidden = !merc;

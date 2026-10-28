@@ -25,13 +25,13 @@ const ctx=new Function('require','__dirname',prefix+'\nreturn ctx;')(require,__d
  const overview=createCanvas(1080,900);ctx.paint=overview.getContext('2d');
  vm.runInContext(`paint.fillStyle='#18212b';paint.fillRect(0,0,1080,900);Object.keys(MERC_SUMMON_ART).forEach((id,i)=>{const x=180+i%3*360,y=190+Math.floor(i/3)*300;paint.fillStyle='#253443';paint.fillRect(x-173,y-180,346,284);for(const [j,acting]of [false,true].entries()){paint.save();paint.translate(x-82+j*164,y);paint.scale(2.4,2.4);mercDrawSummon(paint,id,0,0,280,acting,0);paint.restore();}paint.fillStyle='#f6e2b9';paint.font='24px PreviewCJK';paint.textAlign='center';paint.fillText(MERC_RUNES[id].name.replace('契約',''),x,y+48);paint.fillStyle='#b6cbd8';paint.font='16px PreviewCJK';paint.fillText('行走／振翅      攻擊／施法',x,y+79);});`,ctx);
  fs.writeFileSync(path.join(__dirname,'sprite-src/mercenary/summons-v1/overview.png'),overview.toBuffer('image/png'));ctx.paint=g;
- // 地圖狀態不能畫出冷卻秒數；仍畫出技能圖示、名稱與盾值。
+ // 地圖不再繪狀態；底部保留圖示、名稱與盾值，隱藏技能冷卻。
  ctx.assert=assert;vm.runInContext(`
  SIM_MODE=false;createPlayer('隔離','knight',CLASSES.knight.base);player.loc={type:'zone',id:'island'};
  const m=player.mercenary={cls:'spirit',lv:30,exp:0,hp:100,mp:100,active:true,dead:false,equip:{},skills:['shield','might','',''],cds:{shield:gameNow+10000}};
  const r=mercState(m);r.buffs.shield={until:gameNow+5000,power:42};r.buffs.might={until:gameNow+4000,power:3};
  scene={mons:[]};const labels=[],g=paint,old=g.fillText;g.fillText=(s,...args)=>{labels.push(String(s));old.call(g,s,...args);};sceneDrawMercEffects(g,0,0,m,{rx:1,ry:1});g.fillText=old;
- assert(labels.some(s=>s.includes('盾42')));assert(labels.some(s=>s.includes('力量祝福')));assert(!labels.some(s=>/秒|^10$|^5$|^4$/.test(s)));
+ assert(!labels.some(s=>/盾42|力量祝福|秒/.test(s)));const hud=mercHudHtml();assert(hud.includes('盾42'));assert(hud.includes('力量祝福'));assert(hud.includes('merc-hud-icon'));assert(!hud.includes('秒'));
  `,ctx);
  console.log('PASS：9圖集／72格透明與唯一性、正式行走／施法／左向繪圖、傭兵地圖隱藏秒數。');
 })().catch(e=>{console.error(e);process.exit(1);});

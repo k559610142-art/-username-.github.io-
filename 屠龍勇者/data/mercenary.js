@@ -240,6 +240,14 @@ function mercUpdateLive() {
         for (const el of document.querySelectorAll('[data-merc-rune-live="'+i+'"]')) el.textContent=(sec ? '冷卻 '+sec+' 秒' : '技能就緒')+(b && b.until>gameNow ? ' · 生效 '+Math.ceil((b.until-gameNow)/1000)+' 秒' : '');
     }
 }
+function mercHudHtml() {
+    const m=mercActive();if(!m)return '';
+    const r=mercState(m),icons=m.skills.filter(id=>MERC_RUNES[id]).map(id=>'<img class="merc-hud-icon" src="images/icons/items/mercRune-v1/'+id+'.png?v=1" alt="'+esc(MERC_RUNES[id].name)+'" title="'+esc(MERC_RUNES[id].name)+'">').join('');
+    const parts=r.summons.filter(s=>s.until>gameNow).map(s=>MERC_RUNES[s.id].name.replace('契約','')+' '+Math.ceil((s.until-gameNow)/1000)+'秒');
+    for(const [id,b]of Object.entries(r.buffs))if(b.until>gameNow)parts.push((MERC_RUNES[id]?MERC_RUNES[id].name:b.name||id)+(['shield','fortify','barrier'].includes(id)?' 盾'+Math.ceil(b.power):''));
+    for(const b of Object.values(mercNegative(m)))parts.push(b.name);
+    return (icons?'<div class="merc-hud-runes">'+icons+'</div>':'')+(parts.length?'<div class="merc-hud-text">'+esc(parts.join(' · '))+'</div>':'');
+}
 function mercStats(m = player.mercenary) {
     const c = MERC_CLASSES[m.cls], fx = {}, w = m.equip.weapon, d = w && ITEMS[w.id];
     for (const slot of MERC_SLOTS) {
@@ -248,10 +256,13 @@ function mercStats(m = player.mercenary) {
         addFx(fx, affixFx(it));
         if (slot !== 'weapon') { addFx(fx, def); fx.ac = (fx.ac || 0) + (it.ench || 0); }
     }
+    const lv=m.lv-1;
+    const base={atk:c.atk+Math.floor(lv/5),magic:c.magic+Math.floor(lv/4),def:c.def+Math.floor(lv/10),mr:10+Math.floor(lv/5)};
+    const gear={atk:(d?(d.dmg[0]+d.dmg[1])/2+(w.ench||0):0)+(fx.dmg||0),magic:((fx.sp||0)+((d&&d.sp)||0))*3+(d&&d.type==='staff'?(w.ench||0):0),def:fx.ac||0,mr:fx.mr||0};
+    const buffs={atk:mercBuff('might',m),magic:0,def:mercBuff('iron',m),mr:mercBuff('ward',m)};
     return { hp: c.hp + (m.lv - 1) * 18 + (fx.hp || 0), mp: c.mp + (m.lv - 1) * 8 + (fx.mp || 0),
-        atk: c.atk + m.lv * 2 + (d ? (d.dmg[0] + d.dmg[1]) / 2 + (w.ench || 0) : 0) + (fx.dmg || 0) + mercBuff('might', m),
-        magic: c.magic + m.lv * 2 + (fx.sp || 0) * 3 + ((d && d.sp) || 0) * 3,
-        def: c.def + m.lv + (fx.ac || 0) + mercBuff('iron', m), mr: 10 + m.lv + (fx.mr || 0) + mercBuff('ward', m),
+        atk:base.atk+gear.atk+buffs.atk,magic:base.magic+gear.magic,
+        def:base.def+gear.def+buffs.def,mr:base.mr+gear.mr+buffs.mr,base,gear,buffs,
         regen: c.regen, dodge: Math.min(.5, (m.cls === 'wild' ? .08 : 0) + (fx.dodge || 0) + mercBuff('evasion', m)),
         heal: m.cls === 'wish' ? 1.2 : 1, speed: (d ? WEAPON_TYPES[d.type].spd : 1200) / (1 + (fx.spdMul || 0) + mercBuff('haste', m)) * mercSlowFactor(m) };
 }
@@ -499,6 +510,9 @@ function mercRuneBoardHtml(m, town) {
         return '<article class="merc-socket-card ' + (rune ? 'filled rune-' + rune.group : 'vacant') + '"><span class="merc-socket-number">' + ['Ⅰ','Ⅱ','Ⅲ','Ⅳ'][i] + '</span><button type="button" class="merc-socket" onclick="mercPickRune(' + i + ')" aria-label="第' + (i + 1) + '格：' + esc(name) + '，' + (rune ? '替換符石' : '選擇符石') + '" ' + (locked ? 'disabled' : '') + '><span class="merc-socket-rim" aria-hidden="true">' + (rune ? '<img class="merc-rune-art" src="images/icons/items/mercRune-v1/' + id + '.png?v=1" alt="" draggable="false">' : '<span class="merc-socket-empty">＋</span>') + '</span></button><b class="merc-socket-name">' + esc(name) + '</b><small class="merc-socket-type">' + (rune ? MERC_GROUPS[rune.group] + '系・已鑲嵌' : '尚未鑲嵌') + '</small>' + (rune ? '<small data-merc-rune-live="' + i + '" class="merc-socket-cost">' + (m.dead ? '陣亡' : '技能就緒') + '</small><small class="merc-socket-cost">MP ' + rune.mp + ' · 冷卻 ' + rune.cd + ' 秒</small><details class="merc-rune-detail"><summary>效果說明</summary><small>' + esc(mercRuneText(id)) + '</small></details><button type="button" class="merc-rune-remove" onclick="mercSetRune(' + i + ',\'\')" ' + (locked ? 'disabled' : '') + '>拆回背包</button>' : '<small class="merc-socket-help">點擊上方孔位放入技能</small>') + '</article>';
     }).join('') + '</div></section>';
 }
+function mercStatsHtml(st) {
+    return '<details class="panel"><summary>攻防來源（基礎＋裝備＋增益）</summary><table style="width:100%;text-align:center;font-size:12px"><thead><tr><th>能力</th><th>基礎</th><th>裝備</th><th>增益</th><th>合計</th></tr></thead><tbody>'+[['atk','物攻'],['magic','魔攻'],['def','防禦'],['mr','魔防']].map(([k,n])=>'<tr><th>'+n+'</th><td>'+Math.round(st.base[k])+'</td><td>'+Math.round(st.gear[k])+'</td><td>'+Math.round(st.buffs[k])+'</td><td>'+Math.round(st[k])+'</td></tr>').join('')+'</tbody></table><small>等級僅小幅增加攻防；武器傷害、強化與裝備詞綴另計。魔杖每＋1額外增加1魔攻。</small></details>';
+}
 function renderMercenary() {
     const m = player.mercenary, c = m && MERC_CLASSES[m.cls], town = mercTownReady();
     let h = '<div class="panel"><p>六職業共用50種符石，同時只能召喚一名傭兵。在村莊配置與調整出戰，傭兵不可購買。</p><p>出戰掛機時，傭兵沿用玩家快捷欄的自動補血開關與HP門檻，共用背包治癒藥水，每瓶只補傭兵並扣玩家1瓶；各自喝水延遲0.8秒。</p><p class="bad">死亡永久失去身上全部裝備與已配置符石；背包物品不受影響。復活保留等級。</p><details><summary>戰鬥與裝備規則</summary><small>不限制武器職業，雙手武器與盾牌互斥。一般掛機生效；離線／團隊副本／世界首領暫不參戰。遠程武器不耗玩家彈藥，裝備共鳴與BOSS附魔暫不觸發。技能優先救命治療、淨化、一般治療與多怪群攻；同類依四格順序，每秒最多一招。近戰1格、弓槍8格、魔法與召喚攻擊4格，障礙物會阻擋。召喚物最多2隻。毒系／冰系指定怪物魔法命中附加中毒6秒／緩速4秒，淨化可解除；毒傷最低保留1HP，回村清除。</small></details></div>';
@@ -507,6 +521,7 @@ function renderMercenary() {
         const st = mercStats(m);
         h += '<div class="panel"><div class="merc-model-portrait"><img src="' + MERC_MODELS[m.cls].art + '" alt="' + esc(c.person + '・' + c.name) + '"' + (m.dead ? ' class="merc-model-dead"' : '') + '></div><b>' + mercNameHtml(m) + '</b>（' + c.sex + '／' + c.age + '）<p>Lv.' + m.lv + '｜經驗 ' + fmt(m.exp) + '／' + fmt(mercExpNeed(m)) + '<br>HP ' + Math.ceil(m.hp) + '／' + st.hp + '　MP ' + Math.ceil(m.mp) + '／' + st.mp + '<br>物攻' + Math.round(st.atk) + '／魔攻' + Math.round(st.magic) + '／防禦' + st.def + '／魔防' + st.mr + '</p>' + (m.dead ? '<button onclick="mercRevive()" ' + (!town ? 'disabled' : '') + '>復活（' + fmt(m.lv * MERC_REVIVE_COST) + '金幣）</button>' : '<button onclick="mercToggle()" ' + (!town ? 'disabled' : '') + '>' + (m.active ? '收回傭兵' : '傭兵出戰') + '</button>') + '</div>';
         h += '<button onclick="mercDismiss()" ' + (!town ? 'disabled' : '') + '>放棄傭兵</button>';
+        h += mercStatsHtml(st);
         h += '<p data-merc-live-status style="overflow-wrap:anywhere">' + esc(mercStatusText(m)) + '</p>';
         h += mercRuneBoardHtml(m, town);
         h += '<h4>傭兵裝備</h4><div class="merc-grid">' + MERC_SLOTS.map(slot => '<div class="panel"><b>' + SLOTS[slot] + '：' + (m.equip[slot] ? esc(itemName(m.equip[slot])) : '空白') + '</b><button onclick="mercPickEquip(\'' + slot + '\')" ' + (!town || m.dead ? 'disabled' : '') + '>選擇</button>' + (m.equip[slot] ? '<button onclick="mercUnequip(\'' + slot + '\')" ' + (!town || m.dead ? 'disabled' : '') + '>卸下</button>' : '') + '</div>').join('') + '</div>';
@@ -653,8 +668,6 @@ function sceneDrawMercEffects(ctx, camX, camY, m, d) {
         const side=i?1:-1, acting=gameNow-(s.actedAt||-10000)<450;
         const sx=x+side*30,sy=y+9+i*8;
         mercDrawSummon(ctx,s.id,sx,sy,gameNow,acting,s.actedAt,d.dir);
-        ctx.font='9px sans-serif';ctx.textAlign='center';ctx.fillStyle='#e2e6ff';ctx.strokeStyle='#111';ctx.lineWidth=3;
-        const label=MERC_RUNES[s.id].name.replace('契約','')+' '+Math.ceil((s.until-gameNow)/1000)+'秒';ctx.strokeText(label,sx,sy+14);ctx.fillText(label,sx,sy+14);
     }
     for(const [id,b] of Object.entries(r.buffs)) if(b.until>gameNow && ['shield','fortify','barrier'].includes(id) && b.power>0) {
         ctx.strokeStyle='#91d8ff';ctx.lineWidth=1.5;ctx.beginPath();ctx.ellipse(x,y-13,19,29,0,0,Math.PI*2);ctx.stroke();
@@ -691,16 +704,5 @@ function sceneDrawMercEffects(ctx, camX, camY, m, d) {
         if(p>.35){ctx.beginPath();ctx.ellipse(tx,ty,5+p*20,4+p*10,0,0,Math.PI*2);ctx.stroke();}
         ctx.restore();
     }
-    ctx.font='9px sans-serif';ctx.textAlign='center';ctx.fillStyle='#d3e8ff';ctx.strokeStyle='#111';ctx.lineWidth=3;
-    // 四顆小符石保留圖示，地圖上隱藏技能與狀態秒數。
-    m.skills.forEach((id,i)=>{
-        if(!MERC_RUNES[id])return;
-        const sx=x-38+i*20,sy=y+23,im=spriteImage('images/icons/items/mercRune-v1/'+id+'.png?v=1');
-        ctx.fillStyle='#101622bb';ctx.fillRect(sx-1,sy-1,18,18);
-        if(im)ctx.drawImage(im,sx,sy,16,16);
-        else {ctx.fillStyle='#a3d9ef';ctx.fillText(String(i+1),sx+8,sy+12);}
-    });
-    const active=Object.entries(r.buffs).filter(([,b])=>b.until>gameNow).map(([id,b])=>(MERC_RUNES[id]?MERC_RUNES[id].name:b.name||id)+(['shield','fortify','barrier'].includes(id)?' 盾'+Math.ceil(b.power):''));
-    for(const b of Object.values(mercNegative(m)))active.push(b.name);
-    active.forEach((text,i)=>{ctx.strokeText(text,x,y+62+i*11);ctx.fillText(text,x,y+62+i*11);});
+    // 技能圖示、召喚倒數與增益文字統一由底部外框mercHudHtml顯示。
 }
