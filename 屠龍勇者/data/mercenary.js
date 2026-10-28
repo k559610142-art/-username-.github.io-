@@ -109,6 +109,19 @@ for (const group in MERC_RUNE_ROWS) for (const [id, name, kind, mp, cd, power, s
     ITEMS['mercRune_' + id] = { name: '傭兵符石・' + name, cat: 'mercRune', rune: id, wt: .1, sell: 0 };
 }
 CAT_NAMES.mercRune = '傭兵符石';
+const MERC_RUNE_DROPS = {
+    basic: Object.values(MERC_RUNE_ROWS).flatMap(rows => rows.slice(0, 4).map(row => 'mercRune_' + row[0])),
+    special: Object.values(MERC_RUNE_ROWS).flatMap(rows => rows.slice(4).map(row => 'mercRune_' + row[0])),
+    normalP: .001, bossP: .05
+};
+function mercRuneSource(id) {
+    return MERC_RUNE_DROPS.basic.includes(id) ? '基本符石：黃色稀有異界地圖一般怪0.1%' : '特殊符石：黃色稀有異界首領／團隊副本勝利5%';
+}
+function rollMercRuneDrop(mon, raid = false) {
+    if (SIM_MODE || !raid && (!inMapRun() || player.mapRun.q !== 'rare' || treasureMapActive())) return null;
+    const special = raid || mon.boss, pool = MERC_RUNE_DROPS[special ? 'special' : 'basic'];
+    return chance(special ? MERC_RUNE_DROPS.bossP : MERC_RUNE_DROPS.normalP) ? pool[rand(0, pool.length - 1)] : null;
+}
 const MERC_RANKS = [
     { min: 1, id: 'c', name: 'C級傭兵', color: '#ffffff' },
     { min: 30, id: 'b', name: 'B級傭兵', color: '#66b8ff' },

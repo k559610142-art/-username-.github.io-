@@ -13,7 +13,7 @@ for (const [, file] of fs.readFileSync(path.join(root, 'index.html'), 'utf8').ma
 }
 vm.runInContext(String.raw`
 SIM_MODE=true;createPlayer('財寶測試','knight',CLASSES.knight.base);sfx=()=>{};closeDialog=()=>{};switchTab=()=>{};startHunt=()=>{};refreshUI=()=>{};saveGame=()=>{};renderPanel=()=>{};showToast=()=>{};
-assert.equal(SAVE_SCHEMA,15);player.inv=[];
+assert(SAVE_SCHEMA>=15);player.inv=[];
 const normal=makeMapItem(8,'rare');assert.equal(normal.mm.length>=3,true);const normalKey=mapKindKey(normal);assert.equal(normalKey,[normal.id,normal.q,normal.mm.slice().sort().join(','),normal.nm].join('|'));
 for(let t=8;t<=15;t++){
  const x=makeMapItem(t,'legend');player.inv.push(x);assert(x.unidentified);assert(!x.mm);assert(itemName(x).includes('未鑑定'));

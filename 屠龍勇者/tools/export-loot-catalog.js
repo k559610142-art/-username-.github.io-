@@ -13,7 +13,7 @@ const catalog=vm.runInContext(`(()=>{
  common:COMMON_DROPS,currency:Object.entries(CURRENCY).map(([id,c])=>c.minLv?{id,w:c.w,minLv:c.minLv}:{id,w:c.w}),quality:QUALITY,rareNames:RARE_NAMES,
  affixes:Object.fromEntries(Object.entries(AFFIXES).map(([k,a])=>[k,{pre:a.pre,min:a.min,pct:!!a.pct,max:Array.from({length:111},(_,lv)=>Math.max(a.min,a.max(lv)))}])),legend:LEGEND_AFFIXES,
  mapZones:mapZones().map(z=>({id:z.id,lv:z.lv[0]})),mapMods:MAP_MODS,raids:RAID_BY_ID,resonance:RESONANCE,
- resTiers:Array.from({length:16},(_,t)=>resMaxTierForMap(t)),resMapBossP:RES_MAP_BOSS_P,bossMaterialP:BOSS_MATERIAL_DROP_P};
+ mercRunes:MERC_RUNE_DROPS,resTiers:Array.from({length:16},(_,t)=>resMaxTierForMap(t)),resMapBossP:RES_MAP_BOSS_P,bossMaterialP:BOSS_MATERIAL_DROP_P};
 })()`,ctx);
 catalog.version+='-'+require('crypto').createHash('sha256').update(JSON.stringify(catalog)).digest('hex').slice(0,12);
 const json=JSON.stringify(catalog);fs.writeFileSync(path.join(__dirname,'loot-catalog.json'),json+'\n');

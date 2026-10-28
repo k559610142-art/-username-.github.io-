@@ -74,6 +74,7 @@
 | `images/sprites/mercenary/companions-v1/`、`tools/sprite-src/mercenary/companions-v1/` | 六位傭兵三向四動作圖集／人物像、image_gen原稿／提示詞／來源／腳底註冊與總覽（第206節） |
 | `tools/prepare-mercenary-models.js`、`tools/test-mercenary-models.js`、`tools/mercenary-models-preview.html` | 傭兵模型切格打包／216格素材與96組正式繪圖驗證、動作／方向／實際大小預覽（第206節） |
 | `images/sprites/morph/crimson-shadow-assassin-v1/`、`tools/sprite-src/morph/crimson-shadow-assassin-v1/`、`tools/crimson-assassin-morph-preview.html`、`tools/test-crimson-assassin-morph.js` | 09赤影暗殺者紅變36格透明動作／原稿提示詞／打包／卷軸及正式繪圖驗證（第207節） |
+| `tools/mercenary-rune-drops.sql`、`tools/test-mercenary-rune-drops.js`、`tools/test-mercenary-rune-drops-db.js`、`tools/mercenary-rune-drops-preview.png` | 黃色異界／團隊副本符石掉落、獨立增量SQL、記憶體與PGlite驗證及UI實拍（第208節） |
 | `tools/check.ps1` | 改完的自動檢查：JS 語法（`node --check`）、`index.html` 所有 `?v=` 等於 `GAME_VERSION`、每個 `data/*.js` 都有載入、沒有衝突標記；通過印 `ALL CHECKS PASSED` |
 | `images/icons/items/mercRune-v1/`、`tools/icon-src/mercenary-runes-v1/` | 50款獨立傭兵符石透明PNG、image_gen原稿／完整提示詞／來源與總覽（第203節） |
 | `tools/prepare-mercenary-runes.js`、`tools/test-mercenary-rune-art.js`、`tools/mercenary-runes-preview.html` | 符石等比縮圖／透明與唯一性檢查、正式UI接線驗證及128／48／32px獨立素材預覽（第203節） |
@@ -222,7 +223,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261027u`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261028a`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3803,3 +3804,13 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - prepare.js沿既有alpha輪廓分離／保留原色與邊緣alpha／等比縮放及腳底註冊流程，輸出36個RGBA獨立分鏡、walk4／attack4／cast2／hit2三列圖集、manifest／registration、人物像與contact總覽。cell384×320，foot[192,270]、charH160／drawH48，ms130／140／220／150；左向沿既有鏡射。
 - MORPHS.crimsonShadowAssassin接既有MORPH_FORMS.m09，不新增變身數量。維持紅變Lv35、命中3／傷害3／攻速10%／閃避3%、雙刀系既有武器規則與GM豁免、卷軸30分鐘及商店10000金幣。schema19／SQL／載入順序不變，SW預載4圖集。
 - test-crimson-assassin-morph驗等級34不扣卷／35可用、專屬圖／加成／32款、命中／MISS／受傷不打斷攻擊／施法／到期與沿用上次選擇；另驗36圖RGBA／透明／唯一／圖集逐byte一致，原生Canvas呼叫正式sceneDraw四向四動作16組輸出game-render.png。preview提供真實卷軸、逐格／循環、四向四動作與實際大小，僅記憶體角色／禁止連外。驗證完成：36格RGBA透明／唯一／圖集逐byte、原生Canvas正式sceneDraw16組、卷軸／等級／32款GM與一般帳號門檻通過；check.ps1 ALL CHECKS PASSED（含CSS圖片網址）、git diff --check通過；正式51檔548KB混淆成功，4張發佈圖集逐byte一致。隔離瀏覽器側面攻擊第3格與背面施法第2格／440ms正常、Console無error／warn，browser-preview.png保存。未操作正式存檔／後端；待使用者重新整理u→變形卷軸→雙刀系赤影暗殺者→四方向與動作確認。外部提交8ca4ad1已包含遊戲接線，本助手未提交，後續驗證文件與預覽仍待提交。
+
+
+## 208. 傭兵符石取得（2026-10-28，版本 `20261028a`）
+
+- 使用者確認黃色稀有異界地圖與團隊副本都可掉；六流派各前4種為基本24種，其餘特殊26種。稀有異界一般怪固定0.1%抽基本、首領固定5%抽特殊；團隊副本勝利每位參加者各5%抽特殊，成功等機率給對應池1顆。不乘地圖詞綴／副本獎勵倍率。白／藍／傳奇財寶圖、一般世界／塔／龍穴／世界首領與離線不新增符石。重複可堆疊替換，不開放購買。
+- mercenary.js新增MERC_RUNE_DROPS（basic／special道具ID陣列、normalP／bossP）、mercRuneSource、rollMercRuneDrop。combat.rollDrops新增可選raid參數並在財寶圖return後給符石；raidApplyReward僅勝利本機模式傳true，正式模式沿loot_raid。SIM_MODE不擲；後端啟用或等待中不改成本機抽。背包詳情與圖鑑來源列出分類／區域／機率，lootSnapKey納入mapRun.q，生怪前同步雲端品質。schema19及載入順序不變。
+- 基本池：wolf／golem／butterfly／hawk；cover／shield／taunt／iron；heal／renew／mend／haste；heavy／sweep／pierce／flurry；selfHeal／evasion／meditate／cleanse；firebolt／frost／lightning／nova。其餘現有符石為特殊，ID均加mercRune_前綴。
+- tools/mercenary-rune-drops.sql為使用者已授權的獨立可重跑增量，不改既有SQL：向現有目錄合併50件道具與mercRunes配置，保留舊規則快照；新版本後綴-mercRunes20261028a。新增內部loot_merc_rune並撤銷PUBLIC／anon／authenticated執行權；增量補普通及畫面憑證map.q、loot_roll尾端附符石（財寶分支仍先return）、已驗勝利與參與資格的loot_raid上下文mercRaid:true。品質與規則依出怪時憑證保存，舊規則不補抽，同事件重試沿同收據；缺必要函式或結構不同交易回滾。export-loot-catalog.js日後匯出亦包含mercRunes，這次未重新產生舊SQL／完整目錄。
+- 部署：**由使用者先在Supabase SQL Editor執行tools/mercenary-rune-drops.sql，再更新前端；本助手未執行正式SQL。**前置為既有server-loot、loot-screen（財寶圖規則保留既有treasure-maps）。日後重裝舊server-loot／loot-screen，須重新執行treasure-maps再執行本SQL。
+- 驗證：記憶體真實函式測全50種可抽／分類、品質與地區限制、SIM拒絕、固定機率、兩次實際掉落堆疊、後端不本機重抽、詳情與圖鑑；PGlite真SQL重跑、保留全部舊目錄與快照、10萬次普通約0.1%與2萬次首領約5%、各池全抽中、財寶仍僅通貨、普通／畫面憑證帶品質、離圖後依快照、真實副本領特殊、同憑證／副本重領相同、失敗無獎與內部權限。舊財寶測試改為schema>=15，容許後續schema19但仍檢查財寶功能。傭兵／任務／50圖／收據／離線／財寶前後端及後端RPC回歸通過；check.ps1 ALL CHECKS PASSED。正式51檔混淆549KB建置與git diff --check通過。瀏覽器隔離圖鑑基本0.1%／特殊5%與圖片外框正常，實拍tools/mercenary-rune-drops-preview.png；未讀寫正式角色。待使用者SQL／實玩確認後提交。

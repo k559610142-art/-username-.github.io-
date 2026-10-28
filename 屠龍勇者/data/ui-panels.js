@@ -537,7 +537,7 @@ function itemDescHtml(inst, showAffixMax = false) {
     if (d.cat === 'weapon' || d.cat === 'armor') L.push(d.safe >= 0 ? `安定值 +${d.safe}` : '不可強化');
     if (d.heal) L.push(`回復 HP ${d.heal[0]}～${d.heal[1]}`);
     if (d.buff) L.push(`${BUFF_DEFS[d.buff].name}效果 ${d.sec / 60} 分鐘`);
-    if (d.rune) L.push(mercRuneText(d.rune));
+    if (d.rune) L.push(mercRuneText(d.rune), mercRuneSource(inst.id));
     if (d.cat === 'ammo') L.push(`傷害 +${d.dmg}${d.silver ? '，對不死系額外傷害' : ''}`);
     if (d.classes) L.push(`限定：${d.classes.map(c => CLASSES[c].name).join('、')}`);
     if (d.desc) L.push(d.desc);

@@ -811,7 +811,7 @@ function onKill(mon) {
     checkAutoHome();
 }
 
-function rollDrops(mon, z) {
+function rollDrops(mon, z, raid = false) {
     if (lootRequired() && !lootActive()) { stopHunt('⚠️ 後端掉寶尚未就緒，沒有改用本機抽獎'); return; }
     if (lootActive()) { lootKill(mon); return; }
     const st = calcStats();
@@ -843,13 +843,15 @@ function rollDrops(mon, z) {
         worldVfxLoot(mon, d, inst);
     };
     const qm = 1 + mapBonus();   // 地圖詞綴：掉落機率加成
-    if (treasureMapActive()) {
+    if (!raid && treasureMapActive()) {
         if (chance(Math.min(1, (mon.boss ? CURRENCY_BOSS_P : CURRENCY_DROP_P) * qm * 3))) {
             const n = (mon.boss ? rand(1, 3) : 1) * 2;
             give(rollCurrency(mon.lv), [n, n]);
         }
         return;
     }
+    const rune = rollMercRuneDrop(mon, raid);
+    if (rune) give(rune);
     for (const dr of COMMON_DROPS) {
         if ((dr.minLv && mon.lv < dr.minLv) || (dr.maxLv && mon.lv > dr.maxLv)) continue;
         if (chance(dr.p * qm)) give(dr.id, dr.n);

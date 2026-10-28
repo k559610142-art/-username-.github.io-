@@ -276,7 +276,7 @@ function raidApplyReward(res, uid, runKey) {
     gainExp(out.exp);
     const seq = logSeq;
     if (lootActive()) lootRaid(runKey, lootChar());
-    else rollDrops(boss, { drops: [] });
+    else rollDrops(boss, { drops: [] }, true);
     out.items = gameLog.filter(l => l.seq > seq && /^🎁|^🪙/.test(l.msg)).map(l => l.msg);
     if (boss.dragon) {
         const first = !player.dragons[boss.id];
