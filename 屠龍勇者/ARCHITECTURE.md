@@ -212,6 +212,8 @@
 
 | `images/sprites/mercenary/summons-v1/`、`tools/sprite-src/mercenary/summons-v1/`、`tools/test-mercenary-summon-art.js`、`tools/mercenary-summons-preview.html` | 九種召喚寵物透明動畫、原稿／提示詞／圖集整理、72格與正式繪圖驗證及隔離動畫預覽（第212節） |
 
+| `tools/test-boss-dodge-companions.js` | 玩家／傭兵紅圈場景移動、獨立傷害與堵路／無路／手動隔離回歸（第213節） |
+
 ## 2. 載入順序與依賴
 
 `config → classes → skills → items → spellbook → monsters → zones → quests → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → pwa → loot → main`
@@ -226,7 +228,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261028f`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261028g`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3848,3 +3850,12 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 新常數MERC_SUMMON_ART提供路徑、格寬與顯示尺寸；mercDrawSummon優先用PNG圖集，載入前沿用原Canvas輪廓。gameNow每140ms推進行走格，依既有actedAt在450ms作用時間播放4格施法；左向鏡射，不改技能傷害、治療、冷卻、召喚上限或存檔。共用原spriteImage快取，sw.js預載九圖。
 - 純視覺變更，schema19／SQL／script順序不變；GAME_UPDATES新增f並保留e秒數隱藏。tools/mercenary-summons-preview.html使用正式繪圖函式，可切行走／攻擊／左右，記憶體localStorage並拒絕連外；test-mercenary-summon-art讀真實PNG驗證尺寸、72格透明／不重複、正式圖片行走／施法／左向及地圖狀態不畫秒數。
 - 驗證完成：check.ps1 ALL CHECKS PASSED、原傭兵50符石／六項技能回歸、9圖集72格透明與唯一性、正式圖片行走／施法／左向與秒數隱藏檢查通過；51檔563KB正式混淆成功、發佈9PNG逐byte一致、git diff --check通過。瀏覽器9/9圖載入、行走／施法／鏡射正常，Console無error／warn；隔離實戰PC／手機召喚與施法扣MP正常，未讀寫正式角色或連外。總覽overview.png與contact.png、正式繪圖game-render.png保留原稿資料夾。待使用者刷新f→配置召喚符石出戰→觀察動作與技能狀態秒數隱藏，確認後才commit。
+
+## 213. 玩家與傭兵獨立判斷首領紅圈（2026-10-28，版本 `20261028g`）
+
+- 使用者要求雙方增加判讀、躲首領技能紅圈。沿用settings.autoDodge及350～900ms反應；不新增設定或存檔欄位，schema19／SQL／載入順序不變。
+- ui-scene新增sceneTeleContains共用圈內判定、sceneTeleDodge共用閃避尋路。玩家／傭兵各自短期記錄dodgeTele／dodgeReact／dodgeRetry／dodging，預警開始取消原追怪路線，往半徑1.5格外加0.4格餘裕的最近可達安全格走；安全後維持位置直到預警解除，不追怪／跟隨回圈。玩家需走完整個安全格，避免高幀率途中清路後插值回圈內。
+- 沿用findPath(...,false,true)及inHuntZone，全程不跨地圖／分區，下一步被擋重新找路；無路維持原地、每200ms可重試，照常承傷、不中斷掛機。玩家手動移動優先；關閉自動閃避雙方不接管路線。傭兵新增sceneMercMove共用原移動步進，閃避優先於攻擊射程／跟隨，結束恢復原行為。
+- bossSkillTick在有效即時場景按雙方實際rx／ry獨立結算，不使用玩家是否躲開決定傭兵是否吃圈；玩家躲開但傭兵在圈內仍受傷，反向亦然。共用原傷害骰值，傭兵走自己的減傷／閃避／盾；玩家附魔吸收盾只保護玩家，不再先扣玩家盾再傳給傭兵。既有護衛／挺身保護的代擋仍照常。背景／離線沿原玩家自動60%／關閉20%及傭兵參戰隔離。
+- GAME_UPDATES加入g；tools/test-boss-dodge-companions.js驗真實sceneUpdate含60fps、雙方出圈後停留／結束恢復、四種圈內外組合、實際座標優先於舊dodged旗標、手動／設定、堵路重找／無路承傷／障礙解除重試及背景／SIM。tools/mercenary-preview.html新增雙方紅圈閃避按鈕與圈內外／HP結算顯示，記憶體角色且禁止連外。
+- 驗證完成：check.ps1 ALL CHECKS PASSED、雙方紅圈新測試（含玩家盾只保護玩家與傭兵全路徑區界）、原邊界／50符石／六項技能／武器射程／26附魔回歸通過；21娃娃及能力回歸僅在記憶體把已知過時schema18預期改為19後通過，原測試檔未改。51檔564KB正式混淆與語法成功、diff檢查通過。瀏覽器PC／手機版實際紅圈從雙方圈內移到圈外，結算玩家10000→10000、傭兵632→632，Console無error／warn；實拍tools/boss-dodge-companions-pc.png及-mobile.png。未操作正式角色／後端；待使用者刷新g實玩確認後提交。

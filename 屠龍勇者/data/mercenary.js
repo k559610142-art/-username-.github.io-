@@ -511,6 +511,7 @@ function sceneMercTick(dt) {
         d = scene.mercenary = { owner: m, rx: spot[0], ry: spot[1], path: [], dir: 'down' };
         preloadSprite(MERC_MODELS[m.cls]);
     }
+    if (sceneTeleDodge(d,dt)) { sceneMercMove(d,dt);return; }
     const target = player.hunting && hunt && hunt.state === 'fight' && mercTarget(hunt.mon);
     let goal = pl, range = 1;
     if (target && Math.hypot(target.rx-pl.rx,target.ry-pl.ry) <= 9) {
@@ -534,6 +535,9 @@ function sceneMercTick(dt) {
         d.path=[];
         for(const p of spots) { const path=findPath(Math.round(d.rx),Math.round(d.ry),p.x,p.y,false,true);if(path.length){d.path=path;break;} }
     }
+    sceneMercMove(d,dt);
+}
+function sceneMercMove(d, dt) {
     if (!d.path.length) return;
     const [x,y] = d.path[0]; if (!freeTileFor(x,y) || !inHuntZone(x,y)) { d.path = []; return; }
     const dx = x-d.rx, dy = y-d.ry, dist = Math.hypot(dx,dy), step = PLAYER_SPEED * dt / 1000;

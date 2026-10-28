@@ -298,13 +298,21 @@ function bossSkillTick(dt) {
         if (!hunt.mobs.includes(m)) return;
         worldVfxBoss(t);
         const live = t.seenAt != null && t.seenAt >= t.until - 300;
-        const dodged = live ? !!t.dodged : chance(player.settings.autoDodge ? 0.6 : 0.2);
-        if (dodged) { addLog(`💨 你閃開了${m.name}的「${t.name}」！`, 'miss'); return; }
+        const c=live && scene && scene.tele && scene.tele.ref===t ? scene.tele : null;
+        const dodged = c ? !sceneTeleContains(c,scene.pl.rx,scene.pl.ry) : live ? !!t.dodged : chance(player.settings.autoDodge ? 0.6 : 0.2);
+        const merc=mercActive(), d=scene && scene.mercenary;
+        const mercDodged=c && merc && d && d.owner===merc ? !sceneTeleContains(c,d.rx,d.ry) : dodged;
+        if (dodged) addLog(`💨 你閃開了${m.name}的「${t.name}」！`, 'miss');
+        if (merc && mercDodged && c) addLog(`💨 傭兵閃開了${m.name}的「${t.name}」！`, 'miss');
+        if (dodged && (!merc || mercDodged)) return;
         const st = calcStats();
         let dmg = Math.round(rand(m.dmg[0], m.dmg[1]) * TELE_MUL) - st.reduce;
         dmg = Math.max(1, dmg);
-        dmg = bossEnchantAbsorb(Math.max(1, Math.round(bossEnchantEnemyDamage(m, dmg))));
-        dmg = dollTakeDamage(mercProtect(dmg, true), st);
+        dmg = Math.max(1, Math.round(bossEnchantEnemyDamage(m, dmg)));
+        if (merc && !mercDodged) addLog(`💥 傭兵受到${m.name}的「${t.name}」 ${mercTakeDamage(dmg)} 傷害`, 'hurt');
+        if (dodged) return;
+        dmg = bossEnchantAbsorb(dmg);
+        dmg = dollTakeDamage(mercProtect(dmg), st);
         addLog(`💥 ${m.name}的「${t.name}」命中！你受到 ${dmg} 傷害`, 'hurt');
         if (player.hp <= 0) onDeath(m);
         else resonanceOnHurt(st);

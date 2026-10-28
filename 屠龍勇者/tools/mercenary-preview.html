@@ -31,7 +31,21 @@
     };
     window.mercPreviewNegative=()=>{if(!player.mercenary)return;const mon={id:'venomSpider'};mercEnemyStatus(mon,true,50,player);mercEnemyStatus({id:'frostWitch'},true,30,player.mercenary);renderStatus();};
     window.mercPreviewCleanse=()=>{const m=player.mercenary;if(!m)return;m.skills=['firebolt','might','purify','cleanse'];m.mp=mercStats(m).mp;mercRuntime.delete(m);refreshUI();};
-    for(const [text,fn]of [['技能戰鬥測試',mercPreviewBattle],['附加毒／緩速',mercPreviewNegative],['切換淨化配置',mercPreviewCleanse]]){const b=document.createElement('button');b.textContent=text;b.onclick=fn;$('merc-preview-tools').append(b);}
+    let dodgeMonitor=0;
+    window.mercPreviewBossDodge=()=>{
+        mercPreviewBattle();buildScene();player.settings.autoDodge=true;
+        const pl=scene.pl,m=player.mercenary;m.skills=['','','',''];m.hp=mercStats(m).hp;scene.mons=[];
+        const spot=[[3,0],[-3,0],[0,3],[0,-3]].map(([x,y])=>[pl.x+x,pl.y+y]).find(([x,y])=>freeTileFor(x,y)&&inHuntZone(x,y));
+        if(!spot){showToast('此處無測試首領空位，請重試');return;}
+        const mon=makeMonster(currentZone().mons[0]);Object.assign(mon,{name:'紅圈測試首領',boss:true,hp:1000000,maxHp:1000000,dmg:[40,40],teleCd:99999,atkCd:99999});
+        hunt.mon=mon;hunt.mobs=[mon];hunt.state='fight';hunt.joinCd=99999;
+        scene.mons=[{x:spot[0],y:spot[1],rx:spot[0],ry:spot[1],inst:mon,mid:mon.id,name:mon.name,icon:mon.icon,cd:99999,dying:0,lastHp:mon.hp}];
+        scene.mercenary=null;sceneMercTick(0);
+        const t=hunt.tele={mob:mon,name:'測試紅圈',start:gameNow,until:gameNow+1600};scene.tele={ref:t,x:pl.x,y:pl.y,r:1.5,react:350};
+        const c=scene.tele,before=[player.hp,m.hp];let line=$('merc-dodge-result');if(!line){line=document.createElement('div');line.id='merc-dodge-result';$('merc-preview-tools').append(line);}
+        clearInterval(dodgeMonitor);dodgeMonitor=setInterval(()=>{const d=scene&&scene.mercenary;if(!d)return;line.textContent=(hunt&&hunt.tele===t?'紅圈預警':'結算完成')+'｜玩家'+(sceneTeleContains(c,pl.rx,pl.ry)?'圈內':'圈外')+' HP '+Math.round(player.hp)+'／'+before[0]+'｜傭兵'+(sceneTeleContains(c,d.rx,d.ry)?'圈內':'圈外')+' HP '+Math.round(m.hp)+'／'+before[1];if(!hunt||hunt.tele!==t)clearInterval(dodgeMonitor);},50);
+    };
+    for(const [text,fn]of [['技能戰鬥測試',mercPreviewBattle],['附加毒／緩速',mercPreviewNegative],['切換淨化配置',mercPreviewCleanse],['雙方紅圈閃避',mercPreviewBossDodge]]){const b=document.createElement('button');b.textContent=text;b.onclick=fn;$('merc-preview-tools').append(b);}
     let saved='';sfx=()=>{};presTick=()=>{};
     saveGame=()=>{saved=saveEncode(JSON.stringify({schema:SAVE_SCHEMA,player}));};
     createPlayer('傭兵預覽','knight',CLASSES.knight.base);player.gold=1000000;player.lv=30;

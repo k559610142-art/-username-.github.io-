@@ -958,28 +958,47 @@ function sceneReach(e) {
 
 // ───────── 首領大招紅圈（hunt.tele）與自動閃避 ─────────
 const MANUAL_HOLD_MS = 2500;   // 手動移動後幾毫秒內不自動尋怪
+function sceneTeleContains(c, x, y, margin = 0) {
+    return Math.hypot(x-c.x,y-c.y) <= c.r+margin;
+}
+function sceneTeleDodge(actor, dt, manual = false) {
+    const c = scene.tele, t = hunt && hunt.tele;
+    if (!c || c.ref !== t || !player.settings.autoDodge || manual) {
+        if (actor.dodging && !manual) actor.path=[];
+        actor.dodging=false;actor.dodgeTele=null;return false;
+    }
+    if (actor.dodgeTele !== t) {
+        actor.dodgeTele=t;actor.dodgeReact=c.react;actor.dodgeRetry=0;actor.path=[];
+    }
+    actor.dodging=true;
+    // 圈外保持安全位置，直到這次預警解除，避免追怪或跟隨又走回紅圈。
+    if (!sceneTeleContains(c,actor.rx,actor.ry,.4) && (!Number.isFinite(actor.x) || !sceneTeleContains(c,actor.x,actor.y,.4))) {actor.path=[];return true;}
+    actor.dodgeReact-=dt;
+    if (actor.dodgeReact>0) return true;
+    const end=actor.path[actor.path.length-1],next=actor.path[0];
+    if (end && !sceneTeleContains(c,end[0],end[1],.4) && freeTileFor(next[0],next[1]) && inHuntZone(next[0],next[1])) return true;
+    actor.path=[];
+    if (actor.dodgeRetry>gameNow) return true;
+    actor.dodgeRetry=gameNow+200;
+    const sx=Number.isFinite(actor.x)?actor.x:Math.round(actor.rx),sy=Number.isFinite(actor.y)?actor.y:Math.round(actor.ry);
+    let best=null;
+    for(let dy=-4;dy<=4;dy++)for(let dx=-4;dx<=4;dx++) {
+        const x=sx+dx,y=sy+dy;
+        if(sceneTeleContains(c,x,y,.4)||!freeTileFor(x,y)||!inHuntZone(x,y))continue;
+        const path=findPath(sx,sy,x,y,false,true);
+        if(path.length&&(!best||path.length<best.length))best=path;
+    }
+    actor.path=best||[];return true;
+}
 function sceneTeleTick(dt) {
     const t = hunt && hunt.tele, pl = scene.pl;
-    if (!t || player.loc.type !== 'zone') { scene.tele = null; scene.dodging = false; return; }
+    if (!t || player.loc.type !== 'zone') { scene.tele = null; scene.dodging = false; sceneTeleDodge(pl,dt,scene.manualUntil>gameNow);return; }
     if (!scene.tele || scene.tele.ref !== t) scene.tele = { ref: t, x: pl.x, y: pl.y, r: 1.5, react: rand(350, 900) };
     const c = scene.tele;
-    const inside = Math.hypot(pl.rx - c.x, pl.ry - c.y) <= c.r;
+    const inside = sceneTeleContains(c,pl.rx,pl.ry);
     t.dodged = !inside;          // 回報給 combat.js（時間到時用這個判斷有沒有閃開）
     t.seenAt = gameNow;
-    if (!inside) { if (!pl.path.length) scene.dodging = false; return; }
-    if (!player.settings.autoDodge || scene.manualUntil > gameNow || scene.dodging) return;
-    c.react -= dt;               // 自動閃避有反應時間，偶爾會來不及
-    if (c.react > 0) return;
-    let best = null;
-    for (let dy = -4; dy <= 4; dy++) for (let dx = -4; dx <= 4; dx++) {
-        const x = pl.x + dx, y = pl.y + dy;
-        if (Math.hypot(x - c.x, y - c.y) <= c.r + 0.4 || !freeTileFor(x, y) || !inHuntZone(x, y)) continue;
-        const path = findPath(pl.x, pl.y, x, y, false, true);
-        if (path.length && (!best || path.length < best.length)) best = path;
-    }
-    // 找不到區內安全路線就留在原地扛傷害，不讓自動追怪接手走出紅圈或跨區。
-    pl.path = best || [];
-    scene.dodging = true;
+    scene.dodging=sceneTeleDodge(pl,dt,scene.manualUntil>gameNow);
 }
 
 // big：升級等大字；crit：爆擊傷害（紅色大字、出現時先彈大再縮回，停留久一點）
