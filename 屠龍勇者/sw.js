@@ -20,6 +20,7 @@ self.addEventListener('install', event => {
             const urls = [...html.matchAll(/src="(data\/[^"]+\?v=[^"]+)"/g)].map(m => new URL(m[1], self.location).href);
             await Promise.all(urls.map(u => cache.add(u).catch(() => {})));
             const assets = await caches.open(ASSETS);
+            await Promise.all(['wolf','golem','butterfly','hawk','flameSpirit','iceSpirit','thunderSpirit','treeSpirit','swarm'].map(id => assets.add('images/sprites/mercenary/summons-v1/' + id + '.png?v=1').catch(() => {})));
             await Promise.all(['images/sprites/morph/shura-monk-v1/walk.png', 'images/sprites/morph/shura-monk-v1/attack.png', 'images/sprites/morph/shura-monk-v1/cast.png', 'images/sprites/morph/shura-monk-v1/hit.png'].map(u => assets.add(u).catch(() => {})));
             await Promise.all(['images/sprites/morph/ivory-archmage-v1/walk.png', 'images/sprites/morph/ivory-archmage-v1/attack.png', 'images/sprites/morph/ivory-archmage-v1/cast.png', 'images/sprites/morph/ivory-archmage-v1/hit.png'].map(u => assets.add(u).catch(() => {})));
             await assets.add('images/icons/items/magicCrystal-v1.png').catch(() => {});

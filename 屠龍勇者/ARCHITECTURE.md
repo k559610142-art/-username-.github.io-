@@ -210,6 +210,8 @@
 
 | `images/buildings/identify-station-v1.png`、`tools/scene-rework/identify-station-v1/` | 鑑定台原創建築圖片、生成原稿與提示詞（第188節） |
 
+| `images/sprites/mercenary/summons-v1/`、`tools/sprite-src/mercenary/summons-v1/`、`tools/test-mercenary-summon-art.js`、`tools/mercenary-summons-preview.html` | 九種召喚寵物透明動畫、原稿／提示詞／圖集整理、72格與正式繪圖驗證及隔離動畫預覽（第212節） |
+
 ## 2. 載入順序與依賴
 
 `config → classes → skills → items → spellbook → monsters → zones → quests → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → pwa → loot → main`
@@ -224,7 +226,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261028d`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261028f`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3835,3 +3837,14 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 使用者以截圖確認紅色HP球右側、底部欄杆上方空位，新增#merc-vitals兩行「傭兵 HP 目前／上限」「傭兵 MP 目前／上限」。淡紅／淡藍字、半透明黑底、不接收滑鼠事件；PC原圖x320、bottom270，手機左90s／bottom530s。沒有傭兵時隱藏，待命／陣亡仍呈現目前數值。
 - ui.renderStatus沿既有250ms更新，以mercStats取得獨立上限、目前值向上取整且不低於0；只有文字改變才更新節點，不重建整區。無新全域函式、存檔／schema19／SQL或載入順序變動，GAME_UPDATES加入d條目。
 - check.ps1 ALL CHECKS PASSED；隔離瀏覽器PC確認施法後MP即時變動、位置不擋金幣／經驗條／按鈕，Console無error／warn，375px手機無橫向溢出；原傭兵回歸、git diff --check及正式51檔563KB混淆通過。實拍tools/mercenary-vitals-pc.png。待使用者刷新d確認位置與即時HP／MP，確認後才提交。
+## 211. 傭兵地圖技能狀態隱藏秒數（2026-10-28，版本 `20261028e`）
+
+- sceneDrawMercEffects的四顆符石保留圖示，移除下方冷卻秒數／就緒勾號，底框縮至18px；傭兵增益及負面狀態保留名稱與護盾值，隱藏剩餘秒數。管理視窗與召喚物顯示維持原樣，技能計時與效果不變。
+- GAME_UPDATES同步新增e條目；schema19／SQL／載入順序不變。待使用者實玩確認後提交。
+
+## 212. 九種傭兵召喚寵物圖片動畫（2026-10-28，版本 `20261028f`）
+
+- 使用者指定九種全部製作並接入遊戲、有動作。內建image_gen生成靈狼／石衛／靈蝶／風鷹／火靈／冰靈／雷靈／樹靈／蟲群原創透明圖；原稿、留白修正版、提示詞與prepare.js保留tools/sprite-src/mercenary/summons-v1，正式9圖集存images/sprites/mercenary/summons-v1。每張1024×512、4欄2排256px格；上排行走／振翅／漂浮，下排攻擊／施法，各4格，共72格。
+- 新常數MERC_SUMMON_ART提供路徑、格寬與顯示尺寸；mercDrawSummon優先用PNG圖集，載入前沿用原Canvas輪廓。gameNow每140ms推進行走格，依既有actedAt在450ms作用時間播放4格施法；左向鏡射，不改技能傷害、治療、冷卻、召喚上限或存檔。共用原spriteImage快取，sw.js預載九圖。
+- 純視覺變更，schema19／SQL／script順序不變；GAME_UPDATES新增f並保留e秒數隱藏。tools/mercenary-summons-preview.html使用正式繪圖函式，可切行走／攻擊／左右，記憶體localStorage並拒絕連外；test-mercenary-summon-art讀真實PNG驗證尺寸、72格透明／不重複、正式圖片行走／施法／左向及地圖狀態不畫秒數。
+- 驗證完成：check.ps1 ALL CHECKS PASSED、原傭兵50符石／六項技能回歸、9圖集72格透明與唯一性、正式圖片行走／施法／左向與秒數隱藏檢查通過；51檔563KB正式混淆成功、發佈9PNG逐byte一致、git diff --check通過。瀏覽器9/9圖載入、行走／施法／鏡射正常，Console無error／warn；隔離實戰PC／手機召喚與施法扣MP正常，未讀寫正式角色或連外。總覽overview.png與contact.png、正式繪圖game-render.png保留原稿資料夾。待使用者刷新f→配置召喚符石出戰→觀察動作與技能狀態秒數隱藏，確認後才commit。

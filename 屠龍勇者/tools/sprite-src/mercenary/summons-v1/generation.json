@@ -1,0 +1,61 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-10-28",
+  "assets": [
+    {
+      "id": "wolf",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a181ea-5149-7790-aa5f-096924f006a1\\exec-0a4ba255-10c9-4baa-b4bb-c90c77f19ff4.png",
+      "prompt": "Original silver spectral wolf, violet runes; dark fantasy hand painted isometric 4x2 sprite atlas, top row locomotion, bottom row attack/cast, transparent alpha, full body, fixed right facing three-quarter camera, no text or franchise references. Built-in image_gen.",
+      "fixedSource": "C:\\Users\\User\\.codex\\generated_images\\01a181ea-5149-7790-aa5f-096924f006a1\\exec-01d23d8f-545b-4a68-bd89-2b92d3873964.png"
+    },
+    {
+      "id": "golem",
+      "prompt": "Original dark fantasy RPG sprite atlas: mossy ancient stone golem, chunky stone limbs, emerald rune core. Polished hand painted isometric game art, realistic materials, readable at small size. Transparent background, genuine alpha. Exactly 4 columns by 2 rows of equally sized square cells, 8 full-body views of SAME creature consistent size and pivot, generous padding, fixed three-quarter camera facing right. Top row four sequential walking/flapping/hovering loop poses. Bottom row four attack/casting poses: anticipation, strike, glowing release, recovery. Clearly different poses, consistent anatomy. No text, labels, grid, scenery, ground, or commercial franchise references. Canvas aspect ratio 2:1.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a181ea-5149-7790-aa5f-096924f006a1\\exec-9b5e87ad-6744-44a6-b2b7-62f19fa88b5a.png",
+      "fixedSource": "C:\\Users\\User\\.codex\\generated_images\\01a181ea-5149-7790-aa5f-096924f006a1\\exec-5116ad9f-4703-4948-baa5-aa7f1e9aaa11.png"
+    },
+    {
+      "id": "butterfly",
+      "prompt": "Original dark fantasy RPG sprite atlas: magical violet butterfly, ornate translucent lavender wings. Polished hand painted isometric game art, realistic materials, readable at small size. Transparent background, genuine alpha. Exactly 4 columns by 2 rows of equally sized square cells, 8 full-body views of SAME creature consistent size and pivot, generous padding, fixed three-quarter camera facing right. Top row four sequential walking/flapping/hovering loop poses. Bottom row four attack/casting poses: anticipation, strike, glowing release, recovery. Clearly different poses, consistent anatomy. No text, labels, grid, scenery, ground, or commercial franchise references. Canvas aspect ratio 2:1.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a181ea-5149-7790-aa5f-096924f006a1\\exec-61cf3464-ebb0-45d5-a9d2-00ba2a07531d.png",
+      "fixedSource": "C:\\Users\\User\\.codex\\generated_images\\01a181ea-5149-7790-aa5f-096924f006a1\\exec-9f0b29b0-b5d8-4b17-9c7a-0564fd835dc3.png"
+    },
+    {
+      "id": "hawk",
+      "prompt": "Original dark fantasy RPG sprite atlas: majestic teal wind hawk with silver feathers, spread wings. Polished hand painted isometric game art, realistic materials, readable at small size. Transparent background, genuine alpha. Exactly 4 columns by 2 rows of equally sized square cells, 8 full-body views of SAME creature consistent size and pivot, generous padding, fixed three-quarter camera facing right. Top row four sequential walking/flapping/hovering loop poses. Bottom row four attack/casting poses: anticipation, strike, glowing release, recovery. Clearly different poses, consistent anatomy. No text, labels, grid, scenery, ground, or commercial franchise references. Canvas aspect ratio 2:1.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a181ea-5149-7790-aa5f-096924f006a1\\exec-f143fb22-8ba1-4770-b7f8-554dada04b87.png",
+      "fixedSource": "C:\\Users\\User\\.codex\\generated_images\\01a181ea-5149-7790-aa5f-096924f006a1\\exec-a1f5bbf3-baf5-4cd1-ba32-8d38261fe66f.png"
+    },
+    {
+      "id": "flameSpirit",
+      "prompt": "Original dark fantasy RPG sprite atlas: living amber fire spirit, expressive glowing eyes, curling flame body. Polished hand painted isometric game art, realistic materials, readable at small size. Transparent background, genuine alpha. Exactly 4 columns by 2 rows of equally sized square cells, 8 full-body views of SAME creature consistent size and pivot, generous padding, fixed three-quarter camera facing right. Top row four sequential walking/flapping/hovering loop poses. Bottom row four attack/casting poses: anticipation, strike, glowing release, recovery. Clearly different poses, consistent anatomy. No text, labels, grid, scenery, ground, or commercial franchise references. Canvas aspect ratio 2:1.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a181ea-5149-7790-aa5f-096924f006a1\\exec-d87835a2-d035-48ff-b45d-530ee7d4cded.png",
+      "fixedSource": "C:\\Users\\User\\.codex\\generated_images\\01a181ea-5149-7790-aa5f-096924f006a1\\exec-cf08e9eb-4833-4d3f-b6e4-119e1a15af94.png"
+    },
+    {
+      "id": "iceSpirit",
+      "prompt": "Original dark fantasy RPG sprite atlas: floating ice crystal spirit, cyan crystalline arms and luminous core. Polished hand painted isometric game art, realistic materials, readable at small size. Transparent background, genuine alpha. Exactly 4 columns by 2 rows of equally sized square cells, 8 full-body views of SAME creature consistent size and pivot, generous padding, fixed three-quarter camera facing right. Top row four sequential walking/flapping/hovering loop poses. Bottom row four attack/casting poses: anticipation, strike, glowing release, recovery. Clearly different poses, consistent anatomy. No text, labels, grid, scenery, ground, or commercial franchise references. Canvas aspect ratio 2:1.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a181ea-5149-7790-aa5f-096924f006a1\\exec-98028a5c-62a0-4d0c-ab85-f0105d6ebc4c.png",
+      "fixedSource": "C:\\Users\\User\\.codex\\generated_images\\01a181ea-5149-7790-aa5f-096924f006a1\\exec-0b856250-ae7f-4d4f-8d5f-f3d2dab35ebe.png"
+    },
+    {
+      "id": "thunderSpirit",
+      "prompt": "Original dark fantasy RPG sprite atlas: violet lightning spirit, electric horned silhouette and crackling arms. Polished hand painted isometric game art, realistic materials, readable at small size. Transparent background, genuine alpha. Exactly 4 columns by 2 rows of equally sized square cells, 8 full-body views of SAME creature consistent size and pivot, generous padding, fixed three-quarter camera facing right. Top row four sequential walking/flapping/hovering loop poses. Bottom row four attack/casting poses: anticipation, strike, glowing release, recovery. Clearly different poses, consistent anatomy. No text, labels, grid, scenery, ground, or commercial franchise references. Canvas aspect ratio 2:1.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a181ea-5149-7790-aa5f-096924f006a1\\exec-f7542c4f-dea6-4f04-a069-39fc5088e052.png",
+      "fixedSource": "C:\\Users\\User\\.codex\\generated_images\\01a181ea-5149-7790-aa5f-096924f006a1\\exec-6ecf7c26-7852-484b-ba61-df9cd2b5f573.png"
+    },
+    {
+      "id": "treeSpirit",
+      "prompt": "Original dark fantasy RPG sprite atlas: small ancient treant, bark limbs, leafy green crown. Polished hand painted isometric game art, realistic materials, readable at small size. Transparent background, genuine alpha. Exactly 4 columns by 2 rows of equally sized square cells, 8 full-body views of SAME creature consistent size and pivot, generous padding, fixed three-quarter camera facing right. Top row four sequential walking/flapping/hovering loop poses. Bottom row four attack/casting poses: anticipation, strike, glowing release, recovery. Clearly different poses, consistent anatomy. No text, labels, grid, scenery, ground, or commercial franchise references. Canvas aspect ratio 2:1.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a181ea-5149-7790-aa5f-096924f006a1\\exec-71b5c820-f86e-4a74-813b-fadc3ad3b000.png",
+      "fixedSource": "C:\\Users\\User\\.codex\\generated_images\\01a181ea-5149-7790-aa5f-096924f006a1\\exec-7c0f17c1-f662-4814-83bf-b020df2af500.png"
+    },
+    {
+      "id": "swarm",
+      "prompt": "Original dark fantasy RPG sprite atlas: a cohesive swarm of five luminous jade beetles, arranged as a small flying cluster. Polished hand painted isometric game art, realistic materials, readable at small size. Transparent background, genuine alpha. Exactly 4 columns by 2 rows of equally sized square cells, 8 full-body views of SAME creature consistent size and pivot, generous padding, fixed three-quarter camera facing right. Top row four sequential walking/flapping/hovering loop poses. Bottom row four attack/casting poses: anticipation, strike, glowing release, recovery. Clearly different poses, consistent anatomy. No text, labels, grid, scenery, ground, or commercial franchise references. Canvas aspect ratio 2:1.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a181ea-5149-7790-aa5f-096924f006a1\\exec-7e1b32f1-1339-4090-b5fd-598a74220472.png",
+      "fixedSource": "C:\\Users\\User\\.codex\\generated_images\\01a181ea-5149-7790-aa5f-096924f006a1\\exec-7db516b0-ddf3-4dcf-88fd-c20d3d19b91a.png"
+    }
+  ],
+  "paddingEditPrompt": "Edit this game animation atlas, preserving this exact creature identity and the 8 poses. Keep 4 columns x 2 rows equal square cells. CRITICAL: shrink EVERY creature and ALL associated effects to fit entirely inside the central 70% width and 70% height of its own cell; add wide truly transparent margins on EVERY side of EVERY cell. No creature, tail, wing, particle, projectile or glow may touch or cross a cell edge. In attack frames keep magic as a short compact orb near the hand/mouth, never a long beam. Remove any stray pieces from adjacent cells. Each full creature and its effects must be individually isolated and fully visible, equal size and consistent anchor. Preserve beautiful painted detail and alpha transparency. No text, no grid lines."
+}

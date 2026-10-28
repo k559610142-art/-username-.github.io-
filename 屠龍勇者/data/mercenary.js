@@ -576,8 +576,17 @@ function sceneDrawMerc(ctx, camX, camY) {
     sceneDrawMercEffects(ctx, camX, camY, m, d);
     ctx.restore();
 }
-// 原創 Canvas 靈體：各自輪廓、步態／振翅／施法，無外部商業素材。
-function mercDrawSummon(ctx, id, x, y, age, acting) {
+// 原創透明圖集：上排行走／振翅，下排攻擊／施法；載入前沿用Canvas輪廓。
+const MERC_SUMMON_ART = Object.fromEntries(['wolf','golem','butterfly','hawk','flameSpirit','iceSpirit','thunderSpirit','treeSpirit','swarm'].map(id => [id, { src: 'images/sprites/mercenary/summons-v1/' + id + '.png?v=1', cell: 256, size: id === 'hawk' ? 72 : id === 'butterfly' || id === 'swarm' ? 56 : 64 }]));
+function mercDrawSummon(ctx, id, x, y, age, acting, actionAt = age - age % 450, dir = 'right') {
+    const art = MERC_SUMMON_ART[id], img = art && spriteImage(art.src);
+    if (img) {
+        const frame = acting ? clamp(Math.floor((age-actionAt)/112.5),0,3) : Math.floor(age/140)%4;
+        ctx.save();ctx.translate(x,y+5);
+        if (dir === 'left') ctx.scale(-1,1);
+        ctx.drawImage(img,frame*art.cell,acting?art.cell:0,art.cell,art.cell,-art.size/2,-art.size,art.size,art.size);
+        ctx.restore();return;
+    }
     const colors={wolf:'#b9c8ff',golem:'#8caa9b',butterfly:'#edb8ff',hawk:'#afe8e5',flameSpirit:'#ffad55',iceSpirit:'#92eaff',thunderSpirit:'#e6ccff',treeSpirit:'#a7d78a',swarm:'#d1ed78'};
     const color=colors[id], wave=Math.sin(age/120), bob=Math.sin(age/280)*2;
     ctx.save();ctx.translate(x,y+bob);ctx.globalAlpha*=.9;ctx.fillStyle=color;ctx.strokeStyle='#243445';ctx.lineWidth=1.2;
@@ -626,7 +635,7 @@ function sceneDrawMercEffects(ctx, camX, camY, m, d) {
     for(const [i,s] of r.summons.filter(s=>s.until>gameNow).entries()) {
         const side=i?1:-1, acting=gameNow-(s.actedAt||-10000)<450;
         const sx=x+side*30,sy=y+9+i*8;
-        mercDrawSummon(ctx,s.id,sx,sy,gameNow,acting);
+        mercDrawSummon(ctx,s.id,sx,sy,gameNow,acting,s.actedAt,d.dir);
         ctx.font='9px sans-serif';ctx.textAlign='center';ctx.fillStyle='#e2e6ff';ctx.strokeStyle='#111';ctx.lineWidth=3;
         const label=MERC_RUNES[s.id].name.replace('契約','')+' '+Math.ceil((s.until-gameNow)/1000)+'秒';ctx.strokeText(label,sx,sy+14);ctx.fillText(label,sx,sy+14);
     }
@@ -666,17 +675,15 @@ function sceneDrawMercEffects(ctx, camX, camY, m, d) {
         ctx.restore();
     }
     ctx.font='9px sans-serif';ctx.textAlign='center';ctx.fillStyle='#d3e8ff';ctx.strokeStyle='#111';ctx.lineWidth=3;
-    // 四顆小符石顯示冷卻，避免四行技能名壓到玩家和小地圖。
+    // 四顆小符石保留圖示，地圖上隱藏技能與狀態秒數。
     m.skills.forEach((id,i)=>{
         if(!MERC_RUNES[id])return;
         const sx=x-38+i*20,sy=y+23,im=spriteImage('images/icons/items/mercRune-v1/'+id+'.png?v=1');
-        ctx.fillStyle='#101622bb';ctx.fillRect(sx-1,sy-1,18,27);
+        ctx.fillStyle='#101622bb';ctx.fillRect(sx-1,sy-1,18,18);
         if(im)ctx.drawImage(im,sx,sy,16,16);
         else {ctx.fillStyle='#a3d9ef';ctx.fillText(String(i+1),sx+8,sy+12);}
-        const sec=Math.max(0,Math.ceil(((r.cds[id]||0)-gameNow)/1000));
-        ctx.fillStyle=sec?'#ead4a5':'#98e4af';ctx.fillText(sec?String(sec):'✓',sx+8,sy+24);
     });
-    const active=Object.entries(r.buffs).filter(([,b])=>b.until>gameNow).map(([id,b])=>(MERC_RUNES[id]?MERC_RUNES[id].name:b.name||id)+' '+Math.ceil((b.until-gameNow)/1000)+'秒'+(['shield','fortify','barrier'].includes(id)?' 盾'+Math.ceil(b.power):''));
-    for(const b of Object.values(mercNegative(m)))active.push(b.name+' '+Math.ceil((b.until-gameNow)/1000)+'秒');
+    const active=Object.entries(r.buffs).filter(([,b])=>b.until>gameNow).map(([id,b])=>(MERC_RUNES[id]?MERC_RUNES[id].name:b.name||id)+(['shield','fortify','barrier'].includes(id)?' 盾'+Math.ceil(b.power):''));
+    for(const b of Object.values(mercNegative(m)))active.push(b.name);
     active.forEach((text,i)=>{ctx.strokeText(text,x,y+62+i*11);ctx.fillText(text,x,y+62+i*11);});
 }

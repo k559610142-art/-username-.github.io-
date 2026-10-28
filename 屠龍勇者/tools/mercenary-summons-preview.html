@@ -1,0 +1,16 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><base href="../"><meta name="viewport" content="width=device-width,initial-scale=1"><title>九種傭兵召喚寵物動畫</title><style>body{margin:0;background:#151c25;color:#f3e2bc;font:16px sans-serif}header{padding:12px}button{padding:8px;margin:3px;background:#354453;color:#fff;border:1px solid #a38a55;border-radius:4px}canvas{display:block;max-width:100%;height:auto;margin:auto}#status{font-size:13px;color:#b4cfb5}</style></head><body><header>九種傭兵召喚寵物 · 隔離動畫預覽<br><button id="idle">行走／振翅</button><button id="attack">攻擊／施法</button><button id="left">轉向</button><span id="status">載入中…</span></header><canvas id="summons" width="900" height="810"></canvas><script>
+(async()=>{
+ const memory=new Map();Object.defineProperty(window,'localStorage',{value:{getItem:k=>memory.get(k)||null,setItem:(k,v)=>memory.set(k,String(v)),removeItem:k=>memory.delete(k)}});
+ const localFetch=fetch.bind(window);window.fetch=(u,o)=>{if(new URL(u,location.href).origin!==location.origin)throw Error('隔離預覽禁止連外');return localFetch(u,o);};
+ const html=await(await fetch('index.html',{cache:'no-store'})).text();
+ for(const m of html.matchAll(/<script src="(data\/[^"?]+\.js)\?v=([^\"]+)"/g)){
+  if(['data/main.js','data/pwa.js'].includes(m[1]))continue;
+  await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=m[1]+'?v='+m[2]+'&preview=summons-'+Date.now();s.onload=resolve;s.onerror=reject;document.head.append(s);});
+ }
+ const ids=Object.keys(MERC_SUMMON_ART),images=await Promise.all(ids.map(id=>new Promise((resolve,reject)=>{const im=spriteImage(MERC_SUMMON_ART[id].src);if(im)return resolve(im);const check=()=>{const image=spriteImage(MERC_SUMMON_ART[id].src);if(image)resolve(image);else setTimeout(check,30);};setTimeout(check,30);setTimeout(()=>reject(Error('圖片載入逾時：'+id)),10000);})));
+ document.getElementById('status').textContent=images.length+'/9 圖片載入 · 72格 · 不讀寫正式角色';
+ const c=document.getElementById('summons'),g=c.getContext('2d');let action=false,dir='right';
+ document.getElementById('idle').onclick=()=>action=false;document.getElementById('attack').onclick=()=>action=true;document.getElementById('left').onclick=()=>dir=dir==='right'?'left':'right';
+ function draw(t){g.fillStyle='#18212b';g.fillRect(0,0,c.width,c.height);ids.forEach((id,i)=>{const x=150+i%3*300,y=155+Math.floor(i/3)*260;g.fillStyle='#273544';g.fillRect(x-142,y-136,284,244);g.save();g.translate(x,y);g.scale(2.5,2.5);mercDrawSummon(g,id,0,10,t,action,t-t%450,dir);g.restore();g.fillStyle='#f5e4bc';g.textAlign='center';g.font='20px sans-serif';g.fillText(MERC_RUNES[id].name.replace('契約',''),x,y+65);g.font='13px sans-serif';g.fillStyle='#b3c6d4';g.fillText(action?'攻擊／施法':'行走／振翅',x,y+90);});requestAnimationFrame(draw);}requestAnimationFrame(draw);
+})().catch(e=>{document.getElementById('status').textContent=e.message;console.error(e);});
+</script></body></html>
