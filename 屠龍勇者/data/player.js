@@ -167,6 +167,7 @@ function buffName(b) {
     return b.src === 'skill' ? (findSkill(b.id) || {}).name : ITEMS[b.id].short || ITEMS[b.id].name;
 }
 function cleanBuffs() {
+    mercDebuffTick();
     const now = gameNow;
     for (const k in player.buffs) if (player.buffs[k].until <= now) delete player.buffs[k];
     clockSanity();
@@ -342,7 +343,7 @@ function calcStats() {
         mpRegen: 1 + Math.floor(p.lv / 12) + Math.max(0, Math.floor((s.wis - 10) * c.mpRegenK)) + (fx.mpRegen || 0),
         // 負重（2026-10-16 改版）：底值 1200＋（力量＋體質）×80＋等級×20＋裝備（腰帶 weight）；原本 (力量＋體質)×100，1～50 級不會成長
         weightMax: 1200 + (s.str + s.con) * 80 + p.lv * 20 + (fx.weight || 0),
-        atkMs, castMs,
+        atkMs: atkMs * mercSlowFactor(p), castMs: castMs * mercSlowFactor(p),
         haste: !!fx.haste, brave: !!fx.brave, wise: !!fx.wise,
     };
 }

@@ -236,7 +236,7 @@ function huntTick(dt) {
         m.atkCd -= dt;
         if (m.atkCd > 0) continue;
         if (!mobInReach(m)) { m.atkCd = 200; continue; }   // 還沒走到角色旁邊
-        m.atkCd =(m === hunt.mon ? m.spd : m.spd * MOB_SIDE_SLOW) * bossEnchantAttackFactor(m) * (m.mercEffect === 'slow' && m.mercUntil > gameNow ? (m.boss ? 1.05 : 1.2) : 1);
+        m.atkCd =(m === hunt.mon ? m.spd : m.spd * MOB_SIDE_SLOW) * bossEnchantAttackFactor(m) * (mercEffectOn(m, 'slow') ? (m.boss ? 1.05 : 1.2) : 1);
         if (gameNow >= m.stunUntil) monsterAttack(calcStats(), m);
         if (!fightAlive()) return;
     }
@@ -725,7 +725,7 @@ function monsterAttack(st, mon) {
         dmg = rand(mon.dmg[0], mon.dmg[1]);
         if (st.ac < 0) dmg -= rand(0, Math.floor(-st.ac / 5));   // AC 負值越多，額外減傷越多
     }
-    if (mon.mercEffect === 'weaken' && mon.mercUntil > gameNow) dmg *= mon.boss ? .95 : .85;
+    if (mercEffectOn(mon, 'weaken')) dmg *= mon.boss ? .95 : .85;
     dmg = Math.max(0, Math.round(dmg - st.reduce));
     if (st.absorb && player.mp > 0) {
         const a = Math.min(player.mp, Math.floor(dmg * st.absorb));
@@ -734,6 +734,7 @@ function monsterAttack(st, mon) {
     }
     dmg = bossEnchantAbsorb(Math.max(0, Math.round(bossEnchantEnemyDamage(mon, dmg))));
     dmg = dollTakeDamage(mercProtect(dmg), st);
+    mercEnemyStatus(mon, magic, dmg, player);
     worldVfxEnemy(mon, magic);
     addLog(magic ? `${mon.name}施放「${mon.magic.name}」，你受到 ${dmg} 傷害` : `${mon.name}攻擊，你受到 ${dmg} 傷害`, 'hurt');
     if (player.hp <= 0) { onDeath(mon); return; }

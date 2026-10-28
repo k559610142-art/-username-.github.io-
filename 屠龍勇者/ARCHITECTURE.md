@@ -179,6 +179,7 @@
 | `tools/test-doll-dismantle.js`、`images/icons/items/magicCrystal-v1.png`、`tools/icon-src/magic-crystal-v1/` | 娃娃商人傳說裝備分解隔離測試、魔法結晶圖示／原稿／提示詞（第162節） |
 | `tools/test-dolls.js` | 21款娃娃道具／裝卸／跟隨／存檔隔離測試（第154節） |
 | `data/mercenary.js` | 獨立傭兵：六職業、50符石、招募／復活、四格技能／12格裝備、跟隨標記與戰鬥（第197節） |
+| `tools/test-mercenary-skills.js`、`tools/mercenary-skills-preview.png` | 傭兵六項技能補強的距離／尋路／淨化／狀態與原生Canvas隔離驗證（第209節） |
 | `tools/test-mercenary.js`、`tools/mercenary-preview.html` | 傭兵隔離回歸／記憶體瀏覽器預覽，不連正式後端 |
 | `data/doll-abilities.js` | 21款娃娃基本能力、被動、冷卻／出場時間與觸發狀態（第157節） |
 | `tools/test-doll-abilities.js` | 21款數值、實際戰鬥／藥水、冷卻存檔、範圍防重複與模擬隔離（第157節） |
@@ -223,7 +224,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261028b`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261028c`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3815,3 +3816,17 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - tools/mercenary-rune-drops.sql為使用者已授權的獨立可重跑增量，不改既有SQL：向現有目錄合併50件道具與mercRunes配置，保留舊規則快照；新版本後綴-mercRunes20261028a。新增內部loot_merc_rune並撤銷PUBLIC／anon／authenticated執行權；增量補普通及畫面憑證map.q、loot_roll尾端附符石（財寶分支仍先return）、已驗勝利與參與資格的loot_raid上下文mercRaid:true。品質與規則依出怪時憑證保存，舊規則不補抽，同事件重試沿同收據；缺必要函式或結構不同交易回滾。export-loot-catalog.js日後匯出亦包含mercRunes，這次未重新產生舊SQL／完整目錄。
 - 部署：**由使用者先在Supabase SQL Editor執行tools/mercenary-rune-drops.sql，再更新前端；本助手未執行正式SQL。**前置為既有server-loot、loot-screen（財寶圖規則保留既有treasure-maps）。日後重裝舊server-loot／loot-screen，須重新執行treasure-maps再執行本SQL。
 - 驗證：記憶體真實函式測全50種可抽／分類、品質與地區限制、SIM拒絕、固定機率、兩次實際掉落堆疊、後端不本機重抽、詳情與圖鑑；PGlite真SQL重跑、保留全部舊目錄與快照、10萬次普通約0.1%與2萬次首領約5%、各池全抽中、財寶仍僅通貨、普通／畫面憑證帶品質、離圖後依快照、真實副本領特殊、同憑證／副本重領相同、失敗無獎與內部權限。舊財寶測試改為schema>=15，容許後續schema19但仍檢查財寶功能。傭兵／任務／50圖／收據／離線／財寶前後端及後端RPC回歸通過；check.ps1 ALL CHECKS PASSED。正式51檔混淆549KB建置與git diff --check通過。瀏覽器隔離圖鑑基本0.1%／特殊5%與圖片外框正常，實拍tools/mercenary-rune-drops-preview.png；未讀寫正式角色。待使用者SQL／實玩確認後提交。
+
+## 209. 傭兵技能六項補強（2026-10-28，版本 `20261028c`）
+
+- 使用者要求完成狀態共存、淨化用途、召喚物、技能特效與狀態顯示、射程尋路、自動技能優先六項；並選擇讓現有毒／冰怪物施加可淨化狀態。schema19、SQL與script載入順序不變。暫不擴充離線／團隊副本／世界首領傭兵參戰，符石掉落仍依第208節部署。
+- mercEffectOn／mercEffectSet以怪物瞬時mercEffects分別保存slow／weaken到期，兩者可同時生效及獨立過期。combat敵人攻速／傷害與傭兵受擊讀同一狀態；普通緩速間隔×1.2／衰弱傷害×0.85，首領沿用×1.05／×0.95，免暈眩不變。
+- 新mercDebuffs WeakMap以玩家／傭兵物件保存敵方短期狀態，不寫player欄位或存檔。mercNegative清理過期；mercEnemyStatus僅正式模式魔法實際造成傷害後附加：giantSpider／venomSpider／spiderQueen中毒6秒，每秒該次實際傷害12%（四捨五入、至少1，毒傷不致死）；ghast／frostWitch／iceGiantKing緩速4秒。重複命中刷新時間、不疊倍率；閃避／全盾擋下／物攻／SIM不附加。mercDebuffTick於cleanBuffs推進，每次最多一跳、不補算背景長時間；回村、死亡、傭兵待命清除。mercSlowFactor使玩家物攻與施法間隔、傭兵普攻間隔×1.2；不降低走速。icons既有臨時狀態區顯示玩家狀態、倒數與效果提示。
+- 淨化之光清除玩家對應WeakMap與既有negative／debuff增益；淨身清除傭兵對應WeakMap與短期negative增益。過期狀態不觸發、不扣MP，正面增益保留；沒有出戰傭兵時怪物仍可對玩家施加狀態。
+- mercSkillOrder依緊急（任一方HP<40%）即時治療／背水一戰→淨化→一般治療→射程內至少2怪的群攻→其他排序，同類仍依四格；每秒最多一招與原HP／MP門檻保持。無敵人的搜尋期仍可救援／淨化；未到期增益與同名存活召喚不重放。mercAttackKind／mercSkillRange共用技能分類與射程。
+- mercWeaponRange：近戰1格（斜向容差1.45）、弓槍8格；攻擊魔法及召喚傷害4格（遠程容差0.5），均檢查lineOfSight；mercTarget對應怪物場景實體，mercInRange使用傭兵座標，不借玩家位置。場景不存在時沿玩家抽象背景戰鬥；有場景但無實體不偷打。距離外不扣魔、不進CD；主要目標射程外時可先攻擊目前怪群內可達的敵人，不修改玩家鎖定；群攻先目標再其他射程內怪、最多3隻。敵人改打傭兵也檢查近戰1／魔法4格。sceneMercTick依攻擊能力走向合法射程格，以真正findPath到指定空格、300ms退避重找，遠離玩家8格仍回身邊；不追離玩家9格以上目標。
+- 召喚物仍最多2隻、2秒作用一次。mercDrawSummon為原創Canvas輪廓：靈狼四足步態、石衛重軀擺臂、靈蝶振翅、風鷹展翼、火靈火焰、冰靈晶體、雷靈閃電、樹靈樹冠、蟲群環飛；帶動作光圈、名稱及剩餘秒數，不再用同色光點。屬程序繪圖，不是新增寫實PNG人物圖集，無商業素材。
+- mercSkillVfx將成功技能及召喚行動寫入mercRuntime.vfx（最多16個、700ms），sceneDrawMercEffects畫火球、冰晶、閃電、毒霧、斬光、新星放射、星辰墜落、治療／補助光紋；群攻逐實際命中目標畫圖。傭兵及玩家團隊屏障帶護盾輪廓，怪物緩／弱各自倒數標記。四顆符石小圖在傭兵下方顯示冷卻，增益／護盾與負面狀態有倒數。無額外傷害或亂數。
+- mercStatusText／mercUpdateLive管理視窗與村莊面板每250ms更新就緒／冷卻、增益秒數及護盾餘量（團隊屏障分玩家／傭兵）；data-merc-live-status／data-merc-rune-live避免同時開面板與對話框的重複ID。ui.renderStatus呼叫，僅改文字，不重建四孔。GAME_UPDATES同步新增c條目。
+- tools/test-mercenary-skills.js使用正式遊戲VM、真實monsterAttack／findPath及原生Canvas驗證六項，輸出tools/mercenary-skills-preview.png；tools/mercenary-preview.html新增純記憶體技能戰鬥／附加毒緩／淨化配置按鈕與時鐘，仍禁止連外、不操作正式角色。原50符石測試修正先推時間再建立有效負面狀態，避免拿已過期狀態測淨化。
+- 驗證完成：新六項隔離測試、原50符石／任務／50圖／六模型216格96組／符石掉落／雙爆／玩家射程／離線掉落通過；娃娃21款能力回歸在記憶體把舊測試固定schema18放寬為>=18後通過（沒有修改該測試原檔，原命令仍會卡舊版本斷言）。check.ps1 ALL CHECKS PASSED、git diff --check、正式51檔混淆562KB成功。隔離瀏覽器桌面實際掛機／兩召喚與冷卻、玩家中毒→淨化之光／傭兵緩速→淨身的正式自動施放紀錄、375px兩欄與scrollWidth=375，Console無error／warn；實拍tools/mercenary-skills-browser.png／mercenary-skills-mobile.png。沒有操作正式角色／資料庫，使用者實玩確認前不commit／推送。

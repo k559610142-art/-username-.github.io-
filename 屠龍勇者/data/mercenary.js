@@ -1,4 +1,4 @@
-// 傭兵框架：六職業、50符石、獨立裝備／HP／MP（架構第197節）。人物模型後續製作。
+// 傭兵：六職業、50符石、獨立裝備／HP／MP（架構第197、206、209節）。
 const MERC_CLASSES = {
     spirit: { name: '契靈師', person: '璃音', sex: '女', age: '孩童', hp: 110, mp: 130, atk: 9, magic: 15, def: 1, regen: 5 },
     bulwark: { name: '壁壘衛士', person: '雷恩', sex: '男', age: '中年', hp: 200, mp: 65, atk: 11, magic: 7, def: 8, regen: 2 },
@@ -137,6 +137,35 @@ function mercNameHtml(m) {
     return '<span class="merc-name merc-grade-' + rank.id + '">' + esc(rank.name + '・' + c.person + '・' + c.name) + '</span>';
 }
 const mercRuntime = new WeakMap();
+const mercDebuffs = new WeakMap(); // 玩家與傭兵的敵方狀態只存在本次遊玩，不改存檔。
+function mercNegative(owner) {
+    let buffs=mercDebuffs.get(owner);
+    if(!buffs){buffs={};mercDebuffs.set(owner,buffs);}
+    for(const id in buffs)if(buffs[id].until<=gameNow)delete buffs[id];
+    return buffs;
+}
+function mercEnemyStatus(mon, magic, dealt, owner) {
+    if(SIM_MODE || !magic || dealt<=0 || !owner || owner.hp<=0)return;
+    const kind=['giantSpider','venomSpider','spiderQueen'].includes(mon.id)?'poison':['ghast','frostWitch','iceGiantKing'].includes(mon.id)?'slow':null;
+    if(!kind)return;
+    const buffs=mercNegative(owner), old=buffs[kind];
+    buffs[kind]={name:kind==='poison'?'中毒':'冰霜緩速',until:gameNow+(kind==='poison'?6000:4000),at:old?old.at:gameNow+1000,damage:Math.max(1,Math.round(dealt*.12))};
+    addLog((owner===player?'你':'傭兵')+'受到'+buffs[kind].name+'！','warn');
+}
+function mercDebuffTick() {
+    if(SIM_MODE || !player)return;
+    for(const owner of [player,player.mercenary].filter(Boolean)) {
+        if(owner.hp<=0 || owner===player.mercenary && (!owner.active || owner.dead) || inTown()){mercDebuffs.delete(owner);continue;}
+        const b=(mercDebuffs.get(owner)||{}).poison;
+        if(b && b.until<gameNow){delete mercDebuffs.get(owner).poison;continue;}
+        if(!b || b.at>gameNow)continue;
+        b.at=gameNow+1000;
+        // 毒傷不致死、不觸發反傷／代擋，避免重複附加和找不到死亡來源。
+        const damage=Math.min(Math.max(0,owner.hp-1),b.damage);owner.hp-=damage;
+        if(damage)addLog((owner===player?'你':'傭兵')+'中毒受到 '+damage+' 傷害','hurt');
+    }
+}
+function mercSlowFactor(owner) { return !SIM_MODE && owner && mercNegative(owner).slow ? 1.2 : 1; }
 function mercActive() { const m = player && player.mercenary; return !SIM_MODE && m && !m.dead && m.active && player.hp > 0 ? m : null; }
 function mercState(m = player.mercenary) {
     let r = mercRuntime.get(m);
@@ -144,6 +173,73 @@ function mercState(m = player.mercenary) {
     return r;
 }
 function mercBuff(id, m = player.mercenary) { const b = m && mercState(m).buffs[id]; return b && b.until > gameNow ? b.power : 0; }
+function mercEffectOn(mon, kind) { return !!(mon && mon.mercEffects && mon.mercEffects[kind] > gameNow); }
+function mercEffectSet(mon, kind, sec) {
+    if (!mon.mercEffects) mon.mercEffects = {};
+    mon.mercEffects[kind] = Math.max(mon.mercEffects[kind] || 0, gameNow + sec * 1000);
+}
+function mercWeaponRange(m = player.mercenary) {
+    const w = m && m.equip.weapon, d = w && ITEMS[w.id];
+    return d && ['bow','gun'].includes(d.type) ? 8 : 1;
+}
+function mercTarget(mon) { return scene && scene.mons && scene.mons.find(x => x.inst === mon && !x.dead); }
+function mercInRange(mon, range, origin) {
+    if (!scene || !scene.grid || !scene.pl) return true; // 無場景的背景戰鬥沿玩家的抽象距離規則。
+    const d = origin || scene.mercenary, t = mercTarget(mon);
+    if (!d || !t) return false;
+    const dx = Math.abs(t.rx - d.rx), dy = Math.abs(t.ry - d.ry);
+    return (range === 1 ? Math.max(dx, dy) <= 1.45 : Math.hypot(dx, dy) <= range + .5) && lineOfSight(Math.round(d.rx), Math.round(d.ry), Math.round(t.rx), Math.round(t.ry));
+}
+function mercAttackKind(k) { return ['physical','physicalArea','pierce','execute','bleed','stun','drain','magic','slow','magicArea','poison','weaken'].includes(k); }
+function mercSkillRange(s) { return ['magic','slow','magicArea','poison','weaken'].includes(s.kind) ? 4 : mercWeaponRange(); }
+function mercSkillOrder(m) {
+    const st = mercStats(m), ps = calcStats(), critical = player.hp < ps.maxHp * .4 || m.hp < st.hp * .4;
+    const score = id => {
+        const s = MERC_RUNES[id]; if (!s) return 99;
+        if (critical && ['healPlayer','healBoth','restore','healSelf','lastStand'].includes(s.kind)) return 0;
+        if (['cleansePlayer','cleanseSelf'].includes(s.kind)) return 1;
+        if (['healPlayer','healBoth','restore','healSelf','hot','selfHot'].includes(s.kind)) return 2;
+        if (s.kind.endsWith('Area') && hunt && hunt.mobs.filter(t => t.hp > 0 && mercInRange(t, mercSkillRange(s))).length >= 2) return 3;
+        return 4;
+    };
+    return m.skills.map((id,i) => ({id,i,score:score(id)})).sort((a,b) => a.score-b.score || a.i-b.i).map(x => x.id);
+}
+function mercSkillVfx(id, mon) {
+    if (SIM_MODE || !scene || !scene.mercenary) return;
+    const r = mercState(), d = scene.mercenary, s = MERC_RUNES[id];
+    if (!s) return;
+    const t = mercAttackKind(s.kind) || s.kind.startsWith('summon') && s.kind !== 'summonHeal' ? mercTarget(mon) : null;
+    const healPlayer = ['healPlayer','healBoth','restore','hot','manaPlayer','cleansePlayer','summonHeal'].includes(s.kind);
+    const dest = t || (healPlayer ? scene.pl : d);
+    if (!dest) return;
+    if (!r.vfx) r.vfx = [];
+    r.vfx.push({ id, at: gameNow, from: {x:d.rx,y:d.ry}, to:{x:dest.rx,y:dest.ry} });
+    if (r.vfx.length > 16) r.vfx.shift();
+}
+function mercStatusText(m = player.mercenary) {
+    if (!m || m.dead) return '';
+    const r = mercState(m), parts = [];
+    for (const id of m.skills) if (MERC_RUNES[id]) {
+        const left = Math.max(0, Math.ceil(((r.cds[id] || 0)-gameNow)/1000));
+        parts.push(MERC_RUNES[id].name + '：' + (left ? left+'秒' : '就緒'));
+    }
+    for (const [id,b] of Object.entries(r.buffs)) if (b.until > gameNow) {
+        const shield = ['shield','fortify','barrier'].includes(id);
+        parts.push((MERC_RUNES[id] ? MERC_RUNES[id].name : b.name || id) + ' ' + Math.ceil((b.until-gameNow)/1000)+'秒' + (shield ? '／盾'+Math.ceil(b.power)+(id==='barrier'?'／玩家盾'+Math.ceil(b.player):'') : ''));
+    }
+    for(const b of Object.values(mercNegative(m))) parts.push(b.name+' '+Math.ceil((b.until-gameNow)/1000)+'秒');
+    return parts.join(' · ');
+}
+function mercUpdateLive() {
+    if (!player || !player.mercenary) return;
+    for (const el of document.querySelectorAll('[data-merc-live-status]')) el.textContent = mercStatusText();
+    for (let i=0;i<4;i++) {
+        const id=player.mercenary.skills[i];
+        if (!id) continue;
+        const r=mercState(), b=r.buffs[id], sec=Math.max(0,Math.ceil(((r.cds[id]||0)-gameNow)/1000));
+        for (const el of document.querySelectorAll('[data-merc-rune-live="'+i+'"]')) el.textContent=(sec ? '冷卻 '+sec+' 秒' : '技能就緒')+(b && b.until>gameNow ? ' · 生效 '+Math.ceil((b.until-gameNow)/1000)+' 秒' : '');
+    }
+}
 function mercStats(m = player.mercenary) {
     const c = MERC_CLASSES[m.cls], fx = {}, w = m.equip.weapon, d = w && ITEMS[w.id];
     for (const slot of MERC_SLOTS) {
@@ -157,7 +253,7 @@ function mercStats(m = player.mercenary) {
         magic: c.magic + m.lv * 2 + (fx.sp || 0) * 3 + ((d && d.sp) || 0) * 3,
         def: c.def + m.lv + (fx.ac || 0) + mercBuff('iron', m), mr: 10 + m.lv + (fx.mr || 0) + mercBuff('ward', m),
         regen: c.regen, dodge: Math.min(.5, (m.cls === 'wild' ? .08 : 0) + (fx.dodge || 0) + mercBuff('evasion', m)),
-        heal: m.cls === 'wish' ? 1.2 : 1, speed: (d ? WEAPON_TYPES[d.type].spd : 1200) / (1 + (fx.spdMul || 0) + mercBuff('haste', m)) };
+        heal: m.cls === 'wish' ? 1.2 : 1, speed: (d ? WEAPON_TYPES[d.type].spd : 1200) / (1 + (fx.spdMul || 0) + mercBuff('haste', m)) * mercSlowFactor(m) };
 }
 function mercNormalize(p) {
     const m = p.mercenary;
@@ -216,9 +312,11 @@ function mercTakeDamage(value) {
 function mercEnemyAttack(mon) {
     const m = mercActive(); if (!m || !chance(mercBuff('taunt') || .25)) return false;
     const st = mercStats(m), magic = mon.magic && chance(mon.magic.p);
+    if (!mercInRange(mon, magic ? 4 : 1)) return false;
     let value = magic ? rand(...mon.magic.dmg) * (1 - Math.min(150, st.mr) / 200) : rand(...mon.dmg);
-    if (mon.mercEffect === 'weaken' && mon.mercUntil > gameNow) value *= mon.boss ? .95 : .85;
+    if (mercEffectOn(mon, 'weaken')) value *= mon.boss ? .95 : .85;
     const dealt = mercTakeDamage(value);
+    mercEnemyStatus(mon, magic, dealt, m);
     if (mercBuff('thorn', m) && mon.hp > 0) mon.hp -= Math.round(dealt * mercBuff('thorn', m));
     addLog('⚑ 傭兵承受 ' + dealt + ' 傷害', 'hurt'); return true;
 }
@@ -261,13 +359,17 @@ function mercCast(id, mon) {
     if (m.mp < s.mp || (r.cds[id] || 0) > gameNow || r.skillAt > gameNow) return false;
     const hpLow = player.hp < ps.maxHp * .7, selfLow = m.hp < st.hp * .6;
     if (k === 'healPlayer' && !hpLow || ['healBoth', 'restore', 'hot'].includes(k) && !hpLow && !selfLow || ['healSelf', 'selfHot'].includes(k) && !selfLow || k === 'lastStand' && m.hp >= st.hp * .4 || k === 'manaPlayer' && player.mp >= ps.maxMp * .5 || k === 'manaSelf' && m.mp >= st.mp * .5 || k === 'convert' && (m.mp >= st.mp * .5 || m.hp <= st.hp * .5)) return false;
-    if (k === 'cleansePlayer' && !Object.values(player.buffs).some(b => b.negative || b.src === 'debuff')) return false;
-    if (k === 'cleanseSelf' && !Object.keys(r.buffs).some(key => r.buffs[key].negative)) return false;
+    if (k === 'cleansePlayer' && !Object.values(player.buffs).some(b => b.until > gameNow && (b.negative || b.src === 'debuff')) && !Object.keys(mercNegative(player)).length) return false;
+    if (k === 'cleanseSelf' && !Object.keys(r.buffs).some(key => r.buffs[key].until > gameNow && r.buffs[key].negative) && !Object.keys(mercNegative(m)).length) return false;
     const attackKinds = ['physical','physicalArea','pierce','execute','bleed','stun','drain','magic','slow','magicArea','poison','weaken'];
     if (attackKinds.includes(k) && (!mon || mon.hp <= 0)) return false;
+    if (attackKinds.includes(k) && !mercInRange(mon, mercSkillRange(s))) return false;
+    if (r.buffs[id] && r.buffs[id].until > gameNow && r.buffs[id].power > 0) return false;
+    if (k.startsWith('summon') && r.summons.some(x => x.id === id && x.until > gameNow)) return false;
     mercPlayAnim(['physical','physicalArea','pierce','execute','bleed','stun','drain'].includes(k) ? 'attack' : 'cast', mon);
     m.mp -= s.mp; r.cds[id] = gameNow + s.cd * 1000; r.skillAt = gameNow + 1000;
     const heal = v => Math.round(st.magic * v * st.heal), selfHeal = v => { m.hp = Math.min(st.hp, m.hp + heal(v)); }, playerHeal = v => { player.hp = Math.min(ps.maxHp, player.hp + heal(v)); };
+    if (!attackKinds.includes(k)) mercSkillVfx(id, mon);
     if (k.startsWith('summon')) {
         r.summons = r.summons.filter(x => x.until > gameNow); if (r.summons.length >= 2) r.summons.shift();
         r.summons.push({ id, until: gameNow + s.sec * 1000, at: gameNow, power: s.power * (m.cls === 'spirit' ? 1.2 : 1) });
@@ -276,16 +378,16 @@ function mercCast(id, mon) {
     else if (k === 'manaPlayer') player.mp = Math.min(ps.maxMp, player.mp + s.power);
     else if (k === 'manaSelf') m.mp = Math.min(st.mp, m.mp + s.power);
     else if (k === 'convert') { const n = Math.floor(st.hp * s.power); m.hp -= n; m.mp = Math.min(st.mp, m.mp + n); }
-    else if (k === 'cleansePlayer') { for (const key in player.buffs) if (player.buffs[key].negative || player.buffs[key].src === 'debuff') delete player.buffs[key]; }
-    else if (k === 'cleanseSelf') { for (const key in r.buffs) if (r.buffs[key].negative) delete r.buffs[key]; }
+    else if (k === 'cleansePlayer') { mercDebuffs.delete(player); for (const key in player.buffs) if (player.buffs[key].negative || player.buffs[key].src === 'debuff') delete player.buffs[key]; }
+    else if (k === 'cleanseSelf') { mercDebuffs.delete(m); for (const key in r.buffs) if (r.buffs[key].negative) delete r.buffs[key]; }
     else if (attackKinds.includes(k)) {
         const magic = ['magic','slow','magicArea','poison','weaken'].includes(k);
         const power = (magic ? st.magic : st.atk) + mercBuff('focus');
-        const targets = k.endsWith('Area') ? hunt.mobs.filter(x => x.hp > 0).slice(0,3) : [mon];
-        if (k === 'bleed' || k === 'poison') r.dots.push({ mon, until: gameNow + s.sec * 1000, at: gameNow + 1000, amount: power * s.power, magic });
-        else for (const target of targets) { const dealt = mercHit(target, power * s.power * (k === 'execute' && target.hp < target.maxHp * .3 ? 2 : 1), magic, k === 'pierce'); if (k === 'drain') m.hp = Math.min(st.hp, m.hp + Math.round(dealt * .5)); }
+        const targets = k.endsWith('Area') ? [mon, ...hunt.mobs.filter(x => x !== mon)].filter(x => x.hp > 0 && mercInRange(x, mercSkillRange(s))).slice(0,3) : [mon];
+        if (k === 'bleed' || k === 'poison') { mercSkillVfx(id, mon); r.dots.push({ mon, until: gameNow + s.sec * 1000, at: gameNow + 1000, amount: power * s.power, magic }); }
+        else for (const target of targets) { const dealt = mercHit(target, power * s.power * (k === 'execute' && target.hp < target.maxHp * .3 ? 2 : 1), magic, k === 'pierce'); mercSkillVfx(id, target); if (k === 'drain') m.hp = Math.min(st.hp, m.hp + Math.round(dealt * .5)); }
         if (k === 'stun' && !mon.boss) mon.stunUntil = Math.max(mon.stunUntil || 0, gameNow + s.sec * 1000);
-        if (k === 'slow' || k === 'weaken') { mon.mercEffect = k; mon.mercUntil = gameNow + s.sec * 1000; }
+        if (k === 'slow' || k === 'weaken') mercEffectSet(mon, k, s.sec);
     } else {
         let power = s.power;
         if (['shield','selfShield','teamShield'].includes(k)) power = heal(power);
@@ -304,18 +406,27 @@ function mercTick(dt) {
         b.at = gameNow + 1000; m.hp = Math.min(st.hp, m.hp + Math.round(st.magic * s.power * st.heal));
         if (s.kind === 'hot') player.hp = Math.min(calcStats().maxHp, player.hp + Math.round(st.magic * s.power * st.heal));
     }
-    if (!player.hunting || !mon) return;
-    for (const id of m.skills) if (mercCast(id, mon)) break;
+    if (!player.hunting) return;
+    for (const id of mercSkillOrder(m)) {
+        const s=MERC_RUNES[id];
+        const target=s && mercAttackKind(s.kind) && mon ? [mon,...hunt.mobs.filter(x=>x!==mon)].find(x=>x.hp>0 && mercInRange(x,mercSkillRange(s))) : mon;
+        if (mercCast(id, target)) break;
+    }
     for (const dot of r.dots) if (dot.until >= gameNow && dot.mon.hp > 0 && hunt.mobs.includes(dot.mon) && dot.at <= gameNow) { dot.at = gameNow + 1000; mercHit(dot.mon, dot.amount, dot.magic); }
     r.dots = r.dots.filter(x => x.until > gameNow && x.mon.hp > 0 && hunt.mobs.includes(x.mon));
     r.summons = r.summons.filter(x => x.until > gameNow);
     for (const x of r.summons) {
-        if (x.at > gameNow) continue; x.at = gameNow + 2000;
+        if (x.at > gameNow) continue;
         const s = MERC_RUNES[x.id];
+        const target=mon && [mon,...hunt.mobs.filter(t=>t!==mon)].find(t=>t.hp>0 && mercInRange(t,4));
+        if (s.kind !== 'summonHeal' && !target) continue;
+        x.at = gameNow + 2000; x.actedAt = gameNow;
+        mercSkillVfx(x.id, s.kind === 'summonHeal' ? null : target);
         if (s.kind === 'summonHeal') { m.hp = Math.min(st.hp, m.hp + Math.round(st.magic * x.power)); player.hp = Math.min(calcStats().maxHp, player.hp + Math.round(st.magic * x.power)); }
-        else { const targets = s.kind === 'summonArea' ? hunt.mobs.filter(t => t.hp > 0).slice(0,3) : [mon]; for (const t of targets) mercHit(t, st.magic * x.power, true); if (s.kind === 'summonSlow') { mon.mercEffect = 'slow'; mon.mercUntil = gameNow + 2500; } }
+        else { const targets = s.kind === 'summonArea' ? [target,...hunt.mobs.filter(t=>t!==target)].filter(t => t.hp > 0 && mercInRange(t, 4)).slice(0,3) : [target]; for (const t of targets) mercHit(t, st.magic * x.power, true); if (s.kind === 'summonSlow') mercEffectSet(target, 'slow', 2.5); }
     }
-    if (mon.hp > 0 && gameNow >= r.attackAt) { r.attackAt = gameNow + Math.max(400, st.speed); mercPlayAnim('attack', mon); mercHit(mon, st.atk); }
+    const attackMon=mon && [mon,...hunt.mobs.filter(t=>t!==mon)].find(t=>t.hp>0 && mercInRange(t,mercWeaponRange(m)));
+    if (attackMon && gameNow >= r.attackAt) { r.attackAt = gameNow + Math.max(400, st.speed); mercPlayAnim('attack', attackMon); mercHit(attackMon, st.atk); }
 }
 function mercTownReady() { return !!(player && inTown() && !SIM_MODE); }
 function mercRefresh() { saveGame(); refreshUI(); if (typeof mercPanelOpen !== 'undefined' && mercPanelOpen) openMercenary(); }
@@ -370,19 +481,20 @@ function mercCardHtml() {
     return '<div class="cv-companion-art' + (c ? '' : ' cv-companion-empty') + '">' + (c ? '<img src="' + MERC_MODELS[m.cls].art + '" alt="' + esc(c.person + '・' + c.name) + '"' + (m.dead ? ' class="merc-model-dead"' : '') + '>' : '') + '</div><div class="cv-companion-desc"><span>' + (c ? mercNameHtml(m) + '<br>Lv.' + m.lv + (m.dead ? ' 陣亡' : m.active ? ' 出戰中' : ' 待命') + '<br>HP ' + Math.ceil(m.hp) + '／MP ' + Math.ceil(m.mp) : '未持有傭兵') + '</span></div><button class="mini" onclick="openMercenary()">管理傭兵</button><div class="cv-companion-desc"><small>與娃娃獨立，可同時出戰。四格符石自由搭配。</small></div>';
 }
 function mercRuneBoardHtml(m, town) {
-    return '<section class="merc-rune-board" aria-label="四格技能符石鑲嵌石板"><header><span aria-hidden="true">◆</span><h4>四格技能符石</h4><span aria-hidden="true">◆</span></header><p class="merc-board-hint">點擊凹槽鑲嵌符石・依序施放</p><div class="merc-rune-sockets">' + m.skills.map((id, i) => {
+    return '<section class="merc-rune-board" aria-label="四格技能符石鑲嵌石板"><header><span aria-hidden="true">◆</span><h4>四格技能符石</h4><span aria-hidden="true">◆</span></header><p class="merc-board-hint">點擊凹槽鑲嵌符石・救命／淨化優先</p><div class="merc-rune-sockets">' + m.skills.map((id, i) => {
         const rune = MERC_RUNES[id], locked = !town || m.dead, name = rune ? rune.name : '空白凹槽';
-        return '<article class="merc-socket-card ' + (rune ? 'filled rune-' + rune.group : 'vacant') + '"><span class="merc-socket-number">' + ['Ⅰ','Ⅱ','Ⅲ','Ⅳ'][i] + '</span><button type="button" class="merc-socket" onclick="mercPickRune(' + i + ')" aria-label="第' + (i + 1) + '格：' + esc(name) + '，' + (rune ? '替換符石' : '選擇符石') + '" ' + (locked ? 'disabled' : '') + '><span class="merc-socket-rim" aria-hidden="true">' + (rune ? '<img class="merc-rune-art" src="images/icons/items/mercRune-v1/' + id + '.png?v=1" alt="" draggable="false">' : '<span class="merc-socket-empty">＋</span>') + '</span></button><b class="merc-socket-name">' + esc(name) + '</b><small class="merc-socket-type">' + (rune ? MERC_GROUPS[rune.group] + '系・已鑲嵌' : '尚未鑲嵌') + '</small>' + (rune ? '<small class="merc-socket-cost">MP ' + rune.mp + ' · 冷卻 ' + rune.cd + ' 秒</small><details class="merc-rune-detail"><summary>效果說明</summary><small>' + esc(mercRuneText(id)) + '</small></details><button type="button" class="merc-rune-remove" onclick="mercSetRune(' + i + ',\'\')" ' + (locked ? 'disabled' : '') + '>拆回背包</button>' : '<small class="merc-socket-help">點擊上方孔位放入技能</small>') + '</article>';
+        return '<article class="merc-socket-card ' + (rune ? 'filled rune-' + rune.group : 'vacant') + '"><span class="merc-socket-number">' + ['Ⅰ','Ⅱ','Ⅲ','Ⅳ'][i] + '</span><button type="button" class="merc-socket" onclick="mercPickRune(' + i + ')" aria-label="第' + (i + 1) + '格：' + esc(name) + '，' + (rune ? '替換符石' : '選擇符石') + '" ' + (locked ? 'disabled' : '') + '><span class="merc-socket-rim" aria-hidden="true">' + (rune ? '<img class="merc-rune-art" src="images/icons/items/mercRune-v1/' + id + '.png?v=1" alt="" draggable="false">' : '<span class="merc-socket-empty">＋</span>') + '</span></button><b class="merc-socket-name">' + esc(name) + '</b><small class="merc-socket-type">' + (rune ? MERC_GROUPS[rune.group] + '系・已鑲嵌' : '尚未鑲嵌') + '</small>' + (rune ? '<small data-merc-rune-live="' + i + '" class="merc-socket-cost">' + (m.dead ? '陣亡' : '技能就緒') + '</small><small class="merc-socket-cost">MP ' + rune.mp + ' · 冷卻 ' + rune.cd + ' 秒</small><details class="merc-rune-detail"><summary>效果說明</summary><small>' + esc(mercRuneText(id)) + '</small></details><button type="button" class="merc-rune-remove" onclick="mercSetRune(' + i + ',\'\')" ' + (locked ? 'disabled' : '') + '>拆回背包</button>' : '<small class="merc-socket-help">點擊上方孔位放入技能</small>') + '</article>';
     }).join('') + '</div></section>';
 }
 function renderMercenary() {
     const m = player.mercenary, c = m && MERC_CLASSES[m.cls], town = mercTownReady();
-    let h = '<div class="panel"><p>六職業共用50種符石，同時只能召喚一名傭兵。在村莊配置與調整出戰，傭兵不可購買。</p><p class="bad">死亡永久失去身上全部裝備與已配置符石；背包物品不受影響。復活保留等級。</p><details><summary>戰鬥與裝備規則</summary><small>不限制武器職業，雙手武器與盾牌互斥。一般掛機生效；離線／團隊副本／世界首領暫不參戰。遠程武器不耗玩家彈藥，裝備共鳴與BOSS附魔暫不觸發。技能依四格順序判斷，每秒最多一招；召喚物最多2隻。</small></details></div>';
+    let h = '<div class="panel"><p>六職業共用50種符石，同時只能召喚一名傭兵。在村莊配置與調整出戰，傭兵不可購買。</p><p class="bad">死亡永久失去身上全部裝備與已配置符石；背包物品不受影響。復活保留等級。</p><details><summary>戰鬥與裝備規則</summary><small>不限制武器職業，雙手武器與盾牌互斥。一般掛機生效；離線／團隊副本／世界首領暫不參戰。遠程武器不耗玩家彈藥，裝備共鳴與BOSS附魔暫不觸發。技能優先救命治療、淨化、一般治療與多怪群攻；同類依四格順序，每秒最多一招。近戰1格、弓槍8格、魔法與召喚攻擊4格，障礙物會阻擋。召喚物最多2隻。毒系／冰系指定怪物魔法命中附加中毒6秒／緩速4秒，淨化可解除；毒傷最低保留1HP，回村清除。</small></details></div>';
     h += mercQuestHtml();
     if (m) {
         const st = mercStats(m);
         h += '<div class="panel"><div class="merc-model-portrait"><img src="' + MERC_MODELS[m.cls].art + '" alt="' + esc(c.person + '・' + c.name) + '"' + (m.dead ? ' class="merc-model-dead"' : '') + '></div><b>' + mercNameHtml(m) + '</b>（' + c.sex + '／' + c.age + '）<p>Lv.' + m.lv + '｜經驗 ' + fmt(m.exp) + '／' + fmt(mercExpNeed(m)) + '<br>HP ' + Math.ceil(m.hp) + '／' + st.hp + '　MP ' + Math.ceil(m.mp) + '／' + st.mp + '<br>物攻' + Math.round(st.atk) + '／魔攻' + Math.round(st.magic) + '／防禦' + st.def + '／魔防' + st.mr + '</p>' + (m.dead ? '<button onclick="mercRevive()" ' + (!town ? 'disabled' : '') + '>復活（' + fmt(m.lv * MERC_REVIVE_COST) + '金幣）</button>' : '<button onclick="mercToggle()" ' + (!town ? 'disabled' : '') + '>' + (m.active ? '收回傭兵' : '傭兵出戰') + '</button>') + '</div>';
         h += '<button onclick="mercDismiss()" ' + (!town ? 'disabled' : '') + '>放棄傭兵</button>';
+        h += '<p data-merc-live-status style="overflow-wrap:anywhere">' + esc(mercStatusText(m)) + '</p>';
         h += mercRuneBoardHtml(m, town);
         h += '<h4>傭兵裝備</h4><div class="merc-grid">' + MERC_SLOTS.map(slot => '<div class="panel"><b>' + SLOTS[slot] + '：' + (m.equip[slot] ? esc(itemName(m.equip[slot])) : '空白') + '</b><button onclick="mercPickEquip(\'' + slot + '\')" ' + (!town || m.dead ? 'disabled' : '') + '>選擇</button>' + (m.equip[slot] ? '<button onclick="mercUnequip(\'' + slot + '\')" ' + (!town || m.dead ? 'disabled' : '') + '>卸下</button>' : '') + '</div>').join('') + '</div>';
     }
@@ -399,7 +511,29 @@ function sceneMercTick(dt) {
         d = scene.mercenary = { owner: m, rx: spot[0], ry: spot[1], path: [], dir: 'down' };
         preloadSprite(MERC_MODELS[m.cls]);
     }
-    if (!d.path.length && Math.hypot(d.rx - pl.rx, d.ry - pl.ry) > 1.7) d.path = findPath(Math.round(d.rx), Math.round(d.ry), pl.x, pl.y, true, true);
+    const target = player.hunting && hunt && hunt.state === 'fight' && mercTarget(hunt.mon);
+    let goal = pl, range = 1;
+    if (target && Math.hypot(target.rx-pl.rx,target.ry-pl.ry) <= 9) {
+        const attackSkills = m.skills.map(id=>MERC_RUNES[id]).filter(s=>s && mercAttackKind(s.kind) && m.mp>=s.mp);
+        range = attackSkills.length ? Math.max(mercWeaponRange(m), ...attackSkills.map(mercSkillRange)) : mercWeaponRange(m);
+        goal = target;
+    }
+    const arrived = goal === pl ? Math.hypot(d.rx-pl.rx,d.ry-pl.ry)<=1.7 : mercInRange(goal.inst, range);
+    const key = Math.round(goal.rx)+','+Math.round(goal.ry)+','+range;
+    if (arrived) d.path=[];
+    else if ((!d.path.length || d.goal !== key) && (!d.retryAt || d.retryAt <= gameNow)) {
+        d.goal=key;d.retryAt=gameNow+300;
+        const gx=Math.round(goal.rx), gy=Math.round(goal.ry), spots=[];
+        const radius=goal===pl?1:range;
+        for(let y=gy-radius;y<=gy+radius;y++)for(let x=gx-radius;x<=gx+radius;x++) {
+            if(x===gx && y===gy || !freeTileFor(x,y) || !inHuntZone(x,y))continue;
+            if(goal!==pl && !mercInRange(goal.inst,range,{rx:x,ry:y}))continue;
+            spots.push({x,y,dist:Math.hypot(x-d.rx,y-d.ry)});
+        }
+        spots.sort((a,b)=>a.dist-b.dist);
+        d.path=[];
+        for(const p of spots) { const path=findPath(Math.round(d.rx),Math.round(d.ry),p.x,p.y,false,true);if(path.length){d.path=path;break;} }
+    }
     if (!d.path.length) return;
     const [x,y] = d.path[0]; if (!freeTileFor(x,y) || !inHuntZone(x,y)) { d.path = []; return; }
     const dx = x-d.rx, dy = y-d.ry, dist = Math.hypot(dx,dy), step = PLAYER_SPEED * dt / 1000;
@@ -439,7 +573,110 @@ function sceneDrawMerc(ctx, camX, camY) {
         for (let i=0;i<3;i++) { const phase=(gameNow/1400+i/3)%1; ctx.globalAlpha=.3+.7*Math.abs(Math.sin(phase*Math.PI));ctx.beginPath();ctx.arc(x-65+phase*130,labelY-3+Math.sin(phase*12)*3,1.4,0,Math.PI*2);ctx.fill(); }
         ctx.globalAlpha=1;
     }
-    const summons = mercState(m).summons.filter(s=>s.until>gameNow);
-    summons.forEach((s,i)=>{ const a=gameNow/700+i*Math.PI; ctx.beginPath();ctx.arc(x+Math.cos(a)*18,y+Math.sin(a)*7,3,0,Math.PI*2);ctx.fillStyle='#dcc1ff';ctx.fill(); });
+    sceneDrawMercEffects(ctx, camX, camY, m, d);
     ctx.restore();
+}
+// 原創 Canvas 靈體：各自輪廓、步態／振翅／施法，無外部商業素材。
+function mercDrawSummon(ctx, id, x, y, age, acting) {
+    const colors={wolf:'#b9c8ff',golem:'#8caa9b',butterfly:'#edb8ff',hawk:'#afe8e5',flameSpirit:'#ffad55',iceSpirit:'#92eaff',thunderSpirit:'#e6ccff',treeSpirit:'#a7d78a',swarm:'#d1ed78'};
+    const color=colors[id], wave=Math.sin(age/120), bob=Math.sin(age/280)*2;
+    ctx.save();ctx.translate(x,y+bob);ctx.globalAlpha*=.9;ctx.fillStyle=color;ctx.strokeStyle='#243445';ctx.lineWidth=1.2;
+    const oval=(x,y,rx,ry)=>{ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fill();ctx.stroke();};
+    const poly=points=>{ctx.beginPath();points.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();ctx.fill();ctx.stroke();};
+    if(id==='wolf') {
+        oval(0,-9,11,6);poly([[-8,-11],[-17,-17],[-14,-7],[-8,-5]]);oval(10,-14,6,5);
+        poly([[6,-17],[7,-24],[11,-18],[14,-23],[15,-15],[19,-12],[12,-10]]);
+        for(let i=0;i<4;i++){const px=-7+i*5;ctx.fillRect(px,-6,3,7+Math.sin(age/110+i*Math.PI)*2);}
+        ctx.fillStyle='#594b9c';oval(13,-15,1,1);
+    } else if(id==='golem') {
+        poly([[-9,-20],[7,-20],[11,-7],[5,-3],[-8,-4],[-12,-12]]);oval(0,-26,6,6);
+        for(const side of [-1,1]) {ctx.fillRect(side*12-3,-19+wave*side,6,12);ctx.fillRect(side*5-3,-4,6,7-wave*side);}
+        ctx.fillStyle='#caffce';ctx.fillRect(-4,-27,3,2);ctx.fillRect(2,-27,3,2);
+    } else if(id==='butterfly' || id==='hawk') {
+        const flap=5+Math.abs(wave)*11;
+        if(id==='butterfly') {for(const side of [-1,1]){oval(side*flap*.65,-15,flap*.65,8);oval(side*flap*.5,-5,flap*.45,5);}ctx.fillStyle='#5c4381';oval(0,-10,2,10);}
+        else {poly([[-2,-12],[-flap-7,-21],[-flap,-7],[-4,-6],[0,3],[4,-6],[flap,-7],[flap+7,-21],[2,-12]]);oval(0,-14,3,5);ctx.fillStyle='#ffeab0';poly([[2,-16],[8,-13],[2,-12]]);}
+    } else if(id==='treeSpirit') {
+        ctx.fillStyle='#896b49';poly([[-5,1],[-4,-17],[4,-17],[5,1],[9,4],[1,3],[-8,4]]);
+        ctx.fillStyle=color;oval(-6,-21,7,8);oval(6,-21,7,8);oval(0,-29,8,8);
+        ctx.strokeStyle=color;ctx.beginPath();ctx.moveTo(-3,-10);ctx.lineTo(-12,-16-wave);ctx.moveTo(3,-10);ctx.lineTo(12,-16+wave);ctx.stroke();
+    } else if(id==='swarm') {
+        for(let i=0;i<5;i++){const a=age/220+i*1.256,px=Math.cos(a)*12,py=-12+Math.sin(a)*7;oval(px-2,py-2,3,2);oval(px+2,py-2,3,2);ctx.fillStyle='#64742b';oval(px,py,1.6,3);ctx.fillStyle=color;}
+    } else {
+        if(id==='flameSpirit') poly([[0,-33],[-5,-20],[-12,-15],[-9,-5],[0,1],[10,-5],[12,-17],[6,-12],[4,-25],[1,-19]]);
+        if(id==='iceSpirit') {poly([[0,-31],[-10,-15],[0,1],[10,-15]]);ctx.strokeStyle='#efffff';ctx.beginPath();ctx.moveTo(0,-31);ctx.lineTo(0,1);ctx.moveTo(-10,-15);ctx.lineTo(10,-15);ctx.stroke();}
+        if(id==='thunderSpirit') poly([[4,-33],[-10,-14],[-1,-14],[-5,2],[12,-20],[3,-20]]);
+        ctx.fillStyle='#fff7cd';oval(-3,-12,1.4,2);oval(3,-12,1.4,2);
+    }
+    if(acting){ctx.strokeStyle=color;ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(0,-12,20,16,0,0,Math.PI*2);ctx.stroke();}
+    ctx.restore();
+}
+function sceneDrawMercEffects(ctx, camX, camY, m, d) {
+    const r=mercState(m), px=p=>p.x*TILE-camX+TILE/2, py=p=>p.y*TILE-camY+TILE/2;
+    const x=px({x:d.rx}),y=py({y:d.ry});
+    for(const t of (scene.mons||[])) {
+        if(t.dead || !t.inst || t.inst.hp<=0)continue;
+        const effects=['slow','weaken'].filter(k=>mercEffectOn(t.inst,k));
+        if(!effects.length)continue;
+        const tx=px({x:t.rx}),ty=py({y:t.ry});
+        ctx.strokeStyle=effects.includes('slow')?'#96eaff':'#dd9fff';ctx.lineWidth=1.4;ctx.beginPath();ctx.ellipse(tx,ty+12,16,6,0,0,Math.PI*2);ctx.stroke();
+        ctx.font='9px sans-serif';ctx.textAlign='center';ctx.fillStyle=ctx.strokeStyle;
+        ctx.fillText(effects.map(k=>(k==='slow'?'緩':'弱')+Math.ceil((t.inst.mercEffects[k]-gameNow)/1000)).join(' '),tx,ty-32);
+    }
+    for(const [i,s] of r.summons.filter(s=>s.until>gameNow).entries()) {
+        const side=i?1:-1, acting=gameNow-(s.actedAt||-10000)<450;
+        const sx=x+side*30,sy=y+9+i*8;
+        mercDrawSummon(ctx,s.id,sx,sy,gameNow,acting);
+        ctx.font='9px sans-serif';ctx.textAlign='center';ctx.fillStyle='#e2e6ff';ctx.strokeStyle='#111';ctx.lineWidth=3;
+        const label=MERC_RUNES[s.id].name.replace('契約','')+' '+Math.ceil((s.until-gameNow)/1000)+'秒';ctx.strokeText(label,sx,sy+14);ctx.fillText(label,sx,sy+14);
+    }
+    for(const [id,b] of Object.entries(r.buffs)) if(b.until>gameNow && ['shield','fortify','barrier'].includes(id) && b.power>0) {
+        ctx.strokeStyle='#91d8ff';ctx.lineWidth=1.5;ctx.beginPath();ctx.ellipse(x,y-13,19,29,0,0,Math.PI*2);ctx.stroke();
+    }
+    const barrier=r.buffs.barrier;
+    if(barrier && barrier.until>gameNow && barrier.player>0 && scene.pl) {
+        const bx=px({x:scene.pl.rx}),by=py({y:scene.pl.ry});ctx.strokeStyle='#91d8ff';ctx.beginPath();ctx.ellipse(bx,by-13,19,29,0,0,Math.PI*2);ctx.stroke();
+    }
+    r.vfx=(r.vfx||[]).filter(v=>gameNow-v.at<700);
+    for(const v of r.vfx) {
+        const s=MERC_RUNES[v.id],p=(gameNow-v.at)/700, tx=px(v.to),ty=py(v.to)-10,fx=px(v.from),fy=py(v.from)-20;
+        const fire=/fire|flame|nova/.test(v.id), ice=/frost|ice/.test(v.id), lightning=/lightning|thunder|chain/.test(v.id), poison=/poison|swarm/.test(v.id);
+        const color=fire?'#ff9952':ice?'#92eaff':lightning?'#d5b5ff':poison?'#b9e46c':s.group==='battle'?'#ffb7a7':s.group==='guard'?'#9cdaff':'#b7ffdb';
+        ctx.save();ctx.globalAlpha=1-p;ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=2;
+        if(v.id==='star') {
+            const a=Math.min(1,p*2),sx=tx+35*(1-a),sy=ty-75*(1-a);
+            ctx.beginPath();ctx.moveTo(sx+14,sy-30);ctx.lineTo(sx,sy);ctx.stroke();ctx.beginPath();
+            for(let i=0;i<10;i++){const ang=i*Math.PI/5-Math.PI/2,rad=i%2?3:8;ctx.lineTo(sx+Math.cos(ang)*rad,sy+Math.sin(ang)*rad);}ctx.closePath();ctx.fill();
+        } else if(v.id==='nova') {
+            for(let i=0;i<10;i++){const a=i*Math.PI/5;ctx.beginPath();ctx.moveTo(tx+Math.cos(a)*p*10,ty+Math.sin(a)*p*6);ctx.lineTo(tx+Math.cos(a)*(8+p*28),ty+Math.sin(a)*(8+p*20));ctx.stroke();}
+        } else if(poison) {
+            for(let i=0;i<9;i++){const a=i*2.4;ctx.beginPath();ctx.arc(tx+Math.cos(a)*(3+p*18),ty+Math.sin(a)*7-p*15,2+p*3,0,Math.PI*2);ctx.fill();}
+        } else if(ice) {
+            for(let i=0;i<6;i++){const a=i*Math.PI/3;ctx.beginPath();ctx.moveTo(tx,ty);ctx.lineTo(tx+Math.cos(a)*(6+p*18),ty+Math.sin(a)*(6+p*18));ctx.stroke();}
+        } else if(lightning){ctx.beginPath();ctx.moveTo(fx,fy);for(let i=1;i<=7;i++)ctx.lineTo(fx+(tx-fx)*i/7+(i<7?Math.sin(i*9+v.at)*7:0),fy+(ty-fy)*i/7);ctx.stroke();}
+        else if(mercAttackKind(s.kind) || s.kind.startsWith('summon') && s.kind!=='summonHeal') {
+            const a=Math.min(1,p*2),bx=fx+(tx-fx)*a,by=fy+(ty-fy)*a;
+            if(s.group==='battle'){ctx.beginPath();ctx.arc(tx,ty,10+p*19,-1+p*3,1+p*3);ctx.stroke();}
+            else {ctx.beginPath();ctx.moveTo(bx-9,by+3);ctx.lineTo(bx,by);ctx.stroke();ctx.beginPath();ctx.arc(bx,by,fire?5:3,0,Math.PI*2);ctx.fill();}
+        } else {
+            for(let i=0;i<6;i++){const a=i*Math.PI/3;ctx.beginPath();ctx.arc(tx+Math.cos(a)*(7+p*15),ty+Math.sin(a)*(7+p*15)-p*12,2,0,Math.PI*2);ctx.fill();}
+            ctx.beginPath();ctx.ellipse(tx,ty,8+p*20,5+p*10,0,0,Math.PI*2);ctx.stroke();
+        }
+        if(p>.35){ctx.beginPath();ctx.ellipse(tx,ty,5+p*20,4+p*10,0,0,Math.PI*2);ctx.stroke();}
+        ctx.restore();
+    }
+    ctx.font='9px sans-serif';ctx.textAlign='center';ctx.fillStyle='#d3e8ff';ctx.strokeStyle='#111';ctx.lineWidth=3;
+    // 四顆小符石顯示冷卻，避免四行技能名壓到玩家和小地圖。
+    m.skills.forEach((id,i)=>{
+        if(!MERC_RUNES[id])return;
+        const sx=x-38+i*20,sy=y+23,im=spriteImage('images/icons/items/mercRune-v1/'+id+'.png?v=1');
+        ctx.fillStyle='#101622bb';ctx.fillRect(sx-1,sy-1,18,27);
+        if(im)ctx.drawImage(im,sx,sy,16,16);
+        else {ctx.fillStyle='#a3d9ef';ctx.fillText(String(i+1),sx+8,sy+12);}
+        const sec=Math.max(0,Math.ceil(((r.cds[id]||0)-gameNow)/1000));
+        ctx.fillStyle=sec?'#ead4a5':'#98e4af';ctx.fillText(sec?String(sec):'✓',sx+8,sy+24);
+    });
+    const active=Object.entries(r.buffs).filter(([,b])=>b.until>gameNow).map(([id,b])=>(MERC_RUNES[id]?MERC_RUNES[id].name:b.name||id)+' '+Math.ceil((b.until-gameNow)/1000)+'秒'+(['shield','fortify','barrier'].includes(id)?' 盾'+Math.ceil(b.power):''));
+    for(const b of Object.values(mercNegative(m)))active.push(b.name+' '+Math.ceil((b.until-gameNow)/1000)+'秒');
+    active.forEach((text,i)=>{ctx.strokeText(text,x,y+62+i*11);ctx.fillText(text,x,y+62+i*11);});
 }

@@ -21,6 +21,17 @@
     window.mercPreviewBoard=()=>{if(player.mercenary)openDialog('傭兵技能鑲嵌',mercRuneBoardHtml(player.mercenary,mercTownReady()));};
     window.mercPreviewSockets=()=>{if(!player.mercenary){showToast('請先建立記憶體測試傭兵');return;}['wolf','shield','firebolt',''].forEach((id,i)=>mercSetRune(i,id));openMercenary();};
     window.mercPreviewRanks=()=>openDialog('傭兵七階展示', MERC_RANKS.map((r,i)=>'<div class="panel" style="padding:6px;margin:3px 0">'+mercNameHtml({cls:'spirit',lv:r.min})+'<small style="display:block">'+r.min+(MERC_RANKS[i+1]?'～'+(MERC_RANKS[i+1].min-1)+'級':'級以上')+'</small></div>').join(''));
+    let previewTimer=0;
+    window.mercPreviewBattle=()=>{
+        if(!player.mercenary)mercPreviewSeed();
+        closeDialog();mercPanelOpen=false;lootMode='legacy';
+        const m=player.mercenary;m.lv=30;m.active=true;m.dead=false;m.skills=['wolf','iceSpirit','nova','heal'];m.cds={};mercRuntime.delete(m);
+        m.hp=mercStats(m).hp;m.mp=mercStats(m).mp;player.baseHp=10000;player.hp=calcStats().maxHp;player.loc={type:'zone',id:'island'};scene=null;hunt=null;session=null;switchTab('hunt');startHunt();refreshUI();
+        clearInterval(previewTimer);previewTimer=setInterval(()=>{gameNow+=100;cleanBuffs();if(!hunt||hunt.state!=='fight')mercTick(100);huntTick(100);renderStatus();if(huntVisible())updateHuntLive();},100);
+    };
+    window.mercPreviewNegative=()=>{if(!player.mercenary)return;const mon={id:'venomSpider'};mercEnemyStatus(mon,true,50,player);mercEnemyStatus({id:'frostWitch'},true,30,player.mercenary);renderStatus();};
+    window.mercPreviewCleanse=()=>{const m=player.mercenary;if(!m)return;m.skills=['firebolt','might','purify','cleanse'];m.mp=mercStats(m).mp;mercRuntime.delete(m);refreshUI();};
+    for(const [text,fn]of [['技能戰鬥測試',mercPreviewBattle],['附加毒／緩速',mercPreviewNegative],['切換淨化配置',mercPreviewCleanse]]){const b=document.createElement('button');b.textContent=text;b.onclick=fn;$('merc-preview-tools').append(b);}
     let saved='';sfx=()=>{};presTick=()=>{};
     saveGame=()=>{saved=saveEncode(JSON.stringify({schema:SAVE_SCHEMA,player}));};
     createPlayer('傭兵預覽','knight',CLASSES.knight.base);player.gold=1000000;player.lv=30;

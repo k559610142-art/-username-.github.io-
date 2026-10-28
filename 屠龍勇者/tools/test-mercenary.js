@@ -65,7 +65,7 @@ const encoded=saveEncode(JSON.stringify({schema:SAVE_SCHEMA,player}));const rest
 // 50符石逐一實際執行；每次施放只扣一次MP並有冷卻。
 for(const id of Object.keys(MERC_RUNES)) {
  m=setup(); m.lv=20;const st=mercStats(m);m.hp=Math.floor(st.hp*.3);m.mp=Math.floor(st.mp*.3);player.hp=1;player.mp=0;
- player.buffs.bad={negative:true,until:gameNow+10000};m.skills=[id,'','',''];gameNow+=100000;
+ gameNow+=100000;player.buffs.bad={negative:true,until:gameNow+10000};m.skills=[id,'','',''];
  const mon={hp:100000,maxHp:100000,ac:0,mr:10,boss:false,stunUntil:0,dmg:[30,30],name:'測試怪'};
  hunt={state:'fight',mon,mobs:[mon]};player.hunting=true;
  mercState(m).buffs.bad={negative:true,power:1,until:gameNow+10000};

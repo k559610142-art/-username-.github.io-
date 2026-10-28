@@ -43,6 +43,18 @@ function bar(cur, max, cls, label) {
 // 外框 HUD：上方角色資訊、紅藍法球（HP／MP）、下方地點與經驗條、底部格子數量（ui-frame.js）
 function renderStatus() {
     if (!player || SIM_MODE || !$('hud-stats')) return;
+    mercUpdateLive();
+    const mercVitals = $('merc-vitals'), merc = player.mercenary;
+    if (mercVitals) {
+        mercVitals.hidden = !merc;
+        if (merc) {
+            const ms = mercStats(merc);
+            const hp = '傭兵 HP ' + Math.max(0, Math.ceil(merc.hp)) + '／' + ms.hp;
+            const mp = '傭兵 MP ' + Math.max(0, Math.ceil(merc.mp)) + '／' + ms.mp;
+            if (mercVitals.children[0].textContent !== hp) mercVitals.children[0].textContent = hp;
+            if (mercVitals.children[1].textContent !== mp) mercVitals.children[1].textContent = mp;
+        }
+    }
     const st = calcStats();
     const expPct = player.lv >= MAX_LEVEL ? 100 : player.exp / expToNext(player.lv) * 100;
     // 上方人物狀態（名稱、職業、負重）已移除（2026-10-09 使用者要求）；金幣、防禦、MR、負重顯示在經驗條上方 #hud-stats
