@@ -6,6 +6,7 @@
 ## 1. 專案結構
 
 | 檔案 | 內容 |
+| `images/sprites/morph/abyss-dual-demon-v1/`、`tools/sprite-src/morph/abyss-dual-demon-v1/`、`tools/abyss-demon-morph-preview.html`、`tools/test-abyss-demon-morph.js` | 11深淵雙刃魔神金變：36格透明動畫、原稿／提示詞／註冊、真實卷軸與renderer隔離驗證（第219節） |
 | `images/sprites/morph/shadow-pirate-gunner-v1/`、`tools/sprite-src/morph/shadow-pirate-gunner-v1/`、`tools/pirate-morph-preview.html`、`tools/test-pirate-morph.js` | 06暗影海盜雙槍客36格透明動畫、原稿提示詞、卷軸接線與隔離驗證（第18.15、88節） |
 | `images/ui/message-bubbles-v1.png`、`tools/icon-src/ui/message-bubbles-v1/`、`tools/message-button-preview.html` | 訊息專屬雙對話泡圖示及PC位置／抽屜預覽（第133節） |
 | `images/icons/items/curAwaken-v1.png`、`tools/icon-src/items/awakening-stone-v1/` | 命運的覺醒石專屬虹彩晶石圖示，128px透明PNG；原稿、完整image_gen提示詞與尺寸輸出腳本（第80節） |
@@ -233,7 +234,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261028l`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261028m`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3905,3 +3906,11 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 隔離預覽新增49級空裝／增益／召喚狀態入口；test-mercenary-stats與test-mercenary-summon-art驗地圖無殘留文字、底部圖示／召喚秒數／增益／護盾與過期隱藏。schema20／SQL／script順序不變。
 
 - l版驗證：check.ps1 ALL CHECKS PASSED，攻防／HUD與原傭兵／技能／召喚圖集／共用藥水／雙方閃避測試通過；52檔571KB正式混淆語法通過、臨時副本已清除。PC與375px手機確認血魔下方顯示三類狀態、地圖無殘留黑塊，Console無error／warn；實拍tools/mercenary-stats-pc.png與mercenary-status-pc.png／-mobile.png。待使用者實玩驗收再提交。
+
+## 219. 深淵雙刃魔神金變專屬動畫（2026-10-28，版本 `20261028m`）
+
+- 使用者提供Desktop/變身人物/11.jpg要求製作並加入變身；現有m11已有名稱／金變能力但共用預設外觀，本次補專屬abyssDualDemon，不增加32款數量。原圖保存在reference-11.jpg，內建image_gen製作黑金熔岩鎧、角盔、刃翼、四臂火刃的正／右／背各12格，左鏡像；不使用標題／白底。生成原稿及完整提示詞保留tools/sprite-src/morph/abyss-dual-demon-v1。
+- prepare.js隔離alpha主體、保留原色與透明邊緣，依腳點註冊384×320／foot[192,270]／charH160／drawH48，walk4格130ms、attack4格140ms、cast2格220ms、hit2格150ms。公開只放四圖集／portrait／manifest；製作用36單格放來源build/frames，registration.json記來源裁切與腳點。
+- items.js新增MORPHS.abyssDualDemon並接m11.sprite；SW預快取四圖集，GAME_UPDATES新增m。沿用雙刀系神話Lv70、命中7／傷害7／攻速20%／閃避5%、武器規則與GM豁免、30分鐘卷軸／10000金幣；schema20／SQL／script順序不變。
+- tools/abyss-demon-morph-preview.html只使用記憶體角色並禁止連外，支援卷軸選單、四向四動作、逐格／循環及實際大小；test-abyss-demon-morph驗卷軸扣量／等級鎖／能力維持、四向攻擊／MISS／施法／受傷、到期、36格透明／唯一／圖集與來源一致及正式sceneDraw。
+- 驗證：36格RGBA透明／唯一／圖集逐byte、正式sceneDraw四向四動作16組、卷軸扣量／Lv69拒絕且不扣卷／Lv70可用與原能力測試全過。check.ps1 ALL CHECKS PASSED、git diff --check及52檔571KB正式混淆／四PNG發佈一致通過，臨時驗證副本已刪。瀏覽器側面攻擊第3格560ms、背面施法440ms、左向實際48px循環正常，卷軸4→3、Console無error／warn；browser-attack.png／browser-cast.png與contact.png保留來源目錄。待使用者刷新m→變形卷軸→雙刀系深淵雙刃魔神（Lv70）→觀察四向走路／攻擊／施法／受傷；確認後才commit，未commit／推送。

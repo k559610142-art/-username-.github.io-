@@ -5,6 +5,8 @@
 
 ## 1. 現況
 
+- **20261028m：11深淵雙刃魔神金變專屬動畫（第219節）**。使用者11.jpg原圖，內建image_gen製作三向四動作36格，補既有m11專屬外觀，維持Lv70／原加成／32款與schema20，無SQL。素材原稿／提示詞與腳點註冊保留來源目錄，製作用影格留build/frames。36格RGBA透明／唯一／圖集逐byte、正式sceneDraw四向四動作16組、卷軸扣量／Lv69拒絕且不扣卷／Lv70可用與原能力測試全過。check.ps1 ALL CHECKS PASSED、git diff --check及52檔571KB正式混淆／四PNG發佈一致通過，臨時驗證副本已刪。瀏覽器側面攻擊第3格560ms、背面施法440ms、左向實際48px循環正常，卷軸4→3、Console無error／warn；browser-attack.png／browser-cast.png與contact.png保留來源目錄。待使用者刷新m→變形卷軸→雙刀系深淵雙刃魔神（Lv70）→觀察四向走路／攻擊／施法／受傷；確認後才commit，未commit／推送。
+
 - **20261028l（含k）：傭兵攻防與底部狀態（第217～218節）**。使用者選裝備為主，六職業等級攻防改小幅成長，Lv49空裝契靈師18物攻／27魔攻／5防禦／19魔防，HPMP維持；魔杖強化補魔攻，管理頁新增基礎／裝備／增益明細。使用者明確選技能圖示、召喚剩餘秒數與增益文字全移底部HPMP下方，地圖不留原狀態列及黑塊，寵物與特效保留，技能冷卻／增益秒數沿e隱藏。schema20／SQL不變。新攻防／狀態測試、原傭兵／技能／72格召喚圖集／共用藥水／首領閃避回歸通過；check.ps1 ALL CHECKS PASSED、diff檢查及52檔571KB正式混淆語法通過，臨時驗證副本已刪。PC／375px手機實際顯示圖示、靈狼17秒及兩項增益，HPMP分開、地圖無黑塊，Console無error／warn；實拍tools/mercenary-stats-pc.png、mercenary-status-pc.png及-mobile.png。待使用者刷新l→傭兵出戰施法→檢查底部三類狀態／地圖腳下無黑塊→管理攻防來源看空裝與裝備數值，確認後才commit；未commit／推送。
 
 - **20261028j：資料夾清理（第216節）**。使用者要求照建議全部清：tools/.verify-* 8 份副本（2.8 GB）丟回收筒；git 刪舊野外／村莊／塔地圖、黑暗妖精 v2～v5、boss-enchants、frame-pc-slim、塔傳送師圖、character-status-v1、AI_HANDOFF.min.md；images/sprites 的 frames／preview／contact 約 100 MB 搬到 tools/sprite-src/…/build/（娃娃 walk-down-02 與 manifest.json 留原處）；sw.js 不預載舊村莊圖。test-dwarf-morph／test-crimson-assassin-morph 有既有的遊戲邏輯斷言失敗（與清理無關，待修）。**驗證副本用完就刪。**

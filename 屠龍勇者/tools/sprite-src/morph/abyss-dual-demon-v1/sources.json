@@ -1,0 +1,18 @@
+{
+  "reference": "reference-11.jpg",
+  "generator": "built-in image_gen",
+  "down": {
+    "initial": "down-initial.png",
+    "final": "down-generated.png"
+  },
+  "right": {
+    "initial": "right-initial.png",
+    "final": "right-generated.png"
+  },
+  "up": {
+    "final": "up-generated.png"
+  },
+  "processing": "prepare.js: alpha component separation, proportional rescale and foot registration; no painted replacement frames",
+  "runtime": "images/sprites/morph/abyss-dual-demon-v1",
+  "frames": "build/frames"
+}
