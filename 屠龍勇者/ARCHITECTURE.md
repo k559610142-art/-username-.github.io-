@@ -6,6 +6,7 @@
 ## 1. 專案結構
 
 | 檔案 | 內容 |
+| `tools/gm-resource-audit.sql`、`tools/test-gm-resource-audit.js`、`tools/gm-resource-audit-preview.html` | GM交易／共用倉庫合法增量核對、60分鐘時間差／首領兩倍上限與隔離資料庫／介面驗證；實拍tools/gm-resource-audit-pc.png、gm-resource-history-pc.png／-mobile.png（第221節） |
 | `images/sprites/morph/abyss-goat-envoy-v1/`、`tools/sprite-src/morph/abyss-goat-envoy-v1/`、`tools/goat-envoy-morph-preview.html`、`tools/test-goat-envoy-morph.js` | 20深淵羊魔・巴風特使徒紅變：四參考／36格透明動畫／註冊／卷軸與renderer隔離驗證（第220節） |
 | `images/sprites/morph/abyss-dual-demon-v1/`、`tools/sprite-src/morph/abyss-dual-demon-v1/`、`tools/abyss-demon-morph-preview.html`、`tools/test-abyss-demon-morph.js` | 11深淵雙刃魔神金變：36格透明動畫、原稿／提示詞／註冊、真實卷軸與renderer隔離驗證（第219節） |
 | `images/sprites/morph/shadow-pirate-gunner-v1/`、`tools/sprite-src/morph/shadow-pirate-gunner-v1/`、`tools/pirate-morph-preview.html`、`tools/test-pirate-morph.js` | 06暗影海盜雙槍客36格透明動畫、原稿提示詞、卷軸接線與隔離驗證（第18.15、88節） |
@@ -235,7 +236,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261028n`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261028o`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3923,3 +3924,13 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - items.js新增MORPHS.abyssGoatEnvoy並接既有m20.sprite，不增加32款數量；SW預載四圖集，GAME_UPDATES新增n。沿用紅變Lv35、命中2／SP3／回魔3／MR10、法杖系原雙手武器限制、GM豁免、卷軸30分鐘／10000金幣；schema20／SQL／script順序不變。
 - tools/goat-envoy-morph-preview.html用記憶體角色並禁止連外，可操作卷軸、四向四動作、逐格／循環／實際尺寸；test-goat-envoy-morph驗等級與武器拒絕不扣卷、正常扣卷／上次選擇、原能力／到期／攻擊MISS／施法受傷、36格透明唯一及正式sceneDraw16組。
 - 驗證：36格RGBA透明／唯一／圖集逐byte與正式sceneDraw四向四動作16組、卷軸扣量／Lv34拒絕不扣／Lv35可用／雙手武器拒絕與原能力測試通過。check.ps1 ALL CHECKS PASSED、diff檢查及52檔572KB正式混淆語法／四PNG發佈一致通過，臨時驗證副本已刪。瀏覽器揮杖攻擊第2格560ms、背面施法第2格440ms、左向48px走路正常，卷軸4→3，Console無error／warn；browser-attack.png／browser-cast.png及contact.png保留來源目錄。待使用者刷新n→變形卷軸→法杖系深淵羊魔・巴風特使徒（Lv35，不能拿雙手武器）→觀察四向走路／攻擊／施法／受傷，確認後才commit，未commit／推送。
+
+## 221. GM核對合法交易與同帳號倉庫資源（2026-10-28，版本 `20261028o`）
+
+- 使用者明確同意新增獨立SQL，世界首領上限兩倍、時間差超過60分鐘才標記。tools/gm-resource-audit.sql接在vault-v2／market-v2／flag-trust及既有簽章掉寶更新之後，單一交易／可重跑；舊SQL不改、正式由使用者貼Supabase執行。重跑上述舊函式後須再跑本增量。未執行正式資料庫。
+- 新dragon_resource_log：user_id／slot／char_id(created|cls)／name／kind／ref／gold_delta／detail／at，只允許GM讀；玩家不可寫與讀，內部dragon_resource_commit不可公開呼叫。vault_put2／take2及market_list2／cancel2／buy2驗證成功後，同交易在原dragon_vault_commit之前寫入資源紀錄；金幣差額讀雲端舊數值，物資記道具／數量、取出來源from_slot及手續費；失敗完整回滾。原簽章／vaultSeq／舊RPC停用／防複製觸發器與交易鎖保持。
+- dragon_saves_audit核對player.marketGot的s成交ID：必須是本帳號真實sold且尚未seller_got的賣款，依伺服器price−fee認列；帳號＋成交唯一索引防跨分身及重送重複抵扣。安裝時已ack或既有存檔已記領取的成功成交只建0元防重基線，不補算收入。不採客戶端金額或「曾交易」當整筆豁免。
+- dragon_save_log新增resource_cursor／resource_delta（不改玩家存檔schema20）；每次成長比較扣除同角色上次cursor之後至本次的已核實金幣淨轉移（正負皆計，含手續費），餘額超原門檻仍標gold_rate，其他exp／stat等檢查照常。資源交易強制記一次歷程以推進cursor，平常維持5分鐘節流；信任名單與24小時去重保留。client_t門檻600000→3600000ms，嚴格大於才記clock。
+- wb_attack cap由4×(1500+70×Lv)改8×，Lv55＝42800，超限仍截斷並記wb_dmg，三次／日、登入／封鎖、首領剩血限制維持。原可疑紀錄不清除，既有倉庫未留金流無法補查；不是放行整個帳號或移除防複製。
+- gm.html新增gmResources／gmResourceRows，可疑列「資金／物資」查同帳號最近100筆、列各分身與物資來源欄位／成交及淨額；歷程加已核實淨轉移欄。未安裝SQL顯示可讀錯誤。GM三個script版本與index／config同步o，系統更新不加玩家GAME_UPDATES。tools/gm-resource-audit-preview.html讀正式GM程式、假資料且CSP禁止連外；不登入不接正式資料。
+- 驗證：新PGlite真實RPC測試通過：同帳號分身千萬金幣／物資、真實賣款／混入額外2000萬只扣合法部分、跨分身重複／假成交、失敗無紀錄、46／60／61分鐘、能力照查、RLS／內部權限、首領24240完整及42800截斷／每日三次、重裝不清舊紀錄。原vault-v2／market-v2測試在記憶體追加新SQL後回歸全過（原檔未改）。check.ps1 ALL CHECKS PASSED、diff檢查與52檔572KB正式遊戲／GM混淆及GM內嵌語法通過，驗證副本已刪。隔離瀏覽器PC資金物資中文來源／歷程淨轉移與375px橫向表格正常，Console無error／warn；實拍gm-resource-audit-pc.png、gm-resource-history-pc.png及-mobile.png。待使用者先在Supabase執行tools/gm-resource-audit.sql→刷新o的GM→資金／物資與歷程→同帳號本尊存款、分身領款並上傳確認不標金幣暴增；舊46分鐘及首領舊紀錄核對後可手動已處理。使用者驗收後才commit，未commit／推送。

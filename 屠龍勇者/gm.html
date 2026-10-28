@@ -75,9 +75,9 @@
 </div>
 <div id="modal" class="hidden" onclick="if (event.target === this) gmClose()"><div class="box" id="modal-box"></div></div>
 
-<script src="data/config.js?v=20261015d"></script>
-<script src="data/classes.js?v=20261015d"></script>
-<script src="data/cloud.js?v=20261015d"></script>
+<script src="data/config.js?v=20261028o"></script>
+<script src="data/classes.js?v=20261028o"></script>
+<script src="data/cloud.js?v=20261028o"></script>
 <script>
 const KIND_NAMES = { exp_rate: '經驗暴增', gold_rate: '金幣暴增', stat: '能力值超過上限', elixir: '萬能藥超量', enchant: '強化超過 +15', level: '等級異常', gold_negative: '金幣為負', clock: '裝置時間異常', parse: '存檔格式異常', wb_dmg: '世界首領傷害超過上限', market_dupe: '交易所疑似複製道具', vault_dupe: '共用倉庫疑似複製道具', tamper: '遊戲偵測到改檔', market_big: '交易所大額交易（只提醒）' };
 let sb = null, me = null, tab = 'flags', showResolved = false, playerQuery = '';
@@ -163,8 +163,9 @@ function gmRender() {
         const rows = flags.map(f => `<tr class="${f.resolved ? 'muted' : ''}"><td>${t(f.at)}</td><td>${esc(f.email)}${isBanned(f.user_id) ? ' <span class="bad">⛔</span>' : ''}${isTrusted(f.user_id) ? ' <span class="good">✅</span>' : ''}</td>
             <td>${esc(f.name)}（欄位 ${f.slot + 1}・Lv.${f.lv ?? '?'}）</td><td><span class="kind">${esc(KIND_NAMES[f.kind] || f.kind)}</span></td><td>${esc(f.detail)}</td>
             <td><div class="row"><button class="mini secondary" onclick="gmHistory('${f.user_id}', ${f.slot}, '${esc(f.email || '')}')">歷程</button>
+            <button class="mini secondary" onclick="gmResources('${f.user_id}')">資金／物資</button>
             ${f.resolved ? '' : `<button class="mini secondary" onclick="gmResolve(${f.id})">已處理</button>`}${trustBtn(f.user_id, f.email)}${banBtn(f.user_id, f.email)}</div></td></tr>`).join('');
-        $('view').innerHTML = `<div class="row" style="justify-content:space-between;margin-bottom:8px"><span class="muted">伺服器每次收到存檔都會檢查；這裡只是「可疑」，請看歷程再決定。「已處理」：同一種紀錄 24 小時內不再記；「排除」：確定是正常玩家，以後都不記、不擋。</span>
+        $('view').innerHTML = `<div class="row" style="justify-content:space-between;margin-bottom:8px"><span class="muted">判定會扣除已核實的交易／倉庫淨轉移；請搭配「資金／物資」與歷程判斷（須先安裝 gm-resource-audit.sql）。「已處理」：同一種紀錄 24 小時內不再記；「排除」：確定是正常玩家，以後都不記、不擋。</span>
             <label class="row"><input type="checkbox" ${showResolved ? 'checked' : ''} onchange="showResolved = this.checked; gmLoad()"> 顯示已處理</label></div>
             ${rows ? `<div class="table-wrap"><table><tr><th>時間</th><th>帳號</th><th>角色</th><th>類型</th><th>內容</th><th></th></tr>${rows}</table></div>` : '<p class="good">目前沒有可疑紀錄 👍</p>'}`;
     } else if (tab === 'players') {
@@ -208,14 +209,36 @@ async function gmHistory(uid, slot, email) {
             const de = same ? Number(r.total_exp) - Number(prev.total_exp) : null, dg = same ? Number(r.gold) - Number(prev.gold) : null;
             const dh = same ? (new Date(r.at) - new Date(prev.at)) / 3600000 : null;
             return `<tr><td>${t(r.at)}</td><td>${esc(r.name)}</td><td class="num">${r.lv ?? ''}</td><td class="num">${n(r.total_exp)}</td><td class="num">${de == null ? '' : (de >= 0 ? '+' : '') + n(de)}</td>
-                <td class="num">${n(r.gold)}</td><td class="num">${dg == null ? '' : (dg >= 0 ? '+' : '') + n(dg)}</td><td class="num">${dh == null ? '' : dh < 1 ? Math.round(dh * 60) + ' 分' : dh.toFixed(1) + ' 時'}</td>
+                <td class="num">${n(r.gold)}</td><td class="num">${dg == null ? '' : (dg >= 0 ? '+' : '') + n(dg)}</td><td class="num">${r.resource_cursor == null ? '—' : n(r.resource_delta)}</td><td class="num">${dh == null ? '' : dh < 1 ? Math.round(dh * 60) + ' 分' : dh.toFixed(1) + ' 時'}</td>
                 <td>${(r.flags || []).map(k => `<span class="kind">${esc(KIND_NAMES[k] || k)}</span>`).join(' ')}</td></tr>`;
         }).join('');
         $('modal-box').innerHTML = `<div class="row" style="justify-content:space-between"><h3 style="margin:0">${esc(email)}・欄位 ${slot + 1} 的存檔歷程（最近 80 筆）</h3>
             <div class="row">${trustBtn(uid, email)}${banBtn(uid, email)}<button class="mini secondary" onclick="gmClose()">關閉</button></div></div>
-            <p class="muted">每一列是一次雲端上傳（伺服器時間）。間隔＝和上一筆相差多久；換了不同角色時不計算差值。</p>
-            ${rows ? `<div class="table-wrap"><table><tr><th>時間</th><th>角色</th><th>Lv</th><th>總經驗</th><th>經驗變化</th><th>金幣</th><th>金幣變化</th><th>間隔</th><th>異常</th></tr>${rows}</table></div>` : '<p class="muted">沒有紀錄。</p>'}`;
+            <p class="muted">每一列是一次雲端上傳（伺服器時間）。金幣變化減去已核實淨轉移，才是成長判定金額；淨轉移含收入、支出與手續費。間隔＝和上一筆相差多久；換角色不計差值。</p>
+            ${rows ? `<div class="table-wrap"><table><tr><th>時間</th><th>角色</th><th>Lv</th><th>總經驗</th><th>經驗變化</th><th>金幣</th><th>金幣變化</th><th>已核實淨轉移</th><th>間隔</th><th>異常</th></tr>${rows}</table></div>` : '<p class="muted">沒有紀錄。</p>'}`;
     } catch (e) { $('modal-box').innerHTML = `<p class="bad">讀取失敗：${esc(e.message)}</p><button onclick="gmClose()">關閉</button>`; }
+}
+function gmResourceRows(rows) {
+    const kinds={vault_deposit_gold:'共用倉庫存款',vault_withdraw_gold:'共用倉庫領款',vault_deposit_item:'共用倉庫存入物資',vault_withdraw_item:'共用倉庫領取物資',market_list:'交易所上架',market_cancel:'交易所取回',market_buy:'交易所購買完成',market_sale:'交易所賣款入帳'};
+    return rows.map(r=>{const d=r.detail||{},parts=[];
+        if(r.ref!=null)parts.push('單號 #'+r.ref);
+        if(d.item)parts.push((d.item_name||d.item)+' ×'+(d.n||1));
+        if(d.amount!=null)parts.push('金額 '+n(d.amount));
+        if(d.price!=null)parts.push('成交／定價 '+n(d.price));
+        if(d.fee!=null)parts.push('手續費 '+n(d.fee));
+        if(d.from_slot!=null)parts.push(d.from_slot<0?'來源：GM發放':'來源：同帳號欄位 '+(Number(d.from_slot)+1));
+        if(d.buyer_name)parts.push('買家 '+d.buyer_name);
+        if(d.seller_name)parts.push('賣家 '+d.seller_name);
+        if(d.baseline)parts.push('安裝前已領取，僅防止重複認列');
+        return '<tr><td>'+t(r.at)+'</td><td>'+esc(r.name||'')+'（欄位 '+(Number(r.slot)+1)+'）</td><td>'+esc(kinds[r.kind]||r.kind)+'</td><td class="num">'+(Number(r.gold_delta)>0?'+':'')+n(r.gold_delta)+'</td><td>'+esc(parts.join(' · '))+'</td></tr>';
+    }).join('');
+}
+async function gmResources(uid) {
+    show('modal',true);$('modal-box').innerHTML='<p>讀取同帳號資金／物資紀錄…</p>';
+    try {
+        const rows=await q(sb.from('dragon_resource_log').select('*').eq('user_id',uid).order('id',{ascending:false}).limit(100));
+        $('modal-box').innerHTML='<div class="row" style="justify-content:space-between"><h3>同帳號分身・已完成資金／物資紀錄</h3><button class="mini secondary" onclick="gmClose()">關閉</button></div><p class="muted">最近100筆，依實際伺服器交易與角色領取記錄。物資存取列出來源欄位，金幣存領可對照各分身；只有本次存檔已核實的淨轉移會扣除，其他異常照常檢查。安裝前未留存的倉庫金流無法補查。</p>'+(rows.length?'<div class="table-wrap"><table><tr><th>時間</th><th>角色</th><th>來源</th><th>金幣淨變化</th><th>物資／單據</th></tr>'+gmResourceRows(rows)+'</table></div>':'<p>目前沒有紀錄。</p>');
+    } catch(e) {$('modal-box').innerHTML='<p class="bad">無法讀取：'+esc(e.message)+'。請確認已安裝 tools/gm-resource-audit.sql。</p><button onclick="gmClose()">關閉</button>';}
 }
 function gmClose() { show('modal', false); }
 
