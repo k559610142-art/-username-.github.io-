@@ -5,6 +5,8 @@
 
 ## 1. 現況
 
+- **20261028j：資料夾清理（第216節）**。使用者要求照建議全部清：tools/.verify-* 8 份副本（2.8 GB）丟回收筒；git 刪舊野外／村莊／塔地圖、黑暗妖精 v2～v5、boss-enchants、frame-pc-slim、塔傳送師圖、character-status-v1、AI_HANDOFF.min.md；images/sprites 的 frames／preview／contact 約 100 MB 搬到 tools/sprite-src/…/build/（娃娃 walk-down-02 與 manifest.json 留原處）；sw.js 不預載舊村莊圖。test-dwarf-morph／test-crimson-assassin-morph 有既有的遊戲邏輯斷言失敗（與清理無關，待修）。**驗證副本用完就刪。**
+
 - **20261028i：傭兵共用玩家補血藥水（第215節）**。使用者選沿玩家快捷自動補血開關／HP百分比門檻／選藥，共用實際背包存量，每喝一瓶只補傭兵、扣玩家一瓶；各自800ms，玩家先補，SIM／待命／死亡／停掛／村莊不耗。runtime短期冷卻，不另改schema20；保留h背包收納。新藥水／收納與原傭兵／玩家延遲／瞬移補血通過。PC實際藥水30→29、傭兵HP158→174、玩家HP不變；375px手機29→28、傭兵158→176，Console無error／warn。實拍tools/mercenary-potions-pc.png及-mobile.png。check.ps1 ALL CHECKS PASSED、52檔570KB混淆／語法及diff通過；待刷新i→開玩家自動補血→傭兵HP低於門檻→確認扣同一背包藥水、只補傭兵，實玩確認後提交。
 
 - **20261028h：背包五種獨立收納（第214節，使用者同意schema20）**。通貨／地圖／6衝裝卷軸／26BOSS材料／50傭兵符石；使用者確認零負重、直接使用、新取得自動歸位。實體bagStored標位置，保留UID單份不複製，正常背包排除、收納頁按固定格位／地圖T與品質；舊物可一鍵收納，取出可選數量且檢查負重。原NPC／市場／鍛造／排程直接使用；收據、離線、購買入帳皆讀新重量，SQL及簽章算法不變。新測試與原傭兵／財寶／收據／商店／離線／附魔／射程等通過；排程舊測試固定schema15、指定回收固定12僅記憶體改20後回歸通過，未改原檔。PC一鍵收納負重433→213、取回17張後收納220→203／負重213→230；375px三欄通貨／兩欄地圖、50符石與26材料、零缺圖／橫溢出，Console無error／warn。實拍tools/bag-storage-pc.png／-mobile.png／-maps-pc.png／-maps-mobile.png；check.ps1 ALL CHECKS PASSED、52檔570KB混淆及diff通過；使用者刷新i→背包→一鍵收納→五頁→取回部分→鍛造／開圖／符石直接扣用，確認後才commit。
@@ -593,7 +595,6 @@
   Claude 也能透過 `.claude/gemini/ask.ps1` 呼叫（`prompt.txt` 進、`answer.txt` 出，模型寫在 `model.txt`）。
 - ChatGPT（OpenAI Codex CLI 0.163.0，npm 全域安裝，自動讀 `AGENTS.md`）：使用者雙擊 `ChatGPT改遊戲.bat`，第一次要用 ChatGPT 帳號登入。
   桌面另有 `ChatGPT.lnk`（Edge App 視窗開 chatgpt.com，只能聊天、碰不到檔案）。Microsoft Store 版裝不了：Windows Update 服務被停用。
-- 給其他 AI 的壓縮版交接（整份貼上就能接手，人看不懂沒關係）：`AI_HANDOFF.min.md`。
   API 金鑰目前是免費層，Pro 模型（`gemini-3.1-pro-preview`）要在 Google AI Studio 為金鑰的專案開帳單才能用。
 - 換新的 AI 接手：在 `屠龍勇者/` 資料夾開啟它，第一句話說「先讀 AGENTS.md 和 HANDOFF.md，再告訴我你理解的現況」，確認它講對了再交代工作。
   如果新 AI 會自動讀別的檔名（例如 `.cursorrules`），在那個檔寫一行「請讀 AGENTS.md」即可。

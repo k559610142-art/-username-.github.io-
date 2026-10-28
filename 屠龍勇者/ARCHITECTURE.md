@@ -63,7 +63,7 @@
 | `data/world-vfx.js`、`images/vfx/world/`、`tools/world-vfx-preview.html`、`tools/test-world-vfx.js` | 十類 48 款視覺特效、十二張透明圖集、隔離並排預覽與測試（第 74 節）；生成紀錄在 `tools/sprite-src/boss-vfx/world-prompts.json` |
 | `images/vfx/` 新增二十套 PNG、`tools/vfx-preview.html`、`tools/sprite-src/boss-vfx/generated-prompts.json` | 其餘二十種附魔的原創透明動畫、隔離的 25 種並排預覽、生成提示詞與來源紀錄（第 73 節）。tools 不發佈 |
 | `images/vfx/bull.png`、`ice.png`、`ghost.png`、`death.png`、`king.png` | 五套 BOSS 附魔動畫，各 4×4 格；死神上下各八格對應紫／紅色，幽靈前四格預警、後十二格爆炸（第 72 節）。原圖保存於 `tools/sprite-src/boss-vfx/` |
-| `AGENTS.md`、`HANDOFF.md`、`AI_HANDOFF.min.md` | **給 AI 的文件**（遊戲不載入）：`AGENTS.md` 任何 AI 通用的工作規則與獨立發佈流程；`HANDOFF.md` 目前進度、待辦、使用者的決定、環境、常用操作；`AI_HANDOFF.min.md` 給其他 AI 的壓縮版全貌（規則＋檔案＋核心公式＋現況，整份貼給新 AI 即可接手）。換 AI 接手時靠這三份，要保持最新。`CLAUDE.md`／`GEMINI.md` 只是各 AI 自動讀的入口（`GEMINI.md` 用 `@./AGENTS.md` 匯入） |
+| `AGENTS.md`、`HANDOFF.md` | **給 AI 的文件**（遊戲不載入）：`AGENTS.md` 任何 AI 通用的工作規則與獨立發佈流程；`HANDOFF.md` 目前進度、待辦、使用者的決定、環境、常用操作。換 AI 接手時靠這兩份，要保持最新（舊的 `AI_HANDOFF.min.md` 10/18 後沒更新，20261028j 刪除）。`CLAUDE.md`／`GEMINI.md` 只是各 AI 自動讀的入口（`GEMINI.md` 用 `@./AGENTS.md` 匯入） |
 | `Gemini改遊戲.bat`、`ChatGPT改遊戲.bat` | 雙擊啟動：本機伺服器 8790＋開瀏覽器＋Gemini CLI（`--approval-mode auto_edit`）／OpenAI Codex CLI（自動讀 `AGENTS.md`）；PATH 補 node、npm、GitHub Desktop 的 git |
 | `tools/build.js` | **發佈用建置＋混淆**（第 60 節）：42 支 `data/*.js` 接成一支 `data/game.js` 包進函式範圍＋terser 混淆、gm.html 用的接成 `data/gm-lib.js`。由根目錄 `tools/build.js`（GitHub Actions）呼叫 `buildDragon`，開發與測試照舊用原始檔 |
 | `images/sprites/morph/ivory-archmage-v1/`、`tools/sprite-src/morph/ivory-archmage-v1/`、`tools/test-ivory-archmage-morph.js` | m19象牙塔高階秘術師原稿／生成提示詞、RGBA圖集與打包／四向動畫預覽／卷軸隔離驗證（第165節） |
@@ -110,7 +110,7 @@
 
 | 檔案 | 內容 |
 |---|---|
-| `AGENTS.md`、`HANDOFF.md`、`AI_HANDOFF.min.md` | **給 AI 的文件**（遊戲不載入）：`AGENTS.md` 任何 AI 通用的工作規則與獨立發佈流程；`HANDOFF.md` 目前進度、待辦、使用者的決定、環境、常用操作；`AI_HANDOFF.min.md` 給其他 AI 的壓縮版全貌（規則＋檔案＋核心公式＋現況，整份貼給新 AI 即可接手）。換 AI 接手時靠這三份，要保持最新。`CLAUDE.md`／`GEMINI.md` 只是各 AI 自動讀的入口（`GEMINI.md` 用 `@./AGENTS.md` 匯入） |
+| `AGENTS.md`、`HANDOFF.md` | **給 AI 的文件**（遊戲不載入）：`AGENTS.md` 任何 AI 通用的工作規則與獨立發佈流程；`HANDOFF.md` 目前進度、待辦、使用者的決定、環境、常用操作。換 AI 接手時靠這兩份，要保持最新（舊的 `AI_HANDOFF.min.md` 10/18 後沒更新，20261028j 刪除）。`CLAUDE.md`／`GEMINI.md` 只是各 AI 自動讀的入口（`GEMINI.md` 用 `@./AGENTS.md` 匯入） |
 | `Gemini改遊戲.bat`、`ChatGPT改遊戲.bat` | 雙擊啟動：本機伺服器 8790＋開瀏覽器＋Gemini CLI（`--approval-mode auto_edit`）／OpenAI Codex CLI（自動讀 `AGENTS.md`）；PATH 補 node、npm、GitHub Desktop 的 git |
 | `tools/build.js` | **發佈用建置＋混淆**（第 60 節）：42 支 `data/*.js` 接成一支 `data/game.js` 包進函式範圍＋terser 混淆、gm.html 用的接成 `data/gm-lib.js`。由根目錄 `tools/build.js`（GitHub Actions）呼叫 `buildDragon`，開發與測試照舊用原始檔 |
 | `tools/check.ps1` | 改完的自動檢查：JS 語法（`node --check`）、`index.html` 所有 `?v=` 等於 `GAME_VERSION`、每個 `data/*.js` 都有載入、沒有衝突標記；通過印 `ALL CHECKS PASSED` |
@@ -232,7 +232,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261028i`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261028j`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3878,3 +3878,15 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 使用者指定喝水扣玩家現有藥水，並選沿用玩家自動補血開關／HP百分比門檻／藥水種類。新增mercAutoPotion，正式出戰掛機、非村莊／死亡／待命／SIM時，HP低於玩家settings.potionPct且快捷欄barHealAuto開啟才喝；沿用choosePotion依傭兵缺血量選現有治癒藥水。choosePotion新增可選hp參數，原玩家行為不變。
 - 每次consumeItem(id,1)成功後只回復傭兵，最高不超過mercStats.hp，不套玩家娃娃藥水加成，不新增藥水或MP恢復；紀錄明示傭兵喝水與扣1瓶。玩家autoSupport在戰鬥先執行，共用最後一瓶不重複使用。各自遵守POTION_CD_MS=800ms，傭兵potionAt放既有mercRuntime WeakMap，不寫存檔；不改玩家potReadyAt，超過一次長度的冷卻會校正，SIM／離線／團戰沿原傭兵隔離。
 - 傭兵管理說明與設定HP門檻標籤同步，GAME_UPDATES加入i並保留h收納。tools/test-mercenary-potions.js驗正式mercTick、只補傭兵／扣玩家一瓶、門檻與種類、800ms、最後一瓶及各隔離；tools/mercenary-preview.html新增共用藥水測試按鈕與前後數量／雙方HP。驗證：新藥水測試、原玩家喝水延遲及瞬移補血、原傭兵與六項技能回歸通過。PC正式共用藥水30→29、傭兵HP158→174、玩家10000→10000；375px手機29→28、傭兵158→176、玩家不變，Console無error／warn；實拍tools/mercenary-potions-pc.png及-mobile.png。i版check.ps1與52檔570KB混淆通過。待使用者刷新i→自動補血開啟→傭兵受傷低於設定門檻→確認補血並扣玩家藥水，確認後提交。
+
+## 216. 資料夾清理：廢棄圖檔與製作用影格（2026-10-28，版本 `20261028j`）
+
+- 使用者要求檢查並照建議全部清理。正式資源（images／music／sounds／data）沒有內容完全相同的重複檔。
+- **丟資源回收筒（沒進 git）**：`tools/.verify-*` 8 份驗證用整份遊戲副本（約 2.8 GB）；`tools/bigmap/seams/todo/` 15～18 四張與 `fixed/` 完全相同的 .jfif。之後驗證副本用完就刪，不要留在 tools。
+- **git 刪除（遊戲已不用）**：`images/maps/wild*.jpg/png` 6 張（野外改 `rework/world-play.jpg`）、`village/ash/darkgold/aden.webp`（村莊改 `rework/town-*.jpg`）、`tower.jpg`（塔改 `rework/arena-tower.jpg`）、`images/sprites/darkelf-v2～v5-*` 16 張、`images/vfx/boss-enchants.png`、`images/frame-pc-slim*`、`images/npc/tower-keeper*`／`ivory-keeper*`（傳送師 25aq 已移除）、`images/ui/character-status-v1.png`（用 v2）、`AI_HANDOFF.min.md`。
+  - `ui-scene.js` 的 `SCENE_BGS` 仍留舊 village／ash／darkgold／aden／wild 設定字面值，但載入時被 `scene-art.js` 的 `SCENE_ART_BGS` 以 `Object.assign` 覆蓋；`tower` 鍵沒有地圖會用到（塔走 `art-tower`）。若要讓舊鍵復活必須改指新圖。
+  - `sw.js` 不再預載 village／ash／darkgold／aden 四張舊村莊圖。
+- **搬移（製作用，遊戲不讀）**：`images/sprites/**` 底下的 `frames/`、`*-frames/`、`*preview*`、`*contact*` 共 1420 檔約 100 MB，搬到 `tools/sprite-src/<原 images/sprites 之後的路徑>/build/`（例：`images/sprites/morph/dwarf-gunner-v1/frames/x.png` → `tools/sprite-src/morph/dwarf-gunner-v1/build/frames/x.png`）。
+  - 留在原處：娃娃 `dolls/companions-v1/*/frames/walk-down-02.png`（`items.js` 拿來當道具圖）、所有 `manifest.json`／`*-manifest.json`（`tools/test-*-morph.js` 與預覽頁會讀）。
+  - `tools/test-mercenary-models.js` 改讀 `tools/sprite-src/mercenary/companions-v1/<id>/build/frames`。重跑 `prepare-mercenary-models.js` 等製作腳本仍會把影格寫回 `images/sprites`，跑完要再搬到 `build/`。
+- 驗證：check.ps1 通過；傭兵模型、hellfire、windwood 測試通過；`test-dwarf-morph`／`test-crimson-assassin-morph` 在遊戲邏輯斷言（數量 20≠5／19）失敗，發生在讀圖之前、與清理無關，是既有的過時測試。瀏覽器抓遍所有程式提到的 316 個圖檔網址，只有上述被覆蓋的舊字面值不存在，實際 `SCENE_BGS` 都指向新圖，無 404。

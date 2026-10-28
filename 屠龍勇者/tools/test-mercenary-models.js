@@ -18,7 +18,7 @@ async function main(){
    const n=spec.frames.down;assert.equal(meta.width,n*384);assert.equal(meta.height,960);assert(meta.hasAlpha);
    for(const[di,dir]of ['down','right','up'].entries())for(let f=0;f<n;f++){
     const raw=await sharp(file).extract({left:f*384,top:di*320,width:384,height:320}).ensureAlpha().raw().toBuffer();
-    const frame=await sharp(path.join(base,'frames',action+'-'+dir+'-'+String(f+1).padStart(2,'0')+'.png')).ensureAlpha().raw().toBuffer();assert(raw.equals(frame),'圖集與分鏡不同');
+    const frame=await sharp(path.join(root,'tools/sprite-src/mercenary/companions-v1',id,'build/frames',action+'-'+dir+'-'+String(f+1).padStart(2,'0')+'.png')).ensureAlpha().raw().toBuffer();assert(raw.equals(frame),'圖集與分鏡不同');
     const digest=crypto.createHash('sha256').update(raw).digest('hex');assert(!hashes.has(digest),'重複分鏡');hashes.add(digest);
     let clear=0,visible=0;for(let i=3;i<raw.length;i+=4){if(raw[i]===0)clear++;if(raw[i]>32)visible++;}assert(clear>384*320*.35);assert(visible>1500);frames++;
    }
