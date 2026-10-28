@@ -96,6 +96,13 @@ const MORPHS = {
         cast:   { src: 'images/sprites/morph/shadow-pirate-gunner-v1/cast.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 220 },
         hit:    { src: 'images/sprites/morph/shadow-pirate-gunner-v1/hit.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 150 },
     },
+    abyssGoatEnvoy: {
+        name: '深淵羊魔・巴風特使徒', drawH: 48, charH: 160, foot: [192, 270],
+        walk: { src: 'images/sprites/morph/abyss-goat-envoy-v1/walk.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 130 },
+        attack: { src: 'images/sprites/morph/abyss-goat-envoy-v1/attack.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 140 },
+        cast: { src: 'images/sprites/morph/abyss-goat-envoy-v1/cast.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 220 },
+        hit: { src: 'images/sprites/morph/abyss-goat-envoy-v1/hit.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 150 },
+    },
     abyssDualDemon: {
         name: '深淵雙刃魔神', drawH: 48, charH: 160, foot: [192, 270],
         walk: { src: 'images/sprites/morph/abyss-dual-demon-v1/walk.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 130 },
@@ -234,7 +241,7 @@ const MORPH_FORMS = [
     ['m08', '沉默洞穴刺客', 'dual', 'blue', 'silentCaveAssassin'], ['m09', '赤影暗殺者', 'dual', 'red', 'crimsonShadowAssassin'], ['m10', '布魯迪卡之影', 'dual', 'purple', 'brudikaShadow'], ['m11', '深淵雙刃魔神', 'dual', 'gold', 'abyssDualDemon'],
     ['m12', '鋼鐵狂戰士', 'great', 'blue', 'steelBerserker'], ['m13', '冥皇處刑者', 'great', 'red'], ['m14', '煉獄魔劍尊・巴拉卡', 'great', 'purple'],
     ['m15', '亞丁榮耀劍士', 'sword', 'blue', 'adenGlorySwordsman'], ['m16', '烈焰死亡騎士', 'sword', 'red', 'flameDeathKnight'], ['m17', '雷霆黑騎士統領', 'sword', 'purple'], ['m18', '神聖裁決劍聖', 'sword', 'gold'],
-    ['m19', '象牙塔高階秘術師', 'staff', 'blue', 'ivoryArchmage'], ['m20', '深淵羊魔・巴風特使徒', 'staff', 'red'], ['m21', '大魔導士・巴列斯真身', 'staff', 'purple'],
+    ['m19', '象牙塔高階秘術師', 'staff', 'blue', 'ivoryArchmage'], ['m20', '深淵羊魔・巴風特使徒', 'staff', 'red', 'abyssGoatEnvoy'], ['m21', '大魔導士・巴列斯真身', 'staff', 'purple'],
     ['m22', '修羅破戒僧', 'fist', 'blue', 'shuraMonk'], ['m23', '熔岩碎骨鬥士', 'fist', 'red'], ['m24', '霸天雷神拳皇', 'fist', 'purple'],
     ['m25', '荒野血狼狂戰', 'claw', 'blue', 'wildBloodWolf'], ['m26', '暗夜血族撕裂者', 'claw', 'red'], ['m27', '裂空魔龍爪皇', 'claw', 'purple', 'riftDragon'],
     ['m28', '風木鐵壁重裝兵', 'shield', 'blue', 'windwoodIronwall'], ['m29', '薔薇聖殿十字軍', 'shield', 'red'], ['m30', '不滅黃金守護神・宙斯盾', 'shield', 'gold'],

@@ -1,0 +1,28 @@
+{
+  "reference": [
+    "reference-20.jpg",
+    "reference-20-1.jfif",
+    "reference-20-2.jfif",
+    "reference-20-3.jfif"
+  ],
+  "tool": "built-in image_gen",
+  "down": {
+    "input": "reference-20-3.jfif",
+    "final": "down-generated.png"
+  },
+  "right": {
+    "input": "reference-20-1.jfif",
+    "initial": "right-initial.png",
+    "final": "right-generated.png",
+    "repair": "restore missing staff in cast release"
+  },
+  "up": {
+    "input": "reference-20-2.jfif",
+    "initial": "up-initial.png",
+    "final": "up-generated.png",
+    "repair": "transparent outer margins and rear direction"
+  },
+  "processing": "prepare.js: alpha-connected sprite separation, proportional rescale and foot registration",
+  "runtime": "images/sprites/morph/abyss-goat-envoy-v1",
+  "frames": "build/frames"
+}

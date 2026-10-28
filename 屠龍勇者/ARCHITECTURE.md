@@ -6,6 +6,7 @@
 ## 1. 專案結構
 
 | 檔案 | 內容 |
+| `images/sprites/morph/abyss-goat-envoy-v1/`、`tools/sprite-src/morph/abyss-goat-envoy-v1/`、`tools/goat-envoy-morph-preview.html`、`tools/test-goat-envoy-morph.js` | 20深淵羊魔・巴風特使徒紅變：四參考／36格透明動畫／註冊／卷軸與renderer隔離驗證（第220節） |
 | `images/sprites/morph/abyss-dual-demon-v1/`、`tools/sprite-src/morph/abyss-dual-demon-v1/`、`tools/abyss-demon-morph-preview.html`、`tools/test-abyss-demon-morph.js` | 11深淵雙刃魔神金變：36格透明動畫、原稿／提示詞／註冊、真實卷軸與renderer隔離驗證（第219節） |
 | `images/sprites/morph/shadow-pirate-gunner-v1/`、`tools/sprite-src/morph/shadow-pirate-gunner-v1/`、`tools/pirate-morph-preview.html`、`tools/test-pirate-morph.js` | 06暗影海盜雙槍客36格透明動畫、原稿提示詞、卷軸接線與隔離驗證（第18.15、88節） |
 | `images/ui/message-bubbles-v1.png`、`tools/icon-src/ui/message-bubbles-v1/`、`tools/message-button-preview.html` | 訊息專屬雙對話泡圖示及PC位置／抽屜預覽（第133節） |
@@ -234,7 +235,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261028m`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261028n`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3914,3 +3915,11 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - items.js新增MORPHS.abyssDualDemon並接m11.sprite；SW預快取四圖集，GAME_UPDATES新增m。沿用雙刀系神話Lv70、命中7／傷害7／攻速20%／閃避5%、武器規則與GM豁免、30分鐘卷軸／10000金幣；schema20／SQL／script順序不變。
 - tools/abyss-demon-morph-preview.html只使用記憶體角色並禁止連外，支援卷軸選單、四向四動作、逐格／循環及實際大小；test-abyss-demon-morph驗卷軸扣量／等級鎖／能力維持、四向攻擊／MISS／施法／受傷、到期、36格透明／唯一／圖集與來源一致及正式sceneDraw。
 - 驗證：36格RGBA透明／唯一／圖集逐byte、正式sceneDraw四向四動作16組、卷軸扣量／Lv69拒絕且不扣卷／Lv70可用與原能力測試全過。check.ps1 ALL CHECKS PASSED、git diff --check及52檔571KB正式混淆／四PNG發佈一致通過，臨時驗證副本已刪。瀏覽器側面攻擊第3格560ms、背面施法440ms、左向實際48px循環正常，卷軸4→3、Console無error／warn；browser-attack.png／browser-cast.png與contact.png保留來源目錄。待使用者刷新m→變形卷軸→雙刀系深淵雙刃魔神（Lv70）→觀察四向走路／攻擊／施法／受傷；確認後才commit，未commit／推送。
+
+## 220. 深淵羊魔・巴風特使徒紅變專屬動畫（2026-10-28，版本 `20261028n`）
+
+- 使用者提供20.jpg及20-1／2／3.jfif，原樣保存reference檔；動作表部分朝向不同，內建image_gen依原羊骨面具／彎角／紫黑鎧袍／破紅披風／紅焰法杖，轉為三向一致的透明分鏡，不使用灰褐底及標題。正／右／背各12格、左向鏡射；走路4格、攻擊4格、施法2格、受傷2格。原稿及完整提示詞保留tools/sprite-src/morph/abyss-goat-envoy-v1。
+- prepare.js依alpha連通主體隔離人物，保留邊緣原色及透明度、等比例縮放並註冊腳點；384×320、foot[192,270]、charH160、drawH48，逐格130／140／220／150ms。公開目錄只放四動作圖集／portrait／manifest，單格留來源build/frames；registration.json記來源裁切與腳點。
+- items.js新增MORPHS.abyssGoatEnvoy並接既有m20.sprite，不增加32款數量；SW預載四圖集，GAME_UPDATES新增n。沿用紅變Lv35、命中2／SP3／回魔3／MR10、法杖系原雙手武器限制、GM豁免、卷軸30分鐘／10000金幣；schema20／SQL／script順序不變。
+- tools/goat-envoy-morph-preview.html用記憶體角色並禁止連外，可操作卷軸、四向四動作、逐格／循環／實際尺寸；test-goat-envoy-morph驗等級與武器拒絕不扣卷、正常扣卷／上次選擇、原能力／到期／攻擊MISS／施法受傷、36格透明唯一及正式sceneDraw16組。
+- 驗證：36格RGBA透明／唯一／圖集逐byte與正式sceneDraw四向四動作16組、卷軸扣量／Lv34拒絕不扣／Lv35可用／雙手武器拒絕與原能力測試通過。check.ps1 ALL CHECKS PASSED、diff檢查及52檔572KB正式混淆語法／四PNG發佈一致通過，臨時驗證副本已刪。瀏覽器揮杖攻擊第2格560ms、背面施法第2格440ms、左向48px走路正常，卷軸4→3，Console無error／warn；browser-attack.png／browser-cast.png及contact.png保留來源目錄。待使用者刷新n→變形卷軸→法杖系深淵羊魔・巴風特使徒（Lv35，不能拿雙手武器）→觀察四向走路／攻擊／施法／受傷，確認後才commit，未commit／推送。
