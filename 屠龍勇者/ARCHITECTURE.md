@@ -224,7 +224,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261028c`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261028d`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3830,3 +3830,8 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - mercStatusText／mercUpdateLive管理視窗與村莊面板每250ms更新就緒／冷卻、增益秒數及護盾餘量（團隊屏障分玩家／傭兵）；data-merc-live-status／data-merc-rune-live避免同時開面板與對話框的重複ID。ui.renderStatus呼叫，僅改文字，不重建四孔。GAME_UPDATES同步新增c條目。
 - tools/test-mercenary-skills.js使用正式遊戲VM、真實monsterAttack／findPath及原生Canvas驗證六項，輸出tools/mercenary-skills-preview.png；tools/mercenary-preview.html新增純記憶體技能戰鬥／附加毒緩／淨化配置按鈕與時鐘，仍禁止連外、不操作正式角色。原50符石測試修正先推時間再建立有效負面狀態，避免拿已過期狀態測淨化。
 - 驗證完成：新六項隔離測試、原50符石／任務／50圖／六模型216格96組／符石掉落／雙爆／玩家射程／離線掉落通過；娃娃21款能力回歸在記憶體把舊測試固定schema18放寬為>=18後通過（沒有修改該測試原檔，原命令仍會卡舊版本斷言）。check.ps1 ALL CHECKS PASSED、git diff --check、正式51檔混淆562KB成功。隔離瀏覽器桌面實際掛機／兩召喚與冷卻、玩家中毒→淨化之光／傭兵緩速→淨身的正式自動施放紀錄、375px兩欄與scrollWidth=375，Console無error／warn；實拍tools/mercenary-skills-browser.png／mercenary-skills-mobile.png。沒有操作正式角色／資料庫，使用者實玩確認前不commit／推送。
+## 210. 外框傭兵HP／MP即時顯示（2026-10-28，版本 `20261028d`）
+
+- 使用者以截圖確認紅色HP球右側、底部欄杆上方空位，新增#merc-vitals兩行「傭兵 HP 目前／上限」「傭兵 MP 目前／上限」。淡紅／淡藍字、半透明黑底、不接收滑鼠事件；PC原圖x320、bottom270，手機左90s／bottom530s。沒有傭兵時隱藏，待命／陣亡仍呈現目前數值。
+- ui.renderStatus沿既有250ms更新，以mercStats取得獨立上限、目前值向上取整且不低於0；只有文字改變才更新節點，不重建整區。無新全域函式、存檔／schema19／SQL或載入順序變動，GAME_UPDATES加入d條目。
+- check.ps1 ALL CHECKS PASSED；隔離瀏覽器PC確認施法後MP即時變動、位置不擋金幣／經驗條／按鈕，Console無error／warn，375px手機無橫向溢出；原傭兵回歸、git diff --check及正式51檔563KB混淆通過。實拍tools/mercenary-vitals-pc.png。待使用者刷新d確認位置與即時HP／MP，確認後才提交。
