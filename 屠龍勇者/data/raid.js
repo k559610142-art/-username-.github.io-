@@ -185,7 +185,7 @@ function raidSimulate(def, list, opts = {}) {
                         let d = rand(base[0], base[1]) * RAID_BREATH_MUL * (1 - clamp(st.mr, 0, 150) / 200);
                         d = Math.max(0, Math.round(d - st.reduce));
                         if (st.absorb && player.mp > 0) { const a = Math.min(player.mp, Math.floor(d * st.absorb)); player.mp -= a; d -= a; }
-                        d = bossEnchantAbsorb(Math.max(0, Math.round(bossEnchantEnemyDamage(boss, d))));
+                        d = bossEnchantAbsorb(Math.max(0, Math.round(bossEnchantEnemyDamage(boss, d)*(typeof talentIncomingMult==='function'?talentIncomingMult(true):1))));
                         d = dollTakeDamage(d, st);
                         hit++;
                         if (player.hp <= 0) down(m, `「${name}」`);
@@ -230,7 +230,7 @@ function raidAllyHeal(m, st, ms, ev, t) {
     const s = player.settings;
     if (player.hp < st.maxHp * s.healPct / 100) return false;   // 先顧自己（playerAction 會補自己）
     if (skillGcdLeft()) return false;   // 技能公共冷卻（combat.js）
-    const k = slotSkills().find(k => k.type === 'heal' && player.mp >= k.mp && !(player.cds[k.id] > gameNow));   // 技能欄裡的治癒（欄位順序優先）
+    const k = slotSkills().find(k => k.type === 'heal' && player.mp >= (typeof talentManaCost==='function'?talentManaCost(k):k.mp) && !(player.cds[k.id] > gameNow));   // 技能欄裡的治癒（欄位順序優先）
     if (!k) return false;
     const hurt = ms.filter(o => o.alive && o !== m && o.p.hp < o.maxHp * 0.5).sort((a, b) => a.p.hp / a.maxHp - b.p.hp / b.maxHp)[0];
     if (!hurt) return false;

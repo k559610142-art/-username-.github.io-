@@ -266,6 +266,9 @@ function mercStats(m = player.mercenary) {
         addFx(fx, affixFx(it));
         if (slot !== 'weapon') { addFx(fx, def); fx.ac = (fx.ac || 0) + (it.ench || 0); }
     }
+    const talent=typeof talentBonuses==='function'?talentBonuses().mods:{};
+    fx.hp=(fx.hp||0)+(talent['出戰傭兵最大生命']||0);fx.mp=(fx.mp||0)+(talent['出戰傭兵最大魔力']||0);
+    fx.ac=(fx.ac||0)+(talent['出戰傭兵防禦']||0);fx.mr=(fx.mr||0)+(talent['出戰傭兵魔防']||0);
     const lv=m.lv-1;
     const base={atk:c.atk+Math.floor(lv/5),magic:c.magic+Math.floor(lv/4),def:c.def+Math.floor(lv/10),mr:10+Math.floor(lv/5)};
     const gear={atk:(d?(d.dmg[0]+d.dmg[1])/2+(w.ench||0):0)+(fx.dmg||0),magic:((fx.sp||0)+((d&&d.sp)||0))*3+(d&&d.type==='staff'?(w.ench||0):0),def:fx.ac||0,mr:fx.mr||0};
@@ -273,7 +276,7 @@ function mercStats(m = player.mercenary) {
     return { hp: c.hp + (m.lv - 1) * 18 + (fx.hp || 0), mp: c.mp + (m.lv - 1) * 8 + (fx.mp || 0),
         atk:base.atk+gear.atk+buffs.atk,magic:base.magic+gear.magic,
         def:base.def+gear.def+buffs.def,mr:base.mr+gear.mr+buffs.mr,base,gear,buffs,
-        regen: c.regen, dodge: Math.min(.5, mercTrait(m, 'dodge', 0) + (fx.dodge || 0) + mercBuff('evasion', m)),
+        regen: c.regen+(talent['出戰傭兵每秒回魔']||0), dodge: Math.min(.5, mercTrait(m, 'dodge', 0) + (fx.dodge || 0) + mercBuff('evasion', m)),
         heal: mercTrait(m, 'heal', 1), speed: (d ? WEAPON_TYPES[d.type].spd : 1200) / (1 + mercTrait(m, 'spd', 0) + (fx.spdMul || 0) + mercBuff('haste', m)) * mercSlowFactor(m) };
 }
 function mercNormalize(p) {
@@ -356,9 +359,10 @@ function mercPlayerFx() {
     const m = mercActive(); if (!m) return {};
     return { spdMul: mercBuff('haste'), dmg: mercBuff('might'), hit: mercBuff('focus'), mr: mercBuff('ward') };
 }
-function mercHit(mon, amount, magic = false, pierce = false) {
+function mercHit(mon, amount, magic = false, pierce = false, summon=false) {
     if (!mon || mon.hp <= 0) return 0;
     const mr = clamp(mon.mr || 0, 0, 150) * (1 - mercTrait(player.mercenary, 'mrIgnore', 0));
+    if(typeof talentMercMult==='function')amount*=talentMercMult(summon);
     const value = Math.max(1, Math.round(amount * (magic ? 1 - mr / 200 : 1) - (!magic && !pierce ? Math.max(0, -(mon.ac || 0) / 5) : 0)));
     const dealt = Math.min(mon.hp, value); mon.hp -= value; return dealt;
 }
@@ -458,7 +462,7 @@ function mercTick(dt) {
         x.at = gameNow + 2000; x.actedAt = gameNow;
         mercSkillVfx(x.id, s.kind === 'summonHeal' ? null : target);
         if (s.kind === 'summonHeal') { m.hp = Math.min(st.hp, m.hp + Math.round(st.magic * x.power)); player.hp = Math.min(calcStats().maxHp, player.hp + Math.round(st.magic * x.power)); }
-        else { const targets = s.kind === 'summonArea' ? [target,...hunt.mobs.filter(t=>t!==target)].filter(t => t.hp > 0 && mercInRange(t, 4)).slice(0,3) : [target]; for (const t of targets) mercHit(t, st.magic * x.power, true); if (s.kind === 'summonSlow') mercEffectSet(target, 'slow', 2.5); }
+        else { const targets = s.kind === 'summonArea' ? [target,...hunt.mobs.filter(t=>t!==target)].filter(t => t.hp > 0 && mercInRange(t, 4)).slice(0,3) : [target]; for (const t of targets) mercHit(t, st.magic * x.power, true, false, true); if (s.kind === 'summonSlow') mercEffectSet(target, 'slow', 2.5); }
     }
     const attackMon=mon && [mon,...hunt.mobs.filter(t=>t!==mon)].find(t=>t.hp>0 && mercInRange(t,mercWeaponRange(m)));
     if (attackMon && gameNow >= r.attackAt) { r.attackAt = gameNow + Math.max(400, st.speed); mercPlayAnim('attack', attackMon); mercHit(attackMon, st.atk * (chance(mercTrait(m, 'crit', 0)) ? mercTrait(m, 'critMul', 1) : 1)); }

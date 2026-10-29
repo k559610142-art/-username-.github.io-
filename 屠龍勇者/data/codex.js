@@ -69,6 +69,7 @@ function codexIds() {
 // 取得方式：商店、怪物掉落、永夜之塔首領、一般怪物、鍛造、職業任務
 let codexSrcCache = null;
 function codexSources(id) {
+    if(ITEMS[id]&&(ITEMS[id].talentJewel||id==='talentStone'))return [id==='talentStone'?'天賦石：T1→T15一般怪0.05%→0.50%、首領2%→10%、首次試煉加抽5%→20%。':'天賦寶珠：T1→T15一般怪0.02%→0.30%、首領1%→5%、首次試煉加抽2%→10%；成功後從全部38款依權重抽取。'];
     if (ITEMS[id] && ITEMS[id].rune) return [mercRuneSource(id) + '，成功時隨機1顆；不受地圖加成影響。不可購買，可配置四格、拆回背包；傭兵死亡失去已配置符石'];
     if (!codexSrcCache) {
         const S = codexSrcCache = {};

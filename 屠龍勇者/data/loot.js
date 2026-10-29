@@ -173,12 +173,13 @@ function lootApply(result) {
     if ((Number(data.lootCursor) || 0) + 1 !== result.cursor) return false;
     const live = player && currentSlot === result.slot && lootChar() === result.char, keep = player;
     const target = live ? player : guardWrap(migrateSave(data));
-    const before = { inv: JSON.parse(JSON.stringify(target.inv)), nextUid: target.nextUid, gold: target.gold };
+    const before = { inv: JSON.parse(JSON.stringify(target.inv)), nextUid: target.nextUid, gold: target.gold, talent:target.talent&&JSON.parse(JSON.stringify(target.talent)) };
     const messages = [];
     try {
         player = target;
         for (const source of result.items) {
             const it = JSON.parse(JSON.stringify(source)), d = ITEMS[it.id];
+            if(typeof talentReceiveProof==='function'&&talentReceiveProof(it,target)){messages.push(['✧ 完成一次性命運試煉，獲得1點天賦點。','rare']);continue;}
             if (!d || !Number.isSafeInteger(it.n) || it.n < 1) throw Error('不正確的後端物品');
             if (it.questMax) it.n = Math.min(it.n, Math.max(0, it.questMax - countItem(it.id)));
             delete it.questMax; if (!it.n) continue;
@@ -193,7 +194,7 @@ function lootApply(result) {
         data.player = target; data.schema = SAVE_SCHEMA; data.t = Date.now(); data.lootProtocol = LOOT_PROTOCOL; data.lootCursor = result.cursor;
         if (live) vaultEnvelope(data);   // 目前的角色：倉庫序號用這個分頁自己的，不沿用 localStorage 那份（第 120 節）
         localStorage.setItem(slotKey(result.slot), saveEncode(JSON.stringify(data)));
-    } catch (e) { target.inv = before.inv; target.nextUid = before.nextUid; target.gold = before.gold; throw e; }
+    } catch (e) { target.inv = before.inv; target.nextUid = before.nextUid; target.gold = before.gold; if(before.talent)target.talent=before.talent;else delete target.talent; throw e; }
     finally { player = keep; }
     cloudMarkDirty(result.slot);
     if (result.diamonds && Number.isFinite(result.diamonds.diamonds)) diaCount = result.diamonds.diamonds;

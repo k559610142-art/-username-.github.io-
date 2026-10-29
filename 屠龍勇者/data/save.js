@@ -197,6 +197,8 @@ function migrateSave(data) {
     mercNormalize(p);
     // schema19：舊角色任務未接；保留合法進度，活傭兵持有時隱藏並清空任務。
     mercQuestNormalize(p);
+    // schema21：舊角色以現有等級推算天賦點；沒有試煉紀錄就不補試煉點。
+    if(typeof talentNormalize==='function')talentNormalize(p);
     // schema 6：舊物品預設未鎖定；僅保留明確的鎖定旗標（背包、倉庫、已裝備）。
     for (const it of [...p.inv, ...p.storage, ...Object.values(p.equip)]) {
         if (it.sellLocked !== true) delete it.sellLocked;

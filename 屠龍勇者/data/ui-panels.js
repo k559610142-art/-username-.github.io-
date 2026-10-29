@@ -426,7 +426,7 @@ const CAT_ORDER = ['mercRune', 'quest', 'map', 'weapon', 'armor', 'doll', 'potio
 function bagMatch(def) {
     if (bagFilter === 'all') return true;
     if (bagFilter === 'gear') return def.cat === 'weapon' || def.cat === 'armor';
-    if (bagFilter === 'other') return ['mercRune', 'ammo', 'elixir', 'material', 'quest', 'currency'].includes(def.cat);
+    if (bagFilter === 'other') return ['talentJewel', 'mercRune', 'ammo', 'elixir', 'material', 'quest', 'currency'].includes(def.cat);
     return def.cat === bagFilter;
 }
 
@@ -541,6 +541,7 @@ function itemDescHtml(inst, showAffixMax = false) {
     if (d.heal) L.push(`回復 HP ${d.heal[0]}～${d.heal[1]}`);
     if (d.buff) L.push(`${BUFF_DEFS[d.buff].name}效果 ${d.sec / 60} 分鐘`);
     if (d.rune) L.push(mercRuneText(d.rune), mercRuneSource(inst.id));
+    if(d.talentJewel){const j=TALENT_JEWEL_CATALOG.find(j=>j.id===d.talentJewel);L.push(j.type==='normal'?j.mods.map(talentModText).join('；'):j.text);L.push('命運星盤對應孔位鑲嵌；地圖等級越高掉率越高。');}
     if (d.cat === 'ammo') L.push(`傷害 +${d.dmg}${d.silver ? '，對不死系額外傷害' : ''}`);
     if (d.classes) L.push(`限定：${d.classes.map(c => CLASSES[c].name).join('、')}`);
     if (d.desc) L.push(d.desc);
@@ -681,7 +682,7 @@ const SKILL_TYPE_NAMES = { spell: '攻擊魔法', strike: '技能', heal: '治�
 // ───────── 技能頁（2026-10-15 天堂式：魔法 1～10 級＋職業技能、魔法書學習、技能欄 8 格；第 40 節）─────────
 function skillInfoText(s) {
     const sec = s.sec ? (s.sec >= 60 ? `持續 ${s.sec / 60} 分` : `持續 ${s.sec} 秒`) : '';
-    return [SKILL_TYPE_NAMES[s.type], s.mp ? `MP ${s.mp}` : '', s.type !== 'passive' && skillCd(s) ? `冷卻 ${skillCd(s)} 秒` : '', sec].filter(Boolean).join('｜');
+    return [SKILL_TYPE_NAMES[s.type], s.mp ? `MP ${typeof talentManaCost==='function'?talentManaCost(s):s.mp}` : '', s.type !== 'passive' && skillCd(s) ? `冷卻 ${skillCd(s)} 秒` : '', sec].filter(Boolean).join('｜');
 }
 function renderSkills() {
     const cls = player.cls, bar = player.settings.bar;

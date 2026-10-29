@@ -131,7 +131,8 @@ function usePotion(id, form) {
     if (d.cat === 'potion') potReadyAt = gameNow + POTION_CD_MS;
     if (d.heal) {
         const st = calcStats(), before = player.hp;
-        player.hp = Math.min(st.maxHp, player.hp + dollPotion(rand(d.heal[0], d.heal[1])));
+        const healed=dollPotion(rand(d.heal[0],d.heal[1]));
+        player.hp = Math.min(st.maxHp,player.hp+(typeof talentPotionAmount==='function'?talentPotionAmount(healed):healed));
         addLog(`🧪 ${d.short || d.name}：HP +${player.hp - before}`, 'heal');
     }
     if (d.buff) {
@@ -311,6 +312,7 @@ function bossSkillTick(dt) {
         dmg = Math.max(1, Math.round(bossEnchantEnemyDamage(m, dmg)));
         if (merc && !mercDodged) addLog(`💥 傭兵受到${m.name}的「${t.name}」 ${mercTakeDamage(dmg)} 傷害`, 'hurt');
         if (dodged) return;
+        dmg = Math.max(1,Math.round(dmg*(typeof talentIncomingMult==='function'?talentIncomingMult(false):1)));
         dmg = bossEnchantAbsorb(dmg);
         dmg = dollTakeDamage(mercProtect(dmg), st);
         addLog(`💥 ${m.name}的「${t.name}」命中！你受到 ${dmg} 傷害`, 'hurt');
@@ -363,7 +365,7 @@ function manualCast(id) {
     if (!k || k.type === 'passive') return '尚未學會';
     if (player.cds[k.id] > gameNow) return `冷卻中（${Math.ceil((player.cds[k.id] - gameNow) / 1000)} 秒）`;
     if (skillGcdLeft()) return `技能冷卻中（${Math.ceil(skillGcdLeft() / 1000)} 秒後才能放下一個技能）`;
-    if (player.mp < k.mp) return 'MP 不足';
+    if (player.mp < (typeof talentManaCost==='function'?talentManaCost(k):k.mp)) return 'MP 不足';
     const st = calcStats();
     if (k.type === 'heal') { castHeal(k, st); return ''; }
     if (k.type === 'buff') { castBuff(k); return ''; }
@@ -489,7 +491,7 @@ function playerAction(st) {
     const s = player.settings, now = gameNow;
     const skills = slotSkills();
     const gcd = player.cds._gcd > now;   // 技能公共冷卻中：所有技能（含增益）等一下，只普攻（共鳴照常）
-    const ready = k => !gcd && player.mp >= (k.mp || 0) && !(player.cds[k.id] > now);
+    const ready = k => !gcd && player.mp >= (typeof talentManaCost==='function'?talentManaCost(k):(k.mp||0)) && !(player.cds[k.id] > now);
     if (player.hp < st.maxHp * s.healPct / 100) {
         const heal = skills.find(k => k.type === 'heal' && ready(k));
         if (heal) return castHeal(heal, st);
@@ -513,7 +515,7 @@ const SKILL_DEFAULT_CD = { heal: 4, buff: 10 };
 function skillCd(k) { return k.cd || SKILL_DEFAULT_CD[k.type] || 0; }
 function skillGcdLeft() { return Math.max(0, (player.cds._gcd || 0) - gameNow); }
 function useSkillCost(k) {
-    player.mp -= k.mp;
+    player.mp -= typeof talentManaCost==='function'?talentManaCost(k):k.mp;
     if (skillCd(k)) player.cds[k.id] = gameNow + skillCd(k) * 1000;
     // 共鳴裝備技能（id 'res_…'，castResonance 也走 castSpell／doStrike…）不觸發公共冷卻：
     // 2026-10-17 曾因共鳴武器每次命中都觸發而一直重設，公共冷卻永遠停在 3 秒、玩家技能放不出來
@@ -543,6 +545,7 @@ function magicDamage(base, spK, st, undeadMul, mon = hunt.mon) {
     if (mon.undead && undeadMul) d *= undeadMul;
     d *= slayerMult(mon) * bossDmgMult(mon, st);
     d *= 1 - clamp(mon.mr, 0, 100) / 200;
+    if(typeof talentDamageMult==='function')d*=talentDamageMult(st,true,mon);
     if (st.magicCrit > 0 && chance(st.magicCrit)) {
         d *= st.magicCritDmg == null ? 1.5 : st.magicCritDmg;
         addLog(`✨ 對${mon.name}觸發魔爆！`, 'magic');
@@ -701,6 +704,7 @@ function physicalAttack(st, mult, opt, mon = hunt.mon) {
         if (mon.dragon && st.weapon && st.weapon.dragon) d *= st.weapon.dragon;
         d *= slayerMult(mon) * bossDmgMult(mon, st);
         d *= mult;
+        if(typeof talentDamageMult==='function')d*=talentDamageMult(st,false,mon);
         if (chance(st.crit)) { d *= st.critDmg == null ? 1.5 : st.critDmg; crit = true; }
         total += Math.max(1, Math.round(d));
     }
@@ -740,7 +744,7 @@ function monsterAttack(st, mon) {
         player.mp -= a;
         dmg -= a;
     }
-    dmg = bossEnchantAbsorb(Math.max(0, Math.round(bossEnchantEnemyDamage(mon, dmg))));
+    dmg = bossEnchantAbsorb(Math.max(0, Math.round(bossEnchantEnemyDamage(mon, dmg)*(typeof talentIncomingMult==='function'?talentIncomingMult(magic):1))));
     dmg = dollTakeDamage(mercProtect(dmg), st);
     mercEnemyStatus(mon, magic, dmg, player);
     worldVfxEnemy(mon, magic);

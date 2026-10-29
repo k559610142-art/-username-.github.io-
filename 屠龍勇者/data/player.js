@@ -47,7 +47,7 @@ function createPlayer(name, cls, stats) {
         stats: { ...stats }, statPoints: 0, elixirs: 0,
         baseHp: c.startHp + conHpBonus(stats.con), baseMp: c.startMp + wisMpBonus(stats.wis),
         hp: 1, mp: 0,
-        mercenary: null, mercQuest: { active: false, kills: 0 }, ammoId: '', inv: [], equip: {}, storage: [], nextUid: 1,
+        mercenary: null, mercQuest: { active: false, kills: 0 }, talent: {v:null,nodes:[],jewels:{},trials:[]}, ammoId: '', inv: [], equip: {}, storage: [], nextUid: 1,
         buffs: {}, cds: {}, dollState: {}, dollSummonUntil: 0,
         loc: { type: 'town', id: 'talking' }, hunting: false,
         towerMax: 1, towerKills: {}, towerRule: 2, towerCleared: {}, towerBossCd: {}, dragons: {}, dragonCd: {},
@@ -292,6 +292,7 @@ function calcStats() {
     const doll = dollEquipped(p);
     if (doll && dollIsSummoned(p)) addFx(fx, DOLL_ABILITIES[doll].fx);
     addFx(fx, mercPlayerFx());
+    if(typeof talentPlayerFx==='function')addFx(fx,talentPlayerFx(p));
     let weaponEnch = 0;
     for (const slot of SLOT_KEYS) {
         const it = p.equip[slot];
@@ -350,7 +351,7 @@ function calcStats() {
         mpRegen: 1 + Math.floor(p.lv / 12) + Math.max(0, Math.floor((s.wis - 10) * c.mpRegenK)) + (fx.mpRegen || 0),
         // 負重（2026-10-16 改版）：底值 1200＋（力量＋體質）×80＋等級×20＋裝備（腰帶 weight）；原本 (力量＋體質)×100，1～50 級不會成長
         weightMax: 1200 + (s.str + s.con) * 80 + p.lv * 20 + (fx.weight || 0),
-        atkMs: atkMs * mercSlowFactor(p), castMs: castMs * mercSlowFactor(p),
+        atkMs: atkMs * mercSlowFactor(p) * (typeof talentBonuses==='function'&&talentBonuses(p).cores.has(0)?1.1:1), castMs: castMs * mercSlowFactor(p),
         haste: !!fx.haste, brave: !!fx.brave, wise: !!fx.wise,
     };
 }

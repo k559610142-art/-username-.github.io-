@@ -63,10 +63,11 @@ function barSlotHtml(i, cls = '', style = '') {
         const gcd = s.type !== 'passive' ? skillGcdLeft() / 1000 : 0;   // 技能公共冷卻 1 秒（combat.js；增益也算）
         const cd = skillCd(s), left = Math.max(own, gcd), full = own >= gcd ? cd : SKILL_GCD_MS / 1000;
         if (left) { cdTxt = Math.ceil(left) + 's'; pct = full ? Math.min(100, Math.round(left / full * 100)) : 0; }
-        tl = s.mp ? `<span class="hb-tl">${s.mp}</span>` : '';
+        const manaCost=typeof talentManaCost==='function'?talentManaCost(s):(s.mp||0);
+        tl = manaCost ? `<span class="hb-tl">${manaCost}</span>` : '';
         tr = cd ? `<span class="hb-tr">${cd}s</span>` : '';
-        dim = !hasSkill(s.id) || player.mp < (s.mp || 0);
-        tip = `${s.name}（${s.mp || 0} MP${cd ? '・冷卻 ' + cd + ' 秒' : ''}）${hasSkill(s.id) ? '' : '尚未學會'}`;
+        dim = !hasSkill(s.id) || player.mp < manaCost;
+        tip = `${s.name}（${manaCost} MP${cd ? '・冷卻 ' + cd + ' 秒' : ''}）${hasSkill(s.id) ? '' : '尚未學會'}`;
     } else {
         const n = countItem(b.id);
         ic = itemIconHtml(b.id);

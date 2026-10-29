@@ -5,7 +5,7 @@ const ctx=new Function('require','__dirname',prefix+'\nreturn ctx;')(require,__d
 vm.runInContext(`
 SIM_MODE=false;lootMode='legacy';saveGame=()=>{};refreshUI=()=>{};renderPanel=()=>{};showToast=()=>{};closeDialog=()=>{};sfx=()=>{};
 createPlayer('收納隔離','knight',CLASSES.knight.base);const weight=invWeight();
-assert.equal(SAVE_SCHEMA,20);
+assert.equal(SAVE_SCHEMA,21);
 for(const id of ['curChaos','map8','weaponScroll','baphometHorn','mercRune_wolf'])assert(bagStorageKind(id));
 for(const id of ['redPotion','homeScroll','longSword','magicCrystal','soul_baphometHorn'])assert.equal(bagStorageKind(id),'');
 const material=addItem('baphometHorn',20),scroll=addItem('weaponScroll',10),rune=addItem('mercRune_wolf',3),cur=addItem('curChaos',4),map=makeMapItem(8,'legend');player.inv.push(map);

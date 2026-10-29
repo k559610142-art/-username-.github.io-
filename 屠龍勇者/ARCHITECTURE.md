@@ -6,6 +6,11 @@
 ## 1. 專案結構
 
 | 檔案 | 內容 |
+| `data/talent-live.js`、`tools/test-talent-live.js`、`tools/test-talent-system-db.js` | 正式角色天賦／能力與UID移轉，真實遊戲／加密收據及隔離PostgreSQL回歸（第232節） |
+| `tools/talent-system.template.sql`、`tools/build-talent-sql.js`、`tools/talent-system.sql`、`tools/talent-system-catalog.json`、`tools/TALENT-INSTALL.md` | 新增獨立天賦SQL及JS同源規則匯出、使用者安裝步驟；不執行正式庫（第232節） |
+| `tools/TALENT-RELEASE-PLAN.md` | 已同意的100點／掉率／10試煉／天賦石與正式接入；安裝指引見TALENT-INSTALL（第232節） |
+| `data/talent-tree.js`、`data/talent-planner.js`、`tools/test-talent-planner.js`、`tools/talent-planner-preview.html` | 325節點連線、隔離扣點／退點與實際試插／星團分支、試玩介面及回歸（第227節） |
+| `data/talent-jewels.js`、`tools/test-talent-jewels.js` | 38款寶珠資料、星團產生／範圍轉化純試算與隔離驗證（第226節） |
 | `data/talent.js`、`talent.css`、`images/ui/talent-atlas-v1.png`、`tools/talent-preview.html`、`tools/test-talent.js` | 原畫命運星盤、未開放唯讀預覽、六核心熱區與隔離驗證（第223節） |
 | `images/sprites/morph/{azure-grave-warden,crimson-moon-reaper,void-soul-executioner,underworld-end-sovereign}-v1/`、`tools/sprite-src/morph/`對應同名目錄 | 四款鐮刀系144格透明動畫與原概念／concept-prompt.txt／分鏡／prompts及repair-prompts／sources.json／prepare.js／註冊／實拍（第222節） |
 | `tools/sprite-src/morph/scythe-forms-v1.json`、`tools/prepare-scythe-morphs.js`、`tools/test-scythe-morphs.js`、`tools/scythe-morphs-preview.html`、`tools/scythe-morphs-contact.png`、`tools/scythe-morphs-picker-mobile.png` | 四階名稱／ID素材對照、打包總覽與實際卷軸／64組renderer隔離驗證及瀏覽器預覽（第222節） |
@@ -115,6 +120,9 @@
 ## 1. 專案結構
 
 | 檔案 | 內容 |
+| `tools/TALENT-RELEASE-PLAN.md` | 已同意的100點／掉率／10試煉／天賦石與正式接入；安裝指引見TALENT-INSTALL（第232節） |
+| `data/talent-tree.js`、`data/talent-planner.js`、`tools/test-talent-planner.js`、`tools/talent-planner-preview.html` | 325節點連線、隔離扣點／退點與實際試插／星團分支、試玩介面及回歸（第227節） |
+| `data/talent-jewels.js`、`tools/test-talent-jewels.js` | 38款寶珠資料、星團產生／範圍轉化純試算與隔離驗證（第226節） |
 | `data/talent.js`、`talent.css`、`images/ui/talent-atlas-v1.png`、`tools/talent-preview.html`、`tools/test-talent.js` | 原畫命運星盤、未開放唯讀預覽、六核心熱區與隔離驗證（第223節） |
 |---|---|
 | `AGENTS.md`、`HANDOFF.md` | **給 AI 的文件**（遊戲不載入）：`AGENTS.md` 任何 AI 通用的工作規則與獨立發佈流程；`HANDOFF.md` 目前進度、待辦、使用者的決定、環境、常用操作。換 AI 接手時靠這兩份，要保持最新（舊的 `AI_HANDOFF.min.md` 10/18 後沒更新，20261028j 刪除）。`CLAUDE.md`／`GEMINI.md` 只是各 AI 自動讀的入口（`GEMINI.md` 用 `@./AGENTS.md` 匯入） |
@@ -230,7 +238,7 @@
 
 ## 2. 載入順序與依賴
 
-`config → classes → skills → items → spellbook → monsters → zones → quests → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → talent → bag-storage → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → pwa → loot → main`
+`config → classes → skills → items → spellbook → monsters → zones → quests → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → talent-jewels → talent → talent-tree → talent-planner → talent-live → bag-storage → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → pwa → loot → main`
 
 - 上層資料檔（config～quests）只在「載入時」用到更前面的檔案；quests 載入時會把獎勵裝備與任務道具寫進 `ITEMS`，所以要在 items 之後。
 - resonance 載入時要改 `ITEMS`（含任務武器）、`MONSTERS` 掉落、`RECIPES`，所以在 quests 之後；`findSkill`（skills.js）在執行期才呼叫它的 `findResonanceSkill`。
@@ -243,7 +251,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261029l`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261029m`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3977,6 +3985,43 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - Lv49空手vs Lv47冰原狼參考：征戰者連環突擊84→約111、普攻暴擊32；秘法使雷電衝擊71→約99；祈願使急救之光63→79；契靈師靈狼每下25→31。
 - tools/test-mercenary-traits.js逐項驗證上述數值並對照未受影響職業；其餘傭兵測試全過。test-mercenary-quest.js在本次修改前就因斷言schema19（現為20）失敗，與本節無關，未修。
 
+
+## 225. 星盤星石插槽提案（2026-10-29，版本 `20261029d`）
+
+- 使用者同意加入PoE式插槽並維持未開放。保留原畫不改檔；六區每區2一般孔、1特殊孔、1外圈擴展孔，共24孔＋原7核心熱區。一般◇、特殊◎、擴展✧以原生SVG疊在既有原畫上；仍無配點或實際鑲嵌功能。
+- data/talent.js新增TALENT_SOCKET_TYPES／TALENT_STONES／TALENT_SOCKET_PLANS及talentSocketDetailHtml；talentBuildAtlas新增kind:'socket'及socketType／region節點。talentNodeHtml依類型畫插槽，詳情列出星石提案與disabled「鑲嵌未開放」。talentSelect選特殊孔畫半徑160示意圈（talent-radius-preview），不代表已計算實際基礎節點。talent.css新增孔形、圖例、示例清單與範圍圈。
+- 規則提案：連通路徑後花1點開孔，每孔限一顆對應種類星石。一般範例生命+40／物爆率+0.6百分點／魔力+30。特殊依六區影響附近「已配置的基礎節點」，不影響核心／專精／插槽，相同效果重疊不疊加；數值見TALENT_SOCKET_PLANS。擴展孔預覽3基礎＋1專精，仍須逐點花天賦點；卸石前須先退分支點數。
+- 上述全部提案，不新增ITEMS／背包星石，不讀寫player／能力／存檔，不變SAVE_SCHEMA20／SQL；正式星石取得、鑲嵌／拆回、防複製與存檔轉換須另確認後實作。保留c版傭兵特色；GAME_UPDATES新增d。
+- 聊天中的talent-node-explorer互動提案保留301個舊提案節點，新增24孔，共325個提案節點。插槽資料由遊戲唯讀資料同步，點選一般星石、特殊效果或擴展分支只改當地預覽文字，不呼叫遊戲、不扣道具。聊天數值不等於已實裝玩法。
+- tools/test-talent.js擴充驗31個熱區唯一、12／6／6配置與六區各4孔、一般示例／特殊重疊規則／擴展4節點完整、所有孔disabled、無玩家／存檔副作用；保留原畫SHA256與縮放／入口檢查，補選特殊孔後重畫仍保留示意圈。上述測試及聊天325節點／48組試看驗證通過；check.ps1 ALL CHECKS PASSED、git diff --check通過。實機尚待使用者核對（前次file預覽遭安全政策阻擋）。待使用者驗收：刷新d→技能→命運星盤→點◇／◎／✧，看三種說明及◎示意圈，確認不能鑲嵌。確認後才commit。
+
+## 226. 寶珠目錄與星團分支試算（2026-10-29，版本 `20261029e`）
+
+- 使用者確認一般寶珠／轉化寶珠／六主題小中大星團方案並要求開始製作。沿用先前「未開放」，本版完成可操作的純預覽與規則資料，不啟用角色配點、實物寶珠或戰鬥加成，不改SAVE_SCHEMA20／SQL。使用者詢問天賦點取得方式與每節點成本，目前只有每格1點方案（中央起點免費、插已開孔不另扣點，星團節點仍各1點）；取得提案尚未獲確認。
+- 新data/talent-jewels.js在ui-panels後、talent前載入，只依自身常數，定義TALENT_JEWEL_FAMILIES／TALENT_CONVERSION_JEWELS／TALENT_CLUSTER_FAMILIES／TALENT_CLUSTER_SIZES／TALENT_JEWEL_CATALOG，以及talentModText／talentBuildJewelCatalog／talentJewelFits／talentClusterBranch／talentConvertNodes／talentConversionSamples。全部純資料／試算，不存取ITEMS、player、localStorage、calcStats或saveGame。
+- 38款：七一般家族（赤血／鋒刃／鷹眼／秘法／靈泉／鐵壁／契靈）各魔法2詞綴、稀有3詞綴，共14固定示例；六轉化（血魔／鋼鐵／秘刃／獵影／共生／血泉）；六星團（破軍／秘法／獵星／契靈／嗜血／壁壘）各小4／中6／大8節點，共18。數值集中資料檔，不把固定預覽說成已開放隨機掉落。
+- 轉化：只改160半徑內allocated=true且kind='small'的正值對應詞綴，原節點與輸入資料不變；不改未點出、圈外、專精、核心及插槽。每節點最多一種轉化，重疊由第一筆處理並回傳conflicts；非法插槽或座標拒絕。鋼鐵轉化明確定義每2%物理傷害→防禦1，其餘等值替換。試算樣本不代表真正主盤已配置節點，最終節點配置與有效範圍仍待正式開放。
+- 星團：小3基礎＋1專精，中4基礎＋2專精，大5基礎＋2專精＋1核心；獨立ID、每個cost1、前置逐點串接、不產生新插槽。中央cost0、主盤核心／孔cost1。大型星團與同主題主盤核心共用exclusiveGroup，該規則供未來正式計算使用，現在只有文字試看，不能宣稱已套用戰鬥互斥。
+- talent.js刪舊TALENT_STONES／TALENT_SOCKET_PLANS示例，改統一目錄；新增talentJewelPreviewHtml與talentChooseJewel、talentView.jewelId（只在記憶體）。所有同類寶珠可跨星群試看，類型不合不接受；一般顯示詞綴，轉化顯示樣本前後，星團列每節點能力／前置／點數。talent.css新增原創CSS切面寶珠與目錄／分支樣式，沿用原畫不改圖。GAME_UPDATES及所有index ?v=同步e；隔離talent-preview加入新script。
+- 取得方式提案（未確認）：Lv10給1點，之後每升1級1點，Lv99共90點；另10個一次性試煉各1點，共100點。Lv20=11、Lv50=41、Lv99=90。使用者只詢問「90點是什麼意思」，尚未選方案；不因追問視為同意，不發點、不補舊角色。正式發放／舊角色補點及存檔結構須另經使用者確認。
+- tools/test-talent-jewels.js驗38資料／詞綴、插槽類型、18星團4／6／8節點／逐點成本／前置鏈／不巢狀、不改原物件；六轉化160邊界、圈外／未配置／特殊節點、重疊互斥與非法座標。test-talent擴充312種合法孔／寶珠組合試看、31熱區／原畫、互斥群組、入口與載入／disabled及無玩家副作用。
+- 驗證：38款資料／轉化邊界互斥／18星團／312種合法孔與寶珠試看、核心互斥群組、無角色副作用全部通過；check.ps1 ALL CHECKS PASSED、git diff --check通過；54支正式載入檔案在記憶體合併混淆並驗輸出語法成功，無臨時發佈副本。瀏覽器實機仍待使用者核對（先前本機file預覽被政策阻擋）。
+- 使用者實機核對：刷新e→技能→星盤→◇選14款一般／◎看六種轉化前後／✧看18種星團小中大能力與點數→確認鑲嵌未開放。使用者驗收後才commit，未推送。
+
+## 227. 命運星盤隔離配點試玩（2026-10-29，版本 `20261029f`）
+
+- 使用者同意先補齊節點與連線，再做能扣測試點數／退點、試插寶珠與展開星團的試玩版。正式星盤入口仍「未開放」，不套用角色能力、不新增存檔欄位／ITEMS／掉落／雲端資料，SAVE_SCHEMA20／SQL不變。100點是試玩額度，不代表正式點數取得方式已確認。
+- 在talent後新增talent-tree、talent-planner，於bag-storage前；model載入時使用TALENT_ATLAS／TALENT_REGIONS／寶珠資料，UI載入時只建立試玩狀態，不碰角色。talent.js新增「進入配點試玩」頂層talentOpenPlanner入口；ui更新日誌及所有index ?v=／GAME_VERSION同步f，既有SW從index自動預載新script。
+- talent-tree.js定義TALENT_PLAN_TREE；talentPlanBuildTree產325節點＝中央1＋六區各50個普通／專精／核心節點＋各4個插槽。每區兩環18／30節點、中央路徑1、核心1，有環內橋與相鄰星群跨區路線；24孔接到附近節點，所有ID唯一且可從中央到達。每點有能力mods或核心text／孔規則，中央cost0、其餘cost1。原畫保持，試玩SVG覆蓋真正互動節點與連線，以實心金點／勾號表示已配置，避免把底圖亮線當成已學。
+- 模型函式：talentPlanCreate（傳入測試預算，預設100）、talentPlanScene（合併已插星團）、talentPlanSpent、talentPlanConversions、talentPlanAllocate、talentPlanRefund、talentPlanInsert、talentPlanRemove、talentPlanSummary。只修改傳入試玩state.allocated Set及state.jewels，原主盤／寶珠資料不動，不存取player／ITEMS／localStorage／saveGame／calcStats／cloud。
+- 配點需相鄰已配置節點，星團需其明確前置，點不足／重複點拒絕且不改狀態。退點先做剩餘已配置圖從中央的連通檢查，切斷下游就拒絕；孔內有寶珠需先拆。一般珠不花額外點，詞綴進試玩彙總；轉化只改主盤已配置small、160半徑內對應加成，插珠或新增配點產生重疊轉化都拒絕。移除寶珠會還原加成，沒有正式物品消耗。
+- 星團插入才在主圖外圈長出實際4／6／8節點，ID含socket及jewel，逐點扣1；3／4／5個基礎＋1／2／2專精及大型1核心，不再長插槽。同主題主盤／星團核心透過exclusiveGroup於試玩配置時互斥。分支有任意已配點，就不能拆／換寶珠；須從末端逐點退回，拆除後分支消失，沒有點數或能力殘留。
+- talent-planner.js定義talentPlanState／talentPlanView，以及talentOpenPlanner／talentClosePlanner／renderTalentPlanner／talentPlanDetailHtml／talentPlanRender／talentPlanSelect／talentPlanAction／talentPlanPreview／talentPlanTryInsert／talentPlanReset／talentPlanZoom／talentPlannerBind。以獨立dialog開啟，正式UI重畫不重建試玩；可關閉／Escape、清空、縮放1～4倍、拖曳／滑動、鍵盤Enter或Space選點；相連節點及星團列表按鈕供手機操作。選點後按配置／退回，選孔後挑寶珠再試插。UI重畫保存圖內捲動；試玩加成彙總不混入角色裝備，條件型核心另列。
+- 正式頁試玩狀態只在記憶體，刷新清空；聊天版talent-planner-trial使用同一套遊戲模型／介面、內嵌原畫，僅透過widgetState保留聊天試配，還原時重新走合法路徑／插珠規則並限制100點。不向遊戲寫存檔、不讀取正式角色。聊天版可直接用於使用者實玩核對；不是正式上線配點。
+- tools/talent-planner-preview.html只載四個星盤檔案，不載main、save或cloud，提供獨立瀏覽器試玩；tools/talent-preview.html也同步新script以支援入口。talent.css新增dialog／325節點／學習狀態與連線／試玩欄位的PC手機樣式，舊原畫及素材不改。
+- 驗證：test-talent-planner驗325節點唯一與全連通、前置與預算、重複／非法點、退點連通、24孔生命週期、18星團實際插入／逐點配置／前置／退點拆換、六轉化對實際主盤節點及拆除還原、一般珠彙總還原、重疊轉化拒絕與失敗不改狀態、核心互斥、UI配置退點清空及禁讀正式資料全過。既有test-talent-jewels／test-talent通過；聊天版真實操作函式及widgetState還原／縮放／無網路操作通過；check.ps1 ALL CHECKS PASSED、56檔記憶體合併混淆語法通過。尚需使用者實機確認畫面與操作（前次file預覽遭安全政策阻擋）。
+- 待驗收：刷新f→技能→命運星盤→進入配點試玩→選征戰起點配置1點→沿相連節點前進→檢查跳點／不足／切斷下游被擋→開◇孔試插／拆珠→◎轉化看加成變動→✧插星團逐點學習／先退後拆→清空回100點→關閉確認正式人物能力不變。使用者確認後才commit，未推送。正式點數來源、舊角補點及存檔仍未獲確認，留待之後。
+
 ## 228. 打怪取得的地圖一律未鑑定（2026-10-29，版本 `20261029g`）
 
 - 使用者要求「野外取得的地圖一律改為未鑑定，以後打怪打到的地圖不管品級一律為未鑑定」。範圍：一般掛機／異界怪物掉落（rollMapDrop）、異界通關獎勵（completeMap）、離線收益掉圖，以及伺服器掉寶loot_map（怪物與通關獎勵共用）。商店／GM／測試等明確指定品級的makeMapItem(t,q)不受影響；既有背包地圖不追溯。
@@ -3985,6 +4030,18 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - offline.js離線掉圖改makeMapItem(r.map,null,true)（不額外擲財寶圖，維持舊規則）。save.js migrateSave：非財寶圖若unidentified:true則保留並清q／mm／nm，其他維持刪除旗標。bag-storage地圖收納新增「未鑑定」篩選（bagSetQuality白名單加unid），排序未鑑定排在最前；原「財寶圖」篩選只顯示已鑑定的財寶圖。SAVE_SCHEMA20不變。
 - **tools/unidentified-maps.sql**：重新定義loot_map，所有地圖去掉q／mm／nm並加unidentified，T8以上1%仍為q=legend未鑑定。可重跑；**由使用者自行貼Supabase執行**，未執行前線上（伺服器掉寶）打到的地圖仍是已鑑定（不會壞，只是規則未生效）。日後重跑server-loot／loot-rates／treasure-maps後須再跑本檔。舊版用戶端讀到伺服器的未鑑定普通圖會當成白圖，不會出錯。
 - 測試：新增tools/test-unidentified-maps.js（掉落／離線全未鑑定、隱藏財寶圖、禁止開啟／排程／通貨、村莊限定、全部鑑定4000張品級比例、指定品級不受影響、migrateSave）；test-treasure-maps-db.js追加SQL驗證（重跑、10000次全未鑑定、T8財寶約1%、T3無傳奇、通關獎勵也未鑑定）；test-treasure-maps／test-bag-storage依新規則更新斷言（未鑑定財寶圖不再顯示「只掉通貨」、改用未鑑定篩選）。test-loot-auto-sell與test-map-queue在本次修改前就失敗，未處理。
+
+
+## 229. 確認天賦點來源與天賦石退點（2026-10-29，版本 `20261029h`）
+
+- 使用者明確同意：等級90點＋一次性試煉10點，共100點；一般怪／首領／試煉都掉寶珠，地圖等級越高取得率越高；退點用天賦石。這取代第226～227節「點數來源未定案」的現況，但正式存檔結構與SQL接入尚未獲明確同意，不能直接升schema或改正式DB。保留g未鑑定地圖改動與已執行的SQL。
+- talent-tree新增TALENT_PROGRESS_RULES／TALENT_TRIAL_IDS，以及純函式talentLevelPoints／talentPointTotal：Lv10為1、Lv20為11、Lv50為41、Lv99為90；10個有效試煉ID各計1，去重／排除非法ID／滿額100、未解鎖不計試煉。只是純計算，不讀角色、不發點、不補舊檔；試煉具體條件另見方案，尚未正式實裝。
+- 隔離state新增refundStones測試資源（預設100顆），不是player欄位。暫定每退1點耗1顆，成功退點才同時扣石／刪已學節點；不足、未學、起點、孔內有珠或切斷下游都不扣。UI顯示測試石量／退點成本，清空僅恢復測試資源，不是正式免費洗點。聊天widgetState同步保留測試石量，範圍限0～100，舊試玩狀態缺此值補100，不涉及遊戲存檔。
+- talent.js規則說明改為已確認100點／寶珠來源／天賦石；確切掉率、試煉條件仍是提案。GAME_UPDATES與所有index ?v=／GAME_VERSION換h，tools兩個隔離預覽同步。SAVE_SCHEMA維持20；無ITEMS、雲端設定或SQL變更。
+- tools/TALENT-RELEASE-PLAN.md保存具體可審閱方案：T1～T15一般怪寶珠0.02%→0.30%、首領1%→5%、首次試煉2%→10%；天賦石一般0.05%→0.50%、首領2%→10%、首次試煉5%→20%；各T線性遞增。寶珠池一般70／轉化10／星團20，所有品類各級均非零；以上確切機率尚未確認，不自行宣稱已掉落。
+- 十試煉提案為首次擊殺T1／2／3／4／5／7／9／11／13／15首領各1點（不能跳首領領取）。正式範圍列明SAVE_SCHEMA20→21、player.talent的節點／孔內單份寶珠／試煉記錄、舊角等級點數推算、正式能力與背包移轉、獨立tools/talent-system.sql（由使用者執行）及防重領／去重／隔離測試；尚未建立SQL或修改player。
+- 驗證：test-talent-planner新增Lv9／10／20／50／99／超上限／非法等級、試煉ID重複／非法／未解鎖、退2點扣2石／失敗不扣／無石不能退／清空補測試石，與原325節點／寶珠／星團回歸通過；test-talent-jewels／test-talent通過；聊天退石與widget還原驗證通過；check.ps1 ALL CHECKS PASSED。瀏覽器實際畫面仍待使用者核對，不宣稱已實機驗證。
+- 下一步須先請使用者確認正式存檔＋獨立SQL接入範圍，以及方案中的具體掉率與試煉條件；依AGENTS.md第2.6及第3節要求，確認前不改存檔或資料庫。使用者驗收後才commit，未推送。
 
 ## 230. 全部娃娃自動購買藥水（2026-10-29，版本 `20261029i`）
 
@@ -3999,6 +4056,20 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 ## 231. 交易所移除彈藥分類（2026-10-29，版本 `20261029j`）
 
 - 使用者截圖圈選交易所分類列的「彈藥」要求移除。market.js的MARKET_CATS刪除['ammo','彈藥']，只拿掉分類按鈕；彈藥上架／購買、伺服器目錄與SQL不變，仍可在「全部」或搜尋找到。marketSetCat沒有白名單，舊狀態marketCat='ammo'只會在本次工作階段殘留，重新整理即回「全部」。SAVE_SCHEMA20不變。
+
+## 232. 正式天賦、寶珠與天賦石（2026-10-29，版本 `20261029m`）
+
+- 使用者回覆「同意」，授權方案中的SAVE_SCHEMA20→21、player.talent、新增道具、能力、具體掉率／試煉與獨立SQL。正式資料庫由使用者執行，AI未連線或部署。完整安裝與照著點驗收見tools/TALENT-INSTALL.md。
+- 第2節載入順序補充：ui-panels→talent-jewels→talent→talent-tree→talent-planner→talent-live→bag-storage→codex。live載入時使用ITEMS／CAT_NAMES／CAT_ORDER與寶珠目錄；玩家、戰鬥、vaultOp等只在執行期使用。
+- player.talent={v,nodes:[],jewels:{孔ID:完整道具實體},trials:[]}。schema21遷移呼叫talentNormalize，依等級推算90點；合法路徑重播、孔型／核心互斥／轉化重疊／100點預算檢查、UID去重與nextUid保留。非法孔內的合法單份寶珠退回背包，不複製已在背包／裝備／倉庫的UID。原有存檔加密與guardWrap規則不變。
+- 等級Lv10起每級1點、Lv99為90點；試煉為T1／2／3／4／5／7／9／11／13／15首次地圖首領，各角色各1點，歷史擊殺不追溯。後端一次性帳本及正式收據原子入帳，重送不重發；未滿Lv10暫不計可用點。
+- live註冊38個talentJewel_*非堆疊道具與可堆疊talentStone。icons使用原創CSS寶石切面／石頭字形，ui-panels的其他分類及物品描述、codex來源同步。一般珠70%／轉化10%／星團20%；一般魔法70／稀有30%，星團小60／中30／大10，各主題均分。寶珠T1→T15：一般怪0.02%→0.30%、首領1%→5%、首次試煉另抽2%→10%；石頭0.05%→0.50%／2%→10%／5%→20%，線性增加、不吃地圖掉寶詞綴；非異界依後端怪物等級換算。
+- 所有節點各1點，退1點原子扣1石，失敗不扣；拆一般／轉化珠免費，星團先退分支。實體只在背包或孔內一處，同UID進出。沿vaultOp／vaultSeq／cloudSyncedSlot操作，RPC UUID重送回同一結果，禁止舊序號覆蓋；真實角色無免費清空。試玩模式、100點與100測試石仍獨立。
+- 新常數／狀態：TALENT_SYSTEM_VERSION='talent-20261029k'、TALENT_TRIAL_TIERS、talentLiveMode／talentLiveBusy／talentTrialCache／talentBackendReady、talentBonusCache。函式：talentItemId／talentEmpty／talentRuntimeState／talentNormalize／talentBonuses／talentPlayerFx／talentManaCost／talentDamageMult／talentIncomingMult／talentPotionAmount／talentMercMult／talentReceiveProof／talentLivePlanState／talentOpenCharacterPlanner／talentLiveAction。planner新增talentPlanIsLive／talentShowPlanner，正式／試玩共用介面、各自資料；缺SQL／版本不符時顯示未開放。
+- 能力以固定結構化stat鍵對應calcStats、物理／魔法傷害、技能魔力、實際受傷、玩家藥水、mercStats／mercHit及召喚物傷害；技能欄／技能說明與團戰治療判斷使用實際耗魔。玩家受傷減免只套玩家，不額外降低傭兵預警傷害。六核心包含近戰+20%且間隔+10%、法術+20%且耗魔+15%、遠程≥4格+20%／≤2格-10%、傭兵／召喚+15%且自身-8%、吸血+2百分點且藥水-25%、受傷-10%且自身-10%。沒有場景座標的離線／模擬狙擊固定以4格計算；魔法娃娃不吃傭兵核心。
+- tools/build-talent-sql.js從實際遊戲JS產出同源325節點／38寶珠／39道具的talent-system-catalog.json並填template產生talent-system.sql；不改原SQL或data/cloud.js。新增dragon_talent_trials／dragon_talent_state／dragon_talent_ops三張RLS表；talent_status／talent_action限登入角色，私有talent_graph／talent_valid／talent_loot_items／talent_trial_loot／talent_save_guard撤銷一般權限。save_guard比對權威配點、已完成試煉與活動UID；交易沿既有dragon_vault_commit更新簽章／序號。試煉與配點同帳號共用vault交易鎖，避免並發漏掉試煉。
+- 增量在既有loot_roll追加掉落、loot_finish與loot_finish_batch追加試煉，保留所有既有增量與舊規則快照；舊ticket無天賦規則時不補試煉。安裝可重跑不清記錄，缺前置或無法安全套入函式則整筆回滾，包含PostgREST reload通知。之後若覆蓋掉寶函式／catalog，需重跑本增量。
+- 驗證：新增test-talent-live驗真實角色屬性／核心代價、schema21／UID遷移、加密收據原子試煉與寶珠／還原／重送／換角；test-talent-system-db以隔離PostgreSQL載入原SQL＋增量，驗原子扣石／單UID／星團、伺服器90／100點、實際批次收據去重、簽章與舊序號、權限與重跑，保留未鑑定地圖／符石。背包測試schema期望同步21並保留舊20讀檔案例；既有星盤／掉寶／背包／未鑑定／傭兵／技能／藥水／特效／娃娃自動買藥通過。check.ps1 ALL CHECKS PASSED。瀏覽器先前受環境安全限制未完成本次實玩，等待使用者依指引驗收；未commit／推送。
 
 ## 233. 娃娃自動購買新增藍水與變形卷軸（2026-10-29，版本 `20261029l`）
 
