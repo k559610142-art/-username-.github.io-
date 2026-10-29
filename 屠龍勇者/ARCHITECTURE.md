@@ -9,6 +9,7 @@
 | `images/icons/items/talentJewel_*.png`、`tools/icon-src/items/talent-jewels-v1/`、`tools/prepare-talent-jewels.ps1`、`tools/talent-jewels-contact-v1.png` | 38款寶珠各自原創透明圖、原稿／提示詞清單與裁切／總覽（第235節） |
 | `images/ui/talent-atlas-unallocated-v1.png`、`tools/icon-src/talent-atlas-unallocated-v1.json`、`tools/test-talent-jewel-storage.js`、`tools/talent-jewel-storage-preview.html` | 星盤未配置底圖、三欄寶珠倉庫實際資料／圖片回歸與禁止連外的隔離預覽（第235節） |
 | `images/icons/items/talentStone.png`、`tools/icon-src/items/talent-stone-v1.png`／`.json`、`tools/prepare-talent-stone.ps1` | 天賦石原創透明圖、原稿／提示詞與既有裁切流程接入（第234節） |
+| `data/talent-layout.js`、`tools/test-talent-layout.js`、`images/ui/talent-atlas-clean-v1.png`、`tools/icon-src/talent-atlas-clean-v1.json` | 遊戲實際套用純背景、325點主盤、獨立顯示避碰及精確轉化標記，保留原圖（第237節） |
 | `data/talent-live.js`、`tools/test-talent-live.js`、`tools/test-talent-system-db.js` | 正式角色天賦／能力與UID移轉，真實遊戲／加密收據及隔離PostgreSQL回歸（第232節） |
 | `tools/talent-system.template.sql`、`tools/build-talent-sql.js`、`tools/talent-system.sql`、`tools/talent-system-catalog.json`、`tools/TALENT-INSTALL.md` | 新增獨立天賦SQL及JS同源規則匯出、使用者安裝步驟；不執行正式庫（第232節） |
 | `tools/TALENT-RELEASE-PLAN.md` | 已同意的100點／掉率／10試煉／天賦石與正式接入；安裝指引見TALENT-INSTALL（第232節） |
@@ -241,7 +242,7 @@
 
 ## 2. 載入順序與依賴
 
-`config → classes → skills → items → spellbook → monsters → zones → quests → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → talent-jewels → talent → talent-tree → talent-planner → talent-live → bag-storage → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → pwa → loot → main`
+`config → classes → skills → items → spellbook → monsters → zones → quests → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → talent-jewels → talent → talent-tree → talent-layout → talent-planner → talent-live → bag-storage → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → pwa → loot → main`
 
 - 上層資料檔（config～quests）只在「載入時」用到更前面的檔案；quests 載入時會把獎勵裝備與任務道具寫進 `ITEMS`，所以要在 items 之後。
 - resonance 載入時要改 `ITEMS`（含任務武器）、`MONSTERS` 掉落、`RECIPES`，所以在 quests 之後；`findSkill`（skills.js）在執行期才呼叫它的 `findResonanceSkill`。
@@ -254,7 +255,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261029p`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261029q`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -4103,8 +4104,18 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 最終圖片回歸：test-item-art同步547件道具／379張獨立PNG，並依既有通貨自動歸位改從通貨收納頁驗覺醒石；547件圖片存在、379張128px圖互不重複及各介面接線通過。38寶珠總覽已逐款檢視，兩張原稿角落alpha=1視同透明（與既有裁切alpha>5閾值一致），輸出128px角落均為0；原稿不變。57個正式script記憶體合併混淆／語法驗證通過。
 
 
-## 236. 正式入口暫存門閂與重疊預覽（2026-10-29，版本 `20261029p`，未發布）
+## 236. 正式入口暫存門閂與重疊預覽（2026-10-29，版本 `20261029p`，後續已確認同步origin/main）
 
 - config新增TALENT_RELEASED=false，talent.js新增talentIsReleased；正式標籤與disabled入口採發布旗標，talentOpenCharacterPlanner／talentLiveAction在任何存檔或RPC之前攔截，後端安裝不等於發布。試玩保留，不刪既有角色配置。test-talent-release驗即使backendReady=true也不能顯示開放或呼叫正式操作；寶珠收納測試只在隔離VM覆寫helper以驗既有移轉。check.ps1通過。
 - 新tools/talent-emergency-lock.sql僅撤銷authenticated／anon／public對talent_status與talent_action執行權限，保留所有表及資料，通知PostgREST更新；由使用者執行，尚未收到執行回覆，未連正式庫。正式重新開放前須釐清玩家卡存檔問題，不能只更改標籤。
 - 使用者最新指示先從節點重疊修正開始。聊天預覽用talent-preview-spacing.js產生顯示位置，核心／起點固定、其他節點依圖案半徑+8間距避碰，星團展開再避碰；只改顯示，不變更正式data/talent-tree或邏輯座標／轉化效果／能力／連線／消耗。325與373節點全對檢查零重疊，點擊半徑圖案r+4互不覆蓋，配點退點互動通過。正式遊戲仍待後續套用，未commit／推送。
+
+
+## 237. 遊戲實際套用純背景與節點避碰（2026-10-29，版本 `20261029q`）
+
+- 使用者發現已發布p仍為舊圖，要求實際更新遊戲。新增talent-atlas-clean-v1.png（1254×1254）使用先前已看過的純場景背景，完全移除預畫節點、連線、六大圖章與中央輪盤；舊兩版圖保留，來源與完整提示詞記於icon-src JSON。SVG依原1195×1024邏輯畫布鋪背景，不再裁掉右側一部分或蓋舊假狀態標籤。
+- 新data/talent-layout.js在talent-tree後、talent-planner前載入。全域talentLayoutBasePositions、talentLayoutRadius／talentLayoutSeparate／talentPlanDisplayScene／talentLayoutRadiusHtml：原點與核心固定，其他節點依圖案半徑與8單位空隙避碰，星團新增分支再避碰；點擊半徑r+4，互不覆蓋。只產生顯示座標，不改TALENT_PLAN_TREE、路徑、前置、能力、點數、存檔或SQL。
+- renderTalent主畫面改用完整325點及真實連線，所有小點／專精可選取並查看實際mods，不再只有31個大熱區。talentNodeHtml採一致節點大小，talentSelect與talentDetailHtml改讀完整樹；詳情用程式繪製符號，不再放大截取舊底圖的金色輪盤。talentChooseJewel等既有孔型試看規則保留。
+- 配點頁同用顯示排版與純背景；零點沒有預先亮路線。轉化效果仍依原邏輯半徑160計算，畫面以受範圍涵蓋的基礎節點逐顆標記，避免移位後畫一個不精確的圓。主畫面／配點／詳情沒有舊圖引用。兩個隔離預覽同步script與版本。
+- test-talent-layout驗325點、6孔×3大小及373點同時展開全對間距／點擊區、不改原座標／mod／連線、轉化標記對應邏輯集合、主頁325標記與新圖、詳情數值、試配／退回；既有星盤／角色／釋出門閂／寶珠收納／547道具圖片回歸通過。58個script依實際順序記憶體合併混淆／語法通過，check.ps1 ALL CHECKS PASSED。
+- 本次維持TALENT_RELEASED=false，未處理已回報的正式配點存檔問題，未更動玩家既有配置；正式開放另待修復。瀏覽器嘗試localhost8790預覽導航逾時且回傳網路錯誤頁，未實機驗收。依AGENTS，待使用者本機Ctrl+F5確認版本q→技能→星盤→主頁／試玩皆為純背景且節點不重疊、點小點可看效果、F12無紅字，再commit；由使用者Push origin。q尚未提交／推送，不可說已上線。p已在前輪確認HEAD與origin/main同06b557c，先前『p未發布』說法已更正。

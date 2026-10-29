@@ -1,6 +1,6 @@
 // 隔離試玩實際走圖、扣點／退點、插珠及星團生命週期，不連正式遊戲。
 const fs=require('fs'),path=require('path'),vm=require('vm'),assert=require('assert/strict');
-const root=path.resolve(__dirname,'..'),files=['talent-jewels','talent','talent-tree','talent-planner'];
+const root=path.resolve(__dirname,'..'),files=['talent-jewels','talent','talent-tree','talent-layout','talent-planner'];
 const ctx=vm.createContext({document:{addEventListener:()=>{},querySelectorAll:()=>[],getElementById:()=>null},TABS:{},PANEL_FNS:{}});
 for(const name of ['player','ITEMS','localStorage','saveGame','calcStats','cloudSb','cloudUser'])Object.defineProperty(ctx,name,{get(){throw Error('試玩不可存取 '+name);}});
 files.forEach(f=>vm.runInContext(fs.readFileSync(path.join(root,'data',f+'.js'),'utf8'),ctx));

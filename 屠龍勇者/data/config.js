@@ -1,6 +1,6 @@
 // 屠龍勇者：全域設定、常數、共用小工具（最先載入，不依賴其他檔案）
 const GAME_TITLE = '黑暗大陸';   // 遊戲名稱（2026-10-12 由「屠龍勇者」改名；資料夾與網址不變）
-const GAME_VERSION = '20261029p';
+const GAME_VERSION = '20261029q';
 const TALENT_RELEASED = false; // 正式天賦尚未開放；後端安裝成功不代表發布。
 const BOSS_MATERIAL_DROP_P = 0.001; // BOSS 材料固定掉落率 0.1%，不受異界掉落加成影響
 

@@ -17,7 +17,7 @@ function talentIsReleased() { return typeof TALENT_RELEASED!=='undefined'&&TALEN
 let talentView = { selected:'origin', zoom:1, jewelId:null };
 
 function talentBuildAtlas() {
-    // 原概念圖的實際座標；小節點及亮線目前屬美術示意，不能配點。
+    // 星群核心與插槽的邏輯座標；畫面避碰不回寫這些數值，保留轉化規則。
     const positions=[[377,191],[833,185],[1005,487],[851,787],[377,763],[233,483]];
     const nodes=[{ id:'origin', x:615, y:478, name:'命運之核', kind:'origin', region:-1, cost:0 }];
     TALENT_REGIONS.forEach((r,i)=>nodes.push({id:r.id+'-core',x:positions[i][0],y:positions[i][1],name:r.core,kind:'core',region:i,cost:1,exclusiveGroup:'talent-core-'+i}));
@@ -34,26 +34,27 @@ function talentBuildAtlas() {
 }
 
 function talentNodeHtml(n) {
-    const socket=n.kind==='socket',r=socket?20:n.kind==='origin'?77:60;
-    const mark=socket?`<circle class="talent-socket-face ${n.socketType}" r="18"/><text class="talent-socket-mark" y="7">${TALENT_SOCKET_TYPES[n.socketType].mark}</text>`:'';
-    return `<g class="talent-node${socket?' talent-socket':''}${n.id===talentView.selected ? ' selected' : ''}" data-node="${n.id}" transform="translate(${n.x} ${n.y})" role="button" tabindex="0" aria-label="${n.name}，未開放" onclick="talentSelect('${n.id}')"><title>${n.name}・未開放</title><circle class="talent-hit" r="${r}"/>${mark}<circle class="talent-ring" r="${r}"/></g>`;
+    const socket=n.kind==='socket',r=talentLayoutRadius(n);
+    const mark=socket?TALENT_SOCKET_TYPES[n.socketType].mark:n.kind==='origin'?'✦':n.kind==='core'?'核':'';
+    return `<g class="talent-node ${n.kind}${socket?' talent-socket':''}${n.id===talentView.selected ? ' selected' : ''}" data-node="${n.id}" transform="translate(${n.x} ${n.y})" role="button" tabindex="0" aria-label="${n.name}，未開放" onclick="talentSelect('${n.id}')"><title>${n.name}・${n.cost}點</title><circle class="talent-hit" r="${r+4}"/><circle class="talent-ring" r="${r}"/>${mark?`<text class="talent-node-mark" y="5">${mark}</text>`:''}</g>`;
 }
 
 function renderTalent() {
-    const radiusNode=TALENT_ATLAS.nodes.find(n=>n.id===talentView.selected && n.socketType==='radius');
-    const radiusHtml=radiusNode ? `<circle class="talent-radius-preview" cx="${radiusNode.x}" cy="${radiusNode.y}" r="160"/>` : '';
+    const scene=talentPlanDisplayScene(talentPlanCreate(100)),byId=new Map(scene.nodes.map(n=>[n.id,n]));
+    const radiusHtml=talentLayoutRadiusHtml(scene,talentView.selected);
+    const paths=scene.edges.map(([a,b])=>{const p=byId.get(a),q=byId.get(b);return `<path d="M${p.x} ${p.y} L${q.x} ${q.y}"/>`;}).join('');
     return `<section class="talent-shell"><header class="talent-heading"><div><small>命運交織，群星未醒</small><h3>命運星盤</h3></div><span class="talent-locked">${talentIsReleased()?'✧ 正式已開放':'🔒 未開放'}</span></header>
         <p class="talent-notice">天賦星盤尚未開放，目前僅提供配點試玩預覽；試玩不修改正式角色。</p><button class="talent-entry" onclick="talentOpenCharacterPlanner()" ${talentIsReleased()?'':'disabled'}><div>正式角色天賦<small>等待正式開放</small></div><span>🔒 未開放</span></button><button class="talent-entry" onclick="talentOpenPlanner()"><div>進入配點試玩<small>325個主盤節點・100測試點・可退點及試插寶珠</small></div><span>不套用角色 ›</span></button>
         <div class="talent-layout"><div class="talent-map-column"><div class="talent-tools"><button class="mini secondary" onclick="talentZoom(-1)" aria-label="縮小星盤">－</button><button class="mini secondary" onclick="talentZoom(1)" aria-label="放大星盤">＋</button><button class="mini secondary" onclick="talentZoom(0)">全盤</button><span>拖曳／滑動探索・點節點查看</span></div>
-        <div class="talent-viewport" aria-label="命運星盤，可拖曳與捲動"><svg class="talent-map" style="width:${talentView.zoom*100}%" viewBox="0 0 1195 1024" aria-label="六大區域天賦星盤"><image href="images/ui/talent-atlas-unallocated-v1.png" width="1536" height="1024" pointer-events="none"/><rect x="979" y="25" width="199" height="48" rx="17" fill="#110f0b" stroke="#9f8149"/><text x="1078" y="58" class="talent-art-status">未開放</text><rect x="23" y="942" width="333" height="41" rx="5" fill="#0c1016"/><text x="40" y="969" class="talent-art-note">六大星群・未開放預覽</text>${TALENT_ATLAS.nodes.map(talentNodeHtml).join('')}${radiusHtml}</svg></div></div>
-        <aside class="talent-detail" aria-live="polite">${talentDetailHtml()}</aside></div><div class="talent-socket-legend">◇ 一般孔 12 個　◎ 轉化孔 6 個　✧ 星團孔 6 個</div><details class="talent-point-plan"><summary>天賦點與退點規則・已確認</summary><p>Lv.10拿第1點，之後每升1級再拿1點，Lv.99共90點；另有10個一次性試煉各1點，合計100點。退點使用天賦石，預設每退1點消耗1顆。等級點自動依目前等級計算，舊角色同步適用；每個一次性試煉完成後增加1點。</p><small>範例：Lv.20有11點／Lv.50有41點／Lv.99有90點。寶珠由一般怪、首領、試煉取得，地圖等級越高掉率越高；首次擊倒T1、2、3、4、5、7、9、11、13、15地圖首領各完成一次試煉。寶珠掉率：一般怪0.02%→0.30%、首領1%→5%、試煉加抽2%→10%。</small></details><footer class="talent-footer">未配置節點維持暗色；中央命核是免費起點。可試看寶珠詞綴、節點轉化與星團分支，此圖為原畫預覽；正式鑲嵌及學習請進入「正式角色天賦」。</footer></section>`;
+        <div class="talent-viewport" aria-label="命運星盤，可拖曳與捲動"><svg class="talent-map" style="width:${talentView.zoom*100}%" viewBox="0 0 1195 1024" aria-label="六大區域天賦星盤"><image href="images/ui/talent-atlas-clean-v1.png" width="1195" height="1024" preserveAspectRatio="none" pointer-events="none"/><g class="talent-paths">${paths}</g>${scene.nodes.map(talentNodeHtml).join('')}${radiusHtml}</svg></div></div>
+        <aside class="talent-detail" aria-live="polite">${talentDetailHtml()}</aside></div><div class="talent-socket-legend">◇ 一般孔 12 個　◎ 轉化孔 6 個　✧ 星團孔 6 個</div><details class="talent-point-plan"><summary>天賦點與退點規則・已確認</summary><p>Lv.10拿第1點，之後每升1級再拿1點，Lv.99共90點；另有10個一次性試煉各1點，合計100點。退點使用天賦石，預設每退1點消耗1顆。等級點自動依目前等級計算，舊角色同步適用；每個一次性試煉完成後增加1點。</p><small>範例：Lv.20有11點／Lv.50有41點／Lv.99有90點。寶珠由一般怪、首領、試煉取得，地圖等級越高掉率越高；首次擊倒T1、2、3、4、5、7、9、11、13、15地圖首領各完成一次試煉。寶珠掉率：一般怪0.02%→0.30%、首領1%→5%、試煉加抽2%→10%。</small></details><footer class="talent-footer">未配置節點維持暗色；中央命核是免費起點。可試看寶珠詞綴、節點轉化與星團分支，節點與連線由程式獨立繪製；正式鑲嵌及學習請進入「正式角色天賦」。</footer></section>`;
 }
 
 function talentDetailHtml() {
-    const n=TALENT_ATLAS.nodes.find(n=>n.id===talentView.selected) || TALENT_ATLAS.nodes[0], r=TALENT_REGIONS[n.region];
+    const n=TALENT_PLAN_TREE.nodes.find(n=>n.id===talentView.selected) || TALENT_PLAN_TREE.nodes[0], r=TALENT_REGIONS[n.region];
     if(n.kind==='socket')return talentSocketDetailHtml(n);
     const type={origin:'中央命核',core:'核心天賦',notable:'專精天賦',small:'基礎天賦'}[n.kind];
-    return `<small class="talent-detail-type">節點詳情・${type}</small><div class="talent-detail-icon"><svg viewBox="${n.x-67} ${n.y-67} 134 134" role="img" aria-label="${n.name}"><image href="images/ui/talent-atlas-unallocated-v1.png" width="1536" height="1024"/></svg></div><h4>${n.name}</h4><small class="talent-detail-region">${r ? r.name+'星群' : '中央命核'}</small><p>${r ? r.desc : '六條命運之路由此延伸，通往不同的戰鬥流派。'}</p><p class="talent-idea">${n.kind==='core' ? r.idea : '設計方向預覽；正式效果、數值與配點規則尚未定案。'}</p><button class="talent-learn" disabled>🔒 未開放</button><small class="talent-detail-note">目前無法學習或配置，不會消耗點數。</small><div class="talent-regions">${TALENT_REGIONS.map(region=>`<button class="mini secondary" onclick="talentSelect('${region.id}-core')">${region.name}</button>`).join('')}</div>`;
+    return `<small class="talent-detail-type">節點詳情・${type}</small><div class="talent-detail-icon"><svg viewBox="0 0 100 100" role="img" aria-label="${n.name}"><circle cx="50" cy="50" r="34" class="talent-detail-emblem"/><text x="50" y="59" class="talent-detail-mark">${n.kind==='origin'?'✦':n.kind==='core'?'核':n.kind==='notable'?'◆':'●'}</text></svg></div><h4>${n.name}</h4><small class="talent-detail-region">${r ? r.name+'星群' : '中央命核'}</small><p>${r ? r.desc : '六條命運之路由此延伸，通往不同的戰鬥流派。'}</p><p class="talent-idea">${n.text||(n.mods||[]).map(talentModText).join('；')||'免費起點。'}</p><button class="talent-learn" disabled>🔒 未開放</button><small class="talent-detail-note">目前無法學習或配置，不會消耗點數。</small><div class="talent-regions">${TALENT_REGIONS.map(region=>`<button class="mini secondary" onclick="talentSelect('${region.id}-core')">${region.name}</button>`).join('')}</div>`;
 }
 
 function talentSocketDetailHtml(n) {
@@ -84,16 +85,14 @@ function talentChooseJewel(id) {
 }
 
 function talentSelect(id) {
-    if(!TALENT_ATLAS.nodes.some(n=>n.id===id)) return;
+    if(!TALENT_PLAN_TREE.nodes.some(n=>n.id===id)) return;
     talentView.selected=id;
     document.querySelectorAll('.talent-node').forEach(el=>el.classList.toggle('selected',el.dataset.node===id));
     document.querySelectorAll('.talent-detail').forEach(el=>el.innerHTML=talentDetailHtml());
     document.querySelectorAll('.talent-radius-preview').forEach(el=>el.remove());
-    const node=TALENT_ATLAS.nodes.find(n=>n.id===id);
+    const node=TALENT_PLAN_TREE.nodes.find(n=>n.id===id);
     if(node.socketType==='radius')document.querySelectorAll('.talent-map').forEach(svg=>{
-        const circle=document.createElementNS('http://www.w3.org/2000/svg','circle');
-        circle.setAttribute('class','talent-radius-preview');circle.setAttribute('cx',node.x);circle.setAttribute('cy',node.y);circle.setAttribute('r',160);
-        svg.appendChild(circle);
+        svg.insertAdjacentHTML('beforeend',talentLayoutRadiusHtml(talentPlanDisplayScene(talentPlanCreate(100)),id));
     });
 }
 
