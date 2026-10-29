@@ -1053,6 +1053,12 @@ function renderSettings() {
             ${num('healPct', 'HP 低於 % 施放治癒魔法', 5, 95)}
             ${chk('autoDodge', '首領大招自動閃避（走出紅圈）')}
         </div>
+        <div class="panel"><h4>🧸 娃娃自動購買藥水</h4>
+            <small class="muted">裝備娃娃且召喚中，身上數量低於設定就自動補買（商店價 +10%，0＝不買）。金幣或負重不夠時只買得起的部分；開啟自動回家時不會超過回家負重。</small>
+            ${num('dollBuyGreen', ITEMS.greenPotion.name + '保持數量', 0, 500)}
+            ${braveItemFor(player.cls) ? num('dollBuyBrave', ITEMS[braveItemFor(player.cls)].name + '保持數量', 0, 500) : ''}
+            ${num('dollBuyHeal', ITEMS.ancientPotion.name + '保持數量', 0, 2000)}
+        </div>
         <div class="panel"><div class="loot-filter-head"><h4>🎒 戰利品過濾</h4><button class="mini secondary" aria-expanded="${lootAutoDrawerOpen}" onclick="toggleLootAutoDrawer()">自動販賣 ${lootAutoDrawerOpen ? '▴' : '▾'}</button></div>
             ${lootAutoDrawerHtml()}
             <label class="set-row"><span>撿到裝備時</span><select onchange="setSettingNum('lootFilter',this.value,0,3)">

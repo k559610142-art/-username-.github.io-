@@ -85,7 +85,7 @@ function dollEquipped(p = player) {
 }
 function dollAbilityHtml(id) {
     const d = ITEMS[id], a = d && DOLL_ABILITIES[d.doll];
-    return a ? `<p>${esc(a.base)}</p><p><b>${esc(a.name)}</b>：${esc(a.desc)}</p>` : '';
+    return a ? `<p>${esc(a.base)}</p><p><b>${esc(a.name)}</b>：${esc(a.desc)}</p><p><b>自動購買藥水</b>：召喚中依職業自動補買綠水、勇水／精靈餅乾／慎重藥水與古代終極治癒藥水（商店價+10%，數量在設定調整）。</p>` : '';
 }
 function dollStateNormalize(p) {
     const old = p.dollState && typeof p.dollState === 'object' ? p.dollState : {}, next = {};
@@ -132,10 +132,37 @@ function dollLowHp(st) {
     if (r.id === 'star-fox' && dollTrigger(r)) r.shield = 50;
     else if (r.id === 'black-tortoise') dollTrigger(r);
 }
+// 全部娃娃共通：召喚中自動補買藥水（第230節）。依職業買勇水／精靈餅乾／慎重藥水，另有綠水、古代終極治癒藥水；
+// 數量低於設定就補回，商店價×1.1，金幣或負重不足只買得起的部分（開自動回家時不超過回家負重門檻）。
+const DOLL_BUY_RATE = 1.1, DOLL_BUY_CHECK_MS = 2000;
+function dollBuyList(cls = player.cls) {
+    const s = player.settings, brave = braveItemFor(cls);
+    return [['greenPotion', s.dollBuyGreen], [brave, s.dollBuyBrave], ['ancientPotion', s.dollBuyHeal]].filter(([id, keep]) => id && ITEMS[id] && keep > 0);
+}
+function dollBuyCost(id, n) { return Math.ceil(shopCost(id, n) * DOLL_BUY_RATE); }
+function dollAutoBuy(r) {
+    if (SIM_MODE || !r || gameNow < (r.buyAt || 0)) return 0;
+    r.buyAt = gameNow + DOLL_BUY_CHECK_MS;
+    const st = calcStats(), cap = player.settings.autoHome ? Math.floor(st.weightMax * Math.min(100, player.settings.weightPct) / 100) - 1 : st.weightMax;
+    let bought = 0;
+    for (const [id, keep] of dollBuyList()) {
+        const d = ITEMS[id], want = keep - countItem(id);
+        if (want <= 0) continue;
+        const byGold = Math.floor(player.gold / dollBuyCost(id, 1)), byWeight = d.wt > 0 ? Math.floor((cap - invWeight()) / d.wt) : want;
+        let n = Math.min(want, byGold, byWeight);
+        while (n > 0 && dollBuyCost(id, n) > player.gold) n--;
+        if (n <= 0 || !bagCanReceive(id, n, st.weightMax)) continue;
+        const cost = dollBuyCost(id, n);
+        player.gold -= cost; addItem(id, n); bought += n;
+        addLog('🧸 娃娃自動購買 ' + (d.short || d.name) + ' ×' + fmt(n) + '（-' + fmt(cost) + ' 金幣）', 'sys');
+    }
+    return bought;
+}
 function dollAbilityTick(dt) {
     if (!dollSummonTick()) return;
     const r = dollContext();
     if (!r) return;
+    dollAutoBuy(r);
     const a = DOLL_ABILITIES[r.id], step = Math.max(0, dt);
     if (a.period) {
         const s = dollSaved(r.id); s.elapsed += step;

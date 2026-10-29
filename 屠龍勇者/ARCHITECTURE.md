@@ -225,6 +225,7 @@
 | `data/bag-storage.js`、`tools/test-bag-storage.js`、`tools/bag-storage-preview.html` | 五種背包專用收納、位置／重量／自動歸位、固定格位與地圖階級、隔離測試／預覽（第214節） |
 | `tools/test-mercenary-stats.js`、`tools/mercenary-stats-pc.png`、`tools/mercenary-status-pc.png`、`tools/mercenary-status-mobile.png` | 傭兵攻防來源／裝備與底部狀態隔離驗證（第217～218節） |
 | `tools/test-mercenary-traits.js` | 傭兵六職業特色：召喚倍率／上限、受傷與仇恨、治療與增益延長、物理／魔法技能倍率、暴擊、閃避攻速回血、魔防穿透隔離驗證（第224節） |
+| `tools/test-doll-auto-buy.js` | 全部娃娃自動購買藥水：職業選藥、加價10%、金幣／負重限制與召喚條件隔離驗證（第230節） |
 | `tools/test-mercenary-potions.js` | 傭兵共用玩家藥水、開關／門檻／選藥與延遲隔離測試（第215節） |
 
 ## 2. 載入順序與依賴
@@ -242,7 +243,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261029g`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261029i`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3984,3 +3985,13 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - offline.js離線掉圖改makeMapItem(r.map,null,true)（不額外擲財寶圖，維持舊規則）。save.js migrateSave：非財寶圖若unidentified:true則保留並清q／mm／nm，其他維持刪除旗標。bag-storage地圖收納新增「未鑑定」篩選（bagSetQuality白名單加unid），排序未鑑定排在最前；原「財寶圖」篩選只顯示已鑑定的財寶圖。SAVE_SCHEMA20不變。
 - **tools/unidentified-maps.sql**：重新定義loot_map，所有地圖去掉q／mm／nm並加unidentified，T8以上1%仍為q=legend未鑑定。可重跑；**由使用者自行貼Supabase執行**，未執行前線上（伺服器掉寶）打到的地圖仍是已鑑定（不會壞，只是規則未生效）。日後重跑server-loot／loot-rates／treasure-maps後須再跑本檔。舊版用戶端讀到伺服器的未鑑定普通圖會當成白圖，不會出錯。
 - 測試：新增tools/test-unidentified-maps.js（掉落／離線全未鑑定、隱藏財寶圖、禁止開啟／排程／通貨、村莊限定、全部鑑定4000張品級比例、指定品級不受影響、migrateSave）；test-treasure-maps-db.js追加SQL驗證（重跑、10000次全未鑑定、T8財寶約1%、T3無傳奇、通關獎勵也未鑑定）；test-treasure-maps／test-bag-storage依新規則更新斷言（未鑑定財寶圖不再顯示「只掉通貨」、改用未鑑定篩選）。test-loot-auto-sell與test-map-queue在本次修改前就失敗，未處理。
+
+## 230. 全部娃娃自動購買藥水（2026-10-29，版本 `20261029i`）
+
+- 使用者要求「全部娃娃新增自動購買藥水功能（依照職業判斷買勇水、綠水、精靈餅乾、慎重藥水、古代終極治癒藥水）」，並選定：隨時購買（不必回村，像弓箭彈藥自動購買）、每種可自訂保持數量、商店價加10%、娃娃須裝備且召喚有效（有付魔法結晶）才生效。
+- doll-abilities.js新增DOLL_BUY_RATE=1.1／DOLL_BUY_CHECK_MS=2000與頂層dollBuyList(cls)／dollBuyCost(id,n)／dollAutoBuy(r)；dollAbilityTick在召喚與dollContext檢查通過後呼叫，每2秒（gameNow）檢查一次，r.buyAt存在dollRuntime不入存檔。SIM_MODE（離線量測／團戰模擬）不購買。
+- 選藥：綠水greenPotion與古白ancientPotion全職業；勇水類用既有braveItemFor(cls)：王族／騎士／黑暗妖精／修羅／戰士／聖騎士／惡魔＝勇敢藥水，妖精／槍手＝精靈餅乾，法師／魔鬥士／天使＝慎重藥水。
+- 數量：DEFAULT_SETTINGS新增dollBuyGreen 20、dollBuyBrave 20、dollBuyHeal 200（0＝不買），舊檔由migrateSave的Object.assign補預設，SAVE_SCHEMA20不變。設定頁「🧸 娃娃自動購買藥水」用既有setSettingNum（綠水／勇水類0～500、古白0～2000），勇水類欄位顯示該職業對應藥名。
+- 購買：只補「保持數量−身上數量」，費用ceil(shopCost×1.1)；金幣不足買得起的部分、不會負數；負重上限＝開自動回家時floor(最大負重×回家%)−1，否則最大負重，並再經bagCanReceive。戰鬥訊息「🧸 娃娃自動購買 綠水 ×N（-金幣）」。不改喝水邏輯（仍由快捷欄自動格決定）。
+- dollAbilityHtml在21款娃娃說明加上共通「自動購買藥水」，人物娃娃卡／選擇／道具介紹／商店／圖鑑同步顯示。
+- tools/test-doll-auto-buy.js（沿test-treasure-maps隔離環境）：12職業選藥與不買他職藥、21款娃娃皆有效與說明、加價10%與補差額、2秒節流、0不買、金幣不足、自動回家負重門檻／最大負重、未裝備／召喚過期／SIM_MODE不買、舊檔補預設。test-dolls.js與依賴它的test-doll-abilities／test-doll-summon-cost在本次前就因斷言schema18失敗（現為20），未修。
