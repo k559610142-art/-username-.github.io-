@@ -243,7 +243,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261029j`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261029l`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3999,3 +3999,9 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 ## 231. 交易所移除彈藥分類（2026-10-29，版本 `20261029j`）
 
 - 使用者截圖圈選交易所分類列的「彈藥」要求移除。market.js的MARKET_CATS刪除['ammo','彈藥']，只拿掉分類按鈕；彈藥上架／購買、伺服器目錄與SQL不變，仍可在「全部」或搜尋找到。marketSetCat沒有白名單，舊狀態marketCat='ammo'只會在本次工作階段殘留，重新整理即回「全部」。SAVE_SCHEMA20不變。
+
+## 233. 娃娃自動購買新增藍水與變形卷軸（2026-10-29，版本 `20261029l`）
+
+- 使用者要求娃娃自動購買新增藍水、變形卷軸。doll-abilities.js的dollBuyList加入bluePotion（藍色藥水）與polyScroll（變形卷軸），全職業共用，規則沿第230節：召喚中每2秒檢查、補到保持數量、商店價×1.1、金幣／負重不足只買部分、SIM_MODE不買。
+- DEFAULT_SETTINGS新增dollBuyBlue 20、dollBuyPoly 2（變形卷軸單價10000×1.1＝11000，預設少量；0＝不買），舊檔由migrateSave的Object.assign補預設，SAVE_SCHEMA不變。設定頁「🧸 娃娃自動購買藥水」新增兩欄（藍水0～500、變形卷軸0～100）。只負責購買，使用仍照快捷欄自動格／手動。
+- tools/test-doll-auto-buy.js追加：全職業補到藍水20／變形卷軸2、加價10%、0不買、舊檔補預設。

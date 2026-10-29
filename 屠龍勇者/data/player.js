@@ -23,7 +23,7 @@ const DEFAULT_SETTINGS = {
     teleOn: false, telePct: 15,       // HP 低於 % 自動瞬移脫戰
     autoHaste: true,                  // 自動綠水
     autoBrave: true,                  // 自動勇水／精靈餅乾／慎重藥水
-    dollBuyGreen: 20, dollBuyBrave: 20, dollBuyHeal: 200,   // 娃娃召喚中自動補買到這個數量，0＝不買（doll-abilities.js，第230節）
+    dollBuyGreen: 20, dollBuyBrave: 20, dollBuyHeal: 200, dollBuyBlue: 20, dollBuyPoly: 2,   // 娃娃召喚中自動補買到這個數量，0＝不買（doll-abilities.js，第230節）
     autoBlue: false,                  // 自動藍水
     autoHome: true, weightPct: 82,    // 沒藥水、沒彈藥或負重過高時自動回家
     autoDodge: true,                  // 首領大招（地上紅圈）自動走出圈外

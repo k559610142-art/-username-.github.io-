@@ -1058,6 +1058,8 @@ function renderSettings() {
             ${num('dollBuyGreen', ITEMS.greenPotion.name + '保持數量', 0, 500)}
             ${braveItemFor(player.cls) ? num('dollBuyBrave', ITEMS[braveItemFor(player.cls)].name + '保持數量', 0, 500) : ''}
             ${num('dollBuyHeal', ITEMS.ancientPotion.name + '保持數量', 0, 2000)}
+            ${num('dollBuyBlue', ITEMS.bluePotion.name + '保持數量', 0, 500)}
+            ${num('dollBuyPoly', ITEMS.polyScroll.name + '保持數量', 0, 100)}
         </div>
         <div class="panel"><div class="loot-filter-head"><h4>🎒 戰利品過濾</h4><button class="mini secondary" aria-expanded="${lootAutoDrawerOpen}" onclick="toggleLootAutoDrawer()">自動販賣 ${lootAutoDrawerOpen ? '▴' : '▾'}</button></div>
             ${lootAutoDrawerHtml()}

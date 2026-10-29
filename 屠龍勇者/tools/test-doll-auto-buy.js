@@ -18,7 +18,7 @@ for(const [cls,brave] of Object.entries(expect)){
  for(const other of ['bravePotion','elvenWafer','wisdomPotion'].filter(x=>x!==brave))assert.equal(countItem(other),0,cls+' '+other);
 }
 // 加價10%、只補差額、2秒檢查一次
-setup('knight');player.settings.autoHome=false;player.settings.dollBuyHeal=0;player.settings.dollBuyBrave=0;
+setup('knight');player.settings.autoHome=false;player.settings.dollBuyHeal=0;player.settings.dollBuyBrave=0;player.settings.dollBuyBlue=0;player.settings.dollBuyPoly=0;
 addItem('greenPotion',5);let g=player.gold;gameNow+=2000;dollAbilityTick(1);
 assert.equal(countItem('greenPotion'),20);assert.equal(g-player.gold,Math.ceil(shopCost('greenPotion',15)*1.1));
 consumeItem('greenPotion');g=player.gold;dollAbilityTick(1);assert.equal(countItem('greenPotion'),19,'2秒內不重複檢查');
@@ -26,10 +26,10 @@ gameNow+=2000;dollAbilityTick(1);assert.equal(countItem('greenPotion'),20);asser
 // 0＝不買
 player.settings.dollBuyGreen=0;for(let i=0;i<20;i++)consumeItem('greenPotion');tick();assert.equal(countItem('greenPotion'),0);
 // 金幣不足：只買得起的部分，不會變負數
-setup('knight',Math.ceil(400*1.1)*3+10);player.settings.autoHome=false;player.settings.dollBuyGreen=0;player.settings.dollBuyBrave=0;
+setup('knight',Math.ceil(400*1.1)*3+10);player.settings.autoHome=false;player.settings.dollBuyGreen=0;player.settings.dollBuyBrave=0;player.settings.dollBuyBlue=0;player.settings.dollBuyPoly=0;
 tick();assert.equal(countItem('ancientPotion'),3);assert(player.gold>=0&&player.gold<Math.ceil(400*1.1));
 // 負重：開自動回家時不超過回家門檻；關閉時不超過最大負重
-setup('knight');player.settings.dollBuyGreen=0;player.settings.dollBuyBrave=0;player.settings.dollBuyHeal=2000;player.settings.autoHome=true;player.settings.weightPct=50;
+setup('knight');player.settings.dollBuyGreen=0;player.settings.dollBuyBrave=0;player.settings.dollBuyBlue=0;player.settings.dollBuyPoly=0;player.settings.dollBuyHeal=2000;player.settings.autoHome=true;player.settings.weightPct=50;
 tick();let st=calcStats();assert(countItem('ancientPotion')>0&&countItem('ancientPotion')<2000);assert(invWeight()<st.weightMax*.5);
 player.settings.autoHome=false;tick();st=calcStats();assert(invWeight()<=st.weightMax);assert(invWeight()>st.weightMax*.9);
 // 沒召喚／沒裝娃娃／模擬模式都不買
@@ -38,8 +38,12 @@ setup('knight');player.settings.autoHome=false;player.dollSummonUntil=gameNow-1;
 setup('knight');player.settings.autoHome=false;SIM_MODE=true;gameNow+=2000;assert.equal(dollAutoBuy(dollContext()),0);SIM_MODE=false;assert.equal(countItem('greenPotion'),0);
 // 全部21款娃娃都有這功能、說明文字也有
 for(const id of Object.keys(ITEMS).filter(id=>ITEMS[id].cat==='doll')){setup('elf',10000000,id);player.settings.autoHome=false;tick();assert.equal(countItem('elvenWafer'),20,id);assert(dollAbilityHtml(id).includes('自動購買藥水'));}
+// 第233節：藍水、變形卷軸全職業補到預設數量、加價10%、0不買
+for(const cls of Object.keys(CLASSES)){setup(cls);player.settings.autoHome=false;tick();assert.equal(countItem('bluePotion'),20,cls);assert.equal(countItem('polyScroll'),2,cls);}
+setup('mage');player.settings.autoHome=false;for(const k of ['dollBuyGreen','dollBuyBrave','dollBuyHeal','dollBuyBlue'])player.settings[k]=0;g=player.gold;tick();assert.equal(countItem('polyScroll'),2);assert.equal(g-player.gold,Math.ceil(shopCost('polyScroll',2)*1.1));
+player.settings.dollBuyPoly=0;consumeItem('polyScroll');consumeItem('polyScroll');tick();assert.equal(countItem('polyScroll'),0);assert.equal(countItem('bluePotion'),0);
 // 舊存檔補預設值
-const old=JSON.parse(JSON.stringify(player));delete old.settings.dollBuyGreen;delete old.settings.dollBuyBrave;delete old.settings.dollBuyHeal;
-const mig=migrateSave({schema:SAVE_SCHEMA,player:old});assert.equal(mig.settings.dollBuyGreen,20);assert.equal(mig.settings.dollBuyBrave,20);assert.equal(mig.settings.dollBuyHeal,200);
-console.log('PASS 娃娃自動購買藥水：12職業選藥、21款娃娃、加價10%、補差額、0不買、金幣／負重限制、未召喚與模擬不買、舊檔預設');
+const old=JSON.parse(JSON.stringify(player));delete old.settings.dollBuyGreen;delete old.settings.dollBuyBrave;delete old.settings.dollBuyHeal;delete old.settings.dollBuyBlue;delete old.settings.dollBuyPoly;
+const mig=migrateSave({schema:SAVE_SCHEMA,player:old});assert.equal(mig.settings.dollBuyGreen,20);assert.equal(mig.settings.dollBuyBrave,20);assert.equal(mig.settings.dollBuyHeal,200);assert.equal(mig.settings.dollBuyBlue,20);assert.equal(mig.settings.dollBuyPoly,2);
+console.log('PASS 娃娃自動購買藥水：12職業選藥、藍水／變形卷軸、21款娃娃、加價10%、補差額、0不買、金幣／負重限制、未召喚與模擬不買、舊檔預設');
 }`,ctx);

@@ -5,6 +5,7 @@
 
 ## 1. 現況
 
+- **20261029l：娃娃自動購買新增藍水與變形卷軸（第233節）**。dollBuyList加bluePotion／polyScroll，設定dollBuyBlue 20、dollBuyPoly 2（0＝不買），其他規則同第230節。
 - **20261029j：交易所移除「彈藥」分類按鈕（第231節）**。只刪MARKET_CATS一項，彈藥交易與後端不變。
 - **20261029i：全部娃娃自動購買藥水（第230節）**。召喚中每2秒檢查，依職業補買綠水、勇水／精靈餅乾／慎重藥水、古白到設定數量（預設20／20／200，0＝不買），商店價+10%，金幣／負重（自動回家門檻）不足只買部分，SIM_MODE不買。新增tools/test-doll-auto-buy.js；test-dolls系列原本就斷言schema18失敗。
 - **20261029g：打怪取得的地圖一律未鑑定（第228節）**。野外／異界／通關獎勵／離線掉的地圖都是「未鑑定異界地圖 Tn」，不帶品級詞綴（T8+財寶圖1%掉落時決定但隱藏），村莊鑑定台免費鑑定時才擲普通50／魔法35／稀有15，新增全部鑑定與背包未鑑定篩選。**使用者2026-10-29已在Supabase執行tools/unidentified-maps.sql，線上已生效**（日後重跑server-loot／loot-rates／treasure-maps後要再跑一次）。新增tools/test-unidentified-maps.js。
