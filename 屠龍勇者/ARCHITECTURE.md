@@ -6,6 +6,7 @@
 ## 1. 專案結構
 
 | 檔案 | 內容 |
+| `data/talent.js`、`talent.css`、`images/ui/talent-atlas-v1.png`、`tools/talent-preview.html`、`tools/test-talent.js` | 原畫命運星盤、未開放唯讀預覽、六核心熱區與隔離驗證（第223節） |
 | `images/sprites/morph/{azure-grave-warden,crimson-moon-reaper,void-soul-executioner,underworld-end-sovereign}-v1/`、`tools/sprite-src/morph/`對應同名目錄 | 四款鐮刀系144格透明動畫與原概念／concept-prompt.txt／分鏡／prompts及repair-prompts／sources.json／prepare.js／註冊／實拍（第222節） |
 | `tools/sprite-src/morph/scythe-forms-v1.json`、`tools/prepare-scythe-morphs.js`、`tools/test-scythe-morphs.js`、`tools/scythe-morphs-preview.html`、`tools/scythe-morphs-contact.png`、`tools/scythe-morphs-picker-mobile.png` | 四階名稱／ID素材對照、打包總覽與實際卷軸／64組renderer隔離驗證及瀏覽器預覽（第222節） |
 | `tools/gm-resource-audit.sql`、`tools/test-gm-resource-audit.js`、`tools/gm-resource-audit-preview.html` | GM交易／共用倉庫合法增量核對、60分鐘時間差／首領兩倍上限與隔離資料庫／介面驗證；實拍tools/gm-resource-audit-pc.png、gm-resource-history-pc.png／-mobile.png（第221節） |
@@ -114,6 +115,7 @@
 ## 1. 專案結構
 
 | 檔案 | 內容 |
+| `data/talent.js`、`talent.css`、`images/ui/talent-atlas-v1.png`、`tools/talent-preview.html`、`tools/test-talent.js` | 原畫命運星盤、未開放唯讀預覽、六核心熱區與隔離驗證（第223節） |
 |---|---|
 | `AGENTS.md`、`HANDOFF.md` | **給 AI 的文件**（遊戲不載入）：`AGENTS.md` 任何 AI 通用的工作規則與獨立發佈流程；`HANDOFF.md` 目前進度、待辦、使用者的決定、環境、常用操作。換 AI 接手時靠這兩份，要保持最新（舊的 `AI_HANDOFF.min.md` 10/18 後沒更新，20261028j 刪除）。`CLAUDE.md`／`GEMINI.md` 只是各 AI 自動讀的入口（`GEMINI.md` 用 `@./AGENTS.md` 匯入） |
 | `Gemini改遊戲.bat`、`ChatGPT改遊戲.bat` | 雙擊啟動：本機伺服器 8790＋開瀏覽器＋Gemini CLI（`--approval-mode auto_edit`）／OpenAI Codex CLI（自動讀 `AGENTS.md`）；PATH 補 node、npm、GitHub Desktop 的 git |
@@ -225,7 +227,7 @@
 
 ## 2. 載入順序與依賴
 
-`config → classes → skills → items → spellbook → monsters → zones → quests → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → bag-storage → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → pwa → loot → main`
+`config → classes → skills → items → spellbook → monsters → zones → quests → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → talent → bag-storage → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → pwa → loot → main`
 
 - 上層資料檔（config～quests）只在「載入時」用到更前面的檔案；quests 載入時會把獎勵裝備與任務道具寫進 `ITEMS`，所以要在 items 之後。
 - resonance 載入時要改 `ITEMS`（含任務武器）、`MONSTERS` 掉落、`RECIPES`，所以在 quests 之後；`findSkill`（skills.js）在執行期才呼叫它的 `findResonanceSkill`。
@@ -238,7 +240,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261028p`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261029b`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3945,3 +3947,15 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - ui-panels原選單自動依MORPH_GROUPS列新鐮刀系、原人物／場景沿sprite欄讀新模型，無新script。SW預載16圖集；GAME_UPDATES新增p。只新增既有morph.form可用ID，不加存檔欄位；schema20／SQL／載入順序不變，保留o GM更新。
 - tools/scythe-morphs-preview.html記憶體角色、禁止連外，可切四款／四方向／四動作／逐格與實際大小，真實卷軸入口；tools/test-scythe-morphs.js驗四階門檻不扣卷、36款與舊外觀／schema、基礎加成、真實事件命中／MISS／施法／受傷不中斷／到期、144格RGBA透明／唯一／圖集來源一致、正式sceneDraw四款四向四動作64組。
 - 驗證：四款144格RGBA透明／唯一／來源逐byte、16圖集預載、真實sceneDraw四款四向四動作64組、四階門檻／卷軸扣量／舊變身／schema／攻擊MISS／施法／受傷不中斷／到期與上次選擇通過；原等級／GM豁免／登出換帳號回歸亦通過（舊測試輸出文字仍寫32款，實際遍歷目前36款）。check.ps1 ALL CHECKS PASSED、diff檢查及52檔575KB正式混淆語法／16PNG發佈逐byte一致通過，臨時驗證副本已刪。瀏覽器四款攻擊／背面施法／左鏡射與375px手機四階選單正常，手機選金變卷軸99→98、48px行走播放，Console無error／warn；逐款browser-attack／cast實拍存來源，總覽tools/scythe-morphs-contact.png及手機tools/scythe-morphs-picker-mobile.png。待使用者刷新p→變形卷軸→鐮刀系→按等級選四款→觀察四向走路／揮鐮／施法／受傷，確認後才commit；未commit／推送。
+
+
+## 223. 命運星盤原畫預覽（2026-10-29，版本 `20261029b`）
+
+- 使用者先要求PoE式星盤概念圖，再授權製作但標示未開放；a版程式圓點外型不符合原圖，使用者明確要求外型和上方概念圖一致。本版直接採用同一張原創image_gen美術，完整檔保存images/ui/talent-atlas-v1.png（1536×1024，SHA256 eece1bf4ec165c0daf15c8f1fca53d8b4074b8fd520c916a5031bc9c5395b2d6），保留黑金框、城堡、星空、環狀小節點、六大核心及中央命核。
+- 實際介面以SVG viewBox 0 0 1195 1024顯示原畫左側星盤，右側概念稿的手機示意不放入正式畫面，改成真正的節點詳情面板。原畫12點數改蓋「未開放」、概念標籤改為預覽；亮線只屬美術示意，沒有實際已學狀態。
+- data/talent.js在ui-panels後、bag-storage前載入，定義TALENT_REGIONS／TALENT_ATLAS／talentView及talentBuildAtlas／talentNodeHtml／renderTalent／talentDetailHtml／talentSelect／talentZoom，document事件委派及talentDrag。載入時註冊TABS.talent與PANEL_FNS.talent；ui-frame左抽屜與技能頁提供「未開放」入口；單開星盤沿人物狀態使用PC寬面板。
+- 中央與六核心七個熱區依原圖位置對齊，滑鼠／鍵盤可查看構想；側欄六區按鈕方便手機切換，1～4倍縮放與全盤、滑鼠拖曳／觸控捲動。核心圖案從同一圖以SVG viewBox顯示，不使用傭兵符石代替。小節點暫為原畫裝飾，尚未定義逐點玩法或配點；原a版自動生成301圓點不再顯示。
+- 持續未開放，學習按鈕disabled，沒有配點、消耗、能力計算或玩家存檔讀寫；SAVE_SCHEMA20及SQL不變。GAME_UPDATES同步b版；sw.js預載talent.css帶版本及原畫。
+- tools/talent-preview.html只載星盤，無角色／雲端；tools/test-talent.js驗原圖SHA256一致、七核心熱區、六區說明、非法選取、縮放上下限／重置、鎖定、入口、原畫接線，player／localStorage／calcStats／saveGame一存取即拋錯。
+- 驗證：原畫SHA256、七核心熱區／六區說明、非法選取／縮放／鎖定、無角色／存檔副作用通過；check.ps1 ALL CHECKS PASSED，git diff --check通過。瀏覽器本機file預覽遭URL政策阻擋，尚未實機確認外觀。
+- 待使用者驗收：Ctrl+F5確認b版→技能→命運星盤→核對原圖外型→點六個大核心→縮放與滑動→確認「未開放」不能學習。確認後才commit，未推送。
