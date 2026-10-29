@@ -1,0 +1,11 @@
+{
+  "item": "talentStone",
+  "date": "2026-10-29",
+  "version": "20261029n",
+  "generator": "Built-in image_gen.imagegen",
+  "transparent_background": true,
+  "original": "tools/icon-src/items/talent-stone-v1.png",
+  "gameAsset": "images/icons/items/talentStone.png",
+  "preparation": "Existing cut-single-item-art.ps1 SingleItemCrop: alpha bounds crop, fit within112px, center in128px transparent PNG; original preserved.",
+  "prompt": "Create one original dark fantasy RPG inventory item icon: a TALENT REFUND STONE. A single hefty irregular charcoal-blue stone shard with weathered chipped edges, a deeply engraved six-point celestial star/constellation sigil glowing warm antique gold, subtle golden light inside cracks. Hand-painted realistic fantasy game item rendering, restrained luminous highlights, readable chunky silhouette at 32px, three-quarter view, isolated centered object filling 80 percent of a square canvas. Genuine transparent background, no floor, no cast shadow outside object, no border, no UI frame, no text, no letters, no watermark. Not a polished jewel: visibly ancient rough stone. Original design, not an asset from any existing franchise."
+}

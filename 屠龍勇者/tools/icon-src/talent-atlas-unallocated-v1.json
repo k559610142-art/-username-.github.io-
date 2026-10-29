@@ -1,0 +1,8 @@
+{
+  "date": "2026-10-29",
+  "generator": "Built-in image_gen.imagegen edit",
+  "reference": "images/ui/talent-atlas-v1.png",
+  "output": "images/ui/talent-atlas-unallocated-v1.png",
+  "originalPreserved": true,
+  "prompt": "Edit this exact original game talent atlas into its UNALLOCATED base state. Preserve identical image dimensions1536x1024, positions and size of every castle, circle/node, line, all six regions, ornament, title, central origin, and right sidebar. Change ONLY activation lighting: extinguish ALL brightly glowing gold/orange circular talent node dots and the golden glowing selected path from center to upper-left sword region, plus the golden glowing red chalice paths lower left. All noncentral talent circles and connecting tracks should be subdued dark aged bronze/gray with NO emissive light, NO golden halo and NO path illuminated. The big six core medallions (sword, eye, shield, bow, chalice, dragon) should also be unallocated dark muted readable relief instead of emissive colored icons. Preserve the colored castle backgrounds, architecture and six-region ambience; do not darken the whole painting. The central origin may remain softly golden as the free starting point. Keep all placements EXACTLY aligned so existing click overlays still match. No new nodes, no rearranged tracks, no new artwork, no extra labels. This must clearly show zero allocated talent points. Preserve all original parts not explicitly changed."
+}

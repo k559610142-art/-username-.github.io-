@@ -1,6 +1,7 @@
 // 背包專用收納：同一UID只保留一件實體，以bagStored區分背包／零負重收納位置。
-const BAG_STASH_PAGES = [['currency','通貨'],['map','地圖'],['enchant','衝裝卷軸'],['boss','BOSS材料'],['rune','傭兵符石']];
+const BAG_STASH_PAGES = [['currency','通貨'],['map','地圖'],['enchant','衝裝卷軸'],['boss','BOSS材料'],['rune','傭兵符石'],['jewel','寶珠倉庫']];
 let bagStashPage = 'bag', bagStashTier = 0, bagStashQuality = 'all';
+let bagJewelType = 'all';
 function bagStorageKind(id) {
     const d=ITEMS[id];if(!d)return '';
     if(d.cat==='currency')return 'currency';
@@ -8,6 +9,7 @@ function bagStorageKind(id) {
     if(d.cat==='scroll'&&d.scroll==='enchant')return 'enchant';
     if(BOSS_ENCHANTS[id])return 'boss';
     if(d.cat==='mercRune')return 'rune';
+    if(d.cat==='talentJewel')return 'jewel';
     return '';
 }
 function bagIsStored(x) { return !!(x && x.bagStored===true && bagStorageKind(x.id)); }
@@ -52,6 +54,7 @@ function bagWithdraw(uid, n) {
 }
 function bagSetTier(t) { if(!Number.isInteger(t)||t<0||t>MAP_TIERS)return;bagStashTier=t;renderPanel(); }
 function bagSetQuality(q) { if(!['all','unid','normal','magic','rare','legend'].includes(q))return;bagStashQuality=q;renderPanel(); }
+function bagSetJewelType(type) { if(!['all','normal','radius','cluster'].includes(type))return;bagJewelType=type;renderPanel(); }
 function bagOpenStored(id) {
     const list=player.inv.filter(x=>bagIsStored(x)&&x.id===id);
     if(list.length===1){openItemDialog(list[0].uid);return;}
@@ -64,8 +67,11 @@ function bagStashSlot(id,list) {
 }
 function bagStorageHtml() {
     const list=player.inv.filter(x=>bagIsStored(x)&&bagStorageKind(x.id)===bagStashPage);
-    let h='<div class="bag-stash-board"><div class="bag-stash-heading"><b>'+BAG_STASH_PAGES.find(([id])=>id===bagStashPage)[1]+'收納</b><span>'+fmt(list.reduce((n,x)=>n+x.n,0))+' 個 · 零負重</span></div>';
-    if(bagStashPage==='map') {
+    let h='<div class="bag-stash-board"><div class="bag-stash-heading"><b>'+(bagStashPage==='jewel'?'寶珠倉庫':BAG_STASH_PAGES.find(([id])=>id===bagStashPage)[1]+'收納')+'</b><span>'+fmt(list.reduce((n,x)=>n+x.n,0))+' 個 · 零負重</span></div>';
+    if(bagStashPage==='jewel') {
+        h+='<div class="chips">'+[['all','全部'],['normal','一般寶珠'],['radius','轉化寶珠'],['cluster','星團寶珠']].map(([id,name])=>'<button class="chip-btn '+(bagJewelType===id?'active':'')+'" onclick="bagSetJewelType(\''+id+'\')">'+name+'</button>').join('')+'</div><p class="muted">同款顯示總數；點圖示查看每顆寶珠。可直接從收納中鑲嵌。</p><div class="bag-stash-grid bag-jewel-grid">';
+        h+=TALENT_JEWEL_CATALOG.filter(j=>bagJewelType==='all'||j.type===bagJewelType).map(j=>{const id=talentItemId(j.id);return bagStashSlot(id,list.filter(x=>x.id===id));}).join('')+'</div>';
+    } else if(bagStashPage==='map') {
         h+='<div class="bag-tier-tabs"><button class="chip-btn '+(!bagStashTier?'active':'')+'" onclick="bagSetTier(0)">全部</button>';
         for(let t=1;t<=MAP_TIERS;t++){const n=list.filter(x=>ITEMS[x.id].tier===t).length;h+='<button class="chip-btn '+(bagStashTier===t?'active':'')+'" onclick="bagSetTier('+t+')">T'+t+' <small>'+n+'</small></button>';}
         h+='</div><div class="chips">'+[['all','全部品質'],['unid','未鑑定'],['normal','普通'],['magic','魔法'],['rare','稀有'],['legend','財寶圖']].map(([id,n])=>'<button class="chip-btn '+(bagStashQuality===id?'active':'')+'" onclick="bagSetQuality(\''+id+'\')">'+n+'</button>').join('')+'</div>';

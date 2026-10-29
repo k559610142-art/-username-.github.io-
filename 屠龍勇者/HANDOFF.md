@@ -5,6 +5,10 @@
 
 ## 1. 現況
 
+- **20261029o：38寶珠專屬圖片／三欄寶珠倉庫／未配點不預亮（第235節）**。使用者確認全部3欄往下列、不翻頁，可切一般14／轉化6／星團18；38款各自imagegen原創透明PNG，原稿／提示詞manifest在tools/icon-src/items/talent-jewels-v1，遊戲圖talentJewel_*.png；prepare-talent-jewels.ps1與總覽保留。背包新增寶珠倉庫，沿bagStored與原UID自動零負重歸位，逐顆查看／直接鑲嵌／拆回保留數量與鎖定，不改schema21或SQL。新talent-atlas-unallocated-v1.png保留原畫城堡外型、移除預先發亮路徑／核心；0點僅免費起點亮，選取不等於配點，只有真實學習才亮。新增test-talent-jewel-storage與隔離預覽，38圖片與總覽已檢視；547件道具／379張獨立PNG接線與圖片、收納／正式操作／配點亮滅、隔離SQL與既有回歸／check.ps1／57檔記憶體合併混淆通過，尚待使用者實機驗收、未commit／Push。刷新o→背包→寶珠倉庫；可用http://localhost:8790/tools/talent-jewel-storage-preview.html看預置38款的隔離畫面。
+
+- **20261029n：補上天賦石專屬圖片（第234節）**。內建imagegen原創深色石塊／金色星紋／裂光，原稿及提示詞tools/icon-src/items/talent-stone-v1.png／.json，遊戲圖images/icons/items/talentStone.png為128px透明PNG。沿既有SingleItemCrop裁切，新增可重現腳本prepare-talent-stone.ps1（Windows PowerShell、拒絕覆寫）；ITEM_IMG接入，移除◆占位與無用CSS。能力／存檔／SQL不變；圖案與縮圖已檢視、圖片接線及天賦回歸／check.ps1／diff檢查通過。待使用者刷新n實機確認，未commit／推送。
+
 - **20261029m：正式天賦完成，待使用者安裝SQL及實玩（第232節）**。使用者已回覆「同意」，授權schema20→21／player.talent、38寶珠＋天賦石、實際能力與具體掉率／10試煉。等級90＋一次性試煉10，上限100；每退1點耗1石，實體UID只在孔或背包一處。正式交易沿vault序號／RPC重送／權威帳本，批次試煉收據去重；原畫與隔離試玩保留。新增tools/talent-system.sql由使用者貼Supabase，AI未執行正式庫；安裝前維持未開放提示。安裝／逐步驗收見tools/TALENT-INSTALL.md。新遊戲與隔離PostgreSQL測試、原星盤及掉寶／背包／未鑑定／傭兵／技能／藥水／特效／娃娃買藥回歸、check.ps1通過。保留i娃娃自動買藥與j交易所分類修改。本次未實際瀏覽器驗收（先前環境安全阻擋），未commit／Push，待使用者回報正常才提交。以下h版待同意與schema20描述為歷史，已由本條取代。
 
 - **20261029l：娃娃自動購買新增藍水與變形卷軸（第233節）**。dollBuyList加bluePotion／polyScroll，設定dollBuyBlue 20、dollBuyPoly 2（0＝不買），其他規則同第230節。

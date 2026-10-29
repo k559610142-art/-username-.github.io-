@@ -37,9 +37,9 @@ vm.runInContext(`
 const html=vm.runInContext('renderTalent()',ctx);
 assert.equal((html.match(/class="talent-node/g)||[]).length,31);
 assert.match(html,/viewBox="0 0 1195 1024"/);
-assert.match(html,/href="images\/ui\/talent-atlas-v1.png"/);
+assert.match(html,/href="images\/ui\/talent-atlas-unallocated-v1.png"/);
 assert.doesNotMatch(html,/talent-nebula|talent-paths|mercRune-v1/);
-assert.match(html,/圖中亮線為美術示意/);
+assert.match(html,/未配置節點維持暗色/);
 assert.match(html,/<button class="talent-learn" disabled>🔒 未開放/);
 assert.doesNotMatch(html,/onclick="[^"\n]*(?:learn|allocate|saveGame|player)/);
 assert.equal(typeof ctx.PANEL_FNS.talent,'function');

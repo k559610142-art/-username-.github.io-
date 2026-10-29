@@ -15,7 +15,7 @@ const cfg=JSON.parse(fs.readFileSync(path.join(__dirname,'talent-system-catalog.
  const uid='88888888-8888-4888-8888-888888888888',ch='123|knight';
  await db.query('insert into auth.users values($1,$2)',[uid,'talent@invalid']);
  await db.exec(`select set_config('request.jwt.claim.sub','${uid}',false);update public.dragon_loot_config set enabled=true`);
- const inv=[{uid:1,id:'talentStone',n:100,ench:0},...Object.keys(cfg.jewels).map((id,i)=>({uid:i+2,id,n:1,ench:0}))];
+ const inv=[{uid:1,id:'talentStone',n:100,ench:0,bagStored:true},...Object.keys(cfg.jewels).map((id,i)=>({uid:i+2,id,n:1,ench:0,bagStored:true}))];
  const p={created:123,cls:'knight',name:'talent',lv:99,exp:0,gold:0,inv,storage:[],equip:{},stats:{str:18,dex:12,con:16,int:8,wis:9,cha:12},loc:{type:'zone',id:'island'},quests:{ch:0,active:false},towerMax:100,talent:{v:null,nodes:[],jewels:{},trials:[]}};
  const sig=(await db.query('select public.dragon_save_sig($1,0,$2) s',[uid,p])).rows[0].s;
  await db.query('insert into public.dragon_saves(user_id,slot,client_t,name,cls,lv,data) values($1,0,1,$2,$3,99,$4)',[uid,p.name,p.cls,{schema:21,player:p,sig,lootProtocol:1,lootCursor:0}]);
@@ -44,7 +44,7 @@ const cfg=JSON.parse(fs.readFileSync(path.join(__dirname,'talent-system-catalog.
  let current=await row();assert(!current.data.player.inv.some(x=>x.uid===normal.uid));assert.equal(current.data.player.talent.jewels[socket].uid,normal.uid);
  await assert.rejects(()=>action('insert',socket,normal.uid),/unavailable/);
  const before=current.data;await assert.rejects(()=>db.query('update public.dragon_saves set data=$1 where user_id=$2',[{...before,player:{...before.player,inv:before.player.inv.concat(normal)}},uid]),/duplicate item/);
- r=await action('remove',socket);assert.equal(r.addItem.uid,normal.uid);assert.equal((await row()).data.player.inv.filter(x=>x.uid===normal.uid).length,1);
+ r=await action('remove',socket);assert.equal(r.addItem.uid,normal.uid);assert.equal(r.addItem.bagStored,true);assert.equal((await row()).data.player.inv.filter(x=>x.uid===normal.uid).length,1);
  const clusterSocket='battle-socket-3';await learn(clusterSocket);
  const cluster=inv.find(x=>cfg.jewels[x.id]&&cfg.jewels[x.id].type==='cluster'&&cfg.jewels[x.id].size==='large');
  await action('insert',clusterSocket,cluster.uid);

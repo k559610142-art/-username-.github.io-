@@ -1,0 +1,386 @@
+{
+  "date": "2026-10-29",
+  "version": "20261029o",
+  "generator": "Built-in image_gen.imagegen; one call per distinct jewel",
+  "transparent_background": true,
+  "images": [
+    {
+      "id": "normal-blood-magic",
+      "name": "赤血寶珠・魔法",
+      "type": "normal",
+      "color": "#c86b83",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 赤血寶珠・魔法. Subject: crimson ruby with a carved heart and bloodlike inner veins, a clean single-cut magic specimen with a restrained narrow silver setting. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #c86b83.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-7cfa5380-1a4c-4c7f-9804-0fdbb4a00dc4.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/normal-blood-magic.png"
+    },
+    {
+      "id": "normal-blood-rare",
+      "name": "赤血寶珠・稀有",
+      "type": "normal",
+      "color": "#c86b83",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 赤血寶珠・稀有. Subject: crimson ruby with a carved heart and bloodlike inner veins, an ornate asymmetric double-faceted rare specimen with an aged gold setting and two tiny satellite gems. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #c86b83.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-0a3a2149-ba70-4356-9c1b-29ad9e2a6fbb.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/normal-blood-rare.png"
+    },
+    {
+      "id": "normal-blade-magic",
+      "name": "鋒刃寶珠・魔法",
+      "type": "normal",
+      "color": "#dd966f",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 鋒刃寶珠・魔法. Subject: copper-orange crystalline blade shard with a sculpted sword motif, a clean single-cut magic specimen with a restrained narrow silver setting. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #dd966f.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-8d755c2a-247a-4ad7-830c-398969adeff9.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/normal-blade-magic.png"
+    },
+    {
+      "id": "normal-blade-rare",
+      "name": "鋒刃寶珠・稀有",
+      "type": "normal",
+      "color": "#dd966f",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 鋒刃寶珠・稀有. Subject: copper-orange crystalline blade shard with a sculpted sword motif, an ornate asymmetric double-faceted rare specimen with an aged gold setting and two tiny satellite gems. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #dd966f.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-e4df080d-b7ea-4b07-b989-474fe868b2a0.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/normal-blade-rare.png"
+    },
+    {
+      "id": "normal-eagle-magic",
+      "name": "鷹眼寶珠・魔法",
+      "type": "normal",
+      "color": "#8aba80",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 鷹眼寶珠・魔法. Subject: emerald feather-shaped gem with an eagle feather engraving, a clean single-cut magic specimen with a restrained narrow silver setting. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #8aba80.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-94ce45d3-fced-40b6-b9a9-1d3e053bfc48.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/normal-eagle-magic.png"
+    },
+    {
+      "id": "normal-eagle-rare",
+      "name": "鷹眼寶珠・稀有",
+      "type": "normal",
+      "color": "#8aba80",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 鷹眼寶珠・稀有. Subject: emerald feather-shaped gem with an eagle feather engraving, an ornate asymmetric double-faceted rare specimen with an aged gold setting and two tiny satellite gems. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #8aba80.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-1833c9d1-3047-4852-8650-f01fe9d145de.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/normal-eagle-rare.png"
+    },
+    {
+      "id": "normal-arcane-magic",
+      "name": "秘法寶珠・魔法",
+      "type": "normal",
+      "color": "#87a9e2",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 秘法寶珠・魔法. Subject: deep sapphire crystal with a crescent-and-star engraving, a clean single-cut magic specimen with a restrained narrow silver setting. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #87a9e2.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-263761e7-c887-4f05-8474-4edc8d2a6e34.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/normal-arcane-magic.png"
+    },
+    {
+      "id": "normal-arcane-rare",
+      "name": "秘法寶珠・稀有",
+      "type": "normal",
+      "color": "#87a9e2",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 秘法寶珠・稀有. Subject: deep sapphire crystal with a crescent-and-star engraving, an ornate asymmetric double-faceted rare specimen with an aged gold setting and two tiny satellite gems. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #87a9e2.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-c44f4931-7d43-41bd-b4af-95c461d40fc7.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/normal-arcane-rare.png"
+    },
+    {
+      "id": "normal-spring-magic",
+      "name": "靈泉寶珠・魔法",
+      "type": "normal",
+      "color": "#79bcbf",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 靈泉寶珠・魔法. Subject: turquoise water-drop crystal with an internal spring ripple, a clean single-cut magic specimen with a restrained narrow silver setting. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #79bcbf.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-4ba0a8ff-33dc-4b86-9424-799bedd569b0.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/normal-spring-magic.png"
+    },
+    {
+      "id": "normal-spring-rare",
+      "name": "靈泉寶珠・稀有",
+      "type": "normal",
+      "color": "#79bcbf",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 靈泉寶珠・稀有. Subject: turquoise water-drop crystal with an internal spring ripple, an ornate asymmetric double-faceted rare specimen with an aged gold setting and two tiny satellite gems. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #79bcbf.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-e358f6ec-719a-4e3a-b994-5e6101b74991.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/normal-spring-rare.png"
+    },
+    {
+      "id": "normal-iron-magic",
+      "name": "鐵壁寶珠・魔法",
+      "type": "normal",
+      "color": "#c6b987",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 鐵壁寶珠・魔法. Subject: bronze-gray square-cut gem with a small shield crest, a clean single-cut magic specimen with a restrained narrow silver setting. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #c6b987.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-d0c8b468-4b28-4edd-bc68-f4533cbe3b05.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/normal-iron-magic.png"
+    },
+    {
+      "id": "normal-iron-rare",
+      "name": "鐵壁寶珠・稀有",
+      "type": "normal",
+      "color": "#c6b987",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 鐵壁寶珠・稀有. Subject: bronze-gray square-cut gem with a small shield crest, an ornate asymmetric double-faceted rare specimen with an aged gold setting and two tiny satellite gems. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #c6b987.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-8d8506fc-5bba-43ed-bd1c-0229e783d11d.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/normal-iron-rare.png"
+    },
+    {
+      "id": "normal-spirit-magic",
+      "name": "契靈寶珠・魔法",
+      "type": "normal",
+      "color": "#b399de",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 契靈寶珠・魔法. Subject: violet soul-flame crystal held by delicate aged silver claws, a clean single-cut magic specimen with a restrained narrow silver setting. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #b399de.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-cfb36cc9-a2a7-473a-acb5-d894e3f84b18.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/normal-spirit-magic.png"
+    },
+    {
+      "id": "normal-spirit-rare",
+      "name": "契靈寶珠・稀有",
+      "type": "normal",
+      "color": "#b399de",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 契靈寶珠・稀有. Subject: violet soul-flame crystal held by delicate aged silver claws, an ornate asymmetric double-faceted rare specimen with an aged gold setting and two tiny satellite gems. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #b399de.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-6ac1073e-e7dd-4aab-910d-1258bcd2fd89.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/normal-spirit-rare.png"
+    },
+    {
+      "id": "convert-blood-mana",
+      "name": "血魔轉化珠",
+      "type": "radius",
+      "color": "#a685ca",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 血魔轉化珠. Subject: a dual ruby and sapphire hourglass gemstone, two colors flowing into each other, a visibly interconnected transformation jewel with two interlocking octagonal crystal forms. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #a685ca.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-32273675-e54c-4d06-8603-4668dffcadd1.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/convert-blood-mana.png"
+    },
+    {
+      "id": "convert-steel",
+      "name": "鋼鐵轉化珠",
+      "type": "radius",
+      "color": "#b9b29b",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 鋼鐵轉化珠. Subject: a heavy silver iron octahedral gem with an embossed shield and crystalline golden vein, a visibly interconnected transformation jewel with two interlocking octagonal crystal forms. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #b9b29b.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-4d52d0d2-c9ba-47e6-bd45-e2e36016e787.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/convert-steel.png"
+    },
+    {
+      "id": "convert-spellblade",
+      "name": "秘刃轉化珠",
+      "type": "radius",
+      "color": "#849ddb",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 秘刃轉化珠. Subject: a blue-violet crystal encasing a fine crimson sword-shaped inclusion, a visibly interconnected transformation jewel with two interlocking octagonal crystal forms. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #849ddb.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-c6caf0a7-1c29-438b-965f-d54fa692acbd.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/convert-spellblade.png"
+    },
+    {
+      "id": "convert-hunter",
+      "name": "獵影轉化珠",
+      "type": "radius",
+      "color": "#89bc94",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 獵影轉化珠. Subject: twin emerald feather crystals curling into a translucent arrowhead, a visibly interconnected transformation jewel with two interlocking octagonal crystal forms. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #89bc94.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-ca5d42ed-b8d4-4625-98b8-9437d408792f.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/convert-hunter.png"
+    },
+    {
+      "id": "convert-symbiosis",
+      "name": "共生轉化珠",
+      "type": "radius",
+      "color": "#b9a3d8",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 共生轉化珠. Subject: a connected crimson and lilac twin crystal with an etched wolf-spirit silhouette, a visibly interconnected transformation jewel with two interlocking octagonal crystal forms. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #b9a3d8.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-77c2a826-e9c1-438b-8d9e-e700e69177cc.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/convert-symbiosis.png"
+    },
+    {
+      "id": "convert-bloodspring",
+      "name": "血泉轉化珠",
+      "type": "radius",
+      "color": "#cd8b9d",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 血泉轉化珠. Subject: a turquoise water-drop crystal intersected by glowing red rootlike spring veins, a visibly interconnected transformation jewel with two interlocking octagonal crystal forms. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #cd8b9d.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-b2215ca5-524a-47d5-a33c-cb23b9c56c0b.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/convert-bloodspring.png"
+    },
+    {
+      "id": "cluster-war-small",
+      "name": "小型破軍星團",
+      "type": "cluster",
+      "family": "war",
+      "size": "small",
+      "color": "#dd966f",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 小型破軍星團. Subject: copper-orange meteor shards shaped like crossed blades, a compact four-point cluster with three small attached shards. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #dd966f.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-8f075327-6f1f-4f9f-b33d-ef5c32d20643.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/cluster-war-small.png"
+    },
+    {
+      "id": "cluster-war-medium",
+      "name": "中型破軍星團",
+      "type": "cluster",
+      "family": "war",
+      "size": "medium",
+      "color": "#dd966f",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 中型破軍星團. Subject: copper-orange meteor shards shaped like crossed blades, a wider six-point cluster with layered branching facets. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #dd966f.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-778eb422-e7e4-4aee-8673-601e406016ad.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/cluster-war-medium.png"
+    },
+    {
+      "id": "cluster-war-large",
+      "name": "大型破軍星團",
+      "type": "cluster",
+      "family": "war",
+      "size": "large",
+      "color": "#dd966f",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 大型破軍星團. Subject: copper-orange meteor shards shaped like crossed blades, an elaborate eight-point cluster with large branching satellites and a delicate partial metallic orbital arc. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #dd966f.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-3e0745d8-c8bb-41ee-95a9-92505d44bffa.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/cluster-war-large.png"
+    },
+    {
+      "id": "cluster-arcane-small",
+      "name": "小型秘法星團",
+      "type": "cluster",
+      "family": "arcane",
+      "size": "small",
+      "color": "#87a9e2",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 小型秘法星團. Subject: sapphire and icy blue star crystals surrounding a luminous arcane nucleus, a compact four-point cluster with three small attached shards. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #87a9e2.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-20608e18-a9eb-4b36-b2d6-c633d0f097e0.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/cluster-arcane-small.png"
+    },
+    {
+      "id": "cluster-arcane-medium",
+      "name": "中型秘法星團",
+      "type": "cluster",
+      "family": "arcane",
+      "size": "medium",
+      "color": "#87a9e2",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 中型秘法星團. Subject: sapphire and icy blue star crystals surrounding a luminous arcane nucleus, a wider six-point cluster with layered branching facets. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #87a9e2.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-03959189-487c-4041-a8e7-f21db1dd4105.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/cluster-arcane-medium.png"
+    },
+    {
+      "id": "cluster-arcane-large",
+      "name": "大型秘法星團",
+      "type": "cluster",
+      "family": "arcane",
+      "size": "large",
+      "color": "#87a9e2",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 大型秘法星團. Subject: sapphire and icy blue star crystals surrounding a luminous arcane nucleus, an elaborate eight-point cluster with large branching satellites and a delicate partial metallic orbital arc. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #87a9e2.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-728d09b0-c6ed-4a2d-b8ed-3faf14fc2740.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/cluster-arcane-large.png"
+    },
+    {
+      "id": "cluster-hunter-small",
+      "name": "小型獵星星團",
+      "type": "cluster",
+      "family": "hunter",
+      "size": "small",
+      "color": "#8aba80",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 小型獵星星團. Subject: jade arrowhead crystals with swept featherlike comet tails, a compact four-point cluster with three small attached shards. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #8aba80.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-80203006-3ba9-41f3-8e7b-2233abde05eb.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/cluster-hunter-small.png"
+    },
+    {
+      "id": "cluster-hunter-medium",
+      "name": "中型獵星星團",
+      "type": "cluster",
+      "family": "hunter",
+      "size": "medium",
+      "color": "#8aba80",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 中型獵星星團. Subject: jade arrowhead crystals with swept featherlike comet tails, a wider six-point cluster with layered branching facets. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #8aba80.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-03ca1b8f-1a36-4618-8542-53997bb14e81.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/cluster-hunter-medium.png"
+    },
+    {
+      "id": "cluster-hunter-large",
+      "name": "大型獵星星團",
+      "type": "cluster",
+      "family": "hunter",
+      "size": "large",
+      "color": "#8aba80",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 大型獵星星團. Subject: jade arrowhead crystals with swept featherlike comet tails, an elaborate eight-point cluster with large branching satellites and a delicate partial metallic orbital arc. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #8aba80.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-668cee0a-a518-4a14-9f27-b86bf2ac34e5.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/cluster-hunter-large.png"
+    },
+    {
+      "id": "cluster-spirit-small",
+      "name": "小型契靈星團",
+      "type": "cluster",
+      "family": "spirit",
+      "size": "small",
+      "color": "#b399de",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 小型契靈星團. Subject: violet soul-flame crystals with ghostly animal-shaped inclusions, a compact four-point cluster with three small attached shards. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #b399de.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-dc49a042-b999-4d74-abc1-0feccde80712.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/cluster-spirit-small.png"
+    },
+    {
+      "id": "cluster-spirit-medium",
+      "name": "中型契靈星團",
+      "type": "cluster",
+      "family": "spirit",
+      "size": "medium",
+      "color": "#b399de",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 中型契靈星團. Subject: violet soul-flame crystals with ghostly animal-shaped inclusions, a wider six-point cluster with layered branching facets. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #b399de.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-16ba24ef-14f9-4758-90eb-14cc851ae2a3.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/cluster-spirit-medium.png"
+    },
+    {
+      "id": "cluster-spirit-large",
+      "name": "大型契靈星團",
+      "type": "cluster",
+      "family": "spirit",
+      "size": "large",
+      "color": "#b399de",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 大型契靈星團. Subject: violet soul-flame crystals with ghostly animal-shaped inclusions, an elaborate eight-point cluster with large branching satellites and a delicate partial metallic orbital arc. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #b399de.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-df454d6f-6c5e-436d-8203-9b42c13e21f5.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/cluster-spirit-large.png"
+    },
+    {
+      "id": "cluster-blood-small",
+      "name": "小型嗜血星團",
+      "type": "cluster",
+      "family": "blood",
+      "size": "small",
+      "color": "#c86b83",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 小型嗜血星團. Subject: deep wine-red ruby shards connected by thin bloodlike crystalline veins, a compact four-point cluster with three small attached shards. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #c86b83.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-62617707-91fc-4e79-a8f6-6abb23e70172.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/cluster-blood-small.png"
+    },
+    {
+      "id": "cluster-blood-medium",
+      "name": "中型嗜血星團",
+      "type": "cluster",
+      "family": "blood",
+      "size": "medium",
+      "color": "#c86b83",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 中型嗜血星團. Subject: deep wine-red ruby shards connected by thin bloodlike crystalline veins, a wider six-point cluster with layered branching facets. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #c86b83.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-e6e86826-7ae4-4577-9bb2-0a8ed0399074.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/cluster-blood-medium.png"
+    },
+    {
+      "id": "cluster-blood-large",
+      "name": "大型嗜血星團",
+      "type": "cluster",
+      "family": "blood",
+      "size": "large",
+      "color": "#c86b83",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 大型嗜血星團. Subject: deep wine-red ruby shards connected by thin bloodlike crystalline veins, an elaborate eight-point cluster with large branching satellites and a delicate partial metallic orbital arc. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #c86b83.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-12434baf-58b4-4e56-a425-f737d20fd297.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/cluster-blood-large.png"
+    },
+    {
+      "id": "cluster-bulwark-small",
+      "name": "小型壁壘星團",
+      "type": "cluster",
+      "family": "bulwark",
+      "size": "small",
+      "color": "#c6b987",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 小型壁壘星團. Subject: antique gold and smoky quartz shield-plate crystals, a compact four-point cluster with three small attached shards. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #c6b987.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-dbe8ff2d-f897-4328-83c6-86d93b1a38db.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/cluster-bulwark-small.png"
+    },
+    {
+      "id": "cluster-bulwark-medium",
+      "name": "中型壁壘星團",
+      "type": "cluster",
+      "family": "bulwark",
+      "size": "medium",
+      "color": "#c6b987",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 中型壁壘星團. Subject: antique gold and smoky quartz shield-plate crystals, a wider six-point cluster with layered branching facets. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #c6b987.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-c90d93cd-45dc-4211-bc74-6ab2bafea78c.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/cluster-bulwark-medium.png"
+    },
+    {
+      "id": "cluster-bulwark-large",
+      "name": "大型壁壘星團",
+      "type": "cluster",
+      "family": "bulwark",
+      "size": "large",
+      "color": "#c6b987",
+      "prompt": "Create exactly ONE original dark-fantasy RPG inventory item icon: 大型壁壘星團. Subject: antique gold and smoky quartz shield-plate crystals, an elaborate eight-point cluster with large branching satellites and a delicate partial metallic orbital arc. Hand-painted realistic polished mineral and aged metal, tactile sharp facets, coherent dark fantasy item art, strong readable silhouette even at 32px. Centered isolated single item filling about 80% of square canvas, three-quarter view. Genuine transparent background, no floor, no surrounding scene, no square plate, no UI frame, no border, no text or lettering, no watermark, no copied franchise designs. Restrained magical highlights in #c6b987.",
+      "source": "C:\\Users\\User\\.codex\\generated_images\\01a184bf-0725-7dc1-af45-e483275d9c51\\exec-a6f21a36-3baf-430c-a646-19b183f83a9f.png",
+      "original": "tools/icon-src/items/talent-jewels-v1/cluster-bulwark-large.png"
+    }
+  ]
+}

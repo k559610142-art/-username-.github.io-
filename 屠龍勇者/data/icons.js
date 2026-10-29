@@ -224,10 +224,11 @@ const ITEM_ICON = {
 };
 // 原創道具圖（逐件按名稱設計）；魔法書沿用所屬技能圖，勇敢／慎重／藍水原圖保留。
 const ITEM_IMG = Object.fromEntries([
+    ...(typeof TALENT_JEWEL_CATALOG==='undefined'?[]:TALENT_JEWEL_CATALOG.map(j=>'talentJewel_'+j.id)),
     'eclipseDual', 'rakshasaClaw', 'starfallGun', 'thunderRuneSword', 'dawnJudgmentHammer', 'seraphSpear', 'infernalSoulScythe', 'dragonWardHelm', 'dragonWingCloak', 'dragonHeartTunic', 'dragonFangGloves', 'dragonWardBoots', 'starwindCrown', 'starwindRobe', 'starwindCloak', 'starwindShield', 'starwindTunic', 'starwindGloves',
     'duskWarHelm', 'abyssGuardMail', 'moonveilCloak', 'dawnBastionShield', 'frostMirrorShield', 'runeSilkTunic',
     'titanWeaveTunic', 'bloodOathGauntlets', 'astralWeaveGloves', 'galeStalkerBoots', 'stoneWardBoots',
-    'elvenWafer',
+    'elvenWafer', 'talentStone',
     'dagger', 'silverDagger', 'darkDagger', 'shortSword', 'longSword', 'silverSword', 'katana', 'tsurugi',
     'dragonSlayer', 'twoHandSword', 'dkFlameSword', 'handAxe', 'battleAxe', 'demonAxe', 'spear', 'trident',
     'mace', 'warHammer', 'holyMace', 'shortBow', 'longBow', 'elvenBow', 'windBow', 'matchlock',
@@ -274,8 +275,6 @@ function itemIconOf(id) {
 }
 function itemIconHtml(id, frame) {
     const d = ITEMS[id];
-    if(d&&d.talentJewel&&typeof TALENT_JEWEL_CATALOG!=='undefined'){const j=TALENT_JEWEL_CATALOG.find(j=>j.id===d.talentJewel);if(j)return `<span class="ico talent-jewel-thumb"><span class="talent-jewel-icon ${j.type}" style="--jewel-color:${j.color}"></span></span>`;}
-    if(id==='talentStone')return '<span class="ico talent-stone-icon">◆</span>';
     if (d && d.doll && DOLLS[d.doll]) return `<span class="ico ico-img"><img src="${DOLLS[d.doll].art}" alt="" draggable="false"></span>`;
     // 依圖鑑的基底品級發光；詞綴品質另算，消耗品與技能圖不套用。
     const glow = d && (d.cat === 'weapon' || d.cat === 'armor') && codexGradeOf(id).id === 'legend';

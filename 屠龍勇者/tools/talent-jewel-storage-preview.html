@@ -1,0 +1,19 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><base href="../"><meta name="viewport" content="width=device-width,initial-scale=1"><title>寶珠倉庫三欄隔離預覽</title><link rel="stylesheet" href="talent.css?v=20261029o"><style>#bag-preview-tools{position:fixed;top:4px;left:4px;z-index:10000;background:#171b22ed;padding:6px;border:1px solid #a88a55;color:#eee;font:12px sans-serif}#bag-preview-tools button{margin:2px;padding:4px}</style></head><body><div id="bag-preview-tools">寶珠倉庫三欄預覽 · 不讀寫正式存檔／禁止連外 <button id="preview-pc">PC</button><button id="preview-phone">手機</button></div><script>
+(async()=>{
+ const memory=new Map();Object.defineProperty(window,'localStorage',{value:{getItem:k=>memory.get(k)||null,setItem:(k,v)=>memory.set(k,String(v)),removeItem:k=>memory.delete(k),key:i=>[...memory.keys()][i],get length(){return memory.size;}}});
+ const localFetch=fetch.bind(window);window.fetch=(u,o)=>{if(new URL(u,location.href).origin!==location.origin)throw Error('隔離預覽禁止連外');return localFetch(u,o);};
+ const html=await(await fetch('index.html',{cache:'no-store'})).text(),style=document.createElement('style');style.textContent=html.match(/<style>([\s\S]*?)<\/style>/)[1];document.head.prepend(style);
+ const doc=new DOMParser().parseFromString(html,'text/html');for(const s of doc.body.querySelectorAll('script'))s.remove();for(const c of [...doc.body.children])document.body.append(c);
+ for(const m of html.matchAll(/<script src="(data\/[^"?]+\.js)\?v=([^\"]+)"/g)){if(['data/main.js','data/pwa.js'].includes(m[1]))continue;await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=m[1]+'?v='+m[2]+'&preview=bag-'+Date.now();s.onload=resolve;s.onerror=reject;document.head.append(s);});}
+ SIM_MODE=true;saveGame=()=>{};sfx=()=>{};presTick=()=>{};createPlayer('收納預覽','knight',CLASSES.knight.base);player.lv=50;player.gold=1000000;
+ for(const [i,id]of CURRENCY_IDS.entries())addItem(id,1234-i*123);
+ for(const id of Object.keys(ITEMS).filter(id=>bagStorageKind(id)==='enchant'))addItem(id,200);
+ for(const id of Object.keys(BOSS_ENCHANTS))addItem(id,12);
+ for(const id of Object.keys(MERC_RUNES))addItem('mercRune_'+id,3);
+ for(let t=1;t<=MAP_TIERS;t++){for(const q of [null,'magic','rare',...(t>=8?['legend']:[])]){const x=makeMapItem(t,q);player.inv.push(x);}}
+ const locked=makeMapItem(8,'rare');locked.sellLocked=true;player.inv.push(locked,{...locked,uid:player.nextUid++});
+ const old=addItem('weaponScroll',20);delete old.bagStored;
+ document.getElementById('preview-pc').onclick=()=>{displayMode='pc';layoutFrame();refreshUI();};document.getElementById('preview-phone').onclick=()=>{displayMode='phone';layoutFrame();refreshUI();};
+ for(const j of TALENT_JEWEL_CATALOG)addItem(talentItemId(j.id));addItem(talentItemId(TALENT_JEWEL_CATALOG[0].id));bagStashPage='jewel';showScreen('game');displayMode='pc';layoutFrame();switchTab('bag');refreshUI();
+})().catch(e=>{document.body.append('預覽錯誤：'+e.stack);console.error(e);});
+</script></body></html>

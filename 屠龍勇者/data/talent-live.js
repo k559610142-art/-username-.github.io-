@@ -29,7 +29,7 @@ function talentNormalize(p) {
     }
     const learn=()=>{for(let pass=0;pass<101;pass++){let changed=false;for(const n of talentPlanScene(state).nodes)if(wanted.has(n.id)&&!state.allocated.has(n.id)&&talentPlanAllocate(state,n.id).ok)changed=true;if(!changed)break;}};
     learn();
-    for(const [id,it] of candidates){if(talentPlanInsert(state,id,ITEMS[it.id].talentJewel).ok)jewels[id]=it;else p.inv.push(it);}
+    for(const [id,it] of candidates){if(talentPlanInsert(state,id,ITEMS[it.id].talentJewel).ok)jewels[id]=it;else p.inv.push(bagPlaceNew(it));}
     learn();
     p.talent={v:raw.v===TALENT_SYSTEM_VERSION?raw.v:null,nodes:[...state.allocated].filter(id=>id!=='origin'),jewels,trials};
     p.nextUid=Math.max(p.nextUid||1,...[...used].filter(Number.isSafeInteger).map(uid=>uid+1));
@@ -123,7 +123,7 @@ async function talentLiveAction(action,nodeId,jewelId) {
             if(player!==who||currentSlot!==slot||!cloudUser||cloudUser.id!==uid)return;
             if(r.consumeId)consumeItem(r.consumeId,r.consumeN);
             if(r.removeUid)removeInst(r.removeUid);
-            if(r.addItem&&!player.inv.some(it=>it.uid===r.addItem.uid))player.inv.push(r.addItem);
+            if(r.addItem&&!player.inv.some(it=>it.uid===r.addItem.uid))player.inv.push(bagPlaceNew(r.addItem));
             player.talent=r.talent;clampHpMp();
         });
         if(player===who&&currentSlot===slot){talentPlanState=talentLivePlanState();talentPlanView.message='正式天賦已同步。';}

@@ -6,7 +6,7 @@
 
 1. 使用者在Supabase SQL Editor開新查詢，貼入同資料夾 **talent-system.sql完整內容**，按Run。不要貼template或catalog.json。
 2. 前置為目前已安裝的server-loot、loot-batch、vault-v2與既有掉寶增量。安裝會在原函式追加天賦規則，保留未鑑定地圖與傭兵符石；失敗整筆回滾。不要重新跑舊安裝總檔。
-3. 出現Success後，本機遊戲Ctrl+F5，確認更新紀錄版本20261029m，登入原帳號、完成雲端同步，再進入「天賦星盤→正式角色天賦→檢查開放」。SQL尚未安裝時，按鈕會提示未開放。
+3. 出現Success後，本機遊戲Ctrl+F5，確認更新紀錄版本20261029o或更新，登入原帳號、完成雲端同步，再進入「天賦星盤→正式角色天賦→檢查開放」。SQL尚未安裝時，按鈕會提示未開放。
 4. 若之後重建掉寶catalog或覆蓋loot_roll／loot_finish／loot_finish_batch，應再執行本增量；可重跑，不會清空已配天賦、試煉紀錄或交易紀錄。
 
 新增三張表dragon_talent_trials／dragon_talent_state／dragon_talent_ops；不修改Supabase連線設定，不清除既有角色或道具。SQL已包含PostgREST schema更新通知。

@@ -6,6 +6,9 @@
 ## 1. 專案結構
 
 | 檔案 | 內容 |
+| `images/icons/items/talentJewel_*.png`、`tools/icon-src/items/talent-jewels-v1/`、`tools/prepare-talent-jewels.ps1`、`tools/talent-jewels-contact-v1.png` | 38款寶珠各自原創透明圖、原稿／提示詞清單與裁切／總覽（第235節） |
+| `images/ui/talent-atlas-unallocated-v1.png`、`tools/icon-src/talent-atlas-unallocated-v1.json`、`tools/test-talent-jewel-storage.js`、`tools/talent-jewel-storage-preview.html` | 星盤未配置底圖、三欄寶珠倉庫實際資料／圖片回歸與禁止連外的隔離預覽（第235節） |
+| `images/icons/items/talentStone.png`、`tools/icon-src/items/talent-stone-v1.png`／`.json`、`tools/prepare-talent-stone.ps1` | 天賦石原創透明圖、原稿／提示詞與既有裁切流程接入（第234節） |
 | `data/talent-live.js`、`tools/test-talent-live.js`、`tools/test-talent-system-db.js` | 正式角色天賦／能力與UID移轉，真實遊戲／加密收據及隔離PostgreSQL回歸（第232節） |
 | `tools/talent-system.template.sql`、`tools/build-talent-sql.js`、`tools/talent-system.sql`、`tools/talent-system-catalog.json`、`tools/TALENT-INSTALL.md` | 新增獨立天賦SQL及JS同源規則匯出、使用者安裝步驟；不執行正式庫（第232節） |
 | `tools/TALENT-RELEASE-PLAN.md` | 已同意的100點／掉率／10試煉／天賦石與正式接入；安裝指引見TALENT-INSTALL（第232節） |
@@ -251,7 +254,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261029m`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261029o`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -4076,3 +4079,25 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 使用者要求娃娃自動購買新增藍水、變形卷軸。doll-abilities.js的dollBuyList加入bluePotion（藍色藥水）與polyScroll（變形卷軸），全職業共用，規則沿第230節：召喚中每2秒檢查、補到保持數量、商店價×1.1、金幣／負重不足只買部分、SIM_MODE不買。
 - DEFAULT_SETTINGS新增dollBuyBlue 20、dollBuyPoly 2（變形卷軸單價10000×1.1＝11000，預設少量；0＝不買），舊檔由migrateSave的Object.assign補預設，SAVE_SCHEMA不變。設定頁「🧸 娃娃自動購買藥水」新增兩欄（藍水0～500、變形卷軸0～100）。只負責購買，使用仍照快捷欄自動格／手動。
 - tools/test-doll-auto-buy.js追加：全職業補到藍水20／變形卷軸2、加價10%、0不買、舊檔補預設。
+
+
+## 234. 天賦石專屬原創圖片（2026-10-29，版本 `20261029n`）
+
+- 使用者指出天賦石缺少圖案；原本只有◆字形。本次以內建imagegen生成深藍灰粗石、金色星紋與發光裂隙的原創透明圖，沒有使用商業遊戲素材。原稿與完整提示詞保存tools/icon-src/items/talent-stone-v1.png／.json。
+- 新增images/icons/items/talentStone.png（128×128真透明PNG），由prepare-talent-stone.ps1沿用cut-single-item-art.ps1的SingleItemCrop流程裁alpha邊界、等比例縮至112px並置中；原稿完整保留，腳本拒絕覆寫既有輸出，使用Windows PowerShell執行。
+- icons.js的ITEM_IMG新增talentStone，刪除◆專用回傳，統一經itemIconHtml／itemThumbHtml載PNG；背包、介紹、圖鑑、倉庫等共用圖案，移除未使用的talent-stone-icon CSS。沒有新增全域函式、改載入順序、玩法、存檔或SQL。
+- 已檢視原圖與128px縮圖，確認透明及清晰；真實遊戲圖示／縮圖函式接線、天賦回歸、check.ps1與diff檢查通過。未提交／推送；待使用者刷新版本n實機確認。
+
+
+## 235. 寶珠專屬圖片、三欄倉庫與未配置星盤（2026-10-29，版本 `20261029o`）
+
+- 使用者要求全部寶珠專屬圖片與獨立寶珠倉庫，並明確選擇『全部寶珠用3欄往下排列，不翻頁』；另指出未配點底圖已有亮線，要求修正。
+- 以內建imagegen逐款生成14一般／6轉化／18星團，共38張不同原創圖片。一般魔法／稀有採不同切面與鑲座，六種轉化各有雙向造型，六系星團的小／中／大有不同分枝形狀；不是僅換色的CSS圖。原稿與每張完整提示詞／來源存tools/icon-src/items/talent-jewels-v1/manifest.json及對應PNG。prepare-talent-jewels.ps1沿既有SingleItemCrop透明邊界裁切、112px置中128px，保留原稿並不覆寫既有輸出，另產talent-jewels-contact-v1.png作總覽；用Windows PowerShell執行。
+- icons.js的ITEM_IMG加入38個talentJewel_*對應PNG，移除寶珠CSS備援優先回傳；talentJewelPreviewHtml也改用相同獨立PNG。背包、物品介紹、圖鑑、倉庫與星盤預覽共用圖片。
+- bag-storage.js的BAG_STASH_PAGES新增jewel『寶珠倉庫』、bagStorageKind納入cat=talentJewel。新增暫存bagJewelType（all／normal／radius／cluster）及頂層bagSetJewelType，bagStorageHtml顯示固定3欄、不翻頁的38款格位，未持有保留暗格，一般14／轉化6／星團18可篩選；同款彙總數量，bagOpenStored仍按獨立UID列出每顆，保留防賣鎖。
+- 沿用既有bagStored旗標及player.inv單份實體，沒有新player欄位／schema／SQL。新取得寶珠自動零負重收納，舊背包寶珠可一鍵收納；可直接從收納鑲嵌，拆回及非法孔內合法寶珠退回時經bagPlaceNew自動歸位。天賦石仍在通貨頁，沒有改能力、掉率或天賦點。
+- 由原talent-atlas-v1.png用imagegen編修出talent-atlas-unallocated-v1.png，原圖保留；城堡、六星群與點位外型不變，預先點亮的金色路線／節點熄滅，六大核心為暗色浮雕，中央免費起點可保留光。talent與planner及節點局部圖統一採新底圖，不再用『亮線只是裝飾』解釋。選取未配置點用冷色輪廓，不冒充已配置；實際allocated節點及兩端已配的連線才亮，退回後熄滅。
+- test-talent-jewel-storage驗38張128px且內容不同的圖片、圖示／預覽接線、38／14／6／18格、無翻頁、單UID與數量／鎖定／負重／加密存讀、真實正式操作函式鑲嵌／拆回自動收納，以及0點與僅選取不亮路線／配點才亮／退回熄滅。test-talent-system-db以已收納寶珠驗後端移轉仍保留UID與位置資料；舊主盤／角色／收納／收據回歸及check.ps1通過。
+- 隔離預覽tools/talent-jewel-storage-preview.html沿正式index與渲染，記憶體存檔、禁止跨來源連線、SIM_MODE、停用main／pwa與儲存；預置38款讓使用者核對三欄和圖片。尚未以實機驗收，未提交／推送。手動：Ctrl+F5→背包→寶珠倉庫→切換三類、點已有寶珠明細；星盤無配置時只有免費起點亮，選取不算學習；F12 Console無紅字後再回報。
+
+- 最終圖片回歸：test-item-art同步547件道具／379張獨立PNG，並依既有通貨自動歸位改從通貨收納頁驗覺醒石；547件圖片存在、379張128px圖互不重複及各介面接線通過。38寶珠總覽已逐款檢視，兩張原稿角落alpha=1視同透明（與既有裁切alpha>5閾值一致），輸出128px角落均為0；原稿不變。57個正式script記憶體合併混淆／語法驗證通過。
