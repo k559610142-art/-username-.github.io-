@@ -87,7 +87,7 @@ function renderPanel() {
         // PC 橫式外框：中間大地圖固定狩獵；分頁開成地圖上的視窗，最多 3 個左右並排（每個右上「✖ 關閉」）
         p.innerHTML = renderHunt();
         ov.classList.toggle('hidden', !openTabs.length);
-        ov.classList.toggle('wide', openTabs.length === 1 && openTabs[0] === 'char');   // 只開人物狀態時放大成大視窗，三欄並排
+        ov.classList.toggle('wide', openTabs.length === 1 && (openTabs[0] === 'char' || openTabs[0] === 'talent'));   // 只開人物狀態時放大成大視窗，三欄並排
         ov.dataset.n = openTabs.length;
         renderPanes(ov);
         lastLogRendered = 0;
@@ -684,7 +684,7 @@ function skillInfoText(s) {
 }
 function renderSkills() {
     const cls = player.cls, bar = player.settings.bar;
-    let h = `<div class="panel"><h4>⚔️ 快捷欄</h4>
+    let h = `<button class="talent-entry" onclick="switchTab('talent')"><div>✧ 命運星盤<small>六大星群・天賦路線預覽</small></div><span>🔒 未開放 ›</span></button><div class="panel"><h4>⚔️ 快捷欄</h4>
         <small class="muted">${isPcFrame() ? '畫面底部骷髏頭左右各 8 格（鍵盤 1～8、Q E R F Z X C V），上排 8 格也能放' : '狩獵時地圖下方兩排各 8 格'}，點第一排旁的小箭頭可展開新增8格；技能、藥水、卷軸都能放。
         <b>點一下</b>＝手動使用；<b>按住往下拉再放開</b>＝切換自動（暖黃光框）；點空格、長按或右鍵＝換成別的。
         自動技能依格子順序：治癒（HP 低於設定時）→ 增益（效果結束時）→ 攻擊技能；被動技能學會就生效，不用放。</small>
