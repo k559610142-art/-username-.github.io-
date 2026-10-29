@@ -243,7 +243,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261029i`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261029j`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3995,3 +3995,7 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 購買：只補「保持數量−身上數量」，費用ceil(shopCost×1.1)；金幣不足買得起的部分、不會負數；負重上限＝開自動回家時floor(最大負重×回家%)−1，否則最大負重，並再經bagCanReceive。戰鬥訊息「🧸 娃娃自動購買 綠水 ×N（-金幣）」。不改喝水邏輯（仍由快捷欄自動格決定）。
 - dollAbilityHtml在21款娃娃說明加上共通「自動購買藥水」，人物娃娃卡／選擇／道具介紹／商店／圖鑑同步顯示。
 - tools/test-doll-auto-buy.js（沿test-treasure-maps隔離環境）：12職業選藥與不買他職藥、21款娃娃皆有效與說明、加價10%與補差額、2秒節流、0不買、金幣不足、自動回家負重門檻／最大負重、未裝備／召喚過期／SIM_MODE不買、舊檔補預設。test-dolls.js與依賴它的test-doll-abilities／test-doll-summon-cost在本次前就因斷言schema18失敗（現為20），未修。
+
+## 231. 交易所移除彈藥分類（2026-10-29，版本 `20261029j`）
+
+- 使用者截圖圈選交易所分類列的「彈藥」要求移除。market.js的MARKET_CATS刪除['ammo','彈藥']，只拿掉分類按鈕；彈藥上架／購買、伺服器目錄與SQL不變，仍可在「全部」或搜尋找到。marketSetCat沒有白名單，舊狀態marketCat='ammo'只會在本次工作階段殘留，重新整理即回「全部」。SAVE_SCHEMA20不變。
