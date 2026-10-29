@@ -223,6 +223,7 @@
 
 | `data/bag-storage.js`、`tools/test-bag-storage.js`、`tools/bag-storage-preview.html` | 五種背包專用收納、位置／重量／自動歸位、固定格位與地圖階級、隔離測試／預覽（第214節） |
 | `tools/test-mercenary-stats.js`、`tools/mercenary-stats-pc.png`、`tools/mercenary-status-pc.png`、`tools/mercenary-status-mobile.png` | 傭兵攻防來源／裝備與底部狀態隔離驗證（第217～218節） |
+| `tools/test-mercenary-traits.js` | 傭兵六職業特色：召喚倍率／上限、受傷與仇恨、治療與增益延長、物理／魔法技能倍率、暴擊、閃避攻速回血、魔防穿透隔離驗證（第224節） |
 | `tools/test-mercenary-potions.js` | 傭兵共用玩家藥水、開關／門檻／選藥與延遲隔離測試（第215節） |
 
 ## 2. 載入順序與依賴
@@ -240,7 +241,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261029b`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261029c`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3732,7 +3733,7 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 一般怪每次攻擊有25%選傭兵，挑釁期間65%；使用傭兵自己的防禦／MR／閃避／盾。首領未躲開紅圈也傷傭兵，護衛／挺身保護分擔玩家傷害，團隊屏障雙方各有護盾。怪物緩速／衰弱首領效果減半，首領免暈眩。
 - 傭兵依4格順序自動選第一招符合條件且MP足夠／冷卻好的技能，每秒最多一招，普攻獨立。治療／回魔依低血／低魔門檻，淨化只在有對應負面狀態時使用（現有敵人大多沒有可淨化狀態）；無狀態時不浪費MP。
 - 召喚物最多2隻，新召喚替換最早者；每2秒攻擊或治療，具持續時間。範圍技能僅目前戰鬥集合最多3隻，不拉全畫面怪；DoT每秒一次，離開目前怪群不繼續攻擊。傷害物理扣怪防禦／魔法計MR，未加玩家爆擊、吸血或BOSS附魔連鎖。
-- 基礎HP每級+18、MP每級+8，物魔傷害每級+2；職業起始值見MERC_CLASSES。契靈師召喚效力×1.2，祈願使治療×1.2，荒野行者基礎閃避8%與回血每秒3，其餘每秒1；每秒回魔依職業。裝備基本屬性與詞綴進傭兵計算，不套用玩家職業被動。
+- 基礎HP每級+18、MP每級+8，物魔傷害每級+2；職業起始值見MERC_CLASSES。契靈師召喚效力×1.2，祈願使治療×1.2，荒野行者基礎閃避8%與回血每秒3，其餘每秒1；（職業特色已由第224節取代）每秒回魔依職業。裝備基本屬性與詞綴進傭兵計算，不套用玩家職業被動。
 - SIM_MODE不參戰／不獲經驗／不代擋／不給玩家增益，離線量測與團隊副本／世界首領維持既有流程。這三項未納入本次一般掛機框架，UI有提示。未操作正式角色或後端。
 
 ### 接線與驗證
@@ -3959,3 +3960,17 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - tools/talent-preview.html只載星盤，無角色／雲端；tools/test-talent.js驗原圖SHA256一致、七核心熱區、六區說明、非法選取、縮放上下限／重置、鎖定、入口、原畫接線，player／localStorage／calcStats／saveGame一存取即拋錯。
 - 驗證：原畫SHA256、七核心熱區／六區說明、非法選取／縮放／鎖定、無角色／存檔副作用通過；check.ps1 ALL CHECKS PASSED，git diff --check通過。瀏覽器本機file預覽遭URL政策阻擋，尚未實機確認外觀。
 - 待使用者驗收：Ctrl+F5確認b版→技能→命運星盤→核對原圖外型→點六個大核心→縮放與滑動→確認「未開放」不能學習。確認後才commit，未推送。
+
+## 224. 傭兵六職業特色強化（2026-10-29，版本 `20261029c`）
+
+- 使用者看過Lv49空手六職業傷害比較後要求「加強傭兵特色」，從明顯／溫和／強烈三案選明顯版。只影響傭兵本身，不改玩家、符石倍率、等級成長或存檔；SAVE_SCHEMA20／SQL／script順序不變。
+- mercenary.js新增常數MERC_TRAITS（各職業數值＋text說明）與頂層mercTrait(m,key,預設)，取代原本散在各處的m.cls判斷：
+  - 契靈師spirit：召喚物power×1.5（原1.2），同時上限3隻（其他2隻）。
+  - 壁壘衛士bulwark：mercTakeDamage在扣防禦後×0.8；mercEnemyAttack選傭兵機率取max(挑釁, 0.4)（其他0.25，挑釁0.65不變）。
+  - 祈願使wish：mercStats.heal 1.5（原1.2，影響所有治療／持續回血）；support類符石建立的增益持續×1.5（護衛／生存類不延長）。
+  - 征戰者war：物理攻擊技能（含撕裂DoT）power×1.3；普攻15%機率×1.5暴擊。
+  - 荒野行者wild：基礎閃避0.15（原0.08）、攻速分母+0.2（空手1200→1000ms）、每秒回血5（原3，其他1）。
+  - 秘法使arcane：魔法攻擊技能（含毒霧DoT）power×1.3；mercHit計算魔法時怪物魔防×0.7（召喚物魔法也適用）。
+- 管理頁傭兵名下方顯示「職業特色」，戰鬥規則摺疊說明列出六職業特色與「召喚物最多2隻（契靈師3隻）」。GAME_UPDATES新增c。
+- Lv49空手vs Lv47冰原狼參考：征戰者連環突擊84→約111、普攻暴擊32；秘法使雷電衝擊71→約99；祈願使急救之光63→79；契靈師靈狼每下25→31。
+- tools/test-mercenary-traits.js逐項驗證上述數值並對照未受影響職業；其餘傭兵測試全過。test-mercenary-quest.js在本次修改前就因斷言schema19（現為20）失敗，與本節無關，未修。

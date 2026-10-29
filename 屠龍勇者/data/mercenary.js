@@ -7,7 +7,17 @@ const MERC_CLASSES = {
     wild: { name: '荒野行者', person: '莉雅', sex: '女', age: '年輕', hp: 170, mp: 85, atk: 12, magic: 9, def: 4, regen: 3 },
     arcane: { name: '秘法使', person: '諾亞', sex: '男', age: '孩童', hp: 105, mp: 145, atk: 7, magic: 19, def: 1, regen: 4 },
 };
-const MERC_SLOTS = ['weapon', 'shield', 'helm', 'armor', 'tshirt', 'cloak', 'gloves', 'boots'];
+// 職業特色（第224節）：只影響傭兵本身，不改玩家。
+const MERC_TRAITS = {
+    spirit: { summon: 1.5, summonMax: 3, text: '召喚效力×1.5，召喚物上限3隻' },
+    bulwark: { taken: .8, aggro: .4, text: '受到傷害−20%，怪物選它當目標40%' },
+    wish: { heal: 1.5, buffSec: 1.5, text: '治療×1.5，輔助增益持續時間+50%' },
+    war: { phys: 1.3, crit: .15, critMul: 1.5, text: '物理技能×1.3，普攻15%暴擊×1.5' },
+    wild: { dodge: .15, spd: .2, hpRegen: 5, text: '閃避15%，攻速+20%，每秒回血5' },
+    arcane: { magicSkill: 1.3, mrIgnore: .3, text: '魔法技能×1.3，無視怪物30%魔防' },
+};
+function mercTrait(m, key, def) { const t = m && MERC_TRAITS[m.cls]; return t && t[key] != null ? t[key] : def; }
+const MERC_SLOTS = ['weapon','shield', 'helm', 'armor', 'tshirt', 'cloak', 'gloves', 'boots'];
 const MERC_MODELS = Object.fromEntries(Object.keys(MERC_CLASSES).map(id => {
     const sprite = { charH: 160, drawH: ['spirit', 'arcane'].includes(id) ? 36 : 46, foot: [192, 282], art: 'images/sprites/mercenary/companions-v1/' + id + '/portrait.png' };
     for (const [action, frames, ms] of [['walk',4,130], ['attack',4,140], ['cast',2,220], ['hit',2,150]]) sprite[action] = { src: 'images/sprites/mercenary/companions-v1/' + id + '/' + action + '.png', cellW: 384, cellH: 320, frames: { down: frames, right: frames, up: frames }, ms };
@@ -263,8 +273,8 @@ function mercStats(m = player.mercenary) {
     return { hp: c.hp + (m.lv - 1) * 18 + (fx.hp || 0), mp: c.mp + (m.lv - 1) * 8 + (fx.mp || 0),
         atk:base.atk+gear.atk+buffs.atk,magic:base.magic+gear.magic,
         def:base.def+gear.def+buffs.def,mr:base.mr+gear.mr+buffs.mr,base,gear,buffs,
-        regen: c.regen, dodge: Math.min(.5, (m.cls === 'wild' ? .08 : 0) + (fx.dodge || 0) + mercBuff('evasion', m)),
-        heal: m.cls === 'wish' ? 1.2 : 1, speed: (d ? WEAPON_TYPES[d.type].spd : 1200) / (1 + (fx.spdMul || 0) + mercBuff('haste', m)) * mercSlowFactor(m) };
+        regen: c.regen, dodge: Math.min(.5, mercTrait(m, 'dodge', 0) + (fx.dodge || 0) + mercBuff('evasion', m)),
+        heal: mercTrait(m, 'heal', 1), speed: (d ? WEAPON_TYPES[d.type].spd : 1200) / (1 + mercTrait(m, 'spd', 0) + (fx.spdMul || 0) + mercBuff('haste', m)) * mercSlowFactor(m) };
 }
 function mercNormalize(p) {
     const m = p.mercenary;
@@ -310,7 +320,7 @@ function mercTakeDamage(value) {
     const m = mercActive(); if (!m || value <= 0) return 0;
     const r = mercState(m), st = mercStats(m);
     if (chance(st.dodge)) return 0;
-    let damage = Math.max(1, Math.round(value - st.def / 3));
+    let damage = Math.max(1, Math.round((value - st.def / 3) * mercTrait(m, 'taken', 1)));
     if (mercBuff('lastStand')) damage = Math.round(damage * .5);
     for (const key of ['fortify', 'shield', 'barrier']) {
         const b = r.buffs[key]; if (!b || b.until <= gameNow) continue;
@@ -321,7 +331,7 @@ function mercTakeDamage(value) {
     if (m.hp <= 0) mercDie(); return dealt;
 }
 function mercEnemyAttack(mon) {
-    const m = mercActive(); if (!m || !chance(mercBuff('taunt') || .25)) return false;
+    const m = mercActive(); if (!m || !chance(Math.max(mercBuff('taunt'), mercTrait(m, 'aggro', .25)))) return false;
     const st = mercStats(m), magic = mon.magic && chance(mon.magic.p);
     if (!mercInRange(mon, magic ? 4 : 1)) return false;
     let value = magic ? rand(...mon.magic.dmg) * (1 - Math.min(150, st.mr) / 200) : rand(...mon.dmg);
@@ -348,7 +358,8 @@ function mercPlayerFx() {
 }
 function mercHit(mon, amount, magic = false, pierce = false) {
     if (!mon || mon.hp <= 0) return 0;
-    const value = Math.max(1, Math.round(amount * (magic ? 1 - clamp(mon.mr || 0, 0, 150) / 200 : 1) - (!magic && !pierce ? Math.max(0, -(mon.ac || 0) / 5) : 0)));
+    const mr = clamp(mon.mr || 0, 0, 150) * (1 - mercTrait(player.mercenary, 'mrIgnore', 0));
+    const value = Math.max(1, Math.round(amount * (magic ? 1 - mr / 200 : 1) - (!magic && !pierce ? Math.max(0, -(mon.ac || 0) / 5) : 0)));
     const dealt = Math.min(mon.hp, value); mon.hp -= value; return dealt;
 }
 function mercRuneText(id) {
@@ -382,8 +393,8 @@ function mercCast(id, mon) {
     const heal = v => Math.round(st.magic * v * st.heal), selfHeal = v => { m.hp = Math.min(st.hp, m.hp + heal(v)); }, playerHeal = v => { player.hp = Math.min(ps.maxHp, player.hp + heal(v)); };
     if (!attackKinds.includes(k)) mercSkillVfx(id, mon);
     if (k.startsWith('summon')) {
-        r.summons = r.summons.filter(x => x.until > gameNow); if (r.summons.length >= 2) r.summons.shift();
-        r.summons.push({ id, until: gameNow + s.sec * 1000, at: gameNow, power: s.power * (m.cls === 'spirit' ? 1.2 : 1) });
+        r.summons = r.summons.filter(x => x.until > gameNow); if (r.summons.length >= mercTrait(m, 'summonMax', 2)) r.summons.shift();
+        r.summons.push({ id, until: gameNow + s.sec * 1000, at: gameNow, power: s.power * mercTrait(m, 'summon', 1) });
     } else if (['healPlayer','healBoth','restore'].includes(k)) { playerHeal(s.power); if (k !== 'healPlayer') selfHeal(s.power); if (k === 'restore') player.mp = Math.min(ps.maxMp, player.mp + 8); }
     else if (k === 'healSelf') selfHeal(s.power);
     else if (k === 'manaPlayer') player.mp = Math.min(ps.maxMp, player.mp + s.power);
@@ -393,7 +404,7 @@ function mercCast(id, mon) {
     else if (k === 'cleanseSelf') { mercDebuffs.delete(m); for (const key in r.buffs) if (r.buffs[key].negative) delete r.buffs[key]; }
     else if (attackKinds.includes(k)) {
         const magic = ['magic','slow','magicArea','poison','weaken'].includes(k);
-        const power = (magic ? st.magic : st.atk) + mercBuff('focus');
+        const power = ((magic ? st.magic : st.atk) + mercBuff('focus')) * (magic ? mercTrait(m, 'magicSkill', 1) : mercTrait(m, 'phys', 1));
         const targets = k.endsWith('Area') ? [mon, ...hunt.mobs.filter(x => x !== mon)].filter(x => x.hp > 0 && mercInRange(x, mercSkillRange(s))).slice(0,3) : [mon];
         if (k === 'bleed' || k === 'poison') { mercSkillVfx(id, mon); r.dots.push({ mon, until: gameNow + s.sec * 1000, at: gameNow + 1000, amount: power * s.power, magic }); }
         else for (const target of targets) { const dealt = mercHit(target, power * s.power * (k === 'execute' && target.hp < target.maxHp * .3 ? 2 : 1), magic, k === 'pierce'); mercSkillVfx(id, target); if (k === 'drain') m.hp = Math.min(st.hp, m.hp + Math.round(dealt * .5)); }
@@ -402,7 +413,7 @@ function mercCast(id, mon) {
     } else {
         let power = s.power;
         if (['shield','selfShield','teamShield'].includes(k)) power = heal(power);
-        r.buffs[id] = { power, until: gameNow + s.sec * 1000, at: gameNow + 1000, player: k === 'teamShield' ? power : 0 };
+        r.buffs[id] = { power, until: gameNow + s.sec * 1000 * (s.group === 'support' ? mercTrait(m, 'buffSec', 1) : 1), at: gameNow + 1000, player: k === 'teamShield' ? power : 0 };
     }
     addLog('⚑ ' + MERC_CLASSES[m.cls].person + '使用「' + s.name + '」', 'sys'); return true;
 }
@@ -421,7 +432,7 @@ function mercAutoPotion(m = mercActive()) {
 function mercTick(dt) {
     const m = mercActive(); if (!m) return;
     const r = mercState(m), st = mercStats(m);
-    if (gameNow >= r.regenAt) { r.regenAt = gameNow + 1000; m.mp = Math.min(st.mp, m.mp + st.regen); m.hp = Math.min(st.hp, m.hp + (m.cls === 'wild' ? 3 : 1)); }
+    if (gameNow >= r.regenAt) { r.regenAt = gameNow + 1000; m.mp = Math.min(st.mp, m.mp + st.regen); m.hp = Math.min(st.hp, m.hp + mercTrait(m, 'hpRegen', 1)); }
     const mon = hunt && hunt.state === 'fight' && hunt.mon && hunt.mon.hp > 0 ? hunt.mon : null;
     for (const [id, b] of Object.entries(r.buffs)) {
         if (b.until < gameNow) { delete r.buffs[id]; continue; }
@@ -450,7 +461,7 @@ function mercTick(dt) {
         else { const targets = s.kind === 'summonArea' ? [target,...hunt.mobs.filter(t=>t!==target)].filter(t => t.hp > 0 && mercInRange(t, 4)).slice(0,3) : [target]; for (const t of targets) mercHit(t, st.magic * x.power, true); if (s.kind === 'summonSlow') mercEffectSet(target, 'slow', 2.5); }
     }
     const attackMon=mon && [mon,...hunt.mobs.filter(t=>t!==mon)].find(t=>t.hp>0 && mercInRange(t,mercWeaponRange(m)));
-    if (attackMon && gameNow >= r.attackAt) { r.attackAt = gameNow + Math.max(400, st.speed); mercPlayAnim('attack', attackMon); mercHit(attackMon, st.atk); }
+    if (attackMon && gameNow >= r.attackAt) { r.attackAt = gameNow + Math.max(400, st.speed); mercPlayAnim('attack', attackMon); mercHit(attackMon, st.atk * (chance(mercTrait(m, 'crit', 0)) ? mercTrait(m, 'critMul', 1) : 1)); }
 }
 function mercTownReady() { return !!(player && inTown() && !SIM_MODE); }
 function mercRefresh() { saveGame(); refreshUI(); if (typeof mercPanelOpen !== 'undefined' && mercPanelOpen) openMercenary(); }
@@ -515,11 +526,11 @@ function mercStatsHtml(st) {
 }
 function renderMercenary() {
     const m = player.mercenary, c = m && MERC_CLASSES[m.cls], town = mercTownReady();
-    let h = '<div class="panel"><p>六職業共用50種符石，同時只能召喚一名傭兵。在村莊配置與調整出戰，傭兵不可購買。</p><p>出戰掛機時，傭兵沿用玩家快捷欄的自動補血開關與HP門檻，共用背包治癒藥水，每瓶只補傭兵並扣玩家1瓶；各自喝水延遲0.8秒。</p><p class="bad">死亡永久失去身上全部裝備與已配置符石；背包物品不受影響。復活保留等級。</p><details><summary>戰鬥與裝備規則</summary><small>不限制武器職業，雙手武器與盾牌互斥。一般掛機生效；離線／團隊副本／世界首領暫不參戰。遠程武器不耗玩家彈藥，裝備共鳴與BOSS附魔暫不觸發。技能優先救命治療、淨化、一般治療與多怪群攻；同類依四格順序，每秒最多一招。近戰1格、弓槍8格、魔法與召喚攻擊4格，障礙物會阻擋。召喚物最多2隻。毒系／冰系指定怪物魔法命中附加中毒6秒／緩速4秒，淨化可解除；毒傷最低保留1HP，回村清除。</small></details></div>';
+    let h = '<div class="panel"><p>六職業共用50種符石，同時只能召喚一名傭兵。在村莊配置與調整出戰，傭兵不可購買。</p><p>出戰掛機時，傭兵沿用玩家快捷欄的自動補血開關與HP門檻，共用背包治癒藥水，每瓶只補傭兵並扣玩家1瓶；各自喝水延遲0.8秒。</p><p class="bad">死亡永久失去身上全部裝備與已配置符石；背包物品不受影響。復活保留等級。</p><details><summary>戰鬥與裝備規則</summary><small>不限制武器職業，雙手武器與盾牌互斥。一般掛機生效；離線／團隊副本／世界首領暫不參戰。遠程武器不耗玩家彈藥，裝備共鳴與BOSS附魔暫不觸發。技能優先救命治療、淨化、一般治療與多怪群攻；同類依四格順序，每秒最多一招。近戰1格、弓槍8格、魔法與召喚攻擊4格，障礙物會阻擋。召喚物最多2隻（契靈師3隻）。職業特色：' + Object.keys(MERC_CLASSES).map(k => MERC_CLASSES[k].name + '－' + MERC_TRAITS[k].text).join('；') + '。毒系／冰系指定怪物魔法命中附加中毒6秒／緩速4秒，淨化可解除；毒傷最低保留1HP，回村清除。</small></details></div>';
     h += mercQuestHtml();
     if (m) {
         const st = mercStats(m);
-        h += '<div class="panel"><div class="merc-model-portrait"><img src="' + MERC_MODELS[m.cls].art + '" alt="' + esc(c.person + '・' + c.name) + '"' + (m.dead ? ' class="merc-model-dead"' : '') + '></div><b>' + mercNameHtml(m) + '</b>（' + c.sex + '／' + c.age + '）<p>Lv.' + m.lv + '｜經驗 ' + fmt(m.exp) + '／' + fmt(mercExpNeed(m)) + '<br>HP ' + Math.ceil(m.hp) + '／' + st.hp + '　MP ' + Math.ceil(m.mp) + '／' + st.mp + '<br>物攻' + Math.round(st.atk) + '／魔攻' + Math.round(st.magic) + '／防禦' + st.def + '／魔防' + st.mr + '</p>' + (m.dead ? '<button onclick="mercRevive()" ' + (!town ? 'disabled' : '') + '>復活（' + fmt(m.lv * MERC_REVIVE_COST) + '金幣）</button>' : '<button onclick="mercToggle()" ' + (!town ? 'disabled' : '') + '>' + (m.active ? '收回傭兵' : '傭兵出戰') + '</button>') + '</div>';
+        h += '<div class="panel"><div class="merc-model-portrait"><img src="' + MERC_MODELS[m.cls].art + '" alt="' + esc(c.person + '・' + c.name) + '"' + (m.dead ? ' class="merc-model-dead"' : '') + '></div><b>' + mercNameHtml(m) + '</b>（' + c.sex + '／' + c.age + '）<br><small class="good">職業特色：' + MERC_TRAITS[m.cls].text + '</small><p>Lv.' + m.lv + '｜經驗 ' + fmt(m.exp) + '／' + fmt(mercExpNeed(m)) + '<br>HP ' + Math.ceil(m.hp) + '／' + st.hp + '　MP ' + Math.ceil(m.mp) + '／' + st.mp + '<br>物攻' + Math.round(st.atk) + '／魔攻' + Math.round(st.magic) + '／防禦' + st.def + '／魔防' + st.mr + '</p>' + (m.dead ? '<button onclick="mercRevive()" ' + (!town ? 'disabled' : '') + '>復活（' + fmt(m.lv * MERC_REVIVE_COST) + '金幣）</button>' : '<button onclick="mercToggle()" ' + (!town ? 'disabled' : '') + '>' + (m.active ? '收回傭兵' : '傭兵出戰') + '</button>') + '</div>';
         h += '<button onclick="mercDismiss()" ' + (!town ? 'disabled' : '') + '>放棄傭兵</button>';
         h += mercStatsHtml(st);
         h += '<p data-merc-live-status style="overflow-wrap:anywhere">' + esc(mercStatusText(m)) + '</p>';
