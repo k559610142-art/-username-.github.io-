@@ -254,7 +254,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261029o`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261029p`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -4101,3 +4101,10 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 隔離預覽tools/talent-jewel-storage-preview.html沿正式index與渲染，記憶體存檔、禁止跨來源連線、SIM_MODE、停用main／pwa與儲存；預置38款讓使用者核對三欄和圖片。尚未以實機驗收，未提交／推送。手動：Ctrl+F5→背包→寶珠倉庫→切換三類、點已有寶珠明細；星盤無配置時只有免費起點亮，選取不算學習；F12 Console無紅字後再回報。
 
 - 最終圖片回歸：test-item-art同步547件道具／379張獨立PNG，並依既有通貨自動歸位改從通貨收納頁驗覺醒石；547件圖片存在、379張128px圖互不重複及各介面接線通過。38寶珠總覽已逐款檢視，兩張原稿角落alpha=1視同透明（與既有裁切alpha>5閾值一致），輸出128px角落均為0；原稿不變。57個正式script記憶體合併混淆／語法驗證通過。
+
+
+## 236. 正式入口暫存門閂與重疊預覽（2026-10-29，版本 `20261029p`，未發布）
+
+- config新增TALENT_RELEASED=false，talent.js新增talentIsReleased；正式標籤與disabled入口採發布旗標，talentOpenCharacterPlanner／talentLiveAction在任何存檔或RPC之前攔截，後端安裝不等於發布。試玩保留，不刪既有角色配置。test-talent-release驗即使backendReady=true也不能顯示開放或呼叫正式操作；寶珠收納測試只在隔離VM覆寫helper以驗既有移轉。check.ps1通過。
+- 新tools/talent-emergency-lock.sql僅撤銷authenticated／anon／public對talent_status與talent_action執行權限，保留所有表及資料，通知PostgREST更新；由使用者執行，尚未收到執行回覆，未連正式庫。正式重新開放前須釐清玩家卡存檔問題，不能只更改標籤。
+- 使用者最新指示先從節點重疊修正開始。聊天預覽用talent-preview-spacing.js產生顯示位置，核心／起點固定、其他節點依圖案半徑+8間距避碰，星團展開再避碰；只改顯示，不變更正式data/talent-tree或邏輯座標／轉化效果／能力／連線／消耗。325與373節點全對檢查零重疊，點擊半徑圖案r+4互不覆蓋，配點退點互動通過。正式遊戲仍待後續套用，未commit／推送。

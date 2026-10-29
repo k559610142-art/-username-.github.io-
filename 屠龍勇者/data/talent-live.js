@@ -95,6 +95,7 @@ function talentReceiveProof(it,p) {
 function talentLivePlanState(p=player) { return talentRuntimeState(p); }
 
 async function talentOpenCharacterPlanner() {
+    if(!talentIsReleased()){showToast('天賦星盤尚未開放，請使用配點試玩');return;}
     if(SIM_MODE||!player||!vaultOnline()){showToast('正式天賦需要登入並同步雲端存檔');return;}
     const who=player,slot=currentSlot,uid=cloudUser.id;
     try {
@@ -110,6 +111,7 @@ async function talentOpenCharacterPlanner() {
 }
 
 async function talentLiveAction(action,nodeId,jewelId) {
+    if(!talentIsReleased()){showToast('天賦星盤尚未開放，正式配點已停用');return;}
     if(talentLiveBusy||SIM_MODE||!player)return;
     const who=player,slot=currentSlot,uid=cloudUser&&cloudUser.id;
     let inst=null;

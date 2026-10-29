@@ -16,6 +16,7 @@ bagSetJewelType('bad');assert.equal(bagJewelType,'cluster');bagSetJewelType('all
 const total=player.inv.length,uid=a.uid;bagWithdraw(uid,1);assert(!bagIsStored(a));assert(a.sellLocked);assert.equal(player.inv.length,total);assert(invWeight()>weight);bagStore(uid);assert(bagIsStored(a));assert.equal(invWeight(),weight);
 const restored=migrateSave(saveParse(saveEncode(JSON.stringify({schema:SAVE_SCHEMA,player}))));assert(restored.inv.find(it=>it.uid===uid).bagStored);assert(restored.inv.find(it=>it.uid===uid).sellLocked);
 // 以真實正式操作函式確認收納中的UID可鑲嵌，拆回自動歸位。
+talentIsReleased=()=>true; // 只在隔離測試開啟，正式開放旗標不變。
 const state=talentPlanCreate(90),target='battle-socket-0',prev=new Map([['origin',null]]),q=['origin'];
 while(q.length){const x=q.shift();if(x===target)break;for(const [u,v] of TALENT_PLAN_TREE.edges){const n=u===x?v:v===x?u:null;if(n&&!prev.has(n)&&!TALENT_PLAN_TREE.nodes.find(k=>k.id===n).exclusiveGroup){prev.set(n,x);q.push(n);}}}
 const route=[];for(let x=target;x;x=prev.get(x))route.unshift(x);for(const x of route)if(!state.allocated.has(x))assert(talentPlanAllocate(state,x).ok);

@@ -13,6 +13,7 @@ const TALENT_SOCKET_TYPES = {
     cluster:{name:'星團寶珠孔',mark:'✧',desc:'插入星團後長出額外分支，每個節點仍須花天賦點。六主題各有小、中、大型，共18種，不可再插星團。'}
 };
 const TALENT_ATLAS = talentBuildAtlas();
+function talentIsReleased() { return typeof TALENT_RELEASED!=='undefined'&&TALENT_RELEASED; }
 let talentView = { selected:'origin', zoom:1, jewelId:null };
 
 function talentBuildAtlas() {
@@ -41,8 +42,8 @@ function talentNodeHtml(n) {
 function renderTalent() {
     const radiusNode=TALENT_ATLAS.nodes.find(n=>n.id===talentView.selected && n.socketType==='radius');
     const radiusHtml=radiusNode ? `<circle class="talent-radius-preview" cx="${radiusNode.x}" cy="${radiusNode.y}" r="160"/>` : '';
-    return `<section class="talent-shell"><header class="talent-heading"><div><small>命運交織，群星未醒</small><h3>命運星盤</h3></div><span class="talent-locked">${typeof talentBackendReady!=='undefined'&&talentBackendReady?'✧ 正式已開放':'🔒 未開放'}</span></header>
-        <p class="talent-notice">正式角色天賦已完成；後端安裝前顯示未開放。登入後按「檢查開放」進入，所有操作使用角色真實資源。</p><button class="talent-entry" onclick="talentOpenCharacterPlanner()"><div>正式角色天賦<small>登入並同步後檢查資料庫開放狀態</small></div><span>檢查開放 ›</span></button><button class="talent-entry" onclick="talentOpenPlanner()"><div>進入配點試玩<small>325個主盤節點・100測試點・可退點及試插寶珠</small></div><span>不套用角色 ›</span></button>
+    return `<section class="talent-shell"><header class="talent-heading"><div><small>命運交織，群星未醒</small><h3>命運星盤</h3></div><span class="talent-locked">${talentIsReleased()?'✧ 正式已開放':'🔒 未開放'}</span></header>
+        <p class="talent-notice">天賦星盤尚未開放，目前僅提供配點試玩預覽；試玩不修改正式角色。</p><button class="talent-entry" onclick="talentOpenCharacterPlanner()" ${talentIsReleased()?'':'disabled'}><div>正式角色天賦<small>等待正式開放</small></div><span>🔒 未開放</span></button><button class="talent-entry" onclick="talentOpenPlanner()"><div>進入配點試玩<small>325個主盤節點・100測試點・可退點及試插寶珠</small></div><span>不套用角色 ›</span></button>
         <div class="talent-layout"><div class="talent-map-column"><div class="talent-tools"><button class="mini secondary" onclick="talentZoom(-1)" aria-label="縮小星盤">－</button><button class="mini secondary" onclick="talentZoom(1)" aria-label="放大星盤">＋</button><button class="mini secondary" onclick="talentZoom(0)">全盤</button><span>拖曳／滑動探索・點節點查看</span></div>
         <div class="talent-viewport" aria-label="命運星盤，可拖曳與捲動"><svg class="talent-map" style="width:${talentView.zoom*100}%" viewBox="0 0 1195 1024" aria-label="六大區域天賦星盤"><image href="images/ui/talent-atlas-unallocated-v1.png" width="1536" height="1024" pointer-events="none"/><rect x="979" y="25" width="199" height="48" rx="17" fill="#110f0b" stroke="#9f8149"/><text x="1078" y="58" class="talent-art-status">未開放</text><rect x="23" y="942" width="333" height="41" rx="5" fill="#0c1016"/><text x="40" y="969" class="talent-art-note">六大星群・未開放預覽</text>${TALENT_ATLAS.nodes.map(talentNodeHtml).join('')}${radiusHtml}</svg></div></div>
         <aside class="talent-detail" aria-live="polite">${talentDetailHtml()}</aside></div><div class="talent-socket-legend">◇ 一般孔 12 個　◎ 轉化孔 6 個　✧ 星團孔 6 個</div><details class="talent-point-plan"><summary>天賦點與退點規則・已確認</summary><p>Lv.10拿第1點，之後每升1級再拿1點，Lv.99共90點；另有10個一次性試煉各1點，合計100點。退點使用天賦石，預設每退1點消耗1顆。等級點自動依目前等級計算，舊角色同步適用；每個一次性試煉完成後增加1點。</p><small>範例：Lv.20有11點／Lv.50有41點／Lv.99有90點。寶珠由一般怪、首領、試煉取得，地圖等級越高掉率越高；首次擊倒T1、2、3、4、5、7、9、11、13、15地圖首領各完成一次試煉。寶珠掉率：一般怪0.02%→0.30%、首領1%→5%、試煉加抽2%→10%。</small></details><footer class="talent-footer">未配置節點維持暗色；中央命核是免費起點。可試看寶珠詞綴、節點轉化與星團分支，此圖為原畫預覽；正式鑲嵌及學習請進入「正式角色天賦」。</footer></section>`;

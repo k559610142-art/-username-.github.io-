@@ -5,6 +5,9 @@
 
 ## 1. 現況
 
+- **目前優先事項（2026-10-29）**：使用者要求乾淨背景不含任何預畫節點／連線，先看疊點效果再套用；新純背景圖僅在generated_images與聊天預覽，尚未接遊戲。聊天talent-clean-star-planner.html已以獨立顯示布局修正42組過近節點／孔位，325主盤與六大型星團共373節點全對檢查零重疊、圖案間距至少8世界單位，點擊半徑改為圖案半徑+4，連線與能力／成本／邏輯座標均不改。只更新聊天預覽。
+- **本機暫存20261029p、未發布（第236節）**：玩家回報配點後卡住／斷線／無法存檔，使用者隨後要求先完成星盤並開放，再指定『從節點重疊開始』，故當前先交重疊修正預覽。已暫設TALENT_RELEASED=false、talentIsReleased，後端ready不再自動代表已發布；正式入口與talentLiveAction攔截、試玩保留，新測試與check通過。tools/talent-emergency-lock.sql已提供使用者執行，但未收到執行結果，不能宣稱正式庫已停用。不得清空／回滾玩家資料。正式開放與卡存檔修復仍未完成：已發現talentNormalize重播會重排nodes陣列，而SQL save_guard按陣列順序比對，疑似造成合法配點存檔拒收，尚待隔離重現／修復，不可把單純開放當修復。未commit／Push。
+
 - **20261029o：38寶珠專屬圖片／三欄寶珠倉庫／未配點不預亮（第235節）**。使用者確認全部3欄往下列、不翻頁，可切一般14／轉化6／星團18；38款各自imagegen原創透明PNG，原稿／提示詞manifest在tools/icon-src/items/talent-jewels-v1，遊戲圖talentJewel_*.png；prepare-talent-jewels.ps1與總覽保留。背包新增寶珠倉庫，沿bagStored與原UID自動零負重歸位，逐顆查看／直接鑲嵌／拆回保留數量與鎖定，不改schema21或SQL。新talent-atlas-unallocated-v1.png保留原畫城堡外型、移除預先發亮路徑／核心；0點僅免費起點亮，選取不等於配點，只有真實學習才亮。新增test-talent-jewel-storage與隔離預覽，38圖片與總覽已檢視；547件道具／379張獨立PNG接線與圖片、收納／正式操作／配點亮滅、隔離SQL與既有回歸／check.ps1／57檔記憶體合併混淆通過，尚待使用者實機驗收、未commit／Push。刷新o→背包→寶珠倉庫；可用http://localhost:8790/tools/talent-jewel-storage-preview.html看預置38款的隔離畫面。
 
 - **20261029n：補上天賦石專屬圖片（第234節）**。內建imagegen原創深色石塊／金色星紋／裂光，原稿及提示詞tools/icon-src/items/talent-stone-v1.png／.json，遊戲圖images/icons/items/talentStone.png為128px透明PNG。沿既有SingleItemCrop裁切，新增可重現腳本prepare-talent-stone.ps1（Windows PowerShell、拒絕覆寫）；ITEM_IMG接入，移除◆占位與無用CSS。能力／存檔／SQL不變；圖案與縮圖已檢視、圖片接線及天賦回歸／check.ps1／diff檢查通過。待使用者刷新n實機確認，未commit／推送。
