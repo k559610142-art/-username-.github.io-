@@ -24,3 +24,5 @@
 .bag-jewel-grid .bag-stash-art .ico{width:64px;height:64px;min-width:64px}.talent-node:hover .talent-ring,.talent-node:focus .talent-ring,.talent-node.selected .talent-ring{stroke:#a3bfce;stroke-dasharray:5 4;filter:none}
 
 .talent-node .talent-ring{fill:#151923;stroke:#b4a387;opacity:1;stroke-width:1.5}.talent-node.core .talent-ring{stroke:#c49e68;stroke-width:3}.talent-node.socket .talent-ring{stroke:#c9a1d6}.talent-node.origin .talent-ring{fill:#e9bd65;stroke:#ffe9b8}.talent-node-mark{fill:#eadbc0;text-anchor:middle;font-size:15px;pointer-events:none}.talent-node.origin .talent-node-mark{fill:#241a0d}.talent-detail-emblem{fill:#151923;stroke:#b4a387;stroke-width:2}.talent-detail-mark{fill:#e9bd65;text-anchor:middle;font-size:30px}
+
+.talent-origin-art{pointer-events:none}.talent-origin-detail{display:block;width:100%;max-width:180px;height:auto;margin:auto;object-fit:contain}

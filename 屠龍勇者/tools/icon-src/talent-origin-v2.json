@@ -1,0 +1,10 @@
+{
+  "date": "2026-10-30",
+  "source": "images/ui/talent-atlas-v1.png",
+  "output": "images/ui/talent-origin-v2.png",
+  "method": "Restore the original fate-core artwork as an independent circular PNG; no new generated design, original atlas unchanged.",
+  "crop": { "x": 548, "y": 411, "width": 134, "height": 134 },
+  "outputSize": 256,
+  "transparentMargin": 8,
+  "script": "tools/prepare-talent-origin.ps1"
+}

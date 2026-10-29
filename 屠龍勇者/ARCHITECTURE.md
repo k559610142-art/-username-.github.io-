@@ -9,6 +9,7 @@
 | `images/icons/items/talentJewel_*.png`、`tools/icon-src/items/talent-jewels-v1/`、`tools/prepare-talent-jewels.ps1`、`tools/talent-jewels-contact-v1.png` | 38款寶珠各自原創透明圖、原稿／提示詞清單與裁切／總覽（第235節） |
 | `images/ui/talent-atlas-unallocated-v1.png`、`tools/icon-src/talent-atlas-unallocated-v1.json`、`tools/test-talent-jewel-storage.js`、`tools/talent-jewel-storage-preview.html` | 星盤未配置底圖、三欄寶珠倉庫實際資料／圖片回歸與禁止連外的隔離預覽（第235節） |
 | `images/icons/items/talentStone.png`、`tools/icon-src/items/talent-stone-v1.png`／`.json`、`tools/prepare-talent-stone.ps1` | 天賦石原創透明圖、原稿／提示詞與既有裁切流程接入（第234節） |
+| `images/ui/talent-origin-v2.png`、`tools/prepare-talent-origin.ps1`、`tools/icon-src/talent-origin-v2.json`、`tools/talent-release-fix.sql`、`tools/TALENT-RELEASE-FIX.md` | 命運之核獨立圖、正式開放與配點排序拒存修復／使用者SQL步驟（第238節） |
 | `data/talent-layout.js`、`tools/test-talent-layout.js`、`images/ui/talent-atlas-clean-v1.png`、`tools/icon-src/talent-atlas-clean-v1.json` | 遊戲實際套用純背景、325點主盤、獨立顯示避碰及精確轉化標記，保留原圖（第237節） |
 | `data/talent-live.js`、`tools/test-talent-live.js`、`tools/test-talent-system-db.js` | 正式角色天賦／能力與UID移轉，真實遊戲／加密收據及隔離PostgreSQL回歸（第232節） |
 | `tools/talent-system.template.sql`、`tools/build-talent-sql.js`、`tools/talent-system.sql`、`tools/talent-system-catalog.json`、`tools/TALENT-INSTALL.md` | 新增獨立天賦SQL及JS同源規則匯出、使用者安裝步驟；不執行正式庫（第232節） |
@@ -255,7 +256,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261029q`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261030a`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -4119,3 +4120,13 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 配點頁同用顯示排版與純背景；零點沒有預先亮路線。轉化效果仍依原邏輯半徑160計算，畫面以受範圍涵蓋的基礎節點逐顆標記，避免移位後畫一個不精確的圓。主畫面／配點／詳情沒有舊圖引用。兩個隔離預覽同步script與版本。
 - test-talent-layout驗325點、6孔×3大小及373點同時展開全對間距／點擊區、不改原座標／mod／連線、轉化標記對應邏輯集合、主頁325標記與新圖、詳情數值、試配／退回；既有星盤／角色／釋出門閂／寶珠收納／547道具圖片回歸通過。58個script依實際順序記憶體合併混淆／語法通過，check.ps1 ALL CHECKS PASSED。
 - 本次維持TALENT_RELEASED=false，未處理已回報的正式配點存檔問題，未更動玩家既有配置；正式開放另待修復。瀏覽器嘗試localhost8790預覽導航逾時且回傳網路錯誤頁，未實機驗收。依AGENTS，待使用者本機Ctrl+F5確認版本q→技能→星盤→主頁／試玩皆為純背景且節點不重疊、點小點可看效果、F12無紅字，再commit；由使用者Push origin。q尚未提交／推送，不可說已上線。p已在前輪確認HEAD與origin/main同06b557c，先前『p未發布』說法已更正。
+
+
+## 238. 恢復命運之核與正式星盤開放（2026-10-30，版本 `20261030a`）
+
+- 使用者指出命運之核圖片遺失並要求開啟星盤，授權正式入口開放。本輪TALENT_RELEASED=true，技能入口／TABS／DRAWERS／主頁／配點按鈕統一依此旗標，不再外層未開放、內層已開放。後端尚未握手時顯示正式星盤，握手成功才顯示已開放；試玩獨立標示，不再誤寫正式未開放。選取節點後進正式頁保留原選點，不自動扣點。
+- 從原創talent-atlas-v1.png裁切命運之核本體（548,411,134,134），圓形透明256px輸出talent-origin-v2.png，主盤與配點圖的origin節點及兩種詳情使用獨立PNG，不把輪盤放回純背景。原畫保留；寬裁切初稿另存tools/icon-src/talent-origin-crop-v1.png，不供遊戲使用；裁切腳本拒絕覆寫。沒有新增全域資料或函式。
+- 已重現讀檔重排：raw.nodes=['arcane-gate','battle-gate']經舊talentNormalize變成相反順序，舊SQL guard把同一配點誤認成變動而拒絕存檔。客戶端現以wanted原順序輸出已驗證節點，重複讀檔保留順序；不改schema21／點數／能力，不回滾玩家。
+- 新獨立talent-release-fix.sql只修guard的節點清單比較：排序後完整陣列相等，仍保留重複元素，故多點／少點／重複點一樣拒絕；原寶珠實體／UID／試煉及vault序號保護不變。以原函式精確片段替換，版本不符整筆中止、重跑冪等。status新增saveOrder=1握手；修復後恢復authenticated對status／action權限（可解除先前emergency-lock），anon／PUBLIC不可使用。沒有寫入任何角色資料列，不改原SQL或cloud連線設定。
+- talentOpenCharacterPlanner先查狀態並驗saveOrder=1才同步存檔／進正式頁；舊後端回維護提示，不先送可能拒存的更新。換角色／帳號前後檢查保留。user必須在Supabase執行新SQL；AI未連正式庫、不能宣稱後端已開放。勿重新跑舊talent-system.sql覆蓋修復；新安裝亦須在原天賦安裝後跑此修復。完整指引tools/TALENT-RELEASE-FIX.md。
+- test-talent-system-db真實隔離PostgreSQL重現原拒收，修復後相同集合換序可存，增減／重複仍拒絕，100點經真實客戶端Normalize保序；角色背包與權威配置不變，重跑及緊急停用→恢復權限通過。test-talent-release驗啟用旗標、全入口一致、舊後端不存檔、新握手才開、保留選點及試玩隔離；test-talent-live含連續讀檔保序，layout驗圖片接線。既有58檔混淆及星盤／收納／掉寶／全道具圖回歸、check.ps1通過。尚待使用者執行SQL與本機驗收，未commit／推送本版。

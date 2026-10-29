@@ -31,7 +31,7 @@ function talentNormalize(p) {
     learn();
     for(const [id,it] of candidates){if(talentPlanInsert(state,id,ITEMS[it.id].talentJewel).ok)jewels[id]=it;else p.inv.push(bagPlaceNew(it));}
     learn();
-    p.talent={v:raw.v===TALENT_SYSTEM_VERSION?raw.v:null,nodes:[...state.allocated].filter(id=>id!=='origin'),jewels,trials};
+    p.talent={v:raw.v===TALENT_SYSTEM_VERSION?raw.v:null,nodes:[...wanted].filter(id=>id!=='origin'&&state.allocated.has(id)),jewels,trials};
     p.nextUid=Math.max(p.nextUid||1,...[...used].filter(Number.isSafeInteger).map(uid=>uid+1));
 }
 
@@ -98,14 +98,17 @@ async function talentOpenCharacterPlanner() {
     if(!talentIsReleased()){showToast('天賦星盤尚未開放，請使用配點試玩');return;}
     if(SIM_MODE||!player||!vaultOnline()){showToast('正式天賦需要登入並同步雲端存檔');return;}
     const who=player,slot=currentSlot,uid=cloudUser.id;
+    talentBackendReady=false;
     try {
-        saveGame();if(!await cloudSyncedSlot(slot))throw Error('請先完成雲端同步');
         const r=await marketRpc('talent_status',{p_slot:slot,p_char:lootChar()});
         if(player!==who||currentSlot!==slot||!cloudUser||cloudUser.id!==uid)return;
         if(r.version!==TALENT_SYSTEM_VERSION)throw Error('正式天賦尚未開放，等待資料庫更新');
+        if(r.saveOrder!==1)throw Error('星盤正在維護存檔功能，請稍後再試');
+        saveGame();if(!await cloudSyncedSlot(slot))throw Error('請先完成雲端同步');
+        if(player!==who||currentSlot!==slot||!cloudUser||cloudUser.id!==uid)return;
         talentBackendReady=true;player.talent={...(player.talent||talentEmpty()),trials:r.trials};saveGame();
         if(!talentLiveMode)talentTrialCache=talentPlanState;
-        talentLiveMode=true;talentPlanState=talentLivePlanState();talentPlanView={selected:'origin',jewelId:null,zoom:1,message:'正式角色配點：每格1點，退1點消耗1顆天賦石。'};
+        talentLiveMode=true;talentPlanState=talentLivePlanState();talentPlanView={selected:TALENT_PLAN_TREE.nodes.some(n=>n.id===talentView.selected)?talentView.selected:'origin',jewelId:null,zoom:1,message:'正式角色配點：每格1點，退1點消耗1顆天賦石。'};
         talentShowPlanner();
     }catch(e){showToast(/function|PGRST202|404/i.test(String(e.message||e))?'正式天賦尚未開放，等待資料庫更新':String(e.message||e));}
 }

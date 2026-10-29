@@ -17,8 +17,10 @@ const all=talentPlanCreate(100);for(const socket of sockets){all.allocated.add(s
 assert.equal(JSON.stringify(TALENT_PLAN_TREE),logicalBefore);
 for(const socket of TALENT_PLAN_TREE.nodes.filter(n=>n.socketType==='radius')){const expected=TALENT_PLAN_TREE.nodes.filter(n=>n.kind==='small'&&Math.hypot(n.x-socket.x,n.y-socket.y)<=160),html=talentLayoutRadiusHtml(base,socket.id);assert.equal((html.match(/class="talent-radius-preview"/g)||[]).length,expected.length);for(const n of expected){const shown=base.nodes.find(x=>x.id===n.id);assert(html.includes('cx="'+shown.x+'" cy="'+shown.y+'"'));}}
 const html=renderTalent();assert.equal((html.match(/data-node="/g)||[]).length,325);assert(html.includes('images/ui/talent-atlas-clean-v1.png'));assert(!html.includes('talent-atlas-unallocated'));assert(html.includes('class="talent-paths"'));
+assert(html.includes('href="images/ui/talent-origin-v2.png"'));talentSelect('origin');assert(talentDetailHtml().includes('src="images/ui/talent-origin-v2.png"'));
 talentSelect('battle-r0-0');assert(talentDetailHtml().includes(TALENT_PLAN_TREE.nodes.find(n=>n.id==='battle-r0-0').mods.map(talentModText).join('；')));assert(!talentDetailHtml().includes('<image'));
 talentPlanState=talentPlanCreate(100);assert(renderTalentPlanner().includes('images/ui/talent-atlas-clean-v1.png'));assert(!renderTalentPlanner().includes('talent-atlas-unallocated'));assert(!renderTalentPlanner().includes('<path class="on"'));
+assert(renderTalentPlanner().includes('href="images/ui/talent-origin-v2.png"'));
 talentPlanView.selected='battle-gate';talentPlanAction('allocate');assert.equal(talentPlanSpent(talentPlanState),1);talentPlanAction('refund');assert.equal(talentPlanSpent(talentPlanState),0);
 `,ctx);
 const image=fs.readFileSync(path.join(root,'images/ui/talent-atlas-clean-v1.png'));assert.equal(image.readUInt32BE(16),1254);assert.equal(image.readUInt32BE(20),1254);

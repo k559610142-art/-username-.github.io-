@@ -49,7 +49,7 @@ const index=fs.readFileSync(path.join(root,'index.html'),'utf8');
 assert.ok(index.indexOf('data/talent.js?')>index.indexOf('data/ui-panels.js?'));
 assert.ok(index.indexOf('data/talent-jewels.js?')<index.indexOf('data/talent.js?'));
 assert.match(fs.readFileSync(path.join(root,'data/ui-panels.js'),'utf8'),/onclick="switchTab\('talent'\)"/);
-assert.match(fs.readFileSync(path.join(root,'data/ui-frame.js'),'utf8'),/\['talent', '✧', '天賦星盤・未開放'\]/);
+assert.match(fs.readFileSync(path.join(root,'data/ui-frame.js'),'utf8'),/talentIsReleased\(\)/);
 const crypto=require('crypto');
 assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path.join(root,'images/ui/talent-atlas-v1.png'))).digest('hex'),'eece1bf4ec165c0daf15c8f1fca53d8b4074b8fd520c916a5031bc9c5395b2d6');
 console.log('PASS：原圖一致、7核心＋24插槽、38款寶珠跨區試看、分支效果完整、全部鎖定、縮放、載入／入口、無玩家／存檔副作用。');

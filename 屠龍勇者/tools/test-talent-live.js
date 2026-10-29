@@ -7,6 +7,7 @@ SIM_MODE=true;sfx=()=>{};refreshUI=()=>{};showToast=()=>{};
 createPlayer('天賦隔離測試','knight',CLASSES.knight.base);player.lv=99;player.baseHp=1000;player.baseMp=1000;
 assert.equal(SAVE_SCHEMA,21);assert.equal(Object.keys(ITEMS).filter(id=>ITEMS[id].talentJewel).length,38);
 assert.equal(isStackable(ITEMS.talentStone),true);assert.equal(isStackable(ITEMS[talentItemId(TALENT_JEWEL_CATALOG[0].id)]),false);
+player.talent={v:TALENT_SYSTEM_VERSION,nodes:['arcane-gate','battle-gate'],jewels:{},trials:[]};talentNormalize(player);assert.equal(JSON.stringify(player.talent.nodes),'["arcane-gate","battle-gate"]');talentNormalize(player);assert.equal(JSON.stringify(player.talent.nodes),'["arcane-gate","battle-gate"]');player.talent=talentEmpty();
 const cleanStats=calcStats();
 function learnPath(state,target){
  const scene=talentPlanScene(state),prev=new Map([['origin',null]]),q=['origin'],adj=new Map();scene.edges.forEach(([a,b])=>{if(!adj.has(a))adj.set(a,[]);if(!adj.has(b))adj.set(b,[]);adj.get(a).push(b);adj.get(b).push(a);});

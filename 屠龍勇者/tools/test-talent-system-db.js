@@ -82,5 +82,19 @@ const cfg=JSON.parse(fs.readFileSync(path.join(__dirname,'talent-system-catalog.
  const map=(await db.query('select public.loot_map($1,1) v',[catalog])).rows[0].v;assert.equal(map.unidentified,true);
  for(const tier of [3,4,5,7,9,11,13,15])await trial({...context,map:{t:tier}});
  assert.equal((await rpc('talent_status',[0,ch])).trials.length,10);await fillBudget(100);
- await db.close();console.log('PASS：真實SQL安裝／重跑、伺服器扣點退石、UID鑲嵌拆回、星團前置／退點拆珠、重送冪等、簽章／舊序號拒絕、試煉去重／權限，既有符石與未鑑定地圖保留。');
+ // 重現正式玩家症狀：同一批合法節點僅換順序，舊驗證會錯誤拒收。
+ const original=(await row()).data,authority=(await db.query('select data from public.dragon_talent_state where user_id=$1 and char_id=$2',[uid,ch])).rows[0].data;
+ const reordered=JSON.parse(JSON.stringify(original));reordered.player.talent.nodes.reverse();
+ const prefix=fs.readFileSync(path.join(__dirname,'test-mercenary.js'),'utf8').split('ctx.assert = assert;')[0],client=new Function('require','__dirname',prefix+'\nreturn ctx;')(require,__dirname);client.fixture=JSON.parse(JSON.stringify(reordered.player));
+ vm.runInContext('talentNormalize(fixture)',client);assert.deepEqual(JSON.parse(JSON.stringify(client.fixture.talent.nodes)),reordered.player.talent.nodes);
+ await assert.rejects(()=>db.query('update public.dragon_saves set data=$1 where user_id=$2 and slot=0',[reordered,uid]),/talent state conflict/);
+ await db.exec(fs.readFileSync(path.join(__dirname,'talent-emergency-lock.sql'),'utf8'));await assert.rejects(()=>rpc('talent_status',[0,ch]),/permission denied/);
+ await db.exec(fs.readFileSync(path.join(__dirname,'talent-release-fix.sql'),'utf8'));assert.equal((await rpc('talent_status',[0,ch])).saveOrder,1);
+ await db.query('update public.dragon_saves set data=$1 where user_id=$2 and slot=0',[reordered,uid]);assert.equal((await row()).sig_ok,true);
+ for(const nodes of [reordered.player.talent.nodes.slice(1),reordered.player.talent.nodes.concat('fake-node'),reordered.player.talent.nodes.concat(reordered.player.talent.nodes[0])]){
+  const bad=JSON.parse(JSON.stringify(reordered));bad.player.talent.nodes=nodes;await assert.rejects(()=>db.query('update public.dragon_saves set data=$1 where user_id=$2 and slot=0',[bad,uid]),/talent state conflict/);
+ }
+ assert.deepEqual((await db.query('select data from public.dragon_talent_state where user_id=$1 and char_id=$2',[uid,ch])).rows[0].data,authority);
+ assert.deepEqual((await row()).data.player.inv,original.player.inv);await db.exec(fs.readFileSync(path.join(__dirname,'talent-release-fix.sql'),'utf8'));
+ await db.close();console.log('PASS：真實SQL交易／UID／90與100點／試煉／舊序號；重現排序拒收並修復，同集合可存、增刪重複仍拒絕；緊急停用與正式重開、重跑及玩家資源保留。');
 })().catch(e=>{console.error(e.message,e.where||'',e.stack||'');process.exit(1);});
