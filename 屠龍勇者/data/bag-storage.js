@@ -51,7 +51,7 @@ function bagWithdraw(uid, n) {
     closeDialog();saveGame();refreshUI();
 }
 function bagSetTier(t) { if(!Number.isInteger(t)||t<0||t>MAP_TIERS)return;bagStashTier=t;renderPanel(); }
-function bagSetQuality(q) { if(!['all','normal','magic','rare','legend'].includes(q))return;bagStashQuality=q;renderPanel(); }
+function bagSetQuality(q) { if(!['all','unid','normal','magic','rare','legend'].includes(q))return;bagStashQuality=q;renderPanel(); }
 function bagOpenStored(id) {
     const list=player.inv.filter(x=>bagIsStored(x)&&x.id===id);
     if(list.length===1){openItemDialog(list[0].uid);return;}
@@ -68,10 +68,10 @@ function bagStorageHtml() {
     if(bagStashPage==='map') {
         h+='<div class="bag-tier-tabs"><button class="chip-btn '+(!bagStashTier?'active':'')+'" onclick="bagSetTier(0)">全部</button>';
         for(let t=1;t<=MAP_TIERS;t++){const n=list.filter(x=>ITEMS[x.id].tier===t).length;h+='<button class="chip-btn '+(bagStashTier===t?'active':'')+'" onclick="bagSetTier('+t+')">T'+t+' <small>'+n+'</small></button>';}
-        h+='</div><div class="chips">'+[['all','全部品質'],['normal','普通'],['magic','魔法'],['rare','稀有'],['legend','財寶圖']].map(([id,n])=>'<button class="chip-btn '+(bagStashQuality===id?'active':'')+'" onclick="bagSetQuality(\''+id+'\')">'+n+'</button>').join('')+'</div>';
+        h+='</div><div class="chips">'+[['all','全部品質'],['unid','未鑑定'],['normal','普通'],['magic','魔法'],['rare','稀有'],['legend','財寶圖']].map(([id,n])=>'<button class="chip-btn '+(bagStashQuality===id?'active':'')+'" onclick="bagSetQuality(\''+id+'\')">'+n+'</button>').join('')+'</div>';
         const rows=[],by={};
-        for(const x of list){if(bagStashTier&&ITEMS[x.id].tier!==bagStashTier||bagStashQuality!=='all'&&(x.q||'normal')!==bagStashQuality)continue;const k=mapKindKey(x)+'|'+!!x.sellLocked;if(by[k])by[k].n++;else{const r={x,n:1};by[k]=r;rows.push(r);}}
-        rows.sort((a,b)=>ITEMS[a.x.id].tier-ITEMS[b.x.id].tier||qualityRank(a.x)-qualityRank(b.x));
+        for(const x of list){if(bagStashTier&&ITEMS[x.id].tier!==bagStashTier||bagStashQuality!=='all'&&(x.unidentified===true?'unid':x.q||'normal')!==bagStashQuality)continue;const k=mapKindKey(x)+'|'+!!x.sellLocked;if(by[k])by[k].n++;else{const r={x,n:1};by[k]=r;rows.push(r);}}
+        rows.sort((a,b)=>ITEMS[a.x.id].tier-ITEMS[b.x.id].tier||(a.x.unidentified?-1:qualityRank(a.x))-(b.x.unidentified?-1:qualityRank(b.x)));
         h+='<div class="bag-stash-grid bag-map-grid">'+(rows.map(({x,n})=>'<button class="bag-stash-slot owned '+itemClass(x)+'" onclick="openItemDialog('+x.uid+')"><span class="bag-stash-art">'+itemIconHtml(x.id)+'</span><strong>×'+fmt(n)+'</strong><small>'+esc(itemName(x))+'</small><em>'+esc((x.mm||[]).filter(k=>MAP_MODS[k]).map(k=>MAP_MODS[k].name).join('、')||(x.unidentified?'尚未鑑定':'無詞綴'))+(x.sellLocked?' · 🔒':'')+'</em></button>').join('')||'<p class="muted">此分類尚無地圖</p>')+'</div>';
     } else {
         const ids=Object.keys(ITEMS).filter(id=>bagStorageKind(id)===bagStashPage);

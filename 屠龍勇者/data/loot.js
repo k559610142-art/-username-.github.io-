@@ -188,7 +188,7 @@ function lootApply(result) {
             }
             if (!bagCanReceive(it.id,it.n)) { messages.push([`⚠️ 負重已滿，${d.name}撿不起來`, 'warn']); continue; }
             marketGiveItem(it);
-            messages.push([`🎁 獲得 ${itemName(it)} ×${it.n}`, it.q === 'legend' ? 'boss' : it.q ? 'rare' : 'loot']);
+            messages.push([`🎁 獲得 ${itemName(it)} ×${it.n}`, it.unidentified ? 'loot' : it.q === 'legend' ? 'boss' : it.q ? 'rare' : 'loot']);
         }
         data.player = target; data.schema = SAVE_SCHEMA; data.t = Date.now(); data.lootProtocol = LOOT_PROTOCOL; data.lootCursor = result.cursor;
         if (live) vaultEnvelope(data);   // 目前的角色：倉庫序號用這個分頁自己的，不沿用 localStorage 那份（第 120 節）

@@ -219,7 +219,8 @@ function migrateSave(data) {
             const mods = [...new Set((it.mm || []).filter(k => MAP_MODS[k]))];
             if (it.unidentified === true || mods.length !== 6) { it.unidentified = true; delete it.mm; delete it.nm; }
             else { it.mm = mods; delete it.unidentified; }
-        } else delete it.unidentified;
+        } else if (it.unidentified === true && ITEMS[it.id] && ITEMS[it.id].cat === 'map') { delete it.q; delete it.mm; delete it.nm; }   // 第228節：未鑑定普通地圖不帶品級
+        else delete it.unidentified;
     }
     for (const r of [p.mapRun, p.mapPortal]) if (r) r.treasure = r.treasure === true && r.q === 'legend' && r.t >= 8;
     mapQueueNormalize(p);

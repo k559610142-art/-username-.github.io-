@@ -213,6 +213,7 @@
 
 | `tools/magic-crit-affixes.sql`、`tools/test-critical-stats.js`、`tools/test-critical-db.js` | 三項爆擊詞綴增量SQL與傷害／隔離資料庫測試（第182節） |
 
+| `tools/unidentified-maps.sql`、`tools/test-unidentified-maps.js` | 打怪取得地圖一律未鑑定：伺服器loot_map遷移與用戶端鑑定／隱藏品級隔離驗證（第228節） |
 | `tools/treasure-maps.sql`、`tools/test-treasure-maps.js`、`tools/test-treasure-maps-db.js` | 傳奇財寶圖後端更新、鑑定／通貨限制／掉落與隔離資料庫測試（第187節） |
 
 | `images/buildings/identify-station-v1.png`、`tools/scene-rework/identify-station-v1/` | 鑑定台原創建築圖片、生成原稿與提示詞（第188節） |
@@ -241,7 +242,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261029c`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261029g`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3974,3 +3975,12 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 管理頁傭兵名下方顯示「職業特色」，戰鬥規則摺疊說明列出六職業特色與「召喚物最多2隻（契靈師3隻）」。GAME_UPDATES新增c。
 - Lv49空手vs Lv47冰原狼參考：征戰者連環突擊84→約111、普攻暴擊32；秘法使雷電衝擊71→約99；祈願使急救之光63→79；契靈師靈狼每下25→31。
 - tools/test-mercenary-traits.js逐項驗證上述數值並對照未受影響職業；其餘傭兵測試全過。test-mercenary-quest.js在本次修改前就因斷言schema19（現為20）失敗，與本節無關，未修。
+
+## 228. 打怪取得的地圖一律未鑑定（2026-10-29，版本 `20261029g`）
+
+- 使用者要求「野外取得的地圖一律改為未鑑定，以後打怪打到的地圖不管品級一律為未鑑定」。範圍：一般掛機／異界怪物掉落（rollMapDrop）、異界通關獎勵（completeMap）、離線收益掉圖，以及伺服器掉寶loot_map（怪物與通關獎勵共用）。商店／GM／測試等明確指定品級的makeMapItem(t,q)不受影響；既有背包地圖不追溯。
+- 未鑑定地圖：unidentified:true，不帶q／mm／nm（財寶圖例外，掉落時仍1%決定q=legend，但鑑定前完全隱藏）。itemName一律「未鑑定異界地圖 Tn」，itemClass無品級色，instSellPrice照普通價，mapKindKey只依階級＋unidentified疊在一起，giveMap／伺服器拾取訊息不標品級，mapDescHtml只說明未鑑定。不能開啟、排程、使用通貨（currencyCan false／useCurrency回「未鑑定地圖要先到鑑定台鑑定」）。
+- maps.js：makeMapItem(t,q,unid)；q未指定或unid=true時標未鑑定（財寶判定在前）。新增isUnidentifiedMap／identifyMapInst／identifyAllMaps；identifyMap改處理所有未鑑定地圖。鑑定時才擲品級：普通50%／魔法35%（1～2詞綴）／稀有15%（3～4詞綴），與原掉落機率相同；財寶圖鑑定得6詞綴。鑑定台仍免費、只在村莊，清單依階級排序，超過1張顯示「全部鑑定（N）」。
+- offline.js離線掉圖改makeMapItem(r.map,null,true)（不額外擲財寶圖，維持舊規則）。save.js migrateSave：非財寶圖若unidentified:true則保留並清q／mm／nm，其他維持刪除旗標。bag-storage地圖收納新增「未鑑定」篩選（bagSetQuality白名單加unid），排序未鑑定排在最前；原「財寶圖」篩選只顯示已鑑定的財寶圖。SAVE_SCHEMA20不變。
+- **tools/unidentified-maps.sql**：重新定義loot_map，所有地圖去掉q／mm／nm並加unidentified，T8以上1%仍為q=legend未鑑定。可重跑；**由使用者自行貼Supabase執行**，未執行前線上（伺服器掉寶）打到的地圖仍是已鑑定（不會壞，只是規則未生效）。日後重跑server-loot／loot-rates／treasure-maps後須再跑本檔。舊版用戶端讀到伺服器的未鑑定普通圖會當成白圖，不會出錯。
+- 測試：新增tools/test-unidentified-maps.js（掉落／離線全未鑑定、隱藏財寶圖、禁止開啟／排程／通貨、村莊限定、全部鑑定4000張品級比例、指定品級不受影響、migrateSave）；test-treasure-maps-db.js追加SQL驗證（重跑、10000次全未鑑定、T8財寶約1%、T3無傳奇、通關獎勵也未鑑定）；test-treasure-maps／test-bag-storage依新規則更新斷言（未鑑定財寶圖不再顯示「只掉通貨」、改用未鑑定篩選）。test-loot-auto-sell與test-map-queue在本次修改前就失敗，未處理。

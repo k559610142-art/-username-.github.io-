@@ -62,7 +62,7 @@ function rerollAffixValues(x) {
 // 這顆通貨能不能用在這件道具上（裝備用 CURRENCY 的規則；異界地圖用 maps.js 的 MAP_CURRENCY）
 function currencyCan(cid, x) {
     const d = ITEMS[x.id];
-    if (d.cat === 'map' && x.q === 'legend') return false;
+    if (d.cat === 'map' && (x.q === 'legend' || x.unidentified === true)) return false;
     if (d.cat === 'map') return !!(MAP_CURRENCY[cid] && MAP_CURRENCY[cid].can(x));
     if (d.cat !== 'weapon' && d.cat !== 'armor') return false;
     if (d.cat === 'map' && x.q === 'legend') return '傳奇地圖不可使用通貨改造';
@@ -75,6 +75,7 @@ function useCurrency(cid, uid) {
     if (!c || !x) return '找不到道具';
     const d = ITEMS[x.id];
     if (d.cat !== 'weapon' && d.cat !== 'armor' && d.cat !== 'map') return '只能用在武器、防具、異界地圖上';
+    if (d.cat === 'map' && x.unidentified === true) return '未鑑定地圖要先到鑑定台鑑定';
     if (d.cat === 'map' && x.q === 'legend') return '傳奇地圖不可使用通貨改造';
     if (x.q === 'legend' && cid !== 'curTemper' && cid !== 'curAwaken') return '傳說裝備只能用淬鍊石、命運的覺醒石';
     if (!currencyCan(cid, x)) return `${c.name}不能用在這件道具上`;

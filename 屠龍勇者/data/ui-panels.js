@@ -433,6 +433,7 @@ function bagMatch(def) {
 function itemClass(inst) {
     const d = ITEMS[inst.id];
     if (d.cat === 'doll' && DOLLS[d.doll]) return 'doll-' + DOLLS[d.doll].quality;
+    if (inst.unidentified === true) return '';   // 未鑑定地圖不顯示品級顏色
     if (d.safe >= 0 && (inst.ench || 0) > d.safe) return 'ench-hi';
     if ((inst.ench || 0) < 0) return 'cursed';
     if (inst.q) return QUALITY[inst.q].cls;

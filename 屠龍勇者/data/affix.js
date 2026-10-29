@@ -137,7 +137,7 @@ function qualityName(inst, base) {
 // 單件售價（有品質的乘上倍率，詞綴越多越值錢）
 function instSellPrice(inst) {
     const base = sellPriceOf(inst.id);
-    if (!inst.q) return base;
+    if (!inst.q || inst.unidentified === true) return base;   // 未鑑定地圖照普通價
     return Math.max(base, 50) * QUALITY[inst.q].sell + (inst.af ? inst.af.length * (inst.il || 1) * 10 : 0);
 }
 

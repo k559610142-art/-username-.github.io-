@@ -165,7 +165,7 @@ function offlineGiveDrops(drops, k) {
             if (r.map) {
                 const id = 'map' + r.map;
                 if (!bagCanReceive(id,1,st.weightMax)) { skipped++; continue; }
-                player.inv.push(makeMapItem(r.map, null));
+                player.inv.push(makeMapItem(r.map, null, true));   // 離線打怪的地圖同樣未鑑定（第228節）
                 got[id] = (got[id] || 0) + 1; names[id] = ITEMS[id].name;
                 continue;
             }

@@ -54,5 +54,15 @@ const { PGlite } = require(process.env.LOOT_TEST_RUNTIME || path.join(require('o
  assert(bosses.every(xs=>xs.length===1&&[2,4,6].includes(xs[0].n)&&catalog.items[xs[0].id].cat==='currency'));
  for(const name of ['loot_spawn','loot_spawn_screen']){const defs=(await db.query("select pg_get_functiondef(oid) src from pg_proc where proname=$1",[name])).rows;assert(defs.some(x=>x.src.includes("'treasure'")));}
  console.log('PASS 財寶SQL：重跑、10000次掉圖約1%、T7不掉傳奇、通貨約9%／數量2、首領100%上限／2～6、只掉通貨、普通與全畫面憑證帶旗標');
+ // 第228節：打怪地圖一律未鑑定（可重跑）
+ for(let i=0;i<2;i++)await db.exec(fs.readFileSync(path.join(__dirname,'unidentified-maps.sql'),'utf8'));
+ const unid=(await db.query(`select public.loot_map($1::jsonb,8) v from generate_series(1,10000)`,[JSON.stringify(catalog)])).rows.map(x=>x.v);
+ assert(unid.every(x=>x.unidentified===true&&x.id==='map8'&&x.n===1&&!x.mm&&!x.nm&&(x.q===undefined||x.q==='legend')));
+ const unidLegend=unid.filter(x=>x.q==='legend').length;assert(unidLegend>50&&unidLegend<160);
+ const unidLow=(await db.query(`select public.loot_map($1::jsonb,3) v from generate_series(1,300)`,[JSON.stringify(catalog)])).rows.map(x=>x.v);
+ assert(unidLow.every(x=>x.unidentified===true&&x.q===undefined&&!x.mm));
+ const clearRewards=(await db.query(`select public.loot_roll($1::jsonb,$2::jsonb) v from generate_series(1,50)`,[JSON.stringify(catalog),JSON.stringify({...base,monster:{...base.monster,boss:true},map:{t:5,treasure:false,mods:[]}})])).rows.flatMap(x=>x.v).filter(x=>catalog.items[x.id]&&catalog.items[x.id].cat==='map');
+ assert(clearRewards.length>=50&&clearRewards.every(x=>x.unidentified===true));
+ console.log('PASS 未鑑定地圖SQL：重跑、全部未鑑定無詞綴、T8財寶約1%、T3不出傳奇、通關獎勵也未鑑定');
  await db.close();console.log('PASS screen SQL: repeat install / batch3 / stable replay after settle / cooldown / invalid IDs / size limit / receipt / RLS');
 })().catch(e=>{console.error(e);process.exit(1)});

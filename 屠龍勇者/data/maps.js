@@ -9,17 +9,32 @@ const MAP_TIERS = 15;
 const TREASURE_MAP_DROP_P = 0.01;
 function isTreasureMap(x) { return !!(x && ITEMS[x.id] && ITEMS[x.id].cat === 'map' && ITEMS[x.id].tier >= 8 && x.q === 'legend'); }
 function treasureMapActive() { return !!(inMapRun() && player.mapRun.treasure); }
+function isUnidentifiedMap(x) { return !!(x && ITEMS[x.id] && ITEMS[x.id].cat === 'map' && x.unidentified === true); }
+// 打怪取得的地圖一律未鑑定（第228節）：鑑定時才擲品級／詞綴；財寶圖掉落時已決定，鑑定前一樣隱藏。
+function identifyMapInst(x) {
+    if (isTreasureMap(x)) { x.mm = rollMapMods(6); delete x.nm; }
+    else { const r = Math.random(), q = r < 0.5 ? null : r < 0.85 ? 'magic' : 'rare'; setMapQuality(x, q, q ? rollMapMods(q === 'magic' ? rand(1, 2) : rand(3, 4)) : null); }
+    delete x.unidentified;
+    addLog(`🔍 鑑定完成：【${x.q ? QUALITY[x.q].name : '普通'}】${itemName(x)}${x.mm && x.mm.length ? `（${x.mm.length}條詞綴）` : ''}`, x.q === 'legend' ? 'boss' : x.q === 'rare' ? 'rare' : 'loot');
+}
 function identifyMap(uid) {
     if (!inTown()) { showToast('請回村莊使用鑑定台'); return; }
     const x = findInv(uid);
-    if (!isTreasureMap(x) || x.unidentified !== true) { showToast('這不是未鑑定財寶地圖'); return; }
-    x.mm = rollMapMods(6); delete x.unidentified; delete x.nm;
-    addLog(`🔍 鑑定完成：${itemName(x)}（6條詞綴）`, 'boss');
+    if (!isUnidentifiedMap(x)) { showToast('這不是未鑑定地圖'); return; }
+    identifyMapInst(x);
+    saveGame(); refreshUI();
+}
+function identifyAllMaps() {
+    if (!inTown()) { showToast('請回村莊使用鑑定台'); return; }
+    const list = player.inv.filter(isUnidentifiedMap);
+    if (!list.length) { showToast('沒有未鑑定的地圖'); return; }
+    for (const x of list) identifyMapInst(x);
+    showToast(`鑑定了 ${list.length} 張地圖`);
     saveGame(); refreshUI();
 }
 function renderIdentify() {
-    const list = player.inv.filter(x => isTreasureMap(x) && x.unidentified === true);
-    return '<div class="panel">🔍 鑑定台：免費鑑定傳奇財寶地圖，隨機取得6條不重複詞綴；鑑定後不能用通貨改造。</div><div class="list">' + (list.map(x => `<div class="list-row"><div class="item-info"><b class="q-legend">${esc(itemName(x))}</b></div><button class="mini" onclick="identifyMap(${x.uid})">鑑定</button></div>`).join('') || '<p class="muted">沒有未鑑定的財寶地圖</p>') + '</div>';
+    const list = player.inv.filter(isUnidentifiedMap).sort((a, b) => ITEMS[a.id].tier - ITEMS[b.id].tier);
+    return '<div class="panel">🔍 鑑定台：打怪取得的異界地圖一律未鑑定，在這裡免費鑑定後才知道品級（普通／魔法／稀有，T8以上偶爾是傳奇財寶圖）與詞綴。' + (list.length > 1 ? ` <button class="mini" onclick="identifyAllMaps()">全部鑑定（${list.length}）</button>` : '') + '</div><div class="list">' + (list.map(x => `<div class="list-row"><div class="item-info"><b>${esc(itemName(x))}</b></div><button class="mini" onclick="identifyMap(${x.uid})">鑑定</button></div>`).join('') || '<p class="muted">沒有未鑑定的地圖</p>') + '</div>';
 }
 const MAP_MODS = {
     tough:  { name: '強壯', icon: '💪', desc: '怪物 HP +40%', bonus: 0.15 },
@@ -60,11 +75,11 @@ function setMapQuality(x, q, mods) {
     x.nm = q === 'magic' ? MAP_MODS[mods[0]].name + '的' : RARE_NAMES[rand(0, RARE_NAMES.length - 1)];
     return x;
 }
-function makeMapItem(t, q) {
+function makeMapItem(t, q, unid = false) {
     const x = bagPlaceNew({ uid: player.nextUid++, id: 'map' + clamp(t, 1, MAP_TIERS), n: 1, ench: 0 });
     if (q === 'legend' && ITEMS[x.id].tier < 8) q = null;
     if (q === 'legend' || (q === undefined && ITEMS[x.id].tier >= 8 && chance(TREASURE_MAP_DROP_P))) { x.q = 'legend'; x.unidentified = true; return x; }
-    if (q === undefined) { const r = Math.random(); q = r < 0.5 ? null : r < 0.85 ? 'magic' : 'rare'; }
+    if (q === undefined || unid) { x.unidentified = true; return x; }   // 打怪取得：品級留到鑑定時決定（第228節）
     if (q) setMapQuality(x, q, rollMapMods(q === 'magic' ? rand(1, 2) : rand(3, 4)));
     return x;
 }
@@ -72,12 +87,12 @@ function giveMap(t, q, why) {
     const x = makeMapItem(t, q);
     player.inv.push(x);
     if (SIM_MODE && offlineDrops) offlineDrops.push({ map: clamp(t, 1, MAP_TIERS), q: x.q || null });   // 離線模擬：記下掉落（offline.js，第 108 節）
-    addLootLog(`🗺️ ${why || '獲得'} ${x.q ? `【${QUALITY[x.q].name}】` : ''}${itemName(x)} ×1`, x.q === 'rare' ? 'rare' : 'loot');
+    addLootLog(`🗺️ ${why || '獲得'} ${x.q && !x.unidentified ? `【${QUALITY[x.q].name}】` : ''}${itemName(x)} ×1`, x.q === 'rare' && !x.unidentified ? 'rare' : 'loot');
     return x;
 }
 // 相同的地圖（同階、同品質、同詞綴、同名稱）在清單裡疊成一列「×N」（2026-10-16 使用者要求）；
 // 存檔裡仍是一張一個實體，開啟／出售／改造／上架都只動其中一張，所以其他功能不用改
-function mapKindKey(x) { return [x.id, x.q || '', (x.mm || []).slice().sort().join(','), x.nm || ''].join('|') + (x.unidentified === true ? '|unidentified' : ''); }
+function mapKindKey(x) { if (x.unidentified === true) return x.id + '|unidentified'; return [x.id, x.q || '', (x.mm || []).slice().sort().join(','), x.nm || ''].join('|') + (x.unidentified === true ? '|unidentified' : ''); }
 function groupMaps(list) {
     const out = [], by = {};
     for (const x of list) { const k = mapKindKey(x); if (by[k]) by[k].count++; else { by[k] = { x, count: 1 }; out.push(by[k]); } }
@@ -106,11 +121,11 @@ function mapDescHtml(x) {
     const same = findInv(x.uid) ? mapCountSame(x) : 1;
     const L = [`<small class="muted">異界地圖・T${t}${same > 1 ? `　背包裡同樣的共 ${same} 張` : ''}</small>`, `地區：${z.icon} ${z.name}（建議 Lv.${z.lv[0]}～${z.lv[1]}）${t > mapZones().length ? '<span class="warn">　怪物強化 ×1.4</span>' : ''}`,
         `怪物數量：200～300 隻${mapQtyOf(mods) > 1 ? ` <b class="warn">×${mapQtyOf(mods)}</b>` : ''}，殺光後出現異界首領`];
-    if (isTreasureMap(x)) {
-        L.push('<b class="q-legend">傳奇財寶地圖</b>', x.unidentified ? '未鑑定：請到村莊鑑定台，鑑定前不能開啟或排程。' : '已鑑定：6條固定詞綴。');
-        L.push('只掉通貨：掉落機率為正常3倍（最高100%），數量2倍；不可使用任何通貨改造。');
-        if (x.unidentified) return L.join('<br>');
+    if (x.unidentified === true) {
+        L.push('<b>未鑑定</b>：請到村莊鑑定台免費鑑定，鑑定後才知道品級與詞綴；鑑定前不能開啟、排程或用通貨改造。');
+        return L.join('<br>');
     }
+    if (isTreasureMap(x)) L.push('<b class="q-legend">傳奇財寶地圖</b>', '已鑑定：6條固定詞綴。', '只掉通貨：掉落機率為正常3倍（最高100%），數量2倍；不可使用任何通貨改造。');
     if (x.q && !isTreasureMap(x)) L.push(`<b class="${QUALITY[x.q].cls}">${QUALITY[x.q].name}地圖</b>　<span class="good">獎勵 +${Math.round(mapBonusOf(mods) * 100)}%</span>`);
     for (const k of mods) L.push(`<span class="q-magic">◆ ${MAP_MODS[k].icon} ${MAP_MODS[k].name}：${MAP_MODS[k].desc}</span>`);
     L.push('<small class="muted">獎勵加成作用在經驗、金幣與所有掉落機率。' + (isTreasureMap(x) ? '傳奇地圖不可用通貨改造。' : '可用通貨改造（🔮）。') + '</small>');

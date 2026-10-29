@@ -17,7 +17,7 @@ assert(SAVE_SCHEMA>=15);player.inv=[];
 const normal=makeMapItem(8,'rare');assert.equal(normal.mm.length>=3,true);const normalKey=mapKindKey(normal);assert.equal(normalKey,[normal.id,normal.q,normal.mm.slice().sort().join(','),normal.nm].join('|'));
 for(let t=8;t<=15;t++){
  const x=makeMapItem(t,'legend');player.inv.push(x);assert(x.unidentified);assert(!x.mm);assert(itemName(x).includes('未鑑定'));
- let dialogButtons;openDialog=(title,html,buttons)=>{dialogButtons=buttons;};openItemDialog(x.uid);assert(!dialogButtons.some(b=>b.text==='🌀 開啟'));assert(mapDescHtml(x).includes('只掉通貨'));
+ let dialogButtons;openDialog=(title,html,buttons)=>{dialogButtons=buttons;};openItemDialog(x.uid);assert(!dialogButtons.some(b=>b.text==='🌀 開啟'));assert(!mapDescHtml(x).includes('只掉通貨')&&mapDescHtml(x).includes('未鑑定')&&!itemName(x).includes('傳奇'));
  const n=player.inv.length;openMap(x.uid);assert.equal(player.inv.length,n);assert(!player.mapRun);assert(!mapQueueChoices(0).some(g=>g.x.uid===x.uid));
  for(const c of CURRENCY_IDS){assert.equal(currencyCan(c,x),false);assert(useCurrency(c,x.uid));}
  identifyMap(x.uid);assert(!x.unidentified);assert.equal(x.mm.length,6);assert.equal(new Set(x.mm).size,6);assert(mapQueueChoices(0).some(g=>g.x.uid===x.uid));

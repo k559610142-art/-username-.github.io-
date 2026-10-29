@@ -25,7 +25,7 @@ bagWithdraw(scrollUid);const second=addItem('weaponScroll',7);second.sellLocked=
 bagStoreAll();assert(player.inv.filter(x=>bagStorageKind(x.id)).every(bagIsStored));assert.equal(countItem('weaponScroll'),17);
 // 分頁只有收納物，固定空格可見；地圖按詞綴與鎖定分組，未鑑定資料不變。
 bagSetPage('currency');let html=renderBag();assert(html.includes('bag-stash-slot'));assert(html.includes('點化石'));assert(html.includes('混沌石'));
-bagSetPage('map');bagSetTier(8);bagSetQuality('legend');html=renderBag();assert(html.includes('尚未鑑定'));assert(html.includes('T15'));assert(map.unidentified);
+bagSetPage('map');bagSetTier(8);bagSetQuality('unid');html=renderBag();assert(html.includes('尚未鑑定'));assert(html.includes('T15'));assert(map.unidentified);
 const mod=Object.keys(MAP_MODS)[0],a=makeMapItem(3,'magic');a.mm=[mod];a.nm='甲';const b={...a,uid:player.nextUid++,mm:[mod],sellLocked:true};player.inv.push(a,b);
 bagSetTier(3);bagSetQuality('all');html=renderBag();assert(html.includes('openItemDialog('+a.uid+')'));assert(html.includes('openItemDialog('+b.uid+')'));
 // 舊存檔不憑空搬移／增加物品；加密往返保留位置、UID、詞綴和鑑定。
