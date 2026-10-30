@@ -46,15 +46,27 @@ function getBountyIcon(entry) {
     return (BOUNTY_ICONS[entry.faction] || BOUNTY_ICONS["邪"])[npc ? npc.gender : "male"];
 }
 
-// ---- 榜單刷新（每 BOUNTY_REFRESH_HOURS 小時；陣營改變時立即換成對應陣營的榜單）----
+// ---- 榜單刷新（每 BOUNTY_REFRESH_HOURS 小時；陣營改變或切換同道榜時換成對應陣營的榜單）----
 function refreshBountyIfDue(force) {
-    let foe = getOpposingFaction(getPlayerFaction());
+    let foe = getBountyBoardFaction();   // 預設敵對陣營，同道榜＝自己陣營（merit.js）
     let now = Date.now();
     player.bountyRefreshAt = clampRefreshAt(player.bountyRefreshAt, BOUNTY_REFRESH_HOURS);   // 時間軸保護（ui.js）
     let factionChanged = player.bountyFaction && player.bountyFaction !== foe;
-    if (!force && !factionChanged && player.bountyRefreshAt && now < player.bountyRefreshAt
+    let periodOk = player.bountyRefreshAt && now < player.bountyRefreshAt;
+    if (!force && !factionChanged && periodOk
         && Array.isArray(player.bountyBoard) && player.bountyBoard.length > 0) {
         return false;
+    }
+    // 同一期內換邊：目前榜單收進 bountyAltBoard，另一邊這期抽過就換回來（來回切換不會變成免費刷新、刷新時間不變）
+    if (!force && factionChanged && periodOk) {
+        let alt = player.bountyAltBoard;
+        let stash = { faction: player.bountyFaction, refreshAt: player.bountyRefreshAt, board: player.bountyBoard || [] };
+        player.bountyBoard = alt && alt.faction === foe && alt.refreshAt === player.bountyRefreshAt && Array.isArray(alt.board) && alt.board.length
+            ? alt.board : rollBountyBoard(foe);
+        player.bountyAltBoard = stash;
+        player.bountyFaction = foe;
+        addLog(`📜 懸賞榜改列 ${getFactionLabel(foe)} 人物！`, "system");
+        return true;
     }
     player.bountyBoard = rollBountyBoard(foe);
     player.bountyFaction = foe;
@@ -386,13 +398,15 @@ function endBountyDuel(result) {
         if (opp.attrs && opp.attrs.race) addRaceKill(opp.attrs.race, 1);   // 斬妖錄（race.js）
         if (entry) entry.status = "done";
         player.activeBountyIds = getTrackedBountyIds().filter(x => x !== opp.entryId);
+        let sameSide = opp.faction === getPlayerFaction();   // 同道榜：斬殺同陣營人物，功德減半（config-merit.js）
         let merit = Math.floor((BOUNTY_MERIT_MIN + Math.floor(Math.random() * (BOUNTY_MERIT_MAX - BOUNTY_MERIT_MIN + 1)))
-                               * (1 + gearFx("積德")));   // 積德（裝備特效，gear.js）
+                               * (1 + gearFx("積德")) * (sameSide ? BOUNTY_SAME_FACTION_MERIT_MULT : 1));   // 積德（裝備特效，gear.js）
         player.merit = (player.merit || 0) + merit;
         player.bountyKills = (player.bountyKills || 0) + 1;
         player.evilKills = (player.evilKills || 0) + 1;
         addKarma(opp.faction === "邪" ? rank.karma : -rank.karma);
-        let how = getPlayerFaction() === "邪" ? `吸取其一身功德 ${merit.toWan()} 點` : `積累功德 ${merit.toWan()} 點`;
+        let how = sameSide ? `殘殺同道，僅得功德 ${merit.toWan()} 點`
+                : getPlayerFaction() === "邪" ? `吸取其一身功德 ${merit.toWan()} 點` : `積累功德 ${merit.toWan()} 點`;
         let bountyCoins = grantBountyCoins(opp.rank);   // 懸賞賞金（economy.js：H 的 30／15／5 分鐘）
         addLog(`🏆 【懸賞伏誅】${rank.name}「${opp.title}」${opp.name}授首！${how}${bountyCoins ? `，領得賞金 ${bountyCoins.toWan()} 靈石` : ''}！（功德 ${player.merit.toWan()}）`, "level-up");
         settleMeritStones();

@@ -15,19 +15,37 @@ function isMeritSystemOpen() {
     return !!act && act.implemented;
 }
 
-// ---- 陣營：依已拜入的宗門（config-sects.js 的 faction）與學會的仙法（config-spells.js 的 faction）判定 ----
-// 回傳 "正" 或 "邪"；同分（含散修、什麼都沒學）算正派
+// ---- 陣營：依已拜入的宗門（config-sects.js 的 faction）判定；宗門同分（含散修）才看學會的仙法（config-spells.js 的 faction）----
+// 回傳 "正" 或 "邪"；仍同分算正派。仙法輪迴不遺忘，所以不能壓過宗門（2026-10-30，第 27 節）
 function getPlayerFaction() {
     let score = { "正": 0, "邪": 0 };
     [1, 2, 3].forEach(tier => {
         let sect = player.sectSkills && player.sectSkills[tier] ? findSectByName(player.sectSkills[tier]) : null;
         if (sect) score[sect.faction === "邪" ? "邪" : "正"] += FACTION_SECT_WEIGHT;
     });
-    (player.spells || []).forEach(id => {
-        let sp = getSpell(id);
-        if (sp) score[sp.faction === "邪" ? "邪" : "正"] += 1;
-    });
+    if (score["邪"] === score["正"]) {
+        (player.spells || []).forEach(id => {
+            let sp = getSpell(id);
+            if (sp) score[sp.faction === "邪" ? "邪" : "正"] += 1;
+        });
+    }
     return score["邪"] > score["正"] ? "邪" : "正";
+}
+
+// 懸賞榜目前列哪個陣營：預設敵對陣營，切到「同道榜」就列自己陣營（bounty.js）
+function getBountyBoardFaction() {
+    let mine = getPlayerFaction();
+    return player.bountyTarget === "same" ? mine : getOpposingFaction(mine);
+}
+
+// 切換懸賞榜（敵對／同道）；同一期切回來會換回原本那份榜單，不會變成免費刷新
+function setBountyTarget(target) {
+    if (inBountyDuel) { gameAlert("對決進行中，無法切換懸賞榜！"); return; }
+    target = target === "same" ? "same" : "foe";
+    if (player.bountyTarget === target) return;
+    player.bountyTarget = target;
+    refreshBountyIfDue();
+    renderEvilHunt();
 }
 
 function getOpposingFaction(faction) {
@@ -109,9 +127,15 @@ function renderEvilHunt() {
     if (!container) return;
     let faction = getPlayerFaction();
     let foe = getOpposingFaction(faction);
+    let boardFaction = getBountyBoardFaction();
     let karma = getKarmaState();
     let title = document.getElementById('evil-hunt-title');
-    if (title) title.innerText = faction === "邪" ? "🗡️ 截殺正道・懸賞榜" : "🗡️ 獵殺邪修・懸賞榜";
+    if (title) title.innerText = boardFaction === "正" ? "🗡️ 截殺正道・懸賞榜" : "🗡️ 獵殺邪修・懸賞榜";
+    // 榜單切換：敵對陣營（預設）／同道榜（殺同陣營，善惡往另一邊走、功德減半）
+    let tabBtn = (t, label) => {
+        let on = (player.bountyTarget === "same" ? "same" : "foe") === t;
+        return `<button class="sys-btn" style="width:auto;margin:0;padding:4px 12px;${on ? 'border-color:#facc15;color:#facc15;' : 'opacity:0.7;'}" onclick="setBountyTarget('${t}')">${label}</button>`;
+    };
 
     let ambushText = karma.key === "good" ? `<b style="color:#f87171;">你已是「善」：邪派人士會潛入野外暗殺你！</b>`
                    : karma.key === "evil" ? `<b style="color:#f87171;">你已是「惡」：正派人士會進入野外獵殺你！</b>`
@@ -128,13 +152,18 @@ function renderEvilHunt() {
         </div>
         <details class="evil-hunt-rules">
             <summary>📜 規則說明</summary>
-            <p>・陣營依所屬宗門與學會的仙法判定（${sectData.flatMap(c => c.items).filter(s => s.faction === "邪").map(s => s.name).join('、')}與邪道魔功偏邪派），你是<b>${getFactionLabel(faction)}</b>，懸賞榜列出的是 <b>${getFactionLabel(foe)}</b> 人物。</p>
+            <p>・陣營依所屬宗門判定（${sectData.flatMap(c => c.items).filter(s => s.faction === "邪").map(s => s.name).join('、')}為邪派）；宗門正邪同分（含散修）時才看學會的仙法。你是<b>${getFactionLabel(faction)}</b>，懸賞榜預設列出 <b>${getFactionLabel(foe)}</b> 人物。</p>
+            <p>・可切換到「同道榜」改殺${getFactionLabel(faction)}人物：善惡會往${faction === "邪" ? "「善」" : "「惡」"}走，但功德只有 ${Math.round(BOUNTY_SAME_FACTION_MERIT_MULT * 100)}%。同一期來回切換榜單不會重抽。</p>
+            <p>・轉世輪迴時善惡只保留 ${Math.round(REINCARNATE_KARMA_KEEP * 100)}%，下一世可重新選擇善惡。</p>
             <p>・懸賞榜每 ${BOUNTY_REFRESH_HOURS} 小時刷新 6 名（天榜 1、地榜 2、人榜 3），境界在你目前境界的 ${BOUNTY_REALM_OFFSET_MIN}～+${BOUNTY_REALM_OFFSET_MAX} 境之間隨機（0.1 境 = 1 階）。<b>點擊「接取」後</b>，在野外歷練時才有機會遇上對方並展開一對一對決；斬殺可${meritWord} ${BOUNTY_MERIT_MIN}～${BOUNTY_MERIT_MAX.toWan()}（不論強弱）。落敗視同戰死，懸賞保留可再挑戰。</p>
             <p>・天榜比心魔更強，擅長吸血、退魔（吸走靈力）與各種削弱武學；地榜約天榜 8 成、人榜約 6 成實力。</p>
             <p>・野外偶爾會遇到正道或魔道修士（不是每波都有）：斬殺敵對陣營可得 ${FIELD_MERIT_MIN}～${FIELD_MERIT_MAX} 功德，同陣營不給功德。</p>
             <p>・善惡：殺邪派人士偏「善」、殺正派人士偏「惡」。${ambushText}</p>
             <p>・身上功德每滿 ${MERIT_PER_BUTIAN_STONE.toWan()} 自動凝結 1 顆七彩補天石，可到千寶閣購買破障丹（渡劫勝算 +10%）。</p>
         </details>
+        <div style="display: flex; justify-content: center; gap: 8px; margin: 8px 0;">
+            ${tabBtn("foe", `⚔️ ${faction === "邪" ? "截殺正道" : "獵殺邪修"}`)}${tabBtn("same", `🩸 同道榜（${getFactionLabel(faction)}）`)}
+        </div>
         ${renderBountyBoard()}
         <p style="color: #9ca3af; font-size: 0.8em; margin-top: 10px;">累計斬殺修士 ${(player.evilKills || 0).toWan()} 名｜懸賞伏誅 ${(player.bountyKills || 0).toWan()} 名</p>`;
 }

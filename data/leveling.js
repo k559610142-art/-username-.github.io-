@@ -176,6 +176,7 @@ async function triggerReincarnate() {
         `・遺忘：境界、人物等級、宗門（須重新拜入）與宗門技能、藏書閣古籍與屬性秘典\n` +
         `・身上的裝備全部卸下，放回背包（人物等級回到 Lv.1，要重新達到裝備等級才能再穿）\n` +
         `・壽元回到凡人的 ${lifespanByRealm[0].gain} 年\n` +
+        `・善惡因果只留 ${Math.round(REINCARNATE_KARMA_KEEP * 100)}%，前世善名／惡名大多隨輪迴洗去\n` +
         (typeof hasYuanshen === 'function' && hasYuanshen() ? `・元神消散，需重新凝聚（資質解鎖；化神訣殘本保留）\n` : '') +
         `此操作無法復原，是否確定輪迴？`)) {
         // 先記下此世的數值，再依比例保留（上一世留下的部分已包含在內，會自然累積）
@@ -205,6 +206,8 @@ async function triggerReincarnate() {
         player.reincarnateBonus = { hp: keptHp, mp: keptMp, nv2Hp: keptNv2Hp };
         player.sect = null;
         player.sectSkills = { 1: null, 2: null, 3: null };
+        let oldKarmaState = getKarmaState();
+        player.karma = Math.trunc((player.karma || 0) * REINCARNATE_KARMA_KEEP);   // 善惡只留 10%，下一世可重新選擇善惡（第 27 節）
         player.activeQuest = null;
         player.questTimer = 0;
         player.studyCounts = { str: 0, con: 0, int: 0, spr: 0 };
@@ -225,6 +228,7 @@ async function triggerReincarnate() {
             ? `🌀 成功轉世輪迴！第 ${player.reincarnations} 次輪迴，前世修為化為底蘊（氣血上限 +${fmtCombat(keptNv2Hp)}），其餘盡數遺忘。`
             : `🌀 成功轉世輪迴！第 ${player.reincarnations} 次輪迴，前世修為化為 ${pct}% 的底蘊（氣血上限 +${keptHp.toWan()}、靈力上限 +${keptMp.toWan()}），其餘盡數遺忘。`, "reincarnate");
         if (takenOff) addLog(`🛡️ 輪迴之際，身上 ${takenOff} 件裝備盡數卸下，已放回背包。`, "equip");
+        if (oldKarmaState.key !== getKarmaState().key) addLog(`⚪ 前世的${oldKarmaState.label}名隨輪迴洗去，此世善惡重新開始。`, "system");
         updateUI();
         updateSectFacilitiesUI();
     }

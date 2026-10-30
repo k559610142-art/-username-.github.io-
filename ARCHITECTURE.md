@@ -228,7 +228,7 @@ data/                 所有遊戲邏輯與資料，依「設定資料 / 執行�
 | 15t | `config-zhenmo.js` | 鎮魔塔（第 51 節）：`ZHENMO_TOTAL_FLOORS`(100)/`ZHENMO_QUIZ_COUNT`(10)/`ZHENMO_QUIZ_SECONDS`(30)/`ZHENMO_REVEAL_ANSWER`(false)/`ZHENMO_RECENT_AVOID`(100)/`ZHENMO_QUIZ_REWARD_MULT`(答對數→BOSS 獎勵倍率)/`ZHENMO_SOURCES`、BOSS 戰 `ZHENMO_HERO_IMG`/`ZHENMO_PLAYER_SKILL_MULT`/`ZHENMO_MAX_ROUNDS`/`ZHENMO_ROUND_MS`/`ZHENMO_BOSSES`(第 1 層棄天神) | 無 | `zhenmo.js` |
 | 15v | `config-numeric.js` | 數值重做（第 52 節）：開關 `NUMERIC_V2`（讀 localStorage `xiuxian_numeric_v2`，預設關閉）、參數 `NV2`（成長、屬性、丹藥／藏書閣上限、增益上限、敏捷、氣血靈力、戰力）、`NV2_STAT_KEYS`/`NV2_STAT_LABELS`、`NV2_TEMPLATE_OVERRIDE`（靈動→敏捷範本） | 無 | `numeric.js`、`stats.js`、`elements.js`、`combat.js`、`ui.js`、`home-ui.js`、`alchemy.js` |
 | 15u | `config-zhenmo-questions.js` | `zhenmoQuestions`：300 題 `[出處, 題目, 選項(4 個／是非題 null), 答案 'A'～'D'／'O'／'X', 解析?]`（玩家提供；凡人 110／吞噬 100／斗羅 90；選擇 170／是非 130） | 無 | `zhenmo.js` |
-| 16 | `state.js` | `player`（含裝備系統 `starIron`/`ironShards`/`gearStash`/`ironShop`/`ironUsed`/`maxEnhance`/`gearCodex`/`titles`/`activeTitle`/`profession`/`profSwitched`/`proficiency`（第 37 節）、`lingbaoSold`、仙法 `spells`/`spellSlots`、渡劫失敗虛弱 `weakened`、頭像 `avatarId`/`unlockedAvatars`、頭像光環 `avatarFrameId`/`unlockedFrames`、礦石 `ore`、符寶 `talismans`、異火 `fireShards`/`strangeFires`/`fireCollection`（第 38 節）、天星賭坊 `casino`（第 40 節）、夥伴 `partners`/`partnerTeam`/`partnerBond`/`fieldKills`（第 39 節）、藏書閣屬性秘典次數 `elementStudy`、轉世保留的上限 `reincarnateBonus`、年齡 `age`、功德系統 `merit`/`butianStones`/`breakPills`/`evilKills`、善惡 `karma`、懸賞榜 `bountyBoard`/`bountyRefreshAt`/`bountyFaction`/`activeBountyIds`(可多名，第 36 節)/`bountyKills`、付費刷新次數 `paidRefresh`、線上實戰證明 `idleProvenMap`（第 33 節））、`DEFAULT_PLAYER_JSON`（全新角色預設值快照，讀檔/匯入的合併基底）、`enemies`（每隻帶 `attrs`/`status`；野外修士另帶 `cultivator`("正"/"邪")/`ambush`）、`respawnTimer`、`safeZoneTimer`；不存檔的執行期狀態：`inTribulation`/`heartDemon`/`tribulationFatedWin`/懸賞對決 `inBountyDuel`/`duelOpponent`/`duelWeakenTimer`/`duelWeakenMult`/`duelSilenceTimer`/`duelArmorTimer`/丹藥冷卻/`gameOver`/背景補發 `lastTickAt`/`missedTickMs`/線上實戰秒數 `fieldOnlineTicks`/日誌彙總 `waveSummary`/`meditateSummary`/`playerStatus`(玩家身上的凍結/燒傷/中毒)/靈寵輔助計時(`petBuff*`/`petShield*`/`petRegen*`) | **`maps`**（必須排在 config-maps.js 之後） | 幾乎所有檔案都會讀寫 `player` |
+| 16 | `state.js` | `player`（含裝備系統 `starIron`/`ironShards`/`gearStash`/`ironShop`/`ironUsed`/`maxEnhance`/`gearCodex`/`titles`/`activeTitle`/`profession`/`profSwitched`/`proficiency`（第 37 節）、`lingbaoSold`、仙法 `spells`/`spellSlots`、渡劫失敗虛弱 `weakened`、頭像 `avatarId`/`unlockedAvatars`、頭像光環 `avatarFrameId`/`unlockedFrames`、礦石 `ore`、符寶 `talismans`、異火 `fireShards`/`strangeFires`/`fireCollection`（第 38 節）、天星賭坊 `casino`（第 40 節）、夥伴 `partners`/`partnerTeam`/`partnerBond`/`fieldKills`（第 39 節）、藏書閣屬性秘典次數 `elementStudy`、轉世保留的上限 `reincarnateBonus`、年齡 `age`、功德系統 `merit`/`butianStones`/`breakPills`/`evilKills`、善惡 `karma`、懸賞榜 `bountyBoard`/`bountyRefreshAt`/`bountyFaction`/`bountyTarget`/`bountyAltBoard`/`activeBountyIds`(可多名，第 36 節)/`bountyKills`、付費刷新次數 `paidRefresh`、線上實戰證明 `idleProvenMap`（第 33 節））、`DEFAULT_PLAYER_JSON`（全新角色預設值快照，讀檔/匯入的合併基底）、`enemies`（每隻帶 `attrs`/`status`；野外修士另帶 `cultivator`("正"/"邪")/`ambush`）、`respawnTimer`、`safeZoneTimer`；不存檔的執行期狀態：`inTribulation`/`heartDemon`/`tribulationFatedWin`/懸賞對決 `inBountyDuel`/`duelOpponent`/`duelWeakenTimer`/`duelWeakenMult`/`duelSilenceTimer`/`duelArmorTimer`/丹藥冷卻/`gameOver`/背景補發 `lastTickAt`/`missedTickMs`/線上實戰秒數 `fieldOnlineTicks`/日誌彙總 `waveSummary`/`meditateSummary`/`playerStatus`(玩家身上的凍結/燒傷/中毒)/靈寵輔助計時(`petBuff*`/`petShield*`/`petRegen*`) | **`maps`**（必須排在 config-maps.js 之後） | 幾乎所有檔案都會讀寫 `player` |
 | 16b | `numeric.js` | 新制公式（只在 `NUMERIC_V2` 時被呼叫）：`nv2Level`/`nv2Growth`、屬性 `nv2BaseStat`/`nv2PillStat`/`nv2StudyStat`/`nv2GearStats`/`nv2Stat`、武器 `nv2QualityMult`/`nv2WeaponAtkOf`/`nv2WeaponAtk`、增益 `nv2BuffPct`、`nv2Attack`/`nv2PhysAttack`/`nv2MagAttack`/`nv2MaxHp`/`nv2MaxMp`、敏捷 `nv2Crit`/`nv2Combo`/`nv2Hit`/`nv2AgiEva`、`nv2CombatPower` | `config-numeric.js`、`player`、gear.js(getGearDef／getBonusTotals／getGearPctBonus)、spells.js(getSpellAuraBonus)、stats.js(getRootBonus／hasLiveBeast／getWeaknessMult)、bounty.js(getDuelWeakenMult)、profession.js(getProfWeaponMult) | `stats.js`、`elements.js`、`combat.js`、`ui.js`、`home-ui.js`、`alchemy.js` |
 | 17 | `stats.js` | `EQUIP_STAT_KEYS`/`BASE_STAT_KEYS`、`getEquipBonus`(四維＋減傷/閃避/屬性傷害；四維 × 強化倍率與主修武器加成，再加 gear.js `getBonusTotals` 的詞條／套裝／稱號／職業)/`getElementCounts`/`getSpiritRoots`(靈根判定)/`getRootBonus`(靈根加成總和)/`getPlayerElement`(本命五行，五行相剋用)/`getRealmStageExp`(依 realmPacing 換算每階經驗基數，有快取)/`getNextExp`/`getLevelExpNeeded`/`hasLiveBeast`(出戰中才算，呼叫 beast-combat.js 的 isBeastActive)/`getBasePower`/`getPhysAttack`/`getMagAttack`(兩者皆乘上懸賞對決的化功 `getDuelWeakenMult()` 與 `getGearPctBonus`)/`getMaxHp`(乘 `getGearPctBonus('hp')`)/`getMaxMp`(兩者皆加上轉世保留值)/`getReincarnateBonus`/`getSectTier`/`getAllSkills` | `player`、`realms`、`sectData`、`LEVEL_*`、`equipTypes`/`WUXING_COUNTERS`、靈寵輔助計時、`bounty.js`(getDuelWeakenMult) | `ui.js`、`combat.js`、`leveling.js`、`tribulation.js`、`beast-combat.js` 等幾乎全部功能檔 |
 | 18 | `elements.js` | `newStatus`/`getPlayerCombatAttrs`(含 `element`；懸賞對決被破甲時減傷／閃避 × `getDuelArmorMult()`；裝備特效的護體／先手盾／定神／破甲／洞察／剋敵／寒徹／焚燼／蝕骨欄位與套裝提高的上限)/`getWuxingCounterMult`/`withSkillEffect`/`getMapCategoryIndex`/`rollMonsterAttrs`/`resolveHit`/`addDotStack`/`tickStatus`/`formatStatus`/`summarizeTags`/`formatEquipStats` | `config-elements.js`、`stats.js`(getEquipBonus/getPlayerElement)、`library.js`(getElementBookBonus)、`wuxingElements`、`maps`、`playerStatus` | `combat.js`、`tribulation.js`、`ui.js`、`bag.js`/`equipment.js`/`auction.js`/`lingbao-shop.js`(裝備屬性文字) |
@@ -1478,7 +1478,7 @@ combatTick() 每秒執行 [combat.js]
 | 保留 5% | 四維與魅力：新值 = `10 + floor(前世 player.stats × 5%)`（只看基礎屬性，不含裝備） |
 | 保留 5% | 氣血上限、靈力上限：取前世 `getMaxHp()`/`getMaxMp()`（含裝備、宗門、靈根、等級）的 5%，存入 `player.reincarnateBonus = { hp, mp }`，由 `getMaxHp()`/`getMaxMp()` 加上 |
 | 遺忘 | 天賦分配（`player.talents` 清空重新點；轉世天賦點依輪迴次數另給，第 68 節）、境界（回凡人 1 階）、人物等級（Lv1）、`sect`（變回散修）與 `sectSkills`（可重新選宗門）、門派任務 `activeQuest`、四維古籍 `studyCounts`、屬性秘典 `elementStudy` |
-| 重設 | 壽元回到凡人的 60 年、年齡回到 16 歲，氣血／靈力補滿新上限，輪迴次數 +1 |
+| 重設 | 壽元回到凡人的 60 年、年齡回到 16 歲，氣血／靈力補滿新上限，輪迴次數 +1；善惡值 `karma` 只留 `REINCARNATE_KARMA_KEEP`(10%)（2026-10-30，第 27 節） |
 | 卸下 | 身上裝備（`player.equipment` 各部位）全部放回背包 `equipInventory`，強制卸下不受背包上限 `MAX_EQUIP_INVENTORY` 限制；日誌記「輪迴之際，身上 N 件裝備盡數卸下」（2026-10-01 使用者指定，版本 `20261004o`；人物等級回 Lv1，要重新達到裝備等級才能再穿） |
 | 不動 | 背包、靈石等資源、功德／七彩補天石／破障丹、僕從、靈寵（等級可能高於 Lv1 的人物，但之後的經驗受人物等級上限卡住）、靈寶閣武學 `learnedSkills` 與 `lingbaoSold`、每日任務／千寶閣 |
 
@@ -1541,14 +1541,20 @@ combatTick() 每秒執行 [combat.js]
   `#evil-hall-scene` 在 DOM 中排在 `#evil-hunt-modal` **之前**（兩者 z-index 都是 100），懸賞榜才會疊在場景上面。
 
 ### 陣營（正派／邪派）
-- `getPlayerFaction()`：已拜入的每個宗門算 `FACTION_SECT_WEIGHT`(5) 分、每招學會的仙法算 1 分，依陣營加總；**邪派分數高於正派才是邪派**，同分（含散修）算正派。
+- `getPlayerFaction()`：已拜入的每個宗門算 `FACTION_SECT_WEIGHT`(5) 分，**邪派分數高於正派才是邪派**；**宗門同分（含散修）時才加上學會的仙法**（每招 1 分）決勝，仍同分算正派。
+  （2026-10-30 起，版本 `20261020FI`：原本仙法一律計分，而仙法輪迴不遺忘，學過 20 招正派仙法的人拜三個邪派宗門也只有 15 分，陣營永遠改不了。）
   宗門陣營寫在 `config-sects.js` 的 `faction`（目前 `"邪"` 為凡俗的**皇朝**、修真的**天魔教**、至高的**九幽黃泉**，其他沒寫 = 正）；仙法陣營取 `config-spells.js` 的 `faction`。
   宗門列表卡片會標示「正派／邪派（影響懸賞榜陣營）」（`sect.js` 的 `renderSects()`）；獵殺邪修視窗的規則說明也依 `faction` 自動列出邪派宗門。
-  ⚠️ 每個宗門權重相同，所以「一邪一正」會同分而算正派，要當邪派得拜入較多邪派宗門（或學較多魔功）。
+  ⚠️ 每個宗門權重相同，所以「一邪一正」同分時由仙法決勝（都沒學算正派），要穩定當邪派得拜入較多邪派宗門。
 - 正派玩家的懸賞榜列邪修、邪派玩家列正道修士。**兩者都拿功德**，只有說法不同（邪派的日誌寫「吸取對方功德」）。
+- **同道榜**（2026-10-30，版本 `20261020FI`）：懸賞榜上方兩顆切換鈕 `setBountyTarget('foe'|'same')`（merit.js，存 `player.bountyTarget`），
+  切到同道榜改列**自己陣營**的人物（`getBountyBoardFaction()`）：斬殺時善惡照對方陣營加減（正派殺正派 → 偏惡），功德 ×`BOUNTY_SAME_FACTION_MERIT_MULT`(0.5)，日誌寫「殘殺同道」；賞金、星允鐵、掉落不變。
+  讓玩家不換宗門也能主動把善惡往另一邊走。
 
 ### 善惡值
-- `player.karma`：-3000～+3000（`KARMA_MAX`），新角色 0，轉世不重置。介面只顯示 **善（藍）／中立（灰）／惡（紅）**：≥ `KARMA_GOOD_THRESHOLD`(1000) 為善、≤ `KARMA_EVIL_THRESHOLD`(-1000) 為惡。
+- `player.karma`：-3000～+3000（`KARMA_MAX`），新角色 0；**轉世只留 `REINCARNATE_KARMA_KEEP`(10%)**（2026-10-30 起，原本轉世不重置；+3000 → +300 回到中立，善／惡狀態改變時寫日誌）。
+  ⚠️ 由來：使用者回報「善的永遠是善、惡的永遠是惡、輪迴無法改變」——善惡不重置＋仙法永久算陣營＋懸賞榜只列敵對陣營、暗殺者只來自對立面，形成只會往同一邊加的循環；
+  改成 輪迴留 10%、陣營只看宗門、懸賞榜可切同道榜 三項（使用者選推薦組合）。介面只顯示 **善（藍）／中立（灰）／惡（紅）**：≥ `KARMA_GOOD_THRESHOLD`(1000) 為善、≤ `KARMA_EVIL_THRESHOLD`(-1000) 為惡。
   顯示位置：洞府 HUD 道號旁（`#hud-karma`／`#pc-hud-karma`）、修仙分頁資源列（`#karma-display`）、獵殺邪修視窗。
 - **殺邪派人士 → 善（+）、殺正派人士 → 惡（−）**（`addKarma()`，跨過門檻時寫日誌）：野外修士 ±5、暗殺者 ±10、懸賞人物 人／地／天榜 ±30／60／100（`BOUNTY_RANKS[].karma`）。
 - **暗殺**：善 → 邪派刺客、惡 → 正道獵魔人，野外每波有 `AMBUSH_WAVE_CHANCE`(4%) 混入一名（`AMBUSH_ICON` 🥷，氣血與攻擊 ×`AMBUSH_POWER_MULT` 3）。中立時不會出現。
@@ -1652,7 +1658,7 @@ combatTick() 每秒執行 [combat.js]
 （以 8 種舊存檔形態測試目前程式皆可正常讀取；移除 `#age-display` 即可重現同一錯誤。）
 
 ### 1. 發佈版本號（防止新舊檔案混用）
-- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20261020FH`，gm.html 同；2026-10-01 起 Service Worker 也以這個版本號區分快取，換版本號＝玩家下次開啟時自動換新快取，第 64 節）。
+- `index.html` 的每個 `<script src="data/xxx.js?v=版本">` 都帶 `?v=`（目前 `20261020FI`，gm.html 同；2026-10-01 起 Service Worker 也以這個版本號區分快取，換版本號＝玩家下次開啟時自動換新快取，第 64 節）。
 - **每次推上 GitHub Pages 前，把所有 `?v=` 全部取代成新值**（例：日期＋序號）。新 index.html 會指向新網址的 JS，不會再拿到快取的舊檔。**gm.html 也有 `?v=`（2026-09-28 起），要一起改。**
 - 新增 `data/*.js` 時也要記得帶上 `?v=`。
 - **2026-10-03 起（第 72 節）**：網站可改由 GitHub Actions 發佈建置後的 `dist/`：`index.html` 的 data 腳本被換成單一 `data/game.js?v=版本`、gm.html 換成 `data/gm-lib.js?v=版本`，版本號沿用 index.html 的 `?v=`（所有 `?v=` 必須一致，否則建置失敗）。
@@ -2082,7 +2088,8 @@ App 內建瀏覽器隱藏約 2 分鐘後降到每分鐘約 31 次（半速）；
 
 ### 榜單
 - 每 `BOUNTY_REFRESH_HOURS`(4) 小時刷新（`refreshBountyIfDue()`，以 `player.bountyRefreshAt` 時間戳判斷，同千寶閣），每期 6 名：**天榜 1、地榜 2、人榜 3**。
-  列的是**敵對陣營**：正派看邪修、邪派看正道修士（`player.bountyFaction` 記錄榜單陣營，玩家陣營改變時立即重抽）。刷新時未完成的懸賞一併作廢。
+  預設列**敵對陣營**：正派看邪修、邪派看正道修士；可切到**同道榜**列自己陣營（`player.bountyTarget`，第 27 節）。`player.bountyFaction` 記錄榜單陣營，刷新時未完成的懸賞一併作廢。
+  陣營或榜單改變時：同一期內把目前榜單收進 `player.bountyAltBoard { faction, refreshAt, board }`，另一邊這期抽過就換回來、沒抽過才重抽，刷新時間不變（來回切換不能當免費刷新）；過期或付費刷新才整張重抽。
 - 名冊 `bountyRoster`：邪修 30 名、正道 30 名，**男女各半**，有姓名與稱號；同一期不重複。`id` 寫進存檔，上線後不要改。
 - 每名的**境界 = 玩家目前位置 −0.8～+1 境隨機**（`BOUNTY_REALM_OFFSET_MIN`/`MAX`，2026-09-25 由 ±1 改）：
   把境界換成「大境界 × 10 + (小境界 − 1)」的連續位置，以 **0.1 境 = 1 階**為單位在 −8～+10 階之間平均隨機，再換回大境界＋小境界（頭尾夾在凡人 1 階～混沌道祖 10 階）。

@@ -1,8 +1,9 @@
 // 功德、陣營、善惡值與珍貴物資設定（邏輯見 merit.js；懸賞榜見 config-bounty.js／bounty.js）
 // 流程：斬殺敵對陣營修士 → 功德 → 滿 MERIT_PER_BUTIAN_STONE 自動凝結七彩補天石 → 千寶閣珍貴物資（破障丹）
 
-// ---- 陣營（正派／邪派）：依所屬宗門與學會的仙法判定（merit.js 的 getPlayerFaction）----
-// 每個已拜入的宗門算 FACTION_SECT_WEIGHT 分、每招學會的仙法算 1 分，邪派分數高於正派才是邪派（同分算正派）
+// ---- 陣營（正派／邪派）：依所屬宗門判定（merit.js 的 getPlayerFaction）----
+// 2026-10-30 起只看宗門：每個已拜入的宗門算 FACTION_SECT_WEIGHT 分，邪派分數高才是邪派；
+// 宗門同分（含散修）時才看學會的仙法（每招 1 分），仍同分算正派。仙法輪迴不遺忘，不能讓它綁死陣營
 // 宗門的陣營寫在 config-sects.js 的 faction（沒寫 = 正）；仙法的陣營寫在 config-spells.js
 const FACTION_SECT_WEIGHT = 5;
 
@@ -14,6 +15,8 @@ const KARMA_EVIL_THRESHOLD = -1000;    // ≤ 此值為「惡」：正派人士�
 const KARMA_PER_FIELD_KILL = 5;        // 野外隨機修士
 const KARMA_PER_AMBUSH_KILL = 10;      // 前來暗殺／獵殺你的修士
 // 懸賞榜人物的善惡值見 config-bounty.js 的 BOUNTY_RANKS[].karma
+const REINCARNATE_KARMA_KEEP = 0.1;           // 轉世輪迴只保留此世善惡值的 10%（+3000 → +300，回到中立可重新選擇）
+const BOUNTY_SAME_FACTION_MERIT_MULT = 0.5;   // 懸賞榜切到「同道榜」斬殺同陣營人物：功德 ×0.5（善惡照對方陣營加減）
 
 // ---- 野外修士：不是妖獸，只有機率出現（每一波判定一次，一波最多一名）----
 // 需已解鎖「獵殺邪修」活動（config-activities.js 的 evil）
