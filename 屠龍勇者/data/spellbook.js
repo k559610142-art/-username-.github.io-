@@ -30,7 +30,7 @@ for (const cls in SKILLS) {
 // 書最低可以學的角色等級（任何職業；掉落挑書用）
 function bookMinLv(d) {
     const s = SKILL_BY_ID[d.skill];
-    if (s.kind === 'adv') return 999;   // 二轉技能書不會被怪物掉（advance.js）
+    if (s.kind === 'adv') return s.lv;   // 二轉技能書（advance.js）：Lv.60／70，併入一般技能書掉落
     if (s.kind === 'class') return s.lv;
     return Math.min(...Object.keys(MAGIC_CLASS).map(c => skillNeedLv(s, c)).filter(Boolean));
 }
@@ -81,7 +81,7 @@ const BOOK_DROP_P = 0.003, BOOK_BOSS_P = 0.25;
 let bookDropPool = null;
 function rollBookDrop(mon) {
     if (!chance(mon.boss ? BOOK_BOSS_P : BOOK_DROP_P)) return null;
-    if (!bookDropPool) bookDropPool = Object.keys(ITEMS).filter(id => ITEMS[id].cat === 'book' && !ITEMS[id].price && !ITEMS[id].advBook).map(id => ({ id, lv: bookMinLv(ITEMS[id]) }));
+    if (!bookDropPool) bookDropPool = Object.keys(ITEMS).filter(id => ITEMS[id].cat === 'book' && !ITEMS[id].price).map(id => ({ id, lv: bookMinLv(ITEMS[id]) }));
     const pool = bookDropPool.filter(b => b.lv <= mon.lv + 5);
     return pool.length ? pool[rand(0, pool.length - 1)].id : null;
 }

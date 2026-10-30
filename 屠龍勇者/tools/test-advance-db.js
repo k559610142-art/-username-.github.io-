@@ -19,8 +19,8 @@ const body = String.raw`
   assert.equal(c.quests[cls][4].type,'bossCollect');assert.equal(c.quests[cls][5].type,'boss');assert(c.questBosses[cls][5]&&c.questBosses[cls][6]);
   assert(c.items[c.quests[cls][4].item]);
  }
- for(const [id,d] of Object.entries(before.data.items)){if(d.cat==='book'&&d.classes){assert(c.items[id].bookLv<=55,id);continue;}assert.deepEqual(c.items[id],d);}
- assert(c.items.advReshape);assert.equal(c.advance.reshapeLv,70);
+ for(const [id,d] of Object.entries(before.data.items)){if(d.cat==='book'&&d.classes){assert(Number.isInteger(c.items[id].bookLv)&&c.items[id].bookLv<=55,id);continue;}assert.deepEqual(c.items[id],d);}
+ assert(c.items.advReshape);assert.equal(c.items.book_adv_mFrost_1.bookLv,60);assert.equal(c.items.book_adv_mFrost_2.bookLv,70);assert(!('price' in c.items.book_adv_mFrost_1));assert.equal(c.advance.reshapeLv,70);
  assert.deepEqual((await db.query('select data from dragon_loot_rules where version=$1',[before.version])).rows[0].data,before.data,'舊規則快照保留');
  // loot_roll 尾端接上 loot_adv；spawn 帶 adv
  const fn=async n=>(await db.query("select pg_get_functiondef(p.oid) s from pg_proc p join pg_namespace ns on ns.oid=p.pronamespace where ns.nspname='public' and p.proname=$1",[n])).rows.map(r=>r.s).join(' ');

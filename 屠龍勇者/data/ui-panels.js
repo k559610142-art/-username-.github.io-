@@ -727,7 +727,7 @@ function renderSkills() {
         else if (book && player.lv >= need) btn = `<button class="mini" onclick="learnSkillBook('${s.id}')">📖 學習</button>`;
         else btn = `<span class="muted">${player.lv < need ? `Lv.${need}` : '需要書'}</span>`;
         return `<div class="list-row ${have ? '' : 'locked'}"><span class="sk-ico">${skillIconHtml(s)}</span><div style="flex:1;min-width:0"><b>${esc(s.name)}</b><small>${skillInfoText(s)}</small><small>${esc(s.desc)}</small>
-            ${have ? '' : `<small class="muted">${esc(skillBookName(s))}${s.kind === 'adv' ? '：二轉任務獎勵／職業 NPC 購買' : ITEMS[bookIdOf(s.id)] && ITEMS[bookIdOf(s.id)].price ? '：村莊商店' : '：怪物掉落（首領較容易）'}${book ? '（背包裡有）' : ''}</small>`}</div>${btn}</div>`;
+            ${have ? '' : `<small class="muted">${esc(skillBookName(s))}${s.kind === 'adv' ? '：二轉任務獎勵／怪物掉落（首領較容易）' : ITEMS[bookIdOf(s.id)] && ITEMS[bookIdOf(s.id)].price ? '：村莊商店' : '：怪物掉落（首領較容易）'}${book ? '（背包裡有）' : ''}</small>`}</div>${btn}</div>`;
     };
     const mc = MAGIC_CLASS[cls];
     if (mc) for (let t = 1; t <= mc.max; t++) {

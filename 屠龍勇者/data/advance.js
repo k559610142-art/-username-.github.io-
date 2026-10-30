@@ -5,7 +5,6 @@
 
 const ADV_CH = 4;            // CLASS_QUESTS 的第 5 章（index 4）起是二轉
 const ADV_SKILL1_LV = 60, ADV_SKILL2_LV = 70;
-const ADV_BOOK_PRICE = { 1: 500000, 2: 1500000 };   // 換分支後在職業 NPC 買書
 const ADV_RESHAPE_P = 0.003, ADV_RESHAPE_LV = 70;   // 命運重塑石：Lv.70 以上首領 0.3%
 const ADV_WORLD_CUR_P = 0.05;                       // 天下：擊倒 5% 多掉 1 個通貨
 const ADV_PROOF_P = 0.2;                            // 第 5 章：任何地圖首領 20% 掉職業之證
@@ -205,8 +204,8 @@ for (const b of Object.values(ADV_BY_ID)) {
     b.skill1 = { ...base, ...b.s1, id: 'adv_' + b.id + '_1', lv: ADV_SKILL1_LV, mp: b.s1.mp || 0, slot: 1 };
     b.skill2 = { ...base, ...b.s2, id: 'adv_' + b.id + '_2', lv: ADV_SKILL2_LV, mp: b.s2.mp || 0, slot: 2 };
     for (const s of [b.passive, b.skill1, b.skill2]) SKILL_BY_ID[s.id] = s;
-    for (const s of [b.skill1, b.skill2]) {   // 二轉技能書：不在商店、不會被怪物掉（沒有 price／不進後端目錄），換分支後找職業 NPC 用金幣買
-        ITEMS[bookIdOf(s.id)] = { name: `二轉技能書（${s.name}）`, cat: 'book', skill: s.id, wt: 1, classes: [b.cls], advBook: s.slot, advPrice: ADV_BOOK_PRICE[s.slot], sell: 1000,
+    for (const s of [b.skill1, b.skill2]) {   // 二轉技能書：不在商店（沒有 price）；第一次由任務給，之後打怪掉（併入一般技能書掉落，bookMinLv＝60／70，2026-10-31 使用者改）
+        ITEMS[bookIdOf(s.id)] = { name: `二轉技能書（${s.name}）`, cat: 'book', skill: s.id, wt: 1, classes: [b.cls], advBook: s.slot, sell: s.lv * 400,
             desc: `${CLASSES[b.cls].name}・${b.name}專屬二轉技能「${s.name}」` };
     }
     // 第 7 章分支專屬飾品
@@ -822,7 +821,7 @@ function openAdvReshape() {
     if (!cur) { showToast('完成二轉後才能使用命運重塑石'); return; }
     if (!inTown()) { showToast('回到村莊才能使用'); return; }
     const list = ADV_BRANCHES[player.cls].filter(b => b !== cur);
-    openDialog('💎 命運重塑石', `<p>目前分支：<b style="color:${cur.color}">${esc(cur.name)}</b>。換分支後舊分支的技能全部失效，技能書不會退回；新分支的技能書要到職業 NPC 購買。</p><div class="adv-list">${list.map(b => advBranchCardHtml(b, 'advReshapeTo')).join('')}</div>`, [{ text: '關閉', cls: 'secondary' }]);
+    openDialog('💎 命運重塑石', `<p>目前分支：<b style="color:${cur.color}">${esc(cur.name)}</b>。換分支後舊分支的技能全部失效，技能書不會退回；新分支的技能書要打怪取得（首領較容易掉）。</p><div class="adv-list">${list.map(b => advBranchCardHtml(b, 'advReshapeTo')).join('')}</div>`, [{ text: '關閉', cls: 'secondary' }]);
 }
 function advReshapeTo(id) {
     const b = ADV_BY_ID[id], cur = advBranch();
@@ -837,28 +836,8 @@ function advReshapeTo(id) {
         advResetRuntime();
         addLog(`💎 二轉分支改為「${b.name}」`, 'rare');
         closeDialog(); saveGame(); refreshUI();
-        gameAlert('💎 命運重塑', `你現在是「${b.name}」。新分支的技能書可以到職業 NPC 購買。`);
+        gameAlert('💎 命運重塑', `你現在是「${b.name}」。新分支的技能書要打怪取得（首領較容易掉，也可以在交易所買）。`);
     }, '重塑');
-}
-// 職業 NPC 賣目前分支、已解鎖的二轉技能書
-function advBookShopHtml() {
-    const b = advBranch(); if (!b) return '';
-    const s = questState(), rows = [b.skill1, b.skill2].filter(k => k.slot === 1 || s.ch > ADV_CH + 2).map(k => {
-        const id = bookIdOf(k.id), have = hasSkill(k.id) || countItem(id) > 0;
-        return `<div class="row"><span>📖 ${esc(ITEMS[id].name)}</span><span>${have ? '<small class="muted">已學會／已持有</small>' : `<button onclick="advBuyBook('${k.id}')" ${inTown() ? '' : 'disabled'}>💰 ${fmt(ITEMS[id].advPrice)}</button>`}</span></div>`;
-    });
-    return `<div class="panel"><div class="loc">📖 二轉技能書（${esc(b.name)}）</div>${rows.join('')}<small class="muted">換分支後，用金幣補買目前分支的技能書。</small></div>`;
-}
-function advBuyBook(skillId) {
-    const s = SKILL_BY_ID[skillId], b = advBranch(), id = bookIdOf(skillId), d = ITEMS[id];
-    if (!s || !b || s.branch !== b.id || !d || !inTown()) return;
-    if (s.slot === 2 && questState().ch <= ADV_CH + 2) { showToast('完成第 7 章後才能購買'); return; }
-    if (hasSkill(skillId) || countItem(id) > 0) return;
-    if (player.gold < d.advPrice) { showToast('金幣不足'); return; }
-    gameConfirm('購買技能書', `花費 ${fmt(d.advPrice)} 金幣購買「${d.name}」？`, () => {
-        if (player.gold < d.advPrice || hasSkill(skillId) || countItem(id) > 0) return;
-        player.gold -= d.advPrice; addItem(id, 1); saveGame(); refreshUI(); showToast(`買到 ${d.name}`);
-    }, '購買');
 }
 // 元素契約者：切換精靈元素
 const ADV_ELEMS = [['fire', '🔥 火（傷害）'], ['water', '💧 水（回血）'], ['wind', '🌪️ 風（攻速）'], ['earth', '🪨 地（防禦）']];
@@ -872,7 +851,7 @@ function advSetElem(k) { if (!advIs('ePact') || !ADV_ELEMS.some(x => x[0] === k)
 function advQuestPanelHtml() {
     const s = questState(), b = advBranch(), a = advState(), q = currentQuest();
     let h = '';
-    if (b) h += `<div class="panel"><div class="loc">🌟 二轉：<span style="color:${b.color}">${esc(b.name)}</span></div>${advBranchCardHtml(b)}<small class="muted">持有命運重塑石時，在背包使用可以換分支。</small></div>${advBookShopHtml()}${advElemHtml()}`;
+    if (b) h += `<div class="panel"><div class="loc">🌟 二轉：<span style="color:${b.color}">${esc(b.name)}</span></div>${advBranchCardHtml(b)}<small class="muted">持有命運重塑石時，在背包使用可以換分支。換分支後的技能書要打怪取得。</small></div>${advElemHtml()}`;
     else if (q && q.advPick) {
         const p = ADV_BY_ID[a.pick];
         h += `<div class="panel"><div class="loc">🌟 二轉試煉分支：${p ? `<span style="color:${p.color}">${esc(p.name)}</span>` : '尚未選擇'}</div>

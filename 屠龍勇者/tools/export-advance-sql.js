@@ -7,10 +7,10 @@ const ctx = vm.createContext({ console, Image: function () {}, setTimeout: () =>
 for (const [, f] of fs.readFileSync(path.join(root, 'index.html'), 'utf8').matchAll(/<script src="(data\/[^"?]+\.js)\?v=/g)) if (!['data/main.js', 'data/pwa.js'].includes(f)) vm.runInContext(fs.readFileSync(path.join(root, f), 'utf8'), ctx, { filename: f });
 vm.runInContext('let s=24681;Math.random=()=>((s=(1664525*s+1013904223)>>>0)/4294967296);', ctx);
 const cfg = vm.runInContext(`(()=>{
- const item = id => { const d = ITEMS[id]; return { ...d, sellValue: sellPriceOf(id), stack: isStackable(d), affixes: [], bookLv: null }; };
+ const item = id => { const d = ITEMS[id]; return { ...d, sellValue: sellPriceOf(id), stack: isStackable(d), affixes: [], bookLv: d.cat === 'book' ? bookMinLv(d) : null }; };
  const items = { advReshape: item('advReshape') }, quests = {}, questBosses = {};
  // 2026-10-31：職業技能最高 Lv.55，技能書的 bookLv／回收價跟著更新（後端怪物掉書看 bookLv）
- for (const id in ITEMS) { const d = ITEMS[id], k = d.cat === 'book' && SKILL_BY_ID[d.skill]; if (k && k.kind === 'class') items[id] = item(id); }
+ for (const id in ITEMS) { const d = ITEMS[id], k = d.cat === 'book' && SKILL_BY_ID[d.skill]; if (k && (k.kind === 'class' || k.kind === 'adv')) items[id] = item(id); }   // 二轉技能書也進目錄＝後端怪物會掉
  for (const cls in CLASS_QUESTS) {
   const qs = CLASS_QUESTS[cls].slice(ADV_CH);
   quests[cls] = qs.map(q => q.goal);

@@ -263,7 +263,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261031a`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261031b`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -4171,7 +4171,7 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 使用者逐步決定（紀錄在 `tools/ADVANCE-CLASS-PLAN.md`）：每職業三選一（職業各自定方向）、命運重塑石換分支、每分支核心被動＋2 招、Lv.60 開始／第 2 招 Lv.70、三章任務、外觀只換名牌顏色＋光效、同意 schema 22 與 SQL。36 分支名稱與效果逐職業同意；平衡目標改為「輸出型 +15～30%、防守型受傷少 15～25%」。
 - **資料**：`ADV_BRANCHES[cls]`＝3 分支 `{ id, name, color, glow, grow, p, s1, s2 }`；載入時產生 `ADV_BY_ID`、被動／技能（`SKILL_BY_ID`，kind `'adv'`、`branch`、`slot`）、二轉技能書 `book_adv_<分支>_1/2`（`advBook`、`advPrice`，沒有 price＝不在商店、`bookMinLv` 回 999＝不會被怪掉）、第 7 章飾品 `advAcc_<分支>`、`advReshape`。第 5～7 章 push 到 `CLASS_QUESTS[cls]`（index 4～6），`QUEST_BOSS_BASE[6/7]`、職業之證 `q_<cls>_4`。
 - **任務**：第 5 章 goal `bossCollect`（任何地圖首領 20%；世界首領／團隊副本不算）；第 6 章 `advPick`：`acceptQuest` 先呼叫 `advAcceptCheck`（帶傭兵、娃娃不能接；沒選就開 `openAdvPicker`），完成前可免費改選；回報時 `advQuestReward` 設 `adv.br`、學被動、給第 1 招書。第 7 章給第 2 招書＋飾品；第 2 招書要 ch ≥ 7 才能學。`QUEST_TITLE_CH = 4`：稱號仍是前 4 章。試煉之影打死不扣經驗（`advTrialDeath`）。
-- **換分支**：背包使用命運重塑石 → `openAdvReshape` → `advReshapeTo`：舊分支三招從 skills／快捷欄／冷卻／增益移除，學新被動；技能書不退，到任務頁（職業 NPC）用金幣買（`advBookShopHtml`，50 萬／150 萬）。
+- **換分支**：背包使用命運重塑石 → `openAdvReshape` → `advReshapeTo`：舊分支三招從 skills／快捷欄／冷卻／增益移除，學新被動；技能書不退，打怪取得（20261031b 使用者改：取消金幣購買，見第 245 節）。
 - **戰鬥掛鉤**（都用 `typeof` 判斷，沒二轉不影響）：`calcStats`→`advPlayerFx`；`gainExp`→`advGrowth`；`learnedSkills`→`advSkillUsable`；combat：`advCanCast`（金幣／HP／殘血等條件，手動施放也查）、`advCd`、`advHealMult`、`advAfterBuff`（護盾／召喚／場地）、`advRunSkill`／`advPrepSkill`／`advAfterSkill`、`physicalAttack` 的 `advDefMod`／`advPhysMult`／`advPhysAdd`／`advCritRoll`／`advAmbushMult`／`advSaveAmmo`／`advOnPhysHit`、`castSpell` 的 `advMagicMult`／`advOnSpellHit`、`monsterAttack` 的 `advStealthOn`／`advOnDodge`／`advMonHitMod`／`advIncoming`／`advAbsorbEff`／`advPreventDeath`／`advOnHurt`、`onKill` 的 `advRoyalGoldK`／`advOnKill`／`advLocalDrops`、`huntTick` 的 `advTick`（持續傷害、場地、召喚、精靈、每秒回復）、慢速 `advDeb(m,'slow')`、`weaponRange` 風暴遊俠 +1、`lifeSteal` 溢血 `advOverflowHeal`。mercenary：`advMercMod`（人皇 +15%、士氣套用）、`advMercTaken`、`advMercSave`（神聖復甦保命版）、`advTauntOn`、`advMercHitMult`。
 - 執行期狀態 `advRt(player)`（WeakMap，不存檔）：場地、召喚、護盾、戰意、伏擊、印記等；怪物身上 `advDeb`／`advDots`／`advPoison`。「N 倍魔法傷害」基準 `advMag(n)`＝dmg [30n,50n]＋SP×1.5n。
 - **畫面**：任務頁 `advQuestPanelHtml`（目前分支、試煉分支、買書、元素精靈切換）、技能頁「🌟 二轉」區、角色裝備頁職業名用 `advClassName`、地圖名牌 `advNameColor`、腳下光效 `advDrawAura`、召喚光球 `advDrawOrbs`；CSS `.adv-list`／`.adv-card`。
@@ -4187,3 +4187,8 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 ## 244. 傭兵回魔改每 5 秒（2026-10-31，版本 `20261031a`；`mercenary.js` 的 `MERC_MP_REGEN_MS`）
 
 - 使用者回報傭兵回魔過快：原本 `mercTick` 每秒回 `regen`（2～5＋天賦「出戰傭兵每秒回魔」）MP，改成每 5 秒一次（與玩家回魔節奏相同），數值不變；回血仍每秒。執行期 `mercState(m).mpAt`，不存檔。天賦名稱仍寫「每秒回魔」，實際是每次回魔的量。
+
+## 245. 二轉技能書改打怪掉落（2026-10-31，版本 `20261031b`）
+
+- 使用者要求：二轉技能書打怪獲得、不能購買；第 6、7 章仍給第一次的書。移除 `advBookShopHtml`／`advBuyBook`／`ADV_BOOK_PRICE`／`advPrice`。書沒有 price（不在商店），`bookMinLv` 回技能等級 60／70，所以併入一般技能書掉落（`rollBookDrop`：首領 25%、一般怪 0.3%，挑最低等級 ≤ 怪物等級＋5 的書，任何職業分支都會掉，可賣、可上交易所）；回收價 lv×400。學習仍限目前分支、第 2 招要第 7 章完成。
+- 後端：`advance-class.sql` 把 72 本二轉書也合併進目錄（有 bookLv 才會進後端掉書池）。**修正**：20261031a 版 SQL 產生器把合併的職業技能書 `bookLv` 寫成 null，執行後後端會不掉職業技能書；本版改用 `bookMinLv(d)`，test-advance-db 驗 bookLv 為整數。使用者需重跑 SQL。

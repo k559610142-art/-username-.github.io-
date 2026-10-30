@@ -102,7 +102,9 @@ assert.equal(advBranch().id, 'mFrost'); assert(!hasSkill(b0.skill1.id) && !hasSk
 assert.equal(countItem('advReshape'), 0);
 // 舊分支的書不能學；新分支的書可以在 NPC 買
 assert.equal(bookLearnError(ITEMS[bookIdOf(b0.skill1.id)]), '只有這個二轉分支能學');
-confirmFn = null; advBuyBook(ADV_BY_ID.mFrost.skill1.id); confirmFn(); assert.equal(countItem(bookIdOf(ADV_BY_ID.mFrost.skill1.id)), 1);
+assert.equal(typeof advBuyBook, 'undefined');   // 2026-10-31 改成打怪掉，不能用金幣買
+assert.equal(bookMinLv(ITEMS[bookIdOf(ADV_BY_ID.mFrost.skill1.id)]), 60); assert.equal(bookMinLv(ITEMS[bookIdOf(ADV_BY_ID.mFrost.skill2.id)]), 70); assert(!ITEMS[bookIdOf(ADV_BY_ID.mFrost.skill1.id)].price);
+learnBook(addItem(bookIdOf(ADV_BY_ID.mFrost.skill1.id), 1).uid); assert(hasSkill(ADV_BY_ID.mFrost.skill1.id));
 // 存讀檔保留
 const enc = saveEncode(JSON.stringify({ schema: SAVE_SCHEMA, player }));
 const back = migrateSave(saveParse(enc));
@@ -110,5 +112,5 @@ assert.equal(back.adv.br, 'mFrost');
 // 試煉中不能帶娃娃、傭兵（娃娃欄有東西就擋）
 setupLv('royal', 60); player.quests.ch = 5; player.equip.doll = { uid: 999, id: Object.keys(ITEMS).find(id => ITEMS[id].cat === 'doll'), n: 1 };
 acceptQuest(); assert.equal(questState().active, false);
-console.log('test-advance OK：36 分支任務流程與 90 秒戰鬥、換分支、買書、存讀檔');
+console.log('test-advance OK：36 分支任務流程與 90 秒戰鬥、換分支、技能書掉落等級、存讀檔');
 `, ctx);
