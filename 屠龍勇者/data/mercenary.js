@@ -1,5 +1,5 @@
 // 傭兵：六職業、50符石、獨立裝備／HP／MP（架構第197、206、209節）。
-const MERC_MP_REGEN_MS = 5000;   // 傭兵回魔間隔（2026-10-31 由每秒改成每 5 秒，與玩家相同）
+const MERC_MP_REGEN_MS = 2000;   // 傭兵回魔間隔（2026-10-31：原本每秒太快；20261031a 改 5 秒後技能 MP 不夠用，20261031d 使用者定為每 2 秒）
 const MERC_CLASSES = {
     spirit: { name: '契靈師', person: '璃音', sex: '女', age: '孩童', hp: 110, mp: 130, atk: 9, magic: 15, def: 1, regen: 5 },
     bulwark: { name: '壁壘衛士', person: '雷恩', sex: '男', age: '中年', hp: 200, mp: 65, atk: 11, magic: 7, def: 8, regen: 2 },
@@ -442,7 +442,7 @@ function mercAutoPotion(m = mercActive()) {
 function mercTick(dt) {
     const m = mercActive(); if (!m) return;
     const r = mercState(m), st = mercStats(m);
-    // 2026-10-31 使用者要求：回魔改成跟玩家一樣每 5 秒一次（原本每秒，太快）；回血仍每秒
+    // 2026-10-31 使用者要求：回魔改成每 2 秒一次（MERC_MP_REGEN_MS）；回血仍每秒
     if (gameNow >= r.regenAt) { r.regenAt = gameNow + 1000; m.hp = Math.min(st.hp, m.hp + mercTrait(m, 'hpRegen', 1)); }
     if (gameNow >= (r.mpAt || 0)) { r.mpAt = gameNow + MERC_MP_REGEN_MS; m.mp = Math.min(st.mp, m.mp + st.regen); }
     const mon = hunt && hunt.state === 'fight' && hunt.mon && hunt.mon.hp > 0 ? hunt.mon : null;

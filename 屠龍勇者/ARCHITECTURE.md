@@ -263,7 +263,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261031c`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261031d`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -4196,3 +4196,5 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 ## 246. 狩獵經驗遞減提早到 Lv.60（2026-10-31，版本 `20261031c`；`config.js` 的 `huntExpRate`）
 
 - 使用者回報 Lv.60 後練得比較快。原因：Lv.49 起每級固定 36,065,092 經驗，怪物經驗 lv²＋1 且越級不扣，永夜之塔怪 Lv.60～105（×1.3），而遞減從 65 才開始，60～64 完全沒打折。使用者選「遞減提早到 60」：60～64 ×3/4，65 以後不變；離線收益沿用同一函式。
+
+- 20261031d 補充：每 5 秒讓傭兵技能 MP 不夠用（回魔只剩 1/5、耗魔不變），使用者定為 `MERC_MP_REGEN_MS = 2000`（原本的 1/2）。
