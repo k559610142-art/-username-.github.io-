@@ -243,6 +243,8 @@
 
 | `images/sprites/morph/arcane-judgment-sniper-v1/`、`tools/sprite-src/morph/arcane-judgment-sniper-v1/`、`tools/test-sniper-morph.js`、`tools/sniper-morph-preview.html` | 07紫變專屬36格動畫、原圖／生成提示詞／腳點註冊、隔離卷軸與繪圖驗證（第239節） |
 
+| `images/sprites/morph/nether-executioner-v1/`、`tools/sprite-src/morph/nether-executioner-v1/`、`tools/test-executioner-morph.js`、`tools/executioner-morph-preview.html` | 13紅變36格透明專屬動畫、原稿提示詞／腳點註冊與隔離驗證（第240節） |
+
 ## 2. 載入順序與依賴
 
 `config → classes → skills → items → spellbook → monsters → zones → quests → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → talent-jewels → talent → talent-tree → talent-layout → talent-planner → talent-live → bag-storage → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → pwa → loot → main`
@@ -258,7 +260,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261030b`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261030c`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -4140,3 +4142,11 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 既有MORPH_FORMS.m07新增sprite對應MORPHS.arcaneJudgmentSniper；仍36款，專屬26款／共用10款。紫變Lv52、槍手必須裝槍、命中8／傷害6／攻速13%、GM等級豁免、一張卷軸30分鐘及商店10000金幣不變；schema21、SQL及script順序不變。第88節的外觀擴充規則沿用。
 - 圖集384×320，腳底[192,270]、charH160／drawH48，130／140／220／150ms、攻擊560ms。四PNG加入SW預載，manifest逐格記來源／註冊／hash。prepare.js沿既有連通區分格與原alpha等比縮放，不補畫／複製姿勢；製作用單格留來源build/frames，contact.png總覽與game-render.png保留。
 - test-sniper-morph.js隔離驗卷軸扣量、Lv51拒絕／52使用、空手拒絕、上次選擇／到期、四向命中／MISS／施法／受傷互斥、36格透明唯一與圖集逐byte、正式sceneDraw16組。舊測試的共用外觀案例m07改m13；原歷史schema／款數斷言不順便修改。tools/sniper-morph-preview.html使用實際renderer且隔離localStorage與外網。
+
+
+## 240. 冥皇處刑者紅變專屬動畫（2026-10-30，版本 `20261030c`）
+
+- 使用者提供桌面變身人物/13.jpg要求製作並接變形卷軸；原圖保留reference-13.jpg。內建image_gen依骷髏王冠／黑銅尖刺重甲／骷髏肩甲／破紫披風／黑紅巨劍製作正、右、背三向各12格，左向鏡像；走4／攻4／施2／傷2共36格。巨劍攻擊蓄勢／揮斬／紅黑斬光／收勢，背面全程背影。完整提示詞與生成原稿保留來源目錄。
+- 既有MORPH_FORMS.m13新增sprite對應MORPHS.netherExecutioner，不新增第37款；專屬27款、其餘9款共用。沿原紅變Lv35、雙手劍系建議武器、命中3／傷害6／攻速8%／物爆率2%、GM等級豁免、卷軸30分鐘／10000金幣。schema21／SQL／script順序不變。
+- 四PNG加入SW預載。圖集384×320／腳底[192,270]／charH160／drawH48，130／140／220／150ms，攻擊560ms。prepare.js沿既有連通區保留原色alpha、等比縮放與腳底註冊；製作單格build/frames、manifest逐格來源與hash、registration／contact／game-render保留。
+- 新test-executioner-morph.js驗真實卷軸扣量、Lv34拒絕／35使用、能力與上次選擇／到期、四向命中／MISS／施法／受傷互斥、36格透明唯一與圖集逐byte及sceneDraw16組；tools/executioner-morph-preview.html實際renderer隔離存檔／外網。舊測試共用外觀案例m13改m14，歷史款數／schema斷言不順便改動。已通過新變身與狙擊手回歸、36格RGBA唯一／圖集逐byte／sceneDraw16組、check.ps1 ALL CHECKS PASSED、58檔記憶體混淆語法及diff檢查。側面劍尖碰邊重畫留白，原初稿保留；步行不帶鄰格散落斬光。隔離瀏覽器實測攻擊第3格560ms、背面施法440ms、左向48px循環、卷軸選單重變4→3。初次圖集未產出時有載圖error，完成後重整及操作無新增error／warn。實拍browser-attack.png保留。待使用者正式角色實玩確認才提交，未發布。
