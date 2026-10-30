@@ -215,6 +215,7 @@ function huntTick(dt) {
     autoSupport(st);
     if (!player.hunting || !hunt || hunt.state !== 'fight') return;
     mercTick(dt);
+    if (typeof advTick === 'function') advTick(dt, st);   // 二轉：場地、召喚、持續傷害（advance.js）
     bossEnchantTick(st);
     reapMobs();
     if (!fightAlive()) return;
@@ -237,7 +238,7 @@ function huntTick(dt) {
         m.atkCd -= dt;
         if (m.atkCd > 0) continue;
         if (!mobInReach(m)) { m.atkCd = 200; continue; }   // 還沒走到角色旁邊
-        m.atkCd =(m === hunt.mon ? m.spd : m.spd * MOB_SIDE_SLOW) * bossEnchantAttackFactor(m) * (mercEffectOn(m, 'slow') ? (m.boss ? 1.05 : 1.2) : 1);
+        m.atkCd =(m === hunt.mon ? m.spd : m.spd * MOB_SIDE_SLOW) * bossEnchantAttackFactor(m) * (mercEffectOn(m, 'slow') || (typeof advDeb === 'function' && advDeb(m, 'slow')) ? (m.boss ? 1.05 : 1.2) : 1);
         if (gameNow >= m.stunUntil) monsterAttack(calcStats(), m);
         if (!fightAlive()) return;
     }
@@ -366,6 +367,7 @@ function manualCast(id) {
     if (player.cds[k.id] > gameNow) return `冷卻中（${Math.ceil((player.cds[k.id] - gameNow) / 1000)} 秒）`;
     if (skillGcdLeft()) return `技能冷卻中（${Math.ceil(skillGcdLeft() / 1000)} 秒後才能放下一個技能）`;
     if (player.mp < (typeof talentManaCost==='function'?talentManaCost(k):k.mp)) return 'MP 不足';
+    if (typeof advCanCast === 'function' && !advCanCast(k, true)) return '目前條件不符（金幣、HP 或 MP）';
     const st = calcStats();
     if (k.type === 'heal') { castHeal(k, st); return ''; }
     if (k.type === 'buff') { castBuff(k); return ''; }
@@ -470,7 +472,7 @@ const MELEE_RANGE = 1, RANGED_RANGE = 4;
 // 目前武器的遠程射程（沒拿遠程武器時同魔法 4 格）
 function weaponRange() {
     const w = player.equip.weapon, wt = w && WEAPON_TYPES[ITEMS[w.id].type];
-    return wt && wt.ranged ? (wt.range || RANGED_RANGE) : RANGED_RANGE;
+    return (wt && wt.ranged ? (wt.range || RANGED_RANGE) : RANGED_RANGE) + (wt && wt.ranged && typeof advIs === 'function' && advIs('eTempest') ? 1 : 0);   // 二轉風暴遊俠射程 +1
 }
 // 怪物攻擊距離（2026-10-24 怪改成在區域隨機重生，圍上來的怪可能還在遠處）：ui-scene.js 每幀寫 m.near／m.nearAt；畫面沒開不限制
 function mobInReach(m) { return !m.nearAt || gameNow - m.nearAt > 500 || m.near; }
@@ -491,7 +493,7 @@ function playerAction(st) {
     const s = player.settings, now = gameNow;
     const skills = slotSkills();
     const gcd = player.cds._gcd > now;   // 技能公共冷卻中：所有技能（含增益）等一下，只普攻（共鳴照常）
-    const ready = k => !gcd && player.mp >= (typeof talentManaCost==='function'?talentManaCost(k):(k.mp||0)) && !(player.cds[k.id] > now);
+    const ready = k => !gcd && player.mp >= (typeof talentManaCost==='function'?talentManaCost(k):(k.mp||0)) && !(player.cds[k.id] > now) && (typeof advCanCast !== 'function' || advCanCast(k));   // 二轉：金幣／HP／殘血等條件（advance.js）
     if (player.hp < st.maxHp * s.healPct / 100) {
         const heal = skills.find(k => k.type === 'heal' && ready(k));
         if (heal) return castHeal(heal, st);
@@ -512,7 +514,7 @@ function playerAction(st) {
 const SKILL_GCD_MS = 1000;
 // 每個技能各自的冷卻（秒）：技能資料有 cd 就用它；治癒、增益沒寫的用預設（2026-10-24 使用者要求每種技能都有自己的 CD）
 const SKILL_DEFAULT_CD = { heal: 4, buff: 10 };
-function skillCd(k) { return k.cd || SKILL_DEFAULT_CD[k.type] || 0; }
+function skillCd(k) { const cd = k.cd || SKILL_DEFAULT_CD[k.type] || 0; return typeof advCd === 'function' ? advCd(k, cd) : cd; }   // 二轉分支縮短冷卻（advance.js）
 function skillGcdLeft() { return Math.max(0, (player.cds._gcd || 0) - gameNow); }
 function useSkillCost(k) {
     player.mp -= typeof talentManaCost==='function'?talentManaCost(k):k.mp;
@@ -524,7 +526,7 @@ function useSkillCost(k) {
 
 function castHeal(k, st) {
     useSkillCost(k);
-    const v = rand(k.heal[0], k.heal[1]) + Math.floor(st.sp * k.spK);
+    const v = Math.round((rand(k.heal[0], k.heal[1]) + Math.floor(st.sp * k.spK)) * (typeof advHealMult === 'function' ? advHealMult() : 1));
     const before = player.hp;
     player.hp = Math.min(st.maxHp, player.hp + v);
     addLog(`✨ ${k.name}：HP +${player.hp - before}`, 'heal');
@@ -535,6 +537,7 @@ function castHeal(k, st) {
 function castBuff(k) {
     useSkillCost(k);
     player.buffs[k.group || k.id] = { src: 'skill', id: k.id, until: gameNow + k.sec * 1000 };
+    if (typeof advAfterBuff === 'function') advAfterBuff(k, calcStats());   // 二轉：護盾／召喚／場地（advance.js）
     addLog(`✨ 施放「${k.name}」`, 'heal');
     sfx('buff');
     worldVfxSupport(k);
@@ -555,6 +558,7 @@ function magicDamage(base, spK, st, undeadMul, mon = hunt.mon) {
 
 function castSpell(k, st) {
     if (k.screen) { screenAreaAttack(k, st); return; }
+    if (typeof advRunSkill === 'function') { if (advRunSkill(k, st)) return; k = advPrepSkill(k, st); }   // 二轉技能（advance.js）
     if (!k.screenPaid) useSkillCost(k);
     hunt.lastAtkAt = gameNow;
     if (!k.id.startsWith('res_')) hunt.pCd = st.castMs;   // 攻擊魔法用施法間隔（不看武器）；共鳴觸發的不影響出手計時
@@ -562,29 +566,33 @@ function castSpell(k, st) {
     const targets = k.screenTargets || (k.aoe ? mobTargets() : [hunt.mon]);
     const dollScope = {};
     const parts = targets.map(m => {
-        const d = Math.max(1, Math.round(magicDamage(k.dmg, k.spK, st, k.undeadMul, m) * (!k.id.startsWith('res_') ? dollAttackMult(m) : 1)));
+        const d = Math.max(1, Math.round(magicDamage(k.dmg, k.spK, st, k.undeadMul, m) * (!k.id.startsWith('res_') ? dollAttackMult(m) : 1) * (typeof advMagicMult === 'function' ? advMagicMult(k, m) : 1)));
         const dealt = Math.min(Math.max(0, m.hp), d);
         m.hp -= d;
         if (!k.id.startsWith('res_')) dollOnHit(m, dealt, true, dollScope);
         lifeSteal(d, st);
+        if (typeof advOnSpellHit === 'function') advOnSpellHit(k, m, d, st);
         return `${m.name} ${d}`;
     });
     addLog(targets.length > 1 ? `🔮 ${k.name}（範圍）！${parts.join('、')} 傷害` : `🔮 ${k.name}！${hunt.mon.name}受到 ${parts[0].split(' ').pop()} 傷害`, 'magic');
     sfx(/冰|雪|霜|凍/.test(k.name) ? 'magic-ice' : 'magic-cast');
     worldVfxSkill(k, hunt.mon);
     if (!k.id.startsWith('res_')) { resonanceOnHit(); bossEnchantHit(targets.find(m => m.hp > 0), st); }   // 攻擊魔法也算一次命中（法師拿共鳴魔杖）
+    if (typeof advAfterSkill === 'function') advAfterSkill(k, st, targets);
 }
 
 function doStrike(k, st) {
     if (k.screen) { screenAreaAttack(k, st); return; }
+    if (typeof advRunSkill === 'function') { if (advRunSkill(k, st)) return; k = advPrepSkill(k, st); }   // 二轉技能（advance.js）
     const bossAction = !k.id.startsWith('res_');
     if (bossAction) bossEnchantBegin();
     try {
         if (!k.screenPaid) useSkillCost(k);
         worldVfxSkill(k, hunt.mon);
-        const opt = { ignoreAc: k.ignoreAc, undeadMul: k.undeadMul, label: k.name, res: k.id.startsWith('res_') };
+        const opt = { ignoreAc: k.ignoreAc, undeadMul: k.undeadMul, label: k.name, res: k.id.startsWith('res_'), skill: k, noDouble: !!(k.adv && k.adv.noDouble) };
         const targets = k.screenTargets || mobTargets();
         const hit = k.aoe ? targets : [hunt.mon];
+        const hp0 = hit.map(m => m.hp);
         if (k.aoe && targets.length > 1) addLog(`💥 ${k.name}（範圍）`, 'magic');
         for (let i = 0; i < (k.hits || 1); i++) {
             // 分散：每一發打不同的怪；範圍：每一發打全部
@@ -594,13 +602,14 @@ function doStrike(k, st) {
         }
         if (k.magic) {
             for (const m of hit) {
-                const d = magicDamage(k.magic.dmg, k.magic.spK, st, 0, m);
+                const d = Math.max(1, Math.round(magicDamage(k.magic.dmg, k.magic.spK, st, 0, m) * (typeof advMagicMult === 'function' ? advMagicMult(k, m) : 1)));
                 m.hp -= d;
                 lifeSteal(d, st);
                 addLog(`⚡ ${k.name}的魔力，${m.name}受到 ${d} 傷害`, 'magic');
             }
         }
         if (k.stun) for (const m of hit) { m.stunUntil = gameNow + k.stun; addLog(`${m.name}被暈眩了`, 'magic'); }
+        if (typeof advAfterSkill === 'function') advAfterSkill(k, st, hit, hp0);
     } finally { if (bossAction) bossEnchantEnd(st); }
 }
 
@@ -676,7 +685,10 @@ function bossDmgMult(mon, st) { return mon.boss ? 1 + (st.bossDmg || 0) : 1; }
 
 // 吸血：造成傷害的一定比例轉為 HP
 function lifeSteal(dmg, st) {
-    if (st.lifesteal > 0 && dmg > 0) player.hp = Math.min(st.maxHp, player.hp + Math.max(1, Math.floor(dmg * st.lifesteal)));
+    if (!(st.lifesteal > 0 && dmg > 0)) return;
+    const h = Math.max(1, Math.floor(dmg * st.lifesteal)), over = player.hp + h - st.maxHp;
+    player.hp = Math.min(st.maxHp, player.hp + h);
+    if (over > 0 && typeof advOverflowHeal === 'function') advOverflowHeal(over, st);   // 深淵魔王：多吸的轉護盾
 }
 
 // 回傳 false 代表無法攻擊（沒彈藥）
@@ -687,11 +699,11 @@ function physicalAttack(st, mult, opt, mon = hunt.mon) {
         const ammo = pickAmmo(st.weaponType.ammo, mon);
         if (!ammo) { outOfAmmo(); return false; }
         ammoDef = ITEMS[ammo.id];
-        consumeItem(ammo.id);
+        if (!(typeof advSaveAmmo === 'function' && advSaveAmmo(opt))) consumeItem(ammo.id);   // 二轉：槍鬥士省子彈、集束手雷
         autoBuyAmmo();
     }
-    const swings = chance(st.double) ? 2 : 1;
-    const def = opt.ignoreAc ? 0 : 10 - mon.ac;
+    const swings = !opt.noDouble && chance(st.double) ? 2 : 1;
+    const def = opt.ignoreAc ? 0 : 10 - mon.ac - (typeof advDefMod === 'function' ? advDefMod(mon, opt) : 0);
     const hitChance = clamp(0.7 + (st.hit - def) * 0.02, 0.05, 0.95);
     let total = 0, crit = false, hits = 0;
     for (let i = 0; i < swings; i++) {
@@ -705,9 +717,13 @@ function physicalAttack(st, mult, opt, mon = hunt.mon) {
         d *= slayerMult(mon) * bossDmgMult(mon, st);
         d *= mult;
         if(typeof talentDamageMult==='function')d*=talentDamageMult(st,false,mon);
-        if (chance(st.crit)) { d *= st.critDmg == null ? 1.5 : st.critDmg; crit = true; }
+        if (typeof advPhysMult === 'function') d = d * advPhysMult(st, mon, opt) + advPhysAdd(mon);   // 二轉被動／減益（advance.js）
+        const forced = typeof advCritRoll === 'function' ? advCritRoll(st, mon, opt) : null;
+        if (forced) { d *= forced; crit = true; }
+        else if (chance(st.crit)) { d *= st.critDmg == null ? 1.5 : st.critDmg; crit = true; }
         total += Math.max(1, Math.round(d));
     }
+    if (total && !opt.advExtra && typeof advAmbushMult === 'function') total = Math.round(total * advAmbushMult());
     const label = opt.label ? `「${opt.label}」` : '你';
     const dollMult = !opt.res ? dollAttackMult(mon) : 1;
     if (!hits) { addLog(`${label}沒有命中`, 'miss'); return true; }
@@ -721,27 +737,31 @@ function physicalAttack(st, mult, opt, mon = hunt.mon) {
     addLog(`${label}${hits > 1 ? '連擊' : '攻擊'}，${mon.name}受到 ${total} 傷害${crit ? '（爆擊！）' : ''}`, crit ? 'crit' : '');
     sfxHit(crit, st.ranged);
     worldVfxAttack(st, mon, crit);
+    if (typeof advOnPhysHit === 'function') advOnPhysHit(mon, total, crit, opt, st);
     return true;
 }
 
 function monsterAttack(st, mon) {
     if (mercEnemyAttack(mon)) return;
+    if (typeof advStealthOn === 'function' && advStealthOn()) return;   // 二轉夜行者「影遁」：隱身中怪物不攻擊
     const magic = mon.magic && chance(mon.magic.p);
     let dmg;
     if (magic) {
         dmg = rand(mon.magic.dmg[0], mon.magic.dmg[1]) * (1 - clamp(st.mr, 0, 150) / 200);
     } else {
-        if (chance(st.dodge)) { addLog(`你閃過了${mon.name}的攻擊`, 'miss'); sfx('block'); worldVfxEmit('impact-2', null); return; }
-        const hitChance = clamp(0.7 + (mon.hit - (10 - st.ac)) * 0.02, 0.05, 0.95);
+        if (chance(st.dodge)) { addLog(`你閃過了${mon.name}的攻擊`, 'miss'); sfx('block'); worldVfxEmit('impact-2', null); if (typeof advOnDodge === 'function') advOnDodge(mon, st); return; }
+        const hitChance = clamp(0.7 + (mon.hit - (typeof advMonHitMod === 'function' ? advMonHitMod(mon) : 0) - (10 - st.ac)) * 0.02, 0.05, 0.95);
         if (!chance(hitChance)) { addLog(`${mon.name}的攻擊落空`, 'miss'); return; }
         dmg = rand(mon.dmg[0], mon.dmg[1]);
         if (st.ac < 0) dmg -= rand(0, Math.floor(-st.ac / 5));   // AC 負值越多，額外減傷越多
     }
     if (mercEffectOn(mon, 'weaken')) dmg *= mon.boss ? .95 : .85;
     dmg = Math.max(0, Math.round(dmg - st.reduce));
+    if (typeof advIncoming === 'function') dmg = advIncoming(mon, dmg, magic, st);   // 二轉：減傷、護盾（advance.js）
     if (st.absorb && player.mp > 0) {
-        const a = Math.min(player.mp, Math.floor(dmg * st.absorb));
-        player.mp -= a;
+        const eff = typeof advAbsorbEff === 'function' ? advAbsorbEff() : 1;   // 秘法守衛：每點 MP 擋更多
+        const a = Math.min(Math.floor(player.mp * eff), Math.floor(dmg * st.absorb));
+        player.mp -= Math.ceil(a / eff);
         dmg -= a;
     }
     dmg = bossEnchantAbsorb(Math.max(0, Math.round(bossEnchantEnemyDamage(mon, dmg)*(typeof talentIncomingMult==='function'?talentIncomingMult(magic):1))));
@@ -749,9 +769,10 @@ function monsterAttack(st, mon) {
     mercEnemyStatus(mon, magic, dmg, player);
     worldVfxEnemy(mon, magic);
     addLog(magic ? `${mon.name}施放「${mon.magic.name}」，你受到 ${dmg} 傷害` : `${mon.name}攻擊，你受到 ${dmg} 傷害`, 'hurt');
-    if (player.hp <= 0) { onDeath(mon); return; }
+    if (player.hp <= 0 && !(typeof advPreventDeath === 'function' && advPreventDeath(st))) { onDeath(mon); return; }
     if (dmg > 0) sfx('hurt');
     if (dmg > 0) resonanceOnHurt(st);   // 共鳴防具：受擊／危急觸發（resonance.js）
+    if (typeof advOnHurt === 'function') advOnHurt(mon, dmg, magic, st);
     if (st.thorns && dmg > 0 && !magic) {   // 特殊詞綴「反傷」：被物理攻擊打中時反彈
         const t = Math.max(1, Math.round(dmg * st.thorns));
         mon.hp -= t;
@@ -772,7 +793,7 @@ function onKill(mon) {
     const z = currentZone(), st = calcStats();
     const mb = 1 + mapBonus();   // 地圖詞綴獎勵加成
     let gold = Math.round(rand(mon.gold[0], mon.gold[1]) * mb);
-    if (player.cls === 'royal') gold = Math.round(gold * (1 + Math.max(0, st.cha - 10) * 0.03));
+    if (player.cls === 'royal') gold = Math.round(gold * (1 + Math.max(0, st.cha - 10) * (typeof advRoyalGoldK === 'function' ? advRoyalGoldK() : 0.03)));   // 二轉天下 5%
     gold = Math.round(gold * (1 + st.goldPct));   // 特殊詞綴「金幣加成」
     gold = dollKillGold(mon, gold);
     player.gold += gold;
@@ -792,6 +813,7 @@ function onKill(mon) {
     mercQuestOnKill();
     rollDrops(mon, z);
     questOnKill(mon, z);
+    if (typeof advOnKill === 'function') { advOnKill(mon, st); advLocalDrops(mon); }
     if (mapOnKill(mon)) return;   // 異界：計數；打倒異界首領＝通關、回村
 
     if (z && z.type === 'tower' && player.loc.floor) {   // 逐層解鎖：這層累積擊殺（守關首領也算 1 隻）
@@ -906,7 +928,8 @@ function onDeath(killer) {
     const z = currentZone(), mon = killer || (hunt && hunt.mon);
     player.deaths++;
     let msg = `💀 你被${mon ? mon.name : '敵人'}擊倒了…`;
-    if (consumeItem('reviveScroll')) msg += '復活卷軸生效，沒有損失經驗。';
+    if (typeof advTrialDeath === 'function' && advTrialDeath(mon)) msg += '試煉之影的試煉失敗，沒有損失經驗。';
+    else if (consumeItem('reviveScroll')) msg += '復活卷軸生效，沒有損失經驗。';
     else {
         const lose = Math.floor(expToNext(player.lv) * deathLossRate(player.lv));
         player.exp = Math.max(0, player.exp - lose);

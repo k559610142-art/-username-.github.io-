@@ -406,12 +406,13 @@ function questState() {
 }
 function questList() { return CLASS_QUESTS[player.cls] || []; }
 function currentQuest() { return questList()[questState().ch] || null; }
-function questTitleEarned() { return questState().ch >= questList().length && questList().length > 0; }
+const QUEST_TITLE_CH = 4;   // 前 4 章完成＝職業稱號；第 5～7 章是二轉（advance.js）
+function questTitleEarned() { return questState().ch >= Math.min(QUEST_TITLE_CH, questList().length) && questList().length > 0; }
 
 function questProgress(q) {
     const s = questState();
     if (!s.active) return 0;
-    if (q.goal.type === 'collect') return Math.min(q.goal.n, countItem(q.goal.item));
+    if (q.goal.type === 'collect' || q.goal.type === 'bossCollect') return Math.min(q.goal.n, countItem(q.goal.item));
     if (q.goal.type === 'boss') return s.bossDone ? 1 : 0;
     return s.prog;
 }
@@ -419,6 +420,7 @@ function questNeed(q) { return q.goal.type === 'boss' ? 1 : q.goal.n; }
 function questReady(q) { return questState().active && questProgress(q) >= questNeed(q); }
 
 function questGoalText(q) {
+    if (q.goal.type === 'bossCollect') return advQuestGoalText(q);   // 二轉第 5 章：任何地圖的首領
     const z = ZONE_BY_ID[q.goal.zone].name, g = q.goal;
     if (g.type === 'collect') return `在${z}打倒魔物，收集「${g.itemName}」×${g.n}`;
     if (g.type === 'kill') return `在${z}擊倒 ${g.n} 隻魔物`;
@@ -430,6 +432,7 @@ function acceptQuest() {
     if (!q || s.active) return;
     if (player.lv < q.lv) { showToast(`需要 Lv.${q.lv}`); return; }
     if (!inTown()) { showToast(`回到村莊找${CLASS_STORIES[player.cls].npc}接任務`); return; }
+    if (typeof advAcceptCheck === 'function' && !advAcceptCheck(q)) return;   // 二轉第 6 章：先選分支、不能帶傭兵娃娃
     s.active = true; s.prog = 0; s.bossDone = false;
     addLog(`📜 接受任務「${q.title}」：${questGoalText(q)}`, 'sys');
     saveGame();
@@ -440,16 +443,17 @@ function turnInQuest() {
     const q = currentQuest(), s = questState();
     if (!q || !questReady(q)) return;
     if (!inTown()) { showToast(`回到村莊找${CLASS_STORIES[player.cls].npc}回報`); return; }
-    if (q.goal.type === 'collect') consumeItem(q.goal.item, q.goal.n);
+    if (q.goal.type === 'collect' || q.goal.type === 'bossCollect') consumeItem(q.goal.item, q.goal.n);
     const r = q.reward, got = [];
     if (r.item) { addItem(r.item, 1); got.push(ITEMS[r.item].name); }
     if (r.gold) { player.gold += r.gold; got.push(`${fmt(r.gold)} 金幣`); }
     if (r.elixir) { addItem('elixir', r.elixir); got.push(`萬能藥 ×${r.elixir}`); }
+    if (typeof advQuestReward === 'function') advQuestReward(q, got);   // 二轉完成、第 2 招技能書與飾品
     s.ch++; s.active = false; s.prog = 0; s.bossDone = false;
     addLog(`📜 完成任務「${q.title}」，獲得 ${got.join('、')}`, 'rare');
     sfx('quest-done');
     let msg = `${q.outro}\n\n獲得：${got.join('、')}`;
-    if (questTitleEarned()) {
+    if (s.ch === QUEST_TITLE_CH) {
         const t = CLASS_STORIES[player.cls].title;
         msg += `\n\n🏅 職業任務全部完成，獲得稱號「${t}」！`;
         addLog(`🏅 獲得稱號「${t}」`, 'boss');
@@ -462,8 +466,19 @@ function turnInQuest() {
 // 擊倒怪物時呼叫（combat.js onKill）
 function questOnKill(mon, z) {
     const s = questState(), q = currentQuest();
-    if (!q || !s.active || z.id !== q.goal.zone) return;
+    if (!q || !s.active) return;
     const g = q.goal;
+    if (g.type === 'bossCollect') {   // 二轉第 5 章：任何地圖的首領都可能掉（後端模式由伺服器發放）
+        if (!mon.boss || lootActive()) return;
+        const have = countItem(g.item);
+        if (have < g.n && chance(g.p)) {
+            addItem(g.item, 1);
+            addLootLog(`📜 獲得任務道具「${g.itemName}」 ×1（${have + 1}/${g.n}）`, 'rare');
+            if (have + 1 === g.n) addLog(`📜 任務目標達成！回村莊向${CLASS_STORIES[player.cls].npc}回報`, 'rare');
+        }
+        return;
+    }
+    if (!z || z.id !== g.zone) return;
     if (g.type === 'boss') {
         if (mon.questBoss) { s.bossDone = true; addLog(`📜 討伐「${g.boss.name}」成功！回村莊向${CLASS_STORIES[player.cls].npc}回報`, 'rare'); sfx('quest-done'); return; }
         if (s.prog < g.after) {

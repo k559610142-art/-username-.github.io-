@@ -30,6 +30,7 @@ for (const cls in SKILLS) {
 // 書最低可以學的角色等級（任何職業；掉落挑書用）
 function bookMinLv(d) {
     const s = SKILL_BY_ID[d.skill];
+    if (s.kind === 'adv') return 999;   // 二轉技能書不會被怪物掉（advance.js）
     if (s.kind === 'class') return s.lv;
     return Math.min(...Object.keys(MAGIC_CLASS).map(c => skillNeedLv(s, c)).filter(Boolean));
 }
@@ -42,6 +43,8 @@ function bookLearnError(d) {
     const need = skillNeedLv(s, player.cls);
     if (!need) return s.kind === 'magic' ? `${CLASSES[player.cls].name}學不了${MAGIC_TIER_NAMES[s.tier]}級魔法` : `只有${CLASSES[s.cls].name}能學`;
     if (hasSkill(s.id)) return '已經學會了';
+    if (s.kind === 'adv' && typeof advSkillUsable === 'function' && !advSkillUsable(s)) return '只有這個二轉分支能學';
+    if (s.kind === 'adv' && s.slot === 2 && questState().ch <= ADV_CH + 2) return '完成第 7 章任務後才能學';
     if (player.lv < need) return `需要 Lv.${need}（目前 Lv.${player.lv}）`;
     return '';
 }
@@ -78,7 +81,7 @@ const BOOK_DROP_P = 0.003, BOOK_BOSS_P = 0.25;
 let bookDropPool = null;
 function rollBookDrop(mon) {
     if (!chance(mon.boss ? BOOK_BOSS_P : BOOK_DROP_P)) return null;
-    if (!bookDropPool) bookDropPool = Object.keys(ITEMS).filter(id => ITEMS[id].cat === 'book' && !ITEMS[id].price).map(id => ({ id, lv: bookMinLv(ITEMS[id]) }));
+    if (!bookDropPool) bookDropPool = Object.keys(ITEMS).filter(id => ITEMS[id].cat === 'book' && !ITEMS[id].price && !ITEMS[id].advBook).map(id => ({ id, lv: bookMinLv(ITEMS[id]) }));
     const pool = bookDropPool.filter(b => b.lv <= mon.lv + 5);
     return pool.length ? pool[rand(0, pool.length - 1)].id : null;
 }

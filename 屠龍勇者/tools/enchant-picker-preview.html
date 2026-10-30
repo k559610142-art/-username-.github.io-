@@ -1,0 +1,11 @@
+<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><base href="../"><title>武防卷連續強化隔離驗收</title><style>body{background:#1c2225;color:#eee;font:16px sans-serif;padding:16px}button{margin:8px}</style><h2>武防卷連續強化</h2><p>隔離角色與外網，不讀寫正式存檔。武器從+5開始，可測安全強化及超安定值確認。</p><button id="weapon">一般武卷</button><button id="armor">祝福防卷</button><button id="curse">最後一張詛咒武卷</button><div id="dialog-layer"></div><script>(async()=>{const memory=new Map();Object.defineProperty(window,'localStorage',{value:{getItem:k=>memory.get(k)||null,setItem:(k,v)=>memory.set(k,String(v)),removeItem:k=>memory.delete(k)}});
+const localFetch=window.fetch.bind(window);window.fetch=(u,o)=>{if(new URL(u,location.href).origin!==location.origin)throw Error('隔離預覽禁止連外');return localFetch(u,o);};
+const index=await(await fetch('index.html')).text(),style=document.createElement('style');style.textContent=index.match(/<style>([\s\S]*?)<\/style>/)[1];document.head.prepend(style);
+const files=[...index.matchAll(/<script src="(data\/[^"?]+\.js)\?v=[^"]+"/g)].map(m=>m[1]).filter(f=>!['data/main.js','data/pwa.js'].includes(f));
+for(const f of files)await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=f+'?v=20261030d&preview=nether-executioner-v1';s.onload=resolve;s.onerror=reject;document.head.append(s);});
+
+SIM_MODE=true;createPlayer('強化隔離測試','knight',CLASSES.knight.base);saveGame=()=>{};refreshUI=()=>{};sfx=()=>{};addItem('longSword');addItem('weaponScroll',8);addItem('leatherArmor');addItem('bArmorScroll',3);addItem('cWeaponScroll',1);player.inv.find(x=>x.id==='longSword').ench=5;SIM_MODE=false;
+document.getElementById('weapon').onclick=()=>openEnchantPicker(player.inv.find(x=>x.id==='weaponScroll').uid);
+document.getElementById('armor').onclick=()=>openEnchantPicker(player.inv.find(x=>x.id==='bArmorScroll').uid);
+document.getElementById('curse').onclick=()=>openEnchantPicker(player.inv.find(x=>x.id==='cWeaponScroll').uid);
+})().catch(e=>console.error(e));</script></html>

@@ -199,6 +199,8 @@ function migrateSave(data) {
     mercQuestNormalize(p);
     // schema21：舊角色以現有等級推算天賦點；沒有試煉紀錄就不補試煉點。
     if(typeof talentNormalize==='function')talentNormalize(p);
+    // schema22：二轉；舊角色補空的 player.adv（尚未二轉），非本職業／不存在的分支清掉（advance.js）。
+    if (typeof advNormalize === 'function') advNormalize(p);
     // schema 6：舊物品預設未鎖定；僅保留明確的鎖定旗標（背包、倉庫、已裝備）。
     for (const it of [...p.inv, ...p.storage, ...Object.values(p.equip)]) {
         if (it.sellLocked !== true) delete it.sellLocked;

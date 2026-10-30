@@ -53,6 +53,7 @@ function createPlayer(name, cls, stats) {
         towerMax: 1, towerKills: {}, towerRule: 2, towerCleared: {}, towerBossCd: {}, dragons: {}, dragonCd: {},
         kills: 0, deaths: 0,
         quests: { ch: 0, active: false, prog: 0, bossDone: false },
+        adv: { br: '', pick: '', at: 0, el: 'fire' },   // 二轉（advance.js，SAVE_SCHEMA 22）
         settings: JSON.parse(JSON.stringify(DEFAULT_SETTINGS)), mapRun: null, mapPortal: null, mapQueue: null,
         created: Date.now(),
         skills: [],
@@ -199,7 +200,7 @@ function learnedSkillById(id) { return SKILL_BY_ID[id] || null; }
 // ───────── 技能（2026-10-15 起：用魔法書學，存在 player.skills；ARCHITECTURE.md 第 40 節）─────────
 // 已學會、而且這個職業用得了的技能（被動學會就生效）
 function learnedSkills(p = player) {
-    return (p.skills || []).map(id => SKILL_BY_ID[id]).filter(s => s && skillNeedLv(s, p.cls));
+    return (p.skills || []).map(id => SKILL_BY_ID[id]).filter(s => s && skillNeedLv(s, p.cls) && (typeof advSkillUsable !== 'function' || advSkillUsable(s, p)));   // 二轉技能只認目前分支（advance.js）
 }
 function hasSkill(id) { return (player.skills || []).includes(id); }
 // ───────── 快捷欄（player.settings.bar，2026-10-15 起取代 skillSlots；第 40 節）─────────
@@ -293,6 +294,7 @@ function calcStats() {
     if (doll && dollIsSummoned(p)) addFx(fx, DOLL_ABILITIES[doll].fx);
     addFx(fx, mercPlayerFx());
     if(typeof talentPlayerFx==='function')addFx(fx,talentPlayerFx(p));
+    if (typeof advPlayerFx === 'function') addFx(fx, advPlayerFx(p));   // 二轉被動（advance.js）
     let weaponEnch = 0;
     for (const slot of SLOT_KEYS) {
         const it = p.equip[slot];
@@ -371,8 +373,9 @@ function gainExp(n) {
         player.exp -= expToNext(player.lv);
         player.lv++;
         const st = calcStats();
-        const hpUp = rand(c.hp[0], c.hp[1]) + conHpBonus(st.con);
-        const mpUp = rand(c.mp[0], c.mp[1]) + wisMpBonus(st.wis);
+        const g = typeof advGrowth === 'function' ? advGrowth : () => 1;   // 二轉後每級 HP／MP 成長加成（advance.js）
+        const hpUp = Math.round((rand(c.hp[0], c.hp[1]) + conHpBonus(st.con)) * g('hp'));
+        const mpUp = Math.round((rand(c.mp[0], c.mp[1]) + wisMpBonus(st.wis)) * g('mp'));
         player.baseHp += hpUp;
         player.baseMp += mpUp;
         if (player.lv >= BONUS_STAT_LEVEL) player.statPoints++;

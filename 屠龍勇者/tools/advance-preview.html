@@ -1,0 +1,28 @@
+<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><base href="../"><title>二轉隔離驗收</title>
+<style>body{background:#1c2225;color:#eee;font:15px sans-serif;padding:16px;margin:0}#bar button{margin:4px}#out{max-width:640px}canvas{background:#2b3a2f;border-radius:8px;display:block;margin:8px 0}</style>
+<h2>二轉隔離驗收</h2><p>隔離角色與外網，不讀寫正式存檔。王族 Lv.60，第 4 章已完成。</p>
+<div id="bar"><button id="ch5">完成第 5 章</button><button id="pick">第 6 章：選分支</button><button id="trial">打倒試煉之影並回報</button><button id="ch7">Lv.70 完成第 7 章</button><button id="reshape">使用命運重塑石</button><button id="quest">任務頁</button><button id="skills">技能頁</button></div>
+<canvas id="cv" width="320" height="120"></canvas><div id="out"></div><div id="dialog-layer"></div>
+<script>(async()=>{const memory=new Map();Object.defineProperty(window,'localStorage',{value:{getItem:k=>memory.get(k)||null,setItem:(k,v)=>memory.set(k,String(v)),removeItem:k=>memory.delete(k)}});
+const localFetch=window.fetch.bind(window);window.fetch=(u,o)=>{if(new URL(u,location.href).origin!==location.origin)throw Error('隔離預覽禁止連外');return localFetch(u,o);};
+const index=await(await fetch('index.html')).text(),style=document.createElement('style');style.textContent=index.match(/<style>([\s\S]*?)<\/style>/)[1];document.head.prepend(style);
+const ver=index.match(/advance\.js\?v=([^"]+)"/)[1];
+const files=[...index.matchAll(/<script src="(data\/[^"?]+\.js)\?v=[^"]+"/g)].map(m=>m[1]).filter(f=>!['data/main.js','data/pwa.js'].includes(f));
+for(const f of files)await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=f+'?v='+ver+'&preview=advance';s.onload=resolve;s.onerror=reject;document.head.append(s);});
+SIM_MODE=true;createPlayer('二轉測試','royal',CLASSES.royal.base);SIM_MODE=false;
+saveGame=()=>{};sfx=()=>{};showToast=()=>{};lootMode='legacy';
+player.lv=60;player.gold=3e6;player.quests={ch:4,active:false,prog:0,bossDone:false};player.loc={type:'town',id:'talking'};
+const out=document.getElementById('out'),tab={v:'quest'};
+refreshUI=()=>{out.innerHTML=tab.v==='quest'?renderQuest():renderSkills();draw();};
+function draw(){const c=document.getElementById('cv').getContext('2d');c.clearRect(0,0,320,120);advDrawAura(c,160,70);c.font='40px sans-serif';c.textAlign='center';c.fillText(CLASSES[player.cls].icon,160,64);advDrawOrbs(c,160,52);drawLabel(c,player.name+'（'+advClassName()+'）',160,22,advNameColor());}
+setInterval(draw,100);
+const q=()=>currentQuest(),S=()=>questState();
+document.getElementById('ch5').onclick=()=>{if(q().goal.type!=='bossCollect')return;acceptQuest();addItem(q().goal.item,5);turnInQuest();};
+document.getElementById('pick').onclick=()=>acceptQuest();
+document.getElementById('trial').onclick=()=>{if(!q()||!q().advPick||!S().active)return;S().prog=30;S().bossDone=true;turnInQuest();};
+document.getElementById('ch7').onclick=()=>{player.lv=70;if(q()&&q().advCh===7){acceptQuest();S().bossDone=true;turnInQuest();}};
+document.getElementById('reshape').onclick=()=>{addItem('advReshape',1);openAdvReshape();};
+document.getElementById('quest').onclick=()=>{tab.v='quest';refreshUI();};
+document.getElementById('skills').onclick=()=>{tab.v='skills';refreshUI();};
+refreshUI();
+})().catch(e=>console.error(e));</script></html>

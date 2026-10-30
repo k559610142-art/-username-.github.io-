@@ -397,7 +397,7 @@ function renderChar() {
             <div class="cv-box cv-hero">
                 <div class="cv-name">${esc(player.name)}</div>
                 <div class="cv-stage"><img src="${heroSrc(player.cls)}" alt="${c.name}" onerror="this.src='${c.art || ''}'"><span class="cv-circle"></span></div>
-                <div class="cv-foot"><span>等級 <b>${player.lv}</b></span><span>職業 <b>${c.name}</b></span><span>經驗 <b class="gold">${expPct}%</b></span></div>
+                <div class="cv-foot"><span>等級 <b>${player.lv}</b></span><span>職業 <b${typeof advBranch === 'function' && advBranch() ? ` style="color:${advBranch().color}"` : ''}>${typeof advClassName === 'function' ? advClassName() : c.name}</b></span><span>經驗 <b class="gold">${expPct}%</b></span></div>
             </div>
             <div class="cv-box cv-equipment"><div class="cv-gear">${charGearHtml()}</div>${charCompanionsHtml()}</div>
             <div class="cv-box cv-stats">
@@ -633,6 +633,7 @@ function openItemDialog(uid) {
     if (d.scroll === 'tele') btns.push({ text: '使用', onClick: quickTele });   // 2026-10-18 第 51 節
     if (d.scroll === 'home') btns.push({ text: '使用', onClick: () => { if (!currentZone()) showToast('你已經在村莊裡'); else useHomeScroll(''); } });
     if (d.cat === 'elixir') btns.push({ text: '使用', onClick: () => openElixirDialog() });
+    if (d.advReshape) btns.push({ text: '使用', onClick: openAdvReshape });   // 命運重塑石：換二轉分支（advance.js）
     if (d.cat === 'book' && !bookLearnError(d)) btns.push({ text: '📖 學習', onClick: () => learnBook(uid) });   // 魔法書（spellbook.js）
     if (!slot && isCloudConfigured() && cloudLoggedIn() && inTown() && marketSellable(inst)) btns.push({ text: '🏪 上架', cls: 'secondary', onClick: () => marketOpenSell(uid) });
     if (!slot) btns.push({ text: '丟棄', cls: 'danger', onClick: () => gameConfirm('丟棄道具', `確定丟棄 ${itemName(inst)}${inst.n > 1 ? ' ×' + inst.n : ''}？丟掉就找不回來了。`, () => { removeInst(uid); saveGame(); refreshUI(); }, '丟棄') });
@@ -640,34 +641,59 @@ function openItemDialog(uid) {
     openDialog(itemName(inst) + (inst.n > 1 ? ` ×${fmt(inst.n)}` : ''), itemDescHtml(inst) + (bagIsStored(inst) ? '<p class="good">已存於專用收納頁，不計背包負重，可直接使用。</p>' : '') + (slot ? '' : compareHtml(inst)), btns);
 }
 
+let enchantPickerState = null;
 function openEnchantPicker(scrollUid) {
     const sc = findInv(scrollUid);
     if (!sc) return;
-    const sd = ITEMS[sc.id];
+    enchantPickerState = { owner: player, scrollId: sc.id, pending: null, result: '' };
+    openDialog(ITEMS[sc.id].name, '<div id="enchant-picker"></div>', [{ text: '關閉', cls: 'secondary' }]);
+    renderEnchantPicker();
+}
+
+function renderEnchantPicker() {
+    const state = enchantPickerState, box = $('enchant-picker');
+    if (!state || state.owner !== player || !box) return;
+    const sd = ITEMS[state.scrollId], sc = player.inv.find(x => x.id === state.scrollId && x.n > 0);
+    if (!sc) state.pending = null;
+    const left = countItem(state.scrollId), body = box.closest('.dialog-body'), top = body.scrollTop;
     const rows = enchantTargets(sd).map(x => {
         const d = ITEMS[x.id], cur = x.ench || 0;
         const rate = sd.bless < 0 ? '必定 -1' : cur >= ENCHANT_MAX ? '已達上限' : cur < d.safe ? '安全' : `成功率 ${Math.round(enchantSuccessRate(cur, d.safe) * 100)}%`;
+        const pending = state.pending && state.pending.uid === x.uid;
         return `<div class="list-row"><div><b class="${itemClass(x)}">${esc(itemName(x))}</b>${slotOfEquipped(x.uid) ? ' <small class="good">裝備中</small>' : ''}
-            <small>安定值 +${d.safe}｜${rate}</small></div><button onclick="enchantPick(${scrollUid},${x.uid})">施法</button></div>`;
+            <small>安定值 +${d.safe}｜${rate}</small>${pending ? '<p class="bad">⚠️ 超過安定值，失敗裝備會蒸發消失！確定要衝嗎？</p>' : ''}</div>
+            ${pending ? `<div><button onclick="enchantPick(${sc ? sc.uid : 0},${x.uid},true)">衝了！</button><button class="secondary" onclick="enchantCancelConfirm()">取消</button></div>` : `<button onclick="enchantPick(${sc ? sc.uid : 0},${x.uid})" ${!sc || (sd.bless >= 0 && cur >= ENCHANT_MAX) ? 'disabled' : ''}>施法</button>`}</div>`;
     }).join('');
-    openDialog(sd.name, `<div class="list">${rows || '<p class="muted">沒有可以強化的裝備</p>'}</div>`, [{ text: '取消', cls: 'secondary' }]);
+    box.innerHTML = `<div style="position:sticky;top:0;background:var(--panel);z-index:1"><p>剩餘卷軸：${fmt(left)} 張${!sc ? '（已用完）' : ''}</p><p role="status">${esc(state.result || '選擇裝備施法，強化後可繼續操作。')}</p></div><div class="list">${rows || '<p class="muted">沒有可以強化的裝備</p>'}</div>`;
+    body.scrollTop = top;
 }
 
-function enchantPick(scrollUid, targetUid) {
+function enchantCancelConfirm() {
+    if (!enchantPickerState) return;
+    enchantPickerState.pending = null;
+    renderEnchantPicker();
+}
+
+function enchantPick(scrollUid, targetUid, confirmed = false) {
+    const state = enchantPickerState;
+    if (!state || state.owner !== player || !$('enchant-picker')) return;
     const t = findAnyInst(targetUid), sc = findInv(scrollUid);
-    if (!t || !sc) return;
+    if (!t || !sc || sc.id !== state.scrollId) { state.pending = null; renderEnchantPicker(); return; }
     const d = ITEMS[t.id], sd = ITEMS[sc.id], cur = t.ench || 0;
-    const go = () => {
-        const r = doEnchant(scrollUid, targetUid);
-        if (r.ok) sfx('treasure');
-        saveGame();
-        refreshUI();
-        gameAlert(r.gone ? '💥 蒸發了' : r.ok ? '✨ 衝裝結果' : '衝裝', r.msg);
-    };
-    closeDialog();
     if (sd.bless >= 0 && cur >= d.safe && cur < ENCHANT_MAX) {
-        gameConfirm('⚠️ 超過安定值', `${itemName(t)} 已達安定值 +${d.safe}。\n成功率 ${Math.round(enchantSuccessRate(cur, d.safe) * 100)}%，失敗裝備會蒸發消失！\n確定要衝嗎？`, go, '衝了！');
-    } else go();
+        if (!confirmed || !state.pending || state.pending.uid !== targetUid || state.pending.cur !== cur) {
+            state.pending = { uid: targetUid, cur };
+            renderEnchantPicker();
+            return;
+        }
+    }
+    state.pending = null;
+    const r = doEnchant(scrollUid, targetUid);
+    if (r.ok) sfx('treasure');
+    state.result = (r.gone ? '💥 ' : r.ok ? '✨ ' : '') + r.msg;
+    saveGame();
+    refreshUI();
+    renderEnchantPicker();
 }
 
 function openElixirDialog() {
@@ -701,13 +727,15 @@ function renderSkills() {
         else if (book && player.lv >= need) btn = `<button class="mini" onclick="learnSkillBook('${s.id}')">📖 學習</button>`;
         else btn = `<span class="muted">${player.lv < need ? `Lv.${need}` : '需要書'}</span>`;
         return `<div class="list-row ${have ? '' : 'locked'}"><span class="sk-ico">${skillIconHtml(s)}</span><div style="flex:1;min-width:0"><b>${esc(s.name)}</b><small>${skillInfoText(s)}</small><small>${esc(s.desc)}</small>
-            ${have ? '' : `<small class="muted">${esc(skillBookName(s))}${ITEMS[bookIdOf(s.id)] && ITEMS[bookIdOf(s.id)].price ? '：村莊商店' : '：怪物掉落（首領較容易）'}${book ? '（背包裡有）' : ''}</small>`}</div>${btn}</div>`;
+            ${have ? '' : `<small class="muted">${esc(skillBookName(s))}${s.kind === 'adv' ? '：二轉任務獎勵／職業 NPC 購買' : ITEMS[bookIdOf(s.id)] && ITEMS[bookIdOf(s.id)].price ? '：村莊商店' : '：怪物掉落（首領較容易）'}${book ? '（背包裡有）' : ''}</small>`}</div>${btn}</div>`;
     };
     const mc = MAGIC_CLASS[cls];
     if (mc) for (let t = 1; t <= mc.max; t++) {
         h += `<h4>📘 ${MAGIC_TIER_NAMES[t]}級魔法 <small class="muted">（${CLASSES[cls].name} Lv.${mc.lv[t - 1]} 可學）</small></h4><div class="list">` + MAGIC.filter(s => s.tier === t).map(row).join('') + `</div>`;
     }
     h += `<h4>🗡️ ${CLASSES[cls].name}技能</h4><div class="list">` + (SKILLS[cls] || []).map(row).join('') + `</div>`;
+    const ab = typeof advBranch === 'function' && advBranch();   // 二轉分支技能（advance.js）
+    if (ab) h += `<h4>🌟 二轉・<span style="color:${ab.color}">${esc(ab.name)}</span></h4><div class="list">` + [ab.passive, ab.skill1, ab.skill2].map(row).join('') + `</div>`;
     return h;
 }
 function learnSkillBook(skillId) {
@@ -720,9 +748,10 @@ function renderQuest() {
     const st = CLASS_STORIES[player.cls], c = CLASSES[player.cls], list = questList(), s = questState();
     let h = `<div class="panel story"><div class="loc">${c.icon} ${c.name}的故事</div><p>${st.story}</p>
         <small class="muted">任務 NPC：${st.npc}（在任何村莊都找得到）</small>${questTitleEarned() ? `<p class="good">🏅 稱號：${st.title}</p>` : ''}</div>`;
+    if (typeof advQuestPanelHtml === 'function') h += advQuestPanelHtml();   // 二轉狀態、選分支、買書（advance.js）
     list.forEach((q, i) => {
-        const head = `<div class="quest-head"><b>第 ${i + 1} 章　${q.title}</b><small class="muted">Lv.${q.lv}</small></div>`;
-        const reward = `<small class="muted">獎勵：${ITEMS[q.reward.item].name}、${fmt(q.reward.gold)} 金幣${q.reward.elixir ? `、萬能藥 ×${q.reward.elixir}` : ''}</small>`;
+        const head = `<div class="quest-head"><b>第 ${i + 1} 章　${q.title}${q.advCh ? '　<span class="good">🌟 二轉</span>' : ''}</b><small class="muted">Lv.${q.lv}</small></div>`;
+        const reward = `<small class="muted">獎勵：${advQuestRewardText(q)}</small>`;
         if (i < s.ch) { h += `<div class="quest-card done">${head}<p class="muted">${q.outro}</p></div>`; return; }
         if (i > s.ch) { h += `<div class="quest-card locked">${head}<small class="muted">🔒 完成上一章後開放</small></div>`; return; }
         let body = `<p>${st.npc}：${q.intro}</p><div class="quest-goal">🎯 ${questGoalText(q)}</div>${reward}`;

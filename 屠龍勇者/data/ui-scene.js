@@ -1282,7 +1282,9 @@ function sceneDraw(ctx, W, H) {
                 if (!morph) drawWorldWeapon(ctx, px, py, pl.dir, pl.anim, {image:img,sprite:anim,row:rowIdx,frame,dw,dh,action:playing?pl.anim.name:'walk'});
                 ctx.restore();
             };
+            if (typeof advDrawAura === 'function') advDrawAura(ctx, px, py);   // 二轉分支腳下光效（advance.js）
             body();
+            if (typeof advDrawOrbs === 'function') advDrawOrbs(ctx, px, py + 14 - sp.drawH / 2);
             labelY = py + 14 - sp.drawH - 6;
             // 走到樹、帳篷後面：被蓋住的部分再疊一層半透明身影，不會完全看不到自己
             if (drawOccPatch(ctx, dx, dy, dx + dw, py + 16, pl.ry, camX, camY)) { ctx.globalAlpha = OCC_GHOST; body(); ctx.globalAlpha = 1; }
@@ -1294,13 +1296,15 @@ function sceneDraw(ctx, W, H) {
                 ctx.fillText(CLASSES[player.cls].icon, px, py - 6 + bob);
                 ctx.restore();
             };
+            if (typeof advDrawAura === 'function') advDrawAura(ctx, px, py);
             body();
+            if (typeof advDrawOrbs === 'function') advDrawOrbs(ctx, px, py - 12);
             labelY = py - 32;
             if (drawOccPatch(ctx, px - 24, py - 30, px + 24, py + 16, pl.ry, camX, camY)) { ctx.globalAlpha = OCC_GHOST; body(); ctx.globalAlpha = 1; }
         }
         ctx.font = 'bold 11px sans-serif';
         playerLabelBox = { x: px, y: labelY, w: ctx.measureText(player.name).width };
-        labels.push(() => drawLabel(ctx, player.name, px, labelY, '#9fe0ff'));
+        labels.push(() => drawLabel(ctx, player.name, px, labelY, typeof advNameColor === 'function' ? advNameColor() : '#9fe0ff'));   // 二轉名牌顏色
     };
     const actors = scene.mons.map(m => ({ y: m.ry, draw: () => drawMon(m) }));
     actors.push({ y: pl.ry + 0.01, draw: drawPlayer });

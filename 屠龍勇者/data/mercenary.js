@@ -1,4 +1,5 @@
 // 傭兵：六職業、50符石、獨立裝備／HP／MP（架構第197、206、209節）。
+const MERC_MP_REGEN_MS = 5000;   // 傭兵回魔間隔（2026-10-31 由每秒改成每 5 秒，與玩家相同）
 const MERC_CLASSES = {
     spirit: { name: '契靈師', person: '璃音', sex: '女', age: '孩童', hp: 110, mp: 130, atk: 9, magic: 15, def: 1, regen: 5 },
     bulwark: { name: '壁壘衛士', person: '雷恩', sex: '男', age: '中年', hp: 200, mp: 65, atk: 11, magic: 7, def: 8, regen: 2 },
@@ -273,11 +274,12 @@ function mercStats(m = player.mercenary) {
     const base={atk:c.atk+Math.floor(lv/5),magic:c.magic+Math.floor(lv/4),def:c.def+Math.floor(lv/10),mr:10+Math.floor(lv/5)};
     const gear={atk:(d?(d.dmg[0]+d.dmg[1])/2+(w.ench||0):0)+(fx.dmg||0),magic:((fx.sp||0)+((d&&d.sp)||0))*3+(d&&d.type==='staff'?(w.ench||0):0),def:fx.ac||0,mr:fx.mr||0};
     const buffs={atk:mercBuff('might',m),magic:0,def:mercBuff('iron',m),mr:mercBuff('ward',m)};
-    return { hp: c.hp + (m.lv - 1) * 18 + (fx.hp || 0), mp: c.mp + (m.lv - 1) * 8 + (fx.mp || 0),
+    const out = { hp: c.hp + (m.lv - 1) * 18 + (fx.hp || 0), mp: c.mp + (m.lv - 1) * 8 + (fx.mp || 0),
         atk:base.atk+gear.atk+buffs.atk,magic:base.magic+gear.magic,
         def:base.def+gear.def+buffs.def,mr:base.mr+gear.mr+buffs.mr,base,gear,buffs,
         regen: c.regen+(talent['出戰傭兵每秒回魔']||0), dodge: Math.min(.5, mercTrait(m, 'dodge', 0) + (fx.dodge || 0) + mercBuff('evasion', m)),
         heal: mercTrait(m, 'heal', 1), speed: (d ? WEAPON_TYPES[d.type].spd : 1200) / (1 + mercTrait(m, 'spd', 0) + (fx.spdMul || 0) + mercBuff('haste', m)) * mercSlowFactor(m) };
+    return typeof advMercMod === 'function' ? advMercMod(out, m) : out;   // 二轉人皇、王旗（advance.js）
 }
 function mercNormalize(p) {
     const m = p.mercenary;
@@ -325,15 +327,18 @@ function mercTakeDamage(value) {
     if (chance(st.dodge)) return 0;
     let damage = Math.max(1, Math.round((value - st.def / 3) * mercTrait(m, 'taken', 1)));
     if (mercBuff('lastStand')) damage = Math.round(damage * .5);
+    if (typeof advMercTaken === 'function') damage = advMercTaken(damage);   // 二轉：世界樹庇護、天使結界
     for (const key of ['fortify', 'shield', 'barrier']) {
         const b = r.buffs[key]; if (!b || b.until <= gameNow) continue;
         const n = Math.min(damage, b.power); b.power -= n; damage -= n;
     }
+    if (m.hp - damage <= 0 && typeof advMercSave === 'function' && advMercSave(m)) return 0;   // 二轉守護聖者「神聖復甦」：保住傭兵
     const dealt = Math.min(m.hp, damage); m.hp -= damage;
     if (dealt > 0 && m.hp > 0) mercPlayAnim('hit');
     if (m.hp <= 0) mercDie(); return dealt;
 }
 function mercEnemyAttack(mon) {
+    if (typeof advTauntOn === 'function' && advTauntOn()) return false;   // 二轉「挑釁怒吼」：怪物只打玩家
     const m = mercActive(); if (!m || !chance(Math.max(mercBuff('taunt'), mercTrait(m, 'aggro', .25)))) return false;
     const st = mercStats(m), magic = mon.magic && chance(mon.magic.p);
     if (!mercInRange(mon, magic ? 4 : 1)) return false;
@@ -363,6 +368,7 @@ function mercHit(mon, amount, magic = false, pierce = false, summon=false) {
     if (!mon || mon.hp <= 0) return 0;
     const mr = clamp(mon.mr || 0, 0, 150) * (1 - mercTrait(player.mercenary, 'mrIgnore', 0));
     if(typeof talentMercMult==='function')amount*=talentMercMult(summon);
+    if (typeof advMercHitMult === 'function') amount *= advMercHitMult(mon);   // 二轉「標記獵物」等易傷
     const value = Math.max(1, Math.round(amount * (magic ? 1 - mr / 200 : 1) - (!magic && !pierce ? Math.max(0, -(mon.ac || 0) / 5) : 0)));
     const dealt = Math.min(mon.hp, value); mon.hp -= value; return dealt;
 }
@@ -436,7 +442,9 @@ function mercAutoPotion(m = mercActive()) {
 function mercTick(dt) {
     const m = mercActive(); if (!m) return;
     const r = mercState(m), st = mercStats(m);
-    if (gameNow >= r.regenAt) { r.regenAt = gameNow + 1000; m.mp = Math.min(st.mp, m.mp + st.regen); m.hp = Math.min(st.hp, m.hp + mercTrait(m, 'hpRegen', 1)); }
+    // 2026-10-31 使用者要求：回魔改成跟玩家一樣每 5 秒一次（原本每秒，太快）；回血仍每秒
+    if (gameNow >= r.regenAt) { r.regenAt = gameNow + 1000; m.hp = Math.min(st.hp, m.hp + mercTrait(m, 'hpRegen', 1)); }
+    if (gameNow >= (r.mpAt || 0)) { r.mpAt = gameNow + MERC_MP_REGEN_MS; m.mp = Math.min(st.mp, m.mp + st.regen); }
     const mon = hunt && hunt.state === 'fight' && hunt.mon && hunt.mon.hp > 0 ? hunt.mon : null;
     for (const [id, b] of Object.entries(r.buffs)) {
         if (b.until < gameNow) { delete r.buffs[id]; continue; }

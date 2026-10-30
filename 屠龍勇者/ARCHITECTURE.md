@@ -6,6 +6,7 @@
 ## 1. 專案結構
 
 | 檔案 | 內容 |
+| `data/advance.js`、`tools/advance-class.sql`、`tools/export-advance-sql.js`、`tools/test-advance.js`、`tools/test-advance-db.js`、`tools/sim-advance.js`、`tools/advance-preview.html`、`tools/ADVANCE-CLASS-PLAN.md` | 二轉三選一分支（36 分支、72 招、第 5～7 章任務、命運重塑石、schema 22）、後端補丁與產生器、隔離測試、平衡模擬、規劃與決定紀錄（第 242 節） |
 | `images/icons/items/talentJewel_*.png`、`tools/icon-src/items/talent-jewels-v1/`、`tools/prepare-talent-jewels.ps1`、`tools/talent-jewels-contact-v1.png` | 38款寶珠各自原創透明圖、原稿／提示詞清單與裁切／總覽（第235節） |
 | `images/ui/talent-atlas-unallocated-v1.png`、`tools/icon-src/talent-atlas-unallocated-v1.json`、`tools/test-talent-jewel-storage.js`、`tools/talent-jewel-storage-preview.html` | 星盤未配置底圖、三欄寶珠倉庫實際資料／圖片回歸與禁止連外的隔離預覽（第235節） |
 | `images/icons/items/talentStone.png`、`tools/icon-src/items/talent-stone-v1.png`／`.json`、`tools/prepare-talent-stone.ps1` | 天賦石原創透明圖、原稿／提示詞與既有裁切流程接入（第234節） |
@@ -245,9 +246,11 @@
 
 | `images/sprites/morph/nether-executioner-v1/`、`tools/sprite-src/morph/nether-executioner-v1/`、`tools/test-executioner-morph.js`、`tools/executioner-morph-preview.html` | 13紅變36格透明專屬動畫、原稿提示詞／腳點註冊與隔離驗證（第240節） |
 
+| `tools/test-enchant-picker.js`、`tools/enchant-picker-preview.html` | 武防卷原視窗連續手動強化、逐次風險確認與隔離驗證（第241節） |
+
 ## 2. 載入順序與依賴
 
-`config → classes → skills → items → spellbook → monsters → zones → quests → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → talent-jewels → talent → talent-tree → talent-layout → talent-planner → talent-live → bag-storage → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → pwa → loot → main`
+`config → classes → skills → items → spellbook → monsters → zones → quests → advance → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → talent-jewels → talent → talent-tree → talent-layout → talent-planner → talent-live → bag-storage → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → pwa → loot → main`
 
 - 上層資料檔（config～quests）只在「載入時」用到更前面的檔案；quests 載入時會把獎勵裝備與任務道具寫進 `ITEMS`，所以要在 items 之後。
 - resonance 載入時要改 `ITEMS`（含任務武器）、`MONSTERS` 掉落、`RECIPES`，所以在 quests 之後；`findSkill`（skills.js）在執行期才呼叫它的 `findResonanceSkill`。
@@ -260,7 +263,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261030c`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261031a`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -390,6 +393,7 @@
 - 雙手武器（雙手劍、矛、弓、槍、鋼爪、雙刀）不能與盾同時裝備。
 - 衝裝（`enchant.js`）：強化值 < 安定值必定成功（祝福卷 +1～3）；≥ 安定值成功率 `0.5/(超出+1.25)`（40%→22%→15%…），
   失敗**蒸發**；詛咒卷 -1；飾品不能強化；上限 +15。武器每 +1 傷害 +1，防具每 +1 AC -1。
+- 20261030d：武防卷強化清單持續開啟，原視窗更新結果／數量／成功率，超安定值逐次就地確認，詳第241節。
 - 商店依村莊 `tier` 販售（低語海岸 1、古魯丁 2、奇岩 3、亞丁 4）；回收價 = 售價 30% 或 `sell`。
 - 20261026d：各村商店重新販售變形卷軸polyScroll，每張10,000金幣，tier1；原回收價150固定保存，不隨新售價提高。見第167節。
 - 商店各商品保留快捷數量，另有「自訂」購買數量、即時總價與依金幣／負重計算的上限（20261021e，第 75 節）；購買端拒絕非法整數及溢位。
@@ -452,6 +456,8 @@
 
 ## 10. 存檔欄位（`player`）
 
+- schema 22（20261031a）：使用者同意新增 `player.adv`（二轉：br 分支、pick 試煉分支、at 完成時間、el 精靈元素）；舊檔補空，`advNormalize` 清掉非本職業分支，見第 242 節。
+
 - schema 12（20261025au）：經使用者同意新增dollSummonUntil，共用召喚付費到期時間；舊檔補0，首次檢查支付50結晶或收回，見第163節。
 
 - schema 10（20261025al）：使用者明確同意新增dollState，各娃娃種類共用{elapsed:出場累積毫秒,readyAt:遊戲時鐘冷卻到期}；舊檔補空、只保留合法種類與有限範圍值，見第157節。
@@ -492,6 +498,7 @@ kills, deaths, settings（含 skillSlots 技能欄 8 格）, created, skills[已
 | 2 | 30 | 擊倒 20 隻後引出任務首領並討伐 | 腐朽礦坑・深層 | 職業武器＋10,000 金幣 |
 | 3 | 45 | 收集任務道具 ×8（掉率 20%） | 暮光法師塔／黃沙王陵 | 職業飾品＋30,000 金幣 |
 | 4 | 60 | 擊倒 30 隻後引出任務首領並討伐 | 永夜之塔（任一非首領樓層） | 職業傳說武器＋80,000 金幣＋萬能藥 1，獲得**職業稱號** |
+| 5～7 | 60／60／70 | 二轉：首領掉職業之證 ×5 → 選分支打試煉之影 → Lv.75 任務首領 | 任何地圖首領／熔火煉獄／永夜之塔 | 見第 242 節 |
 
 - 接任務、回報都要在村莊（任何村莊都找得到 NPC）；進度只在指定地圖累積。
 - 任務道具 `q_職業_章`（`cat: 'quest'`，不能賣、重量 0）由程式自動建立；回報時扣除。
@@ -4150,3 +4157,33 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 既有MORPH_FORMS.m13新增sprite對應MORPHS.netherExecutioner，不新增第37款；專屬27款、其餘9款共用。沿原紅變Lv35、雙手劍系建議武器、命中3／傷害6／攻速8%／物爆率2%、GM等級豁免、卷軸30分鐘／10000金幣。schema21／SQL／script順序不變。
 - 四PNG加入SW預載。圖集384×320／腳底[192,270]／charH160／drawH48，130／140／220／150ms，攻擊560ms。prepare.js沿既有連通區保留原色alpha、等比縮放與腳底註冊；製作單格build/frames、manifest逐格來源與hash、registration／contact／game-render保留。
 - 新test-executioner-morph.js驗真實卷軸扣量、Lv34拒絕／35使用、能力與上次選擇／到期、四向命中／MISS／施法／受傷互斥、36格透明唯一與圖集逐byte及sceneDraw16組；tools/executioner-morph-preview.html實際renderer隔離存檔／外網。舊測試共用外觀案例m13改m14，歷史款數／schema斷言不順便改動。已通過新變身與狙擊手回歸、36格RGBA唯一／圖集逐byte／sceneDraw16組、check.ps1 ALL CHECKS PASSED、58檔記憶體混淆語法及diff檢查。側面劍尖碰邊重畫留白，原初稿保留；步行不帶鄰格散落斬光。隔離瀏覽器實測攻擊第3格560ms、背面施法440ms、左向48px循環、卷軸選單重變4→3。初次圖集未產出時有載圖error，完成後重整及操作無新增error／warn。實拍browser-attack.png保留。待使用者正式角色實玩確認才提交，未發布。
+
+
+## 241. 武防卷強化後保留原視窗（2026-10-30，版本 `20261030d`）
+
+- 使用者同意持續開啟方案。ui-panels.js新增暫態enchantPickerState（owner角色參考／scrollId／pending／result），不寫player或存檔；openEnchantPicker只開一次dialog，renderEnchantPicker只更新內部清單、保留dialog-body.scrollTop。頂部黏住的狀態區顯示剩餘同種卷軸與最新結果，裝備名稱／+值／下次成功率同步更新，結果不再跳gameAlert或closeDialog。
+- enchantPick沿原doEnchant／saveGame／refreshUI，每次仍只用一張；超安定值改在該裝備列顯示蒸發警告及「衝了！／取消」，pending記錄UID與強化值，確認時重新檢查，成功後清除、下一次必須再確認。enchantCancelConfirm只退回原清單、不耗卷。HTML事件只呼叫頂層函式並傳數字／boolean字面值。
+- 卷軸用完保留畫面並停用施法；達上限停用，蒸發從清單消失。同種卷軸重查實際背包UID，不切換卷軸種類；關閉視窗或換角色後拒絕舊操作。普通／祝福／詛咒武防卷共用，原機率、安定值、蒸發、價格與上限均不變；schema21／SQL／script載入順序不變。
+- tools/test-enchant-picker.js以隔離角色驗原視窗與捲動／逐次確認取消／成功蒸發／祝福防卷／末張詛咒武卷／上限與關閉防誤耗；preview頁隔離localStorage及外網，瀏覽器實測+5→+6、卷8→7、不關視窗、40%與蒸發警告、取消保留。截圖工具失敗，未宣稱留有截圖。check.ps1 ALL CHECKS PASSED；待使用者實玩確認後才commit／Push。
+
+## 242. 二轉：三選一分支（2026-10-31，版本 `20261031a`，schema 22；`advance.js`、`tools/advance-class.sql`）
+
+- 使用者逐步決定（紀錄在 `tools/ADVANCE-CLASS-PLAN.md`）：每職業三選一（職業各自定方向）、命運重塑石換分支、每分支核心被動＋2 招、Lv.60 開始／第 2 招 Lv.70、三章任務、外觀只換名牌顏色＋光效、同意 schema 22 與 SQL。36 分支名稱與效果逐職業同意；平衡目標改為「輸出型 +15～30%、防守型受傷少 15～25%」。
+- **資料**：`ADV_BRANCHES[cls]`＝3 分支 `{ id, name, color, glow, grow, p, s1, s2 }`；載入時產生 `ADV_BY_ID`、被動／技能（`SKILL_BY_ID`，kind `'adv'`、`branch`、`slot`）、二轉技能書 `book_adv_<分支>_1/2`（`advBook`、`advPrice`，沒有 price＝不在商店、`bookMinLv` 回 999＝不會被怪掉）、第 7 章飾品 `advAcc_<分支>`、`advReshape`。第 5～7 章 push 到 `CLASS_QUESTS[cls]`（index 4～6），`QUEST_BOSS_BASE[6/7]`、職業之證 `q_<cls>_4`。
+- **任務**：第 5 章 goal `bossCollect`（任何地圖首領 20%；世界首領／團隊副本不算）；第 6 章 `advPick`：`acceptQuest` 先呼叫 `advAcceptCheck`（帶傭兵、娃娃不能接；沒選就開 `openAdvPicker`），完成前可免費改選；回報時 `advQuestReward` 設 `adv.br`、學被動、給第 1 招書。第 7 章給第 2 招書＋飾品；第 2 招書要 ch ≥ 7 才能學。`QUEST_TITLE_CH = 4`：稱號仍是前 4 章。試煉之影打死不扣經驗（`advTrialDeath`）。
+- **換分支**：背包使用命運重塑石 → `openAdvReshape` → `advReshapeTo`：舊分支三招從 skills／快捷欄／冷卻／增益移除，學新被動；技能書不退，到任務頁（職業 NPC）用金幣買（`advBookShopHtml`，50 萬／150 萬）。
+- **戰鬥掛鉤**（都用 `typeof` 判斷，沒二轉不影響）：`calcStats`→`advPlayerFx`；`gainExp`→`advGrowth`；`learnedSkills`→`advSkillUsable`；combat：`advCanCast`（金幣／HP／殘血等條件，手動施放也查）、`advCd`、`advHealMult`、`advAfterBuff`（護盾／召喚／場地）、`advRunSkill`／`advPrepSkill`／`advAfterSkill`、`physicalAttack` 的 `advDefMod`／`advPhysMult`／`advPhysAdd`／`advCritRoll`／`advAmbushMult`／`advSaveAmmo`／`advOnPhysHit`、`castSpell` 的 `advMagicMult`／`advOnSpellHit`、`monsterAttack` 的 `advStealthOn`／`advOnDodge`／`advMonHitMod`／`advIncoming`／`advAbsorbEff`／`advPreventDeath`／`advOnHurt`、`onKill` 的 `advRoyalGoldK`／`advOnKill`／`advLocalDrops`、`huntTick` 的 `advTick`（持續傷害、場地、召喚、精靈、每秒回復）、慢速 `advDeb(m,'slow')`、`weaponRange` 風暴遊俠 +1、`lifeSteal` 溢血 `advOverflowHeal`。mercenary：`advMercMod`（人皇 +15%、士氣套用）、`advMercTaken`、`advMercSave`（神聖復甦保命版）、`advTauntOn`、`advMercHitMult`。
+- 執行期狀態 `advRt(player)`（WeakMap，不存檔）：場地、召喚、護盾、戰意、伏擊、印記等；怪物身上 `advDeb`／`advDots`／`advPoison`。「N 倍魔法傷害」基準 `advMag(n)`＝dmg [30n,50n]＋SP×1.5n。
+- **畫面**：任務頁 `advQuestPanelHtml`（目前分支、試煉分支、買書、元素精靈切換）、技能頁「🌟 二轉」區、角色裝備頁職業名用 `advClassName`、地圖名牌 `advNameColor`、腳下光效 `advDrawAura`、召喚光球 `advDrawOrbs`；CSS `.adv-list`／`.adv-card`。
+- **後端**：`node tools/export-advance-sql.js` 產生 `tools/advance-class.sql`（使用者在 Supabase 執行，可重跑）：目錄只合併（道具、`quests[cls][4..6]`、`questBosses`、`advance` 設定），不重跑 loot-catalog.sql；新增 `loot_adv`（職業之證、重塑石 Lv.70+ 0.3%、天下 5% 多 1 通貨），`loot_roll` 尾端接上、`loot_spawn`／`loot_spawn_screen` 情境多帶 `adv`。舊規則快照保留。
+- **測試**：`tools/test-advance.js`（36 分支任務流程＋90 秒戰鬥、換分支、買書、舊檔轉換、加密存讀）、`tools/test-advance-db.js`（PGlite：重跑、機率、補丁、spawn 情境）、`tools/sim-advance.js [秒] [分支]`（二轉前後同武器；單體／3 隻／低血三情境）。模擬限制：角色每格補滿 HP（低血情境固定 45%），所以靠 HP／回血／保命的分支（不屈戰神、守望天使、守護聖者）與傭兵加成（人皇）量不出來；夜行者「影殺」要殘血才放，對假人量不到。
+- 瀏覽器：`tools/advance-preview.html`（隔離角色、禁止連外）實際走過第 5 章→選分支視窗→試煉→第 7 章→技能頁二轉區→學書→命運重塑石換分支，Console 無錯誤；名牌顏色與腳下光效正常。
+
+## 243. 職業技能最高 Lv.55 可學（2026-10-31，版本 `20261031a`；`skills.js`）
+
+- 使用者要求：一轉職業技能（`SKILLS`）原本 Lv.56～85 的 35 招全部改成 Lv.55，Lv.55 以下不變；共用魔法（`MAGIC_CLASS`）不動。技能書回收價（lv×400）與商店第 1 本價格跟著 lv 計算。
+- 後端怪物掉書看目錄的 `bookLv`，所以 `tools/advance-class.sql` 也合併全部職業技能書的新 `bookLv`／回收價（重跑即可，test-advance-db 驗 ≤ 55）。已學會的不受影響；Lv.55 以上的老角色直接能學。
+
+## 244. 傭兵回魔改每 5 秒（2026-10-31，版本 `20261031a`；`mercenary.js` 的 `MERC_MP_REGEN_MS`）
+
+- 使用者回報傭兵回魔過快：原本 `mercTick` 每秒回 `regen`（2～5＋天賦「出戰傭兵每秒回魔」）MP，改成每 5 秒一次（與玩家回魔節奏相同），數值不變；回血仍每秒。執行期 `mercState(m).mpAt`，不存檔。天賦名稱仍寫「每秒回魔」，實際是每次回魔的量。
