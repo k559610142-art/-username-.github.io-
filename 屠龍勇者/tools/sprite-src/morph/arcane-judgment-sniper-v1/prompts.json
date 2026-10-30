@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "reference": "reference-07.jpg",
+  "prompts": [
+    {
+      "direction": "down",
+      "prompt": "Use case: stylized-concept. Game sprite animation production sheet, true transparent background. Reference image defines original character: stern slicked black hair male arcane sniper, purple glowing monocle, black long coat with gold piping and blue-violet rune tabard, brown belt pouch, black boots, enormous black purple rune sniper rifle with purple crystal. Preserve identity and clothing. Draw EXACTLY 12 separate full-body sprites in a precise uniform 4 columns x 3 rows grid, generous transparent gutters, no text, no borders, no ground shadow or platform. Every sprite faces DOWN toward viewer (front view, gun aimed toward viewer when firing), consistent orthographic slightly overhead RPG pixel-art illustration, same body size and baseline per cell. Row1 four consecutive WALK poses: left leg forward, passing, right leg forward, passing, both hands carrying rifle, visible alternating legs. Row2 four ATTACK poses: low-ready rifle, shoulder aim, fire compact purple cyan muzzle flash, recoil and recovery. Row3: first two CAST poses gathering purple runes then releasing small purple magic ring with rifle held; last two HIT poses flinch torso then recover. Keep every limb and entire rifle fully within its own cell, compact effects, no long beam, no aura hiding legs. Real transparent alpha, not checkerboard. Landscape sheet."
+    },
+    {
+      "direction": "right",
+      "prompt": "Use case: stylized-concept. Game sprite animation production sheet, true transparent background. Reference image defines original character: stern slicked black hair male arcane sniper, purple glowing monocle, black long coat with gold piping and blue-violet rune tabard, brown belt pouch, black boots, enormous black purple rune sniper rifle with purple crystal. Preserve identity and clothing. Draw EXACTLY 12 separate full-body sprites in a precise uniform 4 columns x 3 rows grid, generous transparent gutters, no text, no borders, no ground shadow or platform. Every sprite faces RIGHT in strict right-side profile (all 12 poses, gun barrel points right), consistent orthographic slightly overhead RPG pixel-art illustration, same body size and baseline per cell. Row1 four consecutive WALK poses: left leg forward, passing, right leg forward, passing, both hands carrying rifle, visible alternating legs. Row2 four ATTACK poses: low-ready rifle, shoulder aim, fire compact purple cyan muzzle flash, recoil and recovery. Row3: first two CAST poses gathering purple runes then releasing small purple magic ring with rifle held; last two HIT poses flinch torso then recover. Keep every limb and entire rifle fully within its own cell, compact effects, no long beam, no aura hiding legs. Real transparent alpha, not checkerboard. Landscape sheet. Character is seen only from his right side; retain long rifle silhouette, firing muzzle ring at right. No front views."
+    },
+    {
+      "direction": "right-alpha-repair",
+      "prompt": "Use case: background-extraction. Edit this 12-pose sprite sheet: remove ALL dark gray/purple opaque backdrop between sprites and outer canvas. Return genuinely transparent RGBA alpha background. Keep all twelve character poses, exact grid positions, same size, clothing, gun, purple magic effects and all original colors unchanged. No checkerboard, no solid background, no added shadow or background glow. Only retain characters and their compact attached magical effects."
+    }
+  ]
+}

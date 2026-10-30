@@ -241,6 +241,8 @@
 | `tools/test-doll-auto-buy.js` | 全部娃娃自動購買藥水：職業選藥、加價10%、金幣／負重限制與召喚條件隔離驗證（第230節） |
 | `tools/test-mercenary-potions.js` | 傭兵共用玩家藥水、開關／門檻／選藥與延遲隔離測試（第215節） |
 
+| `images/sprites/morph/arcane-judgment-sniper-v1/`、`tools/sprite-src/morph/arcane-judgment-sniper-v1/`、`tools/test-sniper-morph.js`、`tools/sniper-morph-preview.html` | 07紫變專屬36格動畫、原圖／生成提示詞／腳點註冊、隔離卷軸與繪圖驗證（第239節） |
+
 ## 2. 載入順序與依賴
 
 `config → classes → skills → items → spellbook → monsters → zones → quests → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → talent-jewels → talent → talent-tree → talent-layout → talent-planner → talent-live → bag-storage → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → pwa → loot → main`
@@ -256,7 +258,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261030a`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261030b`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -4130,3 +4132,11 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 新獨立talent-release-fix.sql只修guard的節點清單比較：排序後完整陣列相等，仍保留重複元素，故多點／少點／重複點一樣拒絕；原寶珠實體／UID／試煉及vault序號保護不變。以原函式精確片段替換，版本不符整筆中止、重跑冪等。status新增saveOrder=1握手；修復後恢復authenticated對status／action權限（可解除先前emergency-lock），anon／PUBLIC不可使用。沒有寫入任何角色資料列，不改原SQL或cloud連線設定。
 - talentOpenCharacterPlanner先查狀態並驗saveOrder=1才同步存檔／進正式頁；舊後端回維護提示，不先送可能拒存的更新。換角色／帳號前後檢查保留。user必須在Supabase執行新SQL；AI未連正式庫、不能宣稱後端已開放。勿重新跑舊talent-system.sql覆蓋修復；新安裝亦須在原天賦安裝後跑此修復。完整指引tools/TALENT-RELEASE-FIX.md。
 - test-talent-system-db真實隔離PostgreSQL重現原拒收，修復後相同集合換序可存，增減／重複仍拒絕，100點經真實客戶端Normalize保序；角色背包與權威配置不變，重跑及緊急停用→恢復權限通過。test-talent-release驗啟用旗標、全入口一致、舊後端不存檔、新握手才開、保留選點及試玩隔離；test-talent-live含連續讀檔保序，layout驗圖片接線。既有58檔混淆及星盤／收納／掉寶／全道具圖回歸、check.ps1通過。尚待使用者執行SQL與本機驗收，未commit／推送本版。
+
+
+## 239. 魔導審判狙擊手紫變專屬動畫（2026-10-30，版本 `20261030b`）
+
+- 使用者提供桌面變身人物/7.jpg要求製作並加入卷軸；原圖保留為reference-07.jpg。內建image_gen製作黑金長袍／紫色目鏡／藍紫符文／魔導長槍的正、右、背各12格，左向鏡像；走4／攻4／施2／傷2共36格，射擊含低持槍、瞄準、紫青槍口光與後座。側面初稿與去背稿、完整prompts.json保留。
+- 既有MORPH_FORMS.m07新增sprite對應MORPHS.arcaneJudgmentSniper；仍36款，專屬26款／共用10款。紫變Lv52、槍手必須裝槍、命中8／傷害6／攻速13%、GM等級豁免、一張卷軸30分鐘及商店10000金幣不變；schema21、SQL及script順序不變。第88節的外觀擴充規則沿用。
+- 圖集384×320，腳底[192,270]、charH160／drawH48，130／140／220／150ms、攻擊560ms。四PNG加入SW預載，manifest逐格記來源／註冊／hash。prepare.js沿既有連通區分格與原alpha等比縮放，不補畫／複製姿勢；製作用單格留來源build/frames，contact.png總覽與game-render.png保留。
+- test-sniper-morph.js隔離驗卷軸扣量、Lv51拒絕／52使用、空手拒絕、上次選擇／到期、四向命中／MISS／施法／受傷互斥、36格透明唯一與圖集逐byte、正式sceneDraw16組。舊測試的共用外觀案例m07改m13；原歷史schema／款數斷言不順便修改。tools/sniper-morph-preview.html使用實際renderer且隔離localStorage與外網。
