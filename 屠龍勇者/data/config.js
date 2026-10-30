@@ -1,6 +1,6 @@
 // 屠龍勇者：全域設定、常數、共用小工具（最先載入，不依賴其他檔案）
 const GAME_TITLE = '黑暗大陸';   // 遊戲名稱（2026-10-12 由「屠龍勇者」改名；資料夾與網址不變）
-const GAME_VERSION = '20261031b';
+const GAME_VERSION = '20261031c';
 const TALENT_RELEASED = true; // 正式入口啟用；仍須後端存檔修復握手通過才可配點。
 const BOSS_MATERIAL_DROP_P = 0.001; // BOSS 材料固定掉落率 0.1%，不受異界掉落加成影響
 
@@ -54,7 +54,8 @@ const EXP_PER_LEVEL_49 = 36065092;
 
 // 65 級起狩獵經驗遞減（天堂原版）；表上只到 87 級，88 級以上沿用 1/512
 function huntExpRate(lv) {
-    if (lv < 65) return 1;
+    if (lv < 60) return 1;
+    if (lv < 65) return 3 / 4;   // 2026-10-31 使用者要求：遞減提早從 Lv.60 開始（原本 60～64 沒有遞減，練得比 Lv.50 多還快）
     if (lv < 70) return 1 / 2;
     if (lv < 75) return 1 / 4;
     if (lv < 79) return 1 / 8;
