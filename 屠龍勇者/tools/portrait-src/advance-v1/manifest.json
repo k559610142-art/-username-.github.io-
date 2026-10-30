@@ -1,0 +1,218 @@
+[
+  {
+    "id": "aJudge",
+    "file": "images/classes/advance-v1/aJudge.png",
+    "bytes": 1305331,
+    "sha256": "189644E76B49FD3106272805BE3090AF695E9224A8718977844A7DFF75DD37A9"
+  },
+  {
+    "id": "aWar",
+    "file": "images/classes/advance-v1/aWar.png",
+    "bytes": 1092557,
+    "sha256": "7C05817C56DE6C6A1BCEC25B39B5B886EBA365F629BC50394907493CEC0D331A"
+  },
+  {
+    "id": "aWatch",
+    "file": "images/classes/advance-v1/aWatch.png",
+    "bytes": 1255296,
+    "sha256": "84E47E393C0DD5CCDB8237EB542F665CEA48CE9BD5BE174E41C87F279A19E90B"
+  },
+  {
+    "id": "dBlade",
+    "file": "images/classes/advance-v1/dBlade.png",
+    "bytes": 839788,
+    "sha256": "1B097BAE06C4E8B98118DC9BB2169762232DBE95419C833780899B5E40F1366D"
+  },
+  {
+    "id": "dNight",
+    "file": "images/classes/advance-v1/dNight.png",
+    "bytes": 833400,
+    "sha256": "F8A5FF33721C26B7E865D41E2B0E36090FA317FA5270A41FC0EADFB6D14E8CC6"
+  },
+  {
+    "id": "dVenom",
+    "file": "images/classes/advance-v1/dVenom.png",
+    "bytes": 809202,
+    "sha256": "4F420A4B9592384A25CA66E5F13E6020D5D7A00FA8EC92033ED1BC0556AF03A5"
+  },
+  {
+    "id": "eForest",
+    "file": "images/classes/advance-v1/eForest.png",
+    "bytes": 975920,
+    "sha256": "F12F29128A74D2A18637109921582A1EF50E266D3416665FF50DC212AEA440F1"
+  },
+  {
+    "id": "ePact",
+    "file": "images/classes/advance-v1/ePact.png",
+    "bytes": 1351041,
+    "sha256": "329C75585EE52C86024E0BA04190F2398C62380C69E1D9FBC4EB1D88B33622E2"
+  },
+  {
+    "id": "eTempest",
+    "file": "images/classes/advance-v1/eTempest.png",
+    "bytes": 1019689,
+    "sha256": "7DBBF4972DC3EB9DCA7B7CC69FD68AC0BBB4DB36D528F3C0DF53F1A2274FDF75"
+  },
+  {
+    "id": "fArcane",
+    "file": "images/classes/advance-v1/fArcane.png",
+    "bytes": 1166350,
+    "sha256": "24C9B00421CD4A9A9D92309E153478A15D26C22B86DFD89EA8D025E687BA2A71"
+  },
+  {
+    "id": "fElem",
+    "file": "images/classes/advance-v1/fElem.png",
+    "bytes": 1252293,
+    "sha256": "B2E0C96AEA237E019FA5A9FEB52CFDA5F10B0F433664C9BD1C92259DF832B36E"
+  },
+  {
+    "id": "fSword",
+    "file": "images/classes/advance-v1/fSword.png",
+    "bytes": 1153316,
+    "sha256": "43F314F9B52FC9B3416EDCC8D1FB2EAFA8B97C5C4CAE16D407F3ECACF0FFB792"
+  },
+  {
+    "id": "gBomb",
+    "file": "images/classes/advance-v1/gBomb.png",
+    "bytes": 853056,
+    "sha256": "9C80A9E36E3AC5A76C13D61B5143443F602F74E975479F15B1B894C88EED1EFF"
+  },
+  {
+    "id": "gHunter",
+    "file": "images/classes/advance-v1/gHunter.png",
+    "bytes": 788943,
+    "sha256": "826AE22654730946971F18CEAEB1BFD1094DB5852C38A8ABCAE9ACDA5CFF1819"
+  },
+  {
+    "id": "gSling",
+    "file": "images/classes/advance-v1/gSling.png",
+    "bytes": 930885,
+    "sha256": "6DF69D2080EC22DA06ED9BD1A47B77B135647DC1330016C58CE00AFFB7F7D3FA"
+  },
+  {
+    "id": "kBlade",
+    "file": "images/classes/advance-v1/kBlade.png",
+    "bytes": 963901,
+    "sha256": "201889859F86BAF648DAD71DF84735A8A2526B3906013D07C16603D3FF47DFFB"
+  },
+  {
+    "id": "kDragoon",
+    "file": "images/classes/advance-v1/kDragoon.png",
+    "bytes": 1025231,
+    "sha256": "C2855F869A0529C3FE57046372DFC9105EC3FA9D4811711DFDBE525CA4F01871"
+  },
+  {
+    "id": "kShield",
+    "file": "images/classes/advance-v1/kShield.png",
+    "bytes": 1075355,
+    "sha256": "A60B3188D2F5624BF3AE11672BD6AEE883166A0DE4AD8627D6E04894491E0DAD"
+  },
+  {
+    "id": "mFrost",
+    "file": "images/classes/advance-v1/mFrost.png",
+    "bytes": 1228384,
+    "sha256": "4F855F5FF6BE6642D31CA5CB1EB9F20C082ACA57D46E9D23C084B065BFAD294E"
+  },
+  {
+    "id": "mPyro",
+    "file": "images/classes/advance-v1/mPyro.png",
+    "bytes": 1150451,
+    "sha256": "F88BFCA75C160BA6E84E2383BB795EBF7419C4809640FFA2680DDFA76F8F8A2B"
+  },
+  {
+    "id": "mStorm",
+    "file": "images/classes/advance-v1/mStorm.png",
+    "bytes": 1247288,
+    "sha256": "C9402A3827CD27B46F3ADCAE9A75BE34639A02C7E420D72DBF592BBFB0E5B13E"
+  },
+  {
+    "id": "pGuard",
+    "file": "images/classes/advance-v1/pGuard.png",
+    "bytes": 1225643,
+    "sha256": "D91924BA14CBF5CDB670409729C9EF7E7847AA0D112EB1645CF9D6E9A4EABA58"
+  },
+  {
+    "id": "pJudge",
+    "file": "images/classes/advance-v1/pJudge.png",
+    "bytes": 1240241,
+    "sha256": "8EC2222A7F15526566E6083AB719AEAAC2FA3087EB0C1F9F42DCE534656A9B97"
+  },
+  {
+    "id": "pRadiant",
+    "file": "images/classes/advance-v1/pRadiant.png",
+    "bytes": 1143101,
+    "sha256": "00D64265180777B184958B23EE944482A945E96EA46EDDA39701232C92B25889"
+  },
+  {
+    "id": "rEmperor",
+    "file": "images/classes/advance-v1/rEmperor.png",
+    "bytes": 1153382,
+    "sha256": "9A893F3407D518D25679E29C0D1E07BB3ACEDB3FF010BF0EACCFBA0320316BA8"
+  },
+  {
+    "id": "rTyrant",
+    "file": "images/classes/advance-v1/rTyrant.png",
+    "bytes": 1062387,
+    "sha256": "EC4B61451E5A260BE53248B30197DC7A1249AEBCF807D12F4E4C82EE05FE4106"
+  },
+  {
+    "id": "rWorld",
+    "file": "images/classes/advance-v1/rWorld.png",
+    "bytes": 1253620,
+    "sha256": "7D12E6F7F3C6ECDD55676892F433898C1DDB492E1F41093E41FA0B0ABAE2FBD8"
+  },
+  {
+    "id": "sFist",
+    "file": "images/classes/advance-v1/sFist.png",
+    "bytes": 986159,
+    "sha256": "FD45996EBD20B664198EB0F49DE8EBBC16DBE2FB476C7109C7C482184A15B647"
+  },
+  {
+    "id": "sVajra",
+    "file": "images/classes/advance-v1/sVajra.png",
+    "bytes": 974171,
+    "sha256": "1C3CD6510D53510E81BB1744F422518D8C7B72D49AD80C7D7798693CB4AB3E30"
+  },
+  {
+    "id": "sWar",
+    "file": "images/classes/advance-v1/sWar.png",
+    "bytes": 1040137,
+    "sha256": "D0B813C3078CC2451D46C42FF170B9CAA650629DBAAE1D154BFE8B4056C8BB09"
+  },
+  {
+    "id": "wBerserk",
+    "file": "images/classes/advance-v1/wBerserk.png",
+    "bytes": 1005436,
+    "sha256": "C9A19BA6D6A78C753BCDB94A8C166BD6358FC4A6E3FE363393DE1DA93D7A0E74"
+  },
+  {
+    "id": "wRuin",
+    "file": "images/classes/advance-v1/wRuin.png",
+    "bytes": 1162282,
+    "sha256": "74B5FC7CD2E64ACB422736B00131F7610BB6EBB927F65943E2959D0E4C4205F8"
+  },
+  {
+    "id": "wTitan",
+    "file": "images/classes/advance-v1/wTitan.png",
+    "bytes": 1138722,
+    "sha256": "DAC58F013296A6F64070EAEA34E338F5C732A8B9920E972178F99259E836467F"
+  },
+  {
+    "id": "xAbyss",
+    "file": "images/classes/advance-v1/xAbyss.png",
+    "bytes": 1062251,
+    "sha256": "A7563A593EB105488006DC15834CD20421D24F7235073681A2EC5A55DE53C842"
+  },
+  {
+    "id": "xInferno",
+    "file": "images/classes/advance-v1/xInferno.png",
+    "bytes": 1088779,
+    "sha256": "7EC65E8F2E605D1A940A0091ED4E8668810048E325EEB32FDA9E780FE229E508"
+  },
+  {
+    "id": "xReaper",
+    "file": "images/classes/advance-v1/xReaper.png",
+    "bytes": 1111437,
+    "sha256": "4B871D295C01C24D2C408C23BE6A780618A9BEF2D3B25A8753E320420D44B494"
+  }
+]

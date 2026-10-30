@@ -1,0 +1,47 @@
+<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><base href="../"><title>二轉立繪隔離預覽</title>
+<style>body{background:#181b23;color:#eee;font:15px sans-serif;padding:16px;margin:0}#gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}#toolbar{position:sticky;top:0;background:#181b23;padding:12px;z-index:10}#status{min-height:500px}#errors{color:#f99}</style>
+<h2>二轉 36 分支立繪</h2><p>隔離預覽，不讀寫正式存檔、不連線雲端。點下方分支可查看人物狀態。</p>
+<div id="toolbar"><select id="class-filter"><option value="">全部職業</option></select><button id="base">查看原職業立繪</button><span id="result"></span></div><p id="errors"></p><div id="status"></div><div id="gallery"></div><div id="dialog-layer"></div>
+<script>
+(async () => {
+    const errors = document.getElementById('errors');
+    window.addEventListener('error', e => { errors.textContent += (e.message || '載入失敗') + '\n'; });
+    const memory = new Map();
+    Object.defineProperty(window, 'localStorage', { value: { getItem: k => memory.get(k) || null, setItem: (k,v) => memory.set(k,String(v)), removeItem: k => memory.delete(k) } });
+    const localFetch = window.fetch.bind(window);
+    window.fetch = (u,o) => { if (new URL(u,location.href).origin !== location.origin) throw Error('隔離預覽禁止連外'); return localFetch(u,o); };
+    const html = await (await fetch('index.html')).text(), style = document.createElement('style');
+    style.textContent = html.match(/<style>([\s\S]*?)<\/style>/)[1]; document.head.prepend(style);
+    for (const [,src] of html.matchAll(/<script src="(data\/[^"?]+\.js\?v=[^"]+)"/g)) {
+        if (/data\/(main|pwa)\.js/.test(src)) continue;
+        await new Promise((resolve,reject) => { const s = document.createElement('script'); s.src = src; s.onload = resolve; s.onerror = reject; document.head.append(s); });
+    }
+    saveGame = () => {}; refreshUI = () => {}; showToast = () => {};
+    const filter = document.getElementById('class-filter'), gallery = document.getElementById('gallery'), status = document.getElementById('status');
+    for (const cls in CLASSES) { const o = document.createElement('option'); o.value = cls; o.textContent = CLASSES[cls].name; filter.append(o); }
+    function show(cls,id) {
+        SIM_MODE = true; createPlayer('立繪預覽', cls, CLASSES[cls].base); SIM_MODE = false;
+        player.lv = 70; player.adv.br = id;
+        const st = calcStats(), summary = { cls, adv: player.adv, lv: player.lv, exp: player.exp, hp: player.hp, mp: player.mp, maxHp: st.maxHp, maxMp: st.maxMp, name: player.name, loc: '隔離村莊', gold: player.gold, t: 0 };
+        status.innerHTML = renderChar() + '<h3>人物選單卡片</h3><div style="width:220px">' + charCardHtml(0,summary) + '</div>';
+        for (const button of status.querySelectorAll('button')) button.disabled = true;
+    }
+    function render() {
+        gallery.innerHTML = '';
+        for (const cls in ADV_BRANCHES) {
+            if (filter.value && cls !== filter.value) continue;
+            for (const b of ADV_BRANCHES[cls]) {
+                const box = document.createElement('div'); box.innerHTML = advBranchCardHtml(b, '');
+                const button = document.createElement('button'); button.textContent = '人物狀態：' + b.name; button.onclick = () => show(cls,b.id);
+                box.append(button); gallery.append(box);
+            }
+        }
+        const imgs = [...gallery.querySelectorAll('img')];
+        for (const img of imgs) { img.loading = 'eager'; img.onerror = () => { errors.textContent += '圖片失敗：' + img.alt + '\n'; }; }
+        document.getElementById('result').textContent = imgs.length + ' 張立繪';
+    }
+    filter.onchange = render;
+    document.getElementById('base').onclick = () => show(filter.value || 'royal','');
+    render(); show('royal','rTyrant');
+})().catch(e => { document.getElementById('errors').textContent += String(e); console.error(e); });
+</script></html>

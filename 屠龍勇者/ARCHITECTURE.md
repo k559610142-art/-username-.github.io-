@@ -248,6 +248,8 @@
 
 | `tools/test-enchant-picker.js`、`tools/enchant-picker-preview.html` | 武防卷原視窗連續手動強化、逐次風險確認與隔離驗證（第241節） |
 
+| `images/classes/advance-v1/`、`tools/portrait-src/advance-v1/`、`tools/test-advance-portraits.js`、`tools/advance-portraits-preview.html` | 36 分支二轉立繪、內建 imagegen 原稿／提示詞／縮圖工具／總覽，介面接線隔離驗證與預覽（第248節） |
+
 ## 2. 載入順序與依賴
 
 `config → classes → skills → items → spellbook → monsters → zones → quests → advance → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → talent-jewels → talent → talent-tree → talent-layout → talent-planner → talent-live → bag-storage → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → pwa → loot → main`
@@ -263,7 +265,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261031d`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261031f`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -665,6 +667,8 @@ kills, deaths, settings（含 skillSlots 技能欄 8 格）, created, skills[已
 - 迴圈：`requestAnimationFrame`，只在狩獵畫面顯示時跑（`huntVisible()`），分頁隱藏時不更新；canvas 依 `devicePixelRatio` 調整解析度。
 
 ## 18. 人物模型與職業立繪
+
+- 20261031f：36 個二轉分支各一張透明立繪，人物狀態／人物選單／二轉選擇與重塑顯示；創角仍用原職業全身像，地圖 sprite 完全不改（第248節）。
 
 - 20261026e：m22修羅破戒僧專屬三向四動作與變身卷軸接線，見第168節。
 
@@ -1328,6 +1332,8 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 介面：狩獵畫面左上 `#map-prog` 顯示「🌀 T5 剩 132/240 圖示 +45%」；2026-10-24 改成亮紅色粗體（#ff4545）加黑色陰影，使用 `.scene-top .map-prog` 避免被通用 small 灰字覆蓋。僅 CSS，版本維持 20261024b。背包新增「地圖」篩選；圖鑑新增「地圖」分類（取得方式、地區）。
 
 ## 25. 人物選單與多角色欄位（2026-10-09，版本 `20261009v`）
+
+- 20261031f：`readSlotSummary` 回傳既有 `adv` 作介面概要（不是存檔新增欄位），`charCardHtml` 依合法且同職業的已完成分支顯示二轉透明立繪與名稱；沒二轉／無效／跨職業分支仍顯示原職業（第248節）。
 
 - 使用者要求：參考 RPG Maker 隊伍狀態畫面做「人物選單」，讓玩家同時養多個職業、各自存檔。
 - **欄位**：`MAX_SLOTS` 8 個（`config.js`）。欄位 0 沿用舊 key `dragonSlayer_save_v2`（舊存檔直接出現在第 1 格，**不用轉換、schema 不變**），
@@ -4018,7 +4024,7 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 38款：七一般家族（赤血／鋒刃／鷹眼／秘法／靈泉／鐵壁／契靈）各魔法2詞綴、稀有3詞綴，共14固定示例；六轉化（血魔／鋼鐵／秘刃／獵影／共生／血泉）；六星團（破軍／秘法／獵星／契靈／嗜血／壁壘）各小4／中6／大8節點，共18。數值集中資料檔，不把固定預覽說成已開放隨機掉落。
 - 轉化：只改160半徑內allocated=true且kind='small'的正值對應詞綴，原節點與輸入資料不變；不改未點出、圈外、專精、核心及插槽。每節點最多一種轉化，重疊由第一筆處理並回傳conflicts；非法插槽或座標拒絕。鋼鐵轉化明確定義每2%物理傷害→防禦1，其餘等值替換。試算樣本不代表真正主盤已配置節點，最終節點配置與有效範圍仍待正式開放。
 - 星團：小3基礎＋1專精，中4基礎＋2專精，大5基礎＋2專精＋1核心；獨立ID、每個cost1、前置逐點串接、不產生新插槽。中央cost0、主盤核心／孔cost1。大型星團與同主題主盤核心共用exclusiveGroup，該規則供未來正式計算使用，現在只有文字試看，不能宣稱已套用戰鬥互斥。
-- talent.js刪舊TALENT_STONES／TALENT_SOCKET_PLANS示例，改統一目錄；新增talentJewelPreviewHtml與talentChooseJewel、talentView.jewelId（只在記憶體）。所有同類寶珠可跨星群試看，類型不合不接受；一般顯示詞綴，轉化顯示樣本前後，星團列每節點能力／前置／點數。talent.css新增原創CSS切面寶珠與目錄／分支樣式，沿用原畫不改圖。GAME_UPDATES及所有index ?v=同步e；隔離talent-preview加入新script。
+- talent.js刪舊TALENT_STONES／TALENT_SOCKET_PLANS示例，改統一目錄；新增talentJewelPreviewHtml與talentChooseJewel、talentView.jewelId（只在記憶體）。所有同類寶珠可跨星群試看，類型不合不接受；一般顯示詞綴，轉化顯示樣本前後，星團列每節點能力／前置／點數。talent.css新增原創CSS切面寶珠與目錄／分支樣式，沿用原畫不改圖。GAME_UPDATES及所有index ?v=同步f；隔離talent-preview加入新script。
 - 取得方式提案（未確認）：Lv10給1點，之後每升1級1點，Lv99共90點；另10個一次性試煉各1點，共100點。Lv20=11、Lv50=41、Lv99=90。使用者只詢問「90點是什麼意思」，尚未選方案；不因追問視為同意，不發點、不補舊角色。正式發放／舊角色補點及存檔結構須另經使用者確認。
 - tools/test-talent-jewels.js驗38資料／詞綴、插槽類型、18星團4／6／8節點／逐點成本／前置鏈／不巢狀、不改原物件；六轉化160邊界、圈外／未配置／特殊節點、重疊互斥與非法座標。test-talent擴充312種合法孔／寶珠組合試看、31熱區／原畫、互斥群組、入口與載入／disabled及無玩家副作用。
 - 驗證：38款資料／轉化邊界互斥／18星團／312種合法孔與寶珠試看、核心互斥群組、無角色副作用全部通過；check.ps1 ALL CHECKS PASSED、git diff --check通過；54支正式載入檔案在記憶體合併混淆並驗輸出語法成功，無臨時發佈副本。瀏覽器實機仍待使用者核對（先前本機file預覽被政策阻擋）。
@@ -4198,3 +4204,18 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 使用者回報 Lv.60 後練得比較快。原因：Lv.49 起每級固定 36,065,092 經驗，怪物經驗 lv²＋1 且越級不扣，永夜之塔怪 Lv.60～105（×1.3），而遞減從 65 才開始，60～64 完全沒打折。使用者選「遞減提早到 60」：60～64 ×3/4，65 以後不變；離線收益沿用同一函式。
 
 - 20261031d 補充：每 5 秒讓傭兵技能 MP 不夠用（回魔只剩 1/5、耗魔不變），使用者定為 `MERC_MP_REGEN_MS = 2000`（原本的 1/2）。
+
+## 248. 36 分支二轉專屬立繪（2026-10-31，版本 `20261031f`）
+
+- 使用者要求每分支一張新立繪，後續明確選擇「創角保留原立繪，已二轉角色在人物選單顯示新立繪」。地圖行走／攻擊等人物模型維持原樣；沒有修改 classes.js 的 sprite、ui-scene.js 或變身資料。
+- 內建 imagegen 分別生成 36 張原創透明全身像，依分支武器／元素／定位區別裝甲、披風與配色；正式圖 `images/classes/advance-v1/<分支id>.png` 高900px。`tools/portrait-src/advance-v1/` 保留36張原稿、完整 prompts.json、prepare.ps1（保留來源alpha縮圖、不覆寫既有正式圖）、contact.png與SHA256 manifest.json；無商業作品素材。
+- 新全域 `advPortraitSrc(id)`（advance.js）回傳合法分支立繪網址，帶GAME_VERSION；`advBranchCardHtml` 在選分支與命運重塑卡片顯示圖片；`renderChar` 僅已完成二轉時切換圖與alt，試煉pick不算完成。`.adv-portrait` 等比縮放完整圖。
+- `readSlotSummary` 在介面概要帶出既有adv（不新增存檔欄位）；`charCardHtml` 以advBranch(s)驗證分支與職業，已二轉顯示新圖與分支名稱，`.char-adv-art` 用contain保留全身；沒二轉／無效分支保留原職業圖片。創角renderStage／heroSrc不變。
+- 載入順序不變，schema仍22、不改SQL／玩法／能力。index全部?v=與GAME_VERSION同步f；新增遊戲外觀更新日誌。
+- `tools/test-advance-portraits.js`：36個獨立圖片路徑／檔案、人物狀態、人物選單與選擇卡片、未完成試煉仍用原圖、sprite資料不變。`tools/advance-portraits-preview.html` 以記憶體localStorage／禁止連外／不載main與pwa，提供36張卡片與正式人物狀態／人物選單卡片預覽。
+- 36正式PNG各異、總覽與透明圖已視覺檢查；test-advance-portraits、test-advance與check.ps1 ALL CHECKS PASSED。瀏覽器工具Page.navigate逾時，未完成實機與Console確認；待使用者依HANDOFF步驟驗收，未commit／Push。
+
+## 247. 村莊二轉導師 NPC（2026-10-31，與 `20261031f` 同版）
+
+- 使用者要求做二轉 NPC，選「顯示自己職業的導師」＋「專屬對話框」。`scene-art.js`：`SCENE_TOWN_ROLES` 加 `['二轉導師','advance']`，位置 `SCENE_ADV_NPC_SPOT`（talking 8,10／gludio 8,9／giran 8,10／aden 9,9，廣場左側空地，用格線疊圖挑過）。`ui-scene.js`：`TOWN_NPCS` 加二轉導師（`openTownSub('advance')`），`townNpcList` 經 `advNpcPatch`：名牌換成 `CLASS_STORIES[cls].npc`、圖換 `images/classes/stage/<cls>.webp`。`ui-panels.js`：`NPC_LINES.advance`、`TOWN_SUBS` 加「🌟 二轉導師」、對話框表加 `advance: renderAdvanceNpc`。
+- `renderAdvanceNpc`（advance.js）：`advQuestPanelHtml`＋目前第 5～7 章卡片（接受／進度／回報）；前 4 章沒完成時提示並可跳任務分頁。

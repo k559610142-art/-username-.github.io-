@@ -259,6 +259,8 @@ function advState(p = player) {
     return p.adv;
 }
 function advBranch(p = player) { const a = p && p.adv, b = a && ADV_BY_ID[a.br]; return b && b.cls === p.cls ? b : null; }
+// 二轉立繪只用於介面，不變更職業 sprite 或地圖模型。
+function advPortraitSrc(id) { return ADV_BY_ID[id] ? `images/classes/advance-v1/${id}.png?v=${GAME_VERSION}` : ''; }
 function advIs(id, p = player) { const b = advBranch(p); return !!b && b.id === id; }
 function advClassName(p = player) { const b = advBranch(p); return b ? b.name : CLASSES[p.cls].name; }
 function advGrowth(kind) { const b = advBranch(); return b ? 1 + (ADV_GROW[b.grow] || [0, 0])[kind === 'mp' ? 1 : 0] : 1; }
@@ -798,6 +800,7 @@ function advTrialDeath(killer) { return !!(killer && killer.questBoss && advTria
 function advBranchCardHtml(b, pickFn) {
     const s1 = b.skill1, s2 = b.skill2;
     return `<div class="adv-card" style="border-color:${b.color}">
+        <img class="adv-portrait" src="${advPortraitSrc(b.id)}" alt="${esc(b.name)}立繪" loading="lazy">
         <div class="adv-name" style="color:${b.color}">${esc(b.name)}</div>
         <div><b>被動「${esc(b.p.name)}」</b>：${esc(b.p.desc)}</div>
         <div><b>Lv.60「${esc(s1.name)}」</b>：${esc(s1.desc)}</div>
@@ -865,4 +868,31 @@ function advLocalDrops(mon) {
     if (lootActive() || SIM_MODE || !mon) return;
     if (mon.boss && mon.lv >= ADV_RESHAPE_LV && chance(ADV_RESHAPE_P)) { addItem('advReshape', 1); addLootLog('💎 獲得「命運重塑石」！', 'rare'); }
     if (advIs('rWorld') && chance(ADV_WORLD_CUR_P) && typeof rollCurrency === 'function') { const id = rollCurrency(mon.lv); if (id) { addItem(id, 1); addLootLog(`💰 黃金血統：額外獲得「${ITEMS[id].name}」`, 'rare'); } }
+}
+
+// ───────── 村莊二轉導師（2026-10-31，第 247 節）─────────
+// 每個村莊一位；名牌是自己職業的任務 NPC、外觀用職業立繪（scene-art.js 的 SCENE_TOWN_ROLES、ui-scene.js 的 townNpcList 呼叫）
+function advNpcPatch(n) {
+    if (n.role !== '二轉導師' || !player) return n;
+    const names = {}; for (const k in n.names || {}) names[k] = CLASS_STORIES[player.cls].npc;
+    names[player.loc.id] = CLASS_STORIES[player.cls].npc;
+    return { ...n, names, img: n.img ? 'images/classes/stage/' + player.cls + '.webp' : n.img };
+}
+// NPC 對話框（ui-panels.js renderTown）：二轉狀態＋目前的第 5～7 章
+function renderAdvanceNpc() {
+    const s = questState(), q = currentQuest();
+    let h = advQuestPanelHtml();
+    if (s.ch < ADV_CH) return h + `<div class="panel"><p>先完成前 4 章職業任務（目前第 ${s.ch + 1} 章），並達到 Lv.${ADV_SKILL1_LV}，再來找我。</p><button onclick="switchTab('quest')">📜 查看職業任務</button></div>`;
+    if (!q) return h + `<div class="panel"><p class="good">🌟 你已經完成全部二轉任務。</p></div>`;
+    const g = q.goal;
+    let body = `<p>${q.intro}</p><div class="quest-goal">🎯 ${questGoalText(q)}</div><small class="muted">獎勵：${advQuestRewardText(q)}</small>`;
+    if (player.lv < q.lv) body += `<div class="quest-act"><span class="bad">需要 Lv.${q.lv}（目前 Lv.${player.lv}）</span></div>`;
+    else if (!s.active) body += `<div class="quest-act"><button onclick="acceptQuest()">${q.advPick && !advState().pick ? '選擇分支並接受任務' : '接受任務'}</button></div>`;
+    else {
+        const prog = g.type === 'boss' ? (s.bossDone ? '首領已討伐' : s.prog >= g.after ? `「${g.boss.name}」即將出現，繼續在${ZONE_BY_ID[g.zone].name}狩獵` : `擊倒魔物 ${s.prog}/${g.after}`) : `進度 ${questProgress(q)}/${g.n}`;
+        const pct = g.type === 'boss' ? (s.bossDone ? 100 : Math.min(99, s.prog / g.after * 99)) : questProgress(q) / g.n * 100;
+        body += `<div class="quest-act">${bar(pct, 100, 'exp', prog)}</div>`;
+        if (questReady(q)) body += `<div class="quest-act"><button onclick="turnInQuest()">回報任務</button></div>`;
+    }
+    return h + `<div class="quest-card current"><div class="quest-head"><b>第 ${s.ch + 1} 章　${q.title}　<span class="good">🌟 二轉</span></b><small class="muted">Lv.${q.lv}</small></div>${body}</div>`;
 }

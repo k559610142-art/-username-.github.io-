@@ -6,6 +6,7 @@ let selSlot = 0;      // 人物選單目前選中的欄位
 // 更新版本時在最上方新增玩家可讀的更新紀錄。
 // 玩家看得到的更新日誌：只寫遊戲內容（玩法、數值、地圖、道具、介面）。系統類（伺服器、雲端、防作弊、效能、請求減量、更新檢查、聊天輪詢暫停這類連線行為）不寫（使用者 2026-10-27，第 151 節）
 const GAME_UPDATES = [
+    { version:'20261031f', items:['36 個二轉分支各有專屬新立繪，人物狀態、人物選單與二轉選擇畫面可查看。創角保留原立繪，地圖人物模型維持原樣。','四個村莊新增「二轉導師」：名牌與外觀是你職業的導師，點他可以查看二轉狀態、接受與回報第 5～7 章、選擇分支、切換元素精靈。'] },
     { version:'20261031d', items:['傭兵回魔改成每 2 秒一次（上一版每 5 秒回太慢，技能 MP 不夠用）。'] },
     { version:'20261031c', items:['Lv.60～64 狩獵經驗改為 ×3/4（遞減由 Lv.65 提早到 Lv.60），Lv.65 以後不變。'] },
     { version:'20261031b', items:['二轉技能書改成打怪掉落（Lv.60 書由 Lv.55 以上怪物、Lv.70 書由 Lv.65 以上怪物掉，首領較容易），不能用金幣購買；第 6、7 章任務仍會給第一次的書。','換分支後的新技能書也要打怪取得，可在交易所買賣。'] },
@@ -158,14 +159,17 @@ function charCardHtml(i, s) {
     const c = CLASSES[s.cls];
     const next = s.lv >= MAX_LEVEL ? 'MAX' : fmt(expToNext(s.lv) - s.exp);
     const pct = (a, b) => b > 0 ? clamp(a / b * 100, 0, 100) : 0;
-    const face = c.art
+    const branch = advBranch(s);
+    const face = branch
+        ? `<img class="char-adv-art" src="${advPortraitSrc(branch.id)}" alt="${esc(branch.name)}" loading="lazy">`
+        : c.art
         ? `<img src="${c.art}?v=${GAME_VERSION}" alt="${c.name}" loading="lazy">`
         : `<span class="char-emoji">${c.icon}</span>`;
     return `<button class="char-card ${i === selSlot ? 'sel' : ''}" onclick="pickSlot(${i})" ondblclick="playSlot(${i})">
         <div class="char-face">${face}</div>
         <div class="char-top">
             <div class="char-name">${esc(s.name)}</div>
-            <div class="char-cls">${c.name}</div>
+            <div class="char-cls">${branch ? esc(branch.name) : c.name}</div>
             <div class="char-row"><i>Lv</i><b>${s.lv}</b></div>
             <div class="char-row"><i>Next</i><b>${next}</b></div>
         </div>

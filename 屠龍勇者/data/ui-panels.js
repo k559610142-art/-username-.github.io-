@@ -396,7 +396,7 @@ function renderChar() {
         <div class="cv-body">
             <div class="cv-box cv-hero">
                 <div class="cv-name">${esc(player.name)}</div>
-                <div class="cv-stage"><img src="${heroSrc(player.cls)}" alt="${c.name}" onerror="this.src='${c.art || ''}'"><span class="cv-circle"></span></div>
+                <div class="cv-stage"><img src="${advBranch() ? advPortraitSrc(advBranch().id) : heroSrc(player.cls)}" alt="${esc(advClassName())}"><span class="cv-circle"></span></div>
                 <div class="cv-foot"><span>等級 <b>${player.lv}</b></span><span>職業 <b${typeof advBranch === 'function' && advBranch() ? ` style="color:${advBranch().color}"` : ''}>${typeof advClassName === 'function' ? advClassName() : c.name}</b></span><span>經驗 <b class="gold">${expPct}%</b></span></div>
             </div>
             <div class="cv-box cv-equipment"><div class="cv-gear">${charGearHtml()}</div>${charCompanionsHtml()}</div>
@@ -773,13 +773,13 @@ function renderQuest() {
 
 // ───────── 村莊 ─────────
 // NPC 對話框的招呼語
-const NPC_LINES = { mercenary: '接取傭兵團試煉，討伐5,000隻怪物後隨機獲得一名傭兵。持有傭兵時任務隱藏；陣亡可復活或重新接任務，放棄時裝備與符石退回背包。', identify: '將未鑑定財寶地圖交給鑑定台，免費揭露六條詞綴。', dollShop: '也可以在這裡分解傳說裝備，每件取得50個魔法結晶。歡迎挑選魔法娃娃。僅販售 T4 娃娃，每隻 500 鑽石，目前僅開放 GM 測試購買，購買後請到共用倉庫領取。', shop: '歡迎光臨！武器、藥水、卷軸應有盡有，慢慢挑。', sell: '有用不到的東西嗎？我全部收購。', storage: '要寄放什麼東西嗎？角色倉庫和帳號共用倉庫都在這裡。',
+const NPC_LINES = { advance: '職業的盡頭還有更高的境界。帶著證明回來，選擇屬於你的道路。', mercenary: '接取傭兵團試煉，討伐5,000隻怪物後隨機獲得一名傭兵。持有傭兵時任務隱藏；陣亡可復活或重新接任務，放棄時裝備與符石退回背包。', identify: '將未鑑定財寶地圖交給鑑定台，免費揭露六條詞綴。', dollShop: '也可以在這裡分解傳說裝備，每件取得50個魔法結晶。歡迎挑選魔法娃娃。僅販售 T4 娃娃，每隻 500 鑽石，目前僅開放 GM 測試購買，購買後請到共用倉庫領取。', shop: '歡迎光臨！武器、藥水、卷軸應有盡有，慢慢挑。', sell: '有用不到的東西嗎？我全部收購。', storage: '要寄放什麼東西嗎？角色倉庫和帳號共用倉庫都在這裡。',
     craft: '帶齊材料來，我幫你打造最好的裝備。', inn: '旅途辛苦了，住一晚好好休息吧。' };
 // 商店分類（renderShop）：武器裝備（含彈藥）、藥水、卷軸，其他類別放「其他」
 const SHOP_CATS = [['gear', '⚔️ 武器裝備', ['weapon', 'armor', 'ammo']], ['potion', '🧪 藥水', ['potion', 'elixir']], ['scroll', '📜 卷軸', ['scroll']], ['book', '📖 魔法書', ['book']]];
 let townNpcNow = null, shopCat = 'gear';
 function setShopCat(c) { shopCat = c; renderPanel(); }
-const TOWN_SUBS = [['mercenary', '⚑ 傭兵團長'], ['shop', '🏪 商店'], ['sell', '💰 回收'], ['storage', '📦 倉庫'], ['craft', '🔨 鍛造'], ['inn', '🛏️ 旅館'], ['dollShop', '🧚 娃娃商人'], ['identify', '🔍 鑑定台']];
+const TOWN_SUBS = [['advance', '🌟 二轉導師'], ['mercenary', '⚑ 傭兵團長'], ['shop', '🏪 商店'], ['sell', '💰 回收'], ['storage', '📦 倉庫'], ['craft', '🔨 鍛造'], ['inn', '🛏️ 旅館'], ['dollShop', '🧚 娃娃商人'], ['identify', '🔍 鑑定台']];
 
 function renderTown() {
     if (!inTown()) {
@@ -789,13 +789,13 @@ function renderTown() {
     }
     if (townNpcNow) {   // NPC 專用對話框：只顯示這位 NPC 的功能（2026-10-12 使用者要求）
         const say = NPC_LINES[townSub] || '';
-        return `<div class="panel npc-say">「${say}」</div>` + ({ shop: renderShop, sell: renderSell, storage: renderStorage, craft: renderCraft, inn: renderInn, dollShop: renderDollShop, identify: renderIdentify, mercenary: renderMercenary }[townSub])();
+        return `<div class="panel npc-say">「${say}」</div>` + ({ shop: renderShop, sell: renderSell, storage: renderStorage, craft: renderCraft, inn: renderInn, dollShop: renderDollShop, identify: renderIdentify, mercenary: renderMercenary, advance: renderAdvanceNpc }[townSub])();
     }
     const t = currentTown();
     let h = `<div class="panel"><div class="loc">${t.icon} ${t.name}</div><small class="muted">村莊等級 ${t.tier}：越大的城鎮賣的東西越多。</small>
         ${isCloudConfigured() ? `<div class="btn-row"><button class="secondary" onclick="switchTab('raid')">🐉 團隊副本（和朋友組隊打龍）</button><button class="secondary" onclick="switchTab('market')">🏪 交易所</button></div>` : ''}</div>`;
     h += `<div class="chips">${TOWN_SUBS.map(([id, n]) => `<button class="chip-btn ${townSub === id ? 'active' : ''}" onclick="setTownSub('${id}')">${n}</button>`).join('')}</div>`;
-    return h + ({ shop: renderShop, sell: renderSell, storage: renderStorage, craft: renderCraft, inn: renderInn, dollShop: renderDollShop, identify: renderIdentify, mercenary: renderMercenary }[townSub])();
+    return h + ({ shop: renderShop, sell: renderSell, storage: renderStorage, craft: renderCraft, inn: renderInn, dollShop: renderDollShop, identify: renderIdentify, mercenary: renderMercenary, advance: renderAdvanceNpc }[townSub])();
 }
 
 function setTownSub(s) { townSub = s; renderPanel(); if (s === 'dollShop') dollShopLoad(); }

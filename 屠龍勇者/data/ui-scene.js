@@ -207,6 +207,8 @@ const TOWN_NPCS = [
       names: { talking: '露娜', gludio: '希雅', giran: '伊芙', aden: '星語者' } },
     { role: '娃娃商人', icon: '🧚', x: 20, y: 14, act: () => openDollShop(),
       names: { talking: '露米', gludio: '露米', giran: '露米', aden: '露米' } },
+    { role: '二轉導師', icon: '🌟', x: 8, y: 14, act: () => openTownSub('advance'),   // 名字、立繪依玩家職業（advance.js advNpcPatch）
+      names: { talking: '二轉導師', gludio: '二轉導師', giran: '二轉導師', aden: '二轉導師' } },
     { role: '任務',  icon: '🧓', x: 11, y: 15, act: () => switchTab('quest'),
       names: { talking: '賽恩長老', gludio: '亞瑟隊長', giran: '諾亞祭司', aden: '騎士團長' } },
 ];
@@ -322,8 +324,9 @@ function npcOpen(n) {
 
 // 目前村莊要畫的 NPC：有背景圖的村莊用 SCENE_BGS 的 npcs（只換位置，名字、功能沿用 TOWN_NPCS），沒有背景圖用 TOWN_NPCS
 function townNpcList(bg) {
-    if (!bg) return TOWN_NPCS;
-    return (bg.npcs || []).map(n => ({ ...TOWN_NPCS.find(t => t.role === n.role), painted: true, h: 0.6, ...n }));   // 背景圖村莊不畫 NPC 圖示，只留名牌（2026-10-12 使用者要求）
+    const adv = n => typeof advNpcPatch === 'function' ? advNpcPatch(n) : n;   // 二轉導師換成自己職業的導師
+    if (!bg) return TOWN_NPCS.map(adv);
+    return (bg.npcs || []).map(n => adv({ ...TOWN_NPCS.find(t => t.role === n.role), painted: true, h: 0.6, ...n }));   // 背景圖村莊不畫 NPC 圖示，只留名牌（2026-10-12 使用者要求）
 }
 
 // ───────── 地圖產生 ─────────

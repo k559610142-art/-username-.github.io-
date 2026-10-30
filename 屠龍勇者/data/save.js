@@ -49,7 +49,7 @@ function readSlotSummary(i) {
         let st;
         try { player = p; st = calcStats(); } finally { player = keep; }
         const loc = p.loc.type === 'town' ? TOWNS[p.loc.id].name : ZONE_BY_ID[p.loc.id].name;
-        return { name: p.name, cls: p.cls, lv: p.lv, exp: p.exp, hp: p.hp, mp: p.mp, maxHp: st.maxHp, maxMp: st.maxMp,
+        return { name: p.name, cls: p.cls, adv: p.adv, lv: p.lv, exp: p.exp, hp: p.hp, mp: p.mp, maxHp: st.maxHp, maxMp: st.maxMp,
             gold: p.gold, loc, hunting: p.hunting && p.loc.type === 'zone', t: data.t || 0,
             locked: slotLocked(i), ownerEmail: data.ownerEmail || '' };
     } catch (e) {

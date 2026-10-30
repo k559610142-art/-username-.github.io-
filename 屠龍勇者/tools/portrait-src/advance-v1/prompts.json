@@ -1,0 +1,187 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-10-31",
+  "transparent_background": true,
+  "portraits": [
+    {
+      "id": "rTyrant",
+      "name": "暴君",
+      "prompt": "Use case: stylized-concept. Original RPG full body character standing illustration, one adult male Tyrant king (暴君), first advanced branch of a royal hero. Detailed polished anime dark fantasy painting matching a youthful brown-haired royal with crown and cloak. New advanced costume: imposing blackened steel and red gold royal plate, crimson fur-trimmed cloak, jagged elegant gold crown, broad single-handed execution sword held downward. Proud commanding pose, face visible, no helmet, complete body including boots and all sword tip and cape visible, centered with margin, portrait composition. Transparent background, no scene, no floor, no text or letters, no watermark, one character only. Original design, no commercial characters. This is a production game standing portrait, clean readable silhouette, dramatic warm rim light."
+    },
+    {
+      "id": "rEmperor",
+      "name": "人皇",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 人皇. Subject: adult brown-haired male emperor, white gold royal plate, sapphire cloak, ornate crown, upright sword and royal standard. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "rWorld",
+      "name": "天下",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 天下. Subject: adult brown-haired male sovereign, elaborate ivory gold ceremonial armor, flowing golden cloak, gold shield and fine single-handed sword, coin-shaped gem ornaments. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "kShield",
+      "name": "盾衛",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 盾衛. Subject: adult brown-haired male knight, massive blue silver fortress shield, enclosed heavy layered silver plate, blue cape, short sword. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "kBlade",
+      "name": "狂刃",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 狂刃. Subject: adult male knight, red black battle plate, enormous two-handed steel sword, crimson cloak, aggressive proud stance. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "kDragoon",
+      "name": "龍騎",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 龍騎. Subject: adult male knight, emerald silver dragon-scale plate, long dragon-head spear, teal cape, no mount. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "mPyro",
+      "name": "炎魔導師",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 炎魔導師. Subject: adult brown-haired male mage, black crimson gold layered robes, flaming ruby staff, ember runes. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "mFrost",
+      "name": "冰霜賢者",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 冰霜賢者. Subject: adult brown-haired male sage, white blue long robes and fur collar, ice crystal staff, frosted silver ornament. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "mStorm",
+      "name": "雷霆法王",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 雷霆法王. Subject: adult brown-haired male archmage, regal purple gold robes, lightning crystal staff, violet electric accents. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "eTempest",
+      "name": "風暴遊俠",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 風暴遊俠. Subject: adult blonde female elf, long pointed ears, forest green silver ranger armor, elaborate longbow, wind ribbons. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "ePact",
+      "name": "元素契約者",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 元素契約者. Subject: adult blonde female elf, long pointed ears, blue white iridescent robes and nature armor, elemental crystal staff, four small elemental wisps. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "eForest",
+      "name": "森林守護者",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 森林守護者. Subject: adult blonde female elf, long pointed ears, living wood emerald plate armor, leaf shield and single-handed sword, gold leaf ornaments. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "dBlade",
+      "name": "影刃",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 影刃. Subject: adult male dark elf, pale skin, black hair, pointed ears, fitted black violet armor, twin curved blades, purple cloak. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "dVenom",
+      "name": "毒牙",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 毒牙. Subject: adult male dark elf, pale skin, black hair, pointed ears, black emerald assassin armor, twin poisoned daggers, green poison vials. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "dNight",
+      "name": "夜行者",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 夜行者. Subject: adult male dark elf, pale skin, black hair, pointed ears, dark navy hooded stealth armor, dual long daggers, indigo cloak. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "sFist",
+      "name": "拳聖",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 拳聖. Subject: adult muscular male martial artist, dark tied hair, ivory gold martial robes, ornate gauntlets, orange chi around fists. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "sWar",
+      "name": "鬥神",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 鬥神. Subject: adult muscular male martial artist, dark tied hair, red black battle armor and martial cloth, heavy crimson gauntlets, fiery fighting aura. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "sVajra",
+      "name": "金剛",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 金剛. Subject: adult muscular male martial artist, dark hair, heavy gilded bronze armor, prayer bead belt, huge gold defensive gauntlets, serene strong pose. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "wBerserk",
+      "name": "狂戰士",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 狂戰士. Subject: adult muscular bearded male warrior, rugged fur mantle, dark red barbarian plate, massive double axe, scars. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "wRuin",
+      "name": "毀滅者",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 毀滅者. Subject: adult muscular bearded male warrior, black bronze jagged heavy armor, enormous two-handed warhammer, orange volcanic accents. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "wTitan",
+      "name": "不屈戰神",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 不屈戰神. Subject: adult muscular bearded male warrior, steel blue massive layered plate, broad axe and huge tower shield, torn blue cape. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "gHunter",
+      "name": "獵殺者",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 獵殺者. Subject: adult brown-haired male gunner, dark leather longcoat, brass gold accents, ornate long sniper rifle, hunter bandolier. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "gBomb",
+      "name": "爆破專家",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 爆破專家. Subject: adult brown-haired male gunner, brown red armored engineer coat, goggles on forehead, grenade belt, large steampunk grenade launcher. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "gSling",
+      "name": "槍鬥士",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 槍鬥士. Subject: adult brown-haired male gunfighter, tailored navy silver combat coat, dual ornate pistols, agile duelist pose. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "fSword",
+      "name": "魔劍聖",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 魔劍聖. Subject: adult black-haired male arcane swordsman, sleek black violet silver rune armor, long glowing violet sword, violet sash. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "fElem",
+      "name": "元素騎士",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 元素騎士. Subject: adult black-haired male magic knight, teal silver rune plate, elemental glowing sword, elemental gems on armor. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "fArcane",
+      "name": "秘法守衛",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 秘法守衛. Subject: adult black-haired male magic guardian, deep blue silver heavy rune plate, translucent blue crystal shield, arcane sword. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "pJudge",
+      "name": "審判者",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 審判者. Subject: adult short-haired male paladin, white gold imposing holy armor, huge gilded two-handed judgment sword, ivory cloak. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "pGuard",
+      "name": "守護聖者",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 守護聖者. Subject: adult short-haired male paladin, white emerald gold holy plate, protective round holy shield, healing light in free hand. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "pRadiant",
+      "name": "光明聖騎",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 光明聖騎. Subject: adult short-haired male paladin, brilliant silver gold heavy plate, sun-shaped tower shield and bright single-handed sword, white cape. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "aJudge",
+      "name": "審判天使",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 審判天使. Subject: adult blonde female angel, white feathered wings fully visible, golden halo, ivory gold ceremonial armor and long robes, radiant judgment staff. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "aWar",
+      "name": "戰天使",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 戰天使. Subject: adult blonde female angel, white feathered wings fully visible, golden halo, rose gold silver battle plate, long holy spear, white battle skirt. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "aWatch",
+      "name": "守望天使",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 守望天使. Subject: adult blonde female angel, white feathered wings fully visible, blue silver halo, blue white protective armor, crystalline shield and healing staff. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "xAbyss",
+      "name": "深淵魔王",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 深淵魔王. Subject: adult muscular male demon, crimson gray skin, black horns and complete dark bat wings, black ruby demonic plate, huge curved infernal blade. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "xReaper",
+      "name": "死神",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 死神. Subject: adult male horned demon reaper, pale gray skin, black layered hooded robes and bone silver armor, long curved scythe, complete dark bat wings. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    },
+    {
+      "id": "xInferno",
+      "name": "煉獄術士",
+      "prompt": "Use case: stylized-concept. Production original dark fantasy RPG standing character portrait for advanced class 煉獄術士. Subject: adult male horned demon warlock, crimson skin, black orange embroidered robes and dark plate, infernal fire staff, complete dark bat wings. One character only, detailed polished anime fantasy illustration with realistic ornate materials, elegant readable silhouette and dramatic rim lighting. Transparent background with actual alpha, no scenery, no ground, no background gradients. Complete full body including boots, all weapons and wings entirely inside canvas with generous safe margins. Centered upright three-quarter front standing pose, face visible, portrait canvas. No cropping, no text, no labels, no watermark, no commercial characters. Distinct advanced heroic costume."
+    }
+  ]
+}
