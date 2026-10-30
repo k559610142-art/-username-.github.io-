@@ -1056,9 +1056,8 @@ const Encounter = (() => {
     function arRecordMine(win) {
         const [me, op] = G.cur;
         G.path.push({ round: G.phase === 'swiss' ? `海選第 ${G.round} 輪` : G.roundName, op, win });
-        if (G.phase === 'swiss') { recSwiss(win ? me : op, win ? op : me); if (win) G.swissWins++; arSettleSwissOthers(); }
-        else arSettleKO({ w: win ? me : op, l: win ? op : me });
-        G.cur = null;
+        if (G.phase === 'swiss') { recSwiss(win ? me : op, win ? op : me); if (win) G.swissWins++; arSettleSwissOthers(); G.cur = null; }
+        else arSettleKO({ w: win ? me : op, l: win ? op : me });   // arSettleKO 會排好下一輪並設定新的 G.cur，不能再清掉（否則晉級後卡住）
     }
     function arNext() {
         G.last = undefined;
