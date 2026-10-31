@@ -395,7 +395,7 @@ function renderChar() {
         <div class="cv-title"><h3>角色裝備</h3></div>
         <div class="cv-body">
             <div class="cv-box cv-hero">
-                <div class="cv-name">${esc(player.name)}</div>
+                <div class="cv-name">${esc(player.name)}</div>${titleBadgeHtml(accTitle())}
                 <div class="cv-stage"><img src="${advBranch() ? advPortraitSrc(advBranch().id) : heroSrc(player.cls)}" alt="${esc(advClassName())}"><span class="cv-circle"></span></div>
                 <div class="cv-foot"><span>等級 <b>${player.lv}</b></span><span>職業 <b${typeof advBranch === 'function' && advBranch() ? ` style="color:${advBranch().color}"` : ''}>${typeof advClassName === 'function' ? advClassName() : c.name}</b></span><span>經驗 <b class="gold">${expPct}%</b></span></div>
             </div>

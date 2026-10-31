@@ -55,6 +55,7 @@ function raidSnapshot() {
     dollSummonTick();
     const p = JSON.parse(JSON.stringify(player));
     p.storage = [];
+    p.titleShown = accTitle();   // 帳號稱號：團隊副本畫面顯示在名字上方（titles.js）
     return p;
 }
 
@@ -98,7 +99,7 @@ function raidSimulate(def, list, opts = {}) {
                 i, uid: x.uid, clan: x.clan || null, name: p.name, cls: p.cls, lv: p.lv, p, alive: true, dmg: 0, heal: 0, maxHp: st.maxHp,
                 hunt: { state: 'fight', timer: 0, mon: boss, mobs: [boss], pCd: rand(200, 1200), joinCd: 1e15, warned: {} },
                 deaths: p.deaths, inv0: raidConsumables(p), doll0: JSON.parse(JSON.stringify(p.dollState)), dollMs: 0, say: -99999,
-                atkMs: st.atkMs, rng: weaponIsRanged(), actN: 0, castN: 0,
+                atkMs: st.atkMs, rng: weaponIsRanged(), actN: 0, castN: 0, title: x.snap.titleShown,
             };
         });
         const alive = () => ms.filter(m => m.alive);
@@ -219,7 +220,7 @@ function raidSimulate(def, list, opts = {}) {
                 if (d > 0) used[id] = d;
             }
             return { uid: m.uid, clan: m.clan, name: m.name, cls: m.cls, lv: m.lv, maxHp: m.maxHp, dmg: Math.round(m.dmg), heal: Math.round(m.heal), died: !m.alive, used,
-                atk: Math.round(m.atkMs), rng: m.rng ? 1 : 0, castR: m.actN ? Math.round(m.castN / m.actN * 100) / 100 : 0,
+                title: TITLES[m.title] ? m.title : undefined, atk: Math.round(m.atkMs), rng: m.rng ? 1 : 0, castR: m.actN ? Math.round(m.castN / m.actN * 100) / 100 : 0,
                 dollLocks: dollSimulationLocks(m.doll0, m.p.dollState), doll: dollEquipped(m.p), dollMs: m.dollMs, dollSummonUntil: m.p.dollSummonUntil };
         });
         return {
@@ -774,7 +775,7 @@ function raidSceneInit(res, key) {
     ring(tanks, 0.24, 0.24, 20, 160);
     ring(backs, 0.4, 0.4, backs.length > 4 ? 8 : 30, backs.length > 4 ? 172 : 150);
     return {
-        key, spots, fi: 0, lastPos: -1, floats: [], fx: [], hurtAt: res.members.map(() => -1e9), bossHitAt: -1e9,
+        key, spots, fi: 0, lastPos: -1, floats: [], fx: [], tfx: [], hurtAt: res.members.map(() => -1e9), bossHitAt: -1e9,
         g: by('g'), x: by('x'), w: by('w'), b: by('b'), e: by('e'),
         heal: res.members.map((_, i) => marks.filter(x => x[1] === 'h' && x[2] === i)),
         healed: marks.filter(x => x[1] === 'h'),
@@ -901,6 +902,7 @@ function raidSceneDraw(ctx, W, H) {
         ctx.lineWidth = 1;
         ctx.fillStyle = '#000b'; ctx.fillRect(p.x - w / 2, y, w, 4);
         ctx.fillStyle = hp / m.maxHp < 0.3 ? '#e0442e' : '#3fbf5a'; ctx.fillRect(p.x - w / 2, y, w * clamp(hp / m.maxHp, 0, 1), 4);
+        if (m.title) titleFxDraw(ctx, m.title, p.x, y - 22, st.tfx[i] || (st.tfx[i] = {}), Math.round(clamp(11 * S, 11, 14)));
         if (i === tgt && bossAlive) { ctx.font = `${Math.round(12 * S)}px sans-serif`; ctx.fillText('🎯', p.x + w / 2 + 8, y + 2); }
     });
     // 飄字（真實時間 900ms）

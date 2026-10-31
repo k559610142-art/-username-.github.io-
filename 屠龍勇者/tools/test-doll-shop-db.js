@@ -32,8 +32,9 @@ async function main(){
  await assert.rejects(()=>query('select * from public.dragon_doll_shop_catalog'),/permission denied/);
  await db.exec('reset role;set role anon');assert.equal((await query('select public.doll_shop_status() v'))[0].v.canBuy,false);await assert.rejects(()=>buy(id,500,key),/permission denied/);
  await db.exec('reset role');await query('insert into public.dragon_wallet(user_id,diamonds)values($1,1000)',[gm]);
+ const titles=async()=>(await query('select public.dragon_my_titles() v'))[0].v;await as(pl);assert.deepEqual(await titles(),[]);await as(gm);assert.deepEqual(await titles(),[],'沒買過娃娃沒有稱號');
  await as(gm);let status=(await query('select public.doll_shop_status() v'))[0].v;assert(status.canBuy);assert.equal(status.items.length,5);assert(status.items.every(x=>x.quality==='T4'));for(const blocked of ['doll_phoenix','doll_white-tiger','doll_frost-dragon','doll_forest-sprite'])await assert.rejects(()=>buy(blocked,500,'ffffffff-ffff-4fff-8fff-ffffffffffff'),/unknown doll/);assert(status.items.every(x=>x.price===500));
- let r=await buy(id,500,key);assert.equal(r.diamonds,500);const vaultId=r.vaultId;
+ let r=await buy(id,500,key);assert.equal(r.diamonds,500);assert.deepEqual(await titles(),['serverKeeper'],'買過娃娃送伺服器育養員');await as(pl);assert.deepEqual(await titles(),[],'別的帳號沒有');await db.exec('reset role;set role anon');await assert.rejects(()=>titles(),/permission denied/);await as(gm);const vaultId=r.vaultId;
  r=await buy(id,500,key);assert.equal(r.diamonds,500);assert.equal(r.vaultId,vaultId);await assert.rejects(()=>buy('doll_white-tiger',500,key),/request mismatch/);
  await assert.rejects(()=>buy(id,1,'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb'),/price changed/);
  await assert.rejects(()=>buy('redPotion',500,'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb'),/unknown doll/);

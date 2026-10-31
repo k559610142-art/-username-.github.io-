@@ -171,6 +171,7 @@
 | `tools/test-auction-db.js`／`tools/test-auction-client.js` | 隔離PGlite後端交易／輪次／權限與客戶端費用／確認／門檻檢查 |
 | `data/vault.js` | 帳號共用倉庫、鑽石（每日登入、掉落）、離線掛機扣鑽石（第 38 節） |
 | `data/doll-shop.js`、`tools/doll-shop.sql` | GM 限購娃娃商店、伺服器扣鑽與共用倉庫交付（第155節） |
+| `data/titles.js` | 帳號稱號：`TITLES`、`accTitle`／`titleRefresh`（伺服器 `dragon_my_titles`）、地圖七彩火焰字 `titleFxDraw`、介面徽章 `titleBadgeHtml`（第 257 節） |
 | `tools/test-town-doll-shop.js`、`tools/test-doll-shop-db.js` | 村莊 NPC 可達性、商店權限／重試與隔離資料庫交易測試（第155節） |
 | `data/presence.js` | 村莊看得到其他在線玩家（Supabase Realtime presence／broadcast）、點人聊天／邀請組隊（第 39 節） |
 | `data/codex.js` | 裝備圖鑑分頁 `renderCodex`（全部道具的分類、品質、屬性、取得方式；第 20 節），載入時把 `codex` 加進 `TABS`／`PANEL_FNS` |
@@ -269,7 +270,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261031n`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261101a`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -4294,3 +4295,16 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 使用者截圖指定裝備右側列通貨。openCraftDialog改craft-workbench雙欄：左側沿itemDescHtml顯示圖片／屬性／詞綴上限，右側保留九種通貨數量、說明、可用／停用狀態。裝備與地圖共用改造視窗均適用；dialog加craft-dialog最大寬760px。
 - 兩欄各自最高60vh可捲動，手機480px以下保留雙欄、縮內距與字級並允許換行。craftUseBtn重畫後還原dialog-body／craft-item／craft-list捲動位置，洗裝時同步更新名稱／詞綴／通貨數量。無新全域／載入順序／schema／SQL／數值改動。
 - test-craft-workbench隔離測普通→魔法→稀有、重洗扣量、不可用拒絕、三處捲動還原、最高數值／停用顯示；check.ps1 ALL CHECKS PASSED。瀏覽器127.0.0.1:8790/tools/craft-workbench-preview.html實點混沌石25→24／詞綴更新、左右並排截圖檢視、Console無error／warn；該預覽記憶體角色、禁止連外，不讀真實存檔。手機實機仍待驗收。
+
+## 257. 帳號稱號「伺服器育養員」（2026-11-01，版本 `20261101a`；`titles.js`、`tools/doll-shop.sql` 最後一段）
+
+- 使用者要求：稱號「伺服器育養員」顯示在角色頭頂，彩色放大＋火光；看了 4 款樣本（`tools/title-fire-preview.html`）選 **A 七彩火焰**。
+  取得：**帳號第一次購買娃娃就贈送，同帳號所有角色自動配戴**。顯示：自己的地圖頭頂、團隊副本戰鬥畫面、角色裝備視窗、人物選單。
+- **伺服器**：`dragon_my_titles()`（security definer，只給 authenticated）：`dragon_doll_shop_orders` 有自己的紀錄 → `["serverKeeper"]`，否則 `[]`。寫在 `doll-shop.sql` 最後，**使用者要重跑整份 doll-shop.sql**（可重跑）。
+  注意：娃娃商店目前只有 GM 能買（第 155、158 節），所以開放一般玩家購買前只有 GM 帳號會有。
+- **遊戲端** `titles.js`（載入在 doll-shop.js 之後）：`TITLES`（目前只有 `serverKeeper`）；`titleRefresh()` 在登入（`cloudOnSignedIn`）與娃娃購買成功後呼叫，結果存 `accTitles` 並快取在 `dragonSlayer_titles`（`{uid, list}`）；
+  `accTitle()` 只在已登入、沒停權、快取的 uid 等於目前帳號時回傳稱號（不寫進角色存檔，換帳號就沒有）。SQL 還沒裝或連不上時維持原狀。
+- **畫法**：地圖 `titleFxDraw(ctx, id, x, y, fx, size)`：彩虹漸層字左右流動（1.5 秒一輪）、黑框、橘色光暈，七彩火苗往上飄（每秒約 300 顆、最多 160 顆，`fx` 由呼叫端保存）。
+  頭頂：`sceneDraw` 的 drawPlayer 在名字上方 17px（`scene.titleFx`）。團隊副本：`raidSnapshot` 在快照加 `titleShown`，`raidSimulate` 結果 `members[].title`，`raidSceneDraw` 畫在名字上方（字 11～14px，`st.tfx[i]`）。
+  介面：`titleBadgeHtml(id)` → `.acc-title`（外層 drop-shadow 光暈脈動，內層 `b` 彩虹字 background-clip，**要 `text-shadow: none`**，不然繼承的黑色 text-shadow 會蓋住漸層），放在角色裝備 `.cv-name` 與人物選單 `.char-name` 下方。
+- **驗證**：`tools/test-doll-shop-db.js` 加稱號檢查（沒買沒有、GM 買後有、別的帳號沒有、anon 不能呼叫）通過；瀏覽器把 `accTitle` 暫時換成固定值，看過頭頂、角色裝備、人物選單、團隊副本畫面，Console 只有本機原本的 sw.js 錯誤。沒用正式伺服器實測。

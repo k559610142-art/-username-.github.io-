@@ -90,6 +90,7 @@ async function dollShopPurchase(id, price, uid) {
         if (!cloudUser || cloudUser.id !== uid) return;
         diaCount = r.diamonds; vaultData = null;
         showToast('已購買 ' + r.name + '，請到帳號共用倉庫取出', 3500);
+        titleRefresh();   // 第一次買娃娃送稱號「伺服器育養員」（titles.js）
     } catch (e) {
         if (!cloudUser || cloudUser.id !== uid) return;
         const m = String(e && e.message || e);

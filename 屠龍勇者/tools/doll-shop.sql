@@ -77,4 +77,12 @@ end $$;
 revoke execute on function public.doll_shop_status(),public.doll_shop_buy(text,int,uuid) from public,anon,authenticated;
 grant execute on function public.doll_shop_status() to anon,authenticated;
 grant execute on function public.doll_shop_buy(text,int,uuid) to authenticated;
+-- 帳號稱號（titles.js，ARCHITECTURE.md 第 257 節）：帳號買過娃娃 → 稱號「伺服器育養員」(serverKeeper)，同帳號所有角色自動配戴。
+create or replace function public.dragon_my_titles() returns jsonb
+language sql stable security definer set search_path='' as $$
+ select case when auth.uid() is not null and exists(select 1 from public.dragon_doll_shop_orders where user_id=auth.uid())
+  then '["serverKeeper"]'::jsonb else '[]'::jsonb end;
+$$;
+revoke execute on function public.dragon_my_titles() from public,anon,authenticated;
+grant execute on function public.dragon_my_titles() to authenticated;
 commit;

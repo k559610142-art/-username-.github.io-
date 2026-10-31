@@ -1308,6 +1308,8 @@ function sceneDraw(ctx, W, H) {
         ctx.font = 'bold 11px sans-serif';
         playerLabelBox = { x: px, y: labelY, w: ctx.measureText(player.name).width };
         labels.push(() => drawLabel(ctx, player.name, px, labelY, typeof advNameColor === 'function' ? advNameColor() : '#9fe0ff'));   // 二轉名牌顏色
+        const title = accTitle();   // 帳號稱號（titles.js）：名字上方七彩火焰字
+        if (title) labels.push(() => titleFxDraw(ctx, title, px, labelY - 17, scene.titleFx || (scene.titleFx = {})));
     };
     const actors = scene.mons.map(m => ({ y: m.ry, draw: () => drawMon(m) }));
     actors.push({ y: pl.ry + 0.01, draw: drawPlayer });
