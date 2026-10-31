@@ -265,7 +265,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261031g`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261031h`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -4205,10 +4205,10 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 
 - 20261031d 補充：每 5 秒讓傭兵技能 MP 不夠用（回魔只剩 1/5、耗魔不變），使用者定為 `MERC_MP_REGEN_MS = 2000`（原本的 1/2）。
 
-## 249. 法師十級魔法門檻 Lv.70（2026-10-31，版本 `20261031g`；`skills.js` 的 `MAGIC_CLASS.mage`）
+## 249. 法師十級魔法門檻 Lv.70（2026-10-31，版本 `20261031g`／`20261031h`；`skills.js` 的 `MAGIC_CLASS.mage`、`spellbook.js` 的 `MAGIC_BOOK_DROP_LV`）
 
 - 使用者要求「10 級魔法門檻改為 70 等」：`MAGIC_CLASS.mage.lv[9]` 78 → 70（煉獄、黑闇之星）。只有法師能學 10 級，其他職業不受影響；1～9 級不變。
-- `bookMinLv` 跟著變 70：本機掉寶模式下十級魔法書改由 Lv.65 以上怪物掉落。後端掉寶目錄（`loot-catalog.sql`）的 `bookLv` 仍是 78（Lv.73 以上怪物才掉），本版沒改 SQL；要同步需另外產生補丁並由使用者執行。
+- **掉落怪不改**（版本 `20261031h`，使用者決定）：`spellbook.js` 新增 `MAGIC_BOOK_DROP_LV = { 10: 78 }`，`bookMinLv` 對 10 級魔法書固定回 78，本機掉寶與圖鑑仍是 Lv.73 以上怪物掉，與後端目錄 `bookLv` 78 一致，不需要改 SQL。（`20261031g` 曾短暫讓本機改 Lv.65 起掉。）
 - 存檔、schema、魔法數值不變；已學會的不受影響。更新日誌新增一則。
 
 ## 248. 36 分支二轉專屬立繪（2026-10-31，版本 `20261031f`）

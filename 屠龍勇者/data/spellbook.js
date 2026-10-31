@@ -28,10 +28,13 @@ for (const cls in SKILLS) {
     }
 }
 // 書最低可以學的角色等級（任何職業；掉落挑書用）
+// 2026-10-31 使用者要求：法師 10 級魔法改 Lv.70 可學，但掉落怪等級不改，仍照原本 Lv.78 算（和後端目錄 bookLv 一致）
+const MAGIC_BOOK_DROP_LV = { 10: 78 };
 function bookMinLv(d) {
     const s = SKILL_BY_ID[d.skill];
     if (s.kind === 'adv') return s.lv;   // 二轉技能書（advance.js）：Lv.60／70，併入一般技能書掉落
     if (s.kind === 'class') return s.lv;
+    if (MAGIC_BOOK_DROP_LV[s.tier]) return MAGIC_BOOK_DROP_LV[s.tier];
     return Math.min(...Object.keys(MAGIC_CLASS).map(c => skillNeedLv(s, c)).filter(Boolean));
 }
 
