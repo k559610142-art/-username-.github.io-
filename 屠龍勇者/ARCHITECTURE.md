@@ -267,7 +267,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261031l`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261031m`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -1534,6 +1534,7 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
   4. 開始 `raidStart`（隊長，全員準備好）：讀最新快照 → **在隊長的瀏覽器跑 `raidSimulate`** → `update status='fighting', result=…`（伺服器 trigger 寫 `started_at`）。
   5. 每個人（包含隊長）`raidRefresh` 看到結果就**立刻領獎** `raidClaim`，然後依 `started_at` 播放重播（`RAID_REPLAY_SPEED` 2 倍速，所有人看到同一刻；可「⏩ 直接看結果」）。
   6. 隊長「🔁 同一隊再打一場」`raidAgain`：`status='open'`、`round+1`、清掉結果 → 大家要重新準備（冷卻中的人準備不了）。離開／解散：隊長離開＝`status='closed'`，其他人下次更新就被送回首頁。
+- **重播畫面**：20261031m 起是戰鬥場景（第 255 節）。
 - **大廳更新**：`RAID_POLL_MS` 3 秒輪詢（分頁在背景時暫停），沒有用 Realtime（較簡單、免費方案夠用）。房號記在 `dragonSlayer_raid_room`，重新整理或重新登入（`cloudOnSignedIn` → `raidResume`）後回到隊伍、補領離線期間打完的獎勵。
 - **團戰模擬** `raidSimulate(def, list)`（全程 `SIM_MODE`，結束完整還原 player／hunt／session／gameNow／遊戲訊息）：
   - 每個隊員是快照的複本（`migrateSave`），清掉增益與冷卻、HP／MP 補滿，關掉瞬移與自動回家；共用同一隻首領物件 `hunt.mon`。
@@ -4273,3 +4274,15 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - `mapCraftAuto`：財寶圖／關閉時直接開；普通依設定用點化石，魔法依設定用晉升石；有不要的詞綴時魔法用重鑄石、稀有用混沌石重洗，每顆都走 `useCurrency`（扣通貨、寫紀錄），直到乾淨、超過每張上限或通貨低於保留數。仍不乾淨且 giveup＝略過：從排程拿掉那一張（留在背包、已鑑定），格子計 `craftSkip`；否則照開。
 - 開圖失敗時，已被鑑定／打造過的那張不再放回排程。排程格狀態多「詞綴不合略過 N 張」。鑑定說明改為可排程。
 - 測試 `tools/test-map-queue-craft.js`。既有 `tools/test-map-queue.js` 寫死 SAVE_SCHEMA 15，改動前就失敗。
+
+## 255. 團隊副本重播改成戰鬥場景（2026-10-31，版本 `20261031m`；`raid.js` 的 `raidSceneEnsure`／`raidSceneLoop`／`raidSceneDraw`／`raidSceneMember`）
+
+- 使用者要求：報名（組隊準備）的玩家要「出現在畫面上一起打龍」，是重播的虛擬影像（使用者選 A：只改重播畫面，不做單人帶影分身）。
+- **畫面**：重播頁首領血條下方加一塊畫布（`#raid-scene-slot`，寬＝面板寬、高＝寬×0.6，限 220～420px）。背景用龍穴競技場圖 `RAID_SCENE_BG`（地龍／格爾莫斯＝earth、飛龍／維斯塔爾＝wind、瑟拉恩＝water、莫爾加斯＝fire，取 `SCENE_ART_BGS['art-*']`）。
+  首領在中間（`MON_SPRITES` 模型，沒有圖的用 emoji），面向目前盯上的隊員；隊員用各自職業的人物模型（`CLASSES[cls].sprite`）圍兩圈：近戰坦職（`RAID_TANK` ≥ 2）在內圈，其他在外圈，全部面向首領。
+  頭上名字＋血條（自己金色、首領目標加 🎯），倒下半透明＋💀；左上角戰鬥時間，結束時「🏆 討伐成功／☠️ 討伐失敗」。
+- **動作從重播資料推出來**：frames 的血量下降 → 隊員播受傷動作＋紅色飄字、首領閃白＋黃色傷害；血量上升 → 綠色飄字。隊員依自己的攻速 `atk` 循環播攻擊或施法（施法比例 `castR`），遠程／施法出手時有飛向首領的光點。
+- **模擬多記的資料**（結果 `v: 2`）：`marks` `[t, 代碼, 隊員, 目標]`：`g` 換目標、`x` 首領普攻（播攻擊列並轉向）、`w` 吐息蓄力（整隊腳下紅圈）、`b` 吐息爆發（火浪＋畫面閃橘）、`e` 狂暴（首領腳下紅光）、`h` 補師補血（補師施法＋被補者綠光柱），最多 1500 筆；
+  `members[]` 加 `atk`（出手間隔 ms）、`rng`（遠程武器）、`castR`。8 人約多 2～3KB。舊結果（v1）沒有 marks 也能播，只是首領不轉向、沒有吐息特效。`raidAllyHeal` 多一個參數 `mk`。世界首領（wb.js）共用 `raidSimulate`，只是多帶 marks，畫面不變。
+- **畫布不閃**：分頁每秒 `renderPanel` 會換掉 HTML；畫布只建立一次（`raidSceneCv`），每個 `requestAnimationFrame` 檢查並搬回新的 slot（在畫面更新前），slot 不在了就停止迴圈。飄字用真實時間 0.9 秒；按「直接看結果」跳過的時間不補飄字。
+- **驗證**：本機用 6 人／8 人假隊伍跑 `raidSimulate` 後把重播畫在測試覆蓋層（PC 560px、手機 375px），格爾莫斯與瑟拉恩模型、站位、受傷、補血、吐息、倒下、結束字樣正常；Console 無新錯誤（只有本機 sw.js 原本就有的 script fetch 錯誤）。沒有用真的雲端隊伍實測。

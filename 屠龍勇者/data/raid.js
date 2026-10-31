@@ -77,8 +77,10 @@ function raidSimulate(def, list, opts = {}) {
     walkHome = null;
     const t0 = gameNow;
     let t = 0;
-    const events = [], frames = [];
+    const events = [], frames = [], marks = [];
     const ev = (msg, cls = '') => { if (events.length < 600) events.push([t, msg, cls]); };
+    // 重播場景用的動作紀錄（v2）：g 首領換目標、x 首領普攻、w 吐息蓄力、b 吐息、e 狂暴、h 補師補血 [t, 代碼, 隊員, 目標]
+    const mk = (code, a, b) => { if (marks.length < 1500) marks.push(b == null ? (a == null ? [t, code] : [t, code, a]) : [t, code, a, b]); };
     try {
         const n = list.length, boss = opts.boss || raidBoss(def, n);
         const limit = opts.limitMs || RAID_LIMIT_MS;
@@ -96,6 +98,7 @@ function raidSimulate(def, list, opts = {}) {
                 i, uid: x.uid, clan: x.clan || null, name: p.name, cls: p.cls, lv: p.lv, p, alive: true, dmg: 0, heal: 0, maxHp: st.maxHp,
                 hunt: { state: 'fight', timer: 0, mon: boss, mobs: [boss], pCd: rand(200, 1200), joinCd: 1e15, warned: {} },
                 deaths: p.deaths, inv0: raidConsumables(p), doll0: JSON.parse(JSON.stringify(p.dollState)), dollMs: 0, say: -99999,
+                atkMs: st.atkMs, rng: weaponIsRanged(), actN: 0, castN: 0,
             };
         });
         const alive = () => ms.filter(m => m.alive);
@@ -128,7 +131,9 @@ function raidSimulate(def, list, opts = {}) {
                 if (hunt.pCd <= 0) {
                     hunt.pCd = st.atkMs;
                     const hb = boss.hp, logN = logSeq;
-                    if (!raidAllyHeal(m, st, ms, ev, t)) playerAction(st);
+                    m.actN++;
+                    if (raidAllyHeal(m, st, ms, ev, t, mk)) m.castN++;
+                    else { playerAction(st); if (gameLog.some(l => l.seq > logN && /magic/.test(l.cls))) m.castN++; }
                     if (hunt && hunt.mon) resonanceFlush(st);
                     m.dmg += Math.max(0, hb - boss.hp);
                     // 技能訊息挑一些放進重播（每人最多 4 秒一則）
@@ -151,6 +156,7 @@ function raidSimulate(def, list, opts = {}) {
                 if (boss.magic) boss.magic = Object.assign({}, boss.magic, { dmg: boss.magic.dmg.map(v => Math.round(v * 1.5)) });
                 boss.spd = Math.round(boss.spd * 0.75);
                 ev(`😡 ${boss.name}狂暴了！攻擊變得更猛烈`, 'boss');
+                mk('e');
             }
             // 首領挑目標
             retarget -= TICK_MS;
@@ -158,7 +164,7 @@ function raidSimulate(def, list, opts = {}) {
                 const pool = alive(), w = pool.map(m => m.maxHp * (RAID_TANK[m.cls] || 1));
                 let r = Math.random() * w.reduce((a, b) => a + b, 0), pick = pool[pool.length - 1];
                 for (let i = 0; i < pool.length; i++) { r -= w[i]; if (r <= 0) { pick = pool[i]; break; } }
-                if (pick !== target) ev(`👁️ ${boss.name}盯上了 ${pick.name}`, 'warn');
+                if (pick !== target) { ev(`👁️ ${boss.name}盯上了 ${pick.name}`, 'warn'); mk('g', pick.i); }
                 target = pick; retarget = RAID_RETARGET_MS;
             }
             // 首領普攻
@@ -167,6 +173,7 @@ function raidSimulate(def, list, opts = {}) {
                 boss.atkCd = boss.spd;
                 if (gameNow >= boss.stunUntil) {
                     player = target.p; hunt = target.hunt;
+                    mk('x', target.i);
                     monsterAttack(calcStats(), boss);
                     if (target.p.deaths > target.deaths) down(target, boss.name);
                     if (boss.hp <= 0) { win = true; break; }   // 反擊打倒
@@ -176,6 +183,7 @@ function raidSimulate(def, list, opts = {}) {
             if (tele > 0) {
                 tele -= TICK_MS;
                 if (tele <= 0) {
+                    mk('b');
                     const name = boss.magic ? boss.magic.name : '龍之吐息';
                     let hit = 0, dodged = 0;
                     for (const m of alive()) {
@@ -195,7 +203,7 @@ function raidSimulate(def, list, opts = {}) {
                 }
             } else {
                 breathIn -= TICK_MS;
-                if (breathIn <= 0) { tele = RAID_BREATH_TELE; ev(`⚠️ ${boss.name}正在蓄力…`, 'warn'); }
+                if (breathIn <= 0) { tele = RAID_BREATH_TELE; mk('w'); ev(`⚠️ ${boss.name}正在蓄力…`, 'warn'); }
             }
             if (t % RAID_FRAME_MS === 0) frame();
             if (!alive().length) break;
@@ -211,12 +219,13 @@ function raidSimulate(def, list, opts = {}) {
                 if (d > 0) used[id] = d;
             }
             return { uid: m.uid, clan: m.clan, name: m.name, cls: m.cls, lv: m.lv, maxHp: m.maxHp, dmg: Math.round(m.dmg), heal: Math.round(m.heal), died: !m.alive, used,
+                atk: Math.round(m.atkMs), rng: m.rng ? 1 : 0, castR: m.actN ? Math.round(m.castN / m.actN * 100) / 100 : 0,
                 dollLocks: dollSimulationLocks(m.doll0, m.p.dollState), doll: dollEquipped(m.p), dollMs: m.dollMs, dollSummonUntil: m.p.dollSummonUntil };
         });
         return {
-            v: 1, raid: def.id, n: list.length, win, ms: t, enraged,
+            v: 2, raid: def.id, n: list.length, win, ms: t, enraged,
             boss: { id: boss.id, name: boss.name, icon: boss.icon, lv: boss.lv, maxHp: boss.maxHp },
-            members, frames, events,
+            members, frames, events, marks,
         };
     } finally {
         player = keep.player; hunt = keep.hunt; session = keep.session; walkHome = keep.walkHome; gameNow = keep.gameNow; potReadyAt = keep.potReadyAt;
@@ -226,7 +235,7 @@ function raidSimulate(def, list, opts = {}) {
 }
 
 // 補師幫隊友補血：有治癒魔法、隊友 HP 低於 50%、自己不危險時，補最危險的那位（回傳 true＝這回合用掉了）
-function raidAllyHeal(m, st, ms, ev, t) {
+function raidAllyHeal(m, st, ms, ev, t, mk) {
     const s = player.settings;
     if (player.hp < st.maxHp * s.healPct / 100) return false;   // 先顧自己（playerAction 會補自己）
     if (skillGcdLeft()) return false;   // 技能公共冷卻（combat.js）
@@ -239,6 +248,7 @@ function raidAllyHeal(m, st, ms, ev, t) {
     const before = hurt.p.hp;
     hurt.p.hp = Math.min(hurt.maxHp, hurt.p.hp + v);
     m.heal += hurt.p.hp - before;
+    if (mk) mk('h', m.i, hurt.i);
     if (t - m.say >= 4000) { ev(`✨ ${m.name}對 ${hurt.name} 施放「${k.name}」：HP +${fmt(hurt.p.hp - before)}`, 'heal'); m.say = t; }
     return true;
 }
@@ -697,6 +707,7 @@ function raidReplayHtml() {
             <div class="raid-bar boss"><div style="width:${pct(bossHp, res.boss.maxHp)}%"></div><b>${fmt(bossHp)} / ${fmt(res.boss.maxHp)}</b></div>
             <small class="muted">${done ? '戰鬥結束' : `戰鬥中…${Math.floor(pos / 1000)} 秒`}</small>
             ${done ? '' : '<div class="btn-row"><button class="mini secondary" onclick="raidSkip()">⏩ 直接看結果</button></div>'}</div>
+        <div class="raid-scene" id="raid-scene-slot"></div>${raidSceneEnsure()}
         <div class="panel raid-mems">${mem}</div>
         <div class="panel raid-log">${evs}</div>${foot}`;
 }
@@ -710,6 +721,255 @@ function raidRewardHtml(r) {
 }
 
 function raidSkip() { if (raidReplay) { raidReplay.skip = true; raidRender(); } }
+
+// ───────── 重播戰鬥場景（2026-10-31，第 255 節）─────────
+// 依重播結果畫出「隊員一起打龍」的影像：首領在中間、隊員用各自的職業模型圍成兩排（坦職在前），
+// 血量變化 → 受傷動作與飄字，marks（v2）→ 首領出手方向、吐息蓄力與爆發、補師補血。只是畫面，不影響戰鬥結果與獎勵。
+// 畫布只建立一次，分頁每秒重畫時在下一個 requestAnimationFrame（畫面更新前）搬回新的 #raid-scene-slot，不會閃。
+const RAID_SCENE_BG = { drake: 'art-earth-lair', wyvern: 'art-wind-lair', antharas: 'art-earth-lair', fafurion: 'art-water-lair', lindvior: 'art-wind-lair', valakas: 'art-fire-lair' };
+let raidSceneCv = null, raidSceneRaf = 0, raidSceneSt = null;
+
+function raidSceneEnsure() {
+    if (!raidSceneRaf) raidSceneRaf = requestAnimationFrame(raidSceneLoop);
+    return '';
+}
+
+function raidSceneLoop() {
+    raidSceneRaf = 0;
+    const slot = document.getElementById('raid-scene-slot');
+    if (!slot || !raidReplay) return;   // 離開分頁或重播結束：停下來，下次畫重播時再開
+    if (!raidSceneCv) raidSceneCv = document.createElement('canvas');
+    if (raidSceneCv.parentNode !== slot) slot.appendChild(raidSceneCv);
+    const W = Math.max(240, slot.clientWidth), H = Math.round(clamp(W * 0.6, 220, 420)), dpr = Math.min(2, window.devicePixelRatio || 1);
+    if (raidSceneCv.width !== Math.round(W * dpr) || raidSceneCv.height !== Math.round(H * dpr)) {
+        raidSceneCv.width = Math.round(W * dpr); raidSceneCv.height = Math.round(H * dpr);
+        raidSceneCv.style.width = W + 'px'; raidSceneCv.style.height = H + 'px';
+    }
+    const ctx = raidSceneCv.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    try { raidSceneDraw(ctx, W, H); } catch (e) { console.warn('raid scene', e); }
+    raidSceneRaf = requestAnimationFrame(raidSceneLoop);
+}
+
+// 0～1 的固定亂數（同一場重播每次看都一樣）
+function raidSceneRnd(a, b) { const x = Math.sin(a * 12.9898 + b * 78.233) * 43758.5453; return x - Math.floor(x); }
+// 已排序的 [[t, …]] 裡最後一筆 t ≤ pos
+function raidSceneLast(list, pos) {
+    let lo = 0, hi = list.length - 1, r = null;
+    while (lo <= hi) { const mid = (lo + hi) >> 1; if (list[mid][0] <= pos) { r = list[mid]; lo = mid + 1; } else hi = mid - 1; }
+    return r;
+}
+
+function raidSceneInit(res, key) {
+    const marks = res.marks || [], by = c => marks.filter(x => x[1] === c);
+    const tanks = [], backs = [];
+    res.members.forEach((m, i) => ((RAID_TANK[m.cls] || 1) >= 2 && !m.rng ? tanks : backs).push(i));
+    if (!tanks.length && backs.length > 2) tanks.push(backs.shift());
+    // 站位：首領腳下為圓心的兩圈橢圓（比例座標，畫的時候乘上畫布大小）
+    const spots = [];
+    const ring = (list, rx, ry, a0, a1) => list.forEach((idx, k) => {
+        const a = (a0 + (a1 - a0) * (k + 1) / (list.length + 1)) * Math.PI / 180;
+        spots[idx] = { x: 0.5 + Math.cos(a) * rx, y: 0.5 + Math.sin(a) * ry };
+    });
+    ring(tanks, 0.24, 0.24, 20, 160);
+    ring(backs, 0.4, 0.4, backs.length > 4 ? 8 : 30, backs.length > 4 ? 172 : 150);
+    return {
+        key, spots, fi: 0, lastPos: -1, floats: [], fx: [], hurtAt: res.members.map(() => -1e9), bossHitAt: -1e9,
+        g: by('g'), x: by('x'), w: by('w'), b: by('b'), e: by('e'),
+        heal: res.members.map((_, i) => marks.filter(x => x[1] === 'h' && x[2] === i)),
+        healed: marks.filter(x => x[1] === 'h'),
+    };
+}
+
+function raidSceneDraw(ctx, W, H) {
+    const rp = raidReplay, res = rp.res, pos = raidReplayPos(), now = performance.now(), SP = RAID_REPLAY_SPEED;
+    if (!raidSceneSt || raidSceneSt.key !== rp.key) raidSceneSt = raidSceneInit(res, rp.key);
+    const st = raidSceneSt, S = H / 260;
+    const bx = W / 2, by = H * 0.5;   // 首領腳底
+    const memPos = i => { const s = st.spots[i] || { x: 0.5, y: 0.8 }; return { x: bx + (s.x - 0.5) * W, y: clamp(by + (s.y - 0.5) * H, 40, H - 12) }; };
+    // 血量：照 0.5 秒一格的 frames；新的一格出現時產生飄字、受傷動作（跳很多時，例如直接看結果，就不補飄字）
+    const fr = res.frames;
+    if (pos < st.lastPos) { st.fi = 0; st.floats = []; }
+    if (pos - st.lastPos > 3000) while (st.fi + 1 < fr.length && fr[st.fi + 1][0] <= pos) st.fi++;
+    while (st.fi + 1 < fr.length && fr[st.fi + 1][0] <= pos) {
+        const a = fr[st.fi], b = fr[st.fi + 1];
+        st.fi++;
+        const bd = a[1] - b[1];
+        if (bd > 0) { st.bossHitAt = b[0]; st.floats.push({ x: bx + rand(-30, 30) * S, y: by - 70 * S, text: '-' + fmt(bd), color: '#ffe27a', size: 15, born: now }); }
+        res.members.forEach((m, i) => {
+            const d = b[2 + i] - a[2 + i], p = memPos(i);
+            if (d < 0 && b[2 + i] > 0) { st.hurtAt[i] = b[0]; st.floats.push({ x: p.x, y: p.y - 52 * S, text: '-' + fmt(-d), color: '#ff6a5a', size: 12, born: now }); }
+            else if (d < 0) st.floats.push({ x: p.x, y: p.y - 52 * S, text: '倒下', color: '#bbb', size: 12, born: now });
+            else if (d > 0 && a[2 + i] > 0) st.floats.push({ x: p.x, y: p.y - 52 * S, text: '+' + fmt(d), color: '#7dffa0', size: 12, born: now });
+        });
+    }
+    st.lastPos = pos;
+    const f = fr[st.fi] || fr[0];
+    const bossAlive = f[1] > 0, ended = pos >= res.ms;
+
+    // 背景：龍穴圖（cover）＋暗角
+    const bgDef = SCENE_ART_BGS[RAID_SCENE_BG[res.raid] || 'art-earth-lair'], bg = bgDef && spriteImage(bgDef.src);
+    ctx.fillStyle = '#120d0b'; ctx.fillRect(0, 0, W, H);
+    if (bg) {
+        const k = Math.max(W / bg.naturalWidth, H / bg.naturalHeight), dw = bg.naturalWidth * k, dh = bg.naturalHeight * k;
+        ctx.drawImage(bg, (W - dw) / 2, (H - dh) / 2, dw, dh);
+    }
+    const vg = ctx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.3, W / 2, H / 2, Math.hypot(W, H) * 0.6);
+    vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.55)');
+    ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+
+    // 吐息蓄力：整隊腳下的紅圈越長越大
+    const tele = raidSceneLast(st.w, pos);
+    if (tele && pos - tele[0] < RAID_BREATH_TELE && bossAlive && !ended) {
+        const k = (pos - tele[0]) / RAID_BREATH_TELE, R = W * 0.42, Ry = H * 0.36, cy = by + H * 0.12;
+        ctx.fillStyle = `rgba(220,30,20,${0.12 + 0.08 * Math.sin(now / 70)})`;
+        ctx.beginPath(); ctx.ellipse(bx, cy, R, Ry, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = 'rgba(255,70,30,0.25)';
+        ctx.beginPath(); ctx.ellipse(bx, cy, R * k, Ry * k, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#ff3a1a'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.ellipse(bx, cy, R, Ry, 0, 0, Math.PI * 2); ctx.stroke(); ctx.lineWidth = 1;
+    }
+    // 狂暴：首領腳下紅色光暈
+    const enr = raidSceneLast(st.e, pos);
+    if ((enr || (res.enraged && !st.e.length && pos >= RAID_ENRAGE_MS)) && bossAlive) {
+        const g = ctx.createRadialGradient(bx, by, 4, bx, by, 90 * S);
+        g.addColorStop(0, `rgba(255,40,20,${0.45 + 0.15 * Math.sin(now / 120)})`); g.addColorStop(1, 'rgba(255,40,20,0)');
+        ctx.fillStyle = g; ctx.fillRect(bx - 90 * S, by - 90 * S, 180 * S, 180 * S);
+    }
+
+    const tgtMark = raidSceneLast(st.g, pos), tgt = tgtMark ? tgtMark[2] : -1;
+    const actors = [];
+    // 首領
+    actors.push({ y: by, draw: () => {
+        const id = res.boss.id, ms = MON_SPRITES[id], img = monSpriteImg(id);
+        let alpha = 1;
+        if (!bossAlive) alpha = clamp(1 - (pos - f[0]) / 1500, 0, 1);
+        if (alpha <= 0) return;
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = 'rgba(0,0,0,0.45)';
+        ctx.beginPath(); ctx.ellipse(bx, by, 46 * S, 13 * S, 0, 0, Math.PI * 2); ctx.fill();
+        const atk = raidSceneLast(st.x, pos), atkLen = 600 * SP, atking = atk && pos - atk[0] < atkLen && bossAlive;
+        const look = atking ? atk[2] : tgt;
+        let face = 'down';
+        if (look >= 0) { const p = memPos(look), dx = p.x - bx, dy = p.y - by; face = Math.abs(dx) > Math.abs(dy) * 1.2 ? (dx < 0 ? 'left' : 'right') : 'down'; }
+        const flash = clamp(1 - (pos - st.bossHitAt) / (120 * SP), 0, 1) * 0.35;
+        if (img && ms) {
+            const row = { down: 0, right: 1, left: 1, up: 2 }[face] + (atking ? 3 : 0), n = ms.n[row];
+            const fi = atking ? Math.min(n - 1, Math.floor((pos - atk[0]) / atkLen * n)) : Math.floor(now / 220) % ms.n[row];
+            const dh = (ms.size || 62) * ms.ch / ms.body * S * 1.35, dw = ms.cw * dh / ms.ch;
+            const fx = ms.cols ? (row * 2 + fi) % ms.cols * ms.cw : fi * ms.cw, fy = ms.cols ? Math.floor((row * 2 + fi) / ms.cols) * ms.ch : row * ms.ch;
+            ctx.save();
+            if (face === 'left') { ctx.translate(bx, 0); ctx.scale(-1, 1); ctx.translate(-bx, 0); }
+            ctx.drawImage(img, fx, fy, ms.cw, ms.ch, bx - dw / 2, by + 4 * S - dh, dw, dh);
+            if (flash > 0.02) ctx.drawImage(hitFlashCanvas(img, fx, fy, ms.cw, ms.ch, flash), bx - dw / 2, by + 4 * S - dh, dw, dh);
+            ctx.restore();
+        } else {
+            ctx.font = `${Math.round(84 * S)}px "Segoe UI Emoji","Apple Color Emoji",sans-serif`;
+            ctx.fillText(res.boss.icon || '🐉', bx, by - 40 * S);
+        }
+        ctx.globalAlpha = 1;
+    } });
+    // 隊員
+    res.members.forEach((m, i) => {
+        const p = memPos(i);
+        actors.push({ y: p.y, draw: () => raidSceneMember(ctx, m, i, p, f[2 + i], { bx, by, pos, now, S, bossAlive, st }) });
+    });
+    actors.sort((a, b) => a.y - b.y).forEach(a => a.draw());
+
+    // 吐息爆發：從首領往外擴散的火浪＋畫面閃一下
+    const br = raidSceneLast(st.b, pos);
+    if (br && pos - br[0] < 900 * SP) {
+        const k = (pos - br[0]) / (900 * SP);
+        ctx.fillStyle = `rgba(255,120,30,${0.28 * (1 - k)})`; ctx.fillRect(0, 0, W, H);
+        ctx.strokeStyle = `rgba(255,190,80,${1 - k})`; ctx.lineWidth = 6 * (1 - k) + 1;
+        ctx.beginPath(); ctx.ellipse(bx, by + H * 0.08, W * 0.5 * k, H * 0.4 * k, 0, 0, Math.PI * 2); ctx.stroke(); ctx.lineWidth = 1;
+    }
+    // 補血光：被補的人身上綠色光柱
+    for (const h of st.healed) {
+        if (h[0] > pos || pos - h[0] > 700 * SP) continue;
+        const k = (pos - h[0]) / (700 * SP), p = memPos(h[3]);
+        ctx.fillStyle = `rgba(120,255,160,${0.35 * (1 - k)})`;
+        ctx.fillRect(p.x - 10 * S, p.y - 60 * S * (0.5 + k), 20 * S, 60 * S * (0.5 + k));
+    }
+    // 名字與血條（最上層）
+    res.members.forEach((m, i) => {
+        const p = memPos(i), hp = f[2 + i], me = cloudUser && m.uid === cloudUser.id, w = 40 * S, y = p.y - 58 * S;
+        ctx.font = `bold ${Math.round(clamp(10 * S, 10, 13))}px sans-serif`;
+        ctx.lineWidth = 3; ctx.strokeStyle = '#000';
+        ctx.strokeText(m.name, p.x, y - 7); ctx.fillStyle = hp <= 0 ? '#999' : me ? '#ffd34d' : '#e8f4ff'; ctx.fillText(m.name, p.x, y - 7);
+        ctx.lineWidth = 1;
+        ctx.fillStyle = '#000b'; ctx.fillRect(p.x - w / 2, y, w, 4);
+        ctx.fillStyle = hp / m.maxHp < 0.3 ? '#e0442e' : '#3fbf5a'; ctx.fillRect(p.x - w / 2, y, w * clamp(hp / m.maxHp, 0, 1), 4);
+        if (i === tgt && bossAlive) { ctx.font = `${Math.round(12 * S)}px sans-serif`; ctx.fillText('🎯', p.x + w / 2 + 8, y + 2); }
+    });
+    // 飄字（真實時間 900ms）
+    st.floats = st.floats.filter(x => now - x.born < 900);
+    for (const x of st.floats) {
+        const k = (now - x.born) / 900;
+        ctx.globalAlpha = k > 0.7 ? (1 - k) / 0.3 : 1;
+        ctx.font = `bold ${Math.round(x.size * clamp(S, 1, 1.4))}px sans-serif`;
+        ctx.lineWidth = 3; ctx.strokeStyle = '#000';
+        ctx.strokeText(x.text, x.x, x.y - k * 24); ctx.fillStyle = x.color; ctx.fillText(x.text, x.x, x.y - k * 24);
+        ctx.globalAlpha = 1; ctx.lineWidth = 1;
+    }
+    // 結束字樣
+    if (ended) {
+        ctx.fillStyle = '#0008'; ctx.fillRect(0, H / 2 - 24, W, 48);
+        ctx.font = `bold ${Math.round(clamp(22 * S, 18, 30))}px sans-serif`;
+        ctx.fillStyle = res.win ? '#ffd34d' : '#ff7a6a';
+        ctx.fillText(res.win ? '🏆 討伐成功！' : '☠️ 討伐失敗', W / 2, H / 2);
+    } else {
+        ctx.font = '12px sans-serif'; ctx.textAlign = 'left'; ctx.fillStyle = '#ffe7a8';
+        ctx.fillText(`⏱ ${Math.floor(pos / 60000)}:${String(Math.floor(pos / 1000) % 60).padStart(2, '0')}　×${SP}`, 8, 12);
+        ctx.textAlign = 'center';
+    }
+}
+
+// 畫一位隊員：職業模型面向首領，依攻速輪流播攻擊／施法；剛被打到播受傷；倒下變半透明＋骷髏
+function raidSceneMember(ctx, m, i, p, hp, o) {
+    const { bx, by, pos, now, S, bossAlive, st } = o, SP = RAID_REPLAY_SPEED;
+    const c = CLASSES[m.cls] || {}, sp = c.sprite, dx0 = bx - p.x, dy0 = by - p.y;
+    const dir = Math.abs(dy0) > Math.abs(dx0) * 0.8 ? (dy0 < 0 ? 'up' : 'down') : dx0 < 0 ? 'left' : 'right';
+    const dead = hp <= 0;
+    // 動作：受傷 > 補血施法 > 攻速循環的攻擊／施法 > 站立
+    let name = 'walk', t = 0;
+    const hitLen = 260 * SP, healM = raidSceneLast(st.heal[i], pos);
+    const period = Math.max(350, m.atk || 900), phase = raidSceneRnd(i + 1, 7) * period;
+    const cyc = Math.floor((pos + phase) / period), local = (pos + phase) % period;
+    const casts = raidSceneRnd(i + 1, cyc) < (m.castR || 0);
+    if (!dead && pos - st.hurtAt[i] < hitLen) { name = 'hit'; t = (pos - st.hurtAt[i]) / SP; }
+    else if (!dead && healM && pos - healM[0] < 700 * SP) { name = 'cast'; t = (pos - healM[0]) / SP; }
+    else if (!dead && bossAlive) { name = casts ? 'cast' : 'attack'; t = local / SP; }
+    const anim = sp && (sp[name] || sp.walk), img = anim && spriteImage(anim.src);
+    ctx.fillStyle = 'rgba(0,0,0,0.4)';
+    ctx.beginPath(); ctx.ellipse(p.x, p.y, 12 * S, 4 * S, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.globalAlpha = dead ? 0.35 : 1;
+    if (img) {
+        const d = animDir(dir), row = { down: 0, right: 1, up: 2 }[d], n = anim.frames[d];
+        // 站立＝走路圖中間那格；一輪動作播完也回到站姿，等下一次出手
+        let a2 = anim, fr = name === 'walk' ? Math.floor(n / 2) : Math.floor(t / anim.ms);
+        if (name !== 'walk' && fr >= n) { a2 = sp.walk; fr = Math.floor(sp.walk.frames[d] / 2); }
+        const img2 = spriteImage(a2.src), k = sp.drawH * S * 1.15 / sp.charH, dw = a2.cellW * k, dh = a2.cellH * k;
+        if (img2) {
+            ctx.save();
+            if (dir === 'left') { ctx.translate(p.x, 0); ctx.scale(-1, 1); ctx.translate(-p.x, 0); }
+            ctx.drawImage(img2, fr * a2.cellW, row * a2.cellH, a2.cellW, a2.cellH, p.x - dw / 2, p.y + 2 * S - dh, dw, dh);
+            ctx.restore();
+        }
+        // 遠程／施法：出手的前段畫一顆飛向首領的光點
+        if (!dead && bossAlive && name !== 'hit' && (m.rng || casts) && local / SP < 260 && !(healM && pos - healM[0] < 700 * SP)) {
+            const k2 = local / SP / 260, sx = p.x + dx0 * k2, sy = p.y - 24 * S + (dy0 + 30 * S) * k2;
+            ctx.fillStyle = casts ? '#9fd8ff' : '#ffe7a8';
+            ctx.beginPath(); ctx.arc(sx, sy, (casts ? 4 : 2.5) * S, 0, Math.PI * 2); ctx.fill();
+        }
+    } else {
+        ctx.font = `${Math.round(30 * S)}px "Segoe UI Emoji","Apple Color Emoji",sans-serif`;
+        ctx.fillText(c.icon || '🧝', p.x, p.y - 16 * S);
+    }
+    ctx.globalAlpha = 1;
+    if (dead) { ctx.font = `${Math.round(16 * S)}px sans-serif`; ctx.fillText('💀', p.x, p.y - 30 * S); }
+}
 
 // 重播中每秒重畫一次（只在團隊副本分頁開著時）
 setInterval(() => {

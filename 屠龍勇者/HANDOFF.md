@@ -5,6 +5,8 @@
 
 ## 1. 現況
 
+- **20261031m：團隊副本重播改成戰鬥場景（Claude，第 255 節）**：使用者要報名的隊友出現在畫面上一起打龍（選 A，只改重播，不做單人影分身）。龍穴背景＋首領模型＋隊員職業模型圍兩圈，依重播血量／marks 播出手、受傷、吐息、補血；結果 v2 多 marks。沒用真的雲端隊伍實測，待使用者組隊看一場。
+
 - **2026-10-31 loot-cleanup.sql 更新（Claude，第 116 節）**：Supabase 記憶體吃緊，收據保留改 1 天、每日清理加上 dragon_loot_screen_batches（保留 1 天）。**待使用者在 Supabase 重跑 tools/loot-cleanup.sql**；遊戲版本不變。
 - **20261031l：地圖排程可放未鑑定＋自動打造地圖（Claude，第 254 節）**：設定存 player.settings.mapCraft（無 schema 變更），輪到一張才鑑定／洗一張。
 - **本機20261031k已完成待驗收、未commit／發布：21大魔導士・巴列斯真身紫變專屬動畫（第253節）**。使用者21.jpg已保留；既有m21補專屬violetArchmage，三向36格與四圖集，左向鏡像，等級／能力／卷軸規則不改，schema23／SQL不變。原稿、提示詞、prepare與總覽在tools/sprite-src/morph/violet-archmage-v1。完成檢查後仍須實玩確認才commit／推送。保留j合併修復與英雄過濾。
