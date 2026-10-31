@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>稱號樣本：伺服器育養員</title>
+<style>
+    body { margin: 0; padding: 16px; background: #111; color: #ddd; font-family: sans-serif; }
+    h1 { font-size: 18px; margin: 0 0 12px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 12px; }
+    figure { margin: 0; background: #000; border: 1px solid #333; border-radius: 6px; overflow: hidden; }
+    canvas { display: block; width: 100%; }
+    figcaption { padding: 6px 10px; font-size: 14px; }
+    figcaption small { color: #999; }
+</style>
+</head>
+<body>
+<h1>稱號樣本「伺服器育養員」：角色頭頂、彩色放大＋火光（隔離預覽，不讀存檔、不連雲端）</h1>
+<div class="grid" id="grid"></div>
+<script>
+// 只是樣本：用遊戲裡的村莊圖與騎士模型，四種畫法並排，選好再接進 ui-scene.js
+const TITLE = '伺服器育養員', NAME = '玩家名字';
+const STYLES = [
+    { id: 'A', name: 'A 七彩火焰', note: '彩虹漸層字左右流動，七彩火苗往上飄' },
+    { id: 'B', name: 'B 烈焰金字', note: '燙金字＋橘紅光暈脈動，字後面有火舌、火星' },
+    { id: 'C', name: 'C 霓虹跳動', note: '每個字不同顏色輪流變換、輕微上下跳，外圍光暈' },
+    { id: 'D', name: 'D 火焰牌匾', note: '黑底牌匾、邊框一圈火焰，牌子裡是彩色字' },
+];
+const W = 360, H = 240, K = 1.7;   // 邏輯尺寸 × 放大（遊戲內角色身高 48px）
+const bg = new Image(); bg.src = '../images/maps/rework/town-gludio.jpg';
+const sp = new Image(); sp.src = '../images/sprites/knight-walk.png';
+const SPR = { cellW: 134, cellH: 122, charH: 113, drawH: 48, frames: 8 };
+const panels = STYLES.map(s => {
+    const fig = document.createElement('figure');
+    const cv = document.createElement('canvas');
+    cv.width = W * 2; cv.height = H * 2;
+    fig.appendChild(cv);
+    fig.insertAdjacentHTML('beforeend', `<figcaption>${s.name}<br><small>${s.note}</small></figcaption>`);
+    document.getElementById('grid').appendChild(fig);
+    return { s, ctx: cv.getContext('2d'), parts: [] };
+});
+
+const FONT = '"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif';
+function rnd(a, b) { return a + Math.random() * (b - a); }
+
+function drawBase(ctx, t) {
+    ctx.fillStyle = '#222'; ctx.fillRect(0, 0, W / K, H / K);
+    if (bg.complete && bg.naturalWidth) ctx.drawImage(bg, bg.naturalWidth * 0.36, bg.naturalHeight * 0.45, bg.naturalWidth * 0.3, bg.naturalHeight * 0.3, 0, 0, W / K, H / K);
+    const cx = W / K / 2, foot = H / K - 22;
+    ctx.fillStyle = 'rgba(0,0,0,0.4)';
+    ctx.beginPath(); ctx.ellipse(cx, foot - 2, 12, 4, 0, 0, Math.PI * 2); ctx.fill();
+    if (sp.complete && sp.naturalWidth) {
+        const k = SPR.drawH / SPR.charH, dw = SPR.cellW * k, dh = SPR.cellH * k, fr = Math.floor(t / 110) % SPR.frames;
+        ctx.drawImage(sp, fr * SPR.cellW, 0, SPR.cellW, SPR.cellH, cx - dw / 2, foot - dh, dw, dh);
+    }
+    // 原本的名字（遊戲的 drawLabel 樣式）
+    const ny = foot - SPR.drawH - 6;
+    ctx.font = `bold 11px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.lineWidth = 3; ctx.strokeStyle = '#000'; ctx.strokeText(NAME, cx, ny);
+    ctx.fillStyle = '#9fe0ff'; ctx.fillText(NAME, cx, ny);
+    return { cx, ty: ny - 17 };   // 稱號中心
+}
+
+// 火苗粒子：從字的範圍底部往上飄，越往上越小越透明（疊加發光）
+function fireParts(p, cx, ty, w, colorFn, n = 3, spread = 1) {
+    for (let i = 0; i < n; i++) p.parts.push({ x: cx + rnd(-w / 2, w / 2) * spread, y: ty + rnd(2, 7), vx: rnd(-6, 6), vy: rnd(-34, -18), life: 0, max: rnd(600, 1100), r: rnd(2.6, 5.2), c: colorFn() });
+}
+function drawParts(ctx, p, dt) {
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    p.parts = p.parts.filter(q => (q.life += dt) < q.max);
+    for (const q of p.parts) {
+        const k = q.life / q.max;
+        q.x += q.vx * dt / 1000; q.y += q.vy * dt / 1000;
+        ctx.globalAlpha = (1 - k) * 0.9;
+        const g = ctx.createRadialGradient(q.x, q.y, 0, q.x, q.y, q.r * (1.6 - k));
+        g.addColorStop(0, '#fff'); g.addColorStop(0.35, q.c); g.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(q.x, q.y, q.r * (1.6 - k), 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.restore();
+}
+
+const DRAW = {
+    A(ctx, p, t, dt) {
+        const { cx, ty } = drawBase(ctx, t);
+        ctx.font = `900 16px ${FONT}`;
+        const w = ctx.measureText(TITLE).width;
+        fireParts(p, cx, ty, w, () => `hsl(${(t / 6 + rnd(0, 360)) % 360},100%,60%)`, 5);
+        drawParts(ctx, p, dt);
+        const g = ctx.createLinearGradient(cx - w / 2, 0, cx + w / 2, 0), off = (t / 1500) % 1;
+        for (let i = 0; i <= 6; i++) g.addColorStop(i / 6, `hsl(${(i / 6 + off) * 360},100%,62%)`);
+        ctx.lineWidth = 4; ctx.strokeStyle = '#000'; ctx.strokeText(TITLE, cx, ty);
+        ctx.shadowColor = 'rgba(255,160,60,0.9)'; ctx.shadowBlur = 10;
+        ctx.fillStyle = g; ctx.fillText(TITLE, cx, ty); ctx.shadowBlur = 0;
+    },
+    B(ctx, p, t, dt) {
+        const { cx, ty } = drawBase(ctx, t);
+        ctx.font = `900 17px ${FONT}`;
+        const w = ctx.measureText(TITLE).width;
+        // 字後面的火舌
+        ctx.save(); ctx.globalCompositeOperation = 'lighter';
+        for (let i = 0; i < 9; i++) {
+            const x = cx - w / 2 + w * i / 8, h = 12 + 8 * Math.sin(t / 90 + i * 1.7) + 5 * Math.sin(t / 47 + i);
+            const g = ctx.createLinearGradient(0, ty + 8, 0, ty - h);
+            g.addColorStop(0, 'rgba(255,90,20,0.75)'); g.addColorStop(0.6, 'rgba(255,170,40,0.4)'); g.addColorStop(1, 'rgba(255,220,120,0)');
+            ctx.fillStyle = g;
+            ctx.beginPath(); ctx.moveTo(x - 7, ty + 8); ctx.quadraticCurveTo(x - 4, ty - h * 0.4, x + Math.sin(t / 120 + i) * 3, ty - h); ctx.quadraticCurveTo(x + 4, ty - h * 0.4, x + 7, ty + 8); ctx.fill();
+        }
+        ctx.restore();
+        fireParts(p, cx, ty, w, () => ['#ff6a1a', '#ffb02e', '#ff3a10'][Math.floor(rnd(0, 3))], 5);
+        drawParts(ctx, p, dt);
+        const g = ctx.createLinearGradient(0, ty - 9, 0, ty + 9);
+        g.addColorStop(0, '#fff6c8'); g.addColorStop(0.45, '#ffd34d'); g.addColorStop(0.55, '#e89a1c'); g.addColorStop(1, '#fff0a0');
+        ctx.lineWidth = 4; ctx.strokeStyle = '#3a1200'; ctx.strokeText(TITLE, cx, ty);
+        ctx.shadowColor = '#ff5a10'; ctx.shadowBlur = 8 + 6 * Math.sin(t / 200);
+        ctx.fillStyle = g; ctx.fillText(TITLE, cx, ty); ctx.shadowBlur = 0;
+    },
+    C(ctx, p, t, dt) {
+        const { cx, ty } = drawBase(ctx, t);
+        const sc = 1 + 0.06 * Math.sin(t / 260);
+        ctx.font = `900 ${Math.round(16 * sc)}px ${FONT}`;
+        const chars = [...TITLE], cw = chars.map(c => ctx.measureText(c).width), w = cw.reduce((a, b) => a + b, 0);
+        // 外圍光暈
+        const halo = ctx.createRadialGradient(cx, ty, 2, cx, ty, w * 0.75);
+        halo.addColorStop(0, `hsla(${(t / 8) % 360},100%,60%,0.35)`); halo.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = halo; ctx.fillRect(cx - w, ty - w * 0.5, w * 2, w);
+        fireParts(p, cx, ty, w, () => `hsl(${rnd(0, 360)},100%,65%)`, 3, 1.1);
+        drawParts(ctx, p, dt);
+        let x = cx - w / 2;
+        chars.forEach((c, i) => {
+            const y = ty + Math.sin(t / 160 + i * 0.9) * 2.2, hue = (t / 5 + i * 50) % 360;
+            ctx.lineWidth = 3.5; ctx.strokeStyle = '#fff'; ctx.strokeText(c, x + cw[i] / 2, y);
+            ctx.shadowColor = `hsl(${hue},100%,55%)`; ctx.shadowBlur = 10;
+            ctx.fillStyle = `hsl(${hue},100%,52%)`; ctx.fillText(c, x + cw[i] / 2, y); ctx.shadowBlur = 0;
+            x += cw[i];
+        });
+    },
+    D(ctx, p, t, dt) {
+        const { cx, ty } = drawBase(ctx, t);
+        ctx.font = `900 14px ${FONT}`;
+        const w = ctx.measureText(TITLE).width + 22, h = 22, x0 = cx - w / 2, y0 = ty - h / 2;
+        // 邊框一圈火：沿著牌子四邊隨機冒火苗
+        for (let i = 0; i < 6; i++) {
+            const side = Math.floor(rnd(0, 4)), u = Math.random();
+            const px = side < 2 ? x0 + u * w : side === 2 ? x0 : x0 + w, py = side === 0 ? y0 : side === 1 ? y0 + h : y0 + u * h;
+            p.parts.push({ x: px, y: py, vx: rnd(-5, 5), vy: rnd(-30, -14), life: 0, max: rnd(400, 750), r: rnd(2.4, 4.4), c: ['#ff5a14', '#ffa21e', '#ff2a0a'][Math.floor(rnd(0, 3))] });
+        }
+        ctx.fillStyle = 'rgba(20,6,2,0.85)';
+        ctx.beginPath(); ctx.roundRect(x0, y0, w, h, 5); ctx.fill();
+        ctx.lineWidth = 1.5; ctx.strokeStyle = `rgba(255,${140 + 60 * Math.sin(t / 150)},40,1)`;
+        ctx.shadowColor = '#ff6a10'; ctx.shadowBlur = 10; ctx.stroke(); ctx.shadowBlur = 0;
+        drawParts(ctx, p, dt);
+        const g = ctx.createLinearGradient(x0, 0, x0 + w, 0), off = (t / 2000) % 1;
+        for (let i = 0; i <= 6; i++) g.addColorStop(i / 6, `hsl(${(i / 6 + off) * 360},100%,66%)`);
+        ctx.fillStyle = g; ctx.fillText(TITLE, cx, ty + 0.5);
+        // 左右小火焰徽記
+        ctx.font = '12px "Segoe UI Emoji",sans-serif'; ctx.fillText('🔥', x0 - 8, ty); ctx.fillText('🔥', x0 + w + 8, ty);
+    },
+};
+
+let last = performance.now();
+function loop(now) {
+    const dt = Math.min(50, now - last); last = now;
+    for (const p of panels) {
+        const ctx = p.ctx;
+        ctx.setTransform(2 * K, 0, 0, 2 * K, 0, 0);
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        DRAW[p.s.id](ctx, p, now, dt);
+    }
+    requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
