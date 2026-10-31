@@ -19,6 +19,9 @@ const MERC_TRAITS = {
 };
 function mercTrait(m, key, def) { const t = m && MERC_TRAITS[m.cls]; return t && t[key] != null ? t[key] : def; }
 const MERC_SLOTS = ['weapon','shield', 'helm', 'armor', 'tshirt', 'cloak', 'gloves', 'boots'];
+// 2026-10-31 使用者要求：裝備回魔（玩家是每 5 秒）接上傭兵，換算成傭兵每 2 秒一次＝×0.4，四捨五入、有回魔至少 1
+const MERC_GEAR_MP_REGEN_K = MERC_MP_REGEN_MS / 5000;
+function mercGearRegen(v) { return v > 0 ? Math.max(1, Math.round(v * MERC_GEAR_MP_REGEN_K)) : 0; }
 const MERC_MODELS = Object.fromEntries(Object.keys(MERC_CLASSES).map(id => {
     const sprite = { charH: 160, drawH: ['spirit', 'arcane'].includes(id) ? 36 : 46, foot: [192, 282], art: 'images/sprites/mercenary/companions-v1/' + id + '/portrait.png' };
     for (const [action, frames, ms] of [['walk',4,130], ['attack',4,140], ['cast',2,220], ['hit',2,150]]) sprite[action] = { src: 'images/sprites/mercenary/companions-v1/' + id + '/' + action + '.png', cellW: 384, cellH: 320, frames: { down: frames, right: frames, up: frames }, ms };
@@ -277,7 +280,7 @@ function mercStats(m = player.mercenary) {
     const out = { hp: c.hp + (m.lv - 1) * 18 + (fx.hp || 0), mp: c.mp + (m.lv - 1) * 8 + (fx.mp || 0),
         atk:base.atk+gear.atk+buffs.atk,magic:base.magic+gear.magic,
         def:base.def+gear.def+buffs.def,mr:base.mr+gear.mr+buffs.mr,base,gear,buffs,
-        regen: c.regen+(talent['出戰傭兵每秒回魔']||0), dodge: Math.min(.5, mercTrait(m, 'dodge', 0) + (fx.dodge || 0) + mercBuff('evasion', m)),
+        regen: c.regen+(talent['出戰傭兵每秒回魔']||0)+mercGearRegen(fx.mpRegen||0), gearRegen: mercGearRegen(fx.mpRegen||0), dodge: Math.min(.5, mercTrait(m, 'dodge', 0) + (fx.dodge || 0) + mercBuff('evasion', m)),
         heal: mercTrait(m, 'heal', 1), speed: (d ? WEAPON_TYPES[d.type].spd : 1200) / (1 + mercTrait(m, 'spd', 0) + (fx.spdMul || 0) + mercBuff('haste', m)) * mercSlowFactor(m) };
     return typeof advMercMod === 'function' ? advMercMod(out, m) : out;   // 二轉人皇、王旗（advance.js）
 }
@@ -542,7 +545,7 @@ function renderMercenary() {
     h += mercQuestHtml();
     if (m) {
         const st = mercStats(m);
-        h += '<div class="panel"><div class="merc-model-portrait"><img src="' + MERC_MODELS[m.cls].art + '" alt="' + esc(c.person + '・' + c.name) + '"' + (m.dead ? ' class="merc-model-dead"' : '') + '></div><b>' + mercNameHtml(m) + '</b>（' + c.sex + '／' + c.age + '）<br><small class="good">職業特色：' + MERC_TRAITS[m.cls].text + '</small><p>Lv.' + m.lv + '｜經驗 ' + fmt(m.exp) + '／' + fmt(mercExpNeed(m)) + '<br>HP ' + Math.ceil(m.hp) + '／' + st.hp + '　MP ' + Math.ceil(m.mp) + '／' + st.mp + '<br>物攻' + Math.round(st.atk) + '／魔攻' + Math.round(st.magic) + '／防禦' + st.def + '／魔防' + st.mr + '</p>' + (m.dead ? '<button onclick="mercRevive()" ' + (!town ? 'disabled' : '') + '>復活（' + fmt(m.lv * MERC_REVIVE_COST) + '金幣）</button>' : '<button onclick="mercToggle()" ' + (!town ? 'disabled' : '') + '>' + (m.active ? '收回傭兵' : '傭兵出戰') + '</button>') + '</div>';
+        h += '<div class="panel"><div class="merc-model-portrait"><img src="' + MERC_MODELS[m.cls].art + '" alt="' + esc(c.person + '・' + c.name) + '"' + (m.dead ? ' class="merc-model-dead"' : '') + '></div><b>' + mercNameHtml(m) + '</b>（' + c.sex + '／' + c.age + '）<br><small class="good">職業特色：' + MERC_TRAITS[m.cls].text + '</small><p>Lv.' + m.lv + '｜經驗 ' + fmt(m.exp) + '／' + fmt(mercExpNeed(m)) + '<br>HP ' + Math.ceil(m.hp) + '／' + st.hp + '　MP ' + Math.ceil(m.mp) + '／' + st.mp + '　回魔 ' + st.regen + '／2秒' + (st.gearRegen ? '（裝備 +' + st.gearRegen + '）' : '') + '<br>物攻' + Math.round(st.atk) + '／魔攻' + Math.round(st.magic) + '／防禦' + st.def + '／魔防' + st.mr + '</p>' + (m.dead ? '<button onclick="mercRevive()" ' + (!town ? 'disabled' : '') + '>復活（' + fmt(m.lv * MERC_REVIVE_COST) + '金幣）</button>' : '<button onclick="mercToggle()" ' + (!town ? 'disabled' : '') + '>' + (m.active ? '收回傭兵' : '傭兵出戰') + '</button>') + '</div>';
         h += '<button onclick="mercDismiss()" ' + (!town ? 'disabled' : '') + '>放棄傭兵</button>';
         h += mercStatsHtml(st);
         h += '<p data-merc-live-status style="overflow-wrap:anywhere">' + esc(mercStatusText(m)) + '</p>';
