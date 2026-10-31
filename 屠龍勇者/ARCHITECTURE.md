@@ -252,6 +252,8 @@
 
 | `images/sprites/morph/violet-archmage-v1/`、`tools/sprite-src/morph/violet-archmage-v1/`、`tools/test-violet-archmage-morph.js`、`tools/violet-archmage-preview.html` | 第21款紫變專屬動畫、原稿／提示詞／腳底註冊與隔離檢查（第253節） |
 
+| `tools/test-craft-workbench.js`、`tools/craft-workbench-preview.html` | 通貨改造左右並排、連續改造捲動位置隔離驗證／預覽（第256節） |
+
 ## 2. 載入順序與依賴
 
 `config → classes → skills → items → spellbook → monsters → zones → quests → advance → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → talent-jewels → talent → talent-tree → talent-layout → talent-planner → talent-live → bag-storage → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → pwa → loot → main`
@@ -267,7 +269,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261031m`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261031n`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -4286,3 +4288,9 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
   `members[]` 加 `atk`（出手間隔 ms）、`rng`（遠程武器）、`castR`。8 人約多 2～3KB。舊結果（v1）沒有 marks 也能播，只是首領不轉向、沒有吐息特效。`raidAllyHeal` 多一個參數 `mk`。世界首領（wb.js）共用 `raidSimulate`，只是多帶 marks，畫面不變。
 - **畫布不閃**：分頁每秒 `renderPanel` 會換掉 HTML；畫布只建立一次（`raidSceneCv`），每個 `requestAnimationFrame` 檢查並搬回新的 slot（在畫面更新前），slot 不在了就停止迴圈。飄字用真實時間 0.9 秒；按「直接看結果」跳過的時間不補飄字。
 - **驗證**：本機用 6 人／8 人假隊伍跑 `raidSimulate` 後把重播畫在測試覆蓋層（PC 560px、手機 375px），格爾莫斯與瑟拉恩模型、站位、受傷、補血、吐息、倒下、結束字樣正常；Console 無新錯誤（只有本機 sw.js 原本就有的 script fetch 錯誤）。沒有用真的雲端隊伍實測。
+
+## 256. 裝備旁列通貨方便洗裝（2026-10-31，版本 `20261031n`）
+
+- 使用者截圖指定裝備右側列通貨。openCraftDialog改craft-workbench雙欄：左側沿itemDescHtml顯示圖片／屬性／詞綴上限，右側保留九種通貨數量、說明、可用／停用狀態。裝備與地圖共用改造視窗均適用；dialog加craft-dialog最大寬760px。
+- 兩欄各自最高60vh可捲動，手機480px以下保留雙欄、縮內距與字級並允許換行。craftUseBtn重畫後還原dialog-body／craft-item／craft-list捲動位置，洗裝時同步更新名稱／詞綴／通貨數量。無新全域／載入順序／schema／SQL／數值改動。
+- test-craft-workbench隔離測普通→魔法→稀有、重洗扣量、不可用拒絕、三處捲動還原、最高數值／停用顯示；check.ps1 ALL CHECKS PASSED。瀏覽器127.0.0.1:8790/tools/craft-workbench-preview.html實點混沌石25→24／詞綴更新、左右並排截圖檢視、Console無error／warn；該預覽記憶體角色、禁止連外，不讀真實存檔。手機實機仍待驗收。

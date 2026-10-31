@@ -5,6 +5,8 @@
 
 ## 1. 現況
 
+- **本機20261031n：裝備右側通貨清單（第256節），未commit／發布、待實玩確認**。鍛造→裝備改造視窗左右並排，左裝備屬性／詞綴上限、右九種通貨／數量／效果，手機亦雙欄；兩欄可各自捲動，洗裝後保留捲動並更新屬性與數量。規則／schema23／SQL不變，保留m團隊副本重播。新隔離test-craft-workbench與check.ps1通過，瀏覽器實點混沌25→24／新詞綴／並排與Console無錯通過。獨立預覽http://localhost:8790/tools/craft-workbench-preview.html不讀正式存檔。驗收：Ctrl+F5版本n→村莊鍛造→裝備改造→選裝備→確認右側通貨→使用一顆核對扣量／詞綴→手機看兩欄不遮擋。確認後才commit，再請GitHub Desktop Push origin。
+
 - **20261031m：團隊副本重播改成戰鬥場景（Claude，第 255 節）**：使用者要報名的隊友出現在畫面上一起打龍（選 A，只改重播，不做單人影分身）。龍穴背景＋首領模型＋隊員職業模型圍兩圈，依重播血量／marks 播出手、受傷、吐息、補血；結果 v2 多 marks。沒用真的雲端隊伍實測，待使用者組隊看一場。
 
 - **2026-10-31 loot-cleanup.sql 更新（Claude，第 116 節）**：Supabase 記憶體吃緊，收據保留改 1 天、每日清理加上 dragon_loot_screen_batches（保留 1 天）。**待使用者在 Supabase 重跑 tools/loot-cleanup.sql**；遊戲版本不變。

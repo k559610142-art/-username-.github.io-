@@ -1,0 +1,14 @@
+// 物品防賣鎖：記憶體角色／存檔，禁止網路與真實 localStorage。
+const fs = require('fs'), path = require('path'), vm = require('vm'), assert = require('assert/strict');
+const root = path.resolve(__dirname, '..');
+const nodes = { qty: { value: '1' } };
+const sandbox = { console, assert, nodes, TextEncoder, TextDecoder, btoa, atob, crypto: require("crypto").webcrypto, Image: function () {}, setTimeout: () => 0, clearTimeout() {}, setInterval: () => 0, clearInterval() {},
+    localStorage: { getItem: () => null, setItem() { throw Error('禁止寫入真實存檔'); }, removeItem() { throw Error('禁止刪除存檔'); } },
+    document: { addEventListener() {}, getElementById: id => nodes[id] || null, querySelector: () => null, documentElement: { style: {} } },
+    window: { addEventListener() {}, innerWidth: 400, innerHeight: 800 }, navigator: {}, fetch() { throw Error('禁止連線'); } };
+const ctx = vm.createContext(sandbox);
+for (const [, file] of fs.readFileSync(path.join(root, 'index.html'), 'utf8').matchAll(/<script src="(data\/[^"?]+\.js)\?v=/g)) {
+    if (file === 'data/main.js' || file === 'data/pwa.js') continue;
+    vm.runInContext(fs.readFileSync(path.join(root, file), 'utf8'), ctx, { filename: file });
+}
+vm.runInContext("\nSIM_MODE=true;createPlayer('改造並排隔離','knight',CLASSES.knight.base);SIM_MODE=false;\nsfx=()=>{};saveGame=()=>{};renderPanel=()=>{};refreshUI=()=>{};\nlet html='',title='',classes=[];const parts={'.dialog-body':{scrollTop:0},'.craft-item':{scrollTop:0},'.craft-list':{scrollTop:0},'.dialog':{classList:{add:c=>classes.push(c)}},h3:{innerHTML:''}};\n$=id=>id==='dialog-layer'?{querySelector:sel=>parts[sel]||null}:null;\nopenDialog=(t,h)=>{title=t;html=h;for(const sel of ['.dialog-body','.craft-item','.craft-list'])parts[sel].scrollTop=0;};\naddItem('longSword');addItem('curAug',1);addItem('curAlt',2);addItem('curRegal',1);addItem('curChaos',2);\nconst x=player.inv.find(x=>x.id==='longSword');openCraftDialog(x.uid);\nassert(html.includes('craft-workbench'));assert(classes.includes('craft-dialog'));\nparts['.craft-item'].scrollTop=42;parts['.craft-list'].scrollTop=150;parts['.dialog-body'].scrollTop=12;\ncraftUseBtn('curAug',x.uid);assert.equal(x.q,'magic');assert.equal(countItem('curAug'),0);assert.equal(parts['.craft-item'].scrollTop,42);assert.equal(parts['.craft-list'].scrollTop,150);assert.equal(parts['.dialog-body'].scrollTop,12);\ncraftUseBtn('curAlt',x.uid);assert.equal(countItem('curAlt'),1);assert.equal(x.q,'magic');assert(html.includes('最高'));\ncraftUseBtn('curRegal',x.uid);assert.equal(x.q,'rare');craftUseBtn('curChaos',x.uid);assert.equal(countItem('curChaos'),1);assert.equal(x.q,'rare');\nconst before=JSON.stringify(x);let toast='';showToast=s=>toast=s;craftUseBtn('curAug',x.uid);assert(toast);assert.equal(JSON.stringify(x),before);\nassert(html.includes('改造通貨'));assert(html.includes('curAwaken'));assert(html.includes('disabled'));\nconsole.log('PASS：並排改造、普通→魔法→稀有、連續重洗扣量、三處捲動保留、不可用拒絕、詞綴上限與停用顯示。');\n",ctx);

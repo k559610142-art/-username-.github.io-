@@ -1,0 +1,15 @@
+<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><base href="../"><title>裝備改造並排預覽</title><style>body{background:#13110e}#dialog-layer{display:flex}</style><div id="dialog-layer"></div><script>
+(async()=>{
+const memory=new Map();Object.defineProperty(window,'localStorage',{value:{getItem:k=>memory.get(k)||null,setItem:(k,v)=>memory.set(k,String(v)),removeItem:k=>memory.delete(k)}});
+const localFetch=window.fetch.bind(window);window.fetch=(u,o)=>{if(new URL(u,location.href).origin!==location.origin)throw Error('隔離預覽禁止連外');return localFetch(u,o);};
+const index=await(await fetch('index.html')).text(),style=document.createElement('style');style.textContent=index.match(/<style>([\s\S]*?)<\/style>/)[1];document.head.prepend(style);
+const files=[...index.matchAll(/<script src="(data\/[^"?]+\.js)\?v=[^"]+"/g)].map(m=>m[1]).filter(f=>!['data/main.js','data/pwa.js'].includes(f));
+for(const f of files)await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=f+'?v=20261031n&preview=violet-archmage-v1';s.onload=resolve;s.onerror=reject;document.head.append(s);});
+
+SIM_MODE=true;createPlayer('改造隔離預覽','knight',CLASSES.knight.base);SIM_MODE=false;
+saveGame=()=>{};renderPanel=()=>{};refreshUI=()=>{};sfx=()=>{};
+addItem('tshirt');const x=player.inv.find(x=>x.id==='tshirt');x.ench=6;x.il=70;applyAffixes(x,'rare',70);
+for(const id of CURRENCY_IDS)addItem(id,25);
+openCraftDialog(x.uid);
+})().catch(e=>{document.body.textContent=e.stack;console.error(e);});
+</script></html>
