@@ -265,11 +265,7 @@
 
 ## 3. 開發規則
 
-<<<<<<< HEAD
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261031h`；使用者2026-10-24同意z後延伸為aa）。
-=======
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261031i`；使用者2026-10-24同意z後延伸為aa）。
->>>>>>> 60329995954d75548a16eb39f94d9c7a323f7288
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261031j`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -4253,3 +4249,7 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 明確加入「自動販賣」的同名清單仍依既有規則優先，會覆蓋保留設定。無新全域函式／載入順序變更，codexGradeOf只在執行期使用。
 
 第250節驗證：check.ps1 ALL CHECKS PASSED；隔離記憶體測試遍歷全部裝備，72件英雄基底保留、非英雄規則不變、回收保護、schema22舊檔預設關閉／schema23勾選保留與加密存讀通過。未操作真實存檔／網路；瀏覽器畫面與Console待使用者實玩驗收。
+
+## 252. 修復版本合併衝突（2026-10-31，版本 `20261031j`）
+
+- 修正已提交HEAD中config／index／架構／交接殘留的h與i合併標記。程式與HTML兩側逐段驗證僅版本號不同，保留i內容統一為j；交接兩側進度皆保留。英雄保留勾選與schema23仍在，其他技能／傭兵修改不變。check.ps1 ALL CHECKS PASSED。
