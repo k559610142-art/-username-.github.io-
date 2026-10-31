@@ -1,0 +1,865 @@
+{
+  "id": "violet-archmage-v1",
+  "form": "m21",
+  "name": "大魔導士・巴列斯真身（紫變）",
+  "rows": [
+    "down",
+    "right",
+    "up"
+  ],
+  "left": "mirror right",
+  "cellW": 384,
+  "cellH": 320,
+  "footAnchor": [
+    192,
+    270
+  ],
+  "charH": 160,
+  "drawH": 48,
+  "actions": {
+    "walk": {
+      "src": "images/sprites/morph/violet-archmage-v1/walk.png",
+      "cellW": 384,
+      "cellH": 320,
+      "frames": {
+        "down": 4,
+        "right": 4,
+        "up": 4
+      },
+      "ms": 130,
+      "cells": [
+        {
+          "direction": "down",
+          "frame": 0,
+          "file": "frames/walk-down-01.png",
+          "source": "down-generated.png",
+          "sourceRect": {
+            "left": 94,
+            "top": 71,
+            "width": 185,
+            "height": 299
+          },
+          "sourceFoot": [
+            191.5,
+            369
+          ],
+          "scale": 0.5423728813559322,
+          "offset": [
+            140,
+            109
+          ],
+          "sha256": "ca8cc0ee2f2189e6b7658cc94114d6f5a3a99ccc341c2fc23173b9b023808bbe"
+        },
+        {
+          "direction": "down",
+          "frame": 1,
+          "file": "frames/walk-down-02.png",
+          "source": "down-generated.png",
+          "sourceRect": {
+            "left": 460,
+            "top": 75,
+            "width": 179,
+            "height": 295
+          },
+          "sourceFoot": [
+            554.5,
+            369
+          ],
+          "scale": 0.5423728813559322,
+          "offset": [
+            141,
+            111
+          ],
+          "sha256": "4566f3c1554e92137790650db6d8ab0e024f36b0c01eb298bc39a9ca380f273e"
+        },
+        {
+          "direction": "down",
+          "frame": 2,
+          "file": "frames/walk-down-03.png",
+          "source": "down-generated.png",
+          "sourceRect": {
+            "left": 810,
+            "top": 74,
+            "width": 188,
+            "height": 296
+          },
+          "sourceFoot": [
+            914,
+            369
+          ],
+          "scale": 0.5423728813559322,
+          "offset": [
+            136,
+            110
+          ],
+          "sha256": "0c297597d13b62eee551948d1e0810f6eb8e75e86becfaa08ef06b912775b684"
+        },
+        {
+          "direction": "down",
+          "frame": 3,
+          "file": "frames/walk-down-04.png",
+          "source": "down-generated.png",
+          "sourceRect": {
+            "left": 1193,
+            "top": 76,
+            "width": 166,
+            "height": 294
+          },
+          "sourceFoot": [
+            1277,
+            369
+          ],
+          "scale": 0.5423728813559322,
+          "offset": [
+            146,
+            111
+          ],
+          "sha256": "f7b4aefa38b612c6901ffb8959bdaf86e4492520b4d45d12dc8b1a6df5703c78"
+        },
+        {
+          "direction": "right",
+          "frame": 0,
+          "file": "frames/walk-right-01.png",
+          "source": "right-generated.png",
+          "sourceRect": {
+            "left": 64,
+            "top": 22,
+            "width": 246,
+            "height": 333
+          },
+          "sourceFoot": [
+            196.5,
+            354
+          ],
+          "scale": 0.48338368580060426,
+          "offset": [
+            128,
+            110
+          ],
+          "sha256": "69d330cb76c4a4b4c5d1e0aa25e6f23069aa3d09090d3fee2b1c01e5bff7c27c"
+        },
+        {
+          "direction": "right",
+          "frame": 1,
+          "file": "frames/walk-right-02.png",
+          "source": "right-generated.png",
+          "sourceRect": {
+            "left": 429,
+            "top": 26,
+            "width": 236,
+            "height": 329
+          },
+          "sourceFoot": [
+            546.5,
+            354
+          ],
+          "scale": 0.48338368580060426,
+          "offset": [
+            135,
+            111
+          ],
+          "sha256": "32b52cf9835723df00afbd295eea31e1ce383c72ec8770faddc59476f17f3ef3"
+        },
+        {
+          "direction": "right",
+          "frame": 2,
+          "file": "frames/walk-right-03.png",
+          "source": "right-generated.png",
+          "sourceRect": {
+            "left": 811,
+            "top": 20,
+            "width": 226,
+            "height": 336
+          },
+          "sourceFoot": [
+            930.5,
+            354
+          ],
+          "scale": 0.48338368580060426,
+          "offset": [
+            134,
+            109
+          ],
+          "sha256": "5ea7d4ece9281d7e6d4f466ad3cc9de45f437dbf2eed042209db437d71f4375d"
+        },
+        {
+          "direction": "right",
+          "frame": 3,
+          "file": "frames/walk-right-04.png",
+          "source": "right-generated.png",
+          "sourceRect": {
+            "left": 1176,
+            "top": 25,
+            "width": 232,
+            "height": 332
+          },
+          "sourceFoot": [
+            1296.5,
+            355
+          ],
+          "scale": 0.48338368580060426,
+          "offset": [
+            134,
+            110
+          ],
+          "sha256": "b0aa96e72d88e6351382cda570023909a76c8d41fd325d454b7818e3d830bc95"
+        },
+        {
+          "direction": "up",
+          "frame": 0,
+          "file": "frames/walk-up-01.png",
+          "source": "up-generated.png",
+          "sourceRect": {
+            "left": 87,
+            "top": 42,
+            "width": 211,
+            "height": 320
+          },
+          "sourceFoot": [
+            192,
+            361
+          ],
+          "scale": 0.5015673981191222,
+          "offset": [
+            140,
+            111
+          ],
+          "sha256": "f4bf2c6c2cd0ab8581482dc2d924d90b1f42cc3be414ff96de45f067319078f7"
+        },
+        {
+          "direction": "up",
+          "frame": 1,
+          "file": "frames/walk-up-02.png",
+          "source": "up-generated.png",
+          "sourceRect": {
+            "left": 448,
+            "top": 40,
+            "width": 214,
+            "height": 322
+          },
+          "sourceFoot": [
+            562,
+            361
+          ],
+          "scale": 0.5015673981191222,
+          "offset": [
+            135,
+            110
+          ],
+          "sha256": "f8ab10455fd678e41e49a748e1586a2bdbfc845a66c712740b08bd6df7fd3c21"
+        },
+        {
+          "direction": "up",
+          "frame": 2,
+          "file": "frames/walk-up-03.png",
+          "source": "up-generated.png",
+          "sourceRect": {
+            "left": 809,
+            "top": 49,
+            "width": 197,
+            "height": 313
+          },
+          "sourceFoot": [
+            897,
+            361
+          ],
+          "scale": 0.5015673981191222,
+          "offset": [
+            148,
+            115
+          ],
+          "sha256": "35ab2542aef195879a1b36e9214805051f38db22e0768fee025fd367a634f510"
+        },
+        {
+          "direction": "up",
+          "frame": 3,
+          "file": "frames/walk-up-04.png",
+          "source": "up-generated.png",
+          "sourceRect": {
+            "left": 1156,
+            "top": 41,
+            "width": 217,
+            "height": 325
+          },
+          "sourceFoot": [
+            1270,
+            365
+          ],
+          "scale": 0.5015673981191222,
+          "offset": [
+            135,
+            108
+          ],
+          "sha256": "b5e4d0963c1bc51b0208f9686077a3295a91394e5e8ceb6762547c22fb9f243c"
+        }
+      ]
+    },
+    "attack": {
+      "src": "images/sprites/morph/violet-archmage-v1/attack.png",
+      "cellW": 384,
+      "cellH": 320,
+      "frames": {
+        "down": 4,
+        "right": 4,
+        "up": 4
+      },
+      "ms": 140,
+      "cells": [
+        {
+          "direction": "down",
+          "frame": 0,
+          "file": "frames/attack-down-01.png",
+          "source": "down-generated.png",
+          "sourceRect": {
+            "left": 49,
+            "top": 425,
+            "width": 256,
+            "height": 273
+          },
+          "sourceFoot": [
+            158.5,
+            697
+          ],
+          "scale": 0.5423728813559322,
+          "offset": [
+            133,
+            123
+          ],
+          "sha256": "81870404664baad16a7308513390cce55b4a5892840b1b4b568f0e88994918c6"
+        },
+        {
+          "direction": "down",
+          "frame": 1,
+          "file": "frames/attack-down-02.png",
+          "source": "down-generated.png",
+          "sourceRect": {
+            "left": 433,
+            "top": 456,
+            "width": 323,
+            "height": 239
+          },
+          "sourceFoot": [
+            554,
+            692
+          ],
+          "scale": 0.5423728813559322,
+          "offset": [
+            126,
+            143
+          ],
+          "sha256": "d53f19427fa5926cba3ad539464d5f65e79a7aa2b51e0d893636f2c867306e12"
+        },
+        {
+          "direction": "down",
+          "frame": 2,
+          "file": "frames/attack-down-03.png",
+          "source": "down-generated.png",
+          "sourceRect": {
+            "left": 786,
+            "top": 458,
+            "width": 313,
+            "height": 238
+          },
+          "sourceFoot": [
+            947.5,
+            695
+          ],
+          "scale": 0.5423728813559322,
+          "offset": [
+            104,
+            142
+          ],
+          "sha256": "1b3921a614b29c36ac61f48e24216822ad6a2f5d6a76fa1044a5dfbbd08056dc"
+        },
+        {
+          "direction": "down",
+          "frame": 3,
+          "file": "frames/attack-down-04.png",
+          "source": "down-generated.png",
+          "sourceRect": {
+            "left": 1197,
+            "top": 435,
+            "width": 190,
+            "height": 261
+          },
+          "sourceFoot": [
+            1281.5,
+            695
+          ],
+          "scale": 0.5423728813559322,
+          "offset": [
+            146,
+            129
+          ],
+          "sha256": "1374b8b731d4aeeb0d201e859242f6b8e64af2e1348e7ffb367a807e90313e86"
+        },
+        {
+          "direction": "right",
+          "frame": 0,
+          "file": "frames/attack-right-01.png",
+          "source": "right-generated.png",
+          "sourceRect": {
+            "left": 37,
+            "top": 391,
+            "width": 289,
+            "height": 309
+          },
+          "sourceFoot": [
+            187.5,
+            699
+          ],
+          "scale": 0.48338368580060426,
+          "offset": [
+            119,
+            121
+          ],
+          "sha256": "ac6ea79577b88ca67e0d22ad42060c7bb47ae173de3e4bbb21f64e620354fd21"
+        },
+        {
+          "direction": "right",
+          "frame": 1,
+          "file": "frames/attack-right-02.png",
+          "source": "right-generated.png",
+          "sourceRect": {
+            "left": 400,
+            "top": 440,
+            "width": 390,
+            "height": 260
+          },
+          "sourceFoot": [
+            562,
+            697
+          ],
+          "scale": 0.48338368580060426,
+          "offset": [
+            114,
+            146
+          ],
+          "sha256": "ba2e9778abe7a757a901b3122ebb298d5bf0d0e54ee6314741d1914f31a03249"
+        },
+        {
+          "direction": "right",
+          "frame": 2,
+          "file": "frames/attack-right-03.png",
+          "source": "right-generated.png",
+          "sourceRect": {
+            "left": 791,
+            "top": 452,
+            "width": 358,
+            "height": 248
+          },
+          "sourceFoot": [
+            940.5,
+            699
+          ],
+          "scale": 0.48338368580060426,
+          "offset": [
+            120,
+            151
+          ],
+          "sha256": "3811ef68340096d11c484d53bf55efe360016bdac9a9f0830385cbfbbf4dbd46"
+        },
+        {
+          "direction": "right",
+          "frame": 3,
+          "file": "frames/attack-right-04.png",
+          "source": "right-generated.png",
+          "sourceRect": {
+            "left": 1181,
+            "top": 397,
+            "width": 231,
+            "height": 304
+          },
+          "sourceFoot": [
+            1296,
+            700
+          ],
+          "scale": 0.48338368580060426,
+          "offset": [
+            136,
+            124
+          ],
+          "sha256": "38da61f00e55ef644a2842013e10bc4f9180bb5e1f8852ed1a7ddfce39611c7f"
+        },
+        {
+          "direction": "up",
+          "frame": 0,
+          "file": "frames/attack-up-01.png",
+          "source": "up-generated.png",
+          "sourceRect": {
+            "left": 51,
+            "top": 383,
+            "width": 266,
+            "height": 320
+          },
+          "sourceFoot": [
+            162.5,
+            701
+          ],
+          "scale": 0.5015673981191222,
+          "offset": [
+            137,
+            112
+          ],
+          "sha256": "2d8dbbb5a5731dc40d6131937864f6ec53f1e3f6f7b3a28c3dc74fe1830d50c6"
+        },
+        {
+          "direction": "up",
+          "frame": 1,
+          "file": "frames/attack-up-02.png",
+          "source": "up-generated.png",
+          "sourceRect": {
+            "left": 421,
+            "top": 435,
+            "width": 362,
+            "height": 262
+          },
+          "sourceFoot": [
+            497.5,
+            696
+          ],
+          "scale": 0.5015673981191222,
+          "offset": [
+            154,
+            140
+          ],
+          "sha256": "3601a330bccdfba0b8be5f7c6340f35f9b0ffd89fe3e6d552c9c3e973cb10441"
+        },
+        {
+          "direction": "up",
+          "frame": 2,
+          "file": "frames/attack-up-03.png",
+          "source": "up-generated.png",
+          "sourceRect": {
+            "left": 793,
+            "top": 412,
+            "width": 341,
+            "height": 288
+          },
+          "sourceFoot": [
+            978,
+            699
+          ],
+          "scale": 0.5015673981191222,
+          "offset": [
+            100,
+            127
+          ],
+          "sha256": "b41d50a9239082b8d240a2e02cdd99e195938bc7f3df40be7a182e0215ff2bfe"
+        },
+        {
+          "direction": "up",
+          "frame": 3,
+          "file": "frames/attack-up-04.png",
+          "source": "up-generated.png",
+          "sourceRect": {
+            "left": 1181,
+            "top": 404,
+            "width": 211,
+            "height": 310
+          },
+          "sourceFoot": [
+            1285,
+            712
+          ],
+          "scale": 0.5015673981191222,
+          "offset": [
+            140,
+            116
+          ],
+          "sha256": "0fbf55153d99f29c6bfe2db7ec05e234c2d15415810019d1bc9f010bc250b2e7"
+        }
+      ]
+    },
+    "cast": {
+      "src": "images/sprites/morph/violet-archmage-v1/cast.png",
+      "cellW": 384,
+      "cellH": 320,
+      "frames": {
+        "down": 2,
+        "right": 2,
+        "up": 2
+      },
+      "ms": 220,
+      "cells": [
+        {
+          "direction": "down",
+          "frame": 0,
+          "file": "frames/cast-down-01.png",
+          "source": "down-generated.png",
+          "sourceRect": {
+            "left": 89,
+            "top": 742,
+            "width": 217,
+            "height": 290
+          },
+          "sourceFoot": [
+            195,
+            1030
+          ],
+          "scale": 0.5423728813559322,
+          "offset": [
+            135,
+            114
+          ],
+          "sha256": "d84cb86840c8940656a72108b155714c96756ed0ceaea26827b8431340c07fbd"
+        },
+        {
+          "direction": "down",
+          "frame": 1,
+          "file": "frames/cast-down-02.png",
+          "source": "down-generated.png",
+          "sourceRect": {
+            "left": 447,
+            "top": 741,
+            "width": 232,
+            "height": 290
+          },
+          "sourceFoot": [
+            559,
+            1030
+          ],
+          "scale": 0.5423728813559322,
+          "offset": [
+            131,
+            114
+          ],
+          "sha256": "c39e4eb5c21cf3d25d6856ff3bc43bdd1c9226e37c8e751b5d0ebdcb1f96101c"
+        },
+        {
+          "direction": "right",
+          "frame": 0,
+          "file": "frames/cast-right-01.png",
+          "source": "right-generated.png",
+          "sourceRect": {
+            "left": 58,
+            "top": 720,
+            "width": 273,
+            "height": 337
+          },
+          "sourceFoot": [
+            194.5,
+            1056
+          ],
+          "scale": 0.48338368580060426,
+          "offset": [
+            126,
+            108
+          ],
+          "sha256": "5eb52104f84ed8b404fa8e49feef1f60a28392af1fa13c1e18d4598d49ba4852"
+        },
+        {
+          "direction": "right",
+          "frame": 1,
+          "file": "frames/cast-right-02.png",
+          "source": "right-generated.png",
+          "sourceRect": {
+            "left": 431,
+            "top": 730,
+            "width": 262,
+            "height": 328
+          },
+          "sourceFoot": [
+            561,
+            1056
+          ],
+          "scale": 0.48338368580060426,
+          "offset": [
+            129,
+            113
+          ],
+          "sha256": "08a49c1333ac429540d46c151abaeccbcaffa2eac434848911eab010e5326027"
+        },
+        {
+          "direction": "up",
+          "frame": 0,
+          "file": "frames/cast-up-01.png",
+          "source": "up-generated.png",
+          "sourceRect": {
+            "left": 72,
+            "top": 729,
+            "width": 231,
+            "height": 313
+          },
+          "sourceFoot": [
+            198,
+            1041
+          ],
+          "scale": 0.5015673981191222,
+          "offset": [
+            129,
+            114
+          ],
+          "sha256": "ab39fe5b70156b7217b44838eef884600c89fa2b0625736868b08cdac34b7499"
+        },
+        {
+          "direction": "up",
+          "frame": 1,
+          "file": "frames/cast-up-02.png",
+          "source": "up-generated.png",
+          "sourceRect": {
+            "left": 455,
+            "top": 736,
+            "width": 238,
+            "height": 302
+          },
+          "sourceFoot": [
+            567,
+            1037
+          ],
+          "scale": 0.5015673981191222,
+          "offset": [
+            136,
+            120
+          ],
+          "sha256": "e3ff13a5eeb6e5f0edcff35d51e2ced6884d6c3ecdefd9eb0f438c7ee83d721e"
+        }
+      ]
+    },
+    "hit": {
+      "src": "images/sprites/morph/violet-archmage-v1/hit.png",
+      "cellW": 384,
+      "cellH": 320,
+      "frames": {
+        "down": 2,
+        "right": 2,
+        "up": 2
+      },
+      "ms": 150,
+      "cells": [
+        {
+          "direction": "down",
+          "frame": 0,
+          "file": "frames/hit-down-01.png",
+          "source": "down-generated.png",
+          "sourceRect": {
+            "left": 811,
+            "top": 793,
+            "width": 202,
+            "height": 244
+          },
+          "sourceFoot": [
+            941,
+            1034
+          ],
+          "scale": 0.5423728813559322,
+          "offset": [
+            121,
+            140
+          ],
+          "sha256": "a65925749a43fc11fa2a83aca5dad577b08d4933b2cec463754d6b457bbec857"
+        },
+        {
+          "direction": "down",
+          "frame": 1,
+          "file": "frames/hit-down-02.png",
+          "source": "down-generated.png",
+          "sourceRect": {
+            "left": 1180,
+            "top": 739,
+            "width": 207,
+            "height": 295
+          },
+          "sourceFoot": [
+            1306.5,
+            1033
+          ],
+          "scale": 0.5423728813559322,
+          "offset": [
+            123,
+            111
+          ],
+          "sha256": "3623892fb0abb365ef7a05967520d0e56b5c22d854cb0544f9ac3b44a04d3323"
+        },
+        {
+          "direction": "right",
+          "frame": 0,
+          "file": "frames/hit-right-01.png",
+          "source": "right-generated.png",
+          "sourceRect": {
+            "left": 810,
+            "top": 799,
+            "width": 229,
+            "height": 256
+          },
+          "sourceFoot": [
+            933.5,
+            1054
+          ],
+          "scale": 0.48338368580060426,
+          "offset": [
+            132,
+            148
+          ],
+          "sha256": "c047a98ba9cb01c928e05fa04527c2e9e51bba78fb9781ee0852ee7c3c25de91"
+        },
+        {
+          "direction": "right",
+          "frame": 1,
+          "file": "frames/hit-right-02.png",
+          "source": "right-generated.png",
+          "sourceRect": {
+            "left": 1172,
+            "top": 733,
+            "width": 227,
+            "height": 324
+          },
+          "sourceFoot": [
+            1284.5,
+            1056
+          ],
+          "scale": 0.48338368580060426,
+          "offset": [
+            138,
+            115
+          ],
+          "sha256": "39edf95780e1efab532c6d7ddf9c23249dffca4f77ca17d2b663c8eed2eaed15"
+        },
+        {
+          "direction": "up",
+          "frame": 0,
+          "file": "frames/hit-up-01.png",
+          "source": "up-generated.png",
+          "sourceRect": {
+            "left": 791,
+            "top": 796,
+            "width": 266,
+            "height": 245
+          },
+          "sourceFoot": [
+            903,
+            1040
+          ],
+          "scale": 0.5015673981191222,
+          "offset": [
+            136,
+            148
+          ],
+          "sha256": "17c0cae28cb470ed5445b2835411eaccc1eaee8da32916cb4a97fa9b93d03d4b"
+        },
+        {
+          "direction": "up",
+          "frame": 1,
+          "file": "frames/hit-up-02.png",
+          "source": "up-generated.png",
+          "sourceRect": {
+            "left": 1170,
+            "top": 739,
+            "width": 220,
+            "height": 304
+          },
+          "sourceFoot": [
+            1250.5,
+            1041
+          ],
+          "scale": 0.5015673981191222,
+          "offset": [
+            152,
+            119
+          ],
+          "sha256": "48e0c7db3acbf8f329a4ab7efa6c583dba36d40c13e37b4782295ddde3fa00b4"
+        }
+      ]
+    }
+  }
+}

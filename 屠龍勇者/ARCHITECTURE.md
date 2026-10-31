@@ -250,6 +250,8 @@
 
 | `images/classes/advance-v1/`、`tools/portrait-src/advance-v1/`、`tools/test-advance-portraits.js`、`tools/advance-portraits-preview.html` | 36 分支二轉立繪、內建 imagegen 原稿／提示詞／縮圖工具／總覽，介面接線隔離驗證與預覽（第248節） |
 
+| `images/sprites/morph/violet-archmage-v1/`、`tools/sprite-src/morph/violet-archmage-v1/`、`tools/test-violet-archmage-morph.js`、`tools/violet-archmage-preview.html` | 第21款紫變專屬動畫、原稿／提示詞／腳底註冊與隔離檢查（第253節） |
+
 ## 2. 載入順序與依賴
 
 `config → classes → skills → items → spellbook → monsters → zones → quests → advance → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → talent-jewels → talent → talent-tree → talent-layout → talent-planner → talent-live → bag-storage → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → pwa → loot → main`
@@ -265,7 +267,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261031j`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261031k`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -4253,3 +4255,11 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 ## 252. 修復版本合併衝突（2026-10-31，版本 `20261031j`）
 
 - 修正已提交HEAD中config／index／架構／交接殘留的h與i合併標記。程式與HTML兩側逐段驗證僅版本號不同，保留i內容統一為j；交接兩側進度皆保留。英雄保留勾選與schema23仍在，其他技能／傭兵修改不變。check.ps1 ALL CHECKS PASSED。
+
+## 253. 大魔導士紫變專屬動畫（2026-10-31，版本 `20261031k`）
+
+- 使用者提供21.jpg，來源保存於tools/sprite-src/morph/violet-archmage-v1/reference-21.jpg。內建imagegen重新製作銀白長髮、紫黑法袍與紫晶法杖的原創三向12格動畫，走4／攻4／施2／傷2，共36格，左向鏡像。標題牌與大背景法陣不放入遊戲。原稿與提示詞保留。
+- 新增MORPHS.violetArchmage，接既有m21.sprite，不新增變身種類。原紫變Lv52、法杖系、命中3／SP4／回魔4／MR15、武器限制、卷軸30分鐘／10000金幣不變；schema23／SQL／載入順序不變。
+- prepare.js沿用連通區分鏡與原alpha、等比縮放／腳底註冊，cell384×320、foot[192,270]、charH160／drawH48；walk130／attack140／cast220／hit150ms。四圖集加入SW預載。新增隔離驗證與四動作／四方向播放預覽，不碰真實存檔或正式後端。
+
+第253節驗證／驗收：test-violet-archmage-morph通過Lv51拒絕／52使用、卷軸扣量與效果不變、四向命中／MISS／施法／受傷、到期與上次選擇、36格RGBA透明唯一／圖集逐byte／SW預載及正式sceneDraw16組。正面法杖頂端留白已重畫，初稿保留；三向原稿、contact與game-render已目視檢查。check.ps1 ALL CHECKS PASSED。瀏覽器IAB導航ERR_FAILED，Edge工具回報視窗最小化，未完成瀏覽器畫面及Console驗收。原serve.ps1的HttpListener平台不支援，已啟動Node靜態伺服器8790；獨立預覽http://localhost:8790/tools/violet-archmage-preview.html不讀真實存檔／不連正式後端。請Ctrl+F5到k→Lv52且法杖系可用武器→變形卷軸→大魔導士・巴列斯真身→四向走路／攻擊／施法／受傷→F12確認無紅字；使用者確認後才commit與請Push origin。

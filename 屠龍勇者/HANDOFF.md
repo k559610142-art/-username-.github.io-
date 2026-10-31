@@ -5,6 +5,8 @@
 
 ## 1. 現況
 
+- **本機20261031k已完成待驗收、未commit／發布：21大魔導士・巴列斯真身紫變專屬動畫（第253節）**。使用者21.jpg已保留；既有m21補專屬violetArchmage，三向36格與四圖集，左向鏡像，等級／能力／卷軸規則不改，schema23／SQL不變。原稿、提示詞、prepare與總覽在tools/sprite-src/morph/violet-archmage-v1。完成檢查後仍須實玩確認才commit／推送。保留j合併修復與英雄過濾。
+
 - **本機20261031j：修復合併標記導致更新載入失敗，未commit／發布**。使用者回報看不到英雄保留；查到HEAD915af42已包含config／index／文件衝突標記。程式各段核對僅h／i版本差異，統一新j，保留兩側交接紀錄與英雄保留／i版其他內容；check.ps1 ALL CHECKS PASSED。驗收：本機Ctrl+F5確認j→設定→戰利品過濾→共鳴保留上方應有英雄勾選；Console無紅字。使用者確認後才commit及Push。
 
 - **本機20261031h：保留英雄裝備（第250節，schema23），待實玩驗收，未commit／發布**。使用者同意新增設定與schema22→23。設定→戰利品過濾新增英雄保留勾選，依圖鑑分級；舊角色預設關閉，開啟後掉落過濾與回收一鍵賣出跳過英雄。指定同名自動販賣依既有規則優先。保留g地圖排程詳情。驗收：Ctrl+F5確認h→設定→戰利品過濾→勾保留英雄→確認回收一鍵賣出不包含英雄→重登確認勾選保留；不要實際出售要留的裝備。確認後才commit。
@@ -681,3 +683,5 @@
 20261031g驗證：check.ps1 ALL CHECKS PASSED；隔離測試通過選圖預覽、idle／running／paused／done四種狀態、卷軸耗盡及Normalize重登後詞綴／加成保留；test-map-skip-boss回歸通過。尚未完成瀏覽器畫面與Console驗收，待使用者實玩確認後commit。
 
 20261031h驗證：check.ps1 ALL CHECKS PASSED；隔離記憶體測試遍歷全部裝備，72件英雄基底保留、非英雄規則不變、回收保護、schema22舊檔預設關閉／schema23勾選保留與加密存讀通過。未操作真實存檔／網路；瀏覽器畫面與Console待使用者實玩驗收。
+
+20261031k驗證／驗收：test-violet-archmage-morph通過Lv51拒絕／52使用、卷軸扣量與效果不變、四向命中／MISS／施法／受傷、到期與上次選擇、36格RGBA透明唯一／圖集逐byte／SW預載及正式sceneDraw16組。正面法杖頂端留白已重畫，初稿保留；三向原稿、contact與game-render已目視檢查。check.ps1 ALL CHECKS PASSED。瀏覽器IAB導航ERR_FAILED，Edge工具回報視窗最小化，未完成瀏覽器畫面及Console驗收。原serve.ps1的HttpListener平台不支援，已啟動Node靜態伺服器8790；獨立預覽http://localhost:8790/tools/violet-archmage-preview.html不讀真實存檔／不連正式後端。請Ctrl+F5到k→Lv52且法杖系可用武器→變形卷軸→大魔導士・巴列斯真身→四向走路／攻擊／施法／受傷→F12確認無紅字；使用者確認後才commit與請Push origin。
