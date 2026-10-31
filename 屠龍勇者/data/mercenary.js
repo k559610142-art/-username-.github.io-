@@ -160,7 +160,7 @@ function mercNegative(owner) {
 }
 function mercEnemyStatus(mon, magic, dealt, owner) {
     if(SIM_MODE || !magic || dealt<=0 || !owner || owner.hp<=0)return;
-    const kind=['giantSpider','venomSpider','spiderQueen'].includes(mon.id)?'poison':['ghast','frostWitch','iceGiantKing'].includes(mon.id)?'slow':null;
+    const kind=['giantSpider','venomSpider','venomQueen'].includes(mon.id)?'poison':['ghast','frostWitch','iceGiantKing'].includes(mon.id)?'slow':null;
     if(!kind)return;
     const buffs=mercNegative(owner), old=buffs[kind];
     buffs[kind]={name:kind==='poison'?'中毒':'冰霜緩速',until:gameNow+(kind==='poison'?6000:4000),at:old?old.at:gameNow+1000,damage:Math.max(1,Math.round(dealt*.12))};

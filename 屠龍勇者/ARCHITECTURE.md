@@ -270,7 +270,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261101b`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261101c`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -4314,3 +4314,9 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 使用者要求不關閉視窗就能切換其他強化卷軸。renderEnchantPicker頂端新增六種卷軸的三欄兩列按鈕，顯示一般／祝福／詛咒武卷與防卷及持有量，選中高亮；零張仍可切換查看，但施法停用。
 - 新全域enchantSwitchScroll(id)檢查原角色／原視窗／合法強化卷軸，更新暫態scrollId、清除pending與上次結果，再就地更新標題／張數／裝備清單／機率。保留原捲動與逐次風險確認；切換本身不扣卷、不寫存檔。無schema／SQL／玩法數值／載入順序變更。
 - test-enchant-picker新增切換不重開、六種名稱／張數、零張、確認清除、舊卷確認拒絕、非法ID／關閉後拒絕及捲動保留，原強化回歸與check.ps1 ALL CHECKS PASSED。隔離瀏覽器實點一般武卷→視窗內祝福防卷，標題／3張／防具清單更新，截圖確認三欄兩列，Console無error／warn。
+
+## 259. 修正劇毒蛛后不會上毒（2026-11-01，版本 `20261101c`；`mercenary.js` 的 `mercEnemyStatus`）
+
+- 怪物附加中毒的名單寫成 `spiderQueen`，劇毒蛛后實際代號是 `venomQueen`，所以「劇毒噴吐」打中不會中毒。改成 `venomQueen`。
+- 目前怪物給玩家／傭兵的負面狀態（魔法打中才附加）：中毒（每秒扣該下魔法傷害 12%、6 秒、不致死）＝巨大蜘蛛、毒霧獵蛛、劇毒蛛后；冰霜緩速（攻擊／施法間隔 ×1.2、4 秒）＝鬼魂、冰之魔女（野外）、冰之巨人王。異界詞綴「枯竭」自然回復 −40%。
+- 驗證：瀏覽器建臨時角色呼叫 `mercEnemyStatus`，劇毒蛛后 500 傷害 → 中毒 6 秒、每秒 60；拉彌亞不附加。
