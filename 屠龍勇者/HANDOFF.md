@@ -5,6 +5,7 @@
 
 ## 1. 現況
 
+- **20261031g：法師十級魔法門檻 78 → 70（Claude，第 249 節）**。只改 `MAGIC_CLASS.mage`；後端掉寶目錄的十級魔法書 bookLv 仍 78（Lv.73+ 怪才掉），未改 SQL，待使用者決定是否同步。
 - **同步工作提醒（2026-10-31，Codex）**：本次立繪進行中，另一項「村莊二轉導師」修改出現在advance.js／ui-panels.js／scene-art.js／ui-scene.js（其程式註解引用第247節）。Codex未改或還原該部分；本次立繪使用第248節與20261031f，保留共用檔的同步修改。提交前要核對差異，不可把另一項修改誤列為本次立繪成果。
 
 - **本機 20261031f：36 分支二轉專屬立繪（第248節），待使用者實玩驗收，未commit／發布**。內建imagegen各分支獨立生成透明原創全身像；正式PNG在images/classes/advance-v1，完整原稿／逐張提示詞／prepare.ps1／36張總覽／雜湊manifest在tools/portrait-src/advance-v1。人物狀態、人物選單、二轉選擇與命運重塑顯示新圖。**使用者已確認：創角維持原立繪，已二轉角色在人物選單顯示新立繪**；地圖人物模型不變。沿用player.adv，schema22／SQL／數值不變。36檔存在且雜湊各異、透明背景／總覽已檢視；test-advance-portraits、test-advance、check.ps1 ALL CHECKS PASSED。瀏覽器工具Page.navigate逾時，未完成畫面與Console驗收，不能宣稱實機通過。隔離頁http://localhost:8790/tools/advance-portraits-preview.html可看36張與正式人物狀態／人物選單卡片，不讀真實存檔／不連雲端。驗收：Ctrl+F5確認f→人物狀態看目前分支→人物選單看新圖與二轉名→創角看原圖→二轉選擇／命運重塑查看三分支（不必確認消耗）→回地圖確認原模型→F12看Console。使用者確認後才commit本次指定檔案，再請GitHub Desktop Push origin。
