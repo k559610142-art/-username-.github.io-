@@ -1291,6 +1291,7 @@ function sceneDraw(ctx, W, H) {
             labelY = py + 14 - sp.drawH - 6;
             // 走到樹、帳篷後面：被蓋住的部分再疊一層半透明身影，不會完全看不到自己
             if (drawOccPatch(ctx, dx, dy, dx + dw, py + 16, pl.ry, camX, camY)) { ctx.globalAlpha = OCC_GHOST; body(); ctx.globalAlpha = 1; }
+            afflictDrawFx(ctx, player, px, py + 14, sp.drawH);   // 異常狀態特效（afflict.js）
         } else {
             const body = () => {
                 ctx.font = '40px "Segoe UI Emoji","Apple Color Emoji",sans-serif';

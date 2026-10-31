@@ -127,11 +127,12 @@ function usePotion(id, form) {
         if (werr) return werr;
     }
     if (d.cat === 'potion' && !potionReady()) return '喝水延遲中';
+    if (d.cat === 'potion' && afflictStunned(player)) return '無法行動';
     if (!consumeItem(id)) return '沒有這個道具';
     if (d.cat === 'potion') potReadyAt = gameNow + POTION_CD_MS;
     if (d.heal) {
         const st = calcStats(), before = player.hp;
-        const healed=dollPotion(rand(d.heal[0],d.heal[1]));
+        const healed=Math.round(dollPotion(rand(d.heal[0],d.heal[1]))*afflictHealMul());   // 燒傷回血 −30%
         player.hp = Math.min(st.maxHp,player.hp+(typeof talentPotionAmount==='function'?talentPotionAmount(healed):healed));
         addLog(`🧪 ${d.short || d.name}：HP +${player.hp - before}`, 'heal');
     }
@@ -201,7 +202,7 @@ function huntTick(dt) {
     }
     if (!hunt) { startHunt(); if (!hunt) return; }
     if (hunt.lootWait) return;
-    if (hunt.teleRecover) {
+    if (hunt.teleRecover && !afflictStunned(player)) {
         autoSupport(calcStats());
         if (!player.hunting || !hunt) return;
         if (hunt.teleRecover && barHealAuto() && healPotionCount() > 0) return;   // 等喝水延遲，補好再找怪
@@ -212,7 +213,8 @@ function huntTick(dt) {
         return;
     }
     const st = calcStats();
-    autoSupport(st);
+    const stunned = afflictStunned(player);   // 冰凍、石化：不能喝水、不能出手（afflict.js）
+    if (!stunned) autoSupport(st);
     if (!player.hunting || !hunt || hunt.state !== 'fight') return;
     mercTick(dt);
     if (typeof advTick === 'function') advTick(dt, st);   // 二轉：場地、召喚、持續傷害（advance.js）
@@ -222,12 +224,14 @@ function huntTick(dt) {
     hunt.pCd -= dt;
     if (hunt.pCd <= 0) {
         hunt.pCd = st.atkMs;
-        playerAction(st);
-        if (!fightAlive()) return;
-        reapMobs();
-        if (!fightAlive()) return;
-        // 共鳴裝備：這次攻擊觸發的共鳴技能（resonance.js）
-        if (resonanceFlush(st)) { if (!fightAlive()) return; reapMobs(); if (!fightAlive()) return; }
+        if (!stunned && !afflictSkipAction(player)) {   // 麻痺：這一下有機率浪費掉
+            playerAction(st);
+            if (!fightAlive()) return;
+            reapMobs();
+            if (!fightAlive()) return;
+            // 共鳴裝備：這次攻擊觸發的共鳴技能（resonance.js）
+            if (resonanceFlush(st)) { if (!fightAlive()) return; reapMobs(); if (!fightAlive()) return; }
+        }
     }
     // 首領大招：蓄力時地上出現紅圈，時間到沒離開就吃重擊
     bossSkillTick(dt);
@@ -364,6 +368,8 @@ function pullMob(mid, sceneTarget) {
 function manualCast(id) {
     const k = learnedSkills().find(s => s.id === id);
     if (!k || k.type === 'passive') return '尚未學會';
+    if (afflictStunned(player)) return '無法行動';
+    if (afflictSilenced(player)) return '沉默中，無法施放技能';
     if (player.cds[k.id] > gameNow) return `冷卻中（${Math.ceil((player.cds[k.id] - gameNow) / 1000)} 秒）`;
     if (skillGcdLeft()) return `技能冷卻中（${Math.ceil(skillGcdLeft() / 1000)} 秒後才能放下一個技能）`;
     if (player.mp < (typeof talentManaCost==='function'?talentManaCost(k):k.mp)) return 'MP 不足';
@@ -492,7 +498,7 @@ function skillReach(k, st) { return k.type === 'spell' ? 'ranged' : (st.ranged ?
 function playerAction(st) {
     const s = player.settings, now = gameNow;
     const skills = slotSkills();
-    const gcd = player.cds._gcd > now;   // 技能公共冷卻中：所有技能（含增益）等一下，只普攻（共鳴照常）
+    const gcd = player.cds._gcd > now || afflictSilenced(player);   // 技能公共冷卻中（或沉默）：所有技能（含增益）等一下，只普攻（共鳴照常）
     const ready = k => !gcd && player.mp >= (typeof talentManaCost==='function'?talentManaCost(k):(k.mp||0)) && !(player.cds[k.id] > now) && (typeof advCanCast !== 'function' || advCanCast(k));   // 二轉：金幣／HP／殘血等條件（advance.js）
     if (player.hp < st.maxHp * s.healPct / 100) {
         const heal = skills.find(k => k.type === 'heal' && ready(k));
@@ -526,7 +532,7 @@ function useSkillCost(k) {
 
 function castHeal(k, st) {
     useSkillCost(k);
-    const v = Math.round((rand(k.heal[0], k.heal[1]) + Math.floor(st.sp * k.spK)) * (typeof advHealMult === 'function' ? advHealMult() : 1));
+    const v = Math.round((rand(k.heal[0], k.heal[1]) + Math.floor(st.sp * k.spK)) * (typeof advHealMult === 'function' ? advHealMult() : 1) * afflictHealMul());
     const before = player.hp;
     player.hp = Math.min(st.maxHp, player.hp + v);
     addLog(`✨ ${k.name}：HP +${player.hp - before}`, 'heal');
@@ -765,7 +771,8 @@ function monsterAttack(st, mon) {
         dmg -= a;
     }
     dmg = bossEnchantAbsorb(Math.max(0, Math.round(bossEnchantEnemyDamage(mon, dmg)*(typeof talentIncomingMult==='function'?talentIncomingMult(magic):1))));
-    dmg = dollTakeDamage(mercProtect(dmg), st);
+    dmg = dollTakeDamage(mercProtect(afflictOnHurt(player, dmg)), st);   // 石化減傷（afflict.js）
+    afflictAfterHurt(player, dmg);   // 冰凍被打到提早解凍
     mercEnemyStatus(mon, magic, dmg, player);
     worldVfxEnemy(mon, magic);
     addLog(magic ? `${mon.name}施放「${mon.magic.name}」，你受到 ${dmg} 傷害` : `${mon.name}攻擊，你受到 ${dmg} 傷害`, 'hurt');
@@ -950,7 +957,7 @@ function regenTick() {
     const st = calcStats();
     const w = invWeight();
     const mul = player.loc.type === 'town' ? 3 : mapModOn('blight') ? 0.6 : 1;   // 地圖詞綴「枯竭」回復 -40%
-    if (w <= st.weightMax * WEIGHT_NO_REGEN) player.hp = Math.min(st.maxHp, player.hp + Math.round(st.hpRegen * mul));
+    if (w <= st.weightMax * WEIGHT_NO_REGEN) player.hp = Math.min(st.maxHp, player.hp + Math.round(st.hpRegen * mul * afflictHealMul()));
     if (w < st.weightMax * WEIGHT_NO_MP_REGEN) player.mp = Math.min(st.maxMp, player.mp + Math.round(st.mpRegen * mul));   // 回魔：負重 70% 以上才停（回血仍是超過 50% 停）
 }
 

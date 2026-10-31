@@ -335,10 +335,10 @@ function calcStats() {
 
     return {
         ...s, sp, maxHp, maxMp, ranged, weapon: w, weaponType: wt, weaponEnch,
-        hit: p.lv + statHit + ((w && w.hit) || 0) + (fx.hit || 0),
+        hit: p.lv + statHit + ((w && w.hit) || 0) + (fx.hit || 0) - afflictStatMods(p).hit,   // 致盲（afflict.js）
         dmgBonus: statDmg + Math.floor(p.lv / 4) + weaponEnch + (fx.dmg || 0) + Math.floor(sp * (fx.dmgSp || 0)),
-        ac: 10 - Math.max(0, Math.floor((s.dex - 9) / 3)) - Math.floor(p.lv / 10) - (fx.ac || 0),
-        mr: c.mr + Math.max(0, s.wis - 10) * 2 + (fx.mr || 0),
+        ac: 10 - Math.max(0, Math.floor((s.dex - 9) / 3)) - Math.floor(p.lv / 10) - (fx.ac || 0) + afflictStatMods(p).ac,   // 詛咒（afflict.js）
+        mr: Math.max(0, c.mr + Math.max(0, s.wis - 10) * 2 + (fx.mr || 0) - afflictStatMods(p).mr),
         crit: 0.05 + ((w && w.crit) || 0) + (fx.crit || 0),
         magicCrit: fx.magicCrit || 0,
         critDmg: 1.5 + (fx.critDmg || 0),

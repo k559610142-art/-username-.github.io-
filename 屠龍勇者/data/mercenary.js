@@ -158,28 +158,10 @@ function mercNegative(owner) {
     for(const id in buffs)if(buffs[id].until<=gameNow)delete buffs[id];
     return buffs;
 }
-function mercEnemyStatus(mon, magic, dealt, owner) {
-    if(SIM_MODE || !magic || dealt<=0 || !owner || owner.hp<=0)return;
-    const kind=['giantSpider','venomSpider','venomQueen'].includes(mon.id)?'poison':['ghast','frostWitch','iceGiantKing'].includes(mon.id)?'slow':null;
-    if(!kind)return;
-    const buffs=mercNegative(owner), old=buffs[kind];
-    buffs[kind]={name:kind==='poison'?'中毒':'冰霜緩速',until:gameNow+(kind==='poison'?6000:4000),at:old?old.at:gameNow+1000,damage:Math.max(1,Math.round(dealt*.12))};
-    addLog((owner===player?'你':'傭兵')+'受到'+buffs[kind].name+'！','warn');
-}
-function mercDebuffTick() {
-    if(SIM_MODE || !player)return;
-    for(const owner of [player,player.mercenary].filter(Boolean)) {
-        if(owner.hp<=0 || owner===player.mercenary && (!owner.active || owner.dead) || inTown()){mercDebuffs.delete(owner);continue;}
-        const b=(mercDebuffs.get(owner)||{}).poison;
-        if(b && b.until<gameNow){delete mercDebuffs.get(owner).poison;continue;}
-        if(!b || b.at>gameNow)continue;
-        b.at=gameNow+1000;
-        // 毒傷不致死、不觸發反傷／代擋，避免重複附加和找不到死亡來源。
-        const damage=Math.min(Math.max(0,owner.hp-1),b.damage);owner.hp-=damage;
-        if(damage)addLog((owner===player?'你':'傭兵')+'中毒受到 '+damage+' 傷害','hurt');
-    }
-}
-function mercSlowFactor(owner) { return !SIM_MODE && owner && mercNegative(owner).slow ? 1.2 : 1; }
+// 2026-11-01 起異常狀態改由 afflict.js 處理（第 260 節），這裡保留舊名稱給呼叫端
+function mercEnemyStatus(mon, magic, dealt, owner) { afflictTry(mon, magic, dealt, owner); }
+function mercDebuffTick() { afflictTick(); }
+function mercSlowFactor(owner) { return afflictSlowFactor(owner); }
 function mercActive() { const m = player && player.mercenary; return !SIM_MODE && m && !m.dead && m.active && player.hp > 0 ? m : null; }
 function mercState(m = player.mercenary) {
     let r = mercRuntime.get(m);
@@ -347,7 +329,8 @@ function mercEnemyAttack(mon) {
     if (!mercInRange(mon, magic ? 4 : 1)) return false;
     let value = magic ? rand(...mon.magic.dmg) * (1 - Math.min(150, st.mr) / 200) : rand(...mon.dmg);
     if (mercEffectOn(mon, 'weaken')) value *= mon.boss ? .95 : .85;
-    const dealt = mercTakeDamage(value);
+    const dealt = mercTakeDamage(afflictOnHurt(m, value));
+    afflictAfterHurt(m, dealt);
     mercEnemyStatus(mon, magic, dealt, m);
     if (mercBuff('thorn', m) && mon.hp > 0) mon.hp -= Math.round(dealt * mercBuff('thorn', m));
     addLog('⚑ 傭兵承受 ' + dealt + ' 傷害', 'hurt'); return true;
@@ -456,8 +439,9 @@ function mercTick(dt) {
         if (s.kind === 'hot') player.hp = Math.min(calcStats().maxHp, player.hp + Math.round(st.magic * s.power * st.heal));
     }
     if (!player.hunting) return;
+    if (afflictStunned(m)) return;   // 冰凍、石化：不能行動（afflict.js）
     mercAutoPotion(m);
-    for (const id of mercSkillOrder(m)) {
+    if (!afflictSilenced(m)) for (const id of mercSkillOrder(m)) {
         const s=MERC_RUNES[id];
         const target=s && mercAttackKind(s.kind) && mon ? [mon,...hunt.mobs.filter(x=>x!==mon)].find(x=>x.hp>0 && mercInRange(x,mercSkillRange(s))) : mon;
         if (mercCast(id, target)) break;
@@ -476,7 +460,7 @@ function mercTick(dt) {
         else { const targets = s.kind === 'summonArea' ? [target,...hunt.mobs.filter(t=>t!==target)].filter(t => t.hp > 0 && mercInRange(t, 4)).slice(0,3) : [target]; for (const t of targets) mercHit(t, st.magic * x.power, true, false, true); if (s.kind === 'summonSlow') mercEffectSet(target, 'slow', 2.5); }
     }
     const attackMon=mon && [mon,...hunt.mobs.filter(t=>t!==mon)].find(t=>t.hp>0 && mercInRange(t,mercWeaponRange(m)));
-    if (attackMon && gameNow >= r.attackAt) { r.attackAt = gameNow + Math.max(400, st.speed); mercPlayAnim('attack', attackMon); mercHit(attackMon, st.atk * (chance(mercTrait(m, 'crit', 0)) ? mercTrait(m, 'critMul', 1) : 1)); }
+    if (attackMon && gameNow >= r.attackAt) { r.attackAt = gameNow + Math.max(400, st.speed); if (afflictSkipAction(m)) return; mercPlayAnim('attack', attackMon); mercHit(attackMon, st.atk * (chance(mercTrait(m, 'crit', 0)) ? mercTrait(m, 'critMul', 1) : 1)); }
 }
 function mercTownReady() { return !!(player && inTown() && !SIM_MODE); }
 function mercRefresh() { saveGame(); refreshUI(); if (typeof mercPanelOpen !== 'undefined' && mercPanelOpen) openMercenary(); }
@@ -631,6 +615,7 @@ function sceneDrawMerc(ctx, camX, camY) {
         for (let i=0;i<3;i++) { const phase=(gameNow/1400+i/3)%1; ctx.globalAlpha=.3+.7*Math.abs(Math.sin(phase*Math.PI));ctx.beginPath();ctx.arc(x-65+phase*130,labelY-3+Math.sin(phase*12)*3,1.4,0,Math.PI*2);ctx.fill(); }
         ctx.globalAlpha=1;
     }
+    afflictDrawFx(ctx, m, x, y + 14, sp.drawH);   // 異常狀態特效（afflict.js）
     sceneDrawMercEffects(ctx, camX, camY, m, d);
     ctx.restore();
 }

@@ -303,7 +303,7 @@ function buffIconsHtml() {
         groups[group].push({ key, html: `<div class="bf bf-${color} ${cls}" data-status="${esc(key)}" title="${esc(name)}" onclick="buffTip('${esc(name)}')">${ico}<span class="bf-time">${text}</span></div>` });
     };
     const doll = dollStatusInfo();
-    for (const [id,b] of Object.entries(mercNegative(player))) add('temp','enemy_'+id,'bad',b.name+(id==='poison'?'：每秒'+b.damage+'傷害，最低保留1HP':'：攻擊與施法間隔增加20%'),iconSvg('skull','blood','bad'),fmtBuffTime(Math.ceil((b.until-now)/1000)));
+    for (const [id,b] of Object.entries(mercNegative(player))) add('temp','enemy_'+id,'bad',afflictDesc(id,b),afflictIconHtml(id),fmtBuffTime(Math.ceil((b.until-now)/1000)));   // 異常狀態（afflict.js）
     if (doll) add('temp', 'doll_' + doll.id, 'skill', doll.name, itemIconHtml('doll_' + doll.id), doll.text, doll.on ? 'on' : '');
     // 共鳴觸發的增益（res_裝備id）：裝備還穿著就不另外多一格，改在下面那件裝備的圖示上發光＋顯示秒數（避免同一張圖出現兩次）
     Object.keys(player.buffs).filter(k => player.buffs[k].until > now && !(k.startsWith('res_') && equippedRes.includes(k.slice(4)))).forEach(k => {
