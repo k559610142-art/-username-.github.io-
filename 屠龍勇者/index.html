@@ -11,8 +11,13 @@
 <title>黑暗大陸</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#12100c">
+<<<<<<< HEAD
 <link rel="icon" type="image/png" sizes="192x192" href="images/icon-192.png?v=20261031h">
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png?v=20261031h">
+=======
+<link rel="icon" type="image/png" sizes="192x192" href="images/icon-192.png?v=20261031i">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png?v=20261031i">
+>>>>>>> 60329995954d75548a16eb39f94d9c7a323f7288
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -72,7 +77,11 @@
     /* 標題 */
     /* 標題畫面＝使用者提供的「黑暗大陸」封面（images/cover.jpg，1000×1490，圖上已有標題字）；按鈕疊在下方 */
     #screen-title { align-items: center; justify-content: flex-end; text-align: center; padding: 24px 16px calc(20px + env(safe-area-inset-bottom)); gap: 10px;
+<<<<<<< HEAD
         background: url(images/cover.jpg?v=20261031h) center top / contain no-repeat, #000; }   /* contain：整張封面一定看得到（2026-10-12 使用者回報人物被裁掉） */
+=======
+        background: url(images/cover.jpg?v=20261031i) center top / contain no-repeat, #000; }   /* contain：整張封面一定看得到（2026-10-12 使用者回報人物被裁掉） */
+>>>>>>> 60329995954d75548a16eb39f94d9c7a323f7288
     .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
     .title-btns { display: flex; flex-direction: column; gap: 10px; width: 240px; }
     .title-btns button { padding: 13px; font-size: 17px; }
@@ -190,7 +199,11 @@
         /* frame-notop.jpg＝frame.jpg 去掉上方拱門（原圖 y 715 以上，2026-10-15 使用者要求滿版）；頂端 25px 還有拱門殘邊，slice 跳過 */
         /* frame-nopillar.png（2026-10-19，第 54 節）：frame-notop 縮 75%、左右骷髏頭頂的符文石柱改透明（底部淡入），地圖延伸到左右邊；slice 跟著 ×0.75 */
         /* frame-clean.png：再把骷髏、法球後面的暗色階梯底（欄杆以上）去背，只留骷髏與法球（2026-10-19，第 54 節） */
+<<<<<<< HEAD
         border-image-source: url(images/frame-clean.png?v=20261031h);
+=======
+        border-image-source: url(images/frame-clean.png?v=20261031i);
+>>>>>>> 60329995954d75548a16eb39f94d9c7a323f7288
         border-image-slice: 19 77 491 78 fill;
         border-image-width: 0 calc(var(--s) * 102px) calc(var(--s) * 655px) calc(var(--s) * 104px);
         border-image-repeat: stretch round;
@@ -199,7 +212,11 @@
     #frame::after {
         content: ''; position: absolute; left: 0; right: 0; bottom: calc(var(--s) * 405px); height: calc(var(--s) * 250px);
         z-index: 2; pointer-events: none;
+<<<<<<< HEAD
         background: url(images/frame-clean.png?v=20261031h) 0 calc(var(--s) * -630px) / 100% auto no-repeat;
+=======
+        background: url(images/frame-clean.png?v=20261031i) 0 calc(var(--s) * -630px) / 100% auto no-repeat;
+>>>>>>> 60329995954d75548a16eb39f94d9c7a323f7288
     }
     #frame.pc::after { display: none; }
     /* 金幣、防禦、MR：經驗條正上方，左右分在等級兩側（手機原圖 y 1712～1744；PC y 870～904） */
@@ -513,10 +530,17 @@
     #frame.pc #frame-art {
         display: block; position: absolute; inset: 0; z-index: 2; pointer-events: none;
         /* frame-pc-notop：上方拱門整段拿掉、左右柱子接到頂（2026-10-11，第 19 節） */
+<<<<<<< HEAD
         background: url(images/frame-pc-notop.jpg?v=20261031h) center / 100% 100% no-repeat;
         /* frame-pc-nopillar-mask：左右骷髏頭頂的石柱（x < 92、x ≥ 1908、y < 625）也遮掉，y 570～625 淡入（2026-10-19，第 54 節） */
         -webkit-mask: url(images/frame-pc-nopillar-mask.png?v=20261031h) center / 100% 100% no-repeat;
         mask: url(images/frame-pc-nopillar-mask.png?v=20261031h) center / 100% 100% no-repeat;
+=======
+        background: url(images/frame-pc-notop.jpg?v=20261031i) center / 100% 100% no-repeat;
+        /* frame-pc-nopillar-mask：左右骷髏頭頂的石柱（x < 92、x ≥ 1908、y < 625）也遮掉，y 570～625 淡入（2026-10-19，第 54 節） */
+        -webkit-mask: url(images/frame-pc-nopillar-mask.png?v=20261031i) center / 100% 100% no-repeat;
+        mask: url(images/frame-pc-nopillar-mask.png?v=20261031i) center / 100% 100% no-repeat;
+>>>>>>> 60329995954d75548a16eb39f94d9c7a323f7288
         /* 沿骷髏／翅膀外緣裁掉舊遮罩殘留的石柱與矩形背景；座標以原圖 2000×1116 計。 */
         clip-path: polygon(0% 57%, 1% 56%, 3% 55%, 4.3% 55%, 4.4% 56.5%, 5.2% 56.8%, 5.9% 58.3%, 6.15% 60%, 6.1% 62%, 5.6% 64.5%, 5.8% 66%, 6.25% 68%, 6.25% 69.5%, 7% 69.5%, 7% 0%, 93% 0%, 93% 69.5%, 93.75% 69.5%, 93.75% 68%, 94.2% 66%, 94.4% 64.5%, 93.9% 62%, 93.85% 60%, 94.1% 58.3%, 94.8% 56.8%, 95.6% 56.5%, 95.7% 55%, 97% 55%, 99% 56%, 100% 57%, 100% 100%, 0% 100%);
     }
@@ -1030,8 +1054,13 @@
     .list-row.rank-me { border-color: var(--gold); background: #3a2a1e; }
 .bag-page-tabs{display:flex;flex-wrap:wrap;gap:5px;margin:10px 0}.bag-stash-board{background:linear-gradient(135deg,#191c20,#29251e);border:1px solid #766140;border-radius:8px;padding:12px}.bag-stash-heading{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;color:#ead6a6;margin-bottom:14px}.bag-stash-heading span{font-size:12px;color:#c0b59a}.bag-stash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:10px}.bag-stash-slot{position:relative;display:flex;align-items:center;flex-direction:column;justify-content:flex-start;gap:5px;min-width:0;min-height:116px;padding:9px 5px;background:radial-gradient(ellipse at top,#39434a,#161a1d 75%);border:1px solid #79674b;border-radius:6px;color:#eee1c2;box-shadow:inset 0 0 0 3px #0e1214,inset 0 0 16px #0007}.bag-stash-slot:hover{border-color:#dfbd77}.bag-stash-slot.empty{opacity:.42;filter:grayscale(.8)}.bag-stash-art{height:42px;display:flex;align-items:center;justify-content:center}.bag-stash-art img,.bag-stash-art svg{width:40px!important;height:40px!important;max-width:40px}.bag-stash-slot strong{font-size:16px;color:#f4d78a}.bag-stash-slot small{font-size:11px;line-height:1.5;overflow-wrap:anywhere}.bag-stash-slot em{font-size:10px;line-height:1.4;font-style:normal;color:#c3c8ca;overflow-wrap:anywhere}.bag-tier-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:10px}.bag-tier-tabs button{min-width:0}.bag-tier-tabs small{display:block;opacity:.7}.bag-map-grid{grid-template-columns:repeat(auto-fill,minmax(125px,1fr))}@media(max-width:480px){.bag-stash-board{padding:9px}.bag-stash-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.bag-map-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.bag-page-tabs .chip-btn{flex:1 0 28%;font-size:12px}}
 </style>
+<<<<<<< HEAD
 <link rel="stylesheet" href="scene-art.css?v=20261031h">
 <link rel="stylesheet" href="talent.css?v=20261031h">
+=======
+<link rel="stylesheet" href="scene-art.css?v=20261031i">
+<link rel="stylesheet" href="talent.css?v=20261031i">
+>>>>>>> 60329995954d75548a16eb39f94d9c7a323f7288
 </head>
 <body>
 <div id="app">
@@ -1120,6 +1149,7 @@
 <div id="toast-layer"></div>
 
 <!-- 載入順序：設定 → 資料 → 玩家 → 系統 → 介面 → 進入點（換版時所有 ?v= 一起改，見 ARCHITECTURE.md） -->
+<<<<<<< HEAD
 <script src="data/config.js?v=20261031h"></script>
 <script src="data/classes.js?v=20261031h"></script>
 <script src="data/skills.js?v=20261031h"></script>
@@ -1179,5 +1209,66 @@
 <script src="data/pwa.js?v=20261031h"></script>
 <script src="data/loot.js?v=20261031h"></script>
 <script src="data/main.js?v=20261031h"></script>
+=======
+<script src="data/config.js?v=20261031i"></script>
+<script src="data/classes.js?v=20261031i"></script>
+<script src="data/skills.js?v=20261031i"></script>
+<script src="data/items.js?v=20261031i"></script>
+<script src="data/spellbook.js?v=20261031i"></script>
+<script src="data/monsters.js?v=20261031i"></script>
+<script src="data/zones.js?v=20261031i"></script>
+<script src="data/quests.js?v=20261031i"></script>
+<script src="data/advance.js?v=20261031i"></script>
+<script src="data/resonance.js?v=20261031i"></script>
+<script src="data/boss-enchant.js?v=20261031i"></script>
+<script src="data/boss-vfx.js?v=20261031i"></script>
+<script src="data/world-vfx.js?v=20261031i"></script>
+<script src="data/doll-abilities.js?v=20261031i"></script>
+<script src="data/mercenary.js?v=20261031i"></script>
+<script src="data/player.js?v=20261031i"></script>
+<script src="data/enchant.js?v=20261031i"></script>
+<script src="data/affix.js?v=20261031i"></script>
+<script src="data/craft.js?v=20261031i"></script>
+<script src="data/maps.js?v=20261031i"></script>
+<script src="data/combat.js?v=20261031i"></script>
+<script src="data/town.js?v=20261031i"></script>
+<script src="data/guard.js?v=20261031i"></script>
+<script src="data/save.js?v=20261031i"></script>
+<script src="data/cloud.js?v=20261031i"></script>
+<script src="data/offline.js?v=20261031i"></script>
+<script src="data/ui.js?v=20261031i"></script>
+<script src="data/sfx.js?v=20261031i"></script>
+<script src="data/bgm.js?v=20261031i"></script>
+<script src="data/ui-create.js?v=20261031i"></script>
+<script src="data/ui-panels.js?v=20261031i"></script>
+<script src="data/talent-jewels.js?v=20261031i"></script>
+<script src="data/talent.js?v=20261031i"></script>
+<script src="data/talent-tree.js?v=20261031i"></script>
+<script src="data/talent-layout.js?v=20261031i"></script>
+<script src="data/talent-planner.js?v=20261031i"></script>
+<script src="data/talent-live.js?v=20261031i"></script>
+<script src="data/bag-storage.js?v=20261031i"></script>
+<script src="data/codex.js?v=20261031i"></script>
+<script src="data/raid.js?v=20261031i"></script>
+<script src="data/clan.js?v=20261031i"></script>
+<script src="data/chat.js?v=20261031i"></script>
+<script src="data/rank.js?v=20261031i"></script>
+<script src="data/wb.js?v=20261031i"></script>
+<script src="data/market.js?v=20261031i"></script>
+<script src="data/vault.js?v=20261031i"></script>
+<script src="data/doll-shop.js?v=20261031i"></script>
+<script src="data/auction.js?v=20261031i"></script>
+<script src="data/presence.js?v=20261031i"></script>
+<script src="data/ui-frame.js?v=20261031i"></script>
+<script src="data/map-queue.js?v=20261031i"></script>
+<script src="data/icons.js?v=20261031i"></script>
+<script src="data/hotbar.js?v=20261031i"></script>
+<script src="data/scene-art.js?v=20261031i"></script>
+<script src="data/ui-scene.js?v=20261031i"></script>
+<script src="data/world-atlas.js?v=20261031i"></script>
+<script src="data/pwa.js?v=20261031i"></script>
+<script src="data/loot.js?v=20261031i"></script>
+<script src="data/main.js?v=20261031i"></script>
+>>>>>>> 60329995954d75548a16eb39f94d9c7a323f7288
 </body>
 </html>
