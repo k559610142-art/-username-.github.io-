@@ -650,12 +650,27 @@ function openEnchantPicker(scrollUid) {
     renderEnchantPicker();
 }
 
+function enchantSwitchScroll(id) {
+    const state = enchantPickerState;
+    if (!state || state.owner !== player || !$('enchant-picker') || !ITEMS[id] || ITEMS[id].scroll !== 'enchant') return;
+    state.scrollId = id;
+    state.pending = null;
+    state.result = '';
+    renderEnchantPicker();
+}
+
 function renderEnchantPicker() {
     const state = enchantPickerState, box = $('enchant-picker');
     if (!state || state.owner !== player || !box) return;
     const sd = ITEMS[state.scrollId], sc = player.inv.find(x => x.id === state.scrollId && x.n > 0);
     if (!sc) state.pending = null;
     const left = countItem(state.scrollId), body = box.closest('.dialog-body'), top = body.scrollTop;
+    const layer = $('dialog-layer'), heading = layer && layer.querySelector('h3');
+    if (heading) heading.textContent = sd.name;
+    const choices = Object.keys(ITEMS).filter(id => ITEMS[id].scroll === 'enchant').map(id => {
+        const d = ITEMS[id], label = (d.bless > 0 ? '祝福' : d.bless < 0 ? '詛咒' : '一般') + (d.target === 'weapon' ? '武卷' : '防卷');
+        return `<button class="mini ${id === state.scrollId ? '' : 'secondary'}" aria-pressed="${id === state.scrollId}" onclick="enchantSwitchScroll('${id}')">${label} ×${fmt(countItem(id))}</button>`;
+    }).join('');
     const rows = enchantTargets(sd).map(x => {
         const d = ITEMS[x.id], cur = x.ench || 0;
         const rate = sd.bless < 0 ? '必定 -1' : cur >= ENCHANT_MAX ? '已達上限' : cur < d.safe ? '安全' : `成功率 ${Math.round(enchantSuccessRate(cur, d.safe) * 100)}%`;
@@ -664,7 +679,7 @@ function renderEnchantPicker() {
             <small>安定值 +${d.safe}｜${rate}</small>${pending ? '<p class="bad">⚠️ 超過安定值，失敗裝備會蒸發消失！確定要衝嗎？</p>' : ''}</div>
             ${pending ? `<div><button onclick="enchantPick(${sc ? sc.uid : 0},${x.uid},true)">衝了！</button><button class="secondary" onclick="enchantCancelConfirm()">取消</button></div>` : `<button onclick="enchantPick(${sc ? sc.uid : 0},${x.uid})" ${!sc || (sd.bless >= 0 && cur >= ENCHANT_MAX) ? 'disabled' : ''}>施法</button>`}</div>`;
     }).join('');
-    box.innerHTML = `<div style="position:sticky;top:0;background:var(--panel);z-index:1"><p>剩餘卷軸：${fmt(left)} 張${!sc ? '（已用完）' : ''}</p><p role="status">${esc(state.result || '選擇裝備施法，強化後可繼續操作。')}</p></div><div class="list">${rows || '<p class="muted">沒有可以強化的裝備</p>'}</div>`;
+    box.innerHTML = `<div style="position:sticky;top:0;background:var(--panel);z-index:1"><div class="enchant-scroll-switch" aria-label="切換強化卷軸">${choices}</div><p>剩餘卷軸：${fmt(left)} 張${!sc ? '（已用完）' : ''}</p><p role="status">${esc(state.result || '選擇裝備施法，強化後可繼續操作。')}</p></div><div class="list">${rows || '<p class="muted">沒有可以強化的裝備</p>'}</div>`;
     body.scrollTop = top;
 }
 

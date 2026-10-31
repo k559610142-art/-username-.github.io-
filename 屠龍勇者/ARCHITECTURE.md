@@ -270,7 +270,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261101a`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261101b`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -4308,3 +4308,9 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
   頭頂：`sceneDraw` 的 drawPlayer 在名字上方 17px（`scene.titleFx`）。團隊副本：`raidSnapshot` 在快照加 `titleShown`，`raidSimulate` 結果 `members[].title`，`raidSceneDraw` 畫在名字上方（字 11～14px，`st.tfx[i]`）。
   介面：`titleBadgeHtml(id)` → `.acc-title`（外層 drop-shadow 光暈脈動，內層 `b` 彩虹字 background-clip，**要 `text-shadow: none`**，不然繼承的黑色 text-shadow 會蓋住漸層），放在角色裝備 `.cv-name` 與人物選單 `.char-name` 下方。
 - **驗證**：`tools/test-doll-shop-db.js` 加稱號檢查（沒買沒有、GM 買後有、別的帳號沒有、anon 不能呼叫）通過；瀏覽器把 `accTitle` 暫時換成固定值，看過頭頂、角色裝備、人物選單、團隊副本畫面，Console 只有本機原本的 sw.js 錯誤。沒用正式伺服器實測。
+
+## 258. 衝裝視窗隨時切換武防卷（2026-11-01，版本 `20261101b`）
+
+- 使用者要求不關閉視窗就能切換其他強化卷軸。renderEnchantPicker頂端新增六種卷軸的三欄兩列按鈕，顯示一般／祝福／詛咒武卷與防卷及持有量，選中高亮；零張仍可切換查看，但施法停用。
+- 新全域enchantSwitchScroll(id)檢查原角色／原視窗／合法強化卷軸，更新暫態scrollId、清除pending與上次結果，再就地更新標題／張數／裝備清單／機率。保留原捲動與逐次風險確認；切換本身不扣卷、不寫存檔。無schema／SQL／玩法數值／載入順序變更。
+- test-enchant-picker新增切換不重開、六種名稱／張數、零張、確認清除、舊卷確認拒絕、非法ID／關閉後拒絕及捲動保留，原強化回歸與check.ps1 ALL CHECKS PASSED。隔離瀏覽器實點一般武卷→視窗內祝福防卷，標題／3張／防具清單更新，截圖確認三欄兩列，Console無error／warn。

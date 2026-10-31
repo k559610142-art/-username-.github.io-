@@ -28,5 +28,14 @@ chance=()=>false;enchantPick(scroll.uid,target.uid,true);assert(!findAnyInst(tar
 addItem('longSword');target=player.inv.find(x=>x.id==='longSword');addItem('cWeaponScroll',1);scroll=player.inv.find(x=>x.id==='cWeaponScroll');target.ench=3;openEnchantPicker(scroll.uid);enchantPick(scroll.uid,target.uid);assert.equal(target.ench,2);assert.equal(countItem('cWeaponScroll'),0);assert(box.innerHTML.includes('已用完'));assert(box.innerHTML.includes('disabled'));assert(visible);
 addItem('bArmorScroll',2);addItem('leatherArmor');target=player.inv.find(x=>x.id==='leatherArmor');scroll=player.inv.find(x=>x.id==='bArmorScroll');rand=()=>3;openEnchantPicker(scroll.uid);enchantPick(scroll.uid,target.uid);assert.equal(target.ench,3);assert.equal(countItem('bArmorScroll'),1);target.ench=ENCHANT_MAX;renderEnchantPicker();assert(box.innerHTML.includes('已達上限'));const n=countItem('bArmorScroll');enchantPick(scroll.uid,target.uid);assert.equal(countItem('bArmorScroll'),n);
 visible=false;enchantPick(scroll.uid,target.uid);assert.equal(countItem('bArmorScroll'),n);
+
+visible=true;const opensBeforeSwitch=opened;const totalBefore=player.inv.filter(x=>ITEMS[x.id].scroll==='enchant').reduce((n,x)=>n+x.n,0);
+enchantPickerState.pending={uid:target.uid,cur:target.ench};enchantSwitchScroll('weaponScroll');assert.equal(enchantPickerState.pending,null);assert.equal(enchantPickerState.scrollId,'weaponScroll');assert.equal(opened,opensBeforeSwitch);assert.equal(body.scrollTop,120);
+assert(box.innerHTML.includes('一般武卷'));assert(box.innerHTML.includes('祝福防卷'));assert(box.innerHTML.includes('詛咒武卷'));
+const oldWeaponUid=player.inv.find(x=>x.id==='weaponScroll').uid;
+enchantSwitchScroll('bArmorScroll');enchantPick(oldWeaponUid,target.uid,true);assert.equal(countItem('bArmorScroll'),n);assert.equal(enchantPickerState.pending,null);
+enchantSwitchScroll('cWeaponScroll');assert(box.innerHTML.includes('已用完'));enchantSwitchScroll('armorScroll');assert.equal(enchantPickerState.scrollId,'armorScroll');assert.equal(player.inv.filter(x=>ITEMS[x.id].scroll==='enchant').reduce((n,x)=>n+x.n,0),totalBefore);
+enchantSwitchScroll('redPotion');assert.equal(enchantPickerState.scrollId,'armorScroll');visible=false;enchantSwitchScroll('weaponScroll');assert.equal(enchantPickerState.scrollId,'armorScroll');
+console.log('PASS：六種卷軸原視窗切換、數量、零張、清除確認、防舊操作、捲動與關閉保護');
 console.log('PASS：持續原視窗／捲動保留／逐次確認與取消／成功與蒸發／祝福防卷／詛咒末張用完／上限與關閉防誤耗');
 `,ctx);
