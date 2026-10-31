@@ -5,6 +5,8 @@
 
 ## 1. 現況
 
+- **本機20261031g：地圖排程詳情（第249節），待實玩驗收，未commit／發布**。已設定卡片新增詳情，開始前／執行／暫停／完成都可查；選圖後按「查看所選地圖」可先核對詞綴。利用既有種類key還原已耗盡卷軸屬性，不改存檔結構、SQL或數值。驗收：Ctrl+F5確認g→地圖排程→選圖→查看所選地圖→設定→詳情→暫停及完成後核對同樣屬性。使用者確認後才commit。
+
 - **同步工作提醒（2026-10-31，Codex）**：本次立繪進行中，另一項「村莊二轉導師」修改出現在advance.js／ui-panels.js／scene-art.js／ui-scene.js（其程式註解引用第247節）。Codex未改或還原該部分；本次立繪使用第248節與20261031f，保留共用檔的同步修改。提交前要核對差異，不可把另一項修改誤列為本次立繪成果。
 
 - **本機 20261031f：36 分支二轉專屬立繪（第248節），待使用者實玩驗收，未commit／發布**。內建imagegen各分支獨立生成透明原創全身像；正式PNG在images/classes/advance-v1，完整原稿／逐張提示詞／prepare.ps1／36張總覽／雜湊manifest在tools/portrait-src/advance-v1。人物狀態、人物選單、二轉選擇與命運重塑顯示新圖。**使用者已確認：創角維持原立繪，已二轉角色在人物選單顯示新立繪**；地圖人物模型不變。沿用player.adv，schema22／SQL／數值不變。36檔存在且雜湊各異、透明背景／總覽已檢視；test-advance-portraits、test-advance、check.ps1 ALL CHECKS PASSED。瀏覽器工具Page.navigate逾時，未完成畫面與Console驗收，不能宣稱實機通過。隔離頁http://localhost:8790/tools/advance-portraits-preview.html可看36張與正式人物狀態／人物選單卡片，不讀真實存檔／不連雲端。驗收：Ctrl+F5確認f→人物狀態看目前分支→人物選單看新圖與二轉名→創角看原圖→二轉選擇／命運重塑查看三分支（不必確認消耗）→回地圖確認原模型→F12看Console。使用者確認後才commit本次指定檔案，再請GitHub Desktop Push origin。
@@ -669,3 +671,5 @@
 回收分類s版最終驗證：正式50檔混淆515KB成功，setSellCategory事件函式公開，git diff --check通過；待使用者實機確認。
 
 鑑定台b版最終驗證：生成圖已檢視為無人物的亭式建築，1254×1254 RGBA真透明；四村專用圖／可達性、check.ps1、git diff --check通過，正式50檔混淆519KB及建築圖發佈逐byte一致通過。待使用者實機驗收。
+
+20261031g驗證：check.ps1 ALL CHECKS PASSED；隔離測試通過選圖預覽、idle／running／paused／done四種狀態、卷軸耗盡及Normalize重登後詞綴／加成保留；test-map-skip-boss回歸通過。尚未完成瀏覽器畫面與Console驗收，待使用者實玩確認後commit。

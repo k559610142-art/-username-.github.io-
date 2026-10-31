@@ -265,7 +265,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261031f`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261031g`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -4219,3 +4219,11 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 
 - 使用者要求做二轉 NPC，選「顯示自己職業的導師」＋「專屬對話框」。`scene-art.js`：`SCENE_TOWN_ROLES` 加 `['二轉導師','advance']`，位置 `SCENE_ADV_NPC_SPOT`（talking 8,10／gludio 8,9／giran 8,10／aden 9,9，廣場左側空地，用格線疊圖挑過）。`ui-scene.js`：`TOWN_NPCS` 加二轉導師（`openTownSub('advance')`），`townNpcList` 經 `advNpcPatch`：名牌換成 `CLASS_STORIES[cls].npc`、圖換 `images/classes/stage/<cls>.webp`。`ui-panels.js`：`NPC_LINES.advance`、`TOWN_SUBS` 加「🌟 二轉導師」、對話框表加 `advance: renderAdvanceNpc`。
 - `renderAdvanceNpc`（advance.js）：`advQuestPanelHtml`＋目前第 5～7 章卡片（接受／進度／回報）；前 4 章沒完成時提示並可跳任務分頁。
+
+## 249. 地圖排程查看屬性（2026-10-31，版本 `20261031g`）
+
+- 新增頂層 mapQueueDetail(index, selected=false)。已設定卡片的「詳情」在尚未開始、執行、暫停與完成時均可用；設定欄另有「查看所選地圖」，可在按設定前確認。
+- 沿用 mapDescHtml 顯示區域、建議等級、怪物數量、品質、各詞綴效果與獎勵加成／財寶圖規則。已設定內容由原有 mapKindKey 還原，卷軸耗盡、重登後仍可查；不讀新掉落替代卷、不新增 player 欄位，不改 schema／SQL／數值。
+- 驗收：刷新 g → 排程選圖查看所選地圖 → 設定後按詳情 → 開始、暫停與完成後再次查看相同詞綴。
+
+第249節驗證：check.ps1 ALL CHECKS PASSED；隔離測試通過選圖預覽、idle／running／paused／done四種狀態、卷軸耗盡及Normalize重登後詞綴／加成保留；test-map-skip-boss回歸通過。尚未完成瀏覽器畫面與Console驗收，待使用者實玩確認後commit。

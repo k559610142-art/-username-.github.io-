@@ -39,6 +39,23 @@ function mapQueueChoose(index) {
     const html = '<small class="muted">普通白色・魔法藍色・稀有黃色</small><div class="list map-queue-choices">' + (groups.map(g => `<button class="map-queue-choice" onclick="mapQueuePick(${index},${g.x.uid})"><b class="${itemClass(g.x)}">${esc(itemName(g.x))}</b><small>${esc(mapZoneFor(ITEMS[g.x.id].tier).name)}・持有 ${g.count} 張</small></button>`).join('') || '<p class="muted">沒有可安排的地圖</p>') + '</div>';
     openDialog('地圖 ' + (index + 1) + '：選擇地圖', html, [{ text: '關閉', cls: 'secondary' }]);
 }
+function mapQueueDetail(index, selected = false) {
+    if (!Number.isInteger(index) || index < 0 || index >= MAP_QUEUE_MAX) return;
+    let x;
+    if (selected) {
+        const sel = $('map-queue-select-' + index);
+        x = sel && findInv(Number(sel.value));
+        if (!x || !ITEMS[x.id] || ITEMS[x.id].cat !== 'map') { showToast('請先選擇地圖'); return; }
+    } else {
+        const s = mapQueueGet().slots[index];
+        if (!s) return;
+        // key 已保留完整種類，卷軸用完仍能查看，不新增存檔欄位。
+        const [id, q, mods, nm] = s.key.split('|');
+        if (!ITEMS[id] || ITEMS[id].cat !== 'map' || (q && !QUALITY[q])) return;
+        x = { id, q, mm: (mods || '').split(',').filter(k => MAP_MODS[k]), nm };
+    }
+    openDialog('地圖 ' + (index + 1) + '：詳情', '<b class="' + itemClass(x) + '">' + esc(itemName(x)) + '</b><br>' + mapDescHtml(x));
+}
 function mapQueuePick(index, uid) {
     if (mapQueueGet().state !== 'idle') return;
     const g = mapQueueChoices(index).find(g => g.x.uid === uid), sel = $('map-queue-select-' + index), btn = $('map-queue-pick-' + index);
@@ -240,8 +257,8 @@ function renderMapQueue() {
     for (let i = 0; i < MAP_QUEUE_MAX; i++) {
         const s = q.slots[i], groups = mapQueueChoices(i);
         h += `<div class="panel map-queue-row"><b>地圖 ${i + 1}${s ? '：<span class="' + ((QUALITY[s.key.split('|')[1]] || {}).cls || '') + '">' + esc(s.name) + '</span>' : ''}</b><small id="map-queue-status-${i}">${esc(mapQueueRowStatus(i))}</small>
-            <fieldset ${editable ? '' : 'disabled hidden'}><input type="hidden" id="map-queue-select-${i}" value="${s && groups.find(g => mapKindKey(g.x) === s.key) ? groups.find(g => mapKindKey(g.x) === s.key).x.uid : ''}"><button id="map-queue-pick-${i}" class="map-queue-picker secondary" aria-label="地圖 ${i + 1}" onclick="mapQueueChoose(${i})">${s ? '<span class="' + ((QUALITY[s.key.split('|')[1]] || {}).cls || '') + '">' + esc(s.name) + '</span>' : '選擇背包地圖'} ▾</button>
-            <div class="btn-row"><input id="map-queue-qty-${i}" type="number" inputmode="numeric" min="1" value="${s ? Math.max(1, s.uids.length) : 1}" aria-label="地圖 ${i + 1} 張數"><span>張</span><button class="mini" onclick="mapQueueSet(${i})">設定</button><button class="mini secondary" onclick="mapQueueMove(${i},-1)" ${i ? '' : 'disabled'}>↑</button><button class="mini secondary" onclick="mapQueueMove(${i},1)" ${i < MAP_QUEUE_MAX - 1 ? '' : 'disabled'}>↓</button><button class="mini secondary" onclick="mapQueueRemove(${i})">清空</button></div></fieldset></div>`;
+            ${s ? `<button class="mini secondary" onclick="mapQueueDetail(${i})">詳情</button>` : ''}<fieldset ${editable ? '' : 'disabled hidden'}><input type="hidden" id="map-queue-select-${i}" value="${s && groups.find(g => mapKindKey(g.x) === s.key) ? groups.find(g => mapKindKey(g.x) === s.key).x.uid : ''}"><button id="map-queue-pick-${i}" class="map-queue-picker secondary" aria-label="地圖 ${i + 1}" onclick="mapQueueChoose(${i})">${s ? '<span class="' + ((QUALITY[s.key.split('|')[1]] || {}).cls || '') + '">' + esc(s.name) + '</span>' : '選擇背包地圖'} ▾</button>
+            <button class="mini secondary" onclick="mapQueueDetail(${i},true)">查看所選地圖</button><div class="btn-row"><input id="map-queue-qty-${i}" type="number" inputmode="numeric" min="1" value="${s ? Math.max(1, s.uids.length) : 1}" aria-label="地圖 ${i + 1} 張數"><span>張</span><button class="mini" onclick="mapQueueSet(${i})">設定</button><button class="mini secondary" onclick="mapQueueMove(${i},-1)" ${i ? '' : 'disabled'}>↑</button><button class="mini secondary" onclick="mapQueueMove(${i},1)" ${i < MAP_QUEUE_MAX - 1 ? '' : 'disabled'}>↓</button><button class="mini secondary" onclick="mapQueueRemove(${i})">清空</button></div></fieldset></div>`;
     }
     return h + '</div><small class="muted">開始後要更換地圖或張數，請先取消排程再重新設定。排程中的卷軸請留在背包。</small>';
 }
