@@ -155,6 +155,8 @@ function migrateSave(data) {
     // schema 10／12：娃娃能力與共用召喚到期時間；舊檔尚未付費，首次召喚扣料。
     dollStateNormalize(p);
     p.settings = Object.assign(JSON.parse(JSON.stringify(DEFAULT_SETTINGS)), p.settings || {});
+    // schema23：保留英雄裝備；舊角色預設關閉，只接受明確true。
+    p.settings.lootKeepHero = p.settings.lootKeepHero === true;
     // schema15：舊角色預設停留本層；只接受明確true。
     p.settings.towerAutoUp = p.settings.towerAutoUp === true;
     // schema 8：指定自動販賣清單；舊檔預設空，去除不存在或不能回收的道具。

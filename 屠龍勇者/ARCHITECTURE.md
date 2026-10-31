@@ -265,7 +265,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261031g`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261031h`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -4227,3 +4227,11 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 驗收：刷新 g → 排程選圖查看所選地圖 → 設定後按詳情 → 開始、暫停與完成後再次查看相同詞綴。
 
 第249節驗證：check.ps1 ALL CHECKS PASSED；隔離測試通過選圖預覽、idle／running／paused／done四種狀態、卷軸耗盡及Normalize重登後詞綴／加成保留；test-map-skip-boss回歸通過。尚未完成瀏覽器畫面與Console驗收，待使用者實玩確認後commit。
+
+## 250. 裝備過濾保留英雄（2026-10-31，版本 `20261031h`，schema23）
+
+- 使用者確認依裝備圖鑑英雄分級，並明確同意新增存檔設定與schema22→23。新增 DEFAULT_SETTINGS.lootKeepHero=false，migrateSave補預設並僅接受布林true；既有角色／裝備不重置。
+- 設定頁戰利品過濾新增「保留英雄裝備（依裝備圖鑑分級，不論詞綴品質）」勾選，沿setSettingBool存檔。lootFiltered使用既有codexGradeOf(id).id===hero，掉落過濾與回收一鍵賣出均跳過；不改圖鑑分級、掉率、數值或SQL。
+- 明確加入「自動販賣」的同名清單仍依既有規則優先，會覆蓋保留設定。無新全域函式／載入順序變更，codexGradeOf只在執行期使用。
+
+第250節驗證：check.ps1 ALL CHECKS PASSED；隔離記憶體測試遍歷全部裝備，72件英雄基底保留、非英雄規則不變、回收保護、schema22舊檔預設關閉／schema23勾選保留與加密存讀通過。未操作真實存檔／網路；瀏覽器畫面與Console待使用者實玩驗收。

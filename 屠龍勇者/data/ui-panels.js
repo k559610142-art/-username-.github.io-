@@ -1096,6 +1096,7 @@ function renderSettings() {
             <label class="set-row"><span>撿到裝備時</span><select onchange="setSettingNum('lootFilter',this.value,0,3)">
                 ${LOOT_FILTERS.map((n, i) => `<option value="${i}" ${s.lootFilter === i ? 'selected' : ''}>${n}</option>`).join('')}</select></label>
             <small class="muted">被過濾的裝備會直接換成金幣，不進背包、不佔負重。武士刀、精靈之弓、能力戒指這類商店沒賣的稀有基底也一樣照品質賣出（勾選的保留詞綴除外）。</small>
+            ${chk('lootKeepHero', '保留英雄裝備（依裝備圖鑑分級，不論詞綴品質）')}
             ${chk('lootKeepRes', '🌟 保留共鳴裝備（不論品質）')}
             <label class="set-row"><span>📢 地圖上方跑馬燈顯示全服掉寶公告（傳說品質、共鳴裝備）</span><input type="checkbox" ${s.lootNews !== false ? 'checked' : ''} onchange="setLootNews(this.checked)"></label>
             <div class="set-row"><span>保留有這些詞綴的裝備（不論品質）</span></div>

@@ -29,6 +29,7 @@ const DEFAULT_SETTINGS = {
     autoDodge: true,                  // 首領大招（地上紅圈）自動走出圈外
     lootFilter: 1,                    // 戰利品過濾：0 全撿、1 普通自動賣、2 魔法以下自動賣、3 只撿傳說（affix.js）
     lootKeepAf: [],                   // 戰利品過濾例外：有這些詞綴（AFFIXES 代號）的裝備一律保留
+    lootKeepHero: false,              // 保留圖鑑英雄級裝備（第250節）
     lootKeepRes: true,                // 戰利品過濾例外：共鳴裝備（ITEMS[id].res）一律保留
     lootAutoSell: [],                 // 指定同名道具：加入時確認，之後掉落直接回收
     lootNews: true,                   // 聊天世界頻道顯示全服掉寶公告（chat.js，第 139 節）

@@ -157,6 +157,7 @@ function lootFiltered(inst, level, keepRareBase) {
     const d = ITEMS[inst.id];
     if (!level || (d.cat !== 'weapon' && d.cat !== 'armor')) return false;
     if (keepRareBase && !d.price) return false;
+    if (player && player.settings.lootKeepHero && codexGradeOf(inst.id).id === 'hero') return false;
     if (lootKeepHit(inst)) return false;              // 有勾選要保留的詞綴（設定 lootKeepAf）
     if (d.res && player && player.settings.lootKeepRes) return false;   // 保留共鳴裝備（設定 lootKeepRes）
     return qualityRank(inst) < level;
