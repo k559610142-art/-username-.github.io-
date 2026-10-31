@@ -267,7 +267,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261031k`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261031l`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -4263,3 +4263,12 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - prepare.js沿用連通區分鏡與原alpha、等比縮放／腳底註冊，cell384×320、foot[192,270]、charH160／drawH48；walk130／attack140／cast220／hit150ms。四圖集加入SW預載。新增隔離驗證與四動作／四方向播放預覽，不碰真實存檔或正式後端。
 
 第253節驗證／驗收：test-violet-archmage-morph通過Lv51拒絕／52使用、卷軸扣量與效果不變、四向命中／MISS／施法／受傷、到期與上次選擇、36格RGBA透明唯一／圖集逐byte／SW預載及正式sceneDraw16組。正面法杖頂端留白已重畫，初稿保留；三向原稿、contact與game-render已目視檢查。check.ps1 ALL CHECKS PASSED。瀏覽器IAB導航ERR_FAILED，Edge工具回報視窗最小化，未完成瀏覽器畫面及Console驗收。原serve.ps1的HttpListener平台不支援，已啟動Node靜態伺服器8790；獨立預覽http://localhost:8790/tools/violet-archmage-preview.html不讀真實存檔／不連正式後端。請Ctrl+F5到k→Lv52且法杖系可用武器→變形卷軸→大魔導士・巴列斯真身→四向走路／攻擊／施法／受傷→F12確認無紅字；使用者確認後才commit與請Push origin。
+
+## 254. 地圖排程：未鑑定可排程＋自動打造地圖（2026-10-31，版本 `20261031l`；`map-queue.js`）
+
+- 使用者確認：鍛造＝地圖打造（通貨改詞綴）；勾的是地圖詞綴；不要的詞綴用通貨重洗；設定全部排程共用；未鑑定放入後「開一張洗一張」，不一次洗整疊。
+- `mapQueueChoices` 不再排除未鑑定，未鑑定依 `mapKindKey`（`mapN|unidentified`）同階合成一種；`mapQueueDetail` 可查看未鑑定格。`mapQueueTick` 輪到時才對那一張 `identifyMapInst`（此時一定在村莊），再呼叫 `mapCraftAuto`。
+- 新全域 `MAP_CRAFT_DEFAULT`、`mapCraftCfg`（讀取並清理 `player.settings.mapCraft`：on／bad 詞綴陣列／aug／regal／max 0～99／keep／giveup）、`mapCraftSet(k,v)`（onchange 用）、`mapCraftAuto(x)`、`mapCraftHtml`。設定沿用 `save.js` 對 settings 的預設合併，沒有新 schema；預設關閉，原排程行為不變。
+- `mapCraftAuto`：財寶圖／關閉時直接開；普通依設定用點化石，魔法依設定用晉升石；有不要的詞綴時魔法用重鑄石、稀有用混沌石重洗，每顆都走 `useCurrency`（扣通貨、寫紀錄），直到乾淨、超過每張上限或通貨低於保留數。仍不乾淨且 giveup＝略過：從排程拿掉那一張（留在背包、已鑑定），格子計 `craftSkip`；否則照開。
+- 開圖失敗時，已被鑑定／打造過的那張不再放回排程。排程格狀態多「詞綴不合略過 N 張」。鑑定說明改為可排程。
+- 測試 `tools/test-map-queue-craft.js`。既有 `tools/test-map-queue.js` 寫死 SAVE_SCHEMA 15，改動前就失敗。

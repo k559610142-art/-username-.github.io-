@@ -18,7 +18,7 @@ const normal=makeMapItem(8,'rare');assert.equal(normal.mm.length>=3,true);const 
 for(let t=8;t<=15;t++){
  const x=makeMapItem(t,'legend');player.inv.push(x);assert(x.unidentified);assert(!x.mm);assert(itemName(x).includes('未鑑定'));
  let dialogButtons;openDialog=(title,html,buttons)=>{dialogButtons=buttons;};openItemDialog(x.uid);assert(!dialogButtons.some(b=>b.text==='🌀 開啟'));assert(!mapDescHtml(x).includes('只掉通貨')&&mapDescHtml(x).includes('未鑑定')&&!itemName(x).includes('傳奇'));
- const n=player.inv.length;openMap(x.uid);assert.equal(player.inv.length,n);assert(!player.mapRun);assert(!mapQueueChoices(0).some(g=>g.x.uid===x.uid));
+ const n=player.inv.length;openMap(x.uid);assert.equal(player.inv.length,n);assert(!player.mapRun);assert(mapQueueChoices(0).some(g=>g.x.uid===x.uid),'第254節起未鑑定可排程');
  for(const c of CURRENCY_IDS){assert.equal(currencyCan(c,x),false);assert(useCurrency(c,x.uid));}
  identifyMap(x.uid);assert(!x.unidentified);assert.equal(x.mm.length,6);assert.equal(new Set(x.mm).size,6);assert(mapQueueChoices(0).some(g=>g.x.uid===x.uid));
  for(const c of CURRENCY_IDS)assert.equal(currencyCan(c,x),false);
@@ -31,5 +31,5 @@ lootRequired=()=>false;lootActive=()=>false;chance=()=>true;rand=(a,b)=>a;worldV
 for(const boss of [false,true]){player.inv=[];const mon={...makeMonster('goblin'),boss,elite:true,mapBoss:boss};rollDrops(mon,currentZone());assert.equal(player.inv.length,1);assert.equal(ITEMS[player.inv[0].id].cat,'currency');assert.equal(player.inv[0].n,2);}
 const before=player.inv.length;completeMap();assert.equal(player.inv.length,before);assert(!player.mapRun);
 assert(TOWN_SUBS.some(x=>x[0]==='identify'));for(const id of ['talking','gludio','giran','aden'])assert(SCENE_ART_BGS[{talking:'village',gludio:'ash',giran:'darkgold',aden:'aden'}[id]].npcs.some(x=>x.role==='鑑定台'));
-console.log('PASS 財寶圖：T8～15、未鑑定禁止開啟／排程、免費6詞鑑定／不重鑑、所有通貨拒絕、存檔、只掉雙倍通貨與四村鑑定台。');
+console.log('PASS 財寶圖：T8～15、未鑑定禁止開啟（可排程）、免費6詞鑑定／不重鑑、所有通貨拒絕、存檔、只掉雙倍通貨與四村鑑定台。');
 `,ctx);

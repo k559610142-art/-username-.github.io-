@@ -17,7 +17,7 @@ function mapQueueNormalize(p) {
         });
         return { key: s.key, name: String(s.name || '異界地圖'), uids,
             done: Math.max(0, Math.floor(Number(s.done) || 0)), failed: Math.max(0, Math.floor(Number(s.failed) || 0)),
-            skipped: Math.max(0, Math.floor(Number(s.skipped) || 0)) };
+            skipped: Math.max(0, Math.floor(Number(s.skipped) || 0)), craftSkip: Math.max(0, Math.floor(Number(s.craftSkip) || 0)) };
     });
     q.index = clamp(Math.floor(Number(q.index) || 0), 0, MAP_QUEUE_MAX);
     q.active = q.active === true;
@@ -31,12 +31,13 @@ function mapQueueNormalize(p) {
 }
 function mapQueueChoices(index) {
     const q = mapQueueGet(), used = new Set(q.slots.filter((s, i) => s && i !== index).map(s => s.key));
-    return groupMaps(player.inv.filter(x => ITEMS[x.id] && ITEMS[x.id].cat === 'map' && x.unidentified !== true)).filter(g => !used.has(mapKindKey(g.x)));
+    // 未鑑定地圖也能排程（第254節）：同階級的未鑑定合成一種，輪到時才在村莊自動鑑定
+    return groupMaps(player.inv.filter(x => ITEMS[x.id] && ITEMS[x.id].cat === 'map')).filter(g => !used.has(mapKindKey(g.x)));
 }
 function mapQueueChoose(index) {
     if (mapQueueGet().state !== 'idle') return;
     const groups = mapQueueChoices(index);
-    const html = '<small class="muted">普通白色・魔法藍色・稀有黃色</small><div class="list map-queue-choices">' + (groups.map(g => `<button class="map-queue-choice" onclick="mapQueuePick(${index},${g.x.uid})"><b class="${itemClass(g.x)}">${esc(itemName(g.x))}</b><small>${esc(mapZoneFor(ITEMS[g.x.id].tier).name)}・持有 ${g.count} 張</small></button>`).join('') || '<p class="muted">沒有可安排的地圖</p>') + '</div>';
+    const html = '<small class="muted">普通白色・魔法藍色・稀有黃色・未鑑定（輪到時自動鑑定）</small><div class="list map-queue-choices">' + (groups.map(g => `<button class="map-queue-choice" onclick="mapQueuePick(${index},${g.x.uid})"><b class="${itemClass(g.x)}">${esc(itemName(g.x))}</b><small>${esc(mapZoneFor(ITEMS[g.x.id].tier).name)}・持有 ${g.count} 張</small></button>`).join('') || '<p class="muted">沒有可安排的地圖</p>') + '</div>';
     openDialog('地圖 ' + (index + 1) + '：選擇地圖', html, [{ text: '關閉', cls: 'secondary' }]);
 }
 function mapQueueDetail(index, selected = false) {
@@ -51,8 +52,12 @@ function mapQueueDetail(index, selected = false) {
         if (!s) return;
         // key 已保留完整種類，卷軸用完仍能查看，不新增存檔欄位。
         const [id, q, mods, nm] = s.key.split('|');
-        if (!ITEMS[id] || ITEMS[id].cat !== 'map' || (q && !QUALITY[q])) return;
-        x = { id, q, mm: (mods || '').split(',').filter(k => MAP_MODS[k]), nm };
+        if (q === 'unidentified') x = { id, unidentified: true };
+        else {
+            if (!ITEMS[id] || ITEMS[id].cat !== 'map' || (q && !QUALITY[q])) return;
+            x = { id, q, mm: (mods || '').split(',').filter(k => MAP_MODS[k]), nm };
+        }
+        if (!ITEMS[id] || ITEMS[id].cat !== 'map') return;
     }
     openDialog('地圖 ' + (index + 1) + '：詳情', '<b class="' + itemClass(x) + '">' + esc(itemName(x)) + '</b><br>' + mapDescHtml(x));
 }
@@ -74,7 +79,7 @@ function mapQueueSet(index) {
     const key = mapKindKey(x), g = mapQueueChoices(index).find(g => mapKindKey(g.x) === key);
     if (!g || !Number.isSafeInteger(n) || n < 1 || n > g.count) { showToast('張數需為整數，且不能超過背包持有數量'); return; }
     const uids = player.inv.filter(x => ITEMS[x.id].cat === 'map' && mapKindKey(x) === key).slice(0, n).map(x => x.uid);
-    q.slots[index] = { key, name: itemName(x) + '・' + mapZoneFor(ITEMS[x.id].tier).name, uids, done: 0, failed: 0, skipped: 0 };
+    q.slots[index] = { key, name: itemName(x) + '・' + mapZoneFor(ITEMS[x.id].tier).name, uids, done: 0, failed: 0, skipped: 0, craftSkip: 0 };
     saveGame(); refreshUI();
 }
 function mapQueueSelectChanged(index) {
@@ -135,6 +140,49 @@ function mapQueueSkipBoss(r) {
     addLog(`📋 ${r.name}的怪物已清空，依排程設定不打首領，直接回村換下一張`, 'boss');
     moveToTown(z.town);
     return true;
+}
+// ───────── 自動打造地圖（第254節）─────────
+// 全部排程共用一份設定 player.settings.mapCraft；輪到哪張才處理哪張，不會一次洗整疊。
+// 普通可依設定用點化石／晉升石升級；有勾選的不要詞綴時，魔法用重鑄石、稀有用混沌石重洗，直到乾淨或用到上限。財寶圖不改造。
+const MAP_CRAFT_DEFAULT = { on: false, bad: [], aug: false, regal: false, max: 5, keep: 0, giveup: true };
+function mapCraftCfg() {
+    const c = Object.assign({}, MAP_CRAFT_DEFAULT, player.settings.mapCraft || {});
+    c.on = c.on === true; c.aug = c.aug === true; c.regal = c.regal === true; c.giveup = c.giveup !== false;
+    c.bad = [...new Set(Array.isArray(c.bad) ? c.bad : [])].filter(k => MAP_MODS[k]);
+    c.max = clamp(Math.floor(Number(c.max) || 0), 0, 99); c.keep = clamp(Math.floor(Number(c.keep) || 0), 0, 9999);
+    return player.settings.mapCraft = c;
+}
+function mapCraftSet(k, v) {
+    const c = mapCraftCfg();
+    if (['on', 'aug', 'regal', 'giveup'].includes(k)) c[k] = !!v;
+    else if (k === 'max' || k === 'keep') c[k] = v;
+    else if (MAP_MODS[k]) c.bad = v ? [...c.bad, k] : c.bad.filter(x => x !== k);
+    else return;
+    mapCraftCfg(); saveGame();
+}
+// 回傳 'open'（照開）或 'skip'（仍有不要的詞綴且設定略過）
+function mapCraftAuto(x) {
+    const c = mapCraftCfg();
+    if (!c.on || isTreasureMap(x) || x.unidentified === true) return 'open';
+    let used = 0;
+    const use = cid => countItem(cid) > c.keep && used < c.max && currencyCan(cid, x) && !useCurrency(cid, x.uid) && ++used;
+    if (!x.q && c.aug) use('curAug');
+    if (x.q === 'magic' && c.regal) use('curRegal');
+    const dirty = () => (x.mm || []).some(k => c.bad.includes(k));
+    while (dirty() && use(x.q === 'magic' ? 'curAlt' : 'curChaos'));
+    if (used) addLog(`📋 自動打造：用了 ${used} 顆通貨 → ${itemName(x)}`, 'sys');
+    return dirty() && c.giveup ? 'skip' : 'open';
+}
+function mapCraftHtml() {
+    const c = mapCraftCfg(), chk = (k, on) => `${on ? 'checked' : ''} onchange="mapCraftSet('${k}',this.checked)"`;
+    return `<div class="panel map-craft"><b>⚒️ 自動打造地圖（全部排程共用）</b><small class="muted">每次輪到一張地圖才處理那一張：未鑑定先自動鑑定，再依下面設定用通貨洗詞綴。傳奇財寶圖不改造。</small>
+        <label class="set-row"><span>啟用自動打造</span><input type="checkbox" ${chk('on', c.on)}></label>
+        <small>❌ 勾選不要的詞綴（出現就用通貨重洗：魔法用重鑄石、稀有用混沌石）</small>
+        <div class="map-craft-mods">${MAP_MOD_KEYS.map(k => `<label class="map-craft-mod"><input type="checkbox" ${chk(k, c.bad.includes(k))}><span>${MAP_MODS[k].icon} ${MAP_MODS[k].name}<small>${esc(MAP_MODS[k].desc)}</small></span></label>`).join('')}</div>
+        <label class="set-row"><span>普通地圖用點化石升成魔法</span><input type="checkbox" ${chk('aug', c.aug)}></label>
+        <label class="set-row"><span>魔法地圖用晉升石升成稀有</span><input type="checkbox" ${chk('regal', c.regal)}></label>
+        <div class="btn-row"><label>每張最多用 <input type="number" inputmode="numeric" min="0" max="99" value="${c.max}" onchange="mapCraftSet('max',this.value)"> 顆</label><label>每種通貨保留 <input type="number" inputmode="numeric" min="0" value="${c.keep}" onchange="mapCraftSet('keep',this.value)"> 顆不用</label></div>
+        <label class="set-row"><span>用到上限仍有不要的詞綴就略過這張（不勾＝照樣開圖）</span><input type="checkbox" ${chk('giveup', c.giveup)}></label></div>`;
 }
 function mapQueueSupplyReason() {
     if (barHealAuto() && healPotionCount() === 0) return '藥水用完，請先補給';
@@ -221,8 +269,15 @@ function mapQueueTick() {
     if (why) { mapQueueAutoPause(why); saveGame(); return; }
     if (!lootCanPlay()) { mapQueueAutoPause('後端掉寶連線尚未就緒，請稍後繼續'); saveGame(); return; }
     const s = q.slots[q.index], uid = s.uids[0], x = findInv(uid);
-    if (!x || x.unidentified === true || !ITEMS[x.id] || ITEMS[x.id].cat !== 'map' || mapKindKey(x) !== s.key) {
+    if (!x || !ITEMS[x.id] || ITEMS[x.id].cat !== 'map' || mapKindKey(x) !== s.key) {
         mapQueueAutoPause('安排的卷軸已不在背包或已被改造，請取消後重新安排'); saveGame(); return;
+    }
+    // 一次只處理輪到的這一張：未鑑定先鑑定，再依共用設定自動打造（第254節）
+    if (x.unidentified === true) identifyMapInst(x);
+    if (mapCraftAuto(x) === 'skip') {
+        s.uids.shift(); s.craftSkip++;
+        addLog(`📋 ${itemName(x)}仍有不要的詞綴，略過這張（留在背包）`, 'warn');
+        saveGame(); return;
     }
     q.active = true;
     s.uids.shift();
@@ -230,7 +285,7 @@ function mapQueueTick() {
     scene = null;
     openMap(uid, true);
     if (player.mapRun) player.mapRun.queueSlot = q.index;
-    else { s.uids.unshift(uid); q.active = false; mapQueueAutoPause('無法開啟地圖'); }
+    else { if (mapKindKey(x) === s.key) s.uids.unshift(uid); q.active = false; mapQueueAutoPause('無法開啟地圖'); }   // 已鑑定／打造過的這張留在背包，不再放回排程
     saveGame();
 }
 function mapQueueLiveHtml() {
@@ -242,7 +297,7 @@ function mapQueueLiveHtml() {
 function mapQueueRowStatus(i) {
     const q = mapQueueGet(), s = q.slots[i];
     const active = q.active && q.index === i;
-    return s ? `共 ${s.done + s.failed + s.skipped + s.uids.length + (active ? 1 : 0)} 張・完成 ${s.done} 次${s.skipped ? `・略過首領 ${s.skipped} 次` : ''}${s.failed ? `・中斷 ${s.failed} 次` : ''}・${active ? '進行中 1 張・' : ''}待刷 ${s.uids.length} 張` : '尚未安排';
+    return s ? `共 ${s.done + s.failed + s.skipped + (s.craftSkip || 0) + s.uids.length + (active ? 1 : 0)} 張・完成 ${s.done} 次${s.skipped ? `・略過首領 ${s.skipped} 次` : ''}${s.craftSkip ? `・詞綴不合略過 ${s.craftSkip} 張` : ''}${s.failed ? `・中斷 ${s.failed} 次` : ''}・${active ? '進行中 1 張・' : ''}待刷 ${s.uids.length} 張` : '尚未安排';
 }
 function updateMapQueueLive() {
     const el = $('map-queue-live');
@@ -252,8 +307,8 @@ function updateMapQueueLive() {
 }
 function renderMapQueue() {
     const q = mapQueueGet(), editable = q.state === 'idle';
-    let h = `<div class="panel"><small>最多安排 6 種地圖，依第 1～6 格順序刷完。相同區域、階級、品質與詞綴的卷軸可放多張；每次進圖才扣 1 張。</small><small class="muted">死亡、回村或補給不足會暫停；重開遊戲保留排程，需按繼續。取消不會扣掉未使用的卷軸。</small>
-        <label class="set-row"><span>👹 怪物清空後不打首領，直接回村換下一張（沒有通關獎勵）</span><input type="checkbox" ${mapQueueSkipBossOn() ? 'checked' : ''} onchange="mapQueueSetSkipBoss(this.checked)"></label></div><div id="map-queue-live" class="panel">${mapQueueLiveHtml()}</div><div class="map-queue-grid">`;
+    let h = `<div class="panel"><small>最多安排 6 種地圖，依第 1～6 格順序刷完。相同區域、階級、品質與詞綴的卷軸可放多張；未鑑定地圖依階級合成一種，輪到時自動鑑定。每次進圖才扣 1 張。</small><small class="muted">死亡、回村或補給不足會暫停；重開遊戲保留排程，需按繼續。取消不會扣掉未使用的卷軸。</small>
+        <label class="set-row"><span>👹 怪物清空後不打首領，直接回村換下一張（沒有通關獎勵）</span><input type="checkbox" ${mapQueueSkipBossOn() ? 'checked' : ''} onchange="mapQueueSetSkipBoss(this.checked)"></label></div>${mapCraftHtml()}<div id="map-queue-live" class="panel">${mapQueueLiveHtml()}</div><div class="map-queue-grid">`;
     for (let i = 0; i < MAP_QUEUE_MAX; i++) {
         const s = q.slots[i], groups = mapQueueChoices(i);
         h += `<div class="panel map-queue-row"><b>地圖 ${i + 1}${s ? '：<span class="' + ((QUALITY[s.key.split('|')[1]] || {}).cls || '') + '">' + esc(s.name) + '</span>' : ''}</b><small id="map-queue-status-${i}">${esc(mapQueueRowStatus(i))}</small>

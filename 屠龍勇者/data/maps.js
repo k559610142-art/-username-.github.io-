@@ -122,7 +122,7 @@ function mapDescHtml(x) {
     const L = [`<small class="muted">異界地圖・T${t}${same > 1 ? `　背包裡同樣的共 ${same} 張` : ''}</small>`, `地區：${z.icon} ${z.name}（建議 Lv.${z.lv[0]}～${z.lv[1]}）${t > mapZones().length ? '<span class="warn">　怪物強化 ×1.4</span>' : ''}`,
         `怪物數量：200～300 隻${mapQtyOf(mods) > 1 ? ` <b class="warn">×${mapQtyOf(mods)}</b>` : ''}，殺光後出現異界首領`];
     if (x.unidentified === true) {
-        L.push('<b>未鑑定</b>：請到村莊鑑定台免費鑑定，鑑定後才知道品級與詞綴；鑑定前不能開啟、排程或用通貨改造。');
+        L.push('<b>未鑑定</b>：請到村莊鑑定台免費鑑定，鑑定後才知道品級與詞綴；鑑定前不能開啟或用通貨改造；可以放進地圖排程，輪到時在村莊自動鑑定。');
         return L.join('<br>');
     }
     if (isTreasureMap(x)) L.push('<b class="q-legend">傳奇財寶地圖</b>', '已鑑定：6條固定詞綴。', '只掉通貨：掉落機率為正常3倍（最高100%），數量2倍；不可使用任何通貨改造。');
