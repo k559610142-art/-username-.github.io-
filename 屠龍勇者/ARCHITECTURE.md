@@ -265,7 +265,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261031h`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261031i`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -4204,6 +4204,14 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 使用者回報 Lv.60 後練得比較快。原因：Lv.49 起每級固定 36,065,092 經驗，怪物經驗 lv²＋1 且越級不扣，永夜之塔怪 Lv.60～105（×1.3），而遞減從 65 才開始，60～64 完全沒打折。使用者選「遞減提早到 60」：60～64 ×3/4，65 以後不變；離線收益沿用同一函式。
 
 - 20261031d 補充：每 5 秒讓傭兵技能 MP 不夠用（回魔只剩 1/5、耗魔不變），使用者定為 `MERC_MP_REGEN_MS = 2000`（原本的 1/2）。
+
+## 250. 傭兵裝備回魔換算生效（2026-10-31，版本 `20261031i`；`mercenary.js` 的 `MERC_GEAR_MP_REGEN_K`、`mercGearRegen`）
+
+- 原本 `mercStats` 收集了裝備的 `mpRegen`（防具本身＋所有部位的「回魔」詞綴），但 `regen` 只算職業基礎＋天賦「出戰傭兵每秒回魔」（目前沒有節點提供），裝備回魔對傭兵無效。
+- 使用者選「換算版」：裝備回魔是玩家「每 5 秒」的數值，傭兵每 `MERC_MP_REGEN_MS`（2 秒）回一次，`MERC_GEAR_MP_REGEN_K = MERC_MP_REGEN_MS / 5000`（0.4）；`mercGearRegen(v)`＝裝備合計 ×0.4 四捨五入、有回魔至少 1。`mercStats` 回傳 `regen`（含裝備）與 `gearRegen`。
+- 範例：星風披風 3 → +1；星風披風＋星風手套 5 → +2；四件（兩件星風＋兩件滿值詞綴 5）合計 25 → +10，契靈師每 2 秒 5 → 15。玩家的光環、增益、天賦仍不影響傭兵回魔。
+- 傭兵頁 HP／MP 後顯示「回魔 N／2秒（裝備 +M）」。存檔、schema、SQL 不變。
+- 驗證：瀏覽器隔離計算上列各組合＋征戰者、星紋秘法手套（1 → 至少 1）、傭兵頁文字，Console 無錯誤。既有 `test-mercenary.js` 系列在改動前就失敗（10 !== 9 斷言、路徑參數），非本次造成。
 
 ## 249. 法師十級魔法門檻 Lv.70（2026-10-31，版本 `20261031g`／`20261031h`；`skills.js` 的 `MAGIC_CLASS.mage`、`spellbook.js` 的 `MAGIC_BOOK_DROP_LV`）
 
