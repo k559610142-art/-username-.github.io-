@@ -67,7 +67,7 @@ assert.equal(p.mapQueue.slots[0].skipped,3);assert.equal(p.settings.mapSkipBoss,
 p.mapQueue.slots[0].skipped='x';mapQueueNormalize(p);assert.equal(p.mapQueue.slots[0].skipped,0);
 
 // ⑥ 介面：勾選框跟著設定。
-assert.match(renderMapQueue(),/mapQueueSetSkipBoss\(this\.checked\)/);assert.match(renderMapQueue(),/type="checkbox" checked/);
-mapQueueSetSkipBoss(false);assert.doesNotMatch(renderMapQueue(),/type="checkbox" checked/);
+assert.match(renderMapQueue(),/mapQueueSetSkipBoss\(this\.checked\)/);assert.match(renderMapQueue(),/type="checkbox" checked onchange="mapQueueSetSkipBoss/);
+mapQueueSetSkipBoss(false);assert.doesNotMatch(renderMapQueue(),/type="checkbox" checked onchange="mapQueueSetSkipBoss/);
 console.log('PASS：預設照打首領、勾選後清完怪直接回村換下一張（無通關獎勵、計略過次數）、首領已現身才勾也會回村、手動開圖／暫停／離線模擬不觸發、存檔保留、勾選框。');
 `, ctx);

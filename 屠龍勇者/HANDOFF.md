@@ -5,6 +5,7 @@
 
 ## 1. 現況
 
+- **20261031l：地圖排程可放未鑑定＋自動打造地圖（Claude，第 254 節）**：設定存 player.settings.mapCraft（無 schema 變更），輪到一張才鑑定／洗一張。
 - **本機20261031k已完成待驗收、未commit／發布：21大魔導士・巴列斯真身紫變專屬動畫（第253節）**。使用者21.jpg已保留；既有m21補專屬violetArchmage，三向36格與四圖集，左向鏡像，等級／能力／卷軸規則不改，schema23／SQL不變。原稿、提示詞、prepare與總覽在tools/sprite-src/morph/violet-archmage-v1。完成檢查後仍須實玩確認才commit／推送。保留j合併修復與英雄過濾。
 
 - **本機20261031j：修復合併標記導致更新載入失敗，未commit／發布**。使用者回報看不到英雄保留；查到HEAD915af42已包含config／index／文件衝突標記。程式各段核對僅h／i版本差異，統一新j，保留兩側交接紀錄與英雄保留／i版其他內容；check.ps1 ALL CHECKS PASSED。驗收：本機Ctrl+F5確認j→設定→戰利品過濾→共鳴保留上方應有英雄勾選；Console無紅字。使用者確認後才commit及Push。

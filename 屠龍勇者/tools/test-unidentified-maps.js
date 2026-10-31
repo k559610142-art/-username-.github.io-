@@ -19,7 +19,7 @@ const legend=makeMapItem(9,'legend'),plain=makeMapItem(9,undefined,true);
 assert.equal(itemName(legend),itemName(plain));assert.equal(mapKindKey(legend),mapKindKey(plain));assert.equal(itemClass(legend),itemClass(plain));assert.equal(instSellPrice(legend),instSellPrice(plain));
 // 未鑑定：不能開啟、排程、用通貨
 player.loc={type:'town',id:'talking'};player.inv=[x];
-const n=player.inv.length;openMap(x.uid);assert.equal(player.inv.length,n);assert(!player.mapRun);assert(!mapQueueChoices(0).some(g=>g.x.uid===x.uid));
+const n=player.inv.length;openMap(x.uid);assert.equal(player.inv.length,n);assert(!player.mapRun);assert(mapQueueChoices(0).some(g=>g.x.uid===x.uid),'第254節起未鑑定可排程');
 for(const c of CURRENCY_IDS){assert.equal(currencyCan(c,x),false);assert.equal(useCurrency(c,x.uid),'未鑑定地圖要先到鑑定台鑑定');}
 // 鑑定：在村莊才可；品級約 普通50／魔法35／稀有15
 player.loc={type:'zone',id:'island'};identifyMap(x.uid);assert(x.unidentified);player.loc={type:'town',id:'talking'};
