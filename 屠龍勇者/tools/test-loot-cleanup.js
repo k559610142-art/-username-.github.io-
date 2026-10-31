@@ -9,7 +9,7 @@ const { PGlite } = require(process.env.LOOT_TEST_RUNTIME || path.join(require('o
     create function auth.jwt() returns jsonb language sql as $$select jsonb_build_object('email','clean@invalid')$$;
     create function auth.role() returns text language sql as $$select 'authenticated'::text$$;
     grant usage on schema public,auth to anon,authenticated;`);
-    for (const file of ['supabase.sql', 'anticheat.sql', 'server-loot-install.sql', 'vault-v2.sql', 'stat-cap.sql', 'market-v2.sql', 'save-log-throttle.sql', 'loot-batch.sql', 'loot-cleanup.sql']) {
+    for (const file of ['supabase.sql', 'anticheat.sql', 'server-loot-install.sql', 'vault-v2.sql', 'stat-cap.sql', 'market-v2.sql', 'save-log-throttle.sql', 'loot-batch.sql', 'loot-screen.sql', 'loot-cleanup.sql']) {
         let sql = fs.readFileSync(path.join(__dirname, file), 'utf8');
         if (file === 'supabase.sql') sql = sql.replace(/create extension if not exists pgcrypto;/i, '');
         if (file === 'loot-cleanup.sql') sql = sql.slice(0, sql.indexOf('create extension if not exists pg_cron'));   // PGlite 沒有 pg_cron
@@ -22,27 +22,31 @@ const { PGlite } = require(process.env.LOOT_TEST_RUNTIME || path.join(require('o
         [u, ch, crypto.randomUUID(), cur, result, ctx, ago]);
     const rec = (u, cur, ago) => db.query(`insert into public.dragon_loot_receipts(user_id,char_id,slot,cursor,batch_id,items,created_at) values($1,$2,0,$3,$4,'[]',now()-$5::interval)`, [u, ch, cur, crypto.randomUUID(), ago]);
     for (const u of [A, B]) {
-        await rec(u, 1, '4 days');                          // 已確認＋超過 3 天 → 刪（A、B 都是）
-        await rec(u, 2, '4 days');                          // A 刪；B 沒確認 → 留
-        await rec(u, 3, '1 day');                           // 未滿 3 天 → 留
+        await rec(u, 1, '2 days');                          // 已確認＋超過 1 天 → 刪（A、B 都是；2026-10-31 由 3 天改 1 天）
+        await rec(u, 2, '2 days');                          // A 刪；B 沒確認 → 留
+        await rec(u, 3, '20 hours');                        // 未滿 1 天 → 留
         await job(u, 4, '[]', {}, '4 days');                // A 刪；B 沒確認 → 留
         await job(u, null, null, { cancelled: true }, '2 hours');   // 作廢超過 1 小時 → 刪
         await job(u, null, null, {}, '13 hours');           // 超過 12 小時沒結算 → 刪
         await job(u, null, null, {}, '10 minutes');         // 進行中 → 留
     }
     await job(B, 1, '[]', {}, '4 days');                    // 已確認舊帳本 → 刪
+    // 全畫面技能紀錄：超過 1 天刪（不論玩家在不在線），1 天內留
+    const sb = (u, ago) => db.query(`insert into public.dragon_loot_screen_batches(user_id,request_id,slot,char_id,zone,floor,mids,result,created_at) values($1,$2,0,$3,'island',1,'{}','[]',now()-$4::interval)`, [u, crypto.randomUUID(), ch, ago]);
+    for (const u of [A, B]) { await sb(u, '2 days'); await sb(u, '25 hours'); await sb(u, '10 minutes'); }
     const r = (await db.query('select public.loot_cleanup_all() as v')).rows[0].v;
-    assert.deepEqual(r, { receipts: 3, jobs: 6 });
+    assert.deepEqual(r, { receipts: 3, jobs: 6, screen: 4 });
+    assert.equal((await db.query('select count(*)::int n from public.dragon_loot_screen_batches')).rows[0].n, 2, '1 天內的全畫面紀錄保留');
     const left = async (t, u) => (await db.query(`select coalesce(string_agg(coalesce(cursor::text,'live'),',' order by cursor),'') s from public.${t} where user_id=$1`, [u])).rows[0].s;
     assert.equal(await left('dragon_loot_receipts', A), '3');
     assert.equal(await left('dragon_loot_receipts', B), '2,3', '沒確認入帳的收據不刪');
     assert.equal(await left('dragon_loot_jobs', A), 'live');
     assert.equal(await left('dragon_loot_jobs', B), '4,live', '沒確認入帳的帳本不刪');
-    assert.deepEqual((await db.query('select public.loot_cleanup_all() as v')).rows[0].v, { receipts: 0, jobs: 0 }, '重跑不多刪');
+    assert.deepEqual((await db.query('select public.loot_cleanup_all() as v')).rows[0].v, { receipts: 0, jobs: 0, screen: 0 }, '重跑不多刪');
     // 權限：玩家不能呼叫
     await db.exec('set role authenticated');
     await assert.rejects(db.query('select public.loot_cleanup_all()'), /permission denied/);
     await db.exec('reset role');
     await db.close();
-    console.log('PASS：全帳號清理（含不在線玩家）、已確認超過 3 天才刪、未確認的收據／帳本保留、作廢 1 小時／未結算 12 小時刪除、進行中保留、重跑不多刪、玩家不能呼叫。');
+    console.log('PASS：全帳號清理（含不在線玩家）、收據已確認超過 1 天才刪、帳本超過 3 天、全畫面技能紀錄超過 1 天刪、未確認的收據／帳本保留、作廢 1 小時／未結算 12 小時刪除、進行中保留、重跑不多刪、玩家不能呼叫。');
 })().catch(e => { console.error(e); process.exit(1); });

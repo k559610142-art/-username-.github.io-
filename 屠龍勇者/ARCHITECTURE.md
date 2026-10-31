@@ -3031,6 +3031,7 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - **排程**：`create extension pg_cron`，工作名 `dragon-loot-cleanup`，`17 19 * * *`（UTC，＝台灣凌晨 3:17）。重跑這份會先 `cron.unschedule` 舊的再建立；執行檔本身最後會立刻清一次。
 - **注意**：PostgreSQL 刪除後空間是給同一張表重用，主控台顯示的表大小不會馬上變小；要立刻縮小需另外單獨執行 `vacuum full public.dragon_loot_jobs;`（會短暫鎖表）。
 - **查排程紀錄**：`select * from cron.job_run_details where jobid=(select jobid from cron.job where jobname='dragon-loot-cleanup') order by start_time desc limit 10;`
+- **2026-10-31 縮短保留＋清全畫面紀錄**（使用者同意；Supabase 記憶體 1.96／1.99 GB SEVERE，查表大小：receipts 182 MB、`dragon_loot_screen_batches` 135 MB、jobs 62 MB）：收據保留 3 天 → **1 天**（仍須已確認入帳）；`loot_cleanup_all` 新增刪除 `dragon_loot_screen_batches` 超過 1 天的列（該表只供全畫面技能防重送與冷卻，冷卻最長 14 秒；原本只在玩家自己施放時刪自己 3 天前的資料，不在線玩家永遠不清）。未安裝 loot-screen.sql 時以 `to_regclass` 略過。回傳多 `screen` 筆數。帳本（jobs）規則不變。**需使用者重跑 `tools/loot-cleanup.sql`**；遊戲程式與版本不變。
 - **測試**：`tools/test-loot-cleanup.js`（PGlite 載入全部正式 SQL＋本檔去掉 pg_cron 段）：兩個帳號（含不在線、只確認到 1 的）、已確認超過 3 天才刪、未確認的收據／帳本保留、作廢／過期憑證刪除、進行中保留、重跑不多刪、玩家呼叫被拒；`test-loot-batch.js` 回歸通過。
 
 ## 117. 交易所三項修正：賣家入帳確認時機、過期商品不佔名額、道具分類以伺服器為準（2026-10-24，版本 `20261024c`；`market.js` 的 `marketDeliver`、SQL `tools/vault-v2.sql` 的 `dragon_item_cat`／`vault_put2`、`tools/market-v2.sql` 的 `market_list2`）

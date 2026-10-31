@@ -5,6 +5,7 @@
 
 ## 1. 現況
 
+- **2026-10-31 loot-cleanup.sql 更新（Claude，第 116 節）**：Supabase 記憶體吃緊，收據保留改 1 天、每日清理加上 dragon_loot_screen_batches（保留 1 天）。**待使用者在 Supabase 重跑 tools/loot-cleanup.sql**；遊戲版本不變。
 - **20261031l：地圖排程可放未鑑定＋自動打造地圖（Claude，第 254 節）**：設定存 player.settings.mapCraft（無 schema 變更），輪到一張才鑑定／洗一張。
 - **本機20261031k已完成待驗收、未commit／發布：21大魔導士・巴列斯真身紫變專屬動畫（第253節）**。使用者21.jpg已保留；既有m21補專屬violetArchmage，三向36格與四圖集，左向鏡像，等級／能力／卷軸規則不改，schema23／SQL不變。原稿、提示詞、prepare與總覽在tools/sprite-src/morph/violet-archmage-v1。完成檢查後仍須實玩確認才commit／推送。保留j合併修復與英雄過濾。
 
