@@ -2,7 +2,7 @@
 const fs = require('fs'), path = require('path'), vm = require('vm'), assert = require('assert/strict');
 const root = path.resolve(__dirname, '..');
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
-const sandbox = { console, TextEncoder, TextDecoder, btoa, atob, setTimeout: () => 0, clearTimeout() {}, setInterval: () => 0, clearInterval() {},
+const sandbox = { console, performance: { now: () => 0 }, TextEncoder, TextDecoder, btoa, atob, setTimeout: () => 0, clearTimeout() {}, setInterval: () => 0, clearInterval() {},
     localStorage: { getItem: () => null, setItem() { throw Error('測試不准寫入存檔'); }, removeItem() { throw Error('測試不准刪除存檔'); } },
     document: { addEventListener() {}, getElementById: () => null, querySelector: () => null, documentElement: { style: {} } },
     window: { addEventListener() {}, innerWidth: 400, innerHeight: 800 }, navigator: {},
@@ -88,7 +88,7 @@ scene={pl:{x:10,y:10,rx:10,ry:10},doll:{sentinel:true}};freeTileFor=()=>true;inH
 sceneMercTick(100);assert(scene.mercenary);assert(scene.doll.sentinel);scene.mercenary.rx=100;sceneMercTick(100);assert(Math.abs(scene.mercenary.rx-10)<=1);
 const paint=new Proxy({}, {get:(o,k)=>o[k]||(k==='createLinearGradient'?(()=>({addColorStop(){}})):(()=>{})),set:(o,k,v)=>(o[k]=v,true)});for(const lv of [1,30,41,51,61,71,81]){m.lv=lv;sceneDrawMerc(paint,0,0);assert(renderMercenary().includes(mercRank(m).name));assert(mercCardHtml().includes('merc-grade-'+mercRank(m).id));}
 // 四村9設施都有位置且可走到；事件不能引用player。
-for(const [id,key] of [['talking','village'],['gludio','ash'],['giran','darkgold'],['aden','aden']]) {const bg=SCENE_ART_BGS[key];assert.equal(bg.npcs.length,9);assert(bg.npcs.some(n=>n.role==='傭兵團長'));}
+for(const [id,key] of [['talking','village'],['gludio','ash'],['giran','darkgold'],['aden','aden']]) {const bg=SCENE_ART_BGS[key];assert.equal(bg.npcs.length,11);assert(bg.npcs.some(n=>n.role==='傭兵團長'));}
 player.loc={type:'town',id:'talking'};openMercenary();assert(dialog.includes('四格技能符石'));for(const x of dialog.matchAll(/onclick="([^"]+)"/g)){assert(!x[1].includes('player'));new Function(x[1]);}
 // 正式huntTick由傭兵擊殺，沿原reapMobs入帳且只結算一次。
 m=setup('war');player.loc={type:'zone',id:'island'};player.hunting=true;scene=null;

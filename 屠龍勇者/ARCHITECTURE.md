@@ -6,6 +6,7 @@
 ## 1. 專案結構
 
 | 檔案 | 內容 |
+| `tools/test-mercenary-roster.cjs`、`tools/mercenary-roster-preview.html`、`tools/MERCENARY-ROSTER-REVIEW.md`、`tools/mercenary-roster/` | 個人傭兵多名名冊／重複招募／單人跟隨與schema25隔離驗收、審閱及批准後快照（第263節）；正式預覽讀data實檔 |
 | `data/guild-core.js`、`data/guild-state.js`、`data/guild.js` | 公會純規則、身份及存檔接線、正式村莊入口／名冊與三人編隊；schema24（第262節） |
 | `tools/guild-system.sql`、`tools/GUILD-INSTALL.md`、`tools/test-guild-db.cjs`、`tools/test-guild-integration.cjs`、`tools/guild-integration-preview.html` | 獨立公會資料庫草案、安裝說明、隔離DB／正式腳本遷移驗收、記憶體存檔瀏覽器驗收頁；SQL未執行正式庫 |
 | `data/advance.js`、`tools/advance-class.sql`、`tools/export-advance-sql.js`、`tools/test-advance.js`、`tools/test-advance-db.js`、`tools/sim-advance.js`、`tools/advance-preview.html`、`tools/ADVANCE-CLASS-PLAN.md` | 二轉三選一分支（36 分支、72 招、第 5～7 章任務、命運重塑石、schema 22）、後端補丁與產生器、隔離測試、平衡模擬、規劃與決定紀錄（第 242 節） |
@@ -203,7 +204,7 @@
 | `images/sprites/morph/aden-glory-swordsman-v1/`、`tools/sprite-src/morph/aden-glory-swordsman-v1/`、`tools/test-aden-glory-swordsman-morph.js` | m15原始參考／提示詞與圖集打包、專屬動畫、卷軸隔離驗證（第160節） |
 | `tools/test-doll-dismantle.js`、`images/icons/items/magicCrystal-v1.png`、`tools/icon-src/magic-crystal-v1/` | 娃娃商人傳說裝備分解隔離測試、魔法結晶圖示／原稿／提示詞（第162節） |
 | `tools/test-dolls.js` | 21款娃娃道具／裝卸／跟隨／存檔隔離測試（第154節） |
-| `data/mercenary.js` | 獨立傭兵：六職業、50符石、招募／復活、四格技能／12格裝備、跟隨標記與戰鬥（第197節） |
+| `data/mercenary.js` | 獨立傭兵：六職業、50符石、可重複招募與多名候補名冊、單人跟隨／復活、四格技能／裝備與戰鬥（第197、205、263節） |
 | `tools/test-mercenary-skills.js`、`tools/mercenary-skills-preview.png` | 傭兵六項技能補強的距離／尋路／淨化／狀態與原生Canvas隔離驗證（第209節） |
 | `tools/test-mercenary.js`、`tools/mercenary-preview.html` | 傭兵隔離回歸／記憶體瀏覽器預覽，不連正式後端 |
 | `data/doll-abilities.js` | 21款娃娃基本能力、被動、冷卻／出場時間與觸發狀態（第157節） |
@@ -289,7 +290,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261101e`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261101f`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3771,6 +3772,8 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 
 ## 197. 傭兵系統框架（2026-10-27，版本 `20261027k`，schema18）
 
+> 現行招募／名冊規則以第263節為準：可持有多名，出戰仍限一名；任務不再因活傭兵、死亡或復活取消。以下保留當時版本沿革。
+
 ### 使用者決定與第一版範圍
 
 - 六獨立職業：契靈師／壁壘衛士／祈願使／征戰者／荒野行者／秘法使，男女及年輕／中年／孩童各有名單；人物模型最後討論，現以菱形名牌／血條跟隨標記呈現，未新增角色美術。
@@ -3856,6 +3859,8 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 
 
 ## 205. 傭兵團試煉取得與放棄（2026-10-27，版本 `20261027s`，schema19）
+
+> 現行招募／名冊規則以第263節為準：可持有多名，出戰仍限一名；任務不再因活傭兵、死亡或復活取消。以下保留當時版本沿革。
 
 - 使用者指定團長接任務，接取後擊殺任意怪物5000隻、回團長處隨機領取六職業之一（等機率），新傭兵Lv.1／空4技能／空裝備／滿HPMP待命；無購買費用，符石取得方式留待後續。活傭兵持有時完全隱藏任務；死亡或放棄可重接，每次重接從0計。
 - 死亡後舊傭兵仍保留可復活；領新傭兵確認時明示永久替換舊死亡者。復活保級並取消進行中的取得任務；延遲領獎確認重查玩家／原傭兵／任務物件、村莊與進度，拒絕重領及復活後替換。
@@ -4393,3 +4398,17 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - test-guild-integration載真index腳本，驗12職、新舊角色、schema23→24保留裝備金幣／個人傭兵／二轉天賦、加密記憶體存讀、三人草稿／保存、四村入口、錯身份保留。test-guild-db以隔離PGlite跑SQL與重跑、權限／換帳／票據綁定／pending／冪等／封鎖；不連正式庫。guild-integration-preview只載實際正式腳本（不載main／pwa），localStorage替換為記憶體、禁止外網與WebSocket／XHR，不能拿此測試角色上傳正式庫。
 
 驗收結果：上述5組測試全過；check.ps1 ALL CHECKS PASSED（65支語法、64個版本載入及CSS URL），混淆建置64支合併698KB、230公開函式，公會四個HTML事件入口保留。瀏覽器實點名牌／編隊及加密重開、PC／手機比例，無Console error／warn；尚待使用者原角色實玩確認後才commit與請求推送。
+
+
+## 263. 個人傭兵可重複招募與候補名冊（2026-11-01，版本 `20261101f`，schema25）
+
+使用者要求團長可持續接取招募任務、招募成功入冊、只准一名跟隨、先收回再替換；並明確同意新增player.mercReserve及schema24→25。本節取代第197／205節同時只可持有一名、活傭兵隱藏任務、死亡／復活／放棄取消招募進度及新傭兵替換舊死亡者的舊規則。三人傭兵公會是另一系統，不改player.guild或公會開放狀態。
+
+- player.mercenary沿用目前管理的一名（可出戰／待命／陣亡），新增player.mercReserve=[]保存其餘待命者。新角色預設空名冊；migrateSave沿mercNormalize補空陣列、保留原傭兵全部合法數據及出戰狀態，不重新招募或換人。候補一律active=false；跨玩家背包／裝備／倉庫及全名冊共享UID集合，避免讀檔複製裝備，nextUid涵蓋所有合法傭兵裝備。保留同職業的多個獨立個體。
+- mercQuestNormalize／Accept／OnKill／Claim／Html移除活傭兵阻擋，沿原每輪5000隻、六職等機率、Lv1滿HPMP空技能裝備規則。沒有自動接下一輪或多輪同時計數；每次完成後可再次接取。領取先確認，核對角色與任務物件／進度後只新增一人；已有管理者則加入候補，不替換、丟棄或自動派出。確認重按／換角色不重領。死亡、復活、放棄及換人保留任務；既有死亡永久損失裝備符石及付費復活規則不變。
+- 新全域函式mercSelect(index)／mercNormalizeMember(p,m,used)／mercRosterHtml()。mercSelect只在村莊可用，出戰者active時拒絕切換；收回後交換目前管理與候補位置，沒有目前管理者則從候補移出。選擇管理不等於出戰，需再按派出；戰鬥與場景仍只讀mercActive／player.mercenary。收回與換人清除對應WeakMap增益／召喚／異常狀態及scene.mercenary，不把舊人的效果交給新人，保留各人的cds。
+- 團長頁顯示總名冊、目前管理與出戰／待命／陣亡狀態、各候補等級／裝備數／符石數；名冊上方提供收回／派出目前傭兵，候補清單最高320px可捲動，出戰期間選擇管理停用。原詳細裝備／符石／復活／放棄操作仍針對目前管理者。人物傭兵欄在僅有候補時顯示已招募數及尚未選擇，不誤稱未持有。HTML事件只呼叫頂層函式與字面索引。
+- tools/test-mercenary-roster.cjs讀實際index腳本，驗schema24→25、公會及原傭兵資料保留、活傭兵反覆招募、同職獨立、單人與先收回限制、任務不被死亡復活放棄重置、返還不複製、跨角色確認拒絕、跨名冊UID去重與加密存讀。原test-mercenary-quest.js更新舊互斥斷言並保留六職隨機與實際onKill去重／SIM驗證；test-mercenary.js補performance繪圖環境與四村11設施的舊fixture，並回歸6職／50符石與戰鬥。
+- tools/mercenary-roster-preview.html只載data實際腳本、不載main／pwa；localStorage替換記憶體、禁止外網／XHR／WebSocket，測試4999→5000按鈕僅此隔離頁有，不改真實角色或上傳後端。tools/mercenary-roster為批准後快照，正式入口不載入。未改SQL／Supabase設定／正式資料庫；任務數量與費用不改。
+
+驗收：正式名冊、舊招募任務、6職50符石及公會存讀四組回歸全過；check.ps1 ALL CHECKS PASSED，64支混淆699KB、231公開函式，mercSelect／mercToggle／mercQuestAccept／mercQuestClaim事件保留。瀏覽器實際連續兩輪招募入冊3人、頂部收回／選擇／派出、加密記憶體重登保留原17級裝備符石，無Console error／warn。已核對工作區內建置目標，驗完移除生成副本；原始圖片素材不動。

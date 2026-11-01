@@ -196,6 +196,7 @@ function migrateSave(data) {
     // schema20：背包專用收納位置；舊物品不自動搬移，非法位置旗標清除。
     bagStorageNormalize(p);
     // schema18：舊角色未雇傭；先清理玩家容器，再驗證傭兵裝備的UID。
+    // schema25：補入傭兵候補名冊，既有傭兵保留；跨全名冊檢查裝備UID。
     mercNormalize(p);
     // schema19：舊角色任務未接；保留合法進度，活傭兵持有時隱藏並清空任務。
     mercQuestNormalize(p);
