@@ -230,6 +230,8 @@ function migrateSave(data) {
     }
     for (const r of [p.mapRun, p.mapPortal]) if (r) r.treasure = r.treasure === true && r.q === 'legend' && r.t >= 8;
     mapQueueNormalize(p);
+    // schema24：獨立傭兵公會，舊角色補初始三人；不匯入試玩資料。
+    guildNormalize(p, typeof data.owner === 'string' ? data.owner : '');
     return p;
 }
 

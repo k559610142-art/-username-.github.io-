@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-Hant"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>低語海島｜四人探索原型</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#101713;color:#e5e9da;font:14px/1.5 system-ui,sans-serif}header{padding:14px 20px;border-bottom:1px solid #384638;display:flex;align-items:center;justify-content:space-between;gap:12px}h1{font-size:20px;margin:0;color:#e8cd89}small{color:#a2b19e}.shell{display:grid;grid-template-columns:1fr 270px;height:calc(100dvh - 85px);min-height:470px}.stage{position:relative;min-width:0;overflow:hidden;background:#18393e}#world{display:block;width:100%;height:100%;touch-action:none;outline:none}.hud{position:absolute;left:16px;top:12px;background:#101713db;border:1px solid #52624a;padding:10px 14px;border-radius:8px;pointer-events:none}aside{padding:15px;overflow:auto;border-left:1px solid #384638;background:#19221b}button,select{background:#293b2b;color:#e9e8d4;border:1px solid #52624a;border-radius:6px;padding:9px;cursor:pointer;font:inherit}button:hover{background:#42583b}button:disabled{opacity:.4;cursor:default}.destinations{display:grid;gap:6px;margin:12px 0}.destinations button{text-align:left}.bar{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}#mini{width:100%;height:auto;border:1px solid #52624a;cursor:crosshair}label{display:block;margin:8px 0}.notice{color:#d9b774;font-size:12px}#boat{background:#315364;width:100%}.dpad{display:grid;grid-template-columns:repeat(3,42px);gap:3px;position:absolute;bottom:16px;left:16px}.dpad button{background:#17271ce8}.dpad button:first-child{grid-column:2}.dpad button:nth-child(2){grid-column:1}a{color:#d9c18c}@media(max-width:700px){header{padding:10px;font-size:12px}.shell{grid-template-columns:1fr;height:auto}.stage{height:65dvh;min-height:360px}aside{border-left:0}.destinations{grid-template-columns:1fr 1fr}#mini{max-width:260px}h1{font-size:17px}}
+</style>
+<header><div><h1>低語海島 · 四人探索</h1><small>點地面移動／WASD 或方向鍵 · 點地標自動尋路</small></div><span class="notice">可走灰盒｜非正式遊戲</span></header>
+<div class="shell"><div class="stage"><canvas id="world" tabindex="0" aria-label="可點擊移動的斜角海島探索場景"></canvas><div class="hud"><b id="location">港村／公會</b><div id="status">正在載入</div><small>玩家＋盾衛＋遊俠＋補師（沿用既有模型）</small></div><div class="dpad"><button data-move="0,-1">↑</button><button data-move="-1,0">←</button><button data-move="0,1">↓</button><button data-move="1,0">→</button></div></div><aside><canvas id="mini" width="256" height="256" aria-label="全島探索小地圖"></canvas><div class="bar"><button id="home">回營地（重置預覽）</button><button id="stop">停止</button></div><button id="boat" disabled>前往碼頭搭船</button><label>視野 <select id="zoom"><option value="1.5">近看人物</option><option value="1" selected>一般探索</option><option value="0.65">廣角探索</option></select></label><label><input type="checkbox" id="mask"> 顯示可走格／阻擋</label><div class="destinations" id="destinations"></div><p class="notice">這是獨立地形原型，非概念圖直接變成可走地圖。森林可自由穿行，河流只走橋，離岸小島必須在碼頭搭船。正式地形、人物與戰鬥尚未製作；無存檔、無獎勵、無正式後端。</p><a href="whispering-isle-concept-v1.png" target="_blank">對照美術概念圖 ↗</a></aside></div>
+<script>
+'use strict';
+const N=256, grid=new Uint8Array(N*N), road=new Uint8Array(N*N), seen=new Uint8Array(N*N);
+const sites=[['港村／公會',65,177],['廢棄礦坑',50,70],['古寺遺跡',110,55],['森林腹地',103,120],['河谷石橋',135,155],['山頂湖岸',152,36],['古墓入口',192,70],['瞭望塔',210,43],['海崖堡壘',205,130],['燈塔海岸',200,180],['沉船碼頭',186,214],['離岸小島',44,238]];
+function inside(x,y){return x>=0&&y>=0&&x<N&&y<N}
+function idx(x,y){return y*N+x}
+function river(y){return 132+Math.sin(y/31)*10}
+for(let y=0;y<N;y++)for(let x=0;x<N;x++){
+ let land=((x-130)/112)**2+((y-126)/111)**2<1 || ((x-44)/15)**2+((y-238)/12)**2<1;
+ if(land)grid[idx(x,y)]=Math.abs(x-river(y))<3.5&&y>44&&y<227?0:1;
+}
+function carve(a,b,r=3){const len=Math.hypot(b[0]-a[0],b[1]-a[1]);for(let t=0;t<=Math.ceil(len*2);t++){const f=t/Math.max(1,Math.ceil(len*2)),cx=Math.round(a[0]+(b[0]-a[0])*f),cy=Math.round(a[1]+(b[1]-a[1])*f);for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++)if(dx*dx+dy*dy<=r*r&&inside(cx+dx,cy+dy)){const i=idx(cx+dx,cy+dy);grid[i]=1;road[i]=1;}}}
+const loops=[[[65,177],[70,128],[50,70],[110,55],[152,36],[192,70],[210,43]],[[65,177],[103,120],[128,100],[168,100],[205,130],[200,180],[186,214],[160,192],[135,155],[100,155],[65,177]],[[110,55],[112,100],[103,120]],[[192,70],[168,100]],[[135,155],[150,155],[200,180]]];
+for(const line of loops)for(let i=1;i<line.length;i++)carve(line[i-1],line[i],4);
+for(const[,x,y]of sites)carve([x,y],[x,y],8);
+// 障礙只使用可辨認的小岩塊／樹群；道路與地標保留寬度。
+for(let y=12;y<244;y++)for(let x=12;x<244;x++){const i=idx(x,y);if(grid[i]&&!road[i]&&((x*73+y*131)%503<4))grid[i]=0;}
+function walk(x,y){return inside(x,y)&&grid[idx(x,y)]===1}
+function neighbors(i){const x=i%N,y=Math.floor(i/N);return [[x+1,y],[x-1,y],[x,y+1],[x,y-1]].filter(([a,b])=>walk(a,b)).map(([a,b])=>idx(a,b))}
+function flood(start){const visited=new Uint8Array(N*N),q=[start];visited[start]=1;for(let k=0;k<q.length;k++)for(const n of neighbors(q[k]))if(!visited[n]){visited[n]=1;q.push(n)}return visited}
+const mainland=flood(idx(65,177)),islet=flood(idx(44,238));
+// 移除不可達的單格空洞，僅保留本島與搭船可達的小島。
+for(let i=0;i<grid.length;i++)if(grid[i]&&!mainland[i]&&!islet[i])grid[i]=0;
+function pathfind(ax,ay,bx,by){if(!walk(bx,by))return null;const start=idx(ax,ay),goal=idx(bx,by),previous=new Int32Array(N*N);previous.fill(-1);previous[start]=start;const q=[start];for(let k=0;k<q.length;k++){const p=q[k];if(p===goal)break;for(const n of neighbors(p))if(previous[n]<0){previous[n]=p;q.push(n)}}if(previous[goal]<0)return null;const out=[];for(let p=goal;p!==start;p=previous[p])out.push([p%N,Math.floor(p/N)]);return out.reverse()}
+// UI_START：只有下方為畫面與輸入；上方純地圖邏輯可離線驗證。
+const canvas=document.getElementById('world'),ctx=canvas.getContext('2d'),mini=document.getElementById('mini'),mg=mini.getContext('2d');
+const player={x:65,y:177,px:65,py:177,dir:'down'},trail=[[65,180],[65,179],[65,178],[65,177]],companions=[{x:65,y:178,px:65,py:178,dir:'down',model:'bulwark',label:'盾衛'},{x:65,y:179,px:65,py:179,dir:'down',model:'wild',label:'遊俠'},{x:65,y:180,px:65,py:180,dir:'down',model:'wish',label:'補師'}];
+let route=[],zoom=1,w=1,h=1,last=0,tick=0,clock=0,visitedCount=0,camera={x:0,y:0},message='點擊地面或右側地標開始探索',moving=false;
+const images={};for(const id of ['war','bulwark','wild','wish']){const im=new Image();im.src='../../../images/sprites/mercenary/companions-v1/'+id+'/walk.png';images[id]=im;}
+function project(x,y){return {x:(x-y)*18,y:(x+y)*9}}
+function screen(x,y){const p=project(x,y);return {x:(p.x-camera.x)*zoom+w/2,y:(p.y-camera.y)*zoom+h/2}}
+function unproject(x,y){const a=(x-w/2)/zoom+camera.x,b=(y-h/2)/zoom+camera.y;return {x:Math.round((a/18+b/9)/2),y:Math.round((b/9-a/18)/2)}}
+function resize(){const r=canvas.getBoundingClientRect();w=r.width;h=r.height;const d=Math.min(2,devicePixelRatio||1);canvas.width=Math.round(w*d);canvas.height=Math.round(h*d);ctx.setTransform(d,0,0,d,0,0)}
+new ResizeObserver(resize).observe(canvas);
+function go(x,y){const p=pathfind(player.x,player.y,x,y);if(!p){message='此處為水域／障礙，或需要先到碼頭搭船';return}route=p;message=p.length?'正在尋路 · '+p.length+' 格':'已抵達';canvas.focus()}
+function reveal(){for(let dy=-7;dy<=7;dy++)for(let dx=-7;dx<=7;dx++){const x=player.x+dx,y=player.y+dy;if(walk(x,y)&&!seen[idx(x,y)]){seen[idx(x,y)]=1;visitedCount++}}}
+function direction(a,b){return Math.abs(b.x-a.x)>Math.abs(b.y-a.y)?(b.x>a.x?'right':'left'):(b.y>a.y?'down':'up')}
+function step(){moving=route.length>0;if(!moving)return;player.px=player.x;player.py=player.y;const [x,y]=route.shift();player.dir=direction(player,{x,y});player.x=x;player.y=y;trail.push([x,y]);if(trail.length>24)trail.shift();companions.forEach((c,j)=>{const p=trail[Math.max(0,trail.length-2-j)];c.px=c.x;c.py=c.y;c.dir=direction(c,{x:p[0],y:p[1]});c.x=p[0];c.y=p[1]});reveal();message=route.length?'正在尋路 · 剩 '+route.length+' 格':'已抵達';}
+function diamond(p,color,stroke){ctx.beginPath();ctx.moveTo(p.x,p.y-9*zoom);ctx.lineTo(p.x+18*zoom,p.y);ctx.lineTo(p.x,p.y+9*zoom);ctx.lineTo(p.x-18*zoom,p.y);ctx.closePath();ctx.fillStyle=color;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=.5;ctx.stroke()}}
+function drawPerson(c,label,model,fraction){const x=c.px+(c.x-c.px)*fraction,y=c.py+(c.y-c.py)*fraction,p=screen(x,y),im=images[model];ctx.fillStyle='#0006';ctx.beginPath();ctx.ellipse(p.x,p.y,11*zoom,5*zoom,0,0,7);ctx.fill();const dir=c.dir==='left'?'right':c.dir,row={down:0,right:1,up:2}[dir]||0,frame=moving?Math.floor(clock/130)%4:1;const size=82*zoom;if(im.complete&&im.naturalWidth){ctx.save();ctx.translate(p.x,p.y);if(c.dir==='left')ctx.scale(-1,1);ctx.drawImage(im,frame*384,row*320,384,320,-size/2,-size*282/384,size,size*320/384);ctx.restore()}else{ctx.fillStyle=model==='war'?'#f4d77a':'#9fe1be';ctx.beginPath();ctx.arc(p.x,p.y-12*zoom,7*zoom,0,7);ctx.fill()}ctx.font='12px system-ui';ctx.textAlign='center';ctx.fillStyle='#0e1819';ctx.fillRect(p.x-27,p.y-53*zoom,54,17);ctx.fillStyle=model==='war'?'#ffda85':'#cce9cf';ctx.fillText(label,p.x,p.y-40*zoom)}
+function draw(){ctx.clearRect(0,0,w,h);ctx.fillStyle='#183d45';ctx.fillRect(0,0,w,h);const center=unproject(w/2,h/2),radius=Math.ceil(Math.max(w/36,h/18)/zoom)+5,debug=document.getElementById('mask').checked;
+for(let y=Math.max(0,center.y-radius);y<Math.min(N,center.y+radius);y++)for(let x=Math.max(0,center.x-radius);x<Math.min(N,center.x+radius);x++){const p=screen(x,y);if(p.x< -40||p.x>w+40||p.y< -25||p.y>h+25)continue;const i=idx(x,y);if(!grid[i]){if(debug)diamond(p,'#243b42','#36525a');continue}const mountain=y<80,coast=y>202,shade=((x*13+y*17)%5);let color=road[i]?'#a28c60':mountain?['#6c7163','#74796b','#687062','#7a7c6c','#686b60'][shade]:coast?'#b4a479':['#465e3e','#4a6342','#506745','#536b47','#486140'][shade];if(debug)color=seen[i]?'#548e64':'#49614c';diamond(p,color,debug?'#1b3d28':null);if(!road[i]&&!debug&&(x*31+y*17)%41===0){ctx.fillStyle=mountain?'#858675':'#244b31';ctx.beginPath();ctx.moveTo(p.x,p.y-20*zoom);ctx.lineTo(p.x-7*zoom,p.y);ctx.lineTo(p.x+7*zoom,p.y);ctx.closePath();ctx.fill()}}
+ctx.strokeStyle='#f3d985';ctx.lineWidth=2;ctx.beginPath();for(let i=0;i<route.length;i+=3){const p=screen(...route[i]);if(i===0)ctx.moveTo(p.x,p.y);else ctx.lineTo(p.x,p.y)}ctx.stroke();
+for(let i=0;i<sites.length;i++){const [name,x,y]=sites[i],p=screen(x,y);if(p.x< -100||p.x>w+100||p.y< -60||p.y>h+60)continue;ctx.fillStyle=i===0?'#b69556':i===11?'#8eab9d':'#7b7b69';ctx.fillRect(p.x-14*zoom,p.y-23*zoom,28*zoom,23*zoom);ctx.fillStyle='#e7d49e';ctx.font='12px system-ui';ctx.textAlign='center';ctx.fillText(name,p.x,p.y-31*zoom)}
+const f=moving?Math.min(1,tick/105):1;[...companions.map(c=>({...c,label:c.label,model:c.model})),{...player,label:'你',model:'war'}].sort((a,b)=>a.x+a.y-b.x-b.y).forEach(c=>drawPerson(c,c.label,c.model,f));
+mg.fillStyle='#173b46';mg.fillRect(0,0,256,256);for(let i=0;i<grid.length;i++)if(grid[i]){mg.fillStyle=seen[i]?'#91aa69':road[i]?'#c8ad71':'#40593e';mg.fillRect(i%N,Math.floor(i/N),1,1)}for(const[,x,y]of sites){mg.fillStyle='#e8d99b';mg.fillRect(x-2,y-2,4,4)}mg.fillStyle='#fff';mg.beginPath();mg.arc(player.x,player.y,3,0,7);mg.fill();
+let closest=sites[0],dist=Infinity;for(const s of sites){const d=Math.hypot(s[1]-player.x,s[2]-player.y);if(d<dist){dist=d;closest=s}}document.getElementById('location').textContent=closest[0]+'附近';document.getElementById('status').textContent=message+' · 探索 '+visitedCount+' 格';const nearDock=Math.hypot(player.x-186,player.y-214)<10,nearIsle=Math.hypot(player.x-44,player.y-238)<10;document.getElementById('boat').disabled=!nearDock&&!nearIsle;document.getElementById('boat').textContent=nearIsle?'搭船返回沉船碼頭':nearDock?'搭船前往離岸小島':'到沉船碼頭可搭船';}
+function loop(t){const dt=Math.min(50,last?t-last:0);last=t;clock+=dt;tick+=dt;if(tick>=105){tick=0;step()}const p=project(player.px+(player.x-player.px)*Math.min(1,tick/105),player.py+(player.y-player.py)*Math.min(1,tick/105));camera=p;draw();requestAnimationFrame(loop)}
+sites.forEach(([name,x,y],i)=>{const b=document.createElement('button');b.textContent=String(i+1).padStart(2,'0')+' '+name;b.onclick=()=>go(x,y);document.getElementById('destinations').appendChild(b)});
+canvas.addEventListener('pointerdown',e=>{const r=canvas.getBoundingClientRect(),p=unproject(e.clientX-r.left,e.clientY-r.top);go(p.x,p.y)});
+mini.addEventListener('pointerdown',e=>{const r=mini.getBoundingClientRect();go(Math.floor((e.clientX-r.left)/r.width*N),Math.floor((e.clientY-r.top)/r.height*N))});
+function manual(dx,dy){go(player.x+dx,player.y+dy)}
+document.addEventListener('keydown',e=>{if(e.target.tagName==='SELECT')return;const key={w:[0,-1],ArrowUp:[0,-1],s:[0,1],ArrowDown:[0,1],a:[-1,0],ArrowLeft:[-1,0],d:[1,0],ArrowRight:[1,0]}[e.key];if(key){e.preventDefault();manual(...key)}});
+document.querySelectorAll('[data-move]').forEach(b=>b.onclick=()=>manual(...b.dataset.move.split(',').map(Number)));
+function relocate(x,y){player.x=player.px=x;player.y=player.py=y;route=[];trail.length=0;for(let j=3;j>=0;j--)trail.push([x,y+j]);companions.forEach((c,j)=>{c.x=c.px=x;c.y=c.py=y+j+1});reveal()}
+document.getElementById('home').onclick=()=>{relocate(65,177);message='已重置到營地（原型測試）'};
+document.getElementById('stop').onclick=()=>{route=[];message='已停止'};
+document.getElementById('zoom').onchange=e=>zoom=Number(e.target.value);
+document.getElementById('boat').onclick=()=>{if(Math.hypot(player.x-186,player.y-214)<10)relocate(44,238);else if(Math.hypot(player.x-44,player.y-238)<10)relocate(186,214);else return;message='搭船抵達，這是交通原型'};
+reveal();requestAnimationFrame(loop);
+</script></html>

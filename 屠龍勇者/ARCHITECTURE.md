@@ -6,6 +6,8 @@
 ## 1. 專案結構
 
 | 檔案 | 內容 |
+| `data/guild-core.js`、`data/guild-state.js`、`data/guild.js` | 公會純規則、身份及存檔接線、正式村莊入口／名冊與三人編隊；schema24（第262節） |
+| `tools/guild-system.sql`、`tools/GUILD-INSTALL.md`、`tools/test-guild-db.cjs`、`tools/test-guild-integration.cjs`、`tools/guild-integration-preview.html` | 獨立公會資料庫草案、安裝說明、隔離DB／正式腳本遷移驗收、記憶體存檔瀏覽器驗收頁；SQL未執行正式庫 |
 | `data/advance.js`、`tools/advance-class.sql`、`tools/export-advance-sql.js`、`tools/test-advance.js`、`tools/test-advance-db.js`、`tools/sim-advance.js`、`tools/advance-preview.html`、`tools/ADVANCE-CLASS-PLAN.md` | 二轉三選一分支（36 分支、72 招、第 5～7 章任務、命運重塑石、schema 22）、後端補丁與產生器、隔離測試、平衡模擬、規劃與決定紀錄（第 242 節） |
 | `images/icons/items/talentJewel_*.png`、`tools/icon-src/items/talent-jewels-v1/`、`tools/prepare-talent-jewels.ps1`、`tools/talent-jewels-contact-v1.png` | 38款寶珠各自原創透明圖、原稿／提示詞清單與裁切／總覽（第235節） |
 | `images/ui/talent-atlas-unallocated-v1.png`、`tools/icon-src/talent-atlas-unallocated-v1.json`、`tools/test-talent-jewel-storage.js`、`tools/talent-jewel-storage-preview.html` | 星盤未配置底圖、三欄寶珠倉庫實際資料／圖片回歸與禁止連外的隔離預覽（第235節） |
@@ -256,14 +258,30 @@
 
 | `tools/test-craft-workbench.js`、`tools/craft-workbench-preview.html` | 通貨改造左右並排、連續改造捲動位置隔離驗證／預覽（第256節） |
 
+| `tools/GUILD-WORLD-PLAN.md`、`tools/GUILD-WORLD-MASTERPLAN.md`、`tools/map-src/guild-world-v1/` | 大型場景／傭兵公會已確認規則與完整提案、原創海島概念圖及imagegen提示詞（2026-11-01；尚未實作／接入遊戲，不是正式地圖資產） |
+
+| `tools/map-src/guild-world-v1/walk-prototype.html`、`test-walk-prototype.cjs` | 獨立256×256斜角可走灰盒、四人隊伍／尋路／船路與連通測試；不載正式遊戲、不存檔／不連後端（2026-11-01，開發預覽） |
+
+| `tools/map-src/guild-world-v1/harbor-walk-preview.html`、`test-harbor-walk.cjs` | 港村美術獨立通行／四人跟隨／局部門洞遮擋樣本與網格連通測試；不屬正式遊戲載入（2026-11-01） |
+
+| `tools/map-src/guild-world-v1/forest-district-art-v1.png`、`forest-prompts-v1.json`、`forest-walk-preview.html`、`test-forest-walk.cjs` | 原創古林近景與四人通行／碰撞、港村區域入口往返驗證；獨立開發預覽，未載入正式遊戲（2026-11-01） |
+
+| `tools/map-src/guild-world-v1/forest-mission-preview.html`、`test-forest-mission.cjs`、`forest-mission-preview-shot.jpg` | 古林巡查隔離試玩：自主步行／隨行揭霧／調查紀錄、入口接取與交付，無地標導航／目標標記／重置傳送，三NPC任務內出退場／防重複與遠距交付；只用頁面記憶體，不載入正式遊戲（2026-11-01） |
+
+| `tools/map-src/guild-world-v1/forest-encounter-preview.html`、`test-forest-encounter.cjs`、`test-forest-rescue.cjs`、`test-forest-roster.cjs`、`test-forest-defense.cjs`、`test-forest-ledger.cjs`、`test-forest-commands.cjs`、`forest-commands-preview-shot.jpg`、`test-forest-preview-state.cjs`、`forest-ledger-preview-shot.jpg`、`forest-defense-preview-shot.jpg`、`forest-roster-preview-shot.jpg`、`forest-rescue-preview-shot.jpg`、`forest-encounter-preview-shot.jpg` | 小隊集合／守點／名牌集火／撤回指令、本機任務冊／探索選派療養保存（獨立試玩IndexedDB v2、不碰正式存檔）、自主探索小隊遭遇戰及十分鐘營地防衛隔離原型（物資／波次／現場啟動／返入口交付），六職選三人／療養替補（六職全開僅試玩），沿既有原創人物attack圖集／mon-beast；追擊／視線／射程／治療／NPC各自受傷倒地與3秒救援／本頁療養／敗退清場與港村solo返回，不載正式遊戲（2026-11-01） |
+
+| `tools/GUILD-INTEGRATION-REVIEW.md`、`tools/guild-runtime/{core,world,sync}.cjs`、`tools/guild-runtime/test-{core,world,sync}.cjs`、`tools/guild-runtime/README.md` | 正式接入候選純核心／分塊通行與快取／收據重送及隔離驗證；未載入正式遊戲，存檔及SQL變更待確認 |
+| `tools/sprite-src/guild/sentinel-v1/turnaround-v1.png`、`prompt.json` | 原創盾衛八方向造型參考與完整提示詞，1536×1024含alpha；非動畫圖集、未接遊戲 |
+
 ## 2. 載入順序與依賴
 
-`config → classes → skills → items → spellbook → monsters → zones → quests → advance → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → talent-jewels → talent → talent-tree → talent-layout → talent-planner → talent-live → bag-storage → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → pwa → loot → main`
+`config → classes → skills → items → spellbook → monsters → zones → quests → advance → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → afflict → guild-core → guild-state → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → talent-jewels → talent → talent-tree → talent-layout → talent-planner → talent-live → bag-storage → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → titles → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → guild → pwa → loot → main`
 
 - 上層資料檔（config～quests）只在「載入時」用到更前面的檔案；quests 載入時會把獎勵裝備與任務道具寫進 `ITEMS`，所以要在 items 之後。
 - resonance 載入時要改 `ITEMS`（含任務武器）、`MONSTERS` 掉落、`RECIPES`，所以在 quests 之後；`findSkill`（skills.js）在執行期才呼叫它的 `findResonanceSkill`。
 - boss-enchant 在 resonance 後、player 前載入；載入時使用 ITEMS、TOWER_BOSS_MATERIALS，產生 25 種 soul_材料id 封魂石。玩家、戰鬥與介面只在執行期使用。
 - mercenary在doll-abilities後、player前載入；載入時新增ITEMS的50種mercRune與CAT_NAMES，依賴items；其餘玩家／詞綴／UI／場景函式只在執行期使用。
+- guild-core／guild-state在afflict後、player前載入；guild在world-atlas後、pwa前註冊TABS／PANEL_FNS／DRAWERS，NPC動作只在執行期呼叫openGuild。
 - player 之後的檔案互相呼叫（例如 combat 呼叫 `refreshUI`、town 呼叫 `startHunt`），都發生在執行期，全部載完才會跑，所以沒問題。
 - map-queue.js在ui-frame後、icons前載入，載入時使用TABS／PANEL_FNS註冊分頁；maps／combat／save在執行期呼叫排程函式，main啟動前已全部載入。
 - bag-storage在ui-panels後、codex前載入；載入時只定義分頁常數與函式，物品分類依賴ITEMS／BOSS_ENCHANTS／MERC_RUNES，玩家／掉落／UI在執行期使用。
@@ -271,7 +289,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261101d`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261101e`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -4354,3 +4372,24 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - **相容**：`mercEnemyStatus`／`mercDebuffTick`／`mercSlowFactor` 保留名稱改轉呼叫 afflict.js；淨化技能照舊清 `mercDebuffs`。
 - **驗證**：瀏覽器臨時角色：10 種逐一附加（時間、傷害正確）、詛咒＋致盲 AC 1→11、MR 0（不負）、命中 54→39、燒傷回血 ×0.7、沉默擋技能、冰凍擋喝水、被打解凍後免疫、中毒不致死、魔法怪普攻不附加、塔首領名字對照；
   熔火煉獄實際掛機（本機強制 legacy 掉寶）燒傷附加與每秒扣血正常；Console 只有本機原本的 sw.js 錯誤。正式伺服器（後端掉寶）沒實測。
+
+## 261. 公會正式接入候選核心（2026-11-01，未接正式版20261101d）
+
+使用者要求持續完成全部後續，轉向正式接入候選層；不再以新增試玩頁當正式完成。tools/guild-runtime/core.cjs提供create／normalize／adoptOwner／select／begin／resume／finish／receipt，身份與三人限制、療養30分鐘、憑證／恢復與收據驗證皆預設拒絕，32筆outbox保留未交成果；無本機金幣／代幣發獎。12任務與7活動是目錄，不是已完成全部內容。world.cjs提供GuildWorld／GuildAssetCache（有界搜尋、32格探索分塊、不切角／不瞬移、引用保護與LRU預算）；輸入須已做腳底安全退縮，fixture不代替實際美術碰撞。sync.cjs提供GuildSync，每批8筆／最多4批、同角合併、身份切換、CAS衝突重讀與重送。三個test全過、check.ps1全過，實際RPC／加密正式存檔adapter／伺服器重播驗證尚未接入，不能稱已防作弊或已發獎。
+
+審閱文件tools/GUILD-INTEGRATION-REVIEW.md列player.guild完整範圍與schema23→24、獨立SQL由使用者執行。已發出確認請求；獲確認前不改data/config／player／save或tools/*.sql。原型IndexedDB不得直接匯入正式獎勵。
+
+原創盾衛八向turnaround-v1.png已內建imagegen生成並保留prompt.json、原稿來源；檢視8視角與左右手裝備，1536×1024 RGBA、角落alpha1／留白alpha0。僅造型轉向參考，尚未註冊腳底、校準遊戲鏡頭或生成完整待機／步行／攻擊／施法／受傷／倒地／救援動畫，不能稱最高規格模型完成。
+
+
+## 262. 公會名冊正式接線與獨立SQL草案（2026-11-01，版本 `20261101e`，schema24）
+
+使用者明確同意新增player.guild、schema23→24與撰寫獨立SQL；不包含獎勵數值、執行SQL或立即上線。第261節候選core同源複製為data/guild-core.js（去掉CommonJS出口）；world／sync仍在tools，正式任務場景、可信票據簽發、伺服器重播與發獎尚未完成。12任務只列整備中，不提供出發或領獎按鈕。
+
+- guild-state全域：guildIdentity／guildNormalize／guildOwner／guildCheck。createPlayer與migrateSave補入公會；正常加密saveGame／saveParse保存，壞身份或不相容資料保留不覆寫。guild資料為v／ownerId／characterId／baseClass／members／squad／recruitProgress／explored／activeTicket／outbox／serverCursor／settled，完整欄位及初始12職分配見審閱文件及core。療養30分鐘按已確認真實時間，不按gameNow。
+- guild全域：GUILD_ROLE_NAMES／GUILD_PORTRAITS、guildDrafts（WeakMap草稿）、guildServerMessage／guildServerBusy；openGuild、guildCurrent／guildDraft／guildPick／guildResetSquad／guildSaveSquad／guildRefresh／guildRefreshStatus／renderGuild。只有村莊能整理；草稿不動已保存三人，保存才換公會資料，少於三名停用保存。有在途票據或療養不允許非法變更。頭像暫沿原創個人傭兵素材，不代表最終高規格模型已完成。個人傭兵獨立保留，這次不在一般地圖生成公會隊友。
+- 四村TOWN_NPCS與SCENE_ART_BGS新增[20,12]公會接待員，旁格可走且不重疊；沿既有僅點名牌開啟流程。左抽屜註冊公會入口，野外顯示回村提示；ui-create新增玩家可讀更新紀錄。查看公告只在手動點擊後呼叫guild_status，異步完成會再次核對角色與帳號；不自動RPC。
+- tools/guild-system.sql僅新增獨立config／profiles／tickets／reports／receipts及guild_initial_members／guild_status／guild_register／guild_submit／guild_receipts。RLS與權限拒絕客戶端直改，身份取auth.uid及既有dragon_saves；初始名冊由伺服器角色產生。config.enabled預設false，rewardsEnabled固定false；submit只排pending，重送需同hash及同payload，沒有客戶端自批通過／發獎函式。SQL由使用者自己執行；不改既有SQL、data/cloud.js或正式庫。安裝說明明示勿提前開啟。
+- test-guild-integration載真index腳本，驗12職、新舊角色、schema23→24保留裝備金幣／個人傭兵／二轉天賦、加密記憶體存讀、三人草稿／保存、四村入口、錯身份保留。test-guild-db以隔離PGlite跑SQL與重跑、權限／換帳／票據綁定／pending／冪等／封鎖；不連正式庫。guild-integration-preview只載實際正式腳本（不載main／pwa），localStorage替換為記憶體、禁止外網與WebSocket／XHR，不能拿此測試角色上傳正式庫。
+
+驗收結果：上述5組測試全過；check.ps1 ALL CHECKS PASSED（65支語法、64個版本載入及CSS URL），混淆建置64支合併698KB、230公開函式，公會四個HTML事件入口保留。瀏覽器實點名牌／編隊及加密重開、PC／手機比例，無Console error／warn；尚待使用者原角色實玩確認後才commit與請求推送。

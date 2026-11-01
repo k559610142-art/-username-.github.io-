@@ -1,0 +1,16 @@
+const fs=require('fs'),path=require('path'),vm=require('vm'),assert=require('assert/strict');
+const source=fs.readFileSync(path.join(__dirname,'forest-mission-preview.html'),'utf8'),script=source.match(/<script>([\s\S]*)<\/script>/)[1];
+const nodes={},events={};function node(){return {checked:false,value:'1',appendChild(){},addEventListener(){},focus(){},getContext:()=>({}),getBoundingClientRect:()=>({width:1000,height:650})}}
+const navigations=[];const sandbox={console,assert,navigations,Image:function(){},ResizeObserver:class{observe(){}},requestAnimationFrame(){},location:{assign:s=>navigations.push(s)},document:{getElementById:id=>nodes[id]||(nodes[id]=node()),createElement:()=>node(),querySelectorAll:()=>[],addEventListener:(k,f)=>events[k]=f}};
+vm.runInNewContext(script+`
+assert.equal(team.length,0);assert.equal(questState,'idle');questReport();assert.equal(questReports,0);if(!questNear(350,932))arrive(350,932);questStart();assert.equal(team.length,3);if(!questNear(350,932))arrive(350,932);questStart();assert.equal(team.length,3);questInspect();assert.equal(questFound.size,0);questReport();assert.equal(questState,'active');
+function arrive(x,y){go(x,y);assert(route.length);let steps=0;while(route.length){step();assert(++steps<2000);for(const c of [hero,...team])assert(walk(c.x,c.y));}return steps}
+let total=0;for(const p of questSites){total+=arrive(p.x,p.y);questInspect();const size=questFound.size;questInspect();assert.equal(questFound.size,size,'同目標不重計');}assert.equal(questFound.size,3);questReport();assert.equal(questReports,0,'遠處不交付');total+=arrive(350,932);questReport();assert.equal(questReports,1);assert.equal(questState,'complete');assert.equal(team.length,0);questReport();assert.equal(questReports,1,'不重複交付');
+if(!questNear(350,932))arrive(350,932);questStart();total+=arrive(345,215);questInspect();questAbandon();assert.equal(team.length,0);assert.equal(questFound.size,0);questReport();assert.equal(questReports,1);if(!questNear(350,932))arrive(350,932);questStart();assert.equal(questFound.size,0);assert.equal(team.length,3);questAbandon();reset();assert.equal(team.length,0);assert.equal(route.length,0);
+if(!questNear(350,932))arrive(350,932);questStart();total+=arrive(650,520);document.getElementById('travel').onclick();assert.equal(team.length,3);assert.equal(navigations.length,0);total+=arrive(350,932);document.getElementById('travel').onclick();assert.equal(team.length,0);assert.equal(questState,'abandoned');assert.equal(navigations.length,1);
+revealExploration();const revealed=explored.reduce((a,b)=>a+b,0);assert(revealed>0&&revealed<explored.length/4,'只揭開附近');const oldFog=Array.from(explored);arrive(1380,325);revealExploration();assert(explored.reduce((a,b)=>a+b,0)>revealed);assert(oldFog.every((v,i)=>!v||explored[i]),'已探索不消失');questStart();assert.equal(questState,'abandoned','遠處不能接任務並傳回入口');
+console.log('PASS：自由探索迷霧、無遠距接取傳送');
+console.log('PASS：完整巡查／入口交付、三NPC任務內加入及完成放棄離開退場、重接清進度、遠距／重複交付拒絕，共'+total+'步');
+`,sandbox,{timeout:30000});
+assert(!source.includes('id="destinations"'));assert(!source.includes('id="reset"'));assert(!source.includes('drawQuestMarkers'));assert(!source.includes('金色標記'));assert(!source.includes('全景檢視'));
+assert(!/localStorage|fetch\(|WebSocket|XMLHttpRequest|Date\.now/.test(script));console.log('PASS：無正式存檔／API／獎勵');

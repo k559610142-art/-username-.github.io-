@@ -1,0 +1,31 @@
+{
+  "date": "2026-11-01",
+  "type": "original-eight-direction-reference",
+  "status": "reference-only-not-animation-atlas",
+  "character": "sentinel",
+  "displayNameProposal": "鐵誓・洛恩",
+  "tool": "image_gen.imagegen",
+  "transparentBackgroundRequested": true,
+  "width": 1536,
+  "height": 1024,
+  "grid": {
+    "columns": 4,
+    "rows": 2
+  },
+  "directionOrder": [
+    "south",
+    "southeast",
+    "east",
+    "northeast",
+    "north",
+    "northwest",
+    "west",
+    "southwest"
+  ],
+  "prompt": "Use case: stylized-concept. Asset type: original high fidelity isometric dark fantasy RPG mercenary NPC eight-direction turnaround reference sheet for subsequent animation production. Create ONE consistent original human male shield guardian, middle aged, believable grounded anatomy, dark blue cloak, heavy worn gunmetal plate armor, broad practical tower shield attached to his anatomical LEFT forearm and a short straight sword in his anatomical RIGHT hand. Quiet stern face, short dark hair with a little grey, open-face helmet. This is a new original character for the game 黑暗大陸, not a character from any existing franchise. Extremely clear sculpted armor edges, realistic leather, cloth weave, restrained worn metal highlights, readable silhouette suitable for small game sprites, high-end pre-rendered RPG art, not pixel art or chibi. Exactly 8 full-body standing views of the SAME person and equipment, arranged as a precise evenly spaced 4-column 2-row sheet on a truly TRANSPARENT background. Camera is orthographic isometric game camera elevated about 30 degrees; camera elevation and character scale must stay identical in all cells. Character rotates only about the vertical axis by 45 degree increments. Reading left-to-right, top row: facing screen-south/front, southeast/front-right three-quarter, east/right profile, northeast/back-right three-quarter. Bottom row: north/full back, northwest/back-left three-quarter, west/left profile, southwest/front-left three-quarter. Anatomical left shield and right sword remain physically correct in EVERY view, do not mirror asymmetric equipment and do not swap hands. Each full figure including shield, sword tip, helmet, boots and cloak fits wholly within its own cell with generous transparent gutters; no overlapping figures, no crop, identical foot baseline within each row. Neutral ready pose with feet planted, shield lowered enough to read the torso. Large square or wide high resolution sheet, prioritize detail and view consistency. No ground, no background scene, no platform, no text, no labels, no watermark, no motion effects, no extra views. This is a character reference base, not an animation sequence.",
+  "source": "C:/Users/User/.codex/generated_images/01a191b6-cab8-7390-ac17-309a217ef8a5/exec-0376b7d3-aea9-498b-8886-1069add93d4a.png",
+  "limitations": [
+    "造型八向參考，尚未完成各向待機／行走／普攻／施法／受傷／倒地／救援動畫。",
+    "尚未腳底註冊、分格或接正式遊戲；遊戲鏡頭角度仍須以實際場景校準。"
+  ]
+}
