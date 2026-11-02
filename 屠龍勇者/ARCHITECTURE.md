@@ -56,6 +56,7 @@
 | `tools/test-wipe.cjs` | 記憶體PostgreSQL載入正式SQL後驗證洗白：24張玩家資料表清空、帳號／管理者／封鎖與掉寶規則設定保留、重跑與每日鑽石重新起算（第37節）；不連正式服務 |
 | `tools/BACKEND-LOOT-PLAN.md`、`tools/SERVER-LOOT.md` | 後端掉寶盤點與已確認的線上範圍、部署與限制說明；已上線並啟用（第91節） |
 | `data/loot.js`、`tools/server-loot.sql`、`tools/loot-catalog.json`／`.sql`、`tools/server-loot-install.sql`、`tools/export-loot-catalog.js` | 後端遇怪／掉寶RPC、規則版本快照、重試佇列與存檔外層收據；合併安裝檔預設不啟用（第91節） |
+| `data/boss-timer.js` | 「⏱️ 首領計時」分頁：野外首領／龍穴／團隊副本／守關首領倒數（第 277 節） |
 | `tools/test-server-loot-db.js`、`tools/test-server-loot-integration.js`、`tools/test-server-loot-client.js`、`tools/server-loot-preview.html` | 隔離PostgreSQL與既有SQL／簽章相容測試、真實客戶端記憶體存檔與假RPC、瀏覽器重領／斷線驗證（第91節） |
 | `images/sprites/morph/moon-ranger-v1/`、`tools/sprite-src/morph/moon-ranger-v1/` | 月光精靈巡林者透明素材／原稿／提示詞；m02 專屬圖，g 版新增 12 格 attack-v2（第 18.5、88 節） |
 | `images/sprites/morph/hellfire-archer-v1/`、`tools/sprite-src/morph/hellfire-archer-v1/` | 冥火骷髏神射 36 格透明人物／3 獨立箭矢、原圖／補畫原稿／提示詞／整理腳本；m03 專屬圖，20261022j 接入（第 18.6、88 節） |
@@ -4559,3 +4560,10 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 修正：有小怪可打的地方（不是龍穴、不是異界清空後只剩首領）問不到伺服器時，`lootBossLater` 記 `lootBossWaitUntil`＝30 秒後，這段時間 `lootBossDue` 回 false，改本機生小怪（後端模式本機仍不擲首領；任務首領也改成只由伺服器出，`questBossFor` 在後端模式不本機呼叫），30 秒後再問。`lootSpawn` 暫時性錯誤時 0.5 秒後就改打小怪；並 `console.warn` 錯誤方便查。龍穴、異界首領維持原本等待重試。
 - 影響：伺服器慢或斷線時，首領最多晚 30 秒左右才問到；小怪照常掛機、本機掉寶。
 - 測試：`test-server-loot-client.js` 改為：生怪斷線 → 0.5 秒改打小怪、30 秒內不問首領；後端狀態確認中在塔首領層改打一般塔怪、不出首領；龍穴仍等待。全部通過；`test-boss-timer.js`、check.ps1、混淆建置通過；瀏覽器載入 20261102h 無新錯誤。
+
+## 277. 首領計時分頁（2026-11-03，版本 `20261103a`；`data/boss-timer.js`、`ui-frame.js` 的 `DRAWERS.right`）
+
+- 右側抽屜新增「⏱️ 首領計時」（`TABS.bossTimer`／`PANEL_FNS.bossTimer`＝`renderBossTimer`），在 loot.js 之後、main.js 之前載入。
+- 內容：野外首領（有 `rare` 的地圖，時間取 loot.js 的 `bossFieldAt`＝伺服器時間換成本機時鐘；還沒計時顯示「尚未計時」、到期顯示「下次遇怪出現」；後端掉寶沒啟用時顯示「隨機出現」）、龍穴 `dragonCd`（含等級／前一條龍未討伐的限制）、團隊副本 `raidCd`、永夜之塔已打倒過的守關首領 `towerBossCd`。異界地圖首領不計時（清完怪就出現）。
+- 開分頁時呼叫 `bossCdSync()`（本身限 1 分鐘一次），不新增 RPC。倒數每秒只改 `.bt-cd` 文字（`data-t`＝到期時間），有項目到期才 `renderPanel()` 重畫一次；分頁沒開或畫面在背景時不跑。
+- 不用新 SQL、不改存檔。
