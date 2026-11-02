@@ -4493,3 +4493,10 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 復活沿用Lv×1000金幣、保留等級經驗、滿HPMP且待命；村莊／缺錢／重複確認限制不變，未改放棄傭兵規則。修正死亡訊息、復活確認、裝備交付、管理頁及codex符石來源說明。只改死亡規則，不新增player欄位，SAVE_SCHEMA維持25，不改SQL。原已刪除的舊物品沒有憑空重建。
 - test-mercenary-death-keep遍歷六職全裝備／四符石，實跑mercTakeDamage致死、重複死亡、正規化、加密migrate／applySaveData、死亡候補轉換、缺錢與重複確認／復活保級經驗與滿HPMP，確認UID／配置與背包不變、不複製。test-mercenary原永久消失斷言更新為保留；原6職50符石、名冊／招募及公會存檔回歸通過。
 - mercenary-death-preview沿正式名冊隔離頁、僅記憶體加密存檔／禁止連外，增加測試死亡按鈕；瀏覽器實點死亡→記憶體重登→復活（17,000）後Lv17／長劍／靈狼契約仍在，Console無error／warn。check.ps1 ALL CHECKS PASSED，64支713KB建置正常，未發佈。待使用者實玩確認後才commit與請其Push origin。
+
+## 271. 管理頁在線人數（2026-11-02，SQL `tools/gm-online.sql`、`gm.html`；遊戲版本不變）
+
+- 使用者要在管理頁看目前有多少帳號連線。資料來源沿用 `dragon_online`（第 29 節單一登入）：每個帳號一列，遊戲每 60 秒 `online_ping` 更新 `beat_at`，90 秒內有心跳＝在線；手機切背景、伺服器忙碌退避時不送心跳，會暫時算離線。不新增表、不加請求頻率。
+- `gm_online()`（security definer、空 search_path）：`dragon_is_admin()` 為真才回 `(user_id, device, beat_at)`，一般玩家回空、anon 不能執行。可重複執行；**使用者要在 Supabase SQL Editor 執行一次**。
+- `gm.html`：分頁列右邊 `#online` 顯示「🟢 在線 N 個帳號」，每次 `gmLoad`（切分頁、🔄 重新整理）一起查；還沒執行 SQL 時顯示提示、不影響其他分頁。👥 玩家分頁在線的帳號前面加 🟢（`isOnline`）。
+- 測試：`tools/test-gm-online.js`（PGlite 載 supabase.sql＋重複安裝 gm-online.sql）：管理者只看到 90 秒內的帳號、一般玩家空、anon 被拒。瀏覽器以假資料確認人數、🟢 與未安裝提示，Console 無錯誤。

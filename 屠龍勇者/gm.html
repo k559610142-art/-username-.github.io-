@@ -69,6 +69,7 @@
             <button data-tab="bans" onclick="gmTab('bans')">⛔ 封鎖名單</button>
             <button data-tab="trusted" onclick="gmTab('trusted')">✅ 信任名單</button>
             <button class="secondary" onclick="gmLoad()">🔄 重新整理</button>
+            <span id="online" class="muted"></span>
         </div>
         <div id="view" class="panel"></div>
     </div>
@@ -81,7 +82,7 @@
 <script>
 const KIND_NAMES = { exp_rate: '經驗暴增', gold_rate: '金幣暴增', stat: '能力值超過上限', elixir: '萬能藥超量', enchant: '強化超過 +15', level: '等級異常', gold_negative: '金幣為負', clock: '裝置時間異常', parse: '存檔格式異常', wb_dmg: '世界首領傷害超過上限', market_dupe: '交易所疑似複製道具', vault_dupe: '共用倉庫疑似複製道具', tamper: '遊戲偵測到改檔', market_big: '交易所大額交易（只提醒）' };
 let sb = null, me = null, tab = 'flags', showResolved = false, playerQuery = '';
-let flags = [], profiles = [], saves = [], bans = [], chats = [], mutes = [], dias = {}, trusted = [];
+let flags = [], profiles = [], saves = [], bans = [], chats = [], mutes = [], dias = {}, trusted = [], online = null;
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -131,6 +132,9 @@ async function gmLoad() {
         bans = await q(sb.from('dragon_bans').select('*').order('at', { ascending: false }));
         // 信任名單（tools/flag-trust.sql，第 111 節）；還沒執行那份 SQL 時當作空的
         try { trusted = await q(sb.from('dragon_trusted').select('*').order('at', { ascending: false })); } catch (e) { trusted = []; }
+        // 在線人數（tools/gm-online.sql，第 271 節）；還沒執行那份 SQL 時顯示提示
+        try { online = await q(sb.rpc('gm_online')); } catch (e) { online = null; }
+        $('online').innerHTML = online ? `<span class="good">🟢 在線 ${online.length} 個帳號</span>（90 秒內有心跳）` : '在線人數：請先在 Supabase 執行 tools/gm-online.sql';
         if (tab === 'flags') {
             let qq = sb.from('dragon_flags').select('*').order('at', { ascending: false }).limit(200);
             if (!showResolved) qq = qq.eq('resolved', false);
@@ -150,6 +154,7 @@ async function gmLoad() {
 
 const isBanned = uid => bans.some(b => b.user_id === uid);
 const isTrusted = uid => trusted.some(x => x.user_id === uid);
+const isOnline = uid => !!online && online.some(o => o.user_id === uid);
 // 排除＝加入信任名單：不再記可疑紀錄、不會被擋在交易所和共用倉庫外（第 111 節）
 const trustBtn = (uid, email) => isTrusted(uid)
     ? `<button class="mini secondary" onclick="gmUntrust('${uid}')">取消信任</button>`
@@ -173,7 +178,7 @@ function gmRender() {
         const rows = profiles.filter(p => !qy || (p.email || '').toLowerCase().includes(qy) || saves.some(s => s.user_id === p.user_id && (s.name || '').toLowerCase().includes(qy))).map(p => {
             const chars = saves.filter(s => s.user_id === p.user_id).sort((a, b) => a.slot - b.slot)
                 .map(s => `<button class="mini secondary" onclick="gmHistory('${p.user_id}', ${s.slot}, '${esc(p.email || '')}')">${esc(s.name)}・${esc(clsName(s.cls))} Lv.${s.lv}</button>`).join(' ');
-            return `<tr><td>${esc(p.email)}${isBanned(p.user_id) ? ' <span class="bad">⛔ 已封鎖</span>' : ''}${isTrusted(p.user_id) ? ' <span class="good">✅ 信任</span>' : ''}</td><td>${t(p.last_seen)}</td><td><div class="row">${chars || '<span class="muted">（雲端沒有角色）</span>'}</div></td><td>💎 ${dias[p.user_id] || 0} <button class="mini secondary" onclick="gmDia('${p.user_id}', '${esc(p.email || '')}')">發放</button> <button class="mini secondary" onclick="gmGive('${p.user_id}', '${esc(p.email || '')}')">🎁 道具</button></td><td><div class="row">${trustBtn(p.user_id, p.email)}${banBtn(p.user_id, p.email)}</div></td></tr>`;
+            return `<tr><td>${isOnline(p.user_id) ? '<span class="good" title="在線">🟢</span> ' : ''}${esc(p.email)}${isBanned(p.user_id) ? ' <span class="bad">⛔ 已封鎖</span>' : ''}${isTrusted(p.user_id) ? ' <span class="good">✅ 信任</span>' : ''}</td><td>${t(p.last_seen)}</td><td><div class="row">${chars || '<span class="muted">（雲端沒有角色）</span>'}</div></td><td>💎 ${dias[p.user_id] || 0} <button class="mini secondary" onclick="gmDia('${p.user_id}', '${esc(p.email || '')}')">發放</button> <button class="mini secondary" onclick="gmGive('${p.user_id}', '${esc(p.email || '')}')">🎁 道具</button></td><td><div class="row">${trustBtn(p.user_id, p.email)}${banBtn(p.user_id, p.email)}</div></td></tr>`;
         }).join('');
         $('view').innerHTML = `<div class="row" style="margin-bottom:8px"><input id="pq" type="text" placeholder="搜尋 Email 或角色名" value="${esc(playerQuery)}" oninput="playerQuery = this.value; gmRender(); $('pq').focus()">
             <span class="muted">共 ${profiles.length} 個帳號（點角色看存檔歷程）</span></div>
