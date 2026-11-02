@@ -66,9 +66,9 @@ async function lootProbe() {
         if (player && player.hunting) stopHunt('⚠️ 後端掉寶連線失敗，已停止掛機；沒有改用本機抽獎');
     }
 }
-// 首領時間以伺服器為準（第 273 節，tools/boss-timer.sql）：團隊副本／守關首領冷卻併進存檔的顯示欄位（取較晚的）。
-// 後端掉寶啟用時才讀；最多 1 分鐘讀一次；還沒執行 SQL 時維持本機顯示
-let bossCdAt = 0;
+// 首領時間以伺服器為準（第 273 節，tools/boss-timer.sql）：團隊副本／守關首領冷卻併進存檔的顯示欄位（取較晚的）；
+// 野外首領下次時間記在 bossFieldAt（換成本機時鐘，第 274 節 lootBossDue 用）。後端掉寶啟用時才讀；最多 1 分鐘讀一次；還沒執行 SQL 時維持本機顯示
+let bossCdAt = 0, bossFieldAt = {};
 async function bossCdSync(force = false) {
     if (!lootActive() || !player || !cloudCanCall() || (!force && gameNow < bossCdAt)) return;
     bossCdAt = gameNow + 60000;
@@ -79,12 +79,32 @@ async function bossCdSync(force = false) {
         if (player !== p || !Array.isArray(rows)) return;
         for (const r of rows) {
             const t = Date.parse(r.until), i = String(r.key).lastIndexOf('|');
-            if (!t || r.kind === 'field' || r.key.slice(0, i) !== char) continue;
+            if (!t) continue;
+            if (r.kind === 'field') { bossFieldAt[r.key] = t + (Date.now() - (Date.parse(r.now) || Date.now())); continue; }   // 扣掉裝置時鐘誤差
+            if (r.key.slice(0, i) !== char) continue;
             const cd = r.kind === 'raid' ? (p.raidCd = p.raidCd || {}) : r.kind === 'tower' ? p.towerBossCd : null, id = r.key.slice(i + 1);
             if (cd && t > (cd[id] || 0)) { cd[id] = t; changed = true; }
         }
     } catch (e) { return; }
     if (changed && player === p && !SIM_MODE && typeof renderPanel === 'function') renderPanel();
+}
+// 首領走後端、小怪本機算（第 274 節）：這一群「可能」出首領才呼叫 loot_spawn，出不出由伺服器決定；其餘本機生怪、本機掉寶。
+// 異界清空、龍穴、職業任務首領條件、塔的首領層（冷卻已過）、野外首領計時到期（或還不知道時間）
+function lootBossDue() {
+    const z = currentZone();
+    if (!z || (inMapRun() && player.mapRun.left <= 0) || z.type === 'dragon') return !!z;
+    if (z.type === 'tower') return towerBossUp(player.loc.floor);
+    if (questBossFor(z)) return true;
+    if (!z.rare || inMapRun()) return false;
+    const t = bossFieldAt[z.id];
+    return t === undefined || Date.now() >= t;
+}
+// 野外問過伺服器後：先暫定 1 分鐘後再問（避免每群都問），再讀伺服器的實際下次時間
+function lootFieldAsked() {
+    const z = currentZone();
+    if (!z || !z.rare || inMapRun() || z.type === 'tower' || z.type === 'dragon') return;
+    bossFieldAt[z.id] = Date.now() + 60000;
+    bossCdSync(true);
 }
 function lootStart() {
     if (!isCloudConfigured() || LOOT_FORCE_LOCAL) return;   // lootMode 維持 legacy
@@ -128,6 +148,7 @@ async function lootSpawn(join = false, mid = null, sceneTarget = null) {
             const mon = h.mobs[0]; if (p.mapRun.bossHp > 0) mon.hp = Math.min(mon.maxHp, p.mapRun.bossHp);
             p.mapRun.boss = true;
         }
+        if (!join && !mid) lootFieldAsked();
         addLog(join ? '⚔️ 附近的怪物加入戰鬥' : `⚔️ 遭遇${rows[0].monster.name}（後端掉寶）`, '');
     } catch (e) {
         if (player !== p || hunt !== h) return;

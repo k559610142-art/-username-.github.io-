@@ -865,7 +865,7 @@ function advQuestPanelHtml() {
 
 // ───────── 掉落（本機掉寶模式；後端模式由 tools/advance-class.sql 處理）─────────
 function advLocalDrops(mon) {
-    if (lootActive() || SIM_MODE || !mon) return;
+    if (SIM_MODE || !mon || mon.lootTicket) return;   // 伺服器生的怪由後端發；本機小怪照本機擲（第 274 節）
     if (mon.boss && mon.lv >= ADV_RESHAPE_LV && chance(ADV_RESHAPE_P)) { addItem('advReshape', 1); addLootLog('💎 獲得「命運重塑石」！', 'rare'); }
     if (advIs('rWorld') && chance(ADV_WORLD_CUR_P) && typeof rollCurrency === 'function') { const id = rollCurrency(mon.lv); if (id) { addItem(id, 1); addLootLog(`💰 黃金血統：額外獲得「${ITEMS[id].name}」`, 'rare'); } }
 }

@@ -85,6 +85,6 @@ let bookDropPool = null;
 function rollBookDrop(mon) {
     if (!chance(mon.boss ? BOOK_BOSS_P : BOOK_DROP_P)) return null;
     if (!bookDropPool) bookDropPool = Object.keys(ITEMS).filter(id => ITEMS[id].cat === 'book' && !ITEMS[id].price).map(id => ({ id, lv: bookMinLv(ITEMS[id]) }));
-    const pool = bookDropPool.filter(b => b.lv <= mon.lv + 5);
+    const pool = bookDropPool.filter(b => b.lv <= mon.lv + 5 && (mon.boss || !ITEMS[b.id].advBook));   // 二轉技能書只有首領掉（第 274 節）
     return pool.length ? pool[rand(0, pool.length - 1)].id : null;
 }

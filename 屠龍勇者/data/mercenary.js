@@ -138,10 +138,11 @@ const MERC_RUNE_DROPS = {
     normalP: .001, bossP: .05
 };
 function mercRuneSource(id) {
-    return MERC_RUNE_DROPS.basic.includes(id) ? '基本符石：黃色稀有異界地圖一般怪0.1%' : '特殊符石：黃色稀有異界首領／團隊副本勝利5%';
+    return MERC_RUNE_DROPS.basic.includes(id) ? '基本符石：目前沒有掉落來源（2026-11-02 起小怪不掉符石）' : '特殊符石：黃色稀有異界首領／團隊副本勝利5%';
 }
 function rollMercRuneDrop(mon, raid = false) {
     if (SIM_MODE || !raid && (!inMapRun() || player.mapRun.q !== 'rare' || treasureMapActive())) return null;
+    if (!raid && !mon.boss) return null;   // 符石只有首領掉（2026-11-02，第 274 節）
     const special = raid || mon.boss, pool = MERC_RUNE_DROPS[special ? 'special' : 'basic'];
     return chance(special ? MERC_RUNE_DROPS.bossP : MERC_RUNE_DROPS.normalP) ? pool[rand(0, pool.length - 1)] : null;
 }

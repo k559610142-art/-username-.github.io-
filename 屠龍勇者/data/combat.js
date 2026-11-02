@@ -256,8 +256,7 @@ function huntTick(dt) {
         hunt.joinCd = MOB_JOIN_MS;
         if (hunt.mobs.length < packMax() && !hunt.mobs.some(m => m.boss) && !(inMapRun() && player.mapRun.left <= hunt.mobs.length) && chance(MOB_JOIN_P * (mapModOn('swarm') ? 2 : 1))) {
             const add = makeZoneMob(currentZone());
-            if (lootActive()) lootSpawn(true);
-            else if (add) { addMob(weakenForPack(add, hunt.mobs.length + 1)); addLog(`${add.name}（Lv.${add.lv}）加入戰鬥！`, 'warn'); }
+            if (add) {   // 加入戰鬥的都是小怪：一律本機（第 274 節） addMob(weakenForPack(add, hunt.mobs.length + 1)); addLog(`${add.name}（Lv.${add.lv}）加入戰鬥！`, 'warn'); }
         }
     }
 }
@@ -350,7 +349,6 @@ function pullMob(mid, sceneTarget) {
     if (!player.hunting) startHunt();
     if (!hunt) return null;
     if (hunt.state === 'fight' && (hunt.mobs.length >= packMax() || hunt.mobs.some(m => m.boss))) return null;
-    if (lootActive()) { lootSpawn(hunt.state === 'fight', z.type === 'tower' ? 'tower' : mid || null, sceneTarget); return null; }
     let mon = z.type === 'tower' ? makeTowerMonster(player.loc.floor, false) : mid && MONSTERS[mid] ? makeMonster(mid) : makeZoneMob(z);
     if (!mon) return null;
     if (hunt.state !== 'fight') {
@@ -435,7 +433,13 @@ function mobTargets() {
 }
 
 function spawnMonster() {
-    if (lootActive()) { lootSpawn(); return; }
+    // 首領走後端、小怪本機算（第 274 節）：可能出首領的這一群才問伺服器（lootBossDue），其餘本機生怪、本機掉寶
+    if (lootRequired() && lootBossDue()) {
+        if (lootActive()) lootSpawn();
+        else { hunt.state = 'search'; hunt.timer = 3000; lootNotice('⏳ 後端掉寶連線中，恢復後自動繼續掛機'); }
+        return;
+    }
+    const server = lootRequired();   // 後端模式：首領只能由伺服器決定，本機不擲首領
     hunt.bossEnchantRuntime = null; hunt.bossEnchantAction = null;
     const z = currentZone();
     // 異界地圖：怪物清空後出現異界首領
@@ -445,8 +449,8 @@ function spawnMonster() {
     else if (z.type === 'dragon') mon = makeMonster(z.boss);
     else if (z.type === 'tower') {
         const f = player.loc.floor;
-        mon = makeTowerMonster(f, towerBossUp(f));
-    } else if (z.rare && chance(z.rare.p)) mon = makeMonster(z.rare.id);
+        mon = makeTowerMonster(f, !server && towerBossUp(f));
+    } else if (!server && z.rare && chance(z.rare.p)) mon = makeMonster(z.rare.id);
     else {
         // 只出現不超過「玩家等級 +3」的怪；全都太強就出最弱的
         mon = makeZoneMob(z);
@@ -631,12 +635,7 @@ async function screenAreaAttack(k, st) {
     try {
         const budget = inMapRun() ? Math.max(0, player.mapRun.left - h.mobs.filter(m => !m.mapBoss && m.hp > 0).length) : 30;
         const idle = visuals.filter(m => !m.inst).slice(0, budget);
-        if (idle.length && lootActive()) {
-            if (!await lootScreenMobs(idle, h, sc, k.id)) {
-                if (hunt !== h || player !== p || !p.hunting || scene !== sc) return;
-                // 新SQL尚未安裝／連線失敗時仍只打有憑證的怪，不在本機造掉寶怪。
-            }
-        } else if (idle.length && !lootRequired()) {
+        if (idle.length) {   // 畫面上還沒參戰的都是小怪：本機生成（第 274 節）
             for (const m of idle) {
                 if (inMapRun() && player.mapRun.left <= h.mobs.filter(v => !v.mapBoss && v.hp > 0).length) break;
                 const mon = currentZone().type === 'tower' ? makeTowerMonster(player.loc.floor, false) : makeMonster(m.mid);
@@ -814,7 +813,7 @@ function onKill(mon) {
     if (hunt.mon === mon) hunt.mon = hunt.mobs.slice().sort((a, b) => a.hp - b.hp)[0] || null;
     addLog(`☠️ 擊倒${mon.name}！經驗 +${fmt(exp)}、金幣 +${fmt(gold)}`, 'win');
     sfx('mon-die');
-    if (!lootRequired()) diaRoll(mon);   // 後端模式連同物品一併結算鑽石
+    if (!mon.lootTicket && !lootRequired()) diaRoll(mon);   // 只有首領掉鑽石；後端首領連同物品一併結算（第 274 節）
     gainExp(exp);
     mercGainExp(exp);
     mercQuestOnKill();
@@ -854,8 +853,7 @@ function onKill(mon) {
 }
 
 function rollDrops(mon, z, raid = false) {
-    if (lootRequired() && !lootActive()) { stopHunt('⚠️ 後端掉寶尚未就緒，沒有改用本機抽獎'); return; }
-    if (lootActive()) { lootKill(mon); return; }
+    if (mon.lootTicket) { lootKill(mon); return; }   // 伺服器生的（首領那一群）由伺服器結算；小怪本機掉寶（第 274 節）
     const st = calcStats();
     // q：武器／防具的品質（undefined＝依怪物擲；null＝普通）；暗黑式詞綴見 affix.js
     const give = (id, nRange, q) => {
@@ -909,6 +907,8 @@ function rollDrops(mon, z, raid = false) {
     rollMapDrop(mon, qm);   // 異界地圖掉落（maps.js）
     const book = rollBookDrop(mon);   // 高級魔法書／技能書（spellbook.js）
     if (book) give(book, null);
+    const stone = rollTalentStoneDrop(mon);   // 天賦石：小怪本機照伺服器原機率掉（第 274 節）
+    if (stone) give(stone, null);
     // 異界首領：依地圖階級掉共鳴裝備（resonance.js）
     if (mon.mapBoss && player.mapRun && chance(RES_MAP_BOSS_P * qm)) {
         const max = resMaxTierForMap(player.mapRun.t), pool = Object.keys(RESONANCE).filter(id => RESONANCE[id].tier <= max);
@@ -920,6 +920,15 @@ function rollDrops(mon, z, raid = false) {
     }
 }
 const RANDOM_EQUIP_P = 0.015;
+// 天賦石（小怪）：和伺服器 talent_loot_items 相同——階級 T＝異界地圖階級，非異界依怪物等級對應地圖建議等級；T1～T15 線性 0.05%→0.50%，不吃地圖掉寶詞綴。
+// 首領的天賦石、寶珠由伺服器發；本機一般掉寶（後端停用）時首領也照首領機率掉石頭
+function rollTalentStoneDrop(mon) {
+    if (!ITEMS.talentStone || SIM_MODE) return null;
+    let t = inMapRun() ? player.mapRun.t : mapZones().filter(z => z.lv[0] <= mon.lv).length;
+    t = Math.max(1, Math.min(15, t || 1));
+    const f = (t - 1) / 14;
+    return chance(mon.boss ? .02 + .08 * f : .0005 + .0045 * f) ? 'talentStone' : null;
+}
 
 function checkAutoHome() {
     const s = player.settings;

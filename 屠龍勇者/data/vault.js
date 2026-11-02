@@ -5,7 +5,6 @@
 // 離線掛機要登入，只有最後上傳存檔的角色能結算（2026-10-12 起不消耗鑽石；伺服器的 offline_claim 不再使用）。
 
 const VAULT_MAX = 200, VAULT_FEE = 100;
-const DIA_MOB_P = 0.001;      // 一般怪掉鑽石機率
 
 let diaCount = null;          // 目前鑽石（null＝還沒讀到）
 let vaultData = null, vaultBusy = false, vaultErr = '', storageMode = 'char';
@@ -35,7 +34,7 @@ async function diaRefresh() {
 // 打倒怪物時擲骰（combat.js onKill 呼叫；離線模擬不掉）
 function diaRoll(mon) {
     if (SIM_MODE || !vaultOnline()) return;
-    const src = mon.boss || mon.dragon ? 'boss' : chance(DIA_MOB_P) ? 'mob' : null;
+    const src = mon.boss || mon.dragon ? 'boss' : null;   // 小怪不掉鑽石（2026-11-02，第 274 節）
     if (!src) return;
     marketRpc('dia_drop', { p_src: src }).then(r => {
         diaCount = r.diamonds;
