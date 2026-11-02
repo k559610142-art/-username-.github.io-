@@ -1,0 +1,267 @@
+{
+  "key": "fallen-priest",
+  "name": "墮落神官・莫德",
+  "sprite": {
+    "src": "images/monsters/quest-v1/fallen-priest.png",
+    "cw": 384,
+    "ch": 320,
+    "body": 160,
+    "n": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "cols": 4,
+    "size": 68,
+    "foot": [
+      192,
+      270
+    ]
+  },
+  "portrait": "images/monsters/quest-v1/fallen-priest-portrait.png",
+  "cells": [
+    {
+      "slot": 0,
+      "sourceIndex": 0,
+      "rect": {
+        "left": 117,
+        "top": 57,
+        "width": 168,
+        "height": 295
+      },
+      "sourceFoot": [
+        95.5,
+        294
+      ],
+      "scale": 0.54421768707483,
+      "offset": [
+        141,
+        111
+      ],
+      "sha256": "f88f5c25d886755398bb9b25112566c29b97f912e3888a93a9127e4f62809e0d"
+    },
+    {
+      "slot": 1,
+      "sourceIndex": 1,
+      "rect": {
+        "left": 482,
+        "top": 71,
+        "width": 174,
+        "height": 282
+      },
+      "sourceFoot": [
+        96,
+        280
+      ],
+      "scale": 0.54421768707483,
+      "offset": [
+        140,
+        118
+      ],
+      "sha256": "920dba0abb65daa8fd7466563c984f5f12132eb7bb7d9d522113931b47732bb2"
+    },
+    {
+      "slot": 2,
+      "sourceIndex": 4,
+      "rect": {
+        "left": 66,
+        "top": 430,
+        "width": 202,
+        "height": 278
+      },
+      "sourceFoot": [
+        102.5,
+        276
+      ],
+      "scale": 0.5633802816901409,
+      "offset": [
+        135,
+        115
+      ],
+      "sha256": "5fe9029448391be2ca2b15aec6444f758b1455783e61815a819a8d38777478c8"
+    },
+    {
+      "slot": 3,
+      "sourceIndex": 5,
+      "rect": {
+        "left": 452,
+        "top": 423,
+        "width": 222,
+        "height": 285
+      },
+      "sourceFoot": [
+        113,
+        283
+      ],
+      "scale": 0.5633802816901409,
+      "offset": [
+        129,
+        111
+      ],
+      "sha256": "90f28516240bc3588f2bf4d3f9febd8f87f599ed9dc04c3977859c9d77451460"
+    },
+    {
+      "slot": 4,
+      "sourceIndex": 8,
+      "rect": {
+        "left": 104,
+        "top": 755,
+        "width": 175,
+        "height": 288
+      },
+      "sourceFoot": [
+        66.5,
+        286
+      ],
+      "scale": 0.5460750853242321,
+      "offset": [
+        156,
+        114
+      ],
+      "sha256": "318b993f601b20a97d61554e2e4bc911480b6e0ed160e336fac88ddac8c644bd"
+    },
+    {
+      "slot": 5,
+      "sourceIndex": 9,
+      "rect": {
+        "left": 486,
+        "top": 753,
+        "width": 162,
+        "height": 293
+      },
+      "sourceFoot": [
+        89,
+        292
+      ],
+      "scale": 0.5460750853242321,
+      "offset": [
+        143,
+        111
+      ],
+      "sha256": "8179a309b3573d6599fe60c75fa72a6cd6266c59c76261cd0f5876861061f818"
+    },
+    {
+      "slot": 6,
+      "sourceIndex": 2,
+      "rect": {
+        "left": 814,
+        "top": 22,
+        "width": 213,
+        "height": 324
+      },
+      "sourceFoot": [
+        122,
+        322
+      ],
+      "scale": 0.54421768707483,
+      "offset": [
+        126,
+        95
+      ],
+      "sha256": "ec68da969a1f14c65e45f9d069b550da1e6e8dad0140969727eaa1686ca27871"
+    },
+    {
+      "slot": 7,
+      "sourceIndex": 3,
+      "rect": {
+        "left": 1192,
+        "top": 71,
+        "width": 202,
+        "height": 283
+      },
+      "sourceFoot": [
+        66,
+        282
+      ],
+      "scale": 0.54421768707483,
+      "offset": [
+        157,
+        117
+      ],
+      "sha256": "fa8561d590cfbbd45667b427066d20010171f2695fc2ff709c9fa50342d2e693"
+    },
+    {
+      "slot": 8,
+      "sourceIndex": 6,
+      "rect": {
+        "left": 805,
+        "top": 373,
+        "width": 223,
+        "height": 328
+      },
+      "sourceFoot": [
+        109,
+        327
+      ],
+      "scale": 0.5633802816901409,
+      "offset": [
+        131,
+        86
+      ],
+      "sha256": "5523f1a46ec998553e9067b83089dc033074085daa43e5798b21f25b32a2acfd"
+    },
+    {
+      "slot": 9,
+      "sourceIndex": 7,
+      "rect": {
+        "left": 1161,
+        "top": 436,
+        "width": 273,
+        "height": 275
+      },
+      "sourceFoot": [
+        113.5,
+        273
+      ],
+      "scale": 0.5633802816901409,
+      "offset": [
+        129,
+        116
+      ],
+      "sha256": "062536d9ca1550050fc2716c08d03690776e5d5beb0c720d1e16c7fafdb27c7f"
+    },
+    {
+      "slot": 10,
+      "sourceIndex": 10,
+      "rect": {
+        "left": 834,
+        "top": 721,
+        "width": 198,
+        "height": 325
+      },
+      "sourceFoot": [
+        96.5,
+        324
+      ],
+      "scale": 0.5460750853242321,
+      "offset": [
+        140,
+        94
+      ],
+      "sha256": "9bd93303dae48b32234a87fffcf18157131d02311aafa2b3a31017b8a9b48222"
+    },
+    {
+      "slot": 11,
+      "sourceIndex": 11,
+      "rect": {
+        "left": 1162,
+        "top": 749,
+        "width": 233,
+        "height": 298
+      },
+      "sourceFoot": [
+        146,
+        296
+      ],
+      "scale": 0.5460750853242321,
+      "offset": [
+        112,
+        108
+      ],
+      "sha256": "a71cc6d0be73f7667372d944345e26065758f152464a519aa1d83021f2434e76"
+    }
+  ]
+}

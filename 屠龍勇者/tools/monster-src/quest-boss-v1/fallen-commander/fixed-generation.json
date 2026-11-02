@@ -1,0 +1,4 @@
+{
+  "prompt": "Correct this original 4-column by 3-row twelve-pose cursed knight sprite sheet. The fourth character in the middle row has its sword cut off at the RIGHT IMAGE EDGE. Redraw that sword complete and shorter. Make every character 25% smaller and centered in its existing cell so ALL swords, shields and capes have generous completely transparent margins on EVERY edge. Keep same silver-haired pale scarred knight commander, V crest, steel armor, red ragged cape, right sword, LEFT thorn shield. Preserve exact pose order: each row walk1 walk2 attack-windup attack-impact; row1 front/down, row2 strict RIGHT-facing, row3 back/up including attacks. Entire weapons visible inside each cell. RGBA transparent background. No ground/shadows/text/added effects.",
+  "path": "C:\\Users\\User\\.codex\\generated_images\\01a191b6-cab8-7390-ac17-309a217ef8a5\\exec-32877024-83ae-404d-84a0-96645ce7b974.png"
+}

@@ -1,0 +1,267 @@
+{
+  "key": "ash-giant",
+  "name": "灰燼巨人・格倫德",
+  "sprite": {
+    "src": "images/monsters/quest-v1/ash-giant.png",
+    "cw": 384,
+    "ch": 320,
+    "body": 160,
+    "n": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "cols": 4,
+    "size": 90,
+    "foot": [
+      192,
+      270
+    ]
+  },
+  "portrait": "images/monsters/quest-v1/ash-giant-portrait.png",
+  "cells": [
+    {
+      "slot": 0,
+      "sourceIndex": 0,
+      "rect": {
+        "left": 75,
+        "top": 49,
+        "width": 260,
+        "height": 278
+      },
+      "sourceFoot": [
+        98.5,
+        276
+      ],
+      "scale": 0.5776173285198556,
+      "offset": [
+        135,
+        111
+      ],
+      "sha256": "bf978eb015a53c39262ed49dc3c1c8771bcd56ef6a160e78a2af004bf312eddb"
+    },
+    {
+      "slot": 1,
+      "sourceIndex": 1,
+      "rect": {
+        "left": 450,
+        "top": 52,
+        "width": 252,
+        "height": 271
+      },
+      "sourceFoot": [
+        155,
+        271
+      ],
+      "scale": 0.5776173285198556,
+      "offset": [
+        102,
+        113
+      ],
+      "sha256": "1f60fa51ccdbf8ec33aaeecef8f7240ecd9e851d4f6d0ffd723d7550e52ddf1e"
+    },
+    {
+      "slot": 2,
+      "sourceIndex": 4,
+      "rect": {
+        "left": 104,
+        "top": 387,
+        "width": 224,
+        "height": 272
+      },
+      "sourceFoot": [
+        111.5,
+        271
+      ],
+      "scale": 0.583941605839416,
+      "offset": [
+        127,
+        112
+      ],
+      "sha256": "759ac9901c07bad837391e766fa731ede35f52f542afb4315a5118c01171e198"
+    },
+    {
+      "slot": 3,
+      "sourceIndex": 5,
+      "rect": {
+        "left": 466,
+        "top": 390,
+        "width": 251,
+        "height": 274
+      },
+      "sourceFoot": [
+        170.5,
+        273
+      ],
+      "scale": 0.583941605839416,
+      "offset": [
+        92,
+        111
+      ],
+      "sha256": "1842a936558e991bde9483871a762396a5e7d299b34e4f1260a5a74a6fc8b738"
+    },
+    {
+      "slot": 4,
+      "sourceIndex": 8,
+      "rect": {
+        "left": 68,
+        "top": 695,
+        "width": 250,
+        "height": 287
+      },
+      "sourceFoot": [
+        148.5,
+        286
+      ],
+      "scale": 0.5574912891986062,
+      "offset": [
+        110,
+        111
+      ],
+      "sha256": "cfd2af985e9ac5eed70c3ed6f2d45048a97dbc40f89b284817244eba27f3f3d6"
+    },
+    {
+      "slot": 5,
+      "sourceIndex": 9,
+      "rect": {
+        "left": 449,
+        "top": 698,
+        "width": 239,
+        "height": 282
+      },
+      "sourceFoot": [
+        149,
+        281
+      ],
+      "scale": 0.5574912891986062,
+      "offset": [
+        109,
+        113
+      ],
+      "sha256": "77f6697180a471476a55556440042077ac9cfdddabef63a94b9838ff90eebbeb"
+    },
+    {
+      "slot": 6,
+      "sourceIndex": 2,
+      "rect": {
+        "left": 852,
+        "top": 9,
+        "width": 244,
+        "height": 316
+      },
+      "sourceFoot": [
+        121.5,
+        315
+      ],
+      "scale": 0.5776173285198556,
+      "offset": [
+        122,
+        88
+      ],
+      "sha256": "944193215d36d347f8579a87ed21b3544255c29adb25e0caf67ab24ff504dffe"
+    },
+    {
+      "slot": 7,
+      "sourceIndex": 3,
+      "rect": {
+        "left": 1200,
+        "top": 87,
+        "width": 298,
+        "height": 243
+      },
+      "sourceFoot": [
+        153,
+        242
+      ],
+      "scale": 0.5776173285198556,
+      "offset": [
+        104,
+        130
+      ],
+      "sha256": "5be2171b519c6101529889b1a9c8ad42f1933e450403308572bdb9eb290918ab"
+    },
+    {
+      "slot": 8,
+      "sourceIndex": 6,
+      "rect": {
+        "left": 858,
+        "top": 346,
+        "width": 201,
+        "height": 324
+      },
+      "sourceFoot": [
+        51,
+        323
+      ],
+      "scale": 0.583941605839416,
+      "offset": [
+        162,
+        82
+      ],
+      "sha256": "4b6709867e2b4446351665be33a60449d67c033ca3192de468f081acb4e48c7f"
+    },
+    {
+      "slot": 9,
+      "sourceIndex": 7,
+      "rect": {
+        "left": 1202,
+        "top": 445,
+        "width": 314,
+        "height": 229
+      },
+      "sourceFoot": [
+        156.5,
+        227
+      ],
+      "scale": 0.583941605839416,
+      "offset": [
+        101,
+        137
+      ],
+      "sha256": "0aee21989ae27f67c4683d0626172b7ad31b3ad9a276d16f6ec1cf32dce57cca"
+    },
+    {
+      "slot": 10,
+      "sourceIndex": 10,
+      "rect": {
+        "left": 844,
+        "top": 671,
+        "width": 236,
+        "height": 328
+      },
+      "sourceFoot": [
+        167.5,
+        327
+      ],
+      "scale": 0.5574912891986062,
+      "offset": [
+        99,
+        88
+      ],
+      "sha256": "df0172c8414a4139a41c598a5e9ae5ba43c057223487f306bcc0011dc1500759"
+    },
+    {
+      "slot": 11,
+      "sourceIndex": 11,
+      "rect": {
+        "left": 1196,
+        "top": 743,
+        "width": 295,
+        "height": 253
+      },
+      "sourceFoot": [
+        199.5,
+        251
+      ],
+      "scale": 0.5574912891986062,
+      "offset": [
+        81,
+        130
+      ],
+      "sha256": "8ca42e69d86555fa7fdaf9a399201ede3aca075181033ad50b155c2393a65dd4"
+    }
+  ]
+}

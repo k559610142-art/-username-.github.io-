@@ -1,0 +1,1529 @@
+{
+  "date": "2026-11-02",
+  "version": "20261102c",
+  "scope": "本機正式腳本／圖檔；不含未開放公會原型，未查線上部署",
+  "normal": [
+    {
+      "mid": "goblin",
+      "name": "哥布林",
+      "art": "goblin",
+      "actor": null,
+      "src": "images/monsters/goblin.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "dwarf",
+      "name": "侏儒",
+      "art": "dwarf",
+      "actor": null,
+      "src": "images/monsters/dwarf.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "wolf",
+      "name": "狼",
+      "art": "wolf",
+      "actor": null,
+      "src": "images/monsters/wolf.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "orc",
+      "name": "妖魔",
+      "art": "orc",
+      "actor": null,
+      "src": "images/monsters/orc.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "floatingEye",
+      "name": "浮空之眼",
+      "art": "floatingEye",
+      "actor": null,
+      "src": "images/monsters/floatingEye.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "skeleton",
+      "name": "骷髏",
+      "art": "skeleton",
+      "actor": null,
+      "src": "images/monsters/skeleton.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "dwarfWarrior",
+      "name": "侏儒戰士",
+      "art": "dwarfWarrior",
+      "actor": null,
+      "src": "images/monsters/dwarfWarrior.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "orcArcher",
+      "name": "妖魔弓箭手",
+      "art": "orcArcher",
+      "actor": null,
+      "src": "images/monsters/orcArcher.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "skeletonArcher",
+      "name": "骷髏弓箭手",
+      "art": "skeletonArcher",
+      "actor": null,
+      "src": "images/monsters/skeletonArcher.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "ghoul",
+      "name": "食屍鬼",
+      "art": "ghoul",
+      "actor": null,
+      "src": "images/monsters/ghoul.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "orcWarrior",
+      "name": "妖魔戰士",
+      "art": "orcWarrior",
+      "actor": null,
+      "src": "images/monsters/orcWarrior.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "gandiOrc",
+      "name": "甘地妖魔",
+      "art": "gandiOrc",
+      "actor": null,
+      "src": "images/monsters/gandiOrc.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "zombie",
+      "name": "殭屍",
+      "art": "zombie",
+      "actor": null,
+      "src": "images/monsters/zombie.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "lycan",
+      "name": "萊肯",
+      "art": "lycan",
+      "actor": null,
+      "src": "images/monsters/lycan.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "orcxOrc",
+      "name": "歐西斯妖魔",
+      "art": "orcxOrc",
+      "actor": null,
+      "src": "images/monsters/orcxOrc.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "stoneGolem",
+      "name": "石頭高崙",
+      "art": "stoneGolem",
+      "actor": null,
+      "src": "images/monsters/stoneGolem.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "skeletonAxe",
+      "name": "骷髏禁衛兵",
+      "art": "skeletonAxe",
+      "actor": null,
+      "src": "images/monsters/skeletonAxe.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "blackKnight",
+      "name": "黑騎士",
+      "art": "blackKnight",
+      "actor": null,
+      "src": "images/monsters/blackKnight.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "giantAnt",
+      "name": "巨大兵蟻",
+      "art": "giantAnt",
+      "actor": null,
+      "src": "images/monsters/giantAnt.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "spartoi",
+      "name": "史巴托",
+      "art": "spartoi",
+      "actor": null,
+      "src": "images/monsters/spartoi.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "ghast",
+      "name": "鬼魂",
+      "art": "ghast",
+      "actor": null,
+      "src": "images/monsters/ghast.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "baphomet",
+      "name": "巴風特",
+      "art": "baphomet",
+      "actor": null,
+      "src": "images/monsters/baphomet.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "hellhound",
+      "name": "地獄犬",
+      "art": "hellhound",
+      "actor": null,
+      "src": "images/monsters/hellhound.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "lamia",
+      "name": "蛇女",
+      "art": "lamia",
+      "actor": null,
+      "src": "images/monsters/lamia.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "ivoryMage",
+      "name": "墮落法師",
+      "art": "ivoryMage",
+      "actor": null,
+      "src": "images/monsters/ivoryMage.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "beholder",
+      "name": "眼怪",
+      "art": "beholder",
+      "actor": null,
+      "src": "images/monsters/beholder.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "ivoryGuard",
+      "name": "法師塔守衛",
+      "art": "ivoryGuard",
+      "actor": null,
+      "src": "images/monsters/ivoryGuard.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "demon",
+      "name": "惡魔",
+      "art": "demon",
+      "actor": null,
+      "src": "images/monsters/demon.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "mummy",
+      "name": "木乃伊",
+      "art": "mummy",
+      "actor": null,
+      "src": "images/monsters/mummy.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "sandScorpion",
+      "name": "沙漠巨蠍",
+      "art": "sandScorpion",
+      "actor": null,
+      "src": "images/monsters/sandScorpion.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "sphinx",
+      "name": "獅身人面獸",
+      "art": "sphinx",
+      "actor": null,
+      "src": "images/monsters/sphinx.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "anubis",
+      "name": "阿努比斯",
+      "art": "anubis",
+      "actor": null,
+      "src": "images/monsters/anubis.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "osiris",
+      "name": "歐西里斯",
+      "art": "osiris",
+      "actor": null,
+      "src": "images/monsters/osiris.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "werewolf",
+      "name": "狼人",
+      "art": "werewolf",
+      "actor": null,
+      "src": "images/monsters/werewolf.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "forestBear",
+      "name": "森林熊",
+      "art": "forestBear",
+      "actor": null,
+      "src": "images/monsters/forestBear.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "giantSpider",
+      "name": "巨大蜘蛛",
+      "art": "giantSpider",
+      "actor": null,
+      "src": "images/monsters/giantSpider.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "venomSpider",
+      "name": "毒霧獵蛛",
+      "art": "venomSpider",
+      "actor": null,
+      "src": "images/monsters/giantSpider.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "venomQueen",
+      "name": "劇毒蛛后",
+      "art": "venomQueen",
+      "actor": null,
+      "src": "images/monsters/venomQueen.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "treant",
+      "name": "樹精",
+      "art": "treant",
+      "actor": null,
+      "src": "images/monsters/treant.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "elderTreant",
+      "name": "古老樹精",
+      "art": "elderTreant",
+      "actor": null,
+      "src": "images/monsters/elderTreant.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "lizardman",
+      "name": "邪惡蜥蜴",
+      "art": "lizardman",
+      "actor": null,
+      "src": "images/monsters/lizardman.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "caveBat",
+      "name": "吸血蝙蝠",
+      "art": "caveBat",
+      "actor": null,
+      "src": "images/monsters/caveBat.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "darkElfScout",
+      "name": "黑暗妖精斥候",
+      "art": "darkElfScout",
+      "actor": null,
+      "src": "images/monsters/darkElfScout.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "castor",
+      "name": "卡司特",
+      "art": "castor",
+      "actor": null,
+      "src": "images/monsters/castor.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "drake",
+      "name": "幼龍",
+      "art": "drake",
+      "actor": null,
+      "src": "images/monsters/drake.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "wakingDrake",
+      "name": "甦醒的地龍",
+      "art": "wakingDrake",
+      "actor": null,
+      "src": "images/monsters/wakingDrake.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "pirate",
+      "name": "海賊",
+      "art": "pirate",
+      "actor": null,
+      "src": "images/monsters/pirate.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "pirateGunner",
+      "name": "海賊火槍手",
+      "art": "pirateGunner",
+      "actor": null,
+      "src": "images/monsters/pirateGunner.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "giantCrab",
+      "name": "巨蟹",
+      "art": "giantCrab",
+      "actor": null,
+      "src": "images/monsters/giantCrab.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "drownedSailor",
+      "name": "溺死的水手",
+      "art": "drownedSailor",
+      "actor": null,
+      "src": "images/monsters/drownedSailor.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "pirateKing",
+      "name": "海賊王・德雷克",
+      "art": "pirateKing",
+      "actor": null,
+      "src": "images/monsters/pirateKing.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "dvLizard",
+      "name": "蜥蜴人戰士",
+      "art": "dvLizard",
+      "actor": null,
+      "src": "images/monsters/dvLizard.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "cerberus",
+      "name": "地獄三頭犬",
+      "art": "cerberus",
+      "actor": null,
+      "src": "images/monsters/cerberus.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "wyvernling",
+      "name": "飛龍",
+      "art": "wyvernling",
+      "actor": null,
+      "src": "images/monsters/wyvernling.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "boneDragonKnight",
+      "name": "骷髏龍騎士",
+      "art": "boneDragonKnight",
+      "actor": null,
+      "src": "images/monsters/boneDragonKnight.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "wyvern",
+      "name": "巨大飛龍",
+      "art": "wyvern",
+      "actor": null,
+      "src": "images/monsters/wyvern.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "snowWolf",
+      "name": "冰原狼",
+      "art": "snowWolf",
+      "actor": null,
+      "src": "images/monsters/snowWolf.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "yeti",
+      "name": "雪怪",
+      "art": "yeti",
+      "actor": null,
+      "src": "images/monsters/yeti.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "iceGolem",
+      "name": "冰之高崙",
+      "art": "iceGolem",
+      "actor": null,
+      "src": "images/monsters/iceGolem.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "frostWitch",
+      "name": "冰之魔女",
+      "art": "frostWitch",
+      "actor": null,
+      "src": "images/monsters/frostWitch.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "iceGiantKing",
+      "name": "冰之巨人王",
+      "art": "iceGiantKing",
+      "actor": null,
+      "src": "images/monsters/iceGiantKing.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "salamander",
+      "name": "火蜥蜴",
+      "art": "salamander",
+      "actor": null,
+      "src": "images/monsters/salamander.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "fireSpirit",
+      "name": "火之精靈",
+      "art": "fireSpirit",
+      "actor": null,
+      "src": "images/monsters/fireSpirit.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "lavaGolem",
+      "name": "熔岩高崙",
+      "art": "lavaGolem",
+      "actor": null,
+      "src": "images/monsters/lavaGolem.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "flameKnight",
+      "name": "火焰騎士",
+      "art": "flameKnight",
+      "actor": null,
+      "src": "images/monsters/flameKnight.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "ifrit",
+      "name": "伊弗利特",
+      "art": "ifrit",
+      "actor": null,
+      "src": "images/monsters/ifrit.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "ancientGiant",
+      "name": "古代巨人",
+      "art": "ancientGiant",
+      "actor": null,
+      "src": "images/monsters/ancientGiant.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "harpy",
+      "name": "鳥身女妖",
+      "art": "harpy",
+      "actor": null,
+      "src": "images/monsters/harpy.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "forgottenKnight",
+      "name": "被遺忘的騎士",
+      "art": "forgottenKnight",
+      "actor": null,
+      "src": "images/monsters/forgottenKnight.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "chimera",
+      "name": "奇美拉",
+      "art": "chimera",
+      "actor": null,
+      "src": "images/monsters/chimera.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "forgottenKing",
+      "name": "遺忘之王",
+      "art": "forgottenKing",
+      "actor": null,
+      "src": "images/monsters/forgottenKing.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "giantSkeleton",
+      "name": "巨人骷髏",
+      "art": "giantSkeleton",
+      "actor": null,
+      "src": "images/monsters/giantSkeleton.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "tombGuardian",
+      "name": "墓穴守護者",
+      "art": "tombGuardian",
+      "actor": null,
+      "src": "images/monsters/tombGuardian.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "necromancer",
+      "name": "亡靈術士",
+      "art": "necromancer",
+      "actor": null,
+      "src": "images/monsters/necromancer.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "boneDragon",
+      "name": "古代骨龍",
+      "art": "boneDragon",
+      "actor": null,
+      "src": "images/monsters/boneDragon.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "giantKingSpirit",
+      "name": "巨人王的亡魂",
+      "art": "giantKingSpirit",
+      "actor": null,
+      "src": "images/monsters/giantKingSpirit.png",
+      "singleFrame": true,
+      "exists": true
+    },
+    {
+      "mid": "antharas",
+      "name": "地龍・格爾莫斯",
+      "art": "antharas",
+      "actor": null,
+      "src": "images/monsters/antharas.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "fafurion",
+      "name": "水龍・瑟拉恩",
+      "art": "fafurion",
+      "actor": null,
+      "src": "images/monsters/fafurion.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "lindvior",
+      "name": "風龍・維斯塔爾",
+      "art": "lindvior",
+      "actor": null,
+      "src": "images/monsters/lindvior.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "valakas",
+      "name": "火龍・莫爾加斯",
+      "art": "valakas",
+      "actor": null,
+      "src": "images/monsters/quest-v1/valakas.png",
+      "singleFrame": false,
+      "exists": true
+    }
+  ],
+  "quests": [
+    {
+      "cls": "royal",
+      "className": "王族",
+      "mid": "questBoss",
+      "name": "叛軍將軍・格倫",
+      "art": "quest-rebel-general",
+      "actor": null,
+      "src": "images/monsters/quest-v1/rebel-general.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "royal",
+      "className": "王族",
+      "mid": "questBoss",
+      "name": "篡位者・黑暗之王",
+      "art": "quest-usurper-king",
+      "actor": null,
+      "src": "images/monsters/quest-v1/usurper-king.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "royal",
+      "className": "王族",
+      "mid": "questBoss",
+      "name": "王族的試煉之影",
+      "art": "quest-shadow-royal",
+      "actor": "royal",
+      "src": "images/sprites/royal-walk.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "royal",
+      "className": "王族",
+      "mid": "questBoss",
+      "name": "逆王之影・格爾德",
+      "art": "quest-anti-king",
+      "actor": null,
+      "src": "images/monsters/quest-v1/anti-king.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "knight",
+      "className": "騎士",
+      "mid": "questBoss",
+      "name": "叛變騎士・維克",
+      "art": "quest-traitor-knight",
+      "actor": null,
+      "src": "images/monsters/quest-v1/traitor-knight.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "knight",
+      "className": "騎士",
+      "mid": "questBoss",
+      "name": "死亡騎士",
+      "art": "quest-death-knight",
+      "actor": null,
+      "src": "images/monsters/quest-v1/death-knight.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "knight",
+      "className": "騎士",
+      "mid": "questBoss",
+      "name": "騎士的試煉之影",
+      "art": "quest-shadow-knight",
+      "actor": "knight",
+      "src": "images/sprites/knight-walk.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "knight",
+      "className": "騎士",
+      "mid": "questBoss",
+      "name": "墮落騎士團長・維克",
+      "art": "quest-fallen-commander",
+      "actor": null,
+      "src": "images/monsters/quest-v1/fallen-commander.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "mage",
+      "className": "法師",
+      "mid": "questBoss",
+      "name": "黑魔法師・卡斯特",
+      "art": "quest-black-mage",
+      "actor": null,
+      "src": "images/monsters/quest-v1/black-mage.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "mage",
+      "className": "法師",
+      "mid": "questBoss",
+      "name": "古代魔導師的亡靈",
+      "art": "quest-ancient-mage-ghost",
+      "actor": null,
+      "src": "images/monsters/quest-v1/ancient-mage-ghost.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "mage",
+      "className": "法師",
+      "mid": "questBoss",
+      "name": "法師的試煉之影",
+      "art": "quest-shadow-mage",
+      "actor": "mage",
+      "src": "images/sprites/mage-walk.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "mage",
+      "className": "法師",
+      "mid": "questBoss",
+      "name": "虛空魔導・莫爾斯",
+      "art": "quest-void-archmage",
+      "actor": null,
+      "src": "images/monsters/quest-v1/void-archmage.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "elf",
+      "className": "妖精",
+      "mid": "questBoss",
+      "name": "盜獵者首領・薩克",
+      "art": "quest-poacher-chief",
+      "actor": null,
+      "src": "images/monsters/quest-v1/poacher-chief.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "elf",
+      "className": "妖精",
+      "mid": "questBoss",
+      "name": "腐化樹妖",
+      "art": "quest-corrupt-treant",
+      "actor": null,
+      "src": "images/monsters/quest-v1/corrupt-treant.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "elf",
+      "className": "妖精",
+      "mid": "questBoss",
+      "name": "妖精的試煉之影",
+      "art": "quest-shadow-elf",
+      "actor": "elf",
+      "src": "images/sprites/elf-walk.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "elf",
+      "className": "妖精",
+      "mid": "questBoss",
+      "name": "枯萎樹靈・艾爾克",
+      "art": "quest-withered-treant",
+      "actor": null,
+      "src": "images/monsters/quest-v1/withered-treant.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "darkelf",
+      "className": "黑暗妖精",
+      "mid": "questBoss",
+      "name": "喚龍教團執事",
+      "art": "quest-dragon-cult-deacon",
+      "actor": null,
+      "src": "images/monsters/quest-v1/dragon-cult-deacon.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "darkelf",
+      "className": "黑暗妖精",
+      "mid": "questBoss",
+      "name": "喚龍教主",
+      "art": "quest-dragon-cult-master",
+      "actor": null,
+      "src": "images/monsters/quest-v1/dragon-cult-master.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "darkelf",
+      "className": "黑暗妖精",
+      "mid": "questBoss",
+      "name": "黑暗妖精的試煉之影",
+      "art": "quest-shadow-darkelf",
+      "actor": "darkelf",
+      "src": "images/sprites/darkelf-walk.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "darkelf",
+      "className": "黑暗妖精",
+      "mid": "questBoss",
+      "name": "無面刺客・夜鴉",
+      "art": "quest-faceless-assassin",
+      "actor": null,
+      "src": "images/monsters/quest-v1/faceless-assassin.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "shura",
+      "className": "修羅",
+      "mid": "questBoss",
+      "name": "破門者・鬼刃",
+      "art": "quest-gatebreaker",
+      "actor": null,
+      "src": "images/monsters/quest-v1/gatebreaker.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "shura",
+      "className": "修羅",
+      "mid": "questBoss",
+      "name": "拳聖烈（全力）",
+      "art": "quest-fist-saint",
+      "actor": null,
+      "src": "images/monsters/quest-v1/fist-saint.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "shura",
+      "className": "修羅",
+      "mid": "questBoss",
+      "name": "修羅的試煉之影",
+      "art": "quest-shadow-shura",
+      "actor": "shura",
+      "src": "images/sprites/shura-walk.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "shura",
+      "className": "修羅",
+      "mid": "questBoss",
+      "name": "修羅魔王・阿迦",
+      "art": "quest-asura-demon-king",
+      "actor": null,
+      "src": "images/monsters/quest-v1/asura-demon-king.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "warrior",
+      "className": "戰士",
+      "mid": "questBoss",
+      "name": "遠古石巨人",
+      "art": "quest-ancient-stone-giant",
+      "actor": null,
+      "src": "images/monsters/quest-v1/ancient-stone-giant.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "warrior",
+      "className": "戰士",
+      "mid": "questBoss",
+      "name": "炎魔將軍",
+      "art": "quest-flame-general",
+      "actor": null,
+      "src": "images/monsters/quest-v1/flame-general.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "warrior",
+      "className": "戰士",
+      "mid": "questBoss",
+      "name": "戰士的試煉之影",
+      "art": "quest-shadow-warrior",
+      "actor": "warrior",
+      "src": "images/sprites/warrior-walk.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "warrior",
+      "className": "戰士",
+      "mid": "questBoss",
+      "name": "灰燼巨人・格倫德",
+      "art": "quest-ash-giant",
+      "actor": null,
+      "src": "images/monsters/quest-v1/ash-giant.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "gunner",
+      "className": "槍手",
+      "mid": "questBoss",
+      "name": "強盜頭目・鐵手",
+      "art": "quest-bandit-ironhand",
+      "actor": null,
+      "src": "images/monsters/quest-v1/bandit-ironhand.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "gunner",
+      "className": "槍手",
+      "mid": "questBoss",
+      "name": "古代機械魔像",
+      "art": "quest-ancient-mech-golem",
+      "actor": null,
+      "src": "images/monsters/quest-v1/ancient-mech-golem.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "gunner",
+      "className": "槍手",
+      "mid": "questBoss",
+      "name": "槍手的試煉之影",
+      "art": "quest-shadow-gunner",
+      "actor": "gunner",
+      "src": "images/sprites/gunner-walk.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "gunner",
+      "className": "槍手",
+      "mid": "questBoss",
+      "name": "鐵鏽砲台・哈茲",
+      "art": "quest-rust-turret",
+      "actor": null,
+      "src": "images/monsters/quest-v1/rust-turret.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "magicfighter",
+      "className": "魔鬥士",
+      "mid": "questBoss",
+      "name": "失控魔導兵",
+      "art": "quest-runaway-magic-soldier",
+      "actor": null,
+      "src": "images/monsters/quest-v1/runaway-magic-soldier.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "magicfighter",
+      "className": "魔鬥士",
+      "mid": "questBoss",
+      "name": "魔導劍聖的殘影",
+      "art": "quest-sword-saint-remnant",
+      "actor": null,
+      "src": "images/monsters/quest-v1/sword-saint-remnant.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "magicfighter",
+      "className": "魔鬥士",
+      "mid": "questBoss",
+      "name": "魔鬥士的試煉之影",
+      "art": "quest-shadow-magicfighter",
+      "actor": "magicfighter",
+      "src": "images/sprites/magicfighter-walk.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "magicfighter",
+      "className": "魔鬥士",
+      "mid": "questBoss",
+      "name": "崩壞魔劍・艾克西",
+      "art": "quest-broken-magic-blade",
+      "actor": null,
+      "src": "images/monsters/quest-v1/broken-magic-blade.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "paladin",
+      "className": "聖騎士",
+      "mid": "questBoss",
+      "name": "墮落神官・莫德",
+      "art": "quest-fallen-priest",
+      "actor": null,
+      "src": "images/monsters/quest-v1/fallen-priest.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "paladin",
+      "className": "聖騎士",
+      "mid": "questBoss",
+      "name": "巫妖王",
+      "art": "quest-lich-king",
+      "actor": null,
+      "src": "images/monsters/quest-v1/lich-king.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "paladin",
+      "className": "聖騎士",
+      "mid": "questBoss",
+      "name": "聖騎士的試煉之影",
+      "art": "quest-shadow-paladin",
+      "actor": "paladin",
+      "src": "images/sprites/paladin-walk.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "paladin",
+      "className": "聖騎士",
+      "mid": "questBoss",
+      "name": "褻瀆主教・瑟恩",
+      "art": "quest-blasphemous-bishop",
+      "actor": null,
+      "src": "images/monsters/quest-v1/blasphemous-bishop.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "angel",
+      "className": "天使",
+      "mid": "questBoss",
+      "name": "深淵使者・巴爾",
+      "art": "quest-abyss-envoy",
+      "actor": null,
+      "src": "images/monsters/quest-v1/abyss-envoy.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "angel",
+      "className": "天使",
+      "mid": "questBoss",
+      "name": "墮落天使長・路西法",
+      "art": "quest-fallen-archangel",
+      "actor": null,
+      "src": "images/monsters/quest-v1/fallen-archangel.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "angel",
+      "className": "天使",
+      "mid": "questBoss",
+      "name": "天使的試煉之影",
+      "art": "quest-shadow-angel",
+      "actor": "angel",
+      "src": "images/sprites/angel-walk.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "angel",
+      "className": "天使",
+      "mid": "questBoss",
+      "name": "墮天使・薩麥爾",
+      "art": "quest-fallen-seraph",
+      "actor": null,
+      "src": "images/monsters/quest-v1/fallen-seraph.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "demon",
+      "className": "惡魔",
+      "mid": "questBoss",
+      "name": "天界獵人・加百列",
+      "art": "quest-celestial-hunter",
+      "actor": null,
+      "src": "images/monsters/quest-v1/celestial-hunter.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "demon",
+      "className": "惡魔",
+      "mid": "questBoss",
+      "name": "深淵之主・阿斯莫德",
+      "art": "quest-abyss-lord",
+      "actor": null,
+      "src": "images/monsters/quest-v1/abyss-lord.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "demon",
+      "className": "惡魔",
+      "mid": "questBoss",
+      "name": "惡魔的試煉之影",
+      "art": "quest-shadow-demon",
+      "actor": "demon",
+      "src": "images/sprites/demon-walk.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "cls": "demon",
+      "className": "惡魔",
+      "mid": "questBoss",
+      "name": "深淵吞噬者・巴爾",
+      "art": "quest-abyss-devourer",
+      "actor": null,
+      "src": "images/monsters/quest-v1/abyss-devourer.png",
+      "singleFrame": false,
+      "exists": true
+    }
+  ],
+  "tower": [
+    {
+      "mid": "tower-audit",
+      "name": "骷髏神射手",
+      "art": "art-archer",
+      "actor": null,
+      "src": "images/monsters/rework/mon-archer.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "tower-audit",
+      "name": "死亡騎士的隨從",
+      "art": "art-guard",
+      "actor": null,
+      "src": "images/monsters/rework/mon-guard.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "tower-audit",
+      "name": "石像鬼",
+      "art": "art-gargoyle",
+      "actor": null,
+      "src": "images/monsters/rework/mon-gargoyle.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "tower-audit",
+      "name": "暗影刺客",
+      "art": "art-assassin",
+      "actor": null,
+      "src": "images/monsters/rework/mon-assassin.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "tower-audit",
+      "name": "火焰之影",
+      "art": "art-flame",
+      "actor": null,
+      "src": "images/monsters/rework/mon-flame.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "tower-audit",
+      "name": "熔岩高崙",
+      "art": "art-golem",
+      "actor": null,
+      "src": "images/monsters/rework/mon-golem.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "tower-audit",
+      "name": "冰原狼人",
+      "art": "art-wolf",
+      "actor": null,
+      "src": "images/monsters/rework/mon-wolf.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "tower-audit",
+      "name": "冰之魔女",
+      "art": "art-mage",
+      "actor": null,
+      "src": "images/monsters/rework/mon-mage.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "tower-audit",
+      "name": "巫妖",
+      "art": "art-mage",
+      "actor": null,
+      "src": "images/monsters/rework/mon-mage.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "tower-audit",
+      "name": "死靈法師",
+      "art": "art-mage",
+      "actor": null,
+      "src": "images/monsters/rework/mon-mage.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "tower-audit",
+      "name": "墮落天使",
+      "art": "art-angel",
+      "actor": null,
+      "src": "images/monsters/rework/mon-angel.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "tower-audit",
+      "name": "地獄騎士",
+      "art": "art-guard",
+      "actor": null,
+      "src": "images/monsters/rework/mon-guard.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "tower-audit",
+      "name": "混沌戰士",
+      "art": "art-guard",
+      "actor": null,
+      "src": "images/monsters/rework/mon-guard.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "tower-audit",
+      "name": "混沌法師",
+      "art": "art-mage",
+      "actor": null,
+      "src": "images/monsters/rework/mon-mage.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "tower-audit",
+      "name": "深淵魔物",
+      "art": "art-beast",
+      "actor": null,
+      "src": "images/monsters/rework/mon-beast.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "tower-audit",
+      "name": "虛空行者",
+      "art": "art-wraith",
+      "actor": null,
+      "src": "images/monsters/rework/mon-wraith.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "tower-audit",
+      "name": "冥界守衛",
+      "art": "art-guard",
+      "actor": null,
+      "src": "images/monsters/rework/mon-guard.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "tower-audit",
+      "name": "冥界死神",
+      "art": "art-wraith",
+      "actor": null,
+      "src": "images/monsters/rework/mon-wraith.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "tower-audit",
+      "name": "冥法親衛",
+      "art": "art-guard",
+      "actor": null,
+      "src": "images/monsters/rework/mon-guard.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "tower-audit",
+      "name": "冥法巫師",
+      "art": "art-mage",
+      "actor": null,
+      "src": "images/monsters/rework/mon-mage.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "tower-audit",
+      "name": "巨大牛人",
+      "art": "art-bull-boss",
+      "actor": null,
+      "src": "images/monsters/rework/mon-bull-boss.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "tower-audit",
+      "name": "黑暗女妖",
+      "art": "art-banshee-boss",
+      "actor": null,
+      "src": "images/monsters/rework/mon-banshee-boss.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "tower-audit",
+      "name": "炎魔之影",
+      "art": "art-flame-boss",
+      "actor": null,
+      "src": "images/monsters/rework/mon-flame-boss.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "tower-audit",
+      "name": "冰之女王",
+      "art": "art-ice-boss",
+      "actor": null,
+      "src": "images/monsters/rework/mon-ice-boss.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "tower-audit",
+      "name": "巫妖王",
+      "art": "art-lich-boss",
+      "actor": null,
+      "src": "images/monsters/rework/mon-lich-boss.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "tower-audit",
+      "name": "墮落的大天使",
+      "art": "art-angel-boss",
+      "actor": null,
+      "src": "images/monsters/rework/mon-angel-boss.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "tower-audit",
+      "name": "混沌之主",
+      "art": "art-chaos-boss",
+      "actor": null,
+      "src": "images/monsters/rework/mon-chaos-boss.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "tower-audit",
+      "name": "深淵領主",
+      "art": "art-abyss-boss",
+      "actor": null,
+      "src": "images/monsters/rework/mon-abyss-boss.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "tower-audit",
+      "name": "死神",
+      "art": "art-reaper-boss",
+      "actor": null,
+      "src": "images/monsters/rework/mon-reaper-boss.png",
+      "singleFrame": false,
+      "exists": true
+    },
+    {
+      "mid": "tower-audit",
+      "name": "冥法軍王",
+      "art": "art-king-boss",
+      "actor": null,
+      "src": "images/monsters/rework/mon-king-boss.png",
+      "singleFrame": false,
+      "exists": true
+    }
+  ]
+}

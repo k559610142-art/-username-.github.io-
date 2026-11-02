@@ -1,0 +1,267 @@
+{
+  "key": "sword-saint-remnant",
+  "name": "魔導劍聖的殘影",
+  "sprite": {
+    "src": "images/monsters/quest-v1/sword-saint-remnant.png",
+    "cw": 384,
+    "ch": 320,
+    "body": 160,
+    "n": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "cols": 4,
+    "size": 68,
+    "foot": [
+      192,
+      270
+    ]
+  },
+  "portrait": "images/monsters/quest-v1/sword-saint-remnant-portrait.png",
+  "cells": [
+    {
+      "slot": 0,
+      "sourceIndex": 0,
+      "rect": {
+        "left": 43,
+        "top": 45,
+        "width": 266,
+        "height": 290
+      },
+      "sourceFoot": [
+        141.5,
+        289
+      ],
+      "scale": 0.5536332179930796,
+      "offset": [
+        114,
+        111
+      ],
+      "sha256": "0e98b48dbe385e7aaa1e4829e7e9c9b089a1f55133a915727e6ccbb10e60bcde"
+    },
+    {
+      "slot": 1,
+      "sourceIndex": 1,
+      "rect": {
+        "left": 421,
+        "top": 52,
+        "width": 222,
+        "height": 283
+      },
+      "sourceFoot": [
+        138.5,
+        282
+      ],
+      "scale": 0.5536332179930796,
+      "offset": [
+        115,
+        114
+      ],
+      "sha256": "3bc8097bfaa584ffd44b43bd7889ba1c395a72529a76dfe664b6adfed975bf96"
+    },
+    {
+      "slot": 2,
+      "sourceIndex": 4,
+      "rect": {
+        "left": 45,
+        "top": 423,
+        "width": 294,
+        "height": 259
+      },
+      "sourceFoot": [
+        154.5,
+        258
+      ],
+      "scale": 0.6177606177606177,
+      "offset": [
+        97,
+        111
+      ],
+      "sha256": "e663cf545bdd34ecdc2b85ecbc963e7f6faa69a766b685ed6bb51e071c5820c2"
+    },
+    {
+      "slot": 3,
+      "sourceIndex": 5,
+      "rect": {
+        "left": 415,
+        "top": 421,
+        "width": 248,
+        "height": 257
+      },
+      "sourceFoot": [
+        144.5,
+        256
+      ],
+      "scale": 0.6177606177606177,
+      "offset": [
+        103,
+        112
+      ],
+      "sha256": "b08327aa1c3ac1612cca67aef0bd7c054667ca1408ecf95f25e0f276623820a7"
+    },
+    {
+      "slot": 4,
+      "sourceIndex": 8,
+      "rect": {
+        "left": 65,
+        "top": 752,
+        "width": 241,
+        "height": 298
+      },
+      "sourceFoot": [
+        112,
+        296
+      ],
+      "scale": 0.5405405405405406,
+      "offset": [
+        131,
+        111
+      ],
+      "sha256": "7974d318cf05dd988c4ba285a769b4b2509a30ab0937c9ef6af397e86f33fbc9"
+    },
+    {
+      "slot": 5,
+      "sourceIndex": 9,
+      "rect": {
+        "left": 449,
+        "top": 761,
+        "width": 219,
+        "height": 289
+      },
+      "sourceFoot": [
+        84,
+        288
+      ],
+      "scale": 0.5405405405405406,
+      "offset": [
+        147,
+        114
+      ],
+      "sha256": "493106cd365f8d6104a9626659630d6c7aceda09d704583042b763a47cb1dc38"
+    },
+    {
+      "slot": 6,
+      "sourceIndex": 2,
+      "rect": {
+        "left": 793,
+        "top": 11,
+        "width": 249,
+        "height": 323
+      },
+      "sourceFoot": [
+        100,
+        322
+      ],
+      "scale": 0.5536332179930796,
+      "offset": [
+        137,
+        92
+      ],
+      "sha256": "7fe8119af37a145dd6502d1d6ee861dfb459e5b7b5dde11b675f551267f7a27d"
+    },
+    {
+      "slot": 7,
+      "sourceIndex": 3,
+      "rect": {
+        "left": 1103,
+        "top": 42,
+        "width": 333,
+        "height": 293
+      },
+      "sourceFoot": [
+        72.5,
+        291
+      ],
+      "scale": 0.5536332179930796,
+      "offset": [
+        152,
+        110
+      ],
+      "sha256": "ebdbaaa6d758118afdc3d8172f7848d60f927aded188637973d64a907cc3a292"
+    },
+    {
+      "slot": 8,
+      "sourceIndex": 6,
+      "rect": {
+        "left": 776,
+        "top": 385,
+        "width": 222,
+        "height": 300
+      },
+      "sourceFoot": [
+        50.5,
+        298
+      ],
+      "scale": 0.6177606177606177,
+      "offset": [
+        161,
+        87
+      ],
+      "sha256": "c9ed7f9d4020f0dac885059f66986a560e063f91147b5e0fcaf31636444e0c5a"
+    },
+    {
+      "slot": 9,
+      "sourceIndex": 7,
+      "rect": {
+        "left": 1082,
+        "top": 414,
+        "width": 364,
+        "height": 276
+      },
+      "sourceFoot": [
+        73.5,
+        269
+      ],
+      "scale": 0.6177606177606177,
+      "offset": [
+        147,
+        104
+      ],
+      "sha256": "b34fa85c217e6f4feb8864d8afcae885a5916de050c8098a56182f85cf832ac4"
+    },
+    {
+      "slot": 10,
+      "sourceIndex": 10,
+      "rect": {
+        "left": 773,
+        "top": 728,
+        "width": 224,
+        "height": 323
+      },
+      "sourceFoot": [
+        128.5,
+        321
+      ],
+      "scale": 0.5405405405405406,
+      "offset": [
+        123,
+        96
+      ],
+      "sha256": "bb9c3fe3b4b2bff065b8761d8517d1499a1fc1012d35908153e3cef6eccb531c"
+    },
+    {
+      "slot": 11,
+      "sourceIndex": 11,
+      "rect": {
+        "left": 1108,
+        "top": 749,
+        "width": 311,
+        "height": 305
+      },
+      "sourceFoot": [
+        227.5,
+        304
+      ],
+      "scale": 0.5405405405405406,
+      "offset": [
+        70,
+        107
+      ],
+      "sha256": "e60a9cce5a9208a35948869015f5f81913003ec10ab74c5b12993fca2e62fc8f"
+    }
+  ]
+}

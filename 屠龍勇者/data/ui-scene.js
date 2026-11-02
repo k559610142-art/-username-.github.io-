@@ -302,7 +302,27 @@ const MON_SPRITES = {
     lindvior: { cw: 128, ch: 105, body: 88, n: [4, 3, 4, 3, 6, 8], size: 80 },   // 風龍：側面走路 3 格、正面攻擊 3 格（原圖中間是大張立繪）
 };
 Object.assign(MON_SPRITES, SCENE_ART_MONSTERS);
-function monSpriteImg(mid) { return mid && MON_SPRITES[mid] ? spriteImage(MON_SPRITES[mid].src || `images/monsters/${mid}.png`) : null; }
+const MONSTER_ART_CACHE_LIMIT = 4;
+let monsterArtCache = [];
+function monSpriteSpec(mid, attack) {
+    const ms = mid && MON_SPRITES[mid];
+    if (!ms || !ms.actor) return ms;
+    const actor = CLASSES[ms.actor].sprite, a = actor[attack === true ? 'attack' : 'walk'];
+    const counts = s => ['down', 'right', 'up'].map(d => s.frames[d]);
+    return { ...ms, src: a.src, cw: a.cellW, ch: a.cellH, body: actor.charH,
+        n: [...counts(actor.walk), ...counts(actor.attack)], foot: actor.foot || [a.cellW / 2, a.cellH], actorRows: true };
+}
+function monSpriteImg(mid, attack) {
+    const ms = monSpriteSpec(mid, attack);
+    if (!ms) return null;
+    if (ms.actor) { const actor = CLASSES[ms.actor].sprite; spriteImage(actor.walk.src); spriteImage(actor.attack.src); }
+    if (ms.src && ms.src.startsWith('images/monsters/quest-v1/')) {
+        monsterArtCache = monsterArtCache.filter(src => src !== ms.src);
+        monsterArtCache.push(ms.src);
+        while (monsterArtCache.length > MONSTER_ART_CACHE_LIMIT) delete spriteCache[monsterArtCache.shift()];
+    }
+    return spriteImage(ms.src || `images/monsters/${mid}.png`);
+}
 
 let scene = null;   // { key, grid, theme, pl:{x,y,rx,ry,path,dir,lunge}, mons:[], engaged, floats:[], ... }
 let sceneRaf = 0;
@@ -374,7 +394,8 @@ function buildScene() {
     if (bg) { spriteImage(bg.src); if (bg.mini) spriteImage(bg.mini); if (bg.occ) occData(bg.occ); }
     const zz = player.loc.type === 'zone' ? currentZone() : null;
     if (zz && zz.mons) zz.mons.forEach(monSpriteImg);
-    if (zz && zz.type === 'tower') Object.keys(SCENE_ART_MONSTERS).forEach(monSpriteImg);
+    if (zz && zz.boss) monSpriteImg(zz.boss);
+    if (zz && zz.type === 'tower') Object.keys(SCENE_ART_MONSTERS).filter(mid => mid.startsWith('art-')).forEach(monSpriteImg);
     if (player.loc.type === 'town' && bg) townNpcList(bg).forEach(n => { if (n.img) spriteImage(n.img); });
     const mw = bg ? bg.w : MAP_W, mh = bg ? bg.h : MAP_H;
     // 大地圖：從村莊傳送過來時出生在這個地圖對應區域的 start
@@ -775,6 +796,7 @@ function sceneUpdate(dt) {
         best.icon = inst.icon;
         best.name = inst.name;
         best.mid = inst.id;
+        monSpriteImg(sceneMonsterArt(best));
         best.lastHp = inst.hp;
         if (inst === hunt.mon) pl.path = [];
     }
@@ -1191,14 +1213,14 @@ function sceneDraw(ctx, W, H) {
         const big = m.inst && (m.inst.boss || m.inst.dragon);
         ctx.fillStyle = 'rgba(0,0,0,0.35)';
         ctx.beginPath(); ctx.ellipse(sx, sy + 11, big ? 16 : 11, 4, 0, 0, Math.PI * 2); ctx.fill();
-        const art = sceneMonsterArt(m), img = monSpriteImg(art);
+        const art = sceneMonsterArt(m), img = monSpriteImg(art, m.atk > 0);
         let top = sy - (big ? 44 : 30);
         if (img) {
             // 方向：戰鬥中面向角色，遊走時看移動方向；左右用側面圖鏡像
             const fight = m.inst && !m.dead;
             const dx = fight ? pl.rx - m.rx : m.x - m.rx, dy = fight ? pl.ry - m.ry : m.y - m.ry;
             if (Math.abs(dx) > 0.01 || Math.abs(dy) > 0.01) m.face = Math.abs(dx) >= Math.abs(dy) ? (dx < 0 ? 'left' : 'right') : (dy < 0 ? 'up' : 'down');
-            const f = m.face || 'down', ms = MON_SPRITES[art], row = { down: 0, right: 1, left: 1, up: 2 }[f] + (m.atk > 0 ? 3 : 0);
+            const f = m.face || 'down', ms = monSpriteSpec(art, m.atk > 0), row = { down: 0, right: 1, left: 1, up: 2 }[f] + (m.atk > 0 ? 3 : 0);
             const dh = (ms.size || (big ? 62 : 42)) * ms.ch / ms.body, dw = ms.cw * dh / ms.ch;
             const moving = !fight && (Math.abs(m.x - m.rx) + Math.abs(m.y - m.ry)) > 0.02;
             const n = ms.n[row];
@@ -1206,21 +1228,25 @@ function sceneDraw(ctx, W, H) {
             const fr = m.atk > 0 ? Math.min(n - 1, Math.floor((1 - m.atk / 380) * n)) : moving ? Math.floor(gameNow / 150) % n : 0;
             const bob = moving && n === 1 ? Math.abs(Math.sin(gameNow / 110)) * 2 : 0;
             const frameX = ms.cols ? (row * 2 + fr) % ms.cols * ms.cw : fr * ms.cw;
-            const frameY = ms.cols ? Math.floor((row * 2 + fr) / ms.cols) * ms.ch : row * ms.ch;
+            const frameY = ms.cols ? Math.floor((row * 2 + fr) / ms.cols) * ms.ch : (ms.actorRows ? row % 3 : row) * ms.ch;
+            const drawX = ms.foot ? sx - ms.foot[0] * dw / ms.cw : sx - dw / 2;
+            const drawY = (ms.foot ? sy + 13 - ms.foot[1] * dh / ms.ch : sy + 13 - dh) - bob;
+            const box = ms.foot ? [drawX - 4, drawY - 4, drawX + dw + 4, drawY + dh + 2] : [sx - dw / 2 - 4, sy + 13 - dh - 4, sx + dw / 2 + 4, sy + 15];
             const body = () => {
                 ctx.save();
                 hurtFx();
+                if (ms.shadow) { ctx.globalAlpha *= 0.82; ctx.filter = 'brightness(0.55) sepia(1) saturate(3) hue-rotate(190deg)'; ctx.shadowColor = '#a58cff'; ctx.shadowBlur = 3; }
                 if (f === 'left') { ctx.translate(sx, 0); ctx.scale(-1, 1); ctx.translate(-sx, 0); }
-                ctx.drawImage(img, frameX, frameY, ms.cw, ms.ch, sx - dw / 2, sy + 13 - dh - bob, dw, dh);
-                if (flash > 0 && img.complete && img.naturalWidth) ctx.drawImage(hitFlashCanvas(img, frameX, frameY, ms.cw, ms.ch, flash), sx - dw / 2, sy + 13 - dh - bob, dw, dh);
+                ctx.drawImage(img, frameX, frameY, ms.cw, ms.ch, drawX, drawY, dw, dh);
+                if (flash > 0 && img.complete && img.naturalWidth) ctx.drawImage(hitFlashCanvas(img, frameX, frameY, ms.cw, ms.ch, flash), drawX, drawY, dw, dh);
                 ctx.restore();
             };
             body();
-            top = sy + 13 - dh - 4;
+            top = ms.foot ? sy + 13 - (ms.size || (big ? 62 : 42)) - 4 : sy + 13 - dh - 4;
             const a = ctx.globalAlpha;
             ctx.globalAlpha = 1;
             // 被樹、擺設擋住：目前鎖定的目標疊半透明身影（其他怪就讓牠躲在後面）
-            if (drawOccPatch(ctx, sx - dw / 2 - 4, sy + 13 - dh - 4, sx + dw / 2 + 4, sy + 15, m.ry, camX, camY) && m === scene.engaged) { ctx.globalAlpha = OCC_GHOST * a; body(); }
+            if (drawOccPatch(ctx, ...box, m.ry, camX, camY) && m === scene.engaged) { ctx.globalAlpha = OCC_GHOST * a; body(); }
         } else {
             const body = () => {
                 ctx.save();

@@ -1,0 +1,267 @@
+{
+  "key": "poacher-chief",
+  "name": "盜獵者首領・薩克",
+  "sprite": {
+    "src": "images/monsters/quest-v1/poacher-chief.png",
+    "cw": 384,
+    "ch": 320,
+    "body": 160,
+    "n": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "cols": 4,
+    "size": 68,
+    "foot": [
+      192,
+      270
+    ]
+  },
+  "portrait": "images/monsters/quest-v1/poacher-chief-portrait.png",
+  "cells": [
+    {
+      "slot": 0,
+      "sourceIndex": 0,
+      "rect": {
+        "left": 129,
+        "top": 40,
+        "width": 162,
+        "height": 295
+      },
+      "sourceFoot": [
+        62,
+        293
+      ],
+      "scale": 0.5460750853242321,
+      "offset": [
+        158,
+        111
+      ],
+      "sha256": "30f7288b1485be33db03c1a973f09db5e4b37358ddc0a1c8ed38c72e9936110c"
+    },
+    {
+      "slot": 1,
+      "sourceIndex": 1,
+      "rect": {
+        "left": 471,
+        "top": 50,
+        "width": 161,
+        "height": 285
+      },
+      "sourceFoot": [
+        67,
+        284
+      ],
+      "scale": 0.5460750853242321,
+      "offset": [
+        155,
+        115
+      ],
+      "sha256": "47fcd542496b972ca05cd0faa0cd083091776d57e353751d0c217e663f624e3a"
+    },
+    {
+      "slot": 2,
+      "sourceIndex": 4,
+      "rect": {
+        "left": 109,
+        "top": 408,
+        "width": 204,
+        "height": 271
+      },
+      "sourceFoot": [
+        149.5,
+        270
+      ],
+      "scale": 0.5904059040590406,
+      "offset": [
+        104,
+        111
+      ],
+      "sha256": "7886b4b378fcbca4eae5e9363de593eaffe8bec17cf6b86ba8988c455440a003"
+    },
+    {
+      "slot": 3,
+      "sourceIndex": 5,
+      "rect": {
+        "left": 457,
+        "top": 402,
+        "width": 195,
+        "height": 269
+      },
+      "sourceFoot": [
+        97,
+        267
+      ],
+      "scale": 0.5904059040590406,
+      "offset": [
+        135,
+        113
+      ],
+      "sha256": "b660c7fd5ef6498846068cafc51026c7135bc9bb4669263b07250d9f2055da70"
+    },
+    {
+      "slot": 4,
+      "sourceIndex": 8,
+      "rect": {
+        "left": 123,
+        "top": 754,
+        "width": 150,
+        "height": 282
+      },
+      "sourceFoot": [
+        83,
+        281
+      ],
+      "scale": 0.5423728813559322,
+      "offset": [
+        147,
+        118
+      ],
+      "sha256": "ea712a43a8f22e2b681a4925c386921dcc17cf24f003c0429695d62752373a42"
+    },
+    {
+      "slot": 5,
+      "sourceIndex": 9,
+      "rect": {
+        "left": 478,
+        "top": 747,
+        "width": 159,
+        "height": 296
+      },
+      "sourceFoot": [
+        81.5,
+        294
+      ],
+      "scale": 0.5423728813559322,
+      "offset": [
+        148,
+        111
+      ],
+      "sha256": "cfd678ad37da5f17af7d4b8fb6e32fdada24ea41de7c5bb4453ae85825e31845"
+    },
+    {
+      "slot": 6,
+      "sourceIndex": 2,
+      "rect": {
+        "left": 797,
+        "top": 15,
+        "width": 229,
+        "height": 313
+      },
+      "sourceFoot": [
+        150.5,
+        311
+      ],
+      "scale": 0.5460750853242321,
+      "offset": [
+        110,
+        100
+      ],
+      "sha256": "f4d531e9be6de1a132d2df6d676c1278cf47d3b255c0f2688bee7383dda5123c"
+    },
+    {
+      "slot": 7,
+      "sourceIndex": 3,
+      "rect": {
+        "left": 1146,
+        "top": 20,
+        "width": 249,
+        "height": 315
+      },
+      "sourceFoot": [
+        152,
+        313
+      ],
+      "scale": 0.5460750853242321,
+      "offset": [
+        110,
+        99
+      ],
+      "sha256": "e577ef335be4432ab210e39542760864295fd36e45024e7ba1f8662b3e069d0a"
+    },
+    {
+      "slot": 8,
+      "sourceIndex": 6,
+      "rect": {
+        "left": 787,
+        "top": 376,
+        "width": 271,
+        "height": 320
+      },
+      "sourceFoot": [
+        169,
+        299
+      ],
+      "scale": 0.5904059040590406,
+      "offset": [
+        92,
+        93
+      ],
+      "sha256": "d7ba63c13294cb345205b293863646466779e00af165adff9ada0d206487f1f8"
+    },
+    {
+      "slot": 9,
+      "sourceIndex": 7,
+      "rect": {
+        "left": 1130,
+        "top": 376,
+        "width": 297,
+        "height": 320
+      },
+      "sourceFoot": [
+        159,
+        304
+      ],
+      "scale": 0.5904059040590406,
+      "offset": [
+        99,
+        91
+      ],
+      "sha256": "dda1022327aa94364c574905125487af0e3c9ceb7804b9d28faf2b17d03de2d7"
+    },
+    {
+      "slot": 10,
+      "sourceIndex": 10,
+      "rect": {
+        "left": 805,
+        "top": 709,
+        "width": 211,
+        "height": 353
+      },
+      "sourceFoot": [
+        160.5,
+        352
+      ],
+      "scale": 0.5423728813559322,
+      "offset": [
+        105,
+        80
+      ],
+      "sha256": "3f5fbfc278b62f6cda842e43cef9f636959889f5386abfbe237b34f33d8f4544"
+    },
+    {
+      "slot": 11,
+      "sourceIndex": 11,
+      "rect": {
+        "left": 1118,
+        "top": 724,
+        "width": 248,
+        "height": 327
+      },
+      "sourceFoot": [
+        184,
+        326
+      ],
+      "scale": 0.5423728813559322,
+      "offset": [
+        92,
+        93
+      ],
+      "sha256": "03937aa5282fc4e2b3aadc95f1a731fb8cd236a8dd1597c7709e489d94f50b7e"
+    }
+  ]
+}

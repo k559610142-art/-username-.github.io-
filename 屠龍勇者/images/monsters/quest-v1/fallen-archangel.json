@@ -1,0 +1,267 @@
+{
+  "key": "fallen-archangel",
+  "name": "墮落天使長・路西法",
+  "sprite": {
+    "src": "images/monsters/quest-v1/fallen-archangel.png",
+    "cw": 384,
+    "ch": 320,
+    "body": 160,
+    "n": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "cols": 4,
+    "size": 68,
+    "foot": [
+      192,
+      270
+    ]
+  },
+  "portrait": "images/monsters/quest-v1/fallen-archangel-portrait.png",
+  "cells": [
+    {
+      "slot": 0,
+      "sourceIndex": 0,
+      "rect": {
+        "left": 102,
+        "top": 79,
+        "width": 201,
+        "height": 274
+      },
+      "sourceFoot": [
+        122,
+        273
+      ],
+      "scale": 0.583941605839416,
+      "offset": [
+        121,
+        111
+      ],
+      "sha256": "facba452f0b3830bb281672446b3b67340fa36a871db657b6f8cdbddaf1944a6"
+    },
+    {
+      "slot": 1,
+      "sourceIndex": 1,
+      "rect": {
+        "left": 469,
+        "top": 79,
+        "width": 169,
+        "height": 275
+      },
+      "sourceFoot": [
+        88,
+        273
+      ],
+      "scale": 0.583941605839416,
+      "offset": [
+        141,
+        111
+      ],
+      "sha256": "8333be137500e8b916e5c60332e65bea3a910eff28a94183855ee672385121e6"
+    },
+    {
+      "slot": 2,
+      "sourceIndex": 4,
+      "rect": {
+        "left": 124,
+        "top": 418,
+        "width": 219,
+        "height": 251
+      },
+      "sourceFoot": [
+        70.5,
+        250
+      ],
+      "scale": 0.6201550387596899,
+      "offset": [
+        148,
+        115
+      ],
+      "sha256": "59cc4ec534d768de92293051cafb2ef30c7396def558f66b95a82119aa923715"
+    },
+    {
+      "slot": 3,
+      "sourceIndex": 5,
+      "rect": {
+        "left": 469,
+        "top": 418,
+        "width": 227,
+        "height": 258
+      },
+      "sourceFoot": [
+        60,
+        257
+      ],
+      "scale": 0.6201550387596899,
+      "offset": [
+        155,
+        111
+      ],
+      "sha256": "45165b57c88fde7f17328d49b935beae5b97ad5c98e69d74be800f95bae5cb5b"
+    },
+    {
+      "slot": 4,
+      "sourceIndex": 8,
+      "rect": {
+        "left": 129,
+        "top": 739,
+        "width": 230,
+        "height": 280
+      },
+      "sourceFoot": [
+        74,
+        279
+      ],
+      "scale": 0.5734767025089605,
+      "offset": [
+        150,
+        111
+      ],
+      "sha256": "8649548908e2e9097074885fa31d26996ca03ce76e3111a84b415a0abfecf951"
+    },
+    {
+      "slot": 5,
+      "sourceIndex": 9,
+      "rect": {
+        "left": 479,
+        "top": 739,
+        "width": 198,
+        "height": 274
+      },
+      "sourceFoot": [
+        75,
+        273
+      ],
+      "scale": 0.5734767025089605,
+      "offset": [
+        149,
+        114
+      ],
+      "sha256": "35b09328e4252463f64668c749e2e95e1dacb94315b17411e1e78cff2cbf6d24"
+    },
+    {
+      "slot": 6,
+      "sourceIndex": 2,
+      "rect": {
+        "left": 782,
+        "top": 8,
+        "width": 212,
+        "height": 345
+      },
+      "sourceFoot": [
+        86.5,
+        344
+      ],
+      "scale": 0.583941605839416,
+      "offset": [
+        142,
+        69
+      ],
+      "sha256": "cbd45d4f5e91de4bfcebbd1f9f03be80761e271bd9ea625f623280f1394a3921"
+    },
+    {
+      "slot": 7,
+      "sourceIndex": 3,
+      "rect": {
+        "left": 1125,
+        "top": 77,
+        "width": 270,
+        "height": 277
+      },
+      "sourceFoot": [
+        158,
+        276
+      ],
+      "scale": 0.583941605839416,
+      "offset": [
+        100,
+        109
+      ],
+      "sha256": "9e86f736f6167fc51c38051e59a16f0bd8ebaebec77d02431307069fb3040cb4"
+    },
+    {
+      "slot": 8,
+      "sourceIndex": 6,
+      "rect": {
+        "left": 759,
+        "top": 352,
+        "width": 200,
+        "height": 323
+      },
+      "sourceFoot": [
+        99.5,
+        321
+      ],
+      "scale": 0.6201550387596899,
+      "offset": [
+        130,
+        72
+      ],
+      "sha256": "0c7e9b16191eee78b9b2b2e9fa65ef83347d75cc68355ed09f632b2dfe7d02a0"
+    },
+    {
+      "slot": 9,
+      "sourceIndex": 7,
+      "rect": {
+        "left": 1091,
+        "top": 433,
+        "width": 355,
+        "height": 244
+      },
+      "sourceFoot": [
+        143.5,
+        223
+      ],
+      "scale": 0.6201550387596899,
+      "offset": [
+        104,
+        132
+      ],
+      "sha256": "35a781d6597b89d960a8102789139e55a9811a46106d4dc707911406ed1399ac"
+    },
+    {
+      "slot": 10,
+      "sourceIndex": 10,
+      "rect": {
+        "left": 773,
+        "top": 676,
+        "width": 193,
+        "height": 346
+      },
+      "sourceFoot": [
+        102.5,
+        344
+      ],
+      "scale": 0.5734767025089605,
+      "offset": [
+        133,
+        73
+      ],
+      "sha256": "bf51f4945d7ac7588a857afdfd422e8041eb19eb082c63b1a3a8e33a82f0dc45"
+    },
+    {
+      "slot": 11,
+      "sourceIndex": 11,
+      "rect": {
+        "left": 1108,
+        "top": 739,
+        "width": 295,
+        "height": 282
+      },
+      "sourceFoot": [
+        90.5,
+        281
+      ],
+      "scale": 0.5734767025089605,
+      "offset": [
+        140,
+        109
+      ],
+      "sha256": "8c2a31a43e62f5dad7a1b84529881dc82d148056def388684a6e045143c5fbd3"
+    }
+  ]
+}

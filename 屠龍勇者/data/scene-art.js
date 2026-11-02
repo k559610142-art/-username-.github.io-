@@ -61,10 +61,865 @@ const SCENE_TOWER_ART = {
 const SCENE_ART_MONSTERS = Object.fromEntries([...new Set(Object.values(SCENE_TOWER_ART))].map(art => ['art-' + art, {
     src: 'images/monsters/rework/mon-' + art + '.png', cw: 192, ch: 224, body: 168, n: [2, 2, 2, 2, 2, 2], cols: 4, size: art.endsWith('-boss') ? 74 : 48,
 }]));
+const SCENE_QUEST_ART = {
+    "叛軍將軍・格倫": "quest-rebel-general",
+    "篡位者・黑暗之王": "quest-usurper-king",
+    "逆王之影・格爾德": "quest-anti-king",
+    "叛變騎士・維克": "quest-traitor-knight",
+    "死亡騎士": "quest-death-knight",
+    "墮落騎士團長・維克": "quest-fallen-commander",
+    "黑魔法師・卡斯特": "quest-black-mage",
+    "古代魔導師的亡靈": "quest-ancient-mage-ghost",
+    "虛空魔導・莫爾斯": "quest-void-archmage",
+    "盜獵者首領・薩克": "quest-poacher-chief",
+    "腐化樹妖": "quest-corrupt-treant",
+    "枯萎樹靈・艾爾克": "quest-withered-treant",
+    "喚龍教團執事": "quest-dragon-cult-deacon",
+    "喚龍教主": "quest-dragon-cult-master",
+    "無面刺客・夜鴉": "quest-faceless-assassin",
+    "破門者・鬼刃": "quest-gatebreaker",
+    "拳聖烈（全力）": "quest-fist-saint",
+    "修羅魔王・阿迦": "quest-asura-demon-king",
+    "遠古石巨人": "quest-ancient-stone-giant",
+    "炎魔將軍": "quest-flame-general",
+    "灰燼巨人・格倫德": "quest-ash-giant",
+    "強盜頭目・鐵手": "quest-bandit-ironhand",
+    "古代機械魔像": "quest-ancient-mech-golem",
+    "鐵鏽砲台・哈茲": "quest-rust-turret",
+    "失控魔導兵": "quest-runaway-magic-soldier",
+    "魔導劍聖的殘影": "quest-sword-saint-remnant",
+    "崩壞魔劍・艾克西": "quest-broken-magic-blade",
+    "墮落神官・莫德": "quest-fallen-priest",
+    "巫妖王": "quest-lich-king",
+    "褻瀆主教・瑟恩": "quest-blasphemous-bishop",
+    "深淵使者・巴爾": "quest-abyss-envoy",
+    "墮落天使長・路西法": "quest-fallen-archangel",
+    "墮天使・薩麥爾": "quest-fallen-seraph",
+    "天界獵人・加百列": "quest-celestial-hunter",
+    "深淵之主・阿斯莫德": "quest-abyss-lord",
+    "深淵吞噬者・巴爾": "quest-abyss-devourer",
+    "王族的試煉之影": "quest-shadow-royal",
+    "騎士的試煉之影": "quest-shadow-knight",
+    "法師的試煉之影": "quest-shadow-mage",
+    "妖精的試煉之影": "quest-shadow-elf",
+    "黑暗妖精的試煉之影": "quest-shadow-darkelf",
+    "修羅的試煉之影": "quest-shadow-shura",
+    "戰士的試煉之影": "quest-shadow-warrior",
+    "槍手的試煉之影": "quest-shadow-gunner",
+    "魔鬥士的試煉之影": "quest-shadow-magicfighter",
+    "聖騎士的試煉之影": "quest-shadow-paladin",
+    "天使的試煉之影": "quest-shadow-angel",
+    "惡魔的試煉之影": "quest-shadow-demon"
+};
+const SCENE_QUEST_SPRITES = {
+    "valakas": {
+        "src": "images/monsters/quest-v1/valakas.png",
+        "cw": 640,
+        "ch": 448,
+        "body": 192,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 104,
+        "foot": [
+            320,
+            320
+        ]
+    },
+    "quest-rebel-general": {
+        "src": "images/monsters/quest-v1/rebel-general.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 68,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-usurper-king": {
+        "src": "images/monsters/quest-v1/usurper-king.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 68,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-anti-king": {
+        "src": "images/monsters/quest-v1/anti-king.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 68,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-traitor-knight": {
+        "src": "images/monsters/quest-v1/traitor-knight.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 68,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-death-knight": {
+        "src": "images/monsters/quest-v1/death-knight.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 68,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-fallen-commander": {
+        "src": "images/monsters/quest-v1/fallen-commander.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 68,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-black-mage": {
+        "src": "images/monsters/quest-v1/black-mage.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 68,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-ancient-mage-ghost": {
+        "src": "images/monsters/quest-v1/ancient-mage-ghost.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 68,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-void-archmage": {
+        "src": "images/monsters/quest-v1/void-archmage.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 68,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-poacher-chief": {
+        "src": "images/monsters/quest-v1/poacher-chief.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 68,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-corrupt-treant": {
+        "src": "images/monsters/quest-v1/corrupt-treant.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 78,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-withered-treant": {
+        "src": "images/monsters/quest-v1/withered-treant.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 82,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-dragon-cult-deacon": {
+        "src": "images/monsters/quest-v1/dragon-cult-deacon.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 68,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-dragon-cult-master": {
+        "src": "images/monsters/quest-v1/dragon-cult-master.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 68,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-faceless-assassin": {
+        "src": "images/monsters/quest-v1/faceless-assassin.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 68,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-gatebreaker": {
+        "src": "images/monsters/quest-v1/gatebreaker.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 68,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-fist-saint": {
+        "src": "images/monsters/quest-v1/fist-saint.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 68,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-asura-demon-king": {
+        "src": "images/monsters/quest-v1/asura-demon-king.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 78,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-ancient-stone-giant": {
+        "src": "images/monsters/quest-v1/ancient-stone-giant.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 86,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-flame-general": {
+        "src": "images/monsters/quest-v1/flame-general.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 68,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-ash-giant": {
+        "src": "images/monsters/quest-v1/ash-giant.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 90,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-bandit-ironhand": {
+        "src": "images/monsters/quest-v1/bandit-ironhand.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 68,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-ancient-mech-golem": {
+        "src": "images/monsters/quest-v1/ancient-mech-golem.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 82,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-rust-turret": {
+        "src": "images/monsters/quest-v1/rust-turret.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 68,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-runaway-magic-soldier": {
+        "src": "images/monsters/quest-v1/runaway-magic-soldier.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 68,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-sword-saint-remnant": {
+        "src": "images/monsters/quest-v1/sword-saint-remnant.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 68,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-broken-magic-blade": {
+        "src": "images/monsters/quest-v1/broken-magic-blade.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 68,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-fallen-priest": {
+        "src": "images/monsters/quest-v1/fallen-priest.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 68,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-lich-king": {
+        "src": "images/monsters/quest-v1/lich-king.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 68,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-blasphemous-bishop": {
+        "src": "images/monsters/quest-v1/blasphemous-bishop.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 68,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-abyss-envoy": {
+        "src": "images/monsters/quest-v1/abyss-envoy.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 68,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-fallen-archangel": {
+        "src": "images/monsters/quest-v1/fallen-archangel.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 68,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-fallen-seraph": {
+        "src": "images/monsters/quest-v1/fallen-seraph.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 68,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-celestial-hunter": {
+        "src": "images/monsters/quest-v1/celestial-hunter.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 68,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-abyss-lord": {
+        "src": "images/monsters/quest-v1/abyss-lord.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 86,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-abyss-devourer": {
+        "src": "images/monsters/quest-v1/abyss-devourer.png",
+        "cw": 384,
+        "ch": 320,
+        "body": 160,
+        "n": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        "cols": 4,
+        "size": 90,
+        "foot": [
+            192,
+            270
+        ]
+    },
+    "quest-shadow-royal": {
+        "actor": "royal",
+        "size": 48,
+        "shadow": true
+    },
+    "quest-shadow-knight": {
+        "actor": "knight",
+        "size": 48,
+        "shadow": true
+    },
+    "quest-shadow-mage": {
+        "actor": "mage",
+        "size": 48,
+        "shadow": true
+    },
+    "quest-shadow-elf": {
+        "actor": "elf",
+        "size": 48,
+        "shadow": true
+    },
+    "quest-shadow-darkelf": {
+        "actor": "darkelf",
+        "size": 48,
+        "shadow": true
+    },
+    "quest-shadow-shura": {
+        "actor": "shura",
+        "size": 48,
+        "shadow": true
+    },
+    "quest-shadow-warrior": {
+        "actor": "warrior",
+        "size": 48,
+        "shadow": true
+    },
+    "quest-shadow-gunner": {
+        "actor": "gunner",
+        "size": 48,
+        "shadow": true
+    },
+    "quest-shadow-magicfighter": {
+        "actor": "magicfighter",
+        "size": 48,
+        "shadow": true
+    },
+    "quest-shadow-paladin": {
+        "actor": "paladin",
+        "size": 48,
+        "shadow": true
+    },
+    "quest-shadow-angel": {
+        "actor": "angel",
+        "size": 48,
+        "shadow": true
+    },
+    "quest-shadow-demon": {
+        "actor": "demon",
+        "size": 48,
+        "shadow": true
+    }
+};
+Object.assign(SCENE_ART_MONSTERS, SCENE_QUEST_SPRITES);
 function sceneMonsterArt(m) {
     if (!m) return null;
     if (m.mid && SCENE_ART_MONSTERS[m.mid]) return m.mid;
-    const name = (m.inst ? m.inst.name : m.name) || '', art = SCENE_TOWER_ART[name.replace(/\s*[（(].*$/, '')];
+    const name = (m.inst ? m.inst.name : m.name) || '';
+    if ((m.mid === 'questBoss' || m.inst && m.inst.questBoss) && SCENE_QUEST_ART[name]) return SCENE_QUEST_ART[name];
+    const art = SCENE_TOWER_ART[name.replace(/\s*[（(].*$/, '')];
     return art && (!m.mid || /^tower/.test(m.mid) || m.inst && m.inst.towerFloor) ? 'art-' + art : m.mid;
 }
 function drawSceneAtmosphere(ctx, W, H, camX, camY) {

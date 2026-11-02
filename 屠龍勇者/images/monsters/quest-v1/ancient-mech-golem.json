@@ -1,0 +1,267 @@
+{
+  "key": "ancient-mech-golem",
+  "name": "古代機械魔像",
+  "sprite": {
+    "src": "images/monsters/quest-v1/ancient-mech-golem.png",
+    "cw": 384,
+    "ch": 320,
+    "body": 160,
+    "n": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "cols": 4,
+    "size": 82,
+    "foot": [
+      192,
+      270
+    ]
+  },
+  "portrait": "images/monsters/quest-v1/ancient-mech-golem-portrait.png",
+  "cells": [
+    {
+      "slot": 0,
+      "sourceIndex": 0,
+      "rect": {
+        "left": 74,
+        "top": 33,
+        "width": 253,
+        "height": 316
+      },
+      "sourceFoot": [
+        165.5,
+        314
+      ],
+      "scale": 0.5079365079365079,
+      "offset": [
+        108,
+        111
+      ],
+      "sha256": "8007ce8afc36dd86a7d0377a0b2ab4559a1813082182f3ea49830d142d8f88e6"
+    },
+    {
+      "slot": 1,
+      "sourceIndex": 1,
+      "rect": {
+        "left": 421,
+        "top": 33,
+        "width": 245,
+        "height": 315
+      },
+      "sourceFoot": [
+        94.5,
+        313
+      ],
+      "scale": 0.5079365079365079,
+      "offset": [
+        145,
+        111
+      ],
+      "sha256": "d4aeae10b6cf8e73aceffdc198726134b502c8463427788e80ff46540537dadf"
+    },
+    {
+      "slot": 2,
+      "sourceIndex": 4,
+      "rect": {
+        "left": 98,
+        "top": 382,
+        "width": 205,
+        "height": 304
+      },
+      "sourceFoot": [
+        136.5,
+        302
+      ],
+      "scale": 0.528052805280528,
+      "offset": [
+        120,
+        111
+      ],
+      "sha256": "0d62290dbdb25ab62c442dac1abf95906b1a51cb04c65b525c669c1fe8f8536c"
+    },
+    {
+      "slot": 3,
+      "sourceIndex": 5,
+      "rect": {
+        "left": 435,
+        "top": 383,
+        "width": 243,
+        "height": 296
+      },
+      "sourceFoot": [
+        121,
+        295
+      ],
+      "scale": 0.528052805280528,
+      "offset": [
+        128,
+        114
+      ],
+      "sha256": "0e8e32c805022ab92c3de0ba2b091dd622638638c1f260879219c19c76eb513a"
+    },
+    {
+      "slot": 4,
+      "sourceIndex": 8,
+      "rect": {
+        "left": 74,
+        "top": 724,
+        "width": 241,
+        "height": 313
+      },
+      "sourceFoot": [
+        155,
+        312
+      ],
+      "scale": 0.5047318611987381,
+      "offset": [
+        114,
+        113
+      ],
+      "sha256": "cb57341be6b4fa423f343cd566eebcfd89ba36a31573d26f6d80d4531d5435fb"
+    },
+    {
+      "slot": 5,
+      "sourceIndex": 9,
+      "rect": {
+        "left": 422,
+        "top": 718,
+        "width": 237,
+        "height": 319
+      },
+      "sourceFoot": [
+        90,
+        317
+      ],
+      "scale": 0.5047318611987381,
+      "offset": [
+        147,
+        111
+      ],
+      "sha256": "ea806ab832b3e69edc57bcb2544f30dd0059ad044c9a45a64a31c327a2ce8221"
+    },
+    {
+      "slot": 6,
+      "sourceIndex": 2,
+      "rect": {
+        "left": 776,
+        "top": 34,
+        "width": 257,
+        "height": 312
+      },
+      "sourceFoot": [
+        175,
+        311
+      ],
+      "scale": 0.5079365079365079,
+      "offset": [
+        103,
+        113
+      ],
+      "sha256": "a2a652fbf22c633ba6f2f5a6132de516d5b627853bcd4c729aba340e307a9a9d"
+    },
+    {
+      "slot": 7,
+      "sourceIndex": 3,
+      "rect": {
+        "left": 1156,
+        "top": 47,
+        "width": 245,
+        "height": 302
+      },
+      "sourceFoot": [
+        168,
+        300
+      ],
+      "scale": 0.5079365079365079,
+      "offset": [
+        107,
+        118
+      ],
+      "sha256": "b000066e49d9a71bab7278949be5e5ae7c7f36acf4d6c4d87e5a2b52598ecd90"
+    },
+    {
+      "slot": 8,
+      "sourceIndex": 6,
+      "rect": {
+        "left": 771,
+        "top": 404,
+        "width": 277,
+        "height": 278
+      },
+      "sourceFoot": [
+        138,
+        277
+      ],
+      "scale": 0.528052805280528,
+      "offset": [
+        119,
+        124
+      ],
+      "sha256": "0d922fc9b818c6cf320a04b37980c52e1b0f2ba548f2439ebb2d5e1e097bfccb"
+    },
+    {
+      "slot": 9,
+      "sourceIndex": 7,
+      "rect": {
+        "left": 1097,
+        "top": 403,
+        "width": 329,
+        "height": 286
+      },
+      "sourceFoot": [
+        164,
+        285
+      ],
+      "scale": 0.528052805280528,
+      "offset": [
+        105,
+        120
+      ],
+      "sha256": "de2be1bb8b3a4a1ce81e8ef50fdc442b1fb4e6b78421dc4d402729076aa973bf"
+    },
+    {
+      "slot": 10,
+      "sourceIndex": 10,
+      "rect": {
+        "left": 772,
+        "top": 722,
+        "width": 236,
+        "height": 317
+      },
+      "sourceFoot": [
+        174,
+        316
+      ],
+      "scale": 0.5047318611987381,
+      "offset": [
+        104,
+        111
+      ],
+      "sha256": "50569f5726544c67bbd1a893374d622551a58a52abcbc507fd92c1f7bb022f1f"
+    },
+    {
+      "slot": 11,
+      "sourceIndex": 11,
+      "rect": {
+        "left": 1119,
+        "top": 729,
+        "width": 282,
+        "height": 316
+      },
+      "sourceFoot": [
+        192,
+        314
+      ],
+      "scale": 0.5047318611987381,
+      "offset": [
+        95,
+        112
+      ],
+      "sha256": "dd8334850a9b3f23bb570ccdc5a2b902199ab05bbd3bca3db7d2e487b1268f30"
+    }
+  ]
+}

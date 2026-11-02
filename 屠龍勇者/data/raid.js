@@ -858,12 +858,15 @@ function raidSceneDraw(ctx, W, H) {
         if (img && ms) {
             const row = { down: 0, right: 1, left: 1, up: 2 }[face] + (atking ? 3 : 0), n = ms.n[row];
             const fi = atking ? Math.min(n - 1, Math.floor((pos - atk[0]) / atkLen * n)) : Math.floor(now / 220) % ms.n[row];
-            const dh = (ms.size || 62) * ms.ch / ms.body * S * 1.35, dw = ms.cw * dh / ms.ch;
+            const bodySize = ms.foot ? Math.min(ms.size || 62, 90) : ms.size || 62;
+            const dh = bodySize * ms.ch / ms.body * S * 1.35, dw = ms.cw * dh / ms.ch;
+            const drawX = ms.foot ? bx - ms.foot[0] * dw / ms.cw : bx - dw / 2;
+            const drawY = ms.foot ? by + 4 * S - ms.foot[1] * dh / ms.ch : by + 4 * S - dh;
             const fx = ms.cols ? (row * 2 + fi) % ms.cols * ms.cw : fi * ms.cw, fy = ms.cols ? Math.floor((row * 2 + fi) / ms.cols) * ms.ch : row * ms.ch;
             ctx.save();
             if (face === 'left') { ctx.translate(bx, 0); ctx.scale(-1, 1); ctx.translate(-bx, 0); }
-            ctx.drawImage(img, fx, fy, ms.cw, ms.ch, bx - dw / 2, by + 4 * S - dh, dw, dh);
-            if (flash > 0.02) ctx.drawImage(hitFlashCanvas(img, fx, fy, ms.cw, ms.ch, flash), bx - dw / 2, by + 4 * S - dh, dw, dh);
+            ctx.drawImage(img, fx, fy, ms.cw, ms.ch, drawX, drawY, dw, dh);
+            if (flash > 0.02) ctx.drawImage(hitFlashCanvas(img, fx, fy, ms.cw, ms.ch, flash), drawX, drawY, dw, dh);
             ctx.restore();
         } else {
             ctx.font = `${Math.round(84 * S)}px "Segoe UI Emoji","Apple Color Emoji",sans-serif`;

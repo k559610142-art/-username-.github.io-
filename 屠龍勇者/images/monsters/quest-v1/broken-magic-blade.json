@@ -1,0 +1,267 @@
+{
+  "key": "broken-magic-blade",
+  "name": "崩壞魔劍・艾克西",
+  "sprite": {
+    "src": "images/monsters/quest-v1/broken-magic-blade.png",
+    "cw": 384,
+    "ch": 320,
+    "body": 160,
+    "n": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "cols": 4,
+    "size": 68,
+    "foot": [
+      192,
+      270
+    ]
+  },
+  "portrait": "images/monsters/quest-v1/broken-magic-blade-portrait.png",
+  "cells": [
+    {
+      "slot": 0,
+      "sourceIndex": 0,
+      "rect": {
+        "left": 99,
+        "top": 104,
+        "width": 223,
+        "height": 241
+      },
+      "sourceFoot": [
+        137,
+        239
+      ],
+      "scale": 0.6694560669456067,
+      "offset": [
+        100,
+        111
+      ],
+      "sha256": "6679621cfefc55ea569db69185d5911d9933b2e43614209504d04c3b44db1b0d"
+    },
+    {
+      "slot": 1,
+      "sourceIndex": 1,
+      "rect": {
+        "left": 461,
+        "top": 106,
+        "width": 188,
+        "height": 240
+      },
+      "sourceFoot": [
+        96.5,
+        239
+      ],
+      "scale": 0.6694560669456067,
+      "offset": [
+        127,
+        111
+      ],
+      "sha256": "6a36d4107057a6426ed26be955afcdcdc9a8eda86c0287060140bcec21c6684a"
+    },
+    {
+      "slot": 2,
+      "sourceIndex": 4,
+      "rect": {
+        "left": 111,
+        "top": 446,
+        "width": 225,
+        "height": 235
+      },
+      "sourceFoot": [
+        143.5,
+        234
+      ],
+      "scale": 0.6808510638297872,
+      "offset": [
+        94,
+        111
+      ],
+      "sha256": "fa7c4eadf79aef6ea59b827a90affc421060531cd0136a4f7f905d314da0169d"
+    },
+    {
+      "slot": 3,
+      "sourceIndex": 5,
+      "rect": {
+        "left": 464,
+        "top": 446,
+        "width": 235,
+        "height": 222
+      },
+      "sourceFoot": [
+        106,
+        220
+      ],
+      "scale": 0.6808510638297872,
+      "offset": [
+        120,
+        121
+      ],
+      "sha256": "c74a420abeaf3e47661498f7ca7965376d3e112e0221edd78cad3c2ebe1c1e05"
+    },
+    {
+      "slot": 4,
+      "sourceIndex": 8,
+      "rect": {
+        "left": 127,
+        "top": 761,
+        "width": 194,
+        "height": 242
+      },
+      "sourceFoot": [
+        77,
+        241
+      ],
+      "scale": 0.6611570247933884,
+      "offset": [
+        142,
+        111
+      ],
+      "sha256": "035dfa67df2ca28b953c6cae6ebbe8e4e4b9d6aaff868915c979e411f81678c8"
+    },
+    {
+      "slot": 5,
+      "sourceIndex": 9,
+      "rect": {
+        "left": 483,
+        "top": 764,
+        "width": 191,
+        "height": 242
+      },
+      "sourceFoot": [
+        72,
+        241
+      ],
+      "scale": 0.6611570247933884,
+      "offset": [
+        145,
+        111
+      ],
+      "sha256": "e0593ec3d4451b2692e3f6dd68eaf39e6ee5576a356f7eeae87522183aab13a2"
+    },
+    {
+      "slot": 6,
+      "sourceIndex": 2,
+      "rect": {
+        "left": 759,
+        "top": 50,
+        "width": 234,
+        "height": 307
+      },
+      "sourceFoot": [
+        138,
+        306
+      ],
+      "scale": 0.6694560669456067,
+      "offset": [
+        100,
+        65
+      ],
+      "sha256": "4cc594558c52b10643ea8ec9242ac49bdee7215678a0b55ccc2617525e0828a2"
+    },
+    {
+      "slot": 7,
+      "sourceIndex": 3,
+      "rect": {
+        "left": 1114,
+        "top": 124,
+        "width": 306,
+        "height": 223
+      },
+      "sourceFoot": [
+        152.5,
+        188
+      ],
+      "scale": 0.6694560669456067,
+      "offset": [
+        90,
+        144
+      ],
+      "sha256": "a1211d9b299ab3bafb2ffc3340d9b6096d986662814fe5ebad40c265b8e97a37"
+    },
+    {
+      "slot": 8,
+      "sourceIndex": 6,
+      "rect": {
+        "left": 753,
+        "top": 390,
+        "width": 227,
+        "height": 295
+      },
+      "sourceFoot": [
+        181,
+        291
+      ],
+      "scale": 0.6808510638297872,
+      "offset": [
+        69,
+        72
+      ],
+      "sha256": "8fc7db54a2453bce8a18caf78799e83e8a5c465d6fe2afe005ca85233cdb5628"
+    },
+    {
+      "slot": 9,
+      "sourceIndex": 7,
+      "rect": {
+        "left": 1082,
+        "top": 460,
+        "width": 349,
+        "height": 219
+      },
+      "sourceFoot": [
+        116,
+        181
+      ],
+      "scale": 0.6808510638297872,
+      "offset": [
+        113,
+        147
+      ],
+      "sha256": "dab05b5823bbf6a188e9171879bf9fba88cf41ae819c0b3f6cac3aa0963656fd"
+    },
+    {
+      "slot": 10,
+      "sourceIndex": 10,
+      "rect": {
+        "left": 756,
+        "top": 712,
+        "width": 208,
+        "height": 313
+      },
+      "sourceFoot": [
+        130,
+        311
+      ],
+      "scale": 0.6611570247933884,
+      "offset": [
+        107,
+        64
+      ],
+      "sha256": "2ca22890342303141b7ac4d4158587bf0252b946c454a8845242e8da859713d2"
+    },
+    {
+      "slot": 11,
+      "sourceIndex": 11,
+      "rect": {
+        "left": 1109,
+        "top": 755,
+        "width": 301,
+        "height": 267
+      },
+      "sourceFoot": [
+        157,
+        266
+      ],
+      "scale": 0.6611570247933884,
+      "offset": [
+        89,
+        94
+      ],
+      "sha256": "a12c2a4cd68f9928b2d19925489b9ab2945e55632d94ec6ebdde54d47c2ff750"
+    }
+  ]
+}

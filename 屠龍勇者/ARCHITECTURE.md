@@ -101,6 +101,10 @@
 | `tools/prepare-remaining-morphs.js`、`tools/sprite-src/morph/remaining-eight-*` | 八款變身原稿／提示詞、腳底註冊、288格RGBA打包及數值基準；見第267節 |
 | `tools/test-remaining-morphs.cjs`、`tools/remaining-morphs-preview.html` | 八款正式卷軸／事件／128組sceneDraw回歸與隔離遊戲動畫預覽 |
 | `images/sprites/morph/`新增8個`*-v1`目錄 | m14／17／18／23／24／26／29／30四動作／立繪／manifest；詳細路徑見第267節 |
+| `tools/prepare-quest-bosses.cjs`、`tools/monster-src/quest-boss-v1/` | 37款首領原創原稿／提示詞、修正版與444格腳底註冊／打包；見第268節 |
+| `images/monsters/quest-v1/` | 37圖集、37立繪及37manifest；12試煉之影沿用職業圖而非新增重複圖檔 |
+| `tools/test-quest-boss-art.cjs`、`tools/quest-boss-art-preview.html` | 49設定／392正式繪圖、原數值與舊怪像素回歸、LRU、火龍重播及隔離驗收場 |
+| `tools/MONSTER-ART-AUDIT-20261102.md`、`tools/monster-art-audit-20261102.json` | 常規80／任務48／塔30的現碼外型盤點，20261102c皆有有效引用 |
 | `tools/check.ps1` | 改完的自動檢查：JS 語法（`node --check`）、`index.html` 所有 `?v=` 等於 `GAME_VERSION`、每個 `data/*.js` 都有載入、沒有衝突標記；通過印 `ALL CHECKS PASSED` |
 | `images/icons/items/mercRune-v1/`、`tools/icon-src/mercenary-runes-v1/` | 50款獨立傭兵符石透明PNG、image_gen原稿／完整提示詞／來源與總覽（第203節） |
 | `tools/prepare-mercenary-runes.js`、`tools/test-mercenary-rune-art.js`、`tools/mercenary-runes-preview.html` | 符石等比縮圖／透明與唯一性檢查、正式UI接線驗證及128／48／32px獨立素材預覽（第203節） |
@@ -296,7 +300,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261102b`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261102c`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -613,6 +617,8 @@ kills, deaths, settings（含 skillSlots 技能欄 8 格）, created, skills[已
 - 全螢幕需要使用者點擊才能進入；重新整理後瀏覽器會退出全螢幕（版面仍是全螢幕模式，再點一次即可）。iPhone Safari 不支援，會提示改用「安裝到主畫面」。
 
 ## 17. 中間即時地圖（`ui-scene.js`）
+
+- 20261102c：火龍／48任務首領外型、職業暗影、可選腳底與新首領圖集LRU，見第268節。
 
 目前場景與世界總覽改用第 86 節；以下為原系統規格及歷程，舊素材全部保留。
 
@@ -4465,3 +4471,16 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - test-remaining-morphs實跑正式usePotion／sceneReadEvents／sceneDraw：八款等級不足不扣卷、扣量與上次選擇、武器限制、四向命中與MISS／施法／受傷、攻擊不中斷、到期、288格唯一／RGBA／圖集對應／安全留白／40離線路徑及128繪圖組；remaining-eight-before.json對照全部36款原數值完全一致。既有等級／GM及公會遷移回歸、check.ps1 ALL CHECKS PASSED通過。
 - remaining-morphs-preview.html用實際data腳本及sceneDraw，可換8款／四向／四動作／大小／逐格／正式卷軸選單；記憶體localStorage、停公告計時並拒絕連外，載入腳本加每次預覽戳避免開發快取，不跑main／pwa。瀏覽器逐款切換、實點卷軸選血族、背面施法與側面施法皆通過，Console無error／warn。
 - 發布建置64支→704KB，40個新增圖檔逐byte吻合；暫存驗證輸出僅建立在tools/morph-eight-build-verify後清理。PROJECT-REMAINING-20261102及project-audit-20261102更新為36專屬／0缺漏；八向高規格重製仍屬另一期，不把本次三向相容版算八向。待使用者正式角色實玩確認後再commit／請其Push origin，目前未發布。
+
+
+## 268. 火龍與48職業任務首領外型（2026-11-02，版本20261102c）
+
+- 使用者要求製作缺少外型的火龍與48個職業任務首領。內建imagegen原創37款（三向各行走2／攻擊2，向左鏡射），共444格；另12個「職業的試煉之影」沿用CLASSES該職業完整行走／攻擊格數，以暗影濾鏡與微光呈現，不另外複製12套基本職業圖。不是八向重製或新增玩法。
+- 全部原稿／提示詞、火龍／墮落團長／墮落神官修正版、specs、baseline與分格資料保存tools/monster-src/quest-boss-v1；37圖集／37立繪／37manifest輸出images/monsters/quest-v1。prepare-quest-bosses依alpha元件分離而非硬切等分線、等比註冊；一般cw384/ch320/body160/foot[192,270]，火龍640/448/body192/foot[320,320]，火龍另明列12個來源支撐點避免把尾尖當腳底。原稿主體不裁邊，成品透明安全邊與444唯一格逐byte驗證。角色體型size一般68、巨人／魔像78～90、火龍104、職業暗影48。
+- scene-art新增SCENE_QUEST_ART（48名稱→圖集key）、SCENE_QUEST_SPRITES（火龍＋36具名首領＋12暗影，共49），合併進SCENE_ART_MONSTERS；既有21塔怪加49＝70。sceneMonsterArt先辨識questBoss／questBoss旗標的完整名稱，含「拳聖烈（全力）」；保留原id，不改buildMonster／questBossFor、數值、任務條件與掉落。塔內同名巫妖王仍用原塔圖，不被任務外型誤套。
+- ui-scene新增monSpriteSpec(mid, attack)：暗影按當前動作取職業cell／完整格數／charH／腳底，actorRows以原三列尋址；monSpriteImg第二參數僅嚴格true才選攻擊，不被forEach索引誤觸。新怪物ms.foot可校準腳底；舊怪無foot時保留原矩形與遮擋邊界，命中變形、閃白、鏡射、排序不變。新圖集血條按角色body高定位。
+- MONSTER_ART_CACHE_LIMIT＝4與monsterArtCache只限制images/monsters/quest-v1圖集LRU，淘汰spriteCache的舊新首領項，保留基本職業／其他舊素材。塔預載只載art-*的21塔圖，避免把37新圖集及職業陰影全部解碼；龍穴預載該龍，首領綁定時預載解析後外型。sw.js新增37圖集離線預載，立繪／工具預覽不在這份預載清單。
+- raidSceneDraw同步ms.foot，火龍普通場景size104，重播畫布的腳底圖集顯示size上限90，避免原比例切到上緣；舊三龍未變。只動重播繪圖，不改raidSimulate、結果／獎勵／SQL。無新正式script或載入順序、SAVE_SCHEMA維持25。GAME_UPDATES補c首領與b變身紀錄，斥候紀錄保留a。
+- test-quest-boss-art以正式questBossFor遍歷48任務／進度及bossDone條件、12暗影完整UV、原MONSTERS／CLASS_QUESTS／CLASSES.sprite逐項不變、37RGBA／444唯一格與分格逐byte／安全邊、49出場設定392組sceneDraw、4套LRU及塔預載隔離；原sceneDraw／raidSceneDraw快照對既有怪與舊三龍逐像素一致，新增火龍重播可見alpha範圍完整留在畫布。舊8變身與公會存檔遷移回歸、check.ps1 ALL CHECKS PASSED通過。
+- quest-boss-art-preview.html用正式64腳本／sceneDraw／raidSceneDraw與火龍競技場，49選項可切、四向／動作／逐格／受擊、火龍重播。localStorage為記憶體、拒絕連外、停公告計時、不載main／pwa、不結算或發獎。瀏覽器49項逐一切換、職業暗影受擊與火龍重播通過，Console無error／warn。
+- 發布建置64支→713KB，111新增素材／manifest逐byte吻合；驗證副本僅tools/quest-boss-build-verify，確認路徑後清理。盤點更新常規80／任務48／塔30皆有外型；42款舊單格及未開放公會美術不在本次重製。待使用者實玩確認再commit／請其Push origin，未發布。

@@ -1,0 +1,285 @@
+[
+  {
+    "key": "valakas",
+    "name": "火龍・莫爾加斯",
+    "identity": "colossal quadrupedal volcanic dragon, obsidian red scales with molten seams, two swept horns, broad folded leathery wings, heavy tail and powerful four legs, orange throat glow",
+    "attack": "flame breath windup then forceful compact flame exhalation",
+    "sourceFile": "fixed-generated.png",
+    "sourceFeet": [
+      [
+        216,
+        321
+      ],
+      [
+        582,
+        321
+      ],
+      [
+        916,
+        321
+      ],
+      [
+        1268,
+        313
+      ],
+      [
+        235,
+        615
+      ],
+      [
+        600,
+        620
+      ],
+      [
+        935,
+        620
+      ],
+      [
+        1247,
+        620
+      ],
+      [
+        216,
+        923
+      ],
+      [
+        577,
+        938
+      ],
+      [
+        915,
+        921
+      ],
+      [
+        1269,
+        922
+      ]
+    ]
+  },
+  {
+    "key": "rebel-general",
+    "name": "叛軍將軍・格倫",
+    "identity": "veteran human rebel general, scarred face, dark iron lamellar armor, torn crimson officer cape, right longsword and left small battered round shield",
+    "attack": "sword windup then decisive sword slash"
+  },
+  {
+    "key": "usurper-king",
+    "name": "篡位者・黑暗之王",
+    "identity": "sinister human usurper in black gold royal plate, jagged crown helmet, flowing royal purple cape, right broad sword and left clawed empty gauntlet",
+    "attack": "heavy royal sword windup then slash"
+  },
+  {
+    "key": "anti-king",
+    "name": "逆王之影・格爾德",
+    "identity": "spectral tyrant king in broken silver crown, black silver plate, spectral blue face, ragged midnight cape, jagged two handed execution greatsword",
+    "attack": "two handed greatsword windup then cleave"
+  },
+  {
+    "key": "traitor-knight",
+    "name": "叛變騎士・維克",
+    "identity": "grim scarred human knight in tarnished steel plate with V-shaped breastplate crest, red tattered surcoat, right arming sword and left kite shield",
+    "attack": "shield guard then sword slash"
+  },
+  {
+    "key": "death-knight",
+    "name": "死亡騎士",
+    "identity": "original undead knight, closed black horned helmet with icy cyan slit eyes, blackened plate, ragged charcoal cape, right runic sword and left skeletal gauntlet",
+    "attack": "raise runic sword then vicious slash"
+  },
+  {
+    "key": "fallen-commander",
+    "name": "墮落騎士團長・維克",
+    "identity": "cursed human knight commander in heavy tarnished steel plate with V-shaped breastplate crest, red ruined commander cape, pale scarred face, large right sword and left thorned shield",
+    "attack": "shield windup then powerful sword slash",
+    "sourceFile": "fixed-generated.png"
+  },
+  {
+    "key": "black-mage",
+    "name": "黑魔法師・卡斯特",
+    "identity": "human dark mage in black plum layered robe, sinister exposed face and short dark beard, skull-topped staff in right hand, left spell hand",
+    "attack": "raise staff then compact violet magic discharge"
+  },
+  {
+    "key": "ancient-mage-ghost",
+    "name": "古代魔導師的亡靈",
+    "identity": "ancient ghost archmage with spectral teal skeletal face, eroded ivory dark-teal ceremonial robe and floating tatters, right ancient spiral staff",
+    "attack": "staff windup then compact teal spectral magic"
+  },
+  {
+    "key": "void-archmage",
+    "name": "虛空魔導・莫爾斯",
+    "identity": "ominous void archmage in asymmetric black silver robe, featureless dark hood with two violet eye lights, right floating angular staff and left violet spell hand",
+    "attack": "open spell hand then compact void bolt"
+  },
+  {
+    "key": "poacher-chief",
+    "name": "盜獵者首領・薩克",
+    "identity": "rugged human forest poacher chief, fur shoulder mantle, dark green leather coat, hood pushed back, long bow held in left hand and right arrow draw hand, quiver",
+    "attack": "draw bowstring then release arrow"
+  },
+  {
+    "key": "corrupt-treant",
+    "name": "腐化樹妖",
+    "identity": "corrupted walking treant with twisted bark torso, two root legs, two branch arms, green sap glow in face and split trunk, small diseased leaves",
+    "attack": "branch arm windup then heavy branch swipe",
+    "size": 78
+  },
+  {
+    "key": "withered-treant",
+    "name": "枯萎樹靈・艾爾克",
+    "identity": "ancient withered tree spirit with bone-white cracked trunk, dark red sap veins, antler-like dead branches, two root legs and long clawed branch arms",
+    "attack": "raise branches then root claw smash",
+    "size": 82
+  },
+  {
+    "key": "dragon-cult-deacon",
+    "name": "喚龍教團執事",
+    "identity": "human dragon cult deacon in dark red scaled priest robe, bronze dragon mask, right hooked ritual blade and left dragon censer",
+    "attack": "raise ritual blade then stab"
+  },
+  {
+    "key": "dragon-cult-master",
+    "name": "喚龍教主",
+    "identity": "human high dragon cult hierophant in black crimson gold ceremonial robes, tall dragon-horn headdress, right dragon-headed staff, left clawed gauntlet",
+    "attack": "staff windup then compact red dragon spell"
+  },
+  {
+    "key": "faceless-assassin",
+    "name": "無面刺客・夜鴉",
+    "identity": "faceless assassin in smooth featureless pale mask, black feather hood and midnight leather, short raven cape, curved dagger in each hand",
+    "attack": "cross daggers windup then lunging double cut"
+  },
+  {
+    "key": "gatebreaker",
+    "name": "破門者・鬼刃",
+    "identity": "massive tattooed human martial outlaw, shaved sides and black topknot, scarred bare torso, iron bracers, heavy dark trousers, huge right single-edged chopping blade",
+    "attack": "raise chopping blade then cleave"
+  },
+  {
+    "key": "fist-saint",
+    "name": "拳聖烈（全力）",
+    "identity": "elderly muscular martial master, long white brows and short white beard, shaved head, orange dark-red monk trousers and sash, wrapped fists, compact amber knuckle glow",
+    "attack": "fist chamber then forceful straight punch"
+  },
+  {
+    "key": "asura-demon-king",
+    "name": "修羅魔王・阿迦",
+    "identity": "original four-armed asura demon king, dark indigo muscular skin, horned gold crown, red waist cloth and black gold leg armor, four fierce clawed fists",
+    "attack": "four fists chamber then coordinated striking punch",
+    "size": 78
+  },
+  {
+    "key": "ancient-stone-giant",
+    "name": "遠古石巨人",
+    "identity": "massive ancient stone humanoid giant, weathered granite block body, moss and broken engraved stone plates, two thick stone arms, two stone legs, amber rune eyes",
+    "attack": "raise stone fist then groundward heavy punch",
+    "size": 86
+  },
+  {
+    "key": "flame-general",
+    "name": "炎魔將軍",
+    "identity": "armored infernal war general, molten charcoal skin, curved horns, basalt black red armor, compact shoulder flames, two handed infernal halberd",
+    "attack": "halberd windup then heavy sweeping strike"
+  },
+  {
+    "key": "ash-giant",
+    "name": "灰燼巨人・格倫德",
+    "identity": "hulking ash giant made of dark volcanic rock, pale ash crust, ember fissures, scorched iron belt and broad shoulders, two oversized stone fists",
+    "attack": "raise both fists then heavy crushing slam",
+    "size": 90
+  },
+  {
+    "key": "bandit-ironhand",
+    "name": "強盜頭目・鐵手",
+    "identity": "burly human bandit chieftain with shaved head and black beard, leather iron brigandine, oversized mechanical iron left arm, right short axe, red bandana",
+    "attack": "axe windup then iron-fist assisted axe chop"
+  },
+  {
+    "key": "ancient-mech-golem",
+    "name": "古代機械魔像",
+    "identity": "ancient brass and dark iron clockwork guardian, bulky humanoid automaton, exposed gears, cyan chest power core, two piston arms and broad armored feet",
+    "attack": "piston fist pullback then mechanical punch",
+    "size": 82
+  },
+  {
+    "key": "rust-turret",
+    "name": "鐵鏽砲台・哈茲",
+    "identity": "walking rust-red clockwork artillery turret creature, squat armored chassis on four mechanical crab legs, single massive cannon barrel and brass sight lenses, no humanoid rider",
+    "attack": "cannon elevates then fires a compact muzzle flash"
+  },
+  {
+    "key": "runaway-magic-soldier",
+    "name": "失控魔導兵",
+    "identity": "rogue human-sized arcane armored soldier, segmented steel plum armor, cracked violet chest crystal, sealed helmet, right broad arcane sword and left empty gauntlet",
+    "attack": "sword charge then arcane slash"
+  },
+  {
+    "key": "sword-saint-remnant",
+    "name": "魔導劍聖的殘影",
+    "identity": "spectral arcane sword saint, elegant pale silver black armor, long ghostly white hair, midnight half cape, two handed thin runic longsword with compact blue aura",
+    "attack": "sword chamber then elegant arcane slash"
+  },
+  {
+    "key": "broken-magic-blade",
+    "name": "崩壞魔劍・艾克西",
+    "identity": "cursed arcane swordsman in fractured dark silver plate, wild pale hair, violet corruption in armor cracks, right large broken glowing blade and left clawed spell hand",
+    "attack": "broken sword charge then fierce fractured blade slash"
+  },
+  {
+    "key": "fallen-priest",
+    "name": "墮落神官・莫德",
+    "identity": "gaunt human fallen priest, pale face, black burgundy ecclesiastical robe, tarnished gold trim, right skull crozier and left ritual book",
+    "attack": "crozier raise then compact crimson spell",
+    "sourceFile": "fixed-generated.png"
+  },
+  {
+    "key": "lich-king",
+    "name": "巫妖王",
+    "identity": "original skeletal lich monarch, tall bone crown, regal purple black gold robe, skeletal face, right skull staff, left skeletal spell hand",
+    "attack": "staff raised then compact green death magic"
+  },
+  {
+    "key": "blasphemous-bishop",
+    "name": "褻瀆主教・瑟恩",
+    "identity": "sinister human bishop in black ivory robes, thorned gold mitre, gaunt pale face, heavy chain ornaments, right crooked crozier and left black prayer tome",
+    "attack": "crozier windup then compact violet curse"
+  },
+  {
+    "key": "abyss-envoy",
+    "name": "深淵使者・巴爾",
+    "identity": "lean red-black horned abyss demon envoy, angular dark armor, narrow bat wings folded, long tail, clawed hands with a right curved demon sword",
+    "attack": "demon sword windup then vicious slash"
+  },
+  {
+    "key": "fallen-archangel",
+    "name": "墮落天使長・路西法",
+    "identity": "original fallen male archangel, long silver hair, black gold radiant plate, two large folded black feather wings, dark red waist cloth, right black gold sword",
+    "attack": "wing brace and sword raise then powerful slash"
+  },
+  {
+    "key": "fallen-seraph",
+    "name": "墮天使・薩麥爾",
+    "identity": "original fallen seraph warrior, masked pale face, midnight silver plate and plum robes, four compact folded dark feather wings, right hooked silver spear",
+    "attack": "spear pullback then lunging thrust"
+  },
+  {
+    "key": "celestial-hunter",
+    "name": "天界獵人・加百列",
+    "identity": "original celestial hunter with silver hair, white gold hunting armor, two compact folded white feather wings, azure waist cloth, gold bow in left hand and right arrow draw hand",
+    "attack": "draw celestial bow then release light arrow"
+  },
+  {
+    "key": "abyss-lord",
+    "name": "深淵之主・阿斯莫德",
+    "identity": "massive original abyss lord, charcoal red muscular demon body, sweeping horns, black bronze armor, folded torn bat wings, two handed brutal war axe",
+    "attack": "raise huge war axe then crushing cleave",
+    "size": 86
+  },
+  {
+    "key": "abyss-devourer",
+    "name": "深淵吞噬者・巴爾",
+    "identity": "hulking red-black abyss devourer demon, massive tooth-lined jaw, jagged horn crown, armored back and long tail, two heavy claw arms and two thick legs, no extra mouths",
+    "attack": "claw windup then lunging bite and claw strike",
+    "size": 90
+  }
+]

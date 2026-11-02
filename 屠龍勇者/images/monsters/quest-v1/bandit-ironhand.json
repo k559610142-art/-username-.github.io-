@@ -1,0 +1,267 @@
+{
+  "key": "bandit-ironhand",
+  "name": "強盜頭目・鐵手",
+  "sprite": {
+    "src": "images/monsters/quest-v1/bandit-ironhand.png",
+    "cw": 384,
+    "ch": 320,
+    "body": 160,
+    "n": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "cols": 4,
+    "size": 68,
+    "foot": [
+      192,
+      270
+    ]
+  },
+  "portrait": "images/monsters/quest-v1/bandit-ironhand-portrait.png",
+  "cells": [
+    {
+      "slot": 0,
+      "sourceIndex": 0,
+      "rect": {
+        "left": 98,
+        "top": 69,
+        "width": 195,
+        "height": 269
+      },
+      "sourceFoot": [
+        75.5,
+        268
+      ],
+      "scale": 0.5947955390334573,
+      "offset": [
+        147,
+        111
+      ],
+      "sha256": "351fa9440431ed2c112673add0c4278d41bc852393f754243c72d61d093991e0"
+    },
+    {
+      "slot": 1,
+      "sourceIndex": 1,
+      "rect": {
+        "left": 453,
+        "top": 70,
+        "width": 210,
+        "height": 270
+      },
+      "sourceFoot": [
+        93,
+        269
+      ],
+      "scale": 0.5947955390334573,
+      "offset": [
+        137,
+        111
+      ],
+      "sha256": "7d31db44220a9180ad2881b58aa8a37ce7cb602099fc1f0aa4848987787af729"
+    },
+    {
+      "slot": 2,
+      "sourceIndex": 4,
+      "rect": {
+        "left": 121,
+        "top": 409,
+        "width": 153,
+        "height": 271
+      },
+      "sourceFoot": [
+        99.5,
+        270
+      ],
+      "scale": 0.5925925925925926,
+      "offset": [
+        133,
+        111
+      ],
+      "sha256": "d72f889b1c9cc93440f8d736e51db715aca9024de94b08c86caeae13e5511073"
+    },
+    {
+      "slot": 3,
+      "sourceIndex": 5,
+      "rect": {
+        "left": 473,
+        "top": 409,
+        "width": 201,
+        "height": 259
+      },
+      "sourceFoot": [
+        100,
+        257
+      ],
+      "scale": 0.5925925925925926,
+      "offset": [
+        133,
+        118
+      ],
+      "sha256": "011db2ab7e6260b44c565744894346e1897aa5ae28bd5c2e0546b79b045fa9b7"
+    },
+    {
+      "slot": 4,
+      "sourceIndex": 8,
+      "rect": {
+        "left": 88,
+        "top": 752,
+        "width": 226,
+        "height": 282
+      },
+      "sourceFoot": [
+        89.5,
+        280
+      ],
+      "scale": 0.5693950177935944,
+      "offset": [
+        141,
+        111
+      ],
+      "sha256": "f67552535416fff9527fe2232eefe9cb72374bfdd5b6ed68055b1176e2cc8ae0"
+    },
+    {
+      "slot": 5,
+      "sourceIndex": 9,
+      "rect": {
+        "left": 451,
+        "top": 752,
+        "width": 221,
+        "height": 276
+      },
+      "sourceFoot": [
+        116.5,
+        275
+      ],
+      "scale": 0.5693950177935944,
+      "offset": [
+        126,
+        113
+      ],
+      "sha256": "5d096c704efc1ee10bec5532bf3fc7bb34460cca44fbd981ce792979e150e665"
+    },
+    {
+      "slot": 6,
+      "sourceIndex": 2,
+      "rect": {
+        "left": 806,
+        "top": 35,
+        "width": 222,
+        "height": 308
+      },
+      "sourceFoot": [
+        147.5,
+        306
+      ],
+      "scale": 0.5947955390334573,
+      "offset": [
+        104,
+        88
+      ],
+      "sha256": "e84145480399403905e1c4fe267028625c0792ee4dc7fad3c544e26242211fba"
+    },
+    {
+      "slot": 7,
+      "sourceIndex": 3,
+      "rect": {
+        "left": 1155,
+        "top": 89,
+        "width": 228,
+        "height": 258
+      },
+      "sourceFoot": [
+        149,
+        257
+      ],
+      "scale": 0.5947955390334573,
+      "offset": [
+        103,
+        117
+      ],
+      "sha256": "ecfe36786de08ca5dafd06357719ce50ebde93224afd1a1d13595d54580bfe83"
+    },
+    {
+      "slot": 8,
+      "sourceIndex": 6,
+      "rect": {
+        "left": 821,
+        "top": 367,
+        "width": 193,
+        "height": 319
+      },
+      "sourceFoot": [
+        43,
+        318
+      ],
+      "scale": 0.5925925925925926,
+      "offset": [
+        167,
+        82
+      ],
+      "sha256": "ae29bc5c4bfbffe27734d2b3366c28244519f398b117c5a283ffcb8d33f4dbeb"
+    },
+    {
+      "slot": 9,
+      "sourceIndex": 7,
+      "rect": {
+        "left": 1144,
+        "top": 445,
+        "width": 277,
+        "height": 241
+      },
+      "sourceFoot": [
+        159.5,
+        218
+      ],
+      "scale": 0.5925925925925926,
+      "offset": [
+        98,
+        141
+      ],
+      "sha256": "6ecf99caeee7e91b952a6c40c520d3ab421908ba1e338a13d1e3df4d6bc05151"
+    },
+    {
+      "slot": 10,
+      "sourceIndex": 10,
+      "rect": {
+        "left": 805,
+        "top": 717,
+        "width": 208,
+        "height": 318
+      },
+      "sourceFoot": [
+        73.5,
+        317
+      ],
+      "scale": 0.5693950177935944,
+      "offset": [
+        150,
+        90
+      ],
+      "sha256": "7e294f1e3469b9007cc6ed583f39e07d1fada3f02cba90de8def060abe7d7f64"
+    },
+    {
+      "slot": 11,
+      "sourceIndex": 11,
+      "rect": {
+        "left": 1183,
+        "top": 788,
+        "width": 225,
+        "height": 243
+      },
+      "sourceFoot": [
+        46.5,
+        233
+      ],
+      "scale": 0.5693950177935944,
+      "offset": [
+        166,
+        137
+      ],
+      "sha256": "8820bb3ec8530e0f3ed6a5d894da9b8056ad92d6b7eedfb562568101f3a083d7"
+    }
+  ]
+}

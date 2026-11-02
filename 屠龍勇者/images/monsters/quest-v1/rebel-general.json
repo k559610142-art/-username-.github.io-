@@ -1,0 +1,267 @@
+{
+  "key": "rebel-general",
+  "name": "叛軍將軍・格倫",
+  "sprite": {
+    "src": "images/monsters/quest-v1/rebel-general.png",
+    "cw": 384,
+    "ch": 320,
+    "body": 160,
+    "n": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "cols": 4,
+    "size": 68,
+    "foot": [
+      192,
+      270
+    ]
+  },
+  "portrait": "images/monsters/quest-v1/rebel-general-portrait.png",
+  "cells": [
+    {
+      "slot": 0,
+      "sourceIndex": 0,
+      "rect": {
+        "left": 105,
+        "top": 36,
+        "width": 210,
+        "height": 292
+      },
+      "sourceFoot": [
+        69.5,
+        291
+      ],
+      "scale": 0.547945205479452,
+      "offset": [
+        154,
+        111
+      ],
+      "sha256": "4364cc59d3943d180c21173b39c6b67125c0f25f765ffcee8b31d820308273b8"
+    },
+    {
+      "slot": 1,
+      "sourceIndex": 1,
+      "rect": {
+        "left": 444,
+        "top": 42,
+        "width": 224,
+        "height": 275
+      },
+      "sourceFoot": [
+        69,
+        274
+      ],
+      "scale": 0.547945205479452,
+      "offset": [
+        154,
+        120
+      ],
+      "sha256": "a2df1f00e6206693adce0d82f7d0a9862c350a63f5819765693f1c974799a9bb"
+    },
+    {
+      "slot": 2,
+      "sourceIndex": 4,
+      "rect": {
+        "left": 54,
+        "top": 399,
+        "width": 242,
+        "height": 266
+      },
+      "sourceFoot": [
+        171,
+        264
+      ],
+      "scale": 0.6037735849056604,
+      "offset": [
+        89,
+        111
+      ],
+      "sha256": "acd8a93e75d60f84f77808f2d0d27060f8edd994b49a07559b61ba6c95dcc085"
+    },
+    {
+      "slot": 3,
+      "sourceIndex": 5,
+      "rect": {
+        "left": 398,
+        "top": 401,
+        "width": 260,
+        "height": 264
+      },
+      "sourceFoot": [
+        189,
+        263
+      ],
+      "scale": 0.6037735849056604,
+      "offset": [
+        78,
+        111
+      ],
+      "sha256": "8c1e732c43c9ad43df090deabcf18101ea8bb504a63851fabb9826dd8939ea35"
+    },
+    {
+      "slot": 4,
+      "sourceIndex": 8,
+      "rect": {
+        "left": 86,
+        "top": 735,
+        "width": 238,
+        "height": 302
+      },
+      "sourceFoot": [
+        111,
+        301
+      ],
+      "scale": 0.53156146179402,
+      "offset": [
+        133,
+        111
+      ],
+      "sha256": "9249504bdbb3642ad85dfeea2cf53f22209014a0ecee5f78a6038ca3f7a89d0e"
+    },
+    {
+      "slot": 5,
+      "sourceIndex": 9,
+      "rect": {
+        "left": 439,
+        "top": 732,
+        "width": 215,
+        "height": 295
+      },
+      "sourceFoot": [
+        84,
+        294
+      ],
+      "scale": 0.53156146179402,
+      "offset": [
+        148,
+        114
+      ],
+      "sha256": "a6fd857f4f04805644d3d7a43c092a5531bb4480eaabeee93a4d730f6fcf1e4c"
+    },
+    {
+      "slot": 6,
+      "sourceIndex": 2,
+      "rect": {
+        "left": 779,
+        "top": 14,
+        "width": 228,
+        "height": 325
+      },
+      "sourceFoot": [
+        178,
+        323
+      ],
+      "scale": 0.547945205479452,
+      "offset": [
+        95,
+        94
+      ],
+      "sha256": "40c93e36cfd8a0b06e483d12e6b2f67068dd6fa4cbc301c765898dabc594a4f0"
+    },
+    {
+      "slot": 7,
+      "sourceIndex": 3,
+      "rect": {
+        "left": 1104,
+        "top": 63,
+        "width": 308,
+        "height": 271
+      },
+      "sourceFoot": [
+        151,
+        264
+      ],
+      "scale": 0.547945205479452,
+      "offset": [
+        109,
+        125
+      ],
+      "sha256": "6895beda57ee627ed10c76b3d52cd4fcd63175626033b2b519cce640fb4e3d73"
+    },
+    {
+      "slot": 8,
+      "sourceIndex": 6,
+      "rect": {
+        "left": 759,
+        "top": 370,
+        "width": 232,
+        "height": 316
+      },
+      "sourceFoot": [
+        121.5,
+        286
+      ],
+      "scale": 0.6037735849056604,
+      "offset": [
+        119,
+        98
+      ],
+      "sha256": "dcdc2afa4dc0a636f4c03de562feb2b6bc3860ce8a02fbe2f9d87c1d1d6d31cd"
+    },
+    {
+      "slot": 9,
+      "sourceIndex": 7,
+      "rect": {
+        "left": 1093,
+        "top": 420,
+        "width": 335,
+        "height": 257
+      },
+      "sourceFoot": [
+        229.5,
+        256
+      ],
+      "scale": 0.6037735849056604,
+      "offset": [
+        53,
+        115
+      ],
+      "sha256": "f6b58cc0428b70ad905f68faf1791b6bb8868f6b88523816915ea4b0ef1a92ff"
+    },
+    {
+      "slot": 10,
+      "sourceIndex": 10,
+      "rect": {
+        "left": 791,
+        "top": 716,
+        "width": 242,
+        "height": 331
+      },
+      "sourceFoot": [
+        169.5,
+        330
+      ],
+      "scale": 0.53156146179402,
+      "offset": [
+        102,
+        95
+      ],
+      "sha256": "1bad40fb2b097e1f9057947927eeb235dd9ed5df15d423a70d2bb8d6d4fd4e7b"
+    },
+    {
+      "slot": 11,
+      "sourceIndex": 11,
+      "rect": {
+        "left": 1124,
+        "top": 761,
+        "width": 303,
+        "height": 281
+      },
+      "sourceFoot": [
+        176,
+        280
+      ],
+      "scale": 0.53156146179402,
+      "offset": [
+        98,
+        121
+      ],
+      "sha256": "43b424808ba71cd7f8b6fc1537a0443c3f657ace12039ab93e60510f9bcc4236"
+    }
+  ]
+}

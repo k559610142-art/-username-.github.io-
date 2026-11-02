@@ -1,0 +1,4 @@
+{
+  "prompt": "Edit this ORIGINAL twelve-pose fire dragon sprite sheet. Preserve EXACT character, poses, row directions and 4-column x 3-row order. The rightmost side-facing fire breath is clipped at the right edge: redraw that breath shorter so the WHOLE flame is visible. Make ALL twelve dragons 25% SMALLER relative to the sheet and center each inside its same cell, keeping wide empty gutters and at least 12% transparent outer margin on every edge. Every wing, tail, foot and flame must be complete. Keep row1 down/front, row2 RIGHT-facing side profile, row3 BACK-facing up. Transparent RGBA background, no floor, shadows, text or new objects. Same molten obsidian dragon identity and realistic four-legged anatomy. Compact flame only, especially side-view last column.",
+  "path": "C:\\Users\\User\\.codex\\generated_images\\01a191b6-cab8-7390-ac17-309a217ef8a5\\exec-fbc9dbc5-dc13-47c7-9e62-aa1bb7fc8e21.png"
+}

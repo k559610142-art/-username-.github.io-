@@ -1,0 +1,267 @@
+{
+  "key": "ancient-stone-giant",
+  "name": "遠古石巨人",
+  "sprite": {
+    "src": "images/monsters/quest-v1/ancient-stone-giant.png",
+    "cw": 384,
+    "ch": 320,
+    "body": 160,
+    "n": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "cols": 4,
+    "size": 86,
+    "foot": [
+      192,
+      270
+    ]
+  },
+  "portrait": "images/monsters/quest-v1/ancient-stone-giant-portrait.png",
+  "cells": [
+    {
+      "slot": 0,
+      "sourceIndex": 0,
+      "rect": {
+        "left": 77,
+        "top": 32,
+        "width": 254,
+        "height": 302
+      },
+      "sourceFoot": [
+        111,
+        301
+      ],
+      "scale": 0.53156146179402,
+      "offset": [
+        133,
+        111
+      ],
+      "sha256": "80d1767fc1893a035920086fcab07c6ee3fac297b1f3bc5f7a7e0582037b2b08"
+    },
+    {
+      "slot": 1,
+      "sourceIndex": 1,
+      "rect": {
+        "left": 449,
+        "top": 39,
+        "width": 226,
+        "height": 295
+      },
+      "sourceFoot": [
+        141,
+        293
+      ],
+      "scale": 0.53156146179402,
+      "offset": [
+        117,
+        114
+      ],
+      "sha256": "6d9b83d59c0ec5c0db201d43d9d1ebfba1810cbab5b6e2469643db2c21dc6813"
+    },
+    {
+      "slot": 2,
+      "sourceIndex": 4,
+      "rect": {
+        "left": 74,
+        "top": 380,
+        "width": 218,
+        "height": 281
+      },
+      "sourceFoot": [
+        108.5,
+        279
+      ],
+      "scale": 0.5653710247349824,
+      "offset": [
+        131,
+        113
+      ],
+      "sha256": "8513eeae2f1c8347af3548fafe29cdd348d36d25fdab7bfcfc85f781b51f08c4"
+    },
+    {
+      "slot": 3,
+      "sourceIndex": 5,
+      "rect": {
+        "left": 433,
+        "top": 380,
+        "width": 231,
+        "height": 284
+      },
+      "sourceFoot": [
+        115,
+        282
+      ],
+      "scale": 0.5653710247349824,
+      "offset": [
+        127,
+        111
+      ],
+      "sha256": "8c56f232905956a6b917cb7159847249194368715d0660ab92a915588b993dcf"
+    },
+    {
+      "slot": 4,
+      "sourceIndex": 8,
+      "rect": {
+        "left": 77,
+        "top": 720,
+        "width": 242,
+        "height": 313
+      },
+      "sourceFoot": [
+        140.5,
+        312
+      ],
+      "scale": 0.5111821086261981,
+      "offset": [
+        120,
+        111
+      ],
+      "sha256": "aaeaa419b15755033874417759c0f1039278b5e6b45fab1bbb91f9d18093a4d0"
+    },
+    {
+      "slot": 5,
+      "sourceIndex": 9,
+      "rect": {
+        "left": 427,
+        "top": 722,
+        "width": 237,
+        "height": 313
+      },
+      "sourceFoot": [
+        151.5,
+        312
+      ],
+      "scale": 0.5111821086261981,
+      "offset": [
+        115,
+        111
+      ],
+      "sha256": "e1562d0c542f3654d47b30cd3e789d568e519f0c7d479a0294ae482cdd28dcda"
+    },
+    {
+      "slot": 6,
+      "sourceIndex": 2,
+      "rect": {
+        "left": 796,
+        "top": 10,
+        "width": 241,
+        "height": 329
+      },
+      "sourceFoot": [
+        149,
+        328
+      ],
+      "scale": 0.53156146179402,
+      "offset": [
+        113,
+        96
+      ],
+      "sha256": "758e3eae82044106a08a3691d62de2d5d181ab07241d8de8e45744d33a3ee217"
+    },
+    {
+      "slot": 7,
+      "sourceIndex": 3,
+      "rect": {
+        "left": 1138,
+        "top": 83,
+        "width": 241,
+        "height": 263
+      },
+      "sourceFoot": [
+        128,
+        262
+      ],
+      "scale": 0.53156146179402,
+      "offset": [
+        124,
+        131
+      ],
+      "sha256": "a396fe3b80021fb3751d9610356cd3f665011753b3aa0a59990a3e9865c76c19"
+    },
+    {
+      "slot": 8,
+      "sourceIndex": 6,
+      "rect": {
+        "left": 790,
+        "top": 359,
+        "width": 242,
+        "height": 320
+      },
+      "sourceFoot": [
+        120.5,
+        318
+      ],
+      "scale": 0.5653710247349824,
+      "offset": [
+        124,
+        90
+      ],
+      "sha256": "d77891333326e0ccfe77918f591625bc3e68863fc9d66431ec638392e1e6272a"
+    },
+    {
+      "slot": 9,
+      "sourceIndex": 7,
+      "rect": {
+        "left": 1139,
+        "top": 450,
+        "width": 287,
+        "height": 240
+      },
+      "sourceFoot": [
+        194.5,
+        239
+      ],
+      "scale": 0.5653710247349824,
+      "offset": [
+        82,
+        135
+      ],
+      "sha256": "0aaa4b215e40d93ada4a196e9c6586aac795f773da122a998e48cfe970fe2fa0"
+    },
+    {
+      "slot": 10,
+      "sourceIndex": 10,
+      "rect": {
+        "left": 782,
+        "top": 690,
+        "width": 225,
+        "height": 347
+      },
+      "sourceFoot": [
+        158.5,
+        346
+      ],
+      "scale": 0.5111821086261981,
+      "offset": [
+        111,
+        94
+      ],
+      "sha256": "8078bb7a1de5cf90dfbae99016853e396b36b9aa0b84204b0b49097c41af8eda"
+    },
+    {
+      "slot": 11,
+      "sourceIndex": 11,
+      "rect": {
+        "left": 1129,
+        "top": 769,
+        "width": 289,
+        "height": 266
+      },
+      "sourceFoot": [
+        176,
+        265
+      ],
+      "scale": 0.5111821086261981,
+      "offset": [
+        102,
+        135
+      ],
+      "sha256": "a15daf34c7ec65e1547858bf5864e19bf242eabe7990a4daa74151a77bd7bcc3"
+    }
+  ]
+}

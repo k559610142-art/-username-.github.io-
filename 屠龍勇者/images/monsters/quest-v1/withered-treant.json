@@ -1,0 +1,267 @@
+{
+  "key": "withered-treant",
+  "name": "枯萎樹靈・艾爾克",
+  "sprite": {
+    "src": "images/monsters/quest-v1/withered-treant.png",
+    "cw": 384,
+    "ch": 320,
+    "body": 160,
+    "n": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "cols": 4,
+    "size": 82,
+    "foot": [
+      192,
+      270
+    ]
+  },
+  "portrait": "images/monsters/quest-v1/withered-treant-portrait.png",
+  "cells": [
+    {
+      "slot": 0,
+      "sourceIndex": 0,
+      "rect": {
+        "left": 104,
+        "top": 18,
+        "width": 195,
+        "height": 321
+      },
+      "sourceFoot": [
+        113,
+        319
+      ],
+      "scale": 0.5,
+      "offset": [
+        136,
+        111
+      ],
+      "sha256": "bf264ee8736bc702241664b2173eec6c32c35d6d6794a9eac519ff8dfdbd56ce"
+    },
+    {
+      "slot": 1,
+      "sourceIndex": 1,
+      "rect": {
+        "left": 446,
+        "top": 19,
+        "width": 185,
+        "height": 320
+      },
+      "sourceFoot": [
+        86.5,
+        319
+      ],
+      "scale": 0.5,
+      "offset": [
+        149,
+        111
+      ],
+      "sha256": "8307c980e797cabfcdb3ddcfa065c257d35dc6b19967d515432ba5f275556146"
+    },
+    {
+      "slot": 2,
+      "sourceIndex": 4,
+      "rect": {
+        "left": 88,
+        "top": 377,
+        "width": 211,
+        "height": 304
+      },
+      "sourceFoot": [
+        103.5,
+        302
+      ],
+      "scale": 0.5111821086261981,
+      "offset": [
+        139,
+        116
+      ],
+      "sha256": "f1584b1fba2da90b35ab103b827b151ef17e9939c7cec06342cfa6a9cf3efbeb"
+    },
+    {
+      "slot": 3,
+      "sourceIndex": 5,
+      "rect": {
+        "left": 442,
+        "top": 380,
+        "width": 204,
+        "height": 313
+      },
+      "sourceFoot": [
+        110,
+        312
+      ],
+      "scale": 0.5111821086261981,
+      "offset": [
+        136,
+        111
+      ],
+      "sha256": "0d5b2fbc1e5ebe115c8052e1dfd104516ed0ed36f78373bfd4ead868515c15bd"
+    },
+    {
+      "slot": 4,
+      "sourceIndex": 8,
+      "rect": {
+        "left": 96,
+        "top": 724,
+        "width": 190,
+        "height": 328
+      },
+      "sourceFoot": [
+        71.5,
+        326
+      ],
+      "scale": 0.4892966360856269,
+      "offset": [
+        157,
+        110
+      ],
+      "sha256": "08283850cd4236f377db030c94bcc2f707b91acfbb93a1e1644148dcc2a0364d"
+    },
+    {
+      "slot": 5,
+      "sourceIndex": 9,
+      "rect": {
+        "left": 466,
+        "top": 725,
+        "width": 187,
+        "height": 316
+      },
+      "sourceFoot": [
+        83.5,
+        314
+      ],
+      "scale": 0.4892966360856269,
+      "offset": [
+        151,
+        116
+      ],
+      "sha256": "6568ed896cf846e2ba4a1cc4d627f3b49a1a2b83f6eeaef5208eb9fad3d697aa"
+    },
+    {
+      "slot": 6,
+      "sourceIndex": 2,
+      "rect": {
+        "left": 785,
+        "top": 6,
+        "width": 248,
+        "height": 334
+      },
+      "sourceFoot": [
+        149.5,
+        332
+      ],
+      "scale": 0.5,
+      "offset": [
+        117,
+        105
+      ],
+      "sha256": "89a92758bbc49ccbf83f1502ad872a383d756e817bc7e79aa5a34263ea2b1752"
+    },
+    {
+      "slot": 7,
+      "sourceIndex": 3,
+      "rect": {
+        "left": 1114,
+        "top": 72,
+        "width": 260,
+        "height": 279
+      },
+      "sourceFoot": [
+        171.5,
+        271
+      ],
+      "scale": 0.5,
+      "offset": [
+        106,
+        136
+      ],
+      "sha256": "8368e5ea257e9911a2d65bc3a433d897c1777745f8234f9e3b82f123d208274e"
+    },
+    {
+      "slot": 8,
+      "sourceIndex": 6,
+      "rect": {
+        "left": 786,
+        "top": 376,
+        "width": 248,
+        "height": 301
+      },
+      "sourceFoot": [
+        124.5,
+        299
+      ],
+      "scale": 0.5111821086261981,
+      "offset": [
+        129,
+        118
+      ],
+      "sha256": "4637878a33682577b5ed351a07601cff329e7a112650c096a735e31f8a98de9f"
+    },
+    {
+      "slot": 9,
+      "sourceIndex": 7,
+      "rect": {
+        "left": 1077,
+        "top": 425,
+        "width": 348,
+        "height": 253
+      },
+      "sourceFoot": [
+        173.5,
+        238
+      ],
+      "scale": 0.5111821086261981,
+      "offset": [
+        104,
+        148
+      ],
+      "sha256": "f366662c201b02c68a86c3f967d4a982df85d73fe6bb411c0027870bb7d3d8fe"
+    },
+    {
+      "slot": 10,
+      "sourceIndex": 10,
+      "rect": {
+        "left": 791,
+        "top": 707,
+        "width": 237,
+        "height": 357
+      },
+      "sourceFoot": [
+        161.5,
+        356
+      ],
+      "scale": 0.4892966360856269,
+      "offset": [
+        113,
+        96
+      ],
+      "sha256": "12c4f39a19ae10bf5f965fd66189a3fcff8d78bc94a8c681c38fb5d53b0dc04f"
+    },
+    {
+      "slot": 11,
+      "sourceIndex": 11,
+      "rect": {
+        "left": 1127,
+        "top": 763,
+        "width": 255,
+        "height": 292
+      },
+      "sourceFoot": [
+        166.5,
+        290
+      ],
+      "scale": 0.4892966360856269,
+      "offset": [
+        111,
+        128
+      ],
+      "sha256": "da1d35adbbd186ac4ddb2f1849a263f4ec3dd762d3c393d73d1e898f55df3933"
+    }
+  ]
+}

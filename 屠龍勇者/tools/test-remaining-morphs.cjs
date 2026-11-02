@@ -5,7 +5,7 @@ const before=JSON.parse(fs.readFileSync(path.join(__dirname,'sprite-src/morph/re
 const prefix=fs.readFileSync(path.join(__dirname,'test-mercenary.js'),'utf8').split('ctx.assert = assert;')[0];
 const ctx=new Function('require','__dirname',prefix+'\nreturn ctx;')(require,__dirname);Object.assign(ctx,{assert,specs,before});
 vm.runInContext(`
-SIM_MODE=true;assert.equal(SAVE_SCHEMA,25);assert.equal(GAME_VERSION,'20261102b');
+SIM_MODE=true;assert.equal(SAVE_SCHEMA,25);assert.equal(GAME_VERSION,'20261102c');
 assert.equal(JSON.stringify(MORPH_FORMS.map(({sprite,...f})=>f)),JSON.stringify(before),'原36款數值、等級、說明不可變');
 assert.equal(new Set(MORPH_FORMS.map(f=>f.sprite)).size,36);
 assert.equal(ITEMS.polyScroll.sec,1800);assert.equal(ITEMS.polyScroll.price,10000);

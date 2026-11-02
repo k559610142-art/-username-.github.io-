@@ -1,0 +1,267 @@
+{
+  "key": "void-archmage",
+  "name": "虛空魔導・莫爾斯",
+  "sprite": {
+    "src": "images/monsters/quest-v1/void-archmage.png",
+    "cw": 384,
+    "ch": 320,
+    "body": 160,
+    "n": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "cols": 4,
+    "size": 68,
+    "foot": [
+      192,
+      270
+    ]
+  },
+  "portrait": "images/monsters/quest-v1/void-archmage-portrait.png",
+  "cells": [
+    {
+      "slot": 0,
+      "sourceIndex": 0,
+      "rect": {
+        "left": 74,
+        "top": 5,
+        "width": 202,
+        "height": 344
+      },
+      "sourceFoot": [
+        116,
+        343
+      ],
+      "scale": 0.46647230320699706,
+      "offset": [
+        138,
+        110
+      ],
+      "sha256": "919239739b79064a1fae9734d10ae3f43c807aa8ec45a0914b9dbba03717aff1"
+    },
+    {
+      "slot": 1,
+      "sourceIndex": 1,
+      "rect": {
+        "left": 435,
+        "top": 12,
+        "width": 201,
+        "height": 337
+      },
+      "sourceFoot": [
+        93,
+        336
+      ],
+      "scale": 0.46647230320699706,
+      "offset": [
+        149,
+        114
+      ],
+      "sha256": "f83a08ac5199cb8e3edc29f19f8275873695e6b7c5f9d52288951a8ef430b473"
+    },
+    {
+      "slot": 2,
+      "sourceIndex": 4,
+      "rect": {
+        "left": 52,
+        "top": 368,
+        "width": 203,
+        "height": 318
+      },
+      "sourceFoot": [
+        118,
+        316
+      ],
+      "scale": 0.5063291139240507,
+      "offset": [
+        132,
+        111
+      ],
+      "sha256": "ea436f1e819bb8802a15c2c99a563c9a2b988674396f13b210cbd73f13c964dd"
+    },
+    {
+      "slot": 3,
+      "sourceIndex": 5,
+      "rect": {
+        "left": 411,
+        "top": 370,
+        "width": 201,
+        "height": 315
+      },
+      "sourceFoot": [
+        115.5,
+        313
+      ],
+      "scale": 0.5063291139240507,
+      "offset": [
+        134,
+        113
+      ],
+      "sha256": "6121da8aa25b121d0cf5590103c80de9c1ce686e6f5a62b96df7a668bfaf26f4"
+    },
+    {
+      "slot": 4,
+      "sourceIndex": 8,
+      "rect": {
+        "left": 79,
+        "top": 714,
+        "width": 174,
+        "height": 325
+      },
+      "sourceFoot": [
+        88.5,
+        324
+      ],
+      "scale": 0.49079754601226994,
+      "offset": [
+        149,
+        111
+      ],
+      "sha256": "ff3ee6a9d835af7c12a00522804ac8ce5bed6b012af86932881edf9014b57642"
+    },
+    {
+      "slot": 5,
+      "sourceIndex": 9,
+      "rect": {
+        "left": 414,
+        "top": 714,
+        "width": 202,
+        "height": 327
+      },
+      "sourceFoot": [
+        110,
+        325
+      ],
+      "scale": 0.49079754601226994,
+      "offset": [
+        138,
+        110
+      ],
+      "sha256": "9294880ad3d9369d156ed1402b10d2b8efbe00baf411eba3ba5c6625feb9645a"
+    },
+    {
+      "slot": 6,
+      "sourceIndex": 2,
+      "rect": {
+        "left": 778,
+        "top": 16,
+        "width": 260,
+        "height": 329
+      },
+      "sourceFoot": [
+        113.5,
+        328
+      ],
+      "scale": 0.46647230320699706,
+      "offset": [
+        140,
+        117
+      ],
+      "sha256": "dafc75548cc49abc31600d04d098361153803422c407f5c120d346147a8cf777"
+    },
+    {
+      "slot": 7,
+      "sourceIndex": 3,
+      "rect": {
+        "left": 1155,
+        "top": 10,
+        "width": 242,
+        "height": 338
+      },
+      "sourceFoot": [
+        92.5,
+        337
+      ],
+      "scale": 0.46647230320699706,
+      "offset": [
+        149,
+        113
+      ],
+      "sha256": "52c6f2b30efc7c790369fe92c2ca8d753c56ea5b70bc76f848955f508e9779f1"
+    },
+    {
+      "slot": 8,
+      "sourceIndex": 6,
+      "rect": {
+        "left": 762,
+        "top": 371,
+        "width": 270,
+        "height": 313
+      },
+      "sourceFoot": [
+        104.5,
+        312
+      ],
+      "scale": 0.5063291139240507,
+      "offset": [
+        139,
+        113
+      ],
+      "sha256": "799c8abd5ea46f17269bc21cd39d0319823dd18b16115b048f24bb7a946cdd27"
+    },
+    {
+      "slot": 9,
+      "sourceIndex": 7,
+      "rect": {
+        "left": 1120,
+        "top": 384,
+        "width": 298,
+        "height": 301
+      },
+      "sourceFoot": [
+        115.5,
+        298
+      ],
+      "scale": 0.5063291139240507,
+      "offset": [
+        134,
+        119
+      ],
+      "sha256": "ede299040f5ae4e3d32e068a95e0cdde719f6580f089ecba897de44b6c258560"
+    },
+    {
+      "slot": 10,
+      "sourceIndex": 10,
+      "rect": {
+        "left": 779,
+        "top": 712,
+        "width": 247,
+        "height": 333
+      },
+      "sourceFoot": [
+        130.5,
+        332
+      ],
+      "scale": 0.49079754601226994,
+      "offset": [
+        128,
+        107
+      ],
+      "sha256": "3f4cbeb4b1b599fd78e479292e13c45fbb928e8eba89342ef537949bcb5f6ce8"
+    },
+    {
+      "slot": 11,
+      "sourceIndex": 11,
+      "rect": {
+        "left": 1134,
+        "top": 718,
+        "width": 221,
+        "height": 327
+      },
+      "sourceFoot": [
+        131.5,
+        326
+      ],
+      "scale": 0.49079754601226994,
+      "offset": [
+        128,
+        110
+      ],
+      "sha256": "7dd93a51069e99d8a2f70f88c07d795542fd9f7884ad1365e45dae9ce0b1c026"
+    }
+  ]
+}

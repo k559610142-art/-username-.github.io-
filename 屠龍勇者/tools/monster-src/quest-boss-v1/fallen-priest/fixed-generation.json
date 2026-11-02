@@ -1,0 +1,4 @@
+{
+  "prompt": "Repair this original 4-column by 3-row twelve-pose dark priest sprite sheet. The raised skull crozier in ROW ONE COLUMN THREE is clipped at the TOP image edge. Redraw the whole skull ornament with clear transparent space above it. Make all twelve figures 20% SMALLER within their existing cells, preserve all poses, character identity, dark burgundy black robe, pale face, RIGHT skull crozier and LEFT book, every hand/foot/robe/staff tip complete. Row1 front/down, row2 strictly right-facing, row3 back/up including both casting attacks. Four columns per row: walk1, walk2, windup, compact crimson spell. No ground, shadows, text, grid or added objects. Fully transparent RGBA gutters and outer borders.",
+  "path": "C:\\Users\\User\\.codex\\generated_images\\01a191b6-cab8-7390-ac17-309a217ef8a5\\exec-572f3814-63b5-4360-b90d-ccd06b2192e2.png"
+}

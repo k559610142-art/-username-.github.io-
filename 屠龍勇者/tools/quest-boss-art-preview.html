@@ -1,0 +1,42 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><base href="../"><meta name="viewport" content="width=device-width,initial-scale=1"><title>火龍與職業任務首領・外型驗收</title>
+<style>body{margin:20px;background:#171c1d;color:#e8dcc6;font:15px "Microsoft JhengHei",sans-serif;display:block!important;height:auto!important;overflow:auto!important}h1{font-size:24px}p{color:#b8b9a9}.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:16px 0}select,button{font:inherit;padding:7px;background:#34382e;color:#f5e5c5;border:1px solid #6d705b;border-radius:5px}canvas{display:block;width:min(100%,900px);height:auto;border:1px solid #555d49;border-radius:8px}#status{min-height:24px;color:#efd28f}a{color:#e7ca7d}</style>
+</head><body><h1>黑暗大陸 · 火龍與職業任務首領</h1><p>37款原創外型＋12職業試煉之影｜正式遊戲繪圖｜此處為外型驗收場，實際任務出現地點不變</p>
+<div class="controls"><label>首領 <select id="boss" disabled></select></label><label>動作 <select id="action" disabled><option value="walk">行走</option><option value="attack">攻擊</option></select></label><label>方向 <select id="direction" disabled><option value="down">正面</option><option value="right">向右</option><option value="up">背面</option><option value="left">向左</option></select></label><button id="pause" disabled>暫停</button><button id="step" disabled>逐格</button><button id="hurt" disabled>測試受擊</button><label>場景 <select id="mode" disabled><option value="field">一般場景</option><option value="raid">火龍副本重播</option></select></label></div>
+<p id="status">載入中…</p><canvas id="view" width="900" height="540" aria-label="火龍與任務首領的實際遊戲繪圖"></canvas><p>測試角色僅存於記憶體，不讀寫原角色、不連正式服務或發獎。<a href="tools/monster-src/quest-boss-v1/contact.png">查看37款造型總覽</a></p>
+<script>
+(async()=>{
+ const memory=new Map();Object.defineProperty(window,'localStorage',{value:{getItem:k=>memory.get(k)||null,setItem:(k,v)=>memory.set(k,String(v)),removeItem:k=>memory.delete(k)}});window.setInterval=()=>0;
+ const localFetch=window.fetch.bind(window);window.fetch=(u,o)=>{if(new URL(u,location.href).origin!==location.origin)throw Error('預覽禁止連外');return localFetch(u,o);};
+ const index=await(await fetch('index.html',{cache:'no-store'})).text(),stamp=Date.now();
+ const files=[...index.matchAll(/<script src="(data\/[^"?]+\.js\?v=[^"]+)"/g)].map(m=>m[1]).filter(f=>!['data/main.js','data/pwa.js'].includes(f.split('?')[0]));
+ for(const f of files)await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=f+'&preview=quest-boss-'+stamp;s.onload=resolve;s.onerror=reject;document.head.append(s);});
+ SIM_MODE=true;saveGame=()=>{};refreshUI=()=>{};sfx=()=>{};createPlayer('外型驗收','knight',CLASSES.knight.base);player.lv=99;addItem('shortSword');equipItem(player.inv.find(i=>i.id==='shortSword').uid,true);player.loc={type:'zone',id:'lairValakas'};buildScene();scene.gates=null;scene.mons=[];scene.engaged=null;
+ const rows=[{key:'valakas',name:MONSTERS.valakas.name,mid:'valakas',inst:makeMonster('valakas')},...Object.entries(CLASS_QUESTS).flatMap(([cls,qs])=>qs.filter(q=>q.goal.type==='boss').map(q=>({key:SCENE_QUEST_ART[q.goal.boss.name],name:q.goal.boss.name,mid:'questBoss',inst:{...buildMonster('questBoss',q.goal.boss),questBoss:true},cls})))];
+ const boss=document.getElementById('boss'),action=document.getElementById('action'),direction=document.getElementById('direction'),mode=document.getElementById('mode'),status=document.getElementById('status'),canvas=document.getElementById('view');
+ for(const r of rows){const o=document.createElement('option');o.value=r.key;o.textContent=(r.cls?CLASSES[r.cls].name+'｜':'龍族｜')+r.name;boss.append(o);}
+ let selected=rows[0],elapsed=0,last=0,paused=false,loadSeq=0,target=null;
+ async function waitImage(src){spriteImage(src);const im=spriteCache[src];if(im.complete&&im.naturalWidth)return;await new Promise((resolve,reject)=>{im.addEventListener('load',resolve,{once:true});im.addEventListener('error',()=>reject(Error('圖檔載入失敗 '+src)),{once:true});});}
+ async function selectBoss(){const seq=++loadSeq;selected=rows.find(r=>r.key===boss.value);status.textContent='載入 '+selected.name+'…';elapsed=0;
+  for(const atk of [false,true]){monSpriteImg(selected.key,atk);await waitImage(monSpriteSpec(selected.key,atk).src);}
+  if(seq!==loadSeq)return;target={x:20,y:7,rx:20,ry:7,mid:selected.mid,name:selected.name,icon:selected.inst.icon,inst:{...selected.inst},lastHp:selected.inst.hp,atk:0,dead:false,dying:0};scene.mons=[target];scene.engaged=null;
+  status.textContent='目前：'+selected.name+'｜'+(MON_SPRITES[selected.key].actor?'職業暗影・沿用完整職業動作':'原創三向12格・向左鏡射')+'｜版本 '+GAME_VERSION;
+ }
+ boss.onchange=()=>selectBoss().catch(e=>{status.textContent=e.message;console.error(e);});
+ action.onchange=()=>{elapsed=0;};direction.onchange=()=>{elapsed=0;};
+ document.getElementById('pause').onclick=()=>{paused=!paused;document.getElementById('pause').textContent=paused?'繼續':'暫停';};
+ document.getElementById('step').onclick=()=>{paused=true;document.getElementById('pause').textContent='繼續';const sp=monSpriteSpec(selected.key,action.value==='attack'),row={down:0,right:1,up:2,left:1}[direction.value]+(action.value==='attack'?3:0),n=sp.n[row],ms=action.value==='attack'?380/n:150;elapsed=(Math.floor(elapsed/ms)+1)%n*ms+ms/2;};
+ document.getElementById('hurt').onclick=()=>{if(!target)return;target.inst={...selected.inst};target.inst.hp-=10;target.lastHp=selected.inst.hp;scene.engaged=target;scene.lastPlayerHp=player.hp;sceneReadEvents();};
+ // 自製重播fixture只供繪圖，沒有房間、帳號或獎勵。
+ const res={boss:makeMonster('valakas'),members:[{name:'測試騎士',cls:'knight',hp:1000,atk:900,rng:false,castR:0},{name:'測試法師',cls:'mage',hp:700,atk:1100,rng:true,castR:1}],frames:[[0,1,1000,700],[10000,1,1000,700]],marks:[[0,'g',0],[500,'x',0],[1600,'x',1],[2500,'w'],[3000,'b']],duration:10000,win:true};
+ raidReplay={key:'local-fire-art',res};raidReplayPos=()=>elapsed%5000;
+ mode.onchange=async()=>{elapsed=0;raidSceneSt=null;if(mode.value==='raid'){boss.value='valakas';await selectBoss();}for(const id of ['boss','action','direction','hurt','step'])document.getElementById(id).disabled=mode.value==='raid';};
+ await Promise.all([waitImage(scene.bg.src),...['walk','attack','cast','hit'].map(a=>waitImage(CLASSES.knight.sprite[a].src))]);await selectBoss();boss.disabled=false;for(const id of ['pause','step','hurt','action','direction','mode'])document.getElementById(id).disabled=false;
+ function draw(t){const dt=last?Math.min(100,t-last):0;last=t;if(!paused)elapsed+=dt;gameNow=elapsed;const g=canvas.getContext('2d');
+  if(mode.value==='raid'){raidSceneDraw(g,900,540);}else if(target){const atk=action.value==='attack',v={down:[0,1],right:[1,0],up:[0,-1],left:[-1,0]}[direction.value];scene.pl.x=scene.pl.rx=20+v[0]*3;scene.pl.y=scene.pl.ry=7+v[1]*3;scene.pl.path=[];
+   target.inst=atk?target.inst||{...selected.inst}:null;target.x=20+(atk?0:v[0]);target.y=7+(atk?0:v[1]);target.rx=20;target.ry=7;target.atk=atk?380-(elapsed%380):0;
+   if(target.hurt&&!paused){target.hurt.t+=dt;if(target.hurt.t>=HURT_MS)target.hurt=null;}if(scene.pl.anim&&!paused)scene.pl.anim.t+=dt;sceneDraw(g,900,540);
+  }requestAnimationFrame(draw);
+ }
+ requestAnimationFrame(draw);
+})().catch(e=>{document.getElementById('status').textContent=e.stack;console.error(e);});
+</script></body></html>

@@ -1,0 +1,267 @@
+{
+  "key": "gatebreaker",
+  "name": "破門者・鬼刃",
+  "sprite": {
+    "src": "images/monsters/quest-v1/gatebreaker.png",
+    "cw": 384,
+    "ch": 320,
+    "body": 160,
+    "n": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "cols": 4,
+    "size": 68,
+    "foot": [
+      192,
+      270
+    ]
+  },
+  "portrait": "images/monsters/quest-v1/gatebreaker-portrait.png",
+  "cells": [
+    {
+      "slot": 0,
+      "sourceIndex": 0,
+      "rect": {
+        "left": 60,
+        "top": 44,
+        "width": 245,
+        "height": 295
+      },
+      "sourceFoot": [
+        133.5,
+        293
+      ],
+      "scale": 0.54421768707483,
+      "offset": [
+        119,
+        111
+      ],
+      "sha256": "549d07f2d5f65b7c30e222e93670087c033a88ae08d0f02ca2a1e23d723139ea"
+    },
+    {
+      "slot": 1,
+      "sourceIndex": 1,
+      "rect": {
+        "left": 432,
+        "top": 44,
+        "width": 224,
+        "height": 295
+      },
+      "sourceFoot": [
+        119,
+        293
+      ],
+      "scale": 0.54421768707483,
+      "offset": [
+        127,
+        111
+      ],
+      "sha256": "130b47b071d8bc8c282b3385fa2fbcc8c6a28b1e343f6b23b967a6183ee7a008"
+    },
+    {
+      "slot": 2,
+      "sourceIndex": 4,
+      "rect": {
+        "left": 101,
+        "top": 414,
+        "width": 193,
+        "height": 262
+      },
+      "sourceFoot": [
+        148.5,
+        261
+      ],
+      "scale": 0.6130268199233716,
+      "offset": [
+        101,
+        111
+      ],
+      "sha256": "045d5e63da66ee5fc473686858d449f549349ae9c8d18925e0d863673ea8bf01"
+    },
+    {
+      "slot": 3,
+      "sourceIndex": 5,
+      "rect": {
+        "left": 465,
+        "top": 415,
+        "width": 174,
+        "height": 258
+      },
+      "sourceFoot": [
+        86.5,
+        256
+      ],
+      "scale": 0.6130268199233716,
+      "offset": [
+        139,
+        114
+      ],
+      "sha256": "e20980b86bb81495cdd5cb2f9770947203e86133e0dd897a279ae1216f5e2403"
+    },
+    {
+      "slot": 4,
+      "sourceIndex": 8,
+      "rect": {
+        "left": 109,
+        "top": 751,
+        "width": 215,
+        "height": 280
+      },
+      "sourceFoot": [
+        84.5,
+        278
+      ],
+      "scale": 0.5614035087719298,
+      "offset": [
+        145,
+        114
+      ],
+      "sha256": "446d1ec8bfcbbc81be0f7796ec7cdeddaf744a0f996fef3e2ac51e78104b6ce5"
+    },
+    {
+      "slot": 5,
+      "sourceIndex": 9,
+      "rect": {
+        "left": 471,
+        "top": 750,
+        "width": 198,
+        "height": 286
+      },
+      "sourceFoot": [
+        90.5,
+        285
+      ],
+      "scale": 0.5614035087719298,
+      "offset": [
+        141,
+        111
+      ],
+      "sha256": "cccbaa1a06e9abf47a9d0b74d4684e8cc810e1e07e50b97e276524ec6158364e"
+    },
+    {
+      "slot": 6,
+      "sourceIndex": 2,
+      "rect": {
+        "left": 779,
+        "top": 13,
+        "width": 226,
+        "height": 328
+      },
+      "sourceFoot": [
+        165,
+        327
+      ],
+      "scale": 0.54421768707483,
+      "offset": [
+        102,
+        92
+      ],
+      "sha256": "043f2e4460dcd0bbb911b824787e5bffc519d5289d04c4f0be745e87b53b12e4"
+    },
+    {
+      "slot": 7,
+      "sourceIndex": 3,
+      "rect": {
+        "left": 1160,
+        "top": 80,
+        "width": 252,
+        "height": 260
+      },
+      "sourceFoot": [
+        55,
+        259
+      ],
+      "scale": 0.54421768707483,
+      "offset": [
+        163,
+        129
+      ],
+      "sha256": "f3ddd87200a0261a373592111720fec47b9c667553a78f1159129749428f4a87"
+    },
+    {
+      "slot": 8,
+      "sourceIndex": 6,
+      "rect": {
+        "left": 800,
+        "top": 384,
+        "width": 199,
+        "height": 301
+      },
+      "sourceFoot": [
+        99,
+        297
+      ],
+      "scale": 0.6130268199233716,
+      "offset": [
+        131,
+        88
+      ],
+      "sha256": "d077ac98d1674cce526c874161956bd6ec93632d86703f9fc15e28354272e9c8"
+    },
+    {
+      "slot": 9,
+      "sourceIndex": 7,
+      "rect": {
+        "left": 1144,
+        "top": 447,
+        "width": 293,
+        "height": 243
+      },
+      "sourceFoot": [
+        115.5,
+        215
+      ],
+      "scale": 0.6130268199233716,
+      "offset": [
+        122,
+        139
+      ],
+      "sha256": "315b25a300a0f803608f8ccf4439de62f06a1ea0735ef985b4e8d871d3a2570a"
+    },
+    {
+      "slot": 10,
+      "sourceIndex": 10,
+      "rect": {
+        "left": 782,
+        "top": 711,
+        "width": 210,
+        "height": 333
+      },
+      "sourceFoot": [
+        165,
+        332
+      ],
+      "scale": 0.5614035087719298,
+      "offset": [
+        99,
+        84
+      ],
+      "sha256": "20d5c4bc779e755cd45ea992001ce7d9e29907092925cd5464a475081ab6646d"
+    },
+    {
+      "slot": 11,
+      "sourceIndex": 11,
+      "rect": {
+        "left": 1143,
+        "top": 772,
+        "width": 276,
+        "height": 260
+      },
+      "sourceFoot": [
+        111,
+        231
+      ],
+      "scale": 0.5614035087719298,
+      "offset": [
+        130,
+        141
+      ],
+      "sha256": "2d471a1e6b232b6bdad68f6ce12a3a89760b7b50e8b68e9f89c14e7da5f90067"
+    }
+  ]
+}

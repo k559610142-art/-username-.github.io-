@@ -1,0 +1,267 @@
+{
+  "key": "rust-turret",
+  "name": "鐵鏽砲台・哈茲",
+  "sprite": {
+    "src": "images/monsters/quest-v1/rust-turret.png",
+    "cw": 384,
+    "ch": 320,
+    "body": 160,
+    "n": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "cols": 4,
+    "size": 68,
+    "foot": [
+      192,
+      270
+    ]
+  },
+  "portrait": "images/monsters/quest-v1/rust-turret-portrait.png",
+  "cells": [
+    {
+      "slot": 0,
+      "sourceIndex": 0,
+      "rect": {
+        "left": 72,
+        "top": 73,
+        "width": 252,
+        "height": 270
+      },
+      "sourceFoot": [
+        197.5,
+        268
+      ],
+      "scale": 0.5970149253731343,
+      "offset": [
+        74,
+        111
+      ],
+      "sha256": "f33aa1fad192c9feb46f0d3b3b05012226ed67afdb09f5953018e967ab4249ce"
+    },
+    {
+      "slot": 1,
+      "sourceIndex": 1,
+      "rect": {
+        "left": 439,
+        "top": 73,
+        "width": 233,
+        "height": 267
+      },
+      "sourceFoot": [
+        116,
+        251
+      ],
+      "scale": 0.5970149253731343,
+      "offset": [
+        123,
+        120
+      ],
+      "sha256": "fc57773d962121df1523443c7bc7c21ff99186b2ac687de9fe7a6be9e6d8be8e"
+    },
+    {
+      "slot": 2,
+      "sourceIndex": 4,
+      "rect": {
+        "left": 45,
+        "top": 417,
+        "width": 311,
+        "height": 258
+      },
+      "sourceFoot": [
+        206,
+        257
+      ],
+      "scale": 0.6201550387596899,
+      "offset": [
+        64,
+        111
+      ],
+      "sha256": "ce6041dc9915b13f4dc26e00ba721b25f7a00e4dc5fbf9639856fdc7a298a189"
+    },
+    {
+      "slot": 3,
+      "sourceIndex": 5,
+      "rect": {
+        "left": 408,
+        "top": 421,
+        "width": 311,
+        "height": 253
+      },
+      "sourceFoot": [
+        220,
+        252
+      ],
+      "scale": 0.6201550387596899,
+      "offset": [
+        56,
+        114
+      ],
+      "sha256": "4d4bbfda5a9a2e95709a65b71edd79b5414a5cfe2ba1574393ef3bf0a7f34e5e"
+    },
+    {
+      "slot": 4,
+      "sourceIndex": 8,
+      "rect": {
+        "left": 73,
+        "top": 741,
+        "width": 247,
+        "height": 281
+      },
+      "sourceFoot": [
+        52.5,
+        227
+      ],
+      "scale": 0.6274509803921569,
+      "offset": [
+        160,
+        128
+      ],
+      "sha256": "2c1eb00cf470c3a88f4f8f77f189fa8bc7c9e1eac13474270b60e4af2ff13a12"
+    },
+    {
+      "slot": 5,
+      "sourceIndex": 9,
+      "rect": {
+        "left": 437,
+        "top": 740,
+        "width": 234,
+        "height": 283
+      },
+      "sourceFoot": [
+        186,
+        254
+      ],
+      "scale": 0.6274509803921569,
+      "offset": [
+        76,
+        111
+      ],
+      "sha256": "e9a2d3d5711a08dd32cc92835e7f5c6667d3fa37c1aa71080196b34e51316c6b"
+    },
+    {
+      "slot": 6,
+      "sourceIndex": 2,
+      "rect": {
+        "left": 790,
+        "top": 55,
+        "width": 238,
+        "height": 281
+      },
+      "sourceFoot": [
+        118.5,
+        233
+      ],
+      "scale": 0.5970149253731343,
+      "offset": [
+        121,
+        131
+      ],
+      "sha256": "8ad57534d97cab88308775a02e9a0c03895a59533da5f0399eb686b8d21147e8"
+    },
+    {
+      "slot": 7,
+      "sourceIndex": 3,
+      "rect": {
+        "left": 1152,
+        "top": 24,
+        "width": 237,
+        "height": 312
+      },
+      "sourceFoot": [
+        118,
+        264
+      ],
+      "scale": 0.5970149253731343,
+      "offset": [
+        122,
+        114
+      ],
+      "sha256": "721e1caed28cbd8c95c39b3fee3658cfdc3e87967094c3654637fbb6a796835d"
+    },
+    {
+      "slot": 8,
+      "sourceIndex": 6,
+      "rect": {
+        "left": 782,
+        "top": 386,
+        "width": 284,
+        "height": 288
+      },
+      "sourceFoot": [
+        125.5,
+        232
+      ],
+      "scale": 0.6201550387596899,
+      "offset": [
+        115,
+        127
+      ],
+      "sha256": "1966b69b25b797f5fc7ecca260a58d835ab54d4c5db2f5db746f99c8b40df398"
+    },
+    {
+      "slot": 9,
+      "sourceIndex": 7,
+      "rect": {
+        "left": 1144,
+        "top": 370,
+        "width": 292,
+        "height": 304
+      },
+      "sourceFoot": [
+        132.5,
+        248
+      ],
+      "scale": 0.6201550387596899,
+      "offset": [
+        110,
+        117
+      ],
+      "sha256": "89d2de0055f5d32183062b9ead34ebab2842cb861ee50ca2e3ea1d4d820e3855"
+    },
+    {
+      "slot": 10,
+      "sourceIndex": 10,
+      "rect": {
+        "left": 787,
+        "top": 725,
+        "width": 248,
+        "height": 307
+      },
+      "sourceFoot": [
+        138,
+        254
+      ],
+      "scale": 0.6274509803921569,
+      "offset": [
+        105,
+        111
+      ],
+      "sha256": "de2193d3d441b850b053268326a94e8397c6544c8aaf01bca45e718a0fd60716"
+    },
+    {
+      "slot": 11,
+      "sourceIndex": 11,
+      "rect": {
+        "left": 1148,
+        "top": 699,
+        "width": 257,
+        "height": 329
+      },
+      "sourceFoot": [
+        138.5,
+        274
+      ],
+      "scale": 0.6274509803921569,
+      "offset": [
+        105,
+        99
+      ],
+      "sha256": "12416df4600142daa736157fd178a8beaeef29ac4e44dc2879d8bd497b38fde8"
+    }
+  ]
+}

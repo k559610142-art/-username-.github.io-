@@ -1,0 +1,267 @@
+{
+  "key": "runaway-magic-soldier",
+  "name": "失控魔導兵",
+  "sprite": {
+    "src": "images/monsters/quest-v1/runaway-magic-soldier.png",
+    "cw": 384,
+    "ch": 320,
+    "body": 160,
+    "n": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "cols": 4,
+    "size": 68,
+    "foot": [
+      192,
+      270
+    ]
+  },
+  "portrait": "images/monsters/quest-v1/runaway-magic-soldier-portrait.png",
+  "cells": [
+    {
+      "slot": 0,
+      "sourceIndex": 0,
+      "rect": {
+        "left": 82,
+        "top": 75,
+        "width": 199,
+        "height": 263
+      },
+      "sourceFoot": [
+        123.5,
+        261
+      ],
+      "scale": 0.6106870229007634,
+      "offset": [
+        117,
+        111
+      ],
+      "sha256": "687d29d87fbe2350457e6c51351cb618007cd956393a863749e162bb1ba0f1d4"
+    },
+    {
+      "slot": 1,
+      "sourceIndex": 1,
+      "rect": {
+        "left": 467,
+        "top": 75,
+        "width": 196,
+        "height": 261
+      },
+      "sourceFoot": [
+        65,
+        260
+      ],
+      "scale": 0.6106870229007634,
+      "offset": [
+        152,
+        111
+      ],
+      "sha256": "631d06d099f3ea4dbc2a258d44cc96c43761245db7734f540e39a85b9dbcb6c0"
+    },
+    {
+      "slot": 2,
+      "sourceIndex": 4,
+      "rect": {
+        "left": 103,
+        "top": 411,
+        "width": 211,
+        "height": 253
+      },
+      "sourceFoot": [
+        105,
+        252
+      ],
+      "scale": 0.6324110671936759,
+      "offset": [
+        126,
+        111
+      ],
+      "sha256": "1f8ab0a2189289447e9f73344cafbd5a89375703ddb8ab5e43f3aef0ead6d0ef"
+    },
+    {
+      "slot": 3,
+      "sourceIndex": 5,
+      "rect": {
+        "left": 443,
+        "top": 412,
+        "width": 208,
+        "height": 251
+      },
+      "sourceFoot": [
+        103.5,
+        250
+      ],
+      "scale": 0.6324110671936759,
+      "offset": [
+        127,
+        112
+      ],
+      "sha256": "7dd624621f854058e931b8a5529dddbbe1b182ce8c6d58218142ac501776bb93"
+    },
+    {
+      "slot": 4,
+      "sourceIndex": 8,
+      "rect": {
+        "left": 142,
+        "top": 758,
+        "width": 199,
+        "height": 274
+      },
+      "sourceFoot": [
+        82.5,
+        273
+      ],
+      "scale": 0.583941605839416,
+      "offset": [
+        144,
+        111
+      ],
+      "sha256": "6d2b3b00cbd6d9397aa80919e109b220788f5a2b858c3e67e25003b65db2a602"
+    },
+    {
+      "slot": 5,
+      "sourceIndex": 9,
+      "rect": {
+        "left": 465,
+        "top": 758,
+        "width": 222,
+        "height": 265
+      },
+      "sourceFoot": [
+        87,
+        264
+      ],
+      "scale": 0.583941605839416,
+      "offset": [
+        141,
+        116
+      ],
+      "sha256": "3fa25a15f79396f2c1b1ccebe2fba83d73f8f0ae7bb07ac3e2ba8aacd8846952"
+    },
+    {
+      "slot": 6,
+      "sourceIndex": 2,
+      "rect": {
+        "left": 762,
+        "top": 40,
+        "width": 237,
+        "height": 300
+      },
+      "sourceFoot": [
+        72.5,
+        299
+      ],
+      "scale": 0.6106870229007634,
+      "offset": [
+        148,
+        88
+      ],
+      "sha256": "3c3a3a4b55b158b9b8b5283946f86b90dbf04df41c13763a27bc889fe9b63dbd"
+    },
+    {
+      "slot": 7,
+      "sourceIndex": 3,
+      "rect": {
+        "left": 1100,
+        "top": 94,
+        "width": 303,
+        "height": 246
+      },
+      "sourceFoot": [
+        133,
+        239
+      ],
+      "scale": 0.6106870229007634,
+      "offset": [
+        111,
+        125
+      ],
+      "sha256": "085e970f31ac2e96ee4503696fc3ed6f056ab869a9a1f33e0c0c1a0dfd7b3d5a"
+    },
+    {
+      "slot": 8,
+      "sourceIndex": 6,
+      "rect": {
+        "left": 757,
+        "top": 390,
+        "width": 218,
+        "height": 293
+      },
+      "sourceFoot": [
+        76,
+        292
+      ],
+      "scale": 0.6324110671936759,
+      "offset": [
+        145,
+        86
+      ],
+      "sha256": "20d20df40d1c59e65582fbcde402c1129b0867e0f7e02580ff3856ba1c100dbf"
+    },
+    {
+      "slot": 9,
+      "sourceIndex": 7,
+      "rect": {
+        "left": 1088,
+        "top": 433,
+        "width": 337,
+        "height": 247
+      },
+      "sourceFoot": [
+        142.5,
+        217
+      ],
+      "scale": 0.6324110671936759,
+      "offset": [
+        102,
+        133
+      ],
+      "sha256": "bace9eb7aae85f1980ad89c6ae87cc41f5fec12caa54ffd018a887b0d1c371d5"
+    },
+    {
+      "slot": 10,
+      "sourceIndex": 10,
+      "rect": {
+        "left": 785,
+        "top": 725,
+        "width": 213,
+        "height": 316
+      },
+      "sourceFoot": [
+        62,
+        315
+      ],
+      "scale": 0.583941605839416,
+      "offset": [
+        156,
+        87
+      ],
+      "sha256": "31a1578adced4015af612fe6bcb9209832bdbea3bc22440af95f187f2c7ee6f4"
+    },
+    {
+      "slot": 11,
+      "sourceIndex": 11,
+      "rect": {
+        "left": 1133,
+        "top": 758,
+        "width": 282,
+        "height": 271
+      },
+      "sourceFoot": [
+        77.5,
+        270
+      ],
+      "scale": 0.583941605839416,
+      "offset": [
+        147,
+        112
+      ],
+      "sha256": "c3ae725ed05339a0e447a9aa91158054f396c5406c624e6657ecee8f0d2ae5b7"
+    }
+  ]
+}

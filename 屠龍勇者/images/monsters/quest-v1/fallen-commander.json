@@ -1,0 +1,267 @@
+{
+  "key": "fallen-commander",
+  "name": "墮落騎士團長・維克",
+  "sprite": {
+    "src": "images/monsters/quest-v1/fallen-commander.png",
+    "cw": 384,
+    "ch": 320,
+    "body": 160,
+    "n": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "cols": 4,
+    "size": 68,
+    "foot": [
+      192,
+      270
+    ]
+  },
+  "portrait": "images/monsters/quest-v1/fallen-commander-portrait.png",
+  "cells": [
+    {
+      "slot": 0,
+      "sourceIndex": 0,
+      "rect": {
+        "left": 78,
+        "top": 71,
+        "width": 212,
+        "height": 270
+      },
+      "sourceFoot": [
+        98,
+        268
+      ],
+      "scale": 0.5970149253731343,
+      "offset": [
+        133,
+        111
+      ],
+      "sha256": "dfa0757582fde6c5e583198871bae01dfeec15c0afda72b9fbbc8d3bdb38fa9f"
+    },
+    {
+      "slot": 1,
+      "sourceIndex": 1,
+      "rect": {
+        "left": 453,
+        "top": 80,
+        "width": 190,
+        "height": 261
+      },
+      "sourceFoot": [
+        104,
+        259
+      ],
+      "scale": 0.5970149253731343,
+      "offset": [
+        131,
+        115
+      ],
+      "sha256": "536906f197edef3965f92639dd3a387aa12a086e514c046bcb1a1fdd86a46e60"
+    },
+    {
+      "slot": 2,
+      "sourceIndex": 4,
+      "rect": {
+        "left": 67,
+        "top": 410,
+        "width": 245,
+        "height": 258
+      },
+      "sourceFoot": [
+        134,
+        257
+      ],
+      "scale": 0.6177606177606177,
+      "offset": [
+        110,
+        111
+      ],
+      "sha256": "2581c75f0c59c7d77ff6ef62fff4d64dd4e908f55ff97469fe390d5de087a28a"
+    },
+    {
+      "slot": 3,
+      "sourceIndex": 5,
+      "rect": {
+        "left": 433,
+        "top": 411,
+        "width": 241,
+        "height": 260
+      },
+      "sourceFoot": [
+        105,
+        259
+      ],
+      "scale": 0.6177606177606177,
+      "offset": [
+        128,
+        111
+      ],
+      "sha256": "cc9a8ce0f2b33bc42f84ffd34a50a3d8d56d7c0305257b901244d3eac7d7ac32"
+    },
+    {
+      "slot": 4,
+      "sourceIndex": 8,
+      "rect": {
+        "left": 89,
+        "top": 739,
+        "width": 226,
+        "height": 276
+      },
+      "sourceFoot": [
+        95.5,
+        274
+      ],
+      "scale": 0.5818181818181818,
+      "offset": [
+        136,
+        111
+      ],
+      "sha256": "90a57a5b3351cd8a4c416cb63a2188fbc001034dea53324d21a47d0bf52fe3da"
+    },
+    {
+      "slot": 5,
+      "sourceIndex": 9,
+      "rect": {
+        "left": 453,
+        "top": 742,
+        "width": 209,
+        "height": 273
+      },
+      "sourceFoot": [
+        98.5,
+        272
+      ],
+      "scale": 0.5818181818181818,
+      "offset": [
+        135,
+        112
+      ],
+      "sha256": "e565e0c8f756fed3549e49c5bb077a87d1a3584d05a42c3c20f7f17612cc3893"
+    },
+    {
+      "slot": 6,
+      "sourceIndex": 2,
+      "rect": {
+        "left": 781,
+        "top": 61,
+        "width": 220,
+        "height": 276
+      },
+      "sourceFoot": [
+        58.5,
+        274
+      ],
+      "scale": 0.5970149253731343,
+      "offset": [
+        158,
+        106
+      ],
+      "sha256": "8989d6eced09d531723733f5c219702437df563fe845119550e427fd86b4816d"
+    },
+    {
+      "slot": 7,
+      "sourceIndex": 3,
+      "rect": {
+        "left": 1108,
+        "top": 115,
+        "width": 283,
+        "height": 221
+      },
+      "sourceFoot": [
+        141,
+        219
+      ],
+      "scale": 0.5970149253731343,
+      "offset": [
+        108,
+        139
+      ],
+      "sha256": "d4a9a56bd09b52619e7ce3ba63970efe4b1ba88190605335daea5adeb17dfaa6"
+    },
+    {
+      "slot": 8,
+      "sourceIndex": 6,
+      "rect": {
+        "left": 774,
+        "top": 404,
+        "width": 228,
+        "height": 275
+      },
+      "sourceFoot": [
+        72,
+        274
+      ],
+      "scale": 0.6177606177606177,
+      "offset": [
+        148,
+        101
+      ],
+      "sha256": "d85e2340c1a80f4fe82559d2818622ef97cabddf52cc445055644bd8de6aefe3"
+    },
+    {
+      "slot": 9,
+      "sourceIndex": 7,
+      "rect": {
+        "left": 1091,
+        "top": 441,
+        "width": 339,
+        "height": 237
+      },
+      "sourceFoot": [
+        83.5,
+        234
+      ],
+      "scale": 0.6177606177606177,
+      "offset": [
+        140,
+        125
+      ],
+      "sha256": "123c955e17d00e18739d50196039213320115bd0466308084ca5bcdfae809141"
+    },
+    {
+      "slot": 10,
+      "sourceIndex": 10,
+      "rect": {
+        "left": 779,
+        "top": 733,
+        "width": 215,
+        "height": 278
+      },
+      "sourceFoot": [
+        156,
+        277
+      ],
+      "scale": 0.5818181818181818,
+      "offset": [
+        101,
+        109
+      ],
+      "sha256": "53f82e6dc758329284bfd0366604d9a5eee41d0425d339d3bbfca3726597b323"
+    },
+    {
+      "slot": 11,
+      "sourceIndex": 11,
+      "rect": {
+        "left": 1126,
+        "top": 760,
+        "width": 276,
+        "height": 251
+      },
+      "sourceFoot": [
+        137.5,
+        250
+      ],
+      "scale": 0.5818181818181818,
+      "offset": [
+        113,
+        125
+      ],
+      "sha256": "9cebf381a5ad6108436c437b784bdf0c2f6385285bd86a790081f61da93fb59c"
+    }
+  ]
+}

@@ -1,0 +1,267 @@
+{
+  "key": "valakas",
+  "name": "火龍・莫爾加斯",
+  "sprite": {
+    "src": "images/monsters/quest-v1/valakas.png",
+    "cw": 640,
+    "ch": 448,
+    "body": 192,
+    "n": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "cols": 4,
+    "size": 104,
+    "foot": [
+      320,
+      320
+    ]
+  },
+  "portrait": "images/monsters/quest-v1/valakas-portrait.png",
+  "cells": [
+    {
+      "slot": 0,
+      "sourceIndex": 0,
+      "rect": {
+        "left": 124,
+        "top": 133,
+        "width": 187,
+        "height": 203
+      },
+      "sourceFoot": [
+        92,
+        188
+      ],
+      "scale": 1.0158730158730158,
+      "offset": [
+        227,
+        129
+      ],
+      "sha256": "54a4b751a8b2dc54ee75ce6c72e8e69a28482d318c86326abd9753b78583bbb7"
+    },
+    {
+      "slot": 1,
+      "sourceIndex": 1,
+      "rect": {
+        "left": 482,
+        "top": 139,
+        "width": 185,
+        "height": 198
+      },
+      "sourceFoot": [
+        100,
+        182
+      ],
+      "scale": 1.0158730158730158,
+      "offset": [
+        218,
+        135
+      ],
+      "sha256": "ff72ceda2775ca6a57a65e3cdc12421f6cd976aa7b4e861f5c8322c8a9e04f2d"
+    },
+    {
+      "slot": 2,
+      "sourceIndex": 4,
+      "rect": {
+        "left": 94,
+        "top": 472,
+        "width": 245,
+        "height": 145
+      },
+      "sourceFoot": [
+        141,
+        143
+      ],
+      "scale": 1.2885906040268456,
+      "offset": [
+        138,
+        136
+      ],
+      "sha256": "d7ae00b30dddd6c34151f863958d6683d37972540e5cb5d7bb0a8b15f2f6b8a2"
+    },
+    {
+      "slot": 3,
+      "sourceIndex": 5,
+      "rect": {
+        "left": 436,
+        "top": 472,
+        "width": 261,
+        "height": 147
+      },
+      "sourceFoot": [
+        164,
+        148
+      ],
+      "scale": 1.2885906040268456,
+      "offset": [
+        110,
+        129
+      ],
+      "sha256": "11fe83337fa5c444bf5d3b850c5fb34504cdcfcb9fbbcd0b679d172782fd8bf7"
+    },
+    {
+      "slot": 4,
+      "sourceIndex": 8,
+      "rect": {
+        "left": 112,
+        "top": 769,
+        "width": 203,
+        "height": 207
+      },
+      "sourceFoot": [
+        104,
+        154
+      ],
+      "scale": 1.136094674556213,
+      "offset": [
+        202,
+        145
+      ],
+      "sha256": "9d12d84e9d7856d880fdc945108dd9baabcfa595d2982ce2ee7547f1d685df6c"
+    },
+    {
+      "slot": 5,
+      "sourceIndex": 9,
+      "rect": {
+        "left": 459,
+        "top": 770,
+        "width": 211,
+        "height": 193
+      },
+      "sourceFoot": [
+        118,
+        168
+      ],
+      "scale": 1.136094674556213,
+      "offset": [
+        186,
+        129
+      ],
+      "sha256": "65f6f5c89a9545e1643f84cfddae5b380cca23d7c43dd8d72a1bc8883ecd7717"
+    },
+    {
+      "slot": 6,
+      "sourceIndex": 2,
+      "rect": {
+        "left": 822,
+        "top": 133,
+        "width": 181,
+        "height": 202
+      },
+      "sourceFoot": [
+        94,
+        188
+      ],
+      "scale": 1.0158730158730158,
+      "offset": [
+        225,
+        129
+      ],
+      "sha256": "cca4618a865bb897231c4091c26d44478edc54d2a560ad89b5465886c9afd4b6"
+    },
+    {
+      "slot": 7,
+      "sourceIndex": 3,
+      "rect": {
+        "left": 1161,
+        "top": 133,
+        "width": 192,
+        "height": 231
+      },
+      "sourceFoot": [
+        107,
+        180
+      ],
+      "scale": 1.0158730158730158,
+      "offset": [
+        211,
+        137
+      ],
+      "sha256": "eb03e06e9461e287fc883b3e2a0c745f60d89080c5b5c2f1a567d478da89ca2c"
+    },
+    {
+      "slot": 8,
+      "sourceIndex": 6,
+      "rect": {
+        "left": 796,
+        "top": 477,
+        "width": 239,
+        "height": 146
+      },
+      "sourceFoot": [
+        139,
+        143
+      ],
+      "scale": 1.2885906040268456,
+      "offset": [
+        141,
+        136
+      ],
+      "sha256": "2bf50ecc8f53864b190b891a0279c39785314b642bbdc0580f0042b5a6f13949"
+    },
+    {
+      "slot": 9,
+      "sourceIndex": 7,
+      "rect": {
+        "left": 1111,
+        "top": 473,
+        "width": 280,
+        "height": 150
+      },
+      "sourceFoot": [
+        136,
+        147
+      ],
+      "scale": 1.2885906040268456,
+      "offset": [
+        146,
+        131
+      ],
+      "sha256": "3987d8c7585a8bf4e13f04a3685e1e1d11f09fc3d9ac9c7991f18926350bbff1"
+    },
+    {
+      "slot": 10,
+      "sourceIndex": 10,
+      "rect": {
+        "left": 813,
+        "top": 756,
+        "width": 209,
+        "height": 215
+      },
+      "sourceFoot": [
+        102,
+        165
+      ],
+      "scale": 1.136094674556213,
+      "offset": [
+        204,
+        133
+      ],
+      "sha256": "c1e5c400b2c5f84d340a685585b482865076128e9d695b281ae9e112f06210d7"
+    },
+    {
+      "slot": 11,
+      "sourceIndex": 11,
+      "rect": {
+        "left": 1160,
+        "top": 725,
+        "width": 206,
+        "height": 259
+      },
+      "sourceFoot": [
+        109,
+        197
+      ],
+      "scale": 1.136094674556213,
+      "offset": [
+        196,
+        97
+      ],
+      "sha256": "c08ba1d6aa5b1b6875ba1556bb9e199e3dc4595d73dae727839cd99711b801ed"
+    }
+  ]
+}
