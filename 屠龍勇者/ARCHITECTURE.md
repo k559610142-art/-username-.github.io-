@@ -4543,3 +4543,12 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - **伺服器**（`boss-timer.sql` 後段，可重跑）：`loot_minor_filter(items, x)`：非首領憑證的結果拿掉 `book_adv_`／`mercRune_`／`talentJewel_`（擋舊版遊戲與首領那群附帶的小怪）；`loot_finish`／`loot_finish_batch` 的 `public.loot_roll(c,j.context)` 包上它（天賦試煉的 `talent_trial_loot` 照舊接在後面），並拿掉一般怪 0.1% 鑽石（`or random()<0.001`）；`dia_drop` 非 boss 一律 `mob diamonds removed`。
 - **存檔收據**：本機掉落直接進背包，後端收據照 `lootCursor` 順序入帳，兩者並存；`LOOT_FORCE_LOCAL`／legacy 模式照舊全本機（首領也本機，含首領鑽石 `dia_drop('boss')`）。
 - **測試**：`test-boss-timer.js` 加載 talent-system.sql，驗兩函式補丁、過濾、首領不過濾、`dia_drop('mob')` 被拒、首領照舊、status 帶 now；`test-server-loot-client.js` 新增：沒首領地圖不問、本機小怪本機掉寶、野外未知問一次並讀回時間、未到期不問且不本機擲首領、到期再問、塔冷卻中本機／可出時問、後端未就緒等待、小怪不掉二轉書／符石／鑽石、首領照舊、T1 小怪天賦石約 0.05%；`test-mercenary-rune-drops.js`、`test-screen-cannon.js` 依新規則更新。`test-loot-auto-sell.js`、`test-tower-floors.js` 在改動前（7a81cfd4）就失敗，未處理。check.ps1、混淆建置、瀏覽器（本機與 dist）載入無程式錯誤（只有面板 Service Worker 註冊失敗）。
+
+## 275. WL原始客戶端材料本機研究原型（2026-11-02，外部wl-research-v1）
+
+- 使用者明確批准本次使用提供的材料製作本機研究原型；不是變更黑暗大陸正式素材政策。來源C:/Users/User/Desktop/新增資料夾全程只讀，不執行WLGame、不連原伺服器、不部署或上傳。先前幾何原型被拒絕，不作為使用原材料的成果。
+- 獨立目錄C:/Users/User/.codex/visualizations/2026/10/31/01a191b6-cab8-7390-ac17-309a217ef8a5/wl-research-v1，server.mjs只綁127.0.0.1:8792；啟動研究原型.cmd／start.ps1使用既有Node，依賴隨附，不需雲端。README記錄限制、使用的原始材料及操作。未接正式遊戲script／版本／存檔／SQL。
+- package.mjs實讀128/29 UE2套件名稱／匯入／匯出、HasStack及properties，恢復Actor位置／旋轉／縮放／出生點。官方UEViewer把原始SkeletalMesh／StaticMesh／Texture／MeshAnimation轉出glTF／PNG／MD5；build-assets.mjs只做原材質相依、原動畫座標格式轉換。terrain.mjs直接解G16高度圖、可見與翻邊bitmap、原Layer與Engine.u原始TerrainScale預設，不用平面或自製人物替代。
+- 0010_map的1152個設定中1123個場景模型Actor全數載入、147種原模型；原始128x128高度地形與第一層材質。a1_k有6種原骨架模型與原貼圖，五組基本待機／走跑／攻擊／死亡及CCA特殊動作。0011_map相依轉換亦驗證。研究介面列239圖／217動畫套件，可按需轉換；未逐一保證全部相容，缺依賴／特殊格式會報錯。
+- game.mjs使用原模型骨架動畫與原場景三角形，提供WASD、點地直線移動、碰撞／步高與落差、Q/E鏡頭／縮放、暫停、原模型對練角色、普攻28／技能45（20MP／4秒）及死亡／重新開始。對練與戰鬥規則為新寫研究規則，非原伺服器或原任務。研究角色受攻擊才反擊，不在玩家看模型時先圍攻。所有狀態只在記憶體。
+- test.mjs比對1123原始Actor位置／旋轉／網格引用、G16與來源比例、6模型權重／骨架／buffer、原始動畫資料及四元數、貼圖路徑；verification.json記錄SHA256。瀏覽器實際原城鎮／人物待機、跑步與行走、技能45／普攻28命中、受擊死亡，修正不匹配骨骼後新頁Console無error／warn。原UI、HyData、聲音、特效通知／特殊材質／原光照、多層地形與全套件驗收尚未完成，不宣稱整款原遊戲完整復刻。

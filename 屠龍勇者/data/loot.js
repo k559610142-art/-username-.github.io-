@@ -90,9 +90,18 @@ async function bossCdSync(force = false) {
 }
 // 首領走後端、小怪本機算（第 274 節）：這一群「可能」出首領才呼叫 loot_spawn，出不出由伺服器決定；其餘本機生怪、本機掉寶。
 // 異界清空、龍穴、職業任務首領條件、塔的首領層（冷卻已過）、野外首領計時到期（或還不知道時間）
+// 問不到伺服器（還在確認狀態、逾時、雲端存檔還沒傳完）時：有小怪可打的地方先本機打小怪，LOOT_BOSS_RETRY_MS 後再問，掛機不卡住（第 275 節）
+const LOOT_BOSS_RETRY_MS = 30000;
+let lootBossWaitUntil = 0;
+function lootBossOnly() { const z = currentZone(); return !!z && (z.type === 'dragon' || (inMapRun() && player.mapRun.left <= 0)); }
+function lootBossLater(e) {
+    lootBossWaitUntil = Date.now() + LOOT_BOSS_RETRY_MS;
+    if (e) console.warn('後端首領暫時問不到，先打小怪', e);
+}
 function lootBossDue() {
     const z = currentZone();
     if (!z || (inMapRun() && player.mapRun.left <= 0) || z.type === 'dragon') return !!z;
+    if (Date.now() < lootBossWaitUntil) return false;
     if (z.type === 'tower') return towerBossUp(player.loc.floor);
     if (questBossFor(z)) return true;
     if (!z.rare || inMapRun()) return false;
@@ -155,6 +164,7 @@ async function lootSpawn(join = false, mid = null, sceneTarget = null) {
         if (/loot disabled/.test(String(e && e.message))) { lootProbeAt = 0; lootProbe(); }   // 管理者剛停用：馬上重查，改用一般掉寶
         if (/loot encounters full/.test(String(e && e.message))) { h.lootReleased = false; lootSettleNow(); }   // 沒結算的太多：下次先釋放、並馬上結算
         if (lootTransient(e) || /loot disabled|loot encounters full/.test(String(e && e.message))) {   // 連線暫時不通：3 秒後自動再找怪，不停止掛機
+            if (!join && !mid && !lootBossOnly()) { lootBossLater(e); h.state = 'search'; h.timer = 500; return; }   // 有小怪可打：先本機打小怪，30 秒後再問首領
             if (!join) { h.state = 'search'; h.timer = 3000; }
             lootNotice('⏳ 後端掉寶連線中，恢復後自動繼續掛機');
         } else stopHunt('⚠️ 後端掉寶尚未就緒：' + cloudErrText(e));

@@ -46,8 +46,10 @@ async function main(){await vm.runInContext(String.raw`(async()=>{
  // 第99節：剛從背景回來網路不通，掛機只暫停、恢復後自動繼續；不是網路問題才停止。
  stopHunt=msg=>{player.hunting=false;hunt=null;stopped=msg;};let stopped=null;lootNotice=()=>{};
  marketRpc=async()=>{throw Error('Failed to fetch');};await lootProbe();assert.equal(player.hunting,true,'連不上不停掛機');assert.equal(lootMode,'active');
- hunt.state='search';hunt.timer=0;await lootSpawn();assert.equal(player.hunting,true,'生怪連不上不停掛機');assert.equal(hunt.state,'search');assert.equal(hunt.timer,3000);
- const syncedOrig=cloudSyncedSlot;cloudSyncedSlot=async()=>false;await lootSpawn();assert.equal(player.hunting,true,'存檔還沒傳完也只暫停');cloudSyncedSlot=syncedOrig;
+ hunt.state='search';hunt.timer=0;lootBossWaitUntil=0;await lootSpawn();assert.equal(player.hunting,true,'生怪連不上不停掛機');assert.equal(hunt.state,'search');assert.equal(hunt.timer,500,'有小怪可打：馬上改打小怪');
+ assert.ok(lootBossWaitUntil>Date.now()+25000,'30 秒後再問首領');{const zz=currentZone(),bf=zz.rare&&bossFieldAt[zz.id];if(zz.rare)delete bossFieldAt[zz.id];assert.equal(lootBossDue(),false,'等待期間不問首領');lootBossWaitUntil=0;if(bf!==undefined&&bf)bossFieldAt[zz.id]=bf;}
+ console.warn=()=>{};
+ const syncedOrig=cloudSyncedSlot;cloudSyncedSlot=async()=>false;await lootSpawn();assert.equal(player.hunting,true,'存檔還沒傳完也只暫停');cloudSyncedSlot=syncedOrig;lootBossWaitUntil=0;
  lootMode='blocked';const h0=hunt;huntTick(100);assert.equal(player.hunting,true,'後端狀態確認中只暫停');assert.equal(hunt,h0);
  marketRpc=async fn=>fn==='loot_status'?{protocol:LOOT_PROTOCOL,enabled:true,rules:'r'}:[];await lootProbe();assert.equal(lootMode,'active','恢復連線自動回到線上掉寶');
  // 第103節：管理者停用（enabled=false）時改用一般掉寶，不用重新整理、掛機不停
@@ -106,7 +108,7 @@ async function main(){await vm.runInContext(String.raw`(async()=>{
  let spawnCalls=0;cloudFlush=async()=>{cloudUser={id:'other'};return true;};marketRpc=async()=>{spawnCalls++;};
  await lootSpawn();assert.equal(spawnCalls,0,'await期間換帳號不得繼續發怪');
  // 首領走後端、小怪本機算（第 274 節）
- {cloudUser={id:uid,email:'test@invalid'};cloudFlush=async()=>true;cloudBackoffUntil=0;lootMode='active';rollQuality=rq0;rollCurrency=rc0;lootStore([]);
+ {cloudUser={id:uid,email:'test@invalid'};cloudFlush=async()=>true;cloudBackoffUntil=0;lootMode='active';lootBossWaitUntil=0;rollQuality=rq0;rollCurrency=rc0;lootStore([]);
   const tick=async()=>{for(let i=0;i<6;i++)await new Promise(r=>setTimeout(r,0));};
   const calls=[];marketRpc=async fn=>{calls.push(fn);if(fn==='loot_spawn')return [{ticket:crypto.randomUUID(),monster:makeMonster('elderTreant')}];
    if(fn==='boss_cd_status')return [{kind:'field',key:'elvenForest',until:new Date(Date.now()+3600e3).toISOString(),now:new Date(Date.now()-5000).toISOString()}];return true;};
@@ -123,7 +125,9 @@ async function main(){await vm.runInContext(String.raw`(async()=>{
   player.loc={type:'zone',id:'tower',floor:10};player.towerMax=20;player.towerCleared={10:true};player.towerBossCd={10:Date.now()+9e6};fresh();spawnMonster();await tick();
   assert.equal(calls.filter(f=>f==='loot_spawn').length,2,'守關首領冷卻中：本機小怪');assert(hunt.mobs.every(m=>!m.boss));
   player.towerBossCd={};fresh();spawnMonster();await tick();assert.equal(calls.filter(f=>f==='loot_spawn').length,3,'守關首領可出：問伺服器');
-  lootMode='blocked';fresh();spawnMonster();assert.equal(hunt.state,'search','後端未就緒：首領那群等待，不在本機出首領');lootMode='active';
+  lootMode='blocked';lootBossWaitUntil=0;fresh();spawnMonster();assert.equal(hunt.state,'fight','後端未就緒：有小怪可打就先打（第 275 節）');assert(hunt.mobs.every(m=>!m.boss&&!m.lootTicket),'不在本機出首領');assert(lootBossWaitUntil>Date.now(),'30 秒後再問');lootBossWaitUntil=0;
+  player.loc={type:'zone',id:'lairAntharas',floor:1};player.lv=99;if(currentZone()&&currentZone().type==='dragon'){fresh();spawnMonster();assert.equal(hunt.state,'search','龍穴沒有小怪：等待後端');}
+  lootMode='active';
   player.loc={type:'zone',id:'island',floor:1};
   for(let i=0;i<20000;i++){const b=rollBookDrop({lv:99,boss:false});assert(!b||!ITEMS[b].advBook,'小怪不掉二轉書');}
   let adv=0;for(let i=0;i<4000;i++){const b=rollBookDrop({lv:99,boss:true});if(b&&ITEMS[b].advBook)adv++;}assert(adv>0,'首領仍掉二轉書');

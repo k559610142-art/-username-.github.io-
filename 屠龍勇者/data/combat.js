@@ -435,16 +435,16 @@ function mobTargets() {
 function spawnMonster() {
     // 首領走後端、小怪本機算（第 274 節）：可能出首領的這一群才問伺服器（lootBossDue），其餘本機生怪、本機掉寶
     if (lootRequired() && lootBossDue()) {
-        if (lootActive()) lootSpawn();
-        else { hunt.state = 'search'; hunt.timer = 3000; lootNotice('⏳ 後端掉寶連線中，恢復後自動繼續掛機'); }
-        return;
+        if (lootActive()) { lootSpawn(); return; }
+        if (lootBossOnly()) { hunt.state = 'search'; hunt.timer = 3000; lootNotice('⏳ 後端掉寶連線中，恢復後自動繼續掛機'); return; }
+        lootBossLater();   // 後端狀態還在確認：有小怪可打就先打，30 秒後再問首領（第 275 節）
     }
     const server = lootRequired();   // 後端模式：首領只能由伺服器決定，本機不擲首領
     hunt.bossEnchantRuntime = null; hunt.bossEnchantAction = null;
     const z = currentZone();
     // 異界地圖：怪物清空後出現異界首領
     const mapBossUp = inMapRun() && player.mapRun.left <= 0;
-    let mon = mapBossUp ? makeMapBoss() : z.type === 'dragon' ? null : questBossFor(z);   // 職業任務首領優先
+    let mon = mapBossUp ? makeMapBoss() : z.type === 'dragon' || server ? null : questBossFor(z);   // 職業任務首領優先（後端模式由伺服器出）
     if (mon) { /* 任務首領 */ }
     else if (z.type === 'dragon') mon = makeMonster(z.boss);
     else if (z.type === 'tower') {
