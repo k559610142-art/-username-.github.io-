@@ -4564,7 +4564,7 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 ## 277. 首領計時分頁（2026-11-03，版本 `20261103a`；`data/boss-timer.js`、`ui-frame.js` 的 `DRAWERS.right`）
 
 - 右側抽屜新增「⏱️ 首領計時」（`TABS.bossTimer`／`PANEL_FNS.bossTimer`＝`renderBossTimer`），在 loot.js 之後、main.js 之前載入。
-- 內容：野外首領（有 `rare` 的地圖，時間取 loot.js 的 `bossFieldAt`＝伺服器時間換成本機時鐘；還沒計時顯示「尚未計時」、到期顯示「下次遇怪出現」；後端掉寶沒啟用時顯示「隨機出現」）、龍穴 `dragonCd`（含等級／前一條龍未討伐的限制）、團隊副本 `raidCd`、永夜之塔已打倒過的守關首領 `towerBossCd`。異界地圖首領不計時（清完怪就出現）。
+- 內容：野外首領（有 `rare` 的地圖，時間取 loot.js 的 `bossFieldAt`＝伺服器時間換成本機時鐘；還沒計時顯示「進入地圖遇怪後開始計時」、計時中顯示「首領出現倒數 mm:ss」、到期顯示「下次遇怪出現」；20261103c 因玩家誤會成「打倒後復活倒數」改文字，規則不變；後端掉寶沒啟用時顯示「隨機出現」）、龍穴 `dragonCd`（含等級／前一條龍未討伐的限制）、團隊副本 `raidCd`、永夜之塔已打倒過的守關首領 `towerBossCd`。異界地圖首領不計時（清完怪就出現）。
 - 開分頁時呼叫 `bossCdSync()`（本身限 1 分鐘一次），不新增 RPC。倒數每秒只改 `.bt-cd` 文字（`data-t`＝到期時間），有項目到期才 `renderPanel()` 重畫一次；分頁沒開或畫面在背景時不跑。
 - 不用新 SQL、不改存檔。
 

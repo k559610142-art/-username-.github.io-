@@ -1,8 +1,8 @@
 // 首領計時（2026-11-03，ARCHITECTURE.md 第 277 節）：右側抽屜「⏱️ 首領計時」分頁，列出野外首領、龍穴、團隊副本、永夜之塔守關首領的倒數。
 // 依賴 zones、monsters、raid、loot（bossFieldAt／bossCdSync，伺服器時間）、town（fmtDuration）、ui-panels（TABS／PANEL_FNS）。
 // 倒數每秒只改 .bt-cd 的文字（data-t＝到期的本機時間），不重畫整個分頁。
-function btLeftHtml(t, readyText) {
-    return t > Date.now() ? `<span class="bt-cd" data-t="${t}" data-ready="${esc(readyText)}">${btClock(t - Date.now())}</span>` : `<span class="good">${readyText}</span>`;
+function btLeftHtml(t, readyText, label = '') {
+    return t > Date.now() ? `${label ? `<small class="muted">${label} </small>` : ''}<span class="bt-cd" data-t="${t}" data-ready="${esc(readyText)}">${btClock(t - Date.now())}</span>` : `<span class="good">${readyText}</span>`;
 }
 function btClock(ms) {
     const s = Math.ceil(ms / 1000), h = Math.floor(s / 3600), m = Math.floor(s / 60) % 60, pad = n => String(n).padStart(2, '0');
@@ -17,7 +17,7 @@ function renderBossTimer() {
     const field = ZONES.filter(z => z.rare && MONSTERS[z.rare.id]).map(z => {
         const m = MONSTERS[z.rare.id], t = bossFieldAt[z.id];
         const right = !server ? '<small class="muted">隨機出現</small>'
-            : t === undefined ? '<small class="muted">尚未計時</small>' : btLeftHtml(t, '下次遇怪出現');
+            : t === undefined ? '<small class="muted">進入地圖遇怪後開始計時</small>' : btLeftHtml(t, '下次遇怪出現', '首領出現倒數');
         return btRow(m.icon || '👑', m.name, `${z.icon || ''} ${esc(z.name)}`, right);
     }).join('');
     const lairs = ZONES.filter(z => z.type === 'dragon' && MONSTERS[z.boss]).map(z => {
@@ -31,7 +31,7 @@ function renderBossTimer() {
     let tower = '';
     for (let f = 10; f <= 100; f += 10) if (player.towerCleared[f]) tower += btRow('🗼', `${f}F 守關首領`, '永夜之塔・打倒後 6 小時復活', btLeftHtml(player.towerBossCd[f] || 0, '已復活'));
     return `<div class="panel"><h4>🌲 野外首領</h4>
-            <small class="muted">${server ? '每張地圖各自計時（60～90 分鐘隨機），時間到後在那張地圖下一次遇怪就會出現；第一次進去遇怪才開始計時。' : '目前沒有連上後端掉寶，野外首領照舊隨機出現。'}</small>
+            <small class="muted">${server ? '倒數是「首領還要多久出現」，不是打倒後的復活時間。每張地圖第一次遇怪時開始計時（60～90 分鐘隨機），倒數歸零後在那張地圖下一次遇怪就是首領，出現後重新倒數。' : '目前沒有連上後端掉寶，野外首領照舊隨機出現。'}</small>
             <div class="list">${field}</div></div>
         <div class="panel"><h4>🐲 龍穴</h4><div class="list">${lairs}</div></div>
         <div class="panel"><h4>🐉 團隊副本</h4><div class="list">${raids}</div></div>
