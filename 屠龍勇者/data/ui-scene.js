@@ -1557,6 +1557,12 @@ function drawBigMapHud(ctx, W, H, camX, camY) {
     ctx.strokeStyle = '#e6c882'; ctx.lineWidth = 1.2; ctx.stroke();
     ctx.font = '11px sans-serif'; ctx.fillStyle = '#f2d9a0'; ctx.fillText('⤢', bx, by + 1);
     drawLabel(ctx, scene.region || zoneTitle(), cx, cy + R + 14, '#ffe7a8');
+    // 小地圖右下方：首領計時開關（2026-11-03 使用者指定位置，第 278 節）；開著時亮金色
+    const tx = cx + R - 2, ty = cy + R + 38, on = typeof tabOpen === 'function' && tabOpen('bossTimer');
+    scene.bossBtn = { x: tx, y: ty, r: 14 };
+    ctx.fillStyle = on ? 'rgba(120,86,30,0.95)' : 'rgba(20,16,10,0.9)'; ctx.beginPath(); ctx.arc(tx, ty, 14, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = on ? '#ffe7a8' : '#e6c882'; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.font = '15px sans-serif'; ctx.fillStyle = '#f2d9a0'; ctx.fillText('⏱️', tx, ty + 1);
     // 進入新區域：上方中間顯示區域名稱 2.5 秒（淡入淡出）
     const t = gameNow - (scene.regionAt || -1e9);
     if (scene.region && t < 2500) {
@@ -1578,6 +1584,8 @@ function drawWorldMap(ctx, W, H) { syncWorldAtlas(); }
 function sceneMiniClick(sx, sy) {
     if (!scene.bg) return false;
     if (scene.worldOpen) return true;
+    const bb = scene.bossBtn;
+    if (bb && Math.hypot(sx - bb.x, sy - bb.y) <= bb.r + 6) { if (tabOpen('bossTimer')) closeTab('bossTimer'); else switchTab('bossTimer'); return true; }
     const r = scene.miniRect;
     if (!r || Math.hypot(sx - r.cx, sy - r.cy) > r.r + 6) return false;
     openWorldAtlas(); return true;

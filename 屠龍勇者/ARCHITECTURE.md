@@ -4567,3 +4567,8 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 內容：野外首領（有 `rare` 的地圖，時間取 loot.js 的 `bossFieldAt`＝伺服器時間換成本機時鐘；還沒計時顯示「尚未計時」、到期顯示「下次遇怪出現」；後端掉寶沒啟用時顯示「隨機出現」）、龍穴 `dragonCd`（含等級／前一條龍未討伐的限制）、團隊副本 `raidCd`、永夜之塔已打倒過的守關首領 `towerBossCd`。異界地圖首領不計時（清完怪就出現）。
 - 開分頁時呼叫 `bossCdSync()`（本身限 1 分鐘一次），不新增 RPC。倒數每秒只改 `.bt-cd` 文字（`data-t`＝到期時間），有項目到期才 `renderPanel()` 重畫一次；分頁沒開或畫面在背景時不跑。
 - 不用新 SQL、不改存檔。
+
+## 278. 小地圖下方的首領計時開關（2026-11-03，版本 `20261103b`；`ui-scene.js` 的 `drawBigMapHud`／`sceneMiniClick`、`scene.bossBtn`）
+
+- 使用者指定位置：小地圖右下方、地名右下（圓心 `cx + R - 2, cy + R + 38`，半徑 14，畫在畫布上）。點一下開「⏱️ 首領計時」（第 277 節），再點關閉；開著時按鈕亮金色。
+- 點擊在 `sceneMiniClick` 先判斷 `scene.bossBtn`，才判斷小地圖本身（開世界地圖）。所有有小地圖的畫面（大地圖、村莊、永夜之塔）都有。
