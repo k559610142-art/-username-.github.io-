@@ -272,7 +272,7 @@
 
 | `tools/map-src/guild-world-v1/forest-encounter-preview.html`、`test-forest-encounter.cjs`、`test-forest-rescue.cjs`、`test-forest-roster.cjs`、`test-forest-defense.cjs`、`test-forest-ledger.cjs`、`test-forest-commands.cjs`、`forest-commands-preview-shot.jpg`、`test-forest-preview-state.cjs`、`forest-ledger-preview-shot.jpg`、`forest-defense-preview-shot.jpg`、`forest-roster-preview-shot.jpg`、`forest-rescue-preview-shot.jpg`、`forest-encounter-preview-shot.jpg` | 小隊集合／守點／名牌集火／撤回指令、本機任務冊／探索選派療養保存（獨立試玩IndexedDB v2、不碰正式存檔）、自主探索小隊遭遇戰及十分鐘營地防衛隔離原型（物資／波次／現場啟動／返入口交付），六職選三人／療養替補（六職全開僅試玩），沿既有原創人物attack圖集／mon-beast；追擊／視線／射程／治療／NPC各自受傷倒地與3秒救援／本頁療養／敗退清場與港村solo返回，不載正式遊戲（2026-11-01） |
 
-| `tools/GUILD-INTEGRATION-REVIEW.md`、`tools/guild-runtime/{core,world,sync}.cjs`、`tools/guild-runtime/test-{core,world,sync}.cjs`、`tools/guild-runtime/README.md` | 正式接入候選純核心／分塊通行與快取／收據重送及隔離驗證；未載入正式遊戲，存檔及SQL變更待確認 |
+| `tools/GUILD-INTEGRATION-REVIEW.md`、`tools/guild-runtime/{core,world,sync,rules}.cjs`、`tools/guild-runtime/test-{core,world,sync,rules}.cjs`、`tools/guild-runtime/README.md` | 正式接入候選純核心／分塊通行與快取／收據重送／公會數值規則（第266節）及隔離驗證；未載入正式遊戲，存檔及SQL變更待確認 |
 | `tools/sprite-src/guild/sentinel-v1/turnaround-v1.png`、`prompt.json` | 原創盾衛八方向造型參考與完整提示詞，1536×1024含alpha；非動畫圖集、未接遊戲 |
 
 ## 2. 載入順序與依賴
@@ -4425,3 +4425,12 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - mercenary-rune-vault-preview只載實際data腳本（不載main／pwa），記憶體localStorage、假登入與模擬vault RPC、禁止外網／XHR／WebSocket、停用背景interval避免公告輪詢；沒有真實連線或正式角色。瀏覽器可試部分存入／取出併疊，真正SQL相容性以PGlite回歸為準，不拿模擬RPC代替後端驗證。
 
 驗收：PGlite真實腳本端到端（50種／跨角色）通過，公會存讀回歸通過，check.ps1 ALL CHECKS PASSED；64支混淆699KB、231公開函式正常。瀏覽器實點指定存4／背包留6、取回併10、再存4，無Console error／warn；實拍保留在本機驗收輸出。只清除已核對工作區內的建置生成副本，不改原始圖片。尚待使用者正式角色實玩後才commit。
+
+## 266. 公會數值規則計算層（2026-11-02，Claude；候選模組，未載入正式遊戲、無版本號變更）
+
+使用者確認 `tools/GUILD-NUMBERS-DRAFT.md` 後選「先做規則計算層」：只把數值表寫成純函式與測試，不改存檔、SQL、`data/guild-core.js`／`guild.js`／`index.html`。之後接存檔（新欄位）與伺服器帳本時，客戶端顯示和 SQL 驗證都要用同一份數字。
+
+- `tools/guild-runtime/rules.cjs`（全域 `GuildRules`，CommonJS 出口；日後同源複製到 `data/` 時照 core 做法去掉出口）。常數全部凍結：`BOOK`（討伐4／防衛2／個人1／遠征1）、`BASE`（各類聲望／代幣／徽章＋8項全完成獎勵）、`DIFFICULTIES`（normal／hard／elite／legend：建議團員等級5／18／35／48、玩家壓到10／25／40／55、強化上限+3／5／7／9、詞綴50／65／80／100%、代幣徽章×1／1.5／2／3）、`REP_TIERS`（每1300一階，0～6階）、`LEVEL_CAPS`（訓練場0～3級＝20／30／40／50）、`REST_MS`（醫療室0／1級＝30／15分鐘）、`FACILITIES`（醫療室1級、情報所3級、訓練場3級，建材合計1800、各級聲望階級門檻）、`INTEL`（情報所各級可看項目）、`SHOP`（建材1、徽章10個15代幣每週10包、路障5每場2、繃帶8每場3、外觀300～600限購1）。
+- 函式：`categoryOf`（core 任務 kind：expedition→討伐、defense／escort→防衛；活動 personalRecruit／guildExpedition）、`reward`（聲望不隨難度；冊外重打無聲望、代幣徽章25%；評價只加代幣最多20%）、`bookProgress`／`inBook`／`bookBonus`、`repTier`／`nextTierRep`／`recruitSlots`（1～3階各開一位）、`levelCost`（Lv.n→n+1要n個）／`costToLevel`／`levelCap`／`levelUp`（升到上限為止、退回剩餘）、`restMs`、`facilityNext`／`canBuild`、`intelFor`、`canBuy`、`suppression`（玩家等級高於壓制等級才生效）、`weekStart`（週一06:00 UTC+8）／`canSubmit`（上週成果寬限24小時）。全部只回傳結果，不改傳入狀態、不入帳。
+- `tools/guild-runtime/test-rules.cjs`：驗每週合計1300／130／260、難度倍率與冊外25%、12任務分類（6討伐6防衛）、聲望階級與招募位、升級區間190／245／345／445／1225、訓練場上限、療養與 core `REST_MS` 一致、設施1800與門檻、商店限購、壓制、週一06:00邊界與24小時寬限、常數不可改。`node tools/guild-runtime/test-rules.cjs` 通過，test-core 回歸與 check.ps1 ALL CHECKS PASSED。
+- 尚未做：player.guild 新欄位（聲望、代幣、徽章、團員等級、設施等級、已招募順序）、伺服器帳本／商店 RPC、公會介面、醫療室接到 core 的療養時間。這些動到存檔與 SQL，要另外經使用者同意。

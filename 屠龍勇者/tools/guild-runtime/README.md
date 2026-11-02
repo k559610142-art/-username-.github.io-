@@ -6,6 +6,7 @@
 
 - core.cjs：12職業初始三人、名冊／療養、三人選派、角色與帳號綁定、首次離線角色認領、任務憑證、暫停後驗證恢復、離場清除契約、32筆待交佇列與連續序號收據。12任務／7活動目前是目錄，不是12張已做完的可玩地圖。
 - world.cjs：256×256等大型安全站立格、8向不切角、搜尋預算、32格探索分塊往返與可見塊清單；GuildAssetCache做載入去重、引用保護與LRU／容量限制。輸入mask必須先經美術碰撞標定與腳底安全距離退縮，這個模組不代替標定。48MiB是候選快取預設，不是已量測的手機峰值；不保證解碼時峰值等於快取數值。
+- rules.cjs：公會數值規則（tools/GUILD-NUMBERS-DRAFT.md，使用者2026-11-02確認）：任務冊與獎勵、難度倍率與玩家壓制、聲望階級／招募位、團員升級與訓練場上限、醫療室療養、設施、情報所、商店限購、週一06:00重置與24小時寬限。純函式，不入帳；尚未載入正式遊戲（ARCHITECTURE第266節）。
 - sync.cjs：每批最多8筆、單次最多4批、同角色請求合併、斷線與未驗證不清資料、收據錯序拒絕、儲存失敗可重送、帳號／角色切換檢查。load／persistIfCurrent／submit均為adapter介面，尚未連到正式localStorage或RPC。
 
 ## 信任邊界
@@ -21,6 +22,7 @@ persistIfCurrent必須以綁定身份及完整舊公會狀態比較後原子寫�
 node tools/guild-runtime/test-core.cjs
 node tools/guild-runtime/test-world.cjs
 node tools/guild-runtime/test-sync.cjs
+node tools/guild-runtime/test-rules.cjs
 
 測試全用記憶體／隔離adapter。world測試的256×256河橋地形是驗證fixture，不是新增已完成遊戲場景；11地標四人1272步通過，不能據此宣稱美術整島每處碰撞已驗好。sync測17筆分3批及儲存失敗重送，不代表正式雲端已收取或發獎。
 
