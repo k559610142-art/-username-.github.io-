@@ -40,7 +40,7 @@ function marketTradeable(inst) {
     const d = ITEMS[inst.id];
     return d && d.cat !== 'quest' && d.cat !== 'mercRune' && !(inst.ench > 15);
 }
-// 交易所可上架：傭兵符石只開放交易所買賣（使用者 2026-10-28），共用倉庫／拍賣仍用 marketTradeable 排除
+// 交易所可上架：傭兵符石只開放交易所買賣（使用者 2026-10-28），拍賣仍用marketTradeable排除；共用倉庫另用vaultStorable（第264節）
 function marketSellable(inst) {
     const d = ITEMS[inst.id];
     return !!d && (marketTradeable(inst) || d.cat === 'mercRune');

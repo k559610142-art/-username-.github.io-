@@ -6,6 +6,7 @@
 ## 1. 專案結構
 
 | 檔案 | 內容 |
+| `tools/mercenary-rune-vault-preview.html` | 傭兵技能石共用倉庫正式前端隔離驗收；記憶體角色與模擬RPC、不讀寫正式存檔（第264節） |
 | `tools/test-mercenary-roster.cjs`、`tools/mercenary-roster-preview.html`、`tools/MERCENARY-ROSTER-REVIEW.md`、`tools/mercenary-roster/` | 個人傭兵多名名冊／重複招募／單人跟隨與schema25隔離驗收、審閱及批准後快照（第263節）；正式預覽讀data實檔 |
 | `data/guild-core.js`、`data/guild-state.js`、`data/guild.js` | 公會純規則、身份及存檔接線、正式村莊入口／名冊與三人編隊；schema24（第262節） |
 | `tools/guild-system.sql`、`tools/GUILD-INSTALL.md`、`tools/test-guild-db.cjs`、`tools/test-guild-integration.cjs`、`tools/guild-integration-preview.html` | 獨立公會資料庫草案、安裝說明、隔離DB／正式腳本遷移驗收、記憶體存檔瀏覽器驗收頁；SQL未執行正式庫 |
@@ -290,7 +291,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261101f`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261101g`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -4412,3 +4413,15 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - tools/mercenary-roster-preview.html只載data實際腳本、不載main／pwa；localStorage替換記憶體、禁止外網／XHR／WebSocket，測試4999→5000按鈕僅此隔離頁有，不改真實角色或上傳後端。tools/mercenary-roster為批准後快照，正式入口不載入。未改SQL／Supabase設定／正式資料庫；任務數量與費用不改。
 
 驗收：正式名冊、舊招募任務、6職50符石及公會存讀四組回歸全過；check.ps1 ALL CHECKS PASSED，64支混淆699KB、231公開函式，mercSelect／mercToggle／mercQuestAccept／mercQuestClaim事件保留。瀏覽器實際連續兩輪招募入冊3人、頂部收回／選擇／派出、加密記憶體重登保留原17級裝備符石，無Console error／warn。已核對工作區內建置目標，驗完移除生成副本；原始圖片素材不動。
+
+
+## 264. 傭兵技能石可存帳號共用倉庫（2026-11-01，版本 `20261101g`，schema25不變）
+
+使用者指定傭兵技能石可放入共用倉庫。vault原借marketTradeable排除mercRune，導致背包不列、存入入口拒絕；既有vault_put2僅拒quest／超過+15，vault_take2已支援堆疊；gm-resource-audit.sql的同名覆寫也沿用相同quest／+15限制，不需更動SQL或正式庫。
+
+- data/vault.js新增頂層vaultStorable(inst)：已註冊道具且不超過+15，mercRune直接允許、其餘沿用marketTradeable。vaultHtml背包清單及vaultPut／vaultPutN改用同一判斷，vaultPutOne也檢查，避免內外入口不一致。50種技能石可整疊或指定數量存入，同帳號其他角色可取出合併；已鑲嵌者須先拆回背包。手續費每次100、200格、原子SQL扣除、vaultSeq／簽章、雲端同步及防複製流程不變。
+- marketTradeable／marketSellable行為不變（前者仍排mercRune供拍賣等呼叫，交易所早已另允許技能石），僅更新舊註解說明倉庫獨立判斷。沒有改player結構、技能石數值、掉率或SQL。index全部?v與GAME_VERSION升g，新增玩家可讀更新紀錄。
+- test-vault-v2-client.js沿真實data腳本＋隔離PGlite既有SQL，新增50種正確mercRune目錄fixture、各3顆存2留1、slot2另一角色各取2、數量／雙方手續費／唯一UID／sig_ok、倉庫不可重領、原slot0各1顆不變；slot1保留舊測試故意被拒收的壞存檔，避免互相干擾。保留原裝備／藥水／金幣／舊序號拒收、掉寶、交易所、斷線與衝突回歸；測試通過。正式SQL不改、不執行。
+- mercenary-rune-vault-preview只載實際data腳本（不載main／pwa），記憶體localStorage、假登入與模擬vault RPC、禁止外網／XHR／WebSocket、停用背景interval避免公告輪詢；沒有真實連線或正式角色。瀏覽器可試部分存入／取出併疊，真正SQL相容性以PGlite回歸為準，不拿模擬RPC代替後端驗證。
+
+驗收：PGlite真實腳本端到端（50種／跨角色）通過，公會存讀回歸通過，check.ps1 ALL CHECKS PASSED；64支混淆699KB、231公開函式正常。瀏覽器實點指定存4／背包留6、取回併10、再存4，無Console error／warn；實拍保留在本機驗收輸出。只清除已核對工作區內的建置生成副本，不改原始圖片。尚待使用者正式角色實玩後才commit。

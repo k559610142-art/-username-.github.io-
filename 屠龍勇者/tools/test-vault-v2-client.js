@@ -247,12 +247,35 @@ const root = path.resolve(__dirname, '..'), uid = '33333333-3333-4333-8333-33333
         for (let k = 0; k < 10; k++) cloudNoteFail(); assert(cloudBackoffUntil - Date.now() <= 375000, '最多約 5 分鐘'); cloudNoteOk(); assert(cloudCanCall(), '成功一次就恢復');
         assert.equal(await cloudFlush(true), true, '網路恢復後認得自己的版本、成功');
         assert.equal(alerts.length, 0);
+
+        // 傭兵技能石：全部50種可部分存入，另一角色取出；沿真實SQL序號與簽章。
+        player.loc={type:'town',id:Object.keys(TOWNS)[0]};player.hunting=false;hunt=null;
+        const runeIds=Object.keys(MERC_RUNES).map(id=>'mercRune_'+id);
+        assert.equal(runeIds.length,50);
+        const cats={};for(const id of runeIds){cats[id]={name:ITEMS[id].name,cat:'mercRune',stack:true};const it=addItem(id,3);assert(vaultStorable(it));assert.equal(marketTradeable(it),false);assert.equal(marketSellable(it),true);assert.equal(vaultStorable({...it,ench:16}),false);}
+        assert.equal(vaultStorable({id:'no-such-rune'}),false);assert.equal(vaultStorable(null),false);
+        const questId=Object.keys(ITEMS).find(id=>ITEMS[id].cat==='quest');assert(questId);assert.equal(vaultStorable({id:questId,n:1}),false);
+        await db.query('update public.dragon_loot_catalog set data=jsonb_set(data,\'{items}\',(data->\'items\')||$1::jsonb) where id=1',[cats]);
+        player.gold+=20000;const goldBeforeRunes=player.gold;saveGame();assert(await cloudFlush(true));await vaultLoad();
+        const oldElement=document.getElementById;document.getElementById=id=>id==='rune-vault-qty'?{value:'2'}:null;
+        for(const id of runeIds){assert(vaultHtml().includes(ITEMS[id].name));vaultPutN(player.inv.find(x=>x.id===id).uid,'rune-vault-qty');while(vaultBusy)await new Promise(r=>setTimeout(r,5));assert.equal(vaultErr,'');assert.equal(countItem(id),1);}
+        document.getElementById=oldElement;
+        assert.equal(player.gold,goldBeforeRunes-50*VAULT_FEE);const sender=await cloud();assert.equal(sender.sig_ok,true);assert(runeIds.every(id=>sender.data.player.inv.find(x=>x.id===id).n===1));
+        const runeRows=vaultData.items.filter(v=>runeIds.includes(v.item.id));assert.equal(runeRows.length,50);assert(runeRows.every(v=>v.item.n===2));
+        // 同帳號另一欄位取出，不是移回原角色。
+        currentSlot=2;SIM_MODE=true;createPlayer('技能石收件者','mage',CLASSES.mage.base);SIM_MODE=false;playerOwner=uid;player.lv=10;player.gold=10000;saveGame();cloudKnown[2]=null;cloudDirty.add(2);assert(await cloudFlush(true));await vaultLoad();
+        for(const v of runeRows){vaultTake(v.id);while(vaultBusy)await new Promise(r=>setTimeout(r,5));assert.equal(vaultErr,'');assert.equal(countItem(v.item.id),2);}
+        assert.equal(player.gold,10000-50*VAULT_FEE);assert.equal(vaultData.items.filter(v=>runeIds.includes(v.item.id)).length,0);
+        const receiver=(await db.query('select data,sig_ok from public.dragon_saves where user_id=$1 and slot=2',[uid])).rows[0];assert.equal(receiver.sig_ok,true);assert(runeIds.every(id=>receiver.data.player.inv.find(x=>x.id===id).n===2));assert.equal(new Set(player.inv.map(x=>x.uid)).size,player.inv.length);
+        // 已取走的倉庫記錄不能再領一次；原角色仍只有各一顆。
+        await assert.rejects(vaultTakeOne(runeRows[0].id),e=>/not available/.test(e.message||String(e)));currentSlot=0;assert(loadGame());assert(runeIds.every(id=>countItem(id)===1));assert.equal((await cloud()).sig_ok,true);
+
         // 真的被別台裝置改過：仍要跳衝突
         let opened = null; openDialog = t => { opened = t; };
         await db.query('update public.dragon_saves set client_t = client_t + 5, data = jsonb_set(data, \'{t}\', to_jsonb((data->>\'t\')::bigint + 5)) where user_id=$1 and slot=0', [uid]);
         player.exp += 1; saveGame();
         assert.equal(await cloudFlush(true), false); assert.equal(opened, '☁️ 進度衝突', '別台裝置的新進度仍提示衝突');
-        console.log('PASS：真實遊戲＋隔離資料庫：存裝備／藥水／金幣本機與雲端一致、舊存檔上傳被拒自動改用雲端（不重複）、取出直接入帳、交易所上架／下架／購買本機與雲端一致、縮小時回應丟失（含回來時網路未恢復）不誤報衝突、別的角色上傳失敗不擋目前角色、後端掉寶批次結算、簽章不誤判。');
+        console.log('PASS：50種傭兵技能石部分存入／跨角色取出／數量手續費簽章與防重領；真實遊戲＋隔離資料庫：存裝備／藥水／金幣本機與雲端一致、舊存檔上傳被拒自動改用雲端（不重複）、取出直接入帳、交易所上架／下架／購買本機與雲端一致、縮小時回應丟失（含回來時網路未恢復）不誤報衝突、別的角色上傳失敗不擋目前角色、後端掉寶批次結算、簽章不誤判。');
     })()`, ctx);
     await db.close();
 })().catch(e => { console.error(e); process.exit(1); });
