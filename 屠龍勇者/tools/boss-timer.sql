@@ -4,6 +4,7 @@
 --    第一次在那張圖遇怪時才建立計時，不會立刻出。取代 loot_spawn 的 random()<rare.p。
 -- 2. 團隊副本冷卻：勝利領獎（loot_raid）時伺服器記「角色＋副本」冷卻（RAIDS 的 cdH）；冷卻中按「準備」被拒（raid cooldown）。
 -- 3. 永夜之塔守關首領：首領憑證結算時伺服器記「角色＋樓層」6 小時；loot_spawn 改看伺服器表，不再看存檔的 towerBossCd。
+-- 4. 小怪（第 274 節）：小怪不掉鑽石、二轉技能書、傭兵符石、天賦寶珠（新版遊戲小怪改本機算，這裡擋舊版與首領那群附帶的小怪）；舊 dia_drop 只剩首領。
 -- 單人龍穴 dragonCd、異界地圖首領不變。
 create table if not exists public.dragon_boss_cd (
     user_id uuid        not null references auth.users (id) on delete cascade,
@@ -62,7 +63,7 @@ end $$;
 -- 遊戲端顯示用：自己的副本／塔冷卻與野外首領下次時間
 create or replace function public.boss_cd_status() returns jsonb
 language sql stable security definer set search_path = '' as $$
-    select coalesce(jsonb_agg(jsonb_build_object('kind', kind, 'key', key, 'until', until)), '[]'::jsonb)
+    select coalesce(jsonb_agg(jsonb_build_object('kind', kind, 'key', key, 'until', until, 'now', clock_timestamp())), '[]'::jsonb)   -- now：遊戲端換算裝置時鐘誤差
     from public.dragon_boss_cd where user_id = auth.uid() and until > clock_timestamp() - interval '1 day';
 $$;
 
@@ -124,3 +125,39 @@ begin
     end loop;
     if done < 4 then raise exception '缺少掉寶函式（loot_spawn／loot_finish／loot_finish_batch／loot_raid），請先安裝 server-loot-install、loot-batch'; end if;
 end $patch$;
+
+-- ───── 首領走後端、小怪本機算（2026-11-02，第 274 節）─────
+-- 新版遊戲小怪不再要伺服器憑證；伺服器這邊照樣替舊版遊戲、或首領那一群附帶的小怪結算，但：
+--   小怪不掉鑽石（拿掉一般怪 0.1%）、不掉二轉技能書（book_adv_）、傭兵符石（mercRune_）、天賦寶珠（talentJewel_）。首領掉率不變；天賦石照舊。
+create or replace function public.loot_minor_filter(items jsonb, x jsonb) returns jsonb
+language sql immutable set search_path = '' as $$
+    select case when coalesce((x->'monster'->>'boss')::boolean, false) then items
+        else coalesce((select jsonb_agg(v) from jsonb_array_elements(coalesce(items, '[]'::jsonb)) v
+            where left(v->>'id', 9) not in ('book_adv_', 'mercRune_') and left(v->>'id', 12) <> 'talentJewel_'), '[]'::jsonb) end;
+$$;
+revoke execute on function public.loot_minor_filter(jsonb, jsonb) from public, anon, authenticated;
+
+-- 舊的直接領鑽石（後端掉寶停用時才用得到）：只剩首領
+create or replace function public.dia_drop(p_src text) returns json language plpgsql security definer set search_path = '' as $$ begin
+    if p_src is distinct from 'boss' then raise exception 'mob diamonds removed'; end if;
+    if exists (select 1 from public.dragon_loot_config cfg where cfg.id = 1 and enabled) then raise exception 'loot ticket required'; end if;
+    return public.loot_dia_drop_legacy(p_src);
+end $$;
+revoke all on function public.dia_drop(text) from public, anon;
+grant execute on function public.dia_drop(text) to authenticated;
+
+do $minor$
+declare fn record; src text; patched text; done int := 0;
+begin
+    for fn in select p.oid, p.proname from pg_proc p join pg_namespace ns on ns.oid = p.pronamespace
+        where ns.nspname = 'public' and p.proname in ('loot_finish', 'loot_finish_batch') loop
+        src := pg_get_functiondef(fn.oid); patched := src;
+        if position('loot_minor_filter' in src) = 0 then
+            if position('public.loot_roll(c,j.context)' in src) = 0 or position(' or random()<0.001' in src) = 0 then raise exception '%結構不同，未更新', fn.proname; end if;
+            patched := replace(replace(src, 'public.loot_roll(c,j.context)', 'public.loot_minor_filter(public.loot_roll(c,j.context),j.context)'), ' or random()<0.001', '');
+        end if;
+        if patched <> src then execute patched; end if;
+        done := done + 1;
+    end loop;
+    if done < 2 then raise exception '缺少 loot_finish／loot_finish_batch，請先安裝 server-loot-install、loot-batch'; end if;
+end $minor$;

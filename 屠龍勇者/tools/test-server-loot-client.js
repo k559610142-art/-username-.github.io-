@@ -10,7 +10,7 @@ async function main(){await vm.runInContext(String.raw`(async()=>{
  const uid='11111111-1111-4111-8111-111111111111';cloudUser={id:uid,email:'test@invalid'};cloudLoggedIn=()=>!!cloudUser;authUid=()=>uid;playerOwner=uid;lootMode='active';
  showToast=()=>{};refreshUI=()=>{};sfx=()=>{};cloudMarkDirty=()=>{};cloudFlush=async()=>true;cloudSb={};
  currentSlot=0;const char=lootChar();saveGame();const initial=countItem('redPotion');
- rollQuality=()=>{throw Error('前端不可抽品質');};rollCurrency=()=>{throw Error('前端不可抽通貨');};
+ const rq0=rollQuality,rc0=rollCurrency;rollQuality=()=>{throw Error('前端不可抽品質');};rollCurrency=()=>{throw Error('前端不可抽通貨');};
  const result={id:'one',cursor:1,char,slot:0,items:[{id:'redPotion',n:2}]};
  assert(lootApply(result));assert.equal(countItem('redPotion'),initial+2);assert(lootApply(result));assert.equal(countItem('redPotion'),initial+2,'同一結果不可重複入帳');
  saveGame();assert.equal(saveParse(localStorage.getItem(slotKey(0))).lootCursor,1,'自動存檔保留收據');
@@ -38,7 +38,7 @@ async function main(){await vm.runInContext(String.raw`(async()=>{
  marketRpc=async()=>{throw Error('offline');};await lootPump();assert.equal(lootJobs()[0].key,'b');assert.equal(lootMode,'active');
  player.hunting=false;await lootProbe();assert.equal(lootMode,'active');
  SIM_MODE=true;assert.equal(lootActive(),false,'離線試算不使用後端');assert.equal(lootCanPlay(),true);SIM_MODE=false;
- lootMode='blocked';const blockedInv=JSON.stringify(player.inv);rollDrops({lv:1,drops:[]},{drops:[]});assert.equal(JSON.stringify(player.inv),blockedInv,'後端未就緒不可退回本機掉落');
+ lootMode='blocked';const blockedInv=JSON.stringify(player.inv);rollDrops({lv:1,drops:[],lootTicket:'blk'},{drops:[]});assert.equal(JSON.stringify(player.inv),blockedInv,'伺服器生的怪不可退回本機掉落');assert(lootJobs().some(j=>j.key==='blk'),'改排入結算佇列');lootStore(lootJobs().filter(j=>j.key!=='blk'));
  lootMode='active';player.loc={type:'zone',id:'island',floor:1};player.hunting=true;hunt={state:'search',mobs:[],mon:null,warned:{}};
  const target={rx:2,ry:2};scene={mons:[target],effects:[]};updateHuntLive=()=>{};
  marketRpc=async fn=>fn==='loot_release'?true:[{ticket:crypto.randomUUID(),monster:makeMonster('goblin')}];
@@ -105,7 +105,34 @@ async function main(){await vm.runInContext(String.raw`(async()=>{
   assert.equal(calls,0,'退避中不呼叫伺服器');assert.equal(player.hunting,true);assert(hunt.timer>=15000,'等退避結束再找怪');lootStore([{key:'b2',kind:'kill',ticket:'b2',slot:0,char}]);await lootPump();assert.equal(calls,0,'退避中不結算');cloudBackoffUntil=0;lootStore([]);}
  let spawnCalls=0;cloudFlush=async()=>{cloudUser={id:'other'};return true;};marketRpc=async()=>{spawnCalls++;};
  await lootSpawn();assert.equal(spawnCalls,0,'await期間換帳號不得繼續發怪');
+ // 首領走後端、小怪本機算（第 274 節）
+ {cloudUser={id:uid,email:'test@invalid'};cloudFlush=async()=>true;cloudBackoffUntil=0;lootMode='active';rollQuality=rq0;rollCurrency=rc0;lootStore([]);
+  const tick=async()=>{for(let i=0;i<6;i++)await new Promise(r=>setTimeout(r,0));};
+  const calls=[];marketRpc=async fn=>{calls.push(fn);if(fn==='loot_spawn')return [{ticket:crypto.randomUUID(),monster:makeMonster('elderTreant')}];
+   if(fn==='boss_cd_status')return [{kind:'field',key:'elvenForest',until:new Date(Date.now()+3600e3).toISOString(),now:new Date(Date.now()-5000).toISOString()}];return true;};
+  const fresh=()=>{hunt={state:'search',mobs:[],mon:null,warned:{}};player.hunting=true;};
+  player.mapRun=null;player.loc={type:'zone',id:'island',floor:1};fresh();spawnMonster();await tick();
+  assert.equal(calls.length,0,'沒有首領的地圖不問伺服器');assert(hunt.mobs.length&&hunt.mobs.every(m=>!m.lootTicket),'本機小怪');
+  const jobs0=lootJobs().length;rollDrops(hunt.mobs[0],currentZone());assert.equal(lootJobs().length,jobs0,'小怪本機掉寶不排後端');
+  player.loc={type:'zone',id:'elvenForest',floor:1};bossFieldAt={};fresh();spawnMonster();await tick();
+  assert.equal(calls.filter(f=>f==='loot_spawn').length,1,'野外不知道首領時間：問伺服器');assert(hunt.mobs[0].lootTicket);
+  assert(calls.includes('boss_cd_status')&&bossFieldAt.elvenForest>Date.now()+3590e3,'讀回下次首領時間（含時鐘誤差）');
+  const rareP=currentZone().rare.p;currentZone().rare.p=1;fresh();spawnMonster();await tick();currentZone().rare.p=rareP;
+  assert.equal(calls.filter(f=>f==='loot_spawn').length,1,'時間未到：本機小怪不問伺服器');assert(hunt.mobs.every(m=>m.id!=='elderTreant'&&!m.lootTicket),'本機不擲首領');
+  bossFieldAt.elvenForest=Date.now()-1;fresh();spawnMonster();await tick();assert.equal(calls.filter(f=>f==='loot_spawn').length,2,'時間到：問伺服器');
+  player.loc={type:'zone',id:'tower',floor:10};player.towerMax=20;player.towerCleared={10:true};player.towerBossCd={10:Date.now()+9e6};fresh();spawnMonster();await tick();
+  assert.equal(calls.filter(f=>f==='loot_spawn').length,2,'守關首領冷卻中：本機小怪');assert(hunt.mobs.every(m=>!m.boss));
+  player.towerBossCd={};fresh();spawnMonster();await tick();assert.equal(calls.filter(f=>f==='loot_spawn').length,3,'守關首領可出：問伺服器');
+  lootMode='blocked';fresh();spawnMonster();assert.equal(hunt.state,'search','後端未就緒：首領那群等待，不在本機出首領');lootMode='active';
+  player.loc={type:'zone',id:'island',floor:1};
+  for(let i=0;i<20000;i++){const b=rollBookDrop({lv:99,boss:false});assert(!b||!ITEMS[b].advBook,'小怪不掉二轉書');}
+  let adv=0;for(let i=0;i<4000;i++){const b=rollBookDrop({lv:99,boss:true});if(b&&ITEMS[b].advBook)adv++;}assert(adv>0,'首領仍掉二轉書');
+  player.mapRun={zone:'island',t:5,q:'rare',mods:[],left:9};player.loc={type:'zone',id:'island',floor:1};
+  for(let i=0;i<20000;i++)assert.equal(rollMercRuneDrop({boss:false}),null,'小怪不掉符石');
+  let rn=0;for(let i=0;i<4000;i++)if(rollMercRuneDrop({boss:true}))rn++;assert(rn>100&&rn<320,'首領符石 5% '+rn);player.mapRun=null;
+  let st=0;for(let i=0;i<40000;i++)if(rollTalentStoneDrop({lv:1,boss:false}))st++;assert(st>5&&st<45,'T1 小怪天賦石 0.05% '+st);
+  let dia=0;marketRpc=async fn=>{if(fn==='dia_drop')dia++;return {diamonds:0,got:0};};vaultOnline=()=>true;for(let i=0;i<5000;i++)diaRoll({lv:1});assert.equal(dia,0,'小怪不掉鑽石');diaRoll({boss:true});assert.equal(dia,1,'首領照舊');}
  cloudUser=null;assert.equal(lootCanPlay(),false,'未登入不能進入線上掉寶');
- console.log('PASS：原子收據、重領／順序／角色、儲存失敗回復、後端詞綴、過濾、非當前角色入帳、佇列競態、斷線重試及SIM隔離、網路暫斷只暫停掛機、生怪欄位沒變不重傳存檔、伺服器忙碌時退避、停用時改一般掉寶不卡住、批次結算與少釋放、舊伺服器自動逐張結算、結算收據直接入帳。');
+ console.log('PASS（含首領走後端、小怪本機）：原子收據、重領／順序／角色、儲存失敗回復、後端詞綴、過濾、非當前角色入帳、佇列競態、斷線重試及SIM隔離、網路暫斷只暫停掛機、生怪欄位沒變不重傳存檔、伺服器忙碌時退避、停用時改一般掉寶不卡住、批次結算與少釋放、舊伺服器自動逐張結算、結算收據直接入帳。');
 })()`,ctx);}
 main().catch(e=>{console.error(e);process.exitCode=1;});

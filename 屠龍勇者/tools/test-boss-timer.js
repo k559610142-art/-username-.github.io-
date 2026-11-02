@@ -10,7 +10,7 @@ const { PGlite } = require(process.env.LOOT_TEST_RUNTIME || path.join(require('o
     create function auth.role() returns text language sql as $$select 'authenticated'::text$$;
     grant usage on schema public,auth to anon,authenticated;`);
     for (const file of ['supabase.sql', 'anticheat.sql', 'server-loot-install.sql', 'vault-v2.sql', 'stat-cap.sql', 'market-v2.sql', 'save-log-throttle.sql', 'loot-batch.sql',
-        'loot-screen.sql', 'treasure-maps.sql', 'mercenary-rune-drops.sql', 'advance-class.sql', 'boss-timer.sql', 'boss-timer.sql']) {
+        'loot-screen.sql', 'treasure-maps.sql', 'mercenary-rune-drops.sql', 'talent-system.sql', 'advance-class.sql', 'boss-timer.sql', 'boss-timer.sql']) {
         let sql = fs.readFileSync(path.join(__dirname, file), 'utf8');
         if (file === 'supabase.sql') sql = sql.replace(/create extension if not exists pgcrypto;/i, '');
         try { await db.exec(sql); } catch (e) { console.error("Failed migration:", file, e.message, e.where); process.exit(1); }
@@ -92,11 +92,25 @@ const { PGlite } = require(process.env.LOOT_TEST_RUNTIME || path.join(require('o
     await due('raid', ch + '|drake');
     await db.exec('set role authenticated');
     await db.query('update public.raid_members set ready_round=2 where room_id=$1', [room]);
-    // ④ 狀態：自己看得到、表不能直讀
+    await db.exec('reset role');
+    // ④ 小怪：不掉鑽石、二轉書、符石、寶珠；首領不受影響（第 274 節）
+    for (const n of ['loot_finish', 'loot_finish_batch']) { const s = await fn(n); assert(s.includes('loot_minor_filter') && !s.includes('random()<0.001') && s.includes('talent_trial_loot'), n); }
+    const items = [{ id: 'book_adv_mFrost_1' }, { id: 'mercRune_x' }, { id: 'talentJewel_y' }, { id: 'talentStone' }, { id: 'potion' }];
+    const flt = async boss => (await db.query('select public.loot_minor_filter($1::jsonb,$2::jsonb) v', [JSON.stringify(items), JSON.stringify({ monster: { boss } })])).rows[0].v.map(i => i.id);
+    assert.deepEqual(await flt(false), ['talentStone', 'potion'], '小怪過濾');
+    assert.equal((await flt(true)).length, 5, '首領不過濾');
+    await db.exec('update public.dragon_loot_config set enabled=false');
+    await db.exec('set role authenticated');
+    await assert.rejects(db.query("select public.dia_drop('mob')"), /mob diamonds removed/);
+    assert.equal((await db.query("select public.dia_drop('boss') v")).rows[0].v.got, 3, '首領鑽石照舊');
+    await db.exec('reset role');
+    await db.exec('update public.dragon_loot_config set enabled=true');
+    // ⑤ 狀態：自己看得到、表不能直讀
+    await db.exec('set role authenticated');
     const st = (await db.query('select public.boss_cd_status() v')).rows[0].v;
-    assert(st.some(x => x.kind === 'tower') && st.some(x => x.kind === 'field'));
+    assert(st.some(x => x.kind === 'tower') && st.some(x => x.kind === 'field') && st.every(x => x.now));
     await assert.rejects(db.query('select * from public.dragon_boss_cd'), /permission denied/);
     await assert.rejects(db.query("select public.boss_cd_set('raid','x',0)"), /permission denied/);
     await db.exec('reset role');
     console.log('test-boss-timer OK');
-})().catch(e => { console.error(e); process.exit(1); });
+})().catch(e => { console.error(e.message, e.where); process.exit(1); });

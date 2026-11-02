@@ -255,8 +255,8 @@ function huntTick(dt) {
     if (hunt.joinCd <= 0) {
         hunt.joinCd = MOB_JOIN_MS;
         if (hunt.mobs.length < packMax() && !hunt.mobs.some(m => m.boss) && !(inMapRun() && player.mapRun.left <= hunt.mobs.length) && chance(MOB_JOIN_P * (mapModOn('swarm') ? 2 : 1))) {
-            const add = makeZoneMob(currentZone());
-            if (add) {   // 加入戰鬥的都是小怪：一律本機（第 274 節） addMob(weakenForPack(add, hunt.mobs.length + 1)); addLog(`${add.name}（Lv.${add.lv}）加入戰鬥！`, 'warn'); }
+            const add = makeZoneMob(currentZone());   // 加入戰鬥的都是小怪：一律本機生成、本機掉寶（第 274 節）
+            if (add) { addMob(weakenForPack(add, hunt.mobs.length + 1)); addLog(`${add.name}（Lv.${add.lv}）加入戰鬥！`, 'warn'); }
         }
     }
 }
