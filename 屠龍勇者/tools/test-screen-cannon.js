@@ -37,11 +37,9 @@ async function main(){await vm.runInContext(String.raw`(async()=>{
   await screenAreaAttack(spell,{castMs:1000});assert.equal(player.mp,1000-mp,'耗魔只扣一次');assert.equal(player.cds[id],gameNow+cd*1000);
   assert.equal(mon.hp,hp-10);assert.equal(idle.inst.hp,side-10);assert(!outside.inst&&!clipped.inst);
  }
- // 憑證等候期間也立刻扣MP與CD，其他施放不能重複扣款。
- scene.mons.push(extra);marketRpc=()=>new Promise(r=>resume=r);player.mp=1000;
- const waiting=screenAreaAttack(findSkill('blizzard'),{castMs:1000});await Promise.resolve();assert.equal(player.mp,970);
- await screenAreaAttack(findSkill('meteor'),{castMs:1000});assert.equal(player.mp,970);
- resume([{ticket:crypto.randomUUID(),monster:makeMonster('goblin')}]);await waiting;assert.equal(player.mp,970);assert.equal(hunt.screenAttackBusy,false);
+ // 2026-11-02 起畫面上還沒參戰的小怪本機生成，不問伺服器（第 274 節）；耗魔只扣一次
+ scene.mons.push(extra);let calls2=0;marketRpc=async()=>{calls2++;};player.mp=1000;
+ await screenAreaAttack(findSkill('blizzard'),{castMs:1000});assert.equal(player.mp,970);assert.equal(calls2,0);assert(extra.inst&&!extra.inst.lootTicket);assert.equal(hunt.screenAttackBusy,false);
  const star=ITEMS.starfallGun.res;assert(star.screen);assert.equal(star.cd,12);assert.equal(star.mult,1.8);
  const starSkill={id:'res_starfallGun',name:star.name,mp:0,mult:star.mult,aoe:true,screen:true,magic:star.magic};
  hits=[];mon.hp=1000;idle.inst.hp=1000;extra.inst.hp=1000;const mp0=player.mp;
