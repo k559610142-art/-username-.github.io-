@@ -437,7 +437,7 @@ function spawnMonster() {
     if (lootRequired() && lootBossDue()) {
         if (lootActive()) { lootSpawn(); return; }
         if (lootBossOnly()) { hunt.state = 'search'; hunt.timer = 3000; lootNotice('⏳ 後端掉寶連線中，恢復後自動繼續掛機'); return; }
-        lootBossLater();   // 後端狀態還在確認：有小怪可打就先打，30 秒後再問首領（第 275 節）
+        lootBossLater();   // 後端狀態還在確認：有小怪可打就先打，30 秒後再問首領（第 276 節）
     }
     const server = lootRequired();   // 後端模式：首領只能由伺服器決定，本機不擲首領
     hunt.bossEnchantRuntime = null; hunt.bossEnchantAction = null;

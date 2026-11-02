@@ -90,7 +90,7 @@ async function bossCdSync(force = false) {
 }
 // 首領走後端、小怪本機算（第 274 節）：這一群「可能」出首領才呼叫 loot_spawn，出不出由伺服器決定；其餘本機生怪、本機掉寶。
 // 異界清空、龍穴、職業任務首領條件、塔的首領層（冷卻已過）、野外首領計時到期（或還不知道時間）
-// 問不到伺服器（還在確認狀態、逾時、雲端存檔還沒傳完）時：有小怪可打的地方先本機打小怪，LOOT_BOSS_RETRY_MS 後再問，掛機不卡住（第 275 節）
+// 問不到伺服器（還在確認狀態、逾時、雲端存檔還沒傳完）時：有小怪可打的地方先本機打小怪，LOOT_BOSS_RETRY_MS 後再問，掛機不卡住（第 276 節）
 const LOOT_BOSS_RETRY_MS = 30000;
 let lootBossWaitUntil = 0;
 function lootBossOnly() { const z = currentZone(); return !!z && (z.type === 'dragon' || (inMapRun() && player.mapRun.left <= 0)); }
