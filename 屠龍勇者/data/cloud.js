@@ -166,11 +166,12 @@ function onlineDevice() {
 }
 function onlineMissing(e) { return !!e && (e.code === 'PGRST202' || /Could not find the function|does not exist/i.test(e.message || '')); }
 
-// 回傳 true＝可以使用；{ device, ago }＝別台使用中
+// 回傳 true＝可以使用；{ device, ago }＝別台使用中；{ ip: true, max }＝同一個 IP 在線帳號已滿（tools/ip-limit.sql，第 272 節）
 async function onlineClaim(force) {
     try {
         const r = await cloudTimeout(cloudSb.rpc('online_claim', { p_device: onlineDevice(), p_force: !!force }));
         if (r.error) { if (!onlineMissing(r.error)) console.warn('online_claim', r.error); return true; }
+        if (r.data && r.data.ok === false && r.data.reason === 'ip') return { ip: true, max: r.data.max | 0 || 3 };
         return r.data && r.data.ok === false ? { device: r.data.device || '', ago: r.data.ago | 0 } : true;
     } catch (e) { return true; }   // 連不上：不擋
 }
@@ -242,6 +243,12 @@ function onlineReject(u, info) {
     }
     cloudUser = null; cloudMorphAdminUid = '';
     renderCloudEntry();
+    if (info.ip) {   // 同一個 IP 在線帳號已滿：不能強制登入
+        openDialog('⛔ 同一網路在線帳號已滿', `<p>你目前的網路（IP）已經有 <b>${info.max}</b> 個帳號在線上，已拒絕帳號 <b>${esc(u.email || '')}</b> 這次登入。</p>
+            <p class="muted">請先讓其中一個帳號離開遊戲，約 1～2 分鐘後再登入。<br>家人或朋友共用同一個網路也會算在一起。</p>`,
+            [{ text: '確定', cls: 'secondary', onClick: onlineCancel }]);
+        return;
+    }
     const ago = info.ago < 60 ? `${info.ago} 秒前` : `${Math.floor(info.ago / 60)} 分鐘前`;
     openDialog('⛔ 帳號使用中', `<p>帳號 <b>${esc(u.email || '')}</b> 正在另一台裝置使用中${info.device ? `（${esc(info.device)}，${ago}還在線上）` : `（${ago}還在線上）`}，已拒絕這次登入。</p>
         <p class="muted">那台裝置離開遊戲約 1～2 分鐘後就能在這裡登入。<br>如果那<b>不是你本人</b>：按「強制登入」會把其他所有裝置登出，接著請馬上改密碼。</p>`,
@@ -257,8 +264,9 @@ async function onlineCancel() {
 async function onlineForce(u) {
     showToast('登出其他裝置中…');
     try { await cloudTimeout(cloudSb.auth.signOut({ scope: 'others' })); } catch (e) { console.warn('登出其他裝置失敗', e); }
-    await onlineClaim(true);
+    const c = await onlineClaim(true);
     onlineBlocked = false;
+    if (c !== true && c.ip) { onlineReject(u, c); return; }   // 強制登入也不能超過同 IP 上限
     await cloudOnSignedIn(u, false, true);
 }
 

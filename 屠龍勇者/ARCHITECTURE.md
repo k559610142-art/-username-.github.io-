@@ -4500,3 +4500,14 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - `gm_online()`（security definer、空 search_path）：`dragon_is_admin()` 為真才回 `(user_id, device, beat_at)`，一般玩家回空、anon 不能執行。可重複執行；**使用者要在 Supabase SQL Editor 執行一次**。
 - `gm.html`：分頁列右邊 `#online` 顯示「🟢 在線 N 個帳號」，每次 `gmLoad`（切分頁、🔄 重新整理）一起查；還沒執行 SQL 時顯示提示、不影響其他分頁。👥 玩家分頁在線的帳號前面加 🟢（`isOnline`）。
 - 測試：`tools/test-gm-online.js`（PGlite 載 supabase.sql＋重複安裝 gm-online.sql）：管理者只看到 90 秒內的帳號、一般玩家空、anon 被拒。瀏覽器以假資料確認人數、🟢 與未安裝提示，Console 無錯誤。
+
+## 272. 同一個 IP 最多 3 個帳號同時在線（2026-11-02，版本 `20261102e`；SQL `tools/ip-limit.sql`、`cloud.js` 的 `onlineClaim`／`onlineReject`／`onlineForce`）
+
+- 使用者決定：直接限制 3 個（已告知手機網路／家人共用 IP 會算在一起、VPN 換 IP 擋不住）。
+- **SQL**（接在 supabase.sql／single-login.sql 之後，可重跑；**重跑那兩份會蓋回舊的 online_claim／online_ping，要再跑這份**）：`dragon_online` 加 `ip` 欄＋索引；`dragon_req_ip()` 讀 `cf-connecting-ip`／`x-forwarded-for` 第一段／`x-real-ip`（和 save-device-log.sql 相同）。
+  - `online_claim`：同帳號別台使用中的判斷照舊（先判斷）；之後同 IP、90 秒內有心跳、不是自己、不是免限制帳號的在線數 ≥ 3 → 回 `{ok:false, reason:'ip', n, max:3}`，**強制登入（p_force）也擋**。以 IP 做 advisory lock，同時登入不會一起擠過。
+  - `online_ping`：只更新 IP，已在玩的人換網路不會被踢；沒有在線紀錄（或已逾時）時名額滿就不寫入（回 true，不踢）。
+  - 免限制 `dragon_ip_exempt`：管理者、信任名單 `dragon_trusted`（沒安裝 flag-trust.sql 時只看管理者）；也不佔別人的名額。內部函式不給玩家直接呼叫。
+- **遊戲端**：`onlineClaim` 收到 reason ip 回 `{ip:true,max}`；`onlineReject` 顯示「⛔ 同一網路在線帳號已滿」只有「確定」（登出這台），沒有強制登入；`onlineForce` 強制登入後若被 IP 擋也走同一個對話框。SQL 還沒執行時舊函式照常回 ok，不影響登入。
+- **限制**：改過的客戶端可以不呼叫 online_claim 直接玩（dragon_is_banned 只擋「同帳號別台使用中」），這裡只擋一般多開。沒有 IP（直接連資料庫）不擋。
+- 測試：`tools/test-ip-limit.js`（PGlite 載 supabase.sql＋flag-trust.sql＋重複安裝 ip-limit.sql）：前 3 個可登入、第 4 個與強制登入被擋、不同 IP 不受影響、重新登入不重複算、心跳不踢人、名額滿時心跳不新增、管理者／信任不受限、逾時空出名額、玩家不能呼叫內部函式。check.ps1、混淆建置通過；瀏覽器確認 20261102e 載入、對話框顯示，Console 只有本機 Service Worker 註冊失敗（預覽環境，與本次無關）。
