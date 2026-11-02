@@ -73,10 +73,11 @@ for(const id of Object.keys(MERC_RUNES)) {
  const before=m.mp;assert(mercCast(id,mon),id+'未施放');if (!['manaSelf','convert'].includes(MERC_RUNES[id].kind)) assert.equal(m.mp,before-MERC_RUNES[id].mp,id+'扣魔');assert(!mercCast(id,mon),id+'無冷卻');
  gameNow+=1000;mercTick(1000);assert(Number.isFinite(m.hp)&&Number.isFinite(m.mp));
 }
-// 真實戰鬥hook、傭兵死亡與不可恢復的損失，不刪玩家背包或娃娃。
+// 真實戰鬥hook、傭兵死亡保留裝備符石，不刪玩家背包或娃娃。
 m=setup('war'); const weapon=addItem('longSword'); mercEquip(weapon.uid,'weapon'); addItem('mercRune_heavy');mercSetRune(0,'heavy');
 const held=addItem('mercRune_heal',2);m.lv=8;m.exp=37;const invBefore=JSON.stringify(player.inv), dollBefore=player.equip.doll;
-chance=()=>false; assert.equal(mercTakeDamage(0),0);mercTakeDamage(100000);assert(m.dead);assert(!m.active);assert.deepEqual(Object.keys(m.equip),[]);assert(m.skills.every(x=>!x));assert.equal(m.lv,8);assert.equal(JSON.stringify(player.inv),invBefore);assert.equal(player.equip.doll,dollBefore);
+const deathGearBefore=JSON.stringify(m.equip),deathSkillsBefore=JSON.stringify(m.skills);
+chance=()=>false; assert.equal(mercTakeDamage(0),0);mercTakeDamage(100000);assert(m.dead);assert(!m.active);assert.equal(JSON.stringify(m.equip),deathGearBefore);assert.equal(JSON.stringify(m.skills),deathSkillsBefore);assert.equal(m.lv,8);assert.equal(JSON.stringify(player.inv),invBefore);assert.equal(player.equip.doll,dollBefore);
 const beforeRevive=player.gold;mercRevive();confirmFn();assert(!m.dead);assert.equal(m.lv,8);assert.equal(player.gold,beforeRevive-8000);confirmFn();assert.equal(player.gold,beforeRevive-8000);
 // 野外不可收回／換裝／拆符石；缺錢不買；SIM不參戰或取得經驗。
 player.loc={type:'zone',id:'island'};const was=m.active;mercToggle();assert.equal(m.active,was);const n=held.n;mercSetRune(0,'heal');assert.equal(held.n,n);
@@ -96,5 +97,5 @@ lootRequired=()=>false;diaRoll=()=>{};rollDrops=()=>{};questOnKill=()=>{};mapOnK
 const target={id:'mercTest',name:'傭兵目標',hp:1,maxHp:1,ac:0,mr:0,dmg:[1,1],gold:[1,1],exp:100,spd:1000,atkCd:9999,stunUntil:0};
 hunt={state:'fight',mon:target,mobs:[target],pCd:99999,joinCd:99999,warned:{},potCd:0};session={kills:0,exp:0,gold:0,start:gameNow};
 const kills=player.kills;huntTick(100);assert.equal(player.kills,kills+1);assert.equal(session.kills,1);assert(m.exp>0);assert(target.hp<=0);
-console.log('PASS：6職業／50符石實際施放、自由武器、拆回與替換、防重覆確認、冷卻扣魔、舊檔／加密存讀、死亡裝備技能永久消失、復活保級、缺錢／離村／SIM隔離、跟隨標記／娃娃獨立、四村與UI事件。');
+console.log('PASS：6職業／50符石實際施放、自由武器、拆回與替換、防重覆確認、冷卻扣魔、舊檔／加密存讀、死亡保留裝備符石、復活保級、缺錢／離村／SIM隔離、跟隨標記／娃娃獨立、四村與UI事件。');
 `,ctx);

@@ -297,12 +297,12 @@ function mercNormalizeMember(p, m, used) {
         const it = m.equip[slot], d = it && ITEMS[it.id], want = slot.startsWith('ring') ? 'ring' : slot;
         if ((!MERC_SLOTS.includes(slot) && !['amulet', 'ring1', 'ring2', 'belt'].includes(slot)) || !d || (slot === 'weapon' ? d.cat !== 'weapon' : d.cat !== 'armor' || d.slot !== want) || it.n !== 1 || !Number.isSafeInteger(it.uid) || it.uid <= 0 || used.has(it.uid)) { delete m.equip[slot]; continue; }
         used.add(it.uid); p.nextUid = Math.max(p.nextUid, it.uid + 1);
-        // 舊版取消的四個飾品槽原樣退回背包；死亡傭兵不恢復已失去物品。
-        if (!MERC_SLOTS.includes(slot)) { if (!m.dead) p.inv.push(it); delete m.equip[slot]; }
+        // 舊版取消的四個飾品槽原樣退回背包，陣亡時也保留。
+        if (!MERC_SLOTS.includes(slot)) { p.inv.push(it); delete m.equip[slot]; }
     }
     const seen = new Set();
     m.skills = Array.from({ length: 4 }, (_, i) => { const id = Array.isArray(m.skills) && m.skills[i]; if (!MERC_RUNES[id] || seen.has(id)) return ''; seen.add(id); return id; });
-    if (m.dead) { m.hp = 0; m.equip = {}; m.skills = ['', '', '', '']; }
+    if (m.dead) m.hp = 0;
     const st = mercStats(m);
     m.hp = m.dead ? 0 : clamp(Number.isFinite(m.hp) ? m.hp : st.hp, 1, st.hp);
     m.mp = clamp(Number.isFinite(m.mp) ? m.mp : st.mp, 0, st.mp);
@@ -319,8 +319,8 @@ function mercGainExp(n) {
 }
 function mercDie() {
     const m = player.mercenary; if (!m || m.dead) return;
-    m.dead = true; m.active = false; m.hp = 0; m.mp = 0; m.equip = {}; m.skills = ['', '', '', '']; m.cds = {}; mercRuntime.delete(m);
-    addLog('⚑ 傭兵陣亡！身上裝備與技能永久消失，請找傭兵團長復活，或接任務取得新傭兵。', 'warn');
+    m.dead = true; m.active = false; m.hp = 0; m.mp = 0; m.cds = {}; mercRuntime.delete(m);
+    addLog('⚑ 傭兵陣亡！身上裝備與符石保留，請找傭兵團長復活，或接任務取得新傭兵。', 'warn');
     if (!SIM_MODE) saveGame();
 }
 function mercTakeDamage(value) {
@@ -484,7 +484,7 @@ function mercRefresh() { saveGame(); refreshUI(); if (typeof mercPanelOpen !== '
 function mercRevive() {
     const m = player.mercenary; if (!mercTownReady() || !m || !m.dead) return;
     const owner = player, cost = m.lv * MERC_REVIVE_COST;
-    gameConfirm('復活傭兵', '花費' + fmt(cost) + '金幣復活，保留Lv.' + m.lv + '，失去的裝備與技能不恢復。正在進行的招募任務會保留。', () => {
+    gameConfirm('復活傭兵', '花費' + fmt(cost) + '金幣復活，保留Lv.' + m.lv + '，身上裝備與已配置符石皆保留。正在進行的招募任務會保留。', () => {
         if (player !== owner || !mercTownReady() || player.mercenary !== m || !m.dead || player.gold < cost) return;
         player.gold -= cost; m.dead = false; m.active = false; const st = mercStats(m); m.hp = st.hp; m.mp = st.mp; mercRuntime.delete(m); mercRefresh();
     }, '復活');
@@ -526,7 +526,7 @@ function mercPickEquip(slot) {
     mercPanelOpen = true;
     if (!mercTownReady() || !MERC_SLOTS.includes(slot)) return;
     const rows = player.inv.filter(x => { const d = ITEMS[x.id]; return !x.sellLocked && (slot === 'weapon' ? d.cat === 'weapon' : d.cat === 'armor' && d.slot === (slot.startsWith('ring') ? 'ring' : slot)); }).map(x => '<div class="list-row"><div><b>' + esc(itemName(x)) + '</b><small>' + esc(itemDescHtml(x).replace(/<[^>]*>/g,' ')) + '</small></div><button onclick="mercEquip(' + x.uid + ',\'' + slot + '\')">交付</button></div>').join('');
-    openDialog('傭兵裝備・' + SLOTS[slot], '<p class="bad">交付後傭兵死亡會永久失去此裝備。鎖定物品須先解鎖。</p><div class="list">' + (rows || '背包沒有可用裝備。') + '</div>', [{ text: '返回', onClick: openMercenary }]);
+    openDialog('傭兵裝備・' + SLOTS[slot], '<p class="bad">傭兵死亡時仍保留此裝備。鎖定物品須先解鎖。</p><div class="list">' + (rows || '背包沒有可用裝備。') + '</div>', [{ text: '返回', onClick: openMercenary }]);
 }
 function mercCardHtml() {
     const m = player.mercenary, c = m && MERC_CLASSES[m.cls];
@@ -558,7 +558,7 @@ function mercRosterHtml() {
 }
 function renderMercenary() {
     const m = player.mercenary, c = m && MERC_CLASSES[m.cls], town = mercTownReady();
-    let h = '<div class="panel"><p>六職業共用50種符石，同時只能召喚一名傭兵。在村莊配置與調整出戰，傭兵不可購買。</p><p>出戰掛機時，傭兵沿用玩家快捷欄的自動補血開關與HP門檻，共用背包治癒藥水，每瓶只補傭兵並扣玩家1瓶；各自喝水延遲0.8秒。</p><p class="bad">死亡永久失去身上全部裝備與已配置符石；背包物品不受影響。復活保留等級。</p><details><summary>戰鬥與裝備規則</summary><small>不限制武器職業，雙手武器與盾牌互斥。一般掛機生效；離線／團隊副本／世界首領暫不參戰。遠程武器不耗玩家彈藥，裝備共鳴與BOSS附魔暫不觸發。技能優先救命治療、淨化、一般治療與多怪群攻；同類依四格順序，每秒最多一招。近戰1格、弓槍8格、魔法與召喚攻擊4格，障礙物會阻擋。召喚物最多2隻（契靈師3隻）。職業特色：' + Object.keys(MERC_CLASSES).map(k => MERC_CLASSES[k].name + '－' + MERC_TRAITS[k].text).join('；') + '。毒系／冰系指定怪物魔法命中附加中毒6秒／緩速4秒，淨化可解除；毒傷最低保留1HP，回村清除。</small></details></div>';
+    let h = '<div class="panel"><p>六職業共用50種符石，同時只能召喚一名傭兵。在村莊配置與調整出戰，傭兵不可購買。</p><p>出戰掛機時，傭兵沿用玩家快捷欄的自動補血開關與HP門檻，共用背包治癒藥水，每瓶只補傭兵並扣玩家1瓶；各自喝水延遲0.8秒。</p><p class="bad">死亡保留身上全部裝備與已配置符石；復活保留等級與經驗。</p><details><summary>戰鬥與裝備規則</summary><small>不限制武器職業，雙手武器與盾牌互斥。一般掛機生效；離線／團隊副本／世界首領暫不參戰。遠程武器不耗玩家彈藥，裝備共鳴與BOSS附魔暫不觸發。技能優先救命治療、淨化、一般治療與多怪群攻；同類依四格順序，每秒最多一招。近戰1格、弓槍8格、魔法與召喚攻擊4格，障礙物會阻擋。召喚物最多2隻（契靈師3隻）。職業特色：' + Object.keys(MERC_CLASSES).map(k => MERC_CLASSES[k].name + '－' + MERC_TRAITS[k].text).join('；') + '。毒系／冰系指定怪物魔法命中附加中毒6秒／緩速4秒，淨化可解除；毒傷最低保留1HP，回村清除。</small></details></div>';
     h += mercQuestHtml();
     h += mercRosterHtml();
     if (m) {

@@ -5,7 +5,7 @@ const specs=JSON.parse(fs.readFileSync(path.join(source,'specs.json'),'utf8')),b
 const prefix=fs.readFileSync(path.join(__dirname,'test-mercenary.js'),'utf8').split('ctx.assert = assert;')[0];
 const ctx=new Function('require','__dirname',prefix+'\nreturn ctx;')(require,__dirname);Object.assign(ctx,{assert,before});
 vm.runInContext(`
-SIM_MODE=true;assert.equal(SAVE_SCHEMA,25);assert.equal(GAME_VERSION,'20261102c');
+SIM_MODE=true;assert.equal(SAVE_SCHEMA,25);assert.equal(GAME_VERSION,'20261102d');
 assert.equal(JSON.stringify({monsters:MONSTERS,quests:CLASS_QUESTS,classes:Object.fromEntries(Object.entries(CLASSES).map(([k,v])=>[k,v.sprite]))}),JSON.stringify(before),'戰鬥模板／任務與職業模型不可改動');
 assert.equal(Object.keys(SCENE_QUEST_ART).length,48);assert.equal(Object.keys(SCENE_QUEST_SPRITES).length,49);assert.equal(Object.keys(SCENE_ART_MONSTERS).length,70);
 let questCount=0;

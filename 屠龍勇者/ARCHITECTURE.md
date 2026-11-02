@@ -105,6 +105,7 @@
 | `images/monsters/quest-v1/` | 37圖集、37立繪及37manifest；12試煉之影沿用職業圖而非新增重複圖檔 |
 | `tools/test-quest-boss-art.cjs`、`tools/quest-boss-art-preview.html` | 49設定／392正式繪圖、原數值與舊怪像素回歸、LRU、火龍重播及隔離驗收場 |
 | `tools/MONSTER-ART-AUDIT-20261102.md`、`tools/monster-art-audit-20261102.json` | 常規80／任務48／塔30的現碼外型盤點，20261102c皆有有效引用 |
+| `tools/test-mercenary-death-keep.cjs`、`tools/mercenary-death-preview.html` | 六職死亡／死亡存讀／候補／復活保留裝備與符石及隔離GUI驗收 |
 | `tools/check.ps1` | 改完的自動檢查：JS 語法（`node --check`）、`index.html` 所有 `?v=` 等於 `GAME_VERSION`、每個 `data/*.js` 都有載入、沒有衝突標記；通過印 `ALL CHECKS PASSED` |
 | `images/icons/items/mercRune-v1/`、`tools/icon-src/mercenary-runes-v1/` | 50款獨立傭兵符石透明PNG、image_gen原稿／完整提示詞／來源與總覽（第203節） |
 | `tools/prepare-mercenary-runes.js`、`tools/test-mercenary-rune-art.js`、`tools/mercenary-runes-preview.html` | 符石等比縮圖／透明與唯一性檢查、正式UI接線驗證及128／48／32px獨立素材預覽（第203節） |
@@ -300,7 +301,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261102c`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261102d`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -3786,7 +3787,7 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 
 ## 197. 傭兵系統框架（2026-10-27，版本 `20261027k`，schema18）
 
-> 現行招募／名冊規則以第263節為準：可持有多名，出戰仍限一名；任務不再因活傭兵、死亡或復活取消。以下保留當時版本沿革。
+> 現行死亡保留裝備與符石以第269節為準；招募／名冊規則以第263節為準：可持有多名，出戰仍限一名；任務不再因活傭兵、死亡或復活取消。以下保留當時版本沿革。
 
 ### 使用者決定與第一版範圍
 
@@ -4484,3 +4485,11 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - test-quest-boss-art以正式questBossFor遍歷48任務／進度及bossDone條件、12暗影完整UV、原MONSTERS／CLASS_QUESTS／CLASSES.sprite逐項不變、37RGBA／444唯一格與分格逐byte／安全邊、49出場設定392組sceneDraw、4套LRU及塔預載隔離；原sceneDraw／raidSceneDraw快照對既有怪與舊三龍逐像素一致，新增火龍重播可見alpha範圍完整留在畫布。舊8變身與公會存檔遷移回歸、check.ps1 ALL CHECKS PASSED通過。
 - quest-boss-art-preview.html用正式64腳本／sceneDraw／raidSceneDraw與火龍競技場，49選項可切、四向／動作／逐格／受擊、火龍重播。localStorage為記憶體、拒絕連外、停公告計時、不載main／pwa、不結算或發獎。瀏覽器49項逐一切換、職業暗影受擊與火龍重播通過，Console無error／warn。
 - 發布建置64支→713KB，111新增素材／manifest逐byte吻合；驗證副本僅tools/quest-boss-build-verify，確認路徑後清理。盤點更新常規80／任務48／塔30皆有外型；42款舊單格及未開放公會美術不在本次重製。待使用者實玩確認再commit／請其Push origin，未發布。
+
+
+## 269. 傭兵死亡保留裝備與符石（2026-11-02，版本20261102d）
+
+- 使用者明確要求傭兵死亡不再掉落／失去裝備及符石。mercDie保留m.equip與m.skills，只設dead／停出戰／HPMP歸零，沿用清冷卻與短期戰鬥狀態。mercNormalizeMember對死亡者不再清空裝備與技能，保留原合法性、技能去重與跨全名冊UID檢查；舊版已取消飾品槽即使陣亡也退回背包，不吞物品。
+- 復活沿用Lv×1000金幣、保留等級經驗、滿HPMP且待命；村莊／缺錢／重複確認限制不變，未改放棄傭兵規則。修正死亡訊息、復活確認、裝備交付、管理頁及codex符石來源說明。只改死亡規則，不新增player欄位，SAVE_SCHEMA維持25，不改SQL。原已刪除的舊物品沒有憑空重建。
+- test-mercenary-death-keep遍歷六職全裝備／四符石，實跑mercTakeDamage致死、重複死亡、正規化、加密migrate／applySaveData、死亡候補轉換、缺錢與重複確認／復活保級經驗與滿HPMP，確認UID／配置與背包不變、不複製。test-mercenary原永久消失斷言更新為保留；原6職50符石、名冊／招募及公會存檔回歸通過。
+- mercenary-death-preview沿正式名冊隔離頁、僅記憶體加密存檔／禁止連外，增加測試死亡按鈕；瀏覽器實點死亡→記憶體重登→復活（17,000）後Lv17／長劍／靈狼契約仍在，Console無error／warn。check.ps1 ALL CHECKS PASSED，64支713KB建置正常，未發佈。待使用者實玩確認後才commit與請其Push origin。
