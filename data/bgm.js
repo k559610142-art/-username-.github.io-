@@ -9,7 +9,9 @@
 
 // 2026-10-04 使用者再追加五首「加入背景音」→ bgm-4～8（AAC 80kbps，各約 2.4～2.9MB，約 4～4.7 分鐘；.ogg Opus 56kbps 備用），共 8 首依序輪播
 // 2026-10-04 使用者：「昨天移除一首音樂 7 分多鐘的找得回來嗎」→ 從 git 紀錄找回 audio/bgm-game.*（7 分 48 秒），放第 1 首、開頭先播 → 共 9 首
-const BGM_TRACK_COUNT = 8;
+// 2026-11-02 使用者提供六首主題曲（明月照孤舟、劍破蒼穹、桃花簪與碧空、御劍漫步、一劍定乾坤、三生尋你）→ 選「加入背景輪播」：
+//   bgm-9～14（AAC 96kbps，各約 1.8～2.2MB，約 2.5～3 分鐘；.ogg Opus 56kbps 備用），接在 bgm-8 之後 → 共 15 首
+const BGM_TRACK_COUNT = 14;
 const BGM_PLAYLIST = [{ src: "audio/bgm-game.m4a", fallback: "audio/bgm-game.ogg" }]
     .concat(Array.from({ length: BGM_TRACK_COUNT }, (_, i) => ({ src: `audio/bgm-${i + 1}.m4a`, fallback: `audio/bgm-${i + 1}.ogg` })));
 // 特殊地圖曲（2026-10-05 使用者：「原本靈界的背景音樂」→ 選 A 恢復原本設計）：videoplayback.mp4 的音軌（約 97 秒，循環），從 git 紀錄還原 audio/bgm-sanjie.*；
