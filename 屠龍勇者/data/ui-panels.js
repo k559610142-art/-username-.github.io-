@@ -284,6 +284,7 @@ function enterZoneFromKeeper(to, floor) {
 }
 // 永夜之塔：已打倒的守關首領復活倒數（打倒後 6 小時，monsters.js TOWER_BOSS_RESPAWN_H）
 function towerBossStatusHtml() {
+    bossCdSync();   // 守關首領冷卻以伺服器為準（第 273 節）
     const now = Date.now(), L = [];
     for (let f = 10; f <= 100; f += 10) {
         if (!player.towerCleared[f]) continue;

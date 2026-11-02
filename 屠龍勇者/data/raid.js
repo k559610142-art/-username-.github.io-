@@ -351,6 +351,7 @@ function raidErr(e) {
     const m = String((e && e.message) || e || '');
     if (/room full/i.test(m)) return '隊伍已滿（8 人）';
     if (/room closed|not open/i.test(m)) return '隊伍已經開始或解散了';
+    if (/raid cooldown/i.test(m)) { bossCdSync(true); return '這個角色的副本還在冷卻中（以伺服器時間為準）'; }
     return cloudErrText(e);
 }
 
@@ -609,6 +610,7 @@ function renderRaid() {
     if (!isCloudConfigured()) return `<div class="panel notice">團隊副本需要雲端伺服器，目前尚未開通。</div>`;
     if (!cloudLoggedIn()) return `<div class="panel notice">團隊副本要先登入帳號（和朋友組隊需要知道你是誰）。
         <div class="btn-row"><button onclick="cloudLoginFromGame()">☁️ 回標題畫面登入</button></div></div>`;
+    bossCdSync();   // 副本冷卻以伺服器為準（第 273 節）
     if (cloudBan) return `<div class="panel notice">⛔ 帳號已被管理者停權，無法使用團隊副本。<br><small>原因：${esc(cloudBan.reason || '（未填寫）')}</small></div>`;
     if (!raidRoom) raidResume();
     const msg = raidMsg ? `<div class="panel notice">${esc(raidMsg)}</div>` : '';

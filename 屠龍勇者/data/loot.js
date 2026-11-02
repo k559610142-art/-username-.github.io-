@@ -57,12 +57,34 @@ async function lootProbe() {
         if (!r || r.protocol !== LOOT_PROTOCOL || (r.enabled && !r.rules)) throw Error('掉寶規則尚未安裝');
         // 管理者明確停用（enabled=false）才改用一般掉寶，不用重新整理就能繼續掛機（第 103 節）；連不上、回應錯誤一律不退回本機抽獎
         if (lootMode === 'active' && !r.enabled) lootNotice('後端掉寶已暫停，改用一般掉寶');
+        const was = lootMode;
         lootMode = r.enabled ? 'active' : 'legacy';
+        if (lootMode === 'active' && was !== 'active') bossCdSync(true);
     } catch (e) {
         if (lootMode !== 'active') lootMode = 'blocked';
         if (lootTransient(e)) { lootProbeAt = gameNow + 5000; return; }   // 連不上：5 秒後再查，掛機只暫停
         if (player && player.hunting) stopHunt('⚠️ 後端掉寶連線失敗，已停止掛機；沒有改用本機抽獎');
     }
+}
+// 首領時間以伺服器為準（第 273 節，tools/boss-timer.sql）：團隊副本／守關首領冷卻併進存檔的顯示欄位（取較晚的）。
+// 後端掉寶啟用時才讀；最多 1 分鐘讀一次；還沒執行 SQL 時維持本機顯示
+let bossCdAt = 0;
+async function bossCdSync(force = false) {
+    if (!lootActive() || !player || !cloudCanCall() || (!force && gameNow < bossCdAt)) return;
+    bossCdAt = gameNow + 60000;
+    const p = player, char = lootChar();
+    let changed = false;
+    try {
+        const rows = await marketRpc('boss_cd_status');
+        if (player !== p || !Array.isArray(rows)) return;
+        for (const r of rows) {
+            const t = Date.parse(r.until), i = String(r.key).lastIndexOf('|');
+            if (!t || r.kind === 'field' || r.key.slice(0, i) !== char) continue;
+            const cd = r.kind === 'raid' ? (p.raidCd = p.raidCd || {}) : r.kind === 'tower' ? p.towerBossCd : null, id = r.key.slice(i + 1);
+            if (cd && t > (cd[id] || 0)) { cd[id] = t; changed = true; }
+        }
+    } catch (e) { return; }
+    if (changed && player === p && !SIM_MODE && typeof renderPanel === 'function') renderPanel();
 }
 function lootStart() {
     if (!isCloudConfigured() || LOOT_FORCE_LOCAL) return;   // lootMode 維持 legacy
