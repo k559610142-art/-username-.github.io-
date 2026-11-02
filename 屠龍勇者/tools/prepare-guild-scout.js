@@ -11,7 +11,7 @@ function bounds(data,w,h){let l=w,t=h,r=-1,b=-1;for(let y=0;y<h;y++)for(let x=0;
 function median(values){return values.slice().sort((a,b)=>a-b)[Math.floor(values.length/2)];}
 async function extractSheet(file){
  const {data,info}=await sharp(file).ensureAlpha().raw().toBuffer({resolveWithObject:true}),w=info.width,h=info.height,size=w*h;
- const threshold=file.includes('arcane')&&file.includes('up-generated')?192:64;
+ const threshold=64;
  const labels=new Int32Array(size),stack=new Int32Array(size),components=[];let serial=0;
  // 先找完整人物再切格：生成稿的武器／腳底有時跨過等分線，不能硬切斷。
  for(let p=0;p<size;p++){
@@ -54,7 +54,7 @@ async function main(){
   for(const dir of dirs){
    const file=path.join(source,design.id,dir+'-generated.png'),meta=await sharp(file).metadata();assert(meta.hasAlpha,design.id+' '+dir+'無透明通道');crops[dir]=await extractSheet(file);
   }
-  const hashes=new Set(),manifest={id:design.id,name:design.name,cellW,cellH,foot,charH:160,drawH:['spirit','arcane'].includes(design.id)?36:46,rows:dirs,left:'mirror right',actions:{}};
+  const hashes=new Set(),manifest={id:design.id,guildMemberId:'scout',portrait:'images/sprites/guild/scout-v1/portrait.png',name:design.name,cellW,cellH,foot,charH:160,drawH:46,rows:dirs,left:'mirror right',actions:{}};
   for(const [action,cfg]of Object.entries(actions)){
    const sheetWidth=cellW*cfg.n,sheetRaw=Buffer.alloc(sheetWidth*cellH*3*4);
    for(let d=0;d<dirs.length;d++){

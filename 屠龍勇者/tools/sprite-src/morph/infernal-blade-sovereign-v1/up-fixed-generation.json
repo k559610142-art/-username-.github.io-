@@ -1,0 +1,8 @@
+{
+  "id": "m14",
+  "dir": "infernal-blade-sovereign-v1",
+  "direction": "up",
+  "fix": true,
+  "prompt": "Edit this animation sheet. Keep its 4x3 grid, character identity and 10 other poses unchanged. REPLACE ONLY bottom row columns 1 and 2 (the two casting poses) with STRICT BACK VIEW, facing AWAY/NORTH. No eyes, face or front chest visible; show back armor and wings from behind, feet point away. Both hands raise the flaming greatsword, seen from the specified direction; folded wings cover the upper back for BACK view. NO front chest-star or demonic face showing in back view. Maintain same cell scale, correct complete feet and fully transparent background. Do not add ground or text.",
+  "path": "C:\\Users\\User\\.codex\\generated_images\\01a191b6-cab8-7390-ac17-309a217ef8a5\\exec-2e339a8f-8d1c-4575-8ae2-44b80f76a3d0.png"
+}

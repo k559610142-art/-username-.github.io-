@@ -6,6 +6,8 @@
 ## 1. 專案結構
 
 | 檔案 | 內容 |
+| `images/sprites/guild/scout-v1/`、`tools/sprite-src/guild/scout-v1/`、`tools/prepare-guild-scout.js`、`tools/test-guild-scout-model.cjs`、`tools/guild-scout-model-preview.html` | 渡鴉・瑞克三向36格相容模型、頭像、原稿提示詞／切格定位／驗收及動畫預覽（第265節） |
+| `tools/PROJECT-REMAINING-20261102.md`、`tools/project-audit-20261102.json` | 任務／地圖／模型／變身待完成盤點；36變身中28有專屬四動作圖檔、8仍共用外觀 |
 | `tools/mercenary-rune-vault-preview.html` | 傭兵技能石共用倉庫正式前端隔離驗收；記憶體角色與模擬RPC、不讀寫正式存檔（第264節） |
 | `tools/test-mercenary-roster.cjs`、`tools/mercenary-roster-preview.html`、`tools/MERCENARY-ROSTER-REVIEW.md`、`tools/mercenary-roster/` | 個人傭兵多名名冊／重複招募／單人跟隨與schema25隔離驗收、審閱及批准後快照（第263節）；正式預覽讀data實檔 |
 | `data/guild-core.js`、`data/guild-state.js`、`data/guild.js` | 公會純規則、身份及存檔接線、正式村莊入口／名冊與三人編隊；schema24（第262節） |
@@ -96,6 +98,9 @@
 | `tools/prepare-mercenary-models.js`、`tools/test-mercenary-models.js`、`tools/mercenary-models-preview.html` | 傭兵模型切格打包／216格素材與96組正式繪圖驗證、動作／方向／實際大小預覽（第206節） |
 | `images/sprites/morph/crimson-shadow-assassin-v1/`、`tools/sprite-src/morph/crimson-shadow-assassin-v1/`、`tools/crimson-assassin-morph-preview.html`、`tools/test-crimson-assassin-morph.js` | 09赤影暗殺者紅變36格透明動作／原稿提示詞／打包／卷軸及正式繪圖驗證（第207節） |
 | `tools/mercenary-rune-drops.sql`、`tools/test-mercenary-rune-drops.js`、`tools/test-mercenary-rune-drops-db.js`、`tools/mercenary-rune-drops-preview.png` | 黃色異界／團隊副本符石掉落、獨立增量SQL、記憶體與PGlite驗證及UI實拍（第208節） |
+| `tools/prepare-remaining-morphs.js`、`tools/sprite-src/morph/remaining-eight-*` | 八款變身原稿／提示詞、腳底註冊、288格RGBA打包及數值基準；見第267節 |
+| `tools/test-remaining-morphs.cjs`、`tools/remaining-morphs-preview.html` | 八款正式卷軸／事件／128組sceneDraw回歸與隔離遊戲動畫預覽 |
+| `images/sprites/morph/`新增8個`*-v1`目錄 | m14／17／18／23／24／26／29／30四動作／立繪／manifest；詳細路徑見第267節 |
 | `tools/check.ps1` | 改完的自動檢查：JS 語法（`node --check`）、`index.html` 所有 `?v=` 等於 `GAME_VERSION`、每個 `data/*.js` 都有載入、沒有衝突標記；通過印 `ALL CHECKS PASSED` |
 | `images/icons/items/mercRune-v1/`、`tools/icon-src/mercenary-runes-v1/` | 50款獨立傭兵符石透明PNG、image_gen原稿／完整提示詞／來源與總覽（第203節） |
 | `tools/prepare-mercenary-runes.js`、`tools/test-mercenary-rune-art.js`、`tools/mercenary-runes-preview.html` | 符石等比縮圖／透明與唯一性檢查、正式UI接線驗證及128／48／32px獨立素材預覽（第203節） |
@@ -291,7 +296,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261101g`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261102b`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -693,6 +698,8 @@ kills, deaths, settings（含 skillSlots 技能欄 8 格）, created, skills[已
 - 迴圈：`requestAnimationFrame`，只在狩獵畫面顯示時跑（`huntVisible()`），分頁隱藏時不更新；canvas 依 `devicePixelRatio` 調整解析度。
 
 ## 18. 人物模型與職業立繪
+
+- 20261102b：最後8款變身專屬四動作與正式卷軸接線補齊，36款皆有專屬sprite；見第267節。
 
 - 20261031f：36 個二轉分支各一張透明立繪，人物狀態／人物選單／二轉選擇與重塑顯示；創角仍用原職業全身像，地圖 sprite 完全不改（第248節）。
 
@@ -2710,7 +2717,7 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 增益紀錄 `player.buffs.morph = { src: 'item', id: 'polyScroll', form, until }`；`buffFx` 有 `form` 就回傳 `MORPH_BY_ID[form].fx`（`BUFF_DEFS.morph.fx` 是空的），`buffName` 顯示「變身：對象名」（左上角增益列的提示）。
   再讀一張會換成新對象並重新計時；死亡清除增益時一起解除；不改存檔結構（`SAVE_SCHEMA` 仍 5），上次選的對象存在 `player.settings.lastMorph`。
 - 快捷欄可放、可設自動：自動時用 `lastMorph`（效果沒了就再讀一張）；還沒選過任何對象時不能開自動（提示先點一下選擇）。
-- **外觀**：`playerMorph()` 取 `MORPH_FORMS` 的 `sprite`，沒有就用卷軸的 `morph`（m01～m05、m10、m16、m27有自己的圖，其餘22種先用巡守妖魔神射）。之後有某個對象的專屬圖，在 `MORPHS` 加一組圖、該對象加 `sprite: 'key'` 即可。20261022s的m16走路8×65ms＝520ms、單手斬6×80ms＝480ms，改新版圖集，其他動作及戰鬥攻擊間隔不變（第18.13節）。
+- **外觀**：`playerMorph()` 取 `MORPH_FORMS` 的 `sprite`，沒有就用卷軸的 `morph`（20261102b：36款皆已指定各自專屬sprite；舊資料fallback保留，見第267節）。之後有某個對象的專屬圖，在 `MORPHS` 加一組圖、該對象加 `sprite: 'key'` 即可。20261022s的m16走路8×65ms＝520ms、單手斬6×80ms＝480ms，改新版圖集，其他動作及戰鬥攻擊間隔不變（第18.13節）。
 - 變身圖有 `foot: [128, 200]`，畫在 `(腳底X − 128k, 腳底Y − 200k)`，k＝drawH／charH（48／160），不用格子底部當腳底；變身中不畫職業武器光效（遮罩依職業模型算）。讀卷軸時 `scenePreloadMorph` 先載入四張圖，`buildScene` 也會載入，`sw.js` 預先快取四張圖集。
 - 道具圖 `images/icons/items/polyScroll.png`：`tools/make-poly-icon.ps1` 用羊皮紙卷軸＋變身人物第一格合成。道具總數 432 → 433，test-item-art／test-legend-equipment／test-hero-armor／test-legend-glow 的數字已同步。
 - **2026-10-22 外觀樣品待選**：使用者要求更換變形卷軸外觀，先做幾款參考再決定。tools/icon-src/poly-scroll-samples-20261022/保存內建image_gen四款原創圖／prompts.json、a～d-128.png、comparison.png（大圖與40px快捷欄對照）及prepare.py／audit.json。A古典獸印、B紫晶幻化、C暗黑骷髏、D金翼聖印；使用者已選B，q版新增polyScroll-v2.png接共用入口，原polyScroll.png保留，其他三款待討論用途（第90節）。
@@ -4426,6 +4433,17 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 
 驗收：PGlite真實腳本端到端（50種／跨角色）通過，公會存讀回歸通過，check.ps1 ALL CHECKS PASSED；64支混淆699KB、231公開函式正常。瀏覽器實點指定存4／背包留6、取回併10、再存4，無Console error／warn；實拍保留在本機驗收輸出。只清除已核對工作區內的建置生成副本，不改原始圖片。尚待使用者正式角色實玩後才commit。
 
+
+## 265. 公會斥候三向模型與整體待辦盤點（2026-11-02，版本 `20261102a`，schema25不變）
+
+使用者要求先做斥候模型，並詢問包含圖檔及變身的未完成工作。內建imagegen原創渡鴉・瑞克：成年男斥候、深灰兜帽、藍綠領巾、輕皮甲、短披肩與右手單匕首。三個RGBA原稿及完整提示詞／來源保存tools/sprite-src/guild/scout-v1；不使用商業圖片、不覆寫其他角色原素材。
+
+- prepare-guild-scout沿原傭兵alpha元件分離及等比縮放／腳底註冊流程，只處理scout-v1。生成行走4、攻擊4、施法2、受傷2，正／右／背共36格，左鏡射；cell384x320、foot[192,282]、charH160、drawH46。原稿至少1px透明留白，輸出仍有安全留邊。分鏡在source/build/frames，不發佈36個重複單格；images只放4圖集、256x320原稿直接裁切立繪及manifest。manifest.guildMemberId=scout。
+- GUILD_PORTRAITS改成完整資產路徑，5位原頭像保留、scout指新portrait；renderGuild使用完整路徑。只補名冊造型，不解鎖招募、不加第7個人傭兵職業、不產生公會NPC到一般地圖。正式公會戰鬥仍整備中。index與GAME_VERSION換20261102a、ui-create玩家更新紀錄；無新存檔欄位或SQL。
+- test-guild-scout-model驗36格RGBA／唯一性／與圖集逐byte一致／輸出安全留邊／規格／頭像／名冊路徑；另用隔離fixture暫替換既有renderer模型參數，實際畫4方向x4動作16組、不改角色數值。這是renderer相容測試，不能當成正式公會已開戰。純素材HTML可切4動作、4顯示方向、暫停與原地圖46px比例，無角色存檔／雲端。
+- 此次是3向36格相容版，不等於GUILD-WORLD-MASTERPLAN的真正8向368格高規格已完成；待機／倒地／救援、其餘公會團員原創完整模型與正式場景仍待製作。
+- PROJECT-REMAINING-20261102盤點最新6人公會規則與未完成12任務／7活動／3大區、伺服器可信結算、聲望招募與培養設施數值；實際讀MORPH_FORMS／MORPHS及圖檔，36款中28有專屬4動作檔，m14／17／18／23／24／26／29／30未指定專屬sprite。舊HANDOFF有過時缺圖與未驗收紀錄，不混成尚未製作的數量。
+
 ## 266. 公會數值規則計算層（2026-11-02，Claude；候選模組，未載入正式遊戲、無版本號變更）
 
 使用者確認 `tools/GUILD-NUMBERS-DRAFT.md` 後選「先做規則計算層」：只把數值表寫成純函式與測試，不改存檔、SQL、`data/guild-core.js`／`guild.js`／`index.html`。之後接存檔（新欄位）與伺服器帳本時，客戶端顯示和 SQL 驗證都要用同一份數字。
@@ -4434,3 +4452,16 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 函式：`categoryOf`（core 任務 kind：expedition→討伐、defense／escort→防衛；活動 personalRecruit／guildExpedition）、`reward`（聲望不隨難度；冊外重打無聲望、代幣徽章25%；評價只加代幣最多20%）、`bookProgress`／`inBook`／`bookBonus`、`repTier`／`nextTierRep`／`recruitSlots`（1～3階各開一位）、`levelCost`（Lv.n→n+1要n個）／`costToLevel`／`levelCap`／`levelUp`（升到上限為止、退回剩餘）、`restMs`、`facilityNext`／`canBuild`、`intelFor`、`canBuy`、`suppression`（玩家等級高於壓制等級才生效）、`weekStart`（週一06:00 UTC+8）／`canSubmit`（上週成果寬限24小時）。全部只回傳結果，不改傳入狀態、不入帳。
 - `tools/guild-runtime/test-rules.cjs`：驗每週合計1300／130／260、難度倍率與冊外25%、12任務分類（6討伐6防衛）、聲望階級與招募位、升級區間190／245／345／445／1225、訓練場上限、療養與 core `REST_MS` 一致、設施1800與門檻、商店限購、壓制、週一06:00邊界與24小時寬限、常數不可改。`node tools/guild-runtime/test-rules.cjs` 通過，test-core 回歸與 check.ps1 ALL CHECKS PASSED。
 - 尚未做：player.guild 新欄位（聲望、代幣、徽章、團員等級、設施等級、已招募順序）、伺服器帳本／商店 RPC、公會介面、醫療室接到 core 的療養時間。這些動到存檔與 SQL，要另外經使用者同意。
+
+斥候驗收：36格素材／圖集、16組既有renderer與名冊接線通過；check.ps1 ALL CHECKS PASSED、公會存檔回歸通過。瀏覽器1／1模型載入、動作／方向可切及地圖比例顯示，Console無error／warn；未操作正式角色或雲端。
+
+
+## 267. 八款變身專屬模型補完（2026-11-02，版本20261102b）
+
+- 使用者提供14／17／18／23／24／26／29／30原創角色參考並要求完成變身。內建imagegen製作正／右／背原稿，原參考與生成原稿／完整提示詞保存tools/sprite-src/morph各目錄；不覆寫舊角色原稿。m14與m26修正版以remaining-eight-v1.json的sourceFiles指定，舊稿保留。
+- images/sprites/morph新增infernal-blade-sovereign-v1、thunder-black-commander-v1、sacred-judgment-sword-saint-v1、lava-bone-brawler-v1、thunder-fist-emperor-v1、night-blood-ripper-v1、rose-temple-crusader-v1、immortal-golden-guardian-v1：各walk4／attack4／cast2／hit2，三向36格、左鏡射，共288格／32圖集／8立繪與manifest。MORPHS新增對應八組，MORPH_FORMS的八個既有id指定sprite；不改36款id、等級、加成、說明、武器限制或卷軸價錢／30分鐘時效，SAVE_SCHEMA維持25。
+- prepare-remaining-morphs沿alpha元件隔離、等比縮放及腳底註冊流程，不複製貼同一格充動作。charH160／drawH48；七款cell384x320、foot[192,270]；m26因前伸爪刃加寬為448x320、foot[224,270]，維持角色大小並保留完整攻擊。來源不透明主體不得裁邊，僅alpha≤32微弱光暈可碰來源邊；輸出另驗透明安全邊，所有288格逐byte對上單格。portrait由原稿直接縮放，非把小格放大。
+- sw.js增加32圖集＋8立繪預載；ui-panels的卷軸提示同步36款專屬外觀。無新正式script／載入順序、存檔欄位或SQL變更。test-guild-integration只更新版本預期。
+- test-remaining-morphs實跑正式usePotion／sceneReadEvents／sceneDraw：八款等級不足不扣卷、扣量與上次選擇、武器限制、四向命中與MISS／施法／受傷、攻擊不中斷、到期、288格唯一／RGBA／圖集對應／安全留白／40離線路徑及128繪圖組；remaining-eight-before.json對照全部36款原數值完全一致。既有等級／GM及公會遷移回歸、check.ps1 ALL CHECKS PASSED通過。
+- remaining-morphs-preview.html用實際data腳本及sceneDraw，可換8款／四向／四動作／大小／逐格／正式卷軸選單；記憶體localStorage、停公告計時並拒絕連外，載入腳本加每次預覽戳避免開發快取，不跑main／pwa。瀏覽器逐款切換、實點卷軸選血族、背面施法與側面施法皆通過，Console無error／warn。
+- 發布建置64支→704KB，40個新增圖檔逐byte吻合；暫存驗證輸出僅建立在tools/morph-eight-build-verify後清理。PROJECT-REMAINING-20261102及project-audit-20261102更新為36專屬／0缺漏；八向高規格重製仍屬另一期，不把本次三向相容版算八向。待使用者正式角色實玩確認後再commit／請其Push origin，目前未發布。

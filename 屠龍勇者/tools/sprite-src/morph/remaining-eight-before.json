@@ -1,0 +1,495 @@
+[
+  {
+    "id": "m33",
+    "name": "蒼骨巡墓者",
+    "group": "scythe",
+    "tier": "blue",
+    "lv": 15,
+    "fx": {
+      "hit": 2,
+      "dmg": 2,
+      "spdMul": 0.06
+    },
+    "desc": "命中 +2、傷害 +2、攻速 +6%"
+  },
+  {
+    "id": "m34",
+    "name": "緋月收魂姬",
+    "group": "scythe",
+    "tier": "red",
+    "lv": 35,
+    "fx": {
+      "hit": 3,
+      "dmg": 3,
+      "spdMul": 0.1
+    },
+    "desc": "命中 +3、傷害 +3、攻速 +10%"
+  },
+  {
+    "id": "m35",
+    "name": "虛空斷魂使",
+    "group": "scythe",
+    "tier": "purple",
+    "lv": 52,
+    "fx": {
+      "hit": 5,
+      "dmg": 5,
+      "spdMul": 0.15
+    },
+    "desc": "命中 +5、傷害 +5、攻速 +15%"
+  },
+  {
+    "id": "m36",
+    "name": "冥界終焉君主",
+    "group": "scythe",
+    "tier": "gold",
+    "lv": 70,
+    "fx": {
+      "hit": 7,
+      "dmg": 7,
+      "spdMul": 0.2
+    },
+    "desc": "命中 +7、傷害 +7、攻速 +20%"
+  },
+  {
+    "id": "m31",
+    "name": "煉獄雷霆魔皇",
+    "group": "melee",
+    "tier": "gold",
+    "lv": 70,
+    "fx": {
+      "hit": 7,
+      "dmg": 7,
+      "spdMul": 0.2
+    },
+    "desc": "命中 +7、傷害 +7、攻速 +20%"
+  },
+  {
+    "id": "m32",
+    "name": "霜獄幽冥魔皇",
+    "group": "melee",
+    "tier": "gold",
+    "lv": 70,
+    "fx": {
+      "hit": 7,
+      "dmg": 7,
+      "spdMul": 0.2
+    },
+    "desc": "命中 +7、傷害 +7、攻速 +20%"
+  },
+  {
+    "id": "m01",
+    "name": "巡守妖魔神射",
+    "group": "bow",
+    "tier": "blue",
+    "lv": 15,
+    "fx": {
+      "hit": 3,
+      "dmg": 2,
+      "spdMul": 0.06
+    },
+    "desc": "命中 +3、傷害 +2、攻速 +6%"
+  },
+  {
+    "id": "m02",
+    "name": "月光精靈巡林者",
+    "group": "bow",
+    "tier": "red",
+    "lv": 35,
+    "fx": {
+      "hit": 5,
+      "dmg": 3,
+      "spdMul": 0.1
+    },
+    "desc": "命中 +5、傷害 +3、攻速 +10%"
+  },
+  {
+    "id": "m03",
+    "name": "冥火骷髏神射",
+    "group": "bow",
+    "tier": "purple",
+    "lv": 52,
+    "fx": {
+      "hit": 8,
+      "dmg": 5,
+      "spdMul": 0.15
+    },
+    "desc": "命中 +8、傷害 +5、攻速 +15%"
+  },
+  {
+    "id": "m04",
+    "name": "蒼穹女武神・艾爾",
+    "group": "bow",
+    "tier": "gold",
+    "lv": 70,
+    "fx": {
+      "hit": 11,
+      "dmg": 7,
+      "spdMul": 0.2
+    },
+    "desc": "命中 +11、傷害 +7、攻速 +20%"
+  },
+  {
+    "id": "m05",
+    "name": "矮人蒸氣火銃兵",
+    "group": "gun",
+    "tier": "blue",
+    "lv": 15,
+    "fx": {
+      "hit": 3,
+      "dmg": 3,
+      "spdMul": 0.039999999999999994
+    },
+    "desc": "命中 +3、傷害 +3、攻速 +4%"
+  },
+  {
+    "id": "m06",
+    "name": "暗影海盜雙槍客",
+    "group": "gun",
+    "tier": "red",
+    "lv": 35,
+    "fx": {
+      "hit": 5,
+      "dmg": 4,
+      "spdMul": 0.08
+    },
+    "desc": "命中 +5、傷害 +4、攻速 +8%"
+  },
+  {
+    "id": "m07",
+    "name": "魔導審判狙擊手",
+    "group": "gun",
+    "tier": "purple",
+    "lv": 52,
+    "fx": {
+      "hit": 8,
+      "dmg": 6,
+      "spdMul": 0.13
+    },
+    "desc": "命中 +8、傷害 +6、攻速 +13%"
+  },
+  {
+    "id": "m08",
+    "name": "沉默洞穴刺客",
+    "group": "dual",
+    "tier": "blue",
+    "lv": 15,
+    "fx": {
+      "hit": 2,
+      "dmg": 2,
+      "spdMul": 0.06,
+      "dodge": 0.02
+    },
+    "desc": "命中 +2、傷害 +2、攻速 +6%、閃避 +2%"
+  },
+  {
+    "id": "m09",
+    "name": "赤影暗殺者",
+    "group": "dual",
+    "tier": "red",
+    "lv": 35,
+    "fx": {
+      "hit": 3,
+      "dmg": 3,
+      "spdMul": 0.1,
+      "dodge": 0.03
+    },
+    "desc": "命中 +3、傷害 +3、攻速 +10%、閃避 +3%"
+  },
+  {
+    "id": "m10",
+    "name": "布魯迪卡之影",
+    "group": "dual",
+    "tier": "purple",
+    "lv": 52,
+    "fx": {
+      "hit": 5,
+      "dmg": 5,
+      "spdMul": 0.15,
+      "dodge": 0.04
+    },
+    "desc": "命中 +5、傷害 +5、攻速 +15%、閃避 +4%"
+  },
+  {
+    "id": "m11",
+    "name": "深淵雙刃魔神",
+    "group": "dual",
+    "tier": "gold",
+    "lv": 70,
+    "fx": {
+      "hit": 7,
+      "dmg": 7,
+      "spdMul": 0.2,
+      "dodge": 0.05
+    },
+    "desc": "命中 +7、傷害 +7、攻速 +20%、閃避 +5%"
+  },
+  {
+    "id": "m12",
+    "name": "鋼鐵狂戰士",
+    "group": "great",
+    "tier": "blue",
+    "lv": 15,
+    "fx": {
+      "hit": 2,
+      "dmg": 4,
+      "spdMul": 0.039999999999999994,
+      "crit": 0.01
+    },
+    "desc": "命中 +2、傷害 +4、攻速 +4%、物爆率 +1%"
+  },
+  {
+    "id": "m13",
+    "name": "冥皇處刑者",
+    "group": "great",
+    "tier": "red",
+    "lv": 35,
+    "fx": {
+      "hit": 3,
+      "dmg": 6,
+      "spdMul": 0.08,
+      "crit": 0.02
+    },
+    "desc": "命中 +3、傷害 +6、攻速 +8%、物爆率 +2%"
+  },
+  {
+    "id": "m14",
+    "name": "煉獄魔劍尊・巴拉卡",
+    "group": "great",
+    "tier": "purple",
+    "lv": 52,
+    "fx": {
+      "hit": 5,
+      "dmg": 9,
+      "spdMul": 0.13,
+      "crit": 0.03
+    },
+    "desc": "命中 +5、傷害 +9、攻速 +13%、物爆率 +3%"
+  },
+  {
+    "id": "m15",
+    "name": "亞丁榮耀劍士",
+    "group": "sword",
+    "tier": "blue",
+    "lv": 15,
+    "fx": {
+      "hit": 3,
+      "dmg": 2,
+      "spdMul": 0.09
+    },
+    "desc": "命中 +3、傷害 +2、攻速 +9%"
+  },
+  {
+    "id": "m16",
+    "name": "烈焰死亡騎士",
+    "group": "sword",
+    "tier": "red",
+    "lv": 35,
+    "fx": {
+      "hit": 4,
+      "dmg": 3,
+      "spdMul": 0.13
+    },
+    "desc": "命中 +4、傷害 +3、攻速 +13%"
+  },
+  {
+    "id": "m17",
+    "name": "雷霆黑騎士統領",
+    "group": "sword",
+    "tier": "purple",
+    "lv": 52,
+    "fx": {
+      "hit": 6,
+      "dmg": 5,
+      "spdMul": 0.18
+    },
+    "desc": "命中 +6、傷害 +5、攻速 +18%"
+  },
+  {
+    "id": "m18",
+    "name": "神聖裁決劍聖",
+    "group": "sword",
+    "tier": "gold",
+    "lv": 70,
+    "fx": {
+      "hit": 8,
+      "dmg": 7,
+      "spdMul": 0.2
+    },
+    "desc": "命中 +8、傷害 +7、攻速 +20%"
+  },
+  {
+    "id": "m19",
+    "name": "象牙塔高階秘術師",
+    "group": "staff",
+    "tier": "blue",
+    "lv": 15,
+    "fx": {
+      "hit": 1,
+      "sp": 2,
+      "mpRegen": 2,
+      "mr": 5
+    },
+    "desc": "命中 +1、SP +2、回魔 +2、MR +5"
+  },
+  {
+    "id": "m20",
+    "name": "深淵羊魔・巴風特使徒",
+    "group": "staff",
+    "tier": "red",
+    "lv": 35,
+    "fx": {
+      "hit": 2,
+      "sp": 3,
+      "mpRegen": 3,
+      "mr": 10
+    },
+    "desc": "命中 +2、SP +3、回魔 +3、MR +10"
+  },
+  {
+    "id": "m21",
+    "name": "大魔導士・巴列斯真身",
+    "group": "staff",
+    "tier": "purple",
+    "lv": 52,
+    "fx": {
+      "hit": 3,
+      "sp": 4,
+      "mpRegen": 4,
+      "mr": 15
+    },
+    "desc": "命中 +3、SP +4、回魔 +4、MR +15"
+  },
+  {
+    "id": "m22",
+    "name": "修羅破戒僧",
+    "group": "fist",
+    "tier": "blue",
+    "lv": 15,
+    "fx": {
+      "hit": 2,
+      "dmg": 2,
+      "spdMul": 0.06,
+      "crit": 0.02
+    },
+    "desc": "命中 +2、傷害 +2、攻速 +6%、物爆率 +2%"
+  },
+  {
+    "id": "m23",
+    "name": "熔岩碎骨鬥士",
+    "group": "fist",
+    "tier": "red",
+    "lv": 35,
+    "fx": {
+      "hit": 3,
+      "dmg": 3,
+      "spdMul": 0.1,
+      "crit": 0.03
+    },
+    "desc": "命中 +3、傷害 +3、攻速 +10%、物爆率 +3%"
+  },
+  {
+    "id": "m24",
+    "name": "霸天雷神拳皇",
+    "group": "fist",
+    "tier": "purple",
+    "lv": 52,
+    "fx": {
+      "hit": 5,
+      "dmg": 5,
+      "spdMul": 0.15,
+      "crit": 0.04
+    },
+    "desc": "命中 +5、傷害 +5、攻速 +15%、物爆率 +4%"
+  },
+  {
+    "id": "m25",
+    "name": "荒野血狼狂戰",
+    "group": "claw",
+    "tier": "blue",
+    "lv": 15,
+    "fx": {
+      "hit": 2,
+      "dmg": 2,
+      "spdMul": 0.06,
+      "crit": 0.01,
+      "lifesteal": 0.01
+    },
+    "desc": "命中 +2、傷害 +2、攻速 +6%、物爆率 +1%、吸血 +1%"
+  },
+  {
+    "id": "m26",
+    "name": "暗夜血族撕裂者",
+    "group": "claw",
+    "tier": "red",
+    "lv": 35,
+    "fx": {
+      "hit": 3,
+      "dmg": 3,
+      "spdMul": 0.1,
+      "crit": 0.02,
+      "lifesteal": 0.02
+    },
+    "desc": "命中 +3、傷害 +3、攻速 +10%、物爆率 +2%、吸血 +2%"
+  },
+  {
+    "id": "m27",
+    "name": "裂空魔龍爪皇",
+    "group": "claw",
+    "tier": "purple",
+    "lv": 52,
+    "fx": {
+      "hit": 5,
+      "dmg": 5,
+      "spdMul": 0.15,
+      "crit": 0.03,
+      "lifesteal": 0.03
+    },
+    "desc": "命中 +5、傷害 +5、攻速 +15%、物爆率 +3%、吸血 +3%"
+  },
+  {
+    "id": "m28",
+    "name": "風木鐵壁重裝兵",
+    "group": "shield",
+    "tier": "blue",
+    "lv": 15,
+    "fx": {
+      "hit": 2,
+      "dmg": 1,
+      "ac": 2,
+      "hp": 40,
+      "spdMul": 0.03
+    },
+    "desc": "命中 +2、傷害 +1、攻速 +3%、防禦 +2、HP +40"
+  },
+  {
+    "id": "m29",
+    "name": "薔薇聖殿十字軍",
+    "group": "shield",
+    "tier": "red",
+    "lv": 35,
+    "fx": {
+      "hit": 3,
+      "dmg": 2,
+      "ac": 3,
+      "hp": 80,
+      "spdMul": 0.07
+    },
+    "desc": "命中 +3、傷害 +2、攻速 +7%、防禦 +3、HP +80"
+  },
+  {
+    "id": "m30",
+    "name": "不滅黃金守護神・宙斯盾",
+    "group": "shield",
+    "tier": "gold",
+    "lv": 70,
+    "fx": {
+      "hit": 7,
+      "dmg": 6,
+      "ac": 6,
+      "hp": 200,
+      "spdMul": 0.17
+    },
+    "desc": "命中 +7、傷害 +6、攻速 +17%、防禦 +6、HP +200"
+  }
+]

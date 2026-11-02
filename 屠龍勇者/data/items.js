@@ -47,6 +47,62 @@ const BUFF_DEFS = {
 // 變身外觀（變形卷軸的 morph 欄位；ui-scene.js 的 playerSprite 在變身中改用這組圖）
 // 格式同 classes.js 的 sprite，多一個 foot：腳底在格子裡的位置（素材下方留了箭光空間，不能用格子底部當腳底）
 const MORPHS = {
+    infernalBladeSovereign: {
+        name: '煉獄魔劍尊・巴拉卡', drawH: 48, charH: 160, foot: [192, 270],
+        walk: { src: 'images/sprites/morph/infernal-blade-sovereign-v1/walk.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 130 },
+        attack: { src: 'images/sprites/morph/infernal-blade-sovereign-v1/attack.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 140 },
+        cast: { src: 'images/sprites/morph/infernal-blade-sovereign-v1/cast.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 220 },
+        hit: { src: 'images/sprites/morph/infernal-blade-sovereign-v1/hit.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 150 },
+    },
+    thunderBlackCommander: {
+        name: '雷霆黑騎士統領', drawH: 48, charH: 160, foot: [192, 270],
+        walk: { src: 'images/sprites/morph/thunder-black-commander-v1/walk.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 130 },
+        attack: { src: 'images/sprites/morph/thunder-black-commander-v1/attack.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 140 },
+        cast: { src: 'images/sprites/morph/thunder-black-commander-v1/cast.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 220 },
+        hit: { src: 'images/sprites/morph/thunder-black-commander-v1/hit.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 150 },
+    },
+    sacredJudgmentSwordSaint: {
+        name: '神聖裁決劍聖', drawH: 48, charH: 160, foot: [192, 270],
+        walk: { src: 'images/sprites/morph/sacred-judgment-sword-saint-v1/walk.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 130 },
+        attack: { src: 'images/sprites/morph/sacred-judgment-sword-saint-v1/attack.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 140 },
+        cast: { src: 'images/sprites/morph/sacred-judgment-sword-saint-v1/cast.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 220 },
+        hit: { src: 'images/sprites/morph/sacred-judgment-sword-saint-v1/hit.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 150 },
+    },
+    lavaBoneBrawler: {
+        name: '熔岩碎骨鬥士', drawH: 48, charH: 160, foot: [192, 270],
+        walk: { src: 'images/sprites/morph/lava-bone-brawler-v1/walk.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 130 },
+        attack: { src: 'images/sprites/morph/lava-bone-brawler-v1/attack.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 140 },
+        cast: { src: 'images/sprites/morph/lava-bone-brawler-v1/cast.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 220 },
+        hit: { src: 'images/sprites/morph/lava-bone-brawler-v1/hit.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 150 },
+    },
+    thunderFistEmperor: {
+        name: '霸天雷神拳皇', drawH: 48, charH: 160, foot: [192, 270],
+        walk: { src: 'images/sprites/morph/thunder-fist-emperor-v1/walk.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 130 },
+        attack: { src: 'images/sprites/morph/thunder-fist-emperor-v1/attack.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 140 },
+        cast: { src: 'images/sprites/morph/thunder-fist-emperor-v1/cast.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 220 },
+        hit: { src: 'images/sprites/morph/thunder-fist-emperor-v1/hit.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 150 },
+    },
+    nightBloodRipper: {
+        name: '暗夜血族撕裂者', drawH: 48, charH: 160, foot: [224, 270],
+        walk: { src: 'images/sprites/morph/night-blood-ripper-v1/walk.png', cellW: 448, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 130 },
+        attack: { src: 'images/sprites/morph/night-blood-ripper-v1/attack.png', cellW: 448, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 140 },
+        cast: { src: 'images/sprites/morph/night-blood-ripper-v1/cast.png', cellW: 448, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 220 },
+        hit: { src: 'images/sprites/morph/night-blood-ripper-v1/hit.png', cellW: 448, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 150 },
+    },
+    roseTempleCrusader: {
+        name: '薔薇聖殿十字軍', drawH: 48, charH: 160, foot: [192, 270],
+        walk: { src: 'images/sprites/morph/rose-temple-crusader-v1/walk.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 130 },
+        attack: { src: 'images/sprites/morph/rose-temple-crusader-v1/attack.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 140 },
+        cast: { src: 'images/sprites/morph/rose-temple-crusader-v1/cast.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 220 },
+        hit: { src: 'images/sprites/morph/rose-temple-crusader-v1/hit.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 150 },
+    },
+    immortalGoldenGuardian: {
+        name: '不滅黃金守護神・宙斯盾', drawH: 48, charH: 160, foot: [192, 270],
+        walk: { src: 'images/sprites/morph/immortal-golden-guardian-v1/walk.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 130 },
+        attack: { src: 'images/sprites/morph/immortal-golden-guardian-v1/attack.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 140 },
+        cast: { src: 'images/sprites/morph/immortal-golden-guardian-v1/cast.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 220 },
+        hit: { src: 'images/sprites/morph/immortal-golden-guardian-v1/hit.png', cellW: 384, cellH: 320, frames: { down: 2, right: 2, up: 2 }, ms: 150 },
+    },
     violetArchmage: {
         name: '大魔導士・巴列斯真身', drawH: 48, charH: 160, foot: [192, 270],
         walk: { src: 'images/sprites/morph/violet-archmage-v1/walk.png', cellW: 384, cellH: 320, frames: { down: 4, right: 4, up: 4 }, ms: 130 },
@@ -254,7 +310,7 @@ const MORPHS = {
 
 // 變形卷軸可選的變身對象（參考天堂：讀卷軸後選對象，等級到了才能變，越高級越強）。2026-10-22 原30種，2026-10-23新增31煉獄雷霆魔皇、32霜獄幽冥魔皇，設計稿在 tools/MORPH-DESIGN.md。
 // 階級決定需求等級與基礎加成，系別決定偏重（弓槍命中、雙刀閃避、雙手劍傷害、單手劍攻速、法杖施法、拳套爆擊、鋼爪吸血、劍盾防禦）。
-// 外觀：m01～m05、m10、m27 用各自的專屬圖，其餘統一用卷軸的 morph（巡守妖魔神射）；有新圖時在 MORPHS 加一組，該對象加 sprite: 'key' 即可
+// 36款變身皆有專屬外觀；MORPH_FORMS 的 sprite 對應 MORPHS，卷軸 morph 僅留舊資料相容。
 const MORPH_TIERS = {
     blue:   { name: '藍變', grade: '稀有', lv: 15, color: '#6aa8ff', hit: 2, dmg: 2, spd: 0.06 },
     red:    { name: '紅變', grade: '英雄', lv: 35, color: '#ff6a6a', hit: 3, dmg: 3, spd: 0.10 },
@@ -293,12 +349,12 @@ const MORPH_FORMS = [
     ['m01', '巡守妖魔神射', 'bow', 'blue', 'wolfRanger'], ['m02', '月光精靈巡林者', 'bow', 'red', 'moonRanger'], ['m03', '冥火骷髏神射', 'bow', 'purple', 'hellfireArcher'], ['m04', '蒼穹女武神・艾爾', 'bow', 'gold', 'skyValkyrie'],
     ['m05', '矮人蒸氣火銃兵', 'gun', 'blue', 'dwarfGunner'], ['m06', '暗影海盜雙槍客', 'gun', 'red', 'shadowPirateGunner'], ['m07', '魔導審判狙擊手', 'gun', 'purple', 'arcaneJudgmentSniper'],
     ['m08', '沉默洞穴刺客', 'dual', 'blue', 'silentCaveAssassin'], ['m09', '赤影暗殺者', 'dual', 'red', 'crimsonShadowAssassin'], ['m10', '布魯迪卡之影', 'dual', 'purple', 'brudikaShadow'], ['m11', '深淵雙刃魔神', 'dual', 'gold', 'abyssDualDemon'],
-    ['m12', '鋼鐵狂戰士', 'great', 'blue', 'steelBerserker'], ['m13', '冥皇處刑者', 'great', 'red', 'netherExecutioner'], ['m14', '煉獄魔劍尊・巴拉卡', 'great', 'purple'],
-    ['m15', '亞丁榮耀劍士', 'sword', 'blue', 'adenGlorySwordsman'], ['m16', '烈焰死亡騎士', 'sword', 'red', 'flameDeathKnight'], ['m17', '雷霆黑騎士統領', 'sword', 'purple'], ['m18', '神聖裁決劍聖', 'sword', 'gold'],
+    ['m12', '鋼鐵狂戰士', 'great', 'blue', 'steelBerserker'], ['m13', '冥皇處刑者', 'great', 'red', 'netherExecutioner'], ['m14', '煉獄魔劍尊・巴拉卡', 'great', 'purple', 'infernalBladeSovereign'],
+    ['m15', '亞丁榮耀劍士', 'sword', 'blue', 'adenGlorySwordsman'], ['m16', '烈焰死亡騎士', 'sword', 'red', 'flameDeathKnight'], ['m17', '雷霆黑騎士統領', 'sword', 'purple', 'thunderBlackCommander'], ['m18', '神聖裁決劍聖', 'sword', 'gold', 'sacredJudgmentSwordSaint'],
     ['m19', '象牙塔高階秘術師', 'staff', 'blue', 'ivoryArchmage'], ['m20', '深淵羊魔・巴風特使徒', 'staff', 'red', 'abyssGoatEnvoy'], ['m21', '大魔導士・巴列斯真身', 'staff', 'purple', 'violetArchmage'],
-    ['m22', '修羅破戒僧', 'fist', 'blue', 'shuraMonk'], ['m23', '熔岩碎骨鬥士', 'fist', 'red'], ['m24', '霸天雷神拳皇', 'fist', 'purple'],
-    ['m25', '荒野血狼狂戰', 'claw', 'blue', 'wildBloodWolf'], ['m26', '暗夜血族撕裂者', 'claw', 'red'], ['m27', '裂空魔龍爪皇', 'claw', 'purple', 'riftDragon'],
-    ['m28', '風木鐵壁重裝兵', 'shield', 'blue', 'windwoodIronwall'], ['m29', '薔薇聖殿十字軍', 'shield', 'red'], ['m30', '不滅黃金守護神・宙斯盾', 'shield', 'gold'],
+    ['m22', '修羅破戒僧', 'fist', 'blue', 'shuraMonk'], ['m23', '熔岩碎骨鬥士', 'fist', 'red', 'lavaBoneBrawler'], ['m24', '霸天雷神拳皇', 'fist', 'purple', 'thunderFistEmperor'],
+    ['m25', '荒野血狼狂戰', 'claw', 'blue', 'wildBloodWolf'], ['m26', '暗夜血族撕裂者', 'claw', 'red', 'nightBloodRipper'], ['m27', '裂空魔龍爪皇', 'claw', 'purple', 'riftDragon'],
+    ['m28', '風木鐵壁重裝兵', 'shield', 'blue', 'windwoodIronwall'], ['m29', '薔薇聖殿十字軍', 'shield', 'red', 'roseTempleCrusader'], ['m30', '不滅黃金守護神・宙斯盾', 'shield', 'gold', 'immortalGoldenGuardian'],
 ].map(([id, name, group, tier, sprite]) => {
     const t = MORPH_TIERS[tier], fx = MORPH_GROUPS[group].fx(t, MORPH_TIER_K[tier]);
     if (fx.spdMul > MORPH_SPD_MAX) fx.spdMul = MORPH_SPD_MAX;

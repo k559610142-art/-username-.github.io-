@@ -1,6 +1,13 @@
 // 傭兵公會正式入口與名冊。任務出發須後端及場景就緒，不從試玩頁領獎。
 const GUILD_ROLE_NAMES = { tank: '盾衛', warrior: '戰士', ranger: '遊俠', mage: '法師', healer: '補師', scout: '斥候' };
-const GUILD_PORTRAITS = { sentinel: 'bulwark', warrior: 'war', ranger: 'wild', arcanist: 'arcane', healer: 'wish' };
+const GUILD_PORTRAITS = {
+    sentinel: 'images/sprites/mercenary/companions-v1/bulwark/portrait.png',
+    warrior: 'images/sprites/mercenary/companions-v1/war/portrait.png',
+    ranger: 'images/sprites/mercenary/companions-v1/wild/portrait.png',
+    arcanist: 'images/sprites/mercenary/companions-v1/arcane/portrait.png',
+    healer: 'images/sprites/mercenary/companions-v1/wish/portrait.png',
+    scout: 'images/sprites/guild/scout-v1/portrait.png'
+};
 const guildDrafts = new WeakMap();
 let guildServerMessage = '', guildServerBusy = false;
 function guildRefresh() { renderTabs(); renderPanel(); }
@@ -81,7 +88,7 @@ function renderGuild() {
         const member = g.members.find(m => m.id === id), selected = ids.includes(id), resting = member && member.restUntil > now;
         const portrait = GUILD_PORTRAITS[id];
         h += '<div class="panel" style="display:flex;gap:12px;align-items:center;opacity:' + (member ? '1' : '.55') + '">'
-            + (portrait ? '<img alt="' + esc(definition.name) + '" src="images/sprites/mercenary/companions-v1/' + portrait + '/portrait.png" style="width:64px;height:80px;object-fit:contain">' : '<span style="font-size:36px">🗡️</span>')
+            + (portrait ? '<img alt="' + esc(definition.name) + '" src="' + portrait + '" style="width:64px;height:80px;object-fit:contain">' : '<span style="font-size:36px">🗡️</span>')
             + '<div style="flex:1;min-width:0"><b>' + esc(definition.name) + '</b><div>' + esc(GUILD_ROLE_NAMES[definition.role]) + ' · '
             + (!member ? '尚未招募' : resting ? '療養約 ' + Math.ceil((member.restUntil - now) / 60000) + ' 分鐘' : selected ? '已選出戰' : '待命') + '</div>'
             + (member ? '<button class="mini secondary" onclick="guildPick(\'' + id + '\')"' + (g.activeTicket || resting && !selected ? ' disabled' : '') + '>' + (selected ? '取消選派' : '選派') + '</button>' : '<small class="muted">完成夥伴的公會招募任務後加入。</small>') + '</div></div>';

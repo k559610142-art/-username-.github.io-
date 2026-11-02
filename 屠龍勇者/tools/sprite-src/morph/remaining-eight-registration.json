@@ -1,0 +1,6626 @@
+[
+  {
+    "id": "m14",
+    "dir": "down",
+    "action": "walk",
+    "frame": 0,
+    "source": "infernal-blade-sovereign-v1\\down-generated.png",
+    "rect": {
+      "left": 13,
+      "top": 16,
+      "width": 328,
+      "height": 319
+    },
+    "sourceFoot": [
+      209.5,
+      318
+    ],
+    "scale": 0.5031446540880503,
+    "offset": [
+      87,
+      110
+    ],
+    "sha256": "4cd4d02d2b19a4d9417b99d42e6b37c41b5a867a0a64da930712a7c946951fd4"
+  },
+  {
+    "id": "m14",
+    "dir": "down",
+    "action": "walk",
+    "frame": 1,
+    "source": "infernal-blade-sovereign-v1\\down-generated.png",
+    "rect": {
+      "left": 410,
+      "top": 18,
+      "width": 255,
+      "height": 314
+    },
+    "sourceFoot": [
+      167,
+      313
+    ],
+    "scale": 0.5031446540880503,
+    "offset": [
+      108,
+      113
+    ],
+    "sha256": "ab12e1d33705dfda1ad828d87143aab82ddfcd21292c4ea073e574a1e218ebf5"
+  },
+  {
+    "id": "m14",
+    "dir": "down",
+    "action": "walk",
+    "frame": 2,
+    "source": "infernal-blade-sovereign-v1\\down-generated.png",
+    "rect": {
+      "left": 804,
+      "top": 15,
+      "width": 313,
+      "height": 320
+    },
+    "sourceFoot": [
+      83,
+      319
+    ],
+    "scale": 0.5031446540880503,
+    "offset": [
+      150,
+      109
+    ],
+    "sha256": "c323c75c82413fab347a7a7f29711924f0f5fcda63c54d74112b99c7195bf08e"
+  },
+  {
+    "id": "m14",
+    "dir": "down",
+    "action": "walk",
+    "frame": 3,
+    "source": "infernal-blade-sovereign-v1\\down-generated.png",
+    "rect": {
+      "left": 1183,
+      "top": 17,
+      "width": 251,
+      "height": 315
+    },
+    "sourceFoot": [
+      86.5,
+      314
+    ],
+    "scale": 0.5031446540880503,
+    "offset": [
+      148,
+      112
+    ],
+    "sha256": "f9e1913e011087c64a2ffdf1d28246d20a02802bbb833a2a117cfe1e30fe21d3"
+  },
+  {
+    "id": "m14",
+    "dir": "right",
+    "action": "walk",
+    "frame": 0,
+    "source": "infernal-blade-sovereign-v1\\right-fixed-generated.png",
+    "rect": {
+      "left": 105,
+      "top": 68,
+      "width": 302,
+      "height": 253
+    },
+    "sourceFoot": [
+      115.5,
+      250
+    ],
+    "scale": 0.6451612903225806,
+    "offset": [
+      117,
+      109
+    ],
+    "sha256": "be349d487200c2471d9e63df5703b23b2189a90b55b3dfe8fe62813f47ddf451"
+  },
+  {
+    "id": "m14",
+    "dir": "right",
+    "action": "walk",
+    "frame": 1,
+    "source": "infernal-blade-sovereign-v1\\right-fixed-generated.png",
+    "rect": {
+      "left": 455,
+      "top": 70,
+      "width": 298,
+      "height": 250
+    },
+    "sourceFoot": [
+      107,
+      248
+    ],
+    "scale": 0.6451612903225806,
+    "offset": [
+      124,
+      110
+    ],
+    "sha256": "df0cc9a10281f85a4a606fe53df53f770a2ed0c327c6a2ed7acbfe9ce1dc4f2c"
+  },
+  {
+    "id": "m14",
+    "dir": "right",
+    "action": "walk",
+    "frame": 2,
+    "source": "infernal-blade-sovereign-v1\\right-fixed-generated.png",
+    "rect": {
+      "left": 790,
+      "top": 69,
+      "width": 313,
+      "height": 250
+    },
+    "sourceFoot": [
+      126.5,
+      249
+    ],
+    "scale": 0.6451612903225806,
+    "offset": [
+      110,
+      110
+    ],
+    "sha256": "d984e6119d6cfabd02c933e93332666098311d9224f2ac96e6ae8420dc30101c"
+  },
+  {
+    "id": "m14",
+    "dir": "right",
+    "action": "walk",
+    "frame": 3,
+    "source": "infernal-blade-sovereign-v1\\right-fixed-generated.png",
+    "rect": {
+      "left": 1148,
+      "top": 73,
+      "width": 298,
+      "height": 246
+    },
+    "sourceFoot": [
+      140,
+      245
+    ],
+    "scale": 0.6451612903225806,
+    "offset": [
+      102,
+      113
+    ],
+    "sha256": "1e517bec91416ea05eb9b53a72c6c080dde4c7f035c65b415841276cfc661795"
+  },
+  {
+    "id": "m14",
+    "dir": "up",
+    "action": "walk",
+    "frame": 0,
+    "source": "infernal-blade-sovereign-v1\\up-fixed-generated.png",
+    "rect": {
+      "left": 108,
+      "top": 54,
+      "width": 280,
+      "height": 271
+    },
+    "sourceFoot": [
+      88,
+      270
+    ],
+    "scale": 0.6037735849056604,
+    "offset": [
+      139,
+      107
+    ],
+    "sha256": "16db2ba231609e42ef6cd9cc83d618c7492a04f346dfdc0b4bfed25af87ba926"
+  },
+  {
+    "id": "m14",
+    "dir": "up",
+    "action": "walk",
+    "frame": 1,
+    "source": "infernal-blade-sovereign-v1\\up-fixed-generated.png",
+    "rect": {
+      "left": 457,
+      "top": 61,
+      "width": 285,
+      "height": 263
+    },
+    "sourceFoot": [
+      83.5,
+      262
+    ],
+    "scale": 0.6037735849056604,
+    "offset": [
+      142,
+      112
+    ],
+    "sha256": "64288b854629a7b99e00594f2b5cb535da7121c12de690873d498b769d28d370"
+  },
+  {
+    "id": "m14",
+    "dir": "up",
+    "action": "walk",
+    "frame": 2,
+    "source": "infernal-blade-sovereign-v1\\up-fixed-generated.png",
+    "rect": {
+      "left": 820,
+      "top": 59,
+      "width": 266,
+      "height": 267
+    },
+    "sourceFoot": [
+      95.5,
+      266
+    ],
+    "scale": 0.6037735849056604,
+    "offset": [
+      134,
+      110
+    ],
+    "sha256": "1c949542390f1de88c592afdf03fceb771158f5ae2decf3982b253410ef44b0d"
+  },
+  {
+    "id": "m14",
+    "dir": "up",
+    "action": "walk",
+    "frame": 3,
+    "source": "infernal-blade-sovereign-v1\\up-fixed-generated.png",
+    "rect": {
+      "left": 1177,
+      "top": 65,
+      "width": 263,
+      "height": 258
+    },
+    "sourceFoot": [
+      82.5,
+      256
+    ],
+    "scale": 0.6037735849056604,
+    "offset": [
+      142,
+      115
+    ],
+    "sha256": "1c8220bd502b879a73c07e3d06771dc0c93203ba30a0d8c1907ebd7e1201afcc"
+  },
+  {
+    "id": "m14",
+    "dir": "down",
+    "action": "attack",
+    "frame": 0,
+    "source": "infernal-blade-sovereign-v1\\down-generated.png",
+    "rect": {
+      "left": 55,
+      "top": 344,
+      "width": 265,
+      "height": 341
+    },
+    "sourceFoot": [
+      88.5,
+      340
+    ],
+    "scale": 0.5031446540880503,
+    "offset": [
+      147,
+      99
+    ],
+    "sha256": "ef01fb98b7aec4bd7b6d3b74cb729ce72abc9c4912f89c2fec13c06d8e59c17a"
+  },
+  {
+    "id": "m14",
+    "dir": "down",
+    "action": "attack",
+    "frame": 1,
+    "source": "infernal-blade-sovereign-v1\\down-generated.png",
+    "rect": {
+      "left": 434,
+      "top": 365,
+      "width": 266,
+      "height": 319
+    },
+    "sourceFoot": [
+      132.5,
+      309
+    ],
+    "scale": 0.5031446540880503,
+    "offset": [
+      126,
+      115
+    ],
+    "sha256": "603c7d703391d9b030ea21c21da086c56d7fef122e92d9cc8c39e330987c6938"
+  },
+  {
+    "id": "m14",
+    "dir": "down",
+    "action": "attack",
+    "frame": 2,
+    "source": "infernal-blade-sovereign-v1\\down-generated.png",
+    "rect": {
+      "left": 769,
+      "top": 400,
+      "width": 335,
+      "height": 294
+    },
+    "sourceFoot": [
+      167,
+      272
+    ],
+    "scale": 0.5031446540880503,
+    "offset": [
+      108,
+      133
+    ],
+    "sha256": "d6bc724216b428b8bfa2e554a4430388d97b8c5b1b23b9856643a1fc51979182"
+  },
+  {
+    "id": "m14",
+    "dir": "down",
+    "action": "attack",
+    "frame": 3,
+    "source": "infernal-blade-sovereign-v1\\down-generated.png",
+    "rect": {
+      "left": 1131,
+      "top": 408,
+      "width": 275,
+      "height": 288
+    },
+    "sourceFoot": [
+      80,
+      277
+    ],
+    "scale": 0.5031446540880503,
+    "offset": [
+      152,
+      131
+    ],
+    "sha256": "09f798bf30901de25ddc3f7e1b81548a19cd0ef31618051155e411cae8a5f92b"
+  },
+  {
+    "id": "m14",
+    "dir": "right",
+    "action": "attack",
+    "frame": 0,
+    "source": "infernal-blade-sovereign-v1\\right-fixed-generated.png",
+    "rect": {
+      "left": 63,
+      "top": 369,
+      "width": 239,
+      "height": 313
+    },
+    "sourceFoot": [
+      65,
+      312
+    ],
+    "scale": 0.6451612903225806,
+    "offset": [
+      151,
+      69
+    ],
+    "sha256": "45e4a76da4f902afd1e3aeaacdb7348e751a4260d77279abe94b06b27730a9d3"
+  },
+  {
+    "id": "m14",
+    "dir": "right",
+    "action": "attack",
+    "frame": 1,
+    "source": "infernal-blade-sovereign-v1\\right-fixed-generated.png",
+    "rect": {
+      "left": 450,
+      "top": 384,
+      "width": 239,
+      "height": 297
+    },
+    "sourceFoot": [
+      60,
+      296
+    ],
+    "scale": 0.6451612903225806,
+    "offset": [
+      154,
+      80
+    ],
+    "sha256": "dc9de7ecaea3585dd93b0e9062e066866a603e00597b6095da307e7e6755395c"
+  },
+  {
+    "id": "m14",
+    "dir": "right",
+    "action": "attack",
+    "frame": 2,
+    "source": "infernal-blade-sovereign-v1\\right-fixed-generated.png",
+    "rect": {
+      "left": 782,
+      "top": 453,
+      "width": 332,
+      "height": 252
+    },
+    "sourceFoot": [
+      253.5,
+      233
+    ],
+    "scale": 0.6451612903225806,
+    "offset": [
+      28,
+      120
+    ],
+    "sha256": "da2875b778efe04fba771d71cd253516a993e36268a0ec7afac9bd2377133811"
+  },
+  {
+    "id": "m14",
+    "dir": "right",
+    "action": "attack",
+    "frame": 3,
+    "source": "infernal-blade-sovereign-v1\\right-fixed-generated.png",
+    "rect": {
+      "left": 1137,
+      "top": 444,
+      "width": 311,
+      "height": 235
+    },
+    "sourceFoot": [
+      69.5,
+      234
+    ],
+    "scale": 0.6451612903225806,
+    "offset": [
+      147,
+      119
+    ],
+    "sha256": "97e72bdc530c3cdfa092115334ee38e2340ce4b252c2d6691c8b232727fd123b"
+  },
+  {
+    "id": "m14",
+    "dir": "up",
+    "action": "attack",
+    "frame": 0,
+    "source": "infernal-blade-sovereign-v1\\up-fixed-generated.png",
+    "rect": {
+      "left": 65,
+      "top": 370,
+      "width": 224,
+      "height": 313
+    },
+    "sourceFoot": [
+      92,
+      312
+    ],
+    "scale": 0.6037735849056604,
+    "offset": [
+      137,
+      83
+    ],
+    "sha256": "199b8e9d76ac02c4e93cf6953106f882fe414e1abb0879cb8101ad8fd1cc0ad4"
+  },
+  {
+    "id": "m14",
+    "dir": "up",
+    "action": "attack",
+    "frame": 1,
+    "source": "infernal-blade-sovereign-v1\\up-fixed-generated.png",
+    "rect": {
+      "left": 438,
+      "top": 353,
+      "width": 230,
+      "height": 334
+    },
+    "sourceFoot": [
+      64,
+      333
+    ],
+    "scale": 0.6037735849056604,
+    "offset": [
+      153,
+      69
+    ],
+    "sha256": "541215ff89ad558d8ab8321763827f17ac62f09c8782a7697e5aeede04e4cd41"
+  },
+  {
+    "id": "m14",
+    "dir": "up",
+    "action": "attack",
+    "frame": 2,
+    "source": "infernal-blade-sovereign-v1\\up-fixed-generated.png",
+    "rect": {
+      "left": 780,
+      "top": 439,
+      "width": 329,
+      "height": 252
+    },
+    "sourceFoot": [
+      250.5,
+      240
+    ],
+    "scale": 0.6037735849056604,
+    "offset": [
+      41,
+      125
+    ],
+    "sha256": "1853a9c464059f7300e917d80a31fce017ade574bee3c9ea51489828050ac729"
+  },
+  {
+    "id": "m14",
+    "dir": "up",
+    "action": "attack",
+    "frame": 3,
+    "source": "infernal-blade-sovereign-v1\\up-fixed-generated.png",
+    "rect": {
+      "left": 1158,
+      "top": 439,
+      "width": 289,
+      "height": 250
+    },
+    "sourceFoot": [
+      75,
+      249
+    ],
+    "scale": 0.6037735849056604,
+    "offset": [
+      147,
+      120
+    ],
+    "sha256": "0133fe369331133594c00ffee86815029fe465b1fd2b2e1786b00ddf025c0dc0"
+  },
+  {
+    "id": "m14",
+    "dir": "down",
+    "action": "cast",
+    "frame": 0,
+    "source": "infernal-blade-sovereign-v1\\down-generated.png",
+    "rect": {
+      "left": 81,
+      "top": 694,
+      "width": 234,
+      "height": 365
+    },
+    "sourceFoot": [
+      174.5,
+      363
+    ],
+    "scale": 0.5031446540880503,
+    "offset": [
+      105,
+      87
+    ],
+    "sha256": "94eca4a6798f2347b18b1d31ecffead642df6aa75bc594731c3ca08bd7a6a5c7"
+  },
+  {
+    "id": "m14",
+    "dir": "down",
+    "action": "cast",
+    "frame": 1,
+    "source": "infernal-blade-sovereign-v1\\down-generated.png",
+    "rect": {
+      "left": 452,
+      "top": 682,
+      "width": 235,
+      "height": 372
+    },
+    "sourceFoot": [
+      117,
+      370
+    ],
+    "scale": 0.5031446540880503,
+    "offset": [
+      133,
+      84
+    ],
+    "sha256": "8a70d666bac2ff5a1b5e253132de6017b4ce19b19748b38bcf6811505a2074a1"
+  },
+  {
+    "id": "m14",
+    "dir": "right",
+    "action": "cast",
+    "frame": 0,
+    "source": "infernal-blade-sovereign-v1\\right-fixed-generated.png",
+    "rect": {
+      "left": 86,
+      "top": 690,
+      "width": 183,
+      "height": 346
+    },
+    "sourceFoot": [
+      117.5,
+      344
+    ],
+    "scale": 0.6451612903225806,
+    "offset": [
+      116,
+      48
+    ],
+    "sha256": "48064495f6d6a38a774f058bedd4adab6ba9977ccb87e1524db9d0dbe4ab9863"
+  },
+  {
+    "id": "m14",
+    "dir": "right",
+    "action": "cast",
+    "frame": 1,
+    "source": "infernal-blade-sovereign-v1\\right-fixed-generated.png",
+    "rect": {
+      "left": 434,
+      "top": 686,
+      "width": 197,
+      "height": 350
+    },
+    "sourceFoot": [
+      133.5,
+      348
+    ],
+    "scale": 0.6451612903225806,
+    "offset": [
+      106,
+      46
+    ],
+    "sha256": "53b8e4e1eb2f5b08b6ec17f3a79303a3b19e0eb79091f0caca7656bb210e5169"
+  },
+  {
+    "id": "m14",
+    "dir": "up",
+    "action": "cast",
+    "frame": 0,
+    "source": "infernal-blade-sovereign-v1\\up-fixed-generated.png",
+    "rect": {
+      "left": 83,
+      "top": 694,
+      "width": 215,
+      "height": 348
+    },
+    "sourceFoot": [
+      107,
+      347
+    ],
+    "scale": 0.6037735849056604,
+    "offset": [
+      127,
+      62
+    ],
+    "sha256": "629ed8bfd488ba6c78c83c6f787cd482ae3a6427e845365e3b7f74ca31a82555"
+  },
+  {
+    "id": "m14",
+    "dir": "up",
+    "action": "cast",
+    "frame": 1,
+    "source": "infernal-blade-sovereign-v1\\up-fixed-generated.png",
+    "rect": {
+      "left": 450,
+      "top": 690,
+      "width": 213,
+      "height": 353
+    },
+    "sourceFoot": [
+      106,
+      351
+    ],
+    "scale": 0.6037735849056604,
+    "offset": [
+      129,
+      59
+    ],
+    "sha256": "344a53b244d4f51645d425fe50fadcf450cdefe665dd2ea12d200fd8c1c24f57"
+  },
+  {
+    "id": "m14",
+    "dir": "down",
+    "action": "hit",
+    "frame": 0,
+    "source": "infernal-blade-sovereign-v1\\down-generated.png",
+    "rect": {
+      "left": 789,
+      "top": 765,
+      "width": 243,
+      "height": 285
+    },
+    "sourceFoot": [
+      121,
+      281
+    ],
+    "scale": 0.5031446540880503,
+    "offset": [
+      131,
+      129
+    ],
+    "sha256": "9e87fcb152184fc31df77d02fb528d5b0ef2e1e3cb04ed5f9edd9367e38c76e2"
+  },
+  {
+    "id": "m14",
+    "dir": "down",
+    "action": "hit",
+    "frame": 1,
+    "source": "infernal-blade-sovereign-v1\\down-generated.png",
+    "rect": {
+      "left": 1170,
+      "top": 766,
+      "width": 215,
+      "height": 281
+    },
+    "sourceFoot": [
+      107,
+      280
+    ],
+    "scale": 0.5031446540880503,
+    "offset": [
+      138,
+      129
+    ],
+    "sha256": "0071080286e75ced745f481414f25e0363d5995935f5ac9c1a362c1144eb4db5"
+  },
+  {
+    "id": "m14",
+    "dir": "right",
+    "action": "hit",
+    "frame": 0,
+    "source": "infernal-blade-sovereign-v1\\right-fixed-generated.png",
+    "rect": {
+      "left": 772,
+      "top": 798,
+      "width": 319,
+      "height": 240
+    },
+    "sourceFoot": [
+      87.5,
+      239
+    ],
+    "scale": 0.6451612903225806,
+    "offset": [
+      136,
+      116
+    ],
+    "sha256": "c28dbc9a47010817626b1c470ae383d319a8b3da237acf5ad808353e22da82b8"
+  },
+  {
+    "id": "m14",
+    "dir": "right",
+    "action": "hit",
+    "frame": 1,
+    "source": "infernal-blade-sovereign-v1\\right-fixed-generated.png",
+    "rect": {
+      "left": 1149,
+      "top": 797,
+      "width": 299,
+      "height": 237
+    },
+    "sourceFoot": [
+      64,
+      234
+    ],
+    "scale": 0.6451612903225806,
+    "offset": [
+      151,
+      119
+    ],
+    "sha256": "7abcbaa59e46c62b81478ecbde1ebc0666c2e90c434f051879253b89515bce88"
+  },
+  {
+    "id": "m14",
+    "dir": "up",
+    "action": "hit",
+    "frame": 0,
+    "source": "infernal-blade-sovereign-v1\\up-fixed-generated.png",
+    "rect": {
+      "left": 807,
+      "top": 804,
+      "width": 283,
+      "height": 232
+    },
+    "sourceFoot": [
+      65.5,
+      230
+    ],
+    "scale": 0.6037735849056604,
+    "offset": [
+      152,
+      131
+    ],
+    "sha256": "3125ed6749c0eca5c7b1e8b8149ee61e83c2cc075a57517cb23a844850673c3c"
+  },
+  {
+    "id": "m14",
+    "dir": "up",
+    "action": "hit",
+    "frame": 1,
+    "source": "infernal-blade-sovereign-v1\\up-fixed-generated.png",
+    "rect": {
+      "left": 1158,
+      "top": 785,
+      "width": 289,
+      "height": 259
+    },
+    "sourceFoot": [
+      71,
+      257
+    ],
+    "scale": 0.6037735849056604,
+    "offset": [
+      149,
+      115
+    ],
+    "sha256": "5190b350373f8074ce387b52af3061e2051589bffa888e0ba11f9b28c9575e4e"
+  },
+  {
+    "id": "m17",
+    "dir": "down",
+    "action": "walk",
+    "frame": 0,
+    "source": "thunder-black-commander-v1\\down-generated.png",
+    "rect": {
+      "left": 51,
+      "top": 48,
+      "width": 281,
+      "height": 289
+    },
+    "sourceFoot": [
+      173,
+      288
+    ],
+    "scale": 0.5555555555555556,
+    "offset": [
+      96,
+      110
+    ],
+    "sha256": "3c56c8afa0680a84c22be955eee81805383a1f3ff52d5ee12c877377489adf47"
+  },
+  {
+    "id": "m17",
+    "dir": "down",
+    "action": "walk",
+    "frame": 1,
+    "source": "thunder-black-commander-v1\\down-generated.png",
+    "rect": {
+      "left": 417,
+      "top": 48,
+      "width": 262,
+      "height": 289
+    },
+    "sourceFoot": [
+      116,
+      288
+    ],
+    "scale": 0.5555555555555556,
+    "offset": [
+      128,
+      110
+    ],
+    "sha256": "541d4547c3ac45471f795b376281d0898e221e07f08b0b65fdfa2bae7ce9ba41"
+  },
+  {
+    "id": "m17",
+    "dir": "down",
+    "action": "walk",
+    "frame": 2,
+    "source": "thunder-black-commander-v1\\down-generated.png",
+    "rect": {
+      "left": 755,
+      "top": 50,
+      "width": 307,
+      "height": 287
+    },
+    "sourceFoot": [
+      124.5,
+      286
+    ],
+    "scale": 0.5555555555555556,
+    "offset": [
+      123,
+      111
+    ],
+    "sha256": "0b285e4d8fd0051e0010bb94b60efbe038a1041de59a25cdf0e34b8f4ba3db8c"
+  },
+  {
+    "id": "m17",
+    "dir": "down",
+    "action": "walk",
+    "frame": 3,
+    "source": "thunder-black-commander-v1\\down-generated.png",
+    "rect": {
+      "left": 1112,
+      "top": 49,
+      "width": 291,
+      "height": 288
+    },
+    "sourceFoot": [
+      133.5,
+      287
+    ],
+    "scale": 0.5555555555555556,
+    "offset": [
+      118,
+      111
+    ],
+    "sha256": "2695db30de2540b2a84a732628d60693cff95e7c96e41b809a3b3b2938cb1218"
+  },
+  {
+    "id": "m17",
+    "dir": "right",
+    "action": "walk",
+    "frame": 0,
+    "source": "thunder-black-commander-v1\\right-generated.png",
+    "rect": {
+      "left": 67,
+      "top": 50,
+      "width": 273,
+      "height": 285
+    },
+    "sourceFoot": [
+      193.5,
+      283
+    ],
+    "scale": 0.5614035087719298,
+    "offset": [
+      83,
+      111
+    ],
+    "sha256": "95fa0caa1070fa47b1c943758042bd2570c235b68742c716867408d05f227a68"
+  },
+  {
+    "id": "m17",
+    "dir": "right",
+    "action": "walk",
+    "frame": 1,
+    "source": "thunder-black-commander-v1\\right-generated.png",
+    "rect": {
+      "left": 420,
+      "top": 52,
+      "width": 272,
+      "height": 286
+    },
+    "sourceFoot": [
+      146,
+      285
+    ],
+    "scale": 0.5614035087719298,
+    "offset": [
+      110,
+      110
+    ],
+    "sha256": "09a3e051a98dede098e85a93475a1897f605fac67b97eaa1443f58d9e2d3c7e9"
+  },
+  {
+    "id": "m17",
+    "dir": "right",
+    "action": "walk",
+    "frame": 2,
+    "source": "thunder-black-commander-v1\\right-generated.png",
+    "rect": {
+      "left": 778,
+      "top": 54,
+      "width": 275,
+      "height": 290
+    },
+    "sourceFoot": [
+      200,
+      288
+    ],
+    "scale": 0.5614035087719298,
+    "offset": [
+      80,
+      108
+    ],
+    "sha256": "fe65f8667eb5408719bfc40692c08c3f03e72c45ada42f5432c0624e9754c516"
+  },
+  {
+    "id": "m17",
+    "dir": "right",
+    "action": "walk",
+    "frame": 3,
+    "source": "thunder-black-commander-v1\\right-generated.png",
+    "rect": {
+      "left": 1138,
+      "top": 55,
+      "width": 283,
+      "height": 282
+    },
+    "sourceFoot": [
+      144,
+      281
+    ],
+    "scale": 0.5614035087719298,
+    "offset": [
+      111,
+      113
+    ],
+    "sha256": "08bc5d676f260367142b19107b381fc3d70f3b1f6c5406efbde48e1c9b047634"
+  },
+  {
+    "id": "m17",
+    "dir": "up",
+    "action": "walk",
+    "frame": 0,
+    "source": "thunder-black-commander-v1\\up-generated.png",
+    "rect": {
+      "left": 77,
+      "top": 54,
+      "width": 275,
+      "height": 284
+    },
+    "sourceFoot": [
+      136,
+      283
+    ],
+    "scale": 0.5633802816901409,
+    "offset": [
+      115,
+      111
+    ],
+    "sha256": "f1a5f4b7157e1bb092fd8fb7f57ca40f92390b8333fa988e694c4b167ab4a0ff"
+  },
+  {
+    "id": "m17",
+    "dir": "up",
+    "action": "walk",
+    "frame": 1,
+    "source": "thunder-black-commander-v1\\up-generated.png",
+    "rect": {
+      "left": 436,
+      "top": 55,
+      "width": 251,
+      "height": 278
+    },
+    "sourceFoot": [
+      129,
+      276
+    ],
+    "scale": 0.5633802816901409,
+    "offset": [
+      119,
+      115
+    ],
+    "sha256": "52918edcc94200f34d6053c12e59d1b8fd32ca552102ff18d8019db984690444"
+  },
+  {
+    "id": "m17",
+    "dir": "up",
+    "action": "walk",
+    "frame": 2,
+    "source": "thunder-black-commander-v1\\up-generated.png",
+    "rect": {
+      "left": 757,
+      "top": 55,
+      "width": 289,
+      "height": 285
+    },
+    "sourceFoot": [
+      142,
+      284
+    ],
+    "scale": 0.5633802816901409,
+    "offset": [
+      112,
+      110
+    ],
+    "sha256": "41fc8c41527ea4abc70b06b1e4842af7f5edb9c320a7b3424b2270f0c51f5be1"
+  },
+  {
+    "id": "m17",
+    "dir": "up",
+    "action": "walk",
+    "frame": 3,
+    "source": "thunder-black-commander-v1\\up-generated.png",
+    "rect": {
+      "left": 1122,
+      "top": 54,
+      "width": 283,
+      "height": 286
+    },
+    "sourceFoot": [
+      154.5,
+      285
+    ],
+    "scale": 0.5633802816901409,
+    "offset": [
+      105,
+      110
+    ],
+    "sha256": "dd1540b161fbdbe310f68d2d1f406aa27cabf3a7127f233ef91a903c05751fc1"
+  },
+  {
+    "id": "m17",
+    "dir": "down",
+    "action": "attack",
+    "frame": 0,
+    "source": "thunder-black-commander-v1\\down-generated.png",
+    "rect": {
+      "left": 57,
+      "top": 358,
+      "width": 277,
+      "height": 334
+    },
+    "sourceFoot": [
+      71,
+      333
+    ],
+    "scale": 0.5555555555555556,
+    "offset": [
+      153,
+      86
+    ],
+    "sha256": "7e5b3e4e0907c462f96d659f38a7370c78fc1aa0abbc1bc5e988af9065b9c578"
+  },
+  {
+    "id": "m17",
+    "dir": "down",
+    "action": "attack",
+    "frame": 1,
+    "source": "thunder-black-commander-v1\\down-generated.png",
+    "rect": {
+      "left": 411,
+      "top": 414,
+      "width": 271,
+      "height": 284
+    },
+    "sourceFoot": [
+      207,
+      283
+    ],
+    "scale": 0.5555555555555556,
+    "offset": [
+      77,
+      113
+    ],
+    "sha256": "a67f5a72b54be4b93f5e18e0860043bbe367247d399211cbee408a48c36ff1a0"
+  },
+  {
+    "id": "m17",
+    "dir": "down",
+    "action": "attack",
+    "frame": 2,
+    "source": "thunder-black-commander-v1\\down-generated.png",
+    "rect": {
+      "left": 745,
+      "top": 418,
+      "width": 323,
+      "height": 252
+    },
+    "sourceFoot": [
+      165,
+      242
+    ],
+    "scale": 0.5555555555555556,
+    "offset": [
+      100,
+      136
+    ],
+    "sha256": "6ac9ea5741c72668caf4c6da427f8060aa7bda518572a2cd648cf92d13d67c60"
+  },
+  {
+    "id": "m17",
+    "dir": "down",
+    "action": "attack",
+    "frame": 3,
+    "source": "thunder-black-commander-v1\\down-generated.png",
+    "rect": {
+      "left": 1100,
+      "top": 424,
+      "width": 303,
+      "height": 268
+    },
+    "sourceFoot": [
+      128,
+      267
+    ],
+    "scale": 0.5555555555555556,
+    "offset": [
+      122,
+      122
+    ],
+    "sha256": "d439e7caadb2dd8ab412dce31e626a5aaa1e2f0a56c605bbb71e0e9dfd1f2f23"
+  },
+  {
+    "id": "m17",
+    "dir": "right",
+    "action": "attack",
+    "frame": 0,
+    "source": "thunder-black-commander-v1\\right-generated.png",
+    "rect": {
+      "left": 58,
+      "top": 378,
+      "width": 261,
+      "height": 325
+    },
+    "sourceFoot": [
+      58.5,
+      324
+    ],
+    "scale": 0.5614035087719298,
+    "offset": [
+      159,
+      89
+    ],
+    "sha256": "ace8aeeef5da30ae2f9c49689f831964bb26898550fe19a57d2fad643214f08e"
+  },
+  {
+    "id": "m17",
+    "dir": "right",
+    "action": "attack",
+    "frame": 1,
+    "source": "thunder-black-commander-v1\\right-generated.png",
+    "rect": {
+      "left": 422,
+      "top": 440,
+      "width": 253,
+      "height": 259
+    },
+    "sourceFoot": [
+      126,
+      257
+    ],
+    "scale": 0.5614035087719298,
+    "offset": [
+      121,
+      126
+    ],
+    "sha256": "f755f615ce887089e84c36b4620450214e73c4dfe60b4dbe2c6b762abf05ff22"
+  },
+  {
+    "id": "m17",
+    "dir": "right",
+    "action": "attack",
+    "frame": 2,
+    "source": "thunder-black-commander-v1\\right-generated.png",
+    "rect": {
+      "left": 742,
+      "top": 463,
+      "width": 353,
+      "height": 236
+    },
+    "sourceFoot": [
+      259,
+      235
+    ],
+    "scale": 0.5614035087719298,
+    "offset": [
+      47,
+      138
+    ],
+    "sha256": "2ed8014efbc3ee0cdf334df4e4fb685089c5ffb9a7169619da962b42ef989b3b"
+  },
+  {
+    "id": "m17",
+    "dir": "right",
+    "action": "attack",
+    "frame": 3,
+    "source": "thunder-black-commander-v1\\right-generated.png",
+    "rect": {
+      "left": 1133,
+      "top": 443,
+      "width": 283,
+      "height": 262
+    },
+    "sourceFoot": [
+      99,
+      260
+    ],
+    "scale": 0.5614035087719298,
+    "offset": [
+      137,
+      124
+    ],
+    "sha256": "643b049690ac59651621ea6668f7aeff7a5cfb8848b341de6476d60e5d9d44d5"
+  },
+  {
+    "id": "m17",
+    "dir": "up",
+    "action": "attack",
+    "frame": 0,
+    "source": "thunder-black-commander-v1\\up-generated.png",
+    "rect": {
+      "left": 58,
+      "top": 371,
+      "width": 262,
+      "height": 322
+    },
+    "sourceFoot": [
+      91.5,
+      321
+    ],
+    "scale": 0.5633802816901409,
+    "offset": [
+      141,
+      90
+    ],
+    "sha256": "1cb6c4beeea120b58ffeb4c671a723d748b9f506092f343eccd577c6fd1e4ff3"
+  },
+  {
+    "id": "m17",
+    "dir": "up",
+    "action": "attack",
+    "frame": 1,
+    "source": "thunder-black-commander-v1\\up-generated.png",
+    "rect": {
+      "left": 424,
+      "top": 391,
+      "width": 260,
+      "height": 296
+    },
+    "sourceFoot": [
+      201.5,
+      292
+    ],
+    "scale": 0.5633802816901409,
+    "offset": [
+      78,
+      107
+    ],
+    "sha256": "d3c4e0adf4e1cdf6f203bc1cf3994ffccceac5587d23d78e3c738dc830e90f8d"
+  },
+  {
+    "id": "m17",
+    "dir": "up",
+    "action": "attack",
+    "frame": 2,
+    "source": "thunder-black-commander-v1\\up-generated.png",
+    "rect": {
+      "left": 768,
+      "top": 438,
+      "width": 331,
+      "height": 254
+    },
+    "sourceFoot": [
+      74,
+      252
+    ],
+    "scale": 0.5633802816901409,
+    "offset": [
+      151,
+      128
+    ],
+    "sha256": "78c9194ca9543e08d7bc49a56dacff1e38c5eb0b6de59bc4c3335f46a0e3a541"
+  },
+  {
+    "id": "m17",
+    "dir": "up",
+    "action": "attack",
+    "frame": 3,
+    "source": "thunder-black-commander-v1\\up-generated.png",
+    "rect": {
+      "left": 1134,
+      "top": 438,
+      "width": 297,
+      "height": 247
+    },
+    "sourceFoot": [
+      71.5,
+      246
+    ],
+    "scale": 0.5633802816901409,
+    "offset": [
+      152,
+      132
+    ],
+    "sha256": "a7bfebc1ecab1963377dd3b9f4c66b8a5502f597012090909ad31baa798aa636"
+  },
+  {
+    "id": "m17",
+    "dir": "down",
+    "action": "cast",
+    "frame": 0,
+    "source": "thunder-black-commander-v1\\down-generated.png",
+    "rect": {
+      "left": 70,
+      "top": 677,
+      "width": 272,
+      "height": 368
+    },
+    "sourceFoot": [
+      72,
+      367
+    ],
+    "scale": 0.5555555555555556,
+    "offset": [
+      152,
+      67
+    ],
+    "sha256": "e0e7ba48241e5c8465535b0c5dee43197f29923d2afe892e876960045fabf16d"
+  },
+  {
+    "id": "m17",
+    "dir": "down",
+    "action": "cast",
+    "frame": 1,
+    "source": "thunder-black-commander-v1\\down-generated.png",
+    "rect": {
+      "left": 432,
+      "top": 702,
+      "width": 231,
+      "height": 344
+    },
+    "sourceFoot": [
+      115,
+      342
+    ],
+    "scale": 0.5555555555555556,
+    "offset": [
+      129,
+      80
+    ],
+    "sha256": "d14cada1b6a4614b1af6433cfe026b078edab14710d3e0f63114ddc7fc055e07"
+  },
+  {
+    "id": "m17",
+    "dir": "right",
+    "action": "cast",
+    "frame": 0,
+    "source": "thunder-black-commander-v1\\right-generated.png",
+    "rect": {
+      "left": 70,
+      "top": 704,
+      "width": 253,
+      "height": 343
+    },
+    "sourceFoot": [
+      125.5,
+      342
+    ],
+    "scale": 0.5614035087719298,
+    "offset": [
+      122,
+      80
+    ],
+    "sha256": "bccc20d0dc392238f34db2c9ca9de8d30f472ffd63b48666ddf9a84c93b97f6d"
+  },
+  {
+    "id": "m17",
+    "dir": "right",
+    "action": "cast",
+    "frame": 1,
+    "source": "thunder-black-commander-v1\\right-generated.png",
+    "rect": {
+      "left": 441,
+      "top": 730,
+      "width": 219,
+      "height": 322
+    },
+    "sourceFoot": [
+      58,
+      320
+    ],
+    "scale": 0.5614035087719298,
+    "offset": [
+      159,
+      91
+    ],
+    "sha256": "02de5ec846a73c8282c77d891c99ad613533d0c6b4070b2424237028f2cb2263"
+  },
+  {
+    "id": "m17",
+    "dir": "up",
+    "action": "cast",
+    "frame": 0,
+    "source": "thunder-black-commander-v1\\up-generated.png",
+    "rect": {
+      "left": 96,
+      "top": 698,
+      "width": 254,
+      "height": 338
+    },
+    "sourceFoot": [
+      125.5,
+      337
+    ],
+    "scale": 0.5633802816901409,
+    "offset": [
+      121,
+      81
+    ],
+    "sha256": "1fc3ff6c40a91a32126625e74f0775758efcaaa30b7653fa202f048c2b31ac2c"
+  },
+  {
+    "id": "m17",
+    "dir": "up",
+    "action": "cast",
+    "frame": 1,
+    "source": "thunder-black-commander-v1\\up-generated.png",
+    "rect": {
+      "left": 432,
+      "top": 699,
+      "width": 255,
+      "height": 340
+    },
+    "sourceFoot": [
+      129,
+      339
+    ],
+    "scale": 0.5633802816901409,
+    "offset": [
+      119,
+      80
+    ],
+    "sha256": "a2dd7cc834bb26ea2082d6affdb70893433c8be6ba0e30a3bd21ed28d3d1fe6d"
+  },
+  {
+    "id": "m17",
+    "dir": "down",
+    "action": "hit",
+    "frame": 0,
+    "source": "thunder-black-commander-v1\\down-generated.png",
+    "rect": {
+      "left": 779,
+      "top": 784,
+      "width": 267,
+      "height": 259
+    },
+    "sourceFoot": [
+      203.5,
+      248
+    ],
+    "scale": 0.5555555555555556,
+    "offset": [
+      79,
+      132
+    ],
+    "sha256": "e5843decc4db4910732e38ae803851c54dedf52ef408853380c8a50c5d0a8016"
+  },
+  {
+    "id": "m17",
+    "dir": "down",
+    "action": "hit",
+    "frame": 1,
+    "source": "thunder-black-commander-v1\\down-generated.png",
+    "rect": {
+      "left": 1112,
+      "top": 768,
+      "width": 287,
+      "height": 271
+    },
+    "sourceFoot": [
+      104.5,
+      269
+    ],
+    "scale": 0.5555555555555556,
+    "offset": [
+      134,
+      121
+    ],
+    "sha256": "96685e5a379b8c63b690cf83ce82948675372f1e2b1c57cccef628dd9221674c"
+  },
+  {
+    "id": "m17",
+    "dir": "right",
+    "action": "hit",
+    "frame": 0,
+    "source": "thunder-black-commander-v1\\right-generated.png",
+    "rect": {
+      "left": 774,
+      "top": 804,
+      "width": 249,
+      "height": 244
+    },
+    "sourceFoot": [
+      85,
+      243
+    ],
+    "scale": 0.5614035087719298,
+    "offset": [
+      145,
+      134
+    ],
+    "sha256": "9016f34c85c6f98cb0fba3a52de6b05601e1ba703902631ccfc8600be1212416"
+  },
+  {
+    "id": "m17",
+    "dir": "right",
+    "action": "hit",
+    "frame": 1,
+    "source": "thunder-black-commander-v1\\right-generated.png",
+    "rect": {
+      "left": 1154,
+      "top": 778,
+      "width": 240,
+      "height": 269
+    },
+    "sourceFoot": [
+      82.5,
+      268
+    ],
+    "scale": 0.5614035087719298,
+    "offset": [
+      146,
+      120
+    ],
+    "sha256": "a2f029ac07af0b9fb0964d5753eb124cc21b1c7c8fd433d32a7e12c7e31d0021"
+  },
+  {
+    "id": "m17",
+    "dir": "up",
+    "action": "hit",
+    "frame": 0,
+    "source": "thunder-black-commander-v1\\up-generated.png",
+    "rect": {
+      "left": 788,
+      "top": 791,
+      "width": 270,
+      "height": 251
+    },
+    "sourceFoot": [
+      191,
+      250
+    ],
+    "scale": 0.5633802816901409,
+    "offset": [
+      84,
+      129
+    ],
+    "sha256": "e245175e4081eab06376fff8be7b495b360b1ffaf7b74b7e3070a9c196c1ba55"
+  },
+  {
+    "id": "m17",
+    "dir": "up",
+    "action": "hit",
+    "frame": 1,
+    "source": "thunder-black-commander-v1\\up-generated.png",
+    "rect": {
+      "left": 1145,
+      "top": 781,
+      "width": 266,
+      "height": 255
+    },
+    "sourceFoot": [
+      132.5,
+      254
+    ],
+    "scale": 0.5633802816901409,
+    "offset": [
+      117,
+      127
+    ],
+    "sha256": "8e3ec44f0418c8625cc3ebbb2bfb11f6f2c4a100a4f20c975d5cef7bd0e3f0a8"
+  },
+  {
+    "id": "m18",
+    "dir": "down",
+    "action": "walk",
+    "frame": 0,
+    "source": "sacred-judgment-sword-saint-v1\\down-generated.png",
+    "rect": {
+      "left": 51,
+      "top": 12,
+      "width": 270,
+      "height": 348
+    },
+    "sourceFoot": [
+      182,
+      347
+    ],
+    "scale": 0.4624277456647399,
+    "offset": [
+      108,
+      110
+    ],
+    "sha256": "ef7310a36a161361fac14604edccd0ecf857a048b0c3717d0b95fa3863677ae5"
+  },
+  {
+    "id": "m18",
+    "dir": "down",
+    "action": "walk",
+    "frame": 1,
+    "source": "sacred-judgment-sword-saint-v1\\down-generated.png",
+    "rect": {
+      "left": 423,
+      "top": 13,
+      "width": 247,
+      "height": 345
+    },
+    "sourceFoot": [
+      104,
+      344
+    ],
+    "scale": 0.4624277456647399,
+    "offset": [
+      145,
+      111
+    ],
+    "sha256": "aae335c29dd9a7219eb66ab2e0197efe3bffa292e66114250e33d923fb82b29e"
+  },
+  {
+    "id": "m18",
+    "dir": "down",
+    "action": "walk",
+    "frame": 2,
+    "source": "sacred-judgment-sword-saint-v1\\down-generated.png",
+    "rect": {
+      "left": 755,
+      "top": 9,
+      "width": 296,
+      "height": 352
+    },
+    "sourceFoot": [
+      135,
+      351
+    ],
+    "scale": 0.4624277456647399,
+    "offset": [
+      130,
+      108
+    ],
+    "sha256": "5aa6ace47a2e8f0354c47829b9fed13d6dc0ea704313d5f947cac26f7c585e74"
+  },
+  {
+    "id": "m18",
+    "dir": "down",
+    "action": "walk",
+    "frame": 3,
+    "source": "sacred-judgment-sword-saint-v1\\down-generated.png",
+    "rect": {
+      "left": 1140,
+      "top": 12,
+      "width": 273,
+      "height": 347
+    },
+    "sourceFoot": [
+      151.5,
+      346
+    ],
+    "scale": 0.4624277456647399,
+    "offset": [
+      123,
+      110
+    ],
+    "sha256": "fa9f2bb92cae2551a9f1ca17bdb8daccadfb9068fc84cf5b031fd0655bbb9669"
+  },
+  {
+    "id": "m18",
+    "dir": "right",
+    "action": "walk",
+    "frame": 0,
+    "source": "sacred-judgment-sword-saint-v1\\right-generated.png",
+    "rect": {
+      "left": 41,
+      "top": 20,
+      "width": 311,
+      "height": 324
+    },
+    "sourceFoot": [
+      157,
+      322
+    ],
+    "scale": 0.49382716049382713,
+    "offset": [
+      114,
+      111
+    ],
+    "sha256": "1f0bd61f8f33c8e65dd11e32fd3bb6b9c2e73ed777cb1abb5a985a7cfef06bc5"
+  },
+  {
+    "id": "m18",
+    "dir": "right",
+    "action": "walk",
+    "frame": 1,
+    "source": "sacred-judgment-sword-saint-v1\\right-generated.png",
+    "rect": {
+      "left": 413,
+      "top": 21,
+      "width": 303,
+      "height": 327
+    },
+    "sourceFoot": [
+      158,
+      326
+    ],
+    "scale": 0.49382716049382713,
+    "offset": [
+      114,
+      109
+    ],
+    "sha256": "930df568a99b037414f90fe2507ca3d2313fb646210f05bfc07093eab05dbbea"
+  },
+  {
+    "id": "m18",
+    "dir": "right",
+    "action": "walk",
+    "frame": 2,
+    "source": "sacred-judgment-sword-saint-v1\\right-generated.png",
+    "rect": {
+      "left": 766,
+      "top": 20,
+      "width": 310,
+      "height": 325
+    },
+    "sourceFoot": [
+      155,
+      324
+    ],
+    "scale": 0.49382716049382713,
+    "offset": [
+      115,
+      110
+    ],
+    "sha256": "764c1d345861d38bc721bb4b8969e19f19c23f5cc8095d8f4479cbca97c0810c"
+  },
+  {
+    "id": "m18",
+    "dir": "right",
+    "action": "walk",
+    "frame": 3,
+    "source": "sacred-judgment-sword-saint-v1\\right-generated.png",
+    "rect": {
+      "left": 1136,
+      "top": 20,
+      "width": 296,
+      "height": 325
+    },
+    "sourceFoot": [
+      137.5,
+      324
+    ],
+    "scale": 0.49382716049382713,
+    "offset": [
+      124,
+      110
+    ],
+    "sha256": "6475d352e839d7f31d1efdd426fb85f908239899a6412ad7a7ab372cc7f14153"
+  },
+  {
+    "id": "m18",
+    "dir": "up",
+    "action": "walk",
+    "frame": 0,
+    "source": "sacred-judgment-sword-saint-v1\\up-generated.png",
+    "rect": {
+      "left": 64,
+      "top": 18,
+      "width": 303,
+      "height": 338
+    },
+    "sourceFoot": [
+      153.5,
+      337
+    ],
+    "scale": 0.47337278106508873,
+    "offset": [
+      119,
+      110
+    ],
+    "sha256": "658f3473193af8fca515a761b8966a6a78a01a26906f8407d560bc2ab708617f"
+  },
+  {
+    "id": "m18",
+    "dir": "up",
+    "action": "walk",
+    "frame": 1,
+    "source": "sacred-judgment-sword-saint-v1\\up-generated.png",
+    "rect": {
+      "left": 437,
+      "top": 22,
+      "width": 275,
+      "height": 339
+    },
+    "sourceFoot": [
+      143.5,
+      338
+    ],
+    "scale": 0.47337278106508873,
+    "offset": [
+      124,
+      110
+    ],
+    "sha256": "6fd17c6bb82ca05b9706ef6a0932ffb77a8276f2175232131ae846fe551cefdd"
+  },
+  {
+    "id": "m18",
+    "dir": "up",
+    "action": "walk",
+    "frame": 2,
+    "source": "sacred-judgment-sword-saint-v1\\up-generated.png",
+    "rect": {
+      "left": 787,
+      "top": 18,
+      "width": 289,
+      "height": 335
+    },
+    "sourceFoot": [
+      156.5,
+      334
+    ],
+    "scale": 0.47337278106508873,
+    "offset": [
+      118,
+      112
+    ],
+    "sha256": "c89f394a17755493f98cd89f86fe6449e5093448e660d9e0011fe8cf855ade7e"
+  },
+  {
+    "id": "m18",
+    "dir": "up",
+    "action": "walk",
+    "frame": 3,
+    "source": "sacred-judgment-sword-saint-v1\\up-generated.png",
+    "rect": {
+      "left": 1153,
+      "top": 17,
+      "width": 283,
+      "height": 342
+    },
+    "sourceFoot": [
+      150.5,
+      341
+    ],
+    "scale": 0.47337278106508873,
+    "offset": [
+      121,
+      109
+    ],
+    "sha256": "c0805aa95f71e53389a387a27b03935c4ca73122e484293fcb2f0fc317104897"
+  },
+  {
+    "id": "m18",
+    "dir": "down",
+    "action": "attack",
+    "frame": 0,
+    "source": "sacred-judgment-sword-saint-v1\\down-generated.png",
+    "rect": {
+      "left": 48,
+      "top": 373,
+      "width": 284,
+      "height": 330
+    },
+    "sourceFoot": [
+      103,
+      329
+    ],
+    "scale": 0.4624277456647399,
+    "offset": [
+      144,
+      118
+    ],
+    "sha256": "7c0298fa759bfd3cbeea279497ac0810b851b35288843b4bd1b2eb79a498dacc"
+  },
+  {
+    "id": "m18",
+    "dir": "down",
+    "action": "attack",
+    "frame": 1,
+    "source": "sacred-judgment-sword-saint-v1\\down-generated.png",
+    "rect": {
+      "left": 403,
+      "top": 379,
+      "width": 273,
+      "height": 325
+    },
+    "sourceFoot": [
+      63.5,
+      323
+    ],
+    "scale": 0.4624277456647399,
+    "offset": [
+      163,
+      121
+    ],
+    "sha256": "d87cb783becff59018cf685b198f8b3ada021ffcb1526f6de0664b738ee6b2cd"
+  },
+  {
+    "id": "m18",
+    "dir": "down",
+    "action": "attack",
+    "frame": 2,
+    "source": "sacred-judgment-sword-saint-v1\\down-generated.png",
+    "rect": {
+      "left": 741,
+      "top": 382,
+      "width": 331,
+      "height": 307
+    },
+    "sourceFoot": [
+      244.5,
+      291
+    ],
+    "scale": 0.4624277456647399,
+    "offset": [
+      79,
+      136
+    ],
+    "sha256": "e1165681245584cb9940dcfab18ca5d9980258a48465c932e372227c17937745"
+  },
+  {
+    "id": "m18",
+    "dir": "down",
+    "action": "attack",
+    "frame": 3,
+    "source": "sacred-judgment-sword-saint-v1\\down-generated.png",
+    "rect": {
+      "left": 1104,
+      "top": 373,
+      "width": 307,
+      "height": 316
+    },
+    "sourceFoot": [
+      113.5,
+      315
+    ],
+    "scale": 0.4624277456647399,
+    "offset": [
+      140,
+      125
+    ],
+    "sha256": "09a7513c6ea8404f120c13cb804da9319d98eae0df622150a35feac1ee46a663"
+  },
+  {
+    "id": "m18",
+    "dir": "right",
+    "action": "attack",
+    "frame": 0,
+    "source": "sacred-judgment-sword-saint-v1\\right-generated.png",
+    "rect": {
+      "left": 35,
+      "top": 369,
+      "width": 299,
+      "height": 330
+    },
+    "sourceFoot": [
+      67.5,
+      329
+    ],
+    "scale": 0.49382716049382713,
+    "offset": [
+      159,
+      109
+    ],
+    "sha256": "05c825054ac612be691b8a976215956774a4a97ca5810ec3b984e46eb38ec648"
+  },
+  {
+    "id": "m18",
+    "dir": "right",
+    "action": "attack",
+    "frame": 1,
+    "source": "sacred-judgment-sword-saint-v1\\right-generated.png",
+    "rect": {
+      "left": 412,
+      "top": 385,
+      "width": 279,
+      "height": 315
+    },
+    "sourceFoot": [
+      71.5,
+      314
+    ],
+    "scale": 0.49382716049382713,
+    "offset": [
+      157,
+      115
+    ],
+    "sha256": "d64ccdeccf68050a891709643f6fdac2310c0dd9873a3e08da62005210cbebc2"
+  },
+  {
+    "id": "m18",
+    "dir": "right",
+    "action": "attack",
+    "frame": 2,
+    "source": "sacred-judgment-sword-saint-v1\\right-generated.png",
+    "rect": {
+      "left": 757,
+      "top": 396,
+      "width": 411,
+      "height": 301
+    },
+    "sourceFoot": [
+      273,
+      292
+    ],
+    "scale": 0.49382716049382713,
+    "offset": [
+      57,
+      126
+    ],
+    "sha256": "54884e59649ded4c120555c2984a7f743af646bb32e291a8eebc76aac3bb6bd6"
+  },
+  {
+    "id": "m18",
+    "dir": "right",
+    "action": "attack",
+    "frame": 3,
+    "source": "sacred-judgment-sword-saint-v1\\right-generated.png",
+    "rect": {
+      "left": 1175,
+      "top": 390,
+      "width": 243,
+      "height": 309
+    },
+    "sourceFoot": [
+      111.5,
+      307
+    ],
+    "scale": 0.49382716049382713,
+    "offset": [
+      137,
+      119
+    ],
+    "sha256": "31a1a5830309c80a0970652a41d43b08b84016fb8669de8920d72d491710d93e"
+  },
+  {
+    "id": "m18",
+    "dir": "up",
+    "action": "attack",
+    "frame": 0,
+    "source": "sacred-judgment-sword-saint-v1\\up-generated.png",
+    "rect": {
+      "left": 56,
+      "top": 370,
+      "width": 272,
+      "height": 320
+    },
+    "sourceFoot": [
+      61,
+      319
+    ],
+    "scale": 0.47337278106508873,
+    "offset": [
+      163,
+      120
+    ],
+    "sha256": "09fa9aa28aa8dcafe83a4b591e1ec0781d46d33f1457500ff7f323ce4a818afe"
+  },
+  {
+    "id": "m18",
+    "dir": "up",
+    "action": "attack",
+    "frame": 1,
+    "source": "sacred-judgment-sword-saint-v1\\up-generated.png",
+    "rect": {
+      "left": 410,
+      "top": 382,
+      "width": 293,
+      "height": 303
+    },
+    "sourceFoot": [
+      74,
+      303
+    ],
+    "scale": 0.47337278106508873,
+    "offset": [
+      158,
+      127
+    ],
+    "sha256": "c18a34babc57e4cfd0d484746cfeebdc96eff2581b2e2ceff3bfda4a8e1676a5"
+  },
+  {
+    "id": "m18",
+    "dir": "up",
+    "action": "attack",
+    "frame": 2,
+    "source": "sacred-judgment-sword-saint-v1\\up-generated.png",
+    "rect": {
+      "left": 745,
+      "top": 383,
+      "width": 418,
+      "height": 313
+    },
+    "sourceFoot": [
+      204.5,
+      312
+    ],
+    "scale": 0.47337278106508873,
+    "offset": [
+      95,
+      123
+    ],
+    "sha256": "1b02ec9e4f5bb9de8ed906c291780b1b7137472ebee6527c9f0205641455d885"
+  },
+  {
+    "id": "m18",
+    "dir": "up",
+    "action": "attack",
+    "frame": 3,
+    "source": "sacred-judgment-sword-saint-v1\\up-generated.png",
+    "rect": {
+      "left": 1132,
+      "top": 379,
+      "width": 299,
+      "height": 313
+    },
+    "sourceFoot": [
+      149,
+      310
+    ],
+    "scale": 0.47337278106508873,
+    "offset": [
+      121,
+      124
+    ],
+    "sha256": "2988984e473024781453385cea825287a9762886d6ccd2dcfd7e1e116f56f666"
+  },
+  {
+    "id": "m18",
+    "dir": "down",
+    "action": "cast",
+    "frame": 0,
+    "source": "sacred-judgment-sword-saint-v1\\down-generated.png",
+    "rect": {
+      "left": 85,
+      "top": 694,
+      "width": 233,
+      "height": 371
+    },
+    "sourceFoot": [
+      116,
+      370
+    ],
+    "scale": 0.4624277456647399,
+    "offset": [
+      139,
+      99
+    ],
+    "sha256": "c17e3cbcbfd978577be7c80964701fc4d570f4688a8c96b273ec4c2cc7d87d4b"
+  },
+  {
+    "id": "m18",
+    "dir": "down",
+    "action": "cast",
+    "frame": 1,
+    "source": "sacred-judgment-sword-saint-v1\\down-generated.png",
+    "rect": {
+      "left": 422,
+      "top": 691,
+      "width": 243,
+      "height": 366
+    },
+    "sourceFoot": [
+      121.5,
+      365
+    ],
+    "scale": 0.4624277456647399,
+    "offset": [
+      136,
+      102
+    ],
+    "sha256": "e475beb1469dcdb12b2c126de5a6782a8a47cea6e1df9c528e70323bdf774872"
+  },
+  {
+    "id": "m18",
+    "dir": "right",
+    "action": "cast",
+    "frame": 0,
+    "source": "sacred-judgment-sword-saint-v1\\right-generated.png",
+    "rect": {
+      "left": 51,
+      "top": 683,
+      "width": 246,
+      "height": 384
+    },
+    "sourceFoot": [
+      129.5,
+      382
+    ],
+    "scale": 0.49382716049382713,
+    "offset": [
+      129,
+      82
+    ],
+    "sha256": "eaf4b743494e0935bd256c742f119da4613ed0f7b03d0b868764e5742daf62ef"
+  },
+  {
+    "id": "m18",
+    "dir": "right",
+    "action": "cast",
+    "frame": 1,
+    "source": "sacred-judgment-sword-saint-v1\\right-generated.png",
+    "rect": {
+      "left": 414,
+      "top": 689,
+      "width": 248,
+      "height": 377
+    },
+    "sourceFoot": [
+      131,
+      376
+    ],
+    "scale": 0.49382716049382713,
+    "offset": [
+      127,
+      85
+    ],
+    "sha256": "70d13cd2193c0c3131381080928624a9a997013728bcce7cc4a51cea46f2086a"
+  },
+  {
+    "id": "m18",
+    "dir": "up",
+    "action": "cast",
+    "frame": 0,
+    "source": "sacred-judgment-sword-saint-v1\\up-generated.png",
+    "rect": {
+      "left": 65,
+      "top": 689,
+      "width": 249,
+      "height": 367
+    },
+    "sourceFoot": [
+      135,
+      366
+    ],
+    "scale": 0.47337278106508873,
+    "offset": [
+      128,
+      98
+    ],
+    "sha256": "07b6859c3a2c32c10aec00c1a7fccc01952b399b2160165a1c9f5fc15a5e1b13"
+  },
+  {
+    "id": "m18",
+    "dir": "up",
+    "action": "cast",
+    "frame": 1,
+    "source": "sacred-judgment-sword-saint-v1\\up-generated.png",
+    "rect": {
+      "left": 415,
+      "top": 691,
+      "width": 265,
+      "height": 365
+    },
+    "sourceFoot": [
+      125,
+      364
+    ],
+    "scale": 0.47337278106508873,
+    "offset": [
+      133,
+      99
+    ],
+    "sha256": "4549241dc5188a684b5e903ffa3ea05e527aa7571b7ed2d5e520929d27c7f517"
+  },
+  {
+    "id": "m18",
+    "dir": "down",
+    "action": "hit",
+    "frame": 0,
+    "source": "sacred-judgment-sword-saint-v1\\down-generated.png",
+    "rect": {
+      "left": 767,
+      "top": 748,
+      "width": 268,
+      "height": 292
+    },
+    "sourceFoot": [
+      73,
+      290
+    ],
+    "scale": 0.4624277456647399,
+    "offset": [
+      158,
+      136
+    ],
+    "sha256": "8f73b304e975665985bb6944db09e9d044e7ffb8b85caea6d53edb59251a7bb6"
+  },
+  {
+    "id": "m18",
+    "dir": "down",
+    "action": "hit",
+    "frame": 1,
+    "source": "sacred-judgment-sword-saint-v1\\down-generated.png",
+    "rect": {
+      "left": 1145,
+      "top": 712,
+      "width": 266,
+      "height": 338
+    },
+    "sourceFoot": [
+      101,
+      337
+    ],
+    "scale": 0.4624277456647399,
+    "offset": [
+      146,
+      115
+    ],
+    "sha256": "cc53a45d96037491b7e603cff0264b35b97ec73beb92b000488d3fc6cb36b8d6"
+  },
+  {
+    "id": "m18",
+    "dir": "right",
+    "action": "hit",
+    "frame": 0,
+    "source": "sacred-judgment-sword-saint-v1\\right-generated.png",
+    "rect": {
+      "left": 763,
+      "top": 755,
+      "width": 245,
+      "height": 311
+    },
+    "sourceFoot": [
+      114.5,
+      310
+    ],
+    "scale": 0.49382716049382713,
+    "offset": [
+      135,
+      117
+    ],
+    "sha256": "0140eeaa04f18a2866b20eade0005abeafa80cdb5e1e8158a8c24b455aeeaf94"
+  },
+  {
+    "id": "m18",
+    "dir": "right",
+    "action": "hit",
+    "frame": 1,
+    "source": "sacred-judgment-sword-saint-v1\\right-generated.png",
+    "rect": {
+      "left": 1139,
+      "top": 748,
+      "width": 279,
+      "height": 318
+    },
+    "sourceFoot": [
+      89.5,
+      317
+    ],
+    "scale": 0.49382716049382713,
+    "offset": [
+      148,
+      114
+    ],
+    "sha256": "42cffc526e108eb2d553afe9972e2eead262edb3d81a9d632b49e55ca1e65ecc"
+  },
+  {
+    "id": "m18",
+    "dir": "up",
+    "action": "hit",
+    "frame": 0,
+    "source": "sacred-judgment-sword-saint-v1\\up-generated.png",
+    "rect": {
+      "left": 752,
+      "top": 761,
+      "width": 322,
+      "height": 276
+    },
+    "sourceFoot": [
+      146,
+      269
+    ],
+    "scale": 0.47337278106508873,
+    "offset": [
+      123,
+      143
+    ],
+    "sha256": "8f0bd1bdb10bcb165e1fc82f1e8b632e2bfb17b02b58b7645388a90189413998"
+  },
+  {
+    "id": "m18",
+    "dir": "up",
+    "action": "hit",
+    "frame": 1,
+    "source": "sacred-judgment-sword-saint-v1\\up-generated.png",
+    "rect": {
+      "left": 1155,
+      "top": 729,
+      "width": 277,
+      "height": 326
+    },
+    "sourceFoot": [
+      153.5,
+      324
+    ],
+    "scale": 0.47337278106508873,
+    "offset": [
+      119,
+      117
+    ],
+    "sha256": "18352fe779c62c790f2d4ed704495fe63e3fa392bb0d69ee90089f980b2ed7f8"
+  },
+  {
+    "id": "m23",
+    "dir": "down",
+    "action": "walk",
+    "frame": 0,
+    "source": "lava-bone-brawler-v1\\down-generated.png",
+    "rect": {
+      "left": 76,
+      "top": 23,
+      "width": 243,
+      "height": 336
+    },
+    "sourceFoot": [
+      136,
+      335
+    ],
+    "scale": 0.47477744807121663,
+    "offset": [
+      127,
+      111
+    ],
+    "sha256": "31d1500e908c0490ae5b670404fcce65bf6a94186b71a5697537b5b60e9c09ba"
+  },
+  {
+    "id": "m23",
+    "dir": "down",
+    "action": "walk",
+    "frame": 1,
+    "source": "lava-bone-brawler-v1\\down-generated.png",
+    "rect": {
+      "left": 413,
+      "top": 21,
+      "width": 252,
+      "height": 340
+    },
+    "sourceFoot": [
+      116,
+      338
+    ],
+    "scale": 0.47477744807121663,
+    "offset": [
+      137,
+      110
+    ],
+    "sha256": "8e65f5558917cd532ec90e45095ad0e2cb61e890db78d4f525d4fc7ab2d89bf0"
+  },
+  {
+    "id": "m23",
+    "dir": "down",
+    "action": "walk",
+    "frame": 2,
+    "source": "lava-bone-brawler-v1\\down-generated.png",
+    "rect": {
+      "left": 780,
+      "top": 26,
+      "width": 245,
+      "height": 335
+    },
+    "sourceFoot": [
+      137.5,
+      333
+    ],
+    "scale": 0.47477744807121663,
+    "offset": [
+      127,
+      112
+    ],
+    "sha256": "d2d91edebba3f7eabd999e3524a8a10c52e887926ea764563b093b18b8bfc830"
+  },
+  {
+    "id": "m23",
+    "dir": "down",
+    "action": "walk",
+    "frame": 3,
+    "source": "lava-bone-brawler-v1\\down-generated.png",
+    "rect": {
+      "left": 1140,
+      "top": 22,
+      "width": 244,
+      "height": 338
+    },
+    "sourceFoot": [
+      102.5,
+      337
+    ],
+    "scale": 0.47477744807121663,
+    "offset": [
+      143,
+      110
+    ],
+    "sha256": "77af28434610bc6219e6f021e0b48d587a8347d3ee0af6aef395a5b5d16e540a"
+  },
+  {
+    "id": "m23",
+    "dir": "right",
+    "action": "walk",
+    "frame": 0,
+    "source": "lava-bone-brawler-v1\\right-generated.png",
+    "rect": {
+      "left": 72,
+      "top": 29,
+      "width": 256,
+      "height": 339
+    },
+    "sourceFoot": [
+      183,
+      338
+    ],
+    "scale": 0.46647230320699706,
+    "offset": [
+      107,
+      113
+    ],
+    "sha256": "365e9ec917d18cc115ae3e83ca21539fd4e3fa1597774b77ca3d9068ee386b62"
+  },
+  {
+    "id": "m23",
+    "dir": "right",
+    "action": "walk",
+    "frame": 1,
+    "source": "lava-bone-brawler-v1\\right-generated.png",
+    "rect": {
+      "left": 452,
+      "top": 22,
+      "width": 234,
+      "height": 345
+    },
+    "sourceFoot": [
+      162.5,
+      344
+    ],
+    "scale": 0.46647230320699706,
+    "offset": [
+      116,
+      110
+    ],
+    "sha256": "05a6f36577eaa777f6d301ad506a2ee57b1157dbc12ecdd8168c00fee8c28474"
+  },
+  {
+    "id": "m23",
+    "dir": "right",
+    "action": "walk",
+    "frame": 2,
+    "source": "lava-bone-brawler-v1\\right-generated.png",
+    "rect": {
+      "left": 819,
+      "top": 24,
+      "width": 218,
+      "height": 344
+    },
+    "sourceFoot": [
+      152,
+      343
+    ],
+    "scale": 0.46647230320699706,
+    "offset": [
+      121,
+      110
+    ],
+    "sha256": "43818b75998fdda0822e9a979ea19375dd6b7318fe03431082ea3b5b1876e57a"
+  },
+  {
+    "id": "m23",
+    "dir": "right",
+    "action": "walk",
+    "frame": 3,
+    "source": "lava-bone-brawler-v1\\right-generated.png",
+    "rect": {
+      "left": 1175,
+      "top": 22,
+      "width": 226,
+      "height": 345
+    },
+    "sourceFoot": [
+      165.5,
+      344
+    ],
+    "scale": 0.46647230320699706,
+    "offset": [
+      115,
+      110
+    ],
+    "sha256": "b56526e4143bf7e56975f22a3f87854853ac945343a6b80e43b29d418bc9217c"
+  },
+  {
+    "id": "m23",
+    "dir": "up",
+    "action": "walk",
+    "frame": 0,
+    "source": "lava-bone-brawler-v1\\up-generated.png",
+    "rect": {
+      "left": 65,
+      "top": 39,
+      "width": 242,
+      "height": 320
+    },
+    "sourceFoot": [
+      128.5,
+      319
+    ],
+    "scale": 0.5015673981191222,
+    "offset": [
+      128,
+      110
+    ],
+    "sha256": "5f83c2795cedb9861981dc149b45bfdf4206601f5957c2db2a6c0c035d2512bb"
+  },
+  {
+    "id": "m23",
+    "dir": "up",
+    "action": "walk",
+    "frame": 1,
+    "source": "lava-bone-brawler-v1\\up-generated.png",
+    "rect": {
+      "left": 425,
+      "top": 42,
+      "width": 243,
+      "height": 322
+    },
+    "sourceFoot": [
+      142.5,
+      320
+    ],
+    "scale": 0.5015673981191222,
+    "offset": [
+      121,
+      109
+    ],
+    "sha256": "fefb3d7fef2296b83ef4b43e8c94d1d5088b7dcbe82b27ba34aaec0a8dd5b46e"
+  },
+  {
+    "id": "m23",
+    "dir": "up",
+    "action": "walk",
+    "frame": 2,
+    "source": "lava-bone-brawler-v1\\up-generated.png",
+    "rect": {
+      "left": 787,
+      "top": 40,
+      "width": 245,
+      "height": 319
+    },
+    "sourceFoot": [
+      142.5,
+      317
+    ],
+    "scale": 0.5015673981191222,
+    "offset": [
+      122,
+      111
+    ],
+    "sha256": "a88a7b415c36c2fa066a97bbf6155a7f51214fa8feaffc60f10043e5393303d7"
+  },
+  {
+    "id": "m23",
+    "dir": "up",
+    "action": "walk",
+    "frame": 3,
+    "source": "lava-bone-brawler-v1\\up-generated.png",
+    "rect": {
+      "left": 1158,
+      "top": 40,
+      "width": 243,
+      "height": 321
+    },
+    "sourceFoot": [
+      137,
+      319
+    ],
+    "scale": 0.5015673981191222,
+    "offset": [
+      124,
+      111
+    ],
+    "sha256": "bc7455f8eef28b32145e8c8ca9a986ca4b76cb5639d33050182a97891b2095fc"
+  },
+  {
+    "id": "m23",
+    "dir": "down",
+    "action": "attack",
+    "frame": 0,
+    "source": "lava-bone-brawler-v1\\down-generated.png",
+    "rect": {
+      "left": 63,
+      "top": 383,
+      "width": 257,
+      "height": 326
+    },
+    "sourceFoot": [
+      128,
+      289
+    ],
+    "scale": 0.47477744807121663,
+    "offset": [
+      131,
+      133
+    ],
+    "sha256": "1fb1e7620806e475bc6e41f8076a8701d43748d9d90c19beb823e96495c45316"
+  },
+  {
+    "id": "m23",
+    "dir": "down",
+    "action": "attack",
+    "frame": 1,
+    "source": "lava-bone-brawler-v1\\down-generated.png",
+    "rect": {
+      "left": 417,
+      "top": 386,
+      "width": 288,
+      "height": 323
+    },
+    "sourceFoot": [
+      225,
+      320
+    ],
+    "scale": 0.47477744807121663,
+    "offset": [
+      85,
+      119
+    ],
+    "sha256": "012c1c38f3ebdcdd6ce139e51d449453f7c7b00184167134379e314443e249be"
+  },
+  {
+    "id": "m23",
+    "dir": "down",
+    "action": "attack",
+    "frame": 2,
+    "source": "lava-bone-brawler-v1\\down-generated.png",
+    "rect": {
+      "left": 773,
+      "top": 390,
+      "width": 308,
+      "height": 317
+    },
+    "sourceFoot": [
+      153,
+      275
+    ],
+    "scale": 0.47477744807121663,
+    "offset": [
+      119,
+      139
+    ],
+    "sha256": "2dda91bc83dfa6ebc1ad56318101d5b57b759cd84b2b33058c5d8dd936233571"
+  },
+  {
+    "id": "m23",
+    "dir": "down",
+    "action": "attack",
+    "frame": 3,
+    "source": "lava-bone-brawler-v1\\down-generated.png",
+    "rect": {
+      "left": 1155,
+      "top": 382,
+      "width": 241,
+      "height": 322
+    },
+    "sourceFoot": [
+      53.5,
+      319
+    ],
+    "scale": 0.47477744807121663,
+    "offset": [
+      167,
+      119
+    ],
+    "sha256": "5a5f8726e1155cb9eb4261f7d2f3f7d5ef57af9a364da18363f2a72fc437f49e"
+  },
+  {
+    "id": "m23",
+    "dir": "right",
+    "action": "attack",
+    "frame": 0,
+    "source": "lava-bone-brawler-v1\\right-generated.png",
+    "rect": {
+      "left": 53,
+      "top": 391,
+      "width": 276,
+      "height": 324
+    },
+    "sourceFoot": [
+      210,
+      314
+    ],
+    "scale": 0.46647230320699706,
+    "offset": [
+      94,
+      124
+    ],
+    "sha256": "5098cf01387b0ca93037bf202be5b9b4428ce895c70d43c6779bc8c42166c358"
+  },
+  {
+    "id": "m23",
+    "dir": "right",
+    "action": "attack",
+    "frame": 1,
+    "source": "lava-bone-brawler-v1\\right-generated.png",
+    "rect": {
+      "left": 402,
+      "top": 394,
+      "width": 304,
+      "height": 321
+    },
+    "sourceFoot": [
+      232,
+      313
+    ],
+    "scale": 0.46647230320699706,
+    "offset": [
+      84,
+      124
+    ],
+    "sha256": "abc0002ffe11780a153188fbc230a208ed79ef317d3f4e23b0c57bc3821f0cde"
+  },
+  {
+    "id": "m23",
+    "dir": "right",
+    "action": "attack",
+    "frame": 2,
+    "source": "lava-bone-brawler-v1\\right-generated.png",
+    "rect": {
+      "left": 751,
+      "top": 405,
+      "width": 396,
+      "height": 320
+    },
+    "sourceFoot": [
+      250,
+      305
+    ],
+    "scale": 0.46647230320699706,
+    "offset": [
+      75,
+      128
+    ],
+    "sha256": "d40dc693f0e2063ca784267b627be6d2aba6fb53f0b7e6058f075ebe669fef83"
+  },
+  {
+    "id": "m23",
+    "dir": "right",
+    "action": "attack",
+    "frame": 3,
+    "source": "lava-bone-brawler-v1\\right-generated.png",
+    "rect": {
+      "left": 1156,
+      "top": 393,
+      "width": 263,
+      "height": 328
+    },
+    "sourceFoot": [
+      188.5,
+      306
+    ],
+    "scale": 0.46647230320699706,
+    "offset": [
+      104,
+      127
+    ],
+    "sha256": "a7a48c6b02f2532c866b7912fbb4b906c55db19a67dab18014231690a1f50f20"
+  },
+  {
+    "id": "m23",
+    "dir": "up",
+    "action": "attack",
+    "frame": 0,
+    "source": "lava-bone-brawler-v1\\up-generated.png",
+    "rect": {
+      "left": 76,
+      "top": 401,
+      "width": 250,
+      "height": 304
+    },
+    "sourceFoot": [
+      197,
+      277
+    ],
+    "scale": 0.5015673981191222,
+    "offset": [
+      94,
+      131
+    ],
+    "sha256": "382b16962a77c8745277fa6ee548908c4ac73b464184a92e39d4afc4331401fb"
+  },
+  {
+    "id": "m23",
+    "dir": "up",
+    "action": "attack",
+    "frame": 1,
+    "source": "lava-bone-brawler-v1\\up-generated.png",
+    "rect": {
+      "left": 420,
+      "top": 403,
+      "width": 271,
+      "height": 304
+    },
+    "sourceFoot": [
+      135,
+      271
+    ],
+    "scale": 0.5015673981191222,
+    "offset": [
+      124,
+      134
+    ],
+    "sha256": "7a8690fc7a724fff91c504a0ecd0903bb6c9c688580e76f48998250d94cdc712"
+  },
+  {
+    "id": "m23",
+    "dir": "up",
+    "action": "attack",
+    "frame": 2,
+    "source": "lava-bone-brawler-v1\\up-generated.png",
+    "rect": {
+      "left": 761,
+      "top": 416,
+      "width": 358,
+      "height": 284
+    },
+    "sourceFoot": [
+      263,
+      283
+    ],
+    "scale": 0.5015673981191222,
+    "offset": [
+      60,
+      128
+    ],
+    "sha256": "6aa61a1bf113ec025f12cedca825cab8a3154e9dc28f33b6b06cac2e9a2b2bfe"
+  },
+  {
+    "id": "m23",
+    "dir": "up",
+    "action": "attack",
+    "frame": 3,
+    "source": "lava-bone-brawler-v1\\up-generated.png",
+    "rect": {
+      "left": 1170,
+      "top": 401,
+      "width": 241,
+      "height": 305
+    },
+    "sourceFoot": [
+      191.5,
+      298
+    ],
+    "scale": 0.5015673981191222,
+    "offset": [
+      96,
+      121
+    ],
+    "sha256": "187740c79d9e3cb4d788780a6d055377f53621632b916db29e76c111e19308db"
+  },
+  {
+    "id": "m23",
+    "dir": "down",
+    "action": "cast",
+    "frame": 0,
+    "source": "lava-bone-brawler-v1\\down-generated.png",
+    "rect": {
+      "left": 78,
+      "top": 733,
+      "width": 245,
+      "height": 310
+    },
+    "sourceFoot": [
+      122,
+      271
+    ],
+    "scale": 0.47477744807121663,
+    "offset": [
+      134,
+      141
+    ],
+    "sha256": "fc91bbea7f7fabb9a0c78635fc3c8d6b92bf77d03f468e0742d948a1ff6be5da"
+  },
+  {
+    "id": "m23",
+    "dir": "down",
+    "action": "cast",
+    "frame": 1,
+    "source": "lava-bone-brawler-v1\\down-generated.png",
+    "rect": {
+      "left": 424,
+      "top": 729,
+      "width": 247,
+      "height": 314
+    },
+    "sourceFoot": [
+      54.5,
+      284
+    ],
+    "scale": 0.47477744807121663,
+    "offset": [
+      167,
+      135
+    ],
+    "sha256": "244198b46700bc5ce019a062835f523339a597a18758dd89c0415479ae203c3e"
+  },
+  {
+    "id": "m23",
+    "dir": "right",
+    "action": "cast",
+    "frame": 0,
+    "source": "lava-bone-brawler-v1\\right-generated.png",
+    "rect": {
+      "left": 52,
+      "top": 744,
+      "width": 296,
+      "height": 315
+    },
+    "sourceFoot": [
+      229,
+      307
+    ],
+    "scale": 0.46647230320699706,
+    "offset": [
+      85,
+      127
+    ],
+    "sha256": "6577394973fa3cf71556f29f40a15ce857ce9d73ed17de87bb3260aadc2cccab"
+  },
+  {
+    "id": "m23",
+    "dir": "right",
+    "action": "cast",
+    "frame": 1,
+    "source": "lava-bone-brawler-v1\\right-generated.png",
+    "rect": {
+      "left": 421,
+      "top": 742,
+      "width": 283,
+      "height": 317
+    },
+    "sourceFoot": [
+      217.5,
+      309
+    ],
+    "scale": 0.46647230320699706,
+    "offset": [
+      91,
+      126
+    ],
+    "sha256": "f6c3d3f218924e616fab4af0be625ed83c614bba1f5943d122a9798609dd4c05"
+  },
+  {
+    "id": "m23",
+    "dir": "up",
+    "action": "cast",
+    "frame": 0,
+    "source": "lava-bone-brawler-v1\\up-generated.png",
+    "rect": {
+      "left": 71,
+      "top": 753,
+      "width": 248,
+      "height": 303
+    },
+    "sourceFoot": [
+      195.5,
+      273
+    ],
+    "scale": 0.5015673981191222,
+    "offset": [
+      94,
+      133
+    ],
+    "sha256": "1b3bc95910263958b11fc2b1698b01a965ae0c71db2863ef01648501cbf13f3d"
+  },
+  {
+    "id": "m23",
+    "dir": "up",
+    "action": "cast",
+    "frame": 1,
+    "source": "lava-bone-brawler-v1\\up-generated.png",
+    "rect": {
+      "left": 430,
+      "top": 759,
+      "width": 253,
+      "height": 289
+    },
+    "sourceFoot": [
+      198.5,
+      259
+    ],
+    "scale": 0.5015673981191222,
+    "offset": [
+      93,
+      141
+    ],
+    "sha256": "1d6be03f7db949401e77a36491894e168e21fcd91cfb9f69229a72da534341ec"
+  },
+  {
+    "id": "m23",
+    "dir": "down",
+    "action": "hit",
+    "frame": 0,
+    "source": "lava-bone-brawler-v1\\down-generated.png",
+    "rect": {
+      "left": 761,
+      "top": 727,
+      "width": 298,
+      "height": 316
+    },
+    "sourceFoot": [
+      70,
+      314
+    ],
+    "scale": 0.47477744807121663,
+    "offset": [
+      159,
+      121
+    ],
+    "sha256": "b88cb112d7914e9ff7644aa15cf319df43662c9462911d56a1a59ff5583fcb54"
+  },
+  {
+    "id": "m23",
+    "dir": "down",
+    "action": "hit",
+    "frame": 1,
+    "source": "lava-bone-brawler-v1\\down-generated.png",
+    "rect": {
+      "left": 1140,
+      "top": 736,
+      "width": 255,
+      "height": 304
+    },
+    "sourceFoot": [
+      201,
+      284
+    ],
+    "scale": 0.47477744807121663,
+    "offset": [
+      97,
+      135
+    ],
+    "sha256": "edfcab3399c79c16672e10d384ce99dc7cb9b85c6e13f8a5d1ea6ac6f5841efe"
+  },
+  {
+    "id": "m23",
+    "dir": "right",
+    "action": "hit",
+    "frame": 0,
+    "source": "lava-bone-brawler-v1\\right-generated.png",
+    "rect": {
+      "left": 777,
+      "top": 743,
+      "width": 290,
+      "height": 321
+    },
+    "sourceFoot": [
+      73.5,
+      320
+    ],
+    "scale": 0.46647230320699706,
+    "offset": [
+      159,
+      121
+    ],
+    "sha256": "1851f596f43ece912054409b37b145f6e90acf61e7fa6575a9e1c9af92b738ad"
+  },
+  {
+    "id": "m23",
+    "dir": "right",
+    "action": "hit",
+    "frame": 1,
+    "source": "lava-bone-brawler-v1\\right-generated.png",
+    "rect": {
+      "left": 1151,
+      "top": 747,
+      "width": 266,
+      "height": 304
+    },
+    "sourceFoot": [
+      194.5,
+      293
+    ],
+    "scale": 0.46647230320699706,
+    "offset": [
+      101,
+      134
+    ],
+    "sha256": "c5763914785eb250691ee54346f44cad90a38bc6e790bc041918897518544678"
+  },
+  {
+    "id": "m23",
+    "dir": "up",
+    "action": "hit",
+    "frame": 0,
+    "source": "lava-bone-brawler-v1\\up-generated.png",
+    "rect": {
+      "left": 755,
+      "top": 747,
+      "width": 293,
+      "height": 285
+    },
+    "sourceFoot": [
+      146,
+      283
+    ],
+    "scale": 0.5015673981191222,
+    "offset": [
+      119,
+      128
+    ],
+    "sha256": "770094f261dd5e028baf28cec69a0234d3718370f23d9fe189af6e749e8da91b"
+  },
+  {
+    "id": "m23",
+    "dir": "up",
+    "action": "hit",
+    "frame": 1,
+    "source": "lava-bone-brawler-v1\\up-generated.png",
+    "rect": {
+      "left": 1145,
+      "top": 757,
+      "width": 260,
+      "height": 298
+    },
+    "sourceFoot": [
+      129.5,
+      271
+    ],
+    "scale": 0.5015673981191222,
+    "offset": [
+      127,
+      134
+    ],
+    "sha256": "e01fb210d4383ef5840ca38f659328984a011280f19a95eeec8d3ce96ec952b6"
+  },
+  {
+    "id": "m24",
+    "dir": "down",
+    "action": "walk",
+    "frame": 0,
+    "source": "thunder-fist-emperor-v1\\down-generated.png",
+    "rect": {
+      "left": 95,
+      "top": 38,
+      "width": 238,
+      "height": 302
+    },
+    "sourceFoot": [
+      118.5,
+      301
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      129,
+      109
+    ],
+    "sha256": "660b2bdfe561f190de6b663d842aea6e42a06e11fc760070ab22f758698d7ced"
+  },
+  {
+    "id": "m24",
+    "dir": "down",
+    "action": "walk",
+    "frame": 1,
+    "source": "thunder-fist-emperor-v1\\down-generated.png",
+    "rect": {
+      "left": 455,
+      "top": 41,
+      "width": 257,
+      "height": 296
+    },
+    "sourceFoot": [
+      119.5,
+      295
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      128,
+      112
+    ],
+    "sha256": "086c0f51ca003fe513c65fbbc8c54e32765b13849eeb8f9ffa2725eaaaa4c53e"
+  },
+  {
+    "id": "m24",
+    "dir": "down",
+    "action": "walk",
+    "frame": 2,
+    "source": "thunder-fist-emperor-v1\\down-generated.png",
+    "rect": {
+      "left": 829,
+      "top": 41,
+      "width": 264,
+      "height": 298
+    },
+    "sourceFoot": [
+      154.5,
+      297
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      109,
+      111
+    ],
+    "sha256": "6015bf0edc12f8335bb867d203c5c8a06a38867fd69472ac858830fd7880ce0e"
+  },
+  {
+    "id": "m24",
+    "dir": "down",
+    "action": "walk",
+    "frame": 3,
+    "source": "thunder-fist-emperor-v1\\down-generated.png",
+    "rect": {
+      "left": 1180,
+      "top": 36,
+      "width": 269,
+      "height": 301
+    },
+    "sourceFoot": [
+      148,
+      300
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      113,
+      110
+    ],
+    "sha256": "03df1cb634e7eef6fd3c5d043ba5014fa491611bae54d0518678d1263c4468b1"
+  },
+  {
+    "id": "m24",
+    "dir": "right",
+    "action": "walk",
+    "frame": 0,
+    "source": "thunder-fist-emperor-v1\\right-generated.png",
+    "rect": {
+      "left": 68,
+      "top": 29,
+      "width": 274,
+      "height": 311
+    },
+    "sourceFoot": [
+      140.5,
+      310
+    ],
+    "scale": 0.5161290322580645,
+    "offset": [
+      119,
+      110
+    ],
+    "sha256": "d84b795bd975258001b2ce402cb54908e772f7a3ad6f5cbb814f067872fc2903"
+  },
+  {
+    "id": "m24",
+    "dir": "right",
+    "action": "walk",
+    "frame": 1,
+    "source": "thunder-fist-emperor-v1\\right-generated.png",
+    "rect": {
+      "left": 440,
+      "top": 30,
+      "width": 289,
+      "height": 309
+    },
+    "sourceFoot": [
+      156.5,
+      307
+    ],
+    "scale": 0.5161290322580645,
+    "offset": [
+      112,
+      112
+    ],
+    "sha256": "89723be0c63d04a5ae79dd448843fc08fa0867ced763ac2ea8bd91045f0c879b"
+  },
+  {
+    "id": "m24",
+    "dir": "right",
+    "action": "walk",
+    "frame": 2,
+    "source": "thunder-fist-emperor-v1\\right-generated.png",
+    "rect": {
+      "left": 800,
+      "top": 31,
+      "width": 284,
+      "height": 312
+    },
+    "sourceFoot": [
+      159.5,
+      309
+    ],
+    "scale": 0.5161290322580645,
+    "offset": [
+      110,
+      111
+    ],
+    "sha256": "c49ef2b04ab6890000a3a3ce9fd86fdedccc9af678aec729d8221a96681f81bf"
+  },
+  {
+    "id": "m24",
+    "dir": "right",
+    "action": "walk",
+    "frame": 3,
+    "source": "thunder-fist-emperor-v1\\right-generated.png",
+    "rect": {
+      "left": 1187,
+      "top": 28,
+      "width": 292,
+      "height": 318
+    },
+    "sourceFoot": [
+      85.5,
+      316
+    ],
+    "scale": 0.5161290322580645,
+    "offset": [
+      148,
+      107
+    ],
+    "sha256": "b968ac66a4bed7972d71ebb43f500d76be15dcab82c4f00fd39031eb693f80c8"
+  },
+  {
+    "id": "m24",
+    "dir": "up",
+    "action": "walk",
+    "frame": 0,
+    "source": "thunder-fist-emperor-v1\\up-generated.png",
+    "rect": {
+      "left": 79,
+      "top": 32,
+      "width": 271,
+      "height": 316
+    },
+    "sourceFoot": [
+      134.5,
+      315
+    ],
+    "scale": 0.5128205128205128,
+    "offset": [
+      123,
+      109
+    ],
+    "sha256": "3765ec872cf7eae8cab0f79105e1f4046f69ea5c926aa46ae977abea5b0c2afc"
+  },
+  {
+    "id": "m24",
+    "dir": "up",
+    "action": "walk",
+    "frame": 1,
+    "source": "thunder-fist-emperor-v1\\up-generated.png",
+    "rect": {
+      "left": 447,
+      "top": 33,
+      "width": 263,
+      "height": 312
+    },
+    "sourceFoot": [
+      140.5,
+      311
+    ],
+    "scale": 0.5128205128205128,
+    "offset": [
+      120,
+      111
+    ],
+    "sha256": "1bb697d0fb97f57cdfd25e7b8c28640777146ebe41d16d3dd59ee2ace4ea0d5e"
+  },
+  {
+    "id": "m24",
+    "dir": "up",
+    "action": "walk",
+    "frame": 2,
+    "source": "thunder-fist-emperor-v1\\up-generated.png",
+    "rect": {
+      "left": 823,
+      "top": 34,
+      "width": 248,
+      "height": 314
+    },
+    "sourceFoot": [
+      124.5,
+      313
+    ],
+    "scale": 0.5128205128205128,
+    "offset": [
+      128,
+      110
+    ],
+    "sha256": "4363b4a37f66dcf8ff4d874599a2b3b907bf953fb5f1cfe6603b8152c44ccfb3"
+  },
+  {
+    "id": "m24",
+    "dir": "up",
+    "action": "walk",
+    "frame": 3,
+    "source": "thunder-fist-emperor-v1\\up-generated.png",
+    "rect": {
+      "left": 1169,
+      "top": 35,
+      "width": 293,
+      "height": 313
+    },
+    "sourceFoot": [
+      165.5,
+      312
+    ],
+    "scale": 0.5128205128205128,
+    "offset": [
+      108,
+      110
+    ],
+    "sha256": "d4ad32525eca47c637b934c0826d9ef18631a85e60abdca4989cbb932dbd3e8f"
+  },
+  {
+    "id": "m24",
+    "dir": "down",
+    "action": "attack",
+    "frame": 0,
+    "source": "thunder-fist-emperor-v1\\down-generated.png",
+    "rect": {
+      "left": 62,
+      "top": 366,
+      "width": 266,
+      "height": 296
+    },
+    "sourceFoot": [
+      65.5,
+      295
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      157,
+      113
+    ],
+    "sha256": "ebcb2fce2e0ce3bbea3130a2bd016cde9ce827fd9c6da97a0c8af0e630a1d0d7"
+  },
+  {
+    "id": "m24",
+    "dir": "down",
+    "action": "attack",
+    "frame": 1,
+    "source": "thunder-fist-emperor-v1\\down-generated.png",
+    "rect": {
+      "left": 443,
+      "top": 363,
+      "width": 293,
+      "height": 297
+    },
+    "sourceFoot": [
+      61.5,
+      295
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      160,
+      112
+    ],
+    "sha256": "28b8d7493db693c8438486e597333ab4f852c8bc32a7903f6e365bbf57b0abf2"
+  },
+  {
+    "id": "m24",
+    "dir": "down",
+    "action": "attack",
+    "frame": 2,
+    "source": "thunder-fist-emperor-v1\\down-generated.png",
+    "rect": {
+      "left": 802,
+      "top": 361,
+      "width": 322,
+      "height": 294
+    },
+    "sourceFoot": [
+      245,
+      293
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      61,
+      114
+    ],
+    "sha256": "8ea34249d2e7cb8a8808c2c9a690968ffb4cdcfa46602e1ce52c07a93b0ad327"
+  },
+  {
+    "id": "m24",
+    "dir": "down",
+    "action": "attack",
+    "frame": 3,
+    "source": "thunder-fist-emperor-v1\\down-generated.png",
+    "rect": {
+      "left": 1198,
+      "top": 362,
+      "width": 277,
+      "height": 300
+    },
+    "sourceFoot": [
+      64,
+      299
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      158,
+      111
+    ],
+    "sha256": "d30c506481e426c600d5f370d0fea06ee104bfe906a91bdc2d2e677698efbc25"
+  },
+  {
+    "id": "m24",
+    "dir": "right",
+    "action": "attack",
+    "frame": 0,
+    "source": "thunder-fist-emperor-v1\\right-generated.png",
+    "rect": {
+      "left": 45,
+      "top": 364,
+      "width": 292,
+      "height": 305
+    },
+    "sourceFoot": [
+      73,
+      303
+    ],
+    "scale": 0.5161290322580645,
+    "offset": [
+      154,
+      114
+    ],
+    "sha256": "07bee24c4aa89a424cb724c5b43e953f2fcb52611fb2c4abb6f9220adb0c241e"
+  },
+  {
+    "id": "m24",
+    "dir": "right",
+    "action": "attack",
+    "frame": 1,
+    "source": "thunder-fist-emperor-v1\\right-generated.png",
+    "rect": {
+      "left": 428,
+      "top": 367,
+      "width": 297,
+      "height": 309
+    },
+    "sourceFoot": [
+      68.5,
+      307
+    ],
+    "scale": 0.5161290322580645,
+    "offset": [
+      157,
+      112
+    ],
+    "sha256": "d3c8f6d6d009d71901b08733fb59200ce4eab45d6691dc2e03821814314ba034"
+  },
+  {
+    "id": "m24",
+    "dir": "right",
+    "action": "attack",
+    "frame": 2,
+    "source": "thunder-fist-emperor-v1\\right-generated.png",
+    "rect": {
+      "left": 782,
+      "top": 369,
+      "width": 386,
+      "height": 302
+    },
+    "sourceFoot": [
+      274.5,
+      295
+    ],
+    "scale": 0.5161290322580645,
+    "offset": [
+      50,
+      118
+    ],
+    "sha256": "97ffa956e8a82e2b033651653e715394df4032725a83e494c4cfd16766d7c0be"
+  },
+  {
+    "id": "m24",
+    "dir": "right",
+    "action": "attack",
+    "frame": 3,
+    "source": "thunder-fist-emperor-v1\\right-generated.png",
+    "rect": {
+      "left": 1206,
+      "top": 368,
+      "width": 274,
+      "height": 306
+    },
+    "sourceFoot": [
+      67.5,
+      305
+    ],
+    "scale": 0.5161290322580645,
+    "offset": [
+      157,
+      113
+    ],
+    "sha256": "bce0b38a8fd70866285770d5584d2c813cd9d2bfdc0bf744337b8ed18904e1c0"
+  },
+  {
+    "id": "m24",
+    "dir": "up",
+    "action": "attack",
+    "frame": 0,
+    "source": "thunder-fist-emperor-v1\\up-generated.png",
+    "rect": {
+      "left": 54,
+      "top": 365,
+      "width": 292,
+      "height": 293
+    },
+    "sourceFoot": [
+      75.5,
+      292
+    ],
+    "scale": 0.5128205128205128,
+    "offset": [
+      153,
+      121
+    ],
+    "sha256": "ed1453340b1e966ba6b49e3de44839fb29c545c6ba57ccd801de9a136153c315"
+  },
+  {
+    "id": "m24",
+    "dir": "up",
+    "action": "attack",
+    "frame": 1,
+    "source": "thunder-fist-emperor-v1\\up-generated.png",
+    "rect": {
+      "left": 430,
+      "top": 364,
+      "width": 312,
+      "height": 298
+    },
+    "sourceFoot": [
+      78,
+      296
+    ],
+    "scale": 0.5128205128205128,
+    "offset": [
+      152,
+      118
+    ],
+    "sha256": "e0c034eb231910d1196dff4cbea968874a30ff96339630a8aceebaac049a39c5"
+  },
+  {
+    "id": "m24",
+    "dir": "up",
+    "action": "attack",
+    "frame": 2,
+    "source": "thunder-fist-emperor-v1\\up-generated.png",
+    "rect": {
+      "left": 791,
+      "top": 362,
+      "width": 362,
+      "height": 295
+    },
+    "sourceFoot": [
+      165,
+      290
+    ],
+    "scale": 0.5128205128205128,
+    "offset": [
+      107,
+      122
+    ],
+    "sha256": "61af7dac26cefbf779c395f238c63817af310aada9a59a83ae6893515186574e"
+  },
+  {
+    "id": "m24",
+    "dir": "up",
+    "action": "attack",
+    "frame": 3,
+    "source": "thunder-fist-emperor-v1\\up-generated.png",
+    "rect": {
+      "left": 1194,
+      "top": 365,
+      "width": 270,
+      "height": 293
+    },
+    "sourceFoot": [
+      71,
+      292
+    ],
+    "scale": 0.5128205128205128,
+    "offset": [
+      156,
+      120
+    ],
+    "sha256": "0f3ec61089a8afdccc38ad4abd2f2a324ddb984f85aac809da4f1c1746e149b0"
+  },
+  {
+    "id": "m24",
+    "dir": "down",
+    "action": "cast",
+    "frame": 0,
+    "source": "thunder-fist-emperor-v1\\down-generated.png",
+    "rect": {
+      "left": 62,
+      "top": 691,
+      "width": 275,
+      "height": 299
+    },
+    "sourceFoot": [
+      62,
+      297
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      159,
+      111
+    ],
+    "sha256": "9a8380c1ba8182be2cf373702f0e3a4883553344dfad1738d7bf3d830e004658"
+  },
+  {
+    "id": "m24",
+    "dir": "down",
+    "action": "cast",
+    "frame": 1,
+    "source": "thunder-fist-emperor-v1\\down-generated.png",
+    "rect": {
+      "left": 452,
+      "top": 688,
+      "width": 272,
+      "height": 305
+    },
+    "sourceFoot": [
+      62,
+      304
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      159,
+      108
+    ],
+    "sha256": "80ff28d97d7e35828a687360b364e062947c7f4c1a79518ae7788666481bcb7e"
+  },
+  {
+    "id": "m24",
+    "dir": "right",
+    "action": "cast",
+    "frame": 0,
+    "source": "thunder-fist-emperor-v1\\right-generated.png",
+    "rect": {
+      "left": 43,
+      "top": 658,
+      "width": 308,
+      "height": 337
+    },
+    "sourceFoot": [
+      72.5,
+      336
+    ],
+    "scale": 0.5161290322580645,
+    "offset": [
+      155,
+      97
+    ],
+    "sha256": "d7066946c19ec52d6fd7a97f03c6969ee4c42f710baeb57ffcc4c589ff05fd6b"
+  },
+  {
+    "id": "m24",
+    "dir": "right",
+    "action": "cast",
+    "frame": 1,
+    "source": "thunder-fist-emperor-v1\\right-generated.png",
+    "rect": {
+      "left": 428,
+      "top": 687,
+      "width": 287,
+      "height": 309
+    },
+    "sourceFoot": [
+      75.5,
+      308
+    ],
+    "scale": 0.5161290322580645,
+    "offset": [
+      153,
+      112
+    ],
+    "sha256": "8db6b0bddb03c7d25be3e46570474fb6e3ffe69bbb6cdaf112bb608f34611cf4"
+  },
+  {
+    "id": "m24",
+    "dir": "up",
+    "action": "cast",
+    "frame": 0,
+    "source": "thunder-fist-emperor-v1\\up-generated.png",
+    "rect": {
+      "left": 53,
+      "top": 667,
+      "width": 297,
+      "height": 318
+    },
+    "sourceFoot": [
+      74,
+      316
+    ],
+    "scale": 0.5128205128205128,
+    "offset": [
+      155,
+      108
+    ],
+    "sha256": "337ecacd0dc26fb374bdc49b380ede3b07082e1b9a8532078abc41d1537aacef"
+  },
+  {
+    "id": "m24",
+    "dir": "up",
+    "action": "cast",
+    "frame": 1,
+    "source": "thunder-fist-emperor-v1\\up-generated.png",
+    "rect": {
+      "left": 428,
+      "top": 675,
+      "width": 304,
+      "height": 311
+    },
+    "sourceFoot": [
+      83.5,
+      309
+    ],
+    "scale": 0.5128205128205128,
+    "offset": [
+      149,
+      112
+    ],
+    "sha256": "3b165139aca20ab6c589f56a94764b091a23584c463c199a10ffb1ba1ca9cf53"
+  },
+  {
+    "id": "m24",
+    "dir": "down",
+    "action": "hit",
+    "frame": 0,
+    "source": "thunder-fist-emperor-v1\\down-generated.png",
+    "rect": {
+      "left": 808,
+      "top": 716,
+      "width": 277,
+      "height": 274
+    },
+    "sourceFoot": [
+      79.5,
+      273
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      150,
+      124
+    ],
+    "sha256": "e7742b81e2617d7d8941e3075bd54eaf592e56b17595a5845df92bcd2a23de48"
+  },
+  {
+    "id": "m24",
+    "dir": "down",
+    "action": "hit",
+    "frame": 1,
+    "source": "thunder-fist-emperor-v1\\down-generated.png",
+    "rect": {
+      "left": 1181,
+      "top": 696,
+      "width": 282,
+      "height": 293
+    },
+    "sourceFoot": [
+      68.5,
+      292
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      155,
+      114
+    ],
+    "sha256": "bebdcd412444612bc92284b91828cea713cfdbafe1923126af9d34b3e707d792"
+  },
+  {
+    "id": "m24",
+    "dir": "right",
+    "action": "hit",
+    "frame": 0,
+    "source": "thunder-fist-emperor-v1\\right-generated.png",
+    "rect": {
+      "left": 803,
+      "top": 705,
+      "width": 299,
+      "height": 291
+    },
+    "sourceFoot": [
+      70,
+      290
+    ],
+    "scale": 0.5161290322580645,
+    "offset": [
+      156,
+      120
+    ],
+    "sha256": "2066efaf8636183a5f06be9a21b44b4c4a779cb3f9e641e90722656268c6512f"
+  },
+  {
+    "id": "m24",
+    "dir": "right",
+    "action": "hit",
+    "frame": 1,
+    "source": "thunder-fist-emperor-v1\\right-generated.png",
+    "rect": {
+      "left": 1178,
+      "top": 692,
+      "width": 294,
+      "height": 304
+    },
+    "sourceFoot": [
+      76,
+      303
+    ],
+    "scale": 0.5161290322580645,
+    "offset": [
+      153,
+      114
+    ],
+    "sha256": "0bb997c7e23fc580c8c04f01db8b959f22b0badc75a58f4e83cbb6e15b69c6f6"
+  },
+  {
+    "id": "m24",
+    "dir": "up",
+    "action": "hit",
+    "frame": 0,
+    "source": "thunder-fist-emperor-v1\\up-generated.png",
+    "rect": {
+      "left": 789,
+      "top": 696,
+      "width": 295,
+      "height": 291
+    },
+    "sourceFoot": [
+      90,
+      289
+    ],
+    "scale": 0.5128205128205128,
+    "offset": [
+      146,
+      122
+    ],
+    "sha256": "d1d12b17ac66baabd2609841b18dfe68b4a5c1526a674fa040e2b9b539bae9dc"
+  },
+  {
+    "id": "m24",
+    "dir": "up",
+    "action": "hit",
+    "frame": 1,
+    "source": "thunder-fist-emperor-v1\\up-generated.png",
+    "rect": {
+      "left": 1179,
+      "top": 677,
+      "width": 293,
+      "height": 316
+    },
+    "sourceFoot": [
+      101,
+      315
+    ],
+    "scale": 0.5128205128205128,
+    "offset": [
+      140,
+      108
+    ],
+    "sha256": "9914027c66da48d1ce1ca52fa5f1f2f48dfccd6eb98bce9fd82be39bfe1ba083"
+  },
+  {
+    "id": "m26",
+    "dir": "down",
+    "action": "walk",
+    "frame": 0,
+    "source": "night-blood-ripper-v1\\down-generated.png",
+    "rect": {
+      "left": 73,
+      "top": 60,
+      "width": 247,
+      "height": 274
+    },
+    "sourceFoot": [
+      127.5,
+      273
+    ],
+    "scale": 0.5860805860805861,
+    "offset": [
+      149,
+      110
+    ],
+    "sha256": "245abecec3b9c3d8544cf9a9c523daa32fbae493848ded2638d44c59247679e9"
+  },
+  {
+    "id": "m26",
+    "dir": "down",
+    "action": "walk",
+    "frame": 1,
+    "source": "night-blood-ripper-v1\\down-generated.png",
+    "rect": {
+      "left": 459,
+      "top": 57,
+      "width": 279,
+      "height": 271
+    },
+    "sourceFoot": [
+      143.5,
+      270
+    ],
+    "scale": 0.5860805860805861,
+    "offset": [
+      140,
+      112
+    ],
+    "sha256": "a6df8fbec39b3cf67dc4eaa63fee34d629438d34ccff220e00794df9e72904b6"
+  },
+  {
+    "id": "m26",
+    "dir": "down",
+    "action": "walk",
+    "frame": 2,
+    "source": "night-blood-ripper-v1\\down-generated.png",
+    "rect": {
+      "left": 810,
+      "top": 64,
+      "width": 291,
+      "height": 268
+    },
+    "sourceFoot": [
+      179,
+      266
+    ],
+    "scale": 0.5860805860805861,
+    "offset": [
+      119,
+      115
+    ],
+    "sha256": "4e6000077b156fa95c4c66b609794aa55c37cdc9e1c3c6d5741535892c2006e2"
+  },
+  {
+    "id": "m26",
+    "dir": "down",
+    "action": "walk",
+    "frame": 3,
+    "source": "night-blood-ripper-v1\\down-generated.png",
+    "rect": {
+      "left": 1209,
+      "top": 58,
+      "width": 260,
+      "height": 277
+    },
+    "sourceFoot": [
+      152.5,
+      276
+    ],
+    "scale": 0.5860805860805861,
+    "offset": [
+      135,
+      108
+    ],
+    "sha256": "1e86670f5a9e25d5a2b20648805209da368cce7bce76f6b08fa1cb659c56ac08"
+  },
+  {
+    "id": "m26",
+    "dir": "right",
+    "action": "walk",
+    "frame": 0,
+    "source": "night-blood-ripper-v1\\right-fixed-generated.png",
+    "rect": {
+      "left": 57,
+      "top": 38,
+      "width": 256,
+      "height": 292
+    },
+    "sourceFoot": [
+      132,
+      290
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      153,
+      115
+    ],
+    "sha256": "2ce168e62102ab95e25b4805e9d0860139683dbfb42631df706ffd2451a062d9"
+  },
+  {
+    "id": "m26",
+    "dir": "right",
+    "action": "walk",
+    "frame": 1,
+    "source": "night-blood-ripper-v1\\right-fixed-generated.png",
+    "rect": {
+      "left": 426,
+      "top": 38,
+      "width": 261,
+      "height": 301
+    },
+    "sourceFoot": [
+      193.5,
+      299
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      120,
+      110
+    ],
+    "sha256": "6b969baf56be3fc701e0c23a7072037843fb5bfc683bcd190700fb38c0b2eefc"
+  },
+  {
+    "id": "m26",
+    "dir": "right",
+    "action": "walk",
+    "frame": 2,
+    "source": "night-blood-ripper-v1\\right-fixed-generated.png",
+    "rect": {
+      "left": 818,
+      "top": 38,
+      "width": 282,
+      "height": 301
+    },
+    "sourceFoot": [
+      161,
+      299
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      138,
+      110
+    ],
+    "sha256": "765db58ef1a832e4cb0f3d0bed53fadf26864409faba9ece2e5e3597cae9a3d4"
+  },
+  {
+    "id": "m26",
+    "dir": "right",
+    "action": "walk",
+    "frame": 3,
+    "source": "night-blood-ripper-v1\\right-fixed-generated.png",
+    "rect": {
+      "left": 1212,
+      "top": 38,
+      "width": 265,
+      "height": 300
+    },
+    "sourceFoot": [
+      198,
+      298
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      118,
+      111
+    ],
+    "sha256": "5ac9fd9f1cb36949792e48efb5818c417ff82174414bd46a6a47c0a9d2db9623"
+  },
+  {
+    "id": "m26",
+    "dir": "up",
+    "action": "walk",
+    "frame": 0,
+    "source": "night-blood-ripper-v1\\up-generated.png",
+    "rect": {
+      "left": 93,
+      "top": 38,
+      "width": 237,
+      "height": 300
+    },
+    "sourceFoot": [
+      109.5,
+      299
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      165,
+      110
+    ],
+    "sha256": "23bf857beb9144f9993361f484a1ebdad75159e451e0407b039e7e664acd1bf0"
+  },
+  {
+    "id": "m26",
+    "dir": "up",
+    "action": "walk",
+    "frame": 1,
+    "source": "night-blood-ripper-v1\\up-generated.png",
+    "rect": {
+      "left": 458,
+      "top": 39,
+      "width": 241,
+      "height": 301
+    },
+    "sourceFoot": [
+      145,
+      300
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      146,
+      109
+    ],
+    "sha256": "a5a6a9edeef04323c88bfbe6c03c38fcad4d368836148805bc78f8c209d4a891"
+  },
+  {
+    "id": "m26",
+    "dir": "up",
+    "action": "walk",
+    "frame": 2,
+    "source": "night-blood-ripper-v1\\up-generated.png",
+    "rect": {
+      "left": 824,
+      "top": 39,
+      "width": 270,
+      "height": 299
+    },
+    "sourceFoot": [
+      143,
+      298
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      148,
+      111
+    ],
+    "sha256": "66cbf6b68cb74db23cdc8ee6d708309ad933a3de24fe1e215ecd161efa7758ae"
+  },
+  {
+    "id": "m26",
+    "dir": "up",
+    "action": "walk",
+    "frame": 3,
+    "source": "night-blood-ripper-v1\\up-generated.png",
+    "rect": {
+      "left": 1216,
+      "top": 39,
+      "width": 264,
+      "height": 299
+    },
+    "sourceFoot": [
+      153,
+      298
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      142,
+      111
+    ],
+    "sha256": "733fa07df6b9789337980f7441a7168c052a291648d5d9986d7e6c747b700fe6"
+  },
+  {
+    "id": "m26",
+    "dir": "down",
+    "action": "attack",
+    "frame": 0,
+    "source": "night-blood-ripper-v1\\down-generated.png",
+    "rect": {
+      "left": 76,
+      "top": 398,
+      "width": 282,
+      "height": 251
+    },
+    "sourceFoot": [
+      137,
+      219
+    ],
+    "scale": 0.5860805860805861,
+    "offset": [
+      144,
+      142
+    ],
+    "sha256": "ca626a2736315ab238ab79549b80fe3510d1bcddd5f132f0eeda6b1fa67b26c3"
+  },
+  {
+    "id": "m26",
+    "dir": "down",
+    "action": "attack",
+    "frame": 1,
+    "source": "night-blood-ripper-v1\\down-generated.png",
+    "rect": {
+      "left": 442,
+      "top": 382,
+      "width": 304,
+      "height": 267
+    },
+    "sourceFoot": [
+      211.5,
+      250
+    ],
+    "scale": 0.5860805860805861,
+    "offset": [
+      100,
+      124
+    ],
+    "sha256": "9a1f054dfd03cd5ffa11215922ab5b0727bc65c0136fe5e8bbd7544f7111cf0d"
+  },
+  {
+    "id": "m26",
+    "dir": "down",
+    "action": "attack",
+    "frame": 2,
+    "source": "night-blood-ripper-v1\\down-generated.png",
+    "rect": {
+      "left": 791,
+      "top": 398,
+      "width": 384,
+      "height": 261
+    },
+    "sourceFoot": [
+      225.5,
+      228
+    ],
+    "scale": 0.5860805860805861,
+    "offset": [
+      92,
+      137
+    ],
+    "sha256": "c750a6d40aa88ffe5043fd3e934a4d78929ef6f5635209fb37f0af59bc4ec093"
+  },
+  {
+    "id": "m26",
+    "dir": "down",
+    "action": "attack",
+    "frame": 3,
+    "source": "night-blood-ripper-v1\\down-generated.png",
+    "rect": {
+      "left": 1220,
+      "top": 391,
+      "width": 280,
+      "height": 258
+    },
+    "sourceFoot": [
+      139.5,
+      251
+    ],
+    "scale": 0.5860805860805861,
+    "offset": [
+      143,
+      123
+    ],
+    "sha256": "8fe695c3846e48639fa5c46a7696263b06f9688dfeeafdd519a733bb598b20d2"
+  },
+  {
+    "id": "m26",
+    "dir": "right",
+    "action": "attack",
+    "frame": 0,
+    "source": "night-blood-ripper-v1\\right-fixed-generated.png",
+    "rect": {
+      "left": 47,
+      "top": 384,
+      "width": 295,
+      "height": 286
+    },
+    "sourceFoot": [
+      80.5,
+      285
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      181,
+      118
+    ],
+    "sha256": "106d6b8bcb521ad5d54c9fe31e373e04bea113f6b7790c5760dd8735eda2e3e5"
+  },
+  {
+    "id": "m26",
+    "dir": "right",
+    "action": "attack",
+    "frame": 1,
+    "source": "night-blood-ripper-v1\\right-fixed-generated.png",
+    "rect": {
+      "left": 446,
+      "top": 366,
+      "width": 278,
+      "height": 301
+    },
+    "sourceFoot": [
+      71,
+      300
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      186,
+      110
+    ],
+    "sha256": "3754d88fb0d2e6e2e993659b1a6fcd7d6c2d7bbc6c9a069e702f9833166adc8a"
+  },
+  {
+    "id": "m26",
+    "dir": "right",
+    "action": "attack",
+    "frame": 2,
+    "source": "night-blood-ripper-v1\\right-fixed-generated.png",
+    "rect": {
+      "left": 785,
+      "top": 387,
+      "width": 448,
+      "height": 282
+    },
+    "sourceFoot": [
+      90,
+      276
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      176,
+      123
+    ],
+    "sha256": "fbb397d02a8191ee66ab9d0b6b63d5d029b728d0575d61597228791406d93d9b"
+  },
+  {
+    "id": "m26",
+    "dir": "right",
+    "action": "attack",
+    "frame": 3,
+    "source": "night-blood-ripper-v1\\right-fixed-generated.png",
+    "rect": {
+      "left": 1248,
+      "top": 381,
+      "width": 247,
+      "height": 286
+    },
+    "sourceFoot": [
+      57,
+      285
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      193,
+      118
+    ],
+    "sha256": "712e4c276ebfbcff370a3032568d571eef1d7da86db4bd88c87810e409f58572"
+  },
+  {
+    "id": "m26",
+    "dir": "up",
+    "action": "attack",
+    "frame": 0,
+    "source": "night-blood-ripper-v1\\up-generated.png",
+    "rect": {
+      "left": 64,
+      "top": 376,
+      "width": 258,
+      "height": 285
+    },
+    "sourceFoot": [
+      58.5,
+      284
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      193,
+      119
+    ],
+    "sha256": "f290765ee2074723f1039785df1f47a1f7d5093d3d38c504bbba9dde10e593b4"
+  },
+  {
+    "id": "m26",
+    "dir": "up",
+    "action": "attack",
+    "frame": 1,
+    "source": "night-blood-ripper-v1\\up-generated.png",
+    "rect": {
+      "left": 465,
+      "top": 378,
+      "width": 289,
+      "height": 283
+    },
+    "sourceFoot": [
+      218.5,
+      282
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      108,
+      119
+    ],
+    "sha256": "21d215433be2b9b4f5d654e2969dcf84b2471854373af325b650e9deca2692b1"
+  },
+  {
+    "id": "m26",
+    "dir": "up",
+    "action": "attack",
+    "frame": 2,
+    "source": "night-blood-ripper-v1\\up-generated.png",
+    "rect": {
+      "left": 791,
+      "top": 372,
+      "width": 429,
+      "height": 290
+    },
+    "sourceFoot": [
+      87,
+      286
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      177,
+      117
+    ],
+    "sha256": "2ddef51a47dc8d13cf2336ba6c3247947ff09b08535f7da1f698f01b2ddfa407"
+  },
+  {
+    "id": "m26",
+    "dir": "up",
+    "action": "attack",
+    "frame": 3,
+    "source": "night-blood-ripper-v1\\up-generated.png",
+    "rect": {
+      "left": 1235,
+      "top": 384,
+      "width": 270,
+      "height": 276
+    },
+    "sourceFoot": [
+      58.5,
+      275
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      194,
+      123
+    ],
+    "sha256": "209d7af921ac478d52899684e8b30120873c2df74e58b6a2e89748ac2acacdca"
+  },
+  {
+    "id": "m26",
+    "dir": "down",
+    "action": "cast",
+    "frame": 0,
+    "source": "night-blood-ripper-v1\\down-generated.png",
+    "rect": {
+      "left": 68,
+      "top": 714,
+      "width": 264,
+      "height": 262
+    },
+    "sourceFoot": [
+      66,
+      261
+    ],
+    "scale": 0.5860805860805861,
+    "offset": [
+      185,
+      117
+    ],
+    "sha256": "ba1970579c3e8808855c1a734eaeb513160dcf4030afff0eeb6a2f60636d16b4"
+  },
+  {
+    "id": "m26",
+    "dir": "down",
+    "action": "cast",
+    "frame": 1,
+    "source": "night-blood-ripper-v1\\down-generated.png",
+    "rect": {
+      "left": 461,
+      "top": 707,
+      "width": 251,
+      "height": 263
+    },
+    "sourceFoot": [
+      120,
+      262
+    ],
+    "scale": 0.5860805860805861,
+    "offset": [
+      154,
+      117
+    ],
+    "sha256": "978dcfc2c1af1a553c3030d8849a0a0165cb1b718f8ef0c6209c09cfc6fd169a"
+  },
+  {
+    "id": "m26",
+    "dir": "right",
+    "action": "cast",
+    "frame": 0,
+    "source": "night-blood-ripper-v1\\right-fixed-generated.png",
+    "rect": {
+      "left": 54,
+      "top": 687,
+      "width": 258,
+      "height": 308
+    },
+    "sourceFoot": [
+      100.5,
+      307
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      170,
+      106
+    ],
+    "sha256": "1d18ea501d0b8e3a9553dc2d3b0fd604cfce5eb6e412190a329b8b0c7ce74e27"
+  },
+  {
+    "id": "m26",
+    "dir": "right",
+    "action": "cast",
+    "frame": 1,
+    "source": "night-blood-ripper-v1\\right-fixed-generated.png",
+    "rect": {
+      "left": 432,
+      "top": 686,
+      "width": 263,
+      "height": 309
+    },
+    "sourceFoot": [
+      94.5,
+      308
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      173,
+      105
+    ],
+    "sha256": "86acbd67c4ce0e866d08f10a945986b761536d2e6cc6961dc8b79acfc30196b3"
+  },
+  {
+    "id": "m26",
+    "dir": "up",
+    "action": "cast",
+    "frame": 0,
+    "source": "night-blood-ripper-v1\\up-generated.png",
+    "rect": {
+      "left": 70,
+      "top": 687,
+      "width": 264,
+      "height": 285
+    },
+    "sourceFoot": [
+      62.5,
+      284
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      191,
+      118
+    ],
+    "sha256": "6370bf1038ba965e99879c425165157aa8a5ae3e8d0a5c364253e554af9e4644"
+  },
+  {
+    "id": "m26",
+    "dir": "up",
+    "action": "cast",
+    "frame": 1,
+    "source": "night-blood-ripper-v1\\up-generated.png",
+    "rect": {
+      "left": 458,
+      "top": 688,
+      "width": 265,
+      "height": 281
+    },
+    "sourceFoot": [
+      67.5,
+      280
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      188,
+      120
+    ],
+    "sha256": "8be9bbb65130541aa3b985dfc0330e38588ca803a50385e4818a2d0d15652ada"
+  },
+  {
+    "id": "m26",
+    "dir": "down",
+    "action": "hit",
+    "frame": 0,
+    "source": "night-blood-ripper-v1\\down-generated.png",
+    "rect": {
+      "left": 811,
+      "top": 709,
+      "width": 299,
+      "height": 255
+    },
+    "sourceFoot": [
+      76.5,
+      254
+    ],
+    "scale": 0.5860805860805861,
+    "offset": [
+      179,
+      122
+    ],
+    "sha256": "118df03952cc4afd1d4528317a7eeb90735390e546b03e1cdbb2f2007104b8e9"
+  },
+  {
+    "id": "m26",
+    "dir": "down",
+    "action": "hit",
+    "frame": 1,
+    "source": "night-blood-ripper-v1\\down-generated.png",
+    "rect": {
+      "left": 1202,
+      "top": 714,
+      "width": 284,
+      "height": 260
+    },
+    "sourceFoot": [
+      204.5,
+      259
+    ],
+    "scale": 0.5860805860805861,
+    "offset": [
+      104,
+      118
+    ],
+    "sha256": "bd3f8c7fb7e7e0ca147e4ae9130395214e85750fa0cf83301c0ae90e66d35211"
+  },
+  {
+    "id": "m26",
+    "dir": "right",
+    "action": "hit",
+    "frame": 0,
+    "source": "night-blood-ripper-v1\\right-fixed-generated.png",
+    "rect": {
+      "left": 785,
+      "top": 712,
+      "width": 335,
+      "height": 269
+    },
+    "sourceFoot": [
+      97,
+      268
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      172,
+      127
+    ],
+    "sha256": "6ac5cdd658c5a5f5e09446b4dc9fe5e0e7f3dee6c08d78aae99ba170a3d16019"
+  },
+  {
+    "id": "m26",
+    "dir": "right",
+    "action": "hit",
+    "frame": 1,
+    "source": "night-blood-ripper-v1\\right-fixed-generated.png",
+    "rect": {
+      "left": 1214,
+      "top": 684,
+      "width": 279,
+      "height": 298
+    },
+    "sourceFoot": [
+      145.5,
+      297
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      146,
+      112
+    ],
+    "sha256": "2bef8b1e06cc251dde562ba0f7c8c90fdd49f14d0f56950db2a9a89ef192fe7c"
+  },
+  {
+    "id": "m26",
+    "dir": "up",
+    "action": "hit",
+    "frame": 0,
+    "source": "night-blood-ripper-v1\\up-generated.png",
+    "rect": {
+      "left": 813,
+      "top": 717,
+      "width": 284,
+      "height": 252
+    },
+    "sourceFoot": [
+      82,
+      251
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      180,
+      136
+    ],
+    "sha256": "2a8f4c8e088ae2187b6b41e904901c90dd06bc57ac9978ea83f6d0e6bc98a453"
+  },
+  {
+    "id": "m26",
+    "dir": "up",
+    "action": "hit",
+    "frame": 1,
+    "source": "night-blood-ripper-v1\\up-generated.png",
+    "rect": {
+      "left": 1206,
+      "top": 685,
+      "width": 274,
+      "height": 288
+    },
+    "sourceFoot": [
+      207.5,
+      286
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      113,
+      117
+    ],
+    "sha256": "6a71e9af71917e59cafbfc2d40ff7dbd16104c1e44608523fe5c77269fe63e33"
+  },
+  {
+    "id": "m29",
+    "dir": "down",
+    "action": "walk",
+    "frame": 0,
+    "source": "rose-temple-crusader-v1\\down-generated.png",
+    "rect": {
+      "left": 74,
+      "top": 17,
+      "width": 246,
+      "height": 311
+    },
+    "sourceFoot": [
+      125.5,
+      310
+    ],
+    "scale": 0.517799352750809,
+    "offset": [
+      128,
+      109
+    ],
+    "sha256": "3ccec67a29e9de86af03178db698517e4c09bf3d57230ee06ea1cb8dd1cec6d8"
+  },
+  {
+    "id": "m29",
+    "dir": "down",
+    "action": "walk",
+    "frame": 1,
+    "source": "rose-temple-crusader-v1\\down-generated.png",
+    "rect": {
+      "left": 452,
+      "top": 18,
+      "width": 258,
+      "height": 310
+    },
+    "sourceFoot": [
+      138.5,
+      309
+    ],
+    "scale": 0.517799352750809,
+    "offset": [
+      121,
+      110
+    ],
+    "sha256": "1960c3ffda31e71df3ea37e0084f9cbd85211f6f8264dc5e0cded29d58d9d1d3"
+  },
+  {
+    "id": "m29",
+    "dir": "down",
+    "action": "walk",
+    "frame": 2,
+    "source": "rose-temple-crusader-v1\\down-generated.png",
+    "rect": {
+      "left": 832,
+      "top": 19,
+      "width": 244,
+      "height": 309
+    },
+    "sourceFoot": [
+      124,
+      308
+    ],
+    "scale": 0.517799352750809,
+    "offset": [
+      128,
+      111
+    ],
+    "sha256": "199a0364e8d6012636fee9f9f9d9be2a5c75bc4d04b7d2ea6e147ea93f77fc36"
+  },
+  {
+    "id": "m29",
+    "dir": "down",
+    "action": "walk",
+    "frame": 3,
+    "source": "rose-temple-crusader-v1\\down-generated.png",
+    "rect": {
+      "left": 1217,
+      "top": 18,
+      "width": 245,
+      "height": 310
+    },
+    "sourceFoot": [
+      138.5,
+      309
+    ],
+    "scale": 0.517799352750809,
+    "offset": [
+      120,
+      110
+    ],
+    "sha256": "33659777d5b00a85572b2d068cbcb6e649293b485161c514de72ba1b76017a16"
+  },
+  {
+    "id": "m29",
+    "dir": "right",
+    "action": "walk",
+    "frame": 0,
+    "source": "rose-temple-crusader-v1\\right-generated.png",
+    "rect": {
+      "left": 48,
+      "top": 22,
+      "width": 283,
+      "height": 310
+    },
+    "sourceFoot": [
+      154.5,
+      309
+    ],
+    "scale": 0.517799352750809,
+    "offset": [
+      112,
+      111
+    ],
+    "sha256": "9dcfc12c827586248dbda58c9eb49c4483a4ab5ab7588609dfb1c6156ed21418"
+  },
+  {
+    "id": "m29",
+    "dir": "right",
+    "action": "walk",
+    "frame": 1,
+    "source": "rose-temple-crusader-v1\\right-generated.png",
+    "rect": {
+      "left": 436,
+      "top": 21,
+      "width": 281,
+      "height": 311
+    },
+    "sourceFoot": [
+      191,
+      309
+    ],
+    "scale": 0.517799352750809,
+    "offset": [
+      94,
+      110
+    ],
+    "sha256": "9ffbb0bee5cbd5e478f272b167b7bd549fba3b3740cd1fe5ecfebba6f489c88e"
+  },
+  {
+    "id": "m29",
+    "dir": "right",
+    "action": "walk",
+    "frame": 2,
+    "source": "rose-temple-crusader-v1\\right-generated.png",
+    "rect": {
+      "left": 794,
+      "top": 19,
+      "width": 285,
+      "height": 314
+    },
+    "sourceFoot": [
+      155.5,
+      312
+    ],
+    "scale": 0.517799352750809,
+    "offset": [
+      111,
+      108
+    ],
+    "sha256": "3ec0e698bff56c9277a921df6b4d94a02fa081268204b1dd506c8f1fcbb1c0c0"
+  },
+  {
+    "id": "m29",
+    "dir": "right",
+    "action": "walk",
+    "frame": 3,
+    "source": "rose-temple-crusader-v1\\right-generated.png",
+    "rect": {
+      "left": 1196,
+      "top": 21,
+      "width": 289,
+      "height": 312
+    },
+    "sourceFoot": [
+      161,
+      309
+    ],
+    "scale": 0.517799352750809,
+    "offset": [
+      109,
+      110
+    ],
+    "sha256": "5b9fc89a72089b9a79114c74875eddb26df0df86cedb87a69745e4939ab191e1"
+  },
+  {
+    "id": "m29",
+    "dir": "up",
+    "action": "walk",
+    "frame": 0,
+    "source": "rose-temple-crusader-v1\\up-generated.png",
+    "rect": {
+      "left": 119,
+      "top": 13,
+      "width": 214,
+      "height": 314
+    },
+    "sourceFoot": [
+      85,
+      312
+    ],
+    "scale": 0.5128205128205128,
+    "offset": [
+      149,
+      110
+    ],
+    "sha256": "dc4303a1c878b48bc6c8812acd08e8785aa01f185158aad2246deee0ceaeaf11"
+  },
+  {
+    "id": "m29",
+    "dir": "up",
+    "action": "walk",
+    "frame": 1,
+    "source": "rose-temple-crusader-v1\\up-generated.png",
+    "rect": {
+      "left": 497,
+      "top": 13,
+      "width": 235,
+      "height": 311
+    },
+    "sourceFoot": [
+      88,
+      310
+    ],
+    "scale": 0.5128205128205128,
+    "offset": [
+      147,
+      111
+    ],
+    "sha256": "17d81bda0044cbb9cac1cb4213a16af3c2b83e2449c8230568d761323125a949"
+  },
+  {
+    "id": "m29",
+    "dir": "up",
+    "action": "walk",
+    "frame": 2,
+    "source": "rose-temple-crusader-v1\\up-generated.png",
+    "rect": {
+      "left": 865,
+      "top": 16,
+      "width": 219,
+      "height": 309
+    },
+    "sourceFoot": [
+      102,
+      308
+    ],
+    "scale": 0.5128205128205128,
+    "offset": [
+      140,
+      112
+    ],
+    "sha256": "5f1dca516d3f1cb836252ba4e6c1bc07552177097e93af885073a337d5012d3e"
+  },
+  {
+    "id": "m29",
+    "dir": "up",
+    "action": "walk",
+    "frame": 3,
+    "source": "rose-temple-crusader-v1\\up-generated.png",
+    "rect": {
+      "left": 1246,
+      "top": 14,
+      "width": 231,
+      "height": 316
+    },
+    "sourceFoot": [
+      108,
+      315
+    ],
+    "scale": 0.5128205128205128,
+    "offset": [
+      137,
+      108
+    ],
+    "sha256": "e666adc6a0d3e95403339155247572b3314c313d92185f87b2b3b06f80a72240"
+  },
+  {
+    "id": "m29",
+    "dir": "down",
+    "action": "attack",
+    "frame": 0,
+    "source": "rose-temple-crusader-v1\\down-generated.png",
+    "rect": {
+      "left": 29,
+      "top": 361,
+      "width": 323,
+      "height": 298
+    },
+    "sourceFoot": [
+      78,
+      297
+    ],
+    "scale": 0.517799352750809,
+    "offset": [
+      152,
+      116
+    ],
+    "sha256": "4397035988ad81b0b09649f503740f07422253e22288181d34ce83c889892d7d"
+  },
+  {
+    "id": "m29",
+    "dir": "down",
+    "action": "attack",
+    "frame": 1,
+    "source": "rose-temple-crusader-v1\\down-generated.png",
+    "rect": {
+      "left": 435,
+      "top": 349,
+      "width": 282,
+      "height": 313
+    },
+    "sourceFoot": [
+      61,
+      307
+    ],
+    "scale": 0.517799352750809,
+    "offset": [
+      161,
+      112
+    ],
+    "sha256": "15267567d06492ebd002340ad2dca66200c23f4968a753751b81295f7a520d1f"
+  },
+  {
+    "id": "m29",
+    "dir": "down",
+    "action": "attack",
+    "frame": 2,
+    "source": "rose-temple-crusader-v1\\down-generated.png",
+    "rect": {
+      "left": 721,
+      "top": 364,
+      "width": 423,
+      "height": 300
+    },
+    "sourceFoot": [
+      205.5,
+      299
+    ],
+    "scale": 0.517799352750809,
+    "offset": [
+      86,
+      115
+    ],
+    "sha256": "b29b12b60df692cda94707d61e70534f0e3e672ff92499b5215fd704fa9e27dc"
+  },
+  {
+    "id": "m29",
+    "dir": "down",
+    "action": "attack",
+    "frame": 3,
+    "source": "rose-temple-crusader-v1\\down-generated.png",
+    "rect": {
+      "left": 1195,
+      "top": 353,
+      "width": 277,
+      "height": 314
+    },
+    "sourceFoot": [
+      93.5,
+      312
+    ],
+    "scale": 0.517799352750809,
+    "offset": [
+      144,
+      108
+    ],
+    "sha256": "92c63cb7ff43df8f1ece3e6877c68de809de067cc77d3f2dadbba53f11621779"
+  },
+  {
+    "id": "m29",
+    "dir": "right",
+    "action": "attack",
+    "frame": 0,
+    "source": "rose-temple-crusader-v1\\right-generated.png",
+    "rect": {
+      "left": 43,
+      "top": 367,
+      "width": 309,
+      "height": 297
+    },
+    "sourceFoot": [
+      63.5,
+      294
+    ],
+    "scale": 0.517799352750809,
+    "offset": [
+      159,
+      118
+    ],
+    "sha256": "c97c90029c5b82c582501ec3b5f699b9873a54a5d523e307857cddb1afe0a14a"
+  },
+  {
+    "id": "m29",
+    "dir": "right",
+    "action": "attack",
+    "frame": 1,
+    "source": "rose-temple-crusader-v1\\right-generated.png",
+    "rect": {
+      "left": 410,
+      "top": 352,
+      "width": 307,
+      "height": 315
+    },
+    "sourceFoot": [
+      73,
+      313
+    ],
+    "scale": 0.517799352750809,
+    "offset": [
+      154,
+      108
+    ],
+    "sha256": "b04da7519da5d4c72e1b5255fefc3dfddc7e852702169a8ae0b38f24429832ff"
+  },
+  {
+    "id": "m29",
+    "dir": "right",
+    "action": "attack",
+    "frame": 2,
+    "source": "rose-temple-crusader-v1\\right-generated.png",
+    "rect": {
+      "left": 771,
+      "top": 365,
+      "width": 466,
+      "height": 298
+    },
+    "sourceFoot": [
+      256.5,
+      273
+    ],
+    "scale": 0.517799352750809,
+    "offset": [
+      59,
+      129
+    ],
+    "sha256": "760ef5c3b0939229a30034917605251a6aefc29d8f8d6d9181bafd4a49add76e"
+  },
+  {
+    "id": "m29",
+    "dir": "right",
+    "action": "attack",
+    "frame": 3,
+    "source": "rose-temple-crusader-v1\\right-generated.png",
+    "rect": {
+      "left": 1203,
+      "top": 362,
+      "width": 295,
+      "height": 301
+    },
+    "sourceFoot": [
+      72.5,
+      300
+    ],
+    "scale": 0.517799352750809,
+    "offset": [
+      154,
+      115
+    ],
+    "sha256": "b5b2482d54a853fc7544f4ebb581881f3bff17871f55dc3c7f28242009ba9f15"
+  },
+  {
+    "id": "m29",
+    "dir": "up",
+    "action": "attack",
+    "frame": 0,
+    "source": "rose-temple-crusader-v1\\up-generated.png",
+    "rect": {
+      "left": 51,
+      "top": 360,
+      "width": 308,
+      "height": 296
+    },
+    "sourceFoot": [
+      231,
+      295
+    ],
+    "scale": 0.5128205128205128,
+    "offset": [
+      74,
+      119
+    ],
+    "sha256": "22d8866a728e6d05379c36ebdeb2f5cf0555d226c0c86f61777fdcd8eafe1825"
+  },
+  {
+    "id": "m29",
+    "dir": "up",
+    "action": "attack",
+    "frame": 1,
+    "source": "rose-temple-crusader-v1\\up-generated.png",
+    "rect": {
+      "left": 452,
+      "top": 350,
+      "width": 294,
+      "height": 297
+    },
+    "sourceFoot": [
+      192,
+      296
+    ],
+    "scale": 0.5128205128205128,
+    "offset": [
+      94,
+      118
+    ],
+    "sha256": "ddd034a871007f5038d4349c955f5e9ec6bce1211c7dfb2116d14e11ba68d120"
+  },
+  {
+    "id": "m29",
+    "dir": "up",
+    "action": "attack",
+    "frame": 2,
+    "source": "rose-temple-crusader-v1\\up-generated.png",
+    "rect": {
+      "left": 833,
+      "top": 362,
+      "width": 386,
+      "height": 307
+    },
+    "sourceFoot": [
+      104.5,
+      306
+    ],
+    "scale": 0.5128205128205128,
+    "offset": [
+      138,
+      113
+    ],
+    "sha256": "c58aa071b369f1e48a35883401c703964e23253fba4407bbb603d64bd12616a7"
+  },
+  {
+    "id": "m29",
+    "dir": "up",
+    "action": "attack",
+    "frame": 3,
+    "source": "rose-temple-crusader-v1\\up-generated.png",
+    "rect": {
+      "left": 1248,
+      "top": 358,
+      "width": 255,
+      "height": 293
+    },
+    "sourceFoot": [
+      185.5,
+      292
+    ],
+    "scale": 0.5128205128205128,
+    "offset": [
+      97,
+      120
+    ],
+    "sha256": "9164d169f6cc99103454b1d3151909eec18ef681d0208601ea7c78d42c332626"
+  },
+  {
+    "id": "m29",
+    "dir": "down",
+    "action": "cast",
+    "frame": 0,
+    "source": "rose-temple-crusader-v1\\down-generated.png",
+    "rect": {
+      "left": 49,
+      "top": 678,
+      "width": 300,
+      "height": 297
+    },
+    "sourceFoot": [
+      72,
+      296
+    ],
+    "scale": 0.517799352750809,
+    "offset": [
+      155,
+      117
+    ],
+    "sha256": "82d4c7f5c489e2365625d5fea991564164959890e098fdcb3989603869be091b"
+  },
+  {
+    "id": "m29",
+    "dir": "down",
+    "action": "cast",
+    "frame": 1,
+    "source": "rose-temple-crusader-v1\\down-generated.png",
+    "rect": {
+      "left": 429,
+      "top": 677,
+      "width": 309,
+      "height": 305
+    },
+    "sourceFoot": [
+      91.5,
+      304
+    ],
+    "scale": 0.517799352750809,
+    "offset": [
+      145,
+      113
+    ],
+    "sha256": "48d678a863225da4320b101ac3e78342f3939aa88a63a5b463b7793da38f0f36"
+  },
+  {
+    "id": "m29",
+    "dir": "right",
+    "action": "cast",
+    "frame": 0,
+    "source": "rose-temple-crusader-v1\\right-generated.png",
+    "rect": {
+      "left": 53,
+      "top": 680,
+      "width": 304,
+      "height": 305
+    },
+    "sourceFoot": [
+      151.5,
+      279
+    ],
+    "scale": 0.517799352750809,
+    "offset": [
+      114,
+      126
+    ],
+    "sha256": "43f09bd5250d47e3b359308d9a15efebc31119fe9a0701516f713cb191abbe3e"
+  },
+  {
+    "id": "m29",
+    "dir": "right",
+    "action": "cast",
+    "frame": 1,
+    "source": "rose-temple-crusader-v1\\right-generated.png",
+    "rect": {
+      "left": 440,
+      "top": 696,
+      "width": 279,
+      "height": 289
+    },
+    "sourceFoot": [
+      68.5,
+      288
+    ],
+    "scale": 0.517799352750809,
+    "offset": [
+      157,
+      121
+    ],
+    "sha256": "291d35b16ea5aa6a7c9c2202027bac985aa86c8bdecf41adbaf60bf67dff9e9a"
+  },
+  {
+    "id": "m29",
+    "dir": "up",
+    "action": "cast",
+    "frame": 0,
+    "source": "rose-temple-crusader-v1\\up-generated.png",
+    "rect": {
+      "left": 52,
+      "top": 683,
+      "width": 313,
+      "height": 302
+    },
+    "sourceFoot": [
+      238,
+      300
+    ],
+    "scale": 0.5128205128205128,
+    "offset": [
+      70,
+      116
+    ],
+    "sha256": "5153234316564676ef1be38fcfe77554cb38b8e255a0ef6cdb52a68858e6a34f"
+  },
+  {
+    "id": "m29",
+    "dir": "up",
+    "action": "cast",
+    "frame": 1,
+    "source": "rose-temple-crusader-v1\\up-generated.png",
+    "rect": {
+      "left": 443,
+      "top": 684,
+      "width": 318,
+      "height": 287
+    },
+    "sourceFoot": [
+      158.5,
+      285
+    ],
+    "scale": 0.5128205128205128,
+    "offset": [
+      111,
+      124
+    ],
+    "sha256": "a06f66ffd5310f012028c64fca2d9ffe3dc5f450c7540381d1beedb3a336b5e5"
+  },
+  {
+    "id": "m29",
+    "dir": "down",
+    "action": "hit",
+    "frame": 0,
+    "source": "rose-temple-crusader-v1\\down-generated.png",
+    "rect": {
+      "left": 791,
+      "top": 692,
+      "width": 328,
+      "height": 285
+    },
+    "sourceFoot": [
+      140.5,
+      284
+    ],
+    "scale": 0.517799352750809,
+    "offset": [
+      120,
+      123
+    ],
+    "sha256": "3fc88e996f439534caf627a57f3e3aae76b8164364a0ec25c5c95bc8587e3c40"
+  },
+  {
+    "id": "m29",
+    "dir": "down",
+    "action": "hit",
+    "frame": 1,
+    "source": "rose-temple-crusader-v1\\down-generated.png",
+    "rect": {
+      "left": 1210,
+      "top": 689,
+      "width": 270,
+      "height": 285
+    },
+    "sourceFoot": [
+      102.5,
+      281
+    ],
+    "scale": 0.517799352750809,
+    "offset": [
+      139,
+      124
+    ],
+    "sha256": "cd6ed69574b8fa6d446ed080d353e1b8a519b07b674ad202065d72432b21fcac"
+  },
+  {
+    "id": "m29",
+    "dir": "right",
+    "action": "hit",
+    "frame": 0,
+    "source": "rose-temple-crusader-v1\\right-generated.png",
+    "rect": {
+      "left": 763,
+      "top": 686,
+      "width": 347,
+      "height": 304
+    },
+    "sourceFoot": [
+      236.5,
+      302
+    ],
+    "scale": 0.517799352750809,
+    "offset": [
+      70,
+      114
+    ],
+    "sha256": "ec6ecc2cc8397dfe5d573da2d001a7ed9d650d044f27aaabda48462a5b1e0320"
+  },
+  {
+    "id": "m29",
+    "dir": "right",
+    "action": "hit",
+    "frame": 1,
+    "source": "rose-temple-crusader-v1\\right-generated.png",
+    "rect": {
+      "left": 1210,
+      "top": 684,
+      "width": 287,
+      "height": 303
+    },
+    "sourceFoot": [
+      73.5,
+      302
+    ],
+    "scale": 0.517799352750809,
+    "offset": [
+      154,
+      114
+    ],
+    "sha256": "c1591044afdb03b5a9b5383d2207aef9cf64d0a48bce07677f1b630d9910493a"
+  },
+  {
+    "id": "m29",
+    "dir": "up",
+    "action": "hit",
+    "frame": 0,
+    "source": "rose-temple-crusader-v1\\up-generated.png",
+    "rect": {
+      "left": 846,
+      "top": 724,
+      "width": 299,
+      "height": 236
+    },
+    "sourceFoot": [
+      148,
+      235
+    ],
+    "scale": 0.5128205128205128,
+    "offset": [
+      117,
+      149
+    ],
+    "sha256": "b89e97cc5c8731aa6ccfe8f03bcd0bedcfa91e632801cdd7199062e734bb369d"
+  },
+  {
+    "id": "m29",
+    "dir": "up",
+    "action": "hit",
+    "frame": 1,
+    "source": "rose-temple-crusader-v1\\up-generated.png",
+    "rect": {
+      "left": 1240,
+      "top": 685,
+      "width": 259,
+      "height": 312
+    },
+    "sourceFoot": [
+      160,
+      311
+    ],
+    "scale": 0.5128205128205128,
+    "offset": [
+      110,
+      111
+    ],
+    "sha256": "537db5673aff384ba10902d134bcf4a266396b559b14db7ddc7ba5339d20bd52"
+  },
+  {
+    "id": "m30",
+    "dir": "down",
+    "action": "walk",
+    "frame": 0,
+    "source": "immortal-golden-guardian-v1\\down-generated.png",
+    "rect": {
+      "left": 75,
+      "top": 23,
+      "width": 289,
+      "height": 321
+    },
+    "sourceFoot": [
+      113.5,
+      319
+    ],
+    "scale": 0.4984423676012461,
+    "offset": [
+      136,
+      111
+    ],
+    "sha256": "9d55b77c4e614508dd5f75c2b07140dff7932a8bc3565eec63faf589aeaf28ee"
+  },
+  {
+    "id": "m30",
+    "dir": "down",
+    "action": "walk",
+    "frame": 1,
+    "source": "immortal-golden-guardian-v1\\down-generated.png",
+    "rect": {
+      "left": 464,
+      "top": 22,
+      "width": 271,
+      "height": 321
+    },
+    "sourceFoot": [
+      133.5,
+      320
+    ],
+    "scale": 0.4984423676012461,
+    "offset": [
+      125,
+      110
+    ],
+    "sha256": "f3dad8dcff609632e946d2e053f3d5349f010a201f867434f3d18d71699cc98e"
+  },
+  {
+    "id": "m30",
+    "dir": "down",
+    "action": "walk",
+    "frame": 2,
+    "source": "immortal-golden-guardian-v1\\down-generated.png",
+    "rect": {
+      "left": 804,
+      "top": 21,
+      "width": 298,
+      "height": 323
+    },
+    "sourceFoot": [
+      137,
+      322
+    ],
+    "scale": 0.4984423676012461,
+    "offset": [
+      124,
+      110
+    ],
+    "sha256": "aa98de1a63f1603abcbea13d3d661b6bda6a311b4ea1e90669a12d3a76446ede"
+  },
+  {
+    "id": "m30",
+    "dir": "down",
+    "action": "walk",
+    "frame": 3,
+    "source": "immortal-golden-guardian-v1\\down-generated.png",
+    "rect": {
+      "left": 1199,
+      "top": 21,
+      "width": 295,
+      "height": 323
+    },
+    "sourceFoot": [
+      126,
+      322
+    ],
+    "scale": 0.4984423676012461,
+    "offset": [
+      129,
+      110
+    ],
+    "sha256": "f8e00998d8e038e4fee3e30a0a0d38f09e7279cbdf7f2d717e5ea23875d1c5a1"
+  },
+  {
+    "id": "m30",
+    "dir": "right",
+    "action": "walk",
+    "frame": 0,
+    "source": "immortal-golden-guardian-v1\\right-generated.png",
+    "rect": {
+      "left": 70,
+      "top": 48,
+      "width": 266,
+      "height": 269
+    },
+    "sourceFoot": [
+      146.5,
+      267
+    ],
+    "scale": 0.6130268199233716,
+    "offset": [
+      102,
+      107
+    ],
+    "sha256": "3e5b0a8c94fb6e7df715597bdd3b027d9dab8cc566c558b10bdc85f5205e1b90"
+  },
+  {
+    "id": "m30",
+    "dir": "right",
+    "action": "walk",
+    "frame": 1,
+    "source": "immortal-golden-guardian-v1\\right-generated.png",
+    "rect": {
+      "left": 465,
+      "top": 53,
+      "width": 264,
+      "height": 266
+    },
+    "sourceFoot": [
+      140.5,
+      263
+    ],
+    "scale": 0.6130268199233716,
+    "offset": [
+      106,
+      110
+    ],
+    "sha256": "b618ee6aa1ebd7ea87df9674652c4f27359cc01e29e28e63f2981cd1da0c0e0a"
+  },
+  {
+    "id": "m30",
+    "dir": "right",
+    "action": "walk",
+    "frame": 2,
+    "source": "immortal-golden-guardian-v1\\right-generated.png",
+    "rect": {
+      "left": 826,
+      "top": 55,
+      "width": 250,
+      "height": 261
+    },
+    "sourceFoot": [
+      126,
+      259
+    ],
+    "scale": 0.6130268199233716,
+    "offset": [
+      115,
+      112
+    ],
+    "sha256": "856d7df753702004bb84b808d4414f1a3a9a66e7c74f8ecdc09290fd257080e6"
+  },
+  {
+    "id": "m30",
+    "dir": "right",
+    "action": "walk",
+    "frame": 3,
+    "source": "immortal-golden-guardian-v1\\right-generated.png",
+    "rect": {
+      "left": 1204,
+      "top": 55,
+      "width": 284,
+      "height": 263
+    },
+    "sourceFoot": [
+      146.5,
+      262
+    ],
+    "scale": 0.6130268199233716,
+    "offset": [
+      102,
+      110
+    ],
+    "sha256": "c0b1c6fe4f594c80a063c395e063bf065b4e7c43b88190b2cd72b0d5cd5a4a15"
+  },
+  {
+    "id": "m30",
+    "dir": "up",
+    "action": "walk",
+    "frame": 0,
+    "source": "immortal-golden-guardian-v1\\up-generated.png",
+    "rect": {
+      "left": 110,
+      "top": 35,
+      "width": 274,
+      "height": 296
+    },
+    "sourceFoot": [
+      96.5,
+      295
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      140,
+      112
+    ],
+    "sha256": "c980123001992fe5cec2dd09a1386cc79cd6dc37c30fdd0866f0667e04feaf69"
+  },
+  {
+    "id": "m30",
+    "dir": "up",
+    "action": "walk",
+    "frame": 1,
+    "source": "immortal-golden-guardian-v1\\up-generated.png",
+    "rect": {
+      "left": 476,
+      "top": 34,
+      "width": 278,
+      "height": 296
+    },
+    "sourceFoot": [
+      116,
+      294
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      130,
+      113
+    ],
+    "sha256": "b57700c0d079ffe6afdca9126b3e021868a28fa951d7ccdadedd4b77a9ccadfa"
+  },
+  {
+    "id": "m30",
+    "dir": "up",
+    "action": "walk",
+    "frame": 2,
+    "source": "immortal-golden-guardian-v1\\up-generated.png",
+    "rect": {
+      "left": 838,
+      "top": 34,
+      "width": 269,
+      "height": 301
+    },
+    "sourceFoot": [
+      117,
+      300
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      130,
+      110
+    ],
+    "sha256": "ea534ce15ee14ed71ce1f7af82c0181d5815f19954e634b1635f26bfa62aee60"
+  },
+  {
+    "id": "m30",
+    "dir": "up",
+    "action": "walk",
+    "frame": 3,
+    "source": "immortal-golden-guardian-v1\\up-generated.png",
+    "rect": {
+      "left": 1212,
+      "top": 34,
+      "width": 274,
+      "height": 301
+    },
+    "sourceFoot": [
+      110.5,
+      300
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      133,
+      110
+    ],
+    "sha256": "8a1b6de1b0b824a7aa7ff4cce0418085e295f8f44175a4ea7cef1b5edc523e05"
+  },
+  {
+    "id": "m30",
+    "dir": "down",
+    "action": "attack",
+    "frame": 0,
+    "source": "immortal-golden-guardian-v1\\down-generated.png",
+    "rect": {
+      "left": 43,
+      "top": 363,
+      "width": 322,
+      "height": 308
+    },
+    "sourceFoot": [
+      250.5,
+      307
+    ],
+    "scale": 0.4984423676012461,
+    "offset": [
+      67,
+      117
+    ],
+    "sha256": "cc329760da0bfede92b3feca69d3528529f8c511b651860434f1da25ad0ea0c2"
+  },
+  {
+    "id": "m30",
+    "dir": "down",
+    "action": "attack",
+    "frame": 1,
+    "source": "immortal-golden-guardian-v1\\down-generated.png",
+    "rect": {
+      "left": 423,
+      "top": 356,
+      "width": 316,
+      "height": 310
+    },
+    "sourceFoot": [
+      244.5,
+      309
+    ],
+    "scale": 0.4984423676012461,
+    "offset": [
+      70,
+      116
+    ],
+    "sha256": "eb87ca06c7f76be2bf3460a00cd931caa208d26f6bdc6409a9c871cf8941061e"
+  },
+  {
+    "id": "m30",
+    "dir": "down",
+    "action": "attack",
+    "frame": 2,
+    "source": "immortal-golden-guardian-v1\\down-generated.png",
+    "rect": {
+      "left": 768,
+      "top": 369,
+      "width": 366,
+      "height": 307
+    },
+    "sourceFoot": [
+      215,
+      260
+    ],
+    "scale": 0.4984423676012461,
+    "offset": [
+      85,
+      140
+    ],
+    "sha256": "94aa3cc43e795e5da7d58f23aa38de71dab90768dbfe276f9d91e4287900c736"
+  },
+  {
+    "id": "m30",
+    "dir": "down",
+    "action": "attack",
+    "frame": 3,
+    "source": "immortal-golden-guardian-v1\\down-generated.png",
+    "rect": {
+      "left": 1215,
+      "top": 363,
+      "width": 280,
+      "height": 310
+    },
+    "sourceFoot": [
+      218.5,
+      307
+    ],
+    "scale": 0.4984423676012461,
+    "offset": [
+      83,
+      117
+    ],
+    "sha256": "daeef7bc4e56430e9672add756bc5ca395de41df2dce59273c5c777749f52bce"
+  },
+  {
+    "id": "m30",
+    "dir": "right",
+    "action": "attack",
+    "frame": 0,
+    "source": "immortal-golden-guardian-v1\\right-generated.png",
+    "rect": {
+      "left": 47,
+      "top": 354,
+      "width": 276,
+      "height": 294
+    },
+    "sourceFoot": [
+      137.5,
+      293
+    ],
+    "scale": 0.6130268199233716,
+    "offset": [
+      108,
+      91
+    ],
+    "sha256": "71c441b547a89c41c21d1ef8ff7464e6664fc45b1aea4982391ab0e1c2ef37e2"
+  },
+  {
+    "id": "m30",
+    "dir": "right",
+    "action": "attack",
+    "frame": 1,
+    "source": "immortal-golden-guardian-v1\\right-generated.png",
+    "rect": {
+      "left": 472,
+      "top": 376,
+      "width": 237,
+      "height": 275
+    },
+    "sourceFoot": [
+      180.5,
+      270
+    ],
+    "scale": 0.6130268199233716,
+    "offset": [
+      81,
+      106
+    ],
+    "sha256": "c741663da99c717fac3e9b4fd813e3a6d26d05824e6380a4cc20bfa2878c753c"
+  },
+  {
+    "id": "m30",
+    "dir": "right",
+    "action": "attack",
+    "frame": 2,
+    "source": "immortal-golden-guardian-v1\\right-generated.png",
+    "rect": {
+      "left": 796,
+      "top": 395,
+      "width": 405,
+      "height": 252
+    },
+    "sourceFoot": [
+      282,
+      251
+    ],
+    "scale": 0.6130268199233716,
+    "offset": [
+      20,
+      117
+    ],
+    "sha256": "fd2832a5113746efcb2cdd30f05635dbab9ff24e8248e7b7e52243732c33c345"
+  },
+  {
+    "id": "m30",
+    "dir": "right",
+    "action": "attack",
+    "frame": 3,
+    "source": "immortal-golden-guardian-v1\\right-generated.png",
+    "rect": {
+      "left": 1226,
+      "top": 395,
+      "width": 265,
+      "height": 250
+    },
+    "sourceFoot": [
+      132,
+      248
+    ],
+    "scale": 0.6130268199233716,
+    "offset": [
+      111,
+      119
+    ],
+    "sha256": "4ea8b2bb8b93f73a6eb07e098c9b103e9c41421719776fbb19644d9e91cfd858"
+  },
+  {
+    "id": "m30",
+    "dir": "up",
+    "action": "attack",
+    "frame": 0,
+    "source": "immortal-golden-guardian-v1\\up-generated.png",
+    "rect": {
+      "left": 65,
+      "top": 381,
+      "width": 330,
+      "height": 263
+    },
+    "sourceFoot": [
+      201.5,
+      262
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      85,
+      130
+    ],
+    "sha256": "80483053164625651212485c897deb7f61488e5ffd2f81a55e845bdb8af090fc"
+  },
+  {
+    "id": "m30",
+    "dir": "up",
+    "action": "attack",
+    "frame": 1,
+    "source": "immortal-golden-guardian-v1\\up-generated.png",
+    "rect": {
+      "left": 444,
+      "top": 360,
+      "width": 299,
+      "height": 292
+    },
+    "sourceFoot": [
+      130.5,
+      289
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      123,
+      116
+    ],
+    "sha256": "81aa914d71162c7484e33bf7c2f7b86dcfd8ba53bc41fd9c7f23b75f4cc45d55"
+  },
+  {
+    "id": "m30",
+    "dir": "up",
+    "action": "attack",
+    "frame": 2,
+    "source": "immortal-golden-guardian-v1\\up-generated.png",
+    "rect": {
+      "left": 786,
+      "top": 374,
+      "width": 411,
+      "height": 286
+    },
+    "sourceFoot": [
+      263.5,
+      285
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      52,
+      117
+    ],
+    "sha256": "1dc636abd5890b9cf95ba935682ae4d70a3668e42251c5c13d02f403b160b270"
+  },
+  {
+    "id": "m30",
+    "dir": "up",
+    "action": "attack",
+    "frame": 3,
+    "source": "immortal-golden-guardian-v1\\up-generated.png",
+    "rect": {
+      "left": 1235,
+      "top": 381,
+      "width": 281,
+      "height": 269
+    },
+    "sourceFoot": [
+      98,
+      268
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      140,
+      127
+    ],
+    "sha256": "203fad94eb64de6d5bbafaf4d705f68e20c9cc1e53aa5f5999d2a2e527e10f27"
+  },
+  {
+    "id": "m30",
+    "dir": "down",
+    "action": "cast",
+    "frame": 0,
+    "source": "immortal-golden-guardian-v1\\down-generated.png",
+    "rect": {
+      "left": 50,
+      "top": 675,
+      "width": 326,
+      "height": 317
+    },
+    "sourceFoot": [
+      239.5,
+      316
+    ],
+    "scale": 0.4984423676012461,
+    "offset": [
+      73,
+      113
+    ],
+    "sha256": "17c5affe4d981e984916e82b94e8dd12000c14eb47a262f6c318fecb361659d1"
+  },
+  {
+    "id": "m30",
+    "dir": "down",
+    "action": "cast",
+    "frame": 1,
+    "source": "immortal-golden-guardian-v1\\down-generated.png",
+    "rect": {
+      "left": 439,
+      "top": 677,
+      "width": 294,
+      "height": 313
+    },
+    "sourceFoot": [
+      231.5,
+      305
+    ],
+    "scale": 0.4984423676012461,
+    "offset": [
+      77,
+      118
+    ],
+    "sha256": "e3f804cb7c09c1fbfd3acc69d74820d5d760d8b7fad3269c8b57bd1aad8226fa"
+  },
+  {
+    "id": "m30",
+    "dir": "right",
+    "action": "cast",
+    "frame": 0,
+    "source": "immortal-golden-guardian-v1\\right-generated.png",
+    "rect": {
+      "left": 46,
+      "top": 666,
+      "width": 313,
+      "height": 309
+    },
+    "sourceFoot": [
+      156,
+      303
+    ],
+    "scale": 0.6130268199233716,
+    "offset": [
+      97,
+      84
+    ],
+    "sha256": "a376792bed852782b2ba8262c533a438c1b090c457e4b8c5179da16bf964215f"
+  },
+  {
+    "id": "m30",
+    "dir": "right",
+    "action": "cast",
+    "frame": 1,
+    "source": "immortal-golden-guardian-v1\\right-generated.png",
+    "rect": {
+      "left": 435,
+      "top": 677,
+      "width": 306,
+      "height": 300
+    },
+    "sourceFoot": [
+      66,
+      299
+    ],
+    "scale": 0.6130268199233716,
+    "offset": [
+      152,
+      87
+    ],
+    "sha256": "5f8576878e76f4331001e62798682c8872a8d007c0f5d1cf9f6a57b1dbf6151c"
+  },
+  {
+    "id": "m30",
+    "dir": "up",
+    "action": "cast",
+    "frame": 0,
+    "source": "immortal-golden-guardian-v1\\up-generated.png",
+    "rect": {
+      "left": 65,
+      "top": 673,
+      "width": 310,
+      "height": 301
+    },
+    "sourceFoot": [
+      107,
+      300
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      135,
+      111
+    ],
+    "sha256": "cb5029d78bb28a4c48c998f4ded8b358e57fee97a62563195ad364e5f37a5d46"
+  },
+  {
+    "id": "m30",
+    "dir": "up",
+    "action": "cast",
+    "frame": 1,
+    "source": "immortal-golden-guardian-v1\\up-generated.png",
+    "rect": {
+      "left": 451,
+      "top": 671,
+      "width": 309,
+      "height": 312
+    },
+    "sourceFoot": [
+      153,
+      310
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      110,
+      105
+    ],
+    "sha256": "e6fe026e28de7f79d679e336488da48f0d5dfe1f4619a3df2f05aa5fda5a4296"
+  },
+  {
+    "id": "m30",
+    "dir": "down",
+    "action": "hit",
+    "frame": 0,
+    "source": "immortal-golden-guardian-v1\\down-generated.png",
+    "rect": {
+      "left": 811,
+      "top": 694,
+      "width": 327,
+      "height": 298
+    },
+    "sourceFoot": [
+      247.5,
+      297
+    ],
+    "scale": 0.4984423676012461,
+    "offset": [
+      69,
+      122
+    ],
+    "sha256": "a406d970b39ab1f64617ca26ad91f00feafb8a6b712101c8b69c08a045622d3c"
+  },
+  {
+    "id": "m30",
+    "dir": "down",
+    "action": "hit",
+    "frame": 1,
+    "source": "immortal-golden-guardian-v1\\down-generated.png",
+    "rect": {
+      "left": 1208,
+      "top": 688,
+      "width": 281,
+      "height": 302
+    },
+    "sourceFoot": [
+      95.5,
+      301
+    ],
+    "scale": 0.4984423676012461,
+    "offset": [
+      144,
+      120
+    ],
+    "sha256": "eb1693321cf91ed69806ca75ea360d72b2720eff43b7dd4f1041dd2e448ed417"
+  },
+  {
+    "id": "m30",
+    "dir": "right",
+    "action": "hit",
+    "frame": 0,
+    "source": "immortal-golden-guardian-v1\\right-generated.png",
+    "rect": {
+      "left": 835,
+      "top": 705,
+      "width": 263,
+      "height": 273
+    },
+    "sourceFoot": [
+      114.5,
+      272
+    ],
+    "scale": 0.6130268199233716,
+    "offset": [
+      122,
+      104
+    ],
+    "sha256": "20cd39170d8097fa14bb910a2fb0c64a2b596dae883b60da3a5b4f1c866626f1"
+  },
+  {
+    "id": "m30",
+    "dir": "right",
+    "action": "hit",
+    "frame": 1,
+    "source": "immortal-golden-guardian-v1\\right-generated.png",
+    "rect": {
+      "left": 1226,
+      "top": 718,
+      "width": 274,
+      "height": 258
+    },
+    "sourceFoot": [
+      136.5,
+      256
+    ],
+    "scale": 0.6130268199233716,
+    "offset": [
+      109,
+      114
+    ],
+    "sha256": "742b592e7a3acd29ce4d889ecb8f27117da41e959774996db2f730674d488f4a"
+  },
+  {
+    "id": "m30",
+    "dir": "up",
+    "action": "hit",
+    "frame": 0,
+    "source": "immortal-golden-guardian-v1\\up-generated.png",
+    "rect": {
+      "left": 827,
+      "top": 714,
+      "width": 318,
+      "height": 243
+    },
+    "sourceFoot": [
+      164,
+      242
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      105,
+      141
+    ],
+    "sha256": "e8bf82dfab299b71d9a90ab6e2ffbb0da60f9a4a1ee7bbb2b968a0b51afcd954"
+  },
+  {
+    "id": "m30",
+    "dir": "up",
+    "action": "hit",
+    "frame": 1,
+    "source": "immortal-golden-guardian-v1\\up-generated.png",
+    "rect": {
+      "left": 1224,
+      "top": 686,
+      "width": 291,
+      "height": 300
+    },
+    "sourceFoot": [
+      106,
+      297
+    ],
+    "scale": 0.5351170568561873,
+    "offset": [
+      136,
+      111
+    ],
+    "sha256": "3d1826e1da96a9c4401257134852ba04fca93a1d230dc4003322ff715c7ad3d0"
+  }
+]

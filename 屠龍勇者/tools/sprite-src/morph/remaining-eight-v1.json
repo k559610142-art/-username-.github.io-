@@ -1,0 +1,81 @@
+[
+  {
+    "id": "m14",
+    "key": "infernalBladeSovereign",
+    "dir": "infernal-blade-sovereign-v1",
+    "name": "煉獄魔劍尊・巴拉卡",
+    "identity": "massive male infernal warrior, horned black obsidian plate with molten orange cracks, jagged demonic pauldrons, compact folded scorched bat wings, dark iron boots, one huge rune-carved flaming greatsword held in both hands",
+    "attack": "two-handed greatsword windup, preparation, powerful diagonal sword slash, recovery",
+    "cast": "raise the greatsword to channel a small orange ember aura near the blade",
+    "sourceFiles": {
+      "right": "right-fixed-generated.png",
+      "up": "up-fixed-generated.png"
+    }
+  },
+  {
+    "id": "m17",
+    "key": "thunderBlackCommander",
+    "dir": "thunder-black-commander-v1",
+    "name": "雷霆黑騎士統領",
+    "identity": "male black knight commander in fully enclosing spiked midnight plate helmet and armor with purple trims, dark violet tattered cape, one purple lightning longsword in RIGHT hand, LEFT hand empty",
+    "attack": "one-handed sword windup, preparation, lightning sword slash, recovery",
+    "cast": "raise sword to gather restrained violet sparks around the blade"
+  },
+  {
+    "id": "m18",
+    "key": "sacredJudgmentSwordSaint",
+    "dir": "sacred-judgment-sword-saint-v1",
+    "name": "神聖裁決劍聖",
+    "identity": "regal male holy sword saint wearing white ivory and gold full plate with closed wing-crested helmet, lion shoulder ornament, ivory cloak, compact circular gold sun halo behind head and shoulders, one slender luminous gold sword in RIGHT hand, LEFT hand empty",
+    "attack": "one-handed sword windup, preparation, clean holy sword slash, recovery",
+    "cast": "lift sword vertically as compact gold light gathers"
+  },
+  {
+    "id": "m23",
+    "key": "lavaBoneBrawler",
+    "dir": "lava-bone-brawler-v1",
+    "name": "熔岩碎骨鬥士",
+    "identity": "powerful muscular adult bald male with dark red skin and glowing ember fissure tattoos, asymmetric horned bone skull pauldron, brown leather battle kilt, dark heavy boots, TWO black chain-wrapped molten gauntlets, no handheld weapon",
+    "attack": "boxing guard windup, right fist chamber, forceful flaming punch, guard recovery",
+    "cast": "bring both molten gauntlets together to gather restrained orange embers"
+  },
+  {
+    "id": "m24",
+    "key": "thunderFistEmperor",
+    "dir": "thunder-fist-emperor-v1",
+    "name": "霸天雷神拳皇",
+    "identity": "muscular adult male thunder martial emperor, long swept silver hair, stern face, black-purple segmented armor, violet waist sash, dark purple split cape, TWO heavy purple armored gauntlets with blue-violet crystal details, compact electric sparks, no handheld weapon",
+    "attack": "boxing guard windup, right gauntlet chamber, straight thunder punch, guard recovery",
+    "cast": "raise both gauntlets and gather small blue-violet arcs close to hands"
+  },
+  {
+    "id": "m26",
+    "key": "nightBloodRipper",
+    "dir": "night-blood-ripper-v1",
+    "name": "暗夜血族撕裂者",
+    "identity": "pale male vampire claw fighter, red glowing eyes in a red-bronze enclosing crown helmet, dark burgundy black and bronze armor, flowing compact torn bat-shaped crimson cape, TWO forearm claw gauntlets with exactly THREE curved steel blades on EACH hand, no sword or dagger",
+    "attack": "claw guard windup, pull right claw back, forward sweeping claw slash, guard recovery",
+    "cast": "cross both claw gauntlets close to chest with restrained crimson light",
+    "sourceFiles": {
+      "right": "right-fixed-generated.png"
+    }
+  },
+  {
+    "id": "m29",
+    "key": "roseTempleCrusader",
+    "dir": "rose-temple-crusader-v1",
+    "name": "薔薇聖殿十字軍",
+    "identity": "red and gold armored male crusader with closed visored helmet and tall red feather crest, dark red cloak, rose medallions on armor, slim red sword in anatomical RIGHT hand, large rose-adorned burgundy gold kite shield on anatomical LEFT arm",
+    "attack": "shield guard windup, sword chamber, one-handed sword slash while shield remains left, recovery",
+    "cast": "raise left rose shield into a warding stance with a small red-gold glow"
+  },
+  {
+    "id": "m30",
+    "key": "immortalGoldenGuardian",
+    "dir": "immortal-golden-guardian-v1",
+    "name": "不滅黃金守護神・宙斯盾",
+    "identity": "regal male immortal guardian in luminous white and gold plate, closed winged gold helmet, lion shoulder, flowing ivory gold cloak, compact golden halo with tiny light blades behind shoulders, elegant gold sword in anatomical RIGHT hand, imposing white-gold lightning tower shield with winged central medallion on anatomical LEFT arm",
+    "attack": "shield guard windup, sword chamber, decisive golden sword slash while shield stays left, recovery",
+    "cast": "raise left lightning shield and gather a compact gold-white protective radiance"
+  }
+]

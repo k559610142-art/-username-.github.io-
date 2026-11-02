@@ -1,0 +1,838 @@
+{
+  "date": "2026-11-02",
+  "scope": "本機程式／圖檔盤點；非正式庫或線上發布驗證",
+  "morphCount": 36,
+  "morphWithDedicatedAssets": 36,
+  "morphWithoutDedicatedSprite": 0,
+  "morphs": [
+    {
+      "id": "m33",
+      "name": "蒼骨巡墓者",
+      "sprite": "azureGraveWarden",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/azure-grave-warden-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/azure-grave-warden-v1/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/azure-grave-warden-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/azure-grave-warden-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m34",
+      "name": "緋月收魂姬",
+      "sprite": "crimsonMoonReaper",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/crimson-moon-reaper-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/crimson-moon-reaper-v1/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/crimson-moon-reaper-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/crimson-moon-reaper-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m35",
+      "name": "虛空斷魂使",
+      "sprite": "voidSoulExecutioner",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/void-soul-executioner-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/void-soul-executioner-v1/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/void-soul-executioner-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/void-soul-executioner-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m36",
+      "name": "冥界終焉君主",
+      "sprite": "underworldEndSovereign",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/underworld-end-sovereign-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/underworld-end-sovereign-v1/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/underworld-end-sovereign-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/underworld-end-sovereign-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m31",
+      "name": "煉獄雷霆魔皇",
+      "sprite": "infernalThunderEmperor",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/infernal-thunder-emperor-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/infernal-thunder-emperor-v1/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/infernal-thunder-emperor-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/infernal-thunder-emperor-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m32",
+      "name": "霜獄幽冥魔皇",
+      "sprite": "frostNetherEmperor",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/frost-nether-emperor-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/frost-nether-emperor-v1/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/frost-nether-emperor-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/frost-nether-emperor-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m01",
+      "name": "巡守妖魔神射",
+      "sprite": "wolfRanger",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/wolf-ranger-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/wolf-ranger-v1/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/wolf-ranger-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/wolf-ranger-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m02",
+      "name": "月光精靈巡林者",
+      "sprite": "moonRanger",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/moon-ranger-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/moon-ranger-v1/attack-v2.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/moon-ranger-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/moon-ranger-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m03",
+      "name": "冥火骷髏神射",
+      "sprite": "hellfireArcher",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/hellfire-archer-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/hellfire-archer-v1/attack-v2.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/hellfire-archer-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/hellfire-archer-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m04",
+      "name": "蒼穹女武神・艾爾",
+      "sprite": "skyValkyrie",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/sky-valkyrie-v2/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/sky-valkyrie-v2/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/sky-valkyrie-v2/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/sky-valkyrie-v2/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m05",
+      "name": "矮人蒸氣火銃兵",
+      "sprite": "dwarfGunner",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/dwarf-gunner-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/dwarf-gunner-v1/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/dwarf-gunner-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/dwarf-gunner-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m06",
+      "name": "暗影海盜雙槍客",
+      "sprite": "shadowPirateGunner",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/shadow-pirate-gunner-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/shadow-pirate-gunner-v1/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/shadow-pirate-gunner-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/shadow-pirate-gunner-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m07",
+      "name": "魔導審判狙擊手",
+      "sprite": "arcaneJudgmentSniper",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/arcane-judgment-sniper-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/arcane-judgment-sniper-v1/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/arcane-judgment-sniper-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/arcane-judgment-sniper-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m08",
+      "name": "沉默洞穴刺客",
+      "sprite": "silentCaveAssassin",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/silent-cave-assassin-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/silent-cave-assassin-v1/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/silent-cave-assassin-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/silent-cave-assassin-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m09",
+      "name": "赤影暗殺者",
+      "sprite": "crimsonShadowAssassin",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/crimson-shadow-assassin-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/crimson-shadow-assassin-v1/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/crimson-shadow-assassin-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/crimson-shadow-assassin-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m10",
+      "name": "布魯迪卡之影",
+      "sprite": "brudikaShadow",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/brudika-shadow-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/brudika-shadow-v1/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/brudika-shadow-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/brudika-shadow-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m11",
+      "name": "深淵雙刃魔神",
+      "sprite": "abyssDualDemon",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/abyss-dual-demon-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/abyss-dual-demon-v1/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/abyss-dual-demon-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/abyss-dual-demon-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m12",
+      "name": "鋼鐵狂戰士",
+      "sprite": "steelBerserker",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/steel-berserker-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/steel-berserker-v1/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/steel-berserker-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/steel-berserker-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m13",
+      "name": "冥皇處刑者",
+      "sprite": "netherExecutioner",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/nether-executioner-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/nether-executioner-v1/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/nether-executioner-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/nether-executioner-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m14",
+      "name": "煉獄魔劍尊・巴拉卡",
+      "sprite": "infernalBladeSovereign",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/infernal-blade-sovereign-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/infernal-blade-sovereign-v1/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/infernal-blade-sovereign-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/infernal-blade-sovereign-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m15",
+      "name": "亞丁榮耀劍士",
+      "sprite": "adenGlorySwordsman",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/aden-glory-swordsman-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/aden-glory-swordsman-v1/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/aden-glory-swordsman-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/aden-glory-swordsman-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m16",
+      "name": "烈焰死亡騎士",
+      "sprite": "flameDeathKnight",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/flame-death-knight-v1/walk-v2.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/flame-death-knight-v1/attack-v2.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/flame-death-knight-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/flame-death-knight-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m17",
+      "name": "雷霆黑騎士統領",
+      "sprite": "thunderBlackCommander",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/thunder-black-commander-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/thunder-black-commander-v1/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/thunder-black-commander-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/thunder-black-commander-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m18",
+      "name": "神聖裁決劍聖",
+      "sprite": "sacredJudgmentSwordSaint",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/sacred-judgment-sword-saint-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/sacred-judgment-sword-saint-v1/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/sacred-judgment-sword-saint-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/sacred-judgment-sword-saint-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m19",
+      "name": "象牙塔高階秘術師",
+      "sprite": "ivoryArchmage",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/ivory-archmage-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/ivory-archmage-v1/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/ivory-archmage-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/ivory-archmage-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m20",
+      "name": "深淵羊魔・巴風特使徒",
+      "sprite": "abyssGoatEnvoy",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/abyss-goat-envoy-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/abyss-goat-envoy-v1/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/abyss-goat-envoy-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/abyss-goat-envoy-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m21",
+      "name": "大魔導士・巴列斯真身",
+      "sprite": "violetArchmage",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/violet-archmage-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/violet-archmage-v1/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/violet-archmage-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/violet-archmage-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m22",
+      "name": "修羅破戒僧",
+      "sprite": "shuraMonk",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/shura-monk-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/shura-monk-v1/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/shura-monk-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/shura-monk-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m23",
+      "name": "熔岩碎骨鬥士",
+      "sprite": "lavaBoneBrawler",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/lava-bone-brawler-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/lava-bone-brawler-v1/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/lava-bone-brawler-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/lava-bone-brawler-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m24",
+      "name": "霸天雷神拳皇",
+      "sprite": "thunderFistEmperor",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/thunder-fist-emperor-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/thunder-fist-emperor-v1/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/thunder-fist-emperor-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/thunder-fist-emperor-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m25",
+      "name": "荒野血狼狂戰",
+      "sprite": "wildBloodWolf",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/wild-blood-wolf-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/wild-blood-wolf-v1/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/wild-blood-wolf-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/wild-blood-wolf-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m26",
+      "name": "暗夜血族撕裂者",
+      "sprite": "nightBloodRipper",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/night-blood-ripper-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/night-blood-ripper-v1/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/night-blood-ripper-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/night-blood-ripper-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m27",
+      "name": "裂空魔龍爪皇",
+      "sprite": "riftDragon",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/rift-dragon-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/rift-dragon-v1/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/rift-dragon-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/rift-dragon-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m28",
+      "name": "風木鐵壁重裝兵",
+      "sprite": "windwoodIronwall",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/windwood-ironwall-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/windwood-ironwall-v1/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/windwood-ironwall-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/windwood-ironwall-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m29",
+      "name": "薔薇聖殿十字軍",
+      "sprite": "roseTempleCrusader",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/rose-temple-crusader-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/rose-temple-crusader-v1/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/rose-temple-crusader-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/rose-temple-crusader-v1/hit.png",
+          "exists": true
+        }
+      }
+    },
+    {
+      "id": "m30",
+      "name": "不滅黃金守護神・宙斯盾",
+      "sprite": "immortalGoldenGuardian",
+      "actions": {
+        "walk": {
+          "src": "images/sprites/morph/immortal-golden-guardian-v1/walk.png",
+          "exists": true
+        },
+        "attack": {
+          "src": "images/sprites/morph/immortal-golden-guardian-v1/attack.png",
+          "exists": true
+        },
+        "cast": {
+          "src": "images/sprites/morph/immortal-golden-guardian-v1/cast.png",
+          "exists": true
+        },
+        "hit": {
+          "src": "images/sprites/morph/immortal-golden-guardian-v1/hit.png",
+          "exists": true
+        }
+      }
+    }
+  ],
+  "version": "20261102b"
+}

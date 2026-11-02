@@ -1,11 +1,21 @@
 # 黑暗大陸：交接文件（目前進度與待辦）
 
 給接手的 AI：先讀 `AGENTS.md`（規則），再讀這份（現況）。技術細節在 `ARCHITECTURE.md`。
-**這份要保持最新**：完成一件事、新增待辦、使用者做了新決定，都要回來改。最後更新：2026-11-01（Codex）。
+**這份要保持最新**：完成一件事、新增待辦、使用者做了新決定，都要回來改。最後更新：2026-11-02（Codex）。
 
 ## 1. 現況
 
+- **2026-11-02 八款變身補完（Codex，20261102b／schema25不變，未commit／推送）**：依使用者8張參考，m14／17／18／23／24／26／29／30完成原創三向36格／左鏡射四動作，各4／4／2／2，共288格、32圖集／8立繪／manifest，正式MORPHS與卷軸接線、SW40圖檔預載及36款提示已更新。m14／m26側面施法方向已修正，全部原稿／提示詞保留；m26用448寬透明格保全前伸爪刃，其餘384，角色charH160／drawH48不變。全部36款原等級／能力／說明對照一致，未改武器限制、卷軸價錢時效、存檔結構或SQL。288唯一RGBA與來源逐byte／安全邊、128組正式sceneDraw、卷軸事件／原等級GM／公會遷移回歸、check.ps1 ALL CHECKS PASSED及64支704KB建置／40圖檔逐byte通過。瀏覽器逐款切換、正式卷軸實選、背面與側面施法通過，Console無error／warn。架構第267節，盤點已更新36專屬／0缺漏。
+
+  實玩：開http://localhost:8790/確認20261102b → 背包使用變形卷軸 → 按原等級／武器選這8款 → 走動、普攻／施法及受傷確認外觀。快速預覽http://127.0.0.1:8790/tools/remaining-morphs-preview.html（記憶體角色，不讀原存檔／不連正式服務），可選動作、四向、實際大小與逐格。這是現有引擎三向相容版，非另一期八向高規格全面重製。等使用者確認沒問題再commit與請其GitHub Desktop Push origin，目前未發布。
+
+
 - **2026-11-02 公會數值規則計算層（Claude，候選模組，未載入正式遊戲、無版本號／存檔／SQL變更）**：使用者驗收20261101e後選「先做規則計算層」。新增tools/guild-runtime/rules.cjs（GuildRules：任務冊、各類獎勵與難度倍率、冊外25%、聲望階級／招募位、團員升級與訓練場上限、醫療室療養、設施門檻、情報所、商店限購、玩家壓制、週一06:00重置與24小時寬限）＋test-rules.cjs，全部對上GUILD-NUMBERS-DRAFT.md；test-rules／test-core／check.ps1通過（架構第266節）。下一步（要使用者同意）：player.guild新欄位、伺服器帳本與商店RPC、公會介面、醫療室接core療養。
+
+- **2026-11-02 斥候模型與未完成盤點（Codex，20261102a／schema25不變，未commit）**：使用者要先做渡鴉・瑞克模型，製作中再詢問全部尚未完成項目。已內建imagegen原創正／右／背3稿，保留tools/sprite-src/guild/scout-v1原圖／提示詞與來源；prepare-guild-scout輸出36格walk4／attack4／cast2／hit2、左鏡射、腳底[192,282]、charH160／drawH46及頭像／manifest到images/sprites/guild/scout-v1。名冊GUILD_PORTRAITS使用完整路徑並接scout，其他5位原圖保留，未開招募／正式任務或改公會人數／個人傭兵6職。素材RGBA／36唯一格／圖集對應／安全邊與16組既有Canvas繪圖、角色數值不變測試通過；check.ps1 ALL CHECKS PASSED、公會遷移回歸通過。瀏覽器載入1／1模型、側面攻擊／背面施法／向左受傷及原地圖比例可切，Console無error／warn。預覽http://127.0.0.1:8790/tools/guild-scout-model-preview.html。
+
+  相容版3向36格不等於原規劃8向368格完成，後續仍需完整高規格6人模型、正式戰鬥／救援等。PROJECT-REMAINING-20261102.md與project-audit-20261102.json是最新狀態盤點：公會12任務／7活動及3個大型區仍未完整正式化；最新聲望招募／培養／設施規則已定，數值草案待批准；變身盤點已被上方20261102b完成紀錄取代：目前36款皆有專屬四動作檔。不要沿用舊交接「火龍／塔怪無圖」或舊04未接等歷史數字。斥候新頭像與動畫仍待使用者確認後才commit／請其Push origin；本機不等於已發布。
+
 
 - **2026-11-01 傭兵技能石可存共用倉庫（Codex，20261101g／schema25不變，待實玩／未提交）**：使用者要求技能石共用倉庫。vault新增vaultStorable，清單／整疊／指定數量／底層存入均允許50種mercRune，仍拒任務物與+15以上；其他道具沿原marketTradeable，交易所與拍賣行為不動。沿用既有vault_put2／take2、100金幣手續費與vaultSeq防複製，不改SQL或正式庫。test-vault-v2-client以實際腳本和PGlite既有SQL驗全50種各3存2留1、同帳號slot2另一角色取2、兩邊金幣／簽章／UID正確、不重領，舊倉庫／交易所／掉寶／斷線回歸也通過。check.ps1 ALL CHECKS PASSED及公會遷移回歸通過，64支混淆建置699KB／231公開函式正常。瀏覽器實點存4留6、取回併10、再存入，Console無error／warn；不接真實帳號，公告輪詢停用。tools/mercenary-rune-vault-preview.html是記憶體角色＋模擬RPC的GUI驗收，不連正式服務。
 

@@ -1,0 +1,8 @@
+{
+  "id": "m18",
+  "dir": "sacred-judgment-sword-saint-v1",
+  "direction": "up",
+  "fix": false,
+  "prompt": "Create a NEW clean 4 columns x3 rows animation sheet of EXACT same gold-white sword saint from supplied sheet, consistent costume/helmet/sword/cloak/compact metal sun halo. BACK VIEW, facing AWAY/NORTH. No eyes, face or front chest visible; show back armor and wings from behind, feet point away. Applies to EVERY pose INCLUDING CAST AND HIT. Row1 four distinct walking phases; row2 sword windup, preparation, slash, recovery; row3 first2 sword-lifting cast, last2 hit/recovery. In BACK cast show ONLY back of helmet/cloak, never front face/chest. Entire figures max65% cellwidth, max70% cellheight; generous transparent gutters. Effects only a thin blade glow, NO surrounding gold fire/particle clouds. Complete head/halo/weapon/feet in each cell; no overlaps. Original game sprite, elevated camera, transparent RGBA, no floor/shadow/text.",
+  "path": "C:\\Users\\User\\.codex\\generated_images\\01a191b6-cab8-7390-ac17-309a217ef8a5\\exec-540eeea9-693e-47b3-9595-1d0ad4efe719.png"
+}
