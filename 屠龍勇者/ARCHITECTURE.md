@@ -6,6 +6,7 @@
 ## 1. 專案結構
 
 | 檔案 | 內容 |
+| 外部 `C:/Users/User/.codex/visualizations/2026/10/31/01a191b6-cab8-7390-ac17-309a217ef8a5/wuxia-playable-v1/` | 使用者選擇獨立3D可玩原型，非正式遊戲腳本或商業客戶端接入；見第270節 |
 | `images/sprites/guild/scout-v1/`、`tools/sprite-src/guild/scout-v1/`、`tools/prepare-guild-scout.js`、`tools/test-guild-scout-model.cjs`、`tools/guild-scout-model-preview.html` | 渡鴉・瑞克三向36格相容模型、頭像、原稿提示詞／切格定位／驗收及動畫預覽（第265節） |
 | `tools/PROJECT-REMAINING-20261102.md`、`tools/project-audit-20261102.json` | 任務／地圖／模型／變身待完成盤點；36變身中28有專屬四動作圖檔、8仍共用外觀 |
 | `tools/mercenary-rune-vault-preview.html` | 傭兵技能石共用倉庫正式前端隔離驗收；記憶體角色與模擬RPC、不讀寫正式存檔（第264節） |
@@ -4494,6 +4495,14 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - test-mercenary-death-keep遍歷六職全裝備／四符石，實跑mercTakeDamage致死、重複死亡、正規化、加密migrate／applySaveData、死亡候補轉換、缺錢與重複確認／復活保級經驗與滿HPMP，確認UID／配置與背包不變、不複製。test-mercenary原永久消失斷言更新為保留；原6職50符石、名冊／招募及公會存檔回歸通過。
 - mercenary-death-preview沿正式名冊隔離頁、僅記憶體加密存檔／禁止連外，增加測試死亡按鈕；瀏覽器實點死亡→記憶體重登→復活（17,000）後Lv17／長劍／靈狼契約仍在，Console無error／warn。check.ps1 ALL CHECKS PASSED，64支713KB建置正常，未發佈。待使用者實玩確認後才commit與請其Push origin。
 
+## 270. 青嵐古道獨立3D可玩原型（2026-11-02，外部原型v1）
+
+- 使用者明確選擇製作新的可玩原型，並允許外觀後續替換；不是執行WLGame或接私服。隔離目錄見第1節，僅本機127.0.0.1:8791；不載入本遊戲script／SW／存檔／Supabase，不更動正式版本20261102d與schema25。
+- index.html／style.css提供HUD、試煉、觸控及開始／死亡／通關；game.mjs使用隨附Three.js r160 MIT，原創簡易幾何場景／分關節人物、攝影機、ray picking、標籤／傷害與小地圖；core.mjs是可獨立測試的移動／碰撞／視線／冷卻／真氣／六怪追擊反擊返家與通關規則。server.cjs只提供本目錄靜態檔案，start.ps1／啟動遊戲.cmd便於重開。
+- 地圖約60×60，河岸僅石橋可過，樹木／岩石／營舍阻擋，.15單位分段移動避免穿越。WASD以鏡頭方向移動，點地只走直線、遇阻停止，不自動尋路或一鍵前往任務目標。普攻射程2.3／24傷／.5秒；劍氣射程4／42傷／20真氣／4秒，須有通行視線；怪物60HP／8傷／1.25秒，玩家100HP、真氣每秒回3。以上僅原型數值，與黑暗大陸無關。
+- test.mjs通過河水／橋／建物／岩石／邊界／分段碰撞、追擊、射程與視線、傷害／冷卻／真氣／擊殺去重、六殺通關／死亡與重建；瀏覽器實移動／跨橋、劍氣傷42／普攻24一殺、反擊掉血／死亡、新版開始與暫停，Console無error／warn。實拍play-proof.png；全專案check.ps1仍ALL CHECKS PASSED。
+- 非完整模型／地圖美術，不宣稱已還原原作；沒有保存進度、伺服器或多人同步。尚待使用者實玩全程及後續可替換資產／動作、碰撞與戰鬥打磨。
+
 ## 271. 管理頁在線人數（2026-11-02，SQL `tools/gm-online.sql`、`gm.html`；遊戲版本不變）
 
 - 使用者要在管理頁看目前有多少帳號連線。資料來源沿用 `dragon_online`（第 29 節單一登入）：每個帳號一列，遊戲每 60 秒 `online_ping` 更新 `beat_at`，90 秒內有心跳＝在線；手機切背景、伺服器忙碌退避時不送心跳，會暫時算離線。不新增表、不加請求頻率。
@@ -4511,3 +4520,15 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - **遊戲端**：`onlineClaim` 收到 reason ip 回 `{ip:true,max}`；`onlineReject` 顯示「⛔ 同一網路在線帳號已滿」只有「確定」（登出這台），沒有強制登入；`onlineForce` 強制登入後若被 IP 擋也走同一個對話框。SQL 還沒執行時舊函式照常回 ok，不影響登入。
 - **限制**：改過的客戶端可以不呼叫 online_claim 直接玩（dragon_is_banned 只擋「同帳號別台使用中」），這裡只擋一般多開。沒有 IP（直接連資料庫）不擋。
 - 測試：`tools/test-ip-limit.js`（PGlite 載 supabase.sql＋flag-trust.sql＋重複安裝 ip-limit.sql）：前 3 個可登入、第 4 個與強制登入被擋、不同 IP 不受影響、重新登入不重複算、心跳不踢人、名額滿時心跳不新增、管理者／信任不受限、逾時空出名額、玩家不能呼叫內部函式。check.ps1、混淆建置通過；瀏覽器確認 20261102e 載入、對話框顯示，Console 只有本機 Service Worker 註冊失敗（預覽環境，與本次無關）。
+
+## 273. 首領時間改由伺服器決定：野外定時、團隊副本冷卻、守關首領復活（2026-11-02，版本 `20261102f`；SQL `tools/boss-timer.sql`、`loot.js` 的 `bossCdSync`）
+
+- **使用者決定**（2026-11-02）：野外首領「每人每圖計時」60～90 分鐘隨機；團隊副本冷卻、永夜之塔守關首領改伺服器記錄。單人龍穴 `dragonCd`、異界地圖首領不變。
+- **新表** `dragon_boss_cd(user_id, kind, key, until)`（RLS、玩家不能直讀寫）：`field` key＝地圖 id（帳號共用，換角色不能重刷）；`raid` key＝`角色|副本`；`tower` key＝`角色|樓層`（角色＝`lootChar`，沿用原本每角色各自冷卻）。
+- **野外**：`loot_spawn` 原本 `random()<rare.p` 換成 `boss_field_due(zone, z ? 'rare')`（包在 CASE 裡，加入戰鬥／指定怪／異界地圖不會呼叫、不消耗計時）。帳號第一次在該圖遇怪才建立計時（不立刻出）；時間到下一次遇怪出該圖首領、同時重設 60～90 分。沒有首領的地圖不記。**本機一般掉寶（後端停用、緊急開關）仍是原本 `z.rare.p` 機率**（`combat.js` 的 `spawnMonster`）。
+- **守關首領**：`loot_spawn` 不再看存檔 `towerBossCd`，改 `boss_tower_ready(角色, 樓層)`：伺服器冷卻已過，且沒有「已出但還沒結算」的同層首領憑證（批次結算最多等 60 秒，避免這段時間再出一隻；逃跑被釋放的憑證不算）。`loot_finish`／`loot_finish_batch` 結算到 `towerBoss樓層` 時 `boss_cd_kill` 記 6 小時。第一次未通關（`towerCleared`）照舊可出。上線前存檔裡的舊冷卻不搬：伺服器沒紀錄＝可以出。
+- **團隊副本**：`loot_raid`（勝利領掉寶）第一次結算時記冷卻＝目錄 `raids[id].cdH`（2／3／6 小時，重送不重設）；`raid_members` 新 trigger `raid_members_cd_check`：按「準備」（ready_round 改成非 0）時角色＋副本還在冷卻 → `raid cooldown`（`raidErr` 顯示「這個角色的副本還在冷卻中（以伺服器時間為準）」）。取消準備不檢查。
+- **補丁方式**：和 advance-class／treasure-maps 一樣用 `pg_get_functiondef`＋字串替換改現有 `loot_spawn`／`loot_finish`／`loot_finish_batch`／`loot_raid`，找不到原字串就報錯不改、已補過跳過，可重跑。**重跑 server-loot-install.sql／loot-batch.sql 後要再跑這份**。plpgsql 的 `elsif` 條件裡放 CASE 要加括號，否則解析錯誤。
+- **遊戲端**：`bossCdSync(force)`（loot.js）呼叫 `boss_cd_status()`，把目前角色的副本／塔冷卻併進 `player.raidCd`／`towerBossCd`（取較晚的），有變就 `renderPanel`；後端掉寶啟用才讀、最多 1 分鐘一次；時機：`lootProbe` 剛變 active、團隊副本頁 `renderRaid`、`towerBossStatusHtml`、收到 `raid cooldown`。還沒執行 SQL 時失敗就維持本機顯示。本機打倒時照舊先寫本機冷卻（顯示用）。
+- **測試**：`tools/test-boss-timer.js`（PGlite 載 supabase／anticheat／server-loot-install／loot-batch／loot-screen／treasure-maps／mercenary-rune-drops／advance-class＋boss-timer 兩次）：第一次不出、計時 60～90 分、40 次未到不出、加入戰鬥不出不消耗、到期出首領並重設、無首領地圖不記；塔：存檔冷卻無效、未結算不出第二隻、結算記 6 小時、到期再出、未通關照出；副本：勝利記 2 小時、重送不重設、冷卻中準備被拒、取消可、到期可準備；表不可直讀、內部函式不可呼叫、二轉補丁保留。test-loot-batch、test-server-loot-client、check.ps1、混淆建置（dist 載入無錯誤）通過。
+- **部署**：使用者在 Supabase SQL Editor 執行 `tools/boss-timer.sql` 再發布遊戲；先發遊戲也不會壞（`boss_cd_status` 失敗就略過）。
