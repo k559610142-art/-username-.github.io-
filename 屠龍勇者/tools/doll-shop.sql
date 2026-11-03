@@ -1,5 +1,5 @@
 -- 娃娃商店：僅販售T4，每隻固定500鑽；由使用者貼到Supabase執行，可重跑。
--- 先有vault.sql／vault-v2.sql與dragon_is_admin。一般玩家僅能查看，購買限定GM。
+-- 先有vault.sql／vault-v2.sql與dragon_is_admin。2026-11-03 起開放所有已登入、未被封鎖的玩家購買（原本限定GM，第 280 節）。
 -- 娃娃直接放共用倉庫，沿既有vault_take2取出，不修改雲端角色／既有掉寶目錄。
 begin;
 create table if not exists public.dragon_doll_shop_catalog (
@@ -40,7 +40,7 @@ alter table public.dragon_doll_shop_orders enable row level security;
 revoke all on public.dragon_doll_shop_catalog,public.dragon_doll_shop_orders from public,anon,authenticated;
 create or replace function public.doll_shop_status() returns jsonb
 language sql stable security definer set search_path='' as $$
- select jsonb_build_object('canBuy',case when auth.uid() is not null then coalesce(public.dragon_is_admin(),false) else false end,
+ select jsonb_build_object('canBuy',case when auth.uid() is not null then not coalesce(public.dragon_is_banned(),false) else false end,
   'diamonds',coalesce((select diamonds from public.dragon_wallet where user_id=auth.uid()),0),
   'items',coalesce((select jsonb_agg(jsonb_build_object('id',id,'name',name,'quality',quality,'price',price) order by quality,id)
    from public.dragon_doll_shop_catalog where enabled and quality='T4' and price=500),'[]'::jsonb));
@@ -50,7 +50,8 @@ language plpgsql security definer set search_path='' as $$
 declare u uuid:=auth.uid(); product public.dragon_doll_shop_catalog; prior public.dragon_doll_shop_orders;
  balance int; ident bigint; used int;
 begin
- if u is null or not coalesce(public.dragon_is_admin(),false) then raise exception 'not admin'; end if;
+ if u is null then raise exception 'not logged in'; end if;
+ if coalesce(public.dragon_is_banned(),false) then raise exception 'banned'; end if;
  if p_request is null then raise exception 'bad request'; end if;
  perform pg_advisory_xact_lock(7713100,hashtext(u::text));
  select * into prior from public.dragon_doll_shop_orders where user_id=u and request_id=p_request;

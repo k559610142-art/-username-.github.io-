@@ -53,7 +53,7 @@ function renderDollShop() {
         const price = DOLL_SHOP_PRICE;
         return `<div class="list-row"><div class="item-info">${itemThumbHtml(id)}<b class="${itemClass({id})}">${esc(d.name)}</b><small>💎 ${fmt(price)}</small>${dollAbilityHtml(id)}</div><button class="mini" onclick="dollShopBuy('${id}')" ${dollShopBusy || !dollShopCanBuy() || !product ? 'disabled' : ''}>購買</button></div>`;
     }).join('');
-    return tabs + `<div class="panel"><b>🧚 娃娃商人・露米</b><p>僅販售 T4 娃娃，每隻 500 鑽石。目前僅 GM 可以購買，一般玩家可查看商品。每次購買一隻，請至帳號共用倉庫取出（沿用倉庫取出費用）。</p><small class="muted">一次僅出場一隻並提供能力。持有鑽石：💎 ${diaCount == null ? '—' : fmt(diaCount)}</small>${dollShopErr ? `<p class="bad">${esc(dollShopErr)}</p>` : ''}<button class="mini secondary" onclick="dollShopLoad()">重新讀取</button></div><div class="list storage-list">${rows}</div>`;
+    return tabs + `<div class="panel"><b>🧚 娃娃商人・露米</b><p>僅販售 T4 娃娃，每隻 500 鑽石。登入帳號即可購買，每次購買一隻，請至帳號共用倉庫取出（沿用倉庫取出費用）。</p><small class="muted">一次僅出場一隻並提供能力。持有鑽石：💎 ${diaCount == null ? '—' : fmt(diaCount)}</small>${dollShopErr ? `<p class="bad">${esc(dollShopErr)}</p>` : ''}<button class="mini secondary" onclick="dollShopLoad()">重新讀取</button></div><div class="list storage-list">${rows}</div>`;
 }
 async function dollShopLoad() {
     const uid = cloudUser && cloudUser.id || '';
@@ -94,7 +94,7 @@ async function dollShopPurchase(id, price, uid) {
     } catch (e) {
         if (!cloudUser || cloudUser.id !== uid) return;
         const m = String(e && e.message || e);
-        dollShopErr = /not admin/.test(m) ? '目前僅 GM 可以購買' : /not enough diamonds/.test(m) ? '鑽石不足' : /vault full/.test(m) ? '共用倉庫已滿，未扣鑽石' : /price changed/.test(m) ? '商品價格已變更，請重新讀取後再確認' : cloudErrText(e);
+        dollShopErr = /not admin/.test(m) ? '伺服器還是舊版商店（僅 GM 可購買），請管理者重新執行 doll-shop.sql' : /banned/.test(m) ? '帳號已被停權，無法購買' : /not logged in/.test(m) ? '請先登入帳號' : /not enough diamonds/.test(m) ? '鑽石不足' : /vault full/.test(m) ? '共用倉庫已滿，未扣鑽石' : /price changed/.test(m) ? '商品價格已變更，請重新讀取後再確認' : cloudErrText(e);
         showToast(dollShopErr);
     } finally { dollShopBusy = false; dollShopRefresh(); }
 }

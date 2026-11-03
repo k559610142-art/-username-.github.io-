@@ -4581,3 +4581,11 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 遊戲：notice-board.js 在 boss-timer.js 後載入，往 `TOWN_NPCS` 加 role「告示牌」（名牌「遊戲告示牌」），並往四個村莊背景（village／ash／darkgold／aden，scene-art.js 的 `SCENE_ART_BGS`）的 npcs 加格子 (12, 9)（四張圖都是廣場空地）。告示牌用畫布畫（`drawNoticeBoard`：兩根木柱＋板子＋兩張貼紙），ui-scene.js 村莊 NPC 迴圈新增 `n.draw` 分支（自己畫的擺設，名牌在上方 54px）。只有點名牌才開（同其他 NPC）。
 - 點開：`openNoticeBoard` 用 `marketRpc('notice_get')` 讀，5 分鐘內再開沿用上次內容（`NOTICE_CACHE_MS`）；文字跳脫後換行變 `<br>`，用 `openDialog` 顯示。
 - 管理頁：分頁「📋 告示牌」兩個文字框＋「💾 儲存告示牌」（`gmNoticeSave`），存好在按鈕旁顯示結果（不用原生 alert）。
+
+## 280. 娃娃商店開放一般玩家購買（2026-11-03，版本 `20261103e`；SQL `tools/doll-shop.sql`、`doll-shop.js`）
+
+- 使用者要求「娃娃開放購買」：原本只有 GM 能買（第 155、158 節），改成所有已登入、未被封鎖的帳號都能買。販售規則不變：只賣 5 款 T4、每隻 500 鑽、放進帳號共用倉庫、同請求 UUID 不重複扣款、倉庫滿不扣鑽。
+- SQL：`doll_shop_status` 的 canBuy 改為「已登入且 `dragon_is_banned()` 為假」；`doll_shop_buy` 拿掉 `dragon_is_admin` 檢查，改成沒登入 `not logged in`、被封鎖 `banned`。**要在 Supabase 重新執行 doll-shop.sql**（可重跑，保留商品與訂單）；沒重跑前伺服器仍回 not admin，遊戲會提示管理者重跑。
+- 稱號：`dragon_my_titles` 照舊「買過娃娃＝伺服器育養員」，所以開放後每個買過的玩家都會有這個稱號。
+- 遊戲：商店說明改「登入帳號即可購買」；錯誤訊息加 banned／not logged in，not admin 改提示「伺服器還是舊版商店」。
+- 測試：`test-doll-shop-db.js` 改為一般玩家可買（沒鑽石時 not enough diamonds）、封鎖帳號 canBuy=false 且買不了、匿名不能買（補 `dragon_is_banned` 測試替身、匿名前清掉 sub）；`test-town-doll-shop.js` 的村莊 NPC 數改成 `SCENE_TOWN_ROLES.length + 1`（含第 279 節告示牌，原本寫死 9 早已過時），四城告示牌前方都走得到。兩支都通過。
