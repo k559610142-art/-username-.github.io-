@@ -1,0 +1,57 @@
+// 失聯採礦隊固定100ms模擬；同一輸入可在可信驗證端重播，不讀寫player或發獎。
+const GuildMissionCore = (() => {
+    const VERSION='lost-miners-1',LIMIT=7200,MAPS=['harbor','forest','mine','mineInner'];
+    const DIRS=[[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]];
+    function decode(runs,n){const a=new Uint8Array(n);let p=0;for(let i=0;i<runs.length;i+=2){a.fill(runs[i],p,p+runs[i+1]);p+=runs[i+1];}if(p!==n)throw Error('mission_map_invalid');return a;}
+    function world(id,budget){const d=GUILD_MAP_DEFS[id],w=new GuildWorld(d.width/4,d.height/4,decode(d.walkRuns,d.width*d.height/16));w.edges=decode(d.edgeRuns,w.width*w.height);w.raw=decode(d.rawRuns,w.width*w.height);w.neighbors=(x,y)=>{if(++budget.used>2000000)throw Error('mission_work_limit');return DIRS.filter((v,i)=>w.edges[y*w.width+x]&(1<<i)).map(v=>[x+v[0],y+v[1]]);};return w;}
+    function near(w,p){const x=Math.floor(p[0]/4),y=Math.floor(p[1]/4);for(let r=0;r<=8;r++)for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++)if(w.canStand(x+dx,y+dy))return [x+dx,y+dy];throw Error('mission_spawn_invalid');}
+    // 同一八向BFS順序；重用工作陣列，避免每次NPC尋路重配整張網格。
+    function preparePath(w,budget){const queue=new Int32Array(w.mask.length),prev=new Int32Array(w.mask.length),marks=new Uint32Array(w.mask.length);let serial=0;
+        w.path=(start,target,maxVisited=w.mask.length)=>{if(!Array.isArray(start)||!Array.isArray(target)||!w.canStand(...start)||!w.canStand(...target))return null;if(++serial===4294967295){marks.fill(0);serial=1;}const a=start[1]*w.width+start[0],b=target[1]*w.width+target[0];let head=0,tail=1,reached=a===b;queue[0]=a;marks[a]=serial;prev[a]=a;
+            while(head<tail&&head<maxVisited&&!reached){if(++budget.used>2000000)throw Error('mission_work_limit');const n=queue[head++],bits=w.edges[n];for(let i=0;i<8;i++)if(bits&(1<<i)){const k=n+DIRS[i][0]+DIRS[i][1]*w.width;if(marks[k]===serial)continue;marks[k]=serial;prev[k]=n;queue[tail++]=k;if(k===b){reached=true;break;}}}
+            if(!reached)return null;const path=[];for(let n=b;n!==a;n=prev[n])path.push([n%w.width,Math.floor(n/w.width)]);return path.reverse();};return w;
+    }
+    function actor(id,label,p,hp){return {id,label,x:p[0],y:p[1],px:p[0],py:p[1],hp,maxHp:hp,dir:'down',cool:0,path:[],downed:false};}
+    function spawn(s,id,entry){s.map=id;s.world=s.worlds[id];const p=near(s.world,GUILD_MAP_DEFS[id].entries[entry]||GUILD_MAP_DEFS[id].entries.start),queue=[{p,parent:null,depth:0}],seen=new Set([p.join(',')]);let end=queue[0];for(let i=0;i<queue.length;i++){end=queue[i];if(end.depth>=70)break;for(const n of s.world.neighbors(...end.p)){const key=n.join(',');if(!seen.has(key)){seen.add(key);queue.push({p:n,parent:end,depth:end.depth+1});}}}const trail=[];for(let n=end;n;n=n.parent)trail.push(n.p.slice());s.route=[];s.trail=[...Array.from({length:96-trail.length},()=>trail[0].slice()),...trail];[...s.party,...s.miners.filter(m=>m.rescued&&m.hp>0)].forEach((a,i)=>{const at=s.trail[Math.max(0,s.trail.length-1-i*10)];Object.assign(a,{x:at[0],y:at[1],px:at[0],py:at[1],path:[]});});}
+    function create(team,seed,cls){if(!Array.isArray(team)||team.length!==3||new Set(team).size!==3||!team.every(id=>GuildCore.MEMBERS[id])||!Number.isInteger(seed)||seed<0||seed>0xffffffff)throw Error('mission_team_invalid');
+        const budget={used:0};const s={budget,version:VERSION,tick:0,seed:seed||1,cls,phase:'active',map:'harbor',worlds:Object.fromEntries(MAPS.map(id=>[id,preparePath(world(id,budget),budget)])),party:[actor('player','隊長',[0,0],180),...team.map(id=>actor(id,GuildCore.MEMBERS[id].name,[0,0],id==='sentinel'?220:140))],miners:[],enemies:[],clue:false,rescue:null,damage:0,downed:[],log:[]};
+        const w=s.worlds.mineInner,points=GUILD_MAP_DEFS.mineInner.sites;
+        s.miners=points.map((p,i)=>Object.assign(actor('miner'+i,['礦工・阿洛','礦工・席恩','工頭・貝爾'][i],near(w,p.slice(1)),65),{map:'mineInner',rescued:false,evacuated:false}));
+        s.enemies=[{id:'beast0',label:'礦坑獸兵',p:[760,600],map:'mine',hp:110},{id:'beast1',label:'結晶獸兵',p:[620,430],map:'mineInner',hp:130},{id:'giant',label:'深礦巨怪',p:[1370,240],map:'mineInner',hp:300}].map(e=>Object.assign(actor(e.id,e.label,near(s.worlds[e.map],e.p),e.hp),{map:e.map,boss:e.id==='giant',active:false}));
+        spawn(s,'harbor','start');return s;
+    }
+    function distance(a,b){return Math.hypot(a.x-b.x,a.y-b.y)*4;}
+    function sight(s,a,b){const n=Math.ceil(Math.hypot(b.x-a.x,b.y-a.y));for(let i=0;i<=n;i++)if(!s.world.canStand(Math.round(a.x+(b.x-a.x)*i/Math.max(1,n)),Math.round(a.y+(b.y-a.y)*i/Math.max(1,n))))return false;return true;}
+    function stepActor(a,p){if(!p)return;a.px=a.x;a.py=a.y;const dx=p[0]-a.x,dy=p[1]-a.y;a.dir=Math.abs(dx)>Math.abs(dy)?dx>0?'right':'left':dy>0?'down':'up';a.x=p[0];a.y=p[1];}
+    function approach(s,a,target,range){if(distance(a,target)<=range&&sight(s,a,target))return;if(s.tick%8===0||!a.path.length)a.path=s.world.path([a.x,a.y],[target.x,target.y])||[];for(let i=0;i<2;i++){const p=a.path.shift();if(p)stepActor(a,p);}}
+    function random(s,n){let x=s.seed;x^=x<<13;x^=x>>>17;x^=x<<5;s.seed=x>>>0;return s.seed%n;}
+    function hit(s,target,amount){target.hp=Math.max(0,target.hp-amount);if(target.id==='player'){s.damage++;s.rescue=null;}if(!target.hp){target.downed=true;target.path=[];if(s.party.includes(target)&&target.id!=='player'&&!s.downed.includes(target.id))s.downed.push(target.id);}}
+    function command(s,type,arg){if(s.phase!=='active')return false;const hero=s.party[0];
+        if(type==='move'){if(!Array.isArray(arg)||arg.length!==2||!arg.every(Number.isInteger))return false;const [x,y]=arg;if(!s.world.canStand(x,y))return false;const path=s.world.path([hero.x,hero.y],[x,y]);if(!path)return false;s.route=path;s.rescue=null;}
+        else if(type==='gate'){const gate=GUILD_MAP_DEFS[s.map].gates[arg];if(!Number.isInteger(arg)||!gate||!MAPS.includes(gate.to)||s.route.length||Math.hypot(hero.x*4+2-gate.at[0],hero.y*4+2-gate.at[1])>32||s.miners.some(m=>m.rescued&&m.hp>0&&Math.hypot(m.x*4+2-gate.at[0],m.y*4+2-gate.at[1])>64)||s.enemies.some(e=>e.map===s.map&&e.hp>0&&e.active&&distance(hero,e)<180))return false;spawn(s,gate.to,gate.entry);s.rescue=null;}
+        else if(type==='clue'){const p=GUILD_MAP_DEFS.mine.sites[1];if(s.map!=='mine'||s.route.length||Math.hypot(hero.x*4+2-p[1],hero.y*4+2-p[2])>48)return false;s.clue=true;}
+        else if(type==='focus'){const e=s.enemies.find(e=>e.id===arg&&e.map===s.map&&e.hp>0);if(!e||distance(hero,e)>220||!sight(s,hero,e))return false;s.focus=e.id;e.active=true;}
+        else if(type==='rescue'){const a=[...s.miners.filter(m=>m.map===s.map&&!m.rescued&&s.clue),...s.party.filter(a=>a.id!=='player'&&!a.hp)].find(a=>a.id===arg);if(!a||s.route.length||distance(hero,a)>44||!sight(s,hero,a)||s.rescue||s.miners.includes(a)&&a.hp<=0)return false;s.rescue={id:a.id,until:s.tick+30,damage:s.damage,x:hero.x,y:hero.y};}
+        else if(type==='deliver'){const p=GUILD_MAP_DEFS.harbor.sites[0];if(s.map!=='harbor'||s.route.length||Math.hypot(hero.x*4+2-p[1],hero.y*4+2-p[2])>48||!s.clue||s.enemies.find(e=>e.boss).hp>0||s.miners.some(m=>!m.rescued)||s.miners.filter(m=>m.hp>0&&distance(hero,m)<=64).length<2)return false;s.phase='success';for(const m of s.miners)if(m.hp>0&&distance(hero,m)<=64)m.evacuated=true;}
+        else if(type==='stop'){s.route=[];s.rescue=null;}
+        else return false;
+        return true;
+    }
+    function tick(s){if(s.phase!=='active')return;s.tick++;if(s.tick>=LIMIT){s.phase='failed';s.reason='任務逾時';return;}
+        for(const a of [...s.party,...s.miners,...s.enemies]){a.px=a.x;a.py=a.y;if(a.cool>0)a.cool--;}
+        const hero=s.party[0];for(let i=0;i<2&&s.route.length;i++){stepActor(hero,s.route.shift());s.trail.push([hero.x,hero.y]);if(s.trail.length>96)s.trail.shift();}
+        const enemies=s.enemies.filter(e=>e.map===s.map&&e.hp>0);
+        for(const e of enemies){if(distance(hero,e)<180&&sight(s,hero,e))e.active=true;if(!e.active)continue;const targets=[...s.party,...s.miners.filter(m=>m.rescued&&m.hp>0)].filter(a=>a.hp>0);const tank=targets.find(a=>a.id==='sentinel'&&distance(a,e)<100),target=tank||targets.sort((a,b)=>distance(a,e)-distance(b,e))[0];if(!target)continue;approach(s,e,target,36);if(!e.cool&&distance(e,target)<=44&&sight(s,e,target)){e.attackUntil=s.tick+4;hit(s,target,(e.boss?13:7)+random(s,4));e.cool=e.boss?14:18;}}
+        s.party.forEach((a,i)=>{if(!a.hp)return;const e=enemies.find(e=>e.id===s.focus&&e.hp>0)||enemies.filter(e=>e.active&&e.hp>0).sort((u,v)=>distance(a,u)-distance(a,v))[0],r=['ranger','arcanist','healer'].includes(a.id)?150:44;
+            if(a.id==='healer'&&!a.cool){const hurt=s.party.filter(p=>p.hp>0&&p.hp<p.maxHp*.75&&distance(a,p)<180&&sight(s,a,p)).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0];if(hurt){hurt.hp=Math.min(hurt.maxHp,hurt.hp+22);a.cool=20;return;}}
+            if(e&&e.active){if(i&&!s.route.length)approach(s,a,e,r);if(!a.cool&&distance(a,e)<=r&&sight(s,a,e)){a.attackUntil=s.tick+4;hit(s,e,(a.id==='player'?13:a.id==='healer'?5:9)+random(s,4));a.cool=a.id==='arcanist'?13:10;}}
+            else if(i){const p=s.trail[Math.max(0,s.trail.length-1-i*10)];approach(s,a,{x:p[0],y:p[1]},4);}
+        });
+        s.miners.filter(m=>m.rescued&&m.hp>0).forEach((m,i)=>{const offset=[[-6,-4],[0,-8],[6,-4]][i],idle=[hero.x+offset[0],hero.y+offset[1]],p=s.route.length?s.trail[Math.max(0,s.trail.length-1-40-i*10)]:s.world.canStand(...idle)?idle:[hero.x,hero.y];approach(s,m,{x:p[0],y:p[1]},4);});
+        if(s.rescue){const r=s.rescue;if(hero.x!==r.x||hero.y!==r.y||r.damage!==s.damage)s.rescue=null;else if(s.tick>=r.until){const a=[...s.miners,...s.party].find(a=>a.id===r.id);if(a&&distance(hero,a)<=44){if(s.miners.includes(a))a.rescued=true;else{a.hp=Math.ceil(a.maxHp*.35);a.downed=false;}a.path=[];}s.rescue=null;}}
+        if(!hero.hp||s.miners.filter(m=>m.rescued&&!m.hp).length>1){s.phase='failed';s.reason=!hero.hp?'隊長倒下':'礦工撤離人數不足';}
+    }
+    function replay(team,seed,cls,events,ticks){if(!Number.isInteger(ticks)||ticks<0||ticks>LIMIT||!Array.isArray(events)||events.length>10000)throw Error('mission_proof_bounds');let last=-1,count=0;for(const e of events){if(!Array.isArray(e)||e.length!==3||!Number.isInteger(e[0])||e[0]<last||e[0]>ticks||e[0]<0)throw Error('mission_event_order');count=e[0]===last?count+1:1;last=e[0];if(count>4)throw Error('mission_command_rate');}const s=create(team,seed,cls);let i=0;for(let t=0;t<=ticks;t++){while(i<events.length&&events[i][0]===t){const e=events[i++];if(!Array.isArray(e)||e.length!==3||!command(s,e[1],e[2]))throw Error('mission_invalid_command');}if(t<ticks)tick(s);}if(i!==events.length)throw Error('mission_event_order');return s;}
+    function safe(fn,s,...args){try{return fn(s,...args);}catch(e){if(e.message!=='mission_work_limit')throw e;s.phase='failed';s.reason='本次任務已中止，請重新接取';return false;}}
+    return Object.freeze({VERSION,LIMIT,MAPS,create,command:(s,...args)=>safe(command,s,...args),tick:s=>safe(tick,s),replay,distance});
+})();

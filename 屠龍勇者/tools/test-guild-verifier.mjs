@@ -1,0 +1,14 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+const proof=JSON.parse(fs.readFileSync('tools/guild-lost-miners/test-proof.json','utf8'));
+let handler,settled;
+globalThis.Deno={env:{get:k=>({SUPABASE_URL:'https://isolated.invalid',SUPABASE_ANON_KEY:'fixture-anon',SUPABASE_SERVICE_ROLE_KEY:'fixture-service'})[k]},serve:fn=>{handler=fn;}};
+globalThis.fetch=async(url,opts)=>{const p=JSON.parse(opts.body);if(url.endsWith('/guild_lost_ticket')){if(opts.headers.Authorization!=='Bearer fixture-user')return new Response('{}',{status:403});return Response.json({ticket:{team:['sentinel','warrior','healer'],seed:123456},cls:'mage'});}if(url.endsWith('/guild_lost_settle')){assert.equal(opts.headers.Authorization,'Bearer fixture-service');settled=p;return Response.json({receipt:{status:p.p_success?'accepted':'rejected'},reward:{rep:p.p_success?100:0}});}throw Error('unexpected network');};
+await import(process.argv.includes('--deploy')?'./guild-lost-miners/deploy.ts':'./guild-lost-miners/index.ts');
+const request=(body,token='fixture-user')=>new Request('https://isolated.invalid/verify',{method:'POST',headers:{Authorization:'Bearer '+token},body:JSON.stringify(body)});
+assert.equal((await handler(request(proof))).status,200);assert.equal(settled.p_success,true);assert.equal(settled.p_rating,true);assert.equal(settled.p_sim_ms,proof.ticks*100);
+assert.equal((await handler(request({...proof,events:[],ticks:0,success:true,reward:999999}))).status,200);assert.equal(settled.p_success,false,'不採信客戶端success／獎勵');
+assert.equal((await handler(request(proof,'wrong-user'))).status,503);assert.equal((await handler(request({...proof,ticks:7201}))).status,422);
+assert.equal((await handler(request({...proof,events:[[0,'deliver',null]]}))).status,422);
+assert.equal((await handler(request({pad:'x'.repeat(530000)}))).status,413);
+console.log('PASS：實際Edge handler與正式共用核心重播、僅服務金鑰結算、偽造成果拒絕、換帳／越界／巨型輸入拒絕；完全隔離網路');

@@ -32,6 +32,7 @@ function morphChildren(oldP, newP) {
 }
 
 function showScreen(name) {
+    if (name !== 'game' && typeof guildMapExit === 'function') guildMapExit();
     document.querySelectorAll('.screen').forEach(el => el.classList.toggle('active', el.id === 'screen-' + name));
 }
 

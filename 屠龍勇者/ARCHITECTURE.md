@@ -6,6 +6,15 @@
 ## 1. 專案結構
 
 | 檔案 | 內容 |
+| `data/guild-mission-core.js`、`data/guild-mission.js` | 失聯採礦隊固定步長模擬、任務憑證／加密紀錄、暫停續玩、調查／戰鬥／三秒救援／護送、交付；第300節 |
+| `tools/guild-lost-miners.sql`、`tools/guild-lost-miners/{index.ts,simulation.mjs,deploy.ts,sources.json,README.md,test-proof.json}`、`tools/prepare-guild-verifier.cjs` | 經使用者同意的獨立增量SQL、可信Edge重播及單檔部署、正式來源SHA256與可重播fixture；尚未部署正式庫 |
+| `tools/guild-lost-rescue-final-20261104.png`、`tools/guild-lost-rescue-20261104.png`、`tools/guild-lost-return-20261104.png`、`tools/guild-lost-mobile-20261104.png` | 礦坑救援／完整重播返程／手機救援實拍，測試憑證與收據非正式帳本 |
+| `tools/test-guild-mission.cjs`、`tools/test-guild-mission-ui.cjs`、`tools/test-guild-lost-db.cjs`、`tools/test-guild-verifier.mjs`、`tools/guild-mission-preview.js` | 首關規則／正式UI／隔離SQL／實際Edge handler驗證與禁止連外GUI測試憑證 |
+| `data/guild-world.js`、`data/guild-map-data.js`、`data/guild-map.js`、`guild-map.css` | 正式公會地區探索、17景安全通行／分層圖塊、小隊與有界快取；第298節 |
+| `images/guild-world/v1/` | 17景123圖層／273張512邏輯圖塊PNG，每側1px同層留邊；不載原始整張背景 |
+| `tools/prepare-guild-maps.cjs`、`tools/build-guild-map-layers.ps1`、`tools/guild-map-src/{maps-v1.json,layers-v1.cjs}` | 原稿來源／SHA256、景物輪廓與深度線、安全格／八向邊遮罩、無損分層分塊及正式資料輸出 |
+| `tools/test-guild-map.cjs`、`tools/test-guild-map-pixels.ps1` | 正式編隊與17景／34出口、資料保留／載入競態／回收，以及實際PNG像素重建與邊緣接縫檢查 |
+| `tools/guild-map-official-20261104.png`、`tools/guild-map-mobile-20261104.png` | 正式模組隔離驗收實拍，PC沉船群島／390px手機觸控操作 |
 | 外部 `C:/Users/User/.codex/visualizations/2026/10/31/01a191b6-cab8-7390-ac17-309a217ef8a5/wuxia-playable-v1/` | 使用者選擇獨立3D可玩原型，非正式遊戲腳本或商業客戶端接入；見第270節 |
 | `images/sprites/guild/scout-v1/`、`tools/sprite-src/guild/scout-v1/`、`tools/prepare-guild-scout.js`、`tools/test-guild-scout-model.cjs`、`tools/guild-scout-model-preview.html` | 渡鴉・瑞克三向36格相容模型、頭像、原稿提示詞／切格定位／驗收及動畫預覽（第265節） |
 | `tools/PROJECT-REMAINING-20261102.md`、`tools/project-audit-20261102.json` | 任務／地圖／模型／變身待完成盤點；36變身中28有專屬四動作圖檔、8仍共用外觀 |
@@ -295,13 +304,13 @@
 
 ## 2. 載入順序與依賴
 
-`config → classes → skills → items → spellbook → monsters → zones → quests → advance → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → afflict → guild-core → guild-state → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → talent-jewels → talent → talent-tree → talent-layout → talent-planner → talent-live → bag-storage → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → titles → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → guild → pwa → loot → main`
+`config → classes → skills → items → spellbook → monsters → zones → quests → advance → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → afflict → guild-core → guild-state → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → talent-jewels → talent → talent-tree → talent-layout → talent-planner → talent-live → bag-storage → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → titles → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → guild-world → guild-map-data → guild-mission-core → guild-mission → guild-map → guild → pwa → loot → main`
 
 - 上層資料檔（config～quests）只在「載入時」用到更前面的檔案；quests 載入時會把獎勵裝備與任務道具寫進 `ITEMS`，所以要在 items 之後。
 - resonance 載入時要改 `ITEMS`（含任務武器）、`MONSTERS` 掉落、`RECIPES`，所以在 quests 之後；`findSkill`（skills.js）在執行期才呼叫它的 `findResonanceSkill`。
 - boss-enchant 在 resonance 後、player 前載入；載入時使用 ITEMS、TOWER_BOSS_MATERIALS，產生 25 種 soul_材料id 封魂石。玩家、戰鬥與介面只在執行期使用。
 - mercenary在doll-abilities後、player前載入；載入時新增ITEMS的50種mercRune與CAT_NAMES，依賴items；其餘玩家／詞綴／UI／場景函式只在執行期使用。
-- guild-core／guild-state在afflict後、player前載入；guild在world-atlas後、pwa前註冊TABS／PANEL_FNS／DRAWERS，NPC動作只在執行期呼叫openGuild。
+- guild-core／guild-state在afflict後、player前載入；world-atlas後依序guild-world → guild-map-data → guild-mission-core → guild-mission → guild-map → guild → pwa。guild註冊TABS／PANEL_FNS／DRAWERS，NPC動作只在執行期呼叫openGuild；地區探索在呼叫時才讀正式編隊與人物外觀。
 - player 之後的檔案互相呼叫（例如 combat 呼叫 `refreshUI`、town 呼叫 `startHunt`），都發生在執行期，全部載完才會跑，所以沒問題。
 - map-queue.js在ui-frame後、icons前載入，載入時使用TABS／PANEL_FNS註冊分頁；maps／combat／save在執行期呼叫排程函式，main啟動前已全部載入。
 - bag-storage在ui-panels後、codex前載入；載入時只定義分頁常數與函式，物品分類依賴ITEMS／BOSS_ENCHANTS／MERC_RUNES，玩家／掉落／UI在執行期使用。
@@ -309,7 +318,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261104d`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261104e`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -4727,6 +4736,17 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 修正：加 `#frame:not(.pc) .hunt-ctrl select { pointer-events: auto; … }`（樣式比照手機按鈕）。之後在手機操作區加其他非 button 的控制項（input、select）也要記得開 pointer-events。
 - 驗證：375×812 手機尺寸，選單在最上層（elementFromPoint 是 select；拿掉這條規則就是 CANVAS），點開後選「最高 37F」從 5F 跳到 37F。
 
+## 298. 公會17景分層分塊與正式地區探索（2026-11-04，版本 `20261104b`）
+
+- 使用者選定「正式三人編隊、三大區往返、不發任務獎勵」。`renderGuild`新增低語海島／熔火群山／沉船群島入口，頂層`guildDepart`驗證村莊、角色身份、已保存三人編隊、療養與在途憑證；草稿未保存會拒絕。玩家沿用`playerSprite()`職業／變身，三夥伴依正式名冊模型，斥候用scout-v1；不混用舊傭兵團名冊。
+- `GUILD_MAP_DEFS`含17場景、34出口，正式頁不引用tools預覽或整張背景。`GUILD_MAP_STARTS`限定harbor／foothills／port；`guildMapTravel`要求走到出口32px內且停止，使用指定返程入口。港村↔古林↔礦坑、海岸船路與三層洞窟等雙向接線。區內圖塊連續顯示，跨場景經出口切換，不是整個世界無縫拼接。
+- 原始17張美術只讀；`layers-v1.cjs`定義建築／植被／岩石／道具輪廓、門洞與腳底深度線。`build-guild-map-layers.ps1`從原稿無損拆成123圖層（含17地表）、273個PNG，512×512邏輯格、每側1px同層留邊，紋理最大514px。像素歸屬不重疊，重建逐RGBA等於原稿；屬既有畫面的景物輪廓分離，未補畫被遮住的背景或新增建築內室。
+- 通行資料由既有預覽安全退縮規則預算成`walkRuns`、`edgeRuns`、`rawRuns`，4px格／八向合法邊，拒絕水面、牆腳與切角。`GuildWorld`／`GuildAssetCache`取自候選核心；正式覆寫neighbors遵循精確邊遮罩。點地面、WASD／方向鍵、手機長按方向移動，四人沿安全路徑跟隨、不瞬移；時間用`gameNow`，背景暫停，療養仍用真實時間。
+- `guildTrip`只在記憶體保存探索鏡頭／路徑／身份快照；`guildMapChange/Stream/Draw/Frame/Exit`負責切區、串流、繪圖與清場。只載鏡頭周圍加96px圖塊，最多3個並行解碼、24MiB／96項快取，引用保護與LRU；失敗可重試或返回。合成先在世界解析度緩衝拼圖，再縮放一次；每位人物獨立透明畫布按腳底套景物alpha，名牌最後畫，避免一位人物的遮擋覆蓋另一位。
+- 探索期間捕捉鍵盤避免觸發背景快捷列；失焦清除長按。返回、公會身份／編隊改變、`showScreen`離開game或`resetSessionState`都會退出，取消RAF／中止載圖／解碼資源釋放；晚到結果不接回新角色。玩家`loc`保留原村莊，不新增player欄位、不改schema、不送任務RPC／收據、不發幣或裝備。正式任務／戰鬥／交付和伺服器驗證仍待後續。
+- 重建：`node tools/prepare-guild-maps.cjs --stage` → `powershell -NoProfile -ExecutionPolicy Bypass -File tools/build-guild-map-layers.ps1` → `node tools/prepare-guild-maps.cjs --publish`。stage會重算安全邊且較慢；原稿SHA256／輪廓／打包來源保留在tools，不進發佈包。
+- 驗證：`test-guild-map.cjs`逐17景地標四人7845步、34出口實走切區、12職與斥候外觀、編隊／身份／療養限制、角色JSON逐字保留、載入失敗重試／中途取消／換帳換角／回標題及全部資源回收；`test-guild-map-pixels.ps1`讀實際273 PNG驗17景精確RGBA重建、圖塊留邊與無縫接合。GUI沿用`guild-integration-preview.html`載正式腳本，用記憶體加密存檔與禁止連外驗收，不建立測試雲端角色。
+
 ## 299. 倉庫物品分類（2026-11-04，版本 `20261104d`；`ui-panels.js`、`vault.js`）
 
 - 使用者要求：倉庫比照交易所（第 294 節出售區）加分類按鈕。角色倉庫、帳號共用倉庫都有，放在「角色倉庫／帳號共用倉庫」切換鈕下方；選了分類，上方倉庫清單和下方背包清單一起篩。
@@ -4734,3 +4754,15 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 函式：`storageCat`（不存檔，兩種倉庫共用）、`setStorageCat(c)`、`storageCatOf(id)`、`storageCatOk(id, c)`、`storageCatHtml(groups)`（按鈕後面的數字＝上方倉庫那一類有幾列）。vault.js `vaultHtml` 用 `typeof storageCatHtml` 判斷後套用。只在本機篩，不多打伺服器。
 - 沒有道具時顯示「倉庫裡沒有這類道具」／「背包裡沒有這類道具」。
 
+
+## 300. 失聯採礦隊正式首關與可信重播交付（2026-11-04，版本 `20261104e`）
+
+- 使用者已同意獨立SQL；原有guild-system.sql／cloud.js未改、正式庫未執行。普通首關走harbor→forest→mine→mineInner：作業廣場調查、三礦工各三秒救援、深礦巨怪、至少兩人生還到港村公會門前，12分鐘超時或隊長倒下／礦工不足則失敗。出口要求等待礦工跟上，不允許任務船路偏離；每位人物依實際安全格通行／視線，敵人名牌集火，補師治療、盾衛承傷、倒地夥伴可救起，曾倒地返回療養30分鐘。普通使用獨立戰術數值，不宣稱已接裝備壓制或四難度。
+- GuildMissionCore（VERSION lost-miners-1）純固定100ms模擬：create／command／tick／replay／distance；世界沿正式4px安全格與八向邊遮罩，種子Xorshift、可重播路徑／攻擊／療傷／救援／護送。最多7200步長／10000指令／每步4指令／200萬尋路節點。核心同源產生Edge的simulation.mjs與單檔deploy.ts，sources.json保存SHA256；實際結果不依Canvas或render節奏。
+- guildMissionBackend（begin／cancel／submit）、guildMissionBusy／Notice；guildMissionStart／Resume／Abandon／Submit是正式HTML入口。Key／Read／Write／Proof／Save沿saveParse／saveEncode保存綁owner、character、ticket的本機紀錄；Attach／Bind／Command／Travel／Tick／Complete／Draw／Pointer銜接正式地圖與名牌點擊、既有職業／變身／夥伴攻擊圖集、敵人HP／選派目標與救援倒數。guildDepart可接受內部mission，guildMapAlive核對同票；非任務探索仍不發獎。關閉／換角只保存原角色紀錄，晚到RPC／摘要不污染新角色。
+- player.guild沿用既有activeTicket／outbox／settled／serverCursor，SAVE_SCHEMA25不變。憑證由guild_lost_begin從auth.uid與實際dragon_saves／伺服器名冊簽發，鎖定character、team、seed、7日期限；完成先存加密輸入與SHA256，再由GuildCore.finish排待交。暫停重開重播回同狀態，缺原裝置紀錄不假恢復。失敗可重試，離場清掉NPC／臨時能力，不改正式HP、金幣、背包、裝備／個人傭兵。
+- 新SQL獨立lost_config／runs／wallet／book及guild_lost_payload／begin／ticket／cancel／status／settle。新run同時登記既有ticket外鍵，收據沿既有profiles.cursor與receipts；RLS拒絕客戶端直讀寫。只有service_role可settle；同票同hash冪等、不符hash拒絕，profile鎖保證並行帳本與週內首次判斷。每週依台灣週一／票據發行週計，首次100聲望／10代幣／20徽章，全礦工撤離且夥伴未倒地代幣12；重打0／2（完美3）／5。僅入伺服器獨立帳本，不在本機加幣，也未接商店／培養消費。失敗／拒絕無獎。
+- Edge Function guild-lost-miners用呼叫者JWT取自己的票據（每票10秒一次），不接受客戶端success／數值，以正式同源模擬重播後服務角色結算；512KiB串流上限，模擬步數／指令／工作量有界，資料庫不跑整場模擬。實際模擬用時不可大於票據發行到提交時間加5秒容差；有效票據完成成果另有72小時交付寬限。驗證可重播策略，不能證明真人逐秒操作。
+- 安裝及GUI驗收見tools/guild-lost-miners/README.md。新增SQL預設關閉、Edge未部署；僅本機與隔離測試完成不等於正式庫已發獎。guild-integration-preview.html?lost-miners=1才注入明示的記憶體測試憑證／收據，禁止連外；測試工具載入的是test-proof.json重播到中途，不直接修改任務成功旗標。
+
+- 驗證：12職初始編隊皆可重播完成普通、四景22指令／2791步長成功，超時／篡改／救援取消與三秒復活；正式UI加密續玩／完成待交／收據／財物保留；隔離PGlite權限／預設關閉／重跑／隊伍療養／週內25%／冪等；實際Edge index及單檔deploy handler偽造success／換帳／超限拒絕。GUI名牌救援0→1/3、三礦工返程報到→待交1→測試收據1／清空、390px手機救援均通過，Console無error／warn。重用固定BFS工作陣列，16組路徑與既有尋路逐字相同；本機完整重播142ms／602133節點，正式Edge平台尚待部署量測。check.ps1 ALL CHECKS PASSED（72檔／71支載入），正式混淆打包任務四入口及273圖塊通過。查看公會公告改呼叫guild_lost_status，讀本人角色伺服器公會餘額，不增加輪詢。

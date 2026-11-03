@@ -1,0 +1,12 @@
+'use strict';
+const fs=require('fs'),path=require('path'),vm=require('vm'),crypto=require('crypto');
+const root=path.resolve(__dirname,'..'),read=p=>fs.readFileSync(path.join(root,p),'utf8');
+const defs=vm.runInNewContext(read('data/guild-map-data.js')+';GUILD_MAP_DEFS');
+const maps=Object.fromEntries(['harbor','forest','mine','mineInner'].map(id=>[id,Object.fromEntries(['width','height','sites','entries','gates','walkRuns','edgeRuns','rawRuns'].map(k=>[k,defs[id][k]]))]));
+const inputs=['data/guild-core.js','data/guild-world.js','data/guild-mission-core.js'];
+const code='// Generated; rebuild with node tools/prepare-guild-verifier.cjs\nconst GUILD_MAP_DEFS='+JSON.stringify(maps)+';\n'+inputs.map(read).join('\n')+'\nexport {GuildMissionCore};\n';
+const out=path.join(__dirname,'guild-lost-miners');fs.mkdirSync(out,{recursive:true});fs.writeFileSync(path.join(out,'simulation.mjs'),code);
+fs.writeFileSync(path.join(out,'sources.json'),JSON.stringify(Object.fromEntries([...inputs,'data/guild-map-data.js'].map(p=>[p,crypto.createHash('sha256').update(read(p)).digest('hex')])),null,2)+'\n');
+const handler=fs.readFileSync(path.join(out,'index.ts'),'utf8').replace(/^import .*simulation\.mjs';\r?\n/m,'');
+fs.writeFileSync(path.join(out,'deploy.ts'),code.replace('export {GuildMissionCore};','')+'\n'+handler);
+console.log('PASS：可信重播模組已由正式核心與四張實際通行圖產生');

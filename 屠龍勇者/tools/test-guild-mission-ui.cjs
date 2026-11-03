@@ -1,0 +1,20 @@
+'use strict';
+const fs=require('fs'),path=require('path'),vm=require('vm'),assert=require('assert/strict');
+const source=fs.readFileSync(path.join(__dirname,'test-guild-map.cjs'),'utf8').split('async function run(){')[0];
+const {ctx,Element}=new Function('require','__dirname',source+'\nreturn {ctx,Element};')(require,__dirname);
+Element.prototype.prepend=function(node){node.parent=this;this.children.unshift(node);};
+const query=Element.prototype.querySelector;Element.prototype.querySelector=function(s){if(s==='header small')s='small';if(s==='aside>.muted')return {};return query.call(this,s);};
+ctx.crypto=require('crypto').webcrypto;ctx.TextEncoder=TextEncoder;ctx.proof=JSON.parse(fs.readFileSync('tools/guild-lost-miners/test-proof.json','utf8'));
+const memory=new Map();ctx.localStorage={getItem:k=>memory.get(k)||null,setItem:(k,v)=>memory.set(k,String(v)),removeItem:k=>memory.delete(k)};
+ctx.setTimeout=setTimeout;ctx.clearTimeout=clearTimeout;
+(async()=>{await vm.runInContext(`(async()=>{
+playerOwner='11111111-1111-4111-8111-111111111111';createPlayer('任務驗收','mage',CLASSES.mage.base);guildNormalize(player,playerOwner);const savedWealth=JSON.stringify([player.gold,player.inv,player.equip,player.mercenary]);
+let ticket;guildMissionBackend.begin=async team=>(ticket={ticketId:proof.ticketId,ownerId:playerOwner,characterId:player.guild.characterId,missionId:'lostMiners',ruleVersion:GuildCore.RULE_VERSION,missionVersion:GuildMissionCore.VERSION,seed:123456,team,issuedAt:Date.now()-600000,expiresAt:Date.now()+86400000});
+assert(await guildMissionStart(),guildMissionNotice);assert(guildTrip.mission);guildMapDraw(guildTrip);const originalTrip=guildTrip;guildMissionCommand(guildTrip,'move',[201,124]);guildMissionTick(guildTrip,200);const tick=guildTrip.mission.core.tick;guildMapExit();assert(player.guild.activeTicket);assert.equal(originalTrip.cache.bytes,0);
+assert(await guildMissionResume());assert.equal(guildTrip.mission.core.tick,tick,'加密紀錄重開恢復相同步長');assert.equal(player.guild.activeTicket.phase,'active');guildMapExit();
+const m={ticket,events:proof.events.slice(0,-1),core:GuildMissionCore.replay(ticket.team,ticket.seed,player.cls,proof.events.slice(0,-1),proof.ticks),closed:false};assert(await guildDepart('harbor',m));assert.equal(m.core.phase,'active');assert(guildMissionCommand(guildTrip,'deliver',null));
+await new Promise(r=>setTimeout(r,30));assert.equal(guildTrip,null);assert.equal(player.guild.activeTicket,null);assert.equal(player.guild.outbox.length,1,'只排待驗成果');
+const queued=player.guild.outbox[0];guildMissionBackend.submit=async report=>({receipt:{ticketId:queued.ticketId,ownerId:queued.ownerId,characterId:queued.characterId,missionId:'lostMiners',ruleVersion:GuildCore.RULE_VERSION,logHash:queued.logHash,seq:1,status:'accepted',recruits:[]},reward:{rep:100,tokens:12,badges:20}});
+await guildMissionSubmit();assert.equal(player.guild.outbox.length,0);assert.equal(player.guild.serverCursor,1);assert(guildMissionNotice.includes('伺服器帳本'));assert.equal(JSON.stringify([player.gold,player.inv,player.equip,player.mercenary]),savedWealth,'不向本機金幣裝備發獎');
+console.log('PASS：正式任務入口、加密暫停／重開、完成待交付、可信收據採納、場景回收與原角色財物保留');
+})()`,ctx,{timeout:120000});})().catch(e=>{console.error(e);process.exitCode=1;});

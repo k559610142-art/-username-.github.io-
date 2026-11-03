@@ -33,6 +33,7 @@ function gameTick() {
 
 // 換角色（人物選單）時清掉上一個角色的戰鬥、地圖畫面、遊戲訊息
 function resetSessionState() {
+    if (typeof guildMapExit === 'function') guildMapExit();
     hunt = null; session = null; walkHome = null;
     scene = null;
     gameLog.length = 0;
