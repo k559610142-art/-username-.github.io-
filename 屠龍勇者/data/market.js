@@ -257,16 +257,18 @@ function marketSellHtml() {
     const inst = marketSellUid != null ? findInv(marketSellUid) : null;
     if (inst) {
         const d = ITEMS[inst.id], stack = isStackable(d);
-        const ref = sellPriceOf(inst.id);
+        const ref = sellPriceOf(inst.id), same = stack ? 1 : groupInv(player.inv.filter(marketSellable)).find(g => g.uids.includes(inst.uid));
         return `<div class="panel"><h4>🏷️ 上架 <span class="${itemClass(inst)}">${esc(itemName(inst))}</span>${inst.n > 1 ? ' ×' + fmt(inst.n) : ''}</h4>
             ${marketItemDescHtml(inst)}
+            ${same && same.n > 1 ? `<small class="muted">背包有同款 ×${fmt(same.n)}，裝備每次上架一件。</small>` : ''}
             ${stack ? `<label class="set-row"><span>數量（最多 ${fmt(inst.n)}）</span><input type="number" id="market-n" min="1" max="${inst.n}" value="${inst.n}" style="width:100px"></label>` : ''}
             <label class="set-row"><span>總價（金幣）</span><input type="number" id="market-price" min="1" max="2000000000" value="${Math.max(1, ref * (stack ? inst.n : 1) * 2)}" style="width:140px"></label>
             <small class="muted">參考：商店回收價每個 ${fmt(ref)}。成交收 5% 手續費；上架 48 小時，沒賣掉可以在「我的上架」取回。</small>
             <div class="btn-row"><button onclick="marketListItem()" ${marketBusy ? 'disabled' : ''}>上架</button><button class="secondary" onclick="marketPickSell(null)">換一件</button></div></div>`;
     }
-    const list = sortedInv(player.inv).filter(marketSellable).map(x => `<button class="item-row" onclick="marketPickSell(${x.uid})">
-        <span class="item-face">${itemIconHtml(x.id)}<span><span class="${itemClass(x)}">${esc(itemName(x))}</span>${marketBaseLevelText(x) ? `<small>${marketBaseLevelText(x)}</small>` : ''}</span></span><span class="muted">${x.n > 1 ? '×' + fmt(x.n) : ''}</span></button>`).join('');
+    // 相同裝備（除 uid 外全部一樣）疊成一列 ×N（第 282 節）；點了選第一件，裝備每次上架一件
+    const list = groupInv(sortedInv(player.inv).filter(marketSellable)).map(({ x, n }) => `<button class="item-row" onclick="marketPickSell(${x.uid})">
+        <span class="item-face">${itemIconHtml(x.id)}<span><span class="${itemClass(x)}">${esc(itemName(x))}</span>${marketBaseLevelText(x) ? `<small>${marketBaseLevelText(x)}</small>` : ''}</span></span><span class="muted">${n > 1 ? '×' + fmt(n) : ''}</span></button>`).join('');
     return `<div class="panel"><h4>選擇要上架的道具</h4><small class="muted">只能賣背包裡的道具（穿在身上的要先卸下）；任務道具不能交易。同時最多上架 ${MARKET_MAX} 件。</small>
         <div class="list">${list || '<p class="muted">背包裡沒有可以交易的道具。</p>'}</div></div>`;
 }

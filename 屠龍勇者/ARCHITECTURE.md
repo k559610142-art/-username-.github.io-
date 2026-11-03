@@ -4597,3 +4597,8 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 傷害數字：`sceneShowDmg`（key `dragonSlayer_dmgNum`，預設開）；新 `addDmgFloat` 包住怪物受傷、玩家受傷、補血、MISS 數字。LEVEL UP、娃娃訊息、掉寶 🎁、瞬間移動等文字仍顯示。
 - 省電模式：`scenePowerSave`（key `dragonSlayer_powerSave`，預設關）。`sceneFrame` 距上一幀不到 30ms 就跳過（約 30 FPS），畫布解析度 `devicePixelRatio` 最多 1.5 倍（手機 3 倍螢幕像素量約剩 1/4）。遊戲邏輯用 dt 推進，不受幀數影響。
 - 切換函式 `setSceneShowDmg`、`setScenePowerSave`（頂層函式，事件字串可呼叫）。
+
+## 282. 交易所出售清單相同道具疊成 ×N（2026-11-03，版本 `20261103g`；`market.js` 的 `marketSellHtml`）
+
+- 使用者要求：交易所「出售」選單重複的東西疊在一起。改用第 122 節的 `groupInv`：可堆疊照舊一列；不可堆疊（裝備）除 uid 以外欄位全部相同（強化、詞綴、附魔等都一樣）才疊成一列「×N」，不同強化值仍分開。
+- 點疊起來的那列選第一件（`marketPickSell(x.uid)`）；上架畫面多一行「背包有同款 ×N，裝備每次上架一件」。伺服器 `market_list2` 仍一次上架一個 uid，上架流程、SQL 都沒改；上架完回清單自動變 ×(N−1)。
