@@ -309,7 +309,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261103w`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261104a`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -4719,3 +4719,10 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 遊戲端：`rollMercRuneDrop` 多一個 `kind`（'special'／'basic'，預設 special），非首領非副本一律 null，機率 `MERC_RUNE_DROPS.bossP`；`normalP` 刪除。`rollDrops` 兩種各擲一次。`mercRuneSource` 兩種都顯示「黃色稀有異界首領／團隊副本勝利5%」。
 - 伺服器：`boss-timer.sql` 最後重新定義 `loot_merc_rune(c, x)`：首領（或 `mercRaid`）才擲，特殊、基本各 `cfg.bossP`。**重跑 mercenary-rune-drops.sql 後要再跑 boss-timer.sql**。目錄的 `normalP` 留著不用。
 - 測試：`test-mercenary-rune-drops.js`（兩種池子全可抽、小怪不掉、首領一次 rollDrops 同時拿到特殊與基本）、`test-boss-timer.js`（SQL：小怪 0、首領基本與特殊各約 5%）。
+
+## 297. 修手機版永夜之塔快速選樓層點不到（2026-11-04，版本 `20261104a`；`index.html`）
+
+- 使用者回報：手機版永夜之塔的樓層下拉選單（第 285 節 `towerJumpHtml`）點了沒反應。
+- 原因：手機外框的 `.hunt-ctrl` 是 `pointer-events: none`（讓點擊穿到地圖），只有 `button` 另外設 `pointer-events: auto`，`<select>` 沒有，點擊直接落到地圖 canvas。PC 外框沒有這條規則所以正常。
+- 修正：加 `#frame:not(.pc) .hunt-ctrl select { pointer-events: auto; … }`（樣式比照手機按鈕）。之後在手機操作區加其他非 button 的控制項（input、select）也要記得開 pointer-events。
+- 驗證：375×812 手機尺寸，選單在最上層（elementFromPoint 是 select；拿掉這條規則就是 CANVAS），點開後選「最高 37F」從 5F 跳到 37F。
