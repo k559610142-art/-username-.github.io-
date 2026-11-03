@@ -1,0 +1,80 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_1018_t.utx Ver: 128/29 Names: 99 Exports: 41 Imports: 11 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading TexScaler 4000_star_s from package Textures/WL_1018_t.utx
+Loading Texture 4000_aph_006b from package Textures/WL_1018_t.utx
+Loading TexPanner 8045_SPanner from package Textures/WL_1018_t.utx
+Loading Texture 1018_deco_plant_004 from package Textures/WL_1018_t.utx
+Loading Texture 1018_crystal_12 from package Textures/WL_1018_t.utx
+Loading Texture 8045_fl_gre_004b from package Textures/WL_1018_t.utx
+Loading TexScaler 8045_Cloud_s from package Textures/WL_1018_t.utx
+Loading Shader 4000_star_sh from package Textures/WL_1018_t.utx
+Loading TexPanner 1018_crystal_run_12 from package Textures/WL_1018_t.utx
+Loading Texture 1018_crystal_11 from package Textures/WL_1018_t.utx
+Loading Texture 8045_fl_gre_001b from package Textures/WL_1018_t.utx
+Loading Texture 8045_fl_gre_002b from package Textures/WL_1018_t.utx
+Loading Texture 2100_sky_color_001b from package Textures/WL_1018_t.utx
+Loading Palette Palette0 from package Textures/WL_1018_t.utx
+Loading Texture 1018_rainbow_01_n from package Textures/WL_1018_t.utx
+Loading Texture 1018_rainbow_03_n from package Textures/WL_1018_t.utx
+Loading Texture 1018_rainbow_02_n from package Textures/WL_1018_t.utx
+Loading Shader 8045_SShader from package Textures/WL_1018_t.utx
+Loading Texture 4000_star_001b from package Textures/WL_1018_t.utx
+Loading TexRotator 8045_run_cc_002b from package Textures/WL_1018_t.utx
+Loading Shader 1018_crystal_sh_11 from package Textures/WL_1018_t.utx
+Loading Texture 1018_square_01 from package Textures/WL_1018_t.utx
+Loading FinalBlend 4000_star_fb from package Textures/WL_1018_t.utx
+Loading Texture 1018_bridge_11 from package Textures/WL_1018_t.utx
+Loading Texture 1018_bridge_12 from package Textures/WL_1018_t.utx
+Loading Texture 1018_sky_n from package Textures/WL_1018_t.utx
+Loading Texture 4000_HYFX0012b from package Textures/WL_1018_t.utx
+Loading Shader rainbow02_shader from package Textures/WL_1018_t.utx
+Loading Shader rainbow_shader from package Textures/WL_1018_t.utx
+Loading Shader rainbow_03shader from package Textures/WL_1018_t.utx
+Loading Texture 8045_wat_h0b from package Textures/WL_1018_t.utx
+Loading Texture 8045_wat_h1b from package Textures/WL_1018_t.utx
+Loading Texture Dr_light_001j from package Textures/WL_1018_t.utx
+Loading TexRotator 8045_run_cc_003b from package Textures/WL_1018_t.utx
+Loading Texture 1018_deco from package Textures/WL_1018_t.utx
+Loading TexRotator 8045_run_cc_001b from package Textures/WL_1018_t.utx
+Loading TexRotator 1018_deco_plant_004_tr from package Textures/WL_1018_t.utx
+Exporting objects ...
+Exporting TexScaler 4000_star_s to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/TexScaler/4000_star_s.mat
+Exporting Texture 4000_star_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/Texture/4000_star_001b.png
+Exporting Texture 4000_aph_006b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/Texture/4000_aph_006b.png
+Exporting TexPanner 8045_SPanner to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/TexPanner/8045_SPanner.mat
+Exporting Texture 2100_sky_color_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/Texture/2100_sky_color_001b.png
+Exporting Texture 1018_deco_plant_004 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/Texture/1018_deco_plant_004.png
+Exporting Texture 1018_crystal_12 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/Texture/1018_crystal_12.png
+Exporting Texture 8045_fl_gre_004b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/Texture/8045_fl_gre_004b.png
+Exporting TexScaler 8045_Cloud_s to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/TexScaler/8045_Cloud_s.mat
+Exporting Shader 4000_star_sh to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/Shader/4000_star_sh.mat
+Exporting TexPanner 1018_crystal_run_12 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/TexPanner/1018_crystal_run_12.mat
+Exporting Texture 1018_crystal_11 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/Texture/1018_crystal_11.png
+Exporting Texture 8045_fl_gre_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/Texture/8045_fl_gre_001b.png
+Exporting Texture 8045_fl_gre_002b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/Texture/8045_fl_gre_002b.png
+Exporting Texture 1018_rainbow_01_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/Texture/1018_rainbow_01_n.png
+Exporting Texture 1018_rainbow_03_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/Texture/1018_rainbow_03_n.png
+Exporting Texture 1018_rainbow_02_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/Texture/1018_rainbow_02_n.png
+Exporting Shader 8045_SShader to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/Shader/8045_SShader.mat
+Exporting TexRotator 8045_run_cc_002b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/TexRotator/8045_run_cc_002b.mat
+Exporting Shader 1018_crystal_sh_11 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/Shader/1018_crystal_sh_11.mat
+Exporting Texture 1018_square_01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/Texture/1018_square_01.png
+Exporting FinalBlend 4000_star_fb to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/FinalBlend/4000_star_fb.mat
+Exporting Texture 1018_bridge_11 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/Texture/1018_bridge_11.png
+Exporting Texture 1018_bridge_12 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/Texture/1018_bridge_12.png
+Exporting Texture 1018_sky_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/Texture/1018_sky_n.png
+Exporting Texture 4000_HYFX0012b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/Texture/4000_HYFX0012b.png
+Exporting Shader rainbow02_shader to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/Shader/rainbow02_shader.mat
+Exporting Shader rainbow_shader to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/Shader/rainbow_shader.mat
+Exporting Shader rainbow_03shader to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/Shader/rainbow_03shader.mat
+Exporting Texture 8045_wat_h0b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/Texture/8045_wat_h0b.png
+Exporting Texture 8045_wat_h1b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/Texture/8045_wat_h1b.png
+Exporting Texture Dr_light_001j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/Texture/Dr_light_001j.png
+Exporting TexRotator 8045_run_cc_003b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/TexRotator/8045_run_cc_003b.mat
+Exporting Texture 1018_deco to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/Texture/1018_deco.png
+Exporting TexRotator 8045_run_cc_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/TexRotator/8045_run_cc_001b.mat
+Exporting TexRotator 1018_deco_plant_004_tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1018_t/TexRotator/1018_deco_plant_004_tr.mat
+Memory: allocated 500896 bytes in 99 blocks
+Exported 36/36 objects in 0.3 sec

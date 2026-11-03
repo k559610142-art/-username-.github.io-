@@ -1,0 +1,17 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/c8_t.utx Ver: 128/29 Names: 25 Exports: 5 Imports: 2 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture C82301b from package Textures/c8_t.utx
+Loading Texture C82601a from package Textures/c8_t.utx
+Loading Texture C82601b from package Textures/c8_t.utx
+Loading Texture C82601c from package Textures/c8_t.utx
+Loading Texture C82301a from package Textures/c8_t.utx
+Exporting objects ...
+Exporting Texture C82301b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c8_t/Texture/C82301b.png
+Exporting Texture C82601a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c8_t/Texture/C82601a.png
+Exporting Texture C82601b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c8_t/Texture/C82601b.png
+Exporting Texture C82601c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c8_t/Texture/C82601c.png
+Exporting Texture C82301a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c8_t/Texture/C82301a.png
+Memory: allocated 310611 bytes in 53 blocks
+Exported 5/5 objects in 0.1 sec

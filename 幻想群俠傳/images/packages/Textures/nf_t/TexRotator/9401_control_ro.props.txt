@@ -1,0 +1,16 @@
+TexRotationType = TR_ConstantlyRotating (1)
+Rotation = { Yaw=16384, Pitch=0, Roll=0 }
+UOffset = 32
+VOffset = 32
+OscillationRate = { Yaw=0, Pitch=0, Roll=0 }
+OscillationAmplitude = { Yaw=0, Pitch=0, Roll=0 }
+OscillationPhase = { Yaw=0, Pitch=0, Roll=0 }
+TexCoordSource = TCS_NoChange (13)
+TexCoordCount = TCN_2DCoords (0)
+TexCoordProjected = false
+Material = Texture'9401_control02y'
+FallbackMaterial = None
+DefaultMaterial = None
+SurfaceType = 0
+bUseTextureAsHeat = false
+HeatMaterial = None

@@ -1,0 +1,29 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/Z1_T.utx Ver: 128/29 Names: 28 Exports: 11 Imports: 2 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture z10101b from package Textures/Z1_T.utx
+Loading Texture z10401c from package Textures/Z1_T.utx
+Loading Texture z10401a from package Textures/Z1_T.utx
+Loading Texture z10401b from package Textures/Z1_T.utx
+Loading Texture z10201a from package Textures/Z1_T.utx
+Loading Texture z10101a from package Textures/Z1_T.utx
+Loading Texture z10303a from package Textures/Z1_T.utx
+Loading Texture z10301a from package Textures/Z1_T.utx
+Loading Texture z10302a from package Textures/Z1_T.utx
+Loading Texture z10304a from package Textures/Z1_T.utx
+Loading Texture z10305a from package Textures/Z1_T.utx
+Exporting objects ...
+Exporting Texture z10101b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Z1_T/Texture/z10101b.png
+Exporting Texture z10401c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Z1_T/Texture/z10401c.png
+Exporting Texture z10401a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Z1_T/Texture/z10401a.png
+Exporting Texture z10401b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Z1_T/Texture/z10401b.png
+Exporting Texture z10201a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Z1_T/Texture/z10201a.png
+Exporting Texture z10101a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Z1_T/Texture/z10101a.png
+Exporting Texture z10303a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Z1_T/Texture/z10303a.png
+Exporting Texture z10301a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Z1_T/Texture/z10301a.png
+Exporting Texture z10302a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Z1_T/Texture/z10302a.png
+Exporting Texture z10304a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Z1_T/Texture/z10304a.png
+Exporting Texture z10305a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Z1_T/Texture/z10305a.png
+Memory: allocated 335415 bytes in 59 blocks
+Exported 11/11 objects in 0.2 sec

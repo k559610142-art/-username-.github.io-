@@ -1,0 +1,13 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_8018_t.utx Ver: 128/29 Names: 44 Exports: 7 Imports: 9 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading TexPanner 8018_abvearth_sun_tp from package Textures/WL_8018_t.utx
+Loading TexScaler 8018_Abvearth_ts from package Textures/WL_8018_t.utx
+Loading Texture 8018_cl_001a from package Textures/WL_8018_t.utx
+Exporting objects ...
+Exporting TexPanner 8018_abvearth_sun_tp to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8018_t/TexPanner/8018_abvearth_sun_tp.mat
+Exporting Texture 8018_cl_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8018_t/Texture/8018_cl_001a.png
+Exporting TexScaler 8018_Abvearth_ts to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8018_t/TexScaler/8018_Abvearth_ts.mat
+Memory: allocated 310764 bytes in 53 blocks
+Exported 3/3 objects in 0.0 sec

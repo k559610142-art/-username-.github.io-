@@ -1,0 +1,212 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_1031_t.utx Ver: 128/29 Names: 163 Exports: 100 Imports: 17 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.01 MBytes serialized in 2 calls.
+Loading TexPanner Water_01panner_a2 from package Textures/WL_1031_t.utx
+Loading Texture 2000_h3_tex08 from package Textures/WL_1031_t.utx
+Loading TexScaler 0120_star_s from package Textures/WL_1031_t.utx
+Loading Texture 0120_aph_006b from package Textures/WL_1031_t.utx
+Loading Texture 1010_grass_1h_2 from package Textures/WL_1031_t.utx
+Loading Texture 1010_grass_1h from package Textures/WL_1031_t.utx
+Loading Texture 3200_rock_gre_009b from package Textures/WL_1031_t.utx
+Loading Texture 2100_tree28h_01b from package Textures/WL_1031_t.utx
+Loading Texture 0120_star_001b from package Textures/WL_1031_t.utx
+Loading Shader 0120_star_sh from package Textures/WL_1031_t.utx
+Loading Texture Water_01B from package Textures/WL_1031_t.utx
+Loading Texture Water_01C from package Textures/WL_1031_t.utx
+Loading TexPanner Water_01panner_a from package Textures/WL_1031_t.utx
+Loading Texture 0120_fl_gre_003b from package Textures/WL_1031_t.utx
+Loading TexScaler Water_01A_scaler from package Textures/WL_1031_t.utx
+Loading Texture 0120_fl_gre_006b from package Textures/WL_1031_t.utx
+Loading Texture 8020_cloud_001a from package Textures/WL_1031_t.utx
+Loading Texture 8003_cave_03h from package Textures/WL_1031_t.utx
+Loading TexRotator 3200_greee_run_002b from package Textures/WL_1031_t.utx
+Loading FinalBlend 0120_star_fb from package Textures/WL_1031_t.utx
+Loading Texture 0120_tak_gre_001b from package Textures/WL_1031_t.utx
+Loading TexRotator 0120_run_cc_004b from package Textures/WL_1031_t.utx
+Loading TexRotator 0120_run_cc_006b from package Textures/WL_1031_t.utx
+Loading TexRotator 2100_tree28h_01b_tr from package Textures/WL_1031_t.utx
+Loading Shader Water_01bShader from package Textures/WL_1031_t.utx
+Loading package: Textures/HI_Floor_t.utx Ver: 128/29 Names: 505 Exports: 451 Imports: 11 Game: 200001
+Loading Texture duba_waterhouse005_w from package Textures/WL_1031_t.utx
+Loading TexRotator 1031_grass_022 from package Textures/WL_1031_t.utx
+Loading Texture 0027_starstar_001b from package Textures/WL_1031_t.utx
+Loading Texture 1007_stone02 from package Textures/WL_1031_t.utx
+Loading Texture 0010_Wall_006j from package Textures/WL_1031_t.utx
+Loading Texture 0010_Wall_010j from package Textures/WL_1031_t.utx
+Loading Texture 0010_Wall_017j from package Textures/WL_1031_t.utx
+Loading Texture 0010_Wall_020j from package Textures/WL_1031_t.utx
+Loading Texture 0010_Wall_019j from package Textures/WL_1031_t.utx
+Loading Texture 1031_Wall_001j from package Textures/WL_1031_t.utx
+Loading Texture 2000_tower_tex03 from package Textures/WL_1031_t.utx
+Loading Texture 2000_h3_tex06 from package Textures/WL_1031_t.utx
+Loading Texture 0010_Wall_008j from package Textures/WL_1031_t.utx
+Loading Texture 2000_tower_tex01 from package Textures/WL_1031_t.utx
+Loading Texture 2000_tower2_tex04 from package Textures/WL_1031_t.utx
+Loading Texture 2000_tower_tex11 from package Textures/WL_1031_t.utx
+Loading Texture 2000_outgate_tex01 from package Textures/WL_1031_t.utx
+Loading Texture 2000_outgate_tex02 from package Textures/WL_1031_t.utx
+Loading Texture 1004_object_002a from package Textures/WL_1031_t.utx
+Loading Texture 1007_stone01 from package Textures/WL_1031_t.utx
+Loading Texture 1004_object_003a from package Textures/WL_1031_t.utx
+Loading Texture 0010_Wall_001a from package Textures/WL_1031_t.utx
+Loading Texture 0010_door_001a from package Textures/WL_1031_t.utx
+Loading Texture 0010_house_002a from package Textures/WL_1031_t.utx
+Loading Texture 0010_house_004a from package Textures/WL_1031_t.utx
+Loading Texture 1400_house_028a from package Textures/WL_1031_t.utx
+Loading Texture 0010_house_006a from package Textures/WL_1031_t.utx
+Loading Texture 0010_house_010a from package Textures/WL_1031_t.utx
+Loading Texture 0010_Wall_022j from package Textures/WL_1031_t.utx
+Loading Texture 0010_Wall_032j from package Textures/WL_1031_t.utx
+Loading Texture 1031_obj01_2 from package Textures/WL_1031_t.utx
+Loading Texture 0010_Wall_059j from package Textures/WL_1031_t.utx
+Loading Texture 0010_Wall_002j from package Textures/WL_1031_t.utx
+Loading Texture 0010_Wall_003j from package Textures/WL_1031_t.utx
+Loading Texture 0010_Wall_014j from package Textures/WL_1031_t.utx
+Loading Texture 0010_Wall_013j from package Textures/WL_1031_t.utx
+Loading Texture 0010_Wall_011j from package Textures/WL_1031_t.utx
+Loading Texture 0010_Wall_012j from package Textures/WL_1031_t.utx
+Loading Texture 0010_Wall_004j from package Textures/WL_1031_t.utx
+Loading Texture 0010_Wall_015j from package Textures/WL_1031_t.utx
+Loading Texture duba_waterhouse012_w from package Textures/WL_1031_t.utx
+Loading Texture duba_waterhouse001_w from package Textures/WL_1031_t.utx
+Loading Texture duba_waterhouse002_w from package Textures/WL_1031_t.utx
+Loading Texture duba_waterhouse003_w from package Textures/WL_1031_t.utx
+Loading Texture duba_waterhouse004_w from package Textures/WL_1031_t.utx
+Loading Texture duba_waterhouse006_w from package Textures/WL_1031_t.utx
+Loading Texture duba_waterhouse004_2_w from package Textures/WL_1031_t.utx
+Loading Texture duba_waterhouse007_w from package Textures/WL_1031_t.utx
+Loading Texture duba_waterhouse008_w from package Textures/WL_1031_t.utx
+Loading Texture duba_waterhouse009_w from package Textures/WL_1031_t.utx
+Loading Texture duba_waterhouse0010_w from package Textures/WL_1031_t.utx
+Loading Texture duba_waterhouse011_w from package Textures/WL_1031_t.utx
+Loading Shader 2000_h3_tex08msak from package Textures/WL_1031_t.utx
+Loading Texture 0010_Wall_034j from package Textures/WL_1031_t.utx
+Loading Texture 0010_Wall_028j from package Textures/WL_1031_t.utx
+Loading Texture 1031_stone02_2 from package Textures/WL_1031_t.utx
+Loading Texture 1031_grass_00 from package Textures/WL_1031_t.utx
+Loading Texture 1007_plant_01b from package Textures/WL_1031_t.utx
+Loading Texture valley_plant_01 from package Textures/WL_1031_t.utx
+Loading Texture tree_yellow_low_001b from package Textures/WL_1031_t.utx
+Loading Texture 1007_light01 from package Textures/WL_1031_t.utx
+Loading Texture tree_yellow_low_002b from package Textures/WL_1031_t.utx
+Loading Texture 1600_daochang_neijing_10h from package Textures/WL_1031_t.utx
+Loading Texture 0010_Wall_001j from package Textures/WL_1031_t.utx
+Loading Texture 0010_Wall_009j from package Textures/WL_1031_t.utx
+Loading Texture 0010_Wall_016j from package Textures/WL_1031_t.utx
+Loading Texture 1004_object_001a from package Textures/WL_1031_t.utx
+Loading TexRotator 1010_grass_1h_tr from package Textures/WL_1031_t.utx
+Loading Texture 1007_plant_01a from package Textures/WL_1031_t.utx
+Loading TexEnvMap texenvmap01 from package Textures/HI_Floor_t.utx
+Loading Cubemap cubemap01 from package Textures/HI_Floor_t.utx
+Loading Texture wat0 from package Textures/HI_Floor_t.utx
+Loading Texture wat1 from package Textures/HI_Floor_t.utx
+Loading Texture wat2 from package Textures/HI_Floor_t.utx
+Loading Texture wat3 from package Textures/HI_Floor_t.utx
+Loading Texture wat4 from package Textures/HI_Floor_t.utx
+Loading Texture wat5 from package Textures/HI_Floor_t.utx
+Loading Palette Palette0 from package Textures/HI_Floor_t.utx
+Exporting objects ...
+Exporting TexPanner Water_01panner_a2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/TexPanner/Water_01panner_a2.mat
+Exporting Texture Water_01B to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/Water_01B.png
+Exporting Texture 2000_h3_tex08 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/2000_h3_tex08.png
+Exporting TexScaler 0120_star_s to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/TexScaler/0120_star_s.mat
+Exporting Texture 0120_star_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0120_star_001b.png
+Exporting Texture 0120_aph_006b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0120_aph_006b.png
+Exporting Texture 1010_grass_1h_2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/1010_grass_1h_2.png
+Exporting Texture 1010_grass_1h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/1010_grass_1h.png
+Exporting Texture 3200_rock_gre_009b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/3200_rock_gre_009b.png
+Exporting Texture 2100_tree28h_01b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/2100_tree28h_01b.png
+Exporting Shader 0120_star_sh to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Shader/0120_star_sh.mat
+Exporting Texture Water_01C to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/Water_01C.png
+Exporting TexPanner Water_01panner_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/TexPanner/Water_01panner_a.mat
+Exporting Texture 0120_fl_gre_003b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0120_fl_gre_003b.png
+Exporting TexScaler Water_01A_scaler to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/TexScaler/Water_01A_scaler.mat
+Exporting Texture 0120_fl_gre_006b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0120_fl_gre_006b.png
+Exporting Texture 8020_cloud_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/8020_cloud_001a.png
+Exporting Texture 8003_cave_03h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/8003_cave_03h.png
+Exporting TexRotator 3200_greee_run_002b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/TexRotator/3200_greee_run_002b.mat
+Exporting FinalBlend 0120_star_fb to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/FinalBlend/0120_star_fb.mat
+Exporting Texture 0120_tak_gre_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0120_tak_gre_001b.png
+Exporting TexRotator 0120_run_cc_004b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/TexRotator/0120_run_cc_004b.mat
+Exporting TexRotator 0120_run_cc_006b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/TexRotator/0120_run_cc_006b.mat
+Exporting TexRotator 2100_tree28h_01b_tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/TexRotator/2100_tree28h_01b_tr.mat
+Exporting Shader Water_01bShader to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Shader/Water_01bShader.mat
+Exporting Texture duba_waterhouse005_w to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/duba_waterhouse005_w.png
+Exporting TexRotator 1031_grass_022 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/TexRotator/1031_grass_022.mat
+Exporting Texture 0027_starstar_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0027_starstar_001b.png
+Exporting Texture 1007_stone02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/1007_stone02.png
+Exporting Texture 0010_Wall_006j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0010_Wall_006j.png
+Exporting Texture 0010_Wall_010j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0010_Wall_010j.png
+Exporting Texture 0010_Wall_017j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0010_Wall_017j.png
+Exporting Texture 0010_Wall_020j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0010_Wall_020j.png
+Exporting Texture 0010_Wall_019j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0010_Wall_019j.png
+Exporting Texture 1031_Wall_001j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/1031_Wall_001j.png
+Exporting Texture 2000_tower_tex03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/2000_tower_tex03.png
+Exporting Texture 2000_h3_tex06 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/2000_h3_tex06.png
+Exporting Texture 0010_Wall_008j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0010_Wall_008j.png
+Exporting Texture 2000_tower_tex01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/2000_tower_tex01.png
+Exporting Texture 2000_tower2_tex04 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/2000_tower2_tex04.png
+Exporting Texture 2000_tower_tex11 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/2000_tower_tex11.png
+Exporting Texture 2000_outgate_tex01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/2000_outgate_tex01.png
+Exporting Texture 2000_outgate_tex02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/2000_outgate_tex02.png
+Exporting Texture 1004_object_002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/1004_object_002a.png
+Exporting Texture 1007_stone01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/1007_stone01.png
+Exporting Texture 1004_object_003a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/1004_object_003a.png
+Exporting Texture 0010_Wall_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0010_Wall_001a.png
+Exporting Texture 0010_door_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0010_door_001a.png
+Exporting Texture 0010_house_002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0010_house_002a.png
+Exporting Texture 0010_house_004a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0010_house_004a.png
+Exporting Texture 1400_house_028a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/1400_house_028a.png
+Exporting Texture 0010_house_006a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0010_house_006a.png
+Exporting Texture 0010_house_010a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0010_house_010a.png
+Exporting Texture 0010_Wall_022j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0010_Wall_022j.png
+Exporting Texture 0010_Wall_032j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0010_Wall_032j.png
+Exporting Texture 1031_obj01_2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/1031_obj01_2.png
+Exporting Texture 0010_Wall_059j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0010_Wall_059j.png
+Exporting Texture 0010_Wall_002j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0010_Wall_002j.png
+Exporting Texture 0010_Wall_003j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0010_Wall_003j.png
+Exporting Texture 0010_Wall_014j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0010_Wall_014j.png
+Exporting Texture 0010_Wall_013j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0010_Wall_013j.png
+Exporting Texture 0010_Wall_011j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0010_Wall_011j.png
+Exporting Texture 0010_Wall_012j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0010_Wall_012j.png
+Exporting Texture 0010_Wall_004j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0010_Wall_004j.png
+Exporting Texture 0010_Wall_015j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0010_Wall_015j.png
+Exporting Texture duba_waterhouse012_w to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/duba_waterhouse012_w.png
+Exporting Texture duba_waterhouse001_w to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/duba_waterhouse001_w.png
+Exporting Texture duba_waterhouse002_w to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/duba_waterhouse002_w.png
+Exporting Texture duba_waterhouse003_w to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/duba_waterhouse003_w.png
+Exporting Texture duba_waterhouse004_w to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/duba_waterhouse004_w.png
+Exporting Texture duba_waterhouse006_w to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/duba_waterhouse006_w.png
+Exporting Texture duba_waterhouse004_2_w to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/duba_waterhouse004_2_w.png
+Exporting Texture duba_waterhouse007_w to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/duba_waterhouse007_w.png
+Exporting Texture duba_waterhouse008_w to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/duba_waterhouse008_w.png
+Exporting Texture duba_waterhouse009_w to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/duba_waterhouse009_w.png
+Exporting Texture duba_waterhouse0010_w to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/duba_waterhouse0010_w.png
+Exporting Texture duba_waterhouse011_w to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/duba_waterhouse011_w.png
+Exporting Shader 2000_h3_tex08msak to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Shader/2000_h3_tex08msak.mat
+Exporting Texture 0010_Wall_034j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0010_Wall_034j.png
+Exporting Texture 0010_Wall_028j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0010_Wall_028j.png
+Exporting Texture 1031_stone02_2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/1031_stone02_2.png
+Exporting Texture 1031_grass_00 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/1031_grass_00.png
+Exporting Texture 1007_plant_01b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/1007_plant_01b.png
+Exporting Texture valley_plant_01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/valley_plant_01.png
+Exporting Texture tree_yellow_low_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/tree_yellow_low_001b.png
+Exporting Texture 1007_light01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/1007_light01.png
+Exporting Texture tree_yellow_low_002b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/tree_yellow_low_002b.png
+Exporting Texture 1600_daochang_neijing_10h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/1600_daochang_neijing_10h.png
+Exporting Texture 0010_Wall_001j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0010_Wall_001j.png
+Exporting Texture 0010_Wall_009j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0010_Wall_009j.png
+Exporting Texture 0010_Wall_016j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/0010_Wall_016j.png
+Exporting Texture 1004_object_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/1004_object_001a.png
+Exporting TexRotator 1010_grass_1h_tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/TexRotator/1010_grass_1h_tr.mat
+Exporting Texture 1007_plant_01a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1031_t/Texture/1007_plant_01a.png
+Exporting TexEnvMap texenvmap01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/TexEnvMap/texenvmap01.mat
+Exporting Texture wat0 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/Texture/wat0.png
+Exporting Texture wat1 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/Texture/wat1.png
+Exporting Texture wat2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/Texture/wat2.png
+Exporting Texture wat3 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/Texture/wat3.png
+Exporting Texture wat4 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/Texture/wat4.png
+Exporting Texture wat5 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/Texture/wat5.png
+Memory: allocated 804937 bytes in 172 blocks
+Exported 101/101 objects in 0.7 sec

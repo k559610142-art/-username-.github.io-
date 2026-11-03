@@ -1,0 +1,95 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/HI_Tree1_t.utx Ver: 128/29 Names: 84 Exports: 45 Imports: 5 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture tree21h_01a from package Textures/HI_Tree1_t.utx
+Loading Texture tree29h_01a from package Textures/HI_Tree1_t.utx
+Loading Texture tree30h_01a from package Textures/HI_Tree1_t.utx
+Loading Texture tree31h_02a from package Textures/HI_Tree1_t.utx
+Loading Texture tree14h_01a from package Textures/HI_Tree1_t.utx
+Loading Texture tree30h_02a from package Textures/HI_Tree1_t.utx
+Loading Texture tree19h_01a from package Textures/HI_Tree1_t.utx
+Loading Texture tree28h_01a from package Textures/HI_Tree1_t.utx
+Loading Texture tree28h_03a from package Textures/HI_Tree1_t.utx
+Loading Texture tree30h_03a from package Textures/HI_Tree1_t.utx
+Loading Texture tree31h_01a from package Textures/HI_Tree1_t.utx
+Loading Texture tree27h_01a from package Textures/HI_Tree1_t.utx
+Loading Texture tree09h_01a from package Textures/HI_Tree1_t.utx
+Loading Texture tree15h_01a from package Textures/HI_Tree1_t.utx
+Loading Texture tree18h_01a from package Textures/HI_Tree1_t.utx
+Loading Texture tree28h_02a from package Textures/HI_Tree1_t.utx
+Loading TexRotator tree28h_01a_tr from package Textures/HI_Tree1_t.utx
+Loading Texture tree32h_001 from package Textures/HI_Tree1_t.utx
+Loading TexRotator tree27h_01a_tr from package Textures/HI_Tree1_t.utx
+Loading TexRotator tree09h_01a_tr from package Textures/HI_Tree1_t.utx
+Loading Texture tree27h_001 from package Textures/HI_Tree1_t.utx
+Loading TexRotator tree15h_01a_tr from package Textures/HI_Tree1_t.utx
+Loading Texture tree18h_001 from package Textures/HI_Tree1_t.utx
+Loading TexRotator tree18h_01a_tr from package Textures/HI_Tree1_t.utx
+Loading Texture tree28h_002 from package Textures/HI_Tree1_t.utx
+Loading TexRotator tree31h_02a_tr from package Textures/HI_Tree1_t.utx
+Loading Texture tree32h_002 from package Textures/HI_Tree1_t.utx
+Loading TexRotator tree29h_01a_tr from package Textures/HI_Tree1_t.utx
+Loading TexRotator tree30h_01a_tr from package Textures/HI_Tree1_t.utx
+Loading Texture tree26h_001 from package Textures/HI_Tree1_t.utx
+Loading Texture tree25h_001 from package Textures/HI_Tree1_t.utx
+Loading TexRotator tree19h_01a_tr from package Textures/HI_Tree1_t.utx
+Loading TexRotator tree21h_01a_tr from package Textures/HI_Tree1_t.utx
+Loading Texture tree02h_001 from package Textures/HI_Tree1_t.utx
+Loading TexRotator tree28h_02a_tr from package Textures/HI_Tree1_t.utx
+Loading Texture tree31h_001 from package Textures/HI_Tree1_t.utx
+Loading TexRotator tree28h_03a_tr from package Textures/HI_Tree1_t.utx
+Loading TexRotator tree30h_03a_tr from package Textures/HI_Tree1_t.utx
+Loading Texture tree28h_001 from package Textures/HI_Tree1_t.utx
+Loading TexRotator tree31h_01a_tr from package Textures/HI_Tree1_t.utx
+Loading Texture tree15h_001 from package Textures/HI_Tree1_t.utx
+Loading Texture tree14h_001 from package Textures/HI_Tree1_t.utx
+Loading TexRotator tree14h_01a_tr from package Textures/HI_Tree1_t.utx
+Loading TexRotator tree30h_02a_tr from package Textures/HI_Tree1_t.utx
+Exporting objects ...
+Exporting Texture tree21h_01a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/Texture/tree21h_01a.png
+Exporting Texture tree29h_01a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/Texture/tree29h_01a.png
+Exporting Texture tree30h_01a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/Texture/tree30h_01a.png
+Exporting Texture tree31h_02a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/Texture/tree31h_02a.png
+Exporting Texture tree14h_01a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/Texture/tree14h_01a.png
+Exporting Texture tree30h_02a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/Texture/tree30h_02a.png
+Exporting Texture tree19h_01a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/Texture/tree19h_01a.png
+Exporting Texture tree28h_01a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/Texture/tree28h_01a.png
+Exporting Texture tree28h_03a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/Texture/tree28h_03a.png
+Exporting Texture tree30h_03a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/Texture/tree30h_03a.png
+Exporting Texture tree31h_01a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/Texture/tree31h_01a.png
+Exporting Texture tree27h_01a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/Texture/tree27h_01a.png
+Exporting Texture tree09h_01a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/Texture/tree09h_01a.png
+Exporting Texture tree15h_01a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/Texture/tree15h_01a.png
+Exporting Texture tree18h_01a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/Texture/tree18h_01a.png
+Exporting Texture tree28h_02a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/Texture/tree28h_02a.png
+Exporting TexRotator tree28h_01a_tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/TexRotator/tree28h_01a_tr.mat
+Exporting Texture tree32h_001 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/Texture/tree32h_001.png
+Exporting TexRotator tree27h_01a_tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/TexRotator/tree27h_01a_tr.mat
+Exporting TexRotator tree09h_01a_tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/TexRotator/tree09h_01a_tr.mat
+Exporting Texture tree27h_001 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/Texture/tree27h_001.png
+Exporting TexRotator tree15h_01a_tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/TexRotator/tree15h_01a_tr.mat
+Exporting Texture tree18h_001 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/Texture/tree18h_001.png
+Exporting TexRotator tree18h_01a_tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/TexRotator/tree18h_01a_tr.mat
+Exporting Texture tree28h_002 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/Texture/tree28h_002.png
+Exporting TexRotator tree31h_02a_tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/TexRotator/tree31h_02a_tr.mat
+Exporting Texture tree32h_002 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/Texture/tree32h_002.png
+Exporting TexRotator tree29h_01a_tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/TexRotator/tree29h_01a_tr.mat
+Exporting TexRotator tree30h_01a_tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/TexRotator/tree30h_01a_tr.mat
+Exporting Texture tree26h_001 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/Texture/tree26h_001.png
+Exporting Texture tree25h_001 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/Texture/tree25h_001.png
+Exporting TexRotator tree19h_01a_tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/TexRotator/tree19h_01a_tr.mat
+Exporting TexRotator tree21h_01a_tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/TexRotator/tree21h_01a_tr.mat
+Exporting Texture tree02h_001 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/Texture/tree02h_001.png
+Exporting TexRotator tree28h_02a_tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/TexRotator/tree28h_02a_tr.mat
+Exporting Texture tree31h_001 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/Texture/tree31h_001.png
+Exporting TexRotator tree28h_03a_tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/TexRotator/tree28h_03a_tr.mat
+Exporting TexRotator tree30h_03a_tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/TexRotator/tree30h_03a_tr.mat
+Exporting Texture tree28h_001 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/Texture/tree28h_001.png
+Exporting TexRotator tree31h_01a_tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/TexRotator/tree31h_01a_tr.mat
+Exporting Texture tree15h_001 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/Texture/tree15h_001.png
+Exporting Texture tree14h_001 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/Texture/tree14h_001.png
+Exporting TexRotator tree14h_01a_tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/TexRotator/tree14h_01a_tr.mat
+Exporting TexRotator tree30h_02a_tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Tree1_t/TexRotator/tree30h_02a_tr.mat
+Memory: allocated 537749 bytes in 108 blocks
+Exported 44/44 objects in 0.3 sec

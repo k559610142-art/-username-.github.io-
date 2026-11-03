@@ -1,0 +1,94 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/h9_t.utx Ver: 128/29 Names: 67 Exports: 41 Imports: 6 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture h90101b from package Textures/h9_t.utx
+Loading Texture h90101a from package Textures/h9_t.utx
+Loading Texture h90201a from package Textures/h9_t.utx
+Loading Shader h90301a from package Textures/h9_t.utx
+Loading package: Textures/wn_t.utx Ver: 128/29 Names: 69 Exports: 31 Imports: 8 Game: 200001
+Loading Texture h90903b from package Textures/h9_t.utx
+Loading Texture h90901b from package Textures/h9_t.utx
+Loading Texture h90402b from package Textures/h9_t.utx
+Loading Texture h91001a from package Textures/h9_t.utx
+Loading Texture h90601a from package Textures/h9_t.utx
+Loading Texture h90401b from package Textures/h9_t.utx
+Loading Texture h90401a from package Textures/h9_t.utx
+Loading Texture h90701a from package Textures/h9_t.utx
+Loading Texture h90701b from package Textures/h9_t.utx
+Loading Texture h90801a from package Textures/h9_t.utx
+Loading Texture h90501a from package Textures/h9_t.utx
+Loading Texture h90501b from package Textures/h9_t.utx
+Loading Texture h91001b from package Textures/h9_t.utx
+Loading Texture h90403a from package Textures/h9_t.utx
+Loading Texture h91003a from package Textures/h9_t.utx
+Loading Texture h91002b from package Textures/h9_t.utx
+Loading Texture h91002a from package Textures/h9_t.utx
+Loading Texture h90901a from package Textures/h9_t.utx
+Loading Texture h90702a from package Textures/h9_t.utx
+Loading Texture h90703b from package Textures/h9_t.utx
+Loading Texture h90702b from package Textures/h9_t.utx
+Loading Texture h90603a from package Textures/h9_t.utx
+Loading Texture h90503a from package Textures/h9_t.utx
+Loading Texture h90502b from package Textures/h9_t.utx
+Loading Texture h90502a from package Textures/h9_t.utx
+Loading Texture h90503b from package Textures/h9_t.utx
+Loading Texture h90703a from package Textures/h9_t.utx
+Loading Texture h90602a from package Textures/h9_t.utx
+Loading Texture h90903a from package Textures/h9_t.utx
+Loading Texture h90902b from package Textures/h9_t.utx
+Loading Texture h90902a from package Textures/h9_t.utx
+Loading Texture h90803a from package Textures/h9_t.utx
+Loading Texture h90802a from package Textures/h9_t.utx
+Loading Texture h91003b from package Textures/h9_t.utx
+Loading Texture h90402a from package Textures/h9_t.utx
+Loading Texture h90403b from package Textures/h9_t.utx
+Loading Shader h90302a from package Textures/h9_t.utx
+Loading Texture wn01_1a from package Textures/wn_t.utx
+Loading Texture wn01_2a from package Textures/wn_t.utx
+Exporting objects ...
+Exporting Texture h90101b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90101b.png
+Exporting Texture h90101a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90101a.png
+Exporting Texture h90201a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90201a.png
+Exporting Shader h90301a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Shader/h90301a.mat
+Exporting Texture wn01_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wn_t/Texture/wn01_1a.png
+Exporting Texture h90903b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90903b.png
+Exporting Texture h90901b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90901b.png
+Exporting Texture h90402b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90402b.png
+Exporting Texture h91001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h91001a.png
+Exporting Texture h90601a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90601a.png
+Exporting Texture h90401b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90401b.png
+Exporting Texture h90401a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90401a.png
+Exporting Texture h90701a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90701a.png
+Exporting Texture h90701b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90701b.png
+Exporting Texture h90801a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90801a.png
+Exporting Texture h90501a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90501a.png
+Exporting Texture h90501b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90501b.png
+Exporting Texture h91001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h91001b.png
+Exporting Texture h90403a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90403a.png
+Exporting Texture h91003a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h91003a.png
+Exporting Texture h91002b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h91002b.png
+Exporting Texture h91002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h91002a.png
+Exporting Texture h90901a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90901a.png
+Exporting Texture h90702a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90702a.png
+Exporting Texture h90703b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90703b.png
+Exporting Texture h90702b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90702b.png
+Exporting Texture h90603a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90603a.png
+Exporting Texture h90503a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90503a.png
+Exporting Texture h90502b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90502b.png
+Exporting Texture h90502a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90502a.png
+Exporting Texture h90503b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90503b.png
+Exporting Texture h90703a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90703a.png
+Exporting Texture h90602a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90602a.png
+Exporting Texture h90903a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90903a.png
+Exporting Texture h90902b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90902b.png
+Exporting Texture h90902a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90902a.png
+Exporting Texture h90803a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90803a.png
+Exporting Texture h90802a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90802a.png
+Exporting Texture h91003b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h91003b.png
+Exporting Texture h90402a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90402a.png
+Exporting Texture h90403b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Texture/h90403b.png
+Exporting Shader h90302a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h9_t/Shader/h90302a.mat
+Exporting Texture wn01_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wn_t/Texture/wn01_2a.png
+Memory: allocated 478002 bytes in 100 blocks
+Exported 43/43 objects in 1.3 sec

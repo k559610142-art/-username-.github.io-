@@ -1,0 +1,11 @@
+PanDirection = { Yaw=-11000, Pitch=0, Roll=0 }
+PanRate = -0.5
+TexCoordSource = TCS_NoChange (13)
+TexCoordCount = TCN_2DCoords (0)
+TexCoordProjected = false
+Material = Texture'pet_upgrade.xcool_star_001b'
+FallbackMaterial = None
+DefaultMaterial = None
+SurfaceType = 0
+bUseTextureAsHeat = false
+HeatMaterial = None

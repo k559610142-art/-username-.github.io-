@@ -1,0 +1,47 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/h1_t.utx Ver: 128/29 Names: 39 Exports: 20 Imports: 2 Game: 200001
+Loaded in 0.1 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture h10101b from package Textures/h1_t.utx
+Loading Texture h10101a from package Textures/h1_t.utx
+Loading Texture h10902a from package Textures/h1_t.utx
+Loading Texture H10801b from package Textures/h1_t.utx
+Loading Texture H10801a from package Textures/h1_t.utx
+Loading Texture h10903a from package Textures/h1_t.utx
+Loading Texture h10901a from package Textures/h1_t.utx
+Loading Texture h10301b from package Textures/h1_t.utx
+Loading Texture h10201a from package Textures/h1_t.utx
+Loading Texture h10201b from package Textures/h1_t.utx
+Loading Texture h10301a from package Textures/h1_t.utx
+Loading Texture h10601a from package Textures/h1_t.utx
+Loading Texture h10702b from package Textures/h1_t.utx
+Loading Texture h10701a from package Textures/h1_t.utx
+Loading Texture h10701b from package Textures/h1_t.utx
+Loading Texture h10702a from package Textures/h1_t.utx
+Loading Texture h10102b from package Textures/h1_t.utx
+Loading Texture h10102a from package Textures/h1_t.utx
+Loading Texture h10402a from package Textures/h1_t.utx
+Loading Texture h10401a from package Textures/h1_t.utx
+Exporting objects ...
+Exporting Texture h10101b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h1_t/Texture/h10101b.png
+Exporting Texture h10101a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h1_t/Texture/h10101a.png
+Exporting Texture h10902a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h1_t/Texture/h10902a.png
+Exporting Texture H10801b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h1_t/Texture/H10801b.png
+Exporting Texture H10801a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h1_t/Texture/H10801a.png
+Exporting Texture h10903a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h1_t/Texture/h10903a.png
+Exporting Texture h10901a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h1_t/Texture/h10901a.png
+Exporting Texture h10301b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h1_t/Texture/h10301b.png
+Exporting Texture h10201a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h1_t/Texture/h10201a.png
+Exporting Texture h10201b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h1_t/Texture/h10201b.png
+Exporting Texture h10301a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h1_t/Texture/h10301a.png
+Exporting Texture h10601a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h1_t/Texture/h10601a.png
+Exporting Texture h10702b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h1_t/Texture/h10702b.png
+Exporting Texture h10701a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h1_t/Texture/h10701a.png
+Exporting Texture h10701b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h1_t/Texture/h10701b.png
+Exporting Texture h10702a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h1_t/Texture/h10702a.png
+Exporting Texture h10102b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h1_t/Texture/h10102b.png
+Exporting Texture h10102a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h1_t/Texture/h10102a.png
+Exporting Texture h10402a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h1_t/Texture/h10402a.png
+Exporting Texture h10401a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/h1_t/Texture/h10401a.png
+Memory: allocated 372647 bytes in 68 blocks
+Exported 20/20 objects in 0.5 sec

@@ -1,0 +1,24 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_1005_t.utx Ver: 128/29 Names: 64 Exports: 15 Imports: 13 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Palette Palette0 from package Textures/WL_1005_t.utx
+Loading Texture 1005_deco_plant_004 from package Textures/WL_1005_t.utx
+Loading Texture 1005_skybrown_01a from package Textures/WL_1005_t.utx
+Loading Texture 1005_sanddune_001j from package Textures/WL_1005_t.utx
+Loading Texture 1005_cliff_001j from package Textures/WL_1005_t.utx
+Loading Texture 1005_deco from package Textures/WL_1005_t.utx
+Loading TexRotator 1005_deco_plant_004_tr from package Textures/WL_1005_t.utx
+Loading Texture 1005_branch_001j from package Textures/WL_1005_t.utx
+Loading Texture 1005_tree_001j from package Textures/WL_1005_t.utx
+Exporting objects ...
+Exporting Texture 1005_deco_plant_004 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1005_t/Texture/1005_deco_plant_004.png
+Exporting Texture 1005_skybrown_01a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1005_t/Texture/1005_skybrown_01a.png
+Exporting Texture 1005_sanddune_001j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1005_t/Texture/1005_sanddune_001j.png
+Exporting Texture 1005_cliff_001j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1005_t/Texture/1005_cliff_001j.png
+Exporting Texture 1005_deco to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1005_t/Texture/1005_deco.png
+Exporting TexRotator 1005_deco_plant_004_tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1005_t/TexRotator/1005_deco_plant_004_tr.mat
+Exporting Texture 1005_branch_001j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1005_t/Texture/1005_branch_001j.png
+Exporting Texture 1005_tree_001j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1005_t/Texture/1005_tree_001j.png
+Memory: allocated 327692 bytes in 57 blocks
+Exported 8/8 objects in 0.1 sec

@@ -1,0 +1,25 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Maps/9466_map.ut2 Ver: 128/29 Names: 3151 Exports: 2817 Imports: 172 Game: 200001
+Loaded in 0.0 sec, 22 allocs, 0.12 MBytes serialized in 32 calls.
+Loading Texture terrain1 from package Maps/9466_map.ut2
+Loading Texture tex04 from package Maps/9466_map.ut2
+Loading Texture tex02 from package Maps/9466_map.ut2
+Loading Texture tex06 from package Maps/9466_map.ut2
+Loading Texture tex05 from package Maps/9466_map.ut2
+Loading Texture tex01 from package Maps/9466_map.ut2
+Loading Texture tex03 from package Maps/9466_map.ut2
+Loading Texture 8043_deco_01n from package Maps/9466_map.ut2
+Loading Palette Palette0 from package Maps/9466_map.ut2
+Exporting objects ...
+******** Maps/9466_map.ut2 ********
+*** Unknown UE2 texture format: TEXF_G16 (10)
+Exporting Texture tex04 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/9466_map/Texture/tex04.png
+Exporting Texture tex02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/9466_map/Texture/tex02.png
+Exporting Texture tex06 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/9466_map/Texture/tex06.png
+Exporting Texture tex05 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/9466_map/Texture/tex05.png
+Exporting Texture tex01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/9466_map/Texture/tex01.png
+Exporting Texture tex03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/9466_map/Texture/tex03.png
+Exporting Texture 8043_deco_01n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/9466_map/Texture/8043_deco_01n.png
+Memory: allocated 517179 bytes in 60 blocks
+Exported 7/7 objects in 0.0 sec

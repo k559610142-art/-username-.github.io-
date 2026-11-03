@@ -1,0 +1,11 @@
+PanDirection = { Yaw=0, Pitch=0, Roll=0 }
+PanRate = 0.01
+TexCoordSource = TCS_NoChange (13)
+TexCoordCount = TCN_2DCoords (0)
+TexCoordProjected = false
+Material = TexScaler'sky.3001_terrain_a'
+FallbackMaterial = None
+DefaultMaterial = None
+SurfaceType = 0
+bUseTextureAsHeat = false
+HeatMaterial = None

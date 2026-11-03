@@ -1,0 +1,13 @@
+FrameBufferBlending = FB_Brighten (6)
+ZWrite = true
+ZTest = true
+AlphaTest = false
+TwoSided = false
+AlphaRef = 0
+TreatAsTwoSided = false
+Material = Shader'sky.Skyround_SH'
+FallbackMaterial = None
+DefaultMaterial = None
+SurfaceType = 0
+bUseTextureAsHeat = false
+HeatMaterial = None

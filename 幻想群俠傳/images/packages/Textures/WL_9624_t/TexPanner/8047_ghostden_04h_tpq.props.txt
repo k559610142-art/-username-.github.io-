@@ -1,0 +1,11 @@
+PanDirection = { Yaw=-16384, Pitch=0, Roll=0 }
+PanRate = 0.06
+TexCoordSource = TCS_NoChange (13)
+TexCoordCount = TCN_2DCoords (0)
+TexCoordProjected = false
+Material = Texture'8047_ghostden_a04h'
+FallbackMaterial = None
+DefaultMaterial = None
+SurfaceType = 0
+bUseTextureAsHeat = false
+HeatMaterial = None

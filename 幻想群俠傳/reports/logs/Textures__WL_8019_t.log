@@ -1,0 +1,73 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_8019_t.utx Ver: 128/29 Names: 67 Exports: 33 Imports: 3 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture 9148_Water_001j from package Textures/WL_8019_t.utx
+Loading Texture 9148_wall_020j from package Textures/WL_8019_t.utx
+Loading Texture 9148_wall_001j from package Textures/WL_8019_t.utx
+Loading Texture 9148_wall_019j from package Textures/WL_8019_t.utx
+Loading Texture 9148_wall_024j from package Textures/WL_8019_t.utx
+Loading Texture 9148_wall_018j from package Textures/WL_8019_t.utx
+Loading Texture 9148_wall_023j from package Textures/WL_8019_t.utx
+Loading Texture 9148_wall_028j from package Textures/WL_8019_t.utx
+Loading Texture 9148_wall_025j from package Textures/WL_8019_t.utx
+Loading Texture 9148_wall_026j from package Textures/WL_8019_t.utx
+Loading Texture 9148_wall_016j from package Textures/WL_8019_t.utx
+Loading Texture 9148_wall_003j from package Textures/WL_8019_t.utx
+Loading Texture 9148_wall_015j from package Textures/WL_8019_t.utx
+Loading Texture 9148_wall_021j from package Textures/WL_8019_t.utx
+Loading Texture 9148_wall_022j from package Textures/WL_8019_t.utx
+Loading Texture 9148_wall_027j from package Textures/WL_8019_t.utx
+Loading TexPanner 9148_Water_001_tp from package Textures/WL_8019_t.utx
+Loading Texture 9148_wall_029j from package Textures/WL_8019_t.utx
+Loading Texture 9148_wall_005j from package Textures/WL_8019_t.utx
+Loading Texture 9148_wall_010j from package Textures/WL_8019_t.utx
+Loading Texture 9148_wall_011j from package Textures/WL_8019_t.utx
+Loading Texture 9148_wall_012j from package Textures/WL_8019_t.utx
+Loading Texture 9148_wall_002j from package Textures/WL_8019_t.utx
+Loading Texture 9148_wall_004j from package Textures/WL_8019_t.utx
+Loading Texture 9148_wall_008j from package Textures/WL_8019_t.utx
+Loading Texture 9148_wall_006j from package Textures/WL_8019_t.utx
+Loading Texture 9148_Alpha_j from package Textures/WL_8019_t.utx
+Loading Texture 9148_wall_009j from package Textures/WL_8019_t.utx
+Loading Texture 9148_wall_013j from package Textures/WL_8019_t.utx
+Loading Texture 9148_wall_014j from package Textures/WL_8019_t.utx
+Loading Texture 9148_wall_030j from package Textures/WL_8019_t.utx
+Loading Texture 9148_wall_007j from package Textures/WL_8019_t.utx
+Loading Texture 9148_wall_017j from package Textures/WL_8019_t.utx
+Exporting objects ...
+Exporting Texture 9148_Water_001j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/Texture/9148_Water_001j.png
+Exporting Texture 9148_wall_020j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/Texture/9148_wall_020j.png
+Exporting Texture 9148_wall_001j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/Texture/9148_wall_001j.png
+Exporting Texture 9148_wall_019j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/Texture/9148_wall_019j.png
+Exporting Texture 9148_wall_024j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/Texture/9148_wall_024j.png
+Exporting Texture 9148_wall_018j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/Texture/9148_wall_018j.png
+Exporting Texture 9148_wall_023j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/Texture/9148_wall_023j.png
+Exporting Texture 9148_wall_028j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/Texture/9148_wall_028j.png
+Exporting Texture 9148_wall_025j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/Texture/9148_wall_025j.png
+Exporting Texture 9148_wall_026j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/Texture/9148_wall_026j.png
+Exporting Texture 9148_wall_016j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/Texture/9148_wall_016j.png
+Exporting Texture 9148_wall_003j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/Texture/9148_wall_003j.png
+Exporting Texture 9148_wall_015j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/Texture/9148_wall_015j.png
+Exporting Texture 9148_wall_021j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/Texture/9148_wall_021j.png
+Exporting Texture 9148_wall_022j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/Texture/9148_wall_022j.png
+Exporting Texture 9148_wall_027j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/Texture/9148_wall_027j.png
+Exporting TexPanner 9148_Water_001_tp to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/TexPanner/9148_Water_001_tp.mat
+Exporting Texture 9148_wall_029j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/Texture/9148_wall_029j.png
+Exporting Texture 9148_wall_005j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/Texture/9148_wall_005j.png
+Exporting Texture 9148_wall_010j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/Texture/9148_wall_010j.png
+Exporting Texture 9148_wall_011j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/Texture/9148_wall_011j.png
+Exporting Texture 9148_wall_012j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/Texture/9148_wall_012j.png
+Exporting Texture 9148_wall_002j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/Texture/9148_wall_002j.png
+Exporting Texture 9148_wall_004j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/Texture/9148_wall_004j.png
+Exporting Texture 9148_wall_008j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/Texture/9148_wall_008j.png
+Exporting Texture 9148_wall_006j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/Texture/9148_wall_006j.png
+Exporting Texture 9148_Alpha_j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/Texture/9148_Alpha_j.png
+Exporting Texture 9148_wall_009j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/Texture/9148_wall_009j.png
+Exporting Texture 9148_wall_013j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/Texture/9148_wall_013j.png
+Exporting Texture 9148_wall_014j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/Texture/9148_wall_014j.png
+Exporting Texture 9148_wall_030j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/Texture/9148_wall_030j.png
+Exporting Texture 9148_wall_007j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/Texture/9148_wall_007j.png
+Exporting Texture 9148_wall_017j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8019_t/Texture/9148_wall_017j.png
+Memory: allocated 430720 bytes in 82 blocks
+Exported 33/33 objects in 0.2 sec

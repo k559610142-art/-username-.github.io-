@@ -1,0 +1,47 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/HI_planet_t.utx Ver: 128/29 Names: 38 Exports: 20 Imports: 2 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture planet1 from package Textures/HI_planet_t.utx
+Loading Texture planet4 from package Textures/HI_planet_t.utx
+Loading Texture planet2 from package Textures/HI_planet_t.utx
+Loading Texture planet3 from package Textures/HI_planet_t.utx
+Loading Texture planet6 from package Textures/HI_planet_t.utx
+Loading Texture planet5 from package Textures/HI_planet_t.utx
+Loading Texture planet15 from package Textures/HI_planet_t.utx
+Loading Texture planet11 from package Textures/HI_planet_t.utx
+Loading Texture planet12 from package Textures/HI_planet_t.utx
+Loading Texture planet13 from package Textures/HI_planet_t.utx
+Loading Texture planet14 from package Textures/HI_planet_t.utx
+Loading Texture planet10 from package Textures/HI_planet_t.utx
+Loading Texture planet7 from package Textures/HI_planet_t.utx
+Loading Texture planet8 from package Textures/HI_planet_t.utx
+Loading Texture planet9 from package Textures/HI_planet_t.utx
+Loading Texture planet20 from package Textures/HI_planet_t.utx
+Loading Texture planet17 from package Textures/HI_planet_t.utx
+Loading Texture planet18 from package Textures/HI_planet_t.utx
+Loading Texture planet19 from package Textures/HI_planet_t.utx
+Loading Texture planet16 from package Textures/HI_planet_t.utx
+Exporting objects ...
+Exporting Texture planet1 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_planet_t/Texture/planet1.png
+Exporting Texture planet4 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_planet_t/Texture/planet4.png
+Exporting Texture planet2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_planet_t/Texture/planet2.png
+Exporting Texture planet3 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_planet_t/Texture/planet3.png
+Exporting Texture planet6 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_planet_t/Texture/planet6.png
+Exporting Texture planet5 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_planet_t/Texture/planet5.png
+Exporting Texture planet15 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_planet_t/Texture/planet15.png
+Exporting Texture planet11 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_planet_t/Texture/planet11.png
+Exporting Texture planet12 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_planet_t/Texture/planet12.png
+Exporting Texture planet13 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_planet_t/Texture/planet13.png
+Exporting Texture planet14 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_planet_t/Texture/planet14.png
+Exporting Texture planet10 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_planet_t/Texture/planet10.png
+Exporting Texture planet7 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_planet_t/Texture/planet7.png
+Exporting Texture planet8 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_planet_t/Texture/planet8.png
+Exporting Texture planet9 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_planet_t/Texture/planet9.png
+Exporting Texture planet20 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_planet_t/Texture/planet20.png
+Exporting Texture planet17 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_planet_t/Texture/planet17.png
+Exporting Texture planet18 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_planet_t/Texture/planet18.png
+Exporting Texture planet19 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_planet_t/Texture/planet19.png
+Exporting Texture planet16 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_planet_t/Texture/planet16.png
+Memory: allocated 372650 bytes in 68 blocks
+Exported 20/20 objects in 0.2 sec

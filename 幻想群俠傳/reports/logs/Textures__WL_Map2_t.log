@@ -1,0 +1,23 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_Map2_t.utx Ver: 128/29 Names: 27 Exports: 8 Imports: 2 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture 9624_map_t from package Textures/WL_Map2_t.utx
+Loading Texture 9436_map_t from package Textures/WL_Map2_t.utx
+Loading Texture 9440_map_t from package Textures/WL_Map2_t.utx
+Loading Texture 9615_map_t from package Textures/WL_Map2_t.utx
+Loading Texture 9441_map_t from package Textures/WL_Map2_t.utx
+Loading Texture 9437_map_t from package Textures/WL_Map2_t.utx
+Loading Texture 9442_map_t from package Textures/WL_Map2_t.utx
+Loading Texture 8025_map_t from package Textures/WL_Map2_t.utx
+Exporting objects ...
+Exporting Texture 9624_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map2_t/Texture/9624_map_t.png
+Exporting Texture 9436_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map2_t/Texture/9436_map_t.png
+Exporting Texture 9440_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map2_t/Texture/9440_map_t.png
+Exporting Texture 9615_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map2_t/Texture/9615_map_t.png
+Exporting Texture 9441_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map2_t/Texture/9441_map_t.png
+Exporting Texture 9437_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map2_t/Texture/9437_map_t.png
+Exporting Texture 9442_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map2_t/Texture/9442_map_t.png
+Exporting Texture 8025_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map2_t/Texture/8025_map_t.png
+Memory: allocated 323020 bytes in 56 blocks
+Exported 8/8 objects in 0.3 sec

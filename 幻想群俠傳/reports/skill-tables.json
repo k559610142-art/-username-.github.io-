@@ -1,0 +1,198 @@
+[
+  {
+    "file": "HyData/wogon1.dat",
+    "bytes": 347003,
+    "sha256": "0402948f447f6fe012df439e7a896d31ca68f271d20782c0cb495957b8d06153",
+    "status": "固定記錄邊界已驗證，Big5文字已匯出；未知數值欄義未確認",
+    "count": 983,
+    "stride": 353,
+    "schema": {
+      "kind": "武功",
+      "stride": 353,
+      "idBytes": 2,
+      "name": [
+        2,
+        13
+      ],
+      "description": [
+        120,
+        200
+      ],
+      "texts": {
+        "原始文字欄_51": [
+          51,
+          21
+        ]
+      }
+    }
+  },
+  {
+    "file": "HyData/wogon2.dat",
+    "bytes": 6516,
+    "sha256": "da440b3ca1ab80deb06d93c066ad41b2385a104a3deb174c3e0e1218a4d33ee7",
+    "status": "固定記錄邊界已驗證，Big5文字已匯出；未知數值欄義未確認",
+    "count": 592,
+    "stride": 11,
+    "schema": {
+      "kind": "武功數值關聯_欄義未確認",
+      "stride": 11,
+      "idBytes": 2
+    }
+  },
+  {
+    "file": "HyData/wogon3.dat",
+    "bytes": 1060,
+    "sha256": "1f81c9c170c0a3c9fee563277b27977a7805ecfdd84e2311683ac349cb4267c4",
+    "status": "固定記錄邊界已驗證，Big5文字已匯出；未知數值欄義未確認",
+    "count": 16,
+    "stride": 66,
+    "schema": {
+      "kind": "武功條件訊息",
+      "stride": 66,
+      "idBytes": 1,
+      "description": [
+        4,
+        62
+      ]
+    }
+  },
+  {
+    "file": "HyData/Wupetskill.dat",
+    "bytes": 6444,
+    "sha256": "4a41aa581c6ee16450179353f7a001cd49c23bcd87ad345f6db42140acec318c",
+    "status": "固定記錄邊界已驗證，Big5文字已匯出；未知數值欄義未確認",
+    "count": 46,
+    "stride": 140,
+    "schema": {
+      "kind": "寵物技能",
+      "stride": 140,
+      "idBytes": 1,
+      "name": [
+        1,
+        21
+      ],
+      "description": [
+        38,
+        102
+      ]
+    }
+  },
+  {
+    "file": "HyData/MachineSkill.dat",
+    "bytes": 7776,
+    "sha256": "c7d9b71e004b7a01518ad67e9a15e83cbf94149835f50033d84d54575cb2e8c6",
+    "status": "固定記錄邊界已驗證，Big5文字已匯出；未知數值欄義未確認",
+    "count": 29,
+    "stride": 268,
+    "schema": {
+      "kind": "機關技能",
+      "stride": 268,
+      "idBytes": 1,
+      "name": [
+        1,
+        13
+      ],
+      "description": [
+        68,
+        200
+      ]
+    }
+  },
+  {
+    "file": "HyData/status.dat",
+    "bytes": 90750,
+    "sha256": "bd0d9aaa0608a755c78afb497f8b050a5dd626bd8208e09c2a9cbc12c915593b",
+    "status": "固定記錄邊界已驗證，Big5文字已匯出；未知數值欄義未確認",
+    "count": 314,
+    "stride": 289,
+    "schema": {
+      "kind": "狀態",
+      "stride": 289,
+      "idBytes": 2,
+      "name": [
+        2,
+        13
+      ],
+      "description": [
+        29,
+        100
+      ],
+      "texts": {
+        "說明二": [
+          129,
+          100
+        ],
+        "原始圖示字串": [
+          16,
+          13
+        ]
+      }
+    }
+  },
+  {
+    "file": "HyData/skillset.dat",
+    "bytes": 3839,
+    "sha256": "4a38d43ac19e8ba82e57b21f95d924ff154d8e4918755103dfcea37952d8657a",
+    "status": "固定記錄邊界已驗證，Big5文字已匯出；未知數值欄義未確認",
+    "count": 59,
+    "stride": 65,
+    "schema": {
+      "kind": "套裝技能",
+      "stride": 65,
+      "idBytes": 1,
+      "name": [
+        1,
+        13
+      ]
+    }
+  },
+  {
+    "file": "HyData/SkillTrans.dat",
+    "bytes": 814,
+    "sha256": "482515066a929d2f39b2e65633b1c25d2abeeb643e24ac107bbabd3dd23d8de0",
+    "status": "固定記錄邊界已驗證，Big5文字已匯出；未知數值欄義未確認",
+    "count": 135,
+    "stride": 6,
+    "schema": {
+      "kind": "技能轉換_欄義未確認",
+      "stride": 6,
+      "idBytes": 2
+    }
+  },
+  {
+    "file": "HyData/Martial.dat",
+    "bytes": 76415,
+    "sha256": "16a41277c16f10b1b3622c4eade072bf0ff114a594e7597cdcf36f2ed13dc3a2",
+    "status": "保留原始二進位，未確認欄位結構"
+  },
+  {
+    "file": "HyData/Wu_book.dat",
+    "bytes": 6500,
+    "sha256": "7164bd65cc27bbbb7b6c0c3a4c1271a22dd511e5d28e4e0e1a767448ad0ee1ba",
+    "status": "保留原始二進位，未確認欄位結構"
+  },
+  {
+    "file": "HyData/npcteacher.dat",
+    "bytes": 5524,
+    "sha256": "5d108e82c147fb59884241c32bdada1727c1e12c2bba92364f97c8a3b7b375d3",
+    "status": "保留原始二進位，未確認欄位結構"
+  },
+  {
+    "file": "HyData/Trainer.dat",
+    "bytes": 4800,
+    "sha256": "9cca3286e4e3f81f94696fe311b5d3570ffe4db6d7d91099fd479b28d3d8c66f",
+    "status": "保留原始二進位，未確認欄位結構"
+  },
+  {
+    "file": "HyData/Wupet.dat",
+    "bytes": 35554,
+    "sha256": "22d60ed9221bf6c8ba5d0fba75b60b4edeb9b1f6134dc528cc09d83d43851047",
+    "status": "保留原始二進位，未確認欄位結構"
+  },
+  {
+    "file": "HyData/PictureGroup.dat",
+    "bytes": 11178,
+    "sha256": "415ee827f7b9b1b6390e70e39e3945d777f9e7947bbadc169c50f8f6d8a4ad8c",
+    "status": "保留原始二進位，未確認欄位結構"
+  }
+]

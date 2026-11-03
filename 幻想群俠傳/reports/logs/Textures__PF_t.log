@@ -1,0 +1,15 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/PF_t.utx Ver: 128/29 Names: 21 Exports: 4 Imports: 2 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture pf10_1a from package Textures/PF_t.utx
+Loading Texture pf11_2a from package Textures/PF_t.utx
+Loading Texture pf11_1a from package Textures/PF_t.utx
+Loading Texture pf10_2a from package Textures/PF_t.utx
+Exporting objects ...
+Exporting Texture pf10_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/PF_t/Texture/pf10_1a.png
+Exporting Texture pf11_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/PF_t/Texture/pf11_2a.png
+Exporting Texture pf11_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/PF_t/Texture/pf11_1a.png
+Exporting Texture pf10_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/PF_t/Texture/pf10_2a.png
+Memory: allocated 306351 bytes in 52 blocks
+Exported 4/4 objects in 0.0 sec

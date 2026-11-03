@@ -1,0 +1,24 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_1020_t.utx Ver: 128/29 Names: 60 Exports: 13 Imports: 13 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Palette Palette0 from package Textures/WL_1020_t.utx
+Loading Texture 8045_fl_gre_002b from package Textures/WL_1020_t.utx
+Loading Texture 8045_fl_gre_003b from package Textures/WL_1020_t.utx
+Loading Texture 1020_Obj_002j from package Textures/WL_1020_t.utx
+Loading Texture 1020_deco from package Textures/WL_1020_t.utx
+Loading TexRotator 8045_run_cc_003b from package Textures/WL_1020_t.utx
+Loading TexRotator 8045_run_cc_004b from package Textures/WL_1020_t.utx
+Loading Texture 1020bak from package Textures/WL_1020_t.utx
+Loading Texture 1020_deco1 from package Textures/WL_1020_t.utx
+Exporting objects ...
+Exporting Texture 8045_fl_gre_002b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1020_t/Texture/8045_fl_gre_002b.png
+Exporting Texture 8045_fl_gre_003b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1020_t/Texture/8045_fl_gre_003b.png
+Exporting Texture 1020_Obj_002j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1020_t/Texture/1020_Obj_002j.png
+Exporting Texture 1020_deco to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1020_t/Texture/1020_deco.png
+Exporting TexRotator 8045_run_cc_003b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1020_t/TexRotator/8045_run_cc_003b.mat
+Exporting TexRotator 8045_run_cc_004b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1020_t/TexRotator/8045_run_cc_004b.mat
+Exporting Texture 1020bak to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1020_t/Texture/1020bak.png
+Exporting Texture 1020_deco1 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1020_t/Texture/1020_deco1.png
+Memory: allocated 331700 bytes in 58 blocks
+Exported 8/8 objects in 0.1 sec

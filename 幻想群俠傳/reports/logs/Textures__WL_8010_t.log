@@ -1,0 +1,25 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_8010_t.utx Ver: 128/29 Names: 28 Exports: 9 Imports: 2 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture floor_001 from package Textures/WL_8010_t.utx
+Loading Texture fulgurite from package Textures/WL_8010_t.utx
+Loading Texture image_001 from package Textures/WL_8010_t.utx
+Loading Texture image_002 from package Textures/WL_8010_t.utx
+Loading Texture image_003 from package Textures/WL_8010_t.utx
+Loading Texture image_004 from package Textures/WL_8010_t.utx
+Loading Texture floor_002 from package Textures/WL_8010_t.utx
+Loading Texture floor_003 from package Textures/WL_8010_t.utx
+Loading Texture floor_004 from package Textures/WL_8010_t.utx
+Exporting objects ...
+Exporting Texture floor_001 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8010_t/Texture/floor_001.png
+Exporting Texture fulgurite to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8010_t/Texture/fulgurite.png
+Exporting Texture image_001 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8010_t/Texture/image_001.png
+Exporting Texture image_002 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8010_t/Texture/image_002.png
+Exporting Texture image_003 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8010_t/Texture/image_003.png
+Exporting Texture image_004 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8010_t/Texture/image_004.png
+Exporting Texture floor_002 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8010_t/Texture/floor_002.png
+Exporting Texture floor_003 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8010_t/Texture/floor_003.png
+Exporting Texture floor_004 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8010_t/Texture/floor_004.png
+Memory: allocated 327156 bytes in 57 blocks
+Exported 9/9 objects in 0.2 sec

@@ -1,0 +1,11 @@
+PanDirection = { Yaw=0, Pitch=0, Roll=0 }
+PanRate = 0.3
+TexCoordSource = TCS_NoChange (13)
+TexCoordCount = TCN_3DCoords (1)
+TexCoordProjected = false
+Material = Texture'Combiner.Magmacopy'
+FallbackMaterial = None
+DefaultMaterial = None
+SurfaceType = 0
+bUseTextureAsHeat = false
+HeatMaterial = None

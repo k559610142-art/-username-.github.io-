@@ -1,0 +1,13 @@
+FrameBufferBlending = FB_AlphaBlend (2)
+ZWrite = true
+ZTest = true
+AlphaTest = false
+TwoSided = false
+AlphaRef = 0
+TreatAsTwoSided = false
+Material = Shader'28in.shader_28in_35_a_001'
+FallbackMaterial = None
+DefaultMaterial = None
+SurfaceType = 0
+bUseTextureAsHeat = false
+HeatMaterial = None

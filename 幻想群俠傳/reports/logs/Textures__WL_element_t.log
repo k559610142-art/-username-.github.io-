@@ -1,0 +1,113 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_element_t.utx Ver: 128/29 Names: 77 Exports: 53 Imports: 3 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture bell_001a from package Textures/WL_element_t.utx
+Loading Texture bell_002a from package Textures/WL_element_t.utx
+Loading Texture drum_001a from package Textures/WL_element_t.utx
+Loading Texture en_002a from package Textures/WL_element_t.utx
+Loading Texture en_005a from package Textures/WL_element_t.utx
+Loading Texture Lamp_002a from package Textures/WL_element_t.utx
+Loading Texture pt_004a from package Textures/WL_element_t.utx
+Loading Texture pt_005a from package Textures/WL_element_t.utx
+Loading Texture pt_002a from package Textures/WL_element_t.utx
+Loading Texture pt_006a_t from package Textures/WL_element_t.utx
+Loading Texture pt_003a from package Textures/WL_element_t.utx
+Loading Texture pot_001a from package Textures/WL_element_t.utx
+Loading Texture SL_001a_t from package Textures/WL_element_t.utx
+Loading Texture drum_002a from package Textures/WL_element_t.utx
+Loading Texture vase_001a_t from package Textures/WL_element_t.utx
+Loading Texture ac_pot02a_t from package Textures/WL_element_t.utx
+Loading Texture grey_001a from package Textures/WL_element_t.utx
+Loading Texture pt_001a from package Textures/WL_element_t.utx
+Loading Texture grey_002a from package Textures/WL_element_t.utx
+Loading Texture re01a_t from package Textures/WL_element_t.utx
+Loading Texture re_02a_t from package Textures/WL_element_t.utx
+Loading Texture re_03a_t from package Textures/WL_element_t.utx
+Loading Texture re_04a_t from package Textures/WL_element_t.utx
+Loading Texture re_05a_t from package Textures/WL_element_t.utx
+Loading Texture re_06a_t from package Textures/WL_element_t.utx
+Loading Texture re_07a_t from package Textures/WL_element_t.utx
+Loading Texture re_08a_t from package Textures/WL_element_t.utx
+Loading Texture re_09a_t from package Textures/WL_element_t.utx
+Loading Texture OrangeTile from package Textures/WL_element_t.utx
+Loading Texture ro_003a_t from package Textures/WL_element_t.utx
+Loading Texture ro_001a_t from package Textures/WL_element_t.utx
+Loading Texture ro_002a_t from package Textures/WL_element_t.utx
+Loading Texture pot_3 from package Textures/WL_element_t.utx
+Loading Texture en01 from package Textures/WL_element_t.utx
+Loading Texture en03 from package Textures/WL_element_t.utx
+Loading Texture en04 from package Textures/WL_element_t.utx
+Loading Shader oldbell_001a from package Textures/WL_element_t.utx
+Loading Texture grey_003a from package Textures/WL_element_t.utx
+Loading Texture ac_pot_001a from package Textures/WL_element_t.utx
+Loading Texture Lamp_001a from package Textures/WL_element_t.utx
+Loading Texture Lamp_003a from package Textures/WL_element_t.utx
+Loading Texture tp_005a_t from package Textures/WL_element_t.utx
+Loading Texture tp_001a_t from package Textures/WL_element_t.utx
+Loading Texture tp_002a_t from package Textures/WL_element_t.utx
+Loading Texture tp_003a_t from package Textures/WL_element_t.utx
+Loading Texture tp_004a_t from package Textures/WL_element_t.utx
+Loading Texture re_001a_t from package Textures/WL_element_t.utx
+Loading Texture camel_002a from package Textures/WL_element_t.utx
+Loading Texture camel_001a from package Textures/WL_element_t.utx
+Loading Texture lion_002a from package Textures/WL_element_t.utx
+Loading Texture lion_001a from package Textures/WL_element_t.utx
+Loading Texture SnT_001a from package Textures/WL_element_t.utx
+Loading Texture SnT_002a from package Textures/WL_element_t.utx
+Exporting objects ...
+Exporting Texture bell_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/bell_001a.png
+Exporting Texture bell_002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/bell_002a.png
+Exporting Texture drum_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/drum_001a.png
+Exporting Texture en_002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/en_002a.png
+Exporting Texture en_005a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/en_005a.png
+Exporting Texture Lamp_002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/Lamp_002a.png
+Exporting Texture pt_004a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/pt_004a.png
+Exporting Texture pt_005a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/pt_005a.png
+Exporting Texture pt_002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/pt_002a.png
+Exporting Texture pt_006a_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/pt_006a_t.png
+Exporting Texture pt_003a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/pt_003a.png
+Exporting Texture pot_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/pot_001a.png
+Exporting Texture SL_001a_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/SL_001a_t.png
+Exporting Texture drum_002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/drum_002a.png
+Exporting Texture vase_001a_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/vase_001a_t.png
+Exporting Texture ac_pot02a_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/ac_pot02a_t.png
+Exporting Texture grey_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/grey_001a.png
+Exporting Texture pt_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/pt_001a.png
+Exporting Texture grey_002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/grey_002a.png
+Exporting Texture re01a_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/re01a_t.png
+Exporting Texture re_02a_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/re_02a_t.png
+Exporting Texture re_03a_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/re_03a_t.png
+Exporting Texture re_04a_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/re_04a_t.png
+Exporting Texture re_05a_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/re_05a_t.png
+Exporting Texture re_06a_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/re_06a_t.png
+Exporting Texture re_07a_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/re_07a_t.png
+Exporting Texture re_08a_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/re_08a_t.png
+Exporting Texture re_09a_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/re_09a_t.png
+Exporting Texture OrangeTile to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/OrangeTile.png
+Exporting Texture ro_003a_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/ro_003a_t.png
+Exporting Texture ro_001a_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/ro_001a_t.png
+Exporting Texture ro_002a_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/ro_002a_t.png
+Exporting Texture pot_3 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/pot_3.png
+Exporting Texture en01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/en01.png
+Exporting Texture en03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/en03.png
+Exporting Texture en04 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/en04.png
+Exporting Shader oldbell_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Shader/oldbell_001a.mat
+Exporting Texture grey_003a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/grey_003a.png
+Exporting Texture ac_pot_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/ac_pot_001a.png
+Exporting Texture Lamp_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/Lamp_001a.png
+Exporting Texture Lamp_003a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/Lamp_003a.png
+Exporting Texture tp_005a_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/tp_005a_t.png
+Exporting Texture tp_001a_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/tp_001a_t.png
+Exporting Texture tp_002a_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/tp_002a_t.png
+Exporting Texture tp_003a_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/tp_003a_t.png
+Exporting Texture tp_004a_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/tp_004a_t.png
+Exporting Texture re_001a_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/re_001a_t.png
+Exporting Texture camel_002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/camel_002a.png
+Exporting Texture camel_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/camel_001a.png
+Exporting Texture lion_002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/lion_002a.png
+Exporting Texture lion_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/lion_001a.png
+Exporting Texture SnT_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/SnT_001a.png
+Exporting Texture SnT_002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_element_t/Texture/SnT_002a.png
+Memory: allocated 513403 bytes in 102 blocks
+Exported 53/53 objects in 0.5 sec

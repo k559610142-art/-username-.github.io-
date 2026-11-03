@@ -1,0 +1,170 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/fx_t.utx Ver: 128/29 Names: 107 Exports: 74 Imports: 6 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.01 MBytes serialized in 2 calls.
+Loading Texture fx33_1a_tex from package Textures/fx_t.utx
+Loading Texture fx46_1amsk from package Textures/fx_t.utx
+Loading Texture fx33_2a_tex from package Textures/fx_t.utx
+Loading TexEnvMap cube_ref from package Textures/fx_t.utx
+Loading package: Textures/sh_t.utx Ver: 128/29 Names: 105 Exports: 55 Imports: 9 Game: 200001
+Loading TexEnvMap s1_ref from package Textures/fx_t.utx
+Loading Texture s1 from package Textures/fx_t.utx
+Loading Texture fx33_2a_msk from package Textures/fx_t.utx
+Loading Texture fx33_1a_msk from package Textures/fx_t.utx
+Loading Texture fx46_2at from package Textures/fx_t.utx
+Loading Texture fx46_1at from package Textures/fx_t.utx
+Loading Texture fx07_1a from package Textures/fx_t.utx
+Loading Texture fx05_2a from package Textures/fx_t.utx
+Loading Texture fx05_1a from package Textures/fx_t.utx
+Loading Texture fx02_2a from package Textures/fx_t.utx
+Loading Texture fx09_2a from package Textures/fx_t.utx
+Loading Texture fx02_1a from package Textures/fx_t.utx
+Loading Texture fx29_1a from package Textures/fx_t.utx
+Loading Texture fx20_1a from package Textures/fx_t.utx
+Loading Texture fx16_1a from package Textures/fx_t.utx
+Loading Texture fx23_1a from package Textures/fx_t.utx
+Loading Texture fx25_1a from package Textures/fx_t.utx
+Loading Texture fx27_1a from package Textures/fx_t.utx
+Loading Texture fx14_1a from package Textures/fx_t.utx
+Loading Shader fx33_1a from package Textures/fx_t.utx
+Loading Texture fx34_1a from package Textures/fx_t.utx
+Loading Texture fx30_1a from package Textures/fx_t.utx
+Loading Texture fx17_1a from package Textures/fx_t.utx
+Loading Texture fx14_2a from package Textures/fx_t.utx
+Loading Texture fx16_2a from package Textures/fx_t.utx
+Loading Texture fx16_3a from package Textures/fx_t.utx
+Loading Texture fx17_2a from package Textures/fx_t.utx
+Loading Texture fx17_3a from package Textures/fx_t.utx
+Loading Texture fx20_2a from package Textures/fx_t.utx
+Loading Texture fx23_2a from package Textures/fx_t.utx
+Loading Texture fx25_2a from package Textures/fx_t.utx
+Loading Texture fx12_2a from package Textures/fx_t.utx
+Loading Texture fx29_2a from package Textures/fx_t.utx
+Loading Texture fx30_2a from package Textures/fx_t.utx
+Loading Texture fx32_2a from package Textures/fx_t.utx
+Loading Texture fx34_2a from package Textures/fx_t.utx
+Loading Texture fx32_1a from package Textures/fx_t.utx
+Loading Shader fx33_2a from package Textures/fx_t.utx
+Loading Texture fx34_1a2 from package Textures/fx_t.utx
+Loading Texture fx93_1a from package Textures/fx_t.utx
+Loading Texture fx90_1a from package Textures/fx_t.utx
+Loading Texture fx94_1a from package Textures/fx_t.utx
+Loading Texture fx91_1a from package Textures/fx_t.utx
+Loading Texture fx92_1a from package Textures/fx_t.utx
+Loading Texture fx24_1a from package Textures/fx_t.utx
+Loading Texture fx91_2a from package Textures/fx_t.utx
+Loading Texture fx90_2a from package Textures/fx_t.utx
+Loading Texture fx92_2a from package Textures/fx_t.utx
+Loading Texture fx93_2a from package Textures/fx_t.utx
+Loading Texture fx94_2a from package Textures/fx_t.utx
+Loading Texture fx24_2a from package Textures/fx_t.utx
+Loading Texture fx91_3a from package Textures/fx_t.utx
+Loading Texture fx92_3a from package Textures/fx_t.utx
+Loading Texture fx94_3a from package Textures/fx_t.utx
+Loading Texture fx98_1a from package Textures/fx_t.utx
+Loading Texture fx98_2a from package Textures/fx_t.utx
+Loading Texture fx95_2a from package Textures/fx_t.utx
+Loading Texture fx95_1a from package Textures/fx_t.utx
+Loading Texture fx96_2a from package Textures/fx_t.utx
+Loading Texture fx96_1a from package Textures/fx_t.utx
+Loading Texture fx99_2a from package Textures/fx_t.utx
+Loading Texture fx99_1a from package Textures/fx_t.utx
+Loading Shader fx46_1a from package Textures/fx_t.utx
+Loading Texture fx12_1a from package Textures/fx_t.utx
+Loading Texture fx07_2a from package Textures/fx_t.utx
+Loading Texture fx09_1a from package Textures/fx_t.utx
+Loading Texture fx27_2a from package Textures/fx_t.utx
+Loading Shader fx46_2a from package Textures/fx_t.utx
+Loading Texture fx35_1a from package Textures/fx_t.utx
+Loading Texture fx35_2a from package Textures/fx_t.utx
+Loading Cubemap cube_sh from package Textures/sh_t.utx
+Loading Texture d00 from package Textures/sh_t.utx
+Loading Texture d01 from package Textures/sh_t.utx
+Loading Texture d02 from package Textures/sh_t.utx
+Loading Texture d03 from package Textures/sh_t.utx
+Loading Texture d04 from package Textures/sh_t.utx
+Loading Texture d05 from package Textures/sh_t.utx
+Loading Palette Palette0 from package Textures/sh_t.utx
+Exporting objects ...
+Exporting Texture fx33_1a_tex to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx33_1a_tex.png
+Exporting Texture fx46_1amsk to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx46_1amsk.png
+Exporting Texture fx33_2a_tex to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx33_2a_tex.png
+Exporting TexEnvMap cube_ref to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/TexEnvMap/cube_ref.mat
+Exporting Texture d00 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/sh_t/Texture/d00.png
+Exporting Texture d01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/sh_t/Texture/d01.png
+Exporting Texture d02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/sh_t/Texture/d02.png
+Exporting Texture d03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/sh_t/Texture/d03.png
+Exporting Texture d04 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/sh_t/Texture/d04.png
+Exporting Texture d05 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/sh_t/Texture/d05.png
+Exporting TexEnvMap s1_ref to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/TexEnvMap/s1_ref.mat
+Exporting Texture s1 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/s1.png
+Exporting Texture fx33_2a_msk to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx33_2a_msk.png
+Exporting Texture fx33_1a_msk to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx33_1a_msk.png
+Exporting Texture fx46_2at to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx46_2at.png
+Exporting Texture fx46_1at to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx46_1at.png
+Exporting Texture fx07_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx07_1a.png
+Exporting Texture fx05_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx05_2a.png
+Exporting Texture fx05_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx05_1a.png
+Exporting Texture fx02_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx02_2a.png
+Exporting Texture fx09_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx09_2a.png
+Exporting Texture fx02_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx02_1a.png
+Exporting Texture fx29_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx29_1a.png
+Exporting Texture fx20_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx20_1a.png
+Exporting Texture fx16_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx16_1a.png
+Exporting Texture fx23_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx23_1a.png
+Exporting Texture fx25_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx25_1a.png
+Exporting Texture fx27_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx27_1a.png
+Exporting Texture fx14_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx14_1a.png
+Exporting Shader fx33_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Shader/fx33_1a.mat
+Exporting Texture fx34_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx34_1a.png
+Exporting Texture fx30_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx30_1a.png
+Exporting Texture fx17_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx17_1a.png
+Exporting Texture fx14_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx14_2a.png
+Exporting Texture fx16_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx16_2a.png
+Exporting Texture fx16_3a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx16_3a.png
+Exporting Texture fx17_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx17_2a.png
+Exporting Texture fx17_3a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx17_3a.png
+Exporting Texture fx20_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx20_2a.png
+Exporting Texture fx23_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx23_2a.png
+Exporting Texture fx25_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx25_2a.png
+Exporting Texture fx12_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx12_2a.png
+Exporting Texture fx29_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx29_2a.png
+Exporting Texture fx30_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx30_2a.png
+Exporting Texture fx32_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx32_2a.png
+Exporting Texture fx34_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx34_2a.png
+Exporting Texture fx32_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx32_1a.png
+Exporting Shader fx33_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Shader/fx33_2a.mat
+Exporting Texture fx34_1a2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx34_1a2.png
+Exporting Texture fx93_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx93_1a.png
+Exporting Texture fx90_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx90_1a.png
+Exporting Texture fx94_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx94_1a.png
+Exporting Texture fx91_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx91_1a.png
+Exporting Texture fx92_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx92_1a.png
+Exporting Texture fx24_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx24_1a.png
+Exporting Texture fx91_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx91_2a.png
+Exporting Texture fx90_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx90_2a.png
+Exporting Texture fx92_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx92_2a.png
+Exporting Texture fx93_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx93_2a.png
+Exporting Texture fx94_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx94_2a.png
+Exporting Texture fx24_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx24_2a.png
+Exporting Texture fx91_3a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx91_3a.png
+Exporting Texture fx92_3a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx92_3a.png
+Exporting Texture fx94_3a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx94_3a.png
+Exporting Texture fx98_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx98_1a.png
+Exporting Texture fx98_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx98_2a.png
+Exporting Texture fx95_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx95_2a.png
+Exporting Texture fx95_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx95_1a.png
+Exporting Texture fx96_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx96_2a.png
+Exporting Texture fx96_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx96_1a.png
+Exporting Texture fx99_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx99_2a.png
+Exporting Texture fx99_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx99_1a.png
+Exporting Shader fx46_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Shader/fx46_1a.mat
+Exporting Texture fx12_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx12_1a.png
+Exporting Texture fx07_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx07_2a.png
+Exporting Texture fx09_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx09_1a.png
+Exporting Texture fx27_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx27_2a.png
+Exporting Shader fx46_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Shader/fx46_2a.mat
+Exporting Texture fx35_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx35_1a.png
+Exporting Texture fx35_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/fx_t/Texture/fx35_2a.png
+Memory: allocated 648438 bytes in 141 blocks
+Exported 80/80 objects in 0.3 sec

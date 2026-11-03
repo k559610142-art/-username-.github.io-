@@ -1,0 +1,13 @@
+CombineOperation = CO_Multiply (2)
+AlphaOperation = AO_Use_Mask (0)
+Material1 = TexPanner'Magma.1037_0019q_TP'
+Material2 = TexPanner'Magma.1037_009q_TP2'
+Mask = None
+InvertMask = false
+Modulate2X = false
+Modulate4X = false
+FallbackMaterial = None
+DefaultMaterial = None
+SurfaceType = 0
+bUseTextureAsHeat = false
+HeatMaterial = None

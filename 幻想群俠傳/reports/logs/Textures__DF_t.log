@@ -1,0 +1,42 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/DF_t.utx Ver: 128/29 Names: 37 Exports: 9 Imports: 5 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture DF0502ax from package Textures/DF_t.utx
+Loading Texture DF0501ax from package Textures/DF_t.utx
+Loading Texture df0601a from package Textures/DF_t.utx
+Loading Texture df0602a from package Textures/DF_t.utx
+Loading Shader DF0502a from package Textures/DF_t.utx
+Loading package: Textures/H3_t.utx Ver: 128/29 Names: 84 Exports: 53 Imports: 6 Game: 200001
+Loading Texture DF0401_1a from package Textures/DF_t.utx
+Loading Texture DF0401_2a from package Textures/DF_t.utx
+Loading Shader DF0501a from package Textures/DF_t.utx
+Loading Texture df0901a from package Textures/DF_t.utx
+Loading TexEnvMap mjj0000 from package Textures/H3_t.utx
+Loading Cubemap mjj0001 from package Textures/H3_t.utx
+Loading Texture z00 from package Textures/H3_t.utx
+Loading Texture z01 from package Textures/H3_t.utx
+Loading Texture z02 from package Textures/H3_t.utx
+Loading Texture z03 from package Textures/H3_t.utx
+Loading Texture z04 from package Textures/H3_t.utx
+Loading Texture z05 from package Textures/H3_t.utx
+Loading Palette Palette0 from package Textures/H3_t.utx
+Exporting objects ...
+Exporting Texture DF0502ax to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DF_t/Texture/DF0502ax.png
+Exporting Texture DF0501ax to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DF_t/Texture/DF0501ax.png
+Exporting Texture df0601a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DF_t/Texture/df0601a.png
+Exporting Texture df0602a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DF_t/Texture/df0602a.png
+Exporting Shader DF0502a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DF_t/Shader/DF0502a.mat
+Exporting Texture DF0401_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DF_t/Texture/DF0401_1a.png
+Exporting Texture DF0401_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DF_t/Texture/DF0401_2a.png
+Exporting Shader DF0501a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DF_t/Shader/DF0501a.mat
+Exporting Texture df0901a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DF_t/Texture/df0901a.png
+Exporting TexEnvMap mjj0000 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/TexEnvMap/mjj0000.mat
+Exporting Texture z00 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/z00.png
+Exporting Texture z01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/z01.png
+Exporting Texture z02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/z02.png
+Exporting Texture z03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/z03.png
+Exporting Texture z04 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/z04.png
+Exporting Texture z05 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/z05.png
+Memory: allocated 370910 bytes in 74 blocks
+Exported 16/16 objects in 0.2 sec

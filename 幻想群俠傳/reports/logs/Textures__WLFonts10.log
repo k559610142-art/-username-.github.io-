@@ -1,0 +1,17 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WLFonts10.utx Ver: 128/29 Names: 24 Exports: 6 Imports: 3 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture HYFont_PageA from package Textures/WLFonts10.utx
+Loading Texture HYFont_PageB from package Textures/WLFonts10.utx
+Loading Texture HYFont_PageC from package Textures/WLFonts10.utx
+Loading Texture HYFont_PageD from package Textures/WLFonts10.utx
+Loading Texture HYFont_PageE from package Textures/WLFonts10.utx
+Exporting objects ...
+Exporting Texture HYFont_PageA to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WLFonts10/Texture/HYFont_PageA.png
+Exporting Texture HYFont_PageB to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WLFonts10/Texture/HYFont_PageB.png
+Exporting Texture HYFont_PageC to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WLFonts10/Texture/HYFont_PageC.png
+Exporting Texture HYFont_PageD to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WLFonts10/Texture/HYFont_PageD.png
+Exporting Texture HYFont_PageE to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WLFonts10/Texture/HYFont_PageE.png
+Memory: allocated 310664 bytes in 53 blocks
+Exported 5/5 objects in 0.4 sec

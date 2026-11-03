@@ -1,0 +1,28 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Maps/0020_map.ut2 Ver: 128/29 Names: 1356 Exports: 1049 Imports: 122 Game: 200001
+Loaded in 0.0 sec, 19 allocs, 0.05 MBytes serialized in 13 calls.
+Loading Texture tex009 from package Maps/0020_map.ut2
+Loading Texture tex4 from package Maps/0020_map.ut2
+Loading Texture tex3 from package Maps/0020_map.ut2
+Loading Texture tex08 from package Maps/0020_map.ut2
+Loading Texture tex5 from package Maps/0020_map.ut2
+Loading Texture tex6 from package Maps/0020_map.ut2
+Loading Texture tex1 from package Maps/0020_map.ut2
+Loading Texture terrain1 from package Maps/0020_map.ut2
+Loading Texture attack7 from package Maps/0020_map.ut2
+Loading Texture tex010 from package Maps/0020_map.ut2
+Exporting objects ...
+Exporting Texture tex009 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/0020_map/Texture/tex009.png
+Exporting Texture tex4 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/0020_map/Texture/tex4.png
+Exporting Texture tex3 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/0020_map/Texture/tex3.png
+Exporting Texture tex08 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/0020_map/Texture/tex08.png
+Exporting Texture tex5 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/0020_map/Texture/tex5.png
+Exporting Texture tex6 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/0020_map/Texture/tex6.png
+Exporting Texture tex1 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/0020_map/Texture/tex1.png
+******** Maps/0020_map.ut2 ********
+*** Unknown UE2 texture format: TEXF_G16 (10)
+Exporting Texture attack7 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/0020_map/Texture/attack7.png
+Exporting Texture tex010 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/0020_map/Texture/tex010.png
+Memory: allocated 404591 bytes in 59 blocks
+Exported 9/9 objects in 0.0 sec

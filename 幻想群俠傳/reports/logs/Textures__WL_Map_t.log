@@ -1,0 +1,137 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_Map_t.utx Ver: 128/29 Names: 84 Exports: 65 Imports: 2 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.01 MBytes serialized in 2 calls.
+Loading Texture 10_map_t from package Textures/WL_Map_t.utx
+Loading Texture 8037_map_t from package Textures/WL_Map_t.utx
+Loading Texture 8038_map_t from package Textures/WL_Map_t.utx
+Loading Texture 3005_map_t from package Textures/WL_Map_t.utx
+Loading Texture 9404_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1033_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1029_map_t from package Textures/WL_Map_t.utx
+Loading Texture 9438_map_t from package Textures/WL_Map_t.utx
+Loading Texture 11_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1032_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1031_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1030_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1028_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1027_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1026_map_t from package Textures/WL_Map_t.utx
+Loading Texture 8010_map_t from package Textures/WL_Map_t.utx
+Loading Texture 9403_map_t from package Textures/WL_Map_t.utx
+Loading Texture 8013_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1021_map_t from package Textures/WL_Map_t.utx
+Loading Texture 120_map_t from package Textures/WL_Map_t.utx
+Loading Texture 8004_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1011_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1007_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1008_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1009_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1022_map_t from package Textures/WL_Map_t.utx
+Loading Texture 9400_map_t from package Textures/WL_Map_t.utx
+Loading Texture 9401_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1018_map_t from package Textures/WL_Map_t.utx
+Loading Texture 8005_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1019_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1020_map_t from package Textures/WL_Map_t.utx
+Loading Texture 100_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1025_map_t from package Textures/WL_Map_t.utx
+Loading Texture 9402_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1006_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1005_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1004_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1013_map_t from package Textures/WL_Map_t.utx
+Loading Texture 130_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1003_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1002_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1001_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1014_map_t from package Textures/WL_Map_t.utx
+Loading Texture 110_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1010_map_t from package Textures/WL_Map_t.utx
+Loading Texture 30_map_t from package Textures/WL_Map_t.utx
+Loading Texture 20_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1012_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1015_map_t from package Textures/WL_Map_t.utx
+Loading Texture 8003_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1017_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1016_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1023_map_t from package Textures/WL_Map_t.utx
+Loading Texture 8001_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1024_map_t from package Textures/WL_Map_t.utx
+Loading Texture 8043_map_t from package Textures/WL_Map_t.utx
+Loading Texture 140_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1034_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1035_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1036_map_t from package Textures/WL_Map_t.utx
+Loading Texture 1037_map_t from package Textures/WL_Map_t.utx
+Loading Texture 8039_map_t from package Textures/WL_Map_t.utx
+Loading Texture 8040_map_t from package Textures/WL_Map_t.utx
+Loading Texture 8041_map_t from package Textures/WL_Map_t.utx
+Exporting objects ...
+Exporting Texture 10_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/10_map_t.png
+Exporting Texture 8037_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/8037_map_t.png
+Exporting Texture 8038_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/8038_map_t.png
+Exporting Texture 3005_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/3005_map_t.png
+Exporting Texture 9404_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/9404_map_t.png
+Exporting Texture 1033_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1033_map_t.png
+Exporting Texture 1029_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1029_map_t.png
+Exporting Texture 9438_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/9438_map_t.png
+Exporting Texture 11_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/11_map_t.png
+Exporting Texture 1032_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1032_map_t.png
+Exporting Texture 1031_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1031_map_t.png
+Exporting Texture 1030_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1030_map_t.png
+Exporting Texture 1028_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1028_map_t.png
+Exporting Texture 1027_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1027_map_t.png
+Exporting Texture 1026_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1026_map_t.png
+Exporting Texture 8010_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/8010_map_t.png
+Exporting Texture 9403_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/9403_map_t.png
+Exporting Texture 8013_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/8013_map_t.png
+Exporting Texture 1021_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1021_map_t.png
+Exporting Texture 120_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/120_map_t.png
+Exporting Texture 8004_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/8004_map_t.png
+Exporting Texture 1011_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1011_map_t.png
+Exporting Texture 1007_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1007_map_t.png
+Exporting Texture 1008_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1008_map_t.png
+Exporting Texture 1009_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1009_map_t.png
+Exporting Texture 1022_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1022_map_t.png
+Exporting Texture 9400_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/9400_map_t.png
+Exporting Texture 9401_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/9401_map_t.png
+Exporting Texture 1018_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1018_map_t.png
+Exporting Texture 8005_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/8005_map_t.png
+Exporting Texture 1019_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1019_map_t.png
+Exporting Texture 1020_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1020_map_t.png
+Exporting Texture 100_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/100_map_t.png
+Exporting Texture 1025_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1025_map_t.png
+Exporting Texture 9402_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/9402_map_t.png
+Exporting Texture 1006_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1006_map_t.png
+Exporting Texture 1005_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1005_map_t.png
+Exporting Texture 1004_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1004_map_t.png
+Exporting Texture 1013_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1013_map_t.png
+Exporting Texture 130_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/130_map_t.png
+Exporting Texture 1003_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1003_map_t.png
+Exporting Texture 1002_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1002_map_t.png
+Exporting Texture 1001_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1001_map_t.png
+Exporting Texture 1014_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1014_map_t.png
+Exporting Texture 110_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/110_map_t.png
+Exporting Texture 1010_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1010_map_t.png
+Exporting Texture 30_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/30_map_t.png
+Exporting Texture 20_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/20_map_t.png
+Exporting Texture 1012_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1012_map_t.png
+Exporting Texture 1015_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1015_map_t.png
+Exporting Texture 8003_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/8003_map_t.png
+Exporting Texture 1017_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1017_map_t.png
+Exporting Texture 1016_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1016_map_t.png
+Exporting Texture 1023_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1023_map_t.png
+Exporting Texture 8001_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/8001_map_t.png
+Exporting Texture 1024_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1024_map_t.png
+Exporting Texture 8043_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/8043_map_t.png
+Exporting Texture 140_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/140_map_t.png
+Exporting Texture 1034_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1034_map_t.png
+Exporting Texture 1035_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1035_map_t.png
+Exporting Texture 1036_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1036_map_t.png
+Exporting Texture 1037_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/1037_map_t.png
+Exporting Texture 8039_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/8039_map_t.png
+Exporting Texture 8040_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/8040_map_t.png
+Exporting Texture 8041_map_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Map_t/Texture/8041_map_t.png
+Memory: allocated 559027 bytes in 113 blocks
+Exported 65/65 objects in 2.6 sec

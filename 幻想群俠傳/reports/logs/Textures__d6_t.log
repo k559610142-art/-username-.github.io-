@@ -1,0 +1,27 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/d6_t.utx Ver: 128/29 Names: 29 Exports: 10 Imports: 2 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture D60501a from package Textures/d6_t.utx
+Loading Texture D60201a from package Textures/d6_t.utx
+Loading Texture d60101a from package Textures/d6_t.utx
+Loading Texture D60102a from package Textures/d6_t.utx
+Loading Texture D60202a from package Textures/d6_t.utx
+Loading Texture d60301a from package Textures/d6_t.utx
+Loading Texture D60302a from package Textures/d6_t.utx
+Loading Texture d60401a from package Textures/d6_t.utx
+Loading Texture D60402a from package Textures/d6_t.utx
+Loading Texture D60502a from package Textures/d6_t.utx
+Exporting objects ...
+Exporting Texture D60501a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d6_t/Texture/D60501a.png
+Exporting Texture D60201a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d6_t/Texture/D60201a.png
+Exporting Texture d60101a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d6_t/Texture/d60101a.png
+Exporting Texture D60102a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d6_t/Texture/D60102a.png
+Exporting Texture D60202a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d6_t/Texture/D60202a.png
+Exporting Texture d60301a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d6_t/Texture/d60301a.png
+Exporting Texture D60302a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d6_t/Texture/D60302a.png
+Exporting Texture d60401a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d6_t/Texture/d60401a.png
+Exporting Texture D60402a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d6_t/Texture/D60402a.png
+Exporting Texture D60502a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d6_t/Texture/D60502a.png
+Memory: allocated 331287 bytes in 58 blocks
+Exported 10/10 objects in 0.3 sec

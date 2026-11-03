@@ -1,0 +1,57 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/DB_t.utx Ver: 128/29 Names: 44 Exports: 25 Imports: 2 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture db5401eye_op from package Textures/DB_t.utx
+Loading Texture db5201eye_cl from package Textures/DB_t.utx
+Loading Texture db5201eye_op from package Textures/DB_t.utx
+Loading Texture db5401a from package Textures/DB_t.utx
+Loading Texture db5401eye_cl from package Textures/DB_t.utx
+Loading Texture db5201a from package Textures/DB_t.utx
+Loading Texture db5402a from package Textures/DB_t.utx
+Loading Texture db5402eye_cl from package Textures/DB_t.utx
+Loading Texture db5402eye_op from package Textures/DB_t.utx
+Loading Texture db5202eye_cl from package Textures/DB_t.utx
+Loading Texture db5202eye_op from package Textures/DB_t.utx
+Loading Texture db5202a from package Textures/DB_t.utx
+Loading Texture db0401a from package Textures/DB_t.utx
+Loading Texture db0601a from package Textures/DB_t.utx
+Loading Texture db0602a from package Textures/DB_t.utx
+Loading Texture db0301c from package Textures/DB_t.utx
+Loading Texture db0301a from package Textures/DB_t.utx
+Loading Texture db0301b from package Textures/DB_t.utx
+Loading Texture db0701a from package Textures/DB_t.utx
+Loading Texture db0702a from package Textures/DB_t.utx
+Loading Texture db0703a from package Textures/DB_t.utx
+Loading Texture db0501d from package Textures/DB_t.utx
+Loading Texture db0501a from package Textures/DB_t.utx
+Loading Texture db0501b from package Textures/DB_t.utx
+Loading Texture db0501c from package Textures/DB_t.utx
+Exporting objects ...
+Exporting Texture db5401eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DB_t/Texture/db5401eye_op.png
+Exporting Texture db5201eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DB_t/Texture/db5201eye_cl.png
+Exporting Texture db5201eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DB_t/Texture/db5201eye_op.png
+Exporting Texture db5401a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DB_t/Texture/db5401a.png
+Exporting Texture db5401eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DB_t/Texture/db5401eye_cl.png
+Exporting Texture db5201a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DB_t/Texture/db5201a.png
+Exporting Texture db5402a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DB_t/Texture/db5402a.png
+Exporting Texture db5402eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DB_t/Texture/db5402eye_cl.png
+Exporting Texture db5402eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DB_t/Texture/db5402eye_op.png
+Exporting Texture db5202eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DB_t/Texture/db5202eye_cl.png
+Exporting Texture db5202eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DB_t/Texture/db5202eye_op.png
+Exporting Texture db5202a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DB_t/Texture/db5202a.png
+Exporting Texture db0401a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DB_t/Texture/db0401a.png
+Exporting Texture db0601a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DB_t/Texture/db0601a.png
+Exporting Texture db0602a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DB_t/Texture/db0602a.png
+Exporting Texture db0301c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DB_t/Texture/db0301c.png
+Exporting Texture db0301a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DB_t/Texture/db0301a.png
+Exporting Texture db0301b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DB_t/Texture/db0301b.png
+Exporting Texture db0701a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DB_t/Texture/db0701a.png
+Exporting Texture db0702a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DB_t/Texture/db0702a.png
+Exporting Texture db0703a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DB_t/Texture/db0703a.png
+Exporting Texture db0501d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DB_t/Texture/db0501d.png
+Exporting Texture db0501a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DB_t/Texture/db0501a.png
+Exporting Texture db0501b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DB_t/Texture/db0501b.png
+Exporting Texture db0501c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DB_t/Texture/db0501c.png
+Memory: allocated 393327 bytes in 73 blocks
+Exported 25/25 objects in 0.3 sec

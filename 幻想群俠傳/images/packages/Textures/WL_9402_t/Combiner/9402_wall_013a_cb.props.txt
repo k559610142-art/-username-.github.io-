@@ -1,0 +1,13 @@
+CombineOperation = CO_AlphaBlend_With_Mask (5)
+AlphaOperation = AO_Multiply (1)
+Material1 = Texture'9402_wall_013a'
+Material2 = TexPanner'9402_light_001a_cb'
+Mask = Texture'9402_wall_013a'
+InvertMask = false
+Modulate2X = false
+Modulate4X = false
+FallbackMaterial = None
+DefaultMaterial = None
+SurfaceType = 0
+bUseTextureAsHeat = false
+HeatMaterial = None

@@ -1,0 +1,111 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/H3_t.utx Ver: 128/29 Names: 84 Exports: 53 Imports: 6 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading TexEnvMap mjj0000 from package Textures/H3_t.utx
+Loading Texture h31001b from package Textures/H3_t.utx
+Loading Texture h31002b from package Textures/H3_t.utx
+Loading Texture h31003b from package Textures/H3_t.utx
+Loading Texture h31005b from package Textures/H3_t.utx
+Loading Texture h31004b from package Textures/H3_t.utx
+Loading Texture z05 from package Textures/H3_t.utx
+Loading Texture z02 from package Textures/H3_t.utx
+Loading Texture z00 from package Textures/H3_t.utx
+Loading Texture z01 from package Textures/H3_t.utx
+Loading Cubemap mjj0001 from package Textures/H3_t.utx
+Loading Palette Palette0 from package Textures/H3_t.utx
+Loading Texture z04 from package Textures/H3_t.utx
+Loading Texture z03 from package Textures/H3_t.utx
+Loading Texture h30702a from package Textures/H3_t.utx
+Loading Texture h30703a from package Textures/H3_t.utx
+Loading Shader h31004a from package Textures/H3_t.utx
+Loading Shader h31001a from package Textures/H3_t.utx
+Loading Shader h31002a from package Textures/H3_t.utx
+Loading Shader h31003a from package Textures/H3_t.utx
+Loading Shader h31005a from package Textures/H3_t.utx
+Loading Texture h30701a from package Textures/H3_t.utx
+Loading Texture h30601a from package Textures/H3_t.utx
+Loading Texture h31101a from package Textures/H3_t.utx
+Loading Texture h31101b from package Textures/H3_t.utx
+Loading Texture h31101c from package Textures/H3_t.utx
+Loading Texture h31101d from package Textures/H3_t.utx
+Loading Texture h31102a from package Textures/H3_t.utx
+Loading Texture h31102b from package Textures/H3_t.utx
+Loading Texture h31102c from package Textures/H3_t.utx
+Loading Texture h31102d from package Textures/H3_t.utx
+Loading Texture h30302b from package Textures/H3_t.utx
+Loading Texture h30302a from package Textures/H3_t.utx
+Loading Texture h30302c from package Textures/H3_t.utx
+Loading Texture h30301d from package Textures/H3_t.utx
+Loading Texture h30302d from package Textures/H3_t.utx
+Loading Texture h30301a from package Textures/H3_t.utx
+Loading Texture h30301b from package Textures/H3_t.utx
+Loading Texture h30301c from package Textures/H3_t.utx
+Loading Texture h30801a from package Textures/H3_t.utx
+Loading Texture h30802a from package Textures/H3_t.utx
+Loading Texture H30901a from package Textures/H3_t.utx
+Loading Texture H30902a from package Textures/H3_t.utx
+Loading Texture h30402a from package Textures/H3_t.utx
+Loading Texture h30201b from package Textures/H3_t.utx
+Loading Texture h30401a from package Textures/H3_t.utx
+Loading Texture h30101a from package Textures/H3_t.utx
+Loading Texture h30101b from package Textures/H3_t.utx
+Loading Texture h30201a from package Textures/H3_t.utx
+Loading Texture h30201d from package Textures/H3_t.utx
+Loading Texture h30201c from package Textures/H3_t.utx
+Loading Texture H31202a from package Textures/H3_t.utx
+Loading Texture H31201a from package Textures/H3_t.utx
+Exporting objects ...
+Exporting TexEnvMap mjj0000 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/TexEnvMap/mjj0000.mat
+Exporting Texture z00 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/z00.png
+Exporting Texture z01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/z01.png
+Exporting Texture z02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/z02.png
+Exporting Texture z03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/z03.png
+Exporting Texture z04 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/z04.png
+Exporting Texture z05 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/z05.png
+Exporting Texture h31001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h31001b.png
+Exporting Texture h31002b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h31002b.png
+Exporting Texture h31003b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h31003b.png
+Exporting Texture h31005b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h31005b.png
+Exporting Texture h31004b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h31004b.png
+Exporting Texture h30702a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h30702a.png
+Exporting Texture h30703a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h30703a.png
+Exporting Shader h31004a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Shader/h31004a.mat
+Exporting Shader h31001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Shader/h31001a.mat
+Exporting Shader h31002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Shader/h31002a.mat
+Exporting Shader h31003a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Shader/h31003a.mat
+Exporting Shader h31005a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Shader/h31005a.mat
+Exporting Texture h30701a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h30701a.png
+Exporting Texture h30601a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h30601a.png
+Exporting Texture h31101a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h31101a.png
+Exporting Texture h31101b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h31101b.png
+Exporting Texture h31101c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h31101c.png
+Exporting Texture h31101d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h31101d.png
+Exporting Texture h31102a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h31102a.png
+Exporting Texture h31102b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h31102b.png
+Exporting Texture h31102c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h31102c.png
+Exporting Texture h31102d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h31102d.png
+Exporting Texture h30302b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h30302b.png
+Exporting Texture h30302a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h30302a.png
+Exporting Texture h30302c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h30302c.png
+Exporting Texture h30301d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h30301d.png
+Exporting Texture h30302d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h30302d.png
+Exporting Texture h30301a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h30301a.png
+Exporting Texture h30301b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h30301b.png
+Exporting Texture h30301c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h30301c.png
+Exporting Texture h30801a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h30801a.png
+Exporting Texture h30802a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h30802a.png
+Exporting Texture H30901a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/H30901a.png
+Exporting Texture H30902a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/H30902a.png
+Exporting Texture h30402a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h30402a.png
+Exporting Texture h30201b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h30201b.png
+Exporting Texture h30401a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h30401a.png
+Exporting Texture h30101a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h30101a.png
+Exporting Texture h30101b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h30101b.png
+Exporting Texture h30201a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h30201a.png
+Exporting Texture h30201d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h30201d.png
+Exporting Texture h30201c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/h30201c.png
+Exporting Texture H31202a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/H31202a.png
+Exporting Texture H31201a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H3_t/Texture/H31201a.png
+Memory: allocated 525759 bytes in 105 blocks
+Exported 51/51 objects in 0.8 sec

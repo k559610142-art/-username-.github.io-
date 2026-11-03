@@ -1,0 +1,13 @@
+FrameBufferBlending = FB_Translucent (4)
+ZWrite = true
+ZTest = true
+AlphaTest = true
+TwoSided = false
+AlphaRef = 255
+TreatAsTwoSided = false
+Material = Shader'a39WoodJ038b_sh'
+FallbackMaterial = None
+DefaultMaterial = None
+SurfaceType = 0
+bUseTextureAsHeat = false
+HeatMaterial = None

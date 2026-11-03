@@ -1,0 +1,33 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/e6_t.utx Ver: 128/29 Names: 36 Exports: 13 Imports: 3 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture E60501at from package Textures/e6_t.utx
+Loading Texture E60101b from package Textures/e6_t.utx
+Loading Texture E60301a from package Textures/e6_t.utx
+Loading Texture E60101a from package Textures/e6_t.utx
+Loading Texture E60501c from package Textures/e6_t.utx
+Loading Texture E60501b from package Textures/e6_t.utx
+Loading Shader E60501a from package Textures/e6_t.utx
+Loading Texture E60102a from package Textures/e6_t.utx
+Loading Texture E60102b from package Textures/e6_t.utx
+Loading Texture E60302a from package Textures/e6_t.utx
+Loading Shader E60502a from package Textures/e6_t.utx
+Loading Texture E60502b from package Textures/e6_t.utx
+Loading Texture E60502c from package Textures/e6_t.utx
+Exporting objects ...
+Exporting Texture E60501at to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e6_t/Texture/E60501at.png
+Exporting Texture E60101b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e6_t/Texture/E60101b.png
+Exporting Texture E60301a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e6_t/Texture/E60301a.png
+Exporting Texture E60101a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e6_t/Texture/E60101a.png
+Exporting Texture E60501c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e6_t/Texture/E60501c.png
+Exporting Texture E60501b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e6_t/Texture/E60501b.png
+Exporting Shader E60501a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e6_t/Shader/E60501a.mat
+Exporting Texture E60102a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e6_t/Texture/E60102a.png
+Exporting Texture E60102b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e6_t/Texture/E60102b.png
+Exporting Texture E60302a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e6_t/Texture/E60302a.png
+Exporting Shader E60502a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e6_t/Shader/E60502a.mat
+Exporting Texture E60502b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e6_t/Texture/E60502b.png
+Exporting Texture E60502c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e6_t/Texture/E60502c.png
+Memory: allocated 351919 bytes in 63 blocks
+Exported 13/13 objects in 0.3 sec

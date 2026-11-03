@@ -1,0 +1,23 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Maps/9627_map.ut2 Ver: 128/29 Names: 2533 Exports: 2243 Imports: 114 Game: 200001
+Loaded in 0.0 sec, 21 allocs, 0.09 MBytes serialized in 24 calls.
+Loading Texture 8036_layer003 from package Maps/9627_map.ut2
+Loading Texture 8036_terrain01 from package Maps/9627_map.ut2
+Loading Texture 8036_layer01a from package Maps/9627_map.ut2
+Loading Texture 8036_layer00a from package Maps/9627_map.ut2
+Loading Texture 8036_layer004 from package Maps/9627_map.ut2
+Loading Palette Palette0 from package Maps/9627_map.ut2
+Loading Texture 8036_deco from package Maps/9627_map.ut2
+Loading Texture 8036_layer005 from package Maps/9627_map.ut2
+Exporting objects ...
+Exporting Texture 8036_layer003 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/9627_map/Texture/8036_layer003.png
+******** Maps/9627_map.ut2 ********
+*** Unknown UE2 texture format: TEXF_G16 (10)
+Exporting Texture 8036_layer01a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/9627_map/Texture/8036_layer01a.png
+Exporting Texture 8036_layer00a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/9627_map/Texture/8036_layer00a.png
+Exporting Texture 8036_layer004 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/9627_map/Texture/8036_layer004.png
+Exporting Texture 8036_deco to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/9627_map/Texture/8036_deco.png
+Exporting Texture 8036_layer005 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/9627_map/Texture/8036_layer005.png
+Memory: allocated 472635 bytes in 58 blocks
+Exported 6/6 objects in 0.0 sec

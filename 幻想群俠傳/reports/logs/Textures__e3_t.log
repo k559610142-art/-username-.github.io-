@@ -1,0 +1,160 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/e3_t.utx Ver: 128/29 Names: 101 Exports: 69 Imports: 6 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.01 MBytes serialized in 2 calls.
+Loading TexEnvMap cube_ref from package Textures/e3_t.utx
+Loading package: Textures/sh_t.utx Ver: 128/29 Names: 105 Exports: 55 Imports: 9 Game: 200001
+Loading Texture e30602at from package Textures/e3_t.utx
+Loading Texture e30601at from package Textures/e3_t.utx
+Loading Texture e30601bt from package Textures/e3_t.utx
+Loading Texture e30602bt from package Textures/e3_t.utx
+Loading Texture e31001am from package Textures/e3_t.utx
+Loading Texture e30901at from package Textures/e3_t.utx
+Loading Texture e31101at from package Textures/e3_t.utx
+Loading Texture e31201at from package Textures/e3_t.utx
+Loading Texture e31301at from package Textures/e3_t.utx
+Loading Texture e30901am from package Textures/e3_t.utx
+Loading Texture e31301am from package Textures/e3_t.utx
+Loading Texture e30702a from package Textures/e3_t.utx
+Loading Texture e31101am from package Textures/e3_t.utx
+Loading Texture e31001at from package Textures/e3_t.utx
+Loading Texture e31201am from package Textures/e3_t.utx
+Loading Texture e30701a from package Textures/e3_t.utx
+Loading Texture e30501bt from package Textures/e3_t.utx
+Loading Texture e30502bt from package Textures/e3_t.utx
+Loading Shader e30901a from package Textures/e3_t.utx
+Loading Texture E30301a from package Textures/e3_t.utx
+Loading Shader e31201a from package Textures/e3_t.utx
+Loading Shader e30802a from package Textures/e3_t.utx
+Loading Shader e31001a from package Textures/e3_t.utx
+Loading Texture E30302a from package Textures/e3_t.utx
+Loading Texture e30402a from package Textures/e3_t.utx
+Loading Texture e30402b from package Textures/e3_t.utx
+Loading Texture e30202a from package Textures/e3_t.utx
+Loading Texture e30101eye_op from package Textures/e3_t.utx
+Loading Texture e30101b from package Textures/e3_t.utx
+Loading Texture e30101c from package Textures/e3_t.utx
+Loading Shader e31301a from package Textures/e3_t.utx
+Loading Texture e30101eye_cl from package Textures/e3_t.utx
+Loading Texture e30401a from package Textures/e3_t.utx
+Loading Shader e31101a from package Textures/e3_t.utx
+Loading Texture e30401b from package Textures/e3_t.utx
+Loading Texture e30102a from package Textures/e3_t.utx
+Loading Texture e30102b from package Textures/e3_t.utx
+Loading Texture e30102c from package Textures/e3_t.utx
+Loading Texture e30102d from package Textures/e3_t.utx
+Loading Texture e30102eye_op from package Textures/e3_t.utx
+Loading Texture e30201a from package Textures/e3_t.utx
+Loading Shader e31601a from package Textures/e3_t.utx
+Loading Shader e30601a from package Textures/e3_t.utx
+Loading Shader e31401a from package Textures/e3_t.utx
+Loading Shader e30601b from package Textures/e3_t.utx
+Loading Shader e31501a from package Textures/e3_t.utx
+Loading Shader e31501b from package Textures/e3_t.utx
+Loading Shader e31401b from package Textures/e3_t.utx
+Loading Shader e31601b from package Textures/e3_t.utx
+Loading Shader e30602a from package Textures/e3_t.utx
+Loading Shader e30602b from package Textures/e3_t.utx
+Loading Shader e31402a from package Textures/e3_t.utx
+Loading Shader e31402b from package Textures/e3_t.utx
+Loading Shader e31602b from package Textures/e3_t.utx
+Loading Shader e31502a from package Textures/e3_t.utx
+Loading Shader e31502b from package Textures/e3_t.utx
+Loading Shader e31602a from package Textures/e3_t.utx
+Loading Texture e30801c from package Textures/e3_t.utx
+Loading Shader e30801a from package Textures/e3_t.utx
+Loading Texture e30801b from package Textures/e3_t.utx
+Loading Texture e30101d from package Textures/e3_t.utx
+Loading Texture e30501a from package Textures/e3_t.utx
+Loading Shader e30501b from package Textures/e3_t.utx
+Loading Texture e30502a from package Textures/e3_t.utx
+Loading Texture e30101a from package Textures/e3_t.utx
+Loading Shader e30502b from package Textures/e3_t.utx
+Loading Texture e30802b from package Textures/e3_t.utx
+Loading Texture e30802c from package Textures/e3_t.utx
+Loading Cubemap cube_sh from package Textures/sh_t.utx
+Loading Texture d00 from package Textures/sh_t.utx
+Loading Texture d01 from package Textures/sh_t.utx
+Loading Texture d02 from package Textures/sh_t.utx
+Loading Texture d03 from package Textures/sh_t.utx
+Loading Texture d04 from package Textures/sh_t.utx
+Loading Texture d05 from package Textures/sh_t.utx
+Loading Palette Palette0 from package Textures/sh_t.utx
+Exporting objects ...
+Exporting TexEnvMap cube_ref to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/TexEnvMap/cube_ref.mat
+Exporting Texture d00 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/sh_t/Texture/d00.png
+Exporting Texture d01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/sh_t/Texture/d01.png
+Exporting Texture d02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/sh_t/Texture/d02.png
+Exporting Texture d03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/sh_t/Texture/d03.png
+Exporting Texture d04 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/sh_t/Texture/d04.png
+Exporting Texture d05 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/sh_t/Texture/d05.png
+Exporting Texture e30602at to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30602at.png
+Exporting Texture e30601at to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30601at.png
+Exporting Texture e30601bt to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30601bt.png
+Exporting Texture e30602bt to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30602bt.png
+Exporting Texture e31001am to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e31001am.png
+Exporting Texture e30901at to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30901at.png
+Exporting Texture e31101at to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e31101at.png
+Exporting Texture e31201at to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e31201at.png
+Exporting Texture e31301at to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e31301at.png
+Exporting Texture e30901am to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30901am.png
+Exporting Texture e31301am to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e31301am.png
+Exporting Texture e30702a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30702a.png
+Exporting Texture e31101am to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e31101am.png
+Exporting Texture e31001at to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e31001at.png
+Exporting Texture e31201am to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e31201am.png
+Exporting Texture e30701a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30701a.png
+Exporting Texture e30501bt to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30501bt.png
+Exporting Texture e30502bt to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30502bt.png
+Exporting Shader e30901a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Shader/e30901a.mat
+Exporting Texture E30301a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/E30301a.png
+Exporting Shader e31201a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Shader/e31201a.mat
+Exporting Shader e30802a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Shader/e30802a.mat
+Exporting Shader e31001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Shader/e31001a.mat
+Exporting Texture E30302a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/E30302a.png
+Exporting Texture e30402a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30402a.png
+Exporting Texture e30402b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30402b.png
+Exporting Texture e30202a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30202a.png
+Exporting Texture e30101eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30101eye_op.png
+Exporting Texture e30101b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30101b.png
+Exporting Texture e30101c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30101c.png
+Exporting Shader e31301a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Shader/e31301a.mat
+Exporting Texture e30101eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30101eye_cl.png
+Exporting Texture e30401a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30401a.png
+Exporting Shader e31101a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Shader/e31101a.mat
+Exporting Texture e30401b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30401b.png
+Exporting Texture e30102a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30102a.png
+Exporting Texture e30102b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30102b.png
+Exporting Texture e30102c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30102c.png
+Exporting Texture e30102d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30102d.png
+Exporting Texture e30102eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30102eye_op.png
+Exporting Texture e30201a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30201a.png
+Exporting Shader e31601a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Shader/e31601a.mat
+Exporting Shader e30601a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Shader/e30601a.mat
+Exporting Shader e31401a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Shader/e31401a.mat
+Exporting Shader e30601b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Shader/e30601b.mat
+Exporting Shader e31501a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Shader/e31501a.mat
+Exporting Shader e31501b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Shader/e31501b.mat
+Exporting Shader e31401b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Shader/e31401b.mat
+Exporting Shader e31601b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Shader/e31601b.mat
+Exporting Shader e30602a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Shader/e30602a.mat
+Exporting Shader e30602b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Shader/e30602b.mat
+Exporting Shader e31402a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Shader/e31402a.mat
+Exporting Shader e31402b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Shader/e31402b.mat
+Exporting Shader e31602b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Shader/e31602b.mat
+Exporting Shader e31502a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Shader/e31502a.mat
+Exporting Shader e31502b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Shader/e31502b.mat
+Exporting Shader e31602a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Shader/e31602a.mat
+Exporting Texture e30801c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30801c.png
+Exporting Shader e30801a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Shader/e30801a.mat
+Exporting Texture e30801b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30801b.png
+Exporting Texture e30101d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30101d.png
+Exporting Texture e30501a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30501a.png
+Exporting Shader e30501b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Shader/e30501b.mat
+Exporting Texture e30502a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30502a.png
+Exporting Texture e30101a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30101a.png
+Exporting Shader e30502b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Shader/e30502b.mat
+Exporting Texture e30802b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30802b.png
+Exporting Texture e30802c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e3_t/Texture/e30802c.png
+Memory: allocated 709674 bytes in 156 blocks
+Exported 75/75 objects in 0.7 sec

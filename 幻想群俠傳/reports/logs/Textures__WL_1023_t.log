@@ -1,0 +1,64 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_1023_t.utx Ver: 128/29 Names: 96 Exports: 37 Imports: 17 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading TexPanner SPanner from package Textures/WL_1023_t.utx
+Loading Texture opacity2 from package Textures/WL_1023_t.utx
+Loading Texture 05 from package Textures/WL_1023_t.utx
+Loading Texture ItsFullofStars from package Textures/WL_1023_t.utx
+Loading Texture 04 from package Textures/WL_1023_t.utx
+Loading Texture 03 from package Textures/WL_1023_t.utx
+Loading Texture 02 from package Textures/WL_1023_t.utx
+Loading Texture 01 from package Textures/WL_1023_t.utx
+Loading Texture 00 from package Textures/WL_1023_t.utx
+Loading TexPanner Water_01panner_a2 from package Textures/WL_1023_t.utx
+Loading TexEnvMap 1023_Tem from package Textures/WL_1023_t.utx
+Loading TexScaler Cloud_s from package Textures/WL_1023_t.utx
+Loading Texture water_01 from package Textures/WL_1023_t.utx
+Loading Cubemap 1023_Cub from package Textures/WL_1023_t.utx
+Loading Texture StrongCloud_2 from package Textures/WL_1023_t.utx
+Loading Palette Palette0 from package Textures/WL_1023_t.utx
+Loading Texture phoenix_01 from package Textures/WL_1023_t.utx
+Loading Texture Opacity from package Textures/WL_1023_t.utx
+Loading Texture 1023_sky_01_n from package Textures/WL_1023_t.utx
+Loading Shader 1023Water_02 from package Textures/WL_1023_t.utx
+WARNING: Unknown class "VertexColor" for object "1023_Virtex"
+Loading Texture stele01d from package Textures/WL_1023_t.utx
+Loading Texture stele01a from package Textures/WL_1023_t.utx
+Loading Texture stele01b from package Textures/WL_1023_t.utx
+Loading Texture stele01c from package Textures/WL_1023_t.utx
+Loading Texture rock2 from package Textures/WL_1023_t.utx
+Loading Texture Stop from package Textures/WL_1023_t.utx
+Loading Shader 1023Water_01 from package Textures/WL_1023_t.utx
+Loading Shader SShader from package Textures/WL_1023_t.utx
+Loading Texture phoenix_02 from package Textures/WL_1023_t.utx
+Exporting objects ...
+Exporting TexPanner SPanner to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1023_t/TexPanner/SPanner.mat
+Exporting Texture StrongCloud_2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1023_t/Texture/StrongCloud_2.png
+Exporting Texture opacity2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1023_t/Texture/opacity2.png
+Exporting Texture 05 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1023_t/Texture/05.png
+Exporting Texture ItsFullofStars to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1023_t/Texture/ItsFullofStars.png
+Exporting Texture 04 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1023_t/Texture/04.png
+Exporting Texture 03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1023_t/Texture/03.png
+Exporting Texture 02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1023_t/Texture/02.png
+Exporting Texture 01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1023_t/Texture/01.png
+Exporting Texture 00 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1023_t/Texture/00.png
+Exporting TexPanner Water_01panner_a2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1023_t/TexPanner/Water_01panner_a2.mat
+Exporting Texture water_01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1023_t/Texture/water_01.png
+Exporting TexEnvMap 1023_Tem to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1023_t/TexEnvMap/1023_Tem.mat
+Exporting TexScaler Cloud_s to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1023_t/TexScaler/Cloud_s.mat
+Exporting Texture phoenix_01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1023_t/Texture/phoenix_01.png
+Exporting Texture Opacity to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1023_t/Texture/Opacity.png
+Exporting Texture 1023_sky_01_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1023_t/Texture/1023_sky_01_n.png
+Exporting Shader 1023Water_02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1023_t/Shader/1023Water_02.mat
+Exporting Texture stele01d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1023_t/Texture/stele01d.png
+Exporting Texture stele01a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1023_t/Texture/stele01a.png
+Exporting Texture stele01b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1023_t/Texture/stele01b.png
+Exporting Texture stele01c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1023_t/Texture/stele01c.png
+Exporting Texture rock2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1023_t/Texture/rock2.png
+Exporting Texture Stop to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1023_t/Texture/Stop.png
+Exporting Shader 1023Water_01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1023_t/Shader/1023Water_01.mat
+Exporting Shader SShader to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1023_t/Shader/SShader.mat
+Exporting Texture phoenix_02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1023_t/Texture/phoenix_02.png
+Memory: allocated 431076 bytes in 82 blocks
+Exported 27/27 objects in 0.3 sec

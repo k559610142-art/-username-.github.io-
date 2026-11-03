@@ -1,0 +1,23 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/GC_t.utx Ver: 128/29 Names: 25 Exports: 8 Imports: 2 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture gc03_1a from package Textures/GC_t.utx
+Loading Texture gc05_1b from package Textures/GC_t.utx
+Loading Texture gc03_2b from package Textures/GC_t.utx
+Loading Texture gc03_2a from package Textures/GC_t.utx
+Loading Texture gc05_2b from package Textures/GC_t.utx
+Loading Texture gc05_1a from package Textures/GC_t.utx
+Loading Texture gc05_2a from package Textures/GC_t.utx
+Loading Texture gc03_1b from package Textures/GC_t.utx
+Exporting objects ...
+Exporting Texture gc03_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/GC_t/Texture/gc03_1a.png
+Exporting Texture gc05_1b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/GC_t/Texture/gc05_1b.png
+Exporting Texture gc03_2b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/GC_t/Texture/gc03_2b.png
+Exporting Texture gc03_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/GC_t/Texture/gc03_2a.png
+Exporting Texture gc05_2b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/GC_t/Texture/gc05_2b.png
+Exporting Texture gc05_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/GC_t/Texture/gc05_1a.png
+Exporting Texture gc05_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/GC_t/Texture/gc05_2a.png
+Exporting Texture gc03_1b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/GC_t/Texture/gc03_1b.png
+Memory: allocated 323007 bytes in 56 blocks
+Exported 8/8 objects in 0.1 sec

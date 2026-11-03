@@ -1,0 +1,47 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/JC_t.utx Ver: 128/29 Names: 37 Exports: 20 Imports: 2 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture jc31_ha from package Textures/JC_t.utx
+Loading Texture jc31_hb from package Textures/JC_t.utx
+Loading Texture jc31_hc from package Textures/JC_t.utx
+Loading Texture jc31_hh from package Textures/JC_t.utx
+Loading Texture jc31_hd from package Textures/JC_t.utx
+Loading Texture jc31_he from package Textures/JC_t.utx
+Loading Texture jc31_hf from package Textures/JC_t.utx
+Loading Texture jc31_hg from package Textures/JC_t.utx
+Loading Texture jc31_1a from package Textures/JC_t.utx
+Loading Texture jc06_ha from package Textures/JC_t.utx
+Loading Texture jc06_hb from package Textures/JC_t.utx
+Loading Texture jc06_hc from package Textures/JC_t.utx
+Loading Texture jc06_hh from package Textures/JC_t.utx
+Loading Texture jc06_hd from package Textures/JC_t.utx
+Loading Texture jc06_he from package Textures/JC_t.utx
+Loading Texture jc06_hf from package Textures/JC_t.utx
+Loading Texture jc06_hg from package Textures/JC_t.utx
+Loading Texture jc06_1a from package Textures/JC_t.utx
+Loading Texture jc31_2a from package Textures/JC_t.utx
+Loading Texture jc06_2a from package Textures/JC_t.utx
+Exporting objects ...
+Exporting Texture jc31_ha to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/JC_t/Texture/jc31_ha.png
+Exporting Texture jc31_hb to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/JC_t/Texture/jc31_hb.png
+Exporting Texture jc31_hc to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/JC_t/Texture/jc31_hc.png
+Exporting Texture jc31_hh to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/JC_t/Texture/jc31_hh.png
+Exporting Texture jc31_hd to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/JC_t/Texture/jc31_hd.png
+Exporting Texture jc31_he to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/JC_t/Texture/jc31_he.png
+Exporting Texture jc31_hf to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/JC_t/Texture/jc31_hf.png
+Exporting Texture jc31_hg to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/JC_t/Texture/jc31_hg.png
+Exporting Texture jc31_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/JC_t/Texture/jc31_1a.png
+Exporting Texture jc06_ha to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/JC_t/Texture/jc06_ha.png
+Exporting Texture jc06_hb to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/JC_t/Texture/jc06_hb.png
+Exporting Texture jc06_hc to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/JC_t/Texture/jc06_hc.png
+Exporting Texture jc06_hh to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/JC_t/Texture/jc06_hh.png
+Exporting Texture jc06_hd to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/JC_t/Texture/jc06_hd.png
+Exporting Texture jc06_he to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/JC_t/Texture/jc06_he.png
+Exporting Texture jc06_hf to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/JC_t/Texture/jc06_hf.png
+Exporting Texture jc06_hg to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/JC_t/Texture/jc06_hg.png
+Exporting Texture jc06_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/JC_t/Texture/jc06_1a.png
+Exporting Texture jc31_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/JC_t/Texture/jc31_2a.png
+Exporting Texture jc06_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/JC_t/Texture/jc06_2a.png
+Memory: allocated 372639 bytes in 68 blocks
+Exported 20/20 objects in 0.1 sec

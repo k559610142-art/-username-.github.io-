@@ -1,0 +1,13 @@
+UScale = 0.18
+VScale = 0.18
+UOffset = 555
+VOffset = 123
+TexCoordSource = TCS_NoChange (13)
+TexCoordCount = TCN_2DCoords (0)
+TexCoordProjected = false
+Material = Texture'sky.4000_star_001b'
+FallbackMaterial = None
+DefaultMaterial = None
+SurfaceType = 0
+bUseTextureAsHeat = false
+HeatMaterial = None

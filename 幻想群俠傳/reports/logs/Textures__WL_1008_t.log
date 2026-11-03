@@ -1,0 +1,18 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_1008_t.utx Ver: 128/29 Names: 40 Exports: 13 Imports: 14 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Palette Palette6 from package Textures/WL_1008_t.utx
+Loading Texture 1008_black from package Textures/WL_1008_t.utx
+Loading Texture 1008_desolation_01h from package Textures/WL_1008_t.utx
+Loading Texture 1008_desolation_02h from package Textures/WL_1008_t.utx
+Loading Texture 1008_desolation_03h from package Textures/WL_1008_t.utx
+Loading Texture 1008_desolation_04h from package Textures/WL_1008_t.utx
+Exporting objects ...
+Exporting Texture 1008_black to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1008_t/Texture/1008_black.png
+Exporting Texture 1008_desolation_01h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1008_t/Texture/1008_desolation_01h.png
+Exporting Texture 1008_desolation_02h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1008_t/Texture/1008_desolation_02h.png
+Exporting Texture 1008_desolation_03h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1008_t/Texture/1008_desolation_03h.png
+Exporting Texture 1008_desolation_04h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1008_t/Texture/1008_desolation_04h.png
+Memory: allocated 311156 bytes in 53 blocks
+Exported 5/5 objects in 0.0 sec

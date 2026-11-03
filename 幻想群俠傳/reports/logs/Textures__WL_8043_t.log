@@ -1,0 +1,138 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_8043_t.utx Ver: 128/29 Names: 128 Exports: 61 Imports: 13 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.01 MBytes serialized in 2 calls.
+Loading TexPanner Water_02pa_02n from package Textures/WL_8043_t.utx
+Loading TexScaler 8043Water_01A_sc from package Textures/WL_8043_t.utx
+Loading TexPanner 8043_spray01a_tp from package Textures/WL_8043_t.utx
+Loading Texture 8043Water_01B from package Textures/WL_8043_t.utx
+Loading TexPanner 8043_stone_c02al_tp from package Textures/WL_8043_t.utx
+Loading Texture 8043Water_01al_b from package Textures/WL_8043_t.utx
+Loading Texture 8043_pillar_a01al_n from package Textures/WL_8043_t.utx
+Loading Texture 8043_tree_a02_n from package Textures/WL_8043_t.utx
+Loading TexPanner 8043_spray01b_tp from package Textures/WL_8043_t.utx
+Loading Shader 8043Water_01Sh from package Textures/WL_8043_t.utx
+Loading package: Textures/HI_Floor_t.utx Ver: 128/29 Names: 505 Exports: 451 Imports: 11 Game: 200001
+Loading Texture 8043_pillar_a01ran_n from package Textures/WL_8043_t.utx
+Loading Texture 8043_grass_03n from package Textures/WL_8043_t.utx
+Loading TexPanner 8043Water_01pa_b from package Textures/WL_8043_t.utx
+Loading TexPanner 8043Water_01pa_a from package Textures/WL_8043_t.utx
+Loading Combiner 8043Water_01co from package Textures/WL_8043_t.utx
+Loading TexPanner 8043Water_01pa_c from package Textures/WL_8043_t.utx
+Loading Texture 8043_stone_c02_n from package Textures/WL_8043_t.utx
+Loading Texture 8043Water_01C from package Textures/WL_8043_t.utx
+Loading Texture 8043_stone_c02al_n from package Textures/WL_8043_t.utx
+Loading TexPanner 8043_pillar_a01al_tp from package Textures/WL_8043_t.utx
+Loading Texture 8043_grass_02n from package Textures/WL_8043_t.utx
+Loading Shader 8043Water_01bSh_02n from package Textures/WL_8043_t.utx
+Loading Texture 8043_grass_04n from package Textures/WL_8043_t.utx
+Loading Shader 8043_spray01_sh from package Textures/WL_8043_t.utx
+Loading Texture 8043_grass_01n from package Textures/WL_8043_t.utx
+Loading Texture 8043_spray01_n from package Textures/WL_8043_t.utx
+Loading Texture 8043_leafs from package Textures/WL_8043_t.utx
+Loading Texture 8043_whirlpool from package Textures/WL_8043_t.utx
+Loading Texture 8043_pillar_a01_n from package Textures/WL_8043_t.utx
+Loading Texture 8043_house_a01n from package Textures/WL_8043_t.utx
+Loading Texture 8043_house_a08n from package Textures/WL_8043_t.utx
+Loading FinalBlend 8043_water_a_F from package Textures/WL_8043_t.utx
+Loading Texture 8043_stone_c01_n from package Textures/WL_8043_t.utx
+Loading Texture 8043_house_a02n from package Textures/WL_8043_t.utx
+Loading Texture 8043_house_a04n from package Textures/WL_8043_t.utx
+Loading Texture 8043_house_a07n from package Textures/WL_8043_t.utx
+Loading Texture 8043_house_a03n from package Textures/WL_8043_t.utx
+Loading TexRotator 8043_tree_a02_tr from package Textures/WL_8043_t.utx
+Loading Texture 8043_tree_a01_n from package Textures/WL_8043_t.utx
+Loading TexRotator 8043_grass_03n_tr from package Textures/WL_8043_t.utx
+Loading Texture 8043_house_a05n from package Textures/WL_8043_t.utx
+Loading Texture 8043_house_a06n from package Textures/WL_8043_t.utx
+Loading Texture 8043_pillar_a04_n from package Textures/WL_8043_t.utx
+Loading Texture 8043_pillar_a03_n from package Textures/WL_8043_t.utx
+Loading Texture 8043_stone_a01_n from package Textures/WL_8043_t.utx
+Loading TexRotator 8043_grass_01n_tr from package Textures/WL_8043_t.utx
+Loading Combiner 8043_stone_c02_co from package Textures/WL_8043_t.utx
+Loading TexRotator 8043_grass_04n_tr from package Textures/WL_8043_t.utx
+Loading TexRotator 8043_grass_02n_tr from package Textures/WL_8043_t.utx
+Loading Texture 8043_pillar_a02_n from package Textures/WL_8043_t.utx
+Loading Shader 8043_pillar_a01al_sh from package Textures/WL_8043_t.utx
+Loading Texture 8043_dorp_01n from package Textures/WL_8043_t.utx
+Loading FinalBlend 8043_water_w_F from package Textures/WL_8043_t.utx
+Loading Texture 8043_door_a01n from package Textures/WL_8043_t.utx
+Loading Texture 8043_door_a02n from package Textures/WL_8043_t.utx
+Loading Texture 8043_door_a03n from package Textures/WL_8043_t.utx
+Loading FinalBlend 8043_spray01_fb from package Textures/WL_8043_t.utx
+Loading TexEnvMap texenvmap01 from package Textures/HI_Floor_t.utx
+Loading Cubemap cubemap01 from package Textures/HI_Floor_t.utx
+Loading Texture wat0 from package Textures/HI_Floor_t.utx
+Loading Texture wat1 from package Textures/HI_Floor_t.utx
+Loading Texture wat2 from package Textures/HI_Floor_t.utx
+Loading Texture wat3 from package Textures/HI_Floor_t.utx
+Loading Texture wat4 from package Textures/HI_Floor_t.utx
+Loading Texture wat5 from package Textures/HI_Floor_t.utx
+Loading Palette Palette0 from package Textures/HI_Floor_t.utx
+Exporting objects ...
+Exporting TexPanner Water_02pa_02n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/TexPanner/Water_02pa_02n.mat
+Exporting Texture 8043Water_01B to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043Water_01B.png
+Exporting TexScaler 8043Water_01A_sc to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/TexScaler/8043Water_01A_sc.mat
+Exporting Texture 8043Water_01C to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043Water_01C.png
+Exporting TexPanner 8043_spray01a_tp to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/TexPanner/8043_spray01a_tp.mat
+Exporting Texture 8043_spray01_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043_spray01_n.png
+Exporting TexPanner 8043_stone_c02al_tp to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/TexPanner/8043_stone_c02al_tp.mat
+Exporting Texture 8043_stone_c02al_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043_stone_c02al_n.png
+Exporting Texture 8043Water_01al_b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043Water_01al_b.png
+Exporting Texture 8043_pillar_a01al_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043_pillar_a01al_n.png
+Exporting Texture 8043_tree_a02_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043_tree_a02_n.png
+Exporting TexPanner 8043_spray01b_tp to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/TexPanner/8043_spray01b_tp.mat
+Exporting Shader 8043Water_01Sh to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Shader/8043Water_01Sh.mat
+Exporting Texture 8043_pillar_a01ran_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043_pillar_a01ran_n.png
+Exporting Texture 8043_grass_03n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043_grass_03n.png
+Exporting TexPanner 8043Water_01pa_b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/TexPanner/8043Water_01pa_b.mat
+Exporting TexPanner 8043Water_01pa_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/TexPanner/8043Water_01pa_a.mat
+Exporting Combiner 8043Water_01co to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Combiner/8043Water_01co.mat
+Exporting TexPanner 8043Water_01pa_c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/TexPanner/8043Water_01pa_c.mat
+Exporting Texture 8043_stone_c02_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043_stone_c02_n.png
+Exporting TexPanner 8043_pillar_a01al_tp to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/TexPanner/8043_pillar_a01al_tp.mat
+Exporting Texture 8043_grass_02n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043_grass_02n.png
+Exporting Shader 8043Water_01bSh_02n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Shader/8043Water_01bSh_02n.mat
+Exporting Texture 8043_grass_04n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043_grass_04n.png
+Exporting Shader 8043_spray01_sh to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Shader/8043_spray01_sh.mat
+Exporting Texture 8043_grass_01n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043_grass_01n.png
+Exporting Texture 8043_leafs to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043_leafs.png
+Exporting Texture 8043_whirlpool to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043_whirlpool.png
+Exporting Texture 8043_pillar_a01_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043_pillar_a01_n.png
+Exporting Texture 8043_house_a01n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043_house_a01n.png
+Exporting Texture 8043_house_a08n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043_house_a08n.png
+Exporting FinalBlend 8043_water_a_F to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/FinalBlend/8043_water_a_F.mat
+Exporting Texture 8043_stone_c01_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043_stone_c01_n.png
+Exporting Texture 8043_house_a02n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043_house_a02n.png
+Exporting Texture 8043_house_a04n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043_house_a04n.png
+Exporting Texture 8043_house_a07n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043_house_a07n.png
+Exporting Texture 8043_house_a03n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043_house_a03n.png
+Exporting TexRotator 8043_tree_a02_tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/TexRotator/8043_tree_a02_tr.mat
+Exporting Texture 8043_tree_a01_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043_tree_a01_n.png
+Exporting TexRotator 8043_grass_03n_tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/TexRotator/8043_grass_03n_tr.mat
+Exporting Texture 8043_house_a05n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043_house_a05n.png
+Exporting Texture 8043_house_a06n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043_house_a06n.png
+Exporting Texture 8043_pillar_a04_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043_pillar_a04_n.png
+Exporting Texture 8043_pillar_a03_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043_pillar_a03_n.png
+Exporting Texture 8043_stone_a01_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043_stone_a01_n.png
+Exporting TexRotator 8043_grass_01n_tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/TexRotator/8043_grass_01n_tr.mat
+Exporting Combiner 8043_stone_c02_co to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Combiner/8043_stone_c02_co.mat
+Exporting TexRotator 8043_grass_04n_tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/TexRotator/8043_grass_04n_tr.mat
+Exporting TexRotator 8043_grass_02n_tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/TexRotator/8043_grass_02n_tr.mat
+Exporting Texture 8043_pillar_a02_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043_pillar_a02_n.png
+Exporting Shader 8043_pillar_a01al_sh to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Shader/8043_pillar_a01al_sh.mat
+Exporting Texture 8043_dorp_01n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043_dorp_01n.png
+Exporting FinalBlend 8043_water_w_F to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/FinalBlend/8043_water_w_F.mat
+Exporting Texture 8043_door_a01n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043_door_a01n.png
+Exporting Texture 8043_door_a02n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043_door_a02n.png
+Exporting Texture 8043_door_a03n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/Texture/8043_door_a03n.png
+Exporting FinalBlend 8043_spray01_fb to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8043_t/FinalBlend/8043_spray01_fb.mat
+Exporting TexEnvMap texenvmap01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/TexEnvMap/texenvmap01.mat
+Exporting Texture wat0 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/Texture/wat0.png
+Exporting Texture wat1 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/Texture/wat1.png
+Exporting Texture wat2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/Texture/wat2.png
+Exporting Texture wat3 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/Texture/wat3.png
+Exporting Texture wat4 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/Texture/wat4.png
+Exporting Texture wat5 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/Texture/wat5.png
+Memory: allocated 672129 bytes in 143 blocks
+Exported 64/64 objects in 0.4 sec

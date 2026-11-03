@@ -1,0 +1,59 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/c4_t.utx Ver: 128/29 Names: 46 Exports: 26 Imports: 2 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture c40901a from package Textures/c4_t.utx
+Loading Texture C40801a from package Textures/c4_t.utx
+Loading Texture c41301b from package Textures/c4_t.utx
+Loading Texture c41301a from package Textures/c4_t.utx
+Loading Texture c41201a from package Textures/c4_t.utx
+Loading Texture c41101a from package Textures/c4_t.utx
+Loading Texture c41102a from package Textures/c4_t.utx
+Loading Texture c41103a from package Textures/c4_t.utx
+Loading Texture c41202a from package Textures/c4_t.utx
+Loading Texture c41203a from package Textures/c4_t.utx
+Loading Texture c41302a from package Textures/c4_t.utx
+Loading Texture c41302b from package Textures/c4_t.utx
+Loading Texture c41303a from package Textures/c4_t.utx
+Loading Texture c41303b from package Textures/c4_t.utx
+Loading Texture c41001a from package Textures/c4_t.utx
+Loading Texture c41001b from package Textures/c4_t.utx
+Loading Texture c41002a from package Textures/c4_t.utx
+Loading Texture c41002b from package Textures/c4_t.utx
+Loading Texture c41003a from package Textures/c4_t.utx
+Loading Texture c41003b from package Textures/c4_t.utx
+Loading Texture c41101b from package Textures/c4_t.utx
+Loading Texture c41102b from package Textures/c4_t.utx
+Loading Texture c41103b from package Textures/c4_t.utx
+Loading Texture c41201b from package Textures/c4_t.utx
+Loading Texture c41202b from package Textures/c4_t.utx
+Loading Texture c41203b from package Textures/c4_t.utx
+Exporting objects ...
+Exporting Texture c40901a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c4_t/Texture/c40901a.png
+Exporting Texture C40801a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c4_t/Texture/C40801a.png
+Exporting Texture c41301b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c4_t/Texture/c41301b.png
+Exporting Texture c41301a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c4_t/Texture/c41301a.png
+Exporting Texture c41201a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c4_t/Texture/c41201a.png
+Exporting Texture c41101a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c4_t/Texture/c41101a.png
+Exporting Texture c41102a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c4_t/Texture/c41102a.png
+Exporting Texture c41103a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c4_t/Texture/c41103a.png
+Exporting Texture c41202a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c4_t/Texture/c41202a.png
+Exporting Texture c41203a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c4_t/Texture/c41203a.png
+Exporting Texture c41302a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c4_t/Texture/c41302a.png
+Exporting Texture c41302b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c4_t/Texture/c41302b.png
+Exporting Texture c41303a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c4_t/Texture/c41303a.png
+Exporting Texture c41303b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c4_t/Texture/c41303b.png
+Exporting Texture c41001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c4_t/Texture/c41001a.png
+Exporting Texture c41001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c4_t/Texture/c41001b.png
+Exporting Texture c41002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c4_t/Texture/c41002a.png
+Exporting Texture c41002b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c4_t/Texture/c41002b.png
+Exporting Texture c41003a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c4_t/Texture/c41003a.png
+Exporting Texture c41003b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c4_t/Texture/c41003b.png
+Exporting Texture c41101b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c4_t/Texture/c41101b.png
+Exporting Texture c41102b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c4_t/Texture/c41102b.png
+Exporting Texture c41103b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c4_t/Texture/c41103b.png
+Exporting Texture c41201b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c4_t/Texture/c41201b.png
+Exporting Texture c41202b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c4_t/Texture/c41202b.png
+Exporting Texture c41203b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c4_t/Texture/c41203b.png
+Memory: allocated 397467 bytes in 74 blocks
+Exported 26/26 objects in 0.7 sec

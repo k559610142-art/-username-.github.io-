@@ -1,0 +1,45 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Maps/8041_map.ut2 Ver: 128/29 Names: 863 Exports: 605 Imports: 81 Game: 200001
+Loaded in 0.0 sec, 18 allocs, 0.03 MBytes serialized in 7 calls.
+Loading Texture fallen from package Maps/8041_map.ut2
+Loading Texture redmountain from package Maps/8041_map.ut2
+Loading Texture texx4 from package Maps/8041_map.ut2
+Loading Texture road from package Maps/8041_map.ut2
+Loading Texture texx6 from package Maps/8041_map.ut2
+Loading Texture lightmountain from package Maps/8041_map.ut2
+Loading Texture texx5 from package Maps/8041_map.ut2
+Loading Texture texx3 from package Maps/8041_map.ut2
+Loading Texture Tex from package Maps/8041_map.ut2
+Loading Texture Field from package Maps/8041_map.ut2
+Loading Texture tex0000 from package Maps/8041_map.ut2
+Loading Texture yellowwhite from package Maps/8041_map.ut2
+Loading Texture zone000 from package Maps/8041_map.ut2
+Loading Texture tex06 from package Maps/8041_map.ut2
+Loading Texture farmmm from package Maps/8041_map.ut2
+Loading Palette Palette0 from package Maps/8041_map.ut2
+Loading Texture 8041_deco from package Maps/8041_map.ut2
+Loading Texture grass from package Maps/8041_map.ut2
+Loading Texture Terrain from package Maps/8041_map.ut2
+Exporting objects ...
+Exporting Texture fallen to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8041_map/Texture/fallen.png
+Exporting Texture redmountain to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8041_map/Texture/redmountain.png
+Exporting Texture texx4 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8041_map/Texture/texx4.png
+Exporting Texture road to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8041_map/Texture/road.png
+Exporting Texture texx6 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8041_map/Texture/texx6.png
+Exporting Texture lightmountain to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8041_map/Texture/lightmountain.png
+Exporting Texture texx5 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8041_map/Texture/texx5.png
+Exporting Texture texx3 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8041_map/Texture/texx3.png
+Exporting Texture Tex to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8041_map/Texture/Tex.png
+Exporting Texture Field to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8041_map/Texture/Field.png
+Exporting Texture tex0000 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8041_map/Texture/tex0000.png
+Exporting Texture yellowwhite to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8041_map/Texture/yellowwhite.png
+******** Maps/8041_map.ut2 ********
+*** Unknown UE2 texture format: TEXF_G16 (10)
+Exporting Texture tex06 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8041_map/Texture/tex06.png
+Exporting Texture farmmm to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8041_map/Texture/farmmm.png
+Exporting Texture 8041_deco to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8041_map/Texture/8041_deco.png
+Exporting Texture grass to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8041_map/Texture/grass.png
+*** Unknown UE2 texture format: TEXF_G16 (10)
+Memory: allocated 398267 bytes in 65 blocks
+Exported 16/16 objects in 0.0 sec

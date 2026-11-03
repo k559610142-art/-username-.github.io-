@@ -1,0 +1,32 @@
+Diffuse = TexEnvMap'reflection.1100TexEnv'
+NormalMap = None
+Opacity = None
+Specular = TexPanner'water.water01_panner01'
+SpecularityMask = TexScaler'water.Water_tint_a_scaler'
+SelfIllumination = TexPanner'water.water01_panner02'
+SelfIlluminationMask = Texture'water.water_tint_d'
+Detail = None
+DetailScale = 8
+OutputBlending = OB_Normal (0)
+TwoSided = false
+Wireframe = false
+ModulateStaticLighting2X = true
+PerformLightingOnSpecularPass = false
+ModulateSpecular2X = false
+TreatAsTwoSided = false
+ZWrite = false
+AlphaTest = false
+AlphaRef = 0
+Opacity_Bio = { Material=None, Channel=0 }
+HeightMap = { Material=None, Channel=0 }
+SpecularMask = { Material=None, Channel=0 }
+GlossinessMask = { Material=None, Channel=0 }
+ReflectionMask = { Material=None, Channel=0 }
+EmissiveMask = { Material=None, Channel=0 }
+SubsurfaceMask = { Material=None, Channel=0 }
+ClipMask = { Material=None, Channel=0 }
+FallbackMaterial = None
+DefaultMaterial = None
+SurfaceType = 0
+bUseTextureAsHeat = false
+HeatMaterial = None

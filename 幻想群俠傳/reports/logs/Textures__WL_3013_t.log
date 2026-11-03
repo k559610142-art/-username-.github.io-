@@ -1,0 +1,133 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_3013_t.utx Ver: 128/29 Names: 126 Exports: 70 Imports: 15 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.01 MBytes serialized in 2 calls.
+Loading Texture 3013_fountainice012e from package Textures/WL_3013_t.utx
+Loading TexRotator 3013_icesp02e from package Textures/WL_3013_t.utx
+Loading TexPanner 2100_SPanner from package Textures/WL_3013_t.utx
+Loading Texture 3012_fountainice01e from package Textures/WL_3013_t.utx
+Loading TexScaler 2100_Cloud_s from package Textures/WL_3013_t.utx
+Loading Texture 2100_sky_color_001b from package Textures/WL_3013_t.utx
+Loading Texture 3012_maps03e from package Textures/WL_3013_t.utx
+Loading Texture 3012_fountain008e from package Textures/WL_3013_t.utx
+Loading Shader 8040_sky_shader_001b from package Textures/WL_3013_t.utx
+Loading Texture 3012_fire02e from package Textures/WL_3013_t.utx
+Loading Texture 3012_smoke01e from package Textures/WL_3013_t.utx
+Loading Texture 3012_sky04e from package Textures/WL_3013_t.utx
+Loading Texture 3500_light_cool_002b from package Textures/WL_3013_t.utx
+Loading Texture 3012_smoke002e from package Textures/WL_3013_t.utx
+Loading Texture 3012_sky02e from package Textures/WL_3013_t.utx
+Loading Texture 3012_moon01e from package Textures/WL_3013_t.utx
+Loading Texture 3012_maps01e from package Textures/WL_3013_t.utx
+Loading Texture 3012_maps02e from package Textures/WL_3013_t.utx
+Loading Texture 3013_map06e from package Textures/WL_3013_t.utx
+Loading Texture 3013_map004e from package Textures/WL_3013_t.utx
+Loading Texture 3012_fire001e from package Textures/WL_3013_t.utx
+Loading Texture 3012_wall005e from package Textures/WL_3013_t.utx
+Loading Texture 3012_light01e from package Textures/WL_3013_t.utx
+Loading Texture 3012_wall001e from package Textures/WL_3013_t.utx
+Loading Texture 3012_wall008e from package Textures/WL_3013_t.utx
+Loading Texture 3012_sky_003e from package Textures/WL_3013_t.utx
+Loading Texture 3012_tu01e from package Textures/WL_3013_t.utx
+Loading Texture 3012_tu02e from package Textures/WL_3013_t.utx
+Loading Texture 3012_tu03e from package Textures/WL_3013_t.utx
+Loading Texture 3012_fountain003e from package Textures/WL_3013_t.utx
+Loading Texture 3012_house001e from package Textures/WL_3013_t.utx
+Loading Texture 3012_house006e from package Textures/WL_3013_t.utx
+Loading Texture 3012_house010e from package Textures/WL_3013_t.utx
+Loading Texture 3012_lo_001e from package Textures/WL_3013_t.utx
+Loading Texture 3012_lo_004e from package Textures/WL_3013_t.utx
+Loading Texture 3012_lo_003e from package Textures/WL_3013_t.utx
+Loading Texture 3012_lo_002e from package Textures/WL_3013_t.utx
+Loading Texture 3012_house004e from package Textures/WL_3013_t.utx
+Loading Texture 3012_house005e from package Textures/WL_3013_t.utx
+Loading Texture 3012_house007e from package Textures/WL_3013_t.utx
+Loading Texture 3012_house011e from package Textures/WL_3013_t.utx
+Loading Shader 3012_water02e from package Textures/WL_3013_t.utx
+Loading Texture 3012_fx01e from package Textures/WL_3013_t.utx
+Loading Texture 3012_furnace001e from package Textures/WL_3013_t.utx
+Loading Texture 3012_furnace002e from package Textures/WL_3013_t.utx
+Loading Texture 3012_furnace003e from package Textures/WL_3013_t.utx
+Loading Texture 3012_furnace004e from package Textures/WL_3013_t.utx
+Loading Texture 3012_furnace005e from package Textures/WL_3013_t.utx
+Loading Texture 3012_furnace006e from package Textures/WL_3013_t.utx
+Loading Shader 3012_water04e from package Textures/WL_3013_t.utx
+Loading Texture 3012_fx02e from package Textures/WL_3013_t.utx
+Loading Texture 3012_wall_001e from package Textures/WL_3013_t.utx
+Loading Texture 3012_wall004e from package Textures/WL_3013_t.utx
+Loading Texture 3012_house002e from package Textures/WL_3013_t.utx
+Loading Texture 3012_house008e from package Textures/WL_3013_t.utx
+Loading Texture 3012_house009e from package Textures/WL_3013_t.utx
+Loading Texture 3012_fountain007e from package Textures/WL_3013_t.utx
+Loading Texture 3012_fountain001e from package Textures/WL_3013_t.utx
+Loading Texture 3012_fountain002e from package Textures/WL_3013_t.utx
+Loading Texture 3012_sky03e from package Textures/WL_3013_t.utx
+Loading Texture 3012_eye01 from package Textures/WL_3013_t.utx
+Loading Texture 3012_house003e from package Textures/WL_3013_t.utx
+Loading Texture light_apha from package Textures/WL_3013_t.utx
+Exporting objects ...
+Exporting Texture 3013_fountainice012e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3013_fountainice012e.png
+Exporting TexRotator 3013_icesp02e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/TexRotator/3013_icesp02e.mat
+Exporting Texture 3012_fountain008e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_fountain008e.png
+Exporting TexPanner 2100_SPanner to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/TexPanner/2100_SPanner.mat
+Exporting Texture 2100_sky_color_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/2100_sky_color_001b.png
+Exporting Texture 3012_fountainice01e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_fountainice01e.png
+Exporting TexScaler 2100_Cloud_s to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/TexScaler/2100_Cloud_s.mat
+Exporting Texture 3012_maps03e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_maps03e.png
+Exporting Shader 8040_sky_shader_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Shader/8040_sky_shader_001b.mat
+Exporting Texture 3012_fire02e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_fire02e.png
+Exporting Texture 3012_smoke01e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_smoke01e.png
+Exporting Texture 3012_sky04e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_sky04e.png
+Exporting Texture 3500_light_cool_002b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3500_light_cool_002b.png
+Exporting Texture 3012_smoke002e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_smoke002e.png
+Exporting Texture 3012_sky02e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_sky02e.png
+Exporting Texture 3012_moon01e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_moon01e.png
+Exporting Texture 3012_maps01e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_maps01e.png
+Exporting Texture 3012_maps02e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_maps02e.png
+Exporting Texture 3013_map06e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3013_map06e.png
+Exporting Texture 3013_map004e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3013_map004e.png
+Exporting Texture 3012_fire001e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_fire001e.png
+Exporting Texture 3012_wall005e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_wall005e.png
+Exporting Texture 3012_light01e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_light01e.png
+Exporting Texture 3012_wall001e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_wall001e.png
+Exporting Texture 3012_wall008e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_wall008e.png
+Exporting Texture 3012_sky_003e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_sky_003e.png
+Exporting Texture 3012_tu01e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_tu01e.png
+Exporting Texture 3012_tu02e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_tu02e.png
+Exporting Texture 3012_tu03e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_tu03e.png
+Exporting Texture 3012_fountain003e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_fountain003e.png
+Exporting Texture 3012_house001e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_house001e.png
+Exporting Texture 3012_house006e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_house006e.png
+Exporting Texture 3012_house010e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_house010e.png
+Exporting Texture 3012_lo_001e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_lo_001e.png
+Exporting Texture 3012_lo_004e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_lo_004e.png
+Exporting Texture 3012_lo_003e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_lo_003e.png
+Exporting Texture 3012_lo_002e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_lo_002e.png
+Exporting Texture 3012_house004e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_house004e.png
+Exporting Texture 3012_house005e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_house005e.png
+Exporting Texture 3012_house007e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_house007e.png
+Exporting Texture 3012_house011e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_house011e.png
+Exporting Shader 3012_water02e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Shader/3012_water02e.mat
+Exporting Texture 3012_fx01e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_fx01e.png
+Exporting Texture 3012_furnace001e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_furnace001e.png
+Exporting Texture 3012_furnace002e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_furnace002e.png
+Exporting Texture 3012_furnace003e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_furnace003e.png
+Exporting Texture 3012_furnace004e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_furnace004e.png
+Exporting Texture 3012_furnace005e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_furnace005e.png
+Exporting Texture 3012_furnace006e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_furnace006e.png
+Exporting Shader 3012_water04e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Shader/3012_water04e.mat
+Exporting Texture 3012_fx02e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_fx02e.png
+Exporting Texture 3012_wall_001e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_wall_001e.png
+Exporting Texture 3012_wall004e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_wall004e.png
+Exporting Texture 3012_house002e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_house002e.png
+Exporting Texture 3012_house008e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_house008e.png
+Exporting Texture 3012_house009e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_house009e.png
+Exporting Texture 3012_fountain007e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_fountain007e.png
+Exporting Texture 3012_fountain001e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_fountain001e.png
+Exporting Texture 3012_fountain002e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_fountain002e.png
+Exporting Texture 3012_sky03e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_sky03e.png
+Exporting Texture 3012_eye01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_eye01.png
+Exporting Texture 3012_house003e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/3012_house003e.png
+Exporting Texture light_apha to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3013_t/Texture/light_apha.png
+Memory: allocated 575840 bytes in 117 blocks
+Exported 63/63 objects in 1.0 sec

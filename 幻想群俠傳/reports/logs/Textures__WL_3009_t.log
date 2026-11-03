@@ -1,0 +1,53 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_3009_t.utx Ver: 128/29 Names: 44 Exports: 24 Imports: 4 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture 3009_books_a02_n from package Textures/WL_3009_t.utx
+Loading Texture 3009_house_b02_n from package Textures/WL_3009_t.utx
+Loading Texture 3009_house_a01_n from package Textures/WL_3009_t.utx
+Loading Texture 3009_house_b01_n from package Textures/WL_3009_t.utx
+Loading Texture 3009_books_a01_n from package Textures/WL_3009_t.utx
+Loading Texture 3009_house_b03_n from package Textures/WL_3009_t.utx
+Loading Texture 3009_house_a02_n from package Textures/WL_3009_t.utx
+Loading Texture 3009_house_b04_n from package Textures/WL_3009_t.utx
+Loading Texture 3009_bookshelf_a01_n from package Textures/WL_3009_t.utx
+Loading Texture 3009_cabinet_a01_n from package Textures/WL_3009_t.utx
+Loading Texture 3009_cabinet_a02_n from package Textures/WL_3009_t.utx
+Loading Texture 3009_pic_a01_n from package Textures/WL_3009_t.utx
+Loading Texture 3009_desk_a01_n from package Textures/WL_3009_t.utx
+Loading Texture 3009_chair_a01_n from package Textures/WL_3009_t.utx
+Loading Texture 3009_desk_b01_n from package Textures/WL_3009_t.utx
+Loading Texture 3009_pic_a02_n from package Textures/WL_3009_t.utx
+Loading Texture 3009_door_01_n from package Textures/WL_3009_t.utx
+Loading Texture 3009_house_a04_n from package Textures/WL_3009_t.utx
+Loading Texture 3009_house_a05_n from package Textures/WL_3009_t.utx
+Loading Texture 3009_pic_a03_n from package Textures/WL_3009_t.utx
+Loading Texture 3009_bookshelf_b01_n from package Textures/WL_3009_t.utx
+Loading Texture 3009_house_a06_n from package Textures/WL_3009_t.utx
+Loading Texture 3009_carpet_a01_n from package Textures/WL_3009_t.utx
+Exporting objects ...
+Exporting Texture 3009_books_a02_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3009_t/Texture/3009_books_a02_n.png
+Exporting Texture 3009_house_b02_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3009_t/Texture/3009_house_b02_n.png
+Exporting Texture 3009_house_a01_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3009_t/Texture/3009_house_a01_n.png
+Exporting Texture 3009_house_b01_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3009_t/Texture/3009_house_b01_n.png
+Exporting Texture 3009_books_a01_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3009_t/Texture/3009_books_a01_n.png
+Exporting Texture 3009_house_b03_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3009_t/Texture/3009_house_b03_n.png
+Exporting Texture 3009_house_a02_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3009_t/Texture/3009_house_a02_n.png
+Exporting Texture 3009_house_b04_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3009_t/Texture/3009_house_b04_n.png
+Exporting Texture 3009_bookshelf_a01_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3009_t/Texture/3009_bookshelf_a01_n.png
+Exporting Texture 3009_cabinet_a01_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3009_t/Texture/3009_cabinet_a01_n.png
+Exporting Texture 3009_cabinet_a02_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3009_t/Texture/3009_cabinet_a02_n.png
+Exporting Texture 3009_pic_a01_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3009_t/Texture/3009_pic_a01_n.png
+Exporting Texture 3009_desk_a01_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3009_t/Texture/3009_desk_a01_n.png
+Exporting Texture 3009_chair_a01_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3009_t/Texture/3009_chair_a01_n.png
+Exporting Texture 3009_desk_b01_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3009_t/Texture/3009_desk_b01_n.png
+Exporting Texture 3009_pic_a02_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3009_t/Texture/3009_pic_a02_n.png
+Exporting Texture 3009_door_01_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3009_t/Texture/3009_door_01_n.png
+Exporting Texture 3009_house_a04_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3009_t/Texture/3009_house_a04_n.png
+Exporting Texture 3009_house_a05_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3009_t/Texture/3009_house_a05_n.png
+Exporting Texture 3009_pic_a03_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3009_t/Texture/3009_pic_a03_n.png
+Exporting Texture 3009_bookshelf_b01_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3009_t/Texture/3009_bookshelf_b01_n.png
+Exporting Texture 3009_house_a06_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3009_t/Texture/3009_house_a06_n.png
+Exporting Texture 3009_carpet_a01_n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3009_t/Texture/3009_carpet_a01_n.png
+Memory: allocated 385136 bytes in 71 blocks
+Exported 23/23 objects in 0.2 sec

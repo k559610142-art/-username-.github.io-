@@ -1,0 +1,27 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Maps/1027_map.ut2 Ver: 128/29 Names: 696 Exports: 420 Imports: 69 Game: 200001
+Loaded in 0.0 sec, 18 allocs, 0.02 MBytes serialized in 6 calls.
+Loading Texture 1027_soil1 from package Maps/1027_map.ut2
+Loading Texture 1027_cliff1 from package Maps/1027_map.ut2
+Loading Texture 1027_tex1 from package Maps/1027_map.ut2
+Loading Texture 1027_terrain from package Maps/1027_map.ut2
+Loading Texture 1027_cliff2 from package Maps/1027_map.ut2
+Loading Texture 1027_black from package Maps/1027_map.ut2
+Loading package: Textures/WL_1015_t.utx Ver: 128/29 Names: 71 Exports: 16 Imports: 17 Game: 200001
+Loading Texture 1027_grass from package Maps/1027_map.ut2
+Loading Texture 1027_deco_002a from package Maps/1027_map.ut2
+Loading Palette Palette0 from package Maps/1027_map.ut2
+Loading Palette Palette0 from package Textures/WL_1015_t.utx
+Exporting objects ...
+Exporting Texture 1027_soil1 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1027_map/Texture/1027_soil1.png
+Exporting Texture 1027_cliff1 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1027_map/Texture/1027_cliff1.png
+Exporting Texture 1027_tex1 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1027_map/Texture/1027_tex1.png
+******** Maps/1027_map.ut2 ********
+*** Unknown UE2 texture format: TEXF_G16 (10)
+Exporting Texture 1027_cliff2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1027_map/Texture/1027_cliff2.png
+Exporting Texture 1027_black to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1027_map/Texture/1027_black.png
+Exporting Texture 1027_grass to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1027_map/Texture/1027_grass.png
+Exporting Texture 1027_deco_002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1027_map/Texture/1027_deco_002a.png
+Memory: allocated 355395 bytes in 63 blocks
+Exported 7/7 objects in 0.0 sec

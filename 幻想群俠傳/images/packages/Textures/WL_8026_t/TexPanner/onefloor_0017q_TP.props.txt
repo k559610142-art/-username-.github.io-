@@ -1,0 +1,11 @@
+PanDirection = { Yaw=50000, Pitch=0, Roll=0 }
+PanRate = 0.05
+TexCoordSource = TCS_NoChange (13)
+TexCoordCount = TCN_2DCoords (0)
+TexCoordProjected = false
+Material = TexScaler'act.onefloor_0017q_TS'
+FallbackMaterial = None
+DefaultMaterial = None
+SurfaceType = 0
+bUseTextureAsHeat = false
+HeatMaterial = None

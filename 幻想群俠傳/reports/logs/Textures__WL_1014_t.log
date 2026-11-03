@@ -1,0 +1,64 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_1014_t.utx Ver: 128/29 Names: 56 Exports: 32 Imports: 6 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture Gwharf_Waterj from package Textures/WL_1014_t.utx
+Loading Palette Palette0 from package Textures/WL_1014_t.utx
+Loading Texture 1014_deco from package Textures/WL_1014_t.utx
+Loading Texture 8020_cloud_001a from package Textures/WL_1014_t.utx
+Loading Texture field_deco_plant_004 from package Textures/WL_1014_t.utx
+Loading Texture 1300_attack042_a from package Textures/WL_1014_t.utx
+Loading Texture 1300_attack034_a from package Textures/WL_1014_t.utx
+Loading Texture 1300_attack003_a from package Textures/WL_1014_t.utx
+Loading Texture 1300_attack043_a from package Textures/WL_1014_t.utx
+Loading Texture 1600_car_002_f from package Textures/WL_1014_t.utx
+Loading Texture 1600_car_003_f from package Textures/WL_1014_t.utx
+Loading Texture 1300_attack002_a from package Textures/WL_1014_t.utx
+Loading Texture 1300_attack004_a from package Textures/WL_1014_t.utx
+Loading Texture 1300_attack005_a from package Textures/WL_1014_t.utx
+Loading Texture 1300_attack006_a from package Textures/WL_1014_t.utx
+Loading Texture 1300_attack053_a from package Textures/WL_1014_t.utx
+Loading Texture 1300_attack014_a from package Textures/WL_1014_t.utx
+Loading Texture 1300_attack017_a from package Textures/WL_1014_t.utx
+Loading Texture 1300_attack016_a from package Textures/WL_1014_t.utx
+Loading Texture 1300_attack015_a from package Textures/WL_1014_t.utx
+Loading Texture 1300_attack008_a from package Textures/WL_1014_t.utx
+Loading Texture 1300_attack007_a from package Textures/WL_1014_t.utx
+Loading Texture 1300_attack009_a from package Textures/WL_1014_t.utx
+Loading Texture 1300_attack010_a from package Textures/WL_1014_t.utx
+Loading Texture 1300_attackfire001_a from package Textures/WL_1014_t.utx
+Loading Texture 1300_attack039_a from package Textures/WL_1014_t.utx
+Loading Texture 1300_attack040_a from package Textures/WL_1014_t.utx
+Loading Texture 1300_attack038_a from package Textures/WL_1014_t.utx
+Loading Texture 1300_attack041_a from package Textures/WL_1014_t.utx
+Exporting objects ...
+Exporting Texture Gwharf_Waterj to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1014_t/Texture/Gwharf_Waterj.png
+Exporting Texture 1014_deco to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1014_t/Texture/1014_deco.png
+Exporting Texture 8020_cloud_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1014_t/Texture/8020_cloud_001a.png
+Exporting Texture field_deco_plant_004 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1014_t/Texture/field_deco_plant_004.png
+Exporting Texture 1300_attack042_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1014_t/Texture/1300_attack042_a.png
+Exporting Texture 1300_attack034_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1014_t/Texture/1300_attack034_a.png
+Exporting Texture 1300_attack003_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1014_t/Texture/1300_attack003_a.png
+Exporting Texture 1300_attack043_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1014_t/Texture/1300_attack043_a.png
+Exporting Texture 1600_car_002_f to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1014_t/Texture/1600_car_002_f.png
+Exporting Texture 1600_car_003_f to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1014_t/Texture/1600_car_003_f.png
+Exporting Texture 1300_attack002_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1014_t/Texture/1300_attack002_a.png
+Exporting Texture 1300_attack004_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1014_t/Texture/1300_attack004_a.png
+Exporting Texture 1300_attack005_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1014_t/Texture/1300_attack005_a.png
+Exporting Texture 1300_attack006_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1014_t/Texture/1300_attack006_a.png
+Exporting Texture 1300_attack053_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1014_t/Texture/1300_attack053_a.png
+Exporting Texture 1300_attack014_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1014_t/Texture/1300_attack014_a.png
+Exporting Texture 1300_attack017_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1014_t/Texture/1300_attack017_a.png
+Exporting Texture 1300_attack016_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1014_t/Texture/1300_attack016_a.png
+Exporting Texture 1300_attack015_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1014_t/Texture/1300_attack015_a.png
+Exporting Texture 1300_attack008_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1014_t/Texture/1300_attack008_a.png
+Exporting Texture 1300_attack007_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1014_t/Texture/1300_attack007_a.png
+Exporting Texture 1300_attack009_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1014_t/Texture/1300_attack009_a.png
+Exporting Texture 1300_attack010_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1014_t/Texture/1300_attack010_a.png
+Exporting Texture 1300_attackfire001_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1014_t/Texture/1300_attackfire001_a.png
+Exporting Texture 1300_attack039_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1014_t/Texture/1300_attack039_a.png
+Exporting Texture 1300_attack040_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1014_t/Texture/1300_attack040_a.png
+Exporting Texture 1300_attack038_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1014_t/Texture/1300_attack038_a.png
+Exporting Texture 1300_attack041_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1014_t/Texture/1300_attack041_a.png
+Memory: allocated 405984 bytes in 76 blocks
+Exported 28/28 objects in 0.1 sec

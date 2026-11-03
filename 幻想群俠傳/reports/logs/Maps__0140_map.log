@@ -1,0 +1,12 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Maps/0140_map.ut2 Ver: 128/29 Names: 4152 Exports: 3713 Imports: 254 Game: 200001
+Loaded in 0.0 sec, 24 allocs, 0.17 MBytes serialized in 43 calls.
+Loading Texture 0140_terrain01_a from package Maps/0140_map.ut2
+Loading Texture 0140_layer01_a from package Maps/0140_map.ut2
+Exporting objects ...
+******** Maps/0140_map.ut2 ********
+*** Unknown UE2 texture format: TEXF_G16 (10)
+Exporting Texture 0140_layer01_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/0140_map/Texture/0140_layer01_a.png
+Memory: allocated 562831 bytes in 56 blocks
+Exported 1/1 objects in 0.0 sec

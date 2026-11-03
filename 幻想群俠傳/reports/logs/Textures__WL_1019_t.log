@@ -1,0 +1,107 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_1019_t.utx Ver: 128/29 Names: 129 Exports: 60 Imports: 21 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.01 MBytes serialized in 2 calls.
+Loading Texture buggy_fire01 from package Textures/WL_1019_t.utx
+Loading Combiner buggy_03_Combiner from package Textures/WL_1019_t.utx
+Loading TexPanner buggy_panner1 from package Textures/WL_1019_t.utx
+Loading Texture buggy_03 from package Textures/WL_1019_t.utx
+Loading Combiner buggy_05_Combiner from package Textures/WL_1019_t.utx
+Loading Texture buggy_05 from package Textures/WL_1019_t.utx
+Loading Combiner buggy_fire_Combiner from package Textures/WL_1019_t.utx
+Loading Texture buggy_05_ from package Textures/WL_1019_t.utx
+Loading Texture buggy_04 from package Textures/WL_1019_t.utx
+Loading Combiner buggy_04_Combiner from package Textures/WL_1019_t.utx
+Loading Texture 1019_field_deco_plant_002 from package Textures/WL_1019_t.utx
+Loading Texture 1019_field_deco_plant_004 from package Textures/WL_1019_t.utx
+Loading Texture buggy_fire05 from package Textures/WL_1019_t.utx
+Loading TexScaler buggy_03_Texscaler from package Textures/WL_1019_t.utx
+Loading TexScaler buggy_05_Texscaler from package Textures/WL_1019_t.utx
+Loading Texture buggy_fire02 from package Textures/WL_1019_t.utx
+Loading Texture buggy_fire03 from package Textures/WL_1019_t.utx
+Loading Texture buggy_fire04 from package Textures/WL_1019_t.utx
+Loading TexPanner buggy_panner2 from package Textures/WL_1019_t.utx
+Loading TexScaler buggy_fire_Texscaler from package Textures/WL_1019_t.utx
+Loading Texture image01 from package Textures/WL_1019_t.utx
+Loading TexScaler buggy_04_Texscaler from package Textures/WL_1019_t.utx
+Loading Texture 1019_field_deco_plant_001 from package Textures/WL_1019_t.utx
+Loading Texture holethings_02_003d from package Textures/WL_1019_t.utx
+Loading Texture 1300_attack003_a from package Textures/WL_1019_t.utx
+Loading Texture stele01b from package Textures/WL_1019_t.utx
+Loading Texture stele01c from package Textures/WL_1019_t.utx
+Loading Texture holethings_02_001d from package Textures/WL_1019_t.utx
+Loading Texture Weapon from package Textures/WL_1019_t.utx
+Loading Texture buggy_01 from package Textures/WL_1019_t.utx
+Loading Texture buggy_02 from package Textures/WL_1019_t.utx
+Loading Texture 1300_attack034_a from package Textures/WL_1019_t.utx
+Loading Texture 1019_weapontomb_01 from package Textures/WL_1019_t.utx
+Loading Shader buggy_05_Shader from package Textures/WL_1019_t.utx
+Loading Shader buggy_03_Shader from package Textures/WL_1019_t.utx
+Loading Shader buggy_fire_Shader from package Textures/WL_1019_t.utx
+Loading Shader buggy_04_Shader from package Textures/WL_1019_t.utx
+Loading Texture stele01e from package Textures/WL_1019_t.utx
+Loading Texture stele01f from package Textures/WL_1019_t.utx
+Loading Texture stele01a from package Textures/WL_1019_t.utx
+Loading Texture stele01d from package Textures/WL_1019_t.utx
+Loading Texture 1600_daochang_neijing_10h from package Textures/WL_1019_t.utx
+Loading Texture 1019_weapon_005n from package Textures/WL_1019_t.utx
+Loading Combiner image01_shader from package Textures/WL_1019_t.utx
+Loading package: Textures/HI_Floor_t.utx Ver: 128/29 Names: 505 Exports: 451 Imports: 11 Game: 200001
+WARNING: Unknown class "VertexColor" for object "VerColor"
+Loading Texture 1300_star_001a from package Textures/WL_1019_t.utx
+Loading TexRotator 1019_field_deco_plant_004tr from package Textures/WL_1019_t.utx
+Loading TexRotator 1019_field_deco_plant_001tr from package Textures/WL_1019_t.utx
+Loading TexRotator 1019_field_deco_plant_002tr from package Textures/WL_1019_t.utx
+Loading Texture 4000_tex_001b from package Textures/HI_Floor_t.utx
+Exporting objects ...
+Exporting Texture buggy_fire01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Texture/buggy_fire01.png
+Exporting Combiner buggy_03_Combiner to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Combiner/buggy_03_Combiner.mat
+Exporting Texture buggy_03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Texture/buggy_03.png
+Exporting TexPanner buggy_panner1 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/TexPanner/buggy_panner1.mat
+Exporting Texture buggy_05_ to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Texture/buggy_05_.png
+Exporting Combiner buggy_05_Combiner to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Combiner/buggy_05_Combiner.mat
+Exporting Texture buggy_05 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Texture/buggy_05.png
+Exporting Combiner buggy_fire_Combiner to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Combiner/buggy_fire_Combiner.mat
+Exporting Texture buggy_04 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Texture/buggy_04.png
+Exporting Combiner buggy_04_Combiner to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Combiner/buggy_04_Combiner.mat
+Exporting Texture 1019_field_deco_plant_002 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Texture/1019_field_deco_plant_002.png
+Exporting Texture 1019_field_deco_plant_004 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Texture/1019_field_deco_plant_004.png
+Exporting Texture buggy_fire05 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Texture/buggy_fire05.png
+Exporting TexScaler buggy_03_Texscaler to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/TexScaler/buggy_03_Texscaler.mat
+Exporting TexScaler buggy_05_Texscaler to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/TexScaler/buggy_05_Texscaler.mat
+Exporting Texture buggy_fire02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Texture/buggy_fire02.png
+Exporting Texture buggy_fire03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Texture/buggy_fire03.png
+Exporting Texture buggy_fire04 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Texture/buggy_fire04.png
+Exporting TexPanner buggy_panner2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/TexPanner/buggy_panner2.mat
+Exporting TexScaler buggy_fire_Texscaler to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/TexScaler/buggy_fire_Texscaler.mat
+Exporting Texture image01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Texture/image01.png
+Exporting TexScaler buggy_04_Texscaler to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/TexScaler/buggy_04_Texscaler.mat
+Exporting Texture 1019_field_deco_plant_001 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Texture/1019_field_deco_plant_001.png
+Exporting Texture holethings_02_003d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Texture/holethings_02_003d.png
+Exporting Texture 1300_attack003_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Texture/1300_attack003_a.png
+Exporting Texture stele01b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Texture/stele01b.png
+Exporting Texture stele01c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Texture/stele01c.png
+Exporting Texture holethings_02_001d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Texture/holethings_02_001d.png
+Exporting Texture Weapon to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Texture/Weapon.png
+Exporting Texture buggy_01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Texture/buggy_01.png
+Exporting Texture buggy_02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Texture/buggy_02.png
+Exporting Texture 1300_attack034_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Texture/1300_attack034_a.png
+Exporting Texture 1019_weapontomb_01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Texture/1019_weapontomb_01.png
+Exporting Shader buggy_05_Shader to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Shader/buggy_05_Shader.mat
+Exporting Shader buggy_03_Shader to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Shader/buggy_03_Shader.mat
+Exporting Shader buggy_fire_Shader to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Shader/buggy_fire_Shader.mat
+Exporting Shader buggy_04_Shader to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Shader/buggy_04_Shader.mat
+Exporting Texture stele01e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Texture/stele01e.png
+Exporting Texture stele01f to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Texture/stele01f.png
+Exporting Texture stele01a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Texture/stele01a.png
+Exporting Texture stele01d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Texture/stele01d.png
+Exporting Texture 1600_daochang_neijing_10h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Texture/1600_daochang_neijing_10h.png
+Exporting Texture 1019_weapon_005n to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Texture/1019_weapon_005n.png
+Exporting Combiner image01_shader to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Combiner/image01_shader.mat
+Exporting Texture 4000_tex_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/Texture/4000_tex_001b.png
+Exporting Texture 1300_star_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/Texture/1300_star_001a.png
+Exporting TexRotator 1019_field_deco_plant_004tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/TexRotator/1019_field_deco_plant_004tr.mat
+Exporting TexRotator 1019_field_deco_plant_001tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/TexRotator/1019_field_deco_plant_001tr.mat
+Exporting TexRotator 1019_field_deco_plant_002tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1019_t/TexRotator/1019_field_deco_plant_002tr.mat
+Memory: allocated 586209 bytes in 122 blocks
+Exported 49/49 objects in 0.4 sec

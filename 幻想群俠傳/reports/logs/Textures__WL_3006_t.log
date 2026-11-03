@@ -1,0 +1,74 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_3006_t.utx Ver: 128/29 Names: 77 Exports: 26 Imports: 11 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading TexPanner 3006_water03 from package Textures/WL_3006_t.utx
+Loading TexRotator 3006_water06 from package Textures/WL_3006_t.utx
+Loading TexPanner 3006_water04 from package Textures/WL_3006_t.utx
+Loading Texture 3006_water00j from package Textures/WL_3006_t.utx
+Loading TexScaler 3006_water02 from package Textures/WL_3006_t.utx
+Loading Texture 3006_stone07j from package Textures/WL_3006_t.utx
+Loading Texture 3006_sky02j from package Textures/WL_3006_t.utx
+Loading Texture 3006_water01j from package Textures/WL_3006_t.utx
+Loading Texture 3006_bridge01j from package Textures/WL_3006_t.utx
+Loading Texture 3006_channels01j from package Textures/WL_3006_t.utx
+Loading Texture 3006_stone09j from package Textures/WL_3006_t.utx
+Loading Texture 3006_stone08j from package Textures/WL_3006_t.utx
+Loading Texture 3006_stone06j from package Textures/WL_3006_t.utx
+Loading Texture 3006_fire01j from package Textures/WL_3006_t.utx
+Loading Texture 3006_chineserock_001b from package Textures/WL_3006_t.utx
+Loading Shader 3006_water05 from package Textures/WL_3006_t.utx
+Loading package: Textures/HI_Floor_t.utx Ver: 128/29 Names: 505 Exports: 451 Imports: 11 Game: 200001
+Loading Texture 3006_stond02j from package Textures/WL_3006_t.utx
+Loading Texture 3006_bridge04j from package Textures/WL_3006_t.utx
+Loading Texture 3006_bridge02j from package Textures/WL_3006_t.utx
+Loading Texture 3006_bridge03j from package Textures/WL_3006_t.utx
+Loading Texture 3006_tree01j from package Textures/WL_3006_t.utx
+Loading Texture 3006_stone04j from package Textures/WL_3006_t.utx
+Loading Texture 3006_stone01j from package Textures/WL_3006_t.utx
+Loading Texture 3006_sand01j from package Textures/WL_3006_t.utx
+Loading Texture 3006_stond01j from package Textures/WL_3006_t.utx
+Loading TexEnvMap texenvmap01 from package Textures/HI_Floor_t.utx
+Loading Cubemap cubemap01 from package Textures/HI_Floor_t.utx
+Loading Texture wat0 from package Textures/HI_Floor_t.utx
+Loading Texture wat1 from package Textures/HI_Floor_t.utx
+Loading Texture wat2 from package Textures/HI_Floor_t.utx
+Loading Texture wat3 from package Textures/HI_Floor_t.utx
+Loading Texture wat4 from package Textures/HI_Floor_t.utx
+Loading Texture wat5 from package Textures/HI_Floor_t.utx
+Loading Palette Palette0 from package Textures/HI_Floor_t.utx
+Exporting objects ...
+Exporting TexPanner 3006_water03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3006_t/TexPanner/3006_water03.mat
+Exporting Texture 3006_water00j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3006_t/Texture/3006_water00j.png
+Exporting TexRotator 3006_water06 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3006_t/TexRotator/3006_water06.mat
+Exporting TexPanner 3006_water04 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3006_t/TexPanner/3006_water04.mat
+Exporting TexScaler 3006_water02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3006_t/TexScaler/3006_water02.mat
+Exporting Texture 3006_stone07j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3006_t/Texture/3006_stone07j.png
+Exporting Texture 3006_sky02j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3006_t/Texture/3006_sky02j.png
+Exporting Texture 3006_water01j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3006_t/Texture/3006_water01j.png
+Exporting Texture 3006_bridge01j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3006_t/Texture/3006_bridge01j.png
+Exporting Texture 3006_channels01j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3006_t/Texture/3006_channels01j.png
+Exporting Texture 3006_stone09j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3006_t/Texture/3006_stone09j.png
+Exporting Texture 3006_stone08j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3006_t/Texture/3006_stone08j.png
+Exporting Texture 3006_stone06j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3006_t/Texture/3006_stone06j.png
+Exporting Texture 3006_fire01j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3006_t/Texture/3006_fire01j.png
+Exporting Texture 3006_chineserock_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3006_t/Texture/3006_chineserock_001b.png
+Exporting Shader 3006_water05 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3006_t/Shader/3006_water05.mat
+Exporting Texture 3006_stond02j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3006_t/Texture/3006_stond02j.png
+Exporting Texture 3006_bridge04j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3006_t/Texture/3006_bridge04j.png
+Exporting Texture 3006_bridge02j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3006_t/Texture/3006_bridge02j.png
+Exporting Texture 3006_bridge03j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3006_t/Texture/3006_bridge03j.png
+Exporting Texture 3006_tree01j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3006_t/Texture/3006_tree01j.png
+Exporting Texture 3006_stone04j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3006_t/Texture/3006_stone04j.png
+Exporting Texture 3006_stone01j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3006_t/Texture/3006_stone01j.png
+Exporting Texture 3006_sand01j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3006_t/Texture/3006_sand01j.png
+Exporting Texture 3006_stond01j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3006_t/Texture/3006_stond01j.png
+Exporting TexEnvMap texenvmap01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/TexEnvMap/texenvmap01.mat
+Exporting Texture wat0 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/Texture/wat0.png
+Exporting Texture wat1 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/Texture/wat1.png
+Exporting Texture wat2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/Texture/wat2.png
+Exporting Texture wat3 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/Texture/wat3.png
+Exporting Texture wat4 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/Texture/wat4.png
+Exporting Texture wat5 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/Texture/wat5.png
+Memory: allocated 465705 bytes in 93 blocks
+Exported 32/32 objects in 0.3 sec

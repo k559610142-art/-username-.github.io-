@@ -1,0 +1,10 @@
+EnvMapType = EM_WorldSpace (0)
+TexCoordSource = TCS_WorldEnvMapCoords (10)
+TexCoordCount = TCN_3DCoords (1)
+TexCoordProjected = false
+Material = Cubemap'water.MTest'
+FallbackMaterial = None
+DefaultMaterial = None
+SurfaceType = 0
+bUseTextureAsHeat = false
+HeatMaterial = None

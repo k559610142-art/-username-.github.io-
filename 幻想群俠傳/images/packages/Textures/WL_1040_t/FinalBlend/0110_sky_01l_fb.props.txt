@@ -1,0 +1,13 @@
+FrameBufferBlending = FB_AlphaBlend (2)
+ZWrite = false
+ZTest = true
+AlphaTest = false
+TwoSided = false
+AlphaRef = 0
+TreatAsTwoSided = false
+Material = TexPanner'nature.0110_sky_01l_pa'
+FallbackMaterial = None
+DefaultMaterial = None
+SurfaceType = 0
+bUseTextureAsHeat = false
+HeatMaterial = None

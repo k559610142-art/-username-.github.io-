@@ -1,0 +1,83 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_8032_t.utx Ver: 128/29 Names: 79 Exports: 38 Imports: 4 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading TexPanner 8032_light2_TP from package Textures/WL_8032_t.utx
+Loading Texture 8032_025q from package Textures/WL_8032_t.utx
+Loading Texture 8032_017q_a from package Textures/WL_8032_t.utx
+Loading Texture 8032_025q_a from package Textures/WL_8032_t.utx
+Loading Texture 8032_015q_a from package Textures/WL_8032_t.utx
+Loading Texture 8032_024q_a from package Textures/WL_8032_t.utx
+Loading Texture 8032_017q from package Textures/WL_8032_t.utx
+Loading TexPanner 8032_lightq_TP from package Textures/WL_8032_t.utx
+Loading Texture 8032_024q from package Textures/WL_8032_t.utx
+Loading Texture 8032_lightq from package Textures/WL_8032_t.utx
+Loading Texture 8032_015q from package Textures/WL_8032_t.utx
+Loading Texture 8032_lightq2 from package Textures/WL_8032_t.utx
+Loading Texture 8032_011q from package Textures/WL_8032_t.utx
+Loading Texture 8032_013q from package Textures/WL_8032_t.utx
+Loading Texture 8032_005q from package Textures/WL_8032_t.utx
+Loading Texture 8032_007q from package Textures/WL_8032_t.utx
+Loading Texture 8032_006q from package Textures/WL_8032_t.utx
+Loading Texture 8032_023q from package Textures/WL_8032_t.utx
+Loading Shader 8032_pillar_SH from package Textures/WL_8032_t.utx
+Loading Texture 8032_014q from package Textures/WL_8032_t.utx
+Loading Shader 8032_017q_SH from package Textures/WL_8032_t.utx
+Loading Texture 8032_021q from package Textures/WL_8032_t.utx
+Loading Texture 8032_019q from package Textures/WL_8032_t.utx
+Loading Texture 8032_001q from package Textures/WL_8032_t.utx
+Loading Texture 8032_009q from package Textures/WL_8032_t.utx
+Loading Texture 8032_008q from package Textures/WL_8032_t.utx
+Loading Texture 8032_012q from package Textures/WL_8032_t.utx
+Loading Texture 8032_010q from package Textures/WL_8032_t.utx
+Loading Shader 8032_025_SH from package Textures/WL_8032_t.utx
+Loading Texture 8032_020q from package Textures/WL_8032_t.utx
+Loading Texture 8032_018q from package Textures/WL_8032_t.utx
+Loading Texture 8032_022q from package Textures/WL_8032_t.utx
+Loading Shader 8032_015q_SH from package Textures/WL_8032_t.utx
+Loading Texture 8032_016q from package Textures/WL_8032_t.utx
+Loading Texture 8032_026q from package Textures/WL_8032_t.utx
+Loading Texture 8032_003q from package Textures/WL_8032_t.utx
+Loading Texture 8032_004q from package Textures/WL_8032_t.utx
+Loading Texture 8032_002q from package Textures/WL_8032_t.utx
+Exporting objects ...
+Exporting TexPanner 8032_light2_TP to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/TexPanner/8032_light2_TP.mat
+Exporting Texture 8032_lightq2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Texture/8032_lightq2.png
+Exporting Texture 8032_025q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Texture/8032_025q.png
+Exporting Texture 8032_017q_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Texture/8032_017q_a.png
+Exporting Texture 8032_025q_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Texture/8032_025q_a.png
+Exporting Texture 8032_015q_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Texture/8032_015q_a.png
+Exporting Texture 8032_024q_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Texture/8032_024q_a.png
+Exporting Texture 8032_017q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Texture/8032_017q.png
+Exporting TexPanner 8032_lightq_TP to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/TexPanner/8032_lightq_TP.mat
+Exporting Texture 8032_lightq to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Texture/8032_lightq.png
+Exporting Texture 8032_024q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Texture/8032_024q.png
+Exporting Texture 8032_015q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Texture/8032_015q.png
+Exporting Texture 8032_011q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Texture/8032_011q.png
+Exporting Texture 8032_013q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Texture/8032_013q.png
+Exporting Texture 8032_005q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Texture/8032_005q.png
+Exporting Texture 8032_007q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Texture/8032_007q.png
+Exporting Texture 8032_006q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Texture/8032_006q.png
+Exporting Texture 8032_023q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Texture/8032_023q.png
+Exporting Shader 8032_pillar_SH to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Shader/8032_pillar_SH.mat
+Exporting Texture 8032_014q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Texture/8032_014q.png
+Exporting Shader 8032_017q_SH to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Shader/8032_017q_SH.mat
+Exporting Texture 8032_021q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Texture/8032_021q.png
+Exporting Texture 8032_019q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Texture/8032_019q.png
+Exporting Texture 8032_001q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Texture/8032_001q.png
+Exporting Texture 8032_009q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Texture/8032_009q.png
+Exporting Texture 8032_008q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Texture/8032_008q.png
+Exporting Texture 8032_012q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Texture/8032_012q.png
+Exporting Texture 8032_010q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Texture/8032_010q.png
+Exporting Shader 8032_025_SH to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Shader/8032_025_SH.mat
+Exporting Texture 8032_020q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Texture/8032_020q.png
+Exporting Texture 8032_018q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Texture/8032_018q.png
+Exporting Texture 8032_022q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Texture/8032_022q.png
+Exporting Shader 8032_015q_SH to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Shader/8032_015q_SH.mat
+Exporting Texture 8032_016q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Texture/8032_016q.png
+Exporting Texture 8032_026q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Texture/8032_026q.png
+Exporting Texture 8032_003q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Texture/8032_003q.png
+Exporting Texture 8032_004q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Texture/8032_004q.png
+Exporting Texture 8032_002q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8032_t/Texture/8032_002q.png
+Memory: allocated 471924 bytes in 92 blocks
+Exported 38/38 objects in 0.6 sec

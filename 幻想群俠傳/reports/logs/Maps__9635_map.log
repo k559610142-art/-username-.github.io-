@@ -1,0 +1,21 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Maps/9635_map.ut2 Ver: 128/29 Names: 1908 Exports: 1538 Imports: 168 Game: 200001
+Loaded in 0.0 sec, 20 allocs, 0.07 MBytes serialized in 19 calls.
+Loading Texture terrain_1400a from package Maps/9635_map.ut2
+Loading Texture 1400_layer_003a from package Maps/9635_map.ut2
+Loading Texture 1400_layer_004a from package Maps/9635_map.ut2
+Loading Texture 1400_layer_007a from package Maps/9635_map.ut2
+Loading Texture 1400_layer_001a from package Maps/9635_map.ut2
+Loading Texture 1011_deco from package Maps/9635_map.ut2
+Loading Palette Palette0 from package Maps/9635_map.ut2
+Exporting objects ...
+******** Maps/9635_map.ut2 ********
+*** Unknown UE2 texture format: TEXF_G16 (10)
+Exporting Texture 1400_layer_003a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/9635_map/Texture/1400_layer_003a.png
+Exporting Texture 1400_layer_004a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/9635_map/Texture/1400_layer_004a.png
+Exporting Texture 1400_layer_007a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/9635_map/Texture/1400_layer_007a.png
+Exporting Texture 1400_layer_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/9635_map/Texture/1400_layer_001a.png
+Exporting Texture 1011_deco to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/9635_map/Texture/1011_deco.png
+Memory: allocated 425139 bytes in 56 blocks
+Exported 5/5 objects in 0.0 sec

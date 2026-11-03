@@ -1,0 +1,24 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_1012_t.utx Ver: 128/29 Names: 63 Exports: 16 Imports: 13 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture 1012_deco_plant_004 from package Textures/WL_1012_t.utx
+Loading Texture 1005_skybrown_01a from package Textures/WL_1012_t.utx
+Loading Palette Palette0 from package Textures/WL_1012_t.utx
+Loading TexRotator 1012_deco_plant_004_tr from package Textures/WL_1012_t.utx
+Loading Texture Gwharf_050j from package Textures/WL_1012_t.utx
+Loading Texture Gwharf_049j from package Textures/WL_1012_t.utx
+Loading Texture Gwharf_048j from package Textures/WL_1012_t.utx
+Loading Texture 1300_star_001a from package Textures/WL_1012_t.utx
+Loading Texture 1012_deco from package Textures/WL_1012_t.utx
+Exporting objects ...
+Exporting Texture 1012_deco_plant_004 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1012_t/Texture/1012_deco_plant_004.png
+Exporting Texture 1005_skybrown_01a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1012_t/Texture/1005_skybrown_01a.png
+Exporting TexRotator 1012_deco_plant_004_tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1012_t/TexRotator/1012_deco_plant_004_tr.mat
+Exporting Texture Gwharf_050j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1012_t/Texture/Gwharf_050j.png
+Exporting Texture Gwharf_049j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1012_t/Texture/Gwharf_049j.png
+Exporting Texture Gwharf_048j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1012_t/Texture/Gwharf_048j.png
+Exporting Texture 1300_star_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1012_t/Texture/1300_star_001a.png
+Exporting Texture 1012_deco to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1012_t/Texture/1012_deco.png
+Memory: allocated 327724 bytes in 57 blocks
+Exported 8/8 objects in 0.1 sec

@@ -1,0 +1,11 @@
+PanDirection = { Yaw=16384, Pitch=0, Roll=0 }
+PanRate = 0.6
+TexCoordSource = TCS_NoChange (13)
+TexCoordCount = TCN_2DCoords (0)
+TexCoordProjected = false
+Material = Texture'water.8043Water_01B'
+FallbackMaterial = None
+DefaultMaterial = None
+SurfaceType = 0
+bUseTextureAsHeat = false
+HeatMaterial = None

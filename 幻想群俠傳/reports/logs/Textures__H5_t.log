@@ -1,0 +1,21 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/H5_t.utx Ver: 128/29 Names: 26 Exports: 7 Imports: 2 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture h50701b from package Textures/H5_t.utx
+Loading Texture h50702b from package Textures/H5_t.utx
+Loading Texture h50702a from package Textures/H5_t.utx
+Loading Texture h50502a from package Textures/H5_t.utx
+Loading Texture h50503a from package Textures/H5_t.utx
+Loading Texture h50501a from package Textures/H5_t.utx
+Loading Texture h50701a from package Textures/H5_t.utx
+Exporting objects ...
+Exporting Texture h50701b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H5_t/Texture/h50701b.png
+Exporting Texture h50702b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H5_t/Texture/h50702b.png
+Exporting Texture h50702a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H5_t/Texture/h50702a.png
+Exporting Texture h50502a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H5_t/Texture/h50502a.png
+Exporting Texture h50503a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H5_t/Texture/h50503a.png
+Exporting Texture h50501a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H5_t/Texture/h50501a.png
+Exporting Texture h50701a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/H5_t/Texture/h50701a.png
+Memory: allocated 318879 bytes in 55 blocks
+Exported 7/7 objects in 0.1 sec

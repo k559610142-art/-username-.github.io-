@@ -1,0 +1,13 @@
+UScale = 0.5
+VScale = 1
+UOffset = 0
+VOffset = 0
+TexCoordSource = TCS_NoChange (13)
+TexCoordCount = TCN_2DCoords (0)
+TexCoordProjected = false
+Material = Texture'water.1029_waterfall01y'
+FallbackMaterial = None
+DefaultMaterial = None
+SurfaceType = 0
+bUseTextureAsHeat = false
+HeatMaterial = None

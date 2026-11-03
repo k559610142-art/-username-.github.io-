@@ -1,0 +1,120 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_8028_t.utx Ver: 128/29 Names: 104 Exports: 48 Imports: 11 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture 8028_waterq from package Textures/WL_8028_t.utx
+Loading Texture 8028_025q_alpha from package Textures/WL_8028_t.utx
+Loading Texture ws13_2q from package Textures/WL_8028_t.utx
+Loading TexEnvMap sword02 from package Textures/WL_8028_t.utx
+Loading Texture ws13_2q_a from package Textures/WL_8028_t.utx
+Loading Texture sword03 from package Textures/WL_8028_t.utx
+Loading Texture 8028_025q from package Textures/WL_8028_t.utx
+Loading Texture 8028_fish from package Textures/WL_8028_t.utx
+Loading Palette Palette0 from package Textures/WL_8028_t.utx
+Loading Palette Palette1 from package Textures/WL_8028_t.utx
+Loading Palette Palette2 from package Textures/WL_8028_t.utx
+Loading Texture 8028_lea from package Textures/WL_8028_t.utx
+Loading Texture bgrass_black from package Textures/WL_8028_t.utx
+Loading Texture 8028_002q from package Textures/WL_8028_t.utx
+Loading Shader 8028_025q_SH from package Textures/WL_8028_t.utx
+Loading package: Textures/WL_8026_t.utx Ver: 128/29 Names: 78 Exports: 35 Imports: 7 Game: 200001
+Loading Texture 8028_026q from package Textures/WL_8028_t.utx
+Loading TexRotator 8028_fish_TR from package Textures/WL_8028_t.utx
+Loading Texture 8028_027q from package Textures/WL_8028_t.utx
+Loading Texture 8028_028q from package Textures/WL_8028_t.utx
+Loading Texture 8028_006q from package Textures/WL_8028_t.utx
+Loading Texture 8028_017q from package Textures/WL_8028_t.utx
+Loading Texture 8028_008q from package Textures/WL_8028_t.utx
+Loading Texture 8028_011q from package Textures/WL_8028_t.utx
+Loading Texture flower_black from package Textures/WL_8028_t.utx
+Loading Texture 8028_018q from package Textures/WL_8028_t.utx
+Loading Texture 8028_020q from package Textures/WL_8028_t.utx
+Loading Texture 8028_0010q from package Textures/WL_8028_t.utx
+Loading Texture 8028_022q from package Textures/WL_8028_t.utx
+Loading Texture 8028_007q from package Textures/WL_8028_t.utx
+Loading Texture 8028_013q from package Textures/WL_8028_t.utx
+Loading Texture 3002_grund03q from package Textures/WL_8028_t.utx
+Loading Texture 8028_029q from package Textures/WL_8028_t.utx
+Loading Texture 8028_015q from package Textures/WL_8028_t.utx
+Loading Texture 8028_014q from package Textures/WL_8028_t.utx
+Loading Texture 8028_016q from package Textures/WL_8028_t.utx
+Loading Texture 8028_019q from package Textures/WL_8028_t.utx
+Loading Texture 8028_023q from package Textures/WL_8028_t.utx
+Loading Texture 8028_009q from package Textures/WL_8028_t.utx
+Loading Texture 8028_001q from package Textures/WL_8028_t.utx
+Loading Texture 8028_003q from package Textures/WL_8028_t.utx
+Loading Texture 8028_004q from package Textures/WL_8028_t.utx
+Loading Texture 8028_012q from package Textures/WL_8028_t.utx
+Loading Texture 8028_021q from package Textures/WL_8028_t.utx
+Loading Texture 8028_024q from package Textures/WL_8028_t.utx
+Loading Texture grass_alpha from package Textures/WL_8028_t.utx
+Loading Shader sword from package Textures/WL_8028_t.utx
+Loading package: Textures/HI_spaceship_t.utx Ver: 128/29 Names: 68 Exports: 18 Imports: 6 Game: 200001
+Loading TexRotator 8028_waterq_TR from package Textures/WL_8028_t.utx
+Loading Texture 8028_005q from package Textures/WL_8028_t.utx
+Loading TexPanner onefloor_0017q_TP from package Textures/WL_8026_t.utx
+Loading Shader spaceship_01h_reflect_02 from package Textures/HI_spaceship_t.utx
+Loading TexScaler onefloor_0017q_TS from package Textures/WL_8026_t.utx
+Loading Texture spaceship_01h from package Textures/HI_spaceship_t.utx
+Loading Combiner spaceship_01h_at from package Textures/HI_spaceship_t.utx
+Loading Texture onefloor_0017q_f from package Textures/WL_8026_t.utx
+Loading Texture spaceship_a03h from package Textures/HI_spaceship_t.utx
+Loading TexPanner spaceship_02h_aaa from package Textures/HI_spaceship_t.utx
+Loading Texture spaceship_04h from package Textures/HI_spaceship_t.utx
+Exporting objects ...
+Exporting Texture 8028_waterq to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_waterq.png
+Exporting Texture 8028_025q_alpha to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_025q_alpha.png
+Exporting Texture ws13_2q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/ws13_2q.png
+Exporting TexEnvMap sword02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/TexEnvMap/sword02.mat
+Exporting Texture sword03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/sword03.png
+Exporting Texture ws13_2q_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/ws13_2q_a.png
+Exporting Texture 8028_025q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_025q.png
+Exporting Texture 8028_fish to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_fish.png
+Exporting Texture 8028_lea to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_lea.png
+Exporting Texture bgrass_black to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/bgrass_black.png
+Exporting Texture 8028_002q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_002q.png
+Exporting Shader 8028_025q_SH to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Shader/8028_025q_SH.mat
+Exporting Texture 8028_026q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_026q.png
+Exporting TexRotator 8028_fish_TR to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/TexRotator/8028_fish_TR.mat
+Exporting Texture 8028_027q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_027q.png
+Exporting Texture 8028_028q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_028q.png
+Exporting Texture 8028_006q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_006q.png
+Exporting Texture 8028_017q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_017q.png
+Exporting Texture 8028_008q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_008q.png
+Exporting Texture 8028_011q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_011q.png
+Exporting Texture flower_black to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/flower_black.png
+Exporting Texture 8028_018q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_018q.png
+Exporting Texture 8028_020q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_020q.png
+Exporting Texture 8028_0010q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_0010q.png
+Exporting Texture 8028_022q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_022q.png
+Exporting Texture 8028_007q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_007q.png
+Exporting Texture 8028_013q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_013q.png
+Exporting Texture 3002_grund03q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/3002_grund03q.png
+Exporting Texture 8028_029q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_029q.png
+Exporting Texture 8028_015q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_015q.png
+Exporting Texture 8028_014q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_014q.png
+Exporting Texture 8028_016q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_016q.png
+Exporting Texture 8028_019q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_019q.png
+Exporting Texture 8028_023q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_023q.png
+Exporting Texture 8028_009q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_009q.png
+Exporting Texture 8028_001q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_001q.png
+Exporting Texture 8028_003q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_003q.png
+Exporting Texture 8028_004q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_004q.png
+Exporting Texture 8028_012q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_012q.png
+Exporting Texture 8028_021q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_021q.png
+Exporting Texture 8028_024q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_024q.png
+Exporting Texture grass_alpha to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/grass_alpha.png
+Exporting Shader sword to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Shader/sword.mat
+Exporting TexRotator 8028_waterq_TR to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/TexRotator/8028_waterq_TR.mat
+Exporting Texture 8028_005q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8028_t/Texture/8028_005q.png
+Exporting TexPanner onefloor_0017q_TP to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/TexPanner/onefloor_0017q_TP.mat
+Exporting Texture onefloor_0017q_f to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/Texture/onefloor_0017q_f.png
+Exporting Shader spaceship_01h_reflect_02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_spaceship_t/Shader/spaceship_01h_reflect_02.mat
+Exporting Texture spaceship_01h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_spaceship_t/Texture/spaceship_01h.png
+Exporting TexScaler onefloor_0017q_TS to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/TexScaler/onefloor_0017q_TS.mat
+Exporting Combiner spaceship_01h_at to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_spaceship_t/Combiner/spaceship_01h_at.mat
+Exporting Texture spaceship_04h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_spaceship_t/Texture/spaceship_04h.png
+Exporting Texture spaceship_a03h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_spaceship_t/Texture/spaceship_a03h.png
+Exporting TexPanner spaceship_02h_aaa to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_spaceship_t/TexPanner/spaceship_02h_aaa.mat
+Memory: allocated 557881 bytes in 126 blocks
+Exported 54/54 objects in 0.7 sec

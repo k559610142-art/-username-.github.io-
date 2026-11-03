@@ -1,0 +1,57 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/HI_1600_t.utx Ver: 128/29 Names: 82 Exports: 33 Imports: 16 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture 1601_Bwharf_waterj from package Textures/HI_1600_t.utx
+Loading Texture water_alpha_002b from package Textures/HI_1600_t.utx
+Loading TexPanner HI_1000_t00run from package Textures/HI_1600_t.utx
+Loading TexScaler water_ap_ts from package Textures/HI_1600_t.utx
+Loading Texture tree_yellow_low_002b from package Textures/HI_1600_t.utx
+Loading Texture tree_yellow_low_001b from package Textures/HI_1600_t.utx
+Loading Texture 1600_stage08y from package Textures/HI_1600_t.utx
+Loading Texture 1600_stage02a from package Textures/HI_1600_t.utx
+Loading Texture 1600_obj03y from package Textures/HI_1600_t.utx
+Loading Texture 1600_bridge_002a from package Textures/HI_1600_t.utx
+Loading Texture 1600_bridge_001a from package Textures/HI_1600_t.utx
+Loading Texture 1600_leaf_003a from package Textures/HI_1600_t.utx
+Loading Texture Map_HouseB03 from package Textures/HI_1600_t.utx
+Loading Texture Map_HouseB00 from package Textures/HI_1600_t.utx
+Loading Texture Map_HouseB01 from package Textures/HI_1600_t.utx
+Loading Texture Map_HouseB02 from package Textures/HI_1600_t.utx
+Loading Shader 1600_water_alpha from package Textures/HI_1600_t.utx
+Loading Texture Map_House_alpha from package Textures/HI_1600_t.utx
+Loading Texture dkny_001t from package Textures/HI_1600_t.utx
+Loading Texture dkny_002t from package Textures/HI_1600_t.utx
+Loading Texture dkny_003t from package Textures/HI_1600_t.utx
+Loading Texture dkny_004t from package Textures/HI_1600_t.utx
+Loading Texture dkny_008t from package Textures/HI_1600_t.utx
+Loading Texture 1600_daochang_neijing_10h from package Textures/HI_1600_t.utx
+Loading Texture 1600_bridge_003a from package Textures/HI_1600_t.utx
+Exporting objects ...
+Exporting Texture 1601_Bwharf_waterj to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_1600_t/Texture/1601_Bwharf_waterj.png
+Exporting Texture water_alpha_002b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_1600_t/Texture/water_alpha_002b.png
+Exporting TexPanner HI_1000_t00run to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_1600_t/TexPanner/HI_1000_t00run.mat
+Exporting TexScaler water_ap_ts to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_1600_t/TexScaler/water_ap_ts.mat
+Exporting Texture tree_yellow_low_002b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_1600_t/Texture/tree_yellow_low_002b.png
+Exporting Texture tree_yellow_low_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_1600_t/Texture/tree_yellow_low_001b.png
+Exporting Texture 1600_stage08y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_1600_t/Texture/1600_stage08y.png
+Exporting Texture 1600_stage02a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_1600_t/Texture/1600_stage02a.png
+Exporting Texture 1600_obj03y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_1600_t/Texture/1600_obj03y.png
+Exporting Texture 1600_bridge_002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_1600_t/Texture/1600_bridge_002a.png
+Exporting Texture 1600_bridge_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_1600_t/Texture/1600_bridge_001a.png
+Exporting Texture 1600_leaf_003a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_1600_t/Texture/1600_leaf_003a.png
+Exporting Texture Map_HouseB03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_1600_t/Texture/Map_HouseB03.png
+Exporting Texture Map_HouseB00 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_1600_t/Texture/Map_HouseB00.png
+Exporting Texture Map_HouseB01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_1600_t/Texture/Map_HouseB01.png
+Exporting Texture Map_HouseB02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_1600_t/Texture/Map_HouseB02.png
+Exporting Shader 1600_water_alpha to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_1600_t/Shader/1600_water_alpha.mat
+Exporting Texture Map_House_alpha to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_1600_t/Texture/Map_House_alpha.png
+Exporting Texture dkny_001t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_1600_t/Texture/dkny_001t.png
+Exporting Texture dkny_002t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_1600_t/Texture/dkny_002t.png
+Exporting Texture dkny_003t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_1600_t/Texture/dkny_003t.png
+Exporting Texture dkny_004t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_1600_t/Texture/dkny_004t.png
+Exporting Texture dkny_008t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_1600_t/Texture/dkny_008t.png
+Exporting Texture 1600_daochang_neijing_10h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_1600_t/Texture/1600_daochang_neijing_10h.png
+Exporting Texture 1600_bridge_003a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_1600_t/Texture/1600_bridge_003a.png
+Memory: allocated 406284 bytes in 76 blocks
+Exported 25/25 objects in 0.1 sec

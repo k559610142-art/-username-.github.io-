@@ -1,0 +1,192 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_1010_t.utx Ver: 128/29 Names: 168 Exports: 108 Imports: 17 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.01 MBytes serialized in 2 calls.
+Loading TexScaler a39WoodJ038b_ts from package Textures/WL_1010_t.utx
+Loading Shader a39WoodJ038b_sh from package Textures/WL_1010_t.utx
+Loading Palette Palette8 from package Textures/WL_1010_t.utx
+Loading Texture a39WoodJ038b from package Textures/WL_1010_t.utx
+Loading TexPanner a39WoodJ038b_tp from package Textures/WL_1010_t.utx
+Loading Texture 1010_grass_1h from package Textures/WL_1010_t.utx
+Loading Texture black_w_small_002b from package Textures/WL_1010_t.utx
+Loading Texture house_010t from package Textures/WL_1010_t.utx
+Loading Texture bat_020d from package Textures/WL_1010_t.utx
+Loading Texture bat_021d from package Textures/WL_1010_t.utx
+Loading Texture bat_022d from package Textures/WL_1010_t.utx
+Loading Texture house_020t from package Textures/WL_1010_t.utx
+Loading Texture 1010_black from package Textures/WL_1010_t.utx
+Loading Texture 8031back from package Textures/WL_1010_t.utx
+Loading FinalBlend a39WoodJ038b_fb from package Textures/WL_1010_t.utx
+Loading Texture door_001a from package Textures/WL_1010_t.utx
+Loading Texture door_003a from package Textures/WL_1010_t.utx
+Loading Texture house_009t from package Textures/WL_1010_t.utx
+Loading Texture house_002a from package Textures/WL_1010_t.utx
+Loading Texture house_004a from package Textures/WL_1010_t.utx
+Loading Texture house_003a from package Textures/WL_1010_t.utx
+Loading Texture door_open from package Textures/WL_1010_t.utx
+Loading Texture things_06_d001 from package Textures/WL_1010_t.utx
+Loading Texture fly_chinese_rock_001b from package Textures/WL_1010_t.utx
+Loading Texture things_03_d001 from package Textures/WL_1010_t.utx
+Loading Texture things_03_d002 from package Textures/WL_1010_t.utx
+Loading Texture ax2_002e from package Textures/WL_1010_t.utx
+Loading Texture tree_001e from package Textures/WL_1010_t.utx
+Loading Texture ax_001e from package Textures/WL_1010_t.utx
+Loading Texture things_05_d001 from package Textures/WL_1010_t.utx
+Loading Texture chairleg_001e from package Textures/WL_1010_t.utx
+Loading Texture chair_001e from package Textures/WL_1010_t.utx
+Loading Texture house_028t from package Textures/WL_1010_t.utx
+Loading Texture house_023t from package Textures/WL_1010_t.utx
+Loading Texture house_029t from package Textures/WL_1010_t.utx
+Loading Texture house_015t from package Textures/WL_1010_t.utx
+Loading Texture house_005t from package Textures/WL_1010_t.utx
+Loading Texture house_001a from package Textures/WL_1010_t.utx
+Loading TexRotator 1010_grass_1h_tr from package Textures/WL_1010_t.utx
+Loading Texture house_006t from package Textures/WL_1010_t.utx
+Loading Texture house_004t from package Textures/WL_1010_t.utx
+Loading Texture house_021t from package Textures/WL_1010_t.utx
+Loading Texture house_013t from package Textures/WL_1010_t.utx
+Loading Texture house_026t from package Textures/WL_1010_t.utx
+Loading Texture house_022t from package Textures/WL_1010_t.utx
+Loading Texture house_016t from package Textures/WL_1010_t.utx
+Loading Texture house_011t from package Textures/WL_1010_t.utx
+Loading Texture house_025t from package Textures/WL_1010_t.utx
+Loading Texture house_024t from package Textures/WL_1010_t.utx
+Loading Texture chairleg_002e from package Textures/WL_1010_t.utx
+Loading Texture house_014t from package Textures/WL_1010_t.utx
+Loading Texture house_027t from package Textures/WL_1010_t.utx
+Loading Texture house_019t from package Textures/WL_1010_t.utx
+Loading Texture house_012t from package Textures/WL_1010_t.utx
+Loading Texture house_031t from package Textures/WL_1010_t.utx
+Loading Texture house_008t from package Textures/WL_1010_t.utx
+Loading Texture rock_bat_B_010b from package Textures/WL_1010_t.utx
+Loading Texture rock_bat_B_005b from package Textures/WL_1010_t.utx
+Loading Texture rock_bat_B_004b from package Textures/WL_1010_t.utx
+Loading Texture rock_000c from package Textures/WL_1010_t.utx
+Loading Texture holethings_02_003d from package Textures/WL_1010_t.utx
+Loading Texture wood-bat_0_001 from package Textures/WL_1010_t.utx
+Loading Texture bat_015c from package Textures/WL_1010_t.utx
+Loading Texture bat_002a from package Textures/WL_1010_t.utx
+Loading Texture bat_016c from package Textures/WL_1010_t.utx
+Loading Texture bat_013c from package Textures/WL_1010_t.utx
+Loading Texture roof-bat_0_002 from package Textures/WL_1010_t.utx
+Loading Texture bat_008c from package Textures/WL_1010_t.utx
+Loading Texture wood-bat_0_002 from package Textures/WL_1010_t.utx
+Loading Texture bat_007c from package Textures/WL_1010_t.utx
+Loading Texture bat_006c from package Textures/WL_1010_t.utx
+Loading Texture bat_012c from package Textures/WL_1010_t.utx
+Loading Texture bat_014a from package Textures/WL_1010_t.utx
+Loading Texture bat_005c from package Textures/WL_1010_t.utx
+Loading Texture bat_011c from package Textures/WL_1010_t.utx
+Loading Texture bat_013a from package Textures/WL_1010_t.utx
+Loading Texture bat_011a from package Textures/WL_1010_t.utx
+Loading Texture bat_004d from package Textures/WL_1010_t.utx
+Loading Texture walk_alhpa from package Textures/WL_1010_t.utx
+Loading Texture bat_001d from package Textures/WL_1010_t.utx
+Loading Texture bat_002d from package Textures/WL_1010_t.utx
+Loading Texture rock-bat_005_3b from package Textures/WL_1010_t.utx
+Loading Texture bat_006a from package Textures/WL_1010_t.utx
+Loading Texture bat_001a from package Textures/WL_1010_t.utx
+Loading Texture bat_017c from package Textures/WL_1010_t.utx
+Loading Texture rock_bat_B_003b from package Textures/WL_1010_t.utx
+Loading Texture bat_018c from package Textures/WL_1010_t.utx
+Loading Texture rock_bat_B_006b from package Textures/WL_1010_t.utx
+Loading Texture rock_bat_B_002b from package Textures/WL_1010_t.utx
+Loading Texture rock_bat_B_001b from package Textures/WL_1010_t.utx
+Loading Texture ax_003e from package Textures/WL_1010_t.utx
+Loading Texture 1010_ultramontane_01h from package Textures/WL_1010_t.utx
+Loading Texture house_007t from package Textures/WL_1010_t.utx
+Exporting objects ...
+Exporting TexScaler a39WoodJ038b_ts to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/TexScaler/a39WoodJ038b_ts.mat
+Exporting Texture a39WoodJ038b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/a39WoodJ038b.png
+Exporting Shader a39WoodJ038b_sh to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Shader/a39WoodJ038b_sh.mat
+Exporting Texture black_w_small_002b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/black_w_small_002b.png
+Exporting TexPanner a39WoodJ038b_tp to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/TexPanner/a39WoodJ038b_tp.mat
+Exporting Texture 1010_grass_1h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/1010_grass_1h.png
+Exporting Texture house_010t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/house_010t.png
+Exporting Texture bat_020d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/bat_020d.png
+Exporting Texture bat_021d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/bat_021d.png
+Exporting Texture bat_022d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/bat_022d.png
+Exporting Texture house_020t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/house_020t.png
+Exporting Texture 1010_black to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/1010_black.png
+Exporting Texture 8031back to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/8031back.png
+Exporting FinalBlend a39WoodJ038b_fb to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/FinalBlend/a39WoodJ038b_fb.mat
+Exporting Texture door_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/door_001a.png
+Exporting Texture door_003a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/door_003a.png
+Exporting Texture house_009t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/house_009t.png
+Exporting Texture house_002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/house_002a.png
+Exporting Texture house_004a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/house_004a.png
+Exporting Texture house_003a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/house_003a.png
+Exporting Texture door_open to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/door_open.png
+Exporting Texture things_06_d001 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/things_06_d001.png
+Exporting Texture fly_chinese_rock_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/fly_chinese_rock_001b.png
+Exporting Texture things_03_d001 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/things_03_d001.png
+Exporting Texture things_03_d002 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/things_03_d002.png
+Exporting Texture ax2_002e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/ax2_002e.png
+Exporting Texture tree_001e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/tree_001e.png
+Exporting Texture ax_001e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/ax_001e.png
+Exporting Texture things_05_d001 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/things_05_d001.png
+Exporting Texture chairleg_001e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/chairleg_001e.png
+Exporting Texture chair_001e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/chair_001e.png
+Exporting Texture house_028t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/house_028t.png
+Exporting Texture house_023t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/house_023t.png
+Exporting Texture house_029t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/house_029t.png
+Exporting Texture house_015t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/house_015t.png
+Exporting Texture house_005t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/house_005t.png
+Exporting Texture house_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/house_001a.png
+Exporting TexRotator 1010_grass_1h_tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/TexRotator/1010_grass_1h_tr.mat
+Exporting Texture house_006t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/house_006t.png
+Exporting Texture house_004t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/house_004t.png
+Exporting Texture house_021t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/house_021t.png
+Exporting Texture house_013t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/house_013t.png
+Exporting Texture house_026t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/house_026t.png
+Exporting Texture house_022t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/house_022t.png
+Exporting Texture house_016t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/house_016t.png
+Exporting Texture house_011t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/house_011t.png
+Exporting Texture house_025t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/house_025t.png
+Exporting Texture house_024t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/house_024t.png
+Exporting Texture chairleg_002e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/chairleg_002e.png
+Exporting Texture house_014t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/house_014t.png
+Exporting Texture house_027t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/house_027t.png
+Exporting Texture house_019t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/house_019t.png
+Exporting Texture house_012t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/house_012t.png
+Exporting Texture house_031t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/house_031t.png
+Exporting Texture house_008t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/house_008t.png
+Exporting Texture rock_bat_B_010b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/rock_bat_B_010b.png
+Exporting Texture rock_bat_B_005b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/rock_bat_B_005b.png
+Exporting Texture rock_bat_B_004b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/rock_bat_B_004b.png
+Exporting Texture rock_000c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/rock_000c.png
+Exporting Texture holethings_02_003d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/holethings_02_003d.png
+Exporting Texture wood-bat_0_001 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/wood-bat_0_001.png
+Exporting Texture bat_015c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/bat_015c.png
+Exporting Texture bat_002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/bat_002a.png
+Exporting Texture bat_016c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/bat_016c.png
+Exporting Texture bat_013c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/bat_013c.png
+Exporting Texture roof-bat_0_002 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/roof-bat_0_002.png
+Exporting Texture bat_008c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/bat_008c.png
+Exporting Texture wood-bat_0_002 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/wood-bat_0_002.png
+Exporting Texture bat_007c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/bat_007c.png
+Exporting Texture bat_006c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/bat_006c.png
+Exporting Texture bat_012c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/bat_012c.png
+Exporting Texture bat_014a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/bat_014a.png
+Exporting Texture bat_005c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/bat_005c.png
+Exporting Texture bat_011c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/bat_011c.png
+Exporting Texture bat_013a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/bat_013a.png
+Exporting Texture bat_011a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/bat_011a.png
+Exporting Texture bat_004d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/bat_004d.png
+Exporting Texture walk_alhpa to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/walk_alhpa.png
+Exporting Texture bat_001d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/bat_001d.png
+Exporting Texture bat_002d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/bat_002d.png
+Exporting Texture rock-bat_005_3b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/rock-bat_005_3b.png
+Exporting Texture bat_006a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/bat_006a.png
+Exporting Texture bat_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/bat_001a.png
+Exporting Texture bat_017c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/bat_017c.png
+Exporting Texture rock_bat_B_003b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/rock_bat_B_003b.png
+Exporting Texture bat_018c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/bat_018c.png
+Exporting Texture rock_bat_B_006b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/rock_bat_B_006b.png
+Exporting Texture rock_bat_B_002b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/rock_bat_B_002b.png
+Exporting Texture rock_bat_B_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/rock_bat_B_001b.png
+Exporting Texture ax_003e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/ax_003e.png
+Exporting Texture 1010_ultramontane_01h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/1010_ultramontane_01h.png
+Exporting Texture house_007t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1010_t/Texture/house_007t.png
+Memory: allocated 692224 bytes in 145 blocks
+Exported 92/92 objects in 0.6 sec

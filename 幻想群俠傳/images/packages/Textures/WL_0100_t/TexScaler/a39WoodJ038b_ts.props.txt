@@ -1,0 +1,13 @@
+UScale = 1
+VScale = 0.5
+UOffset = 0
+VOffset = 0
+TexCoordSource = TCS_NoChange (13)
+TexCoordCount = TCN_2DCoords (0)
+TexCoordProjected = false
+Material = TexPanner'a39WoodJ038b_tp'
+FallbackMaterial = None
+DefaultMaterial = None
+SurfaceType = 0
+bUseTextureAsHeat = false
+HeatMaterial = None

@@ -1,0 +1,75 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_3007_t.utx Ver: 128/29 Names: 78 Exports: 55 Imports: 3 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture 3007_room_19q from package Textures/WL_3007_t.utx
+Loading Texture 3007_room_30q from package Textures/WL_3007_t.utx
+Loading Texture 3007_room_02q from package Textures/WL_3007_t.utx
+Loading Texture 3007_room_03q from package Textures/WL_3007_t.utx
+Loading Texture 3007_room_08q from package Textures/WL_3007_t.utx
+Loading Texture 3007_room_10q from package Textures/WL_3007_t.utx
+Loading Texture 3007_room_09q from package Textures/WL_3007_t.utx
+Loading Texture 3007_room_05q from package Textures/WL_3007_t.utx
+Loading Texture 3007_room_04q from package Textures/WL_3007_t.utx
+Loading Texture 3007_room_06q from package Textures/WL_3007_t.utx
+Loading Texture 3007_room_11q from package Textures/WL_3007_t.utx
+Loading Texture 3007_room_07q from package Textures/WL_3007_t.utx
+Loading Texture 3007_room_01q from package Textures/WL_3007_t.utx
+Loading Texture 3007_room_18q from package Textures/WL_3007_t.utx
+Loading Texture 3007_room_17q from package Textures/WL_3007_t.utx
+Loading Texture 3007_room_23q from package Textures/WL_3007_t.utx
+Loading Texture 3007_room_16q from package Textures/WL_3007_t.utx
+Loading Texture 3007_room_15q from package Textures/WL_3007_t.utx
+Loading Texture 3007_room_27q from package Textures/WL_3007_t.utx
+Loading Texture 3007_room_26q from package Textures/WL_3007_t.utx
+Loading Texture 3007_room_24q from package Textures/WL_3007_t.utx
+Loading Texture 3007_room_21q from package Textures/WL_3007_t.utx
+Loading Texture 3007_room_12q from package Textures/WL_3007_t.utx
+Loading Texture 3007_room_14q from package Textures/WL_3007_t.utx
+Loading Texture 3007_room_13q from package Textures/WL_3007_t.utx
+Loading Texture 3007_room_20q from package Textures/WL_3007_t.utx
+Loading Texture 3007_room_25q from package Textures/WL_3007_t.utx
+Loading Texture 3007_room_22q from package Textures/WL_3007_t.utx
+Loading Texture 3007_room_29q from package Textures/WL_3007_t.utx
+Loading Texture 3007_room_28q from package Textures/WL_3007_t.utx
+Loading Texture 3007_room_31q from package Textures/WL_3007_t.utx
+Loading Texture 3007_room_33q from package Textures/WL_3007_t.utx
+Loading Texture light_apha from package Textures/WL_3007_t.utx
+Loading Texture 3007_room_32q from package Textures/WL_3007_t.utx
+Exporting objects ...
+Exporting Texture 3007_room_19q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_19q.png
+Exporting Texture 3007_room_30q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_30q.png
+Exporting Texture 3007_room_02q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_02q.png
+Exporting Texture 3007_room_03q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_03q.png
+Exporting Texture 3007_room_08q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_08q.png
+Exporting Texture 3007_room_10q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_10q.png
+Exporting Texture 3007_room_09q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_09q.png
+Exporting Texture 3007_room_05q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_05q.png
+Exporting Texture 3007_room_04q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_04q.png
+Exporting Texture 3007_room_06q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_06q.png
+Exporting Texture 3007_room_11q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_11q.png
+Exporting Texture 3007_room_07q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_07q.png
+Exporting Texture 3007_room_01q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_01q.png
+Exporting Texture 3007_room_18q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_18q.png
+Exporting Texture 3007_room_17q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_17q.png
+Exporting Texture 3007_room_23q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_23q.png
+Exporting Texture 3007_room_16q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_16q.png
+Exporting Texture 3007_room_15q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_15q.png
+Exporting Texture 3007_room_27q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_27q.png
+Exporting Texture 3007_room_26q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_26q.png
+Exporting Texture 3007_room_24q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_24q.png
+Exporting Texture 3007_room_21q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_21q.png
+Exporting Texture 3007_room_12q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_12q.png
+Exporting Texture 3007_room_14q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_14q.png
+Exporting Texture 3007_room_13q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_13q.png
+Exporting Texture 3007_room_20q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_20q.png
+Exporting Texture 3007_room_25q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_25q.png
+Exporting Texture 3007_room_22q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_22q.png
+Exporting Texture 3007_room_29q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_29q.png
+Exporting Texture 3007_room_28q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_28q.png
+Exporting Texture 3007_room_31q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_31q.png
+Exporting Texture 3007_room_33q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_33q.png
+Exporting Texture light_apha to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/light_apha.png
+Exporting Texture 3007_room_32q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3007_t/Texture/3007_room_32q.png
+Memory: allocated 431556 bytes in 82 blocks
+Exported 34/34 objects in 0.2 sec

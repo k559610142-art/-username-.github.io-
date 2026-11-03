@@ -1,0 +1,53 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/HI_mapnpc_t.utx Ver: 128/29 Names: 42 Exports: 23 Imports: 2 Game: 200001
+Loaded in 0.1 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture 1300_flagnpc_001a from package Textures/HI_mapnpc_t.utx
+Loading Texture 8012_thing001 from package Textures/HI_mapnpc_t.utx
+Loading Texture 8012_thing002 from package Textures/HI_mapnpc_t.utx
+Loading Texture 8012_thing005 from package Textures/HI_mapnpc_t.utx
+Loading Texture 1400_house_061a_2 from package Textures/HI_mapnpc_t.utx
+Loading Texture 1400_house_058a_2 from package Textures/HI_mapnpc_t.utx
+Loading Texture 1400_house_064a_2 from package Textures/HI_mapnpc_t.utx
+Loading Texture 1400_house_062a_2 from package Textures/HI_mapnpc_t.utx
+Loading Texture 8012_book_02 from package Textures/HI_mapnpc_t.utx
+Loading Texture 8012_book_02_2 from package Textures/HI_mapnpc_t.utx
+Loading Texture 8012_thing005_2 from package Textures/HI_mapnpc_t.utx
+Loading Texture tommym_002t_2 from package Textures/HI_mapnpc_t.utx
+Loading Texture tommym_004t_2 from package Textures/HI_mapnpc_t.utx
+Loading Texture 8012_thing003 from package Textures/HI_mapnpc_t.utx
+Loading Texture holethings_04_001d_2 from package Textures/HI_mapnpc_t.utx
+Loading Texture holethings_04_002d_2 from package Textures/HI_mapnpc_t.utx
+Loading Texture 8012_stoneeye from package Textures/HI_mapnpc_t.utx
+Loading Texture 1300_mapnpc_001a from package Textures/HI_mapnpc_t.utx
+Loading Texture 8012_stone_13_2d from package Textures/HI_mapnpc_t.utx
+Loading Texture 8012_stone_02_2 from package Textures/HI_mapnpc_t.utx
+Loading Texture map_thing_001a from package Textures/HI_mapnpc_t.utx
+Loading Texture 8012_box_t from package Textures/HI_mapnpc_t.utx
+Loading Texture 8012_box_t2 from package Textures/HI_mapnpc_t.utx
+Exporting objects ...
+Exporting Texture 1300_flagnpc_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_mapnpc_t/Texture/1300_flagnpc_001a.png
+Exporting Texture 8012_thing001 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_mapnpc_t/Texture/8012_thing001.png
+Exporting Texture 8012_thing002 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_mapnpc_t/Texture/8012_thing002.png
+Exporting Texture 8012_thing005 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_mapnpc_t/Texture/8012_thing005.png
+Exporting Texture 1400_house_061a_2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_mapnpc_t/Texture/1400_house_061a_2.png
+Exporting Texture 1400_house_058a_2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_mapnpc_t/Texture/1400_house_058a_2.png
+Exporting Texture 1400_house_064a_2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_mapnpc_t/Texture/1400_house_064a_2.png
+Exporting Texture 1400_house_062a_2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_mapnpc_t/Texture/1400_house_062a_2.png
+Exporting Texture 8012_book_02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_mapnpc_t/Texture/8012_book_02.png
+Exporting Texture 8012_book_02_2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_mapnpc_t/Texture/8012_book_02_2.png
+Exporting Texture 8012_thing005_2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_mapnpc_t/Texture/8012_thing005_2.png
+Exporting Texture tommym_002t_2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_mapnpc_t/Texture/tommym_002t_2.png
+Exporting Texture tommym_004t_2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_mapnpc_t/Texture/tommym_004t_2.png
+Exporting Texture 8012_thing003 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_mapnpc_t/Texture/8012_thing003.png
+Exporting Texture holethings_04_001d_2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_mapnpc_t/Texture/holethings_04_001d_2.png
+Exporting Texture holethings_04_002d_2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_mapnpc_t/Texture/holethings_04_002d_2.png
+Exporting Texture 8012_stoneeye to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_mapnpc_t/Texture/8012_stoneeye.png
+Exporting Texture 1300_mapnpc_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_mapnpc_t/Texture/1300_mapnpc_001a.png
+Exporting Texture 8012_stone_13_2d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_mapnpc_t/Texture/8012_stone_13_2d.png
+Exporting Texture 8012_stone_02_2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_mapnpc_t/Texture/8012_stone_02_2.png
+Exporting Texture map_thing_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_mapnpc_t/Texture/map_thing_001a.png
+Exporting Texture 8012_box_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_mapnpc_t/Texture/8012_box_t.png
+Exporting Texture 8012_box_t2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_mapnpc_t/Texture/8012_box_t2.png
+Memory: allocated 385062 bytes in 71 blocks
+Exported 23/23 objects in 0.3 sec

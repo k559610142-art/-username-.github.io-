@@ -1,0 +1,97 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_3005_t.utx Ver: 128/29 Names: 108 Exports: 52 Imports: 14 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading TexPanner 0056_panner_001b from package Textures/WL_3005_t.utx
+Loading TexPanner 3005_sky_002 from package Textures/WL_3005_t.utx
+Loading TexPanner 3005_SPanner from package Textures/WL_3005_t.utx
+Loading Texture 0056_smok_001b from package Textures/WL_3005_t.utx
+Loading Shader 0056_shader_o_001b from package Textures/WL_3005_t.utx
+Loading Shader 3005_SShader from package Textures/WL_3005_t.utx
+Loading Texture 0056_fire_x_001b from package Textures/WL_3005_t.utx
+Loading TexScaler 0056_cloud_001b from package Textures/WL_3005_t.utx
+Loading TexOscillator 0056_fire_to_001b from package Textures/WL_3005_t.utx
+Loading Texture 3005_sky_color_001b from package Textures/WL_3005_t.utx
+Loading Texture 0056StrongCloud_2 from package Textures/WL_3005_t.utx
+Loading Texture 0056StrongCloud_2 from package Textures/WL_3005_t.utx
+Loading TexScaler 3005_sky_001 from package Textures/WL_3005_t.utx
+Loading Texture 0056_skyxxx_001b from package Textures/WL_3005_t.utx
+Loading TexScaler 3005_Cloud_s from package Textures/WL_3005_t.utx
+Loading Texture 0002_wood_003_b from package Textures/WL_3005_t.utx
+Loading Texture 3005_wood_005_b from package Textures/WL_3005_t.utx
+Loading Texture 3005_wood_001_b from package Textures/WL_3005_t.utx
+Loading Shader 3005_sky_003 from package Textures/WL_3005_t.utx
+Loading Texture air_002a from package Textures/WL_3005_t.utx
+Loading Texture 0001_wall_003_b from package Textures/WL_3005_t.utx
+Loading Texture 0002_roof_007_b from package Textures/WL_3005_t.utx
+Loading Texture 0002_brick_001_b from package Textures/WL_3005_t.utx
+Loading Texture 0002_wood_002_b from package Textures/WL_3005_t.utx
+Loading Texture 0002_roof_008_b from package Textures/WL_3005_t.utx
+Loading Texture 0002_roof_002_b from package Textures/WL_3005_t.utx
+Loading Texture 0002_roof_005_b from package Textures/WL_3005_t.utx
+Loading Texture 0001_wall_002_b from package Textures/WL_3005_t.utx
+Loading Texture 0056_fire_001b from package Textures/WL_3005_t.utx
+Loading FinalBlend 0056_fire_fb_001b from package Textures/WL_3005_t.utx
+Loading Shader 0056_shader_o_001b from package Textures/WL_3005_t.utx
+Loading Texture 0002_wood_001_b from package Textures/WL_3005_t.utx
+Loading Texture 0002_wall_003_b from package Textures/WL_3005_t.utx
+Loading Texture 0002_wall_004_b from package Textures/WL_3005_t.utx
+Loading Texture 0003_hawk_001_b from package Textures/WL_3005_t.utx
+Loading Texture 0002_wall_002_b from package Textures/WL_3005_t.utx
+Loading Texture 0002_door_001_b from package Textures/WL_3005_t.utx
+Loading Texture 0002_roof_006_b from package Textures/WL_3005_t.utx
+Loading TexPanner kumo001 from package Textures/WL_3005_t.utx
+Loading Texture 0002_brick_003_b from package Textures/WL_3005_t.utx
+Loading Texture 0001_wall_004_b from package Textures/WL_3005_t.utx
+Loading Texture 0002_brick_002_b from package Textures/WL_3005_t.utx
+Loading Texture 0001_wall_001_b from package Textures/WL_3005_t.utx
+Loading Texture 3005_bone_001_b from package Textures/WL_3005_t.utx
+Loading Texture 3005_wat_h0b from package Textures/WL_3005_t.utx
+Exporting objects ...
+Exporting TexPanner 0056_panner_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/TexPanner/0056_panner_001b.mat
+Exporting Texture 0056StrongCloud_2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Texture/0056StrongCloud_2.png
+Exporting TexPanner 3005_sky_002 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/TexPanner/3005_sky_002.mat
+Exporting Texture 0056StrongCloud_2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Texture/0056StrongCloud_2.png
+Exporting TexPanner 3005_SPanner to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/TexPanner/3005_SPanner.mat
+Exporting Texture 3005_sky_color_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Texture/3005_sky_color_001b.png
+Exporting Texture 0056_smok_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Texture/0056_smok_001b.png
+Exporting Shader 0056_shader_o_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Shader/0056_shader_o_001b.mat
+Exporting Shader 3005_SShader to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Shader/3005_SShader.mat
+Exporting Texture 0056_fire_x_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Texture/0056_fire_x_001b.png
+Exporting TexScaler 0056_cloud_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/TexScaler/0056_cloud_001b.mat
+Exporting TexOscillator 0056_fire_to_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/TexOscillator/0056_fire_to_001b.mat
+Exporting TexScaler 3005_sky_001 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/TexScaler/3005_sky_001.mat
+Exporting Texture 0056_skyxxx_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Texture/0056_skyxxx_001b.png
+Exporting TexScaler 3005_Cloud_s to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/TexScaler/3005_Cloud_s.mat
+Exporting Texture 0002_wood_003_b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Texture/0002_wood_003_b.png
+Exporting Texture 3005_wood_005_b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Texture/3005_wood_005_b.png
+Exporting Texture 3005_wood_001_b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Texture/3005_wood_001_b.png
+Exporting Shader 3005_sky_003 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Shader/3005_sky_003.mat
+Exporting Texture air_002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Texture/air_002a.png
+Exporting Texture 0001_wall_003_b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Texture/0001_wall_003_b.png
+Exporting Texture 0002_roof_007_b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Texture/0002_roof_007_b.png
+Exporting Texture 0002_brick_001_b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Texture/0002_brick_001_b.png
+Exporting Texture 0002_wood_002_b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Texture/0002_wood_002_b.png
+Exporting Texture 0002_roof_008_b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Texture/0002_roof_008_b.png
+Exporting Texture 0002_roof_002_b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Texture/0002_roof_002_b.png
+Exporting Texture 0002_roof_005_b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Texture/0002_roof_005_b.png
+Exporting Texture 0001_wall_002_b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Texture/0001_wall_002_b.png
+Exporting Texture 0056_fire_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Texture/0056_fire_001b.png
+Exporting FinalBlend 0056_fire_fb_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/FinalBlend/0056_fire_fb_001b.mat
+Exporting Shader 0056_shader_o_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Shader/0056_shader_o_001b.mat
+Exporting Texture 0002_wood_001_b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Texture/0002_wood_001_b.png
+Exporting Texture 0002_wall_003_b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Texture/0002_wall_003_b.png
+Exporting Texture 0002_wall_004_b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Texture/0002_wall_004_b.png
+Exporting Texture 0003_hawk_001_b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Texture/0003_hawk_001_b.png
+Exporting Texture 0002_wall_002_b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Texture/0002_wall_002_b.png
+Exporting Texture 0002_door_001_b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Texture/0002_door_001_b.png
+Exporting Texture 0002_roof_006_b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Texture/0002_roof_006_b.png
+Exporting TexPanner kumo001 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/TexPanner/kumo001.mat
+Exporting Texture 0002_brick_003_b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Texture/0002_brick_003_b.png
+Exporting Texture 0001_wall_004_b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Texture/0001_wall_004_b.png
+Exporting Texture 0002_brick_002_b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Texture/0002_brick_002_b.png
+Exporting Texture 0001_wall_001_b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Texture/0001_wall_001_b.png
+Exporting Texture 3005_bone_001_b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Texture/3005_bone_001_b.png
+Exporting Texture 3005_wat_h0b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3005_t/Texture/3005_wat_h0b.png
+Memory: allocated 530048 bytes in 106 blocks
+Exported 45/45 objects in 0.7 sec

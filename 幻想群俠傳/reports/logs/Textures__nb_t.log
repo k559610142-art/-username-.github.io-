@@ -1,0 +1,230 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/nb_t.utx Ver: 128/29 Names: 128 Exports: 103 Imports: 6 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.01 MBytes serialized in 2 calls.
+Loading Texture nb0602h from package Textures/nb_t.utx
+Loading Texture nb0602g from package Textures/nb_t.utx
+Loading Texture nb0602gb from package Textures/nb_t.utx
+Loading Texture nb0304d from package Textures/nb_t.utx
+Loading Texture nb0304c from package Textures/nb_t.utx
+Loading Texture NB0401a from package Textures/nb_t.utx
+Loading Texture NB0401c from package Textures/nb_t.utx
+Loading Texture NB0401eye_op from package Textures/nb_t.utx
+Loading Texture NB0401b from package Textures/nb_t.utx
+Loading Texture NB0501a from package Textures/nb_t.utx
+Loading Texture NB0501b from package Textures/nb_t.utx
+Loading Texture NB0501c from package Textures/nb_t.utx
+Loading Texture NB0501eye_op from package Textures/nb_t.utx
+Loading Texture nb0304eye_op from package Textures/nb_t.utx
+Loading Texture nb0601a from package Textures/nb_t.utx
+Loading Texture nb0601d from package Textures/nb_t.utx
+Loading Texture nb0601c from package Textures/nb_t.utx
+Loading Texture nb0601e from package Textures/nb_t.utx
+Loading Texture nb0601b from package Textures/nb_t.utx
+Loading Texture nb0601f from package Textures/nb_t.utx
+Loading Texture nb0601g from package Textures/nb_t.utx
+Loading Texture NB0101b from package Textures/nb_t.utx
+Loading Texture NB0101c from package Textures/nb_t.utx
+Loading Texture NB0101a from package Textures/nb_t.utx
+Loading Texture NB0101eye_op from package Textures/nb_t.utx
+Loading Texture nb0304a from package Textures/nb_t.utx
+Loading Texture nb0601h from package Textures/nb_t.utx
+Loading Texture nb0304b from package Textures/nb_t.utx
+Loading Texture nb0301b from package Textures/nb_t.utx
+Loading Texture nb0301a from package Textures/nb_t.utx
+Loading Texture nb0301eye_op from package Textures/nb_t.utx
+Loading Texture nb0301d from package Textures/nb_t.utx
+Loading Texture nb0301c from package Textures/nb_t.utx
+Loading Texture NB0403a from package Textures/nb_t.utx
+Loading Texture NB0403c from package Textures/nb_t.utx
+Loading Texture NB0403eye_op from package Textures/nb_t.utx
+Loading Texture NB0403b from package Textures/nb_t.utx
+Loading Texture NB0101eye_cl from package Textures/nb_t.utx
+Loading Texture NB0102a from package Textures/nb_t.utx
+Loading Texture NB0102b from package Textures/nb_t.utx
+Loading Texture NB0102c from package Textures/nb_t.utx
+Loading Texture NB0102eye_cl from package Textures/nb_t.utx
+Loading Texture NB0102eye_op from package Textures/nb_t.utx
+Loading Texture NB0103a from package Textures/nb_t.utx
+Loading Texture NB0103b from package Textures/nb_t.utx
+Loading Texture NB0103c from package Textures/nb_t.utx
+Loading Texture NB0103eye_cl from package Textures/nb_t.utx
+Loading Texture NB0103eye_op from package Textures/nb_t.utx
+Loading Texture NB0104a from package Textures/nb_t.utx
+Loading Texture NB0104b from package Textures/nb_t.utx
+Loading Texture NB0104c from package Textures/nb_t.utx
+Loading Texture NB0104eye_cl from package Textures/nb_t.utx
+Loading Texture NB0104eye_op from package Textures/nb_t.utx
+Loading Texture NB0105a from package Textures/nb_t.utx
+Loading Texture NB0105b from package Textures/nb_t.utx
+Loading Texture NB0105c from package Textures/nb_t.utx
+Loading Texture NB0105eye_cl from package Textures/nb_t.utx
+Loading Texture NB0105eye_op from package Textures/nb_t.utx
+Loading Texture nb0301eye_cl from package Textures/nb_t.utx
+Loading Texture nb0302a from package Textures/nb_t.utx
+Loading Texture nb0302b from package Textures/nb_t.utx
+Loading Texture nb0302d from package Textures/nb_t.utx
+Loading Texture nb0302eye_cl from package Textures/nb_t.utx
+Loading Texture nb0302eye_op from package Textures/nb_t.utx
+Loading Texture nb0303a from package Textures/nb_t.utx
+Loading Texture nb0303b from package Textures/nb_t.utx
+Loading Texture nb0303c from package Textures/nb_t.utx
+Loading Texture nb0303d from package Textures/nb_t.utx
+Loading Texture nb0303eye_cl from package Textures/nb_t.utx
+Loading Texture nb0303eye_op from package Textures/nb_t.utx
+Loading Texture nb0304eye_cl from package Textures/nb_t.utx
+Loading Texture NB0503eye_op from package Textures/nb_t.utx
+Loading Texture NB0501eye_cl from package Textures/nb_t.utx
+Loading Texture NB0502a from package Textures/nb_t.utx
+Loading Texture NB0502b from package Textures/nb_t.utx
+Loading Texture NB0502c from package Textures/nb_t.utx
+Loading Texture NB0502eye_cl from package Textures/nb_t.utx
+Loading Texture NB0502eye_op from package Textures/nb_t.utx
+Loading Texture NB0503a from package Textures/nb_t.utx
+Loading Texture NB0503b from package Textures/nb_t.utx
+Loading Texture NB0503c from package Textures/nb_t.utx
+Loading Texture NB0503eye_cl from package Textures/nb_t.utx
+Loading Texture NB0504eye_op from package Textures/nb_t.utx
+Loading Texture NB0403eye_cl from package Textures/nb_t.utx
+Loading Texture NB0504a from package Textures/nb_t.utx
+Loading Texture NB0504b from package Textures/nb_t.utx
+Loading Texture NB0504c from package Textures/nb_t.utx
+Loading Texture NB0504eye_cl from package Textures/nb_t.utx
+Loading Texture NB0402eye_op from package Textures/nb_t.utx
+Loading Texture NB0401eye_cl from package Textures/nb_t.utx
+Loading Texture NB0402a from package Textures/nb_t.utx
+Loading Texture NB0402b from package Textures/nb_t.utx
+Loading Texture NB0402c from package Textures/nb_t.utx
+Loading Texture NB0402eye_cl from package Textures/nb_t.utx
+Loading Texture nb0602a from package Textures/nb_t.utx
+Loading Texture nb0602b from package Textures/nb_t.utx
+Loading Texture nb0602c from package Textures/nb_t.utx
+Loading Texture nb0602d from package Textures/nb_t.utx
+Loading Texture nb0602e from package Textures/nb_t.utx
+Loading Texture nb0602f from package Textures/nb_t.utx
+Loading Texture nb0302c from package Textures/nb_t.utx
+Loading Shader nb0602hx from package Textures/nb_t.utx
+Loading package: Textures/nf_t.utx Ver: 128/29 Names: 277 Exports: 209 Imports: 17 Game: 200001
+Loading Shader nb0602gx from package Textures/nb_t.utx
+Loading TexEnvMap R from package Textures/nf_t.utx
+Loading Cubemap LightCubemap from package Textures/nf_t.utx
+Loading Texture 00 from package Textures/nf_t.utx
+Loading Texture 01 from package Textures/nf_t.utx
+Loading Texture 02 from package Textures/nf_t.utx
+Loading Texture 03 from package Textures/nf_t.utx
+Loading Texture 04 from package Textures/nf_t.utx
+Loading Texture 05 from package Textures/nf_t.utx
+Loading Palette Palette0 from package Textures/nf_t.utx
+Exporting objects ...
+Exporting Texture nb0602h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0602h.png
+Exporting Texture nb0602g to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0602g.png
+Exporting Texture nb0602gb to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0602gb.png
+Exporting Texture nb0304d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0304d.png
+Exporting Texture nb0304c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0304c.png
+Exporting Texture NB0401a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0401a.png
+Exporting Texture NB0401c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0401c.png
+Exporting Texture NB0401eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0401eye_op.png
+Exporting Texture NB0401b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0401b.png
+Exporting Texture NB0501a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0501a.png
+Exporting Texture NB0501b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0501b.png
+Exporting Texture NB0501c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0501c.png
+Exporting Texture NB0501eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0501eye_op.png
+Exporting Texture nb0304eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0304eye_op.png
+Exporting Texture nb0601a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0601a.png
+Exporting Texture nb0601d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0601d.png
+Exporting Texture nb0601c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0601c.png
+Exporting Texture nb0601e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0601e.png
+Exporting Texture nb0601b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0601b.png
+Exporting Texture nb0601f to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0601f.png
+Exporting Texture nb0601g to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0601g.png
+Exporting Texture NB0101b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0101b.png
+Exporting Texture NB0101c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0101c.png
+Exporting Texture NB0101a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0101a.png
+Exporting Texture NB0101eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0101eye_op.png
+Exporting Texture nb0304a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0304a.png
+Exporting Texture nb0601h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0601h.png
+Exporting Texture nb0304b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0304b.png
+Exporting Texture nb0301b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0301b.png
+Exporting Texture nb0301a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0301a.png
+Exporting Texture nb0301eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0301eye_op.png
+Exporting Texture nb0301d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0301d.png
+Exporting Texture nb0301c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0301c.png
+Exporting Texture NB0403a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0403a.png
+Exporting Texture NB0403c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0403c.png
+Exporting Texture NB0403eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0403eye_op.png
+Exporting Texture NB0403b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0403b.png
+Exporting Texture NB0101eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0101eye_cl.png
+Exporting Texture NB0102a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0102a.png
+Exporting Texture NB0102b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0102b.png
+Exporting Texture NB0102c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0102c.png
+Exporting Texture NB0102eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0102eye_cl.png
+Exporting Texture NB0102eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0102eye_op.png
+Exporting Texture NB0103a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0103a.png
+Exporting Texture NB0103b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0103b.png
+Exporting Texture NB0103c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0103c.png
+Exporting Texture NB0103eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0103eye_cl.png
+Exporting Texture NB0103eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0103eye_op.png
+Exporting Texture NB0104a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0104a.png
+Exporting Texture NB0104b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0104b.png
+Exporting Texture NB0104c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0104c.png
+Exporting Texture NB0104eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0104eye_cl.png
+Exporting Texture NB0104eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0104eye_op.png
+Exporting Texture NB0105a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0105a.png
+Exporting Texture NB0105b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0105b.png
+Exporting Texture NB0105c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0105c.png
+Exporting Texture NB0105eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0105eye_cl.png
+Exporting Texture NB0105eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0105eye_op.png
+Exporting Texture nb0301eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0301eye_cl.png
+Exporting Texture nb0302a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0302a.png
+Exporting Texture nb0302b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0302b.png
+Exporting Texture nb0302d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0302d.png
+Exporting Texture nb0302eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0302eye_cl.png
+Exporting Texture nb0302eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0302eye_op.png
+Exporting Texture nb0303a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0303a.png
+Exporting Texture nb0303b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0303b.png
+Exporting Texture nb0303c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0303c.png
+Exporting Texture nb0303d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0303d.png
+Exporting Texture nb0303eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0303eye_cl.png
+Exporting Texture nb0303eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0303eye_op.png
+Exporting Texture nb0304eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0304eye_cl.png
+Exporting Texture NB0503eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0503eye_op.png
+Exporting Texture NB0501eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0501eye_cl.png
+Exporting Texture NB0502a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0502a.png
+Exporting Texture NB0502b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0502b.png
+Exporting Texture NB0502c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0502c.png
+Exporting Texture NB0502eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0502eye_cl.png
+Exporting Texture NB0502eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0502eye_op.png
+Exporting Texture NB0503a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0503a.png
+Exporting Texture NB0503b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0503b.png
+Exporting Texture NB0503c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0503c.png
+Exporting Texture NB0503eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0503eye_cl.png
+Exporting Texture NB0504eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0504eye_op.png
+Exporting Texture NB0403eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0403eye_cl.png
+Exporting Texture NB0504a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0504a.png
+Exporting Texture NB0504b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0504b.png
+Exporting Texture NB0504c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0504c.png
+Exporting Texture NB0504eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0504eye_cl.png
+Exporting Texture NB0402eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0402eye_op.png
+Exporting Texture NB0401eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0401eye_cl.png
+Exporting Texture NB0402a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0402a.png
+Exporting Texture NB0402b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0402b.png
+Exporting Texture NB0402c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0402c.png
+Exporting Texture NB0402eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/NB0402eye_cl.png
+Exporting Texture nb0602a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0602a.png
+Exporting Texture nb0602b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0602b.png
+Exporting Texture nb0602c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0602c.png
+Exporting Texture nb0602d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0602d.png
+Exporting Texture nb0602e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0602e.png
+Exporting Texture nb0602f to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0602f.png
+Exporting Texture nb0302c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Texture/nb0302c.png
+Exporting Shader nb0602hx to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Shader/nb0602hx.mat
+Exporting Shader nb0602gx to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nb_t/Shader/nb0602gx.mat
+Exporting TexEnvMap R to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nf_t/TexEnvMap/R.mat
+Exporting Texture 00 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nf_t/Texture/00.png
+Exporting Texture 01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nf_t/Texture/01.png
+Exporting Texture 02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nf_t/Texture/02.png
+Exporting Texture 03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nf_t/Texture/03.png
+Exporting Texture 04 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nf_t/Texture/04.png
+Exporting Texture 05 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/nf_t/Texture/05.png
+Memory: allocated 766646 bytes in 168 blocks
+Exported 110/110 objects in 0.8 sec

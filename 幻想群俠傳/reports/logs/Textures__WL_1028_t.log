@@ -1,0 +1,9 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_1028_t.utx Ver: 128/29 Names: 18 Exports: 1 Imports: 2 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture beach_2 from package Textures/WL_1028_t.utx
+Exporting objects ...
+Exporting Texture beach_2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1028_t/Texture/beach_2.png
+Memory: allocated 293948 bytes in 49 blocks
+Exported 1/1 objects in 0.0 sec

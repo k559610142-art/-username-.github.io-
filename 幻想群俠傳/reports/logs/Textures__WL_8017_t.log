@@ -1,0 +1,94 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_8017_t.utx Ver: 128/29 Names: 91 Exports: 49 Imports: 10 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture 8003_sky_003a from package Textures/WL_8017_t.utx
+Loading TexPanner SPanner from package Textures/WL_8017_t.utx
+Loading package: Textures/HI_sky_t.utx Ver: 128/29 Names: 72 Exports: 28 Imports: 8 Game: 200001
+Loading Shader SShader from package Textures/WL_8017_t.utx
+Loading Texture 1400_palace_006a from package Textures/WL_8017_t.utx
+Loading Texture 1300_a06h from package Textures/WL_8017_t.utx
+Loading Texture 1401_in05y from package Textures/WL_8017_t.utx
+Loading Texture 1401_in07y from package Textures/WL_8017_t.utx
+Loading Texture 8020_cloud_002a from package Textures/WL_8017_t.utx
+Loading Texture 1401_in03y from package Textures/WL_8017_t.utx
+Loading Texture 1401_in11y from package Textures/WL_8017_t.utx
+Loading Texture 1401_in09y from package Textures/WL_8017_t.utx
+Loading Texture 1401_in08y from package Textures/WL_8017_t.utx
+Loading Texture 1401_in04y from package Textures/WL_8017_t.utx
+Loading Texture 1401_in12y from package Textures/WL_8017_t.utx
+Loading Texture 1400_house_103a from package Textures/WL_8017_t.utx
+Loading Texture 1400_house_007a from package Textures/WL_8017_t.utx
+Loading Texture 1400_house_105a from package Textures/WL_8017_t.utx
+Loading Texture 1400_house_065a from package Textures/WL_8017_t.utx
+Loading Texture 1400_house_012a from package Textures/WL_8017_t.utx
+Loading Texture 1400_house_014a from package Textures/WL_8017_t.utx
+Loading Texture 1400_palace_008a from package Textures/WL_8017_t.utx
+Loading Texture 1700_object_002z from package Textures/WL_8017_t.utx
+Loading Texture 1401_in02y from package Textures/WL_8017_t.utx
+Loading Texture 1401_in15y from package Textures/WL_8017_t.utx
+Loading Texture 1400_house_003a from package Textures/WL_8017_t.utx
+Loading Texture 1400_house_001a from package Textures/WL_8017_t.utx
+Loading Texture 1400_house_004a from package Textures/WL_8017_t.utx
+Loading Texture 1300_house_021a from package Textures/WL_8017_t.utx
+Loading Texture 1300_door_034a from package Textures/WL_8017_t.utx
+Loading Texture 1400_house_002a from package Textures/WL_8017_t.utx
+Loading Texture 1300_door_036a from package Textures/WL_8017_t.utx
+Loading Texture 1401_in10y from package Textures/WL_8017_t.utx
+Loading Texture 1400_palace_002a from package Textures/WL_8017_t.utx
+Loading Texture 1400_house_070a from package Textures/WL_8017_t.utx
+Loading Texture 1401_in06y from package Textures/WL_8017_t.utx
+Loading Texture 1401_in13y from package Textures/WL_8017_t.utx
+Loading Texture 1401_in14y from package Textures/WL_8017_t.utx
+Loading Texture door_open from package Textures/WL_8017_t.utx
+Loading Texture 1401_in01y from package Textures/WL_8017_t.utx
+Loading Texture 1400_house_010a from package Textures/WL_8017_t.utx
+Loading Texture 8020_cloud_001a from package Textures/WL_8017_t.utx
+Loading TexScaler Cloud_s from package Textures/HI_sky_t.utx
+Loading Texture StrongCloud_2 from package Textures/HI_sky_t.utx
+Exporting objects ...
+Exporting Texture 8003_sky_003a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/8003_sky_003a.png
+Exporting TexPanner SPanner to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/TexPanner/SPanner.mat
+Exporting Texture StrongCloud_2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_sky_t/Texture/StrongCloud_2.png
+Exporting Shader SShader to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Shader/SShader.mat
+Exporting Texture 1400_palace_006a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1400_palace_006a.png
+Exporting Texture 1300_a06h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1300_a06h.png
+Exporting Texture 1401_in05y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1401_in05y.png
+Exporting Texture 1401_in07y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1401_in07y.png
+Exporting Texture 8020_cloud_002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/8020_cloud_002a.png
+Exporting Texture 1401_in03y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1401_in03y.png
+Exporting Texture 1401_in11y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1401_in11y.png
+Exporting Texture 1401_in09y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1401_in09y.png
+Exporting Texture 1401_in08y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1401_in08y.png
+Exporting Texture 1401_in04y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1401_in04y.png
+Exporting Texture 1401_in12y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1401_in12y.png
+Exporting Texture 1400_house_103a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1400_house_103a.png
+Exporting Texture 1400_house_007a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1400_house_007a.png
+Exporting Texture 1400_house_105a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1400_house_105a.png
+Exporting Texture 1400_house_065a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1400_house_065a.png
+Exporting Texture 1400_house_012a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1400_house_012a.png
+Exporting Texture 1400_house_014a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1400_house_014a.png
+Exporting Texture 1400_palace_008a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1400_palace_008a.png
+Exporting Texture 1700_object_002z to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1700_object_002z.png
+Exporting Texture 1401_in02y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1401_in02y.png
+Exporting Texture 1401_in15y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1401_in15y.png
+Exporting Texture 1400_house_003a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1400_house_003a.png
+Exporting Texture 1400_house_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1400_house_001a.png
+Exporting Texture 1400_house_004a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1400_house_004a.png
+Exporting Texture 1300_house_021a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1300_house_021a.png
+Exporting Texture 1300_door_034a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1300_door_034a.png
+Exporting Texture 1400_house_002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1400_house_002a.png
+Exporting Texture 1300_door_036a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1300_door_036a.png
+Exporting Texture 1401_in10y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1401_in10y.png
+Exporting Texture 1400_palace_002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1400_palace_002a.png
+Exporting Texture 1400_house_070a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1400_house_070a.png
+Exporting Texture 1401_in06y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1401_in06y.png
+Exporting Texture 1401_in13y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1401_in13y.png
+Exporting Texture 1401_in14y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1401_in14y.png
+Exporting Texture door_open to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/door_open.png
+Exporting Texture 1401_in01y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1401_in01y.png
+Exporting Texture 1400_house_010a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/1400_house_010a.png
+Exporting Texture 8020_cloud_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8017_t/Texture/8020_cloud_001a.png
+Exporting TexScaler Cloud_s to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_sky_t/TexScaler/Cloud_s.mat
+Memory: allocated 482459 bytes in 101 blocks
+Exported 43/43 objects in 0.2 sec

@@ -1,0 +1,128 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_1029_t.utx Ver: 128/29 Names: 121 Exports: 59 Imports: 18 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.01 MBytes serialized in 2 calls.
+Loading TexPanner Water_01panner_a2 from package Textures/WL_1029_t.utx
+Loading TexPanner Water_01panner_a from package Textures/WL_1029_t.utx
+Loading Texture 1029_waterfall01y from package Textures/WL_1029_t.utx
+Loading Texture 1029_wnder_cool_002b from package Textures/WL_1029_t.utx
+Loading Texture 1029_tree02y from package Textures/WL_1029_t.utx
+Loading Texture 1029_tree03y from package Textures/WL_1029_t.utx
+Loading Texture 1029_Nmain07_alpha from package Textures/WL_1029_t.utx
+Loading TexEnvMap 1029_xox_001b from package Textures/WL_1029_t.utx
+Loading Texture 1029_grass02y from package Textures/WL_1029_t.utx
+Loading Texture 1029_Nmain07y from package Textures/WL_1029_t.utx
+Loading TexScaler Water_01A_scaler from package Textures/WL_1029_t.utx
+Loading Texture 1029_grass01y from package Textures/WL_1029_t.utx
+Loading Texture 1029Nmain10y from package Textures/WL_1029_t.utx
+Loading Texture 1029_HYFX00012b from package Textures/WL_1029_t.utx
+Loading TexRotator 1029_grass02y_ro from package Textures/WL_1029_t.utx
+Loading Texture 1029_main015y from package Textures/WL_1029_t.utx
+Loading Texture 1029_main016y from package Textures/WL_1029_t.utx
+Loading Texture 1029_Nmain02y from package Textures/WL_1029_t.utx
+Loading Texture 1029_Nmain01y from package Textures/WL_1029_t.utx
+Loading Texture 1029_Nmain09y from package Textures/WL_1029_t.utx
+Loading Texture 1029main_y009 from package Textures/WL_1029_t.utx
+Loading Texture 1029_main013y from package Textures/WL_1029_t.utx
+Loading Texture channels01 from package Textures/WL_1029_t.utx
+Loading Texture 1029_main026y from package Textures/WL_1029_t.utx
+Loading Texture 1029_main017y from package Textures/WL_1029_t.utx
+Loading Texture 1029_main021y from package Textures/WL_1029_t.utx
+Loading Shader 1029_Nmain07_re from package Textures/WL_1029_t.utx
+Loading Texture 1029_water_bule_002b from package Textures/WL_1029_t.utx
+Loading TexRotator 1029_tree03_mov from package Textures/WL_1029_t.utx
+Loading TexRotator 1029_tree2_mov from package Textures/WL_1029_t.utx
+Loading Texture 1029_Nmain08y from package Textures/WL_1029_t.utx
+Loading Texture 1029_Nmain03y from package Textures/WL_1029_t.utx
+Loading Texture 1029_Nmain04y from package Textures/WL_1029_t.utx
+Loading Texture 1029_main003y from package Textures/WL_1029_t.utx
+Loading Texture 1029_main002y from package Textures/WL_1029_t.utx
+Loading Texture 1029_Nmain05y from package Textures/WL_1029_t.utx
+Loading Texture 1029_main004y from package Textures/WL_1029_t.utx
+Loading Texture 1029_main014y from package Textures/WL_1029_t.utx
+Loading Texture 1029_Nmain06y from package Textures/WL_1029_t.utx
+Loading Texture 1029_main001y from package Textures/WL_1029_t.utx
+Loading Texture 1029_main006y from package Textures/WL_1029_t.utx
+Loading Texture 1029_bridgr01y from package Textures/WL_1029_t.utx
+Loading Texture 1029_background from package Textures/WL_1029_t.utx
+Loading Texture 1029base01y from package Textures/WL_1029_t.utx
+Loading Shader Water_01bShader from package Textures/WL_1029_t.utx
+Loading package: Textures/HI_Floor_t.utx Ver: 128/29 Names: 505 Exports: 451 Imports: 11 Game: 200001
+Loading Texture 1029_object01y from package Textures/WL_1029_t.utx
+Loading Texture 1029_floor05y from package Textures/WL_1029_t.utx
+Loading Texture 1029_floor01y from package Textures/WL_1029_t.utx
+Loading Texture 1029_floor02y from package Textures/WL_1029_t.utx
+Loading Texture 1029_floor04y from package Textures/WL_1029_t.utx
+Loading Texture 1029_tree01y from package Textures/WL_1029_t.utx
+Loading TexRotator 1029_grass01_ro from package Textures/WL_1029_t.utx
+Loading TexEnvMap texenvmap01 from package Textures/HI_Floor_t.utx
+Loading Cubemap cubemap01 from package Textures/HI_Floor_t.utx
+Loading Texture wat0 from package Textures/HI_Floor_t.utx
+Loading Texture wat1 from package Textures/HI_Floor_t.utx
+Loading Texture wat2 from package Textures/HI_Floor_t.utx
+Loading Texture wat3 from package Textures/HI_Floor_t.utx
+Loading Texture wat4 from package Textures/HI_Floor_t.utx
+Loading Texture wat5 from package Textures/HI_Floor_t.utx
+Loading Palette Palette0 from package Textures/HI_Floor_t.utx
+Exporting objects ...
+Exporting TexPanner Water_01panner_a2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/TexPanner/Water_01panner_a2.mat
+Exporting Texture 1029_waterfall01y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_waterfall01y.png
+Exporting TexPanner Water_01panner_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/TexPanner/Water_01panner_a.mat
+Exporting Texture 1029_wnder_cool_002b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_wnder_cool_002b.png
+Exporting Texture 1029_tree02y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_tree02y.png
+Exporting Texture 1029_tree03y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_tree03y.png
+Exporting Texture 1029_Nmain07_alpha to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_Nmain07_alpha.png
+Exporting TexEnvMap 1029_xox_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/TexEnvMap/1029_xox_001b.mat
+Exporting Texture 1029_grass02y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_grass02y.png
+Exporting Texture 1029_Nmain07y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_Nmain07y.png
+Exporting TexScaler Water_01A_scaler to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/TexScaler/Water_01A_scaler.mat
+Exporting Texture 1029_grass01y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_grass01y.png
+Exporting Texture 1029Nmain10y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029Nmain10y.png
+Exporting Texture 1029_HYFX00012b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_HYFX00012b.png
+Exporting TexRotator 1029_grass02y_ro to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/TexRotator/1029_grass02y_ro.mat
+Exporting Texture 1029_main015y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_main015y.png
+Exporting Texture 1029_main016y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_main016y.png
+Exporting Texture 1029_Nmain02y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_Nmain02y.png
+Exporting Texture 1029_Nmain01y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_Nmain01y.png
+Exporting Texture 1029_Nmain09y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_Nmain09y.png
+Exporting Texture 1029main_y009 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029main_y009.png
+Exporting Texture 1029_main013y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_main013y.png
+Exporting Texture channels01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/channels01.png
+Exporting Texture 1029_main026y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_main026y.png
+Exporting Texture 1029_main017y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_main017y.png
+Exporting Texture 1029_main021y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_main021y.png
+Exporting Shader 1029_Nmain07_re to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Shader/1029_Nmain07_re.mat
+Exporting Texture 1029_water_bule_002b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_water_bule_002b.png
+Exporting TexRotator 1029_tree03_mov to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/TexRotator/1029_tree03_mov.mat
+Exporting TexRotator 1029_tree2_mov to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/TexRotator/1029_tree2_mov.mat
+Exporting Texture 1029_Nmain08y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_Nmain08y.png
+Exporting Texture 1029_Nmain03y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_Nmain03y.png
+Exporting Texture 1029_Nmain04y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_Nmain04y.png
+Exporting Texture 1029_main003y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_main003y.png
+Exporting Texture 1029_main002y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_main002y.png
+Exporting Texture 1029_Nmain05y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_Nmain05y.png
+Exporting Texture 1029_main004y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_main004y.png
+Exporting Texture 1029_main014y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_main014y.png
+Exporting Texture 1029_Nmain06y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_Nmain06y.png
+Exporting Texture 1029_main001y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_main001y.png
+Exporting Texture 1029_main006y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_main006y.png
+Exporting Texture 1029_bridgr01y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_bridgr01y.png
+Exporting Texture 1029_background to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_background.png
+Exporting Texture 1029base01y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029base01y.png
+Exporting Shader Water_01bShader to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Shader/Water_01bShader.mat
+Exporting Texture 1029_object01y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_object01y.png
+Exporting Texture 1029_floor05y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_floor05y.png
+Exporting Texture 1029_floor01y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_floor01y.png
+Exporting Texture 1029_floor02y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_floor02y.png
+Exporting Texture 1029_floor04y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_floor04y.png
+Exporting Texture 1029_tree01y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/Texture/1029_tree01y.png
+Exporting TexRotator 1029_grass01_ro to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1029_t/TexRotator/1029_grass01_ro.mat
+Exporting TexEnvMap texenvmap01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/TexEnvMap/texenvmap01.mat
+Exporting Texture wat0 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/Texture/wat0.png
+Exporting Texture wat1 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/Texture/wat1.png
+Exporting Texture wat2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/Texture/wat2.png
+Exporting Texture wat3 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/Texture/wat3.png
+Exporting Texture wat4 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/Texture/wat4.png
+Exporting Texture wat5 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/Texture/wat5.png
+Memory: allocated 598381 bytes in 125 blocks
+Exported 59/59 objects in 0.8 sec

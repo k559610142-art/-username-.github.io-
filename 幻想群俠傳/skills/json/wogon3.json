@@ -1,0 +1,201 @@
+{
+  "source": {
+    "file": "HyData/wogon3.dat",
+    "bytes": 1060,
+    "sha256": "1f81c9c170c0a3c9fee563277b27977a7805ecfdd84e2311683ac349cb4267c4",
+    "status": "保留原始二進位，未確認欄位結構"
+  },
+  "header": {
+    "version": 1,
+    "count": 16,
+    "stride": 66
+  },
+  "schema": {
+    "kind": "武功條件訊息",
+    "stride": 66,
+    "idBytes": 1,
+    "description": [
+      4,
+      62
+    ]
+  },
+  "numericSemantics": "未經原始碼確認；保留 rawHex，不將未知數值臆測成傷害或冷卻。",
+  "records": [
+    {
+      "source": "HyData/wogon3.dat",
+      "index": 0,
+      "offset": 4,
+      "id": 1,
+      "kind": "武功條件訊息",
+      "name": "",
+      "description": "需施展外功才能發動^N",
+      "asciiCodes": [],
+      "rawHex": "01010000bbddac49ae69a57ea55ca47eafe0b56fb0ca5e4e000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "HyData/wogon3.dat",
+      "index": 1,
+      "offset": 70,
+      "id": 2,
+      "kind": "武功條件訊息",
+      "name": "",
+      "description": "需在門派絕招狀態下才可施展",
+      "asciiCodes": [],
+      "rawHex": "02026500bbdda662aaf9aca3b5b4a9dbaaacba41a455a47ea569ac49ae69000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "HyData/wogon3.dat",
+      "index": 2,
+      "offset": 136,
+      "id": 3,
+      "kind": "武功條件訊息",
+      "name": "",
+      "description": "需在門派絕招狀態下才可施展",
+      "asciiCodes": [],
+      "rawHex": "03026600bbdda662aaf9aca3b5b4a9dbaaacba41a455a47ea569ac49ae69000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "HyData/wogon3.dat",
+      "index": 3,
+      "offset": 202,
+      "id": 4,
+      "kind": "武功條件訊息",
+      "name": "",
+      "description": "需在門派絕招狀態下才可施展",
+      "asciiCodes": [],
+      "rawHex": "04026700bbdda662aaf9aca3b5b4a9dbaaacba41a455a47ea569ac49ae69000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "HyData/wogon3.dat",
+      "index": 4,
+      "offset": 268,
+      "id": 5,
+      "kind": "武功條件訊息",
+      "name": "",
+      "description": "需在門派絕招狀態下才可施展",
+      "asciiCodes": [],
+      "rawHex": "05026800bbdda662aaf9aca3b5b4a9dbaaacba41a455a47ea569ac49ae69000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "HyData/wogon3.dat",
+      "index": 5,
+      "offset": 334,
+      "id": 6,
+      "kind": "武功條件訊息",
+      "name": "",
+      "description": "沒有伴侶無法使用",
+      "asciiCodes": [],
+      "rawHex": "06030000a853a6b3a6f1ab51b54caa6ba8cfa5ce00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "HyData/wogon3.dat",
+      "index": 6,
+      "offset": 400,
+      "id": 7,
+      "kind": "武功條件訊息",
+      "name": "",
+      "description": "親密度不足無法使用",
+      "asciiCodes": [],
+      "rawHex": "07060000bfcbb14babd7a4a3a8acb54caa6ba8cfa5ce0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "HyData/wogon3.dat",
+      "index": 7,
+      "offset": 466,
+      "id": 8,
+      "kind": "武功條件訊息",
+      "name": "",
+      "description": "伴侶離線無法使用",
+      "asciiCodes": [],
+      "rawHex": "08070000a6f1ab51c2f7bd75b54caa6ba8cfa5ce00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "HyData/wogon3.dat",
+      "index": 8,
+      "offset": 532,
+      "id": 9,
+      "kind": "武功條件訊息",
+      "name": "",
+      "description": "尚未結婚無法使用",
+      "asciiCodes": [],
+      "rawHex": "09040000a97ca5bcb5b2b142b54caa6ba8cfa5ce00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "HyData/wogon3.dat",
+      "index": 9,
+      "offset": 598,
+      "id": 10,
+      "kind": "武功條件訊息",
+      "name": "",
+      "description": "親密度不足無法使用",
+      "asciiCodes": [],
+      "rawHex": "0a050000bfcbb14babd7a4a3a8acb54caa6ba8cfa5ce0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "HyData/wogon3.dat",
+      "index": 10,
+      "offset": 664,
+      "id": 11,
+      "kind": "武功條件訊息",
+      "name": "",
+      "description": "沒有目標無法使用",
+      "asciiCodes": [],
+      "rawHex": "0b080000a853a6b3a5d8bcd0b54caa6ba8cfa5ce00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "HyData/wogon3.dat",
+      "index": 11,
+      "offset": 730,
+      "id": 12,
+      "kind": "武功條件訊息",
+      "name": "",
+      "description": "沒有目標或與目標並非夫妻",
+      "asciiCodes": [],
+      "rawHex": "0c090000a853a6b3a5d8bcd0a9cebb50a5d8bcd0a8c3ab44a4d2a9640000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "HyData/wogon3.dat",
+      "index": 12,
+      "offset": 796,
+      "id": 13,
+      "kind": "武功條件訊息",
+      "name": "",
+      "description": "需開啟刀法外功",
+      "asciiCodes": [],
+      "rawHex": "0d0a0000bbddb67db1d2a44daa6ba57ea55c000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "HyData/wogon3.dat",
+      "index": 13,
+      "offset": 862,
+      "id": 14,
+      "kind": "武功條件訊息",
+      "name": "",
+      "description": "需開啟拳法外功",
+      "asciiCodes": [],
+      "rawHex": "0e0b0000bbddb67db1d2aeb1aa6ba57ea55c000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "HyData/wogon3.dat",
+      "index": 14,
+      "offset": 928,
+      "id": 15,
+      "kind": "武功條件訊息",
+      "name": "",
+      "description": "需開啟槍法外功",
+      "asciiCodes": [],
+      "rawHex": "0f0c0000bbddb67db1d2ba6aaa6ba57ea55c000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "HyData/wogon3.dat",
+      "index": 15,
+      "offset": 994,
+      "id": 16,
+      "kind": "武功條件訊息",
+      "name": "",
+      "description": "只能對隊友施放",
+      "asciiCodes": [],
+      "rawHex": "100d0000a575afe0b9efb6a4a4cdac49a9f1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ]
+}

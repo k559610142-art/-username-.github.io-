@@ -1,0 +1,23 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/DE_t.utx Ver: 128/29 Names: 27 Exports: 8 Imports: 2 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture DE0702a from package Textures/DE_t.utx
+Loading Texture de0301a from package Textures/DE_t.utx
+Loading Texture de0402a from package Textures/DE_t.utx
+Loading Texture de0401a from package Textures/DE_t.utx
+Loading Texture de0302a from package Textures/DE_t.utx
+Loading Texture de0501a from package Textures/DE_t.utx
+Loading Texture de0501b from package Textures/DE_t.utx
+Loading Texture DE0701a from package Textures/DE_t.utx
+Exporting objects ...
+Exporting Texture DE0702a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DE_t/Texture/DE0702a.png
+Exporting Texture de0301a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DE_t/Texture/de0301a.png
+Exporting Texture de0402a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DE_t/Texture/de0402a.png
+Exporting Texture de0401a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DE_t/Texture/de0401a.png
+Exporting Texture de0302a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DE_t/Texture/de0302a.png
+Exporting Texture de0501a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DE_t/Texture/de0501a.png
+Exporting Texture de0501b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DE_t/Texture/de0501b.png
+Exporting Texture DE0701a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DE_t/Texture/DE0701a.png
+Memory: allocated 323015 bytes in 56 blocks
+Exported 8/8 objects in 0.2 sec

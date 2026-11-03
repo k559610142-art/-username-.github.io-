@@ -1,0 +1,25 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_8015_t.utx Ver: 128/29 Names: 33 Exports: 9 Imports: 3 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture 9463_gallery_a02h from package Textures/WL_8015_t.utx
+Loading Texture 9463_gallery_a02h_a from package Textures/WL_8015_t.utx
+Loading Texture 8015_active_001h from package Textures/WL_8015_t.utx
+Loading Texture 8047_ghostden_a06h from package Textures/WL_8015_t.utx
+Loading Texture 8015_active_004h from package Textures/WL_8015_t.utx
+Loading Shader 9463_gallery_a02h_light from package Textures/WL_8015_t.utx
+Loading Texture 8015_active_002h from package Textures/WL_8015_t.utx
+Loading Texture 8015_active_003h from package Textures/WL_8015_t.utx
+Loading Texture 8015_active_005h from package Textures/WL_8015_t.utx
+Exporting objects ...
+Exporting Texture 9463_gallery_a02h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8015_t/Texture/9463_gallery_a02h.png
+Exporting Texture 9463_gallery_a02h_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8015_t/Texture/9463_gallery_a02h_a.png
+Exporting Texture 8015_active_001h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8015_t/Texture/8015_active_001h.png
+Exporting Texture 8047_ghostden_a06h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8015_t/Texture/8047_ghostden_a06h.png
+Exporting Texture 8015_active_004h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8015_t/Texture/8015_active_004h.png
+Exporting Shader 9463_gallery_a02h_light to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8015_t/Shader/9463_gallery_a02h_light.mat
+Exporting Texture 8015_active_002h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8015_t/Texture/8015_active_002h.png
+Exporting Texture 8015_active_003h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8015_t/Texture/8015_active_003h.png
+Exporting Texture 8015_active_005h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8015_t/Texture/8015_active_005h.png
+Memory: allocated 331288 bytes in 58 blocks
+Exported 9/9 objects in 0.0 sec

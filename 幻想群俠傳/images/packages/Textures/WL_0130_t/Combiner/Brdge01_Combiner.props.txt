@@ -1,0 +1,13 @@
+CombineOperation = CO_AlphaBlend_With_Mask (5)
+AlphaOperation = AO_Use_Mask (0)
+Material1 = Texture'ground.Groundplants0015_1_S'
+Material2 = Texture'bastion.bridge2'
+Mask = None
+InvertMask = false
+Modulate2X = false
+Modulate4X = false
+FallbackMaterial = None
+DefaultMaterial = None
+SurfaceType = 0
+bUseTextureAsHeat = false
+HeatMaterial = None

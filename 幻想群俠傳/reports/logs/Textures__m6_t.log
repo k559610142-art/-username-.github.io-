@@ -1,0 +1,193 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/m6_t.utx Ver: 128/29 Names: 112 Exports: 93 Imports: 2 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.01 MBytes serialized in 2 calls.
+Loading Texture bx55_1a from package Textures/m6_t.utx
+Loading Texture bx67_1a from package Textures/m6_t.utx
+Loading Texture bx59_1a from package Textures/m6_t.utx
+Loading Texture cg63_1a from package Textures/m6_t.utx
+Loading Texture cg63_1b from package Textures/m6_t.utx
+Loading Texture cg72_1a from package Textures/m6_t.utx
+Loading Texture cg77_1b from package Textures/m6_t.utx
+Loading Texture cg77_1a from package Textures/m6_t.utx
+Loading Texture cm63_1a from package Textures/m6_t.utx
+Loading Texture cm63_1b from package Textures/m6_t.utx
+Loading Texture cm72_1a from package Textures/m6_t.utx
+Loading Texture cm77_1a from package Textures/m6_t.utx
+Loading Texture fx49_1a from package Textures/m6_t.utx
+Loading Texture fx55_1a from package Textures/m6_t.utx
+Loading Texture fx61_1a from package Textures/m6_t.utx
+Loading Texture fx54_1a from package Textures/m6_t.utx
+Loading Texture hg57_1a from package Textures/m6_t.utx
+Loading Texture hg57_ha from package Textures/m6_t.utx
+Loading Texture hg69_1a from package Textures/m6_t.utx
+Loading Texture hg69_ha from package Textures/m6_t.utx
+Loading Texture hg74_1a from package Textures/m6_t.utx
+Loading Texture hm57_1b from package Textures/m6_t.utx
+Loading Texture hm57_1a from package Textures/m6_t.utx
+Loading Texture hm69_1a from package Textures/m6_t.utx
+Loading Texture hm69_ha from package Textures/m6_t.utx
+Loading Texture hm74_1a from package Textures/m6_t.utx
+Loading Texture sm33_1a from package Textures/m6_t.utx
+Loading Texture sm42_1a from package Textures/m6_t.utx
+Loading Texture sm44_1a from package Textures/m6_t.utx
+Loading Texture bx60_1a from package Textures/m6_t.utx
+Loading Texture bx62_1a from package Textures/m6_t.utx
+Loading Texture cg64_1a from package Textures/m6_t.utx
+Loading Texture cm60_1a from package Textures/m6_t.utx
+Loading Texture fx68_1a from package Textures/m6_t.utx
+Loading Texture hg70_1a from package Textures/m6_t.utx
+Loading Texture hm72_1a from package Textures/m6_t.utx
+Loading Texture sm18_1a from package Textures/m6_t.utx
+Loading Texture bx60_2a from package Textures/m6_t.utx
+Loading Texture bx67_2a from package Textures/m6_t.utx
+Loading Texture cg63_2a from package Textures/m6_t.utx
+Loading Texture sm44_2a from package Textures/m6_t.utx
+Loading Texture bx55_2a from package Textures/m6_t.utx
+Loading Texture bx59_2a from package Textures/m6_t.utx
+Loading Texture cg63_2b from package Textures/m6_t.utx
+Loading Texture cg72_2a from package Textures/m6_t.utx
+Loading Texture cg77_2a from package Textures/m6_t.utx
+Loading Texture cg77_2b from package Textures/m6_t.utx
+Loading Texture cm63_2a from package Textures/m6_t.utx
+Loading Texture cm63_2b from package Textures/m6_t.utx
+Loading Texture cm77_2a from package Textures/m6_t.utx
+Loading Texture fx49_2a from package Textures/m6_t.utx
+Loading Texture fx54_2a from package Textures/m6_t.utx
+Loading Texture fx55_2a from package Textures/m6_t.utx
+Loading Texture fx61_2a from package Textures/m6_t.utx
+Loading Texture hg57_2a from package Textures/m6_t.utx
+Loading Texture hg57_hb from package Textures/m6_t.utx
+Loading Texture hg57_hc from package Textures/m6_t.utx
+Loading Texture hg57_hd from package Textures/m6_t.utx
+Loading Texture hg57_he from package Textures/m6_t.utx
+Loading Texture hg57_hf from package Textures/m6_t.utx
+Loading Texture hg57_hg from package Textures/m6_t.utx
+Loading Texture hg57_hh from package Textures/m6_t.utx
+Loading Texture hg69_2a from package Textures/m6_t.utx
+Loading Texture hg69_hb from package Textures/m6_t.utx
+Loading Texture hg69_hc from package Textures/m6_t.utx
+Loading Texture hg69_hd from package Textures/m6_t.utx
+Loading Texture hg69_he from package Textures/m6_t.utx
+Loading Texture hg69_hf from package Textures/m6_t.utx
+Loading Texture hg69_hg from package Textures/m6_t.utx
+Loading Texture hg69_hh from package Textures/m6_t.utx
+Loading Texture hg74_2a from package Textures/m6_t.utx
+Loading Texture hm57_2a from package Textures/m6_t.utx
+Loading Texture hm57_2b from package Textures/m6_t.utx
+Loading Texture hm69_2a from package Textures/m6_t.utx
+Loading Texture hm69_hb from package Textures/m6_t.utx
+Loading Texture hm69_hc from package Textures/m6_t.utx
+Loading Texture hm69_hd from package Textures/m6_t.utx
+Loading Texture hm69_he from package Textures/m6_t.utx
+Loading Texture hm69_hf from package Textures/m6_t.utx
+Loading Texture hm69_hg from package Textures/m6_t.utx
+Loading Texture hm69_hh from package Textures/m6_t.utx
+Loading Texture hm74_2a from package Textures/m6_t.utx
+Loading Texture sm33_2a from package Textures/m6_t.utx
+Loading Texture cm72_2a from package Textures/m6_t.utx
+Loading Texture sm42_2a from package Textures/m6_t.utx
+Loading Texture fx68_2a from package Textures/m6_t.utx
+Loading Texture hm72_2a from package Textures/m6_t.utx
+Loading Texture bx62_2a from package Textures/m6_t.utx
+Loading Texture hg70_2a from package Textures/m6_t.utx
+Loading Texture cm60_2a from package Textures/m6_t.utx
+Loading Texture fx68_3a from package Textures/m6_t.utx
+Loading Texture fx68_4a from package Textures/m6_t.utx
+Loading Texture cg64_2a from package Textures/m6_t.utx
+Exporting objects ...
+Exporting Texture bx55_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/bx55_1a.png
+Exporting Texture bx67_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/bx67_1a.png
+Exporting Texture bx59_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/bx59_1a.png
+Exporting Texture cg63_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/cg63_1a.png
+Exporting Texture cg63_1b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/cg63_1b.png
+Exporting Texture cg72_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/cg72_1a.png
+Exporting Texture cg77_1b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/cg77_1b.png
+Exporting Texture cg77_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/cg77_1a.png
+Exporting Texture cm63_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/cm63_1a.png
+Exporting Texture cm63_1b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/cm63_1b.png
+Exporting Texture cm72_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/cm72_1a.png
+Exporting Texture cm77_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/cm77_1a.png
+Exporting Texture fx49_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/fx49_1a.png
+Exporting Texture fx55_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/fx55_1a.png
+Exporting Texture fx61_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/fx61_1a.png
+Exporting Texture fx54_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/fx54_1a.png
+Exporting Texture hg57_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hg57_1a.png
+Exporting Texture hg57_ha to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hg57_ha.png
+Exporting Texture hg69_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hg69_1a.png
+Exporting Texture hg69_ha to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hg69_ha.png
+Exporting Texture hg74_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hg74_1a.png
+Exporting Texture hm57_1b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hm57_1b.png
+Exporting Texture hm57_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hm57_1a.png
+Exporting Texture hm69_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hm69_1a.png
+Exporting Texture hm69_ha to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hm69_ha.png
+Exporting Texture hm74_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hm74_1a.png
+Exporting Texture sm33_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/sm33_1a.png
+Exporting Texture sm42_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/sm42_1a.png
+Exporting Texture sm44_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/sm44_1a.png
+Exporting Texture bx60_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/bx60_1a.png
+Exporting Texture bx62_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/bx62_1a.png
+Exporting Texture cg64_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/cg64_1a.png
+Exporting Texture cm60_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/cm60_1a.png
+Exporting Texture fx68_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/fx68_1a.png
+Exporting Texture hg70_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hg70_1a.png
+Exporting Texture hm72_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hm72_1a.png
+Exporting Texture sm18_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/sm18_1a.png
+Exporting Texture bx60_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/bx60_2a.png
+Exporting Texture bx67_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/bx67_2a.png
+Exporting Texture cg63_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/cg63_2a.png
+Exporting Texture sm44_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/sm44_2a.png
+Exporting Texture bx55_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/bx55_2a.png
+Exporting Texture bx59_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/bx59_2a.png
+Exporting Texture cg63_2b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/cg63_2b.png
+Exporting Texture cg72_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/cg72_2a.png
+Exporting Texture cg77_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/cg77_2a.png
+Exporting Texture cg77_2b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/cg77_2b.png
+Exporting Texture cm63_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/cm63_2a.png
+Exporting Texture cm63_2b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/cm63_2b.png
+Exporting Texture cm77_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/cm77_2a.png
+Exporting Texture fx49_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/fx49_2a.png
+Exporting Texture fx54_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/fx54_2a.png
+Exporting Texture fx55_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/fx55_2a.png
+Exporting Texture fx61_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/fx61_2a.png
+Exporting Texture hg57_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hg57_2a.png
+Exporting Texture hg57_hb to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hg57_hb.png
+Exporting Texture hg57_hc to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hg57_hc.png
+Exporting Texture hg57_hd to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hg57_hd.png
+Exporting Texture hg57_he to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hg57_he.png
+Exporting Texture hg57_hf to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hg57_hf.png
+Exporting Texture hg57_hg to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hg57_hg.png
+Exporting Texture hg57_hh to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hg57_hh.png
+Exporting Texture hg69_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hg69_2a.png
+Exporting Texture hg69_hb to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hg69_hb.png
+Exporting Texture hg69_hc to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hg69_hc.png
+Exporting Texture hg69_hd to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hg69_hd.png
+Exporting Texture hg69_he to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hg69_he.png
+Exporting Texture hg69_hf to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hg69_hf.png
+Exporting Texture hg69_hg to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hg69_hg.png
+Exporting Texture hg69_hh to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hg69_hh.png
+Exporting Texture hg74_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hg74_2a.png
+Exporting Texture hm57_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hm57_2a.png
+Exporting Texture hm57_2b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hm57_2b.png
+Exporting Texture hm69_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hm69_2a.png
+Exporting Texture hm69_hb to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hm69_hb.png
+Exporting Texture hm69_hc to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hm69_hc.png
+Exporting Texture hm69_hd to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hm69_hd.png
+Exporting Texture hm69_he to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hm69_he.png
+Exporting Texture hm69_hf to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hm69_hf.png
+Exporting Texture hm69_hg to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hm69_hg.png
+Exporting Texture hm69_hh to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hm69_hh.png
+Exporting Texture hm74_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hm74_2a.png
+Exporting Texture sm33_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/sm33_2a.png
+Exporting Texture cm72_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/cm72_2a.png
+Exporting Texture sm42_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/sm42_2a.png
+Exporting Texture fx68_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/fx68_2a.png
+Exporting Texture hm72_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hm72_2a.png
+Exporting Texture bx62_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/bx62_2a.png
+Exporting Texture hg70_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/hg70_2a.png
+Exporting Texture cm60_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/cm60_2a.png
+Exporting Texture fx68_3a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/fx68_3a.png
+Exporting Texture fx68_4a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/fx68_4a.png
+Exporting Texture cg64_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/m6_t/Texture/cg64_2a.png
+Memory: allocated 674831 bytes in 141 blocks
+Exported 93/93 objects in 1.1 sec

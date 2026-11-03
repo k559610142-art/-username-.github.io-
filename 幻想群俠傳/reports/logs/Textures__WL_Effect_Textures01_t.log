@@ -1,0 +1,55 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_Effect_Textures01_t.utx Ver: 128/29 Names: 42 Exports: 25 Imports: 4 Game: 200001
+Loaded in 0.0 sec, 21 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture HYFX0127m from package Textures/WL_Effect_Textures01_t.utx
+Loading Texture HYFX0001a from package Textures/WL_Effect_Textures01_t.utx
+Loading Texture HYFX0083m from package Textures/WL_Effect_Textures01_t.utx
+Loading Texture hot_rock_1 from package Textures/WL_Effect_Textures01_t.utx
+Loading Texture HYFX0016m from package Textures/WL_Effect_Textures01_t.utx
+Loading Texture HYFX0130m from package Textures/WL_Effect_Textures01_t.utx
+Loading Texture Ef01 from package Textures/WL_Effect_Textures01_t.utx
+Loading Texture HYFX0115a from package Textures/WL_Effect_Textures01_t.utx
+Loading Texture HYFX0011a from package Textures/WL_Effect_Textures01_t.utx
+Loading Texture CH_FX003a from package Textures/WL_Effect_Textures01_t.utx
+Loading Texture HYFX0155a from package Textures/WL_Effect_Textures01_t.utx
+Loading Texture HYFX0144m from package Textures/WL_Effect_Textures01_t.utx
+Loading Texture 0001xb_smok_001c from package Textures/WL_Effect_Textures01_t.utx
+Loading Texture HYFX0139m from package Textures/WL_Effect_Textures01_t.utx
+Loading Texture 0006_smok_001b from package Textures/WL_Effect_Textures01_t.utx
+Loading Texture WL_0006_smo_b from package Textures/WL_Effect_Textures01_t.utx
+Loading Texture WL_HYFX0056a from package Textures/WL_Effect_Textures01_t.utx
+Loading Texture WL_Water_print from package Textures/WL_Effect_Textures01_t.utx
+Loading Texture WL_rippling from package Textures/WL_Effect_Textures01_t.utx
+Loading Texture WL_FX_explo003 from package Textures/WL_Effect_Textures01_t.utx
+Loading Texture WLO_Bome_smake03p from package Textures/WL_Effect_Textures01_t.utx
+Loading Texture WLO_Bome_smake01p from package Textures/WL_Effect_Textures01_t.utx
+Loading Texture WLO_Bome_smake02p from package Textures/WL_Effect_Textures01_t.utx
+Loading Texture WL_Ef01 from package Textures/WL_Effect_Textures01_t.utx
+Exporting objects ...
+Exporting Texture HYFX0127m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Effect_Textures01_t/Texture/HYFX0127m.png
+Exporting Texture HYFX0001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Effect_Textures01_t/Texture/HYFX0001a.png
+Exporting Texture HYFX0083m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Effect_Textures01_t/Texture/HYFX0083m.png
+Exporting Texture hot_rock_1 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Effect_Textures01_t/Texture/hot_rock_1.png
+Exporting Texture HYFX0016m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Effect_Textures01_t/Texture/HYFX0016m.png
+Exporting Texture HYFX0130m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Effect_Textures01_t/Texture/HYFX0130m.png
+Exporting Texture Ef01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Effect_Textures01_t/Texture/Ef01.png
+Exporting Texture HYFX0115a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Effect_Textures01_t/Texture/HYFX0115a.png
+Exporting Texture HYFX0011a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Effect_Textures01_t/Texture/HYFX0011a.png
+Exporting Texture CH_FX003a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Effect_Textures01_t/Texture/CH_FX003a.png
+Exporting Texture HYFX0155a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Effect_Textures01_t/Texture/HYFX0155a.png
+Exporting Texture HYFX0144m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Effect_Textures01_t/Texture/HYFX0144m.png
+Exporting Texture 0001xb_smok_001c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Effect_Textures01_t/Texture/0001xb_smok_001c.png
+Exporting Texture HYFX0139m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Effect_Textures01_t/Texture/HYFX0139m.png
+Exporting Texture 0006_smok_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Effect_Textures01_t/Texture/0006_smok_001b.png
+Exporting Texture WL_0006_smo_b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Effect_Textures01_t/Texture/WL_0006_smo_b.png
+Exporting Texture WL_HYFX0056a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Effect_Textures01_t/Texture/WL_HYFX0056a.png
+Exporting Texture WL_Water_print to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Effect_Textures01_t/Texture/WL_Water_print.png
+Exporting Texture WL_rippling to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Effect_Textures01_t/Texture/WL_rippling.png
+Exporting Texture WL_FX_explo003 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Effect_Textures01_t/Texture/WL_FX_explo003.png
+Exporting Texture WLO_Bome_smake03p to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Effect_Textures01_t/Texture/WLO_Bome_smake03p.png
+Exporting Texture WLO_Bome_smake01p to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Effect_Textures01_t/Texture/WLO_Bome_smake01p.png
+Exporting Texture WLO_Bome_smake02p to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Effect_Textures01_t/Texture/WLO_Bome_smake02p.png
+Exporting Texture WL_Ef01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_Effect_Textures01_t/Texture/WL_Ef01.png
+Memory: allocated 389273 bytes in 72 blocks
+Exported 24/24 objects in 0.2 sec

@@ -1,0 +1,179 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/d4_t.utx Ver: 128/29 Names: 111 Exports: 83 Imports: 5 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.01 MBytes serialized in 2 calls.
+Loading Texture d40101at from package Textures/d4_t.utx
+Loading Texture d40201at from package Textures/d4_t.utx
+Loading Texture d40501at from package Textures/d4_t.utx
+Loading Texture d40401at from package Textures/d4_t.utx
+Loading Texture d40301at from package Textures/d4_t.utx
+Loading Texture d40501am from package Textures/d4_t.utx
+Loading Texture d40301am from package Textures/d4_t.utx
+Loading Texture d40201am from package Textures/d4_t.utx
+Loading Texture d40401am from package Textures/d4_t.utx
+Loading Texture d40101am from package Textures/d4_t.utx
+Loading Texture D45601a from package Textures/d4_t.utx
+Loading Texture D45801a from package Textures/d4_t.utx
+Loading Texture d44601a from package Textures/d4_t.utx
+Loading Texture D45701a from package Textures/d4_t.utx
+Loading Texture D45201a from package Textures/d4_t.utx
+Loading Texture D46501a from package Textures/d4_t.utx
+Loading Texture d45901a from package Textures/d4_t.utx
+Loading Texture D46401a from package Textures/d4_t.utx
+Loading Texture D46301a from package Textures/d4_t.utx
+Loading Texture D46001b from package Textures/d4_t.utx
+Loading Texture D46201a from package Textures/d4_t.utx
+Loading Texture d45401a from package Textures/d4_t.utx
+Loading Texture D45001a from package Textures/d4_t.utx
+Loading Texture D44901a from package Textures/d4_t.utx
+Loading Texture D44501a from package Textures/d4_t.utx
+Loading Shader d40301a from package Textures/d4_t.utx
+Loading package: Textures/cm_t.utx Ver: 128/29 Names: 195 Exports: 159 Imports: 8 Game: 200001
+Loading Shader d40201a from package Textures/d4_t.utx
+Loading Shader d40401a from package Textures/d4_t.utx
+Loading Shader d40501a from package Textures/d4_t.utx
+Loading Texture D46601a from package Textures/d4_t.utx
+Loading Texture D46001a from package Textures/d4_t.utx
+Loading Texture D45301a from package Textures/d4_t.utx
+Loading Texture D44701b from package Textures/d4_t.utx
+Loading Texture D44701a from package Textures/d4_t.utx
+Loading Texture d44801a from package Textures/d4_t.utx
+Loading Texture d45101a from package Textures/d4_t.utx
+Loading Texture d46101b from package Textures/d4_t.utx
+Loading Texture d46101a from package Textures/d4_t.utx
+Loading Texture D45501a from package Textures/d4_t.utx
+Loading Shader d40101a from package Textures/d4_t.utx
+Loading Texture D44502a from package Textures/d4_t.utx
+Loading Texture d44503a from package Textures/d4_t.utx
+Loading Texture D44504a from package Textures/d4_t.utx
+Loading Texture d44602a from package Textures/d4_t.utx
+Loading Texture d44603a from package Textures/d4_t.utx
+Loading Texture d44604a from package Textures/d4_t.utx
+Loading Texture D44702a from package Textures/d4_t.utx
+Loading Texture D44702b from package Textures/d4_t.utx
+Loading Texture D44703a from package Textures/d4_t.utx
+Loading Texture D44703b from package Textures/d4_t.utx
+Loading Texture d44802a from package Textures/d4_t.utx
+Loading Texture d44803a from package Textures/d4_t.utx
+Loading Texture D44902a from package Textures/d4_t.utx
+Loading Texture D44903a from package Textures/d4_t.utx
+Loading Texture D45002a from package Textures/d4_t.utx
+Loading Texture D45003a from package Textures/d4_t.utx
+Loading Texture d45102a from package Textures/d4_t.utx
+Loading Texture d45103a from package Textures/d4_t.utx
+Loading Texture D45202a from package Textures/d4_t.utx
+Loading Texture D45203a from package Textures/d4_t.utx
+Loading Texture D45302a from package Textures/d4_t.utx
+Loading Texture D45303a from package Textures/d4_t.utx
+Loading Texture d45402a from package Textures/d4_t.utx
+Loading Texture d45403a from package Textures/d4_t.utx
+Loading Texture D45502a from package Textures/d4_t.utx
+Loading Texture D45503a from package Textures/d4_t.utx
+Loading Texture d45602a from package Textures/d4_t.utx
+Loading Texture D45603a from package Textures/d4_t.utx
+Loading Texture D45702a from package Textures/d4_t.utx
+Loading Texture D45703a from package Textures/d4_t.utx
+Loading Texture D45802a from package Textures/d4_t.utx
+Loading Texture D45803a from package Textures/d4_t.utx
+Loading Texture d45902a from package Textures/d4_t.utx
+Loading Texture d45903a from package Textures/d4_t.utx
+Loading Texture D46002a from package Textures/d4_t.utx
+Loading Texture D46002b from package Textures/d4_t.utx
+Loading Texture d46102a from package Textures/d4_t.utx
+Loading Texture d46102b from package Textures/d4_t.utx
+Loading Texture D46202a from package Textures/d4_t.utx
+Loading Texture D46302a from package Textures/d4_t.utx
+Loading Texture D46402a from package Textures/d4_t.utx
+Loading Texture D46502a from package Textures/d4_t.utx
+Loading Texture D46602a from package Textures/d4_t.utx
+Loading TexEnvMap s2_ref from package Textures/cm_t.utx
+Loading package: Textures/cg_t.utx Ver: 128/29 Names: 185 Exports: 153 Imports: 6 Game: 200001
+Loading Texture cg99b from package Textures/cg_t.utx
+Exporting objects ...
+Exporting Texture d40101at to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/d40101at.png
+Exporting Texture d40201at to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/d40201at.png
+Exporting Texture d40501at to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/d40501at.png
+Exporting Texture d40401at to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/d40401at.png
+Exporting Texture d40301at to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/d40301at.png
+Exporting Texture d40501am to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/d40501am.png
+Exporting Texture d40301am to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/d40301am.png
+Exporting Texture d40201am to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/d40201am.png
+Exporting Texture d40401am to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/d40401am.png
+Exporting Texture d40101am to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/d40101am.png
+Exporting Texture D45601a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D45601a.png
+Exporting Texture D45801a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D45801a.png
+Exporting Texture d44601a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/d44601a.png
+Exporting Texture D45701a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D45701a.png
+Exporting Texture D45201a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D45201a.png
+Exporting Texture D46501a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D46501a.png
+Exporting Texture d45901a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/d45901a.png
+Exporting Texture D46401a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D46401a.png
+Exporting Texture D46301a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D46301a.png
+Exporting Texture D46001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D46001b.png
+Exporting Texture D46201a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D46201a.png
+Exporting Texture d45401a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/d45401a.png
+Exporting Texture D45001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D45001a.png
+Exporting Texture D44901a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D44901a.png
+Exporting Texture D44501a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D44501a.png
+Exporting Shader d40301a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Shader/d40301a.mat
+Exporting Shader d40201a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Shader/d40201a.mat
+Exporting Shader d40401a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Shader/d40401a.mat
+Exporting Shader d40501a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Shader/d40501a.mat
+Exporting Texture D46601a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D46601a.png
+Exporting Texture D46001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D46001a.png
+Exporting Texture D45301a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D45301a.png
+Exporting Texture D44701b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D44701b.png
+Exporting Texture D44701a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D44701a.png
+Exporting Texture d44801a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/d44801a.png
+Exporting Texture d45101a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/d45101a.png
+Exporting Texture d46101b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/d46101b.png
+Exporting Texture d46101a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/d46101a.png
+Exporting Texture D45501a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D45501a.png
+Exporting Shader d40101a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Shader/d40101a.mat
+Exporting Texture D44502a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D44502a.png
+Exporting Texture d44503a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/d44503a.png
+Exporting Texture D44504a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D44504a.png
+Exporting Texture d44602a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/d44602a.png
+Exporting Texture d44603a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/d44603a.png
+Exporting Texture d44604a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/d44604a.png
+Exporting Texture D44702a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D44702a.png
+Exporting Texture D44702b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D44702b.png
+Exporting Texture D44703a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D44703a.png
+Exporting Texture D44703b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D44703b.png
+Exporting Texture d44802a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/d44802a.png
+Exporting Texture d44803a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/d44803a.png
+Exporting Texture D44902a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D44902a.png
+Exporting Texture D44903a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D44903a.png
+Exporting Texture D45002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D45002a.png
+Exporting Texture D45003a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D45003a.png
+Exporting Texture d45102a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/d45102a.png
+Exporting Texture d45103a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/d45103a.png
+Exporting Texture D45202a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D45202a.png
+Exporting Texture D45203a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D45203a.png
+Exporting Texture D45302a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D45302a.png
+Exporting Texture D45303a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D45303a.png
+Exporting Texture d45402a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/d45402a.png
+Exporting Texture d45403a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/d45403a.png
+Exporting Texture D45502a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D45502a.png
+Exporting Texture D45503a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D45503a.png
+Exporting Texture d45602a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/d45602a.png
+Exporting Texture D45603a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D45603a.png
+Exporting Texture D45702a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D45702a.png
+Exporting Texture D45703a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D45703a.png
+Exporting Texture D45802a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D45802a.png
+Exporting Texture D45803a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D45803a.png
+Exporting Texture d45902a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/d45902a.png
+Exporting Texture d45903a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/d45903a.png
+Exporting Texture D46002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D46002a.png
+Exporting Texture D46002b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D46002b.png
+Exporting Texture d46102a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/d46102a.png
+Exporting Texture d46102b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/d46102b.png
+Exporting Texture D46202a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D46202a.png
+Exporting Texture D46302a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D46302a.png
+Exporting Texture D46402a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D46402a.png
+Exporting Texture D46502a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D46502a.png
+Exporting Texture D46602a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d4_t/Texture/D46602a.png
+Exporting TexEnvMap s2_ref to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/cm_t/TexEnvMap/s2_ref.mat
+Exporting Texture cg99b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/cg_t/Texture/cg99b.png
+Memory: allocated 680049 bytes in 153 blocks
+Exported 85/85 objects in 1.9 sec

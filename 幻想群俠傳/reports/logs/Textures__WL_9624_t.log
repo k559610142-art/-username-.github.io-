@@ -1,0 +1,118 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_9624_t.utx Ver: 128/29 Names: 119 Exports: 63 Imports: 12 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.01 MBytes serialized in 2 calls.
+Loading Texture 8048wat_h4 from package Textures/WL_9624_t.utx
+Loading TexPanner 8047_ghostden_04h_tpq from package Textures/WL_9624_t.utx
+Loading Texture 8047_ghostden_a03h from package Textures/WL_9624_t.utx
+Loading Texture 8047_ghostden_ac04h from package Textures/WL_9624_t.utx
+Loading Texture 8047_ghostden_ac05h from package Textures/WL_9624_t.utx
+Loading Texture 8047_ghostden_a04h from package Textures/WL_9624_t.utx
+Loading Texture 8047_ghostden_ac03h from package Textures/WL_9624_t.utx
+Loading Texture 8048wat_h3 from package Textures/WL_9624_t.utx
+Loading Texture 8048wat_h2 from package Textures/WL_9624_t.utx
+Loading Texture 8048wat_h1 from package Textures/WL_9624_t.utx
+Loading Texture 8048wat_h0 from package Textures/WL_9624_t.utx
+Loading Texture 8047_ghostden_04h from package Textures/WL_9624_t.utx
+Loading Texture 8047_ghostden_ac01h from package Textures/WL_9624_t.utx
+Loading Texture 8047_ghostden_06h from package Textures/WL_9624_t.utx
+Loading TexPanner 8047_ghostden_02h_tp from package Textures/WL_9624_t.utx
+Loading Texture 8047_ghostden_02h from package Textures/WL_9624_t.utx
+Loading TexRotator 8047_ghostden_02h_01_tp from package Textures/WL_9624_t.utx
+Loading Texture 8047_ghostden_03h from package Textures/WL_9624_t.utx
+Loading Texture 8047_ghostden_ac06h from package Textures/WL_9624_t.utx
+Loading Cubemap 8048cube from package Textures/WL_9624_t.utx
+Loading package: Textures/HI_Floor_t.utx Ver: 128/29 Names: 505 Exports: 451 Imports: 11 Game: 200001
+Loading Texture 8047_ghostden_ac08h from package Textures/WL_9624_t.utx
+Loading Texture 8047_ghostden_ac02h from package Textures/WL_9624_t.utx
+Loading Texture 8047_ghostden_ac07h from package Textures/WL_9624_t.utx
+Loading TexEnvMap TexEnv8048 from package Textures/WL_9624_t.utx
+Loading Shader shader8048 from package Textures/WL_9624_t.utx
+Loading Texture holethings_01_001d from package Textures/WL_9624_t.utx
+Loading Texture holethings_01_002d from package Textures/WL_9624_t.utx
+Loading Texture WHouse1_009j from package Textures/WL_9624_t.utx
+Loading Texture WHouse1_008j from package Textures/WL_9624_t.utx
+Loading Texture 2107_didao_09h from package Textures/WL_9624_t.utx
+Loading Shader 8047_ghostden_04h_sh from package Textures/WL_9624_t.utx
+Loading Texture 032pierres[2] from package Textures/WL_9624_t.utx
+Loading Texture 8047_ghostden_07h from package Textures/WL_9624_t.utx
+Loading Texture 8047_ghostden_a01h from package Textures/WL_9624_t.utx
+Loading Shader 8047_ghostden_02h_01_tp from package Textures/WL_9624_t.utx
+Loading Shader 8047_ghostden_03h_tp from package Textures/WL_9624_t.utx
+Loading Texture 8047_ghostden_05h from package Textures/WL_9624_t.utx
+Loading Texture 8047_ghostden_01h from package Textures/WL_9624_t.utx
+Loading Texture 8047_ghostden_08h from package Textures/WL_9624_t.utx
+Loading Texture walk_alhpa from package Textures/WL_9624_t.utx
+Loading Texture 8047_ghostden_a06h from package Textures/WL_9624_t.utx
+Loading Texture Drooon_011j from package Textures/WL_9624_t.utx
+Loading Texture 8047_ghostden_a05h from package Textures/WL_9624_t.utx
+Loading Texture 2107_didao_effect_03h from package Textures/WL_9624_t.utx
+Loading Texture 8047_ghostden_a02h from package Textures/WL_9624_t.utx
+Loading Texture bloodriver from package Textures/WL_9624_t.utx
+Loading Texture skyygoof from package Textures/WL_9624_t.utx
+Loading Texture nanyangshadow from package Textures/WL_9624_t.utx
+Loading Texture stonewalkwall02 from package Textures/WL_9624_t.utx
+Loading Texture light_001a from package Textures/WL_9624_t.utx
+Loading Texture 1600_daochang_neijing_10h from package Textures/WL_9624_t.utx
+Loading Texture Sun_T from package Textures/WL_9624_t.utx
+Loading Texture moon_k1 from package Textures/WL_9624_t.utx
+Loading Shader 8047_ghostden_06h_sh from package Textures/WL_9624_t.utx
+Loading Texture 8020_cloud_001a from package Textures/WL_9624_t.utx
+Loading Palette Palette9 from package Textures/HI_Floor_t.utx
+Exporting objects ...
+Exporting Texture 8048wat_h4 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/8048wat_h4.png
+Exporting TexPanner 8047_ghostden_04h_tpq to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/TexPanner/8047_ghostden_04h_tpq.mat
+Exporting Texture 8047_ghostden_a04h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/8047_ghostden_a04h.png
+Exporting Texture 8047_ghostden_a03h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/8047_ghostden_a03h.png
+Exporting Texture 8047_ghostden_ac04h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/8047_ghostden_ac04h.png
+Exporting Texture 8047_ghostden_ac05h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/8047_ghostden_ac05h.png
+Exporting Texture 8047_ghostden_ac03h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/8047_ghostden_ac03h.png
+Exporting Texture 8048wat_h3 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/8048wat_h3.png
+Exporting Texture 8048wat_h2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/8048wat_h2.png
+Exporting Texture 8048wat_h1 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/8048wat_h1.png
+Exporting Texture 8048wat_h0 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/8048wat_h0.png
+Exporting Texture 8047_ghostden_04h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/8047_ghostden_04h.png
+Exporting Texture 8047_ghostden_ac01h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/8047_ghostden_ac01h.png
+Exporting Texture 8047_ghostden_06h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/8047_ghostden_06h.png
+Exporting TexPanner 8047_ghostden_02h_tp to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/TexPanner/8047_ghostden_02h_tp.mat
+Exporting Texture 8047_ghostden_02h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/8047_ghostden_02h.png
+Exporting TexRotator 8047_ghostden_02h_01_tp to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/TexRotator/8047_ghostden_02h_01_tp.mat
+Exporting Texture 8047_ghostden_03h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/8047_ghostden_03h.png
+Exporting Texture 8047_ghostden_ac06h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/8047_ghostden_ac06h.png
+Exporting Texture 8047_ghostden_ac08h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/8047_ghostden_ac08h.png
+Exporting Texture 8047_ghostden_ac02h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/8047_ghostden_ac02h.png
+Exporting Texture 8047_ghostden_ac07h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/8047_ghostden_ac07h.png
+Exporting TexEnvMap TexEnv8048 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/TexEnvMap/TexEnv8048.mat
+Exporting Shader shader8048 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Shader/shader8048.mat
+Exporting Texture holethings_01_001d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/holethings_01_001d.png
+Exporting Texture holethings_01_002d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/holethings_01_002d.png
+Exporting Texture WHouse1_009j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/WHouse1_009j.png
+Exporting Texture WHouse1_008j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/WHouse1_008j.png
+Exporting Texture 2107_didao_09h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/2107_didao_09h.png
+Exporting Shader 8047_ghostden_04h_sh to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Shader/8047_ghostden_04h_sh.mat
+Exporting Texture 032pierres[2] to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/032pierres[2].png
+Exporting Texture 8047_ghostden_07h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/8047_ghostden_07h.png
+Exporting Texture 8047_ghostden_a01h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/8047_ghostden_a01h.png
+Exporting Shader 8047_ghostden_02h_01_tp to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Shader/8047_ghostden_02h_01_tp.mat
+Exporting Shader 8047_ghostden_03h_tp to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Shader/8047_ghostden_03h_tp.mat
+Exporting Texture 8047_ghostden_05h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/8047_ghostden_05h.png
+Exporting Texture 8047_ghostden_01h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/8047_ghostden_01h.png
+Exporting Texture 8047_ghostden_08h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/8047_ghostden_08h.png
+Exporting Texture walk_alhpa to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/walk_alhpa.png
+Exporting Texture 8047_ghostden_a06h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/8047_ghostden_a06h.png
+Exporting Texture Drooon_011j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/Drooon_011j.png
+Exporting Texture 8047_ghostden_a05h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/8047_ghostden_a05h.png
+Exporting Texture 2107_didao_effect_03h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/2107_didao_effect_03h.png
+Exporting Texture 8047_ghostden_a02h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/8047_ghostden_a02h.png
+Exporting Texture bloodriver to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/bloodriver.png
+Exporting Texture skyygoof to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/skyygoof.png
+Exporting Texture nanyangshadow to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/nanyangshadow.png
+Exporting Texture stonewalkwall02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/stonewalkwall02.png
+Exporting Texture light_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/light_001a.png
+Exporting Texture 1600_daochang_neijing_10h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/1600_daochang_neijing_10h.png
+Exporting Texture Sun_T to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/Sun_T.png
+Exporting Texture moon_k1 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/moon_k1.png
+Exporting Shader 8047_ghostden_06h_sh to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Shader/8047_ghostden_06h_sh.mat
+Exporting Texture 8020_cloud_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9624_t/Texture/8020_cloud_001a.png
+Memory: allocated 569749 bytes in 118 blocks
+Exported 54/54 objects in 0.4 sec

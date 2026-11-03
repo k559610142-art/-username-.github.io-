@@ -1,0 +1,81 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_8038_t.utx Ver: 128/29 Names: 94 Exports: 44 Imports: 9 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading TexPanner SPanner from package Textures/WL_8038_t.utx
+Loading Texture 8038_deco_plant_004 from package Textures/WL_8038_t.utx
+Loading Texture 8038_Wall_008 from package Textures/WL_8038_t.utx
+Loading Texture 8038_fire_001b from package Textures/WL_8038_t.utx
+Loading TexScaler Cloud_s from package Textures/WL_8038_t.utx
+Loading Texture StrongCloud_2 from package Textures/WL_8038_t.utx
+Loading Texture SkyTop2 from package Textures/WL_8038_t.utx
+Loading Texture SkyTop from package Textures/WL_8038_t.utx
+Loading Shader SShader from package Textures/WL_8038_t.utx
+Loading Texture 1005_skybrown_01a from package Textures/WL_8038_t.utx
+Loading TexPanner 8038_fire_001b_m from package Textures/WL_8038_t.utx
+Loading Texture 8038_bridge_001 from package Textures/WL_8038_t.utx
+Loading Texture 8038_ring_01 from package Textures/WL_8038_t.utx
+Loading Texture 8038_bridge_002 from package Textures/WL_8038_t.utx
+Loading Texture 8038_ring_03 from package Textures/WL_8038_t.utx
+Loading Texture 8038_bridge_005 from package Textures/WL_8038_t.utx
+Loading Texture 8038_bridge_003 from package Textures/WL_8038_t.utx
+Loading Texture 8038_bridge_006 from package Textures/WL_8038_t.utx
+Loading Texture 8038_bridge_004 from package Textures/WL_8038_t.utx
+Loading Texture 8038_house_005j from package Textures/WL_8038_t.utx
+Loading Texture 8038_rock_003 from package Textures/WL_8038_t.utx
+Loading Texture 8038_house_001b from package Textures/WL_8038_t.utx
+Loading Texture 8038_house_002j from package Textures/WL_8038_t.utx
+Loading Texture 8038_house_004j from package Textures/WL_8038_t.utx
+Loading Texture 8038_House_003 from package Textures/WL_8038_t.utx
+Loading Texture 8038_house_007 from package Textures/WL_8038_t.utx
+Loading Texture 8038_house_008 from package Textures/WL_8038_t.utx
+Loading Texture 8038_rock_001 from package Textures/WL_8038_t.utx
+Loading Texture 8038_rock_005 from package Textures/WL_8038_t.utx
+Loading TexPanner 8038_wall_008_tp from package Textures/WL_8038_t.utx
+Loading Texture HYFX0176m from package Textures/WL_8038_t.utx
+Loading Texture 8038_ring_02 from package Textures/WL_8038_t.utx
+Loading Texture 8038_rock_004 from package Textures/WL_8038_t.utx
+Loading TexRotator 8038_deco_plant_004_tr from package Textures/WL_8038_t.utx
+Loading Texture 1300_star_001a from package Textures/WL_8038_t.utx
+Loading Texture stat_01a from package Textures/WL_8038_t.utx
+Loading Texture 8038_house_006 from package Textures/WL_8038_t.utx
+Exporting objects ...
+Exporting TexPanner SPanner to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/TexPanner/SPanner.mat
+Exporting Texture StrongCloud_2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/Texture/StrongCloud_2.png
+Exporting Texture 8038_deco_plant_004 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/Texture/8038_deco_plant_004.png
+Exporting Texture 8038_Wall_008 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/Texture/8038_Wall_008.png
+Exporting Texture 8038_fire_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/Texture/8038_fire_001b.png
+Exporting TexScaler Cloud_s to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/TexScaler/Cloud_s.mat
+Exporting Texture SkyTop2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/Texture/SkyTop2.png
+Exporting Texture SkyTop to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/Texture/SkyTop.png
+Exporting Shader SShader to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/Shader/SShader.mat
+Exporting Texture 1005_skybrown_01a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/Texture/1005_skybrown_01a.png
+Exporting TexPanner 8038_fire_001b_m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/TexPanner/8038_fire_001b_m.mat
+Exporting Texture 8038_bridge_001 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/Texture/8038_bridge_001.png
+Exporting Texture 8038_ring_01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/Texture/8038_ring_01.png
+Exporting Texture 8038_bridge_002 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/Texture/8038_bridge_002.png
+Exporting Texture 8038_ring_03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/Texture/8038_ring_03.png
+Exporting Texture 8038_bridge_005 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/Texture/8038_bridge_005.png
+Exporting Texture 8038_bridge_003 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/Texture/8038_bridge_003.png
+Exporting Texture 8038_bridge_006 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/Texture/8038_bridge_006.png
+Exporting Texture 8038_bridge_004 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/Texture/8038_bridge_004.png
+Exporting Texture 8038_house_005j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/Texture/8038_house_005j.png
+Exporting Texture 8038_rock_003 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/Texture/8038_rock_003.png
+Exporting Texture 8038_house_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/Texture/8038_house_001b.png
+Exporting Texture 8038_house_002j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/Texture/8038_house_002j.png
+Exporting Texture 8038_house_004j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/Texture/8038_house_004j.png
+Exporting Texture 8038_House_003 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/Texture/8038_House_003.png
+Exporting Texture 8038_house_007 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/Texture/8038_house_007.png
+Exporting Texture 8038_house_008 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/Texture/8038_house_008.png
+Exporting Texture 8038_rock_001 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/Texture/8038_rock_001.png
+Exporting Texture 8038_rock_005 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/Texture/8038_rock_005.png
+Exporting TexPanner 8038_wall_008_tp to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/TexPanner/8038_wall_008_tp.mat
+Exporting Texture HYFX0176m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/Texture/HYFX0176m.png
+Exporting Texture 8038_ring_02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/Texture/8038_ring_02.png
+Exporting Texture 8038_rock_004 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/Texture/8038_rock_004.png
+Exporting TexRotator 8038_deco_plant_004_tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/TexRotator/8038_deco_plant_004_tr.mat
+Exporting Texture 1300_star_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/Texture/1300_star_001a.png
+Exporting Texture stat_01a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/Texture/stat_01a.png
+Exporting Texture 8038_house_006 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8038_t/Texture/8038_house_006.png
+Memory: allocated 468184 bytes in 91 blocks
+Exported 37/37 objects in 0.3 sec

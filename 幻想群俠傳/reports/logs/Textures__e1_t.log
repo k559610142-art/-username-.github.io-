@@ -1,0 +1,25 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/e1_t.utx Ver: 128/29 Names: 29 Exports: 9 Imports: 3 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture e06c from package Textures/e1_t.utx
+Loading Texture e06a from package Textures/e1_t.utx
+Loading Texture e06b from package Textures/e1_t.utx
+Loading Texture e10603a from package Textures/e1_t.utx
+Loading TexEnvMap e3s from package Textures/e1_t.utx
+Loading TexEnvMap e2s from package Textures/e1_t.utx
+Loading TexEnvMap e1s from package Textures/e1_t.utx
+Loading Texture e10602a from package Textures/e1_t.utx
+Loading Texture e10601a from package Textures/e1_t.utx
+Exporting objects ...
+Exporting Texture e06c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e1_t/Texture/e06c.png
+Exporting Texture e06a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e1_t/Texture/e06a.png
+Exporting Texture e06b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e1_t/Texture/e06b.png
+Exporting Texture e10603a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e1_t/Texture/e10603a.png
+Exporting TexEnvMap e3s to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e1_t/TexEnvMap/e3s.mat
+Exporting TexEnvMap e2s to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e1_t/TexEnvMap/e2s.mat
+Exporting TexEnvMap e1s to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e1_t/TexEnvMap/e1s.mat
+Exporting Texture e10602a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e1_t/Texture/e10602a.png
+Exporting Texture e10601a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e1_t/Texture/e10601a.png
+Memory: allocated 339459 bytes in 60 blocks
+Exported 9/9 objects in 0.1 sec

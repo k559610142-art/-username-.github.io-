@@ -1,0 +1,86 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_1030_t.utx Ver: 128/29 Names: 95 Exports: 46 Imports: 14 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading TexPanner 1030_tornado_02h_ac from package Textures/WL_1030_t.utx
+Loading Texture 1030_tornado_02h_a from package Textures/WL_1030_t.utx
+Loading Texture 1030_tornado_02h from package Textures/WL_1030_t.utx
+Loading Texture 1030_tornado_04h_a from package Textures/WL_1030_t.utx
+Loading Texture 0059_skyxxx_001b from package Textures/WL_1030_t.utx
+Loading Texture 1030_tornado_07h from package Textures/WL_1030_t.utx
+Loading Texture 1030_tornado_04h from package Textures/WL_1030_t.utx
+Loading Palette Palette0 from package Textures/WL_1030_t.utx
+Loading Texture 0059StrongCloud_2 from package Textures/WL_1030_t.utx
+Loading Texture Yang_001y from package Textures/WL_1030_t.utx
+Loading Texture 1030_tornado_01h from package Textures/WL_1030_t.utx
+Loading Texture 1600_rookietown_d04_2b from package Textures/WL_1030_t.utx
+Loading Texture 1600_two_005b from package Textures/WL_1030_t.utx
+Loading Shader 1030_tornado_04h_at from package Textures/WL_1030_t.utx
+Loading Shader 1030_tornado_02h_at from package Textures/WL_1030_t.utx
+Loading Texture 1030_tornado_09h from package Textures/WL_1030_t.utx
+Loading Texture 1030_tornado_08h from package Textures/WL_1030_t.utx
+Loading Texture 1030_tornado_05h from package Textures/WL_1030_t.utx
+Loading Texture 1600_001by from package Textures/WL_1030_t.utx
+Loading Texture 1600_006y from package Textures/WL_1030_t.utx
+Loading Texture 1600_door_021a from package Textures/WL_1030_t.utx
+Loading Texture 1600_door_040a from package Textures/WL_1030_t.utx
+Loading Texture 1600_house2_08h from package Textures/WL_1030_t.utx
+Loading Texture 1600_015y from package Textures/WL_1030_t.utx
+Loading Texture 1600_stonn_sto_001b from package Textures/WL_1030_t.utx
+Loading Texture 1600_greenvillage_d40b from package Textures/WL_1030_t.utx
+Loading Texture 1600_door_059a from package Textures/WL_1030_t.utx
+Loading Texture 1600_tag_gold_002b from package Textures/WL_1030_t.utx
+Loading Texture 1600_door_043a from package Textures/WL_1030_t.utx
+Loading Texture 1600_daochang_door_01h from package Textures/WL_1030_t.utx
+Loading Texture 1600_house_027a from package Textures/WL_1030_t.utx
+Loading Texture 1600_house_032a from package Textures/WL_1030_t.utx
+Loading TexPanner 0059_tp_sky_001b from package Textures/WL_1030_t.utx
+Loading TexPanner 0059_sky_run_001b from package Textures/WL_1030_t.utx
+Loading Texture tree07h_001 from package Textures/WL_1030_t.utx
+Loading Texture 1030_black from package Textures/WL_1030_t.utx
+Loading Texture 1030_tornado_03h from package Textures/WL_1030_t.utx
+Loading Texture 1030_tornado_06h from package Textures/WL_1030_t.utx
+Loading Texture 1030_floor from package Textures/WL_1030_t.utx
+Loading Texture 1600_house2_10h from package Textures/WL_1030_t.utx
+Exporting objects ...
+Exporting TexPanner 1030_tornado_02h_ac to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/TexPanner/1030_tornado_02h_ac.mat
+Exporting Texture 1030_tornado_07h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/1030_tornado_07h.png
+Exporting Texture 1030_tornado_02h_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/1030_tornado_02h_a.png
+Exporting Texture 1030_tornado_02h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/1030_tornado_02h.png
+Exporting Texture 1030_tornado_04h_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/1030_tornado_04h_a.png
+Exporting Texture 0059_skyxxx_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/0059_skyxxx_001b.png
+Exporting Texture 1030_tornado_04h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/1030_tornado_04h.png
+Exporting Texture 0059StrongCloud_2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/0059StrongCloud_2.png
+Exporting Texture Yang_001y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/Yang_001y.png
+Exporting Texture 1030_tornado_01h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/1030_tornado_01h.png
+Exporting Texture 1600_rookietown_d04_2b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/1600_rookietown_d04_2b.png
+Exporting Texture 1600_two_005b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/1600_two_005b.png
+Exporting Shader 1030_tornado_04h_at to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Shader/1030_tornado_04h_at.mat
+Exporting Shader 1030_tornado_02h_at to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Shader/1030_tornado_02h_at.mat
+Exporting Texture 1030_tornado_09h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/1030_tornado_09h.png
+Exporting Texture 1030_tornado_08h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/1030_tornado_08h.png
+Exporting Texture 1030_tornado_05h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/1030_tornado_05h.png
+Exporting Texture 1600_001by to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/1600_001by.png
+Exporting Texture 1600_006y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/1600_006y.png
+Exporting Texture 1600_door_021a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/1600_door_021a.png
+Exporting Texture 1600_door_040a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/1600_door_040a.png
+Exporting Texture 1600_house2_08h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/1600_house2_08h.png
+Exporting Texture 1600_015y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/1600_015y.png
+Exporting Texture 1600_stonn_sto_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/1600_stonn_sto_001b.png
+Exporting Texture 1600_greenvillage_d40b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/1600_greenvillage_d40b.png
+Exporting Texture 1600_door_059a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/1600_door_059a.png
+Exporting Texture 1600_tag_gold_002b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/1600_tag_gold_002b.png
+Exporting Texture 1600_door_043a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/1600_door_043a.png
+Exporting Texture 1600_daochang_door_01h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/1600_daochang_door_01h.png
+Exporting Texture 1600_house_027a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/1600_house_027a.png
+Exporting Texture 1600_house_032a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/1600_house_032a.png
+Exporting TexPanner 0059_tp_sky_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/TexPanner/0059_tp_sky_001b.mat
+Exporting TexPanner 0059_sky_run_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/TexPanner/0059_sky_run_001b.mat
+Exporting Texture tree07h_001 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/tree07h_001.png
+Exporting Texture 1030_black to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/1030_black.png
+Exporting Texture 1030_tornado_03h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/1030_tornado_03h.png
+Exporting Texture 1030_tornado_06h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/1030_tornado_06h.png
+Exporting Texture 1030_floor to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/1030_floor.png
+Exporting Texture 1600_house2_10h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1030_t/Texture/1600_house2_10h.png
+Memory: allocated 472436 bytes in 92 blocks
+Exported 39/39 objects in 0.5 sec

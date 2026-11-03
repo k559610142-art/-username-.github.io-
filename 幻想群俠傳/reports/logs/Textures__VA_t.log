@@ -1,0 +1,35 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/VA_t.utx Ver: 128/29 Names: 31 Exports: 14 Imports: 2 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture va64_2a from package Textures/VA_t.utx
+Loading Texture va58_2a from package Textures/VA_t.utx
+Loading Texture va59_1a from package Textures/VA_t.utx
+Loading Texture va59_2a from package Textures/VA_t.utx
+Loading Texture va60_1a from package Textures/VA_t.utx
+Loading Texture va60_2a from package Textures/VA_t.utx
+Loading Texture va61_1a from package Textures/VA_t.utx
+Loading Texture va61_2a from package Textures/VA_t.utx
+Loading Texture va62_1a from package Textures/VA_t.utx
+Loading Texture va62_2a from package Textures/VA_t.utx
+Loading Texture va63_1a from package Textures/VA_t.utx
+Loading Texture va63_2a from package Textures/VA_t.utx
+Loading Texture va64_1a from package Textures/VA_t.utx
+Loading Texture va58_1a from package Textures/VA_t.utx
+Exporting objects ...
+Exporting Texture va64_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/VA_t/Texture/va64_2a.png
+Exporting Texture va58_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/VA_t/Texture/va58_2a.png
+Exporting Texture va59_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/VA_t/Texture/va59_1a.png
+Exporting Texture va59_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/VA_t/Texture/va59_2a.png
+Exporting Texture va60_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/VA_t/Texture/va60_1a.png
+Exporting Texture va60_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/VA_t/Texture/va60_2a.png
+Exporting Texture va61_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/VA_t/Texture/va61_1a.png
+Exporting Texture va61_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/VA_t/Texture/va61_2a.png
+Exporting Texture va62_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/VA_t/Texture/va62_1a.png
+Exporting Texture va62_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/VA_t/Texture/va62_2a.png
+Exporting Texture va63_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/VA_t/Texture/va63_1a.png
+Exporting Texture va63_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/VA_t/Texture/va63_2a.png
+Exporting Texture va64_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/VA_t/Texture/va64_1a.png
+Exporting Texture va58_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/VA_t/Texture/va58_1a.png
+Memory: allocated 347823 bytes in 62 blocks
+Exported 14/14 objects in 0.2 sec

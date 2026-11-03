@@ -1,0 +1,119 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/Effect_masahiro_t.utx Ver: 128/29 Names: 75 Exports: 56 Imports: 2 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture HYmasahiro_029a from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_028a from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_056m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_045m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_031a from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_044m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_035m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_019m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_012m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_042m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_005m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_007m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_006m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_049m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_043m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_022m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_048m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_053m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_054m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_055m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_057m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_017m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_051m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_052m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_047m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_025m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_024m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_021a from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_033a from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_015a from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_060m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_058m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_036m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_039m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_038m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_059m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_023m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_041m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_009m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_008m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_026a from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_040m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_013m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_034m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_014a from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_010a from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_011a from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_027a from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_032a from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_030a from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_020a from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_046m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_050m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_059_1m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_061m from package Textures/Effect_masahiro_t.utx
+Loading Texture HYmasahiro_062m from package Textures/Effect_masahiro_t.utx
+Exporting objects ...
+Exporting Texture HYmasahiro_029a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_029a.png
+Exporting Texture HYmasahiro_028a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_028a.png
+Exporting Texture HYmasahiro_056m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_056m.png
+Exporting Texture HYmasahiro_045m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_045m.png
+Exporting Texture HYmasahiro_031a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_031a.png
+Exporting Texture HYmasahiro_044m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_044m.png
+Exporting Texture HYmasahiro_035m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_035m.png
+Exporting Texture HYmasahiro_019m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_019m.png
+Exporting Texture HYmasahiro_012m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_012m.png
+Exporting Texture HYmasahiro_042m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_042m.png
+Exporting Texture HYmasahiro_005m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_005m.png
+Exporting Texture HYmasahiro_007m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_007m.png
+Exporting Texture HYmasahiro_006m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_006m.png
+Exporting Texture HYmasahiro_049m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_049m.png
+Exporting Texture HYmasahiro_043m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_043m.png
+Exporting Texture HYmasahiro_022m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_022m.png
+Exporting Texture HYmasahiro_048m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_048m.png
+Exporting Texture HYmasahiro_053m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_053m.png
+Exporting Texture HYmasahiro_054m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_054m.png
+Exporting Texture HYmasahiro_055m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_055m.png
+Exporting Texture HYmasahiro_057m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_057m.png
+Exporting Texture HYmasahiro_017m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_017m.png
+Exporting Texture HYmasahiro_051m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_051m.png
+Exporting Texture HYmasahiro_052m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_052m.png
+Exporting Texture HYmasahiro_047m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_047m.png
+Exporting Texture HYmasahiro_025m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_025m.png
+Exporting Texture HYmasahiro_024m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_024m.png
+Exporting Texture HYmasahiro_021a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_021a.png
+Exporting Texture HYmasahiro_033a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_033a.png
+Exporting Texture HYmasahiro_015a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_015a.png
+Exporting Texture HYmasahiro_060m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_060m.png
+Exporting Texture HYmasahiro_058m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_058m.png
+Exporting Texture HYmasahiro_036m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_036m.png
+Exporting Texture HYmasahiro_039m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_039m.png
+Exporting Texture HYmasahiro_038m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_038m.png
+Exporting Texture HYmasahiro_059m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_059m.png
+Exporting Texture HYmasahiro_023m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_023m.png
+Exporting Texture HYmasahiro_041m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_041m.png
+Exporting Texture HYmasahiro_009m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_009m.png
+Exporting Texture HYmasahiro_008m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_008m.png
+Exporting Texture HYmasahiro_026a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_026a.png
+Exporting Texture HYmasahiro_040m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_040m.png
+Exporting Texture HYmasahiro_013m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_013m.png
+Exporting Texture HYmasahiro_034m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_034m.png
+Exporting Texture HYmasahiro_014a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_014a.png
+Exporting Texture HYmasahiro_010a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_010a.png
+Exporting Texture HYmasahiro_011a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_011a.png
+Exporting Texture HYmasahiro_027a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_027a.png
+Exporting Texture HYmasahiro_032a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_032a.png
+Exporting Texture HYmasahiro_030a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_030a.png
+Exporting Texture HYmasahiro_020a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_020a.png
+Exporting Texture HYmasahiro_046m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_046m.png
+Exporting Texture HYmasahiro_050m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_050m.png
+Exporting Texture HYmasahiro_059_1m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_059_1m.png
+Exporting Texture HYmasahiro_061m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_061m.png
+Exporting Texture HYmasahiro_062m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/Effect_masahiro_t/Texture/HYmasahiro_062m.png
+Memory: allocated 521684 bytes in 104 blocks
+Exported 56/56 objects in 0.4 sec

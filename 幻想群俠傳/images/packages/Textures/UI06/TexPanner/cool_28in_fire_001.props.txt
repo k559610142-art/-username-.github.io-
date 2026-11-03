@@ -1,0 +1,11 @@
+PanDirection = { Yaw=16384, Pitch=0, Roll=0 }
+PanRate = 1
+TexCoordSource = TCS_NoChange (13)
+TexCoordCount = TCN_2DCoords (0)
+TexCoordProjected = false
+Material = Texture'28in.run_28in_fire_001c'
+FallbackMaterial = None
+DefaultMaterial = None
+SurfaceType = 0
+bUseTextureAsHeat = false
+HeatMaterial = None

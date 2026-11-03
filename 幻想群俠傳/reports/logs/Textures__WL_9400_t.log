@@ -1,0 +1,165 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_9400_t.utx Ver: 128/29 Names: 148 Exports: 77 Imports: 14 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.01 MBytes serialized in 2 calls.
+Loading Texture 8050_flag_001a from package Textures/WL_9400_t.utx
+Loading Texture 4000_sky_old from package Textures/WL_9400_t.utx
+Loading Texture water_tint_d from package Textures/WL_9400_t.utx
+Loading Texture 4000_aph_006b from package Textures/WL_9400_t.utx
+Loading TexScaler 4000_star_s from package Textures/WL_9400_t.utx
+Loading Texture water_01 from package Textures/WL_9400_t.utx
+Loading TexPanner water01_panner02 from package Textures/WL_9400_t.utx
+Loading TexScaler Abvearth_ts from package Textures/WL_9400_t.utx
+WARNING: Unknown class "ColorModifier" for object "Abvearth_cm"
+Loading Texture 4000_sky_old_002b from package Textures/WL_9400_t.utx
+Loading Shader 4000_star_sh from package Textures/WL_9400_t.utx
+Loading Texture 4000_star_001b from package Textures/WL_9400_t.utx
+Loading TexScaler Water_tint_a_scaler from package Textures/WL_9400_t.utx
+Loading Texture 9400_deco_plant_004_a from package Textures/WL_9400_t.utx
+Loading TexPanner water01_panner01 from package Textures/WL_9400_t.utx
+Loading TexScaler water01_Scaler02 from package Textures/WL_9400_t.utx
+Loading Texture water_tint_a from package Textures/WL_9400_t.utx
+Loading Texture Abvearth from package Textures/WL_9400_t.utx
+Loading TexScaler water_01_Scaler from package Textures/WL_9400_t.utx
+Loading Shader water02 from package Textures/WL_9400_t.utx
+Loading package: Textures/HI_Floor_t.utx Ver: 128/29 Names: 505 Exports: 451 Imports: 11 Game: 200001
+Loading Texture treeW_001a from package Textures/WL_9400_t.utx
+Loading Texture 8050sky from package Textures/WL_9400_t.utx
+Loading TexPanner Abvearth_pt from package Textures/WL_9400_t.utx
+Loading Texture 8050_Monster_004a from package Textures/WL_9400_t.utx
+Loading Texture Billboard01 from package Textures/WL_9400_t.utx
+Loading Texture rk_e005a from package Textures/WL_9400_t.utx
+Loading Texture rk_e002a from package Textures/WL_9400_t.utx
+Loading Texture rk_e003a from package Textures/WL_9400_t.utx
+Loading Texture rk_e004a from package Textures/WL_9400_t.utx
+Loading Texture rk_e001a from package Textures/WL_9400_t.utx
+Loading Texture i01 from package Textures/WL_9400_t.utx
+Loading Texture w02 from package Textures/WL_9400_t.utx
+Loading Texture Bag01 from package Textures/WL_9400_t.utx
+Loading Texture Torch01 from package Textures/WL_9400_t.utx
+Loading Texture w03 from package Textures/WL_9400_t.utx
+Loading Texture 8050_rockgate_001a from package Textures/WL_9400_t.utx
+Loading Texture ro_d16 from package Textures/WL_9400_t.utx
+Loading Texture s04 from package Textures/WL_9400_t.utx
+Loading Texture Swordbox01 from package Textures/WL_9400_t.utx
+Loading Texture lt_01 from package Textures/WL_9400_t.utx
+Loading Texture Tower01 from package Textures/WL_9400_t.utx
+Loading Texture 8050_Monster_003a from package Textures/WL_9400_t.utx
+Loading Texture rk_e21 from package Textures/WL_9400_t.utx
+Loading Texture rk_a06 from package Textures/WL_9400_t.utx
+Loading Texture rk_e03 from package Textures/WL_9400_t.utx
+Loading Texture rk_e12 from package Textures/WL_9400_t.utx
+Loading Texture rk_d16 from package Textures/WL_9400_t.utx
+Loading Texture rk_e05 from package Textures/WL_9400_t.utx
+Loading Texture rk_d05 from package Textures/WL_9400_t.utx
+Loading Texture rk_d07 from package Textures/WL_9400_t.utx
+Loading Texture rk_e04 from package Textures/WL_9400_t.utx
+Loading Texture rk_e22 from package Textures/WL_9400_t.utx
+Loading Texture tree_001a from package Textures/WL_9400_t.utx
+Loading TexOscillator treeW_001a_m from package Textures/WL_9400_t.utx
+Loading Texture 8050_Monster_001a from package Textures/WL_9400_t.utx
+Loading Texture Jewelcase05b from package Textures/WL_9400_t.utx
+Loading Texture Jewelcase05a from package Textures/WL_9400_t.utx
+Loading Texture 8050_Monster_002a from package Textures/WL_9400_t.utx
+Loading Texture rk_e02 from package Textures/WL_9400_t.utx
+Loading Texture bag02 from package Textures/WL_9400_t.utx
+Loading Texture stone03 from package Textures/WL_9400_t.utx
+Loading Texture w06 from package Textures/WL_9400_t.utx
+Loading Texture w04 from package Textures/WL_9400_t.utx
+Loading Texture Barrow01 from package Textures/WL_9400_t.utx
+Loading Texture Palisade01 from package Textures/WL_9400_t.utx
+Loading TexScaler water_tint_d_scaler from package Textures/WL_9400_t.utx
+Loading FinalBlend water_01_fb from package Textures/WL_9400_t.utx
+Loading TexRotator 9400_deco_plant_004_tr from package Textures/WL_9400_t.utx
+Loading FinalBlend 4000_star_fb from package Textures/WL_9400_t.utx
+Loading Texture w01 from package Textures/WL_9400_t.utx
+Loading Shader 4000_sky_sh from package Textures/WL_9400_t.utx
+Loading Shader 8050_flag_001a_sh from package Textures/WL_9400_t.utx
+Loading TexEnvMap 8050texenv from package Textures/HI_Floor_t.utx
+Loading Cubemap 8050cube from package Textures/HI_Floor_t.utx
+Loading Texture 8050wat_h0 from package Textures/HI_Floor_t.utx
+Loading Texture 8050wat_h1 from package Textures/HI_Floor_t.utx
+Loading Texture 8050wat_h2 from package Textures/HI_Floor_t.utx
+Loading Texture 8050wat_h3 from package Textures/HI_Floor_t.utx
+Loading Texture 8050wat_h4 from package Textures/HI_Floor_t.utx
+Loading Palette Palette10 from package Textures/HI_Floor_t.utx
+Exporting objects ...
+Exporting Texture 8050_flag_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/8050_flag_001a.png
+Exporting Texture 4000_sky_old to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/4000_sky_old.png
+Exporting Texture water_tint_d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/water_tint_d.png
+Exporting Texture 4000_aph_006b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/4000_aph_006b.png
+Exporting TexScaler 4000_star_s to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/TexScaler/4000_star_s.mat
+Exporting Texture 4000_star_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/4000_star_001b.png
+Exporting Texture water_01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/water_01.png
+Exporting TexPanner water01_panner02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/TexPanner/water01_panner02.mat
+Ignoring TexScaler'Abvearth_ts' due to empty parameters
+Exporting Texture 4000_sky_old_002b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/4000_sky_old_002b.png
+Exporting Shader 4000_star_sh to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Shader/4000_star_sh.mat
+Exporting TexScaler Water_tint_a_scaler to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/TexScaler/Water_tint_a_scaler.mat
+Exporting Texture water_tint_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/water_tint_a.png
+Exporting Texture 9400_deco_plant_004_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/9400_deco_plant_004_a.png
+Exporting TexPanner water01_panner01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/TexPanner/water01_panner01.mat
+Exporting TexScaler water01_Scaler02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/TexScaler/water01_Scaler02.mat
+Exporting Texture Abvearth to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/Abvearth.png
+Exporting TexScaler water_01_Scaler to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/TexScaler/water_01_Scaler.mat
+Exporting Shader water02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Shader/water02.mat
+Exporting Texture 8050wat_h0 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/Texture/8050wat_h0.png
+Exporting Texture 8050wat_h1 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/Texture/8050wat_h1.png
+Exporting Texture 8050wat_h2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/Texture/8050wat_h2.png
+Exporting Texture 8050wat_h3 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/Texture/8050wat_h3.png
+Exporting Texture 8050wat_h4 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/Texture/8050wat_h4.png
+Exporting Texture treeW_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/treeW_001a.png
+Exporting Texture 8050sky to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/8050sky.png
+Ignoring TexPanner'Abvearth_pt' due to empty parameters
+Exporting Texture 8050_Monster_004a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/8050_Monster_004a.png
+Exporting Texture Billboard01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/Billboard01.png
+Exporting Texture rk_e005a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/rk_e005a.png
+Exporting Texture rk_e002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/rk_e002a.png
+Exporting Texture rk_e003a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/rk_e003a.png
+Exporting Texture rk_e004a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/rk_e004a.png
+Exporting Texture rk_e001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/rk_e001a.png
+Exporting Texture i01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/i01.png
+Exporting Texture w02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/w02.png
+Exporting Texture Bag01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/Bag01.png
+Exporting Texture Torch01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/Torch01.png
+Exporting Texture w03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/w03.png
+Exporting Texture 8050_rockgate_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/8050_rockgate_001a.png
+Exporting Texture ro_d16 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/ro_d16.png
+Exporting Texture s04 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/s04.png
+Exporting Texture Swordbox01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/Swordbox01.png
+Exporting Texture lt_01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/lt_01.png
+Exporting Texture Tower01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/Tower01.png
+Exporting Texture 8050_Monster_003a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/8050_Monster_003a.png
+Exporting Texture rk_e21 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/rk_e21.png
+Exporting Texture rk_a06 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/rk_a06.png
+Exporting Texture rk_e03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/rk_e03.png
+Exporting Texture rk_e12 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/rk_e12.png
+Exporting Texture rk_d16 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/rk_d16.png
+Exporting Texture rk_e05 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/rk_e05.png
+Exporting Texture rk_d05 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/rk_d05.png
+Exporting Texture rk_d07 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/rk_d07.png
+Exporting Texture rk_e04 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/rk_e04.png
+Exporting Texture rk_e22 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/rk_e22.png
+Exporting Texture tree_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/tree_001a.png
+Exporting TexOscillator treeW_001a_m to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/TexOscillator/treeW_001a_m.mat
+Exporting Texture 8050_Monster_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/8050_Monster_001a.png
+Exporting Texture Jewelcase05b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/Jewelcase05b.png
+Exporting Texture Jewelcase05a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/Jewelcase05a.png
+Exporting Texture 8050_Monster_002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/8050_Monster_002a.png
+Exporting Texture rk_e02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/rk_e02.png
+Exporting Texture bag02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/bag02.png
+Exporting Texture stone03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/stone03.png
+Exporting Texture w06 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/w06.png
+Exporting Texture w04 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/w04.png
+Exporting Texture Barrow01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/Barrow01.png
+Exporting Texture Palisade01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/Palisade01.png
+Exporting TexScaler water_tint_d_scaler to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/TexScaler/water_tint_d_scaler.mat
+Exporting FinalBlend water_01_fb to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/FinalBlend/water_01_fb.mat
+Exporting TexRotator 9400_deco_plant_004_tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/TexRotator/9400_deco_plant_004_tr.mat
+Exporting FinalBlend 4000_star_fb to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/FinalBlend/4000_star_fb.mat
+Exporting Texture w01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Texture/w01.png
+Exporting Shader 4000_sky_sh to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Shader/4000_sky_sh.mat
+Exporting Shader 8050_flag_001a_sh to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9400_t/Shader/8050_flag_001a_sh.mat
+Exporting TexEnvMap 8050texenv to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_Floor_t/TexEnvMap/8050texenv.mat
+Memory: allocated 685217 bytes in 146 blocks
+Exported 75/75 objects in 0.5 sec

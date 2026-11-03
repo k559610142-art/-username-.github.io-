@@ -1,0 +1,151 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_0120_t.utx Ver: 128/29 Names: 137 Exports: 76 Imports: 12 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.01 MBytes serialized in 2 calls.
+Loading Texture 0120_sky_blue_003b from package Textures/WL_0120_t.utx
+Loading TexScaler 0120_star_s from package Textures/WL_0120_t.utx
+Loading Texture 0120_aph_006b from package Textures/WL_0120_t.utx
+Loading TexScaler 0120a39WoodJ038b_ts from package Textures/WL_0120_t.utx
+Loading TexPanner 0120_SPanner from package Textures/WL_0120_t.utx
+Loading TexPanner 0120a39WoodJ038b_tp from package Textures/WL_0120_t.utx
+Loading TexScaler 0120_Cloud_s from package Textures/WL_0120_t.utx
+Loading Texture 0120_fl_gre_003b from package Textures/WL_0120_t.utx
+Loading Texture 0120_fl_gre_006b from package Textures/WL_0120_t.utx
+Loading Texture 0120_star_001b from package Textures/WL_0120_t.utx
+Loading Texture 0120_black_w_small_002b from package Textures/WL_0120_t.utx
+Loading Texture 0120_fl_gre_002b from package Textures/WL_0120_t.utx
+Loading Texture 0120_fl_gre_005b from package Textures/WL_0120_t.utx
+Loading Texture 0120_fl_gre_004b from package Textures/WL_0120_t.utx
+Loading Shader 0120_star_sh from package Textures/WL_0120_t.utx
+Loading Shader 0120a39WoodJ038b_sh from package Textures/WL_0120_t.utx
+Loading Texture 0120_fl_gre_001b from package Textures/WL_0120_t.utx
+Loading Texture 0120_sky_blue_004b from package Textures/WL_0120_t.utx
+Loading Texture 0120_water_bule_001b from package Textures/WL_0120_t.utx
+Loading Shader 0120_SShader from package Textures/WL_0120_t.utx
+Loading TexPanner 0120_panner_001b from package Textures/WL_0120_t.utx
+Loading Texture 0120_sky_color_001b from package Textures/WL_0120_t.utx
+Loading Texture 0120pinehouse01t from package Textures/WL_0120_t.utx
+Loading Texture 0120pinehouse02t from package Textures/WL_0120_t.utx
+Loading Texture 0120pinehouse03t from package Textures/WL_0120_t.utx
+Loading Texture 0120pinehouse04t from package Textures/WL_0120_t.utx
+Loading Texture 0120pinehouse05t from package Textures/WL_0120_t.utx
+Loading Texture 0120pinehouse06t from package Textures/WL_0120_t.utx
+Loading Texture 0120pinehouse07t from package Textures/WL_0120_t.utx
+Loading Texture 0120pinehouse08t from package Textures/WL_0120_t.utx
+Loading Texture 0120pinehouse09t from package Textures/WL_0120_t.utx
+Loading Texture 0120pinehouse10t from package Textures/WL_0120_t.utx
+Loading TexRotator 0120_run_cc_002b from package Textures/WL_0120_t.utx
+Loading Texture 0120_001y from package Textures/WL_0120_t.utx
+Loading Texture 0120_main08y from package Textures/WL_0120_t.utx
+Loading Texture 0120_sky_blue_001b from package Textures/WL_0120_t.utx
+Loading FinalBlend 0120a39WoodJ038b_fb from package Textures/WL_0120_t.utx
+Loading Texture 0120_zx_rock_001b from package Textures/WL_0120_t.utx
+Loading Texture 0120_main02y from package Textures/WL_0120_t.utx
+Loading Texture 0120_main03y from package Textures/WL_0120_t.utx
+Loading Texture 0120_main12y from package Textures/WL_0120_t.utx
+Loading Texture 0120_main05y from package Textures/WL_0120_t.utx
+Loading Texture 0120_main06y from package Textures/WL_0120_t.utx
+Loading Texture 0120_main07y from package Textures/WL_0120_t.utx
+Loading Texture 0120_main09y from package Textures/WL_0120_t.utx
+Loading Texture 0120_main10y from package Textures/WL_0120_t.utx
+Loading Texture 0120_main11y from package Textures/WL_0120_t.utx
+Loading Texture 0120_bridge01y from package Textures/WL_0120_t.utx
+Loading Texture 0120turtle02t from package Textures/WL_0120_t.utx
+Loading Texture 0120_eagle from package Textures/WL_0120_t.utx
+Loading Texture 0120_gress_005b from package Textures/WL_0120_t.utx
+Loading FinalBlend 0120_star_fb from package Textures/WL_0120_t.utx
+Loading TexRotator 0120_run_cc_001b from package Textures/WL_0120_t.utx
+Loading Texture 0120turtle01t from package Textures/WL_0120_t.utx
+Loading Texture 0120_stage02y from package Textures/WL_0120_t.utx
+Loading Texture 0120_stage01y from package Textures/WL_0120_t.utx
+Loading TexRotator 0120_run_cc_005b from package Textures/WL_0120_t.utx
+Loading TexRotator 0120_run_cc_003b from package Textures/WL_0120_t.utx
+Loading TexRotator 0120_run_cc_006b from package Textures/WL_0120_t.utx
+Loading Texture 0120_field_wall_002b from package Textures/WL_0120_t.utx
+Loading Texture 0120_field_wall_001b from package Textures/WL_0120_t.utx
+Loading Texture 0120_tak_gre_001b from package Textures/WL_0120_t.utx
+Loading TexRotator 0120_run_cc_004b from package Textures/WL_0120_t.utx
+Loading Texture 0120_water_bule_002b from package Textures/WL_0120_t.utx
+Loading Shader 0120_runrun_sh from package Textures/WL_0120_t.utx
+Loading Texture 0120_HYFX0012b from package Textures/WL_0120_t.utx
+Loading Texture 0120_wat_h0b from package Textures/WL_0120_t.utx
+Loading Texture 0120_wat_h1b from package Textures/WL_0120_t.utx
+Loading Texture 0120_kirin from package Textures/WL_0120_t.utx
+Loading Texture 0120_deco from package Textures/WL_0120_t.utx
+Loading package: Textures/WL_1012_t.utx Ver: 128/29 Names: 63 Exports: 16 Imports: 13 Game: 200001
+Loading Texture 0120_main01y from package Textures/WL_0120_t.utx
+Loading Palette Palette0 from package Textures/WL_1012_t.utx
+Exporting objects ...
+Exporting Texture 0120_sky_blue_003b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_sky_blue_003b.png
+Exporting TexScaler 0120_star_s to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/TexScaler/0120_star_s.mat
+Exporting Texture 0120_star_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_star_001b.png
+Exporting Texture 0120_aph_006b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_aph_006b.png
+Exporting TexScaler 0120a39WoodJ038b_ts to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/TexScaler/0120a39WoodJ038b_ts.mat
+Exporting Texture 0120_water_bule_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_water_bule_001b.png
+Exporting TexPanner 0120_SPanner to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/TexPanner/0120_SPanner.mat
+Exporting Texture 0120_sky_color_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_sky_color_001b.png
+Exporting TexPanner 0120a39WoodJ038b_tp to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/TexPanner/0120a39WoodJ038b_tp.mat
+Exporting TexScaler 0120_Cloud_s to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/TexScaler/0120_Cloud_s.mat
+Exporting Texture 0120_fl_gre_003b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_fl_gre_003b.png
+Exporting Texture 0120_fl_gre_006b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_fl_gre_006b.png
+Exporting Texture 0120_black_w_small_002b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_black_w_small_002b.png
+Exporting Texture 0120_fl_gre_002b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_fl_gre_002b.png
+Exporting Texture 0120_fl_gre_005b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_fl_gre_005b.png
+Exporting Texture 0120_fl_gre_004b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_fl_gre_004b.png
+Exporting Shader 0120_star_sh to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Shader/0120_star_sh.mat
+Exporting Shader 0120a39WoodJ038b_sh to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Shader/0120a39WoodJ038b_sh.mat
+Exporting Texture 0120_fl_gre_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_fl_gre_001b.png
+Exporting Texture 0120_sky_blue_004b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_sky_blue_004b.png
+Exporting Shader 0120_SShader to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Shader/0120_SShader.mat
+Exporting TexPanner 0120_panner_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/TexPanner/0120_panner_001b.mat
+Exporting Texture 0120pinehouse01t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120pinehouse01t.png
+Exporting Texture 0120pinehouse02t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120pinehouse02t.png
+Exporting Texture 0120pinehouse03t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120pinehouse03t.png
+Exporting Texture 0120pinehouse04t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120pinehouse04t.png
+Exporting Texture 0120pinehouse05t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120pinehouse05t.png
+Exporting Texture 0120pinehouse06t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120pinehouse06t.png
+Exporting Texture 0120pinehouse07t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120pinehouse07t.png
+Exporting Texture 0120pinehouse08t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120pinehouse08t.png
+Exporting Texture 0120pinehouse09t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120pinehouse09t.png
+Exporting Texture 0120pinehouse10t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120pinehouse10t.png
+Exporting TexRotator 0120_run_cc_002b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/TexRotator/0120_run_cc_002b.mat
+Exporting Texture 0120_001y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_001y.png
+Exporting Texture 0120_main08y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_main08y.png
+Exporting Texture 0120_sky_blue_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_sky_blue_001b.png
+Exporting FinalBlend 0120a39WoodJ038b_fb to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/FinalBlend/0120a39WoodJ038b_fb.mat
+Exporting Texture 0120_zx_rock_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_zx_rock_001b.png
+Exporting Texture 0120_main02y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_main02y.png
+Exporting Texture 0120_main03y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_main03y.png
+Exporting Texture 0120_main12y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_main12y.png
+Exporting Texture 0120_main05y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_main05y.png
+Exporting Texture 0120_main06y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_main06y.png
+Exporting Texture 0120_main07y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_main07y.png
+Exporting Texture 0120_main09y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_main09y.png
+Exporting Texture 0120_main10y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_main10y.png
+Exporting Texture 0120_main11y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_main11y.png
+Exporting Texture 0120_bridge01y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_bridge01y.png
+Exporting Texture 0120turtle02t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120turtle02t.png
+Exporting Texture 0120_eagle to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_eagle.png
+Exporting Texture 0120_gress_005b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_gress_005b.png
+Exporting FinalBlend 0120_star_fb to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/FinalBlend/0120_star_fb.mat
+Exporting TexRotator 0120_run_cc_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/TexRotator/0120_run_cc_001b.mat
+Exporting Texture 0120turtle01t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120turtle01t.png
+Exporting Texture 0120_stage02y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_stage02y.png
+Exporting Texture 0120_stage01y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_stage01y.png
+Exporting TexRotator 0120_run_cc_005b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/TexRotator/0120_run_cc_005b.mat
+Exporting TexRotator 0120_run_cc_003b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/TexRotator/0120_run_cc_003b.mat
+Exporting TexRotator 0120_run_cc_006b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/TexRotator/0120_run_cc_006b.mat
+Exporting Texture 0120_field_wall_002b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_field_wall_002b.png
+Exporting Texture 0120_field_wall_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_field_wall_001b.png
+Exporting Texture 0120_tak_gre_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_tak_gre_001b.png
+Exporting TexRotator 0120_run_cc_004b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/TexRotator/0120_run_cc_004b.mat
+Exporting Texture 0120_water_bule_002b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_water_bule_002b.png
+Exporting Shader 0120_runrun_sh to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Shader/0120_runrun_sh.mat
+Exporting Texture 0120_HYFX0012b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_HYFX0012b.png
+Exporting Texture 0120_wat_h0b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_wat_h0b.png
+Exporting Texture 0120_wat_h1b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_wat_h1b.png
+Exporting Texture 0120_kirin to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_kirin.png
+Exporting Texture 0120_deco to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_deco.png
+Exporting Texture 0120_main01y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_main01y.png
+Memory: allocated 659516 bytes in 144 blocks
+Exported 71/71 objects in 0.6 sec

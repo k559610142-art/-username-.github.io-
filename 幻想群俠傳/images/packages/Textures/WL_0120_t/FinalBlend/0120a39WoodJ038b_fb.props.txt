@@ -1,0 +1,13 @@
+FrameBufferBlending = FB_Brighten (6)
+ZWrite = true
+ZTest = true
+AlphaTest = false
+TwoSided = true
+AlphaRef = 255
+TreatAsTwoSided = false
+Material = Shader'water.0120a39WoodJ038b_sh'
+FallbackMaterial = None
+DefaultMaterial = None
+SurfaceType = 0
+bUseTextureAsHeat = false
+HeatMaterial = None

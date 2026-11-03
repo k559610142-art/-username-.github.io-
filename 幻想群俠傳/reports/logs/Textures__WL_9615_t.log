@@ -1,0 +1,51 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_9615_t.utx Ver: 128/29 Names: 65 Exports: 25 Imports: 11 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading TexPanner 8896_fire_001a_tp from package Textures/WL_9615_t.utx
+Loading Texture 9615_center_01l from package Textures/WL_9615_t.utx
+Loading Texture 9615_rock_03l from package Textures/WL_9615_t.utx
+Loading Texture 9615_rock_04l from package Textures/WL_9615_t.utx
+Loading Texture 9615_rock_02l from package Textures/WL_9615_t.utx
+Loading Texture 9615_center_02l from package Textures/WL_9615_t.utx
+Loading Texture 9615_rock_01l from package Textures/WL_9615_t.utx
+Loading Texture 8096_fire_001a from package Textures/WL_9615_t.utx
+Loading Texture 9615_sky_02l from package Textures/WL_9615_t.utx
+Loading Texture 3002_wat_h0b from package Textures/WL_9615_t.utx
+Loading Shader 9615_center_01l_shader from package Textures/WL_9615_t.utx
+Loading Shader 9615_rock_02l from package Textures/WL_9615_t.utx
+Loading Shader 9615_rock_04l_shader from package Textures/WL_9615_t.utx
+Loading Shader 9615_rock_03l_shader from package Textures/WL_9615_t.utx
+Loading Texture 9615_sky_01l from package Textures/WL_9615_t.utx
+Loading Texture 9615_light_01l from package Textures/WL_9615_t.utx
+Loading Texture 9615_light_03l from package Textures/WL_9615_t.utx
+Loading Texture 9615_sky_01 from package Textures/WL_9615_t.utx
+Loading Shader 8896_rock_sh01j from package Textures/WL_9615_t.utx
+Loading Texture 9615_terrain from package Textures/WL_9615_t.utx
+Loading Shader 9615_center_02l_shader from package Textures/WL_9615_t.utx
+Loading Texture 9615_light_02l from package Textures/WL_9615_t.utx
+Exporting objects ...
+Exporting TexPanner 8896_fire_001a_tp to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9615_t/TexPanner/8896_fire_001a_tp.mat
+Exporting Texture 8096_fire_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9615_t/Texture/8096_fire_001a.png
+Exporting Texture 9615_center_01l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9615_t/Texture/9615_center_01l.png
+Exporting Texture 9615_rock_03l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9615_t/Texture/9615_rock_03l.png
+Exporting Texture 9615_rock_04l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9615_t/Texture/9615_rock_04l.png
+Exporting Texture 9615_rock_02l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9615_t/Texture/9615_rock_02l.png
+Exporting Texture 9615_center_02l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9615_t/Texture/9615_center_02l.png
+Exporting Texture 9615_rock_01l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9615_t/Texture/9615_rock_01l.png
+Exporting Texture 9615_sky_02l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9615_t/Texture/9615_sky_02l.png
+Exporting Texture 3002_wat_h0b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9615_t/Texture/3002_wat_h0b.png
+Exporting Shader 9615_center_01l_shader to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9615_t/Shader/9615_center_01l_shader.mat
+Exporting Shader 9615_rock_02l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9615_t/Shader/9615_rock_02l.mat
+Exporting Shader 9615_rock_04l_shader to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9615_t/Shader/9615_rock_04l_shader.mat
+Exporting Shader 9615_rock_03l_shader to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9615_t/Shader/9615_rock_03l_shader.mat
+Exporting Texture 9615_sky_01l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9615_t/Texture/9615_sky_01l.png
+Exporting Texture 9615_light_01l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9615_t/Texture/9615_light_01l.png
+Exporting Texture 9615_light_03l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9615_t/Texture/9615_light_03l.png
+Exporting Texture 9615_sky_01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9615_t/Texture/9615_sky_01.png
+Exporting Shader 8896_rock_sh01j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9615_t/Shader/8896_rock_sh01j.mat
+Exporting Texture 9615_terrain to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9615_t/Texture/9615_terrain.png
+Exporting Shader 9615_center_02l_shader to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9615_t/Shader/9615_center_02l_shader.mat
+Exporting Texture 9615_light_02l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9615_t/Texture/9615_light_02l.png
+Memory: allocated 409944 bytes in 77 blocks
+Exported 22/22 objects in 0.6 sec

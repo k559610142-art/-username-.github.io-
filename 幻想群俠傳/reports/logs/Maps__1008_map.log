@@ -1,0 +1,28 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Maps/1008_map.ut2 Ver: 128/29 Names: 2702 Exports: 2491 Imports: 76 Game: 200001
+Loaded in 0.0 sec, 22 allocs, 0.11 MBytes serialized in 29 calls.
+Loading Texture farmmm from package Maps/1008_map.ut2
+Loading Texture grass from package Maps/1008_map.ut2
+Loading Texture Field from package Maps/1008_map.ut2
+Loading Texture redmountain from package Maps/1008_map.ut2
+Loading Texture zone000 from package Maps/1008_map.ut2
+Loading Texture tex0000 from package Maps/1008_map.ut2
+Loading Texture road from package Maps/1008_map.ut2
+Loading Texture fallen from package Maps/1008_map.ut2
+Loading Texture yellowwhite from package Maps/1008_map.ut2
+Loading Texture lightmountain from package Maps/1008_map.ut2
+Exporting objects ...
+Exporting Texture farmmm to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1008_map/Texture/farmmm.png
+Exporting Texture grass to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1008_map/Texture/grass.png
+Exporting Texture Field to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1008_map/Texture/Field.png
+Exporting Texture redmountain to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1008_map/Texture/redmountain.png
+******** Maps/1008_map.ut2 ********
+*** Unknown UE2 texture format: TEXF_G16 (10)
+Exporting Texture tex0000 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1008_map/Texture/tex0000.png
+Exporting Texture road to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1008_map/Texture/road.png
+Exporting Texture fallen to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1008_map/Texture/fallen.png
+Exporting Texture yellowwhite to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1008_map/Texture/yellowwhite.png
+Exporting Texture lightmountain to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1008_map/Texture/lightmountain.png
+Memory: allocated 510303 bytes in 62 blocks
+Exported 9/9 objects in 0.0 sec

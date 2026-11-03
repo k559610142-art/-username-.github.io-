@@ -1,0 +1,75 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_8026_t.utx Ver: 128/29 Names: 78 Exports: 35 Imports: 7 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture onefloor_0017q_f from package Textures/WL_8026_t.utx
+Loading TexScaler onefloor_0017q_TS from package Textures/WL_8026_t.utx
+Loading Texture onefloor_0017q_a from package Textures/WL_8026_t.utx
+Loading TexPanner onefloor_0017q_TP from package Textures/WL_8026_t.utx
+Loading Texture onefloor_0023q_a from package Textures/WL_8026_t.utx
+Loading TexPanner bluefire from package Textures/WL_8026_t.utx
+Loading Texture onefloor_0017q from package Textures/WL_8026_t.utx
+Loading Texture onefloor_0023q from package Textures/WL_8026_t.utx
+Loading Texture Blue from package Textures/WL_8026_t.utx
+Loading Texture onefloor_0026q from package Textures/WL_8026_t.utx
+Loading Texture onefloor_0027q from package Textures/WL_8026_t.utx
+Loading Texture onefloor_005q from package Textures/WL_8026_t.utx
+Loading Texture onefloor_002q from package Textures/WL_8026_t.utx
+Loading Texture onefloor_0021q from package Textures/WL_8026_t.utx
+Loading Texture onefloor_0022q from package Textures/WL_8026_t.utx
+Loading Texture onefloor_0019q from package Textures/WL_8026_t.utx
+Loading Texture onefloor_0020q from package Textures/WL_8026_t.utx
+Loading Texture onefloor_0018q from package Textures/WL_8026_t.utx
+Loading Texture onefloor_007q from package Textures/WL_8026_t.utx
+Loading Texture onefloor_0012q from package Textures/WL_8026_t.utx
+Loading Texture onefloor_0013q from package Textures/WL_8026_t.utx
+Loading Texture onefloor_009q from package Textures/WL_8026_t.utx
+Loading Texture onefloor_001q from package Textures/WL_8026_t.utx
+Loading Texture onefloor_0011q from package Textures/WL_8026_t.utx
+Loading Texture onefloor_0024q from package Textures/WL_8026_t.utx
+Loading Texture onefloor_0025q from package Textures/WL_8026_t.utx
+Loading Shader table from package Textures/WL_8026_t.utx
+Loading Texture onefloor_0014q from package Textures/WL_8026_t.utx
+Loading Texture onefloor_006q from package Textures/WL_8026_t.utx
+Loading Texture onefloor_0016q from package Textures/WL_8026_t.utx
+Loading Texture onefloor_0010q from package Textures/WL_8026_t.utx
+Loading Texture onefloor_0015q from package Textures/WL_8026_t.utx
+Loading Shader onefloor_0017q_SH from package Textures/WL_8026_t.utx
+Loading Texture onefloor_008q from package Textures/WL_8026_t.utx
+Exporting objects ...
+Exporting Texture onefloor_0017q_f to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/Texture/onefloor_0017q_f.png
+Exporting TexScaler onefloor_0017q_TS to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/TexScaler/onefloor_0017q_TS.mat
+Exporting Texture onefloor_0017q_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/Texture/onefloor_0017q_a.png
+Exporting TexPanner onefloor_0017q_TP to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/TexPanner/onefloor_0017q_TP.mat
+Exporting Texture onefloor_0023q_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/Texture/onefloor_0023q_a.png
+Exporting TexPanner bluefire to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/TexPanner/bluefire.mat
+Exporting Texture Blue to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/Texture/Blue.png
+Exporting Texture onefloor_0017q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/Texture/onefloor_0017q.png
+Exporting Texture onefloor_0023q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/Texture/onefloor_0023q.png
+Exporting Texture onefloor_0026q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/Texture/onefloor_0026q.png
+Exporting Texture onefloor_0027q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/Texture/onefloor_0027q.png
+Exporting Texture onefloor_005q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/Texture/onefloor_005q.png
+Exporting Texture onefloor_002q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/Texture/onefloor_002q.png
+Exporting Texture onefloor_0021q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/Texture/onefloor_0021q.png
+Exporting Texture onefloor_0022q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/Texture/onefloor_0022q.png
+Exporting Texture onefloor_0019q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/Texture/onefloor_0019q.png
+Exporting Texture onefloor_0020q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/Texture/onefloor_0020q.png
+Exporting Texture onefloor_0018q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/Texture/onefloor_0018q.png
+Exporting Texture onefloor_007q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/Texture/onefloor_007q.png
+Exporting Texture onefloor_0012q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/Texture/onefloor_0012q.png
+Exporting Texture onefloor_0013q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/Texture/onefloor_0013q.png
+Exporting Texture onefloor_009q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/Texture/onefloor_009q.png
+Exporting Texture onefloor_001q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/Texture/onefloor_001q.png
+Exporting Texture onefloor_0011q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/Texture/onefloor_0011q.png
+Exporting Texture onefloor_0024q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/Texture/onefloor_0024q.png
+Exporting Texture onefloor_0025q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/Texture/onefloor_0025q.png
+Exporting Shader table to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/Shader/table.mat
+Exporting Texture onefloor_0014q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/Texture/onefloor_0014q.png
+Exporting Texture onefloor_006q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/Texture/onefloor_006q.png
+Exporting Texture onefloor_0016q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/Texture/onefloor_0016q.png
+Exporting Texture onefloor_0010q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/Texture/onefloor_0010q.png
+Exporting Texture onefloor_0015q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/Texture/onefloor_0015q.png
+Exporting Shader onefloor_0017q_SH to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/Shader/onefloor_0017q_SH.mat
+Exporting Texture onefloor_008q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8026_t/Texture/onefloor_008q.png
+Memory: allocated 451380 bytes in 87 blocks
+Exported 34/34 objects in 0.5 sec

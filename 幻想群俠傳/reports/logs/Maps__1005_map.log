@@ -1,0 +1,18 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Maps/1005_map.ut2 Ver: 128/29 Names: 455 Exports: 213 Imports: 63 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.02 MBytes serialized in 5 calls.
+Loading Texture drygrass from package Maps/1005_map.ut2
+Loading Texture terrain1 from package Maps/1005_map.ut2
+Loading Texture sand from package Maps/1005_map.ut2
+Loading Texture mountain from package Maps/1005_map.ut2
+Loading Texture sanddune from package Maps/1005_map.ut2
+Exporting objects ...
+Exporting Texture drygrass to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1005_map/Texture/drygrass.png
+******** Maps/1005_map.ut2 ********
+*** Unknown UE2 texture format: TEXF_G16 (10)
+Exporting Texture sand to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1005_map/Texture/sand.png
+Exporting Texture mountain to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1005_map/Texture/mountain.png
+Exporting Texture sanddune to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1005_map/Texture/sanddune.png
+Memory: allocated 316699 bytes in 52 blocks
+Exported 4/4 objects in 0.0 sec

@@ -1,0 +1,67 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_8014_t.utx Ver: 128/29 Names: 88 Exports: 35 Imports: 9 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading TexEnvMap Water_TEM from package Textures/WL_8014_t.utx
+Loading Texture water from package Textures/WL_8014_t.utx
+Loading Texture floor_04 from package Textures/WL_8014_t.utx
+Loading Cubemap Water_Cube from package Textures/WL_8014_t.utx
+Loading Texture Object_001b from package Textures/WL_8014_t.utx
+Loading Palette Palette0 from package Textures/WL_8014_t.utx
+Loading Texture 04 from package Textures/WL_8014_t.utx
+Loading Texture 03 from package Textures/WL_8014_t.utx
+Loading Texture 02 from package Textures/WL_8014_t.utx
+Loading Texture 01 from package Textures/WL_8014_t.utx
+Loading Texture 05 from package Textures/WL_8014_t.utx
+Loading Texture 00 from package Textures/WL_8014_t.utx
+Loading Texture bur_01b from package Textures/WL_8014_t.utx
+Loading Texture tree_big from package Textures/WL_8014_t.utx
+Loading Texture grass01 from package Textures/WL_8014_t.utx
+Loading Texture fall01 from package Textures/WL_8014_t.utx
+Loading Texture Object_001a from package Textures/WL_8014_t.utx
+Loading Shader Water_Shader from package Textures/WL_8014_t.utx
+Loading Shader Water2_shader from package Textures/WL_8014_t.utx
+Loading TexRotator Grass01_TEXR from package Textures/WL_8014_t.utx
+Loading Texture grass01 from package Textures/WL_8014_t.utx
+Loading Texture Wood_01 from package Textures/WL_8014_t.utx
+Loading Texture Rock_01 from package Textures/WL_8014_t.utx
+Loading Texture sky from package Textures/WL_8014_t.utx
+Loading TexRotator tree_big_TexR from package Textures/WL_8014_t.utx
+Loading Texture floor_05 from package Textures/WL_8014_t.utx
+Loading Texture floor_03 from package Textures/WL_8014_t.utx
+Loading Texture floor_02 from package Textures/WL_8014_t.utx
+Loading Texture floor_01 from package Textures/WL_8014_t.utx
+Loading Texture bur_01a from package Textures/WL_8014_t.utx
+Loading Texture Light from package Textures/WL_8014_t.utx
+Exporting objects ...
+Exporting TexEnvMap Water_TEM to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8014_t/TexEnvMap/Water_TEM.mat
+Exporting Texture 00 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8014_t/Texture/00.png
+Exporting Texture 01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8014_t/Texture/01.png
+Exporting Texture 02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8014_t/Texture/02.png
+Exporting Texture 03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8014_t/Texture/03.png
+Exporting Texture 04 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8014_t/Texture/04.png
+Exporting Texture 05 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8014_t/Texture/05.png
+Exporting Texture water to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8014_t/Texture/water.png
+Exporting Texture floor_04 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8014_t/Texture/floor_04.png
+Exporting Texture Object_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8014_t/Texture/Object_001b.png
+Exporting Texture bur_01b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8014_t/Texture/bur_01b.png
+Exporting Texture tree_big to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8014_t/Texture/tree_big.png
+Exporting Texture grass01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8014_t/Texture/grass01.png
+Exporting Texture fall01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8014_t/Texture/fall01.png
+Exporting Texture Object_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8014_t/Texture/Object_001a.png
+Exporting Shader Water_Shader to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8014_t/Shader/Water_Shader.mat
+Exporting Shader Water2_shader to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8014_t/Shader/Water2_shader.mat
+Exporting TexRotator Grass01_TEXR to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8014_t/TexRotator/Grass01_TEXR.mat
+Exporting Texture grass01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8014_t/Texture/grass01.png
+Exporting Texture Wood_01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8014_t/Texture/Wood_01.png
+Exporting Texture Rock_01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8014_t/Texture/Rock_01.png
+Exporting Texture sky to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8014_t/Texture/sky.png
+Exporting TexRotator tree_big_TexR to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8014_t/TexRotator/tree_big_TexR.mat
+Exporting Texture floor_05 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8014_t/Texture/floor_05.png
+Exporting Texture floor_03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8014_t/Texture/floor_03.png
+Exporting Texture floor_02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8014_t/Texture/floor_02.png
+Exporting Texture floor_01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8014_t/Texture/floor_01.png
+Exporting Texture bur_01a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8014_t/Texture/bur_01a.png
+Exporting Texture Light to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8014_t/Texture/Light.png
+Memory: allocated 430844 bytes in 82 blocks
+Exported 29/29 objects in 0.2 sec

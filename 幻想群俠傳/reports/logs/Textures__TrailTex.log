@@ -1,0 +1,14 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/TrailTex.utx Ver: 128/29 Names: 24 Exports: 5 Imports: 5 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Palette Palette0 from package Textures/TrailTex.utx
+Loading Texture repeat2 from package Textures/TrailTex.utx
+Loading Texture Trail_red from package Textures/TrailTex.utx
+Loading Texture Test from package Textures/TrailTex.utx
+Exporting objects ...
+Exporting Texture repeat2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/TrailTex/Texture/repeat2.png
+Exporting Texture Trail_red to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/TrailTex/Texture/Trail_red.png
+Exporting Texture Test to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/TrailTex/Texture/Test.png
+Memory: allocated 302355 bytes in 51 blocks
+Exported 3/3 objects in 0.0 sec

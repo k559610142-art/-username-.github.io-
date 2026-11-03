@@ -1,0 +1,35 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Maps/3005_map.ut2 Ver: 128/29 Names: 1620 Exports: 1279 Imports: 160 Game: 200001
+Loaded in 0.0 sec, 19 allocs, 0.06 MBytes serialized in 15 calls.
+Loading Texture 3005_layer01a from package Maps/3005_map.ut2
+Loading Texture 3005_layer04a from package Maps/3005_map.ut2
+Loading Texture 3005_layer05a from package Maps/3005_map.ut2
+Loading Texture 3005_terrain01 from package Maps/3005_map.ut2
+Loading Texture 3005_layer02a from package Maps/3005_map.ut2
+Loading Texture 3005_deco_2 from package Maps/3005_map.ut2
+Loading Palette Palette0 from package Maps/3005_map.ut2
+Loading Texture 3005_deco_3 from package Maps/3005_map.ut2
+Loading Palette Palette1 from package Maps/3005_map.ut2
+Loading Texture 3005_deco_4 from package Maps/3005_map.ut2
+Loading Palette Palette2 from package Maps/3005_map.ut2
+Loading Texture 3005_layer00a from package Maps/3005_map.ut2
+Loading Texture 3005_deco from package Maps/3005_map.ut2
+Loading package: Textures/WL_0010_t.utx Ver: 128/29 Names: 271 Exports: 219 Imports: 15 Game: 200001
+Loading Texture 3005_layer03a from package Maps/3005_map.ut2
+Loading Palette Palette0 from package Textures/WL_0010_t.utx
+Exporting objects ...
+Exporting Texture 3005_layer01a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/3005_map/Texture/3005_layer01a.png
+Exporting Texture 3005_layer04a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/3005_map/Texture/3005_layer04a.png
+Exporting Texture 3005_layer05a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/3005_map/Texture/3005_layer05a.png
+******** Maps/3005_map.ut2 ********
+*** Unknown UE2 texture format: TEXF_G16 (10)
+Exporting Texture 3005_layer02a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/3005_map/Texture/3005_layer02a.png
+Exporting Texture 3005_deco_2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/3005_map/Texture/3005_deco_2.png
+Exporting Texture 3005_deco_3 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/3005_map/Texture/3005_deco_3.png
+Exporting Texture 3005_deco_4 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/3005_map/Texture/3005_deco_4.png
+Exporting Texture 3005_layer00a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/3005_map/Texture/3005_layer00a.png
+Exporting Texture 3005_deco to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/3005_map/Texture/3005_deco.png
+Exporting Texture 3005_layer03a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/3005_map/Texture/3005_layer03a.png
+Memory: allocated 444603 bytes in 68 blocks
+Exported 10/10 objects in 0.0 sec

@@ -1,0 +1,13 @@
+CombineOperation = CO_Multiply (2)
+AlphaOperation = AO_Use_Alpha_From_Material1 (3)
+Material1 = Texture'spaceship_a03h'
+Material2 = TexPanner'spaceship_02h_aaa'
+Mask = None
+InvertMask = true
+Modulate2X = false
+Modulate4X = false
+FallbackMaterial = None
+DefaultMaterial = None
+SurfaceType = 0
+bUseTextureAsHeat = false
+HeatMaterial = None

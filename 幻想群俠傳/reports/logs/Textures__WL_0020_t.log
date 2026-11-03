@@ -1,0 +1,159 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_0020_t.utx Ver: 128/29 Names: 109 Exports: 82 Imports: 11 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.01 MBytes serialized in 2 calls.
+Loading Texture 1600_daochang_neijing_10h from package Textures/WL_0020_t.utx
+Loading Texture 8020_cloud_001a from package Textures/WL_0020_t.utx
+Loading Texture 0020_rock_01 from package Textures/WL_0020_t.utx
+Loading Texture Bwharf_076j from package Textures/WL_0020_t.utx
+Loading Texture hunt_shadow_car from package Textures/WL_0020_t.utx
+Loading Texture House1_003t from package Textures/WL_0020_t.utx
+Loading Texture Bwharf_056j from package Textures/WL_0020_t.utx
+Loading Texture 1300_attack002_a from package Textures/WL_0020_t.utx
+Loading Texture 1300_attack003_a from package Textures/WL_0020_t.utx
+Loading Texture 1300_attack004_a from package Textures/WL_0020_t.utx
+Loading Texture 1300_attack005_a from package Textures/WL_0020_t.utx
+Loading Texture 1300_attack006_a from package Textures/WL_0020_t.utx
+Loading Texture 1300_attack053_a from package Textures/WL_0020_t.utx
+Loading Texture 1300_attack042_a from package Textures/WL_0020_t.utx
+Loading Texture 1300_attack034_a from package Textures/WL_0020_t.utx
+Loading Texture 0020_wood02 from package Textures/WL_0020_t.utx
+Loading Texture 0020_wood01 from package Textures/WL_0020_t.utx
+Loading Texture 0020_wood03 from package Textures/WL_0020_t.utx
+Loading Texture goods_001t from package Textures/WL_0020_t.utx
+Loading Texture goods_013t from package Textures/WL_0020_t.utx
+Loading Texture flyhorse_a001d from package Textures/WL_0020_t.utx
+Loading Texture flyhorse_a002d from package Textures/WL_0020_t.utx
+Loading Texture flyhorse_a003d from package Textures/WL_0020_t.utx
+Loading Texture flyhorse_a004d from package Textures/WL_0020_t.utx
+Loading Texture flyhorse_w003d from package Textures/WL_0020_t.utx
+Loading Texture flyhorse_w001d from package Textures/WL_0020_t.utx
+Loading Texture flyhorse_w002d from package Textures/WL_0020_t.utx
+Loading Texture flyhorse_a005d from package Textures/WL_0020_t.utx
+Loading Texture flyhorse_a006d from package Textures/WL_0020_t.utx
+Loading Texture greenvillage_d08 from package Textures/WL_0020_t.utx
+Loading Texture greenvillage_d02 from package Textures/WL_0020_t.utx
+Loading Texture greenvillage_d09 from package Textures/WL_0020_t.utx
+Loading Texture greenvillage_d10 from package Textures/WL_0020_t.utx
+Loading Texture hunt_d15 from package Textures/WL_0020_t.utx
+Loading Texture rookietown_d05 from package Textures/WL_0020_t.utx
+Loading Texture rookietown_d14 from package Textures/WL_0020_t.utx
+Loading Texture greenvillage_d06 from package Textures/WL_0020_t.utx
+Loading Texture greenvillage_d07 from package Textures/WL_0020_t.utx
+Loading Texture southcity_d16 from package Textures/WL_0020_t.utx
+Loading Texture greenvillage_d11 from package Textures/WL_0020_t.utx
+Loading Texture things_01_001d from package Textures/WL_0020_t.utx
+Loading Texture things_05_d001 from package Textures/WL_0020_t.utx
+Loading Texture flyhorse_c002d from package Textures/WL_0020_t.utx
+Loading Texture flyhorse_wh001d from package Textures/WL_0020_t.utx
+Loading Texture flyhorse_c003d from package Textures/WL_0020_t.utx
+Loading Texture flyhorse_c001d from package Textures/WL_0020_t.utx
+Loading Texture flyhorse_w005d from package Textures/WL_0020_t.utx
+Loading Texture flyhorse_w006d from package Textures/WL_0020_t.utx
+Loading Texture flyhorse_wh002d from package Textures/WL_0020_t.utx
+Loading Texture flyhorse_w009d from package Textures/WL_0020_t.utx
+Loading Texture flyhorse_c005d from package Textures/WL_0020_t.utx
+Loading Texture flyhorse_c004d from package Textures/WL_0020_t.utx
+Loading Texture flyhorse_c004d_2 from package Textures/WL_0020_t.utx
+Loading Texture e_object_01 from package Textures/WL_0020_t.utx
+Loading Texture flyhorse_c006d from package Textures/WL_0020_t.utx
+Loading Texture flyhorse_w004d from package Textures/WL_0020_t.utx
+Loading Texture flyhorse_c006d_2 from package Textures/WL_0020_t.utx
+Loading Texture 1300_attack043_a from package Textures/WL_0020_t.utx
+Loading Texture 1600_car_002_f from package Textures/WL_0020_t.utx
+Loading Texture 1600_car_003_f from package Textures/WL_0020_t.utx
+Loading Texture flyhorse_e001d from package Textures/WL_0020_t.utx
+Loading Texture 0020_rock_02 from package Textures/WL_0020_t.utx
+Loading Texture Map_HouseA14 from package Textures/WL_0020_t.utx
+Loading Texture 1300_attackfire001_a from package Textures/WL_0020_t.utx
+Loading Texture 1300_attack052_a from package Textures/WL_0020_t.utx
+Loading Texture 1300_attack022_a from package Textures/WL_0020_t.utx
+Loading Texture 1300_attack028_a from package Textures/WL_0020_t.utx
+Loading Texture 1300_attack030_a from package Textures/WL_0020_t.utx
+Loading Texture 1300_attack029_a from package Textures/WL_0020_t.utx
+Loading Texture 1300_attack045_a from package Textures/WL_0020_t.utx
+Loading Texture 1300_attack033_a from package Textures/WL_0020_t.utx
+Loading Texture 1300_attack050_a from package Textures/WL_0020_t.utx
+Loading Texture 1300_attack032_a from package Textures/WL_0020_t.utx
+Loading Texture 1300_attack026_a from package Textures/WL_0020_t.utx
+Loading Texture 1300_attack027_a from package Textures/WL_0020_t.utx
+Loading Texture 1300_attack031_a from package Textures/WL_0020_t.utx
+Exporting objects ...
+Exporting Texture 1600_daochang_neijing_10h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/1600_daochang_neijing_10h.png
+Exporting Texture 8020_cloud_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/8020_cloud_001a.png
+Exporting Texture 0020_rock_01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/0020_rock_01.png
+Exporting Texture Bwharf_076j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/Bwharf_076j.png
+Exporting Texture hunt_shadow_car to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/hunt_shadow_car.png
+Exporting Texture House1_003t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/House1_003t.png
+Exporting Texture Bwharf_056j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/Bwharf_056j.png
+Exporting Texture 1300_attack002_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/1300_attack002_a.png
+Exporting Texture 1300_attack003_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/1300_attack003_a.png
+Exporting Texture 1300_attack004_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/1300_attack004_a.png
+Exporting Texture 1300_attack005_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/1300_attack005_a.png
+Exporting Texture 1300_attack006_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/1300_attack006_a.png
+Exporting Texture 1300_attack053_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/1300_attack053_a.png
+Exporting Texture 1300_attack042_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/1300_attack042_a.png
+Exporting Texture 1300_attack034_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/1300_attack034_a.png
+Exporting Texture 0020_wood02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/0020_wood02.png
+Exporting Texture 0020_wood01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/0020_wood01.png
+Exporting Texture 0020_wood03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/0020_wood03.png
+Exporting Texture goods_001t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/goods_001t.png
+Exporting Texture goods_013t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/goods_013t.png
+Exporting Texture flyhorse_a001d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/flyhorse_a001d.png
+Exporting Texture flyhorse_a002d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/flyhorse_a002d.png
+Exporting Texture flyhorse_a003d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/flyhorse_a003d.png
+Exporting Texture flyhorse_a004d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/flyhorse_a004d.png
+Exporting Texture flyhorse_w003d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/flyhorse_w003d.png
+Exporting Texture flyhorse_w001d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/flyhorse_w001d.png
+Exporting Texture flyhorse_w002d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/flyhorse_w002d.png
+Exporting Texture flyhorse_a005d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/flyhorse_a005d.png
+Exporting Texture flyhorse_a006d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/flyhorse_a006d.png
+Exporting Texture greenvillage_d08 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/greenvillage_d08.png
+Exporting Texture greenvillage_d02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/greenvillage_d02.png
+Exporting Texture greenvillage_d09 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/greenvillage_d09.png
+Exporting Texture greenvillage_d10 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/greenvillage_d10.png
+Exporting Texture hunt_d15 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/hunt_d15.png
+Exporting Texture rookietown_d05 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/rookietown_d05.png
+Exporting Texture rookietown_d14 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/rookietown_d14.png
+Exporting Texture greenvillage_d06 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/greenvillage_d06.png
+Exporting Texture greenvillage_d07 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/greenvillage_d07.png
+Exporting Texture southcity_d16 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/southcity_d16.png
+Exporting Texture greenvillage_d11 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/greenvillage_d11.png
+Exporting Texture things_01_001d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/things_01_001d.png
+Exporting Texture things_05_d001 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/things_05_d001.png
+Exporting Texture flyhorse_c002d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/flyhorse_c002d.png
+Exporting Texture flyhorse_wh001d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/flyhorse_wh001d.png
+Exporting Texture flyhorse_c003d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/flyhorse_c003d.png
+Exporting Texture flyhorse_c001d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/flyhorse_c001d.png
+Exporting Texture flyhorse_w005d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/flyhorse_w005d.png
+Exporting Texture flyhorse_w006d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/flyhorse_w006d.png
+Exporting Texture flyhorse_wh002d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/flyhorse_wh002d.png
+Exporting Texture flyhorse_w009d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/flyhorse_w009d.png
+Exporting Texture flyhorse_c005d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/flyhorse_c005d.png
+Exporting Texture flyhorse_c004d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/flyhorse_c004d.png
+Exporting Texture flyhorse_c004d_2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/flyhorse_c004d_2.png
+Exporting Texture e_object_01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/e_object_01.png
+Exporting Texture flyhorse_c006d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/flyhorse_c006d.png
+Exporting Texture flyhorse_w004d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/flyhorse_w004d.png
+Exporting Texture flyhorse_c006d_2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/flyhorse_c006d_2.png
+Exporting Texture 1300_attack043_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/1300_attack043_a.png
+Exporting Texture 1600_car_002_f to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/1600_car_002_f.png
+Exporting Texture 1600_car_003_f to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/1600_car_003_f.png
+Exporting Texture flyhorse_e001d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/flyhorse_e001d.png
+Exporting Texture 0020_rock_02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/0020_rock_02.png
+Exporting Texture Map_HouseA14 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/Map_HouseA14.png
+Exporting Texture 1300_attackfire001_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/1300_attackfire001_a.png
+Exporting Texture 1300_attack052_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/1300_attack052_a.png
+Exporting Texture 1300_attack022_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/1300_attack022_a.png
+Exporting Texture 1300_attack028_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/1300_attack028_a.png
+Exporting Texture 1300_attack030_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/1300_attack030_a.png
+Exporting Texture 1300_attack029_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/1300_attack029_a.png
+Exporting Texture 1300_attack045_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/1300_attack045_a.png
+Exporting Texture 1300_attack033_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/1300_attack033_a.png
+Exporting Texture 1300_attack050_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/1300_attack050_a.png
+Exporting Texture 1300_attack032_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/1300_attack032_a.png
+Exporting Texture 1300_attack026_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/1300_attack026_a.png
+Exporting Texture 1300_attack027_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/1300_attack027_a.png
+Exporting Texture 1300_attack031_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0020_t/Texture/1300_attack031_a.png
+Memory: allocated 604940 bytes in 124 blocks
+Exported 76/76 objects in 0.4 sec

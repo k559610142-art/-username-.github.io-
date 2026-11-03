@@ -1,0 +1,39 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/HI_sky_t.utx Ver: 128/29 Names: 72 Exports: 28 Imports: 8 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading TexPanner SPanner from package Textures/HI_sky_t.utx
+Loading Texture test_go_go_001b from package Textures/HI_sky_t.utx
+Loading Texture moon_k1 from package Textures/HI_sky_t.utx
+Loading Texture StrongCloud_2 from package Textures/HI_sky_t.utx
+Loading Texture SkyTop2 from package Textures/HI_sky_t.utx
+Loading Texture air_001a from package Textures/HI_sky_t.utx
+Loading Shader SShader from package Textures/HI_sky_t.utx
+Loading Texture Sun_aT from package Textures/HI_sky_t.utx
+Loading Texture SkyTop from package Textures/HI_sky_t.utx
+Loading Texture stat_01a from package Textures/HI_sky_t.utx
+Loading Texture SkyTop3 from package Textures/HI_sky_t.utx
+Loading Shader sky_sha from package Textures/HI_sky_t.utx
+Loading TexScaler Cloud_s from package Textures/HI_sky_t.utx
+Loading TexPanner test_gogogo_002b from package Textures/HI_sky_t.utx
+Loading Texture MTestsky from package Textures/HI_sky_t.utx
+Loading Texture Sun_T from package Textures/HI_sky_t.utx
+Exporting objects ...
+Exporting TexPanner SPanner to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_sky_t/TexPanner/SPanner.mat
+Exporting Texture StrongCloud_2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_sky_t/Texture/StrongCloud_2.png
+Exporting Texture test_go_go_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_sky_t/Texture/test_go_go_001b.png
+Exporting Texture moon_k1 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_sky_t/Texture/moon_k1.png
+Exporting Texture SkyTop2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_sky_t/Texture/SkyTop2.png
+Exporting Texture air_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_sky_t/Texture/air_001a.png
+Exporting Shader SShader to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_sky_t/Shader/SShader.mat
+Exporting Texture Sun_aT to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_sky_t/Texture/Sun_aT.png
+Exporting Texture SkyTop to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_sky_t/Texture/SkyTop.png
+Exporting Texture stat_01a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_sky_t/Texture/stat_01a.png
+Exporting Texture SkyTop3 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_sky_t/Texture/SkyTop3.png
+Exporting Shader sky_sha to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_sky_t/Shader/sky_sha.mat
+Exporting TexScaler Cloud_s to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_sky_t/TexScaler/Cloud_s.mat
+Exporting TexPanner test_gogogo_002b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_sky_t/TexPanner/test_gogogo_002b.mat
+Exporting Texture MTestsky to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_sky_t/Texture/MTestsky.png
+Exporting Texture Sun_T to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_sky_t/Texture/Sun_T.png
+Memory: allocated 377263 bytes in 69 blocks
+Exported 16/16 objects in 0.1 sec

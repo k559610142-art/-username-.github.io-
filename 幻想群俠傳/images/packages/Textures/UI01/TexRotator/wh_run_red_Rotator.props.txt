@@ -1,0 +1,16 @@
+TexRotationType = TR_FixedRotation (0)
+Rotation = { Yaw=0, Pitch=0, Roll=0 }
+UOffset = 128
+VOffset = 128
+OscillationRate = { Yaw=0, Pitch=0, Roll=0 }
+OscillationAmplitude = { Yaw=0, Pitch=0, Roll=0 }
+OscillationPhase = { Yaw=0, Pitch=0, Roll=0 }
+TexCoordSource = TCS_NoChange (13)
+TexCoordCount = TCN_2DCoords (0)
+TexCoordProjected = false
+Material = Texture'Shop.wh_run_red_001b'
+FallbackMaterial = None
+DefaultMaterial = None
+SurfaceType = 0
+bUseTextureAsHeat = false
+HeatMaterial = None

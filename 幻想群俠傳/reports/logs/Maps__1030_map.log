@@ -1,0 +1,28 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Maps/1030_map.ut2 Ver: 128/29 Names: 926 Exports: 630 Imports: 96 Game: 200001
+Loaded in 0.0 sec, 18 allocs, 0.03 MBytes serialized in 8 calls.
+Loading Texture 0048_layer06_a from package Maps/1030_map.ut2
+Loading Texture 0048_layer04_a from package Maps/1030_map.ut2
+Loading Texture 0048_layer01_a from package Maps/1030_map.ut2
+Loading Texture layer09 from package Maps/1030_map.ut2
+Loading Texture 0048_layer02_a from package Maps/1030_map.ut2
+Loading Texture layer10 from package Maps/1030_map.ut2
+Loading Texture 0048_layer03_a from package Maps/1030_map.ut2
+Loading Texture 0048_layer08_a from package Maps/1030_map.ut2
+Loading Texture 0048_layer05_a from package Maps/1030_map.ut2
+Loading Texture 0048_terrain01_a from package Maps/1030_map.ut2
+Exporting objects ...
+Exporting Texture 0048_layer06_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1030_map/Texture/0048_layer06_a.png
+Exporting Texture 0048_layer04_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1030_map/Texture/0048_layer04_a.png
+Exporting Texture 0048_layer01_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1030_map/Texture/0048_layer01_a.png
+Exporting Texture layer09 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1030_map/Texture/layer09.png
+Exporting Texture 0048_layer02_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1030_map/Texture/0048_layer02_a.png
+Exporting Texture layer10 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1030_map/Texture/layer10.png
+Exporting Texture 0048_layer03_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1030_map/Texture/0048_layer03_a.png
+Exporting Texture 0048_layer08_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1030_map/Texture/0048_layer08_a.png
+Exporting Texture 0048_layer05_a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1030_map/Texture/0048_layer05_a.png
+******** Maps/1030_map.ut2 ********
+*** Unknown UE2 texture format: TEXF_G16 (10)
+Memory: allocated 370987 bytes in 58 blocks
+Exported 9/9 objects in 0.0 sec

@@ -1,0 +1,16 @@
+TexRotationType = TR_OscillatingRotation (2)
+Rotation = { Yaw=0, Pitch=0, Roll=0 }
+UOffset = 256
+VOffset = 160
+OscillationRate = { Yaw=5000, Pitch=0, Roll=0 }
+OscillationAmplitude = { Yaw=100, Pitch=0, Roll=0 }
+OscillationPhase = { Yaw=15000, Pitch=0, Roll=0 }
+TexCoordSource = TCS_NoChange (13)
+TexCoordCount = TCN_2DCoords (0)
+TexCoordProjected = false
+Material = Texture'tree.Tree_07a'
+FallbackMaterial = None
+DefaultMaterial = None
+SurfaceType = 0
+bUseTextureAsHeat = false
+HeatMaterial = None

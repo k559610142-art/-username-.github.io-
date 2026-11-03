@@ -1,0 +1,87 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/am_t.utx Ver: 128/29 Names: 57 Exports: 40 Imports: 2 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture am03_ha from package Textures/am_t.utx
+Loading Texture am01_ha from package Textures/am_t.utx
+Loading Texture am02_ha from package Textures/am_t.utx
+Loading Texture am03_hh from package Textures/am_t.utx
+Loading Texture am04_ha from package Textures/am_t.utx
+Loading Texture am05_ha from package Textures/am_t.utx
+Loading Texture am01_hb from package Textures/am_t.utx
+Loading Texture am01_hc from package Textures/am_t.utx
+Loading Texture am01_he from package Textures/am_t.utx
+Loading Texture am01_hf from package Textures/am_t.utx
+Loading Texture am01_hg from package Textures/am_t.utx
+Loading Texture am01_hh from package Textures/am_t.utx
+Loading Texture am02_hb from package Textures/am_t.utx
+Loading Texture am02_hc from package Textures/am_t.utx
+Loading Texture am02_hd from package Textures/am_t.utx
+Loading Texture am02_he from package Textures/am_t.utx
+Loading Texture am02_hf from package Textures/am_t.utx
+Loading Texture am02_hg from package Textures/am_t.utx
+Loading Texture am02_hh from package Textures/am_t.utx
+Loading Texture am03_hb from package Textures/am_t.utx
+Loading Texture am03_hc from package Textures/am_t.utx
+Loading Texture am03_hd from package Textures/am_t.utx
+Loading Texture am03_he from package Textures/am_t.utx
+Loading Texture am03_hf from package Textures/am_t.utx
+Loading Texture am03_hg from package Textures/am_t.utx
+Loading Texture am01_hd from package Textures/am_t.utx
+Loading Texture am05_hh from package Textures/am_t.utx
+Loading Texture am04_hb from package Textures/am_t.utx
+Loading Texture am04_hc from package Textures/am_t.utx
+Loading Texture am04_hd from package Textures/am_t.utx
+Loading Texture am04_he from package Textures/am_t.utx
+Loading Texture am04_hf from package Textures/am_t.utx
+Loading Texture am04_hg from package Textures/am_t.utx
+Loading Texture am04_hh from package Textures/am_t.utx
+Loading Texture am05_hb from package Textures/am_t.utx
+Loading Texture am05_hc from package Textures/am_t.utx
+Loading Texture am05_hd from package Textures/am_t.utx
+Loading Texture am05_he from package Textures/am_t.utx
+Loading Texture am05_hf from package Textures/am_t.utx
+Loading Texture am05_hg from package Textures/am_t.utx
+Exporting objects ...
+Exporting Texture am03_ha to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am03_ha.png
+Exporting Texture am01_ha to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am01_ha.png
+Exporting Texture am02_ha to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am02_ha.png
+Exporting Texture am03_hh to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am03_hh.png
+Exporting Texture am04_ha to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am04_ha.png
+Exporting Texture am05_ha to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am05_ha.png
+Exporting Texture am01_hb to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am01_hb.png
+Exporting Texture am01_hc to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am01_hc.png
+Exporting Texture am01_he to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am01_he.png
+Exporting Texture am01_hf to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am01_hf.png
+Exporting Texture am01_hg to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am01_hg.png
+Exporting Texture am01_hh to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am01_hh.png
+Exporting Texture am02_hb to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am02_hb.png
+Exporting Texture am02_hc to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am02_hc.png
+Exporting Texture am02_hd to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am02_hd.png
+Exporting Texture am02_he to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am02_he.png
+Exporting Texture am02_hf to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am02_hf.png
+Exporting Texture am02_hg to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am02_hg.png
+Exporting Texture am02_hh to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am02_hh.png
+Exporting Texture am03_hb to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am03_hb.png
+Exporting Texture am03_hc to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am03_hc.png
+Exporting Texture am03_hd to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am03_hd.png
+Exporting Texture am03_he to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am03_he.png
+Exporting Texture am03_hf to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am03_hf.png
+Exporting Texture am03_hg to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am03_hg.png
+Exporting Texture am01_hd to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am01_hd.png
+Exporting Texture am05_hh to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am05_hh.png
+Exporting Texture am04_hb to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am04_hb.png
+Exporting Texture am04_hc to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am04_hc.png
+Exporting Texture am04_hd to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am04_hd.png
+Exporting Texture am04_he to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am04_he.png
+Exporting Texture am04_hf to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am04_hf.png
+Exporting Texture am04_hg to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am04_hg.png
+Exporting Texture am04_hh to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am04_hh.png
+Exporting Texture am05_hb to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am05_hb.png
+Exporting Texture am05_hc to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am05_hc.png
+Exporting Texture am05_hd to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am05_hd.png
+Exporting Texture am05_he to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am05_he.png
+Exporting Texture am05_hf to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am05_hf.png
+Exporting Texture am05_hg to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/am_t/Texture/am05_hg.png
+Memory: allocated 455487 bytes in 88 blocks
+Exported 40/40 objects in 0.7 sec

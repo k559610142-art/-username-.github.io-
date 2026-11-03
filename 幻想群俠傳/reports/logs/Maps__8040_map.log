@@ -1,0 +1,48 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Maps/8040_map.ut2 Ver: 128/29 Names: 859 Exports: 600 Imports: 93 Game: 200001
+Loaded in 0.0 sec, 18 allocs, 0.03 MBytes serialized in 7 calls.
+Loading Texture Field from package Maps/8040_map.ut2
+Loading Palette Palette0 from package Maps/8040_map.ut2
+Loading Texture grass from package Maps/8040_map.ut2
+Loading Palette Palette1 from package Maps/8040_map.ut2
+Loading Texture 8040_deco2 from package Maps/8040_map.ut2
+Loading Texture fallen from package Maps/8040_map.ut2
+Loading Texture yellowwhite from package Maps/8040_map.ut2
+Loading Texture road from package Maps/8040_map.ut2
+Loading Texture 8040_map_005 from package Maps/8040_map.ut2
+Loading Texture 8040_map_004 from package Maps/8040_map.ut2
+Loading Texture lightmountain from package Maps/8040_map.ut2
+Loading Texture zone000 from package Maps/8040_map.ut2
+Loading Texture Terrain from package Maps/8040_map.ut2
+Loading Texture Tex from package Maps/8040_map.ut2
+Loading Texture redmountain from package Maps/8040_map.ut2
+Loading Texture 8040_floor_002e from package Maps/8040_map.ut2
+Loading Texture tex0000 from package Maps/8040_map.ut2
+Loading Texture 8040_deco from package Maps/8040_map.ut2
+Loading Texture 8040_map_06 from package Maps/8040_map.ut2
+Loading Texture farmmm from package Maps/8040_map.ut2
+Loading Texture 8040_black_07 from package Maps/8040_map.ut2
+Exporting objects ...
+Exporting Texture Field to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8040_map/Texture/Field.png
+Exporting Texture grass to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8040_map/Texture/grass.png
+Exporting Texture 8040_deco2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8040_map/Texture/8040_deco2.png
+Exporting Texture fallen to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8040_map/Texture/fallen.png
+Exporting Texture yellowwhite to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8040_map/Texture/yellowwhite.png
+Exporting Texture road to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8040_map/Texture/road.png
+Exporting Texture 8040_map_005 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8040_map/Texture/8040_map_005.png
+Exporting Texture 8040_map_004 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8040_map/Texture/8040_map_004.png
+Exporting Texture lightmountain to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8040_map/Texture/lightmountain.png
+******** Maps/8040_map.ut2 ********
+*** Unknown UE2 texture format: TEXF_G16 (10)
+*** Unknown UE2 texture format: TEXF_G16 (10)
+Exporting Texture Tex to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8040_map/Texture/Tex.png
+Exporting Texture redmountain to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8040_map/Texture/redmountain.png
+Exporting Texture 8040_floor_002e to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8040_map/Texture/8040_floor_002e.png
+Exporting Texture tex0000 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8040_map/Texture/tex0000.png
+Exporting Texture 8040_deco to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8040_map/Texture/8040_deco.png
+Exporting Texture 8040_map_06 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8040_map/Texture/8040_map_06.png
+Exporting Texture farmmm to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8040_map/Texture/farmmm.png
+Exporting Texture 8040_black_07 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8040_map/Texture/8040_black_07.png
+Memory: allocated 402359 bytes in 66 blocks
+Exported 17/17 objects in 0.0 sec

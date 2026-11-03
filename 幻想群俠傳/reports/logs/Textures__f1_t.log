@@ -1,0 +1,39 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/f1_t.utx Ver: 128/29 Names: 40 Exports: 16 Imports: 3 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture f10102b1 from package Textures/f1_t.utx
+Loading Texture f10104a1 from package Textures/f1_t.utx
+Loading Texture f10103b1 from package Textures/f1_t.utx
+Loading Texture f10103a1 from package Textures/f1_t.utx
+Loading Texture f10104b1 from package Textures/f1_t.utx
+Loading Texture f10102a1 from package Textures/f1_t.utx
+Loading Texture f10101b1 from package Textures/f1_t.utx
+Loading Texture f10101a1 from package Textures/f1_t.utx
+Loading Shader f10103a from package Textures/f1_t.utx
+Loading Shader f10103b from package Textures/f1_t.utx
+Loading Shader f10102a from package Textures/f1_t.utx
+Loading Shader f10101b from package Textures/f1_t.utx
+Loading Shader f10101a from package Textures/f1_t.utx
+Loading Shader f10102b from package Textures/f1_t.utx
+Loading Shader f10104a from package Textures/f1_t.utx
+Loading Shader f10104b from package Textures/f1_t.utx
+Exporting objects ...
+Exporting Texture f10102b1 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/f1_t/Texture/f10102b1.png
+Exporting Texture f10104a1 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/f1_t/Texture/f10104a1.png
+Exporting Texture f10103b1 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/f1_t/Texture/f10103b1.png
+Exporting Texture f10103a1 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/f1_t/Texture/f10103a1.png
+Exporting Texture f10104b1 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/f1_t/Texture/f10104b1.png
+Exporting Texture f10102a1 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/f1_t/Texture/f10102a1.png
+Exporting Texture f10101b1 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/f1_t/Texture/f10101b1.png
+Exporting Texture f10101a1 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/f1_t/Texture/f10101a1.png
+Exporting Shader f10103a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/f1_t/Shader/f10103a.mat
+Exporting Shader f10103b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/f1_t/Shader/f10103b.mat
+Exporting Shader f10102a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/f1_t/Shader/f10102a.mat
+Exporting Shader f10101b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/f1_t/Shader/f10101b.mat
+Exporting Shader f10101a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/f1_t/Shader/f10101a.mat
+Exporting Shader f10102b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/f1_t/Shader/f10102b.mat
+Exporting Shader f10104a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/f1_t/Shader/f10104a.mat
+Exporting Shader f10104b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/f1_t/Shader/f10104b.mat
+Memory: allocated 388907 bytes in 72 blocks
+Exported 16/16 objects in 0.3 sec

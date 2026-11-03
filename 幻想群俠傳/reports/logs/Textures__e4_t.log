@@ -1,0 +1,29 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/e4_t.utx Ver: 128/29 Names: 31 Exports: 11 Imports: 2 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture E40701a from package Textures/e4_t.utx
+Loading Texture E41201a from package Textures/e4_t.utx
+Loading Texture E40801a from package Textures/e4_t.utx
+Loading Texture E40901b from package Textures/e4_t.utx
+Loading Texture E40901a from package Textures/e4_t.utx
+Loading Texture E41301a from package Textures/e4_t.utx
+Loading Texture E41101a from package Textures/e4_t.utx
+Loading Texture E40601a from package Textures/e4_t.utx
+Loading Texture E41102a from package Textures/e4_t.utx
+Loading Texture E41202a from package Textures/e4_t.utx
+Loading Texture E41302a from package Textures/e4_t.utx
+Exporting objects ...
+Exporting Texture E40701a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e4_t/Texture/E40701a.png
+Exporting Texture E41201a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e4_t/Texture/E41201a.png
+Exporting Texture E40801a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e4_t/Texture/E40801a.png
+Exporting Texture E40901b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e4_t/Texture/E40901b.png
+Exporting Texture E40901a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e4_t/Texture/E40901a.png
+Exporting Texture E41301a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e4_t/Texture/E41301a.png
+Exporting Texture E41101a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e4_t/Texture/E41101a.png
+Exporting Texture E40601a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e4_t/Texture/E40601a.png
+Exporting Texture E41102a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e4_t/Texture/E41102a.png
+Exporting Texture E41202a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e4_t/Texture/E41202a.png
+Exporting Texture E41302a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/e4_t/Texture/E41302a.png
+Memory: allocated 335427 bytes in 59 blocks
+Exported 11/11 objects in 0.3 sec

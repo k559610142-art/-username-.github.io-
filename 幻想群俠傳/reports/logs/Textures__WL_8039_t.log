@@ -1,0 +1,109 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_8039_t.utx Ver: 128/29 Names: 104 Exports: 56 Imports: 12 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture bg_8039 from package Textures/WL_8039_t.utx
+Loading Texture leaf_0 from package Textures/WL_8039_t.utx
+Loading Texture 8039_deco from package Textures/WL_8039_t.utx
+Loading Texture leaf_02l from package Textures/WL_8039_t.utx
+Loading Texture Koenig-flower_003l from package Textures/WL_8039_t.utx
+Loading Texture begonia_004l from package Textures/WL_8039_t.utx
+Loading Texture begonia_003l from package Textures/WL_8039_t.utx
+Loading Texture Koenig-flower_002l from package Textures/WL_8039_t.utx
+Loading Texture begonia_002l from package Textures/WL_8039_t.utx
+Loading Texture ml_leaf_02l from package Textures/WL_8039_t.utx
+Loading TexRotator 8039_deco_rotate from package Textures/WL_8039_t.utx
+Loading TexRotator leaf_0_rotate from package Textures/WL_8039_t.utx
+Loading Texture wood_01 from package Textures/WL_8039_t.utx
+Loading Texture begonia_001l from package Textures/WL_8039_t.utx
+Loading Texture 8039_star_001a from package Textures/WL_8039_t.utx
+Loading TexRotator leaf_02l_rotate from package Textures/WL_8039_t.utx
+Loading Texture SB061 from package Textures/WL_8039_t.utx
+Loading Texture trunk_02l from package Textures/WL_8039_t.utx
+Loading TexRotator ml_leaf_02l_rotate from package Textures/WL_8039_t.utx
+Loading Texture sue_004l from package Textures/WL_8039_t.utx
+Loading Texture Koenig-flower_001l from package Textures/WL_8039_t.utx
+Loading TexRotator koening_rotate from package Textures/WL_8039_t.utx
+Loading Texture Fire from package Textures/WL_8039_t.utx
+Loading Texture fire_01 from package Textures/WL_8039_t.utx
+Loading Texture fire_02 from package Textures/WL_8039_t.utx
+Loading TexRotator begonia_002l_rotate from package Textures/WL_8039_t.utx
+Loading TexRotator begonia_rotate from package Textures/WL_8039_t.utx
+Loading TexRotator begonia_004l_rotate from package Textures/WL_8039_t.utx
+Loading Texture 8039_iron_01l from package Textures/WL_8039_t.utx
+Loading TexRotator Koenig-flower_003l_rotate from package Textures/WL_8039_t.utx
+Loading Texture 8039_stair_03l from package Textures/WL_8039_t.utx
+Loading Texture 8039_stair_01l from package Textures/WL_8039_t.utx
+Loading Texture 8039_stair_darkl from package Textures/WL_8039_t.utx
+Loading Texture 8039_stair_02l from package Textures/WL_8039_t.utx
+Loading Texture 8039_cylunder_01l from package Textures/WL_8039_t.utx
+Loading Texture 8039_cylunder_02l from package Textures/WL_8039_t.utx
+Loading Texture 8038_ring_01 from package Textures/WL_8039_t.utx
+Loading Texture 8039_wall_01l from package Textures/WL_8039_t.utx
+Loading Texture 8039_wall_02l from package Textures/WL_8039_t.utx
+Loading Texture 8039_wall_03l from package Textures/WL_8039_t.utx
+Loading Texture 8039_wall_04l from package Textures/WL_8039_t.utx
+Loading Texture 8039_wall_05l from package Textures/WL_8039_t.utx
+Loading Texture 8039_wall_06l from package Textures/WL_8039_t.utx
+Loading Texture 8039_wall_07l from package Textures/WL_8039_t.utx
+Loading Texture 8039_wall_08l from package Textures/WL_8039_t.utx
+Loading Texture 8039_wall_darkl from package Textures/WL_8039_t.utx
+Loading Texture 8039_wall_010l from package Textures/WL_8039_t.utx
+Loading Texture 8039_mountain_01l from package Textures/WL_8039_t.utx
+Loading Texture ground2_8039_t from package Textures/WL_8039_t.utx
+Loading Texture fire_03 from package Textures/WL_8039_t.utx
+Loading Texture terrian_05 from package Textures/WL_8039_t.utx
+Exporting objects ...
+Exporting Texture bg_8039 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/bg_8039.png
+Exporting Texture leaf_0 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/leaf_0.png
+Exporting Texture 8039_deco to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/8039_deco.png
+Exporting Texture leaf_02l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/leaf_02l.png
+Exporting Texture Koenig-flower_003l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/Koenig-flower_003l.png
+Exporting Texture begonia_004l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/begonia_004l.png
+Exporting Texture begonia_003l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/begonia_003l.png
+Exporting Texture Koenig-flower_002l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/Koenig-flower_002l.png
+Exporting Texture begonia_002l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/begonia_002l.png
+Exporting Texture ml_leaf_02l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/ml_leaf_02l.png
+Exporting TexRotator 8039_deco_rotate to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/TexRotator/8039_deco_rotate.mat
+Exporting TexRotator leaf_0_rotate to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/TexRotator/leaf_0_rotate.mat
+Exporting Texture wood_01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/wood_01.png
+Exporting Texture begonia_001l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/begonia_001l.png
+Exporting Texture 8039_star_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/8039_star_001a.png
+Exporting TexRotator leaf_02l_rotate to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/TexRotator/leaf_02l_rotate.mat
+Exporting Texture SB061 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/SB061.png
+Exporting Texture trunk_02l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/trunk_02l.png
+Exporting TexRotator ml_leaf_02l_rotate to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/TexRotator/ml_leaf_02l_rotate.mat
+Exporting Texture sue_004l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/sue_004l.png
+Exporting Texture Koenig-flower_001l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/Koenig-flower_001l.png
+Exporting TexRotator koening_rotate to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/TexRotator/koening_rotate.mat
+Exporting Texture Fire to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/Fire.png
+Exporting Texture fire_01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/fire_01.png
+Exporting Texture fire_02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/fire_02.png
+Exporting TexRotator begonia_002l_rotate to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/TexRotator/begonia_002l_rotate.mat
+Exporting TexRotator begonia_rotate to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/TexRotator/begonia_rotate.mat
+Exporting TexRotator begonia_004l_rotate to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/TexRotator/begonia_004l_rotate.mat
+Exporting Texture 8039_iron_01l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/8039_iron_01l.png
+Exporting TexRotator Koenig-flower_003l_rotate to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/TexRotator/Koenig-flower_003l_rotate.mat
+Exporting Texture 8039_stair_03l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/8039_stair_03l.png
+Exporting Texture 8039_stair_01l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/8039_stair_01l.png
+Exporting Texture 8039_stair_darkl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/8039_stair_darkl.png
+Exporting Texture 8039_stair_02l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/8039_stair_02l.png
+Exporting Texture 8039_cylunder_01l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/8039_cylunder_01l.png
+Exporting Texture 8039_cylunder_02l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/8039_cylunder_02l.png
+Exporting Texture 8038_ring_01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/8038_ring_01.png
+Exporting Texture 8039_wall_01l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/8039_wall_01l.png
+Exporting Texture 8039_wall_02l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/8039_wall_02l.png
+Exporting Texture 8039_wall_03l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/8039_wall_03l.png
+Exporting Texture 8039_wall_04l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/8039_wall_04l.png
+Exporting Texture 8039_wall_05l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/8039_wall_05l.png
+Exporting Texture 8039_wall_06l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/8039_wall_06l.png
+Exporting Texture 8039_wall_07l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/8039_wall_07l.png
+Exporting Texture 8039_wall_08l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/8039_wall_08l.png
+Exporting Texture 8039_wall_darkl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/8039_wall_darkl.png
+Exporting Texture 8039_wall_010l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/8039_wall_010l.png
+Exporting Texture 8039_mountain_01l to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/8039_mountain_01l.png
+Exporting Texture ground2_8039_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/ground2_8039_t.png
+Exporting Texture fire_03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/fire_03.png
+Exporting Texture terrian_05 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8039_t/Texture/terrian_05.png
+Memory: allocated 538336 bytes in 108 blocks
+Exported 51/51 objects in 0.3 sec

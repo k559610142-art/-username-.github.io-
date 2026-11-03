@@ -1,0 +1,69 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_8012_t.utx Ver: 128/29 Names: 82 Exports: 36 Imports: 8 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture tokara-lightstreaks from package Textures/WL_8012_t.utx
+Loading TexPanner Tokara-beams-tp0 from package Textures/WL_8012_t.utx
+Loading Shader tokara-beam-shader from package Textures/WL_8012_t.utx
+Loading TexOscillator TexOscillator0 from package Textures/WL_8012_t.utx
+Loading Texture image_01a from package Textures/WL_8012_t.utx
+Loading Texture image_01b from package Textures/WL_8012_t.utx
+Loading Texture image_01c from package Textures/WL_8012_t.utx
+Loading Texture image_02b from package Textures/WL_8012_t.utx
+Loading Texture foot_02 from package Textures/WL_8012_t.utx
+Loading Texture foot_01a from package Textures/WL_8012_t.utx
+Loading Texture foot_01b from package Textures/WL_8012_t.utx
+Loading Texture foot_01c from package Textures/WL_8012_t.utx
+Loading Texture foot_01d from package Textures/WL_8012_t.utx
+Loading Texture foot_03 from package Textures/WL_8012_t.utx
+Loading FinalBlend Tokara-beams from package Textures/WL_8012_t.utx
+Loading Texture 1300_object_010h from package Textures/WL_8012_t.utx
+Loading Texture well_01b from package Textures/WL_8012_t.utx
+Loading Texture well_02b from package Textures/WL_8012_t.utx
+Loading Texture well_02a from package Textures/WL_8012_t.utx
+Loading Texture well_02c from package Textures/WL_8012_t.utx
+Loading Texture well_03 from package Textures/WL_8012_t.utx
+Loading Texture well_04a from package Textures/WL_8012_t.utx
+Loading Texture well_04b from package Textures/WL_8012_t.utx
+Loading Texture Object_01 from package Textures/WL_8012_t.utx
+Loading Texture Object_02a from package Textures/WL_8012_t.utx
+Loading Texture Object_02b from package Textures/WL_8012_t.utx
+Loading Texture door_02 from package Textures/WL_8012_t.utx
+Loading Texture door_01 from package Textures/WL_8012_t.utx
+Loading Texture Object_03 from package Textures/WL_8012_t.utx
+Loading Texture dust from package Textures/WL_8012_t.utx
+Loading Texture well_01a from package Textures/WL_8012_t.utx
+Exporting objects ...
+Exporting Texture tokara-lightstreaks to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8012_t/Texture/tokara-lightstreaks.png
+Exporting TexPanner Tokara-beams-tp0 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8012_t/TexPanner/Tokara-beams-tp0.mat
+Exporting Shader tokara-beam-shader to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8012_t/Shader/tokara-beam-shader.mat
+Exporting TexOscillator TexOscillator0 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8012_t/TexOscillator/TexOscillator0.mat
+Exporting Texture image_01a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8012_t/Texture/image_01a.png
+Exporting Texture image_01b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8012_t/Texture/image_01b.png
+Exporting Texture image_01c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8012_t/Texture/image_01c.png
+Exporting Texture image_02b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8012_t/Texture/image_02b.png
+Exporting Texture foot_02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8012_t/Texture/foot_02.png
+Exporting Texture foot_01a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8012_t/Texture/foot_01a.png
+Exporting Texture foot_01b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8012_t/Texture/foot_01b.png
+Exporting Texture foot_01c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8012_t/Texture/foot_01c.png
+Exporting Texture foot_01d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8012_t/Texture/foot_01d.png
+Exporting Texture foot_03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8012_t/Texture/foot_03.png
+Exporting FinalBlend Tokara-beams to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8012_t/FinalBlend/Tokara-beams.mat
+Exporting Texture 1300_object_010h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8012_t/Texture/1300_object_010h.png
+Exporting Texture well_01b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8012_t/Texture/well_01b.png
+Exporting Texture well_02b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8012_t/Texture/well_02b.png
+Exporting Texture well_02a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8012_t/Texture/well_02a.png
+Exporting Texture well_02c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8012_t/Texture/well_02c.png
+Exporting Texture well_03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8012_t/Texture/well_03.png
+Exporting Texture well_04a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8012_t/Texture/well_04a.png
+Exporting Texture well_04b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8012_t/Texture/well_04b.png
+Exporting Texture Object_01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8012_t/Texture/Object_01.png
+Exporting Texture Object_02a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8012_t/Texture/Object_02a.png
+Exporting Texture Object_02b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8012_t/Texture/Object_02b.png
+Exporting Texture door_02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8012_t/Texture/door_02.png
+Exporting Texture door_01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8012_t/Texture/door_01.png
+Exporting Texture Object_03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8012_t/Texture/Object_03.png
+Exporting Texture dust to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8012_t/Texture/dust.png
+Exporting Texture well_01a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8012_t/Texture/well_01a.png
+Memory: allocated 434936 bytes in 83 blocks
+Exported 31/31 objects in 0.2 sec

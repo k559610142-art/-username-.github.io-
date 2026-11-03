@@ -1,0 +1,77 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/ne_t.utx Ver: 128/29 Names: 52 Exports: 35 Imports: 2 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture NE0401eye_op from package Textures/ne_t.utx
+Loading Texture NE0402A from package Textures/ne_t.utx
+Loading Texture NE0403eye_op from package Textures/ne_t.utx
+Loading Texture NE0401C from package Textures/ne_t.utx
+Loading Texture NE0401eye_cl from package Textures/ne_t.utx
+Loading Texture NE0401B from package Textures/ne_t.utx
+Loading Texture NE0402B from package Textures/ne_t.utx
+Loading Texture NE0402c from package Textures/ne_t.utx
+Loading Texture NE0402eye_cl from package Textures/ne_t.utx
+Loading Texture NE0402eye_op from package Textures/ne_t.utx
+Loading Texture NE0403A from package Textures/ne_t.utx
+Loading Texture NE0403B from package Textures/ne_t.utx
+Loading Texture NE0403C from package Textures/ne_t.utx
+Loading Texture NE0403eye_cl from package Textures/ne_t.utx
+Loading Texture NE0401A from package Textures/ne_t.utx
+Loading Texture NE0502eye_op from package Textures/ne_t.utx
+Loading Texture NE0501eye_cl from package Textures/ne_t.utx
+Loading Texture NE0501eye_op from package Textures/ne_t.utx
+Loading Texture NE0502B from package Textures/ne_t.utx
+Loading Texture NE0502eye_cl from package Textures/ne_t.utx
+Loading Texture NE0501B from package Textures/ne_t.utx
+Loading Texture NE0502C from package Textures/ne_t.utx
+Loading Texture NE0502A from package Textures/ne_t.utx
+Loading Texture NE0501C from package Textures/ne_t.utx
+Loading Texture NE0501A from package Textures/ne_t.utx
+Loading Texture NE0503eye_op from package Textures/ne_t.utx
+Loading Texture NE0404B from package Textures/ne_t.utx
+Loading Texture NE0404C from package Textures/ne_t.utx
+Loading Texture NE0404eye_CL from package Textures/ne_t.utx
+Loading Texture NE0404eye_op from package Textures/ne_t.utx
+Loading Texture NE0503A from package Textures/ne_t.utx
+Loading Texture NE0503B from package Textures/ne_t.utx
+Loading Texture NE0503C from package Textures/ne_t.utx
+Loading Texture NE0503eye_cl from package Textures/ne_t.utx
+Loading Texture NE0404A from package Textures/ne_t.utx
+Exporting objects ...
+Exporting Texture NE0401eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0401eye_op.png
+Exporting Texture NE0402A to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0402A.png
+Exporting Texture NE0403eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0403eye_op.png
+Exporting Texture NE0401C to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0401C.png
+Exporting Texture NE0401eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0401eye_cl.png
+Exporting Texture NE0401B to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0401B.png
+Exporting Texture NE0402B to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0402B.png
+Exporting Texture NE0402c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0402c.png
+Exporting Texture NE0402eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0402eye_cl.png
+Exporting Texture NE0402eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0402eye_op.png
+Exporting Texture NE0403A to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0403A.png
+Exporting Texture NE0403B to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0403B.png
+Exporting Texture NE0403C to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0403C.png
+Exporting Texture NE0403eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0403eye_cl.png
+Exporting Texture NE0401A to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0401A.png
+Exporting Texture NE0502eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0502eye_op.png
+Exporting Texture NE0501eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0501eye_cl.png
+Exporting Texture NE0501eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0501eye_op.png
+Exporting Texture NE0502B to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0502B.png
+Exporting Texture NE0502eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0502eye_cl.png
+Exporting Texture NE0501B to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0501B.png
+Exporting Texture NE0502C to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0502C.png
+Exporting Texture NE0502A to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0502A.png
+Exporting Texture NE0501C to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0501C.png
+Exporting Texture NE0501A to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0501A.png
+Exporting Texture NE0503eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0503eye_op.png
+Exporting Texture NE0404B to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0404B.png
+Exporting Texture NE0404C to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0404C.png
+Exporting Texture NE0404eye_CL to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0404eye_CL.png
+Exporting Texture NE0404eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0404eye_op.png
+Exporting Texture NE0503A to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0503A.png
+Exporting Texture NE0503B to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0503B.png
+Exporting Texture NE0503C to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0503C.png
+Exporting Texture NE0503eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0503eye_cl.png
+Exporting Texture NE0404A to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ne_t/Texture/NE0404A.png
+Memory: allocated 434807 bytes in 83 blocks
+Exported 35/35 objects in 0.2 sec

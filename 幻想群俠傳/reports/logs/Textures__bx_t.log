@@ -1,0 +1,186 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/bx_t.utx Ver: 128/29 Names: 116 Exports: 79 Imports: 8 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.01 MBytes serialized in 2 calls.
+Loading Texture bx90_2a_tex from package Textures/bx_t.utx
+Loading Texture bx19_2at from package Textures/bx_t.utx
+Loading TexEnvMap s1_ref from package Textures/bx_t.utx
+Loading Texture bx19_1at from package Textures/bx_t.utx
+Loading Texture bx90_1a_tex from package Textures/bx_t.utx
+Loading TexEnvMap cube_ref from package Textures/bx_t.utx
+Loading package: Textures/sh_t.utx Ver: 128/29 Names: 105 Exports: 55 Imports: 9 Game: 200001
+Loading Texture bx42_2at from package Textures/bx_t.utx
+Loading Texture bx63_1at from package Textures/bx_t.utx
+Loading Texture bx19_1am from package Textures/bx_t.utx
+Loading Texture bx19_2am from package Textures/bx_t.utx
+Loading Texture bx63_2at from package Textures/bx_t.utx
+Loading Texture bx42_2amsk from package Textures/bx_t.utx
+Loading Texture bx42_1amsk from package Textures/bx_t.utx
+Loading Texture s1 from package Textures/bx_t.utx
+Loading Texture bx42_1at from package Textures/bx_t.utx
+Loading Texture bx64_2a from package Textures/bx_t.utx
+Loading Shader bx63_1a from package Textures/bx_t.utx
+Loading Texture bx64_1a from package Textures/bx_t.utx
+Loading Shader bx63_2a from package Textures/bx_t.utx
+Loading Texture bx38_1a from package Textures/bx_t.utx
+Loading Texture bx40_1a from package Textures/bx_t.utx
+Loading Texture bx91_1a from package Textures/bx_t.utx
+Loading Texture bx92_1a from package Textures/bx_t.utx
+Loading Texture bx94_1a from package Textures/bx_t.utx
+Loading Shader bx90_1a from package Textures/bx_t.utx
+Loading Texture bx95_1a from package Textures/bx_t.utx
+Loading Texture bx98_1a from package Textures/bx_t.utx
+Loading Texture bx37_1a from package Textures/bx_t.utx
+Loading Texture bx96_1a from package Textures/bx_t.utx
+Loading Shader bx42_1a from package Textures/bx_t.utx
+Loading Texture bx36_1a from package Textures/bx_t.utx
+Loading Texture bx35_1a from package Textures/bx_t.utx
+Loading Texture bx31_1a from package Textures/bx_t.utx
+Loading Texture bx29_1a from package Textures/bx_t.utx
+Loading Texture bx28_1a from package Textures/bx_t.utx
+Loading Texture bx27_1a from package Textures/bx_t.utx
+Loading Texture bx26_1a from package Textures/bx_t.utx
+Loading Texture bx25_1a from package Textures/bx_t.utx
+Loading Texture bx02_1a from package Textures/bx_t.utx
+Loading Texture bx699999_1a from package Textures/bx_t.utx
+Loading Texture bx68_1a from package Textures/bx_t.utx
+Loading Texture bx68_2a from package Textures/bx_t.utx
+Loading Shader bx19_1a from package Textures/bx_t.utx
+Loading package: Textures/cm_t.utx Ver: 128/29 Names: 195 Exports: 159 Imports: 8 Game: 200001
+Loading Texture bx18_1a from package Textures/bx_t.utx
+Loading Texture bx93_1a from package Textures/bx_t.utx
+Loading Texture bx99_1a from package Textures/bx_t.utx
+Loading Texture bx69_1a from package Textures/bx_t.utx
+Loading Texture bx69_2a from package Textures/bx_t.utx
+Loading Texture bx02_2a from package Textures/bx_t.utx
+Loading Texture bx18_2a from package Textures/bx_t.utx
+Loading Texture bx25_2a from package Textures/bx_t.utx
+Loading Texture bx29_2a from package Textures/bx_t.utx
+Loading Texture bx36_2a from package Textures/bx_t.utx
+Loading Texture bx38_2a from package Textures/bx_t.utx
+Loading Texture bx40_2a from package Textures/bx_t.utx
+Loading Texture bx91_2a from package Textures/bx_t.utx
+Loading Texture bx92_2a from package Textures/bx_t.utx
+Loading Texture bx93_2a from package Textures/bx_t.utx
+Loading Texture bx94_2a from package Textures/bx_t.utx
+Loading Texture bx28_2a from package Textures/bx_t.utx
+Loading Shader bx90_2a from package Textures/bx_t.utx
+Loading Texture bx35_2a from package Textures/bx_t.utx
+Loading Texture bx02_3a from package Textures/bx_t.utx
+Loading Texture bx18_3a from package Textures/bx_t.utx
+Loading Texture bx25_3a from package Textures/bx_t.utx
+Loading Texture bx95_2a from package Textures/bx_t.utx
+Loading Texture bx98_2a from package Textures/bx_t.utx
+Loading Texture bx96_2a from package Textures/bx_t.utx
+Loading Texture bx99_2a from package Textures/bx_t.utx
+Loading Shader bx42_2a from package Textures/bx_t.utx
+Loading Texture bx26_2a from package Textures/bx_t.utx
+Loading Texture bx27_2a from package Textures/bx_t.utx
+Loading Shader bx19_2a from package Textures/bx_t.utx
+Loading Texture bx37_2a from package Textures/bx_t.utx
+Loading Texture bx31_2a from package Textures/bx_t.utx
+Loading Texture bg66_1a from package Textures/bx_t.utx
+Loading Texture bg66_2a from package Textures/bx_t.utx
+Loading Texture bm65_2a from package Textures/bx_t.utx
+Loading Texture bm65_1a from package Textures/bx_t.utx
+Loading Cubemap cube_sh from package Textures/sh_t.utx
+Loading TexEnvMap s2_ref from package Textures/cm_t.utx
+Loading package: Textures/cg_t.utx Ver: 128/29 Names: 185 Exports: 153 Imports: 6 Game: 200001
+Loading Texture d00 from package Textures/sh_t.utx
+Loading Texture d01 from package Textures/sh_t.utx
+Loading Texture d02 from package Textures/sh_t.utx
+Loading Texture d03 from package Textures/sh_t.utx
+Loading Texture d04 from package Textures/sh_t.utx
+Loading Texture d05 from package Textures/sh_t.utx
+Loading Palette Palette0 from package Textures/sh_t.utx
+Loading Texture cg99b from package Textures/cg_t.utx
+Exporting objects ...
+Exporting Texture bx90_2a_tex to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx90_2a_tex.png
+Exporting Texture bx19_2at to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx19_2at.png
+Exporting TexEnvMap s1_ref to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/TexEnvMap/s1_ref.mat
+Exporting Texture s1 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/s1.png
+Exporting Texture bx19_1at to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx19_1at.png
+Exporting Texture bx90_1a_tex to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx90_1a_tex.png
+Exporting TexEnvMap cube_ref to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/TexEnvMap/cube_ref.mat
+Exporting Texture d00 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/sh_t/Texture/d00.png
+Exporting Texture d01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/sh_t/Texture/d01.png
+Exporting Texture d02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/sh_t/Texture/d02.png
+Exporting Texture d03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/sh_t/Texture/d03.png
+Exporting Texture d04 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/sh_t/Texture/d04.png
+Exporting Texture d05 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/sh_t/Texture/d05.png
+Exporting Texture bx42_2at to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx42_2at.png
+Exporting Texture bx63_1at to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx63_1at.png
+Exporting Texture bx19_1am to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx19_1am.png
+Exporting Texture bx19_2am to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx19_2am.png
+Exporting Texture bx63_2at to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx63_2at.png
+Exporting Texture bx42_2amsk to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx42_2amsk.png
+Exporting Texture bx42_1amsk to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx42_1amsk.png
+Exporting Texture bx42_1at to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx42_1at.png
+Exporting Texture bx64_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx64_2a.png
+Exporting Shader bx63_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Shader/bx63_1a.mat
+Exporting Texture bx64_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx64_1a.png
+Exporting Shader bx63_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Shader/bx63_2a.mat
+Exporting Texture bx38_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx38_1a.png
+Exporting Texture bx40_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx40_1a.png
+Exporting Texture bx91_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx91_1a.png
+Exporting Texture bx92_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx92_1a.png
+Exporting Texture bx94_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx94_1a.png
+Exporting Shader bx90_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Shader/bx90_1a.mat
+Exporting Texture bx95_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx95_1a.png
+Exporting Texture bx98_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx98_1a.png
+Exporting Texture bx37_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx37_1a.png
+Exporting Texture bx96_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx96_1a.png
+Exporting Shader bx42_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Shader/bx42_1a.mat
+Exporting Texture bx36_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx36_1a.png
+Exporting Texture bx35_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx35_1a.png
+Exporting Texture bx31_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx31_1a.png
+Exporting Texture bx29_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx29_1a.png
+Exporting Texture bx28_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx28_1a.png
+Exporting Texture bx27_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx27_1a.png
+Exporting Texture bx26_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx26_1a.png
+Exporting Texture bx25_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx25_1a.png
+Exporting Texture bx02_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx02_1a.png
+Exporting Texture bx699999_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx699999_1a.png
+Exporting Texture bx68_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx68_1a.png
+Exporting Texture bx68_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx68_2a.png
+Exporting Shader bx19_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Shader/bx19_1a.mat
+Exporting Texture bx18_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx18_1a.png
+Exporting Texture bx93_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx93_1a.png
+Exporting Texture bx99_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx99_1a.png
+Exporting Texture bx69_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx69_1a.png
+Exporting Texture bx69_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx69_2a.png
+Exporting Texture bx02_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx02_2a.png
+Exporting Texture bx18_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx18_2a.png
+Exporting Texture bx25_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx25_2a.png
+Exporting Texture bx29_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx29_2a.png
+Exporting Texture bx36_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx36_2a.png
+Exporting Texture bx38_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx38_2a.png
+Exporting Texture bx40_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx40_2a.png
+Exporting Texture bx91_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx91_2a.png
+Exporting Texture bx92_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx92_2a.png
+Exporting Texture bx93_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx93_2a.png
+Exporting Texture bx94_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx94_2a.png
+Exporting Texture bx28_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx28_2a.png
+Exporting Shader bx90_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Shader/bx90_2a.mat
+Exporting Texture bx35_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx35_2a.png
+Exporting Texture bx02_3a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx02_3a.png
+Exporting Texture bx18_3a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx18_3a.png
+Exporting Texture bx25_3a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx25_3a.png
+Exporting Texture bx95_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx95_2a.png
+Exporting Texture bx98_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx98_2a.png
+Exporting Texture bx96_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx96_2a.png
+Exporting Texture bx99_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx99_2a.png
+Exporting Shader bx42_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Shader/bx42_2a.mat
+Exporting Texture bx26_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx26_2a.png
+Exporting Texture bx27_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx27_2a.png
+Exporting Shader bx19_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Shader/bx19_2a.mat
+Exporting Texture bx37_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx37_2a.png
+Exporting Texture bx31_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bx31_2a.png
+Exporting Texture bg66_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bg66_1a.png
+Exporting Texture bg66_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bg66_2a.png
+Exporting Texture bm65_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bm65_2a.png
+Exporting Texture bm65_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/bx_t/Texture/bm65_1a.png
+Exporting TexEnvMap s2_ref to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/cm_t/TexEnvMap/s2_ref.mat
+Exporting Texture cg99b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/cg_t/Texture/cg99b.png
+Memory: allocated 711564 bytes in 167 blocks
+Exported 87/87 objects in 0.4 sec

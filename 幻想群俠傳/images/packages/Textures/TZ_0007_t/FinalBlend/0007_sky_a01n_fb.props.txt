@@ -1,0 +1,13 @@
+FrameBufferBlending = FB_AlphaBlend (2)
+ZWrite = true
+ZTest = true
+AlphaTest = false
+TwoSided = false
+AlphaRef = 0
+TreatAsTwoSided = false
+Material = TexRotator'sky.0007_sky_a01n_tr'
+FallbackMaterial = None
+DefaultMaterial = None
+SurfaceType = 0
+bUseTextureAsHeat = false
+HeatMaterial = None

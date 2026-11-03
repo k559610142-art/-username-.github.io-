@@ -1,0 +1,36 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/r2_t.utx Ver: 128/29 Names: 34 Exports: 6 Imports: 5 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture r21001c1 from package Textures/r2_t.utx
+Loading Texture r20801a from package Textures/r2_t.utx
+Loading Shader r21001c from package Textures/r2_t.utx
+Loading package: Textures/sh_t.utx Ver: 128/29 Names: 105 Exports: 55 Imports: 9 Game: 200001
+Loading Texture r20701a from package Textures/r2_t.utx
+Loading Texture r21001a from package Textures/r2_t.utx
+Loading Texture r21001b from package Textures/r2_t.utx
+Loading TexEnvMap cube_ref from package Textures/sh_t.utx
+Loading Cubemap cube_sh from package Textures/sh_t.utx
+Loading Texture d00 from package Textures/sh_t.utx
+Loading Texture d01 from package Textures/sh_t.utx
+Loading Texture d02 from package Textures/sh_t.utx
+Loading Texture d03 from package Textures/sh_t.utx
+Loading Texture d04 from package Textures/sh_t.utx
+Loading Texture d05 from package Textures/sh_t.utx
+Loading Palette Palette0 from package Textures/sh_t.utx
+Exporting objects ...
+Exporting Texture r21001c1 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/r2_t/Texture/r21001c1.png
+Exporting Texture r20801a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/r2_t/Texture/r20801a.png
+Exporting Shader r21001c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/r2_t/Shader/r21001c.mat
+Exporting Texture r20701a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/r2_t/Texture/r20701a.png
+Exporting Texture r21001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/r2_t/Texture/r21001a.png
+Exporting Texture r21001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/r2_t/Texture/r21001b.png
+Exporting TexEnvMap cube_ref to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/sh_t/TexEnvMap/cube_ref.mat
+Exporting Texture d00 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/sh_t/Texture/d00.png
+Exporting Texture d01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/sh_t/Texture/d01.png
+Exporting Texture d02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/sh_t/Texture/d02.png
+Exporting Texture d03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/sh_t/Texture/d03.png
+Exporting Texture d04 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/sh_t/Texture/d04.png
+Exporting Texture d05 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/sh_t/Texture/d05.png
+Memory: allocated 354610 bytes in 70 blocks
+Exported 13/13 objects in 0.1 sec

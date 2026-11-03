@@ -1,0 +1,19 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/HI_time_t.utx Ver: 128/29 Names: 42 Exports: 6 Imports: 4 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture time_004a from package Textures/HI_time_t.utx
+Loading Texture time_002a from package Textures/HI_time_t.utx
+Loading Shader time_002a_sh from package Textures/HI_time_t.utx
+Loading Shader time_004a_sh from package Textures/HI_time_t.utx
+Loading TexPanner time_004a_tp from package Textures/HI_time_t.utx
+Loading TexPanner time_002a_tp from package Textures/HI_time_t.utx
+Exporting objects ...
+Exporting Texture time_004a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_time_t/Texture/time_004a.png
+Exporting Texture time_002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_time_t/Texture/time_002a.png
+Exporting Shader time_002a_sh to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_time_t/Shader/time_002a_sh.mat
+Exporting Shader time_004a_sh to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_time_t/Shader/time_004a_sh.mat
+Exporting TexPanner time_004a_tp to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_time_t/TexPanner/time_004a_tp.mat
+Exporting TexPanner time_002a_tp to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/HI_time_t/TexPanner/time_002a_tp.mat
+Memory: allocated 331232 bytes in 58 blocks
+Exported 6/6 objects in 0.0 sec

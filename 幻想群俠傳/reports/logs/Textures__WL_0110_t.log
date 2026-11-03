@@ -1,0 +1,55 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_0110_t.utx Ver: 128/29 Names: 86 Exports: 29 Imports: 10 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture 0110_flag_002a from package Textures/WL_0110_t.utx
+Loading Texture 0110_flag_001a from package Textures/WL_0110_t.utx
+Loading Texture 0110_grass_005a from package Textures/WL_0110_t.utx
+Loading Texture Skyies02 from package Textures/WL_0110_t.utx
+Loading Texture 0110_sky_001a from package Textures/WL_0110_t.utx
+Loading Texture Skyies01 from package Textures/WL_0110_t.utx
+Loading TexPanner Skyies02_panner from package Textures/WL_0110_t.utx
+Loading Shader 0110_flag_002a_sh from package Textures/WL_0110_t.utx
+Loading Shader 0110_flag_001a_sh from package Textures/WL_0110_t.utx
+Loading Texture walk_alhpa from package Textures/WL_0110_t.utx
+Loading Texture 0110_gate_002a from package Textures/WL_0110_t.utx
+Loading Texture 0110_floor_001a from package Textures/WL_0110_t.utx
+Loading Texture 0110_object_001a from package Textures/WL_0110_t.utx
+Loading Texture 0110_fire_001a from package Textures/WL_0110_t.utx
+Loading Texture uja_gate011 from package Textures/WL_0110_t.utx
+Loading Texture 0110_object_010a_t from package Textures/WL_0110_t.utx
+Loading Texture 0110_object_011a_t from package Textures/WL_0110_t.utx
+Loading Texture 0110_object_012a_t from package Textures/WL_0110_t.utx
+Loading Texture 0110_object_002a from package Textures/WL_0110_t.utx
+Loading Texture 0110_object_004a from package Textures/WL_0110_t.utx
+Loading Texture Black from package Textures/WL_0110_t.utx
+Loading TexOscillator 0110_grass_005a_tg from package Textures/WL_0110_t.utx
+Loading Texture 0110_gate_001a from package Textures/WL_0110_t.utx
+Loading TexRotator 0110_grass_005a_tr from package Textures/WL_0110_t.utx
+Exporting objects ...
+Exporting Texture 0110_flag_002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0110_t/Texture/0110_flag_002a.png
+Exporting Texture 0110_flag_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0110_t/Texture/0110_flag_001a.png
+Exporting Texture 0110_grass_005a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0110_t/Texture/0110_grass_005a.png
+Exporting Texture Skyies02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0110_t/Texture/Skyies02.png
+Exporting Texture 0110_sky_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0110_t/Texture/0110_sky_001a.png
+Exporting Texture Skyies01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0110_t/Texture/Skyies01.png
+Exporting TexPanner Skyies02_panner to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0110_t/TexPanner/Skyies02_panner.mat
+Exporting Shader 0110_flag_002a_sh to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0110_t/Shader/0110_flag_002a_sh.mat
+Exporting Shader 0110_flag_001a_sh to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0110_t/Shader/0110_flag_001a_sh.mat
+Exporting Texture walk_alhpa to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0110_t/Texture/walk_alhpa.png
+Exporting Texture 0110_gate_002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0110_t/Texture/0110_gate_002a.png
+Exporting Texture 0110_floor_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0110_t/Texture/0110_floor_001a.png
+Exporting Texture 0110_object_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0110_t/Texture/0110_object_001a.png
+Exporting Texture 0110_fire_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0110_t/Texture/0110_fire_001a.png
+Exporting Texture uja_gate011 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0110_t/Texture/uja_gate011.png
+Exporting Texture 0110_object_010a_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0110_t/Texture/0110_object_010a_t.png
+Exporting Texture 0110_object_011a_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0110_t/Texture/0110_object_011a_t.png
+Exporting Texture 0110_object_012a_t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0110_t/Texture/0110_object_012a_t.png
+Exporting Texture 0110_object_002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0110_t/Texture/0110_object_002a.png
+Exporting Texture 0110_object_004a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0110_t/Texture/0110_object_004a.png
+Exporting Texture Black to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0110_t/Texture/Black.png
+Exporting TexOscillator 0110_grass_005a_tg to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0110_t/TexOscillator/0110_grass_005a_tg.mat
+Exporting Texture 0110_gate_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0110_t/Texture/0110_gate_001a.png
+Exporting TexRotator 0110_grass_005a_tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0110_t/TexRotator/0110_grass_005a_tr.mat
+Memory: allocated 410156 bytes in 77 blocks
+Exported 24/24 objects in 0.1 sec

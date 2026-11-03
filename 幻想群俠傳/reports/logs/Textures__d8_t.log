@@ -1,0 +1,79 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/d8_t.utx Ver: 128/29 Names: 55 Exports: 36 Imports: 2 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture d80101a from package Textures/d8_t.utx
+Loading Texture d80101eye_cl from package Textures/d8_t.utx
+Loading Texture d80101eye_op from package Textures/d8_t.utx
+Loading Texture d80102a from package Textures/d8_t.utx
+Loading Texture d80102eye_cl from package Textures/d8_t.utx
+Loading Texture d80401a from package Textures/d8_t.utx
+Loading Texture d80401eye_cl from package Textures/d8_t.utx
+Loading Texture d80401eye_op from package Textures/d8_t.utx
+Loading Texture d80402a from package Textures/d8_t.utx
+Loading Texture d80402eye_cl from package Textures/d8_t.utx
+Loading Texture d80402eye_op from package Textures/d8_t.utx
+Loading Texture d80501a from package Textures/d8_t.utx
+Loading Texture d80501eye_cl from package Textures/d8_t.utx
+Loading Texture d80501eye_op from package Textures/d8_t.utx
+Loading Texture d80502a from package Textures/d8_t.utx
+Loading Texture d80502eye_cl from package Textures/d8_t.utx
+Loading Texture d80502eye_op from package Textures/d8_t.utx
+Loading Texture d80601a from package Textures/d8_t.utx
+Loading Texture d80601eye_cl from package Textures/d8_t.utx
+Loading Texture d80601eye_op from package Textures/d8_t.utx
+Loading Texture d80602a from package Textures/d8_t.utx
+Loading Texture d80602eye_cl from package Textures/d8_t.utx
+Loading Texture d80602eye_op from package Textures/d8_t.utx
+Loading Texture d80701a from package Textures/d8_t.utx
+Loading Texture d80701eye_cl from package Textures/d8_t.utx
+Loading Texture d80701eye_op from package Textures/d8_t.utx
+Loading Texture d80702a from package Textures/d8_t.utx
+Loading Texture d80702eye_cl from package Textures/d8_t.utx
+Loading Texture d80702eye_op from package Textures/d8_t.utx
+Loading Texture d81201a from package Textures/d8_t.utx
+Loading Texture d81202a from package Textures/d8_t.utx
+Loading Texture d81202eye_cl from package Textures/d8_t.utx
+Loading Texture d81202eye_op from package Textures/d8_t.utx
+Loading Texture d80102eye_op from package Textures/d8_t.utx
+Loading Texture d81201eye_op from package Textures/d8_t.utx
+Loading Texture d81201eye_cl from package Textures/d8_t.utx
+Exporting objects ...
+Exporting Texture d80101a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d80101a.png
+Exporting Texture d80101eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d80101eye_cl.png
+Exporting Texture d80101eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d80101eye_op.png
+Exporting Texture d80102a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d80102a.png
+Exporting Texture d80102eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d80102eye_cl.png
+Exporting Texture d80401a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d80401a.png
+Exporting Texture d80401eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d80401eye_cl.png
+Exporting Texture d80401eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d80401eye_op.png
+Exporting Texture d80402a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d80402a.png
+Exporting Texture d80402eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d80402eye_cl.png
+Exporting Texture d80402eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d80402eye_op.png
+Exporting Texture d80501a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d80501a.png
+Exporting Texture d80501eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d80501eye_cl.png
+Exporting Texture d80501eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d80501eye_op.png
+Exporting Texture d80502a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d80502a.png
+Exporting Texture d80502eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d80502eye_cl.png
+Exporting Texture d80502eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d80502eye_op.png
+Exporting Texture d80601a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d80601a.png
+Exporting Texture d80601eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d80601eye_cl.png
+Exporting Texture d80601eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d80601eye_op.png
+Exporting Texture d80602a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d80602a.png
+Exporting Texture d80602eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d80602eye_cl.png
+Exporting Texture d80602eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d80602eye_op.png
+Exporting Texture d80701a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d80701a.png
+Exporting Texture d80701eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d80701eye_cl.png
+Exporting Texture d80701eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d80701eye_op.png
+Exporting Texture d80702a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d80702a.png
+Exporting Texture d80702eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d80702eye_cl.png
+Exporting Texture d80702eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d80702eye_op.png
+Exporting Texture d81201a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d81201a.png
+Exporting Texture d81202a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d81202a.png
+Exporting Texture d81202eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d81202eye_cl.png
+Exporting Texture d81202eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d81202eye_op.png
+Exporting Texture d80102eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d80102eye_op.png
+Exporting Texture d81201eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d81201eye_op.png
+Exporting Texture d81201eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/d8_t/Texture/d81201eye_cl.png
+Memory: allocated 438951 bytes in 84 blocks
+Exported 36/36 objects in 0.4 sec

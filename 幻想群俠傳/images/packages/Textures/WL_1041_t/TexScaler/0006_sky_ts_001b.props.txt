@@ -1,0 +1,13 @@
+UScale = 0.26
+VScale = 0.26
+UOffset = 0
+VOffset = 0
+TexCoordSource = TCS_NoChange (13)
+TexCoordCount = TCN_2DCoords (0)
+TexCoordProjected = false
+Material = Texture'sky.0006_sky_cool_002b'
+FallbackMaterial = None
+DefaultMaterial = None
+SurfaceType = 0
+bUseTextureAsHeat = false
+HeatMaterial = None

@@ -1,0 +1,19 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/c5_t.utx Ver: 128/29 Names: 25 Exports: 6 Imports: 2 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture C50201a from package Textures/c5_t.utx
+Loading Texture C50301a from package Textures/c5_t.utx
+Loading Texture C50101a from package Textures/c5_t.utx
+Loading Texture C50701a from package Textures/c5_t.utx
+Loading Texture C51101a from package Textures/c5_t.utx
+Loading Texture C50101b from package Textures/c5_t.utx
+Exporting objects ...
+Exporting Texture C50201a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c5_t/Texture/C50201a.png
+Exporting Texture C50301a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c5_t/Texture/C50301a.png
+Exporting Texture C50101a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c5_t/Texture/C50101a.png
+Exporting Texture C50701a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c5_t/Texture/C50701a.png
+Exporting Texture C51101a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c5_t/Texture/C51101a.png
+Exporting Texture C50101b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/c5_t/Texture/C50101b.png
+Memory: allocated 314743 bytes in 54 blocks
+Exported 6/6 objects in 0.2 sec

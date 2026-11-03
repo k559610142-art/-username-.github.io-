@@ -1,0 +1,32 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_1004_t.utx Ver: 128/29 Names: 48 Exports: 18 Imports: 12 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Palette Palette0 from package Textures/WL_1004_t.utx
+Loading Texture 1004_deco from package Textures/WL_1004_t.utx
+Loading Texture field_deco_plant_004 from package Textures/WL_1004_t.utx
+Loading Texture House1_003t from package Textures/WL_1004_t.utx
+Loading Texture Map_HouseA14 from package Textures/WL_1004_t.utx
+Loading Texture things_05_d001 from package Textures/WL_1004_t.utx
+Loading Texture 1004_object_004a from package Textures/WL_1004_t.utx
+Loading Texture 1004_object_003a from package Textures/WL_1004_t.utx
+Loading Texture 1004_object_001a from package Textures/WL_1004_t.utx
+Loading Texture 1004_object_002a from package Textures/WL_1004_t.utx
+Loading Texture temple_008j from package Textures/WL_1004_t.utx
+Loading Texture temple_003j from package Textures/WL_1004_t.utx
+Loading Texture Map_HouseA09 from package Textures/WL_1004_t.utx
+Exporting objects ...
+Exporting Texture 1004_deco to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1004_t/Texture/1004_deco.png
+Exporting Texture field_deco_plant_004 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1004_t/Texture/field_deco_plant_004.png
+Exporting Texture House1_003t to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1004_t/Texture/House1_003t.png
+Exporting Texture Map_HouseA14 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1004_t/Texture/Map_HouseA14.png
+Exporting Texture things_05_d001 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1004_t/Texture/things_05_d001.png
+Exporting Texture 1004_object_004a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1004_t/Texture/1004_object_004a.png
+Exporting Texture 1004_object_003a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1004_t/Texture/1004_object_003a.png
+Exporting Texture 1004_object_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1004_t/Texture/1004_object_001a.png
+Exporting Texture 1004_object_002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1004_t/Texture/1004_object_002a.png
+Exporting Texture temple_008j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1004_t/Texture/temple_008j.png
+Exporting Texture temple_003j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1004_t/Texture/temple_003j.png
+Exporting Texture Map_HouseA09 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1004_t/Texture/Map_HouseA09.png
+Memory: allocated 340008 bytes in 60 blocks
+Exported 12/12 objects in 0.1 sec

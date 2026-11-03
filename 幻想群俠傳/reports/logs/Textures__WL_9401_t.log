@@ -1,0 +1,159 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_9401_t.utx Ver: 128/29 Names: 146 Exports: 78 Imports: 17 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.01 MBytes serialized in 2 calls.
+Loading TexEnvMap 9401_xox_001b from package Textures/WL_9401_t.utx
+Loading TexRotator 9401_control_ro from package Textures/WL_9401_t.utx
+Loading Texture 9999wat4 from package Textures/WL_9401_t.utx
+Loading Texture 9401_project02y from package Textures/WL_9401_t.utx
+Loading Texture 9401_ball01y from package Textures/WL_9401_t.utx
+Loading Texture 9999wat1 from package Textures/WL_9401_t.utx
+Loading Texture 9999wat0 from package Textures/WL_9401_t.utx
+Loading TexPanner Tokara-beams-tp0 from package Textures/WL_9401_t.utx
+Loading Texture 9999wat2 from package Textures/WL_9401_t.utx
+Loading Texture 9401_lighting from package Textures/WL_9401_t.utx
+Loading Texture 9999wat3 from package Textures/WL_9401_t.utx
+Loading TexPanner 9401_project02_mov from package Textures/WL_9401_t.utx
+Loading TexPanner 9401_project02_mov2 from package Textures/WL_9401_t.utx
+Loading TexOscillator TexOscillator0 from package Textures/WL_9401_t.utx
+Loading Texture 9401_project03_bk from package Textures/WL_9401_t.utx
+Loading Texture 9401_water_fire_099b from package Textures/WL_9401_t.utx
+Loading Texture 9401_rock01y from package Textures/WL_9401_t.utx
+Loading Texture 9401_water_fire_ap_001b from package Textures/WL_9401_t.utx
+Loading TexEnvMap TexEnv9401 from package Textures/WL_9401_t.utx
+Loading Texture 9401_ap_wat_001b from package Textures/WL_9401_t.utx
+Loading TexRotator 9401_lighting_ro from package Textures/WL_9401_t.utx
+Loading Texture 9401_project03y from package Textures/WL_9401_t.utx
+Loading Texture 9401_rock01_alpha from package Textures/WL_9401_t.utx
+Loading Texture 9401_gre_yell_001b from package Textures/WL_9401_t.utx
+Loading Texture 9401_dragon01_alpha from package Textures/WL_9401_t.utx
+Loading Texture 9401_dragon01y from package Textures/WL_9401_t.utx
+Loading Shader 9401_ball01_re from package Textures/WL_9401_t.utx
+Loading Shader tokara-beam-shader from package Textures/WL_9401_t.utx
+Loading Cubemap cubemap9401 from package Textures/WL_9401_t.utx
+Loading package: Textures/HI_Floor_t.utx Ver: 128/29 Names: 505 Exports: 451 Imports: 11 Game: 200001
+Loading Texture 9401_control02y from package Textures/WL_9401_t.utx
+Loading Texture 9401_wnder_cool_002b from package Textures/WL_9401_t.utx
+Loading Texture tokara-lightstreaks from package Textures/WL_9401_t.utx
+Loading Texture 9401_s_bridge01y from package Textures/WL_9401_t.utx
+Loading FinalBlend Tokara-beams from package Textures/WL_9401_t.utx
+Loading Texture 9401_stove02y from package Textures/WL_9401_t.utx
+Loading Texture 9401_firestage01y from package Textures/WL_9401_t.utx
+Loading TexRotator 8401_ball01_ro from package Textures/WL_9401_t.utx
+Loading Texture 9401_tiger01y from package Textures/WL_9401_t.utx
+Loading Texture 9401_tiger02y from package Textures/WL_9401_t.utx
+Loading Texture 9401_tiger03y from package Textures/WL_9401_t.utx
+Loading Texture 9401_dragonhead01y from package Textures/WL_9401_t.utx
+Loading Texture 9401_dragon04y from package Textures/WL_9401_t.utx
+Loading Shader 9401_dragon_re from package Textures/WL_9401_t.utx
+Loading Texture 9401_dragon03y from package Textures/WL_9401_t.utx
+Loading Texture 9401_dragon05y from package Textures/WL_9401_t.utx
+Loading Texture 9401_dragonhead02y from package Textures/WL_9401_t.utx
+Loading Texture 9401_dragon02y from package Textures/WL_9401_t.utx
+Loading Texture 9401_stove from package Textures/WL_9401_t.utx
+Loading Texture 9401_stage02y from package Textures/WL_9401_t.utx
+Loading TexPanner 9401_water01y from package Textures/WL_9401_t.utx
+Loading package: Textures/WL_0120_t.utx Ver: 128/29 Names: 137 Exports: 76 Imports: 12 Game: 200001
+Loading Texture 9401_bridge01y from package Textures/WL_9401_t.utx
+Loading Texture channels01 from package Textures/WL_9401_t.utx
+Loading Texture 9401_object01y from package Textures/WL_9401_t.utx
+Loading Texture 9401_firestage02y from package Textures/WL_9401_t.utx
+Loading TexRotator 9401_run_cc_001b from package Textures/WL_9401_t.utx
+Loading Texture 9401_stage06y from package Textures/WL_9401_t.utx
+Loading Texture 9401_stage04y from package Textures/WL_9401_t.utx
+Loading Texture 9401_stage03y from package Textures/WL_9401_t.utx
+Loading Shader 9401_rock_re from package Textures/WL_9401_t.utx
+Loading Texture 9401_stove03y from package Textures/WL_9401_t.utx
+Loading Shader 9401_project02_re from package Textures/WL_9401_t.utx
+Loading Texture 9401_control01y from package Textures/WL_9401_t.utx
+Loading Shader 9401_project03_re from package Textures/WL_9401_t.utx
+Loading Texture 9401_break_bridge01y from package Textures/WL_9401_t.utx
+Loading Texture 9401_project02ky from package Textures/WL_9401_t.utx
+Loading Texture 9401_project01y from package Textures/WL_9401_t.utx
+Loading Texture 9401_stage05y from package Textures/WL_9401_t.utx
+Loading Shader shader9401 from package Textures/WL_9401_t.utx
+Loading Shader 9401_water_cool_ap_001b from package Textures/WL_9401_t.utx
+Loading Texture 9401_04h from package Textures/WL_9401_t.utx
+Loading Texture 9401_stage01y from package Textures/WL_9401_t.utx
+Loading Shader 9401_control_re from package Textures/WL_9401_t.utx
+Loading Texture 9401_project01_color from package Textures/WL_9401_t.utx
+Loading Texture 9401_door01y from package Textures/WL_9401_t.utx
+Loading Palette Palette6 from package Textures/HI_Floor_t.utx
+Loading Texture 0120_water_bule_001b from package Textures/WL_0120_t.utx
+Exporting objects ...
+Exporting TexEnvMap 9401_xox_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/TexEnvMap/9401_xox_001b.mat
+Exporting Texture 9401_wnder_cool_002b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_wnder_cool_002b.png
+Exporting TexRotator 9401_control_ro to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/TexRotator/9401_control_ro.mat
+Exporting Texture 9401_control02y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_control02y.png
+Exporting Texture 9999wat4 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9999wat4.png
+Exporting Texture 9401_project02y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_project02y.png
+Exporting Texture 9401_ball01y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_ball01y.png
+Exporting Texture 9999wat1 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9999wat1.png
+Exporting Texture 9999wat0 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9999wat0.png
+Exporting TexPanner Tokara-beams-tp0 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/TexPanner/Tokara-beams-tp0.mat
+Exporting Texture tokara-lightstreaks to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/tokara-lightstreaks.png
+Exporting Texture 9999wat2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9999wat2.png
+Exporting Texture 9401_lighting to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_lighting.png
+Exporting Texture 9999wat3 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9999wat3.png
+Exporting TexPanner 9401_project02_mov to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/TexPanner/9401_project02_mov.mat
+Exporting TexPanner 9401_project02_mov2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/TexPanner/9401_project02_mov2.mat
+Exporting TexOscillator TexOscillator0 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/TexOscillator/TexOscillator0.mat
+Exporting Texture 9401_project03_bk to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_project03_bk.png
+Exporting Texture 9401_water_fire_099b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_water_fire_099b.png
+Exporting Texture 9401_rock01y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_rock01y.png
+Exporting Texture 9401_water_fire_ap_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_water_fire_ap_001b.png
+Exporting TexEnvMap TexEnv9401 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/TexEnvMap/TexEnv9401.mat
+Exporting Texture 9401_ap_wat_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_ap_wat_001b.png
+Exporting TexRotator 9401_lighting_ro to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/TexRotator/9401_lighting_ro.mat
+Exporting Texture 9401_project03y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_project03y.png
+Exporting Texture 9401_rock01_alpha to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_rock01_alpha.png
+Exporting Texture 9401_gre_yell_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_gre_yell_001b.png
+Exporting Texture 9401_dragon01_alpha to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_dragon01_alpha.png
+Exporting Texture 9401_dragon01y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_dragon01y.png
+Exporting Shader 9401_ball01_re to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Shader/9401_ball01_re.mat
+Exporting Shader tokara-beam-shader to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Shader/tokara-beam-shader.mat
+Exporting Texture 9401_s_bridge01y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_s_bridge01y.png
+Exporting FinalBlend Tokara-beams to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/FinalBlend/Tokara-beams.mat
+Exporting Texture 9401_stove02y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_stove02y.png
+Exporting Texture 9401_firestage01y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_firestage01y.png
+Exporting TexRotator 8401_ball01_ro to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/TexRotator/8401_ball01_ro.mat
+Exporting Texture 9401_tiger01y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_tiger01y.png
+Exporting Texture 9401_tiger02y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_tiger02y.png
+Exporting Texture 9401_tiger03y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_tiger03y.png
+Exporting Texture 9401_dragonhead01y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_dragonhead01y.png
+Exporting Texture 9401_dragon04y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_dragon04y.png
+Exporting Shader 9401_dragon_re to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Shader/9401_dragon_re.mat
+Exporting Texture 9401_dragon03y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_dragon03y.png
+Exporting Texture 9401_dragon05y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_dragon05y.png
+Exporting Texture 9401_dragonhead02y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_dragonhead02y.png
+Exporting Texture 9401_dragon02y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_dragon02y.png
+Exporting Texture 9401_stove to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_stove.png
+Exporting Texture 9401_stage02y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_stage02y.png
+Exporting TexPanner 9401_water01y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/TexPanner/9401_water01y.mat
+Exporting Texture 0120_water_bule_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_0120_t/Texture/0120_water_bule_001b.png
+Exporting Texture 9401_bridge01y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_bridge01y.png
+Exporting Texture channels01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/channels01.png
+Exporting Texture 9401_object01y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_object01y.png
+Exporting Texture 9401_firestage02y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_firestage02y.png
+Exporting TexRotator 9401_run_cc_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/TexRotator/9401_run_cc_001b.mat
+Exporting Texture 9401_stage06y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_stage06y.png
+Exporting Texture 9401_stage04y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_stage04y.png
+Exporting Texture 9401_stage03y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_stage03y.png
+Exporting Shader 9401_rock_re to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Shader/9401_rock_re.mat
+Exporting Texture 9401_stove03y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_stove03y.png
+Exporting Shader 9401_project02_re to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Shader/9401_project02_re.mat
+Exporting Texture 9401_control01y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_control01y.png
+Exporting Shader 9401_project03_re to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Shader/9401_project03_re.mat
+Exporting Texture 9401_break_bridge01y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_break_bridge01y.png
+Exporting Texture 9401_project02ky to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_project02ky.png
+Exporting Texture 9401_project01y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_project01y.png
+Exporting Texture 9401_stage05y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_stage05y.png
+Exporting Shader shader9401 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Shader/shader9401.mat
+Exporting Shader 9401_water_cool_ap_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Shader/9401_water_cool_ap_001b.mat
+Exporting Texture 9401_04h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_04h.png
+Exporting Texture 9401_stage01y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_stage01y.png
+Exporting Shader 9401_control_re to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Shader/9401_control_re.mat
+Exporting Texture 9401_project01_color to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_project01_color.png
+Exporting Texture 9401_door01y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_9401_t/Texture/9401_door01y.png
+Memory: allocated 721917 bytes in 158 blocks
+Exported 74/74 objects in 0.8 sec

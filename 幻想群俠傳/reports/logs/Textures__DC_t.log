@@ -1,0 +1,63 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/DC_t.utx Ver: 128/29 Names: 47 Exports: 28 Imports: 2 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture dc5001a from package Textures/DC_t.utx
+Loading Texture dc5001eye_op from package Textures/DC_t.utx
+Loading Texture dc5001eye_cl from package Textures/DC_t.utx
+Loading Texture dc5101a from package Textures/DC_t.utx
+Loading Texture dc5101eye_op from package Textures/DC_t.utx
+Loading Texture dc5101eye_cl from package Textures/DC_t.utx
+Loading Texture dc5002a from package Textures/DC_t.utx
+Loading Texture dc5002eye_cl from package Textures/DC_t.utx
+Loading Texture dc5002eye_op from package Textures/DC_t.utx
+Loading Texture dc5102a from package Textures/DC_t.utx
+Loading Texture dc5102eye_cl from package Textures/DC_t.utx
+Loading Texture dc5102eye_op from package Textures/DC_t.utx
+Loading Texture dc0202a from package Textures/DC_t.utx
+Loading Texture dc0201a from package Textures/DC_t.utx
+Loading Texture dc0702a from package Textures/DC_t.utx
+Loading Texture dc0701a from package Textures/DC_t.utx
+Loading Texture dc0701b from package Textures/DC_t.utx
+Loading Texture dc0702b from package Textures/DC_t.utx
+Loading Texture dc0401a from package Textures/DC_t.utx
+Loading Texture dc0402a from package Textures/DC_t.utx
+Loading Texture dc0101a from package Textures/DC_t.utx
+Loading Texture dc0301a from package Textures/DC_t.utx
+Loading Texture dc0302a from package Textures/DC_t.utx
+Loading Texture dc0501a from package Textures/DC_t.utx
+Loading Texture dc0502a from package Textures/DC_t.utx
+Loading Texture dc0602a from package Textures/DC_t.utx
+Loading Texture dc0601a from package Textures/DC_t.utx
+Loading Texture dc0102a from package Textures/DC_t.utx
+Exporting objects ...
+Exporting Texture dc5001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DC_t/Texture/dc5001a.png
+Exporting Texture dc5001eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DC_t/Texture/dc5001eye_op.png
+Exporting Texture dc5001eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DC_t/Texture/dc5001eye_cl.png
+Exporting Texture dc5101a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DC_t/Texture/dc5101a.png
+Exporting Texture dc5101eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DC_t/Texture/dc5101eye_op.png
+Exporting Texture dc5101eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DC_t/Texture/dc5101eye_cl.png
+Exporting Texture dc5002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DC_t/Texture/dc5002a.png
+Exporting Texture dc5002eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DC_t/Texture/dc5002eye_cl.png
+Exporting Texture dc5002eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DC_t/Texture/dc5002eye_op.png
+Exporting Texture dc5102a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DC_t/Texture/dc5102a.png
+Exporting Texture dc5102eye_cl to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DC_t/Texture/dc5102eye_cl.png
+Exporting Texture dc5102eye_op to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DC_t/Texture/dc5102eye_op.png
+Exporting Texture dc0202a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DC_t/Texture/dc0202a.png
+Exporting Texture dc0201a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DC_t/Texture/dc0201a.png
+Exporting Texture dc0702a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DC_t/Texture/dc0702a.png
+Exporting Texture dc0701a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DC_t/Texture/dc0701a.png
+Exporting Texture dc0701b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DC_t/Texture/dc0701b.png
+Exporting Texture dc0702b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DC_t/Texture/dc0702b.png
+Exporting Texture dc0401a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DC_t/Texture/dc0401a.png
+Exporting Texture dc0402a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DC_t/Texture/dc0402a.png
+Exporting Texture dc0101a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DC_t/Texture/dc0101a.png
+Exporting Texture dc0301a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DC_t/Texture/dc0301a.png
+Exporting Texture dc0302a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DC_t/Texture/dc0302a.png
+Exporting Texture dc0501a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DC_t/Texture/dc0501a.png
+Exporting Texture dc0502a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DC_t/Texture/dc0502a.png
+Exporting Texture dc0602a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DC_t/Texture/dc0602a.png
+Exporting Texture dc0601a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DC_t/Texture/dc0601a.png
+Exporting Texture dc0102a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/DC_t/Texture/dc0102a.png
+Memory: allocated 405735 bytes in 76 blocks
+Exported 28/28 objects in 0.4 sec

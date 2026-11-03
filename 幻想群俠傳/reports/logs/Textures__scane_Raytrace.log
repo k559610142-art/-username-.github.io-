@@ -1,0 +1,113 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/scane_Raytrace.utx Ver: 128/29 Names: 56 Exports: 67 Imports: 7 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture 00 from package Textures/scane_Raytrace.utx
+Loading Texture 05 from package Textures/scane_Raytrace.utx
+Loading Cubemap eye_Cub from package Textures/scane_Raytrace.utx
+Loading Palette Palette0 from package Textures/scane_Raytrace.utx
+Loading Cubemap specular_Cub from package Textures/scane_Raytrace.utx
+Loading Cubemap cloth_Cub from package Textures/scane_Raytrace.utx
+Loading Texture 00 from package Textures/scane_Raytrace.utx
+Loading Texture 01 from package Textures/scane_Raytrace.utx
+Loading Texture 02 from package Textures/scane_Raytrace.utx
+Loading Texture 03 from package Textures/scane_Raytrace.utx
+Loading Texture 04 from package Textures/scane_Raytrace.utx
+Loading Texture 05 from package Textures/scane_Raytrace.utx
+Loading Palette Palette0 from package Textures/scane_Raytrace.utx
+Loading Texture 00 from package Textures/scane_Raytrace.utx
+Loading Texture 01 from package Textures/scane_Raytrace.utx
+Loading Texture 02 from package Textures/scane_Raytrace.utx
+Loading Texture 03 from package Textures/scane_Raytrace.utx
+Loading Texture 04 from package Textures/scane_Raytrace.utx
+Loading Texture 05 from package Textures/scane_Raytrace.utx
+Loading Palette Palette2 from package Textures/scane_Raytrace.utx
+Loading Cubemap skin2_Cub from package Textures/scane_Raytrace.utx
+Loading Texture 04 from package Textures/scane_Raytrace.utx
+Loading Texture 05 from package Textures/scane_Raytrace.utx
+Loading Texture 00 from package Textures/scane_Raytrace.utx
+Loading Texture 04 from package Textures/scane_Raytrace.utx
+Loading Palette Palette0 from package Textures/scane_Raytrace.utx
+Loading Texture 03 from package Textures/scane_Raytrace.utx
+Loading Texture 03 from package Textures/scane_Raytrace.utx
+Loading Texture 02 from package Textures/scane_Raytrace.utx
+Loading Texture 02 from package Textures/scane_Raytrace.utx
+Loading Texture 01 from package Textures/scane_Raytrace.utx
+Loading Palette Palette1 from package Textures/scane_Raytrace.utx
+Loading Texture 05 from package Textures/scane_Raytrace.utx
+Loading Texture 00 from package Textures/scane_Raytrace.utx
+Loading Cubemap skin_Cub from package Textures/scane_Raytrace.utx
+Loading Cubemap metal_Cub from package Textures/scane_Raytrace.utx
+Loading Texture 01 from package Textures/scane_Raytrace.utx
+Loading Texture 04 from package Textures/scane_Raytrace.utx
+Loading Palette Palette1 from package Textures/scane_Raytrace.utx
+Loading Cubemap falloff_Cub from package Textures/scane_Raytrace.utx
+Loading Texture 00 from package Textures/scane_Raytrace.utx
+Loading Texture 01 from package Textures/scane_Raytrace.utx
+Loading Texture 02 from package Textures/scane_Raytrace.utx
+Loading Texture 03 from package Textures/scane_Raytrace.utx
+Loading Texture 05 from package Textures/scane_Raytrace.utx
+Loading Texture 05 from package Textures/scane_Raytrace.utx
+Loading Palette Palette0 from package Textures/scane_Raytrace.utx
+Loading Texture 04 from package Textures/scane_Raytrace.utx
+Loading Texture 00 from package Textures/scane_Raytrace.utx
+Loading Texture 01 from package Textures/scane_Raytrace.utx
+Loading Texture 02 from package Textures/scane_Raytrace.utx
+Loading Texture 03 from package Textures/scane_Raytrace.utx
+Loading TexEnvMap metal_Tem from package Textures/scane_Raytrace.utx
+Loading TexEnvMap skin_Tem from package Textures/scane_Raytrace.utx
+Loading Texture XXX from package Textures/scane_Raytrace.utx
+Loading TexEnvMap falloff_Tem from package Textures/scane_Raytrace.utx
+Loading TexEnvMap skin2_Tem from package Textures/scane_Raytrace.utx
+Loading TexEnvMap cloth_Tem from package Textures/scane_Raytrace.utx
+Loading TexEnvMap specular_Tem from package Textures/scane_Raytrace.utx
+Loading TexEnvMap ete_Tem from package Textures/scane_Raytrace.utx
+Exporting objects ...
+Exporting Texture 00 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/00.png
+Exporting Texture 05 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/05.png
+Exporting Texture 00 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/00.png
+Exporting Texture 01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/01.png
+Exporting Texture 02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/02.png
+Exporting Texture 03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/03.png
+Exporting Texture 04 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/04.png
+Exporting Texture 05 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/05.png
+Exporting Texture 00 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/00.png
+Exporting Texture 01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/01.png
+Exporting Texture 02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/02.png
+Exporting Texture 03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/03.png
+Exporting Texture 04 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/04.png
+Exporting Texture 05 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/05.png
+Exporting Texture 00 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/00.png
+Exporting Texture 01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/01.png
+Exporting Texture 02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/02.png
+Exporting Texture 03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/03.png
+Exporting Texture 04 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/04.png
+Exporting Texture 05 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/05.png
+Exporting Texture 04 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/04.png
+Exporting Texture 05 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/05.png
+Exporting Texture 03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/03.png
+Exporting Texture 02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/02.png
+Exporting Texture 01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/01.png
+Exporting Texture 05 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/05.png
+Exporting Texture 00 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/00.png
+Exporting Texture 00 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/00.png
+Exporting Texture 01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/01.png
+Exporting Texture 02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/02.png
+Exporting Texture 03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/03.png
+Exporting Texture 04 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/04.png
+Exporting Texture 04 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/04.png
+Exporting Texture 00 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/00.png
+Exporting Texture 01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/01.png
+Exporting Texture 02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/02.png
+Exporting Texture 03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/03.png
+Exporting Texture 05 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/05.png
+Exporting TexEnvMap metal_Tem to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/TexEnvMap/metal_Tem.mat
+Exporting TexEnvMap skin_Tem to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/TexEnvMap/skin_Tem.mat
+Exporting Texture XXX to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/Texture/XXX.png
+Exporting TexEnvMap falloff_Tem to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/TexEnvMap/falloff_Tem.mat
+Exporting TexEnvMap skin2_Tem to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/TexEnvMap/skin2_Tem.mat
+Exporting TexEnvMap cloth_Tem to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/TexEnvMap/cloth_Tem.mat
+Exporting TexEnvMap specular_Tem to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/TexEnvMap/specular_Tem.mat
+Exporting TexEnvMap ete_Tem to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/scane_Raytrace/TexEnvMap/ete_Tem.mat
+Memory: allocated 509793 bytes in 101 blocks
+Exported 46/46 objects in 0.1 sec

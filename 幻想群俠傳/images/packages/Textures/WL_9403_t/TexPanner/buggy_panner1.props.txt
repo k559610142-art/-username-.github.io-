@@ -1,0 +1,11 @@
+PanDirection = { Yaw=6000, Pitch=0, Roll=0 }
+PanRate = 0.2
+TexCoordSource = TCS_NoChange (13)
+TexCoordCount = TCN_2DCoords (0)
+TexCoordProjected = false
+Material = Texture'Object.buggy_05_'
+FallbackMaterial = None
+DefaultMaterial = None
+SurfaceType = 0
+bUseTextureAsHeat = false
+HeatMaterial = None

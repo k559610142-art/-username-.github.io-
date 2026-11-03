@@ -1,0 +1,16 @@
+TexRotationType = TR_OscillatingRotation (2)
+Rotation = { Yaw=0, Pitch=0, Roll=0 }
+UOffset = 64
+VOffset = 128
+OscillationRate = { Yaw=20000, Pitch=0, Roll=0 }
+OscillationAmplitude = { Yaw=200, Pitch=0, Roll=0 }
+OscillationPhase = { Yaw=50000, Pitch=0, Roll=0 }
+TexCoordSource = TCS_NoChange (13)
+TexCoordCount = TCN_2DCoords (0)
+TexCoordProjected = false
+Material = Texture'1036_grass_01h'
+FallbackMaterial = None
+DefaultMaterial = None
+SurfaceType = 0
+bUseTextureAsHeat = false
+HeatMaterial = None

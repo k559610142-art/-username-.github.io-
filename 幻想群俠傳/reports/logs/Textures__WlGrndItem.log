@@ -1,0 +1,37 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WlGrndItem.utx Ver: 128/29 Names: 37 Exports: 21 Imports: 3 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture Itemtext002_001 from package Textures/WlGrndItem.utx
+Loading Texture Itemtext003_001 from package Textures/WlGrndItem.utx
+Loading Texture Itemtext004_001 from package Textures/WlGrndItem.utx
+Loading Texture Itemtext005_001 from package Textures/WlGrndItem.utx
+Loading Texture Itemtext006_001 from package Textures/WlGrndItem.utx
+Loading Texture Itemtext001_001 from package Textures/WlGrndItem.utx
+Loading Texture Itemtext001_002 from package Textures/WlGrndItem.utx
+Loading Texture Itemtext002_002 from package Textures/WlGrndItem.utx
+Loading Texture Itemtext003_002 from package Textures/WlGrndItem.utx
+Loading Texture Itemtext004_002 from package Textures/WlGrndItem.utx
+Loading Texture Itemtext005_002 from package Textures/WlGrndItem.utx
+Loading Texture Itemtext006_002 from package Textures/WlGrndItem.utx
+Loading Texture Itemtext005_005 from package Textures/WlGrndItem.utx
+Loading Texture Itemtext005_004 from package Textures/WlGrndItem.utx
+Loading Texture Itemtext005_003 from package Textures/WlGrndItem.utx
+Exporting objects ...
+Exporting Texture Itemtext002_001 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WlGrndItem/Texture/Itemtext002_001.png
+Exporting Texture Itemtext003_001 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WlGrndItem/Texture/Itemtext003_001.png
+Exporting Texture Itemtext004_001 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WlGrndItem/Texture/Itemtext004_001.png
+Exporting Texture Itemtext005_001 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WlGrndItem/Texture/Itemtext005_001.png
+Exporting Texture Itemtext006_001 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WlGrndItem/Texture/Itemtext006_001.png
+Exporting Texture Itemtext001_001 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WlGrndItem/Texture/Itemtext001_001.png
+Exporting Texture Itemtext001_002 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WlGrndItem/Texture/Itemtext001_002.png
+Exporting Texture Itemtext002_002 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WlGrndItem/Texture/Itemtext002_002.png
+Exporting Texture Itemtext003_002 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WlGrndItem/Texture/Itemtext003_002.png
+Exporting Texture Itemtext004_002 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WlGrndItem/Texture/Itemtext004_002.png
+Exporting Texture Itemtext005_002 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WlGrndItem/Texture/Itemtext005_002.png
+Exporting Texture Itemtext006_002 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WlGrndItem/Texture/Itemtext006_002.png
+Exporting Texture Itemtext005_005 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WlGrndItem/Texture/Itemtext005_005.png
+Exporting Texture Itemtext005_004 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WlGrndItem/Texture/Itemtext005_004.png
+Exporting Texture Itemtext005_003 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WlGrndItem/Texture/Itemtext005_003.png
+Memory: allocated 352217 bytes in 63 blocks
+Exported 15/15 objects in 0.1 sec

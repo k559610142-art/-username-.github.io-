@@ -1,0 +1,26 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_1015_t.utx Ver: 128/29 Names: 71 Exports: 16 Imports: 17 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture BG-Tree001Leaves from package Textures/WL_1015_t.utx
+Loading TexPanner Tokara-beams-tp0 from package Textures/WL_1015_t.utx
+Loading Texture tokara-lightstreaks from package Textures/WL_1015_t.utx
+Loading Shader tokara-beam-shader from package Textures/WL_1015_t.utx
+Loading TexOscillator TexOscillator0 from package Textures/WL_1015_t.utx
+Loading Palette Palette0 from package Textures/WL_1015_t.utx
+Loading FinalBlend Tokara-beams from package Textures/WL_1015_t.utx
+Loading Texture 2300_tree_001a from package Textures/WL_1015_t.utx
+Loading Shader BG-Tree001Leaves_MaskedTwoSided from package Textures/WL_1015_t.utx
+Loading Texture 1010_black from package Textures/WL_1015_t.utx
+Exporting objects ...
+Exporting Texture BG-Tree001Leaves to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1015_t/Texture/BG-Tree001Leaves.png
+Exporting TexPanner Tokara-beams-tp0 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1015_t/TexPanner/Tokara-beams-tp0.mat
+Exporting Texture tokara-lightstreaks to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1015_t/Texture/tokara-lightstreaks.png
+Exporting Shader tokara-beam-shader to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1015_t/Shader/tokara-beam-shader.mat
+Exporting TexOscillator TexOscillator0 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1015_t/TexOscillator/TexOscillator0.mat
+Exporting FinalBlend Tokara-beams to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1015_t/FinalBlend/Tokara-beams.mat
+Exporting Texture 2300_tree_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1015_t/Texture/2300_tree_001a.png
+Exporting Shader BG-Tree001Leaves_MaskedTwoSided to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1015_t/Shader/BG-Tree001Leaves_MaskedTwoSided.mat
+Exporting Texture 1010_black to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1015_t/Texture/1010_black.png
+Memory: allocated 348300 bytes in 62 blocks
+Exported 9/9 objects in 0.1 sec

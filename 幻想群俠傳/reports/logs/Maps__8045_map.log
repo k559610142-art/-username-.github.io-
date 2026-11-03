@@ -1,0 +1,14 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Maps/8045_map.ut2 Ver: 128/29 Names: 862 Exports: 617 Imports: 97 Game: 200001
+Loaded in 0.0 sec, 18 allocs, 0.03 MBytes serialized in 8 calls.
+Loading Texture terrain1 from package Maps/8045_map.ut2
+Loading Texture tex01 from package Maps/8045_map.ut2
+Loading Texture Tex from package Maps/8045_map.ut2
+Exporting objects ...
+******** Maps/8045_map.ut2 ********
+*** Unknown UE2 texture format: TEXF_G16 (10)
+Exporting Texture tex01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8045_map/Texture/tex01.png
+Exporting Texture Tex to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/8045_map/Texture/Tex.png
+Memory: allocated 341495 bytes in 51 blocks
+Exported 2/2 objects in 0.0 sec

@@ -1,0 +1,24 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Maps/9625_map.ut2 Ver: 128/29 Names: 601 Exports: 337 Imports: 80 Game: 200001
+Loaded in 0.0 sec, 18 allocs, 0.02 MBytes serialized in 5 calls.
+Loading Texture 3006_terrain01 from package Maps/9625_map.ut2
+Loading Texture 3001_layer08a from package Maps/9625_map.ut2
+Loading Texture 3001_layer09a from package Maps/9625_map.ut2
+Loading Texture 3001_layer03a from package Maps/9625_map.ut2
+Loading Texture 3001_layer05a from package Maps/9625_map.ut2
+Loading Texture 3001_layer06a from package Maps/9625_map.ut2
+Loading Texture 3001_layer01a from package Maps/9625_map.ut2
+Loading Texture 3001_layer07a from package Maps/9625_map.ut2
+Exporting objects ...
+******** Maps/9625_map.ut2 ********
+*** Unknown UE2 texture format: TEXF_G16 (10)
+Exporting Texture 3001_layer08a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/9625_map/Texture/3001_layer08a.png
+Exporting Texture 3001_layer09a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/9625_map/Texture/3001_layer09a.png
+Exporting Texture 3001_layer03a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/9625_map/Texture/3001_layer03a.png
+Exporting Texture 3001_layer05a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/9625_map/Texture/3001_layer05a.png
+Exporting Texture 3001_layer06a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/9625_map/Texture/3001_layer06a.png
+Exporting Texture 3001_layer01a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/9625_map/Texture/3001_layer01a.png
+Exporting Texture 3001_layer07a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/9625_map/Texture/3001_layer07a.png
+Memory: allocated 350691 bytes in 56 blocks
+Exported 7/7 objects in 0.0 sec

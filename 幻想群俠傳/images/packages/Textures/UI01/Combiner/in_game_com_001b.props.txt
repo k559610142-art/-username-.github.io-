@@ -1,0 +1,13 @@
+CombineOperation = CO_Multiply (2)
+AlphaOperation = AO_Use_Mask (0)
+Material1 = Texture'Lobby.in_game_alpha_001b'
+Material2 = TexPanner'Lobby.in_game_run_001b'
+Mask = Texture'Lobby.in_game_001b'
+InvertMask = false
+Modulate2X = false
+Modulate4X = false
+FallbackMaterial = None
+DefaultMaterial = None
+SurfaceType = 0
+bUseTextureAsHeat = false
+HeatMaterial = None

@@ -1,0 +1,133 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/wk_t.utx Ver: 128/29 Names: 82 Exports: 63 Imports: 2 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture wk32_2a from package Textures/wk_t.utx
+Loading Texture wk02_1a from package Textures/wk_t.utx
+Loading Texture wk10_1a from package Textures/wk_t.utx
+Loading Texture wk01_1a from package Textures/wk_t.utx
+Loading Texture wk24_1a from package Textures/wk_t.utx
+Loading Texture wk28_1a from package Textures/wk_t.utx
+Loading Texture wk30_1a from package Textures/wk_t.utx
+Loading Texture wk32_1a from package Textures/wk_t.utx
+Loading Texture wk37_1a from package Textures/wk_t.utx
+Loading Texture wk35_1a from package Textures/wk_t.utx
+Loading Texture wk36_1a from package Textures/wk_t.utx
+Loading Texture wk34_1a from package Textures/wk_t.utx
+Loading Texture wk33_1a from package Textures/wk_t.utx
+Loading Texture wk07_1a from package Textures/wk_t.utx
+Loading Texture wk08_1a from package Textures/wk_t.utx
+Loading Texture wk06_1a from package Textures/wk_t.utx
+Loading Texture wk11_1a from package Textures/wk_t.utx
+Loading Texture wk12_1a from package Textures/wk_t.utx
+Loading Texture wk13_1a from package Textures/wk_t.utx
+Loading Texture wk14_1a from package Textures/wk_t.utx
+Loading Texture wk15_1a from package Textures/wk_t.utx
+Loading Texture wk16_1a from package Textures/wk_t.utx
+Loading Texture wk01_2a from package Textures/wk_t.utx
+Loading Texture wk10_2a from package Textures/wk_t.utx
+Loading Texture wk24_2a from package Textures/wk_t.utx
+Loading Texture wk28_2a from package Textures/wk_t.utx
+Loading Texture wk30_2a from package Textures/wk_t.utx
+Loading Texture wk30_3a from package Textures/wk_t.utx
+Loading Texture wk01_3a from package Textures/wk_t.utx
+Loading Texture wk10_3a from package Textures/wk_t.utx
+Loading Texture wk24_3a from package Textures/wk_t.utx
+Loading Texture wk28_3a from package Textures/wk_t.utx
+Loading Texture wk32_3a from package Textures/wk_t.utx
+Loading Texture wk37_3a from package Textures/wk_t.utx
+Loading Texture wk33_2a from package Textures/wk_t.utx
+Loading Texture wk33_3a from package Textures/wk_t.utx
+Loading Texture wk34_2a from package Textures/wk_t.utx
+Loading Texture wk34_3a from package Textures/wk_t.utx
+Loading Texture wk35_2a from package Textures/wk_t.utx
+Loading Texture wk35_3a from package Textures/wk_t.utx
+Loading Texture wk36_2a from package Textures/wk_t.utx
+Loading Texture wk36_3a from package Textures/wk_t.utx
+Loading Texture wk37_2a from package Textures/wk_t.utx
+Loading Texture wk16_3a from package Textures/wk_t.utx
+Loading Texture wk02_2a from package Textures/wk_t.utx
+Loading Texture wk02_3a from package Textures/wk_t.utx
+Loading Texture wk06_2a from package Textures/wk_t.utx
+Loading Texture wk06_3a from package Textures/wk_t.utx
+Loading Texture wk07_2a from package Textures/wk_t.utx
+Loading Texture wk07_3a from package Textures/wk_t.utx
+Loading Texture wk08_2a from package Textures/wk_t.utx
+Loading Texture wk08_3a from package Textures/wk_t.utx
+Loading Texture wk11_2a from package Textures/wk_t.utx
+Loading Texture wk11_3a from package Textures/wk_t.utx
+Loading Texture wk12_2a from package Textures/wk_t.utx
+Loading Texture wk12_3a from package Textures/wk_t.utx
+Loading Texture wk13_2a from package Textures/wk_t.utx
+Loading Texture wk13_3a from package Textures/wk_t.utx
+Loading Texture wk14_2a from package Textures/wk_t.utx
+Loading Texture wk14_3a from package Textures/wk_t.utx
+Loading Texture wk15_2a from package Textures/wk_t.utx
+Loading Texture wk15_3a from package Textures/wk_t.utx
+Loading Texture wk16_2a from package Textures/wk_t.utx
+Exporting objects ...
+Exporting Texture wk32_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk32_2a.png
+Exporting Texture wk02_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk02_1a.png
+Exporting Texture wk10_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk10_1a.png
+Exporting Texture wk01_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk01_1a.png
+Exporting Texture wk24_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk24_1a.png
+Exporting Texture wk28_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk28_1a.png
+Exporting Texture wk30_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk30_1a.png
+Exporting Texture wk32_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk32_1a.png
+Exporting Texture wk37_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk37_1a.png
+Exporting Texture wk35_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk35_1a.png
+Exporting Texture wk36_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk36_1a.png
+Exporting Texture wk34_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk34_1a.png
+Exporting Texture wk33_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk33_1a.png
+Exporting Texture wk07_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk07_1a.png
+Exporting Texture wk08_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk08_1a.png
+Exporting Texture wk06_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk06_1a.png
+Exporting Texture wk11_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk11_1a.png
+Exporting Texture wk12_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk12_1a.png
+Exporting Texture wk13_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk13_1a.png
+Exporting Texture wk14_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk14_1a.png
+Exporting Texture wk15_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk15_1a.png
+Exporting Texture wk16_1a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk16_1a.png
+Exporting Texture wk01_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk01_2a.png
+Exporting Texture wk10_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk10_2a.png
+Exporting Texture wk24_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk24_2a.png
+Exporting Texture wk28_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk28_2a.png
+Exporting Texture wk30_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk30_2a.png
+Exporting Texture wk30_3a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk30_3a.png
+Exporting Texture wk01_3a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk01_3a.png
+Exporting Texture wk10_3a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk10_3a.png
+Exporting Texture wk24_3a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk24_3a.png
+Exporting Texture wk28_3a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk28_3a.png
+Exporting Texture wk32_3a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk32_3a.png
+Exporting Texture wk37_3a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk37_3a.png
+Exporting Texture wk33_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk33_2a.png
+Exporting Texture wk33_3a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk33_3a.png
+Exporting Texture wk34_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk34_2a.png
+Exporting Texture wk34_3a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk34_3a.png
+Exporting Texture wk35_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk35_2a.png
+Exporting Texture wk35_3a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk35_3a.png
+Exporting Texture wk36_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk36_2a.png
+Exporting Texture wk36_3a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk36_3a.png
+Exporting Texture wk37_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk37_2a.png
+Exporting Texture wk16_3a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk16_3a.png
+Exporting Texture wk02_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk02_2a.png
+Exporting Texture wk02_3a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk02_3a.png
+Exporting Texture wk06_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk06_2a.png
+Exporting Texture wk06_3a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk06_3a.png
+Exporting Texture wk07_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk07_2a.png
+Exporting Texture wk07_3a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk07_3a.png
+Exporting Texture wk08_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk08_2a.png
+Exporting Texture wk08_3a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk08_3a.png
+Exporting Texture wk11_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk11_2a.png
+Exporting Texture wk11_3a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk11_3a.png
+Exporting Texture wk12_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk12_2a.png
+Exporting Texture wk12_3a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk12_3a.png
+Exporting Texture wk13_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk13_2a.png
+Exporting Texture wk13_3a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk13_3a.png
+Exporting Texture wk14_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk14_2a.png
+Exporting Texture wk14_3a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk14_3a.png
+Exporting Texture wk15_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk15_2a.png
+Exporting Texture wk15_3a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk15_3a.png
+Exporting Texture wk16_2a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/wk_t/Texture/wk16_2a.png
+Memory: allocated 550623 bytes in 111 blocks
+Exported 63/63 objects in 0.4 sec

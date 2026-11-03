@@ -1,0 +1,16 @@
+TexRotationType = TR_OscillatingRotation (2)
+Rotation = { Yaw=0, Pitch=0, Roll=0 }
+UOffset = 0
+VOffset = 250
+OscillationRate = { Yaw=15000, Pitch=0, Roll=0 }
+OscillationAmplitude = { Yaw=200, Pitch=0, Roll=0 }
+OscillationPhase = { Yaw=50000, Pitch=0, Roll=0 }
+TexCoordSource = TCS_NoChange (13)
+TexCoordCount = TCN_2DCoords (0)
+TexCoordProjected = false
+Material = Texture'1036_ghost_tree01h_01'
+FallbackMaterial = None
+DefaultMaterial = None
+SurfaceType = 0
+bUseTextureAsHeat = false
+HeatMaterial = None

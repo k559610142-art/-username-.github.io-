@@ -1,0 +1,24 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Maps/1009_map.ut2 Ver: 128/29 Names: 741 Exports: 454 Imports: 80 Game: 200001
+Loaded in 0.0 sec, 18 allocs, 0.02 MBytes serialized in 7 calls.
+Loading Texture tex1 from package Maps/1009_map.ut2
+Loading Texture rock2 from package Maps/1009_map.ut2
+Loading Texture rock from package Maps/1009_map.ut2
+Loading Texture terrain2 from package Maps/1009_map.ut2
+Loading Texture ssss from package Maps/1009_map.ut2
+Loading Texture tree01 from package Maps/1009_map.ut2
+Loading Texture tree02 from package Maps/1009_map.ut2
+Loading Texture tex5 from package Maps/1009_map.ut2
+Exporting objects ...
+Exporting Texture tex1 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1009_map/Texture/tex1.png
+Exporting Texture rock2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1009_map/Texture/rock2.png
+Exporting Texture rock to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1009_map/Texture/rock.png
+******** Maps/1009_map.ut2 ********
+*** Unknown UE2 texture format: TEXF_G16 (10)
+Exporting Texture ssss to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1009_map/Texture/ssss.png
+Exporting Texture tree01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1009_map/Texture/tree01.png
+Exporting Texture tree02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1009_map/Texture/tree02.png
+Exporting Texture tex5 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1009_map/Texture/tex5.png
+Memory: allocated 355463 bytes in 56 blocks
+Exported 7/7 objects in 0.0 sec

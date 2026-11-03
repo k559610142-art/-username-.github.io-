@@ -1,0 +1,26 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Maps/1006_map.ut2 Ver: 128/29 Names: 1264 Exports: 970 Imports: 93 Game: 200001
+Loaded in 0.0 sec, 19 allocs, 0.05 MBytes serialized in 13 calls.
+Loading Texture 2 from package Maps/1006_map.ut2
+Loading Texture rock from package Maps/1006_map.ut2
+Loading Texture 1 from package Maps/1006_map.ut2
+Loading Texture grassy from package Maps/1006_map.ut2
+Loading Texture tex2 from package Maps/1006_map.ut2
+Loading Texture ter2 from package Maps/1006_map.ut2
+Loading Texture terrain3 from package Maps/1006_map.ut2
+Loading Texture soil from package Maps/1006_map.ut2
+Loading Texture tex3 from package Maps/1006_map.ut2
+Exporting objects ...
+Exporting Texture 2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1006_map/Texture/2.png
+Exporting Texture rock to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1006_map/Texture/rock.png
+Exporting Texture 1 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1006_map/Texture/1.png
+Exporting Texture grassy to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1006_map/Texture/grassy.png
+Exporting Texture tex2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1006_map/Texture/tex2.png
+Exporting Texture ter2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1006_map/Texture/ter2.png
+******** Maps/1006_map.ut2 ********
+*** Unknown UE2 texture format: TEXF_G16 (10)
+Exporting Texture soil to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1006_map/Texture/soil.png
+Exporting Texture tex3 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/1006_map/Texture/tex3.png
+Memory: allocated 396819 bytes in 58 blocks
+Exported 8/8 objects in 0.0 sec

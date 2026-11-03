@@ -1,0 +1,59 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/ro_t.utx Ver: 128/29 Names: 53 Exports: 30 Imports: 8 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading TexEnvMap Light_TEM from package Textures/ro_t.utx
+Loading TexEnvMap Reflection_01TEM from package Textures/ro_t.utx
+Loading Texture RO04a from package Textures/ro_t.utx
+Loading Texture RO03b from package Textures/ro_t.utx
+Loading Texture RO04b from package Textures/ro_t.utx
+Loading Texture RO04c from package Textures/ro_t.utx
+Loading Texture RO04d from package Textures/ro_t.utx
+Loading Texture RO03a from package Textures/ro_t.utx
+Loading Texture RO03c from package Textures/ro_t.utx
+Loading Texture RO03d from package Textures/ro_t.utx
+Loading Texture 01 from package Textures/ro_t.utx
+Loading Texture 02 from package Textures/ro_t.utx
+Loading Texture 03 from package Textures/ro_t.utx
+Loading Texture 04 from package Textures/ro_t.utx
+Loading Cubemap Reflection_01Cub from package Textures/ro_t.utx
+Loading Palette Palette0 from package Textures/ro_t.utx
+Loading Texture HYFX0002a from package Textures/ro_t.utx
+Loading Texture 00 from package Textures/ro_t.utx
+Loading Texture 05 from package Textures/ro_t.utx
+Loading Shader RO03b from package Textures/ro_t.utx
+Loading Shader RO03c from package Textures/ro_t.utx
+Loading Shader RO03d from package Textures/ro_t.utx
+Loading Shader RO04a from package Textures/ro_t.utx
+Loading Shader RO04c from package Textures/ro_t.utx
+Loading Shader RO03a from package Textures/ro_t.utx
+Loading Shader RO04b from package Textures/ro_t.utx
+Loading Shader RO04d from package Textures/ro_t.utx
+Exporting objects ...
+Exporting TexEnvMap Light_TEM to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ro_t/TexEnvMap/Light_TEM.mat
+Exporting Texture HYFX0002a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ro_t/Texture/HYFX0002a.png
+Exporting TexEnvMap Reflection_01TEM to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ro_t/TexEnvMap/Reflection_01TEM.mat
+Exporting Texture 00 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ro_t/Texture/00.png
+Exporting Texture 01 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ro_t/Texture/01.png
+Exporting Texture 02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ro_t/Texture/02.png
+Exporting Texture 03 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ro_t/Texture/03.png
+Exporting Texture 04 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ro_t/Texture/04.png
+Exporting Texture 05 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ro_t/Texture/05.png
+Exporting Texture RO04a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ro_t/Texture/RO04a.png
+Exporting Texture RO03b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ro_t/Texture/RO03b.png
+Exporting Texture RO04b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ro_t/Texture/RO04b.png
+Exporting Texture RO04c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ro_t/Texture/RO04c.png
+Exporting Texture RO04d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ro_t/Texture/RO04d.png
+Exporting Texture RO03a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ro_t/Texture/RO03a.png
+Exporting Texture RO03c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ro_t/Texture/RO03c.png
+Exporting Texture RO03d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ro_t/Texture/RO03d.png
+Exporting Shader RO03b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ro_t/Shader/RO03b.mat
+Exporting Shader RO03c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ro_t/Shader/RO03c.mat
+Exporting Shader RO03d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ro_t/Shader/RO03d.mat
+Exporting Shader RO04a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ro_t/Shader/RO04a.mat
+Exporting Shader RO04c to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ro_t/Shader/RO04c.mat
+Exporting Shader RO03a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ro_t/Shader/RO03a.mat
+Exporting Shader RO04b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ro_t/Shader/RO04b.mat
+Exporting Shader RO04d to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/ro_t/Shader/RO04d.mat
+Memory: allocated 434599 bytes in 83 blocks
+Exported 25/25 objects in 0.3 sec

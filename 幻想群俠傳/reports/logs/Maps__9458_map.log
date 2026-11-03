@@ -1,0 +1,18 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Maps/9458_map.ut2 Ver: 128/29 Names: 656 Exports: 372 Imports: 93 Game: 200001
+Loaded in 0.0 sec, 18 allocs, 0.02 MBytes serialized in 6 calls.
+Loading Texture 3012_terrain01 from package Maps/9458_map.ut2
+Loading Texture 3012_layer01a from package Maps/9458_map.ut2
+Loading Texture 3012_layer03a from package Maps/9458_map.ut2
+Loading Texture 3012_layer05a from package Maps/9458_map.ut2
+Loading Texture 3012_layer06a from package Maps/9458_map.ut2
+Exporting objects ...
+******** Maps/9458_map.ut2 ********
+*** Unknown UE2 texture format: TEXF_G16 (10)
+Exporting Texture 3012_layer01a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/9458_map/Texture/3012_layer01a.png
+Exporting Texture 3012_layer03a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/9458_map/Texture/3012_layer03a.png
+Exporting Texture 3012_layer05a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/9458_map/Texture/3012_layer05a.png
+Exporting Texture 3012_layer06a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Maps/9458_map/Texture/3012_layer06a.png
+Memory: allocated 340091 bytes in 53 blocks
+Exported 4/4 objects in 0.0 sec

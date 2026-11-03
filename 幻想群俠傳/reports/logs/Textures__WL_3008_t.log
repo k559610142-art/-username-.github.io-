@@ -1,0 +1,73 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_3008_t.utx Ver: 128/29 Names: 53 Exports: 33 Imports: 2 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture light_apha from package Textures/WL_3008_t.utx
+Loading Texture 3008_027q from package Textures/WL_3008_t.utx
+Loading Texture 3008_026q from package Textures/WL_3008_t.utx
+Loading Texture 3008_032q from package Textures/WL_3008_t.utx
+Loading Texture 3008_021q from package Textures/WL_3008_t.utx
+Loading Texture 3008_031q from package Textures/WL_3008_t.utx
+Loading Texture 3008_012q from package Textures/WL_3008_t.utx
+Loading Texture 3008_011q from package Textures/WL_3008_t.utx
+Loading Texture 3008_010q from package Textures/WL_3008_t.utx
+Loading Texture 3008_033q from package Textures/WL_3008_t.utx
+Loading Texture 3008_013q from package Textures/WL_3008_t.utx
+Loading Texture 3008_018q from package Textures/WL_3008_t.utx
+Loading Texture 3008_016q from package Textures/WL_3008_t.utx
+Loading Texture 3008_014q from package Textures/WL_3008_t.utx
+Loading Texture 3008_009q from package Textures/WL_3008_t.utx
+Loading Texture 3008_017q from package Textures/WL_3008_t.utx
+Loading Texture 3008_008q from package Textures/WL_3008_t.utx
+Loading Texture 3008_019q from package Textures/WL_3008_t.utx
+Loading Texture 3008_015q from package Textures/WL_3008_t.utx
+Loading Texture 3008_001q from package Textures/WL_3008_t.utx
+Loading Texture 3008_024q from package Textures/WL_3008_t.utx
+Loading Texture 3008_002q from package Textures/WL_3008_t.utx
+Loading Texture 3008_006q from package Textures/WL_3008_t.utx
+Loading Texture 3008_023q from package Textures/WL_3008_t.utx
+Loading Texture 3008_035q from package Textures/WL_3008_t.utx
+Loading Texture 3008_004q from package Textures/WL_3008_t.utx
+Loading Texture 3008_028q from package Textures/WL_3008_t.utx
+Loading Texture 3008_005q from package Textures/WL_3008_t.utx
+Loading Texture 3008_007q from package Textures/WL_3008_t.utx
+Loading Texture 3008_003q from package Textures/WL_3008_t.utx
+Loading Texture 3008_022q from package Textures/WL_3008_t.utx
+Loading Texture 3008_029q from package Textures/WL_3008_t.utx
+Loading Texture 3008_025q from package Textures/WL_3008_t.utx
+Exporting objects ...
+Exporting Texture light_apha to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/light_apha.png
+Exporting Texture 3008_027q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/3008_027q.png
+Exporting Texture 3008_026q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/3008_026q.png
+Exporting Texture 3008_032q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/3008_032q.png
+Exporting Texture 3008_021q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/3008_021q.png
+Exporting Texture 3008_031q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/3008_031q.png
+Exporting Texture 3008_012q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/3008_012q.png
+Exporting Texture 3008_011q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/3008_011q.png
+Exporting Texture 3008_010q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/3008_010q.png
+Exporting Texture 3008_033q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/3008_033q.png
+Exporting Texture 3008_013q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/3008_013q.png
+Exporting Texture 3008_018q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/3008_018q.png
+Exporting Texture 3008_016q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/3008_016q.png
+Exporting Texture 3008_014q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/3008_014q.png
+Exporting Texture 3008_009q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/3008_009q.png
+Exporting Texture 3008_017q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/3008_017q.png
+Exporting Texture 3008_008q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/3008_008q.png
+Exporting Texture 3008_019q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/3008_019q.png
+Exporting Texture 3008_015q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/3008_015q.png
+Exporting Texture 3008_001q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/3008_001q.png
+Exporting Texture 3008_024q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/3008_024q.png
+Exporting Texture 3008_002q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/3008_002q.png
+Exporting Texture 3008_006q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/3008_006q.png
+Exporting Texture 3008_023q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/3008_023q.png
+Exporting Texture 3008_035q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/3008_035q.png
+Exporting Texture 3008_004q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/3008_004q.png
+Exporting Texture 3008_028q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/3008_028q.png
+Exporting Texture 3008_005q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/3008_005q.png
+Exporting Texture 3008_007q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/3008_007q.png
+Exporting Texture 3008_003q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/3008_003q.png
+Exporting Texture 3008_022q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/3008_022q.png
+Exporting Texture 3008_029q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/3008_029q.png
+Exporting Texture 3008_025q to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_3008_t/Texture/3008_025q.png
+Memory: allocated 426552 bytes in 81 blocks
+Exported 33/33 objects in 0.1 sec

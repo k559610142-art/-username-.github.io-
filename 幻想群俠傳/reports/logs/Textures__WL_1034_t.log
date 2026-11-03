@@ -1,0 +1,75 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_1034_t.utx Ver: 128/29 Names: 100 Exports: 40 Imports: 16 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading TexPanner 2100_SPanner from package Textures/WL_1034_t.utx
+Loading Texture 0034_Glass_alpha_003b from package Textures/WL_1034_t.utx
+Loading TexScaler 2100_Cloud_s from package Textures/WL_1034_t.utx
+Loading TexPanner 0034_run_tp_001b from package Textures/WL_1034_t.utx
+Loading TexEnvMap 0034_xox_001b from package Textures/WL_1034_t.utx
+Loading Texture ice01AL_2alpha from package Textures/WL_1034_t.utx
+Loading Texture ice01AL_2 from package Textures/WL_1034_t.utx
+Loading Texture tree_ice_02ah from package Textures/WL_1034_t.utx
+Loading Texture 2100_sky_color_001b from package Textures/WL_1034_t.utx
+Loading Texture 0034_wnder_cool_002b from package Textures/WL_1034_t.utx
+Loading Shader 2100_SShader from package Textures/WL_1034_t.utx
+Loading Texture 1034_fish_01j from package Textures/WL_1034_t.utx
+Loading Texture icebrg02a_2 from package Textures/WL_1034_t.utx
+Loading Texture tree_ice_03h from package Textures/WL_1034_t.utx
+Loading TexRotator tree_ice_02ah_tr from package Textures/WL_1034_t.utx
+Loading Texture icebrg03a from package Textures/WL_1034_t.utx
+Loading Texture tree_ice_02h from package Textures/WL_1034_t.utx
+Loading Texture 1034_obj_001j from package Textures/WL_1034_t.utx
+Loading Texture 1034_obj_005j from package Textures/WL_1034_t.utx
+Loading Texture 1034_obj_003j from package Textures/WL_1034_t.utx
+Loading Texture snowmountain from package Textures/WL_1034_t.utx
+Loading Texture 1034_obj_006j from package Textures/WL_1034_t.utx
+Loading Texture 1034_obj_004j from package Textures/WL_1034_t.utx
+Loading Texture 1034_obj_007j from package Textures/WL_1034_t.utx
+Loading Shader 0034_glass_shader_001b from package Textures/WL_1034_t.utx
+Loading Texture 1034_Alpha_01j from package Textures/WL_1034_t.utx
+Loading Texture 032pierres[4]b from package Textures/WL_1034_t.utx
+Loading Texture ice01AL from package Textures/WL_1034_t.utx
+Loading Texture snow01AL_02 from package Textures/WL_1034_t.utx
+Loading Texture snowcliff04AL from package Textures/WL_1034_t.utx
+Loading Texture icebrg02a from package Textures/WL_1034_t.utx
+Loading Texture 0034_rocks_001b_02 from package Textures/WL_1034_t.utx
+Loading Texture icebrg02a_tga from package Textures/WL_1034_t.utx
+Loading Texture 1034_fish_02j from package Textures/WL_1034_t.utx
+Exporting objects ...
+Exporting TexPanner 2100_SPanner to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/TexPanner/2100_SPanner.mat
+Exporting Texture 2100_sky_color_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/Texture/2100_sky_color_001b.png
+Exporting Texture 0034_Glass_alpha_003b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/Texture/0034_Glass_alpha_003b.png
+Exporting TexScaler 2100_Cloud_s to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/TexScaler/2100_Cloud_s.mat
+Exporting TexPanner 0034_run_tp_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/TexPanner/0034_run_tp_001b.mat
+Exporting TexEnvMap 0034_xox_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/TexEnvMap/0034_xox_001b.mat
+Exporting Texture 0034_wnder_cool_002b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/Texture/0034_wnder_cool_002b.png
+Exporting Texture ice01AL_2alpha to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/Texture/ice01AL_2alpha.png
+Exporting Texture ice01AL_2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/Texture/ice01AL_2.png
+Exporting Texture tree_ice_02ah to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/Texture/tree_ice_02ah.png
+Exporting Shader 2100_SShader to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/Shader/2100_SShader.mat
+Exporting Texture 1034_fish_01j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/Texture/1034_fish_01j.png
+Exporting Texture icebrg02a_2 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/Texture/icebrg02a_2.png
+Exporting Texture tree_ice_03h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/Texture/tree_ice_03h.png
+Exporting TexRotator tree_ice_02ah_tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/TexRotator/tree_ice_02ah_tr.mat
+Exporting Texture icebrg03a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/Texture/icebrg03a.png
+Exporting Texture tree_ice_02h to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/Texture/tree_ice_02h.png
+Exporting Texture 1034_obj_001j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/Texture/1034_obj_001j.png
+Exporting Texture 1034_obj_005j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/Texture/1034_obj_005j.png
+Exporting Texture 1034_obj_003j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/Texture/1034_obj_003j.png
+Exporting Texture snowmountain to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/Texture/snowmountain.png
+Exporting Texture 1034_obj_006j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/Texture/1034_obj_006j.png
+Exporting Texture 1034_obj_004j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/Texture/1034_obj_004j.png
+Exporting Texture 1034_obj_007j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/Texture/1034_obj_007j.png
+Exporting Shader 0034_glass_shader_001b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/Shader/0034_glass_shader_001b.mat
+Exporting Texture 1034_Alpha_01j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/Texture/1034_Alpha_01j.png
+Exporting Texture 032pierres[4]b to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/Texture/032pierres[4]b.png
+Exporting Texture ice01AL to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/Texture/ice01AL.png
+Exporting Texture snow01AL_02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/Texture/snow01AL_02.png
+Exporting Texture snowcliff04AL to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/Texture/snowcliff04AL.png
+Exporting Texture icebrg02a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/Texture/icebrg02a.png
+Exporting Texture 0034_rocks_001b_02 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/Texture/0034_rocks_001b_02.png
+Exporting Texture icebrg02a_tga to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/Texture/icebrg02a_tga.png
+Exporting Texture 1034_fish_02j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_1034_t/Texture/1034_fish_02j.png
+Memory: allocated 459984 bytes in 89 blocks
+Exported 34/34 objects in 0.4 sec

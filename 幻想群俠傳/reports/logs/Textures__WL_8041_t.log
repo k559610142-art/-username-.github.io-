@@ -1,0 +1,29 @@
+Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
+Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
+Loading package: Textures/WL_8041_t.utx Ver: 128/29 Names: 66 Exports: 20 Imports: 12 Game: 200001
+Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
+Loading Texture 8041_deco_plant_004 from package Textures/WL_8041_t.utx
+Loading Texture 8048_tower02y from package Textures/WL_8041_t.utx
+Loading Texture 8048_tower01y from package Textures/WL_8041_t.utx
+Loading Texture 8041_skybrown_01a from package Textures/WL_8041_t.utx
+Loading Texture 8041_star_001a from package Textures/WL_8041_t.utx
+Loading Texture 8048_tower04y from package Textures/WL_8041_t.utx
+Loading Texture 8041_qin_02j from package Textures/WL_8041_t.utx
+Loading Texture 8041_qin_01j from package Textures/WL_8041_t.utx
+Loading Texture 8041_qin_03j from package Textures/WL_8041_t.utx
+Loading TexRotator 8041_deco_plant_004_tr from package Textures/WL_8041_t.utx
+Loading Texture 8048_tower03y from package Textures/WL_8041_t.utx
+Exporting objects ...
+Exporting Texture 8041_deco_plant_004 to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8041_t/Texture/8041_deco_plant_004.png
+Exporting Texture 8048_tower02y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8041_t/Texture/8048_tower02y.png
+Exporting Texture 8048_tower01y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8041_t/Texture/8048_tower01y.png
+Exporting Texture 8041_skybrown_01a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8041_t/Texture/8041_skybrown_01a.png
+Exporting Texture 8041_star_001a to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8041_t/Texture/8041_star_001a.png
+Exporting Texture 8048_tower04y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8041_t/Texture/8048_tower04y.png
+Exporting Texture 8041_qin_02j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8041_t/Texture/8041_qin_02j.png
+Exporting Texture 8041_qin_01j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8041_t/Texture/8041_qin_01j.png
+Exporting Texture 8041_qin_03j to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8041_t/Texture/8041_qin_03j.png
+Exporting TexRotator 8041_deco_plant_004_tr to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8041_t/TexRotator/8041_deco_plant_004_tr.mat
+Exporting Texture 8048_tower03y to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WL_8041_t/Texture/8048_tower03y.png
+Memory: allocated 340152 bytes in 60 blocks
+Exported 11/11 objects in 0.1 sec
