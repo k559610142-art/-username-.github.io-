@@ -4614,3 +4614,8 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 使用者給一張白底劍客立繪（原檔 `tools/sprite-src/npc-exchange-src.webp`），要做成通貨兌換 NPC。去背在瀏覽器 Canvas 做：從四邊 flood fill 近白色（RGB 最小值 > 228、色差 < 18），邊緣依亮度給半透明，裁掉空白後縮成高 336px → `images/npc/rework/npc-exchange.png`（195×336）。
 - `SCENE_TOWN_ROLES` 加 `['通貨兌換','exchange']`（圖走預設 `npc-<art>.png`），四村莊站位 (20,14)；`TOWN_NPCS` 加 role「通貨兌換」，名牌「兌換師・青嵐」，`act` → `openCurrencyExchange()`（craft.js：`craftMode='exchange'`＋`openTownSub('craft')`，直接開第 283 節的分頁）。
 - 使用者反映村莊 NPC 名牌重疊：公會接待員原站 (20,12) 名牌壓到鑑定台 (18,11)，改到 (22,11)（`SCENE_TOWN_NPC_SPOTS` 尾端與 `TOWN_NPCS` 都改）。四個村莊都截圖確認沒有重疊。
+
+## 285. 永夜之塔快速選樓層（2026-11-03，版本 `20261103j`；`combat.js` 的 `towerJumpHtml`／`towerJumpBtn`）
+
+- 使用者要求：塔內「下樓／上樓」旁加選單，直接選已到達的整數樓層（10F、20F…）。`towerJumpHtml` 下拉列 1F、所有 ≤ `player.towerMax` 的 10 倍數層，以及「最高 xxF」（最高層不是 10 倍數時）；目前樓層不在清單時第一項顯示目前樓層。
+- `towerJumpBtn(v)` 呼叫既有 `changeFloor(f - 目前樓層)`，所以解鎖規則不變（只能去 ≤ towerMax 的樓層、移動時離開戰鬥）。手機與 PC 的 `huntButtonsHtml` 都插在上樓鈕後面；`updateHuntLive` 的重畫簽章加 `player.towerMax`（解鎖新層選單會更新）。樣式 `.tower-jump`（index.html）。

@@ -76,6 +76,18 @@ function towerAutoUpHtml() {
     const on = player.settings.towerAutoUp === true;
     return `<span class="tower-auto-options"><button class="${on ? 'secondary' : ''}" onclick="setTowerAutoUp(false)">${on ? '' : '✔ '}停留本層</button><button class="${on ? '' : 'secondary'}" onclick="setTowerAutoUp(true)">${on ? '✔ ' : ''}滿額自動上樓</button></span>`;
 }
+// 快速選樓層（2026-11-03 第 285 節，使用者要求）：1F、已到達的 10、20…F、目前最高層，直接跳過去
+function towerJumpHtml() {
+    const max = player.towerMax, cur = player.loc.floor, list = [1];
+    for (let f = 10; f <= max; f += 10) list.push(f);
+    if (!list.includes(max)) list.push(max);
+    return `<select class="tower-jump" onchange="towerJumpBtn(this.value)" aria-label="快速前往樓層">${list.includes(cur) ? '' : `<option value="" selected>${cur}F</option>`}${list.map(f => `<option value="${f}" ${f === cur ? 'selected' : ''}>${f === max && f % 10 ? '最高 ' : ''}${f}F</option>`).join('')}</select>`;
+}
+function towerJumpBtn(v) {
+    const f = Math.floor(Number(v)), z = currentZone();
+    if (!z || z.type !== 'tower' || !f || f === player.loc.floor) return;
+    changeFloor(f - player.loc.floor); refreshUI();
+}
 function setTowerAutoUp(on) {
     player.settings.towerAutoUp = on === true;
     saveGame(); refreshUI();
