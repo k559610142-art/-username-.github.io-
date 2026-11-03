@@ -4619,3 +4619,9 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 
 - 使用者要求：塔內「下樓／上樓」旁加選單，直接選已到達的整數樓層（10F、20F…）。`towerJumpHtml` 下拉列 1F、所有 ≤ `player.towerMax` 的 10 倍數層，以及「最高 xxF」（最高層不是 10 倍數時）；目前樓層不在清單時第一項顯示目前樓層。
 - `towerJumpBtn(v)` 呼叫既有 `changeFloor(f - 目前樓層)`，所以解鎖規則不變（只能去 ≤ towerMax 的樓層、移動時離開戰鬥）。手機與 PC 的 `huntButtonsHtml` 都插在上樓鈕後面；`updateHuntLive` 的重畫簽章加 `player.towerMax`（解鎖新層選單會更新）。樣式 `.tower-jump`（index.html）。
+
+## 286. 鍛造 NPC 併入兌換師（2026-11-03，版本 `20261103k`；`scene-art.js`、`ui-scene.js`）
+
+- 使用者要求移除四個村莊的鍛造 NPC（葛蘭／托爾／布洛克／巴恩），鍛造功能統一由兌換師提供，並改名「鍛造.兌換師-青嵐」。
+- `SCENE_TOWN_ROLES` 拿掉 `['鍛造','forge']`、`SCENE_TOWN_NPC_SPOTS` 每村前 7 格拿掉原鍛造站位（第 4 格），role 順序與站位一一對應；兌換師 role 改「鍛造兌換」（名牌右側小字），`act` 改 `openTownSub('craft')`（沿用上次選的鍛造分頁，預設 🔨 裝備鍛造；五個分頁都在）。第 284 節的 `openCurrencyExchange` 移除。
+- `TOWN_NPCS` 移除鍛造條目；舊格子村莊背景（`SCENE_BGS` village／ash／darkgold／aden，已被 `SCENE_ART_BGS` 覆蓋不再使用）裡的鍛造站位也一起刪掉。`npc-forge.png` 仍給傭兵團長／傭兵公會使用，沒刪。

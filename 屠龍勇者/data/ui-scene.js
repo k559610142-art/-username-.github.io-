@@ -44,7 +44,7 @@ const SCENE_BGS = {
     village: {
         src: 'images/maps/village.webp', w: 30, h: 15, start: [13, 10],
         walk: [[8, 6, 19, 10], [10, 10, 20, 11], [16, 12, 21, 13], [12, 2, 14, 5], [19, 7, 22, 9], [5, 7, 7, 8], [21, 11, 23, 11]],
-        npcs: [{ role: '旅館', x: 5, y: 8 }, { role: '商店', x: 8, y: 10 }, { role: '倉庫', x: 12, y: 9 }, { role: '鍛造', x: 23, y: 11 }, { role: '回收', x: 16, y: 7 }],
+        npcs: [{ role: '旅館', x: 5, y: 8 }, { role: '商店', x: 8, y: 10 }, { role: '倉庫', x: 12, y: 9 }, { role: '回收', x: 16, y: 7 }],
         block: [[12, 7, 14, 8], [8, 8, 10, 9], [15, 6, 17, 6], [17, 7, 18, 7], [17, 9, 18, 9]],
     },
     // 永夜之塔（原傲慢之塔）通用地圖：使用者提供的塔內大廳（2000×989 tower.jpg，中間魔法陣廣場、四條斜走道通往四角螺旋梯），鋪成 40×20 格（2026-10-18，第 52 節）
@@ -66,7 +66,7 @@ const SCENE_BGS = {
         src: 'images/maps/ash.webp', w: 30, h: 17, start: [16, 12],
         walk: [[13, 3, 17, 6], [11, 6, 19, 9], [8, 9, 24, 15]],
         block: [],
-        npcs: [{ role: '旅館', x: 11, y: 8 }, { role: '商店', x: 9, y: 11 }, { role: '倉庫', x: 14, y: 7 }, { role: '鍛造', x: 19, y: 8 }, { role: '回收', x: 22, y: 11 }],
+        npcs: [{ role: '旅館', x: 11, y: 8 }, { role: '商店', x: 9, y: 11 }, { role: '倉庫', x: 14, y: 7 }, { role: '回收', x: 22, y: 11 }],
     },
     // 暗金城：使用者提供的雨夜哥德城市廣場（2000×1116 → 1755×979 darkgold.webp），30×17 格；圖上已畫好人物，
     // npcs 的 painted 表示直接用圖上的人（不另外畫圖示），h＝名牌在腳底格上方幾格（對到頭頂）
@@ -80,7 +80,6 @@ const SCENE_BGS = {
             { role: '傳送師', x: 8, y: 15, painted: true, h: 2.8 },  // 兜帽劍士
             { role: '旅館', x: 20, y: 15, painted: true, h: 2.6 },   // 右邊修士
             { role: '回收', x: 24, y: 15, painted: true, h: 2.8 },   // 右邊兜帽女子
-            { role: '鍛造', x: 27, y: 15, painted: true, h: 2.7 },   // 右下打鐵匠
         ],
     },
     // 永夜王都：使用者提供的長條全景雨夜王都（2000×553 aden.webp），鋪成 61×17 格＝比畫面寬的「大型地圖」，PC、手機都會左右捲動；
@@ -95,7 +94,6 @@ const SCENE_BGS = {
             { role: '旅館', x: 16, y: 14, painted: true, h: 2.7 },   // 大街中間的修士
             { role: '傳送師', x: 44, y: 14, painted: true, h: 3.2 }, // 雕像旁的兜帽術士
             { role: '回收', x: 49, y: 14, painted: true, h: 2.8 },   // 鐵匠區的工匠
-            { role: '鍛造', x: 56, y: 15, painted: true, h: 4.2 },   // 右下打鐵匠
         ],
     },
     // 大地圖（2026-10-18 第 1 期，ARCHITECTURE.md 第 45、47、48 節）：使用者用 AI 生成的場景＋森林／雪地／沙漠填充，tools/bigmap/build-map.ps1 拼成 6016×4768＝188×149 格（1 格 32px，原圖 1:1；第 48、49、57、67 節陸續加大）
@@ -202,16 +200,14 @@ const TOWN_NPCS = [
       names: { talking: '莫莉', gludio: '蘿絲', giran: '貝拉', aden: '艾瑪' } },
     { role: '倉庫',  icon: '👷', x: 10, y: 13, act: () => openTownSub('storage'), prop: '📦',
       names: { talking: '杜克', gludio: '柏恩', giran: '歐文', aden: '葛雷' } },
-    { role: '鍛造',  icon: '🧑‍🏭', x: 17, y: 15, act: () => openTownSub('craft'), prop: '⚒️',
-      names: { talking: '葛蘭', gludio: '托爾', giran: '布洛克', aden: '巴恩' } },
     { role: '傳送師', icon: '🧙‍♀️', x: 14, y: 16, act: () => openWorldAtlas(),
       names: { talking: '露娜', gludio: '希雅', giran: '伊芙', aden: '星語者' } },
     { role: '娃娃商人', icon: '🧚', x: 20, y: 14, act: () => openDollShop(),
       names: { talking: '露米', gludio: '露米', giran: '露米', aden: '露米' } },
     { role: '二轉導師', icon: '🌟', x: 8, y: 14, act: () => openTownSub('advance'),   // 名字、立繪依玩家職業（advance.js advNpcPatch）
       names: { talking: '二轉導師', gludio: '二轉導師', giran: '二轉導師', aden: '二轉導師' } },
-    { role: '通貨兌換', icon: '⚔️', x: 20, y: 14, act: () => openCurrencyExchange(),   // 第 284 節，圖 images/npc/rework/npc-exchange.png
-      names: { talking: '兌換師・青嵐', gludio: '兌換師・青嵐', giran: '兌換師・青嵐', aden: '兌換師・青嵐' } },
+    { role: '鍛造兌換', icon: '⚔️', x: 20, y: 14, act: () => openTownSub('craft'),   // 第 284、286 節，圖 images/npc/rework/npc-exchange.png；鍛造 NPC 已併入
+      names: { talking: '鍛造.兌換師-青嵐', gludio: '鍛造.兌換師-青嵐', giran: '鍛造.兌換師-青嵐', aden: '鍛造.兌換師-青嵐' } },
     { role: '任務',  icon: '🧓', x: 11, y: 15, act: () => switchTab('quest'),
       names: { talking: '賽恩長老', gludio: '亞瑟隊長', giran: '諾亞祭司', aden: '騎士團長' } },
 ];
