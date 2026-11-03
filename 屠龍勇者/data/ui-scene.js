@@ -1347,6 +1347,7 @@ function sceneDraw(ctx, W, H) {
     if (player.loc.type === 'town') for (const n of townNpcList(scene.bg)) actors.push({ y: n.y, draw: () => {
         const sx = n.x * TILE - camX + TILE / 2, sy = n.y * TILE - camY + TILE / 2;
         if (n.painted) { labels.push(() => drawNpcPlate(ctx, n.names[player.loc.id] || n.role, n.role, sx, sy - n.h * TILE, camX, camY, n)); return; }   // 圖上已畫好的人：只加名牌
+        if (n.draw) { n.draw(ctx, sx, sy); labels.push(() => drawNpcPlate(ctx, n.names[player.loc.id] || n.role, n.role, sx, sy - 54, camX, camY, n)); return; }   // 自己畫的擺設（告示牌，notice-board.js）
         if (n.img) {
             const img = spriteImage(n.img), dh = n.h * TILE;
             ctx.fillStyle = 'rgba(0,0,0,0.45)'; ctx.beginPath(); ctx.ellipse(sx, sy + 12, 12, 4, 0, 0, Math.PI * 2); ctx.fill();

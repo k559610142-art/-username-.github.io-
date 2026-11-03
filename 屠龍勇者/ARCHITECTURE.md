@@ -57,6 +57,7 @@
 | `tools/BACKEND-LOOT-PLAN.md`、`tools/SERVER-LOOT.md` | 後端掉寶盤點與已確認的線上範圍、部署與限制說明；已上線並啟用（第91節） |
 | `data/loot.js`、`tools/server-loot.sql`、`tools/loot-catalog.json`／`.sql`、`tools/server-loot-install.sql`、`tools/export-loot-catalog.js` | 後端遇怪／掉寶RPC、規則版本快照、重試佇列與存檔外層收據；合併安裝檔預設不啟用（第91節） |
 | `data/boss-timer.js` | 「⏱️ 首領計時」分頁：野外首領／龍穴／團隊副本／守關首領倒數（第 277 節） |
+| `data/notice-board.js`、`tools/notice-board.sql` | 村莊遊戲告示牌：贊助人／目前遊戲經費，管理頁編輯（第 279 節） |
 | `tools/test-server-loot-db.js`、`tools/test-server-loot-integration.js`、`tools/test-server-loot-client.js`、`tools/server-loot-preview.html` | 隔離PostgreSQL與既有SQL／簽章相容測試、真實客戶端記憶體存檔與假RPC、瀏覽器重領／斷線驗證（第91節） |
 | `images/sprites/morph/moon-ranger-v1/`、`tools/sprite-src/morph/moon-ranger-v1/` | 月光精靈巡林者透明素材／原稿／提示詞；m02 專屬圖，g 版新增 12 格 attack-v2（第 18.5、88 節） |
 | `images/sprites/morph/hellfire-archer-v1/`、`tools/sprite-src/morph/hellfire-archer-v1/` | 冥火骷髏神射 36 格透明人物／3 獨立箭矢、原圖／補畫原稿／提示詞／整理腳本；m03 專屬圖，20261022j 接入（第 18.6、88 節） |
@@ -4572,3 +4573,11 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 
 - 使用者指定位置：小地圖右下方、地名右下（圓心 `cx + R - 2, cy + R + 38`，半徑 14，畫在畫布上）。點一下開「⏱️ 首領計時」（第 277 節），再點關閉；開著時按鈕亮金色。
 - 點擊在 `sceneMiniClick` 先判斷 `scene.bossBtn`，才判斷小地圖本身（開世界地圖）。所有有小地圖的畫面（大地圖、村莊、永夜之塔）都有。
+
+## 279. 村莊遊戲告示牌（2026-11-03，版本 `20261103d`；`data/notice-board.js`、SQL `tools/notice-board.sql`、`gm.html`「📋 告示牌」）
+
+- 使用者要求：村莊放告示牌，內容兩段「贊助人」「目前遊戲經費」，由管理頁自己編輯。
+- 伺服器：`dragon_notice` 只有一筆（id=1，sponsors ≤2000 字、funds ≤500 字），表本身不開放；`notice_get()` 給 anon＋authenticated 讀，`gm_notice_set(p_sponsors, p_funds)` 限 `dragon_is_admin()`。**要先在 Supabase 執行 tools/notice-board.sql**，沒執行時遊戲顯示「暫時讀不到告示內容」、管理頁顯示提示。測試 `tools/test-notice-board.js`（PGlite）。
+- 遊戲：notice-board.js 在 boss-timer.js 後載入，往 `TOWN_NPCS` 加 role「告示牌」（名牌「遊戲告示牌」），並往四個村莊背景（village／ash／darkgold／aden，scene-art.js 的 `SCENE_ART_BGS`）的 npcs 加格子 (12, 9)（四張圖都是廣場空地）。告示牌用畫布畫（`drawNoticeBoard`：兩根木柱＋板子＋兩張貼紙），ui-scene.js 村莊 NPC 迴圈新增 `n.draw` 分支（自己畫的擺設，名牌在上方 54px）。只有點名牌才開（同其他 NPC）。
+- 點開：`openNoticeBoard` 用 `marketRpc('notice_get')` 讀，5 分鐘內再開沿用上次內容（`NOTICE_CACHE_MS`）；文字跳脫後換行變 `<br>`，用 `openDialog` 顯示。
+- 管理頁：分頁「📋 告示牌」兩個文字框＋「💾 儲存告示牌」（`gmNoticeSave`），存好在按鈕旁顯示結果（不用原生 alert）。

@@ -68,6 +68,7 @@
             <button data-tab="chat" onclick="gmTab('chat')">💬 聊天</button>
             <button data-tab="bans" onclick="gmTab('bans')">⛔ 封鎖名單</button>
             <button data-tab="trusted" onclick="gmTab('trusted')">✅ 信任名單</button>
+            <button data-tab="notice" onclick="gmTab('notice')">📋 告示牌</button>
             <button class="secondary" onclick="gmLoad()">🔄 重新整理</button>
             <span id="online" class="muted"></span>
         </div>
@@ -82,7 +83,7 @@
 <script>
 const KIND_NAMES = { exp_rate: '經驗暴增', gold_rate: '金幣暴增', stat: '能力值超過上限', elixir: '萬能藥超量', enchant: '強化超過 +15', level: '等級異常', gold_negative: '金幣為負', clock: '裝置時間異常', parse: '存檔格式異常', wb_dmg: '世界首領傷害超過上限', market_dupe: '交易所疑似複製道具', vault_dupe: '共用倉庫疑似複製道具', tamper: '遊戲偵測到改檔', market_big: '交易所大額交易（只提醒）' };
 let sb = null, me = null, tab = 'flags', showResolved = false, playerQuery = '';
-let flags = [], profiles = [], saves = [], bans = [], chats = [], mutes = [], dias = {}, trusted = [], online = null;
+let flags = [], profiles = [], saves = [], bans = [], chats = [], mutes = [], dias = {}, trusted = [], online = null, notice = null;
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -147,6 +148,9 @@ async function gmLoad() {
             profiles = await q(sb.from('dragon_profiles').select('*').order('last_seen', { ascending: false }).limit(500));
             saves = await q(sb.from('dragon_saves').select('user_id, slot, name, cls, lv, updated_at').order('updated_at', { ascending: false }).limit(1000));
             dias = {}; for (const d of await q(sb.rpc('dia_admin_list'))) dias[d.user_id] = d.diamonds;
+        } else if (tab === 'notice') {
+            // 村莊告示牌（tools/notice-board.sql，第 279 節）；還沒執行那份 SQL 時顯示提示
+            try { notice = await q(sb.rpc('notice_get')); } catch (e) { notice = null; }
         }
         gmRender();
     } catch (e) { $('view').innerHTML = `<p class="bad">讀取失敗：${esc(e.message)}</p>`; }
@@ -195,6 +199,12 @@ function gmRender() {
         $('view').innerHTML = `<p class="muted" style="margin-top:0">最近 200 則（世界＋所有隊伍；訊息 3 天後自動刪除）。禁言期間不能發言，但可以正常遊玩。</p>
             ${rows ? `<div class="table-wrap"><table><tr><th>時間</th><th>頻道</th><th>發言者</th><th>內容</th><th></th></tr>${rows}</table></div>` : '<p class="muted">還沒有訊息。</p>'}
             <h3>禁言中</h3>${ml ? `<div class="table-wrap"><table><tr><th>帳號</th><th>到期</th><th>原因</th><th></th></tr>${ml}</table></div>` : '<p class="muted">沒有人被禁言。</p>'}`;
+    } else if (tab === 'notice') {
+        $('view').innerHTML = notice ? `<p class="muted" style="margin-top:0">玩家在村莊點「告示牌」會看到這兩段，換行會照樣顯示。最後更新：${t(notice.updated_at)}</p>
+            <label style="display:block;margin-bottom:10px"><b>🤝 贊助人</b><br><textarea id="nb-sponsors" rows="6" maxlength="2000" style="width:100%;box-sizing:border-box">${esc(notice.sponsors)}</textarea></label>
+            <label style="display:block;margin-bottom:10px"><b>💰 目前遊戲經費</b><br><textarea id="nb-funds" rows="3" maxlength="500" style="width:100%;box-sizing:border-box">${esc(notice.funds)}</textarea></label>
+            <div class="row"><button onclick="gmNoticeSave()">💾 儲存告示牌</button><span id="nb-msg" class="muted"></span></div>`
+            : '<p class="bad">請先在 Supabase 執行 tools/notice-board.sql，再按「重新整理」。</p>';
     } else if (tab === 'trusted') {
         const rows = trusted.map(x => `<tr><td>${t(x.at)}</td><td>${esc(x.email)}</td><td>${esc(x.reason)}</td><td>${esc(x.by_email)}</td><td><button class="mini secondary" onclick="gmUntrust('${x.user_id}')">取消信任</button></td></tr>`).join('');
         $('view').innerHTML = `<p class="muted" style="margin-top:0">信任名單上的帳號不再記可疑紀錄（存檔歷程照記）、也不會被擋在交易所和共用倉庫外。需要先在 Supabase 執行 tools/flag-trust.sql。</p>`
@@ -203,6 +213,14 @@ function gmRender() {
         const rows = bans.map(b => `<tr><td>${t(b.at)}</td><td>${esc(b.email)}</td><td>${esc(b.reason)}</td><td>${esc(b.by_email)}</td><td><button class="mini secondary" onclick="gmUnban('${b.user_id}')">解除封鎖</button></td></tr>`).join('');
         $('view').innerHTML = rows ? `<div class="table-wrap"><table><tr><th>時間</th><th>帳號</th><th>原因</th><th>處理人</th><th></th></tr>${rows}</table></div>` : '<p class="muted">沒有被封鎖的帳號。</p>';
     }
+}
+
+async function gmNoticeSave() {
+    $('nb-msg').textContent = '儲存中…';
+    try {
+        notice = await q(sb.rpc('gm_notice_set', { p_sponsors: $('nb-sponsors').value, p_funds: $('nb-funds').value }));
+        gmRender(); $('nb-msg').innerHTML = '<span class="good">✅ 已更新，玩家重新打開告示牌就會看到</span>';
+    } catch (e) { $('nb-msg').innerHTML = `<span class="bad">儲存失敗：${esc(e.message)}</span>`; }
 }
 
 async function gmHistory(uid, slot, email) {
