@@ -191,7 +191,7 @@ const TOWN_BG = { gludio: 'ash', giran: 'darkgold', aden: 'aden' };
 
 // 村莊 NPC：站在廣場上，頭上名牌顯示「名字＋功能」，點 NPC 或名牌打開設施；names 依村莊 id
 const TOWN_NPCS = [
-    { role: '傭兵公會', icon: '🏛️', x: 20, y: 12, act: () => openGuild(), names: { talking: '公會接待員', gludio: '公會接待員', giran: '公會接待員', aden: '公會接待員' } },
+    { role: '傭兵公會', icon: '🏛️', x: 22, y: 11, act: () => openGuild(), names: { talking: '公會接待員', gludio: '公會接待員', giran: '公會接待員', aden: '公會接待員' } },
     { role: '傭兵團長', icon: '⚑', x: 12, y: 13, act: () => openTownSub('mercenary'), names: { talking: '傭兵團長', gludio: '傭兵團長', giran: '傭兵團長', aden: '傭兵團長' } },
     { role: '鑑定台', icon: '🔍', img: 'images/buildings/identify-station-v1.png', h: 2.4, x: 18, y: 11, act: () => openTownSub('identify'), names: { talking: '鑑定台', gludio: '鑑定台', giran: '鑑定台', aden: '鑑定台' } },
     { role: '商店',  icon: '👩‍💼', x: 12, y: 12, act: () => openTownSub('shop'),
@@ -210,6 +210,8 @@ const TOWN_NPCS = [
       names: { talking: '露米', gludio: '露米', giran: '露米', aden: '露米' } },
     { role: '二轉導師', icon: '🌟', x: 8, y: 14, act: () => openTownSub('advance'),   // 名字、立繪依玩家職業（advance.js advNpcPatch）
       names: { talking: '二轉導師', gludio: '二轉導師', giran: '二轉導師', aden: '二轉導師' } },
+    { role: '通貨兌換', icon: '⚔️', x: 20, y: 14, act: () => openCurrencyExchange(),   // 第 284 節，圖 images/npc/rework/npc-exchange.png
+      names: { talking: '兌換師・青嵐', gludio: '兌換師・青嵐', giran: '兌換師・青嵐', aden: '兌換師・青嵐' } },
     { role: '任務',  icon: '🧓', x: 11, y: 15, act: () => switchTab('quest'),
       names: { talking: '賽恩長老', gludio: '亞瑟隊長', giran: '諾亞祭司', aden: '騎士團長' } },
 ];

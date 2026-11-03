@@ -4608,3 +4608,9 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 使用者反映部分通貨過剩，選方案 A（升階合成）＋B（反向拆解）。鍛造 NPC 新分頁「♻️ 通貨兌換」（`craftMode = 'exchange'` → `renderCurrencyExchange`）。
 - `CURRENCY_LADDER`（依第 23 節掉落權重再加約 1.5～2 倍）：點化石 2→重鑄石 1、重鑄石 3→淬鍊石 1、淬鍊石 2→晉升石 1、晉升石 2→混沌石 1、混沌石 4→剝離石 1、剝離石 3→命運石 1、命運石 6→神諭石 1。拆解一律 1 顆高階 → 1 顆低一階，所以拆了再合一定虧。**命運的覺醒石不合成也不拆**。
 - `curExchange(i, up)`：數量框（`qtyInputHtml`，id `cx-up-i`／`cx-dn-i`）是換幾次，預設全部；`gameConfirm` 顯示用掉／得到，確認時再檢查同角色、仍在村莊鍛造兌換頁、數量足夠，才 `consumeItem`＋`addItem`、寫紀錄、`saveGame`。純本機背包操作，不用 SQL、存檔 schema 不變；通貨不佔負重。
+
+## 284. 通貨兌換師 NPC＋公會接待員移位（2026-11-03，版本 `20261103i`；`scene-art.js`、`ui-scene.js`、`craft.js`）
+
+- 使用者給一張白底劍客立繪（原檔 `tools/sprite-src/npc-exchange-src.webp`），要做成通貨兌換 NPC。去背在瀏覽器 Canvas 做：從四邊 flood fill 近白色（RGB 最小值 > 228、色差 < 18），邊緣依亮度給半透明，裁掉空白後縮成高 336px → `images/npc/rework/npc-exchange.png`（195×336）。
+- `SCENE_TOWN_ROLES` 加 `['通貨兌換','exchange']`（圖走預設 `npc-<art>.png`），四村莊站位 (20,14)；`TOWN_NPCS` 加 role「通貨兌換」，名牌「兌換師・青嵐」，`act` → `openCurrencyExchange()`（craft.js：`craftMode='exchange'`＋`openTownSub('craft')`，直接開第 283 節的分頁）。
+- 使用者反映村莊 NPC 名牌重疊：公會接待員原站 (20,12) 名牌壓到鑑定台 (18,11)，改到 (22,11)（`SCENE_TOWN_NPC_SPOTS` 尾端與 `TOWN_NPCS` 都改）。四個村莊都截圖確認沒有重疊。

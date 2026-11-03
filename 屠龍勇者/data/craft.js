@@ -133,6 +133,7 @@ function craftUseBtn(cid, uid) {
 // ───────── 通貨合成／拆解（鍛造 NPC「♻️ 通貨兌換」，2026-11-03 第 283 節）─────────
 // 合成：低階 cost 顆 → 高一階 1 顆；拆解：高階 1 顆 → 低一階 1 顆（拆了再合一定虧，不能刷）。覺醒石不參與。
 const CURRENCY_LADDER = [['curAug', 'curAlt', 2], ['curAlt', 'curTemper', 3], ['curTemper', 'curRegal', 2], ['curRegal', 'curChaos', 2], ['curChaos', 'curAnnul', 4], ['curAnnul', 'curChance', 3], ['curChance', 'curOracle', 6]];
+function openCurrencyExchange() { craftMode = 'exchange'; openTownSub('craft'); }   // 兌換師 NPC（第 284 節）
 function curExchangeHere() { return player && inTown() && tabOpen('town') && townSub === 'craft' && craftMode === 'exchange'; }
 function curExchangeMax(i, up) {
     const step = CURRENCY_LADDER[i];
