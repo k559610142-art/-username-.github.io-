@@ -8,6 +8,10 @@ const sandbox={console,assert,Image:function(){},ResizeObserver:class{observe(){
 vm.runInNewContext(script+`
 let total=0;
 for(const[name,x,y]of destinations){reset();go(x,y);const end=nearest(x,y);assert(end,name);while(route.length){step();total++;for(const c of [hero,...team]){assert(walk(c.x,c.y));assert(Math.abs(c.x-c.px)<=1&&Math.abs(c.y-c.py)<=1);for(const f of [0,.5,1])for(let a=0;a<12;a++){const angle=a*Math.PI/6;assert(surface((c.px+(c.x-c.px)*f)*CELL+CELL/2+Math.cos(angle)*(FOOT_RX+2),(c.py+(c.y-c.py)*f)*CELL+CELL/2+Math.sin(angle)*(FOOT_RY+2)),name+'角色碰到阻擋');}}}assert.equal(hero.x,end[0]);assert.equal(hero.y,end[1]);}
+for(const [name,x,y] of [['遺跡西柱',183,143],['遺跡南牆',215,239],['遺跡東牆',393,188],['營地帳篷',1260,249],['營地工作桌',1446,256],['東側木箱',1514,240],['營地圍欄',1324,326]]){assert(!surface(x,y),name+'須阻擋');reset();go(x,y);assert.equal(route.length,0,name+'不能吸附到另一側');}
+for(const [x,y]of [[-2,520],[1536,350],[650,-2],[650,1024]])assert(!standAt(x,y),'圖外不可站立');
+for(const [x,y]of [[1110,391],[1150,493]])assert(!surface(x,y),'橋外河水不可走');
+console.log('PASS：七處景物實體阻擋、點障礙不吸附、橋外河水與四邊越界拒絕');
 assert.equal(nearest(900,200),null,'河流不可走');assert.equal(nearest(1360,270),null,'營火不可貼上');
 reset();go(900,200);assert.equal(route.length,0);assert(message.includes('不能前往'));
 document.getElementById('travel').onclick();assert.equal(navigations.length,1);assert.equal(navigations[0],'harbor-walk-preview.html?entry=forest');

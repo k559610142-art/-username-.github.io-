@@ -161,3 +161,21 @@ begin
     end loop;
     if done < 2 then raise exception '缺少 loot_finish／loot_finish_batch，請先安裝 server-loot-install、loot-batch'; end if;
 end $minor$;
+
+-- ───── 傭兵符石只有首領掉：特殊、基本各自 5%（2026-11-03，第 296 節）─────
+-- 黃色稀有異界地圖的首領、團隊副本勝利（同原本特殊符石的範圍）；小怪不掉。重跑 mercenary-rune-drops.sql 後要再跑這份。
+create or replace function public.loot_merc_rune(c jsonb, x jsonb) returns jsonb
+language plpgsql volatile set search_path = '' as $$
+declare cfg jsonb := c->'mercRunes'; raid boolean := coalesce((x->>'mercRaid')::boolean, false); out jsonb := '[]'::jsonb; kind text;
+begin
+    if cfg is null then return out; end if;
+    if not raid and (coalesce(x->'map'->>'q', '') <> 'rare' or coalesce((x->'map'->>'treasure')::boolean, false)) then return out; end if;
+    if not raid and not coalesce((x->'monster'->>'boss')::boolean, false) then return out; end if;
+    foreach kind in array array['special', 'basic'] loop
+        if random() < (cfg->>'bossP')::numeric then
+            out := out || jsonb_build_array(public.loot_item(c, public.loot_pick(cfg->kind)#>>'{}', 1, null, coalesce((x->'monster'->>'lv')::int, 1)));
+        end if;
+    end loop;
+    return out;
+end $$;
+revoke all on function public.loot_merc_rune(jsonb, jsonb) from public, anon, authenticated;

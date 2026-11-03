@@ -9,6 +9,7 @@ let total=0;
 for(const[name,x,y]of destinations){reset();go(x,y);const target=nearest(x,y);assert(target,name);assert(route.length||name==='中央廣場');while(route.length){step();total++;assert(walk(hero.x,hero.y));for(const c of [hero,...team])for(const f of [0,.5,1])for(let a=0;a<16;a++){const angle=a*Math.PI/8,px=(c.px+(c.x-c.px)*f)*CELL+CELL/2,py=(c.py+(c.y-c.py)*f)*CELL+CELL/2;assert(surface(px+Math.cos(angle)*(FOOT_RX+2),py+Math.sin(angle)*(FOOT_RY+2)),name+'角色體積貼牆或穿過邊界');}for(const c of team){assert(walk(c.x,c.y),name+'伙伴超出可走範圍');assert(Math.abs(c.x-c.px)<=1&&Math.abs(c.y-c.py)<=1,name+'伙伴跳格');}}assert.equal(hero.x,target[0]);assert.equal(hero.y,target[1]);}
 for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){reset();let hit=false;for(let i=0;i<500;i++){const before=[hero.x,hero.y];manual(dx,dy);step();assert(standAt(hero.x*CELL+CELL/2,hero.y*CELL+CELL/2));if(before[0]===hero.x&&before[1]===hero.y){hit=true;break}}assert(hit,'連續鍵盤移動應被邊界擋住');}
 assert.equal(nearest(40,900),null,'海面不可進入');assert.equal(nearest(380,190),null,'公會建築不可穿入');
+assert(!surface(1240,704),'舊城門路線的右門柱須阻擋');assert(walk(...cell(1188,725)),'門洞中央可站立');for(const [x,y]of [[-2,500],[1536,872],[800,-2],[800,1024]])assert(!standAt(x,y),'港村圖外不可站立');
 assert.equal(nearest(1100,650),null,'城牆不可跨越');
 reset();go(696,792);document.getElementById('stop').onclick();assert.equal(route.length,0);
 let q=[[200,124]],visited=new Set(['200,124']);for(let i=0;i<q.length;i++)for(const p of neighbors(...q[i]))if(!visited.has(p.join(','))){visited.add(p.join(','));q.push(p)}

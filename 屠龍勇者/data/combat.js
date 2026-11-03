@@ -906,8 +906,7 @@ function rollDrops(mon, z, raid = false) {
         }
         return;
     }
-    const rune = rollMercRuneDrop(mon, raid);
-    if (rune) give(rune);
+    for (const kind of ['special', 'basic']) { const rune = rollMercRuneDrop(mon, raid, kind); if (rune) give(rune); }   // 首領特殊、基本各 5%（第 296 節）
     for (const dr of COMMON_DROPS) {
         if ((dr.minLv && mon.lv < dr.minLv) || (dr.maxLv && mon.lv > dr.maxLv)) continue;
         if (chance(dr.p * qm)) give(dr.id, dr.n);

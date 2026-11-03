@@ -99,6 +99,12 @@ const { PGlite } = require(process.env.LOOT_TEST_RUNTIME || path.join(require('o
     const flt = async boss => (await db.query('select public.loot_minor_filter($1::jsonb,$2::jsonb) v', [JSON.stringify(items), JSON.stringify({ monster: { boss } })])).rows[0].v.map(i => i.id);
     assert.deepEqual(await flt(false), ['talentStone', 'potion'], '小怪過濾');
     assert.equal((await flt(true)).length, 5, '首領不過濾');
+    // 符石：只有首領，特殊、基本各 5%（第 296 節）
+    const cat = (await db.query('select data from public.dragon_loot_catalog where id=1')).rows[0].data;
+    const runes = async (boss, n) => (await db.query('select public.loot_merc_rune($1::jsonb,$2::jsonb) v from generate_series(1,$3)', [JSON.stringify(cat), JSON.stringify({ monster: { boss, lv: 50 }, map: { q: 'rare', t: 5 } }), n])).rows.flatMap(r => r.v);
+    assert.equal((await runes(false, 5000)).length, 0, '小怪不掉符石');
+    const br = await runes(true, 6000), bb = br.filter(i => cat.mercRunes.basic.includes(i.id)).length, bs = br.filter(i => cat.mercRunes.special.includes(i.id)).length;
+    assert(bb > 200 && bb < 420 && bs > 200 && bs < 420, '首領基本、特殊各約 5% ' + bb + '/' + bs);
     await db.exec('update public.dragon_loot_config set enabled=false');
     await db.exec('set role authenticated');
     await assert.rejects(db.query("select public.dia_drop('mob')"), /mob diamonds removed/);

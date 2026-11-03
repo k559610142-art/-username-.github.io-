@@ -1,0 +1,126 @@
+{
+  "created": "2026-11-03",
+  "purpose": "三大地區原創場景；隔離地圖預覽，非正式任務或發獎",
+  "assets": [
+    {
+      "id": "mine",
+      "file": "mine-district-art-v1.png",
+      "tool": "built-in imagegen",
+      "prompt": "Use case: stylized-concept. Asset type: original playable RPG environment background, 1536x1024 landscape. Create a richly detailed hand-painted isometric dark fantasy mining outpost at the edge of a temperate coastal island. High elevated three-quarter camera matching a classic detailed 2D RPG, realistic stone texture, warm natural daylight, green moss. No people, monsters, UI, text, labels, logos or borders. Crucial gameplay layout: a continuous broad clear traversable sandy stone floor stretching from bottom center entrance through a large central clearing to a mine entrance centered on upper middle rock face. The mine is a dark tunnel with wooden beams; keep the visible ground outside it open. A second broad path exits right center. Place props only on outer edges: mine carts and timber stacks at left edge, scaffold and ore bins at upper right, large cliff and pine trees around perimeter. Keep central ground spacious, natural irregular terrain, no narrow maze, no overhead roofs over central floor, no water crossing the paths. Distinct natural landmarks and believable scale, detailed premium game background, NOT a map diagram or miniature island.",
+      "generated_source": "C:\\Users\\User\\.codex\\generated_images\\01a1a1a4-587b-7723-abf6-3804762227f4\\exec-8243a4ec-c8ab-452f-af55-b73cdc115aec.png",
+      "sha256": "7f21dc37ac7559871be74e268a153e5d6eda974c0527ea1ae4c55315231e9fd7"
+    },
+    {
+      "id": "temple-lake",
+      "file": "temple-lake-district-art-v1.png",
+      "tool": "built-in imagegen",
+      "prompt": "Original premium hand-painted isometric 2D dark fantasy RPG environment, landscape 1536x1024. Elevated three-quarter view, realistic detailed stone textures and moss, warm natural daylight like a temperate medieval coastal island. A broad open rocky lakeshore plateau. In upper left, an ancient ruined temple with columns and a small open courtyard. In upper right, a blue mountain lake with rocky banks, a waterfall far beyond, clearly separated from paths. Clear broad continuous sandy ground from lower left entrance diagonally through center to right center mountain pass exit. Central meadow and temple forecourt are spacious usable flat ground; no props in middle of paths. Outer edges contain boulders, ruined low wall and trees. No characters, monsters, text, UI, labels, logos or borders. Not a miniature map, no grid, no diagram. Both entrance and exit visibly touch image edges, floor level perspective consistent.",
+      "generated_source": "C:\\Users\\User\\.codex\\generated_images\\01a1a1a4-587b-7723-abf6-3804762227f4\\exec-ca1fc613-5113-4ff6-b33f-580f6a4c0f6c.png",
+      "sha256": "71f67229b0fff96754e138e60467b011e72662911212122e787c10355bb0a78e"
+    },
+    {
+      "id": "fortress",
+      "file": "fortress-district-art-v1.png",
+      "tool": "built-in imagegen",
+      "prompt": "Original premium hand-painted isometric 2D dark fantasy RPG environment, landscape 1536x1024. Elevated three-quarter view, realistic detailed medieval stone and moss textures, natural daylight. A ruined coastal fortress district: upper right a stone watchtower, upper left an ancient crypt entrance in cliff rock, along upper middle a broken fortress rampart and gate. All three front approaches connect onto a very broad flat central stone courtyard and dirt clearing. Keep spacious walkable ground from lower left border entrance through center to right center border exit. Add an ocean cliff only far right perimeter, boulders and shrubs only at outer edges, small low wall at lower side of courtyard. Structures stay at top and edges with no roofs covering central ground. No characters, enemies, text, labels, UI, borders, logos or diagrams; believable near-scale environment not a zoomed-out island.",
+      "generated_source": "C:\\Users\\User\\.codex\\generated_images\\01a1a1a4-587b-7723-abf6-3804762227f4\\exec-a9c5efef-51e9-47f7-8d94-f50f8b45adf4.png",
+      "sha256": "9247dff6fcb08c1e5be11a5d6ba806f69ce2ccdd4553019e345e91a35104d632"
+    },
+    {
+      "id": "ship-coast",
+      "file": "ship-coast-district-art-v1.png",
+      "tool": "built-in imagegen",
+      "prompt": "Original premium hand-painted isometric 2D dark fantasy RPG environment, landscape 1536x1024. High three-quarter camera, rich painterly realistic detail consistent with a medieval coastal island game. A storm-worn but daylight beach: tall old stone lighthouse at upper left, broken wooden shipwreck and a simple pier at upper right along turquoise ocean. Broad open sand and stone clearing across lower two thirds, connecting a lower left land-path entrance to a right-middle wooden boat landing. Keep all foreground central ground wide and empty for walking. Ocean stays upper third and far right edge, no water between land entrance and pier, scattered props only near outer edges. The pier is visibly wide and attached to land, no boats blocking walk area. No characters, monsters, words, UI, grid, labels, logos, borders or miniature map.",
+      "generated_source": "C:\\Users\\User\\.codex\\generated_images\\01a1a1a4-587b-7723-abf6-3804762227f4\\exec-bd702138-96e6-4049-bc7b-eacc2acddac3.png",
+      "sha256": "b420f8ade1ad73d786600302edd1e012b7e601a05a71b1fe35b1e7617da69d08"
+    },
+    {
+      "id": "offshore-isle",
+      "file": "offshore-isle-district-art-v1.png",
+      "tool": "built-in imagegen",
+      "prompt": "Original premium hand-painted isometric 2D dark fantasy RPG environment1536x1024 landscape. Elevated three-quarter view with detailed realistic painterly stone, jungle greens and turquoise sea, matching medieval fantasy island game art. A small offshore island near-scale walkable scene: broad clear sandy landing from bottom center image edge leads into an expansive central grassy sandy clearing; upper middle contains an old stone shrine, upper right a weathered treasure vault entrance in rocks. Sea only far upper and right perimeter and lower outer corners, no sea between landing and shrine. Landing has short wide wooden jetty and small moored rowboat on left perimeter, not obstructing paths. Two distinct open shrine and vault forecourts, broad natural paths. No people, creatures, text, UI, grid, labels, logos or borders.",
+      "generated_source": "C:\\Users\\User\\.codex\\generated_images\\01a1a1a4-587b-7723-abf6-3804762227f4\\exec-b0899ff4-f00b-4693-baea-3547a1faeb15.png",
+      "sha256": "abcaa3a6df41400f268f3b347c84bc3690bbdb4ce3174d09c4946dd89027f456"
+    },
+    {
+      "id": "fire-foothills",
+      "file": "fire-foothills-district-art-v1.png",
+      "tool": "built-in imagegen",
+      "prompt": "Original hand-painted isometric premium 2D dark fantasy game environment, landscape1536x1024, elevated three-quarter view and realistic rich texture, no characters or text/UI. A volcanic foothill staging camp merging into an ash valley. Smoky black mountain cliffs at top, wooden expedition tents and supplies ONLY upper left perimeter, reddish basalt rocks and dry grass outer edges, distant orange volcanic glow. Clear broad continuous gray sand and stone floor from bottom center border entrance through a spacious central clearing to right center border trail exit. Keep central walking ground empty, lit by warm smoky daylight. No lava crossing paths. A safe camp forecourt and ash valley approach visibly distinguishable on same connected ground. No diagrams, grids, logos, borders or miniature world map.",
+      "generated_source": "C:\\Users\\User\\.codex\\generated_images\\01a1a1a4-587b-7723-abf6-3804762227f4\\exec-a7017060-05a0-4542-803f-f62847046c3b.png",
+      "sha256": "5afb03b0174df79812e1f18370f3b0456ce466496a777ac68295cc13a1d07ff0"
+    },
+    {
+      "id": "fire-forge",
+      "file": "fire-forge-district-art-v1.png",
+      "tool": "built-in imagegen",
+      "prompt": "Original hand-painted isometric premium 2D dark fantasy game environment, landscape1536x1024, elevated three-quarter view, detailed near-scale medieval textures. Abandoned volcanic forge and three cave mouths in upper background rock face: upper left ruined stone forge with quenched furnace and anvils at outer edge, upper right dark cave entrances connected along visible rocky forecourt, a little lava only far perimeter crevices. A broad empty continuous basalt and ash floor from bottom center border entrance through central clearing to right center border mountain tunnel approach. Clear playable ground stays free of props, no lava across routes, no roof covering center. Ember lighting, gray charcoal rock, warm orange accents. No characters, enemies, text, labels, UI, grids, logos, borders or map diagram.",
+      "generated_source": "C:\\Users\\User\\.codex\\generated_images\\01a1a1a4-587b-7723-abf6-3804762227f4\\exec-735f326a-1279-4cf8-bbab-906925125ccd.png",
+      "sha256": "ce81f38a3544f3a27aace7135f78d40c38ed60d4e4133d2d78682da524d5b0d5"
+    },
+    {
+      "id": "dragon-rim",
+      "file": "dragon-rim-district-art-v1.png",
+      "tool": "built-in imagegen",
+      "prompt": "Original richly detailed hand-painted isometric 2D dark fantasy RPG background1536x1024 landscape, elevated three-quarter game view, realistic painterly rock textures. Dragon nesting grounds OUTER APPROACH on volcanic mountaintop: upper middle huge dark cavern arch in jagged cliff, a few large weathered dragon bones and old stone ballista ruins only outer left/right edges, fiery lava and distant smoking crater only top and far right perimeter. Broad empty central obsidian and ash terrace extends from bottom center border to cavern forecourt, a right center safe path exit, both clearly continuous with no lava crossing ground. Wide combat staging spaces, no dragon or characters or monsters, no text, UI, diagram, grid, logos, borders. Match premium medieval game near-scale environmental art rather than panoramic concept illustration.",
+      "generated_source": "C:\\Users\\User\\.codex\\generated_images\\01a1a1a4-587b-7723-abf6-3804762227f4\\exec-3dfde68d-6dd8-4611-a372-bc6d55a1138c.png",
+      "sha256": "3dd4bcbc3de0e2754487610b9107ec15a06a2b941a0cf8277c996915df061915"
+    },
+    {
+      "id": "wreck-harbor",
+      "file": "wreck-harbor-district-art-v1.png",
+      "tool": "built-in imagegen",
+      "prompt": "Original premium hand-painted isometric 2D dark fantasy RPG game background1536x1024 landscape, elevated three-quarter view, realistic detailed painterly texture. Tropical shipwreck archipelago safe port and rain forest approach. Upper left old harbor customs hut and moored wooden ship beside turquoise water at FAR LEFT edge, upper right dense emerald rainforest with broken stone stair and a jungle trail entrance. Spacious clear connected sand and cobblestone ground across center, from bottom center border landing entrance to right center border jungle trail exit. Trees, crates, fishing gear only upper/perimeter, no clutter on central floor, no roofs over main play area. Humid bright daylight, warm sand and cool green. No characters, monsters, text, UI, grid, labels, logos, borders or map diagram.",
+      "generated_source": "C:\\Users\\User\\.codex\\generated_images\\01a1a1a4-587b-7723-abf6-3804762227f4\\exec-f7de5cef-cf2f-4473-88b7-0806b41db967.png",
+      "sha256": "c3b69f49a12033460837a316fd1f64d99a36f0c569b5462f121558d62d61db47"
+    },
+    {
+      "id": "smuggler-fort",
+      "file": "smuggler-fort-district-art-v1.png",
+      "tool": "built-in imagegen",
+      "prompt": "Original premium hand-painted isometric 2D dark fantasy RPG game environment1536x1024 landscape. Elevated three-quarter camera, near-scale detailed realistic painterly tropical coastal stone and timber. Smuggler camp below a ruined northern coastal fortress: upper left dark red tents, hidden supply crates and timber palisade only perimeter; upper right weathered stone fortress gate and tower overgrown with vines, open visible stone forecourt. Spacious broad connected clear sand and stone ground from bottom center border entrance through central open clearing to right center border trail exit. Tropical jungle at outer edges, sea only distant top background, no water across routes, no props in central walking floor. No characters, monsters, text, UI, labels, grids, logos, borders or miniature map.",
+      "generated_source": "C:\\Users\\User\\.codex\\generated_images\\01a1a1a4-587b-7723-abf6-3804762227f4\\exec-21f30085-a516-4300-aa4f-53e6a8b304be.png",
+      "sha256": "877eb3955fbe8d4ad2e9058bd710f79db2e012b00b02e3a20d1514721a1b452c"
+    },
+    {
+      "id": "tidal-ruins",
+      "file": "tidal-ruins-district-art-v1.png",
+      "tool": "built-in imagegen",
+      "prompt": "Original premium hand-painted isometric 2D dark fantasy RPG game environment1536x1024 landscape. Elevated three-quarter camera with richly detailed realistic painterly stone and tropical turquoise shallows. Low-tide ruins district connecting two rocky coastal islets: lower center broad dry sandy landing, upper left ancient tomb facade and seal shrine on rocky raised island, upper right ruined ship hull beside stone treasure-vault facade on another rocky island. Important: very wide visibly DRY continuous sandbars form a Y from bottom center entrance through broad central sandy clearing to BOTH upper island forecourts. Shallow water lies ONLY outside sandbar banks, never across walkable paths. Wide wooden departure pier at right center border also connects directly to central sandy ground. Clear ground and no people, creatures, text, UI, grids, logos, labels or borders. Near-scale game environment, not map diagram.",
+      "generated_source": "C:\\Users\\User\\.codex\\generated_images\\01a1a1a4-587b-7723-abf6-3804762227f4\\exec-3c0d6cdd-9ab8-48e4-8a2b-2e26a267b09a.png",
+      "sha256": "d1367c3bb17eede64eaa0327f230e75ae06a65ed4c1ca67c482c69f42c062d29"
+    },
+    {
+      "id": "mine-depths",
+      "file": "mine-depths-district-art-v1.png",
+      "tool": "built-in imagegen",
+      "prompt": "Original richly detailed hand-painted isometric 2D dark fantasy RPG environment1536x1024 landscape, elevated three-quarter game view. Interior of abandoned mine: spacious connected open rock floor with wooden support beams along UPPER EDGE and outer walls, a few ore veins and mining tracks at left outer side, empty central mining chamber floor, wooden exit tunnel at bottom center and a second upper right tunnel. Camera sees floor unobstructed, no roof. Torchlight and subtle cool blue crystal light, realistic dark stone. Floor wide enough for four characters with multiple open forecourts. No characters, enemies, text, UI, labels, logos, grids, borders or map diagram.",
+      "generated_source": "C:\\Users\\User\\.codex\\generated_images\\01a1a1a4-587b-7723-abf6-3804762227f4\\exec-d6f8a10f-bdd5-4727-b103-8aeb63089b0e.png",
+      "sha256": "7b4c1ea7323f1e661ee65c0e8bee5dc64941a8917f401707ac5056d5a27386fb"
+    },
+    {
+      "id": "cave-one",
+      "file": "cave-one-district-art-v1.png",
+      "tool": "built-in imagegen",
+      "prompt": "Original richly detailed hand-painted isometric 2D dark fantasy RPG environment1536x1024 landscape, elevated three-quarter game view. Volcanic cavern FIRST LEVEL: broad cool gray basalt chamber, natural jagged rock walls only along top and outer edges, pale luminous crystals and small steam vents on far edges. Large continuous empty floor from bottom center exit tunnel to right center deeper passage. No pits or lava crossing walking ground, varied natural floor, a large side alcove at upper left. Dramatic warm torch and blue mineral lighting. No characters, monsters, text, UI, grids, logos, labels, borders, or diagram.",
+      "generated_source": "C:\\Users\\User\\.codex\\generated_images\\01a1a1a4-587b-7723-abf6-3804762227f4\\exec-3228f814-2632-4635-9d3e-eca0b9f02848.png",
+      "sha256": "ca9fe2d50125ab9b9bb65285354e606d8c38598ff6f7e861e0839c507f4fd299"
+    },
+    {
+      "id": "cave-two",
+      "file": "cave-two-district-art-v1.png",
+      "tool": "built-in imagegen",
+      "prompt": "Original richly detailed hand-painted isometric 2D dark fantasy RPG environment1536x1024 landscape, elevated three-quarter game view. Volcanic cavern SECOND LEVEL: giant red mineral geodes and ruined dwarven stone arches along upper perimeter, amber molten glow from narrow fissures only far upper and outer walls. Broad spacious continuous safe black stone floor across lower two thirds from bottom center tunnel to right center tunnel, connected upper left ritual alcove with open floor. No lava across paths, no pillars in center, no roofs. Strong realistic painterly volcanic cave textures. No characters, monsters, text, UI, labels, logos, grids, borders or diagram.",
+      "generated_source": "C:\\Users\\User\\.codex\\generated_images\\01a1a1a4-587b-7723-abf6-3804762227f4\\exec-ec05315b-9c2b-4534-8c2c-fb7558c444aa.png",
+      "sha256": "f3fe7e0aa887867b04fdaac3ce169c9f465453d1d4c08a374e3ff3f0e32cfc30"
+    },
+    {
+      "id": "cave-three",
+      "file": "cave-three-district-art-v1.png",
+      "tool": "built-in imagegen",
+      "prompt": "Original richly detailed hand-painted isometric 2D dark fantasy RPG environment1536x1024 landscape, elevated three-quarter game view. Volcanic cavern THIRD LEVEL before dragon ridge: immense dark natural cavern, obsidian columns and ancient carved dragon relief on upper wall, deep orange lava lake far upper background behind a continuous rocky bank. Vast safe empty stone terrace across middle and lower area, bottom center tunnel entrance, broad continuous path to right center ascending tunnel exit. Floor clearly dry and unbroken, lava only outside safe ground, no bridge over center. A distinctive open sanctuary alcove at upper left. No dragon, characters, monsters, words, UI, grids, logos, labels, borders or map diagram.",
+      "generated_source": "C:\\Users\\User\\.codex\\generated_images\\01a1a1a4-587b-7723-abf6-3804762227f4\\exec-96ddb028-e20e-49f8-94b2-6879d805b495.png",
+      "sha256": "5925d868a1a4efc68193b6c9d2612085dea264bada11fba8b6a735728991e0d2"
+    }
+  ]
+}

@@ -135,16 +135,17 @@ CAT_NAMES.mercRune = '傭兵符石';
 const MERC_RUNE_DROPS = {
     basic: Object.values(MERC_RUNE_ROWS).flatMap(rows => rows.slice(0, 4).map(row => 'mercRune_' + row[0])),
     special: Object.values(MERC_RUNE_ROWS).flatMap(rows => rows.slice(4).map(row => 'mercRune_' + row[0])),
-    normalP: .001, bossP: .05
+    bossP: .05   // 首領特殊、基本各自擲（小怪不掉，第 274、296 節）
 };
 function mercRuneSource(id) {
-    return MERC_RUNE_DROPS.basic.includes(id) ? '基本符石：目前沒有掉落來源（2026-11-02 起小怪不掉符石）' : '特殊符石：黃色稀有異界首領／團隊副本勝利5%';
+    return (MERC_RUNE_DROPS.basic.includes(id) ? '基本符石' : '特殊符石') + '：黃色稀有異界首領／團隊副本勝利5%';
 }
-function rollMercRuneDrop(mon, raid = false) {
+// 2026-11-03（第 296 節）：只有首領掉，特殊、基本各自擲 5%（kind 選哪一種）
+function rollMercRuneDrop(mon, raid = false, kind = 'special') {
     if (SIM_MODE || !raid && (!inMapRun() || player.mapRun.q !== 'rare' || treasureMapActive())) return null;
     if (!raid && !mon.boss) return null;   // 符石只有首領掉（2026-11-02，第 274 節）
-    const special = raid || mon.boss, pool = MERC_RUNE_DROPS[special ? 'special' : 'basic'];
-    return chance(special ? MERC_RUNE_DROPS.bossP : MERC_RUNE_DROPS.normalP) ? pool[rand(0, pool.length - 1)] : null;
+    const pool = MERC_RUNE_DROPS[kind];
+    return chance(MERC_RUNE_DROPS.bossP) ? pool[rand(0, pool.length - 1)] : null;
 }
 const MERC_RANKS = [
     { min: 1, id: 'c', name: 'C級傭兵', color: '#ffffff' },

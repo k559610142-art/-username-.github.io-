@@ -279,7 +279,7 @@
 
 | `tools/map-src/guild-world-v1/harbor-walk-preview.html`、`test-harbor-walk.cjs` | 港村美術獨立通行／四人跟隨／局部門洞遮擋樣本與網格連通測試；不屬正式遊戲載入（2026-11-01） |
 
-| `tools/map-src/guild-world-v1/forest-district-art-v1.png`、`forest-prompts-v1.json`、`forest-walk-preview.html`、`test-forest-walk.cjs` | 原創古林近景與四人通行／碰撞、港村區域入口往返驗證；獨立開發預覽，未載入正式遊戲（2026-11-01） |
+| `tools/map-src/guild-world-v1/forest-district-art-v1.png`、`forest-prompts-v1.json`、`forest-walk-preview.html`、`test-forest-walk.cjs`、`forest-boundaries-20261103.jpg` | 原創古林近景與四人通行／碰撞、港村區域入口往返驗證；獨立開發預覽，未載入正式遊戲（2026-11-01） |
 
 | `tools/map-src/guild-world-v1/forest-mission-preview.html`、`test-forest-mission.cjs`、`forest-mission-preview-shot.jpg` | 古林巡查隔離試玩：自主步行／隨行揭霧／調查紀錄、入口接取與交付，無地標導航／目標標記／重置傳送，三NPC任務內出退場／防重複與遠距交付；只用頁面記憶體，不載入正式遊戲（2026-11-01） |
 
@@ -287,6 +287,11 @@
 
 | `tools/GUILD-INTEGRATION-REVIEW.md`、`tools/guild-runtime/{core,world,sync,rules}.cjs`、`tools/guild-runtime/test-{core,world,sync,rules}.cjs`、`tools/guild-runtime/README.md` | 正式接入候選純核心／分塊通行與快取／收據重送／公會數值規則（第266節）及隔離驗證；未載入正式遊戲，存檔及SQL變更待確認 |
 | `tools/sprite-src/guild/sentinel-v1/turnaround-v1.png`、`prompt.json` | 原創盾衛八方向造型參考與完整提示詞，1536×1024含alpha；非動畫圖集、未接遊戲 |
+
+| `tools/map-src/guild-world-v1/test-scene-depth.cjs`、`harbor-depth-20261103.jpg`、`forest-depth-20261103.jpg` | 港村／古林局部景物遮擋與實拍驗收（第291節）；仍為獨立地圖預覽 |
+
+| `tools/map-src/guild-world-v1/region-catalog.js`、`region-walk-preview.html`、`regions-preview.html`、`test-regions.cjs`、`test-region-links.cjs` | 三大地區15個新近景、地標碰撞／出入口／共用隔離通行引擎與17場景總覽；未載入正式遊戲（第293節） |
+| `tools/map-src/guild-world-v1/*-district-art-v1.png`（新增15張）、`region-thumbs-v1/`、`regions-prompts-v1.json`、`regions-*-proof-20261103.jpg` | 內建imagegen原創背景／總覽縮圖、完整提示詞與原圖SHA256、瀏覽器實拍；既有港村／古林原圖保留（第293節） |
 
 ## 2. 載入順序與依賴
 
@@ -4649,12 +4654,54 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - gm.html：三個文字框並排（寬度不夠自動換行）；讀到的資料沒有 `expenses`（還沒重跑 SQL）會顯示紅字提示，儲存失敗時也提示要重跑 SQL。
 - 遊戲：告示牌視窗贊助人下方 `.notice-money` 三欄並排（經費／開支／餘額），沒內容顯示「（目前還沒有公告）」；舊 SQL 沒這兩欄也不會壞。
 
+
+## 290. 中央古林通行邊界細修（2026-11-03，版本 `20261103p`）
+
+- 延續既有原創forest-district-art-v1，不重畫或覆寫素材；forest-walk／forest-mission／forest-encounter-preview三個隔離頁同步bridgeFloor橋面多邊形及scenerySolids七組景物腳座。橋中央不再用圓頭通道覆蓋河岸，新增遺跡西柱／南牆／東牆、營地帳篷／工作桌／東側木箱／圍欄阻擋，維持足底橢圓與4px安全留白、NPC沿安全軌跡及任務自主探索。
+- standAt先拒絕四邊圖外座標，避免細網格快取索引與圖內座標混用。三頁保留相同通行資料，未加入正式場景載入順序或新增player欄位／SQL。正式玩法不變；依版本規則index所有?v=與GAME_VERSION更新20261103p。
+- test-forest-walk新增七處景物點擊拒絕、橋外河水與圖外邊界；八個探索點四人1598步、12712可站格全連通，沿途足底及插值留白通過。仍是手工碰撞校準的隔離預覽，完整場景分層遮擋、整島無縫分塊及正式公會地圖接線待完成。
+
+- 驗證補充：巡查、遭遇戰、港村往返、救援、名冊、十分鐘防衛排程、小隊指令、任務冊與探索保存既有測試全過，check.ps1 ALL CHECKS PASSED。瀏覽器桌面／窄畫面可載入，實點入口往廣場及東岸方向、四人沿路行進、遮罩可切，Console無error／warn；未在瀏覽器完整走完全部地標，完整路徑由隔離測試覆蓋。實拍forest-boundaries-20261103.jpg。
+
+
+## 291. 港村與中央古林景物前後遮擋（2026-11-03，版本 `20261103q`）
+
+- 使用者要求先完善中央古林／港村公會周邊地圖。保留兩張原創背景與原始素材，於harbor-walk、forest-walk／mission／encounter四頁加入SCENE_OCCLUDERS、sceneryCovers與drawSceneryOverActor。港村四組：公會階梯護欄、西碼頭護牆、南碼頭護牆、城門拱頂；古林五組：遺跡矮牆、推車、石橋前欄、營地圍欄、工作桌。
+- 每名人物／獸兵依自己插值腳底與景物基線判斷前後，只在人物繪圖框與景物多邊形交集重繪原背景；不再因任一隊友進門而整片開關。人物走到景物前方恢復完整顯示，名牌與血條保留可讀；古林任務既有迷霧仍在最後繪製，不揭露未探索區。通行頁可切「場景前後遮擋」，任務頁預設啟用。
+- 港村城門道路由偏右門柱的舊1240,704移回1188,725門洞中央，銜接前後道路；standAt同步圖外拒絕。港村八目的地四人770步／17174格全連通與足底／插值安全留白通過，新增舊門柱阻擋與新門洞可站立／四邊圖外拒絕。古林沿用第290節碰撞。
+- test-scene-depth驗四頁景物前後判斷、限人物區域裁切、狀態還原、開關、缺圖降級、三古林設定一致、人物與獸兵接線。未新增正式地圖載入或player欄位／SQL；背景仍非完整拆層資產，室內／整島無縫分塊與正式場景接線待後續。index所有?v=與GAME_VERSION改20261103q。
+
+- 驗收：港村／古林通行、巡查、遭遇戰與港村往返、救援、名冊、防衛、小隊指令、本機任務冊／保存回歸通過，check.ps1 ALL CHECKS PASSED。瀏覽器實走港村門洞前後並比較遮擋開關、古林入口到推車旁四人步行，Console無error／warn；實拍harbor-depth-20261103.jpg、forest-depth-20261103.jpg，其他景物前後由隔離測試覆蓋，仍需使用者逐區目視實玩。
+
 ## 292. 鑽石商人＋魔法結晶包＋商店賣魔法結晶（2026-11-03，版本 `20261103r`；`doll-shop.js`、`items.js`、`ui-scene.js`、`scene-art.js`、`ui-panels.js`、`codex.js`、SQL `tools/crystal-pack.sql`）
 
 - 使用者要求：「娃娃商人」改名「鑽石商人」（NPC 角色名、村莊分頁「💎 鑽石商人」、面板標題「💎 鑽石商人・露米」、NPC 台詞、圖鑑說明；圖片代號仍是 `doll`，`townSub` 仍是 `dollShop`）。
 - 新商品「魔法結晶包（10小時）」：50 鑽石換 1000 個魔法結晶（召喚娃娃每 30 分鐘 50 個＝10 小時）。列在鑽石商人「購買娃娃」分頁最上面（`crystalPackRow`／`crystalPackBuy`／`crystalPackPurchase`，`CRYSTAL_PACK_PRICE`／`CRYSTAL_PACK_N`）。
 - 伺服器：`tools/crystal-pack.sql` 的 `crystal_pack_buy(p_price, p_request)`，價格與數量寫死在伺服器（50／1000），扣 `dragon_wallet` 鑽石、寫 `dragon_dia_log`、在共用倉庫放一筆 `{id:'magicCrystal', n:1000}`（沒有 ench → `vault_take2` 取出時併進同一疊）。訂單在獨立表 `dragon_crystal_pack_orders`（同 request 重送不重扣），**不算**「伺服器育養員」稱號（稱號只看娃娃訂單）。**要在 Supabase 執行一次 `tools/crystal-pack.sql`**，沒跑前按購買會顯示「請管理者執行 crystal-pack.sql」。
 - 一般商店：`magicCrystal` 加 `price: 3000, tier: 1`，四個村莊商店「📦 其他」分頁都買得到（每顆 3,000 金幣；20261103r 原定 5 萬，使用者同日改 3,000，版本 `20261103t`）；`sell: 0` 不變，回收不給錢，不能套利。
+
+
+
+## 293. 三大地區近景地圖與往返網絡（2026-11-03，版本 `20261103u`）
+
+使用者明確選擇低語海島、熔火群山、沉船群島三大地區全部地圖，優先地圖層，不新增正式任務或發獎。內建imagegen製作15張不同1536×1024原創背景，各自標定面域／道路／障礙／地標／安全落點／景物遮擋；既有港村與古林保留，合計17個可走隔離場景。原圖、完整提示詞、產生來源與SHA256存regions-prompts-v1.json；region-thumbs-v1提供總覽延遲載入縮圖，瀏覽器每次探索只載當區背景與既有四人模型。
+
+|大區|新增場景與地標|
+|---|---|
+|低語海島（新6＋舊2）|廢棄礦坑、礦坑內部、古寺／山頂湖岸、海崖堡壘／古墓／瞭望塔、燈塔海岸／沉船碼頭、離岸小島神壇／寶庫前庭；古林河谷石橋與港村沿原場景|
+|熔火群山（新6）|山麓營地／灰燼谷、廢棄鍛爐／洞窟前庭、洞窟第一／第二／第三層各獨立場景、龍巢外圍／弩炮遺跡／熔岩觀測台|
+|沉船群島（新3）|群島港口／雨林、走私營地／北部堡壘、退潮雙島／古墓／封印祭壇／沉船觀測岸／寶庫前庭|
+
+- region-catalog：GUILD_MAPS含region／name／art／note／areas／lanes／solids／sites／entries／center／blocked／gates／occluders。sceneKey與entryKey均用Object.hasOwn核對查詢字串，不允許任意場景或任意座標。相鄰地標合併為同一個近景面域，並非每個名稱都換一張相同圖。
+- region-walk-preview沿4px網格、腳底10×6加4px留白、2px細樣本／段落檢查與不切角尋路；先保留與中心相連的可站格，NPC沿實際步行軌跡，不跨水／熔岩或穿牆。reset只重置當區預覽，從中心到指定入口的安全路徑排四人隊形。go／manual／step／draw等僅此隔離頁使用。SCENE_OCCLUDERS沿第291節局部裁切，並非完整拆層素材。
+- gateNear／travelGate只在停止且入口32px內可換區，回程帶entry落到對應入口。古林北側1512,355→礦坑；礦坑→古寺→堡壘→海岸，礦坑另進地下作業區。海岸船埠1420,320分航離岸小島／熔火群山／沉船群島／港村；港村南碼頭696,792新增航線，返回可落南碼頭。群山由營地→鍛爐→三層洞窟→龍巢；群島由港口→走私營地→雙島。船為入口切換，不讓角色走海；退潮沙洲採固定低潮地貌，尚無潮汐時序玩法。
+- regions-preview按三大區展示17張場景卡片與路線說明，地圖檢視連結明示重開預覽；港村／古林／整島灰盒加入總覽入口。主遊戲script順序、player、SAVE_SCHEMA與SQL不變。r與t已被同時進行的商店更新使用，本次index所有?v=、GAME_VERSION與預覽catalog快取鍵改20261103u，保留該商店提交。
+- 驗證：test-regions載實際資料與HTML引擎驗15圖唯一背景／尺寸、地標與每一入口、四人20500步端點及插值足底留白、障礙點拒絕／四邊界、停止及遠距換區拒絕、繪圖、全圖可走連通、15圖網絡可達。test-region-links驗原圖SHA256／完整提示詞／縮圖、17卡片、原港村／古林回程落點與新按鈕；既有港村／古林／巡查／遭遇戰／景物遮擋回歸通過，check.ps1 ALL CHECKS PASSED。
+- 邊界：完成三大區的獨立地圖預覽與路線，未接正式公會世界。地圖仍為近景背景＋手工面域與局部遮擋，尚非全物件獨立地面／樹冠拆層或無縫2048分塊；建築內室／寶庫內室未開放（礦坑及三層洞窟可進）。未製作新敵人／正式任務、潮汐、船動畫或正式獎勵，不能以本次地圖完成宣稱全部公會內容完成。
+
+- 瀏覽器驗收：15個新場景逐張載入並讀到「場景已載入」，Console無error／warn；實點熔火群山→海岸→離岸小島→海岸→沉船群島航線；四人實從礦坑南入口走到洞口、進地下再返回洞口落點。總覽17卡片與三大區路線可見。實拍regions-isle／fire／tidal／hub-proof-20261103.jpg；未在瀏覽器逐圖走完全部地標，完整通行由test-regions覆蓋，仍待使用者實玩。
+
+- 手機驗收：潮間雙島390px畫面可操作，DOM寬度375px、不橫向溢出；總覽及礦坑分頁保留供使用者驗收。
 
 ## 294. 交易所出售區分類（2026-11-03，版本 `20261103v`；`market.js`）
 
@@ -4666,3 +4713,9 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 使用者回報霜羽貓頭鷹回魔 64 秒太久，三隻回魔娃娃一起改成每出場 32 秒（跟森靈幼鹿等回血娃娃一樣）：霜羽貓頭鷹 `snow-owl` MP 10、潮汐幼龍 `tidal-dragon` MP 15、青龍 `azure-dragon` MP 22（每次回復量不變，等於每秒回魔加倍）。
 - 舊存檔累積的 `elapsed` 超過新間隔時，`dollStateNormalize`會夾到 `period - 1`，下一刻就觸發一次，不會出錯。
 
+## 296. 首領也掉基本符石（2026-11-03，版本 `20261103x`；`mercenary.js` 的 `rollMercRuneDrop(mon, raid, kind)`、`combat.js` 的 `rollDrops`、SQL `tools/boss-timer.sql` 最後一段）
+
+- 第 274 節小怪不掉符石後，基本符石沒有來源。**使用者決定**（2026-11-03）：首領也掉基本符石，機率 5%（和特殊一樣、各自擲），範圍同特殊符石：黃色稀有異界地圖首領、團隊副本勝利；非財寶圖。
+- 遊戲端：`rollMercRuneDrop` 多一個 `kind`（'special'／'basic'，預設 special），非首領非副本一律 null，機率 `MERC_RUNE_DROPS.bossP`；`normalP` 刪除。`rollDrops` 兩種各擲一次。`mercRuneSource` 兩種都顯示「黃色稀有異界首領／團隊副本勝利5%」。
+- 伺服器：`boss-timer.sql` 最後重新定義 `loot_merc_rune(c, x)`：首領（或 `mercRaid`）才擲，特殊、基本各 `cfg.bossP`。**重跑 mercenary-rune-drops.sql 後要再跑 boss-timer.sql**。目錄的 `normalP` 留著不用。
+- 測試：`test-mercenary-rune-drops.js`（兩種池子全可抽、小怪不掉、首領一次 rollDrops 同時拿到特殊與基本）、`test-boss-timer.js`（SQL：小怪 0、首領基本與特殊各約 5%）。

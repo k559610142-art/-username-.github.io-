@@ -12,7 +12,8 @@ player.loc={type:'zone',id:'island'};player.mapRun={zone:'island',t:1,q:'rare',m
 const normal=makeMonster('goblin'),boss={...normal,boss:true};
 const originalChance=chance,originalRand=rand;
 chance=()=>true;
-{const pool=MERC_RUNE_DROPS.special;for(let i=0;i<pool.length;i++){rand=()=>i;assert.equal(rollMercRuneDrop(boss),pool[i]);}}
+for(const kind of ['special','basic']){const pool=MERC_RUNE_DROPS[kind];for(let i=0;i<pool.length;i++){rand=()=>i;assert.equal(rollMercRuneDrop(boss,false,kind),pool[i]);}}
+assert.equal(rollMercRuneDrop(normal,false,'basic'),null,'小怪不掉基本符石');
 assert.equal(rollMercRuneDrop(normal),null,'2026-11-02 起小怪不掉符石（第 274 節）');
 rand=originalRand;
 for(const q of [null,'magic','legend']){player.mapRun.q=q;assert.equal(rollMercRuneDrop(normal),null);assert.equal(rollMercRuneDrop(boss),null);}
@@ -25,12 +26,12 @@ player.mapRun.treasure=true;assert.equal(rollMercRuneDrop(boss),null);delete pla
 const key=lootSnapKey(player);player.mapRun.q='magic';assert.notEqual(lootSnapKey(player),key);player.mapRun.q='rare';
 // 僅命中符石機率，走正式rollDrops兩次，確認實際背包堆疊。
 const sp0=MERC_RUNE_DROPS.special[0];chance=p=>p===.05;rollBookDrop=()=>null;rollMapDrop=()=>{};rand=(lo)=>lo;
-rollDrops(boss,{drops:[]});rollDrops(boss,{drops:[]});assert.equal(countItem(sp0),2);
+const bs0=MERC_RUNE_DROPS.basic[0];rollDrops(boss,{drops:[]});rollDrops(boss,{drops:[]});assert.equal(countItem(sp0),2);assert.equal(countItem(bs0),2,'首領同時擲基本符石（第 296 節）');
 const before=countItem(sp0);SIM_MODE=true;rollDrops(boss,{drops:[]});SIM_MODE=false;assert.equal(countItem(sp0),before);
 let server=0;lootMode='server';lootActive=()=>true;lootKill=()=>server++;rollDrops({...boss,lootTicket:'t'},{drops:[]});assert.equal(server,1);assert.equal(countItem(sp0),before);
-for(const id of MERC_RUNE_DROPS.basic){assert(mercRuneSource(id).includes('沒有掉落來源'));assert(codexSources(id).length);}
+for(const id of MERC_RUNE_DROPS.basic){assert(mercRuneSource(id).includes('首領')&&mercRuneSource(id).includes('5%'));assert(codexSources(id).length);}
 for(const id of MERC_RUNE_DROPS.special)assert(mercRuneSource(id).includes('5%'));
 assert(itemDescHtml({id:'mercRune_wolf',n:1}).includes('基本符石'));
 chance=originalChance;rand=originalRand;
 `, ctx);
-console.log('PASS：24基本（小怪不掉）／26特殊、全部可抽、黃圖限定、離線排除、固定機率、實際背包堆疊、伺服器不本機重抽、圖鑑與詳情。');
+console.log('PASS：24基本／26特殊（只有首領，各 5%）、全部可抽、黃圖限定、離線排除、固定機率、實際背包堆疊、伺服器不本機重抽、圖鑑與詳情。');
