@@ -200,9 +200,14 @@ function gmRender() {
             ${rows ? `<div class="table-wrap"><table><tr><th>時間</th><th>頻道</th><th>發言者</th><th>內容</th><th></th></tr>${rows}</table></div>` : '<p class="muted">還沒有訊息。</p>'}
             <h3>禁言中</h3>${ml ? `<div class="table-wrap"><table><tr><th>帳號</th><th>到期</th><th>原因</th><th></th></tr>${ml}</table></div>` : '<p class="muted">沒有人被禁言。</p>'}`;
     } else if (tab === 'notice') {
-        $('view').innerHTML = notice ? `<p class="muted" style="margin-top:0">玩家在村莊點「告示牌」會看到這兩段，換行會照樣顯示。最後更新：${t(notice.updated_at)}</p>
+        $('view').innerHTML = notice ? `<p class="muted" style="margin-top:0">玩家在村莊點「告示牌」會看到這幾段，換行會照樣顯示。最後更新：${t(notice.updated_at)}</p>
             <label style="display:block;margin-bottom:10px"><b>🤝 贊助人</b><br><textarea id="nb-sponsors" rows="6" maxlength="2000" style="width:100%;box-sizing:border-box">${esc(notice.sponsors)}</textarea></label>
-            <label style="display:block;margin-bottom:10px"><b>💰 目前遊戲經費</b><br><textarea id="nb-funds" rows="3" maxlength="500" style="width:100%;box-sizing:border-box">${esc(notice.funds)}</textarea></label>
+            ${notice.expenses == null ? '<p class="bad">要顯示「開支」「餘額」，請在 Supabase 重新執行一次 tools/notice-board.sql。</p>' : ''}
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-bottom:10px">
+                <label><b>💰 目前遊戲經費</b><br><textarea id="nb-funds" rows="4" maxlength="500" style="width:100%;box-sizing:border-box">${esc(notice.funds)}</textarea></label>
+                <label><b>🧾 開支</b><br><textarea id="nb-expenses" rows="4" maxlength="1000" style="width:100%;box-sizing:border-box">${esc(notice.expenses || '')}</textarea></label>
+                <label><b>🏦 餘額</b><br><textarea id="nb-balance" rows="4" maxlength="500" style="width:100%;box-sizing:border-box">${esc(notice.balance || '')}</textarea></label>
+            </div>
             <div class="row"><button onclick="gmNoticeSave()">💾 儲存告示牌</button><span id="nb-msg" class="muted"></span></div>`
             : '<p class="bad">請先在 Supabase 執行 tools/notice-board.sql，再按「重新整理」。</p>';
     } else if (tab === 'trusted') {
@@ -218,9 +223,9 @@ function gmRender() {
 async function gmNoticeSave() {
     $('nb-msg').textContent = '儲存中…';
     try {
-        notice = await q(sb.rpc('gm_notice_set', { p_sponsors: $('nb-sponsors').value, p_funds: $('nb-funds').value }));
+        notice = await q(sb.rpc('gm_notice_set', { p_sponsors: $('nb-sponsors').value, p_funds: $('nb-funds').value, p_expenses: $('nb-expenses').value, p_balance: $('nb-balance').value }));
         gmRender(); $('nb-msg').innerHTML = '<span class="good">✅ 已更新，玩家重新打開告示牌就會看到</span>';
-    } catch (e) { $('nb-msg').innerHTML = `<span class="bad">儲存失敗：${esc(e.message)}</span>`; }
+    } catch (e) { $('nb-msg').innerHTML = `<span class="bad">儲存失敗：${esc(e.message)}${/gm_notice_set|function/i.test(e.message) ? '（請先在 Supabase 重新執行 tools/notice-board.sql）' : ''}</span>`; }
 }
 
 async function gmHistory(uid, slot, email) {

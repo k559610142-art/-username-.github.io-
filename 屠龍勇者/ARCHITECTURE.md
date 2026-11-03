@@ -4641,3 +4641,10 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 原本傳送師 `travelZone`、野外入口 `enterZoneFromKeeper`、異界地圖／傳送門（maps.js）都已在換地點後 `startHunt()`；大地圖走過交界 `sceneEnterZone`、永夜之塔換樓層 `changeFloor` 不會中斷掛機。
 - 唯一缺口是世界地圖傳送 `atlasTravel`：先 `stopHunt()` 再換地點但沒有重開。現在目的地是狩獵地點（`z`）時傳送後呼叫 `startHunt()`；目的地是村莊維持停止。玩家在野外手動按停止仍然有效。
 - 驗證：瀏覽器測試角色村莊→世界地圖傳送野外（掛機中）→另一個野外（掛機中）→村莊（停止），Console 無錯誤。
+
+## 289. 告示牌加「開支」「餘額」（2026-11-03，版本 `20261103o`；`data/notice-board.js`、`index.html` `.notice-money`、`gm.html`、SQL `tools/notice-board.sql`）
+
+- 使用者要求：第 279 節告示牌「目前遊戲經費」旁邊新增「開支」「餘額」兩欄。三欄都是管理者自己寫的文字（不自動計算），換行照樣顯示。
+- SQL：`dragon_notice` 加 `expenses`（≤1000 字）、`balance`（≤500 字）欄位（`add column if not exists`）；`notice_get` 多回傳這兩個；`gm_notice_set` 改成四個參數（`p_sponsors, p_funds, p_expenses, p_balance`），舊的兩參數版本 drop 掉。**要在 Supabase 重新執行一次 `tools/notice-board.sql`**。
+- gm.html：三個文字框並排（寬度不夠自動換行）；讀到的資料沒有 `expenses`（還沒重跑 SQL）會顯示紅字提示，儲存失敗時也提示要重跑 SQL。
+- 遊戲：告示牌視窗贊助人下方 `.notice-money` 三欄並排（經費／開支／餘額），沒內容顯示「（目前還沒有公告）」；舊 SQL 沒這兩欄也不會壞。

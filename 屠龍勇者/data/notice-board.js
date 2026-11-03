@@ -1,4 +1,4 @@
-// 村莊遊戲告示牌（2026-11-03，ARCHITECTURE.md 第 279 節）：每個村莊廣場一塊木頭告示牌（格子 12,9），點名牌打開「贊助人／目前遊戲經費」。
+// 村莊遊戲告示牌（2026-11-03，ARCHITECTURE.md 第 279 節）：每個村莊廣場一塊木頭告示牌（格子 12,9），點名牌打開「贊助人／目前遊戲經費／開支／餘額」（第 289 節）。
 // 內容由管理者在 gm.html「📋 告示牌」編輯（tools/notice-board.sql 的 notice_get／gm_notice_set），沒登入也讀得到；讀過 5 分鐘內再開不重抓。
 // 依賴 ui（openDialog）、ui-scene（TOWN_NPCS、drawNpcPlate 的 n.draw）、scene-art（SCENE_ART_BGS 村莊）、cloud（cloudSb）、market（marketRpc）
 const NOTICE_CACHE_MS = 5 * 60 * 1000;
@@ -7,7 +7,11 @@ function noticeText(s, empty) { return s && s.trim() ? esc(s.trim()).replace(/\n
 function noticeHtml(d) {
     if (!d) return '<p class="muted">暫時讀不到告示內容，請稍後再看。</p>';
     return `<div class="panel"><h4>🤝 贊助人</h4><p style="margin:0">${noticeText(d.sponsors, '（目前還沒有公告）')}</p></div>
-        <div class="panel"><h4>💰 目前遊戲經費</h4><p style="margin:0">${noticeText(d.funds, '（目前還沒有公告）')}</p></div>
+        <div class="notice-money">
+            <div class="panel"><h4>💰 目前遊戲經費</h4><p style="margin:0">${noticeText(d.funds, '（目前還沒有公告）')}</p></div>
+            <div class="panel"><h4>🧾 開支</h4><p style="margin:0">${noticeText(d.expenses, '（目前還沒有公告）')}</p></div>
+            <div class="panel"><h4>🏦 餘額</h4><p style="margin:0">${noticeText(d.balance, '（目前還沒有公告）')}</p></div>
+        </div>
         <small class="muted">感謝每一位支持黑暗大陸的冒險者。</small>`;
 }
 async function openNoticeBoard() {
