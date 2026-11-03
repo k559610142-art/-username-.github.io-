@@ -131,9 +131,9 @@ function afflictAfterHurt(owner, dmg) {
 }
 
 // 每次 cleanBuffs（玩家）呼叫：持續傷害、到期處理
-function afflictTick() {
+function afflictTick(mercOnly) {   // mercOnly：人皇第二名傭兵（mercenary.js mercAs2）只處理傭兵
     if (SIM_MODE || !player) return;
-    for (const owner of [player, player.mercenary].filter(Boolean)) {
+    for (const owner of (mercOnly ? [player.mercenary] : [player, player.mercenary]).filter(Boolean)) {
         if (owner.hp <= 0 || owner === player.mercenary && (!owner.active || owner.dead) || inTown()) { mercDebuffs.delete(owner); continue; }
         const list = mercDebuffs.get(owner);
         if (!list) continue;

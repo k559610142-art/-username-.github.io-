@@ -170,9 +170,23 @@ function mercNegative(owner) {
 }
 // 2026-11-01 起異常狀態改由 afflict.js 處理（第 260 節），這裡保留舊名稱給呼叫端
 function mercEnemyStatus(mon, magic, dealt, owner) { afflictTry(mon, magic, dealt, owner); }
-function mercDebuffTick() { afflictTick(); }
+function mercDebuffTick() { afflictTick(); mercAs2(() => afflictTick(true)); }
 function mercSlowFactor(owner) { return afflictSlowFactor(owner); }
 function mercActive() { const m = player && player.mercenary; return !SIM_MODE && m && !m.dead && m.active && player.hp > 0 ? m : null; }
+// 人皇第二名出戰傭兵（2026-11-03 第 287 節，player.mercenary2）：傭兵程式大多直接讀 player.mercenary／scene.mercenary，
+// 第二名用 mercAs2(fn) 暫時對調兩格再呼叫 fn，結束（含例外）一定換回；不是人皇時第二名不出戰。
+let mercSwapped = false;
+function mercSecondOk() { return typeof advIs === 'function' && advIs('rEmperor'); }
+function mercSwapSlots() {
+    const a = player.mercenary; player.mercenary = player.mercenary2 || null; player.mercenary2 = a;
+    if (scene) { const d = scene.mercenary; scene.mercenary = scene.mercenary2 || null; scene.mercenary2 = d || null; }
+}
+function mercAs2(fn) {
+    if (!player || !player.mercenary2 || mercSwapped || !mercSecondOk()) return undefined;
+    mercSwapSlots(); mercSwapped = true;
+    try { return fn(); } finally { mercSwapped = false; mercSwapSlots(); }
+}
+function mercSecondActive() { return mercAs2(mercActive) || null; }
 function mercState(m = player.mercenary) {
     let r = mercRuntime.get(m);
     if (!r) { r = { buffs: {}, cds: m.cds || (m.cds = {}), summons: [], dots: [], attackAt: 0, skillAt: 0, regenAt: gameNow + 1000 }; mercRuntime.set(m, r); }
@@ -246,7 +260,8 @@ function mercUpdateLive() {
         for (const el of document.querySelectorAll('[data-merc-rune-live="'+i+'"]')) el.textContent=(sec ? '冷卻 '+sec+' 秒' : '技能就緒')+(b && b.until>gameNow ? ' · 生效 '+Math.ceil((b.until-gameNow)/1000)+' 秒' : '');
     }
 }
-function mercHudHtml() {
+function mercHudHtml() { return [mercHudHtmlOne(), mercAs2(mercHudHtmlOne)].filter(Boolean).join(''); }
+function mercHudHtmlOne() {
     const m=mercActive();if(!m)return '';
     const r=mercState(m),icons=m.skills.filter(id=>MERC_RUNES[id]).map(id=>'<img class="merc-hud-icon" src="images/icons/items/mercRune-v1/'+id+'.png?v=1" alt="'+esc(MERC_RUNES[id].name)+'" title="'+esc(MERC_RUNES[id].name)+'">').join('');
     const parts=r.summons.filter(s=>s.until>gameNow).map(s=>MERC_RUNES[s.id].name.replace('契約','')+' '+Math.ceil((s.until-gameNow)/1000)+'秒');
@@ -286,6 +301,7 @@ function mercNormalize(p) {
         return m;
     }
     p.mercenary = member(p.mercenary, false);
+    p.mercenary2 = member(p.mercenary2, false);   // 人皇第二出戰位（第 287 節）
     p.mercReserve = reserve.map(m => member(m, true)).filter(Boolean);
 }
 function mercNormalizeMember(p, m, used) {
@@ -309,7 +325,8 @@ function mercNormalizeMember(p, m, used) {
     m.mp = clamp(Number.isFinite(m.mp) ? m.mp : st.mp, 0, st.mp);
 }
 function mercExpNeed(m) { return 100 + m.lv * m.lv * 30; }
-function mercGainExp(n) {
+function mercGainExp(n) { mercGainExpOne(n); mercAs2(() => mercGainExpOne(n)); }
+function mercGainExpOne(n) {
     const m = mercActive(); if (!m) return;
     m.exp += Math.max(0, Math.floor(n));
     while (m.lv < Math.min(MAX_LEVEL, player.lv) && m.exp >= mercExpNeed(m)) {
@@ -340,7 +357,8 @@ function mercTakeDamage(value) {
     if (dealt > 0 && m.hp > 0) mercPlayAnim('hit');
     if (m.hp <= 0) mercDie(); return dealt;
 }
-function mercEnemyAttack(mon) {
+function mercEnemyAttack(mon) { return mercEnemyAttackOne(mon) || mercAs2(() => mercEnemyAttackOne(mon)) === true; }
+function mercEnemyAttackOne(mon) {
     if (typeof advTauntOn === 'function' && advTauntOn()) return false;   // 二轉「挑釁怒吼」：怪物只打玩家
     const m = mercActive(); if (!m || !chance(Math.max(mercBuff('taunt'), mercTrait(m, 'aggro', .25)))) return false;
     const st = mercStats(m), magic = mon.magic && chance(mon.magic.p);
@@ -353,7 +371,8 @@ function mercEnemyAttack(mon) {
     if (mercBuff('thorn', m) && mon.hp > 0) mon.hp -= Math.round(dealt * mercBuff('thorn', m));
     addLog('⚑ 傭兵承受 ' + dealt + ' 傷害', 'hurt'); return true;
 }
-function mercProtect(value, area = false) {
+function mercProtect(value, area = false) { const v = mercProtectOne(value, area), v2 = mercAs2(() => mercProtectOne(v, area)); return v2 === undefined ? v : v2; }
+function mercProtectOne(value, area = false) {
     const m = mercActive(); if (!m) return value;
     if (area) mercTakeDamage(value);
     if (!mercActive()) return value;
@@ -364,7 +383,8 @@ function mercProtect(value, area = false) {
     if (b && b.until > gameNow) { const n = Math.min(damage, b.player || 0); b.player -= n; damage -= n; }
     return damage;
 }
-function mercPlayerFx() {
+function mercPlayerFx() { const a = mercPlayerFxOne(), b = mercAs2(mercPlayerFxOne) || {}; for (const k in b) a[k] = Math.max(a[k] || 0, b[k] || 0); return a; }
+function mercPlayerFxOne() {
     const m = mercActive(); if (!m) return {};
     return { spdMul: mercBuff('haste'), dmg: mercBuff('might'), hit: mercBuff('focus'), mr: mercBuff('ward') };
 }
@@ -443,7 +463,8 @@ function mercAutoPotion(m = mercActive()) {
     addLog('🧪 傭兵飲用'+(ITEMS[id].short||ITEMS[id].name)+'：HP +'+(m.hp-before)+'（扣玩家藥水1瓶）','heal');
     return true;
 }
-function mercTick(dt) {
+function mercTick(dt) { mercTickOne(dt); mercAs2(() => mercTickOne(dt)); }
+function mercTickOne(dt) {
     const m = mercActive(); if (!m) return;
     const r = mercState(m), st = mercStats(m);
     // 2026-10-31 使用者要求：回魔改成每 2 秒一次（MERC_MP_REGEN_MS）；回血仍每秒
@@ -542,16 +563,46 @@ function mercRuneBoardHtml(m, town) {
 function mercStatsHtml(st) {
     return '<details class="panel"><summary>攻防來源（基礎＋裝備＋增益）</summary><table style="width:100%;text-align:center;font-size:12px"><thead><tr><th>能力</th><th>基礎</th><th>裝備</th><th>增益</th><th>合計</th></tr></thead><tbody>'+[['atk','物攻'],['magic','魔攻'],['def','防禦'],['mr','魔防']].map(([k,n])=>'<tr><th>'+n+'</th><td>'+Math.round(st.base[k])+'</td><td>'+Math.round(st.gear[k])+'</td><td>'+Math.round(st.buffs[k])+'</td><td>'+Math.round(st[k])+'</td></tr>').join('')+'</tbody></table><small>等級僅小幅增加攻防；武器傷害、強化與裝備詞綴另計。魔杖每＋1額外增加1魔攻。</small></details>';
 }
+function mercSetSecond(index) {
+    if (!mercTownReady() || !mercSecondOk() || player.mercenary2 || !Number.isInteger(index) || index < 0 || index >= player.mercReserve.length) return;
+    const m = player.mercReserve.splice(index, 1)[0]; m.active = false; player.mercenary2 = m;
+    mercRuntime.delete(m); mercDebuffs.delete(m); mercRefresh();
+}
+function mercSecondToggle() {
+    const m = player.mercenary2; if (!mercTownReady() || !mercSecondOk() || !m || m.dead) return;
+    m.active = !m.active;
+    if (!m.active) { mercRuntime.delete(m); mercDebuffs.delete(m); if (scene) scene.mercenary2 = null; }
+    mercRefresh();
+}
+function mercSecondSwap() {   // 換到上方管理欄（裝備、符石、復活、放棄都在那裡操作）
+    if (!mercTownReady() || !player.mercenary2) return;
+    mercSwapSlots(); if (scene) { scene.mercenary = null; scene.mercenary2 = null; }
+    mercRefresh();
+}
+function mercSecondUnset() {
+    const m = player.mercenary2; if (!mercTownReady() || !m) return;
+    m.active = false; player.mercReserve.push(m); player.mercenary2 = null;
+    mercRuntime.delete(m); mercDebuffs.delete(m); if (scene) scene.mercenary2 = null;
+    mercRefresh();
+}
+function mercSecondHtml() {
+    const m = player.mercenary2, ok = mercSecondOk(), dis = mercTownReady() ? '' : 'disabled';
+    if (!ok && !m) return '';
+    let h = '<div class="panel"><h4>👑 人皇第二出戰位</h4>' + (ok ? '<p>二轉人皇可同時帶兩名傭兵。第二名的裝備、符石、復活請先按「換到管理欄」再調整。</p>' : '<p class="bad">只有二轉人皇能帶第二名傭兵，目前不會出戰。</p>');
+    if (m) h += '<p>' + mercNameHtml(m) + ' · Lv.' + m.lv + ' · ' + (m.dead ? '陣亡' : m.active && ok ? '出戰中' : '待命') + ' · HP ' + Math.ceil(m.hp) + '</p><div class="btn-row">' + (m.dead || !ok ? '' : '<button class="mini" onclick="mercSecondToggle()" ' + dis + '>' + (m.active ? '收回' : '派出') + '</button>') + '<button class="mini secondary" onclick="mercSecondSwap()" ' + dis + '>換到管理欄</button><button class="mini secondary" onclick="mercSecondUnset()" ' + dis + '>放回名冊</button></div>';
+    else h += '<p class="muted">從下方名冊按「設為第二名」。</p>';
+    return h + '</div>';
+}
 function mercRosterHtml() {
     const current = player.mercenary, reserve = player.mercReserve, town = mercTownReady();
-    const total = reserve.length + (current ? 1 : 0), blocked = current && current.active;
-    let h = '<div class="panel"><h4>已招募名冊（' + total + '名）</h4><p>可重複接取招募任務；每次取得的傭兵分別保留成長、裝備與符石。同時只能一名跟隨，替換前請先收回。</p>';
+    const total = reserve.length + (current ? 1 : 0) + (player.mercenary2 ? 1 : 0), blocked = current && current.active, second = mercSecondOk() && !player.mercenary2;
+    let h = '<div class="panel"><h4>已招募名冊（' + total + '名）</h4><p>可重複接取招募任務；每次取得的傭兵分別保留成長、裝備與符石。同時只能一名跟隨（二轉人皇可兩名），替換前請先收回。</p>';
     if (current) h += '<p class="good">目前管理：' + mercNameHtml(current) + ' · Lv.' + current.lv + ' · ' + (current.dead ? '陣亡' : current.active ? '出戰中' : '待命') + '</p>';
     if (current && !current.dead) h += '<button class="mini" onclick="mercToggle()" ' + (!town ? 'disabled' : '') + '>' + (current.active ? '收回目前傭兵' : '派出目前傭兵') + '</button>';
     h += '<div class="list" style="max-height:320px;overflow-y:auto">';
     for (let i = 0; i < reserve.length; i++) {
         const m = reserve[i], c = MERC_CLASSES[m.cls];
-        h += '<div class="list-row"><img src="' + MERC_MODELS[m.cls].art + '" alt="' + esc(c.person) + '" style="width:44px;height:56px;object-fit:contain"><div><b>' + mercNameHtml(m) + '</b><small>Lv.' + m.lv + ' · ' + (m.dead ? '陣亡' : '待命') + ' · 裝備' + Object.keys(m.equip).length + '件 · 符石' + m.skills.filter(Boolean).length + '格</small></div><button class="mini" onclick="mercSelect(' + i + ')" ' + (!town || blocked ? 'disabled' : '') + '>選擇管理</button></div>';
+        h += '<div class="list-row"><img src="' + MERC_MODELS[m.cls].art + '" alt="' + esc(c.person) + '" style="width:44px;height:56px;object-fit:contain"><div><b>' + mercNameHtml(m) + '</b><small>Lv.' + m.lv + ' · ' + (m.dead ? '陣亡' : '待命') + ' · 裝備' + Object.keys(m.equip).length + '件 · 符石' + m.skills.filter(Boolean).length + '格</small></div><button class="mini" onclick="mercSelect(' + i + ')" ' + (!town || blocked ? 'disabled' : '') + '>選擇管理</button>' + (second ? '<button class="mini secondary" onclick="mercSetSecond(' + i + ')" ' + (!town ? 'disabled' : '') + '>設為第二名</button>' : '') + '</div>';
     }
     h += '</div>';
     if (!total) h += '<p class="muted">尚未招募傭兵，請向團長接取任務。</p>';
@@ -559,8 +610,9 @@ function mercRosterHtml() {
 }
 function renderMercenary() {
     const m = player.mercenary, c = m && MERC_CLASSES[m.cls], town = mercTownReady();
-    let h = '<div class="panel"><p>六職業共用50種符石，同時只能召喚一名傭兵。在村莊配置與調整出戰，傭兵不可購買。</p><p>出戰掛機時，傭兵沿用玩家快捷欄的自動補血開關與HP門檻，共用背包治癒藥水，每瓶只補傭兵並扣玩家1瓶；各自喝水延遲0.8秒。</p><p class="bad">死亡保留身上全部裝備與已配置符石；復活保留等級與經驗。</p><details><summary>戰鬥與裝備規則</summary><small>不限制武器職業，雙手武器與盾牌互斥。一般掛機生效；離線／團隊副本／世界首領暫不參戰。遠程武器不耗玩家彈藥，裝備共鳴與BOSS附魔暫不觸發。技能優先救命治療、淨化、一般治療與多怪群攻；同類依四格順序，每秒最多一招。近戰1格、弓槍8格、魔法與召喚攻擊4格，障礙物會阻擋。召喚物最多2隻（契靈師3隻）。職業特色：' + Object.keys(MERC_CLASSES).map(k => MERC_CLASSES[k].name + '－' + MERC_TRAITS[k].text).join('；') + '。毒系／冰系指定怪物魔法命中附加中毒6秒／緩速4秒，淨化可解除；毒傷最低保留1HP，回村清除。</small></details></div>';
+    let h = '<div class="panel"><p>六職業共用50種符石，同時只能召喚一名傭兵（二轉人皇可兩名）。在村莊配置與調整出戰，傭兵不可購買。</p><p>出戰掛機時，傭兵沿用玩家快捷欄的自動補血開關與HP門檻，共用背包治癒藥水，每瓶只補傭兵並扣玩家1瓶；各自喝水延遲0.8秒。</p><p class="bad">死亡保留身上全部裝備與已配置符石；復活保留等級與經驗。</p><details><summary>戰鬥與裝備規則</summary><small>不限制武器職業，雙手武器與盾牌互斥。一般掛機生效；離線／團隊副本／世界首領暫不參戰。遠程武器不耗玩家彈藥，裝備共鳴與BOSS附魔暫不觸發。技能優先救命治療、淨化、一般治療與多怪群攻；同類依四格順序，每秒最多一招。近戰1格、弓槍8格、魔法與召喚攻擊4格，障礙物會阻擋。召喚物最多2隻（契靈師3隻）。職業特色：' + Object.keys(MERC_CLASSES).map(k => MERC_CLASSES[k].name + '－' + MERC_TRAITS[k].text).join('；') + '。毒系／冰系指定怪物魔法命中附加中毒6秒／緩速4秒，淨化可解除；毒傷最低保留1HP，回村清除。</small></details></div>';
     h += mercQuestHtml();
+    h += mercSecondHtml();
     h += mercRosterHtml();
     if (m) {
         const st = mercStats(m);
@@ -574,13 +626,20 @@ function renderMercenary() {
     if (!m) h += '<div class="panel"><p>尚未選擇管理中的傭兵。可從名冊選擇，或接取任務招募新傭兵。</p></div>';
     return h;
 }
-function sceneMercTick(dt) {
+function sceneMercTick(dt) { sceneMercTickOne(dt); if (!mercAs2(() => (sceneMercTickOne(dt), true)) && scene) scene.mercenary2 = null; }
+// 兩名傭兵不要站同一格：另一名（scene.mercenary2，在 mercAs2 裡就是主傭兵）佔的格子或它的目的地不選
+function mercTileTaken(x, y) {
+    const o = scene && scene.mercenary2; if (!o) return false;
+    const end = o.path && o.path.length ? o.path[o.path.length - 1] : [Math.round(o.rx), Math.round(o.ry)];
+    return Math.round(o.rx) === x && Math.round(o.ry) === y || end[0] === x && end[1] === y;
+}
+function sceneMercTickOne(dt) {
     const m = mercActive();
     if (!m || !scene || !scene.pl) { if (scene) scene.mercenary = null; return; }
     const pl = scene.pl;
     let d = scene.mercenary;
     if (!d || d.owner !== m || Math.hypot(d.rx - pl.rx, d.ry - pl.ry) > 8) {
-        const spot = [[-1,0],[0,-1],[1,0],[0,1]].map(([x,y]) => [pl.x+x,pl.y+y]).find(([x,y]) => freeTileFor(x,y) && inHuntZone(x,y)) || [pl.x,pl.y];
+        const spot = [[-1,0],[0,-1],[1,0],[0,1]].map(([x,y]) => [pl.x+x,pl.y+y]).find(([x,y]) => freeTileFor(x,y) && inHuntZone(x,y) && !mercTileTaken(x,y)) || [pl.x,pl.y];
         d = scene.mercenary = { owner: m, rx: spot[0], ry: spot[1], path: [], dir: 'down' };
         preloadSprite(MERC_MODELS[m.cls]);
     }
@@ -600,7 +659,7 @@ function sceneMercTick(dt) {
         const gx=Math.round(goal.rx), gy=Math.round(goal.ry), spots=[];
         const radius=goal===pl?1:range;
         for(let y=gy-radius;y<=gy+radius;y++)for(let x=gx-radius;x<=gx+radius;x++) {
-            if(x===gx && y===gy || !freeTileFor(x,y) || !inHuntZone(x,y))continue;
+            if(x===gx && y===gy || !freeTileFor(x,y) || !inHuntZone(x,y) || mercTileTaken(x,y))continue;
             if(goal!==pl && !mercInRange(goal.inst,range,{rx:x,ry:y}))continue;
             spots.push({x,y,dist:Math.hypot(x-d.rx,y-d.ry)});
         }

@@ -51,8 +51,9 @@ function renderStatus() {
         mercVitals.hidden = !merc;
         if (merc) {
             const ms = mercStats(merc);
-            const hp = '傭兵 HP ' + Math.max(0, Math.ceil(merc.hp)) + '／' + ms.hp;
-            const mp = '傭兵 MP ' + Math.max(0, Math.ceil(merc.mp)) + '／' + ms.mp;
+            const m2 = mercSecondActive(), ms2 = m2 && mercStats(m2);   // 人皇第二名傭兵接在後面（第 287 節）
+            const hp = '傭兵 HP ' + Math.max(0, Math.ceil(merc.hp)) + '／' + ms.hp + (m2 ? '｜' + Math.max(0, Math.ceil(m2.hp)) + '／' + ms2.hp : '');
+            const mp = '傭兵 MP ' + Math.max(0, Math.ceil(merc.mp)) + '／' + ms.mp + (m2 ? '｜' + Math.max(0, Math.ceil(m2.mp)) + '／' + ms2.mp : '');
             if (mercVitals.children[0].textContent !== hp) mercVitals.children[0].textContent = hp;
             if (mercVitals.children[1].textContent !== mp) mercVitals.children[1].textContent = mp;
         }

@@ -317,16 +317,20 @@ function bossSkillTick(dt) {
         const live = t.seenAt != null && t.seenAt >= t.until - 300;
         const c=live && scene && scene.tele && scene.tele.ref===t ? scene.tele : null;
         const dodged = c ? !sceneTeleContains(c,scene.pl.rx,scene.pl.ry) : live ? !!t.dodged : chance(player.settings.autoDodge ? 0.6 : 0.2);
-        const merc=mercActive(), d=scene && scene.mercenary;
-        const mercDodged=c && merc && d && d.owner===merc ? !sceneTeleContains(c,d.rx,d.ry) : dodged;
         if (dodged) addLog(`💨 你閃開了${m.name}的「${t.name}」！`, 'miss');
-        if (merc && mercDodged && c) addLog(`💨 傭兵閃開了${m.name}的「${t.name}」！`, 'miss');
-        if (dodged && (!merc || mercDodged)) return;
         const st = calcStats();
         let dmg = Math.round(rand(m.dmg[0], m.dmg[1]) * TELE_MUL) - st.reduce;
         dmg = Math.max(1, dmg);
         dmg = Math.max(1, Math.round(bossEnchantEnemyDamage(m, dmg)));
-        if (merc && !mercDodged) addLog(`💥 傭兵受到${m.name}的「${t.name}」 ${mercTakeDamage(dmg)} 傷害`, 'hurt');
+        // 傭兵各自判斷有沒有站在紅圈外；人皇第二名傭兵用 mercAs2 再跑一次（mercenary.js，第 287 節）
+        const mercTele = () => {
+            const merc=mercActive(), d=scene && scene.mercenary;
+            if (!merc) return;
+            const mercDodged=c && d && d.owner===merc ? !sceneTeleContains(c,d.rx,d.ry) : dodged;
+            if (mercDodged && c) addLog(`💨 傭兵閃開了${m.name}的「${t.name}」！`, 'miss');
+            if (!mercDodged) addLog(`💥 傭兵受到${m.name}的「${t.name}」 ${mercTakeDamage(dmg)} 傷害`, 'hurt');
+        };
+        mercTele(); mercAs2(mercTele);
         if (dodged) return;
         dmg = Math.max(1,Math.round(dmg*(typeof talentIncomingMult==='function'?talentIncomingMult(false):1)));
         dmg = bossEnchantAbsorb(dmg);

@@ -1341,6 +1341,7 @@ function sceneDraw(ctx, W, H) {
     const actors = scene.mons.map(m => ({ y: m.ry, draw: () => drawMon(m) }));
     actors.push({ y: pl.ry + 0.01, draw: drawPlayer });
     if (scene.mercenary) actors.push({ y: scene.mercenary.ry, draw: () => sceneDrawMerc(ctx, camX, camY) });
+    if (scene.mercenary2) actors.push({ y: scene.mercenary2.ry, draw: () => mercAs2(() => sceneDrawMerc(ctx, camX, camY)) });   // 人皇第二名傭兵（第 287 節）
     if (scene.doll) actors.push({ y: scene.doll.ry, draw: () => sceneDrawDoll(ctx, camX, camY) });
     if (player.loc.type === 'town') for (const key in presOthers) { const o = presOthers[key]; actors.push({ y: o.ry, draw: () => presDraw(ctx, o, camX, camY, labels) }); }   // 其他在線玩家（presence.js）
     if (player.loc.type === 'town') for (const n of townNpcList(scene.bg)) actors.push({ y: n.y, draw: () => {

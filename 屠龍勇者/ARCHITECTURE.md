@@ -4625,3 +4625,12 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 使用者要求移除四個村莊的鍛造 NPC（葛蘭／托爾／布洛克／巴恩），鍛造功能統一由兌換師提供，並改名「鍛造.兌換師-青嵐」。
 - `SCENE_TOWN_ROLES` 拿掉 `['鍛造','forge']`、`SCENE_TOWN_NPC_SPOTS` 每村前 7 格拿掉原鍛造站位（第 4 格），role 順序與站位一一對應；兌換師 role 改「鍛造兌換」（名牌右側小字），`act` 改 `openTownSub('craft')`（沿用上次選的鍛造分頁，預設 🔨 裝備鍛造；五個分頁都在）。第 284 節的 `openCurrencyExchange` 移除。
 - `TOWN_NPCS` 移除鍛造條目；舊格子村莊背景（`SCENE_BGS` village／ash／darkgold／aden，已被 `SCENE_ART_BGS` 覆蓋不再使用）裡的鍛造站位也一起刪掉。`npc-forge.png` 仍給傭兵團長／傭兵公會使用，沒刪。
+
+## 287. 二轉人皇可帶兩名傭兵（2026-11-03，版本 `20261103m`；`mercenary.js`、`combat.js`、`afflict.js`、`ui.js`、`ui-scene.js`、`advance.js`、`player.js`）
+
+- 使用者決定：只有二轉 **人皇**（`advIs('rEmperor')`）能同時出戰兩名傭兵，其他職業／分支維持第 201 節一名。
+- 存檔：新增 `player.mercenary2`（第二出戰位，預設 null），`mercNormalize` 跟主傭兵一樣驗證（裝備 UID 與名冊一起去重）。**SAVE_SCHEMA 不變**（舊版讀到會原樣保留這個欄位，不會複製裝備）。不是人皇時第二名不出戰、只能放回名冊或換到管理欄。
+- 做法：傭兵程式大多直接讀 `player.mercenary`／`scene.mercenary`，所以不改成陣列，而是 `mercAs2(fn)`：暫時對調 `player.mercenary↔mercenary2`、`scene.mercenary↔mercenary2`，呼叫 fn 後一定換回（try/finally，`mercSwapped` 防巢狀）。包了兩次的入口：`mercTick`、`sceneMercTick`（場景畫面，第二名不在時清掉 `scene.mercenary2`）、`mercGainExp`（兩名都拿經驗）、`mercEnemyAttack`（先試第一名、沒被打再試第二名）、`mercProtect`（依序代擋）、`mercPlayerFx`（同 key 取較大值）、`mercHudHtml`、`mercDebuffTick`（`afflictTick(true)` 只跑傭兵）。原函式改名 `…One`。
+- 其他接點：ui-scene.js 角色排序多一個 `scene.mercenary2` actor（`mercAs2(sceneDrawMerc)`）；combat.js 首領紅圈大招改成 `mercTele` 兩名各自判斷有沒有站出紅圈；ui.js 狀態列「傭兵 HP a／b｜c／d」；advance.js 二轉試煉兩名都要先休息。兩名不站同一格：`mercTileTaken` 排除另一名所在格與目的地。
+- 介面（傭兵團）：新區塊「👑 人皇第二出戰位」：派出／收回（`mercSecondToggle`）、換到管理欄（`mercSecondSwap`，主／副對調，裝備、符石、復活、放棄都在主欄操作）、放回名冊（`mercSecondUnset`）；名冊每列多「設為第二名」（`mercSetSecond`，人皇且第二位空時）。
+- 驗證：瀏覽器人皇＋兩名 Lv.30 傭兵掛機，兩名都出手、受傷、拿到相同經驗、地圖上分開站、狀態列顯示兩組；JSON 存讀後第二名保留；換欄／放回／再設定物件不變；改成暴君後 `mercSecondActive()` 為 null、面板顯示限制且沒有「設為第二名」。test-mercenary／-skills、test-advance／-portraits 原本就失敗（舊 schema 斷言），改前改後同一行。

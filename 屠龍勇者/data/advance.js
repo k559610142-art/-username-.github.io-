@@ -762,7 +762,7 @@ function advQuestGoalText(q) {
 // 第 6 章：接任務前先選分支
 function advAcceptCheck(q) {
     if (!q.advPick) return true;
-    if (typeof mercActive === 'function' && mercActive()) { showToast('試煉只能一個人面對：請先讓傭兵休息'); return false; }
+    if (typeof mercActive === 'function' && (mercActive() || mercSecondActive())) { showToast('試煉只能一個人面對：請先讓傭兵休息'); return false; }
     if (player.equip.doll) { showToast('試煉只能一個人面對：請先卸下娃娃'); return false; }
     if (!advState().pick) { openAdvPicker(); return false; }
     return true;
