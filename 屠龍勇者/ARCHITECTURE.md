@@ -304,7 +304,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261103v`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261103w`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -4660,4 +4660,9 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 
 - 使用者要求：出售區（選擇要上架的道具）比照購買區加分類按鈕，沿用 `MARKET_CATS`（全部／武器／防具／藥水／卷軸／技能書／通貨／地圖／材料／萬能藥／傭兵符石），按鈕後面顯示該分類可上架的列數。
 - `marketSellCat`（不存檔）＋ `marketSetSellCat(c)`；只在本機篩背包清單（第 282 節的 `groupInv` 合併後再依 `ITEMS[id].cat` 過濾），不呼叫伺服器。彈藥、娃娃等沒有對應分類的只出現在「全部」。
+
+## 295. 回魔娃娃間隔 64 秒→32 秒（2026-11-03，版本 `20261103w`；`doll-abilities.js`）
+
+- 使用者回報霜羽貓頭鷹回魔 64 秒太久，三隻回魔娃娃一起改成每出場 32 秒（跟森靈幼鹿等回血娃娃一樣）：霜羽貓頭鷹 `snow-owl` MP 10、潮汐幼龍 `tidal-dragon` MP 15、青龍 `azure-dragon` MP 22（每次回復量不變，等於每秒回魔加倍）。
+- 舊存檔累積的 `elapsed` 超過新間隔時，`dollStateNormalize`會夾到 `period - 1`，下一刻就觸發一次，不會出錯。
 
