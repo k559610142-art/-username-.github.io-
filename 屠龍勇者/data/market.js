@@ -172,6 +172,9 @@ async function marketBuy(id) {
 // ───────── 出售 ─────────
 function marketOpenSell(uid) { closeDialog(); marketView = 'sell'; marketSellUid = uid; switchTab('market'); }
 function marketPickSell(uid) { marketSellUid = uid; renderPanel(); }
+// 出售區分類（2026-11-03 第 294 節，比照購買區 MARKET_CATS）：只篩背包清單，不重抓伺服器
+let marketSellCat = '';
+function marketSetSellCat(c) { marketSellCat = MARKET_CATS.some(x => x[0] === c) ? c : ''; renderPanel(); }
 
 async function marketListItem() {
     const inst = findInv(marketSellUid);
@@ -267,10 +270,12 @@ function marketSellHtml() {
             <div class="btn-row"><button onclick="marketListItem()" ${marketBusy ? 'disabled' : ''}>上架</button><button class="secondary" onclick="marketPickSell(null)">換一件</button></div></div>`;
     }
     // 相同裝備（除 uid 外全部一樣）疊成一列 ×N（第 282 節）；點了選第一件，裝備每次上架一件
-    const list = groupInv(sortedInv(player.inv).filter(marketSellable)).map(({ x, n }) => `<button class="item-row" onclick="marketPickSell(${x.uid})">
+    const all = groupInv(sortedInv(player.inv).filter(marketSellable)), cnt = c => c ? all.filter(g => ITEMS[g.x.id].cat === c).length : all.length;
+    const cats = `<div class="chips">${MARKET_CATS.map(([c, nm]) => `<button class="chip-btn ${marketSellCat === c ? 'active' : ''}" onclick="marketSetSellCat('${c}')">${nm}${cnt(c) ? ' ' + cnt(c) : ''}</button>`).join('')}</div>`;
+    const list = all.filter(g => !marketSellCat || ITEMS[g.x.id].cat === marketSellCat).map(({ x, n }) => `<button class="item-row" onclick="marketPickSell(${x.uid})">
         <span class="item-face">${itemIconHtml(x.id)}<span><span class="${itemClass(x)}">${esc(itemName(x))}</span>${marketBaseLevelText(x) ? `<small>${marketBaseLevelText(x)}</small>` : ''}</span></span><span class="muted">${n > 1 ? '×' + fmt(n) : ''}</span></button>`).join('');
     return `<div class="panel"><h4>選擇要上架的道具</h4><small class="muted">只能賣背包裡的道具（穿在身上的要先卸下）；任務道具不能交易。同時最多上架 ${MARKET_MAX} 件。</small>
-        <div class="list">${list || '<p class="muted">背包裡沒有可以交易的道具。</p>'}</div></div>`;
+        ${cats}<div class="list">${list || `<p class="muted">${marketSellCat ? '這個分類沒有可以交易的道具。' : '背包裡沒有可以交易的道具。'}</p>`}</div></div>`;
 }
 
 function marketMineHtml() {
