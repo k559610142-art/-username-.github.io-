@@ -990,12 +990,23 @@ function sellN(uid, qid) {
     if (valuable) gameConfirm('確認賣出', `確定賣出 ${itemName(it)} ×${n}？`, go, '賣出'); else go();
 }
 
+// 倉庫物品分類（2026-11-04 第 299 節，比照交易所 MARKET_CATS）：角色倉庫、共用倉庫、下方背包一起篩；按鈕數字＝上方倉庫的列數
+function storageCats() { return MARKET_CATS.concat([['doll', '娃娃'], ['other', '其他']]); }   // MARKET_CATS 在 market.js（比 ui-panels 晚載入），用函式取
+let storageCat = '';
+function setStorageCat(c) { storageCat = storageCats().some(x => x[0] === c) ? c : ''; renderPanel(); }
+function storageCatOf(id) { const c = ITEMS[id] && ITEMS[id].cat; return storageCats().some(x => x[0] === c && c) ? c : 'other'; }
+function storageCatOk(id, c = storageCat) { return !c || storageCatOf(id) === c; }
+function storageCatHtml(groups) {
+    const n = c => groups.filter(g => storageCatOk(g.x.id, c)).length;
+    return `<div class="chips">${storageCats().map(([c, nm]) => `<button class="chip-btn ${storageCat === c ? 'active' : ''}" onclick="setStorageCat('${c}')">${nm}${n(c) ? ' ' + n(c) : ''}</button>`).join('')}</div>`;
+}
 function renderStorage() {
-    const inv = groupInv(sortedInv(player.inv)).map(g => groupRowHtml(g, `${qtyInputHtml('dep-q-' + g.x.uid, g.n)}<button class="mini" onclick="depositN(${g.x.uid},'dep-q-${g.x.uid}')">存入</button>`)).join('') || '<p class="muted">背包是空的</p>';
-    const sto = groupInv(sortedInv(player.storage)).map(g => groupRowHtml(g, `${qtyInputHtml('wd-q-' + g.x.uid, g.n)}<button class="mini" onclick="withdrawN(${g.x.uid},'wd-q-${g.x.uid}')">取出</button>`)).join('') || '<p class="muted">倉庫是空的</p>';
+    const inv = groupInv(sortedInv(player.inv)).filter(g => storageCatOk(g.x.id)).map(g => groupRowHtml(g, `${qtyInputHtml('dep-q-' + g.x.uid, g.n)}<button class="mini" onclick="depositN(${g.x.uid},'dep-q-${g.x.uid}')">存入</button>`)).join('') || `<p class="muted">${storageCat ? '背包裡沒有這類道具' : '背包是空的'}</p>`;
+    const stoAll = groupInv(sortedInv(player.storage));
+    const sto = stoAll.filter(g => storageCatOk(g.x.id)).map(g => groupRowHtml(g, `${qtyInputHtml('wd-q-' + g.x.uid, g.n)}<button class="mini" onclick="withdrawN(${g.x.uid},'wd-q-${g.x.uid}')">取出</button>`)).join('') || `<p class="muted">${storageCat ? '倉庫裡沒有這類道具' : '倉庫是空的'}</p>`;
     const tabs = `<div class="chips"><button class="chip-btn ${storageMode === 'char' ? 'active' : ''}" onclick="setStorageMode('char')">📦 角色倉庫</button><button class="chip-btn ${storageMode === 'vault' ? 'active' : ''}" onclick="setStorageMode('vault')">🏦 帳號共用倉庫</button></div>`;
     if (storageMode === 'vault') return tabs + vaultHtml();
-    return tabs + `<h4>📦 角色倉庫（${player.storage.length} 格，只有這個角色能用）</h4><div class="list storage-list">${sto}</div><h4>🎒 背包</h4><div class="list storage-list">${inv}</div>`;
+    return tabs + storageCatHtml(stoAll) + `<h4>📦 角色倉庫（${player.storage.length} 格，只有這個角色能用）</h4><div class="list storage-list">${sto}</div><h4>🎒 背包</h4><div class="list storage-list">${inv}</div>`;
 }
 
 // 鍛造 NPC：🔨 裝備鍛造（配方）／🗺️ 地圖打造（用通貨改造異界地圖，craft.js openCraftDialog）

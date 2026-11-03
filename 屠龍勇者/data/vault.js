@@ -97,15 +97,16 @@ function vaultHtml() {
     if (!vaultData) return `<p class="muted">${vaultErr ? esc(vaultErr) : '讀取中…'}</p>`;
     // 相同道具合併成一列＋數量框（第 122 節）：倉庫裡一疊一筆只能整筆取出；不可堆疊的同種可選取出幾件（每件各收手續費）
     const dis = vaultBusy ? 'disabled' : '';
-    const items = vaultGroups().map(g => groupRowHtml(g, `${g.stack ? '' : qtyInputHtml('vt-q-' + g.ids[0], g.n)}<button class="mini" onclick="vaultTakeN(${g.ids[0]},'vt-q-${g.ids[0]}')" ${dis}>取出</button>`)).join('') || '<p class="muted">共用倉庫是空的</p>';
-    const inv = groupInv(sortedInv(player.inv).filter(vaultStorable)).map(g => groupRowHtml(g, `${qtyInputHtml('vp-q-' + g.x.uid, g.n)}<button class="mini" onclick="vaultPutN(${g.x.uid},'vp-q-${g.x.uid}')" ${dis}>存入</button>`)).join('') || '<p class="muted">背包沒有可以存的道具</p>';
+    const all = vaultGroups(), cat = typeof storageCatHtml === 'function';   // 分類按鈕（ui-panels.js，第 299 節）
+    const items = all.filter(g => !cat || storageCatOk(g.x.id)).map(g => groupRowHtml(g, `${g.stack ? '' : qtyInputHtml('vt-q-' + g.ids[0], g.n)}<button class="mini" onclick="vaultTakeN(${g.ids[0]},'vt-q-${g.ids[0]}')" ${dis}>取出</button>`)).join('') || '<p class="muted">共用倉庫是空的</p>';
+    const inv = groupInv(sortedInv(player.inv).filter(vaultStorable)).filter(g => !cat || storageCatOk(g.x.id)).map(g => groupRowHtml(g, `${qtyInputHtml('vp-q-' + g.x.uid, g.n)}<button class="mini" onclick="vaultPutN(${g.x.uid},'vp-q-${g.x.uid}')" ${dis}>存入</button>`)).join('') || '<p class="muted">背包沒有可以存的道具</p>';
     return `<div class="panel"><b>🏦 帳號共用倉庫</b>（${vaultData.items.length}／${VAULT_MAX} 格）　💎 鑽石 ${fmt(diaCount || 0)}
         <small class="muted" style="display:block">同帳號所有角色共用。每次存入、取出各收 💰${VAULT_FEE} 手續費。存取前會先上傳存檔，伺服器以雲端存檔為準。</small>
         ${vaultErr ? `<p class="bad">${esc(vaultErr)}</p>` : ''}
         <div class="list-row"><div>💰 倉庫金幣：<b>${fmt(vaultData.gold)}</b></div>
         <div class="row"><input id="vault-gold" type="number" min="1" placeholder="金額" style="width:110px">
         <button class="mini" onclick="vaultGold(1)" ${vaultBusy ? 'disabled' : ''}>存入</button><button class="mini secondary" onclick="vaultGold(-1)" ${vaultBusy ? 'disabled' : ''}>取出</button></div></div></div>
-        <h4>🏦 共用倉庫</h4><div class="list storage-list">${items}</div><h4>🎒 背包</h4><div class="list storage-list">${inv}</div>`;
+        ${cat ? storageCatHtml(all) : ''}<h4>🏦 共用倉庫</h4><div class="list storage-list">${items}</div><h4>🎒 背包</h4><div class="list storage-list">${inv}</div>`;
 }
 
 async function vaultRun(fn) {

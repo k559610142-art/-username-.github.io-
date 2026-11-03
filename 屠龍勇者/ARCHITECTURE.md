@@ -309,7 +309,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261104a`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261104d`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -4726,3 +4726,11 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 原因：手機外框的 `.hunt-ctrl` 是 `pointer-events: none`（讓點擊穿到地圖），只有 `button` 另外設 `pointer-events: auto`，`<select>` 沒有，點擊直接落到地圖 canvas。PC 外框沒有這條規則所以正常。
 - 修正：加 `#frame:not(.pc) .hunt-ctrl select { pointer-events: auto; … }`（樣式比照手機按鈕）。之後在手機操作區加其他非 button 的控制項（input、select）也要記得開 pointer-events。
 - 驗證：375×812 手機尺寸，選單在最上層（elementFromPoint 是 select；拿掉這條規則就是 CANVAS），點開後選「最高 37F」從 5F 跳到 37F。
+
+## 299. 倉庫物品分類（2026-11-04，版本 `20261104d`；`ui-panels.js`、`vault.js`）
+
+- 使用者要求：倉庫比照交易所（第 294 節出售區）加分類按鈕。角色倉庫、帳號共用倉庫都有，放在「角色倉庫／帳號共用倉庫」切換鈕下方；選了分類，上方倉庫清單和下方背包清單一起篩。
+- 分類：`storageCats()`＝交易所 `MARKET_CATS`＋「娃娃」（doll）＋「其他」（彈藥、任務道具等沒有對應分類的）。`MARKET_CATS` 在 market.js、比 ui-panels.js 晚載入，所以用函式取，不能寫成頂層常數。
+- 函式：`storageCat`（不存檔，兩種倉庫共用）、`setStorageCat(c)`、`storageCatOf(id)`、`storageCatOk(id, c)`、`storageCatHtml(groups)`（按鈕後面的數字＝上方倉庫那一類有幾列）。vault.js `vaultHtml` 用 `typeof storageCatHtml` 判斷後套用。只在本機篩，不多打伺服器。
+- 沒有道具時顯示「倉庫裡沒有這類道具」／「背包裡沒有這類道具」。
+
