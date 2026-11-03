@@ -4602,3 +4602,9 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 
 - 使用者要求：交易所「出售」選單重複的東西疊在一起。改用第 122 節的 `groupInv`：可堆疊照舊一列；不可堆疊（裝備）除 uid 以外欄位全部相同（強化、詞綴、附魔等都一樣）才疊成一列「×N」，不同強化值仍分開。
 - 點疊起來的那列選第一件（`marketPickSell(x.uid)`）；上架畫面多一行「背包有同款 ×N，裝備每次上架一件」。伺服器 `market_list2` 仍一次上架一個 uid，上架流程、SQL 都沒改；上架完回清單自動變 ×(N−1)。
+
+## 283. 通貨合成／拆解（2026-11-03，版本 `20261103h`；`craft.js` 尾段、`ui-panels.js` 的 `renderCraft`）
+
+- 使用者反映部分通貨過剩，選方案 A（升階合成）＋B（反向拆解）。鍛造 NPC 新分頁「♻️ 通貨兌換」（`craftMode = 'exchange'` → `renderCurrencyExchange`）。
+- `CURRENCY_LADDER`（依第 23 節掉落權重再加約 1.5～2 倍）：點化石 2→重鑄石 1、重鑄石 3→淬鍊石 1、淬鍊石 2→晉升石 1、晉升石 2→混沌石 1、混沌石 4→剝離石 1、剝離石 3→命運石 1、命運石 6→神諭石 1。拆解一律 1 顆高階 → 1 顆低一階，所以拆了再合一定虧。**命運的覺醒石不合成也不拆**。
+- `curExchange(i, up)`：數量框（`qtyInputHtml`，id `cx-up-i`／`cx-dn-i`）是換幾次，預設全部；`gameConfirm` 顯示用掉／得到，確認時再檢查同角色、仍在村莊鍛造兌換頁、數量足夠，才 `consumeItem`＋`addItem`、寫紀錄、`saveGame`。純本機背包操作，不用 SQL、存檔 schema 不變；通貨不佔負重。

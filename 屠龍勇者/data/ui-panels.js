@@ -1029,8 +1029,9 @@ function renderMapForge() {
 }
 
 function renderCraft() {
-    const tabs = `<div class="chips">${[['gear', '🔨 裝備鍛造'], ['mod', '🔮 裝備改造'], ['map', '🗺️ 地圖打造'], ['boss', '🔱 BOSS 附魔']].map(([k, n]) => `<button class="chip-btn ${craftMode === k ? 'active' : ''}" onclick="setCraftMode('${k}')">${n}</button>`).join('')}</div>`;
+    const tabs = `<div class="chips">${[['gear', '🔨 裝備鍛造'], ['mod', '🔮 裝備改造'], ['map', '🗺️ 地圖打造'], ['boss', '🔱 BOSS 附魔'], ['exchange', '♻️ 通貨兌換']].map(([k, n]) => `<button class="chip-btn ${craftMode === k ? 'active' : ''}" onclick="setCraftMode('${k}')">${n}</button>`).join('')}</div>`;
     if (craftMode === 'boss') return tabs + renderBossEnchantForge();
+    if (craftMode === 'exchange') return tabs + renderCurrencyExchange();
     if (craftMode === 'map') return tabs + renderMapForge();
     if (craftMode === 'mod') return tabs + renderGearForge();
     return tabs + `<div class="list">` + RECIPES.map((r, i) => {

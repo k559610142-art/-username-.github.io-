@@ -129,3 +129,39 @@ function craftUseBtn(cid, uid) {
     openCraftDialog(uid);   // 重畫視窗顯示新詞綴
     for (const [sel, top] of positions) { const el = layer.querySelector(sel); if (el) el.scrollTop = top; }
 }
+
+// ───────── 通貨合成／拆解（鍛造 NPC「♻️ 通貨兌換」，2026-11-03 第 283 節）─────────
+// 合成：低階 cost 顆 → 高一階 1 顆；拆解：高階 1 顆 → 低一階 1 顆（拆了再合一定虧，不能刷）。覺醒石不參與。
+const CURRENCY_LADDER = [['curAug', 'curAlt', 2], ['curAlt', 'curTemper', 3], ['curTemper', 'curRegal', 2], ['curRegal', 'curChaos', 2], ['curChaos', 'curAnnul', 4], ['curAnnul', 'curChance', 3], ['curChance', 'curOracle', 6]];
+function curExchangeHere() { return player && inTown() && tabOpen('town') && townSub === 'craft' && craftMode === 'exchange'; }
+function curExchangeMax(i, up) {
+    const step = CURRENCY_LADDER[i];
+    return step ? (up ? Math.floor(countItem(step[0]) / step[2]) : countItem(step[1])) : 0;
+}
+function curExchangeLabel(id) { return `${CURRENCY[id].icon}<span class="cur-${id}">${ITEMS[id].name}</span>`; }
+function renderCurrencyExchange() {
+    const rows = CURRENCY_LADDER.map(([lo, hi, cost], i) => {
+        const up = curExchangeMax(i, true), down = curExchangeMax(i, false);
+        return `<div class="list-row"><div class="item-info"><b>${curExchangeLabel(lo)} ×${cost} ⇄ ${curExchangeLabel(hi)} ×1</b><small class="muted">持有 ${ITEMS[lo].name} ${fmt(countItem(lo))}・${ITEMS[hi].name} ${fmt(countItem(hi))}</small></div>
+            <div class="qty-btns">${qtyInputHtml('cx-up-' + i, up)}<button class="mini" onclick="curExchange(${i},true)" ${up ? '' : 'disabled'}>合成</button>${qtyInputHtml('cx-dn-' + i, down)}<button class="mini secondary" onclick="curExchange(${i},false)" ${down ? '' : 'disabled'}>拆解</button></div></div>`;
+    }).join('');
+    return `<div class="panel"><small class="muted">合成：多顆低階通貨換 1 顆高一階；拆解：1 顆高階通貨換 1 顆低一階。數量框是要換幾次（預設全部）。命運的覺醒石不能合成或拆解。</small></div><div class="list">${rows}</div>`;
+}
+function curExchange(i, up) {
+    if (!curExchangeHere()) return;
+    const step = CURRENCY_LADDER[i];
+    if (!step) return;
+    const [lo, hi, cost] = step, max = curExchangeMax(i, up);
+    if (max < 1) { showToast('通貨不足'); return; }
+    const n = qtyRead((up ? 'cx-up-' : 'cx-dn-') + i, max);
+    if (!n) return;
+    const from = up ? lo : hi, to = up ? hi : lo, use = up ? n * cost : n, owner = player;
+    gameConfirm(up ? '通貨合成' : '通貨拆解', `用掉 ${ITEMS[from].name} ×${fmt(use)}\n得到 ${ITEMS[to].name} ×${fmt(n)}`, () => {
+        if (player !== owner || !curExchangeHere() || n > curExchangeMax(i, up)) { showToast('通貨數量已變更，請重新確認'); return; }
+        if (!consumeItem(from, use)) return;
+        addItem(to, n);
+        addLog(`♻️ ${up ? '合成' : '拆解'}：${ITEMS[from].name} ×${fmt(use)} → ${ITEMS[to].name} ×${fmt(n)}`, 'sys');
+        showToast(`${up ? '合成' : '拆解'}完成：${ITEMS[to].name} +${fmt(n)}`);
+        saveGame(); renderPanel();
+    }, up ? '確認合成' : '確認拆解');
+}
