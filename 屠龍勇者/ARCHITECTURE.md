@@ -4589,3 +4589,11 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 稱號：`dragon_my_titles` 照舊「買過娃娃＝伺服器育養員」，所以開放後每個買過的玩家都會有這個稱號。
 - 遊戲：商店說明改「登入帳號即可購買」；錯誤訊息加 banned／not logged in，not admin 改提示「伺服器還是舊版商店」。
 - 測試：`test-doll-shop-db.js` 改為一般玩家可買（沒鑽石時 not enough diamonds）、封鎖帳號 canBuy=false 且買不了、匿名不能買（補 `dragon_is_banned` 測試替身、匿名前清掉 sub）；`test-town-doll-shop.js` 的村莊 NPC 數改成 `SCENE_TOWN_ROLES.length + 1`（含第 279 節告示牌，原本寫死 9 早已過時），四城告示牌前方都走得到。兩支都通過。
+
+## 281. 特效關閉、傷害數字開關、省電模式（2026-11-03，版本 `20261103f`；`world-vfx.js`、`ui-scene.js`、`boss-vfx.js`）
+
+- 使用者要求：設定可關閉攻擊傷害數字、可關閉技能效果，並問降低效能負擔的方法。都放在設定 →「✨ 視覺特效」，只存這台裝置的 localStorage，不改存檔。
+- 特效：第 74 節的品質多一檔 `off`（按鈕「關閉」，key 仍是 `dragonSlayer_vfxQuality`）。關閉時 `worldVfxEmit` 不收事件、`drawWorldVfx` 清空佇列不畫（含常駐增益／狀態光）、`drawWorldWeapon` 不畫武器光、`drawBossEnchantEffects` 清空不畫、ui-scene.js 魔法／治癒光圈（`scene.effects` 圓環）不推。**首領紅圈（scene.tele）、受擊火花與壓扁動作照常**，閃避判斷不受影響。
+- 傷害數字：`sceneShowDmg`（key `dragonSlayer_dmgNum`，預設開）；新 `addDmgFloat` 包住怪物受傷、玩家受傷、補血、MISS 數字。LEVEL UP、娃娃訊息、掉寶 🎁、瞬間移動等文字仍顯示。
+- 省電模式：`scenePowerSave`（key `dragonSlayer_powerSave`，預設關）。`sceneFrame` 距上一幀不到 30ms 就跳過（約 30 FPS），畫布解析度 `devicePixelRatio` 最多 1.5 倍（手機 3 倍螢幕像素量約剩 1/4）。遊戲邏輯用 dt 推進，不受幀數影響。
+- 切換函式 `setSceneShowDmg`、`setScenePowerSave`（頂層函式，事件字串可呼叫）。

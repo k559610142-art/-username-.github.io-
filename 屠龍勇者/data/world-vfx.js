@@ -46,7 +46,12 @@ for (const sheet in WORLD_VFX_ROWS) WORLD_VFX_ROWS[sheet].forEach((name, row) =>
 });
 const worldVfxImages = {};
 let worldVfxQuality = 'medium', worldVfxPreviewRun = 0;
-try { const q = localStorage.getItem('dragonSlayer_vfxQuality'); if (['low', 'medium', 'high'].includes(q)) worldVfxQuality = q; } catch (e) {}
+try { const q = localStorage.getItem('dragonSlayer_vfxQuality'); if (['off', 'low', 'medium', 'high'].includes(q)) worldVfxQuality = q; } catch (e) {}
+// 第 281 節：傷害數字開關、省電模式（30 FPS＋解析度最多 1.5 倍），只存這台裝置
+let sceneShowDmg = true, scenePowerSave = false;
+try { sceneShowDmg = localStorage.getItem('dragonSlayer_dmgNum') !== '0'; scenePowerSave = localStorage.getItem('dragonSlayer_powerSave') === '1'; } catch (e) {}
+function setSceneShowDmg(on) { sceneShowDmg = !!on; try { localStorage.setItem('dragonSlayer_dmgNum', on ? '1' : '0'); } catch (e) {} refreshUI(); }
+function setScenePowerSave(on) { scenePowerSave = !!on; try { localStorage.setItem('dragonSlayer_powerSave', on ? '1' : '0'); } catch (e) {} refreshUI(); }
 function worldVfxImage(sheet) {
     if (!worldVfxImages[sheet]) { const im = new Image(); im.src = 'images/vfx/world/' + sheet + '.png?v=' + GAME_VERSION; worldVfxImages[sheet] = im; }
     const im = worldVfxImages[sheet];
@@ -78,7 +83,7 @@ function worldVfxPosition(mon) {
     return m ? { x: m.rx, y: m.ry } : null;
 }
 function worldVfxEmit(id, mon, options = {}) {
-    if (SIM_MODE || typeof scene === 'undefined' || !scene || !player || !WORLD_VFX_DEFS[id] || WORLD_VFX_DEFS[id].previewOnly) return;
+    if (SIM_MODE || worldVfxQuality === 'off' || typeof scene === 'undefined' || !scene || !player || !WORLD_VFX_DEFS[id] || WORLD_VFX_DEFS[id].previewOnly) return;
     const pos = options.pos || worldVfxPosition(mon);
     if (!pos) return;
     const list = scene.worldVfx || (scene.worldVfx = []);
@@ -187,7 +192,7 @@ function worldWeaponMask(info, dir) {
     return canvas;
 }
 function drawWorldWeapon(ctx, x, y, dir, anim, info) {
-    if (worldVfxQuality === 'low' || player.hp <= 0) return;
+    if (worldVfxQuality === 'low' || worldVfxQuality === 'off' || player.hp <= 0) return;
     const w = player.equip.weapon;
     if (!w) return;
     const power = Math.max(0, w.ench || 0), element = w.bossEnchant;
@@ -216,6 +221,7 @@ function drawWorldWeapon(ctx, x, y, dir, anim, info) {
 }
 function drawWorldVfx(ctx, camX, camY, layer) {
     if (SIM_MODE || !scene || !scene.pl || !player) return;
+    if (worldVfxQuality === 'off') { scene.worldVfx = []; return; }
     const list = scene.worldVfx || [];
     scene.worldVfx = list.filter(f => f.owner === player && gameNow - f.at < WORLD_VFX_DEFS[f.id].dur);
     for (const f of scene.worldVfx) {
@@ -248,13 +254,16 @@ function drawWorldVfx(ctx, camX, camY, layer) {
     }
 }
 function setWorldVfxQuality(q) {
-    if (!['low', 'medium', 'high'].includes(q)) return;
+    if (!['off', 'low', 'medium', 'high'].includes(q)) return;
     worldVfxQuality = q;
     try { localStorage.setItem('dragonSlayer_vfxQuality', q); } catch (e) {}
     refreshUI();
 }
 function worldVfxSettingsHtml() {
-    return '<div class="panel"><h4>✨ 視覺特效</h4><div class="btn-row">' + ['low', 'medium', 'high'].map((q, i) => '<button class="' + (worldVfxQuality === q ? '' : 'secondary') + '" onclick="setWorldVfxQuality(\'' + q + '\')">' + ['低', '中', '高'][i] + '</button>').join('') + '</div><small class="muted">低：減少同時特效與常駐光效。只影響這台裝置畫面。</small><div class="btn-row"><button class="secondary" onclick="openWorldVfxPreview(\'weapon-glow-0\')">🎬 十類特效預覽</button></div></div>';
+    return '<div class="panel"><h4>✨ 視覺特效</h4><div class="btn-row">' + ['off', 'low', 'medium', 'high'].map((q, i) => '<button class="' + (worldVfxQuality === q ? '' : 'secondary') + '" onclick="setWorldVfxQuality(\'' + q + '\')">' + ['關閉', '低', '中', '高'][i] + '</button>').join('') + '</div><small class="muted">低：減少同時特效與常駐光效。關閉：不顯示技能、普攻、增益、武器光效等特效（首領紅圈照常顯示）。只影響這台裝置畫面。</small>'
+        + '<label class="set-row"><span>顯示攻擊傷害數字</span><input type="checkbox" ' + (sceneShowDmg ? 'checked' : '') + ' onchange="setSceneShowDmg(this.checked)"></label>'
+        + '<label class="set-row"><span>省電模式（30 FPS、降低解析度）</span><input type="checkbox" ' + (scenePowerSave ? 'checked' : '') + ' onchange="setScenePowerSave(this.checked)"></label>'
+        + '<small class="muted">手機發燙、耗電或卡頓時建議：特效「關閉」或「低」＋關掉傷害數字＋開省電模式。</small><div class="btn-row"><button class="secondary" onclick="openWorldVfxPreview(\'weapon-glow-0\')">🎬 十類特效預覽</button></div></div>';
 }
 function worldVfxPreviewButtons() {
     return '<div class="btn-row" style="max-height:150px;overflow-y:auto">' + Object.keys(WORLD_VFX_DEFS).map(id => '<button class="mini secondary" onclick="openWorldVfxPreview(\'' + id + '\')">' + esc(WORLD_VFX_DEFS[id].name) + '</button>').join('') + '</div>';

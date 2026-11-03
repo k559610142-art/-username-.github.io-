@@ -214,6 +214,7 @@ function bossVfxPaint(ctx, f, elapsed, camX, camY, tile, layer) {
 }
 function drawBossEnchantEffects(ctx, camX, camY, layer) {
     if (!scene || !scene.bossEnchantFx) return;
+    if (worldVfxQuality === 'off') { scene.bossEnchantFx = []; return; }
     scene.bossEnchantFx = scene.bossEnchantFx.filter(f => !f.done && gameNow - f.at < bossVfxDuration(f));
     for (const f of scene.bossEnchantFx) {
         // 冰霜附著腳下，隨怪物移動，死亡後移除；不更動減益或戰鬥數值。

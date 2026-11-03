@@ -1028,6 +1028,7 @@ function sceneTeleTick(dt) {
 }
 
 // big：升級等大字；crit：爆擊傷害（紅色大字、出現時先彈大再縮回，停留久一點）
+function addDmgFloat(tx, ty, text, color, big, crit) { if (sceneShowDmg) addFloat(tx, ty, text, color, big, crit); }   // 傷害／MISS／補血數字，設定可關（第 281 節）
 function addFloat(tx, ty, text, color, big, crit) {
     scene.floats.push({ x: tx * TILE + TILE / 2 + rand(-6, 6), y: ty * TILE, text, color, t: 0, dur: crit ? 1100 : 900, size: crit ? 24 : big ? 17 : 13, pop: !!crit });
 }
@@ -1076,18 +1077,18 @@ function sceneReadEvents() {
         if (l.cls === 'doll') addFloat(pl.rx, pl.ry - .7, l.msg.replace('🧚 ', ''), '#86e4ff');
         if (l.cls === 'crit' && l.msg.includes('爆擊')) scene.critNext = true;   // 反擊也用 crit 樣式，但不是爆擊
         if (l.cls === 'miss') {
-            if (l.msg.includes('沒有命中') && e) { addFloat(e.rx, e.ry, 'MISS', '#9a9a9a'); missNow = true; }
-            else addFloat(pl.rx, pl.ry, 'MISS', '#9a9a9a');
+            if (l.msg.includes('沒有命中') && e) { addDmgFloat(e.rx, e.ry, 'MISS', '#9a9a9a'); missNow = true; }
+            else addDmgFloat(pl.rx, pl.ry, 'MISS', '#9a9a9a');
         }
         if (l.cls === 'magic' && e) {
             // 範圍技能：所有圍上來的怪身上都爆特效
             const list = l.msg.includes('（範圍）') ? scene.mons.filter(m => m.inst && !m.dead) : [e];
-            for (const m of list) scene.effects.push({ x: m.rx, y: m.ry, t: 0, dur: l.msg.includes('（範圍）') ? 550 : 400, color: l.msg.startsWith('💥') ? '#ffb347' : '#b48cff' });
+            if (worldVfxQuality !== 'off') for (const m of list) scene.effects.push({ x: m.rx, y: m.ry, t: 0, dur: l.msg.includes('（範圍）') ? 550 : 400, color: l.msg.startsWith('💥') ? '#ffb347' : '#b48cff' });
             if (l.msg.startsWith('🔮')) castNow = true;
         }
         if (l.cls === 'heal' && l.msg.startsWith('✨')) {
             castNow = true;
-            if (l.msg.startsWith('✨ 施放')) scene.effects.push({ x: pl.rx, y: pl.ry, t: 0, dur: 500, color: '#8fd0ff' });
+            if (l.msg.startsWith('✨ 施放') && worldVfxQuality !== 'off') scene.effects.push({ x: pl.rx, y: pl.ry, t: 0, dur: 500, color: '#8fd0ff' });
         }
         if (l.cls === 'lvup' && l.msg.startsWith('🎉')) addFloat(pl.rx, pl.ry - 0.5, 'LEVEL UP!', '#ffd34d', true);
         if ((l.cls === 'rare' || l.cls === 'loot') && l.msg.startsWith('🎁')) addFloat(pl.rx, pl.ry - 0.8, '🎁', '#fff');
@@ -1101,7 +1102,7 @@ function sceneReadEvents() {
         const hp = Math.max(0, m.inst.hp);
         if (hp < m.lastHp) {
             const crit = m === e && scene.critNext;
-            addFloat(m.rx, m.ry, '-' + fmt(m.lastHp - hp), crit ? '#ff3b2f' : '#ffffff', false, crit);
+            addDmgFloat(m.rx, m.ry, '-' + fmt(m.lastHp - hp), crit ? '#ff3b2f' : '#ffffff', false, crit);
             monHurt(m, crit);
             if (m === e) { scene.critNext = false; if (!playerSprite()) pl.lunge = { dx: e.x - pl.x, dy: e.y - pl.y, t: 0 }; }
             dealt = true;
@@ -1111,14 +1112,14 @@ function sceneReadEvents() {
     if (castNow) playAnim('cast');
     else if (dealt || missNow) playAnim('attack');
     if (player.hp < scene.lastPlayerHp) {
-        addFloat(pl.rx, pl.ry, '-' + fmt(scene.lastPlayerHp - player.hp), '#ff6b5b');
+        addDmgFloat(pl.rx, pl.ry, '-' + fmt(scene.lastPlayerHp - player.hp), '#ff6b5b');
         // 隨機一隻貼在旁邊的怪做出攻擊動作
         const near = scene.mons.filter(m => m.inst && !m.dead && Math.abs(m.x - pl.x) + Math.abs(m.y - pl.y) <= 1);
         const a = near.length ? near[rand(0, near.length - 1)] : e;
         if (a) { a.lunge = { dx: pl.x - a.x, dy: pl.y - a.y, t: 0 }; a.atk = 380; }   // atk：怪物模型顯示攻擊那列
         playAnim('hit');
     } else if (player.hp > scene.lastPlayerHp + 1 && scene.lastPlayerHp > 0) {
-        addFloat(pl.rx, pl.ry, '+' + fmt(player.hp - scene.lastPlayerHp), '#7fe07a');
+        addDmgFloat(pl.rx, pl.ry, '+' + fmt(player.hp - scene.lastPlayerHp), '#7fe07a');
     }
     scene.lastPlayerHp = player.hp;
 }
@@ -1693,9 +1694,10 @@ function sceneFrame(ts) {
     const cv = $('scene-canvas');
     if (!cv || !player || !huntVisible()) return;
     if (!scene || scene.key !== sceneKey()) buildScene();
+    if (scenePowerSave && sceneLast && ts - sceneLast < 30) { sceneRaf = requestAnimationFrame(sceneFrame); return; }   // 省電：約 30 FPS
     const dt = Math.min(100, sceneLast ? ts - sceneLast : 16);
     sceneLast = ts;
-    const dpr = window.devicePixelRatio || 1;
+    const dpr = scenePowerSave ? Math.min(1.5, window.devicePixelRatio || 1) : window.devicePixelRatio || 1;
     const W = cv.clientWidth, H = cv.clientHeight;
     if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
     const ctx = cv.getContext('2d');
