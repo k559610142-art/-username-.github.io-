@@ -1,6 +1,6 @@
 // 帳號稱號（2026-11-01，ARCHITECTURE.md 第 257 節）
 // 伺服器 dragon_my_titles()（tools/doll-shop.sql）決定這個帳號有哪些稱號，同帳號所有角色自動配戴。
-// 伺服器育養員：帳號第一次在娃娃商人買娃娃就獲得（dragon_doll_shop_orders 有紀錄即可）。
+// 伺服器育養員：帳號第一次在鑽石商人（原娃娃商人）買娃娃就獲得（dragon_doll_shop_orders 有紀錄即可）。
 // 顯示：地圖頭頂（ui-scene.js）、團隊副本戰鬥畫面（raid.js，快照帶 titleShown）、角色裝備視窗、人物選單。
 const TITLES = { serverKeeper: { name: '伺服器育養員' } };
 const TITLE_CACHE_KEY = 'dragonSlayer_titles';   // 上次讀到的 { uid, list }，離線或還沒讀完時先用

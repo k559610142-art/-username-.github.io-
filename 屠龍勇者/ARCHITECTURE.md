@@ -304,7 +304,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261102d`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261103r`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -4648,3 +4648,11 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - SQL：`dragon_notice` 加 `expenses`（≤1000 字）、`balance`（≤500 字）欄位（`add column if not exists`）；`notice_get` 多回傳這兩個；`gm_notice_set` 改成四個參數（`p_sponsors, p_funds, p_expenses, p_balance`），舊的兩參數版本 drop 掉。**要在 Supabase 重新執行一次 `tools/notice-board.sql`**。
 - gm.html：三個文字框並排（寬度不夠自動換行）；讀到的資料沒有 `expenses`（還沒重跑 SQL）會顯示紅字提示，儲存失敗時也提示要重跑 SQL。
 - 遊戲：告示牌視窗贊助人下方 `.notice-money` 三欄並排（經費／開支／餘額），沒內容顯示「（目前還沒有公告）」；舊 SQL 沒這兩欄也不會壞。
+
+## 292. 鑽石商人＋魔法結晶包＋商店賣魔法結晶（2026-11-03，版本 `20261103r`；`doll-shop.js`、`items.js`、`ui-scene.js`、`scene-art.js`、`ui-panels.js`、`codex.js`、SQL `tools/crystal-pack.sql`）
+
+- 使用者要求：「娃娃商人」改名「鑽石商人」（NPC 角色名、村莊分頁「💎 鑽石商人」、面板標題「💎 鑽石商人・露米」、NPC 台詞、圖鑑說明；圖片代號仍是 `doll`，`townSub` 仍是 `dollShop`）。
+- 新商品「魔法結晶包（10小時）」：50 鑽石換 1000 個魔法結晶（召喚娃娃每 30 分鐘 50 個＝10 小時）。列在鑽石商人「購買娃娃」分頁最上面（`crystalPackRow`／`crystalPackBuy`／`crystalPackPurchase`，`CRYSTAL_PACK_PRICE`／`CRYSTAL_PACK_N`）。
+- 伺服器：`tools/crystal-pack.sql` 的 `crystal_pack_buy(p_price, p_request)`，價格與數量寫死在伺服器（50／1000），扣 `dragon_wallet` 鑽石、寫 `dragon_dia_log`、在共用倉庫放一筆 `{id:'magicCrystal', n:1000}`（沒有 ench → `vault_take2` 取出時併進同一疊）。訂單在獨立表 `dragon_crystal_pack_orders`（同 request 重送不重扣），**不算**「伺服器育養員」稱號（稱號只看娃娃訂單）。**要在 Supabase 執行一次 `tools/crystal-pack.sql`**，沒跑前按購買會顯示「請管理者執行 crystal-pack.sql」。
+- 一般商店：`magicCrystal` 加 `price: 50000, tier: 1`，四個村莊商店「📦 其他」分頁都買得到（每顆 5 萬金幣）；`sell: 0` 不變，回收不給錢，不能套利。
+

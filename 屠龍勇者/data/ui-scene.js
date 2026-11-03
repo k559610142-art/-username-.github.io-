@@ -202,7 +202,7 @@ const TOWN_NPCS = [
       names: { talking: '杜克', gludio: '柏恩', giran: '歐文', aden: '葛雷' } },
     { role: '傳送師', icon: '🧙‍♀️', x: 14, y: 16, act: () => openWorldAtlas(),
       names: { talking: '露娜', gludio: '希雅', giran: '伊芙', aden: '星語者' } },
-    { role: '娃娃商人', icon: '🧚', x: 20, y: 14, act: () => openDollShop(),
+    { role: '鑽石商人', icon: '💎', x: 20, y: 14, act: () => openDollShop(),
       names: { talking: '露米', gludio: '露米', giran: '露米', aden: '露米' } },
     { role: '二轉導師', icon: '🌟', x: 8, y: 14, act: () => openTownSub('advance'),   // 名字、立繪依玩家職業（advance.js advNpcPatch）
       names: { talking: '二轉導師', gludio: '二轉導師', giran: '二轉導師', aden: '二轉導師' } },

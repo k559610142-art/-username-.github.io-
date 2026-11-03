@@ -14,7 +14,7 @@ const SCENE_WORLD_WALK = SCENE_WORLD_TILES.flatMap(r => {
     const [x0, y0, x1, y1] = r.rect;
     return [[x0 + 12, y0 + 10, x1 - 12, y1 - 10], [x0, r.y - 2, x1, r.y + 2], [r.x - 2, y0, r.x + 2, y1]];
 });
-const SCENE_TOWN_ROLES = [['商店', 'shop'], ['回收', 'sell'], ['倉庫', 'storage'], ['旅館', 'inn'], ['傳送師', 'teleport'], ['娃娃商人', 'doll'], ['鑑定台', 'identify'], ['傭兵團長', 'mercenary'], ['二轉導師', 'advance'], ['傭兵公會', 'guild'], ['鍛造兌換', 'exchange']];   // 2026-11-03 鍛造 NPC 移除，鍛造併入兌換師（第 286 節）   // 二轉導師：名字與外觀依玩家職業（advance.js advNpcPatch，第 247 節）
+const SCENE_TOWN_ROLES = [['商店', 'shop'], ['回收', 'sell'], ['倉庫', 'storage'], ['旅館', 'inn'], ['傳送師', 'teleport'], ['鑽石商人', 'doll'], ['鑑定台', 'identify'], ['傭兵團長', 'mercenary'], ['二轉導師', 'advance'], ['傭兵公會', 'guild'], ['鍛造兌換', 'exchange']];   // 2026-11-03 鍛造 NPC 移除，鍛造併入兌換師（第 286 節）   // 二轉導師：名字與外觀依玩家職業（advance.js advNpcPatch，第 247 節）
 const SCENE_ART_BGS = {
     wild: { src: SCENE_ART_ROOT + 'world-play.jpg', mini: SCENE_ART_ROOT + 'world-mini.jpg', w: 188, h: 149, start: [23, 92], big: true,
         walk: SCENE_WORLD_WALK, block: [], regions: SCENE_WORLD_TILES,
