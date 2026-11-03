@@ -4634,3 +4634,10 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 其他接點：ui-scene.js 角色排序多一個 `scene.mercenary2` actor（`mercAs2(sceneDrawMerc)`）；combat.js 首領紅圈大招改成 `mercTele` 兩名各自判斷有沒有站出紅圈；ui.js 狀態列「傭兵 HP a／b｜c／d」；advance.js 二轉試煉兩名都要先休息。兩名不站同一格：`mercTileTaken` 排除另一名所在格與目的地。
 - 介面（傭兵團）：新區塊「👑 人皇第二出戰位」：派出／收回（`mercSecondToggle`）、換到管理欄（`mercSecondSwap`，主／副對調，裝備、符石、復活、放棄都在主欄操作）、放回名冊（`mercSecondUnset`）；名冊每列多「設為第二名」（`mercSetSecond`，人皇且第二位空時）。
 - 驗證：瀏覽器人皇＋兩名 Lv.30 傭兵掛機，兩名都出手、受傷、拿到相同經驗、地圖上分開站、狀態列顯示兩組；JSON 存讀後第二名保留；換欄／放回／再設定物件不變；改成暴君後 `mercSecondActive()` 為 null、面板顯示限制且沒有「設為第二名」。test-mercenary／-skills、test-advance／-portraits 原本就失敗（舊 schema 斷言），改前改後同一行。
+
+## 288. 切換地圖自動掛機、回村才停（2026-11-03，版本 `20261103n`；`world-atlas.js`）
+
+- 使用者要求：換到任何狩獵地點就立刻開始自動掛機，只有回到村莊才關閉。
+- 原本傳送師 `travelZone`、野外入口 `enterZoneFromKeeper`、異界地圖／傳送門（maps.js）都已在換地點後 `startHunt()`；大地圖走過交界 `sceneEnterZone`、永夜之塔換樓層 `changeFloor` 不會中斷掛機。
+- 唯一缺口是世界地圖傳送 `atlasTravel`：先 `stopHunt()` 再換地點但沒有重開。現在目的地是狩獵地點（`z`）時傳送後呼叫 `startHunt()`；目的地是村莊維持停止。玩家在野外手動按停止仍然有效。
+- 驗證：瀏覽器測試角色村莊→世界地圖傳送野外（掛機中）→另一個野外（掛機中）→村莊（停止），Console 無錯誤。

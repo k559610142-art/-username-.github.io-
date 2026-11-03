@@ -93,6 +93,7 @@ function atlasTravel(index) {
         scene = null; sceneSpawnAt = null; session = null;
         openTabs = []; currentTab = 'hunt';
         addLog(`🌀 世界地圖傳送到${atlasPointName(p)}${tower ? ` ${player.loc.floor}F` : ''}`, 'sys');
+        if (z) startHunt();   // 傳到狩獵地點立刻掛機、回村莊才停（2026-11-03 第 288 節，使用者要求）
         saveGame(); renderTabs(); refreshUI();
     }, '傳送前往');
 }
