@@ -323,7 +323,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261105a`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261105b`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -4808,4 +4808,12 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 使用者回報：特定帳號一直出現「掉寶結算待重試：loot raid not won」。
 - 原因：團隊副本打贏後，每個隊員各自把 `{kind:'raid', room, round}` 放進掉寶佇列，再呼叫 `loot_raid`。伺服器（`tools/server-loot.sql` `loot_raid`）要求房間還在、`round` 相同、`status` 是 fighting／done、`result.win` 為真。如果隊長在這之前按了「再打一場」（`raidAgain`：status 改回 open、round+1、result 清空）或解散隊伍（status closed），慢一步的隊員（背景分頁、手機網路慢）就會永遠拿到 `loot raid not won`。以前這個錯誤直接丟出，整輪 `lootPump` 中斷，**排在後面的一般擊殺也結算不到**，每次重試都再顯示一次。
 - 修正（客戶端）：`lootPump` 的團隊副本那一段遇到 `loot raid not won` 就把這筆移出佇列、在戰鬥訊息寫「⚠️ 團隊副本掉寶已失效：結算前隊伍已開始下一場或解散」，繼續結算其他項目。那一場的團隊副本掉落會拿不到（伺服器已經不承認），經驗與金幣本來就在本機入帳，不受影響。
-- 根本解法（待使用者決定）：伺服器在副本開打時把勝利結果另存一張表（房間＋回合），`loot_raid` 改查那張表，隊長再開下一場也不影響上一場的結算；需要改 SQL 並在 Supabase 執行。
+- 根本解法已做（第 305 節）：伺服器另存勝利紀錄。客戶端這段保留，給裝 SQL 前就已經失效的舊結算用。
+
+## 305. 團隊副本勝利紀錄：再打一場／解散不影響上一場掉寶（2026-11-05，版本 `20261105b`；SQL `tools/raid-wins.sql`，已同步進 `server-loot.sql`／`server-loot-install.sql`）
+
+- 使用者決定改伺服器（接第 304 節）。新表 `dragon_raid_wins(room_id, round, raid, result, members, at)`，主鍵房間＋回合，RLS 開、不給 anon／authenticated 直接讀寫。
+- `raid_rooms` 加 AFTER INSERT/UPDATE trigger `raid_rooms_keep_win`（`dragon_raid_win_keep`）：房間 status 是 fighting／done 且 `result.win` 為真時，寫入一筆勝利紀錄，`members`＝當下 `raid_members` 裡 `ready_round` 等於這一回合的 `{uid, char}`；`on conflict do nothing`，以第一次為準，之後隊長改 result 也不覆蓋。有新紀錄時順便刪掉 7 天前的紀錄。安裝時也會補記目前已經打贏、還沒換下一場的房間。
+- `loot_raid`：先查勝利紀錄，有紀錄就用紀錄的副本 id 與結果結算；隊員要在紀錄的 `members` 裡（沒記到時退回查 `raid_members`），且要在 `result.members` 裡。沒有紀錄（安裝前的舊房間）才照舊看房間現況。所以隊長按「再打一場」（round+1、result 清空）、解散（closed），或隊員離隊（raid_members 被刪），上一場都還能結算。沒打贏的場次一樣回 `loot raid not won`。
+- **要在 Supabase 執行一次 `tools/raid-wins.sql`**（可重跑）。內容已同步寫進 `server-loot.sql`／`server-loot-install.sql`，之後重跑那兩份也不會蓋回舊版。
+- 測試：`tools/test-server-loot-db.js`（PGlite，只用記憶體）加情境：打贏→隊長再打一場＋隊員離隊→上一場仍可結算；換角色結算被拒；沒打贏後解散→not won。另外把 `raid-wins.sql` 接在 `server-loot.sql` 後面跑同一份測試，也通過。

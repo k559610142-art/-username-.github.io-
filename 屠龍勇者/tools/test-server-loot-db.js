@@ -70,8 +70,25 @@ async function main(){
  await db.exec('set role authenticated');
  const raid=await rpc('loot_raid',[0,'123|knight',room,1]);assert.equal(raid.cursor,2);assert.deepEqual(await rpc('loot_raid',[0,'123|knight',room,1]),raid);
  await reject(()=>rpc('loot_raid',[0,'123|knight',room,2]),/not won/);
+ // 第 305 節：打贏後隊長馬上「再打一場」（round+1、result 清空）、隊員也離隊，上一場仍可結算；別人的勝利紀錄不能拿
+ await db.exec('reset role');const room2=crypto.randomUUID();
+ await db.query('insert into public.raid_rooms values($1,1,$2,$3,null)',[room2,'drake','open']);
+ await db.query('insert into public.raid_members values($1,$2,$3,1)',[room2,uuid,'123|knight']);
+ await db.query('update public.raid_rooms set status=$2,result=$3 where id=$1',[room2,'fighting',{win:true,members:[{uid:uuid}]}]);
+ await db.query('update public.raid_rooms set status=$2,round=2,result=null where id=$1',[room2,'open']);
+ await db.query('delete from public.raid_members where room_id=$1',[room2]);
+ assert.equal((await query('select count(*)::int as n from public.dragon_raid_wins where room_id=$1',[room2]))[0].n,1);
+ await db.exec('set role authenticated');
+ const raid2=await rpc('loot_raid',[0,'123|knight',room2,1]);assert(raid2.cursor>raid.cursor);
+ await reject(()=>rpc('loot_raid',[0,'999|knight',room2,1]),/character changed|not member/);
+ await db.exec('reset role');const room3=crypto.randomUUID();
+ await db.query('insert into public.raid_rooms values($1,1,$2,$3,null)',[room3,'drake','open']);
+ await db.query('update public.raid_rooms set status=$2,result=$3 where id=$1',[room3,'fighting',{win:false,members:[{uid:uuid}]}]);
+ await db.query('update public.raid_rooms set status=$2 where id=$1',[room3,'closed']);
+ await db.exec('set role authenticated');
+ await reject(()=>rpc('loot_raid',[0,'123|knight',room3,1]),/not won/);
  await rpc('loot_worldboss',[0,'123|knight',7]);await reject(()=>rpc('loot_worldboss',[0,'123|knight',7]),/already claimed/);
- const all=await rpc('loot_pending',[0,'123|knight']);assert.equal(all.length,2);assert.equal(all[1].items.length,2);
+ const all=await rpc('loot_pending',[0,'123|knight']);assert.equal(all.length,3);assert.equal(all[2].items.length,2);   // 團戰兩場（含第 305 節再打一場）＋世界首領
  await db.exec('reset role');assert.equal((await query('select count(*) as n from public.test_wb'))[0].n,1);
  const mapPlayer={...player,created:456,loc:{type:'zone',id:'pyramid'},mapRun:{zone:'pyramid',t:5,left:0,mods:[]}};
  await db.query('insert into public.dragon_saves values($1,1,$2,1)',[uuid,{schema:5,lootProtocol:1,lootCursor:0,player:mapPlayer}]);
