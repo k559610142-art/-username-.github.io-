@@ -66,6 +66,7 @@ function renderStatus() {
     const hs = $('hud-stats');
     if (hs) hs.innerHTML = `<span class="gold">💰${fmt(player.gold)}</span>${diaCount != null ? `<span class="dia">💎${fmt(diaCount)}</span>` : ''}<span class="hud-lv-gap"></span><span>防禦 ${defenseOf(st)}</span><span class="hud-mr">MR ${st.mr}<span class="hud-weight">負重 ${weightPct}%</span></span>`;
     setOrb('orb-hp', player.hp, st.maxHp, 'HP');
+    setOrbShield(st.maxHp);
     setOrb('orb-mp', player.mp, st.maxMp, 'MP');
     const where = player.loc.type === 'town' ? `${TOWNS[player.loc.id].icon} ${TOWNS[player.loc.id].name}`
         : `📍 ${zoneTitle()}${sceneRegionName() ? '・' + sceneRegionName() : ''}${walkHome ? '・步行回村中' : player.hunting ? '・<span class="good">掛機中</span>' : '・停止'}`;
@@ -92,6 +93,24 @@ function setOrb(id, cur, max, label) {
     const pct = max > 0 ? clamp(cur / max, 0, 1) : 0;
     el.querySelector('.orb-empty').style.height = `${(1 - pct) * 100}%`;
     el.querySelector('span').innerHTML = `${label}<br>${Math.max(0, Math.floor(cur))}/${max}`;
+}
+// 血球護盾（2026-11-04 第 303 節）：二轉技能護盾（advRt().shield，有時限）＋深淵魔王溢血護盾（overShield）合計；
+// 外圈藍色光暈比例＝護盾／HP 上限的 20%（溢血護盾上限，滿一圈），HP 數字下面多一行「盾 N」。setOrb 會重寫文字，所以要在它之後呼叫
+function orbShieldAmount() {
+    if (typeof advRt !== 'function') return 0;
+    const rt = advRt();
+    return Math.max(0, (rt.shieldUntil > gameNow ? rt.shield : 0) + (rt.overShield || 0));
+}
+function setOrbShield(maxHp) {
+    const el = $('orb-hp');
+    if (!el) return;
+    const n = Math.floor(orbShieldAmount());
+    let ring = el.querySelector('.orb-shield');
+    if (!ring) { ring = document.createElement('div'); ring.className = 'orb-shield'; el.insertBefore(ring, el.querySelector('span')); }
+    const pct = n > 0 && maxHp > 0 ? clamp(n / (maxHp * 0.2), 0.04, 1) : 0;
+    ring.hidden = !pct;
+    if (pct) ring.style.setProperty('--sp', (pct * 360).toFixed(1) + 'deg');
+    if (n > 0) el.querySelector('span').innerHTML += `<b class="orb-shield-n">盾 ${n}</b>`;
 }
 
 function showToast(msg, ms = 1800) {

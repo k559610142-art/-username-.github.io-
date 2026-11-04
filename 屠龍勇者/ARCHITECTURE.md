@@ -323,7 +323,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261104g`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261104k`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -4795,3 +4795,10 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 使用者要求：二轉鬥神（`sWar`）被動「修羅道」的戰意（`advRt().stacks`，第 247 節二轉）原本畫面上看不到，現在比照阿修羅「血戰」在狀態欄技能區固定一格（`buffIconsHtml` 的 `passive_sWar`，圖示用 `war.passive`）。
 - 顯示：沒戰意「待命」；有戰意發光（`on`）顯示「×N」；20 層「滿層」。點圖示提示「修羅道（戰意 N／20 層，傷害 +N%，10 層以上加註可施放戰意爆發）」。
 - 5 秒清空：`advTick` 只在掛機中執行，停止掛機或回村時層數不會被清，所以顯示端也用 `now - stackAt <= 5000` 判斷，超過就當 0。
+
+## 303. 血球護盾顯示（2026-11-04，版本 `20261104k`；`ui.js`、`index.html`）
+
+- 使用者要求：深淵魔王「血魔領域」溢血護盾（`advRt().overShield`，第 247 節二轉）原本畫面上看不到，改顯示在紅色血球上，使用者指定**藍色光暈在血球邊緣**。
+- `orbShieldAmount()`＝技能護盾（`rt.shield`，`shieldUntil` 內才算，例如秘法屏障）＋溢血護盾合計；`setOrbShield(maxHp)` 在 `renderStatus` 的 `setOrb('orb-hp')` 之後呼叫（setOrb 會重寫文字）。
+- 外圈：`.orb-shield`（動態建在 `#orb-hp` 裡），`conic-gradient` 從正上方順時針，長度 `--sp`＝護盾／（HP 上限 × 20%），滿 20% 是一整圈，最少畫 4%；`mask: radial-gradient(circle closest-side, …)` 只留外緣一圈（不要用預設 farthest-corner，方形框的角落半徑比圓大，整圈會被遮掉）。
+- 文字：HP 數字下面多一行藍字「盾 N」（`.orb-shield-n`），沒有護盾不顯示；`.orb span` 改 `flex-direction: column`，不然 `<b>` 會被 flex 排到數字右邊。
