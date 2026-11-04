@@ -321,6 +321,13 @@ function buffIconsHtml() {
         add('skill', 'passive_shuraBlood', 'skill', `血戰（${on ? '生效中' : '待命：HP 低於 50% 觸發'}）：` + blood.desc,
             skillIconHtml(blood, 'skill'), on ? '生效中' : '待命', on ? 'on' : '');
     }
+    // 鬥神「修羅道」戰意層數（2026-11-04 第 302 節）：advance.js advRt().stacks，學會就固定顯示；5 秒沒攻擊清空（advTick 只在掛機時跑，這裡也照 5 秒判斷）
+    const war = advIs('sWar') && advBranch();
+    if (war && player.hp > 0) {
+        const rt = advRt(), n = rt.stacks && now - rt.stackAt <= 5000 ? rt.stacks : 0;
+        add('skill', 'passive_sWar', 'skill', `修羅道（戰意 ${n}／20 層，傷害 +${n}%${n >= 10 ? '，可施放戰意爆發' : ''}）：${war.p.desc}`,
+            skillIconHtml(war.passive, 'skill'), n >= 20 ? '滿層' : n ? '×' + n : '待命', n ? 'on' : '');
+    }
     // 共鳴視為裝備提供的技能；生效時依原始持續時間分類，不重複顯示。
     equippedRes.forEach(id => {
         const r = ITEMS[id].res, left = Math.ceil(((player.cds['res_' + id] || 0) - now) / 1000), act = player.buffs['res_' + id];
