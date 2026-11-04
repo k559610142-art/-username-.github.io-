@@ -323,7 +323,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261104k`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261105a`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -4802,3 +4802,10 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - `orbShieldAmount()`＝技能護盾（`rt.shield`，`shieldUntil` 內才算，例如秘法屏障）＋溢血護盾合計；`setOrbShield(maxHp)` 在 `renderStatus` 的 `setOrb('orb-hp')` 之後呼叫（setOrb 會重寫文字）。
 - 外圈：`.orb-shield`（動態建在 `#orb-hp` 裡），`conic-gradient` 從正上方順時針，長度 `--sp`＝護盾／（HP 上限 × 20%），滿 20% 是一整圈，最少畫 4%；`mask: radial-gradient(circle closest-side, …)` 只留外緣一圈（不要用預設 farthest-corner，方形框的角落半徑比圓大，整圈會被遮掉）。
 - 文字：HP 數字下面多一行藍字「盾 N」（`.orb-shield-n`），沒有護盾不顯示；`.orb span` 改 `flex-direction: column`，不然 `<b>` 會被 flex 排到數字右邊。
+
+## 304. 團隊副本掉寶「loot raid not won」卡住結算（2026-11-05，版本 `20261105a`；`loot.js`）
+
+- 使用者回報：特定帳號一直出現「掉寶結算待重試：loot raid not won」。
+- 原因：團隊副本打贏後，每個隊員各自把 `{kind:'raid', room, round}` 放進掉寶佇列，再呼叫 `loot_raid`。伺服器（`tools/server-loot.sql` `loot_raid`）要求房間還在、`round` 相同、`status` 是 fighting／done、`result.win` 為真。如果隊長在這之前按了「再打一場」（`raidAgain`：status 改回 open、round+1、result 清空）或解散隊伍（status closed），慢一步的隊員（背景分頁、手機網路慢）就會永遠拿到 `loot raid not won`。以前這個錯誤直接丟出，整輪 `lootPump` 中斷，**排在後面的一般擊殺也結算不到**，每次重試都再顯示一次。
+- 修正（客戶端）：`lootPump` 的團隊副本那一段遇到 `loot raid not won` 就把這筆移出佇列、在戰鬥訊息寫「⚠️ 團隊副本掉寶已失效：結算前隊伍已開始下一場或解散」，繼續結算其他項目。那一場的團隊副本掉落會拿不到（伺服器已經不承認），經驗與金幣本來就在本機入帳，不受影響。
+- 根本解法（待使用者決定）：伺服器在副本開打時把勝利結果另存一張表（房間＋回合），`loot_raid` 改查那張表，隊長再開下一場也不影響上一場的結算；需要改 SQL 並在 Supabase 執行。

@@ -295,7 +295,17 @@ async function lootPump() {
                 throw Error('雲端存檔尚未同步');
             }
             let receipt = null;
-            if (job.kind === 'raid') await marketRpc('loot_raid', { p_slot:job.slot,p_char:job.char,p_room:job.room,p_round:job.round });
+            if (job.kind === 'raid') {
+                // 2026-11-05 第 304 節：結算前隊長已按「再打一場」（round+1）或解散隊伍，伺服器回 loot raid not won，這筆永遠不會成功；
+                // 以前會一直丟錯，卡住排在後面的一般擊殺結算，畫面一直顯示「掉寶結算待重試」。直接移出佇列、繼續結算其他的
+                try { await marketRpc('loot_raid', { p_slot:job.slot,p_char:job.char,p_room:job.room,p_round:job.round }); }
+                catch (e) {
+                    if (!/loot raid not won/.test(String(e && e.message))) throw e;
+                    lootStore(lootJobs().filter(j => j.key !== job.key));
+                    addLog('⚠️ 團隊副本掉寶已失效：結算前隊伍已開始下一場或解散', 'warn');
+                    continue;
+                }
+            }
             else {
                 const tickets = lootJobs().filter(j => j.batch === job.batch).map(j => j.ticket);
                 try { if (lootBatchMissing) throw Error('loot_finish_batch missing'); receipt = await marketRpc('loot_finish_batch', { p_batch:job.batch,p_tickets:tickets }); }
