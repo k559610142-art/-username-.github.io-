@@ -1,0 +1,114 @@
+{
+  "version": 3,
+  "coordinateSpace": "512x512 logical game cells",
+  "requirements": [
+    {
+      "id": "talking_island_village_gate",
+      "anchorGame": [
+        32576,
+        32945
+      ],
+      "anchorLocal": [
+        320,
+        177
+      ],
+      "anchorNativePixel": [
+        11952,
+        4428
+      ],
+      "clearWidthCells": 1,
+      "status": "pure L1J terrain; runtime lane-width assertion required",
+      "rule": "Village entrance must allow exactly one character abreast."
+    },
+    {
+      "id": "talking_island_port_bridge",
+      "anchorGame": [
+        32652,
+        32984
+      ],
+      "anchorLocal": [
+        396,
+        216
+      ],
+      "anchorNativePixel": [
+        14712,
+        3984
+      ],
+      "clearWidthCells": 2,
+      "status": "pure L1J terrain; runtime lane-width assertion required",
+      "rule": "Port wooden bridge must allow exactly two characters abreast."
+    },
+    {
+      "id": "talking_island_village_exit_lower_left",
+      "anchorGame": [
+        32544,
+        32957
+      ],
+      "anchorLocal": [
+        288,
+        189
+      ],
+      "anchorNativePixel": [
+        11472,
+        4956
+      ],
+      "clearWidthCells": 1,
+      "status": "pure L1J terrain (barricade artwork filtered from render only); runtime lane-width assertion required",
+      "rule": "Lower-left village exit must remain one character wide and unobstructed."
+    },
+    {
+      "id": "talking_island_village_exit_lower_right",
+      "anchorGame": [
+        32572,
+        32980
+      ],
+      "anchorLocal": [
+        316,
+        212
+      ],
+      "anchorNativePixel": [
+        12696,
+        4896
+      ],
+      "clearWidthCells": 1,
+      "status": "pure L1J terrain (barricade artwork filtered from render only); runtime lane-width assertion required",
+      "rule": "Lower-right village exit must remain one character wide and unobstructed."
+    },
+    {
+      "id": "talking_island_adventure_cave_entrance",
+      "anchorGame": [
+        32492,
+        32852
+      ],
+      "anchorLocal": [
+        236,
+        84
+      ],
+      "anchorNativePixel": [
+        7704,
+        4320
+      ],
+      "clearWidthCells": 1,
+      "status": "anchored on the painted cave mouth (stone-framed doorway + floor mat); terrain already walkable",
+      "rule": "Adventure Cave 1F is entered at the painted cave mouth on the western rock wall."
+    },
+    {
+      "id": "talking_island_adventure_cave_return",
+      "anchorGame": [
+        32493,
+        32853
+      ],
+      "anchorLocal": [
+        237,
+        85
+      ],
+      "anchorNativePixel": [
+        7752,
+        4320
+      ],
+      "clearWidthCells": 1,
+      "status": "anchored on the painted cave mouth (stone-framed doorway + floor mat); terrain already walkable",
+      "rule": "Return landing beside the painted Adventure Cave mouth."
+    }
+  ]
+}

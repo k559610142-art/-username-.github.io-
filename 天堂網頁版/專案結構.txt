@@ -1,0 +1,9 @@
+天堂網頁版/
+  index.html             遊戲入口
+  data/                  獨立功能 JS 與地圖資料
+  mobile.css             手機版面
+  rpg-hud.css             手機 MMORPG 介面樣式
+  assets/talking-island/  說話之島素材
+
+開發：修改 data/ 對應功能檔；新增功能後在 index.html 加入 script defer。
+沒有修改上一層的 index.html、data、sw.js 或其他遊戲資料夾。

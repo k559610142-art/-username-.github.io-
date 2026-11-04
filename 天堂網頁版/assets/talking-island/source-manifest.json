@@ -1,0 +1,1652 @@
+{
+  "source": "C:/Users/User/Desktop/秋月天堂/IdleLineage.pck",
+  "sourceMapId": 0,
+  "compatibility": "Map ID, origin and dimensions match supplied emulator. Scene comes from a separate local client; exact historical version equivalence unverified.",
+  "files": [
+    {
+      "file": "collision-overrides.json",
+      "pckEntry": "assets/maps/talking_island/collision-overrides.json",
+      "bytes": 2971,
+      "sha256": "f39e93fb780cba9c311a0e49b5bb58c602c31d1a05fc1d21fa940c44ac8f326f"
+    },
+    {
+      "file": "l1j-source.json",
+      "pckEntry": "assets/maps/talking_island/l1j-source.json",
+      "bytes": 302,
+      "sha256": "9fc45619a64e6ab9c5c9e4b3f140ab580d19d2def88fa572e66b4be0710a40f7"
+    },
+    {
+      "file": "map.json",
+      "pckEntry": "assets/maps/talking_island/map.json",
+      "bytes": 63184,
+      "sha256": "a9a1fa2560ec0403f7f48590b0473ffdc9565ec52b31436d44593b7042055eb8"
+    },
+    {
+      "file": "occlusion-cells.bin",
+      "pckEntry": "assets/maps/talking_island/occlusion-cells.bin",
+      "bytes": 557152,
+      "sha256": "e881cebeb569763baef0d13bee8b332fa003e265fd873b288ead735c325b9a3f"
+    },
+    {
+      "file": "occlusion-groups.json",
+      "pckEntry": "assets/maps/talking_island/occlusion-groups.json",
+      "bytes": 444076,
+      "sha256": "4ed6f843b941425451c32cdc13d146825ccf534abb7658a07dc07d42cc24a905"
+    },
+    {
+      "file": "pages/fore_01_02.webp",
+      "pckEntry": ".godot/imported/fore_01_02.webp-2bdd5405fd443c1f35f638a4ec3692f1.ctex",
+      "bytes": 139552,
+      "sha256": "c595545e1f768a67cf6944f0c8385c3db618b36d7294a3cb5d66274d7a05725e",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 38056,
+        "sha256": "9a696ecf899cc6f6876bd6183c9d16e84593893475875dd487023af6e78afce6",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/fore_01_03.webp",
+      "pckEntry": ".godot/imported/fore_01_03.webp-220fc9fc490a0bc76a91abfd2d94e350.ctex",
+      "bytes": 830070,
+      "sha256": "1cad52c406b59b8fd6fb7a1b98a9ed5cbfe34b294eba80612a740000477480fc",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 228158,
+        "sha256": "a1ee7df7e66a3f8ac2325b28c22032f460f56849e589ba529b98c0d210e9764f",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/fore_01_04.webp",
+      "pckEntry": ".godot/imported/fore_01_04.webp-927c1925b6ad5811984c51efd468a06d.ctex",
+      "bytes": 402098,
+      "sha256": "9707742a66cd6c9838d3049ac8f2b8a8b646168e4a3c09726328cbbe1e9c62e1",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 96070,
+        "sha256": "1e0b7c88e6b310e2c06bc85e62cada0b4f12fc18ada652f59f0e8e88dae89924",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/fore_02_01.webp",
+      "pckEntry": ".godot/imported/fore_02_01.webp-1499badec4a00a0f3a887a928823669f.ctex",
+      "bytes": 99602,
+      "sha256": "5fdaa06e4c1355c845310329652786bf3826b514fc8f04952fc8157f627daff0",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 27594,
+        "sha256": "d8bdd5b2ec24b1093f1136dd92d04a74d06134ce549f7f3d5497a4c7909f7a99",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/fore_02_02.webp",
+      "pckEntry": ".godot/imported/fore_02_02.webp-dd86ddbfa1e0590fb71861c8a01cfc13.ctex",
+      "bytes": 2053576,
+      "sha256": "be1e8918f14f9c3b7dd517ff9dffab81cb38e40956dd201a4f496f83d1b6c8b4",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 471230,
+        "sha256": "9a12de9583bf22aac5fef219fe34d71790191df3577977cd7b95bc8ec78bc73f",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/fore_02_03.webp",
+      "pckEntry": ".godot/imported/fore_02_03.webp-6dc6e91b5351b6835cdda40fa2fa7a39.ctex",
+      "bytes": 1874076,
+      "sha256": "df75ea1ccd08c06845d27e074c4db6da12251176471d5be5ad2a1e282194599f",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 404286,
+        "sha256": "4641f6debd619339f46cec85045003896d79ff1cdbbe7f8d7bbb868c1af724cf",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/fore_02_04.webp",
+      "pckEntry": ".godot/imported/fore_02_04.webp-d0c18072c39d2dae53a6d0ffa9fa6d2e.ctex",
+      "bytes": 689432,
+      "sha256": "39f633011e2b55191c843b8ce4549f87c363a6774183c9b86a1ead01c51bb690",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 154094,
+        "sha256": "d056718f87140eea64f7bbd00728984e18ad5459d5261d532b239ea04f0e2958",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/fore_02_05.webp",
+      "pckEntry": ".godot/imported/fore_02_05.webp-be315b1f66645e90fe89a70c0a555217.ctex",
+      "bytes": 459130,
+      "sha256": "6a9d6b7c89476abd2ca7b67c2c3f0eed217d916689e2f2fd4ef3d9888036d2fc",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 116856,
+        "sha256": "f3a4bf214d9705ec4945eaa6529f2cf2358d0c7315cadaa5584caee6713273a3",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/fore_02_06.webp",
+      "pckEntry": ".godot/imported/fore_02_06.webp-1f97bde3db4ee949da27f3f6459c657d.ctex",
+      "bytes": 554324,
+      "sha256": "e4a974aa5e0936fff5ae3c1de0d333a4de0253418425a2ca096e0c5e3d0d6c9b",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 130986,
+        "sha256": "4ff49dc9ea6e3b2908fdbe562091115932bf2dde23548bcae37a50584eba0647",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/fore_03_01.webp",
+      "pckEntry": ".godot/imported/fore_03_01.webp-9257b1fc68387e4ed3a4322da93c020c.ctex",
+      "bytes": 886356,
+      "sha256": "9884c084439dc1d586e6bc12cd28c962f64c28ca3e3f679eafb309eb70b76f06",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 223042,
+        "sha256": "e3f73e0f48407d8258f12f3622e6b76f2288b2b2ba05f6b71f272328dd26e4de",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/fore_03_02.webp",
+      "pckEntry": ".godot/imported/fore_03_02.webp-9b3e85d8fc1cd9809e756e1067f2c871.ctex",
+      "bytes": 2032538,
+      "sha256": "be19d9bfe8b085eccce1c98a41cd635997a61217f61ffac2e43076110447f41f",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 632622,
+        "sha256": "5d85bdfaaca38214c5705cfb1f2a64ad5ce5016c3078cb7e830d3484f47dd9db",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/fore_03_03.webp",
+      "pckEntry": ".godot/imported/fore_03_03.webp-e01c98e156182f992e0ddd98ecc52caa.ctex",
+      "bytes": 2432708,
+      "sha256": "dc2c69409e7b26ff7b5360056f0c99d237d75a5836a7e64527d14bc2858a0b12",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 552326,
+        "sha256": "0ddb28924879036a6624b5fc781061a630f12e12dad8e588dbcaecbde31dd337",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/fore_03_04.webp",
+      "pckEntry": ".godot/imported/fore_03_04.webp-eea2933ab085d5eba80c02407704904a.ctex",
+      "bytes": 1633152,
+      "sha256": "d9034381ab7ae75f5f8a0a06f2f2212a0f29dc06fe1c76ce648e44d3daed0998",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 426624,
+        "sha256": "05f5cc8c466d9fd49471f56a0e0eb8530bd17c93e9b072ac7aad4151183c2f51",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/fore_03_05.webp",
+      "pckEntry": ".godot/imported/fore_03_05.webp-c35578b666c42c96359eb1e7bf3b2586.ctex",
+      "bytes": 2154484,
+      "sha256": "640cf628d75b4099eded0658077a1a3ed10b06fa7261b933caf8caffcd09a845",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 529234,
+        "sha256": "436e65936298d9647667927723cf9c3493ce0e0a47e0f4be29bfc0c12a295783",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/fore_03_06.webp",
+      "pckEntry": ".godot/imported/fore_03_06.webp-4c99ba245916e448a6d3a2f0eb8d69c8.ctex",
+      "bytes": 2407342,
+      "sha256": "e2eedd45f039dfd99838b5d0713be176bbd3d0a1da9c051628787a10405e1694",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 607110,
+        "sha256": "c0f3d94cc9d520f1cc3f4347cb3a70232f841b3712b6e015a2939445dc351fad",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/fore_03_07.webp",
+      "pckEntry": ".godot/imported/fore_03_07.webp-d0606c88935cabc89f30a51b843089e7.ctex",
+      "bytes": 1594,
+      "sha256": "6b168f0579d4e4b8e92f186ab25485ffe828f4782a7b39e37181ee9102b74fda",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 2562,
+        "sha256": "abfebc4d8bd21d2b080ad32a5ebdfa0ded4763523462461cf5c3a021cd617296",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/fore_04_01.webp",
+      "pckEntry": ".godot/imported/fore_04_01.webp-8c3142917a9bd7a91aa17ecb3b8a8fc5.ctex",
+      "bytes": 817928,
+      "sha256": "d8a0e2d152c3b7f7fe322308181a9bb775c6a72ade01cf1b9a4e0e368999f63f",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 209272,
+        "sha256": "d9c9fdfdf6d711fa27c3ca2be5b17e030f64238e3ac00933f83d4b55338a2292",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/fore_04_02.webp",
+      "pckEntry": ".godot/imported/fore_04_02.webp-125ad1af1617791ac29e1072d6275931.ctex",
+      "bytes": 2129808,
+      "sha256": "9e4cf60413e4cb1ef868275c82d33b3c32642f70ada7c9ddb4f6478ca5df9790",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 642932,
+        "sha256": "ed55b1f4d74aeb17655d3e1a7b3ddbde156b8c3aaa3a329a528c2c3325f8c952",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/fore_04_03.webp",
+      "pckEntry": ".godot/imported/fore_04_03.webp-bd93241fffffb235a620676c894e2dbe.ctex",
+      "bytes": 2386110,
+      "sha256": "fe198017730b01754eefd8e6adeec86da9e6200f21c8efbc28229fb9f9cfd21b",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 558488,
+        "sha256": "94a0b93406818fae32c806df54cb6af488b9903deaedb085206d9df6fcd3c8b6",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/fore_04_04.webp",
+      "pckEntry": ".godot/imported/fore_04_04.webp-d307c11c7bc4c62fa277b54419c0f5a0.ctex",
+      "bytes": 2121258,
+      "sha256": "5e1968cdb80579025a4abd5e3f4f74461edc407bcf079910e282f3b90118b196",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 540830,
+        "sha256": "ebcd0ab593bc38cdca3725407714f3e25815e7cd1be2404c12ac4fc18095a78d",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/fore_04_05.webp",
+      "pckEntry": ".godot/imported/fore_04_05.webp-fdf9099669fb45987d417fab3f598c0e.ctex",
+      "bytes": 2606192,
+      "sha256": "700750ea4456ab346b14ddf271ba64cf10cc806df24e203305c0f7b8c6f9d93c",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 645634,
+        "sha256": "4f08d2c9bbd8e9f0132381d627b1574ce643f26eda7fc3318592051a44994513",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/fore_04_06.webp",
+      "pckEntry": ".godot/imported/fore_04_06.webp-aa2ad82b9d2e217ad5cdc441f21f234c.ctex",
+      "bytes": 1155314,
+      "sha256": "d9500c7fc06633adc37cedd2b08fba927b0c001cac3fef1bb6aad8cf00eb0b4f",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 301538,
+        "sha256": "f9b1717d9f7de37440648750cfa9afdaedbb96a6eb041b6c7edbdaf6f03e1b63",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/fore_05_01.webp",
+      "pckEntry": ".godot/imported/fore_05_01.webp-e78a344e7c513f6a72901612185b7890.ctex",
+      "bytes": 27902,
+      "sha256": "7578a31c54edbba0ae286592d88805a820a7baf29e474db447b0301871ff5f2f",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 8606,
+        "sha256": "b797e413fbf880eacbc832ad57fb202c3ae5c03f9389a575e08476b5a2199c21",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/fore_05_02.webp",
+      "pckEntry": ".godot/imported/fore_05_02.webp-16b6826a8d4b25ca30a4f07b5b63343b.ctex",
+      "bytes": 1696610,
+      "sha256": "43ad5c1a6cafc2c4d1bacb211ddb62f6f9f217b2555f31cd1b8dc84b95ebe2a7",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 447264,
+        "sha256": "d38c3b6e9aa814602e88b5965f701ee283ef6b7fc5ce3245cc1e4002574b41d9",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/fore_05_03.webp",
+      "pckEntry": ".godot/imported/fore_05_03.webp-81dbf4507f50ce50b34705c6f3a4be7b.ctex",
+      "bytes": 2467074,
+      "sha256": "d45cdfb2a50114909f3e4bdb1b81affce5e6527f901ee39f78e2c4d240afa522",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 529626,
+        "sha256": "3d5a1dec96e78ba945febbe010c707b536c92b7200ed87e62897fab54652df52",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/fore_05_04.webp",
+      "pckEntry": ".godot/imported/fore_05_04.webp-adf32a6265dec49935dbcac0746a6fc5.ctex",
+      "bytes": 2002000,
+      "sha256": "8e27e21d83268f71bce123322b753ee30de95e487da03e492aaa59887c63478a",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 510992,
+        "sha256": "edb1ba475c51fe11cf19011fbfb586870a600e1181e68c8a055c24fe51596c79",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/fore_05_05.webp",
+      "pckEntry": ".godot/imported/fore_05_05.webp-2631b2df828a9d1946a0b89d86637c5c.ctex",
+      "bytes": 331920,
+      "sha256": "a6ba5b08b6e3fb8f32f24c320d434f6e97198e8d40a8d3bc19ec6796406ed4df",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 96744,
+        "sha256": "e8b4983128d3855b49196186a3b2ca2dca922e7627009139acdfb03ebe7c8de5",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/fore_05_06.webp",
+      "pckEntry": ".godot/imported/fore_05_06.webp-71ea3eabcc651e6595fecaeb27b607f4.ctex",
+      "bytes": 29094,
+      "sha256": "1284bcc9e67623ef3abc65dd0802f7d6fdeb4fe075444d1f360f4f4e3e777dc2",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 9600,
+        "sha256": "f3ef1c9b1b59ee04f397f7e24891aeb138cc1a5c6b9b62655e4ec1d2c7563815",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/fore_06_03.webp",
+      "pckEntry": ".godot/imported/fore_06_03.webp-24d8f821f66af732a017db16df549cf1.ctex",
+      "bytes": 318256,
+      "sha256": "e6c3bcaf8012250b6ed7fd57bc5f3c26abfc4cd533835431c689d793bdea669e",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 81290,
+        "sha256": "72c47b60badfe3ebc276dfa2731f9eab419b9fa4986469fdd6be717a733fcdba",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/fore_06_04.webp",
+      "pckEntry": ".godot/imported/fore_06_04.webp-01a7ef3b9c7f09cef4c89b797085d3d4.ctex",
+      "bytes": 203624,
+      "sha256": "b2b48bb96df139c13b5698892911ce8a8ca39fc7c76f923b5e19391e936551a4",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 55802,
+        "sha256": "34a68d125aa96f45c750e87711a6994acdc577abc2423ef8f248b67b0ba3803b",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/mask_01_02.webp",
+      "pckEntry": ".godot/imported/mask_01_02.webp-df95f7a0f4cafe72d59b4760887b53c9.ctex",
+      "bytes": 9886,
+      "sha256": "b6f84a478a2e032c2f94fb202a3c74fd08dc255e9c967aa025366c9ff2cfbb7a"
+    },
+    {
+      "file": "pages/mask_01_03.webp",
+      "pckEntry": ".godot/imported/mask_01_03.webp-6b6a888a3652f387292ad6efac1dd182.ctex",
+      "bytes": 64538,
+      "sha256": "e6a22260746624e919d802c3decc03fbb27d9107068da9017d8c222436967a41"
+    },
+    {
+      "file": "pages/mask_01_04.webp",
+      "pckEntry": ".godot/imported/mask_01_04.webp-96853e35bcf22500c26a43f16b2f61f7.ctex",
+      "bytes": 24880,
+      "sha256": "0f4ca7c185ca2d5fcb6e2ab2f6f62f02d86757e091b66ea34095e8816eb90083"
+    },
+    {
+      "file": "pages/mask_02_01.webp",
+      "pckEntry": ".godot/imported/mask_02_01.webp-337ea8b4b4afe66a01192f7c9ba7680c.ctex",
+      "bytes": 6680,
+      "sha256": "3afed5537343cfefe73319f4b61e9473957eba3b7e6cb1c09a55a44550b5554d"
+    },
+    {
+      "file": "pages/mask_02_02.webp",
+      "pckEntry": ".godot/imported/mask_02_02.webp-61d48ad8ddbafe3a1ada2900fda9b0df.ctex",
+      "bytes": 145042,
+      "sha256": "42727d39f30ea42893fa8877b4d49f6a00d33a6721721ef76809f7b2b31d3a2b"
+    },
+    {
+      "file": "pages/mask_02_03.webp",
+      "pckEntry": ".godot/imported/mask_02_03.webp-a478e49db6d420341d72fb00430d1ac1.ctex",
+      "bytes": 108404,
+      "sha256": "b46d11e60f4ef21f5d320ab218d84ff50d13491ff7a04640450520a8af8f3920"
+    },
+    {
+      "file": "pages/mask_02_04.webp",
+      "pckEntry": ".godot/imported/mask_02_04.webp-28154d78e2e44712370db74f7b95e937.ctex",
+      "bytes": 31540,
+      "sha256": "89a1eaaf90d4d24d7b7feae30df3fc3c20de3a725c3ce1db0da2ac8f82c50be7"
+    },
+    {
+      "file": "pages/mask_02_05.webp",
+      "pckEntry": ".godot/imported/mask_02_05.webp-6ab80aaa4e8455ffd2c28fe0b01361ef.ctex",
+      "bytes": 34584,
+      "sha256": "7e87934f45e53b94103c994ec9e8319fd31b2e9417575b0cb02abe6fbaee2541"
+    },
+    {
+      "file": "pages/mask_02_06.webp",
+      "pckEntry": ".godot/imported/mask_02_06.webp-f41d98bb63d597910e17eb3e1e2a8758.ctex",
+      "bytes": 43344,
+      "sha256": "d93cb526bb49d783a756c0b30b07f1508ac7fa5f8192a42272763ee20fa3f0b9"
+    },
+    {
+      "file": "pages/mask_03_01.webp",
+      "pckEntry": ".godot/imported/mask_03_01.webp-949933aa4f8f70de4336125eb437f564.ctex",
+      "bytes": 66412,
+      "sha256": "db7aecaf7cc5f606931f4e56da55bf03c6d4c56f2f76f93d2c59e280f4c5adb1"
+    },
+    {
+      "file": "pages/mask_03_02.webp",
+      "pckEntry": ".godot/imported/mask_03_02.webp-b38594e6effc8fe36d20a27491ed01b8.ctex",
+      "bytes": 259406,
+      "sha256": "28091e9bf229a02f23c222963b84647c1f4c567fc746da0e2db6dcfe4d52372b"
+    },
+    {
+      "file": "pages/mask_03_03.webp",
+      "pckEntry": ".godot/imported/mask_03_03.webp-6eab1c9114aa9cf79f03e8c0bd84311f.ctex",
+      "bytes": 152464,
+      "sha256": "0aff7835c48f5c0b87896b395f13f3bb2f6e3bdddd84959ca6e8870ba9bc4981"
+    },
+    {
+      "file": "pages/mask_03_04.webp",
+      "pckEntry": ".godot/imported/mask_03_04.webp-2b78be508315ef3fc5ecc894180b8bf9.ctex",
+      "bytes": 120604,
+      "sha256": "609ba04384fa13699eb2b3667f889884d6b745257951fb4a9471107174bcf85c"
+    },
+    {
+      "file": "pages/mask_03_05.webp",
+      "pckEntry": ".godot/imported/mask_03_05.webp-8b67070cd3ad8e341aeb6d98d899c979.ctex",
+      "bytes": 176800,
+      "sha256": "c28e63e6f25eabc440647cf7f0380be5390e9718556829265daef69af0fcc2a4"
+    },
+    {
+      "file": "pages/mask_03_06.webp",
+      "pckEntry": ".godot/imported/mask_03_06.webp-f235e9b451ef33728f7dec99c5052b00.ctex",
+      "bytes": 238448,
+      "sha256": "9917e9d4423ba425621c7b7c885655956442fcbb10ca6bb4b087d4708c36ffc6"
+    },
+    {
+      "file": "pages/mask_03_07.webp",
+      "pckEntry": ".godot/imported/mask_03_07.webp-0068faa31d1917f7e9187c175f60303c.ctex",
+      "bytes": 282,
+      "sha256": "992225d43fda71c8a72cffcc3b33c4a399fdae32493192b9887276c02acb0bb1"
+    },
+    {
+      "file": "pages/mask_04_01.webp",
+      "pckEntry": ".godot/imported/mask_04_01.webp-224b515c20946475eb15b36a306328ae.ctex",
+      "bytes": 55920,
+      "sha256": "089699510b6a7dbd319860cfa062630df27aadff09067d2574da2fa2b53dd575"
+    },
+    {
+      "file": "pages/mask_04_02.webp",
+      "pckEntry": ".godot/imported/mask_04_02.webp-806abc01525d1f18c3e2e69a174f7337.ctex",
+      "bytes": 274172,
+      "sha256": "9d54c9388c249777fb7e26f80a554e14ff9228577fa342d3b8dba7938b13418b"
+    },
+    {
+      "file": "pages/mask_04_03.webp",
+      "pckEntry": ".godot/imported/mask_04_03.webp-0568e01e955dee0d4b09820d44704ca8.ctex",
+      "bytes": 162482,
+      "sha256": "d9db98c5471a505ab26e014e21af8f58283e29e5e0a2ecbf40b21112968b4348"
+    },
+    {
+      "file": "pages/mask_04_04.webp",
+      "pckEntry": ".godot/imported/mask_04_04.webp-adcc280a0b0cbed2477d04f8b1d7868a.ctex",
+      "bytes": 165538,
+      "sha256": "0bfffb35310fdbf5b7787b0fa48765124798f81129dc52823ce4826c2e372cbc"
+    },
+    {
+      "file": "pages/mask_04_05.webp",
+      "pckEntry": ".godot/imported/mask_04_05.webp-2c5689e923d611b2227bb4d654491298.ctex",
+      "bytes": 231604,
+      "sha256": "45ebe3f818c8d1f89b0f5f07f4390c5ee27f95f7fbb805a93b54ac448bd65c89"
+    },
+    {
+      "file": "pages/mask_04_06.webp",
+      "pckEntry": ".godot/imported/mask_04_06.webp-dff3e25fcbe7caed0d89e04af0cc80d1.ctex",
+      "bytes": 84326,
+      "sha256": "3f1b42448a961c4580ad396be6dac1ccb15da602300dee1dbcc355aca09775b2"
+    },
+    {
+      "file": "pages/mask_05_01.webp",
+      "pckEntry": ".godot/imported/mask_05_01.webp-5fbbf63880fa1e77ef093a98c417291b.ctex",
+      "bytes": 1602,
+      "sha256": "ce387e3d7c9093dfd8c99e8908e6c2e3039c2037662013dab21a8dbae5e02dc1"
+    },
+    {
+      "file": "pages/mask_05_02.webp",
+      "pckEntry": ".godot/imported/mask_05_02.webp-c8a80e8eb8a14255be8f810886b6a220.ctex",
+      "bytes": 172190,
+      "sha256": "8ef662178b52576d799ac86b561e192970b0a26a491015b5ce64848150855cb1"
+    },
+    {
+      "file": "pages/mask_05_03.webp",
+      "pckEntry": ".godot/imported/mask_05_03.webp-4e53d81f9336733287fe238432783535.ctex",
+      "bytes": 240836,
+      "sha256": "66b3550ceb22ed31b54ac6d081bd868de99afab64b6924ef93bbcea681da6201"
+    },
+    {
+      "file": "pages/mask_05_04.webp",
+      "pckEntry": ".godot/imported/mask_05_04.webp-f5231dbd6bbd1362a32d3c87bf088652.ctex",
+      "bytes": 154576,
+      "sha256": "d72ac278b0b425b06e30c35921cb6bb548c69894ac1ac136bd84836864a16311"
+    },
+    {
+      "file": "pages/mask_05_05.webp",
+      "pckEntry": ".godot/imported/mask_05_05.webp-c576e0d637f0d63d386a67c6ebc6f4ed.ctex",
+      "bytes": 26720,
+      "sha256": "b07a046c6485a606cb89847bb6757b636cabb7e22e87760ae1ce2afa19e37ba9"
+    },
+    {
+      "file": "pages/mask_05_06.webp",
+      "pckEntry": ".godot/imported/mask_05_06.webp-42b2743da3a525028c931e39780b8371.ctex",
+      "bytes": 2478,
+      "sha256": "8ebdd1637aa15b3dc5d0e70e5a7a58d3d1038e394ada3900929034773766ffc6"
+    },
+    {
+      "file": "pages/mask_06_03.webp",
+      "pckEntry": ".godot/imported/mask_06_03.webp-fb3876e633d41d27117ae7ed2758d975.ctex",
+      "bytes": 30668,
+      "sha256": "a1de31936666a0e1552b0ba2464869af34c6fbadd5b4b9cdd3bd8cf6681d9bfc"
+    },
+    {
+      "file": "pages/mask_06_04.webp",
+      "pckEntry": ".godot/imported/mask_06_04.webp-c2ee8da3c59f2f9dddd135c688755a02.ctex",
+      "bytes": 19040,
+      "sha256": "362cefb3a5db34e8516b87632f0a26385eba79ff93fb78250bec4e9c37b1bf47"
+    },
+    {
+      "file": "pages/page_00_00.webp",
+      "pckEntry": ".godot/imported/page_00_00.webp-3ad51032cdcfb78b2e7f143eceb614b7.ctex",
+      "bytes": 238,
+      "sha256": "fa9255eaf05b8546462ac23b508debd7c1b044b3d9a5a96418cc74620e5dcc9a",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 2252,
+        "sha256": "2023e91fd745e2739d10a56f96d461a6ac3fc22467ab5b921c5cfd465b46aac4",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_00_01.webp",
+      "pckEntry": ".godot/imported/page_00_01.webp-bf0d3792c374a002b0c5c7e68397c69e.ctex",
+      "bytes": 238,
+      "sha256": "fa9255eaf05b8546462ac23b508debd7c1b044b3d9a5a96418cc74620e5dcc9a",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 2252,
+        "sha256": "2023e91fd745e2739d10a56f96d461a6ac3fc22467ab5b921c5cfd465b46aac4",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_00_02.webp",
+      "pckEntry": ".godot/imported/page_00_02.webp-c5f0c8bbc535b6032088866e131ceb89.ctex",
+      "bytes": 238,
+      "sha256": "fa9255eaf05b8546462ac23b508debd7c1b044b3d9a5a96418cc74620e5dcc9a",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 2252,
+        "sha256": "2023e91fd745e2739d10a56f96d461a6ac3fc22467ab5b921c5cfd465b46aac4",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_00_03.webp",
+      "pckEntry": ".godot/imported/page_00_03.webp-b1df37a19e923d6e156c68c730dc6003.ctex",
+      "bytes": 185218,
+      "sha256": "6244d8ebfca4139e4d40dca139373ade3bb8c2de0247c97085cf2d742fc81873",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 86810,
+        "sha256": "d24cef0b979ecb1663240019f72aeb1e9cb2f14d4580d40ce1a18e69f799bbb4",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_00_04.webp",
+      "pckEntry": ".godot/imported/page_00_04.webp-80640471fbca1d877f62fe65cad05bbc.ctex",
+      "bytes": 134456,
+      "sha256": "a8dd87099a501ba8803cf29448017b4f4e94c77dcd658adb513f5ff283beeabf",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 85518,
+        "sha256": "d78d15f1677dbd64d12b211342fe51d7a6ea3fec40482fa0b91ef54f0e3f84c0",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_00_05.webp",
+      "pckEntry": ".godot/imported/page_00_05.webp-90ce8528a658af73ee5fb8bff78b75fa.ctex",
+      "bytes": 238,
+      "sha256": "fa9255eaf05b8546462ac23b508debd7c1b044b3d9a5a96418cc74620e5dcc9a",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 2252,
+        "sha256": "2023e91fd745e2739d10a56f96d461a6ac3fc22467ab5b921c5cfd465b46aac4",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_00_06.webp",
+      "pckEntry": ".godot/imported/page_00_06.webp-1764917946c8025a3ba210161b0d9c15.ctex",
+      "bytes": 238,
+      "sha256": "fa9255eaf05b8546462ac23b508debd7c1b044b3d9a5a96418cc74620e5dcc9a",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 2252,
+        "sha256": "2023e91fd745e2739d10a56f96d461a6ac3fc22467ab5b921c5cfd465b46aac4",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_00_07.webp",
+      "pckEntry": ".godot/imported/page_00_07.webp-831c722ac49ac13f3a5a78975c30b50f.ctex",
+      "bytes": 238,
+      "sha256": "fa9255eaf05b8546462ac23b508debd7c1b044b3d9a5a96418cc74620e5dcc9a",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 2252,
+        "sha256": "2023e91fd745e2739d10a56f96d461a6ac3fc22467ab5b921c5cfd465b46aac4",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_01_00.webp",
+      "pckEntry": ".godot/imported/page_01_00.webp-5ee0b7af7d7cfebaff019aec6eaf04cb.ctex",
+      "bytes": 238,
+      "sha256": "fa9255eaf05b8546462ac23b508debd7c1b044b3d9a5a96418cc74620e5dcc9a",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 2252,
+        "sha256": "2023e91fd745e2739d10a56f96d461a6ac3fc22467ab5b921c5cfd465b46aac4",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_01_01.webp",
+      "pckEntry": ".godot/imported/page_01_01.webp-45fdbf9687c37d584a3ed99fe8c94cfd.ctex",
+      "bytes": 238,
+      "sha256": "fa9255eaf05b8546462ac23b508debd7c1b044b3d9a5a96418cc74620e5dcc9a",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 2252,
+        "sha256": "2023e91fd745e2739d10a56f96d461a6ac3fc22467ab5b921c5cfd465b46aac4",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_01_02.webp",
+      "pckEntry": ".godot/imported/page_01_02.webp-7c973f7a8baf1d18bd98971af4f2668a.ctex",
+      "bytes": 1169848,
+      "sha256": "50c672f381710d611b9f1120a7a807c89900663f801903bbaeeb223cb170dd3a",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 114850,
+        "sha256": "fcfa9bfe64701911f8db26c5f55c5f05e20f5fbf9c3fd78f58d3a993c15bad8c",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_01_03.webp",
+      "pckEntry": ".godot/imported/page_01_03.webp-32adc56574b93cb69ba142345527b9c5.ctex",
+      "bytes": 4701402,
+      "sha256": "4f18f7cc6dbbf2b18cea841b010ebc8a4be3e0eaaaca18cf8fa4f90dd9f2694d",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 365686,
+        "sha256": "985d9c84771492e2dc272418f19bfe70fcac2508505d7f72d84c9299872505e4",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_01_04.webp",
+      "pckEntry": ".godot/imported/page_01_04.webp-fc36e9ee58b15d00b55e0e3918920f34.ctex",
+      "bytes": 1776528,
+      "sha256": "8aecc45bebaf8f621f7004d76a7c1954292f3de38958f75589ca77647ad62208",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 260022,
+        "sha256": "be8488bcea3e088fe510dbb54e2ce1adf59364ca639371eea0e73330d852331b",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_01_05.webp",
+      "pckEntry": ".godot/imported/page_01_05.webp-d5aa8898ff1817f50cbb2b7f65357cc6.ctex",
+      "bytes": 217440,
+      "sha256": "1d6a7264395897270be9304d4401b4019cc18dbe82180437fe801c9f7799a710",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 85838,
+        "sha256": "6ce9e2cf5b9bd6e79264fcf91cdf510a6b6e68e5feda2a0673d78c052ea47a87",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_01_06.webp",
+      "pckEntry": ".godot/imported/page_01_06.webp-f746bd2d4f29ba989d83e616d4ed637c.ctex",
+      "bytes": 238,
+      "sha256": "fa9255eaf05b8546462ac23b508debd7c1b044b3d9a5a96418cc74620e5dcc9a",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 2252,
+        "sha256": "2023e91fd745e2739d10a56f96d461a6ac3fc22467ab5b921c5cfd465b46aac4",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_01_07.webp",
+      "pckEntry": ".godot/imported/page_01_07.webp-04d052f5824da720a20c66098e6da248.ctex",
+      "bytes": 238,
+      "sha256": "fa9255eaf05b8546462ac23b508debd7c1b044b3d9a5a96418cc74620e5dcc9a",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 2252,
+        "sha256": "2023e91fd745e2739d10a56f96d461a6ac3fc22467ab5b921c5cfd465b46aac4",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_02_00.webp",
+      "pckEntry": ".godot/imported/page_02_00.webp-e3b2b3f004e99081835c36103b6689da.ctex",
+      "bytes": 238,
+      "sha256": "fa9255eaf05b8546462ac23b508debd7c1b044b3d9a5a96418cc74620e5dcc9a",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 2252,
+        "sha256": "2023e91fd745e2739d10a56f96d461a6ac3fc22467ab5b921c5cfd465b46aac4",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_02_01.webp",
+      "pckEntry": ".godot/imported/page_02_01.webp-b93a9cbd05fca6757371de49398b695d.ctex",
+      "bytes": 452272,
+      "sha256": "f6a765a4c834c7518992038935dd727327d653987bb3f94551e21ba25e3054ae",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 97730,
+        "sha256": "3fe117dd0bd95efb02760664578ec6a1ee4ab4df677f89f2cb2170ae173c590c",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_02_02.webp",
+      "pckEntry": ".godot/imported/page_02_02.webp-877bcb3348510d9cbf7ce622bd35b948.ctex",
+      "bytes": 6236230,
+      "sha256": "8e27855d036cd86c86fd8a26eb7d9f686dc31ee5061c6cca9a269a8d3d564949",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 464498,
+        "sha256": "af948978161a7392b757b5fd499d30c0f88a8d32ffa74a720c5e13c30d4b11d1",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_02_03.webp",
+      "pckEntry": ".godot/imported/page_02_03.webp-9d5b40d3bbcadb0c849d33387e5c22d2.ctex",
+      "bytes": 5227088,
+      "sha256": "5b9bb585c4ce0f921b4c2a2469e4c7c092896203823840abb6256df7b71fd4f6",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 441676,
+        "sha256": "54b1758373486bdced52dec3a157e99c7316512eab07ecfeb170216b6c4ead88",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_02_04.webp",
+      "pckEntry": ".godot/imported/page_02_04.webp-aebc604ce226108fcfa66630e8dcc6d7.ctex",
+      "bytes": 3191144,
+      "sha256": "d48c72fba05ce965fbb6c591cc916a226511971b22a86664d9b24d15805afd02",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 296210,
+        "sha256": "bcd874b87a65d128e54c1f81f59018415dc304b63fbbaeb5e4d8010dc7f87d53",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_02_05.webp",
+      "pckEntry": ".godot/imported/page_02_05.webp-fd7fdfd4571a5cc07aaf3efb1075daf5.ctex",
+      "bytes": 1747210,
+      "sha256": "e2ffce2f78e481bda4b60a38c93c150a78961f0cfdea9e954bf4e6e640516b64",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 233450,
+        "sha256": "b8f3b5b40baefee694ee5279b2f02422e33f13a52bb9e661f8a91e83d4844ba2",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_02_06.webp",
+      "pckEntry": ".godot/imported/page_02_06.webp-c69babc9cb4e4b51983a5f0c4ec06518.ctex",
+      "bytes": 1096442,
+      "sha256": "0c8fae4ce92e1a7fb44c757fbbbedaea2294d1878817ca0516d44b2ffdf42197",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 128244,
+        "sha256": "f878083cca39c4ec5b2ccb3e7465b59373057818052e3a2112ca212fb881d348",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_02_07.webp",
+      "pckEntry": ".godot/imported/page_02_07.webp-824f1a6c7f67d5071dbca441f06277f8.ctex",
+      "bytes": 238,
+      "sha256": "fa9255eaf05b8546462ac23b508debd7c1b044b3d9a5a96418cc74620e5dcc9a",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 2252,
+        "sha256": "2023e91fd745e2739d10a56f96d461a6ac3fc22467ab5b921c5cfd465b46aac4",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_03_00.webp",
+      "pckEntry": ".godot/imported/page_03_00.webp-9b3a169f104f7003237dbc1284384268.ctex",
+      "bytes": 153444,
+      "sha256": "a9d9c5c929864f11a95af1801472113f9d6b075225336f4c306ae137a2775eb4",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 84820,
+        "sha256": "2ecaff3a65c770680eb3ce7b131571622b1865d487b04ccdfaca092a50fe8684",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_03_01.webp",
+      "pckEntry": ".godot/imported/page_03_01.webp-caa78e53733244f97a62dfb50477651a.ctex",
+      "bytes": 3015292,
+      "sha256": "9d30fbc71b5a4d45e091d26225b2294e167cbf8364c3a0ae8f82541367ed4f7a",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 315342,
+        "sha256": "6bffdb7b567d9a472fe71ce488f59bdf440020c24740e6566c08fa4980b4bde5",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_03_02.webp",
+      "pckEntry": ".godot/imported/page_03_02.webp-01ed5915ceeed1d35b4681fecf20a162.ctex",
+      "bytes": 5466312,
+      "sha256": "1c5606d85aebc7944e75ca7066a22f99d082e9c7bdee87ddbbf744be6a74fe21",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 500248,
+        "sha256": "d45018af1b95fede0dd16ea85bc27c6de7523fd44f8baf4646cdef527f3cabd8",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_03_03.webp",
+      "pckEntry": ".godot/imported/page_03_03.webp-813f1de5b77a1a628270ea7584aa4cfa.ctex",
+      "bytes": 6526926,
+      "sha256": "3d5709f3727f98446fc48ca71645185dfeeb0f293afb6e55c961d53b4fdd34c9",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 522368,
+        "sha256": "c11b4820ffa696786e8db0dd46ec63b017af024f0078b20f2a6914c01616b138",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_03_04.webp",
+      "pckEntry": ".godot/imported/page_03_04.webp-d466c2640fabeeab461c611f683a53f6.ctex",
+      "bytes": 5095526,
+      "sha256": "8f228ea70d5b3cf3c1392c7e0e0b7d24d44269f75e93f2f46d6d09ab25c4ce87",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 463490,
+        "sha256": "858beee8df31eabab86dcfaab8be339ea0a5e5b8fd0ba48bc9b5d0bc0e61850b",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_03_05.webp",
+      "pckEntry": ".godot/imported/page_03_05.webp-90b5655da12eb76cbc383d67af363575.ctex",
+      "bytes": 5834818,
+      "sha256": "3da284d712bef14d0c32691a02aa3c3c95b6818d2a298fbe698df2503bbd2d7f",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 494244,
+        "sha256": "09a8407ed01d357ac32b328bb361c5cb3a35579d8a4fb56d94ad4b77ab97591e",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_03_06.webp",
+      "pckEntry": ".godot/imported/page_03_06.webp-134390a4db0124b440cc40043487fc56.ctex",
+      "bytes": 5511952,
+      "sha256": "4377ff950824e9b46a7de1a0747a66586de335d98f5183e11935253cdfd3d8e9",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 446202,
+        "sha256": "07ba259d70414d0ae2404f1b9ee6c5ff5c3f223911f7549a4a04cd6357ffff8c",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_03_07.webp",
+      "pckEntry": ".godot/imported/page_03_07.webp-fc521e960b8d69e2e7111d5431d73e86.ctex",
+      "bytes": 346980,
+      "sha256": "b308f453518ca9161e424f8b1785c4d0650693417c348691abb5346c5bbaf438",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 88222,
+        "sha256": "fcfc934ab7a5e95a5c1fb0a9f69efd5e04a8c9f95bf368803c98ad40799aa022",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_04_00.webp",
+      "pckEntry": ".godot/imported/page_04_00.webp-ce4b0abaa5d6b5f1eab02ff0443645fb.ctex",
+      "bytes": 205540,
+      "sha256": "229ff7968d187f6f2b3a369a87331b9b558f801c49f90ae3dd93b4bdddafdcb3",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 84516,
+        "sha256": "d49126764cf4ca440e5ef9942fd55a90a3a30b497dca1bfd3c2eec300c597f3c",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_04_01.webp",
+      "pckEntry": ".godot/imported/page_04_01.webp-68bc577d3fd6e15cb786d2ce0578b7e3.ctex",
+      "bytes": 3682786,
+      "sha256": "8e0435167e92fe935002a2a0133e49c8bb302202d4b047438cb0f8117184e6c3",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 331304,
+        "sha256": "11a7f6cbecc9358e931461f4933c2199ff8f9fabdf2334609d2e1fec61a9a7bc",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_04_02.webp",
+      "pckEntry": ".godot/imported/page_04_02.webp-a68c8b559cead867ebc75b6860a2dad9.ctex",
+      "bytes": 5052812,
+      "sha256": "dec6ea33105218cfaea2330f6b6ad5898a25f2c2e6e82c44f16b9e3fb7d04050",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 460984,
+        "sha256": "dfe1079adf2d52045ef310890c15e8402aabefe8604254a30bea188a553d1bec",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_04_03.webp",
+      "pckEntry": ".godot/imported/page_04_03.webp-481a85aecbf386e60cac8e84d4032832.ctex",
+      "bytes": 6040748,
+      "sha256": "d2b21fdcc3c1f7d4f074686fe7dd97f2f68e9c3a6bb66e547327c392871d1ff0",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 492058,
+        "sha256": "37dbd1e5b411abbf6867b932a3bdf3763f005702959a7f42ef70be5e6d68e8f3",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_04_04.webp",
+      "pckEntry": ".godot/imported/page_04_04.webp-4798e02b9e6988a25ecaaea3702dd7de.ctex",
+      "bytes": 6129136,
+      "sha256": "626f3d20d2dc6da0f185fb1b18bd268fca05745141071db3183710f0f93450b1",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 535908,
+        "sha256": "a415c59b4483dcb8e2929fe88e9661af6c43f6bf539d937b311cfb0d3c6a3837",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_04_05.webp",
+      "pckEntry": ".godot/imported/page_04_05.webp-d30073ac00c74fbc5d5756e1a9154ef8.ctex",
+      "bytes": 5843874,
+      "sha256": "5116d90a79b2a38d157d522cc87d28c051e1c72e26e62829e19519984272029a",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 513804,
+        "sha256": "862a870ee58f0389919170bd1a9d0881f2dfd0b14998106b679c039e1a8050ee",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_04_06.webp",
+      "pckEntry": ".godot/imported/page_04_06.webp-f6e2dc220f26316e3890dc1a3ed0821d.ctex",
+      "bytes": 4851230,
+      "sha256": "c85cd6337cd4ed3cc470c4a357a1e1fa71ec1079350f6fb28e94ee06f97a78d9",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 398490,
+        "sha256": "8ba191c97bde0e20ce25f306360c5dc7660684675900d50a8f9d6b9c5eb21756",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_04_07.webp",
+      "pckEntry": ".godot/imported/page_04_07.webp-56f18333f74a8feed5cd12fd2813e47e.ctex",
+      "bytes": 162418,
+      "sha256": "129753073ac2f2308386bb8f1726281f120723fcdedee9f32aed995b02d466a9",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 85416,
+        "sha256": "97e26d17b8ae1ee9065fa9b1e600606936c317ed61b83ad5facc045f228319fe",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_05_00.webp",
+      "pckEntry": ".godot/imported/page_05_00.webp-f2608d0de052c1fd0e9010f009dbaf53.ctex",
+      "bytes": 238,
+      "sha256": "fa9255eaf05b8546462ac23b508debd7c1b044b3d9a5a96418cc74620e5dcc9a",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 2252,
+        "sha256": "2023e91fd745e2739d10a56f96d461a6ac3fc22467ab5b921c5cfd465b46aac4",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_05_01.webp",
+      "pckEntry": ".godot/imported/page_05_01.webp-e93b9a5a6045d49fe3eba8b89439e6e0.ctex",
+      "bytes": 504860,
+      "sha256": "3081438121433d4ddc9c05840db0fe20f27ed042ae648e435f0dbf8344498dc9",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 101566,
+        "sha256": "842647c4508e713404f9c74ba0cd14d1367574ba7d0ad6792b7f403fee6dd833",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_05_02.webp",
+      "pckEntry": ".godot/imported/page_05_02.webp-08759036da769da7317aba3386bd0d8e.ctex",
+      "bytes": 4757216,
+      "sha256": "007af3170e0749cdf787c48e77d4a1675b26d6497a6760a1aba65f24816cbf03",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 429780,
+        "sha256": "460410ef75487e61b3333a6223c6439872c64db527daede06d215f2a192021af",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_05_03.webp",
+      "pckEntry": ".godot/imported/page_05_03.webp-b972848754acd02f173d74419f0772f4.ctex",
+      "bytes": 4852764,
+      "sha256": "0bbe00d87ec8f43d769c4f414bd555820501f848c47fe6073ab3092aa1eebefd",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 557824,
+        "sha256": "98659df131dfccf505089eb92c22b0f5092a845e11eabb9072065349dd7d0d5c",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_05_04.webp",
+      "pckEntry": ".godot/imported/page_05_04.webp-16cf68adf7eda9a323f5bdf4b3699926.ctex",
+      "bytes": 5736950,
+      "sha256": "d08b80f3f9e718c8949be1a9ce00538cb25c7f6c689312a3bda4384a9cf08a89",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 496582,
+        "sha256": "68958ddce29bbf555bc1fdedd8c0e69ae72c4777d38ebe78c134783eed0005bf",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_05_05.webp",
+      "pckEntry": ".godot/imported/page_05_05.webp-cbd905ef8d5729106ce96e956d2f1490.ctex",
+      "bytes": 2684592,
+      "sha256": "eb4b54c9a674547352d902b2fe8ebadb94e6152f6e3a352e0d45a80182f66e03",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 316210,
+        "sha256": "df4a5afed228049d49cc107e31ccc973e5f3d18edb0d82dc4ea1d4cb13b46844",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_05_06.webp",
+      "pckEntry": ".godot/imported/page_05_06.webp-ef7cec5ceb1357182613d99af9037c2b.ctex",
+      "bytes": 769246,
+      "sha256": "ca861e649595fb6f2cd7335da912d54c5278631684bd449d1f6fc6f78c020ea6",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 113356,
+        "sha256": "a5bc9a67bf7e8e8083dbc6fa89052d1cc596817914dc8b72e28707f4b4690bc7",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_05_07.webp",
+      "pckEntry": ".godot/imported/page_05_07.webp-5476a7559b54c32dacabb9196315810c.ctex",
+      "bytes": 238,
+      "sha256": "fa9255eaf05b8546462ac23b508debd7c1b044b3d9a5a96418cc74620e5dcc9a",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 2252,
+        "sha256": "2023e91fd745e2739d10a56f96d461a6ac3fc22467ab5b921c5cfd465b46aac4",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_06_00.webp",
+      "pckEntry": ".godot/imported/page_06_00.webp-e11b052145c23401c5e822b1d7e3ec69.ctex",
+      "bytes": 238,
+      "sha256": "fa9255eaf05b8546462ac23b508debd7c1b044b3d9a5a96418cc74620e5dcc9a",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 2252,
+        "sha256": "2023e91fd745e2739d10a56f96d461a6ac3fc22467ab5b921c5cfd465b46aac4",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_06_01.webp",
+      "pckEntry": ".godot/imported/page_06_01.webp-e8db120f493496060e4dc48e42ae96f7.ctex",
+      "bytes": 238,
+      "sha256": "fa9255eaf05b8546462ac23b508debd7c1b044b3d9a5a96418cc74620e5dcc9a",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 2252,
+        "sha256": "2023e91fd745e2739d10a56f96d461a6ac3fc22467ab5b921c5cfd465b46aac4",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_06_02.webp",
+      "pckEntry": ".godot/imported/page_06_02.webp-5c1035ae5079fd2e5128db01ce287369.ctex",
+      "bytes": 436892,
+      "sha256": "e265257589855247d817646fe2ef7b26040782a73ac97a726b8b61710d398d09",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 99436,
+        "sha256": "c575d548d4d8a29cbc972aa0e4d90406749d92f0c37b2d85abc4e04e63cc0af5",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_06_03.webp",
+      "pckEntry": ".godot/imported/page_06_03.webp-5ac8524a79fe0134c4cd0bef2dfe860d.ctex",
+      "bytes": 1792298,
+      "sha256": "2df43a8ca15f9272a9568540b43e41790969d9bef381c135d14faacb9bac24da",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 290936,
+        "sha256": "8c113b3f27f37a8b464cd62e784f6223b9d08fc6a4f59baed65904be80c7bb71",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_06_04.webp",
+      "pckEntry": ".godot/imported/page_06_04.webp-f5c4249849cd5c5d7a35bf80305e2756.ctex",
+      "bytes": 1601674,
+      "sha256": "17364856bc48ccf6ca97aaaeadafa9840a2601cf4f820c59633d7381f7f2665b",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 270680,
+        "sha256": "b3fc7d62a5165bd67676fdcfdea7177f37c9f219aa441148774216f7d6f7c410",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_06_05.webp",
+      "pckEntry": ".godot/imported/page_06_05.webp-d06816a57b291807b1a4e8f233d8a01e.ctex",
+      "bytes": 194214,
+      "sha256": "aabdc81f5c4ea2c01a27cc9a92b1ad27e36908d493ad1e50d097cc17edb52bf4",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 84846,
+        "sha256": "a1b8f40a0b4169e05fbd39937fabb7988bbdebd33297326d5870cdbae06122b6",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_06_06.webp",
+      "pckEntry": ".godot/imported/page_06_06.webp-9d800f61f8811bd9ff4a77f8d022a127.ctex",
+      "bytes": 238,
+      "sha256": "fa9255eaf05b8546462ac23b508debd7c1b044b3d9a5a96418cc74620e5dcc9a",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 2252,
+        "sha256": "2023e91fd745e2739d10a56f96d461a6ac3fc22467ab5b921c5cfd465b46aac4",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_06_07.webp",
+      "pckEntry": ".godot/imported/page_06_07.webp-4a8fcf2decdc9e4b9b2a2af2d7ef78c8.ctex",
+      "bytes": 238,
+      "sha256": "fa9255eaf05b8546462ac23b508debd7c1b044b3d9a5a96418cc74620e5dcc9a",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 2252,
+        "sha256": "2023e91fd745e2739d10a56f96d461a6ac3fc22467ab5b921c5cfd465b46aac4",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_07_00.webp",
+      "pckEntry": ".godot/imported/page_07_00.webp-0c03a895efcdd5c9ef1186e30e7bd1d9.ctex",
+      "bytes": 238,
+      "sha256": "fa9255eaf05b8546462ac23b508debd7c1b044b3d9a5a96418cc74620e5dcc9a",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 2252,
+        "sha256": "2023e91fd745e2739d10a56f96d461a6ac3fc22467ab5b921c5cfd465b46aac4",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_07_01.webp",
+      "pckEntry": ".godot/imported/page_07_01.webp-933ca2d65d18675bf295e5a28efb019c.ctex",
+      "bytes": 238,
+      "sha256": "fa9255eaf05b8546462ac23b508debd7c1b044b3d9a5a96418cc74620e5dcc9a",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 2252,
+        "sha256": "2023e91fd745e2739d10a56f96d461a6ac3fc22467ab5b921c5cfd465b46aac4",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_07_02.webp",
+      "pckEntry": ".godot/imported/page_07_02.webp-adb29bafa0acc044e0487ec8df740910.ctex",
+      "bytes": 238,
+      "sha256": "fa9255eaf05b8546462ac23b508debd7c1b044b3d9a5a96418cc74620e5dcc9a",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 2252,
+        "sha256": "2023e91fd745e2739d10a56f96d461a6ac3fc22467ab5b921c5cfd465b46aac4",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_07_03.webp",
+      "pckEntry": ".godot/imported/page_07_03.webp-2b96423c0097c3dc6942079fee466432.ctex",
+      "bytes": 210864,
+      "sha256": "c35d45a756383fb18d8d13854d899732ed7fe670a1dc178a24e663f87cd131b6",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 83878,
+        "sha256": "a248cb779b5e9e0f11491ed4f0d1b333cc0fb74be4b9725f76c30f5141a5902e",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_07_04.webp",
+      "pckEntry": ".godot/imported/page_07_04.webp-97f689ef9e1a4be57416fcea0e87c760.ctex",
+      "bytes": 147234,
+      "sha256": "0617d5fede8c946075236eb5700d601a480eed3bf41f31dec8bb314f6a15da45",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 84722,
+        "sha256": "5021d2529b0406c90e44e15adb4d3a20d079420481681d3c81fdecbe4fcb9a21",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_07_05.webp",
+      "pckEntry": ".godot/imported/page_07_05.webp-4d36999a5a951aee3f292b6b402371b4.ctex",
+      "bytes": 238,
+      "sha256": "fa9255eaf05b8546462ac23b508debd7c1b044b3d9a5a96418cc74620e5dcc9a",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 2252,
+        "sha256": "2023e91fd745e2739d10a56f96d461a6ac3fc22467ab5b921c5cfd465b46aac4",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_07_06.webp",
+      "pckEntry": ".godot/imported/page_07_06.webp-6709ba038d0492b88a13ebe712871200.ctex",
+      "bytes": 238,
+      "sha256": "fa9255eaf05b8546462ac23b508debd7c1b044b3d9a5a96418cc74620e5dcc9a",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 2252,
+        "sha256": "2023e91fd745e2739d10a56f96d461a6ac3fc22467ab5b921c5cfd465b46aac4",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "pages/page_07_07.webp",
+      "pckEntry": ".godot/imported/page_07_07.webp-ab238d84844b2178da741c78af08eab4.ctex",
+      "bytes": 238,
+      "sha256": "fa9255eaf05b8546462ac23b508debd7c1b044b3d9a5a96418cc74620e5dcc9a",
+      "mobileOutput": {
+        "dimensions": [
+          1536,
+          768
+        ],
+        "bytes": 2252,
+        "sha256": "2023e91fd745e2739d10a56f96d461a6ac3fc22467ab5b921c5cfd465b46aac4",
+        "note": "Half-size mobile derivative; original sha256 above identifies extracted PCK image."
+      }
+    },
+    {
+      "file": "talking-island-preview.png",
+      "pckEntry": ".godot/imported/talking-island-preview.png-2dccb3df9fb448e62abf1abddb43e63e.ctex",
+      "bytes": 656126,
+      "sha256": "3c4b61618433c0711ded824c6ab5c9db2c58f489b3a557f569149fe4afbbd710"
+    },
+    {
+      "file": "terrain-tiles.bin",
+      "pckEntry": "assets/maps/talking_island/terrain-tiles.bin",
+      "bytes": 262144,
+      "sha256": "d12e8b591100a0eedf11c9964c4383638c0788bd8be451ab22aaf6b96e0bb7e2"
+    },
+    {
+      "file": "terrain-water.bin",
+      "pckEntry": "assets/maps/talking_island/terrain-water.bin",
+      "bytes": 262144,
+      "sha256": "2389b24092d6bae7546da5f0dd82a1ecaa2eae0fe818f7b441bc1bf2ef85c662"
+    },
+    {
+      "file": "terrain-zones.bin",
+      "pckEntry": "assets/maps/talking_island/terrain-zones.bin",
+      "bytes": 262144,
+      "sha256": "185b5bc39b6645cf3529718e3fa633204c6a93c361924314a59c6226c02fa674"
+    }
+  ],
+  "mobileOptimization": "Ground and foreground images downsampled to 1536x768. Logical page origins and dimensions are unchanged."
+}

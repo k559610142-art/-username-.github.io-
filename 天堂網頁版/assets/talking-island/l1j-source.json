@@ -1,0 +1,20 @@
+{
+ "sourceMapId": 0,
+ "declaredMapId": 0,
+ "idOverridden": false,
+ "cropOffset": [
+  0,
+  0
+ ],
+ "l1jMapSize": [
+  512,
+  512
+ ],
+ "l1jDataSize": [
+  512,
+  512
+ ],
+ "outsideCells": 0,
+ "walkableL1J": 128254,
+ "generator": "tools/map-build/l1j_walkable.py apply (pure-L1J rebuild)"
+}
