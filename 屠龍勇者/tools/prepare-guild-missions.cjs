@@ -1,0 +1,12 @@
+'use strict';
+const fs=require('fs'),path=require('path'),vm=require('vm'),crypto=require('crypto');
+const root=path.resolve(__dirname,'..'),read=p=>fs.readFileSync(path.join(root,p),'utf8');
+const defs=vm.runInNewContext(read('data/guild-map-data.js')+';GUILD_MAP_DEFS');
+const maps=Object.fromEntries(Object.entries(defs).map(([id,m])=>[id,Object.fromEntries(['width','height','sites','entries','gates','walkRuns','edgeRuns','rawRuns'].map(k=>[k,m[k]]))]));
+const inputs=['data/guild-core.js','data/guild-world.js','data/guild-missions.js','data/guild-mission-core.js'];
+const code='// Generated from formal runtime, no images or client credentials.\nconst GUILD_MAP_DEFS='+JSON.stringify(maps)+';\n'+inputs.map(read).join('\n')+'\nexport {GuildMissionCore,GuildMissions};\n';
+const out=path.join(__dirname,'guild-missions');fs.mkdirSync(out,{recursive:true});fs.writeFileSync(path.join(out,'simulation.mjs'),code);
+fs.writeFileSync(path.join(out,'sources.json'),JSON.stringify(Object.fromEntries([...inputs,'data/guild-map-data.js'].map(p=>[p,crypto.createHash('sha256').update(read(p)).digest('hex')])),null,2)+'\n');
+const handler=fs.readFileSync(path.join(out,'index.ts'),'utf8').replace(/^import .*simulation\.mjs';\r?\n/m,'');
+fs.writeFileSync(path.join(out,'deploy.ts'),'// @ts-nocheck\n'+code.replace('export {GuildMissionCore,GuildMissions};','')+'\n'+handler);
+console.log('PASS：12任務／17景可信重播與單檔部署已由正式來源產生');

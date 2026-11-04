@@ -68,10 +68,10 @@ async function guildRefreshStatus() {
     }
     guildServerBusy = true; guildServerMessage = '正在查看公會公告…'; guildRefresh();
     try {
-        const response = await cloudSb.rpc('guild_lost_status',{p_character:g.characterId});
+        const response = await cloudSb.rpc('guild_mission_status',{p_character:g.characterId});
         if (player !== subject || guildOwner() !== owner) return;
         guildServerMessage = response.error ? '暫時無法取得公會公告，請稍後再試。'
-            : response.data && response.data.enabled ? '失聯採礦隊已開放。公會聲望 '+fmt(response.data.wallet.rep)+'／代幣 '+fmt(response.data.wallet.tokens)+'／培養徽章 '+fmt(response.data.wallet.badges)+'。其餘路線整備中。' : '失聯採礦隊尚未開放，名冊與地區探索可以先行使用。';
+            : response.data && response.data.enabled ? '公會任務已開放。公會聲望 '+fmt(response.data.wallet.rep)+'／代幣 '+fmt(response.data.wallet.tokens)+'／培養徽章 '+fmt(response.data.wallet.badges)+'。'+(response.data.book?'本週討伐 '+response.data.book.hunt+'/4、防衛／護送 '+response.data.book.defense+'/2。每週一06:00重置，舊週成果寬限24小時。':'') : '公會任務尚未開放，名冊與地區探索可以先行使用。';
     } catch (e) { if (player === subject && guildOwner() === owner) guildServerMessage = '暫時無法取得公會公告，請稍後再試。'; }
     finally {
         guildServerBusy = false;
@@ -84,9 +84,8 @@ function renderGuild() {
     const g = guildCurrent();
     if (!g) return '<div class="panel notice">公會資料暫時無法讀取。原資料已保留，請稍後重新登入。</div>';
     const ids = guildDraft(g), now = Date.now();
-    const missionActive=g.activeTicket&&g.activeTicket.ticket.missionId==='lostMiners',missionPending=g.outbox.some(r=>r.missionId==='lostMiners');
     let h = '<div class="panel"><h3>傭兵公會</h3><p>每場選派三位夥伴。夥伴只參加公會任務，離開任務後返回公會。</p>'
-        + '<p class="muted">可使用已保存的三人編隊進行地區探索，或接取「失聯採礦隊」。其餘路線整備中。</p></div>';
+        + '<p class="muted">可使用已保存的三人編隊進行地區探索，或從十二項任務中選擇路線。</p></div>';
     h += '<div class="panel"><h3>地區探索</h3><p>三大區道路與碼頭可往返。先保存編隊再出發，探索不發任務獎勵；離開後返回原村莊。</p><div class="btn-row">'
         + '<button data-guild-depart onclick="guildDepart(\'harbor\')"' + (g.activeTicket ? ' disabled' : '') + '>低語海島</button>'
         + '<button data-guild-depart onclick="guildDepart(\'foothills\')"' + (g.activeTicket ? ' disabled' : '') + '>熔火群山</button>'
@@ -101,12 +100,16 @@ function renderGuild() {
             + (!member ? '尚未招募' : resting ? '療養約 ' + Math.ceil((member.restUntil - now) / 60000) + ' 分鐘' : selected ? '已選出戰' : '待命') + '</div>'
             + (member ? '<button class="mini secondary" onclick="guildPick(\'' + id + '\')"' + (g.activeTicket || resting && !selected ? ' disabled' : '') + '>' + (selected ? '取消選派' : '選派') + '</button>' : '<small class="muted">完成夥伴的公會招募任務後加入。</small>') + '</div></div>';
     }
-    h += '<div class="panel"><h3>失聯採礦隊 · 普通</h3><p>12分鐘內調查礦坑作業廣場、救援三名礦工並擊倒深礦巨怪，護送至少兩人生還，返回港村公會門前報到。</p><p class="muted">每週首次：聲望100、代幣10、培養徽章20；三人皆生還且夥伴未倒地，代幣12。重打無聲望，代幣／徽章為25%。</p><div class="btn-row">'
-        + (missionActive?'<button onclick="guildMissionResume()">繼續採礦隊任務</button><button class="secondary" onclick="guildMissionAbandon()">放棄任務</button>':'<button onclick="guildMissionStart()"'+(guildMissionBusy||g.activeTicket||missionPending?' disabled':'')+'>接取並出發</button>')
-        + (missionPending?'<button onclick="guildMissionSubmit()"'+(guildMissionBusy?' disabled':'')+'>交付採礦隊成果</button>':'')+'</div><p>'+esc(guildMissionNotice)+'</p></div>';
-    h += '<div class="panel"><h3>公會任務冊</h3><p>待交付成果 ' + g.outbox.length + ' 筆 · 已確認序號 ' + g.serverCursor + '</p>'
-        + Object.values(GuildCore.MISSIONS).filter(m=>m.id!=='lostMiners').map(m => '<div class="muted" style="padding:6px 0">' + esc(m.name) + ' · 路線整備中</div>').join('')
-        + '<p>' + esc(guildServerMessage || '成果由公會確認；查看公會公告可查詢聲望、代幣與培養徽章。') + '</p><button class="secondary" onclick="guildRefreshStatus()"' + (guildServerBusy ? ' disabled' : '') + '>查看公會公告</button></div>';
+    h += '<div class="panel"><h3>公會任務冊 · 普通（12項）</h3><p>先保存三人編隊，再選擇任務。每週討伐4次、防衛／護送2次計入任務冊；同任務重打或超出次數，無聲望、代幣與徽章25%。</p><p>待交付成果 '+g.outbox.length+' 筆 · 已確認序號 '+g.serverCursor+'</p><button onclick="guildMissionSubmitAll()"'+(guildMissionBusy||g.activeTicket||!g.outbox.length?' disabled':'')+'>批次交付成果（最多8筆）</button><p>'+esc(guildMissionNotice)+'</p></div>';
+    for(const [id,d]of Object.entries(GuildMissions.defs)){
+        const active=g.activeTicket&&g.activeTicket.ticket.missionId===id,pending=g.outbox.some(r=>r.missionId===id),defense=GuildCore.MISSIONS[id].kind!=='expedition';
+        h+='<div class="panel"><h3>'+esc(d.name)+' · '+(defense?'防衛／護送':'討伐探索')+'</h3><p>'+esc(d.brief)+'</p><p class="muted">任務冊內：聲望'+(defense?150:100)+'／代幣'+(defense?15:10)+'／培養徽章'+(defense?30:20)+'；可選目標達成，代幣再加20%。</p><div class="btn-row">';
+        if(active)h+='<button onclick="guildMissionResume()">繼續任務</button><button class="secondary" onclick="guildMissionAbandon()">放棄任務</button>';
+        else h+='<button onclick="guildMissionStart(\''+id+'\')"'+(guildMissionBusy||g.activeTicket||pending||g.outbox.length>=32?' disabled':'')+'>接取並出發</button>';
+        if(pending)h+='<button onclick="guildMissionSubmitMission(\''+id+'\')"'+(guildMissionBusy||g.activeTicket?' disabled':'')+'>交付此任務成果</button>';
+        h+='</div></div>';
+    }
+    h+='<div class="panel"><p>'+esc(guildServerMessage||'成果由公會確認；查看公會公告可查詢聲望、代幣與培養徽章。')+'</p><button class="secondary" onclick="guildRefreshStatus()"'+(guildServerBusy?' disabled':'')+'>查看公會公告</button></div>';
     return h;
 }
 TABS.guild = ['🏛️', '傭兵公會'];

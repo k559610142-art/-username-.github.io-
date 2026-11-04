@@ -140,6 +140,10 @@ function guildMapTravel(index) {
     return guildMapChange(trip,gate.to,gate.entry);
 }
 function guildMapSprite(actor) {
+    if(actor.vehicle)return {charH:64,drawH:46,walk:{cellW:64,cellH:64,frames:{down:1,right:1,up:1},ms:130}};
+    if(actor.skin==='spider')return {charH:45,drawH:actor.boss?72:48,foot:[31,45],walk:{src:'images/monsters/giantSpider.png',cellW:62,cellH:49,frames:{down:1,right:1,up:1},ms:160},attack:{src:'images/monsters/giantSpider.png',cellW:62,cellH:49,rowOffset:3,frames:{down:1,right:1,up:1},ms:130}};
+    if(actor.skin){const key={spider:'quest-spider-queen',bandit:'quest-bandit-ironhand',undead:'quest-lich-king',dragon:'valakas'}[actor.skin],q=SCENE_QUEST_SPRITES[key]||SCENE_QUEST_SPRITES.valakas;return {charH:q.body,drawH:actor.boss?Math.min(104,q.size):48,foot:q.foot,walk:{src:q.src,cellW:q.cw,cellH:q.ch,frames:{down:q.n[0],right:q.n[1],up:q.n[2]},ms:160},attack:{src:q.src,cellW:q.cw,cellH:q.ch,rowOffset:3,frames:{down:q.n[3],right:q.n[4],up:q.n[5]},ms:130}};}
+
     if(actor.id==='giant'||actor.id.startsWith('beast'))return {charH:224,foot:[96,210],drawH:actor.id==='giant'?90:62,walk:{src:'images/monsters/rework/mon-beast.png',cellW:192,cellH:224,frames:{down:2,right:2,up:2},ms:250}};
     if(actor.id.startsWith('miner'))return MERC_MODELS.bulwark;
     if(actor.id==='player')return playerSprite();
@@ -148,11 +152,12 @@ function guildMapSprite(actor) {
 }
 function guildMapActor(trip,s,actor,f) {
     const sp=guildMapSprite(actor),anim=sp&&(trip.mission&&actor.attackUntil>trip.mission.core.tick&&sp.attack?sp.attack:sp.walk);if(!anim)return null;
-    const image=spriteImage(anim.src),k=sp.drawH/sp.charH,dw=anim.cellW*k,dh=anim.cellH*k,canvas=actor.picture;
+    const image=anim.src?spriteImage(anim.src):null,k=sp.drawH/sp.charH,dw=anim.cellW*k,dh=anim.cellH*k,canvas=actor.picture;
     const w=Math.max(128,Math.ceil(dw+12)),h=Math.max(128,Math.ceil(dh+24));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;}
     const g=canvas.getContext('2d'),cx=w/2,cy=h-12,x=(actor.px+(actor.x-actor.px)*f)*4+2,y=(actor.py+(actor.y-actor.py)*f)*4+2;
     g.clearRect(0,0,w,h);g.fillStyle='#0006';g.beginPath();g.ellipse(cx,cy,10,6,0,0,Math.PI*2);g.fill();
-    if(image){const dir=actor.dir==='left'?'right':actor.dir,row=actor.id==='giant'||actor.id.startsWith('beast')?0:{down:0,right:1,up:2}[dir],n=anim.frames[dir],frame=s.route.length||actor.x!==actor.px||actor.y!==actor.py||trip.mission&&actor.attackUntil>trip.mission.core.tick?Math.floor(gameNow/anim.ms)%n:Math.floor(n/2),foot=sp.foot||[anim.cellW/2,anim.cellH];g.save();if(actor.hp===0)g.globalAlpha=.35;g.translate(cx,cy);if(actor.dir==='left')g.scale(-1,1);g.drawImage(image,frame*anim.cellW,row*anim.cellH,anim.cellW,anim.cellH,-foot[0]*k,-foot[1]*k,dw,dh);g.restore();}
+    if(actor.vehicle){g.fillStyle='#3c2418';g.fillRect(cx-21,cy-18,42,9);g.fillStyle='#8e653c';g.fillRect(cx-18,cy-32,36,19);g.fillStyle='#71c9e3';g.beginPath();g.moveTo(cx-12,cy-32);g.lineTo(cx-4,cy-47);g.lineTo(cx+3,cy-34);g.lineTo(cx+11,cy-43);g.lineTo(cx+16,cy-30);g.closePath();g.fill();g.fillStyle='#201b18';for(const dx of [-17,17]){g.beginPath();g.arc(cx+dx,cy-7,7,0,Math.PI*2);g.fill();}}
+    if(image){const dir=actor.dir==='left'?'right':actor.dir,row=actor.skin?{down:0,right:1,up:2}[dir]+(anim.rowOffset||0):actor.id==='giant'||actor.id.startsWith('beast')?0:{down:0,right:1,up:2}[dir],n=anim.frames[dir],frame=s.route.length||actor.x!==actor.px||actor.y!==actor.py||trip.mission&&actor.attackUntil>trip.mission.core.tick?Math.floor(gameNow/anim.ms)%n:Math.floor(n/2),foot=sp.foot||[anim.cellW/2,anim.cellH];g.save();if(actor.hp===0)g.globalAlpha=.35;g.translate(cx,cy);if(actor.dir==='left')g.scale(-1,1);g.drawImage(image,frame*anim.cellW,row*anim.cellH,anim.cellW,anim.cellH,-foot[0]*k,-foot[1]*k,dw,dh);g.restore();}
     // 只裁去這名角色被前景遮住的像素，不重畫地面，也不抹掉其他角色。
     g.globalCompositeOperation='destination-out';
     for(const layer of s.def.layers){if(!layer.depthLine)continue;const a=layer.depthLine,t=Math.max(0,Math.min(1,(x-a[0])/(a[2]-a[0]))),depth=a[1]+(a[3]-a[1])*t;if(y>=depth)continue;
@@ -192,7 +197,7 @@ function guildMapFrame(trip) {
 }
 async function guildDepart(id,mission=null) {
     if(!mission&&guildMissionBusy)return false;
-    if(guildTrip||!GUILD_MAP_STARTS.includes(id)||!player||!inTown())return false;
+    if(guildTrip||(!GUILD_MAP_STARTS.includes(id)&&!(mission&&GuildMissions.defs[mission.ticket.missionId].maps.includes(id)))||!player||!inTown())return false;
     const g=guildCurrent();if(!g||g.activeTicket&&(!mission||g.activeTicket.ticket.ticketId!==mission.ticket.ticketId)){showToast('請先處理進行中的公會任務');return false;}
     if(guildDraft(g).join('|')!==g.squad.join('|')){showToast('請先保存編隊再出發');return false;}
     const selected=GuildCore.select(mission?{...g,activeTicket:null}:g,g.squad,Date.now());

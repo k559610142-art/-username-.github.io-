@@ -146,10 +146,11 @@ const GuildCore = (() => {
         const run = s.activeTicket;
         if (!run || !time(now) || now < run.startedAt || !['success', 'failed', 'abandoned'].includes(outcome)) return error('run_invalid');
         if (!Array.isArray(downedIds) || new Set(downedIds).size !== downedIds.length || downedIds.some(id => !run.ticket.team.includes(id))) return error('downed_invalid');
-        if (outcome === 'success') {
-            if (run.phase !== 'active' || now > run.ticket.expiresAt) return error('run_expired_or_paused');
+        const pending = outcome === 'success' || outcome === 'failed' && proof;
+        if (pending) {
+            if (outcome === 'success' && (run.phase !== 'active' || now > run.ticket.expiresAt)) return error('run_expired_or_paused');
             if (!proof || !text(proof.logRef, 200) || !/^[a-f0-9]{64}$/.test(proof.logHash || '') || !time(proof.simulationMs)
-                || proof.simulationMs < MISSIONS[run.ticket.missionId].survivalMs) return error('proof_invalid');
+                || outcome === 'success' && proof.simulationMs < MISSIONS[run.ticket.missionId].survivalMs) return error('proof_invalid');
             if (s.outbox.length >= MAX_OUTBOX) return error('outbox_full');
         }
         const next = copy(s);
@@ -157,7 +158,7 @@ const GuildCore = (() => {
             const member = next.members.find(m => m.id === id);
             if (member) member.restUntil = now + REST_MS;
         }
-        if (outcome === 'success') next.outbox.push({ ticketId: run.ticket.ticketId, missionId: run.ticket.missionId,
+        if (pending) next.outbox.push({ ticketId: run.ticket.ticketId, missionId: run.ticket.missionId,
             ownerId: s.ownerId, characterId: s.characterId, ruleVersion: run.ticket.ruleVersion, team: run.ticket.team.slice(),
             completedAt: now, simulationMs: proof.simulationMs, logRef: proof.logRef, logHash: proof.logHash, status: 'pending' });
         next.activeTicket = null;
@@ -166,7 +167,11 @@ const GuildCore = (() => {
     function receipt(s, r, now, security = {}) {
         if (!time(now) || !r || !sameBinding(r, s) || !text(r.ticketId) || !time(r.seq) || r.seq < 1) return error('receipt_invalid');
         if (!verified(security.verifyReceipt, r)) return error('receipt_unverified');
-        if (r.seq <= s.serverCursor) return { ok: true, duplicate: true, state: copy(s) };
+        if (r.seq <= s.serverCursor) {
+            const next = copy(s), queued = next.outbox.find(x => x.ticketId === r.ticketId);
+            if (queued && r.missionId === queued.missionId && r.logHash === queued.logHash && r.ruleVersion === queued.ruleVersion && ['accepted', 'rejected'].includes(r.status)) next.outbox = next.outbox.filter(x => x.ticketId !== r.ticketId);
+            return { ok: true, duplicate: true, state: next };
+        }
         if (r.seq !== s.serverCursor + 1) return error('receipt_gap');
         const report = s.outbox.find(x => x.ticketId === r.ticketId);
         if (!report || r.missionId !== report.missionId || r.logHash !== report.logHash || r.ruleVersion !== report.ruleVersion || !['accepted', 'rejected'].includes(r.status)) return error('receipt_mismatch');

@@ -1,0 +1,124 @@
+{
+  "version": "20261104f",
+  "environment": "Node本機量測，非正式Edge平台效能保證",
+  "sourceSHA256": {
+    "data/guild-core.js": "2993a13e0f6d9abf54eda85bcf7f4c02d14cef705b0bcde22e67d40dec4eb02a",
+    "data/guild-world.js": "4457df9175a5c45194fca05fa5ca861c503b503bde1e4d19faced65b70a8aaf5",
+    "data/guild-missions.js": "6b36e5023f041252e63a17be3cf365ffcc173bd4c86ef216b356f175bcf2e45e",
+    "data/guild-mission-core.js": "05e4318da8650c4b9f96bf96cd8aa987fe4fd74679b8e19455488b33a4bb5fda",
+    "data/guild-map-data.js": "a033973b1e5ffcd24c98d906d41339a6947388a75e475d1e9fe869654d334172"
+  },
+  "runs": [
+    {
+      "id": "lostMiners",
+      "ticks": 2303,
+      "commands": 22,
+      "pathNodes": 606984,
+      "replayMs": 151,
+      "rssMiB": 72,
+      "reportBytes": 583
+    },
+    {
+      "id": "poisonHerbs",
+      "ticks": 2681,
+      "commands": 29,
+      "pathNodes": 691777,
+      "replayMs": 117,
+      "rssMiB": 92,
+      "reportBytes": 787
+    },
+    {
+      "id": "tradeRoad",
+      "ticks": 1926,
+      "commands": 19,
+      "pathNodes": 220326,
+      "replayMs": 81,
+      "rssMiB": 91,
+      "reportBytes": 542
+    },
+    {
+      "id": "ancientSeal",
+      "ticks": 2148,
+      "commands": 16,
+      "pathNodes": 235008,
+      "replayMs": 78,
+      "rssMiB": 91,
+      "reportBytes": 471
+    },
+    {
+      "id": "dragonOutpost",
+      "ticks": 3753,
+      "commands": 38,
+      "pathNodes": 704944,
+      "replayMs": 177,
+      "rssMiB": 97,
+      "reportBytes": 960
+    },
+    {
+      "id": "lostBanner",
+      "ticks": 1847,
+      "commands": 16,
+      "pathNodes": 229413,
+      "replayMs": 63,
+      "rssMiB": 96,
+      "reportBytes": 468
+    },
+    {
+      "id": "lastCampfire",
+      "ticks": 6267,
+      "commands": 4,
+      "pathNodes": 172619,
+      "replayMs": 44,
+      "rssMiB": 89,
+      "reportBytes": 220
+    },
+    {
+      "id": "northGate",
+      "ticks": 6206,
+      "commands": 4,
+      "pathNodes": 489526,
+      "replayMs": 53,
+      "rssMiB": 84,
+      "reportBytes": 217
+    },
+    {
+      "id": "sealKeeper",
+      "ticks": 6983,
+      "commands": 8,
+      "pathNodes": 398660,
+      "replayMs": 66,
+      "rssMiB": 88,
+      "reportBytes": 315
+    },
+    {
+      "id": "refugeeEvacuation",
+      "ticks": 1051,
+      "commands": 10,
+      "pathNodes": 642733,
+      "replayMs": 57,
+      "rssMiB": 86,
+      "reportBytes": 359
+    },
+    {
+      "id": "crystalCart",
+      "ticks": 1253,
+      "commands": 16,
+      "pathNodes": 416536,
+      "replayMs": 72,
+      "rssMiB": 88,
+      "reportBytes": 482
+    },
+    {
+      "id": "dragonTide",
+      "ticks": 6174,
+      "commands": 4,
+      "pathNodes": 641330,
+      "replayMs": 91,
+      "rssMiB": 86,
+      "reportBytes": 218
+    }
+  ],
+  "maxReplayMs": 177,
+  "maxPathNodes": 704944,
+  "maxRssMiB": 97
+}

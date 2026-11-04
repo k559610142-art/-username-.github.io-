@@ -148,10 +148,11 @@ const GuildCore = (() => {
         const run = s.activeTicket;
         if (!run || !time(now) || now < run.startedAt || !['success', 'failed', 'abandoned'].includes(outcome)) return error('run_invalid');
         if (!Array.isArray(downedIds) || new Set(downedIds).size !== downedIds.length || downedIds.some(id => !run.ticket.team.includes(id))) return error('downed_invalid');
-        if (outcome === 'success') {
-            if (run.phase !== 'active' || now > run.ticket.expiresAt) return error('run_expired_or_paused');
+        const pending = outcome === 'success' || outcome === 'failed' && proof;
+        if (pending) {
+            if (outcome === 'success' && (run.phase !== 'active' || now > run.ticket.expiresAt)) return error('run_expired_or_paused');
             if (!proof || !text(proof.logRef, 200) || !/^[a-f0-9]{64}$/.test(proof.logHash || '') || !time(proof.simulationMs)
-                || proof.simulationMs < MISSIONS[run.ticket.missionId].survivalMs) return error('proof_invalid');
+                || outcome === 'success' && proof.simulationMs < MISSIONS[run.ticket.missionId].survivalMs) return error('proof_invalid');
             if (s.outbox.length >= MAX_OUTBOX) return error('outbox_full');
         }
         const next = copy(s);
@@ -159,7 +160,7 @@ const GuildCore = (() => {
             const member = next.members.find(m => m.id === id);
             if (member) member.restUntil = now + REST_MS;
         }
-        if (outcome === 'success') next.outbox.push({ ticketId: run.ticket.ticketId, missionId: run.ticket.missionId,
+        if (pending) next.outbox.push({ ticketId: run.ticket.ticketId, missionId: run.ticket.missionId,
             ownerId: s.ownerId, characterId: s.characterId, ruleVersion: run.ticket.ruleVersion, team: run.ticket.team.slice(),
             completedAt: now, simulationMs: proof.simulationMs, logRef: proof.logRef, logHash: proof.logHash, status: 'pending' });
         next.activeTicket = null;
@@ -168,7 +169,11 @@ const GuildCore = (() => {
     function receipt(s, r, now, security = {}) {
         if (!time(now) || !r || !sameBinding(r, s) || !text(r.ticketId) || !time(r.seq) || r.seq < 1) return error('receipt_invalid');
         if (!verified(security.verifyReceipt, r)) return error('receipt_unverified');
-        if (r.seq <= s.serverCursor) return { ok: true, duplicate: true, state: copy(s) };
+        if (r.seq <= s.serverCursor) {
+            const next = copy(s), queued = next.outbox.find(x => x.ticketId === r.ticketId);
+            if (queued && r.missionId === queued.missionId && r.logHash === queued.logHash && r.ruleVersion === queued.ruleVersion && ['accepted', 'rejected'].includes(r.status)) next.outbox = next.outbox.filter(x => x.ticketId !== r.ticketId);
+            return { ok: true, duplicate: true, state: next };
+        }
         if (r.seq !== s.serverCursor + 1) return error('receipt_gap');
         const report = s.outbox.find(x => x.ticketId === r.ticketId);
         if (!report || r.missionId !== report.missionId || r.logHash !== report.logHash || r.ruleVersion !== report.ruleVersion || !['accepted', 'rejected'].includes(r.status)) return error('receipt_mismatch');
@@ -322,6 +327,126 @@ class GuildAssetCache {
 }
 
 
+// 十二項普通公會任務；位置以正式17景安全通行格校準，與可信重播端同源。
+const GuildMissions = (() => {
+    const VERSION='guild-missions-1';
+    const defs={
+        lostMiners:{name:'失聯採礦隊',start:'harbor',maps:['harbor','forest','mine','mineInner'],limit:7200,kind:'rescue',brief:'調查採礦紀錄、救出三名礦工、擊倒巨怪，至少兩人撤離。'},
+        poisonHerbs:{name:'毒霧藥草',start:'port',maps:['port','smuggler','tidal'],limit:7200,kind:'gather',brief:'採集六株解毒草，擊倒蛛后；摧毀三個毒囊可減少毒霧傷害。'},
+        tradeRoad:{name:'商道清剿',start:'harbor',maps:['harbor','forest','mine'],limit:7200,kind:'camps',brief:'清除三座營地、擊倒強盜首領；救援斥候可揭露弱點。'},
+        ancientSeal:{name:'古墓封印',start:'port',maps:['port','smuggler','tidal'],limit:7200,kind:'ritual',brief:'到古墓啟動三座封印，各守護二十秒，再擊退守墓者。'},
+        dragonOutpost:{name:'獵龍前哨',start:'foothills',maps:['foothills','forge','cave1','cave2','cave3','dragon'],limit:9000,kind:'dragon',brief:'清除山道與洞窟前哨、擊倒幼龍並撤離；殘留龍卵會孵化。'},
+        lostBanner:{name:'失落旗幟',start:'harbor',maps:['harbor','coast','fortress'],limit:7200,kind:'flag',brief:'從堡壘取回公會旗幟，持旗時步速減半；避開或解除兩處警報。'},
+        lastCampfire:{name:'最後營火',start:'forest',maps:['forest'],limit:9000,kind:'defense',brief:'到東岸營地啟動防衛，守住補給核心十分鐘；營火會治療附近友軍。'},
+        northGate:{name:'北境城門',start:'fortress',maps:['fortress'],limit:9000,kind:'defense',brief:'到堡壘城門啟動十分鐘防衛，攔截兩路入侵與優先攻城的巨怪。'},
+        sealKeeper:{name:'守護封印師',start:'tidal',maps:['tidal'],limit:9000,kind:'defense',brief:'保護封印師完成十分鐘施法；受擊會延誤儀式，摧毀遠程祭壇可減壓。'},
+        refugeeEvacuation:{name:'難民撤離',start:'forest',maps:['forest','harbor'],limit:6000,kind:'refugees',brief:'到東岸營地接應十五名村民，分三批護送，至少十人返抵港村。'},
+        crystalCart:{name:'魔晶運輸車',start:'foothills',maps:['foothills','forge'],limit:6000,kind:'cart',brief:'護送魔晶車經灰燼谷到廢棄鍛爐；靠近車輛才能前進，三處補給可修車。'},
+        dragonTide:{name:'龍潮之夜',start:'dragon',maps:['dragon'],limit:9000,kind:'defense',brief:'守住獵龍弩炮十分鐘，最後擊退巨龍；友軍須在弩炮旁操作，保住兩座側塔可增加火力。'}
+    };
+    for(const [id,d]of Object.entries(defs)){d.id=id;Object.freeze(d.maps);Object.freeze(d);}Object.freeze(defs);
+    function point(s,map,p,api){const a=api.near(s.worlds[map],p);return {x:a[0],y:a[1]};}
+    function object(s,id,label,type,map,p,api,extra={}){const a=Object.assign(api.actor(id,label,[0,0],extra.hp||100),point(s,map,p,api),{map,type,done:false},extra);a.px=a.x;a.py=a.y;s.objects.push(a);return a;}
+    function enemy(s,id,label,map,p,api,extra={}){try{point(s,map,p,api);}catch(e){const w=s.worlds[map];let best=null,dist=161;for(let i=0;i<w.mask.length;i++)if(w.mask[i]){const at=[i%w.width*4+2,Math.floor(i/w.width)*4+2],d=Math.hypot(at[0]-p[0],at[1]-p[1]);if(d<dist){dist=d;best=at;}}if(!best)throw e;p=best;}const a=Object.assign(api.actor('beast-'+id,label,[0,0],extra.hp||100),point(s,map,p,api),{map,active:false,boss:false},extra);a.px=a.x;a.py=a.y;s.enemies.push(a);return a;}
+    function npc(s,id,label,map,p,api,extra={}){const a=Object.assign(api.actor('miner-'+id,label,[0,0],extra.hp||80),point(s,map,p,api),{map,rescued:false,evacuated:false},extra);a.px=a.x;a.py=a.y;s.miners.push(a);return a;}
+    function site(map,i){return GUILD_MAP_DEFS[map].sites[i].slice(1);}
+    function init(s,api){const id=s.missionId,d=defs[id];s.objects=[];s.enemies=[];s.miners=[];s.done={};s.supplies=3;s.stance='gather';s.wave=0;s.defendAt=null;s.ritualTicks=0;s.alarms=0;s.cartIndex=0;s.joinedGroups=0;s.delivery={map:d.start,p:site(d.start,0)};
+        if(id==='poisonHerbs'){
+            for(const [i,p]of [[0,[650,430]],[1,[1120,380]],[2,[1330,340]],[3,[350,440]],[4,[1000,480]],[5,[1230,420]]])object(s,'herb'+i,'解毒草 '+(i+1),'herb',i<3?'port':'smuggler',p,api);
+            [[880,410],[1140,420],[1460,460]].forEach((p,i)=>object(s,'sac'+i,'毒囊 '+(i+1),'sac',i===2?'smuggler':'port',p,api));
+            enemy(s,'spider0','毒霧巨蛛','port',[1120,380],api,{skin:'spider',hp:110});enemy(s,'spider1','毒牙蛛衛','smuggler',[1000,480],api,{skin:'spider',hp:120});enemy(s,'queen','毒霧蛛后','tidal',site('tidal',1),api,{skin:'spider',hp:330,boss:true});
+        }else if(id==='tradeRoad'){
+            [site('forest',1),site('forest',2),site('forest',3)].forEach((p,i)=>{object(s,'camp'+i,'強盜營地 '+(i+1),'camp','forest',p,api);enemy(s,'camp'+i,'商道掠奪者','forest',p,api,{group:'camp'+i,hp:125,skin:'bandit'});});
+            npc(s,'scout','受困斥候','forest',[1240,430],api,{optional:true});enemy(s,'chief','強盜首領','mine',site('mine',1),api,{hp:340,boss:true,skin:'bandit'});
+        }else if(id==='ancientSeal'){
+            [[280,300],[450,290],[1170,400]].forEach((p,i)=>object(s,'seal'+i,'封印石 '+(i+1),'seal','tidal',p,api,{hp:500,protected:false,progress:0}));enemy(s,'keeper','守墓者','tidal',site('tidal',3),api,{hp:360,boss:true,skin:'undead'});
+        }else if(id==='dragonOutpost'){
+            [['foothills',site('foothills',1)],['forge',site('forge',0)],['cave2',site('cave2',1)]].forEach(([map,p],i)=>{object(s,'outpost'+i,'獵龍前哨 '+(i+1),'camp',map,p,api);enemy(s,'outpost'+i,'焰鱗守衛',map,p,api,{hp:130,group:'outpost'+i});});
+            [[300,440],[1350,430],[740,730]].forEach((p,i)=>object(s,'egg'+i,'龍卵 '+(i+1),'egg','dragon',p,api));enemy(s,'youngDragon','赤翼幼龍','dragon',site('dragon',0),api,{hp:450,boss:true,skin:'dragon'});
+        }else if(id==='lostBanner'){
+            object(s,'flag','失落公會旗幟','flag','fortress',site('fortress',0),api);[[800,510],[1180,450]].forEach((p,i)=>object(s,'alarm'+i,'警報繩 '+(i+1),'alarm','fortress',p,api));enemy(s,'flagGuard','旗幟守衛','fortress',site('fortress',0),api,{hp:220,skin:'bandit'});
+        }else if(d.kind==='defense'){
+            const map=d.start,p=id==='lastCampfire'?site(map,3):id==='northGate'?site(map,1):id==='sealKeeper'?site(map,1):site(map,1);
+            const core=object(s,'core',id==='lastCampfire'?'補給營火':id==='northGate'?'北境城門':id==='sealKeeper'?'封印師':'獵龍弩炮','core',map,p,api,{hp:1200,protected:true});s.delivery={map,p};
+            if(id==='sealKeeper')[[1170,400],[1270,320]].forEach((p,i)=>object(s,'altar'+i,'遠程祭壇 '+(i+1),'altar',map,p,api));
+            if(id==='dragonTide')[[260,480],[420,460]].forEach((p,i)=>object(s,'tower'+i,'側翼弩塔 '+(i+1),'tower',map,p,api,{hp:450,protected:true}));
+            s.spawnPoints=[[-180,100],[180,100]].map(v=>{try{return point(s,map,[(core.x*4)+v[0],(core.y*4)+v[1]],api);}catch{return point(s,map,GUILD_MAP_DEFS[map].entries.start,api);}});
+        }else if(id==='refugeeEvacuation'){
+            for(let i=0;i<15;i++){const p=site('forest',3);npc(s,'villager'+i,'村民 '+(i+1),'forest',[p[0]+(i%3-1)*12,p[1]+Math.floor(i/3)*8],api,{hp:55,group:Math.floor(i/5)});}
+            object(s,'group0','接應第一批村民','group','forest',site('forest',3),api,{group:0});object(s,'group1','接應第二批村民','group','forest',site('forest',3),api,{group:1});object(s,'group2','接應第三批村民','group','forest',site('forest',3),api,{group:2});
+            [site('forest',2),[750,600],[390,800]].forEach((p,i)=>enemy(s,'refugeeRaid'+i,'追獵村民的掠奪者','forest',p,api,{hp:120,skin:'bandit'}));s.delivery={map:'harbor',p:site('harbor',0)};
+        }else if(id==='crystalCart'){
+            npc(s,'cart','魔晶運輸車','foothills',GUILD_MAP_DEFS.foothills.entries.start,api,{hp:800,vehicle:true,rescued:true});s.cartStops=[['foothills',site('foothills',0)],['foothills',site('foothills',1)],['foothills',GUILD_MAP_DEFS.foothills.entries.east],['forge',site('forge',0)]];
+            [['foothills',[570,360]],['foothills',[1130,530]],['forge',[620,550]]].forEach(([map,p],i)=>object(s,'supply'+i,'補給箱 '+(i+1),'supply',map,p,api));
+            enemy(s,'cartRaid0','灰燼谷伏兵','foothills',site('foothills',1),api,{hp:180});enemy(s,'cartRaid1','鍛爐劫掠者','forge',[620,550],api,{hp:220});s.delivery={map:'forge',p:site('forge',0)};
+        }
+    }
+    function canDeliver(s,api){const d=defs[s.missionId],bosses=s.enemies.filter(e=>e.boss),allBosses=()=>bosses.every(e=>e.hp<=0);
+        if(d.kind==='gather')return s.objects.filter(o=>o.type==='herb'&&o.done).length===6&&allBosses();
+        if(d.kind==='camps')return s.objects.filter(o=>o.type==='camp'&&o.done).length===3&&allBosses();
+        if(d.kind==='ritual')return s.objects.filter(o=>o.type==='seal'&&o.done).length===3&&allBosses();
+        if(d.kind==='dragon')return s.objects.filter(o=>o.type==='camp'&&o.done).length===3&&allBosses();
+        if(d.kind==='flag')return !!s.flag;
+        if(d.kind==='defense')return s.defendAt!==null&&(s.missionId==='sealKeeper'?s.ritualTicks>=6000:s.tick-s.defendAt>=6000)&&s.objects.find(o=>o.id==='core').hp>0&&(s.missionId!=='dragonTide'||bosses.length>0&&allBosses());
+        if(d.kind==='refugees')return s.miners.filter(m=>m.hp>0&&m.evacuated).length>=10;
+        if(d.kind==='cart')return s.cartIndex>=s.cartStops.length&&!s.cartGuard&&s.miners[0].hp>0&&api.distance(s.party[0],s.miners[0])<=100;
+        return false;
+    }
+    function command(s,type,arg,api){const hero=s.party[0],d=defs[s.missionId];
+        if(type==='stance'){if(!['gather','hold','retreat'].includes(arg))return false;s.stance=arg;s.focus=null;return true;}
+        if(type==='deliver'){const p=s.delivery.p;if(s.map!==s.delivery.map||s.route.length||Math.hypot(hero.x*4+2-p[0],hero.y*4+2-p[1])>48||!canDeliver(s,api))return false;s.phase='success';for(const m of s.miners)if(m.rescued&&m.hp>0&&api.distance(hero,m)<=64)m.evacuated=true;return true;}
+        if(type==='interact'||type==='repair'){const o=s.objects.find(o=>o.id===arg&&o.map===s.map&&o.hp>0);if(!o||s.route.length||api.distance(hero,o)>44||!api.sight(s,hero,o)||s.rescue)return false;
+            if(type==='repair'){if(!o.protected||o.hp>=o.maxHp||!s.supplies)return false;}
+            else if(o.done||o.type==='core'&&s.defendAt!==null||o.type==='group'&&o.group!==s.joinedGroups||o.type==='camp'&&s.enemies.some(e=>e.group===o.id&&e.hp>0)||o.type==='seal'&&s.objects.some(a=>a.type==='seal'&&a.protected&&!a.done))return false;
+            s.rescue={id:o.id,kind:type,until:s.tick+30,damage:s.damage,x:hero.x,y:hero.y};return true;}
+        return false;
+    }
+    function complete(s,r,api){const o=s.objects.find(o=>o.id===r.id);if(!o||o.map!==s.map||o.hp<=0||api.distance(s.party[0],o)>44)return;
+        if(r.kind==='repair'){if(s.supplies&&o.protected){o.hp=Math.min(o.maxHp,o.hp+Math.ceil(o.maxHp*.3));s.supplies--;}return;}
+        if(o.type==='core'){s.defendAt=s.tick;o.done=true;return;}
+        if(o.type==='seal'){o.protected=true;o.progress=1;for(let i=0;i<2;i++)enemy(s,'ritual'+o.id+i,'封印追獵者',s.map,[o.x*4+(i?100:-100),o.y*4+80],api,{hp:90,attack:34,assault:true,skin:'undead'});return;}
+        if(o.type==='group'){s.miners.filter(m=>m.group===o.group).forEach(m=>{m.rescued=true;});s.joinedGroups++;}
+        if(o.type==='flag')s.flag=true;
+        if(o.type==='supply'){s.supplies++;const cart=s.miners.find(m=>m.vehicle);if(cart)cart.hp=Math.min(cart.maxHp,cart.hp+200);}
+        o.done=true;
+    }
+    function update(s,api){const id=s.missionId,d=defs[id],hero=s.party[0];
+        if(id==='poisonHerbs'&&s.tick%30===0&&['port','smuggler'].includes(s.map)){const n=s.objects.filter(o=>o.type==='sac'&&!o.done&&o.map===s.map&&api.distance(hero,o)<=180).length;if(n)for(const a of s.party)if(a.hp>0)api.hit(s,a,n,false);}
+        if(id==='tradeRoad'&&s.miners.some(m=>m.rescued)){const boss=s.enemies.find(e=>e.boss);boss.vulnerable=true;}
+        if(id==='dragonOutpost'){const boss=s.enemies.find(e=>e.boss);if(boss.active&&!s.hatched){s.hatched=true;s.objects.filter(o=>o.type==='egg'&&!o.done).forEach((o,i)=>enemy(s,'hatch'+i,'破殼幼獸',o.map,[o.x*4+2,o.y*4+2],api,{hp:70,active:true}));}}
+        if(id==='lostBanner')for(const o of s.objects.filter(o=>o.type==='alarm'&&!o.done&&o.map===s.map))if(api.distance(hero,o)<28){o.done=true;o.triggered=true;s.alarms++;enemy(s,'alarm'+o.id,'警報增援',s.map,[o.x*4+60,o.y*4+60],api,{hp:110,active:true,skin:'bandit'});}
+        if(d.kind==='ritual')for(const o of s.objects.filter(o=>o.type==='seal'&&o.protected&&!o.done)){if(!o.hp){s.phase='failed';s.reason='封印石已被摧毀';return;}o.progress++;if(o.progress>=200){o.done=true;o.protected=false;}}
+        if(d.kind==='defense'&&s.defendAt!==null){const core=s.objects.find(o=>o.id==='core'),elapsed=s.tick-s.defendAt;if(!core.hp){s.phase='failed';s.reason=core.label+'已被摧毀';return;}
+            const wave=Math.floor(elapsed/400)+1;if(wave>s.wave&&elapsed<5700){s.wave=wave;const lane=s.wave%2,p=s.spawnPoints[lane];enemy(s,'wave'+s.wave,s.missionId==='northGate'&&wave%3===0?'攻城巨怪':s.missionId==='sealKeeper'?'遠程咒術師':'入侵掠奪者',s.map,[p.x*4+2,p.y*4+2],api,{hp:wave%3===0?140:90,assault:true,siege:id==='northGate'&&wave%3===0,reach:id==='sealKeeper'?140:36,attack:id==='northGate'&&wave%3===0?25:9});}
+            if(id==='lastCampfire'&&s.tick%30===0)for(const a of s.party)if(a.hp>0&&api.distance(a,core)<=140)a.hp=Math.min(a.maxHp,a.hp+10);
+            if(id==='sealKeeper'){if(!s.enemies.some(e=>e.hp>0&&e.active&&e.map===s.map&&api.distance(e,core)<=150))s.ritualTicks++;if(s.tick%30===0)for(const altar of s.objects.filter(o=>o.type==='altar'&&!o.done))api.hit(s,core,3);}
+            if(id==='dragonTide'){if(elapsed>=5400&&!s.finalDragon){s.finalDragon=true;enemy(s,'finalDragon','熔火巨龍',s.map,[core.x*4+160,core.y*4+100],api,{hp:900,boss:true,active:true,assault:true,skin:'dragon',attack:24});}if(s.tick%10===0&&s.party.some(a=>a.hp>0&&api.distance(a,core)<=140)){const target=s.enemies.find(e=>e.hp>0&&e.active&&e.map===s.map);if(target){const towers=s.objects.filter(o=>o.type==='tower'&&o.hp>0).length;api.hit(s,target,8+towers*3);}}}
+        }
+        if(d.kind==='refugees'&&s.map==='harbor'){const dest=point(s,'harbor',s.delivery.p,api);for(const m of s.miners)if(m.rescued&&m.hp>0&&api.distance(m,dest)<=64){m.evacuated=true;m.rescued=false;}}
+        if(d.kind==='refugees'&&s.miners.filter(m=>m.hp>0).length<10){s.phase='failed';s.reason='已無法讓十名村民撤離';}
+        if(d.kind==='cart'){const cart=s.miners[0];if(!cart.hp){s.phase='failed';s.reason='魔晶運輸車已被摧毀';return;}if(s.cartGuard){if(s.enemies.some(e=>e.group===s.cartGuard&&e.hp>0))return;s.cartGuard=null;}const stop=s.cartStops[s.cartIndex];if(stop&&stop[0]===s.map){const p=point(s,s.map,stop[1],api);if(api.distance(cart,p)<12){s.cartIndex++;s.cartGuard='cartStop'+s.cartIndex;for(let i=0;i<2;i++)enemy(s,s.cartGuard+i,'劫掠車隊的伏兵',s.map,[cart.x*4+(i?90:-90),cart.y*4+60],api,{hp:90,active:true,group:s.cartGuard,targetId:cart.id});}else if(api.distance(hero,cart)<=140&&!s.enemies.some(e=>e.map===s.map&&e.hp>0&&e.active&&api.distance(e,cart)<50))api.approach(s,cart,p,8);}}
+        if(d.kind==='defense'&&s.defendAt===null&&s.tick>=3000){s.phase='failed';s.reason='未及時抵達並啟動防衛';}
+    }
+    function rating(s){const id=s.missionId,d=defs[id];if(s.phase!=='success')return false;
+        if(d.kind==='gather')return s.objects.filter(o=>o.type==='sac').every(o=>o.done);
+        if(d.kind==='camps')return s.miners.some(m=>m.rescued&&m.hp>0);
+        if(d.kind==='ritual')return s.objects.filter(o=>o.type==='seal').every(o=>o.hp>=o.maxHp*.5);
+        if(d.kind==='dragon')return s.objects.filter(o=>o.type==='egg').every(o=>o.done);
+        if(d.kind==='flag')return !s.alarms;
+        if(id==='lastCampfire')return s.objects.find(o=>o.id==='core').hp>=900;
+        if(id==='northGate')return s.enemies.filter(e=>e.siege).every(e=>e.hp===0&&!e.objectiveHits);
+        if(id==='sealKeeper')return s.objects.filter(o=>o.type==='altar').every(o=>o.done);
+        if(id==='dragonTide')return s.objects.filter(o=>o.type==='tower').every(o=>o.hp>0);
+        if(d.kind==='refugees')return s.miners.every(m=>m.hp>0&&m.evacuated);
+        if(d.kind==='cart')return s.objects.filter(o=>o.type==='supply').every(o=>o.done);
+        return false;
+    }
+    function actions(s){const a=s.objects.filter(o=>o.map===s.map&&o.hp>0&&!o.done&&o.type!=='tower').map(o=>({label:o.type==='core'?'啟動十分鐘防衛':o.label,type:'interact',id:o.id}));for(const o of s.objects.filter(o=>o.map===s.map&&o.protected&&o.hp>0&&o.hp<o.maxHp&&s.supplies))a.push({label:'修復'+o.label+'（補給'+s.supplies+'）',type:'repair',id:o.id});return a;}
+    function summary(s){const d=defs[s.missionId],o=s.objects,core=o.find(a=>a.id==='core');let progress='';if(d.kind==='gather')progress='藥草 '+o.filter(a=>a.type==='herb'&&a.done).length+'/6';if(['camps','dragon'].includes(d.kind))progress='營地 '+o.filter(a=>a.type==='camp'&&a.done).length+'/3';if(d.kind==='ritual')progress='封印 '+o.filter(a=>a.type==='seal'&&a.done).length+'/3'+(o.some(a=>a.type==='seal'&&a.protected&&!a.done)?' · 儀式 '+Math.floor(o.find(a=>a.type==='seal'&&a.protected&&!a.done).progress/10)+'/20秒':'');if(d.kind==='flag')progress=s.flag?'旗幟已取回，步速減半':'尚未取旗';if(d.kind==='refugees')progress='撤離 '+s.miners.filter(m=>m.evacuated).length+'/15 · 已接應 '+s.joinedGroups+'/3批';if(d.kind==='cart')progress='車輛 '+s.miners[0].hp+'/'+s.miners[0].maxHp+' · 路段 '+s.cartIndex+'/4';if(d.kind==='defense')progress=core.label+' '+core.hp+'/'+core.maxHp+' · '+(s.defendAt===null?'尚未啟動':idTime(s));const bosses=s.enemies.filter(e=>e.boss);if(bosses.length)progress+=' · 首領 '+bosses.filter(e=>!e.hp).length+'/'+bosses.length;const extra={poisonHerbs:['sac','毒囊'],dragonOutpost:['egg','龍卵'],sealKeeper:['altar','祭壇'],crystalCart:['supply','補給箱']}[s.missionId];if(extra){const list=o.filter(a=>a.type===extra[0]);progress+=' · '+extra[1]+' '+list.filter(a=>a.done).length+'/'+list.length;}if(d.kind==='flag')progress+=' · 警報觸發 '+s.alarms+' 次';return '剩餘 '+Math.max(0,Math.ceil((s.limit-s.tick)/10))+' 秒 · '+progress;}
+    function idTime(s){return '防衛 '+Math.floor((s.missionId==='sealKeeper'?s.ritualTicks:s.tick-s.defendAt)/10)+'/600秒';}
+    return Object.freeze({VERSION,defs,init,command,complete,update,canDeliver,rating,actions,summary});
+})();
+
 // 失聯採礦隊固定100ms模擬；同一輸入可在可信驗證端重播，不讀寫player或發獎。
 const GuildMissionCore = (() => {
     const VERSION='lost-miners-1',LIMIT=7200,MAPS=['harbor','forest','mine','mineInner'];
@@ -336,46 +461,47 @@ const GuildMissionCore = (() => {
             if(!reached)return null;const path=[];for(let n=b;n!==a;n=prev[n])path.push([n%w.width,Math.floor(n/w.width)]);return path.reverse();};return w;
     }
     function actor(id,label,p,hp){return {id,label,x:p[0],y:p[1],px:p[0],py:p[1],hp,maxHp:hp,dir:'down',cool:0,path:[],downed:false};}
-    function spawn(s,id,entry){s.map=id;s.world=s.worlds[id];const p=near(s.world,GUILD_MAP_DEFS[id].entries[entry]||GUILD_MAP_DEFS[id].entries.start),queue=[{p,parent:null,depth:0}],seen=new Set([p.join(',')]);let end=queue[0];for(let i=0;i<queue.length;i++){end=queue[i];if(end.depth>=70)break;for(const n of s.world.neighbors(...end.p)){const key=n.join(',');if(!seen.has(key)){seen.add(key);queue.push({p:n,parent:end,depth:end.depth+1});}}}const trail=[];for(let n=end;n;n=n.parent)trail.push(n.p.slice());s.route=[];s.trail=[...Array.from({length:96-trail.length},()=>trail[0].slice()),...trail];[...s.party,...s.miners.filter(m=>m.rescued&&m.hp>0)].forEach((a,i)=>{const at=s.trail[Math.max(0,s.trail.length-1-i*10)];Object.assign(a,{x:at[0],y:at[1],px:at[0],py:at[1],path:[]});});}
-    function create(team,seed,cls){if(!Array.isArray(team)||team.length!==3||new Set(team).size!==3||!team.every(id=>GuildCore.MEMBERS[id])||!Number.isInteger(seed)||seed<0||seed>0xffffffff)throw Error('mission_team_invalid');
-        const budget={used:0};const s={budget,version:VERSION,tick:0,seed:seed||1,cls,phase:'active',map:'harbor',worlds:Object.fromEntries(MAPS.map(id=>[id,preparePath(world(id,budget),budget)])),party:[actor('player','隊長',[0,0],180),...team.map(id=>actor(id,GuildCore.MEMBERS[id].name,[0,0],id==='sentinel'?220:140))],miners:[],enemies:[],clue:false,rescue:null,damage:0,downed:[],log:[]};
-        const w=s.worlds.mineInner,points=GUILD_MAP_DEFS.mineInner.sites;
+    function spawn(s,id,entry){s.map=id;s.world=s.worlds[id];const p=near(s.world,GUILD_MAP_DEFS[id].entries[entry]||GUILD_MAP_DEFS[id].entries.start),queue=[{p,parent:null,depth:0}],seen=new Set([p.join(',')]);let end=queue[0];for(let i=0;i<queue.length;i++){end=queue[i];if(end.depth>=70)break;for(const n of s.world.neighbors(...end.p)){const key=n.join(',');if(!seen.has(key)){seen.add(key);queue.push({p:n,parent:end,depth:end.depth+1});}}}const trail=[];for(let n=end;n;n=n.parent)trail.push(n.p.slice());s.route=[];s.trail=[...Array.from({length:96-trail.length},()=>trail[0].slice()),...trail];[...s.party,...s.miners.filter(m=>m.rescued&&m.hp>0)].forEach((a,i)=>{const at=s.trail[Math.max(0,s.trail.length-1-(a.vehicle?6:i*10))];Object.assign(a,{x:at[0],y:at[1],px:at[0],py:at[1],path:[]});if(s.missionId!=='lostMiners'&&a.rescued)a.map=id;});}
+    function create(team,seed,cls,missionId='lostMiners'){const def=GuildMissions.defs[missionId];if(!def)throw Error('mission_unknown');if(!Array.isArray(team)||team.length!==3||new Set(team).size!==3||!team.every(id=>GuildCore.MEMBERS[id])||!Number.isInteger(seed)||seed<0||seed>0xffffffff)throw Error('mission_team_invalid');
+        const budget={used:0};const s={budget,version:missionId==='lostMiners'?VERSION:GuildMissions.VERSION,tick:0,seed:seed||1,cls,phase:'active',map:'harbor',missionId,limit:def.limit,objects:[],worlds:Object.fromEntries(def.maps.map(id=>[id,preparePath(world(id,budget),budget)])),party:[actor('player','隊長',[0,0],180),...team.map(id=>actor(id,GuildCore.MEMBERS[id].name,[0,0],id==='sentinel'?220:140))],miners:[],enemies:[],clue:false,rescue:null,damage:0,downed:[],log:[]};
+        if(missionId==='lostMiners'){const w=s.worlds.mineInner,points=GUILD_MAP_DEFS.mineInner.sites;
         s.miners=points.map((p,i)=>Object.assign(actor('miner'+i,['礦工・阿洛','礦工・席恩','工頭・貝爾'][i],near(w,p.slice(1)),65),{map:'mineInner',rescued:false,evacuated:false}));
         s.enemies=[{id:'beast0',label:'礦坑獸兵',p:[760,600],map:'mine',hp:110},{id:'beast1',label:'結晶獸兵',p:[620,430],map:'mineInner',hp:130},{id:'giant',label:'深礦巨怪',p:[1370,240],map:'mineInner',hp:300}].map(e=>Object.assign(actor(e.id,e.label,near(s.worlds[e.map],e.p),e.hp),{map:e.map,boss:e.id==='giant',active:false}));
-        spawn(s,'harbor','start');return s;
+        }else GuildMissions.init(s,api);spawn(s,def.start,'start');return s;
     }
     function distance(a,b){return Math.hypot(a.x-b.x,a.y-b.y)*4;}
     function sight(s,a,b){const n=Math.ceil(Math.hypot(b.x-a.x,b.y-a.y));for(let i=0;i<=n;i++)if(!s.world.canStand(Math.round(a.x+(b.x-a.x)*i/Math.max(1,n)),Math.round(a.y+(b.y-a.y)*i/Math.max(1,n))))return false;return true;}
     function stepActor(a,p){if(!p)return;a.px=a.x;a.py=a.y;const dx=p[0]-a.x,dy=p[1]-a.y;a.dir=Math.abs(dx)>Math.abs(dy)?dx>0?'right':'left':dy>0?'down':'up';a.x=p[0];a.y=p[1];}
-    function approach(s,a,target,range){if(distance(a,target)<=range&&sight(s,a,target))return;if(s.tick%8===0||!a.path.length)a.path=s.world.path([a.x,a.y],[target.x,target.y])||[];for(let i=0;i<2;i++){const p=a.path.shift();if(p)stepActor(a,p);}}
+    function approach(s,a,target,range){if(distance(a,target)<=range&&sight(s,a,target))return;if(!a.path.length||s.tick%8===0&&(s.missionId==='lostMiners'||a.targetX!==target.x||a.targetY!==target.y)){a.targetX=target.x;a.targetY=target.y;a.path=s.world.path([a.x,a.y],[target.x,target.y])||[];}for(let i=0;i<2;i++){const p=a.path.shift();if(p)stepActor(a,p);}}
     function random(s,n){let x=s.seed;x^=x<<13;x^=x>>>17;x^=x<<5;s.seed=x>>>0;return s.seed%n;}
-    function hit(s,target,amount){target.hp=Math.max(0,target.hp-amount);if(target.id==='player'){s.damage++;s.rescue=null;}if(!target.hp){target.downed=true;target.path=[];if(s.party.includes(target)&&target.id!=='player'&&!s.downed.includes(target.id))s.downed.push(target.id);}}
-    function command(s,type,arg){if(s.phase!=='active')return false;const hero=s.party[0];
+    function hit(s,target,amount,interrupt=true){if(interrupt)target.damageSerial=(target.damageSerial||0)+1;target.hp=Math.max(0,target.hp-amount);if(target.id==='player'&&interrupt){s.damage++;s.rescue=null;}if(!target.hp){if(target.id==='player'){s.rescue=null;s.route=[];}target.downed=true;target.path=[];if(s.party.includes(target)&&target.id!=='player'&&!s.downed.includes(target.id))s.downed.push(target.id);}}
+    function command(s,type,arg){if(s.phase!=='active')return false;const hero=s.party[0];if(s.missionId!=='lostMiners'&&['interact','repair','stance','deliver'].includes(type))return GuildMissions.command(s,type,arg,api);if(!hero.hp&&s.missionId!=='lostMiners'&&!['stance','stop'].includes(type))return false;
         if(type==='move'){if(!Array.isArray(arg)||arg.length!==2||!arg.every(Number.isInteger))return false;const [x,y]=arg;if(!s.world.canStand(x,y))return false;const path=s.world.path([hero.x,hero.y],[x,y]);if(!path)return false;s.route=path;s.rescue=null;}
-        else if(type==='gate'){const gate=GUILD_MAP_DEFS[s.map].gates[arg];if(!Number.isInteger(arg)||!gate||!MAPS.includes(gate.to)||s.route.length||Math.hypot(hero.x*4+2-gate.at[0],hero.y*4+2-gate.at[1])>32||s.miners.some(m=>m.rescued&&m.hp>0&&Math.hypot(m.x*4+2-gate.at[0],m.y*4+2-gate.at[1])>64)||s.enemies.some(e=>e.map===s.map&&e.hp>0&&e.active&&distance(hero,e)<180))return false;spawn(s,gate.to,gate.entry);s.rescue=null;}
-        else if(type==='clue'){const p=GUILD_MAP_DEFS.mine.sites[1];if(s.map!=='mine'||s.route.length||Math.hypot(hero.x*4+2-p[1],hero.y*4+2-p[2])>48)return false;s.clue=true;}
+        else if(type==='gate'){const gate=GUILD_MAP_DEFS[s.map].gates[arg];if(!Number.isInteger(arg)||!gate||!GuildMissions.defs[s.missionId].maps.includes(gate.to)||s.route.length||Math.hypot(hero.x*4+2-gate.at[0],hero.y*4+2-gate.at[1])>32||s.missionId!=='lostMiners'&&s.miners.some(m=>m.rescued&&m.hp>0&&Math.hypot(m.x*4+2-gate.at[0],m.y*4+2-gate.at[1])>64)||s.enemies.some(e=>e.map===s.map&&e.hp>0&&e.active&&distance(hero,e)<180))return false;spawn(s,gate.to,gate.entry);s.rescue=null;}
+        else if(type==='clue'){if(s.missionId!=='lostMiners')return false;const p=GUILD_MAP_DEFS.mine.sites[1];if(s.map!=='mine'||s.route.length||Math.hypot(hero.x*4+2-p[1],hero.y*4+2-p[2])>48)return false;s.clue=true;}
         else if(type==='focus'){const e=s.enemies.find(e=>e.id===arg&&e.map===s.map&&e.hp>0);if(!e||distance(hero,e)>220||!sight(s,hero,e))return false;s.focus=e.id;e.active=true;}
-        else if(type==='rescue'){const a=[...s.miners.filter(m=>m.map===s.map&&!m.rescued&&s.clue),...s.party.filter(a=>a.id!=='player'&&!a.hp)].find(a=>a.id===arg);if(!a||s.route.length||distance(hero,a)>44||!sight(s,hero,a)||s.rescue||s.miners.includes(a)&&a.hp<=0)return false;s.rescue={id:a.id,until:s.tick+30,damage:s.damage,x:hero.x,y:hero.y};}
+        else if(type==='rescue'){const a=[...s.miners.filter(m=>m.map===s.map&&!m.rescued&&!m.evacuated&&(s.clue||s.missionId!=='lostMiners')),...s.party.filter(a=>a.id!=='player'&&!a.hp)].find(a=>a.id===arg);if(!a||s.route.length||distance(hero,a)>44||!sight(s,hero,a)||s.rescue||s.miners.includes(a)&&a.hp<=0)return false;s.rescue={id:a.id,until:s.tick+30,damage:s.damage,x:hero.x,y:hero.y};}
         else if(type==='deliver'){const p=GUILD_MAP_DEFS.harbor.sites[0];if(s.map!=='harbor'||s.route.length||Math.hypot(hero.x*4+2-p[1],hero.y*4+2-p[2])>48||!s.clue||s.enemies.find(e=>e.boss).hp>0||s.miners.some(m=>!m.rescued)||s.miners.filter(m=>m.hp>0&&distance(hero,m)<=64).length<2)return false;s.phase='success';for(const m of s.miners)if(m.hp>0&&distance(hero,m)<=64)m.evacuated=true;}
         else if(type==='stop'){s.route=[];s.rescue=null;}
         else return false;
         return true;
     }
-    function tick(s){if(s.phase!=='active')return;s.tick++;if(s.tick>=LIMIT){s.phase='failed';s.reason='任務逾時';return;}
+    function tick(s){if(s.phase!=='active')return;s.tick++;if(s.tick>=s.limit){s.phase='failed';s.reason='任務逾時';return;}
         for(const a of [...s.party,...s.miners,...s.enemies]){a.px=a.x;a.py=a.y;if(a.cool>0)a.cool--;}
-        const hero=s.party[0];for(let i=0;i<2&&s.route.length;i++){stepActor(hero,s.route.shift());s.trail.push([hero.x,hero.y]);if(s.trail.length>96)s.trail.shift();}
+        const hero=s.party[0];for(let i=0;i<(s.flag?1:2)&&s.route.length&&hero.hp>0;i++){stepActor(hero,s.route.shift());s.trail.push([hero.x,hero.y]);if(s.trail.length>96)s.trail.shift();}
         const enemies=s.enemies.filter(e=>e.map===s.map&&e.hp>0);
-        for(const e of enemies){if(distance(hero,e)<180&&sight(s,hero,e))e.active=true;if(!e.active)continue;const targets=[...s.party,...s.miners.filter(m=>m.rescued&&m.hp>0)].filter(a=>a.hp>0);const tank=targets.find(a=>a.id==='sentinel'&&distance(a,e)<100),target=tank||targets.sort((a,b)=>distance(a,e)-distance(b,e))[0];if(!target)continue;approach(s,e,target,36);if(!e.cool&&distance(e,target)<=44&&sight(s,e,target)){e.attackUntil=s.tick+4;hit(s,target,(e.boss?13:7)+random(s,4));e.cool=e.boss?14:18;}}
-        s.party.forEach((a,i)=>{if(!a.hp)return;const e=enemies.find(e=>e.id===s.focus&&e.hp>0)||enemies.filter(e=>e.active&&e.hp>0).sort((u,v)=>distance(a,u)-distance(a,v))[0],r=['ranger','arcanist','healer'].includes(a.id)?150:44;
-            if(a.id==='healer'&&!a.cool){const hurt=s.party.filter(p=>p.hp>0&&p.hp<p.maxHp*.75&&distance(a,p)<180&&sight(s,a,p)).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0];if(hurt){hurt.hp=Math.min(hurt.maxHp,hurt.hp+22);a.cool=20;return;}}
-            if(e&&e.active){if(i&&!s.route.length)approach(s,a,e,r);if(!a.cool&&distance(a,e)<=r&&sight(s,a,e)){a.attackUntil=s.tick+4;hit(s,e,(a.id==='player'?13:a.id==='healer'?5:9)+random(s,4));a.cool=a.id==='arcanist'?13:10;}}
-            else if(i){const p=s.trail[Math.max(0,s.trail.length-1-i*10)];approach(s,a,{x:p[0],y:p[1]},4);}
+        for(const e of enemies){if(e.assault||distance(hero,e)<180&&sight(s,hero,e)||s.miners.some(m=>m.rescued&&m.hp>0&&distance(m,e)<160))e.active=true;if(!e.active)continue;const protectedObjects=s.objects.filter(o=>o.map===s.map&&o.protected&&o.hp>0),targets=[...s.party,...s.miners.filter(m=>m.rescued&&m.hp>0),...protectedObjects].filter(a=>a.hp>0);const tank=targets.find(a=>a.id==='sentinel'&&distance(a,e)<100),target=e.targetId&&targets.find(a=>a.id===e.targetId)||(e.assault&&protectedObjects.length?protectedObjects.slice().sort((a,b)=>distance(a,e)-distance(b,e))[0]:tank||targets.sort((a,b)=>distance(a,e)-distance(b,e))[0]);if(!target)continue;approach(s,e,target,e.reach||36);if(!e.cool&&distance(e,target)<=(e.reach||44)&&sight(s,e,target)){e.attackUntil=s.tick+4;if(e.siege&&target.protected)e.objectiveHits=(e.objectiveHits||0)+1;hit(s,target,(e.attack||(e.boss?13:7))+random(s,4));e.cool=e.boss?14:18;}}
+        s.party.forEach((a,i)=>{if(!a.hp||s.autoRescue&&s.autoRescue.by===a.id)return;const e=enemies.find(e=>e.id===s.focus&&e.hp>0)||enemies.filter(e=>e.active&&e.hp>0&&(s.missionId==='lostMiners'||distance(a,e)<=240&&sight(s,a,e))).sort((u,v)=>distance(a,u)-distance(a,v))[0],r=['ranger','arcanist','healer'].includes(a.id)||a.id==='player'&&s.missionId!=='lostMiners'&&['mage','elf','gunner','angel'].includes(s.cls)?150:44;
+            if(a.id==='healer'&&!a.cool){const hurt=[...s.party,...s.objects.filter(o=>o.protected&&o.map===s.map)].filter(p=>p.hp>0&&p.hp<p.maxHp*.75&&distance(a,p)<180&&sight(s,a,p)).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0];if(hurt){hurt.hp=Math.min(hurt.maxHp,hurt.hp+22);a.cool=20;return;}}
+            if(e&&e.active&&s.stance!=='retreat'){if(i&&!s.route.length&&s.stance!=='hold')approach(s,a,e,r);if(!a.cool&&distance(a,e)<=r&&sight(s,a,e)){a.attackUntil=s.tick+4;hit(s,e,Math.floor(((a.id==='player'?13:a.id==='healer'?5:9)+random(s,4))*(e.vulnerable?1.25:1)));a.cool=a.id==='arcanist'?13:10;}}
+            else if(i&&s.stance!=='hold'){const p=s.trail[Math.max(0,s.trail.length-1-i*10)];approach(s,a,{x:p[0],y:p[1]},4);}
         });
-        s.miners.filter(m=>m.rescued&&m.hp>0).forEach((m,i)=>{const offset=[[-6,-4],[0,-8],[6,-4]][i],idle=[hero.x+offset[0],hero.y+offset[1]],p=s.route.length?s.trail[Math.max(0,s.trail.length-1-40-i*10)]:s.world.canStand(...idle)?idle:[hero.x,hero.y];approach(s,m,{x:p[0],y:p[1]},4);});
-        if(s.rescue){const r=s.rescue;if(hero.x!==r.x||hero.y!==r.y||r.damage!==s.damage)s.rescue=null;else if(s.tick>=r.until){const a=[...s.miners,...s.party].find(a=>a.id===r.id);if(a&&distance(hero,a)<=44){if(s.miners.includes(a))a.rescued=true;else{a.hp=Math.ceil(a.maxHp*.35);a.downed=false;}a.path=[];}s.rescue=null;}}
-        if(!hero.hp||s.miners.filter(m=>m.rescued&&!m.hp).length>1){s.phase='failed';s.reason=!hero.hp?'隊長倒下':'礦工撤離人數不足';}
+        s.miners.filter(m=>m.rescued&&m.hp>0&&!m.vehicle).forEach((m,i)=>{const offset=[[-6,-4],[0,-8],[6,-4],[-8,0],[8,0],[-6,4],[0,8],[6,4]][i%8],idle=[hero.x+offset[0],hero.y+offset[1]],p=s.route.length?s.trail[Math.max(0,s.trail.length-1-40-i*(s.miners.length>3?3:10))]:s.world.canStand(...idle)?idle:[hero.x,hero.y];approach(s,m,{x:p[0],y:p[1]},4);});
+        if(s.rescue){const r=s.rescue;if(hero.x!==r.x||hero.y!==r.y||r.damage!==s.damage)s.rescue=null;else if(s.tick>=r.until){if(r.kind)GuildMissions.complete(s,r,api);const a=[...s.miners,...s.party].find(a=>a.id===r.id);if(a&&distance(hero,a)<=44){if(s.miners.includes(a))a.rescued=true;else{a.hp=Math.ceil(a.maxHp*.35);a.downed=false;}a.path=[];}s.rescue=null;}}
+        if(s.missionId!=='lostMiners'){GuildMissions.update(s,api);if(!hero.hp){s.route=[];const ally=s.party.slice(1).filter(a=>a.hp>0).sort((a,b)=>distance(a,hero)-distance(b,hero))[0];if(!ally){s.phase='failed';s.reason='全隊失去行動能力';}else{approach(s,ally,hero,32);if(!s.autoRescue&&distance(ally,hero)<=44)s.autoRescue={by:ally.id,damage:ally.damageSerial||0,until:s.tick+30};if(s.autoRescue){if(ally.id!==s.autoRescue.by||(ally.damageSerial||0)!==s.autoRescue.damage||distance(ally,hero)>44)s.autoRescue=null;else if(s.tick>=s.autoRescue.until){hero.hp=Math.ceil(hero.maxHp*.35);hero.downed=false;s.autoRescue=null;}}}}}else if(!hero.hp||s.miners.filter(m=>m.rescued&&!m.hp).length>1){s.phase='failed';s.reason=!hero.hp?'隊長倒下':'礦工撤離人數不足';}
     }
-    function replay(team,seed,cls,events,ticks){if(!Number.isInteger(ticks)||ticks<0||ticks>LIMIT||!Array.isArray(events)||events.length>10000)throw Error('mission_proof_bounds');let last=-1,count=0;for(const e of events){if(!Array.isArray(e)||e.length!==3||!Number.isInteger(e[0])||e[0]<last||e[0]>ticks||e[0]<0)throw Error('mission_event_order');count=e[0]===last?count+1:1;last=e[0];if(count>4)throw Error('mission_command_rate');}const s=create(team,seed,cls);let i=0;for(let t=0;t<=ticks;t++){while(i<events.length&&events[i][0]===t){const e=events[i++];if(!Array.isArray(e)||e.length!==3||!command(s,e[1],e[2]))throw Error('mission_invalid_command');}if(t<ticks)tick(s);}if(i!==events.length)throw Error('mission_event_order');return s;}
+    function replay(team,seed,cls,events,ticks,missionId='lostMiners'){if(!Number.isInteger(ticks)||ticks<0||ticks>(GuildMissions.defs[missionId]?.limit||0)||!Array.isArray(events)||events.length>10000)throw Error('mission_proof_bounds');let last=-1,count=0;for(const e of events){if(!Array.isArray(e)||e.length!==3||!Number.isInteger(e[0])||e[0]<last||e[0]>ticks||e[0]<0)throw Error('mission_event_order');count=e[0]===last?count+1:1;last=e[0];if(count>4)throw Error('mission_command_rate');}const s=create(team,seed,cls,missionId);let i=0;for(let t=0;t<=ticks;t++){while(i<events.length&&events[i][0]===t){const e=events[i++];if(!Array.isArray(e)||e.length!==3||!command(s,e[1],e[2]))throw Error('mission_invalid_command');}if(t<ticks)tick(s);}if(i!==events.length)throw Error('mission_event_order');return s;}
+    const api={actor,near,hit,approach,distance,sight};
     function safe(fn,s,...args){try{return fn(s,...args);}catch(e){if(e.message!=='mission_work_limit')throw e;s.phase='failed';s.reason='本次任務已中止，請重新接取';return false;}}
     return Object.freeze({VERSION,LIMIT,MAPS,create,command:(s,...args)=>safe(command,s,...args),tick:s=>safe(tick,s),replay,distance});
 })();

@@ -1,0 +1,16 @@
+{
+  "version": "20261104f",
+  "bundledFiles": 72,
+  "exportedHandlersChecked": [
+    "guildDepart",
+    "guildMissionStart",
+    "guildMissionResume",
+    "guildMissionAbandon",
+    "guildMissionSubmitAll",
+    "guildMissionSubmitMission"
+  ],
+  "mapTiles": 273,
+  "cssSHA256": "ec26478cd5bdc1aa3a18b52bc386d1fec31978c5d440f2d03cf2655dd82de679",
+  "gameBytes": 1221002,
+  "gameSHA256": "3502382260a4f45503a12071d4222cf50d0a7763cd5f9213a7b8734b44308543"
+}

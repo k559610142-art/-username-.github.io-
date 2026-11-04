@@ -1,7 +1,7 @@
 'use strict';
 const fs=require('fs'),vm=require('vm'),assert=require('assert/strict');
 const ctx=vm.createContext({Uint8Array,Map,Set,Math,JSON,console,assert});
-for(const f of ['guild-core','guild-world','guild-map-data','guild-mission-core'])vm.runInContext(fs.readFileSync('data/'+f+'.js','utf8'),ctx);
+for(const f of ['guild-core','guild-world','guild-map-data','guild-missions','guild-mission-core'])vm.runInContext(fs.readFileSync('data/'+f+'.js','utf8'),ctx);
 vm.runInContext(`
 const team=['sentinel','warrior','healer'],seed=123456,run=GuildMissionCore.create(team,seed,'mage'),events=[];
 function cmd(type,arg=null){assert(GuildMissionCore.command(run,type,arg),'command '+type+' '+JSON.stringify(arg)+' at '+run.map+' '+run.tick);events.push([run.tick,type,arg]);}
