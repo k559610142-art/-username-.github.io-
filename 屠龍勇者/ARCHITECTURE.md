@@ -323,7 +323,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261105c`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261106a`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -4825,3 +4825,8 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - **遊戲端（vault.js）**：`offlineSeenTick()` 由 gameTick 呼叫（在 gap 判斷與 offlineHold 之後），登入時每 `OFFLINE_SEEN_MS`＝3 分鐘回報一次；`offlineSettle` 結算前 `offlineServerMs(true)` 取伺服器時間，離線時間＝min(裝置量到的, 伺服器量到的)，不滿 OFFLINE_MIN_MS（30 分鐘）不結算。回報間隔必須遠小於 30 分鐘，開著遊戲調時鐘只會量到最多約 3 分鐘。
 - **相容**：還沒執行 SQL（函式不存在，onlineMissing）時照舊用裝置時間，回報也自動停掉；網路錯誤＝這次不結算（顯示「離線收益結算失敗」）。
 - **測試**：PGlite 記憶體測試（首次用存檔時間、立刻再領 ≈0、沒存檔 0、權限、slot 範圍、未登入）通過。
+
+## 307. 移除等級排行榜（2026-11-06，版本 `20261106a`；`rank.js`）
+
+- 使用者要求：排行榜分頁拿掉「⭐ 等級」榜，連同只有等級榜在用的職業篩選（rankCls／rankSetCls）。預設改開「🐉 屠龍」，剩屠龍、永夜之塔、擊殺、血盟四個榜。
+- 伺服器 `dragon_leaderboard` 沒改（仍支援 p_kind='level'），只是遊戲不再呼叫。第 34 節的等級榜說明已過時。
