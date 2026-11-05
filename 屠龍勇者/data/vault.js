@@ -49,6 +49,22 @@ function offlineEligible() {
     return !!z && z.type !== 'dragon';
 }
 
+// 伺服器離線計時（tools/offline-time.sql，第 306 節）：回報「這個角色還在線上」並重新起算；claim 時回傳距離上次回報的毫秒數。
+// 回傳 null＝伺服器還沒裝這個函式
+async function offlineServerMs(claim) {
+    const r = await cloudTimeout(cloudSb.rpc('offline_seen', { p_slot: currentSlot, p_claim: !!claim }));
+    if (r.error) { if (onlineMissing(r.error)) return null; throw r.error; }
+    return Math.max(0, Number(r.data) || 0);
+}
+// 遊戲中每 3 分鐘回報一次（main.js gameTick 呼叫；結算中 offlineHold 不會跑到這裡）。間隔必須遠小於 OFFLINE_MIN_MS
+const OFFLINE_SEEN_MS = 3 * 60 * 1000;
+let offlineSeenAt = 0, offlineSeenOff = false;
+function offlineSeenTick() {
+    if (offlineSeenOff || !player || !vaultOnline() || !cloudCanCall() || Date.now() - offlineSeenAt < OFFLINE_SEEN_MS) return;
+    offlineSeenAt = Date.now();
+    offlineServerMs(false).then(v => { if (v === null) offlineSeenOff = true; }).catch(() => { });   // 沒裝 SQL 就不再送
+}
+
 let offlineHold = false;   // 向伺服器結算中：主迴圈暫停，避免角色先動
 // 有離線時間要結算：登入才算，向伺服器扣鑽石換可結算的時間，再用 applyOffline 模擬
 async function offlineSettle(awayMs) {
@@ -65,7 +81,11 @@ async function offlineSettle(awayMs) {
             showToast('🌙 沒有離線收益：只有最後離線的角色才能離線掛機', 3500);
             return;
         }
-        const rep = applyOffline(awayMs);
+        // 2026-11-05（第 306 節）：改用伺服器量到的離線時間，調裝置時鐘刷不到；還沒執行 offline-time.sql 時照舊用裝置時間
+        const srvMs = await offlineServerMs(true);
+        const away = srvMs == null ? awayMs : Math.min(awayMs, srvMs);
+        if (away < OFFLINE_MIN_MS) return;
+        const rep = applyOffline(away);
         if (rep) { refreshUI(); showOfflineReport(rep); }
     } catch (e) {
         addLog('🌙 離線收益結算失敗：' + vaultErrText(e), 'sys');

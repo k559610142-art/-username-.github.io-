@@ -323,7 +323,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261105b`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261105c`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -4817,3 +4817,11 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - `loot_raid`：先查勝利紀錄，有紀錄就用紀錄的副本 id 與結果結算；隊員要在紀錄的 `members` 裡（沒記到時退回查 `raid_members`），且要在 `result.members` 裡。沒有紀錄（安裝前的舊房間）才照舊看房間現況。所以隊長按「再打一場」（round+1、result 清空）、解散（closed），或隊員離隊（raid_members 被刪），上一場都還能結算。沒打贏的場次一樣回 `loot raid not won`。
 - **要在 Supabase 執行一次 `tools/raid-wins.sql`**（可重跑）。內容已同步寫進 `server-loot.sql`／`server-loot-install.sql`，之後重跑那兩份也不會蓋回舊版。
 - 測試：`tools/test-server-loot-db.js`（PGlite，只用記憶體）加情境：打贏→隊長再打一場＋隊員離隊→上一場仍可結算；換角色結算被拒；沒打贏後解散→not won。另外把 `raid-wins.sql` 接在 `server-loot.sql` 後面跑同一份測試，也通過。
+
+## 306. 離線收益改用伺服器時間（2026-11-05，版本 `20261105c`；SQL `tools/offline-time.sql`）
+
+- **漏洞**：離線時間原本＝裝置時鐘「現在 − 上次存檔」（main.js continueGame）或主迴圈兩次 tick 的間隔（gameTick 的 gap），把手機／電腦時間往後調就能一直領 12 小時×50% 的離線經驗金幣。
+- **伺服器**：`dragon_offline_seen(user_id, slot, seen_at)`（RLS 開、不開放直接讀寫）＋ `offline_seen(p_slot, p_claim)`：每次呼叫把 seen_at 設成 now()；p_claim＝true 時回傳距離上次 seen_at 的毫秒數（第一次沒有紀錄就用 dragon_saves.updated_at，沒存檔回 0）。
+- **遊戲端（vault.js）**：`offlineSeenTick()` 由 gameTick 呼叫（在 gap 判斷與 offlineHold 之後），登入時每 `OFFLINE_SEEN_MS`＝3 分鐘回報一次；`offlineSettle` 結算前 `offlineServerMs(true)` 取伺服器時間，離線時間＝min(裝置量到的, 伺服器量到的)，不滿 OFFLINE_MIN_MS（30 分鐘）不結算。回報間隔必須遠小於 30 分鐘，開著遊戲調時鐘只會量到最多約 3 分鐘。
+- **相容**：還沒執行 SQL（函式不存在，onlineMissing）時照舊用裝置時間，回報也自動停掉；網路錯誤＝這次不結算（顯示「離線收益結算失敗」）。
+- **測試**：PGlite 記憶體測試（首次用存檔時間、立刻再領 ≈0、沒存檔 0、權限、slot 範圍、未登入）通過。

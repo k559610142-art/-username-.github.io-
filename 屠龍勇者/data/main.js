@@ -12,6 +12,7 @@ function gameTick() {
     if (!player) return;
     // 分頁在背景被瀏覽器暫停太久（或電腦休眠）：用離線收益補上這段時間（要登入、扣鑽石）
     if (gap >= OFFLINE_MIN_MS && offlineEligible()) { offlineSettle(gap); return; }
+    offlineSeenTick();   // 每 3 分鐘向伺服器回報在線，離線收益以伺服器時間計算（vault.js，第 306 節）
     cleanBuffs();
     dollAbilityTick(dt);
     if (!hunt || hunt.state !== 'fight') mercTick(dt);
