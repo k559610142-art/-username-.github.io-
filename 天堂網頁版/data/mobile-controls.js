@@ -4,7 +4,7 @@ const hint=document.createElement('div');hint.className='gesture-hint';hint.text
 tools.hidden=true;
 function point(e){const r=canvas.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top}}
 function clearHold(){clearTimeout(holdTimer);clearInterval(holdRepeat);holdTimer=null;holdRepeat=null}
-function continueHold(){const p=[...pointers.values()][0];if(p&&pointers.size===1)navigateTo(...screenToWorld(p),true)}
+function continueHold(){const p=[...pointers.values()][0];if(!p||pointers.size!==1)return;const view=getRenderedSceneView();if(Math.hypot(p.x-view.width/2,p.y-view.height*view.anchorY)<18){cancelNavigation();return}navigateTo(...screenToWorld(p),true)}
 function beginHold(){if(pointers.size!==1||gesture?.type==='ignore')return;gesture.type='hold';clearHold();continueHold();holdRepeat=setInterval(continueHold,300)}
 canvas.addEventListener('pointerdown',e=>{if(!document.querySelector('#panel').hidden||(e.pointerType==='mouse'&&e.button!==0))return;e.preventDefault();canvas.setPointerCapture(e.pointerId);cancelNavigation();clearHold();pointers.set(e.pointerId,point(e));hint.style.opacity=0;if(pointers.size>1){gesture={type:'ignore'};return}gesture={type:'tap',point:point(e)};holdTimer=setTimeout(beginHold,350)});
 canvas.addEventListener('pointermove',e=>{if(!pointers.has(e.pointerId))return;e.preventDefault();pointers.set(e.pointerId,point(e));if(pointers.size!==1||gesture?.type==='ignore')return;const p=point(e);if(gesture?.type==='tap'&&Math.hypot(p.x-gesture.point.x,p.y-gesture.point.y)>10)beginHold()});

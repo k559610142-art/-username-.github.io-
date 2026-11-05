@@ -1,0 +1,92 @@
+
+/* 遊戲選單與左側訊息列 */
+main.game.reference-game #panel.reference-menu-panel {
+  inset: 0 !important;
+  padding: 0;
+  border: 0 !important;
+  border-radius: 0;
+  background: transparent !important;
+  box-shadow: none;
+  overflow: hidden;
+}
+.reference-menu-panel #panelContent {
+  display: flex;
+  justify-content: flex-end;
+  height: 100%;
+  padding-right: var(--ui-right);
+}
+.reference-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-auto-rows: minmax(44px, auto);
+  align-content: start;
+  gap: 3px;
+  width: min(100%, 320px);
+  padding: 8px;
+  overflow: auto;
+  border-inline: 1px solid #b27e62;
+  background: linear-gradient(155deg, #111e35eb, #081222bc);
+}
+main.game.reference-game #panel .reference-menu-tile {
+  display: grid;
+  place-content: center;
+  gap: 2px;
+  min-width: 0;
+  min-height: 44px;
+  padding: 3px 0;
+  border: 0;
+  background: transparent !important;
+  color: #f0e5c9;
+  font-size: 11px;
+  line-height: 1.2;
+}
+.reference-menu-tile:disabled { opacity: .44; cursor: default; }
+.reference-menu-tile:not(:disabled):hover { box-shadow: inset 0 0 0 1px #cbb4877a; }
+.reference-menu-glyph { color: #d6b378; font-size: 22px; }
+.reference-menu-close .reference-menu-glyph { color: #ffd7c7; text-shadow: 0 0 6px #dd7557; }
+.reference-messages {
+  position: absolute;
+  top: calc(var(--ui-top) + 88px);
+  left: var(--ui-left);
+  z-index: 2;
+  width: min(27%, 260px);
+  font-size: 11px;
+}
+.reference-message-tabs { display: flex; gap: 3px; }
+.reference-message-tabs button {
+  padding: 3px 5px;
+  min-height: 28px;
+  border: 1px solid #a887545e;
+  background: #2b231bcc;
+  color: #fff0d3;
+  white-space: nowrap;
+}
+.reference-message-tabs [aria-pressed="true"] { background: #806233; }
+.reference-message-list {
+  max-height: 5em;
+  overflow: auto;
+  padding: 3px;
+  background: #090d1466;
+  overflow-wrap: anywhere;
+}
+.reference-potion-count {
+  position: absolute;
+  top: 0;
+  left: calc(100% + 3px);
+  display: grid;
+  justify-items: center;
+  min-width: 26px;
+  padding: 2px;
+  background: #111923b8;
+  color: #f1d199;
+  font-size: 10px;
+}
+.reference-potion-count img { width: 20px; height: 20px; object-fit: contain; }
+@media (pointer: coarse) {
+  .reference-message-tabs button { min-height: 44px; }
+}
+@media (orientation: portrait) and (max-width: 650px) {
+  .reference-messages { top: 104px; width: min(42%, 155px); }
+  .reference-message-list { max-height: 2.8em; }
+  .reference-menu-grid { padding: 3px; }
+}

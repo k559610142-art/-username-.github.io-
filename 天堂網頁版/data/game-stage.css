@@ -1,0 +1,49 @@
+/* Match the reference gameplay frame without stretching the scene. */
+main.game {
+  --stage-ratio: 1824 / 850;
+  --stage-height: min(calc(100vw * 850 / 1824), 100dvh);
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: min(100vw, calc(100dvh * 1824 / 850));
+  height: var(--stage-height) !important;
+  aspect-ratio: var(--stage-ratio);
+  min-height: 0 !important;
+}
+
+main.game.reference-game .classic-window {
+  max-height: calc(var(--stage-height) - 76px);
+}
+
+@media (orientation: portrait) and (max-width: 650px) {
+  main.game.reference-game {
+    --ui-top: 3px;
+    --ui-left: 4px;
+    --ui-right: 4px;
+    --ui-bottom: 3px;
+  }
+  main.game.reference-game .nav { top: 2px !important; }
+  main.game.reference-game .hud { top: 49px !important; width: 156px !important; }
+  main.game.reference-game .minimap-button { top: 49px !important; }
+  main.game.reference-game .quest-note,
+  main.game.reference-game .location,
+  main.game.reference-game .log { display: none !important; }
+  main.game.reference-game .quick-slots {
+    left: 4px !important;
+    right: 150px;
+    bottom: 8px !important;
+    flex-direction: row;
+    transform: none;
+    overflow-x: auto;
+    justify-content: flex-start;
+    gap: 4px;
+  }
+  main.game.reference-game .quick-group { flex: none; }
+  main.game.reference-game .actions { bottom: 7px; width: 145px !important; }
+  main.game.reference-game .actions #attack { width: 62px !important; height: 62px !important; }
+  main.game.reference-game .actions .reference-auto { right: 65px; width: 44px; height: 44px; }
+  main.game.reference-game .actions .reference-self { right: 110px; bottom: 0; }
+  main.game.reference-game .actions .reference-interact { right: 65px; bottom: 48px; }
+  main.game.reference-game #panel.classic-panel { inset: 6px !important; }
+  main.game.reference-game .classic-window { max-height: calc(var(--stage-height) - 12px); }
+}

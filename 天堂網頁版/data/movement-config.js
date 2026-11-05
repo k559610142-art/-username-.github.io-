@@ -4,12 +4,12 @@ function getMovementStepMs(profile=getActiveWalkProfile(),modifiers=window.playe
 window.MovementConfig=Object.freeze({get stepMs(){return getMovementStepMs()},pollMs:32,animationFrameMs:110});
 let lastMovementAt=-Infinity,lastMovementDuration=0;
 function movementTime(){return globalThis.performance?.now?.()??Date.now()}
-function movementReady(){return movementTime()-lastMovementAt>=lastMovementDuration}
-function markMovementStep(){lastMovementAt=movementTime();lastMovementDuration=MovementConfig.stepMs}
+function movementReady(now=movementTime()){return !movementAnimating(now)&&now-lastMovementAt>=lastMovementDuration}
+function markMovementStep(now=movementTime(),duration=MovementConfig.stepMs){lastMovementAt=now;lastMovementDuration=duration}
 function walkFrameIndex(elapsed,duration,count,profile=getActiveWalkProfile()){const phase=Math.max(0,Math.min(1-Number.EPSILON,elapsed/Math.max(1,duration))),tick=phase*profile.sourceTicks;let total=0,pose=profile.frames.length-1;for(let i=0;i<profile.frames.length;i++){total+=profile.frames[i].ticks;if(tick<total){pose=i;break}}const raw=profile.frames[pose].imageFrame,maxRaw=Math.max(...profile.frames.map(f=>f.imageFrame));if(count>maxRaw)return raw;if(count===profile.frames.length)return pose;return Math.min(count-1,Math.floor(phase*count))}
 function resetMovementState(){movementTween=null;lastMovementAt=-Infinity;lastMovementDuration=0}
 // 邏輯每個 walk 動作走一格，顯示座標在兩格之間連續內插。
 let movementTween=null;
-function visualWorldPosition(){if(!movementTween||movementTween.toX!==worldX||movementTween.toY!==worldY){movementTween=null;return {x:worldX,y:worldY}}const t=Math.max(0,Math.min(1,(movementTime()-movementTween.started)/movementTween.duration));return {x:movementTween.fromX+(movementTween.toX-movementTween.fromX)*t,y:movementTween.fromY+(movementTween.toY-movementTween.fromY)*t}}
-function startVisualStep(nextX,nextY){const current=visualWorldPosition();movementTween={fromX:current.x,fromY:current.y,toX:nextX,toY:nextY,started:movementTime(),duration:MovementConfig.stepMs}}
-function movementAnimating(){return !!movementTween&&movementTween.toX===worldX&&movementTween.toY===worldY&&movementTime()-movementTween.started<movementTween.duration}
+function visualWorldPosition(now=movementTime()){if(!movementTween||movementTween.toX!==worldX||movementTween.toY!==worldY)return {x:worldX,y:worldY};const t=Math.max(0,Math.min(1,(now-movementTween.started)/movementTween.duration));return {x:movementTween.fromX+(movementTween.toX-movementTween.fromX)*t,y:movementTween.fromY+(movementTween.toY-movementTween.fromY)*t}}
+function startVisualStep(nextX,nextY,now=movementTime(),started=now){const current=visualWorldPosition(now),duration=MovementConfig.stepMs;worldX=nextX;worldY=nextY;movementTween={fromX:current.x,fromY:current.y,toX:nextX,toY:nextY,started,duration};markMovementStep(started,duration)}
+function movementAnimating(now=movementTime()){return !!movementTween&&movementTween.toX===worldX&&movementTween.toY===worldY&&now-movementTween.started<movementTween.duration}

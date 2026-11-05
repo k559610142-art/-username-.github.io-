@@ -1,0 +1,127 @@
+[
+  {
+    "file": "shop.png",
+    "source": "https://test.xiaoshu.gg/play/assets/resources/native/86/86187776-bb5e-49ee-8300-351a07c7f9a6.b86d1.png",
+    "originalName": "skin/mhud_Hud_Menu_BMShop0"
+  },
+  {
+    "file": "bag.png",
+    "source": "https://test.xiaoshu.gg/play/assets/resources/native/c2/c287dbc9-2c8f-4ac6-98c5-eba234789988.58ad7.png",
+    "originalName": "skin/nav_bag"
+  },
+  {
+    "file": "skill.png",
+    "source": "https://test.xiaoshu.gg/play/assets/resources/native/96/96181ebb-6096-43b2-b366-588ef8766dc6.d3721.png",
+    "originalName": "skin/nav_skill"
+  },
+  {
+    "file": "mail.png",
+    "source": "https://test.xiaoshu.gg/play/assets/resources/native/6e/6ed9a67f-cf63-4a34-870b-8ebc8d229f80.c09d0.png",
+    "originalName": "skin/mhud_Hud_Menu_Post0"
+  },
+  {
+    "file": "close.png",
+    "source": "https://test.xiaoshu.gg/play/assets/resources/native/3d/3db3c00e-47b9-436a-ae72-83c8cf16e846.063e1.png",
+    "originalName": "skin/mhud_Btn_CloseTypeB"
+  },
+  {
+    "file": "character.png",
+    "source": "https://test.xiaoshu.gg/play/assets/resources/native/2e/2e0300de-2a2e-45ad-aff3-8e7c7093aff4.d7b12.png",
+    "originalName": "skin/nav_char"
+  },
+  {
+    "file": "social.png",
+    "source": "https://test.xiaoshu.gg/play/assets/resources/native/bc/bcfc390c-fd64-4041-ae23-669fd1038d20.3c497.png",
+    "originalName": "skin/nav_clan"
+  },
+  {
+    "file": "settings.png",
+    "source": "https://test.xiaoshu.gg/play/assets/resources/native/98/984c2857-4996-459b-b715-3aa5c89f3c12.b239d.png",
+    "originalName": "skin/nav_settings"
+  },
+  {
+    "file": "ranking.png",
+    "source": "https://test.xiaoshu.gg/play/assets/resources/native/cb/cbf4e0ef-4fbf-4651-bda3-746378e823d9.06d40.png",
+    "originalName": "skin/mhud_Hud_Menu_Ranking0"
+  },
+  {
+    "file": "memory.png",
+    "source": "https://test.xiaoshu.gg/play/assets/resources/native/21/2145e9fa-5d0c-41ee-9a83-433bf19ef3a1.9886e.png",
+    "originalName": "skin/mhud_Hud_Menu_Memory0"
+  },
+  {
+    "file": "transform.png",
+    "source": "https://test.xiaoshu.gg/play/assets/resources/native/91/9156e80e-ce2b-46d6-96ef-e6b232d3f729.bab9f.png",
+    "originalName": "skin/mhud_Hud_Menu_Change0"
+  },
+  {
+    "file": "doll.png",
+    "source": "https://test.xiaoshu.gg/play/assets/resources/native/57/5797df2e-e048-4b11-864b-c25b4d4a1c65.98b78.png",
+    "originalName": "skin/mhud_Hud_Menu_MagicDoll0"
+  },
+  {
+    "file": "collection.png",
+    "source": "https://test.xiaoshu.gg/play/assets/resources/native/e2/e20ef5e3-7171-4b14-b600-abb5a44ff09b.761b4.png",
+    "originalName": "skin/mhud_Hud_Menu_Collection0"
+  },
+  {
+    "file": "exchange.png",
+    "source": "https://test.xiaoshu.gg/play/assets/resources/native/48/4872b65c-8aaa-4b70-bdfb-801258d700f9.22907.png",
+    "originalName": "skin/nav_exchange"
+  },
+  {
+    "file": "logout.png",
+    "source": "https://test.xiaoshu.gg/play/assets/resources/native/4d/4d352355-6a5b-447c-b62d-63285ed00d88.bd2a0.png",
+    "originalName": "skin/nav_logout"
+  },
+  {
+    "file": "menu.png",
+    "source": "https://test.xiaoshu.gg/play/assets/resources/native/ce/ce3bd5f5-77ac-4f4d-ae8c-91b9dfc63144.b92d8.png",
+    "originalName": "skin/mhud_Hud_Btn_Menu0"
+  },
+  {
+    "file": "back.png",
+    "source": "https://test.xiaoshu.gg/play/assets/resources/native/d6/d65cbab8-c023-4899-9841-1e6fed201580.e4cce.png",
+    "originalName": "skin/mhud_Btn_Back_Normal"
+  },
+  {
+    "file": "attack.png",
+    "source": "https://test.xiaoshu.gg/play/assets/resources/native/97/97c505ea-58ab-48e1-aae1-5c3625820309.aec76.png",
+    "originalName": "skin/mhud_Hud_Attack_OneHandSword"
+  },
+  {
+    "file": "attack-bg.png",
+    "source": "https://test.xiaoshu.gg/play/assets/resources/native/2e/2e2e7e76-8183-4de2-8338-512fab55f2f3.7d9d1.png",
+    "originalName": "skin/mhud_Hud_Btn_Pad_AttackBg"
+  },
+  {
+    "file": "pickup.png",
+    "source": "https://test.xiaoshu.gg/play/assets/resources/native/96/9680568b-37b3-4bc9-a4dc-93607605389a.99bd7.png",
+    "originalName": "skin/mhud_Hud_Btn_Pad_Get"
+  },
+  {
+    "file": "auto.png",
+    "source": "https://test.xiaoshu.gg/play/assets/resources/native/7b/7b70b315-aa00-4952-babc-78f020ece1b5.56dc8.png",
+    "originalName": "skin/mhud_Hud_Btn_Pad_Auto"
+  },
+  {
+    "file": "self.png",
+    "source": "https://test.xiaoshu.gg/play/assets/resources/native/49/4999a5ba-7b01-4fae-a370-b2d9fccefb09.82137.png",
+    "originalName": "skin/mhud_Hud_Btn_Pad_Self"
+  },
+  {
+    "file": "slot.png",
+    "source": "https://test.xiaoshu.gg/play/assets/resources/native/16/167fbf80-7513-473e-a61c-b8a27fd504f9.641d8.png",
+    "originalName": "skin/qs_slot"
+  },
+  {
+    "file": "hp.png",
+    "source": "https://test.xiaoshu.gg/play/assets/resources/native/cc/cc4fcd87-004f-4df5-980d-9cc432d07d87.c31e7.png",
+    "originalName": "skin/mhud_Hud_Cha_GaugeHP"
+  },
+  {
+    "file": "mp.png",
+    "source": "https://test.xiaoshu.gg/play/assets/resources/native/41/414994a6-c0a4-4546-b0a3-28b6b8626300.e69f0.png",
+    "originalName": "skin/mhud_Hud_Cha_GaugeMP"
+  }
+]

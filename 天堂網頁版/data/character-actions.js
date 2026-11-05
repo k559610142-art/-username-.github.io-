@@ -9,20 +9,43 @@ function activeCharacterActions(){return fullCharacterAssets.avatars[activeChara
 function activeCharacterWeapon(){const data=activeCharacterActions();return data.weapons.includes(characterWeapon)?characterWeapon:'unarmed'}
 function activeWeaponWalkAction(){return fullCharacterAssets.weapons[activeCharacterWeapon()].base}
 function fullCharacterPath(avatar,heading,clip,index,shadow=false){return 'assets/character-actions/'+avatar+'/'+heading+'/'+clip+(shadow?'_s':'')+'_'+index+'.png'}
+const characterFrameResources=new Map();
+let displayedCharacterBody=null,displayedCharacterShadow=null,preloadedWalkSet='';
+// These legacy nodes retain diagnostic state. Only decoded cache nodes are displayed.
+characterImage.style.display='none';characterShadow.style.display='none';
+function characterFrameResource(file){
+ if(characterFrameResources.has(file))return characterFrameResources.get(file);
+ const img=new Image(),item={img,ready:false,error:false,decoding:false};img.style??={};img.decoding='async';img.draggable=false;characterFrameResources.set(file,item);
+ const failed=()=>{item.error=true;if(characterFrameResources.get(file)===item){document.querySelector('#log').textContent='人物圖片載入失敗，暫時保留上一個完整姿勢。';refreshCharacter()}};
+ const ready=()=>{if(item.ready)return;item.ready=true;item.error=false;if(characterFrameResources.get(file)===item)refreshCharacter()};
+ const loaded=()=>{if(item.ready||item.decoding)return;if(typeof img.decode==='function'){item.decoding=true;img.decode().then(ready,()=>img.complete&&img.naturalWidth?ready():failed())}else ready()};
+ img.onload=loaded;img.onerror=failed;img.src=file;
+ if(img.complete&&img.naturalWidth){if(typeof img.decode==='function')loaded();else item.ready=true}
+ return item;
+}
 function preloadFullCharacterClip(avatar,heading,clip){
  const key=avatar+'/'+heading+'/'+clip;if(fullCharacterCache.has(key))return;
- const data=fullCharacterAssets.avatars[avatar],images=[];
- for(const shadow of [false,true])for(let i=0;i<(shadow?data.shadows:data.directions)[heading][clip];i++){const img=new Image();img.decoding='async';img.src=fullCharacterPath(avatar,heading,clip,i,shadow);images.push(img)}
- fullCharacterCache.set(key,images);while(fullCharacterCache.size>6)fullCharacterCache.delete(fullCharacterCache.keys().next().value);
+ const data=fullCharacterAssets.avatars[avatar],frames=[];
+ for(const shadow of [false,true])for(let i=0;i<(shadow?data.shadows:data.directions)[heading][clip];i++){const file=fullCharacterPath(avatar,heading,clip,i,shadow);frames.push({file,item:characterFrameResource(file)})}
+ fullCharacterCache.set(key,frames);
+ while(fullCharacterCache.size>12){const key=fullCharacterCache.keys().next().value,old=fullCharacterCache.get(key);fullCharacterCache.delete(key);for(const f of old)if(characterFrameResources.get(f.file)===f.item)characterFrameResources.delete(f.file)}
+}
+function preloadCharacterWalkSet(avatar,weapon){const key=avatar+'/'+weapon;if(preloadedWalkSet===key)return;preloadedWalkSet=key;for(const heading of Object.keys(fullCharacterAssets.avatars[avatar].directions))preloadFullCharacterClip(avatar,heading,weapon+'_walk')}
+function showDecodedCharacterFrame(body,shadow,transform){
+ if(displayedCharacterBody!==body.img){displayedCharacterBody?.remove?.();displayedCharacterBody=body.img;displayedCharacterBody.className='character-main';displayedCharacterBody.alt='遊戲人物';characterBody.append(displayedCharacterBody)}
+ displayedCharacterBody.style.display='block';displayedCharacterBody.style.transform=transform;
+ if(shadow?.ready){if(displayedCharacterShadow!==shadow.img){displayedCharacterShadow?.remove?.();displayedCharacterShadow=shadow.img;displayedCharacterShadow.className='character-shadow';displayedCharacterShadow.alt='';characterBody.append(displayedCharacterShadow)}displayedCharacterShadow.style.display='block';displayedCharacterShadow.style.transform=transform}
+ else{displayedCharacterShadow?.remove?.();displayedCharacterShadow=null}
 }
 function fullCharacterPose(timeline,elapsed,loop=false){
  const duration=Math.max(1,timeline.durationMs),phase=loop?(Math.max(0,elapsed)%duration)/duration:Math.max(0,Math.min(1-Number.EPSILON,elapsed/duration));
  const tick=phase*timeline.sourceTicks;let total=0;for(const pose of timeline.frames){total+=pose.ticks;if(tick<total)return pose}return timeline.frames[timeline.frames.length-1];
 }
 function characterMovementBlocked(){return characterDead||!!characterActionState&&movementTime()<characterActionState.until}
-function ensureFullCharacterAnimation(){if(!characterActionRaf&&window.gameFlowState==='playing'&&!document.hidden)characterActionRaf=requestAnimationFrame(()=>{characterActionRaf=0;refreshCharacter()})}
-refreshCharacter=function(){
- const avatar=activeCharacterAvatar(),data=activeCharacterActions(),weapon=activeCharacterWeapon(),now=movementTime(),identity=avatar+'/'+characterHeading+'/'+weapon;
+function ensureFullCharacterAnimation(){if(!characterActionRaf&&window.gameFlowState==='playing'&&!document.hidden)characterActionRaf=requestAnimationFrame(frameTime=>{characterActionRaf=0;refreshCharacter(frameTime)})}
+refreshCharacter=function(frameTime=movementTime()){
+ const avatar=activeCharacterAvatar(),data=activeCharacterActions(),weapon=activeCharacterWeapon(),now=frameTime,identity=avatar+'/'+characterHeading+'/'+weapon;
+ preloadCharacterWalkSet(avatar,weapon);
  if(identity!==characterIdentity){characterIdentity=identity;characterIdleStarted=now;characterActionState=null}
  if(characterActionState&&now>=characterActionState.until&&!characterActionState.hold){characterActionState=null;characterIdleStarted=now}
  let action='idle',pose;
@@ -31,10 +54,15 @@ refreshCharacter=function(){
  else{const clip=weapon+'_idle';pose=fullCharacterPose(data.timelines[clip],now-characterIdleStarted,true)}
  if(characterDead&&!characterActionState){action='death';const t=data.timelines.death;pose=t.frames[t.frames.length-1]}
  characterLastAction=action;preloadFullCharacterClip(avatar,characterHeading,pose.clip);
- const file=fullCharacterPath(avatar,characterHeading,pose.clip,pose.frame);
- if(file!==characterCurrentPath){characterCurrentPath=file;characterImage.src=file;const hasShadow=pose.frame<data.shadows[characterHeading][pose.clip];characterShadow.hidden=!hasShadow;if(hasShadow)characterShadow.src=fullCharacterPath(avatar,characterHeading,pose.clip,pose.frame,true)}
- const scale=Math.max(.85,Math.min(1.25,zoom)),w=data.size[0]*scale,h=data.size[1]*scale;
- characterBody.style.width=w+'px';characterBody.style.height=h+'px';characterBody.style.left=(-w/2)+'px';characterBody.style.top=(-data.footY*scale)+'px';characterActor.querySelector('small').textContent=window.activeCharacterName||avatar;
+ const file=fullCharacterPath(avatar,characterHeading,pose.clip,pose.frame),hasShadow=pose.frame<data.shadows[characterHeading][pose.clip],body=characterFrameResource(file),shadow=hasShadow?characterFrameResource(fullCharacterPath(avatar,characterHeading,pose.clip,pose.frame,true)):null;
+ // Keep the prior bitmap, geometry and correction together while either new layer is decoding.
+ // Decode completions refresh the current pose, so obsolete requests can never overwrite it.
+ if(!body.ready||shadow&&!shadow.ready&&!shadow.error){ensureFullCharacterAnimation();return}
+ const scale=characterRenderScale(),w=data.size[0]*scale,h=data.size[1]*scale,correction=characterWalkCorrection(pose,data,characterHeading),transform='translate('+(correction.x*scale)+'px,'+(correction.y*scale)+'px)';
+ characterBody.style.width=w+'px';characterBody.style.height=h+'px';characterBody.style.left=(-w/2)+'px';characterBody.style.top=(-data.footY*scale)+'px';
+ showDecodedCharacterFrame(body,shadow,transform);
+ characterCurrentPath=file;characterImage.src=file;characterImage.style.transform=transform;characterShadow.style.transform=transform;
+ characterActor.querySelector('small').textContent=window.activeCharacterName||avatar;
  ensureFullCharacterAnimation();
 };
 function playCharacterAction(action,options={}){
