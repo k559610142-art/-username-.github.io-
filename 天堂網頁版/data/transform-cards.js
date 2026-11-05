@@ -125,13 +125,24 @@ window.TransformCards = (() => {
   atlasBody.className = 'transform-atlas';
   morphLayer.append(atlasShadow, atlasBody);
   morphStyle.textContent += '.transform-atlas{position:absolute;background-repeat:no-repeat}.transform-atlas[hidden]{display:none}';
+  // 圖集的 foot 不一定是腳底（秋月圖集腳浮在上方、spr 匯出的陷在下方）：改用 8 方向待機幀腳底的中位數當地面。
+  function atlasGround(data) {
+    const bottoms = [];
+    for (let d = 0; d < 8; d++) {
+      const fr = data.frames['d' + d + '/idle'] || data.frames['d' + d + '/walk'] || [];
+      if (fr.length) bottoms.push(Math.max(...fr.map(f => f[5] + f[3])));
+    }
+    if (!bottoms.length) return data.foot;
+    bottoms.sort((a, b) => a - b);
+    return bottoms[Math.floor(bottoms.length / 2)] - 1;
+  }
   function loadAtlas(gfx, ext = 'webp') {
     if (atlasCache.has(gfx)) return atlasCache.get(gfx);
     const entry = {ready: false, data: null, url: 'assets/transform-walk/' + gfx + '.' + ext};
     atlasCache.set(gfx, entry);
     const img = new Image();
     Promise.all([fetch('assets/transform-walk/' + gfx + '.json').then(r => r.json()), new Promise((ok, fail) => { img.onload = ok; img.onerror = fail; img.src = entry.url; })])
-      .then(([data]) => { entry.data = data; entry.ready = true; if (window.activeTransformCard?.wk === gfx) refreshCharacter(); })
+      .then(([data]) => { entry.data = data; entry.ground = atlasGround(data); entry.ready = true; if (window.activeTransformCard?.wk === gfx) refreshCharacter(); })
       .catch(() => { entry.failed = true; });
     return entry;
   }
@@ -145,7 +156,7 @@ window.TransformCards = (() => {
     el.style.backgroundPosition = (-x * scale) + 'px ' + (-y * scale) + 'px';
     el.style.backgroundSize = (atlas.size || 1024) * scale + 'px auto';
     el.style.width = w * scale + 'px'; el.style.height = h * scale + 'px';
-    el.style.left = (dx - cw / 2) * scale + 'px'; el.style.top = (dy - atlas.data.foot) * scale + 'px';
+    el.style.left = (dx - cw / 2) * scale + 'px'; el.style.top = (dy - (atlas.ground ?? atlas.data.foot)) * scale + 'px';
   }
   function walkPhase(now) {
     if (typeof characterWalkUntil === 'undefined' || now >= characterWalkUntil) return null;
@@ -161,16 +172,16 @@ window.TransformCards = (() => {
     const scale = typeof characterRenderScale === 'function' ? characterRenderScale() : 1;
     const heading = typeof characterHeading === 'string' ? characterHeading : 'E';
     const phase = acting ? null : walkPhase(now);
-    // 有 8 方向圖集：走路一律用圖集；wa 的卡待機、攻擊也用圖集。
+    // 有 8 方向圖集：待機、走路、攻擊全部用圖集，走路時才不會從網站大圖換成小圖、腳離地像在飄。
     const atlas = card.wk ? loadAtlas(card.wk, card.wx) : null;
-    const useAtlas = atlas?.ready && (phase !== null || card.wa);
+    const useAtlas = !!atlas?.ready;
     atlasBody.hidden = atlasShadow.hidden = !useAtlas;
     morphBody.hidden = !!useAtlas;
     if (useAtlas) {
       morphShadow.hidden = true;
       const dir = atlasDirs[heading] || 'd5';
       const name = phase !== null ? 'walk' : acting ? (atlas.data.frames[dir + '/' + action.action] ? action.action : 'attack') : 'idle';
-      const frames = atlas.data.frames[dir + '/' + name] || atlas.data.frames[dir + '/idle'];
+      const frames = atlas.data.frames[dir + '/' + name] || atlas.data.frames[dir + '/idle'] || (atlas.data.frames[dir + '/walk'] || []).slice(0, 1);
       const index = phase !== null ? Math.floor(phase * frames.length) : acting ? Math.min(frames.length - 1, Math.floor(elapsed / frameMs)) : Math.floor(elapsed / (frameMs * 1.5)) % frames.length;
       const v = name === 'walk' ? walkVector[heading] || [0, 0] : [0, 0], shift = [v[0] * index / frames.length, v[1] * index / frames.length];
       placeAtlas(atlasBody, atlas, frames[index], scale, shift);
