@@ -52,7 +52,7 @@ window.TransformCards = (() => {
     window.playerMovementModifiers = window.playerMovementModifiers || {};
     window.playerMovementModifiers.polyMovePct = speedPct(card, '移動速度');
     window.activeTransformCard = card || null;
-    if (card?.wk) loadAtlas(card.wk);
+    if (card?.wk) loadAtlas(card.wk, card.wx);
   }
   // ---- 3.63 變身設定（L1PolyMorph）：最低等級、可用武器／防具遮罩、能否施法 ----
   const weaponFlags = {dagger: 1, sword: 2, tohandsword: 4, blunt: 8, tohandblunt: 8, spear: 16, singlespear: 16, staff: 32, tohandstaff: 32, edoryu: 64, claw: 128, bow: 256, singlebow: 256, gauntlet: 256, kiringku: 512, chainsword: 1024};
@@ -75,7 +75,7 @@ window.TransformCards = (() => {
   function rules(card) {
     const p = card.p;
     if (!p) return null;
-    return {level: p.lv, magic: !!p.m, weapons: describe(p.w, weaponNames), armors: describe(p.a, armorNames), en: p.en};
+    return {level: p.lv, magic: !!p.m, weapons: describe(p.w, weaponNames), armors: describe(p.a, armorNames), en: p.en, rebirth: p.rb || 0, bonus: card.pb || null};
   }
 
   function activate(name) {
@@ -125,9 +125,9 @@ window.TransformCards = (() => {
   atlasBody.className = 'transform-atlas';
   morphLayer.append(atlasShadow, atlasBody);
   morphStyle.textContent += '.transform-atlas{position:absolute;background-repeat:no-repeat}.transform-atlas[hidden]{display:none}';
-  function loadAtlas(gfx) {
+  function loadAtlas(gfx, ext = 'webp') {
     if (atlasCache.has(gfx)) return atlasCache.get(gfx);
-    const entry = {ready: false, data: null, url: 'assets/transform-walk/' + gfx + '.webp'};
+    const entry = {ready: false, data: null, url: 'assets/transform-walk/' + gfx + '.' + ext};
     atlasCache.set(gfx, entry);
     const img = new Image();
     Promise.all([fetch('assets/transform-walk/' + gfx + '.json').then(r => r.json()), new Promise((ok, fail) => { img.onload = ok; img.onerror = fail; img.src = entry.url; })])
@@ -135,9 +135,11 @@ window.TransformCards = (() => {
       .catch(() => { entry.failed = true; });
     return entry;
   }
-  function placeAtlas(el, atlas, frame, scale) {
+  // 天堂走路幀本身帶「走一格」的位移；遊戲已經在移動人物，畫面要把這段位移扣掉才不會滑一下再跳回。
+  const walkVector = {E: [48, 0], W: [-48, 0], N: [0, -24], S: [0, 24], NE: [24, -12], SE: [24, 12], SW: [-24, 12], NW: [-24, -12]};
+  function placeAtlas(el, atlas, frame, scale, shift = [0, 0]) {
     if (!frame) { el.hidden = true; return; }
-    const [x, y, w, h, dx, dy] = frame, cw = atlas.data.cw;
+    const [x, y, w, h, fx, fy] = frame, cw = atlas.data.cw, dx = fx - shift[0], dy = fy - shift[1];
     el.hidden = false;
     el.style.backgroundImage = 'url("' + atlas.url + '")';
     el.style.backgroundPosition = (-x * scale) + 'px ' + (-y * scale) + 'px';
@@ -155,12 +157,12 @@ window.TransformCards = (() => {
     let clip = 'idle', elapsed = now - morphStarted, loop = true;
     const action = typeof characterActionState !== 'undefined' ? characterActionState : null;
     const acting = action && now >= action.started && now < action.until && ['attack', 'skill'].includes(action.action);
-    if (acting) { clip = card.f[action.action] ? action.action : 'attack'; elapsed = now - action.started; loop = false; }
+    if (acting) { clip = card.f[action.action] ? action.action : card.f.attack ? 'attack' : 'idle'; elapsed = now - action.started; loop = false; }
     const scale = typeof characterRenderScale === 'function' ? characterRenderScale() : 1;
     const heading = typeof characterHeading === 'string' ? characterHeading : 'E';
     const phase = acting ? null : walkPhase(now);
     // 有 8 方向圖集：走路一律用圖集；wa 的卡待機、攻擊也用圖集。
-    const atlas = card.wk ? loadAtlas(card.wk) : null;
+    const atlas = card.wk ? loadAtlas(card.wk, card.wx) : null;
     const useAtlas = atlas?.ready && (phase !== null || card.wa);
     atlasBody.hidden = atlasShadow.hidden = !useAtlas;
     morphBody.hidden = !!useAtlas;
@@ -170,9 +172,10 @@ window.TransformCards = (() => {
       const name = phase !== null ? 'walk' : acting ? (atlas.data.frames[dir + '/' + action.action] ? action.action : 'attack') : 'idle';
       const frames = atlas.data.frames[dir + '/' + name] || atlas.data.frames[dir + '/idle'];
       const index = phase !== null ? Math.floor(phase * frames.length) : acting ? Math.min(frames.length - 1, Math.floor(elapsed / frameMs)) : Math.floor(elapsed / (frameMs * 1.5)) % frames.length;
-      placeAtlas(atlasBody, atlas, frames[index], scale);
+      const v = name === 'walk' ? walkVector[heading] || [0, 0] : [0, 0], shift = [v[0] * index / frames.length, v[1] * index / frames.length];
+      placeAtlas(atlasBody, atlas, frames[index], scale, shift);
       const shadows = atlas.data.frames[dir + '/' + name + '_s'];
-      placeAtlas(atlasShadow, atlas, shadows?.[index], scale);
+      placeAtlas(atlasShadow, atlas, shadows?.[index], scale, shift);
       return;
     }
     // 網站單方向動畫：有 walk 的用 walk，沒有的用待機加踏步擺動。

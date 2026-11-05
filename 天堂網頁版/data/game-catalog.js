@@ -1,6 +1,14 @@
 // 圖鑑面板共用既有遊戲視窗的鍵盤和關閉操作。
-const gameCatalogTitles = {dolls: '魔法娃娃', transforms: '變身卡冊', collection: '道具收藏'};
-const gameCatalogIcons = {dolls: 'doll', transforms: 'transform', cards: 'transform', collection: 'collection'};
+const gameCatalogTitles = {dolls: '魔法娃娃', transforms: '變身卡冊', enchant: 'BOSS附魔', wuhun: '武魂', collection: '道具收藏'};
+const gameCatalogIcons = {dolls: 'doll', transforms: 'transform', cards: 'transform', enchant: 'attack', wuhun: 'character', collection: 'collection'};
+// 天地劫系統分頁（娃娃召喚、BOSS 附魔、武魂）：列表資料快取，讓選取狀態在重畫時保持同一列。
+const tdjCatalogRows = {};
+function tdjRows(type) {
+  if (type === 'enchant') return tdjCatalogRows.enchant ??= bossEnchantData.map(e => ({name: e.stone, e}));
+  if (type === 'wuhun') return tdjCatalogRows.wuhun ??= wuhunData.map(w => ({name: w.name, w}));
+  return null;
+}
+const tdjWuhunTierTag = {下品: 'white', 上品: 'green', 極品: 'blue', 千年: 'red', 萬年: 'purple', 上古: 'gold', 四神獸: 'transcend'};
 const lineageMCardTiers = {
   "white": "白卡 · 一般",
   "green": "綠卡 · 高級",
@@ -419,6 +427,14 @@ function transformBookRows() {
 }
 
 function catalogPortrait(type, row, preview = false) {
+  if (type === 'enchant' || type === 'wuhun') {
+    const src = type === 'enchant' ? TdjSystems.enchant.image(row.e) : TdjSystems.wuhun.image(row.w);
+    if (!src) return uiElement('span', 'game-catalog-missing', '尚無外觀圖');
+    const img = uiElement('img', 'game-catalog-portrait' + (preview ? ' game-catalog-preview' : ''));
+    img.src = src; img.alt = preview ? row.name : ''; img.loading = preview ? 'eager' : 'lazy'; img.decoding = 'async';
+    img.onerror = () => img.replaceWith(uiElement('span', 'game-catalog-missing', '圖片未能載入'));
+    return img;
+  }
   if (type === 'transforms') {
     const img = uiElement('img', 'game-catalog-portrait' + (preview ? ' game-catalog-preview' : ''));
     img.src = TransformCards.portrait(row.card);
@@ -428,7 +444,7 @@ function catalogPortrait(type, row, preview = false) {
     img.onerror = () => img.replaceWith(uiElement('span', 'game-catalog-missing', '圖片未能載入'));
     return img;
   }
-  const asset = type === "cards" ? catalogPortraits["transforms-" + row.portrait] : catalogPortraits[type + "-" + row.id];
+  const asset = type === "cards" ? catalogPortraits["transforms-" + row.portrait] : catalogPortraits[type + "-" + row.id] || (row.img ? [row.img, "sprite"] : null);
   const className = "game-catalog-portrait" + (preview ? " game-catalog-preview" : "");
   if (!asset && type !== "collection" && type !== "cards") {
     return uiElement("span", "game-catalog-missing", "尚無外觀圖");
@@ -481,11 +497,14 @@ function openGameCatalog(type) {
   gameDialogContent.replaceChildren(title, tabs, layout);
 
   const entries = type === 'cards' ? lineageMTransformCards : type === 'collection' ? gameCollections
-    : type === 'transforms' ? transformBookRows() : gameCatalogData[type];
+    : type === 'transforms' ? transformBookRows() : tdjRows(type) || gameCatalogData[type];
   const all = () => true;
   const usedGrades = type === 'transforms' ? [...new Set(entries.map(row => row.grade))].sort((a, b) => a - b) : [];
   const filters = type === 'cards' ? [['全部', all], ...Object.entries(lineageMCardTiers).map(([tier, label]) => [label, row => row.tier === tier])]
     : type === 'transforms' ? [['全部', all], ['已收集', row => TransformCards.owned(row.name) > 0], ...usedGrades.map(grade => [lineageWGrades[grade][0], row => row.grade === grade])]
+    : type === 'dolls' ? [['全部', all], ['已擁有', row => TdjSystems.dolls.owned(row.id) > 0]]
+    : type === 'enchant' ? [['全部', all], ['已擁有', row => TdjSystems.enchant.stones(row.e.id) > 0]]
+    : type === 'wuhun' ? [['全部', all], ['已擁有', row => TdjSystems.wuhun.owned(row.w.id) > 0], ...wuhunTiers.map(tier => [tier, row => row.w.tier === tier])]
     : [['全部', all]];
   let activeFilter = all;
   let selected = null;
@@ -523,6 +542,35 @@ function openGameCatalog(type) {
       }
       detail.append(uiElement('h4', '', '娃娃能力'));
       for (const effect of row.effects) detail.append(uiElement('p', '', effect));
+      if (!row.effects.length) detail.append(uiElement('p', '', '能力未設定'));
+      if (row.note) detail.append(uiElement('small', '', row.note));
+      const owned = TdjSystems.dolls.owned(row.id), active = String(TdjSystems.dolls.active) === String(row.id);
+      detail.append(uiElement('p', '', owned ? '擁有 ' + owned + ' 隻' + (active ? ' · 召喚中' : '') : '尚未擁有'));
+      const action = active ? catalogButton('解除召喚', () => { TdjSystems.dolls.dismiss(); refreshCards(); }, 'game-catalog-action')
+        : catalogButton(owned ? '召喚' : '擁有才能召喚', () => { if (TdjSystems.dolls.summon(row.id)) refreshCards(); }, 'game-catalog-action');
+      action.disabled = !owned;
+      detail.append(action);
+    } else if (type === 'enchant') {
+      const e = row.e, stones = TdjSystems.enchant.stones(e.id), cur = TdjSystems.enchant.current();
+      const mine = cur && cur.data.id === e.id ? cur.lv : 0;
+      detail.append(uiElement('strong', '', e.boss + '的靈魂 · 技能「' + e.skill + '」'),
+        uiElement('p', '', '擁有附魔石 ' + stones + ' 個'),
+        uiElement('p', '', cur ? '目前武器：' + cur.weapon.item.name + ' · ' + cur.level.name : '目前武器沒有 BOSS 附魔'),
+        uiElement('h4', '', '各階設定'));
+      e.levels.forEach((lv, i) => detail.append(uiElement('p', '', (i + 1 === mine ? '▶ ' : '') + lv.name + '：附魔成功 ' + lv.rate + '% · 攻擊發動 ' + lv.proc + '%' + (lv.dmg || lv.rnd ? ' · 傷害 ' + lv.dmg + '～' + (lv.dmg + lv.rnd) : '') + (lv.drain ? ' · 吸血 ' + lv.drain : ''))));
+      detail.append(uiElement('small', '', '附魔在目前裝備的武器上；同一種石頭可往上升階，換不同石頭會從 LV1 重來；失敗會消耗石頭。'));
+      const action = catalogButton(mine >= e.levels.length ? '已達最高階' : stones ? '附魔到武器（LV' + (mine + 1) + '）' : '沒有附魔石', () => { TdjSystems.enchant.enchant(e.id); updateCounts(); refreshCards(); }, 'game-catalog-action');
+      action.disabled = !stones || mine >= e.levels.length;
+      detail.append(action);
+    } else if (type === 'wuhun') {
+      const w = row.w, owned = TdjSystems.wuhun.owned(w.id), active = String(TdjSystems.wuhun.active) === String(w.id);
+      detail.append(uiElement('strong', '', w.tier + (w.desc ? ' · ' + w.desc : '')), uiElement('p', '', owned ? '擁有' + (active ? ' · 裝備中' : '') : '尚未擁有'), uiElement('h4', '', '武魂能力'));
+      for (const effect of w.fx) detail.append(uiElement('p', '', effect));
+      detail.append(uiElement('small', '', '光環外觀編號 ' + w.skin + (TdjSystems.wuhun.image(w) ? '（目前用替代外觀顯示）' : '（沒有圖，以光暈顯示）')));
+      const action = active ? catalogButton('卸下武魂', () => { TdjSystems.wuhun.unequip(); refreshCards(); }, 'game-catalog-action')
+        : catalogButton(owned ? '裝備武魂' : '擁有才能裝備', () => { if (TdjSystems.wuhun.equip(w.id)) refreshCards(); }, 'game-catalog-action');
+      action.disabled = !owned;
+      detail.append(action);
     } else {
       const card = row.card, owned = TransformCards.owned(row.name), active = TransformCards.active === row.name;
       const rule = TransformCards.rules(card);
@@ -532,12 +580,17 @@ function openGameCatalog(type) {
       for (const effect of card.fx) detail.append(uiElement('p', '', effect));
       detail.append(uiElement('small', '', card.src === '天堂W' ? '能力：天堂W 官方圖鑑（' + card.w + '）' : '能力：參考天堂W 同階平均'));
       if (rule) {
-        detail.append(uiElement('h4', '', '變身限制（3.63）'),
+        if (rule.bonus) {
+          detail.append(uiElement('h4', '', '伺服器變身能力（' + rule.bonus.note + '）'));
+          for (const effect of rule.bonus.fx) detail.append(uiElement('p', '', effect));
+        }
+        detail.append(uiElement('h4', '', '變身限制'),
           uiElement('p', '', rule.magic ? '可施放魔法' : '無法施放魔法'),
           uiElement('p', '', '武器：' + rule.weapons),
-          uiElement('p', '', '防具：' + rule.armors),
-          uiElement('small', '', '3.63 變身表：' + rule.en));
-      } else detail.append(uiElement('small', '', '3.63 變身表沒有這個變身，不限等級與裝備'));
+          uiElement('p', '', '防具：' + rule.armors));
+        if (rule.rebirth) detail.append(uiElement('p', '', '需轉生 ' + rule.rebirth + ' 次'));
+        detail.append(uiElement('small', '', '天地劫天堂變身表：' + rule.en));
+      } else detail.append(uiElement('small', '', '天地劫天堂變身表沒有這個變身，不限等級與裝備'));
       const action = active ? catalogButton('解除變身', () => { TransformCards.deactivate(); refreshCards(); }, 'game-catalog-action')
         : catalogButton(owned ? '變身' : '收集到才能變身', () => { if (TransformCards.activate(row.name)) refreshCards(); }, 'game-catalog-action');
       action.disabled = !owned;
@@ -560,6 +613,23 @@ function openGameCatalog(type) {
     status.update = () => { status.textContent = '已收集 ' + TransformCards.collected + ' / ' + entries.length + (TransformCards.active ? ' · 變身中：' + TransformCards.active : ''); };
     var transformStatus = status;
   }
+  if (type === 'dolls' || type === 'enchant' || type === 'wuhun') {
+    const status = uiElement('span', 'game-catalog-status', '');
+    const toolbar = uiElement('div', 'game-catalog-toolbar');
+    const add = (label, fn) => toolbar.append(catalogButton(label, () => { const got = fn(); if (!got.filter(Boolean).length) return; toast('獲得：' + got.filter(Boolean).map(x => x.stone || x.name).join('、')); updateCounts(); refreshCards(); }));
+    const times = (n, fn) => () => Array.from({length: n}, fn);
+    if (type === 'dolls') { add('抽 1 隻', times(1, () => TdjSystems.dolls.draw())); add('抽 10 隻', times(10, () => TdjSystems.dolls.draw())); }
+    if (type === 'enchant') { add('取得附魔石', times(1, () => TdjSystems.enchant.get())); add('取得 5 個', times(5, () => TdjSystems.enchant.get())); }
+    if (type === 'wuhun') { add('取得武魂', times(1, () => TdjSystems.wuhun.get())); add('取得 5 個', times(5, () => TdjSystems.wuhun.get())); }
+    toolbar.append(status);
+    results.prepend(toolbar);
+    status.update = () => {
+      if (type === 'dolls') { const d = entries.find(x => String(x.id) === String(TdjSystems.dolls.active)); status.textContent = '測試用（免費）· ' + (d ? '召喚中：' + d.name : '未召喚'); }
+      if (type === 'enchant') { const c = TdjSystems.enchant.current(); status.textContent = '測試用（免費）· ' + (c ? c.weapon.item.name + '：' + c.level.name : '武器未附魔'); }
+      if (type === 'wuhun') { const w = entries.find(x => String(x.w.id) === String(TdjSystems.wuhun.active)); status.textContent = '測試用（免費）· ' + (w ? '裝備中：' + w.name : '未裝備'); }
+    };
+    var tdjStatus = status;
+  }
   function updateCounts() {
     for (const item of sidebar.children) item.textContent = item.filterLabel + ' (' + entries.filter(item.filterPredicate).length + ')';
   }
@@ -580,6 +650,11 @@ function openGameCatalog(type) {
         card.setAttribute('data-tier', lineageWGrades[row.grade][1]);
         if (!owned) card.classList.add('game-catalog-locked');
         card.append(uiElement('small', '', lineageWGrades[row.grade][0] + (owned ? ' ×' + owned : ' · 未收集')));
+      } else if (type === 'dolls' || type === 'enchant' || type === 'wuhun') {
+        const owned = type === 'dolls' ? TdjSystems.dolls.owned(row.id) : type === 'enchant' ? TdjSystems.enchant.stones(row.e.id) : TdjSystems.wuhun.owned(row.w.id);
+        if (type === 'wuhun') card.setAttribute('data-tier', tdjWuhunTierTag[row.w.tier] || 'white');
+        if (!owned) card.classList.add('game-catalog-locked');
+        card.append(uiElement('small', '', (type === 'wuhun' ? row.w.tier + ' · ' : '') + (owned ? '×' + owned : '未擁有')));
       }
       if (type !== 'collection') card.append(catalogPortrait(type, row));
       card.append(uiElement('span', '', row.name));
@@ -588,6 +663,7 @@ function openGameCatalog(type) {
     }
     showDetails(visible.includes(selected) ? selected : visible[0]);
     if (type === 'transforms') transformStatus.update();
+    if (tdjStatus) tdjStatus.update();
   }
 
   for (const [label, predicate] of filters) {
