@@ -82,3 +82,27 @@ main.game.reference-game #panel.game-catalog-panel {
   .game-catalog-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .game-catalog-preview { height: 38px; }
 }
+
+.game-catalog-portrait { display: block; width: min(100%, 70px); height: 58px; object-fit: contain; image-rendering: pixelated; }
+.game-catalog-portrait.game-catalog-preview { width: min(100%, 150px); height: clamp(64px, 18vh, 160px); }
+.game-catalog-missing { display: grid; place-items: center; min-height: 40px; color: #bac3d4; font-size: 11px; }
+
+.game-catalog-tabs { flex-wrap: wrap; }
+.game-catalog-card[data-tier] { border: 1px solid var(--card-tier) !important; box-shadow: inset 0 0 16px color-mix(in srgb, var(--card-tier) 35%, transparent); }
+.game-catalog-card[data-tier] small { color: var(--card-tier); }
+.game-catalog-card[data-tier="white"] { --card-tier: #e8e8ed; }
+.game-catalog-card[data-tier="green"] { --card-tier: #8fd787; }
+.game-catalog-card[data-tier="blue"] { --card-tier: #75adff; }
+.game-catalog-card[data-tier="red"] { --card-tier: #f48180; }
+.game-catalog-card[data-tier="purple"] { --card-tier: #d698ff; }
+.game-catalog-card[data-tier="gold"] { --card-tier: #f7cf6a; }
+.game-catalog-card[data-tier="transcend"] { --card-tier: #7ee8e0; }
+.game-catalog-card[data-tier="unique"] { --card-tier: #ff9fd6; }
+.game-catalog-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 8px; }
+.game-catalog-toolbar button, .game-catalog-action { min-height: 40px; padding: 6px 14px; border: 1px solid #c9a75a; border-radius: 8px; background: #3a2f1a; color: #f3e2b5; }
+.game-catalog-toolbar button:hover, .game-catalog-action:not(:disabled):hover { background: #57452a; }
+.game-catalog-action { margin-top: 12px; width: 100%; }
+.game-catalog-action:disabled { opacity: .5; cursor: not-allowed; }
+.game-catalog-status { color: #d8c9a0; font-size: 13px; }
+.game-catalog-card.game-catalog-locked img { filter: grayscale(1) brightness(.45); }
+.game-catalog-card.game-catalog-locked span { opacity: .6; }

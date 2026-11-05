@@ -1,6 +1,7 @@
 天堂網頁版/
   index.html             遊戲入口
-  data/                  獨立功能 JS 與地圖資料
+  data/                  獨立功能 JS 與地圖資料（transform-cards*.js＝變身卡冊，含 3.63 變身設定）
+  assets/transform-anim/  變身動畫（165 種，來源見 變身娃娃資料補充.md 第六節）
   mobile.css             手機版面
   rpg-hud.css             手機 MMORPG 介面樣式
   assets/talking-island/  說話之島素材

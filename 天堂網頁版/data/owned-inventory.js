@@ -37,7 +37,7 @@ window.OwnedInventory=(()=>{
  }
  function equip(uid){
   const e=entries.find(e=>e.uid===uid);if(!e)return false;if(e.slot)return unequip(uid);const item=definition(e),r=config(e),slot=slotFor(item);if(!slot)return false;
-  if(!item.allowed.includes(job)){toast('目前職業無法使用這項裝備。');return false}if(level()<r.minLevel||r.maxLevel&&level()>r.maxLevel){toast('角色等級不符合道具限制。');return false}if(characterMovementBlocked()||movementAnimating()){toast('請等目前動作結束。');return false}
+  if(!item.allowed.includes(job)){toast('目前職業無法使用這項裝備。');return false}if(window.TransformCards&&!TransformCards.canEquip(item)){toast('目前的變身無法裝備這項物品。');return false}if(level()<r.minLevel||r.maxLevel&&level()>r.maxLevel){toast('角色等級不符合道具限制。');return false}if(characterMovementBlocked()||movementAnimating()){toast('請等目前動作結束。');return false}
   if(item.kind==='weapon'&&[65,133,191,192].includes(item.id)){toast('這項任務武器不能在說話之島使用。');return false}
   const current=entries.find(i=>i.slot===slot),weapon=entries.find(i=>i.slot==='weapon');
   if(slot==='weapon'&&item.twoHand&&entries.some(i=>i.slot==='shield')||slot==='shield'&&weapon&&definition(weapon).twoHand){toast('雙手武器與盾牌不能同時裝備。');return false}

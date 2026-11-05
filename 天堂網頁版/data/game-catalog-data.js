@@ -220,19 +220,6 @@ const gameCatalogData = {
       "time": 1800
     },
     {
-      "id": 55014,
-      "name": "變形怪",
-      "gfx": 7516,
-      "effects": [],
-      "materials": [
-        [
-          41246,
-          50
-        ]
-      ],
-      "time": 1800
-    },
-    {
       "id": 55015,
       "name": "王族(王子)",
       "gfx": 9635,

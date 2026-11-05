@@ -1,0 +1,1665 @@
+{
+  "sources": [
+    {
+      "key": "dolls-55000",
+      "source": "assets/atlas/anim/mob_6100",
+      "kind": "sprite"
+    },
+    {
+      "key": "dolls-55001",
+      "source": "assets/atlas/anim/mob_5919",
+      "kind": "sprite"
+    },
+    {
+      "key": "dolls-55002",
+      "source": "assets/atlas/anim/mob_6096",
+      "kind": "sprite"
+    },
+    {
+      "key": "dolls-55003",
+      "source": "assets/atlas/anim/mob_7050",
+      "kind": "sprite"
+    },
+    {
+      "key": "dolls-55004",
+      "source": "assets/atlas/anim/mob_7053",
+      "kind": "sprite"
+    },
+    {
+      "key": "dolls-55005",
+      "source": "assets/atlas/anim/mob_6477",
+      "kind": "sprite"
+    },
+    {
+      "key": "dolls-55006",
+      "source": "assets/atlas/anim/mob_6480",
+      "kind": "sprite"
+    },
+    {
+      "key": "dolls-55007",
+      "source": "assets/atlas/anim/mob_6483",
+      "kind": "sprite"
+    },
+    {
+      "key": "dolls-55008",
+      "source": "assets/atlas/anim/mob_5933",
+      "kind": "sprite"
+    },
+    {
+      "key": "dolls-55009",
+      "source": "assets/atlas/anim/mob_7257",
+      "kind": "sprite"
+    },
+    {
+      "key": "dolls-55010",
+      "source": "assets/atlas/anim/mob_6443",
+      "kind": "sprite"
+    },
+    {
+      "key": "dolls-55011",
+      "source": "assets/atlas/anim/mob_6449",
+      "kind": "sprite"
+    },
+    {
+      "key": "dolls-55012",
+      "source": "assets/atlas/anim/mob_6452",
+      "kind": "sprite"
+    },
+    {
+      "key": "dolls-55013",
+      "source": "assets/atlas/anim/mob_7047",
+      "kind": "sprite"
+    },
+    {
+      "key": "dolls-55014",
+      "source": "重要檔案\\天堂圖檔\\3434.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55015",
+      "source": "重要檔案\\天堂圖檔\\5088.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55016",
+      "source": "重要檔案\\天堂圖檔\\5089.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55017",
+      "source": "重要檔案\\天堂圖檔\\5090.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55018",
+      "source": "重要檔案\\天堂圖檔\\5091.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55019",
+      "source": "重要檔案\\天堂圖檔\\5096.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55020",
+      "source": "重要檔案\\天堂圖檔\\5097.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55021",
+      "source": "重要檔案\\天堂圖檔\\5094.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55022",
+      "source": "重要檔案\\天堂圖檔\\5095.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55023",
+      "source": "重要檔案\\天堂圖檔\\5092.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55024",
+      "source": "重要檔案\\天堂圖檔\\5093.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55025",
+      "source": "重要檔案\\天堂圖檔\\5098.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55026",
+      "source": "重要檔案\\天堂圖檔\\5099.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55027",
+      "source": "重要檔案\\天堂圖檔\\5100.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55028",
+      "source": "重要檔案\\天堂圖檔\\5101.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55029",
+      "source": "3.63模擬器改7.6\\登入器\\sprite\\8650-12.spr",
+      "kind": "sprite"
+    },
+    {
+      "key": "dolls-55030",
+      "source": "3.63模擬器改7.6\\登入器\\sprite\\8650-12.spr",
+      "kind": "sprite"
+    },
+    {
+      "key": "dolls-55031",
+      "source": "3.63模擬器改7.6\\登入器\\sprite\\8650-12.spr",
+      "kind": "sprite"
+    },
+    {
+      "key": "dolls-55032",
+      "source": "3.63模擬器改7.6\\登入器\\sprite\\8650-12.spr",
+      "kind": "sprite"
+    },
+    {
+      "key": "dolls-55033",
+      "source": "重要檔案\\天堂圖檔\\4152.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55034",
+      "source": "重要檔案\\天堂圖檔\\4154.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55035",
+      "source": "重要檔案\\天堂圖檔\\4134.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55036",
+      "source": "重要檔案\\天堂圖檔\\4135.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55037",
+      "source": "重要檔案\\天堂圖檔\\4137.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55038",
+      "source": "重要檔案\\天堂圖檔\\4139.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55039",
+      "source": "重要檔案\\天堂圖檔\\4141.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55040",
+      "source": "重要檔案\\天堂圖檔\\4143.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55041",
+      "source": "3.63模擬器改7.6\\登入器\\sprite\\8539-12.spr",
+      "kind": "sprite"
+    },
+    {
+      "key": "dolls-55042",
+      "source": "3.63模擬器改7.6\\登入器\\sprite\\8539-12.spr",
+      "kind": "sprite"
+    },
+    {
+      "key": "dolls-55043",
+      "source": "3.63模擬器改7.6\\登入器\\sprite\\8539-12.spr",
+      "kind": "sprite"
+    },
+    {
+      "key": "dolls-55044",
+      "source": "3.63模擬器改7.6\\登入器\\sprite\\8539-12.spr",
+      "kind": "sprite"
+    },
+    {
+      "key": "dolls-55045",
+      "source": "3.63模擬器改7.6\\登入器\\sprite\\8542-12.spr",
+      "kind": "sprite"
+    },
+    {
+      "key": "dolls-55046",
+      "source": "3.63模擬器改7.6\\登入器\\sprite\\8545-12.spr",
+      "kind": "sprite"
+    },
+    {
+      "key": "dolls-55047",
+      "source": "3.63模擬器改7.6\\登入器\\sprite\\8549-12.spr",
+      "kind": "sprite"
+    },
+    {
+      "key": "dolls-55048",
+      "source": "3.63模擬器改7.6\\登入器\\sprite\\8549-12.spr",
+      "kind": "sprite"
+    },
+    {
+      "key": "dolls-55049",
+      "source": "3.63模擬器改7.6\\登入器\\sprite\\8549-12.spr",
+      "kind": "sprite"
+    },
+    {
+      "key": "dolls-55050",
+      "source": "3.63模擬器改7.6\\登入器\\sprite\\8549-12.spr",
+      "kind": "sprite"
+    },
+    {
+      "key": "dolls-55051",
+      "source": "3.63模擬器改7.6\\登入器\\sprite\\8600-12.spr",
+      "kind": "sprite"
+    },
+    {
+      "key": "dolls-55052",
+      "source": "3.63模擬器改7.6\\登入器\\sprite\\8602-12.spr",
+      "kind": "sprite"
+    },
+    {
+      "key": "dolls-55053",
+      "source": "重要檔案\\天堂圖檔\\5033.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55054",
+      "source": "重要檔案\\天堂圖檔\\5035.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55055",
+      "source": "重要檔案\\天堂圖檔\\5037.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55056",
+      "source": "重要檔案\\天堂圖檔\\5039.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55057",
+      "source": "重要檔案\\天堂圖檔\\5041.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55058",
+      "source": "重要檔案\\天堂圖檔\\5043.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55059",
+      "source": "重要檔案\\天堂圖檔\\5045.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55060",
+      "source": "重要檔案\\天堂圖檔\\5047.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55061",
+      "source": "重要檔案\\天堂圖檔\\5049.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55062",
+      "source": "重要檔案\\天堂圖檔\\5051.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55063",
+      "source": "重要檔案\\天堂圖檔\\5053.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55064",
+      "source": "重要檔案\\天堂圖檔\\5055.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55065",
+      "source": "重要檔案\\天堂圖檔\\5021.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55066",
+      "source": "重要檔案\\天堂圖檔\\5023.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55067",
+      "source": "重要檔案\\天堂圖檔\\5025.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55068",
+      "source": "重要檔案\\天堂圖檔\\5027.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55069",
+      "source": "重要檔案\\天堂圖檔\\5029.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55070",
+      "source": "重要檔案\\天堂圖檔\\5031.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55071",
+      "source": "重要檔案\\天堂圖檔\\4998.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55072",
+      "source": "重要檔案\\天堂圖檔\\4999.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55073",
+      "source": "重要檔案\\天堂圖檔\\5001.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55074",
+      "source": "重要檔案\\天堂圖檔\\5003.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55075",
+      "source": "重要檔案\\天堂圖檔\\5005.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55076",
+      "source": "重要檔案\\天堂圖檔\\5007.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55077",
+      "source": "重要檔案\\天堂圖檔\\5009.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55078",
+      "source": "重要檔案\\天堂圖檔\\5011.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55079",
+      "source": "重要檔案\\天堂圖檔\\5013.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55080",
+      "source": "重要檔案\\天堂圖檔\\5015.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55081",
+      "source": "重要檔案\\天堂圖檔\\5017.gif",
+      "kind": "item"
+    },
+    {
+      "key": "dolls-55082",
+      "source": "重要檔案\\天堂圖檔\\5019.gif",
+      "kind": "item"
+    },
+    {
+      "key": "transforms-947",
+      "source": "assets/atlas/anim/mob_947",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-979",
+      "source": "assets/atlas/anim/mob_979",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3906",
+      "source": "assets/atlas/anim/mob_56",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3860",
+      "source": "assets/atlas/anim/mob_57",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3861",
+      "source": "assets/atlas/anim/mob_1022",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3862",
+      "source": "assets/atlas/anim/mob_1059",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3863",
+      "source": "assets/atlas/anim/mob_54",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3864",
+      "source": "assets/atlas/anim/mob_94",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3865",
+      "source": "assets/atlas/anim/mob_1110",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3904",
+      "source": "assets/atlas/anim/mob_49",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-29",
+      "source": "assets/atlas/anim/mob_29",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-1037",
+      "source": "assets/atlas/anim/mob_1037",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-1039",
+      "source": "assets/atlas/anim/mob_1039",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3866",
+      "source": "assets/atlas/anim/mob_784",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3867",
+      "source": "assets/atlas/anim/mob_786",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3868",
+      "source": "assets/atlas/anim/mob_786",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3869",
+      "source": "assets/atlas/anim/mob_788",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3870",
+      "source": "assets/atlas/anim/mob_788",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-2374",
+      "source": "assets/atlas/anim/mob_30",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-2377",
+      "source": "assets/atlas/anim/mob_1106",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3871",
+      "source": "assets/atlas/anim/mob_1096",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-2376",
+      "source": "assets/atlas/anim/mob_1104",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-95",
+      "source": "assets/atlas/anim/mob_95",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3872",
+      "source": "assets/atlas/anim/mob_52",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3873",
+      "source": "assets/atlas/anim/mob_52",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-2378",
+      "source": "assets/atlas/anim/mob_145",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3874",
+      "source": "assets/atlas/anim/mob_1108",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-146",
+      "source": "assets/atlas/anim/mob_95",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3875",
+      "source": "assets/atlas/anim/mob_255",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3876",
+      "source": "assets/atlas/anim/mob_152",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-951",
+      "source": "assets/atlas/anim/mob_951",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-1047",
+      "source": "assets/atlas/anim/mob_1047",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3877",
+      "source": "assets/atlas/anim/mob_1020",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3878",
+      "source": "assets/atlas/anim/mob_1098",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3879",
+      "source": "assets/atlas/anim/mob_32",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3880",
+      "source": "assets/atlas/anim/mob_894",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-2323",
+      "source": "assets/atlas/anim/mob_790",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-2386",
+      "source": "assets/atlas/anim/mob_1517",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-2387",
+      "source": "assets/atlas/anim/mob_1542",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-2385",
+      "source": "assets/atlas/anim/mob_2134",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3630",
+      "source": "assets/atlas/anim/mob_1202",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3631",
+      "source": "assets/atlas/anim/mob_1204",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3632",
+      "source": "assets/atlas/anim/mob_1052",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3633",
+      "source": "assets/atlas/anim/mob_1128",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3881",
+      "source": "assets/atlas/anim/mob_183",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3884",
+      "source": "assets/atlas/anim/mob_187",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3885",
+      "source": "assets/atlas/anim/mob_183",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3882",
+      "source": "assets/atlas/anim/mob_185",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3883",
+      "source": "assets/atlas/anim/mob_173",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3634",
+      "source": "assets/atlas/anim/mob_2966",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3887",
+      "source": "assets/atlas/anim/mob_3659",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3888",
+      "source": "assets/atlas/anim/mob_53",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3905",
+      "source": "assets/atlas/anim/mob_1011",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3784",
+      "source": "assets/atlas/anim/mob_240",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-2284",
+      "source": "assets/atlas/anim/mob_1125",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3945",
+      "source": "assets/atlas/anim/mob_2541",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3950",
+      "source": "assets/atlas/anim/mob_3644",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-2384",
+      "source": "assets/atlas/anim/mob_1112",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-4918",
+      "source": "assets/atlas/anim/mob_2533",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-4925",
+      "source": "assets/atlas/anim/mob_2150",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3886",
+      "source": "assets/atlas/anim/mob_2524",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-4917",
+      "source": "assets/atlas/anim/mob_2850",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-4920",
+      "source": "assets/atlas/anim/mob_2137",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3102",
+      "source": "assets/atlas/anim/mob_2402",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-4919",
+      "source": "assets/atlas/anim/mob_3402",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-4922",
+      "source": "assets/atlas/anim/mob_2771",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-4924",
+      "source": "assets/atlas/anim/mob_3404",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-4926",
+      "source": "assets/atlas/anim/mob_3376",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3103",
+      "source": "assets/atlas/anim/mob_2538",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-4921",
+      "source": "assets/atlas/anim/mob_3366",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-4932",
+      "source": "assets/atlas/anim/mob_2843",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3890",
+      "source": "assets/atlas/anim/mob_3054",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3891",
+      "source": "assets/atlas/anim/mob_3046",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3892",
+      "source": "assets/atlas/anim/mob_3105",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-5727",
+      "source": "assets/atlas/anim/mob_5727",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3893",
+      "source": "assets/atlas/anim/mob_3063",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3894",
+      "source": "assets/atlas/anim/mob_3070",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3895",
+      "source": "assets/atlas/anim/mob_3145",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-5730",
+      "source": "assets/atlas/anim/mob_5730",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3896",
+      "source": "assets/atlas/anim/mob_3057",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3897",
+      "source": "assets/atlas/anim/mob_3075",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3898",
+      "source": "assets/atlas/anim/mob_3148",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-5733",
+      "source": "assets/atlas/anim/mob_5733",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3899",
+      "source": "assets/atlas/anim/mob_3060",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3900",
+      "source": "assets/atlas/anim/mob_3080",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3901",
+      "source": "assets/atlas/anim/mob_3151",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-5736",
+      "source": "assets/atlas/anim/mob_5736",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-2501",
+      "source": "assets/atlas/anim/mob_2412",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-2388",
+      "source": "assets/atlas/anim/mob_1576",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3952",
+      "source": "assets/atlas/anim/mob_2757",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-4767",
+      "source": "assets/atlas/anim/mob_4168",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-4769",
+      "source": "assets/atlas/anim/mob_4171",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-4928",
+      "source": "assets/atlas/anim/mob_3211",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-4929",
+      "source": "assets/atlas/anim/mob_4133",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-938",
+      "source": "assets/atlas/anim/mob_938",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-2064",
+      "source": "assets/atlas/anim/mob_2064",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-4227",
+      "source": "assets/atlas/anim/mob_4227",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3750",
+      "source": "assets/atlas/anim/mob_3750",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3664",
+      "source": "assets/atlas/anim/mob_3664",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6010",
+      "source": "assets/atlas/anim/mob_6010",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6089",
+      "source": "assets/atlas/anim/mob_4218",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-4000",
+      "source": "assets/atlas/anim/mob_3066",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-4001",
+      "source": "assets/atlas/anim/mob_3180",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-4002",
+      "source": "assets/atlas/anim/mob_1538",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-4004",
+      "source": "assets/atlas/anim/mob_1116",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-4186",
+      "source": "assets/atlas/anim/mob_4186",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-4188",
+      "source": "assets/atlas/anim/mob_4188",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-4190",
+      "source": "assets/atlas/anim/mob_4190",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6002",
+      "source": "assets/atlas/anim/mob_2749",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6137",
+      "source": "assets/atlas/anim/mob_240",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6140",
+      "source": "assets/atlas/anim/mob_1125",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6136",
+      "source": "assets/atlas/anim/mob_2538",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6139",
+      "source": "assets/atlas/anim/mob_3366",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6138",
+      "source": "assets/atlas/anim/mob_2843",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6267",
+      "source": "assets/atlas/anim/mob_3054",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6268",
+      "source": "assets/atlas/anim/mob_3046",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6269",
+      "source": "assets/atlas/anim/mob_3105",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6279",
+      "source": "assets/atlas/anim/mob_5727",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6142",
+      "source": "assets/atlas/anim/mob_240",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6145",
+      "source": "assets/atlas/anim/mob_1125",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6141",
+      "source": "assets/atlas/anim/mob_2538",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6144",
+      "source": "assets/atlas/anim/mob_3366",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6143",
+      "source": "assets/atlas/anim/mob_2843",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6270",
+      "source": "assets/atlas/anim/mob_3063",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6271",
+      "source": "assets/atlas/anim/mob_3070",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6272",
+      "source": "assets/atlas/anim/mob_3145",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6280",
+      "source": "assets/atlas/anim/mob_5730",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6147",
+      "source": "assets/atlas/anim/mob_240",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6150",
+      "source": "assets/atlas/anim/mob_1125",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6146",
+      "source": "assets/atlas/anim/mob_2538",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6149",
+      "source": "assets/atlas/anim/mob_3366",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6148",
+      "source": "assets/atlas/anim/mob_2843",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6273",
+      "source": "assets/atlas/anim/mob_3057",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6274",
+      "source": "assets/atlas/anim/mob_3075",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6275",
+      "source": "assets/atlas/anim/mob_3148",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6281",
+      "source": "assets/atlas/anim/mob_5733",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6152",
+      "source": "assets/atlas/anim/mob_240",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6155",
+      "source": "assets/atlas/anim/mob_1125",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6151",
+      "source": "assets/atlas/anim/mob_2538",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6154",
+      "source": "assets/atlas/anim/mob_3366",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6153",
+      "source": "assets/atlas/anim/mob_2843",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6276",
+      "source": "assets/atlas/anim/mob_3060",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6277",
+      "source": "assets/atlas/anim/mob_3080",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6278",
+      "source": "assets/atlas/anim/mob_3151",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6282",
+      "source": "assets/atlas/anim/mob_5736",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6157",
+      "source": "assets/atlas/anim/mob_240",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6160",
+      "source": "assets/atlas/anim/mob_1125",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6156",
+      "source": "assets/atlas/anim/mob_2538",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6159",
+      "source": "assets/atlas/anim/mob_3366",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6158",
+      "source": "assets/atlas/anim/mob_2843",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6284",
+      "source": "assets/atlas/anim/mob_2412",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3902",
+      "source": "assets/atlas/anim/mob_2468",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-3903",
+      "source": "assets/atlas/anim/mob_2419",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-5976",
+      "source": "assets/atlas/anim/mob_3188",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6086",
+      "source": "assets/atlas/anim/mob_4188",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6087",
+      "source": "assets/atlas/anim/mob_4190",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6088",
+      "source": "assets/atlas/anim/mob_4796",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6034",
+      "source": "assets/atlas/anim/mob_3195",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-6035",
+      "source": "assets/atlas/anim/mob_2524",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-9987",
+      "source": "3.63模擬器改7.6\\登入器\\sprite\\7332-12.spr",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-9988",
+      "source": "3.63模擬器改7.6\\登入器\\sprite\\7332-12.spr",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-9989",
+      "source": "3.63模擬器改7.6\\登入器\\sprite\\7332-12.spr",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-9990",
+      "source": "3.63模擬器改7.6\\登入器\\sprite\\7332-12.spr",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-9991",
+      "source": "3.63模擬器改7.6\\登入器\\sprite\\7332-12.spr",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-9205",
+      "source": "assets/atlas/anim/mob_240",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-9011",
+      "source": "3.63模擬器改7.6\\登入器\\sprite\\7332-12.spr",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-9225",
+      "source": "assets/atlas/anim/mob_1125",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-9206",
+      "source": "assets/atlas/anim/mob_240",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-9012",
+      "source": "3.63模擬器改7.6\\登入器\\sprite\\7332-12.spr",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-9226",
+      "source": "assets/atlas/anim/mob_1125",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8860",
+      "source": "assets/atlas/anim/mob_790",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8859",
+      "source": "assets/atlas/anim/mob_152",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-2437",
+      "source": "assets/atlas/anim/mob_1037",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-2438",
+      "source": "assets/atlas/anim/mob_1039",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8858",
+      "source": "assets/atlas/anim/mob_255",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8865",
+      "source": "assets/atlas/anim/mob_1173",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8866",
+      "source": "assets/atlas/anim/mob_4147",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8868",
+      "source": "assets/atlas/anim/mob_4207",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8863",
+      "source": "assets/atlas/anim/mob_4038",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8864",
+      "source": "assets/atlas/anim/mob_1162",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8867",
+      "source": "assets/atlas/anim/mob_1612",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8862",
+      "source": "assets/atlas/anim/mob_1844",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8861",
+      "source": "assets/atlas/anim/mob_1112",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8781",
+      "source": "assets/atlas/anim/mob_4559",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8782",
+      "source": "assets/atlas/anim/mob_3659",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8783",
+      "source": "assets/atlas/anim/mob_2966",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8784",
+      "source": "assets/atlas/anim/mob_32",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8785",
+      "source": "assets/atlas/anim/mob_4460",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8786",
+      "source": "assets/atlas/anim/mob_2533",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8787",
+      "source": "assets/atlas/anim/mob_4561",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8788",
+      "source": "assets/atlas/anim/mob_4519",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8789",
+      "source": "assets/atlas/anim/mob_4698",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8790",
+      "source": "assets/atlas/anim/mob_183",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8791",
+      "source": "assets/atlas/anim/mob_2516",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8792",
+      "source": "assets/atlas/anim/mob_2850",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8793",
+      "source": "assets/atlas/anim/mob_4746",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8794",
+      "source": "assets/atlas/anim/mob_3404",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8795",
+      "source": "assets/atlas/anim/mob_4618",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8796",
+      "source": "assets/atlas/anim/mob_3698",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8797",
+      "source": "assets/atlas/anim/mob_7335",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8798",
+      "source": "assets/atlas/anim/mob_3412",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8799",
+      "source": "assets/atlas/anim/mob_111",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8800",
+      "source": "assets/atlas/anim/mob_110",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8801",
+      "source": "assets/atlas/anim/mob_2843",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8802",
+      "source": "assets/atlas/anim/mob_53",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8803",
+      "source": "assets/atlas/anim/mob_1517",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8804",
+      "source": "assets/atlas/anim/mob_3402",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8805",
+      "source": "assets/atlas/anim/mob_4218",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8806",
+      "source": "assets/atlas/anim/mob_4667",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8807",
+      "source": "assets/atlas/anim/mob_2402",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8808",
+      "source": "assets/atlas/anim/mob_1125",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-945",
+      "source": "https://www.lineage182classic.com/transform-catalog/images/945.png",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8817",
+      "source": "https://loalineage.com/assets/npcgfxsm/8817-5342111c.png",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8774",
+      "source": "https://loalineage.com/assets/npcgfxsm/8774-349a27c3.png",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8900",
+      "source": "https://loalineage.com/assets/npcgfxsm/8900-d1667b77.png",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8851",
+      "source": "https://loalineage.com/assets/npcgfxsm/8851-cb9fa736.png",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8812",
+      "source": "https://loalineage.com/assets/npcgfxsm/8812-9cc85d88.png",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-9003",
+      "source": "https://loalineage.com/assets/npcgfxsm/9003-0c80dbcb.png",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8913",
+      "source": "https://loalineage.com/assets/npcgfxsm/8913-fb6ad623.png",
+      "kind": "sprite"
+    },
+    {
+      "key": "transforms-8978",
+      "source": "https://loalineage.com/assets/npcgfxsm/8978-a809832f.png",
+      "kind": "sprite"
+    }
+  ],
+  "missing": [
+    {
+      "type": "transforms",
+      "id": 5719,
+      "gfx": 5719,
+      "name": "manekineko"
+    },
+    {
+      "type": "transforms",
+      "id": 5184,
+      "gfx": 5184,
+      "name": "red uniform"
+    },
+    {
+      "type": "transforms",
+      "id": 5186,
+      "gfx": 5186,
+      "name": "blue uniform"
+    },
+    {
+      "type": "transforms",
+      "id": 6080,
+      "gfx": 6080,
+      "name": "princess horse"
+    },
+    {
+      "type": "transforms",
+      "id": 6094,
+      "gfx": 6094,
+      "name": "prince horse"
+    },
+    {
+      "type": "transforms",
+      "id": 5645,
+      "gfx": 5645,
+      "name": "Halloween Pumpkin"
+    },
+    {
+      "type": "transforms",
+      "id": 6400,
+      "gfx": 6400,
+      "name": "Halloween jack o lantern"
+    },
+    {
+      "type": "transforms",
+      "id": 6894,
+      "gfx": 6894,
+      "name": "awake"
+    },
+    {
+      "type": "transforms",
+      "id": 6882,
+      "gfx": 6882,
+      "name": "king 70"
+    },
+    {
+      "type": "transforms",
+      "id": 6883,
+      "gfx": 6883,
+      "name": "queen 70"
+    },
+    {
+      "type": "transforms",
+      "id": 6884,
+      "gfx": 6884,
+      "name": "kinght 70"
+    },
+    {
+      "type": "transforms",
+      "id": 6885,
+      "gfx": 6885,
+      "name": "wkinght 70"
+    },
+    {
+      "type": "transforms",
+      "id": 6886,
+      "gfx": 6886,
+      "name": "elf 70"
+    },
+    {
+      "type": "transforms",
+      "id": 6887,
+      "gfx": 6887,
+      "name": "welf 70"
+    },
+    {
+      "type": "transforms",
+      "id": 6888,
+      "gfx": 6888,
+      "name": "mage 70"
+    },
+    {
+      "type": "transforms",
+      "id": 6889,
+      "gfx": 6889,
+      "name": "wmage 70"
+    },
+    {
+      "type": "transforms",
+      "id": 6890,
+      "gfx": 6890,
+      "name": "delf 70"
+    },
+    {
+      "type": "transforms",
+      "id": 6891,
+      "gfx": 6891,
+      "name": "wdelf 70"
+    },
+    {
+      "type": "transforms",
+      "id": 7163,
+      "gfx": 7163,
+      "name": "dkinght 70"
+    },
+    {
+      "type": "transforms",
+      "id": 7164,
+      "gfx": 7164,
+      "name": "wdkinght 70"
+    },
+    {
+      "type": "transforms",
+      "id": 7165,
+      "gfx": 7165,
+      "name": "lis 70"
+    },
+    {
+      "type": "transforms",
+      "id": 7166,
+      "gfx": 7166,
+      "name": "wlis 70"
+    },
+    {
+      "type": "transforms",
+      "id": 6503,
+      "gfx": 6503,
+      "name": "cat"
+    },
+    {
+      "type": "transforms",
+      "id": 7061,
+      "gfx": 7061,
+      "name": "xmasman"
+    }
+  ]
+}

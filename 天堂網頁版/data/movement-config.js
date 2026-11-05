@@ -1,6 +1,6 @@
 // 依目前武器的 walk 動作取原始速度；無武器設定時使用空手 walk(0)。
 function getActiveWalkProfile(){const role=typeof job==='string'?job:'騎士',gender=typeof characterGender==='number'?characterGender:0;const actions=(SPRITE_MOVEMENT.profiles[role+':'+gender]||SPRITE_MOVEMENT.profiles['騎士:0']).actions;return actions[typeof activeWeaponWalkAction==='function'?activeWeaponWalkAction():0]||actions[0]}
-function getMovementStepMs(profile=getActiveWalkProfile(),modifiers=window.playerMovementModifiers||{}){let ms=profile.stepMs;for(const [key,factor] of [['haste',.755],['fastMovable',.665],['brave',.755],['braveX',.755],['elfBrave',.855]])if(modifiers[key])ms=Math.trunc(ms*factor);return Math.max(1,ms)}
+function getMovementStepMs(profile=getActiveWalkProfile(),modifiers=window.playerMovementModifiers||{}){let ms=profile.stepMs;for(const [key,factor] of [['haste',.755],['fastMovable',.665],['brave',.755],['braveX',.755],['elfBrave',.855]])if(modifiers[key])ms=Math.trunc(ms*factor);if(modifiers.polyMovePct>0)ms=Math.trunc(ms/(1+modifiers.polyMovePct/100));return Math.max(1,ms)}
 window.MovementConfig=Object.freeze({get stepMs(){return getMovementStepMs()},pollMs:32,animationFrameMs:110});
 let lastMovementAt=-Infinity,lastMovementDuration=0;
 function movementTime(){return globalThis.performance?.now?.()??Date.now()}
