@@ -579,6 +579,7 @@ function openGameCatalog(type) {
         uiElement('h4', '', '變身能力'));
       for (const effect of card.fx) detail.append(uiElement('p', '', effect));
       detail.append(uiElement('small', '', card.src === '天堂W' ? '能力：天堂W 官方圖鑑（' + card.w + '）' : '能力：參考天堂W 同階平均'));
+      detail.append(uiElement('small', '', card.wk ? '動作：8 方向走路' + (card.wa ? '、待機、攻擊' : '') : card.f.walk ? '動作：單方向走路（往左時翻面）' : '動作：沒有走路圖，只有單方向待機（走路時原地擺動）'));
       if (rule) {
         if (rule.bonus) {
           detail.append(uiElement('h4', '', '伺服器變身能力（' + rule.bonus.note + '）'));
