@@ -36,7 +36,7 @@ for (const [t, lo, hi] of [[3, 1, 1], [8, 1, 2], [14, 2, 3]]) {
 player.mapRun = null;
 // ② 野外 3%、不含塔／龍穴／異界／離線
 let n = 0; for (let i = 0; i < 20000; i++) { const m = makeMonster(zone.mons[0]); eliteFieldRoll(m); if (m.elite) { n++; assert(m.fieldElite); } }
-assert(n > 450 && n < 750, '野外精英比例 ' + n / 20000);
+assert.equal(n, 0, '野外已取消精英（2026-11-07）');
 player.loc = { type: 'zone', id: 'tower', floor: 5 }; n = 0; for (let i = 0; i < 3000; i++) { const m = makeMonster(zone.mons[0]); eliteFieldRoll(m); if (m.elite) n++; } assert.equal(n, 0);
 player.loc = { type: 'zone', id: 'dragonValley' }; player.mapRun = { t: 3, zone: 'dragonValley', mods: [], left: 10 };
 n = 0; for (let i = 0; i < 3000; i++) { const m = makeMonster(zone.mons[0]); eliteFieldRoll(m); if (m.elite) n++; } assert.equal(n, 0, '異界沒精英詞綴不出精英'); player.mapRun = null;
@@ -92,7 +92,7 @@ for (const mode of ['field', 'map']) {
     const w = addItem('dkFlameSword', 1); w.ench = 9; equipItem(w.uid, true); addItem('redPotion', 3000);
     hunt = null; startHunt();
     if (mode === 'map') player.mapRun = { t: 15, zone: 'dragonValley', mods: ['elite'], left: 300, total: 300, q: 'rare' };
-    const FR = eliteFieldRoll; if (mode === 'field') eliteFieldRoll = x => { chance = () => true; try { FR(x); } finally { chance = CHANCE; } };
+    const FR = eliteFieldRoll; if (mode === 'field') eliteFieldRoll = x => { if (SIM_MODE || inMapRun() || x.boss || x.elite || x.eliteMinion) return; x.elite = true; x.fieldElite = true; };   // 野外精英已取消：測試時手動讓每隻變精英，驗證詞條掛機流程
     chance = CHANCE;
     let elites = 0, kills0 = player.kills;
     for (let t = 0; t < 5 * 60 * 10; t++) { gameNow += 100; huntTick(100); cleanBuffs(); if (t % 50 === 0) regenTick();
@@ -102,5 +102,5 @@ for (const mode of ['field', 'map']) {
     console.log(mode, '5 分鐘擊殺', player.kills - kills0, '出現詞條精英', elites);
     assert(elites > 0 && player.kills > kills0);
 }
-console.log('PASS 精英詞條：階級 1/1～2/2～3 條、經驗 +50%/條、野外 3%（塔／龍穴／異界無精英詞綴／離線不出）、護盾、復甦、分裂、召喚上限、狂暴、吸血、魔力燃燒、燃燒附加、反傷不致死、瞬移、野外不保證掉裝備、實際掛機。');
+console.log('PASS 精英詞條：階級 1/1～2/2～3 條、經驗 +50%/條、野外取消精英（2026-11-07）、護盾、復甦、分裂、召喚上限、狂暴、吸血、魔力燃燒、燃燒附加、反傷不致死、瞬移、野外不保證掉裝備、實際掛機。');
 `, ctx);

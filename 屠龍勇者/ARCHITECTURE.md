@@ -4872,7 +4872,7 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 
 ## 312. 精英怪特殊詞條（2026-11-06，版本 `20261106i`；新檔 `data/elite.js`，接在 combat／maps／afflict／ui-scene）
 
-- 使用者轉貼玩家建議：「地圖詞綴＝這張圖難不難、精英詞條＝這隻怪要怎麼打」。逐項決定：異界依階級 1～3 條（T1～T5 1 條、T6～T10 1～2、T11～T15 2～3）；**一般野外／地監 3% 精英、固定 1 條**（HP ×3、傷害 ×1.5、經驗 ×4，不保證掉裝備、金幣不變；不含永夜之塔、龍穴、異界）；**只加經驗**（每條 +50%，疊在 ×4 上），掉寶不變；**離線（SIM_MODE）不出特殊詞條、也不出野外精英**；10 種一次做完（冰封／燃燒／中毒拆 3 條＝12 條）；名牌加詞條＋觸發飄字。數值照草案。
+- 使用者轉貼玩家建議：「地圖詞綴＝這張圖難不難、精英詞條＝這隻怪要怎麼打」。逐項決定：異界依階級 1～3 條（T1～T5 1 條、T6～T10 1～2、T11～T15 2～3）；**一般野外／地監 3% 精英、固定 1 條**（HP ×3、傷害 ×1.5、經驗 ×4，不保證掉裝備、金幣不變；不含永夜之塔、龍穴、異界；**2026-11-07 已取消，見第 314 節**）；**只加經驗**（每條 +50%，疊在 ×4 上），掉寶不變；**離線（SIM_MODE）不出特殊詞條、也不出野外精英**；10 種一次做完（冰封／燃燒／中毒拆 3 條＝12 條）；名牌加詞條＋觸發飄字。數值照草案。
 - **詞條** `ELITE_AFFIXES`：吸血（打中玩家回 50% 傷害）、護盾（每 8 秒 15% 最大 HP，打破為止）、魔力燃燒（扣 MP＝傷害 30%）、反傷（玩家物理攻擊反彈 15%，最多扣到 1 HP）、召喚（每 12 秒 1 隻同種小怪，同時最多 2 隻）、分裂（死亡後 2 隻 HP 40%／傷害 60%）、狂暴（HP<30% 攻速 ×1.5、傷害 ×1.3）、復甦（第一次倒下 40% HP 復活）、冰封／燃燒／中毒（攻擊 30% 機率附加 freeze／burn／poison，走 `afflictTry` 的 MR 減免與免疫時間；afflictTry 新增第 5 參數 ruleOverride）、瞬移（每 10 秒，地圖畫面上離玩家 >2 格就移到身邊空格，`freeTile`；畫面沒開不處理）。
 - **掛勾**：`addMob` 在 `applyMapMods` 後呼叫 `eliteFieldRoll`＋`eliteRollAffixes`（名字改成「精英・吸血・護盾 骷髏」）；`huntTick` 呼叫 `eliteTick`；怪物出手間隔 × `eliteAtkMul`；`monsterAttack` 傷害 × `eliteDmgMul`，打中後 `eliteOnHitPlayer`；`physicalAttack` 扣血後 `eliteOnPlayerPhys`；`onKill` 一開始 `eliteBeforeKill`（護盾結算／復甦，回 true＝沒死），塔／龍處理之後 `eliteAfterKill`（分裂）。
 - **護盾的做法**：傷害來源很多（普攻、魔法、傭兵、二轉、共鳴、娃娃、反擊…），不逐一修改；`eliteSettle` 比較 `_eHp`（上次結算的 HP）與目前 HP，差額先從護盾扣回（每次 eliteTick 與 onKill 前結算）。吸血、復甦改 HP 後同步 `_eHp`。
@@ -4891,3 +4891,9 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
   圖有更新時照舊由 `staleWhileRevalidate` 在背景換新。遊戲 JS（dragon-core-版本）仍每版重抓（必要且小）。
 - 驗證（本機）：舊版第二次安裝會重新下載（cover.jpg 的 Date 標頭改變），新版第二次安裝不重抓（Date 不變），安裝時間 4.0 秒 → 1.6 秒；正式建置（tools/build.js）帶上新 sw.js；Console 無錯誤。
 - 這次更新本身仍要讓玩家換一次新 SW（舊 SW 不會自己變聰明）；換到 20261106j 之後，之後的版本就不會再整包重抓。
+
+## 314. 一般地圖取消精英怪（2026-11-07，版本 `20261107a`；`elite.js` 的 `ELITE_FIELD_P`）
+
+- 使用者要求「一般地圖取消精英（反傷）怪」，二選一時選「野外完全取消精英怪」（不是只拿掉反傷）。
+- `ELITE_FIELD_P` 3% → 0，`eliteFieldRoll` 一開始判斷為 0 就不處理（函式保留備用）。精英只在有「精英」地圖詞綴的異界出現，詞條規則照第 312 節（含反傷）。
+- `tools/test-elite.js` 改驗證野外 0 隻精英；實際掛機那段改成測試內手動讓每隻怪變精英，照樣驗證詞條流程。

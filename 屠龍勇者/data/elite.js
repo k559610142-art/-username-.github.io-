@@ -1,7 +1,7 @@
 // 屠龍勇者：精英怪特殊詞條（2026-11-06，ARCHITECTURE.md 第 312 節）
 // 使用者決定：「地圖詞綴＝這張圖難不難、精英詞條＝這隻怪要怎麼打」。
 //   異界（有「精英」地圖詞綴）的精英：T1～T5 帶 1 條、T6～T10 帶 1～2 條、T11～T15 帶 2～3 條。
-//   一般野外／地監（不含永夜之塔、龍穴、異界）：3% 變精英（HP ×3、傷害 ×1.5、經驗 ×4，不保證掉裝備），固定 1 條。
+//   一般野外／地監：2026-11-07 起取消精英（ELITE_FIELD_P＝0；原本 3% 變精英、固定 1 條，eliteFieldRoll 保留備用）。
 //   每條詞條經驗 +50%（疊在精英 ×4 上），掉寶不變。離線模擬（SIM_MODE）不出特殊詞條、也不出野外精英。
 // 執行期狀態都掛在怪物物件上（不存檔）：eliteAf 詞條、eliteShield 護盾、_eHp 上次結算的 HP（護盾用它算這段時間受到多少傷害）。
 const ELITE_AFFIXES = {
@@ -18,7 +18,8 @@ const ELITE_AFFIXES = {
     venom:    { name: '中毒',     afflict: 'poison', desc: '攻擊 30% 機率使玩家中毒' },
     blink:    { name: '瞬移',     desc: '每 10 秒，離玩家超過 2 格就瞬間移動到玩家身邊' },
 };
-const ELITE_FIELD_P = 0.03, ELITE_EXP_PER_AFFIX = 0.5, ELITE_MINION_EXP = 0.3, ELITE_MINION_MAX = 2;
+// 2026-11-07 使用者要求：一般地圖（野外／地監）取消精英怪（原本 3%），精英只在有「精英」詞綴的異界出現
+const ELITE_FIELD_P = 0, ELITE_EXP_PER_AFFIX = 0.5, ELITE_MINION_EXP = 0.3, ELITE_MINION_MAX = 2;
 const ELITE_SHIELD_MS = 8000, ELITE_SHIELD_K = 0.15, ELITE_SUMMON_MS = 12000, ELITE_BLINK_MS = 10000;
 const ELITE_VAMP_K = 0.5, ELITE_BURN_K = 0.3, ELITE_THORNS_K = 0.15, ELITE_AFFLICT_P = 0.3;
 const ELITE_BERSERK_HP = 0.3, ELITE_BERSERK_SPD = 1.5, ELITE_BERSERK_DMG = 1.3, ELITE_REVIVE_HP = 0.4;
@@ -34,7 +35,7 @@ function eliteNameColor(m) { const n = m.eliteAf ? m.eliteAf.length : 0; return 
 
 // 野外／地監 3% 變精英（addMob 呼叫，在 applyMapMods 之後）
 function eliteFieldRoll(m) {
-    if (SIM_MODE || inMapRun() || !m || m.boss || m.elite || m.eliteMinion) return;
+    if (!ELITE_FIELD_P || SIM_MODE || inMapRun() || !m || m.boss || m.elite || m.eliteMinion) return;
     const z = currentZone();
     if (!z || (z.type !== 'field' && z.type !== 'dungeon') || !chance(ELITE_FIELD_P)) return;
     m.elite = true; m.fieldElite = true;   // fieldElite：不保證掉裝備（combat.js rollDrops）
