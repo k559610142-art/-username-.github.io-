@@ -234,7 +234,8 @@ function huntTick(dt) {
     if (typeof advTick === 'function') advTick(dt, st);   // 二轉：場地、召喚、持續傷害（advance.js）
     bossEnchantTick(st);
     if (typeof uqOn === 'function') uniqueTick();   // 傳奇：獵魂者的燃燒／中毒持續傷害（uniques.js）
-    if (typeof eliteTick === 'function') eliteTick();   // 精英詞條：護盾、召喚、狂暴、瞬移（elite.js）
+    if (typeof eliteTick === 'function') eliteTick();
+    if (typeof elemPhys === 'function') elementsTick();   // 點燃持續傷害（elements.js）   // 精英詞條：護盾、召喚、狂暴、瞬移（elite.js）
     reapMobs();
     if (!fightAlive()) return;
     hunt.pCd -= dt;
@@ -258,7 +259,7 @@ function huntTick(dt) {
         m.atkCd -= dt;
         if (m.atkCd > 0) continue;
         if (!mobInReach(m)) { m.atkCd = 200; continue; }   // 還沒走到角色旁邊
-        m.atkCd =(m === hunt.mon ? m.spd : m.spd * MOB_SIDE_SLOW) * bossEnchantAttackFactor(m) * (mercEffectOn(m, 'slow') || (typeof advDeb === 'function' && advDeb(m, 'slow')) ? (m.boss ? 1.05 : 1.2) : 1) * (typeof eliteAtkMul === 'function' ? eliteAtkMul(m) : 1);   // 精英「狂暴」攻速 +50%
+        m.atkCd =(m === hunt.mon ? m.spd : m.spd * MOB_SIDE_SLOW) * bossEnchantAttackFactor(m) * (mercEffectOn(m, 'slow') || (typeof advDeb === 'function' && advDeb(m, 'slow')) ? (m.boss ? 1.05 : 1.2) : 1) * (typeof eliteAtkMul === 'function' ? eliteAtkMul(m) : 1) * (typeof elemPhys === 'function' ? elemChillMul(m) : 1);   // 精英「狂暴」攻速 +50%；冰緩 −30%
         if (gameNow >= m.stunUntil) monsterAttack(calcStats(), m);
         if (!fightAlive()) return;
     }
@@ -575,13 +576,14 @@ function castBuff(k) {
     worldVfxSupport(k);
 }
 
-function magicDamage(base, spK, st, undeadMul, mon = hunt.mon) {
+function magicDamage(base, spK, st, undeadMul, mon = hunt.mon, elem = null) {   // elem：火／冰／雷（elements.js，第 316 節）
     let d = rand(base[0], base[1]) + Math.floor(st.sp * spK);
     if (mon.undead && undeadMul) d *= undeadMul;
     d *= slayerMult(mon) * bossDmgMult(mon, st);
     d *= 1 - clamp(mon.mr, 0, 100) / 200;
     if(typeof talentDamageMult==='function')d*=talentDamageMult(st,true,mon);
     if (typeof uqOn === 'function') d *= uniqueDmgMul(true);   // 傳奇傷害倍率（狂戰之顱、虛空之戒…）
+    if (typeof elemPhys === 'function') d *= elemSpellMul(mon, elem, st);   // 元素增傷 × 怪物抗性 × 感電
     if (st.magicCrit > 0 && chance(st.magicCrit)) {
         d *= st.magicCritDmg == null ? 1.5 : st.magicCritDmg;
         addLog(`✨ 對${mon.name}觸發魔爆！`, 'magic');
@@ -598,13 +600,15 @@ function castSpell(k, st) {
     // 範圍魔法：打全部圍上來的怪
     const targets = k.screenTargets || (k.aoe ? mobTargets() : [hunt.mon]);
     const dollScope = {};
+    const el = typeof elemPhys === 'function' ? elemSpellElem(k, st) : null;   // 技能元素（冰轉火、火轉雷）
     const parts = targets.map(m => {
-        const d = Math.max(1, Math.round(magicDamage(k.dmg, k.spK, st, k.undeadMul, m) * (!k.id.startsWith('res_') ? dollAttackMult(m) : 1) * (typeof advMagicMult === 'function' ? advMagicMult(k, m) : 1)));
+        const d = Math.max(1, Math.round(magicDamage(k.dmg, k.spK, st, k.undeadMul, m, el) * (!k.id.startsWith('res_') ? dollAttackMult(m) : 1) * (typeof advMagicMult === 'function' ? advMagicMult(k, m) : 1)));
         const dealt = Math.min(Math.max(0, m.hp), d);
         m.hp -= d;
         if (!k.id.startsWith('res_')) dollOnHit(m, dealt, true, dollScope);
         lifeSteal(d, st);
         if (typeof uqOn === 'function') uniqueOnHit(m, d, true);
+        if (el && typeof elemPhys === 'function') elemOnHit(m, { [el]: d }, st);   // 點燃／冰緩／感電
         if (typeof advOnSpellHit === 'function') advOnSpellHit(k, m, d, st);
         return `${m.name} ${d}`;
     });
@@ -636,8 +640,10 @@ function doStrike(k, st) {
         }
         if (k.magic) {
             for (const m of hit) {
-                const d = Math.max(1, Math.round(magicDamage(k.magic.dmg, k.magic.spK, st, 0, m) * (typeof advMagicMult === 'function' ? advMagicMult(k, m) : 1)));
+                const mel = typeof elemPhys === 'function' ? elemSpellElem(k, st) : null;
+                const d = Math.max(1, Math.round(magicDamage(k.magic.dmg, k.magic.spK, st, 0, m, mel) * (typeof advMagicMult === 'function' ? advMagicMult(k, m) : 1)));
                 m.hp -= d;
+                if (mel && typeof elemPhys === 'function') elemOnHit(m, { [mel]: d }, st);
                 lifeSteal(d, st);
                 addLog(`⚡ ${k.name}的魔力，${m.name}受到 ${d} 傷害`, 'magic');
             }
@@ -760,16 +766,19 @@ function physicalAttack(st, mult, opt, mon = hunt.mon) {
     const label = opt.label ? `「${opt.label}」` : '你';
     const dollMult = !opt.res ? dollAttackMult(mon) : 1;
     if (!hits) { addLog(`${label}沒有命中`, 'miss'); return true; }
+    let elemParts = null;
+    if (typeof elemPhys === 'function') { const r = elemPhys(total, hits, st, mon); total = r.total; elemParts = r.parts; }   // 物理轉元素、附加元素傷害、抗性（第 316 節）
     total = Math.max(1, Math.round(total * dollMult));
     const dealt = Math.min(Math.max(0, mon.hp), total);
     mon.hp -= total;
     if (typeof eliteOnPlayerPhys === 'function') eliteOnPlayerPhys(mon, total);
+    if (elemParts && typeof elemPhys === 'function') elemOnHit(mon, elemParts, st);
     if (typeof uqOn === 'function' && !opt.res && !opt.advExtra) { uniqueOnHit(mon, total, false); uniqueAfterPhys(mon, total, st, ammoDef ? player.ammoId || null : null); }   // 千羽、獵魂者   // 精英「反傷」15%（不會反彈致死，elite.js）
     if (!opt.res) dollOnHit(mon, dealt, false, opt);
     lifeSteal(total, st);
     if (st.weapon && st.weapon.drain) player.mp = Math.min(st.maxMp, player.mp + rand(st.weapon.drain[0], st.weapon.drain[1]));
     if (!opt.res) { resonanceOnHit(); bossEnchantHit(mon, st); }   // 共鳴武器：觸發／累積共鳴值（共鳴技能本身的攻擊不算）
-    addLog(`${label}${hits > 1 ? '連擊' : '攻擊'}，${mon.name}受到 ${total} 傷害${crit ? '（爆擊！）' : ''}`, crit ? 'crit' : '');
+    addLog(`${label}${hits > 1 ? '連擊' : '攻擊'}，${mon.name}受到 ${total} 傷害${elemParts && typeof elemPhys === 'function' ? elemPartsText(elemParts) : ''}${crit ? '（爆擊！）' : ''}`, crit ? 'crit' : '');
     sfxHit(crit, st.ranged);
     worldVfxAttack(st, mon, crit);
     if (typeof advOnPhysHit === 'function') advOnPhysHit(mon, total, crit, opt, st);

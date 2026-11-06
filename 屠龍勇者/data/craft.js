@@ -8,12 +8,14 @@ const CURRENCY = {
     curTemper:  { name: '淬鍊石', icon: '⚖️', w: 12,  desc: '詞綴種類不變，重新擲數值（傳說也能用）', can: x => !!(x.af && x.af.length), use: rerollAffixValues },
     curRegal:   { name: '晉升石', icon: '👑', w: 8,   desc: '魔法 → 稀有，保留原詞綴再加 1 條', can: x => x.q === 'magic', use: x => { x.q = 'rare'; x.nm = RARE_NAMES[rand(0, RARE_NAMES.length - 1)]; addRandomAffix(x); } },
     curChaos:   { name: '混沌石', icon: '🌀', w: 6,   desc: '重新擲稀有裝備的全部詞綴（3～4 條）', can: x => x.q === 'rare', use: x => applyAffixes(x, 'rare', craftIl(x)) },
-    curAnnul:   { name: '剝離石', icon: '✂️', w: 2.5, desc: '隨機移除一條詞綴（魔法、稀有；特殊詞綴不會被移除）', can: x => (x.q === 'magic' || x.q === 'rare') && (x.af || []).some(a => !a.sx), use: removeRandomAffix },
+    curAnnul:   { name: '剝離石', icon: '✂️', w: 2.5, desc: '隨機移除一條詞綴（魔法、稀有；特殊詞綴不會被移除）', can: x => (x.q === 'magic' || x.q === 'rare') && (x.af || []).some(a => !affixProtected(a)), use: removeRandomAffix },
     curChance:  { name: '命運石', icon: '🎲', w: 1.2, desc: '普通 → 隨機品質（魔法 75%、稀有 21%、傳說 4%）', can: x => !x.q, use: x => applyAffixes(x, rollQuality(false, true), craftIl(x)) },
-    curOracle:  { name: '神諭石', icon: '✨', w: 0.3, desc: '稀有裝備再加 1 條詞綴（最多 6 條，不含特殊詞綴）', can: x => x.q === 'rare' && (x.af || []).filter(a => !a.sx).length < 6, use: addRandomAffix },
+    curOracle:  { name: '神諭石', icon: '✨', w: 0.3, desc: '稀有裝備再加 1 條詞綴（最多 6 條，不含特殊詞綴）', can: x => x.q === 'rare' && (x.af || []).filter(a => !affixProtected(a)).length < 6, use: addRandomAffix },
     // 命運的覺醒石（2026-10-24，第 23 節）：物品等級 70 以上（看掉落時記的 il，商店貨不算）才能用，任何品質都可以（傳說也行）；
     // 最稀有的通貨，只有 Lv.minLv 以上的怪物會掉（後端 loot_roll 也看 catalog.currency 的 minLv）
     curAwaken:  { name: '命運的覺醒石', icon: '💠', w: 0.15, minLv: 70, desc: `物品等級 ${SPECIAL_AFFIX_IL} 以上的裝備：加上 1 條特殊詞綴（全能力／首領增傷／經驗／金幣／反傷，已有就重洗那條）`, can: x => (x.il || 0) >= SPECIAL_AFFIX_IL, use: awakenAffix },
+    // 元素石（2026-11-07，第 316 節）：武器加上或重洗 1 條「物理傷害 20～50% 轉為火焰／冰冷／閃電」；Lv.50 以上的怪物才會掉
+    curElement: { name: '元素石', icon: '🜂', w: 0.4, minLv: 50, desc: '武器：加上 1 條「物理傷害 20～50% 轉為火焰／冰冷／閃電」（每件最多 1 條，已有就重洗那條；傳奇不能用）', can: x => ITEMS[x.id].cat === 'weapon', use: elemStoneAffix },
 };
 const CURRENCY_IDS = Object.keys(CURRENCY);
 const CURRENCY_DROP_P = 0.03, CURRENCY_BOSS_P = 0.6;   // 每隻怪掉通貨的機率（首領 60%）
@@ -37,10 +39,10 @@ function addRandomAffix(x) {
     x.il = craftIl(x);
 }
 function removeRandomAffix(x) {
-    const idx = x.af.map((a, i) => a.lg || a.sx ? -1 : i).filter(i => i >= 0);
+    const idx = x.af.map((a, i) => a.lg || affixProtected(a) ? -1 : i).filter(i => i >= 0);
     if (!idx.length) return;
     x.af.splice(idx[rand(0, idx.length - 1)], 1);
-    if (x.q === 'magic' && !x.af.some(a => !a.sx)) {   // 魔法剝光變回普通（特殊詞綴和物品等級留著）
+    if (x.q === 'magic' && !x.af.some(a => !affixProtected(a))) {   // 魔法剝光變回普通（特殊詞綴和物品等級留著）
         delete x.q; delete x.nm;
         if (!x.af.length) { delete x.af; delete x.il; }
     } else if (x.q === 'magic') x.nm = AFFIXES[x.af[0].k].pre;
@@ -50,6 +52,12 @@ function awakenAffix(x) {
     const ks = Object.keys(SPECIAL_AFFIXES), k = ks[rand(0, ks.length - 1)];
     x.af = (x.af || []).filter(a => !a.sx);
     x.af.push({ k, v: rollAffixValue(k, x.il), sx: 1 });
+}
+// 元素石：隨機一種轉換，取代原本那條（每件最多 1 條，ex 標記）
+function elemStoneAffix(x) {
+    const ks = Object.keys(ELEM_CONV_AFFIXES), k = ks[rand(0, ks.length - 1)];
+    x.af = (x.af || []).filter(a => !a.ex);
+    x.af.push({ k, v: rollAffixValue(k, craftIl(x)), ex: 1 });
 }
 function rerollAffixValues(x) {
     for (const a of x.af) {

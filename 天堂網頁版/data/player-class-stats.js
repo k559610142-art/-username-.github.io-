@@ -6,7 +6,9 @@ const PlayerClassStats = (() => {
     const attributes = {...base};
     const level = Number(window.activeCharacterLevel) || 1;
     let gearHp = 0, gearMp = 0, weapon = null;
-    for (const entry of window.OwnedInventory?.items || []) {
+    const items = window.OwnedInventory?.items || [];
+    const equipmentSets = EquipmentSets.read(items);
+    for (const entry of items) {
       if (!entry.slot) continue;
       const item = entry.item;
       if (entry.slot === 'weapon') weapon = item;
@@ -15,13 +17,15 @@ const PlayerClassStats = (() => {
       gearHp += hpr;
       gearMp += mpr;
     }
+    gearHp += equipmentSets.hpr;
+    gearMp += equipmentSets.mpr;
     const con = attributes.con || 0, wis = attributes.wis || 0;
     const highStat = score => score >= 45 ? 5 : score >= 25 ? Math.trunc((score - 15) / 10) : 0;
     const hpDie = Math.max(1, (level < 12 ? 0 : con <= 17 ? 5 : 6 + Math.trunc((con - 12) / 2)) + highStat(base.con));
     const naturalMp = wis <= 9 ? 1 : 1 + Math.trunc((wis - 5) / 5);
     const mpAmount = naturalMp + highStat(base.wis) + gearMp;
     const hpMin = 1 + gearHp, hpMax = hpDie + gearHp;
-    return {attributes, level, weapon, hpDie, gearHp, mpAmount,
+    return {attributes, level, weapon, hpDie, gearHp, mpAmount, equipmentSets,
       meleeBonus: job === '騎士' ? Math.trunc(level / 10) : 0,
       rangedBonus: job === '妖精' ? Math.trunc(level / 10) : 0,
       hpRecoveryText: (hpMin === hpMax ? hpMin : hpMin + '～' + hpMax) + ' HP／次',

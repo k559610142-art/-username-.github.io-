@@ -359,6 +359,10 @@ function calcStats() {
         weightMax: 1200 + (s.str + s.con) * 80 + p.lv * 20 + (fx.weight || 0),
         atkMs: atkMs * mercSlowFactor(p) * (typeof talentBonuses==='function'&&talentBonuses(p).cores.has(0)?1.1:1), castMs: castMs * mercSlowFactor(p),
         haste: !!fx.haste, brave: !!fx.brave, wise: !!fx.wise,
+        // 元素（elements.js，第 316 節）：增傷、物理攻擊附加、物理轉換、元素互轉、異常機率、物理傷害降低
+        elem: { inc: { fire: fx.fireInc || 0, ice: fx.iceInc || 0, light: fx.lightInc || 0 }, add: { fire: fx.addFire || 0, ice: fx.addIce || 0, light: fx.addLight || 0 },
+            conv: { fire: fx.convFire || 0, ice: fx.convIce || 0, light: fx.convLight || 0 }, iceToFire: (fx.iceToFire || 0) > 0, fireToLight: (fx.fireToLight || 0) > 0,
+            ailment: fx.ailment || 0, physMul: Math.max(0, 1 - (fx.physLess || 0)) },
     };
     return typeof uniqueStatPost === 'function' ? uniqueStatPost(out, p) : out;   // 傳奇倍率（血契之刃吸血 ×3、雷鳴獨眼攻速…）
 }

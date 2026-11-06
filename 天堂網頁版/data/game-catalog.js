@@ -93,14 +93,7 @@ const lineageMTransformCards = [
     ]
   }
 ];
-const gameCollections = [
-  {
-    name: '解放的哈爾巴斯：降臨',
-    required: ['解放的哈爾巴斯', '覺醒支配者吉爾塔斯'],
-    effect: '最大 HP +1,000',
-    source: 'https://lineagem-event.beanfun.com/EventAD/EventAD?EventADID=9888'
-  }
-];
+const gameCollections = [];
 gameDialogClose.onclick = () => closePanel();
 const catalogClosePanel = closePanel;
 closePanel = function () {
@@ -1768,25 +1761,19 @@ function openGameCatalog(type) {
   const detail = uiElement('div', 'game-catalog-detail');
   const search = uiElement('input', 'game-catalog-search');
   search.type = 'search';
-  search.placeholder = type === 'collection' ? '搜尋收藏或需求卡片' : '搜尋名稱或外觀編號';
+  search.placeholder = '搜尋名稱或外觀編號';
   search.setAttribute('aria-label', search.placeholder);
   const cards = uiElement('div', type === 'collection' ? 'game-catalog-sets' : 'game-catalog-cards');
   results.append(search);
-  if (type === 'collection') {
-    const guide = uiElement('details', 'game-collection-guide');
-    guide.append(
-      uiElement('summary', '', '收藏規則參考'),
-      uiElement('p', '', '卡片收藏：集齊指定卡片後查看套組與加成。'),
-      uiElement('p', '', '道具收藏：確認後才登錄並扣除符合條件的背包道具。'),
-      uiElement('p', '', '小樹的收藏紀錄由同帳號角色共用。此處先提供條件與效果查閱。')
-    );
-    results.append(guide);
-  }
   results.append(cards);
   layout.append(sidebar, results, detail);
   gameDialogContent.replaceChildren(title, tabs, layout);
 
-  const entries = type === 'cards' ? lineageMTransformCards : type === 'collection' ? gameCollections
+  if (type === 'collection') {
+    renderEquipmentCollection(sidebar, results, cards, detail, search, gameCollections);
+    return;
+  }
+  const entries = type === 'cards' ? lineageMTransformCards
     : type === 'transforms' ? transformBookRows() : tdjRows(type) || gameCatalogData[type];
   const all = () => true;
   const usedGrades = type === 'transforms' ? [...new Set(entries.map(row => row.grade))].sort((a, b) => a - b) : [];
@@ -1817,14 +1804,6 @@ function openGameCatalog(type) {
       source.target = '_blank';
       source.rel = 'noopener noreferrer';
       detail.append(uiElement('p', '', '天堂M 公開資料'), source);
-    } else if (type === 'collection') {
-      detail.append(uiElement('strong', '', row.effect), uiElement('h4', '', '需求卡片'));
-      for (const card of row.required) detail.append(uiElement('p', '', card));
-      const source = uiElement('a', '', '查看官方公告');
-      source.href = row.source;
-      source.target = '_blank';
-      source.rel = 'noopener noreferrer';
-      detail.append(source);
     } else if (type === 'dolls') {
       detail.append(uiElement('p', '', '召喚時間 ' + Math.floor(row.time / 60) + ' 分鐘 · 外觀 ' + row.gfx));
       for (const [id, amount] of row.materials) {
@@ -1947,7 +1926,7 @@ function openGameCatalog(type) {
         if (!owned) card.classList.add('game-catalog-locked');
         card.append(uiElement('small', '', (type === 'wuhun' ? row.w.tier + ' · ' : '') + (owned ? '×' + owned : '未擁有')));
       }
-      if (type !== 'collection') card.append(catalogPortrait(type, row));
+      card.append(catalogPortrait(type, row));
       card.append(uiElement('span', '', row.name));
       if (row.effect) card.append(uiElement('small', '', row.effect));
       cards.append(card);

@@ -29,6 +29,13 @@ const AFFIXES = {
     sp:        { name: 'SP',     pre: '魔導的', min: 1, max: il => 1 + il / 30, slots: ['weapon', 'helm', 'amulet', 'ring', 'cloak'] },
     reduce:    { name: '減傷',   pre: '守護的', min: 1, max: il => 1 + il / 40, slots: ['armor', 'shield', 'helm', 'belt'] },
     dodge:     { name: '閃避',   pre: '幻影的', min: 0.01, max: il => 0.01 + il / 3000, pct: true, slots: ['boots', 'cloak', 'gloves', 'ring'] },
+    // 元素（2026-11-07，第 316 節）：元素增傷影響攻擊與魔法；附加傷害只加在物理攻擊（每一下）
+    fireInc:   { name: '火焰傷害', pre: '熾熱的', min: 0.03, max: il => 0.05 + il / 1000, pct: true, slots: ['weapon', 'gloves', 'ring', 'amulet', 'helm'] },
+    iceInc:    { name: '冰冷傷害', pre: '凜冽的', min: 0.03, max: il => 0.05 + il / 1000, pct: true, slots: ['weapon', 'gloves', 'ring', 'amulet', 'helm'] },
+    lightInc:  { name: '閃電傷害', pre: '雷鳴的', min: 0.03, max: il => 0.05 + il / 1000, pct: true, slots: ['weapon', 'gloves', 'ring', 'amulet', 'helm'] },
+    addFire:   { name: '附加火焰傷害', pre: '燃燒的', min: 1, max: il => 2 + il / 8, slots: ['weapon', 'gloves', 'ring', 'amulet'] },
+    addIce:    { name: '附加冰冷傷害', pre: '冰封的', min: 1, max: il => 2 + il / 8, slots: ['weapon', 'gloves', 'ring', 'amulet'] },
+    addLight:  { name: '附加閃電傷害', pre: '帶電的', min: 1, max: il => 2 + il / 8, slots: ['weapon', 'gloves', 'ring', 'amulet'] },
 };
 // 傳說詞綴：數值是一般上限的 2 倍，並加上專屬名稱
 const LEGEND_AFFIXES = [
@@ -46,8 +53,15 @@ const SPECIAL_AFFIXES = {
     goldPct: { name: '金幣加成', min: 0.03, max: il => 0.03 + specialIl(il) / 570, pct: true },       // 打怪金幣
     thorns:  { name: '反傷',     min: 0.05, max: il => 0.05 + specialIl(il) / 400, pct: true },       // 被物理攻擊打中時反彈受到的傷害
 };
+// 元素石（craft.js curElement）洗出的轉換詞綴：只在武器、每件最多 1 條（a.ex＝1），其他通貨重洗／剝離都保留（第 316 節）
+const ELEM_CONV_AFFIXES = {
+    convFire:  { name: '物理傷害轉為火焰', min: 0.2, max: () => 0.5, pct: true },
+    convIce:   { name: '物理傷害轉為冰冷', min: 0.2, max: () => 0.5, pct: true },
+    convLight: { name: '物理傷害轉為閃電', min: 0.2, max: () => 0.5, pct: true },
+};
 const ALL_STAT_KEYS = ['str', 'dex', 'con', 'int', 'wis'];
-function affixDef(k) { return AFFIXES[k] || SPECIAL_AFFIXES[k]; }
+function affixDef(k) { return AFFIXES[k] || SPECIAL_AFFIXES[k] || ELEM_CONV_AFFIXES[k]; }
+function affixProtected(a) { return !!(a && (a.sx || a.ex)); }   // 覺醒（sx）、元素石（ex）：重洗、剝離都保留
 
 const QUALITY = {
     magic:  { name: '魔法', cls: 'q-magic',  n: [1, 2], sell: 1.5 },
@@ -79,7 +93,7 @@ function rollQuality(boss, guaranteed) {
 function applyAffixes(inst, q, il) {
     const def = ITEMS[inst.id];
     if (!q || !def || (def.cat !== 'weapon' && def.cat !== 'armor')) return inst;
-    const Q = QUALITY[q], n = rand(Q.n[0], Q.n[1]), keepSx = (inst.af || []).filter(a => a.sx);   // 特殊詞綴重洗時保留
+    const Q = QUALITY[q], n = rand(Q.n[0], Q.n[1]), keepSx = (inst.af || []).filter(affixProtected);   // 特殊詞綴（覺醒、元素石）重洗時保留
     const pool = Object.keys(AFFIXES).filter(k => affixAllowed(k, def));
     const af = [];
     if (q === 'legend') {
