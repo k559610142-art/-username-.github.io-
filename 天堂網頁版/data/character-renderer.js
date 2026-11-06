@@ -31,7 +31,8 @@ function refreshCharacter(){
   characterActor.querySelector('small').textContent=window.activeCharacterName||avatar;
 }
 
-function onCharacterStep(dx,dy){const headings={'1,-1':'N','1,0':'NE','1,1':'E','0,1':'SE','-1,1':'S','-1,0':'SW','-1,-1':'W','0,-1':'NW'};characterHeading=headings[dx+','+dy]||'S';characterWalkStarted=movementTween?.started??movementTime();characterWalkDuration=movementTween?.duration||MovementConfig.stepMs;characterWalkProfile=getActiveWalkProfile();characterWalkUntil=characterWalkStarted+characterWalkDuration;refreshCharacter()}
+function characterHeadingForStep(dx,dy){const headings={'1,-1':'N','1,0':'NE','1,1':'E','0,1':'SE','-1,1':'S','-1,0':'SW','-1,-1':'W','0,-1':'NW'};return headings[dx+','+dy]||'S'}
+function onCharacterStep(dx,dy){characterHeading=characterHeadingForStep(dx,dy);characterWalkStarted=movementTween?.started??movementTime();characterWalkDuration=movementTween?.duration||MovementConfig.stepMs;characterWalkProfile=getActiveWalkProfile();characterWalkUntil=characterWalkStarted+characterWalkDuration;refreshCharacter()}
 const characterFlash=flash;flash=function(){characterFlash();characterAttackUntil=movementTime()+500;refreshCharacter()};
 const characterPanel=panel;panel=function(type){characterPanel(type);if(type==='roles'){const button=document.createElement('button');button.className='character-gender';button.textContent=characterGender?'切換為男性':'切換為女性';button.onclick=()=>{characterGender=characterGender?0:1;refreshCharacter();closePanel()};document.querySelector('#panelContent').append(button)}};
 characterImage.onerror=()=>{document.querySelector('#log').textContent='人物圖片載入失敗，請確認 assets/characters 資料夾完整。'};

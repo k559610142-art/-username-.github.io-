@@ -20,7 +20,7 @@
     <div class="select-heading"><h1>選擇人物</h1><button id="entry-back" type="button">返回登入</button></div>
     <div id="character-choices" class="character-choices" aria-label="已建立的人物與空欄位"></div>
     <div class="selection-info">
-      <div class="selection-options"><div class="selection-name"><strong id="entry-name">尚未建立角色</strong><small id="entry-gender">請先建立角色</small></div><button id="entry-new" type="button">建立角色</button></div>
+      <div class="selection-options"><div class="selection-name"><strong id="entry-name">尚未建立角色</strong><small id="entry-gender">請先建立角色</small></div><div style="display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px"><button id="entry-new" type="button">建立角色</button><button id="entry-delete" type="button" disabled>刪除角色</button></div></div>
       <div class="selection-stats"><div><span>職業</span><strong id="entry-class">—</strong></div><div><span>等級</span><strong id="entry-level">—</strong></div><div><span>生命／魔力</span><strong id="entry-health">—</strong></div><div><span>地區</span><strong>說話之島</strong></div></div>
       <p id="entry-attributes" class="selected-attributes"></p>
       <p id="selection-message" class="select-message" role="status">目前沒有角色，請先建立角色。</p>
@@ -55,19 +55,19 @@
 <script defer src="data/sprite-movement-data.js?v=20261105-clean17"></script><script defer src="data/movement-config.js?v=attack-priority1"></script><script defer src="data/player.js?v=class-stats1"></script><script defer src="data/player-gear-recovery.js?v=1"></script><script defer src="data/equipment-sets.js?v=1"></script><script defer src="data/player-class-stats.js?v=equipment-sets1"></script>
 <script defer src="data/notifications.js?v=menu1"></script>
 <script defer src="data/panels.js?v=menu1"></script>
-<script defer src="data/combat.js?v=attack-priority1"></script>
+<script defer src="data/combat.js?v=island-combat1"></script>
 <script defer src="data/input.js?v=20261105-clean17"></script>
 <script defer src="data/talking-island-data.js?v=20261105-clean17"></script>
 <script defer src="data/island-scene-data.js?v=20261105-clean17"></script>
-<script defer src="data/scene-renderer.js?v=responsive-step1"></script>
-<script defer src="data/navigation.js?v=arrow-cursor1"></script><script defer src="data/mobile-controls.js?v=responsive-step1"></script>
+<script defer src="data/scene-renderer.js?v=visible-terrain1"></script>
+<script defer src="data/navigation.js?v=arrow-cursor1"></script><script defer src="data/mobile-controls.js?v=island-combat1"></script>
 <script defer src="data/rpg-hud.js?v=20261105-clean17"></script>
 <script defer src="data/character-data.js?v=20261105-clean17"></script><script defer src="data/character-action-data.js?v=20261105-clean17"></script>
-<script defer src="data/character-renderer.js?v=layout-fix"></script>
+<script defer src="data/character-renderer.js?v=island-combat1"></script>
 <script defer src="data/character-motion.js?v=20261105-clean17"></script>
-<script defer src="data/character-actions.js?v=attack-priority1"></script><script defer src="data/class-creation-data.js?v=20261105-clean17"></script><script defer src="data/character-store.js?v=20261105-clean17"></script><script defer src="data/character-creation.js?v=20261105-clean17"></script><script defer src="data/entry-flow.js?v=double-select1"></script>
+<script defer src="data/character-actions.js?v=attack-priority1"></script><script defer src="data/class-creation-data.js?v=20261105-clean17"></script><script defer src="data/character-store.js?v=20261105-clean17"></script><script defer src="data/character-creation.js?v=20261105-clean17"></script><script defer src="data/entry-flow.js?v=delete-character1"></script>
 <script defer src="data/interface-catalog.js?v=client-pictures1"></script>
 <script defer src="data/item-use-data.js?v=20261105-clean17"></script>
-<script defer src="data/owned-inventory.js?v=weapon-morph1"></script>
+<script defer src="data/owned-inventory.js?v=island-combat1"></script>
 <script defer src="data/classic-panels.js?v=equipment-sets1"></script>
-<script defer src="data/reference-hud.js?v=quiet-auto1"></script><script defer src="data/reference-menu.js?v=layout-fix"></script><script defer src="data/reference-skin.js?v=1"></script><script defer src="data/game-catalog-data.js?v=sys1"></script><script defer src="data/transform-cards-data.js?v=original-polys1"></script><script defer src="data/monster-action-index.js?v=1"></script><script defer src="data/morph-weapon-data.js?v=1"></script><script defer src="data/death-knight-layer-data.js?v=1"></script><script defer src="data/death-knight-original-data.js?v=1"></script><script defer src="data/original-polymorph-extra-data.js?v=1"></script><script defer src="data/monster-actions.js?v=wuhun-more1"></script><script defer src="data/transform-cards.js?v=smooth-walk1"></script><script defer src="data/equipment-collection.js?v=empty-card-collection1"></script><script defer src="data/game-catalog.js?v=empty-card-collection1"></script><script defer src="data/tdj-systems-data.js?v=sys1"></script><script defer src="data/wuhun-boss-loop-data.js?v=1"></script><script defer src="data/wuhun-boss-gesture-data.js?v=1"></script><script defer src="data/wuhun-auto-data.js?v=wuhun-body1"></script><script defer src="data/wuhun-more-effects.js?v=1"></script><script defer src="data/wuhun-auto-cast.js?v=long-pause1"></script><script defer src="data/tdj-systems.js?v=client-pictures1"></script></html>
+<script defer src="data/reference-hud.js?v=island-combat1"></script><script defer src="data/reference-menu.js?v=layout-fix"></script><script defer src="data/reference-skin.js?v=1"></script><script defer src="data/game-catalog-data.js?v=sys1"></script><script defer src="data/transform-cards-data.js?v=original-polys1"></script><script defer src="data/monster-action-index.js?v=1"></script><script defer src="data/morph-weapon-data.js?v=1"></script><script defer src="data/death-knight-layer-data.js?v=1"></script><script defer src="data/death-knight-original-data.js?v=1"></script><script defer src="data/original-polymorph-extra-data.js?v=1"></script><script defer src="data/monster-actions.js?v=wuhun-more1"></script><script defer src="data/island-monster-data.js?v=1"></script><script defer src="data/island-monsters.js?v=island-combat1"></script><script defer src="data/island-combat.js?v=1"></script><script defer src="data/transform-cards.js?v=smooth-walk1"></script><script defer src="data/equipment-collection.js?v=empty-card-collection1"></script><script defer src="data/game-catalog.js?v=empty-card-collection1"></script><script defer src="data/tdj-systems-data.js?v=sys1"></script><script defer src="data/wuhun-boss-loop-data.js?v=1"></script><script defer src="data/wuhun-boss-gesture-data.js?v=1"></script><script defer src="data/wuhun-auto-data.js?v=wuhun-body1"></script><script defer src="data/wuhun-more-effects.js?v=1"></script><script defer src="data/wuhun-auto-cast.js?v=long-pause1"></script><script defer src="data/tdj-systems.js?v=client-pictures1"></script></html>

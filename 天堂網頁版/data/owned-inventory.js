@@ -24,6 +24,12 @@ window.OwnedInventory=(()=>{
   if(!window.GameEntry?.saveActive()){entries=old;hp=oldHp;mp=oldMp;if(CharacterActions.weapon!==oldMode||CharacterActions.dead!==(oldHp<=0))CharacterActions.reset(oldMode);sync();toast('儲存失敗，物品與狀態未變更。');return false}
   refresh();return true;
  }
+ function consumeArrow(){
+  const next=clone(entries),index=next.findIndex(e=>e.key==='etcitem:40743');
+  if(index<0)return false;
+  if(--next[index].count===0)next.splice(index,1);
+  return transact(next);
+ }
  function activate(rows=[]){const error=validate(rows,job,level());if(error)throw Error(error);owner=window.activeCharacterId||'';entries=clone(rows);cooldowns.clear();CharacterActions.reset(visualMode(entries));sync()}
  function receive(kind,id,count=1){
   if(!Number.isSafeInteger(count)||count<=0||count>2147483647)return false;const key=kind+':'+id,item=catalog.get(key),r=rules.definitions[key];if(!item||!r)return false;const next=clone(entries);let uid;
@@ -61,5 +67,5 @@ window.OwnedInventory=(()=>{
  }
  function usePotion(){const e=entries.find(i=>i.key==='etcitem:40010')||entries.find(i=>rules.handlers[config(i).handler]?.kind==='hpGaussian');if(!e){toast('背包中沒有回復藥水。');return false}return use(e.uid)}
  document.querySelector('#heal').onclick=usePotion;potions=0;
- return {activate,validate,receive,use,equip,unequip,usePotion,slotFor,deactivate(){owner='';entries=[];cooldowns.clear();potions=0},get owner(){return owner},get snapshot(){return clone(entries)},get equippedWeaponType(){const weapon=entries.find(e=>e.slot==='weapon');return weapon?definition(weapon).type:null},get items(){return entries.map(e=>({...e,item:definition(e)}))}};
+ return {activate,validate,receive,use,equip,unequip,usePotion,consumeArrow,slotFor,deactivate(){owner='';entries=[];cooldowns.clear();potions=0},get owner(){return owner},get snapshot(){return clone(entries)},get equippedWeaponType(){const weapon=entries.find(e=>e.slot==='weapon');return weapon?definition(weapon).type:null},get items(){return entries.map(e=>({...e,item:definition(e)}))}};
 })();
