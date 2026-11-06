@@ -4837,3 +4837,8 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 改為：MP<50%，且**扣完後** HP 仍 ≥ 30% 最大 HP（`MERC_CONVERT_MIN_HP = .3`）就施放；MP 0、冷卻 15 秒、15% 不變。
 - `mercConvertFloat(hp, mp)`：施放時在 `scene.mercenary` 頭上 `addFloat` 紅字「-N HP」、藍字「+N MP」（不受傷害數字開關影響；SIM／無場景不畫）。雙傭兵時 `mercAs2` 會交換 `scene.mercenary`，飄在正確的那位身上。
 - 技能說明文字同步改為「傭兵MP低於50%時消耗生命回魔（扣完HP需留30%以上）」。
+
+## 309. 二轉縮短冷卻四捨五入（2026-11-06，版本 `20261106c`；`advance.js` 的 `advCd`）
+
+- 使用者回報死神「恐懼之眼」冷卻時間異常：`ADV_CD_MUL` 的 14 秒 ×0.7 浮點誤差成 `9.799999999999999`，快捷欄右上角、技能提示、魔法書／技能說明都直接顯示這串數字。
+- `advCd` 改為 `Math.round(cd * m * 10) / 10`。同時修好毀滅戰士 warSmash（4.800000000000001→4.8）、審判聖騎 palStrike／palHammer（同）。實際冷卻長度不變（差距不到 1 毫秒）。

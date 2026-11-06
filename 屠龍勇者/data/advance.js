@@ -336,7 +336,7 @@ const ADV_CD_MUL = {
     rTyrant: { royalWrath: 0.7 }, wRuin: { warSmash: 0.8, warWhirl: 0.8, warQuake: 0.8 }, fSword: { mfSlash: 0.8, mfThunder: 0.8, mfFlame: 0.8 },
     pJudge: { palStrike: 0.8, palHammer: 0.8 }, xReaper: { demonFear: 0.7 },
 };
-function advCd(k, cd) { const b = advBranch(); const m = b && ADV_CD_MUL[b.id] && ADV_CD_MUL[b.id][k.id]; return m ? cd * m : cd; }
+function advCd(k, cd) { const b = advBranch(); const m = b && ADV_CD_MUL[b.id] && ADV_CD_MUL[b.id][k.id]; return m ? Math.round(cd * m * 10) / 10 : cd; }   // 四捨五入到 0.1 秒：14×0.7 原本顯示 9.799999999999999（第 309 節）
 
 // 自動施放的額外條件（金幣、HP、MP、殘血目標）
 function advCanCast(k, manual) {
