@@ -4852,3 +4852,18 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - `offlineSettle` claim 後呼叫 `speedBaseReset()` 重新起算。第 306 節的 3 分鐘回報改為上述節奏。
 - 模擬（真實 300 秒，計時器跟著加速）：正常 300 秒經驗／7 次呼叫；10 倍（裝置 3000 秒）359 秒經驗；60 倍（裝置 18000 秒）372 秒經驗／300 次呼叫。斷線 2 分鐘的正常玩家不受影響；伺服器忙 5 分鐘約 100 秒沒經驗。
 - **尚未處理**（使用者 11/6 說先不用）：首領重生冷卻 `player.towerBossCd`、`player.dragonCd`（combat.js）用裝置 `Date.now()`；加速仍會讓金幣、掉寶變多（只限制經驗）。
+
+## 311. 伺服器擋經驗暴增（2026-11-06，版本 `20261106h`；SQL `tools/exp-guard.sql`、`cloud.js`、`gm.html`）
+
+- 使用者貼出 GM 存檔紀錄：Lv.50 槍手每 6 分鐘 +260～300 萬經驗。模擬（Lv.50 槍手、最強槍 +9、全身最好防具 +7）各練功區與永夜之塔 1～21F 每 6 分鐘約 4.5～6 萬；全部經驗加成疊滿（稀有地圖 ×1.8、T15 ×1.4、精英 ×1.45、經驗詞綴＋娃娃 ×2.55）理論極限約 56 萬 → 判定加速器或改程式。第 310 節的手機端限制擋不住改程式／沒更新的玩家，改在伺服器把關。
+- **原本的漏洞**：`dragon_saves_audit`（supabase.sql）只記錄不擋，而且每次只跟上一筆比、時間至少算 0.5 小時（Lv.50 上限 302 萬），每 6 分鐘上傳 270 萬永遠不會被記到。
+- **exp-guard.sql**（使用者在 Supabase 執行，可重跑）：`dragon_saves` 新增 `exp_total`、`exp_credit`（只有伺服器寫，玩家送的值一律蓋掉）；before 觸發器 `dragon_saves_exp_guard` 用「額度桶」：
+  - 每小時額度 `dragon_exp_guard_rate(lv)`＝2000 ×((lv+5)²+1)× 遞減（`dragon_exp_guard_hunt`，同 config.js huntExpRate，60 級起），Lv.50 約 605 萬／小時；最多存 6 小時份（`dragon_exp_guard_hours`，離線 12 小時 × 50% 也在內）。計時用伺服器的 `updated_at`。
+  - 等級取舊等級與「新等級（最多舊＋5）」較高者，避免低等級快速升級誤擋（測試 Lv.10→20 每 3 分鐘一級不擋）。
+  - 總經驗增加 > 額度 → 拒收（hint `dragon_exp_rate`），雲端停在上一份。死亡扣經驗照收。
+  - 同欄位換角色（`player.created` 不同）＝從 0 起算、額度只有 Lv.1 的 6 小時份（匯入大號存檔要管理者放行）。新角色第一次上傳（insert）不擋、只起算；管理者（非 authenticated）直接改照收並重新起算；存檔內容沒變不檢查。
+  - 拒收會整筆回滾，觸發器裡不能寫紀錄 → 遊戲呼叫 `dragon_exp_block_report(p_slot, p_lv, p_total)` 記一筆 `exp_block`（同欄位 24 小時內未處理的不重複），內容含雲端等級／總經驗／目前可增加額度。
+  - **放行**：管理頁把 `exp_block` 按「已處理」→ 之後第一次上傳照收、額度補滿（只認 `at > updated_at` 的已處理紀錄）。未處理期間 `dragon_market_hold` 會擋交易所（exp_block 不在排除清單）。
+- **遊戲端（cloud.js）**：`cloudIsExpErr` 認 hint；`cloudExpBlocked` 每個欄位每次開遊戲只回報一次，目前角色跳 `gameAlert`「雲端存檔暫停上傳」＋戰鬥訊息；照舊 `CLOUD_REJECT_HOLD_MS` 10 分鐘後重傳。`cloudErrText` 加對應文字。gm.html `KIND_NAMES` 加 `exp_block`。
+- **效果**：加速玩家第一次執行後先用掉 6 小時額度（Lv.50 約 3600 萬），每 6 分鐘 +270 萬約 1.7 小時後被擋，之後雲端每小時最多 +605 萬（約正常最快的 10 倍內）。已經在雲端的作弊經驗不會被扣回，要管理者另外處理。
+- **測試**：`node tools/test-exp-guard-db.js`（PGlite，載入 supabase.sql＋exp-guard.sql 兩次）：正常每 6 分 6 萬 ×50 次不擋、偽造額度欄位無效、每 6 分 270 萬第 17 次被擋且雲端保留上一份、回報 24 小時不重複、放行一次後再暴增又擋、死亡扣經驗、換角色大號擋小號收、管理者直改、低等級快速升級不誤擋。

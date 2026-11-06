@@ -74,6 +74,7 @@ function cloudErrText(e) {
     if (/client too old/i.test(m)) return '遊戲版本太舊，請重新整理或按「有新版本」更新';
     if (/char owned elsewhere/i.test(m)) return '這個角色已經屬於其他帳號，不能上傳到目前的帳號';   // tools/char-owner.sql
     if (/stat cap exceeded/i.test(m)) return '能力值超過上限（單項最高 40），雲端不接受這份存檔';   // tools/stat-cap.sql
+    if (/exp rate/i.test(m)) return '經驗增加速度超過伺服器上限，雲端暫停上傳（請聯絡管理員）';   // tools/exp-guard.sql
     return m || '未知錯誤';
 }
 
@@ -625,11 +626,25 @@ async function cloudPushSlot(i, overwrite, retry) {
     }
     if (res.error && cloudIsTombErr(res.error)) { cloudDropDeleted(i); return true; }
     if (res.error && cloudIsVaultSeqErr(res.error)) return cloudVaultAdopt(i);
+    if (res.error && cloudIsExpErr(res.error)) cloudExpBlocked(i, p);   // 經驗增加過快被拒收（tools/exp-guard.sql）：提示＋回報，照舊 10 分鐘後重傳
     if (res.error) throw res.error;
     cloudKnown[i] = t;
     if (typeof lootSnapKey === 'function') cloudSnapKey[i] = lootSnapKey(p);   // 雲端這份的生怪資格欄位（loot.js，第 100 節）
     delete cloudConflict[i];
     return true;
+}
+
+// 伺服器擋經驗暴增（tools/exp-guard.sql，第 311 節）：雲端停在上一份，本機進度保留。每個欄位每次開遊戲只提示、回報一次
+function cloudIsExpErr(e) { return !!e && (e.hint === 'dragon_exp_rate' || /exp rate/.test(e.message || '')); }
+const cloudExpWarned = {};
+function cloudExpBlocked(i, p) {
+    if (cloudExpWarned[i]) return;
+    cloudExpWarned[i] = true;
+    const total = typeof totalExpOf === 'function' ? totalExpOf(p) : 0;
+    cloudSb.rpc('dragon_exp_block_report', { p_slot: i, p_lv: p.lv | 0, p_total: total }).then(() => { }, () => { });
+    if (i !== currentSlot) return;
+    addLog('⚠️ 經驗增加速度超過伺服器上限，雲端存檔暫停上傳', 'warn');
+    gameAlert('⚠️ 雲端存檔暫停上傳', '這個角色的經驗增加速度超過伺服器允許的上限（可能開了加速器或改了遊戲），雲端存檔先停在上一份，這台的進度不會遺失。\n\n如果是正常遊玩，請聯絡管理員確認，放行後會自動恢復上傳。');
 }
 
 // 已刪除的角色（tools/char-tombstone.sql 墓碑）：伺服器拒收 → 這台也移除，正在玩就回標題
