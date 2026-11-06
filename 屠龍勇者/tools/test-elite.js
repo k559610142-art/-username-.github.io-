@@ -92,7 +92,7 @@ for (const mode of ['field', 'map']) {
     const w = addItem('dkFlameSword', 1); w.ench = 9; equipItem(w.uid, true); addItem('redPotion', 3000);
     hunt = null; startHunt();
     if (mode === 'map') player.mapRun = { t: 15, zone: 'dragonValley', mods: ['elite'], left: 300, total: 300, q: 'rare' };
-    const FR = eliteFieldRoll; if (mode === 'field') eliteFieldRoll = x => { if (SIM_MODE || inMapRun() || x.boss || x.elite || x.eliteMinion) return; x.elite = true; x.fieldElite = true; };   // 野外精英已取消：測試時手動讓每隻變精英，驗證詞條掛機流程
+    const FR = eliteFieldRoll; eliteFieldRoll = x => { if (SIM_MODE || x.boss || x.elite || x.eliteMinion) return; x.elite = true; if (mode === 'field') x.fieldElite = true; };   // 測試時讓每隻都變精英（野外已取消；異界 15% 打不到幾隻時偶爾一隻都沒有），驗證詞條掛機流程
     chance = CHANCE;
     let elites = 0, kills0 = player.kills;
     for (let t = 0; t < 5 * 60 * 10; t++) { gameNow += 100; huntTick(100); cleanBuffs(); if (t % 50 === 0) regenTick();

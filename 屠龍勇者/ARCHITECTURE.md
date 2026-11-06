@@ -142,6 +142,7 @@
 | `data/affix.js` | 暗黑式裝備詞綴：`AFFIXES`、品質 `QUALITY`、`rollQuality`／`applyAffixes`／`affixFx`／`qualityName`／`instSellPrice`／`randomEquipFor`（第 21 節） |
 | `data/craft.js` | 製作通貨 `CURRENCY`（8 種，載入時併入 `ITEMS`）、`useCurrency`、改造視窗 `openCraftDialog`；通貨用在地圖時轉給 maps.js 的 `MAP_CURRENCY`（第 23 節） |
 | `data/maps.js` | 異界地圖 T1～T15：地圖道具、`MAP_MODS`、`openMap`／`mapOnKill`／`completeMap`／`endMapRun`、回卷傳送門 `mapPortalOpen`／`enterMapPortal`（第 114 節）、`applyMapMods`、`mapBonus`、地圖掉落、異界裝置面板（第 24 節） |
+| `data/uniques.js` | 傳奇裝備 20 件 `UNIQUE_DEFS`（載入時寫入 `ITEMS` 的 `uq_*`）、掉率 `UNIQUE_DROP_P`、`uqOn`、能力 `uniquePlayerFx`／`uniqueStatPost`、傷害／爆擊／受擊／擊殺／藥水／耗魔等掛勾、本機掉落 `uniqueDropFor`、說明 `uniqueInfoHtml`（第 315 節） |
 | `data/elite.js` | 精英怪特殊詞條 `ELITE_AFFIXES`（12 條）、野外 3% 精英 `eliteFieldRoll`、擲詞條 `eliteRollAffixes`、`eliteTick`（護盾／召喚／狂暴／瞬移）、`eliteOnHitPlayer`、`eliteOnPlayerPhys`、`eliteBeforeKill`／`eliteAfterKill`、名牌顏色 `eliteNameColor`（第 312 節） |
 | `data/enchant.js` | 衝裝規則 `doEnchant`、成功率、可強化目標 |
 | `data/combat.js` | 彈藥欄／自動補彈weaponAmmoType／autoBuyAmmo／pickAmmo（第195節）；掛機戰鬥：`hunt` 狀態、尋怪、玩家行動、怪物攻擊、掉落、死亡、自動補給、回家、步行、自然回復 |
@@ -181,6 +182,7 @@
 | `data/affix.js` | 暗黑式裝備詞綴：`AFFIXES`、品質 `QUALITY`、`rollQuality`／`applyAffixes`／`affixFx`／`qualityName`／`instSellPrice`／`randomEquipFor`（第 21 節） |
 | `data/craft.js` | 製作通貨 `CURRENCY`（8 種，載入時併入 `ITEMS`）、`useCurrency`、改造視窗 `openCraftDialog`；通貨用在地圖時轉給 maps.js 的 `MAP_CURRENCY`（第 23 節） |
 | `data/maps.js` | 異界地圖 T1～T15：地圖道具、`MAP_MODS`、`openMap`／`mapOnKill`／`completeMap`／`endMapRun`、回卷傳送門 `mapPortalOpen`／`enterMapPortal`（第 114 節）、`applyMapMods`、`mapBonus`、地圖掉落、異界裝置面板（第 24 節） |
+| `data/uniques.js` | 傳奇裝備 20 件 `UNIQUE_DEFS`（載入時寫入 `ITEMS` 的 `uq_*`）、掉率 `UNIQUE_DROP_P`、`uqOn`、能力 `uniquePlayerFx`／`uniqueStatPost`、傷害／爆擊／受擊／擊殺／藥水／耗魔等掛勾、本機掉落 `uniqueDropFor`、說明 `uniqueInfoHtml`（第 315 節） |
 | `data/elite.js` | 精英怪特殊詞條 `ELITE_AFFIXES`（12 條）、野外 3% 精英 `eliteFieldRoll`、擲詞條 `eliteRollAffixes`、`eliteTick`（護盾／召喚／狂暴／瞬移）、`eliteOnHitPlayer`、`eliteOnPlayerPhys`、`eliteBeforeKill`／`eliteAfterKill`、名牌顏色 `eliteNameColor`（第 312 節） |
 | `data/enchant.js` | 衝裝規則 `doEnchant`、成功率、可強化目標 |
 | `data/combat.js` | 掛機戰鬥：`hunt` 狀態、尋怪、玩家行動、怪物攻擊、掉落、死亡、自動補給、回家、步行、自然回復 |
@@ -311,7 +313,7 @@
 
 ## 2. 載入順序與依賴
 
-`config → classes → skills → items → spellbook → monsters → zones → quests → advance → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → afflict → guild-core → guild-state → player → enchant → affix → craft → maps → elite → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → talent-jewels → talent → talent-tree → talent-layout → talent-planner → talent-live → bag-storage → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → titles → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → guild-world → guild-map-data → guild-missions → guild-mission-core → guild-mission → guild-map → guild → pwa → loot → main`
+`config → classes → skills → items → spellbook → monsters → zones → quests → advance → resonance → uniques → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → afflict → guild-core → guild-state → player → enchant → affix → craft → maps → elite → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → talent-jewels → talent → talent-tree → talent-layout → talent-planner → talent-live → bag-storage → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → titles → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → guild-world → guild-map-data → guild-missions → guild-mission-core → guild-mission → guild-map → guild → pwa → loot → main`
 
 - 上層資料檔（config～quests）只在「載入時」用到更前面的檔案；quests 載入時會把獎勵裝備與任務道具寫進 `ITEMS`，所以要在 items 之後。
 - resonance 載入時要改 `ITEMS`（含任務武器）、`MONSTERS` 掉落、`RECIPES`，所以在 quests 之後；`findSkill`（skills.js）在執行期才呼叫它的 `findResonanceSkill`。
@@ -4897,3 +4899,15 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 使用者要求「一般地圖取消精英（反傷）怪」，二選一時選「野外完全取消精英怪」（不是只拿掉反傷）。
 - `ELITE_FIELD_P` 3% → 0，`eliteFieldRoll` 一開始判斷為 0 就不處理（函式保留備用）。精英只在有「精英」地圖詞綴的異界出現，詞條規則照第 312 節（含反傷）。
 - `tools/test-elite.js` 改驗證野外 0 隻精英；實際掛機那段改成測試內手動讓每隻怪變精英，照樣驗證詞條流程。
+
+## 315. 傳奇裝備 20 件（PoE 式唯一裝備，2026-11-07，版本 `20261107b`；新檔 `data/uniques.js`、SQL `tools/unique-items.sql`）
+
+- 使用者決定（第一期）：20 件、固定名稱與詞綴＋1 個改變玩法的特殊效果；**只有稀有（黃色、非財寶圖）異界 T11～T15 的異界首領掉**（T11～T12 1%、T13～T14 2%、T15 3%；世界首領不掉、小怪不掉）；可以交易；清單照草案。另訂：Lv.60 才能裝備（`reqLv`，`canEquip`）、不能用通貨改造（`currencyCan`）、可以強化。
+- **資料**：`UNIQUE_DEFS` 每件 { key, name, base（圖示沿用的基底）, cat/type/slot、武器 dmg／hit、防具 ac／mr／weight, fx（固定詞綴）, special }；載入時寫成 `ITEMS['uq_'+key]`（`unique`、`uqBase`、`uqFx`、`reqLv`、sell 50000）。道具代號本身就是傳奇（防改檔簽章涵蓋 id），實體只有 { uid, id, n, ench }，不存 q／af，不改存檔格式。
+- **20 件**：武器 斷罪者（雙手劍，每第 4 下必爆 ×2）、血契之刃（單手劍，吸血 ×3、不能喝治癒藥水）、虛空低語（魔杖，技能改用 HP 支付 1 MP＝2 HP）、千羽（弓，額外 2 箭各 40%、箭 ×3）、雷鳴獨眼（槍，攻速 −30%、物理 ×1.8、無視防禦）、影噬（鋼爪，擊殺回 5% HP／MP、攻速 +10% 3 秒疊 3 層）、哀嚎收割（鐮刀，非首領 HP<20% 斬殺）；防具 逆流之心（盔甲，30% 傷害由 MP 承受）、狂戰之顱（頭盔，每少 10% HP 傷害 +6%、治療 −50%）、荊棘織衣（T恤，反彈 30%、受傷 +10%）、幻影披風（閃避後下一擊必爆）、點金之手（手套，金幣 +50%、傷害 −10%）、殉道者的長靴（HP<50% 攻速 +30%、不自然回血）、堅守誓約（盾，25% 擋物理並回 2%、攻速 −10%）、獵魂者之索（腰帶，獵首）、無底行囊（腰帶，負重 +2000、藥水 +30% 並回 30% MP、喝水延遲 +50%）；飾品 虛空之戒（魔爆必定、魔法 −40%）、賭徒之指（物爆率 ×2、沒爆 −20%）、傭兵之誓（項鍊，傭兵攻擊／魔力／HP +40%、自己 −15%）、時之沙漏（項鍊，冷卻 −25%、MP 消耗 +40%）。
+- **獵魂者之索**：擊殺帶詞條的精英（第 312 節）後 20 秒獲得：吸血 +5%、護盾 15% 最大 HP、魔力燃燒＝打中回 1% MP、反傷 +15%、召喚＝傷害 +10%、分裂＝25% 再打一隻、狂暴＝攻速 +30%、復甦＝免死一次（回 20%）、冰封＝怪物緩速、燃燒／中毒＝每秒打中傷害 10%（4 秒，`mon.uqDots`，`uniqueTick`）、瞬移＝閃避 +15%。執行期狀態 `uqRt(player)`（WeakMap，不存檔）。
+- **掛勾**：calcStats（`uniquePlayerFx` 加固定詞綴；回傳前 `uniqueStatPost` 改吸血／魔爆／物爆率／攻擊間隔）、physicalAttack（`uniqueIgnoreAc`、`uniqueDmgMul(false)`、`uniqueCritRoll`、`uniqueNoCritMul`、`uniqueOnHit`＋`uniqueAfterPhys`）、magicDamage（`uniqueDmgMul(true)`）、castSpell（`uniqueOnHit`）、monsterAttack（閃避 `uniqueOnDodge`、`uniqueBlock`、扣血前 `uniqueIncoming`、`uniquePreventDeath`）、onKill（`uniqueOnKill`）、reapMobs（`uniqueReap`）、huntTick（`uniqueTick`）、usePotion／autoSupport（`uniqueNoPotion`、`uniquePotionHeal`／`After`／`CdMul`）、regenTick（`uniqueNoRegen`）、afflictHealMul（`uniqueHealMul`）、技能耗魔（`uniquePayOk`／`uniquePay`、talentManaCost × `uniqueMpMul`）、skillCd × `uniqueCdMul`、mercStats → `uniqueMercMod`、rollDrops（本機 `uniqueDropFor`）、randomEquipFor 排除傳奇。
+- **畫面**：`itemClass` → `q-unique`（金棕色 #d9883b）；道具說明 `uniqueInfoHtml`（固定詞綴＋★特殊效果，d.desc 不重複顯示）；圖示 `itemIconHtml` 用 `uqBase` 的圖＋`.uq-ico` 金棕外框（index.html CSS）。
+- **伺服器**：`node tools/build-unique-sql.js` 從遊戲資料產生 `tools/unique-items.sql`（**使用者要在 Supabase 執行**，可重跑）：掉寶目錄補 20 件與 `uniques` 設定（version 尾碼 -uniques20261107a，舊憑證照舊規則）；`loot_unique(c,x)`；修補 `loot_roll`：結尾 `return out || public.loot_unique(c,x) || …`、隨機裝備池加 `and not(value ? 'unique')`。重裝舊掉寶 SQL（重建 loot_roll）後要再跑。改 UNIQUE_DEFS 要重新產生並升 VER 尾碼。
+- **測試**：`node tools/test-uniques.js`（20 種效果逐一、Lv.60／不能改造／不進隨機池、本機掉率、三職業全套掛機 3 分鐘）；`node tools/test-unique-items-db.js`（PGlite：重跑不變、舊道具／規則保留、只有稀有 T11～T15 異界首領掉、財寶圖／野外／一般首領不掉、舊憑證不補抽、實測機率、隨機裝備池排除；另以加載 loot-rates／awaken-stone 的版本驗證修補）。瀏覽器以記憶體測試角色開道具視窗確認顯示、裝備成功，Console 無錯誤；正式建置 74 檔成功。
+- `tools/test-elite.js` 實際掛機段改成每隻都變精英（原本異界 15% 偶爾一隻都沒有，測試不穩定）。
