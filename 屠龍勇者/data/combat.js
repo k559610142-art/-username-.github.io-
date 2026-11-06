@@ -822,7 +822,8 @@ function onKill(mon) {
     player.kills++;
     session.kills++;
     // 狩獵經驗＝怪物經驗 × 倍率 × 高等級遞減（65 級起）
-    const exp = Math.max(1, Math.floor(mon.exp * EXP_RATE * huntExpRate(player.lv) * mb * (1 + st.expPct)));   // 特殊詞綴「經驗加成」
+    // 2026-11-06（第 310 節）：伺服器時間額度用完（開加速器）時這隻沒有經驗，傭兵也一樣
+    const exp = typeof timeExpAllowed === 'function' && !timeExpAllowed() ? 0 : Math.max(1, Math.floor(mon.exp * EXP_RATE * huntExpRate(player.lv) * mb * (1 + st.expPct)));   // 特殊詞綴「經驗加成」
     session.exp += exp;
     session.gold += gold;
     hunt.mobs = hunt.mobs.filter(m => m !== mon);

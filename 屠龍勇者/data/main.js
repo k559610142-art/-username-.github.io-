@@ -6,15 +6,16 @@ function gameTick() {
     const now = Date.now();
     const raw = now - lastTick;   // 裝置量到的間隔（開加速器會變大）
     lastTick = now;
-    // 2026-11-06（第 310 節）：遊戲時間照伺服器時鐘走，每次最多用掉伺服器給的額度（vault.js serverTimeGap）；離線那種長間隔照舊整段推進，收益另由伺服器時間結算
-    const gap = raw >= OFFLINE_MIN_MS ? raw : serverTimeGap(raw);
+    const gap = raw;
+    // 2026-11-06（第 310 節）：打怪經驗照伺服器時間發，這段裝置時間要用掉經驗額度（vault.js）；離線那種長間隔另由伺服器時間結算
+    if (raw < OFFLINE_MIN_MS) serverTimeUse(raw);
     const dt = Math.min(1000, gap);   // 一般情況最多補 1 秒
     gameNow += gap;   // 遊戲時鐘跟著真實時間走（分頁在背景也算），不然會越來越落後，載入別台裝置的存檔時冷卻／增益會變成好幾小時
     if (offlineHold) return;   // 向伺服器結算離線收益中（vault.js）
     if (!player) return;
     // 分頁在背景被瀏覽器暫停太久（或電腦休眠）：用離線收益補上這段時間（要登入、扣鑽石）
     if (raw >= OFFLINE_MIN_MS && offlineEligible()) { offlineSettle(raw); return; }
-    offlineSeenTick();   // 向伺服器回報在線＋領時間額度：離線收益以伺服器時間計算（第 306 節）、遊戲時間照伺服器時鐘（第 310 節）
+    offlineSeenTick();   // 向伺服器回報在線＋領經驗額度：離線收益以伺服器時間計算（第 306 節）、打怪經驗照伺服器時間（第 310 節）
     cleanBuffs();
     dollAbilityTick(dt);
     if (!hunt || hunt.state !== 'fight') mercTick(dt);
