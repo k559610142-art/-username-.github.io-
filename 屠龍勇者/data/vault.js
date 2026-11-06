@@ -56,13 +56,58 @@ async function offlineServerMs(claim) {
     if (r.error) { if (onlineMissing(r.error)) return null; throw r.error; }
     return Math.max(0, Number(r.data) || 0);
 }
-// 遊戲中每 3 分鐘回報一次（main.js gameTick 呼叫；結算中 offlineHold 不會跑到這裡）。間隔必須遠小於 OFFLINE_MIN_MS
-const OFFLINE_SEEN_MS = 3 * 60 * 1000;
-let offlineSeenAt = 0, offlineSeenOff = false;
+// 2026-11-06 遊戲時間照伺服器時鐘走（第 310 節，使用者選 A）：
+// 每次回報都 claim 拿「伺服器量到距上次回報幾毫秒」，加進 timeBudget；gameTick 每次最多只能用掉 timeBudget 的時間（serverTimeGap）。
+// 開加速器時裝置時間跑很快，但額度只照伺服器真實時間增加 → 用完就停住等下一次回報，整體速度＝真實時間。
+// 也是離線收益的線上回報（第 306 節），回報間隔遠小於 OFFLINE_MIN_MS。
+const TIME_START_MS = 60 * 1000, TIME_MAX_MS = 120 * 1000, TIME_LOW_MS = 20 * 1000, TIME_MIN_GAP_MS = 5000, TIME_FAIL_MS = 60 * 1000;
+let offlineSeenAt = 0, offlineSeenOff = false, offlineSeenBusy = false;
+let timeBudget = TIME_START_MS, timeBase = null, timeRatio = 1, timeFastWarned = false;
+let timeDebt = 0;   // 額度不夠而沒走的裝置時間（分頁在背景等）：時間正常時用伺服器時間補回時鐘（只推 gameNow、不打怪），避免時鐘越來越落後
+let timeFailN = 0;   // 連續連不上幾次：前 5 次照裝置時間補額度（網路不穩不卡），之後停住等連線，避免擋網路刷時間
+const TIME_FAIL_MAX = 5;
+function timeLimitOn() { return !!player && !offlineSeenOff && !SIM_MODE && vaultOnline(); }
+// 主迴圈呼叫：裝置量到的間隔 → 實際可用的遊戲時間
+function serverTimeGap(raw) {
+    if (!timeLimitOn()) return raw;   // 沒登入／沒裝 SQL：照裝置時間（無法驗證）
+    const g = Math.max(0, Math.min(raw, timeBudget));
+    timeBudget -= g; timeDebt = Math.min(OFFLINE_MIN_MS, timeDebt + raw - g);
+    return g;
+}
+function speedBaseReset() { timeBase = player ? { at: Date.now(), slot: currentSlot } : null; timeBudget = TIME_START_MS; timeRatio = 1; timeDebt = 0; offlineSeenAt = Date.now(); }
+// 連不上：前 5 次照裝置時間補一點額度（網路不穩不卡住），之後停住等連線；重新起算
+function timeSeenFail(since) {
+    timeBase = null; timeFailN++;
+    if (timeFailN <= TIME_FAIL_MAX) timeBudget = Math.min(TIME_MAX_MS, timeBudget + Math.min(since, TIME_FAIL_MS));
+    else if (timeFailN === TIME_FAIL_MAX + 1) addLog('⏱️ 連不上伺服器，遊戲時間暫停，恢復連線後自動繼續', 'sys');
+}
 function offlineSeenTick() {
-    if (offlineSeenOff || !player || !vaultOnline() || !cloudCanCall() || Date.now() - offlineSeenAt < OFFLINE_SEEN_MS) return;
-    offlineSeenAt = Date.now();
-    offlineServerMs(false).then(v => { if (v === null) offlineSeenOff = true; }).catch(() => { });   // 沒裝 SQL 就不再送
+    if (offlineSeenOff || offlineSeenBusy || !player || !vaultOnline()) return;
+    const sent = Date.now(), since = sent - offlineSeenAt;
+    if (!cloudCanCall()) {   // 雲端退避中（伺服器忙）不送：額度快用完時當作一次連不上處理，避免伺服器忙時所有玩家立刻停住
+        if (timeBudget < TIME_LOW_MS && since >= 60 * 1000) { offlineSeenAt = sent; timeSeenFail(since); }
+        return;
+    }
+    // 額度快用完才問（正常約 40 秒一次）；加速中裝置時間要等比放大，避免一直呼叫伺服器（最多約每秒 1 次）
+    if (timeBudget >= TIME_LOW_MS && since < 60 * 1000 || since < TIME_MIN_GAP_MS * Math.min(12, Math.max(1, timeRatio)) * Math.min(64, 2 ** timeFailN)) return;   // 連不上時間隔加倍（最多 64 倍）
+    const base = timeBase, slot = currentSlot;
+    offlineSeenAt = sent; offlineSeenBusy = true;
+    offlineServerMs(true).then(srv => {
+        if (srv === null) { offlineSeenOff = true; timeBase = null; return; }   // 沒裝 SQL：不再送、不限制
+        timeBase = { at: sent, slot };
+        if (timeFailN > TIME_FAIL_MAX) addLog('⏱️ 已恢復連線，遊戲繼續', 'sys');
+        timeFailN = 0;
+        if (!base || base.slot !== slot || currentSlot !== slot) { timeBudget = Math.max(timeBudget, TIME_START_MS); timeRatio = 1; return; }   // 第一次／換角色：只起算
+        const dev = sent - base.at;
+        timeRatio = dev / Math.max(1, srv);
+        const fast = dev > srv * 1.25 + 5000;
+        let add = srv;
+        if (fast) timeDebt = 0;   // 加速造成的落差不補
+        else if (timeDebt > 0) { const pay = Math.min(timeDebt, add); timeDebt -= pay; add -= pay; gameNow += pay; }   // 先把落後的時鐘補上
+        timeBudget = Math.min(TIME_MAX_MS, timeBudget + add);
+        if (fast && !timeFastWarned) { timeFastWarned = true; addLog('⏱️ 偵測到裝置時間被加速，遊戲改以伺服器時間進行（加速無效）', 'sys'); }
+        if (!fast) timeFastWarned = false;
+    }).catch(() => timeSeenFail(since)).finally(() => { offlineSeenBusy = false; });
 }
 
 let offlineHold = false;   // 向伺服器結算中：主迴圈暫停，避免角色先動
@@ -83,6 +128,7 @@ async function offlineSettle(awayMs) {
         }
         // 2026-11-05（第 306 節）：改用伺服器量到的離線時間，調裝置時鐘刷不到；還沒執行 offline-time.sql 時照舊用裝置時間
         const srvMs = await offlineServerMs(true);
+        speedBaseReset();   // 這次 claim 已重設伺服器起點，防加速也重新起算（第 310 節）
         const away = srvMs == null ? awayMs : Math.min(awayMs, srvMs);
         if (away < OFFLINE_MIN_MS) return;
         const rep = applyOffline(away);
