@@ -1560,6 +1560,7 @@ function drawBigMapHud(ctx, W, H, camX, camY) {
     ctx.strokeStyle = '#e6c882'; ctx.lineWidth = 1.2; ctx.stroke();
     ctx.font = '11px sans-serif'; ctx.fillStyle = '#f2d9a0'; ctx.fillText('⤢', bx, by + 1);
     drawLabel(ctx, scene.region || zoneTitle(), cx, cy + R + 14, '#ffe7a8');
+    if (typeof onlineCountN !== 'undefined' && onlineCountN != null && typeof cloudLoggedIn === 'function' && cloudLoggedIn()) drawLabel(ctx, '👥 線上 ' + onlineCountN, cx, cy + R + 33, '#9fe0a0');   // 線上帳號數（cloud.js，第 318 節）
     // 小地圖右下方：首領計時開關（2026-11-03 使用者指定位置，第 278 節）；開著時亮金色
     const tx = cx + R - 2, ty = cy + R + 38, on = typeof tabOpen === 'function' && tabOpen('bossTimer');
     scene.bossBtn = { x: tx, y: ty, r: 14 };

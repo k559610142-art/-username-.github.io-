@@ -4943,3 +4943,11 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - **防改檔簽章**：guard.js `guardItemCanon` 在有 gl／gx 時接 `,G:等級:經驗`、有 so 時接 `,S:孔1~孔2…（_空／s技能／{寶石簽章}）,L:串聯`；**沒有這些欄位的道具簽章不變**。伺服器 `dragon_item_canon` 由 sockets-gems.sql 改成同樣算法（plpgsql，遞迴算寶石）。
 - **伺服器**：`node tools/build-gems-sql.js` → `tools/sockets-gems.sql`（**使用者要盡快在 Supabase 執行**：沒執行前，有孔的裝備／寶石上傳後簽章不符，交易所與共用倉庫會暫時不能用；沒有孔的舊道具不受影響）：① 新的 dragon_item_canon ② 目錄補 13 種寶石＋開孔石／連結石與通貨權重（尾碼 -gems20261107）③ `loot_gem`（後端首領 10%）＋修補 loot_roll。小怪本機 0.3%（`gemDropFor`，後端那一群不在本機掉）。
 - **測試**：`tools/test-gems.js`（孔數上限、擲孔與 6 連機率、開孔石／連結石、串聯群組、多重打擊／範圍／附加火焰／連鎖／耗魔／冷卻／殘忍／吸血、經驗 10% 與 20 級、玩家經驗不變、鑲嵌拆下與金幣、沒學會的技能不能做、簽章字串、本機掉落、騎士普攻 6 連與法師火球 6 連實際掛機）；`tools/test-gems-db.js`（PGlite：載入 supabase＋anticheat＋整套掉寶 SQL；重跑不變、沒有孔的道具簽章不變、400 件隨機道具與整份存檔的簽章字串和遊戲端一致、用遊戲算的簽章上傳有孔存檔 sig_ok＝true、目錄、首領 10%、loot_roll 串接）。瀏覽器以記憶體測試角色開鑲嵌視窗，用畫面按鈕鑲入技能寶石＋兩顆輔助寶石並確認效果生效，Console 無錯誤；正式建置 76 檔（公開函式 249）成功。
+
+## 318. 小地圖下方顯示線上人數（2026-11-07，版本 `20261107e`；`cloud.js`、`ui-scene.js`、SQL `tools/online-count.sql`）
+
+- 使用者要求：小地圖下方（地圖名稱下）顯示線上玩家數，例如 60 個帳號連線就顯示 60。
+- **伺服器** `online_ping_count()`（使用者要在 Supabase 執行 online-count.sql，可重跑）：先做原本的 `online_ping`（單一登入、被擠下線照舊），再回傳 { ok, n }，n＝`dragon_online` 90 秒內有心跳的帳號數（主鍵 user_id，同帳號只算一個）。
+- **遊戲端**：`onlinePing`（每 60 秒，登入 3 秒後先送一次）改呼叫 `online_ping_count`，一次請求同時完成心跳與人數（不增加請求量），存在 `onlineCountN`；ok＝false 照舊 `onlineKicked`。函式不存在（還沒執行 SQL）時 `onlineCountOff`＝true 改回原本的 online_ping、不顯示人數。`drawBigMapHud` 在地圖名稱下方畫「👥 線上 N」（登入且有數字才顯示）。沒有用 Realtime（第 16 節 presence 已因額度關閉）。
+- **測試** `tools/test-online-count-db.js`（PGlite：可重跑、人數、90 秒逾時、同帳號一個、擠下線照舊）；瀏覽器以記憶體角色在永夜之塔 10F 確認顯示位置、Console 無錯誤。
+- 同日記錄：第 317 節簽章擴充上線後，使用者執行 sockets-gems.sql 前有大量「雲端存檔簽章不符」（新掉落的有孔裝備，遊戲端已簽孔、伺服器還是舊算法）；執行後 15 分鐘內 88 份上傳全部 sig_ok＝true，自動恢復。教訓：改簽章要先上 SQL 再發遊戲。

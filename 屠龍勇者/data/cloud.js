@@ -158,6 +158,7 @@ window.addEventListener('storage', e => {
 // 登入後每 30 秒心跳，被別台強制登入搶走就把這台登出。伺服器還沒執行 single-login.sql、或網路錯誤時不擋（照舊可以玩）。
 const ONLINE_BEAT_MS = 60 * 1000;   // 2026-10-26 由 30 秒改 60 秒（第 170 節）；伺服器 90 秒沒心跳才算離線，不能再拉長
 let onlineTimer = null, onlineBlocked = false;
+let onlineCountN = null, onlineCountOff = false;   // 線上帳號數（小地圖下方，第 318 節）；tools/online-count.sql 還沒執行時 onlineCountOff＝true，改回原本的心跳
 
 function onlineDevice() {
     const ua = navigator.userAgent || '';
@@ -180,12 +181,18 @@ async function onlineClaim(force) {
 function onlineStart() {
     clearInterval(onlineTimer);
     onlineTimer = setInterval(onlinePing, ONLINE_BEAT_MS);
+    setTimeout(onlinePing, 3000);   // 登入後先拿一次線上人數
 }
 function onlineStop() { clearInterval(onlineTimer); onlineTimer = null; }
 
 async function onlinePing() {
     if (!cloudLoggedIn() || onlineBlocked || !cloudCanCall()) return;   // 退避中不送心跳
     try {
+        if (!onlineCountOff) {   // 心跳＋線上人數一次完成（tools/online-count.sql）
+            const r = await cloudTimeout(cloudSb.rpc('online_ping_count'));
+            if (!r.error && r.data) { onlineCountN = Number(r.data.n) || 0; if (r.data.ok === false) onlineKicked(); return; }
+            if (r.error && onlineMissing(r.error)) onlineCountOff = true; else return;
+        }
         const r = await cloudTimeout(cloudSb.rpc('online_ping'));
         if (!r.error && r.data === false) onlineKicked();
     } catch (e) { }
