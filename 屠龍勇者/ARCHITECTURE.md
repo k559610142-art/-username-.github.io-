@@ -4830,3 +4830,10 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 
 - 使用者要求：排行榜分頁拿掉「⭐ 等級」榜，連同只有等級榜在用的職業篩選（rankCls／rankSetCls）。預設改開「🐉 屠龍」，剩屠龍、永夜之塔、擊殺、血盟四個榜。
 - 伺服器 `dragon_leaderboard` 沒改（仍支援 p_kind='level'），只是遊戲不再呼叫。第 34 節的等級榜說明已過時。
+
+## 308. 傭兵「生命轉魔」放寬條件＋飄字（2026-11-06，版本 `20261106b`；`mercenary.js`）
+
+- 使用者回報「生命轉魔好像沒有效果」。原本機制有作用（扣 15% 最大 HP 換等量 MP），但條件是 MP<50% **且** HP>50%：戰鬥中 MP 低時 HP 多半也低，加上傭兵每秒只回 1 HP，連放幾次後 HP 掉到 50% 以下就不再觸發；畫面也只有戰鬥訊息一行。
+- 改為：MP<50%，且**扣完後** HP 仍 ≥ 30% 最大 HP（`MERC_CONVERT_MIN_HP = .3`）就施放；MP 0、冷卻 15 秒、15% 不變。
+- `mercConvertFloat(hp, mp)`：施放時在 `scene.mercenary` 頭上 `addFloat` 紅字「-N HP」、藍字「+N MP」（不受傷害數字開關影響；SIM／無場景不畫）。雙傭兵時 `mercAs2` 會交換 `scene.mercenary`，飄在正確的那位身上。
+- 技能說明文字同步改為「傭兵MP低於50%時消耗生命回魔（扣完HP需留30%以上）」。

@@ -403,19 +403,27 @@ function mercRuneText(id) {
         guard: '代玩家承擔部分傷害', shield: '傭兵護盾', taunt: '提高敵人攻擊傭兵的機率', selfBuff: '提高傭兵防禦', teamBuff: '提高雙方魔防', thorn: '傭兵受擊反傷', teamShield: '雙方各獲護盾',
         healPlayer: '玩家低於70%HP時治療', hot: '雙方持續恢復HP', healBoth: '雙方低於70%HP時治療', haste: '提高雙方攻速', might: '提高雙方物理傷害', focus: '提高玩家命中及傭兵技能傷害', manaPlayer: '玩家低於50%MP時回魔', cleansePlayer: '清除玩家負面增益', restore: '雙方恢復HP並回復玩家MP',
         physical: '單體物理傷害', physicalArea: '最多3名敵人物理傷害', pierce: '忽略防禦的物理傷害', execute: '目標低於30%HP時傷害翻倍', bleed: '持續物理傷害', stun: '物理傷害並暈眩一般怪，首領免控', drain: '物理傷害並恢復傭兵HP',
-        healSelf: '傭兵低於60%HP時自療', evade: '提高傭兵閃避', manaSelf: '傭兵低於50%MP時恢復MP', cleanseSelf: '清除傭兵負面狀態', selfShield: '傭兵護盾', selfHot: '傭兵持續回血', lastStand: '傭兵低於40%HP時減傷50%', convert: '傭兵HP高於50%時消耗生命回魔',
+        healSelf: '傭兵低於60%HP時自療', evade: '提高傭兵閃避', manaSelf: '傭兵低於50%MP時恢復MP', cleanseSelf: '清除傭兵負面狀態', selfShield: '傭兵護盾', selfHot: '傭兵持續回血', lastStand: '傭兵低於40%HP時減傷50%', convert: '傭兵MP低於50%時消耗生命回魔（扣完HP需留30%以上）',
         magic: '單體魔法傷害', slow: '魔法傷害並降低敵人攻速', magicArea: '最多3名敵人魔法傷害', poison: '持續魔法傷害', weaken: '魔法傷害並降低敵人傷害' };
     const percent = ['guard','taunt','thorn','haste','evade','lastStand','convert'].includes(s.kind);
     const scaled = ['physical','physicalArea','pierce','execute','bleed','stun','drain','magic','slow','magicArea','poison','weaken','shield','selfShield','teamShield','healPlayer','healBoth','healSelf','hot','selfHot','restore'].includes(s.kind) || s.kind.startsWith('summon');
     const effect = !s.power ? '' : percent ? '｜效果' + Math.round(s.power * 100) + '%' : scaled ? '｜能力倍率' + Math.round(s.power * 100) + '%' : '｜效果 +' + s.power;
     return MERC_GROUPS[s.group] + '｜' + texts[s.kind] + '｜MP ' + s.mp + '｜冷卻' + s.cd + '秒' + (s.sec ? '｜持續' + s.sec + '秒' : '') + effect;
 }
+// 生命轉魔（2026-11-06 使用者要求，第 308 節）：MP 低於 50% 就放，扣完 HP 仍要留 30% 以上；傭兵頭上飄 -HP／+MP
+const MERC_CONVERT_MIN_HP = .3;
+function mercConvertFloat(hp, mp) {
+    if (SIM_MODE || !scene || !scene.mercenary || typeof addFloat !== 'function') return;
+    const d = scene.mercenary;
+    addFloat(d.rx, d.ry - .4, '-' + fmt(hp) + ' HP', '#ff6b5b');
+    addFloat(d.rx, d.ry - .9, '+' + fmt(mp) + ' MP', '#6fb6ff');
+}
 function mercCast(id, mon) {
     const m = mercActive(), s = MERC_RUNES[id]; if (!m || !s || !m.skills.includes(id)) return false;
     const r = mercState(m), st = mercStats(m), ps = calcStats(), k = s.kind;
     if (m.mp < s.mp || (r.cds[id] || 0) > gameNow || r.skillAt > gameNow) return false;
     const hpLow = player.hp < ps.maxHp * .7, selfLow = m.hp < st.hp * .6;
-    if (k === 'healPlayer' && !hpLow || ['healBoth', 'restore', 'hot'].includes(k) && !hpLow && !selfLow || ['healSelf', 'selfHot'].includes(k) && !selfLow || k === 'lastStand' && m.hp >= st.hp * .4 || k === 'manaPlayer' && player.mp >= ps.maxMp * .5 || k === 'manaSelf' && m.mp >= st.mp * .5 || k === 'convert' && (m.mp >= st.mp * .5 || m.hp <= st.hp * .5)) return false;
+    if (k === 'healPlayer' && !hpLow || ['healBoth', 'restore', 'hot'].includes(k) && !hpLow && !selfLow || ['healSelf', 'selfHot'].includes(k) && !selfLow || k === 'lastStand' && m.hp >= st.hp * .4 || k === 'manaPlayer' && player.mp >= ps.maxMp * .5 || k === 'manaSelf' && m.mp >= st.mp * .5 || k === 'convert' && (m.mp >= st.mp * .5 || m.hp - Math.floor(st.hp * s.power) < st.hp * MERC_CONVERT_MIN_HP)) return false;
     if (k === 'cleansePlayer' && !Object.values(player.buffs).some(b => b.until > gameNow && (b.negative || b.src === 'debuff')) && !Object.keys(mercNegative(player)).length) return false;
     if (k === 'cleanseSelf' && !Object.keys(r.buffs).some(key => r.buffs[key].until > gameNow && r.buffs[key].negative) && !Object.keys(mercNegative(m)).length) return false;
     const attackKinds = ['physical','physicalArea','pierce','execute','bleed','stun','drain','magic','slow','magicArea','poison','weaken'];
@@ -434,7 +442,7 @@ function mercCast(id, mon) {
     else if (k === 'healSelf') selfHeal(s.power);
     else if (k === 'manaPlayer') player.mp = Math.min(ps.maxMp, player.mp + s.power);
     else if (k === 'manaSelf') m.mp = Math.min(st.mp, m.mp + s.power);
-    else if (k === 'convert') { const n = Math.floor(st.hp * s.power); m.hp -= n; m.mp = Math.min(st.mp, m.mp + n); }
+    else if (k === 'convert') { const n = Math.floor(st.hp * s.power), mp0 = m.mp; m.hp -= n; m.mp = Math.min(st.mp, m.mp + n); mercConvertFloat(n, m.mp - mp0); }
     else if (k === 'cleansePlayer') { mercDebuffs.delete(player); for (const key in player.buffs) if (player.buffs[key].negative || player.buffs[key].src === 'debuff') delete player.buffs[key]; }
     else if (k === 'cleanseSelf') { mercDebuffs.delete(m); for (const key in r.buffs) if (r.buffs[key].negative) delete r.buffs[key]; }
     else if (attackKinds.includes(k)) {
