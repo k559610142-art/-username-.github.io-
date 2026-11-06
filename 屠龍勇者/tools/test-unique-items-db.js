@@ -17,12 +17,14 @@ const { PGlite } = require(runtime);
     const load = async f => db.exec(fs.readFileSync(path.join(__dirname, f), 'utf8'));
     for (const f of ['server-loot.sql', 'loot-catalog.sql', 'loot-screen.sql', 'treasure-maps.sql', 'mercenary-rune-drops.sql']) await load(f);
     const old = (await db.query('select version,data from dragon_loot_catalog where id=1')).rows[0];
+    // 升級路徑：先裝第一期（20 件，-uniques20261107a），再裝第二期（26 件）
+    if (fs.existsSync(path.join(__dirname, 'test-fixture-unique-items-v1.sql'))) { await load('test-fixture-unique-items-v1.sql'); assert.equal((await db.query('select data from dragon_loot_catalog where id=1')).rows[0].data.uniques.ids.length, 20); }
     await load('unique-items.sql');
     const cat = (await db.query('select version,data from dragon_loot_catalog where id=1')).rows[0];
     await load('unique-items.sql');   // 重跑不變
     assert.deepEqual((await db.query('select data from dragon_loot_catalog where id=1')).rows[0].data, cat.data);
-    assert.equal(cat.version, old.version + '-uniques20261107a');
-    const ids = cat.data.uniques.ids; assert.equal(ids.length, 20);
+    assert(cat.version.startsWith(old.version) && cat.version.endsWith('-uniques20261107c'), cat.version);
+    const ids = cat.data.uniques.ids; assert.equal(ids.length, 26);
     for (const id of ids) { const d = cat.data.items[id]; assert(d && d.unique && d.reqLv === 60 && d.affixes.length === 0, id); }
     for (const [id, d] of Object.entries(old.data.items)) assert.deepEqual(cat.data.items[id], d, '舊道具不變 ' + id);
     assert.deepEqual((await db.query('select data from dragon_loot_rules where version=$1', [old.version])).rows[0].data, old.data);
@@ -38,7 +40,7 @@ const { PGlite } = require(runtime);
     // 條件：稀有、T11～T15、異界首領、不是財寶圖
     let got = await call('loot_unique', forced, X({ t: 15, q: 'rare', mods: [] }), 1000);
     assert.equal(got.length, 1000); assert(got.every(i => ids.includes(i.id) && i.n === 1 && !i.q && !i.af));
-    assert.equal(new Set(got.map(i => i.id)).size, 20, '20 件都抽得到');
+    assert.equal(new Set(got.map(i => i.id)).size, 26, '26 件都抽得到');
     for (const t of [11, 12, 13, 14]) assert.equal((await call('loot_unique', forced, X({ t, q: 'rare', mods: [] }), 20)).length, 20, 'T' + t);
     for (const t of [1, 5, 10]) assert.equal((await call('loot_unique', forced, X({ t, q: 'rare', mods: [] }), 50)).length, 0, 'T' + t + ' 不掉');
     for (const q of [null, 'magic', 'legend']) assert.equal((await call('loot_unique', forced, X({ t: 15, q, mods: [] }), 50)).length, 0, q + ' 不掉');
@@ -57,5 +59,5 @@ const { PGlite } = require(runtime);
     got = await call('loot_roll', forced, X({ t: 15, q: 'rare', mods: [] }, elite), 3000);
     assert.equal(got.filter(i => ids.includes(i.id)).length, 0, '隨機裝備池不會出傳奇');
     await db.close();
-    console.log(`PASS unique-items.sql：重跑不變、20 件目錄／舊道具與舊規則保留、loot_roll 修補（傭兵符石仍在）、只有稀有 T11～T15 異界首領掉、財寶圖／野外／一般首領不掉、舊憑證不補抽、機率 T11 ${(r11 * 100).toFixed(2)}%／T13 ${(r13 * 100).toFixed(2)}%／T15 ${(r15 * 100).toFixed(2)}%、隨機裝備池排除傳奇。`);
+    console.log(`PASS unique-items.sql：重跑不變、第一期→第二期升級、26 件目錄／舊道具與舊規則保留、loot_roll 修補（傭兵符石仍在）、只有稀有 T11～T15 異界首領掉、財寶圖／野外／一般首領不掉、舊憑證不補抽、機率 T11 ${(r11 * 100).toFixed(2)}%／T13 ${(r13 * 100).toFixed(2)}%／T15 ${(r15 * 100).toFixed(2)}%、隨機裝備池排除傳奇。`);
 })().catch(e => { console.error(e); process.exit(1); });

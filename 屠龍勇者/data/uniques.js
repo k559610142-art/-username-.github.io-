@@ -1,5 +1,5 @@
 // 屠龍勇者：傳奇裝備（PoE 式唯一裝備，2026-11-07，ARCHITECTURE.md 第 315 節）
-// 使用者決定：20 件、固定名稱與詞綴＋1 個改變玩法的特殊效果；只有稀有異界地圖（黃色、非財寶圖）T11～T15 的異界首領會掉
+// 使用者決定：20 件（2026-11-07 第二期再加 6 件轉換類，共 26 件）、固定名稱與詞綴＋1 個改變玩法的特殊效果；只有稀有異界地圖（黃色、非財寶圖）T11～T15 的異界首領會掉
 //   （T11～T12 1%、T13～T14 2%、T15 3%，伺服器 tools/unique-items.sql 決定）；可以交易；Lv.60 才能裝備；不能用通貨改造（可以強化）。
 // 每件是獨立的道具代號 uq_*（防改檔簽章涵蓋道具代號，普通裝備改不成傳奇）；不會出現在隨機裝備池。
 // 依賴：items（載入時寫入 ITEMS）；其餘函式都在執行期由 combat／player／mercenary／afflict 呼叫。
@@ -49,6 +49,19 @@ const UNIQUE_DEFS = [
       fx: { hp: 80, wis: 2 }, special: '傭兵的攻擊、魔力與最大 HP +40%；自己造成的傷害 −15%' },
     { key: 'hourglass', name: '時之沙漏', base: 'mrAmulet', cat: 'armor', slot: 'amulet', safe: -1, wt: 5,
       fx: { mp: 120, mpRegen: 2 }, special: '技能冷卻 −25%；技能 MP 消耗 +40%' },
+    // ── 第二期：轉換類（2026-11-07，元素系統 elements.js，第 316 節）──
+    { key: 'forgeheart', name: '熔爐之心', base: 'twoHandSword', cat: 'weapon', type: 'twohand', dmg: [20, 26], hit: 3, safe: 6, wt: 150,
+      fx: { convFire: 0.5, fireInc: 0.3, str: 2 }, special: '物理傷害 50% 轉為火焰；火焰傷害 +30%' },
+    { key: 'frostvein', name: '霜脈', base: 'elvenBow', cat: 'weapon', type: 'bow', dmg: [13, 13], hit: 3, safe: 6, wt: 80,
+      fx: { convIce: 0.5, iceInc: 0.2, ailment: 0.2 }, special: '物理傷害 50% 轉為冰冷；元素異常觸發機率 +20%' },
+    { key: 'thundergrip', name: '雷霆之握', base: 'dragonFangGloves', cat: 'armor', slot: 'gloves', ac: 3, safe: 4, wt: 30,
+      fx: { convLight: 0.3, lightInc: 0.2, dex: 2 }, special: '物理傷害 30% 轉為閃電；閃電傷害 +20%' },
+    { key: 'dualflame', name: '冰火同源', base: 'dexRing', cat: 'armor', slot: 'ring', safe: -1, wt: 2,
+      fx: { iceToFire: 1, fireInc: 0.2 }, special: '冰冷傷害全部轉為火焰；火焰傷害 +20%' },
+    { key: 'stormeye', name: '風暴之眼', base: 'mrAmulet', cat: 'armor', slot: 'amulet', safe: -1, wt: 5,
+      fx: { fireToLight: 1, lightInc: 0.2 }, special: '火焰傷害全部轉為閃電；閃電傷害 +20%' },
+    { key: 'elementalist', name: '元素使徒', base: 'crystalWand', cat: 'weapon', type: 'staff', dmg: [6, 6], hit: 2, safe: 6, wt: 40,
+      fx: { fireInc: 0.25, iceInc: 0.25, lightInc: 0.25, ailment: 0.15, sp: 6, physLess: 0.5 }, special: '火焰／冰冷／閃電傷害 +25%、元素異常觸發機率 +15%；物理傷害 −50%' },
 ];
 const UNIQUE_BY_KEY = {};
 for (const u of UNIQUE_DEFS) {
@@ -263,10 +276,10 @@ function uniqueDropFor(mon) {
 function uniqueInfoHtml(d) {
     if (!d || !d.unique) return '';
     const u = UNIQUE_BY_KEY[d.unique];
-    const af = Object.entries(u.fx).map(([k, v]) => {
+    const af = Object.entries(u.fx).filter(([k]) => k !== 'iceToFire' && k !== 'fireToLight').map(([k, v]) => {   // 元素互轉寫在特殊效果裡
         const a = (typeof affixDef === 'function' && affixDef(k)) || null;
-        const name = a ? a.name : ({ str: '力量', dex: '敏捷', con: '體質', int: '智力', wis: '精神', cha: '魅力', goldPct: '金幣加成', weight: '負重' })[k] || k;
-        const pct = a ? a.pct : k === 'goldPct';
+        const name = a ? a.name : ({ str: '力量', dex: '敏捷', con: '體質', int: '智力', wis: '精神', cha: '魅力', goldPct: '金幣加成', weight: '負重', ailment: '元素異常機率', physLess: '物理傷害降低' })[k] || k;
+        const pct = a ? a.pct : ['goldPct', 'ailment', 'physLess'].includes(k);
         return `<span class="q-unique">◆ ${name} +${pct ? Math.round(v * 100) + '%' : v}</span>`;
     });
     return [`<b class="q-unique">傳奇裝備</b><small class="muted">（Lv.${d.reqLv} 以上可裝備；不能用通貨改造）</small>`, ...af, `<span class="q-unique-special">★ ${u.special}</span>`].join('<br>');

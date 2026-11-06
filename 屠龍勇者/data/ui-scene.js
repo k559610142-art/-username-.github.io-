@@ -1271,7 +1271,8 @@ function sceneDraw(ctx, W, H) {
                 ctx.fillStyle = '#000a'; ctx.fillRect(sx - w / 2, by, w, 5);
                 ctx.fillStyle = tgt ? '#d64036' : '#b0702c'; ctx.fillRect(sx - w / 2, by, w * pct, 5);
                 if (tgt || m.inst.elite) {
-                    const name = `${m.inst.name} Lv.${m.inst.lv}`, ly = sy + 29;
+                    const et = tgt && typeof elemTagText === 'function' ? elemTagText(m.inst) : '';   // 目標顯示元素抗性／弱點（elements.js）
+                    const name = `${m.inst.name} Lv.${m.inst.lv}${et ? ' ' + et : ''}`, ly = sy + 29;
                     ctx.font = 'bold 11px sans-serif';
                     const width = ctx.measureText(name).width; let lx = sx;
                     if (playerLabelBox && Math.abs(ly - playerLabelBox.y) < 15 && Math.abs(lx - playerLabelBox.x) < (width + playerLabelBox.w) / 2 + 6) {

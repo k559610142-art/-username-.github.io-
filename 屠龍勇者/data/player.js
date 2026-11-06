@@ -274,7 +274,9 @@ function defaultSkillSlots(p = player, skip = {}) {
 // ───────── 能力計算 ─────────
 const FX_KEYS = ['ac', 'hit', 'dmg', 'sp', 'mr', 'crit', 'magicCrit', 'critDmg', 'magicCritDmg', 'dodge', 'reduce', 'double', 'absorb', 'counter', 'hpRegen', 'mpRegen',
     'dmgSp', 'spdMul', 'lifesteal', 'hp', 'mp', 'haste', 'brave', 'wise', 'weight',
-    'bossDmg', 'expPct', 'goldPct', 'thorns', ...STAT_KEYS];   // 第二行：特殊詞綴（affix.js SPECIAL_AFFIXES）
+    'bossDmg', 'expPct', 'goldPct', 'thorns',
+    'fireInc', 'iceInc', 'lightInc', 'addFire', 'addIce', 'addLight', 'convFire', 'convIce', 'convLight', 'iceToFire', 'fireToLight', 'ailment', 'physLess',   // 元素（elements.js，第 316 節）
+    ...STAT_KEYS];   // 第二行：特殊詞綴（affix.js SPECIAL_AFFIXES）
 // 攻速規則：見 calcStats 的 atkMs／castMs（天堂式：綠水、勇水 ×1.33，精靈餅乾 ×1.15）
 const HASTE_MUL = 1.33, BRAVE_MUL = 1.33, WAFER_MUL = 1.15, ATK_MIN_MS = 200;
 const CAST_BASE_MS = 1200, CAST_MIN_MS = 600, CAST_POTION_MS = 300;

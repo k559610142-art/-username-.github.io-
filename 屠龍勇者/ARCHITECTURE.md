@@ -145,6 +145,7 @@
 | `data/uniques.js` | 傳奇裝備 20 件 `UNIQUE_DEFS`（載入時寫入 `ITEMS` 的 `uq_*`）、掉率 `UNIQUE_DROP_P`、`uqOn`、能力 `uniquePlayerFx`／`uniqueStatPost`、傷害／爆擊／受擊／擊殺／藥水／耗魔等掛勾、本機掉落 `uniqueDropFor`、說明 `uniqueInfoHtml`（第 315 節） |
 | `data/elite.js` | 精英怪特殊詞條 `ELITE_AFFIXES`（12 條）、野外 3% 精英 `eliteFieldRoll`、擲詞條 `eliteRollAffixes`、`eliteTick`（護盾／召喚／狂暴／瞬移）、`eliteOnHitPlayer`、`eliteOnPlayerPhys`、`eliteBeforeKill`／`eliteAfterKill`、名牌顏色 `eliteNameColor`（第 312 節） |
 | `data/enchant.js` | 衝裝規則 `doEnchant`、成功率、可強化目標 |
+| `data/elements.js` | 元素系統：`ELEMENTS`（火冰雷）、技能元素 `skillElem`／`elemSpellElem`、怪物抗性 `monElemRes`（`ELEM_MON_TAGS`／`ELEM_TAG_RES`／`ELEM_MON_OVERRIDE`）、名牌 `elemTagText`、傷害 `elemSpellMul`／`elemPhys`、異常 `elemOnHit`／`elementsTick`／`elemChillMul`／`elemShockMul`（第 316 節） |
 | `data/combat.js` | 彈藥欄／自動補彈weaponAmmoType／autoBuyAmmo／pickAmmo（第195節）；掛機戰鬥：`hunt` 狀態、尋怪、玩家行動、怪物攻擊、掉落、死亡、自動補給、回家、步行、自然回復 |
 | `data/town.js` | 村莊設施：傳送、商店、回收、旅館、倉庫、鍛造；龍穴進入條件 |
 | `data/guard.js` | **防改檔**（第 60 節）：本機存檔加密＋簽章 `saveEncode`／`saveDecode`／`saveParse`／`saveFormatMigrate`、雲端存檔簽章 `guardCloudSig`／`guardSaveCanon`／`guardCheckCloud`、記憶體數值偽裝 `guardWrap`、改檔標記 `guardFlag`（`player.integrity`） |
@@ -185,6 +186,7 @@
 | `data/uniques.js` | 傳奇裝備 20 件 `UNIQUE_DEFS`（載入時寫入 `ITEMS` 的 `uq_*`）、掉率 `UNIQUE_DROP_P`、`uqOn`、能力 `uniquePlayerFx`／`uniqueStatPost`、傷害／爆擊／受擊／擊殺／藥水／耗魔等掛勾、本機掉落 `uniqueDropFor`、說明 `uniqueInfoHtml`（第 315 節） |
 | `data/elite.js` | 精英怪特殊詞條 `ELITE_AFFIXES`（12 條）、野外 3% 精英 `eliteFieldRoll`、擲詞條 `eliteRollAffixes`、`eliteTick`（護盾／召喚／狂暴／瞬移）、`eliteOnHitPlayer`、`eliteOnPlayerPhys`、`eliteBeforeKill`／`eliteAfterKill`、名牌顏色 `eliteNameColor`（第 312 節） |
 | `data/enchant.js` | 衝裝規則 `doEnchant`、成功率、可強化目標 |
+| `data/elements.js` | 元素系統：`ELEMENTS`（火冰雷）、技能元素 `skillElem`／`elemSpellElem`、怪物抗性 `monElemRes`（`ELEM_MON_TAGS`／`ELEM_TAG_RES`／`ELEM_MON_OVERRIDE`）、名牌 `elemTagText`、傷害 `elemSpellMul`／`elemPhys`、異常 `elemOnHit`／`elementsTick`／`elemChillMul`／`elemShockMul`（第 316 節） |
 | `data/combat.js` | 掛機戰鬥：`hunt` 狀態、尋怪、玩家行動、怪物攻擊、掉落、死亡、自動補給、回家、步行、自然回復 |
 | `data/town.js` | 村莊設施：傳送、商店、回收、旅館、倉庫、鍛造；龍穴進入條件 |
 | `data/guard.js` | **防改檔**（第 60 節）：本機存檔加密＋簽章 `saveEncode`／`saveDecode`／`saveParse`／`saveFormatMigrate`、雲端存檔簽章 `guardCloudSig`／`guardSaveCanon`／`guardCheckCloud`、記憶體數值偽裝 `guardWrap`、改檔標記 `guardFlag`（`player.integrity`） |
@@ -313,7 +315,7 @@
 
 ## 2. 載入順序與依賴
 
-`config → classes → skills → items → spellbook → monsters → zones → quests → advance → resonance → uniques → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → afflict → guild-core → guild-state → player → enchant → affix → craft → maps → elite → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → talent-jewels → talent → talent-tree → talent-layout → talent-planner → talent-live → bag-storage → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → titles → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → guild-world → guild-map-data → guild-missions → guild-mission-core → guild-mission → guild-map → guild → pwa → loot → main`
+`config → classes → skills → items → spellbook → monsters → zones → quests → advance → resonance → uniques → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → afflict → guild-core → guild-state → player → enchant → affix → craft → maps → elite → elements → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → talent-jewels → talent → talent-tree → talent-layout → talent-planner → talent-live → bag-storage → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → titles → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → guild-world → guild-map-data → guild-missions → guild-mission-core → guild-mission → guild-map → guild → pwa → loot → main`
 
 - 上層資料檔（config～quests）只在「載入時」用到更前面的檔案；quests 載入時會把獎勵裝備與任務道具寫進 `ITEMS`，所以要在 items 之後。
 - resonance 載入時要改 `ITEMS`（含任務武器）、`MONSTERS` 掉落、`RECIPES`，所以在 quests 之後；`findSkill`（skills.js）在執行期才呼叫它的 `findResonanceSkill`。
@@ -4911,3 +4913,17 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - **伺服器**：`node tools/build-unique-sql.js` 從遊戲資料產生 `tools/unique-items.sql`（**使用者要在 Supabase 執行**，可重跑）：掉寶目錄補 20 件與 `uniques` 設定（version 尾碼 -uniques20261107a，舊憑證照舊規則）；`loot_unique(c,x)`；修補 `loot_roll`：結尾 `return out || public.loot_unique(c,x) || …`、隨機裝備池加 `and not(value ? 'unique')`。重裝舊掉寶 SQL（重建 loot_roll）後要再跑。改 UNIQUE_DEFS 要重新產生並升 VER 尾碼。
 - **測試**：`node tools/test-uniques.js`（20 種效果逐一、Lv.60／不能改造／不進隨機池、本機掉率、三職業全套掛機 3 分鐘）；`node tools/test-unique-items-db.js`（PGlite：重跑不變、舊道具／規則保留、只有稀有 T11～T15 異界首領掉、財寶圖／野外／一般首領不掉、舊憑證不補抽、實測機率、隨機裝備池排除；另以加載 loot-rates／awaken-stone 的版本驗證修補）。瀏覽器以記憶體測試角色開道具視窗確認顯示、裝備成功，Console 無錯誤；正式建置 74 檔成功。
 - `tools/test-elite.js` 實際掛機段改成每隻都變精英（原本異界 15% 偶爾一隻都沒有，測試不穩定）。
+
+## 316. 元素系統＋屬性轉換（PoE 第二期，2026-11-07，版本 `20261107c`；新檔 `data/elements.js`、SQL `tools/elements.sql`＋更新 `tools/unique-items.sql`）
+
+- 使用者決定：火、冰、雷 3 種（聖、暗照舊算一般魔法，聖光對不死的加成不變）；怪物依種類設定抗性；異常＝點燃／冰緩／感電；轉換來源三種都做（轉換類傳奇、元素石、一般裝備元素詞綴）。玩家這邊**沒有**元素抗性（怪物魔法照舊看 MR）。
+- **技能元素** `skillElem`：二轉 `elem` 欄位（fire／ice／storm→雷／elem＝三元素斬每次隨機；holy、dark 不算），其餘看名稱（雷|電→雷、冰|霜|雪|凍|寒→冰、火|炎|焰|爆裂|熔|隕石|煉獄→火）。光箭等聖光不算。物理技能（strike）本身仍是物理，只有附帶的魔法部分（k.magic）吃技能元素。`elemSpellElem` 再套玩家互轉（冰轉火、火轉雷，可連鎖）。
+- **怪物抗性** `monElemRes`（快取在 mon._er）：標籤 fire（抗火 50%／弱冰 25%）、ice（相反）、storm（抗雷 50%／弱冰）、water（抗火 25%／弱雷）、nature（弱火）、undead（弱火／抗冰 25%）、dragon（全抗 25%）；四大龍與世界首領另訂（火龍抗火 75% 等）；夾在 −50%～75%。塔怪、精英、異界首領、召喚／分裂小怪用名字對回原怪（`elemBaseId`）。名牌：目標怪名稱後加 `elemTagText`（「抗🔥 弱❄️」，ui-scene.js）。
+- **傷害**：倍率＝(1＋玩家該元素增傷)×(1−怪物抗性)×感電。魔法：`magicDamage` 新增第 6 參數 elem（castSpell／doStrike 的魔法部分傳入），MR 減免照舊。物理：`physicalAttack` 算完爆擊後 `elemPhys(total, hits, st, mon)`：轉換（合計超過 100% 依比例）＋附加傷害（每一下 ±20%）＋互轉，物理部分 × physMul（元素使徒 −50%），戰鬥訊息加「（🔥10 ⚡5）」。
+- **異常**（`elemOnHit`，每種元素傷害各 20%＋ailment 機率）：點燃＝每秒該次火焰傷害 20%、4 秒（`elementsTick`，huntTick 呼叫）；冰緩＝怪物攻擊間隔 ×1/0.7、3 秒（`elemChillMul`，接在怪物 atkCd），單次冰冷 ≥ 最大 HP 10% 的非首領怪凍住 1 秒（stunUntil）；感電＝受到玩家傷害 ×1.15、4 秒。飄字：點燃／冰緩／冰凍／感電。
+- **能力** calcStats 輸出 `st.elem = { inc, add, conv, iceToFire, fireToLight, ailment, physMul }`；新 fx 鍵加進 `FX_KEYS`（fireInc、iceInc、lightInc、addFire、addIce、addLight、convFire、convIce、convLight、iceToFire、fireToLight、ailment、physLess）——沒加進白名單 addFx 會忽略。
+- **詞綴**（affix.js `AFFIXES`）：火焰／冰冷／閃電傷害 %（3%～16%，武器、手套、戒指、項鍊、頭盔）、附加火焰／冰冷／閃電傷害（1～15，武器、手套、戒指、項鍊）。**元素石** `curElement`（craft.js，w 0.4、Lv.50 以上怪物掉）：只限武器（傳奇不行），`elemStoneAffix` 加或重洗 1 條 `ELEM_CONV_AFFIXES`（物理轉火／冰／雷 20%～50%，標記 ex）；`affixProtected`（sx 或 ex）讓重洗、剝離、神諭都保留；覺醒與元素石可並存；普通品質道具也會顯示這兩種詞綴。
+- **轉換類傳奇**（uniques.js 第二期 6 件，共 26 件）：熔爐之心（雙手劍，物理 50% 轉火、火 +30%）、霜脈（弓，物理 50% 轉冰、異常 +20%）、雷霆之握（手套，物理 30% 轉雷、雷 +20%）、冰火同源（戒指，冰全部轉火、火 +20%）、風暴之眼（項鍊，火全部轉雷、雷 +20%）、元素使徒（魔杖，三元素 +25%、異常 +15%、物理 −50%）。掉落規則同第 315 節。
+- **伺服器**（使用者要執行，可重跑）：① `node tools/build-elements-sql.js` → `tools/elements.sql`：目錄 affixes 補 6 條（上限陣列 0～110）、116 件可擲裝備加入允許的元素詞綴（傳奇不加）、元素石道具與通貨權重（version 尾碼 -elements20261107）。② `tools/unique-items.sql` 重新產生（尾碼 -uniques20261107c，**已裝過第一期也能合併**成 26 件）。
+- **測試**：`tools/test-elements.js`（技能元素、抗性含塔怪／精英名、真正 castSpell 火球打火蜥蜴 vs 雪怪約 2.5 倍、物理轉換／附加／連鎖互轉、四種異常與 20% 機率、元素石重洗剝離保留、6 件轉換傳奇、法師／騎士／妖精實際掛機）；`tools/test-elements-db.js`（PGlite：重跑不變、詞綴部位、舊詞綴與規則保留、伺服器擲稀有武器出元素詞綴且數值在範圍、元素石 Lv.50 以上才掉）；`tools/test-unique-items-db.js` 改成第一期→第二期升級路徑（`tools/test-fixture-unique-items-v1.sql` 是第一期的 SQL 固定檔）。瀏覽器以記憶體測試角色穿熔爐之心打熔火煉獄：訊息「（🔥10）」、名牌「抗🔥 弱❄️」、Console 無錯誤；正式建置 75 檔成功。
+- **注意**：11/7 00:39 使用者的「更」提交把本節做到一半的 affix／craft／player／combat／ui-panels 推上線（當時沒有 elements.js，呼叫處都有 typeof 判斷不會出錯，但元素詞綴、元素石可能已經從本機掉落、當時還沒有效果）。法系技能現在吃怪物抗性：火系區域的火法、冰系區域的冰法傷害會下降、打弱點會上升。

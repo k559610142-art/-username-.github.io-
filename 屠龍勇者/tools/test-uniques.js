@@ -28,7 +28,7 @@ function wear(key) {
 function mob(hp = 100000, extra = {}) { const m = makeMonster('skeleton'); m.boss = false; m.hp = m.maxHp = hp; m.ac = 10; Object.assign(m, extra); addMob(m); m.atkCd = 9e9; return m; }
 
 // ── 資料：20 件、代號、Lv.60、不能改造、不進隨機池 ──
-assert.equal(UNIQUE_IDS.length, 20);
+assert.equal(UNIQUE_IDS.length, 26);   // 第一期 20＋第二期轉換類 6
 for (const id of UNIQUE_IDS) { const d = ITEMS[id]; assert(d.unique && d.reqLv === 60 && d.uqFx, id); assert(d.cat === 'weapon' ? WEAPON_TYPES[d.type] : SLOTS[d.slot === 'ring' ? 'ring1' : d.slot], id + ' 部位'); }
 for (let i = 0; i < 300; i++) assert(!ITEMS[randomEquipFor(99)].unique, '隨機裝備池不出傳奇');
 setup();
@@ -125,5 +125,5 @@ for (const cls of ['knight', 'gunner', 'mage']) {
     console.log(cls, '穿', keys.length, '件傳奇打 3 分鐘，擊殺', player.kills - k0);
     assert(player.kills > k0);
 }
-console.log('PASS 傳奇裝備：20 件資料／Lv.60／不能改造／不進隨機池、固定詞綴、20 種特殊效果逐一驗證、本機掉落條件與 3% 機率、三職業全套實際掛機。');
+console.log('PASS 傳奇裝備：26 件資料／Lv.60／不能改造／不進隨機池、固定詞綴、20 種特殊效果逐一驗證、本機掉落條件與 3% 機率、三職業全套實際掛機。');
 `, ctx);

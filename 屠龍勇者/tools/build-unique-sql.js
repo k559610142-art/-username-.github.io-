@@ -8,10 +8,10 @@ const data = vm.runInContext(`({ ids: UNIQUE_IDS, p: UNIQUE_DROP_P, items: Objec
     for (const k of ['name', 'cat', 'type', 'slot', 'dmg', 'hit', 'ac', 'mr', 'weight', 'safe', 'wt', 'sell', 'reqLv', 'unique']) if (d[k] != null) o[k] = d[k];
     return [id, Object.assign(o, { sellValue: d.sell, stack: false, affixes: [], bookLv: null })];
 })) })`, ctx);
-const VER = '-uniques20261107a';
+const VER = '-uniques20261107c';   // 改 UNIQUE_DEFS 就換尾碼（a＝第一期 20 件；c＝第二期加 6 件轉換類）
 const sql = `-- 黑暗大陸：傳奇裝備掉落（2026-11-07，ARCHITECTURE.md 第 315 節）。由 tools/build-unique-sql.js 從遊戲資料產生，不要手改。可重複執行。
 -- 需要先裝好 server-loot（含 loot-catalog、mercenary-rune-drops 等）。重裝舊掉寶 SQL（會重建 loot_roll）後要再跑這份。
--- ① 掉寶目錄補 20 件傳奇道具（uq_*，固定詞綴寫在遊戲裡，伺服器只給 { id, n:1, ench:0 }）與 uniques 設定；目錄 version 加尾碼 ${VER}，舊憑證照舊規則。
+-- ① 掉寶目錄補 ${data.ids.length} 件傳奇道具（已裝過舊版會合併新增的件數）（uq_*，固定詞綴寫在遊戲裡，伺服器只給 { id, n:1, ench:0 }）與 uniques 設定；目錄 version 加尾碼 ${VER}，舊憑證照舊規則。
 -- ② loot_unique：只有稀有（黃色、非財寶圖）異界的異界首領，T11～T12 1%、T13～T14 2%、T15 3%，20 件平均抽一件。
 -- ③ 修補 loot_roll：結尾接上 loot_unique；隨機裝備池排除傳奇（不然會被當普通裝備掉出來、還擲上隨機詞綴）。
 begin;
@@ -20,7 +20,7 @@ declare c public.dragon_loot_catalog%rowtype; d jsonb; v text;
 begin
  select * into c from public.dragon_loot_catalog where id=1 for update;
  if not found then raise exception '請先安裝後端掉寶目錄';end if;
- if c.data->'uniques' is not null then return;end if;
+ if position('${VER}' in c.version)>0 then return;end if;   -- 已經是這一版：不重複；舊版（少件數）照樣合併
  d:=jsonb_set(c.data,'{items}',(c.data->'items')||$items$${JSON.stringify(data.items)}$items$::jsonb);
  d:=jsonb_set(d,'{uniques}',$cfg$${JSON.stringify({ ids: data.ids, p: data.p })}$cfg$::jsonb);
  v:=c.version||'${VER}';d:=jsonb_set(d,'{version}',to_jsonb(v));
