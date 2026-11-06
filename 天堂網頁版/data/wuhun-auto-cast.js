@@ -1,7 +1,8 @@
-// The reference recording shows casts about five seconds apart.
+// Wait between complete casts, including their trailing effects.
 const WuhunAutoCast = (() => {
   const directionIds = {NW:0,N:1,NE:2,E:3,SE:4,S:5,SW:6,W:7};
   const phases = ['bossCastGesture','bossCastStart','bossCastLoop','bossCastEnd'];
+  const firstDelay = 3000, restDelay = 12000;
   const duration = frames => frames.reduce((ms,f) => ms + f[5], 0);
   function currentFrame(frames,time) {
     for (const frame of frames) {
@@ -31,19 +32,19 @@ const WuhunAutoCast = (() => {
     return {sequence,effects,total,heading};
   }
   function update(phantom,now,pose,allowed) {
-    if (phantom.nextCast == null) phantom.nextCast = now + 2000;
+    if (phantom.nextCast == null) phantom.nextCast = now + firstDelay;
     if (pose.clip === 'death') {
       phantom.cast = null;
-      phantom.nextCast = now + 2000;
+      phantom.nextCast = now + firstDelay;
       return {pose,effects:[]};
     }
     if (!phantom.cast && allowed && now >= phantom.nextCast) {
       const cast = plan(phantom.gfx,characterHeading);
       if (cast.sequence.length) {
         phantom.cast = {...cast,started:now};
-        phantom.nextCast = now + Math.max(5000,cast.total + 250);
+        phantom.nextCast = now + cast.total + restDelay;
         for (const track of cast.effects) MonsterActions.preloadFrames(track.frames);
-      } else phantom.nextCast = now + 5000;
+      } else phantom.nextCast = now + restDelay;
     }
     const cast = phantom.cast;
     if (!cast) return {pose,effects:[]};

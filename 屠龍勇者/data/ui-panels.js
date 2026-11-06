@@ -435,6 +435,7 @@ function itemClass(inst) {
     const d = ITEMS[inst.id];
     if (d.cat === 'doll' && DOLLS[d.doll]) return 'doll-' + DOLLS[d.doll].quality;
     if (inst.unidentified === true) return '';   // 未鑑定地圖不顯示品級顏色
+    if (d.unique) return 'q-unique';   // 傳奇裝備（uniques.js）
     if (d.safe >= 0 && (inst.ench || 0) > d.safe) return 'ench-hi';
     if ((inst.ench || 0) < 0) return 'cursed';
     if (inst.q) return QUALITY[inst.q].cls;
@@ -545,7 +546,8 @@ function itemDescHtml(inst, showAffixMax = false) {
     if(d.talentJewel){const j=TALENT_JEWEL_CATALOG.find(j=>j.id===d.talentJewel);L.push(j.type==='normal'?j.mods.map(talentModText).join('；'):j.text);L.push('命運星盤對應孔位鑲嵌；地圖等級越高掉率越高。');}
     if (d.cat === 'ammo') L.push(`傷害 +${d.dmg}${d.silver ? '，對不死系額外傷害' : ''}`);
     if (d.classes) L.push(`限定：${d.classes.map(c => CLASSES[c].name).join('、')}`);
-    if (d.desc) L.push(d.desc);
+    if (d.desc && !d.unique) L.push(d.desc);
+    if (d.unique && typeof uniqueInfoHtml === 'function') L.push(uniqueInfoHtml(d));   // 傳奇：固定詞綴＋特殊效果
     const bossHtml = bossEnchantItemHtml(inst);
     if (bossHtml) L.push(bossHtml);
     if (d.res) L.push(resonanceHtml(d));   // 共鳴武器（resonance.js）

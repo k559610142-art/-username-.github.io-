@@ -10,6 +10,19 @@ function walkFrameIndex(elapsed,duration,count,profile=getActiveWalkProfile()){c
 function resetMovementState(){movementTween=null;lastMovementAt=-Infinity;lastMovementDuration=0}
 // 邏輯每個 walk 動作走一格，顯示座標在兩格之間連續內插。
 let movementTween=null;
-function visualWorldPosition(now=movementTime()){if(!movementTween||movementTween.toX!==worldX||movementTween.toY!==worldY)return {x:worldX,y:worldY};const t=Math.max(0,Math.min(1,(now-movementTween.started)/movementTween.duration));return {x:movementTween.fromX+(movementTween.toX-movementTween.fromX)*t,y:movementTween.fromY+(movementTween.toY-movementTween.fromY)*t}}
-function startVisualStep(nextX,nextY,now=movementTime(),started=now){const current=visualWorldPosition(now),duration=MovementConfig.stepMs;worldX=nextX;worldY=nextY;movementTween={fromX:current.x,fromY:current.y,toX:nextX,toY:nextY,started,duration};markMovementStep(started,duration)}
-function movementAnimating(now=movementTime()){return !!movementTween&&movementTween.toX===worldX&&movementTween.toY===worldY&&now-movementTween.started<movementTween.duration}
+function visualWorldPosition(now=movementTime()){if(!movementTween||movementTween.toX!==worldX||movementTween.toY!==worldY)return {x:worldX,y:worldY};if(movementTween.stopped)return movementTween.stopped;const t=Math.max(0,Math.min(1,(now-movementTween.started)/movementTween.duration));return {x:movementTween.fromX+(movementTween.toX-movementTween.fromX)*t,y:movementTween.fromY+(movementTween.toY-movementTween.fromY)*t}}
+function startVisualStep(nextX,nextY,now=movementTime(),started=now){const current=visualWorldPosition(now),duration=MovementConfig.stepMs,fromTileX=worldX,fromTileY=worldY;worldX=nextX;worldY=nextY;movementTween={fromX:current.x,fromY:current.y,fromTileX,fromTileY,toX:nextX,toY:nextY,started,duration};markMovementStep(started,duration)}
+// Keep the camera at the point where the attack was pressed; collision still uses a whole tile.
+function interruptVisualStep(now=movementTime()){
+  if(!movementAnimating(now))return false;
+  const position=visualWorldPosition(now), step=movementTween;
+  if(Math.hypot(position.x-step.fromTileX,position.y-step.fromTileY)<Math.hypot(position.x-step.toX,position.y-step.toY)){
+    worldX=step.fromTileX;
+    worldY=step.fromTileY;
+  }
+  movementTween={toX:worldX,toY:worldY,stopped:position};
+  lastMovementAt=-Infinity;
+  lastMovementDuration=0;
+  return true;
+}
+function movementAnimating(now=movementTime()){return !!movementTween&&!movementTween.stopped&&movementTween.toX===worldX&&movementTween.toY===worldY&&now-movementTween.started<movementTween.duration}

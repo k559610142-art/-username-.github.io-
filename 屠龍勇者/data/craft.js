@@ -65,6 +65,7 @@ function currencyCan(cid, x) {
     if (d.cat === 'map' && (x.q === 'legend' || x.unidentified === true)) return false;
     if (d.cat === 'map') return !!(MAP_CURRENCY[cid] && MAP_CURRENCY[cid].can(x));
     if (d.cat !== 'weapon' && d.cat !== 'armor') return false;
+    if (d.unique) return false;   // 傳奇裝備不能用通貨改造（uniques.js）
     if (d.cat === 'map' && x.q === 'legend') return '傳奇地圖不可使用通貨改造';
     if (x.q === 'legend' && cid !== 'curTemper' && cid !== 'curAwaken') return false;
     return CURRENCY[cid].can(x);

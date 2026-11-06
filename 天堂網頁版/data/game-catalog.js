@@ -116,308 +116,1586 @@ function catalogButton(label, action, className = '') {
 }
 
 const catalogPortraits = {
-  "transforms-8817": ["transforms-8817.png","sprite"],
-  "transforms-8774": ["transforms-8774.png","sprite"],
-  "transforms-8900": ["transforms-8900.png","sprite"],
-  "transforms-8851": ["transforms-8851.png","sprite"],
-  "transforms-8812": ["transforms-8812.png","sprite"],
-  "transforms-9003": ["transforms-9003.png","sprite"],
-  "transforms-8913": ["transforms-8913.png","sprite"],
-  "transforms-8978": ["transforms-8978.png","sprite"],
-  "dolls-55000": ["dolls-55000.png","sprite"],
-  "dolls-55001": ["dolls-55001.png","sprite"],
-  "dolls-55002": ["dolls-55002.png","sprite"],
-  "dolls-55003": ["dolls-55003.png","sprite"],
-  "dolls-55004": ["dolls-55004.png","sprite"],
-  "dolls-55005": ["dolls-55005.png","sprite"],
-  "dolls-55006": ["dolls-55006.png","sprite"],
-  "dolls-55007": ["dolls-55007.png","sprite"],
-  "dolls-55008": ["dolls-55008.png","sprite"],
-  "dolls-55009": ["dolls-55009.png","sprite"],
-  "dolls-55010": ["dolls-55010.png","sprite"],
-  "dolls-55011": ["dolls-55011.png","sprite"],
-  "dolls-55012": ["dolls-55012.png","sprite"],
-  "dolls-55013": ["dolls-55013.png","sprite"],
-  "dolls-55015": ["dolls-55015.gif","item"],
-  "dolls-55016": ["dolls-55016.gif","item"],
-  "dolls-55017": ["dolls-55017.gif","item"],
-  "dolls-55018": ["dolls-55018.gif","item"],
-  "dolls-55019": ["dolls-55019.gif","item"],
-  "dolls-55020": ["dolls-55020.gif","item"],
-  "dolls-55021": ["dolls-55021.gif","item"],
-  "dolls-55022": ["dolls-55022.gif","item"],
-  "dolls-55023": ["dolls-55023.gif","item"],
-  "dolls-55024": ["dolls-55024.gif","item"],
-  "dolls-55025": ["dolls-55025.gif","item"],
-  "dolls-55026": ["dolls-55026.gif","item"],
-  "dolls-55027": ["dolls-55027.gif","item"],
-  "dolls-55028": ["dolls-55028.gif","item"],
-  "dolls-55029": ["dolls-55029.png","sprite"],
-  "dolls-55030": ["dolls-55030.png","sprite"],
-  "dolls-55031": ["dolls-55031.png","sprite"],
-  "dolls-55032": ["dolls-55032.png","sprite"],
-  "dolls-55033": ["dolls-55033.gif","item"],
-  "dolls-55034": ["dolls-55034.gif","item"],
-  "dolls-55035": ["dolls-55035.gif","item"],
-  "dolls-55036": ["dolls-55036.gif","item"],
-  "dolls-55037": ["dolls-55037.gif","item"],
-  "dolls-55038": ["dolls-55038.gif","item"],
-  "dolls-55039": ["dolls-55039.gif","item"],
-  "dolls-55040": ["dolls-55040.gif","item"],
-  "dolls-55041": ["dolls-55041.png","sprite"],
-  "dolls-55042": ["dolls-55042.png","sprite"],
-  "dolls-55043": ["dolls-55043.png","sprite"],
-  "dolls-55044": ["dolls-55044.png","sprite"],
-  "dolls-55045": ["dolls-55045.png","sprite"],
-  "dolls-55046": ["dolls-55046.png","sprite"],
-  "dolls-55047": ["dolls-55047.png","sprite"],
-  "dolls-55048": ["dolls-55048.png","sprite"],
-  "dolls-55049": ["dolls-55049.png","sprite"],
-  "dolls-55050": ["dolls-55050.png","sprite"],
-  "dolls-55051": ["dolls-55051.png","sprite"],
-  "dolls-55052": ["dolls-55052.png","sprite"],
-  "dolls-55053": ["dolls-55053.gif","item"],
-  "dolls-55054": ["dolls-55054.gif","item"],
-  "dolls-55055": ["dolls-55055.gif","item"],
-  "dolls-55056": ["dolls-55056.gif","item"],
-  "dolls-55057": ["dolls-55057.gif","item"],
-  "dolls-55058": ["dolls-55058.gif","item"],
-  "dolls-55059": ["dolls-55059.gif","item"],
-  "dolls-55060": ["dolls-55060.gif","item"],
-  "dolls-55061": ["dolls-55061.gif","item"],
-  "dolls-55062": ["dolls-55062.gif","item"],
-  "dolls-55063": ["dolls-55063.gif","item"],
-  "dolls-55064": ["dolls-55064.gif","item"],
-  "dolls-55065": ["dolls-55065.gif","item"],
-  "dolls-55066": ["dolls-55066.gif","item"],
-  "dolls-55067": ["dolls-55067.gif","item"],
-  "dolls-55068": ["dolls-55068.gif","item"],
-  "dolls-55069": ["dolls-55069.gif","item"],
-  "dolls-55070": ["dolls-55070.gif","item"],
-  "dolls-55071": ["dolls-55071.gif","item"],
-  "dolls-55072": ["dolls-55072.gif","item"],
-  "dolls-55073": ["dolls-55073.gif","item"],
-  "dolls-55074": ["dolls-55074.gif","item"],
-  "dolls-55075": ["dolls-55075.gif","item"],
-  "dolls-55076": ["dolls-55076.gif","item"],
-  "dolls-55077": ["dolls-55077.gif","item"],
-  "dolls-55078": ["dolls-55078.gif","item"],
-  "dolls-55079": ["dolls-55079.gif","item"],
-  "dolls-55080": ["dolls-55080.gif","item"],
-  "dolls-55081": ["dolls-55081.gif","item"],
-  "dolls-55082": ["dolls-55082.gif","item"],
-  "transforms-947": ["transforms-947.png","sprite"],
-  "transforms-979": ["transforms-979.png","sprite"],
-  "transforms-3906": ["transforms-3906.png","sprite"],
-  "transforms-3860": ["transforms-3860.png","sprite"],
-  "transforms-3861": ["transforms-3861.png","sprite"],
-  "transforms-3862": ["transforms-3862.png","sprite"],
-  "transforms-3863": ["transforms-3863.png","sprite"],
-  "transforms-3864": ["transforms-3864.png","sprite"],
-  "transforms-3865": ["transforms-3865.png","sprite"],
-  "transforms-3904": ["transforms-3904.png","sprite"],
-  "transforms-29": ["transforms-29.png","sprite"],
-  "transforms-1037": ["transforms-1037.png","sprite"],
-  "transforms-1039": ["transforms-1039.png","sprite"],
-  "transforms-3866": ["transforms-3866.png","sprite"],
-  "transforms-3867": ["transforms-3867.png","sprite"],
-  "transforms-3868": ["transforms-3868.png","sprite"],
-  "transforms-3869": ["transforms-3869.png","sprite"],
-  "transforms-3870": ["transforms-3870.png","sprite"],
-  "transforms-2374": ["transforms-2374.png","sprite"],
-  "transforms-2377": ["transforms-2377.png","sprite"],
-  "transforms-3871": ["transforms-3871.png","sprite"],
-  "transforms-2376": ["transforms-2376.png","sprite"],
-  "transforms-95": ["transforms-95.png","sprite"],
-  "transforms-3872": ["transforms-3872.png","sprite"],
-  "transforms-3873": ["transforms-3873.png","sprite"],
-  "transforms-2378": ["transforms-2378.png","sprite"],
-  "transforms-3874": ["transforms-3874.png","sprite"],
-  "transforms-146": ["transforms-146.png","sprite"],
-  "transforms-3875": ["transforms-3875.png","sprite"],
-  "transforms-3876": ["transforms-3876.png","sprite"],
-  "transforms-951": ["transforms-951.png","sprite"],
-  "transforms-1047": ["transforms-1047.png","sprite"],
-  "transforms-3877": ["transforms-3877.png","sprite"],
-  "transforms-3878": ["transforms-3878.png","sprite"],
-  "transforms-3879": ["transforms-3879.png","sprite"],
-  "transforms-3880": ["transforms-3880.png","sprite"],
-  "transforms-2323": ["transforms-2323.png","sprite"],
-  "transforms-2386": ["transforms-2386.png","sprite"],
-  "transforms-2387": ["transforms-2387.png","sprite"],
-  "transforms-2385": ["transforms-2385.png","sprite"],
-  "transforms-3630": ["transforms-3630.png","sprite"],
-  "transforms-3631": ["transforms-3631.png","sprite"],
-  "transforms-3632": ["transforms-3632.png","sprite"],
-  "transforms-3633": ["transforms-3633.png","sprite"],
-  "transforms-3881": ["transforms-3881.png","sprite"],
-  "transforms-3884": ["transforms-3884.png","sprite"],
-  "transforms-3885": ["transforms-3885.png","sprite"],
-  "transforms-3882": ["transforms-3882.png","sprite"],
-  "transforms-3883": ["transforms-3883.png","sprite"],
-  "transforms-3634": ["transforms-3634.png","sprite"],
-  "transforms-3887": ["transforms-3887.png","sprite"],
-  "transforms-3888": ["transforms-3888.png","sprite"],
-  "transforms-3905": ["transforms-3905.png","sprite"],
-  "transforms-3784": ["transforms-3784.png","sprite"],
-  "transforms-2284": ["transforms-2284.png","sprite"],
-  "transforms-3945": ["transforms-3945.png","sprite"],
-  "transforms-3950": ["transforms-3950.png","sprite"],
-  "transforms-2384": ["transforms-2384.png","sprite"],
-  "transforms-4918": ["transforms-4918.png","sprite"],
-  "transforms-4925": ["transforms-4925.png","sprite"],
-  "transforms-3886": ["transforms-3886.png","sprite"],
-  "transforms-4917": ["transforms-4917.png","sprite"],
-  "transforms-4920": ["transforms-4920.png","sprite"],
-  "transforms-3102": ["transforms-3102.png","sprite"],
-  "transforms-4919": ["transforms-4919.png","sprite"],
-  "transforms-4922": ["transforms-4922.png","sprite"],
-  "transforms-4924": ["transforms-4924.png","sprite"],
-  "transforms-4926": ["transforms-4926.png","sprite"],
-  "transforms-3103": ["transforms-3103.png","sprite"],
-  "transforms-4921": ["transforms-4921.png","sprite"],
-  "transforms-4932": ["transforms-4932.png","sprite"],
-  "transforms-3890": ["transforms-3890.png","sprite"],
-  "transforms-3891": ["transforms-3891.png","sprite"],
-  "transforms-3892": ["transforms-3892.png","sprite"],
-  "transforms-5727": ["transforms-5727.png","sprite"],
-  "transforms-3893": ["transforms-3893.png","sprite"],
-  "transforms-3894": ["transforms-3894.png","sprite"],
-  "transforms-3895": ["transforms-3895.png","sprite"],
-  "transforms-5730": ["transforms-5730.png","sprite"],
-  "transforms-3896": ["transforms-3896.png","sprite"],
-  "transforms-3897": ["transforms-3897.png","sprite"],
-  "transforms-3898": ["transforms-3898.png","sprite"],
-  "transforms-5733": ["transforms-5733.png","sprite"],
-  "transforms-3899": ["transforms-3899.png","sprite"],
-  "transforms-3900": ["transforms-3900.png","sprite"],
-  "transforms-3901": ["transforms-3901.png","sprite"],
-  "transforms-5736": ["transforms-5736.png","sprite"],
-  "transforms-2501": ["transforms-2501.png","sprite"],
-  "transforms-2388": ["transforms-2388.png","sprite"],
-  "transforms-3952": ["transforms-3952.png","sprite"],
-  "transforms-4767": ["transforms-4767.png","sprite"],
-  "transforms-4769": ["transforms-4769.png","sprite"],
-  "transforms-4928": ["transforms-4928.png","sprite"],
-  "transforms-4929": ["transforms-4929.png","sprite"],
-  "transforms-938": ["transforms-938.png","sprite"],
-  "transforms-2064": ["transforms-2064.png","sprite"],
-  "transforms-4227": ["transforms-4227.png","sprite"],
-  "transforms-3750": ["transforms-3750.png","sprite"],
-  "transforms-3664": ["transforms-3664.png","sprite"],
-  "transforms-6010": ["transforms-6010.png","sprite"],
-  "transforms-6089": ["transforms-6089.png","sprite"],
-  "transforms-4000": ["transforms-4000.png","sprite"],
-  "transforms-4001": ["transforms-4001.png","sprite"],
-  "transforms-4002": ["transforms-4002.png","sprite"],
-  "transforms-4004": ["transforms-4004.png","sprite"],
-  "transforms-4186": ["transforms-4186.png","sprite"],
-  "transforms-4188": ["transforms-4188.png","sprite"],
-  "transforms-4190": ["transforms-4190.png","sprite"],
-  "transforms-6002": ["transforms-6002.png","sprite"],
-  "transforms-6137": ["transforms-6137.png","sprite"],
-  "transforms-6140": ["transforms-6140.png","sprite"],
-  "transforms-6136": ["transforms-6136.png","sprite"],
-  "transforms-6139": ["transforms-6139.png","sprite"],
-  "transforms-6138": ["transforms-6138.png","sprite"],
-  "transforms-6267": ["transforms-6267.png","sprite"],
-  "transforms-6268": ["transforms-6268.png","sprite"],
-  "transforms-6269": ["transforms-6269.png","sprite"],
-  "transforms-6279": ["transforms-6279.png","sprite"],
-  "transforms-6142": ["transforms-6142.png","sprite"],
-  "transforms-6145": ["transforms-6145.png","sprite"],
-  "transforms-6141": ["transforms-6141.png","sprite"],
-  "transforms-6144": ["transforms-6144.png","sprite"],
-  "transforms-6143": ["transforms-6143.png","sprite"],
-  "transforms-6270": ["transforms-6270.png","sprite"],
-  "transforms-6271": ["transforms-6271.png","sprite"],
-  "transforms-6272": ["transforms-6272.png","sprite"],
-  "transforms-6280": ["transforms-6280.png","sprite"],
-  "transforms-6147": ["transforms-6147.png","sprite"],
-  "transforms-6150": ["transforms-6150.png","sprite"],
-  "transforms-6146": ["transforms-6146.png","sprite"],
-  "transforms-6149": ["transforms-6149.png","sprite"],
-  "transforms-6148": ["transforms-6148.png","sprite"],
-  "transforms-6273": ["transforms-6273.png","sprite"],
-  "transforms-6274": ["transforms-6274.png","sprite"],
-  "transforms-6275": ["transforms-6275.png","sprite"],
-  "transforms-6281": ["transforms-6281.png","sprite"],
-  "transforms-6152": ["transforms-6152.png","sprite"],
-  "transforms-6155": ["transforms-6155.png","sprite"],
-  "transforms-6151": ["transforms-6151.png","sprite"],
-  "transforms-6154": ["transforms-6154.png","sprite"],
-  "transforms-6153": ["transforms-6153.png","sprite"],
-  "transforms-6276": ["transforms-6276.png","sprite"],
-  "transforms-6277": ["transforms-6277.png","sprite"],
-  "transforms-6278": ["transforms-6278.png","sprite"],
-  "transforms-6282": ["transforms-6282.png","sprite"],
-  "transforms-6157": ["transforms-6157.png","sprite"],
-  "transforms-6160": ["transforms-6160.png","sprite"],
-  "transforms-6156": ["transforms-6156.png","sprite"],
-  "transforms-6159": ["transforms-6159.png","sprite"],
-  "transforms-6158": ["transforms-6158.png","sprite"],
-  "transforms-6284": ["transforms-6284.png","sprite"],
-  "transforms-3902": ["transforms-3902.png","sprite"],
-  "transforms-3903": ["transforms-3903.png","sprite"],
-  "transforms-5976": ["transforms-5976.png","sprite"],
-  "transforms-6086": ["transforms-6086.png","sprite"],
-  "transforms-6087": ["transforms-6087.png","sprite"],
-  "transforms-6088": ["transforms-6088.png","sprite"],
-  "transforms-6034": ["transforms-6034.png","sprite"],
-  "transforms-6035": ["transforms-6035.png","sprite"],
-  "transforms-9987": ["transforms-9987.png","sprite"],
-  "transforms-9988": ["transforms-9988.png","sprite"],
-  "transforms-9989": ["transforms-9989.png","sprite"],
-  "transforms-9990": ["transforms-9990.png","sprite"],
-  "transforms-9991": ["transforms-9991.png","sprite"],
-  "transforms-9205": ["transforms-9205.png","sprite"],
-  "transforms-9011": ["transforms-9011.png","sprite"],
-  "transforms-9225": ["transforms-9225.png","sprite"],
-  "transforms-9206": ["transforms-9206.png","sprite"],
-  "transforms-9012": ["transforms-9012.png","sprite"],
-  "transforms-9226": ["transforms-9226.png","sprite"],
-  "transforms-8860": ["transforms-8860.png","sprite"],
-  "transforms-8859": ["transforms-8859.png","sprite"],
-  "transforms-2437": ["transforms-2437.png","sprite"],
-  "transforms-2438": ["transforms-2438.png","sprite"],
-  "transforms-8858": ["transforms-8858.png","sprite"],
-  "transforms-8865": ["transforms-8865.png","sprite"],
-  "transforms-8866": ["transforms-8866.png","sprite"],
-  "transforms-8868": ["transforms-8868.png","sprite"],
-  "transforms-8863": ["transforms-8863.png","sprite"],
-  "transforms-8864": ["transforms-8864.png","sprite"],
-  "transforms-8867": ["transforms-8867.png","sprite"],
-  "transforms-8862": ["transforms-8862.png","sprite"],
-  "transforms-8861": ["transforms-8861.png","sprite"],
-  "transforms-8781": ["transforms-8781.png","sprite"],
-  "transforms-8782": ["transforms-8782.png","sprite"],
-  "transforms-8783": ["transforms-8783.png","sprite"],
-  "transforms-8784": ["transforms-8784.png","sprite"],
-  "transforms-8785": ["transforms-8785.png","sprite"],
-  "transforms-8786": ["transforms-8786.png","sprite"],
-  "transforms-8787": ["transforms-8787.png","sprite"],
-  "transforms-8788": ["transforms-8788.png","sprite"],
-  "transforms-8789": ["transforms-8789.png","sprite"],
-  "transforms-8790": ["transforms-8790.png","sprite"],
-  "transforms-8791": ["transforms-8791.png","sprite"],
-  "transforms-8792": ["transforms-8792.png","sprite"],
-  "transforms-8793": ["transforms-8793.png","sprite"],
-  "transforms-8794": ["transforms-8794.png","sprite"],
-  "transforms-8795": ["transforms-8795.png","sprite"],
-  "transforms-8796": ["transforms-8796.png","sprite"],
-  "transforms-8797": ["transforms-8797.png","sprite"],
-  "transforms-8798": ["transforms-8798.png","sprite"],
-  "transforms-8799": ["transforms-8799.png","sprite"],
-  "transforms-8800": ["transforms-8800.png","sprite"],
-  "transforms-8801": ["transforms-8801.png","sprite"],
-  "transforms-8802": ["transforms-8802.png","sprite"],
-  "transforms-8803": ["transforms-8803.png","sprite"],
-  "transforms-8804": ["transforms-8804.png","sprite"],
-  "transforms-8805": ["transforms-8805.png","sprite"],
-  "transforms-8806": ["transforms-8806.png","sprite"],
-  "transforms-8807": ["transforms-8807.png","sprite"],
-  "transforms-8808": ["transforms-8808.png","sprite"],
-  "transforms-945": ["transforms-945.png","sprite"],
+  "transforms-8817": [
+    "transforms-8817.png",
+    "sprite"
+  ],
+  "transforms-8774": [
+    "transforms-8774.png",
+    "sprite"
+  ],
+  "transforms-8900": [
+    "transforms-8900.png",
+    "sprite"
+  ],
+  "transforms-8851": [
+    "transforms-8851.png",
+    "sprite"
+  ],
+  "transforms-8812": [
+    "transforms-8812.png",
+    "sprite"
+  ],
+  "transforms-9003": [
+    "transforms-9003.png",
+    "sprite"
+  ],
+  "transforms-8913": [
+    "transforms-8913.png",
+    "sprite"
+  ],
+  "transforms-8978": [
+    "transforms-8978.png",
+    "sprite"
+  ],
+  "dolls-55000": [
+    "dolls-55000.png",
+    "sprite"
+  ],
+  "dolls-55001": [
+    "dolls-55001.png",
+    "sprite"
+  ],
+  "dolls-55002": [
+    "dolls-55002.png",
+    "sprite"
+  ],
+  "dolls-55003": [
+    "dolls-55003.png",
+    "sprite"
+  ],
+  "dolls-55004": [
+    "dolls-55004.png",
+    "sprite"
+  ],
+  "dolls-55005": [
+    "dolls-55005.png",
+    "sprite"
+  ],
+  "dolls-55006": [
+    "dolls-55006.png",
+    "sprite"
+  ],
+  "dolls-55007": [
+    "dolls-55007.png",
+    "sprite"
+  ],
+  "dolls-55008": [
+    "dolls-55008.png",
+    "sprite"
+  ],
+  "dolls-55009": [
+    "dolls-55009.png",
+    "sprite"
+  ],
+  "dolls-55010": [
+    "dolls-55010.png",
+    "sprite"
+  ],
+  "dolls-55011": [
+    "dolls-55011.png",
+    "sprite"
+  ],
+  "dolls-55012": [
+    "dolls-55012.png",
+    "sprite"
+  ],
+  "dolls-55013": [
+    "dolls-55013.png",
+    "sprite"
+  ],
+  "dolls-55015": [
+    "dolls-55015.gif",
+    "item"
+  ],
+  "dolls-55016": [
+    "dolls-55016.gif",
+    "item"
+  ],
+  "dolls-55017": [
+    "dolls-55017.gif",
+    "item"
+  ],
+  "dolls-55018": [
+    "dolls-55018.gif",
+    "item"
+  ],
+  "dolls-55019": [
+    "dolls-55019.gif",
+    "item"
+  ],
+  "dolls-55020": [
+    "dolls-55020.gif",
+    "item"
+  ],
+  "dolls-55021": [
+    "dolls-55021.gif",
+    "item"
+  ],
+  "dolls-55022": [
+    "dolls-55022.gif",
+    "item"
+  ],
+  "dolls-55023": [
+    "dolls-55023.gif",
+    "item"
+  ],
+  "dolls-55024": [
+    "dolls-55024.gif",
+    "item"
+  ],
+  "dolls-55025": [
+    "dolls-55025.gif",
+    "item"
+  ],
+  "dolls-55026": [
+    "dolls-55026.gif",
+    "item"
+  ],
+  "dolls-55027": [
+    "dolls-55027.gif",
+    "item"
+  ],
+  "dolls-55028": [
+    "dolls-55028.gif",
+    "item"
+  ],
+  "dolls-55029": [
+    "dolls-55029.png",
+    "sprite"
+  ],
+  "dolls-55030": [
+    "dolls-55030.png",
+    "sprite"
+  ],
+  "dolls-55031": [
+    "dolls-55031.png",
+    "sprite"
+  ],
+  "dolls-55032": [
+    "dolls-55032.png",
+    "sprite"
+  ],
+  "dolls-55033": [
+    "dolls-55033.gif",
+    "item"
+  ],
+  "dolls-55034": [
+    "dolls-55034.gif",
+    "item"
+  ],
+  "dolls-55035": [
+    "dolls-55035.gif",
+    "item"
+  ],
+  "dolls-55036": [
+    "dolls-55036.gif",
+    "item"
+  ],
+  "dolls-55037": [
+    "dolls-55037.gif",
+    "item"
+  ],
+  "dolls-55038": [
+    "dolls-55038.gif",
+    "item"
+  ],
+  "dolls-55039": [
+    "dolls-55039.gif",
+    "item"
+  ],
+  "dolls-55040": [
+    "dolls-55040.gif",
+    "item"
+  ],
+  "dolls-55041": [
+    "dolls-55041.png",
+    "sprite"
+  ],
+  "dolls-55042": [
+    "dolls-55042.png",
+    "sprite"
+  ],
+  "dolls-55043": [
+    "dolls-55043.png",
+    "sprite"
+  ],
+  "dolls-55044": [
+    "dolls-55044.png",
+    "sprite"
+  ],
+  "dolls-55045": [
+    "dolls-55045.png",
+    "sprite"
+  ],
+  "dolls-55046": [
+    "dolls-55046.png",
+    "sprite"
+  ],
+  "dolls-55047": [
+    "dolls-55047.png",
+    "sprite"
+  ],
+  "dolls-55048": [
+    "dolls-55048.png",
+    "sprite"
+  ],
+  "dolls-55049": [
+    "dolls-55049.png",
+    "sprite"
+  ],
+  "dolls-55050": [
+    "dolls-55050.png",
+    "sprite"
+  ],
+  "dolls-55051": [
+    "dolls-55051.png",
+    "sprite"
+  ],
+  "dolls-55052": [
+    "dolls-55052.png",
+    "sprite"
+  ],
+  "dolls-55053": [
+    "dolls-55053.gif",
+    "item"
+  ],
+  "dolls-55054": [
+    "dolls-55054.gif",
+    "item"
+  ],
+  "dolls-55055": [
+    "dolls-55055.gif",
+    "item"
+  ],
+  "dolls-55056": [
+    "dolls-55056.gif",
+    "item"
+  ],
+  "dolls-55057": [
+    "dolls-55057.gif",
+    "item"
+  ],
+  "dolls-55058": [
+    "dolls-55058.gif",
+    "item"
+  ],
+  "dolls-55059": [
+    "dolls-55059.gif",
+    "item"
+  ],
+  "dolls-55060": [
+    "dolls-55060.gif",
+    "item"
+  ],
+  "dolls-55061": [
+    "dolls-55061.gif",
+    "item"
+  ],
+  "dolls-55062": [
+    "dolls-55062.gif",
+    "item"
+  ],
+  "dolls-55063": [
+    "dolls-55063.gif",
+    "item"
+  ],
+  "dolls-55064": [
+    "dolls-55064.gif",
+    "item"
+  ],
+  "dolls-55065": [
+    "dolls-55065.gif",
+    "item"
+  ],
+  "dolls-55066": [
+    "dolls-55066.gif",
+    "item"
+  ],
+  "dolls-55067": [
+    "dolls-55067.gif",
+    "item"
+  ],
+  "dolls-55068": [
+    "dolls-55068.gif",
+    "item"
+  ],
+  "dolls-55069": [
+    "dolls-55069.gif",
+    "item"
+  ],
+  "dolls-55070": [
+    "dolls-55070.gif",
+    "item"
+  ],
+  "dolls-55071": [
+    "dolls-55071.gif",
+    "item"
+  ],
+  "dolls-55072": [
+    "dolls-55072.gif",
+    "item"
+  ],
+  "dolls-55073": [
+    "dolls-55073.gif",
+    "item"
+  ],
+  "dolls-55074": [
+    "dolls-55074.gif",
+    "item"
+  ],
+  "dolls-55075": [
+    "dolls-55075.gif",
+    "item"
+  ],
+  "dolls-55076": [
+    "dolls-55076.gif",
+    "item"
+  ],
+  "dolls-55077": [
+    "dolls-55077.gif",
+    "item"
+  ],
+  "dolls-55078": [
+    "dolls-55078.gif",
+    "item"
+  ],
+  "dolls-55079": [
+    "dolls-55079.gif",
+    "item"
+  ],
+  "dolls-55080": [
+    "dolls-55080.gif",
+    "item"
+  ],
+  "dolls-55081": [
+    "dolls-55081.gif",
+    "item"
+  ],
+  "dolls-55082": [
+    "dolls-55082.gif",
+    "item"
+  ],
+  "transforms-947": [
+    "transforms-947.png",
+    "sprite"
+  ],
+  "transforms-979": [
+    "transforms-979.png",
+    "sprite"
+  ],
+  "transforms-3906": [
+    "transforms-3906.png",
+    "sprite"
+  ],
+  "transforms-3860": [
+    "transforms-3860.png",
+    "sprite"
+  ],
+  "transforms-3861": [
+    "transforms-3861.png",
+    "sprite"
+  ],
+  "transforms-3862": [
+    "transforms-3862.png",
+    "sprite"
+  ],
+  "transforms-3863": [
+    "transforms-3863.png",
+    "sprite"
+  ],
+  "transforms-3864": [
+    "transforms-3864.png",
+    "sprite"
+  ],
+  "transforms-3865": [
+    "transforms-3865.png",
+    "sprite"
+  ],
+  "transforms-3904": [
+    "transforms-3904.png",
+    "sprite"
+  ],
+  "transforms-29": [
+    "transforms-29.png",
+    "sprite"
+  ],
+  "transforms-1037": [
+    "transforms-1037.png",
+    "sprite"
+  ],
+  "transforms-1039": [
+    "transforms-1039.png",
+    "sprite"
+  ],
+  "transforms-3866": [
+    "transforms-3866.png",
+    "sprite"
+  ],
+  "transforms-3867": [
+    "transforms-3867.png",
+    "sprite"
+  ],
+  "transforms-3868": [
+    "transforms-3868.png",
+    "sprite"
+  ],
+  "transforms-3869": [
+    "transforms-3869.png",
+    "sprite"
+  ],
+  "transforms-3870": [
+    "transforms-3870.png",
+    "sprite"
+  ],
+  "transforms-2374": [
+    "transforms-2374.png",
+    "sprite"
+  ],
+  "transforms-2377": [
+    "transforms-2377.png",
+    "sprite"
+  ],
+  "transforms-3871": [
+    "transforms-3871.png",
+    "sprite"
+  ],
+  "transforms-2376": [
+    "transforms-2376.png",
+    "sprite"
+  ],
+  "transforms-95": [
+    "transforms-95.png",
+    "sprite"
+  ],
+  "transforms-3872": [
+    "transforms-3872.png",
+    "sprite"
+  ],
+  "transforms-3873": [
+    "transforms-3873.png",
+    "sprite"
+  ],
+  "transforms-2378": [
+    "transforms-2378.png",
+    "sprite"
+  ],
+  "transforms-3874": [
+    "transforms-3874.png",
+    "sprite"
+  ],
+  "transforms-146": [
+    "transforms-146.png",
+    "sprite"
+  ],
+  "transforms-3875": [
+    "transforms-3875.png",
+    "sprite"
+  ],
+  "transforms-3876": [
+    "transforms-3876.png",
+    "sprite"
+  ],
+  "transforms-951": [
+    "transforms-951.png",
+    "sprite"
+  ],
+  "transforms-1047": [
+    "transforms-1047.png",
+    "sprite"
+  ],
+  "transforms-3877": [
+    "transforms-3877.png",
+    "sprite"
+  ],
+  "transforms-3878": [
+    "transforms-3878.png",
+    "sprite"
+  ],
+  "transforms-3879": [
+    "transforms-3879.png",
+    "sprite"
+  ],
+  "transforms-3880": [
+    "transforms-3880.png",
+    "sprite"
+  ],
+  "transforms-2323": [
+    "transforms-2323.png",
+    "sprite"
+  ],
+  "transforms-2386": [
+    "transforms-2386.png",
+    "sprite"
+  ],
+  "transforms-2387": [
+    "transforms-2387.png",
+    "sprite"
+  ],
+  "transforms-2385": [
+    "transforms-2385.png",
+    "sprite"
+  ],
+  "transforms-3630": [
+    "transforms-3630.png",
+    "sprite"
+  ],
+  "transforms-3631": [
+    "transforms-3631.png",
+    "sprite"
+  ],
+  "transforms-3632": [
+    "transforms-3632.png",
+    "sprite"
+  ],
+  "transforms-3633": [
+    "transforms-3633.png",
+    "sprite"
+  ],
+  "transforms-3881": [
+    "transforms-3881.png",
+    "sprite"
+  ],
+  "transforms-3884": [
+    "transforms-3884.png",
+    "sprite"
+  ],
+  "transforms-3885": [
+    "transforms-3885.png",
+    "sprite"
+  ],
+  "transforms-3882": [
+    "transforms-3882.png",
+    "sprite"
+  ],
+  "transforms-3883": [
+    "transforms-3883.png",
+    "sprite"
+  ],
+  "transforms-3634": [
+    "transforms-3634.png",
+    "sprite"
+  ],
+  "transforms-3887": [
+    "transforms-3887.png",
+    "sprite"
+  ],
+  "transforms-3888": [
+    "transforms-3888.png",
+    "sprite"
+  ],
+  "transforms-3905": [
+    "transforms-3905.png",
+    "sprite"
+  ],
+  "transforms-3784": [
+    "transforms-3784.png",
+    "sprite"
+  ],
+  "transforms-2284": [
+    "transforms-2284.png",
+    "sprite"
+  ],
+  "transforms-3945": [
+    "transforms-3945.png",
+    "sprite"
+  ],
+  "transforms-3950": [
+    "transforms-3950.png",
+    "sprite"
+  ],
+  "transforms-2384": [
+    "transforms-2384.png",
+    "sprite"
+  ],
+  "transforms-4918": [
+    "transforms-4918.png",
+    "sprite"
+  ],
+  "transforms-4925": [
+    "transforms-4925.png",
+    "sprite"
+  ],
+  "transforms-3886": [
+    "transforms-3886.png",
+    "sprite"
+  ],
+  "transforms-4917": [
+    "transforms-4917.png",
+    "sprite"
+  ],
+  "transforms-4920": [
+    "transforms-4920.png",
+    "sprite"
+  ],
+  "transforms-3102": [
+    "transforms-3102.png",
+    "sprite"
+  ],
+  "transforms-4919": [
+    "transforms-4919.png",
+    "sprite"
+  ],
+  "transforms-4922": [
+    "transforms-4922.png",
+    "sprite"
+  ],
+  "transforms-4924": [
+    "transforms-4924.png",
+    "sprite"
+  ],
+  "transforms-4926": [
+    "transforms-4926.png",
+    "sprite"
+  ],
+  "transforms-3103": [
+    "transforms-3103.png",
+    "sprite"
+  ],
+  "transforms-4921": [
+    "transforms-4921.png",
+    "sprite"
+  ],
+  "transforms-4932": [
+    "transforms-4932.png",
+    "sprite"
+  ],
+  "transforms-3890": [
+    "transforms-3890.png",
+    "sprite"
+  ],
+  "transforms-3891": [
+    "transforms-3891.png",
+    "sprite"
+  ],
+  "transforms-3892": [
+    "transforms-3892.png",
+    "sprite"
+  ],
+  "transforms-5727": [
+    "transforms-5727.png",
+    "sprite"
+  ],
+  "transforms-3893": [
+    "transforms-3893.png",
+    "sprite"
+  ],
+  "transforms-3894": [
+    "transforms-3894.png",
+    "sprite"
+  ],
+  "transforms-3895": [
+    "transforms-3895.png",
+    "sprite"
+  ],
+  "transforms-5730": [
+    "transforms-5730.png",
+    "sprite"
+  ],
+  "transforms-3896": [
+    "transforms-3896.png",
+    "sprite"
+  ],
+  "transforms-3897": [
+    "transforms-3897.png",
+    "sprite"
+  ],
+  "transforms-3898": [
+    "transforms-3898.png",
+    "sprite"
+  ],
+  "transforms-5733": [
+    "transforms-5733.png",
+    "sprite"
+  ],
+  "transforms-3899": [
+    "transforms-3899.png",
+    "sprite"
+  ],
+  "transforms-3900": [
+    "transforms-3900.png",
+    "sprite"
+  ],
+  "transforms-3901": [
+    "transforms-3901.png",
+    "sprite"
+  ],
+  "transforms-5736": [
+    "transforms-5736.png",
+    "sprite"
+  ],
+  "transforms-2501": [
+    "transforms-2501.png",
+    "sprite"
+  ],
+  "transforms-2388": [
+    "transforms-2388.png",
+    "sprite"
+  ],
+  "transforms-3952": [
+    "transforms-3952.png",
+    "sprite"
+  ],
+  "transforms-4767": [
+    "transforms-4767.png",
+    "sprite"
+  ],
+  "transforms-4769": [
+    "transforms-4769.png",
+    "sprite"
+  ],
+  "transforms-4928": [
+    "transforms-4928.png",
+    "sprite"
+  ],
+  "transforms-4929": [
+    "transforms-4929.png",
+    "sprite"
+  ],
+  "transforms-938": [
+    "transforms-938.png",
+    "sprite"
+  ],
+  "transforms-2064": [
+    "transforms-2064.png",
+    "sprite"
+  ],
+  "transforms-4227": [
+    "transforms-4227.png",
+    "sprite"
+  ],
+  "transforms-3750": [
+    "transforms-3750.png",
+    "sprite"
+  ],
+  "transforms-3664": [
+    "transforms-3664.png",
+    "sprite"
+  ],
+  "transforms-6010": [
+    "transforms-6010.png",
+    "sprite"
+  ],
+  "transforms-6089": [
+    "transforms-6089.png",
+    "sprite"
+  ],
+  "transforms-4000": [
+    "transforms-4000.png",
+    "sprite"
+  ],
+  "transforms-4001": [
+    "transforms-4001.png",
+    "sprite"
+  ],
+  "transforms-4002": [
+    "transforms-4002.png",
+    "sprite"
+  ],
+  "transforms-4004": [
+    "transforms-4004.png",
+    "sprite"
+  ],
+  "transforms-4186": [
+    "transforms-4186.png",
+    "sprite"
+  ],
+  "transforms-4188": [
+    "transforms-4188.png",
+    "sprite"
+  ],
+  "transforms-4190": [
+    "transforms-4190.png",
+    "sprite"
+  ],
+  "transforms-6002": [
+    "transforms-6002.png",
+    "sprite"
+  ],
+  "transforms-6137": [
+    "transforms-6137.png",
+    "sprite"
+  ],
+  "transforms-6140": [
+    "transforms-6140.png",
+    "sprite"
+  ],
+  "transforms-6136": [
+    "transforms-6136.png",
+    "sprite"
+  ],
+  "transforms-6139": [
+    "transforms-6139.png",
+    "sprite"
+  ],
+  "transforms-6138": [
+    "transforms-6138.png",
+    "sprite"
+  ],
+  "transforms-6267": [
+    "transforms-6267.png",
+    "sprite"
+  ],
+  "transforms-6268": [
+    "transforms-6268.png",
+    "sprite"
+  ],
+  "transforms-6269": [
+    "transforms-6269.png",
+    "sprite"
+  ],
+  "transforms-6279": [
+    "transforms-6279.png",
+    "sprite"
+  ],
+  "transforms-6142": [
+    "transforms-6142.png",
+    "sprite"
+  ],
+  "transforms-6145": [
+    "transforms-6145.png",
+    "sprite"
+  ],
+  "transforms-6141": [
+    "transforms-6141.png",
+    "sprite"
+  ],
+  "transforms-6144": [
+    "transforms-6144.png",
+    "sprite"
+  ],
+  "transforms-6143": [
+    "transforms-6143.png",
+    "sprite"
+  ],
+  "transforms-6270": [
+    "transforms-6270.png",
+    "sprite"
+  ],
+  "transforms-6271": [
+    "transforms-6271.png",
+    "sprite"
+  ],
+  "transforms-6272": [
+    "transforms-6272.png",
+    "sprite"
+  ],
+  "transforms-6280": [
+    "transforms-6280.png",
+    "sprite"
+  ],
+  "transforms-6147": [
+    "transforms-6147.png",
+    "sprite"
+  ],
+  "transforms-6150": [
+    "transforms-6150.png",
+    "sprite"
+  ],
+  "transforms-6146": [
+    "transforms-6146.png",
+    "sprite"
+  ],
+  "transforms-6149": [
+    "transforms-6149.png",
+    "sprite"
+  ],
+  "transforms-6148": [
+    "transforms-6148.png",
+    "sprite"
+  ],
+  "transforms-6273": [
+    "transforms-6273.png",
+    "sprite"
+  ],
+  "transforms-6274": [
+    "transforms-6274.png",
+    "sprite"
+  ],
+  "transforms-6275": [
+    "transforms-6275.png",
+    "sprite"
+  ],
+  "transforms-6281": [
+    "transforms-6281.png",
+    "sprite"
+  ],
+  "transforms-6152": [
+    "transforms-6152.png",
+    "sprite"
+  ],
+  "transforms-6155": [
+    "transforms-6155.png",
+    "sprite"
+  ],
+  "transforms-6151": [
+    "transforms-6151.png",
+    "sprite"
+  ],
+  "transforms-6154": [
+    "transforms-6154.png",
+    "sprite"
+  ],
+  "transforms-6153": [
+    "transforms-6153.png",
+    "sprite"
+  ],
+  "transforms-6276": [
+    "transforms-6276.png",
+    "sprite"
+  ],
+  "transforms-6277": [
+    "transforms-6277.png",
+    "sprite"
+  ],
+  "transforms-6278": [
+    "transforms-6278.png",
+    "sprite"
+  ],
+  "transforms-6282": [
+    "transforms-6282.png",
+    "sprite"
+  ],
+  "transforms-6157": [
+    "transforms-6157.png",
+    "sprite"
+  ],
+  "transforms-6160": [
+    "transforms-6160.png",
+    "sprite"
+  ],
+  "transforms-6156": [
+    "transforms-6156.png",
+    "sprite"
+  ],
+  "transforms-6159": [
+    "transforms-6159.png",
+    "sprite"
+  ],
+  "transforms-6158": [
+    "transforms-6158.png",
+    "sprite"
+  ],
+  "transforms-6284": [
+    "transforms-6284.png",
+    "sprite"
+  ],
+  "transforms-3902": [
+    "transforms-3902.png",
+    "sprite"
+  ],
+  "transforms-3903": [
+    "transforms-3903.png",
+    "sprite"
+  ],
+  "transforms-5976": [
+    "transforms-5976.png",
+    "sprite"
+  ],
+  "transforms-6086": [
+    "transforms-6086.png",
+    "sprite"
+  ],
+  "transforms-6087": [
+    "transforms-6087.png",
+    "sprite"
+  ],
+  "transforms-6088": [
+    "transforms-6088.png",
+    "sprite"
+  ],
+  "transforms-6034": [
+    "transforms-6034.png",
+    "sprite"
+  ],
+  "transforms-6035": [
+    "transforms-6035.png",
+    "sprite"
+  ],
+  "transforms-9987": [
+    "transforms-9987.png",
+    "sprite"
+  ],
+  "transforms-9988": [
+    "transforms-9988.png",
+    "sprite"
+  ],
+  "transforms-9989": [
+    "transforms-9989.png",
+    "sprite"
+  ],
+  "transforms-9990": [
+    "transforms-9990.png",
+    "sprite"
+  ],
+  "transforms-9991": [
+    "transforms-9991.png",
+    "sprite"
+  ],
+  "transforms-9205": [
+    "transforms-9205.png",
+    "sprite"
+  ],
+  "transforms-9011": [
+    "transforms-9011.png",
+    "sprite"
+  ],
+  "transforms-9225": [
+    "transforms-9225.png",
+    "sprite"
+  ],
+  "transforms-9206": [
+    "transforms-9206.png",
+    "sprite"
+  ],
+  "transforms-9012": [
+    "transforms-9012.png",
+    "sprite"
+  ],
+  "transforms-9226": [
+    "transforms-9226.png",
+    "sprite"
+  ],
+  "transforms-8860": [
+    "transforms-8860.png",
+    "sprite"
+  ],
+  "transforms-8859": [
+    "transforms-8859.png",
+    "sprite"
+  ],
+  "transforms-2437": [
+    "transforms-2437.png",
+    "sprite"
+  ],
+  "transforms-2438": [
+    "transforms-2438.png",
+    "sprite"
+  ],
+  "transforms-8858": [
+    "transforms-8858.png",
+    "sprite"
+  ],
+  "transforms-8865": [
+    "transforms-8865.png",
+    "sprite"
+  ],
+  "transforms-8866": [
+    "transforms-8866.png",
+    "sprite"
+  ],
+  "transforms-8868": [
+    "transforms-8868.png",
+    "sprite"
+  ],
+  "transforms-8863": [
+    "transforms-8863.png",
+    "sprite"
+  ],
+  "transforms-8864": [
+    "transforms-8864.png",
+    "sprite"
+  ],
+  "transforms-8867": [
+    "transforms-8867.png",
+    "sprite"
+  ],
+  "transforms-8862": [
+    "transforms-8862.png",
+    "sprite"
+  ],
+  "transforms-8861": [
+    "transforms-8861.png",
+    "sprite"
+  ],
+  "transforms-8781": [
+    "transforms-8781.png",
+    "sprite"
+  ],
+  "transforms-8782": [
+    "transforms-8782.png",
+    "sprite"
+  ],
+  "transforms-8783": [
+    "transforms-8783.png",
+    "sprite"
+  ],
+  "transforms-8784": [
+    "transforms-8784.png",
+    "sprite"
+  ],
+  "transforms-8785": [
+    "transforms-8785.png",
+    "sprite"
+  ],
+  "transforms-8786": [
+    "transforms-8786.png",
+    "sprite"
+  ],
+  "transforms-8787": [
+    "transforms-8787.png",
+    "sprite"
+  ],
+  "transforms-8788": [
+    "transforms-8788.png",
+    "sprite"
+  ],
+  "transforms-8789": [
+    "transforms-8789.png",
+    "sprite"
+  ],
+  "transforms-8790": [
+    "transforms-8790.png",
+    "sprite"
+  ],
+  "transforms-8791": [
+    "transforms-8791.png",
+    "sprite"
+  ],
+  "transforms-8792": [
+    "transforms-8792.png",
+    "sprite"
+  ],
+  "transforms-8793": [
+    "transforms-8793.png",
+    "sprite"
+  ],
+  "transforms-8794": [
+    "transforms-8794.png",
+    "sprite"
+  ],
+  "transforms-8795": [
+    "transforms-8795.png",
+    "sprite"
+  ],
+  "transforms-8796": [
+    "transforms-8796.png",
+    "sprite"
+  ],
+  "transforms-8797": [
+    "transforms-8797.png",
+    "sprite"
+  ],
+  "transforms-8798": [
+    "transforms-8798.png",
+    "sprite"
+  ],
+  "transforms-8799": [
+    "transforms-8799.png",
+    "sprite"
+  ],
+  "transforms-8800": [
+    "transforms-8800.png",
+    "sprite"
+  ],
+  "transforms-8801": [
+    "transforms-8801.png",
+    "sprite"
+  ],
+  "transforms-8802": [
+    "transforms-8802.png",
+    "sprite"
+  ],
+  "transforms-8803": [
+    "transforms-8803.png",
+    "sprite"
+  ],
+  "transforms-8804": [
+    "transforms-8804.png",
+    "sprite"
+  ],
+  "transforms-8805": [
+    "transforms-8805.png",
+    "sprite"
+  ],
+  "transforms-8806": [
+    "transforms-8806.png",
+    "sprite"
+  ],
+  "transforms-8807": [
+    "transforms-8807.png",
+    "sprite"
+  ],
+  "transforms-8808": [
+    "transforms-8808.png",
+    "sprite"
+  ],
+  "transforms-945": [
+    "transforms-945.png",
+    "sprite"
+  ],
+  "dolls-39039": [
+    "client-doll-13183.png",
+    "sprite"
+  ],
+  "dolls-39149": [
+    "client-doll-13344.png",
+    "sprite"
+  ],
+  "dolls-39150": [
+    "client-doll-13345.png",
+    "sprite"
+  ],
+  "dolls-55084": [
+    "client-doll-3891.png",
+    "sprite"
+  ],
+  "dolls-55085": [
+    "client-doll-3894.png",
+    "sprite"
+  ],
+  "dolls-55086": [
+    "client-doll-3897.png",
+    "sprite"
+  ],
+  "dolls-55087": [
+    "client-doll-3900.png",
+    "sprite"
+  ],
+  "dolls-80254": [
+    "client-doll-5933.png",
+    "sprite"
+  ],
+  "dolls-80255": [
+    "client-doll-5933.png",
+    "sprite"
+  ],
+  "dolls-80256": [
+    "client-doll-5933.png",
+    "sprite"
+  ],
+  "dolls-80257": [
+    "client-doll-5933.png",
+    "sprite"
+  ],
+  "dolls-80258": [
+    "client-doll-5933.png",
+    "sprite"
+  ],
+  "dolls-80259": [
+    "client-doll-11229.png",
+    "sprite"
+  ],
+  "dolls-80260": [
+    "client-doll-11227.png",
+    "sprite"
+  ],
+  "dolls-80261": [
+    "client-doll-11225.png",
+    "sprite"
+  ],
+  "dolls-80262": [
+    "client-doll-11611.png",
+    "sprite"
+  ],
+  "dolls-80263": [
+    "client-doll-11608.png",
+    "sprite"
+  ],
+  "dolls-80264": [
+    "client-doll-14303.png",
+    "sprite"
+  ],
+  "dolls-80265": [
+    "client-doll-8751.png",
+    "sprite"
+  ],
+  "dolls-80266": [
+    "client-doll-11316.png",
+    "sprite"
+  ],
+  "dolls-80267": [
+    "client-doll-11111.png",
+    "sprite"
+  ],
+  "dolls-80268": [
+    "client-doll-10717.png",
+    "sprite"
+  ],
+  "dolls-80269": [
+    "client-doll-10741.png",
+    "sprite"
+  ],
+  "dolls-80270": [
+    "client-doll-10742.png",
+    "sprite"
+  ],
+  "dolls-80271": [
+    "client-doll-10720.png",
+    "sprite"
+  ],
+  "dolls-80272": [
+    "client-doll-10723.png",
+    "sprite"
+  ],
+  "dolls-80273": [
+    "client-doll-10726.png",
+    "sprite"
+  ],
+  "dolls-80274": [
+    "client-doll-10729.png",
+    "sprite"
+  ],
+  "dolls-80275": [
+    "client-doll-10743.png",
+    "sprite"
+  ],
+  "dolls-80276": [
+    "client-doll-10744.png",
+    "sprite"
+  ],
+  "dolls-80277": [
+    "client-doll-10732.png",
+    "sprite"
+  ],
+  "dolls-80278": [
+    "client-doll-10735.png",
+    "sprite"
+  ],
+  "dolls-80279": [
+    "client-doll-10738.png",
+    "sprite"
+  ],
+  "dolls-80280": [
+    "client-doll-12991.png",
+    "sprite"
+  ],
+  "dolls-80281": [
+    "client-doll-13183.png",
+    "sprite"
+  ],
+  "dolls-80282": [
+    "client-doll-13187.png",
+    "sprite"
+  ],
+  "dolls-80283": [
+    "client-doll-13191.png",
+    "sprite"
+  ],
+  "dolls-80286": [
+    "client-doll-13250.png",
+    "sprite"
+  ],
+  "dolls-80287": [
+    "client-doll-13254.png",
+    "sprite"
+  ],
+  "dolls-80288": [
+    "client-doll-13258.png",
+    "sprite"
+  ],
+  "dolls-80290": [
+    "client-doll-13342.png",
+    "sprite"
+  ],
+  "dolls-80291": [
+    "client-doll-13342.png",
+    "sprite"
+  ],
+  "dolls-80292": [
+    "client-doll-13342.png",
+    "sprite"
+  ],
+  "dolls-80293": [
+    "client-doll-13342.png",
+    "sprite"
+  ],
+  "dolls-80294": [
+    "client-doll-13342.png",
+    "sprite"
+  ],
+  "dolls-80295": [
+    "client-doll-13342.png",
+    "sprite"
+  ],
+  "dolls-80296": [
+    "client-doll-13342.png",
+    "sprite"
+  ],
+  "dolls-80297": [
+    "client-doll-13342.png",
+    "sprite"
+  ],
+  "dolls-80298": [
+    "client-doll-13342.png",
+    "sprite"
+  ],
+  "dolls-80299": [
+    "client-doll-13342.png",
+    "sprite"
+  ],
+  "dolls-80300": [
+    "client-doll-13344.png",
+    "sprite"
+  ],
+  "dolls-80301": [
+    "client-doll-13344.png",
+    "sprite"
+  ],
+  "dolls-80302": [
+    "client-doll-13344.png",
+    "sprite"
+  ],
+  "dolls-80303": [
+    "client-doll-13344.png",
+    "sprite"
+  ],
+  "dolls-80304": [
+    "client-doll-13344.png",
+    "sprite"
+  ],
+  "dolls-80305": [
+    "client-doll-13343.png",
+    "sprite"
+  ],
+  "dolls-80306": [
+    "client-doll-13343.png",
+    "sprite"
+  ],
+  "dolls-80307": [
+    "client-doll-13343.png",
+    "sprite"
+  ],
+  "dolls-80308": [
+    "client-doll-13343.png",
+    "sprite"
+  ],
+  "dolls-80309": [
+    "client-doll-13343.png",
+    "sprite"
+  ],
+  "dolls-80310": [
+    "client-doll-13343.png",
+    "sprite"
+  ],
+  "dolls-80311": [
+    "client-doll-13343.png",
+    "sprite"
+  ],
+  "dolls-80312": [
+    "client-doll-13343.png",
+    "sprite"
+  ],
+  "dolls-80313": [
+    "client-doll-13343.png",
+    "sprite"
+  ],
+  "dolls-80314": [
+    "client-doll-13343.png",
+    "sprite"
+  ],
+  "dolls-80315": [
+    "client-doll-13345.png",
+    "sprite"
+  ],
+  "dolls-80316": [
+    "client-doll-13345.png",
+    "sprite"
+  ],
+  "dolls-80317": [
+    "client-doll-13345.png",
+    "sprite"
+  ],
+  "dolls-80318": [
+    "client-doll-13345.png",
+    "sprite"
+  ],
+  "dolls-80319": [
+    "client-doll-13345.png",
+    "sprite"
+  ],
+  "dolls-80339": [
+    "client-doll-12539.png",
+    "sprite"
+  ],
+  "dolls-80340": [
+    "client-doll-13577.png",
+    "sprite"
+  ],
+  "dolls-80341": [
+    "client-doll-13573.png",
+    "sprite"
+  ],
+  "dolls-80342": [
+    "client-doll-13524.png",
+    "sprite"
+  ],
+  "dolls-80365": [
+    "client-doll-14812.png",
+    "sprite"
+  ],
+  "dolls-80366": [
+    "client-doll-14812.png",
+    "sprite"
+  ],
+  "dolls-80367": [
+    "client-doll-14812.png",
+    "sprite"
+  ],
+  "dolls-80368": [
+    "client-doll-14809.png",
+    "sprite"
+  ],
+  "dolls-80369": [
+    "client-doll-14809.png",
+    "sprite"
+  ],
+  "dolls-80370": [
+    "client-doll-14809.png",
+    "sprite"
+  ],
+  "dolls-80371": [
+    "client-doll-14829.png",
+    "sprite"
+  ],
+  "dolls-80372": [
+    "client-doll-14829.png",
+    "sprite"
+  ],
+  "dolls-80373": [
+    "client-doll-14829.png",
+    "sprite"
+  ],
+  "dolls-80374": [
+    "client-doll-14805.png",
+    "sprite"
+  ],
+  "dolls-80375": [
+    "client-doll-14805.png",
+    "sprite"
+  ],
+  "dolls-80376": [
+    "client-doll-14805.png",
+    "sprite"
+  ],
+  "dolls-80377": [
+    "client-doll-14848.png",
+    "sprite"
+  ],
+  "dolls-80382": [
+    "client-doll-16064.png",
+    "sprite"
+  ],
+  "dolls-300201": [
+    "client-doll-5933.png",
+    "sprite"
+  ],
+  "dolls-300202": [
+    "client-doll-5933.png",
+    "sprite"
+  ],
+  "dolls-300203": [
+    "client-doll-5933.png",
+    "sprite"
+  ],
+  "dolls-300204": [
+    "client-doll-5933.png",
+    "sprite"
+  ],
+  "dolls-300205": [
+    "client-doll-5933.png",
+    "sprite"
+  ]
 };
 
 let transformBookCache = null;

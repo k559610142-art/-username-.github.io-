@@ -275,6 +275,7 @@ function itemIconOf(id) {
 }
 function itemIconHtml(id, frame) {
     const d = ITEMS[id];
+    if (d && d.uqBase && ITEMS[d.uqBase]) return itemIconHtml(d.uqBase, frame).replace('class="ico', 'class="uq-ico ico');   // 傳奇：沿用基底圖示＋金棕外框（uniques.js）
     if (d && d.doll && DOLLS[d.doll]) return `<span class="ico ico-img"><img src="${DOLLS[d.doll].art}" alt="" draggable="false"></span>`;
     // 依圖鑑的基底品級發光；詞綴品質另算，消耗品與技能圖不套用。
     const glow = d && (d.cat === 'weapon' || d.cat === 'armor') && codexGradeOf(id).id === 'legend';

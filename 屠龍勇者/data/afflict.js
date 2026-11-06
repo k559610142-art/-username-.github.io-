@@ -116,7 +116,7 @@ function afflictSkipAction(owner) {
 function afflictSilenced(owner) { return afflictOn(owner, 'silence'); }
 function afflictSlowFactor(owner) { return afflictOn(owner, 'slow') ? 1.2 : 1; }
 // 回血效果倍率（燒傷 −30%）：藥水、治癒魔法、自然回復
-function afflictHealMul(owner = player) { return afflictOn(owner, 'burn') ? 1 - AFFLICTS.burn.antiheal : 1; }
+function afflictHealMul(owner = player) { return (afflictOn(owner, 'burn') ? 1 - AFFLICTS.burn.antiheal : 1) * (owner === player && typeof uniqueHealMul === 'function' ? uniqueHealMul() : 1); }   // 狂戰之顱：治療 −50%
 // calcStats 用：詛咒 AC 變差／MR 下降、致盲命中下降（只算玩家）
 function afflictStatMods(p) {
     if (p !== player || SIM_MODE) return { ac: 0, mr: 0, hit: 0 };

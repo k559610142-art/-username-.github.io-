@@ -58,7 +58,7 @@ function talentPlayerFx(p) {
 
 function talentManaCost(k,p=player) {
     const {mods:m,cores:c}=talentBonuses(p);
-    return Math.max(0,Math.ceil((k.mp||0)*Math.max(.1,1-(m['技能魔力消耗降低']||0)/100)*(c.has(1)?1.15:1)));
+    return Math.max(0,Math.ceil((k.mp||0)*Math.max(.1,1-(m['技能魔力消耗降低']||0)/100)*(c.has(1)?1.15:1)*(typeof uniqueMpMul==='function'?uniqueMpMul(p):1)));   // 時之沙漏 +40%
 }
 
 function talentDamageMult(st,magic,mon) {

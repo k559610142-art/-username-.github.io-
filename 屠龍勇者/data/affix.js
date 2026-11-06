@@ -185,7 +185,7 @@ function randomEquipFor(lv) {
     const cap = Math.max(300, lv * 600);
     const pool = Object.keys(ITEMS).filter(id => {
         const d = ITEMS[id];
-        return (d.cat === 'weapon' || d.cat === 'armor') && !d.classes && !d.res && sellPriceOf(id) <= cap;   // 共鳴武器只從指定來源取得
+        return (d.cat === 'weapon' || d.cat === 'armor') && !d.classes && !d.res && !d.unique && sellPriceOf(id) <= cap;   // 傳奇只從稀有異界首領掉   // 共鳴武器只從指定來源取得
     });
     return pool.length ? pool[rand(0, pool.length - 1)] : null;
 }

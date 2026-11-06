@@ -39,61 +39,196 @@ window.TdjSystems = (() => {
   const enchantImage = e => e.img || imageByName(e.boss);
   // 原版怪物外觀編號來自天地劫 TW13081901.txt。
   const wuhunVisuals = {
-    39265: {"gfx":14084,"file":"wuhun-39265.png"},
-    39266: {"gfx":16861,"file":"wuhun-39266.png"},
-    39267: {"gfx":16287,"file":"wuhun-39267.png"},
-    39268: {"gfx":11490,"file":null},
-    39269: {"gfx":12607,"file":null},
-    39270: {"gfx":14239,"file":"wuhun-39270.png"},
-    39271: {"gfx":7539,"file":null},
-    39272: {"gfx":8036,"file":null},
-    39273: {"gfx":7864,"file":null},
-    39274: {"gfx":15492,"file":"wuhun-39274.png"},
-    39275: {"gfx":16633,"file":"wuhun-39275.png"},
-    39276: {"gfx":16704,"file":"wuhun-39276.png"},
-    39277: {"gfx":16674,"file":"wuhun-39277.png"},
-    39278: {"gfx":16662,"file":"wuhun-39278.png"},
-    39279: {"gfx":16896,"file":"wuhun-39279.png"},
-    39280: {"gfx":16930,"file":"wuhun-39280.png"},
-    39281: {"gfx":16621,"file":null},
-    39282: {"gfx":16578,"file":"wuhun-39282.png"},
-    39283: {"gfx":16872,"file":"wuhun-39283.png"},
-    39284: {"gfx":16734,"file":"wuhun-39284.png"},
-    39285: {"gfx":22021,"file":null},
-    39286: {"gfx":10851,"file":null},
-    39291: {"gfx":4851,"file":"wuhun-39291.png"},
-    39292: {"gfx":7559,"file":"wuhun-39292.png"},
-    39293: {"gfx":12589,"file":"wuhun-39293.png"},
-    39294: {"gfx":5072,"file":"wuhun-39294.png"},
-    39295: {"gfx":null,"file":null},
-    39296: {"gfx":null,"file":null},
-    39297: {"gfx":null,"file":null},
-    39298: {"gfx":13106,"file":null},
-    39299: {"gfx":16905,"file":"wuhun-39299.png"},
-    39300: {"gfx":13177,"file":null},
-    39301: {"gfx":12895,"file":null},
-    39302: {"gfx":12846,"file":"wuhun-39302.png"},
-    39303: {"gfx":2118,"file":"wuhun-39303.png"},
-    39304: {"gfx":14179,"file":"wuhun-39304.png"},
-    39305: {"gfx":10573,"file":null},
-    39306: {"gfx":8128,"file":null},
-    39307: {"gfx":2749,"file":"wuhun-39307.png"},
-    39308: {"gfx":2738,"file":"wuhun-39308.png"},
-    39309: {"gfx":2741,"file":"wuhun-39309.png"},
-    39310: {"gfx":2747,"file":"wuhun-39310.png"},
-    39311: {"gfx":3415,"file":"wuhun-39311.png"},
-    39312: {"gfx":2308,"file":"wuhun-39312.png"},
-    39313: {"gfx":854,"file":"wuhun-39313.png"},
-  };
+  "39265": {
+    "gfx": 14084,
+    "file": "wuhun-39265.png"
+  },
+  "39266": {
+    "gfx": 16861,
+    "file": "wuhun-39266.png"
+  },
+  "39267": {
+    "gfx": 16287,
+    "file": "wuhun-39267.png"
+  },
+  "39268": {
+    "gfx": 11490,
+    "file": "wuhun-39268.png"
+  },
+  "39269": {
+    "gfx": 12607,
+    "file": "wuhun-39269.png"
+  },
+  "39270": {
+    "gfx": 14239,
+    "file": "wuhun-39270.png"
+  },
+  "39271": {
+    "gfx": 7539,
+    "file": "wuhun-39271.png"
+  },
+  "39272": {
+    "gfx": 8036,
+    "file": "wuhun-39272.png"
+  },
+  "39273": {
+    "gfx": 7864,
+    "file": "wuhun-39273.png"
+  },
+  "39274": {
+    "gfx": 15492,
+    "file": "wuhun-39274.png"
+  },
+  "39275": {
+    "gfx": 16633,
+    "file": "wuhun-39275.png"
+  },
+  "39276": {
+    "gfx": 16704,
+    "file": "wuhun-39276.png"
+  },
+  "39277": {
+    "gfx": 16674,
+    "file": "wuhun-39277.png"
+  },
+  "39278": {
+    "gfx": 16662,
+    "file": "wuhun-39278.png"
+  },
+  "39279": {
+    "gfx": 16896,
+    "file": "wuhun-39279.png"
+  },
+  "39280": {
+    "gfx": 16930,
+    "file": "wuhun-39280.png"
+  },
+  "39281": {
+    "gfx": 16621,
+    "file": "wuhun-39281.png"
+  },
+  "39282": {
+    "gfx": 16578,
+    "file": "wuhun-39282.png"
+  },
+  "39283": {
+    "gfx": 16872,
+    "file": "wuhun-39283.png"
+  },
+  "39284": {
+    "gfx": 16734,
+    "file": "wuhun-39284.png"
+  },
+  "39285": {
+    "gfx": 22021,
+    "file": "wuhun-39285.png"
+  },
+  "39286": {
+    "gfx": 10851,
+    "file": "wuhun-39286.png"
+  },
+  "39291": {
+    "gfx": 4851,
+    "file": "wuhun-39291.png"
+  },
+  "39292": {
+    "gfx": 7559,
+    "file": "wuhun-39292.png"
+  },
+  "39293": {
+    "gfx": 12589,
+    "file": "wuhun-39293.png"
+  },
+  "39294": {
+    "gfx": 5072,
+    "file": "wuhun-39294.png"
+  },
+  "39295": {
+    "gfx": null,
+    "file": "wuhun-39295.png"
+  },
+  "39296": {
+    "gfx": null,
+    "file": "wuhun-39296.png"
+  },
+  "39297": {
+    "gfx": null,
+    "file": "wuhun-39297.png"
+  },
+  "39298": {
+    "gfx": 13106,
+    "file": "wuhun-39298.png"
+  },
+  "39299": {
+    "gfx": 16905,
+    "file": "wuhun-39299.png"
+  },
+  "39300": {
+    "gfx": 13177,
+    "file": "wuhun-39300.png"
+  },
+  "39301": {
+    "gfx": 12895,
+    "file": "wuhun-39301.png"
+  },
+  "39302": {
+    "gfx": 12846,
+    "file": "wuhun-39302.png"
+  },
+  "39303": {
+    "gfx": 2118,
+    "file": "wuhun-39303.png"
+  },
+  "39304": {
+    "gfx": 14179,
+    "file": "wuhun-39304.png"
+  },
+  "39305": {
+    "gfx": 10573,
+    "file": "wuhun-39305.png"
+  },
+  "39306": {
+    "gfx": 8128,
+    "file": "wuhun-39306.png"
+  },
+  "39307": {
+    "gfx": 2749,
+    "file": "wuhun-39307.png"
+  },
+  "39308": {
+    "gfx": 2738,
+    "file": "wuhun-39308.png"
+  },
+  "39309": {
+    "gfx": 2741,
+    "file": "wuhun-39309.png"
+  },
+  "39310": {
+    "gfx": 2747,
+    "file": "wuhun-39310.png"
+  },
+  "39311": {
+    "gfx": 3415,
+    "file": "wuhun-39311.png"
+  },
+  "39312": {
+    "gfx": 2308,
+    "file": "wuhun-39312.png"
+  },
+  "39313": {
+    "gfx": 854,
+    "file": "wuhun-39313.png"
+  }
+};
   const wuhunImage = w => wuhunVisuals[w.id]?.file ? "assets/interface/wuhun/" + wuhunVisuals[w.id].file : null;
   const wuhunBaseGfx = w => wuhunVisuals[w.id]?.gfx ?? null;
 
   // ---- 畫面：娃娃跟在旁邊、武魂虛影在背後、附魔發動時 BOSS 閃現 ----
   const style = document.createElement('style');
   style.textContent = '.tdj-layer{position:absolute;left:0;top:0;width:0;height:0;pointer-events:none}' +
-    '.tdj-phantom{position:absolute;opacity:.48;image-rendering:pixelated;filter:drop-shadow(0 0 6px var(--tdj-aura,#ffd27a88));animation:tdjFloat 3.2s ease-in-out infinite;transform-origin:50% 100%}' +
-    '.tdj-phantom-animated{animation:none;background-repeat:no-repeat}.tdj-phantom-group{position:absolute;left:0;top:0;opacity:.48}.tdj-phantom-group .tdj-phantom-animated{opacity:1}.tdj-phantom-fx{opacity:.85}' +
-    '.tdj-phantom.tdj-aura{width:120px;height:150px;left:-60px;top:-150px;border-radius:50%;background:radial-gradient(closest-side,var(--tdj-aura,#ffd27a88),transparent);opacity:.7;filter:none}' +
+    '.tdj-phantom{position:absolute;opacity:.48;image-rendering:pixelated;animation:tdjFloat 3.2s ease-in-out infinite;transform-origin:50% 100%}' +
+    '.tdj-phantom-animated{animation:none;background-repeat:no-repeat}.tdj-phantom-group{position:absolute;left:0;top:0;opacity:.48;transform-origin:0 0}.tdj-phantom-group.phoenix-phantom{opacity:.64}.tdj-phantom-group .tdj-phantom-animated{opacity:1}.tdj-phantom-fx{opacity:.85}' +
+    '.tdj-phantom.tdj-aura{width:56px;height:14px;left:-28px;top:-7px;border-radius:50%;background:radial-gradient(closest-side,var(--tdj-aura,#ffd27a88),transparent);opacity:.38;animation:none}' +
     '.tdj-doll{position:absolute;transform:translate(-50%,-100%);width:calc(27px * var(--character-size-factor,1));height:calc(30px * var(--character-size-factor,1));object-fit:contain;object-position:bottom center;pointer-events:none;filter:drop-shadow(0 2px 2px #0008)}' +
     '.tdj-flash{position:absolute;opacity:0;animation:tdjFlash 1s ease-out forwards;filter:drop-shadow(0 0 14px #ff5a3a) brightness(1.4)}' +
     '@keyframes tdjFloat{0%,100%{transform:translateY(0) scale(1.35)}50%{transform:translateY(-4px) scale(1.35)}}' +
@@ -122,22 +257,28 @@ window.TdjSystems = (() => {
   }
   function drawPhantom(now) {
     if (!phantom || window.gameFlowState !== 'playing') return;
-    const {sprite, fallback, gfx, layers, fx} = phantom;
+    const {sprite, fallback, gfx, layers, group, fx} = phantom;
     const scale = characterRenderScale();
+    const phoenix = gfx === 22003;
+    const [offsetX, offsetY] = phoenix ? [22, 9] : [7, 5];
+    group.style.transform = 'translate(' + offsetX * scale + 'px,' + offsetY * scale + 'px) scale(' + (phoenix ? .58 : .9) + ')';
     const {pose, effects} = WuhunAutoCast.update(phantom, now, MonsterActions.pose(now), !document.hidden && document.querySelector('#panel').hidden);
     const drawn = MonsterActions.draw(sprite, gfx, pose.heading || characterHeading, pose, scale, null, layers)
       || MonsterActions.draw(sprite, gfx, characterHeading, {clip: 'idle', time: now}, scale, null, layers);
     sprite.hidden = !drawn;
     if (fallback) fallback.hidden = drawn;
-    effects.forEach(([attribute, frame], i) => {
+    // Paint the dark pass first, then the colored flame and highlights.
+    const orderedEffects = [...effects.filter(([attr]) => attr === 128), ...effects.filter(([attr]) => attr !== 128)];
+    orderedEffects.forEach(([attribute, frame], i) => {
       let node = fx.children[i];
       if (!node) {
         node = document.createElement('div');
         node.className = 'transform-atlas tdj-phantom-fx';
         fx.append(node);
       }
-      node.style.mixBlendMode = attribute === 8 ? 'screen' : attribute === 128 ? 'multiply' : 'normal';
-      node.hidden = !MonsterActions.paintSprite(node, frame, frame[1], frame[2], scale);
+      node.style.mixBlendMode = attribute === 8 ? 'screen' : 'normal';
+      node.style.opacity = attribute === 128 ? '.42' : '';
+      node.hidden = !MonsterActions.paintSprite(node, frame, frame[1] + offsetX, frame[2] + offsetY, scale);
     });
     for (let i = effects.length; i < fx.children.length; i++) fx.children[i].hidden = true;
   }
@@ -174,14 +315,14 @@ window.TdjSystems = (() => {
         sprite.style.setProperty('--tdj-aura', color);
         sprite.hidden = true;
         const group = document.createElement('div'), fx = document.createElement('div');
-        group.className = 'tdj-phantom-group';
+        group.className = 'tdj-phantom-group' + (w.skin === 22003 ? ' phoenix-phantom' : '');
         const layers = {shadow: document.createElement('div'), light: document.createElement('div'), extras: document.createElement('div')};
         layers.shadow.className = layers.light.className = 'transform-atlas';
         layers.shadow.hidden = layers.light.hidden = layers.extras.hidden = true;
         group.append(layers.shadow, sprite, layers.light, layers.extras);
         back.append(group, fx);
         const activeCast = previousPhantom?.owner === owner && previousPhantom.gfx === w.skin ? previousPhantom : null;
-        phantom = {sprite, fallback, gfx: w.skin, owner, layers, fx, cast: activeCast?.cast, nextCast: activeCast?.nextCast};
+        phantom = {sprite, fallback, gfx: w.skin, owner, layers, group, fx, cast: activeCast?.cast, nextCast: activeCast?.nextCast};
         MonsterActions.preload(w.skin, characterHeading, ['skill', 'bossCastGesture', 'bossCastStart', 'bossCastLoop', 'bossCastEnd']);
         drawPhantom(movementTime());
       }

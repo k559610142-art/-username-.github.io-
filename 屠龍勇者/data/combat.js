@@ -140,12 +140,14 @@ function usePotion(id, form) {
     }
     if (d.cat === 'potion' && !potionReady()) return '喝水延遲中';
     if (d.cat === 'potion' && afflictStunned(player)) return '無法行動';
+    if (d.heal && typeof uqOn === 'function' && uniqueNoPotion()) return '血契之刃：無法飲用治癒藥水';   // 傳奇（uniques.js）
     if (!consumeItem(id)) return '沒有這個道具';
-    if (d.cat === 'potion') potReadyAt = gameNow + POTION_CD_MS;
+    if (d.cat === 'potion') potReadyAt = gameNow + POTION_CD_MS * (typeof uqOn === 'function' ? uniquePotionCdMul() : 1);   // 無底行囊：喝水延遲 +50%
     if (d.heal) {
         const st = calcStats(), before = player.hp;
-        const healed=Math.round(dollPotion(rand(d.heal[0],d.heal[1]))*afflictHealMul());   // 燒傷回血 −30%
+        const healed=Math.round(dollPotion(rand(d.heal[0],d.heal[1]))*afflictHealMul()*(typeof uqOn === 'function'?uniquePotionHeal(100)/100:1));   // 燒傷回血 −30%；無底行囊 +30%
         player.hp = Math.min(st.maxHp,player.hp+(typeof talentPotionAmount==='function'?talentPotionAmount(healed):healed));
+        if (typeof uqOn === 'function') uniquePotionAfter(player.hp - before);   // 無底行囊：同時回 MP
         addLog(`🧪 ${d.short || d.name}：HP +${player.hp - before}`, 'heal');
     }
     if (d.buff) {
@@ -191,7 +193,7 @@ function autoSupport(st) {
         return;
     }
     if (!potionReady()) return;
-    if (barHealAuto() && player.hp < st.maxHp && ((hunt && hunt.teleRecover) || player.hp < st.maxHp * s.potionPct / 100)) {
+    if (barHealAuto() && !(typeof uqOn === 'function' && uniqueNoPotion()) && player.hp < st.maxHp && ((hunt && hunt.teleRecover) || player.hp < st.maxHp * s.potionPct / 100)) {
         const id = choosePotion(st);
         if (id) { usePotion(id); return; }
         if (s.autoHome && useHomeScroll('藥水用完')) return;
@@ -231,6 +233,7 @@ function huntTick(dt) {
     mercTick(dt);
     if (typeof advTick === 'function') advTick(dt, st);   // 二轉：場地、召喚、持續傷害（advance.js）
     bossEnchantTick(st);
+    if (typeof uqOn === 'function') uniqueTick();   // 傳奇：獵魂者的燃燒／中毒持續傷害（uniques.js）
     if (typeof eliteTick === 'function') eliteTick();   // 精英詞條：護盾、召喚、狂暴、瞬移（elite.js）
     reapMobs();
     if (!fightAlive()) return;
@@ -387,7 +390,7 @@ function manualCast(id) {
     if (afflictSilenced(player)) return '沉默中，無法施放技能';
     if (player.cds[k.id] > gameNow) return `冷卻中（${Math.ceil((player.cds[k.id] - gameNow) / 1000)} 秒）`;
     if (skillGcdLeft()) return `技能冷卻中（${Math.ceil(skillGcdLeft() / 1000)} 秒後才能放下一個技能）`;
-    if (player.mp < (typeof talentManaCost==='function'?talentManaCost(k):k.mp)) return 'MP 不足';
+    if (!(typeof uniquePayOk === 'function' ? uniquePayOk(typeof talentManaCost==='function'?talentManaCost(k):k.mp) : player.mp >= (typeof talentManaCost==='function'?talentManaCost(k):k.mp))) return 'MP 不足';   // 虛空低語改用 HP
     if (typeof advCanCast === 'function' && !advCanCast(k, true)) return '目前條件不符（金幣、HP 或 MP）';
     const st = calcStats();
     if (k.type === 'heal') { castHeal(k, st); return ''; }
@@ -437,6 +440,7 @@ function leaveFight(searchMs) {
 
 // 把 HP 歸零的怪結算掉；目標死了就換剩下 HP 最少的那隻
 function reapMobs() {
+    if (typeof uqOn === 'function') uniqueReap();   // 哀嚎收割：HP < 20% 斬殺
     for (const m of hunt.mobs.slice()) {
         if (m.hp > 0) continue;
         onKill(m);
@@ -521,7 +525,7 @@ function playerAction(st) {
     const s = player.settings, now = gameNow;
     const skills = slotSkills();
     const gcd = player.cds._gcd > now || afflictSilenced(player);   // 技能公共冷卻中（或沉默）：所有技能（含增益）等一下，只普攻（共鳴照常）
-    const ready = k => !gcd && player.mp >= (typeof talentManaCost==='function'?talentManaCost(k):(k.mp||0)) && !(player.cds[k.id] > now) && (typeof advCanCast !== 'function' || advCanCast(k));   // 二轉：金幣／HP／殘血等條件（advance.js）
+    const ready = k => !gcd && (typeof uniquePayOk === 'function' ? uniquePayOk(typeof talentManaCost==='function'?talentManaCost(k):(k.mp||0)) : player.mp >= (typeof talentManaCost==='function'?talentManaCost(k):(k.mp||0))) && !(player.cds[k.id] > now) && (typeof advCanCast !== 'function' || advCanCast(k));   // 二轉：金幣／HP／殘血等條件（advance.js）
     if (player.hp < st.maxHp * s.healPct / 100) {
         const heal = skills.find(k => k.type === 'heal' && ready(k));
         if (heal) return castHeal(heal, st);
@@ -542,10 +546,10 @@ function playerAction(st) {
 const SKILL_GCD_MS = 1000;
 // 每個技能各自的冷卻（秒）：技能資料有 cd 就用它；治癒、增益沒寫的用預設（2026-10-24 使用者要求每種技能都有自己的 CD）
 const SKILL_DEFAULT_CD = { heal: 4, buff: 10 };
-function skillCd(k) { const cd = k.cd || SKILL_DEFAULT_CD[k.type] || 0; return typeof advCd === 'function' ? advCd(k, cd) : cd; }   // 二轉分支縮短冷卻（advance.js）
+function skillCd(k) { const cd = k.cd || SKILL_DEFAULT_CD[k.type] || 0, c2 = typeof advCd === 'function' ? advCd(k, cd) : cd; return typeof uqOn === 'function' && uniqueCdMul() !== 1 ? Math.round(c2 * uniqueCdMul() * 10) / 10 : c2; }   // 時之沙漏 −25%   // 二轉分支縮短冷卻（advance.js）
 function skillGcdLeft() { return Math.max(0, (player.cds._gcd || 0) - gameNow); }
 function useSkillCost(k) {
-    player.mp -= typeof talentManaCost==='function'?talentManaCost(k):k.mp;
+    { const cost = typeof talentManaCost==='function'?talentManaCost(k):k.mp; if (typeof uqOn === 'function') uniquePay(cost); else player.mp -= cost; }   // 虛空低語改用 HP
     if (skillCd(k)) player.cds[k.id] = gameNow + skillCd(k) * 1000;
     // 共鳴裝備技能（id 'res_…'，castResonance 也走 castSpell／doStrike…）不觸發公共冷卻：
     // 2026-10-17 曾因共鳴武器每次命中都觸發而一直重設，公共冷卻永遠停在 3 秒、玩家技能放不出來
@@ -577,6 +581,7 @@ function magicDamage(base, spK, st, undeadMul, mon = hunt.mon) {
     d *= slayerMult(mon) * bossDmgMult(mon, st);
     d *= 1 - clamp(mon.mr, 0, 100) / 200;
     if(typeof talentDamageMult==='function')d*=talentDamageMult(st,true,mon);
+    if (typeof uqOn === 'function') d *= uniqueDmgMul(true);   // 傳奇傷害倍率（狂戰之顱、虛空之戒…）
     if (st.magicCrit > 0 && chance(st.magicCrit)) {
         d *= st.magicCritDmg == null ? 1.5 : st.magicCritDmg;
         addLog(`✨ 對${mon.name}觸發魔爆！`, 'magic');
@@ -599,6 +604,7 @@ function castSpell(k, st) {
         m.hp -= d;
         if (!k.id.startsWith('res_')) dollOnHit(m, dealt, true, dollScope);
         lifeSteal(d, st);
+        if (typeof uqOn === 'function') uniqueOnHit(m, d, true);
         if (typeof advOnSpellHit === 'function') advOnSpellHit(k, m, d, st);
         return `${m.name} ${d}`;
     });
@@ -726,7 +732,7 @@ function physicalAttack(st, mult, opt, mon = hunt.mon) {
         autoBuyAmmo();
     }
     const swings = !opt.noDouble && chance(st.double) ? 2 : 1;
-    const def = opt.ignoreAc ? 0 : 10 - mon.ac - (typeof advDefMod === 'function' ? advDefMod(mon, opt) : 0);
+    const def = opt.ignoreAc || (typeof uqOn === 'function' && uniqueIgnoreAc()) ? 0 : 10 - mon.ac - (typeof advDefMod === 'function' ? advDefMod(mon, opt) : 0);
     const hitChance = clamp(0.7 + (st.hit - def) * 0.02, 0.05, 0.95);
     let total = 0, crit = false, hits = 0;
     for (let i = 0; i < swings; i++) {
@@ -740,10 +746,14 @@ function physicalAttack(st, mult, opt, mon = hunt.mon) {
         d *= slayerMult(mon) * bossDmgMult(mon, st);
         d *= mult;
         if(typeof talentDamageMult==='function')d*=talentDamageMult(st,false,mon);
+        if (typeof uqOn === 'function') d *= uniqueDmgMul(false);   // 傳奇傷害倍率（雷鳴獨眼 ×1.8、點金之手 −10%…）
         if (typeof advPhysMult === 'function') d = d * advPhysMult(st, mon, opt) + advPhysAdd(mon);   // 二轉被動／減益（advance.js）
         const forced = typeof advCritRoll === 'function' ? advCritRoll(st, mon, opt) : null;
+        const uqCrit = !forced && typeof uqOn === 'function' ? uniqueCritRoll(st) : null;   // 斷罪者第 4 下、幻影披風
         if (forced) { d *= forced; crit = true; }
+        else if (uqCrit) { d *= uqCrit; crit = true; }
         else if (chance(st.crit)) { d *= st.critDmg == null ? 1.5 : st.critDmg; crit = true; }
+        else if (typeof uqOn === 'function') d *= uniqueNoCritMul();   // 賭徒之指：沒爆擊 −20%
         total += Math.max(1, Math.round(d));
     }
     if (total && !opt.advExtra && typeof advAmbushMult === 'function') total = Math.round(total * advAmbushMult());
@@ -753,7 +763,8 @@ function physicalAttack(st, mult, opt, mon = hunt.mon) {
     total = Math.max(1, Math.round(total * dollMult));
     const dealt = Math.min(Math.max(0, mon.hp), total);
     mon.hp -= total;
-    if (typeof eliteOnPlayerPhys === 'function') eliteOnPlayerPhys(mon, total);   // 精英「反傷」15%（不會反彈致死，elite.js）
+    if (typeof eliteOnPlayerPhys === 'function') eliteOnPlayerPhys(mon, total);
+    if (typeof uqOn === 'function' && !opt.res && !opt.advExtra) { uniqueOnHit(mon, total, false); uniqueAfterPhys(mon, total, st, ammoDef ? player.ammoId || null : null); }   // 千羽、獵魂者   // 精英「反傷」15%（不會反彈致死，elite.js）
     if (!opt.res) dollOnHit(mon, dealt, false, opt);
     lifeSteal(total, st);
     if (st.weapon && st.weapon.drain) player.mp = Math.min(st.maxMp, player.mp + rand(st.weapon.drain[0], st.weapon.drain[1]));
@@ -773,7 +784,8 @@ function monsterAttack(st, mon) {
     if (magic) {
         dmg = rand(mon.magic.dmg[0], mon.magic.dmg[1]) * (1 - clamp(st.mr, 0, 150) / 200);
     } else {
-        if (chance(st.dodge)) { addLog(`你閃過了${mon.name}的攻擊`, 'miss'); sfx('block'); worldVfxEmit('impact-2', null); if (typeof advOnDodge === 'function') advOnDodge(mon, st); return; }
+        if (chance(st.dodge)) { addLog(`你閃過了${mon.name}的攻擊`, 'miss'); sfx('block'); worldVfxEmit('impact-2', null); if (typeof advOnDodge === 'function') advOnDodge(mon, st); if (typeof uqOn === 'function') uniqueOnDodge(); return; }
+        if (typeof uqOn === 'function' && uniqueBlock(mon, st)) return;   // 堅守誓約：25% 擋下物理攻擊
         const hitChance = clamp(0.7 + (mon.hit - (typeof advMonHitMod === 'function' ? advMonHitMod(mon) : 0) - (10 - st.ac)) * 0.02, 0.05, 0.95);
         if (!chance(hitChance)) { addLog(`${mon.name}的攻擊落空`, 'miss'); return; }
         dmg = rand(mon.dmg[0], mon.dmg[1]);
@@ -789,6 +801,7 @@ function monsterAttack(st, mon) {
         player.mp -= Math.ceil(a / eff);
         dmg -= a;
     }
+    if (typeof uqOn === 'function') dmg = uniqueIncoming(mon, dmg, magic, st);   // 荊棘織衣、獵魂者護盾、逆流之心
     dmg = bossEnchantAbsorb(Math.max(0, Math.round(bossEnchantEnemyDamage(mon, dmg)*(typeof talentIncomingMult==='function'?talentIncomingMult(magic):1))));
     dmg = dollTakeDamage(mercProtect(afflictOnHurt(player, dmg)), st);   // 石化減傷（afflict.js）
     afflictAfterHurt(player, dmg);   // 冰凍被打到提早解凍
@@ -796,7 +809,7 @@ function monsterAttack(st, mon) {
     if (typeof eliteOnHitPlayer === 'function') eliteOnHitPlayer(mon, dmg, magic);   // 精英：吸血、魔力燃燒、冰封／燃燒／中毒（elite.js）
     worldVfxEnemy(mon, magic);
     addLog(magic ? `${mon.name}施放「${mon.magic.name}」，你受到 ${dmg} 傷害` : `${mon.name}攻擊，你受到 ${dmg} 傷害`, 'hurt');
-    if (player.hp <= 0 && !(typeof advPreventDeath === 'function' && advPreventDeath(st))) { onDeath(mon); return; }
+    if (player.hp <= 0 && !(typeof advPreventDeath === 'function' && advPreventDeath(st)) && !(typeof uqOn === 'function' && uniquePreventDeath(st))) { onDeath(mon); return; }
     if (dmg > 0) sfx('hurt');
     if (dmg > 0) resonanceOnHurt(st);   // 共鳴防具：受擊／危急觸發（resonance.js）
     if (typeof advOnHurt === 'function') advOnHurt(mon, dmg, magic, st);
@@ -846,6 +859,7 @@ function onKill(mon) {
         questOnKill(mon, z);
     }
     if (typeof advOnKill === 'function') { advOnKill(mon, st); if (!minion) advLocalDrops(mon); }
+    if (typeof uqOn === 'function') uniqueOnKill(mon);   // 影噬、獵魂者之索
     if (!minion && mapOnKill(mon)) return;   // 異界：計數；打倒異界首領＝通關、回村（精英召喚／分裂的小怪不算）
 
     if (z && z.type === 'tower' && player.loc.floor) {   // 逐層解鎖：這層累積擊殺（守關首領也算 1 隻）
@@ -940,6 +954,8 @@ function rollDrops(mon, z, raid = false) {
         const max = resMaxTierForMap(player.mapRun.t), pool = Object.keys(RESONANCE).filter(id => RESONANCE[id].tier <= max);
         give(pool[rand(0, pool.length - 1)], null, null);
     }
+    const uq = typeof uqOn === 'function' ? uniqueDropFor(mon) : null;   // 傳奇：稀有異界 T11～T15 首領（後端模式由伺服器決定，見 tools/unique-items.sql）
+    if (uq) give(uq, null, null);
     if ((mon.elite && !mon.fieldElite) || chance((mon.boss ? 0.5 : RANDOM_EQUIP_P) * qm)) {   // 野外精英不保證掉裝備（elite.js，第 312 節）
         const id = randomEquipFor(mon.lv);
         if (id) give(id, null);
@@ -992,7 +1008,7 @@ function regenTick() {
     const st = calcStats();
     const w = invWeight();
     const mul = player.loc.type === 'town' ? 3 : mapModOn('blight') ? 0.6 : 1;   // 地圖詞綴「枯竭」回復 -40%
-    if (w <= st.weightMax * WEIGHT_NO_REGEN) player.hp = Math.min(st.maxHp, player.hp + Math.round(st.hpRegen * mul * afflictHealMul()));
+    if (w <= st.weightMax * WEIGHT_NO_REGEN && !(typeof uqOn === 'function' && uniqueNoRegen())) player.hp = Math.min(st.maxHp, player.hp + Math.round(st.hpRegen * mul * afflictHealMul()));
     if (w < st.weightMax * WEIGHT_NO_MP_REGEN) player.mp = Math.min(st.maxMp, player.mp + Math.round(st.mpRegen * mul));   // 回魔：負重 70% 以上才停（回血仍是超過 50% 停）
 }
 

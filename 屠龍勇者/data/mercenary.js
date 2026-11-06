@@ -290,7 +290,8 @@ function mercStats(m = player.mercenary) {
         def:base.def+gear.def+buffs.def,mr:base.mr+gear.mr+buffs.mr,base,gear,buffs,
         regen: c.regen+(talent['出戰傭兵每秒回魔']||0)+mercGearRegen(fx.mpRegen||0), gearRegen: mercGearRegen(fx.mpRegen||0), dodge: Math.min(.5, mercTrait(m, 'dodge', 0) + (fx.dodge || 0) + mercBuff('evasion', m)),
         heal: mercTrait(m, 'heal', 1), speed: (d ? WEAPON_TYPES[d.type].spd : 1200) / (1 + mercTrait(m, 'spd', 0) + (fx.spdMul || 0) + mercBuff('haste', m)) * mercSlowFactor(m) };
-    return typeof advMercMod === 'function' ? advMercMod(out, m) : out;   // 二轉人皇、王旗（advance.js）
+    const out2 = typeof advMercMod === 'function' ? advMercMod(out, m) : out;   // 二轉人皇、王旗（advance.js）
+    return typeof uniqueMercMod === 'function' ? uniqueMercMod(out2) : out2;   // 傳奇「傭兵之誓」（uniques.js）
 }
 function mercNormalize(p) {
     const used = new Set([...p.inv, ...p.storage, ...Object.values(p.equip)].map(x => x.uid));

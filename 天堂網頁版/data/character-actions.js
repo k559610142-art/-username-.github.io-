@@ -67,9 +67,15 @@ refreshCharacter=function(frameTime=movementTime()){
 };
 function playCharacterAction(action,options={}){
  if(window.gameFlowState!=='playing'||!['idle','attack','skill','hurt','death'].includes(action)||characterDead&&action!=='death')return false;
- if(!options.force&&(movementAnimating()||characterMovementBlocked()))return false;
- stopMovement();const data=activeCharacterActions(),clip=['skill','death'].includes(action)?action:activeCharacterWeapon()+'_'+action;
+ const interrupt=action==='attack'&&options.interruptMovement;
+ if(!options.force&&(characterMovementBlocked()||!interrupt&&movementAnimating()))return false;
+ const data=activeCharacterActions(),clip=['skill','death'].includes(action)?action:activeCharacterWeapon()+'_'+action;
  if(!data.timelines[clip])return false;
+ stopMovement();
+ if(interrupt){
+  if(typeof cancelPointerGesture==='function')cancelPointerGesture();
+  if(interruptVisualStep())recenter();
+ }
  if(action==='idle'){characterActionState=null;characterWalkUntil=0;characterIdleStarted=movementTime();refreshCharacter();return true}
  const started=options.force&&movementAnimating()?movementTween.started+movementTween.duration:movementTime(),duration=(typeof MonsterActions !== 'undefined' && MonsterActions.actionDuration(window.activeTransformCard?.p?.gfx,characterHeading,action,MonsterActions.equippedWeapon()))||data.timelines[clip].durationMs;
  characterActionState={action,clip,started,duration,hold:!!options.hold,until:options.hold?Infinity:started+duration+(action==='death'?900:0)};

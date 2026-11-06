@@ -87,7 +87,7 @@ const MonsterActions = (() => {
     layers.extras.hidden = false;
     let index = 0;
     for (const [attribute, frame] of overlays) {
-      let layer = layers.shadow;
+      let layer = layers.shadow, groundOffset = 0;
       if (attribute !== 'shadow') {
         layer = layers.extras.children[index++];
         if (!layer) {
@@ -95,11 +95,18 @@ const MonsterActions = (() => {
           layer.className = 'transform-atlas';
           layers.extras.append(layer);
         }
-        layer.style.zIndex = gfx === 12681 ? (/^dk-original-(20415|20545|20547|20548)-/.test(frame[0]) ? '0' : '2') : '';
-        layer.style.mixBlendMode = attribute === 8 ? 'screen' : attribute === 128 ? 'multiply' : 'normal';
+        const groundRing = gfx === 12681 && /^dk-original-(20545|20547|20548)-/.test(frame[0]);
+        const behind = groundRing || gfx === 12681 && frame[0].startsWith('dk-original-20415-');
+        const wuhunBodyLayer = frame[0].startsWith('wuhun-body-');
+        const wuhunMatte = wuhunBodyLayer && attribute === 128;
+        layer.style.zIndex = gfx === 12681 ? (behind ? '0' : '2') : wuhunBodyLayer ? (wuhunMatte ? '0' : '2') : '';
+        layer.style.opacity = groundRing ? '.55' : wuhunMatte ? '.25' : '';
+        layer.style.transform = groundRing ? 'scaleY(.62)' : '';
+        groundOffset = groundRing ? 12 : 0;
+        layer.style.mixBlendMode = attribute === 8 ? 'screen' : attribute === 128 && !wuhunMatte ? 'multiply' : 'normal';
       }
       layer.hidden = true;
-      paintSprite(layer, frame, left + frame[1], top + frame[2], scale);
+      paintSprite(layer, frame, left + frame[1], top + frame[2] + groundOffset, scale);
     }
     for (; index < layers.extras.children.length; index++) layers.extras.children[index].hidden = true;
   }
@@ -117,7 +124,7 @@ const MonsterActions = (() => {
     const [dx, dy] = animation.clip === 'walk' ? walkOffset(frames, heading, index) : [0, 0];
     const left = x - dx, top = y - dy;
     if (!paintSprite(element, frame, left, top, scale)) return false;
-    if (layers) element.style.zIndex = gfx === 12681 ? '1' : '';
+    if (layers) element.style.zIndex = gfx === 12681 || /^wuhun-(auto|more)-/.test(frame[0]) ? '1' : '';
     if (layers) layers.shadow.hidden = layers.light.hidden = layers.extras.hidden = true;
     const address = [file, sx, sy].join(':');
     if (layers && deathKnightOriginalLayers[gfx]) {

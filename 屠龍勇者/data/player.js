@@ -130,6 +130,7 @@ function itemName(inst) {
 function canEquip(def) {
     const c = CLASSES[player.cls];
     if (def.classes && !def.classes.includes(player.cls)) return '你的職業無法使用';
+    if (def.reqLv && player.lv < def.reqLv) return `需要 Lv.${def.reqLv} 才能裝備`;   // 傳奇裝備（uniques.js）
     if (def.cat === 'weapon' && !c.weapons.includes(def.type)) return `${c.name}無法使用${WEAPON_TYPES[def.type].name}`;
     if (def.slot === 'shield' && !c.shield) return `${c.name}無法使用盾牌`;
     return '';
@@ -307,6 +308,7 @@ function calcStats() {
         if (d.safe >= 0) fx.ac = (fx.ac || 0) + (it.ench || 0);
     }
     for (const slot of SLOT_KEYS) addFx(fx, affixFx(p.equip[slot]));   // 暗黑式詞綴（affix.js）
+    if (typeof uniquePlayerFx === 'function') addFx(fx, uniquePlayerFx(p));   // 傳奇固定詞綴＋獵魂者（uniques.js）
     addFx(fx, galeFx(SLOT_KEYS.map(s => p.equip[s])));                 // 傳說「疾風」只算一條
     for (const k in p.buffs) if (p.buffs[k].until > now) addFx(fx, buffFx(p.buffs[k]));
 
@@ -334,7 +336,7 @@ function calcStats() {
     // 施法間隔（攻擊魔法用，不看武器）：1.2 秒 − 綠水 0.3 − 慎重藥水 0.3（法師、魔鬥士、天使），最快 0.6 秒
     const castMs = Math.max(CAST_MIN_MS, CAST_BASE_MS - (fx.haste ? CAST_POTION_MS : 0) - (fx.wise ? CAST_POTION_MS : 0));
 
-    return {
+    const out = {
         ...s, sp, maxHp, maxMp, ranged, weapon: w, weaponType: wt, weaponEnch,
         hit: p.lv + statHit + ((w && w.hit) || 0) + (fx.hit || 0) - afflictStatMods(p).hit,   // 致盲（afflict.js）
         dmgBonus: statDmg + Math.floor(p.lv / 4) + weaponEnch + (fx.dmg || 0) + Math.floor(sp * (fx.dmgSp || 0)),
@@ -358,6 +360,7 @@ function calcStats() {
         atkMs: atkMs * mercSlowFactor(p) * (typeof talentBonuses==='function'&&talentBonuses(p).cores.has(0)?1.1:1), castMs: castMs * mercSlowFactor(p),
         haste: !!fx.haste, brave: !!fx.brave, wise: !!fx.wise,
     };
+    return typeof uniqueStatPost === 'function' ? uniqueStatPost(out, p) : out;   // 傳奇倍率（血契之刃吸血 ×3、雷鳴獨眼攻速…）
 }
 
 function clampHpMp() {
