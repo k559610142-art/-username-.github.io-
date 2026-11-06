@@ -1264,7 +1264,8 @@ function sceneDraw(ctx, W, H) {
         if (m.inst && !m.dead) {
             const tgt = m === scene.engaged;
             const w = big ? 46 : 32, pct = clamp(m.inst.hp / m.inst.maxHp, 0, 1), by = Math.min(sy - (big ? 44 : 30), top);
-            if (m.inst.elite) { ctx.strokeStyle = '#ffd34d'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(sx, sy + 11, 16, 6, 0, 0, Math.PI * 2); ctx.stroke(); ctx.lineWidth = 1; }
+            if (m.inst.elite) { ctx.strokeStyle = m.inst.eliteAf && typeof eliteNameColor === 'function' ? eliteNameColor(m.inst) : '#ffd34d'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(sx, sy + 11, 16, 6, 0, 0, Math.PI * 2); ctx.stroke(); ctx.lineWidth = 1; }
+            if (m.inst.eliteShield > 0) { ctx.strokeStyle = '#9fd8ffcc'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(sx, sy - (big ? 14 : 8), big ? 30 : 20, 0, Math.PI * 2); ctx.stroke(); ctx.lineWidth = 1; }   // 精英護盾（elite.js）
             if (tgt) { ctx.strokeStyle = '#ff5a3c'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.ellipse(sx, sy + 11, big ? 20 : 14, big ? 6 : 5, 0, 0, Math.PI * 2); ctx.stroke(); ctx.lineWidth = 1; }
             labels.push(() => {
                 ctx.fillStyle = '#000a'; ctx.fillRect(sx - w / 2, by, w, 5);
@@ -1278,7 +1279,7 @@ function sceneDraw(ctx, W, H) {
                         lx = clamp(lx, width / 2 + 4, W - width / 2 - 4);
                         ctx.strokeStyle = '#baa88488'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(sx, sy + 18); ctx.lineTo(lx, ly - 8); ctx.stroke();
                     }
-                    drawLabel(ctx, name, lx, ly, m.inst.boss ? '#ff8a6a' : m.inst.elite ? '#ffd34d' : '#e8e0cc');
+                    drawLabel(ctx, name, lx, ly, m.inst.boss ? '#ff8a6a' : m.inst.elite ? (m.inst.eliteAf && typeof eliteNameColor === 'function' ? eliteNameColor(m.inst) : '#ffd34d') : '#e8e0cc');   // 精英詞條 1／2／3 條：金／橘／粉紫
                 }
             });
         }

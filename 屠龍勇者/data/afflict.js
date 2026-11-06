@@ -72,9 +72,10 @@ function afflictMr(owner) {
 function afflictResist(owner) { return 1 - clamp(afflictMr(owner), 0, 150) / 300; }
 
 // 怪物打中後呼叫（玩家 combat.js monsterAttack、傭兵 mercenary.js mercEnemyAttack）；dealt＝實際扣到的血
-function afflictTry(mon, magic, dealt, owner) {
+// rule：指定狀態（精英怪冰封／燃燒／中毒詞條，elite.js），沒給就查 AFFLICT_MONS
+function afflictTry(mon, magic, dealt, owner, ruleOverride) {
     if (SIM_MODE || dealt <= 0 || !owner || owner.hp <= 0) return;
-    const rule = afflictRule(mon), def = rule && AFFLICTS[rule.kind];
+    const rule = ruleOverride || afflictRule(mon), def = rule && AFFLICTS[rule.kind];
     if (!def || rule.on !== 'hit' && !magic) return;
     const kind = rule.kind, now = gameNow;
     if (((afflictImm.get(owner) || {})[kind] || 0) > now) return;

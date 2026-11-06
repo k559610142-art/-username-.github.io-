@@ -142,6 +142,7 @@
 | `data/affix.js` | 暗黑式裝備詞綴：`AFFIXES`、品質 `QUALITY`、`rollQuality`／`applyAffixes`／`affixFx`／`qualityName`／`instSellPrice`／`randomEquipFor`（第 21 節） |
 | `data/craft.js` | 製作通貨 `CURRENCY`（8 種，載入時併入 `ITEMS`）、`useCurrency`、改造視窗 `openCraftDialog`；通貨用在地圖時轉給 maps.js 的 `MAP_CURRENCY`（第 23 節） |
 | `data/maps.js` | 異界地圖 T1～T15：地圖道具、`MAP_MODS`、`openMap`／`mapOnKill`／`completeMap`／`endMapRun`、回卷傳送門 `mapPortalOpen`／`enterMapPortal`（第 114 節）、`applyMapMods`、`mapBonus`、地圖掉落、異界裝置面板（第 24 節） |
+| `data/elite.js` | 精英怪特殊詞條 `ELITE_AFFIXES`（12 條）、野外 3% 精英 `eliteFieldRoll`、擲詞條 `eliteRollAffixes`、`eliteTick`（護盾／召喚／狂暴／瞬移）、`eliteOnHitPlayer`、`eliteOnPlayerPhys`、`eliteBeforeKill`／`eliteAfterKill`、名牌顏色 `eliteNameColor`（第 312 節） |
 | `data/enchant.js` | 衝裝規則 `doEnchant`、成功率、可強化目標 |
 | `data/combat.js` | 彈藥欄／自動補彈weaponAmmoType／autoBuyAmmo／pickAmmo（第195節）；掛機戰鬥：`hunt` 狀態、尋怪、玩家行動、怪物攻擊、掉落、死亡、自動補給、回家、步行、自然回復 |
 | `data/town.js` | 村莊設施：傳送、商店、回收、旅館、倉庫、鍛造；龍穴進入條件 |
@@ -180,6 +181,7 @@
 | `data/affix.js` | 暗黑式裝備詞綴：`AFFIXES`、品質 `QUALITY`、`rollQuality`／`applyAffixes`／`affixFx`／`qualityName`／`instSellPrice`／`randomEquipFor`（第 21 節） |
 | `data/craft.js` | 製作通貨 `CURRENCY`（8 種，載入時併入 `ITEMS`）、`useCurrency`、改造視窗 `openCraftDialog`；通貨用在地圖時轉給 maps.js 的 `MAP_CURRENCY`（第 23 節） |
 | `data/maps.js` | 異界地圖 T1～T15：地圖道具、`MAP_MODS`、`openMap`／`mapOnKill`／`completeMap`／`endMapRun`、回卷傳送門 `mapPortalOpen`／`enterMapPortal`（第 114 節）、`applyMapMods`、`mapBonus`、地圖掉落、異界裝置面板（第 24 節） |
+| `data/elite.js` | 精英怪特殊詞條 `ELITE_AFFIXES`（12 條）、野外 3% 精英 `eliteFieldRoll`、擲詞條 `eliteRollAffixes`、`eliteTick`（護盾／召喚／狂暴／瞬移）、`eliteOnHitPlayer`、`eliteOnPlayerPhys`、`eliteBeforeKill`／`eliteAfterKill`、名牌顏色 `eliteNameColor`（第 312 節） |
 | `data/enchant.js` | 衝裝規則 `doEnchant`、成功率、可強化目標 |
 | `data/combat.js` | 掛機戰鬥：`hunt` 狀態、尋怪、玩家行動、怪物攻擊、掉落、死亡、自動補給、回家、步行、自然回復 |
 | `data/town.js` | 村莊設施：傳送、商店、回收、旅館、倉庫、鍛造；龍穴進入條件 |
@@ -309,7 +311,7 @@
 
 ## 2. 載入順序與依賴
 
-`config → classes → skills → items → spellbook → monsters → zones → quests → advance → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → afflict → guild-core → guild-state → player → enchant → affix → craft → maps → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → talent-jewels → talent → talent-tree → talent-layout → talent-planner → talent-live → bag-storage → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → titles → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → guild-world → guild-map-data → guild-missions → guild-mission-core → guild-mission → guild-map → guild → pwa → loot → main`
+`config → classes → skills → items → spellbook → monsters → zones → quests → advance → resonance → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → afflict → guild-core → guild-state → player → enchant → affix → craft → maps → elite → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → talent-jewels → talent → talent-tree → talent-layout → talent-planner → talent-live → bag-storage → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → titles → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → guild-world → guild-map-data → guild-missions → guild-mission-core → guild-mission → guild-map → guild → pwa → loot → main`
 
 - 上層資料檔（config～quests）只在「載入時」用到更前面的檔案；quests 載入時會把獎勵裝備與任務道具寫進 `ITEMS`，所以要在 items 之後。
 - resonance 載入時要改 `ITEMS`（含任務武器）、`MONSTERS` 掉落、`RECIPES`，所以在 quests 之後；`findSkill`（skills.js）在執行期才呼叫它的 `findResonanceSkill`。
@@ -4867,3 +4869,15 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - **遊戲端（cloud.js）**：`cloudIsExpErr` 認 hint；`cloudExpBlocked` 每個欄位每次開遊戲只回報一次，目前角色跳 `gameAlert`「雲端存檔暫停上傳」＋戰鬥訊息；照舊 `CLOUD_REJECT_HOLD_MS` 10 分鐘後重傳。`cloudErrText` 加對應文字。gm.html `KIND_NAMES` 加 `exp_block`。
 - **效果**：加速玩家第一次執行後先用掉 6 小時額度（Lv.50 約 3600 萬），每 6 分鐘 +270 萬約 1.7 小時後被擋，之後雲端每小時最多 +605 萬（約正常最快的 10 倍內）。已經在雲端的作弊經驗不會被扣回，要管理者另外處理。
 - **測試**：`node tools/test-exp-guard-db.js`（PGlite，載入 supabase.sql＋exp-guard.sql 兩次）：正常每 6 分 6 萬 ×50 次不擋、偽造額度欄位無效、每 6 分 270 萬第 17 次被擋且雲端保留上一份、回報 24 小時不重複、放行一次後再暴增又擋、死亡扣經驗、換角色大號擋小號收、管理者直改、低等級快速升級不誤擋。
+
+## 312. 精英怪特殊詞條（2026-11-06，版本 `20261106i`；新檔 `data/elite.js`，接在 combat／maps／afflict／ui-scene）
+
+- 使用者轉貼玩家建議：「地圖詞綴＝這張圖難不難、精英詞條＝這隻怪要怎麼打」。逐項決定：異界依階級 1～3 條（T1～T5 1 條、T6～T10 1～2、T11～T15 2～3）；**一般野外／地監 3% 精英、固定 1 條**（HP ×3、傷害 ×1.5、經驗 ×4，不保證掉裝備、金幣不變；不含永夜之塔、龍穴、異界）；**只加經驗**（每條 +50%，疊在 ×4 上），掉寶不變；**離線（SIM_MODE）不出特殊詞條、也不出野外精英**；10 種一次做完（冰封／燃燒／中毒拆 3 條＝12 條）；名牌加詞條＋觸發飄字。數值照草案。
+- **詞條** `ELITE_AFFIXES`：吸血（打中玩家回 50% 傷害）、護盾（每 8 秒 15% 最大 HP，打破為止）、魔力燃燒（扣 MP＝傷害 30%）、反傷（玩家物理攻擊反彈 15%，最多扣到 1 HP）、召喚（每 12 秒 1 隻同種小怪，同時最多 2 隻）、分裂（死亡後 2 隻 HP 40%／傷害 60%）、狂暴（HP<30% 攻速 ×1.5、傷害 ×1.3）、復甦（第一次倒下 40% HP 復活）、冰封／燃燒／中毒（攻擊 30% 機率附加 freeze／burn／poison，走 `afflictTry` 的 MR 減免與免疫時間；afflictTry 新增第 5 參數 ruleOverride）、瞬移（每 10 秒，地圖畫面上離玩家 >2 格就移到身邊空格，`freeTile`；畫面沒開不處理）。
+- **掛勾**：`addMob` 在 `applyMapMods` 後呼叫 `eliteFieldRoll`＋`eliteRollAffixes`（名字改成「精英・吸血・護盾 骷髏」）；`huntTick` 呼叫 `eliteTick`；怪物出手間隔 × `eliteAtkMul`；`monsterAttack` 傷害 × `eliteDmgMul`，打中後 `eliteOnHitPlayer`；`physicalAttack` 扣血後 `eliteOnPlayerPhys`；`onKill` 一開始 `eliteBeforeKill`（護盾結算／復甦，回 true＝沒死），塔／龍處理之後 `eliteAfterKill`（分裂）。
+- **護盾的做法**：傷害來源很多（普攻、魔法、傭兵、二轉、共鳴、娃娃、反擊…），不逐一修改；`eliteSettle` 比較 `_eHp`（上次結算的 HP）與目前 HP，差額先從護盾扣回（每次 eliteTick 與 onKill 前結算）。吸血、復甦改 HP 後同步 `_eHp`。
+- **召喚／分裂的小怪** `eliteMinion`：`eliteMinion` 旗標、`eliteOwner`、名字前綴「召喚・／分裂・」、經驗 30%、金幣 0；`onKill` 不呼叫 rollDrops／questOnKill／mercQuestOnKill／advLocalDrops，`mapOnKill` 不扣異界剩餘數；`applyMapMods` 不會讓牠變精英。
+- 野外精英 `fieldElite`：`rollDrops` 的「精英必掉裝備」改成 `mon.elite && !mon.fieldElite`。後端掉寶（lootTicket）的怪照樣可能變野外精英，掉寶仍由伺服器決定。
+- **畫面**（ui-scene.js）：精英腳下圈與名牌顏色 `eliteNameColor`：1 條金 #ffd34d、2 條橘 #ffa040、3 條粉紫 #ff6ad5；有護盾時身上藍色光圈；飄字：護盾／護盾破裂、吸血 +N、-N MP（玩家頭上）、反傷 -N、召喚、狂暴！、復甦！、瞬移。戰鬥訊息也有對應文字。
+- **測試** `node tools/test-elite.js`（正式遊戲 VM）：詞條數量依階級、經驗 +50%／條、野外 3%（塔／龍穴／異界／離線不出）、護盾吸收與擋致命、復甦只一次且經驗只給一次、分裂（不掉寶、不扣剩餘數、經驗 30%、金幣 0）、召喚上限 2、狂暴、吸血上限、魔力燃燒、燃燒附加、反傷不致死（含真正 physicalAttack）、瞬移（假地圖）、野外精英不保證掉裝備、實際掛機 5 分鐘（野外強制精英／T15 異界精英）不出錯。瀏覽器以記憶體測試角色（停用存檔）實際掛機，看到名牌顏色、護盾光圈、冰凍、瞬移，Console 無錯誤；本機存檔前後比對未變動。
+- **注意**：精英詞條讓高階異界的經驗變多（T15 精英平均約 ×2.5 的額外倍率），所有加成疊滿時可能接近第 311 節伺服器經驗上限（Lv.50 每小時約 605 萬），正常玩法不會碰到。傭兵被精英打中不套吸血／魔力燃燒／狀態詞條（只對玩家）。

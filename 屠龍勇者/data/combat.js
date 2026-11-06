@@ -231,6 +231,7 @@ function huntTick(dt) {
     mercTick(dt);
     if (typeof advTick === 'function') advTick(dt, st);   // 二轉：場地、召喚、持續傷害（advance.js）
     bossEnchantTick(st);
+    if (typeof eliteTick === 'function') eliteTick();   // 精英詞條：護盾、召喚、狂暴、瞬移（elite.js）
     reapMobs();
     if (!fightAlive()) return;
     hunt.pCd -= dt;
@@ -254,7 +255,7 @@ function huntTick(dt) {
         m.atkCd -= dt;
         if (m.atkCd > 0) continue;
         if (!mobInReach(m)) { m.atkCd = 200; continue; }   // 還沒走到角色旁邊
-        m.atkCd =(m === hunt.mon ? m.spd : m.spd * MOB_SIDE_SLOW) * bossEnchantAttackFactor(m) * (mercEffectOn(m, 'slow') || (typeof advDeb === 'function' && advDeb(m, 'slow')) ? (m.boss ? 1.05 : 1.2) : 1);
+        m.atkCd =(m === hunt.mon ? m.spd : m.spd * MOB_SIDE_SLOW) * bossEnchantAttackFactor(m) * (mercEffectOn(m, 'slow') || (typeof advDeb === 'function' && advDeb(m, 'slow')) ? (m.boss ? 1.05 : 1.2) : 1) * (typeof eliteAtkMul === 'function' ? eliteAtkMul(m) : 1);   // 精英「狂暴」攻速 +50%
         if (gameNow >= m.stunUntil) monsterAttack(calcStats(), m);
         if (!fightAlive()) return;
     }
@@ -404,6 +405,7 @@ function fightAlive() { return player.hunting && hunt && hunt.state === 'fight' 
 
 function addMob(mon) {
     applyMapMods(mon);   // 地圖詞綴（craft.js）
+    if (typeof eliteRollAffixes === 'function') { eliteFieldRoll(mon); eliteRollAffixes(mon); }   // 野外 3% 精英＋精英特殊詞條（elite.js，第 312 節）
     mon.atkCd = mon.spd * (0.5 + Math.random() * 0.5);
     mon.stunUntil = 0;
     hunt.mobs.push(mon);
@@ -751,6 +753,7 @@ function physicalAttack(st, mult, opt, mon = hunt.mon) {
     total = Math.max(1, Math.round(total * dollMult));
     const dealt = Math.min(Math.max(0, mon.hp), total);
     mon.hp -= total;
+    if (typeof eliteOnPlayerPhys === 'function') eliteOnPlayerPhys(mon, total);   // 精英「反傷」15%（不會反彈致死，elite.js）
     if (!opt.res) dollOnHit(mon, dealt, false, opt);
     lifeSteal(total, st);
     if (st.weapon && st.weapon.drain) player.mp = Math.min(st.maxMp, player.mp + rand(st.weapon.drain[0], st.weapon.drain[1]));
@@ -777,6 +780,7 @@ function monsterAttack(st, mon) {
         if (st.ac < 0) dmg -= rand(0, Math.floor(-st.ac / 5));   // AC 負值越多，額外減傷越多
     }
     if (mercEffectOn(mon, 'weaken')) dmg *= mon.boss ? .95 : .85;
+    if (typeof eliteDmgMul === 'function') dmg *= eliteDmgMul(mon);   // 精英「狂暴」傷害 +30%
     dmg = Math.max(0, Math.round(dmg - st.reduce));
     if (typeof advIncoming === 'function') dmg = advIncoming(mon, dmg, magic, st);   // 二轉：減傷、護盾（advance.js）
     if (st.absorb && player.mp > 0) {
@@ -789,6 +793,7 @@ function monsterAttack(st, mon) {
     dmg = dollTakeDamage(mercProtect(afflictOnHurt(player, dmg)), st);   // 石化減傷（afflict.js）
     afflictAfterHurt(player, dmg);   // 冰凍被打到提早解凍
     mercEnemyStatus(mon, magic, dmg, player);
+    if (typeof eliteOnHitPlayer === 'function') eliteOnHitPlayer(mon, dmg, magic);   // 精英：吸血、魔力燃燒、冰封／燃燒／中毒（elite.js）
     worldVfxEnemy(mon, magic);
     addLog(magic ? `${mon.name}施放「${mon.magic.name}」，你受到 ${dmg} 傷害` : `${mon.name}攻擊，你受到 ${dmg} 傷害`, 'hurt');
     if (player.hp <= 0 && !(typeof advPreventDeath === 'function' && advPreventDeath(st))) { onDeath(mon); return; }
@@ -812,6 +817,8 @@ function monsterAttack(st, mon) {
 // ───────── 結果 ─────────
 function onKill(mon) {
     if (!hunt.mobs.includes(mon)) return;   // 已經結算過
+    if (typeof eliteBeforeKill === 'function' && eliteBeforeKill(mon)) return;   // 精英護盾擋下／復甦：這次沒死（elite.js）
+    const minion = !!mon.eliteMinion;   // 精英召喚／分裂的小怪：不掉寶、不算任務與異界剩餘數
     const z = currentZone(), st = calcStats();
     const mb = 1 + mapBonus();   // 地圖詞綴獎勵加成
     let gold = Math.round(rand(mon.gold[0], mon.gold[1]) * mb);
@@ -833,11 +840,13 @@ function onKill(mon) {
     if (!mon.lootTicket && !lootRequired()) diaRoll(mon);   // 只有首領掉鑽石；後端首領連同物品一併結算（第 274 節）
     gainExp(exp);
     mercGainExp(exp);
-    mercQuestOnKill();
-    rollDrops(mon, z);
-    questOnKill(mon, z);
-    if (typeof advOnKill === 'function') { advOnKill(mon, st); advLocalDrops(mon); }
-    if (mapOnKill(mon)) return;   // 異界：計數；打倒異界首領＝通關、回村
+    if (!minion) {
+        mercQuestOnKill();
+        rollDrops(mon, z);
+        questOnKill(mon, z);
+    }
+    if (typeof advOnKill === 'function') { advOnKill(mon, st); if (!minion) advLocalDrops(mon); }
+    if (!minion && mapOnKill(mon)) return;   // 異界：計數；打倒異界首領＝通關、回村（精英召喚／分裂的小怪不算）
 
     if (z && z.type === 'tower' && player.loc.floor) {   // 逐層解鎖：這層累積擊殺（守關首領也算 1 隻）
         const f = player.loc.floor;
@@ -862,6 +871,7 @@ function onKill(mon) {
         moveToTown(z.town);
         return;
     }
+    if (typeof eliteAfterKill === 'function') eliteAfterKill(mon);   // 精英「分裂」：死亡後出現 2 隻小怪（elite.js）
     if (hunt.mon) { hunt.pCd = Math.min(hunt.pCd, 300); return; }   // 還有怪圍著：直接打下一隻
     hunt.tele = null;
     hunt.state = 'search';
@@ -930,7 +940,7 @@ function rollDrops(mon, z, raid = false) {
         const max = resMaxTierForMap(player.mapRun.t), pool = Object.keys(RESONANCE).filter(id => RESONANCE[id].tier <= max);
         give(pool[rand(0, pool.length - 1)], null, null);
     }
-    if (mon.elite || chance((mon.boss ? 0.5 : RANDOM_EQUIP_P) * qm)) {
+    if ((mon.elite && !mon.fieldElite) || chance((mon.boss ? 0.5 : RANDOM_EQUIP_P) * qm)) {   // 野外精英不保證掉裝備（elite.js，第 312 節）
         const id = randomEquipFor(mon.lv);
         if (id) give(id, null);
     }

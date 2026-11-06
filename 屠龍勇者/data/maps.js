@@ -166,7 +166,7 @@ function applyMapMods(m) {
     if (!inMapRun()) return m;
     const on = mapModsOn(), sc = mapTierScale(player.mapRun.t);
     if (sc > 1) { m.hp = m.maxHp = Math.round(m.maxHp * sc); m.dmg = m.dmg.map(d => Math.round(d * sc)); m.exp = Math.round(m.exp * sc); }
-    if (on.includes('elite') && !m.boss && !m.elite && (m.lootTicket ? m.lootElite === true : chance(0.15))) {
+    if (on.includes('elite') && !m.boss && !m.elite && !m.eliteMinion && (m.lootTicket ? m.lootElite === true : chance(0.15))) {
         m.elite = true; m.name = '精英・' + m.name;
         m.hp = m.maxHp = Math.round(m.maxHp * 3);
         m.dmg = m.dmg.map(d => Math.round(d * 1.5));
