@@ -548,6 +548,7 @@ function itemDescHtml(inst, showAffixMax = false) {
     if (d.classes) L.push(`限定：${d.classes.map(c => CLASSES[c].name).join('、')}`);
     if (d.desc && !d.unique) L.push(d.desc);
     if (d.unique && typeof uniqueInfoHtml === 'function') L.push(uniqueInfoHtml(d));   // 傳奇：固定詞綴＋特殊效果
+    if (typeof gemInfoHtml === 'function') { const gh = gemInfoHtml(inst) || gemSocketsHtml(inst); if (gh) L.push(gh); }   // 輔助寶石說明／裝備的孔（gems.js）
     const bossHtml = bossEnchantItemHtml(inst);
     if (bossHtml) L.push(bossHtml);
     if (d.res) L.push(resonanceHtml(d));   // 共鳴武器（resonance.js）
@@ -626,6 +627,7 @@ function openItemDialog(uid) {
             ? { text: '卸下', onClick: () => { unequipSlot(slot); saveGame(); refreshUI(); } }
             : { text: '裝備', onClick: () => { if (equipItem(uid)) showToast(`裝備了 ${itemName(inst)}`); saveGame(); refreshUI(); } });
     }
+    if (Array.isArray(inst.so) && inst.so.length && typeof openSocketDialog === 'function') btns.push({ text: '🔷 鑲嵌', cls: 'secondary', onClick: () => openSocketDialog(uid) });   // 第 317 節
     if (d.cat === 'ammo') btns.push({ text: player.ammoId === inst.id ? '卸下彈藥' : '裝備彈藥', onClick: () => selectAmmo(player.ammoId === inst.id ? '' : inst.id) });
     if (d.cat === 'map') {
         if (inTown() && !player.mapRun && !player.mapPortal && !inst.unidentified) btns.push({ text: '🌀 開啟', onClick: () => openMap(uid) });

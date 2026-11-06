@@ -146,6 +146,7 @@
 | `data/elite.js` | 精英怪特殊詞條 `ELITE_AFFIXES`（12 條）、野外 3% 精英 `eliteFieldRoll`、擲詞條 `eliteRollAffixes`、`eliteTick`（護盾／召喚／狂暴／瞬移）、`eliteOnHitPlayer`、`eliteOnPlayerPhys`、`eliteBeforeKill`／`eliteAfterKill`、名牌顏色 `eliteNameColor`（第 312 節） |
 | `data/enchant.js` | 衝裝規則 `doEnchant`、成功率、可強化目標 |
 | `data/elements.js` | 元素系統：`ELEMENTS`（火冰雷）、技能元素 `skillElem`／`elemSpellElem`、怪物抗性 `monElemRes`（`ELEM_MON_TAGS`／`ELEM_TAG_RES`／`ELEM_MON_OVERRIDE`）、名牌 `elemTagText`、傷害 `elemSpellMul`／`elemPhys`、異常 `elemOnHit`／`elementsTick`／`elemChillMul`／`elemShockMul`（第 316 節） |
+| `data/gems.js` | 裝備開孔＋技能／輔助寶石：`SUPPORT_GEMS`（13 種，載入時寫入 `ITEMS` 的 `gem_*`）、孔數 `gemMaxSockets`／擲孔 `gemRollSockets`、開孔石／連結石、串聯 `gemGroups`／`gemSupportMap`／`gemModsOf`、`gemSt`／`gemPrepSkill`／`gemSpellExtra`／`gemChain`、經驗 `gemGainExp`、鑲嵌 `openSocketDialog`／`gemSocketPut`／`gemSocketTake`、說明、本機掉落（第 317 節） |
 | `data/combat.js` | 彈藥欄／自動補彈weaponAmmoType／autoBuyAmmo／pickAmmo（第195節）；掛機戰鬥：`hunt` 狀態、尋怪、玩家行動、怪物攻擊、掉落、死亡、自動補給、回家、步行、自然回復 |
 | `data/town.js` | 村莊設施：傳送、商店、回收、旅館、倉庫、鍛造；龍穴進入條件 |
 | `data/guard.js` | **防改檔**（第 60 節）：本機存檔加密＋簽章 `saveEncode`／`saveDecode`／`saveParse`／`saveFormatMigrate`、雲端存檔簽章 `guardCloudSig`／`guardSaveCanon`／`guardCheckCloud`、記憶體數值偽裝 `guardWrap`、改檔標記 `guardFlag`（`player.integrity`） |
@@ -187,6 +188,7 @@
 | `data/elite.js` | 精英怪特殊詞條 `ELITE_AFFIXES`（12 條）、野外 3% 精英 `eliteFieldRoll`、擲詞條 `eliteRollAffixes`、`eliteTick`（護盾／召喚／狂暴／瞬移）、`eliteOnHitPlayer`、`eliteOnPlayerPhys`、`eliteBeforeKill`／`eliteAfterKill`、名牌顏色 `eliteNameColor`（第 312 節） |
 | `data/enchant.js` | 衝裝規則 `doEnchant`、成功率、可強化目標 |
 | `data/elements.js` | 元素系統：`ELEMENTS`（火冰雷）、技能元素 `skillElem`／`elemSpellElem`、怪物抗性 `monElemRes`（`ELEM_MON_TAGS`／`ELEM_TAG_RES`／`ELEM_MON_OVERRIDE`）、名牌 `elemTagText`、傷害 `elemSpellMul`／`elemPhys`、異常 `elemOnHit`／`elementsTick`／`elemChillMul`／`elemShockMul`（第 316 節） |
+| `data/gems.js` | 裝備開孔＋技能／輔助寶石：`SUPPORT_GEMS`（13 種，載入時寫入 `ITEMS` 的 `gem_*`）、孔數 `gemMaxSockets`／擲孔 `gemRollSockets`、開孔石／連結石、串聯 `gemGroups`／`gemSupportMap`／`gemModsOf`、`gemSt`／`gemPrepSkill`／`gemSpellExtra`／`gemChain`、經驗 `gemGainExp`、鑲嵌 `openSocketDialog`／`gemSocketPut`／`gemSocketTake`、說明、本機掉落（第 317 節） |
 | `data/combat.js` | 掛機戰鬥：`hunt` 狀態、尋怪、玩家行動、怪物攻擊、掉落、死亡、自動補給、回家、步行、自然回復 |
 | `data/town.js` | 村莊設施：傳送、商店、回收、旅館、倉庫、鍛造；龍穴進入條件 |
 | `data/guard.js` | **防改檔**（第 60 節）：本機存檔加密＋簽章 `saveEncode`／`saveDecode`／`saveParse`／`saveFormatMigrate`、雲端存檔簽章 `guardCloudSig`／`guardSaveCanon`／`guardCheckCloud`、記憶體數值偽裝 `guardWrap`、改檔標記 `guardFlag`（`player.integrity`） |
@@ -315,7 +317,7 @@
 
 ## 2. 載入順序與依賴
 
-`config → classes → skills → items → spellbook → monsters → zones → quests → advance → resonance → uniques → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → afflict → guild-core → guild-state → player → enchant → affix → craft → maps → elite → elements → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → talent-jewels → talent → talent-tree → talent-layout → talent-planner → talent-live → bag-storage → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → titles → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → guild-world → guild-map-data → guild-missions → guild-mission-core → guild-mission → guild-map → guild → pwa → loot → main`
+`config → classes → skills → items → spellbook → monsters → zones → quests → advance → resonance → uniques → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → afflict → guild-core → guild-state → player → enchant → affix → craft → maps → elite → elements → gems → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → talent-jewels → talent → talent-tree → talent-layout → talent-planner → talent-live → bag-storage → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → titles → auction → presence → ui-frame → map-queue → icons → hotbar → scene-art → ui-scene → world-atlas → guild-world → guild-map-data → guild-missions → guild-mission-core → guild-mission → guild-map → guild → pwa → loot → main`
 
 - 上層資料檔（config～quests）只在「載入時」用到更前面的檔案；quests 載入時會把獎勵裝備與任務道具寫進 `ITEMS`，所以要在 items 之後。
 - resonance 載入時要改 `ITEMS`（含任務武器）、`MONSTERS` 掉落、`RECIPES`，所以在 quests 之後；`findSkill`（skills.js）在執行期才呼叫它的 `findResonanceSkill`。
@@ -4927,3 +4929,17 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - **伺服器**（使用者要執行，可重跑）：① `node tools/build-elements-sql.js` → `tools/elements.sql`：目錄 affixes 補 6 條（上限陣列 0～110）、116 件可擲裝備加入允許的元素詞綴（傳奇不加）、元素石道具與通貨權重（version 尾碼 -elements20261107）。② `tools/unique-items.sql` 重新產生（尾碼 -uniques20261107c，**已裝過第一期也能合併**成 26 件）。
 - **測試**：`tools/test-elements.js`（技能元素、抗性含塔怪／精英名、真正 castSpell 火球打火蜥蜴 vs 雪怪約 2.5 倍、物理轉換／附加／連鎖互轉、四種異常與 20% 機率、元素石重洗剝離保留、6 件轉換傳奇、法師／騎士／妖精實際掛機）；`tools/test-elements-db.js`（PGlite：重跑不變、詞綴部位、舊詞綴與規則保留、伺服器擲稀有武器出元素詞綴且數值在範圍、元素石 Lv.50 以上才掉）；`tools/test-unique-items-db.js` 改成第一期→第二期升級路徑（`tools/test-fixture-unique-items-v1.sql` 是第一期的 SQL 固定檔）。瀏覽器以記憶體測試角色穿熔爐之心打熔火煉獄：訊息「（🔥10）」、名牌「抗🔥 弱❄️」、Console 無錯誤；正式建置 75 檔成功。
 - **注意**：11/7 00:39 使用者的「更」提交把本節做到一半的 affix／craft／player／combat／ui-panels 推上線（當時沒有 elements.js，呼叫處都有 typeof 判斷不會出錯，但元素詞綴、元素石可能已經從本機掉落、當時還沒有效果）。法系技能現在吃怪物抗性：火系區域的火法、冰系區域的冰法傷害會下降、打弱點會上升。
+
+## 317. 裝備開孔＋技能／輔助寶石（PoE 第三期，2026-11-07，版本 `20261107d`；新檔 `data/gems.js`、SQL `tools/sockets-gems.sql`）
+
+- 使用者決定：件內連線（最像 PoE）；技能照舊學，技能寶石只是載體；輔助寶石怪物掉落、靠經驗升級（最高 20 級、分到擊殺經驗 10%，玩家經驗不變）；拆輔助寶石要「等級 × 2,000」金幣；孔＝盔甲最多 6（可 6 連）、其他防具 4、雙手武器 6、單手武器 3（遊戲本來就只有單手配盾）、戒指／項鍊／腰帶沒有；掉落時隨機孔數與串聯＋開孔石、連結石。使用者也問過「技能要不要全改成石頭」，回答建議保留（現有玩家、天堂式職業與魔法書、掛機穩定），使用者同意。
+- **資料**：裝備 `so`＝孔陣列（null／{ t:'skill', sk }／輔助寶石實體 { uid, id, n:1, gl, gx }），`ln`＝相鄰孔是否串聯（長度 n−1，1／0）。輔助寶石 `ITEMS['gem_'+key]`（cat 'gem'、不堆疊、wt 1、sell 2000），實體 `gl` 等級、`gx` 經驗。技能寶石不是道具：鑲嵌時從已學會的技能（strike／spell）或「普通攻擊」（`GEM_ATTACK_ID`＝'_attack'）直接產生，拆下就消失、免費。**沒有改 SAVE_SCHEMA**（新欄位，舊版遊戲讀寫會原樣保留）。
+- **孔數**：`gemRollCount` 普通 0～1、魔法 1～2、稀有 2～3、傳說／傳奇 2～4，之後每孔 25% 再加一孔（不超過上限）；串聯每兩孔 35%＋10%×品質階（普通 0～傳說 3）。只有新掉落的裝備擲孔：本機 rollDrops 的 give()、後端 lootApply 入帳前（`gemRollSockets`；已經有 so 的不動）；舊裝備、商店貨沒有孔，用開孔石開。和通貨改造一樣在遊戲端擲（伺服器不產生孔）。
+- **通貨**（craft.js）：開孔石 curSocket（w 4、Lv.15+）重擲孔數（1～上限，孔越多權重越低）；連結石 curLink（w 2.5、Lv.25+）每兩孔 50% 重擲串聯；都要孔裡全空（`gemSocketsEmpty`）。傳奇可以用這兩種（`currencyCan` 例外），其他通貨照舊不行。
+- **13 種輔助寶石**（L＝等級）：多重打擊（物理技能／普攻多 1 下、傷害 ×0.6＋0.01L）、範圍擴大（改範圍、×0.7＋0.01L）、附加火焰／冰冷／閃電（每擊 4＋2L，魔法也有效）、元素集中（三元素 +15＋1.5L%）、暴擊強化（物爆、魔爆 +3＋0.5L%）、吸血（1＋0.2L%）、耗魔降低（−20＋L%）、冷卻縮減（−10＋L%）、連鎖（魔法彈跳 1 隻、L≥10 兩隻，50＋1.5L%）、殘忍（物理 ×1.2＋0.015L，這個技能沒有元素）、異常強化（+10＋L%）。
+- **串聯效果**：`gemSupportMap`＝身上每件裝備的每個串聯群組裡，技能寶石 → 同群輔助寶石（同種取最高等級）；`gemModsOf(skillId)` 合成一份修正。掛勾：castSpell／doStrike 開頭 `gemPrepSkill`（hits、aoe，掛 k._gm）＋`gemSt`（crit、magicCrit、lifesteal、elem.inc／add／ailment／physMul；殘忍清掉轉換與附加）；castSpell 每目標 × dmgMul ＋ `gemSpellExtra`（附加元素），結束 `gemChain`；physicalAttack 普攻用 '_attack' 的修正（gemSt、多打幾下），每一下 × dmgMul；talentManaCost × `gemMpMul`；skillCd × `gemCdMul`。
+- **經驗**：onKill 在 gainExp 後 `gemGainExp(exp)`：身上裝備孔裡每顆輔助寶石 +exp×10%，需要經驗 `gemExpNeed(L)`＝1500×L²（1→20 合計約 370 萬），滿 20 級 gx 歸零。伺服器經驗額度（第 311 節）只看玩家總經驗，寶石經驗不影響；開加速器時 exp＝0（第 310 節）寶石也不會漲。
+- **介面**：道具視窗有孔就有「🔷 鑲嵌」→ `openSocketDialog`（每個串聯群組一個框，空孔下拉選「技能寶石（已學技能）」或「輔助寶石（背包）」＋鑲入；有寶石顯示拆下與費用）；onclick 只呼叫頂層函式 `gemSocketPut(itemUid, idx)`、`gemSocketTake(itemUid, idx)`（建置會公開這兩個）。道具說明 `gemSocketsHtml`（[技能 ═ 輔助] ◇空孔）、寶石 `gemInfoHtml`（等級、經驗、目前效果）；寶石名稱帶 Lv。CSS `.gem-*`（index.html）。CAT_NAMES.gem＝寶石。
+- **防改檔簽章**：guard.js `guardItemCanon` 在有 gl／gx 時接 `,G:等級:經驗`、有 so 時接 `,S:孔1~孔2…（_空／s技能／{寶石簽章}）,L:串聯`；**沒有這些欄位的道具簽章不變**。伺服器 `dragon_item_canon` 由 sockets-gems.sql 改成同樣算法（plpgsql，遞迴算寶石）。
+- **伺服器**：`node tools/build-gems-sql.js` → `tools/sockets-gems.sql`（**使用者要盡快在 Supabase 執行**：沒執行前，有孔的裝備／寶石上傳後簽章不符，交易所與共用倉庫會暫時不能用；沒有孔的舊道具不受影響）：① 新的 dragon_item_canon ② 目錄補 13 種寶石＋開孔石／連結石與通貨權重（尾碼 -gems20261107）③ `loot_gem`（後端首領 10%）＋修補 loot_roll。小怪本機 0.3%（`gemDropFor`，後端那一群不在本機掉）。
+- **測試**：`tools/test-gems.js`（孔數上限、擲孔與 6 連機率、開孔石／連結石、串聯群組、多重打擊／範圍／附加火焰／連鎖／耗魔／冷卻／殘忍／吸血、經驗 10% 與 20 級、玩家經驗不變、鑲嵌拆下與金幣、沒學會的技能不能做、簽章字串、本機掉落、騎士普攻 6 連與法師火球 6 連實際掛機）；`tools/test-gems-db.js`（PGlite：載入 supabase＋anticheat＋整套掉寶 SQL；重跑不變、沒有孔的道具簽章不變、400 件隨機道具與整份存檔的簽章字串和遊戲端一致、用遊戲算的簽章上傳有孔存檔 sig_ok＝true、目錄、首領 10%、loot_roll 串接）。瀏覽器以記憶體測試角色開鑲嵌視窗，用畫面按鈕鑲入技能寶石＋兩顆輔助寶石並確認效果生效，Console 無錯誤；正式建置 76 檔（公開函式 249）成功。

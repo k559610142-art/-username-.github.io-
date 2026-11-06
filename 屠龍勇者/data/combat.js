@@ -547,7 +547,7 @@ function playerAction(st) {
 const SKILL_GCD_MS = 1000;
 // 每個技能各自的冷卻（秒）：技能資料有 cd 就用它；治癒、增益沒寫的用預設（2026-10-24 使用者要求每種技能都有自己的 CD）
 const SKILL_DEFAULT_CD = { heal: 4, buff: 10 };
-function skillCd(k) { const cd = k.cd || SKILL_DEFAULT_CD[k.type] || 0, c2 = typeof advCd === 'function' ? advCd(k, cd) : cd; return typeof uqOn === 'function' && uniqueCdMul() !== 1 ? Math.round(c2 * uniqueCdMul() * 10) / 10 : c2; }   // 時之沙漏 −25%   // 二轉分支縮短冷卻（advance.js）
+function skillCd(k) { const cd = k.cd || SKILL_DEFAULT_CD[k.type] || 0, c2 = typeof advCd === 'function' ? advCd(k, cd) : cd; const m = (typeof uqOn === 'function' ? uniqueCdMul() : 1) * (typeof gemCdMul === 'function' ? gemCdMul(k) : 1); return m !== 1 ? Math.round(c2 * m * 10) / 10 : c2; }   // 時之沙漏、輔助寶石「冷卻縮減」   // 時之沙漏 −25%   // 二轉分支縮短冷卻（advance.js）
 function skillGcdLeft() { return Math.max(0, (player.cds._gcd || 0) - gameNow); }
 function useSkillCost(k) {
     { const cost = typeof talentManaCost==='function'?talentManaCost(k):k.mp; if (typeof uqOn === 'function') uniquePay(cost); else player.mp -= cost; }   // 虛空低語改用 HP
@@ -594,6 +594,7 @@ function magicDamage(base, spK, st, undeadMul, mon = hunt.mon, elem = null) {   
 function castSpell(k, st) {
     if (k.screen) { screenAreaAttack(k, st); return; }
     if (typeof advRunSkill === 'function') { if (advRunSkill(k, st)) return; k = advPrepSkill(k, st); }   // 二轉技能（advance.js）
+    if (typeof gemPrepSkill === 'function' && !k.id.startsWith('res_')) { k = gemPrepSkill(k); if (k._gm) st = gemSt(st, k._gm); }   // 輔助寶石：範圍、暴擊、元素、吸血（gems.js，第 317 節）
     if (!k.screenPaid) useSkillCost(k);
     hunt.lastAtkAt = gameNow;
     if (!k.id.startsWith('res_')) hunt.pCd = st.castMs;   // 攻擊魔法用施法間隔（不看武器）；共鳴觸發的不影響出手計時
@@ -601,14 +602,18 @@ function castSpell(k, st) {
     const targets = k.screenTargets || (k.aoe ? mobTargets() : [hunt.mon]);
     const dollScope = {};
     const el = typeof elemPhys === 'function' ? elemSpellElem(k, st) : null;   // 技能元素（冰轉火、火轉雷）
+    let gemFirstD = 0;
     const parts = targets.map(m => {
-        const d = Math.max(1, Math.round(magicDamage(k.dmg, k.spK, st, k.undeadMul, m, el) * (!k.id.startsWith('res_') ? dollAttackMult(m) : 1) * (typeof advMagicMult === 'function' ? advMagicMult(k, m) : 1)));
+        let d = Math.max(1, Math.round((k._gm ? k._gm.dmgMul : 1) * magicDamage(k.dmg, k.spK, st, k.undeadMul, m, el) * (!k.id.startsWith('res_') ? dollAttackMult(m) : 1) * (typeof advMagicMult === 'function' ? advMagicMult(k, m) : 1)));
+        const gx = k._gm && typeof gemPrepSkill === 'function' ? gemSpellExtra(k._gm, m, st) : null;   // 輔助寶石「附加 X」對魔法也有效
+        if (gx) d += gx.fire + gx.ice + gx.light;
+        if (!gemFirstD) gemFirstD = d;
         const dealt = Math.min(Math.max(0, m.hp), d);
         m.hp -= d;
         if (!k.id.startsWith('res_')) dollOnHit(m, dealt, true, dollScope);
         lifeSteal(d, st);
         if (typeof uqOn === 'function') uniqueOnHit(m, d, true);
-        if (el && typeof elemPhys === 'function') elemOnHit(m, { [el]: d }, st);   // 點燃／冰緩／感電
+        if (typeof elemPhys === 'function' && (el || gx)) { const pp = { fire: 0, ice: 0, light: 0 }; if (el) pp[el] += d; if (gx) for (const e in gx) pp[e] += gx[e]; elemOnHit(m, pp, st); }   // 點燃／冰緩／感電
         if (typeof advOnSpellHit === 'function') advOnSpellHit(k, m, d, st);
         return `${m.name} ${d}`;
     });
@@ -616,12 +621,14 @@ function castSpell(k, st) {
     sfx(/冰|雪|霜|凍/.test(k.name) ? 'magic-ice' : 'magic-cast');
     worldVfxSkill(k, hunt.mon);
     if (!k.id.startsWith('res_')) { resonanceOnHit(); bossEnchantHit(targets.find(m => m.hp > 0), st); }   // 攻擊魔法也算一次命中（法師拿共鳴魔杖）
+    if (k._gm && typeof gemPrepSkill === 'function') gemChain(k, st, targets, gemFirstD);   // 輔助寶石「連鎖」
     if (typeof advAfterSkill === 'function') advAfterSkill(k, st, targets);
 }
 
 function doStrike(k, st) {
     if (k.screen) { screenAreaAttack(k, st); return; }
     if (typeof advRunSkill === 'function') { if (advRunSkill(k, st)) return; k = advPrepSkill(k, st); }   // 二轉技能（advance.js）
+    if (typeof gemPrepSkill === 'function' && !k.id.startsWith('res_')) { k = gemPrepSkill(k); if (k._gm) st = gemSt(st, k._gm); }   // 輔助寶石：多打幾下、範圍、暴擊…（gems.js）
     const bossAction = !k.id.startsWith('res_');
     if (bossAction) bossEnchantBegin();
     try {
@@ -737,7 +744,10 @@ function physicalAttack(st, mult, opt, mon = hunt.mon) {
         if (!(typeof advSaveAmmo === 'function' && advSaveAmmo(opt))) consumeItem(ammo.id);   // 二轉：槍鬥士省子彈、集束手雷
         autoBuyAmmo();
     }
-    const swings = !opt.noDouble && chance(st.double) ? 2 : 1;
+    const gm = opt.res || !(typeof gemPrepSkill === 'function') ? null : opt.skill ? opt.skill._gm || null : gemModsOf(GEM_ATTACK_ID);   // 輔助寶石（gems.js）
+    if (gm && !opt.skill) st = gemSt(st, gm);
+    let swings = !opt.noDouble && chance(st.double) ? 2 : 1;
+    if (gm && !opt.skill && gm.hitsAdd) swings += gm.hitsAdd;   // 多重打擊（普攻）
     const def = opt.ignoreAc || (typeof uqOn === 'function' && uniqueIgnoreAc()) ? 0 : 10 - mon.ac - (typeof advDefMod === 'function' ? advDefMod(mon, opt) : 0);
     const hitChance = clamp(0.7 + (st.hit - def) * 0.02, 0.05, 0.95);
     let total = 0, crit = false, hits = 0;
@@ -753,6 +763,7 @@ function physicalAttack(st, mult, opt, mon = hunt.mon) {
         d *= mult;
         if(typeof talentDamageMult==='function')d*=talentDamageMult(st,false,mon);
         if (typeof uqOn === 'function') d *= uniqueDmgMul(false);   // 傳奇傷害倍率（雷鳴獨眼 ×1.8、點金之手 −10%…）
+        if (gm) d *= gm.dmgMul;   // 輔助寶石（多重打擊、範圍擴大的傷害倍率）
         if (typeof advPhysMult === 'function') d = d * advPhysMult(st, mon, opt) + advPhysAdd(mon);   // 二轉被動／減益（advance.js）
         const forced = typeof advCritRoll === 'function' ? advCritRoll(st, mon, opt) : null;
         const uqCrit = !forced && typeof uqOn === 'function' ? uniqueCritRoll(st) : null;   // 斷罪者第 4 下、幻影披風
@@ -861,6 +872,7 @@ function onKill(mon) {
     sfx('mon-die');
     if (!mon.lootTicket && !lootRequired()) diaRoll(mon);   // 只有首領掉鑽石；後端首領連同物品一併結算（第 274 節）
     gainExp(exp);
+    if (typeof gemGainExp === 'function') gemGainExp(exp);   // 身上的輔助寶石分到 10%（玩家經驗不變）
     mercGainExp(exp);
     if (!minion) {
         mercQuestOnKill();
@@ -925,6 +937,7 @@ function rollDrops(mon, z, raid = false) {
         if (!bagCanReceive(id,n,st.weightMax)) { addLog(`⚠️ 負重已滿，${d.name}撿不起來`, 'warn'); return; }
         const inst = addItem(id, n);
         if (rolled && inst) for (const k of ['q', 'af', 'il', 'nm']) if (rolled[k] != null) inst[k] = rolled[k];
+        if (gear && inst && typeof gemRollSockets === 'function') gemRollSockets(inst);   // 新掉落的裝備擲孔與串聯（gems.js）
         if (SIM_MODE && offlineDrops && inst) offlineDrops.push({ id, n, q: inst.q || null });   // 離線模擬：記下掉落（offline.js，第 108 節）
         const rare = ['weapon', 'armor', 'elixir'].includes(d.cat) || (d.cat === 'scroll' && d.bless === 1) || d.scroll === 'enchant';
         const tag = gear && inst && inst.q ? `【${QUALITY[inst.q].name}】` : '';
@@ -965,6 +978,8 @@ function rollDrops(mon, z, raid = false) {
     }
     const uq = typeof uqOn === 'function' ? uniqueDropFor(mon) : null;   // 傳奇：稀有異界 T11～T15 首領（後端模式由伺服器決定，見 tools/unique-items.sql）
     if (uq) give(uq, null, null);
+    const gemId = typeof gemDropFor === 'function' ? gemDropFor(mon, qm) : null;   // 輔助寶石（後端那一群由伺服器決定）
+    if (gemId) give(gemId, null);
     if ((mon.elite && !mon.fieldElite) || chance((mon.boss ? 0.5 : RANDOM_EQUIP_P) * qm)) {   // 野外精英不保證掉裝備（elite.js，第 312 節）
         const id = randomEquipFor(mon.lv);
         if (id) give(id, null);

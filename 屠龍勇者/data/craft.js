@@ -16,6 +16,9 @@ const CURRENCY = {
     curAwaken:  { name: '命運的覺醒石', icon: '💠', w: 0.15, minLv: 70, desc: `物品等級 ${SPECIAL_AFFIX_IL} 以上的裝備：加上 1 條特殊詞綴（全能力／首領增傷／經驗／金幣／反傷，已有就重洗那條）`, can: x => (x.il || 0) >= SPECIAL_AFFIX_IL, use: awakenAffix },
     // 元素石（2026-11-07，第 316 節）：武器加上或重洗 1 條「物理傷害 20～50% 轉為火焰／冰冷／閃電」；Lv.50 以上的怪物才會掉
     curElement: { name: '元素石', icon: '🜂', w: 0.4, minLv: 50, desc: '武器：加上 1 條「物理傷害 20～50% 轉為火焰／冰冷／閃電」（每件最多 1 條，已有就重洗那條；傳奇不能用）', can: x => ITEMS[x.id].cat === 'weapon', use: elemStoneAffix },
+    // 開孔石／連結石（2026-11-07，第 317 節）：孔裡要先清空
+    curSocket:  { name: '開孔石', icon: '🔷', w: 4, minLv: 15, desc: '重擲武器／防具的孔數（1～上限：盔甲與雙手武器 6、其他防具 4、單手武器 3；戒指、項鍊、腰帶沒有孔）。孔裡要先清空', can: x => gemMaxSockets(ITEMS[x.id]) > 0 && gemSocketsEmpty(x), use: x => gemSocketStone(x) },
+    curLink:    { name: '連結石', icon: '🔗', w: 2.5, minLv: 25, desc: '重擲孔與孔之間的串聯（每兩孔 50%）。要有 2 孔以上、孔裡要先清空', can: x => Array.isArray(x.so) && x.so.length > 1 && gemSocketsEmpty(x), use: x => gemLinkStone(x) },
 };
 const CURRENCY_IDS = Object.keys(CURRENCY);
 const CURRENCY_DROP_P = 0.03, CURRENCY_BOSS_P = 0.6;   // 每隻怪掉通貨的機率（首領 60%）
@@ -73,7 +76,7 @@ function currencyCan(cid, x) {
     if (d.cat === 'map' && (x.q === 'legend' || x.unidentified === true)) return false;
     if (d.cat === 'map') return !!(MAP_CURRENCY[cid] && MAP_CURRENCY[cid].can(x));
     if (d.cat !== 'weapon' && d.cat !== 'armor') return false;
-    if (d.unique) return false;   // 傳奇裝備不能用通貨改造（uniques.js）
+    if (d.unique && cid !== 'curSocket' && cid !== 'curLink') return false;   // 傳奇裝備不能用通貨改造（uniques.js）；開孔、連結可以
     if (d.cat === 'map' && x.q === 'legend') return '傳奇地圖不可使用通貨改造';
     if (x.q === 'legend' && cid !== 'curTemper' && cid !== 'curAwaken') return false;
     return CURRENCY[cid].can(x);

@@ -5,6 +5,7 @@
 
 ## 1. 現況
 
+- **2026-11-07 裝備開孔＋技能／輔助寶石（PoE 第三期，Claude，20261107d）**：data/gems.js；**tools/sockets-gems.sql 要盡快在 Supabase 執行**（改簽章，沒執行前有孔裝備不能交易／存倉庫）；還沒確認使用者執行過的：tools/elements.sql、tools/unique-items.sql（第二期）；第 317 節。
 - **2026-11-07 元素系統＋屬性轉換（PoE 第二期，Claude，20261107c）**：data/elements.js；**tools/elements.sql 和重新產生的 tools/unique-items.sql 都要在 Supabase 執行**；第 316 節。下一步第三期：裝備開孔＋輔助寶石（規格待使用者確認）。
 - **2026-11-07 傳奇裝備 20 件（Claude，20261107b）**：data/uniques.js＋tools/unique-items.sql（使用者 11/7 已在 Supabase 執行）；只有稀有 T11～T15 異界首領 1%／2%／3%，第 315 節。後續第二期：元素系統＋屬性轉換；第三期：裝備開孔＋輔助寶石（都還沒做）。
 - **2026-11-07 一般地圖取消精英怪（Claude，20261107a）**：ELITE_FIELD_P＝0，精英只在異界「精英」詞綴出現，第 314 節。傳奇裝備 20 件草案（第一期）已提給使用者，等確認清單／掉率／可否交易。

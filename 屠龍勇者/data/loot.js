@@ -241,6 +241,7 @@ function lootApply(result) {
                 messages.push([`🪙 自動賣出 ${itemName(it)} ×${it.n}（+${fmt(gold)}）`, 'loot']); continue;
             }
             if (!bagCanReceive(it.id,it.n)) { messages.push([`⚠️ 負重已滿，${d.name}撿不起來`, 'warn']); continue; }
+            if (typeof gemRollSockets === 'function') gemRollSockets(it);   // 新掉落的裝備擲孔（gems.js）
             marketGiveItem(it);
             messages.push([`🎁 獲得 ${itemName(it)} ×${it.n}`, it.unidentified ? 'loot' : it.q === 'legend' ? 'boss' : it.q ? 'rare' : 'loot']);
         }

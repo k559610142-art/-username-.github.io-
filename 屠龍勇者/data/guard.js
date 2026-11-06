@@ -108,7 +108,11 @@ function guardCv(v) {   // 和 PostgreSQL 的 jsonb ->> 取出的文字一致
 function guardItemCanon(x) {
     x = x && typeof x === 'object' ? x : {};
     const af = Array.isArray(x.af) ? x.af.map(a => (a && typeof a === 'object' ? a : {})).map(a => guardCv(a.k) + ':' + guardCv(a.v)).join('/') : '';
-    return [x.uid, x.id, x.n, x.ench, x.q].map(guardCv).join(',') + ',' + af;
+    let s = [x.uid, x.id, x.n, x.ench, x.q].map(guardCv).join(',') + ',' + af;
+    // 寶石等級／經驗、孔與串聯（gems.js，第 317 節）：只有有這些欄位才接上，舊道具簽章不變；必須和 tools/sockets-gems.sql 的 dragon_item_canon 一致
+    if (x.gl != null || x.gx != null) s += ',G:' + guardCv(x.gl) + ':' + guardCv(x.gx);
+    if (Array.isArray(x.so)) s += ',S:' + x.so.map(g => g == null ? '_' : g.t === 'skill' ? 's' + guardCv(g.sk) : '{' + guardItemCanon(g) + '}').join('~') + ',L:' + (Array.isArray(x.ln) ? x.ln.map(guardCv).join('') : '');
+    return s;
 }
 function guardListCanon(arr) { return Array.isArray(arr) ? arr.map(guardItemCanon).join(';') : ''; }
 function guardSaveCanon(uid, slot, p) {

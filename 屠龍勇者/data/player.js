@@ -123,6 +123,7 @@ function itemName(inst) {
     const e = inst.ench ? (inst.ench > 0 ? '+' : '') + inst.ench + ' ' : '';
     if (d.cat === 'map' && inst.unidentified === true) return `未鑑定異界地圖 T${d.tier}`;   // 品級鑑定前隱藏（第228節）
     if (d.cat === 'map' && inst.q === 'legend') return `傳奇財寶地圖 T${d.tier}${inst.unidentified ? '（未鑑定）' : ''}`;
+    if (d.cat === 'gem') return `${d.name} Lv.${inst.gl || 1}`;   // 輔助寶石（gems.js）
     return e + qualityName(inst, d.name);   // 魔法／稀有／傳說品質的名稱（affix.js）
 }
 
