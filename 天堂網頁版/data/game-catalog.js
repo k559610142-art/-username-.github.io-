@@ -431,6 +431,7 @@ function catalogPortrait(type, row, preview = false) {
     const src = type === 'enchant' ? TdjSystems.enchant.image(row.e) : TdjSystems.wuhun.image(row.w);
     if (!src) return uiElement('span', 'game-catalog-missing', '尚無外觀圖');
     const img = uiElement('img', 'game-catalog-portrait' + (preview ? ' game-catalog-preview' : ''));
+    if (type === 'wuhun') img.classList.add('game-catalog-wuhun-phantom');
     img.src = src; img.alt = preview ? row.name : ''; img.loading = preview ? 'eager' : 'lazy'; img.decoding = 'async';
     img.onerror = () => img.replaceWith(uiElement('span', 'game-catalog-missing', '圖片未能載入'));
     return img;
@@ -492,7 +493,18 @@ function openGameCatalog(type) {
   search.placeholder = type === 'collection' ? '搜尋收藏或需求卡片' : '搜尋名稱或外觀編號';
   search.setAttribute('aria-label', search.placeholder);
   const cards = uiElement('div', type === 'collection' ? 'game-catalog-sets' : 'game-catalog-cards');
-  results.append(search, cards);
+  results.append(search);
+  if (type === 'collection') {
+    const guide = uiElement('details', 'game-collection-guide');
+    guide.append(
+      uiElement('summary', '', '收藏規則參考'),
+      uiElement('p', '', '卡片收藏：集齊指定卡片後查看套組與加成。'),
+      uiElement('p', '', '道具收藏：確認後才登錄並扣除符合條件的背包道具。'),
+      uiElement('p', '', '小樹的收藏紀錄由同帳號角色共用。此處先提供條件與效果查閱。')
+    );
+    results.append(guide);
+  }
+  results.append(cards);
   layout.append(sidebar, results, detail);
   gameDialogContent.replaceChildren(title, tabs, layout);
 
@@ -566,7 +578,7 @@ function openGameCatalog(type) {
       const w = row.w, owned = TdjSystems.wuhun.owned(w.id), active = String(TdjSystems.wuhun.active) === String(w.id);
       detail.append(uiElement('strong', '', w.tier + (w.desc ? ' · ' + w.desc : '')), uiElement('p', '', owned ? '擁有' + (active ? ' · 裝備中' : '') : '尚未擁有'), uiElement('h4', '', '武魂能力'));
       for (const effect of w.fx) detail.append(uiElement('p', '', effect));
-      detail.append(uiElement('small', '', '光環外觀編號 ' + w.skin + (TdjSystems.wuhun.image(w) ? '（目前用替代外觀顯示）' : '（沒有圖，以光暈顯示）')));
+      detail.append(uiElement('small', '', '武魂外觀 ' + w.skin + ' · 原怪物 ' + (TdjSystems.wuhun.baseGfx(w) ?? '未查到') + (TdjSystems.wuhun.image(w) ? ' · 半透明原怪物圖' : ' · 尚缺原圖，使用光暈')));
       const action = active ? catalogButton('卸下武魂', () => { TdjSystems.wuhun.unequip(); refreshCards(); }, 'game-catalog-action')
         : catalogButton(owned ? '裝備武魂' : '擁有才能裝備', () => { if (TdjSystems.wuhun.equip(w.id)) refreshCards(); }, 'game-catalog-action');
       action.disabled = !owned;

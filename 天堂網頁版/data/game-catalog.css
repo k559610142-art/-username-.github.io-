@@ -106,3 +106,17 @@ main.game.reference-game #panel.game-catalog-panel {
 .game-catalog-status { color: #d8c9a0; font-size: 13px; }
 .game-catalog-card.game-catalog-locked img { filter: grayscale(1) brightness(.45); }
 .game-catalog-card.game-catalog-locked span { opacity: .6; }
+
+/* 小樹客戶端卡框，依圖檔實際顏色對應。 */
+.game-catalog-card[data-tier="white"] { --catalog-card-frame: url("../assets/interface/card-frames/white.png"); }
+.game-catalog-card[data-tier="green"] { --catalog-card-frame: url("../assets/interface/card-frames/green.png"); }
+.game-catalog-card[data-tier="blue"] { --catalog-card-frame: url("../assets/interface/card-frames/blue.png"); }
+.game-catalog-card[data-tier="red"] { --catalog-card-frame: url("../assets/interface/card-frames/red.png"); }
+.game-catalog-card[data-tier="purple"] { --catalog-card-frame: url("../assets/interface/card-frames/purple.png"); }
+.game-catalog-card[data-tier="gold"] { --catalog-card-frame: url("../assets/interface/card-frames/gold.png"); }
+main.game.reference-game #panel .game-catalog-card[data-tier] { background-image: var(--catalog-card-frame) !important; background-size: 100% 100% !important; background-position: center !important; }
+.game-collection-guide { margin: 6px 0; padding: 6px 8px; border: 1px solid #62778b; background: #102237; }
+.game-collection-guide summary { cursor: pointer; color: #efd394; }
+.game-collection-guide p { margin: 6px 0 0; font-size: 12px; }
+
+.game-catalog-wuhun-phantom { opacity: .52; filter: drop-shadow(0 0 5px #b3cbf0aa); }

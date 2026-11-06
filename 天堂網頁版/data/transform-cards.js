@@ -113,7 +113,7 @@ window.TransformCards = (() => {
   const morphStyle = document.createElement('style');
   morphStyle.textContent = '.transform-morph{position:absolute;left:0;top:0;width:0;height:0;pointer-events:none}.transform-morph img{position:absolute;image-rendering:auto}.transform-morph-shadow{opacity:.6}.transform-morph[hidden]{display:none}';
   document.head.append(morphStyle);
-  let morphStarted = 0, morphRaf = 0;
+  let morphStarted = 0;
   const framePath = (card, clip, i, shadow) => 'assets/transform-anim/' + encodeURIComponent(card.n) + '/' + clip + (shadow ? '_s_' : '_') + i + (i === 0 ? '.png' : '.webp');
   const flipHeadings = new Set(['W', 'SW', 'NW']);
 
@@ -123,8 +123,15 @@ window.TransformCards = (() => {
   const atlasShadow = document.createElement('div'), atlasBody = document.createElement('div');
   atlasShadow.className = 'transform-atlas transform-morph-shadow';
   atlasBody.className = 'transform-atlas';
-  morphLayer.append(atlasShadow, atlasBody);
-  morphStyle.textContent += '.transform-atlas{position:absolute;background-repeat:no-repeat}.transform-atlas[hidden]{display:none}';
+  const atlasLight = document.createElement('div');
+  atlasLight.className = 'transform-atlas transform-atlas-light';
+  atlasLight.hidden = true;
+  const extras = document.createElement('div');
+  extras.hidden = true;
+  extras.className = 'transform-composite-extras';
+  const compositeLayers = {shadow: atlasShadow, light: atlasLight, extras};
+  morphLayer.append(atlasShadow, atlasBody, atlasLight, extras);
+  morphStyle.textContent += '.transform-atlas{position:absolute;background-repeat:no-repeat}.transform-atlas[hidden]{display:none}.transform-atlas-light{mix-blend-mode:screen}';
   // 圖集的 foot 不一定是腳底（秋月圖集腳浮在上方、spr 匯出的陷在下方）：改用 8 方向待機幀腳底的中位數當地面。
   function atlasGround(data) {
     const bottoms = [];
@@ -141,13 +148,12 @@ window.TransformCards = (() => {
     const entry = {ready: false, data: null, url: 'assets/transform-walk/' + gfx + '.' + ext};
     atlasCache.set(gfx, entry);
     const img = new Image();
-    Promise.all([fetch('assets/transform-walk/' + gfx + '.json').then(r => r.json()), new Promise((ok, fail) => { img.onload = ok; img.onerror = fail; img.src = entry.url; })])
-      .then(([data]) => { entry.data = data; entry.ground = atlasGround(data); entry.ready = true; if (window.activeTransformCard?.wk === gfx) refreshCharacter(); })
+    Promise.all([transformAtlasIndex[gfx] || fetch('assets/transform-walk/' + gfx + '.json').then(r => r.json()), new Promise((ok, fail) => { img.onload = ok; img.onerror = fail; img.src = entry.url; })])
+      .then(([data]) => { entry.data = data; entry.size = img.naturalWidth; entry.ground = atlasGround(data); entry.ready = true; if (window.activeTransformCard?.wk === gfx) refreshCharacter(); })
       .catch(() => { entry.failed = true; });
     return entry;
   }
   // 天堂走路幀本身帶「走一格」的位移；遊戲已經在移動人物，畫面要把這段位移扣掉才不會滑一下再跳回。
-  const walkVector = {E: [48, 0], W: [-48, 0], N: [0, -24], S: [0, 24], NE: [24, -12], SE: [24, 12], SW: [-24, 12], NW: [-24, -12]};
   function placeAtlas(el, atlas, frame, scale, shift = [0, 0]) {
     if (!frame) { el.hidden = true; return; }
     const [x, y, w, h, fx, fy] = frame, cw = atlas.data.cw, dx = fx - shift[0], dy = fy - shift[1];
@@ -163,15 +169,27 @@ window.TransformCards = (() => {
     return Math.max(0, Math.min(.999, (now - characterWalkStarted) / Math.max(1, characterWalkDuration)));
   }
 
+  let displayedNativeCard = null;
   function drawMorph(now) {
     const card = window.activeTransformCard;
     let clip = 'idle', elapsed = now - morphStarted, loop = true;
     const action = typeof characterActionState !== 'undefined' ? characterActionState : null;
-    const acting = action && now >= action.started && now < action.until && ['attack', 'skill'].includes(action.action);
-    if (acting) { clip = card.f[action.action] ? action.action : card.f.attack ? 'attack' : 'idle'; elapsed = now - action.started; loop = false; }
+    const acting = action && now >= action.started && now < action.until && ['attack', 'skill', 'hurt', 'death'].includes(action.action);
+    if (acting && card.f[action.action]) { clip = action.action; elapsed = now - action.started; loop = false; }
     const scale = typeof characterRenderScale === 'function' ? characterRenderScale() : 1;
     const heading = typeof characterHeading === 'string' ? characterHeading : 'E';
     const phase = acting ? null : walkPhase(now);
+    const weapon = MonsterActions.equippedWeapon();
+    MonsterActions.warmWeapon(card.p?.gfx, heading, weapon);
+    const pose = MonsterActions.pose(now);
+    if (MonsterActions.draw(atlasBody, card.p?.gfx, heading, pose, scale, weapon, compositeLayers)) {
+      displayedNativeCard = card;
+      morphBody.hidden = morphShadow.hidden = true;
+      return;
+    }
+    if (displayedNativeCard === card && MonsterActions.hasClip(card.p?.gfx, heading, pose.clip, weapon)) return;
+    displayedNativeCard = null;
+    atlasLight.hidden = extras.hidden = true;
     // 有 8 方向圖集：待機、走路、攻擊全部用圖集，走路時才不會從網站大圖換成小圖、腳離地像在飄。
     const atlas = card.wk ? loadAtlas(card.wk, card.wx) : null;
     const useAtlas = !!atlas?.ready;
@@ -180,10 +198,10 @@ window.TransformCards = (() => {
     if (useAtlas) {
       morphShadow.hidden = true;
       const dir = atlasDirs[heading] || 'd5';
-      const name = phase !== null ? 'walk' : acting ? (atlas.data.frames[dir + '/' + action.action] ? action.action : 'attack') : 'idle';
+      const name = phase !== null ? 'walk' : acting && atlas.data.frames[dir + '/' + action.action] ? action.action : 'idle';
       const frames = atlas.data.frames[dir + '/' + name] || atlas.data.frames[dir + '/idle'] || (atlas.data.frames[dir + '/walk'] || []).slice(0, 1);
-      const index = phase !== null ? Math.floor(phase * frames.length) : acting ? Math.min(frames.length - 1, Math.floor(elapsed / frameMs)) : Math.floor(elapsed / (frameMs * 1.5)) % frames.length;
-      const v = name === 'walk' ? walkVector[heading] || [0, 0] : [0, 0], shift = [v[0] * index / frames.length, v[1] * index / frames.length];
+      const index = phase !== null ? Math.floor(phase * frames.length) : name !== 'idle' && acting ? Math.min(frames.length - 1, Math.floor((now - action.started) * frames.length / Math.max(1, action.duration))) : Math.floor(elapsed / (frameMs * 1.5)) % frames.length;
+      const shift = name === 'walk' ? MonsterActions.walkOffset(frames, heading, index, true) : [0, 0];
       placeAtlas(atlasBody, atlas, frames[index], scale, shift);
       const shadows = atlas.data.frames[dir + '/' + name + '_s'];
       placeAtlas(atlasShadow, atlas, shadows?.[index], scale, shift);
@@ -193,7 +211,7 @@ window.TransformCards = (() => {
     let bob = 0;
     if (phase !== null && card.f.walk) { clip = 'walk'; elapsed = phase * card.f.walk * frameMs; loop = true; }
     else if (phase !== null) bob = -Math.abs(Math.sin(phase * Math.PI * 2)) * 4 * scale;
-    const count = card.f[clip] || 1, step = Math.floor(elapsed / frameMs);
+    const count = card.f[clip] || 1, step = Math.floor(loop ? elapsed / frameMs : elapsed * count / Math.max(1, action.duration));
     const frame = loop ? step % count : Math.min(count - 1, step);
     const flip = flipHeadings.has(heading);
     const body = framePath(card, clip, frame, false);
@@ -211,20 +229,15 @@ window.TransformCards = (() => {
       img.style.transform = flip ? 'scaleX(-1)' : 'none';
     }
   }
-  function morphLoop(frameTime) {
-    morphRaf = 0;
-    if (!window.activeTransformCard || window.gameFlowState !== 'playing') return;
-    drawMorph(frameTime ?? movementTime());
-    if (!document.hidden) morphRaf = requestAnimationFrame(morphLoop);
-  }
   const baseRefresh = refreshCharacter;
   refreshCharacter = function (frameTime = movementTime()) {
     ensure();
-    const morphed = !!window.activeTransformCard && window.gameFlowState === 'playing' && !(typeof characterDead !== 'undefined' && characterDead);
+    const morphed = !!window.activeTransformCard && window.gameFlowState === 'playing' && (!characterDead || MonsterActions.hasClip(window.activeTransformCard.p?.gfx, characterHeading, 'death'));
     morphLayer.hidden = !morphed;
     characterBody.style.visibility = morphed ? 'hidden' : '';
     baseRefresh(frameTime);
-    if (morphed) { drawMorph(frameTime); if (!morphRaf) morphRaf = requestAnimationFrame(morphLoop); }
+    if (morphed) drawMorph(frameTime);
+    else displayedNativeCard = null;
   };
 
   return {
@@ -233,6 +246,6 @@ window.TransformCards = (() => {
     owned: name => (ensure(), state.owned[name] || 0),
     get collected() { ensure(); return Object.keys(state.owned).length; },
     get active() { ensure(); return state.active; },
-    portrait: card => framePath(card, 'idle', 0, false)
+    portrait: card => 'assets/transform-portraits/' + card.p.gfx + '.png'
   };
 })();

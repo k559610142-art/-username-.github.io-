@@ -42,7 +42,7 @@ function fullCharacterPose(timeline,elapsed,loop=false){
  const tick=phase*timeline.sourceTicks;let total=0;for(const pose of timeline.frames){total+=pose.ticks;if(tick<total)return pose}return timeline.frames[timeline.frames.length-1];
 }
 function characterMovementBlocked(){return characterDead||!!characterActionState&&movementTime()<characterActionState.until}
-function ensureFullCharacterAnimation(){if(!characterActionRaf&&window.gameFlowState==='playing'&&!document.hidden)characterActionRaf=requestAnimationFrame(frameTime=>{characterActionRaf=0;refreshCharacter(frameTime)})}
+function ensureFullCharacterAnimation(){if(!characterActionRaf&&window.gameFlowState==='playing'&&!document.hidden)characterActionRaf=requestAnimationFrame(frameTime=>{characterActionRaf=0;if(movementAnimating(frameTime)||(typeof navigationPath!=='undefined'&&navigationPath.length))ensureFullCharacterAnimation();else refreshCharacter(frameTime)})}
 refreshCharacter=function(frameTime=movementTime()){
  const avatar=activeCharacterAvatar(),data=activeCharacterActions(),weapon=activeCharacterWeapon(),now=frameTime,identity=avatar+'/'+characterHeading+'/'+weapon;
  preloadCharacterWalkSet(avatar,weapon);
@@ -71,8 +71,8 @@ function playCharacterAction(action,options={}){
  stopMovement();const data=activeCharacterActions(),clip=['skill','death'].includes(action)?action:activeCharacterWeapon()+'_'+action;
  if(!data.timelines[clip])return false;
  if(action==='idle'){characterActionState=null;characterWalkUntil=0;characterIdleStarted=movementTime();refreshCharacter();return true}
- const started=options.force&&movementAnimating()?movementTween.started+movementTween.duration:movementTime(),duration=data.timelines[clip].durationMs;
- characterActionState={action,clip,started,hold:!!options.hold,until:options.hold?Infinity:started+duration+(action==='death'?900:0)};
+ const started=options.force&&movementAnimating()?movementTween.started+movementTween.duration:movementTime(),duration=(typeof MonsterActions !== 'undefined' && MonsterActions.actionDuration(window.activeTransformCard?.p?.gfx,characterHeading,action,MonsterActions.equippedWeapon()))||data.timelines[clip].durationMs;
+ characterActionState={action,clip,started,duration,hold:!!options.hold,until:options.hold?Infinity:started+duration+(action==='death'?900:0)};
  if(started<=movementTime())characterWalkUntil=0;
  preloadFullCharacterClip(activeCharacterAvatar(),characterHeading,clip);refreshCharacter();return true;
 }

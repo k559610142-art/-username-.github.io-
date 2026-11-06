@@ -37,18 +37,66 @@ window.TdjSystems = (() => {
     return d ? dollImage(d) : null;
   }
   const enchantImage = e => e.img || imageByName(e.boss);
-  const wuhunImage = w => w.img || imageByName(w.core);
+  // 原版怪物外觀編號來自天地劫 TW13081901.txt。
+  const wuhunVisuals = {
+    39265: {"gfx":14084,"file":"wuhun-39265.png"},
+    39266: {"gfx":16861,"file":"wuhun-39266.png"},
+    39267: {"gfx":16287,"file":"wuhun-39267.png"},
+    39268: {"gfx":11490,"file":null},
+    39269: {"gfx":12607,"file":null},
+    39270: {"gfx":14239,"file":"wuhun-39270.png"},
+    39271: {"gfx":7539,"file":null},
+    39272: {"gfx":8036,"file":null},
+    39273: {"gfx":7864,"file":null},
+    39274: {"gfx":15492,"file":"wuhun-39274.png"},
+    39275: {"gfx":16633,"file":"wuhun-39275.png"},
+    39276: {"gfx":16704,"file":"wuhun-39276.png"},
+    39277: {"gfx":16674,"file":"wuhun-39277.png"},
+    39278: {"gfx":16662,"file":"wuhun-39278.png"},
+    39279: {"gfx":16896,"file":"wuhun-39279.png"},
+    39280: {"gfx":16930,"file":"wuhun-39280.png"},
+    39281: {"gfx":16621,"file":null},
+    39282: {"gfx":16578,"file":"wuhun-39282.png"},
+    39283: {"gfx":16872,"file":"wuhun-39283.png"},
+    39284: {"gfx":16734,"file":"wuhun-39284.png"},
+    39285: {"gfx":22021,"file":null},
+    39286: {"gfx":10851,"file":null},
+    39291: {"gfx":4851,"file":"wuhun-39291.png"},
+    39292: {"gfx":7559,"file":"wuhun-39292.png"},
+    39293: {"gfx":12589,"file":"wuhun-39293.png"},
+    39294: {"gfx":5072,"file":"wuhun-39294.png"},
+    39295: {"gfx":null,"file":null},
+    39296: {"gfx":null,"file":null},
+    39297: {"gfx":null,"file":null},
+    39298: {"gfx":13106,"file":null},
+    39299: {"gfx":16905,"file":"wuhun-39299.png"},
+    39300: {"gfx":13177,"file":null},
+    39301: {"gfx":12895,"file":null},
+    39302: {"gfx":12846,"file":"wuhun-39302.png"},
+    39303: {"gfx":2118,"file":"wuhun-39303.png"},
+    39304: {"gfx":14179,"file":"wuhun-39304.png"},
+    39305: {"gfx":10573,"file":null},
+    39306: {"gfx":8128,"file":null},
+    39307: {"gfx":2749,"file":"wuhun-39307.png"},
+    39308: {"gfx":2738,"file":"wuhun-39308.png"},
+    39309: {"gfx":2741,"file":"wuhun-39309.png"},
+    39310: {"gfx":2747,"file":"wuhun-39310.png"},
+    39311: {"gfx":3415,"file":"wuhun-39311.png"},
+    39312: {"gfx":2308,"file":"wuhun-39312.png"},
+    39313: {"gfx":854,"file":"wuhun-39313.png"},
+  };
+  const wuhunImage = w => wuhunVisuals[w.id]?.file ? "assets/interface/wuhun/" + wuhunVisuals[w.id].file : null;
+  const wuhunBaseGfx = w => wuhunVisuals[w.id]?.gfx ?? null;
 
   // ---- 畫面：娃娃跟在旁邊、武魂虛影在背後、附魔發動時 BOSS 閃現 ----
   const style = document.createElement('style');
   style.textContent = '.tdj-layer{position:absolute;left:0;top:0;width:0;height:0;pointer-events:none}' +
-    '.tdj-phantom{position:absolute;opacity:.42;filter:drop-shadow(0 0 10px #ffd27a) brightness(1.25);animation:tdjFloat 3.2s ease-in-out infinite;transform-origin:50% 100%}' +
+    '.tdj-phantom{position:absolute;opacity:.48;image-rendering:pixelated;filter:drop-shadow(0 0 6px var(--tdj-aura,#ffd27a88));animation:tdjFloat 3.2s ease-in-out infinite;transform-origin:50% 100%}' +
+    '.tdj-phantom-animated{animation:none;background-repeat:no-repeat}.tdj-phantom-group{position:absolute;left:0;top:0;opacity:.48}.tdj-phantom-group .tdj-phantom-animated{opacity:1}.tdj-phantom-fx{opacity:.85}' +
     '.tdj-phantom.tdj-aura{width:120px;height:150px;left:-60px;top:-150px;border-radius:50%;background:radial-gradient(closest-side,var(--tdj-aura,#ffd27a88),transparent);opacity:.7;filter:none}' +
-    '.tdj-doll{position:absolute;animation:tdjBob 1.6s ease-in-out infinite;filter:drop-shadow(0 2px 2px #0008)}' +
-    '.tdj-doll-name{position:absolute;white-space:nowrap;font:11px sans-serif;color:#ffe9a8;text-shadow:0 1px 2px #000;transform:translateX(-50%)}' +
+    '.tdj-doll{position:absolute;transform:translate(-50%,-100%);width:calc(27px * var(--character-size-factor,1));height:calc(30px * var(--character-size-factor,1));object-fit:contain;object-position:bottom center;pointer-events:none;filter:drop-shadow(0 2px 2px #0008)}' +
     '.tdj-flash{position:absolute;opacity:0;animation:tdjFlash 1s ease-out forwards;filter:drop-shadow(0 0 14px #ff5a3a) brightness(1.4)}' +
-    '@keyframes tdjFloat{0%,100%{transform:translateY(0) scale(1.55)}50%{transform:translateY(-8px) scale(1.6)}}' +
-    '@keyframes tdjBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}' +
+    '@keyframes tdjFloat{0%,100%{transform:translateY(0) scale(1.35)}50%{transform:translateY(-4px) scale(1.35)}}' +
     '@keyframes tdjFlash{0%{opacity:0;transform:scale(1.2)}25%{opacity:.85;transform:scale(1.8)}100%{opacity:0;transform:scale(2.2)}}';
   document.head.append(style);
   const back = document.createElement('div'), front = document.createElement('div');
@@ -60,22 +108,94 @@ window.TdjSystems = (() => {
     const fit = () => { const s = (typeof characterRenderScale === 'function' ? characterRenderScale() : 1) * wScale, w = img.naturalWidth * s, h = img.naturalHeight * s; img.style.width = w + 'px'; img.style.height = h + 'px'; img.style.left = (-w / 2) + 'px'; img.style.top = (-h * anchorY) + 'px'; };
     if (img.complete && img.naturalWidth) fit(); else img.onload = fit;
   }
+  let phantom = null, dollSprite = null;
+  // Projected one-tile offsets behind the actor, based on the direction it faces.
+  const dollBehind = {N: [0, 24], NE: [-24, 12], E: [-48, 0], SE: [-24, -12],
+    S: [0, -24], SW: [24, -12], W: [48, 0], NW: [24, 12]};
+  function positionDoll() {
+    if (!dollSprite) return;
+    const [x, y] = dollBehind[characterHeading];
+    dollSprite.style.left = (x * zoom) + 'px';
+    dollSprite.style.top = (y * zoom) + 'px';
+    const layer = y < 0 ? back : front;
+    if (dollSprite.parentNode !== layer) layer.append(dollSprite);
+  }
+  function drawPhantom(now) {
+    if (!phantom || window.gameFlowState !== 'playing') return;
+    const {sprite, fallback, gfx, layers, fx} = phantom;
+    const scale = characterRenderScale();
+    const {pose, effects} = WuhunAutoCast.update(phantom, now, MonsterActions.pose(now), !document.hidden && document.querySelector('#panel').hidden);
+    const drawn = MonsterActions.draw(sprite, gfx, pose.heading || characterHeading, pose, scale, null, layers)
+      || MonsterActions.draw(sprite, gfx, characterHeading, {clip: 'idle', time: now}, scale, null, layers);
+    sprite.hidden = !drawn;
+    if (fallback) fallback.hidden = drawn;
+    effects.forEach(([attribute, frame], i) => {
+      let node = fx.children[i];
+      if (!node) {
+        node = document.createElement('div');
+        node.className = 'transform-atlas tdj-phantom-fx';
+        fx.append(node);
+      }
+      node.style.mixBlendMode = attribute === 8 ? 'screen' : attribute === 128 ? 'multiply' : 'normal';
+      node.hidden = !MonsterActions.paintSprite(node, frame, frame[1], frame[2], scale);
+    });
+    for (let i = effects.length; i < fx.children.length; i++) fx.children[i].hidden = true;
+  }
   function render() {
+    const previousPhantom = phantom;
+    phantom = dollSprite = null;
     back.replaceChildren(); front.replaceChildren();
     if (!owner || window.gameFlowState !== 'playing') return;
     const w = wuhunById.get(+state.wuhun.active);
     if (w) {
       const src = wuhunImage(w);
-      if (src) { const img = new Image(); img.className = 'tdj-phantom'; img.src = src; img.alt = ''; placeImage(img, 1, 0.92); back.append(img); }
-      else { const aura = document.createElement('div'); aura.className = 'tdj-phantom tdj-aura'; aura.style.setProperty('--tdj-aura', tierColor[w.tier] || '#ffd27a88'); back.append(aura); }
+      const color = tierColor[w.tier] || '#ffd27a88';
+      const aura = () => {
+        const glow = document.createElement('div');
+        glow.className = 'tdj-phantom tdj-aura';
+        glow.style.setProperty('--tdj-aura', color);
+        return glow;
+      };
+      let fallback;
+      if (src) {
+        const img = new Image();
+        img.className = 'tdj-phantom';
+        img.alt = '';
+        img.style.setProperty('--tdj-aura', color);
+        fallback = img;
+        img.onerror = () => { const glow = aura(); img.replaceWith(glow); if (phantom?.fallback === img) phantom.fallback = glow; };
+        img.onload = () => placeImage(img, 1, 1.12);
+        back.append(img);
+        img.src = src;
+      } else { fallback = aura(); back.append(fallback); }
+      if (MonsterActions.has(w.skin)) {
+        const sprite = document.createElement('div');
+        sprite.className = 'tdj-phantom tdj-phantom-animated';
+        sprite.style.setProperty('--tdj-aura', color);
+        sprite.hidden = true;
+        const group = document.createElement('div'), fx = document.createElement('div');
+        group.className = 'tdj-phantom-group';
+        const layers = {shadow: document.createElement('div'), light: document.createElement('div'), extras: document.createElement('div')};
+        layers.shadow.className = layers.light.className = 'transform-atlas';
+        layers.shadow.hidden = layers.light.hidden = layers.extras.hidden = true;
+        group.append(layers.shadow, sprite, layers.light, layers.extras);
+        back.append(group, fx);
+        const activeCast = previousPhantom?.owner === owner && previousPhantom.gfx === w.skin ? previousPhantom : null;
+        phantom = {sprite, fallback, gfx: w.skin, owner, layers, fx, cast: activeCast?.cast, nextCast: activeCast?.nextCast};
+        MonsterActions.preload(w.skin, characterHeading, ['skill', 'bossCastGesture', 'bossCastStart', 'bossCastLoop', 'bossCastEnd']);
+        drawPhantom(movementTime());
+      }
     }
     const d = dollById.get(+state.dolls.active);
-    if (d) {
-      const holder = document.createElement('div'); holder.style.cssText = 'position:absolute;left:-58px;top:-30px';
-      const src = dollImage(d);
-      if (src) { const img = new Image(); img.className = 'tdj-doll'; img.src = src; img.alt = ''; placeImage(img, 0.8, 1); holder.append(img); }
-      const label = document.createElement('div'); label.className = 'tdj-doll-name'; label.textContent = d.name.replace(/^.*：/, ''); label.style.top = '4px'; holder.append(label);
-      front.append(holder);
+    const dollSrc = d && dollImage(d);
+    if (dollSrc) {
+      const img = new Image();
+      img.className = 'tdj-doll';
+      img.alt = d.name.replace(/^.*：/, '');
+      img.draggable = false;
+      img.src = dollSrc;
+      dollSprite = img;
+      positionDoll();
     }
   }
   function flash(src) {
@@ -148,13 +268,13 @@ window.TdjSystems = (() => {
 
   // 進出遊戲、換角色時重畫
   const baseRefresh = refreshCharacter;
-  refreshCharacter = function (...args) { const before = owner; ensure(); if (before !== owner) render(); return baseRefresh.apply(this, args); };
+  refreshCharacter = function (...args) { const before = owner; ensure(); if (before !== owner) render(); const result = baseRefresh.apply(this, args); drawPhantom(args[0] ?? movementTime()); positionDoll(); return result; };
 
   const get = () => (ensure(), state);
   return {
     dolls: {draw: drawDoll, summon, dismiss, image: dollImage, owned: id => get().dolls.owned[id] || 0, get active() { return get().dolls.active; }},
     enchant: {get: getStone, enchant, current: currentEnchant, image: enchantImage, stones: id => get().enchant.stones[id] || 0},
-    wuhun: {get: getWuhun, equip: equipWuhun, unequip: unequipWuhun, image: wuhunImage, owned: id => get().wuhun.owned[id] || 0, get active() { return get().wuhun.active; }},
+    wuhun: {get: getWuhun, equip: equipWuhun, unequip: unequipWuhun, image: wuhunImage, baseGfx: wuhunBaseGfx, owned: id => get().wuhun.owned[id] || 0, get active() { return get().wuhun.active; }},
     onAttack, render
   };
 })();

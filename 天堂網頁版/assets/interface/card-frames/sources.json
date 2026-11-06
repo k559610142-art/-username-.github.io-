@@ -1,0 +1,26 @@
+[
+  {
+    "file": "white.png",
+    "source": "skin/mhud_Img_ChageCard_Common"
+  },
+  {
+    "file": "green.png",
+    "source": "skin/mhud_Img_ChageCard_Rare"
+  },
+  {
+    "file": "blue.png",
+    "source": "skin/mhud_Img_ChageCard_Unique"
+  },
+  {
+    "file": "red.png",
+    "source": "skin/mhud_Img_ChageCard_Legend"
+  },
+  {
+    "file": "purple.png",
+    "source": "skin/mhud_Img_ChageCard_Epic"
+  },
+  {
+    "file": "gold.png",
+    "source": "skin/mhud_Img_ChageCard_Myth"
+  }
+]

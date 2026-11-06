@@ -61,5 +61,5 @@ window.OwnedInventory=(()=>{
  }
  function usePotion(){const e=entries.find(i=>i.key==='etcitem:40010')||entries.find(i=>rules.handlers[config(i).handler]?.kind==='hpGaussian');if(!e){toast('背包中沒有回復藥水。');return false}return use(e.uid)}
  document.querySelector('#heal').onclick=usePotion;potions=0;
- return {activate,validate,receive,use,equip,unequip,usePotion,slotFor,deactivate(){owner='';entries=[];cooldowns.clear();potions=0},get owner(){return owner},get snapshot(){return clone(entries)},get items(){return entries.map(e=>({...e,item:definition(e)}))}};
+ return {activate,validate,receive,use,equip,unequip,usePotion,slotFor,deactivate(){owner='';entries=[];cooldowns.clear();potions=0},get owner(){return owner},get snapshot(){return clone(entries)},get equippedWeaponType(){const weapon=entries.find(e=>e.slot==='weapon');return weapon?definition(weapon).type:null},get items(){return entries.map(e=>({...e,item:definition(e)}))}};
 })();
