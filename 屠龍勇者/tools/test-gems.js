@@ -63,7 +63,7 @@ Math.random = RND; chance = CHANCE;
 // ⑥ 魔法：範圍、附加火焰、連鎖、耗魔、冷卻
 setup('mage'); const fb = classSkillList('mage').find(s => s.name === '火球術'); player.skills.push(fb.id);
 it = gear('leatherArmor', 5); it.so = [skG(fb.id), sup('aoeExpand', 10), sup('addFireG', 20), sup('efficiency', 10), sup('cdrG', 10)]; player.equip.armor = it;
-assert.equal(talentManaCost(fb), Math.ceil(fb.mp * 0.7)); assert.equal(skillCd(fb), Math.round(fb.cd * 0.8 * 10) / 10 || skillCd(fb));
+assert.equal(talentManaCost(fb), Math.ceil(fb.mp * 0.7)); assert.equal(skillCd(fb), Math.round(fb.cd * 0.8 * classAoeCdMul(fb) * 10) / 10 || skillCd(fb));   // 含職業平衡冷卻倍率（class-balance.js）
 const a1 = mob(), a2 = mob(), a3 = mob(); hunt.mon = a1; player.mp = 9999; castSpell(fb, calcStats());
 assert([a1, a2, a3].every(z => z.hp < 100000), '範圍擴大：三隻都打到');
 it.so[1] = sup('chainG', 12); it.so[2] = null; const b1 = mob(), b2 = mob(), b3 = mob(); hunt.mobs = [b1, b2, b3]; hunt.mon = b1; player.cds = {}; player.mp = 9999; castSpell(fb, calcStats());
