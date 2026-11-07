@@ -4951,3 +4951,9 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - **遊戲端**：`onlinePing`（每 60 秒，登入 3 秒後先送一次）改呼叫 `online_ping_count`，一次請求同時完成心跳與人數（不增加請求量），存在 `onlineCountN`；ok＝false 照舊 `onlineKicked`。函式不存在（還沒執行 SQL）時 `onlineCountOff`＝true 改回原本的 online_ping、不顯示人數。`drawBigMapHud` 在地圖名稱下方畫「👥 線上 N」（登入且有數字才顯示）。沒有用 Realtime（第 16 節 presence 已因額度關閉）。
 - **測試** `tools/test-online-count-db.js`（PGlite：可重跑、人數、90 秒逾時、同帳號一個、擠下線照舊）；瀏覽器以記憶體角色在永夜之塔 10F 確認顯示位置、Console 無錯誤。
 - 同日記錄：第 317 節簽章擴充上線後，使用者執行 sockets-gems.sql 前有大量「雲端存檔簽章不符」（新掉落的有孔裝備，遊戲端已簽孔、伺服器還是舊算法）；執行後 15 分鐘內 88 份上傳全部 sig_ok＝true，自動恢復。教訓：改簽章要先上 SQL 再發遊戲。
+
+## 319. 通貨兌換：混沌石換開孔石／連結石（2026-11-07，版本 `20261107f`；`craft.js` 的 `CURRENCY_LADDER`）
+
+- 使用者要求通貨兌換加開孔石、連結石，用混沌石兌換。比率依第 23 節掉落權重（混沌 6、開孔 4、連結 2.5）再加約 1.5 倍合成溢價（和第 283 節一致）：**混沌石 2 → 開孔石 1、混沌石 4 → 連結石 1**。
+- `CURRENCY_LADDER` 第 4 欄 `true`＝單向：`curExchangeMax(i,false)` 回 0、`curExchange` 擋拆解、畫面用「→」與「兌換」按鈕、不顯示拆解欄。不能拆回是因為開孔石掉率比混沌石高，1 換 1 拆回會變成混沌石的新來源。
+- 純本機背包操作，不用 SQL、存檔 schema 不變。
