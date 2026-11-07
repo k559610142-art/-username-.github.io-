@@ -4956,4 +4956,5 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 
 - 使用者要求通貨兌換加開孔石、連結石，用混沌石兌換。比率依第 23 節掉落權重（混沌 6、開孔 4、連結 2.5）再加約 1.5 倍合成溢價（和第 283 節一致）：**混沌石 2 → 開孔石 1、混沌石 4 → 連結石 1**。
 - `CURRENCY_LADDER` 第 4 欄 `true`＝單向：`curExchangeMax(i,false)` 回 0、`curExchange` 擋拆解、畫面用「→」與「兌換」按鈕、不顯示拆解欄。不能拆回是因為開孔石掉率比混沌石高，1 換 1 拆回會變成混沌石的新來源。
+- **20261107g 使用者改比率：混沌石 1 → 開孔石 2、混沌石 1 → 連結石 3**。`CURRENCY_LADDER` 第 5 欄 `gain`＝每次得到幾顆（預設 1），`curExchange` 用 `get = n × gain`，畫面顯示「×cost → ×gain」。
 - 純本機背包操作，不用 SQL、存檔 schema 不變。
