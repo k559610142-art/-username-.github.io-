@@ -28,6 +28,7 @@
 | `data/guild-core.js`、`data/guild-state.js`、`data/guild.js` | 公會純規則、身份及存檔接線、正式村莊入口／名冊與三人編隊；schema24（第262節） |
 | `tools/guild-system.sql`、`tools/GUILD-INSTALL.md`、`tools/test-guild-db.cjs`、`tools/test-guild-integration.cjs`、`tools/guild-integration-preview.html` | 獨立公會資料庫草案、安裝說明、隔離DB／正式腳本遷移驗收、記憶體存檔瀏覽器驗收頁；SQL未執行正式庫 |
 | `data/advance.js`、`tools/advance-class.sql`、`tools/export-advance-sql.js`、`tools/test-advance.js`、`tools/test-advance-db.js`、`tools/sim-advance.js`、`tools/advance-preview.html`、`tools/ADVANCE-CLASS-PLAN.md` | 二轉三選一分支（36 分支、72 招、第 5～7 章任務、命運重塑石、schema 22）、後端補丁與產生器、隔離測試、平衡模擬、規劃與決定紀錄（第 242 節） |
+| `data/class-balance.js`、`tools/sim-classes.js` | 職業平衡倍率（全部傷害、二轉分支、範圍技能冷卻／傷害）與跨職業平衡模擬（第 320 節）；接在 advance.js 後面載入 |
 | `images/icons/items/talentJewel_*.png`、`tools/icon-src/items/talent-jewels-v1/`、`tools/prepare-talent-jewels.ps1`、`tools/talent-jewels-contact-v1.png` | 38款寶珠各自原創透明圖、原稿／提示詞清單與裁切／總覽（第235節） |
 | `images/ui/talent-atlas-unallocated-v1.png`、`tools/icon-src/talent-atlas-unallocated-v1.json`、`tools/test-talent-jewel-storage.js`、`tools/talent-jewel-storage-preview.html` | 星盤未配置底圖、三欄寶珠倉庫實際資料／圖片回歸與禁止連外的隔離預覽（第235節） |
 | `images/icons/items/talentStone.png`、`tools/icon-src/items/talent-stone-v1.png`／`.json`、`tools/prepare-talent-stone.ps1` | 天賦石原創透明圖、原稿／提示詞與既有裁切流程接入（第234節） |
@@ -4958,3 +4959,12 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - `CURRENCY_LADDER` 第 4 欄 `true`＝單向：`curExchangeMax(i,false)` 回 0、`curExchange` 擋拆解、畫面用「→」與「兌換」按鈕、不顯示拆解欄。不能拆回是因為開孔石掉率比混沌石高，1 換 1 拆回會變成混沌石的新來源。
 - **20261107g 使用者改比率：混沌石 1 → 開孔石 2、混沌石 1 → 連結石 3**。`CURRENCY_LADDER` 第 5 欄 `gain`＝每次得到幾顆（預設 1），`curExchange` 用 `get = n × gain`，畫面顯示「×cost → ×gain」。
 - 純本機背包操作，不用 SQL、存檔 schema 不變。
+
+## 320. 職業平衡調整（2026-11-07，版本 `20261107h`；新檔 `data/class-balance.js`、`tools/sim-classes.js`，掛在 `combat.js`）
+
+- **不寫進更新日誌**（使用者要求）。
+- 模擬 `tools/sim-classes.js`：12 職業 Lv.80、各自最好的武器 +9、20 點屬性投最有利的一項、各職業最佳二轉分支，對 Lv.60 假人打 45～90 秒，輸出對 12 職業平均的倍數（單體、3 隻、真實 MP、承受、血量淨變化）。限制：沒算變身、防具、傳奇、寶石、閃避。
+- 調整前（Lv.80 頂裝）：修羅拳聖單體 1.51 最高；法師／魔鬥士／天使群怪 1.44～1.68；聖騎士、槍手、王族、騎士單體與群怪只有 0.62～0.81；黑妖、惡魔在平均附近（惡魔掉血最慢）。
+- **`CLASS_DMG_MUL`**（物理＋魔法全部傷害，乘在 `magicDamage`／`physicalAttack` 的 talentDamageMult 後面）：聖騎士 ×1.25、槍手 ×1.25、王族 ×1.2、騎士 ×1.2。**`ADV_DMG_MUL`**：修羅「拳聖」（sFist）×0.9。調整後四職業約 0.73～0.96。
+- 預留 **`CLASS_AOE_CD_MUL`**（`skillCd` 乘上，範圍／全畫面攻擊技能）與 **`CLASS_AOE_DMG_MUL`**（`castSpell`／`doStrike` 打 2 隻以上才乘，單體不受影響），目前都空的。注意：二轉技能走 `advRunSkill` 的不經過這兩個掛勾。
+- 方案比較（各一組模擬，雜訊約 ±0.1）：法系範圍冷卻 ×1.5 → 魔鬥士／天使群怪降到約 1.18～1.19，但法師有 6 招範圍輪替只降到 1.43，且單體也一起降（1.20→1.00）；範圍傷害 ×0.8（2 隻以上）→ 魔鬥士 1.28、天使 1.22，單體不變，法師幾乎沒變（主力是二轉技能）；魔法全部 ×0.85 → 群怪 1.24～1.41，但單體一起降（天使單體 0.85）。修羅攻速係數 0.95→1.05 → 拳聖單體 1.51→約 1.38（約 −9%，所有分支都降、也連帶少吸血與觸發）；只削拳聖時鬥神單體約 1.31 仍偏高。

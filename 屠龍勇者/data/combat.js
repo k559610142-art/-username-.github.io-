@@ -547,7 +547,7 @@ function playerAction(st) {
 const SKILL_GCD_MS = 1000;
 // 每個技能各自的冷卻（秒）：技能資料有 cd 就用它；治癒、增益沒寫的用預設（2026-10-24 使用者要求每種技能都有自己的 CD）
 const SKILL_DEFAULT_CD = { heal: 4, buff: 10 };
-function skillCd(k) { const cd = k.cd || SKILL_DEFAULT_CD[k.type] || 0, c2 = typeof advCd === 'function' ? advCd(k, cd) : cd; const m = (typeof uqOn === 'function' ? uniqueCdMul() : 1) * (typeof gemCdMul === 'function' ? gemCdMul(k) : 1); return m !== 1 ? Math.round(c2 * m * 10) / 10 : c2; }   // 時之沙漏、輔助寶石「冷卻縮減」   // 時之沙漏 −25%   // 二轉分支縮短冷卻（advance.js）
+function skillCd(k) { const cd = k.cd || SKILL_DEFAULT_CD[k.type] || 0, c2 = typeof advCd === 'function' ? advCd(k, cd) : cd; const m = (typeof uqOn === 'function' ? uniqueCdMul() : 1) * (typeof gemCdMul === 'function' ? gemCdMul(k) : 1) * (typeof classAoeCdMul === 'function' ? classAoeCdMul(k) : 1); return m !== 1 ? Math.round(c2 * m * 10) / 10 : c2; }   // 時之沙漏、輔助寶石「冷卻縮減」   // 時之沙漏 −25%   // 二轉分支縮短冷卻（advance.js）
 function skillGcdLeft() { return Math.max(0, (player.cds._gcd || 0) - gameNow); }
 function useSkillCost(k) {
     { const cost = typeof talentManaCost==='function'?talentManaCost(k):k.mp; if (typeof uqOn === 'function') uniquePay(cost); else player.mp -= cost; }   // 虛空低語改用 HP
@@ -582,6 +582,7 @@ function magicDamage(base, spK, st, undeadMul, mon = hunt.mon, elem = null) {   
     d *= slayerMult(mon) * bossDmgMult(mon, st);
     d *= 1 - clamp(mon.mr, 0, 100) / 200;
     if(typeof talentDamageMult==='function')d*=talentDamageMult(st,true,mon);
+    if (typeof classBalMul === 'function') d *= classBalMul();   // 職業平衡倍率（class-balance.js，第 320 節）
     if (typeof uqOn === 'function') d *= uniqueDmgMul(true);   // 傳奇傷害倍率（狂戰之顱、虛空之戒…）
     if (typeof elemPhys === 'function') d *= elemSpellMul(mon, elem, st);   // 元素增傷 × 怪物抗性 × 感電
     if (st.magicCrit > 0 && chance(st.magicCrit)) {
@@ -603,8 +604,9 @@ function castSpell(k, st) {
     const dollScope = {};
     const el = typeof elemPhys === 'function' ? elemSpellElem(k, st) : null;   // 技能元素（冰轉火、火轉雷）
     let gemFirstD = 0;
+    const aoeMul = targets.length > 1 && typeof classAoeDmgMul === 'function' ? classAoeDmgMul(k) : 1;   // 職業範圍技能傷害（打 2 隻以上才算，第 320 節）
     const parts = targets.map(m => {
-        let d = Math.max(1, Math.round((k._gm ? k._gm.dmgMul : 1) * magicDamage(k.dmg, k.spK, st, k.undeadMul, m, el) * (!k.id.startsWith('res_') ? dollAttackMult(m) : 1) * (typeof advMagicMult === 'function' ? advMagicMult(k, m) : 1)));
+        let d = Math.max(1, Math.round(aoeMul * (k._gm ? k._gm.dmgMul : 1) * magicDamage(k.dmg, k.spK, st, k.undeadMul, m, el) * (!k.id.startsWith('res_') ? dollAttackMult(m) : 1) * (typeof advMagicMult === 'function' ? advMagicMult(k, m) : 1)));
         const gx = k._gm && typeof gemPrepSkill === 'function' ? gemSpellExtra(k._gm, m, st) : null;   // 輔助寶石「附加 X」對魔法也有效
         if (gx) d += gx.fire + gx.ice + gx.light;
         if (!gemFirstD) gemFirstD = d;
@@ -638,17 +640,18 @@ function doStrike(k, st) {
         const targets = k.screenTargets || mobTargets();
         const hit = k.aoe ? targets : [hunt.mon];
         const hp0 = hit.map(m => m.hp);
+        const aoeMul = hit.length > 1 && typeof classAoeDmgMul === 'function' ? classAoeDmgMul(k) : 1;   // 職業範圍技能傷害（第 320 節）
         if (k.aoe && targets.length > 1) addLog(`💥 ${k.name}（範圍）`, 'magic');
         for (let i = 0; i < (k.hits || 1); i++) {
             // 分散：每一發打不同的怪；範圍：每一發打全部
             const list = k.spread ? [targets[i % targets.length]] : hit;
-            for (const m of list) if (!physicalAttack(st, k.mult, opt, m)) return;
+            for (const m of list) if (!physicalAttack(st, aoeMul === 1 ? k.mult : k.mult * aoeMul, opt, m)) return;
             if (!hunt || !hunt.mon) return;
         }
         if (k.magic) {
             for (const m of hit) {
                 const mel = typeof elemPhys === 'function' ? elemSpellElem(k, st) : null;
-                const d = Math.max(1, Math.round(magicDamage(k.magic.dmg, k.magic.spK, st, 0, m, mel) * (typeof advMagicMult === 'function' ? advMagicMult(k, m) : 1)));
+                const d = Math.max(1, Math.round(aoeMul * magicDamage(k.magic.dmg, k.magic.spK, st, 0, m, mel) * (typeof advMagicMult === 'function' ? advMagicMult(k, m) : 1)));
                 m.hp -= d;
                 if (mel && typeof elemPhys === 'function') elemOnHit(m, { [mel]: d }, st);
                 lifeSteal(d, st);
@@ -762,6 +765,7 @@ function physicalAttack(st, mult, opt, mon = hunt.mon) {
         d *= slayerMult(mon) * bossDmgMult(mon, st);
         d *= mult;
         if(typeof talentDamageMult==='function')d*=talentDamageMult(st,false,mon);
+        if (typeof classBalMul === 'function') d *= classBalMul();   // 職業平衡倍率（class-balance.js，第 320 節）
         if (typeof uqOn === 'function') d *= uniqueDmgMul(false);   // 傳奇傷害倍率（雷鳴獨眼 ×1.8、點金之手 −10%…）
         if (gm) d *= gm.dmgMul;   // 輔助寶石（多重打擊、範圍擴大的傷害倍率）
         if (typeof advPhysMult === 'function') d = d * advPhysMult(st, mon, opt) + advPhysAdd(mon);   // 二轉被動／減益（advance.js）
