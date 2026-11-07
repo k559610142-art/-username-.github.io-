@@ -582,7 +582,7 @@ function magicDamage(base, spK, st, undeadMul, mon = hunt.mon, elem = null) {   
     d *= slayerMult(mon) * bossDmgMult(mon, st);
     d *= 1 - clamp(mon.mr, 0, 100) / 200;
     if(typeof talentDamageMult==='function')d*=talentDamageMult(st,true,mon);
-    if (typeof classBalMul === 'function') d *= classBalMul();   // 職業平衡倍率（class-balance.js，第 320 節）
+    if (typeof classBalMul === 'function') d *= classBalMul(true);   // 職業平衡倍率（class-balance.js，第 320 節）
     if (typeof uqOn === 'function') d *= uniqueDmgMul(true);   // 傳奇傷害倍率（狂戰之顱、虛空之戒…）
     if (typeof elemPhys === 'function') d *= elemSpellMul(mon, elem, st);   // 元素增傷 × 怪物抗性 × 感電
     if (st.magicCrit > 0 && chance(st.magicCrit)) {
