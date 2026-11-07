@@ -257,13 +257,19 @@ function gemSocketTake(itemUid, idx) {
 function openSocketDialog(uid) {
     const it = findAnyInst(uid);
     if (!it || !Array.isArray(it.so)) return;
-    const gemsInBag = player.inv.filter(x => ITEMS[x.id] && ITEMS[x.id].cat === 'gem');
+    const gemsInBag = [], seen = {};   // 同種、同等級疊成一個選項「×N」，鑲入經驗最高的那顆（第 323 節）
+    for (const x of player.inv) {
+        if (!ITEMS[x.id] || ITEMS[x.id].cat !== 'gem') continue;
+        const k = x.id + '|' + (x.gl || 1), s = seen[k];
+        if (!s) gemsInBag.push(seen[k] = { ...x, cnt: 1 });
+        else { s.cnt++; if ((x.gx || 0) > (s.gx || 0)) Object.assign(s, x, { cnt: s.cnt }); }
+    }
     const skills = gemSkillChoices();
     const rows = gemGroups(it).map(group => '<div class="gem-group">' + group.map(i => {
         const g = it.so[i];
         const body = g ? `<b class="${g.t === 'skill' ? 'gem-skill' : 'gem-sup'}">${esc(gemSocketLabel(g))}</b> <button class="mini secondary" onclick="gemSocketTake(${uid},${i})">拆下${gemUnsocketCost(g) ? `（${fmt(gemUnsocketCost(g))} 金幣）` : ''}</button>`
             : `<select id="gem-sel-${i}"><option value="">選擇要鑲的寶石…</option><optgroup label="技能寶石（技能照常可用，這裡只當載體）">${skills.map(s => `<option value="s:${esc(s.id)}">${esc(s.name)}</option>`).join('')}</optgroup>`
-              + `<optgroup label="輔助寶石（背包）">${gemsInBag.map(x => `<option value="g:${x.uid}">${esc(SUPPORT_GEMS[ITEMS[x.id].gem].name)} Lv.${x.gl || 1}</option>`).join('')}</optgroup></select> <button class="mini" onclick="gemSocketPut(${uid},${i})">鑲入</button>`;
+              + `<optgroup label="輔助寶石（背包）">${gemsInBag.map(x => `<option value="g:${x.uid}">${esc(SUPPORT_GEMS[ITEMS[x.id].gem].name)} Lv.${x.gl || 1}${x.cnt > 1 ? ' ×' + x.cnt : ''}</option>`).join('')}</optgroup></select> <button class="mini" onclick="gemSocketPut(${uid},${i})">鑲入</button>`;
         return `<div class="gem-socket"><span class="gem-hole">◆${i + 1}</span> ${body}</div>`;
     }).join('<div class="gem-link">║ 串聯</div>') + '</div>').join('');
     openDialog('🔷 鑲嵌寶石：' + itemName(it), `<p class="muted">同一個框裡串聯的孔：放 1 顆技能寶石，其他放輔助寶石，就會強化那個技能。拆下輔助寶石要「寶石等級 × ${fmt(GEM_UNSOCKET_GOLD)}」金幣（寶石保留）；技能寶石免費拆、拆下就消失。</p>${rows}`);

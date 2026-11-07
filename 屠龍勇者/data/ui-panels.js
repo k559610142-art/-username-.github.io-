@@ -458,10 +458,15 @@ function renderBag() {
     h += `<div class="chips">${BAG_FILTERS.map(([id, n]) => `<button class="chip-btn ${bagFilter === id ? 'active' : ''}" onclick="setBagFilter('${id}')">${n}</button>`).join('')}</div>`;
     h += `<div class="btn-row"><button class="secondary mini" onclick="bagTidy()">🧹 整理背包</button></div>`;
     const list = player.inv.filter(x => !bagIsStored(x)&&bagMatch(ITEMS[x.id]));   // 收納與背包是不同位置，保留同一物品UID。
-    // 相同的異界地圖疊成一列（maps.js mapKindKey），點開的是第一張
+    // 相同的異界地圖疊成一列（maps.js mapKindKey）；輔助寶石同種、同等級、同經驗也疊成一列（instKindKey，2026-11-08 第 323 節）。只是顯示合併，點開的是第一個
     const rows = [], mapRow = {};
     for (const x of list) {
-        if (ITEMS[x.id].cat === 'map') { const k = mapKindKey(x) + (x.sellLocked ? "|locked" : ""); if (mapRow[k]) { mapRow[k].n++; continue; } rows.push(mapRow[k] = { x, n: 1 }); }
+        const cat = ITEMS[x.id].cat;
+        if (cat === 'map' || cat === 'gem') {
+            const k = cat === 'map' ? mapKindKey(x) + (x.sellLocked ? "|locked" : "") : `gem|${x.id}|${x.gl || 1}|${x.sellLocked ? 1 : 0}`;
+            if (mapRow[k]) { mapRow[k].n++; if (cat === 'gem' && (x.gx || 0) > (mapRow[k].x.gx || 0)) mapRow[k].x = x; continue; }   // 寶石：點開經驗最高的那顆
+            rows.push(mapRow[k] = { x, n: 1 });
+        }
         else rows.push({ x, n: x.n });
     }
     h += `<div class="list">` + (rows.map(({ x, n }) => `<div class="item-row"><button class="bag-item-open" onclick="openItemDialog(${x.uid})">

@@ -4988,3 +4988,11 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 有按鈕的：野外首領（每張地圖）、龍穴（未鎖定且冷卻結束才顯示，否則 zoneBlockReason 也會擋）、永夜之塔守關首領（直接到該層 10F／20F…）。團隊副本沒有按鈕（另有入場流程）。
 - `world-atlas.js`：`atlasTravel(index)` 拆出 `atlasTravelTo(p, picked)`（p＝{ kind, id }，不需要在 ATLAS_POINTS 裡），費用、確認視窗、異界地圖離開提示、角色／所在地變更防護、傳送後立刻掛機都和世界地圖傳送一樣。
 - 驗證：瀏覽器記憶體角色（不存檔）renderBossTimer 產生 14 個按鈕，btTravel 到迷霧古林扣 100 金幣、塔 10F 正確，Console 只有未登入 401。
+
+## 323. 背包輔助寶石疊成 ×N（2026-11-08，版本 `20261108b`；`ui-panels.js` 的 `renderBag`、`gems.js` 的 `openSocketDialog`）
+
+- 使用者要求「輔助寶石要可以重疊」，選擇「背包堆疊」（不是同串效果疊加）。
+- **只是顯示合併**（和異界地圖一樣）：存檔仍是一顆一個實體（各自 gl／gx，`isStackable` 不變），所以交易所、倉庫、共用倉庫、防改檔簽章、伺服器都不受影響；倉庫／回收／交易所原本的 `groupInv`（instKindKey，連經驗都要一樣才合併）照舊。
+- `renderBag`：寶石以 `id＋等級＋是否鎖定` 為一組，列顯示「×N」，點開的是組內經驗最高的那顆。
+- `openSocketDialog`：輔助寶石下拉以 `id＋等級` 合併成一個選項「名稱 Lv.X ×N」，值是組內經驗最高那顆的 uid（鑲入那顆）。
+- 驗證：瀏覽器記憶體角色（不存檔）3 顆附加火焰 Lv.1 → ×3、Lv.5 單獨一列、兩顆連鎖 Lv.1（經驗 0／300）→ ×2 且指向經驗 300 那顆；Console 無錯誤。
