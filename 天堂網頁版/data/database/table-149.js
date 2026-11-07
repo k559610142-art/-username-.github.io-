@@ -1,0 +1,1 @@
+GameDatabase.register("spawnlist_time",[{"name":"npc_id","type":"int(11)"},{"name":"time_start","type":"time"},{"name":"time_end","type":"time"},{"name":"delete_at_endtime","type":"tinyint(1)"},{"name":"怪物出生訊息","type":"varchar(20)"},{"name":"每週出生日期","type":"varchar(20)"}],[]);

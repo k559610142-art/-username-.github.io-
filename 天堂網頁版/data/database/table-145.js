@@ -1,0 +1,1 @@
+GameDatabase.register("spawnlist_furniture",[{"name":"item_obj_id","type":"int(10)"},{"name":"npcid","type":"int(10)"},{"name":"locx","type":"int(10)"},{"name":"locy","type":"int(10)"},{"name":"mapid","type":"int(10)"}],[]);

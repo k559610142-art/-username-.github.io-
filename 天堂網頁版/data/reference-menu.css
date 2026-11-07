@@ -90,3 +90,8 @@ main.game.reference-game #panel .reference-menu-tile {
   .reference-message-list { max-height: 2.8em; }
   .reference-menu-grid { padding: 3px; }
 }
+
+/* Exposed terrain remains clickable beside the menu. */
+main.game.reference-game #panel.reference-menu-panel,
+.reference-menu-panel #panelContent { pointer-events: none; }
+.reference-menu-panel .reference-menu-grid { pointer-events: auto; }

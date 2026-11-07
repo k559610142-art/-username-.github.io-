@@ -1,0 +1,1 @@
+GameDatabase.register("server_board",[{"name":"id","type":"int(10)"},{"name":"name","type":"varchar(16)"},{"name":"date","type":"varchar(16)"},{"name":"title","type":"varchar(16)"},{"name":"content","type":"varchar(1000)"}],[]);

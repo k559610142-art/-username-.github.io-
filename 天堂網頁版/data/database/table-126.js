@@ -1,0 +1,1 @@
+GameDatabase.register("server_message",[{"name":"note","type":"varchar(45)"},{"name":"id","type":"int(10)"},{"name":"show","type":"tinyint(1)"},{"name":"message","type":"varchar(100)"}],[["新創血盟公告",2,1,"\\aD新血盟【\\aC%s\\aD】誕生王:\\aC【%s】"],["創新血盟廣播",3,1,"\\aC血盟【%s】誕生!!"],["新創角色公告",4,0,"\\aD新玩家【\\aC%s\\aD】誕生 職:\\aC%s"],["威望升級道具文字extra.Honor_Lv",1,1,"玩家【%s】，經歷九死一生，終於度過天劫成為一方霸主。"]]);

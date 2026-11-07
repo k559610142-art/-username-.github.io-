@@ -1,0 +1,1 @@
+GameDatabase.register("weapon_power",[{"name":"weapon_id","type":"int(11)"},{"name":"note","type":"varchar(255)"},{"name":"add_dmg_min","type":"int(10)"},{"name":"add_dmg_max","type":"int(10)"}],[[60,"末日刀",100,200]]);

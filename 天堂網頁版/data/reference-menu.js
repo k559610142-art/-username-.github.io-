@@ -62,9 +62,7 @@ function renderGameMenu(showCharacter = false) {
 
 menuButton.onclick = () => {
   if (window.gameFlowState !== 'playing') return;
-  cancelPointerGesture();
-  stopMovement();
-  stopReferenceAuto();
+  cancelPointerGesture({preserveNavigation:true});
   previous = menuButton;
   gameDialog.classList.remove('classic-panel', 'game-catalog-panel');
   gameDialog.classList.add('reference-menu-panel');
@@ -97,7 +95,7 @@ quickButtons.forEach((button, index) => {
   button.querySelector('.quick-key').textContent = 'F' + (index + 1);
 });
 addEventListener('keydown', event => {
-  if (window.gameFlowState !== 'playing' || !gameDialog.hidden || event.altKey || event.ctrlKey ||
+  if (window.gameFlowState !== 'playing' || event.altKey || event.ctrlKey ||
       event.metaKey || event.shiftKey || event.target.closest?.('input, textarea, select, [contenteditable]')) return;
   const match = /^F(10|[1-9])$/.exec(event.key);
   if (!match) return;

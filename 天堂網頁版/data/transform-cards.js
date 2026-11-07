@@ -21,6 +21,7 @@ window.TransformCards = (() => {
         if (saved.active && state.owned[saved.active]) state.active = saved.active;
       }
     } catch (error) { /* 讀不到就從空卡冊開始 */ }
+    if(characterDead&&state.active){state.active=null;save();}
     applyEffects();
     return true;
   }
@@ -56,14 +57,14 @@ window.TransformCards = (() => {
   }
   // ---- 3.63 變身設定（L1PolyMorph）：最低等級、可用武器／防具遮罩、能否施法 ----
   const weaponFlags = {dagger: 1, sword: 2, tohandsword: 4, blunt: 8, tohandblunt: 8, spear: 16, singlespear: 16, staff: 32, tohandstaff: 32, edoryu: 64, claw: 128, bow: 256, singlebow: 256, gauntlet: 256, kiringku: 512, chainsword: 1024};
-  const armorFlags = {helm: 1, amulet: 2, earring: 4, T: 8, armor: 16, cloak: 32, belt: 64, shield: 128, glove: 256, ring: 512, boots: 1024, guarder: 2048};
+  const armorFlags = {helmet: 1, helm: 1, amulet: 2, earring: 4, T: 8, tshirt: 8, shirt: 8, armor: 16, cloak: 32, belt: 64, shield: 128, glove: 256, gloves: 256, ring: 512, ring2: 512, boots: 1024, guarder: 2048};
   const weaponNames = {1: '匕首', 2: '單手劍', 4: '雙手劍', 8: '斧／鈍器', 16: '矛', 32: '魔杖', 64: '雙刀', 128: '鋼爪', 256: '弓', 512: '奇古獸', 1024: '鎖鏈劍'};
   const armorNames = {1: '頭盔', 2: '項鍊', 4: '耳環', 8: '內衣', 16: '盔甲', 32: '斗篷', 64: '腰帶', 128: '盾牌', 256: '手套', 512: '戒指', 1024: '長靴', 2048: '臂甲'};
   function canEquip(item, card = window.activeTransformCard) {
     const p = card?.p;
     if (!p || !item) return true;
-    if (item.kind === 'weapon') { const flag = weaponFlags[item.type]; return flag === undefined || (p.w & flag) !== 0; }
-    if (item.kind === 'armor') { const flag = armorFlags[item.type]; return flag === undefined || (p.a & flag) !== 0; }
+    if (item.kind === 'weapon') { const flag = weaponFlags[item.type]; return flag !== undefined && ((transformWeaponRules[p.gfx]?.weapons??p.w) & flag) !== 0; }
+    if (item.kind === 'armor') { const flag = armorFlags[item.type]; return flag !== undefined && (p.a & flag) !== 0; }
     return true;
   }
   function describe(mask, names) {
@@ -75,9 +76,28 @@ window.TransformCards = (() => {
   function rules(card) {
     const p = card.p;
     if (!p) return null;
-    return {level: p.lv, magic: !!p.m, weapons: describe(p.w, weaponNames), armors: describe(p.a, armorNames), en: p.en, rebirth: p.rb || 0, bonus: card.pb || null};
+    return {level: p.lv, magic: !!p.m, weapons: describe(transformWeaponRules[p.gfx]?.weapons??p.w, weaponNames), armors: describe(p.a, armorNames), en: p.en, rebirth: p.rb || 0, bonus: card.pb || null};
   }
 
+  function canAttack() {
+    ensure();
+    const card=window.activeTransformCard;
+    const weapon=window.OwnedInventory?.items.find(e=>e.slot==='weapon')?.item;
+    if(weapon&&!canEquip(weapon,card))return false;
+    if(transformWeaponRules[card?.p?.gfx]?.bowOnly&&!['bow','singlebow'].includes(weapon?.type))return false;
+    if(card&&['bow','singlebow'].includes(weapon?.type)&&!MonsterActions.hasClip(card.p?.gfx,characterHeading,'attack',20))return false;
+    return !['bow','singlebow'].includes(weapon?.type)||OwnedInventory.items.some(e=>e.item.type==='arrow'&&e.count>0);
+  }
+  function reconcileEquipment(){
+    ensure();
+    const card=window.activeTransformCard;
+    if(!card)return true;
+    const blocked=OwnedInventory.items.some(entry=>entry.slot&&!canEquip(entry.item,card));
+    if(!blocked)return true;
+    if(OwnedInventory.prepareTransform(card))return true;
+    deactivate({quiet:true});
+    return false;
+  }
   function activate(name) {
     if (!ensure()) { toast('請先進入遊戲角色。'); return false; }
     const card = byName.get(name);
@@ -87,17 +107,15 @@ window.TransformCards = (() => {
     if (typeof characterMovementBlocked === 'function' && characterMovementBlocked()) { toast('請等目前動作結束。'); return false; }
     // 照 3.63 規則：變身後不能用的裝備自動卸下（被詛咒的卸不下就不能變身）。
     const blocked = (window.OwnedInventory?.items || []).filter(entry => entry.slot && !canEquip(entry.item, card));
-    for (const entry of blocked) {
-      if (!OwnedInventory.unequip(entry.uid)) { toast(entry.item.name + ' 無法卸下，不能變身。'); return false; }
-    }
+    if(blocked.length&&!OwnedInventory.prepareTransform(card))return false;
     state.active = name; save(); applyEffects(); morphStarted = movementTime(); refreshCharacter();
     toast('變身為 ' + name + '（' + card.fx.slice(0, 3).join('、') + '）' + (blocked.length ? '，已卸下 ' + blocked.map(entry => entry.item.name).join('、') : ''));
     return true;
   }
-  function deactivate() {
+  function deactivate({quiet=false}={}) {
     if (!ensure() || !state.active) return false;
     state.active = null; save(); applyEffects(); refreshCharacter();
-    toast('解除變身');
+    if(!quiet)toast('解除變身');
     return true;
   }
 
@@ -241,7 +259,7 @@ window.TransformCards = (() => {
   };
 
   return {
-    book, draw, activate, deactivate, gradeWeights, canEquip, rules,
+    book, draw, activate, deactivate, canAttack, reconcileEquipment, onDeath(){deactivate({quiet:true});}, gradeWeights, canEquip, rules,
     get canCast() { ensure(); return window.activeTransformCard?.p?.m !== 0; },
     owned: name => (ensure(), state.owned[name] || 0),
     get collected() { ensure(); return Object.keys(state.owned).length; },

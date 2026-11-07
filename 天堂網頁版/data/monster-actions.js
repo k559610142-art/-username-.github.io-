@@ -29,6 +29,7 @@ const MonsterActions = (() => {
   const get = (gfx, heading, clip, weapon) => {
     const key = 'd' + (directions[heading] ?? 5) + '/' + clip;
     const variant = weaponMorphModes[gfx]?.[weapon];
+    if(weapon===20&&clip==='attack')return weaponMorphFrames[variant]?.[key];
     return weaponMorphFrames[variant]?.[key] || monsterActionIndex[gfx]?.[key];
   };
   const weaponBases = {sword:4, blunt:11, tohandblunt:11, bow:20, singlebow:20, spear:24, singlespear:24, chainsword:24, staff:40, tohandstaff:40, dagger:46, tohandsword:50, edoryu:54, claw:58, kiringku:58, gauntlet:62};

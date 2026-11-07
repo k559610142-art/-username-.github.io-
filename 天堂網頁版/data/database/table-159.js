@@ -1,0 +1,1 @@
+GameDatabase.register("system_custom_text",[{"name":"代碼","type":"int(10)"},{"name":"顯示的文字","type":"varchar(1000)"},{"name":"註解","type":"varchar(45)"}],[[1501,"強大的魔法無法附著在裝備上.....。","強大的魔法無法附著在裝備上.....。"]]);

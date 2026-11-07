@@ -17,7 +17,7 @@ function findWalkingPath(startX,startY,targetX,targetY){
   return null;
 }
 function cancelNavigation(){navigationPath=[];navigationTarget=null;paintNavigationTarget()}
-function advanceNavigation(now=movementTime(),continuous=false){if(!document.querySelector('#panel').hidden){cancelNavigation();return}if(!movementReady(now)||(typeof characterMovementBlocked==='function'&&characterMovementBlocked()))return;const due=lastMovementAt+lastMovementDuration;const started=continuous&&now-due<=32?due:now;const next=navigationPath.shift();if(!next){cancelNavigation();return}if(!stepWorld(next[0]-worldX,next[1]-worldY,now,started)){cancelNavigation();toast('前方無法通行，請重新選擇位置');return}if(!navigationPath.length)cancelNavigation()}
+function advanceNavigation(now=movementTime(),continuous=false){if(!movementReady(now)||(typeof characterMovementBlocked==='function'&&characterMovementBlocked()))return;const due=lastMovementAt+lastMovementDuration;const started=continuous&&now-due<=32?due:now;const next=navigationPath.shift();if(!next){cancelNavigation();return}if(!stepWorld(next[0]-worldX,next[1]-worldY,now,started)){cancelNavigation();toast('前方無法通行，請重新選擇位置');return}if(!navigationPath.length)cancelNavigation()}
 function navigateTo(x,y,quiet=false){if(window.gameFlowState!=='playing'||typeof characterDead!=='undefined'&&characterDead)return false;if(navigationTarget&&navigationTarget[0]===x&&navigationTarget[1]===y&&navigationPath.length)return true;const route=findWalkingPath(worldX,worldY,x,y);if(!route){if(!quiet)toast('這個位置沒有可通行的路徑');return false}cancelNavigation();if(!route.length)return true;navigationPath=route;navigationTarget=[x,y];advanceNavigation();paintNavigationTarget();if(navigationPath.length)schedule();return true}
 function screenToWorld(point){const view=getRenderedSceneView();return unproject((point.x-view.ox)/view.zoom,(point.y-view.oy)/view.zoom).map(Math.round)}
 const navigationMarker=document.createElement('div');navigationMarker.setAttribute('aria-hidden','true');navigationMarker.className='navigation-target';navigationMarker.hidden=true;game.append(navigationMarker);
@@ -25,3 +25,28 @@ const navigationStyle=document.createElement('style');navigationStyle.textConten
 function paintNavigationTarget(){navigationMarker.hidden=!navigationTarget;if(!navigationTarget)return;const view=getRenderedSceneView(),[tx,ty]=project(...navigationTarget);navigationMarker.style.left=(view.ox+tx*view.zoom)+'px';navigationMarker.style.top=(view.oy+ty*view.zoom)+'px'}
 const navigationDraw=draw;draw=function(frameTime){navigationDraw(frameTime);paintNavigationTarget()};
 addEventListener('blur',cancelNavigation);addEventListener('pagehide',cancelNavigation);document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelNavigation()});
+
+function navigateToAny(targets,radius){
+  if(window.gameFlowState!=='playing'||!targets.length)return false;
+  const width=island.width,ox=island.startX,oy=island.startY;
+  const id=(x,y)=>(y-oy)*width+x-ox;
+  const start=id(worldX,worldY),goals=new Set(targets.map(([x,y])=>id(x,y)));
+  if(goals.has(start))return true;
+  const previous=new Int32Array(width*island.height);previous.fill(-1);previous[start]=start;
+  const queue=[start];let found=null;
+  for(let head=0;head<queue.length&&found===null;head++){
+    const cell=queue[head],x=cell%width+ox,y=Math.floor(cell/width)+oy;
+    for(const [dx,dy]of navigationDirections){
+      const nx=x+dx,ny=y+dy;
+      if(nx<ox||ny<oy||nx>=ox+width||ny>=oy+island.height||Math.max(Math.abs(nx-worldX),Math.abs(ny-worldY))>radius||!canTraverse(x,y,dx,dy))continue;
+      const next=id(nx,ny);if(previous[next]!==-1)continue;
+      previous[next]=cell;
+      if(goals.has(next)){found=next;break;}
+      queue.push(next);
+    }
+  }
+  if(found===null)return false;
+  const route=[];for(let cell=found;cell!==start;cell=previous[cell])route.push([cell%width+ox,Math.floor(cell/width)+oy]);
+  route.reverse();cancelNavigation();navigationPath=route;navigationTarget=route.at(-1);
+  advanceNavigation();paintNavigationTarget();if(navigationPath.length)schedule();return true;
+}

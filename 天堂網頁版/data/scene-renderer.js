@@ -31,27 +31,54 @@ function project(wx,wy){const x=wx-island.startX,y=wy-island.startY;return [(x+y
 function unproject(px,py){const a=px/24,b=py/12-512;return [island.startX+(a-b)/2,island.startY+(a+b)/2]}
 function canTraverse(fromX,fromY,dx,dy){const a=tile(fromX,fromY),b=tile(fromX+dx,fromY+dy);if(!b||(b&128))return false;if(dx===1&&dy===0)return !!(a&1);if(dx===-1&&dy===0)return !!(b&1);if(dx===0&&dy===-1)return !!(a&2);if(dx===0&&dy===1)return !!(b&2);if(dx===1&&dy===-1)return !!((tile(fromX,fromY-1)&1)||(tile(fromX+1,fromY)&2));if(dx===1&&dy===1)return !!(tile(fromX,fromY+1)&1);if(dx===-1&&dy===1)return !!(b&3);if(dx===-1&&dy===-1)return !!(tile(fromX-1,fromY)&2);return false}
 function canStep(dx,dy){return canTraverse(worldX,worldY,dx,dy)}
-function paintTerrainImage(img,left,top,width,height,view){
+function paintTerrainImage(img,left,top,width,height,view,pen=ctx){
   const scaleX=width/img.naturalWidth,scaleY=height/img.naturalHeight;
   const x=Math.max(0,Math.floor(-left/scaleX)),y=Math.max(0,Math.floor(-top/scaleY));
   const right=Math.min(img.naturalWidth,Math.ceil((view.width-left)/scaleX));
   const bottom=Math.min(img.naturalHeight,Math.ceil((view.height-top)/scaleY));
   if(right<=x||bottom<=y)return;
-  ctx.drawImage(img,x,y,right-x,bottom-y,left+x*scaleX,top+y*scaleY,(right-x)*scaleX,(bottom-y)*scaleY);
+  pen.drawImage(img,x,y,right-x,bottom-y,left+x*scaleX,top+y*scaleY,(right-x)*scaleX,(bottom-y)*scaleY);
+}
+const terrainRaster=document.createElement('canvas'),terrainRasterPen=terrainRaster.getContext('2d',{alpha:false});
+const terrainPadding=128;
+let terrainRasterView=null;
+function paintCachedTerrain(view,layers,dpr,dirty){
+  const previous=terrainRasterView;
+  const shiftX=previous?(previous.px-view.px)*view.zoom:0;
+  const shiftY=previous?(previous.py-view.py)*view.zoom:0;
+  const rebuild=dirty||!previous||previous.width!==view.width||previous.height!==view.height||
+    previous.zoom!==view.zoom||previous.dpr!==dpr||
+    Math.abs(shiftX)>terrainPadding*.6||Math.abs(shiftY)>terrainPadding*.6;
+  if(rebuild){
+    const expanded={...view,width:view.width+terrainPadding*2,height:view.height+terrainPadding*2,
+      ox:view.ox+terrainPadding,oy:view.oy+terrainPadding};
+    const width=Math.ceil(expanded.width*dpr),height=Math.ceil(expanded.height*dpr);
+    if(terrainRaster.width!==width||terrainRaster.height!==height){terrainRaster.width=width;terrainRaster.height=height;}
+    terrainRasterPen.setTransform(dpr,0,0,dpr,0,0);
+    terrainRasterPen.fillStyle='#101b17';
+    terrainRasterPen.fillRect(0,0,expanded.width,expanded.height);
+    if(preview.complete&&preview.naturalWidth)paintTerrainImage(preview,expanded.ox,expanded.oy,24576*view.zoom,12288*view.zoom,expanded,terrainRasterPen);
+    for(const {p,item} of layers)if(item.ready)paintTerrainImage(item.img,p.pixelOrigin[0]*view.zoom+expanded.ox,p.pixelOrigin[1]*view.zoom+expanded.oy,3072*view.zoom,1536*view.zoom,expanded,terrainRasterPen);
+    terrainRasterView={...view,dpr};
+  }
+  const offsetX=(terrainRasterView.px-view.px)*view.zoom;
+  const offsetY=(terrainRasterView.py-view.py)*view.zoom;
+  ctx.drawImage(terrainRaster,(terrainPadding-offsetX)*dpr,(terrainPadding-offsetY)*dpr,
+    view.width*dpr,view.height*dpr,0,0,view.width,view.height);
 }
 function draw(frameTime=movementTime()){const rect=game.getBoundingClientRect(),w=rect.width,h=rect.height,layout=viewportLayout(w,h),dpr=Math.min(devicePixelRatio||1,2),cw=Math.round(w*dpr),ch=Math.round(h*dpr);zoom=layout.defaultZoom;panX=0;panY=0;const view=sceneViewAt(w,h,frameTime),{px,py,ox,oy}=view;
 if(terrainDirty===false&&paintedView&&paintedView.px===px&&paintedView.py===py&&paintedView.worldX===worldX&&paintedView.worldY===worldY&&paintedView.width===w&&paintedView.height===h&&canvas.width===cw&&canvas.height===ch)return;
 const pageVisible=(p,margin)=>{const [x,y]=p.pixelOrigin;return x*zoom+ox<w+margin&&y*zoom+oy<h+margin&&(x+3072)*zoom+ox>-margin&&(y+1536)*zoom+oy>-margin};
-const nearby=scene.pages.filter(p=>pageVisible(p,96)),needed=new Set();let pending=0,errors=0;
-const layers=[];for(const layer of ['file','foreground'])for(const p of nearby){if(!p[layer])continue;needed.add(p[layer]);const item=image(p[layer]);if(!pageVisible(p,0))continue;layers.push({p,item});if(item.error)errors++;else if(!item.ready)pending++}
+const nearby=scene.pages.filter(p=>pageVisible(p,terrainPadding+96)),needed=new Set();let pending=0,errors=0;
+const layers=[];for(const layer of ['file','foreground'])for(const p of nearby){if(!p[layer])continue;needed.add(p[layer]);const item=image(p[layer]);if(!pageVisible(p,terrainPadding))continue;layers.push({p,item});if(item.error)errors++;else if(!item.ready)pending++}
 // Commit a complete scene in one frame; never swap a cropped fallback, overview and partial layers.
-if(sceneStarted||(!pending&&!errors)||(errors&&preview.complete&&preview.naturalWidth)){sceneStarted=true;if(canvas.width!==cw||canvas.height!==ch){canvas.width=cw;canvas.height=ch}ctx.setTransform(dpr,0,0,dpr,0,0);ctx.fillStyle='#101b17';ctx.fillRect(0,0,w,h);if(preview.complete&&preview.naturalWidth)paintTerrainImage(preview,ox,oy,24576*zoom,12288*zoom,view);for(const {p,item} of layers)if(item.ready)paintTerrainImage(item.img,p.pixelOrigin[0]*zoom+ox,p.pixelOrigin[1]*zoom+oy,3072*zoom,1536*zoom,view);const actor=document.querySelector('#actor');actor.hidden=false;renderedSceneView=view;paintedView={...view,worldX,worldY};terrainDirty=false;actor.style.setProperty('left',(w/2)+'px','important');actor.style.setProperty('top',(h*layout.anchorY)+'px','important');}
-for(const [file,item] of cache)if(!needed.has(file)&&cache.size>8){item.img.onload=null;item.img.onerror=null;item.img.src='';cache.delete(file)}
+if(sceneStarted||(!pending&&!errors)||(errors&&preview.complete&&preview.naturalWidth)){sceneStarted=true;if(canvas.width!==cw||canvas.height!==ch){canvas.width=cw;canvas.height=ch}ctx.setTransform(dpr,0,0,dpr,0,0);paintCachedTerrain(view,layers,dpr,terrainDirty);const actor=document.querySelector('#actor');actor.hidden=false;renderedSceneView=view;paintedView={...view,worldX,worldY};terrainDirty=false;actor.style.setProperty('left',(w/2)+'px','important');actor.style.setProperty('top',(h*layout.anchorY)+'px','important');}
+for(const [file,item] of cache)if(!needed.has(file)&&cache.size>24){item.img.onload=null;item.img.onerror=null;item.img.src='';cache.delete(file)}
 document.querySelector('#coordinates').textContent=`${worldX}, ${worldY} · ${((tile(worldX,worldY)&48)===16)?'安全區':'一般區'}`;status.hidden=!pending&&!errors;status.textContent=errors?'部分場景圖片讀取失敗，請確認完整解壓縮':`載入附近場景… ${pending}`;
 }
 function stepWorld(dx,dy,now=movementTime(),started=now){if(window.gameFlowState!=='playing'||(typeof characterMovementBlocked==='function'&&characterMovementBlocked())||!movementReady(now))return false;if(!canStep(dx,dy))return false;startVisualStep(worldX+dx,worldY+dy,now,started);recenter();if(typeof onCharacterStep==='function')onCharacterStep(dx,dy);schedule();return true}
 move=function(dx,dy){if(typeof cancelNavigation==='function')cancelNavigation();if(!movementReady())return;const d=dx===0&&dy===-1?[1,-1]:dx===0&&dy===1?[-1,1]:dx===1?[1,1]:[-1,-1];if(!stepWorld(...d))toast('此方向受到原始地圖通行資料阻擋')};
 document.querySelector('#zoomIn').onclick=()=>setZoom(zoom+.12);document.querySelector('#zoomOut').onclick=()=>setZoom(zoom-.12);
-document.querySelector('#overview').onclick=()=>{previous=document.activeElement;document.querySelector('#panel').hidden=false;document.querySelector('#panelContent').innerHTML='<h2>說話之島 · 全島場景</h2><canvas class="fullmap" id="fullmap" width="2048" height="1024"></canvas><p class="mapcaption">包含地表、道路、建築及樹木。場景取自桌面「秋月天堂 / IdleLineage.pck」，Map ID、地圖原點與尺寸已對應；與 3.63 模擬器的歷史版本差異尚未逐格驗證。人物素材已接入，戰鬥仍為本機展示，尚未連接伺服器。</p><button id="home">回到村莊</button>';const c=document.querySelector('#fullmap').getContext('2d');const paint=()=>{c.drawImage(preview,0,0,2048,1024);const p=project(worldX,worldY);c.fillStyle='#fff';c.strokeStyle='#d24936';c.lineWidth=3;c.beginPath();c.arc(p[0]/12,p[1]/12,6,0,Math.PI*2);c.fill();c.stroke()};if(preview.complete&&preview.naturalWidth)paint();else preview.addEventListener('load',paint,{once:true});document.querySelector('#home').onclick=()=>{worldX=island.spawn.x;worldY=island.spawn.y;recenter();closePanel();toast('已回到說話之島村莊（本機展示）')};document.querySelector('#close').focus()};
+document.querySelector('#overview').onclick=()=>{previous=document.activeElement;document.querySelector('#panel').hidden=false;document.querySelector('#panelContent').innerHTML='<h2>說話之島 · 全島場景</h2><canvas class="fullmap" id="fullmap" width="2048" height="1024"></canvas><p class="mapcaption">說話之島。通行與安全區資料採用天地劫 Map 0，場景圖像採用目前的說話之島素材。</p><button id="home">回到村莊</button>';const c=document.querySelector('#fullmap').getContext('2d');const paint=()=>{c.drawImage(preview,0,0,2048,1024);const p=project(worldX,worldY);c.fillStyle='#fff';c.strokeStyle='#d24936';c.lineWidth=3;c.beginPath();c.arc(p[0]/12,p[1]/12,6,0,Math.PI*2);c.fill();c.stroke()};if(preview.complete&&preview.naturalWidth)paint();else preview.addEventListener('load',paint,{once:true});document.querySelector('#home').onclick=()=>{worldX=island.spawn.x;worldY=island.spawn.y;recenter();closePanel();toast('已回到說話之島村莊（本機展示）')};document.querySelector('#close').focus()};
 function fixedSceneResize(){schedule()}
 new ResizeObserver(fixedSceneResize).observe(game);fixedSceneResize();document.querySelector('#log').textContent='說話之島場景已接入。方向鍵／觸控移動；右上「地圖」查看全島。';

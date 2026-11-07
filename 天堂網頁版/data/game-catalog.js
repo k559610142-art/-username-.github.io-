@@ -1737,9 +1737,7 @@ function catalogPortrait(type, row, preview = false) {
 }
 
 function openGameCatalog(type) {
-  cancelPointerGesture();
-  stopMovement();
-  stopReferenceAuto();
+  cancelPointerGesture({preserveNavigation:true});
   previous = menuButton;
   gameDialog.classList.remove('reference-menu-panel', 'classic-panel');
   gameDialog.classList.add('game-catalog-panel');

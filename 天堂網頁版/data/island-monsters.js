@@ -11,18 +11,50 @@ const IslandMonsters = (() => {
   let hitboxes=[],selected=null,lastTap=null;
   const within=(area,x,y)=>x>=area[0]&&x<=area[2]&&y>=area[1]&&y<=area[3];
   const town=gfx=>gfx===945||gfx===1094;
+  const effects=[];
   function usable(spawn,x,y){
+    if(spawn.resident)return !!tile(x,y);
     const cell=tile(x,y);
     return !!cell&&!(cell&128)&&(town(spawn.npc.gfx)||(cell&48)!==16)
       &&steps.some(([dx,dy])=>canTraverse(x,y,dx,dy));
   }
+  function addMob(spawn, region, x, y, random, pack = null) {
+    const mob = {spawn,region,x,y,homeX:x,homeY:y,hp:Math.max(1,spawn.npc.hp),heading:spawn.heading%8,
+      rest:500+random()*2200,phase:random()*1800,step:null,pack};
+    mobs.push(mob);
+    IslandNpcAi.reset(mob);
+    return mob;
+  }
+  function spawnPack(spawn, region, x, y, random) {
+    const group = islandMonsterGroups[spawn.group];
+    const pack = group ? {members:[],group} : null;
+    const leader = addMob(spawn,region,x,y,random,pack);
+    if (!pack) return;
+    pack.leader = leader;
+    for (const [id,count] of group.members) {
+      const npc = islandMonsterTemplates[id];
+      if (!npc || !islandMonsterFrames[npc.gfx]) continue;
+      const member = {...spawn,npcId:id,npc};
+      for (let i=0;i<count;i++) {
+        const spot = steps.map(([dx,dy])=>[x+dx,y+dy]).find(([tx,ty])=>!taken.has(tx+','+ty)&&usable(member,tx,ty));
+        const [tx,ty] = spot || [x,y];
+        if (spot) taken.add(tx+','+ty);
+        pack.members.push(addMob(member,region,tx,ty,random,pack));
+      }
+    }
+  }
+  // Keep village landmarks and service NPCs visible. Other residents remain in the source data.
+  const villageServices = new Set([60001,70014,...dbActiveSettings.system_item_blend.rows.map(row=>row[1])]); // 傳送師、倉庫、雜貨商
   for(const spawn of islandMonsterSpawns){
+    if(spawn.resident&&spawn.npc.kind!=='L1Guard'&&!villageServices.has(spawn.npcId))continue;
+    if(!islandMonsterFrames[spawn.npc.gfx])continue;
     let seed=spawn.spawnId>>>0;
     const random=()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);
     const [px,py]=spawn.point;
     const [rx,ry]=spawn.random;
     const region=spawn.bounds[2] ? spawn.bounds : [px-Math.max(1,rx),py-Math.max(1,ry),px+Math.max(1,rx),py+Math.max(1,ry)];
-    const count=Math.min(12,Math.ceil(spawn.count/3));
+    // Scale each wild spawn row for local play. spawnPack still adds its full group.
+    const count=spawn.resident||town(spawn.npc.gfx)?spawn.count:Math.min(12,Math.ceil(spawn.count/3));
     for(let i=0;i<count;i++){
       for(let attempt=0;attempt<120;attempt++){
         const fixed=i===0&&attempt===0&&within(region,px,py);
@@ -31,15 +63,39 @@ const IslandMonsters = (() => {
         const spot=x+','+y;
         if(taken.has(spot)||!usable(spawn,x,y))continue;
         taken.add(spot);
-        mobs.push({spawn,region,x,y,homeX:x,homeY:y,hp:spawn.npc.hp,heading:spawn.heading%8,rest:500+random()*2200,phase:random()*1800,step:null});
+        spawnPack(spawn,region,x,y,random);
         break;
       }
     }
+  }
+  function startStep(mob, heading, now) {
+    const [dx,dy] = steps[heading], x = mob.x+dx, y = mob.y+dy;
+    const frames = islandMonsterFrames[mob.spawn.npc.gfx]['d'+heading+'/walk'];
+    if (!frames || x===worldX&&y===worldY || !usable(mob.spawn,x,y) || !canTraverse(mob.x,mob.y,dx,dy)) return false;
+    const duration = mob.spawn.npc.walk || frames.reduce((sum,frame)=>sum+frame[5],0);
+    mob.heading = heading;
+    mob.step = {x,y,start:now,end:now+duration};
+    return true;
+  }
+  function stepToward(mob, tx, ty, now) {
+    const distance = (x,y)=>Math.hypot(x-tx,y-ty);
+    const options = steps.map(([dx,dy],heading)=>({heading,dist:distance(mob.x+dx,mob.y+dy)}))
+      .filter(option=>option.dist<distance(mob.x,mob.y))
+      .sort((a,b)=>a.dist-b.dist);
+    return options.some(({heading})=>startStep(mob,heading,now));
   }
   function advance(mob,now){
     if(mob.step&&now>=mob.step.end){
       mob.x=mob.step.x;mob.y=mob.step.y;mob.step=null;
       mob.rest=now+1400+Math.random()*2300;
+    }
+    if(IslandNpcAi.update(mob,now,mobs,steps,stepToward))return;
+    if(mob.spawn.resident||mob.step||now<mob.rest)return;
+    const leader=mob.pack?.leader;
+    const home=leader&&leader!==mob&&leader.hp?[leader.x,leader.y]:[mob.homeX,mob.homeY];
+    if(Math.max(Math.abs(mob.x-home[0]),Math.abs(mob.y-home[1]))>3){
+      if(!stepToward(mob,...home,now))mob.rest=now+1000;
+      return;
     }
     const clips=islandMonsterFrames[mob.spawn.npc.gfx];
     if(!mob.step&&now>=mob.rest&&clips['d'+mob.heading+'/walk']){
@@ -48,20 +104,19 @@ const IslandMonsters = (() => {
         const heading=(first+i)%steps.length,[dx,dy]=steps[heading],x=mob.x+dx,y=mob.y+dy;
         if(!within(mob.region,x,y)||Math.max(Math.abs(x-mob.homeX),Math.abs(y-mob.homeY))>3
            ||x===worldX&&y===worldY||!usable(mob.spawn,x,y)||!canTraverse(mob.x,mob.y,dx,dy))continue;
-        const frames=clips['d'+heading+'/walk'];
-        if(!frames)continue;
-        const duration=frames.reduce((total,frame)=>total+frame[5],0);
-        mob.heading=heading;
-        mob.step={x,y,start:now,end:now+duration};
-        break;
+        if(startStep(mob,heading,now))break;
       }
       if(!mob.step)mob.rest=now+1600;
     }
   }
   function spriteFrame(mob,now,phase){
-    const frames=islandMonsterFrames[mob.spawn.npc.gfx]['d'+mob.heading+'/'+(mob.step?'walk':'idle')];
+    const clips=islandMonsterFrames[mob.spawn.npc.gfx], prefix='d'+mob.heading+'/';
+    const action=mob.action&&now<mob.action.end?mob.action:null;
+    const frames=clips[prefix+(mob.step?'walk':action?.clip||'idle')]||
+      (action&&clips[prefix+'attack'])||clips[prefix+'idle']||clips['d0/idle'];
     const total=frames.reduce((sum,frame)=>sum+frame[5],0);
-    let time=mob.step?Math.min(.999,phase)*total:(now+mob.phase)%total,index=0;
+    let time=mob.step?Math.min(.999,phase)*total:action?
+      Math.max(0,Math.min(.999,(now-action.start)/(action.end-action.start)))*total:(now+mob.phase)%total,index=0;
     while(index<frames.length-1&&time>=frames[index][5])time-=frames[index++][5];
     const correction=mob.step?MonsterActions.walkOffset(frames,directions[mob.heading],index):[0,0];
     return [frames[index],correction];
@@ -70,7 +125,9 @@ const IslandMonsters = (() => {
     const playing=window.gameFlowState==='playing'&&sceneStarted;
     surface.hidden=!playing;
     hitboxes=[];
-    if(!playing){selected=null;return;}
+    IslandNpcAi.playerActive();
+    IslandNpcAi.updateRevive();
+    if(!playing){selected=null;effects.length=0;return;}
     if(!view.width||!view.height)return;
     const dpr=Math.min(devicePixelRatio||1,2),w=Math.round(view.width*dpr),h=Math.round(view.height*dpr);
     if(surface.width!==w||surface.height!==h){surface.width=w;surface.height=h;}
@@ -80,22 +137,28 @@ const IslandMonsters = (() => {
     const scale=characterRenderScale();
     const visible=[];
     for(const mob of mobs){
-      if(!mob.hp){if(now<mob.respawnAt)continue;mob.hp=mob.spawn.npc.hp;mob.x=mob.homeX;mob.y=mob.homeY;}
+      if(!mob.hp){
+        if(now<mob.respawnAt)continue;
+        mob.hp=mob.spawn.npc.hp;mob.x=mob.homeX;mob.y=mob.homeY;
+        IslandNpcAi.reset(mob);mob.reward=null;
+      }
+      const nearby=Math.max(Math.abs(worldX-mob.x),Math.abs(worldY-mob.y))<=22;
+      if(nearby)advance(mob,now);
       const [px,py]=project(mob.x,mob.y),sx=px*view.zoom+view.ox,sy=py*view.zoom+view.oy;
       if(sx<-120||sx>view.width+120||sy<-120||sy>view.height+160)continue;
-      advance(mob,now);
+      if(!nearby)advance(mob,now);
       const phase=mob.step?Math.max(0,Math.min(1,(now-mob.step.start)/(mob.step.end-mob.step.start))):0;
       const [x,y]=mob.step?project(mob.x+(mob.step.x-mob.x)*phase,mob.y+(mob.step.y-mob.y)*phase):project(mob.x,mob.y);
       visible.push([mob,x*view.zoom+view.ox,y*view.zoom+view.oy,phase]);
     }
     for(const [mob,x,y,phase] of visible.sort((a,b)=>a[2]-b[2])){
       const [[file,fx,fy,sw,sh,,sx,sy],[cx,cy]]=spriteFrame(mob,now,phase);
-      if(!sheets.has(file)){const image=new Image();image.src='assets/island-monsters/'+file;sheets.set(file,image);}
+      if(!sheets.has(file)){const image=new Image();image.src='assets/island-monsters-v2/'+file;sheets.set(file,image);}
       const sheet=sheets.get(file);
       if(!sheet.complete||!sheet.naturalWidth)continue;
       const left=x+(fx-cx)*scale,top=y+(fy-cy)*scale;
       const width=sw*scale,height=sh*scale;
-      hitboxes.push({mob,left,top,width,height});
+      if(!mob.spawn.resident||villageServices.has(mob.spawn.npcId))hitboxes.push({mob,left,top,width,height});
       if(mob===selected){
         pen.beginPath();pen.ellipse(x,y,Math.max(12,width*.36),6,0,0,Math.PI*2);
         pen.strokeStyle='#f0bc65';pen.lineWidth=2;pen.stroke();
@@ -113,14 +176,36 @@ const IslandMonsters = (() => {
       pen.lineWidth=3;
       pen.strokeStyle='#171510';
       pen.fillStyle=town(mob.spawn.npc.gfx)?'#ebdcb6':'#ffdd9a';
-      const name=mob.spawn.npc.name;
+      const name=mob.spawn.npc.name.replace('^',' · ');
       pen.strokeText(name,left+sw*scale/2,top-5);
       pen.fillText(name,left+sw*scale/2,top-5);
     }
+    for(let i=effects.length-1;i>=0;i--){
+      const effect=effects[i];
+      const elapsed=now-effect.start;
+      if(elapsed>=effect.duration){effects.splice(i,1);continue;}
+      const [px,py]=project(effect.x,effect.y);
+      let remaining=elapsed;
+      const frame=effect.frames.find(f=>(remaining-=f[5])<0)||effect.frames.at(-1);
+      const [file,fx,fy,sw,sh,,sx,sy]=frame;
+      if(!sheets.has(file)){const img=new Image();img.src='assets/island-monsters-v2/'+file;sheets.set(file,img);}
+      const image=sheets.get(file);
+      if(image.complete&&image.naturalWidth)pen.drawImage(image,sx,sy,sw,sh,px*view.zoom+view.ox+fx*scale,py*view.zoom+view.oy+fy*scale,sw*scale,sh*scale);
+    }
+  }
+  function playEffect(gfx,x,y,now){
+    const frames=islandMonsterFrames[gfx]?.['d0/idle'];
+    if(frames)effects.push({frames,x,y,start:now,duration:frames.reduce((sum,f)=>sum+f[5],0)});
   }
   function selectAt({x,y}){
     const hit=hitboxes.findLast(box=>x>=box.left-4&&x<=box.left+box.width+4&&y>=box.top-4&&y<=box.top+box.height+4);
     const next=hit?.mob||null;
+    if(next?.spawn.resident){
+      selected=null;
+      lastTap=null;
+      IslandNpcServices.open(next.spawn.npcId);
+      return true;
+    }
     const now=movementTime();
     if(next&&lastTap?.mob===next&&now-lastTap.time<=420){
       lastTap=null;return 'attack';
@@ -130,20 +215,28 @@ const IslandMonsters = (() => {
     return !!hit;
   }
   function nearest(range,eligible=()=>true){
-    return mobs.filter(m=>m.hp&&!town(m.spawn.npc.gfx)&&Math.max(Math.abs(m.x-worldX),Math.abs(m.y-worldY))<=range&&eligible(m))
+    return mobs.filter(m=>m.hp&&!m.spawn.resident&&!town(m.spawn.npc.gfx)&&Math.max(Math.abs(m.x-worldX),Math.abs(m.y-worldY))<=range&&eligible(m))
       .sort((a,b)=>Math.hypot(a.x-worldX,a.y-worldY)-Math.hypot(b.x-worldX,b.y-worldY))[0];
   }
   function setTarget(mob){selected=mob;draw(getRenderedSceneView(),movementTime());}
   function damage(mob,amount){
     if(!mob.hp)return;
+    IslandNpcAi.provoke(mob,mobs);
+    if(amount>=mob.hp&&!mob.spawn.resident&&!PlayerProgression.award(mob))return;
     mob.hp=Math.max(0,mob.hp-amount);
+    CombatSound.monsterHit(mob);
     if(!mob.hp){
-      mob.step=null;mob.respawnAt=movementTime()+60000;
+      const [min,max]=mob.spawn.respawn;
+      const respawn=movementTime()+1000*(Math.min(min,max)+Math.random()*Math.abs(max-min));
+      mob.step=null;mob.respawnAt=respawn;
+      if(mob.pack?.leader===mob&&mob.pack.group.removeWithLeader){
+        for(const member of mob.pack.members){member.hp=0;member.step=null;member.respawnAt=respawn;}
+      }
       if(selected===mob)selected=null;
     }
     draw(getRenderedSceneView(),movementTime());
   }
-  return {draw,selectAt,nearest,setTarget,damage,get target(){return selected;}};
+  return {draw,selectAt,nearest,setTarget,damage,playEffect,serviceNearby:(id,range)=>mobs.some(m=>m.spawn.resident&&m.spawn.npcId===id&&Math.max(Math.abs(m.x-worldX),Math.abs(m.y-worldY))<=range),get target(){return selected;}};
 })();
 const drawIslandScene=draw;
 draw=function(now=movementTime()){

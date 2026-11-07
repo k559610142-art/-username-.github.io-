@@ -41,7 +41,7 @@ function fullCharacterPose(timeline,elapsed,loop=false){
  const duration=Math.max(1,timeline.durationMs),phase=loop?(Math.max(0,elapsed)%duration)/duration:Math.max(0,Math.min(1-Number.EPSILON,elapsed/duration));
  const tick=phase*timeline.sourceTicks;let total=0;for(const pose of timeline.frames){total+=pose.ticks;if(tick<total)return pose}return timeline.frames[timeline.frames.length-1];
 }
-function characterMovementBlocked(){return characterDead||!!characterActionState&&movementTime()<characterActionState.until}
+function characterMovementBlocked(){return characterDead||(typeof IslandNpcAi!=='undefined'&&IslandNpcAi.cursed)||!!characterActionState&&movementTime()<characterActionState.until}
 function ensureFullCharacterAnimation(){if(!characterActionRaf&&window.gameFlowState==='playing'&&!document.hidden)characterActionRaf=requestAnimationFrame(frameTime=>{characterActionRaf=0;if(movementAnimating(frameTime)||(typeof navigationPath!=='undefined'&&navigationPath.length))ensureFullCharacterAnimation();else refreshCharacter(frameTime)})}
 refreshCharacter=function(frameTime=movementTime()){
  const avatar=activeCharacterAvatar(),data=activeCharacterActions(),weapon=activeCharacterWeapon(),now=frameTime,identity=avatar+'/'+characterHeading+'/'+weapon;
@@ -67,6 +67,7 @@ refreshCharacter=function(frameTime=movementTime()){
 };
 function playCharacterAction(action,options={}){
  if(window.gameFlowState!=='playing'||!['idle','attack','skill','hurt','death'].includes(action)||characterDead&&action!=='death')return false;
+ if(action==='attack'&&window.TransformCards&&!TransformCards.canAttack())return false;
  const interrupt=action==='attack'&&options.interruptMovement;
  if(!options.force&&(characterMovementBlocked()||!interrupt&&movementAnimating()))return false;
  const data=activeCharacterActions(),clip=['skill','death'].includes(action)?action:activeCharacterWeapon()+'_'+action;
@@ -77,8 +78,9 @@ function playCharacterAction(action,options={}){
   if(interruptVisualStep())recenter();
  }
  if(action==='idle'){characterActionState=null;characterWalkUntil=0;characterIdleStarted=movementTime();refreshCharacter();return true}
- const started=options.force&&movementAnimating()?movementTween.started+movementTween.duration:movementTime(),duration=(typeof MonsterActions !== 'undefined' && MonsterActions.actionDuration(window.activeTransformCard?.p?.gfx,characterHeading,action,MonsterActions.equippedWeapon()))||data.timelines[clip].durationMs;
+ const started=options.force&&movementAnimating()?movementTween.started+movementTween.duration:movementTime(),duration=((typeof MonsterActions !== 'undefined' && MonsterActions.actionDuration(window.activeTransformCard?.p?.gfx,characterHeading,action,MonsterActions.equippedWeapon()))||data.timelines[clip].durationMs)*(window.NativePotions?.actionMultiplier(action)||1);
  characterActionState={action,clip,started,duration,hold:!!options.hold,until:options.hold?Infinity:started+duration+(action==='death'?900:0)};
+ if(action==='attack')CombatSound.playerAttack(characterActionState);
  if(started<=movementTime())characterWalkUntil=0;
  preloadFullCharacterClip(activeCharacterAvatar(),characterHeading,clip);refreshCharacter();return true;
 }
@@ -88,7 +90,7 @@ function resetCharacterActions(weapon='unarmed'){
 window.CharacterActions={
  play:playCharacterAction,
  setWeapon(weapon){if(window.gameFlowState!=='playing'||!activeCharacterActions().weapons.includes(weapon)||movementAnimating()||characterMovementBlocked())return false;characterWeapon=weapon;characterActionState=null;characterIdleStarted=movementTime();refreshCharacter();window.GameEntry?.saveActive();return true},
- damage(amount){if(window.gameFlowState!=='playing'||!Number.isFinite(amount)||amount<=0||characterDead)return false;hp=Math.max(0,hp-Math.floor(amount));characterDead=hp===0;playCharacterAction(characterDead?'death':'hurt',{force:true,hold:characterDead});stats();window.GameEntry?.saveActive();return true},
+ damage(amount,{animate=true}={}){if(window.gameFlowState!=='playing'||!Number.isFinite(amount)||amount<=0||characterDead)return false;hp=Math.max(0,hp-Math.floor(amount));characterDead=hp===0;CombatSound.playerHit(characterDead);if(characterDead)window.TransformCards?.onDeath();if(animate||characterDead)playCharacterAction(characterDead?'death':'hurt',{force:true,hold:characterDead});stats();window.GameEntry?.saveActive();return true},
  revive(){if(window.gameFlowState!=='playing'||movementAnimating())return false;if(hp<=0)hp=maxHp;resetCharacterActions(characterWeapon);stats();window.GameEntry?.saveActive();return true},
  reset:resetCharacterActions,
  get weapon(){return activeCharacterWeapon()},get action(){return characterLastAction},get dead(){return characterDead},

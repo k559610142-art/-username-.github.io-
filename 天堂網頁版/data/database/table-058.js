@@ -1,0 +1,1 @@
+GameDatabase.register("eric_startcheckwartime",[{"name":"castle_id","type":"int(12)"},{"name":"name","type":"varchar(45)"},{"name":"isActive","type":"int(1)"}],[[2,"妖魔城",1],[3,"風木城",0],[1,"肯特城",0],[4,"奇岩城",0],[5,"海音城",0],[6,"侏儒城",0],[7,"亞丁城",0],[8,"狄亞得要塞",0]]);

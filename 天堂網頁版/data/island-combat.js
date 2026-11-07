@@ -1,15 +1,27 @@
 const IslandCombat=(()=>{
   let mode=null,target=null,pending=null,owner=null;
+  let autoScanRange=32;
+  try{const saved=Number(localStorage.getItem('lineage-auto-range'));if(saved>=12&&saved<=48)autoScanRange=saved;}catch{}
+  function setAutoRange(value){
+    autoScanRange=Math.max(12,Math.min(48,Math.round(value)));
+    try{localStorage.setItem('lineage-auto-range',String(autoScanRange));}catch{}
+  }
   const retryAfter=new WeakMap();
   const panelOpen=()=>!document.querySelector('#panel').hidden;
   const distance=(x,y)=>Math.max(Math.abs(worldX-x),Math.abs(worldY-y));
   const ranged=()=>['bow','singlebow'].includes(OwnedInventory.equippedWeaponType);
+  function attackRange(){
+    const weapon=OwnedInventory.items.find(e=>e.slot==='weapon')?.item;
+    if(!weapon)return 1;
+    const source=originalWeaponRanges[weapon.id];
+    return ranged()?(source>0?source:15):Math.max(1,source||1);
+  }
   function stop(){
     if(mode&&navigationPath.length)cancelNavigation();
     mode=null;target=null;
   }
   function begin(kind,mob){
-    if(window.gameFlowState!=='playing'||CharacterActions.dead)return false;
+    if(window.gameFlowState!=='playing'||CharacterActions.dead||!TransformCards.canAttack())return false;
     if(kind!=='auto'&&!mob?.hp)return false;
     if(owner!==window.activeCharacterId){owner=window.activeCharacterId;pending=null;}
     stop();mode=kind;target=mob||null;tick();return true;
@@ -23,11 +35,7 @@ const IslandCombat=(()=>{
       if(tile(x,y)&&!(tile(x,y)&128)&&clearShot(x,y,mob.x,mob.y))candidates.push([x,y]);
     }
     candidates.sort((a,b)=>distance(...a)-distance(...b));
-    for(const [x,y] of candidates.slice(0,16)){
-      if(distance(x,y)>18)continue;
-      if(navigateTo(x,y,true))return true;
-    }
-    return false;
+    return navigateToAny(candidates,Math.max(24,autoScanRange+range));
   }
   function clearShot(x,y,tx,ty){
     while(x!==tx||y!==ty){
@@ -38,9 +46,10 @@ const IslandCombat=(()=>{
     return true;
   }
   function hit(mob,interrupt=false){
-    const bow=ranged(),range=bow?6:1;
+    const bow=ranged(),range=attackRange();
+    if(!TransformCards.canAttack()){stop();return false;}
     if(!mob?.hp||distance(mob.x,mob.y)>range||!clearShot(worldX,worldY,mob.x,mob.y))return false;
-    if(bow&&!OwnedInventory.items.some(e=>e.key==='etcitem:40743'&&e.count)){
+    if(bow&&!OwnedInventory.items.some(e=>e.item.type==='arrow'&&e.count)){
       stop();toast('箭矢不足。');return false;
     }
     if(characterMovementBlocked()||!interrupt&&movementAnimating())return false;
@@ -53,7 +62,7 @@ const IslandCombat=(()=>{
     if(bow&&!OwnedInventory.consumeArrow()){stop();return false;}
     const profile=PlayerClassStats.read();
     const weaponMax=Math.max(1,profile.weapon?.damage[0]||2);
-    const damage=1+Math.floor(Math.random()*weaponMax)+(bow?profile.rangedBonus:profile.meleeBonus);
+    const damage=1+Math.floor(Math.random()*weaponMax)+(bow?profile.rangedBonus:profile.meleeBonus)+DBGameRules.weaponProc(mob);
     pending={mob,damage,at:movementTime()+characterActionState.duration*.4};
     window.TdjSystems?.onAttack();
     return true;
@@ -66,14 +75,15 @@ const IslandCombat=(()=>{
       IslandMonsters.damage(pending.mob,pending.damage);
       pending=null;
     }
+    if(mode&&!TransformCards.canAttack()){stop();return;}
     if(!mode||pending||panelOpen()||characterMovementBlocked())return;
     if(!target?.hp){
       if(mode!=='auto'){stop();return;}
-      target=IslandMonsters.nearest(14,mob=>!(retryAfter.get(mob)>movementTime()));
+      target=IslandMonsters.nearest(Math.max(autoScanRange,attackRange()),mob=>!(retryAfter.get(mob)>movementTime()));
       if(!target)return;
       IslandMonsters.setTarget(target);
     }
-    const range=ranged()?6:1;
+    const range=attackRange();
     if(distance(target.x,target.y)<=range&&clearShot(worldX,worldY,target.x,target.y)){
       hit(target,true);
       if(mode==='once')stop();
@@ -87,5 +97,5 @@ const IslandCombat=(()=>{
     if(CharacterActions.play('attack',{interruptMovement:true}))window.TdjSystems?.onAttack();
   }
   setInterval(tick,100);
-  return {begin,stop,attack,get mode(){return mode}};
+  return {begin,stop,attack,clearShot,setAutoRange,get autoRange(){return autoScanRange},get range(){return attackRange()},get mode(){return mode}};
 })();
