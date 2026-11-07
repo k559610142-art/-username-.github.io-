@@ -73,6 +73,11 @@ function atlasTravel(index) {
     if (!p || !player || !scene || walkHome || player.hp <= 0) return;
     const fi = atlasSelected === index && $('atlas-tower-floor'), picked = fi ? parseInt(fi.value, 10) : NaN;   // 先讀樓層：atlasSelect 會重畫說明區、輸入框回到預設
     atlasSelect(index);
+    atlasTravelTo(p, picked);
+}
+// 傳送到地點 p（{ kind, id }，不一定在 ATLAS_POINTS 裡）：確認費用 → 傳送。首領計時的「🌀 傳送」也走這裡（boss-timer.js，第 322 節）
+function atlasTravelTo(p, picked) {
+    if (!p || !player || walkHome || player.hp <= 0) return;
     const z = p.kind === 'zone' && ZONE_BY_ID[p.id], why = z && zoneBlockReason(z), fee = atlasTravelFee(p), tower = z && z.type === 'tower';
     const floor = tower ? clamp(picked || player.towerMax, 1, player.towerMax) : 0;
     if (player.loc.type === p.kind && player.loc.id === p.id && (!tower || player.loc.floor === floor)) { showToast(tower ? `已經在 ${floor}F` : '已經在這個地點'); return; }

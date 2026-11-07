@@ -8,8 +8,18 @@ function btClock(ms) {
     const s = Math.ceil(ms / 1000), h = Math.floor(s / 3600), m = Math.floor(s / 60) % 60, pad = n => String(n).padStart(2, '0');
     return h ? `${h}:${pad(m)}:${pad(s % 60)}` : `${pad(m)}:${pad(s % 60)}`;
 }
-function btRow(icon, name, sub, right) {
-    return `<div class="list-row"><div><b>${icon} ${esc(name)}</b><small>${sub}</small></div><span class="rank-val">${right}</span></div>`;
+function btRow(icon, name, sub, right, go = '') {
+    return `<div class="list-row"><div><b>${icon} ${esc(name)}</b><small>${sub}</small></div><span class="rank-val">${right}${go}</span></div>`;
+}
+// 快速傳送按鈕（2026-11-07 使用者要求，第 322 節）：走世界地圖傳送（atlasTravelTo：確認費用、龍穴限制照舊）
+function btGoBtn(zoneId, floor = 0) {
+    const z = ZONE_BY_ID[zoneId]; if (!z) return '';
+    const here = player.loc.type === 'zone' && player.loc.id === zoneId && (!floor || player.loc.floor === floor);
+    return ` <button class="mini bt-go" onclick="btTravel('${zoneId}',${floor | 0})" ${here ? 'disabled' : ''} title="傳送費 ${fmt(z.fee || 0)}">${here ? '所在地' : '🌀 傳送'}</button>`;
+}
+function btTravel(zoneId, floor) {
+    if (!ZONE_BY_ID[zoneId] || typeof atlasTravelTo !== 'function') return;
+    atlasTravelTo({ kind: 'zone', id: zoneId }, floor || 0);
 }
 function renderBossTimer() {
     bossCdSync();   // 最多 1 分鐘向伺服器讀一次
@@ -18,18 +28,18 @@ function renderBossTimer() {
         const m = MONSTERS[z.rare.id], t = bossFieldAt[z.id];
         const right = !server ? '<small class="muted">隨機出現</small>'
             : t === undefined ? '<small class="muted">進入地圖遇怪後開始計時</small>' : btLeftHtml(t, '下次遇怪出現', '首領出現倒數');
-        return btRow(m.icon || '👑', m.name, `${z.icon || ''} ${esc(z.name)}`, right);
+        return btRow(m.icon || '👑', m.name, `${z.icon || ''} ${esc(z.name)}`, right, btGoBtn(z.id));
     }).join('');
     const lairs = ZONES.filter(z => z.type === 'dragon' && MONSTERS[z.boss]).map(z => {
         const m = MONSTERS[z.boss], lock = player.lv < z.reqLv ? `需要 Lv.${z.reqLv}` : z.prev && !player.dragons[z.prev] ? `需先討伐${MONSTERS[z.prev].name}` : '';
-        return btRow(z.icon || '🐲', m.name, esc(z.name), lock ? `<small class="muted">${lock}</small>` : btLeftHtml(player.dragonCd[z.boss] || 0, '可挑戰'));
+        return btRow(z.icon || '🐲', m.name, esc(z.name), lock ? `<small class="muted">${lock}</small>` : btLeftHtml(player.dragonCd[z.boss] || 0, '可挑戰'), lock || (player.dragonCd[z.boss] || 0) > Date.now() ? '' : btGoBtn(z.id));
     }).join('');
     const raids = RAIDS.map(r => {
         const m = MONSTERS[r.boss] || {};
         return btRow('🐉', m.name || r.id, `團隊副本・Lv.${r.reqLv}・冷卻 ${r.cdH} 小時`, player.lv < r.reqLv ? `<small class="muted">需要 Lv.${r.reqLv}</small>` : btLeftHtml((player.raidCd && player.raidCd[r.id]) || 0, '可挑戰'));
     }).join('');
     let tower = '';
-    for (let f = 10; f <= 100; f += 10) if (player.towerCleared[f]) tower += btRow('🗼', `${f}F 守關首領`, '永夜之塔・打倒後 6 小時復活', btLeftHtml(player.towerBossCd[f] || 0, '已復活'));
+    for (let f = 10; f <= 100; f += 10) if (player.towerCleared[f]) tower += btRow('🗼', `${f}F 守關首領`, '永夜之塔・打倒後 6 小時復活', btLeftHtml(player.towerBossCd[f] || 0, '已復活'), btGoBtn('tower', f));
     return `<div class="panel"><h4>🌲 野外首領</h4>
             <small class="muted">${server ? '倒數是「首領還要多久出現」，不是打倒後的復活時間。每張地圖第一次遇怪時開始計時（60～90 分鐘隨機），倒數歸零後在那張地圖下一次遇怪就是首領，出現後重新倒數。' : '目前沒有連上後端掉寶，野外首領照舊隨機出現。'}</small>
             <div class="list">${field}</div></div>

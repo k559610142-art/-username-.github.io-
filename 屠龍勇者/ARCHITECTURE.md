@@ -4981,3 +4981,10 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 每跳：`advTick` 場地與召喚每個目標 `gemDotHit(f, m, d, st)`：物理類 × physMul（多重打擊＝(1+1)×倍率、殘忍）、gmAoe × 範圍倍率、火／冰／雷（storm）場地 × (1＋元素集中)、加上附加元素（`gemSpellExtra`，殘忍去掉）；之後 `gemDotAfter`：吸血、連鎖（只有單體類才彈跳，用該跳總傷害 × 倍率）。毒霧（poison）只吃耗魔／冷卻。
 - 耗魔降低、冷卻縮減本來就以技能 id 經 talentManaCost／skillCd 生效。暴擊強化、異常強化對持續傷害無效（場地不暴擊）。
 - 測試 `tools/test-gems.js` ⑫（炎獄＋附加火焰／元素集中、天雷＋範圍／連鎖、轟炸＋多重、惡魔召喚＋範圍、純增益不能選）。
+
+## 322. 首領計時加快速傳送鍵（2026-11-07，版本 `20261107l`；`boss-timer.js`、`world-atlas.js`）
+
+- 使用者要求首領計時每列旁邊加快速傳送。`btRow` 多一個 `go` 參數，`btGoBtn(zoneId, floor)` 產生「🌀 傳送」按鈕（已在該地圖／樓層顯示「所在地」並停用），onclick 呼叫頂層 `btTravel(zoneId, floor)`。
+- 有按鈕的：野外首領（每張地圖）、龍穴（未鎖定且冷卻結束才顯示，否則 zoneBlockReason 也會擋）、永夜之塔守關首領（直接到該層 10F／20F…）。團隊副本沒有按鈕（另有入場流程）。
+- `world-atlas.js`：`atlasTravel(index)` 拆出 `atlasTravelTo(p, picked)`（p＝{ kind, id }，不需要在 ATLAS_POINTS 裡），費用、確認視窗、異界地圖離開提示、角色／所在地變更防護、傳送後立刻掛機都和世界地圖傳送一樣。
+- 驗證：瀏覽器記憶體角色（不存檔）renderBossTimer 產生 14 個按鈕，btTravel 到迷霧古林扣 100 金幣、塔 10F 正確，Console 只有未登入 401。
