@@ -146,6 +146,54 @@ function gemChain(k, st, targets, dmg) {
     for (const m of others) { const d = Math.max(1, Math.round(dmg * gm.chain.mul)); m.hp -= d; addLog(`🔗 連鎖：${m.name}受到 ${d} 傷害`, 'magic'); }
 }
 
+// 會持續造成傷害的增益技能（二轉場地、召喚：炎獄降臨、天雷審判、轟炸支援、槍舞、精靈王降臨…，第 321 節）也能當技能寶石。
+// 施放時記下輔助寶石修正（advAfterBuff），每次跳傷害用 gemDotHit／gemDotAfter：
+//   多重打擊（物理場地 ×2×倍率＝多打一次）、殘忍（物理 ×、去元素）、範圍擴大（單體／隨機 → 全部，×倍率）、附加元素、元素集中（火／冰／雷場地）、吸血、連鎖（單體才彈跳）；
+//   耗魔降低、冷卻縮減照常由 talentManaCost／skillCd 生效；暴擊強化、異常強化對場地無效（場地不會暴擊）。
+function gemDotSkill(s) { const a = s && s.type === 'buff' && s.adv; return !!(a && (a.field || a.summon)); }
+function gemDotMods(skillId, p = player) {
+    const sup = gemSupportMap(p)[skillId];
+    if (!sup) return null;
+    const o = { physMul: 1, aoeMul: 1, aoe: false, add: { fire: 0, ice: 0, light: 0 }, elemInc: 0, leech: 0, chain: null, noElem: false };
+    for (const k in sup) {
+        const g = SUPPORT_GEMS[k]; if (!g) continue;
+        const x = g.mods(sup[k]);
+        if (k === 'multistrike') o.physMul *= (1 + x.hitsAdd) * x.dmgMul;
+        else if (k === 'aoeExpand') { o.aoe = true; o.aoeMul = x.dmgMul; }
+        if (x.physMul) o.physMul *= x.physMul;
+        if (x.noElem) o.noElem = true;
+        if (x.add) for (const e in x.add) o.add[e] += x.add[e];
+        if (x.elemInc) o.elemInc += x.elemInc;
+        if (x.leech) o.leech += x.leech;
+        if (x.chain) o.chain = x.chain;
+    }
+    return o;
+}
+// 施放時套到場地／召喚物件（f.aoe／f.rnd 依範圍擴大改寫）
+function gemDotApply(k, f) {
+    const gm = gemDotMods(k.id); if (!gm) return f;
+    f.gm = gm;
+    if (gm.aoe && !f.aoe && !f.poison) { f.aoe = true; f.rnd = false; f.gmAoe = true; }
+    return f;
+}
+function gemDotHit(f, m, d, st) {
+    const g = f.gm; if (!g || d <= 0) return d;
+    let x = d;
+    if (f.phys) x *= g.physMul;
+    if (f.gmAoe) x *= g.aoeMul;
+    if (g.elemInc && !g.noElem && ['fire', 'ice', 'storm', 'light'].includes(f.elem)) x *= 1 + g.elemInc;
+    const ex = gemSpellExtra(g, m, st);
+    return Math.max(1, Math.round(x + ex.fire + ex.ice + ex.light));
+}
+function gemDotAfter(f, tg, total, st) {
+    const g = f.gm; if (!g || total <= 0) return;
+    if (g.leech && player) player.hp = Math.min(st.maxHp, player.hp + Math.round(total * g.leech));
+    if (g.chain && !f.aoe && hunt && hunt.mobs) {
+        const others = hunt.mobs.filter(m => m.hp > 0 && !tg.includes(m)).slice(0, g.chain.n);
+        for (const m of others) { const d = Math.max(1, Math.round(total * g.chain.mul)); m.hp -= d; addLog(`🔗 連鎖：${m.name}受到 ${d} 傷害`, 'magic'); }
+    }
+}
+
 // ───────── 經驗 ─────────
 function gemExpNeed(L) { return 1500 * L * L; }   // 1→20 級合計約 370 萬（Lv.50 一般每小時打怪約 60 萬經驗 → 寶石 6 萬）
 function gemGainExp(exp) {
@@ -169,7 +217,7 @@ function gemGainExp(exp) {
 // ───────── 鑲嵌／拆下（onclick 只呼叫這些頂層函式）─────────
 function gemSkillChoices() {
     const out = [{ id: GEM_ATTACK_ID, name: '普通攻擊' }];
-    for (const s of learnedSkills()) if (s.type === 'strike' || s.type === 'spell') out.push({ id: s.id, name: s.name });
+    for (const s of learnedSkills()) if (s.type === 'strike' || s.type === 'spell' || gemDotSkill(s)) out.push({ id: s.id, name: s.name });
     return out;
 }
 function gemSkillName(sk) { if (sk === GEM_ATTACK_ID) return '普通攻擊'; const s = typeof SKILL_BY_ID !== 'undefined' && SKILL_BY_ID[sk]; return s ? s.name : sk; }

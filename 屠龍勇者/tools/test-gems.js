@@ -111,5 +111,33 @@ for (const [cls, build] of [['knight', ['multistrike', 'addFireG', 'leechG', 'cr
     console.log(cls, '6 連', build.join('+'), '3 分鐘擊殺', player.kills - k0, '有累積經驗的寶石', lv);
     assert(player.kills > k0 && lv === build.length);
 }
+// ⑫ 持續傷害的增益技能（二轉場地／召喚，第 321 節）：可選為技能寶石、輔助寶石生效
+{
+    const dotRun = (cls, br, slot, so, n = 3) => {
+        setup(cls); player.lv = 80; const b = ADV_BY_ID[br]; player.adv = { br, pick: '', at: 0, el: 'fire' }; const k = slot === 1 ? b.skill1 : b.skill2; player.skills.push(k.id);
+        const it = gear('leatherArmor', so.length + 1); it.so = [skG(k.id), ...so]; player.equip.armor = so.length ? it : null;
+        const ms = Array.from({ length: n }, () => mob()); hunt.mon = ms[0]; advResetRuntime(); player.cds = {};
+        advAfterBuff(k, calcStats());
+        for (let t = 0; t < 30; t++) { gameNow += 1000; advTick(1000, calcStats()); }
+        return { k, ms, dealt: ms.map(m => 100000 - m.hp) };
+    };
+    setup('mage'); player.lv = 80; player.adv = { br: 'mPyro', pick: '', at: 0, el: 'fire' }; player.skills.push(ADV_BY_ID.mPyro.skill2.id);
+    assert(gemSkillChoices().some(c => c.name === '炎獄降臨'), '炎獄降臨可以當技能寶石');
+    assert(!gemSkillChoices().some(c => c.name === '保護罩'), '純增益不能當技能寶石');
+    const sum = r => r.dealt.reduce((a, b) => a + b, 0);
+    Math.random = () => 0.5; chance = () => false;
+    const p0 = dotRun('mage', 'mPyro', 2, []), p1 = dotRun('mage', 'mPyro', 2, [sup('addFireG', 20), sup('elemFocus', 20)]);
+    assert(sum(p1) > sum(p0) * 1.2, '炎獄降臨：附加火焰＋元素集中（' + sum(p0) + ' → ' + sum(p1) + '）');
+    const s0 = dotRun('mage', 'mStorm', 2, []), s1 = dotRun('mage', 'mStorm', 2, [sup('aoeExpand', 10)]);
+    assert(s0.dealt.filter(Boolean).length >= 1 && s1.dealt.every(d => d > 0), '天雷審判＋範圍擴大：三隻都打到');
+    const c1 = dotRun('mage', 'mStorm', 2, [sup('chainG', 12)]);
+    assert(sum(c1) > sum(s0) * 1.5, '天雷審判＋連鎖：彈跳（' + sum(s0) + ' → ' + sum(c1) + '）');
+    const g0 = dotRun('gunner', ADV_BRANCHES.gunner.find(b => b.skill2.name === '轟炸支援').id, 2, []), g1 = dotRun('gunner', ADV_BRANCHES.gunner.find(b => b.skill2.name === '轟炸支援').id, 2, [sup('multistrike', 10)]);
+    assert(sum(g1) > sum(g0) * 1.2, '轟炸支援＋多重打擊（' + sum(g0) + ' → ' + sum(g1) + '）');
+    const e0 = dotRun('demon', ADV_BRANCHES.demon.find(b => b.skill2.name === '惡魔召喚').id, 2, []), e1 = dotRun('demon', ADV_BRANCHES.demon.find(b => b.skill2.name === '惡魔召喚').id, 2, [sup('aoeExpand', 10)]);
+    assert(e0.dealt.filter(Boolean).length === 1 && e1.dealt.every(d => d > 0), '惡魔召喚＋範圍擴大：打全部');
+    Math.random = RND; chance = CHANCE;
+    console.log('持續技能寶石：炎獄', sum(p0), '→', sum(p1), '｜天雷', sum(s0), '→ 範圍', sum(s1), '／連鎖', sum(c1), '｜轟炸', sum(g0), '→', sum(g1), '｜惡魔', sum(e0), '→', sum(e1));
+}
 console.log('PASS 寶石：孔數上限（雙手 6／單手 3／盔甲 6／其他 4／飾品 0）、掉落擲孔與 6 連機率、開孔石／連結石（要清空、傳奇可用）、串聯群組、輔助效果（多重打擊、範圍、附加火焰、連鎖、耗魔、冷卻、殘忍、吸血）、經驗 10% 與 20 級、鑲嵌拆下與金幣、簽章（舊道具不變）、說明、本機掉落、實際掛機。');
 `, ctx);

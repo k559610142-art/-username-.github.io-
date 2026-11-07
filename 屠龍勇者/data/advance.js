@@ -562,8 +562,9 @@ function advAfterBuff(k, st) {
         rt.shield = v; rt.shieldUntil = gameNow + k.sec * 1000; rt.shieldBoom = a.breakBoom || 0;
         addLog(`🛡️ ${k.name}：護盾 ${v}`, 'heal');
     }
-    if (a.summon) for (let i = 0; i < a.summon.n; i++) rt.summons.push({ ...a.summon, until: gameNow + k.sec * 1000, at: gameNow + 600 + i * 300, name: k.name });
-    if (a.field) rt.fields.push({ ...a.field, until: gameNow + k.sec * 1000 + 50, at: gameNow + 200, name: k.name });
+    const gx = f => typeof gemDotApply === 'function' ? gemDotApply(k, f) : f;   // 輔助寶石（gems.js，第 321 節）
+    if (a.summon) for (let i = 0; i < a.summon.n; i++) rt.summons.push(gx({ ...a.summon, until: gameNow + k.sec * 1000, at: gameNow + 600 + i * 300, name: k.name }));
+    if (a.field) rt.fields.push(gx({ ...a.field, until: gameNow + k.sec * 1000 + 50, at: gameNow + 200, name: k.name }));
     if (a.stealth) rt.ambush = true;
     if (a.store) { rt.stored = 0; rt.storeUntil = gameNow + k.sec * 1000; }
 }
@@ -702,9 +703,11 @@ function advTick(dt, st) {
         for (const m of tg) {
             if (!m || m.hp <= 0) continue;
             if (f.poison) { advAddPoison(m, st); if (f.hitDown) advSetDeb(m, 'hitDown', f.hitDown, 3); continue; }
-            const d = f.mag ? Math.round(advMagicBase(f.mag, st, m) * advMagicMult({ elem: f.elem }, m)) : Math.max(1, Math.round(advPhysBase(st, m) * f.phys * advPhysMult(st, m, { skill: { aoe: true } })));
+            let d = f.mag ? Math.round(advMagicBase(f.mag, st, m) * advMagicMult({ elem: f.elem }, m)) : Math.max(1, Math.round(advPhysBase(st, m) * f.phys * advPhysMult(st, m, { skill: { aoe: true } })));
+            if (f.gm) d = gemDotHit(f, m, d, st);
             m.hp -= d; total += d;
         }
+        if (f.gm) gemDotAfter(f, tg, total, st);
         if (total) { addLog(`${f.icon || '✨'} ${f.name}：造成 ${total} 傷害`, 'magic'); if (tg[0] && typeof worldVfxEmit === 'function') worldVfxEmit('impact-2', tg[0]); }
     }
     // 召喚物（王室近衛、精靈王、小惡魔）與元素精靈
@@ -721,7 +724,8 @@ function advTick(dt, st) {
         s.at = now + s.every;
         const tg = s.aoe ? mobs : [hunt.mon && hunt.mon.hp > 0 ? hunt.mon : mobs[0]];
         let total = 0;
-        for (const m of tg) { const d = s.mag ? Math.round(advMagicBase(s.mag, st, m)) : Math.max(1, Math.round(advPhysBase(st, m) * s.phys)); m.hp -= d; total += d; }
+        for (const m of tg) { let d = s.mag ? Math.round(advMagicBase(s.mag, st, m)) : Math.max(1, Math.round(advPhysBase(st, m) * s.phys)); if (s.gm) d = gemDotHit(s, m, d, st); m.hp -= d; total += d; }
+        if (s.gm) gemDotAfter(s, tg, total, st);
         addLog(`${s.icon} ${s.name}：${total} 傷害`, 'magic');
     }
 }
