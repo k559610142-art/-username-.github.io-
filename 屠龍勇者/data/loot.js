@@ -274,6 +274,7 @@ function lootSettleNow() { lootFlushWanted = true; lootPump(); }
 document.addEventListener('visibilitychange', () => { if (document.hidden) lootSettleNow(); });
 async function lootPump() {
     if (!lootActive() || !cloudLoggedIn() || cloudBan || lootBusy || !cloudCanCall()) return;
+    if (typeof vaultOpPending !== 'undefined' && vaultOpPending) return;   // 倉庫／交易所／天賦操作進行中先不結算，結束後補跑（第 326 節）
     lootBusy = true;
     const uid = cloudUser.id;
     try {

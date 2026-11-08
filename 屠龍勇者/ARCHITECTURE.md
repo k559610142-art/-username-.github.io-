@@ -5012,3 +5012,13 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 本機 PGlite 量測（`talent-system.template.sql` 的函式）：`talent_valid`／`talent_graph` 在 90～100 點、24 孔全插寶珠時都約 10～30 毫秒；完整 `test-talent-system-db.js` 約 4 秒全部通過。所以**慢的不是天賦計算**，較可能是共用的存檔寫入（`dragon_vault_commit` 觸發 dragon_saves 十幾個觸發器）、鎖等待（advisory lock 7713100／存檔列 `for update`），或資料庫當下忙碌。
 - 遊戲端：逾時錯誤改顯示中文「伺服器忙碌逾時，這次沒有扣天賦石、也沒有變更配點，請稍後再試」。
 - `tools/talent-timeout-diagnose.sql`：只讀診斷（pg_stat_statements 耗時、等鎖連線、資料表大小、逾時設定），請使用者在 Supabase 執行後回傳結果，再決定伺服器端怎麼修。
+
+## 326. 倉庫／交易所／天賦操作先等掉寶結算（2026-11-08，版本 `20261108e`；`vault.js` 的 `vaultOp`／`vaultOpRun`／`vaultOpPending`、`loot.js` 的 `lootPump`）
+
+- 第 325 節逾時的原因：`vaultOp` 開頭只「觸發」`lootSettleNow()` 不等它，接著馬上呼叫伺服器。`loot_finish_batch` 交易裡 `update dragon_loot_state`（鎖住該列直到結束，後面還要刪舊收據／工作），而 `talent_action`／倉庫等 RPC 寫存檔時 `dragon_loot_save_guard` 要 `select … for update` 同一列 → 排隊等到 statement timeout。自動掛機時結算一直在跑，所以天賦退點幾乎每次都逾時。
+- 修正（只改遊戲端）：
+  - `vaultOp` 先 `lootSettleNow()`，等 `lootBusy` 變回 false（最多 12 秒），再設 `vaultOpPending = true` 執行原本流程（改名 `vaultOpRun`）；結束後清旗標，若有待結算（`lootFlushWanted`）補跑 `lootPump`。
+  - `lootPump` 開頭：`vaultOpPending` 時不開始新的結算。
+- 影響範圍：所有用 `vaultOp` 的操作（共用倉庫存取、交易所上架／下架／購買、天賦配點／退點／寶珠）。
+- 驗證：瀏覽器模擬結算忙 1.5 秒 → RPC 在 1.68 秒才送出、送出期間 `lootPump` 不啟動、結束後旗標清除；`test-vault-v2-client`、`test-server-loot-client`、`test-loot-batch`、`test-talent-release`、`test-gems` 通過（`test-talent-live` 25≠21 改前就失敗）。
+- 若仍逾時，請使用者跑 `tools/talent-timeout-diagnose.sql`。
