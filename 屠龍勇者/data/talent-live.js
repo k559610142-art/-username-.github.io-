@@ -94,6 +94,26 @@ function talentReceiveProof(it,p) {
 
 function talentLivePlanState(p=player) { return talentRuntimeState(p); }
 
+// 正式配點送出前，用試玩同一套規則檢查（中間節點不能退、插著寶珠要先拆、天賦石不足…）；回傳 null 表示可以送
+function talentLivePrecheck(action,nodeId,p=player) {
+    const fn=action==='allocate'?talentPlanAllocate:action==='refund'?talentPlanRefund:action==='remove'?talentPlanRemove:null;
+    if(!fn||!p)return null;
+    const r=fn(talentRuntimeState(p),nodeId);   // talentRuntimeState 每次都是新物件，檢查不會改到角色
+    return r.ok?null:r.reason.replace(/試玩|測試/g,'');
+}
+
+// 伺服器錯誤翻成中文
+function talentLiveErrorText(e) {
+    const m=String(e&&e.message||e);
+    if(/talent cannot refund/.test(m))return '這個節點不能退：請先拆下孔裡的寶珠；若仍不行，請關閉星盤重新開啟同步資料。';
+    if(/前置斷線|talent prerequisite/.test(m))return '退掉會切斷後續節點（或缺少前置路徑），請先退回最末端的節點。';
+    if(/talent already allocated/.test(m))return '這個節點已點出，請關閉星盤重新開啟同步資料。';
+    if(/talent state conflict/.test(m))return '星盤資料與伺服器不同步，請關閉星盤重新開啟。';
+    if(/talent socket unavailable|talent wrong jewel/.test(m))return '這顆寶珠不能放進這個孔。';
+    if(/talent empty socket/.test(m))return '這個孔沒有寶珠。';
+    return m;
+}
+
 async function talentOpenCharacterPlanner() {
     if(!talentIsReleased()){showToast('天賦星盤尚未開放，請使用配點試玩');return;}
     if(SIM_MODE||!player||!vaultOnline()){showToast('正式天賦需要登入並同步雲端存檔');return;}
@@ -122,6 +142,8 @@ async function talentLiveAction(action,nodeId,jewelId) {
         inst=player.inv.find(it=>ITEMS[it.id]&&ITEMS[it.id].talentJewel===jewelId);
         if(!inst){showToast('背包沒有這顆寶珠');return;}
     }
+    const pre=talentLivePrecheck(action,nodeId);   // 先用本機規則檢查，伺服器拒絕時玩家才知道原因（第 324 節）
+    if(pre){talentPlanView.message=pre;showToast(pre);talentPlanRender();return;}
     talentLiveBusy=true;
     try {
         await vaultOp('talent_action',{p_char:lootChar(),p_op:crypto.randomUUID(),p_action:action,p_node:nodeId,p_uid:inst?inst.uid:null},r=>{
@@ -132,6 +154,6 @@ async function talentLiveAction(action,nodeId,jewelId) {
             player.talent=r.talent;clampHpMp();
         });
         if(player===who&&currentSlot===slot){talentPlanState=talentLivePlanState();talentPlanView.message='正式天賦已同步。';}
-    }catch(e){talentPlanView.message=String(e.message||e);showToast(talentPlanView.message);}
+    }catch(e){talentPlanView.message=talentLiveErrorText(e);showToast(talentPlanView.message);}
     finally {talentLiveBusy=false;if(player===who&&currentSlot===slot)talentPlanRender();else talentClosePlanner();}
 }

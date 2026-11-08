@@ -4996,3 +4996,12 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - `renderBag`：寶石以 `id＋等級＋是否鎖定` 為一組，列顯示「×N」，點開的是組內經驗最高的那顆。
 - `openSocketDialog`：輔助寶石下拉以 `id＋等級` 合併成一個選項「名稱 Lv.X ×N」，值是組內經驗最高那顆的 uid（鑲入那顆）。
 - 驗證：瀏覽器記憶體角色（不存檔）3 顆附加火焰 Lv.1 → ×3、Lv.5 單獨一列、兩顆連鎖 Lv.1（經驗 0／300）→ ×2 且指向經驗 300 那顆；Console 無錯誤。
+
+## 324. 命運星盤正式退點先在本機檢查（2026-11-08，版本 `20261108c`；`talent-live.js` 的 `talentLivePrecheck`、`talentLiveErrorText`）
+
+- 使用者回報「天賦點重置異常：有人不會扣石頭、也不會退點」。
+- 原因：正式模式的 `talentLiveAction` 直接呼叫伺服器 `talent_action`。伺服器的 `talent_valid` 不允許退「中間節點」（會切斷後續節點），插著寶珠的孔也不能退，整筆交易回滾，所以石頭沒扣、點也沒退。錯誤訊息只有英文 `talent cannot refund` 或籠統的「天賦點不足、前置斷線…」，玩家看不懂。試玩模式有用 `talentPlanRefund` 先檢查，正式模式沒有。
+- 修正（只改遊戲端，伺服器 SQL 不變）：
+  - `talentLivePrecheck(action, nodeId)`：配置／退點／拆珠送出前，先用試玩同一套規則（`talentPlanAllocate`／`talentPlanRefund`／`talentPlanRemove`）跑在 `talentRuntimeState(player)` 的新物件上，不合法就直接顯示中文原因（去掉「試玩／測試」字樣），不呼叫伺服器。
+  - `talentLiveErrorText(e)`：伺服器的英文錯誤翻成中文（不能退、前置斷線、已點出、資料不同步、寶珠不符、空孔）。
+- 驗證：瀏覽器記憶體角色＋模擬伺服器：配 2 點後退中間節點 → 提示「退掉會切斷後續節點，請先退回末端節點」、未呼叫伺服器、石頭 5 不變；退末端 → 石頭 5→4、節點移除；沒有石頭 → 提示「天賦石不足」。
