@@ -28,9 +28,9 @@ function cameraPosition(){const p=visualWorldPosition();return project(p.x,p.y)}
 let renderedSceneView=null;
 function sceneViewAt(w,h,now=movementTime()){const layout=viewportLayout(w,h),scale=layout.defaultZoom,p=visualWorldPosition(now),[px,py]=project(p.x,p.y);return {width:w,height:h,anchorY:layout.anchorY,zoom:scale,px,py,ox:w/2-px*scale,oy:h*layout.anchorY-py*scale}}
 function getRenderedSceneView(){const r=game.getBoundingClientRect();return renderedSceneView&&renderedSceneView.width===r.width&&renderedSceneView.height===r.height?renderedSceneView:sceneViewAt(r.width,r.height)}
-function project(wx,wy){const x=wx-island.startX,y=wy-island.startY;return [(x+y)*24,(y-x+island.width)*12]}
-function unproject(px,py){const a=px/24,b=py/12-island.width;return [island.startX+(a-b)/2,island.startY+(a+b)/2]}
-function canTraverse(fromX,fromY,dx,dy){const a=tile(fromX,fromY),b=tile(fromX+dx,fromY+dy);if(!b||(b&128))return false;if(dx===1&&dy===0)return !!(a&1);if(dx===-1&&dy===0)return !!(b&1);if(dx===0&&dy===-1)return !!(a&2);if(dx===0&&dy===1)return !!(b&2);if(dx===1&&dy===-1)return !!((tile(fromX,fromY-1)&1)||(tile(fromX+1,fromY)&2));if(dx===1&&dy===1)return !!(tile(fromX,fromY+1)&1);if(dx===-1&&dy===1)return !!(b&3);if(dx===-1&&dy===-1)return !!(tile(fromX-1,fromY)&2);return false}
+function project(wx,wy){const x=wx-island.startX,y=wy-island.startY;return [(x+y)*24+(island.id===4?24:0),(y-x+island.width)*12]}
+function unproject(px,py){const a=(px-(island.id===4?24:0))/24,b=py/12-island.width;return [island.startX+(a-b)/2,island.startY+(a+b)/2]}
+function canTraverse(fromX,fromY,dx,dy){const native=window.MainlandPassability?.canTraverse(fromX,fromY,dx,dy);if(native!==null&&native!==undefined)return native;const a=tile(fromX,fromY),b=tile(fromX+dx,fromY+dy);if(!b||(b&128))return false;if(dx===1&&dy===0)return !!(a&1);if(dx===-1&&dy===0)return !!(b&1);if(dx===0&&dy===-1)return !!(a&2);if(dx===0&&dy===1)return !!(b&2);if(dx===1&&dy===-1)return !!((tile(fromX,fromY-1)&1)||(tile(fromX+1,fromY)&2));if(dx===1&&dy===1)return !!(tile(fromX,fromY+1)&1);if(dx===-1&&dy===1)return !!(b&3);if(dx===-1&&dy===-1)return !!(tile(fromX-1,fromY)&2);return false}
 function canStep(dx,dy){return canTraverse(worldX,worldY,dx,dy)}
 function paintTerrainImage(img,left,top,width,height,view,pen=ctx){
   const scaleX=width/img.naturalWidth,scaleY=height/img.naturalHeight;

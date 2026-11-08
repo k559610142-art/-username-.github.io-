@@ -63,17 +63,14 @@ const IslandNpcAi = (() => {
       IslandMonsters.playEffect(skill.gfx || skill.spell?.gfx, worldX, worldY, now, {heading:mob.heading});
       IslandMonsters.playEffect(skill.spell?.gfx2, worldX, worldY, now);
     }
-    const [base, sides, dice] = skill?.spell?.damage || [0, 0, 0];
-    let damage = base;
-    for (let i = 0; i < dice && sides; i++) damage += 1 + Math.floor(Math.random() * sides);
     if (skill?.id === 33 || skill?.id === 29) {
       const until = now + skill.spell.duration * 1000;
       if (skill.id === 33) cursedUntil = Math.max(cursedUntil, until);
       else slowedUntil = Math.max(slowedUntil, until);
       return;
     }
-    if (!damage) damage = Math.max(1, Math.floor((npc.str + npc.level) / 10));
-    CharacterActions.damage(Math.max(1, Math.floor(damage * (skill?.leverage || 10) / 10)-(skill?.type===2?0:DBGameRules.reduction())), {
+    const result=NativeCombatRules.resolve(mob,skill);if(!result.hit||result.damage<=0)return;
+    CharacterActions.damage(result.damage, {
       animate: !movementAnimating() && !navigationPath.length && !characterMovementBlocked()
     });
   }

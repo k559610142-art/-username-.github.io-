@@ -24,7 +24,8 @@ const NativePotions=(()=>{
   }
   function isHealing(key){
     if(parse(key)?.handler.startsWith('hp.UserAddHp'))return true;
-    return !!window.DBGameRules?.rows('system_etcitem_hpmp').some(row=>row['物品編號']===Number(key.split(':')[1])&&row['補血量固定值']>0);
+    const rule=ITEM_USE_RULES.definitions[key];if(ITEM_USE_RULES.handlers[rule?.handler]?.kind==='hpGaussian')return true;
+    return !!window.DBGameRules?.rows('system_etcitem_hpmp').some(row=>row['物品編號']===Number(key.split(':')[1])&&(row['補血量固定值']>0||row['補血量隨機值']>0));
   }
   function take(rows,key,count){
     for(const row of rows){

@@ -21,10 +21,13 @@ const PlayerGrowth = (() => {
   }
   function fromCharacter(character,base,target){
     const saved=character.vitalGrowth;
-    const valid=saved&&Number.isInteger(saved.level)&&saved.level>=1&&saved.level<=target&&
-      Number.isInteger(saved.maxHp)&&saved.maxHp>=base.hp&&
-      Number.isInteger(saved.maxMp)&&saved.maxMp>=base.mp;
-    const initial=valid?saved:{level:1,maxHp:base.hp,maxMp:base.mp};
+    const valid=saved&&Number.isInteger(saved.level)&&saved.level>=1&&saved.level<=target&&Number.isInteger(saved.maxHp)&&Number.isInteger(saved.maxMp);
+    let initial=valid?{...saved}:{level:1,maxHp:base.hp,maxMp:base.mp};delete initial.repairedHp;delete initial.repairedMp;
+    if(valid){const config=playerGrowthData[character.role],levels=saved.level-1,[lo,hi]=config.mp[Math.max(0,Math.min(45,character.stats.wis||0))],gain=Math.max(0,(character.stats.con||0)-15)+config.hpBase;
+      const expected=grow({level:1,maxHp:base.hp,maxMp:base.mp},character.role,character.stats,character.id,saved.level);
+      if(saved.maxMp<Math.min(config.mpCap,base.mp+lo*levels)||saved.maxMp>Math.min(config.mpCap,base.mp+hi*levels)){initial.maxMp=expected.maxMp;initial.repairedMp=true;}
+      if(saved.maxHp<Math.min(config.hpCap,base.hp+gain*levels)||saved.maxHp>Math.min(config.hpCap,base.hp+(gain+1)*levels)){initial.maxHp=expected.maxHp;initial.repairedHp=true;}
+    }
     return grow(initial,character.role,character.stats,character.id,target);
   }
   function advance(target){
