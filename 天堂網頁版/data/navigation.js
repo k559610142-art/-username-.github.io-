@@ -36,7 +36,15 @@ function reverseWalkingEdge(targetX,targetY,now=movementTime()){
  onCharacterStep(-dx,-dy);characterWalkDuration=MovementConfig.stepMs;characterWalkUntil=now+duration;
  return route;
 }
-function navigateTo(x,y,quiet=false){if(window.gameFlowState!=='playing'||typeof characterDead!=='undefined'&&characterDead)return false;if(navigationTarget&&navigationTarget[0]===x&&navigationTarget[1]===y&&navigationPath.length)return true;const route=findWalkingPath(worldX,worldY,x,y);if(!route){if(!quiet)toast('這個位置沒有可通行的路徑');return false}const reversed=reverseWalkingEdge(x,y);cancelNavigation();if(reversed){navigationPath=reversed;navigationTarget=reversed.length?[x,y]:null;paintNavigationTarget();schedule();return true;}if(!route.length)return true;navigationPath=route;navigationTarget=[x,y];advanceNavigation();paintNavigationTarget();if(navigationPath.length)schedule();return true}
+// A click on a wall edge should still approach the nearest reachable ground.
+function resolveWalkingClick(x,y){
+ const direct=findWalkingPath(worldX,worldY,x,y);if(direct)return {x,y,route:direct};if(window.activeMapId!==4)return null;
+ const [px,py]=project(x,y);for(let radius=1;radius<=3;radius++){
+  const candidates=[];for(let dy=-radius;dy<=radius;dy++)for(let dx=-radius;dx<=radius;dx++){if(Math.max(Math.abs(dx),Math.abs(dy))!==radius)continue;const tx=x+dx,ty=y+dy;if(!tile(tx,ty)||(tile(tx,ty)&128)||window.NavigationConnectivity&&!NavigationConnectivity.canReach(worldX,worldY,tx,ty))continue;const q=project(tx,ty);candidates.push({x:tx,y:ty,score:Math.hypot(q[0]-px,q[1]-py),distance:Math.max(Math.abs(tx-worldX),Math.abs(ty-worldY))});}
+  candidates.sort((a,b)=>a.score-b.score||a.distance-b.distance);for(const p of candidates){const route=findWalkingPath(worldX,worldY,p.x,p.y);if(route)return {...p,route};}
+ }return null;
+}
+function navigateTo(x,y,quiet=false){if(window.gameFlowState!=='playing'||typeof characterDead!=='undefined'&&characterDead)return false;if(navigationTarget&&navigationTarget[0]===x&&navigationTarget[1]===y&&navigationPath.length)return true;const target=resolveWalkingClick(x,y);if(!target){if(!quiet)toast('這個位置沒有可通行的路徑');return false}x=target.x;y=target.y;const route=target.route;const reversed=reverseWalkingEdge(x,y);cancelNavigation();if(reversed){navigationPath=reversed;navigationTarget=reversed.length?[x,y]:null;paintNavigationTarget();schedule();return true;}if(!route.length)return true;navigationPath=route;navigationTarget=[x,y];advanceNavigation();paintNavigationTarget();if(navigationPath.length)schedule();return true}
 function screenToWorld(point){const view=getRenderedSceneView();return unproject((point.x-view.ox)/view.zoom,(point.y-view.oy)/view.zoom).map(Math.round)}
 const navigationMarker=document.createElement('div');navigationMarker.setAttribute('aria-hidden','true');navigationMarker.className='navigation-target';navigationMarker.hidden=true;game.append(navigationMarker);
 const navigationStyle=document.createElement('style');navigationStyle.textContent='.navigation-target{position:absolute;width:30px;height:16px;border:2px solid #f0d086;border-radius:50%;box-shadow:0 0 10px #ffe2a1aa;transform:translate(-50%,-50%);pointer-events:none;z-index:1}#terrain{cursor:default}';document.head.append(navigationStyle);

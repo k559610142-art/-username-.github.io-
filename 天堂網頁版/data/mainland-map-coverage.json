@@ -1,0 +1,10 @@
+{
+  "mapId": 4,
+  "nativeChunks": 599,
+  "interiorVariants": 408,
+  "indoorCells": 14129,
+  "objectImages": 11592,
+  "source": "Native client SEG/S32 Layer5, Tile.idx and Tile.pak",
+  "passability": "Existing full scene-matched navigation retained",
+  "scope": "Aden mainland Map 4; no separate dungeon maps"
+}
