@@ -1,30 +1,47 @@
 // 點地尋路：使用原始地圖的八方向通行規則，不直接改寫到目的地。
 let navigationPath=[],navigationTarget=null;
 const navigationDirections=[[1,-1],[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1],[0,-1]];
+let walkingSearch=null;
 function findWalkingPath(startX,startY,targetX,targetY){
-  const ox=island.startX,oy=island.startY,w=island.width,h=island.height;
-  if(!Number.isInteger(targetX)||!Number.isInteger(targetY)||!tile(targetX,targetY))return null;
-  const start=(startY-oy)*w+startX-ox,goal=(targetY-oy)*w+targetX-ox;
-  if(start===goal)return [];
-  const previous=new Int32Array(w*h);previous.fill(-1);previous[start]=start;
-  const queue=new Int32Array(w*h);let head=0,tail=0;queue[tail++]=start;
-  while(head<tail){const cell=queue[head++],x=cell%w+ox,y=Math.floor(cell/w)+oy;
-    for(const [dx,dy] of navigationDirections){const nx=x+dx,ny=y+dy;if(nx<ox||ny<oy||nx>=ox+w||ny>=oy+h)continue;const next=(ny-oy)*w+nx-ox;if(previous[next]!==-1||!canTraverse(x,y,dx,dy))continue;previous[next]=cell;
-      if(next===goal){const route=[];for(let c=goal;c!==start;c=previous[c])route.push([c%w+ox,Math.floor(c/w)+oy]);return route.reverse()}
-      queue[tail++]=next;
-    }
-  }
-  return null;
+ const ox=island.startX,oy=island.startY,w=island.width,h=island.height,cell=tile(targetX,targetY);
+ if(!Number.isInteger(targetX)||!Number.isInteger(targetY)||!cell||(cell&128))return null;
+ if(startX===targetX&&startY===targetY)return [];
+ const straight=[];let sx=startX,sy=startY;
+ while(sx!==targetX||sy!==targetY){const dx=Math.sign(targetX-sx),dy=Math.sign(targetY-sy);if(!canTraverse(sx,sy,dx,dy))break;sx+=dx;sy+=dy;straight.push([sx,sy]);}
+ if(sx===targetX&&sy===targetY)return straight;
+ if(!walkingSearch||walkingSearch.size!==w*h)walkingSearch={size:w*h,stamp:0,marks:new Uint32Array(w*h),closed:new Uint32Array(w*h),cost:new Int32Array(w*h),previous:new Int32Array(w*h),heap:new Int32Array(w*h),position:new Int32Array(w*h),heuristic:new Int32Array(w*h)};
+ const data=walkingSearch;if(++data.stamp>=4294967295){data.marks.fill(0);data.closed.fill(0);data.stamp=1;}const stamp=data.stamp;
+ const start=(startY-oy)*w+startX-ox,goal=(targetY-oy)*w+targetX-ox,heap=data.heap;let count=0;
+ const less=(a,b)=>data.cost[a]+data.heuristic[a]<data.cost[b]+data.heuristic[b]||data.cost[a]+data.heuristic[a]===data.cost[b]+data.heuristic[b]&&data.heuristic[a]<data.heuristic[b];
+ function push(id){let i=data.position[id];if(i<0)i=count++;while(i){const parent=(i-1)>>1;if(!less(id,heap[parent]))break;heap[i]=heap[parent];data.position[heap[i]]=i;i=parent;}heap[i]=id;data.position[id]=i;}
+ function pop(){const first=heap[0],last=heap[--count];data.position[first]=-1;if(count){let i=0;while(i*2+1<count){let child=i*2+1;if(child+1<count&&less(heap[child+1],heap[child]))child++;if(!less(heap[child],last))break;heap[i]=heap[child];data.position[heap[i]]=i;i=child;}heap[i]=last;data.position[last]=i;}return first;}
+ data.marks[start]=stamp;data.cost[start]=0;data.previous[start]=start;const heuristic=(x,y)=>Math.max(Math.abs(targetX-x),Math.abs(targetY-y));const initial=heuristic(startX,startY);data.heuristic[start]=initial;data.position[start]=-1;push(start);
+ while(count){const id=pop();if(data.closed[id]===stamp)continue;if(id===goal){const route=[];for(let p=goal;p!==start;p=data.previous[p])route.push([p%w+ox,Math.floor(p/w)+oy]);return route.reverse();}data.closed[id]=stamp;const x=id%w+ox,y=Math.floor(id/w)+oy;
+  for(const [dx,dy]of navigationDirections){const nx=x+dx,ny=y+dy;if(nx<ox||ny<oy||nx>=ox+w||ny>=oy+h||!canTraverse(x,y,dx,dy))continue;const next=(ny-oy)*w+nx-ox,cost=data.cost[id]+1;if(data.closed[next]===stamp||data.marks[next]===stamp&&data.cost[next]<=cost)continue;if(data.marks[next]!==stamp){data.position[next]=-1;data.heuristic[next]=heuristic(nx,ny);}data.marks[next]=stamp;data.cost[next]=cost;data.previous[next]=id;push(next);}
+ }
+ return null;
 }
 function cancelNavigation(){navigationPath=[];navigationTarget=null;paintNavigationTarget()}
-function advanceNavigation(now=movementTime(),continuous=false){if(!movementReady(now)||(typeof characterMovementBlocked==='function'&&characterMovementBlocked()))return;const due=lastMovementAt+lastMovementDuration;const started=continuous&&now-due<=32?due:now;const next=navigationPath.shift();if(!next){cancelNavigation();return}if(!stepWorld(next[0]-worldX,next[1]-worldY,now,started)){cancelNavigation();toast('前方無法通行，請重新選擇位置');return}if(!navigationPath.length)cancelNavigation()}
-function navigateTo(x,y,quiet=false){if(window.gameFlowState!=='playing'||typeof characterDead!=='undefined'&&characterDead)return false;if(navigationTarget&&navigationTarget[0]===x&&navigationTarget[1]===y&&navigationPath.length)return true;const route=findWalkingPath(worldX,worldY,x,y);if(!route){if(!quiet)toast('這個位置沒有可通行的路徑');return false}cancelNavigation();if(!route.length)return true;navigationPath=route;navigationTarget=[x,y];advanceNavigation();paintNavigationTarget();if(navigationPath.length)schedule();return true}
+function advanceNavigation(now=movementTime(),continuous=false){if(!movementReady(now)||(typeof characterMovementBlocked==='function'&&characterMovementBlocked()))return;const due=lastMovementAt+lastMovementDuration;const started=continuous&&now-due<=Math.min(100,lastMovementDuration*.25)?due:now;const next=navigationPath.shift();if(!next){cancelNavigation();return}if(!stepWorld(next[0]-worldX,next[1]-worldY,now,started)){cancelNavigation();toast('前方無法通行，請重新選擇位置');return}if(!navigationPath.length)cancelNavigation()}
+// Reverse an in-flight edge from the current visual position, retaining native speed.
+function reverseWalkingEdge(targetX,targetY,now=movementTime()){
+ if(!movementAnimating(now)||characterMovementBlocked())return null;
+ const old=movementTween,p=visualWorldPosition(now),dx=old.toX-old.fromTileX,dy=old.toY-old.fromTileY;
+ if(!dx&&!dy||(targetX-p.x)*dx+(targetY-p.y)*dy>=-.001||!canTraverse(old.toX,old.toY,-dx,-dy))return null;
+ const route=findWalkingPath(old.fromTileX,old.fromTileY,targetX,targetY);if(!route)return null;
+ const length=Math.hypot(dx,dy),distance=Math.hypot(p.x-old.fromTileX,p.y-old.fromTileY),duration=Math.max(1,MovementConfig.stepMs*distance/length);
+ const x=old.fromTileX,y=old.fromTileY;worldX=x;worldY=y;
+ movementTween={fromX:p.x,fromY:p.y,fromTileX:old.toX,fromTileY:old.toY,toX:x,toY:y,started:now,duration};markMovementStep(now,duration);
+ onCharacterStep(-dx,-dy);characterWalkDuration=MovementConfig.stepMs;characterWalkUntil=now+duration;
+ return route;
+}
+function navigateTo(x,y,quiet=false){if(window.gameFlowState!=='playing'||typeof characterDead!=='undefined'&&characterDead)return false;if(navigationTarget&&navigationTarget[0]===x&&navigationTarget[1]===y&&navigationPath.length)return true;const route=findWalkingPath(worldX,worldY,x,y);if(!route){if(!quiet)toast('這個位置沒有可通行的路徑');return false}const reversed=reverseWalkingEdge(x,y);cancelNavigation();if(reversed){navigationPath=reversed;navigationTarget=reversed.length?[x,y]:null;paintNavigationTarget();schedule();return true;}if(!route.length)return true;navigationPath=route;navigationTarget=[x,y];advanceNavigation();paintNavigationTarget();if(navigationPath.length)schedule();return true}
 function screenToWorld(point){const view=getRenderedSceneView();return unproject((point.x-view.ox)/view.zoom,(point.y-view.oy)/view.zoom).map(Math.round)}
 const navigationMarker=document.createElement('div');navigationMarker.setAttribute('aria-hidden','true');navigationMarker.className='navigation-target';navigationMarker.hidden=true;game.append(navigationMarker);
 const navigationStyle=document.createElement('style');navigationStyle.textContent='.navigation-target{position:absolute;width:30px;height:16px;border:2px solid #f0d086;border-radius:50%;box-shadow:0 0 10px #ffe2a1aa;transform:translate(-50%,-50%);pointer-events:none;z-index:1}#terrain{cursor:default}';document.head.append(navigationStyle);
 function paintNavigationTarget(){navigationMarker.hidden=!navigationTarget;if(!navigationTarget)return;const view=getRenderedSceneView(),[tx,ty]=project(...navigationTarget);navigationMarker.style.left=(view.ox+tx*view.zoom)+'px';navigationMarker.style.top=(view.oy+ty*view.zoom)+'px'}
 const navigationDraw=draw;draw=function(frameTime){navigationDraw(frameTime);paintNavigationTarget()};
-addEventListener('blur',cancelNavigation);addEventListener('pagehide',cancelNavigation);document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelNavigation()});
+const pauseManualNavigation=()=>{if(window.IslandCombat?.mode!=='auto')cancelNavigation()};addEventListener('blur',pauseManualNavigation);addEventListener('pagehide',cancelNavigation);document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseManualNavigation()});
 
 function navigateToAny(targets,radius){
   if(window.gameFlowState!=='playing'||!targets.length)return false;

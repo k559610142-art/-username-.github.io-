@@ -17,15 +17,17 @@ window.OwnedInventory=(()=>{
  }
  function visualMode(rows){const weapon=rows.find(e=>e.slot==='weapon'),item=weapon&&definition(weapon),modes=CharacterActions.available.weapons;if(!item)return 'unarmed';if(modes.includes(item.mode))return item.mode;if(/staff/.test(item.type)&&modes.includes('blunt'))return 'blunt';return 'unarmed'}
  function sync(){window.DBGameRules?.syncVitals();potions=entries.filter(e=>window.NativePotions?.isHealing(e.key)||rules.handlers[config(e).handler]?.kind==='hpGaussian').reduce((n,e)=>n+e.count,0);stats();if(typeof updateReferenceHud==='function')updateReferenceHud()}
- function refresh(){sync();if(document.querySelector('#panel.classic-panel:not([hidden])')&&typeof classicTab!=='undefined'&&['bag','equipment','status'].includes(classicTab))panel(classicTab)}
+ function refresh(){sync();if(window.FloatingWindows){FloatingWindows.refreshInventory();return;}if(document.querySelector('#panel.classic-panel:not([hidden])')&&typeof classicTab!=='undefined'&&['bag','equipment','status'].includes(classicTab))panel(classicTab)}
  function transact(next,effect={}){
-  if(window.gameFlowState!=='playing'||!owner||owner!==window.activeCharacterId)return false;const error=validate(next,job,level());if(error){toast(error);return false}
-  const old=entries,oldStorage=warehouse,oldSkills=skillState,oldBuffs=window.activePotionBuffs,oldHp=hp,oldMp=mp,oldMode=CharacterActions.weapon;entries=clone(next);warehouse=effect.warehouse??warehouse;skillState=effect.skills??skillState;window.activePotionBuffs=effect.potionBuffs??window.activePotionBuffs;hp=effect.hp??hp;mp=effect.mp??mp;
+  if(window.gameFlowState!=='playing'||!owner||owner!==window.activeCharacterId)return false;const autoResult=window.AutoSell?.processRows(next);if(autoResult?.error){toast(autoResult.error);return false;}if(autoResult)next=autoResult.rows;const error=validate(next,job,level());if(error){toast(error);return false}
+  const old=entries,oldStorage=warehouse,oldSkills=skillState,oldBuffs=window.activePotionBuffs,oldX=worldX,oldY=worldY,oldHp=hp,oldMp=mp,oldMode=CharacterActions.weapon;entries=clone(next);warehouse=effect.warehouse??warehouse;skillState=effect.skills??skillState;window.activePotionBuffs=effect.potionBuffs??window.activePotionBuffs;hp=effect.hp??hp;mp=effect.mp??mp;
+  if(effect.position){worldX=effect.position.x;worldY=effect.position.y;}
   const mode=visualMode(entries);if(mode!==oldMode||CharacterActions.dead!==(hp<=0))CharacterActions.reset(mode);
-  if(!window.GameEntry?.saveActive()){entries=old;warehouse=oldStorage;skillState=oldSkills;window.activePotionBuffs=oldBuffs;hp=oldHp;mp=oldMp;if(CharacterActions.weapon!==oldMode||CharacterActions.dead!==(oldHp<=0))CharacterActions.reset(oldMode);sync();toast('儲存失敗，物品與狀態未變更。');return false}
+  if(!window.GameEntry?.saveActive()){entries=old;warehouse=oldStorage;skillState=oldSkills;window.activePotionBuffs=oldBuffs;hp=oldHp;mp=oldMp;worldX=oldX;worldY=oldY;if(CharacterActions.weapon!==oldMode||CharacterActions.dead!==(oldHp<=0))CharacterActions.reset(oldMode);sync();toast('儲存失敗，物品與狀態未變更。');return false}
   refresh();return true;
  }
  function reward(gain,loot){
+  const autoLoot=window.AutoSell?.prepareLoot(loot);if(autoLoot?.error)return false;if(autoLoot)loot=autoLoot.rows;
   let next=clone(entries);
   for(const drop of loot){
    const candidate=clone(next);
@@ -99,10 +101,11 @@ window.OwnedInventory=(()=>{
   return transact(next,{warehouse:storage})?'':'存檔失敗，物品未移動。';
  }
  function trade(key,count,price,sell){
+  if(!Number.isSafeInteger(count)||count<1||count>2147483647||!Number.isSafeInteger(price)||price<0||price>2147483647)return '交易數量或價格有誤。';
   const next=clone(entries);
   if(sell){
-   const row=next.find(e=>e.key===key&&!e.slot&&e.count>=count);
-   if(!row||!deduct(next,row.uid,count))return '背包沒有可出售的物品。';
+   let remaining=count;for(const row of next.filter(e=>e.key===key&&!e.slot)){const taken=Math.min(row.count,remaining);if(taken)deduct(next,row.uid,taken);remaining-=taken;if(!remaining)break;}
+   if(remaining)return '背包沒有可出售的物品。';
    if(price&&!addItems(next,money,price))return '背包無法收取天幣。';
   }else{
    if(!pay(next,price))return '天幣不足。';
@@ -137,6 +140,7 @@ window.OwnedInventory=(()=>{
  function use(uid){
   if(window.gameFlowState!=='playing'||owner!==window.activeCharacterId)return false;const e=entries.find(i=>i.uid===uid);if(!e){toast('背包中沒有這個物品。');return false}if(CharacterActions.dead){toast('倒地時無法使用物品。');return false}
   if(window.PlayerSkills?.isBook(e.key))return PlayerSkills.learn(uid);
+  const scrollUse=window.TeleportScrolls?.use(uid);if(scrollUse!==undefined&&scrollUse!==null)return scrollUse;
   const potionUse=window.NativePotions?.use(uid);if(potionUse!==undefined&&potionUse!==null)return potionUse;
   const nativeUse=window.DBGameRules?.useItem(uid);if(nativeUse!==undefined&&nativeUse!==null)return nativeUse;
   const item=definition(e),r=config(e);if(item.kind!=='etcitem')return equip(uid);if(level()<r.minLevel||r.maxLevel&&level()>r.maxLevel){toast('等級不符合道具限制。');return false}
@@ -148,7 +152,18 @@ window.OwnedInventory=(()=>{
   const next=clone(entries);const used=next.find(i=>i.uid===uid);used.count--;if(used.count===0)next.splice(next.indexOf(used),1);
   if(!transact(next,{hp:nextHp,mp:nextMp}))return false;if(r.delayId&&r.delayMs)cooldowns.set(r.delayId,now+r.delayMs);if(window.playerItemState)window.playerItemState.absoluteBarrier=false;toast('使用 '+item.name);return true;
  }
+
+ function canDiscard(uid){const e=entries.find(e=>e.uid===uid);return !!e&&!e.slot&&!definition(e).sourceRules?.cant_delete;}
+ function discard(uids){
+  if(!Array.isArray(uids)||!uids.length||new Set(uids).size!==uids.length||uids.some(uid=>typeof uid!=='string'||!canDiscard(uid)))return false;
+  const selected=new Set(uids);return transact(entries.filter(e=>!selected.has(e.uid)));
+ }
+ function sortInventory(){
+  const rank={weapon:0,armor:1,etcitem:2},collator=new Intl.Collator('zh-Hant',{numeric:true});
+  const sorted=clone(entries).sort((a,b)=>(rank[definition(a).kind]??3)-(rank[definition(b).kind]??3)||collator.compare(definition(a).name,definition(b).name)||collator.compare(a.uid,b.uid));
+  return transact(sorted);
+ }
  function usePotion(){const e=entries.find(i=>i.key==='etcitem:40010')||entries.find(i=>window.NativePotions?.isHealing(i.key)||rules.handlers[config(i).handler]?.kind==='hpGaussian');if(!e){toast('背包中沒有回復藥水。');return false}return use(e.uid)}
  document.querySelector('#heal').onclick=usePotion;potions=0;
- return {activate,validate,validateWarehouse,get healingItems(){return entries.filter(e=>window.NativePotions?.isHealing(e.key)||rules.handlers[config(e).handler]?.kind==='hpGaussian').map(e=>({...e,item:definition(e)}))},applyChange:transact,reward,learnSkill,setElfElement,castCost,get skills(){return clone(skillState)},prepareTransform,transfer,trade,receive,get warehouse(){return clone(warehouse)},get storedItems(){return warehouse.map(e=>({...e,item:definition(e)}))},use,equip,unequip,usePotion,consumeArrow,slotFor,deactivate(){owner='';entries=[];warehouse=[];skillState={ids:[],element:''};cooldowns.clear();potions=0},get owner(){return owner},get snapshot(){return clone(entries)},get equippedWeaponType(){const weapon=entries.find(e=>e.slot==='weapon');return weapon?definition(weapon).type:null},get items(){return entries.map(e=>({...e,item:definition(e)}))}};
+ return {canDiscard,discard,sortInventory,activate,validate,validateWarehouse,get healingItems(){return entries.filter(e=>window.NativePotions?.isHealing(e.key)||rules.handlers[config(e).handler]?.kind==='hpGaussian').map(e=>({...e,item:definition(e)}))},applyChange:transact,reward,learnSkill,setElfElement,castCost,get skills(){return clone(skillState)},prepareTransform,transfer,trade,receive,get warehouse(){return clone(warehouse)},get storedItems(){return warehouse.map(e=>({...e,item:definition(e)}))},use,equip,unequip,usePotion,consumeArrow,slotFor,deactivate(){owner='';entries=[];warehouse=[];skillState={ids:[],element:''};cooldowns.clear();potions=0},get owner(){return owner},get snapshot(){return clone(entries)},get equippedWeaponType(){const weapon=entries.find(e=>e.slot==='weapon');return weapon?definition(weapon).type:null},get items(){return entries.map(e=>({...e,item:definition(e)}))}};
 })();

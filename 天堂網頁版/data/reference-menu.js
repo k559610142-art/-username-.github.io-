@@ -22,8 +22,14 @@ function runGameMenuAction(action) {
     openGameCatalog(action);
     return;
   }
-  if (action === 'menu' || action === 'character') {
-    renderGameMenu(action === 'character');
+  if (action === 'character') {
+    gameDialog.classList.remove('reference-menu-panel');
+    panel('equipment');
+    previous = menuButton;
+    return;
+  }
+  if (action === 'menu') {
+    renderGameMenu();
     return;
   }
   if (action === 'close' || action === 'logout') {
@@ -76,19 +82,6 @@ nav.replaceChildren(
   menuButton
 );
 quest.hidden = true;
-
-const potionCount = document.querySelector('#potions');
-const potionBadge = uiElement('div', 'reference-potion-count');
-const potionIcon = document.createElement('img');
-potionIcon.src = 'assets/interface/quick-heal.png';
-potionIcon.alt = '';
-const potionValue = uiElement('span', '', potionCount.textContent);
-potionBadge.setAttribute('aria-label', '回復藥水持有量');
-potionBadge.append(potionIcon, potionValue);
-document.querySelector('.hud').append(potionBadge);
-new MutationObserver(() => {
-  potionValue.textContent = potionCount.textContent;
-}).observe(potionCount, {childList: true, characterData: true, subtree: true});
 
 const quickButtons = [...shortcuts.querySelectorAll('.combat-quick-slot')];
 quickButtons.forEach((button, index) => {

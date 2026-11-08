@@ -13,7 +13,7 @@ const IslandMonsters = (() => {
   const town=gfx=>gfx===945||gfx===1094;
   const effects=[];
   function usable(spawn,x,y){
-    if(spawn.resident)return !!tile(x,y);
+    if(spawn.resident)return !!WorldMaps.cell(spawn.mapId||0,x,y);
     const cell=tile(x,y);
     return !!cell&&!(cell&128)&&(town(spawn.npc.gfx)||(cell&48)!==16)
       &&steps.some(([dx,dy])=>canTraverse(x,y,dx,dy));
@@ -44,7 +44,7 @@ const IslandMonsters = (() => {
     }
   }
   // Keep village landmarks and service NPCs visible. Other residents remain in the source data.
-  const villageServices = new Set([60001,70014,...dbActiveSettings.system_item_blend.rows.map(row=>row[1])]); // 傳送師、倉庫、雜貨商
+  const villageServices = new Set([60001,70014,...TELEPORTER_DATA.ids,...dbActiveSettings.system_item_blend.rows.map(row=>row[1])]); // 傳送師、倉庫、雜貨商
   for(const spawn of islandMonsterSpawns){
     if(spawn.resident&&spawn.npc.kind!=='L1Guard'&&!villageServices.has(spawn.npcId))continue;
     if(!islandMonsterFrames[spawn.npc.gfx])continue;
@@ -137,6 +137,7 @@ const IslandMonsters = (() => {
     const scale=characterRenderScale();
     const visible=[];
     for(const mob of mobs){
+      if((mob.spawn.mapId||0)!==(window.activeMapId||0))continue;
       if(!mob.hp){
         if(now<mob.respawnAt)continue;
         mob.hp=mob.spawn.npc.hp;mob.x=mob.homeX;mob.y=mob.homeY;
@@ -185,17 +186,21 @@ const IslandMonsters = (() => {
       const elapsed=now-effect.start;
       if(elapsed>=effect.duration){effects.splice(i,1);continue;}
       const [px,py]=project(effect.x,effect.y);
+      if(effect.nativeScreen&&window.NpcEffectRenderer){NpcEffectRenderer.draw(pen,effect,elapsed,px*view.zoom+view.ox,py*view.zoom+view.oy,scale);continue;}
       let remaining=elapsed;
       const frame=effect.frames.find(f=>(remaining-=f[5])<0)||effect.frames.at(-1);
       const [file,fx,fy,sw,sh,,sx,sy]=frame;
+      if(!file||!sw||!sh)continue;
       if(!sheets.has(file)){const img=new Image();img.src='assets/island-monsters-v2/'+file;sheets.set(file,img);}
       const image=sheets.get(file);
-      if(image.complete&&image.naturalWidth)pen.drawImage(image,sx,sy,sw,sh,px*view.zoom+view.ox+fx*scale,py*view.zoom+view.oy+fy*scale,sw*scale,sh*scale);
+      if(image.complete&&image.naturalWidth){pen.save();pen.globalCompositeOperation=effect.attribute===8?'screen':effect.attribute===128?'multiply':'source-over';pen.drawImage(image,sx||0,sy||0,sw,sh,px*view.zoom+view.ox+fx*scale,py*view.zoom+view.oy+fy*scale,sw*scale,sh*scale);pen.restore();}
     }
   }
-  function playEffect(gfx,x,y,now){
-    const frames=islandMonsterFrames[gfx]?.['d0/idle'];
-    if(frames)effects.push({frames,x,y,start:now,duration:frames.reduce((sum,f)=>sum+f[5],0)});
+  function playEffect(gfx,x,y,now,options={}){
+    const visited=options.visited||new Set();if(visited.has(gfx))return;visited.add(gfx);
+    const native=typeof NPC_EFFECT_DATA!=='undefined'&&NPC_EFFECT_DATA[gfx],frames=native?.directions['d'+(options.heading||0)+'/idle']||native?.directions['d0/idle']||islandMonsterFrames[gfx]?.['d0/idle'];
+    if(frames)effects.push({gfx,heading:options.heading||0,nativeScreen:native?.attribute===8,frames,attribute:native?.attribute||0,x,y,start:now,duration:frames.reduce((sum,f)=>sum+f[5],0)});
+    for(const child of native?.attribute===8?[]:native?.parts||[])playEffect(child,x,y,now,{...options,visited});
   }
   function selectAt({x,y}){
     const hit=hitboxes.findLast(box=>x>=box.left-4&&x<=box.left+box.width+4&&y>=box.top-4&&y<=box.top+box.height+4);
@@ -215,7 +220,7 @@ const IslandMonsters = (() => {
     return !!hit;
   }
   function nearest(range,eligible=()=>true){
-    return mobs.filter(m=>m.hp&&!m.spawn.resident&&!town(m.spawn.npc.gfx)&&Math.max(Math.abs(m.x-worldX),Math.abs(m.y-worldY))<=range&&eligible(m))
+    return mobs.filter(m=>(m.spawn.mapId||0)===(window.activeMapId||0)&&m.hp&&!m.spawn.resident&&!town(m.spawn.npc.gfx)&&Math.max(Math.abs(m.x-worldX),Math.abs(m.y-worldY))<=range&&eligible(m))
       .sort((a,b)=>Math.hypot(a.x-worldX,a.y-worldY)-Math.hypot(b.x-worldX,b.y-worldY))[0];
   }
   function setTarget(mob){selected=mob;draw(getRenderedSceneView(),movementTime());}
@@ -236,7 +241,16 @@ const IslandMonsters = (() => {
     }
     draw(getRenderedSceneView(),movementTime());
   }
-  return {draw,selectAt,nearest,setTarget,damage,playEffect,serviceNearby:(id,range)=>mobs.some(m=>m.spawn.resident&&m.spawn.npcId===id&&Math.max(Math.abs(m.x-worldX),Math.abs(m.y-worldY))<=range),get target(){return selected;}};
+  function updateBackground(now){
+    if(window.gameFlowState!=='playing'||!sceneStarted)return;
+    IslandNpcAi.playerActive();
+    for(const mob of mobs){
+      if((mob.spawn.mapId||0)!==(window.activeMapId||0))continue;
+      if(!mob.hp){if(now<mob.respawnAt)continue;mob.hp=mob.spawn.npc.hp;mob.x=mob.homeX;mob.y=mob.homeY;IslandNpcAi.reset(mob);mob.reward=null;}
+      if(Math.max(Math.abs(worldX-mob.x),Math.abs(worldY-mob.y))<=Math.max(22,window.IslandCombat?.autoRange||22))advance(mob,now);
+    }
+  }
+  return {occupied:(x,y)=>mobs.some(m=>(m.spawn.mapId||0)===(window.activeMapId||0)&&m.hp&&(m.x===x&&m.y===y||m.step?.x===x&&m.step?.y===y)),updateBackground,draw,selectAt,nearest,setTarget,damage,playEffect,serviceNearby:(id,range)=>mobs.some(m=>(m.spawn.mapId||0)===(window.activeMapId||0)&&m.spawn.resident&&m.spawn.npcId===id&&Math.max(Math.abs(m.x-worldX),Math.abs(m.y-worldY))<=range),get target(){return selected;}};
 })();
 const drawIslandScene=draw;
 draw=function(now=movementTime()){
@@ -246,3 +260,6 @@ draw=function(now=movementTime()){
 setInterval(()=>{
   if(!document.hidden&&!movementAnimating())IslandMonsters.draw(getRenderedSceneView(),movementTime());
 },80);
+
+// AI runs independently of repainting and character animation.
+setInterval(()=>IslandMonsters.updateBackground(movementTime()),100);

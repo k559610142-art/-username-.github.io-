@@ -1,13 +1,20 @@
 // Native potion handlers carry their amount, effect and class parameters in classname.
 const NativePotions=(()=>{
   const timers=new Map();
+  const buffIcons={haste:43,brave:52,elfBrave:150,braveX:54,blue:32,wisdom:26};
   const buffNames={haste:'加速',brave:'勇敢',elfBrave:'精靈餅乾',braveX:'三段加速',blue:'魔力回復',wisdom:'慎重'};
   const flags={'王族':1,'騎士':2,'妖精':4,'法師':8};
   const bar=document.createElement('div');
   bar.className='native-potion-buffs';
-  bar.style.cssText='position:absolute;left:var(--ui-left,12px);top:100px;z-index:3;display:flex;gap:4px;max-width:260px;flex-wrap:wrap;pointer-events:none';
+  bar.style.cssText='position:absolute;left:var(--ui-left,12px);top:calc(var(--ui-top,12px) + 60px);z-index:3;display:flex;gap:4px;max-width:260px;flex-wrap:wrap;pointer-events:none';
   game.append(bar);
-  const active=key=>window.gameFlowState==='playing'&&Number(window.activePotionBuffs?.[key])>Date.now();
+  function positionBuffs(){
+    const mana=document.querySelector('.hud .bar.mana');if(!mana)return;
+    const g=game.getBoundingClientRect(),m=mana.getBoundingClientRect(),left=m.left-g.left+2;
+    bar.style.left=left+'px';bar.style.top=(m.bottom-g.top+8)+'px';bar.style.maxWidth=Math.max(28,Math.min(260,g.width-left-8))+'px';
+  }
+  const observer=new ResizeObserver(positionBuffs);observer.observe(game);observer.observe(document.querySelector('.hud'));
+  const active=key=>window.gameFlowState==='playing'&&!CharacterActions.dead&&Number(window.activePotionBuffs?.[key])>Date.now();
   function parse(key){
     const rule=ITEM_USE_RULES.definitions[key];
     if(!rule)return null;
@@ -29,16 +36,20 @@ const NativePotions=(()=>{
     for(let i=rows.length-1;i>=0;i--)if(!rows[i].count)rows.splice(i,1);
     return true;
   }
+  function clearOnDeath(){window.activePotionBuffs={};timers.clear();sync();}
   function sync(){
     window.playerMovementModifiers=window.playerMovementModifiers||{};
     for(const key of ['haste','brave','elfBrave','braveX'])window.playerMovementModifiers[key]=active(key);
     bar.hidden=window.gameFlowState!=='playing';bar.replaceChildren();
     if(bar.hidden)return;
+    positionBuffs();
     for(const [key,name]of Object.entries(buffNames)){
       if(!active(key))continue;
-      const label=document.createElement('span');
-      label.style.cssText='font-size:10px;padding:3px;background:#162733d9;color:#d9eac7;border:1px solid #8d986480';
-      label.textContent=name+' '+Math.ceil((activePotionBuffs[key]-Date.now())/1000)+'s';
+      const label=document.createElement('span'),image=document.createElement('img'),timer=document.createElement('small');
+      image.src='assets/interface/skills/'+buffIcons[key]+'.png';image.alt='';image.style.cssText='width:24px;height:24px;display:block;image-rendering:pixelated';
+      label.title=name;label.setAttribute('aria-label',name);timer.style.cssText='position:absolute;bottom:0;right:1px;font:10px sans-serif;color:white;text-shadow:0 1px 2px black';
+      label.style.cssText='position:relative;width:26px;height:26px;background:#162733d9;border:1px solid #8d986480';
+      timer.textContent=Math.ceil((activePotionBuffs[key]-Date.now())/1000);label.append(image,timer);
       bar.append(label);
     }
   }
@@ -117,6 +128,6 @@ const NativePotions=(()=>{
     return factor;
   }
   setInterval(sync,500);
-  return {use,isHealing,sync,recoveryBonus,actionMultiplier,get spBonus(){return active('wisdom')?2:0;}};
+  return {clearOnDeath,use,isHealing,sync,recoveryBonus,actionMultiplier,get spBonus(){return active('wisdom')?2:0;}};
 })();
 window.NativePotions=NativePotions;

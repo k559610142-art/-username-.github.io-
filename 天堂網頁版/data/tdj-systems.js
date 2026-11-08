@@ -16,8 +16,8 @@ window.TdjSystems = (() => {
     try {
       const saved = JSON.parse(localStorage.getItem(key(id)) || 'null');
       if (saved) {
-        for (const [k, n] of Object.entries(saved.dolls?.owned || {})) if (dollById.has(+k) && n > 0) state.dolls.owned[k] = n;
-        if (state.dolls.owned[saved.dolls?.active]) state.dolls.active = saved.dolls.active;
+        for (const [k, n] of Object.entries(saved.dolls?.owned || {})) {const canonical=DOLL_ID_ALIASES[k]||+k;if(dollById.has(canonical)&&Number.isSafeInteger(n)&&n>0)state.dolls.owned[canonical]=Math.min(2147483647,(state.dolls.owned[canonical]||0)+n);}
+        const activeDoll=DOLL_ID_ALIASES[saved.dolls?.active]||saved.dolls?.active;if(state.dolls.owned[activeDoll])state.dolls.active=String(activeDoll);
         for (const [k, n] of Object.entries(saved.enchant?.stones || {})) if (enchantById.has(+k) && n > 0) state.enchant.stones[k] = n;
         const w = saved.enchant?.weapon;
         if (w && enchantById.has(w.id) && w.lv >= 1 && w.lv <= 5) state.enchant.weapon = {id: w.id, lv: w.lv, uid: w.uid};

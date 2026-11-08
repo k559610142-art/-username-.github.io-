@@ -60,7 +60,7 @@ const IslandNpcAi = (() => {
   function strike(mob, skill, now) {
     const npc = mob.spawn.npc;
     if (skill) {
-      IslandMonsters.playEffect(skill.gfx || skill.spell?.gfx, worldX, worldY, now);
+      IslandMonsters.playEffect(skill.gfx || skill.spell?.gfx, worldX, worldY, now, {heading:mob.heading});
       IslandMonsters.playEffect(skill.spell?.gfx2, worldX, worldY, now);
     }
     const [base, sides, dice] = skill?.spell?.damage || [0, 0, 0];
@@ -95,7 +95,7 @@ const IslandNpcAi = (() => {
       return false;
     }
     const clear = gap <= 14 && IslandCombat.clearShot(mob.x, mob.y, worldX, worldY);
-    if (!mob.alert && mob.spawn.npc.aggressive && gap <= 6 && clear) provoke(mob, mobs);
+    if (!mob.alert && mob.spawn.npc.aggressive && gap <= 14 && clear) provoke(mob, mobs);
     if (!mob.alert) return false;
     if (mob.step) return true;
     const npc = mob.spawn.npc, basicRange = Math.max(1, npc.ranged);

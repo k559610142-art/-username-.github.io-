@@ -7,7 +7,7 @@ const characterSizeFactor=1.55;
 let previousCharacterScale = 0;
 function characterRenderScale() {
   const viewportFactor = zoom / referenceSceneZoom;
-  const scale = .85 * viewportFactor * characterSizeFactor;
+  const scale = zoom;
   if (scale !== previousCharacterScale) {
     characterActor.style.setProperty('--character-size-factor', String(viewportFactor * characterSizeFactor));
     previousCharacterScale = scale;

@@ -76,7 +76,7 @@ const IslandCombat=(()=>{
       pending=null;
     }
     if(mode&&!TransformCards.canAttack()){stop();return;}
-    if(!mode||pending||panelOpen()||characterMovementBlocked())return;
+    if(!mode||pending||characterMovementBlocked())return;
     if(!target?.hp){
       if(mode!=='auto'){stop();return;}
       target=IslandMonsters.nearest(Math.max(autoScanRange,attackRange()),mob=>!(retryAfter.get(mob)>movementTime()));
@@ -97,5 +97,6 @@ const IslandCombat=(()=>{
     if(CharacterActions.play('attack',{interruptMovement:true}))window.TdjSystems?.onAttack();
   }
   setInterval(tick,100);
-  return {begin,stop,attack,clearShot,setAutoRange,get autoRange(){return autoScanRange},get range(){return attackRange()},get mode(){return mode}};
+  function resetAfterTeleport(){const auto=mode==='auto';stop();pending=null;IslandMonsters.setTarget(null);if(auto)mode='auto';}
+  return {resetAfterTeleport,tick,begin,stop,attack,clearShot,setAutoRange,get autoRange(){return autoScanRange},get range(){return attackRange()},get mode(){return mode}};
 })();

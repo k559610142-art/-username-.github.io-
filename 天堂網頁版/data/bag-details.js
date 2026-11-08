@@ -1,0 +1,9 @@
+const BagDetails=(()=>{
+ let current=null,pane=null;
+ const style=document.createElement('style');style.textContent='.reference-game .bag-detail-floating{position:fixed;z-index:30;box-sizing:border-box;margin:0;padding:10px;background:#102332f5;border:1px solid #96896a;box-shadow:0 3px 16px #0009;overflow:auto;pointer-events:auto;overflow-wrap:anywhere}.reference-game .bag-detail-floating small{display:block}.reference-game .bag-detail-floating strong{font-size:14px}.reference-game .bag-detail-floating .classic-use{display:block;width:100%;min-height:40px;margin-top:6px;padding:6px;color:#e8d7a9;background:#263427;border:1px solid #8a7c4a;border-radius:3px;font-size:12px}';document.head.append(style);
+ function hide(){if(current){current.remove();current=null;}if(pane){pane.style.width='';pane=null;}}
+ function position(){if(!current||!pane?.isConnected)return hide();const g=game.getBoundingClientRect();let p=pane.getBoundingClientRect();if(p.left-g.left<150){pane.style.width=Math.max(180,Math.min(310,g.width*.56))+'px';p=pane.getBoundingClientRect();}const width=Math.max(120,Math.min(260,p.left-g.left-12)),height=Math.max(100,g.height-120);current.style.zIndex=String(window.FloatingWindows?.frontLevel()||30);current.style.width=width+'px';current.style.maxHeight=height+'px';current.style.left=Math.max(g.left+4,p.left-width-10)+'px';current.style.top=Math.max(g.top+8,Math.min(g.top+g.height*.3,g.bottom-current.scrollHeight-12))+'px';}
+ function show(detail){const next=detail.closest('.inventory-window');if(!next)return;if(current&&current!==detail)hide();pane=next;current=detail;detail.classList.add('bag-detail-floating');game.append(detail);position();}
+ new MutationObserver(()=>{if(current&&(!pane?.isConnected))hide()}).observe(game,{attributes:true,childList:true,subtree:true,attributeFilter:['hidden']});
+ addEventListener('resize',position);return {show,hide,position};
+})();window.BagDetails=BagDetails;

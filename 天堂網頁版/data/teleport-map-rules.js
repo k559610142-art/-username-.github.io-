@@ -1,0 +1,1 @@
+const TeleportMapRules={"0":{"teleportable":true,"usableItem":true,"markable":true,"escapable":true,"homeLocations":[[32600,32942],[32574,32944],[32580,32923],[32557,32975],[32597,32914],[32580,32974]]}};

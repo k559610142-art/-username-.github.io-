@@ -90,7 +90,7 @@ function resetCharacterActions(weapon='unarmed'){
 window.CharacterActions={
  play:playCharacterAction,
  setWeapon(weapon){if(window.gameFlowState!=='playing'||!activeCharacterActions().weapons.includes(weapon)||movementAnimating()||characterMovementBlocked())return false;characterWeapon=weapon;characterActionState=null;characterIdleStarted=movementTime();refreshCharacter();window.GameEntry?.saveActive();return true},
- damage(amount,{animate=true}={}){if(window.gameFlowState!=='playing'||!Number.isFinite(amount)||amount<=0||characterDead)return false;hp=Math.max(0,hp-Math.floor(amount));characterDead=hp===0;CombatSound.playerHit(characterDead);if(characterDead)window.TransformCards?.onDeath();if(animate||characterDead)playCharacterAction(characterDead?'death':'hurt',{force:true,hold:characterDead});stats();window.GameEntry?.saveActive();return true},
+ damage(amount,{animate=true}={}){if(window.gameFlowState!=='playing'||!Number.isFinite(amount)||amount<=0||characterDead)return false;hp=Math.max(0,hp-Math.floor(amount));characterDead=hp===0;CombatSound.playerHit(characterDead);if(characterDead){window.NativePotions?.clearOnDeath();window.TransformCards?.onDeath();}if(animate||characterDead)playCharacterAction(characterDead?'death':'hurt',{force:true,hold:characterDead});stats();window.GameEntry?.saveActive();return true},
  revive(){if(window.gameFlowState!=='playing'||movementAnimating())return false;if(hp<=0)hp=maxHp;resetCharacterActions(characterWeapon);stats();window.GameEntry?.saveActive();return true},
  reset:resetCharacterActions,
  get weapon(){return activeCharacterWeapon()},get action(){return characterLastAction},get dead(){return characterDead},

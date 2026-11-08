@@ -35,7 +35,7 @@ const PlayerClassStats = (() => {
   function tick() {
     const active = window.gameFlowState === 'playing' ? window.activeCharacterId : null;
     if (active !== owner) { owner = active; hpCount = mpCount = 0; }
-    if (!active || hp <= 0 || document.hidden) return;
+    if (!active || hp <= 0) return;
     const action = typeof characterLastAction === 'string' ? characterLastAction : 'idle';
     const points = action === 'attack' ? 1 : action === 'walk' ? 2 : 4;
     hpCount += points;

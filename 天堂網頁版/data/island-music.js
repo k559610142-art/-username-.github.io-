@@ -8,7 +8,7 @@ const IslandMusic = (() => {
   try { enabled = localStorage.getItem(key) !== 'off'; } catch {}
 
   function sync() {
-    if (!enabled || window.gameFlowState !== 'playing' || document.hidden) {
+    if (!enabled || window.gameFlowState !== 'playing') {
       track.pause();
     } else if (track.paused) {
       track.play().catch(() => {});
