@@ -6,6 +6,7 @@ function findWalkingPath(startX,startY,targetX,targetY){
  const ox=island.startX,oy=island.startY,w=island.width,h=island.height,cell=tile(targetX,targetY);
  if(!Number.isInteger(targetX)||!Number.isInteger(targetY)||!cell||(cell&128))return null;
  if(startX===targetX&&startY===targetY)return [];
+ if(window.NavigationConnectivity&&!NavigationConnectivity.canReach(startX,startY,targetX,targetY))return null;
  const straight=[];let sx=startX,sy=startY;
  while(sx!==targetX||sy!==targetY){const dx=Math.sign(targetX-sx),dy=Math.sign(targetY-sy);if(!canTraverse(sx,sy,dx,dy))break;sx+=dx;sy+=dy;straight.push([sx,sy]);}
  if(sx===targetX&&sy===targetY)return straight;

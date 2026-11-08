@@ -18,7 +18,8 @@ const TeleportScrolls=(()=>{
   const key=window.activeCharacterId+'/'+(rule.delayId||entry.key),now=movementTime();if(now<(cooldowns.get(key)||0))return false;
   if(!home&&!destination&&!random&&canSelect(entry,rule)&&window.Bookmarks){Bookmarks.open({scrollUid:uid});return true;}
   if(destination&&!canSelect(entry,rule))return false;
-  const homeChoices=home?(map.homeLocations||[]).filter(([x,y])=>canLand(x,y)):[];
+  const region=home?map.homeRegions?.find(r=>worldX>=r.bounds[0]&&worldY>=r.bounds[1]&&worldX<=r.bounds[2]&&worldY<=r.bounds[3]):null;
+  const homeChoices=home?((job==='妖精'&&region?.locationsElf?region.locationsElf:region?.locations)||map.homeLocations||[]).filter(([x,y])=>canLand(x,y)):[];
   const homeSpot=homeChoices[Math.floor(Math.random()*homeChoices.length)];
   const position=home?(homeSpot?{x:homeSpot[0],y:homeSpot[1]}:null):destination?Bookmarks.find(destination):landing();if(!position)return false;
   if(destination&&(position.mapId!==(window.activeMapId||0)||!canLand(position.x,position.y))){toast('該座標目前無法抵達，物品未消耗。');return false;}

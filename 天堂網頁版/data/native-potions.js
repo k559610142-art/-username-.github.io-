@@ -110,6 +110,7 @@ const NativePotions=(()=>{
     if(gfx)IslandMonsters.playEffect(gfx,worldX,worldY,movementTime());
     sync();return true;
   }
+  function durationState(key){const c=parse(key);if(!c||Number(c.parameters[0])<=0||c.rule.minLevel>(window.activeCharacterLevel||1)||c.rule.maxLevel&&c.rule.maxLevel<(window.activeCharacterLevel||1))return null;const h=c.handler;if(h.startsWith('brave.')&&!(Number(c.parameters[2])&flags[job]))return null;const buff=h==='mp.UserMprBlue'?'blue':h.includes('WisdomPotion')?'wisdom':h.includes('ElfBrave')?'elfBrave':h.includes('BraveCake')?'braveX':h.includes('Haste')?'haste':h.includes('Brave')?'brave':null;if(!buff)return null;return {key:buff,duration:Number(c.parameters[0])*1000,until:Number(window.activePotionBuffs?.[buff])||0};}
   function recoveryBonus(wis,baseWis){
     let amount=active('wisdom')?2:0;
     if(active('blue')){
@@ -129,6 +130,6 @@ const NativePotions=(()=>{
     return factor;
   }
   setInterval(sync,500);
-  return {clearOnDeath,use,isHealing,sync,recoveryBonus,actionMultiplier,get spBonus(){return active('wisdom')?2:0;}};
+  return {clearOnDeath,use,isHealing,sync,durationState,recoveryBonus,actionMultiplier,get spBonus(){return active('wisdom')?2:0;}};
 })();
 window.NativePotions=NativePotions;

@@ -4,7 +4,7 @@
  function beat(){
   if(!document.hidden||window.gameFlowState!=='playing')return;
   const now=movementTime();if(now-last<80)return;last=now;
-  window.AutoPotion?.tick();refreshCharacter(now);
+  window.AutoPotion?.tick();window.QuickSlots?.tickAuto();refreshCharacter(now);
   if(navigationPath.length)advanceNavigation(now);
   IslandMonsters.updateBackground(now);IslandCombat.tick();
   if(now-lastSave>=5000){GameEntry.saveActive();lastSave=now;}
