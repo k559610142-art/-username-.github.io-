@@ -5005,3 +5005,10 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
   - `talentLivePrecheck(action, nodeId)`：配置／退點／拆珠送出前，先用試玩同一套規則（`talentPlanAllocate`／`talentPlanRefund`／`talentPlanRemove`）跑在 `talentRuntimeState(player)` 的新物件上，不合法就直接顯示中文原因（去掉「試玩／測試」字樣），不呼叫伺服器。
   - `talentLiveErrorText(e)`：伺服器的英文錯誤翻成中文（不能退、前置斷線、已點出、資料不同步、寶珠不符、空孔）。
 - 驗證：瀏覽器記憶體角色＋模擬伺服器：配 2 點後退中間節點 → 提示「退掉會切斷後續節點，請先退回末端節點」、未呼叫伺服器、石頭 5 不變；退末端 → 石頭 5→4、節點移除；沒有石頭 → 提示「天賦石不足」。
+
+## 325. 天賦退點逾時（statement timeout）診斷（2026-11-08，版本 `20261108d`；`talent-live.js` 的 `talentLiveErrorText`、`tools/talent-timeout-diagnose.sql`）
+
+- 使用者回報星盤退點／配點出現「canceling statement due to statement timeout」。逾時時 `talent_action` 整筆回滾，所以沒扣天賦石、也沒退點（第 324 節使用者說的「有人不會扣石頭也不會退點」）。
+- 本機 PGlite 量測（`talent-system.template.sql` 的函式）：`talent_valid`／`talent_graph` 在 90～100 點、24 孔全插寶珠時都約 10～30 毫秒；完整 `test-talent-system-db.js` 約 4 秒全部通過。所以**慢的不是天賦計算**，較可能是共用的存檔寫入（`dragon_vault_commit` 觸發 dragon_saves 十幾個觸發器）、鎖等待（advisory lock 7713100／存檔列 `for update`），或資料庫當下忙碌。
+- 遊戲端：逾時錯誤改顯示中文「伺服器忙碌逾時，這次沒有扣天賦石、也沒有變更配點，請稍後再試」。
+- `tools/talent-timeout-diagnose.sql`：只讀診斷（pg_stat_statements 耗時、等鎖連線、資料表大小、逾時設定），請使用者在 Supabase 執行後回傳結果，再決定伺服器端怎麼修。

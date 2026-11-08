@@ -111,6 +111,7 @@ function talentLiveErrorText(e) {
     if(/talent state conflict/.test(m))return '星盤資料與伺服器不同步，請關閉星盤重新開啟。';
     if(/talent socket unavailable|talent wrong jewel/.test(m))return '這顆寶珠不能放進這個孔。';
     if(/talent empty socket/.test(m))return '這個孔沒有寶珠。';
+    if(/statement timeout|canceling statement/i.test(m))return '伺服器忙碌逾時，這次沒有扣天賦石、也沒有變更配點，請稍後再試。';   // 整筆交易回滾（第 325 節）
     return m;
 }
 
