@@ -139,7 +139,7 @@ create or replace function public.talent_action(p_slot int,p_char text,p_op uuid
 declare p jsonb;t jsonb;cfg jsonb;graph jsonb;node jsonb;it jsonb;j jsonb;idx int;trials jsonb;args jsonb:=jsonb_build_array(p_slot,p_action,p_node,p_uid);old public.dragon_talent_ops;delta jsonb:='{}';commit_result jsonb;result jsonb;owned int;spent int;amount int;inv jsonb;inv_item jsonb;left_n int:=1;ch text;
 begin
  if auth.uid() is null or public.dragon_is_banned() then raise exception 'not allowed';end if;
- perform pg_advisory_xact_lock(7713100,hashtext(auth.uid()::text));
+ perform set_config('lock_timeout','4000',true);perform pg_advisory_xact_lock(7713201,hashtext(auth.uid()::text));perform pg_advisory_xact_lock(7713100,hashtext(auth.uid()::text)); /* talent_lock_order_v1 */
  select * into old from public.dragon_talent_ops where user_id=auth.uid() and op=p_op;
  if found then if old.char_id<>p_char or old.args<>args then raise exception 'talent operation changed';end if;return old.result;end if;
  if p_op is null then raise exception 'talent operation missing';end if;

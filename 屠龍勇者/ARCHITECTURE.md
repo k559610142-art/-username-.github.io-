@@ -5022,3 +5022,10 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 影響範圍：所有用 `vaultOp` 的操作（共用倉庫存取、交易所上架／下架／購買、天賦配點／退點／寶珠）。
 - 驗證：瀏覽器模擬結算忙 1.5 秒 → RPC 在 1.68 秒才送出、送出期間 `lootPump` 不啟動、結束後旗標清除；`test-vault-v2-client`、`test-server-loot-client`、`test-loot-batch`、`test-talent-release`、`test-gems` 通過（`test-talent-live` 25≠21 改前就失敗）。
 - 若仍逾時，請使用者跑 `tools/talent-timeout-diagnose.sql`。
+## 327. 天賦交易排隊順序＋等鎖逾時自動重試（2026-11-09，版本 `20261109a`；`talent-live.js` 的 `talentLiveAction`／`talentLiveRetryable`、`tools/talent-lock-fix.sql`）
+
+- 第 326 節後部分玩家仍逾時（英文 statement timeout 多半是手機還在舊版）。`tools/save-trigger-profile.sql`（EXPLAIN ANALYZE 以玩家身分假寫存檔，最後 raise 自動復原）量出：寫一次存檔全部觸發器只要 0.08～0.44 秒（最慢 `dragon_saves_sig`，83kB 約 0.26 秒；`dragon_market_audit`、`talent_save_guard` 次之），**不是計算慢，是排隊等鎖**。
+- 伺服器修正 `tools/talent-lock-fix.sql`（使用者在 SQL Editor 執行一次；修補線上 `talent_action`，標記 `talent_lock_order_v1`，重跑無害；`talent-system.sql`／template 同步）：開頭 `set_config('lock_timeout','4000',true)`，先拿掉寶鎖 `7713201` 再拿 `7713100`，和 `loot_finish_batch`（7713201 → loot_state → 試煉 7713100）同順序，整筆排在掉寶結算後面，不會中途卡 `dragon_loot_state`；等鎖超過 4 秒就失敗（整筆回滾，不扣石頭）。
+- 遊戲端：`talentLiveAction` 用同一組 args（同一張 `p_op`）遇到 statement timeout／lock timeout／deadlock 自動重試最多 3 次（間隔 1.5、3、4.5 秒，畫面顯示「自動重試中」）；伺服器 `dragon_talent_ops` 以 p_op 去重，已成功的會回同一份結果，不會重複扣天賦石。
+- 驗證：`test-talent-system-db.js`（PGlite 真實 SQL）通過；修補 SQL 套在舊版 `talent_action` 上可成功並可重跑。
+- 診斷工具：`tools/talent-char-diagnose.sql`（單一角色）、`tools/save-trigger-profile.sql`（觸發器耗時）。

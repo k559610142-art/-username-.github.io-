@@ -103,8 +103,10 @@ function talentLivePrecheck(action,nodeId,p=player) {
 }
 
 // 伺服器錯誤翻成中文
+function talentLiveRetryable(e) { return /statement timeout|lock timeout|canceling statement|deadlock/i.test(String(e&&e.message||e)); }
 function talentLiveErrorText(e) {
     const m=String(e&&e.message||e);
+    if(/lock timeout|deadlock/i.test(m))return '伺服器忙碌逾時，這次沒有扣天賦石、也沒有變更配點，請稍後再試。';
     if(/talent cannot refund/.test(m))return '這個節點不能退：請先拆下孔裡的寶珠；若仍不行，請關閉星盤重新開啟同步資料。';
     if(/前置斷線|talent prerequisite/.test(m))return '退掉會切斷後續節點（或缺少前置路徑），請先退回最末端的節點。';
     if(/talent already allocated/.test(m))return '這個節點已點出，請關閉星盤重新開啟同步資料。';
@@ -147,13 +149,24 @@ async function talentLiveAction(action,nodeId,jewelId) {
     if(pre){talentPlanView.message=pre;showToast(pre);talentPlanRender();return;}
     talentLiveBusy=true;
     try {
-        await vaultOp('talent_action',{p_char:lootChar(),p_op:crypto.randomUUID(),p_action:action,p_node:nodeId,p_uid:inst?inst.uid:null},r=>{
-            if(player!==who||currentSlot!==slot||!cloudUser||cloudUser.id!==uid)return;
-            if(r.consumeId)consumeItem(r.consumeId,r.consumeN);
-            if(r.removeUid)removeInst(r.removeUid);
-            if(r.addItem&&!player.inv.some(it=>it.uid===r.addItem.uid))player.inv.push(bagPlaceNew(r.addItem));
-            player.talent=r.talent;clampHpMp();
-        });
+        // 同一張單號（p_op）重送：伺服器已做過就回同一份結果，不會重複扣天賦石；排隊等鎖逾時最多自動再試 3 次（第 327 節）
+        const args={p_char:lootChar(),p_op:crypto.randomUUID(),p_action:action,p_node:nodeId,p_uid:inst?inst.uid:null};
+        for(let tries=1;;tries++){
+            try{
+                await vaultOp('talent_action',args,r=>{
+                    if(player!==who||currentSlot!==slot||!cloudUser||cloudUser.id!==uid)return;
+                    if(r.consumeId)consumeItem(r.consumeId,r.consumeN);
+                    if(r.removeUid)removeInst(r.removeUid);
+                    if(r.addItem&&!player.inv.some(it=>it.uid===r.addItem.uid))player.inv.push(bagPlaceNew(r.addItem));
+                    player.talent=r.talent;clampHpMp();
+                });
+                break;
+            }catch(e){
+                if(tries>=4||!talentLiveRetryable(e)||player!==who||currentSlot!==slot)throw e;
+                talentPlanView.message='伺服器忙碌，自動重試中（'+tries+'/3）…';talentPlanRender();
+                await new Promise(r=>setTimeout(r,1500*tries));
+            }
+        }
         if(player===who&&currentSlot===slot){talentPlanState=talentLivePlanState();talentPlanView.message='正式天賦已同步。';}
     }catch(e){talentPlanView.message=talentLiveErrorText(e);showToast(talentPlanView.message);}
     finally {talentLiveBusy=false;if(player===who&&currentSlot===slot)talentPlanRender();else talentClosePlanner();}
