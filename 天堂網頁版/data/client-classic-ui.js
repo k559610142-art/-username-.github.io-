@@ -40,6 +40,7 @@
  .client-bag-extras{margin-top:4px;padding:4px;background:#11171cee;border:1px solid #5d5847;border-radius:3px}
  .client-bag-extras .classic-filter{margin:0 0 4px!important}
  .client-bag-extras .classic-item-detail:empty{display:none}
+ @media (max-width:520px){.reference-game .floating-game-window:has(>.client-art){left:3vw!important;right:auto!important}}
  `;document.head.append(css);
  const pct=(v,t)=>v/t*100+'%';
  function place(el,[x,y,w,h],W,H){el.style.left=pct(x,W);el.style.top=pct(y,H);el.style.width=pct(w,W);el.style.height=pct(h,H)}
