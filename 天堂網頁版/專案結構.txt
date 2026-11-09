@@ -13,3 +13,5 @@
   assets/native-world/lite/0、4  輕量底圖（地面＋前景合成、半尺寸 webp，說話之島 64 張 6 MB、大陸 625 張 80 MB）
   data/native-world.js           進地圖時先畫輕量底圖、角色與怪物在底圖上方、載入期間可以走動；原始圖集讀完後無縫換成原始地圖
   tools/lite-pages/              重新產生輕量底圖的工具（見該資料夾 README.md）
+  assets/native-world/atlas64/   原始地圖圖集小頁（512×512、64 塊一頁，manifest-atlas64.json 列出），進地圖只下載畫面用到的頁
+  tools/atlas-split/             大圖集切小頁工具（node tools/atlas-split/split.js assets/native-world 8，需要舊 manifest.json＋atlas-N.png）
