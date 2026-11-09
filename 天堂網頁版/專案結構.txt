@@ -16,8 +16,10 @@
   assets/native-world/atlas64/   原始地圖圖集小頁（512×512、64 塊一頁，manifest-atlas64.json 列出），進地圖只下載畫面用到的頁
   tools/atlas-split/             大圖集切小頁工具（node tools/atlas-split/split.js assets/native-world 8，需要舊 manifest.json＋atlas-N.png）
 
-人物狀態視窗（2026-11-10）：
-  assets/interface/client-ui/982c.png  天地劫天堂客戶端 Sprite.pak 的 982c.img（中文版角色狀態，179×275）
-  data/client-status-window.js         人物狀態改用原版圖，數值疊在原圖格子上（等級、體力、魔力、重量、能力值、魔法等級、額外魔法點數、MR、四屬性、迴避率）
-  tools/client-pak/                    讀天地劫天堂 .idx/.pak（l1pak.js，Text.pak 有加密，對照表 maps.json 取自開源 PakViewer）、.img 轉 PNG（img2png.js）、
-                                       依檔名抽圖（extract.js："node tools/client-pak/extract.js C:/Users/User/Desktop/天地劫天堂 assets/interface/client-ui 982c.img"）
+原版介面（2026-11-10，天地劫天堂客戶端 Sprite.pak）：
+  assets/interface/client-ui/532.png   道具欄（4×8 格）
+  assets/interface/client-ui/563c.png  人物屬性（男）／567c.png（女）：左邊能力值、右邊人形裝備欄，人物狀態與裝備都開這個
+  assets/interface/client-ui/431.png   底部介面（龍頭、對話、F5～F12 快捷格、功能鈕）
+  data/client-classic-ui.js            道具欄、人物屬性改用上述原版圖；背包每頁 inventoryPageSize（classic-panels.js）改為 32
+  tools/client-pak/                    讀天地劫天堂 .idx/.pak（l1pak.js，Text.pak 有加密，對照表 maps.json 取自開源 PakViewer）、.img 轉 PNG（img2png.js，綠色 0x3E0／0x7E0 為透明）、
+                                       依檔名抽圖（extract.js："node tools/client-pak/extract.js C:/Users/User/Desktop/天地劫天堂 assets/interface/client-ui 532.img"）
