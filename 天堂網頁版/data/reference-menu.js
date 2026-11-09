@@ -90,10 +90,14 @@ quickButtons.forEach((button, index) => {
 addEventListener('keydown', event => {
   if (window.gameFlowState !== 'playing' || event.altKey || event.ctrlKey ||
       event.metaKey || event.shiftKey || event.target.closest?.('input, textarea, select, [contenteditable]')) return;
-  const match = /^F(10|[1-9])$/.exec(event.key);
+  const match = /^F(1[0-2]|[1-9])$/.exec(event.key);
   if (!match) return;
+  // 原版底部介面（client-classic-hud.js）右下 8 格是 F5～F12；其他畫面維持 F1～F10
+  const key = Number(match[1]), classic = document.querySelector('.game')?.classList.contains('classic-hud');
+  const index = classic ? (key >= 5 ? key - 5 : -1) : (key <= 10 ? key - 1 : -1);
+  if (index < 0) return;
   event.preventDefault();
-  if (!event.repeat) quickButtons[Number(match[1]) - 1].click();
+  if (!event.repeat) quickButtons[index].click();
 });
 
 const logSource = document.querySelector('#log');

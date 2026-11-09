@@ -28,6 +28,7 @@
  .game.classic-hud>.quick-slots>.quick-expanded-row:not(:first-child),.game.classic-hud>.quick-slots>.quick-expand-arrow,.game.classic-hud>.quick-slots>.quick-expanded-row:first-child>.combat-quick-slot:nth-child(n+9){display:none!important}
  .game.classic-hud>.quick-slots .combat-quick-slot{width:auto!important;height:auto!important;min-width:0!important;min-height:0!important;margin:0!important;padding:6%!important;background:transparent!important;border:0!important;box-shadow:none!important;font-size:calc(var(--cb-w)*9/${W})!important;color:#d9cba2}
  .game.classic-hud>.quick-slots .combat-quick-slot.empty-quick-slot{color:transparent!important}
+ .game.classic-hud>.quick-slots .combat-quick-slot .quick-key{display:none!important}
  .game.classic-hud>.quick-slots .combat-quick-slot img{width:100%!important;height:100%!important;object-fit:contain}
  .game.classic-hud>.bottom .actions,.game.classic-hud>.bottom .pad{bottom:calc(var(--cb-h) + 8px)!important}
  .game.classic-hud>.auto-potion-hud{top:12px!important}
@@ -39,7 +40,7 @@
  const level=text([2,49,108,19],'between'),ac=text([19,74,30,15],'center'),mr=text([66,74,44,15],'center');
  const hpG=gauge([124,28,170,13],'hp'),mpG=gauge([343,28,137,13],'mp'),weightG=gauge([20,95,89,12],'orange'),foodG=gauge([20,115,89,12],'orange'),expG=gauge([20,134,89,12],'green');
  // 功能鈕（原圖上的 7 個圖示）
- const actions=[['說明',()=>toast('原版介面：人物、魔法、道具欄、選單、設定、地圖。快捷欄 F1～F8 對應右下 8 格。')],['人物屬性',()=>panel('status')],['魔法',()=>panel('magic')],['道具欄',()=>panel('bag')],
+ const actions=[['說明',()=>toast('原版介面：人物、魔法、道具欄、選單、設定、地圖。快捷欄 F5～F12 對應右下 8 格。')],['人物屬性',()=>panel('status')],['魔法',()=>panel('magic')],['道具欄',()=>panel('bag')],
   ['選單',()=>document.querySelectorAll('.nav button')[2]?.click()],['設定',()=>panel('settings')],['地圖',()=>document.querySelector('#overview')?.onclick?.()]];
  actions.forEach(([label,fn],i)=>{const b=put(document.createElement('button'),[497+i*20.1,128,20,20]);b.className='classic-hud-button';b.type='button';b.title=label;b.setAttribute('aria-label',label);b.onclick=fn});
  function expInfo(){const lv=window.activeCharacterLevel||1,exp=window.activeCharacterExperience||0,t=typeof killRewardData!=='undefined'?killRewardData.thresholds:null;const a=t?.find(r=>r[0]===lv)?.[1],b=t?.find(r=>r[0]===lv+1)?.[1];return Number.isFinite(a)&&Number.isFinite(b)&&b>a?Math.max(0,Math.min(100,(exp-a)/(b-a)*100)):0}
