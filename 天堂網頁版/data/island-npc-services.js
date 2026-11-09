@@ -10,13 +10,13 @@ const IslandNpcServices = (() => {
     control.onclick = action;
     return control;
   };
-  function open(id) {
+  function open(id,service=null) {
     if (CharacterActions.dead || window.gameFlowState !== 'playing') return;
-    if(TELEPORTER_DATA.ids.includes(id))return TeleporterServices.open(id);
-    if(DBGameRules.craftNpcs().has(id))return DBGameRules.openCrafting(id);
-    const warehouse = id === 60001;
-    const title = warehouse ? '倉庫管理員 · 朵琳' : '雜貨商 · 潘朵拉';
-    let secondary = false;
+    if(!service){if(DBGameRules.craftNpcs().has(id)&&!NativeNpcDialogs.profile(id)?.normal)return DBGameRules.openCrafting(id);return NativeNpcDialogs.open(id);}
+    if(service==='craft'&&DBGameRules.craftNpcs().has(id))return DBGameRules.openCrafting(id);
+    const warehouse = islandMonsterTemplates[id]?.kind==='L1Dwarf';const shopRows=NativeNpcDialogs.shop(id);if(!warehouse&&!shopRows.length){NativeNpcDialogs.open(id);return NativeNpcDialogs.message('此 NPC 沒有設定商品。')}if(!warehouse&&(NativeNpcDialogs.profile(id)?.currency||40308)!==40308){NativeNpcDialogs.open(id);return NativeNpcDialogs.message('此商店使用特殊貨幣，目前尚未接入交易。')}
+    const title = NativeNpcDialogs.title(id);
+    let secondary = service==='sell'||service==='retrieve';
     cancelPointerGesture({preserveNavigation:true});
     panel.classList.remove('classic-panel','reference-menu-panel','game-catalog-panel');
     panel.setAttribute('aria-label',title);
@@ -32,7 +32,7 @@ const IslandNpcServices = (() => {
     const primary = button(warehouse?'存入道具':'購買',()=>{secondary=false;render();});
     const other = button(warehouse?'領取道具':'出售',()=>{secondary=true;render();});
     tabs.append(primary,other);
-    const intro = uiElement('p','',warehouse ? islandNpcServiceData.feeLine : '依天地劫潘朵拉的商品與天幣價格交易。');
+    const intro = uiElement('p','',warehouse ? islandNpcServiceData.feeLine : '商品與價格依此 NPC 的原始設定。');
     content.replaceChildren(heading,intro,tabs,message,list);
     function render(note='') {
       const purse = OwnedInventory.items.find(e=>e.key==='etcitem:40308')?.count||0;
@@ -47,7 +47,7 @@ const IslandNpcServices = (() => {
           list.append(button(label,()=>render(OwnedInventory.transfer(item.uid,secondary,islandNpcServiceData.fee)||'已完成。')));
         }
       } else {
-        for (const [itemId,,buy,pack,sell,enchant] of islandNpcServiceData.shop) {
+        for (const [itemId,,buy,pack,sell,enchant] of shopRows) {
           const item = catalog.get(itemId), price = secondary?sell:buy, count = secondary?1:Math.max(1,pack);
           if (!item || price < 0 || enchant || secondary&&!OwnedInventory.items.some(e=>!e.slot&&e.item.id===itemId)) continue;
           const key=item.kind+':'+item.id;

@@ -1,0 +1,98 @@
+{
+  "npcTemplates": 4812,
+  "monsterSkills": 4383,
+  "dropRows": 12839,
+  "mapDefinitions": 735,
+  "runtimeMaps": [
+    0,
+    4
+  ],
+  "runtimeSpawnRows": 1711,
+  "originalPopulation": 17042,
+  "nativeAppearanceCount": 250,
+  "missingGfx": [
+    9484,
+    2674,
+    4825,
+    5460,
+    6036,
+    1544,
+    10939,
+    869
+  ],
+  "skillTypeCounts": {
+    "0": 19,
+    "1": 2104,
+    "2": 1960,
+    "3": 183,
+    "4": 13,
+    "5": 12,
+    "6": 11,
+    "7": 4,
+    "8": 13,
+    "9": 4,
+    "10": 9,
+    "11": 6,
+    "12": 1,
+    "13": 9,
+    "14": 11,
+    "15": 12,
+    "16": 7,
+    "17": 5
+  },
+  "skillTypeExecution": {
+    "supported": [
+      1,
+      2
+    ],
+    "pending": [
+      0,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17
+    ]
+  },
+  "coreServer": "Node local test server; original Java core is reference input, not running or fully ported",
+  "source": "2022-01-21.sql + native client sprites / TIL / S32 / SEG",
+  "nativeMapBlocks": 663,
+  "nativeTileBlocks": 374592,
+  "coreClassCount": 2686,
+  "pendingSystems": [
+    "原始 Java 核心尚未完整移植或啟動",
+    "怪物技能類型 0、3–17 尚未完整執行",
+    "獨立洞穴及其他 Map 尚未接入場景",
+    "所有玩家命中、傷害、抗性公式尚未逐項完成位元碼比對",
+    "NPC 原始 HTML 對話與全部特殊服務尚未完整移植",
+    "玩家與全部 NPC 的整體前後景排序尚待全面比對",
+    "跨區載入／屋頂切換重組仍可能出現長幀，實測最大約 150ms"
+  ],
+  "validation": {
+    "nativeCollisionSamples": 958868,
+    "map0Population": 1776,
+    "map4Population": 16101,
+    "doorwayPathSteps": 17,
+    "killRewardTest": "passed",
+    "sourceReviewTable": "4812 NPC records loaded",
+    "nativeRendering": "Map 0 and 4 direct TIL tile rendering; no flattened scene overlays",
+    "movementFrameMs": {
+      "p95": 33.2,
+      "max": 183.3,
+      "note": "Local headless tests vary: p95 16.8–33.2 ms, max 133–183.3 ms; occasional composition/loading long frames remain."
+    },
+    "fileMode": "passed: native rendering, collision, doorway route and kill rewards"
+  },
+  "mapExtentNote": "Map 4 native renderer currently uses the existing mainland_south extent (32512..34303,32128..33535), narrower than DB mapids bounds (32448..34303,32064..33599); three client edge chunks remain outside the active map extent.",
+  "legacyOverlays": "Retired from index; native tiles supply ground, interiors and entity foreground pixels"
+}

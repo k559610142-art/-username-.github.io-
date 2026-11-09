@@ -4,7 +4,7 @@ const MainlandInteriors=(()=>{
  const root=document.createElement('div');root.className='native-building-interior';root.style.cssText='position:absolute;left:0;top:0;pointer-events:none;transform-origin:0 0';root.hidden=true;actor.before(root);
  function picture(file){let img=pictures.get(file);if(!img){img=new Image();img.onload=()=>{sync();window.MainlandOcclusion?.draw()};img.src='assets/maps/mainland_south/interiors-continent1/'+file;pictures.set(file,img)}return img}
  function sync(now=movementTime()){
-  const view=renderedSceneView;
+  const view=renderedSceneView;if(window.NativeWorld?.active){active=null;root.hidden=true;return;}
   if(window.gameFlowState!=='playing'||window.activeMapId!==4||!sceneStarted||!view){active=null;root.hidden=true;return}
   const p=visualWorldPosition(now),room=rooms.get(cells.get(Math.round(p.x)+','+Math.round(p.y)))||null;active=room;
   // Warm nearby roofs before entering so their original interior is ready immediately.

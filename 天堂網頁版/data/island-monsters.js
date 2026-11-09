@@ -7,13 +7,13 @@ const IslandMonsters = (() => {
   const pen=surface.getContext('2d');
   const directions=['NW','N','NE','E','SE','S','SW','W'];
   const steps=[[0,-1],[1,-1],[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1]];
-  const sheets=new Map(), mobs=[], taken=new Set();
+  const decodedSheets=new WeakSet(),sheets=new Map(), mobs=[], taken=new Set();
   let hitboxes=[],selected=null,lastTap=null;
   const within=(area,x,y)=>x>=area[0]&&x<=area[2]&&y>=area[1]&&y<=area[3];
   const town=gfx=>gfx===945||gfx===1094;
   const effects=[];
   function usable(spawn,x,y){
-    if(spawn.resident)return !!WorldMaps.cell(spawn.mapId||0,x,y);
+    if(spawn.resident)return !!WorldMaps.cell(spawn.mapId||0,x,y)&&steps.some(([dx,dy])=>canTraverse(x,y,dx,dy));
     const cell=tile(x,y);
     return !!cell&&!(cell&128)&&(town(spawn.npc.gfx)||(cell&48)!==16)
       &&steps.some(([dx,dy])=>canTraverse(x,y,dx,dy));
@@ -21,7 +21,7 @@ const IslandMonsters = (() => {
   function addMob(spawn, region, x, y, random, pack = null) {
     const mob = {spawn,region,x,y,homeX:x,homeY:y,hp:Math.max(1,spawn.npc.hp),heading:spawn.heading%8,
       rest:500+random()*2200,phase:random()*1800,step:null,pack};
-    mobs.push(mob);
+    mob.lastRegen=movementTime();mobs.push(mob);
     IslandNpcAi.reset(mob);
     return mob;
   }
@@ -45,17 +45,25 @@ const IslandMonsters = (() => {
   }
   // Keep village landmarks and service NPCs visible. Other residents remain in the source data.
   const villageServices = new Set([60001,70014,...TELEPORTER_DATA.ids,...dbActiveSettings.system_item_blend.rows.map(row=>row[1])]); // 傳送師、倉庫、雜貨商
-  for(const spawn of islandMonsterSpawns){
-    if(spawn.resident&&spawn.npc.kind!=='L1Guard'&&!villageServices.has(spawn.npcId))continue;
+  const occupancy=new Set();let occupancyTick=-1;const populations=new Map();let populationMap=null;
+  function seedPopulation(){
+  // These two DB positions belong to a different house layout. Match the supplied client indoor groups.
+  const indoorServices={231:[33094,33385],262:[33097,33405]};
+  for(const source of islandMonsterSpawns){
+    const corrected=source.resident&&source.mapId===4&&indoorServices[source.spawnId];
+    const spawn=corrected?{...source,point:corrected,sourcePoint:source.point}:source;
+    if((spawn.mapId||0)!==(window.activeMapId||0))continue;
     if(!islandMonsterFrames[spawn.npc.gfx])continue;
     let seed=spawn.spawnId>>>0;
     const random=()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);
     const [px,py]=spawn.point;
     const [rx,ry]=spawn.random;
-    const region=spawn.bounds[2] ? spawn.bounds : [px-Math.max(1,rx),py-Math.max(1,ry),px+Math.max(1,rx),py+Math.max(1,ry)];
+    const region=spawn.bounds[2] ? spawn.bounds : [px-(spawn.resident?rx:Math.max(1,rx)),py-(spawn.resident?ry:Math.max(1,ry)),px+(spawn.resident?rx:Math.max(1,rx)),py+(spawn.resident?ry:Math.max(1,ry))];
     // Scale each wild spawn row for local play. spawnPack still adds its full group.
-    const count=spawn.resident||town(spawn.npc.gfx)?spawn.count:Math.min(12,Math.ceil(spawn.count/3));
+    const count=spawn.count;
     for(let i=0;i<count;i++){
+      // Fixed service NPCs use the DB point even on indoor or occupied cells.
+      if(spawn.resident&&rx===0&&ry===0&&!spawn.bounds[2]){taken.add(px+","+py);spawnPack(spawn,region,px,py,random);continue;}
       for(let attempt=0;attempt<120;attempt++){
         const fixed=i===0&&attempt===0&&within(region,px,py);
         const x=fixed?px:region[0]+Math.floor(random()*(region[2]-region[0]+1));
@@ -68,6 +76,8 @@ const IslandMonsters = (() => {
       }
     }
   }
+  }
+  function ensurePopulation(){const id=window.activeMapId||0;if(id===populationMap)return;if(populationMap!==null)populations.set(populationMap,mobs.splice(0));populationMap=id;occupancyTick=-1;taken.clear();selected=null;const previous=populations.get(id);if(previous)mobs.push(...previous);else seedPopulation();}
   function startStep(mob, heading, now) {
     const [dx,dy] = steps[heading], x = mob.x+dx, y = mob.y+dy;
     const frames = islandMonsterFrames[mob.spawn.npc.gfx]['d'+heading+'/walk'];
@@ -85,6 +95,8 @@ const IslandMonsters = (() => {
     return options.some(({heading})=>startStep(mob,heading,now));
   }
   function advance(mob,now){
+    const regen=mob.spawn.npc.regeneration;if(regen&&mob.hp>0){const last=mob.regenTimes??={hp:now,mp:now};for(const key of ['hp','mp']){const ms=regen[key+'Ms'];if(ms>0&&regen[key]>0&&now-last[key]>=ms){const ticks=Math.floor((now-last[key])/ms);last[key]+=ticks*ms;mob[key]=Math.min(mob.spawn.npc[key],(mob[key]||0)+ticks*regen[key]);}}}
+
     if(mob.step&&now>=mob.step.end){
       mob.x=mob.step.x;mob.y=mob.step.y;mob.step=null;
       mob.rest=now+1400+Math.random()*2300;
@@ -122,6 +134,7 @@ const IslandMonsters = (() => {
     return [frames[index],correction];
   }
   function draw(view,now){
+    ensurePopulation();
     const playing=window.gameFlowState==='playing'&&sceneStarted;
     surface.hidden=!playing;
     hitboxes=[];
@@ -154,17 +167,18 @@ const IslandMonsters = (() => {
     }
     for(const [mob,x,y,phase] of visible.sort((a,b)=>a[2]-b[2])){
       const [[file,fx,fy,sw,sh,,sx,sy],[cx,cy]]=spriteFrame(mob,now,phase);
-      if(!sheets.has(file)){const image=new Image();image.src='assets/island-monsters-v2/'+file;sheets.set(file,image);}
+      if(!sheets.has(file)){const image=new Image();image.decoding='async';image.onload=()=>{const ready=()=>decodedSheets.add(image);if(image.decode)image.decode().then(ready,ready);else ready()};image.src=(typeof nativeMonsterFiles!=='undefined'&&nativeMonsterFiles.has(file)?'assets/native-monsters/':'assets/island-monsters-v2/')+file;sheets.set(file,image);}
       const sheet=sheets.get(file);
-      if(!sheet.complete||!sheet.naturalWidth)continue;
+      if(!sheet.complete||!sheet.naturalWidth||!decodedSheets.has(sheet))continue;
       const left=x+(fx-cx)*scale,top=y+(fy-cy)*scale;
       const width=sw*scale,height=sh*scale;
-      if(!mob.spawn.resident||villageServices.has(mob.spawn.npcId))hitboxes.push({mob,left,top,width,height});
+      hitboxes.push({mob,left,top,width,height});
       if(mob===selected){
         pen.beginPath();pen.ellipse(x,y,Math.max(12,width*.36),6,0,0,Math.PI*2);
         pen.strokeStyle='#f0bc65';pen.lineWidth=2;pen.stroke();
       }
       pen.drawImage(sheet,sx,sy,sw,sh,left,top,width,height);
+      const vx=mob.step?mob.x+(mob.step.x-mob.x)*phase:mob.x,vy=mob.step?mob.y+(mob.step.y-mob.y)*phase:mob.y;window.NativeWorld?.paintEntity(pen,view,vx,vy,{left,top,width,height});
       if(mob===selected){
         const meter=Math.max(42,Math.min(84,width));
         pen.fillStyle='#241b17';pen.fillRect(left+(width-meter)/2-1,top-21,meter+2,7);
@@ -191,9 +205,9 @@ const IslandMonsters = (() => {
       const frame=effect.frames.find(f=>(remaining-=f[5])<0)||effect.frames.at(-1);
       const [file,fx,fy,sw,sh,,sx,sy]=frame;
       if(!file||!sw||!sh)continue;
-      if(!sheets.has(file)){const img=new Image();img.src='assets/island-monsters-v2/'+file;sheets.set(file,img);}
+      if(!sheets.has(file)){const img=new Image();img.decoding='async';img.onload=()=>{const ready=()=>decodedSheets.add(img);if(img.decode)img.decode().then(ready,ready);else ready()};img.src=(typeof nativeMonsterFiles!=='undefined'&&nativeMonsterFiles.has(file)?'assets/native-monsters/':'assets/island-monsters-v2/')+file;sheets.set(file,img);}
       const image=sheets.get(file);
-      if(image.complete&&image.naturalWidth){pen.save();pen.globalCompositeOperation=effect.attribute===8?'screen':effect.attribute===128?'multiply':'source-over';pen.drawImage(image,sx||0,sy||0,sw,sh,px*view.zoom+view.ox+fx*scale,py*view.zoom+view.oy+fy*scale,sw*scale,sh*scale);pen.restore();}
+      if(image.complete&&image.naturalWidth&&decodedSheets.has(image)){pen.save();pen.globalCompositeOperation=effect.attribute===8?'screen':effect.attribute===128?'multiply':'source-over';pen.drawImage(image,sx||0,sy||0,sw,sh,px*view.zoom+view.ox+fx*scale,py*view.zoom+view.oy+fy*scale,sw*scale,sh*scale);pen.restore();}
     }
   }
   function playEffect(gfx,x,y,now,options={}){
@@ -242,6 +256,7 @@ const IslandMonsters = (() => {
     draw(getRenderedSceneView(),movementTime());
   }
   function updateBackground(now){
+    ensurePopulation();
     if(window.gameFlowState!=='playing'||!sceneStarted)return;
     IslandNpcAi.playerActive();
     for(const mob of mobs){
@@ -250,7 +265,7 @@ const IslandMonsters = (() => {
       if(Math.max(Math.abs(worldX-mob.x),Math.abs(worldY-mob.y))<=Math.max(22,window.IslandCombat?.autoRange||22))advance(mob,now);
     }
   }
-  return {occupied:(x,y)=>mobs.some(m=>(m.spawn.mapId||0)===(window.activeMapId||0)&&m.hp&&(m.x===x&&m.y===y||m.step?.x===x&&m.step?.y===y)),updateBackground,draw,selectAt,nearest,setTarget,damage,playEffect,serviceNearby:(id,range)=>mobs.some(m=>(m.spawn.mapId||0)===(window.activeMapId||0)&&m.spawn.resident&&m.spawn.npcId===id&&Math.max(Math.abs(m.x-worldX),Math.abs(m.y-worldY))<=range),get target(){return selected;}};
+  return {get residentPositions(){ensurePopulation();return mobs.filter(m=>m.spawn.resident).map(m=>({id:m.spawn.npcId,spawnId:m.spawn.spawnId,x:m.x,y:m.y,point:[...m.spawn.point],sourcePoint:[...(m.spawn.sourcePoint||m.spawn.point)],random:[...m.spawn.random]}))},get audit(){return {mapId:populationMap,spawned:mobs.length,sourceRows:islandMonsterSpawns.length,fullCounts:true}},occupied:(x,y)=>{ensurePopulation();const tick=Math.floor(movementTime()/50);if(tick!==occupancyTick){occupancyTick=tick;occupancy.clear();for(const m of mobs)if(m.hp){occupancy.add(m.x+","+m.y);if(m.step)occupancy.add(m.step.x+","+m.step.y)}}return occupancy.has(x+","+y)},updateBackground,draw,selectAt,nearest,setTarget,damage,playEffect,serviceNearby:(id,range)=>mobs.some(m=>(m.spawn.mapId||0)===(window.activeMapId||0)&&m.spawn.resident&&m.spawn.npcId===id&&Math.max(Math.abs(m.x-worldX),Math.abs(m.y-worldY))<=range),get target(){return selected;}};
 })();
 const drawIslandScene=draw;
 draw=function(now=movementTime()){
