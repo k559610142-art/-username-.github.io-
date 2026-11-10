@@ -117,7 +117,10 @@ begin
         elsif fn.proname = 'loot_raid' then
             if position('boss_cd_set' in src) = 0 then
                 if position('''loot invalid raid'';end if;' in src) = 0 then raise exception 'loot_raid結構不同，未更新'; end if;
-                patched := replace(src, '''loot invalid raid'';end if;', '''loot invalid raid'';end if;perform public.boss_cd_set(''raid'',p_char||''|''||r.raid,coalesce((def->>''cdH'')::numeric,2));');
+                -- 用 rid（第 305 節勝利紀錄版只填 rid，r 是空的；舊版 r.raid 會是 NULL → dragon_boss_cd.key 違反 not null，整筆副本結算失敗）
+                patched := replace(src, '''loot invalid raid'';end if;', '''loot invalid raid'';end if;perform public.boss_cd_set(''raid'',p_char||''|''||rid,coalesce((def->>''cdH'')::numeric,2));');
+            elsif position('''|''||r.raid,coalesce((def->>''cdH'')' in src) > 0 and position('rid:=' in src) > 0 then
+                patched := replace(src, '''|''||r.raid,coalesce((def->>''cdH'')', '''|''||rid,coalesce((def->>''cdH'')');   -- 修補已裝上的錯誤版本（2026-11-10，第 328 節）
             end if;
         end if;
         if patched <> src then execute patched; end if;

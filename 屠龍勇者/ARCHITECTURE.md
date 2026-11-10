@@ -5029,3 +5029,10 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 遊戲端：`talentLiveAction` 用同一組 args（同一張 `p_op`）遇到 statement timeout／lock timeout／deadlock 自動重試最多 3 次（間隔 1.5、3、4.5 秒，畫面顯示「自動重試中」）；伺服器 `dragon_talent_ops` 以 p_op 去重，已成功的會回同一份結果，不會重複扣天賦石。
 - 驗證：`test-talent-system-db.js`（PGlite 真實 SQL）通過；修補 SQL 套在舊版 `talent_action` 上可成功並可重跑。
 - 診斷工具：`tools/talent-char-diagnose.sql`（單一角色）、`tools/save-trigger-profile.sql`（觸發器耗時）。
+## 328. 團隊副本結算 r.raid → rid 修正＋測試總檢（2026-11-10，只改 SQL，遊戲版本不變；`tools/raid-cd-fix.sql`、`tools/boss-timer.sql`）
+
+- **BUG**：`boss-timer.sql`（第 273 節）在 `loot_raid` 插入 `boss_cd_set('raid', p_char||'|'||r.raid, …)`；第 305 節勝利紀錄版 `loot_raid` 有勝利紀錄時只填 `rid`，`r`（raid_rooms 列）是空的 → `r.raid` 為 NULL。
+  - 後跑 `raid-wins.sql`：補丁被蓋掉，副本冷卻沒寫到伺服器。
+  - 後跑 `boss-timer.sql`：`dragon_boss_cd.key` not null 錯誤，**副本獎勵整筆領不到**。`test-boss-timer.js` 就是這樣失敗。
+- 修正：`boss-timer.sql` 改用 `rid`，並能修補已裝上的 `r.raid` 版；線上用 `tools/raid-cd-fix.sql`（只改 `loot_raid` 一行、可重跑，最後一段查詢應為 `has_raid_cd=true, still_broken=false`）。PGlite 驗證：沒補丁／錯誤補丁兩種都修成正確；`test-boss-timer`、`test-server-loot-db` 通過。
+- 測試總檢：`tools/test-*.js` 共 134 支，約 40 支失敗，逐一看過都是**測試沒跟上遊戲內容**（不是遊戲壞）：變身數 36≠32、角色欄位／背包 25≠18 等、村莊 NPC 12≠11、道具圖數 710≠547、`gm_notice_set` 改成 4 參數、背包 class 名稱改了、測試假 scene 沒有 `floats`、魔法傷害多乘職業平衡 0.85（第 320 節）、`uq_berserkskull` 光暈名單。待有空時更新這些測試的期望值。
