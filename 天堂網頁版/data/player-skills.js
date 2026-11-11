@@ -27,10 +27,14 @@ const PlayerSkills = (() => {
   }
   function supports(id){
     const skill=skills[id];
+    // 龍騎士／幻術師／戰士 (id ≥ 181, data/extra-class-skills.js): only direct attack skills with DB damage are cast here;
+    // their buffs／debuffs (damage field used as power) are not implemented yet.
+    if(id>=181)return !!skill&&skill.target==='attack'&&skill.damage.some(Boolean);
     return !!skill&&(skill.damage.some(Boolean)||id===87);
   }
   function cast(id){
     const skill=skills[id];
+    if(skill&&knows(id)&&id>=181&&!supports(id))return errors('「'+skill.name+'」的效果尚未實作。');
     if(!skill||!knows(id)||!supports(id)||CharacterActions.dead||window.gameFlowState!=='playing'||
       characterMovementBlocked()||movementAnimating()||!TransformCards.canCast)return false;
     const now=movementTime();
