@@ -51,6 +51,7 @@ const PlayerSkills = (() => {
     for(let i=0;i<skill.damage[2];i++)amount+=1+Math.floor(Math.random()*Math.max(1,skill.damage[1]));
     if(!OwnedInventory.castCost(skill,healing?Math.min(maxHp,hp-skill.hp+amount):undefined))return false;
     if(!CharacterActions.play('skill'))return false;
+    window.ClassBuffs?.reveal();
     cooldowns.set(id,now+skill.reuse);
     IslandMonsters.playEffect(skill.gfx,healing?worldX:mob.x,healing?worldY:mob.y,now);
     if(!healing){

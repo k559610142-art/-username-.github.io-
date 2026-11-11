@@ -80,7 +80,7 @@ const IslandNpcAi = (() => {
     if (mob.aiOwner !== owner) {
       reset(mob);
     }
-    if (!canFight(mob) || !playerActive() || now < immuneUntil || safe(worldX, worldY) || safe(mob.x, mob.y)) {
+    if (!canFight(mob) || !playerActive() || now < immuneUntil || safe(worldX, worldY) || safe(mob.x, mob.y) || window.ClassBuffs?.invisible()) {
       mob.alert = false;
       mob.windup = null;
       return false;
@@ -154,6 +154,7 @@ const IslandNpcAi = (() => {
   game.append(revive);
   return {reset, playerActive, provoke, update, canFight,
     updateRevive(){revive.hidden = window.gameFlowState !== 'playing' || !CharacterActions.dead;},
+    cure(){slowedUntil = cursedUntil = 0;},
     get cursed(){return window.activeCharacterId === owner && movementTime() < cursedUntil;},
     get slowed(){return window.activeCharacterId === owner && movementTime() < slowedUntil;}
   };
