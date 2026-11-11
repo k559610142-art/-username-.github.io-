@@ -72,14 +72,20 @@ const Summons=(()=>{
  function enemyFor(mob){
   const t=IslandMonsters.target;
   if(t?.hp&&!t.spawn.ally&&dist(t.x,t.y,worldX,worldY)<=12)return t;
-  return IslandMonsters.around(worldX,worldY,6).filter(m=>m.alert||m.windup).sort((a,b)=>dist(a.x,a.y,mob.x,mob.y)-dist(b.x,b.y,mob.x,mob.y))[0]||null;
+  return IslandMonsters.around(worldX,worldY,6).filter(m=>m.alert||m.windup||m.allyTarget).sort((a,b)=>dist(a.x,a.y,mob.x,mob.y)-dist(b.x,b.y,mob.x,mob.y))[0]||null;
  }
- // Greedy step first; around walls use the player's path finder (navigation.js findWalkingPath), at most every 600 ms per ally.
+ // Straight step when nothing is in the way; otherwise follow the player's path finder (navigation.js findWalkingPath),
+ // re-planned at most every 600 ms or when the goal moves, so walls do not make the ally swing back and forth.
  function moveToward(mob,tx,ty,t,stepToward){
-  if(stepToward(mob,tx,ty,t))return true;
-  if(t<(mob.pathAt||0))return false;mob.pathAt=t+600;
-  const path=typeof findWalkingPath==='function'?findWalkingPath(mob.x,mob.y,tx,ty):null;
-  return !!path?.length&&stepToward(mob,path[0][0],path[0][1],t);
+  if(IslandCombat.clearShot(mob.x,mob.y,tx,ty)&&stepToward(mob,tx,ty,t)){mob.path=null;return true;}
+  if(!mob.path||mob.pathGoal!==tx+','+ty&&t>=(mob.pathAt||0)){
+   mob.pathAt=t+600;mob.pathGoal=tx+','+ty;
+   mob.path=typeof findWalkingPath==='function'?findWalkingPath(mob.x,mob.y,tx,ty):null;
+  }
+  while(mob.path?.length&&mob.path[0][0]===mob.x&&mob.path[0][1]===mob.y)mob.path.shift();
+  const next=mob.path?.[0];
+  if(next&&stepToward(mob,next[0],next[1],t))return true;
+  mob.path=null;return false;
  }
  function update(mob,t,stepToward){
   if(!mob.hp||mob.step)return;
@@ -91,12 +97,37 @@ const Summons=(()=>{
     const dx=Math.sign(target.x-mob.x),dy=Math.sign(target.y-mob.y);const h=[[0,-1],[1,-1],[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1]].findIndex(([x,y])=>x===dx&&y===dy);if(h>=0)mob.heading=h;
     const duration=npc.attack||1000;mob.action={clip:'attack',start:t,end:t+duration};mob.ready=t+duration;
     const r=NativeCombatRules.physical(npc,{ac:target.spawn.npc.ac||0,dodge:0,reduction:0,role:''});
-    setTimeout(()=>{if(target.hp&&mob.hp&&r.hit&&r.damage>0)IslandMonsters.damage(target,r.damage);},duration*.45);
+    setTimeout(()=>{if(!target.hp||!mob.hp)return;if(!target.spawn.resident&&!target.allyTarget)target.allyTarget=mob;if(r.hit&&r.damage>0)IslandMonsters.damage(target,r.damage);},duration*.45);
     return;
    }
    moveToward(mob,target.x,target.y,t,stepToward);return;
   }
   if(dist(mob.x,mob.y,worldX,worldY)>2)moveToward(mob,worldX,worldY,t,stepToward);
+ }
+ // ---- monsters fighting back (called first in IslandNpcAi.update) ----
+ // A monster hit by an ally attacks that ally (same NativeCombatRules.physical) until the ally dies, leaves 12 cells or the
+ // player hits the monster (ClassBuffs.onHit／player-skills clear allyTarget). Returns true while it handles the monster.
+ function drive(mob,t,stepToward){
+  const a=mob.allyTarget;
+  if(!a)return false;
+  if(!a.hp||!allies.some(x=>x.mob===a)||dist(a.x,a.y,mob.x,mob.y)>12||mob.spawn.resident){mob.allyTarget=null;return false;}
+  if(!mob.hp)return true;
+  mob.alert=true;
+  if(mob.step||t<(mob.ready||0))return true;
+  const npc=mob.spawn.npc,range=Math.max(1,npc.ranged||1);
+  if(dist(a.x,a.y,mob.x,mob.y)<=range&&IslandCombat.clearShot(mob.x,mob.y,a.x,a.y)){
+   const dx=Math.sign(a.x-mob.x),dy=Math.sign(a.y-mob.y);const h=[[0,-1],[1,-1],[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1]].findIndex(([x,y])=>x===dx&&y===dy);if(h>=0)mob.heading=h;
+   const duration=npc.attack||1000;mob.action={clip:'attack',start:t,end:t+duration};mob.ready=t+duration*(window.ClassBuffs?.slowed(mob)?1.33:1);
+   const r=NativeCombatRules.physical(npc,{ac:a.spawn.npc.ac||0,dodge:0,reduction:0,role:''});
+   setTimeout(()=>{if(mob.hp&&a.hp&&r.hit&&r.damage>0)hurt(a,r.damage);},duration*.45);
+   return true;
+  }
+  if(!window.ClassBuffs?.rooted(mob))moveToward(mob,a.x,a.y,t,stepToward);
+  return true;
+ }
+ function hurt(mob,amount){
+  mob.hp=Math.max(0,mob.hp-amount);window.CombatSound?.monsterHit?.(mob);
+  if(!mob.hp){IslandMonsters.playEffect(169,mob.x,mob.y,now());window.toast?.(mob.spawn.npc.name+' 倒下了。');killed(mob);}
  }
 
  // ---- follow the player across maps, expire, reset per character ----
@@ -114,5 +145,5 @@ const Summons=(()=>{
   if(allies.some(expired))release(expired);
  }
  setInterval(tick,500);
- return {prepare,update,killed,release:()=>release(),get mobs(){return allies.map(a=>a.mob);},get list(){return allies.map(a=>({name:a.mob.spawn.npc.name,hp:a.mob.hp,kind:a.kind}))},get room(){return room();}};
+ return {prepare,update,drive,killed,release:()=>release(),get mobs(){return allies.map(a=>a.mob);},get list(){return allies.map(a=>({name:a.mob.spawn.npc.name,hp:a.mob.hp,kind:a.kind}))},get room(){return room();}};
 })();window.Summons=Summons;

@@ -55,7 +55,7 @@ const PlayerSkills = (() => {
     cooldowns.set(id,now+skill.reuse);
     IslandMonsters.playEffect(skill.gfx,healing?worldX:mob.x,healing?worldY:mob.y,now);
     if(!healing){
-      IslandMonsters.damage(mob,Math.max(id===87?0:1,amount));
+      mob.allyTarget=null;IslandMonsters.damage(mob,Math.max(id===87?0:1,amount));
       if(id>=181)window.ClassBuffs?.afterCast(id,mob);
       if(id===87)mob.ready=Math.max(mob.ready||0,now+skill.duration*1000);
     }

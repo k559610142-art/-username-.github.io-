@@ -80,6 +80,7 @@ const IslandNpcAi = (() => {
     if (mob.aiOwner !== owner) {
       reset(mob);
     }
+    if (window.Summons?.drive(mob, now, stepToward)) return true;
     if (!canFight(mob) || !playerActive() || now < immuneUntil || safe(worldX, worldY) || safe(mob.x, mob.y) || window.ClassBuffs?.invisible()) {
       mob.alert = false;
       mob.windup = null;

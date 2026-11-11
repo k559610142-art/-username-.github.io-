@@ -70,7 +70,7 @@ const ClassBuffs=(()=>{
  function maxMpBonus(){return on(79)?Math.trunc(base().maxMp/5):0;}
  // Extra damage on a melee／bow hit.
  function onHit(mob,ranged){
-  let add=0;invisible=false;
+  let add=0;invisible=false;mob.allyTarget=null;
   if(!ranged&&on(182)){add+=10;buffs.delete(182);}
   if(!ranged){const bonus=Math.max(2,2+level()-45);
    if(knows(233)&&Math.random()<.17){add+=bonus;IslandMonsters.playEffect(12487,mob.x,mob.y,now());}
