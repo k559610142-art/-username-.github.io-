@@ -11,7 +11,7 @@ const Summons=(()=>{
  const SUMMON_IDS=[81210,81213,81216,81219,81222,81225,81228];
  const ELEMENTAL={地:[45306,81053],火:[45303,81050],水:[45304,81051],風:[45305,81052]};
  const LIFE=3600*1000;
- let owner=null,allies=[];const corpses=[];
+ let owner=null,allies=[],pending=null;const corpses=[];
  const now=()=>movementTime();
  const dist=(a,b,x,y)=>Math.max(Math.abs(a-x),Math.abs(b-y));
  const cha=()=>PlayerClassStats.read().attributes.cha||0;
@@ -133,7 +133,10 @@ const Summons=(()=>{
  // ---- follow the player across maps, expire, reset per character ----
  function tick(){
   const current=window.gameFlowState==='playing'?window.activeCharacterId:null;
-  if(current!==owner){release();owner=current;corpses.length=0;}
+  if(current!==owner){release();owner=current;corpses.length=0;
+   // Saved allies (entry-flow saveActiveCharacter → character.summons) come back next to the player.
+   if(pending&&pending.id===current){for(const s of pending.list){const a=create(s.npcId,worldX,worldY,s.cost,s.kind,s.hp);if(a&&s.left!=null)a.until=now()+s.left;}}
+   pending=null;}
   if(!current)return;
   const t=now();
   for(const a of allies){
@@ -145,5 +148,7 @@ const Summons=(()=>{
   if(allies.some(expired))release(expired);
  }
  setInterval(tick,500);
- return {prepare,update,drive,killed,release:()=>release(),get mobs(){return allies.map(a=>a.mob);},get list(){return allies.map(a=>({name:a.mob.spawn.npc.name,hp:a.mob.hp,kind:a.kind}))},get room(){return room();}};
+ function snapshot(){const t=now();return allies.filter(a=>a.mob.hp).map(a=>({npcId:a.mob.spawn.npcId,hp:a.mob.hp,cost:a.cost,kind:a.kind,left:a.until===Infinity?null:Math.max(0,Math.round(a.until-t))}));}
+ function restore(id,list){pending=Array.isArray(list)&&list.length?{id,list:list.filter(s=>s&&Number.isInteger(s.npcId)&&islandMonsterTemplates[s.npcId]&&s.hp>0).slice(0,12)}:null;}
+ return {prepare,update,drive,killed,restore,get snapshot(){return owner===window.activeCharacterId?snapshot():[];},release:()=>release(),get mobs(){return allies.map(a=>a.mob);},get list(){return allies.map(a=>({name:a.mob.spawn.npc.name,hp:a.mob.hp,kind:a.kind}))},get room(){return room();}};
 })();window.Summons=Summons;

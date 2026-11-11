@@ -92,5 +92,7 @@
   怪物反擊（2026-11-12）：被召喚獸打到的怪物改打那隻召喚獸（mob.allyTarget，Summons.drive 在 IslandNpcAi.update 最前面），
     直到召喚獸倒下、離開 12 格或玩家出手；召喚獸受傷、自然回血、血量歸零倒下移除；召喚獸也會支援正在打其他召喚獸的怪物
     移動：沒擋住時直走，被擋住就照 findWalkingPath 的路徑走（每 600 ms 或目標移動時重算）
-  限制：召喚獸不存檔（重整或換角色就消失）；召喚術／屬性精靈 1 小時後消失；沒有召喚控制戒指的選單
+  存檔（2026-11-12）：entry-flow saveActiveCharacter 寫入 character.summons（npcId、血量、佔用、種類、剩餘毫秒），
+    進入遊戲時 Summons.restore → 第一次 tick 在角色身邊重新叫出；只屬於該角色，離線時間不扣剩餘時間
+  限制：召喚術／屬性精靈 1 小時後消失；沒有召喚控制戒指的選單
   tools/native-monsters/build.js 另外切召喚獸與屬性精靈的圖
