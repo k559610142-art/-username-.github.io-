@@ -5036,3 +5036,9 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
   - 後跑 `boss-timer.sql`：`dragon_boss_cd.key` not null 錯誤，**副本獎勵整筆領不到**。`test-boss-timer.js` 就是這樣失敗。
 - 修正：`boss-timer.sql` 改用 `rid`，並能修補已裝上的 `r.raid` 版；線上用 `tools/raid-cd-fix.sql`（只改 `loot_raid` 一行、可重跑，最後一段查詢應為 `has_raid_cd=true, still_broken=false`）。PGlite 驗證：沒補丁／錯誤補丁兩種都修成正確；`test-boss-timer`、`test-server-loot-db` 通過。
 - 測試總檢：`tools/test-*.js` 共 134 支，約 40 支失敗，逐一看過都是**測試沒跟上遊戲內容**（不是遊戲壞）：變身數 36≠32、角色欄位／背包 25≠18 等、村莊 NPC 12≠11、道具圖數 710≠547、`gm_notice_set` 改成 4 參數、背包 class 名稱改了、測試假 scene 沒有 `floats`、魔法傷害多乘職業平衡 0.85（第 320 節）、`uq_berserkskull` 光暈名單。待有空時更新這些測試的期望值。
+
+## 329. 團隊副本準備失敗 raid_members_snap_check（2026-11-11，版本 `20261111a`；`tools/raid-snap-limit.sql`、`raid.js` 的 `raidErr`）
+
+- 玩家按「準備」出現 `new row for relation "raid_members" violates check constraint "raid_members_snap_check"`。準備時把整份角色（`raidSnapshot()`，不含倉庫）寫進 `raid_members.snap`，限制 `pg_column_size(snap) < 1000000`，但存檔 `dragon_saves.data` 上限是 2MB → 資料大的角色存得了卻準備不了。
+- 修正：使用者在 SQL Editor 執行 `tools/raid-snap-limit.sql`，約束改成 < 2000000（快照是存檔的子集，能存檔就放得下）；`supabase.sql` 建表定義同步。遊戲端 `raidErr` 遇到這個約束顯示中文「角色資料太大…」。
+- 之後若想省流量，可再把 `raidSnapshot` 瘦身（只留戰鬥模擬用到的欄位），要先確認 `raidSimulate` 用到哪些欄位。

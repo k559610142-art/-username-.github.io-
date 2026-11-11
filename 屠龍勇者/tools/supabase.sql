@@ -70,7 +70,7 @@ create table if not exists public.raid_members (
     lv          int,
     char_id     text        check (char_length(char_id) <= 60),                      -- 用哪個角色參加（獎勵發給它）
     ready_round int         not null default 0,
-    snap        jsonb       check (snap is null or pg_column_size(snap) < 1000000),   -- 準備時的角色快照
+    snap        jsonb       check (snap is null or pg_column_size(snap) < 2000000),   -- 準備時的角色快照（2026-11-11 由 1MB 放寬到和存檔一樣 2MB，第 329 節）
     joined_at   timestamptz not null default now(),
     primary key (room_id, user_id)
 );

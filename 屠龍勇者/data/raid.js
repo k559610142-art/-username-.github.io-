@@ -352,6 +352,7 @@ function raidErr(e) {
     if (/room full/i.test(m)) return '隊伍已滿（8 人）';
     if (/room closed|not open/i.test(m)) return '隊伍已經開始或解散了';
     if (/raid cooldown/i.test(m)) { bossCdSync(true); return '這個角色的副本還在冷卻中（以伺服器時間為準）'; }
+    if (/raid_members_snap_check/i.test(m)) return '角色資料太大，無法準備：請先把背包裡用不到的道具賣掉或存進倉庫再試';   // 快照上限 2MB（第 329 節）
     return cloudErrText(e);
 }
 
