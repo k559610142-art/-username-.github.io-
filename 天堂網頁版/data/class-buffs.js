@@ -44,10 +44,11 @@ const ClassBuffs=(()=>{
  const AREA={205:1,210:1,215:1,220:1,225:1};
  const PASSIVE={233:1,234:1,235:1,236:1,237:1,238:1,239:1};
  // Utility skills (skillmode BODY_TO_MIND mp+2, BLOODY_SOUL mp+15, TELEPORT／MASS_TELEPORT, TELEPORT_TO_MATHER, CURE_POISON,
- // REMOVE_CURSE; L1J 魔力奪取 5–14 MP, 起死回生術 kills undead at 50%). `need` = needs another system and only explains why.
+ // REMOVE_CURSE; L1J 魔力奪取 5–14 MP, 起死回生術 kills undead at 50%). Summon kinds go to data/summons.js.
+ // `need` = needs another system and only explains why.
  const UTIL={5:'teleport',69:'teleport',131:'mother',9:'cure',37:'purify',44:'purify',153:'purify',23:'sense',18:'turnUndead',39:'drain',
   130:'mp2',146:'mp15',60:'invisible',67:'poly',13:'none',27:'none',71:'none',
-  36:'need:召喚',41:'need:召喚',51:'need:召喚',145:'need:召喚',154:'need:召喚',162:'need:召喚',61:'need:隊友',75:'need:隊友',116:'need:血盟',118:'need:血盟',73:'need:製作'};
+  36:'tame',41:'zombie',51:'summon',145:'release',154:'elemental',162:'greater',61:'need:隊友',75:'need:隊友',116:'need:血盟',118:'need:血盟',73:'need:製作'};
  const UTIL_TARGET={18:1,23:1,39:1,27:1,71:1,153:1};
  const handles=id=>!!(SELF[id]||TARGET[id]||AREA_TARGET[id]||ATTACK[id]||AREA[id]||PASSIVE[id]||UTIL[id]);
  let invisible=false;
@@ -127,6 +128,8 @@ const ClassBuffs=(()=>{
   const kind=UTIL[id];
   if(kind.startsWith('need:'))return say('「'+skill.name+'」需要'+kind.slice(5)+'系統，網頁版目前還沒有。');
   if(kind==='teleport'&&!landing())return say('這個地區無法使用瞬間移動。');
+  const summon=['summon','tame','zombie','elemental','greater','release'].includes(kind)?window.Summons?.prepare(kind,skill):null;
+  if(typeof summon==='string')return say(summon);
   if(kind==='mother'&&!WorldMaps.has(4))return false;
   let mob=null;if(UTIL_TARGET[id]){mob=targetInRange(skill);if(!mob)return say('請先選擇範圍內的目標。');}
   if(!OwnedInventory.castCost(skill))return say('魔力、體力或材料不足。');
@@ -141,6 +144,7 @@ const ClassBuffs=(()=>{
   if(kind==='drain'){const gain=Math.min(5+Math.floor(Math.random()*10),Math.max(0,mob.mp??99));if(mob.mp!==undefined)mob.mp-=gain;mp=Math.min(maxMp,mp+gain);window.stats?.();}
   if(kind==='mp2'||kind==='mp15'){mp=Math.min(maxMp,mp+(kind==='mp2'?2:15));window.stats?.();}
   if(kind==='poly')window.openGameCatalog?.('transforms');
+  if(typeof summon==='function')summon();
   if(kind==='none')say('「'+skill.name+'」在這個網頁版沒有可作用的對象。');
   return true;
  }

@@ -77,7 +77,7 @@ const IslandMonsters = (() => {
     }
   }
   }
-  function ensurePopulation(){const id=window.activeMapId||0;if(id===populationMap)return;if(populationMap!==null)populations.set(populationMap,mobs.splice(0));populationMap=id;occupancyTick=-1;taken.clear();selected=null;const previous=populations.get(id);if(previous)mobs.push(...previous);else seedPopulation();}
+  function ensurePopulation(){const id=window.activeMapId||0;if(id===populationMap)return;if(populationMap!==null)populations.set(populationMap,mobs.splice(0).filter(m=>!m.spawn.ally));populationMap=id;occupancyTick=-1;taken.clear();selected=null;const previous=populations.get(id);if(previous)mobs.push(...previous);else seedPopulation();}
   function startStep(mob, heading, now) {
     const [dx,dy] = steps[heading], x = mob.x+dx, y = mob.y+dy;
     const frames = islandMonsterFrames[mob.spawn.npc.gfx]['d'+heading+'/walk'];
@@ -101,7 +101,7 @@ const IslandMonsters = (() => {
       mob.x=mob.step.x;mob.y=mob.step.y;mob.step=null;
       mob.rest=now+1400+Math.random()*2300;
     }
-    if(IslandNpcAi.update(mob,now,mobs,steps,stepToward))return;
+    if(mob.spawn.ally){window.Summons?.update(mob,now,stepToward);return;}    if(IslandNpcAi.update(mob,now,mobs,steps,stepToward))return;
     if(mob.spawn.resident||mob.step||now<mob.rest)return;
     const leader=mob.pack?.leader;
     const home=leader&&leader!==mob&&leader.hp?[leader.x,leader.y]:[mob.homeX,mob.homeY];
@@ -218,7 +218,7 @@ const IslandMonsters = (() => {
   }
   function selectAt({x,y}){
     const hit=hitboxes.findLast(box=>x>=box.left-4&&x<=box.left+box.width+4&&y>=box.top-4&&y<=box.top+box.height+4);
-    const next=hit?.mob||null;
+    const next=hit?.mob?.spawn.ally?null:hit?.mob||null;
     if(next?.spawn.resident){
       selected=null;
       lastTap=null;
@@ -234,7 +234,7 @@ const IslandMonsters = (() => {
     return !!hit;
   }
   function nearest(range,eligible=()=>true){
-    return mobs.filter(m=>(m.spawn.mapId||0)===(window.activeMapId||0)&&m.hp&&!m.spawn.resident&&!town(m.spawn.npc.gfx)&&Math.max(Math.abs(m.x-worldX),Math.abs(m.y-worldY))<=range&&eligible(m))
+    return mobs.filter(m=>(m.spawn.mapId||0)===(window.activeMapId||0)&&m.hp&&!m.spawn.resident&&!m.spawn.ally&&!town(m.spawn.npc.gfx)&&Math.max(Math.abs(m.x-worldX),Math.abs(m.y-worldY))<=range&&eligible(m))
       .sort((a,b)=>Math.hypot(a.x-worldX,a.y-worldY)-Math.hypot(b.x-worldX,b.y-worldY))[0];
   }
   function setTarget(mob){selected=mob;draw(getRenderedSceneView(),movementTime());}
@@ -245,7 +245,7 @@ const IslandMonsters = (() => {
     mob.hp=Math.max(0,mob.hp-amount);
     CombatSound.monsterHit(mob);
     if(!mob.hp){
-      const [min,max]=mob.spawn.respawn;
+      window.Summons?.killed(mob);const [min,max]=mob.spawn.respawn;
       const respawn=movementTime()+1000*(Math.min(min,max)+Math.random()*Math.abs(max-min));
       mob.step=null;mob.respawnAt=respawn;
       if(mob.pack?.leader===mob&&mob.pack.group.removeWithLeader){
@@ -261,11 +261,11 @@ const IslandMonsters = (() => {
     IslandNpcAi.playerActive();
     for(const mob of mobs){
       if((mob.spawn.mapId||0)!==(window.activeMapId||0))continue;
-      if(!mob.hp){if(now<mob.respawnAt)continue;mob.hp=mob.spawn.npc.hp;mob.x=mob.homeX;mob.y=mob.homeY;IslandNpcAi.reset(mob);mob.reward=null;}
+      if(!mob.hp){if(mob.spawn.ally||now<mob.respawnAt)continue;mob.hp=mob.spawn.npc.hp;mob.x=mob.homeX;mob.y=mob.homeY;IslandNpcAi.reset(mob);mob.reward=null;}
       if(Math.max(Math.abs(worldX-mob.x),Math.abs(worldY-mob.y))<=Math.max(22,window.IslandCombat?.autoRange||22))advance(mob,now);
     }
   }
-  return {get residentPositions(){ensurePopulation();return mobs.filter(m=>m.spawn.resident).map(m=>({id:m.spawn.npcId,spawnId:m.spawn.spawnId,x:m.x,y:m.y,point:[...m.spawn.point],sourcePoint:[...(m.spawn.sourcePoint||m.spawn.point)],random:[...m.spawn.random]}))},get audit(){return {mapId:populationMap,spawned:mobs.length,sourceRows:islandMonsterSpawns.length,fullCounts:true}},occupied:(x,y)=>{ensurePopulation();const tick=Math.floor(movementTime()/50);if(tick!==occupancyTick){occupancyTick=tick;occupancy.clear();for(const m of mobs)if(m.hp){occupancy.add(m.x+","+m.y);if(m.step)occupancy.add(m.step.x+","+m.step.y)}}return occupancy.has(x+","+y)},around:(x,y,r)=>{ensurePopulation();return mobs.filter(m=>m.hp&&!m.spawn.resident&&(m.spawn.mapId||0)===(window.activeMapId||0)&&Math.max(Math.abs(m.x-x),Math.abs(m.y-y))<=r)},updateBackground,draw,selectAt,nearest,setTarget,damage,playEffect,serviceNearby:(id,range)=>mobs.some(m=>(m.spawn.mapId||0)===(window.activeMapId||0)&&m.spawn.resident&&m.spawn.npcId===id&&Math.max(Math.abs(m.x-worldX),Math.abs(m.y-worldY))<=range),get target(){return selected;}};
+  return {get residentPositions(){ensurePopulation();return mobs.filter(m=>m.spawn.resident).map(m=>({id:m.spawn.npcId,spawnId:m.spawn.spawnId,x:m.x,y:m.y,point:[...m.spawn.point],sourcePoint:[...(m.spawn.sourcePoint||m.spawn.point)],random:[...m.spawn.random]}))},get audit(){return {mapId:populationMap,spawned:mobs.length,sourceRows:islandMonsterSpawns.length,fullCounts:true}},occupied:(x,y)=>{ensurePopulation();const tick=Math.floor(movementTime()/50);if(tick!==occupancyTick){occupancyTick=tick;occupancy.clear();for(const m of mobs)if(m.hp){occupancy.add(m.x+","+m.y);if(m.step)occupancy.add(m.step.x+","+m.step.y)}}return occupancy.has(x+","+y)},around:(x,y,r)=>{ensurePopulation();return mobs.filter(m=>m.hp&&!m.spawn.resident&&!m.spawn.ally&&(m.spawn.mapId||0)===(window.activeMapId||0)&&Math.max(Math.abs(m.x-x),Math.abs(m.y-y))<=r)},addAlly:(mob)=>{ensurePopulation();if(!mobs.includes(mob))mobs.push(mob);return mob;},removeAlly:(mob)=>{const i=mobs.indexOf(mob);if(i>=0)mobs.splice(i,1);if(selected===mob)selected=null;},hasMob:(mob)=>mobs.includes(mob),updateBackground,draw,selectAt,nearest,setTarget,damage,playEffect,serviceNearby:(id,range)=>mobs.some(m=>(m.spawn.mapId||0)===(window.activeMapId||0)&&m.spawn.resident&&m.spawn.npcId===id&&Math.max(Math.abs(m.x-worldX),Math.abs(m.y-worldY))<=range),get target(){return selected;}};
 })();
 const drawIslandScene=draw;
 draw=function(now=movementTime()){

@@ -80,3 +80,14 @@
   新掛點：NativeCombatRules.defense().mr、DBGameRules.syncVitals 最大魔力、island-npc-ai 攻擊間隔（緩速）
   只有狀態：日光術、負重強化、尖刺盔甲、堅固防護、精準目標、王者加護、鏡反射、屬性防禦等屬性類、闇盲咒術、黑闇之影、風之神射（命中）
   仍未實作（使用時提示）：傳送、召喚、復活、變形、解毒、造屍、魔力奪取、心靈／魂體轉換等功能型技能
+
+召喚系統（2026-11-12）：
+  data/summons.js（Summons）召喚術、迷魅術、造屍術、召喚屬性精靈、召喚強力屬性精靈、釋放元素
+  規則取自 jar SUMMON_MONSTER／LESSER_ELEMENTAL／GREATER_ELEMENTAL：召喚術依等級（<32 哈柏哥布林 81210，每 4 級換下一種，≥52 魔熊 81228），
+  每隻佔 6、可用量＝魅力＋6；屬性精靈依妖精屬性 地 45306／81053、火 45303／81050、水 45304／81051、風 45305／81052，佔 7
+  迷魅術：DB tamable 且不高於自己等級；造屍術：20 秒內在 5 格內被打倒的怪物
+  召喚獸放在 IslandMonsters 的怪物清單（spawn.ally：照常繪圖、不能被點選攻擊、不重生、不存在地圖人口裡），
+  IslandMonsters.addAlly／removeAlly／hasMob；跟著玩家換地圖；攻擊玩家目標或正在追打玩家的怪物（距玩家 12 格內），
+  傷害用 NativeCombatRules.physical 對怪物 AC；走不過去時用 findWalkingPath；打倒怪物的經驗歸玩家
+  限制：怪物不會攻擊召喚獸；召喚獸不存檔（重整或換角色就消失）；召喚術／屬性精靈 1 小時後消失；沒有召喚控制戒指的選單
+  tools/native-monsters/build.js 另外切召喚獸與屬性精靈的圖
