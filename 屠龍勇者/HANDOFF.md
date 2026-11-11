@@ -5,7 +5,7 @@
 
 ## 1. 現況
 
-- **2026-11-11 團隊副本準備失敗 raid_members_snap_check（Claude，20261111a）**：快照上限 1MB＜存檔 2MB；**使用者要執行 tools/raid-snap-limit.sql** 放寬到 2MB，遊戲端改中文訊息（第 329 節）。
+- **2026-11-11 團隊副本準備失敗 raid_members_snap_check（Claude，20261111a）**：快照上限 1MB＜存檔 2MB；tools/raid-snap-limit.sql 使用者 11/11 已執行，放寬到 2MB，遊戲端改中文訊息（第 329 節）。
 - **2026-11-10 團隊副本結算 BUG（Claude，只改 SQL）**：boss-timer 補丁用 r.raid，勝利紀錄版只有 rid → 副本冷卻沒寫或副本獎勵整筆失敗；tools/raid-cd-fix.sql 使用者 11/10 已執行。另：約 40 支 test-*.js 因遊戲內容增加而期望值過期（待更新，第 328 節）。
 - **2026-11-09 天賦退點逾時第三次修正（Claude，20261109a）**：剖析量出寫存檔只要 0.08～0.44 秒，逾時是排隊等鎖；talent_action 先拿掉寶鎖再拿倉庫鎖、等鎖上限 4 秒（tools/talent-lock-fix.sql 使用者 11/10 已執行），遊戲端逾時自動用同一單號重試 3 次（第 327 節）。
 - **2026-11-08 天賦退點逾時主因修正（Claude，20261108e）**：vaultOp 原本觸發掉寶結算不等，結算鎖著 dragon_loot_state、寫存檔的 loot_save_guard 要等 → 逾時；改成先等結算完、操作中暫停結算（第 326 節）。診斷 SQL 仍可用。
