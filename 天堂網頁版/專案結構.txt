@@ -39,10 +39,12 @@
           龍之谷地監 1～7、巨蟻洞穴（43～51、541～543）、奇岩地監 1～4、伊娃王國地監 1～3、傲慢之塔 1～10
   2026-11-11 再轉剩下 75 張（城堡內城、船、海底隧道、伊娃王國、象牙塔、沉默洞穴、拉斯塔巴德全區、大洞穴、精靈墓穴、魔族神殿等），
           從 Map 0／4 走得到的 130 張全部完成，DB 傳送點已沒有「尚未開放」的目的地
-  尚未：城堡內城等地圖的 NPC（spawnlist_npc）還沒放；只有 .seg 沒有 .s32 的區塊（Map 3、6 各 1 塊）沒轉
+  NPC：spawnlist_npc 115 筆（城堡內城的守門人／管家／警衛、象牙塔／沉默洞穴／歐姆地監等商人、魔法傳授者），以常駐 NPC（resident）放入，
+       對話、商店沿用 IslandNpcServices；L1Bow（隱形射箭陷阱）不放，和 Map 0／4 一樣
+  尚未：只有 .seg 沒有 .s32 的區塊（Map 3、6 各 1 塊）沒轉
 
 地監怪物（2026-11-11）：
-  tools/native-monsters/build.js   DB spawnlist（130 張地圖 1,577 筆）＋從客戶端 Sprite*.pak 切怪物圖（spr.js 解 .spr、listspr.js 讀 Text.pak 的 list.spr 動作時間）
+  tools/native-monsters/build.js   DB spawnlist（130 張地圖 1,577 筆）＋spawnlist_npc（115 筆 NPC）＋從客戶端 Sprite*.pak 切怪物圖（spr.js 解 .spr、listspr.js 讀 Text.pak 的 list.spr 動作時間）
                                    用法：node tools/native-monsters/build.js；--check 拿新切的圖對照既有 Map 0／4 怪物（194 種裡 169 種位置誤差 ≤1px）
                                    動作對應：待機＝breath(3)、走路＝walk(0)、攻擊＝1、施法＝18／19、特殊＝30；時間單位 1/24 秒；腳底對齊＝全方向待機腳底中位數
   assets/native-monsters/dungeon-mob-<外觀>-<n>.png   新切的 36 種怪物圖（約 14 MB）

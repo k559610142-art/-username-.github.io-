@@ -59,6 +59,13 @@ const spawns = table('table-141.js').filter(r => maps.has(+r.mapid) && templates
   point: [+r.locx, +r.locy], random: [+r.randomx, +r.randomy], bounds: [+r.locx1, +r.locy1, +r.locx2, +r.locy2], heading: +r.heading || 0,
   respawn: [+r.min_respawn_delay, +r.max_respawn_delay], movement: +r.movement_distance || 0,
 }));
+// Town / castle NPCs (spawnlist_npc) become resident spawns like Map 0／4; L1Bow rows are invisible arrow traps and were never placed.
+const npcRows = table('table-147.js').filter(r => maps.has(+r.mapid) && templates[r.npc_templateid] && templates[r.npc_templateid].kind !== 'L1Bow' && +r.count > 0);
+for (const r of npcRows) spawns.push({
+  mapId: +r.mapid, spawnId: +r.id, zone: r.location, count: +r.count, npcId: +r.npc_templateid, group: 0,
+  point: [+r.locx, +r.locy], random: [+r.randomx, +r.randomy], bounds: [0, 0, 0, 0], heading: +r.heading || 0,
+  respawn: [+r.respawn_delay || 0, +r.respawn_delay || 0], movement: +r.movement_distance || 0, resident: true,
+});
 const looks = new Set(); for (const s of spawns) { looks.add(templates[s.npcId].gfx); for (const [id] of groups[s.group]?.members || []) if (templates[id]) looks.add(templates[id].gfx); }
 const need = [...looks].filter(g => !existing[g]).sort((a, b) => a - b);
 
