@@ -133,6 +133,14 @@ const IslandNpcAi = (() => {
   revive.style.cssText = 'position:absolute;z-index:18;left:50%;top:63%;transform:translateX(-50%);background:#231d12;color:#ffedbf;border:1px solid #b8924f;border-radius:6px;padding:12px 24px';
   revive.onclick = () => {
     if (!CharacterActions.dead || !CharacterActions.revive()) return;
+    // Converted dungeon maps: restart at the DB getback town (dungeon-portals.js), like the home scroll.
+    const dungeon = window.WorldMaps?.isDungeon(window.activeMapId || 0) && window.DungeonPortals?.homeTarget(NATIVE_DUNGEON_MAPS[window.activeMapId]);
+    const spot = dungeon?.points?.[Math.floor(Math.random() * dungeon.points.length)];
+    if (spot) {
+      revive.hidden = true; slowedUntil = cursedUntil = 0; immuneUntil = movementTime() + 3000;
+      WorldMaps.travel(dungeon.mapId, spot[0], spot[1]).then(ok => { if (ok) DungeonPortals.settle(); window.GameEntry?.saveActive(); });
+      return;
+    }
     worldX = island.spawn.x;
     worldY = island.spawn.y;
     resetMovementState();

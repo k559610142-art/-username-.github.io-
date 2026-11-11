@@ -38,3 +38,12 @@
   已轉換：冒險洞窟 1～2、古魯丁地監 1～7、妖精森林地監 1～3、傑瑞德試煉地監、風木城地監 1～2、騎士洞穴 1～4、
           龍之谷地監 1～7、巨蟻洞穴（43～51、541～543）、奇岩地監 1～4、伊娃王國地監 1～3、傲慢之塔 1～10
   尚未：地監裡沒有怪物；城堡內城、船、沉默洞穴、拉斯塔巴德等其餘 75 張可達地圖還沒轉
+
+地監怪物（2026-11-11）：
+  tools/native-monsters/build.js   DB spawnlist（55 張地監 330 筆、7,172 隻）＋從客戶端 Sprite*.pak 切怪物圖（spr.js 解 .spr、listspr.js 讀 Text.pak 的 list.spr 動作時間）
+                                   用法：node tools/native-monsters/build.js；--check 拿新切的圖對照既有 Map 0／4 怪物（194 種裡 169 種位置誤差 ≤1px）
+                                   動作對應：待機＝breath(3)、走路＝walk(0)、攻擊＝1、施法＝18／19、特殊＝30；時間單位 1/24 秒；腳底對齊＝全方向待機腳底中位數
+  assets/native-monsters/dungeon-mob-<外觀>-<n>.png   新切的 36 種怪物圖（約 14 MB）
+  data/dungeon-monster-data.js     地監生怪資料與新圖影格，載入時併進 islandMonsterSpawns／islandMonsterFrames（index.html 放在 island-monster-data.js 後面）
+  data/island-npc-ai.js            在地監死亡按「回村復活」→ DB getback 村莊（和回家卷軸同一套）
+  沒有圖的 9 種（客戶端沒有 .spr）：污濁蘑菇／歐吉／多羅／精靈／獨眼巨人／都達瑪拉妖魔／妖魔鬥士、背叛的妖魔隊長、怪手，共 355 隻不會出現
