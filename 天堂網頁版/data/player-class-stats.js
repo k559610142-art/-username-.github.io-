@@ -17,16 +17,16 @@ const PlayerClassStats = (() => {
       gearHp += hpr;
       gearMp += mpr;
     }
-    for(const key of Object.keys(attributes))attributes[key]+=equipmentSets[key]||0;
+    for(const key of Object.keys(attributes))attributes[key]+=(equipmentSets[key]||0)+(window.ClassBuffs?.stats()[key]||0);
     gearHp += equipmentSets.hpr;
     gearMp += equipmentSets.mpr;
     const con = attributes.con || 0, wis = attributes.wis || 0;
     const highStat = score => score >= 45 ? 5 : score >= 25 ? Math.trunc((score - 15) / 10) : 0;
     const hpDie = Math.max(1, (level < 12 ? 0 : con <= 17 ? 5 : 6 + Math.trunc((con - 12) / 2)) + highStat(base.con));
     const naturalMp = wis <= 9 ? 1 : 1 + Math.trunc((wis - 5) / 5);
-    const mpAmount = naturalMp + highStat(base.wis) + gearMp + (window.NativePotions?.recoveryBonus(wis,base.wis)||0);
+    const mpAmount = naturalMp + highStat(base.wis) + gearMp + (window.NativePotions?.recoveryBonus(wis,base.wis)||0) + (window.ClassBuffs?.mpr()||0);
     const hpMin = 1 + gearHp, hpMax = hpDie + gearHp;
-    return {attributes, level, weapon, sp:items.filter(e=>e.slot).reduce((n,e)=>n+(e.item.sourceRules?.add_sp||0),0)+(equipmentSets.sp||0)+(window.NativePotions?.spBonus||0), hpDie, gearHp, mpAmount, equipmentSets,
+    return {attributes, level, weapon, sp:items.filter(e=>e.slot).reduce((n,e)=>n+(e.item.sourceRules?.add_sp||0),0)+(equipmentSets.sp||0)+(window.NativePotions?.spBonus||0)+(window.ClassBuffs?.sp()||0), hpDie, gearHp, mpAmount, equipmentSets,
       meleeBonus: (job === '騎士' ? Math.trunc(level / 10) : 0)+(window.DBGameRules?.damageBonus(false)||0),
       rangedBonus: (job === '妖精' ? Math.trunc(level / 10) : 0)+(window.DBGameRules?.damageBonus(true)||0),
       hpRecoveryText: (hpMin === hpMax ? hpMin : hpMin + '～' + hpMax) + ' HP／次',

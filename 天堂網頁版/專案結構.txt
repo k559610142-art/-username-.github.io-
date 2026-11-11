@@ -64,4 +64,9 @@
   assets/entry/class-<外觀>.png    建角立繪暫用角色本身的像素圖放大（沒有官方插畫）
   職業技能：tools/class-skills/build.js → data/extra-class-skills.js（47 個技能、47 本技能書：龍騎士書板 49102～49116、記憶水晶 49117～49136、戰士的印記 49950～49961）
             學習等級取自 jar Skill_Studying（龍騎士 15／30／45、幻術師 10／20／30／40、戰士 15～82）
-            可施放：直接攻擊型的岩漿噴吐、岩漿之箭、奪命之雷、粉碎能量、骷髏毀壞；其餘輔助／被動技能可學、使用時提示效果尚未實作
+            可施放：直接攻擊型的岩漿噴吐、岩漿之箭、奪命之雷、粉碎能量、骷髏毀壞
+  data/class-buffs.js（ClassBuffs）三職業輔助／被動／控場技能效果，數值取自 jar skillmode／L1SkillUse／L1AttackList／L1AttackPc／L1AttackNpc；
+            掛在 DBGameRules.damageBonus／reduction／syncVitals、NativeCombatRules.armorClass／defense、PlayerClassStats、island-combat 打擊、
+            island-npc-ai 受擊（反擊、沉默、定身），IslandMonsters.around(x,y,r) 給範圍技能；左上角顯示生效中的技能圖示（不存檔，重整或死亡清除）
+            網頁版沒有命中與怪物防禦計算：護衛毀滅、恐懼無助、驚悚死神、恐慌、覺醒：巴拉卡斯（命中）、覺醒：法利昂、暴龍之眼、隱身破壞者、
+            立方：地裂／衝擊／和諧、咆哮、迅猛雙斧、疼痛的歡愉 只有狀態沒有數值效果

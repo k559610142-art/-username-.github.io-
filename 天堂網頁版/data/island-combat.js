@@ -62,7 +62,7 @@ const IslandCombat=(()=>{
     if(bow&&!OwnedInventory.consumeArrow()){stop();return false;}
     const profile=PlayerClassStats.read();
     const weaponMax=Math.max(1,profile.weapon?.damage[0]||2);
-    const damage=1+Math.floor(Math.random()*weaponMax)+(bow?profile.rangedBonus:profile.meleeBonus)+DBGameRules.weaponProc(mob);
+    const damage=1+Math.floor(Math.random()*weaponMax)+(bow?profile.rangedBonus:profile.meleeBonus)+DBGameRules.weaponProc(mob)+(window.ClassBuffs?.onHit(mob,bow)||0);
     pending={mob,damage,at:movementTime()+characterActionState.duration*.4};
     window.TdjSystems?.onAttack();
     return true;

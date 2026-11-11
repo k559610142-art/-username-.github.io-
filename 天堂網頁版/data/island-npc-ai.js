@@ -70,7 +70,8 @@ const IslandNpcAi = (() => {
       return;
     }
     const result=NativeCombatRules.resolve(mob,skill);if(!result.hit||result.damage<=0)return;
-    CharacterActions.damage(result.damage, {
+    const dealt=window.ClassBuffs?ClassBuffs.onHurt(mob,result.damage,skill):result.damage;if(dealt<=0)return;
+    CharacterActions.damage(dealt, {
       animate: !movementAnimating() && !navigationPath.length && !characterMovementBlocked()
     });
   }
@@ -105,7 +106,7 @@ const IslandNpcAi = (() => {
       return true;
     }
     if (now < mob.ready) return true;
-    const skill = clear ? pickSkill(mob, gap, now, basicRange) : null;
+    const skill = clear && !window.ClassBuffs?.silenced(mob) ? pickSkill(mob, gap, now, basicRange) : null;
     if (clear && (skill || gap <= basicRange)) {
       const dx = Math.sign(worldX - mob.x), dy = Math.sign(worldY - mob.y);
       const heading = steps.findIndex(([x, y]) => x === dx && y === dy);
@@ -120,7 +121,7 @@ const IslandNpcAi = (() => {
       CombatSound.monsterAttack(mob,skill,duration);
       mob.windup = {skill, range: skill ? range(skill, basicRange) : basicRange, at: now + duration * .45};
       mob.ready = now + duration;
-    } else {
+    } else if (!window.ClassBuffs?.rooted(mob)) {
       stepToward(mob, worldX, worldY, now);
     }
     return true;
