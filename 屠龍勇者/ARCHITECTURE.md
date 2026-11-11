@@ -5042,3 +5042,10 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 玩家按「準備」出現 `new row for relation "raid_members" violates check constraint "raid_members_snap_check"`。準備時把整份角色（`raidSnapshot()`，不含倉庫）寫進 `raid_members.snap`，限制 `pg_column_size(snap) < 1000000`，但存檔 `dragon_saves.data` 上限是 2MB → 資料大的角色存得了卻準備不了。
 - 修正：使用者在 SQL Editor 執行 `tools/raid-snap-limit.sql`，約束改成 < 2000000（快照是存檔的子集，能存檔就放得下）；`supabase.sql` 建表定義同步。遊戲端 `raidErr` 遇到這個約束顯示中文「角色資料太大…」。
 - 之後若想省流量，可再把 `raidSnapshot` 瘦身（只留戰鬥模擬用到的欄位），要先確認 `raidSimulate` 用到哪些欄位。
+
+## 330. 地圖排程自動打造改成洗到乾淨為止（2026-11-11，版本 `20261111b`；`map-queue.js` 的 `mapCraftAuto`／`mapCraftHtml`）
+
+- 使用者回報「刷到不要的地圖不會洗掉，換新的未鑑定地圖」：原設計每張最多用 `max`（預設 5）顆，用完仍有不要詞綴就略過（`giveup`）。使用者決定改成**洗到乾淨為止**。
+- `mapCraftAuto`：拿掉每張上限 `used < c.max`，只受「每種通貨保留 N 顆」限制；通貨不夠才停，停下後仍照「通貨用完仍有不要的詞綴就略過這張」決定略過或照開。設定畫面拿掉「每張最多用 N 顆」（`c.max` 仍保留在設定裡但不再使用）。
+- 防燒光：勾選的不要詞綴太多、不可能洗乾淨時不洗——魔法地圖至少要 1 種、稀有地圖至少要 4 種沒勾（稀有 3～4 條詞綴，`rollMapMods` 不重複）。
+- 本機模擬 40 張 T1 未鑑定：勾 4 種、通貨充足 → 全部洗乾淨開圖（約 12 重鑄石、187 混沌石）；沒有混沌石 → 稀有圖略過；勾 6 種 → 稀有不洗直接略過、魔法照洗；保留 3 顆、只有 3 顆 → 不用通貨。

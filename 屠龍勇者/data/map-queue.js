@@ -164,12 +164,14 @@ function mapCraftSet(k, v) {
 function mapCraftAuto(x) {
     const c = mapCraftCfg();
     if (!c.on || isTreasureMap(x) || x.unidentified === true) return 'open';
-    let used = 0;
-    const use = cid => countItem(cid) > c.keep && used < c.max && currencyCan(cid, x) && !useCurrency(cid, x.uid) && ++used;
+    let used = 0;   // 洗到乾淨為止，沒有每張上限；通貨不夠（扣掉保留數）才停（使用者 2026-11-11，第 330 節）
+    const use = cid => countItem(cid) > c.keep && currencyCan(cid, x) && !useCurrency(cid, x.uid) && ++used;
     if (!x.q && c.aug) use('curAug');
     if (x.q === 'magic' && c.regal) use('curRegal');
     const dirty = () => (x.mm || []).some(k => c.bad.includes(k));
-    while (dirty() && use(x.q === 'magic' ? 'curAlt' : 'curChaos'));
+    // 不要的詞綴勾太多、這個品質不可能洗乾淨（魔法至少要 1 種、稀有至少要 4 種可接受詞綴）→ 不洗，免得把通貨全部燒光
+    const okKinds = MAP_MOD_KEYS.length - c.bad.length, canClean = x.q === 'magic' ? okKinds >= 1 : okKinds >= 4;
+    if (canClean) while (dirty() && use(x.q === 'magic' ? 'curAlt' : 'curChaos'));
     if (used) addLog(`📋 自動打造：用了 ${used} 顆通貨 → ${itemName(x)}`, 'sys');
     return dirty() && c.giveup ? 'skip' : 'open';
 }
@@ -177,12 +179,12 @@ function mapCraftHtml() {
     const c = mapCraftCfg(), chk = (k, on) => `${on ? 'checked' : ''} onchange="mapCraftSet('${k}',this.checked)"`;
     return `<div class="panel map-craft"><b>⚒️ 自動打造地圖（全部排程共用）</b><small class="muted">每次輪到一張地圖才處理那一張：未鑑定先自動鑑定，再依下面設定用通貨洗詞綴。傳奇財寶圖不改造。</small>
         <label class="set-row"><span>啟用自動打造</span><input type="checkbox" ${chk('on', c.on)}></label>
-        <small>❌ 勾選不要的詞綴（出現就用通貨重洗：魔法用重鑄石、稀有用混沌石）</small>
+        <small>❌ 勾選不要的詞綴（出現就用通貨重洗到乾淨為止：魔法用重鑄石、稀有用混沌石；稀有地圖至少要留 4 種沒勾才會洗）</small>
         <div class="map-craft-mods">${MAP_MOD_KEYS.map(k => `<label class="map-craft-mod"><input type="checkbox" ${chk(k, c.bad.includes(k))}><span>${MAP_MODS[k].icon} ${MAP_MODS[k].name}<small>${esc(MAP_MODS[k].desc)}</small></span></label>`).join('')}</div>
         <label class="set-row"><span>普通地圖用點化石升成魔法</span><input type="checkbox" ${chk('aug', c.aug)}></label>
         <label class="set-row"><span>魔法地圖用晉升石升成稀有</span><input type="checkbox" ${chk('regal', c.regal)}></label>
-        <div class="btn-row"><label>每張最多用 <input type="number" inputmode="numeric" min="0" max="99" value="${c.max}" onchange="mapCraftSet('max',this.value)"> 顆</label><label>每種通貨保留 <input type="number" inputmode="numeric" min="0" value="${c.keep}" onchange="mapCraftSet('keep',this.value)"> 顆不用</label></div>
-        <label class="set-row"><span>用到上限仍有不要的詞綴就略過這張（不勾＝照樣開圖）</span><input type="checkbox" ${chk('giveup', c.giveup)}></label></div>`;
+        <div class="btn-row"><label>每種通貨保留 <input type="number" inputmode="numeric" min="0" value="${c.keep}" onchange="mapCraftSet('keep',this.value)"> 顆不用</label></div>
+        <label class="set-row"><span>通貨用完仍有不要的詞綴就略過這張（不勾＝照樣開圖）</span><input type="checkbox" ${chk('giveup', c.giveup)}></label></div>`;
 }
 function mapQueueSupplyReason() {
     if (barHealAuto() && healPotionCount() === 0) return '藥水用完，請先補給';
