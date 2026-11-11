@@ -4,7 +4,7 @@ const navigationDirections=[[1,-1],[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1],[0,-1
 let walkingSearch=null;
 function findWalkingPath(startX,startY,targetX,targetY){
  const ox=island.startX,oy=island.startY,w=island.width,h=island.height,cell=tile(targetX,targetY);
- if(!Number.isInteger(targetX)||!Number.isInteger(targetY)||!cell||(cell&128))return null;
+ if(!Number.isInteger(targetX)||!Number.isInteger(targetY)||(!cell||(cell&128))&&!window.NativeCollision?.isEntrance(window.activeMapId||0,targetX,targetY))return null;
  if(startX===targetX&&startY===targetY)return [];
  if(window.NavigationConnectivity&&!NavigationConnectivity.canReach(startX,startY,targetX,targetY))return null;
  const straight=[];let sx=startX,sy=startY;

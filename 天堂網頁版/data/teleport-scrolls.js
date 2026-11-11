@@ -18,8 +18,17 @@ const TeleportScrolls=(()=>{
   const key=window.activeCharacterId+'/'+(rule.delayId||entry.key),now=movementTime();if(now<(cooldowns.get(key)||0))return false;
   if(!home&&!destination&&!random&&canSelect(entry,rule)&&window.Bookmarks){Bookmarks.open({scrollUid:uid});return true;}
   if(destination&&!canSelect(entry,rule))return false;
+  // Converted dungeon maps (dungeon-portals.js): home goes to the DB getback town, usually on another map.
+  const cross=home&&map.homeTarget?map.homeTarget():null;
+  if(cross&&cross.mapId!==(window.activeMapId||0)){
+   const spots=cross.points.filter(([x,y])=>{const t=WorldMaps.cell(cross.mapId,x,y);return t&&!(t&128);}),spot=spots[Math.floor(Math.random()*spots.length)]||cross.points[0];if(!spot)return false;
+   const next=OwnedInventory.snapshot,index=next.findIndex(e=>e.uid===uid);if(--next[index].count===0)next.splice(index,1);
+   cooldowns.set(key,now+(rule.delayMs||0));
+   WorldMaps.travel(cross.mapId,spot[0],spot[1],next).then(ok=>{if(!ok){cooldowns.delete(key);return;}window.DungeonPortals?.settle();if(window.playerItemState)playerItemState.absoluteBarrier=false;IslandMonsters.playEffect(169,worldX,worldY,movementTime());}).catch(()=>{cooldowns.delete(key);toast('回家失敗，物品未消耗。');});
+   return true;
+  }
   const region=home?map.homeRegions?.find(r=>worldX>=r.bounds[0]&&worldY>=r.bounds[1]&&worldX<=r.bounds[2]&&worldY<=r.bounds[3]):null;
-  const homeChoices=home?((job==='妖精'&&region?.locationsElf?region.locationsElf:region?.locations)||map.homeLocations||[]).filter(([x,y])=>canLand(x,y)):[];
+  const homeChoices=home?((job==='妖精'&&region?.locationsElf?region.locationsElf:region?.locations)||cross?.points||map.homeLocations||[]).filter(([x,y])=>canLand(x,y)):[];
   const homeSpot=homeChoices[Math.floor(Math.random()*homeChoices.length)];
   const position=home?(homeSpot?{x:homeSpot[0],y:homeSpot[1]}:null):destination?Bookmarks.find(destination):landing();if(!position)return false;
   if(destination&&(position.mapId!==(window.activeMapId||0)||!canLand(position.x,position.y))){toast('該座標目前無法抵達，物品未消耗。');return false;}

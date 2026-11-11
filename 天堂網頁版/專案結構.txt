@@ -24,3 +24,17 @@
   data/client-classic-hud.js           底部介面改用 431 原版圖（遊戲畫面寬 ≥ 760、高 ≥ 480 才啟用，最寬 900；手機直向維持原介面）
   tools/client-pak/                    讀天地劫天堂 .idx/.pak（l1pak.js，Text.pak 有加密，對照表 maps.json 取自開源 PakViewer）、.img 轉 PNG（img2png.js，綠色 0x3E0／0x7E0 為透明）、
                                        依檔名抽圖（extract.js："node tools/client-pak/extract.js C:/Users/User/Desktop/天地劫天堂 assets/interface/client-ui 532.img"）
+
+地監樓梯上下（2026-11-11）：
+  tools/native-map/build.js        把客戶端 map/<id>/*.s32＋Tile.pak 轉成 assets/native-world/<id>/ 區塊，新圖塊接在 atlas64 後面，產生 data/native-dungeon-maps.js
+                                   用法：node tools/native-map/build.js 1 2 7 8 …（預設客戶端 C:/Users/User/Desktop/天地劫天堂、伺服器 maps 在 天地劫天堂(核心)/maps）
+                                   格式說明在 tools/native-map/formats.js 開頭；已對照 Map 0／4 原轉換逐位元組一致（624 個 S32、6,011 個抽樣圖塊）
+                                   重轉同一張地圖會沿用原本的圖塊編號，不會多出重複頁；新地圖不產生 file:// 用的 .json.js／.png.js
+  data/native-dungeon-maps.js      55 張地圖：名稱、範圍、伺服器通行（maps/<id>.txt）、S32 通行、DB mapids 規則、getback 回家點（RLE）
+  data/dungeon-portals.js          讀 DB dungeon／dungeon_random，踩到入口格就換地圖；沒轉換的目的地只提示「尚未開放」；入口格一律可以從旁邊走進去
+  data/world-maps.js               Map 0／4 以外的地圖從 native-dungeon-maps.js 建立；WorldMaps.travel(map,x,y,inventory) 跨地圖移動
+  data/teleport-scrolls.js         在地監用回家卷軸 → DB getback 村莊（通常在 Map 0／4）
+  data/map-overview.js             地監的「目前區域」用通行資料畫小地圖，金點＝樓梯／出入口
+  已轉換：冒險洞窟 1～2、古魯丁地監 1～7、妖精森林地監 1～3、傑瑞德試煉地監、風木城地監 1～2、騎士洞穴 1～4、
+          龍之谷地監 1～7、巨蟻洞穴（43～51、541～543）、奇岩地監 1～4、伊娃王國地監 1～3、傲慢之塔 1～10
+  尚未：地監裡沒有怪物；城堡內城、船、沉默洞穴、拉斯塔巴德等其餘 75 張可達地圖還沒轉
