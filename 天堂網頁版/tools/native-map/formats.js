@@ -29,4 +29,17 @@ function decodeBlock(til, idx) {
   }
   return { type, px };
 }
-module.exports = { parseS32, decodeBlock };
+// SEG (older map blocks, used where no .s32 exists): same layers with byte-sized tile references —
+// floor 8192 × [u8 block, u8 til], u16 n × [x, y, block, til], 8192 × u8 attributes, i32 groups × (u16 id, u16 n, n × [x, y, layer, block, til]),
+// i32 events × [x, y, u16 group, u8 type]. Checked against the 39 SEG chunks of the original Map 4 conversion.
+function parseSeg(buf) {
+  let o = 0;
+  const u8 = () => buf[o++], u16 = () => { const v = buf.readUInt16LE(o); o += 2; return v; }, i32 = () => { const v = buf.readInt32LE(o); o += 4; return v; };
+  const floor = []; for (let i = 0; i < 8192; i++) { const idx = u8(), til = u8(); floor.push([til, idx]); }
+  const extra = []; for (let i = 0, n = u16(); i < n; i++) { const x = u8(), y = u8(), idx = u8(), til = u8(); extra.push([x, y, til, idx]); }
+  const attrs = []; for (let i = 0; i < 8192; i++) attrs.push(u8());
+  const groups = []; for (let i = 0, n = i32(); i < n; i++) { const gid = u16(), bc = u16(), blocks = []; for (let k = 0; k < bc; k++) { const x = u8(), y = u8(), layer = u8(), idx = u8(), til = u8(); blocks.push([x, y, layer, til, idx]); } groups.push([gid, blocks]); }
+  const events = []; for (let i = 0, n = i32(); i < n; i++) events.push([u8(), u8(), u16(), u8()]);
+  return { floor, extra, attrs, groups, events };
+}
+module.exports = { parseS32, parseSeg, decodeBlock };

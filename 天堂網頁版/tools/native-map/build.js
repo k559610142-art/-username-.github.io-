@@ -1,13 +1,14 @@
 // Convert original client maps (map/<id>/*.s32 + Tile.pak) into assets/native-world/<id>/ chunks,
 // append the new TIL blocks to the atlas64 pages, and write data/native-dungeon-maps.js
 // (map name, bounds, server passability from <core>/maps/<id>.txt, collision from S32 attributes, DB map rules).
-// Formats were checked against the existing Map 0/4 conversion: all 624 S32 chunks and 6,011 sampled tiles match byte-for-byte.
+// Formats were checked against the existing Map 0/4 conversion: all 624 S32 + 39 SEG chunks and 6,011 sampled tiles match byte-for-byte.
 // Usage: node tools/native-map/build.js [--client DIR] [--core DIR] 1 2 7 8 ...
 const fs = require('fs'), path = require('path'), vm = require('vm'), crypto = require('crypto');
 const ROOT = path.resolve(__dirname, '../..');
 const { openPak } = require('../client-pak/l1pak.js');
 const { rgbaPng } = require('../client-pak/img2png.js');
-const { parseS32, decodeBlock } = require('./formats.js');
+const { parseS32, parseSeg, decodeBlock } = require('./formats.js');
+const parseBlock = (name, buf) => /\.seg$/i.test(name) ? parseSeg(buf) : parseS32(buf);
 
 const args = process.argv.slice(2), opt = { client: 'C:/Users/User/Desktop/天地劫天堂', core: 'C:/Users/User/Desktop/天地劫天堂(核心)' }, ids = [];
 for (let i = 0; i < args.length; i++) { if (args[i] === '--client') opt.client = args[++i]; else if (args[i] === '--core') opt.core = args[++i]; else ids.push(+args[i]); }
@@ -27,7 +28,13 @@ const mapids = new Map(table('table-078.js').map(r => [+r.mapid, r]));
 const dungeon = table('table-054.js'), getback = table('table-072.js');
 
 const chunkPos = name => { const hi = parseInt(name.slice(0, 4), 16), lo = parseInt(name.slice(4, 8), 16); return [32704 + (hi - 0x7fff) * 64, 32704 + (lo - 0x7fff) * 64]; };
-const s32Files = id => { const dir = path.join(opt.client, 'map', String(id)); return fs.existsSync(dir) ? fs.readdirSync(dir).filter(f => /^[0-9a-f]{8}\.s32$/i.test(f)).sort() : []; };
+// One file per 64×64 block: the .s32 when present, otherwise the older .seg.
+const s32Files = id => {
+  const dir = path.join(opt.client, 'map', String(id)); if (!fs.existsSync(dir)) return [];
+  const by = new Map();
+  for (const f of fs.readdirSync(dir).filter(f => /^[0-9a-f]{8}\.(s32|seg)$/i.test(f))) { const k = f.slice(0, 8).toLowerCase(); if (!by.has(k) || /\.s32$/i.test(f)) by.set(k, f); }
+  return [...by.values()].sort();
+};
 
 // 1. Existing (til, block) -> atlas id, rebuilt from every converted S32 chunk.
 const tileIds = new Map(); let pairs = 0;
@@ -35,9 +42,9 @@ const keyOf = (til, idx) => til * 256 + idx;
 for (const [mid, m] of Object.entries(manifest.maps)) { // includes maps being rebuilt, so their tiles keep the same ids
   for (const [, , name] of m.chunks) {
     const file = path.join(NW, mid, name + '.json'); if (!fs.existsSync(file)) continue;
-    const j = JSON.parse(fs.readFileSync(file, 'utf8')); if (!/\.s32$/i.test(j.source)) continue;
+    const j = JSON.parse(fs.readFileSync(file, 'utf8')); if (!/\.(s32|seg)$/i.test(j.source)) continue;
     const src = path.join(opt.client, 'map', mid, j.source); if (!fs.existsSync(src)) continue;
-    const r = parseS32(fs.readFileSync(src));
+    const r = parseBlock(j.source, fs.readFileSync(src));
     r.floor.forEach(([til, idx], i) => tileIds.set(keyOf(til, idx), j.floor[i]));
     r.extra.forEach(([, , til, idx], i) => tileIds.set(keyOf(til, idx), j.extra[i * 3 + 2]));
     r.groups.forEach(([, blocks], g) => blocks.forEach(([, , , til, idx], k) => tileIds.set(keyOf(til, idx), j.groups[g][1][k * 4 + 3])));
@@ -52,7 +59,10 @@ const til = n => { if (!tilCache.has(n)) { const r = pakByName.get(n + '.til'); 
 let nextId = manifest.atlas.length * PER; const newTiles = []; const blend = new Set(manifest.blendTiles || []);
 function idFor(t, idx) {
   const k = keyOf(t, idx); if (tileIds.has(k)) return tileIds.get(k);
-  const data = til(t), d = data && decodeBlock(data, idx);
+  const data = til(t); let d = data && decodeBlock(data, idx);
+  // type&8 blocks (47.til on the ship maps 5／6／83) are the client's sea placeholder — a white "o" pattern the game covers with water.
+  // Draw Talking Island's open-sea halves (1310.til blocks 94／95, Map 0) instead.
+  if (d && d.type & 8) d = { type: d.type, px: decodeBlock(til(1310), 94 + (d.type & 1)).px };
   const id = nextId++; tileIds.set(k, id); newTiles.push([id, d ? d.px : Buffer.alloc(64 * 64 * 4)]);
   if (d && d.type & 0x20) blend.add(id);
   return id;
@@ -71,7 +81,7 @@ for (const id of ids) {
   for (const f of files) {
     const name = f.slice(0, 8).toLowerCase(), [cx, cy] = chunkPos(name), buf = fs.readFileSync(path.join(opt.client, 'map', String(id), f));
     if (cx + 64 <= startX || cy + 64 <= startY || cx >= startX + width || cy >= startY + height) continue;
-    const r = parseS32(buf);
+    const r = parseBlock(f, buf);
     const j = {
       x: cx, y: cy,
       floor: r.floor.map(([t, i]) => idFor(t, i)),
@@ -115,5 +125,5 @@ manifest.tileBlocks = manifest.atlas.length * PER; manifest.blendTiles = [...ble
 fs.writeFileSync(MANIFEST, JSON.stringify(manifest));
 fs.writeFileSync(MANIFEST + '.js', "window.__nativeWorldReceive('manifest-atlas64.json'," + JSON.stringify(manifest) + ');');
 const sorted = Object.fromEntries(Object.entries(out).sort((a, b) => a[0] - b[0]));
-fs.writeFileSync(DATA, '// Generated by tools/native-map/build.js: dungeon/indoor maps beyond Map 0／4 (bounds, server passability, S32 collision, DB rules). Runs are [value,count,...].\nwindow.NATIVE_DUNGEON_MAPS_VERSION=' + JSON.stringify(manifest.atlas.length + '-' + Object.keys(sorted).length) + ';\nwindow.NATIVE_DUNGEON_MAPS=' + JSON.stringify(sorted) + ';\n');
+fs.writeFileSync(DATA, '// Generated by tools/native-map/build.js: dungeon/indoor maps beyond Map 0／4 (bounds, server passability, S32 collision, DB rules). Runs are [value,count,...].\nwindow.NATIVE_DUNGEON_MAPS_VERSION=' + JSON.stringify(manifest.atlas.length + '-' + Object.keys(sorted).length + '-' + Object.values(manifest.maps).reduce((n, m) => n + m.chunks.length, 0)) + ';\nwindow.NATIVE_DUNGEON_MAPS=' + JSON.stringify(sorted) + ';\n');
 console.log('新增圖塊', newTiles.length, '新頁', pages.size, '目前頁數', manifest.atlas.length);
