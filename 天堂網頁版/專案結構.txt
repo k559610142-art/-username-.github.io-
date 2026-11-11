@@ -65,8 +65,18 @@
   職業技能：tools/class-skills/build.js → data/extra-class-skills.js（47 個技能、47 本技能書：龍騎士書板 49102～49116、記憶水晶 49117～49136、戰士的印記 49950～49961）
             學習等級取自 jar Skill_Studying（龍騎士 15／30／45、幻術師 10／20／30／40、戰士 15～82）
             可施放：直接攻擊型的岩漿噴吐、岩漿之箭、奪命之雷、粉碎能量、骷髏毀壞
-  data/class-buffs.js（ClassBuffs）三職業輔助／被動／控場技能效果，數值取自 jar skillmode／L1SkillUse／L1AttackList／L1AttackPc／L1AttackNpc；
+  data/class-buffs.js（ClassBuffs）七職業輔助／被動／控場技能效果（2026-11-12 起含王族、騎士、妖精、法師；效果表 SELF／TARGET），數值取自 jar skillmode／L1SkillUse／L1AttackList／L1AttackPc／L1AttackNpc；
             掛在 DBGameRules.damageBonus／reduction／syncVitals、NativeCombatRules.armorClass／defense、PlayerClassStats、island-combat 打擊、
             island-npc-ai 受擊（反擊、沉默、定身），IslandMonsters.around(x,y,r) 給範圍技能；左上角顯示生效中的技能圖示（不存檔，重整或死亡清除）
             網頁版沒有命中與怪物防禦計算：護衛毀滅、恐懼無助、驚悚死神、恐慌、覺醒：巴拉卡斯（命中）、覺醒：法利昂、暴龍之眼、隱身破壞者、
             立方：地裂／衝擊／和諧、咆哮、迅猛雙斧、疼痛的歡愉 只有狀態沒有數值效果
+
+原四職業輔助技能（2026-11-12）：
+  data/class-buffs.js 效果表加入 保護罩、神聖武器、擬似／祝福魔法武器、鎧甲護持、通暢氣脈術、體魄強健術、加速術、強力加速術、神聖疾走、狂暴術、
+  魔法屏障（擋一次怪物魔法）、冥想術、聖結界（傷害減半）、絕對屏障、靈魂昇華（最大血魔 +20%）、增幅防禦、反擊屏障（25% 反彈）、
+  灼熱武器、閃亮之盾、勇猛意志、魔法防禦、淨化精神、火焰／烈炎武器、暴風之眼、暴風神射、大地防護、鋼鐵防護、水之防護、風之疾走；
+  對怪物：毒咒（每 3 秒 5）、緩速術／集體緩速術／風之枷鎖（攻擊變慢 1.33 倍）、木乃伊的詛咒／沉睡之霧／大地屏障（不能行動）、
+  弱化術（怪物傷害 −5）、疾病術（−6）、魔法封印／封印禁地（不能放技能）、地面障礙（不能移動）
+  新掛點：NativeCombatRules.defense().mr、DBGameRules.syncVitals 最大魔力、island-npc-ai 攻擊間隔（緩速）
+  只有狀態：日光術、負重強化、尖刺盔甲、堅固防護、精準目標、王者加護、鏡反射、屬性防禦等屬性類、闇盲咒術、黑闇之影、風之神射（命中）
+  仍未實作（使用時提示）：傳送、召喚、復活、變形、解毒、造屍、魔力奪取、心靈／魂體轉換等功能型技能

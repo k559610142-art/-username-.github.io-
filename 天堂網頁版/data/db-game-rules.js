@@ -153,7 +153,7 @@ const DBGameRules = (() => {
     const equipped=OwnedInventory.items.filter(e=>e.slot),sets=EquipmentSets.read(equipped);
     const poly=rows('system_poly_orginal').find(r=>r.gfxId===window.activeTransformCard?.p?.gfx);
     maxHp=Math.max(1,activeVitalGrowth.maxHp+(sets.hp||0)+equipped.reduce((s,e)=>s+(e.item.bonuses.hp||0),0)+(poly?.addMaxHP||0)+(window.ClassBuffs?.maxHp()||0));
-    maxMp=Math.max(0,activeVitalGrowth.maxMp+(sets.mp||0)+equipped.reduce((s,e)=>s+(e.item.bonuses.mp||0),0)+(poly?.addMaxMP||0));
+    maxMp=Math.max(0,activeVitalGrowth.maxMp+(sets.mp||0)+equipped.reduce((s,e)=>s+(e.item.bonuses.mp||0),0)+(poly?.addMaxMP||0)+(window.ClassBuffs?.maxMp()||0));
     hp=Math.min(hp,maxHp);mp=Math.min(mp,maxMp);
   }
   function reduction(){

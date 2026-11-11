@@ -27,15 +27,16 @@ const PlayerSkills = (() => {
   }
   function supports(id){
     const skill=skills[id];
-    // 龍騎士／幻術師／戰士 (id ≥ 181, data/extra-class-skills.js): only direct attack skills with DB damage are cast here;
-    // their buffs／debuffs (damage field used as power) are not implemented yet.
-    if(id>=181)return !!skill&&(skill.target==='attack'&&skill.damage.some(Boolean)||!!window.ClassBuffs?.handles(id));
+    // Support／debuff／passive skills of every class go to data/class-buffs.js (ClassBuffs). Here: direct damage and healing;
+    // for 龍騎士／幻術師／戰士 (id ≥ 181) the DB damage field of buffs is a power value, so only target 'attack' counts.
+    if(window.ClassBuffs?.handles(id))return !!skill;
+    if(id>=181)return !!skill&&skill.target==='attack'&&skill.damage.some(Boolean);
     return !!skill&&(skill.damage.some(Boolean)||id===87);
   }
   function cast(id){
     const skill=skills[id];
-    if(skill&&knows(id)&&id>=181&&!supports(id))return errors('「'+skill.name+'」的效果尚未實作。');
-    if(skill&&id>=181&&window.ClassBuffs?.handles(id))return ClassBuffs.cast(id);
+    if(skill&&knows(id)&&!supports(id))return errors('「'+skill.name+'」的效果尚未實作。');
+    if(skill&&window.ClassBuffs?.handles(id))return ClassBuffs.cast(id);
     if(!skill||!knows(id)||!supports(id)||CharacterActions.dead||window.gameFlowState!=='playing'||
       characterMovementBlocked()||movementAnimating()||!TransformCards.canCast)return false;
     const now=movementTime();

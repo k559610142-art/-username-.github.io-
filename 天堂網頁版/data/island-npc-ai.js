@@ -120,7 +120,7 @@ const IslandNpcAi = (() => {
       mob.action = {clip: skill?.type === 2 ? 'cast' : skill?.action === 30 ? 'special' : 'attack', start: now, end: now + duration};
       CombatSound.monsterAttack(mob,skill,duration);
       mob.windup = {skill, range: skill ? range(skill, basicRange) : basicRange, at: now + duration * .45};
-      mob.ready = now + duration;
+      mob.ready = now + duration * (window.ClassBuffs?.slowed(mob) ? 1.33 : 1);
     } else if (!window.ClassBuffs?.rooted(mob)) {
       stepToward(mob, worldX, worldY, now);
     }
