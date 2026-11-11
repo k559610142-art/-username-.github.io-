@@ -13,7 +13,7 @@ function parseList(text) {
       actions[+a[1]] = { name: a[2].trim(), dirs: +a[3], frames };
     }
     const ref = body.match(/(\d+)\.\w[^(]*\((\d+)\)/g);
-    out.set(gfx, { gfx, sprites: +m[2], name: (name || '').trim(), actions, raw: body.slice(0, 400) });
+    out.set(gfx, { gfx, sprites: +m[2], name: (name || '').trim(), actions, raw: body });
   }
   return out;
 }

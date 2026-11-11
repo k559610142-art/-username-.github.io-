@@ -66,7 +66,7 @@ const DBGameRules = (() => {
     return true;
   }
   function starter(role,existing){
-    const next=clone(existing),code={'王族':'P','騎士':'K','法師':'W','妖精':'E'}[role];
+    const next=clone(existing),code={'王族':'P','騎士':'K','法師':'W','妖精':'E','龍騎士':'R','幻術師':'I','戰士':'F'}[role];
     for(const row of rows('beginner')){
       if(row.count<=0||!['A',code].includes(row.activate))continue;
       if(!add(next,keyFor(row.item_id),row.count,row.enchantlvl))throw Error('新手道具設定錯誤：'+row.item_id);

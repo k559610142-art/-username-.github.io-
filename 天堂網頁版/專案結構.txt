@@ -52,3 +52,14 @@
   data/dungeon-monster-data.js     地監生怪資料與新圖影格，載入時併進 islandMonsterSpawns／islandMonsterFrames（index.html 放在 island-monster-data.js 後面）
   data/island-npc-ai.js            在地監死亡按「回村復活」→ DB getback 村莊（和回家卷軸同一套）
   130 張共 1,577 筆生怪，新切 124 種外觀（約 77 MB）；客戶端沒有 .spr 的 16 種外觀不會出現（污濁系列、背叛的妖魔隊長、怪手等）
+
+新職業 龍騎士／幻術師／戰士（2026-11-11）：
+  data/class-creation-data.js      初始能力、配點、初始血魔：Server_Game_2.jar 的 C_CreateChar（ORIGINAL_* 第 5／6／7 項）與 CalcInitHpMp
+  data/player-growth-data.js       升級加血 system_message 2709～2711（15／9／21＋隨機 0～1）、加魔表 CalcStat.calcStatMp（760 算法）、上限 charsettings.properties
+  data/db-game-rules.js            新手道具代碼 龍騎士 R／幻術師 I／戰士 F（DB beginner 沒有戰士的道具）
+  data/owned-inventory.js          鎖鏈劍（chainsword）、奇古獸（kiringku）有自己的動作
+  tools/class-sprites/build.js     從客戶端 .spr 切六個角色的全部武器動作＋影子 → assets/character-actions/<男女職業>/、data/extra-class-data.js
+                                   龍騎士 6658／6661、幻術師 6671／6650 照 list.spr；戰士 12490／12494 沒有 list.spr，
+                                   圖檔分組看圖辨認（斧 112、單手劍 160、長矛 208、雙手劍 248，男女排列不同），長度照 DB spr_action
+  assets/entry/class-<外觀>.png    建角立繪暫用角色本身的像素圖放大（沒有官方插畫）
+  尚未：三職業的職業技能（龍騎士／幻術師技能書、戰士技能）
