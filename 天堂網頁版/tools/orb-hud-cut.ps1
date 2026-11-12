@@ -1,9 +1,9 @@
 ﻿# 水晶球介面素材切圖：把使用者給的素材總圖（JPG，背景是畫上去的灰白格紋）切成透明 PNG。
-# 用法：powershell -File tools/orb-hud-cut.ps1 -Src 素材圖.jpg -Out <完整路徑>ssetsinterfaceorb-hud（-Out 要給完整路徑）
+# 用法：powershell -File tools/orb-hud-cut.ps1 -Src 素材圖.jpg -Out <完整路徑>/assets/interface/orb-hud（-Out 要給完整路徑）
 #  1. 依格紋週期算出每個像素底下是淺格還是深格，用「顏色轉透明」把光暈還原成半透明
 #  2. 從裁切框邊緣往內 flood fill，只有連到外面的像素才去背（物件內部保持不透明，不會被挖洞）
 #  3. 擦掉圖上寫死的文字（HP／MP 數值、快捷列 F 鍵標籤、藥水格），改由程式即時顯示
-param([Parameter(Mandatory)][string]$Src,[string]$Out="$PSScriptRoot\..\assets\interface\orb-hud")
+param([Parameter(Mandatory)][string]$Src,[Parameter(Mandatory)][string]$Out)
 Add-Type -AssemblyName System.Drawing
 Add-Type -ReferencedAssemblies System.Drawing -TypeDefinition @'
 using System;using System.Drawing;using System.Drawing.Imaging;using System.Collections.Generic;
