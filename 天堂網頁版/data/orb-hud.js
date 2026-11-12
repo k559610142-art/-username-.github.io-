@@ -1,7 +1,7 @@
 // 水晶球式底部介面：照使用者 2026-11-12 設計的介面圖與素材（assets/interface/orb-hud/，由 tools/orb-hud-cut.ps1 從素材總圖切出、去格紋背景、擦掉寫死的文字）
 //  左下：遊戲訊息／對話框（分頁＋訊息＋金框輸入列）
 //  中下：左邊 HP 紅水晶、右邊 MP 藍水晶（數值用文字疊上，空的部分把寶石壓暗），中間快捷列 F1～F10（左 6 技能、右 4 藥水）＋上緣金色經驗線
-//  右側：小地圖下方「目錄」（展開能力、魔法、背包、裝備、地圖、選單、設定），鎖定／拾取／SELF／AUTO／攻擊換成素材圓鈕
+//  右側：小地圖下方「目錄」（打開原本的大圖示選單），鎖定／拾取／SELF／AUTO／攻擊換成素材圓鈕
 // 版面以設計圖 1024×572 為基準（--ok＝實際畫面縮放），只在橫向畫面啟用；設定裡可切回奇岩式（window.HudStyle，localStorage 'hudStyle'）。
 (()=>{
  const KEY='hudStyle',game=document.querySelector('.game'),A='assets/interface/orb-hud/';
@@ -109,7 +109,8 @@
  const GEM={hp:[7.9,82.7],mp:[3,74.4]};
  // 目錄鈕＋功能選單
  const menuBtn=el('button','oh-menu-btn','目錄'),menu=el('div','oh-menu');menuBtn.type='button';menuBtn.title='目錄';menuBtn.setAttribute('aria-expanded','false');menuBtn.setAttribute('aria-label','目錄');
- menuBtn.onclick=()=>{const open=!menu.classList.contains('open');menu.classList.toggle('open',open);menuBtn.setAttribute('aria-expanded',String(open))};
+ // 目錄：直接打開原本的大圖示選單（商城、背包、技能、角色、設定、變身…）
+ menuBtn.onclick=()=>document.querySelectorAll('.nav button')[2]?.click();
  for(const [label,short,fn]of [['能力（Insert）','能力',()=>panel('status')],['魔法（Delete）','魔法',()=>panel('magic')],['背包（Tab）','背包',()=>panel('bag')],['裝備（E）','裝備',()=>panel('equipment')],
   ['地圖','地圖',()=>document.querySelector('#overview')?.onclick?.()],['選單','選單',()=>document.querySelectorAll('.nav button')[2]?.click()],['設定（Home）','設定',()=>panel('settings')]]){
   const b=el('button','',short);b.type='button';b.title=label;b.setAttribute('aria-label',label);b.onclick=()=>{menu.classList.remove('open');menuBtn.setAttribute('aria-expanded','false');fn()};menu.append(b)}

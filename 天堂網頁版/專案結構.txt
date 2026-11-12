@@ -25,7 +25,7 @@
                                        右邊快捷 F1～F10（5×2）＋8 個功能鈕（圖示裁自 431.png）；F 鍵對應改在 reference-menu.js
   data/orb-hud.js                     水晶球式底部介面（預設樣式；2026-11-12 改用使用者自己設計的素材 assets/interface/orb-hud/，版面照使用者的設計圖，以 1024×572 為基準縮放 --ok）：
                                        左下訊息框（全部／一般／掉落／系統＋金框輸入列）、中下 HP 紅水晶／MP 藍水晶（數值文字疊上、空的部分把寶石壓暗）、
-                                       中間快捷列 F1～F6 技能＋F7～F10 藥水（格子位置對齊 bar.png）＋上緣金色經驗線；小地圖下「目錄」展開能力／魔法／背包／裝備／地圖／選單／設定；
+                                       中間快捷列 F1～F6 技能＋F7～F10 藥水（格子位置對齊 bar.png）＋上緣金色經驗線；小地圖下「目錄」直接打開原本的大圖示選單（商城、背包、技能、角色、設定、變身…）；
                                        快捷列抽屜式（F10 右邊 ⌃ 依序展開 1→2→3 排，第 2、3 排疊在上方、同一張底圖）；左上頭像框保留並加防禦／魔防一行；鎖定／拾取／SELF／AUTO／攻擊換成素材圓鈕（按鈕間留空、AUTO／SELF 靠近 MP 水晶，.bottom 提到 z-index 8 不被水晶蓋住；矮畫面鎖定鈕自動往下避開目錄）；小地圖放大成 176×124；window.HudStyle（localStorage hudStyle：orb／classic），設定「畫面→底部介面」可切回奇岩式
   assets/interface/orb-hud/            水晶球介面素材（hp、mp、bar、menu、lock、pick、self、self-s、auto、auto2、claw、attack、potion1/2），由 tools/orb-hud-cut.ps1 從使用者給的素材總圖切出
   tools/orb-hud-cut.ps1                切素材總圖：依灰白格紋週期做顏色轉透明（光暈保留半透明）、從邊框 flood fill 只去外面的背景、擦掉圖上寫死的 HP／MP 數值與 F 鍵標籤
@@ -111,3 +111,5 @@
     最後三種要身邊沒有其他召喚獸；選好後才扣魔力與材料。沒戴戒指維持依等級自動選
   限制：召喚術／屬性精靈 1 小時後消失；黑豹（外觀 13068）客戶端沒有圖，不能召喚
   tools/native-monsters/build.js 另外切召喚獸與屬性精靈的圖
+
+2026-11-13 傳說變身-屠龍者(翅膀)／(披風)（gfx 14491／15483）：data/original-polymorph-extra-data.js 拿掉 14667 圖層（翅膀＋白霧，轉檔後白霧不透明變白色色塊），只留 14666 翅膀；14493／14494 金色火花層黑底改 screen 疊加（attribute 8）
