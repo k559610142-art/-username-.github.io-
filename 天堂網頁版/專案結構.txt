@@ -115,3 +115,4 @@
 2026-11-13 傳說變身-屠龍者(翅膀)／(披風)（gfx 14491／15483）：data/original-polymorph-extra-data.js 拿掉 14667 圖層（翅膀＋白霧，轉檔後白霧不透明變白色色塊），只留 14666 翅膀；14493／14494 金色火花層黑底改 screen 疊加（attribute 8）
 2026-11-13 變身卡頭像 assets/transform-portraits/14491.png 用修正後圖層（本體＋14666 翅膀＋14493 火花 screen）重新合成；transform-cards.js 的 portrait() 對重畫過的頭像加 ?v= 避免舊快取
 2026-11-13 創角畫面龍騎士改用使用者給的插畫 assets/entry/dragonknight-art-m.jpg／-f.jpg（桌面原圖 1792×2400 裁掉外框縮成 600 寬）；class-creation-data.js 新增 art 欄位，只有創角預覽用（選角卡片仍用 portraits 小人圖）
+2026-11-13 創角畫面幻術師也改用使用者插畫 assets/entry/illusionist-art-m.jpg／-f.jpg（桌面 webp，裁掉外框成 600×823）
