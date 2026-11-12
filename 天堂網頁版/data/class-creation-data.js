@@ -9,7 +9,7 @@ window.CreationRules=(()=>{
     '王族':{type:0,base:{str:13,dex:10,con:10,wis:11,cha:13,int:10},points:8,hp:14,portraits:['royal-m.png','royal-f.png'],intro:'能夠領導血盟的職業，以領袖身分結合近戰能力與團隊支援。'},
     '妖精':{type:2,base:{str:11,dex:12,con:12,wis:12,cha:9,int:12},points:7,hp:15,portraits:['elf-m.png','elf-f.png'],intro:'兼具弓箭與精靈魔法的職業，可在遠距作戰與輔助之間選擇。'},
     // 2026-11-11: Server_Game_2.jar C_CreateChar ORIGINAL_* index 5／6／7 and CalcInitHpMp; portraits are the client sprite (tools/class-sprites).
-    '龍騎士':{type:5,base:{str:13,dex:11,con:14,wis:12,cha:8,int:11},points:6,hp:16,portraits:['class-6658.png','class-6661.png'],intro:'繼承龍之力量的戰士，以鎖鏈劍、雙手劍近戰，兼具龍魔法。'},
+    '龍騎士':{type:5,base:{str:13,dex:11,con:14,wis:12,cha:8,int:11},points:6,hp:16,portraits:['class-6658.png','class-6661.png'],art:['dragonknight-art-m.jpg','dragonknight-art-f.jpg'],intro:'繼承龍之力量的戰士，以鎖鏈劍、雙手劍近戰，兼具龍魔法。'},
     '幻術師':{type:6,base:{str:11,dex:10,con:12,wis:12,cha:8,int:12},points:10,hp:14,portraits:['class-6671.png','class-6650.png'],intro:'操控幻象的施法者，使用奇古獸與魔杖，兼顧攻擊與輔助。'},
     '戰士':{type:7,base:{str:16,dex:13,con:16,wis:7,cha:9,int:10},points:4,hp:16,portraits:['class-12490.png','class-12494.png'],intro:'以強健體魄揮舞斧、劍與長矛的近戰職業，擅長正面硬戰。'}
   };
