@@ -23,8 +23,13 @@
   data/client-classic-hud.js           奇岩式底部對話框（設定選奇岩式才顯示），照網頁奇岩城畫面排版自寫（2026-11-12，設計高 160、寬度＝整個畫面寬，依畫面高度縮放約佔 28%，橫向畫面寬 ≥ 560 就啟用）：
                                        上緣地點＋左端飾｜體力｜龍頭｜魔力｜右端飾（端飾與龍頭裁自 431.png）；左欄等級／金幣／防禦魔防／負重／經驗；中間 7 個訊息分頁＋輸入列（本機訊息）；
                                        右邊快捷 F1～F10（5×2）＋8 個功能鈕（圖示裁自 431.png）；F 鍵對應改在 reference-menu.js
-  data/orb-hud.js                     水晶球式底部介面（2026-11-12，自創，全部 CSS 畫，預設樣式）：左下訊息框（全部／一般／掉落／系統＋輸入列）、中下 HP／MP 六角水晶，
-                                       中間快捷列左半技能 F1～F6、右半藥水 F7～F10＋經驗線、MP 右側功能鈕；window.HudStyle（localStorage hudStyle：orb／classic），設定「畫面→底部介面」可切回奇岩式
+  data/orb-hud.js                     水晶球式底部介面（預設樣式；2026-11-12 改用使用者自己設計的素材 assets/interface/orb-hud/，版面照使用者的設計圖，以 1024×572 為基準縮放 --ok）：
+                                       左下訊息框（全部／一般／掉落／系統＋金框輸入列）、中下 HP 紅水晶／MP 藍水晶（數值文字疊上、空的部分把寶石壓暗）、
+                                       中間快捷列 F1～F6 技能＋F7～F10 藥水（格子位置對齊 bar.png）＋上緣金色經驗線；小地圖下「目錄」展開能力／魔法／背包／裝備／地圖／選單／設定；
+                                       鎖定／拾取／SELF／AUTO／攻擊換成素材圓鈕（矮畫面鎖定鈕自動往下避開目錄）；window.HudStyle（localStorage hudStyle：orb／classic），設定「畫面→底部介面」可切回奇岩式
+  assets/interface/orb-hud/            水晶球介面素材（hp、mp、bar、menu、lock、pick、self、self-s、auto、auto2、claw、attack、potion1/2），由 tools/orb-hud-cut.ps1 從使用者給的素材總圖切出
+  tools/orb-hud-cut.ps1                切素材總圖：依灰白格紋週期做顏色轉透明（光暈保留半透明）、從邊框 flood fill 只去外面的背景、擦掉圖上寫死的 HP／MP 數值與 F 鍵標籤
+                                       （powershell -File tools/orb-hud-cut.ps1 -Src 素材圖.jpg -Out <完整路徑>/assets/interface/orb-hud）
   data/settings-panel.js              設定視窗照網頁奇岩城畫面排版自寫（2026-11-12）：系統（一般／聲音／畫面）＋狩獵（掛機索敵範圍）分頁、開關列；
                                        原本的設定控制項放在隱藏區保留事件，只重新排列（MutationObserver 偵測 .floating-settings）
   tools/client-pak/                    讀天地劫天堂 .idx/.pak（l1pak.js，Text.pak 有加密，對照表 maps.json 取自開源 PakViewer）、.img 轉 PNG（img2png.js，綠色 0x3E0／0x7E0 為透明）、

@@ -1,63 +1,77 @@
-// 水晶球式底部介面（自創，圖形全部用 CSS 畫）：
-//  左下：遊戲訊息／對話框（分頁＋訊息＋輸入列，半透明不擋畫面）
-//  中下：左邊 HP 水晶、右邊 MP 水晶，中間一條快捷列：左半技能 F1～F6、右半藥水 F7～F10，上緣一條經驗線
-//  MP 水晶右側：功能鈕（能力、魔法、背包、裝備、地圖、選單、設定）
-// 只在橫向畫面啟用；設定裡可切回奇岩式（window.HudStyle，存在 localStorage 'hudStyle'）。
+// 水晶球式底部介面：照使用者 2026-11-12 設計的介面圖與素材（assets/interface/orb-hud/，由 tools/orb-hud-cut.ps1 從素材總圖切出、去格紋背景、擦掉寫死的文字）
+//  左下：遊戲訊息／對話框（分頁＋訊息＋金框輸入列）
+//  中下：左邊 HP 紅水晶、右邊 MP 藍水晶（數值用文字疊上，空的部分把寶石壓暗），中間快捷列 F1～F10（左 6 技能、右 4 藥水）＋上緣金色經驗線
+//  右側：小地圖下方「目錄」（展開能力、魔法、背包、裝備、地圖、選單、設定），鎖定／拾取／SELF／AUTO／攻擊換成素材圓鈕
+// 版面以設計圖 1024×572 為基準（--ok＝實際畫面縮放），只在橫向畫面啟用；設定裡可切回奇岩式（window.HudStyle，localStorage 'hudStyle'）。
 (()=>{
- const KEY='hudStyle',game=document.querySelector('.game');
+ const KEY='hudStyle',game=document.querySelector('.game'),A='assets/interface/orb-hud/';
  let style='orb';try{style=localStorage.getItem(KEY)||'orb'}catch{}
+ const k=v=>`calc(${v}px*var(--ok,1))`;
+ // 快捷列格子位置（素材快捷列 897×138 縮成 445×68：左 6 格、右 4 格）
+ const slotX=[22,61,100,139,178,217,269,308,347,386];
  const css=document.createElement('style');css.textContent=`
  .orb-hud-root{display:none}
- .game.orb-hud .orb-hud-root{display:block;position:absolute;inset:0;pointer-events:none;z-index:6;--o:var(--oh-s,1)}
+ main.game.orb-hud.orb-hud.orb-hud .orb-hud-root{display:block;position:absolute;inset:0;pointer-events:none;z-index:6}
  .orb-hud-root>*{position:absolute;pointer-events:auto;box-sizing:border-box}
- .game.orb-hud>.hud,.game.orb-hud>.nav,.game.orb-hud>.exp-track,.game.orb-hud>.reference-messages{display:none!important}
+ main.game.orb-hud.orb-hud.orb-hud>.hud,main.game.orb-hud.orb-hud.orb-hud>.nav,main.game.orb-hud.orb-hud.orb-hud>.exp-track,main.game.orb-hud.orb-hud.orb-hud>.reference-messages{display:none!important}
  /* 訊息框 */
- .oh-msg{left:calc(10px*var(--o));bottom:calc(10px*var(--o));width:max(150px,min(calc(340px*var(--o)),calc(50% - 410px*var(--o) - 14px)));height:calc(200px*var(--o));display:flex;flex-direction:column;gap:calc(3px*var(--o));font-size:calc(12px*var(--o))}
- .oh-msg .tabs{display:flex;gap:calc(3px*var(--o));opacity:.75;transition:opacity .2s}
- .oh-msg:hover .tabs,.oh-msg:focus-within .tabs{opacity:1}
- .oh-msg .tabs button{min-height:0!important;padding:calc(1px*var(--o)) calc(7px*var(--o))!important;font-size:calc(11px*var(--o));color:#cfc6b0;background:#0009;border:1px solid #ffffff22;border-radius:calc(9px*var(--o))}
- .oh-msg .tabs button[aria-pressed=true]{color:#ffe08a;border-color:#d8b56a}
- .oh-msg .list{flex:1;min-height:0;overflow-y:auto;padding:calc(4px*var(--o)) calc(6px*var(--o));background:linear-gradient(90deg,#000a,#0006 70%,#0000);color:#f1d98e;line-height:1.5;text-shadow:1px 1px 0 #000,0 0 3px #000;scrollbar-width:thin;scrollbar-color:#8a7650 #0000}
+ .oh-msg{left:${k(4)};bottom:${k(6)};width:max(140px,min(${k(300)},calc(50% - ${k(352)})));height:${k(188)};display:flex;flex-direction:column;gap:${k(3)};font-size:${k(11.5)}}
+ .oh-msg .tabs{display:flex;gap:${k(3)}}
+ .oh-msg .tabs button{min-height:0!important;padding:${k(1)} ${k(7)}!important;font-size:${k(10.5)};color:#d6ccb4;background:#000000b8;border:1px solid #ffffff1c;border-radius:${k(9)}}
+ .oh-msg .tabs button[aria-pressed=true]{color:#ffe08a;border-color:#c9a45e}
+ .oh-msg .list{flex:1;min-height:0;overflow-y:auto;padding:${k(2)} ${k(4)};background:linear-gradient(90deg,#0006,#0002 75%,#0000);color:#f1d98e;line-height:1.5;text-shadow:1px 1px 0 #000,0 0 3px #000;scrollbar-width:thin;scrollbar-color:#8a7650 #0000}
  .oh-msg .list .say{color:#fff}.oh-msg .list .drop{color:#9fe0ff}.oh-msg .list .journal{color:#c5b9ff}
- .oh-msg form{display:flex;gap:calc(3px*var(--o))}
- .oh-msg form input{flex:1;min-width:0;min-height:0!important;height:calc(24px*var(--o));padding:0 calc(6px*var(--o));font-size:calc(12px*var(--o));color:#fff;background:#000a;border:1px solid #ffffff2a;border-radius:calc(3px*var(--o))}
- .oh-msg form button{min-height:0!important;height:calc(24px*var(--o));padding:0 calc(10px*var(--o))!important;font-size:calc(12px*var(--o));color:#f3dfae;background:#3a2c16cc;border:1px solid #9b8150;border-radius:calc(3px*var(--o))}
- /* 中下：水晶＋快捷列 */
- .oh-center{left:50%;bottom:calc(4px*var(--o));width:calc(820px*var(--o));height:calc(150px*var(--o));transform:translateX(-50%);pointer-events:none!important}
- .oh-center>*{position:absolute;pointer-events:auto}
- .oh-bar{left:calc(140px*var(--o));right:calc(140px*var(--o));bottom:calc(10px*var(--o));height:calc(66px*var(--o));border-radius:calc(6px*var(--o));
-  background:linear-gradient(#2b2d31,#141518 60%,#0c0d0f);border:calc(2px*var(--o)) solid #5c4a2c;box-shadow:inset 0 1px 0 #ffffff1a,inset 0 0 0 1px #000,0 4px 12px #000b}
- .oh-bar::before,.oh-bar::after{position:absolute;top:calc(-15px*var(--o));font-size:calc(10px*var(--o));letter-spacing:2px;color:#d8c08a;text-shadow:1px 1px 0 #000}
- .oh-bar::before{content:'技能';left:calc(8px*var(--o))}.oh-bar::after{content:'藥水';right:calc(8px*var(--o))}
- .oh-exp{left:calc(146px*var(--o));right:calc(146px*var(--o));bottom:calc(77px*var(--o));height:calc(4px*var(--o));background:#000c;border-radius:2px;overflow:hidden}
- .oh-exp i{display:block;height:100%;width:var(--fill,0%);background:linear-gradient(90deg,#b8862a,#ffe08a)}
- .oh-orb{bottom:0;width:calc(132px*var(--o));height:calc(150px*var(--o));filter:drop-shadow(0 4px 8px #000c)}
- .oh-orb.hp{left:0}.oh-orb.mp{right:0}
- .oh-orb .shell{position:absolute;inset:0;clip-path:polygon(50% 0,96% 30%,96% 72%,50% 100%,4% 72%,4% 30%);background:linear-gradient(135deg,#d9d2c0,#6f6a60 30%,#2a2826 55%,#8d8676 80%,#e6dfcc)}
- .oh-orb .glass{position:absolute;inset:calc(7px*var(--o));clip-path:polygon(50% 0,96% 30%,96% 72%,50% 100%,4% 72%,4% 30%);background:#0b0a0c;overflow:hidden}
- .oh-orb .liquid{position:absolute;left:0;right:0;bottom:0;height:var(--fill,100%);transition:height .25s}
- .oh-orb.hp .liquid{background:radial-gradient(ellipse at 40% 20%,#ff8a6a,#c0261a 45%,#5c0a06)}
- .oh-orb.mp .liquid{background:radial-gradient(ellipse at 40% 20%,#8fd0ff,#2a74d6 45%,#0b2a63)}
- .oh-orb .facet{position:absolute;inset:calc(7px*var(--o));clip-path:polygon(50% 0,96% 30%,96% 72%,50% 100%,4% 72%,4% 30%);pointer-events:none;
-  background:linear-gradient(115deg,#ffffff55 0,#ffffff10 30%,transparent 31%),linear-gradient(245deg,transparent 60%,#ffffff18 61%,transparent 75%),linear-gradient(transparent 49.5%,#ffffff22 50%,transparent 50.5%)}
- .oh-orb span{position:absolute;left:0;right:0;top:44%;text-align:center;font-weight:bold;font-size:calc(13px*var(--o));color:#fff;text-shadow:0 0 3px #000,1px 1px 0 #000;pointer-events:none}
- .oh-orb small{position:absolute;left:0;right:0;top:30%;text-align:center;font-size:calc(10px*var(--o));letter-spacing:2px;color:#ffffffb0;text-shadow:1px 1px 0 #000;pointer-events:none}
- .oh-icons{right:calc(-58px*var(--o));bottom:calc(8px*var(--o));display:grid;grid-template-columns:repeat(2,calc(26px*var(--o)));gap:calc(3px*var(--o))}
- .oh-icons button{width:calc(26px*var(--o));height:calc(26px*var(--o));min-height:0!important;padding:0!important;font-size:calc(11px*var(--o));color:#f0dcae;background:linear-gradient(#3a3020,#1c160d);border:1px solid #8a6f40;border-radius:calc(4px*var(--o))}
- .oh-icons button:hover{border-color:#ffe08a}
- /* 快捷列：QuickSlots 第一排 10 格放進中間條 */
- .game.orb-hud>.quick-slots{position:absolute!important;left:50%!important;right:auto!important;top:auto!important;bottom:calc(20px*var(--oh-s,1))!important;transform:translateX(-50%)!important;
-  width:calc(520px*var(--oh-s,1))!important;height:calc(48px*var(--oh-s,1))!important;margin:0!important;padding:0!important;background:transparent!important;border:0!important;z-index:7;display:block!important}
- .game.orb-hud>.quick-slots>.quick-expanded-row:first-child{display:flex!important;gap:calc(4px*var(--oh-s,1))!important;width:100%!important;height:100%!important;margin:0!important;padding:0!important}
- .game.orb-hud>.quick-slots>.quick-expanded-row:not(:first-child),.game.orb-hud>.quick-slots>.quick-expand-arrow{display:none!important}
- .game.orb-hud>.quick-slots .combat-quick-slot{position:relative;flex:1 1 0;width:auto!important;height:100%!important;min-width:0!important;min-height:0!important;margin:0!important;padding:calc(3px*var(--oh-s,1))!important;
-  background:radial-gradient(#26282c,#111214)!important;border:1px solid #4d4130!important;border-radius:calc(4px*var(--oh-s,1));box-shadow:inset 0 0 6px #000!important;font-size:calc(10px*var(--oh-s,1))!important;color:#d9cba2}
- .game.orb-hud>.quick-slots .combat-quick-slot:nth-child(7){margin-left:calc(18px*var(--oh-s,1))!important}
- .game.orb-hud>.quick-slots .combat-quick-slot:nth-child(n+7){border-color:#2f5a7a!important}
- .game.orb-hud>.quick-slots .combat-quick-slot .quick-key{display:none!important}
- .game.orb-hud>.quick-slots .combat-quick-slot::after{content:attr(data-oh-key);position:absolute;left:0;right:0;bottom:calc(-13px*var(--oh-s,1));text-align:center;font-size:calc(9px*var(--oh-s,1));color:#c9b98e;text-shadow:1px 1px 0 #000;pointer-events:none}
- .game.orb-hud>.quick-slots .combat-quick-slot img{width:100%!important;height:100%!important;object-fit:contain}
- .game.orb-hud>.bottom .actions,.game.orb-hud>.bottom .pad{bottom:calc(170px*var(--oh-s,1))!important}
+ .oh-msg form{display:flex;gap:${k(6)}}
+ .oh-msg form input{flex:1;min-width:0;min-height:0!important;height:${k(24)};padding:0 ${k(6)};font-size:${k(11.5)};color:#fff;background:#000d;border:1px solid #c9a45e;border-radius:${k(3)};box-shadow:inset 0 0 4px #000}
+ .oh-msg form button{min-height:0!important;height:${k(24)};padding:0 ${k(9)}!important;font-size:${k(11.5)};color:#d9ccb0;background:linear-gradient(#2c2b29,#151413);border:1px solid #5d5545;border-radius:${k(2)}}
+ /* 水晶 */
+ .oh-orb{bottom:${k(-4)};background:center/100% 100% no-repeat;pointer-events:none!important;filter:drop-shadow(0 2px 6px #000a)}
+ .oh-orb.hp{left:calc(50% - ${k(361)});width:${k(189)};height:${k(208)};background-image:url(${A}hp.png)}
+ .oh-orb.mp{left:calc(50% + ${k(181)});width:${k(186)};height:${k(200)};bottom:${k(-2)};background-image:url(${A}mp.png)}
+ .oh-orb .empty{position:absolute;inset:0;background:linear-gradient(#000000c8 var(--empty,0%),#0000 var(--empty,0%))}
+ .oh-orb.hp .empty{clip-path:polygon(48.4% 7.9%,80.2% 44.6%,48.4% 82.7%,16.2% 44.6%)}
+ .oh-orb.mp .empty{clip-path:polygon(49.7% 3%,79.8% 38.3%,49.7% 74.4%,19% 38.3%)}
+ .oh-orb .val{position:absolute;left:0;right:0;text-align:center;font-family:'Times New Roman','Noto Serif TC',serif;color:#f4e4c8;text-shadow:0 0 4px #000,0 0 2px #000,1px 1px 0 #000;line-height:1.3}
+ .oh-orb.hp .val{top:33%}.oh-orb.mp .val{top:30%}
+ .oh-orb .val b{display:block;font-weight:normal;font-size:${k(16)}}
+ .oh-orb .val span{display:block;font-size:${k(17)}}
+ /* 快捷列 */
+ .oh-bar{left:calc(50% - ${k(212)});bottom:${k(5)};width:${k(445)};height:${k(68)};background:url(${A}bar.png) center/100% 100% no-repeat;pointer-events:none!important}
+ .oh-exp{left:calc(50% - ${k(208)});bottom:${k(73)};width:${k(437)};height:${k(4)};background:#0b0c0dd8;border:1px solid #3a3326;border-bottom:0;overflow:hidden;pointer-events:auto}
+ .oh-exp i{display:block;height:100%;width:var(--fill,0%);background:linear-gradient(#fff0b8,#e2ad3c 55%,#9a6814);box-shadow:0 0 6px #ffcf5a}
+ main.game.orb-hud.orb-hud.orb-hud>.quick-slots{position:absolute!important;left:calc(50% - ${k(212)})!important;right:auto!important;top:auto!important;bottom:${k(5)}!important;transform:none!important;
+  width:${k(445)}!important;height:${k(68)}!important;margin:0!important;padding:0!important;background:transparent!important;border:0!important;z-index:7;display:block!important}
+ main.game.orb-hud.orb-hud.orb-hud>.quick-slots>.quick-expanded-row:first-child{display:block!important;position:absolute!important;inset:0!important;width:auto!important;height:auto!important;margin:0!important;padding:0!important;background:none!important;border:0!important}
+ main.game.orb-hud.orb-hud.orb-hud>.quick-slots>.quick-expanded-row:not(:first-child),main.game.orb-hud.orb-hud.orb-hud>.quick-slots>.quick-expand-arrow{display:none!important}
+ main.game.orb-hud.orb-hud.orb-hud>.quick-slots .combat-quick-slot{position:absolute!important;top:${k(5)}!important;width:${k(35.5)}!important;height:${k(46)}!important;min-width:0!important;min-height:0!important;max-height:none!important;margin:0!important;
+  padding:${k(9)} ${k(2)} ${k(2)}!important;background:transparent!important;border:0!important;border-radius:${k(2)}!important;box-shadow:none!important;font-size:${k(9)}!important;color:#efe4c8}
+ ${slotX.map((x,i)=>`main.game.orb-hud.orb-hud.orb-hud>.quick-slots .combat-quick-slot:nth-child(${i+1}){left:${k(x)}!important}`).join('\n ')}
+ main.game.orb-hud.orb-hud.orb-hud>.quick-slots .combat-quick-slot:hover{background:linear-gradient(#ffe08a22,#0000 80%)!important}
+ main.game.orb-hud.orb-hud.orb-hud>.quick-slots .combat-quick-slot .quick-key{display:none!important}
+ main.game.orb-hud.orb-hud.orb-hud>.quick-slots .combat-quick-slot::before{content:attr(data-oh-key);position:absolute;left:0;right:0;top:${k(0.5)};text-align:center;font-size:${k(7.5)};color:#8f8a7e;text-shadow:1px 1px 0 #000;pointer-events:none;z-index:1}
+ main.game.orb-hud.orb-hud.orb-hud>.quick-slots .combat-quick-slot img{width:100%!important;height:100%!important;object-fit:contain}
+ /* 右側圓鈕 */
+ main.game.orb-hud.orb-hud.orb-hud>.bottom .actions{position:absolute!important;inset:0!important;left:0!important;top:0!important;right:0!important;bottom:0!important;width:auto!important;height:auto!important;transform:none!important;pointer-events:none!important;display:block!important;background:none!important}
+ main.game.orb-hud.orb-hud.orb-hud>.bottom .actions>button{position:absolute!important;left:auto!important;top:auto!important;margin:0!important;padding:0!important;min-height:0!important;pointer-events:auto;border:0!important;border-radius:50%!important;box-shadow:none!important;
+  background:transparent center/contain no-repeat!important;color:transparent!important;font-size:0!important;text-shadow:none!important;filter:drop-shadow(0 2px 4px #000c);transition:filter .15s,transform .1s}
+ main.game.orb-hud.orb-hud.orb-hud>.bottom .actions>button>*{display:none!important}
+ main.game.orb-hud.orb-hud.orb-hud>.bottom .actions>button:active{transform:scale(.95)}
+ main.game.orb-hud.orb-hud.orb-hud>.bottom .actions>button[aria-pressed=true]{filter:drop-shadow(0 0 5px #ffd77a) drop-shadow(0 0 2px #ffcf5a) brightness(1.15)}
+ main.game.orb-hud.orb-hud.orb-hud>.bottom .actions>#attack{right:${k(4)}!important;bottom:${k(27)}!important;width:${k(116)}!important;height:${k(117)}!important;background-image:url(${A}attack.png)!important}
+ main.game.orb-hud.orb-hud.orb-hud>.bottom .actions>.reference-auto{right:${k(104)}!important;bottom:${k(70)}!important;width:${k(60)}!important;height:${k(60)}!important;background-image:url(${A}auto.png)!important}
+ main.game.orb-hud.orb-hud.orb-hud>.bottom .actions>.reference-self{right:${k(78)}!important;bottom:${k(151)}!important;width:${k(58)}!important;height:${k(59)}!important;background-image:url(${A}self-s.png)!important}
+ main.game.orb-hud.orb-hud.orb-hud>.bottom .actions>.reference-interact{right:${k(5)}!important;bottom:${k(181)}!important;width:${k(58)}!important;height:${k(56)}!important;background-image:url(${A}pick.png)!important}
+ main.game.orb-hud.orb-hud.orb-hud>.bottom .actions>.reference-lock{right:${k(10)}!important;bottom:${k(256)}!important;width:${k(64)}!important;height:${k(65)}!important;background-image:url(${A}lock.png)!important}
+ main.game.orb-hud.orb-hud.orb-hud>.bottom .pad{display:none!important}
+ /* 目錄 */
+ .oh-menu-btn{right:${k(2)};width:${k(76)};height:${k(75)};padding:0!important;min-height:0!important;border:0!important;background:url(${A}menu.png) center/contain no-repeat!important;color:transparent!important;font-size:0!important;filter:drop-shadow(0 2px 4px #000c)}
+ .oh-menu-btn[aria-expanded=true]{filter:drop-shadow(0 0 5px #ffd77a) brightness(1.1)}
+ .oh-menu{display:none;right:${k(84)};grid-template-columns:repeat(4,${k(44)});gap:${k(4)};padding:${k(6)};background:#0c0d0fec;border:1px solid #7a6038;border-radius:${k(4)};box-shadow:0 4px 14px #000c}
+ .oh-menu.open{display:grid}
+ .oh-menu button{width:${k(44)};height:${k(44)};min-height:0!important;padding:0!important;border-radius:50%!important;font-size:${k(11.5)}!important;font-family:'Times New Roman','Noto Serif TC',serif;color:#f1dfb6!important;
+  background:radial-gradient(circle at 50% 38%,#4b3c2b,#261c12 62%,#1a130c)!important;border:2px solid #5b4428!important;box-shadow:inset 0 0 0 2px #120c06,inset 0 0 0 3px #b38a50,inset 0 0 8px #000!important;text-shadow:1px 1px 0 #000}
+ .oh-menu button:hover{border-color:#a07a3e!important}
+ main.game.orb-hud.orb-hud.orb-hud>.minimap-button{border:2px solid #6b5230!important;box-shadow:inset 0 0 0 1px #000,0 0 0 1px #c19a5a,0 3px 8px #000b!important;border-radius:2px!important}
  `;document.head.append(css);
 
  const el=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e};
@@ -66,7 +80,7 @@
  const msg=el('section','oh-msg'),tabs=el('div','tabs'),list=el('div','list'),form=el('form'),input=el('input'),send=el('button','','發送');
  list.setAttribute('aria-live','polite');list.setAttribute('aria-label','遊戲訊息');input.placeholder='輸入訊息';input.maxLength=60;input.setAttribute('aria-label','輸入訊息');send.type='submit';form.append(input,send);
  let filter='all';const messages=[];
- for(const [k,l]of [['all','全部'],['say','一般'],['drop','掉落'],['sys','系統']]){const b=el('button','',l);b.type='button';b.setAttribute('aria-pressed',String(k===filter));b.onclick=()=>{filter=k;for(const t of tabs.children)t.setAttribute('aria-pressed',String(t===b));render()};tabs.append(b)}
+ for(const [key,l]of [['all','全部'],['say','一般'],['drop','掉落'],['sys','系統']]){const b=el('button','',l);b.type='button';b.setAttribute('aria-pressed',String(key===filter));b.onclick=()=>{filter=key;for(const t of tabs.children)t.setAttribute('aria-pressed',String(t===b));render()};tabs.append(b)}
  msg.append(tabs,list,form);root.append(msg);
  function render(){list.replaceChildren(...messages.filter(m=>filter==='all'||m.kind===filter||(filter==='sys'&&m.kind==='journal')).map(m=>el('div',m.kind,m.text)));list.scrollTop=list.scrollHeight}
  function push(text,kind){messages.push({text,kind});if(messages.length>150)messages.shift();render()}
@@ -75,22 +89,31 @@
  if(log){new MutationObserver(capture).observe(log,{childList:true,characterData:true,subtree:true});capture()}
  form.onsubmit=e=>{e.preventDefault();const t=input.value.trim();if(!t)return;input.value='';push((window.activeCharacterName||'我')+'：'+t,'say')};
  input.addEventListener('keydown',e=>e.stopPropagation());
- // 中下
- const center=el('div','oh-center');root.append(center);
- const bar=el('div','oh-bar'),exp=el('div','oh-exp');exp.append(el('i'));
- function orb(kind,label){const o=el('div','oh-orb '+kind),glass=el('div','glass'),liquid=el('div','liquid');glass.append(liquid);o.append(el('div','shell'),glass,el('div','facet'),el('small','',label),el('span'));return o}
- const hpO=orb('hp','HP'),mpO=orb('mp','MP');
- const icons=el('div','oh-icons');
- for(const [label,short,fn]of [['能力（Insert）','能',()=>panel('status')],['魔法（Delete）','魔',()=>panel('magic')],['背包（Tab）','包',()=>panel('bag')],['裝備（E）','裝',()=>panel('equipment')],
-  ['地圖','圖',()=>document.querySelector('#overview')?.onclick?.()],['選單','單',()=>document.querySelectorAll('.nav button')[2]?.click()],['設定（Home）','設',()=>panel('settings')]]){const b=el('button','',short);b.type='button';b.title=label;b.setAttribute('aria-label',label);b.onclick=fn;icons.append(b)}
- center.append(bar,exp,hpO,mpO,icons);
+ // 水晶＋快捷列底圖＋經驗線
+ function orb(kind,label){const o=el('div','oh-orb '+kind),v=el('div','val');v.append(el('b','',label),el('span'));o.append(el('div','empty'),v);return o}
+ const hpO=orb('hp','HP'),mpO=orb('mp','MP'),bar=el('div','oh-bar'),exp=el('div','oh-exp');exp.append(el('i'));
+ root.append(bar,exp,hpO,mpO);
+ // 寶石上下範圍（佔圖片高度的百分比），用來算空的部分要壓暗到哪
+ const GEM={hp:[7.9,82.7],mp:[3,74.4]};
+ // 目錄鈕＋功能選單
+ const menuBtn=el('button','oh-menu-btn','目錄'),menu=el('div','oh-menu');menuBtn.type='button';menuBtn.title='目錄';menuBtn.setAttribute('aria-expanded','false');menuBtn.setAttribute('aria-label','目錄');
+ menuBtn.onclick=()=>{const open=!menu.classList.contains('open');menu.classList.toggle('open',open);menuBtn.setAttribute('aria-expanded',String(open))};
+ for(const [label,short,fn]of [['能力（Insert）','能力',()=>panel('status')],['魔法（Delete）','魔法',()=>panel('magic')],['背包（Tab）','背包',()=>panel('bag')],['裝備（E）','裝備',()=>panel('equipment')],
+  ['地圖','地圖',()=>document.querySelector('#overview')?.onclick?.()],['選單','選單',()=>document.querySelectorAll('.nav button')[2]?.click()],['設定（Home）','設定',()=>panel('settings')]]){
+  const b=el('button','',short);b.type='button';b.title=label;b.setAttribute('aria-label',label);b.onclick=()=>{menu.classList.remove('open');menuBtn.setAttribute('aria-expanded','false');fn()};menu.append(b)}
+ root.append(menuBtn,menu);
  // 數值
  function expPct(){const lv=window.activeCharacterLevel||1,e=window.activeCharacterExperience||0,t=typeof killRewardData!=='undefined'?killRewardData.thresholds:null;const a=t?.find(r=>r[0]===lv)?.[1],b=t?.find(r=>r[0]===lv+1)?.[1];return Number.isFinite(a)&&Number.isFinite(b)&&b>a?Math.max(0,Math.min(100,(e-a)/(b-a)*100)):0}
- function setOrb(o,v,m){o.querySelector('.liquid').style.setProperty('--fill',(m?Math.max(0,Math.min(100,v/m*100)):0)+'%');o.querySelector('span').textContent=v+' / '+m}
+ function setOrb(o,kind,v,m){const p=m?Math.max(0,Math.min(1,v/m)):0,[t,b]=GEM[kind];o.querySelector('.empty').style.setProperty('--empty',(p>=1?0:t+(b-t)*(1-p))+'%');o.querySelector('.val span').textContent=v+'/'+m}
  function labelSlots(){[...document.querySelectorAll('.quick-slots>.quick-expanded-row:first-child>.combat-quick-slot')].forEach((b,i)=>{b.dataset.ohKey='F'+(i+1);b.style.display=i<10?'':'none'})}
- function refresh(){if(!game.classList.contains('orb-hud')||window.gameFlowState!=='playing')return;setOrb(hpO,hp,maxHp);setOrb(mpO,mp,maxMp);const e=expPct();exp.style.setProperty('--fill',e+'%');exp.title='經驗 '+e.toFixed(2)+'%';labelSlots()}
+ function placeMenu(){const g=game.getBoundingClientRect(),m=document.querySelector('.minimap-button')?.getBoundingClientRect(),s=Number(getComputedStyle(game).getPropertyValue('--ok'))||1;
+  const top=m&&m.height?m.bottom-g.top+8*s:150*s;menuBtn.style.top=top+'px';menu.style.top=top+'px';
+  // 矮畫面：鎖定鈕不夠放時往下推，避免蓋到目錄
+  const lock=document.querySelector('.bottom .actions>.reference-lock');if(lock){const want=top+80*s,def=g.height-(256+65)*s;if(def<want){lock.style.setProperty('top',want+'px','important');lock.style.setProperty('bottom','auto','important')}else{lock.style.removeProperty('top');lock.style.removeProperty('bottom')}}}
+ function refresh(){if(!game.classList.contains('orb-hud')||window.gameFlowState!=='playing')return;setOrb(hpO,'hp',hp,maxHp);setOrb(mpO,'mp',mp,maxMp);const e=expPct();exp.style.setProperty('--fill',e+'%');exp.title='經驗 '+e.toFixed(2)+'%';labelSlots();placeMenu()}
  function layout(){const r=game.getBoundingClientRect(),on=style==='orb'&&r.width>=560&&r.width>r.height;game.classList.toggle('orb-hud',on);
-  if(on){game.classList.remove('classic-hud');game.style.setProperty('--oh-s',Math.max(.55,Math.min(r.height/620,r.width/1000,1.4)));refresh()}}
+  if(!on){const lock=document.querySelector('.bottom .actions>.reference-lock');lock?.style.removeProperty('top');lock?.style.removeProperty('bottom')}
+  if(on){game.classList.remove('classic-hud');game.style.setProperty('--ok',Math.max(.5,Math.min(r.height/572,r.width/1024,1.5)));refresh()}}
  new ResizeObserver(layout).observe(game);addEventListener("resize",layout);
  const baseStats=stats;stats=function(...args){const out=baseStats.apply(this,args);refresh();return out};
  setInterval(refresh,1000);
