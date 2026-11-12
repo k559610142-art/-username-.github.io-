@@ -58,7 +58,17 @@
  .qy-win.qy-bag button{font-size:12px}
  .reference-game .classic-window.qy-win{container-type:inline-size}
  .qy-tabs button{min-width:0;white-space:nowrap;overflow:hidden}
- @container (max-width:260px){.qy-tabs button{font-size:11px!important;letter-spacing:-.5px}.qy-bag-info{grid-template-columns:1fr 1fr}.qy-bag-info>div:first-child{grid-column:1/-1}.qy-doll-figure img{max-height:160px}}
+ .qy-bag-foot{display:flex;align-items:center;gap:4px;margin:0 6px 6px;flex:none}
+ .qy-win.qy-bag .qy-bag-foot>.classic-filter{flex:1 1 0!important;min-width:0!important;margin:0!important}
+ .qy-bag-foot>*{margin:0!important}
+ .qy-bag-foot .inventory-tools{position:static!important;transform:none!important;inset:auto!important}
+ .qy-bag-foot .inventory-tools-count:empty{display:none}
+ .qy-bag-foot input{width:100%!important;min-width:0!important;box-sizing:border-box}
+ .qy-bag-foot button{width:30px!important;height:30px!important;min-height:0!important;min-width:0!important;padding:2px!important;margin:0!important;flex:none}
+ .qy-bag-foot>:not(.classic-filter){display:flex!important;gap:3px;flex:none;width:auto!important;padding:0!important;background:transparent!important;border:0!important}
+ .qy-bag-foot button img,.qy-bag-foot button svg{max-height:20px}
+ .qy-win.qy-bag .classic-grid-scroll{min-height:96px}
+ @container (max-width:230px){.qy-tabs button{font-size:11px!important;letter-spacing:-.5px}.qy-bag-info{grid-template-columns:1fr 1fr}.qy-bag-info>div:first-child{grid-column:1/-1}.qy-doll-figure img{max-height:160px}}
  `;document.head.append(css);
 
  const el=(tag,cls,text)=>uiElement(tag,cls,text);
@@ -113,7 +123,9 @@
   const header=pane.querySelector('.classic-window-header'),filter=pane.querySelector('.classic-filter'),scroll=pane.querySelector('.classic-grid-scroll'),grid=pane.querySelector('.classic-item-grid'),query=filter?.querySelector('input');
   const bar=tabs(BAG_TABS,catalogKind,k=>{catalogKind=k;for(const [i,b]of [...bar.children].entries())b.setAttribute('aria-selected',String(BAG_TABS[i][0]===k));query?.dispatchEvent(new Event('input'))});
   const info=el('div','qy-bag-info'),w=weightPct(),wd=el('div');wd.append('負重 ',el('b','',w+'%'));wd.append(meter(w));const n=el('div');n.append('格數 ',el('b','',OwnedInventory.items.length+'/180'));const ac=el('div');ac.append('防禦 ',el('b','',String(previewArmorClass())));info.append(wd,n,ac);
-  header.after(bar,info);if(scroll)bar.parentNode.insertBefore(scroll,info.nextSibling);if(filter)scroll?.after(filter);
+  header.after(bar,info);if(scroll)bar.parentNode.insertBefore(scroll,info.nextSibling);
+  // 搜尋框和整理／刪除／販賣按鈕併成一排，矮螢幕也留得下格子區
+  const tools=pane.lastElementChild,foot=el('div','qy-bag-foot');if(filter)foot.append(filter);if(tools&&tools!==filter&&tools!==scroll&&!tools.classList.contains('classic-item-detail'))foot.append(tools);scroll?.after(foot);
   if(grid){padGrid(grid);new MutationObserver(()=>padGrid(grid)).observe(grid,{childList:true})}
   return pane};
 

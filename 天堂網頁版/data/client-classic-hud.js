@@ -1,5 +1,5 @@
 // 原版底部介面：天地劫天堂客戶端 Sprite.pak 的 431.img（640×149，龍頭欄＋對話＋F5～F12 快捷格＋功能鈕）。
-// 只在電腦／橫向寬畫面（遊戲畫面寬 ≥ 760、高 ≥ 480）啟用；手機直向維持原本介面。
+// 橫向畫面（遊戲畫面寬 ≥ 600 且寬 > 高）啟用，高度最多佔畫面 28%；手機直向維持原本介面。
 // 座標以原圖像素表示，依底部介面實際寬度換算。
 (()=>{
  const W=640,H=149,MAXW=900,game=document.querySelector('.game');
@@ -51,8 +51,8 @@
   const d=window.NativeCombatRules?.defense?.()||{};ac.textContent=typeof previewArmorClass==='function'?previewArmorClass():(d.ac??10);mr.textContent=d.mr||0;
   setGauge(hpG,hp/Math.max(1,maxHp)*100,'體力: '+hp+'/'+maxHp);setGauge(mpG,mp/Math.max(1,maxMp)*100,'魔力: '+mp+'/'+maxMp);
   const w=weightPct();setGauge(weightG,w,'負重 '+w+'%');setGauge(foodG,100,'飽食');setGauge(expG,e,'經驗 '+e.toFixed(2)+'%')}
- // 版面：寬 ≥ 760、高 ≥ 480 才用原版底部介面；寬度最多 900，保持原圖比例
- function layout(){const r=game.getBoundingClientRect(),on=r.width>=760&&r.height>=480;game.classList.toggle('classic-hud',on);if(!on)return;const w=Math.min(r.width,MAXW),h=w*H/W;game.style.setProperty('--cb-w',w+'px');game.style.setProperty('--cb-h',h+'px');game.style.setProperty('--cb-l',(r.width-w)/2+'px');refresh()}
+ // 版面：橫向畫面（寬 ≥ 600 且寬 > 高）就用原版底部介面；寬度最多 900、高度最多佔畫面 28%，保持原圖比例
+ function layout(){const r=game.getBoundingClientRect(),on=r.width>=600&&r.width>r.height;game.classList.toggle('classic-hud',on);if(!on)return;const w=Math.min(r.width,MAXW,r.height*.28*W/H),h=w*H/W;game.style.setProperty('--cb-w',w+'px');game.style.setProperty('--cb-h',h+'px');game.style.setProperty('--cb-l',(r.width-w)/2+'px');refresh()}
  new ResizeObserver(layout).observe(game);layout();
  const baseStats=stats;stats=function(...args){const out=baseStats.apply(this,args);refresh();return out};
  setInterval(refresh,1000);
