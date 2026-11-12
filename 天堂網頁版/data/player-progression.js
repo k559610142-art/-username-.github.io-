@@ -28,6 +28,7 @@ const PlayerProgression = (() => {
   function roll(mob){
     const loot=[],weekendRate=rates.weekend&&weekend()?rates.WeekendRateDropItems:1;
     for(const drop of [...(drops[mob.spawn.npcId]||[]),...DBGameRules.extraDrops(mob)]){
+      if(typeof REMOVED_ITEM_IDS!=='undefined'&&REMOVED_ITEM_IDS.has(drop.id))continue;
       const item=catalog.get(drop.id);
       if(!item)throw Error('掉落道具不存在：'+drop.id);
       const coin=drop.id===40308;

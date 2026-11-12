@@ -120,3 +120,5 @@
 2026-11-13 左上頭像 currentPortrait()（classic-panels.js）：有 art 的職業（龍騎士、幻術師）用插畫，騎士／法師／王族／妖精用原立繪，其他（戰士）用創角職業圖；reference-hud.js faceCenters 加龍騎士、幻術師臉部位置
 2026-11-13 戰士也加插畫 assets/entry/warrior-art-m.jpg／-f.jpg（創角、選角卡片、左上頭像都用；faceCenters 加戰士）
 2026-11-13 遊戲選單（reference-menu.js）新增第 16 格「返回選擇英雄」（圖示 reference-skin back.png）：呼叫 GameEntry.backToSelect()＝entry-flow.js 新函式 returnToSelection()（存檔→回選角畫面）；原 #roles 按鈕的 onclick 已被其他腳本改成狀態視窗，所以不靠它
+2026-11-13 新增 data/removed-items.js（載在 kill-reward-data.js 之後）：REMOVED_ITEM_IDS＝銀飛刀 40738、飛刀 40739、重飛刀 40740（丟出去打不到），從 NATIVE_NPC_DIALOGS.shops、islandNpcServiceData.shop、killRewardData.drops 原地刪掉；player-progression.js roll() 也跳過這些 ID（含 droplist_map 地圖掉落）。玩家身上已有的保留可出售
+2026-11-13 檢查「地圖移動卡卡」：無頭 Chrome 實測平常走路穩定 60fps，水晶球 HUD／頭頂條無影響；卡頓是第一次走進新區域時 160～370ms 的停頓，沒有腳本歸屬＝瀏覽器解碼新地圖圖片（atlas64 大圖），尚未修
