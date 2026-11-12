@@ -118,3 +118,4 @@
 2026-11-13 創角畫面幻術師也改用使用者插畫 assets/entry/illusionist-art-m.jpg／-f.jpg（桌面 webp，裁掉外框成 600×823）
 2026-11-13 選角卡片（entry-flow.js）也改用 art 插畫（有 art 的職業：龍騎士、幻術師），其他職業仍用 portraits
 2026-11-13 左上頭像 currentPortrait()（classic-panels.js）：有 art 的職業（龍騎士、幻術師）用插畫，騎士／法師／王族／妖精用原立繪，其他（戰士）用創角職業圖；reference-hud.js faceCenters 加龍騎士、幻術師臉部位置
+2026-11-13 戰士也加插畫 assets/entry/warrior-art-m.jpg／-f.jpg（創角、選角卡片、左上頭像都用；faceCenters 加戰士）
