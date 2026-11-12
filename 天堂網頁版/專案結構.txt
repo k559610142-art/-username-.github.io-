@@ -113,3 +113,4 @@
   tools/native-monsters/build.js 另外切召喚獸與屬性精靈的圖
 
 2026-11-13 傳說變身-屠龍者(翅膀)／(披風)（gfx 14491／15483）：data/original-polymorph-extra-data.js 拿掉 14667 圖層（翅膀＋白霧，轉檔後白霧不透明變白色色塊），只留 14666 翅膀；14493／14494 金色火花層黑底改 screen 疊加（attribute 8）
+2026-11-13 變身卡頭像 assets/transform-portraits/14491.png 用修正後圖層（本體＋14666 翅膀＋14493 火花 screen）重新合成；transform-cards.js 的 portrait() 對重畫過的頭像加 ?v= 避免舊快取

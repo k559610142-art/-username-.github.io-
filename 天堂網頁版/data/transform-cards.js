@@ -264,6 +264,7 @@ window.TransformCards = (() => {
     owned: name => (ensure(), state.owned[name] || 0),
     get collected() { ensure(); return Object.keys(state.owned).length; },
     get active() { ensure(); return state.active; },
-    portrait: card => 'assets/transform-portraits/' + card.p.gfx + '.png'
+    // 重做過的頭像加版本號，避免瀏覽器用舊快取（14491 屠龍者(翅膀) 2026-11-13 拿掉白霧重畫）
+    portrait: card => 'assets/transform-portraits/' + card.p.gfx + '.png' + ({14491: '?v=2'}[card.p.gfx] || '')
   };
 })();
