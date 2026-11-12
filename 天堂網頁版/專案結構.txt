@@ -122,3 +122,10 @@
 2026-11-13 遊戲選單（reference-menu.js）新增第 16 格「返回選擇英雄」（圖示 reference-skin back.png）：呼叫 GameEntry.backToSelect()＝entry-flow.js 新函式 returnToSelection()（存檔→回選角畫面）；原 #roles 按鈕的 onclick 已被其他腳本改成狀態視窗，所以不靠它
 2026-11-13 新增 data/removed-items.js（載在 kill-reward-data.js 之後）：REMOVED_ITEM_IDS＝銀飛刀 40738、飛刀 40739、重飛刀 40740（丟出去打不到），從 NATIVE_NPC_DIALOGS.shops、islandNpcServiceData.shop、killRewardData.drops 原地刪掉；player-progression.js roll() 也跳過這些 ID（含 droplist_map 地圖掉落）。玩家身上已有的保留可出售
 2026-11-13 檢查「地圖移動卡卡」：無頭 Chrome 實測平常走路穩定 60fps，水晶球 HUD／頭頂條無影響；卡頓是第一次走進新區域時 160～370ms 的停頓，沒有腳本歸屬＝瀏覽器解碼新地圖圖片（atlas64 大圖），尚未修
+2026-11-13 修「地圖移動卡卡」（無頭 Chrome＋CPU 分析找出來的）：
+  1. native-world.js paintEntity／drawForeground：遮擋（建築、樹蓋住角色怪物）原本每幀把整個建築群組的圖塊都畫一遍再裁切，改成只畫跟角色／怪物框重疊的圖塊（inBox）
+  2. native-world.js 地圖大圖（atlas64）改 fetch→blob→createImageBitmap，在背景執行緒解碼；sendAtlas 從 blob 建 bitmap，不再在主執行緒同步解碼
+  3. native-world.js 新區塊 JSON 給 worker 改傳原始文字（type:'chunkText'，native-world-worker.js 自己 JSON.parse），不再結構化複製大陣列（原本一次卡 110ms 以上）
+  4. scene-renderer.js getRenderedSceneView 快取畫面大小（ResizeObserver／resize 時清掉），不再每幀 getBoundingClientRect
+  5. overhead-bars.js 頭頂名牌只在角色圖尺寸改變或每 30 幀量一次版面，數值沒變不寫 DOM
+  結果（30 秒走路）：版面量測 1.5s→0.09s、drawImage 4.3s→1.5s、主執行緒解碼 0.62s→0.08s；主執行緒已無 80ms 以上的長工作

@@ -28,19 +28,20 @@
  // 目前畫出來的角色圖（變身時用變身圖）
  function shownImage(){const morph=actor.querySelector('.transform-morph');if(morph&&!morph.hidden){const m=[...morph.querySelectorAll('img')].find(i=>!i.classList.contains('transform-morph-shadow')&&i.offsetWidth);if(m)return m}
   return [...actor.querySelectorAll('img.character-main')].find(i=>i.getBoundingClientRect().height>0)||null}
- let y=null;
+ // 效能：版面量測（getBoundingClientRect）只在換圖尺寸或每 30 幀做一次，其餘用快取，避免每幀強制重排
+ let y=null,n=0,img=null,geo=null,lastName='',lastH='',lastM='',fallback=null;
+ function measure(){img=shownImage();geo=null;if(!img)return;const r=img.getBoundingClientRect(),a=actor.getBoundingClientRect();if(!r.height)return;geo={nw:img.naturalWidth,nh:img.naturalHeight,top:r.top-a.top,w:r.width,h:r.height}}
  function frame(){
-  const playing=window.gameFlowState==='playing'&&actor.offsetParent!==null;box.hidden=!playing;
+  const playing=window.gameFlowState==='playing';if(box.hidden===playing)box.hidden=!playing;
   if(playing){
-   const small=actor.querySelector(':scope>small');nm.textContent=small?.textContent||window.activeCharacterName||'';
-   const pct=(v,m)=>(m>0?Math.max(0,Math.min(100,v/m*100)):0)+'%';
-   if(typeof hp!=='undefined'){hB.style.setProperty('--p',pct(hp,maxHp));mB.style.setProperty('--p',pct(mp,maxMp))}
-   const img=shownImage(),a=actor.getBoundingClientRect();let target=null;
-   if(img){const r=img.getBoundingClientRect(),t=topOf(img);if(r.height&&t!==null){
-    // object-fit:contain 的實際畫面範圍
-    const s=Math.min(r.width/img.naturalWidth,r.height/img.naturalHeight),oy=(r.height-img.naturalHeight*s)/2;target=r.top+oy+t*img.naturalHeight*s-a.top-3}}
-   if(target===null){const f=parseFloat(getComputedStyle(actor).getPropertyValue('--character-size-factor'))||1;target=-70*f}
-   y=y===null||Math.abs(target-y)>80?target:y+(target-y)*.25;box.style.top=y.toFixed(1)+'px'}
+   const name=actor.querySelector(':scope>small')?.textContent||window.activeCharacterName||'';if(name!==lastName)nm.textContent=lastName=name;
+   const pct=(v,m)=>(m>0?Math.max(0,Math.min(100,v/m*100)):0).toFixed(1)+'%';
+   if(typeof hp!=='undefined'){const h=pct(hp,maxHp),m=pct(mp,maxMp);if(h!==lastH)hB.style.setProperty('--p',lastH=h);if(m!==lastM)mB.style.setProperty('--p',lastM=m)}
+   if(n++%30===0||!img||!img.isConnected||!geo||geo.nw!==img.naturalWidth||geo.nh!==img.naturalHeight)measure();
+   let target=null;const t=img&&geo?topOf(img):null;
+   if(t!==null){const sc=Math.min(geo.w/geo.nw,geo.h/geo.nh),oy=(geo.h-geo.nh*sc)/2;target=geo.top+oy+t*geo.nh*sc-3}
+   if(target===null){if(fallback===null||n%30===1)fallback=-70*(parseFloat(getComputedStyle(actor).getPropertyValue('--character-size-factor'))||1);target=fallback}
+   y=y===null||Math.abs(target-y)>80?target:y+(target-y)*.25;const top=y.toFixed(1)+'px';if(box.style.top!==top)box.style.top=top}
   requestAnimationFrame(frame)}
  requestAnimationFrame(frame);
 })();
