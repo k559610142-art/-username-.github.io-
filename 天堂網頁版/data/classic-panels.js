@@ -4,7 +4,8 @@ const equipmentSlots=[['necklace','項鍊'],['helm','頭盔'],['earring','耳環
 let classicTab='bag',catalogPage=0,catalogQuery='',catalogKind='all',equipmentOwner='';
 const uiElement=(tag,className,text)=>{const e=document.createElement(tag);if(className)e.className=className;if(text!==undefined)e.textContent=text;return e};
 function itemKey(item){return item.kind+':'+item.id}
-function currentPortrait(){const role={騎士:'knight',法師:'mage',王族:'royal',妖精:'elf'}[job]||'knight';return 'assets/entry/'+role+'-'+(characterGender?'f':'m')+'.png'}
+// 頭像來源：有插畫（art）的職業用插畫，四個原始職業用 entry 立繪，其他職業用創角的職業圖
+function currentPortrait(){const g=characterGender?1:0,cr=window.CreationRules?.classes?.[job];if(cr?.art?.[g])return 'assets/entry/'+cr.art[g];const role={騎士:'knight',法師:'mage',王族:'royal',妖精:'elf'}[job];if(!role&&cr?.portraits?.[g])return 'assets/entry/'+cr.portraits[g];return 'assets/entry/'+(role||'knight')+'-'+(g?'f':'m')+'.png'}
 function loadPreviewEquipment(){equipmentOwner=OwnedInventory.owner;previewEquipment.clear();for(const e of OwnedInventory.items)if(e.slot)previewEquipment.set(e.slot,e.item)}
 function slotForItem(item){return OwnedInventory.slotFor(item)}
 function equipPreviewItem(item){const row=OwnedInventory.items.find(e=>itemKey(e.item)===itemKey(item)&&!e.slot)||OwnedInventory.items.find(e=>itemKey(e.item)===itemKey(item));if(!row){toast('背包中沒有這個物品。');return false}return OwnedInventory.use(row.uid)}

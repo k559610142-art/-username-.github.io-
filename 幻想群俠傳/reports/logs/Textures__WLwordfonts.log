@@ -1,9 +1,0 @@
-Found 945 game files (190 skipped) in 6 folders at path "C:/Users/User/Desktop/新增資料夾"
-Scanned game directory in 0.0 sec, 1356 allocs, 0.00 MBytes serialized in 0 calls.
-Loading package: Textures/WLwordfonts.utx Ver: 128/29 Names: 20 Exports: 2 Imports: 3 Game: 200001
-Loaded in 0.0 sec, 17 allocs, 0.00 MBytes serialized in 2 calls.
-Loading Texture HYFont_PageA from package Textures/WLwordfonts.utx
-Exporting objects ...
-Exporting Texture HYFont_PageA to C:/Users/User/Desktop/凡人修仙傳/-username-.github.io-/武林群俠傳/images/packages/Textures/WLwordfonts/Texture/HYFont_PageA.png
-Memory: allocated 294010 bytes in 49 blocks
-Exported 1/1 objects in 0.0 sec
