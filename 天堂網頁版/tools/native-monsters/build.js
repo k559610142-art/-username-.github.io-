@@ -68,6 +68,7 @@ for (const r of npcRows) spawns.push({
 });
 const looks = new Set(); for (const s of spawns) { looks.add(templates[s.npcId].gfx); for (const [id] of groups[s.group]?.members || []) if (templates[id]) looks.add(templates[id].gfx); }
 // Monsters made by skills (data/summons.js): 召喚術 81210–81228, 屬性精靈 45303–45306, 強力屬性精靈 81050–81053.
+for (let id = 81210; id <= 81240; id++) if (templates[id]) looks.add(templates[id].gfx); // 召喚控制戒指 list
 for (const id of [81210, 81213, 81216, 81219, 81222, 81225, 81228, 45303, 45304, 45305, 45306, 81050, 81051, 81052, 81053]) if (templates[id]) looks.add(templates[id].gfx);
 const need = [...looks].filter(g => !existing[g]).sort((a, b) => a - b);
 

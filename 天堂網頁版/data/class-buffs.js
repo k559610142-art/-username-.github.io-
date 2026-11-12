@@ -130,6 +130,7 @@ const ClassBuffs=(()=>{
   if(kind==='teleport'&&!landing())return say('這個地區無法使用瞬間移動。');
   const summon=['summon','tame','zombie','elemental','greater','release'].includes(kind)?window.Summons?.prepare(kind,skill):null;
   if(typeof summon==='string')return say(summon);
+  if(summon?.menu)return true;
   if(kind==='mother'&&!WorldMaps.has(4))return false;
   let mob=null;if(UTIL_TARGET[id]){mob=targetInRange(skill);if(!mob)return say('請先選擇範圍內的目標。');}
   if(!OwnedInventory.castCost(skill))return say('魔力、體力或材料不足。');

@@ -11,6 +11,31 @@ const Summons=(()=>{
  const SUMMON_IDS=[81210,81213,81216,81219,81222,81225,81228];
  const ELEMENTAL={地:[45306,81053],火:[45303,81050],水:[45304,81051],風:[45305,81052]};
  const LIFE=3600*1000;
+ // 召喚控制戒指 (armor 20284／120284): SUMMON_MONSTER.start(pc, choice) — 31 choices, minimum level and cost per summon;
+ // count = (CHA + 6 − used) ÷ cost; the last three (81238–81240) only when no other summon is out.
+ const RING_IDS=Array.from({length:31},(_,i)=>81210+i);
+ const RING_LEVEL=[28,28,28,32,32,32,36,36,36,40,40,40,44,44,44,48,48,48,52,52,52,56,56,56,60,60,60,64,68,72,72];
+ const RING_COST=[8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,10,10,10,12,12,12,20,42,42,50];
+ let chosen=null;
+ const hasRing=()=>OwnedInventory.items.some(e=>e.slot&&(e.key==='armor:20284'||e.key==='armor:120284'));
+ function openMenu(){
+  const overlay=document.querySelector('#panel'),content=document.querySelector('#panelContent');
+  cancelPointerGesture({preserveNavigation:true});
+  overlay.classList.remove('classic-panel','reference-menu-panel','game-catalog-panel','npc-shop-panel','map-overview-panel');
+  overlay.setAttribute('aria-label','召喚術');overlay.querySelector('#close').hidden=false;overlay.hidden=false;
+  const lv=window.activeCharacterLevel||1,free=room();
+  const heading=uiElement('h2','','召喚術 · 選擇召喚獸'),intro=uiElement('p','summon-menu-intro','可用魅力 '+free+'（魅力＋6－已佔用）。選好後會立刻施放召喚術。'),list=uiElement('div','summon-menu');
+  RING_IDS.forEach((id,i)=>{
+   const npc=islandMonsterTemplates[id];if(!npc)return;
+   const n=Math.floor(free/RING_COST[i]),noArt=!islandMonsterFrames[npc.gfx];
+   const why=lv<RING_LEVEL[i]?'需要 '+RING_LEVEL[i]+' 級':noArt?'沒有圖':id>=81238&&used()?'要先收回其他召喚獸':n<1?'魅力不足':'';
+   const b=uiElement('button','',npc.name+'　Lv.'+npc.level+'　體力 '+npc.hp+'　佔用 '+RING_COST[i]+(why?'　（'+why+'）':'　× '+n));
+   b.type='button';b.disabled=!!why;b.onclick=()=>{chosen=i;closePanel();if(!PlayerSkills.cast(51))chosen=null;};
+   list.append(b);
+  });
+  content.replaceChildren(heading,intro,list);overlay.scrollTop=0;
+ }
+ const menuStyle=document.createElement('style');menuStyle.textContent='.summon-menu{display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}.summon-menu button{min-height:46px;padding:10px;text-align:left;background:#24342a;border:1px solid #a28b55;color:#f0dfb7;font-size:15px}.summon-menu button:disabled{opacity:.5}.summon-menu-intro{font-size:15px;line-height:1.7}';document.head.append(menuStyle);
  let owner=null,allies=[],pending=null;const corpses=[];
  const now=()=>movementTime();
  const dist=(a,b,x,y)=>Math.max(Math.abs(a-x),Math.abs(b-y));
@@ -37,6 +62,16 @@ const Summons=(()=>{
 
  // ---- skills (called by ClassBuffs before paying the cost; return an error text or a function that does the work) ----
  function prepare(kind,skill){
+  if(kind==='summon'&&hasRing()){
+   // 召喚控制戒指: choose from the list first (no cost yet); the chosen entry is used by the next cast.
+   if(chosen===null){openMenu();return {menu:true};}
+   const i=chosen;chosen=null;const id=RING_IDS[i],cost=RING_COST[i];
+   if((window.activeCharacterLevel||1)<RING_LEVEL[i])return '等級不足，無法召喚。';
+   if(id>=81238&&used())return '必須先收回其他召喚獸才能召喚。';
+   const n=Math.floor(room()/cost);if(cha()+6<cost||n<1)return '魅力不足，無法再召喚。';
+   if(!islandMonsterTemplates[id]||!islandMonsterFrames[islandMonsterTemplates[id].gfx])return '這種召喚獸目前沒有圖，無法召喚。';
+   return ()=>{for(let k=0;k<n;k++)create(id,worldX,worldY,cost,'summon');};
+  }
   if(kind==='summon'){
    const lv=window.activeCharacterLevel||1;let i=0;while(i<SUMMON_IDS.length-1&&lv>=32+i*4)i++;
    const n=Math.floor(room()/6);if(n<1)return '魅力不足，無法再召喚。';

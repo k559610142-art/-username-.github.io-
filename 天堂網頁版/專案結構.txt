@@ -94,5 +94,8 @@
     移動：沒擋住時直走，被擋住就照 findWalkingPath 的路徑走（每 600 ms 或目標移動時重算）
   存檔（2026-11-12）：entry-flow saveActiveCharacter 寫入 character.summons（npcId、血量、佔用、種類、剩餘毫秒），
     進入遊戲時 Summons.restore → 第一次 tick 在角色身邊重新叫出；只屬於該角色，離線時間不扣剩餘時間
-  限制：召喚術／屬性精靈 1 小時後消失；沒有召喚控制戒指的選單
+  召喚控制戒指選單（2026-11-12）：裝備 armor 20284／120284（限法師）時施放召喚術先開選單（Summons.openMenu，用 #panel），
+    31 種 81210～81240、等級門檻 28～72、每隻佔用 8～50（jar SUMMON_MONSTER.start(pc, choice) 的三個陣列），數量＝(魅力＋6－已佔用)÷佔用，
+    最後三種要身邊沒有其他召喚獸；選好後才扣魔力與材料。沒戴戒指維持依等級自動選
+  限制：召喚術／屬性精靈 1 小時後消失；黑豹（外觀 13068）客戶端沒有圖，不能召喚
   tools/native-monsters/build.js 另外切召喚獸與屬性精靈的圖
