@@ -57,12 +57,13 @@
  main.game.orb-hud.orb-hud.orb-hud>.bottom .actions>button>*{display:none!important}
  main.game.orb-hud.orb-hud.orb-hud>.bottom .actions>button:active{transform:scale(.95)}
  main.game.orb-hud.orb-hud.orb-hud>.bottom .actions>button[aria-pressed=true]{filter:drop-shadow(0 0 5px #ffd77a) drop-shadow(0 0 2px #ffcf5a) brightness(1.15)}
- main.game.orb-hud.orb-hud.orb-hud>.bottom .actions>#attack{right:${k(4)}!important;bottom:${k(27)}!important;width:${k(116)}!important;height:${k(117)}!important;background-image:url(${A}attack.png)!important}
- main.game.orb-hud.orb-hud.orb-hud>.bottom .actions>.reference-auto{right:${k(104)}!important;bottom:${k(70)}!important;width:${k(60)}!important;height:${k(60)}!important;background-image:url(${A}auto.png)!important}
- main.game.orb-hud.orb-hud.orb-hud>.bottom .actions>.reference-self{right:${k(78)}!important;bottom:${k(151)}!important;width:${k(58)}!important;height:${k(59)}!important;background-image:url(${A}self-s.png)!important}
- main.game.orb-hud.orb-hud.orb-hud>.bottom .actions>.reference-interact{right:${k(5)}!important;bottom:${k(181)}!important;width:${k(58)}!important;height:${k(56)}!important;background-image:url(${A}pick.png)!important}
- main.game.orb-hud.orb-hud.orb-hud>.bottom .actions>.reference-lock{right:${k(10)}!important;bottom:${k(256)}!important;width:${k(64)}!important;height:${k(65)}!important;background-image:url(${A}lock.png)!important}
+ main.game.orb-hud.orb-hud.orb-hud>.bottom .actions>#attack{right:${k(2)}!important;bottom:${k(22)}!important;width:${k(116)}!important;height:${k(117)}!important;background-image:url(${A}attack.png)!important}
+ main.game.orb-hud.orb-hud.orb-hud>.bottom .actions>.reference-auto{right:${k(127)}!important;bottom:${k(15)}!important;width:${k(62)}!important;height:${k(62)}!important;background-image:url(${A}auto.png)!important}
+ main.game.orb-hud.orb-hud.orb-hud>.bottom .actions>.reference-self{right:${k(114)}!important;bottom:${k(118)}!important;width:${k(60)}!important;height:${k(61)}!important;background-image:url(${A}self-s.png)!important}
+ main.game.orb-hud.orb-hud.orb-hud>.bottom .actions>.reference-interact{right:${k(28)}!important;bottom:${k(158)}!important;width:${k(60)}!important;height:${k(58)}!important;background-image:url(${A}pick.png)!important}
+ main.game.orb-hud.orb-hud.orb-hud>.bottom .actions>.reference-lock{right:${k(8)}!important;bottom:${k(244)}!important;width:${k(64)}!important;height:${k(65)}!important;background-image:url(${A}lock.png)!important}
  main.game.orb-hud.orb-hud.orb-hud>.bottom .pad{display:none!important}
+ main.game.orb-hud.orb-hud.orb-hud>.bottom{z-index:8!important}
  /* 目錄 */
  .oh-menu-btn{right:${k(2)};width:${k(76)};height:${k(75)};padding:0!important;min-height:0!important;border:0!important;background:url(${A}menu.png) center/contain no-repeat!important;color:transparent!important;font-size:0!important;filter:drop-shadow(0 2px 4px #000c)}
  .oh-menu-btn[aria-expanded=true]{filter:drop-shadow(0 0 5px #ffd77a) brightness(1.1)}
@@ -71,7 +72,8 @@
  .oh-menu button{width:${k(44)};height:${k(44)};min-height:0!important;padding:0!important;border-radius:50%!important;font-size:${k(11.5)}!important;font-family:'Times New Roman','Noto Serif TC',serif;color:#f1dfb6!important;
   background:radial-gradient(circle at 50% 38%,#4b3c2b,#261c12 62%,#1a130c)!important;border:2px solid #5b4428!important;box-shadow:inset 0 0 0 2px #120c06,inset 0 0 0 3px #b38a50,inset 0 0 8px #000!important;text-shadow:1px 1px 0 #000}
  .oh-menu button:hover{border-color:#a07a3e!important}
- main.game.orb-hud.orb-hud.orb-hud>.minimap-button{border:2px solid #6b5230!important;box-shadow:inset 0 0 0 1px #000,0 0 0 1px #c19a5a,0 3px 8px #000b!important;border-radius:2px!important}
+ main.game.orb-hud.orb-hud.orb-hud>.minimap-button{width:${k(176)}!important;height:${k(124)}!important;border:2px solid #6b5230!important;box-shadow:inset 0 0 0 1px #000,0 0 0 1px #c19a5a,0 3px 8px #000b!important;border-radius:2px!important}
+  main.game.orb-hud.orb-hud.orb-hud>.minimap-button canvas{width:100%!important;height:100%!important}
  `;document.head.append(css);
 
  const el=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e};
@@ -109,7 +111,7 @@
  function placeMenu(){const g=game.getBoundingClientRect(),m=document.querySelector('.minimap-button')?.getBoundingClientRect(),s=Number(getComputedStyle(game).getPropertyValue('--ok'))||1;
   const top=m&&m.height?m.bottom-g.top+8*s:150*s;menuBtn.style.top=top+'px';menu.style.top=top+'px';
   // 矮畫面：鎖定鈕不夠放時往下推，避免蓋到目錄
-  const lock=document.querySelector('.bottom .actions>.reference-lock');if(lock){const want=top+80*s,def=g.height-(256+65)*s;if(def<want){lock.style.setProperty('top',want+'px','important');lock.style.setProperty('bottom','auto','important')}else{lock.style.removeProperty('top');lock.style.removeProperty('bottom')}}}
+  const lock=document.querySelector('.bottom .actions>.reference-lock');if(lock){const want=top+80*s,def=g.height-(244+65)*s;if(def<want){lock.style.setProperty('top',want+'px','important');lock.style.setProperty('bottom','auto','important')}else{lock.style.removeProperty('top');lock.style.removeProperty('bottom')}}}
  function refresh(){if(!game.classList.contains('orb-hud')||window.gameFlowState!=='playing')return;setOrb(hpO,'hp',hp,maxHp);setOrb(mpO,'mp',mp,maxMp);const e=expPct();exp.style.setProperty('--fill',e+'%');exp.title='經驗 '+e.toFixed(2)+'%';labelSlots();placeMenu()}
  function layout(){const r=game.getBoundingClientRect(),on=style==='orb'&&r.width>=560&&r.width>r.height;game.classList.toggle('orb-hud',on);
   if(!on){const lock=document.querySelector('.bottom .actions>.reference-lock');lock?.style.removeProperty('top');lock?.style.removeProperty('bottom')}
