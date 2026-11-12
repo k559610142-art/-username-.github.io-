@@ -3,7 +3,7 @@
 //  左：等級＋經驗%、金幣、防禦／魔防、負重、經驗條
 //  中（隨畫面寬度伸縮）：訊息分頁（全部／一般／隊伍／血盟／世界／掉落／系統）＋訊息＋輸入列（一般▾｜輸入訊息｜發送）
 //  右：快捷格 F1～F10（5×2）＋功能鈕列（狩獵場、地圖、能力、魔法、背包、裝備、選單、設定）
-// 橫向畫面（寬 > 高、寬 ≥ 560）啟用，高度約佔畫面 28%；手機直向維持原本介面。
+// 設定選「奇岩式」底部介面（hudStyle=classic）且為橫向畫面（寬 > 高、寬 ≥ 560）才啟用，高度約佔畫面 28%；預設是水晶球式（orb-hud.js）。
 (()=>{
  const DH=160,SIDE=200,game=document.querySelector('.game'),UI='assets/interface/client-ui/431.png';
  const crop=(x,y,w,h)=>`background:url('${UI}') -${x}px -${y}px/640px 149px no-repeat;width:${w}px;height:${h}px`;
@@ -123,9 +123,10 @@
   const mapName=window.WorldMaps?.name?.(window.activeMapId||0)||'',safe=typeof tile==='function'&&(tile(worldX,worldY)&48)===16;
   place.replaceChildren(document.createTextNode(mapName),Object.assign(el('small',safe?'':'danger',safe?'（安全區域）':'（一般區域）')));labelSlots()}
  // 版面：橫向畫面啟用；寬度＝整個畫面，高度約佔畫面 28%（依高度等比縮放）
- function layout(){const r=game.getBoundingClientRect(),on=r.width>=560&&r.width>r.height;game.classList.toggle('classic-hud',on);if(!on)return;
+ function hudStyle(){if(window.HudStyle)return HudStyle.current;try{return localStorage.getItem('hudStyle')||'orb'}catch{return 'orb'}}
+ function layout(){const r=game.getBoundingClientRect(),on=hudStyle()==='classic'&&r.width>=560&&r.width>r.height;game.classList.toggle('classic-hud',on);if(!on)return;
   const s=Math.max(.5,Math.min(r.height*.28/DH,r.width/720,1.6));game.style.setProperty('--qh-s',s);game.style.setProperty('--qh-w',r.width/s+'px');refresh()}
- new ResizeObserver(layout).observe(game);layout();
+ new ResizeObserver(layout).observe(game);addEventListener("resize",layout);layout();window.ClassicHud={layout};
  const baseStats=stats;stats=function(...args){const out=baseStats.apply(this,args);refresh();return out};
  setInterval(refresh,1000);
 })();

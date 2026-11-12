@@ -1,5 +1,5 @@
 // 設定視窗：照網頁奇岩城畫面排版自寫（分頁＋分區標題＋開關列）。內容沿用遊戲原本的設定控制項，只重新排列與換樣式。
-//  系統：一般（視窗歸位、製作配方、匯出角色存檔、重設快捷欄）／聲音（背景音樂、戰鬥音效）／畫面（螢幕尺寸、全螢幕、操作按鈕大小）
+//  系統：一般（視窗歸位、製作配方、匯出角色存檔、重設快捷欄）／聲音（背景音樂、戰鬥音效）／畫面（螢幕尺寸、全螢幕、操作按鈕大小、底部介面 水晶球式／奇岩式）
 //  狩獵：掛機索敵範圍
 (()=>{
  const css=document.createElement('style');css.textContent=`
@@ -61,6 +61,7 @@
   if(screenSelect)g3.append(row('🖥️','螢幕尺寸','',screenSelect));
   if(full)g3.append(row('⛶','全螢幕','手機以橫式操作為主',action('切換',()=>full.click())));
   if(sizeSelect)g3.append(row('👆','操作按鈕大小','',sizeSelect));
+  if(window.HudStyle){const sel=el('select');for(const [v,l]of [['orb','水晶球式'],['classic','奇岩式']]){const o=el('option','',l);o.value=v;sel.append(o)}sel.value=HudStyle.current;sel.setAttribute('aria-label','底部介面');sel.onchange=()=>HudStyle.set(sel.value);g3.append(row('🧭','底部介面','橫向畫面的狀態列樣式',sel))}
   if(cameraNote)g3.append(row('🎥','鏡頭',cameraNote));
   sys.append(el('div','qy-set-head','畫面'),g3);
   const g4=el('div','qy-set-group');
