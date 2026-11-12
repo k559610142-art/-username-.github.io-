@@ -119,3 +119,4 @@
 2026-11-13 選角卡片（entry-flow.js）也改用 art 插畫（有 art 的職業：龍騎士、幻術師），其他職業仍用 portraits
 2026-11-13 左上頭像 currentPortrait()（classic-panels.js）：有 art 的職業（龍騎士、幻術師）用插畫，騎士／法師／王族／妖精用原立繪，其他（戰士）用創角職業圖；reference-hud.js faceCenters 加龍騎士、幻術師臉部位置
 2026-11-13 戰士也加插畫 assets/entry/warrior-art-m.jpg／-f.jpg（創角、選角卡片、左上頭像都用；faceCenters 加戰士）
+2026-11-13 遊戲選單（reference-menu.js）新增第 16 格「返回選擇英雄」（圖示 reference-skin back.png）：呼叫 GameEntry.backToSelect()＝entry-flow.js 新函式 returnToSelection()（存檔→回選角畫面）；原 #roles 按鈕的 onclick 已被其他腳本改成狀態視窗，所以不靠它
