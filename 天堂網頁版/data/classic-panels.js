@@ -27,7 +27,7 @@ function renderEquipmentPane(){
  for(const [slot,label] of equipmentSlots){const b=uiElement('button','equipment-slot'),item=previewEquipment.get(slot);b.type='button';b.setAttribute('aria-label',label+(item?'：'+item.name+'，點擊卸下':'：空'));b.title=item?item.name+'（點擊卸下）':label;if(item)b.append(itemIcon(item));else b.append(uiElement('span','slot-symbol',label));b.onclick=()=>{if(item){removePreviewItem(slot)}else toast(label+'欄位：取得裝備後可從背包穿戴。')};sheet.append(b)}
  const ac=uiElement('div','equipment-ac','Armor Class　'+previewArmorClass()),note=uiElement('p','classic-note','雙擊背包裝備穿戴／卸下');const summary=uiElement('div','equipment-summary'),status=uiElement('button','equipment-status-button','狀態');status.type='button';status.setAttribute('aria-label','開啟人物狀態');status.onclick=()=>panel('status');summary.append(ac,status);pane.append(sheet,summary,note);return pane;
 }
-// 背包每頁格數；原版道具欄介面（client-classic-ui.js）改成 4×8＝32 格
+// 背包每頁格數；character-bag-panels.js 改成整頁捲動
 let inventoryPageSize=24;
 function catalogMatches(){return OwnedInventory.items.filter(e=>(catalogKind==='all'||e.item.kind===catalogKind)&&(!catalogQuery||e.item.name.includes(catalogQuery)||String(e.item.id)===catalogQuery))}
 function renderInventoryPane(){

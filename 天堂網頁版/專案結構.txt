@@ -17,10 +17,9 @@
   tools/atlas-split/             大圖集切小頁工具（node tools/atlas-split/split.js assets/native-world 8，需要舊 manifest.json＋atlas-N.png）
 
 原版介面（2026-11-10，天地劫天堂客戶端 Sprite.pak）：
-  assets/interface/client-ui/532.png   道具欄（4×8 格）
-  assets/interface/client-ui/563c.png  人物屬性（男）／567c.png（女）：左邊能力值、右邊人形裝備欄，人物狀態與裝備都開這個
   assets/interface/client-ui/431.png   底部介面（龍頭、對話、F5～F12 快捷格、功能鈕）
-  data/client-classic-ui.js            道具欄、人物屬性改用上述原版圖；背包每頁 inventoryPageSize（classic-panels.js）改為 32；手機窄螢幕視窗靠左
+  data/character-bag-panels.js       角色視窗＋背包，照網頁奇岩城畫面排版自寫（2026-11-12）：角色（人物狀態，放左側）分頁 能力／隊伍／血盟／好友；
+                                       背包（右側）分頁 全部／武器／防具／道具／裝備欄，負重條＋格數＋防禦、4 欄捲動；「裝備」按鈕開背包的裝備欄（左右各 5 格＋武器戒指一排＋3×3 數值）
   data/client-classic-hud.js           底部介面改用 431 原版圖（遊戲畫面寬 ≥ 760、高 ≥ 480 才啟用，最寬 900；手機直向維持原介面）
   tools/client-pak/                    讀天地劫天堂 .idx/.pak（l1pak.js，Text.pak 有加密，對照表 maps.json 取自開源 PakViewer）、.img 轉 PNG（img2png.js，綠色 0x3E0／0x7E0 為透明）、
                                        依檔名抽圖（extract.js："node tools/client-pak/extract.js C:/Users/User/Desktop/天地劫天堂 assets/interface/client-ui 532.img"）
