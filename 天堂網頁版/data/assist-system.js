@@ -16,7 +16,7 @@ const AssistSystem=(()=>{
  for(const rows of [...Object.values(NATIVE_NPC_DIALOGS.shops||{}),islandNpcServiceData.shop||[]])for(const [id,,buy,pack,,ench] of rows){if(!(buy>=0)||ench)continue;const n=Math.max(1,pack|0),b=SHOP.get(id);if(!b||buy/n<b.price/b.pack)SHOP.set(id,{price:buy,pack:n});}
  const QTY=[1,5,10,20,50,100,200,500,1000];
  const BUYS=[['tp','瞬間移動卷軸',10],['home','傳送回家的卷軸',5],['heal','補血道具（補給選的那種）',100],['haste','綠色藥水',5],['brave','勇敢藥水類',5],['wisdom','慎重藥水',5],['blue','藍色藥水',5],['arrow','箭（裝備弓時）',1000]];
- const base=()=>({noMobTp:false,noMobSec:10,potions:{haste:false,brave:false,wisdom:false,blue:false},attackOn:false,attackSkill:null,attackMp:30,buffs:[],list:{},escape:false,healFallback:false,morph:false,openOn:false,openSkill:null,openMp:50,aoeOn:false,aoeSkill:null,aoeRange:3,aoeCount:3,aoeMp:50,mindOn:false,mindHp:80,mindMp:40,summonOn:false,ringOn:false,buy:Object.fromEntries(BUYS.map(([k,,n])=>[k,{on:false,n}]))});
+ const base=()=>({noMobTp:false,noMobSec:10,potions:{haste:false,brave:false,wisdom:false,blue:false},attackOn:false,attackSkill:null,attackMp:30,buffs:[],list:{},escape:false,healFallback:false,morph:false,openOn:false,openSkill:null,openMp:50,aoeOn:false,aoeSkill:null,aoeRange:3,aoeCount:3,aoeMp:50,mindOn:false,mindHp:80,mindMp:40,summonOn:false,ringOn:false,pick:{haste:null,brave:null,wisdom:null,blue:null},buy:Object.fromEntries(BUYS.map(([k,,n])=>[k,{on:false,n}]))});
  let state=base(),owner='',dialog=null,tab='hunt',idleSince=0,lastTp=0,retry=new Map(),escapes=[],lostMorph=null,seenMorph=null,lastOpen=null;
  const int=(v,lo,hi,d)=>Number.isInteger(v)?Math.max(lo,Math.min(hi,v)):d;
  function validate(v){const s=base();if(!v||typeof v!=='object')return s;
@@ -26,6 +26,7 @@ const AssistSystem=(()=>{
   for(const k of ['escape','healFallback','morph','openOn','aoeOn','mindOn','summonOn','ringOn'])s[k]=v[k]===true;
   const skillOk=id=>Number.isInteger(id)&&playerSkillData.skills[id]?id:null;s.openSkill=skillOk(v.openSkill);s.aoeSkill=skillOk(v.aoeSkill);
   s.openMp=int(v.openMp,0,99,50);s.aoeRange=int(v.aoeRange,1,8,3);s.aoeCount=int(v.aoeCount,2,10,3);s.aoeMp=int(v.aoeMp,0,99,50);s.mindHp=int(v.mindHp,1,99,80);s.mindMp=int(v.mindMp,1,99,40);
+  for(const k of Object.keys(s.pick))s.pick[k]=typeof v.pick?.[k]==='string'&&catalog.has(v.pick[k])?v.pick[k]:null;
   for(const [k] of BUYS){const b=v.buy?.[k];if(b)s.buy[k]={on:b.on===true,n:QTY.includes(b.n)?b.n:s.buy[k].n};}
   if(v.list&&typeof v.list==='object')for(const [map,names] of Object.entries(v.list)){if(!names||typeof names!=='object')continue;const m={};for(const [n,mode] of Object.entries(names))if(['skip','tp'].includes(mode))m[n]=mode;if(Object.keys(m).length)s.list[map]=m;}
   return s;}
@@ -41,7 +42,8 @@ const AssistSystem=(()=>{
  const busy=()=>characterMovementBlocked()||movementAnimating();
  function teleport(){const s=owned().find(e=>handler(e)==='teleport.Move_Reel');if(!s||movementTime()-lastTp<2000)return false;lastTp=movementTime();const ok=TeleportScrolls.random(s.uid);if(ok){idleSince=movementTime();IslandCombat.resetAfterTeleport?.();}return ok;}
  function potionFor(kind){const kinds=POTIONS.find(p=>p[0]===kind)[2];if(kinds.some(k=>Number(window.activePotionBuffs?.[k])>Date.now()+1500))return null;
-  return owned().find(e=>kinds.includes(NativePotions.durationState(e.key)?.key))||null;}
+  const ok=e=>kinds.includes(NativePotions.durationState(e.key)?.key),pick=state.pick[kind];
+  return owned().find(e=>e.key===pick&&ok(e))||owned().find(ok)||null;}
  // 每種補給：身上算哪些道具、要買哪一個（商店有賣、職業能用的最便宜那個）
  const kindsOf=k=>POTIONS.find(p=>p[0]===k)?.[2];
  function matcher(k){
@@ -122,7 +124,10 @@ const AssistSystem=(()=>{
  .assist-note{margin:6px 4px;font-size:11px;color:#857d6a;line-height:1.5;text-align:center}
  .assist-buffs{display:grid;grid-template-columns:1fr 1fr;gap:0}
  .assist-buffs .qy-set-row{border-bottom:1px solid #1f1e1b}
- .assist-mob{display:flex;align-items:center;gap:6px}`;document.head.append(css);
+ .assist-mob{display:flex;align-items:center;gap:6px}
+ .assist-body .qy-set-row .ico.item{width:32px;height:32px;flex:none;display:flex;align-items:center;justify-content:center;background:#0a0b0c;border:1px solid #4a4336;border-radius:3px}
+ .assist-body .qy-set-row .ico.item img{max-width:28px;max-height:28px;image-rendering:pixelated}
+ .assist-body .qy-set-row .ico.item .missing-item-icon{font-size:12px;color:#cdbb8a}`;document.head.append(css);
 
  const hud=el('button','assist-hud');hud.type='button';hud.setAttribute('aria-label','輔助系統');
  hud.innerHTML='<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="4"/><path d="M16 3v5M16 24v5M3 16h5M24 16h5M6.8 6.8l3.5 3.5M21.7 21.7l3.5 3.5M6.8 25.2l3.5-3.5M21.7 10.3l3.5-3.5"/></svg>';hud.append(el('span','','輔助'));
@@ -132,7 +137,10 @@ const AssistSystem=(()=>{
 
  function switcher(on,fn,label){const s=el('button','qy-switch');s.type='button';s.setAttribute('role','switch');s.setAttribute('aria-label',label);s.setAttribute('aria-checked',String(!!on));s.onclick=()=>{const want=s.getAttribute('aria-checked')!=='true';if(fn(want)!==false)s.setAttribute('aria-checked',String(want));};return s;}
  function slider(value,min,max,fn,unit,label){const box=el('span','assist-mob'),r=el('input'),v=el('span','val',value+unit);r.type='range';r.min=String(min);r.max=String(max);r.value=String(value);r.setAttribute('aria-label',label);r.oninput=()=>{v.textContent=r.value+unit;};r.onchange=()=>{if(fn(Number(r.value))===false){r.value=String(value);v.textContent=value+unit;}else value=Number(r.value);};box.append(r,v);return box;}
- function row(icon,label,note,...c){const r=el('div','qy-set-row'),t=el('div','txt',label);if(note)t.append(el('small','',note));r.append(el('span','ico',icon),t,...c);return r;}
+ function row(icon,label,note,...c){const r=el('div','qy-set-row'),t=el('div','txt',label);if(note)t.append(el('small','',note));r.append(typeof icon==='string'?el('span','ico',icon):icon,t,...c);return r;}
+ // 道具圖（沒有道具時用文字圖示）
+ function ico(key,fallback){const item=key&&catalog.get(key);if(!item)return el('span','ico',fallback);const box=el('span','ico item');box.append(itemIcon(item));box.title=item.name;return box;}
+ const firstKey=pred=>owned().find(pred)?.key||null;
  const group=(...rows)=>{const g=el('div','qy-set-group');g.append(...rows);return g;};
  const head=t=>el('div','qy-set-head',t);
  const count=pred=>owned().filter(pred).reduce((n,e)=>n+e.count,0);
@@ -140,9 +148,9 @@ const AssistSystem=(()=>{
  function huntPage(){const p=el('div'),ap=AutoPotion.snapshot,tp=count(e=>handler(e)==='teleport.Move_Reel'),home=count(e=>handler(e)==='teleport.GoHome_Reel');
   p.append(head('AUTO 掛機'),group(
    row('🎯','掛機索敵範圍','AUTO 時會往多遠的怪物走過去',slider(IslandCombat.autoRange,12,48,v=>{IslandCombat.setAutoRange(v);},' 格','掛機索敵範圍')),
-   row('🌀','沒怪 '+state.noMobSec+' 秒自動瞬移','用瞬間移動卷軸（身上 '+tp+' 張）',slider(state.noMobSec,3,60,v=>save({noMobSec:v})&&void render(),' 秒','沒怪幾秒瞬移'),switcher(state.noMobTp,on=>save({noMobTp:on}),'沒怪自動瞬移')),
-   row('🏠','體力低於 '+ap.homeThreshold+'% 時回村','用回家卷軸（身上 '+home+' 張）',slider(ap.homeThreshold,1,99,v=>AutoPotion.configure({homeThreshold:v})&&void render(),'%','回村體力門檻'),switcher(ap.homeEnabled,on=>AutoPotion.configure({homeEnabled:on}),'低血回村')),
-   row('🏃','撐不住先瞬移，3 次就回村','體力低於回村門檻時先用瞬間移動卷軸；一分鐘內逃到第 3 次才用回家卷軸（要開上面的回村）',switcher(state.escape,on=>save({escape:on}),'撐不住先瞬移'))));
+   row(ico(firstKey(e=>handler(e)==='teleport.Move_Reel')||product('tp')?.key,'🌀'),'沒怪 '+state.noMobSec+' 秒自動瞬移','用瞬間移動卷軸（身上 '+tp+' 張）',slider(state.noMobSec,3,60,v=>save({noMobSec:v})&&void render(),' 秒','沒怪幾秒瞬移'),switcher(state.noMobTp,on=>save({noMobTp:on}),'沒怪自動瞬移')),
+   row(ico(firstKey(e=>handler(e)==='teleport.GoHome_Reel')||product('home')?.key,'🏠'),'體力低於 '+ap.homeThreshold+'% 時回村','用回家卷軸（身上 '+home+' 張）',slider(ap.homeThreshold,1,99,v=>AutoPotion.configure({homeThreshold:v})&&void render(),'%','回村體力門檻'),switcher(ap.homeEnabled,on=>AutoPotion.configure({homeEnabled:on}),'低血回村')),
+   row(ico(firstKey(e=>handler(e)==='teleport.Move_Reel')||product('tp')?.key,'🏃'),'撐不住先瞬移，3 次就回村','體力低於回村門檻時先用瞬間移動卷軸；一分鐘內逃到第 3 次才用回家卷軸（要開上面的回村）',switcher(state.escape,on=>save({escape:on}),'撐不住先瞬移'))));
   p.append(el('p','assist-note','巡邏範圍從開 AUTO 的地方算起；瞬間移動卷軸不能用的地區不會瞬移。'));return p;}
 
  function supplyPage(){const p=el('div'),ap=AutoPotion.snapshot;
@@ -150,17 +158,23 @@ const AssistSystem=(()=>{
   for(const key of [...new Set(OwnedInventory.healingItems.map(e=>e.key))])heal.append(new Option(catalog.get(key).name+' ×'+count(e=>e.key===key),key,false,ap.key===key&&!ap.skillId));
   heal.onchange=()=>{if(heal.value&&!AutoPotion.configure({key:heal.value,skillId:null}))heal.value='';render();};
   p.append(head('補血'),group(
-   row('❤️','自動喝補血道具',null,heal),
+   row(ico(ap.key,'❤️'),'自動喝補血道具',null,heal),
    row('🔁','喝完先喝身上別種','選的補血道具用完時，改喝身上其他補血藥水',switcher(state.healFallback,on=>save({healFallback:on}),'喝完先喝身上別種')),
    row('📉','體力低於 '+ap.threshold+'% 時喝',null,slider(ap.threshold,1,99,v=>AutoPotion.configure({threshold:v})&&void render(),'%','補血門檻'),switcher(ap.enabled,on=>AutoPotion.configure({enabled:on})||(toast('請先選擇補血道具或治癒魔法。'),false),'自動補血'))));
-  const rows=POTIONS.map(([kind,label,kinds])=>{const n=count(e=>kinds.includes(NativePotions.durationState(e.key)?.key));return row('🧪',label,'效果沒了自動喝 · 身上 '+n+' 個',switcher(state.potions[kind],on=>save({potions:{...state.potions,[kind]:on}}),label));});
+  const rows=POTIONS.map(([kind,label,kinds])=>{const ok=e=>kinds.includes(NativePotions.durationState(e.key)?.key),n=count(ok),keys=[...new Set(owned().filter(ok).map(e=>e.key))];
+   const pick=state.pick[kind],shown=keys.includes(pick)?pick:keys[0]||product(kind)?.key;
+   const sel=el('select');sel.setAttribute('aria-label',label+' 喝哪一種');sel.append(new Option('自動（先喝身上有的）',''));
+   for(const k of keys)sel.append(new Option(catalog.get(k).name+' ×'+count(e=>e.key===k),k,false,k===pick));
+   if(pick&&!keys.includes(pick))sel.append(new Option(catalog.get(pick).name+' ×0',pick,false,true));
+   sel.onchange=()=>{save({pick:{...state.pick,[kind]:sel.value||null}});render();};
+   return row(ico(shown,'🧪'),label,'效果沒了自動喝 · 身上 '+n+' 個',sel,switcher(state.potions[kind],on=>save({potions:{...state.potions,[kind]:on}}),label));});
   p.append(head('狀態藥水'),group(...rows),el('p','assist-note','職業不能喝的（例如勇水限騎士、戰士）會自動略過。'));
   const cur=TransformCards.active;p.append(head('變身'),group(row('🎭','死亡後自動再變身',(cur?'目前變身：'+cur+'。':'目前沒有變身。')+'倒地後變身會消失，復活後自動變回死亡前的那張變身卡',switcher(state.morph,on=>save({morph:on}),'死亡後自動再變身'))));
   const buyRows=BUYS.map(([k,label])=>{const b=state.buy[k],pr=product(k),qty=el('select');qty.setAttribute('aria-label',label+' 購買數量');
    for(const n of QTY)qty.append(new Option('×'+n,String(n),false,n===b.n));qty.onchange=()=>{save({buy:{...state.buy,[k]:{...b,n:Number(qty.value)}}});render();};
    const packs=pr?Math.ceil(b.n/pr.pack):0,note=pr?catalog.get(pr.key).name+' · 一次 '+(packs*pr.pack)+' 個 '+(packs*pr.price).toLocaleString()+' 金幣':k==='heal'&&!AutoPotion.snapshot.key?'先在上面選補血道具':'商店沒賣或目前職業不能用';
    const sw=switcher(b.on,on=>pr||!on?save({buy:{...state.buy,[k]:{...b,on}}}):(toast('商店沒賣這項，無法自動購買。'),false),'自動購買 '+label);
-   return row('🛒',label,'用完時自動買 · '+note,qty,sw);});
+   return row(ico(pr?.key,'🛒'),label,'用完時自動買 · '+note,qty,sw);});
   const purse=OwnedInventory.items.find(e=>e.key==='etcitem:40308')?.count||0;
   p.append(head('自動購買'),group(...buyRows),el('p','assist-note','身上用完（0 個）時直接扣金幣購買，價格取各地商店最便宜的。目前金幣 '+purse.toLocaleString()+'。'));return p;}
 
