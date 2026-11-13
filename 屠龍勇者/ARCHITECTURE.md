@@ -5092,7 +5092,7 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - **後台**（`tools/doll-upgrade.sql`，使用者要自己在 Supabase SQL Editor 執行，可重跑）：`dragon_doll_scrolls`（user_id＋char_id＝`lootChar()` 的卷軸張數）、`dragon_inf_runs`（每個角色目前這一趟的 run_id、開始時間、已領樓層）、`dragon_doll_upgrade_log`（領取／升級紀錄）；三張表 RLS 全擋，只能透過函式。
   - `inf_status(char)`：今天用了幾次、剩幾次、卷軸張數。
   - `inf_run_start(char)`：**買票進塔**時呼叫，回傳 `{run, used, left}`；每天（台灣時間 `dragon_inf_today`）最多 3 次，超過 `daily limit`（`dragon_inf_runs.day/runs`）；換新 run_id、清空已領樓層（舊的 run 作廢）；記 `enter` 紀錄。早期版本回傳 uuid，SQL 會先 drop 再建。
-  - `inf_claim(char, run, floor)`：floor 要 ≥10 且是 5 的倍數（上限 2000）；run 要是目前這一趟；同一趟每層只能領一次；進塔時間要 ≥ (樓層−1)×30 秒×0.95（第 N 層首領最早在第 N 層開始時出現）。成功卷軸 +1。（20261113v 前只接受 10／15／20、時間門檻 N×30 秒。）
+  - `inf_claim(char, run, floor)`：floor 要 ≥10 且是 5 的倍數（上限 2000）；run 要是目前這一趟；同一趟每層只能領一次；進塔時間要 ≥ (樓層−1)×30 秒×0.95（第 N 層首領最早在第 N 層開始時出現）。成功卷軸 +1。（20261113v 前只接受 10／15／20、時間門檻 N×30 秒；新版使用者 11/13 已執行。）
   - `doll_scroll_status(char)`：查張數。`doll_upgrade(char, from, to)`：檢查 from→to 是 T4→T3／T3→T2／T2→T1／T1→T0（伺服器內建 21 隻階級表 `dragon_doll_quality`），扣 1 張，`random() < 0.05` 決定成敗，回傳 `{ok, scrolls}`。
   - 共用檢查 `dragon_doll_scroll_check`：登入、沒被封鎖（`dragon_is_banned`）、char 格式。
   - 限制：娃娃本身仍在玩家存檔（跟其他道具一樣），伺服器不檢查玩家是不是真的有那隻 from 娃娃；成功後由遊戲把那隻換成 to。
