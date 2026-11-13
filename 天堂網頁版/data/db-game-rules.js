@@ -65,11 +65,17 @@ const DBGameRules = (() => {
     for(let i=next.length-1;i>=0;i--)if(!next[i].count)next.splice(i,1);
     return true;
   }
+  // 新角色背包（2026-11-13 使用者指定，取代 DB beginner 表）：金幣 10 萬、自我加速藥水（綠水）50、治癒藥水（紅水）1000、傳送回家的卷軸 10、
+  // 修練者防具一套（頭盔／T恤／盔甲／手套／涼鞋／盾牌／銀戒指）＋職業新手武器：戰士 修練者斧頭、妖精 修練者長弓＋修練者短劍＋箭 1000、
+  // 龍騎士 修練者單手劍（DB 沒有龍騎士能用的矛）、幻術師 修練者魔杖（DB 幻術師不能用匕首）、王族／騎士／法師 修練者短劍
+  const STARTER_KIT={
+    common:[[40308,100000],[40013,50],[40010,1000],[40079,10],[20028,1],[20082,1],[20126,1],[20173,1],[20206,1],[20232,1],[20282,1]],
+    '王族':[[7,1]],'騎士':[[7,1]],'法師':[[7,1]],'妖精':[[175,1],[7,1],[40743,1000]],'戰士':[[147,1]],'龍騎士':[[35,1]],'幻術師':[[120,1]]
+  };
   function starter(role,existing){
-    const next=clone(existing),code={'王族':'P','騎士':'K','法師':'W','妖精':'E','龍騎士':'R','幻術師':'I','戰士':'F'}[role];
-    for(const row of rows('beginner')){
-      if(row.count<=0||!['A',code].includes(row.activate))continue;
-      if(!add(next,keyFor(row.item_id),row.count,row.enchantlvl))throw Error('新手道具設定錯誤：'+row.item_id);
+    const next=clone(existing);
+    for(const [id,count] of [...STARTER_KIT.common,...(STARTER_KIT[role]||[])]){
+      if(!add(next,keyFor(id),count))throw Error('新手道具設定錯誤：'+id);
     }
     return next;
   }
