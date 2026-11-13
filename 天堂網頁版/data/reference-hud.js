@@ -19,17 +19,15 @@ const auto=hudButton('AUTO','',()=>{
 });
 auto.className='reference-auto';
 auto.setAttribute('aria-label','自動打怪');
-const targetLock=hudButton('鎖定','',()=>{
- if(IslandCombat.mode==='lock')IslandCombat.stop();
- else IslandCombat.begin('lock',IslandMonsters.target||IslandMonsters.nearest(14));
- updateTargetControls();
-});
-targetLock.className='reference-lock';
-targetLock.setAttribute('aria-label','鎖定怪物');
-targetLock.style.cssText='position:absolute;bottom:100%;right:0;width:48px;height:44px;font:12px sans-serif;color:#f7dfa4;background:#181913e8;border:1px solid #786442;border-radius:50%;pointer-events:auto';
+// 強制攻擊（原「鎖定」鈕位置）：開啟時按鈕變紅，點 NPC／守衛等常駐角色改成直接攻擊而不是開對話（island-monsters.js selectAt）。
+const ForceAttack={on:false,toggle(){this.on=!this.on;updateTargetControls();toast(this.on?'強制攻擊：開啟':'強制攻擊：關閉');}};window.ForceAttack=ForceAttack;
+const targetLock=hudButton('強制攻擊','',()=>{if(window.gameFlowState==='playing')ForceAttack.toggle();});
+targetLock.className='reference-lock reference-force';
+targetLock.style.cssText='position:absolute;bottom:100%;right:0;width:48px;height:44px;font:11px sans-serif;line-height:1.1;color:#f7dfa4;background:#181913e8;border:1px solid #786442;border-radius:50%;pointer-events:auto';
 function updateTargetControls(){
  auto.setAttribute('aria-pressed',String(IslandCombat.mode==='auto'));
- targetLock.setAttribute('aria-pressed',String(IslandCombat.mode==='lock'));
+ targetLock.setAttribute('aria-pressed',String(ForceAttack.on));
+ targetLock.style.background=ForceAttack.on?'radial-gradient(circle at 50% 40%,#e0402c,#8c140c 72%)':'#181913e8';
 }
 function stopReferenceAuto(){if(typeof IslandCombat!=='undefined'){IslandCombat.stop();updateTargetControls();}}
 document.querySelector('.actions').append(auto,targetLock);

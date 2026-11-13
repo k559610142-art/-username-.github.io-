@@ -69,6 +69,11 @@
  main.game.orb-hud.orb-hud.orb-hud>.bottom .actions>.reference-self{right:${k(114)}!important;bottom:${k(118)}!important;width:${k(60)}!important;height:${k(61)}!important;background-image:url(${A}self-s.png)!important}
  main.game.orb-hud.orb-hud.orb-hud>.bottom .actions>.reference-interact{right:${k(28)}!important;bottom:${k(158)}!important;width:${k(60)}!important;height:${k(58)}!important;background-image:url(${A}pick.png)!important}
  main.game.orb-hud.orb-hud.orb-hud>.bottom .actions>.reference-lock{right:${k(8)}!important;bottom:${k(244)}!important;width:${k(64)}!important;height:${k(65)}!important;background-image:url(${A}lock.png)!important}
+ /* 強制攻擊（原鎖定鈕）：沿用深色圓底但文字改用 CSS（lock.png 內建「鎖定」字樣），開啟時變紅 */
+ main.game.orb-hud.orb-hud.orb-hud>.bottom .actions>.reference-force{background-image:radial-gradient(circle at 50% 38%,#2b3046,#141724 70%)!important;box-shadow:inset 0 0 0 ${k(3)} #3c4058,inset 0 0 0 ${k(4)} #0008!important;display:flex!important;align-items:center;justify-content:center}
+ main.game.orb-hud.orb-hud.orb-hud>.bottom .actions>.reference-force>span{display:block!important;font-size:${k(14)}!important;line-height:1.15;width:3em;color:#d9d4c4!important;text-shadow:0 1px 2px #000!important;letter-spacing:.05em}
+ main.game.orb-hud.orb-hud.orb-hud>.bottom .actions>.reference-force[aria-pressed=true]{background-image:radial-gradient(circle at 50% 38%,#ff5a3c,#a3180d 62%,#5a0905)!important;box-shadow:inset 0 0 0 ${k(3)} #e86a4c,inset 0 0 0 ${k(4)} #0008!important;filter:drop-shadow(0 0 6px #ff3b1f) drop-shadow(0 2px 4px #000c)!important}
+ main.game.orb-hud.orb-hud.orb-hud>.bottom .actions>.reference-force[aria-pressed=true]>span{color:#fff!important}
  main.game.orb-hud.orb-hud.orb-hud>.bottom .pad{display:none!important}
  main.game.orb-hud.orb-hud.orb-hud>.bottom{z-index:8!important}
  /* 目錄 */

@@ -149,3 +149,9 @@ NPC 穿衣服（2026-11-13）：
   data/island-music.js             登入／選角＝music0；建角＝職業曲（戰士沒有自己的，用騎士）；遊戲中每秒依 activeMapId＋worldX/worldY 找區域
                                    （第一個符合的區域優先、整張地圖那行墊底），沒列到的地圖（3、16、17、62、301、305、330、401）放 Hunting；死亡放 Death；
                                    一區多首＝照地圖編號挑起始曲、播完換下一首；換曲淡出淡入 0.9 秒；設定「遊戲音樂 開啟／關閉」按鈕文字不可改（settings-panel.js 用文字找）
+
+強制攻擊鈕（2026-11-13，取代右側「鎖定」鈕，位置不變、class 仍是 reference-lock）：
+  data/reference-hud.js   window.ForceAttack {on, toggle()}，按一下開／關（toast 提示），開啟時按鈕變紅；不存檔，重整後關閉
+  data/orb-hud.js         .reference-force 改用 CSS 圓底＋文字「強制攻擊」（lock.png 內建「鎖定」字樣不再使用），aria-pressed=true 時紅色發光
+  data/island-monsters.js selectAt：強制攻擊開啟時點到任何目標（含 NPC、守衛）直接回傳 'attack'，不開 NPC 對話；
+                          damage：DB 沒有血量的常駐 NPC（商人、傳送師、管家等）不受傷，守衛、稻草人、守護者等有血量的照常扣血（目前不會反擊）

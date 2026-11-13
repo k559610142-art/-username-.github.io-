@@ -219,6 +219,8 @@ const IslandMonsters = (() => {
   function selectAt({x,y}){
     const hit=hitboxes.findLast(box=>x>=box.left-4&&x<=box.left+box.width+4&&y>=box.top-4&&y<=box.top+box.height+4);
     const next=hit?.mob?.spawn.ally?null:hit?.mob||null;
+    // 強制攻擊開啟：點到的目標（含 NPC、守衛）直接攻擊。
+    if(next&&window.ForceAttack?.on){lastTap=null;if(next!==selected){selected=next;draw(getRenderedSceneView(),movementTime());}return 'attack';}
     if(next?.spawn.resident){
       selected=null;
       lastTap=null;
@@ -240,6 +242,8 @@ const IslandMonsters = (() => {
   function setTarget(mob){selected=mob;draw(getRenderedSceneView(),movementTime());}
   function damage(mob,amount){
     if(!mob.hp)return;
+    // 商人、傳送師等 DB 沒有血量的常駐 NPC 不會受傷（強制攻擊只會揮空）；守衛、稻草人等有血量的照常扣血。
+    if(mob.spawn.resident&&!(mob.spawn.npc.hp>0)){CombatSound.monsterHit(mob);return;}
     IslandNpcAi.provoke(mob,mobs);
     if(amount>=mob.hp&&!mob.spawn.resident&&!PlayerProgression.award(mob))return;
     mob.hp=Math.max(0,mob.hp-amount);
