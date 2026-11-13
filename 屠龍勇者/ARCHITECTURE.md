@@ -231,6 +231,7 @@
 | `data/survivor.js` | **無限塔地圖**（第 332 節，大地圖紫霧遺跡有守門人入口）：樓層計時、怪物生成、加入戰鬥、擊殺／倒下規則；zones.js 的 infinite 地圖、world-atlas 傳送點、combat.js／ui-scene.js 有接口；只在執行期用到其他檔案，載入順序在 main 前即可 |
 | `data/minigame.js` | **小遊戲分頁**（第 334 節）：TABS／PANEL_FNS 註冊 minigame，iframe 全螢幕開 `survivor.html`；載入時要 TABS／PANEL_FNS，放在 map-queue 之後 |
 | `survivor.html` | **小遊戲「生存者挑戰」**（第 331、334 節）：獨立頁面、內嵌程式，不讀寫存檔、不連雲端；由小遊戲分頁用 iframe 開 |
+| `data/memory-candle.js` | **回憶蠟燭**（第 335 節）：道具 memoryCandle＋重新配點視窗；載入時要 ITEMS，放在 doll-upgrade 之後 |
 | `data/doll-upgrade.js` | **娃娃升級卷軸**（第 333 節）：卷軸存在伺服器、升級由伺服器擲骰（SQL `tools/doll-upgrade.sql`）；升級選單與無限塔領取；只在執行期用到其他檔案（放在 icons 之後） |
 | `manifest.json` | App 名稱、圖示、`scope: ./`（只涵蓋本資料夾） |
 | `sw.js` | Service Worker，快取名稱 `dragon-` 開頭（第 12 節） |
@@ -322,7 +323,7 @@
 
 ## 2. 載入順序與依賴
 
-`config → classes → skills → items → spellbook → monsters → zones → quests → advance → resonance → uniques → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → afflict → guild-core → guild-state → player → enchant → affix → craft → maps → elite → elements → gems → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → talent-jewels → talent → talent-tree → talent-layout → talent-planner → talent-live → bag-storage → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → titles → auction → presence → ui-frame → map-queue → minigame → icons → doll-upgrade → hotbar → scene-art → ui-scene → world-atlas → guild-world → guild-map-data → guild-missions → guild-mission-core → guild-mission → guild-map → guild → pwa → loot → survivor → main`
+`config → classes → skills → items → spellbook → monsters → zones → quests → advance → resonance → uniques → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → afflict → guild-core → guild-state → player → enchant → affix → craft → maps → elite → elements → gems → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → talent-jewels → talent → talent-tree → talent-layout → talent-planner → talent-live → bag-storage → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → titles → auction → presence → ui-frame → map-queue → minigame → icons → doll-upgrade → memory-candle → hotbar → scene-art → ui-scene → world-atlas → guild-world → guild-map-data → guild-missions → guild-mission-core → guild-mission → guild-map → guild → pwa → loot → survivor → main`
 
 - 上層資料檔（config～quests）只在「載入時」用到更前面的檔案；quests 載入時會把獎勵裝備與任務道具寫進 `ITEMS`，所以要在 items 之後。
 - resonance 載入時要改 `ITEMS`（含任務武器）、`MONSTERS` 掉落、`RECIPES`，所以在 quests 之後；`findSkill`（skills.js）在執行期才呼叫它的 `findResonanceSkill`。
@@ -336,7 +337,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261113w`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261113x`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -5106,3 +5107,11 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 使用者看了第 331 節的生存者挑戰測試版後要求「加入當作小遊戲」。`survivor.html` 從 7c2ebe496 恢復（內容不變：騎士、30 秒一波、每波能力、經驗石升級三選一，不讀角色、不存檔、沒有獎勵）。
 - 入口：手機右抽屜「🎮 小遊戲」（`DRAWERS.right`，設定上面）、PC 地圖左側圓鈕（`PC_SLOTS`，交易所下面 y 590）。分頁 `renderMiniGames` 列出小遊戲，「開始遊玩」→ `openMiniSurvivor`：`#minigame-layer`（z-index 9500）裡放 iframe `survivor.html?v=版本`，左下角「✕ 離開小遊戲」→ `closeMiniGame` 移除。iframe 自己吃鍵盤，不會讓村莊人物跟著走；遊戲本體（掛機）照常在背景跑。
 - 之後要加新的小遊戲：做成獨立 html，在 `renderMiniGames` 加一張卡片與開啟函式即可。
+
+## 335. 回憶蠟燭：重新分配出生配點（2026-11-13，版本 `20261113x`；新檔 `data/memory-candle.js`）
+
+- 使用者規格：新道具「回憶蠟燭」，讓玩家重新出生配點，萬能藥的 5 點也可以加入出生配點；使用後等級不變、萬能藥使用次數不變。
+- 存檔只有 `player.stats` 一個總數，沒記錄每一點來自出生、萬能藥還是 51 級後的升級，使用者選擇「升級點退回讓玩家重加」：使用時能力值從職業最低值（`CLASSES[cls].base`）開始，在視窗重新分配 出生 `CREATE_TOTAL`（75）＋`player.elixirs` 點；出生規則單項最高 `CREATE_STAT_MAX`（18），超過 18 的部分算萬能藥點（總共不能超過已吃的萬能藥數），單項最高 `STAT_CAP`（35）；點數要剛好分完才能確定。已加進能力值的其他點數（總和 − 75 − 萬能藥）全部退回 `player.statPoints`，照平常在人物狀態加回去。
+- 道具 `ITEMS.memoryCandle`（cat scroll、`candle:true`、重 0.1、回收 0、沒有 price＝商店不賣）；背包點它「使用」→ `openMemoryCandle`（＋／−、重設、確定）→ `candleApply` 用 `gameConfirm` 列出前後差異，確定才扣 1 支蠟燭、套用、`clampHpMp`、存檔。HP／MP 上限不變（體質、精神只影響之後升級的成長）。onclick 只呼叫頂層函式（`candleAdj`／`candleReset`／`candleApply`）。
+- **取得方式尚未決定**（目前只有 GM 用聊天 /give 回憶蠟燭 發）；它不在後端道具目錄，所以不能放共用倉庫／交易所／管理頁發放，要開放需另外同步目錄。
+- 本機驗證：測試修羅（萬能藥 5）重配：出生點單項卡 18、萬能藥 5 點推到 23、第 6 點擋下；套用後等級、萬能藥次數、最大 HP 不變，多出的 6 點退回可分配點數，蠟燭 −1；Console 無錯誤。
