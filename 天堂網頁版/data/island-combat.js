@@ -52,7 +52,9 @@ const IslandCombat=(()=>{
     if(bow&&!OwnedInventory.items.some(e=>e.item.type==='arrow'&&e.count)){
       stop();toast('箭矢不足。');return false;
     }
-    if(characterMovementBlocked()||!interrupt&&movementAnimating())return false;
+    if(characterMovementBlocked())return false;
+    // 走路時座標一開始就算到下一格；走到一半就出手會被拉回上一格，變成隔 2 格打到。先停下後續路徑、走完這一格再攻擊。
+    if(movementAnimating()){if(interrupt)cancelNavigation();return false;}
     const dx=Math.sign(mob.x-worldX),dy=Math.sign(mob.y-worldY);
     if(dx||dy){
       characterHeading=characterHeadingForStep(dx,dy);
