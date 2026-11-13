@@ -84,7 +84,7 @@
  .oh-menu button{width:${k(44)};height:${k(44)};min-height:0!important;padding:0!important;border-radius:50%!important;font-size:${k(11.5)}!important;font-family:'Times New Roman','Noto Serif TC',serif;color:#f1dfb6!important;
   background:radial-gradient(circle at 50% 38%,#4b3c2b,#261c12 62%,#1a130c)!important;border:2px solid #5b4428!important;box-shadow:inset 0 0 0 2px #120c06,inset 0 0 0 3px #b38a50,inset 0 0 8px #000!important;text-shadow:1px 1px 0 #000}
  .oh-menu button:hover{border-color:#a07a3e!important}
- main.game.orb-hud.orb-hud.orb-hud>.minimap-button{width:${k(176)}!important;height:${k(124)}!important;border:2px solid #6b5230!important;box-shadow:inset 0 0 0 1px #000,0 0 0 1px #c19a5a,0 3px 8px #000b!important;border-radius:2px!important}
+ main.game.orb-hud.orb-hud.orb-hud>.minimap-button{top:${k(8)}!important;width:${k(176)}!important;height:${k(124)}!important;border:2px solid #6b5230!important;box-shadow:inset 0 0 0 1px #000,0 0 0 1px #c19a5a,0 3px 8px #000b!important;border-radius:2px!important}
   main.game.orb-hud.orb-hud.orb-hud>.minimap-button canvas{width:100%!important;height:100%!important}
  main.game.orb-hud.orb-hud.orb-hud>.hud{height:auto!important}
  main.game.orb-hud.orb-hud.orb-hud>.hud .oh-def{display:flex;justify-content:space-between;gap:8px;margin-top:2px}
@@ -125,7 +125,10 @@
  function setOrb(o,kind,v,m){const p=m?Math.max(0,Math.min(1,v/m)):0,[t,b]=GEM[kind];o.querySelector('.empty').style.setProperty('--empty',(p>=1?0:t+(b-t)*(1-p))+'%');o.querySelector('.val span').textContent=v+'/'+m}
  function labelSlots(){[...document.querySelectorAll('.quick-slots>.quick-expanded-row')].forEach((row,r)=>[...row.querySelectorAll(':scope>.combat-quick-slot')].forEach((b,i)=>{b.dataset.ohKey=r?(r+1)+'-'+(i+1):'F'+(i+1);b.style.display=i<10?'':'none'}))}
  function placeMenu(){const g=game.getBoundingClientRect(),m=document.querySelector('.minimap-button')?.getBoundingClientRect(),s=Number(getComputedStyle(game).getPropertyValue('--ok'))||1;
-  const top=m&&m.height?m.bottom-g.top+8*s:150*s;menuBtn.style.top=top+'px';menu.style.top=top+'px';
+  // 地點／座標緊貼小地圖下方（靠右對齊），目錄再排在座標下面，避免蓋住座標
+  const loc=document.querySelector('.location');let below=m&&m.height?m.bottom-g.top:0;
+  if(loc&&below){loc.style.setProperty('top',below+3*s+'px','important');loc.style.setProperty('right',g.right-m.right+'px','important');const l=loc.getBoundingClientRect();if(l.height)below=l.bottom-g.top;}
+  const top=below?below+6*s:150*s;menuBtn.style.top=top+'px';menu.style.top=top+'px';
   // 矮畫面：鎖定鈕不夠放時往下推，避免蓋到目錄
   const lock=document.querySelector('.bottom .actions>.reference-lock');if(lock){const want=top+80*s,def=g.height-(244+65)*s;if(def<want){lock.style.setProperty('top',want+'px','important');lock.style.setProperty('bottom','auto','important')}else{lock.style.removeProperty('top');lock.style.removeProperty('bottom')}}}
  // 左上頭像框加一行防禦／魔防
@@ -133,7 +136,7 @@
  function refreshDef(){try{acT.textContent=String(typeof previewArmorClass==='function'?previewArmorClass():'—');mrT.textContent=String(window.NativeCombatRules?.defense?.()?.mr??0)}catch{}}
  function refresh(){if(!game.classList.contains('orb-hud')||window.gameFlowState!=='playing')return;refreshDef();setOrb(hpO,'hp',hp,maxHp);setOrb(mpO,'mp',mp,maxMp);const e=expPct();exp.style.setProperty('--fill',e+'%');exp.title='經驗 '+e.toFixed(2)+'%';labelSlots();placeMenu()}
  function layout(){const r=game.getBoundingClientRect(),on=style==='orb'&&r.width>=560&&r.width>r.height;game.classList.toggle('orb-hud',on);
-  if(!on){const lock=document.querySelector('.bottom .actions>.reference-lock');lock?.style.removeProperty('top');lock?.style.removeProperty('bottom')}
+  if(!on){const lock=document.querySelector('.bottom .actions>.reference-lock');lock?.style.removeProperty('top');lock?.style.removeProperty('bottom');const loc=document.querySelector('.location');loc?.style.removeProperty('top');loc?.style.removeProperty('right')}
   if(on){game.classList.remove('classic-hud');game.style.setProperty('--ok',Math.max(.5,Math.min(r.height/572,r.width/1024,1.5)));refresh()}}
  new ResizeObserver(layout).observe(game);addEventListener("resize",layout);
  const baseStats=stats;stats=function(...args){const out=baseStats.apply(this,args);refresh();return out};

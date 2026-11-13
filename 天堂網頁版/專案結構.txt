@@ -159,3 +159,10 @@ NPC 穿衣服（2026-11-13）：
                           安全區也照打，附近 6 格同種類一起生氣；玩家離開 18 格／超出範圍／死亡就消氣（calm），island-monsters.js advance 讓常駐 NPC 走回原位；
                           DB 攻擊動作時間 0 的警衛用 1000 毫秒（swing）
   怪物攻擊最小距離 1 格（2026-11-13）：island-npc-ai.js update 裡跟玩家同一格（gap 0）時先往旁邊空格走一步再出手，避免重疊
+
+怪物音效補齊（2026-11-13）：
+  tools/combat-sound/build.js  原本 data/combat-sound-data.js 只有 155 種外觀有音效標記，其他怪物受擊都只播通用 701（毒蠍、妖魔殭屍沒有自己的聲音）；
+                               讀 list.spr 動作 1／2／8／18／19／30 的 "[音效編號" 標記，替還沒有資料的怪物外觀補上（新增 874 種，舊資料不動），
+                               從客戶端 Sound 資料夾複製用到的 WAV 到 assets/combat-sound（新增 855 個、約 78 MB，播放時才下載）
+                               用法：node tools/combat-sound/build.js（新增怪物外觀後重跑，並換 index.html 的 combat-sound-data.js?v=）
+小地圖位置（2026-11-13，水晶球介面）：小地圖貼齊上緣（top 8），地點／座標（.location）緊接在小地圖下方靠右，目錄鈕排在座標下面（orb-hud.js placeMenu），座標不再被目錄蓋住
