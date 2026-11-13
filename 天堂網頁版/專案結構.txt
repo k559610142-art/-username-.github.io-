@@ -175,3 +175,5 @@ NPC 穿衣服（2026-11-13）：
   武器：戰士 修練者斧頭；妖精 修練者長弓＋修練者短劍＋箭 1,000；龍騎士 修練者單手劍（DB 沒有龍騎士能用的矛）；幻術師 修練者魔杖（DB 幻術師不能用匕首）；王族／騎士／法師 修練者短劍
   entry-flow.js starterInventory 不再另外塞歐西斯匕首／弓／箭；只影響新建角色，舊角色背包不變
 背包裝備欄立繪（2026-11-13）：character-bag-panels.js portrait() 改用 currentPortrait()（classic-panels.js，龍騎士／幻術師／戰士用正式立繪 *-art-*.jpg），原本讀 CreationRules.portraits 會顯示建角像素圖
+藥水職業限制（2026-11-13）：data/native-potions.js flags 補上新職業位元（黑妖 16、龍騎士 32、幻術師 64、戰士 128），原本只有王族／騎士／妖精／法師，
+  戰士、龍騎士、幻術師喝綠水（brave.StatusHaste … 255）會被當成職業不符；勇水 130＝騎士＋戰士、生命之樹果實 96＝龍騎士＋幻術師也照原版生效
