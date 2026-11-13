@@ -184,3 +184,6 @@ NPC 穿衣服（2026-11-13）：
   魔法：攻擊技能（打怪時魔力 ≥ N% 用 PlayerSkills.cast）、治癒魔法（AutoPotion skillId）、輔助魔法（ClassBuffs.selfBuff(id)＝SELF 表且非被動／功能型、有持續時間，效果沒了就補）
   名單：每張地圖各自的怪物名單（不打＝island-combat.js AUTO 找怪時 AssistSystem.skip 過濾；瞬移＝附近 8 格出現就用瞬間移動卷軸）
   存檔：角色 assist 欄位（entry-flow.js saveActiveCharacter／enterSelectedCharacter）。第 2 期以後：自動購買、武器修理、箭、變身卷軸、召喚、寵物
+輔助系統 第 2 期（2026-11-13）：補給分頁加「自動購買」——瞬間移動卷軸、回家卷軸、補血道具（補給選的那種）、綠水、勇水類、慎重藥水、藍水、箭（裝備弓時），
+  各自開關＋數量（×1～×1000）；身上 0 個時直接用 OwnedInventory.trade 扣金幣買，價格取所有 NPC 商店（NATIVE_NPC_DIALOGS.shops＋islandNpcServiceData.shop）最低單價，
+  職業不能用的藥水不買；失敗（金幣不足／背包滿）30 秒後再試並提示。存在 assist.buy
