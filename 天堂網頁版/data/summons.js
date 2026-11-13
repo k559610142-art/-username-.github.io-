@@ -16,7 +16,7 @@ const Summons=(()=>{
  const RING_IDS=Array.from({length:31},(_,i)=>81210+i);
  const RING_LEVEL=[28,28,28,32,32,32,36,36,36,40,40,40,44,44,44,48,48,48,52,52,52,56,56,56,60,60,60,64,68,72,72];
  const RING_COST=[8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,10,10,10,12,12,12,20,42,42,50];
- let chosen=null;
+ let chosen=null,lastChosen=null; // lastChosen：上次在召喚控制戒指選單手選的（輔助系統自動召喚用）
  const hasRing=()=>OwnedInventory.items.some(e=>e.slot&&(e.key==='armor:20284'||e.key==='armor:120284'));
  function openMenu(){
   const overlay=document.querySelector('#panel'),content=document.querySelector('#panelContent');
@@ -30,7 +30,7 @@ const Summons=(()=>{
    const n=Math.floor(free/RING_COST[i]),noArt=!islandMonsterFrames[npc.gfx];
    const why=lv<RING_LEVEL[i]?'需要 '+RING_LEVEL[i]+' 級':noArt?'沒有圖':id>=81238&&used()?'要先收回其他召喚獸':n<1?'魅力不足':'';
    const b=uiElement('button','',npc.name+'　Lv.'+npc.level+'　體力 '+npc.hp+'　佔用 '+RING_COST[i]+(why?'　（'+why+'）':'　× '+n));
-   b.type='button';b.disabled=!!why;b.onclick=()=>{chosen=i;closePanel();if(!PlayerSkills.cast(51))chosen=null;};
+   b.type='button';b.disabled=!!why;b.onclick=()=>{chosen=lastChosen=i;closePanel();if(!PlayerSkills.cast(51))chosen=null;};
    list.append(b);
   });
   content.replaceChildren(heading,intro,list);overlay.scrollTop=0;
@@ -185,5 +185,5 @@ const Summons=(()=>{
  setInterval(tick,500);
  function snapshot(){const t=now();return allies.filter(a=>a.mob.hp).map(a=>({npcId:a.mob.spawn.npcId,hp:a.mob.hp,cost:a.cost,kind:a.kind,left:a.until===Infinity?null:Math.max(0,Math.round(a.until-t))}));}
  function restore(id,list){pending=Array.isArray(list)&&list.length?{id,list:list.filter(s=>s&&Number.isInteger(s.npcId)&&islandMonsterTemplates[s.npcId]&&s.hp>0).slice(0,12)}:null;}
- return {prepare,update,drive,killed,restore,get snapshot(){return owner===window.activeCharacterId?snapshot():[];},release:()=>release(),get mobs(){return allies.map(a=>a.mob);},get list(){return allies.map(a=>({name:a.mob.spawn.npc.name,hp:a.mob.hp,kind:a.kind}))},get room(){return room();}};
+ return {prepare,update,drive,killed,restore,get snapshot(){return owner===window.activeCharacterId?snapshot():[];},release:()=>release(),get mobs(){return allies.map(a=>a.mob);},get list(){return allies.map(a=>({name:a.mob.spawn.npc.name,hp:a.mob.hp,kind:a.kind}))},get room(){return room();},hasRing:()=>hasRing(),useLast(){if(lastChosen===null)return false;chosen=lastChosen;return true;},get lastName(){return lastChosen===null?null:islandMonsterTemplates[RING_IDS[lastChosen]]?.name||null;}};
 })();window.Summons=Summons;

@@ -3,7 +3,10 @@
 //  補給：自動補血道具（AutoPotion 原有）、綠水／勇水類／慎重藥水／藍水 效果沒了自動喝（只用身上有的，NativePotions.durationState 判斷種類）
 //  魔法：攻擊技能（AUTO／攻擊目標時魔力 ≥ N% 施放）、治癒魔法（AutoPotion 的補血技能）、輔助魔法（ClassBuffs.selfBuff，效果沒了就補）
 //  名單：每張地圖各自的怪物名單，「不打」＝AUTO 不主動找（被打仍還手）、「瞬移」＝附近 8 格出現就用瞬間移動卷軸離開
-//  設定存在角色存檔 assist 欄位（entry-flow.js saveActiveCharacter／enterSelectedCharacter）。之後：修理、召喚、寵物、變身卷軸。
+//  第 3 期：撐不住先瞬移（一分鐘內第 3 次改回村，auto-potion.js 讓出回村判斷）、補血喝完改喝別種（auto-potion.js healFallback）、
+//   死亡後自動再變身（TransformCards）、開怪技能、範圍技能、洗魔（心靈轉換 130）、召喚分頁（召喚術 51／召喚屬性精靈 154／強力 162，
+//   戴召喚控制戒指時用 Summons.useLast 召喚上次手選的）。遊戲沒有的系統（寵物、夥伴、武器耐久、水中、中毒、木乃伊、經驗藥水效果）不做。
+//  設定存在角色存檔 assist 欄位（entry-flow.js saveActiveCharacter／enterSelectedCharacter）。
 const AssistSystem=(()=>{
  const el=(t,c,x)=>uiElement(t,c,x);
  const catalog=new Map(INTERFACE_CATALOG.items.map(i=>[i.kind+':'+i.id,i]));
@@ -13,17 +16,20 @@ const AssistSystem=(()=>{
  for(const rows of [...Object.values(NATIVE_NPC_DIALOGS.shops||{}),islandNpcServiceData.shop||[]])for(const [id,,buy,pack,,ench] of rows){if(!(buy>=0)||ench)continue;const n=Math.max(1,pack|0),b=SHOP.get(id);if(!b||buy/n<b.price/b.pack)SHOP.set(id,{price:buy,pack:n});}
  const QTY=[1,5,10,20,50,100,200,500,1000];
  const BUYS=[['tp','瞬間移動卷軸',10],['home','傳送回家的卷軸',5],['heal','補血道具（補給選的那種）',100],['haste','綠色藥水',5],['brave','勇敢藥水類',5],['wisdom','慎重藥水',5],['blue','藍色藥水',5],['arrow','箭（裝備弓時）',1000]];
- const base=()=>({noMobTp:false,noMobSec:10,potions:{haste:false,brave:false,wisdom:false,blue:false},attackOn:false,attackSkill:null,attackMp:30,buffs:[],list:{},buy:Object.fromEntries(BUYS.map(([k,,n])=>[k,{on:false,n}]))});
- let state=base(),owner='',dialog=null,tab='hunt',idleSince=0,lastTp=0,retry=new Map();
+ const base=()=>({noMobTp:false,noMobSec:10,potions:{haste:false,brave:false,wisdom:false,blue:false},attackOn:false,attackSkill:null,attackMp:30,buffs:[],list:{},escape:false,healFallback:false,morph:false,openOn:false,openSkill:null,openMp:50,aoeOn:false,aoeSkill:null,aoeRange:3,aoeCount:3,aoeMp:50,mindOn:false,mindHp:80,mindMp:40,summonOn:false,ringOn:false,buy:Object.fromEntries(BUYS.map(([k,,n])=>[k,{on:false,n}]))});
+ let state=base(),owner='',dialog=null,tab='hunt',idleSince=0,lastTp=0,retry=new Map(),escapes=[],lostMorph=null,lastOpen=null;
  const int=(v,lo,hi,d)=>Number.isInteger(v)?Math.max(lo,Math.min(hi,v)):d;
  function validate(v){const s=base();if(!v||typeof v!=='object')return s;
   s.noMobTp=v.noMobTp===true;s.noMobSec=int(v.noMobSec,3,60,10);for(const k of Object.keys(s.potions))s.potions[k]=v.potions?.[k]===true;
   s.attackOn=v.attackOn===true;s.attackSkill=Number.isInteger(v.attackSkill)&&playerSkillData.skills[v.attackSkill]?v.attackSkill:null;s.attackMp=int(v.attackMp,0,99,30);
   s.buffs=Array.isArray(v.buffs)?[...new Set(v.buffs.filter(id=>Number.isInteger(id)&&playerSkillData.skills[id]))]:[];
+  for(const k of ['escape','healFallback','morph','openOn','aoeOn','mindOn','summonOn','ringOn'])s[k]=v[k]===true;
+  const skillOk=id=>Number.isInteger(id)&&playerSkillData.skills[id]?id:null;s.openSkill=skillOk(v.openSkill);s.aoeSkill=skillOk(v.aoeSkill);
+  s.openMp=int(v.openMp,0,99,50);s.aoeRange=int(v.aoeRange,1,8,3);s.aoeCount=int(v.aoeCount,2,10,3);s.aoeMp=int(v.aoeMp,0,99,50);s.mindHp=int(v.mindHp,1,99,80);s.mindMp=int(v.mindMp,1,99,40);
   for(const [k] of BUYS){const b=v.buy?.[k];if(b)s.buy[k]={on:b.on===true,n:QTY.includes(b.n)?b.n:s.buy[k].n};}
   if(v.list&&typeof v.list==='object')for(const [map,names] of Object.entries(v.list)){if(!names||typeof names!=='object')continue;const m={};for(const [n,mode] of Object.entries(names))if(['skip','tp'].includes(mode))m[n]=mode;if(Object.keys(m).length)s.list[map]=m;}
   return s;}
- function activate(v){state=validate(v);owner=window.activeCharacterId||'';idleSince=0;lastTp=0;retry.clear();close();}
+ function activate(v){state=validate(v);owner=window.activeCharacterId||'';idleSince=0;lastTp=0;retry.clear();escapes=[];lostMorph=null;lastOpen=null;close();}
  function save(next){if(window.gameFlowState!=='playing'||owner!==window.activeCharacterId)return false;const old=state;state=validate({...state,...next});if(!GameEntry.saveActive()){state=old;return false;}return true;}
  const mapList=()=>state.list[String(window.activeMapId||0)]||{};
  function skip(mob){const m=mapList()[mob?.spawn?.npc?.name];return m==='skip'||m==='tp';}
@@ -57,9 +63,19 @@ const AssistSystem=(()=>{
    else{toast('自動購買 '+catalog.get(p.key).name+' ×'+(packs*p.pack)+'（'+(packs*p.price).toLocaleString()+' 金幣）');return true;}}
   return false;
  }
+ const pctOf=(v,m)=>m?v*100/m:0;
+ const attackSkills=ids=>ids.filter(id=>PlayerSkills.supports(id)&&!/治癒|恢復/.test(playerSkillData.skills[id].name)&&!ClassBuffs.handles(id)||[187,207,229].includes(id));
+ const summonSkill=()=>[51,162,154].find(id=>learned().includes(id))||null;
+ function lowHp(){const ap=AutoPotion.snapshot;return ap.homeEnabled&&maxHp&&hp*100<=maxHp*ap.homeThreshold&&(tile(worldX,worldY)&48)!==16;}
+ // 撐不住先瞬移：一分鐘內前兩次用瞬間移動卷軸，第 3 次用回家卷軸
+ function escape(now){if(!state.escape||!lowHp()||(retry.get('esc')||0)>now)return false;retry.set('esc',now+1500);escapes=escapes.filter(t=>now-t<60000);
+  if(escapes.length<2&&owned().some(e=>handler(e)==='teleport.Move_Reel')){if(teleport()){escapes.push(now);return true;}return false;} // 瞬移冷卻中就等，不提早回村
+  const home=owned().find(e=>handler(e)==='teleport.GoHome_Reel');if(home&&TeleportScrolls.use(home.uid)){escapes=[];return true;}return false;}
  function tick(){
-  if(window.gameFlowState!=='playing'||owner!==window.activeCharacterId||OwnedInventory.owner!==owner||CharacterActions.dead||hp<=0)return;
+  if(window.gameFlowState!=='playing'||owner!==window.activeCharacterId||OwnedInventory.owner!==owner)return;
+  if(CharacterActions.dead||hp<=0){if(TransformCards.active)lostMorph=TransformCards.active;return;}
   const now=movementTime(),auto=IslandCombat.mode==='auto';
+  if(escape(now))return;
   if(autoBuy(now))return;
   // 名單：瞬移
   const tpNames=Object.entries(mapList()).filter(([,m])=>m==='tp').map(([n])=>n);
@@ -67,12 +83,23 @@ const AssistSystem=(()=>{
   // 沒怪自動瞬移
   if(auto&&state.noMobTp){if(IslandMonsters.target?.hp||!idleSince)idleSince=now;else if(now-idleSince>=state.noMobSec*1000){idleSince=now;if(teleport())return;}}else idleSince=0;
   if(busy())return;
+  // 死亡後自動再變身（變身卡）
+  if(lostMorph){const name=lostMorph;if(!state.morph||TransformCards.active)lostMorph=null;else if((retry.get('morph')||0)<=now){retry.set('morph',now+5000);if(TransformCards.owned(name)&&TransformCards.activate(name)){lostMorph=null;return;}}}
+  // 洗魔：心靈轉換
+  if(state.mindOn&&learned().includes(130)&&pctOf(hp,maxHp)>=state.mindHp&&pctOf(mp,maxMp)<state.mindMp&&(retry.get('mind')||0)<=now){retry.set('mind',now+1500);if(ClassBuffs.cast(130))return;}
+  // 召喚：身邊沒有召喚物時（掛機中）
+  if(state.summonOn&&auto&&!Summons.list.length&&(retry.get('sum')||0)<=now){const id=summonSkill();retry.set('sum',now+5000);
+   if(id&&(id!==51||!Summons.hasRing()||state.ringOn&&Summons.useLast())&&ClassBuffs.cast(id))return;}
   // 補給：效果沒了自動喝
   for(const [kind] of POTIONS){if(!state.potions[kind]||(retry.get('p'+kind)||0)>now)continue;const e=potionFor(kind);if(!e)continue;retry.set('p'+kind,now+1500);if(OwnedInventory.use(e.uid))return;}
   // 輔助魔法
   for(const id of state.buffs){if(!learned().includes(id)||ClassBuffs.active(id)||(retry.get('b'+id)||0)>now)continue;const s=playerSkillData.skills[id];if(mp<(s.mp||0)||hp<=(s.hp||0))continue;retry.set('b'+id,now+3000);if(ClassBuffs.cast(id))return;}
   // 攻擊技能
-  const t=IslandMonsters.target,id=state.attackSkill;
+  const t=IslandMonsters.target,id=state.attackSkill,fighting=IslandCombat.mode&&t?.hp;
+  // 開怪技能：換到新目標（滿血）先放一次
+  if(fighting&&t!==lastOpen){if(state.openOn&&state.openSkill&&learned().includes(state.openSkill)&&t.hp>=t.spawn.npc.hp&&pctOf(mp,maxMp)>=state.openMp){if(PlayerSkills.cast(state.openSkill)){lastOpen=t;return;}}else lastOpen=t;}
+  // 範圍技能：周圍 N 格有 M 隻以上
+  if(fighting&&state.aoeOn&&state.aoeSkill&&learned().includes(state.aoeSkill)&&pctOf(mp,maxMp)>=state.aoeMp&&(retry.get('aoe')||0)<=now&&IslandMonsters.around(worldX,worldY,state.aoeRange).length>=state.aoeCount){retry.set('aoe',now+1000);if(PlayerSkills.cast(state.aoeSkill))return;}
   if(state.attackOn&&id&&learned().includes(id)&&IslandCombat.mode&&t?.hp&&maxMp&&mp*100>=maxMp*state.attackMp&&(retry.get('a')||0)<=now){retry.set('a',now+800);PlayerSkills.cast(id);}
  }
  setInterval(tick,300);
@@ -112,7 +139,8 @@ const AssistSystem=(()=>{
   p.append(head('AUTO 掛機'),group(
    row('🎯','掛機索敵範圍','AUTO 時會往多遠的怪物走過去',slider(IslandCombat.autoRange,12,48,v=>{IslandCombat.setAutoRange(v);},' 格','掛機索敵範圍')),
    row('🌀','沒怪 '+state.noMobSec+' 秒自動瞬移','用瞬間移動卷軸（身上 '+tp+' 張）',slider(state.noMobSec,3,60,v=>save({noMobSec:v})&&void render(),' 秒','沒怪幾秒瞬移'),switcher(state.noMobTp,on=>save({noMobTp:on}),'沒怪自動瞬移')),
-   row('🏠','體力低於 '+ap.homeThreshold+'% 時回村','用回家卷軸（身上 '+home+' 張）',slider(ap.homeThreshold,1,99,v=>AutoPotion.configure({homeThreshold:v})&&void render(),'%','回村體力門檻'),switcher(ap.homeEnabled,on=>AutoPotion.configure({homeEnabled:on}),'低血回村'))));
+   row('🏠','體力低於 '+ap.homeThreshold+'% 時回村','用回家卷軸（身上 '+home+' 張）',slider(ap.homeThreshold,1,99,v=>AutoPotion.configure({homeThreshold:v})&&void render(),'%','回村體力門檻'),switcher(ap.homeEnabled,on=>AutoPotion.configure({homeEnabled:on}),'低血回村')),
+   row('🏃','撐不住先瞬移，3 次就回村','體力低於回村門檻時先用瞬間移動卷軸；一分鐘內逃到第 3 次才用回家卷軸（要開上面的回村）',switcher(state.escape,on=>save({escape:on}),'撐不住先瞬移'))));
   p.append(el('p','assist-note','巡邏範圍從開 AUTO 的地方算起；瞬間移動卷軸不能用的地區不會瞬移。'));return p;}
 
  function supplyPage(){const p=el('div'),ap=AutoPotion.snapshot;
@@ -121,9 +149,11 @@ const AssistSystem=(()=>{
   heal.onchange=()=>{if(heal.value&&!AutoPotion.configure({key:heal.value,skillId:null}))heal.value='';render();};
   p.append(head('補血'),group(
    row('❤️','自動喝補血道具',null,heal),
+   row('🔁','喝完先喝身上別種','選的補血道具用完時，改喝身上其他補血藥水',switcher(state.healFallback,on=>save({healFallback:on}),'喝完先喝身上別種')),
    row('📉','體力低於 '+ap.threshold+'% 時喝',null,slider(ap.threshold,1,99,v=>AutoPotion.configure({threshold:v})&&void render(),'%','補血門檻'),switcher(ap.enabled,on=>AutoPotion.configure({enabled:on})||(toast('請先選擇補血道具或治癒魔法。'),false),'自動補血'))));
   const rows=POTIONS.map(([kind,label,kinds])=>{const n=count(e=>kinds.includes(NativePotions.durationState(e.key)?.key));return row('🧪',label,'效果沒了自動喝 · 身上 '+n+' 個',switcher(state.potions[kind],on=>save({potions:{...state.potions,[kind]:on}}),label));});
   p.append(head('狀態藥水'),group(...rows),el('p','assist-note','職業不能喝的（例如勇水限騎士、戰士）會自動略過。'));
+  const cur=TransformCards.active;p.append(head('變身'),group(row('🎭','死亡後自動再變身',(cur?'目前變身：'+cur+'。':'目前沒有變身。')+'倒地後變身會消失，復活後自動變回死亡前的那張變身卡',switcher(state.morph,on=>save({morph:on}),'死亡後自動再變身'))));
   const buyRows=BUYS.map(([k,label])=>{const b=state.buy[k],pr=product(k),qty=el('select');qty.setAttribute('aria-label',label+' 購買數量');
    for(const n of QTY)qty.append(new Option('×'+n,String(n),false,n===b.n));qty.onchange=()=>{save({buy:{...state.buy,[k]:{...b,n:Number(qty.value)}}});render();};
    const packs=pr?Math.ceil(b.n/pr.pack):0,note=pr?catalog.get(pr.key).name+' · 一次 '+(packs*pr.pack)+' 個 '+(packs*pr.price).toLocaleString()+' 金幣':k==='heal'&&!AutoPotion.snapshot.key?'先在上面選補血道具':'商店沒賣或目前職業不能用';
@@ -133,17 +163,33 @@ const AssistSystem=(()=>{
   p.append(head('自動購買'),group(...buyRows),el('p','assist-note','身上用完（0 個）時直接扣金幣購買，價格取各地商店最便宜的。目前金幣 '+purse.toLocaleString()+'。'));return p;}
 
  function magicPage(){const p=el('div'),ids=learned(),ap=AutoPotion.snapshot,sk=id=>playerSkillData.skills[id];
-  const atk=el('select');atk.setAttribute('aria-label','攻擊技能');atk.append(new Option('（選擇攻擊技能）',''));
-  for(const id of ids.filter(id=>PlayerSkills.supports(id)&&!/治癒|恢復/.test(sk(id).name)&&!ClassBuffs.handles(id)||[187,207,229].includes(id)))atk.append(new Option(sk(id).name+' · MP '+sk(id).mp,String(id),false,state.attackSkill===id));
-  atk.onchange=()=>save({attackSkill:atk.value?Number(atk.value):null});
+  const pickSkill=(field,label)=>{const s=el('select');s.setAttribute('aria-label',label);s.append(new Option('（選擇'+label+'）',''));for(const id of attackSkills(ids))s.append(new Option(sk(id).name+' · MP '+sk(id).mp,String(id),false,state[field]===id));s.onchange=()=>save({[field]:s.value?Number(s.value):null});return s;};
+  const atk=pickSkill('attackSkill','攻擊技能');
   const healSk=el('select');healSk.setAttribute('aria-label','治癒魔法');healSk.append(new Option('（不用治癒魔法）',''));
   for(const id of ids.filter(id=>PlayerSkills.supports(id)&&/治癒|恢復/.test(sk(id).name)))healSk.append(new Option(sk(id).name+' · MP '+sk(id).mp,String(id),false,ap.skillId===id));
   healSk.onchange=()=>{if(healSk.value){if(!AutoPotion.configure({skillId:Number(healSk.value),key:null}))healSk.value='';}else{const k=OwnedInventory.healingItems[0]?.key;AutoPotion.configure(k?{skillId:null,key:k}:{skillId:null,key:null,enabled:false});}render();};
+  p.append(head('開怪技能'),group(row('🎯','開怪技能','換到新目標（滿血）先放一次',pickSkill('openSkill','開怪技能')),row('💧','魔力 '+state.openMp+'% 以上',null,slider(state.openMp,0,99,v=>save({openMp:v})&&void render(),'%','開怪技能魔力門檻'),switcher(state.openOn,on=>save({openOn:on}),'自動開怪技能'))));
+  p.append(head('範圍技能'),group(row('💥','範圍技能','周圍 '+state.aoeRange+' 格有 '+state.aoeCount+' 隻以上時施放',pickSkill('aoeSkill','範圍技能')),
+   row('📏','範圍 '+state.aoeRange+' 格',null,slider(state.aoeRange,1,8,v=>save({aoeRange:v})&&void render(),' 格','範圍格數')),
+   row('👥',state.aoeCount+' 隻以上',null,slider(state.aoeCount,2,10,v=>save({aoeCount:v})&&void render(),' 隻','怪物數量')),
+   row('💧','魔力 '+state.aoeMp+'% 以上',null,slider(state.aoeMp,0,99,v=>save({aoeMp:v})&&void render(),'%','範圍技能魔力門檻'),switcher(state.aoeOn,on=>save({aoeOn:on}),'自動範圍技能'))));
   p.append(head('攻擊魔法'),group(row('⚡','攻擊技能','打怪時魔力 '+state.attackMp+'% 以上施放',atk),row('💧','魔力門檻',null,slider(state.attackMp,0,99,v=>save({attackMp:v})&&void render(),'%','攻擊技能魔力門檻'),switcher(state.attackOn,on=>save({attackOn:on}),'自動攻擊技能'))));
   p.append(head('治癒魔法'),group(row('✚','體力低於 '+ap.threshold+'% 時施放','和「補給」的補血門檻共用',healSk)));
+  const mind=ids.includes(130);
+  p.append(head('洗魔魔法'),mind?group(row('🔄','用體力換魔力（心靈轉換）','體力高於 '+state.mindHp+'%、魔力低於 '+state.mindMp+'% 時施放',switcher(state.mindOn,on=>save({mindOn:on}),'自動心靈轉換')),
+   row('❤️','體力高於 '+state.mindHp+'%',null,slider(state.mindHp,1,99,v=>save({mindHp:v})&&void render(),'%','洗魔體力門檻')),
+   row('💧','魔力低於 '+state.mindMp+'%',null,slider(state.mindMp,1,99,v=>save({mindMp:v})&&void render(),'%','洗魔魔力門檻'))):el('p','assist-note','還沒有學會心靈轉換。'));
   const buffIds=ids.filter(id=>ClassBuffs.selfBuff(id));
   if(buffIds.length){const g=el('div','qy-set-group assist-buffs');for(const id of buffIds)g.append(row('',sk(id).name,null,switcher(state.buffs.includes(id),on=>save({buffs:on?[...state.buffs,id]:state.buffs.filter(x=>x!==id)}),sk(id).name)));p.append(head('輔助魔法'),g,el('p','assist-note','效果沒了就補；沒開 AUTO 也會。'));}
   else p.append(head('輔助魔法'),el('p','assist-note','還沒有學會可以自動施放的輔助魔法。'));
+  return p;}
+
+ function summonPage(){const p=el('div'),id=summonSkill(),last=Summons.lastName,list=Summons.list;
+  p.append(head('自動召喚'),group(
+   row('🐾','沒有召喚物時自動施放',id?playerSkillData.skills[id].name+' · 掛機（AUTO）時身邊沒有召喚物就施放':'還沒學會召喚術／召喚屬性精靈',switcher(state.summonOn,on=>id||!on?save({summonOn:on}):(toast('還沒學會召喚魔法。'),false),'自動召喚')),
+   row('💍','戴召喚控制戒指時召喚上次手選的',last?'上次手選：'+last:'先手動用一次召喚控制戒指選單選怪物',switcher(state.ringOn,on=>save({ringOn:on}),'召喚控制戒指自動召喚'))));
+  p.append(head('目前召喚物'),list.length?group(...list.map(a=>row('',a.name,'體力 '+a.hp))):el('p','assist-note','（沒有）'),
+   el('p','assist-note','法師用「召喚術」依等級召喚；妖精用「召喚屬性精靈」召喚自己屬性的精靈。沒戴戒指時直接召喚；戴戒指但沒開上面的選項時不會自動召喚（避免一直跳出選單）。寵物、夥伴系統這個遊戲還沒有。'));
   return p;}
 
  function listPage(){const p=el('div'),map=String(window.activeMapId||0),cur=mapList();
@@ -155,7 +201,7 @@ const AssistSystem=(()=>{
    const del=el('button','act','移除');del.type='button';del.onclick=()=>{const next={...cur};delete next[n];const list={...state.list};if(Object.keys(next).length)list[map]=next;else delete list[map];save({list});render();};return row('',n,null,s,del);});
   p.append(rows.length?group(...rows):el('p','assist-note','（沒有）'),el('p','assist-note','沒加進來的怪都會打；「瞬移」看到就用瞬間移動卷軸離開，「不打」被牠打時還是會還手。每張地圖各自設定。'));return p;}
 
- const PAGES=[['hunt','狩獵',huntPage],['supply','補給',supplyPage],['magic','魔法',magicPage],['list','名單',listPage]];
+ const PAGES=[['hunt','狩獵',huntPage],['supply','補給',supplyPage],['magic','魔法',magicPage],['summon','召喚',summonPage],['list','名單',listPage]];
  let body=null,tabs=null;
  function render(){if(!dialog)return;const y=body.scrollTop;body.replaceChildren(PAGES.find(p=>p[0]===tab)[2]());body.scrollTop=y;for(const b of tabs.children)b.setAttribute('aria-selected',String(b.dataset.tab===tab));}
  function open(){if(window.gameFlowState!=='playing')return false;if(dialog){dialog.style.zIndex=String(FloatingWindows.frontLevel());return true;}
@@ -165,5 +211,5 @@ const AssistSystem=(()=>{
   body=el('div','assist-body');dialog.append(h,tabs,body);game.append(dialog);hud.setAttribute('aria-pressed','true');render();return true;}
  function close(){dialog?.remove();dialog=null;hud.setAttribute('aria-pressed','false');}
  addEventListener('keydown',e=>{if(e.key==='Escape'&&dialog)close();});
- return {activate,open,close,skip,tick,get snapshot(){return JSON.parse(JSON.stringify(state));}};
+ return {activate,open,close,skip,tick,get escapeFirst(){return state.escape&&owner===window.activeCharacterId;},get healFallback(){return state.healFallback&&owner===window.activeCharacterId;},get snapshot(){return JSON.parse(JSON.stringify(state));}};
 })();window.AssistSystem=AssistSystem;
