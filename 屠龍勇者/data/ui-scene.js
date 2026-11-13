@@ -806,6 +806,16 @@ function sceneUpdate(dt) {
         const d = Math.max(Math.abs(m.x - pl.x), Math.abs(m.y - pl.y));
         // 無限塔：4 格內卻 1.5 秒碰不到角色（被其他怪擋住）就改用遠程攻擊（survivor.js，使用者 2026-11-13）
         if (m.inst.inf && !m.inst.infRanged && !m.inst.magic) { if (d > MELEE_RANGE && d <= RANGED_RANGE) { m.blockT = (m.blockT || 0) + dt; if (m.blockT > 1500) m.inst.infRanged = true; } else m.blockT = 0; }
+        // 無限塔：參戰的怪被擠到 4 格外超過 2 秒 → 交給 4 格內離角色最近、還沒參戰的地圖怪接手（不然牠永遠打不到你）
+        if (m.inst.inf && d > RANGED_RANGE) {
+            m.farT = (m.farT || 0) + dt;
+            if (m.farT > 2000) {
+                m.farT = 0;
+                let f = null, fd = 1e9;
+                for (const o of scene.mons) { if (o.dead || o.inst) continue; const od = Math.max(Math.abs(o.x - pl.x), Math.abs(o.y - pl.y)); if (od <= RANGED_RANGE && od < fd) { fd = od; f = o; } }
+                if (f) { f.inst = m.inst; f.icon = m.icon; f.name = m.name; f.mid = m.mid; f.lastHp = m.inst.hp; m.inst = null; continue; }
+            }
+        } else m.farT = 0;
         m.inst.near = m.fixed || d <=(m.inst.magic || m.inst.infRanged ? RANGED_RANGE : MELEE_RANGE);
         m.inst.nearAt = gameNow;
     }

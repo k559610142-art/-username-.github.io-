@@ -334,7 +334,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261113s`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261113u`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -5062,7 +5062,7 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 測試按鈕「⏭ 下一波（測試）」直接跳波。效能：560 隻怪每幀約 update 1.4ms＋draw 4ms（分格推擠 GRID 56）；分裂在場上 480 隻以上不再分裂。
 - 簡單自動閃避機器人模擬：大多撐到第 4～5 波（首領波）倒下，真人會更久。若要正式接入遊戲：入口、獎勵（要走伺服器防改檔）、套用玩家角色數值，都待使用者決定。
 
-## 332. 無限塔：一張特殊地圖（2026-11-13，版本 `20261113s`；`data/survivor.js`＋`zones.js`／`world-atlas.js`／`combat.js`／`ui-scene.js` 接口）
+## 332. 無限塔：一張特殊地圖（2026-11-13，版本 `20261113u`；`data/survivor.js`＋`zones.js`／`world-atlas.js`／`combat.js`／`ui-scene.js` 接口）
 
 - 歷程：第 331 節獨立原型 → 全螢幕覆蓋式「無限塔」（自己畫畫面、自己算戰鬥）→ 使用者附截圖指正：**無限塔是一張特殊地圖，畫面、狀態欄、快捷欄跟一般狩獵完全一樣，技能配置由玩家用原本的快捷欄自由控制，只有地圖場地不同**。全螢幕版整個拿掉，改成真正的地圖。**尚未推送**。
 - **門票與次數**（20261113r，使用者指定）：每次進塔 **1000 萬金幣**（`ZONES.infinite.fee`），**每天最多 3 次**（`INF_DAILY`）。守門人與世界地圖（`atlasTravelTo` 攔截）都走 `openInfiniteEntrance`：查今天次數（登入問伺服器 `inf_status`；訪客或伺服器還沒裝 SQL 時用本機 localStorage `dsInfDaily`，台灣日期）→ 確認視窗顯示門票、剩餘次數、規則 → `infEnter`：先向伺服器 `inf_run_start` 登記這一趟（同時扣當天次數，超過回 daily limit），成功才扣 1000 萬、進場；`infPending` 帶 runId 給 `infTick` 開始這一趟。**倒下或撤退後要重新買票**：倒下由 `infLeaveToGate` 送回大地圖守門人前（不扣經驗、不回村、HP 30%）；存檔停在塔裡（重新整理、換裝置）沒有門票時也送回塔門口。
@@ -5073,6 +5073,8 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
   - `huntTick` 開頭 `infTick(dt)`：在無限塔就計時換層（不管有沒有掛機）、再生能力回血；離開地圖 `infRun=null`（樓層不進存檔）。
   - `startHunt`／`huntTick` 的後端掉寶連線檢查：無限塔免檢查（沒有掉寶，訪客也能挑戰）。
   - `packMax`：無限塔 `INF_PACK`＝16 隻同時圍攻（一般 6；貼身最多 8 格，其餘是 4 格內的遠程怪）；`weakenForPack` 不削弱無限塔的怪（`m.inf`）；`makeZoneMob` → `infMakeMonster`；原本「每 3 秒 15% 機率有怪加入」在無限塔改成每 0.25 秒 `infJoinTick`：地圖怪貼到身邊（1 格；法師、射手或「射手」能力 4 格）就加入戰鬥，該層首領第一個加入。
+  - **失敗條件：累積 5 層的怪**（20261113u，使用者指定）：累積怪物＝場上活著的（`infSpawnTick` 每幀記 `infRun.alive`）＋這幾層還沒出場的（`budget`），`infPile()` 達到 `INF_FAIL_PILE`＝150（5×30）就 `infFail`：跟倒下一樣沒懲罰、送回塔門口、HP 不變；剩不到 30 隻時戰鬥訊息＋提示警告。小地圖下方 `zoneTitle` 顯示「怪 N/150」。地圖上限 `INF_MAP_CAP` 改 200（讓 150 先到）。
+  - **4 格內全部攻擊**（20261113u，使用者回報到 20 層周圍三、四十隻怪都不打、HP 停在 100 多不會死）：原本只有貼身或卡住 2 步的閒置怪才加入，排隊的都站著；改成 `infJoinTick` 每 0.25 秒把 4 格內的閒置怪最多 4 隻加入、全部標 `infRanged`（4 格內算打得到，貼身的照樣近戰），`INF_PACK` 16→40；已參戰卻被擠到 4 格外超過 2 秒（`m.farT`）就把怪物資料交給 4 格內最近的閒置地圖怪接手。本機 70 級修羅：第 1 層最多 25 隻同時參戰、4 格內閒置 0 隻；第 18 層 6 秒倒下正常送回門口（沒重現鎖血，推測是參戰太少、傷害被喝水抵消）。
   - **碰不到就遠程**（20261113s，使用者：無限塔怪物攻擊不到玩家改成遠程攻擊）：`infJoinTick` 身邊（1 格）沒有空的地圖怪、但 4 格內有走不過來的（`m.stuck`≥2）就照樣加入戰鬥並設 `inst.infRanged`；已參戰的怪在 2～4 格內 1.5 秒碰不到角色（`m.blockT`）也改 `infRanged`。`ui-scene.js` 回報 `near` 時 `infRanged` 跟魔法怪一樣 4 格內算打得到；攻擊仍是 `monsterAttack` 的物理攻擊（命中／閃避／防禦照算）。模擬 120 隻擠在一起時 16 隻參戰、最多 8 隻遠程（貼身剛好 8 格）。
   - **怪物主動攻擊**（20261113i，使用者回報「怪都不會主動攻擊」）：`infTick` 在沒掛機時，只要有怪貼到身邊就自動 `startHunt`（倒下後有 5 秒喘息 `calmUntil`）；怪物命中改成 等級＋10＋樓層（一般怪＝等級；20261113i 時是等級×1.3＋10＋樓層，起始改 Lv.50 後太準而調低），否則高防禦角色（防禦 64）對第 6 層怪只有 5% 被命中、看起來像不會打人，改後約 50%。
   - `onKill` 開頭 `infOnKill`：不給經驗、金幣、掉寶、任務；分裂能力再冒 2 隻地圖怪。`onDeath` 開頭 `infOnDeath`：HP 回 30%、送回塔門口（`infLeaveToGate`；20261113r 前是原地從第 1 層重來）。
@@ -5084,7 +5086,7 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 模擬（手動推進 gameNow＋sceneUpdate＋huntTick）：70 級法師（冰之女王魔杖 +7、星風套 +5、技能與藥水照快捷欄自動）掛機撐到 22 層以上未倒，第 15 層後開始喝水；地圖上同時約 90～110 隻。
 - 本機測試角色：slot 0「測試法師70」、slot 1「測試修羅70」（阿修羅雙刀 +7、騎士頭盔／板甲／保護者斗篷／力量手套／速度之靴／泰坦紋戰衣 +5，力量 35，修羅技能全學、攻擊技能與增益設自動，古代終極治癒藥水 300＋綠水＋勇水自動；HP 1082、防禦 55）。未登入雲端，不要用它登入以免收進帳號。
 
-## 333. 娃娃升級卷軸（2026-11-13，版本 `20261113s`；新檔 `data/doll-upgrade.js`、SQL `tools/doll-upgrade.sql`、測試 `tools/test-doll-upgrade-db.js`；使用者 11/13 推送 a1bd1f18a）
+## 333. 娃娃升級卷軸（2026-11-13，版本 `20261113u`；新檔 `data/doll-upgrade.js`、SQL `tools/doll-upgrade.sql`、測試 `tools/test-doll-upgrade-db.js`；使用者 11/13 推送 a1bd1f18a）
 
 - 使用者規格：對娃娃使用 T4→T3、T3→T2、T2→T1、T1→T0，每次**出現選單自選下一階的一隻**當作進化；成功率 5%，失敗維持現況、沒有懲罰。**無法購買**，無限塔撐過第 10、15、20 層各 1 張（第 332 節）。使用者再要求「**從後台計算**」並選擇「發卷軸＋擲骰都在後台」。（20261113o 曾做成背包道具、本機擲骰，已改掉。）
 - **後台**（`tools/doll-upgrade.sql`，使用者要自己在 Supabase SQL Editor 執行，可重跑）：`dragon_doll_scrolls`（user_id＋char_id＝`lootChar()` 的卷軸張數）、`dragon_inf_runs`（每個角色目前這一趟的 run_id、開始時間、已領樓層）、`dragon_doll_upgrade_log`（領取／升級紀錄）；三張表 RLS 全擋，只能透過函式。

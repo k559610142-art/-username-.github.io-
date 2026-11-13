@@ -4,6 +4,7 @@
 //   - 怪物大量出現、一出生就朝玩家衝過來，貼到身邊就加入戰鬥（同時參戰最多 INF_PACK 隻）
 //   - 每層 30 秒，時間到直接進下一層（不等玩家清怪，場上的怪留著），越高層怪越強，每層抽不同能力，每 5 層出首領
 //   - 門票：每次進塔 1000 萬金幣（zones.js 的 fee），每天最多 3 次（登入：伺服器 inf_run_start 計次；訪客：本機計次）
+//   - 失敗條件：倒下，或場上累積怪物（含還沒出場的）達到 150 隻＝5 層的量
 //   - 挑戰規則：打怪不給經驗、不掉寶；倒下沒有死亡懲罰（不扣經驗、不回村），送回大地圖塔門口，再挑戰要重新買票
 //   - 唯一獎勵：撐過第 10、15、20 層各 1 張娃娃升級卷軸（向伺服器領，doll-upgrade.js／tools/doll-upgrade.sql）
 // 樓層不寫進存檔（infRun，離開地圖就重來）；最高樓層記在 localStorage dsSurvivorBest（{角色名: 層}）。
@@ -12,9 +13,10 @@
 const INF_ZONE = 'infinite';
 const INF_FLOOR_MS = 30000;   // 每層 30 秒
 const INF_PER_FLOOR = 30;     // 每一層固定出 30 隻（使用者 2026-11-13 指定），出完不補；沒打完的留著跟下一層疊加
-const INF_MAP_CAP = 150;      // 地圖上最多同時幾隻（太多會擠滿競技場）
+const INF_FAIL_PILE = 150;    // 累積怪物（場上＋還沒出場）達到 5 層的量（5×30）就判定挑戰失敗（使用者 2026-11-13 指定）
+const INF_MAP_CAP = 200;      // 地圖上最多同時幾隻（太多會擠滿競技場；失敗門檻 150 會先到）
 const INF_SCROLL_FLOORS = [10, 15, 20];   // 撐過這幾層各給 1 張娃娃升級卷軸（使用者 2026-11-13 指定）
-const INF_PACK = 16;          // 同時參戰（圍著打你）最多幾隻；一般地圖 6 隻（貼身的最多 8 格，其餘是遠程）
+const INF_PACK = 40;          // 同時參戰（圍著打你）最多幾隻；一般地圖 6 隻。貼身的最多 8 格，其餘 4 格內用遠程（使用者 2026-11-13：周圍的怪都要打）
 const INF_HP_K = 0.5, INF_DMG_K = 0.6;   // 一群一起上：單隻血量、傷害相對一般怪（monBase）的倍率
 // 怪物外觀：images/monsters/rework/mon-*.png（scene-art.js 的 SCENE_ART_MONSTERS 'art-…'）；step＝地圖上每走一格幾毫秒
 const INF_TYPES = {
@@ -93,9 +95,13 @@ function infNextFloor() {
 function infLv(f) { return 50 + Math.round((f - 1) * 2.5); }   // 第 1 層怪物 Lv.50（使用者 2026-11-13 指定），每層 +2.5 級
 function infFloorLeft() { return infRun ? Math.max(0, Math.ceil((INF_FLOOR_MS - (gameNow - infRun.start)) / 1000)) : 0; }
 function infTitle() { return infRun ? `無限塔 第 ${infRun.floor} 層` : '無限塔'; }
+// 累積怪物：場上活著的（ui-scene 每幀回報）＋這幾層還沒出場的
+function infPile() { return infRun ? (infRun.alive || 0) + Math.max(0, infRun.budget) : 0; }
 // 地圖怪出場（ui-scene.js sceneUpdate 每幀呼叫）：每層 INF_PER_FLOOR 隻，一口氣出完（每幀一隻），不補打掉的
 function infSpawnTick(alive) {
-    if (!infRun || infRun.budget <= 0 || alive >= INF_MAP_CAP) return;
+    if (!infRun) return;
+    infRun.alive = alive;
+    if (infRun.budget <= 0 || alive >= INF_MAP_CAP) return;
     if (spawnMapMon()) infRun.budget--;
 }
 
@@ -108,6 +114,10 @@ function infTick(dt) {
         infStart(infPending.runId); infPending = null;
     }
     if (gameNow - infRun.start >= INF_FLOOR_MS) infNextFloor();
+    // 累積 5 層的怪（150 隻）就失敗：沒有懲罰，送回塔門口
+    if (infPile() >= INF_FAIL_PILE) { infFail(`場上累積的怪物達到 ${INF_FAIL_PILE} 隻（5 層的量）`); return; }
+    if (infPile() >= INF_FAIL_PILE - INF_PER_FLOOR && !infRun.warned) { infRun.warned = true; addLog(`⚠️ 無限塔累積怪物 ${infPile()} 隻，達到 ${INF_FAIL_PILE} 隻就挑戰失敗！`, 'warn'); showToast(`⚠️ 累積怪物 ${infPile()}／${INF_FAIL_PILE}，快清怪！`, 3000); }
+    if (infPile() < INF_FAIL_PILE - INF_PER_FLOOR) infRun.warned = false;
     // 怪物主動攻擊：沒在掛機時，怪貼到身邊就自動開打（倒下後有 5 秒喘息）
     if (!player.hunting && player.hp > 0 && !walkHome && !(infRun.calmUntil > gameNow) && scene && scene.mons && scene.pl && scene.key === sceneKey()
         && scene.mons.some(m => !m.dead && !m.inst && Math.max(Math.abs(m.x - scene.pl.x), Math.abs(m.y - scene.pl.y)) <= 1)) {
@@ -246,19 +256,18 @@ async function infEnter(fromAtlas) {
 function infJoinTick() {
     if (!hunt || hunt.state !== 'fight' || hunt.mobs.length >= INF_PACK || !scene || !scene.mons || !scene.pl) return;
     const pl = scene.pl;
-    const ranged = mid => (INF_TYPES[(mid || '').replace(/^art-/, '')] || {}).magic || infHas('ranged');
     const dist = m => Math.max(Math.abs(m.x - pl.x), Math.abs(m.y - pl.y));
-    const free = scene.mons.filter(m => !m.dead && !m.inst);
-    // 貼身（1 格）用近戰；身邊擠滿、4 格內走不過來（卡住 2 步以上）的怪改用遠程攻擊（使用者 2026-11-13：攻擊不到玩家就改遠程）
-    const melee = free.some(m => dist(m) <= 1 || (ranged(m.mid) && dist(m) <= RANGED_RANGE));
-    const blocked = !melee && free.some(m => dist(m) <= RANGED_RANGE && (m.stuck || 0) >= 2);
-    if (!melee && !blocked) return;
-    const boss = !!(infRun && infRun.bossDue);
-    if (boss) infRun.bossDue = false;
-    const mon = infMakeMonster(boss);
-    if (blocked) mon.infRanged = true;   // ui-scene.js：4 格內就算打得到（照樣是物理攻擊，看命中／閃避／防禦）
-    addMob(mon);
-    if (boss) addLog(`⚠️ ${mon.name}（Lv.${mon.lv}）出現了！`, 'boss');
+    // 4 格內的地圖怪全部加入戰鬥（使用者 2026-11-13：周圍三、四十隻怪都要打你）：貼身的近戰，其他的用遠程（infRanged）
+    // 每 0.25 秒最多加入 4 隻；sceneUpdate 會把新的怪綁到離角色最近的地圖怪身上
+    let n = Math.min(4, INF_PACK - hunt.mobs.length, scene.mons.filter(m => !m.dead && !m.inst && dist(m) <= RANGED_RANGE).length);
+    while (n-- > 0) {
+        const boss = !!(infRun && infRun.bossDue);
+        if (boss) infRun.bossDue = false;
+        const mon = infMakeMonster(boss);
+        mon.infRanged = true;   // ui-scene.js：4 格內就算打得到（照樣是物理攻擊，看命中／閃避／防禦）；貼身的照樣近戰
+        addMob(mon);
+        if (boss) addLog(`⚠️ ${mon.name}（Lv.${mon.lv}）出現了！`, 'boss');
+    }
 }
 // 打倒：不給經驗、金幣、掉寶；分裂能力再冒 2 隻
 function infOnKill(mon) {
@@ -278,6 +287,15 @@ function infOnKill(mon) {
     return true;
 }
 // 倒下：沒有死亡懲罰（不扣經驗、不清增益、不回村），HP 回 30%，從第 1 層重來，先停止掛機讓玩家整理
+// 挑戰失敗（怪物累積太多）：跟倒下一樣沒有懲罰、送回塔門口，HP 不變
+function infFail(why) {
+    const f = infRun ? infRun.floor : 1;
+    const nb = infSaveBest(f - 1);
+    addLog(`💀 無限塔挑戰失敗：${why}（第 ${f} 層，撐過 ${f - 1} 層${nb ? '，新紀錄！' : ''}）。已送回塔門口；再挑戰要重新購買門票`, 'dead');
+    sfx('player-die');
+    showToast(`💀 挑戰失敗：怪物累積 ${INF_FAIL_PILE} 隻，撐過 ${f - 1} 層${nb ? '（新紀錄）' : ''}`, 3500);
+    infLeaveToGate();
+}
 function infOnDeath(killer) {
     if (!inInfinite()) return false;
     const f = infRun ? infRun.floor : 1;
