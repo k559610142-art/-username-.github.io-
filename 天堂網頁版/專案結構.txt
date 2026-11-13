@@ -169,4 +169,4 @@ NPC 穿衣服（2026-11-13）：
 近戰攻擊距離（2026-11-13）：武器射程照 DB weapon.range（匕首、劍、鈍器等 1 格，矛／單手矛／鎖鏈劍 2 格，弓 -1＝遠距）。
   原本 island-combat.js hit() 在走路途中就出手（interruptMovement），走不到半格時 interruptVisualStep 會把座標拉回上一格，變成隔 2 格打到；
   改成走路動畫中先 cancelNavigation、等這一格走完再攻擊
-快捷列滑鼠滾輪（2026-11-13）：data/quick-slots.js 在快捷列上滾輪往上＝多展開一排、往下＝收回一排（1～3 排，不循環，間隔 180ms），和 ⌃ 按鈕共用 activeQuickRows 並存檔
+快捷列滑鼠滾輪（2026-11-13）：data/quick-slots.js 在地圖（#terrain）或快捷列上滾動，金框（.wheel-pick）在第一排 F1～F10 之間移動（往下＝下一格，頭尾循環）；按滾輪中鍵使用金框那一格（等同按 F 鍵）；視窗內滾動不受影響

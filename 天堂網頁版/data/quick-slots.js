@@ -5,10 +5,17 @@ const QuickSlots=(()=>{
   const arrow=uiElement('button','quick-expand-arrow','⌃');arrow.type='button';arrow.setAttribute('aria-label','展開第二排快捷欄');shortcuts.append(arrow);
   const extraStyle=document.createElement('style');extraStyle.textContent='main.game.reference-game .quick-slots{display:flex!important;flex-direction:column-reverse!important;align-items:stretch!important;gap:4px!important;overflow:visible!important;height:auto!important}.quick-expanded-row{display:flex;gap:3px;flex:none}.quick-expanded-row[hidden]{display:none!important}.reference-game .quick-slots .quick-expand-arrow{position:absolute!important;left:calc(100% + 4px)!important;bottom:0!important;top:auto!important;width:28px!important;min-width:28px!important;min-height:44px!important;height:44px!important;background:#142730d9;color:#e7e0c7;border:1px solid #9d9976;font-size:22px;padding:0;touch-action:manipulation}.combat-quick-slot.quick-auto-on:after{content:"";position:absolute;inset:2px;border:2px solid #59c5ff;border-radius:6px;box-shadow:0 0 9px 2px #168dff,inset 0 0 8px #168dff;pointer-events:none}.quick-auto-note{position:absolute;left:0;bottom:2px;font-size:7px;color:#91dcff}';document.head.append(extraStyle);
   arrow.onclick=()=>{const before=window.activeQuickRows||1;window.activeQuickRows=before%3+1;if(!GameEntry.saveActive())window.activeQuickRows=before;signature='';render();};
-  // 滑鼠滾輪在快捷列上：往上滾多展開一排、往下滾收回一排（1～3 排，不循環）
-  let wheelAt=0;shortcuts.addEventListener('wheel',e=>{e.preventDefault();e.stopPropagation();const now=performance.now();if(now-wheelAt<180||!e.deltaY)return;wheelAt=now;
-   const before=Math.max(1,Math.min(3,window.activeQuickRows||1)),next=Math.max(1,Math.min(3,before+(e.deltaY<0?1:-1)));if(next===before)return;
-   window.activeQuickRows=next;if(!GameEntry.saveActive())window.activeQuickRows=before;signature='';render();},{passive:false});
+  // 滑鼠滾輪：在地圖或快捷列上滾動，金框在第一排 F1～F10 之間移動（往下＝下一格，頭尾循環）；按滾輪（中鍵）使用金框那一格，等同按 F 鍵
+  const pickStyle=document.createElement('style');pickStyle.textContent='.quick-slots>.quick-expanded-row:first-child>.combat-quick-slot.wheel-pick{outline:2px solid #ffd77a!important;outline-offset:-2px;box-shadow:0 0 10px #ffcf5a,inset 0 0 8px #ffcf5a88!important;z-index:2}';document.head.append(pickStyle);
+  let wheelPick=0,wheelAt=0;
+  const firstRow=()=>[...document.querySelectorAll('.quick-slots>.quick-expanded-row:first-child>.combat-quick-slot')].slice(0,10);
+  const markPick=()=>firstRow().forEach((b,i)=>b.classList.toggle('wheel-pick',i===wheelPick));
+  const wheelZone=e=>window.gameFlowState==='playing'&&(e.target?.id==='terrain'||e.target.closest?.('.quick-slots'));
+  document.addEventListener('wheel',e=>{if(!wheelZone(e))return;e.preventDefault();const now=performance.now();if(now-wheelAt<90||!e.deltaY)return;wheelAt=now;
+   wheelPick=(wheelPick+(e.deltaY>0?1:-1)+10)%10;markPick();},{passive:false,capture:true});
+  document.addEventListener('mousedown',e=>{if(e.button!==1||!wheelZone(e))return;e.preventDefault();e.stopPropagation();markPick();firstRow()[wheelPick]?.click();},{capture:true});
+  document.addEventListener('auxclick',e=>{if(e.button===1&&wheelZone(e))e.preventDefault();},{capture:true});
+  setTimeout(markPick,0);
   const catalog=new Map(INTERFACE_CATALOG.items.map(item=>[item.kind+':'+item.id,item]));
   let signature='',drag=null,ghost=null,picking=null,suppressUntil=0;
   function valid(value){
