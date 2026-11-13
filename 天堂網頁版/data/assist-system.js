@@ -129,6 +129,7 @@ const AssistSystem=(()=>{
  .assist-mob{display:flex;align-items:center;gap:6px}
  .assist-body .qy-set-row .ico.item{width:32px;height:32px;flex:none;display:flex;align-items:center;justify-content:center;background:#0a0b0c;border:1px solid #4a4336;border-radius:3px}
  .assist-body .qy-set-row .ico.item img{max-width:28px;max-height:28px;image-rendering:pixelated}
+ .assist-body .qy-set-row .ico.item.dim img{opacity:.4;filter:grayscale(.6)}
  .assist-body .qy-set-row .ico.item .missing-item-icon{font-size:12px;color:#cdbb8a}`;document.head.append(css);
 
  const hud=el('button','assist-hud');hud.type='button';hud.setAttribute('aria-label','輔助系統');
@@ -142,6 +143,10 @@ const AssistSystem=(()=>{
  function slider(value,min,max,fn,unit,label){const box=el('span','assist-mob'),r=el('input'),v=el('span','val',value+unit);r.type='range';r.min=String(min);r.max=String(max);r.value=String(value);r.setAttribute('aria-label',label);r.oninput=()=>{v.textContent=r.value+unit;};r.onchange=()=>{if(fn(Number(r.value))===false){r.value=String(value);v.textContent=value+unit;}else value=Number(r.value);};box.append(r,v);return box;}
  function row(icon,label,note,...c){const r=el('div','qy-set-row'),t=el('div','txt',label);if(note)t.append(el('small','',note));r.append(typeof icon==='string'?el('span','ico',icon):icon,t,...c);return r;}
  // 道具圖（沒有道具時用文字圖示）
+ // 技能圖（interfaceCatalog.skills 的 icon，和快捷欄同一張）
+ // 沒選／沒學會時改顯示代表技能（fallback 給技能編號）的圖並變暗，表示還沒啟用
+ function sico(id,fallback){const find=x=>typeof x==='number'&&(interfaceCatalog.skills.find(s=>s.id===x&&s.icon)||null);const sk=find(id),alt=sk?null:find(fallback);const use=sk||alt;
+  if(!use)return el('span','ico',typeof fallback==='string'?fallback:'');const box=el('span','ico item'+(sk?'':' dim'));box.append(itemIcon(use));box.title=sk?use.name:'（未選）'+use.name;return box;}
  function ico(key,fallback){const item=key&&catalog.get(key);if(!item)return el('span','ico',fallback);const box=el('span','ico item');box.append(itemIcon(item));box.title=item.name;return box;}
  const firstKey=pred=>owned().find(pred)?.key||null;
  const group=(...rows)=>{const g=el('div','qy-set-group');g.append(...rows);return g;};
@@ -182,31 +187,31 @@ const AssistSystem=(()=>{
   p.append(head('自動購買'),group(...buyRows),el('p','assist-note','身上用完（0 個）時直接扣金幣購買，價格取各地商店最便宜的。目前金幣 '+purse.toLocaleString()+'。'));return p;}
 
  function magicPage(){const p=el('div'),ids=learned(),ap=AutoPotion.snapshot,sk=id=>playerSkillData.skills[id];
-  const pickSkill=(field,label)=>{const s=el('select');s.setAttribute('aria-label',label);s.append(new Option('（選擇'+label+'）',''));for(const id of attackSkills(ids))s.append(new Option(sk(id).name+' · MP '+sk(id).mp,String(id),false,state[field]===id));s.onchange=()=>save({[field]:s.value?Number(s.value):null});return s;};
+  const pickSkill=(field,label)=>{const s=el('select');s.setAttribute('aria-label',label);s.append(new Option('（選擇'+label+'）',''));for(const id of attackSkills(ids))s.append(new Option(sk(id).name+' · MP '+sk(id).mp,String(id),false,state[field]===id));s.onchange=()=>{save({[field]:s.value?Number(s.value):null});render();};return s;};
   const atk=pickSkill('attackSkill','攻擊技能');
   const healSk=el('select');healSk.setAttribute('aria-label','治癒魔法');healSk.append(new Option('（不用治癒魔法）',''));
   for(const id of ids.filter(id=>PlayerSkills.supports(id)&&/治癒|恢復/.test(sk(id).name)))healSk.append(new Option(sk(id).name+' · MP '+sk(id).mp,String(id),false,ap.skillId===id));
   healSk.onchange=()=>{if(healSk.value){if(!AutoPotion.configure({skillId:Number(healSk.value),key:null}))healSk.value='';}else{const k=OwnedInventory.healingItems[0]?.key;AutoPotion.configure(k?{skillId:null,key:k}:{skillId:null,key:null,enabled:false});}render();};
-  p.append(head('開怪技能'),group(row('🎯','開怪技能','換到新目標（滿血）先放一次',pickSkill('openSkill','開怪技能')),row('💧','魔力 '+state.openMp+'% 以上',null,slider(state.openMp,0,99,v=>save({openMp:v})&&void render(),'%','開怪技能魔力門檻'),switcher(state.openOn,on=>save({openOn:on}),'自動開怪技能'))));
-  p.append(head('範圍技能'),group(row('💥','範圍技能','周圍 '+state.aoeRange+' 格有 '+state.aoeCount+' 隻以上時施放',pickSkill('aoeSkill','範圍技能')),
+  p.append(head('開怪技能'),group(row(sico(state.openSkill,4),'開怪技能','換到新目標（滿血）先放一次',pickSkill('openSkill','開怪技能')),row('💧','魔力 '+state.openMp+'% 以上',null,slider(state.openMp,0,99,v=>save({openMp:v})&&void render(),'%','開怪技能魔力門檻'),switcher(state.openOn,on=>save({openOn:on}),'自動開怪技能'))));
+  p.append(head('範圍技能'),group(row(sico(state.aoeSkill,53),'範圍技能','周圍 '+state.aoeRange+' 格有 '+state.aoeCount+' 隻以上時施放',pickSkill('aoeSkill','範圍技能')),
    row('📏','範圍 '+state.aoeRange+' 格',null,slider(state.aoeRange,1,8,v=>save({aoeRange:v})&&void render(),' 格','範圍格數')),
    row('👥',state.aoeCount+' 隻以上',null,slider(state.aoeCount,2,10,v=>save({aoeCount:v})&&void render(),' 隻','怪物數量')),
    row('💧','魔力 '+state.aoeMp+'% 以上',null,slider(state.aoeMp,0,99,v=>save({aoeMp:v})&&void render(),'%','範圍技能魔力門檻'),switcher(state.aoeOn,on=>save({aoeOn:on}),'自動範圍技能'))));
-  p.append(head('攻擊魔法'),group(row('⚡','攻擊技能','打怪時魔力 '+state.attackMp+'% 以上施放',atk),row('💧','魔力門檻',null,slider(state.attackMp,0,99,v=>save({attackMp:v})&&void render(),'%','攻擊技能魔力門檻'),switcher(state.attackOn,on=>save({attackOn:on}),'自動攻擊技能'))));
-  p.append(head('治癒魔法'),group(row('✚','體力低於 '+ap.threshold+'% 時施放','和「補給」的補血門檻共用',healSk)));
+  p.append(head('攻擊魔法'),group(row(sico(state.attackSkill,4),'攻擊技能','打怪時魔力 '+state.attackMp+'% 以上施放',atk),row('💧','魔力門檻',null,slider(state.attackMp,0,99,v=>save({attackMp:v})&&void render(),'%','攻擊技能魔力門檻'),switcher(state.attackOn,on=>save({attackOn:on}),'自動攻擊技能'))));
+  p.append(head('治癒魔法'),group(row(sico(ap.skillId,1),'體力低於 '+ap.threshold+'% 時施放','和「補給」的補血門檻共用',healSk)));
   const mind=ids.includes(130);
-  p.append(head('洗魔魔法'),mind?group(row('🔄','用體力換魔力（心靈轉換）','體力高於 '+state.mindHp+'%、魔力低於 '+state.mindMp+'% 時施放',switcher(state.mindOn,on=>save({mindOn:on}),'自動心靈轉換')),
+  p.append(head('洗魔魔法'),mind?group(row(sico(130,'🔄'),'用體力換魔力（心靈轉換）','體力高於 '+state.mindHp+'%、魔力低於 '+state.mindMp+'% 時施放',switcher(state.mindOn,on=>save({mindOn:on}),'自動心靈轉換')),
    row('❤️','體力高於 '+state.mindHp+'%',null,slider(state.mindHp,1,99,v=>save({mindHp:v})&&void render(),'%','洗魔體力門檻')),
    row('💧','魔力低於 '+state.mindMp+'%',null,slider(state.mindMp,1,99,v=>save({mindMp:v})&&void render(),'%','洗魔魔力門檻'))):el('p','assist-note','還沒有學會心靈轉換。'));
   const buffIds=ids.filter(id=>ClassBuffs.selfBuff(id));
-  if(buffIds.length){const g=el('div','qy-set-group assist-buffs');for(const id of buffIds)g.append(row('',sk(id).name,null,switcher(state.buffs.includes(id),on=>save({buffs:on?[...state.buffs,id]:state.buffs.filter(x=>x!==id)}),sk(id).name)));p.append(head('輔助魔法'),g,el('p','assist-note','效果沒了就補；沒開 AUTO 也會。'));}
+  if(buffIds.length){const g=el('div','qy-set-group assist-buffs');for(const id of buffIds)g.append(row(sico(id,''),sk(id).name,null,switcher(state.buffs.includes(id),on=>save({buffs:on?[...state.buffs,id]:state.buffs.filter(x=>x!==id)}),sk(id).name)));p.append(head('輔助魔法'),g,el('p','assist-note','效果沒了就補；沒開 AUTO 也會。'));}
   else p.append(head('輔助魔法'),el('p','assist-note','還沒有學會可以自動施放的輔助魔法。'));
   return p;}
 
  function summonPage(){const p=el('div'),id=summonSkill(),last=Summons.lastName,list=Summons.list;
   p.append(head('自動召喚'),group(
-   row('🐾','沒有召喚物時自動施放',id?playerSkillData.skills[id].name+' · 掛機（AUTO）時身邊沒有召喚物就施放':'還沒學會召喚術／召喚屬性精靈',switcher(state.summonOn,on=>id||!on?save({summonOn:on}):(toast('還沒學會召喚魔法。'),false),'自動召喚')),
-   row('💍','戴召喚控制戒指時召喚上次手選的',last?'上次手選：'+last:'先手動用一次召喚控制戒指選單選怪物',switcher(state.ringOn,on=>save({ringOn:on}),'召喚控制戒指自動召喚'))));
+   row(sico(id,job==='妖精'?154:51),'沒有召喚物時自動施放',id?playerSkillData.skills[id].name+' · 掛機（AUTO）時身邊沒有召喚物就施放':'還沒學會召喚術／召喚屬性精靈',switcher(state.summonOn,on=>id||!on?save({summonOn:on}):(toast('還沒學會召喚魔法。'),false),'自動召喚')),
+   row(ico('armor:20284','💍'),'戴召喚控制戒指時召喚上次手選的',last?'上次手選：'+last:'先手動用一次召喚控制戒指選單選怪物',switcher(state.ringOn,on=>save({ringOn:on}),'召喚控制戒指自動召喚'))));
   p.append(head('目前召喚物'),list.length?group(...list.map(a=>row('',a.name,'體力 '+a.hp))):el('p','assist-note','（沒有）'),
    el('p','assist-note','法師用「召喚術」依等級召喚；妖精用「召喚屬性精靈」召喚自己屬性的精靈。沒戴戒指時直接召喚；戴戒指但沒開上面的選項時不會自動召喚（避免一直跳出選單）。寵物、夥伴系統這個遊戲還沒有。'));
   return p;}
