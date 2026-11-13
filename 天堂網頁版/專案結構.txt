@@ -177,3 +177,10 @@ NPC 穿衣服（2026-11-13）：
 背包裝備欄立繪（2026-11-13）：character-bag-panels.js portrait() 改用 currentPortrait()（classic-panels.js，龍騎士／幻術師／戰士用正式立繪 *-art-*.jpg），原本讀 CreationRules.portraits 會顯示建角像素圖
 藥水職業限制（2026-11-13）：data/native-potions.js flags 補上新職業位元（黑妖 16、龍騎士 32、幻術師 64、戰士 128），原本只有王族／騎士／妖精／法師，
   戰士、龍騎士、幻術師喝綠水（brave.StatusHaste … 255）會被當成職業不符；勇水 130＝騎士＋戰士、生命之樹果實 96＝龍騎士＋幻術師也照原版生效
+
+輔助系統 第 1 期（2026-11-13）：data/assist-system.js（AssistSystem），左上原「自動喝水」鈕（.auto-potion-hud 隱藏）換成「輔助」鈕，打開分頁視窗：
+  狩獵：掛機索敵範圍（IslandCombat.setAutoRange）、AUTO 沒怪 N 秒（3～60）用瞬間移動卷軸、體力低於 N% 用回家卷軸回村（沿用 AutoPotion homeEnabled／homeThreshold）
+  補給：自動喝補血道具＋門檻（沿用 AutoPotion）、綠水／勇水類／慎重藥水／藍水「效果沒了自動喝」（只用身上有的，NativePotions.durationState 判斷，職業不能喝的自動略過）
+  魔法：攻擊技能（打怪時魔力 ≥ N% 用 PlayerSkills.cast）、治癒魔法（AutoPotion skillId）、輔助魔法（ClassBuffs.selfBuff(id)＝SELF 表且非被動／功能型、有持續時間，效果沒了就補）
+  名單：每張地圖各自的怪物名單（不打＝island-combat.js AUTO 找怪時 AssistSystem.skip 過濾；瞬移＝附近 8 格出現就用瞬間移動卷軸）
+  存檔：角色 assist 欄位（entry-flow.js saveActiveCharacter／enterSelectedCharacter）。第 2 期以後：自動購買、武器修理、箭、變身卷軸、召喚、寵物

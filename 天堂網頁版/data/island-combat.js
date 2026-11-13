@@ -81,7 +81,7 @@ const IslandCombat=(()=>{
     if(!mode||pending||characterMovementBlocked())return;
     if(!target?.hp){
       if(mode!=='auto'){stop();return;}
-      target=IslandMonsters.nearest(Math.max(autoScanRange,attackRange()),mob=>!(retryAfter.get(mob)>movementTime()));
+      target=IslandMonsters.nearest(Math.max(autoScanRange,attackRange()),mob=>!(retryAfter.get(mob)>movementTime())&&!window.AssistSystem?.skip(mob)); // 輔助系統怪物名單：不打／瞬移的怪不主動找
       if(!target)return;
       IslandMonsters.setTarget(target);
     }

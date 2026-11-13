@@ -203,5 +203,5 @@ const ClassBuffs=(()=>{
   bar.hidden=!ids.length;
  }
  setInterval(tick,250);
- return {handles,cast,afterCast,invisible:()=>invisible,reveal:()=>{invisible=false;},damageBonus,reduction,ac,dodge,mpr,mr,sp,stats,maxHp:maxHpBonus,maxMp:maxMpBonus,onHit,onHurt,silenced,rooted,slowed,active:id=>on(id)};
+ return {handles,cast,afterCast,invisible:()=>invisible,reveal:()=>{invisible=false;},damageBonus,reduction,ac,dodge,mpr,mr,sp,stats,maxHp:maxHpBonus,maxMp:maxMpBonus,onHit,onHurt,silenced,rooted,slowed,active:id=>on(id),selfBuff:id=>!!SELF[id]&&!PASSIVE[id]&&!UTIL[id]&&(sk(id)?.duration||0)>0};
 })();window.ClassBuffs=ClassBuffs;
