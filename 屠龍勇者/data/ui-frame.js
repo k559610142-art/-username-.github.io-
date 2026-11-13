@@ -10,7 +10,7 @@ const FRAME_MIN_RATIO = 0.62;     // 寬度不超過高度 × 0.62，避免矮�
 
 const DRAWERS = {
     left:  [['char', '🧝', '人物狀態'], ['skill', '✨', '技能'], ['talent', '✧', talentIsReleased()?'天賦星盤':'天賦星盤・未開放'], ['quest', '📜', '任務'], ['codex', '📖', '裝備圖鑑'], ['clan', '🏰', '血盟'], ['market', '🏪', '交易所']],
-    right: [['map', '🌀', '異界裝置'], ['mapQueue', '📋', '地圖排程'], ['raid', '🐉', '團隊副本'], ['chat', '💬', '聊天'], ['rank', '🏆', '排行榜'], ['wb', '👹', '世界首領'], ['bossTimer', '⏱️', '首領計時'], ['set', '⚙️', '設定']],
+    right: [['map', '🌀', '異界裝置'], ['mapQueue', '📋', '地圖排程'], ['raid', '🐉', '團隊副本'], ['chat', '💬', '聊天'], ['rank', '🏆', '排行榜'], ['wb', '👹', '世界首領'], ['bossTimer', '⏱️', '首領計時'], ['minigame', '🎮', '小遊戲'], ['set', '⚙️', '設定']],   // 小遊戲：minigame.js（第 334 節）
 };
 
 const SLOT_DEFS = [
@@ -44,6 +44,7 @@ const PC_SLOTS = [
     { icon: '🐉', name: '團隊副本', tab: 'raid', x: 104, y: 392, w: 58, h: 58, round: true, side: true },
     { icon: '🏰', name: '血盟', tab: 'clan', x: 104, y: 458, w: 58, h: 58, round: true, side: true },
     { icon: '🏪', name: '交易所', tab: 'market', x: 104, y: 524, w: 58, h: 58, round: true, side: true },
+    { icon: '🎮', name: '小遊戲', tab: 'minigame', x: 104, y: 590, w: 58, h: 58, round: true, side: true },   // minigame.js（第 334 節）
 ];
 function isPcFrame() { return displayMode === 'pc'; }
 function currentSlotDefs() { return isPcFrame() ? PC_SLOTS : SLOT_DEFS; }

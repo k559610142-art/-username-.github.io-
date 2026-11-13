@@ -229,6 +229,8 @@
 | `data/main.js` | 主迴圈 `gameTick`（每 100ms）、繼續遊戲、啟動（呼叫 `initPwa`） |
 | `gm.html` | **管理頁**（不是遊戲的一部分）：可疑紀錄、玩家存檔歷程、封鎖／解除封鎖、🎁 發放道具（第 128 節）；載入 config／classes／cloud.js 取得 Supabase 設定（第 31 節） |
 | `data/survivor.js` | **無限塔地圖**（第 332 節，大地圖紫霧遺跡有守門人入口）：樓層計時、怪物生成、加入戰鬥、擊殺／倒下規則；zones.js 的 infinite 地圖、world-atlas 傳送點、combat.js／ui-scene.js 有接口；只在執行期用到其他檔案，載入順序在 main 前即可 |
+| `data/minigame.js` | **小遊戲分頁**（第 334 節）：TABS／PANEL_FNS 註冊 minigame，iframe 全螢幕開 `survivor.html`；載入時要 TABS／PANEL_FNS，放在 map-queue 之後 |
+| `survivor.html` | **小遊戲「生存者挑戰」**（第 331、334 節）：獨立頁面、內嵌程式，不讀寫存檔、不連雲端；由小遊戲分頁用 iframe 開 |
 | `data/doll-upgrade.js` | **娃娃升級卷軸**（第 333 節）：卷軸存在伺服器、升級由伺服器擲骰（SQL `tools/doll-upgrade.sql`）；升級選單與無限塔領取；只在執行期用到其他檔案（放在 icons 之後） |
 | `manifest.json` | App 名稱、圖示、`scope: ./`（只涵蓋本資料夾） |
 | `sw.js` | Service Worker，快取名稱 `dragon-` 開頭（第 12 節） |
@@ -320,7 +322,7 @@
 
 ## 2. 載入順序與依賴
 
-`config → classes → skills → items → spellbook → monsters → zones → quests → advance → resonance → uniques → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → afflict → guild-core → guild-state → player → enchant → affix → craft → maps → elite → elements → gems → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → talent-jewels → talent → talent-tree → talent-layout → talent-planner → talent-live → bag-storage → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → titles → auction → presence → ui-frame → map-queue → icons → doll-upgrade → hotbar → scene-art → ui-scene → world-atlas → guild-world → guild-map-data → guild-missions → guild-mission-core → guild-mission → guild-map → guild → pwa → loot → survivor → main`
+`config → classes → skills → items → spellbook → monsters → zones → quests → advance → resonance → uniques → boss-enchant → boss-vfx → world-vfx → doll-abilities → mercenary → afflict → guild-core → guild-state → player → enchant → affix → craft → maps → elite → elements → gems → combat → town → guard → save → cloud → offline → ui → sfx → bgm → ui-create → ui-panels → talent-jewels → talent → talent-tree → talent-layout → talent-planner → talent-live → bag-storage → codex → raid → clan → chat → rank → wb → market → vault → doll-shop → titles → auction → presence → ui-frame → map-queue → minigame → icons → doll-upgrade → hotbar → scene-art → ui-scene → world-atlas → guild-world → guild-map-data → guild-missions → guild-mission-core → guild-mission → guild-map → guild → pwa → loot → survivor → main`
 
 - 上層資料檔（config～quests）只在「載入時」用到更前面的檔案；quests 載入時會把獎勵裝備與任務道具寫進 `ITEMS`，所以要在 items 之後。
 - resonance 載入時要改 `ITEMS`（含任務武器）、`MONSTERS` 掉落、`RECIPES`，所以在 quests 之後；`findSkill`（skills.js）在執行期才呼叫它的 `findResonanceSkill`。
@@ -334,7 +336,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261113v`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261113w`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -5052,7 +5054,7 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 防燒光：勾選的不要詞綴太多、不可能洗乾淨時不洗——魔法地圖至少要 1 種、稀有地圖至少要 4 種沒勾（稀有 3～4 條詞綴，`rollMapMods` 不重複）。
 - 本機模擬 40 張 T1 未鑑定：勾 4 種、通貨充足 → 全部洗乾淨開圖（約 12 重鑄石、187 混沌石）；沒有混沌石 → 稀有圖略過；勾 6 種 → 稀有不洗直接略過、魔法照洗；保留 3 顆、只有 3 顆 → 不用通貨。
 
-## 331. 生存者挑戰模式（測試原型，2026-11-13；`survivor.html` 已於同日刪除，改成第 332 節的無限塔地圖）
+## 331. 生存者挑戰模式（測試原型，2026-11-13；`survivor.html` 一度刪除，同日使用者要求恢復當小遊戲，見第 334 節）
 
 - 使用者想要「生存者挑戰」：進入後海量怪物立刻出生瘋狂進攻，每一波傷害／血量變強、每一波能力不同。先做**獨立測試頁**給使用者試玩手感，**沒接進遊戲**（不存檔、沒獎勵、沒入口），網址 `屠龍勇者/survivor.html`。
 - 程式全部內嵌在 survivor.html（`svStart`／`svPause`／`svSkipWave`／`svChoose` 是按鈕呼叫的頂層函式）。素材沿用：騎士 sprite（`images/sprites/knight-*`）、怪物 `images/monsters/rework/mon-*.png`（192×224 一格、4 欄、第 row*2+fr 格）、背景 `images/maps/rework/arena-tower.jpg` 放大 2 倍當競技場。
@@ -5098,3 +5100,9 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
   - 限制：娃娃本身仍在玩家存檔（跟其他道具一樣），伺服器不檢查玩家是不是真的有那隻 from 娃娃；成功後由遊戲把那隻換成 to。
 - **遊戲**（`doll-upgrade.js`）：入口是娃娃的道具視窗「🎎 升級」（背包或裝備中、T1～T4；倉庫裡的要先取出）→ `openDollUpgrade(uid)`，讀伺服器張數（`dollScrollRefresh`），列出下一階全部娃娃（含 `dollAbilityHtml`）自選 → `dollUpDo` 呼叫 `doll_upgrade`（擲骰中按鈕鎖住）；成功把同一個道具實體 id 換成目標（uid、強化值不變；裝備中會 `dollResetTransient`＋`clampHpMp`＋重設跟隨外觀），存檔並立刻上傳；失敗只顯示結果。沒登入、伺服器沒安裝 SQL、沒卷軸都有中文提示（`dollUpErrText`），0 張時不送請求。無限塔：`dollScrollClaim`（這一趟的 runId 在 `infEnter` 向伺服器登記時取得；沒登入或沒登記時在戰鬥訊息說明領不到）。onclick 只呼叫頂層函式。
 - 驗證：`node tools/test-doll-upgrade-db.js`（PGlite 記憶體，不連正式庫）通過：可重跑、匿名與直接讀表被擋、領取時間門檻 285 秒、每趟每層一次、只有 10／15／20、新的一趟讓舊 run 作廢、角色與帳號隔離、升級路線檢查、扣卷軸到 0、4000 次擲骰成功率約 4.6%、封鎖、紀錄。遊戲端用假的伺服器回應在本機走過：開視窗、選目標、成功換娃娃、失敗維持、0 張不送請求、無限塔推到 21 層剛好領 10／15／20 三張；Console 無錯誤。正式 Supabase：使用者 11/13 已執行最新版（查過 inf_status／inf_run_start／inf_claim／doll_scroll_status／doll_upgrade 都在，匿名呼叫被拒）。
+
+## 334. 小遊戲分頁：生存者挑戰（2026-11-13，版本 `20261113w`；新檔 `data/minigame.js`、恢復 `survivor.html`）
+
+- 使用者看了第 331 節的生存者挑戰測試版後要求「加入當作小遊戲」。`survivor.html` 從 7c2ebe496 恢復（內容不變：騎士、30 秒一波、每波能力、經驗石升級三選一，不讀角色、不存檔、沒有獎勵）。
+- 入口：手機右抽屜「🎮 小遊戲」（`DRAWERS.right`，設定上面）、PC 地圖左側圓鈕（`PC_SLOTS`，交易所下面 y 590）。分頁 `renderMiniGames` 列出小遊戲，「開始遊玩」→ `openMiniSurvivor`：`#minigame-layer`（z-index 9500）裡放 iframe `survivor.html?v=版本`，左下角「✕ 離開小遊戲」→ `closeMiniGame` 移除。iframe 自己吃鍵盤，不會讓村莊人物跟著走；遊戲本體（掛機）照常在背景跑。
+- 之後要加新的小遊戲：做成獨立 html，在 `renderMiniGames` 加一張卡片與開啟函式即可。

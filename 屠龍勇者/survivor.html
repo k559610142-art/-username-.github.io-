@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>生存者挑戰（測試）</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; height: 100%; background: #0b0a0d; color: #eee; font-family: "Microsoft JhengHei", "PingFang TC", sans-serif; overflow: hidden; touch-action: none; user-select: none; }
+  #cv { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+  #hud { position: fixed; left: 0; right: 0; top: 0; padding: 8px 10px calc(8px + env(safe-area-inset-top)) 10px; pointer-events: none; }
+  .bar { height: 12px; border-radius: 6px; background: #2a1414; border: 1px solid #000; overflow: hidden; position: relative; }
+  .bar > i { position: absolute; left: 0; top: 0; bottom: 0; display: block; }
+  #hpBar > i { background: linear-gradient(#ff5a4e, #b3160c); }
+  #expBar { height: 6px; background: #14182a; margin-top: 4px; }
+  #expBar > i { background: linear-gradient(#7fd2ff, #2e7bd6); }
+  .row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; text-shadow: 0 1px 2px #000; margin-top: 4px; gap: 8px; }
+  #wave { font-size: 16px; font-weight: bold; color: #ffd86b; }
+  #traits { font-size: 12px; color: #ff9c8a; text-shadow: 0 1px 2px #000; margin-top: 2px; }
+  #btns { position: fixed; right: 10px; bottom: calc(10px + env(safe-area-inset-bottom)); display: flex; gap: 6px; }
+  #btns button, .card, .big { font-family: inherit; }
+  #btns button { background: rgba(20,16,24,.8); color: #ddd; border: 1px solid #5a4a3a; border-radius: 6px; padding: 6px 10px; font-size: 13px; }
+  #banner { position: fixed; left: 50%; top: 22%; transform: translate(-50%, -50%); text-align: center; pointer-events: none; opacity: 0; transition: opacity .3s; text-shadow: 0 2px 6px #000, 0 0 12px #000; width: 92%; }
+  #banner .t { font-size: 30px; font-weight: bold; color: #ffd86b; letter-spacing: 2px; }
+  #banner .s { font-size: 16px; color: #ffb3a6; margin-top: 6px; }
+  #banner .d { font-size: 13px; color: #ddd; margin-top: 4px; }
+  .modal { position: fixed; inset: 0; background: rgba(0,0,0,.72); display: none; align-items: center; justify-content: center; flex-direction: column; padding: 16px; }
+  .modal.on { display: flex; }
+  .modal h2 { margin: 0 0 6px; color: #ffd86b; font-size: 24px; letter-spacing: 2px; }
+  .modal p { margin: 4px 0; color: #ccc; font-size: 14px; text-align: center; max-width: 520px; line-height: 1.6; }
+  .cards { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 10px; max-width: 760px; }
+  .card { width: 220px; max-width: 46vw; background: linear-gradient(#2a2130, #17121b); border: 2px solid #8a6a3a; border-radius: 10px; padding: 12px; color: #eee; text-align: left; cursor: pointer; }
+  .card:hover, .card:active { border-color: #ffd86b; transform: translateY(-2px); }
+  .card b { display: block; font-size: 16px; color: #ffd86b; margin-bottom: 4px; }
+  .card small { color: #9ad; display: block; margin-bottom: 4px; }
+  .card span { font-size: 13px; color: #ccc; line-height: 1.5; }
+  .big { margin-top: 14px; background: linear-gradient(#c8902e, #7a4f12); border: 1px solid #ffd86b; color: #fff; font-size: 18px; padding: 10px 34px; border-radius: 8px; cursor: pointer; }
+  .stats { font-size: 14px; color: #ddd; line-height: 1.8; text-align: center; }
+  #joy { position: fixed; width: 110px; height: 110px; margin: -55px 0 0 -55px; border-radius: 50%; border: 2px solid rgba(255,255,255,.25); background: rgba(255,255,255,.06); display: none; pointer-events: none; }
+  #joy i { position: absolute; left: 50%; top: 50%; width: 46px; height: 46px; margin: -23px 0 0 -23px; border-radius: 50%; background: rgba(255,216,107,.45); }
+  .weap { font-size: 12px; color: #bbb; }
+  @media (max-width: 600px) { #banner .t { font-size: 22px; } #banner .s { font-size: 14px; } #wave { font-size: 14px; } .row { font-size: 12px; } .card { width: 100%; max-width: 340px; padding: 10px; } }
+</style>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="hud">
+  <div class="bar" id="hpBar"><i></i></div>
+  <div class="bar" id="expBar"><i></i></div>
+  <div class="row"><span id="wave">第 1 波</span><span id="timer"></span><span id="kills"></span></div>
+  <div id="traits"></div>
+  <div class="row"><span class="weap" id="weaps"></span><span class="weap" id="alive"></span></div>
+</div>
+<div id="btns"><button onclick="svPause()">⏸ 暫停</button><button onclick="svSkipWave()">⏭ 下一波（測試）</button></div>
+<div id="banner"><div class="t"></div><div class="s"></div><div class="d"></div></div>
+<div id="joy"><i></i></div>
+
+<div class="modal on" id="mStart">
+  <h2>⚔ 生存者挑戰</h2>
+  <p>怪物會從四面八方<b>大量、立刻</b>湧出，瘋狂圍攻你。<br>每 30 秒進入下一波：怪物<b>血量、傷害、數量</b>都會提升，而且每一波會抽到<b>不同的能力</b>（疾風、分裂、自爆、劇毒……）。每 5 波出現首領。</p>
+  <p>操作：<b>WASD／方向鍵</b>移動，手機<b>按住畫面拖曳</b>移動。攻擊全自動。<br>撿起藍色經驗石升級，三選一強化。</p>
+  <p style="color:#888;font-size:12px">（測試版：不存檔、沒有獎勵，只是試玩手感）</p>
+  <button class="big" onclick="svStart()">開始挑戰</button>
+</div>
+<div class="modal" id="mLevel">
+  <h2 id="lvTitle">升級！</h2>
+  <p>選擇一項強化</p>
+  <div class="cards" id="cards"></div>
+</div>
+<div class="modal" id="mPause">
+  <h2>暫停</h2>
+  <div class="stats" id="pauseInfo"></div>
+  <button class="big" onclick="svPause()">繼續</button>
+</div>
+<div class="modal" id="mOver">
+  <h2>你倒下了</h2>
+  <div class="stats" id="overInfo"></div>
+  <button class="big" onclick="svStart()">再挑戰一次</button>
+</div>
+
+<script>
+'use strict';
+// ===== 生存者挑戰（測試原型）=====
+// 獨立頁面，不讀寫存檔、不連雲端。素材沿用本遊戲：騎士 sprite、images/monsters/rework 怪物圖、競技場背景。
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+const $ = id => document.getElementById(id);
+const rand = (a, b) => a + Math.random() * (b - a);
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+
+// ---------- 素材 ----------
+const IMG = {};
+function img(src) { if (!IMG[src]) { const i = new Image(); i.src = src; IMG[src] = i; } return IMG[src]; }
+const BG = img('images/maps/rework/arena-tower.jpg');
+const BG_SCALE = 2;                               // 背景 1600×960 放大 2 倍當競技場
+const WORLD = { w: 3200, h: 1920, x0: 330, y0: 380, x1: 2950, y1: 1860 };   // 可走範圍（避開柱子與牆）
+const HERO = {
+    charH: 113, drawH: 58,
+    walk:   { src: 'images/sprites/knight-walk.png',   cellW: 134, cellH: 122, frames: { down: 8, right: 8, up: 6 }, ms: 110 },
+    attack: { src: 'images/sprites/knight-attack.png', cellW: 194, cellH: 136, frames: { down: 3, right: 3, up: 3 }, ms: 90 },
+    hit:    { src: 'images/sprites/knight-hit.png',    cellW: 148, cellH: 125, frames: { down: 3, right: 3, up: 3 }, ms: 80 },
+};
+['walk', 'attack', 'hit'].forEach(k => img(HERO[k].src));
+// 怪物圖：192×224 一格，4 欄×3 列；第 row*2+fr 格，row 0～2 走路（下／右／上）、3～5 攻擊
+const MON_CW = 192, MON_CH = 224, MON_BODY = 168;
+function monImg(art) { return img('images/monsters/rework/mon-' + art + '.png'); }
+
+// 怪物種類：spd 像素/秒、hp/dmg 倍率、size 身高、ranged 遠程
+const MON_TYPES = {
+    wolf:     { name: '狼人',     spd: 98,  hp: 0.8, dmg: 1.0, size: 46 },
+    beast:    { name: '深淵魔物', spd: 82,  hp: 1.15, dmg: 1.1, size: 48 },
+    gargoyle: { name: '石像鬼',   spd: 90,  hp: 1.0, dmg: 1.0, size: 46 },
+    golem:    { name: '熔岩高崙', spd: 52,  hp: 2.3, dmg: 1.35, size: 58 },
+    guard:    { name: '地獄騎士', spd: 66,  hp: 1.6, dmg: 1.2, size: 50 },
+    assassin: { name: '暗影刺客', spd: 115, hp: 0.7, dmg: 1.25, size: 44 },
+    flame:    { name: '火焰之影', spd: 78,  hp: 1.0, dmg: 1.15, size: 46 },
+    wraith:   { name: '虛空行者', spd: 92,  hp: 0.8, dmg: 1.0, size: 46 },
+    angel:    { name: '墮落天使', spd: 84,  hp: 1.2, dmg: 1.15, size: 48 },
+    mage:     { name: '混沌法師', spd: 58,  hp: 0.9, dmg: 1.1, size: 46, ranged: 'fire' },
+    archer:   { name: '骷髏神射手', spd: 60, hp: 0.8, dmg: 1.0, size: 46, ranged: 'arrow' },
+};
+const BOSSES = [
+    { art: 'bull-boss', name: '巨大牛人' }, { art: 'flame-boss', name: '炎魔之影' }, { art: 'ice-boss', name: '冰之女王' },
+    { art: 'lich-boss', name: '巫妖王' }, { art: 'banshee-boss', name: '黑暗女妖' }, { art: 'angel-boss', name: '墮落的大天使' },
+    { art: 'chaos-boss', name: '混沌之主' }, { art: 'abyss-boss', name: '深淵領主' }, { art: 'reaper-boss', name: '死神' }, { art: 'king-boss', name: '冥法軍王' },
+];
+Object.keys(MON_TYPES).forEach(monImg); BOSSES.forEach(b => monImg(b.art));
+
+// 前 10 波固定主題，之後隨機混搭
+const WAVE_THEMES = [
+    { name: '狼人獸群', mons: ['wolf'] },
+    { name: '深淵獸潮', mons: ['beast', 'wolf'] },
+    { name: '石像鬼來襲', mons: ['gargoyle', 'wraith'] },
+    { name: '暗影刺殺', mons: ['assassin', 'wraith'] },
+    { name: '地獄軍團', mons: ['guard', 'beast'] },
+    { name: '烈焰潮', mons: ['flame', 'gargoyle'] },
+    { name: '高崙行軍', mons: ['golem', 'guard'] },
+    { name: '亡靈法團', mons: ['mage', 'wraith', 'assassin'] },
+    { name: '骷髏箭雨', mons: ['archer', 'guard', 'wolf'] },
+    { name: '天使墮落', mons: ['angel', 'flame', 'mage'] },
+];
+
+// 每波能力（詞條）：每一波抽不同組合，1～5 波 1 個、6～11 波 2 個、12 波起 3 個
+const TRAITS = {
+    fast:    { name: '疾風', desc: '移動速度 +50%' },
+    armor:   { name: '鋼皮', desc: '受到傷害 −40%' },
+    berserk: { name: '狂暴', desc: '血量低於一半時速度、傷害 +50%' },
+    split:   { name: '分裂', desc: '死亡時分裂成 2 隻小怪' },
+    explode: { name: '自爆', desc: '死亡 0.7 秒後爆炸' },
+    leech:   { name: '嗜血', desc: '打中你會回復 25% 生命' },
+    regen:   { name: '再生', desc: '每秒回復 4% 生命' },
+    frost:   { name: '冰霜', desc: '打中你會緩速 2 秒' },
+    poison:  { name: '劇毒', desc: '死亡留下毒池' },
+    ranged:  { name: '射手', desc: '4 成怪物改成遠程攻擊' },
+    charge:  { name: '衝鋒', desc: '每隔幾秒朝你猛衝' },
+    giant:   { name: '巨人', desc: '體型變大、血量 ×2.2、數量較少' },
+    shield:  { name: '護盾', desc: '出生帶 40% 血量的護盾' },
+    blink:   { name: '閃現', desc: '每 5 秒瞬移到你身邊' },
+};
+const TRAIT_KEYS = Object.keys(TRAITS);
+
+const WAVE_SEC = 30;
+
+// ---------- 玩家可選強化 ----------
+const UPGRADES = {
+    slash:   { name: '劍氣斬', icon: '🗡️', max: 6, weapon: true, desc: l => l === 1 ? '朝最近的敵人揮出扇形劍氣' : l === 4 ? '傷害 +25%，範圍變成前後兩刀' : l === 6 ? '傷害 +25%，360° 迴旋斬' : '傷害 +25%、範圍 +12%' },
+    missile: { name: '魔法飛彈', icon: '🔮', max: 5, weapon: true, desc: l => l === 1 ? '每秒射出追蹤飛彈' : '飛彈 +1 發、穿透 +1' },
+    orbit:   { name: '守護飛劍', icon: '⚔️', max: 5, weapon: true, desc: l => l === 1 ? '2 把飛劍繞著你旋轉' : '飛劍 +1、傷害 +15%' },
+    thunder: { name: '天雷', icon: '⚡', max: 5, weapon: true, desc: l => l === 1 ? '隨機雷擊 2 個敵人（小範圍）' : '雷擊 +1 目標、傷害 +20%' },
+    nova:    { name: '聖光爆', icon: '✴️', max: 5, weapon: true, desc: l => l === 1 ? '每 3 秒在身邊爆發聖光並擊退' : '範圍 +20、傷害 +25%、冷卻 −0.3 秒' },
+    might:   { name: '力量', icon: '💪', max: 6, desc: () => '所有傷害 +15%' },
+    haste:   { name: '迅捷', icon: '⏱️', max: 5, desc: () => '武器冷卻 −9%' },
+    vigor:   { name: '體魄', icon: '❤️', max: 6, desc: () => '最大生命 +30，並回復 30' },
+    regen:   { name: '再生', icon: '💚', max: 5, desc: () => '每秒回復 +1 生命' },
+    armor:   { name: '護甲', icon: '🛡️', max: 5, desc: () => '受到傷害 −7%' },
+    swift:   { name: '疾行', icon: '👟', max: 4, desc: () => '移動速度 +9%' },
+    magnet:  { name: '磁吸', icon: '🧲', max: 4, desc: () => '經驗石拾取範圍 +40%' },
+};
+
+// ---------- 狀態 ----------
+let S = null, running = false, paused = false, choosing = false, lastT = 0;
+const keys = {};
+let joy = null;   // { id, x0, y0, dx, dy }
+
+function newState() {
+    return {
+        t: 0, wave: 0, waveT: 0, traits: [], theme: null, kills: 0, spawnAcc: 0, burst: 0, burstT: 0,
+        p: { x: 1640, y: 1150, hp: 100, maxHp: 100, spd: 165, face: 'down', faceX: 0, faceY: 1, lvl: 1, exp: 0, next: 6,
+             atk: 1, cdMul: 1, regen: 0, armor: 0, magnet: 90, slow: 0, anim: null, hitT: 0, moving: false, hurtCd: 0 },
+        up: { slash: 1 },
+        cds: { slash: 0, missile: 0, thunder: 0, nova: 0 },
+        orbitAng: 0,
+        mons: [], gems: [], shots: [], eShots: [], fx: [], nums: [], pools: [], booms: [], spawns: [],
+        dmgDealt: 0, pendingLv: 0,
+    };
+}
+
+// ---------- 波次 ----------
+function waveScale(w) {
+    return { hp: 14 * Math.pow(1.25, w - 1), dmg: 5 * Math.pow(1.15, w - 1), spd: Math.min(1.45, 1 + 0.025 * (w - 1)) };
+}
+function startWave(w) {
+    S.wave = w; S.waveT = 0;
+    const theme = w <= WAVE_THEMES.length ? WAVE_THEMES[w - 1]
+        : { name: pick(['混沌亂流', '深淵大軍', '萬魔齊至', '屍山血海', '無盡之夜']), mons: shuffle(Object.keys(MON_TYPES)).slice(0, 3) };
+    S.theme = theme;
+    const n = w <= 5 ? 1 : w <= 11 ? 2 : 3;
+    const prev = S.traits;
+    let pool = TRAIT_KEYS.filter(k => !prev.includes(k));
+    if (w === 1) pool = ['fast', 'regen', 'shield'];          // 第一波給溫和一點的
+    S.traits = shuffle(pool).slice(0, n);
+    // 開場大量瞬間出生：一開波就把一大群塞進出生佇列（約 1 秒內全部冒出來）
+    const sc = S.traits.includes('giant') ? 0.6 : 1;
+    S.burst = Math.round((26 + w * 9) * sc);
+    if (w % 5 === 0) spawnBoss(w);
+    const tr = S.traits.map(k => TRAITS[k]);
+    showBanner('第 ' + w + ' 波・' + theme.name + (w % 5 === 0 ? '（首領）' : ''),
+        tr.map(t => '【' + t.name + '】' + t.desc).join('　'),
+        '怪物血量 ×' + (waveScale(w).hp / 14).toFixed(1) + '　傷害 ×' + (waveScale(w).dmg / 5).toFixed(1));
+}
+function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function has(t) { return S.traits.includes(t); }
+
+function spawnPoint() {
+    // 玩家周圍一圈（大約在畫面邊緣），夾在競技場內
+    for (let k = 0; k < 6; k++) {
+        const a = Math.random() * Math.PI * 2, d = rand(360, 620);
+        const x = S.p.x + Math.cos(a) * d, y = S.p.y + Math.sin(a) * d;
+        if (x > WORLD.x0 && x < WORLD.x1 && y > WORLD.y0 && y < WORLD.y1) return { x, y };
+    }
+    return { x: clamp(S.p.x + rand(-500, 500), WORLD.x0, WORLD.x1), y: clamp(S.p.y + rand(-500, 500), WORLD.y0, WORLD.y1) };
+}
+function queueSpawn(opts) {
+    const pt = opts.x != null ? opts : spawnPoint();
+    S.spawns.push({ x: pt.x, y: pt.y, t: 0.35, opts });   // 地上冒出紅色法陣 0.35 秒後出現
+}
+function makeMon(x, y, opts) {
+    const sc = waveScale(S.wave);
+    const type = opts.boss ? null : (opts.type || pick(S.theme.mons));
+    const T = opts.boss ? { spd: 62, hp: 55, dmg: 2.6, size: 104 } : MON_TYPES[type];
+    let hp = sc.hp * T.hp, dmg = sc.dmg * T.dmg, size = T.size, spd = T.spd * sc.spd;
+    if (has('giant') && !opts.boss) { hp *= 2.2; dmg *= 1.3; size *= 1.4; spd *= 0.85; }
+    if (has('fast')) spd *= 1.5;
+    if (opts.small) { hp *= 0.4; size *= 0.68; spd *= 1.15; }
+    if (opts.boss) hp *= 1 + S.wave * 0.12;
+    let ranged = T.ranged || null;
+    if (!ranged && !opts.boss && has('ranged') && Math.random() < 0.4) ranged = Math.random() < 0.5 ? 'arrow' : 'fire';
+    const m = {
+        x, y, art: opts.boss ? opts.boss.art : type, name: opts.boss ? opts.boss.name : T.name,
+        hp, maxHp: hp, dmg, size, spd, ranged, boss: !!opts.boss, small: !!opts.small,
+        shield: has('shield') ? hp * 0.4 : 0, face: 'down', atk: 0, hitCd: 0, shotCd: rand(1, 2.5),
+        chargeCd: rand(2, 4), charging: 0, tele: 0, blinkCd: rand(3, 6), kx: 0, ky: 0, hurt: 0, traits: S.traits.slice(),
+    };
+    S.mons.push(m);
+    return m;
+}
+function spawnBoss(w) {
+    const b = BOSSES[(Math.floor(w / 5) - 1) % BOSSES.length];
+    queueSpawn({ boss: b });
+}
+
+// ---------- 主迴圈 ----------
+function svStart() {
+    S = newState(); running = true; paused = false; choosing = false;
+    ['mStart', 'mOver', 'mLevel', 'mPause'].forEach(id => $(id).classList.remove('on'));
+    startWave(1);
+    lastT = performance.now();
+}
+function svPause() {
+    if (!running || choosing) return;
+    paused = !paused;
+    $('mPause').classList.toggle('on', paused);
+    if (paused) $('pauseInfo').innerHTML = statsHtml();
+}
+function svSkipWave() { if (running && !choosing) { S.waveT = WAVE_SEC; } }
+
+function loop(now) {
+    requestAnimationFrame(loop);
+    const dt = Math.min(0.05, (now - lastT) / 1000); lastT = now;
+    resize();
+    if (running && !paused && !choosing && S) update(dt);
+    draw(now);
+}
+
+function update(dt) {
+    S.t += dt; S.waveT += dt;
+    if (S.waveT >= WAVE_SEC) startWave(S.wave + 1);
+    const p = S.p;
+
+    // 移動
+    let mx = 0, my = 0;
+    if (keys.ArrowLeft || keys.KeyA) mx -= 1;
+    if (keys.ArrowRight || keys.KeyD) mx += 1;
+    if (keys.ArrowUp || keys.KeyW) my -= 1;
+    if (keys.ArrowDown || keys.KeyS) my += 1;
+    if (joy && (Math.abs(joy.dx) + Math.abs(joy.dy) > 6)) { const l = Math.hypot(joy.dx, joy.dy); mx = joy.dx / l * Math.min(1, l / 40); my = joy.dy / l * Math.min(1, l / 40); }
+    const ml = Math.hypot(mx, my);
+    p.moving = ml > 0.05;
+    if (p.moving) {
+        if (ml > 1) { mx /= ml; my /= ml; }
+        const sp = p.spd * (p.slow > 0 ? 0.6 : 1);
+        p.x = clamp(p.x + mx * sp * dt, WORLD.x0, WORLD.x1);
+        p.y = clamp(p.y + my * sp * dt, WORLD.y0, WORLD.y1);
+        p.faceX = mx; p.faceY = my;
+        p.face = Math.abs(mx) >= Math.abs(my) ? (mx < 0 ? 'left' : 'right') : (my < 0 ? 'up' : 'down');
+    }
+    if (p.slow > 0) p.slow -= dt;
+    if (p.hitT > 0) p.hitT -= dt;
+    if (p.inv > 0) p.inv -= dt;
+    p.hp = Math.min(p.maxHp, p.hp + p.regen * dt);
+    if (p.anim) { p.anim.t += dt * 1000; const A = HERO[p.anim.k]; if (p.anim.t >= A.ms * A.frames[faceRow(p.anim.face)]) p.anim = null; }
+
+    // 出生
+    const sc = has('giant') ? 0.6 : 1;
+    if (S.burst > 0) { const n = Math.min(S.burst, Math.ceil(dt * 60)); for (let i = 0; i < n; i++) queueSpawn({}); S.burst -= n; }
+    const rate = (2.6 + S.wave * 1.1) * sc;       // 每秒補怪
+    S.spawnAcc += rate * dt;
+    const cap = 220 + S.wave * 12;
+    while (S.spawnAcc >= 1) { S.spawnAcc -= 1; if (S.mons.length + S.spawns.length < cap) queueSpawn({}); }
+    for (let i = S.spawns.length - 1; i >= 0; i--) {
+        const s = S.spawns[i]; s.t -= dt;
+        if (s.t <= 0) { S.spawns.splice(i, 1); makeMon(s.x, s.y, s.opts); }
+    }
+
+    updateWeapons(dt);
+    updateMons(dt);
+    updateShots(dt);
+    updateMisc(dt);
+
+    // 經驗石
+    for (let i = S.gems.length - 1; i >= 0; i--) {
+        const g = S.gems[i], d = Math.hypot(g.x - p.x, g.y - p.y);
+        if (d < p.magnet || g.pull) {
+            g.pull = true;
+            const v = 520 * dt;
+            g.x += (p.x - g.x) / d * Math.min(v, d); g.y += (p.y - 10 - g.y) / d * Math.min(v, d);
+            if (d < 16) { S.gems.splice(i, 1); gainExp(g.v); }
+        }
+    }
+    if (p.hp <= 0) gameOver();
+    updateHud();
+}
+
+function faceRow(f) { return f === 'up' ? 'up' : f === 'down' ? 'down' : 'right'; }
+
+// ---------- 武器 ----------
+function nearestMon(x, y, maxD) {
+    let best = null, bd = maxD * maxD;
+    for (const m of S.mons) { const d = (m.x - x) ** 2 + (m.y - y) ** 2; if (d < bd) { bd = d; best = m; } }
+    return best;
+}
+function updateWeapons(dt) {
+    const p = S.p, U = S.up, C = S.cds;
+    for (const k in C) C[k] -= dt;
+
+    // 劍氣斬
+    if (U.slash && C.slash <= 0) {
+        const t = nearestMon(p.x, p.y, 260);
+        if (t) {
+            C.slash = 0.62 * p.cdMul;
+            const lv = U.slash, ang = Math.atan2(t.y - p.y, t.x - p.x);
+            const range = 115 * (1 + 0.12 * Math.min(lv - 1, 3)), dmg = 20 * (1 + 0.25 * (lv - 1)) * p.atk;
+            const arcs = lv >= 6 ? [[ang, Math.PI]] : lv >= 4 ? [[ang, 1.1], [ang + Math.PI, 1.1]] : [[ang, 1.1]];
+            for (const [a, half] of arcs) {
+                for (const m of S.mons) {
+                    const dx = m.x - p.x, dy = m.y - p.y, d = Math.hypot(dx, dy);
+                    if (d > range + m.size * 0.3) continue;
+                    let da = Math.abs(Math.atan2(dy, dx) - a); if (da > Math.PI) da = Math.PI * 2 - da;
+                    if (da <= half) hitMon(m, dmg, dx / (d || 1), dy / (d || 1), 14);
+                }
+                S.fx.push({ k: 'slash', x: p.x, y: p.y - 18, a, half, r: range, t: 0, life: 0.18 });
+            }
+            p.face = Math.abs(Math.cos(ang)) >= Math.abs(Math.sin(ang)) ? (Math.cos(ang) < 0 ? 'left' : 'right') : (Math.sin(ang) < 0 ? 'up' : 'down');
+            p.anim = { k: 'attack', t: 0, face: p.face };
+        }
+    }
+    // 魔法飛彈
+    if (U.missile && C.missile <= 0) {
+        const t = nearestMon(p.x, p.y, 520);
+        if (t) {
+            C.missile = 1.0 * p.cdMul;
+            const n = U.missile;
+            const base = Math.atan2(t.y - p.y, t.x - p.x);
+            for (let i = 0; i < n; i++) {
+                const a = base + (i - (n - 1) / 2) * 0.22;
+                S.shots.push({ x: p.x, y: p.y - 24, vx: Math.cos(a) * 460, vy: Math.sin(a) * 460, dmg: 13 * p.atk, pierce: 1 + Math.floor(n / 2), life: 1.4, hit: new Set(), homing: t });
+            }
+        }
+    }
+    // 守護飛劍
+    if (U.orbit) {
+        S.orbitAng += dt * 3.4;
+        const n = U.orbit + 1, r = 78, dmg = 9 * (1 + 0.15 * (U.orbit - 1)) * p.atk;
+        for (let i = 0; i < n; i++) {
+            const a = S.orbitAng + i * Math.PI * 2 / n, ox = p.x + Math.cos(a) * r, oy = p.y - 16 + Math.sin(a) * r * 0.8;
+            for (const m of S.mons) {
+                if (m.orbCd > S.t) continue;
+                if ((m.x - ox) ** 2 + (m.y - 16 - oy) ** 2 < (18 + m.size * 0.3) ** 2) { m.orbCd = S.t + 0.35; hitMon(m, dmg, Math.cos(a), Math.sin(a), 6); }
+            }
+        }
+    }
+    // 天雷
+    if (U.thunder && C.thunder <= 0 && S.mons.length) {
+        C.thunder = 1.5 * p.cdMul;
+        const near = S.mons.filter(m => Math.abs(m.x - p.x) < 480 && Math.abs(m.y - p.y) < 420);
+        const n = U.thunder + 1, dmg = 26 * (1 + 0.2 * (U.thunder - 1)) * p.atk;
+        for (let i = 0; i < n && near.length; i++) {
+            const t = near.splice(Math.floor(Math.random() * near.length), 1)[0];
+            S.fx.push({ k: 'bolt', x: t.x, y: t.y, t: 0, life: 0.25 });
+            for (const m of S.mons) if ((m.x - t.x) ** 2 + (m.y - t.y) ** 2 < 46 * 46) hitMon(m, dmg, 0, 0, 0);
+        }
+    }
+    // 聖光爆
+    if (U.nova && C.nova <= 0) {
+        const lv = U.nova;
+        C.nova = (3 - 0.3 * (lv - 1)) * p.cdMul;
+        const r = 120 + 20 * (lv - 1), dmg = 20 * (1 + 0.25 * (lv - 1)) * p.atk;
+        S.fx.push({ k: 'nova', x: p.x, y: p.y - 10, r, t: 0, life: 0.4 });
+        for (const m of S.mons) {
+            const dx = m.x - p.x, dy = m.y - p.y, d = Math.hypot(dx, dy);
+            if (d < r) hitMon(m, dmg, dx / (d || 1), dy / (d || 1), 40);
+        }
+    }
+}
+
+function hitMon(m, dmg, nx, ny, kb) {
+    if (m.dead) return;
+    dmg *= rand(0.9, 1.1);
+    const crit = Math.random() < 0.1; if (crit) dmg *= 1.8;
+    if (m.traits.includes('armor')) dmg *= 0.6;
+    S.dmgDealt += dmg;
+    if (m.shield > 0) { const a = Math.min(m.shield, dmg); m.shield -= a; dmg -= a; }
+    m.hp -= dmg; m.hurt = 0.14;
+    if (!m.boss) { m.kx += nx * kb * 6; m.ky += ny * kb * 6; } else { m.kx += nx * kb; m.ky += ny * kb; }
+    if (S.nums.length < 70) S.nums.push({ x: m.x + rand(-8, 8), y: m.y - m.size, v: Math.round(dmg + (m.shield >= 0 ? 0 : 0)), t: 0, crit });
+    if (m.hp <= 0) killMon(m);
+}
+function killMon(m) {
+    m.dead = true; S.kills++;
+    const T = m.traits;
+    S.fx.push({ k: 'die', x: m.x, y: m.y, art: m.art, size: m.size, face: m.face, t: 0, life: 0.35 });
+    // 經驗石：太多時合併到最近的一顆
+    const v = m.boss ? 40 + S.wave * 4 : 1 + Math.floor(S.wave / 3) + (m.small ? 0 : 0);
+    if (S.gems.length < 260) S.gems.push({ x: m.x + rand(-6, 6), y: m.y + rand(-6, 6), v, big: m.boss || v >= 4 });
+    else { const g = S.gems[Math.floor(Math.random() * S.gems.length)]; g.v += v; g.big = true; }
+    if (T.includes('split') && !m.small && !m.boss && S.mons.length < 480) for (let i = 0; i < 2; i++) makeMon(m.x + rand(-14, 14), m.y + rand(-14, 14), { type: MON_TYPES[m.art] ? m.art : null, small: true });
+    if (T.includes('explode')) S.booms.push({ x: m.x, y: m.y, t: 0.7, r: 72 * (m.boss ? 2 : 1), dmg: m.dmg * 1.4 });
+    if (T.includes('poison')) S.pools.push({ x: m.x, y: m.y, t: 3, r: m.boss ? 90 : 42, dps: m.dmg * 0.9 });
+}
+
+// ---------- 怪物 ----------
+const GRID = 56;
+function updateMons(dt) {
+    const p = S.p;
+    // 分格：怪物彼此推開，避免疊成一團
+    const grid = new Map();
+    for (const m of S.mons) { if (m.dead) continue; const k = (Math.floor(m.x / GRID) << 16) | Math.floor(m.y / GRID); let a = grid.get(k); if (!a) grid.set(k, a = []); a.push(m); }
+    for (const m of S.mons) {
+        if (m.dead) continue;
+        const T = m.traits;
+        if (m.hurt > 0) m.hurt -= dt;
+        if (m.atk > 0) m.atk -= dt;
+        if (T.includes('regen')) m.hp = Math.min(m.maxHp, m.hp + m.maxHp * 0.04 * dt);
+        const dx = p.x - m.x, dy = p.y - m.y, d = Math.hypot(dx, dy) || 1;
+        let spd = m.spd, dmg = m.dmg;
+        const mad = T.includes('berserk') && m.hp < m.maxHp * 0.5;
+        if (mad) { spd *= 1.5; dmg *= 1.5; }
+        m.mad = mad;
+        // 閃現
+        if (T.includes('blink')) { m.blinkCd -= dt; if (m.blinkCd <= 0 && d > 180) { m.blinkCd = rand(4.5, 6); S.fx.push({ k: 'puff', x: m.x, y: m.y, t: 0, life: 0.3 }); const a = Math.random() * 6.28, r = rand(110, 170); m.x = clamp(p.x + Math.cos(a) * r, WORLD.x0, WORLD.x1); m.y = clamp(p.y + Math.sin(a) * r, WORLD.y0, WORLD.y1); S.fx.push({ k: 'puff', x: m.x, y: m.y, t: 0, life: 0.3 }); } }
+        // 衝鋒：先預警 0.45 秒再衝
+        if (T.includes('charge') && !m.ranged) {
+            if (m.charging > 0) { m.charging -= dt; spd *= m.charging > 0 && m.tele <= 0 ? 3.2 : 1; }
+            if (m.tele > 0) { m.tele -= dt; spd = 0; if (m.tele <= 0) m.charging = 0.55; }
+            m.chargeCd -= dt;
+            if (m.chargeCd <= 0 && d < 420 && d > 90) { m.chargeCd = rand(3, 4.5); m.tele = 0.45; m.cdx = dx / d; m.cdy = dy / d; }
+        }
+        let vx, vy;
+        if (m.charging > 0 && m.cdx != null && m.tele <= 0) { vx = m.cdx; vy = m.cdy; }
+        else if (m.ranged && d < 300) { vx = d < 220 ? -dx / d * 0.6 : 0; vy = d < 220 ? -dy / d * 0.6 : 0; }   // 遠程：保持距離
+        else { vx = dx / d; vy = dy / d; }
+        // 推開鄰居
+        let sx = 0, sy = 0;
+        const gx = Math.floor(m.x / GRID), gy = Math.floor(m.y / GRID);
+        for (let ix = -1; ix <= 1; ix++) for (let iy = -1; iy <= 1; iy++) {
+            const a = grid.get(((gx + ix) << 16) | (gy + iy)); if (!a) continue;
+            for (const o of a) {
+                if (o === m) continue;
+                const ox = m.x - o.x, oy = m.y - o.y, od = ox * ox + oy * oy, rr = (m.size + o.size) * 0.32;
+                if (od < rr * rr && od > 0.01) { const l = Math.sqrt(od); sx += ox / l * (rr - l) / rr; sy += oy / l * (rr - l) / rr; }
+            }
+        }
+        m.x += (vx * spd + sx * 90 + m.kx) * dt; m.y += (vy * spd + sy * 90 + m.ky) * dt;
+        m.kx *= Math.pow(0.002, dt); m.ky *= Math.pow(0.002, dt);
+        m.x = clamp(m.x, WORLD.x0 - 40, WORLD.x1 + 40); m.y = clamp(m.y, WORLD.y0 - 40, WORLD.y1 + 40);
+        m.face = Math.abs(dx) >= Math.abs(dy) ? (dx < 0 ? 'left' : 'right') : (dy < 0 ? 'up' : 'down');
+        m.moving = Math.abs(vx) + Math.abs(vy) > 0.1 && spd > 0;
+        // 攻擊
+        m.hitCd -= dt;
+        if (m.ranged) {
+            m.shotCd -= dt;
+            if (m.shotCd <= 0 && d < 420) {
+                m.shotCd = rand(1.8, 2.6); m.atk = 0.38;
+                const sp = m.ranged === 'arrow' ? 300 : 210;
+                S.eShots.push({ x: m.x, y: m.y - m.size * 0.6, vx: dx / d * sp, vy: dy / d * sp, dmg: dmg * 0.8, k: m.ranged, life: 2.5, src: m });
+            }
+        } else if (d < 20 + m.size * 0.35 && m.hitCd <= 0) {
+            m.hitCd = 0.7; m.atk = 0.38;
+            hurtPlayer(dmg, m);
+        }
+    }
+    S.mons = S.mons.filter(m => !m.dead);
+}
+function hurtPlayer(dmg, src) {
+    const p = S.p;
+    if (p.inv > 0) return;            // 受傷後 0.3 秒無敵：被海量怪包圍時，每秒最多挨約 3 下（傷害靠每波成長）
+    dmg *= 1 - p.armor;
+    p.hp -= dmg; p.hitT = 0.12; p.inv = 0.3;
+    if (!p.anim || p.anim.k !== 'attack') p.anim = { k: 'hit', t: 0, face: p.face };
+    if (S.nums.length < 70) S.nums.push({ x: p.x + rand(-6, 6), y: p.y - 60, v: Math.round(dmg), t: 0, me: true });
+    if (src && src.traits) {
+        if (src.traits.includes('leech') && !src.dead) src.hp = Math.min(src.maxHp, src.hp + src.maxHp * 0.25);
+        if (src.traits.includes('frost')) p.slow = 2;
+    }
+}
+
+function updateShots(dt) {
+    for (let i = S.shots.length - 1; i >= 0; i--) {
+        const s = S.shots[i]; s.life -= dt;
+        if (s.homing && !s.homing.dead) {   // 輕微追蹤
+            const a = Math.atan2(s.homing.y - s.homing.size * 0.5 - s.y, s.homing.x - s.x), sp = Math.hypot(s.vx, s.vy);
+            const cur = Math.atan2(s.vy, s.vx); let da = a - cur; while (da > Math.PI) da -= 6.28; while (da < -Math.PI) da += 6.28;
+            const na = cur + clamp(da, -4 * dt, 4 * dt); s.vx = Math.cos(na) * sp; s.vy = Math.sin(na) * sp;
+        }
+        s.x += s.vx * dt; s.y += s.vy * dt;
+        for (const m of S.mons) {
+            if (m.dead || s.hit.has(m)) continue;
+            if ((m.x - s.x) ** 2 + (m.y - m.size * 0.5 - s.y) ** 2 < (12 + m.size * 0.3) ** 2) {
+                s.hit.add(m); hitMon(m, s.dmg, s.vx / 460, s.vy / 460, 8);
+                if (--s.pierce < 0) { s.life = 0; break; }
+            }
+        }
+        if (s.life <= 0) S.shots.splice(i, 1);
+    }
+    const p = S.p;
+    for (let i = S.eShots.length - 1; i >= 0; i--) {
+        const s = S.eShots[i]; s.life -= dt; s.x += s.vx * dt; s.y += s.vy * dt;
+        if ((p.x - s.x) ** 2 + (p.y - 24 - s.y) ** 2 < 18 * 18) { hurtPlayer(s.dmg, s.src); s.life = 0; }
+        if (s.life <= 0) S.eShots.splice(i, 1);
+    }
+}
+function updateMisc(dt) {
+    const p = S.p;
+    for (let i = S.fx.length - 1; i >= 0; i--) { const f = S.fx[i]; f.t += dt; if (f.t >= f.life) S.fx.splice(i, 1); }
+    for (let i = S.nums.length - 1; i >= 0; i--) { const n = S.nums[i]; n.t += dt; n.y -= 34 * dt; if (n.t > 0.7) S.nums.splice(i, 1); }
+    for (let i = S.pools.length - 1; i >= 0; i--) {
+        const o = S.pools[i]; o.t -= dt;
+        if ((p.x - o.x) ** 2 + (p.y - o.y) ** 2 < o.r * o.r) { p.hp -= o.dps * dt * (1 - p.armor); o.tick = (o.tick || 0) + dt; if (o.tick > 0.5) { o.tick = 0; if (S.nums.length < 70) S.nums.push({ x: p.x, y: p.y - 60, v: Math.round(o.dps * 0.5), t: 0, me: true, poison: true }); } }
+        if (o.t <= 0) S.pools.splice(i, 1);
+    }
+    for (let i = S.booms.length - 1; i >= 0; i--) {
+        const b = S.booms[i]; b.t -= dt;
+        if (b.t <= 0) {
+            S.booms.splice(i, 1);
+            S.fx.push({ k: 'boom', x: b.x, y: b.y, r: b.r, t: 0, life: 0.3 });
+            if ((p.x - b.x) ** 2 + (p.y - b.y) ** 2 < b.r * b.r) hurtPlayer(b.dmg, null);
+        }
+    }
+}
+
+// ---------- 升級 ----------
+function gainExp(v) {
+    const p = S.p; p.exp += v;
+    while (p.exp >= p.next) { p.exp -= p.next; p.lvl++; p.next = Math.round(6 + p.lvl * 3.2 + p.lvl * p.lvl * 0.22); S.pendingLv++; }
+    if (S.pendingLv > 0 && !choosing) openLevelUp();
+}
+function openLevelUp() {
+    const avail = Object.keys(UPGRADES).filter(k => (S.up[k] || 0) < UPGRADES[k].max);
+    if (!avail.length) { S.pendingLv = 0; return; }
+    // 還沒拿到的武器多給一點機會
+    const weighted = [];
+    avail.forEach(k => { const w = UPGRADES[k].weapon && !S.up[k] ? 3 : 2; for (let i = 0; i < w; i++) weighted.push(k); });
+    const opts = [];
+    while (opts.length < Math.min(3, avail.length)) { const k = pick(weighted); if (!opts.includes(k)) opts.push(k); }
+    choosing = true;
+    $('lvTitle').textContent = '升級！Lv.' + (S.p.lvl - S.pendingLv + 1);
+    $('cards').innerHTML = opts.map(k => {
+        const U = UPGRADES[k], nl = (S.up[k] || 0) + 1;
+        return '<div class="card" onclick="svChoose(\'' + k + '\')"><b>' + U.icon + ' ' + U.name + '</b><small>' + (nl === 1 ? '新！' : 'Lv.' + nl + ' / ' + U.max) + '</small><span>' + U.desc(nl) + '</span></div>';
+    }).join('');
+    $('mLevel').classList.add('on');
+}
+function svChoose(k) {
+    if (!choosing) return;
+    const p = S.p;
+    S.up[k] = (S.up[k] || 0) + 1;
+    if (k === 'might') p.atk += 0.15;
+    if (k === 'haste') p.cdMul *= 0.91;
+    if (k === 'vigor') { p.maxHp += 30; p.hp = Math.min(p.maxHp, p.hp + 30); }
+    if (k === 'regen') p.regen += 1;
+    if (k === 'armor') p.armor = Math.min(0.5, p.armor + 0.07);
+    if (k === 'swift') p.spd *= 1.09;
+    if (k === 'magnet') p.magnet *= 1.4;
+    S.pendingLv--;
+    $('mLevel').classList.remove('on');
+    choosing = false;
+    if (S.pendingLv > 0) openLevelUp();
+    lastT = performance.now();
+}
+
+function gameOver() {
+    running = false;
+    $('overInfo').innerHTML = statsHtml();
+    $('mOver').classList.add('on');
+}
+function statsHtml() {
+    const m = Math.floor(S.t / 60), s = Math.floor(S.t % 60);
+    return '撐到 <b style="color:#ffd86b">第 ' + S.wave + ' 波</b>（' + m + ' 分 ' + String(s).padStart(2, '0') + ' 秒）<br>' +
+        '擊殺 ' + S.kills + '　等級 ' + S.p.lvl + '　總傷害 ' + Math.round(S.dmgDealt).toLocaleString() + '<br>' +
+        Object.keys(S.up).map(k => UPGRADES[k].icon + UPGRADES[k].name + ' ' + S.up[k]).join('　');
+}
+
+// ---------- HUD ----------
+let hudCache = '';
+function updateHud() {
+    const p = S.p;
+    $('hpBar').firstElementChild.style.width = Math.max(0, p.hp / p.maxHp * 100) + '%';
+    $('expBar').firstElementChild.style.width = (p.exp / p.next * 100) + '%';
+    const txt = [S.wave, Math.ceil(WAVE_SEC - S.waveT), S.kills, Math.ceil(p.hp), p.maxHp, S.mons.length, p.lvl, S.traits.join(), Object.values(S.up).join()].join('|');
+    if (txt === hudCache) return; hudCache = txt;
+    $('wave').textContent = '第 ' + S.wave + ' 波・' + S.theme.name;
+    $('timer').textContent = '下一波 ' + Math.ceil(WAVE_SEC - S.waveT) + ' 秒';
+    $('kills').textContent = '☠ ' + S.kills + '　Lv.' + p.lvl + '　❤ ' + Math.ceil(Math.max(0, p.hp)) + '/' + p.maxHp;
+    $('traits').textContent = '本波能力：' + S.traits.map(k => TRAITS[k].name).join('、');
+    $('weaps').textContent = Object.keys(S.up).map(k => UPGRADES[k].icon + S.up[k]).join(' ');
+    $('alive').textContent = '場上怪物 ' + S.mons.length;
+}
+let bannerTO = 0;
+function showBanner(t, s, d) {
+    const b = $('banner');
+    b.querySelector('.t').textContent = t; b.querySelector('.s').textContent = s; b.querySelector('.d').textContent = d;
+    b.style.opacity = 1; clearTimeout(bannerTO); bannerTO = setTimeout(() => b.style.opacity = 0, 3200);
+}
+
+// ---------- 繪圖 ----------
+let W = 0, H = 0, DPR = 1, ZOOM = 1;
+function resize() {
+    const w = innerWidth, h = innerHeight, dpr = Math.min(2, devicePixelRatio || 1);
+    if (w === W && h === H && dpr === DPR) return;
+    W = w; H = h; DPR = dpr;
+    cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+    ZOOM = clamp(Math.min(w, h) / 560, 0.62, 1.35);
+}
+function drawHero(p) {
+    const k = p.anim ? p.anim.k : 'walk', A = HERO[k], im = IMG[A.src];
+    const face = p.anim ? p.anim.face : p.face, fr = faceRow(face);
+    const rowIdx = { down: 0, right: 1, up: 2 }[fr], n = A.frames[fr];
+    let f;
+    if (p.anim) f = Math.min(n - 1, Math.floor(p.anim.t / A.ms));
+    else f = p.moving ? Math.floor(S.t * 1000 / A.ms) % n : Math.floor(n / 2);
+    const sc = HERO.drawH / HERO.charH, dw = A.cellW * sc, dh = A.cellH * sc;
+    ctx.fillStyle = 'rgba(0,0,0,.4)'; ctx.beginPath(); ctx.ellipse(p.x, p.y, 15, 5, 0, 0, 6.28); ctx.fill();
+    ctx.save();
+    if (face === 'left') { ctx.translate(p.x, 0); ctx.scale(-1, 1); ctx.translate(-p.x, 0); }
+    if (p.hitT > 0) ctx.globalAlpha = 0.55;
+    if (im && im.complete && im.naturalWidth) ctx.drawImage(im, f * A.cellW, rowIdx * A.cellH, A.cellW, A.cellH, p.x - dw / 2, p.y - dh + 2, dw, dh);
+    else { ctx.font = '36px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('🛡️', p.x, p.y - 6); }
+    ctx.restore();
+    if (p.slow > 0) { ctx.strokeStyle = 'rgba(140,210,255,.8)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(p.x, p.y, 20, 7, 0, 0, 6.28); ctx.stroke(); }
+}
+function drawMon(m, ghost) {
+    const im = monImg(m.art);
+    const row = { down: 0, right: 1, left: 1, up: 2 }[m.face] + (m.atk > 0 ? 3 : 0);
+    const fr = m.atk > 0 ? (m.atk > 0.19 ? 0 : 1) : m.moving ? Math.floor((S.t + (m.x % 1)) * 6.5) % 2 : 0;
+    const idx = row * 2 + fr, fx = (idx % 4) * MON_CW, fy = Math.floor(idx / 4) * MON_CH;
+    const dh = m.size * MON_CH / MON_BODY, dw = MON_CW * dh / MON_CH;
+    let x = m.x, y = m.y;
+    if (m.tele > 0) x += Math.sin(S.t * 80) * 2;
+    ctx.fillStyle = 'rgba(0,0,0,.35)'; ctx.beginPath(); ctx.ellipse(x, y, m.size * 0.26, m.size * 0.09, 0, 0, 6.28); ctx.fill();
+    if (m.mad) { ctx.fillStyle = 'rgba(255,40,20,.25)'; ctx.beginPath(); ctx.ellipse(x, y, m.size * 0.4, m.size * 0.15, 0, 0, 6.28); ctx.fill(); }
+    ctx.save();
+    if (ghost != null) ctx.globalAlpha = ghost;
+    else if (m.hurt > 0) ctx.globalAlpha = 0.6;
+    if (m.face === 'left') { ctx.translate(x, 0); ctx.scale(-1, 1); ctx.translate(-x, 0); }
+    if (im.complete && im.naturalWidth) ctx.drawImage(im, fx, fy, MON_CW, MON_CH, x - dw / 2, y - dh * 0.93, dw, dh);
+    ctx.restore();
+    if (ghost != null) return;
+    if (m.shield > 0) { ctx.strokeStyle = 'rgba(110,180,255,.75)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y - m.size * 0.45, m.size * 0.5, 0, 6.28); ctx.stroke(); }
+    if (m.tele > 0 && m.cdx != null) { ctx.strokeStyle = 'rgba(255,60,40,.5)'; ctx.lineWidth = m.size * 0.4; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + m.cdx * 230, y + m.cdy * 230); ctx.stroke(); }
+    if (m.boss || m.hp < m.maxHp) {
+        const bw = m.boss ? 90 : 26, by = y - m.size - (m.boss ? 14 : 4);
+        ctx.fillStyle = '#000'; ctx.fillRect(x - bw / 2 - 1, by - 1, bw + 2, m.boss ? 7 : 4);
+        ctx.fillStyle = m.boss ? '#e0302a' : '#c33'; ctx.fillRect(x - bw / 2, by, bw * Math.max(0, m.hp / m.maxHp), m.boss ? 5 : 2);
+        if (m.boss) { ctx.font = 'bold 13px sans-serif'; ctx.textAlign = 'center'; ctx.fillStyle = '#ffd86b'; ctx.fillText(m.name, x, by - 4); }
+    }
+}
+function draw(now) {
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    ctx.fillStyle = '#0b0a0d'; ctx.fillRect(0, 0, W, H);
+    if (!S) return;
+    const p = S.p;
+    const camX = p.x - W / 2 / ZOOM, camY = p.y - 20 - H / 2 / ZOOM;
+    ctx.setTransform(DPR * ZOOM, 0, 0, DPR * ZOOM, -camX * DPR * ZOOM, -camY * DPR * ZOOM);
+    if (BG.complete && BG.naturalWidth) ctx.drawImage(BG, 0, 0, WORLD.w, WORLD.h);
+    const vx0 = camX - 80, vy0 = camY - 80, vx1 = camX + W / ZOOM + 80, vy1 = camY + H / ZOOM + 120;
+    const inView = o => o.x > vx0 && o.x < vx1 && o.y > vy0 && o.y < vy1;
+
+    // 地面：毒池、出生法陣、爆炸預警、經驗石
+    for (const o of S.pools) { ctx.fillStyle = 'rgba(90,200,60,' + (0.22 + 0.08 * Math.sin(S.t * 6)) + ')'; ctx.beginPath(); ctx.ellipse(o.x, o.y, o.r, o.r * 0.55, 0, 0, 6.28); ctx.fill(); }
+    for (const s of S.spawns) { if (!inView(s)) continue; const k = 1 - s.t / 0.35; ctx.strokeStyle = 'rgba(255,40,40,' + (0.4 + k * 0.5) + ')'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(s.x, s.y, Math.max(1, 8 + k * 16), Math.max(1, (8 + k * 16) * 0.45), 0, 0, 6.28); ctx.stroke(); }
+    for (const b of S.booms) { ctx.fillStyle = 'rgba(255,120,30,' + (0.15 + (0.7 - b.t) * 0.4) + ')'; ctx.beginPath(); ctx.ellipse(b.x, b.y, b.r, b.r * 0.55, 0, 0, 6.28); ctx.fill(); }
+    for (const g of S.gems) { if (!inView(g)) continue; ctx.fillStyle = g.big ? '#c48bff' : '#5fc8ff'; ctx.beginPath(); const r = g.big ? 6 : 4; ctx.moveTo(g.x, g.y - r); ctx.lineTo(g.x + r * 0.7, g.y); ctx.lineTo(g.x, g.y + r); ctx.lineTo(g.x - r * 0.7, g.y); ctx.fill(); }
+
+    // 角色與怪物依 y 排序
+    const list = S.mons.filter(inView);
+    list.push(p);
+    list.sort((a, b) => a.y - b.y);
+    for (const o of list) o === p ? drawHero(p) : drawMon(o);
+    for (const f of S.fx) if (f.k === 'die') { ctx.save(); drawMon({ art: f.art, size: f.size, face: f.face, x: f.x, y: f.y, atk: 0, moving: false }, 0.7 * (1 - f.t / f.life)); ctx.restore(); }
+
+    // 飛劍
+    if (S.up.orbit) {
+        const n = S.up.orbit + 1;
+        for (let i = 0; i < n; i++) {
+            const a = S.orbitAng + i * Math.PI * 2 / n, ox = p.x + Math.cos(a) * 78, oy = p.y - 16 + Math.sin(a) * 78 * 0.8;
+            ctx.save(); ctx.translate(ox, oy); ctx.rotate(a + Math.PI / 2);
+            ctx.fillStyle = '#dff4ff'; ctx.shadowColor = '#7fd2ff'; ctx.shadowBlur = 10;
+            ctx.beginPath(); ctx.moveTo(0, -16); ctx.lineTo(4, 6); ctx.lineTo(-4, 6); ctx.fill(); ctx.fillStyle = '#c8902e'; ctx.fillRect(-5, 6, 10, 3);
+            ctx.restore();
+        }
+    }
+    // 投射物
+    for (const s of S.shots) { ctx.fillStyle = '#b48cff'; ctx.shadowColor = '#b48cff'; ctx.shadowBlur = 12; ctx.beginPath(); ctx.arc(s.x, s.y, 6, 0, 6.28); ctx.fill(); }
+    ctx.shadowBlur = 0;
+    for (const s of S.eShots) {
+        if (s.k === 'arrow') { const a = Math.atan2(s.vy, s.vx); ctx.strokeStyle = '#e8d8b0'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(s.x - Math.cos(a) * 12, s.y - Math.sin(a) * 12); ctx.lineTo(s.x, s.y); ctx.stroke(); }
+        else { ctx.fillStyle = '#ff7a2a'; ctx.beginPath(); ctx.arc(s.x, s.y, 6, 0, 6.28); ctx.fill(); ctx.fillStyle = '#ffd86b'; ctx.beginPath(); ctx.arc(s.x, s.y, 3, 0, 6.28); ctx.fill(); }
+    }
+    // 特效
+    for (const f of S.fx) {
+        const k = f.t / f.life;
+        if (f.k === 'slash') {
+            ctx.strokeStyle = 'rgba(255,240,200,' + (1 - k) + ')'; ctx.lineWidth = 10 * (1 - k) + 2; ctx.shadowColor = '#ffd86b'; ctx.shadowBlur = 12;
+            ctx.beginPath(); ctx.arc(f.x, f.y, f.r * (0.7 + k * 0.3), f.a - f.half, f.a + f.half); ctx.stroke(); ctx.shadowBlur = 0;
+        } else if (f.k === 'bolt') {
+            ctx.strokeStyle = 'rgba(200,230,255,' + (1 - k) + ')'; ctx.lineWidth = 3; ctx.shadowColor = '#7fd2ff'; ctx.shadowBlur = 14;
+            ctx.beginPath(); let y = f.y - 260, x = f.x; ctx.moveTo(x, y); while (y < f.y) { y += 30; x = f.x + rand(-12, 12); ctx.lineTo(x, Math.min(y, f.y)); } ctx.stroke(); ctx.shadowBlur = 0;
+            ctx.fillStyle = 'rgba(180,220,255,' + 0.4 * (1 - k) + ')'; ctx.beginPath(); ctx.ellipse(f.x, f.y, 46, 20, 0, 0, 6.28); ctx.fill();
+        } else if (f.k === 'nova') {
+            ctx.strokeStyle = 'rgba(255,230,140,' + (1 - k) + ')'; ctx.lineWidth = 6; ctx.beginPath(); ctx.ellipse(f.x, f.y, Math.max(1, f.r * k), Math.max(1, f.r * k * 0.6), 0, 0, 6.28); ctx.stroke();
+            ctx.fillStyle = 'rgba(255,240,180,' + 0.25 * (1 - k) + ')'; ctx.fill();
+        } else if (f.k === 'boom') {
+            ctx.fillStyle = 'rgba(255,150,40,' + 0.7 * (1 - k) + ')'; ctx.beginPath(); ctx.ellipse(f.x, f.y, f.r * (0.6 + k * 0.4), f.r * 0.55 * (0.6 + k * 0.4), 0, 0, 6.28); ctx.fill();
+        } else if (f.k === 'puff') {
+            ctx.fillStyle = 'rgba(160,120,255,' + 0.6 * (1 - k) + ')'; ctx.beginPath(); ctx.arc(f.x, f.y - 20, 10 + k * 22, 0, 6.28); ctx.fill();
+        }
+    }
+    // 飄字
+    ctx.textAlign = 'center';
+    for (const n of S.nums) {
+        ctx.globalAlpha = 1 - n.t / 0.7;
+        ctx.font = (n.crit ? 'bold 17px' : n.me ? 'bold 15px' : '13px') + ' sans-serif';
+        ctx.lineWidth = 3; ctx.strokeStyle = '#000'; ctx.strokeText(n.v, n.x, n.y);
+        ctx.fillStyle = n.me ? (n.poison ? '#8f6' : '#ff5a4e') : n.crit ? '#ffd86b' : '#fff'; ctx.fillText(n.v, n.x, n.y);
+    }
+    ctx.globalAlpha = 1;
+    // 受傷紅邊
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    if (p.hitT > 0 || p.hp < p.maxHp * 0.3) {
+        const g = ctx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.35, W / 2, H / 2, Math.max(W, H) * 0.7);
+        g.addColorStop(0, 'rgba(160,0,0,0)'); g.addColorStop(1, 'rgba(160,0,0,' + (p.hitT > 0 ? 0.45 : 0.25) + ')');
+        ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    }
+}
+
+// ---------- 輸入 ----------
+addEventListener('keydown', e => { keys[e.code] = true; if (e.code === 'Escape' || e.code === 'KeyP') svPause(); });
+addEventListener('keyup', e => { keys[e.code] = false; });
+addEventListener('blur', () => { for (const k in keys) keys[k] = false; if (running && !paused && !choosing) svPause(); });
+document.addEventListener('visibilitychange', () => { if (document.hidden && running && !paused && !choosing) svPause(); });
+cv.addEventListener('pointerdown', e => {
+    if (joy) return;
+    joy = { id: e.pointerId, x0: e.clientX, y0: e.clientY, dx: 0, dy: 0 };
+    const j = $('joy'); j.style.left = e.clientX + 'px'; j.style.top = e.clientY + 'px'; j.style.display = 'block'; j.firstElementChild.style.transform = '';
+});
+addEventListener('pointermove', e => {
+    if (!joy || e.pointerId !== joy.id) return;
+    joy.dx = e.clientX - joy.x0; joy.dy = e.clientY - joy.y0;
+    const l = Math.hypot(joy.dx, joy.dy), k = l > 40 ? 40 / l : 1;
+    $('joy').firstElementChild.style.transform = 'translate(' + joy.dx * k + 'px,' + joy.dy * k + 'px)';
+});
+const endJoy = e => { if (joy && e.pointerId === joy.id) { joy = null; $('joy').style.display = 'none'; } };
+addEventListener('pointerup', endJoy); addEventListener('pointercancel', endJoy);
+
+resize();
+requestAnimationFrame(t => { lastT = t; loop(t); });
+</script>
+</body>
+</html>
