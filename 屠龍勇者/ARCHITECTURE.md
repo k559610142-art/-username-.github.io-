@@ -5076,7 +5076,7 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
   - `huntTick` 開頭 `infTick(dt)`：在無限塔就計時換層（不管有沒有掛機）、再生能力回血；離開地圖 `infRun=null`（樓層不進存檔）。
   - `startHunt`／`huntTick` 的後端掉寶連線檢查：無限塔免檢查（沒有掉寶，訪客也能挑戰）。
   - `packMax`：無限塔 `INF_PACK`＝16 隻同時圍攻（一般 6；貼身最多 8 格，其餘是 4 格內的遠程怪）；`weakenForPack` 不削弱無限塔的怪（`m.inf`）；`makeZoneMob` → `infMakeMonster`；原本「每 3 秒 15% 機率有怪加入」在無限塔改成每 0.25 秒 `infJoinTick`：地圖怪貼到身邊（1 格；法師、射手或「射手」能力 4 格）就加入戰鬥，該層首領第一個加入。
-  - **失敗條件：累積 5 層的怪**（20261113u，使用者指定）：累積怪物＝場上活著的（`infSpawnTick` 每幀記 `infRun.alive`）＋這幾層還沒出場的（`budget`），`infPile()` 達到 `INF_FAIL_PILE`＝150（5×30）就 `infFail`：跟倒下一樣沒懲罰、送回塔門口、HP 不變；剩不到 30 隻時戰鬥訊息＋提示警告。小地圖下方 `zoneTitle` 顯示「怪 N/150」。地圖上限 `INF_MAP_CAP` 改 200（讓 150 先到）。
+  - **（20261114a 已移除，見第 338 節）** ~~失敗條件：累積 5 層的怪~~（20261113u，使用者指定）：累積怪物＝場上活著的（`infSpawnTick` 每幀記 `infRun.alive`）＋這幾層還沒出場的（`budget`），`infPile()` 達到 `INF_FAIL_PILE`＝150（5×30）就 `infFail`：跟倒下一樣沒懲罰、送回塔門口、HP 不變；剩不到 30 隻時戰鬥訊息＋提示警告。小地圖下方 `zoneTitle` 顯示「怪 N/150」。地圖上限 `INF_MAP_CAP` 改 200（讓 150 先到）。
   - **4 格內全部攻擊**（20261113u，使用者回報到 20 層周圍三、四十隻怪都不打、HP 停在 100 多不會死）：原本只有貼身或卡住 2 步的閒置怪才加入，排隊的都站著；改成 `infJoinTick` 每 0.25 秒把 4 格內的閒置怪最多 4 隻加入、全部標 `infRanged`（4 格內算打得到，貼身的照樣近戰），`INF_PACK` 16→40；已參戰卻被擠到 4 格外超過 2 秒（`m.farT`）就把怪物資料交給 4 格內最近的閒置地圖怪接手。本機 70 級修羅：第 1 層最多 25 隻同時參戰、4 格內閒置 0 隻；第 18 層 6 秒倒下正常送回門口（沒重現鎖血，推測是參戰太少、傷害被喝水抵消）。
   - **碰不到就遠程**（20261113s，使用者：無限塔怪物攻擊不到玩家改成遠程攻擊）：`infJoinTick` 身邊（1 格）沒有空的地圖怪、但 4 格內有走不過來的（`m.stuck`≥2）就照樣加入戰鬥並設 `inst.infRanged`；已參戰的怪在 2～4 格內 1.5 秒碰不到角色（`m.blockT`）也改 `infRanged`。`ui-scene.js` 回報 `near` 時 `infRanged` 跟魔法怪一樣 4 格內算打得到；攻擊仍是 `monsterAttack` 的物理攻擊（命中／閃避／防禦照算）。模擬 120 隻擠在一起時 16 隻參戰、最多 8 隻遠程（貼身剛好 8 格）。
   - **怪物主動攻擊**（20261113i，使用者回報「怪都不會主動攻擊」）：`infTick` 在沒掛機時，只要有怪貼到身邊就自動 `startHunt`（倒下後有 5 秒喘息 `calmUntil`）；怪物命中改成 等級＋10＋樓層（一般怪＝等級；20261113i 時是等級×1.3＋10＋樓層，起始改 Lv.50 後太準而調低），否則高防禦角色（防禦 64）對第 6 層怪只有 5% 被命中、看起來像不會打人，改後約 50%。
@@ -5127,3 +5127,9 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 第 2 步視窗 `candleRbOpen`／`candleRbRender`（沒有關閉鈕）：`candleRbUp(1|'cap')` 用 `candleRbLevel` 照 `gainExp` 同公式升級（二轉成長 `advGrowth` 只用在 61 級以後）、51 級起 `statPoints++`；有未分配點數時不能再升，`candleRbStat(k)` 走 `addStatPoint`。到目標等級按 `candleRbDone`：還原經驗、`extra`（不是升級來的點數，正常為 0）加回 `statPoints`、刪 `candleRb`、補滿 HP/MP，記錄新舊 HP/MP。
 - 防跑掉：`gainExp` 在 `candleRb` 期間直接 return（含離線收益）；`startHunt` 改開回憶視窗；`gameTick` 每輪呼叫 `candleRbKeep()`，對話框沒開著就重開（重新載入也會接著升）。`candleRb` 隨 player 一起存檔。
 - 本機驗證（不存檔的測試騎士 Lv.70、體力 31）：Lv.1 HP 21 → 一鍵 Lv.50 → 51 級有點數時「升 1 級」停用 → 關掉視窗 0.8 秒自動重開、startHunt／gainExp 被擋 → 每級加體力升到 70 →「完成回憶」經驗 1234 還原、視窗關閉；Console 無錯誤。
+
+## 338. 無限塔取消累積怪物失敗，只有倒下才算失敗（2026-11-14，版本 `20261114a`；`data/survivor.js`、`data/combat.js`）
+- 使用者：「無限塔 150 隻怪物就失敗，規則修改不再限制數量，改回人物死亡才算失敗」。
+- 刪除 `INF_FAIL_PILE`、`infFail` 與 `infTick` 裡的累積判定／警告（`infRun.warned`）；失敗只剩 `infOnDeath`（倒下：沒懲罰、HP 回 30%、送回塔門口）。
+- `infPile()` 保留，小地圖下方 `zoneTitle` 改顯示「怪 N」（不再有 /150）。地圖同時最多 `INF_MAP_CAP`＝200 隻，超過的留在 `budget`，打掉再出場。
+- 本機驗證：`infRun` 累積 450 隻跑 `infTick`，挑戰繼續、沒有送回塔門口；Console 無錯誤。

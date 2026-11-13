@@ -4,7 +4,7 @@
 //   - 怪物大量出現、一出生就朝玩家衝過來，貼到身邊就加入戰鬥（同時參戰最多 INF_PACK 隻）
 //   - 每層 30 秒，時間到直接進下一層（不等玩家清怪，場上的怪留著），越高層怪越強，每層抽不同能力，每 5 層出首領
 //   - 門票：每次進塔 1000 萬金幣（zones.js 的 fee），每天最多 3 次（登入：伺服器 inf_run_start 計次；訪客：本機計次）
-//   - 失敗條件：倒下，或場上累積怪物（含還沒出場的）達到 150 隻＝5 層的量
+//   - 失敗條件：只有人物倒下（2026-11-14 使用者：拿掉「累積 150 隻失敗」，怪物數量不限）
 //   - 挑戰規則：打怪不給經驗、不掉寶；倒下沒有死亡懲罰（不扣經驗、不回村），送回大地圖塔門口，再挑戰要重新買票
 //   - 唯一獎勵：擊殺第 10、15、20、25…層（每 5 層、沒有上限）的首領各 1 張娃娃升級卷軸（向伺服器領，doll-upgrade.js／tools/doll-upgrade.sql）
 // 樓層不寫進存檔（infRun，離開地圖就重來）；最高樓層記在 localStorage dsSurvivorBest（{角色名: 層}）。
@@ -13,8 +13,7 @@
 const INF_ZONE = 'infinite';
 const INF_FLOOR_MS = 30000;   // 每層 30 秒
 const INF_PER_FLOOR = 30;     // 每一層固定出 30 隻（使用者 2026-11-13 指定），出完不補；沒打完的留著跟下一層疊加
-const INF_FAIL_PILE = 150;    // 累積怪物（場上＋還沒出場）達到 5 層的量（5×30）就判定挑戰失敗（使用者 2026-11-13 指定）
-const INF_MAP_CAP = 200;      // 地圖上最多同時幾隻（太多會擠滿競技場；失敗門檻 150 會先到）
+const INF_MAP_CAP = 200;      // 地圖上最多同時幾隻（太多會擠滿競技場）；超過的留在 budget，打掉再補出來，不會失敗
 // 娃娃升級卷軸：第 10 層起每 5 層（10、15、20、25…沒有上限）擊殺該層首領各給 1 張（使用者 2026-11-13 指定；伺服器 inf_claim 同樣檢查）
 const INF_SCROLL_FROM = 10;
 function infScrollFloor(f) { return f >= INF_SCROLL_FROM && f % 5 === 0; }
@@ -114,10 +113,7 @@ function infTick(dt) {
         infStart(infPending.runId); infPending = null;
     }
     if (gameNow - infRun.start >= INF_FLOOR_MS) infNextFloor();
-    // 累積 5 層的怪（150 隻）就失敗：沒有懲罰，送回塔門口
-    if (infPile() >= INF_FAIL_PILE) { infFail(`場上累積的怪物達到 ${INF_FAIL_PILE} 隻（5 層的量）`); return; }
-    if (infPile() >= INF_FAIL_PILE - INF_PER_FLOOR && !infRun.warned) { infRun.warned = true; addLog(`⚠️ 無限塔累積怪物 ${infPile()} 隻，達到 ${INF_FAIL_PILE} 隻就挑戰失敗！`, 'warn'); showToast(`⚠️ 累積怪物 ${infPile()}／${INF_FAIL_PILE}，快清怪！`, 3000); }
-    if (infPile() < INF_FAIL_PILE - INF_PER_FLOOR) infRun.warned = false;
+    // 2026-11-14 使用者：不再限制累積怪物數量，只有人物倒下才算失敗（infOnDeath）
     // 怪物主動攻擊：沒在掛機時，怪貼到身邊就自動開打（倒下後有 5 秒喘息）
     if (!player.hunting && player.hp > 0 && !walkHome && !(infRun.calmUntil > gameNow) && scene && scene.mons && scene.pl && scene.key === sceneKey()
         && scene.mons.some(m => !m.dead && !m.inst && Math.max(Math.abs(m.x - scene.pl.x), Math.abs(m.y - scene.pl.y)) <= 1)) {
@@ -290,15 +286,6 @@ function infOnKill(mon) {
     return true;
 }
 // 倒下：沒有死亡懲罰（不扣經驗、不清增益、不回村），HP 回 30%，從第 1 層重來，先停止掛機讓玩家整理
-// 挑戰失敗（怪物累積太多）：跟倒下一樣沒有懲罰、送回塔門口，HP 不變
-function infFail(why) {
-    const f = infRun ? infRun.floor : 1;
-    const nb = infSaveBest(f - 1);
-    addLog(`💀 無限塔挑戰失敗：${why}（第 ${f} 層，撐過 ${f - 1} 層${nb ? '，新紀錄！' : ''}）。已送回塔門口；再挑戰要重新購買門票`, 'dead');
-    sfx('player-die');
-    showToast(`💀 挑戰失敗：怪物累積 ${INF_FAIL_PILE} 隻，撐過 ${f - 1} 層${nb ? '（新紀錄）' : ''}`, 3500);
-    infLeaveToGate();
-}
 function infOnDeath(killer) {
     if (!inInfinite()) return false;
     const f = infRun ? infRun.floor : 1;

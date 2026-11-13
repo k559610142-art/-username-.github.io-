@@ -11,7 +11,7 @@ function currentZone() { return player.loc.type === 'zone' ? ZONE_BY_ID[player.l
 function zoneTitle() {
     const z = currentZone();
     if (!z) return TOWNS[player.loc.id].name;
-    if (z.type === 'infinite') return infTitle() + '・剩 ' + infFloorLeft() + ' 秒・怪 ' + infPile() + '/' + INF_FAIL_PILE;   // 無限塔：樓層、倒數、累積怪物（150 隻失敗）
+    if (z.type === 'infinite') return infTitle() + '・剩 ' + infFloorLeft() + ' 秒・怪 ' + infPile();   // 無限塔：樓層、倒數、累積怪物（不限數量，2026-11-14 起只有倒下才失敗）
     return z.type === 'tower' ? `${z.name} ${player.loc.floor}F` : z.name;
 }
 
