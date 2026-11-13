@@ -129,3 +129,13 @@
   4. scene-renderer.js getRenderedSceneView 快取畫面大小（ResizeObserver／resize 時清掉），不再每幀 getBoundingClientRect
   5. overhead-bars.js 頭頂名牌只在角色圖尺寸改變或每 30 幀量一次版面，數值沒變不寫 DOM
   結果（30 秒走路）：版面量測 1.5s→0.09s、drawImage 4.3s→1.5s、主執行緒解碼 0.62s→0.08s；主執行緒已無 80ms 以上的長工作
+
+NPC 穿衣服（2026-11-13）：
+  客戶端 list.spr 的城鎮 NPC 外觀只是素體（例：德漢 #800 "32=877" → 圖檔借用 877-*.spr），衣服另外寫在 105.clothes(數量 頭髮 上衣 褲子 鞋子…)，
+  每層衣服是自己的 .spr、動作／方向檔／影格編號和素體相同，之前切圖沒疊上所以 NPC 都是灰色素體
+  tools/native-monsters/listspr.js  解析 "數量=來源外觀"（src，素體圖檔編號）與 105.clothes（clothes 陣列）；原本遇到 "=" 整筆漏掉
+  tools/npc-clothes/build.js        找出 NPC（resident 或非 L1Monster）且有 105.clothes 的外觀（目前 40 種），素體＋衣服依 list 順序疊合重切，
+                                    腳底沿用既有影格位置；104.attr/type(8) 發光層（精靈翅膀、鐵匠爐光等）以亮度當透明度疊上，(128) multiply 層略過
+                                    用法：node tools/npc-clothes/build.js [--preview 預覽.png]（新舊對照用）
+  assets/native-monsters/npc-dressed-<外觀>-<n>.png   重切的 NPC 圖（約 4.4 MB）
+  data/npc-clothes-data.js          載在 dungeon-monster-data.js 後面，覆蓋 islandMonsterFrames 並把圖檔加進 nativeMonsterFiles；雷德（3757）原本沒圖，這次也補上
