@@ -5108,7 +5108,7 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 入口：手機右抽屜「🎮 小遊戲」（`DRAWERS.right`，設定上面）、PC 地圖左側圓鈕（`PC_SLOTS`，交易所下面 y 590）。分頁 `renderMiniGames` 列出小遊戲，「開始遊玩」→ `openMiniSurvivor`：`#minigame-layer`（z-index 9500）裡放 iframe `survivor.html?v=版本`，左下角「✕ 離開小遊戲」→ `closeMiniGame` 移除。iframe 自己吃鍵盤，不會讓村莊人物跟著走；遊戲本體（掛機）照常在背景跑。
 - 之後要加新的小遊戲：做成獨立 html，在 `renderMiniGames` 加一張卡片與開啟函式即可。
 
-## 335. 回憶蠟燭：重新分配出生配點（2026-11-13，版本 `20261113y`；新檔 `data/memory-candle.js`、SQL `tools/memory-candle.sql`、測試 `tools/test-memory-candle-db.js`）
+## 335. 回憶蠟燭：重新分配出生配點（**20261113aa 起改成第 337 節的「回到 1 級原地升回」**；2026-11-13，版本 `20261113y`；新檔 `data/memory-candle.js`、SQL `tools/memory-candle.sql`、測試 `tools/test-memory-candle-db.js`）
 
 - 使用者規格：新道具「回憶蠟燭」，讓玩家重新出生配點，萬能藥的 5 點也可以加入出生配點；使用後等級不變、萬能藥使用次數不變。
 - 存檔只有 `player.stats` 一個總數，沒記錄每一點來自出生、萬能藥還是 51 級後的升級，使用者選擇「升級點退回讓玩家重加」：使用時能力值從職業最低值（`CLASSES[cls].base`）開始，在視窗重新分配 出生 `CREATE_TOTAL`（75）＋`player.elixirs` 點；出生規則單項最高 `CREATE_STAT_MAX`（18），超過 18 的部分算萬能藥點（總共不能超過已吃的萬能藥數），單項最高 `STAT_CAP`（35）；點數要剛好分完才能確定。已加進能力值的其他點數（總和 − 75 − 萬能藥）全部退回 `player.statPoints`，照平常在人物狀態加回去。
@@ -5120,3 +5120,10 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 現象：世界地圖上看不到「暮光法師塔」，無法傳送前往（第 161 節後只能從世界地圖直接傳送，等於整張地圖到不了）。
 - 原因：`a1bd1f18a` 加無限塔入口（第 332 節）時，把 `{ id: 'infinite', … }` 插在 `{ id: 'ivory', … }` 前面同一行，並在中間加 `//` 註解，ivory 那段變成註解內容。
 - 修正：ivory 拆回自己一行。`ATLAS_POINTS` 每行結尾若有 `//` 註解，後面不要再接資料。
+
+## 337. 回憶蠟燭第二版：回到 Lv.1 原地升回（洗血洗魔）（2026-11-13，版本 `20261113aa`；`data/memory-candle.js`，鉤子在 `player.js` 的 `gainExp`、`combat.js` 的 `startHunt`、`main.js` 的 `gameTick`）
+- 使用者規格：使用後人物變回 1 級，再手動原地升回去，有洗血、洗魔效果，也能重新配點。使用者選擇：升回去時體力／精神**跟一般升級一樣算裝備、詞綴、buff**；**結果照收不能反悔**；1～50 有「升 1 級」＋「直接升到 Lv.50」，51 級起每級點數要先配完才能升下一級。
+- 流程：第 1 步同第 335 節（只能在村莊；重配出生 75＋萬能藥點）→ `candleApply` 確認後扣蠟燭、停掛機，記下 `player.candleRb = { lv 目標, exp 原經驗, extra, oldHp, oldMp }`，能力值換成出生配點、`statPoints=0`、`lv=1`、`exp=0`，`baseHp/baseMp = 職業 startHp/startMp ＋ conHpBonus/wisMpBonus(calcStats 的體力／精神)`。
+- 第 2 步視窗 `candleRbOpen`／`candleRbRender`（沒有關閉鈕）：`candleRbUp(1|'cap')` 用 `candleRbLevel` 照 `gainExp` 同公式升級（二轉成長 `advGrowth` 只用在 61 級以後）、51 級起 `statPoints++`；有未分配點數時不能再升，`candleRbStat(k)` 走 `addStatPoint`。到目標等級按 `candleRbDone`：還原經驗、`extra`（不是升級來的點數，正常為 0）加回 `statPoints`、刪 `candleRb`、補滿 HP/MP，記錄新舊 HP/MP。
+- 防跑掉：`gainExp` 在 `candleRb` 期間直接 return（含離線收益）；`startHunt` 改開回憶視窗；`gameTick` 每輪呼叫 `candleRbKeep()`，對話框沒開著就重開（重新載入也會接著升）。`candleRb` 隨 player 一起存檔。
+- 本機驗證（不存檔的測試騎士 Lv.70、體力 31）：Lv.1 HP 21 → 一鍵 Lv.50 → 51 級有點數時「升 1 級」停用 → 關掉視窗 0.8 秒自動重開、startHunt／gainExp 被擋 → 每級加體力升到 70 →「完成回憶」經驗 1234 還原、視窗關閉；Console 無錯誤。

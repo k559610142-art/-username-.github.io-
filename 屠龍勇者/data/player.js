@@ -378,7 +378,7 @@ function clampHpMp() {
 
 // ───────── 經驗與升級 ─────────
 function gainExp(n) {
-    if (player.lv >= MAX_LEVEL) return;
+    if (player.lv >= MAX_LEVEL || player.candleRb) return;   // 回憶蠟燭進行中不拿經驗（memory-candle.js）
     player.exp += n;
     const c = CLASSES[player.cls];
     while (player.lv < MAX_LEVEL && player.exp >= expToNext(player.lv)) {

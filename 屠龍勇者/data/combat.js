@@ -17,6 +17,7 @@ function zoneTitle() {
 
 function startHunt() {
     const infFree = typeof inInfinite === 'function' && inInfinite();   // 無限塔沒有掉寶，不需要後端掉寶連線（訪客也能挑戰）
+    if (player.candleRb) { candleRbOpen(); return; }   // 回憶蠟燭還沒升回原等級（memory-candle.js）
     if (!infFree && !lootCanPlay()) return;
     if (!currentZone()) { showToast('請先傳送到狩獵地點'); return; }
     if (walkHome) { showToast('正在步行回村'); return; }

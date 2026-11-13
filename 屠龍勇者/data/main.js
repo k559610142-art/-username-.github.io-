@@ -13,6 +13,7 @@ function gameTick() {
     gameNow += gap;   // 遊戲時鐘跟著真實時間走（分頁在背景也算），不然會越來越落後，載入別台裝置的存檔時冷卻／增益會變成好幾小時
     if (offlineHold) return;   // 向伺服器結算離線收益中（vault.js）
     if (!player) return;
+    if (player.candleRb && typeof candleRbKeep === 'function') candleRbKeep();   // 回憶蠟燭沒做完：視窗一直開著（memory-candle.js）
     // 分頁在背景被瀏覽器暫停太久（或電腦休眠）：用離線收益補上這段時間（要登入、扣鑽石）
     if (raw >= OFFLINE_MIN_MS && offlineEligible()) { offlineSettle(raw); return; }
     offlineSeenTick();   // 向伺服器回報在線＋領經驗額度：離線收益以伺服器時間計算（第 306 節）、打怪經驗照伺服器時間（第 310 節）
