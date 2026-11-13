@@ -228,7 +228,6 @@
 | `data/pwa.js` | PWA：註冊 SW、安裝說明 `openInstallGuide`、新版本提示、持久儲存（第 12 節） |
 | `data/main.js` | 主迴圈 `gameTick`（每 100ms）、繼續遊戲、啟動（呼叫 `initPwa`） |
 | `gm.html` | **管理頁**（不是遊戲的一部分）：可疑紀錄、玩家存檔歷程、封鎖／解除封鎖、🎁 發放道具（第 128 節）；載入 config／classes／cloud.js 取得 Supabase 設定（第 31 節） |
-| `survivor.html` | **生存者挑戰（測試原型，第 331 節）**：獨立頁面、內嵌程式，不讀寫存檔、不連雲端；遊戲內沒有入口，直接開網址 |
 | `data/survivor.js` | **無限塔地圖**（第 332 節，大地圖紫霧遺跡有守門人入口）：樓層計時、怪物生成、加入戰鬥、擊殺／倒下規則；zones.js 的 infinite 地圖、world-atlas 傳送點、combat.js／ui-scene.js 有接口；只在執行期用到其他檔案，載入順序在 main 前即可 |
 | `data/doll-upgrade.js` | **娃娃升級卷軸**（第 333 節）：卷軸存在伺服器、升級由伺服器擲骰（SQL `tools/doll-upgrade.sql`）；升級選單與無限塔領取；只在執行期用到其他檔案（放在 icons 之後） |
 | `manifest.json` | App 名稱、圖示、`scope: ./`（只涵蓋本資料夾） |
@@ -5053,7 +5052,7 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 防燒光：勾選的不要詞綴太多、不可能洗乾淨時不洗——魔法地圖至少要 1 種、稀有地圖至少要 4 種沒勾（稀有 3～4 條詞綴，`rollMapMods` 不重複）。
 - 本機模擬 40 張 T1 未鑑定：勾 4 種、通貨充足 → 全部洗乾淨開圖（約 12 重鑄石、187 混沌石）；沒有混沌石 → 稀有圖略過；勾 6 種 → 稀有不洗直接略過、魔法照洗；保留 3 顆、只有 3 顆 → 不用通貨。
 
-## 331. 生存者挑戰模式（測試原型，2026-11-13；新檔 `survivor.html`，遊戲版本不變）
+## 331. 生存者挑戰模式（測試原型，2026-11-13；`survivor.html` 已於同日刪除，改成第 332 節的無限塔地圖）
 
 - 使用者想要「生存者挑戰」：進入後海量怪物立刻出生瘋狂進攻，每一波傷害／血量變強、每一波能力不同。先做**獨立測試頁**給使用者試玩手感，**沒接進遊戲**（不存檔、沒獎勵、沒入口），網址 `屠龍勇者/survivor.html`。
 - 程式全部內嵌在 survivor.html（`svStart`／`svPause`／`svSkipWave`／`svChoose` 是按鈕呼叫的頂層函式）。素材沿用：騎士 sprite（`images/sprites/knight-*`）、怪物 `images/monsters/rework/mon-*.png`（192×224 一格、4 欄、第 row*2+fr 格）、背景 `images/maps/rework/arena-tower.jpg` 放大 2 倍當競技場。
@@ -5084,7 +5083,7 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 模擬（手動推進 gameNow＋sceneUpdate＋huntTick）：70 級法師（冰之女王魔杖 +7、星風套 +5、技能與藥水照快捷欄自動）掛機撐到 22 層以上未倒，第 15 層後開始喝水；地圖上同時約 90～110 隻。
 - 本機測試角色：slot 0「測試法師70」、slot 1「測試修羅70」（阿修羅雙刀 +7、騎士頭盔／板甲／保護者斗篷／力量手套／速度之靴／泰坦紋戰衣 +5，力量 35，修羅技能全學、攻擊技能與增益設自動，古代終極治癒藥水 300＋綠水＋勇水自動；HP 1082、防禦 55）。未登入雲端，不要用它登入以免收進帳號。
 
-## 333. 娃娃升級卷軸（2026-11-13，版本 `20261113r`；新檔 `data/doll-upgrade.js`、SQL `tools/doll-upgrade.sql`、測試 `tools/test-doll-upgrade-db.js`，未推送）
+## 333. 娃娃升級卷軸（2026-11-13，版本 `20261113r`；新檔 `data/doll-upgrade.js`、SQL `tools/doll-upgrade.sql`、測試 `tools/test-doll-upgrade-db.js`；使用者 11/13 推送 a1bd1f18a）
 
 - 使用者規格：對娃娃使用 T4→T3、T3→T2、T2→T1、T1→T0，每次**出現選單自選下一階的一隻**當作進化；成功率 5%，失敗維持現況、沒有懲罰。**無法購買**，無限塔撐過第 10、15、20 層各 1 張（第 332 節）。使用者再要求「**從後台計算**」並選擇「發卷軸＋擲骰都在後台」。（20261113o 曾做成背包道具、本機擲骰，已改掉。）
 - **後台**（`tools/doll-upgrade.sql`，使用者要自己在 Supabase SQL Editor 執行，可重跑）：`dragon_doll_scrolls`（user_id＋char_id＝`lootChar()` 的卷軸張數）、`dragon_inf_runs`（每個角色目前這一趟的 run_id、開始時間、已領樓層）、`dragon_doll_upgrade_log`（領取／升級紀錄）；三張表 RLS 全擋，只能透過函式。
@@ -5095,4 +5094,4 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
   - 共用檢查 `dragon_doll_scroll_check`：登入、沒被封鎖（`dragon_is_banned`）、char 格式。
   - 限制：娃娃本身仍在玩家存檔（跟其他道具一樣），伺服器不檢查玩家是不是真的有那隻 from 娃娃；成功後由遊戲把那隻換成 to。
 - **遊戲**（`doll-upgrade.js`）：入口是娃娃的道具視窗「🎎 升級」（背包或裝備中、T1～T4；倉庫裡的要先取出）→ `openDollUpgrade(uid)`，讀伺服器張數（`dollScrollRefresh`），列出下一階全部娃娃（含 `dollAbilityHtml`）自選 → `dollUpDo` 呼叫 `doll_upgrade`（擲骰中按鈕鎖住）；成功把同一個道具實體 id 換成目標（uid、強化值不變；裝備中會 `dollResetTransient`＋`clampHpMp`＋重設跟隨外觀），存檔並立刻上傳；失敗只顯示結果。沒登入、伺服器沒安裝 SQL、沒卷軸都有中文提示（`dollUpErrText`），0 張時不送請求。無限塔：`dollScrollClaim`（這一趟的 runId 在 `infEnter` 向伺服器登記時取得；沒登入或沒登記時在戰鬥訊息說明領不到）。onclick 只呼叫頂層函式。
-- 驗證：`node tools/test-doll-upgrade-db.js`（PGlite 記憶體，不連正式庫）通過：可重跑、匿名與直接讀表被擋、領取時間門檻 285 秒、每趟每層一次、只有 10／15／20、新的一趟讓舊 run 作廢、角色與帳號隔離、升級路線檢查、扣卷軸到 0、4000 次擲骰成功率約 4.6%、封鎖、紀錄。遊戲端用假的伺服器回應在本機走過：開視窗、選目標、成功換娃娃、失敗維持、0 張不送請求、無限塔推到 21 層剛好領 10／15／20 三張；Console 無錯誤。**正式 Supabase 還沒執行 SQL**。
+- 驗證：`node tools/test-doll-upgrade-db.js`（PGlite 記憶體，不連正式庫）通過：可重跑、匿名與直接讀表被擋、領取時間門檻 285 秒、每趟每層一次、只有 10／15／20、新的一趟讓舊 run 作廢、角色與帳號隔離、升級路線檢查、扣卷軸到 0、4000 次擲骰成功率約 4.6%、封鎖、紀錄。遊戲端用假的伺服器回應在本機走過：開視窗、選目標、成功換娃娃、失敗維持、0 張不送請求、無限塔推到 21 層剛好領 10／15／20 三張；Console 無錯誤。正式 Supabase：使用者執行過早期版本（11/13 查到缺 `inf_status`），需重跑最新版。
