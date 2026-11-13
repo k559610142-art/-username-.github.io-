@@ -190,8 +190,9 @@ NPC 穿衣服（2026-11-13）：
 輔助系統 第 3 期（2026-11-13）：
   狩獵：撐不住先瞬移——體力低於回村門檻時先用瞬間移動卷軸，一分鐘內逃到第 3 次（或沒瞬移卷軸）才用回家卷軸；開啟時 auto-potion.js 讓出回村（AssistSystem.escapeFirst）
   補給：喝完先喝身上別種（auto-potion.js 選的補血道具沒了改用 OwnedInventory.healingItems 第一個，AssistSystem.healFallback）；
-        死亡後自動再變身（倒地時記下 TransformCards.active，復活後 TransformCards.activate）
+        死亡後自動再變身（活著時持續記住 TransformCards.active——倒地同一刻變身就被取消；復活後 TransformCards.activate；活著自己取消不會變回去）
   魔法：開怪技能（換到滿血新目標先放一次）、範圍技能（周圍 N 格 ≥ M 隻且魔力 ≥ N%）、洗魔（心靈轉換 130：體力 ≥ N% 且魔力 < N%）
   召喚（新分頁）：AUTO 時身邊沒召喚物自動施放召喚術 51／召喚強力屬性精靈 162／召喚屬性精靈 154；戴召喚控制戒指時要開「召喚上次手選的」
         （summons.js 記 lastChosen，Summons.useLast()／lastName／hasRing()），否則不自動召喚以免一直跳選單；列出目前召喚物
   沒做（遊戲沒有對應系統）：寵物、夥伴視窗、武器耐久／修理、水中（伊娃的祝福）、玩家中毒、木乃伊定身、經驗藥水與魔法屏障卷軸效果、隊友補血
+  第 3 期實測（2026-11-13，本機法師／妖精測試角色）：自動召喚（魔熊、強力風之精靈）、輔助魔法、開怪（光箭）、範圍（龍捲風）、心靈轉換、死亡後再變身（格利芬）都通過

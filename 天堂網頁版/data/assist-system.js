@@ -17,7 +17,7 @@ const AssistSystem=(()=>{
  const QTY=[1,5,10,20,50,100,200,500,1000];
  const BUYS=[['tp','瞬間移動卷軸',10],['home','傳送回家的卷軸',5],['heal','補血道具（補給選的那種）',100],['haste','綠色藥水',5],['brave','勇敢藥水類',5],['wisdom','慎重藥水',5],['blue','藍色藥水',5],['arrow','箭（裝備弓時）',1000]];
  const base=()=>({noMobTp:false,noMobSec:10,potions:{haste:false,brave:false,wisdom:false,blue:false},attackOn:false,attackSkill:null,attackMp:30,buffs:[],list:{},escape:false,healFallback:false,morph:false,openOn:false,openSkill:null,openMp:50,aoeOn:false,aoeSkill:null,aoeRange:3,aoeCount:3,aoeMp:50,mindOn:false,mindHp:80,mindMp:40,summonOn:false,ringOn:false,buy:Object.fromEntries(BUYS.map(([k,,n])=>[k,{on:false,n}]))});
- let state=base(),owner='',dialog=null,tab='hunt',idleSince=0,lastTp=0,retry=new Map(),escapes=[],lostMorph=null,lastOpen=null;
+ let state=base(),owner='',dialog=null,tab='hunt',idleSince=0,lastTp=0,retry=new Map(),escapes=[],lostMorph=null,seenMorph=null,lastOpen=null;
  const int=(v,lo,hi,d)=>Number.isInteger(v)?Math.max(lo,Math.min(hi,v)):d;
  function validate(v){const s=base();if(!v||typeof v!=='object')return s;
   s.noMobTp=v.noMobTp===true;s.noMobSec=int(v.noMobSec,3,60,10);for(const k of Object.keys(s.potions))s.potions[k]=v.potions?.[k]===true;
@@ -29,7 +29,7 @@ const AssistSystem=(()=>{
   for(const [k] of BUYS){const b=v.buy?.[k];if(b)s.buy[k]={on:b.on===true,n:QTY.includes(b.n)?b.n:s.buy[k].n};}
   if(v.list&&typeof v.list==='object')for(const [map,names] of Object.entries(v.list)){if(!names||typeof names!=='object')continue;const m={};for(const [n,mode] of Object.entries(names))if(['skip','tp'].includes(mode))m[n]=mode;if(Object.keys(m).length)s.list[map]=m;}
   return s;}
- function activate(v){state=validate(v);owner=window.activeCharacterId||'';idleSince=0;lastTp=0;retry.clear();escapes=[];lostMorph=null;lastOpen=null;close();}
+ function activate(v){state=validate(v);owner=window.activeCharacterId||'';idleSince=0;lastTp=0;retry.clear();escapes=[];lostMorph=null;seenMorph=null;lastOpen=null;close();}
  function save(next){if(window.gameFlowState!=='playing'||owner!==window.activeCharacterId)return false;const old=state;state=validate({...state,...next});if(!GameEntry.saveActive()){state=old;return false;}return true;}
  const mapList=()=>state.list[String(window.activeMapId||0)]||{};
  function skip(mob){const m=mapList()[mob?.spawn?.npc?.name];return m==='skip'||m==='tp';}
@@ -73,7 +73,9 @@ const AssistSystem=(()=>{
   const home=owned().find(e=>handler(e)==='teleport.GoHome_Reel');if(home&&TeleportScrolls.use(home.uid)){escapes=[];return true;}return false;}
  function tick(){
   if(window.gameFlowState!=='playing'||owner!==window.activeCharacterId||OwnedInventory.owner!==owner)return;
-  if(CharacterActions.dead||hp<=0){if(TransformCards.active)lostMorph=TransformCards.active;return;}
+  // 倒地的同一刻變身就被取消（TransformCards.onDeath），所以平常就記住目前變身；活著時自己取消變身則清掉，不會被自動變回去
+  if(CharacterActions.dead||hp<=0){if(seenMorph)lostMorph=seenMorph;seenMorph=null;return;}
+  if(!lostMorph)seenMorph=TransformCards.active||null;
   const now=movementTime(),auto=IslandCombat.mode==='auto';
   if(escape(now))return;
   if(autoBuy(now))return;
