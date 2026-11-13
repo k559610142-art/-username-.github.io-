@@ -139,3 +139,13 @@ NPC 穿衣服（2026-11-13）：
                                     用法：node tools/npc-clothes/build.js [--preview 預覽.png]（新舊對照用）
   assets/native-monsters/npc-dressed-<外觀>-<n>.png   重切的 NPC 圖（約 4.4 MB）
   data/npc-clothes-data.js          載在 dungeon-monster-data.js 後面，覆蓋 islandMonsterFrames 並把圖檔加進 nativeMonsterFiles；雷德（3757）原本沒圖，這次也補上
+
+背景音樂（2026-11-13）：
+  tools/music/parse-def.js         解析天地劫客戶端 Text.pak 的 music.def：System Setting（Login／各職業建角／Hunting／Death／PledgeWar…）＋
+                                   LOC 地圖 [x1 y1 x2 y2]（\ 分隔多張地圖、可續行）／MUSIC 曲目清單
+  tools/music/build.js             node tools/music/build.js [--client DIR]：只複製遊戲現有地圖（Map 0／4＋native-dungeon-maps 130 張）與系統場景用到的
+                                   Sound/music<N>.mp3 到 assets/music/（目前 57 首約 83 MB；用不到的會刪掉），產生 data/music-zones-data.js（window.MUSIC_ZONES）
+                                   客戶端共約 200 首，其餘是遊戲還沒有的地圖用的；之後新增地圖重跑一次就會補上
+  data/island-music.js             登入／選角＝music0；建角＝職業曲（戰士沒有自己的，用騎士）；遊戲中每秒依 activeMapId＋worldX/worldY 找區域
+                                   （第一個符合的區域優先、整張地圖那行墊底），沒列到的地圖（3、16、17、62、301、305、330、401）放 Hunting；死亡放 Death；
+                                   一區多首＝照地圖編號挑起始曲、播完換下一首；換曲淡出淡入 0.9 秒；設定「遊戲音樂 開啟／關閉」按鈕文字不可改（settings-panel.js 用文字找）
