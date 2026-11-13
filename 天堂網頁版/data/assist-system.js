@@ -110,9 +110,11 @@ const AssistSystem=(()=>{
 
  // ---- 介面 ----
  const css=document.createElement('style');css.textContent=`
- .assist-hud{position:absolute;z-index:12;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;width:54px;height:54px;padding:3px!important;min-height:0!important;background:#122029c9!important;color:#f4dfa4!important;border:1px solid #b6a576!important;border-radius:4px!important;pointer-events:auto;font-size:11px!important;line-height:1.1}
- .assist-hud svg{width:26px;height:26px;fill:none;stroke:#eee;stroke-width:1.7}
- .assist-hud[aria-pressed=true]{border-color:#e3c65d!important;box-shadow:0 0 6px #e3c65d99}
+ /* 輔助鈕用使用者提供的圖（assets/interface/assist-button.png，金框太陽法陣＋「輔助」字，已去背），文字只留給讀屏 */
+ .assist-hud{position:absolute;z-index:12;width:54px;height:74px;padding:0!important;min-height:0!important;border:0!important;border-radius:0!important;background:url(assets/interface/assist-button.png) center/contain no-repeat!important;pointer-events:auto;cursor:pointer;filter:drop-shadow(0 2px 3px #000b);transition:filter .15s,transform .1s}
+ .assist-hud>*{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+ .assist-hud:active{transform:scale(.95)}
+ .assist-hud[aria-pressed=true]{filter:drop-shadow(0 0 6px #ffd77a) drop-shadow(0 2px 3px #000b) brightness(1.12)}
  .auto-potion-hud{display:none!important}
  .assist-window{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(420px,94%);max-height:86%;display:flex;flex-direction:column;box-sizing:border-box;padding:0 7px 7px;color:#d8cfb8;pointer-events:auto;
   background:linear-gradient(90deg,#6e5a33 0,#c9a85e 2px,#3b3020 4px,transparent 5px,transparent calc(100% - 5px),#3b3020 calc(100% - 4px),#c9a85e calc(100% - 2px),#6e5a33 100%),linear-gradient(#17191c,#121416);box-shadow:0 0 0 1px #000,0 8px 24px #000b;border-radius:3px}
@@ -132,8 +134,9 @@ const AssistSystem=(()=>{
  const hud=el('button','assist-hud');hud.type='button';hud.setAttribute('aria-label','輔助系統');
  hud.innerHTML='<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="4"/><path d="M16 3v5M16 24v5M3 16h5M24 16h5M6.8 6.8l3.5 3.5M21.7 21.7l3.5 3.5M6.8 25.2l3.5-3.5M21.7 10.3l3.5-3.5"/></svg>';hud.append(el('span','','輔助'));
  hud.onclick=()=>dialog?close():open();game.append(hud);
- function place(){const src=document.querySelector('.auto-potion-hud');hud.hidden=window.gameFlowState!=='playing';if(!src)return;hud.style.left=src.style.left;hud.style.top=src.style.top;const top=getComputedStyle(src).top;if(game.classList.contains('classic-hud'))hud.style.top=top;}
- setInterval(place,500);
+ // 位置：左上頭像框（.hud）右邊、和框頂對齊；奇岩式介面照舊按鈕的 top。每次重算，不靠舊鈕的 ResizeObserver
+ function place(){hud.hidden=window.gameFlowState!=='playing';if(hud.hidden)return;const g=game.getBoundingClientRect(),box=document.querySelector('.hud')?.getBoundingClientRect(),bar=document.querySelector('.hud .bar')?.getBoundingClientRect();if(!box||!box.width)return;const right=Math.max(box.right,bar?.right||0);hud.style.left=Math.max(4,Math.min(g.width-58,right-g.left+8))+'px';hud.style.top=(game.classList.contains('classic-hud')?12:Math.max(4,box.top-g.top))+'px';}
+ setInterval(place,500);new ResizeObserver(place).observe(game);
 
  function switcher(on,fn,label){const s=el('button','qy-switch');s.type='button';s.setAttribute('role','switch');s.setAttribute('aria-label',label);s.setAttribute('aria-checked',String(!!on));s.onclick=()=>{const want=s.getAttribute('aria-checked')!=='true';if(fn(want)!==false)s.setAttribute('aria-checked',String(want));};return s;}
  function slider(value,min,max,fn,unit,label){const box=el('span','assist-mob'),r=el('input'),v=el('span','val',value+unit);r.type='range';r.min=String(min);r.max=String(max);r.value=String(value);r.setAttribute('aria-label',label);r.oninput=()=>{v.textContent=r.value+unit;};r.onchange=()=>{if(fn(Number(r.value))===false){r.value=String(value);v.textContent=value+unit;}else value=Number(r.value);};box.append(r,v);return box;}
