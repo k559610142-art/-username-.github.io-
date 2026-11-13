@@ -102,7 +102,9 @@ const IslandMonsters = (() => {
       mob.rest=now+1400+Math.random()*2300;
     }
     if(mob.spawn.ally){window.Summons?.update(mob,now,stepToward);return;}    if(IslandNpcAi.update(mob,now,mobs,steps,stepToward))return;
-    if(mob.spawn.resident||mob.step||now<mob.rest)return;
+    // 消氣的常駐 NPC（被強制攻擊追出去的警衛）走回原位
+    if(mob.spawn.resident){if(!mob.step&&now>=mob.rest&&(mob.x!==mob.homeX||mob.y!==mob.homeY)&&!stepToward(mob,mob.homeX,mob.homeY,now))mob.rest=now+1000;return;}
+    if(mob.step||now<mob.rest)return;
     const leader=mob.pack?.leader;
     const home=leader&&leader!==mob&&leader.hp?[leader.x,leader.y]:[mob.homeX,mob.homeY];
     if(Math.max(Math.abs(mob.x-home[0]),Math.abs(mob.y-home[1]))>3){

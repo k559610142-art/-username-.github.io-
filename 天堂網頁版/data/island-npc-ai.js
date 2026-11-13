@@ -2,12 +2,17 @@
 const IslandNpcAi = (() => {
   const distance = (x, y, tx, ty) => Math.max(Math.abs(x - tx), Math.abs(y - ty));
   const safe = (x, y) => (tile(x, y) & 48) === 16;
-  const canFight = mob => !mob.spawn.resident && mob.spawn.npc.attack > 0;
+  // 強制攻擊：被打的常駐警衛／守護者（有血量）會生氣反擊，安全區也一樣；玩家離開範圍或死亡後消氣、走回原位（island-monsters.js advance）。
+  const retaliates = mob => mob.spawn.resident && mob.spawn.npc.hp > 0 && (mob.spawn.npc.kind === 'L1Guard' || mob.spawn.npc.kind === 'L1Guardian');
+  const canFight = mob => !mob.spawn.resident && mob.spawn.npc.attack > 0 || !!mob.angry && retaliates(mob);
+  const calm = mob => { mob.alert = false; mob.windup = null; mob.angry = false; };
+  const swing = npc => npc.attack || 1000; // 部分警衛 DB 沒有攻擊動作時間
   let owner, slowedUntil = 0, cursedUntil = 0, immuneUntil = 0;
 
   function reset(mob) {
     mob.aiOwner = owner;
     mob.alert = false;
+    mob.angry = false;
     mob.windup = null;
     mob.ready = 0;
     mob.action = null;
@@ -25,11 +30,18 @@ const IslandNpcAi = (() => {
   }
 
   function provoke(mob, nearby) {
-    if (!playerActive() || !canFight(mob) || safe(worldX, worldY) || safe(mob.x, mob.y)) return;
     if (mob.aiOwner !== owner) reset(mob);
+    if (playerActive() && retaliates(mob)) mob.angry = true;
+    if (!playerActive() || !canFight(mob) || !mob.angry && (safe(worldX, worldY) || safe(mob.x, mob.y))) return;
     mob.alert = true;
     const npc = mob.spawn.npc;
     for (const ally of nearby) {
+      // 附近 6 格內同種類的警衛／守護者一起反擊
+      if (mob.angry && ally !== mob && ally.hp && retaliates(ally) && ally.spawn.npc.kind === npc.kind && distance(mob.x, mob.y, ally.x, ally.y) <= 6) {
+        if (ally.aiOwner !== owner) reset(ally);
+        ally.angry = ally.alert = true;
+        continue;
+      }
       if (ally === mob || !ally.hp || !canFight(ally)) continue;
       if (mob.pack && ally.pack === mob.pack ||
           npc.family && ally.spawn.npc.family === npc.family && ally.spawn.npc.familyAggro &&
@@ -81,22 +93,26 @@ const IslandNpcAi = (() => {
       reset(mob);
     }
     if (window.Summons?.drive(mob, now, stepToward)) return true;
-    if (!canFight(mob) || !playerActive() || now < immuneUntil || safe(worldX, worldY) || safe(mob.x, mob.y) || window.ClassBuffs?.invisible()) {
-      mob.alert = false;
-      mob.windup = null;
+    if (!canFight(mob) || !playerActive() || now < immuneUntil || !mob.angry && (safe(worldX, worldY) || safe(mob.x, mob.y)) || window.ClassBuffs?.invisible()) {
+      calm(mob);
       return false;
     }
     const gap = distance(mob.x, mob.y, worldX, worldY);
     const leash = mob.spawn.movement || 12;
     if (gap > 18 || distance(mob.homeX, mob.homeY, worldX, worldY) > leash + 2) {
-      mob.alert = false;
-      mob.windup = null;
+      calm(mob);
       return false;
     }
     const clear = gap <= 14 && IslandCombat.clearShot(mob.x, mob.y, worldX, worldY);
     if (!mob.alert && mob.spawn.npc.aggressive && gap <= 14 && clear) provoke(mob, mobs);
     if (!mob.alert) return false;
     if (mob.step) return true;
+    // 攻擊最小距離 1 格：跟玩家同一格（重疊）時先退到旁邊空格再出手
+    if (gap === 0) {
+      const first = Math.floor(Math.random() * steps.length);
+      for (let i = 0; i < steps.length; i++) { const [dx, dy] = steps[(first + i) % steps.length]; if (stepToward(mob, mob.x + dx * 2, mob.y + dy * 2, now)) break; }
+      return true;
+    }
     const npc = mob.spawn.npc, basicRange = Math.max(1, npc.ranged);
     if (mob.windup) {
       const hit = mob.windup;
@@ -112,7 +128,7 @@ const IslandNpcAi = (() => {
       const dx = Math.sign(worldX - mob.x), dy = Math.sign(worldY - mob.y);
       const heading = steps.findIndex(([x, y]) => x === dx && y === dy);
       if (heading >= 0) mob.heading = heading;
-      const duration = skill?.type === 2 ? npc.cast || npc.attack : npc.attack;
+      const duration = skill?.type === 2 ? npc.cast || swing(npc) : swing(npc);
       if (skill) {
         const use = mob.skillUse.get(skill.order);
         mob.skillUse.set(skill.order, {count: (use?.count || 0) + 1, ready: now + Math.max(skill.reuse, skill.spell?.reuse || 0)});

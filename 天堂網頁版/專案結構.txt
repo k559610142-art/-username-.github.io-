@@ -155,3 +155,7 @@ NPC 穿衣服（2026-11-13）：
   data/orb-hud.js         .reference-force 改用 CSS 圓底＋文字「強制攻擊」（lock.png 內建「鎖定」字樣不再使用），aria-pressed=true 時紅色發光
   data/island-monsters.js selectAt：強制攻擊開啟時點到任何目標（含 NPC、守衛）直接回傳 'attack'，不開 NPC 對話；
                           damage：DB 沒有血量的常駐 NPC（商人、傳送師、管家等）不受傷，守衛、稻草人、守護者等有血量的照常扣血（目前不會反擊）
+  守衛反擊（2026-11-13）：data/island-npc-ai.js retaliates()＝有血量的常駐 L1Guard／L1Guardian；被打（provoke）後 mob.angry＝true 才會 canFight，
+                          安全區也照打，附近 6 格同種類一起生氣；玩家離開 18 格／超出範圍／死亡就消氣（calm），island-monsters.js advance 讓常駐 NPC 走回原位；
+                          DB 攻擊動作時間 0 的警衛用 1000 毫秒（swing）
+  怪物攻擊最小距離 1 格（2026-11-13）：island-npc-ai.js update 裡跟玩家同一格（gap 0）時先往旁邊空格走一步再出手，避免重疊
