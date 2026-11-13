@@ -83,7 +83,8 @@
  function row(label,value,key){const r=el('div','qy-row');r.append(el('span','',label));const b=el('b','',String(value??'—'));if(key)b.dataset.qyVital=key;r.append(b);return r}
  function meter(pct){const m=el('div','qy-meter'),i=el('i');i.style.width=Math.max(0,Math.min(100,pct))+'%';m.append(i);return m}
  function tabs(list,current,pick){const bar=el('div','qy-tabs');bar.setAttribute('role','tablist');for(const [key,label,badge]of list){const b=el('button','',label);b.type='button';b.dataset.key=key;b.setAttribute('role','tab');b.setAttribute('aria-selected',String(key===current));if(badge!==undefined)b.append(el('sup','',String(badge)));b.onclick=()=>{for(const x of bar.children)x.setAttribute('aria-selected',String(x===b));pick(key)};bar.append(b)}return bar}
- function portrait(){const rules=window.CreationRules?.classes?.[job],file=rules?.portraits?.[characterGender?1:0]||rules?.portraits?.[0];const img=el('img');img.alt='';img.src=file?'assets/entry/'+file:currentPortrait();img.onerror=()=>img.remove();return img}
+ // 立繪跟左上頭像同一來源（classic-panels.js currentPortrait：新職業優先用正式立繪 art，不再用建角像素圖）
+ function portrait(){const img=el('img');img.alt='';img.src=currentPortrait();img.onerror=()=>img.remove();return img}
 
  // ---------- 角色（status） ----------
  let charTab='ability';
