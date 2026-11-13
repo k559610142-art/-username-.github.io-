@@ -54,7 +54,7 @@ function renderDollShop() {
         const price = DOLL_SHOP_PRICE;
         return `<div class="list-row"><div class="item-info">${itemThumbHtml(id)}<b class="${itemClass({id})}">${esc(d.name)}</b><small>💎 ${fmt(price)}</small>${dollAbilityHtml(id)}</div><button class="mini" onclick="dollShopBuy('${id}')" ${dollShopBusy || !dollShopCanBuy() || !product ? 'disabled' : ''}>購買</button></div>`;
     }).join('');
-    return tabs + `<div class="panel"><b>💎 鑽石商人・露米</b><p>T4 娃娃每隻 500 鑽石，魔法結晶包每包 50 鑽石。登入帳號即可購買，每次購買一隻，請至帳號共用倉庫取出（沿用倉庫取出費用）。</p><small class="muted">一次僅出場一隻並提供能力。持有鑽石：💎 ${diaCount == null ? '—' : fmt(diaCount)}</small>${dollShopErr ? `<p class="bad">${esc(dollShopErr)}</p>` : ''}<button class="mini secondary" onclick="dollShopLoad()">重新讀取</button></div><div class="list storage-list">${crystalPackRow()}${rows}</div>`;
+    return tabs + `<div class="panel"><b>💎 鑽石商人・露米</b><p>T4 娃娃每隻 500 鑽石，魔法結晶包每包 50 鑽石，回憶蠟燭每支 100 鑽石。登入帳號即可購買，每次購買一隻，請至帳號共用倉庫取出（沿用倉庫取出費用）。</p><small class="muted">一次僅出場一隻並提供能力。持有鑽石：💎 ${diaCount == null ? '—' : fmt(diaCount)}</small>${dollShopErr ? `<p class="bad">${esc(dollShopErr)}</p>` : ''}<button class="mini secondary" onclick="dollShopLoad()">重新讀取</button></div><div class="list storage-list">${crystalPackRow()}${typeof candleShopRow === 'function' ? candleShopRow() : ''}${rows}</div>`;
 }
 async function dollShopLoad() {
     const uid = cloudUser && cloudUser.id || '';

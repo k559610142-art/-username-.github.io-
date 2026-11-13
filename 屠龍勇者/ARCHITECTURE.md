@@ -337,7 +337,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261113x`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261113y`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -5108,10 +5108,10 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 入口：手機右抽屜「🎮 小遊戲」（`DRAWERS.right`，設定上面）、PC 地圖左側圓鈕（`PC_SLOTS`，交易所下面 y 590）。分頁 `renderMiniGames` 列出小遊戲，「開始遊玩」→ `openMiniSurvivor`：`#minigame-layer`（z-index 9500）裡放 iframe `survivor.html?v=版本`，左下角「✕ 離開小遊戲」→ `closeMiniGame` 移除。iframe 自己吃鍵盤，不會讓村莊人物跟著走；遊戲本體（掛機）照常在背景跑。
 - 之後要加新的小遊戲：做成獨立 html，在 `renderMiniGames` 加一張卡片與開啟函式即可。
 
-## 335. 回憶蠟燭：重新分配出生配點（2026-11-13，版本 `20261113x`；新檔 `data/memory-candle.js`）
+## 335. 回憶蠟燭：重新分配出生配點（2026-11-13，版本 `20261113y`；新檔 `data/memory-candle.js`、SQL `tools/memory-candle.sql`、測試 `tools/test-memory-candle-db.js`）
 
 - 使用者規格：新道具「回憶蠟燭」，讓玩家重新出生配點，萬能藥的 5 點也可以加入出生配點；使用後等級不變、萬能藥使用次數不變。
 - 存檔只有 `player.stats` 一個總數，沒記錄每一點來自出生、萬能藥還是 51 級後的升級，使用者選擇「升級點退回讓玩家重加」：使用時能力值從職業最低值（`CLASSES[cls].base`）開始，在視窗重新分配 出生 `CREATE_TOTAL`（75）＋`player.elixirs` 點；出生規則單項最高 `CREATE_STAT_MAX`（18），超過 18 的部分算萬能藥點（總共不能超過已吃的萬能藥數），單項最高 `STAT_CAP`（35）；點數要剛好分完才能確定。已加進能力值的其他點數（總和 − 75 − 萬能藥）全部退回 `player.statPoints`，照平常在人物狀態加回去。
 - 道具 `ITEMS.memoryCandle`（cat scroll、`candle:true`、重 0.1、回收 0、沒有 price＝商店不賣）；背包點它「使用」→ `openMemoryCandle`（＋／−、重設、確定）→ `candleApply` 用 `gameConfirm` 列出前後差異，確定才扣 1 支蠟燭、套用、`clampHpMp`、存檔。HP／MP 上限不變（體質、精神只影響之後升級的成長）。onclick 只呼叫頂層函式（`candleAdj`／`candleReset`／`candleApply`）。
-- **取得方式尚未決定**（目前只有 GM 用聊天 /give 回憶蠟燭 發）；它不在後端道具目錄，所以不能放共用倉庫／交易所／管理頁發放，要開放需另外同步目錄。
+- **取得**（20261113y，使用者決定）：鑽石商人販售，**每支 100 鑽石**。照魔法結晶包的做法：`candleShopRow` 接在結晶包下面，`candleBuy` 確認 → `candlePurchase` 呼叫 `candle_buy(p_price, p_request)`（tools/memory-candle.sql：伺服器固定價 100、扣 `dragon_wallet` 鑽石、放一筆 `{id:memoryCandle,n:1}` 到 `dragon_vault_items`、記 `dragon_candle_orders` 與 `dragon_dia_log`；同一個 request 只交付一次、倉庫滿或鑽石不足不扣）；玩家到帳號共用倉庫取出（`vault_take2` 不檢查道具目錄）。回憶蠟燭不在後端道具目錄，所以從背包存回共用倉庫、上交易所可能被伺服器拒絕。GM 也能用聊天 /give 回憶蠟燭 發。
 - 本機驗證：測試修羅（萬能藥 5）重配：出生點單項卡 18、萬能藥 5 點推到 23、第 6 點擋下；套用後等級、萬能藥次數、最大 HP 不變，多出的 6 點退回可分配點數，蠟燭 −1；Console 無錯誤。

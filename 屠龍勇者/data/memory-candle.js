@@ -7,7 +7,7 @@
 
 const CANDLE_ID = 'memoryCandle';
 ITEMS[CANDLE_ID] = {
-    name: '回憶蠟燭', cat: 'scroll', candle: true, wt: 0.1, sell: 0,
+    name: '回憶蠟燭', cat: 'scroll', candle: true, wt: 0.1, sell: 0,   // 鑽石商人 100 鑽石（candle_buy）
     desc: '點燃後回想出生的那一刻：重新分配出生配點（75 點）＋萬能藥的點數。51 級以後的升級點數會退回成可分配點數，再自行加回。等級與萬能藥使用次數不變。',
 };
 
@@ -72,4 +72,35 @@ function candleApply() {
         closeDialog();
         saveGame(); refreshUI();
     }, '確定');
+}
+
+// ───────── 鑽石商人販售（2026-11-13 使用者決定：100 鑽石一支；tools/memory-candle.sql 的 candle_buy，放進帳號共用倉庫）─────────
+const CANDLE_PRICE = 100;
+function candleShopRow() {
+    return `<div class="list-row"><div class="item-info">${itemThumbHtml(CANDLE_ID)}<b>回憶蠟燭</b><small>💎 ${CANDLE_PRICE}・1 支</small><small class="muted">重新分配出生配點（75 點＋萬能藥點數），升級點數退回可分配。</small></div><button class="mini" onclick="candleBuy()" ${dollShopBusy || !dollShopCanBuy() ? 'disabled' : ''}>購買</button></div>`;
+}
+function candleBuy() {
+    if (!inTown() || !dollShopCanBuy() || dollShopBusy) return;
+    const owner = player, uid = cloudUser.id;
+    gameConfirm('購買回憶蠟燭', `花費 ${CANDLE_PRICE} 鑽石購買「回憶蠟燭」×1？\n放入帳號共用倉庫，取出後在背包使用。`, () => {
+        if (player === owner && cloudUser && cloudUser.id === uid && inTown()) candlePurchase(uid);
+    }, '確認購買');
+}
+async function candlePurchase(uid) {
+    if (dollShopBusy || !inTown() || !dollShopCanBuy() || cloudUser.id !== uid) return;
+    const key = uid + '|memoryCandle';
+    if (!dollShopRequests.has(key)) dollShopRequests.set(key, crypto.randomUUID());   // 斷線重試沿用同一個請求，只交付一次
+    dollShopBusy = true; dollShopErr = ''; dollShopRefresh();
+    try {
+        const r = await marketRpc('candle_buy', { p_price: CANDLE_PRICE, p_request: dollShopRequests.get(key) });
+        dollShopRequests.delete(key);
+        if (!cloudUser || cloudUser.id !== uid) return;
+        diaCount = r.diamonds; vaultData = null;
+        showToast('已購買回憶蠟燭，請到帳號共用倉庫取出', 3500);
+    } catch (e) {
+        if (!cloudUser || cloudUser.id !== uid) return;
+        const m = String(e && e.message || e);
+        dollShopErr = /candle_buy|schema cache/i.test(m) ? '回憶蠟燭尚未開放，請管理者執行 memory-candle.sql' : /banned/.test(m) ? '帳號已被停權，無法購買' : /not logged in/.test(m) ? '請先登入帳號' : /not enough diamonds/.test(m) ? '鑽石不足' : /vault full/.test(m) ? '共用倉庫已滿，未扣鑽石' : /price changed/.test(m) ? '商品價格已變更，請重新讀取後再確認' : cloudErrText(e);
+        showToast(dollShopErr);
+    } finally { dollShopBusy = false; dollShopRefresh(); }
 }
