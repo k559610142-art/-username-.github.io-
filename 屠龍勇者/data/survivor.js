@@ -247,10 +247,16 @@ function infJoinTick() {
     if (!hunt || hunt.state !== 'fight' || hunt.mobs.length >= INF_PACK || !scene || !scene.mons || !scene.pl) return;
     const pl = scene.pl;
     const ranged = mid => (INF_TYPES[(mid || '').replace(/^art-/, '')] || {}).magic || infHas('ranged');
-    if (!scene.mons.some(m => !m.dead && !m.inst && Math.max(Math.abs(m.x - pl.x), Math.abs(m.y - pl.y)) <= (ranged(m.mid) ? RANGED_RANGE : 1))) return;
+    const dist = m => Math.max(Math.abs(m.x - pl.x), Math.abs(m.y - pl.y));
+    const free = scene.mons.filter(m => !m.dead && !m.inst);
+    // 貼身（1 格）用近戰；身邊擠滿、4 格內走不過來（卡住 2 步以上）的怪改用遠程攻擊（使用者 2026-11-13：攻擊不到玩家就改遠程）
+    const melee = free.some(m => dist(m) <= 1 || (ranged(m.mid) && dist(m) <= RANGED_RANGE));
+    const blocked = !melee && free.some(m => dist(m) <= RANGED_RANGE && (m.stuck || 0) >= 2);
+    if (!melee && !blocked) return;
     const boss = !!(infRun && infRun.bossDue);
     if (boss) infRun.bossDue = false;
     const mon = infMakeMonster(boss);
+    if (blocked) mon.infRanged = true;   // ui-scene.js：4 格內就算打得到（照樣是物理攻擊，看命中／閃避／防禦）
     addMob(mon);
     if (boss) addLog(`⚠️ ${mon.name}（Lv.${mon.lv}）出現了！`, 'boss');
 }
