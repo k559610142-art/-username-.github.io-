@@ -4,7 +4,8 @@ const ATLAS_POINTS = SCENE_WORLD_TILES.filter((r, i, a) => a.findIndex(q => q.zo
 })).concat([
     { id: 'talking', kind: 'town', x: 9, y: 55 }, { id: 'gludio', kind: 'town', x: 35, y: 55 },
     { id: 'giran', kind: 'town', x: 54, y: 45 }, { id: 'aden', kind: 'town', x: 84, y: 20 },
-    { id: 'tower', kind: 'zone', x: 7, y: 23 }, { id: 'infinite', kind: 'zone', x: 30.5 / 188 * 100, y: 14.5 / 149 * 100, target: [30, 16], entrance: true },   // 無限塔：紫霧遺跡的守門人（第 332 節），可直接傳送或步行至入口 { id: 'ivory', kind: 'zone', x: 64, y: 95 },   // 傳送師移除後只能直接傳送（第 161 節）
+    { id: 'tower', kind: 'zone', x: 7, y: 23 }, { id: 'infinite', kind: 'zone', x: 30.5 / 188 * 100, y: 14.5 / 149 * 100, target: [30, 16], entrance: true },   // 無限塔：紫霧遺跡的守門人（第 332 節），可直接傳送或步行至入口
+    { id: 'ivory', kind: 'zone', x: 64, y: 95 },   // 暮光法師塔：傳送師移除後只能直接傳送（第 161 節）；別再和別的點寫在同一行註解後面
     { id: 'venomNest', kind: 'zone', x: 164.5 / 188 * 100, y: 125.5 / 149 * 100, target: [164, 127], entrance: true, art: 'images/maps/rework/venom-entrance-v1.png' },
     { id: 'lairAntharas', kind: 'zone', x: 66, y: 72 }, { id: 'lairFafurion', kind: 'zone', x: 7, y: 44 },
     { id: 'lairLindvior', kind: 'zone', x: 86, y: 6 }, { id: 'lairValakas', kind: 'zone', x: 94, y: 44 },

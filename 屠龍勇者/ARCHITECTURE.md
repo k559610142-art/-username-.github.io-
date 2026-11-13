@@ -5115,3 +5115,8 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 道具 `ITEMS.memoryCandle`（cat scroll、`candle:true`、重 0.1、回收 0、沒有 price＝商店不賣）；背包點它「使用」→ `openMemoryCandle`（＋／−、重設、確定）→ `candleApply` 用 `gameConfirm` 列出前後差異，確定才扣 1 支蠟燭、套用、`clampHpMp`、存檔。HP／MP 上限不變（體質、精神只影響之後升級的成長）。onclick 只呼叫頂層函式（`candleAdj`／`candleReset`／`candleApply`）。
 - **取得**（20261113y，使用者決定）：鑽石商人販售，**每支 100 鑽石**。照魔法結晶包的做法：`candleShopRow` 接在結晶包下面，`candleBuy` 確認 → `candlePurchase` 呼叫 `candle_buy(p_price, p_request)`（tools/memory-candle.sql：伺服器固定價 100、扣 `dragon_wallet` 鑽石、放一筆 `{id:memoryCandle,n:1}` 到 `dragon_vault_items`、記 `dragon_candle_orders` 與 `dragon_dia_log`；同一個 request 只交付一次、倉庫滿或鑽石不足不扣）；玩家到帳號共用倉庫取出（`vault_take2` 不檢查道具目錄）。正式庫使用者 11/13 已執行（第一次沒套用成功，重貼含 `notify pgrst, 'reload schema'` 後確認 candle_buy 存在、匿名呼叫被拒）。回憶蠟燭不在後端道具目錄，所以從背包存回共用倉庫、上交易所可能被伺服器拒絕。GM 也能用聊天 /give 回憶蠟燭 發。
 - 本機驗證：測試修羅（萬能藥 5）重配：出生點單項卡 18、萬能藥 5 點推到 23、第 6 點擋下；套用後等級、萬能藥次數、最大 HP 不變，多出的 6 點退回可分配點數，蠟燭 −1；Console 無錯誤。
+
+## 336. 修正世界地圖暮光法師塔傳送點被註解掉（2026-11-13，版本 `20261113z`；`world-atlas.js` 的 `ATLAS_POINTS`）
+- 現象：世界地圖上看不到「暮光法師塔」，無法傳送前往（第 161 節後只能從世界地圖直接傳送，等於整張地圖到不了）。
+- 原因：`a1bd1f18a` 加無限塔入口（第 332 節）時，把 `{ id: 'infinite', … }` 插在 `{ id: 'ivory', … }` 前面同一行，並在中間加 `//` 註解，ivory 那段變成註解內容。
+- 修正：ivory 拆回自己一行。`ATLAS_POINTS` 每行結尾若有 `//` 註解，後面不要再接資料。
