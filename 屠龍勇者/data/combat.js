@@ -11,11 +11,13 @@ function currentZone() { return player.loc.type === 'zone' ? ZONE_BY_ID[player.l
 function zoneTitle() {
     const z = currentZone();
     if (!z) return TOWNS[player.loc.id].name;
+    if (z.type === 'infinite') return infTitle() + '・剩 ' + infFloorLeft() + ' 秒';   // 無限塔：樓層與倒數
     return z.type === 'tower' ? `${z.name} ${player.loc.floor}F` : z.name;
 }
 
 function startHunt() {
-    if (!lootCanPlay()) return;
+    const infFree = typeof inInfinite === 'function' && inInfinite();   // 無限塔沒有掉寶，不需要後端掉寶連線（訪客也能挑戰）
+    if (!infFree && !lootCanPlay()) return;
     if (!currentZone()) { showToast('請先傳送到狩獵地點'); return; }
     if (walkHome) { showToast('正在步行回村'); return; }
     player.hunting = true;
@@ -209,8 +211,9 @@ function autoSupport(st) {
 
 // ───────── 主迴圈中的掛機處理 ─────────
 function huntTick(dt) {
+    if (typeof infTick === 'function') infTick(dt);   // 無限塔：每層 30 秒計時（不管有沒有在掛機）
     if (!player.hunting) return;
-    if (!SIM_MODE && lootMode !== 'legacy' && !lootCanPlay()) {
+    if (!SIM_MODE && lootMode !== 'legacy' && !(typeof inInfinite === 'function' && inInfinite()) && !lootCanPlay()) {
         if (lootWaiting()) return;   // 後端狀態確認中／剛才連不上：掛機先暫停，恢復後自動繼續（loot.js，第 99 節）
         stopHunt('⚠️ 後端掉寶未連線，已暫停掛機'); return;
     }
@@ -267,6 +270,8 @@ function huntTick(dt) {
     if (!fightAlive()) return;
     // 共鳴防具受擊觸發的反擊（resonance.js）
     if (resonanceFlush(calcStats())) { if (!fightAlive()) return; reapMobs(); if (!fightAlive()) return; }
+    // 無限塔：貼到身邊的怪不斷加入戰鬥（survivor.js）
+    if (currentZone().type === 'infinite') { hunt.joinCd -= dt; if (hunt.joinCd <= 0) { hunt.joinCd = 250; infJoinTick(); } return; }
     // 打到一半，附近的怪可能被吸引過來加入戰鬥
     hunt.joinCd -= dt;
     if (hunt.joinCd <= 0) {
@@ -285,6 +290,7 @@ const MOB_SIDE_SLOW = 1.6;   // 非目標的怪出手間隔 ×1.6（圍著輪流
 // 同時最多幾隻：龍穴 1、永夜之塔 3、其他 6
 function packMax() {
     const z = currentZone();
+    if (z && z.type === 'infinite') return INF_PACK;   // 無限塔：同時最多 10 隻圍攻
     return (!z || z.type === 'dragon' ? 1 : z.type === 'tower' ? 3 : 6) + (z && z.type !== 'dragon' && mapModOn('swarm') ? 2 : 0);
 }
 // 一開始出現幾隻（受 packMax 限制）
@@ -296,7 +302,7 @@ function packRoll() {
 }
 // 群越大每隻越弱：第 n 隻成群的怪 HP／經驗／金幣 ÷(1+0.2(n−1))、傷害 ÷(1+0.3(n−1))（6 隻：HP 約 50%、傷害 40%）
 function weakenForPack(m, n) {
-    if (n <= 1 || m.boss) return m;
+    if (n <= 1 || m.boss || m.inf) return m;   // 無限塔的怪數值已依樓層設計，不再因成群變弱
     const hk = 1 / (1 + 0.2 * (n - 1)), dk = 1 / (1 + 0.3 * (n - 1));
     m.hp = m.maxHp = Math.max(1, Math.round(m.maxHp * hk));
     m.exp = Math.max(1, Math.round(m.exp * hk));
@@ -420,6 +426,7 @@ function addMob(mon) {
 function makeZoneMob(z) {
     if (!z || z.type === 'dragon') return null;
     if (z.type === 'tower') return makeTowerMonster(player.loc.floor, false);
+    if (z.type === 'infinite') return infMakeMonster(false);
     if (inMapRun()) return makeMonster(z.mons[rand(0, z.mons.length - 1)]);   // 異界：整個地區的怪都會出現
     let pool = z.mons.filter(id => MONSTERS[id].lv <= player.lv + 3);
     if (!pool.length) pool = [z.mons.reduce((a, b) => MONSTERS[a].lv <= MONSTERS[b].lv ? a : b)];
@@ -853,6 +860,7 @@ function monsterAttack(st, mon) {
 
 // ───────── 結果 ─────────
 function onKill(mon) {
+    if (typeof infOnKill === 'function' && infOnKill(mon)) return;   // 無限塔：不給經驗、不掉寶（survivor.js，第 332 節）
     if (!hunt.mobs.includes(mon)) return;   // 已經結算過
     if (typeof eliteBeforeKill === 'function' && eliteBeforeKill(mon)) return;   // 精英護盾擋下／復甦：這次沒死（elite.js）
     const minion = !!mon.eliteMinion;   // 精英召喚／分裂的小怪：不掉寶、不算任務與異界剩餘數
@@ -1010,6 +1018,7 @@ function checkAutoHome() {
 }
 
 function onDeath(killer) {
+    if (typeof infOnDeath === 'function' && infOnDeath(killer)) return;   // 無限塔：沒有死亡懲罰，從第 1 層重來
     dollResetTransient();
     const z = currentZone(), mon = killer || (hunt && hunt.mon);
     player.deaths++;

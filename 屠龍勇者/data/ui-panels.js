@@ -644,6 +644,7 @@ function openItemDialog(uid) {
     if (d.scroll === 'tele') btns.push({ text: '使用', onClick: quickTele });   // 2026-10-18 第 51 節
     if (d.scroll === 'home') btns.push({ text: '使用', onClick: () => { if (!currentZone()) showToast('你已經在村莊裡'); else useHomeScroll(''); } });
     if (d.cat === 'elixir') btns.push({ text: '使用', onClick: () => openElixirDialog() });
+    if (d.cat === 'doll' && DOLLS[d.doll] && DOLL_UP_NEXT[DOLLS[d.doll].quality]) btns.push({ text: '🎎 升級', cls: 'secondary', onClick: () => openDollUpgrade(uid) });   // 娃娃升級卷軸（伺服器擲骰，doll-upgrade.js，第 333 節）
     if (d.advReshape) btns.push({ text: '使用', onClick: openAdvReshape });   // 命運重塑石：換二轉分支（advance.js）
     if (d.cat === 'book' && !bookLearnError(d)) btns.push({ text: '📖 學習', onClick: () => learnBook(uid) });   // 魔法書（spellbook.js）
     if (!slot && isCloudConfigured() && cloudLoggedIn() && inTown() && marketSellable(inst)) btns.push({ text: '🏪 上架', cls: 'secondary', onClick: () => marketOpenSell(uid) });

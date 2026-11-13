@@ -126,6 +126,10 @@ const ZONES = [
             { id: 'knightHelm', p: 0.0008 }, { id: 'knightShield', p: 0.0008 }, { id: 'holyMace', p: 0.0004 }, { id: 'tsurugi', p: 0.0002 }],
         desc: '共 100 層，每 10 層有守關首領，擊敗後才能往上 10 層。',
     },
+    // 無限塔（第 332 節，survivor.js；大地圖紫霧遺跡有守門人）：怪物大量湧出、每層 30 秒自動進下一層；不給經驗、不掉寶、倒下沒有死亡懲罰
+    { id: 'infinite', name: '無限塔', icon: '🗼', type: 'infinite', lv: [1, 99], town: 'aden', fee: 10000000,   // 門票每次 1000 萬、每天最多 3 次（使用者 2026-11-13 指定，survivor.js）
+        noMap: true, mons: [], drops: [],
+        desc: '怪物源源不絕湧出，每 30 秒進入下一層，看你能撐過幾層。門票每次 1000 萬金幣、每天最多 3 次。挑戰地圖：沒有經驗與掉寶，倒下沒有懲罰（送回塔門口）。' },
     { id: 'lairAntharas', name: '格爾莫斯的巢穴', icon: '🐲', type: 'dragon', boss: 'antharas', reqLv: 60, town: 'aden', fee: 5000, cdH: 6, lv: [60, 99], desc: '大地之龍。' },
     { id: 'lairFafurion', name: '瑟拉恩的巢穴',   icon: '🌊', type: 'dragon', boss: 'fafurion', reqLv: 70, prev: 'antharas', town: 'aden', fee: 8000, cdH: 6, lv: [70, 99], desc: '水之龍。' },
     { id: 'lairLindvior', name: '維斯塔爾的巢穴', icon: '🌪️', type: 'dragon', boss: 'lindvior', reqLv: 80, prev: 'fafurion', town: 'aden', fee: 12000, cdH: 6, lv: [80, 99], desc: '風之龍。' },

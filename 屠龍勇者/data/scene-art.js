@@ -19,6 +19,8 @@ const SCENE_ART_BGS = {
     wild: { src: SCENE_ART_ROOT + 'world-play.jpg', mini: SCENE_ART_ROOT + 'world-mini.jpg', w: 188, h: 149, start: [23, 92], big: true,
         walk: SCENE_WORLD_WALK, block: [], regions: SCENE_WORLD_TILES,
         fieldNpcs: [
+            // 無限塔（第 332 節）：紫霧遺跡中間的守門人，點他進塔（survivor.js 的 openInfiniteEntrance 在 scene-art.js 之後才載入，所以包一層）
+            { name: '無限塔守門人', role: '無限塔', to: 'infinite', zone: 'forgottenIsle', x: 30, y: 14, front: [30, 16], img: 'images/npc/rework/npc-teleport.png', h: 2.0, act: () => openInfiniteEntrance() },
             { name: '毒霧巢穴入口', role: '進入洞穴', to: 'venomNest', zone: 'elvenForest', x: 164, y: 125, front: [164, 127], img: 'images/maps/rework/venom-entrance-v1.png', h: 2.8, entrance: true, act: openVenomNestEntrance },
         ],
     },

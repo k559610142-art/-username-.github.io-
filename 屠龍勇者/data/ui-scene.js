@@ -367,7 +367,7 @@ function themeFor() {
     const z = currentZone();
     if (z.bg && SCENE_BGS[z.bg] && SCENE_BGS[z.bg].big) return { ...SCENE_THEMES.field, bg: z.bg };   // 大地圖（含地監黃沙王陵的外圍）
     if (z.type === 'dragon') return { ...SCENE_THEMES.dragon, bg: SCENE_DRAGON_BGS[z.id] };
-    if (z.type === 'tower') return { ...SCENE_THEMES.tower, bg: 'art-tower' };
+    if (z.type === 'tower' || z.type === 'infinite') return { ...SCENE_THEMES.tower, bg: 'art-tower' };   // 無限塔借用永夜之塔的競技場（第 332 節）
     if (z.id === 'venomNest') return { ...SCENE_THEMES.cave, bg: 'art-venom-nest' };
     if (z.id === 'ivory') return { ...SCENE_THEMES.ivory, bg: 'art-ivory' };
     if (z.type === 'field') return z.bg ? { ...SCENE_THEMES.field, bg: z.bg } : SCENE_THEMES.field;   // z.bg：這張野外用自己的背景圖（大地圖）
@@ -393,7 +393,7 @@ function buildScene() {
     const zz = player.loc.type === 'zone' ? currentZone() : null;
     if (zz && zz.mons) zz.mons.forEach(monSpriteImg);
     if (zz && zz.boss) monSpriteImg(zz.boss);
-    if (zz && zz.type === 'tower') Object.keys(SCENE_ART_MONSTERS).filter(mid => mid.startsWith('art-')).forEach(monSpriteImg);
+    if (zz && (zz.type === 'tower' || zz.type === 'infinite')) Object.keys(SCENE_ART_MONSTERS).filter(mid => mid.startsWith('art-')).forEach(monSpriteImg);
     if (player.loc.type === 'town' && bg) townNpcList(bg).forEach(n => { if (n.img) spriteImage(n.img); });
     const mw = bg ? bg.w : MAP_W, mh = bg ? bg.h : MAP_H;
     // 大地圖：從村莊傳送過來時出生在這個地圖對應區域的 start
@@ -642,6 +642,7 @@ function freeTileFor(x, y) {
 function visualMonster() {
     const z = currentZone();
     if (!z || z.type === 'dragon') return null;
+    if (z.type === 'infinite') return infVisual();   // 無限塔（survivor.js）
     if (z.type === 'tower') {
         const g = Math.min(9, Math.floor((player.loc.floor - 1) / 10));
         const name = TOWER_THEMES[g][rand(0, TOWER_THEMES[g].length - 1)];
@@ -765,7 +766,8 @@ function sceneUpdate(dt) {
     if (inZone && currentZone().type !== 'dragon') {
         scene.spawnCd -= dt;
         const alive = scene.mons.filter(m => !m.dead).length, want = mapMonTarget();
-        if (scene.spawnCd <= 0 && alive < want) { spawnMapMon(); scene.spawnCd = alive < want / 2 ? 0 : 1200; }
+        if (inInfinite()) infSpawnTick(alive);   // 無限塔：每層固定 30 隻（survivor.js）
+        else if (scene.spawnCd <= 0 && alive < want) { spawnMapMon(); scene.spawnCd = alive < want / 2 ? 0 : 1200; }
     }
 
     // 綁定戰鬥中的怪：hunt.mobs 每隻對應一隻地圖怪
@@ -831,8 +833,16 @@ function sceneUpdate(dt) {
             if (m.cd > 0) continue;
             m.cd = 300;
             if (Math.abs(pl.x - m.x) + Math.abs(pl.y - m.y) <= 1) continue;
+            if (inZone && inInfinite()) { infStep(m, pl); continue; }   // 無限塔怪很多：直接朝角色走，不每步尋路（會 LAG）
             const step = findPath(m.x, m.y, pl.x, pl.y, true)[0];   // 尋路繞過牆
             if (step && freeTile(step[0], step[1])) { m.x = step[0]; m.y = step[1]; }
+            continue;
+        }
+        if (inZone && inInfinite()) {   // 無限塔：還沒參戰的怪也一直朝角色衝過來（survivor.js）
+            if (m.cd > 0) continue;
+            m.cd = infStepMs(m);
+            if (infBlink(m, pl) || Math.max(Math.abs(pl.x - m.x), Math.abs(pl.y - m.y)) <= 1) continue;
+            infStep(m, pl);
             continue;
         }
         if (m.cd <= 0) {

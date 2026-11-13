@@ -4,7 +4,7 @@ const ATLAS_POINTS = SCENE_WORLD_TILES.filter((r, i, a) => a.findIndex(q => q.zo
 })).concat([
     { id: 'talking', kind: 'town', x: 9, y: 55 }, { id: 'gludio', kind: 'town', x: 35, y: 55 },
     { id: 'giran', kind: 'town', x: 54, y: 45 }, { id: 'aden', kind: 'town', x: 84, y: 20 },
-    { id: 'tower', kind: 'zone', x: 7, y: 23 }, { id: 'ivory', kind: 'zone', x: 64, y: 95 },   // 傳送師移除後只能直接傳送（第 161 節）
+    { id: 'tower', kind: 'zone', x: 7, y: 23 }, { id: 'infinite', kind: 'zone', x: 30.5 / 188 * 100, y: 14.5 / 149 * 100, target: [30, 16], entrance: true },   // 無限塔：紫霧遺跡的守門人（第 332 節），可直接傳送或步行至入口 { id: 'ivory', kind: 'zone', x: 64, y: 95 },   // 傳送師移除後只能直接傳送（第 161 節）
     { id: 'venomNest', kind: 'zone', x: 164.5 / 188 * 100, y: 125.5 / 149 * 100, target: [164, 127], entrance: true, art: 'images/maps/rework/venom-entrance-v1.png' },
     { id: 'lairAntharas', kind: 'zone', x: 66, y: 72 }, { id: 'lairFafurion', kind: 'zone', x: 7, y: 44 },
     { id: 'lairLindvior', kind: 'zone', x: 86, y: 6 }, { id: 'lairValakas', kind: 'zone', x: 94, y: 44 },
@@ -78,6 +78,7 @@ function atlasTravel(index) {
 // 傳送到地點 p（{ kind, id }，不一定在 ATLAS_POINTS 裡）：確認費用 → 傳送。首領計時的「🌀 傳送」也走這裡（boss-timer.js，第 322 節）
 function atlasTravelTo(p, picked) {
     if (!p || !player || walkHome || player.hp <= 0) return;
+    if (p.kind === 'zone' && ZONE_BY_ID[p.id] && ZONE_BY_ID[p.id].type === 'infinite') { closeWorldAtlas(); openInfiniteEntrance(true); return; }   // 無限塔：買票＋每天次數（survivor.js）
     const z = p.kind === 'zone' && ZONE_BY_ID[p.id], why = z && zoneBlockReason(z), fee = atlasTravelFee(p), tower = z && z.type === 'tower';
     const floor = tower ? clamp(picked || player.towerMax, 1, player.towerMax) : 0;
     if (player.loc.type === p.kind && player.loc.id === p.id && (!tower || player.loc.floor === floor)) { showToast(tower ? `已經在 ${floor}F` : '已經在這個地點'); return; }
