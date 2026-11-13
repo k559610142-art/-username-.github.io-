@@ -32,7 +32,7 @@
                                        （powershell -File tools/orb-hud-cut.ps1 -Src 素材圖.jpg -Out <完整路徑>/assets/interface/orb-hud）
   data/overhead-bars.js               頭頂名牌＋HP（紅）／MP（藍）條（2026-11-12）：水平對齊角色腳下基準點 #actor（永遠在正上方），垂直依目前角色圖的不透明上緣（每張圖算一次快取、平滑移動），
                                        名字沿用 #actor>small（原本那行隱藏），變身時用變身圖算頭頂
-  data/settings-panel.js              設定視窗照網頁奇岩城畫面排版自寫（2026-11-12）：系統（一般／聲音／畫面）＋狩獵（掛機索敵範圍）分頁、開關列；
+  data/settings-panel.js              設定視窗照網頁奇岩城畫面排版自寫（2026-11-12）：系統（一般／聲音／畫面）＋狩獵（掛機索敵範圍）分頁、開關列（2026-11-13 拿掉「製作配方」列）；
                                        原本的設定控制項放在隱藏區保留事件，只重新排列（MutationObserver 偵測 .floating-settings）
   tools/client-pak/                    讀天地劫天堂 .idx/.pak（l1pak.js，Text.pak 有加密，對照表 maps.json 取自開源 PakViewer）、.img 轉 PNG（img2png.js，綠色 0x3E0／0x7E0 為透明）、
                                        依檔名抽圖（extract.js："node tools/client-pak/extract.js C:/Users/User/Desktop/天地劫天堂 assets/interface/client-ui 532.img"）

@@ -1,5 +1,5 @@
 // 設定視窗：照網頁奇岩城畫面排版自寫（分頁＋分區標題＋開關列）。內容沿用遊戲原本的設定控制項，只重新排列與換樣式。
-//  系統：一般（視窗歸位、製作配方、匯出角色存檔、重設快捷欄）／聲音（背景音樂、戰鬥音效）／畫面（螢幕尺寸、全螢幕、操作按鈕大小、底部介面 水晶球式／奇岩式）
+//  系統：一般（視窗歸位、匯出角色存檔、重設快捷欄）／聲音（背景音樂、戰鬥音效）／畫面（螢幕尺寸、全螢幕、操作按鈕大小、底部介面 水晶球式／奇岩式）
 //  狩獵：掛機索敵範圍
 (()=>{
  const css=document.createElement('style');css.textContent=`
@@ -43,13 +43,12 @@
   const h=frame.querySelector('.floating-window-header');if(h){h.querySelector('h2').textContent='設定';const x=h.querySelector('button');if(x)x.textContent='✕'}
   const nodes=[...content.children],byText=re=>nodes.flatMap(n=>n.matches('button')?[n]:[...n.querySelectorAll('button')]).find(b=>re.test(b.textContent));
   const screen=content.querySelector('.screen-settings'),screenSelect=screen?.querySelector('select'),full=screen?byText(/全螢幕/):null,sizeSelect=content.querySelector('#size'),
-   music=byText(/遊戲音樂/),sfx=byText(/戰鬥音效/),recipe=byText(/製作配方/),exportBtn=byText(/匯出角色存檔/),resetQuick=byText(/重設快捷欄/),
+   music=byText(/遊戲音樂/),sfx=byText(/戰鬥音效/),exportBtn=byText(/匯出角色存檔/),resetQuick=byText(/重設快捷欄/),
    rangeInput=nodes.find(n=>n.matches?.('label')&&n.querySelector('input'))?.querySelector('input'),cameraNote=nodes.find(n=>n.tagName==='P')?.textContent.trim();
   const keep=el('div','qy-set-hidden');keep.append(...nodes);   // 原本的控制項保留在隱藏區，事件都還在
   const sys=el('div','qy-set-page'),hunt=el('div','qy-set-page');
   const g1=el('div','qy-set-group');
   g1.append(row('🔄','視窗歸位','把開著的視窗收回預設位置',action('歸位',()=>{const open=FloatingWindows.types.filter(t=>t!=='settings');for(const t of open)FloatingWindows.close(t);for(const t of open)panel(t==='equipment'?'status':t)})));
-  if(recipe)g1.append(row('📜','製作配方','',action('查看',()=>recipe.click())));
   if(exportBtn)g1.append(row('💾','匯出角色存檔','',action('匯出',()=>exportBtn.click())));
   if(resetQuick)g1.append(row('⌨️','重設快捷欄','',action('重設',()=>resetQuick.click())));
   sys.append(el('div','qy-set-head','一般'),g1);
