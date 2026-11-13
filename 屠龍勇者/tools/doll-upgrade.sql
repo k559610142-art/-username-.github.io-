@@ -4,7 +4,8 @@
 --   inf_status(char)               查今天已進塔幾次、剩幾次、卷軸張數（進塔前顯示）
 --   inf_run_start(char)            買票進無限塔時呼叫：每天（台灣時間 00:00 重置）最多 3 次，超過拒絕 'daily limit'；
 --                                  記下這一趟的開始時間（舊的一趟作廢），回傳 {run, used, left}
---   inf_claim(char, run, floor)    撐過第 10／15／20 層時領 1 張：同一趟每層只能領一次，且進塔時間要夠（每層 30 秒，容許 5% 誤差）
+--   inf_claim(char, run, floor)    擊殺第 10、15、20、25…層（10 以上、5 的倍數）首領時領 1 張：同一趟每層只能領一次，
+--                                  且進塔時間要夠（第 N 層的首領最早在 (N−1)×30 秒出現，容許 5% 誤差）
 --   doll_scroll_status(char)       查剩幾張
 --   doll_upgrade(char, from, to)   用 1 張：檢查 from→to 是 T4→T3／T3→T2／T2→T1／T1→T0，伺服器擲 5%，回傳成功與否與剩餘張數
 -- 娃娃本身仍在玩家存檔裡（跟其他道具一樣）；成功時由遊戲把那隻娃娃換成 to。門票 1000 萬金幣由遊戲扣（金幣在存檔裡）。
@@ -105,12 +106,12 @@ create or replace function public.inf_claim(p_char text, p_run uuid, p_floor int
 language plpgsql security definer set search_path = '' as $$
 declare u uuid := public.dragon_doll_scroll_check(p_char); run public.dragon_inf_runs; n int;
 begin
- if p_floor is null or p_floor not in (10, 15, 20) then raise exception 'bad floor'; end if;
+ if p_floor is null or p_floor < 10 or p_floor > 2000 or p_floor % 5 <> 0 then raise exception 'bad floor'; end if;   -- 10、15、20、25…
  select * into run from public.dragon_inf_runs where user_id = u and char_id = p_char for update;
  if not found or run.run_id is distinct from p_run then raise exception 'bad run'; end if;
  if p_floor = any(run.claimed) then raise exception 'already claimed'; end if;
- -- 每層 30 秒，撐過第 N 層至少要 N×30 秒（容許 5% 時鐘誤差）
- if now() - run.started_at < make_interval(secs => p_floor * 30 * 0.95) then raise exception 'too early'; end if;
+ -- 每層 30 秒，第 N 層的首領最早在 (N−1)×30 秒出現（容許 5% 時鐘誤差）
+ if now() - run.started_at < make_interval(secs => (p_floor - 1) * 30 * 0.95) then raise exception 'too early'; end if;
  update public.dragon_inf_runs set claimed = claimed || p_floor where user_id = u and char_id = p_char;
  insert into public.dragon_doll_scrolls(user_id, char_id, scrolls) values (u, p_char, 1)
  on conflict (user_id, char_id) do update set scrolls = public.dragon_doll_scrolls.scrolls + 1, updated_at = now()

@@ -1,7 +1,7 @@
 // 屠龍勇者：娃娃升級卷軸（後台計算；ARCHITECTURE.md 第 333 節，SQL tools/doll-upgrade.sql）
 // 對娃娃使用：T4→T3→T2→T1→T0，從下一階的娃娃裡自己選一隻當作進化目標。成功率 5%，失敗維持原樣、沒有懲罰（卷軸用掉）。
 // 卷軸數量存在伺服器（不是背包道具，改存檔加不了）；成功與否由伺服器擲骰（doll_upgrade），成功後遊戲把同一個道具實體（uid、強化值不變）換成目標娃娃。
-// 取得：無限塔（survivor.js）每一趟撐過第 10、15、20 層向伺服器領 1 張（inf_claim，伺服器檢查進塔時間）。要登入帳號。
+// 取得：無限塔（survivor.js）第 10 層起每 5 層擊殺該層首領，向伺服器領 1 張（inf_claim，伺服器檢查這一趟與時間）。要登入帳號。
 // 依賴（執行期）：player、DOLLS、findAnyInst、openDialog、dollAbilityHtml、marketRpc、lootChar、cloudLoggedIn…
 
 const DOLL_UP_NAME = '娃娃升級卷軸';
@@ -55,7 +55,7 @@ function renderDollUp() {
     if (!S || S.owner !== player || !box) return;
     const online = dollUpOnline(), left = dollScrolls;
     const head = `<p>${online ? `持有${DOLL_UP_NAME}：<b>${left == null ? '讀取中…' : fmt(left)}</b> 張（存在伺服器）` : '<span class="bad">要登入帳號才能使用娃娃升級卷軸</span>'}｜成功率 <b>${Math.round(DOLL_UP_RATE * 100)}%</b>，失敗娃娃維持原樣</p>`
-        + `<small class="muted">卷軸取得：無限塔每一趟撐過第 10、15、20 層各 1 張。</small>`
+        + `<small class="muted">卷軸取得：無限塔第 10 層起每 5 層（10、15、20、25…）擊殺該層首領各 1 張。</small>`
         + (S.err ? `<p class="bad">${esc(S.err)}</p>` : '') + (S.result ? `<p role="status">${S.result}</p>` : '');
     const inst = S.uid && findAnyInst(S.uid);
     if (!inst || !DOLL_UP_NEXT[dollQualityOf(inst)]) {
@@ -120,15 +120,15 @@ async function dollUpDo() {
     renderDollUp();
 }
 
-// 無限塔（survivor.js）：買票進塔時已向伺服器登記這一趟（inf_run_start → run.runId）；撐過第 10／15／20 層時領卷軸
+// 無限塔（survivor.js）：買票進塔時已向伺服器登記這一趟（inf_run_start → run.runId）；擊殺第 10、15、20…層首領時領卷軸
 function dollScrollClaim(run, floor) {
-    if (!dollUpOnline()) { addLog(`🎁 撐過第 ${floor} 層：登入帳號才能領取${DOLL_UP_NAME}`, 'sys'); return; }
-    if (!run.runId) { addLog(`🎁 撐過第 ${floor} 層，但這一趟沒有向伺服器登記（伺服器還沒安裝），無法領取${DOLL_UP_NAME}`, 'sys'); return; }
+    if (!dollUpOnline()) { addLog(`🎁 擊殺第 ${floor} 層首領：登入帳號才能領取${DOLL_UP_NAME}`, 'sys'); return; }
+    if (!run.runId) { addLog(`🎁 擊殺第 ${floor} 層首領，但這一趟沒有向伺服器登記（伺服器還沒安裝），無法領取${DOLL_UP_NAME}`, 'sys'); return; }
     const owner = player;
     marketRpc('inf_claim', { p_char: lootChar(), p_run: run.runId, p_floor: floor }).then(r => {
         if (player !== owner) return;
         dollScrolls = r.scrolls;
-        addLog(`🎁 撐過第 ${floor} 層，獲得${DOLL_UP_NAME} ×1（持有 ${r.scrolls} 張）`, 'win');
+        addLog(`🎁 擊殺第 ${floor} 層首領，獲得${DOLL_UP_NAME} ×1（持有 ${r.scrolls} 張）`, 'win');
         showToast(`🎁 獲得${DOLL_UP_NAME} ×1（持有 ${r.scrolls} 張）`, 3000);
         sfx('treasure');
     }).catch(e => addLog(`🎁 第 ${floor} 層的${DOLL_UP_NAME}沒有領到：${dollUpErrText(e)}`, 'sys'));

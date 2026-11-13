@@ -6,7 +6,7 @@
 //   - 門票：每次進塔 1000 萬金幣（zones.js 的 fee），每天最多 3 次（登入：伺服器 inf_run_start 計次；訪客：本機計次）
 //   - 失敗條件：倒下，或場上累積怪物（含還沒出場的）達到 150 隻＝5 層的量
 //   - 挑戰規則：打怪不給經驗、不掉寶；倒下沒有死亡懲罰（不扣經驗、不回村），送回大地圖塔門口，再挑戰要重新買票
-//   - 唯一獎勵：撐過第 10、15、20 層各 1 張娃娃升級卷軸（向伺服器領，doll-upgrade.js／tools/doll-upgrade.sql）
+//   - 唯一獎勵：擊殺第 10、15、20、25…層（每 5 層、沒有上限）的首領各 1 張娃娃升級卷軸（向伺服器領，doll-upgrade.js／tools/doll-upgrade.sql）
 // 樓層不寫進存檔（infRun，離開地圖就重來）；最高樓層記在 localStorage dsSurvivorBest（{角色名: 層}）。
 // 依賴（執行期）：player、hunt、scene、buildMonster、monBase、monHpMul、addMob、spawnMapMon、stopHunt、addLog、showToast、gameNow、currentZone
 
@@ -15,7 +15,9 @@ const INF_FLOOR_MS = 30000;   // 每層 30 秒
 const INF_PER_FLOOR = 30;     // 每一層固定出 30 隻（使用者 2026-11-13 指定），出完不補；沒打完的留著跟下一層疊加
 const INF_FAIL_PILE = 150;    // 累積怪物（場上＋還沒出場）達到 5 層的量（5×30）就判定挑戰失敗（使用者 2026-11-13 指定）
 const INF_MAP_CAP = 200;      // 地圖上最多同時幾隻（太多會擠滿競技場；失敗門檻 150 會先到）
-const INF_SCROLL_FLOORS = [10, 15, 20];   // 撐過這幾層各給 1 張娃娃升級卷軸（使用者 2026-11-13 指定）
+// 娃娃升級卷軸：第 10 層起每 5 層（10、15、20、25…沒有上限）擊殺該層首領各給 1 張（使用者 2026-11-13 指定；伺服器 inf_claim 同樣檢查）
+const INF_SCROLL_FROM = 10;
+function infScrollFloor(f) { return f >= INF_SCROLL_FROM && f % 5 === 0; }
 const INF_PACK = 40;          // 同時參戰（圍著打你）最多幾隻；一般地圖 6 隻。貼身的最多 8 格，其餘 4 格內用遠程（使用者 2026-11-13：周圍的怪都要打）
 const INF_HP_K = 0.5, INF_DMG_K = 0.6;   // 一群一起上：單隻血量、傷害相對一般怪（monBase）的倍率
 // 怪物外觀：images/monsters/rework/mon-*.png（scene-art.js 的 SCENE_ART_MONSTERS 'art-…'）；step＝地圖上每走一格幾毫秒
@@ -57,7 +59,7 @@ const INF_TRAITS = {
 
 const INF_DAILY = 3;   // 每天最多進塔幾次（伺服器同樣限制，tools/doll-upgrade.sql）
 let infPending = null;   // 剛買票進塔：{ runId }，infTick 第一次執行時用它開始這一趟
-let infRun = null;   // { floor, start, traits, theme, kills, bossDue, calmUntil, budget＝這層還沒出場的怪 }
+let infRun = null;   // { floor, start, traits, theme, kills, bossQueue＝還沒出場的首領樓層, calmUntil, budget＝這層還沒出場的怪, alive }
 
 function inInfinite() { const z = player && player.loc.type === 'zone' && currentZone(); return !!(z && z.type === INF_ZONE); }
 function infBest() { try { return (JSON.parse(localStorage.getItem('dsSurvivorBest') || '{}')[player.name]) || 0; } catch (e) { return 0; } }
@@ -70,7 +72,7 @@ function infHas(t) { return !!(infRun && infRun.traits.includes(t)); }
 
 // ───────── 樓層 ─────────
 function infStart(runId) {
-    infRun = { floor: 0, start: gameNow, traits: [], theme: null, kills: 0, bossDue: false, budget: 0, runId: runId || null };   // runId：伺服器登記的這一趟（領娃娃升級卷軸用）
+    infRun = { floor: 0, start: gameNow, traits: [], theme: null, kills: 0, bossQueue: [], budget: 0, runId: runId || null };   // runId：伺服器登記的這一趟（領娃娃升級卷軸用）
     infNextFloor();
 }
 function infNextFloor() {
@@ -81,13 +83,11 @@ function infNextFloor() {
     let pool = Object.keys(INF_TRAITS).filter(k => !R.traits.includes(k));
     if (f === 1) pool = ['fast', 'regen', 'shield'];
     R.traits = infShuffle(pool).slice(0, n);
-    R.bossDue = f % 5 === 0;
+    if (f % 5 === 0) R.bossQueue.push(f);   // 首領排隊出場（上一層的首領還沒出來也不會被蓋掉）
     R.budget += INF_PER_FLOOR;
-    // 獎勵：撐過第 10、15、20 層各 1 張娃娃升級卷軸（每一趟都能領；由伺服器發、存在伺服器，doll-upgrade.js，第 333 節）
-    if (INF_SCROLL_FLOORS.includes(f - 1)) dollScrollClaim(R, f - 1);   // 向伺服器領卷軸（doll-upgrade.js；伺服器檢查進塔時間）
     if (f > 1 && infSaveBest(f - 1)) addLog(`🏆 無限塔新紀錄：撐過 ${f - 1} 層`, 'win');
     const tr = R.traits.map(k => INF_TRAITS[k].name + '（' + INF_TRAITS[k].desc + '）').join('、');
-    addLog(`🏯 無限塔第 ${f} 層・${R.theme[0]}${R.bossDue ? '（首領）' : ''}：怪物 Lv.${infLv(f)}，本層能力 ${tr}`, 'boss');
+    addLog(`🏯 無限塔第 ${f} 層・${R.theme[0]}${f % 5 === 0 ? (infScrollFloor(f) ? '（首領：擊殺可得娃娃升級卷軸）' : '（首領）') : ''}：怪物 Lv.${infLv(f)}，本層能力 ${tr}`, 'boss');
     showToast(`🏯 第 ${f} 層・${R.theme[0]}　${R.traits.map(k => INF_TRAITS[k].name).join('、')}`, 3000);
     if (typeof scene !== 'undefined' && scene && scene.floats && scene.pl) addFloat(scene.pl.x, scene.pl.y - 1.5, `第 ${f} 層`, '#ffd86b', true);
     if (typeof refreshUI === 'function') refreshUI();
@@ -134,9 +134,10 @@ function infVisual() {
     return { icon: '👹', name: INF_TYPES[t].name, mid: 'art-' + t };
 }
 // 參戰的怪（遊戲本身的怪物資料 buildMonster）：等級＝2＋樓層×2.5，血量／傷害依種類與本層能力
-function infMakeMonster(boss) {
+// bossFloor：首領屬於第幾層（數值與外觀照那一層；擊殺時用它領卷軸）
+function infMakeMonster(boss, bossFloor) {
     const R = infRun || { floor: 1, traits: [], theme: INF_THEMES[0] };
-    const f = R.floor, lv = infLv(f) + (boss ? 3 : 0), b = monBase(lv);
+    const f = boss && bossFloor ? bossFloor : R.floor, lv = infLv(f) + (boss ? 3 : 0), b = monBase(lv);
     let type = null, name, art;
     if (boss) { const bb = INF_BOSSES[(Math.floor(f / 5) - 1) % INF_BOSSES.length]; art = bb[0]; name = bb[1]; }
     else { type = R.theme[1][rand(0, R.theme[1].length - 1)]; art = type; name = INF_TYPES[type].name; }
@@ -157,6 +158,7 @@ function infMakeMonster(boss) {
     });
     if (magic) m.magic = magic;   // buildMonster 會把 magic 再 ×1.4，這裡直接用算好的
     m.inf = true; m.infRegen = infHas('regen'); m.infSplit = infHas('split') && !boss;
+    if (boss) { m.infBossFloor = f; m.name = `${name}（${f}F）`; }
     return m;
 }
 // 地圖怪的移動間隔（毫秒／格）：追著玩家跑
@@ -205,7 +207,7 @@ async function openInfiniteEntrance(fromAtlas) {
     if (used == null) { showToast('連線失敗，無法確認今天的進塔次數，請稍後再試'); return; }
     const left = Math.max(0, INF_DAILY - used);
     if (left <= 0) { gameAlert('🗼 無限塔', `今天的 ${INF_DAILY} 次挑戰已經用完，明天再來。`); return; }
-    gameConfirm('🗼 無限塔', `門票 ${fmt(fee)} 金幣（每次進塔一張），今天還能挑戰 ${left} / ${INF_DAILY} 次。\n怪物源源不絕湧出、每 30 秒進入下一層（第 1 層怪物 Lv.50），看你能撐過幾層。\n挑戰地圖：沒有經驗與掉寶；撐過第 10、15、20 層各得 1 張娃娃升級卷軸（要登入）；藥水照常消耗；倒下沒有死亡懲罰（送回塔門口）。\n\n你的最高紀錄：撐過 ${infBest()} 層。要買票進入嗎？`, () => {
+    gameConfirm('🗼 無限塔', `門票 ${fmt(fee)} 金幣（每次進塔一張），今天還能挑戰 ${left} / ${INF_DAILY} 次。\n怪物源源不絕湧出、每 30 秒進入下一層（第 1 層怪物 Lv.50），看你能撐過幾層。\n挑戰地圖：沒有經驗與掉寶；第 10 層起每 5 層（10、15、20、25…）擊殺該層首領各得 1 張娃娃升級卷軸（要登入）；藥水照常消耗；倒下沒有死亡懲罰（送回塔門口）。\n\n你的最高紀錄：撐過 ${infBest()} 層。要買票進入嗎？`, () => {
         if (player !== owner || (!fromAtlas && !keeperNear(INF_ZONE))) { showToast('請先走回無限塔守門人旁邊'); return; }
         infEnter(fromAtlas);
     }, '購買門票進入');
@@ -261,9 +263,8 @@ function infJoinTick() {
     // 每 0.25 秒最多加入 4 隻；sceneUpdate 會把新的怪綁到離角色最近的地圖怪身上
     let n = Math.min(4, INF_PACK - hunt.mobs.length, scene.mons.filter(m => !m.dead && !m.inst && dist(m) <= RANGED_RANGE).length);
     while (n-- > 0) {
-        const boss = !!(infRun && infRun.bossDue);
-        if (boss) infRun.bossDue = false;
-        const mon = infMakeMonster(boss);
+        const bossFloor = infRun && infRun.bossQueue.length ? infRun.bossQueue.shift() : 0, boss = !!bossFloor;
+        const mon = infMakeMonster(boss, bossFloor);
         mon.infRanged = true;   // ui-scene.js：4 格內就算打得到（照樣是物理攻擊，看命中／閃避／防禦）；貼身的照樣近戰
         addMob(mon);
         if (boss) addLog(`⚠️ ${mon.name}（Lv.${mon.lv}）出現了！`, 'boss');
@@ -279,6 +280,8 @@ function infOnKill(mon) {
     addLog(`☠️ 擊倒${mon.name}（無限塔：沒有經驗與掉寶）`, 'win');
     sfx('mon-die');
     if (typeof uqOn === 'function') uniqueOnKill(mon);
+    // 擊殺第 10、15、20…層的首領：向伺服器領娃娃升級卷軸（doll-upgrade.js；伺服器檢查這一趟、時間、每層一次）
+    if (mon.infBossFloor && infRun && infScrollFloor(mon.infBossFloor)) dollScrollClaim(infRun, mon.infBossFloor);
     if (mon.infSplit && scene && scene.mons) for (let i = 0; i < 2; i++) spawnMapMon();
     if (hunt.mon) { hunt.pCd = Math.min(hunt.pCd, 300); return true; }
     hunt.tele = null;

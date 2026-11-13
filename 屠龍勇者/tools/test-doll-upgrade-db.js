@@ -42,12 +42,14 @@ async function main() {
     let run = await start();
     assert.equal(await status(), 0);
     await assert.rejects(() => claim(run, 10), /too early/);
-    await age(280); await assert.rejects(() => claim(run, 10), /too early/, '門檻 285 秒');
-    await age(290); assert.deepEqual(await claim(run, 10), { ok: true, scrolls: 1 });
+    await age(250); await assert.rejects(() => claim(run, 10), /too early/, '第 10 層首領最早 (10−1)×30×0.95＝256.5 秒');
+    await age(260); assert.deepEqual(await claim(run, 10), { ok: true, scrolls: 1 });
     await assert.rejects(() => claim(run, 10), /already claimed/);
     await assert.rejects(() => claim(run, 15), /too early/);
     await assert.rejects(() => claim(run, 11), /bad floor/);
-    await assert.rejects(() => claim(run, 30), /bad floor/);
+    await assert.rejects(() => claim(run, 5), /bad floor/, '第 5 層不給');
+    await assert.rejects(() => claim(run, 2005), /bad floor/);
+    await assert.rejects(() => claim(run, 30), /too early/, '30 層之後也可以領，只是時間還不夠');
     await age(430); assert.equal((await claim(run, 15)).scrolls, 2);
     await age(580); assert.equal((await claim(run, 20)).scrolls, 3);
     await assert.rejects(() => claim('00000000-0000-4000-8000-000000000000', 10), /bad run/);
@@ -88,7 +90,7 @@ async function main() {
     await db.exec('reset role');
     const logs = (await q("select kind,count(*)::int n from public.dragon_doll_upgrade_log group by kind order by kind")).map(r => r.kind + ':' + r.n).join(',');
     assert.equal(logs, 'claim:4,enter:5,upgrade:4004');
-    console.log('PASS DB: rerunnable / daily limit 3 per char (Taipei day) & next-day reset / inf_status / anon & direct table denied / claim time gate 285s / once per floor per run / floors 10,15,20 only / new run voids old / per char & account isolation / upgrade path checks / scroll decrement & none left / success rate ' + (rate * 100).toFixed(1) + '% / banned / audit log');
+    console.log('PASS DB: rerunnable / daily limit 3 per char (Taipei day) & next-day reset / inf_status / anon & direct table denied / claim time gate (N-1)*30*0.95s / once per floor per run / floors 10,15,20,25… (multiples of 5 from 10) / new run voids old / per char & account isolation / upgrade path checks / scroll decrement & none left / success rate ' + (rate * 100).toFixed(1) + '% / banned / audit log');
     await db.close();
 }
 main().catch(e => { console.error(e); process.exit(1); });

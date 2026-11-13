@@ -334,7 +334,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261113u`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261113v`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -5062,11 +5062,11 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 測試按鈕「⏭ 下一波（測試）」直接跳波。效能：560 隻怪每幀約 update 1.4ms＋draw 4ms（分格推擠 GRID 56）；分裂在場上 480 隻以上不再分裂。
 - 簡單自動閃避機器人模擬：大多撐到第 4～5 波（首領波）倒下，真人會更久。若要正式接入遊戲：入口、獎勵（要走伺服器防改檔）、套用玩家角色數值，都待使用者決定。
 
-## 332. 無限塔：一張特殊地圖（2026-11-13，版本 `20261113u`；`data/survivor.js`＋`zones.js`／`world-atlas.js`／`combat.js`／`ui-scene.js` 接口）
+## 332. 無限塔：一張特殊地圖（2026-11-13，版本 `20261113v`；`data/survivor.js`＋`zones.js`／`world-atlas.js`／`combat.js`／`ui-scene.js` 接口）
 
 - 歷程：第 331 節獨立原型 → 全螢幕覆蓋式「無限塔」（自己畫畫面、自己算戰鬥）→ 使用者附截圖指正：**無限塔是一張特殊地圖，畫面、狀態欄、快捷欄跟一般狩獵完全一樣，技能配置由玩家用原本的快捷欄自由控制，只有地圖場地不同**。全螢幕版整個拿掉，改成真正的地圖。**尚未推送**。
 - **門票與次數**（20261113r，使用者指定）：每次進塔 **1000 萬金幣**（`ZONES.infinite.fee`），**每天最多 3 次**（`INF_DAILY`）。守門人與世界地圖（`atlasTravelTo` 攔截）都走 `openInfiniteEntrance`：查今天次數（登入問伺服器 `inf_status`；訪客或伺服器還沒裝 SQL 時用本機 localStorage `dsInfDaily`，台灣日期）→ 確認視窗顯示門票、剩餘次數、規則 → `infEnter`：先向伺服器 `inf_run_start` 登記這一趟（同時扣當天次數，超過回 daily limit），成功才扣 1000 萬、進場；`infPending` 帶 runId 給 `infTick` 開始這一趟。**倒下或撤退後要重新買票**：倒下由 `infLeaveToGate` 送回大地圖守門人前（不扣經驗、不回村、HP 30%）；存檔停在塔裡（重新整理、換裝置）沒有門票時也送回塔門口。
-- 唯一獎勵：每一趟撐過第 10、15、20 層各 1 張娃娃升級卷軸（`INF_SCROLL_FLOORS`）。20261113q 起由伺服器發：`infStart` 呼叫 `dollScrollRunStart` 登記這一趟（`inf_run_start`），換層時 `dollScrollClaim`（`inf_claim`，伺服器檢查進塔時間），見第 333 節。
+- 唯一獎勵（20261113v 使用者改規則）：**第 10 層起每 5 層（10、15、20、25…沒有上限）擊殺該層首領**各 1 張娃娃升級卷軸，只撐過樓層不給（第 5 層首領不給）。首領改排隊 `infRun.bossQueue`（每 5 層 push 樓層，`infJoinTick` 依序出場，上一層的首領還沒出來不會被蓋掉），`infMakeMonster(true, bossFloor)` 用那一層的數值、名稱加「（NF）」、記 `m.infBossFloor`；`infOnKill` 擊殺時 `infScrollFloor(f)` 成立就 `dollScrollClaim`（伺服器 `inf_claim`）。沒打完的首領留在場上，之後擊殺一樣算。
 - 規則（使用者定）：照遊戲規則，只是換一張地圖；藥水、彈藥照一般規則消耗；**不給經驗、不掉寶；倒下沒有死亡懲罰**（不扣經驗、不清增益、不回村；20261113r 起送回大地圖塔門口，再挑戰要重新買票）；怪物不等玩家，**每層 30 秒時間到直接下一層**。
 - 地圖：`ZONES` 的 `{ id:'infinite', name:'無限塔', type:'infinite', town:'aden', fee:10000000, noMap:true, mons:[] }`（20261113n 使用者改稱「無限塔」，原「無限城」）。**入口**：大地圖紫霧遺跡 (30,14) 的「無限塔守門人」（`scene-art.js` `SCENE_ART_BGS.wild.fieldNpcs`，圖 `images/npc/rework/npc-teleport.png`；點他 → `openInfiniteEntrance` 確認後 `enterZoneFromKeeper`，要站在 5 格內）；世界地圖 `ATLAS_POINTS` 的 `infinite` 放在守門人位置（`entrance:true`，可直接傳送或步行至入口）。畫面借用永夜之塔的競技場背景（`themeFor` 回傳 `art-tower`），怪物外觀用 `images/monsters/rework/mon-*.png`（`art-…`）。還沒有專屬的塔外觀圖，之後有圖可換成 `entrance:true` 的建築。
 - 戰鬥完全走一般掛機（`huntTick`／`playerAction`／`monsterAttack`／`autoSupport`…），只加這些接口：
@@ -5086,13 +5086,13 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 模擬（手動推進 gameNow＋sceneUpdate＋huntTick）：70 級法師（冰之女王魔杖 +7、星風套 +5、技能與藥水照快捷欄自動）掛機撐到 22 層以上未倒，第 15 層後開始喝水；地圖上同時約 90～110 隻。
 - 本機測試角色：slot 0「測試法師70」、slot 1「測試修羅70」（阿修羅雙刀 +7、騎士頭盔／板甲／保護者斗篷／力量手套／速度之靴／泰坦紋戰衣 +5，力量 35，修羅技能全學、攻擊技能與增益設自動，古代終極治癒藥水 300＋綠水＋勇水自動；HP 1082、防禦 55）。未登入雲端，不要用它登入以免收進帳號。
 
-## 333. 娃娃升級卷軸（2026-11-13，版本 `20261113u`；新檔 `data/doll-upgrade.js`、SQL `tools/doll-upgrade.sql`、測試 `tools/test-doll-upgrade-db.js`；使用者 11/13 推送 a1bd1f18a）
+## 333. 娃娃升級卷軸（2026-11-13，版本 `20261113v`；新檔 `data/doll-upgrade.js`、SQL `tools/doll-upgrade.sql`、測試 `tools/test-doll-upgrade-db.js`；使用者 11/13 推送 a1bd1f18a）
 
 - 使用者規格：對娃娃使用 T4→T3、T3→T2、T2→T1、T1→T0，每次**出現選單自選下一階的一隻**當作進化；成功率 5%，失敗維持現況、沒有懲罰。**無法購買**，無限塔撐過第 10、15、20 層各 1 張（第 332 節）。使用者再要求「**從後台計算**」並選擇「發卷軸＋擲骰都在後台」。（20261113o 曾做成背包道具、本機擲骰，已改掉。）
 - **後台**（`tools/doll-upgrade.sql`，使用者要自己在 Supabase SQL Editor 執行，可重跑）：`dragon_doll_scrolls`（user_id＋char_id＝`lootChar()` 的卷軸張數）、`dragon_inf_runs`（每個角色目前這一趟的 run_id、開始時間、已領樓層）、`dragon_doll_upgrade_log`（領取／升級紀錄）；三張表 RLS 全擋，只能透過函式。
   - `inf_status(char)`：今天用了幾次、剩幾次、卷軸張數。
   - `inf_run_start(char)`：**買票進塔**時呼叫，回傳 `{run, used, left}`；每天（台灣時間 `dragon_inf_today`）最多 3 次，超過 `daily limit`（`dragon_inf_runs.day/runs`）；換新 run_id、清空已領樓層（舊的 run 作廢）；記 `enter` 紀錄。早期版本回傳 uuid，SQL 會先 drop 再建。
-  - `inf_claim(char, run, floor)`：floor 只能 10／15／20；run 要是目前這一趟；同一趟每層只能領一次；進塔時間要 ≥ 樓層×30 秒×0.95（無限塔每層固定 30 秒、沒有提早上樓，所以撐過第 N 層至少 N×30 秒）。成功卷軸 +1。
+  - `inf_claim(char, run, floor)`：floor 要 ≥10 且是 5 的倍數（上限 2000）；run 要是目前這一趟；同一趟每層只能領一次；進塔時間要 ≥ (樓層−1)×30 秒×0.95（第 N 層首領最早在第 N 層開始時出現）。成功卷軸 +1。（20261113v 前只接受 10／15／20、時間門檻 N×30 秒。）
   - `doll_scroll_status(char)`：查張數。`doll_upgrade(char, from, to)`：檢查 from→to 是 T4→T3／T3→T2／T2→T1／T1→T0（伺服器內建 21 隻階級表 `dragon_doll_quality`），扣 1 張，`random() < 0.05` 決定成敗，回傳 `{ok, scrolls}`。
   - 共用檢查 `dragon_doll_scroll_check`：登入、沒被封鎖（`dragon_is_banned`）、char 格式。
   - 限制：娃娃本身仍在玩家存檔（跟其他道具一樣），伺服器不檢查玩家是不是真的有那隻 from 娃娃；成功後由遊戲把那隻換成 to。
