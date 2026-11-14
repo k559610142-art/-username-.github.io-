@@ -14,7 +14,8 @@ window.CreationRules=(()=>{
     '幻術師':{type:6,base:{str:11,dex:10,con:12,wis:12,cha:8,int:12},points:10,hp:14,portraits:['class-6671.png','class-6650.png'],art:['illusionist-art-m.jpg','illusionist-art-f.jpg'],intro:'操控幻象的施法者，使用奇古獸與魔杖，兼顧攻擊與輔助。'},
     '戰士':{type:7,base:{str:16,dex:13,con:16,wis:7,cha:9,int:10},points:4,hp:16,portraits:['class-12490.png','class-12494.png'],art:['warrior-art-m.jpg','warrior-art-f.jpg'],intro:'以強健體魄揮舞斧、劍與長矛的近戰職業，擅長正面硬戰。'}
   };
-  function validStats(role,stats){const c=classes[role];return !!c&&!!stats&&keys.every(k=>Number.isInteger(stats[k])&&stats[k]>=c.base[k]&&stats[k]<=c.base[k]+c.points)&&keys.reduce((s,k)=>s+stats[k],0)===75}
+  function validStoredStats(role,stats){const c=classes[role];return !!c&&!!stats&&keys.every(k=>Number.isInteger(stats[k])&&stats[k]>=c.base[k]&&stats[k]<=c.base[k]+c.points)&&keys.reduce((s,k)=>s+stats[k],0)===75}
+  function validStats(role,stats){return validStoredStats(role,stats)&&keys.every(k=>stats[k]<=20)}
   function vitals(role,stats){const c=classes[role],wis=stats.wis;let mp;
     if(role==='騎士')mp=[12,13].includes(wis)?2:1;
     else if(role==='王族')mp=wis>=12&&wis<=15?3:wis>=16&&wis<=18?4:2;
@@ -25,5 +26,5 @@ window.CreationRules=(()=>{
     else mp=wis>=16&&wis<=18?8:6;
     return {hp:c.hp,mp};
   }
-  return {keys,labels,classes,jobs:Object.keys(classes),validStats,vitals};
+  return {keys,labels,classes,jobs:Object.keys(classes),validStats,validStoredStats,vitals};
 })();

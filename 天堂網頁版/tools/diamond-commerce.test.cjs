@@ -3,10 +3,10 @@ const {DatabaseSync}=require('node:sqlite');
 const {createGameServer}=require('../data/server/local-test-server.cjs');
 test('交易所 30 等限制、鑽石收付、失敗回滾、舊天幣商品與錢包保護',async()=>{
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'lineage-diamond-')),file=path.join(dir,'test.sqlite');
- const settings={items:{'etcitem:40010':{kind:'etcitem',stackable:true,trade:true},'etcitem:40308':{kind:'etcitem',stackable:true,trade:true}},classes:{騎士:{base:{str:75},points:0}}};
+ const settings={items:{'etcitem:40010':{kind:'etcitem',stackable:true,trade:true},'etcitem:40308':{kind:'etcitem',stackable:true,trade:true}},classes:{騎士:{base:{str:20,dex:15,con:10,wis:10,cha:10,int:10},points:0}}};
  const server=createGameServer({database:file,settings});await new Promise(r=>server.listen(0,'127.0.0.1',r));const db=new DatabaseSync(file),base='http://127.0.0.1:'+server.address().port;
  async function api(route,data,cookie,method='POST'){const response=await fetch(base+route,{method,headers:{'Content-Type':'application/json',...(cookie?{Cookie:cookie}:{})},...(data?{body:JSON.stringify(data)}:{})});return {status:response.status,data:await response.json(),cookie:response.headers.get('set-cookie')?.split(';')[0]};}
- async function user(name,level,diamonds){const auth=await api('/api/auth',{name,password:'testpass',register:true});const c={id:name,name,role:'騎士',gender:0,stats:{str:75},level,diamonds,inventory:[{uid:'potion',key:'etcitem:40010',count:10},{uid:'gold',key:'etcitem:40308',count:10000}]};db.prepare('INSERT INTO states(user_id,revision,payload) VALUES(?,0,?)').run(auth.data.user.id,JSON.stringify({characters:[c,null,null,null],warehouse:[]}));return {id:auth.data.user.id,cookie:auth.cookie,c};}
+ async function user(name,level,diamonds){const auth=await api('/api/auth',{name,password:'testpass',register:true});const c={id:name,name,role:'騎士',gender:0,stats:{str:20,dex:15,con:10,wis:10,cha:10,int:10},level,diamonds,inventory:[{uid:'potion',key:'etcitem:40010',count:10},{uid:'gold',key:'etcitem:40308',count:10000}]};db.prepare('INSERT INTO states(user_id,revision,payload) VALUES(?,0,?)').run(auth.data.user.id,JSON.stringify({characters:[c,null,null,null],warehouse:[]}));return {id:auth.data.user.id,cookie:auth.cookie,c};}
  const state=u=>JSON.parse(db.prepare('SELECT payload FROM states WHERE user_id=?').get(u.id).payload);
  try{
   const seller=await user('seller',30,5),buyer=await user('buyer',29,100);

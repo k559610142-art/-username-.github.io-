@@ -2,7 +2,7 @@
 window.CharacterStore=(()=>{
   const key=account=>'lineage-web-characters-v1:'+encodeURIComponent(account.trim());
   const clone=value=>JSON.parse(JSON.stringify(value));
-  function valid(c){return !!c&&typeof c.id==='string'&&typeof c.name==='string'&&c.name.trim().length>0&&Array.from(c.name).length<=12&&(c.gender===0||c.gender===1)&&CreationRules.validStats(c.role,c.stats)}
+  function valid(c){return !!c&&typeof c.id==='string'&&typeof c.name==='string'&&c.name.trim().length>0&&Array.from(c.name).length<=12&&(c.gender===0||c.gender===1)&&CreationRules.validStoredStats(c.role,c.stats)}
   function read(account){
     const raw=localStorage.getItem(key(account));
     if(!raw)return {characters:Array(4).fill(null),warehouse:[]};

@@ -1,6 +1,6 @@
 // 套用備份中的公開圖檔，沿用遊戲原本的按鈕事件。
 const referenceSkinFiles = {
-  商城: 'shop', 扭蛋機: 'gacha-machine.jpg', 背包: 'bag', 技能: 'skill', 信件: 'mail', 關閉: 'close',
+  商城: 'shop', 扭蛋機: 'gacha-machine-transparent.png', 背包: 'bag', 技能: 'skill', 信件: 'mail', 關閉: 'close',
   角色: 'character', 社交: 'social', 設定: 'settings', 排行: 'ranking', 記憶座標: 'memory',
   變身: 'transform', 魔法娃娃: 'doll', 收藏: 'collection', 交易所: 'exchange', 登出: 'logout', 返回選擇英雄: 'back', 製作: 'craft.svg', 擺攤: 'exchange',
   選單: 'menu', 返回選單: 'back', 裝備: 'attack', 狀態: 'character'

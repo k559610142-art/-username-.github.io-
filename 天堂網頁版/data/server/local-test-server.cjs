@@ -61,6 +61,7 @@ function createGameServer(options={}){
    ids.add(c.id);names.add(c.name);
    if(![0,1].includes(c.gender)||!c.stats||Object.keys(rules.base).some(k=>!Number.isInteger(c.stats[k])||c.stats[k]<rules.base[k]||c.stats[k]>rules.base[k]+rules.points)||Object.keys(rules.base).reduce((n,k)=>n+c.stats[k],0)!==75)fail(400,'角色能力值有誤。');
    int(c.level||1,1,100);validInventory(c.inventory||[]);
+   const previous=snapshot(user.id).characters.find(row=>row?.id===c.id);if(Object.keys(rules.base).some(k=>c.stats[k]>20)&&(!previous||Object.keys(rules.base).some(k=>previous.stats[k]!==c.stats[k])))fail(400,'創角單項屬性最高 20。');
    const old=snapshot(user.id).characters.find(row=>row?.id===c.id);c.diamonds=old?.diamonds||0; // 鑽石只允許由伺服器交易修改。
   }
   validInventory(state.warehouse||[],true);
