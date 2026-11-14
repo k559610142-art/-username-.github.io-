@@ -40,7 +40,7 @@ const FakePlayers=(()=>{
    const frames={};
    DIRS.forEach((dir,d)=>{for(const key of ['idle','walk','attack']){const clip=weapon+'_'+key,count=a.directions[dir][clip];
     frames['d'+d+'/'+key]=a.timelines[clip].frames.filter(f=>f.frame<count).map(f=>['../character-actions/'+avatar+'/'+dir+'/'+clip+'_'+f.frame+'.png',sx-W/2,sy-foot,sw,sh,Math.max(1,f.ticks)*TICK,sx,sy,W]);}});
-   const id=gfxId++;islandMonsterFrames[id]=frames;looks.push({id,avatar,role:a.role,weapon,attackMs:a.timelines[weapon+'_attack'].frames.reduce((s,f)=>s+Math.max(1,f.ticks)*TICK,0)});
+   const id=gfxId++;islandMonsterFrames[id]=frames;looks.push({id,avatar,role:a.role,weapon,walkProfile:window.SPRITE_MOVEMENT?.profiles[a.role+':'+(a.gender?1:0)]?.actions[A.weapons[weapon].base],attackMs:a.timelines[weapon+'_attack'].frames.reduce((s,f)=>s+Math.max(1,f.ticks)*TICK,0)});
   }
  }
  // ---- 名字、血盟、台詞 ----
@@ -83,14 +83,14 @@ const FakePlayers=(()=>{
   const saved=roster.find(r=>!used.has(r.name)&&!!r.red===red&&lookOf(r.look)&&!stallNames().has(r.name));
   const look=saved?lookOf(saved.look):pick(looks);const g=A.avatars[look.avatar]?.gender?1:0,cls=CLASS_NAMES[look.role]||{any:[],m:[],f:[]},own=[...cls.any,...(g?cls.f:cls.m)].filter(n=>!used.has(n));
   let name=saved?saved.name:pick((red?RED_NAMES:own.length&&Math.random()<.35?own:[...NAMES,...GENDER_NAMES[g],...own]).filter(n=>!used.has(n)));if(!name)return null;used.add(name);const lv=saved?saved.lv:red?ri(18,40):ri(5,45);
-  const npc={name,kind:'L1Bot',gfx:look.id,level:lv,hp:40+lv*14,mp:0,ac:0,walk:look.weapon==='bow'?600:640,attack:look.attackMs,ranged:RANGED[look.weapon]||1,skills:[],regeneration:null,aggressive:false};
+  const npc={name,kind:'L1Bot',gfx:look.id,level:lv,hp:40+lv*14,mp:0,ac:0,walk:look.walkProfile?.stepMs||640,attack:look.attackMs,ranged:RANGED[look.weapon]||1,skills:[],regeneration:null,aggressive:false};
   const mob={spawn:{bot:true,mapId:window.activeMapId||0,npc,heading:ri(0,7),respawn:[0,0]},region:[x-50,y-50,x+50,y+50],x,y,homeX:x,homeY:y,hp:npc.hp,heading:ri(0,7),rest:0,phase:Math.random()*1800,step:null,
    fp:{look,red,clan:red?'血月':Math.random()<.8?pick(CLANS):null,state:safe(x,y)?'town':'hunt',think:0,chatAt:movementTime()+rnd(6000,40000),ready:0,target:null,since:movementTime(),pk:false,pkCd:movementTime()+rnd(20000,60000)}};
   if(saved)mob.fp.clan=saved.clan;
   preloadLook(look);IslandMonsters.addAlly(mob);remember(mob);return mob;}
  const preloaded=new Set();
  function preloadLook(look){if(preloaded.has(look.id))return;preloaded.add(look.id);const files=new Set();for(const list of Object.values(islandMonsterFrames[look.id]||{}))for(const f of list)files.add(f[0]);IslandMonsters.preload([...files]);}
- function place(mob,x,y){mob.x=mob.homeX=x;mob.y=mob.homeY=y;mob.step=null;mob.fp.target=null;mob.fp.state=safe(x,y)?'town':'hunt';mob.fp.since=movementTime();mob.spawn.mapId=window.activeMapId||0;}
+ function place(mob,x,y){mob.x=mob.homeX=x;mob.y=mob.homeY=y;mob.step=null;mob.fp.route=null;mob.fp.goal=null;mob.fp.target=null;mob.fp.state=safe(x,y)?'town':'hunt';mob.fp.since=movementTime();mob.spawn.mapId=window.activeMapId||0;}
  function bots(){return IslandMonsters.botList.filter(m=>(m.spawn.mapId||0)===(window.activeMapId||0));}
  // 人數維持與換位置（每 2 秒）
  function maintain(){
@@ -127,7 +127,7 @@ const FakePlayers=(()=>{
    if(boss&&Math.random()<.2){claimed.delete(f.target);f.state='boss';f.boss=boss;f.target=boss;f.goal=null;if(Math.random()<.45)say(mob,pick(['王出了!集合!','衝王!','打王打王','有王!']));}}
   if(f.state==='boss'){if(!f.boss?.hp||dist(mob.x,mob.y,f.boss.x,f.boss.y)>40){if(f.boss&&!f.boss.hp&&Math.random()<.4)say(mob,pick(['王倒了!!','太爽了','有掉什麼嗎']));f.state='hunt';f.boss=null;f.target=null;}else f.target=f.boss;}
   // 繼續走向目標點（每步走完一格，下一格接著走）
-  if(f.goal&&!f.target){if(dist(mob.x,mob.y,...f.goal)<=0||!stepToward(mob,...f.goal,now))f.goal=null;return;}
+  if(f.goal&&!f.target){if(dist(mob.x,mob.y,...f.goal)<=0||!stepToward(mob,...f.goal,now)){f.goal=null;f.think=now+rnd(900,3500);}return;}
   if(f.state==='town'){
    wander(mob,now,stepToward,5);
    if(now-f.since>rnd(25000,70000)){f.state='hunt';f.since=now;const s=spotNear(mob.x,mob.y,8,16,false);if(s){mob.homeX=s[0];mob.homeY=s[1];f.goal=s;}}

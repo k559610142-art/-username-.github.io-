@@ -91,6 +91,19 @@ const IslandMonsters = (() => {
     return true;
   }
   function stepToward(mob, tx, ty, now) {
+    // 與真人點地走路使用相同尋路，保留路線，避免牆角來回轉向。
+    if(mob.spawn.bot&&typeof findWalkingPath==='function'){
+      const f=mob.fp,key=tx+','+ty;
+      if(f.routeKey!==key){f.route=null;f.routeKey=key;f.routeRetry=0;}
+      if(!f.route?.length){
+        if(now<(f.routeRetry||0))return false;
+        f.route=findWalkingPath(mob.x,mob.y,tx,ty);
+        if(!f.route?.length){f.routeRetry=now+1500;return false;}
+      }
+      const next=f.route[0],heading=steps.findIndex(([dx,dy])=>mob.x+dx===next[0]&&mob.y+dy===next[1]);
+      if(heading>=0&&startStep(mob,heading,now)){f.route.shift();return true;}
+      f.route=null;f.routeRetry=now+350;return false;
+    }
     const distance = (x,y)=>Math.hypot(x-tx,y-ty);
     const options = steps.map(([dx,dy],heading)=>({heading,dist:distance(mob.x+dx,mob.y+dy)}))
       .filter(option=>option.dist<distance(mob.x,mob.y))
@@ -138,6 +151,14 @@ const IslandMonsters = (() => {
     let time=mob.step?Math.min(.999,phase)*total:action?
       Math.max(0,Math.min(.999,(now-action.start)/(action.end-action.start)))*total:(now+mob.phase)%total,index=0;
     while(index<frames.length-1&&time>=frames[index][5])time-=frames[index++][5];
+    // 人物 PNG 內含位移，必須沿用真人的影格與位移抵消，否則每格會滑回原點。
+    if(mob.spawn.bot&&mob.step){
+      const look=mob.fp.look,data=window.CHARACTER_ACTION_ASSETS.avatars[look.avatar],heading=directions[mob.heading],clip=look.weapon+'_walk',count=data.directions[heading][clip];
+      const frame=look.walkProfile?walkFrameIndex(now-mob.step.start,mob.step.end-mob.step.start,count,look.walkProfile):data.timelines[clip].frames[index].frame;
+      const selected=frames.find(f=>f[0].endsWith('_'+frame+'.png'))||frames[index];
+      const correction=characterWalkCorrection({clip,frame},data,heading);
+      return [selected,[-correction.x,-correction.y]];
+    }
     const correction=mob.step?MonsterActions.walkOffset(frames,directions[mob.heading],index):[0,0];
     return [frames[index],correction];
   }
