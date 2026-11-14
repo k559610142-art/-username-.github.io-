@@ -309,3 +309,9 @@ NPC 穿衣服（2026-11-13）：
 假人場合發言與區域人口（2026-11-14）：npc-context.js 依安全區／野外／地監、職業、實際補給、附近怪物選台詞；戰鬥、撤退、重傷、交易及擺攤不閒聊，升級／衝裝成功／掉寶不再當隨機台詞。公開回話延遲後重查距離與角色，密語忙碌時回報正在戰鬥。
   fake-players.js 移除超過 28 格就搬到玩家旁邊的補位；原區域路人留在原地，新區域延後 6～14 秒按地域密度補人，野外可無人，村莊較熱鬧；離開 5 分鐘的非社交路人退場，名字冷卻 3 分鐘，不立即在下一區重用。消失後回自己原區域；隊友與約交易的跟隨仍由 npc-social.js 管理。
   驗證：node --test tools/npc-context.test.cjs tools/npc-social.test.cjs tools/movement-death.test.cjs（21 項）。
+
+地圖穩態繪製／石化狀態圖示（2026-11-14）：
+  比較本機放置天堂離線版：區域／村莊主要採背景圖片；此專案維持原始連續地圖、建築內外與遮擋。native-world.js 增加每 64 像素區段的可見地圖區塊快取（保留邊緣預留範圍），預讀不每幀重做；屋內／遮擋事件只於角色格子或地圖區塊改變時重查。
+  怪物遮擋結果按格子快取（含無遮擋），新區塊或合成畫面完成後失效；人物前景只在目前角色姿勢完成後畫一次，相同畫面與姿勢略過，清除範圍縮至人物範圍。character-actions.js 相同影格不重寫 DOM；scene-renderer.js 同位置不反覆存檔，走路最長每 5 秒、停止及 pagehide 保存。
+  island-npc-ai.js 匯出 window.IslandNpcAi 與 negativeEffects：33 石化、29 緩速回傳實際剩餘時間；native-potions.js 狀態列以原技能圖片、紅框與倒數顯示，受擊／解除立即同步，到期／死亡／角色切換移除。window 匯出亦接通原 ClassBuffs 的解除詛咒入口。
+  驗證：node --test tools/render-status.test.cjs tools/npc-context.test.cjs tools/npc-social.test.cjs tools/movement-death.test.cjs（28 項）；包含實際怪物施法到狀態 UI 的串接測試。

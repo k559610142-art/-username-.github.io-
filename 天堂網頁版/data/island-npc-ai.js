@@ -79,6 +79,7 @@ const IslandNpcAi = (() => {
       const until = now + skill.spell.duration * 1000;
       if (skill.id === 33) cursedUntil = Math.max(cursedUntil, until);
       else slowedUntil = Math.max(slowedUntil, until);
+      window.NativePotions?.sync();
       return;
     }
     const result=NativeCombatRules.resolve(mob,skill);if(!result.hit||result.damage<=0)return;
@@ -171,8 +172,15 @@ const IslandNpcAi = (() => {
   game.append(revive);
   return {reset, playerActive, provoke, update, canFight,
     updateRevive(){revive.hidden = window.gameFlowState !== 'playing' || !CharacterActions.dead;},
-    cure(){slowedUntil = cursedUntil = 0;},
+    cure(){slowedUntil = cursedUntil = 0;window.NativePotions?.sync();},
+    get negativeEffects(){
+      if(window.gameFlowState!=='playing'||CharacterActions.dead||window.activeCharacterId!==owner)return [];
+      const now=movementTime(),effects=[];
+      if(now<cursedUntil)effects.push({id:'petrify',name:'石化',icon:'assets/interface/skills/33.png',description:'無法移動或行動',remainingMs:cursedUntil-now});
+      if(now<slowedUntil)effects.push({id:'slow',name:'緩速',icon:'assets/interface/skills/29.png',description:'移動速度降低',remainingMs:slowedUntil-now});
+      return effects;
+    },
     get cursed(){return window.activeCharacterId === owner && movementTime() < cursedUntil;},
     get slowed(){return window.activeCharacterId === owner && movementTime() < slowedUntil;}
   };
-})();
+})();window.IslandNpcAi=IslandNpcAi;

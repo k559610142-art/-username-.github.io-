@@ -10,7 +10,7 @@ function activeCharacterWeapon(){const data=activeCharacterActions();return data
 function activeWeaponWalkAction(){return fullCharacterAssets.weapons[activeCharacterWeapon()].base}
 function fullCharacterPath(avatar,heading,clip,index,shadow=false){return 'assets/character-actions/'+avatar+'/'+heading+'/'+clip+(shadow?'_s':'')+'_'+index+'.png'}
 const characterFrameResources=new Map();
-let displayedCharacterBody=null,displayedCharacterShadow=null,preloadedWalkSet='';
+let displayedCharacterBody=null,displayedCharacterShadow=null,preloadedWalkSet='',displayedCharacterSignature='';
 // These legacy nodes retain diagnostic state. Only decoded cache nodes are displayed.
 characterImage.style.display='none';characterShadow.style.display='none';
 function characterFrameResource(file){
@@ -59,10 +59,12 @@ refreshCharacter=function(frameTime=movementTime()){
  // Decode completions refresh the current pose, so obsolete requests can never overwrite it.
  if(!body.ready||shadow&&!shadow.ready&&!shadow.error){ensureFullCharacterAnimation();return}
  const scale=characterRenderScale(),w=data.size[0]*scale,h=data.size[1]*scale,correction=characterWalkCorrection(pose,data,characterHeading),transform='translate('+(correction.x*scale)+'px,'+(correction.y*scale)+'px)';
- characterBody.style.width=w+'px';characterBody.style.height=h+'px';characterBody.style.left=(-w/2)+'px';characterBody.style.top=(-data.footY*scale)+'px';
- showDecodedCharacterFrame(body,shadow,transform);
- characterCurrentPath=file;/* 效能：隱藏的舊 characterImage 不再每格換 src（會重新請求圖片），顯示用的是已解碼的快取節點 */characterShadow.style.transform=transform;
- characterActor.querySelector('small').textContent=window.activeCharacterName||avatar;
+ const signature=[file,scale,w,h,transform,!!shadow?.ready].join('|');
+ if(signature!==displayedCharacterSignature||displayedCharacterBody!==body.img){
+  characterBody.style.width=w+'px';characterBody.style.height=h+'px';characterBody.style.left=(-w/2)+'px';characterBody.style.top=(-data.footY*scale)+'px';
+  showDecodedCharacterFrame(body,shadow,transform);characterCurrentPath=file;characterShadow.style.transform=transform;displayedCharacterSignature=signature;
+ }
+ const label=characterActor.querySelector('small'),name=window.activeCharacterName||avatar;if(label.textContent!==name)label.textContent=name;
  ensureFullCharacterAnimation();
 };
 function playCharacterAction(action,options={}){
