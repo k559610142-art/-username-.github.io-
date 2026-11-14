@@ -1,5 +1,5 @@
 // 圖鑑面板共用既有遊戲視窗的鍵盤和關閉操作。
-const gameCatalogTitles = {dolls: '魔法娃娃', transforms: '變身卡冊', enchant: 'BOSS附魔', wuhun: '武魂', collection: '道具收藏'};
+const gameCatalogTitles = {dolls: '魔法娃娃', transforms: '變身卡冊', enchant: 'BOSS附魔', wuhun: '武魂', collection: '圖鑑'};
 const gameCatalogIcons = {dolls: 'doll', transforms: 'transform', cards: 'transform', enchant: 'attack', wuhun: 'character', collection: 'collection'};
 // 天地劫系統分頁（娃娃召喚、BOSS 附魔、武魂）：列表資料快取，讓選取狀態在重畫時保持同一列。
 const tdjCatalogRows = {};

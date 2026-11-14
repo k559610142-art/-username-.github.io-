@@ -16,6 +16,13 @@ window.CreationRules=(()=>{
   };
   function validStoredStats(role,stats){const c=classes[role];return !!c&&!!stats&&keys.every(k=>Number.isInteger(stats[k])&&stats[k]>=c.base[k]&&stats[k]<=c.base[k]+c.points)&&keys.reduce((s,k)=>s+stats[k],0)===75}
   function validStats(role,stats){return validStoredStats(role,stats)&&keys.every(k=>stats[k]<=20)}
+  function rollStats(role,rng=Math.random){
+    const c=classes[role];if(!c)return null;const memo=new Map();
+    function ways(index,left){if(index===keys.length)return left===0?1:0;const key=index+','+left;if(memo.has(key))return memo.get(key);let total=0;for(let n=0;n<=Math.min(left,20-c.base[keys[index]]);n++)total+=ways(index+1,left-n);memo.set(key,total);return total;}
+    let left=c.points;const stats={...c.base};
+    for(let index=0;index<keys.length;index++){let ticket=Math.floor(Math.max(0,Math.min(1-Number.EPSILON,Number(rng())||0))*ways(index,left));for(let n=0;n<=Math.min(left,20-c.base[keys[index]]);n++){const count=ways(index+1,left-n);if(ticket<count){stats[keys[index]]+=n;left-=n;break;}ticket-=count;}}
+    return stats;
+  }
   function vitals(role,stats){const c=classes[role],wis=stats.wis;let mp;
     if(role==='騎士')mp=[12,13].includes(wis)?2:1;
     else if(role==='王族')mp=wis>=12&&wis<=15?3:wis>=16&&wis<=18?4:2;
@@ -26,5 +33,5 @@ window.CreationRules=(()=>{
     else mp=wis>=16&&wis<=18?8:6;
     return {hp:c.hp,mp};
   }
-  return {keys,labels,classes,jobs:Object.keys(classes),validStats,validStoredStats,vitals};
+  return {keys,labels,classes,jobs:Object.keys(classes),validStats,validStoredStats,rollStats,vitals};
 })();

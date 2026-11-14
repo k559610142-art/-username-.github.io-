@@ -1,0 +1,13 @@
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
+const read=n=>fs.readFileSync(path.join(__dirname,'../data',n),'utf8');
+test('所有職業擲骰遵守初始值、總和75與上限20；黑妖有機會擲出20',()=>{
+ const c={};c.window=c;vm.createContext(c);vm.runInContext(read('class-creation-data.js'),c);let seed=42;const random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
+ for(const role of c.CreationRules.jobs){const combinations=new Set();for(let i=0;i<300;i++){const stats=c.CreationRules.rollStats(role,random);assert(c.CreationRules.validStats(role,stats));assert.equal(Object.values(stats).reduce((a,b)=>a+b),75);for(const key of c.CreationRules.keys)assert(stats[key]>=c.CreationRules.classes[role].base[key]&&stats[key]<=20);combinations.add(JSON.stringify(stats));}assert(combinations.size>10);}
+ assert.equal(c.CreationRules.rollStats('黑妖',()=>.999999999).str,20);assert.notEqual(c.CreationRules.rollStats('黑妖',()=>0).str,20);assert.equal(c.CreationRules.rollStats('不存在'),null);
+});
+test('創角自動擲骰、可重擲、切職業重新產生，性別切換保留結果，沒有手動加減',()=>{
+ function node(tag='div'){const classes=new Set();return {tag,children:[],classList:{toggle:(key,on)=>on?classes.add(key):classes.delete(key)},append(...n){this.children.push(...n);},setAttribute(k,v){this[k]=v;},addEventListener(){}};}
+ const nodes=new Map(),created=[];const c={document:{querySelector:s=>{if(!nodes.has(s))nodes.set(s,node());return nodes.get(s);},createElement:node},GameEntry:{create:d=>{created.push(d);return true;}},setEntryScreen(){},updateEntrySelection(){}};c.window=c;vm.createContext(c);vm.runInContext(read('class-creation-data.js')+'\n'+read('character-creation.js'),c);const api=c.CharacterCreation;
+ assert.equal(api.roll(),false);api.open(0);assert.equal(api.draft.rolls,1);assert.equal(api.remaining,0);assert(c.CreationRules.validStats('騎士',api.draft.stats));assert.equal(api.adjust,undefined);for(const row of nodes.get('#creation-stats').children)assert.deepEqual(row.children.map(n=>n.tag),['div','output']);
+ api.roll();assert.equal(api.draft.rolls,2);api.selectClass('黑妖');assert.equal(api.draft.rolls,1);assert(c.CreationRules.validStats('黑妖',api.draft.stats));const before=JSON.stringify(api.draft.stats);api.setGender(1);assert.equal(JSON.stringify(api.draft.stats),before);assert.equal(api.draft.rolls,1);api.reset();assert.equal(api.draft.rolls,2);nodes.get('#creation-name').value='擲骰測試';assert(api.commit());assert.equal(created[0].name,'擲骰測試');assert.equal(created[0].gender,1);assert(c.CreationRules.validStats('黑妖',created[0].stats));assert.equal(nodes.get('#creation-submit').disabled,false);
+});
