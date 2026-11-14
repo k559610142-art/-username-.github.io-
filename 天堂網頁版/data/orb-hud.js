@@ -78,7 +78,7 @@
  main.game.orb-hud.orb-hud.orb-hud>.bottom .pad{display:none!important}
  main.game.orb-hud.orb-hud.orb-hud>.bottom{z-index:8!important}
  /* 目錄 */
- .oh-menu-btn{right:${k(2)};width:${k(76)};height:${k(75)};padding:0!important;min-height:0!important;border:0!important;background:url(${A}menu.png) center/contain no-repeat!important;color:transparent!important;font-size:0!important;filter:drop-shadow(0 2px 4px #000c)}
+ .oh-menu-btn{right:${k(2)};width:${k(76)};height:${k(76)};border-radius:50%!important;clip-path:circle(49% at 50% 50%);padding:0!important;min-height:0!important;border:0!important;background:url(${A}menu.png) center/contain no-repeat!important;color:transparent!important;font-size:0!important;filter:drop-shadow(0 2px 4px #000c)}
  .oh-menu-btn[aria-expanded=true]{filter:drop-shadow(0 0 5px #ffd77a) brightness(1.1)}
  .oh-menu{display:none;right:${k(84)};grid-template-columns:repeat(4,${k(44)});gap:${k(4)};padding:${k(6)};background:#0c0d0fec;border:1px solid #7a6038;border-radius:${k(4)};box-shadow:0 4px 14px #000c}
  .oh-menu.open{display:grid}
