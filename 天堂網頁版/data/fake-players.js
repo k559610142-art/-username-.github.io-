@@ -6,6 +6,9 @@
 //  人數：每張地圖約 12 人，散在你周圍 8～20 格；離你超過 28 格的會換到你附近 16～22 格（假人跟怪物一樣只有在你 22 格內才會動）。
 //  聊天：每 20～70 秒有機會說一句（頭上泡泡＋訊息框「一般」）；你在訊息框打字提到 組隊／王／買賣／強化／你好／PK 時，附近假人會回話。
 //  不能點選、不會被 AUTO／技能選到、不會被怪打死。
+// 第 3 期（2026-11-14）：設定「其他玩家」開關（顯示其他玩家、紅名 PK）；妖精箭矢／法師魔法彈飛行特效（drawShots）；
+//  假人被打時頭上短暫顯示血條；地監裡說地監台詞；擺攤商人：玩家附近有安全區時 1 個假人在安全區固定擺攤，
+//  3～5 件貨（NPC 商店有賣的東西，價格 0.9～1.6 倍），每 40～90 秒喊「【賣】…」，點他打開攤位用金幣買，賣完或 4～7 分鐘換貨。
 // 第 2 期（2026-11-14）：
 //  紅名：每張地圖 2 個（血手、夜梟…，血盟「血月」，身體染暗紅、名字紅色），只在野外；冷卻到了且你在野外 8 格內就盯上你
 //   （訊息框【警告】），追著打（命中看等級差與你的防禦），你進安全區、倒下或跑出 14 格就放棄。紅名可以點選、攻擊（不用強制攻擊），
@@ -42,7 +45,9 @@ const FakePlayers=(()=>{
  const pick=a=>a[Math.floor(Math.random()*a.length)],rnd=(a,b)=>a+Math.random()*(b-a),ri=(a,b)=>Math.floor(rnd(a,b+1));
  const dist=(ax,ay,bx,by)=>Math.max(Math.abs(ax-bx),Math.abs(ay-by));
  const safe=(x,y)=>(tile(x,y)&48)===16;
- let enabled=true;try{enabled=localStorage.getItem('lineage-fake-players')!=='off'}catch{}
+ let enabled=true,redOn=true;try{enabled=localStorage.getItem('lineage-fake-players')!=='off';redOn=localStorage.getItem('lineage-fake-red')!=='off'}catch{}
+ const DUN_LINES=['這層好難','誰有回家卷軸','王在哪','組隊嗎','爆了一個祝福卷!','差點死','上樓上樓','掉寶率真低','這裡好暗','怪好多 小心','紅水快沒了','下一層是什麼'];
+ const isDungeon=()=>!!window.WorldMaps?.isDungeon?.(window.activeMapId||0);
  const PER_MAP=12,used=new Set();let mapNow=null;
  function say(mob,text){mob.bubble={text,until:movementTime()+4500};window.GameChat?.say(mob.spawn.npc.name+'：'+text,'say');}
  function spotNear(cx,cy,minR,maxR,wantSafe=null){for(let i=0;i<80;i++){const r=rnd(minR,maxR),a=Math.random()*Math.PI*2,x=Math.round(cx+Math.cos(a)*r),y=Math.round(cy+Math.sin(a)*r);
@@ -60,8 +65,13 @@ const FakePlayers=(()=>{
   const map=window.activeMapId||0;if(map!==mapNow){mapNow=map;}
   const list=bots();
   if(!enabled){for(const b of IslandMonsters.botList){IslandMonsters.removeAlly(b);used.delete(b.spawn.npc.name);}return;}
-  for(const b of list)if(dist(b.x,b.y,worldX,worldY)>28&&!b.step&&!b.fp.vanish){const s=spotNear(worldX,worldY,16,22,b.fp.red?false:null);if(s){place(b,...s);b.fp.pk=false;}}
-  const reds=list.filter(b=>b.fp.red).length;
+  for(const b of list)if(dist(b.x,b.y,worldX,worldY)>28&&!b.step&&!b.fp.vanish&&!b.fp.stall){const s=spotNear(worldX,worldY,16,22,b.fp.red?false:null);if(s){place(b,...s);b.fp.pk=false;}}
+  if(!redOn)for(const b of list.filter(b=>b.fp.red)){IslandMonsters.removeAlly(b);used.delete(b.spawn.npc.name);if(IslandMonsters.target===b){IslandMonsters.setTarget(null);IslandCombat.stop();}}
+  const reds=redOn?list.filter(b=>b.fp.red).length:RED_PER_MAP;
+  // 擺攤：附近有安全區（村莊）時一個假人固定擺攤；離開太遠就收攤換人
+  const stall=list.find(b=>b.fp.stall);
+  if(stall&&dist(stall.x,stall.y,worldX,worldY)>26){stall.fp.stall=null;stall.fp.state='town';}
+  if(!stall&&!isDungeon()){const s=spotNear(worldX,worldY,3,14,true);const b=s&&list.find(b=>!b.fp.red&&!b.fp.vanish&&!b.fp.target&&b.fp.state!=='boss');if(b){place(b,...s);b.fp.stall=genStall();b.fp.shoutAt=movementTime()+rnd(3000,9000);}}
   if(reds<RED_PER_MAP){const s=spotNear(worldX,worldY,16,22,false);if(s)make(...s,true);}
   else if(list.length<PER_MAP){const s=spotNear(worldX,worldY,list.length<PER_MAP/2?8:16,20);if(s)make(...s);}
  }
@@ -74,9 +84,10 @@ const FakePlayers=(()=>{
  function update(mob,now,stepToward){
   const f=mob.fp;if(!f)return;
   if(mob.bubble&&now>mob.bubble.until)mob.bubble=null;
-  if(now>=f.chatAt){f.chatAt=now+rnd(20000,70000);if(Math.random()<.55&&dist(mob.x,mob.y,worldX,worldY)<=18)say(mob,pick(LINES));}
+  if(now>=f.chatAt){f.chatAt=now+rnd(20000,70000);if(Math.random()<.55&&dist(mob.x,mob.y,worldX,worldY)<=18&&!f.stall)say(mob,pick(isDungeon()?DUN_LINES:LINES));}
   if(f.vanish){if(now>=f.vanish){f.vanish=0;f.hidden=false;f.pk=false;mob.hp=mob.spawn.npc.hp;const s=f.red?spotNear(worldX,worldY,16,22,false):spotNear(worldX,worldY,16,22,true)||spotNear(worldX,worldY,16,22);if(s)place(mob,...s);}return;}
   if(mob.step)return;
+  if(f.stall){mob.hp=mob.spawn.npc.hp;if(now>=f.shoutAt){f.shoutAt=now+rnd(40000,90000);shout(mob);}if(now>=f.stall.restock||!f.stall.items.length)f.stall=genStall();return;}
   if(f.red&&pk(mob,now,stepToward))return;
   // 打王：王出現在你附近時集合
   const lvl=mob.spawn.npc.level;
@@ -102,9 +113,10 @@ const FakePlayers=(()=>{
   if(now<f.ready)return;
   face(mob,t.x,t.y);const dur=f.look.attackMs;mob.action={clip:'attack',start:now,end:now+dur};f.ready=now+dur+rnd(150,500);
   const lv=mob.spawn.npc.level;
+  if(reach>1)shoot(mob,t,now+dur*.45,f.look.weapon);
   setTimeout(()=>{if(!t.hp||!mob.hp)return;IslandMonsters.botHit(t,ri(3,9)+Math.floor(lv*.6));if(!t.hp){claimed.delete(t);if(f.target===t)f.target=null;loot(mob,t);if(Math.random()<.08)say(mob,pick(['又一隻','好爽','經驗+1','掉寶吧拜託']));}},dur*.45);
   // 怪物反擊（簡化：不真的追打，只扣假人血）
-  if(Math.random()<.5)mob.hp=Math.max(1,mob.hp-ri(1,Math.max(3,Math.floor((t.spawn.npc.level||1)*1.2))));
+  if(Math.random()<.5){mob.hp=Math.max(1,mob.hp-ri(1,Math.max(3,Math.floor((t.spawn.npc.level||1)*1.2))));f.hpShow=now+3000;}
   if(mob.hp<mob.spawn.npc.hp*.25){claimed.delete(t);f.target=null;f.state=f.state==='boss'?'hunt':f.state;f.boss=null;if(Math.random()<.6)say(mob,pick(FLEE));f.vanish=now+1600;setTimeout(()=>{if(mob.fp.vanish)IslandMonsters.playEffect(169,mob.x,mob.y,movementTime());},1500);}
  }
  // ---- 紅名 PK ----
@@ -117,6 +129,7 @@ const FakePlayers=(()=>{
    if(pd>reach||!IslandCombat.clearShot(mob.x,mob.y,worldX,worldY)){stepToward(mob,worldX,worldY,now);return true;}
    if(now<f.ready)return true;
    face(mob,worldX,worldY);const dur=f.look.attackMs;mob.action={clip:'attack',start:now,end:now+dur};f.ready=now+dur+rnd(200,600);
+   if(reach>1)shoot(mob,{x:worldX,y:worldY},now+dur*.45,f.look.weapon);
    setTimeout(()=>{if(!f.pk||CharacterActions.dead||safe(worldX,worldY))return;
     const ac=typeof previewArmorClass==='function'?Number(previewArmorClass())||10:10,plv=window.activeCharacterLevel||1;
     if(Math.random()<clamp(.6+(lv-plv)*.02+(ac-10)*.025,.1,.95)){CharacterActions.damage(ri(3,9)+Math.floor(lv*.6)+4,{animate:!movementAnimating()&&!navigationPath.length});
@@ -125,7 +138,7 @@ const FakePlayers=(()=>{
   if(now>=f.pkCd&&ok&&!safe(mob.x,mob.y)&&pd<=8&&IslandCombat.clearShot(mob.x,mob.y,worldX,worldY)){f.pk=true;claimed.delete(f.target);f.target=null;f.goal=null;f.pkCd=now+rnd(45000,90000);say(mob,pick(RED_LINES));window.GameChat?.say('【警告】'+name+'（紅名）盯上你了！','sys');window.toast?.(name+'（紅名）盯上你了！');return true;}
   return false;}
  // 玩家打到假人（只有紅名能被點選）：被打就反擊；打倒得金幣，消失一分鐘
- function hurt(mob,amount){const f=mob.fp;if(!f||f.hidden||!mob.hp)return;mob.hp=Math.max(0,mob.hp-Math.max(1,Math.floor(amount)));window.CombatSound?.monsterHit?.(mob);
+ function hurt(mob,amount){const f=mob.fp;if(!f||f.hidden||!mob.hp)return;mob.hp=Math.max(0,mob.hp-Math.max(1,Math.floor(amount)));f.hpShow=movementTime()+3000;window.CombatSound?.monsterHit?.(mob);
   if(f.red&&!f.pk&&mob.hp>0&&!CharacterActions.dead){f.pk=true;f.target=null;f.goal=null;say(mob,pick(['你敢打我?','找死','來啊']));}
   if(mob.hp>0)return;
   const gold=mob.spawn.npc.level*40;IslandMonsters.playEffect(169,mob.x,mob.y,movementTime());
@@ -138,11 +151,55 @@ const FakePlayers=(()=>{
   for(const d of drops){if(d.id===40308||!(d.chance>0)||d.chance>20000||Math.random()*1e6>=d.chance*2)continue;const item=itemById.get(d.id);if(!item)continue;
    window.GameChat?.say('【全服】'+mob.spawn.npc.name+' 打倒了 '+t.spawn.npc.name+'，獲得了【'+item.name+'】！','drop');
    if(dist(mob.x,mob.y,worldX,worldY)<=18)say(mob,pick(['哈哈哈 我的了!!!','發財了','感謝施主','出了出了!!']));return;}}
+ // ---- 遠程飛行物：妖精的箭、法師的魔法彈 ----
+ const shots=[];
+ function shoot(mob,t,at,weapon){shots.push({fx:mob.x,fy:mob.y,tx:t.x,ty:t.y,start:at,end:at+Math.max(160,dist(mob.x,mob.y,t.x,t.y)*55),kind:weapon==='bow'?'arrow':'bolt',map:window.activeMapId||0});if(shots.length>40)shots.shift();}
+ function drawShots(pen,view,now){if(!shots.length)return;const s=typeof characterRenderScale==='function'?characterRenderScale():1;
+  for(let i=shots.length-1;i>=0;i--){const k=shots[i];if(now>=k.end||k.map!==(window.activeMapId||0)){shots.splice(i,1);continue;}if(now<k.start)continue;
+   const p=(now-k.start)/(k.end-k.start),wx=k.fx+(k.tx-k.fx)*p,wy=k.fy+(k.ty-k.fy)*p,[px,py]=project(wx,wy),x=px*view.zoom+view.ox,y=py*view.zoom+view.oy-34*s;
+   const [qx,qy]=project(k.tx,k.ty),ang=Math.atan2(qy*view.zoom+view.oy-34*s-y,qx*view.zoom+view.ox-x);
+   pen.save();pen.translate(x,y);pen.rotate(ang);
+   if(k.kind==='arrow'){pen.strokeStyle='#e8dcb0';pen.lineWidth=2*s;pen.beginPath();pen.moveTo(-12*s,0);pen.lineTo(8*s,0);pen.stroke();pen.fillStyle='#f4f0e0';pen.beginPath();pen.moveTo(10*s,0);pen.lineTo(5*s,-3*s);pen.lineTo(5*s,3*s);pen.fill();}
+   else{const g=pen.createRadialGradient(0,0,0,0,0,9*s);g.addColorStop(0,'rgba(220,240,255,1)');g.addColorStop(.4,'rgba(120,190,255,.9)');g.addColorStop(1,'rgba(60,120,255,0)');pen.fillStyle=g;pen.beginPath();pen.arc(0,0,9*s,0,Math.PI*2);pen.fill();}
+   pen.restore();}}
+ // ---- 擺攤商人 ----
+ // 商店資料（native-npc-dialog-data.js）比這支晚載入，第一次擺攤時才建價目表
+ let SHOP_PRICE=null,stallPool=[],usefulPool=[];
+ function prices(){if(SHOP_PRICE)return;SHOP_PRICE=new Map();for(const rows of [...Object.values((typeof NATIVE_NPC_DIALOGS!=='undefined'?NATIVE_NPC_DIALOGS:null)?.shops||{}),(typeof islandNpcServiceData!=='undefined'?islandNpcServiceData:null)?.shop||[]])for(const [id,,buy,pack,,ench] of rows){if(!(buy>0)||ench||id===40308)continue;const unit=buy/Math.max(1,pack|0);if(!SHOP_PRICE.has(id)||unit<SHOP_PRICE.get(id))SHOP_PRICE.set(id,unit);}
+  stallPool=[...SHOP_PRICE.keys()].filter(id=>itemById.get(id)?.icon&&SHOP_PRICE.get(id)>=5&&SHOP_PRICE.get(id)<=30000);
+  usefulPool=stallPool.filter(id=>{const it=itemById.get(id),h=ITEM_USE_RULES.definitions[it.kind+':'+id]?.handler||'';return /^(hp.|mp.|brave.|teleport.)/.test(h)||it.type==='arrow'});}
+ function genStall(){prices();const items=[],n=ri(3,5),ids=new Set();while(items.length<n&&ids.size<stallPool.length){const id=pick(usefulPool.length&&Math.random()<.7?usefulPool:stallPool);/* 七成賣實用品：藥水、卷軸、箭 */if(ids.has(id))continue;ids.add(id);const item=itemById.get(id),stack=!!ITEM_USE_RULES.definitions[item.kind+':'+id]?.stackable;
+   const unit=SHOP_PRICE.get(id),qty=stack?Math.max(1,Math.min(pick([5,10,20,50,100]),Math.floor(200000/unit))):1,price=Math.max(1,Math.round(unit*rnd(.9,1.6)));items.push({id,key:item.kind+':'+id,qty,price});}
+  return {items,restock:movementTime()+rnd(240000,420000)};}
+ function shout(mob){const it=mob.fp.stall?.items?.[0]&&pick(mob.fp.stall.items);if(!it)return;const name=itemById.get(it.id)?.name||'道具';
+  say(mob,'【賣】'+name+(it.qty>1?' ×'+it.qty:'')+' '+it.price.toLocaleString()+' 金');}
+ let stallWin=null;
+ function openStall(mob){if(window.gameFlowState!=='playing')return;stallWin?.remove();const f=mob.fp;if(!f?.stall)return;
+  const el=(t,c,x)=>uiElement(t,c,x),w=el('section','fp-stall');w.style.zIndex=String(window.FloatingWindows?.frontLevel?.()||40);
+  const head=el('div','fp-stall-head'),x=el('button','','✕');x.type='button';x.onclick=()=>{w.remove();stallWin=null;};head.append(el('b','',mob.spawn.npc.name+' 的攤位'),x);
+  const list=el('div','fp-stall-list'),msg=el('div','fp-stall-msg');
+  const gold=()=>OwnedInventory.items.filter(e=>e.key==='etcitem:40308').reduce((n,e)=>n+e.count,0);
+  function render(){list.replaceChildren();for(const it of f.stall.items){const item=itemById.get(it.id),row=el('div','fp-stall-row'),buy=el('button','','買 1 個');buy.type='button';
+    row.append(itemIcon(item),el('span','nm',item.name+(it.qty>1?'（剩 '+it.qty+'）':'')),el('span','pr',it.price.toLocaleString()+' 金'),buy);
+    buy.disabled=gold()<it.price;buy.onclick=()=>{if(dist(mob.x,mob.y,worldX,worldY)>8){msg.textContent='離攤位太遠了。';return;}const err=OwnedInventory.trade(it.key,1,it.price,false);
+     if(err){msg.textContent=err;return;}it.qty--;if(!it.qty)f.stall.items.splice(f.stall.items.indexOf(it),1);msg.textContent='買到 '+item.name+'。';if(Math.random()<.5)say(mob,pick(['謝謝惠顧','感謝老闆','歡迎再來']));render();};
+    list.append(row);}
+   if(!f.stall.items.length)list.append(el('div','fp-stall-msg','賣完了，等老闆補貨。'));msg.dataset.gold='目前金幣 '+gold().toLocaleString();}
+  w.append(head,list,msg);game.append(w);stallWin=w;render();msg.textContent='目前金幣 '+gold().toLocaleString();}
+ const stallCss=document.createElement('style');stallCss.textContent='.fp-stall{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(340px,92%);padding:8px 10px 10px;box-sizing:border-box;pointer-events:auto;background:linear-gradient(#1b1d21,#121417);border:1px solid #6e5a33;border-radius:8px;box-shadow:0 10px 30px #000c;color:#e8dcc0}'
+  +'.fp-stall-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}.fp-stall-head b{color:#f0cf7c;font-size:15px}.fp-stall-head button{width:26px;height:24px;min-height:0!important;padding:0!important;background:linear-gradient(#4a3d26,#2a2216)!important;border:1px solid #9b8150!important;border-radius:4px;color:#f0dcae!important}'
+  +'.fp-stall-list{display:grid;gap:5px;max-height:52vh;overflow:auto}.fp-stall-row{display:flex;align-items:center;gap:8px;padding:5px 8px;background:#0e0f11;border:1px solid #2e2c28;border-radius:6px;font-size:13px}'
+  +'.fp-stall-row img{width:28px;height:28px;object-fit:contain;image-rendering:pixelated}.fp-stall-row .nm{flex:1;min-width:0}.fp-stall-row .pr{color:#ffd77a;font-variant-numeric:tabular-nums}'
+  +'.fp-stall-row button{min-height:0!important;height:26px;padding:0 10px!important;font-size:12px!important;background:linear-gradient(#5e4c2a,#3b2f1b)!important;color:#ffe2a0!important;border:1px solid #a3864d!important;border-radius:5px!important}.fp-stall-row button:disabled{opacity:.45}'
+  +'.fp-stall-msg{margin-top:6px;text-align:center;font-size:12px;color:#c9bd9c;min-height:16px}';document.head.append(stallCss);
  // ---- 名牌與對話泡泡（island-monsters.js 繪製時呼叫） ----
  function label(pen,mob,x,y,now){if(mob.fp?.vanish&&now>=mob.fp.vanish-150)return;y+=36*(typeof characterRenderScale==='function'?characterRenderScale():1); /* 影格上方留了武器揮動的空間，名牌往下貼近頭頂 */
   const name=mob.spawn.npc.name,clan=mob.fp?.clan;pen.textAlign='center';pen.lineWidth=3;pen.strokeStyle='#101010';
   pen.font='12px sans-serif';pen.fillStyle=mob.fp?.red?'#ff6a5a':'#e9f1ff';pen.strokeText(name,x,y);pen.fillText(name,x,y);
-  let top=y-14;if(clan){pen.font='10px sans-serif';pen.fillStyle=mob.fp?.red?'#d05050':'#9fd18b';pen.strokeText('['+clan+']',x,top);pen.fillText('['+clan+']',x,top);top-=13;}
+  let top=y-14;
+  if(mob.fp?.stall){pen.font='10px sans-serif';pen.fillStyle='#ffd77a';pen.strokeText('【擺攤中】點我購買',x,y+13);pen.fillText('【擺攤中】點我購買',x,y+13);pen.font='12px sans-serif';}
+  if(mob.fp?.hpShow>now){const w=36,h=4,r=Math.max(0,mob.hp/mob.spawn.npc.hp);pen.fillStyle='#1a1410';pen.fillRect(x-w/2-1,y+3,w+2,h+2);pen.fillStyle=mob.fp.red?'#e04030':'#c83a32';pen.fillRect(x-w/2,y+4,w*r,h);}
+  if(clan){pen.font='10px sans-serif';pen.fillStyle=mob.fp?.red?'#d05050':'#9fd18b';pen.strokeText('['+clan+']',x,top);pen.fillText('['+clan+']',x,top);top-=13;}
   const b=mob.bubble;if(b&&now<b.until){pen.font='12px sans-serif';const w=Math.min(190,pen.measureText(b.text).width+14),h=20,bx=x-w/2,by=top-h-2;
    pen.fillStyle='rgba(255,252,240,.94)';pen.strokeStyle='#5a4a2a';pen.lineWidth=1;pen.beginPath();pen.roundRect?pen.roundRect(bx,by,w,h,6):pen.rect(bx,by,w,h);pen.fill();pen.stroke();
    pen.fillStyle='#2a2216';pen.fillText(b.text.length>14?b.text.slice(0,14)+'…':b.text,x,by+14);}
@@ -151,5 +208,6 @@ const FakePlayers=(()=>{
  document.addEventListener('player-chat',e=>{const text=String(e.detail||'');for(const [re,ans] of REPLY){if(!re.test(text))continue;
   const near=bots().filter(b=>!b.fp?.vanish&&dist(b.x,b.y,worldX,worldY)<=20);if(near.length)setTimeout(()=>say(pick(near),pick(ans)),rnd(900,2200));break;}});
  function setEnabled(on){enabled=!!on;try{localStorage.setItem('lineage-fake-players',on?'on':'off')}catch{}maintain();}
- return {update,label,hurt,get count(){return bots().length;},get enabled(){return enabled;},setEnabled,looks};
+ function setRed(on){redOn=!!on;try{localStorage.setItem('lineage-fake-red',on?'on':'off')}catch{}maintain();}
+ return {update,label,hurt,drawShots,openStall,setRed,get redOn(){return redOn;},get count(){return bots().length;},get enabled(){return enabled;},setEnabled,looks};
 })();window.FakePlayers=FakePlayers;

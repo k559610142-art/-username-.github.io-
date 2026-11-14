@@ -226,7 +226,6 @@ NPC 穿衣服（2026-11-13）：
    怪物反擊簡化成扣假人血，低於 25% 喊一句後回家卷軸消失，再從玩家附近 16～22 格出現；頭上 [血盟] 名字＋對話泡泡
   聊天：orb-hud.js／client-classic-hud.js 加共用 window.GameChat.say(text,kind)，玩家送出訊息時發 document 事件 player-chat；
    假人每 20～70 秒有機會說話（玩家 18 格內才說），玩家提到 組隊／王／你好／買賣／強化／PK／謝 時附近 20 格的假人 1～2 秒後回話
-  FakePlayers.setEnabled(false) 可關（localStorage lineage-fake-players），目前沒有設定介面
 假玩家 第 2 期（2026-11-14）：
   紅名：每張地圖 2 個（RED_NAMES，血盟血月，island-monsters.js 繪製時 pen.filter 染暗紅、名字紅色），只在野外出現；pkCd 到了且玩家在野外 8 格內就盯上（訊息框【警告】＋toast），
    追打玩家（命中＝0.6＋(等級差)×0.02＋(防禦−10)×0.025，傷害 3～9＋等級×0.6＋4，CharacterActions.damage），玩家進安全區／倒下／超過 14 格就放棄
@@ -234,3 +233,11 @@ NPC 穿衣服（2026-11-13）：
   寶物公告：遊戲沒有地上掉落物，所以改成假人殺怪時照 killRewardData 掉寶表擲骰（掉率 ≤ 2% 的道具、機率 ×2），中了就發【全服】公告（訊息框「掉落」）
   打王：名字含 BOSS 或單隻生成且血量 ≥ 1500 的怪在玩家 30 格內時，14 級以上一般假人每 3 秒 20% 機率集合去打（state boss），王倒了喊一句
   實測：紅名毒蛇 PK 擊倒 1 級角色、擊敗紅名血手得 960 金幣並消失、3 個假人集合打測試王（3000→1509）
+假玩家 第 3 期（2026-11-14）：
+  設定（settings-panel.js 系統分頁「其他玩家」）：顯示其他玩家（FakePlayers.setEnabled，localStorage lineage-fake-players）、紅名 PK（setRed，lineage-fake-red，關掉時紅名立刻消失）
+  遠程飛行物：妖精箭矢、法師魔法彈（FakePlayers.drawShots，island-monsters.js 畫完角色後呼叫），打怪和紅名 PK 都有
+  血條：假人被打（怪物反擊、玩家打紅名）後名字下方顯示 3 秒血條；地監（WorldMaps.isDungeon）裡說 DUN_LINES
+  擺攤：玩家 14 格內有安全區時，一個一般假人在安全區固定擺攤（名字下「【擺攤中】點我購買」），3～5 件貨：NPC 商店有賣、單價 5～30,000、
+   七成是實用品（hp./mp./brave./teleport. 道具或箭），價格為最低商店價 0.9～1.6 倍，可疊加的一次 5～100 個（總價 ≤ 20 萬）；
+   每 40～90 秒喊「【賣】…」，4～7 分鐘或賣完換貨；點攤主（island-monsters.js selectAt）開攤位視窗，8 格內用 OwnedInventory.trade 買 1 個；玩家離開 26 格就收攤
+  實測：擺攤喊賣、買到蘋果扣 7 金幣、關紅名後紅名消失、設定出現兩個開關；箭矢／血條在隱藏面板下沒有截圖確認
