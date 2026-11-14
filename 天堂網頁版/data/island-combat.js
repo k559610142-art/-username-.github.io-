@@ -22,6 +22,7 @@ const IslandCombat=(()=>{
   }
   function begin(kind,mob){
     if(window.gameFlowState!=='playing'||CharacterActions.dead||!TransformCards.canAttack())return false;
+    if(window.PlayerStall?.active){toast('擺攤中不能戰鬥，請先收攤。');return false;}
     if(kind!=='auto'&&!mob?.hp)return false;
     if(owner!==window.activeCharacterId){owner=window.activeCharacterId;pending=null;}
     stop();mode=kind;target=mob||null;tick();return true;

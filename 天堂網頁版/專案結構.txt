@@ -256,3 +256,10 @@ NPC 穿衣服（2026-11-13）：
   輔助系統補給分頁「其他補給」：經驗藥水（AUTO 打怪中效果沒了自動喝、高的先喝）、魔法屏障卷軸（沒有魔法屏障時自動用）
 假人名字（2026-11-14）：fake-players.js 名字分 通用 NAMES／性別 GENDER_NAMES／職業 CLASS_NAMES（騎士、法師、妖精、王族、戰士、龍騎士，再分男女），
   只從「通用＋同性別＋自己職業」裡挑（35% 優先職業名），不會再出現王子叫「法師老李」、男角叫「精靈公主」；魔法卷軸持續時間不到 60 秒改顯示秒數
+
+玩家擺攤（2026-11-14）：data/player-stall.js（PlayerStall），目錄（reference-menu.js）新增「擺攤」（圖示用交易所 exchange.png）
+  只能在安全區；從背包選道具（不含穿戴、金幣、不能丟的），自訂數量、單價（預設參考價＝NPC 商店最低價，沒有用自動販賣價 ×4，再沒有 100），最多 8 項，可寫招牌標語
+  擺攤中不能移動／戰鬥（navigation.js navigateTo、scene-renderer.js stepWorld／move、island-combat.js begin 擋住），頭上顯示「【擺攤】標語」（#actor .ovh 前面）；不存檔
+  買家：玩家 20 格內的一般假人，每 6～14 秒來看一次貨，成交機率＝clamp(1.2 − 單價/參考價 × 0.6, 3%, 95%)，一次買 1～3 成存量（最多 50 個），
+   OwnedInventory.trade(賣) 扣道具收金幣、訊息框「掉落」分頁顯示成交；太貴時偶爾說「太貴了吧」；道具被自己用掉會自動下架，賣完自動收攤
+  注意：IslandMonsters／IslandCombat 是一般全域常數，不在 window 上，不能寫 window.IslandMonsters
