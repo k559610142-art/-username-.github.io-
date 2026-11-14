@@ -44,6 +44,7 @@ const PlayerSkills = (() => {
     if(now<(cooldowns.get(id)||0))return false;
     const healing=/治癒|恢復/.test(skill.name);
     const mob=IslandMonsters.target;
+    if(!healing&&mob?.spawn.bot&&!window.FakePlayers?.canFight(mob))return false;
     const range=skill.range>0?skill.range:10;
     if(!healing&&(!mob?.hp||Math.max(Math.abs(mob.x-worldX),Math.abs(mob.y-worldY))>range||
       !IslandCombat.clearShot(worldX,worldY,mob.x,mob.y)))return false;

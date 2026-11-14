@@ -9,6 +9,26 @@ const IslandMonsters = (() => {
   const steps=[[0,-1],[1,-1],[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1]];
   const decodedSheets=new WeakSet(),sheets=new Map(), mobs=[], taken=new Set();
   let hitboxes=[],selected=null,lastTap=null;
+  const stallMasks=new WeakMap();
+  function stallHit(box,x,y){
+    if(x<box.left||y<box.top||x>=box.left+box.width||y>=box.top+box.height)return false;
+    const {sheet,sx,sy,sw,sh}=box,key=[sx,sy,sw,sh].join(',');
+    let masks=stallMasks.get(sheet);if(!masks){masks=new Map();stallMasks.set(sheet,masks);}
+    if(!masks.has(key)){
+      const sample=document.createElement('canvas');sample.width=sw;sample.height=sh;
+      const context=sample.getContext('2d',{willReadFrequently:true});
+      try{
+        context.drawImage(sheet,sx,sy,sw,sh,0,0,sw,sh);const pixels=context.getImageData(0,0,sw,sh).data;
+        let headTop=sh;
+        for(let py=0;py<sh&&headTop===sh;py++)for(let px=Math.max(0,Math.floor(sw/2)-7);px<Math.min(sw,Math.ceil(sw/2)+7);px++)if(pixels[(py*sw+px)*4+3]>32){headTop=py;break;}
+        masks.set(key,{pixels,headTop});
+      }
+      catch{masks.set(key,null);}
+    }
+    const mask=masks.get(key),px=Math.floor((x-box.left)/box.width*sw),py=Math.floor((y-box.top)/box.height*sh);
+    // 只接受頭部像素，身體、武器與透明空地不開攤。
+    return !!mask&&Math.abs(px-sw/2)<=12&&py>=mask.headTop&&py<mask.headTop+20&&mask.pixels[(py*sw+px)*4+3]>32;
+  }
   const within=(area,x,y)=>x>=area[0]&&x<=area[2]&&y>=area[1]&&y<=area[3];
   const town=gfx=>gfx===945||gfx===1094;
   const effects=[];
@@ -85,6 +105,13 @@ const IslandMonsters = (() => {
     const [dx,dy] = steps[heading], x = mob.x+dx, y = mob.y+dy;
     const frames = islandMonsterFrames[mob.spawn.npc.gfx]['d'+heading+'/walk'];
     if (!frames || x===worldX&&y===worldY || !usable(mob.spawn,x,y) || !canTraverse(mob.x,mob.y,dx,dy)) return false;
+    // 先備妥整段走路影格，避免走到一半仍用上一張圖配上下一張的位移。
+    if(mob.spawn.bot){
+      let ready=true;
+      for(const frame of frames){const sheet=loadSheet(frame[0]);if(!decodedSheets.has(sheet))ready=false;}
+      if(!ready){mob.fp.waitingForWalk=true;return false;}
+      mob.fp.waitingForWalk=false;
+    }
     const duration = mob.spawn.npc.walk || frames.reduce((sum,frame)=>sum+frame[5],0);
     mob.heading = heading;
     mob.step = {x,y,start:now,end:now+duration};
@@ -102,6 +129,7 @@ const IslandMonsters = (() => {
       }
       const next=f.route[0],heading=steps.findIndex(([dx,dy])=>mob.x+dx===next[0]&&mob.y+dy===next[1]);
       if(heading>=0&&startStep(mob,heading,now)){f.route.shift();return true;}
+      if(f.waitingForWalk)return true; // 圖片準備期間保留目的地及路線。
       f.route=null;f.routeRetry=now+350;return false;
     }
     const distance = (x,y)=>Math.hypot(x-tx,y-ty);
@@ -198,11 +226,11 @@ const IslandMonsters = (() => {
     for(const [mob,x,y,phase] of visible.sort((a,b)=>a[2]-b[2])){
       let [[file,fx,fy,sw,sh,,sx,sy],[cx,cy]]=spriteFrame(mob,now,phase);
       let sheet=loadSheet(file);
-      if(!sheet.complete||!sheet.naturalWidth||!decodedSheets.has(sheet)){if(!mob.lastDrawn)continue;({sheet,fx,fy,sw,sh,sx,sy}=mob.lastDrawn);}
-      else mob.lastDrawn={sheet,fx,fy,sw,sh,sx,sy};
+      if(!sheet.complete||!sheet.naturalWidth||!decodedSheets.has(sheet)){if(!mob.lastDrawn)continue;({sheet,fx,fy,sw,sh,sx,sy,cx,cy}=mob.lastDrawn);}
+      else mob.lastDrawn={sheet,fx,fy,sw,sh,sx,sy,cx,cy};
       const left=x+(fx-cx)*scale,top=y+(fy-cy)*scale;
       const width=sw*scale,height=sh*scale;
-      hitboxes.push({mob,left,top,width,height});
+      hitboxes.push({mob,left,top,width,height,sheet,sx:sx||0,sy:sy||0,sw,sh});
       if(mob===selected){
         pen.beginPath();pen.ellipse(x,y,Math.max(12,width*.36),6,0,0,Math.PI*2);
         pen.strokeStyle='#f0bc65';pen.lineWidth=2;pen.stroke();
@@ -249,9 +277,9 @@ const IslandMonsters = (() => {
     for(const child of native?.attribute===8?[]:native?.parts||[])playEffect(child,x,y,now,{...options,visited});
   }
   function selectAt({x,y}){
-    const hit=hitboxes.findLast(box=>x>=box.left-4&&x<=box.left+box.width+4&&y>=box.top-4&&y<=box.top+box.height+4);
+    const hit=hitboxes.findLast(box=>box.mob.fp?.stall?stallHit(box,x,y):x>=box.left-4&&x<=box.left+box.width+4&&y>=box.top-4&&y<=box.top+box.height+4);
     if(hit?.mob?.spawn.bot&&hit.mob.fp?.stall){lastTap=null;window.FakePlayers?.openStall(hit.mob);return true;}
-    const next=hit?.mob?.spawn.ally||hit?.mob?.spawn.bot&&!hit.mob.fp?.red?null:hit?.mob||null;
+    const next=hit?.mob?.spawn.ally||hit?.mob?.spawn.bot&&!window.FakePlayers?.canFight(hit.mob)?null:hit?.mob||null;
     // 強制攻擊開啟：點到的目標（含 NPC、守衛）直接攻擊。
     if(next&&window.ForceAttack?.on){lastTap=null;if(next!==selected){selected=next;draw(getRenderedSceneView(),movementTime());}return 'attack';}
     if(next?.spawn.resident){
