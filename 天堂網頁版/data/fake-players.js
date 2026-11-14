@@ -1,0 +1,106 @@
+// 假玩家（2026-11-14 第 1 期，參考使用者另一款遊戲「龍脈紀元」的假人）：讓單機地圖看起來有其他玩家。
+//  外觀：原版 8 種角色動作圖（CHARACTER_ACTION_ASSETS：騎士、法師、王族、妖精 × 男女），轉成怪物影格格式（[檔, x, y, w, h, 毫秒, sx, sy]）
+//   掛在 islandMonsterFrames 的虛擬外觀編號 990000＋，所以沿用 island-monsters.js 的繪製、尋路與走路（spawn.bot）。
+//  行為：村莊（安全區）閒逛；野外找附近、等級合適、沒被你鎖定的怪打（近戰／妖精射箭／法師遠距），
+//   用 IslandMonsters.botHit 扣血（不激怒怪打你、不給你經驗）；血量低於 25% 喊一句後用回家卷軸消失，過一陣子在你附近重新出現。
+//  人數：每張地圖約 12 人，散在你周圍 8～20 格；離你超過 28 格的會換到你附近 16～22 格（假人跟怪物一樣只有在你 22 格內才會動）。
+//  聊天：每 20～70 秒有機會說一句（頭上泡泡＋訊息框「一般」）；你在訊息框打字提到 組隊／王／買賣／強化／你好／PK 時，附近假人會回話。
+//  不能點選、不會被 AUTO／技能選到、不會被怪打死；第 2 期：紅名 PK、撿掉落物、打王集合。
+const FakePlayers=(()=>{
+ const A=window.CHARACTER_ACTION_ASSETS;
+ const DIRS=['NW','N','NE','E','SE','S','SW','W'],TICK=40;
+ const WEAPON={騎士:['sword1','sword2','blunt'],王族:['sword1','dagger'],法師:['wand','dagger'],妖精:['bow','dagger']};
+ const RANGED={bow:6,wand:5};
+ // ---- 外觀：每個角色＋武器做一組影格 ----
+ const looks=[];let gfxId=990000;
+ for(const [avatar,a] of Object.entries(A?.avatars||{})){
+  for(const weapon of WEAPON[a.role]||['sword1']){
+   const need=['idle','walk','attack'].map(k=>weapon+'_'+k);if(!need.every(c=>a.timelines?.[c]&&DIRS.every(d=>a.directions[d]?.[c])))continue;
+   const [W,H]=a.size,foot=a.footY,sw=Math.min(170,W),sx=Math.round(W/2-sw/2),sy=Math.max(0,foot-100),sh=Math.min(H-sy,foot+22-sy);
+   const frames={};
+   DIRS.forEach((dir,d)=>{for(const key of ['idle','walk','attack']){const clip=weapon+'_'+key,count=a.directions[dir][clip];
+    frames['d'+d+'/'+key]=a.timelines[clip].frames.filter(f=>f.frame<count).map(f=>['../character-actions/'+avatar+'/'+dir+'/'+clip+'_'+f.frame+'.png',sx-W/2,sy-foot,sw,sh,Math.max(1,f.ticks)*TICK,sx,sy,W]);}});
+   const id=gfxId++;islandMonsterFrames[id]=frames;looks.push({id,avatar,role:a.role,weapon,attackMs:a.timelines[weapon+'_attack'].frames.reduce((s,f)=>s+Math.max(1,f.ticks)*TICK,0)});
+  }
+ }
+ // ---- 名字、血盟、台詞 ----
+ const NAMES=['夜行俠','小雨點','阿翔哥','劍無痕','黑貓貓','老王出擊','星辰雨','月下影','飛龍騎','冰咖啡','焦糖布丁','北風','米漿加蛋','阿凱','風之谷','咖哩飯','奶茶微糖','血色玫瑰','孤狼','小騎士','法師老李','精靈公主','狂戰','雷霆一擊','無名氏','天堂老玩家','肝帝','打寶仔','紅水不夠','閃電貂','銀色月光','大叔來了','喵喵拳','鐵頭','碎星','白目王'];
+ const CLANS=['風雲','天堂之戰','傲世','夜城','龍騎團','銀月','狂嵐','聖騎士團'];
+ const LINES=['收 +7 長劍 私我','賣 精靈餅乾 便宜賣','組隊打死亡騎士 缺補','有人要一起去龍之谷嗎','升等了 開心','讚啦','剛衝 +8 成功!!!','嗚嗚 +7 蒸發了','說話之島人好多','誰有多的紅水','求帶 新手','6666','今天掉寶好爛','骷髏好硬','奇岩城門口集合','有人看到巴風特嗎','收 魔法娃娃','綠水喝完了 誰有','練功練到睡著','這裡怪被搶光了 哈','回家卷軸剩一張 先回了','妖精的箭好貴','法師沒藍好痛苦','今天要衝到 40 等'];
+ const REPLY=[[/組|隊|一起/,['我可以!','+1','等我一下','缺什麼職業?']],[/王|boss|巴風特|死亡騎士/i,['王快出了吧','我也要打!','王在哪?']],[/哈囉|你好|嗨|安安|hi|hello/i,['嗨~','哈囉','安安','新人嗎?']],[/賣|收|買|交易/,['多少?','私我','太貴了吧','我有 等等']],[/強化|衝|\+\d/,['+6 以上小心','祝你過!','蒸發不要哭']],[/殺|PK|pk|紅名/i,['不要殺我啦','紅名去死','來啊']],[/謝/,['不客氣','小事','^^']]];
+ const FLEE=['快死了 先跑','血不夠 回村','救命','先回家補一下'];
+ const pick=a=>a[Math.floor(Math.random()*a.length)],rnd=(a,b)=>a+Math.random()*(b-a),ri=(a,b)=>Math.floor(rnd(a,b+1));
+ const dist=(ax,ay,bx,by)=>Math.max(Math.abs(ax-bx),Math.abs(ay-by));
+ const safe=(x,y)=>(tile(x,y)&48)===16;
+ let enabled=true;try{enabled=localStorage.getItem('lineage-fake-players')!=='off'}catch{}
+ const PER_MAP=12,used=new Set();let mapNow=null;
+ function say(mob,text){mob.bubble={text,until:movementTime()+4500};window.GameChat?.say(mob.spawn.npc.name+'：'+text,'say');}
+ function spotNear(cx,cy,minR,maxR,wantSafe=null){for(let i=0;i<80;i++){const r=rnd(minR,maxR),a=Math.random()*Math.PI*2,x=Math.round(cx+Math.cos(a)*r),y=Math.round(cy+Math.sin(a)*r);
+   if(dist(x,y,worldX,worldY)<minR||!TeleportScrolls.canLand(x,y))continue;if(wantSafe!==null&&safe(x,y)!==wantSafe)continue;return [x,y];}return null;}
+ function make(x,y){const look=pick(looks);let name=pick(NAMES.filter(n=>!used.has(n)));if(!name)return null;used.add(name);const lv=ri(5,45);
+  const npc={name,kind:'L1Bot',gfx:look.id,level:lv,hp:40+lv*14,mp:0,ac:0,walk:look.weapon==='bow'?600:640,attack:look.attackMs,ranged:RANGED[look.weapon]||1,skills:[],regeneration:null,aggressive:false};
+  const mob={spawn:{bot:true,mapId:window.activeMapId||0,npc,heading:ri(0,7),respawn:[0,0]},region:[x-50,y-50,x+50,y+50],x,y,homeX:x,homeY:y,hp:npc.hp,heading:ri(0,7),rest:0,phase:Math.random()*1800,step:null,
+   fp:{look,clan:Math.random()<.8?pick(CLANS):null,state:safe(x,y)?'town':'hunt',think:0,chatAt:movementTime()+rnd(6000,40000),ready:0,target:null,since:movementTime()}};
+  IslandMonsters.addAlly(mob);return mob;}
+ function place(mob,x,y){mob.x=mob.homeX=x;mob.y=mob.homeY=y;mob.step=null;mob.fp.target=null;mob.fp.state=safe(x,y)?'town':'hunt';mob.fp.since=movementTime();mob.spawn.mapId=window.activeMapId||0;}
+ function bots(){return IslandMonsters.botList.filter(m=>(m.spawn.mapId||0)===(window.activeMapId||0));}
+ // 人數維持與換位置（每 2 秒）
+ function maintain(){
+  if(window.gameFlowState!=='playing'||!sceneStarted||!looks.length)return;
+  const map=window.activeMapId||0;if(map!==mapNow){mapNow=map;}
+  const list=bots();
+  if(!enabled){for(const b of IslandMonsters.botList){IslandMonsters.removeAlly(b);used.delete(b.spawn.npc.name);}return;}
+  for(const b of list)if(dist(b.x,b.y,worldX,worldY)>28&&!b.step&&!b.fp.vanish){const s=spotNear(worldX,worldY,16,22);if(s)place(b,...s);}
+  if(list.length<PER_MAP){const s=spotNear(worldX,worldY,list.length<PER_MAP/2?8:16,20);if(s)make(...s);}
+ }
+ setInterval(maintain,2000);
+ // ---- 每隻假人的行為（island-monsters.js advance 呼叫） ----
+ const claimed=new WeakMap();
+ function face(mob,tx,ty){const dx=Math.sign(tx-mob.x),dy=Math.sign(ty-mob.y),h=[[0,-1],[1,-1],[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1]].findIndex(([x,y])=>x===dx&&y===dy);if(h>=0)mob.heading=h;}
+ function wander(mob,now,stepToward,r){const f=mob.fp;if(now<f.think)return;f.think=now+rnd(1500,5000);if(Math.random()<.35)return;
+  for(let i=0;i<6;i++){const x=mob.homeX+ri(-r,r),y=mob.homeY+ri(-r,r);if(stepToward(mob,x,y,now)){f.goal=[x,y];return;}}}
+ function update(mob,now,stepToward){
+  const f=mob.fp;if(!f)return;
+  if(mob.bubble&&now>mob.bubble.until)mob.bubble=null;
+  if(now>=f.chatAt){f.chatAt=now+rnd(20000,70000);if(Math.random()<.55&&dist(mob.x,mob.y,worldX,worldY)<=18)say(mob,pick(LINES));}
+  if(f.vanish){if(now>=f.vanish){f.vanish=0;mob.hp=mob.spawn.npc.hp;const s=spotNear(worldX,worldY,16,22,true)||spotNear(worldX,worldY,16,22);if(s)place(mob,...s);}return;}
+  if(mob.step)return;
+  // 繼續走向目標點（每步走完一格，下一格接著走）
+  if(f.goal&&!f.target){if(dist(mob.x,mob.y,...f.goal)<=0||!stepToward(mob,...f.goal,now))f.goal=null;return;}
+  if(f.state==='town'){
+   wander(mob,now,stepToward,5);
+   if(now-f.since>rnd(25000,70000)){f.state='hunt';f.since=now;const s=spotNear(mob.x,mob.y,8,16,false);if(s){mob.homeX=s[0];mob.homeY=s[1];f.goal=s;}}
+   return;}
+  // 打怪
+  if(f.target&&(!f.target.hp||dist(mob.x,mob.y,f.target.x,f.target.y)>14||f.target===IslandMonsters.target)){claimed.delete(f.target);f.target=null;}
+  if(!f.target&&now>=f.think){f.think=now+800;const lv=mob.spawn.npc.level;
+   const c=IslandMonsters.around(mob.x,mob.y,10).filter(m=>!claimed.has(m)&&m!==IslandMonsters.target&&!m.alert&&(m.spawn.npc.level||1)<=lv+4&&!safe(m.x,m.y))
+    .sort((a,b)=>dist(mob.x,mob.y,a.x,a.y)-dist(mob.x,mob.y,b.x,b.y))[0];
+   if(c){f.target=c;claimed.set(c,mob);}else{const far=IslandMonsters.around(mob.x,mob.y,24).filter(m=>!claimed.has(m)&&!safe(m.x,m.y)&&(m.spawn.npc.level||1)<=lv+4).sort((a,b)=>dist(mob.x,mob.y,a.x,a.y)-dist(mob.x,mob.y,b.x,b.y))[0];if(far){mob.homeX=far.x;mob.homeY=far.y;f.goal=[far.x,far.y];return;}wander(mob,now,stepToward,8);if(now-f.since>rnd(60000,120000)&&Math.random()<.4){f.state='town';f.since=now;}}}
+  const t=f.target;if(!t)return;
+  const reach=mob.spawn.npc.ranged||1,d=dist(mob.x,mob.y,t.x,t.y);
+  if(d>reach||!IslandCombat.clearShot(mob.x,mob.y,t.x,t.y)){if(!stepToward(mob,t.x,t.y,now)){claimed.delete(t);f.target=null;f.think=now+1500;}return;}
+  if(d===0){for(const [dx,dy] of [[1,0],[0,1],[-1,0],[0,-1]])if(stepToward(mob,mob.x+dx*2,mob.y+dy*2,now))return;}
+  if(now<f.ready)return;
+  face(mob,t.x,t.y);const dur=f.look.attackMs;mob.action={clip:'attack',start:now,end:now+dur};f.ready=now+dur+rnd(150,500);
+  const lv=mob.spawn.npc.level;
+  setTimeout(()=>{if(!t.hp||!mob.hp)return;IslandMonsters.botHit(t,ri(3,9)+Math.floor(lv*.6));if(!t.hp){claimed.delete(t);if(f.target===t)f.target=null;if(Math.random()<.08)say(mob,pick(['又一隻','好爽','經驗+1','掉寶吧拜託']));}},dur*.45);
+  // 怪物反擊（簡化：不真的追打，只扣假人血）
+  if(Math.random()<.5)mob.hp=Math.max(1,mob.hp-ri(1,Math.max(3,Math.floor((t.spawn.npc.level||1)*1.2))));
+  if(mob.hp<mob.spawn.npc.hp*.25){claimed.delete(t);f.target=null;if(Math.random()<.6)say(mob,pick(FLEE));f.vanish=now+1600;setTimeout(()=>{if(mob.fp.vanish)IslandMonsters.playEffect(169,mob.x,mob.y,movementTime());},1500);}
+ }
+ // ---- 名牌與對話泡泡（island-monsters.js 繪製時呼叫） ----
+ function label(pen,mob,x,y,now){if(mob.fp?.vanish&&now>=mob.fp.vanish-150)return;y+=36*(typeof characterRenderScale==='function'?characterRenderScale():1); /* 影格上方留了武器揮動的空間，名牌往下貼近頭頂 */
+  const name=mob.spawn.npc.name,clan=mob.fp?.clan;pen.textAlign='center';pen.lineWidth=3;pen.strokeStyle='#101010';
+  pen.font='12px sans-serif';pen.fillStyle='#e9f1ff';pen.strokeText(name,x,y);pen.fillText(name,x,y);
+  let top=y-14;if(clan){pen.font='10px sans-serif';pen.fillStyle='#9fd18b';pen.strokeText('['+clan+']',x,top);pen.fillText('['+clan+']',x,top);top-=13;}
+  const b=mob.bubble;if(b&&now<b.until){pen.font='12px sans-serif';const w=Math.min(190,pen.measureText(b.text).width+14),h=20,bx=x-w/2,by=top-h-2;
+   pen.fillStyle='rgba(255,252,240,.94)';pen.strokeStyle='#5a4a2a';pen.lineWidth=1;pen.beginPath();pen.roundRect?pen.roundRect(bx,by,w,h,6):pen.rect(bx,by,w,h);pen.fill();pen.stroke();
+   pen.fillStyle='#2a2216';pen.fillText(b.text.length>14?b.text.slice(0,14)+'…':b.text,x,by+14);}
+ }
+ // ---- 回話 ----
+ document.addEventListener('player-chat',e=>{const text=String(e.detail||'');for(const [re,ans] of REPLY){if(!re.test(text))continue;
+  const near=bots().filter(b=>!b.fp?.vanish&&dist(b.x,b.y,worldX,worldY)<=20);if(near.length)setTimeout(()=>say(pick(near),pick(ans)),rnd(900,2200));break;}});
+ function setEnabled(on){enabled=!!on;try{localStorage.setItem('lineage-fake-players',on?'on':'off')}catch{}maintain();}
+ return {update,label,get count(){return bots().length;},get enabled(){return enabled;},setEnabled,looks};
+})();window.FakePlayers=FakePlayers;

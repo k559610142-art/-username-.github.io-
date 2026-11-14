@@ -13,7 +13,8 @@ const IslandMonsters = (() => {
   const town=gfx=>gfx===945||gfx===1094;
   const effects=[];
   function usable(spawn,x,y){
-    if(spawn.resident)return !!WorldMaps.cell(spawn.mapId||0,x,y)&&steps.some(([dx,dy])=>canTraverse(x,y,dx,dy));
+    // 假人（data/fake-players.js）和常駐 NPC 一樣可以走進安全區
+    if(spawn.resident||spawn.bot)return !!WorldMaps.cell(spawn.mapId||0,x,y)&&steps.some(([dx,dy])=>canTraverse(x,y,dx,dy));
     const cell=tile(x,y);
     return !!cell&&!(cell&128)&&(town(spawn.npc.gfx)||(cell&48)!==16)
       &&steps.some(([dx,dy])=>canTraverse(x,y,dx,dy));
@@ -101,6 +102,7 @@ const IslandMonsters = (() => {
       mob.x=mob.step.x;mob.y=mob.step.y;mob.step=null;
       mob.rest=now+1400+Math.random()*2300;
     }
+    if(mob.spawn.bot){window.FakePlayers?.update(mob,now,stepToward);return;}
     if(mob.spawn.ally){window.Summons?.update(mob,now,stepToward);return;}    if(IslandNpcAi.update(mob,now,mobs,steps,stepToward))return;
     // 消氣的常駐 NPC（被強制攻擊追出去的警衛）走回原位
     if(mob.spawn.resident){if(!mob.step&&now>=mob.rest&&(mob.x!==mob.homeX||mob.y!==mob.homeY)&&!stepToward(mob,mob.homeX,mob.homeY,now))mob.rest=now+1000;return;}
@@ -194,6 +196,7 @@ const IslandMonsters = (() => {
       pen.strokeStyle='#171510';
       pen.fillStyle=town(mob.spawn.npc.gfx)?'#ebdcb6':'#ffdd9a';
       const name=mob.spawn.npc.name.replace('^',' · ');
+      if(mob.spawn.bot){window.FakePlayers?.label(pen,mob,left+sw*scale/2,top-5,now);continue;}
       pen.strokeText(name,left+sw*scale/2,top-5);
       pen.fillText(name,left+sw*scale/2,top-5);
     }
@@ -220,7 +223,7 @@ const IslandMonsters = (() => {
   }
   function selectAt({x,y}){
     const hit=hitboxes.findLast(box=>x>=box.left-4&&x<=box.left+box.width+4&&y>=box.top-4&&y<=box.top+box.height+4);
-    const next=hit?.mob?.spawn.ally?null:hit?.mob||null;
+    const next=hit?.mob?.spawn.ally||hit?.mob?.spawn.bot?null:hit?.mob||null;
     // 強制攻擊開啟：點到的目標（含 NPC、守衛）直接攻擊。
     if(next&&window.ForceAttack?.on){lastTap=null;if(next!==selected){selected=next;draw(getRenderedSceneView(),movementTime());}return 'attack';}
     if(next?.spawn.resident){
@@ -238,7 +241,7 @@ const IslandMonsters = (() => {
     return !!hit;
   }
   function nearest(range,eligible=()=>true){
-    return mobs.filter(m=>(m.spawn.mapId||0)===(window.activeMapId||0)&&m.hp&&!m.spawn.resident&&!m.spawn.ally&&!town(m.spawn.npc.gfx)&&Math.max(Math.abs(m.x-worldX),Math.abs(m.y-worldY))<=range&&eligible(m))
+    return mobs.filter(m=>(m.spawn.mapId||0)===(window.activeMapId||0)&&m.hp&&!m.spawn.resident&&!m.spawn.ally&&!m.spawn.bot&&!town(m.spawn.npc.gfx)&&Math.max(Math.abs(m.x-worldX),Math.abs(m.y-worldY))<=range&&eligible(m))
       .sort((a,b)=>Math.hypot(a.x-worldX,a.y-worldY)-Math.hypot(b.x-worldX,b.y-worldY))[0];
   }
   function setTarget(mob){selected=mob;draw(getRenderedSceneView(),movementTime());}
@@ -271,7 +274,10 @@ const IslandMonsters = (() => {
       if(Math.max(Math.abs(worldX-mob.x),Math.abs(worldY-mob.y))<=Math.max(22,window.IslandCombat?.autoRange||22))advance(mob,now);
     }
   }
-  return {get residentPositions(){ensurePopulation();return mobs.filter(m=>m.spawn.resident).map(m=>({id:m.spawn.npcId,spawnId:m.spawn.spawnId,x:m.x,y:m.y,point:[...m.spawn.point],sourcePoint:[...(m.spawn.sourcePoint||m.spawn.point)],random:[...m.spawn.random]}))},get audit(){return {mapId:populationMap,spawned:mobs.length,sourceRows:islandMonsterSpawns.length,fullCounts:true}},occupied:(x,y)=>{ensurePopulation();const tick=Math.floor(movementTime()/50);if(tick!==occupancyTick){occupancyTick=tick;occupancy.clear();for(const m of mobs)if(m.hp){occupancy.add(m.x+","+m.y);if(m.step)occupancy.add(m.step.x+","+m.step.y)}}return occupancy.has(x+","+y)},around:(x,y,r)=>{ensurePopulation();return mobs.filter(m=>m.hp&&!m.spawn.resident&&!m.spawn.ally&&(m.spawn.mapId||0)===(window.activeMapId||0)&&Math.max(Math.abs(m.x-x),Math.abs(m.y-y))<=r)},addAlly:(mob)=>{ensurePopulation();if(!mobs.includes(mob))mobs.push(mob);return mob;},removeAlly:(mob)=>{const i=mobs.indexOf(mob);if(i>=0)mobs.splice(i,1);if(selected===mob)selected=null;},hasMob:(mob)=>mobs.includes(mob),updateBackground,draw,selectAt,nearest,setTarget,damage,playEffect,serviceNearby:(id,range)=>mobs.some(m=>(m.spawn.mapId||0)===(window.activeMapId||0)&&m.spawn.resident&&m.spawn.npcId===id&&Math.max(Math.abs(m.x-worldX),Math.abs(m.y-worldY))<=range),get target(){return selected;}};
+  return {get residentPositions(){ensurePopulation();return mobs.filter(m=>m.spawn.resident).map(m=>({id:m.spawn.npcId,spawnId:m.spawn.spawnId,x:m.x,y:m.y,point:[...m.spawn.point],sourcePoint:[...(m.spawn.sourcePoint||m.spawn.point)],random:[...m.spawn.random]}))},get audit(){return {mapId:populationMap,spawned:mobs.length,sourceRows:islandMonsterSpawns.length,fullCounts:true}},occupied:(x,y)=>{ensurePopulation();const tick=Math.floor(movementTime()/50);if(tick!==occupancyTick){occupancyTick=tick;occupancy.clear();for(const m of mobs)if(m.hp){occupancy.add(m.x+","+m.y);if(m.step)occupancy.add(m.step.x+","+m.step.y)}}return occupancy.has(x+","+y)},around:(x,y,r)=>{ensurePopulation();return mobs.filter(m=>m.hp&&!m.spawn.resident&&!m.spawn.ally&&!m.spawn.bot&&(m.spawn.mapId||0)===(window.activeMapId||0)&&Math.max(Math.abs(m.x-x),Math.abs(m.y-y))<=r)},addAlly:(mob)=>{ensurePopulation();if(!mobs.includes(mob))mobs.push(mob);return mob;},removeAlly:(mob)=>{const i=mobs.indexOf(mob);if(i>=0)mobs.splice(i,1);if(selected===mob)selected=null;},hasMob:(mob)=>mobs.includes(mob),
+    botHit(mob,amount){if(!mob?.hp||mob.spawn.resident||mob.spawn.ally||mob.spawn.bot)return false;mob.hp=Math.max(0,mob.hp-amount);CombatSound.monsterHit(mob);
+     if(!mob.hp){const [min,max]=mob.spawn.respawn;mob.step=null;mob.respawnAt=movementTime()+1000*(Math.min(min,max)+Math.random()*Math.abs(max-min));if(selected===mob)selected=null;}return true;},
+    get botList(){return mobs.filter(m=>m.spawn.bot);},updateBackground,draw,selectAt,nearest,setTarget,damage,playEffect,serviceNearby:(id,range)=>mobs.some(m=>(m.spawn.mapId||0)===(window.activeMapId||0)&&m.spawn.resident&&m.spawn.npcId===id&&Math.max(Math.abs(m.x-worldX),Math.abs(m.y-worldY))<=range),get target(){return selected;}};
 })();
 const drawIslandScene=draw;
 draw=function(now=movementTime()){

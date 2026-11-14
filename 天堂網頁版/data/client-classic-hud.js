@@ -97,7 +97,8 @@
  const log=document.querySelector('#log');let lastLog='';
  function capture(){const t=log?.textContent.trim();if(!t||t===lastLog)return;lastLog=t;push(t,t.startsWith('[日誌]')?'journal':/獲得|撿起|拾取|掉落/.test(t)?'drop':'sys')}
  if(log){new MutationObserver(capture).observe(log,{childList:true,characterData:true,subtree:true});capture()}
- input.onsubmit=e=>{e.preventDefault();const t=text.value.trim();if(!t)return;text.value='';const who=window.activeCharacterName||'我';
+ (window.GameChat??={pushers:[],say(text,kind='say'){for(const p of this.pushers)p(text,kind)}}).pushers.push(push);
+ input.onsubmit=e=>{e.preventDefault();const t=text.value.trim();if(!t)return;text.value='';const who=window.activeCharacterName||'我';document.dispatchEvent(new CustomEvent('player-chat',{detail:t}));
   if(channel.value==='world'&&window.LocalServerClient?.online&&typeof LocalServerClient.chat==='function'){LocalServerClient.chat(t);push('[世界] '+who+'：'+t,'world');return}
   push((channel.value==='world'?'[世界] ':'')+who+'：'+t,channel.value==='world'?'world':'say')};
  text.addEventListener('keydown',e=>e.stopPropagation());

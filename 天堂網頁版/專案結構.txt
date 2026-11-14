@@ -215,3 +215,16 @@ NPC 穿衣服（2026-11-13）：
   native-world.js drawForeground：沒有遮擋物（cover 空）時不每幀清整張前景畫布
   navigation.js 走路銜接：上一步結束後 ≤ min(250ms, 半步) 內接到下一步都從上一步結束點起算（原本 100ms／四分之一步），畫面偶爾卡一下不會停頓後才起步
   實測（本機 1280×720 以下面板，連續走 39 格）：場景繪製平均 1.9ms／最大 12ms、地圖 render 平均 0.5ms，無長任務；走路約 63fps、p99 16.9ms、>50ms 的幀 0
+
+假玩家 第 1 期（2026-11-14，參考使用者另一款遊戲「龍脈紀元」）：data/fake-players.js（FakePlayers）
+  外觀：CHARACTER_ACTION_ASSETS 的角色動作圖（騎士／法師／王族／妖精／龍騎士／戰士 × 男女，配不同武器，共 22 種）轉成怪物影格，掛在 islandMonsterFrames 990000＋，
+   影格裁成人物附近 170 寬（file 用 ../character-actions/… 讓怪物繪製器的 island-monsters-v2/ 前綴也找得到）
+  island-monsters.js：spawn.bot＝假人（可進安全區、advance 交給 FakePlayers.update、不能點選、nearest／around 排除、名牌交給 FakePlayers.label）；
+   新 API botHit(mob,amount)（扣怪血但不激怒怪打玩家、不給玩家經驗，死了照原本重生）、botList
+  行為：每張地圖約 12 人在玩家周圍 8～20 格（超過 28 格換位置；假人和怪物一樣只在玩家 22 格內行動）；安全區閒逛，25～70 秒後出去打怪；
+   野外找 10 格內等級 ≤ 自己＋4、沒被玩家鎖定、沒在打玩家的怪（10 格沒有就往 24 格內最近的怪走），妖精射程 6、法師 5、其餘近戰；
+   怪物反擊簡化成扣假人血，低於 25% 喊一句後回家卷軸消失，再從玩家附近 16～22 格出現；頭上 [血盟] 名字＋對話泡泡
+  聊天：orb-hud.js／client-classic-hud.js 加共用 window.GameChat.say(text,kind)，玩家送出訊息時發 document 事件 player-chat；
+   假人每 20～70 秒有機會說話（玩家 18 格內才說），玩家提到 組隊／王／你好／買賣／強化／PK／謝 時附近 20 格的假人 1～2 秒後回話
+  FakePlayers.setEnabled(false) 可關（localStorage lineage-fake-players），目前沒有設定介面
+  第 2 期待做：紅名 PK、撿掉落物（傳說公告）、王出現集合打王

@@ -104,7 +104,9 @@
  const log=document.querySelector('#log');let last='';
  function capture(){const t=log?.textContent.trim();if(!t||t===last)return;last=t;push(t,t.startsWith('[日誌]')?'journal':/獲得|撿起|拾取|掉落/.test(t)?'drop':'sys')}
  if(log){new MutationObserver(capture).observe(log,{childList:true,characterData:true,subtree:true});capture()}
- form.onsubmit=e=>{e.preventDefault();const t=input.value.trim();if(!t)return;input.value='';push((window.activeCharacterName||'我')+'：'+t,'say')};
+ // 共用聊天接口：假人說話（GameChat.say）；玩家發言發出 player-chat 事件（data/fake-players.js 會回話）
+ (window.GameChat??={pushers:[],say(text,kind='say'){for(const p of this.pushers)p(text,kind)}}).pushers.push(push);
+ form.onsubmit=e=>{e.preventDefault();const t=input.value.trim();if(!t)return;input.value='';push((window.activeCharacterName||'我')+'：'+t,'say');document.dispatchEvent(new CustomEvent('player-chat',{detail:t}))};
  input.addEventListener('keydown',e=>e.stopPropagation());
  // 水晶＋快捷列底圖＋經驗線
  function orb(kind,label){const o=el('div','oh-orb '+kind),v=el('div','val');v.append(el('b','',label),el('span'));o.append(el('div','empty'),v);return o}
