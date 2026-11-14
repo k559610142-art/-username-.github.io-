@@ -5,7 +5,7 @@ const IslandNpcAi = (() => {
   // 強制攻擊：被打的常駐警衛／守護者（有血量）會生氣反擊，安全區也一樣；玩家離開範圍或死亡後消氣、走回原位（island-monsters.js advance）。
   const retaliates = mob => mob.spawn.resident && mob.spawn.npc.hp > 0 && (mob.spawn.npc.kind === 'L1Guard' || mob.spawn.npc.kind === 'L1Guardian');
   const canFight = mob => !mob.spawn.resident && mob.spawn.npc.attack > 0 || !!mob.angry && retaliates(mob);
-  const calm = mob => { mob.alert = false; mob.windup = null; mob.angry = false; };
+  const calm = mob => { mob.alert = false; mob.windup = null; mob.angry = false; mob.botEnemy = null; };
   const swing = npc => npc.attack || 1000; // 部分警衛 DB 沒有攻擊動作時間
   let owner, slowedUntil = 0, cursedUntil = 0, immuneUntil = 0;
 
@@ -14,6 +14,7 @@ const IslandNpcAi = (() => {
     mob.alert = false;
     mob.angry = false;
     mob.windup = null;
+    mob.botEnemy = null;
     mob.ready = 0;
     mob.action = null;
     mob.skillUse = new Map();
@@ -33,6 +34,7 @@ const IslandNpcAi = (() => {
     if (mob.aiOwner !== owner) reset(mob);
     if (playerActive() && retaliates(mob)) mob.angry = true;
     if (!playerActive() || !canFight(mob) || !mob.angry && (safe(worldX, worldY) || safe(mob.x, mob.y))) return;
+    if(mob.botEnemy){mob.botEnemy=null;mob.windup=null;}
     mob.alert = true;
     const npc = mob.spawn.npc;
     for (const ally of nearby) {
@@ -89,10 +91,28 @@ const IslandNpcAi = (() => {
     });
   }
 
+  function provokeBot(mob, attacker){
+    playerActive();if(mob.aiOwner!==owner)reset(mob);
+    if(!mob.hp||!canFight(mob)||!attacker?.hp||!attacker.spawn.bot||attacker.fp?.hidden||safe(mob.x,mob.y)||safe(attacker.x,attacker.y)||(mob.spawn.mapId||0)!==(attacker.spawn.mapId||0))return false;
+    if(mob.botEnemy!==attacker)mob.windup=null;
+    mob.botEnemy=attacker;mob.alert=true;return true;
+  }
+  function fightBot(mob,now,steps,stepToward){
+    const target=mob.botEnemy;
+    if(!target?.hp||target.fp?.hidden||!canFight(mob)||(mob.spawn.mapId||0)!==(target.spawn.mapId||0)||safe(mob.x,mob.y)||safe(target.x,target.y)||distance(mob.x,mob.y,target.x,target.y)>18||distance(mob.homeX,mob.homeY,target.x,target.y)>(mob.spawn.movement||12)+2){calm(mob);return false;}
+    if(mob.step)return true;
+    const gap=distance(mob.x,mob.y,target.x,target.y),reach=Math.max(1,mob.spawn.npc.ranged||1),clear=IslandCombat.clearShot(mob.x,mob.y,target.x,target.y);
+    if(mob.windup){const hit=mob.windup;if(now>=hit.at){mob.windup=null;if(hit.bot===target&&gap<=reach&&clear)window.FakePlayers?.monsterHurt(target,Math.max(1,Math.floor((mob.spawn.npc.level||1)*.6)+1+Math.floor(Math.random()*6)),now);}return true;}
+    if(now<mob.ready)return true;
+    if(gap&&gap<=reach&&clear){const heading=steps.findIndex(([x,y])=>x===Math.sign(target.x-mob.x)&&y===Math.sign(target.y-mob.y));if(heading>=0)mob.heading=heading;const duration=swing(mob.spawn.npc);mob.action={clip:'attack',start:now,end:now+duration};mob.windup={bot:target,at:now+duration*.45};mob.ready=now+duration;CombatSound.monsterAttack(mob,null,duration);}
+    else if(!window.ClassBuffs?.rooted(mob))stepToward(mob,target.x,target.y,now);
+    return true;
+  }
   function update(mob, now, mobs, steps, stepToward) {
     if (mob.aiOwner !== owner) {
       reset(mob);
     }
+    if(mob.botEnemy){fightBot(mob,now,steps,stepToward);return true;}
     if (window.Summons?.drive(mob, now, stepToward)) return true;
     if (!canFight(mob) || !playerActive() || now < immuneUntil || !mob.angry && (safe(worldX, worldY) || safe(mob.x, mob.y)) || window.ClassBuffs?.invisible()) {
       calm(mob);
@@ -170,7 +190,7 @@ const IslandNpcAi = (() => {
     revive.hidden = true;
   };
   game.append(revive);
-  return {reset, playerActive, provoke, update, canFight,
+  return {reset, playerActive, provoke, provokeBot, update, canFight,
     updateRevive(){revive.hidden = window.gameFlowState !== 'playing' || !CharacterActions.dead;},
     cure(){slowedUntil = cursedUntil = 0;window.NativePotions?.sync();},
     get negativeEffects(){

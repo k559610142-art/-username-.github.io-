@@ -275,9 +275,14 @@ const IslandMonsters = (() => {
     window.FakePlayers?.drawShots(pen,view,now);
     for(let i=effects.length-1;i>=0;i--){
       const effect=effects[i];
+      if(effect.failed||effect.owner&&effect.owner!==window.activeCharacterId){effects.splice(i,1);continue;}
+      if(effect.waiting)continue;
       const elapsed=now-effect.start;
       if(elapsed>=effect.duration){effects.splice(i,1);continue;}
-      const [px,py]=project(effect.x,effect.y);
+      const followed=effect.follow==='player'?visualWorldPosition(now):effect.follow;
+      if(followed?.fp?.hidden){effects.splice(i,1);continue;}
+      const phase=followed?.step?Math.max(0,Math.min(1,(now-followed.step.start)/(followed.step.end-followed.step.start))):0;
+      const [px,py]=project(followed?.step?followed.x+(followed.step.x-followed.x)*phase:followed?.x??effect.x,followed?.step?followed.y+(followed.step.y-followed.y)*phase:followed?.y??effect.y);
       if(effect.nativeScreen&&window.NpcEffectRenderer){NpcEffectRenderer.draw(pen,effect,elapsed,px*view.zoom+view.ox,py*view.zoom+view.oy,scale);continue;}
       let remaining=elapsed;
       const frame=effect.frames.find(f=>(remaining-=f[5])<0)||effect.frames.at(-1);
@@ -291,7 +296,9 @@ const IslandMonsters = (() => {
   function playEffect(gfx,x,y,now,options={}){
     const visited=options.visited||new Set();if(visited.has(gfx))return;visited.add(gfx);
     const native=typeof NPC_EFFECT_DATA!=='undefined'&&NPC_EFFECT_DATA[gfx],frames=native?.directions['d'+(options.heading||0)+'/idle']||native?.directions['d0/idle']||islandMonsterFrames[gfx]?.['d0/idle'];
-    if(frames)effects.push({gfx,heading:options.heading||0,nativeScreen:native?.attribute===8,frames,attribute:native?.attribute||0,x,y,start:now,duration:frames.reduce((sum,f)=>sum+f[5],0)});
+    if(frames){const effect={gfx,heading:options.heading||0,nativeScreen:native?.attribute===8,frames,attribute:native?.attribute||0,x,y,start:now,follow:options.follow,owner:window.activeCharacterId,duration:frames.reduce((sum,f)=>sum+f[5],0)};effects.push(effect);
+      if(effect.nativeScreen&&window.NpcEffectRenderer?.preload){effect.waiting=true;NpcEffectRenderer.preload(gfx).then(ready=>{effect.failed=!ready;effect.waiting=false;effect.start=movementTime();schedule();});}
+    }
     for(const child of native?.attribute===8?[]:native?.parts||[])playEffect(child,x,y,now,{...options,visited});
   }
   function selectAt({x,y}){
@@ -360,7 +367,7 @@ const IslandMonsters = (() => {
   }
   return {get residentPositions(){ensurePopulation();return mobs.filter(m=>m.spawn.resident).map(m=>({id:m.spawn.npcId,spawnId:m.spawn.spawnId,x:m.x,y:m.y,point:[...m.spawn.point],sourcePoint:[...(m.spawn.sourcePoint||m.spawn.point)],random:[...m.spawn.random]}))},get audit(){return {mapId:populationMap,spawned:mobs.length,sourceRows:islandMonsterSpawns.length,fullCounts:true}},occupied:(x,y)=>{ensurePopulation();const tick=Math.floor(movementTime()/50);if(tick!==occupancyTick){occupancyTick=tick;occupancy.clear();for(const m of mobs)if(m.hp){occupancy.add(m.x+","+m.y);if(m.step)occupancy.add(m.step.x+","+m.step.y)}}return occupancy.has(x+","+y)},around:(x,y,r)=>{ensurePopulation();return mobs.filter(m=>m.hp&&!m.spawn.resident&&!m.spawn.ally&&!m.spawn.bot&&(m.spawn.mapId||0)===(window.activeMapId||0)&&Math.max(Math.abs(m.x-x),Math.abs(m.y-y))<=r)},addAlly:(mob)=>{ensurePopulation();if(!mobs.includes(mob))mobs.push(mob);return mob;},removeAlly:(mob)=>{for(const list of [mobs,...populations.values(),...incomingBots.values()]){const i=list.indexOf(mob);if(i>=0)list.splice(i,1);}if(selected===mob)selected=null;},hasMob:(mob)=>mobs.includes(mob),
     preload(files){for(const f of files)loadSheet(f);},
-    botHit(mob,amount,options={}){if(!mob?.hp||mob.spawn.resident||mob.spawn.ally||mob.spawn.bot)return false;if(options.party&&amount>=mob.hp&&!PlayerProgression.award(mob))return false;mob.hp=Math.max(0,mob.hp-amount);CombatSound.monsterHit(mob);
+    botHit(mob,amount,options={}){if(!mob?.hp||mob.spawn.resident||mob.spawn.ally||mob.spawn.bot)return false;if(options.party&&amount>=mob.hp&&!PlayerProgression.award(mob))return false;mob.hp=Math.max(0,mob.hp-amount);CombatSound.monsterHit(mob);if(mob.hp&&options.attacker)IslandNpcAi.provokeBot(mob,options.attacker);
      if(!mob.hp)markDead(mob);return true;},
     transferBot,get botList(){ensurePopulation();const result=new Set();for(const list of [mobs,...populations.values(),...incomingBots.values()])for(const mob of list)if(mob.spawn.bot)result.add(mob);return [...result];},updateBackground,draw,selectAt,nearest,setTarget,damage,playEffect,serviceNearby:(id,range)=>mobs.some(m=>(m.spawn.mapId||0)===(window.activeMapId||0)&&m.spawn.resident&&m.spawn.npcId===id&&Math.max(Math.abs(m.x-worldX),Math.abs(m.y-worldY))<=range),get target(){return selected;}};
 })();

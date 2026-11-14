@@ -23,5 +23,11 @@ const NpcEffectRenderer=(()=>{
   }
   pen.drawImage(sprite.canvas,px+sprite.left*scale,py+sprite.top*scale,sprite.canvas.width*scale,sprite.canvas.height*scale);
  }
- return {draw};
+ function preload(gfx,seen=new Set()){
+  if(seen.has(gfx))return Promise.resolve(true);seen.add(gfx);const m=NPC_EFFECT_DATA[gfx];if(!m)return Promise.resolve(false);
+  const files=new Set(Object.values(m.directions).flat().map(f=>f[0]).filter(Boolean));
+  return Promise.all([...files].map(file=>{const image=asset(file);if(image.complete)return Promise.resolve(!!image.naturalWidth);return new Promise(resolve=>{image.addEventListener('load',()=>resolve(true),{once:true});image.addEventListener('error',()=>resolve(false),{once:true});});}).concat(m.parts.map(id=>preload(id,seen)))).then(ready=>ready.every(Boolean));
+ }
+ for(const id of [169,189,190,194,197,8910,11722])if(NPC_EFFECT_DATA[id])preload(id);
+ return {draw,preload};
 })();window.NpcEffectRenderer=NpcEffectRenderer;

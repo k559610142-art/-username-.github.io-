@@ -78,6 +78,13 @@ function createGameServer(options={}){
   const state=snapshot(user.id),character=state.characters.find(c=>c?.id===id);
   if(!character)fail(404,'找不到你的角色。');return {state,character};
  }
+ function partyRoster(user,cid){
+  const member=db.prepare("SELECT group_id FROM members WHERE user_id=? AND character_id=? AND kind='party'").get(user.id,cid);if(!member)return [];
+  return db.prepare('SELECT user_id,character_id FROM members WHERE group_id=? AND character_id<>?').all(member.group_id,cid).map(row=>{
+   const c=snapshot(row.user_id).characters.find(c=>c?.id===row.character_id);if(!c)return null;const p=presence.get(row.user_id),online=p?.id===c.id&&Date.now()-p.at<12000;
+   return {id:c.id,name:c.name,role:c.role,level:c.level,hp:Number.isFinite(c.hp)?c.hp:null,maxHp:Number.isFinite(c.maxHp)?c.maxHp:null,mapId:c.mapId||0,online};
+  }).filter(Boolean);
+ }
  function target(name){
   for(const row of db.prepare('SELECT user_id,payload FROM states').all()){
    const c=JSON.parse(row.payload).characters.find(c=>c?.name===name);
@@ -161,7 +168,7 @@ function createGameServer(options={}){
     if(route==='/api/presence'&&req.method==='POST'){
      const input=await body(req),{character:c}=actor(user,input.characterId);
      presence.set(user.id,{id:c.id,name:c.name,role:c.role,gender:c.gender,x:c.x,y:c.y,level:c.level,mapId:c.mapId||0,at:Date.now()});
-     return json(res,200,{players:[...presence].filter(([id,p])=>id!==user.id&&Date.now()-p.at<12000).map(([,p])=>p)});
+     return json(res,200,{party:partyRoster(user,c.id),players:[...presence].filter(([id,p])=>id!==user.id&&Date.now()-p.at<12000).map(([,p])=>p)});
     }
     if(route==='/api/social'&&req.method==='GET'){
      const cid=url.searchParams.get('characterId'),viewer=actor(user,cid).character;

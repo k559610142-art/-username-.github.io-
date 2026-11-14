@@ -200,7 +200,7 @@ const LocalServerClient=(()=>{
  };
  const peersLayer=uiElement('div',''),peers=new Map();
  peersLayer.style.cssText='position:absolute;inset:0;pointer-events:none;z-index:2;overflow:hidden';game.append(peersLayer);
- let visiblePlayers=[];
+ let visiblePlayers=[],partyMembers=[],partyOwner=null;
  function drawPeers(){
   peersLayer.hidden=window.gameFlowState!=='playing';
   if(peersLayer.hidden)return;
@@ -223,7 +223,7 @@ const LocalServerClient=(()=>{
  setInterval(async()=>{
   if(!online||!user||window.gameFlowState!=='playing'||document.hidden||busy||presenceBusy)return;
   presenceBusy=true;
-  try{await flush();const data=await request('/api/presence',{method:'POST',body:JSON.stringify({characterId:window.activeCharacterId})});visiblePlayers=data.players;drawPeers();}
+  try{await flush();const data=await request('/api/presence',{method:'POST',body:JSON.stringify({characterId:window.activeCharacterId})});visiblePlayers=data.players;partyMembers=data.party||[];partyOwner=window.activeCharacterId;drawPeers();}
   catch(error){message(error.message);}finally{presenceBusy=false;}
  },1500);
  async function init(){
@@ -246,6 +246,6 @@ const LocalServerClient=(()=>{
   }catch{}
  }
  init();
- return {flush,open,act,async market(){await flush();return request('/api/social?characterId='+encodeURIComponent(window.activeCharacterId));},get online(){return online;}};
+ return {flush,open,act,get party(){return window.gameFlowState==='playing'&&partyOwner===window.activeCharacterId?partyMembers:[];},async market(){await flush();return request('/api/social?characterId='+encodeURIComponent(window.activeCharacterId));},get online(){return online;}};
 })();
 window.LocalServerClient=LocalServerClient;

@@ -4,7 +4,7 @@ const NativePotions=(()=>{
   const buffIcons={haste:43,brave:52,elfBrave:150,braveX:54,blue:32,wisdom:26};
   const buffNames={haste:'加速',brave:'勇敢',elfBrave:'精靈餅乾',braveX:'三段加速',blue:'魔力回復',wisdom:'慎重',exp:'經驗加成'};
   // 原版職業位元：王族 1、騎士 2、妖精 4、法師 8、黑妖 16、龍騎士 32、幻術師 64、戰士 128（例：綠水 255＝全職業、勇水 130＝騎士＋戰士、生命之樹果實 96＝龍騎士＋幻術師）
-  const flags={'王族':1,'騎士':2,'妖精':4,'法師':8,'黑暗妖精':16,'龍騎士':32,'幻術師':64,'戰士':128};
+  const flags={'王族':1,'騎士':2,'妖精':4,'法師':8,'黑妖':16,'黑暗妖精':16,'龍騎士':32,'幻術師':64,'戰士':128};
   const bar=document.createElement('div');
   bar.className='native-potion-buffs';
   bar.style.cssText='position:absolute;left:var(--ui-left,12px);top:calc(var(--ui-top,12px) + 60px);z-index:3;display:flex;gap:4px;max-width:260px;flex-wrap:wrap;pointer-events:none';
@@ -129,7 +129,7 @@ const NativePotions=(()=>{
     }
     if(window.playerItemState)window.playerItemState.absoluteBarrier=false;
     if(!hp)window.TransformCards?.onDeath();
-    if(gfx)IslandMonsters.playEffect(gfx,worldX,worldY,movementTime());
+    if(gfx)IslandMonsters.playEffect(gfx,worldX,worldY,movementTime(),{follow:'player'});
     sync();return true;
   }
   function durationState(key){const c=parse(key);if(!c||Number(c.parameters[0])<=0||c.rule.minLevel>(window.activeCharacterLevel||1)||c.rule.maxLevel&&c.rule.maxLevel<(window.activeCharacterLevel||1))return null;const h=c.handler;if(h.startsWith('brave.')&&!(Number(c.parameters[2])&flags[job]))return null;const buff=h==='mp.UserMprBlue'?'blue':h.includes('WisdomPotion')?'wisdom':h.includes('ElfBrave')?'elfBrave':h.includes('BraveCake')?'braveX':h.includes('Haste')?'haste':h.includes('Brave')?'brave':null;if(!buff)return null;return {key:buff,duration:Number(c.parameters[0])*1000,until:Number(window.activePotionBuffs?.[buff])||0};}

@@ -336,3 +336,9 @@ NPC 穿衣服（2026-11-13）：
   tools/class-sprites/build.js --dark-elf 可重建 data/dark-elf-data.js 與男女原始動作；tools/black-elf.test.cjs 檢查創角、存讀、升級及所有圖片引用。
   裝備欄由背包移至角色的裝備分頁；E 開角色裝備，狀態入口開能力；背包保留全部／武器／防具／道具。
   tools/black-elf-preview.cjs 使用隔離瀏覽器測試實際男女創角、進場、穿雙刀與兩個視窗。
+
+藥水特效與怪物反擊（2026-11-14）
+  原先紅水189／橙水194／白水197只有特效呼叫，沒有任何已載入的圖格；tools/build-potion-effects.cjs 從原始客戶端補出169、189、190、194、197、8910、11722，data/potion-effect-data.js 接入既有特效播放器。
+  藥水圖片預載，冷載入完成才起算特效時間；玩家與假玩家共用特效，位置跟隨移動。假玩家喝水／施放治癒術不再生成文字泡泡。
+  botHit 傳遞實際攻擊者（含組隊假玩家）；怪物對該人物轉身、追擊與出手，不把此次傷害轉給玩家。玩家親自攻擊才切換至玩家仇恨，取消舊對象尚未落下的傷害。
+  tools/potion-retaliation.test.cjs 驗證仇恨、出手、安全區、逃離、藥水素材與冷載入時間；tools/black-elf-preview.cjs --potions 驗證實際使用紅水、扣物品、補HP及光效像素。

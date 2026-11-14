@@ -163,7 +163,7 @@ const NpcSocial=(()=>{
    b.action={clip:'attack',start:time,end:time+duration};
    setTimeout(()=>{
     if(owner!==teamOwner||map()!==teamMap||!party.has(b)||!usable(b)||b.fp.retreatUntil||CharacterActions.dead||!target.hp||distance(b,target)>reach||safe(b.x,b.y)||safe(target.x,target.y)||safe(worldX,worldY)||!IslandCombat.clearShot(b.x,b.y,target.x,target.y))return;
-    IslandMonsters.botHit(target,3+Math.floor(b.spawn.npc.level*.6),{party:true});
+    IslandMonsters.botHit(target,3+Math.floor(b.spawn.npc.level*.6),{party:true,attacker:b});
     b.hp=Math.max(1,b.hp-Math.max(1,Math.floor((target.spawn.npc.level||1)*.5)));b.fp.hpShow=now()+3000;
    },duration*.45);return true;
   }

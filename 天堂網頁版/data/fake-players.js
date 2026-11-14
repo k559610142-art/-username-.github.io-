@@ -135,7 +135,7 @@ const FakePlayers=(()=>{
   if(mob.hp<max*.7&&now>=(f.healAt||0)&&f.potions>0){
    const magic=f.look.role==='法師'&&Math.random()<.5;
    mob.hp=Math.min(max,mob.hp+Math.round(max*(magic ? .3 : .22)));f.potions--;f.healAt=now+(magic?4500:1800);f.hpShow=now+3000;
-   f.bubbleHeal=magic?'施放治癒術':'喝下紅色藥水';mob.bubble={text:f.bubbleHeal,until:now+1200};
+   IslandMonsters.playEffect(magic?(typeof playerSkillData!=='undefined'?playerSkillData.skills[1]?.gfx:0)||189:189,mob.x,mob.y,now,{follow:mob});
   }
   const fighting=f.pk||f.target||f.partyTarget;
   if(!f.retreatUntil&&fighting&&mob.hp/max<f.nerve){f.retreatUntil=now+rnd(4000,7500);f.escapeAt=now+rnd(800,2200);f.escapeMap=window.activeMapId||0;f.pk=false;claimed.delete(f.target);f.target=null;f.partyTarget=null;f.boss=null;f.goal=null;f.route=null;f.state='hunt';say(mob,pick(FLEE));}
@@ -184,9 +184,7 @@ const FakePlayers=(()=>{
   face(mob,t.x,t.y);const dur=f.look.attackMs;mob.action={clip:'attack',start:now,end:now+dur};f.ready=now+dur+rnd(150,500);
   const lv=mob.spawn.npc.level;
   if(reach>1)shoot(mob,t,now+dur*.45,f.look.weapon);
-  setTimeout(()=>{if(!t.hp||!mob.hp||f.hidden||f.retreatUntil||f.target!==t||(mob.spawn.mapId||0)!==(window.activeMapId||0))return;IslandMonsters.botHit(t,ri(3,9)+Math.floor(lv*.6));if(!t.hp){claimed.delete(t);if(f.target===t)f.target=null;loot(mob,t);if(Math.random()<.08)say(mob,pick(['又一隻','好爽','經驗+1','掉寶吧拜託']));}},dur*.45);
-  // 怪物反擊（簡化：不真的追打，只扣假人血）
-  if(Math.random()<.5){mob.hp=Math.max(1,mob.hp-ri(1,Math.max(3,Math.floor((t.spawn.npc.level||1)*1.2))));f.hpShow=now+3000;}
+  setTimeout(()=>{if(!t.hp||!mob.hp||f.hidden||f.retreatUntil||f.target!==t||(mob.spawn.mapId||0)!==(window.activeMapId||0))return;IslandMonsters.botHit(t,ri(3,9)+Math.floor(lv*.6),{attacker:mob});if(!t.hp){claimed.delete(t);if(f.target===t)f.target=null;loot(mob,t);if(Math.random()<.08)say(mob,pick(['又一隻','好爽','經驗+1','掉寶吧拜託']));}},dur*.45);
   survival(mob,now,stepToward);
  }
  // ---- 紅名 PK ----
@@ -208,6 +206,7 @@ const FakePlayers=(()=>{
    return true;}
   if(f.red&&now>=f.pkCd&&ok&&!safe(mob.x,mob.y)&&pd<=8&&IslandCombat.clearShot(mob.x,mob.y,worldX,worldY)){f.pk=true;f.enemyId=window.activeCharacterId;claimed.delete(f.target);f.target=null;f.goal=null;f.pkCd=now+rnd(45000,90000);say(mob,pick(RED_LINES));window.GameChat?.say('【警告】'+name+'（紅名）盯上你了！','sys');window.toast?.(name+'（紅名）盯上你了！');return true;}
   return false;}
+ function monsterHurt(mob,amount,now=movementTime()){const f=mob?.fp;if(!f||f.hidden||!mob.hp)return;mob.hp=Math.max(0,mob.hp-Math.max(1,Math.floor(amount)));f.hpShow=now+3000;window.CombatSound?.monsterHit?.(mob);if(mob.hp)return;claimed.delete(f.target);f.target=f.partyTarget=null;f.pk=false;f.goal=f.route=null;f.hidden=true;f.vanish=now+60000;mob.hp=mob.spawn.npc.hp;mob.step=mob.action=null;mob.bubble=null;if(IslandMonsters.target===mob){IslandMonsters.setTarget(null);IslandCombat.stop();}}
  // 玩家打到假人（只有紅名能被點選）：被打就反擊；打倒得金幣，消失一分鐘
  function hurt(mob,amount){const f=mob.fp;if(!f||!canFight(mob))return;mob.hp=Math.max(0,mob.hp-Math.max(1,Math.floor(amount)));f.hpShow=movementTime()+3000;window.CombatSound?.monsterHit?.(mob);
   if(!f.pk&&!f.retreatUntil&&mob.hp>0&&!CharacterActions.dead){f.pk=true;f.enemyId=window.activeCharacterId;claimed.delete(f.target);f.target=null;f.goal=null;f.route=null;say(mob,pick(['你敢打我?','找死','來啊']));}
@@ -386,5 +385,5 @@ const FakePlayers=(()=>{
   const reply=whisperReply(b,text);if(reply)setTimeout(()=>window.GameChat?.say('[密語] '+to+'：'+reply,'whisper'),rnd(1500,4000));});
  function setEnabled(on){enabled=!!on;maintain();}
  function setRed(on){redOn=!!on;maintain();}
- return {canFight,update,label,hurt,drawShots,openStall,get stalls(){stallInit();return stalls;},sampleStall:()=>genStall().items.map(i=>itemById.get(i.id)?.name),setRed,get redOn(){return redOn;},get count(){return bots().length;},get enabled(){return enabled;},setEnabled,looks};
+ return {canFight,update,label,hurt,monsterHurt,drawShots,openStall,get stalls(){stallInit();return stalls;},sampleStall:()=>genStall().items.map(i=>itemById.get(i.id)?.name),setRed,get redOn(){return redOn;},get count(){return bots().length;},get enabled(){return enabled;},setEnabled,looks};
 })();window.FakePlayers=FakePlayers;
