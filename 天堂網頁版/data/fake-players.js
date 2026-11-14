@@ -6,6 +6,11 @@
 //  人數：每張地圖約 12 人，散在你周圍 8～20 格；離你超過 28 格的會換到你附近 16～22 格（假人跟怪物一樣只有在你 22 格內才會動）。
 //  聊天：每 20～70 秒有機會說一句（頭上泡泡＋訊息框「一般」）；你在訊息框打字提到 組隊／王／買賣／強化／你好／PK 時，附近假人會回話。
 //  不能點選、不會被 AUTO／技能選到、不會被怪打死。
+// 第 4 期（2026-11-14 使用者規則）：
+//  名單存檔：一般假人的名字、外觀、等級、血盟存在 localStorage lineage-fake-roster，重登後同一批人回來（位置仍在你附近）。
+//  擺攤商人：固定 6 人（STALL_NAMES），時間表存在 localStorage lineage-fake-stalls，照真實時間走（重登不影響）：
+//   每次擺 30 分鐘～3 小時，到時間就下線消失；下線 3 小時後隨機到「奇岩村莊」或「銀騎士村莊」（只有這兩村）找新位置再擺，不固定點；
+//   擺攤時只喊【賣】／【收】，不聊天、不回公開對話、不回密語；點他開攤位：可以買他賣的，也可以把他收的東西賣給他。
 // 第 3 期（2026-11-14）：（設定開關已拿掉，玩家不能控制假人）；妖精箭矢／法師魔法彈飛行特效（drawShots）；
 //  假人被打時頭上短暫顯示血條；地監裡說地監台詞；擺攤商人：玩家附近有安全區時 1 個假人在安全區固定擺攤，
 //  3～5 件貨（NPC 商店有賣的東西，價格 0.9～1.6 倍），每 40～90 秒喊「【賣】…」，點他打開攤位用金幣買，賣完或 4～7 分鐘換貨。
@@ -36,6 +41,7 @@ const FakePlayers=(()=>{
  // 名字跟職業、性別要對得上（使用者 2026-11-14：王子叫「法師老李」不合理）：通用名＋性別名＋職業名，職業名只給那個職業
  const NAMES=['夜行俠','小雨點','劍無痕','黑貓貓','星辰雨','月下影','冰咖啡','焦糖布丁','北風','米漿加蛋','風之谷','咖哩飯','孤狼','雷霆一擊','無名氏','天堂老玩家','肝帝','打寶仔','紅水不夠','閃電貂','銀色月光','喵喵拳','鐵頭','碎星','白目王'];
  const GENDER_NAMES=[['阿翔哥','阿凱','老王出擊','大叔來了','型男一號'],['血色玫瑰','奶茶微糖','小公主喵','櫻花雨','甜心兔']];
+ const STALL_NAMES=['阿福雜貨','藥水小舖','箭矢批發','二手裝備行','回收大王','便宜賣啦'];
  const CLASS_NAMES={騎士:{any:['小騎士','鐵壁騎士','聖光之盾'],m:['重甲阿強'],f:['女武神']},法師:{any:['魔導研究生','火球專家','冰封千里'],m:['法師老李'],f:['魔女小玲']},
   妖精:{any:['森林射手','風之箭','月光弓手'],m:['精靈王子'],f:['精靈公主','綠葉小妖']},王族:{any:['血盟君主'],m:['小王子','王者之劍'],f:['公主殿下','女王陛下']},
   戰士:{any:['狂戰','斧頭幫','怒吼戰神'],m:[],f:['戰場女神']},龍騎士:{any:['飛龍騎','龍之血','赤焰龍騎'],m:[],f:['龍騎少女']}};
@@ -58,12 +64,21 @@ const FakePlayers=(()=>{
  function say(mob,text){mob.bubble={text,until:movementTime()+4500};if(mob.fp)mob.fp.lastLine=text;window.GameChat?.say(mob.spawn.npc.name+'：'+text,'say');}
  function spotNear(cx,cy,minR,maxR,wantSafe=null){for(let i=0;i<80;i++){const r=rnd(minR,maxR),a=Math.random()*Math.PI*2,x=Math.round(cx+Math.cos(a)*r),y=Math.round(cy+Math.sin(a)*r);
    if(dist(x,y,worldX,worldY)<minR||!TeleportScrolls.canLand(x,y))continue;if(wantSafe!==null&&safe(x,y)!==wantSafe)continue;return [x,y];}return null;}
- function make(x,y,red=false){const look=pick(looks);const g=A.avatars[look.avatar]?.gender?1:0,cls=CLASS_NAMES[look.role]||{any:[],m:[],f:[]},own=[...cls.any,...(g?cls.f:cls.m)].filter(n=>!used.has(n));
-  let name=pick((red?RED_NAMES:own.length&&Math.random()<.35?own:[...NAMES,...GENDER_NAMES[g],...own]).filter(n=>!used.has(n)));if(!name)return null;used.add(name);const lv=red?ri(18,40):ri(5,45);
+ const ROSTER_KEY='lineage-fake-roster',STALL_KEY='lineage-fake-stalls';
+ const loadJson=k=>{try{const v=JSON.parse(localStorage.getItem(k));return Array.isArray(v)?v:null}catch{return null}};
+ const saveJson=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}};
+ const lookKey=l=>l.avatar+'|'+l.weapon,lookOf=k=>looks.find(l=>lookKey(l)===k);
+ let roster=loadJson(ROSTER_KEY)||[];
+ function remember(mob){const r={name:mob.spawn.npc.name,look:lookKey(mob.fp.look),lv:mob.spawn.npc.level,clan:mob.fp.clan,red:!!mob.fp.red};roster=[r,...roster.filter(x=>x.name!==r.name)].slice(0,40);saveJson(ROSTER_KEY,roster);}
+ function make(x,y,red=false){
+  const saved=roster.find(r=>!used.has(r.name)&&!!r.red===red&&lookOf(r.look)&&!STALL_NAMES.includes(r.name));
+  const look=saved?lookOf(saved.look):pick(looks);const g=A.avatars[look.avatar]?.gender?1:0,cls=CLASS_NAMES[look.role]||{any:[],m:[],f:[]},own=[...cls.any,...(g?cls.f:cls.m)].filter(n=>!used.has(n));
+  let name=saved?saved.name:pick((red?RED_NAMES:own.length&&Math.random()<.35?own:[...NAMES,...GENDER_NAMES[g],...own]).filter(n=>!used.has(n)));if(!name)return null;used.add(name);const lv=saved?saved.lv:red?ri(18,40):ri(5,45);
   const npc={name,kind:'L1Bot',gfx:look.id,level:lv,hp:40+lv*14,mp:0,ac:0,walk:look.weapon==='bow'?600:640,attack:look.attackMs,ranged:RANGED[look.weapon]||1,skills:[],regeneration:null,aggressive:false};
   const mob={spawn:{bot:true,mapId:window.activeMapId||0,npc,heading:ri(0,7),respawn:[0,0]},region:[x-50,y-50,x+50,y+50],x,y,homeX:x,homeY:y,hp:npc.hp,heading:ri(0,7),rest:0,phase:Math.random()*1800,step:null,
    fp:{look,red,clan:red?'血月':Math.random()<.8?pick(CLANS):null,state:safe(x,y)?'town':'hunt',think:0,chatAt:movementTime()+rnd(6000,40000),ready:0,target:null,since:movementTime(),pk:false,pkCd:movementTime()+rnd(20000,60000)}};
-  preloadLook(look);IslandMonsters.addAlly(mob);return mob;}
+  if(saved)mob.fp.clan=saved.clan;
+  preloadLook(look);IslandMonsters.addAlly(mob);remember(mob);return mob;}
  const preloaded=new Set();
  function preloadLook(look){if(preloaded.has(look.id))return;preloaded.add(look.id);const files=new Set();for(const list of Object.values(islandMonsterFrames[look.id]||{}))for(const f of list)files.add(f[0]);IslandMonsters.preload([...files]);}
  function place(mob,x,y){mob.x=mob.homeX=x;mob.y=mob.homeY=y;mob.step=null;mob.fp.target=null;mob.fp.state=safe(x,y)?'town':'hunt';mob.fp.since=movementTime();mob.spawn.mapId=window.activeMapId||0;}
@@ -77,12 +92,9 @@ const FakePlayers=(()=>{
   for(const b of list)if(dist(b.x,b.y,worldX,worldY)>28&&!b.step&&!b.fp.vanish&&!b.fp.stall){const s=spotNear(worldX,worldY,16,22,b.fp.red?false:null);if(s){place(b,...s);b.fp.pk=false;}}
   if(!redOn)for(const b of list.filter(b=>b.fp.red)){IslandMonsters.removeAlly(b);used.delete(b.spawn.npc.name);if(IslandMonsters.target===b){IslandMonsters.setTarget(null);IslandCombat.stop();}}
   const reds=redOn?list.filter(b=>b.fp.red).length:RED_PER_MAP;
-  // 擺攤：附近有安全區（村莊）時一個假人固定擺攤；離開太遠就收攤換人
-  const stall=list.find(b=>b.fp.stall);
-  if(stall&&dist(stall.x,stall.y,worldX,worldY)>26){stall.fp.stall=null;stall.fp.state='town';}
-  if(!stall&&!isDungeon()){const s=spotNear(worldX,worldY,3,14,true);const b=s&&list.find(b=>!b.fp.red&&!b.fp.vanish&&!b.fp.target&&b.fp.state!=='boss');if(b){place(b,...s);b.fp.stall=genStall();b.fp.shoutAt=movementTime()+rnd(3000,9000);}}
+  stallTick();
   if(reds<RED_PER_MAP){const s=spotNear(worldX,worldY,16,22,false);if(s)make(...s,true);}
-  else if(list.length<PER_MAP){const s=spotNear(worldX,worldY,list.length<PER_MAP/2?8:16,20);if(s)make(...s);}
+  else{const roam=list.filter(b=>!b.fp.stall).length;if(roam<PER_MAP){const s=spotNear(worldX,worldY,roam<PER_MAP/2?8:16,20);if(s)make(...s);}}
  }
  setInterval(maintain,2000);
  // ---- 每隻假人的行為（island-monsters.js advance 呼叫） ----
@@ -96,7 +108,7 @@ const FakePlayers=(()=>{
   if(now>=f.chatAt){f.chatAt=now+rnd(20000,70000);if(Math.random()<.55&&dist(mob.x,mob.y,worldX,worldY)<=18&&!f.stall)say(mob,pick(isDungeon()?DUN_LINES:LINES));}
   if(f.vanish){if(now>=f.vanish){f.vanish=0;f.hidden=false;f.pk=false;mob.hp=mob.spawn.npc.hp;const s=f.red?spotNear(worldX,worldY,16,22,false):spotNear(worldX,worldY,16,22,true)||spotNear(worldX,worldY,16,22);if(s)place(mob,...s);}return;}
   if(mob.step)return;
-  if(f.stall){mob.hp=mob.spawn.npc.hp;if(now>=f.shoutAt){f.shoutAt=now+rnd(40000,90000);shout(mob);}if(now>=f.stall.restock||!f.stall.items.length)f.stall=genStall();return;}
+  if(f.stall){mob.hp=mob.spawn.npc.hp;if(now>=f.shoutAt){f.shoutAt=now+rnd(40000,90000);shout(mob);}return;}
   if(f.red&&pk(mob,now,stepToward))return;
   // 打王：王出現在你附近時集合
   const lvl=mob.spawn.npc.level;
@@ -183,20 +195,57 @@ const FakePlayers=(()=>{
  function genStall(){prices();const items=[],n=ri(3,5),ids=new Set();while(items.length<n&&ids.size<stallPool.length){const id=pick(usefulPool.length&&Math.random()<.7?usefulPool:stallPool);/* 七成賣實用品：藥水、卷軸、箭 */if(ids.has(id))continue;ids.add(id);const item=itemById.get(id),stack=!!ITEM_USE_RULES.definitions[item.kind+':'+id]?.stackable;
    const unit=SHOP_PRICE.get(id),qty=stack?Math.max(1,Math.min(pick([5,10,20,50,100]),Math.floor(200000/unit))):1,price=Math.max(1,Math.round(unit*rnd(.9,1.6)));items.push({id,key:item.kind+':'+id,qty,price});}
   return {items,restock:movementTime()+rnd(240000,420000)};}
- function shout(mob){const it=mob.fp.stall?.items?.[0]&&pick(mob.fp.stall.items);if(!it)return;const name=itemById.get(it.id)?.name||'道具';
+ function shout(mob){const st=mob.fp.stall,b=st?.buys?.length&&Math.random()<.35?pick(st.buys):null;
+  if(b){say(mob,'【收】'+(itemById.get(b.id)?.name||'道具')+' 每個 '+b.price.toLocaleString()+' 金');return;}
+  const it=st?.items?.length&&pick(st.items);if(!it)return;const name=itemById.get(it.id)?.name||'道具';
   say(mob,'【賣】'+name+(it.qty>1?' ×'+it.qty:'')+' '+it.price.toLocaleString()+' 金');}
+ function genBuys(){prices();const out=[],n=ri(1,2),ids=new Set();while(out.length<n&&ids.size<stallPool.length){const id=pick(usefulPool.length&&Math.random()<.8?usefulPool:stallPool);if(ids.has(id))continue;ids.add(id);
+   const item=itemById.get(id),stack=!!ITEM_USE_RULES.definitions[item.kind+':'+id]?.stackable;out.push({id,key:item.kind+':'+id,want:stack?pick([10,20,50]):ri(1,2),price:Math.max(1,Math.round(SHOP_PRICE.get(id)*rnd(.5,.8)))});}
+  return out;}
+ // ---- 擺攤商人時間表（只在奇岩村莊、銀騎士村莊）----
+ const STALL_TOWNS={giran:{name:'奇岩村莊',map:4,x:33421,y:32813},silver:{name:'銀騎士村莊',map:4,x:33080,y:33395}};
+ const H=3600000,MIN=60000;
+ let stalls=loadJson(STALL_KEY);
+ function stallInit(){if(stalls&&stalls.length===STALL_NAMES.length&&stalls.every(s=>lookOf(s.look)))return;const now=Date.now(),pool=looks.filter(l=>l.weapon!=='bow');
+  stalls=STALL_NAMES.map((name,i)=>{const start=i%2?now+rnd(5*MIN,3*H):now-rnd(0,20*MIN);return {name,look:lookKey(pick(pool)),clan:Math.random()<.6?pick(CLANS):null,town:pick(Object.keys(STALL_TOWNS)),spot:null,start,end:start+rnd(30*MIN,3*H),items:null,buys:null};});saveJson(STALL_KEY,stalls);}
+ function roll(s,now){let changed=false;while(now>=s.end){const off=s.end+3*H;s.start=off;s.end=off+rnd(30*MIN,3*H);s.town=pick(Object.keys(STALL_TOWNS));s.spot=null;s.items=null;s.buys=null;changed=true;}return changed;}
+ function stallSpot(s){const t=STALL_TOWNS[s.town];for(let i=0;i<120;i++){const r=rnd(2,10),a=Math.random()*Math.PI*2,x=Math.round(t.x+Math.cos(a)*r),y=Math.round(t.y+Math.sin(a)*r);
+   if(!TeleportScrolls.canLand(x,y)||!safe(x,y))continue;if(stalls.some(o=>o!==s&&o.town===s.town&&o.spot&&dist(o.spot[0],o.spot[1],x,y)<3))continue;return [x,y];}return null;}
+ let stallSaveAt=0;
+ function stallTick(){if(!looks.length)return;stallInit();const now=Date.now(),map=window.activeMapId||0;let dirty=false;
+  for(const s of stalls){if(roll(s,now))dirty=true;const live=now>=s.start&&now<s.end,t=STALL_TOWNS[s.town],mob=IslandMonsters.botList.find(m=>m.fp?.stallRef===s||m.fp?.stallName===s.name);
+   if(live&&map===t.map){if(!s.spot){s.spot=stallSpot(s);dirty=true;}if(!s.items){s.items=genStall().items;s.buys=genBuys();dirty=true;}}
+   const near=live&&map===t.map&&s.spot&&dist(s.spot[0],s.spot[1],worldX,worldY)<=32;
+   if(near&&!mob)makeStallMob(s);
+   else if(mob&&!near){if(!live&&dist(mob.x,mob.y,worldX,worldY)<=20)IslandMonsters.playEffect(169,mob.x,mob.y,movementTime());IslandMonsters.removeAlly(mob);used.delete(s.name);}
+   else if(mob)mob.fp.stall=s;}
+  if(dirty||now-stallSaveAt>30000){stallSaveAt=now;saveJson(STALL_KEY,stalls);}}
+ function makeStallMob(s){const look=lookOf(s.look)||pick(looks),[x,y]=s.spot;used.add(s.name);
+  const npc={name:s.name,kind:'L1Bot',gfx:look.id,level:ri(20,45),hp:500,mp:0,ac:0,walk:640,attack:look.attackMs,ranged:1,skills:[],regeneration:null,aggressive:false};
+  const mob={spawn:{bot:true,mapId:STALL_TOWNS[s.town].map,npc,heading:4,respawn:[0,0]},region:[x-5,y-5,x+5,y+5],x,y,homeX:x,homeY:y,hp:npc.hp,heading:ri(3,5),rest:0,phase:Math.random()*1800,step:null,
+   fp:{look,clan:s.clan,stall:s,stallRef:s,stallName:s.name,state:'stall',think:0,chatAt:Infinity,ready:0,target:null,since:movementTime(),shoutAt:movementTime()+rnd(3000,15000)}};
+  preloadLook(look);IslandMonsters.addAlly(mob);return mob;}
+ const saveStalls=()=>saveJson(STALL_KEY,stalls);
  let stallWin=null;
  function openStall(mob){if(window.gameFlowState!=='playing')return;stallWin?.remove();const f=mob.fp;if(!f?.stall)return;
   const el=(t,c,x)=>uiElement(t,c,x),w=el('section','fp-stall');w.style.zIndex=String(window.FloatingWindows?.frontLevel?.()||40);
   const head=el('div','fp-stall-head'),x=el('button','','✕');x.type='button';x.onclick=()=>{w.remove();stallWin=null;};head.append(el('b','',mob.spawn.npc.name+' 的攤位'),x);
   const list=el('div','fp-stall-list'),msg=el('div','fp-stall-msg');
   const gold=()=>OwnedInventory.items.filter(e=>e.key==='etcitem:40308').reduce((n,e)=>n+e.count,0);
-  function render(){list.replaceChildren();for(const it of f.stall.items){const item=itemById.get(it.id),row=el('div','fp-stall-row'),buy=el('button','','買 1 個');buy.type='button';
+  const have=key=>OwnedInventory.items.filter(e=>e.key===key&&!e.slot).reduce((n,e)=>n+e.count,0);
+  function render(){list.replaceChildren();list.append(el('div','fp-stall-msg','【賣】'));for(const it of f.stall.items){const item=itemById.get(it.id),row=el('div','fp-stall-row'),buy=el('button','','買 1 個');buy.type='button';
     row.append(itemIcon(item),el('span','nm',item.name+(it.qty>1?'（剩 '+it.qty+'）':'')),el('span','pr',it.price.toLocaleString()+' 金'),buy);
     buy.disabled=gold()<it.price;buy.onclick=()=>{if(dist(mob.x,mob.y,worldX,worldY)>8){msg.textContent='離攤位太遠了。';return;}const err=OwnedInventory.trade(it.key,1,it.price,false);
-     if(err){msg.textContent=err;return;}it.qty--;if(!it.qty)f.stall.items.splice(f.stall.items.indexOf(it),1);msg.textContent='買到 '+item.name+'。';if(Math.random()<.5)say(mob,pick(['謝謝惠顧','感謝老闆','歡迎再來']));render();};
+     if(err){msg.textContent=err;return;}it.qty--;if(!it.qty)f.stall.items.splice(f.stall.items.indexOf(it),1);msg.textContent='買到 '+item.name+'。';saveStalls();render();};
     list.append(row);}
-   if(!f.stall.items.length)list.append(el('div','fp-stall-msg','賣完了，等老闆補貨。'));msg.dataset.gold='目前金幣 '+gold().toLocaleString();}
+   if(!f.stall.items.length)list.append(el('div','fp-stall-msg','（賣完了）'));
+   if(f.stall.buys?.length){list.append(el('div','fp-stall-msg','【收】把你身上的東西賣給他'));
+    for(const b of f.stall.buys){const item=itemById.get(b.id),row=el('div','fp-stall-row'),sell=el('button','','賣給他 1 個');sell.type='button';
+     row.append(itemIcon(item),el('span','nm',item.name+'（還收 '+b.want+'，你有 '+have(b.key)+'）'),el('span','pr',b.price.toLocaleString()+' 金'),sell);
+     sell.disabled=have(b.key)<1;sell.onclick=()=>{if(dist(mob.x,mob.y,worldX,worldY)>8){msg.textContent='離攤位太遠了。';return;}const err=OwnedInventory.trade(b.key,1,b.price,true);
+      if(err){msg.textContent=err;return;}b.want--;if(!b.want)f.stall.buys.splice(f.stall.buys.indexOf(b),1);msg.textContent='賣出 '+item.name+'，得到 '+b.price.toLocaleString()+' 金。';saveStalls();render();};
+     list.append(row);}}
+   msg.dataset.gold='目前金幣 '+gold().toLocaleString();}
   w.append(head,list,msg);game.append(w);stallWin=w;render();msg.textContent='目前金幣 '+gold().toLocaleString();}
  const stallCss=document.createElement('style');stallCss.textContent='.fp-stall{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(340px,92%);padding:8px 10px 10px;box-sizing:border-box;pointer-events:auto;background:linear-gradient(#1b1d21,#121417);border:1px solid #6e5a33;border-radius:8px;box-shadow:0 10px 30px #000c;color:#e8dcc0}'
   +'.fp-stall-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}.fp-stall-head b{color:#f0cf7c;font-size:15px}.fp-stall-head button{width:26px;height:24px;min-height:0!important;padding:0!important;background:linear-gradient(#4a3d26,#2a2216)!important;border:1px solid #9b8150!important;border-radius:4px;color:#f0dcae!important}'
@@ -218,12 +267,12 @@ const FakePlayers=(()=>{
  }
  // ---- 回話 ----
  document.addEventListener('player-chat',e=>{const text=String(e.detail||'');for(const [re,ans] of REPLY){if(!re.test(text))continue;
-  const near=bots().filter(b=>!b.fp?.vanish&&dist(b.x,b.y,worldX,worldY)<=20);if(near.length)setTimeout(()=>say(pick(near),pick(ans)),rnd(900,2200));break;}});
+  const near=bots().filter(b=>!b.fp?.vanish&&!b.fp?.stall&&dist(b.x,b.y,worldX,worldY)<=20);if(near.length)setTimeout(()=>say(pick(near),pick(ans)),rnd(900,2200));break;}});
  // ---- 密語：玩家 /密 名字 內容 → 找同名假人（任何地圖），1.5～4 秒後回密語；找不到就「不在線上」 ----
  const W_TRADE_ASK=/有|賣|收|多少|價|錢|幾|算|便宜|出/;
  function whisperReply(b,text){const f=b.fp||{},last=f.lastLine||'',item=(last.match(/^(?:收|賣)\s*(.+?)(?:\s+(?:私我|便宜賣|\d+).*)?$/)||[])[1];
   if(f.red)return pick(['滾','想死嗎','嘿嘿 野外見','找我幹嘛']);
-  if(f.stall)return pick(['來攤位看看啊','我在村裡擺攤 過來挑','東西都在攤位上 點我就能買']);
+  if(f.stall)return null; // 擺攤中（掛機）不回密語
   if(/^收/.test(last)&&W_TRADE_ASK.test(text))return pick(['你有'+(item||'喔')+'? 開價多少','還在收 你出個價','剛剛收到了 抱歉','給你 '+ri(3,30)*1000+' 金 要不要']);
   if(/^賣/.test(last)&&W_TRADE_ASK.test(text))return pick([(item||'東西')+' '+ri(2,40)*500+' 金 要嗎','可以算便宜點','剛賣掉了 sorry','你出多少?']);
   for(const [re,ans] of REPLY)if(re.test(text))return pick(ans);
@@ -232,8 +281,8 @@ const FakePlayers=(()=>{
  document.addEventListener('player-whisper',e=>{const to=String(e.detail?.to||''),text=String(e.detail?.text||'');
   const b=IslandMonsters.botList.find(x=>x.spawn.npc.name===to);
   if(!b||b.fp?.hidden){setTimeout(()=>window.GameChat?.say('【系統】'+to+' 目前不在線上。','sys'),300);return;}
-  setTimeout(()=>window.GameChat?.say('[密語] '+to+'：'+whisperReply(b,text),'whisper'),rnd(1500,4000));});
+  const reply=whisperReply(b,text);if(reply)setTimeout(()=>window.GameChat?.say('[密語] '+to+'：'+reply,'whisper'),rnd(1500,4000));});
  function setEnabled(on){enabled=!!on;maintain();}
  function setRed(on){redOn=!!on;maintain();}
- return {update,label,hurt,drawShots,openStall,sampleStall:()=>genStall().items.map(i=>itemById.get(i.id)?.name),setRed,get redOn(){return redOn;},get count(){return bots().length;},get enabled(){return enabled;},setEnabled,looks};
+ return {update,label,hurt,drawShots,openStall,get stalls(){stallInit();return stalls;},sampleStall:()=>genStall().items.map(i=>itemById.get(i.id)?.name),setRed,get redOn(){return redOn;},get count(){return bots().length;},get enabled(){return enabled;},setEnabled,looks};
 })();window.FakePlayers=FakePlayers;
