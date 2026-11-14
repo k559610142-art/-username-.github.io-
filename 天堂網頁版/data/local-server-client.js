@@ -232,7 +232,7 @@ const LocalServerClient=(()=>{
    online=true;
    for(const entry of menuLayout){
     const tab={'社交':'players','信件':'mail','交易所':'auction'}[entry[0]];
-    if(tab)entry[2]='online-'+tab;
+    if(tab)entry[2]=entry[0]==='社交'?'social':'online-'+tab;
    }
    const originalMenuAction=runGameMenuAction;
    runGameMenuAction=function(action){if(action.startsWith('online-'))return open(action.slice(7));return originalMenuAction(action);};

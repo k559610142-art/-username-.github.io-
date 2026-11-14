@@ -68,7 +68,7 @@ const IslandMonsters = (() => {
   }
   // Keep village landmarks and service NPCs visible. Other residents remain in the source data.
   const villageServices = new Set([60001,70014,...TELEPORTER_DATA.ids,...dbActiveSettings.system_item_blend.rows.map(row=>row[1])]); // 傳送師、倉庫、雜貨商
-  const occupancy=new Set();let occupancyTick=-1;const populations=new Map();let populationMap=null;
+  const occupancy=new Set();let occupancyTick=-1;const populations=new Map(),incomingBots=new Map();let populationMap=null;
   function seedPopulation(){
   // These two DB positions belong to a different house layout. Match the supplied client indoor groups.
   const indoorServices={231:[33094,33385],262:[33097,33405]};
@@ -100,7 +100,17 @@ const IslandMonsters = (() => {
     }
   }
   }
-  function ensurePopulation(){const id=window.activeMapId||0;if(id===populationMap)return;if(populationMap!==null)populations.set(populationMap,mobs.splice(0).filter(m=>!m.spawn.ally));populationMap=id;occupancyTick=-1;taken.clear();selected=null;const previous=populations.get(id);if(previous)mobs.push(...previous);else seedPopulation();}
+  function ensurePopulation(){const id=window.activeMapId||0;if(id===populationMap)return;if(populationMap!==null)populations.set(populationMap,mobs.splice(0).filter(m=>!m.spawn.ally));populationMap=id;occupancyTick=-1;taken.clear();selected=null;const previous=populations.get(id);if(previous)mobs.push(...previous);else seedPopulation();const incoming=incomingBots.get(id);if(incoming){for(const mob of incoming)if(!mobs.includes(mob))mobs.push(mob);incomingBots.delete(id);}}
+  function transferBot(mob,mapId,x,y){
+    if(!mob?.spawn.bot)return false;ensurePopulation();
+    for(const list of [mobs,...populations.values(),...incomingBots.values()]){const index=list.indexOf(mob);if(index>=0)list.splice(index,1);}
+    if(selected===mob)selected=null;
+    mob.spawn.mapId=mapId;mob.x=mob.homeX=x;mob.y=mob.homeY=y;mob.step=null;mob.action=null;mob.fp.route=null;mob.fp.goal=null;mob.fp.target=null;occupancyTick=-1;
+    if(mapId===populationMap)mobs.push(mob);
+    else if(populations.has(mapId))populations.get(mapId).push(mob);
+    else{if(!incomingBots.has(mapId))incomingBots.set(mapId,[]);incomingBots.get(mapId).push(mob);}
+    return true;
+  }
   function startStep(mob, heading, now) {
     const [dx,dy] = steps[heading], x = mob.x+dx, y = mob.y+dy;
     const frames = islandMonsterFrames[mob.spawn.npc.gfx]['d'+heading+'/walk'];
@@ -124,7 +134,7 @@ const IslandMonsters = (() => {
       if(f.routeKey!==key){f.route=null;f.routeKey=key;f.routeRetry=0;}
       if(!f.route?.length){
         if(now<(f.routeRetry||0))return false;
-        f.route=findWalkingPath(mob.x,mob.y,tx,ty);
+        f.route=findWalkingPath(mob.x,mob.y,tx,ty,{maxNodes:384});
         if(!f.route?.length){f.routeRetry=now+1500;return false;}
       }
       const next=f.route[0],heading=steps.findIndex(([dx,dy])=>mob.x+dx===next[0]&&mob.y+dy===next[1]);
@@ -172,6 +182,10 @@ const IslandMonsters = (() => {
   }
   function spriteFrame(mob,now,phase){
     const clips=islandMonsterFrames[mob.spawn.npc.gfx], prefix='d'+mob.heading+'/';
+    if(mob.death&&!mob.hp){
+      const frames=clips[prefix+'death']||clips['d0/death'];
+      if(frames){let elapsed=Math.max(0,now-mob.death.start),index=0;while(index<frames.length-1&&elapsed>=frames[index][5])elapsed-=frames[index++][5];return [now>=mob.death.end?(frames.findLast(f=>f[3]>1&&f[4]>1)||frames[index]):frames[index],[0,0]];}
+    }
     const action=mob.action&&now<mob.action.end?mob.action:null;
     const frames=clips[prefix+(mob.step?'walk':action?.clip||'idle')]||
       (action&&clips[prefix+'attack'])||clips[prefix+'idle']||clips['d0/idle'];
@@ -210,9 +224,12 @@ const IslandMonsters = (() => {
       if((mob.spawn.mapId||0)!==(window.activeMapId||0))continue;
       if(mob.spawn.bot&&mob.fp?.hidden){advance(mob,now);continue;}
       if(!mob.hp){
-        if(now<mob.respawnAt)continue;
+        if(now<mob.respawnAt){
+          if(mob.death&&now<mob.death.until){const [px,py]=project(mob.death.x,mob.death.y);visible.push([mob,px*view.zoom+view.ox,py*view.zoom+view.oy,0]);}
+          continue;
+        }
         mob.hp=mob.spawn.npc.hp;mob.x=mob.homeX;mob.y=mob.homeY;
-        IslandNpcAi.reset(mob);mob.reward=null;
+        IslandNpcAi.reset(mob);mob.reward=null;mob.death=null;
       }
       const nearby=Math.max(Math.abs(worldX-mob.x),Math.abs(worldY-mob.y))<=22;
       if(nearby)advance(mob,now);
@@ -230,13 +247,14 @@ const IslandMonsters = (() => {
       else mob.lastDrawn={sheet,fx,fy,sw,sh,sx,sy,cx,cy};
       const left=x+(fx-cx)*scale,top=y+(fy-cy)*scale;
       const width=sw*scale,height=sh*scale;
-      hitboxes.push({mob,left,top,width,height,sheet,sx:sx||0,sy:sy||0,sw,sh});
+      if(mob.hp)hitboxes.push({mob,left,top,width,height,sheet,sx:sx||0,sy:sy||0,sw,sh});
       if(mob===selected){
         pen.beginPath();pen.ellipse(x,y,Math.max(12,width*.36),6,0,0,Math.PI*2);
         pen.strokeStyle='#f0bc65';pen.lineWidth=2;pen.stroke();
       }
       pen.drawImage(sheet,sx,sy,sw,sh,left,top,width,height); // 紅名只有名字紅色，身體不染色（使用者 2026-11-14）
-      const vx=mob.step?mob.x+(mob.step.x-mob.x)*phase:mob.x,vy=mob.step?mob.y+(mob.step.y-mob.y)*phase:mob.y;window.NativeWorld?.paintEntity(pen,view,vx,vy,{left,top,width,height});
+      const vx=mob.death&&!mob.hp?mob.death.x:mob.step?mob.x+(mob.step.x-mob.x)*phase:mob.x,vy=mob.death&&!mob.hp?mob.death.y:mob.step?mob.y+(mob.step.y-mob.y)*phase:mob.y;window.NativeWorld?.paintEntity(pen,view,vx,vy,{left,top,width,height});
+      if(!mob.hp)continue; // 屍體不顯示名牌、血條，也不能被點選。
       if(mob===selected){
         const meter=Math.max(42,Math.min(84,width));
         pen.fillStyle='#241b17';pen.fillRect(left+(width-meter)/2-1,top-21,meter+2,7);
@@ -301,6 +319,17 @@ const IslandMonsters = (() => {
       .sort((a,b)=>Math.hypot(a.x-worldX,a.y-worldY)-Math.hypot(b.x-worldX,b.y-worldY))[0];
   }
   function setTarget(mob){selected=mob;draw(getRenderedSceneView(),movementTime());}
+  function markDead(mob,at=movementTime(),respawnAt=null){
+    const frames=islandMonsterFrames[mob.spawn.npc.gfx]?.['d'+mob.heading+'/death']||islandMonsterFrames[mob.spawn.npc.gfx]?.['d0/death'];
+    const duration=frames?.reduce((sum,f)=>sum+f[5],0)||0;
+    const phase=mob.step?Math.max(0,Math.min(1,(at-mob.step.start)/(mob.step.end-mob.step.start))):0;
+    const x=mob.x+(mob.step?mob.step.x-mob.x:0)*phase,y=mob.y+(mob.step?mob.step.y-mob.y:0)*phase;
+    const [min,max]=mob.spawn.respawn;
+    mob.respawnAt=Math.max(respawnAt??at+1000*(Math.min(min,max)+Math.random()*Math.abs(max-min)),at+duration+1500);
+    mob.death=frames?{start:at,end:at+duration,until:Math.min(mob.respawnAt,at+duration+12000),x,y}:null;
+    if(frames)for(const frame of frames)loadSheet(frame[0]);
+    mob.hp=0;mob.step=null;mob.action=null;mob.windup=null;if(selected===mob)selected=null;
+  }
   function damage(mob,amount){
     if(!mob.hp)return;
     if(mob.spawn.bot){window.FakePlayers?.hurt(mob,amount);draw(getRenderedSceneView(),movementTime());return;}
@@ -311,11 +340,9 @@ const IslandMonsters = (() => {
     mob.hp=Math.max(0,mob.hp-amount);
     CombatSound.monsterHit(mob);
     if(!mob.hp){
-      window.Summons?.killed(mob);const [min,max]=mob.spawn.respawn;
-      const respawn=movementTime()+1000*(Math.min(min,max)+Math.random()*Math.abs(max-min));
-      mob.step=null;mob.respawnAt=respawn;
+      window.Summons?.killed(mob);markDead(mob);
       if(mob.pack?.leader===mob&&mob.pack.group.removeWithLeader){
-        for(const member of mob.pack.members){member.hp=0;member.step=null;member.respawnAt=respawn;}
+        for(const member of mob.pack.members)if(member.hp)markDead(member,movementTime(),mob.respawnAt);
       }
       if(selected===mob)selected=null;
     }
@@ -327,15 +354,15 @@ const IslandMonsters = (() => {
     IslandNpcAi.playerActive();
     for(const mob of mobs){
       if((mob.spawn.mapId||0)!==(window.activeMapId||0))continue;
-      if(!mob.hp){if(mob.spawn.ally||now<mob.respawnAt)continue;mob.hp=mob.spawn.npc.hp;mob.x=mob.homeX;mob.y=mob.homeY;IslandNpcAi.reset(mob);mob.reward=null;}
+      if(!mob.hp){if(mob.spawn.ally||now<mob.respawnAt)continue;mob.hp=mob.spawn.npc.hp;mob.x=mob.homeX;mob.y=mob.homeY;IslandNpcAi.reset(mob);mob.reward=null;mob.death=null;}
       if(Math.max(Math.abs(worldX-mob.x),Math.abs(worldY-mob.y))<=Math.max(22,window.IslandCombat?.autoRange||22))advance(mob,now);
     }
   }
-  return {get residentPositions(){ensurePopulation();return mobs.filter(m=>m.spawn.resident).map(m=>({id:m.spawn.npcId,spawnId:m.spawn.spawnId,x:m.x,y:m.y,point:[...m.spawn.point],sourcePoint:[...(m.spawn.sourcePoint||m.spawn.point)],random:[...m.spawn.random]}))},get audit(){return {mapId:populationMap,spawned:mobs.length,sourceRows:islandMonsterSpawns.length,fullCounts:true}},occupied:(x,y)=>{ensurePopulation();const tick=Math.floor(movementTime()/50);if(tick!==occupancyTick){occupancyTick=tick;occupancy.clear();for(const m of mobs)if(m.hp){occupancy.add(m.x+","+m.y);if(m.step)occupancy.add(m.step.x+","+m.step.y)}}return occupancy.has(x+","+y)},around:(x,y,r)=>{ensurePopulation();return mobs.filter(m=>m.hp&&!m.spawn.resident&&!m.spawn.ally&&!m.spawn.bot&&(m.spawn.mapId||0)===(window.activeMapId||0)&&Math.max(Math.abs(m.x-x),Math.abs(m.y-y))<=r)},addAlly:(mob)=>{ensurePopulation();if(!mobs.includes(mob))mobs.push(mob);return mob;},removeAlly:(mob)=>{const i=mobs.indexOf(mob);if(i>=0)mobs.splice(i,1);if(selected===mob)selected=null;},hasMob:(mob)=>mobs.includes(mob),
+  return {get residentPositions(){ensurePopulation();return mobs.filter(m=>m.spawn.resident).map(m=>({id:m.spawn.npcId,spawnId:m.spawn.spawnId,x:m.x,y:m.y,point:[...m.spawn.point],sourcePoint:[...(m.spawn.sourcePoint||m.spawn.point)],random:[...m.spawn.random]}))},get audit(){return {mapId:populationMap,spawned:mobs.length,sourceRows:islandMonsterSpawns.length,fullCounts:true}},occupied:(x,y)=>{ensurePopulation();const tick=Math.floor(movementTime()/50);if(tick!==occupancyTick){occupancyTick=tick;occupancy.clear();for(const m of mobs)if(m.hp){occupancy.add(m.x+","+m.y);if(m.step)occupancy.add(m.step.x+","+m.step.y)}}return occupancy.has(x+","+y)},around:(x,y,r)=>{ensurePopulation();return mobs.filter(m=>m.hp&&!m.spawn.resident&&!m.spawn.ally&&!m.spawn.bot&&(m.spawn.mapId||0)===(window.activeMapId||0)&&Math.max(Math.abs(m.x-x),Math.abs(m.y-y))<=r)},addAlly:(mob)=>{ensurePopulation();if(!mobs.includes(mob))mobs.push(mob);return mob;},removeAlly:(mob)=>{for(const list of [mobs,...populations.values(),...incomingBots.values()]){const i=list.indexOf(mob);if(i>=0)list.splice(i,1);}if(selected===mob)selected=null;},hasMob:(mob)=>mobs.includes(mob),
     preload(files){for(const f of files)loadSheet(f);},
-    botHit(mob,amount){if(!mob?.hp||mob.spawn.resident||mob.spawn.ally||mob.spawn.bot)return false;mob.hp=Math.max(0,mob.hp-amount);CombatSound.monsterHit(mob);
-     if(!mob.hp){const [min,max]=mob.spawn.respawn;mob.step=null;mob.respawnAt=movementTime()+1000*(Math.min(min,max)+Math.random()*Math.abs(max-min));if(selected===mob)selected=null;}return true;},
-    get botList(){return mobs.filter(m=>m.spawn.bot);},updateBackground,draw,selectAt,nearest,setTarget,damage,playEffect,serviceNearby:(id,range)=>mobs.some(m=>(m.spawn.mapId||0)===(window.activeMapId||0)&&m.spawn.resident&&m.spawn.npcId===id&&Math.max(Math.abs(m.x-worldX),Math.abs(m.y-worldY))<=range),get target(){return selected;}};
+    botHit(mob,amount,options={}){if(!mob?.hp||mob.spawn.resident||mob.spawn.ally||mob.spawn.bot)return false;if(options.party&&amount>=mob.hp&&!PlayerProgression.award(mob))return false;mob.hp=Math.max(0,mob.hp-amount);CombatSound.monsterHit(mob);
+     if(!mob.hp)markDead(mob);return true;},
+    transferBot,get botList(){ensurePopulation();const result=new Set();for(const list of [mobs,...populations.values(),...incomingBots.values()])for(const mob of list)if(mob.spawn.bot)result.add(mob);return [...result];},updateBackground,draw,selectAt,nearest,setTarget,damage,playEffect,serviceNearby:(id,range)=>mobs.some(m=>(m.spawn.mapId||0)===(window.activeMapId||0)&&m.spawn.resident&&m.spawn.npcId===id&&Math.max(Math.abs(m.x-worldX),Math.abs(m.y-worldY))<=range),get target(){return selected;}};
 })();
 const drawIslandScene=draw;
 draw=function(now=movementTime()){

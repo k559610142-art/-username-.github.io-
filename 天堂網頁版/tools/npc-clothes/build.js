@@ -11,8 +11,8 @@ const { rgbaPng } = require('../client-pak/img2png.js');
 const { parseSpr, renderFrame } = require('../native-monsters/spr.js');
 const { parseList } = require('../native-monsters/listspr.js');
 
-const args = process.argv.slice(2), opt = { client: 'C:/Users/User/Desktop/天地劫天堂', preview: '' };
-for (let i = 0; i < args.length; i++) { if (args[i] === '--client') opt.client = args[++i]; else if (args[i] === '--preview') opt.preview = args[++i]; }
+const args = process.argv.slice(2), opt = { client: 'C:/Users/User/Desktop/天地劫天堂', preview: '', monsters: false };
+for (let i = 0; i < args.length; i++) { if (args[i] === '--client') opt.client = args[++i]; else if (args[i] === '--preview') opt.preview = args[++i]; else if(args[i] === '--monsters') opt.monsters=true; else if(args[i] === '--deaths') opt.deaths=true; }
 
 const game = {}; vm.createContext(game);
 for (const f of ['island-monster-data.js', 'dungeon-monster-data.js'])
@@ -31,11 +31,11 @@ const screenLayer = id => layerMode(id) === 8;
 
 // NPC looks with clothes.
 const looks = new Map();
-const addLook = (npc, resident) => { if (npc && (resident || npc.kind !== 'L1Monster') && list.get(npc.gfx)?.clothes.length) looks.set(npc.gfx, (looks.get(npc.gfx) || new Set()).add(npc.name)); };
+const addLook = (npc, resident) => { if (npc && (opt.deaths ? npc.kind === 'L1Monster' && !!oldFrames(npc.gfx) && !!list.get(npc.gfx)?.actions[8] : (opt.monsters ? npc.kind === 'L1Monster' && !!oldFrames(npc.gfx) : resident || npc.kind !== 'L1Monster') && list.get(npc.gfx)?.clothes.length)) looks.set(npc.gfx, (looks.get(npc.gfx) || new Set()).add(npc.name)); };
 for (const s of game.islandMonsterSpawns) addLook(s.npc, s.resident);
 for (const s of game.dungeonMonsterSpawns) addLook(templates[s.npcId], s.resident);
 
-const KEYS = { idle: [3, 0], walk: [0], attack: [1], cast: [18, 19], special: [30] };
+const KEYS = opt.deaths ? {death:[8]} : { idle: [3, 0], walk: [0], attack: [1], cast: [18, 19], special: [30] };
 const ms = d => Math.round(d * 1000 / 24 * 10) / 10;
 function clipsFor(gfx) {
   const e = list.get(gfx), out = {};
@@ -45,7 +45,7 @@ function clipsFor(gfx) {
     for (const f of a.frames) { const g = f.group + (a.dirs ? dir : 0), file = e.src + '-' + g + '.spr', s = spr(file); if (!s || !s.frames[f.frame]) { frames.length = 0; break; } frames.push({ g, frame: f.frame, dur: ms(f.dur) }); }
     if (frames.length) out['d' + dir + '/' + key] = frames;
   }
-  return out['d0/idle'] || out['d0/walk'] ? out : null;
+  return out['d0/idle'] || out['d0/walk'] || out['d0/death'] ? out : null;
 }
 
 const c5 = v => Math.floor(v * 255 / 31);
@@ -53,6 +53,7 @@ const c5 = v => Math.floor(v * 255 / 31);
 function dressed(gfx, g, frame) {
   const layers = [[list.get(gfx).src, false], ...list.get(gfx).clothes.filter(id => layerMode(id) !== 128).map(id => [list.get(id)?.src || id, screenLayer(id)])], parts = [];
   for (const [id, screen] of layers) { const s = spr(id + '-' + g + '.spr'); const r = s && s.frames[frame] && renderFrame(s, frame); if (r && r.w > 1) parts.push([r, screen]); }
+  if(!parts.length)return {x:0,y:0,w:1,h:1,px:Buffer.alloc(4)};
   const x0 = Math.min(...parts.map(([r]) => r.x)), y0 = Math.min(...parts.map(([r]) => r.y));
   const w = Math.max(...parts.map(([r]) => r.x + r.w)) - x0, h = Math.max(...parts.map(([r]) => r.y + r.h)) - y0, px = Buffer.alloc(w * h * 4);
   for (const [r, screen] of parts) for (let y = 0; y < r.h; y++) for (let x = 0; x < r.w; x++) {
@@ -67,6 +68,8 @@ function dressed(gfx, g, frame) {
 
 // Feet stay where the existing frames had them: shift = old idle first frame y − bare body y (median rule for new looks).
 function yShift(gfx, clips) {
+  if(opt.deaths){const entry=list.get(gfx),a=entry.actions[3]||entry.actions[0];if(a)for(const dir of [2,0]){const old=oldFrames(gfx)?.['d'+dir+'/idle'];if(!old)continue;const f=a.frames[0],body=spr(entry.src+'-'+(f.group+(a.dirs?dir:0))+'.spr'),r=body&&renderFrame(body,f.frame);if(r)return old[0][2]-r.y;}}
+
   const old = oldFrames(gfx);
   for (const key of ['d2/idle', 'd0/idle', 'd2/walk', 'd0/walk']) if (old?.[key] && clips[key]) { const f = clips[key][0], r = renderFrame(spr(list.get(gfx).src + '-' + f.g + '.spr'), f.frame); return old[key][0][2] - r.y; }
   const bottoms = []; for (const [key, l] of Object.entries(clips)) if (key.endsWith('/idle')) for (const f of l) { const r = renderFrame(spr(list.get(gfx).src + '-' + f.g + '.spr'), f.frame); bottoms.push(r.y + r.h); }
@@ -75,7 +78,7 @@ function yShift(gfx, clips) {
 
 const SHEET = 2048, frames = {}, sheets = [], report = [];
 let sheet, cx, cy, rowH;
-function newSheet(gfx, n) { sheet = { name: 'npc-dressed-' + gfx + '-' + n + '.png', px: Buffer.alloc(SHEET * SHEET * 4), h: 0 }; sheets.push(sheet); cx = cy = rowH = 0; }
+function newSheet(gfx, n) { sheet = { name: (opt.deaths?'monster-death-':opt.monsters?'monster-layer-':'npc-dressed-') + gfx + '-' + n + '.png', px: Buffer.alloc(SHEET * SHEET * 4), h: 0 }; sheets.push(sheet); cx = cy = rowH = 0; }
 for (const gfx of [...looks.keys()].sort((a, b) => a - b)) {
   const clips = clipsFor(gfx); if (!clips) { report.push(gfx + ' 無動作，略過'); continue; }
   let n = 0; newSheet(gfx, n++); const placed = new Map(), Y = yShift(gfx, clips); frames[gfx] = {};
@@ -91,17 +94,20 @@ for (const gfx of [...looks.keys()].sort((a, b) => a - b)) {
     }
     return [p[0], p[1], p[2], p[3], p[4], f.dur, p[5], p[6], SHEET];
   });
+  // 原始 death 的第一張是靜態屍體姿勢；播放時移到末尾，避免先閃屍體再倒下。
+  if(opt.deaths)for(const [key,l]of Object.entries(clips))if(l.length>1&&l[0].g===l.at(-1).g&&l[0].frame>l.at(-1).frame)frames[gfx][key].push(frames[gfx][key].shift());
+  if(opt.deaths)for(const s of sheets)if(s.px){const h=Math.max(1,s.h);fs.writeFileSync(path.join(ROOT,'assets/native-monsters',s.name),rgbaPng(SHEET,h,s.px.subarray(0,SHEET*h*4)));s.px=null;}
   report.push(gfx + ' ' + [...looks.get(gfx)].slice(0, 4).join('、') + ' 圖層 ' + list.get(gfx).clothes.join(',') + (oldFrames(gfx) ? '' : '（新外觀）'));
 }
 
 const outDir = path.join(ROOT, 'assets/native-monsters');
-for (const f of fs.readdirSync(outDir)) if (/^npc-dressed-/.test(f)) fs.unlinkSync(path.join(outDir, f));
-for (const s of sheets) { const h = Math.max(1, s.h); fs.writeFileSync(path.join(outDir, s.name), rgbaPng(SHEET, h, s.px.subarray(0, SHEET * h * 4))); }
-fs.writeFileSync(path.join(ROOT, 'data/npc-clothes-data.js'),
-  '// Generated by tools/npc-clothes/build.js: NPC looks re-cut with their list.spr 105.clothes layers (hair, shirt, pants, shoes, glow).\n' +
-  'const npcClothesFrames=' + JSON.stringify(frames) + ';\n' +
+for (const f of fs.readdirSync(outDir)) if (!opt.monsters && !opt.deaths && /^npc-dressed-/.test(f)) fs.unlinkSync(path.join(outDir, f));
+for (const s of sheets) { if(!s.px)continue; const h = Math.max(1, s.h); fs.writeFileSync(path.join(outDir, s.name), rgbaPng(SHEET, h, s.px.subarray(0, SHEET * h * 4))); }
+fs.writeFileSync(path.join(ROOT, opt.deaths?'data/monster-death-data.js':opt.monsters?'data/monster-layer-data.js':'data/npc-clothes-data.js'),
+  '// Generated by tools/npc-clothes/build.js'+(opt.deaths?' --deaths':opt.monsters?' --monsters':'')+': native 105.clothes body layers and screen glow, aligned to original frames.\n' +
+  'const '+(opt.deaths?'monsterDeathFrames':opt.monsters?'monsterLayerFrames':'npcClothesFrames')+'=' + JSON.stringify(frames) + ';\n' +
   'for(const f of ' + JSON.stringify(sheets.map(s => s.name)) + ')nativeMonsterFiles.add(f);\n' +
-  'Object.assign(islandMonsterFrames,npcClothesFrames);\n');
+  (opt.deaths?'for(const [gfx,clips]of Object.entries(monsterDeathFrames))Object.assign(islandMonsterFrames[gfx]||={},clips);\n':'Object.assign(islandMonsterFrames,'+(opt.monsters?'monsterLayerFrames':'npcClothesFrames')+');\n'));
 console.log(report.join('\n')); console.log('外觀', Object.keys(frames).length, '圖檔', sheets.length);
 
 // --preview: first idle frame of every look, old (left) vs dressed (right), on a grey strip for eyeballing.

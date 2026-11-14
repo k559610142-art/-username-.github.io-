@@ -24,11 +24,11 @@ function characterFrameResource(file){
  return item;
 }
 function preloadFullCharacterClip(avatar,heading,clip){
- const key=avatar+'/'+heading+'/'+clip;if(fullCharacterCache.has(key))return;
+ const key=avatar+'/'+heading+'/'+clip;if(fullCharacterCache.has(key)){const cached=fullCharacterCache.get(key);fullCharacterCache.delete(key);fullCharacterCache.set(key,cached);return;}
  const data=fullCharacterAssets.avatars[avatar],frames=[];
  for(const shadow of [false,true])for(let i=0;i<(shadow?data.shadows:data.directions)[heading][clip];i++){const file=fullCharacterPath(avatar,heading,clip,i,shadow);frames.push({file,item:characterFrameResource(file)})}
  fullCharacterCache.set(key,frames);
- while(fullCharacterCache.size>12){const key=fullCharacterCache.keys().next().value,old=fullCharacterCache.get(key);fullCharacterCache.delete(key);for(const f of old)if(characterFrameResources.get(f.file)===f.item)characterFrameResources.delete(f.file)}
+ while(fullCharacterCache.size>48){const pinned=avatar+'/',walk='/'+activeCharacterWeapon()+'_walk';const key=[...fullCharacterCache.keys()].find(k=>!(k.startsWith(pinned)&&k.endsWith(walk)));if(!key)break;const old=fullCharacterCache.get(key);fullCharacterCache.delete(key);for(const f of old)if(characterFrameResources.get(f.file)===f.item)characterFrameResources.delete(f.file)}
 }
 function preloadCharacterWalkSet(avatar,weapon){const key=avatar+'/'+weapon;if(preloadedWalkSet===key)return;preloadedWalkSet=key;for(const heading of Object.keys(fullCharacterAssets.avatars[avatar].directions))preloadFullCharacterClip(avatar,heading,weapon+'_walk')}
 function showDecodedCharacterFrame(body,shadow,transform){

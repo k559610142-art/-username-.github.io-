@@ -70,7 +70,7 @@ const FakePlayers=(()=>{
  const DUN_LINES=['這層好難','誰有回家卷軸','王在哪','組隊嗎','爆了一個祝福卷!','差點死','上樓上樓','掉寶率真低','這裡好暗','怪好多 小心','紅水快沒了','下一層是什麼'];
  const isDungeon=()=>!!window.WorldMaps?.isDungeon?.(window.activeMapId||0);
  const PER_MAP=12,used=new Set();let mapNow=null;
- function say(mob,text){mob.bubble={text,until:movementTime()+4500};if(mob.fp)mob.fp.lastLine=text;window.GameChat?.say(mob.spawn.npc.name+'：'+text,'say');}
+ function say(mob,text){mob.bubble={text,until:movementTime()+4500};if(mob.fp)mob.fp.lastLine=text;window.GameChat?.say(mob.spawn.npc.name+'：'+text,'say');window.NpcSocial?.onSpeech(mob,text);}
  function spotNear(cx,cy,minR,maxR,wantSafe=null){for(let i=0;i<80;i++){const r=rnd(minR,maxR),a=Math.random()*Math.PI*2,x=Math.round(cx+Math.cos(a)*r),y=Math.round(cy+Math.sin(a)*r);
    if(dist(x,y,worldX,worldY)<minR||!TeleportScrolls.canLand(x,y))continue;if(wantSafe!==null&&safe(x,y)!==wantSafe)continue;return [x,y];}return null;}
  const ROSTER_KEY='lineage-fake-roster',STALL_KEY='lineage-fake-stalls';
@@ -102,7 +102,7 @@ const FakePlayers=(()=>{
   const map=window.activeMapId||0;if(map!==mapNow){mapNow=map;}
   const list=bots();
   if(!enabled){for(const b of IslandMonsters.botList){IslandMonsters.removeAlly(b);used.delete(b.spawn.npc.name);}return;}
-  for(const b of list)if(dist(b.x,b.y,worldX,worldY)>28&&!b.step&&!b.fp.vanish&&!b.fp.stall){const s=spotNear(worldX,worldY,16,22,b.fp.red?false:null);if(s){place(b,...s);b.fp.pk=false;}}
+  for(const b of list)if(dist(b.x,b.y,worldX,worldY)>28&&!b.step&&!b.fp.vanish&&!b.fp.stall&&!b.fp.social&&!b.fp.partyOwner){const s=spotNear(worldX,worldY,16,22,b.fp.red?false:null);if(s){place(b,...s);b.fp.pk=false;}}
   if(!redOn)for(const b of list.filter(b=>b.fp.red)){IslandMonsters.removeAlly(b);used.delete(b.spawn.npc.name);if(IslandMonsters.target===b){IslandMonsters.setTarget(null);IslandCombat.stop();}}
   const reds=redOn?list.filter(b=>b.fp.red).length:RED_PER_MAP;
   stallTick();
@@ -118,7 +118,7 @@ const FakePlayers=(()=>{
  function wander(mob,now,stepToward,r){const f=mob.fp;if(now<f.think)return;f.think=now+rnd(1500,5000);if(Math.random()<.35)return;
   for(let i=0;i<6;i++){const x=mob.homeX+ri(-r,r),y=mob.homeY+ri(-r,r);if(stepToward(mob,x,y,now)){f.goal=[x,y];return;}}}
  // 村莊雙向保護：出手與傷害落下時都檢查，踏入安全區立即停戰。
- function canFight(mob){return !!mob?.fp&&!mob.fp.hidden&&!mob.fp.vanish&&!mob.fp.stall&&mob.hp>0&&(mob.spawn.mapId||0)===(window.activeMapId||0)&&!safe(worldX,worldY)&&!(typeof movementTween!=='undefined'&&movementAnimating()&&safe(movementTween.fromTileX,movementTween.fromTileY))&&!safe(mob.x,mob.y)&&(!mob.step||!safe(mob.step.x,mob.step.y));}
+ function canFight(mob){return !!mob?.fp&&!mob.fp.hidden&&!mob.fp.vanish&&!mob.fp.stall&&mob.fp.partyOwner!==window.activeCharacterId&&mob.hp>0&&(mob.spawn.mapId||0)===(window.activeMapId||0)&&!safe(worldX,worldY)&&!(typeof movementTween!=='undefined'&&movementAnimating()&&safe(movementTween.fromTileX,movementTween.fromTileY))&&!safe(mob.x,mob.y)&&(!mob.step||!safe(mob.step.x,mob.step.y));}
  function survival(mob,now,stepToward){
   const f=mob.fp,max=mob.spawn.npc.hp;
   f.potions??=ri(5,12);f.nerve??=rnd(.25,.48);
@@ -128,8 +128,8 @@ const FakePlayers=(()=>{
    mob.hp=Math.min(max,mob.hp+Math.round(max*(magic ? .3 : .22)));f.potions--;f.healAt=now+(magic?4500:1800);f.hpShow=now+3000;
    f.bubbleHeal=magic?'施放治癒術':'喝下紅色藥水';mob.bubble={text:f.bubbleHeal,until:now+1200};
   }
-  const fighting=f.pk||f.target;
-  if(!f.retreatUntil&&fighting&&mob.hp/max<f.nerve){f.retreatUntil=now+rnd(4000,7500);f.escapeAt=now+rnd(800,2200);f.escapeMap=window.activeMapId||0;f.pk=false;claimed.delete(f.target);f.target=null;f.boss=null;f.goal=null;f.route=null;f.state='hunt';say(mob,pick(FLEE));}
+  const fighting=f.pk||f.target||f.partyTarget;
+  if(!f.retreatUntil&&fighting&&mob.hp/max<f.nerve){f.retreatUntil=now+rnd(4000,7500);f.escapeAt=now+rnd(800,2200);f.escapeMap=window.activeMapId||0;f.pk=false;claimed.delete(f.target);f.target=null;f.partyTarget=null;f.boss=null;f.goal=null;f.route=null;f.state='hunt';say(mob,pick(FLEE));}
   if(!f.retreatUntil)return false;
   if(now>=f.escapeAt&&!mob.step){
    const spot=spotNear(mob.x,mob.y,10,20,null);
@@ -143,9 +143,10 @@ const FakePlayers=(()=>{
  function update(mob,now,stepToward){
   const f=mob.fp;if(!f)return;
   if(mob.bubble&&now>mob.bubble.until)mob.bubble=null;
-  if(now>=f.chatAt){f.chatAt=now+rnd(20000,70000);if(Math.random()<.55&&dist(mob.x,mob.y,worldX,worldY)<=18&&!f.stall)say(mob,pick(isDungeon()?DUN_LINES:LINES.filter(lineOk)));}
+  if(now>=f.chatAt){f.chatAt=now+rnd(20000,70000);if(Math.random()<.55&&dist(mob.x,mob.y,worldX,worldY)<=18&&!f.stall&&!f.social&&!f.partyOwner)say(mob,pick(isDungeon()?DUN_LINES:LINES.filter(lineOk)));}
   if(f.vanish){if(now>=f.vanish){f.vanish=0;f.hidden=false;f.pk=false;mob.hp=mob.spawn.npc.hp;const s=f.red?spotNear(worldX,worldY,16,22,false):spotNear(worldX,worldY,16,22,true)||spotNear(worldX,worldY,16,22);if(s)place(mob,...s);}return;}
   if(!f.stall&&survival(mob,now,stepToward))return;
+  if(window.NpcSocial?.update(mob,now,stepToward))return;
   if(mob.step)return;
   if(f.stall){mob.hp=mob.spawn.npc.hp;if(now>=f.shoutAt){f.shoutAt=now+rnd(40000,90000);shout(mob);}return;}
   if((f.red||f.pk)&&pk(mob,now,stepToward))return;
@@ -351,7 +352,7 @@ const FakePlayers=(()=>{
    pen.fillStyle='#2a2216';pen.fillText(b.text.length>14?b.text.slice(0,14)+'…':b.text,x,by+14);}
  }
  // ---- 回話 ----
- document.addEventListener('player-chat',e=>{const text=String(e.detail||'');for(const [re,ans] of REPLY){if(!re.test(text))continue;
+ document.addEventListener('player-chat',e=>{const text=String(e.detail||'');if(window.NpcSocial?.handlePublic(text))return;for(const [re,ans] of REPLY){if(!re.test(text))continue;
   const near=bots().filter(b=>!b.fp?.vanish&&!b.fp?.stall&&dist(b.x,b.y,worldX,worldY)<=20);if(near.length)setTimeout(()=>say(pick(near),pick(ans)),rnd(900,2200));break;}});
  // ---- 密語：玩家 /密 名字 內容 → 找同名假人（任何地圖），1.5～4 秒後回密語；找不到就「不在線上」 ----
  const W_TRADE_ASK=/有|賣|收|多少|價|錢|幾|算|便宜|出/;
@@ -364,6 +365,7 @@ const FakePlayers=(()=>{
   if(/\?|？|嗎/.test(text))return pick(['不知道耶','應該吧','我也不確定','你問問看別人']);
   return pick(['嗯?','怎麼了','打怪中 等等','?','有事嗎','哈哈','好喔']);}
  document.addEventListener('player-whisper',e=>{const to=String(e.detail?.to||''),text=String(e.detail?.text||'');
+  if(window.NpcSocial?.handleWhisper(to,text))return;
   const b=IslandMonsters.botList.find(x=>x.spawn.npc.name===to);
   if(!b||b.fp?.hidden){setTimeout(()=>window.GameChat?.say('【系統】'+to+' 目前不在線上。','sys'),300);return;}
   const reply=whisperReply(b,text);if(reply)setTimeout(()=>window.GameChat?.say('[密語] '+to+'：'+reply,'whisper'),rnd(1500,4000));});

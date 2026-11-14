@@ -10,7 +10,7 @@ closePanel = function () {
 };
 const menuLayout = [
   ['商城', '◆'], ['背包', '▣', 'bag'], ['技能', '✦', 'magic'], ['信件', '✉'], ['關閉', '×', 'close'],
-  ['角色', '♙', 'character'], ['社交', '♧'], ['設定', '⚙', 'settings'], ['排行', '♜'], ['記憶座標', '⌖'],
+  ['角色', '♙', 'character'], ['社交', '♧', 'social'], ['設定', '⚙', 'settings'], ['排行', '♜'], ['記憶座標', '⌖'],
   ['變身', '◈', 'transforms'], ['魔法娃娃', '✧', 'dolls'], ['收藏', '▤', 'collection'], ['交易所', '⚖'], ['登出', '⇥', 'logout'],
   ['製作', '⚒', 'craft'], ['擺攤', '⛺', 'stall'], ['返回選擇英雄', '‹', 'roles']
 ];
@@ -31,6 +31,11 @@ function runGameMenuAction(action) {
   }
   if (action === 'menu') {
     renderGameMenu();
+    return;
+  }
+  if (action === 'social') {
+    closePanel();
+    window.NpcSocial?.open();
     return;
   }
   if (action === 'stall') {

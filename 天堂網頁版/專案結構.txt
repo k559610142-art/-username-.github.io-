@@ -296,3 +296,12 @@ NPC 穿衣服（2026-11-13）：
   假人下一步從上一步結束的時間點接著算（advance 傳 stepEnd 給 FakePlayers.update），不會每走一格停一下；實測連續步 60/64 次間隔 0ms
   fake-players.js maintain：紅名找不到野外位置（人在大村莊中央）時也照樣補一般假人（原本整個卡住，奇岩村裡只有擺攤的人）
   client-classic-hud.js v13：密語那次加的聊天 line(m) 跟狀態列 line(row,…) 同名，奇岩式介面訊息框會報錯 → 改名 chatLine
+
+假人社交／走路／怪物圖層與屍體（2026-11-14）：
+  npc-social.js：選單→社交；收購喊話辨識物品，密語「我有紅水／我有東西，要給你」建立交易，支援騎村（銀騎）、奇岩、古魯丁、話島、目前村莊或座標。
+  假人跨地圖傳送到約定位置，玩家抵達後走近；社交視窗列數量與金額，按確認才原子扣物品／加金幣，成功後離開；可取消、5 分鐘逾時、換角色清除。贈送 0 元；一般收購價取 NPC 商店最低價×0.7；每次 1～10 個、僅未穿戴未強化物品。
+  假人可邀請玩家組隊（密語「好，組隊」或社交接受），玩家也可從社交邀請；最多玩家＋3 名假人，跨圖跟隨、協助打玩家選定的野外怪物，隊友擊殺使用正常經驗與掉寶流程。真人多人社交仍從社交視窗的真人玩家按鈕進入（本機多人伺服器登入時）。
+  input.js：長按鍵盤／方向按鈕用 requestAnimationFrame 續步；scene-renderer.js 續步接前一步截止時刻；character-actions.js 保留目前武器八方向走路圖，快取 48 段；假人尋路最多展開 384 點，避免阻塞玩家動畫。
+  tools/npc-clothes/build.js --monsters：51 種怪物原始 105.clothes 附加圖層／火焰重組，產生 monster-layer-data.js 與 monster-layer-*.png；包括烈炎獸 1780＋火焰 1781。
+  同工具 --deaths：232 種怪物死亡動作，原始首張屍體移到播放末尾，產生 monster-death-data.js 與 monster-death-*.png。island-monsters.js markDead 固定死亡位置，播倒地後保留屍體至多 12 秒或重生前；屍體不阻擋、不點選、不顯示名牌，不重發獎勵。
+  驗證：node --test tools/npc-social.test.cjs tools/movement-death.test.cjs；原始圖檔裁切範圍亦已核對。

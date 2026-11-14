@@ -2,7 +2,7 @@
 let navigationPath=[],navigationTarget=null;
 const navigationDirections=[[1,-1],[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1],[0,-1]];
 let walkingSearch=null;
-function findWalkingPath(startX,startY,targetX,targetY){
+function findWalkingPath(startX,startY,targetX,targetY,options={}){
  const ox=island.startX,oy=island.startY,w=island.width,h=island.height,cell=tile(targetX,targetY);
  if(!Number.isInteger(targetX)||!Number.isInteger(targetY)||(!cell||(cell&128))&&!window.NativeCollision?.isEntrance(window.activeMapId||0,targetX,targetY))return null;
  if(startX===targetX&&startY===targetY)return [];
@@ -17,7 +17,7 @@ function findWalkingPath(startX,startY,targetX,targetY){
  function push(id){let i=data.position[id];if(i<0)i=count++;while(i){const parent=(i-1)>>1;if(!less(id,heap[parent]))break;heap[i]=heap[parent];data.position[heap[i]]=i;i=parent;}heap[i]=id;data.position[id]=i;}
  function pop(){const first=heap[0],last=heap[--count];data.position[first]=-1;if(count){let i=0;while(i*2+1<count){let child=i*2+1;if(child+1<count&&less(heap[child+1],heap[child]))child++;if(!less(heap[child],last))break;heap[i]=heap[child];data.position[heap[i]]=i;i=child;}heap[i]=last;data.position[last]=i;}return first;}
  data.marks[start]=stamp;data.cost[start]=0;data.previous[start]=start;const heuristic=(x,y)=>Math.max(Math.abs(targetX-x),Math.abs(targetY-y));const initial=heuristic(startX,startY);data.heuristic[start]=initial;data.position[start]=-1;push(start);
- while(count){const id=pop();if(data.closed[id]===stamp)continue;if(id===goal){const route=[];for(let p=goal;p!==start;p=data.previous[p])route.push([p%w+ox,Math.floor(p/w)+oy]);return route.reverse();}data.closed[id]=stamp;const x=id%w+ox,y=Math.floor(id/w)+oy;
+ let visited=0;while(count){if(++visited>(options.maxNodes||Infinity))return null;const id=pop();if(data.closed[id]===stamp)continue;if(id===goal){const route=[];for(let p=goal;p!==start;p=data.previous[p])route.push([p%w+ox,Math.floor(p/w)+oy]);return route.reverse();}data.closed[id]=stamp;const x=id%w+ox,y=Math.floor(id/w)+oy;
   for(const [dx,dy]of navigationDirections){const nx=x+dx,ny=y+dy;if(nx<ox||ny<oy||nx>=ox+w||ny>=oy+h||!canTraverse(x,y,dx,dy))continue;const next=(ny-oy)*w+nx-ox,cost=data.cost[id]+1;if(data.closed[next]===stamp||data.marks[next]===stamp&&data.cost[next]<=cost)continue;if(data.marks[next]!==stamp){data.position[next]=-1;data.heuristic[next]=heuristic(nx,ny);}data.marks[next]=stamp;data.cost[next]=cost;data.previous[next]=id;push(next);}
  }
  return null;
