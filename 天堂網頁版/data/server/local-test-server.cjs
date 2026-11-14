@@ -167,7 +167,7 @@ function createGameServer(options={}){
     }
     if(route==='/api/presence'&&req.method==='POST'){
      const input=await body(req),{character:c}=actor(user,input.characterId);
-     presence.set(user.id,{id:c.id,name:c.name,role:c.role,gender:c.gender,x:c.x,y:c.y,level:c.level,mapId:c.mapId||0,at:Date.now()});
+     presence.set(user.id,{id:c.id,name:c.name,role:c.role,gender:c.gender,x:c.x,y:c.y,level:c.level,lawful:Number(c.lawful)||0,mapId:c.mapId||0,at:Date.now()});
      return json(res,200,{party:partyRoster(user,c.id),players:[...presence].filter(([id,p])=>id!==user.id&&Date.now()-p.at<12000).map(([,p])=>p)});
     }
     if(route==='/api/social'&&req.method==='GET'){

@@ -49,7 +49,7 @@ const NativePotions=(()=>{
     for(let i=rows.length-1;i>=0;i--)if(!rows[i].count)rows.splice(i,1);
     return true;
   }
-  function clearOnDeath(){const b=window.activePotionBuffs||{};window.activePotionBuffs=Number(b.exp)>Date.now()?{exp:b.exp,expRate:b.expRate,expIcon:b.expIcon}:{};timers.clear();sync();} // 經驗藥水倒下不消失
+  function clearOnDeath(){const b=window.activePotionBuffs||{};window.activePotionBuffs=Number(b.exp)>Date.now()?{exp:b.exp,expRate:b.expRate,expIcon:b.expIcon}:{};timers.clear();window.IslandNpcAi?.cure?.();sync();} // 經驗藥水倒下不消失
   function sync(){
     window.playerMovementModifiers=window.playerMovementModifiers||{};
     for(const key of ['haste','brave','elfBrave','braveX'])window.playerMovementModifiers[key]=active(key);
@@ -67,12 +67,12 @@ const NativePotions=(()=>{
       bar.append(label);
     }
     for(const effect of window.IslandNpcAi?.negativeEffects||[]){
-      const label=document.createElement('span'),image=document.createElement('img'),timer=document.createElement('small'),seconds=Math.ceil(effect.remainingMs/1000);
+      const label=document.createElement('span'),image=document.createElement('img'),timer=document.createElement('small'),seconds=Number.isFinite(effect.remainingMs)?Math.ceil(effect.remainingMs/1000):null;
       label.className='negative-buff';label.dataset.effect=effect.id;
-      label.title=effect.name+'：'+effect.description+'（剩餘 '+seconds+' 秒）';label.setAttribute('aria-label',label.title);
+      label.title=effect.name+'：'+effect.description+(seconds===null?'':'（剩餘 '+seconds+' 秒）');label.setAttribute('aria-label',label.title);
       label.style.cssText='position:relative;width:26px;height:26px;background:#361622e8;border:1px solid #f36d79;box-shadow:0 0 4px #b3294266';
       image.src=effect.icon;image.alt=effect.name;image.style.cssText='width:24px;height:24px;display:block;image-rendering:pixelated';
-      timer.textContent=seconds;timer.style.cssText='position:absolute;bottom:0;right:1px;font:bold 10px sans-serif;color:#fff;text-shadow:0 1px 2px #000';
+      timer.textContent=seconds===null?'':seconds;timer.style.cssText='position:absolute;bottom:0;right:1px;font:bold 10px sans-serif;color:#fff;text-shadow:0 1px 2px #000';
       label.append(image,timer);bar.append(label);
     }
   }

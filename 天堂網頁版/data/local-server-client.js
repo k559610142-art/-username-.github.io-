@@ -214,7 +214,7 @@ const LocalServerClient=(()=>{
    const [x,y]=project(player.x,player.y),w=asset.size[0]*scale,h=asset.size[1]*scale;
    element.style.cssText='position:absolute;left:'+(x*view.zoom+view.ox-w/2)+'px;top:'+(y*view.zoom+view.oy-asset.footY*scale)+'px;width:'+w+'px;height:'+h+'px';
    element.firstChild.style.cssText='width:100%;height:100%;position:absolute;inset:0';
-   element.lastChild.style.cssText='position:absolute;left:0;right:0;top:0;text-align:center;color:#c7e8ff;text-shadow:1px 1px #000';
+   element.lastChild.style.cssText='position:absolute;left:0;right:0;top:0;text-align:center;color:'+(window.PlayerAppearance?.lawfulColor(player.lawful)||'#fff')+';text-shadow:1px 1px #000';
   }
   for(const [id,element]of peers)if(!used.has(id)){element.remove();peers.delete(id);}
  }

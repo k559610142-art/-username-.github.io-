@@ -139,7 +139,7 @@ const ClassBuffs=(()=>{
   IslandMonsters.playEffect(skill.gfx,mob?mob.x:worldX,mob?mob.y:worldY,t);
   if(kind==='teleport'){const p=landing();if(p&&OwnedInventory.applyChange(OwnedInventory.snapshot,{position:p})){WorldMaps.arrived();window.DungeonPortals?.settle();IslandMonsters.playEffect(169,worldX,worldY,now());}}
   if(kind==='mother')WorldMaps.travel(4,33051,32337).then(ok=>{if(ok)window.DungeonPortals?.settle();});
-  if(kind==='cure'||kind==='purify'){if(window.playerItemState){delete playerItemState.poison;delete playerItemState.poisoned;}if(kind==='purify')window.IslandNpcAi?.cure?.();}
+  if(kind==='cure'||kind==='purify'){window.IslandNpcAi?.curePoison?.();if(window.playerItemState){delete playerItemState.poison;delete playerItemState.poisoned;}if(kind==='purify')window.IslandNpcAi?.cure?.();}
   if(kind==='sense')say(mob.spawn.npc.name+'　體力 '+mob.hp+' / '+mob.spawn.npc.hp+'　等級 '+mob.spawn.npc.level);
   if(kind==='turnUndead'){const u=mob.spawn.npc.raw?.undead??mob.spawn.npc.undead;if(u===1&&Math.random()<.5)IslandMonsters.damage(mob,mob.hp);else say('沒有效果。');}
   if(kind==='drain'){const gain=Math.min(5+Math.floor(Math.random()*10),Math.max(0,mob.mp??99));if(mob.mp!==undefined)mob.mp-=gain;mp=Math.min(maxMp,mp+gain);window.stats?.();}

@@ -7,7 +7,7 @@ const IslandNpcAi = (() => {
   const canFight = mob => !mob.spawn.resident && mob.spawn.npc.attack > 0 || !!mob.angry && retaliates(mob);
   const calm = mob => { mob.alert = false; mob.windup = null; mob.angry = false; mob.botEnemy = null; };
   const swing = npc => npc.attack || 1000; // 部分警衛 DB 沒有攻擊動作時間
-  let owner, slowedUntil = 0, cursedUntil = 0, immuneUntil = 0;
+  let owner, slowedUntil = 0, cursedUntil = 0, immuneUntil = 0, poisoned = false, poisonAt = 0;
 
   function reset(mob) {
     mob.aiOwner = owner;
@@ -26,6 +26,7 @@ const IslandNpcAi = (() => {
     if (id !== owner) {
       owner = id;
       slowedUntil = cursedUntil = immuneUntil = 0;
+      poisoned=false;poisonAt=0;
     }
     return id && !CharacterActions.dead;
   }
@@ -89,7 +90,16 @@ const IslandNpcAi = (() => {
     CharacterActions.damage(dealt, {
       animate: !movementAnimating() && !navigationPath.length && !characterMovementBlocked()
     });
+    // Core L1AttackNpc poison type 1: 15% infection, 20 HP every 3000 ms until cured.
+    if(!skill&&npc.poison===1&&Math.random()<.15&&!CharacterActions.dead)infectPoison(now);
   }
+  function infectPoison(now=movementTime()){
+    if(!playerActive()||poisoned)return false;poisoned=true;poisonAt=now+3000;
+    window.NativePotions?.sync();window.PlayerAppearance?.sync();return true;
+  }
+  function curePoison(){poisoned=false;poisonAt=0;if(window.playerItemState){delete playerItemState.poison;delete playerItemState.poisoned;}window.NativePotions?.sync();window.PlayerAppearance?.sync();}
+  function poisonTick(){if(!playerActive()||!poisoned)return;const now=movementTime();if(now<poisonAt)return;poisonAt=now+3000;CharacterActions.damage(20,{animate:false});if(CharacterActions.dead)curePoison();}
+  setInterval(poisonTick,250);
 
   function provokeBot(mob, attacker){
     playerActive();if(mob.aiOwner!==owner)reset(mob);
@@ -190,17 +200,19 @@ const IslandNpcAi = (() => {
     revive.hidden = true;
   };
   game.append(revive);
-  return {reset, playerActive, provoke, provokeBot, update, canFight,
+  return {reset, playerActive, provoke, provokeBot, update, canFight,infectPoison,curePoison,
     updateRevive(){revive.hidden = window.gameFlowState !== 'playing' || !CharacterActions.dead;},
-    cure(){slowedUntil = cursedUntil = 0;window.NativePotions?.sync();},
+    cure(){slowedUntil = cursedUntil = 0;curePoison();},
     get negativeEffects(){
       if(window.gameFlowState!=='playing'||CharacterActions.dead||window.activeCharacterId!==owner)return [];
       const now=movementTime(),effects=[];
+      if(poisoned)effects.push({id:'poison',name:'中毒',icon:'assets/interface/skills/11.png',description:'每 3 秒損失 20 HP，解毒後解除',remainingMs:null});
       if(now<cursedUntil)effects.push({id:'petrify',name:'石化',icon:'assets/interface/skills/33.png',description:'無法移動或行動',remainingMs:cursedUntil-now});
       if(now<slowedUntil)effects.push({id:'slow',name:'緩速',icon:'assets/interface/skills/29.png',description:'移動速度降低',remainingMs:slowedUntil-now});
       return effects;
     },
     get cursed(){return window.activeCharacterId === owner && movementTime() < cursedUntil;},
+    get poisoned(){return window.activeCharacterId===owner&&poisoned&&!CharacterActions.dead;},
     get slowed(){return window.activeCharacterId === owner && movementTime() < slowedUntil;}
   };
 })();window.IslandNpcAi=IslandNpcAi;
