@@ -93,7 +93,24 @@
   const box=el('div','qy-box');box.append(row('等級',p.level),row('經驗值',x.exp.toLocaleString()+' ('+x.pct.toFixed(2)+'%)'),row('體力',hp+' / '+maxHp,'hp'),row('魔力',mp+' / '+maxMp,'mp'),
    row('防禦',previewArmorClass()),row('魔防',(d.mr||0)+'%'),row('正義值',window.activeCharacterLawful??0));frag.append(box);
   const w=weightPct(),bars=el('div','qy-box');bars.append(row('負重程度',w+'%'),meter(w),row('飽食程度','—'),meter(0));frag.append(bars);
-  const more=el('div','qy-box');more.append(row('近距離傷害','+'+(p.meleeBonus||0)),row('遠距離傷害','+'+(p.rangedBonus||0)),row('武器傷害',p.weapon?.damage?.join(' / ')??'空手'),row('魔攻',p.sp||0),row('閃避',d.dodge||0),row('自然回血',p.hpRecoveryText),row('自然回魔',p.mpRecoveryText));frag.append(more);return frag}
+  const signed=n=>(n>=0?'+':'')+n;
+  const section=(title,rows)=>{const box=el('div','qy-box');box.append(el('h3','',title));for(const [label,value,note]of rows){const r=row(label,value);if(note)r.title=note;box.append(r)}frag.append(box)};
+  section('物理能力',[
+   ['近距離傷害',signed(p.meleeBonus||0),'固定加成，不含武器隨機傷害與觸發技能'],
+   ['近距離命中','必中','目前有效普攻未進行命中擲骰'],
+   ['遠距離傷害',signed(p.rangedBonus||0),'固定加成，不含武器隨機傷害與觸發技能'],
+   ['遠距離命中','必中','目前有效普攻未進行命中擲骰'],
+   ['武器傷害',p.weapon?.damage?.join(' / ')??'空手'],
+   ['迴避修正',d.dodge||0,'用於怪物命中擲骰，迴避率依攻擊者與防禦決定'],
+   ['HP恢復量',p.hpRecoveryText],['MP恢復量',p.mpRecoveryText],
+   ['傷害減免',d.reduction||0],['魔法傷害減免',d.magicReduction||0]]);
+  section('魔法能力',[
+   ['魔攻',p.sp||0,'目前加成；攻擊魔法仍依技能本身傷害計算'],
+   ['魔法命中','必中','目前有效傷害魔法未進行命中擲骰'],
+   ['魔法爆擊率','0%','目前未實作玩家魔法暴擊'],
+   ['智力省魔',0,'目前使用技能原始 MP 消耗'],['創角智力省魔',0,'目前尚未套用']]);
+  section('屬性抗性',[['火屬性抗性','未套用'],['水屬性抗性','未套用'],['風屬性抗性','未套用'],['地屬性抗性','未套用']]);
+  frag.append(el('p','qy-ability-note','命中目前為有效攻擊必中；迴避依敵人與防禦計算。屬性抗性尚未接入戰鬥。'));return frag}
  const SOCIAL={party:['隊伍','目前沒有隊伍。'],clan:['血盟','尚未加入血盟。'],friend:['好友','好友名單是空的。']};
  function characterPane(){const pane=makeClassicWindow('角色');pane.classList.add('qy-win','qy-char','status-window');
   const body=el('div','qy-body'),fill=()=>body.replaceChildren(charTab==='equip'?equipView():charTab==='ability'?abilityTab():el('div','qy-empty',SOCIAL[charTab][1]));

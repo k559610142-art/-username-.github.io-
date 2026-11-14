@@ -25,6 +25,15 @@ const PlayerProgression = (() => {
     const day=parts.find(p=>p.type==='weekday').value,hour=+parts.find(p=>p.type==='hour').value;
     return day==='Sat'||day==='Sun'||day==='Fri'&&hour>=19||day==='Mon'&&hour<7;
   }
+  function dropInfo(mob){
+    const result=[],weekendRate=rates.weekend&&weekend()?rates.WeekendRateDropItems:1;
+    const groups=[['monster',drops[mob.spawn.npcId]||[]],['region',DBGameRules.extraDrops(mob)]];
+    for(const [source,list]of groups)for(const drop of list){
+      if(typeof REMOVED_ITEM_IDS!=='undefined'&&REMOVED_ITEM_IDS.has(drop.id))continue;
+      const item=catalog.get(drop.id);if(!item||!(drop.chance>0))continue;const coin=drop.id===40308,multiplier=drop.fixedRate||coin?1:rates.RateDropItems*weekendRate;
+      result.push({id:drop.id,key:item.kind+':'+item.id,name:item.name,icon:item.icon,source,chance:Math.min(1000000,drop.chance*multiplier),baseChance:drop.chance,min:Math.floor(Math.min(drop.min,drop.max)*(coin?rates.RateDropAdena:1)),max:Math.floor(Math.max(drop.min,drop.max)*(coin?rates.RateDropAdena:1))});
+    }return result;
+  }
   function roll(mob){
     const loot=[],weekendRate=rates.weekend&&weekend()?rates.WeekendRateDropItems:1;
     for(const drop of [...(drops[mob.spawn.npcId]||[]),...DBGameRules.extraDrops(mob)]){
@@ -59,6 +68,6 @@ const PlayerProgression = (() => {
     updateReferenceHud();
     return true;
   }
-  return {levelFor,initialExperience,percentage,award,get maxExperience(){return maximum;}};
+  return {levelFor,initialExperience,percentage,award,dropInfo,get maxExperience(){return maximum;}};
 })();
 window.PlayerProgression=PlayerProgression;

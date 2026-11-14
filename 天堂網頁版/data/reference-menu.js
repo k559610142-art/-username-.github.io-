@@ -12,13 +12,15 @@ const menuLayout = [
   ['商城', '◆', 'mall'], ['背包', '▣', 'bag'], ['技能', '✦', 'magic'], ['信件', '✉'], ['關閉', '×', 'close'],
   ['角色', '♙', 'character'], ['社交', '♧', 'social'], ['設定', '⚙', 'settings'], ['排行', '♜'], ['記憶座標', '⌖'],
   ['變身', '◈', 'transforms'], ['魔法娃娃', '✧', 'dolls'], ['BOSS附魔', '⚔', 'enchant'], ['武魂真身', '♜', 'wuhun'], ['收藏', '▤', 'collection'], ['交易所', '⚖', 'exchange'], ['登出', '⇥', 'logout'],
-  ['扭蛋機', '◈', 'gacha'], ['製作', '⚒', 'craft'], ['擺攤', '⛺', 'stall'], ['返回選擇英雄', '‹', 'roles']
+  ['本區掉寶', '▤', 'areaLoot'], ['隨身傳送', '⌖', 'portableTeleport'], ['扭蛋機', '◈', 'gacha'], ['製作', '⚒', 'craft'], ['擺攤', '⛺', 'stall'], ['返回選擇英雄', '‹', 'roles']
 ];
 const characterMenuLayout = [
   ['裝備', '⚔', 'equipment'], ['狀態', '♙', 'status'], ['返回選單', '‹', 'menu'], ['關閉', '×', 'close']
 ];
 
 function runGameMenuAction(action) {
+  if(action==='areaLoot'){closePanel();window.AreaLoot?.open();return;}
+  if(action==='portableTeleport'){closePanel();window.PortableTeleport?.open();return;}
   if (['mall','gacha','exchange'].includes(action)) { closePanel(); window.DiamondCommerce?.open(action); return; }
   if (Object.hasOwn(gameCatalogTitles, action)) {
     openGameCatalog(action);
