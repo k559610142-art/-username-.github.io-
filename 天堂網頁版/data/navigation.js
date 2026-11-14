@@ -23,7 +23,7 @@ function findWalkingPath(startX,startY,targetX,targetY){
  return null;
 }
 function cancelNavigation(){navigationPath=[];navigationTarget=null;paintNavigationTarget()}
-function advanceNavigation(now=movementTime(),continuous=false){if(!movementReady(now)||(typeof characterMovementBlocked==='function'&&characterMovementBlocked()))return;const due=lastMovementAt+lastMovementDuration;const started=continuous&&now-due<=Math.min(100,lastMovementDuration*.25)?due:now;const next=navigationPath.shift();if(!next){cancelNavigation();return}if(!stepWorld(next[0]-worldX,next[1]-worldY,now,started)){cancelNavigation();toast('前方無法通行，請重新選擇位置');return}if(!navigationPath.length)cancelNavigation()}
+function advanceNavigation(now=movementTime(),continuous=false){if(!movementReady(now)||(typeof characterMovementBlocked==='function'&&characterMovementBlocked()))return;const due=lastMovementAt+lastMovementDuration;const started=continuous&&now-due<=Math.min(250,lastMovementDuration*.5)?due:now;/* 畫面偶爾卡一下（≤250ms）時下一步仍接在上一步結束點，不會停頓後才起步 */const next=navigationPath.shift();if(!next){cancelNavigation();return}if(!stepWorld(next[0]-worldX,next[1]-worldY,now,started)){cancelNavigation();toast('前方無法通行，請重新選擇位置');return}if(!navigationPath.length)cancelNavigation()}
 // Reverse an in-flight edge from the current visual position, retaining native speed.
 function reverseWalkingEdge(targetX,targetY,now=movementTime()){
  if(!movementAnimating(now)||characterMovementBlocked())return null;

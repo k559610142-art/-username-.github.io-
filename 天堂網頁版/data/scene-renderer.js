@@ -76,7 +76,7 @@ function paintCachedTerrain(view,layers,dpr,dirty){
   const offsetY=(terrainRasterView.py-view.py)*view.zoom;
   terrainRaster.style.transform='translate3d('+(-terrainPadding+offsetX)+'px,'+(-terrainPadding+offsetY)+'px,0)';paintForegroundLayers(view,layers);
 }
-function draw(frameTime=movementTime()){const rect=game.getBoundingClientRect(),w=rect.width,h=rect.height,layout=viewportLayout(w,h),dpr=Math.min(devicePixelRatio||1,2),cw=Math.round(w*dpr),ch=Math.round(h*dpr);zoom=layout.defaultZoom;panX=0;panY=0;const view=sceneViewAt(w,h,frameTime),{px,py,ox,oy}=view;
+function draw(frameTime=movementTime()){const rect=sceneBoxCache||(sceneBoxCache=game.getBoundingClientRect()),/* 效能：用 ResizeObserver 維護的快取，不每幀強制排版 */w=rect.width,h=rect.height,layout=viewportLayout(w,h),dpr=Math.min(devicePixelRatio||1,2),cw=Math.round(w*dpr),ch=Math.round(h*dpr);zoom=layout.defaultZoom;panX=0;panY=0;const view=sceneViewAt(w,h,frameTime),{px,py,ox,oy}=view;
 if(window.NativeWorld?.render(view,dpr,frameTime))return;
 if(terrainDirty===false&&paintedView&&paintedView.px===px&&paintedView.py===py&&paintedView.worldX===worldX&&paintedView.worldY===worldY&&paintedView.width===w&&paintedView.height===h&&canvas.width===cw&&canvas.height===ch)return;
 const pageVisible=(p,margin)=>{const [x,y]=p.pixelOrigin;return x*zoom+ox<w+margin&&y*zoom+oy<h+margin&&(x+3072)*zoom+ox>-margin&&(y+1536)*zoom+oy>-margin};
@@ -85,7 +85,7 @@ const layers=[];for(const layer of ['file','foreground'])for(const p of nearby){
 // Commit a complete scene in one frame; never swap a cropped fallback, overview and partial layers.
 if(sceneStarted||(!pending&&!errors)||(errors&&preview.complete&&preview.naturalWidth)){sceneStarted=true;if(canvas.width!==cw||canvas.height!==ch){canvas.width=cw;canvas.height=ch}ctx.setTransform(dpr,0,0,dpr,0,0);paintCachedTerrain(view,layers,dpr,terrainDirty);const actor=document.querySelector('#actor');actor.hidden=false;renderedSceneView=view;paintedView={...view,worldX,worldY};terrainDirty=false;actor.style.setProperty('left',(w/2)+'px','important');actor.style.setProperty('top',(h*layout.anchorY)+'px','important');}
 for(const [file,item] of cache)if(!needed.has(file)&&cache.size>24){item.img.onload=null;item.img.onerror=null;item.img.src='';cache.delete(file)}
-document.querySelector('#coordinates').textContent=`${worldX}, ${worldY} · ${((tile(worldX,worldY)&48)===16)?'安全區':'一般區'}`;status.hidden=!pending&&!errors;status.textContent=errors?'部分場景圖片讀取失敗，請確認完整解壓縮':`載入附近場景… ${pending}`;
+{const coord=`${worldX}, ${worldY} · ${((tile(worldX,worldY)&48)===16)?'安全區':'一般區'}`,el=document.querySelector('#coordinates');if(el.textContent!==coord)el.textContent=coord}status.hidden=!pending&&!errors;status.textContent=errors?'部分場景圖片讀取失敗，請確認完整解壓縮':`載入附近場景… ${pending}`;
 }
 function stepWorld(dx,dy,now=movementTime(),started=now){if(window.gameFlowState!=='playing'||window.NativeWorld?.loading||(typeof characterMovementBlocked==='function'&&characterMovementBlocked())||!movementReady(now))return false;if(!canStep(dx,dy))return false;startVisualStep(worldX+dx,worldY+dy,now,started);recenter();if(typeof onCharacterStep==='function')onCharacterStep(dx,dy);schedule();return true}
 move=function(dx,dy){if(typeof cancelNavigation==='function')cancelNavigation();if(!movementReady())return;const d=dx===0&&dy===-1?[1,-1]:dx===0&&dy===1?[-1,1]:dx===1?[1,1]:[-1,-1];if(!stepWorld(...d))toast('此方向受到原始地圖通行資料阻擋')};

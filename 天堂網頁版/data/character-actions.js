@@ -61,7 +61,7 @@ refreshCharacter=function(frameTime=movementTime()){
  const scale=characterRenderScale(),w=data.size[0]*scale,h=data.size[1]*scale,correction=characterWalkCorrection(pose,data,characterHeading),transform='translate('+(correction.x*scale)+'px,'+(correction.y*scale)+'px)';
  characterBody.style.width=w+'px';characterBody.style.height=h+'px';characterBody.style.left=(-w/2)+'px';characterBody.style.top=(-data.footY*scale)+'px';
  showDecodedCharacterFrame(body,shadow,transform);
- characterCurrentPath=file;characterImage.src=file;characterImage.style.transform=transform;characterShadow.style.transform=transform;
+ characterCurrentPath=file;/* 效能：隱藏的舊 characterImage 不再每格換 src（會重新請求圖片），顯示用的是已解碼的快取節點 */characterShadow.style.transform=transform;
  characterActor.querySelector('small').textContent=window.activeCharacterName||avatar;
  ensureFullCharacterAnimation();
 };

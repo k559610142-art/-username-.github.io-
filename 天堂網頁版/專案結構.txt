@@ -208,3 +208,10 @@ NPC 穿衣服（2026-11-13）：
   可製作（材料、等級、職業、體力魔力都夠）卡片綠框綠點排前面；沒有背包圖的成品（伺服器自訂道具，約 500 筆）顯示類別徽章並排後面
   使用者決定隨時隨地都能製作：db-game-rules.js craft(npcId,id,anywhere) 第三個參數 true 時不檢查是否靠近 NPC（NPC 對話裡的製作照舊要靠近）
   嘗試過從客戶端 Sprite*.pak 抽 <gfx>.img 當背包圖，但編號對不上（抽到介面元件、綠底），已放棄
+
+走路流暢度（2026-11-14）：
+  scene-renderer.js draw() 改用 sceneBoxCache（ResizeObserver 維護），不再每幀 game.getBoundingClientRect() 強制排版；座標文字（#coordinates）只在變動時寫入（scene-renderer／native-world）
+  character-actions.js 不再每換一格動作就改隱藏舊 characterImage 的 src（原本每步重新請求 walk 圖）
+  native-world.js drawForeground：沒有遮擋物（cover 空）時不每幀清整張前景畫布
+  navigation.js 走路銜接：上一步結束後 ≤ min(250ms, 半步) 內接到下一步都從上一步結束點起算（原本 100ms／四分之一步），畫面偶爾卡一下不會停頓後才起步
+  實測（本機 1280×720 以下面板，連續走 39 格）：場景繪製平均 1.9ms／最大 12ms、地圖 render 平均 0.5ms，無長任務；走路約 63fps、p99 16.9ms、>50ms 的幀 0
