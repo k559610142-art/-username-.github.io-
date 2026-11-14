@@ -342,3 +342,9 @@ NPC 穿衣服（2026-11-13）：
   藥水圖片預載，冷載入完成才起算特效時間；玩家與假玩家共用特效，位置跟隨移動。假玩家喝水／施放治癒術不再生成文字泡泡。
   botHit 傳遞實際攻擊者（含組隊假玩家）；怪物對該人物轉身、追擊與出手，不把此次傷害轉給玩家。玩家親自攻擊才切換至玩家仇恨，取消舊對象尚未落下的傷害。
   tools/potion-retaliation.test.cjs 驗證仇恨、出手、安全區、逃離、藥水素材與冷載入時間；tools/black-elf-preview.cjs --potions 驗證實際使用紅水、扣物品、補HP及光效像素。
+
+隊伍血條與血盟卷軸圖（2026-11-14）
+  data/party-hud.js／.css：左上 HUD 下方顯示目前隊伍（NPC／真人名字或ID、HP）與召喚怪物；每250ms讀取即時資料，避開可見聊天區，成員多可捲動，離隊與換角色清除舊名單。
+  本機伺服器 /api/presence 僅回傳同隊成員血量，現有1.5秒同步同時更新隊伍欄；需重啟本機伺服器套用。
+  血盟傳送卷軸 etcitem:40124 改為使用者提供的原圖 assets/interface/items/clan-teleport-scroll.jpg，由 item-icon-overrides.js 統一套用到背包／快捷欄／道具詳細圖。
+  tools/party-hud.test.cjs 驗證HP更新、換角色、真人同隊權限與離隊；隔離瀏覽器 --party／--clan-scroll 驗證桌面、直式排版及背包圖示。

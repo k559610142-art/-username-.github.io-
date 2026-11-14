@@ -12,9 +12,10 @@ const PartyHud=(()=>{
   return {party,summons};
  }
  function position(){
-  const g=game.getBoundingClientRect(),hud=game.querySelector(':scope>.hud')?.getBoundingClientRect(),chat=game.querySelector('.qh-chat')?.getBoundingClientRect();
-  const top=Math.max(8,(hud?.bottom??g.top+110)-g.top+14),left=Math.max(6,(hud?.left??g.left+8)-g.left);
-  const bottom=chat&&chat.top>g.top+top?chat.top-g.top-10:g.height-120;
+  const g=game.getBoundingClientRect(),hud=game.querySelector(':scope>.hud')?.getBoundingClientRect();
+  const chat=['.oh-msg','.qh-chat','.reference-messages'].map(s=>game.querySelector(s)?.getBoundingClientRect()).find(r=>r?.height>0);
+  let top=Math.max(8,(hud?.bottom??g.top+110)-g.top+14),bottom=g.height-100;const left=Math.max(6,(hud?.left??g.left+8)-g.left);
+  if(chat){if(chat.top>=g.top+top+80)bottom=chat.top-g.top-10;else if(chat.bottom>g.top+top&&chat.bottom<g.top+g.height-100)top=chat.bottom-g.top+10;}
   root.style.left=left+'px';root.style.top=top+'px';root.style.maxHeight=Math.max(70,bottom-top)+'px';root.style.width=Math.min(210,Math.max(145,g.width*.38))+'px';
  }
  function row(member){
@@ -30,6 +31,6 @@ const PartyHud=(()=>{
   const data=snapshot(),key=JSON.stringify(data);if(key===signature)return;signature=key;
   const scroll=root.scrollTop;root.replaceChildren(section('目前隊伍',data.party,'尚未組隊'),section('召喚怪物',data.summons,'目前沒有召喚物'));position();root.scrollTop=scroll;
  }
- const observer=new ResizeObserver(position);observer.observe(game);for(const node of [game.querySelector(':scope>.hud'),game.querySelector('.qh-chat')])if(node)observer.observe(node);
+ const observer=new ResizeObserver(position);observer.observe(game);for(const node of [game.querySelector(':scope>.hud'),game.querySelector('.oh-msg'),game.querySelector('.qh-chat'),game.querySelector('.reference-messages')])if(node)observer.observe(node);
  setInterval(tick,250);tick();return {snapshot,refresh:tick};
 })();window.PartyHud=PartyHud;

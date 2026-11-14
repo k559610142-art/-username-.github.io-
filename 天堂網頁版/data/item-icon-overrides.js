@@ -6,3 +6,6 @@
 
 // Native client inventory icon for 羊男的硬幣.
 for(const item of INTERFACE_CATALOG.items)if(item.gfx===6833&&!item.icon)item.icon="assets/interface/client-icons/6833.png";
+
+// User-provided clan teleport scroll artwork (2026-11-14).
+for(const item of INTERFACE_CATALOG.items)if(item.kind==="etcitem"&&item.id===40124)item.icon="assets/interface/items/clan-teleport-scroll.jpg";
