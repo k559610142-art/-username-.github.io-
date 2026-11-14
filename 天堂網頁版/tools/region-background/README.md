@@ -18,6 +18,14 @@ node --expose-gc tools/region-background/build.cjs --reuse-pages 0 4
 node tools/region-background/finalize.cjs
 ```
 
+長時間轉換中斷時，使用 `--resume` 檢查既有圖片並接續建置；已完成的圖片不重畫。建置完整地圖後才執行 `finalize.cjs`，它會拆分區域資料、檢查引用並清除本工具產生的過期圖片。`validate.cjs` 進一步核對全部地圖、圖檔、室內組合和遮擋裁切範圍。
+
+```powershell
+node --expose-gc tools/region-background/build.cjs --resume 4
+node tools/region-background/finalize.cjs
+node tools/region-background/validate.cjs
+```
+
 產物在 `assets/region-background/` 與 `data/region-background-index.js`。完成全部轉換、驗證後，`index.html` 依序載入地圖索引、`region-background.js`、`native-world.js`。新模式不啟動原始地圖繪製 worker，也不下載原始圖集。
 
 ```powershell

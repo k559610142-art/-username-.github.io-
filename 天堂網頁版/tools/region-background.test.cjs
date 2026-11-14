@@ -24,6 +24,11 @@ test('室內版本僅重算建築範圍，像素與整頁重畫相同',async()=>
  const outside=renderPage(page,painter),full=renderPage(page,painter,['roof']),patched=renderPage(page,painter,['roof'],outside);
  assert.deepEqual(Buffer.from(full.getContext('2d').getImageData(0,0,1024,1024).data),Buffer.from(patched.getContext('2d').getImageData(0,0,1024,1024).data));
 });
+test('跨越分區邊界的普通與混色圖塊無接縫、無像素遺失',async()=>{
+ const manifest=JSON.parse(fs.readFileSync(path.join(ROOT,'assets/native-world/manifest-atlas64.json'),'utf8')),painter=createPainter(manifest),rows=[{x:1008,y:24,t:12},{x:1016,y:48,t:manifest.blendTiles[0]}];await painter.preload(rows);
+ const left=renderPage({x:0,y:0,floors:rows,objects:[]},painter),right=renderPage({x:1024,y:0,floors:rows,objects:[]},painter),expected=createCanvas(2048,1024),pen=expected.getContext('2d'),joined=createCanvas(128,128),j=joined.getContext('2d');pen.fillStyle='#101b17';pen.fillRect(0,0,2048,1024);for(const row of rows)painter.paint(pen,row,0,0);
+ j.drawImage(left,960,0,64,128,0,0,64,128);j.drawImage(right,0,0,64,128,64,0,64,128);assert.deepEqual(Buffer.from(j.getImageData(0,0,128,128).data),Buffer.from(pen.getImageData(960,0,128,128).data));
+});
 test('遮擋小圖打包時，混色不得污染相鄰圖格',()=>{
  const canvas=createCanvas(32,16),pen=canvas.getContext('2d');pen.fillStyle='#abcdef';pen.fillRect(0,0,32,16);const source=new Uint8ClampedArray(64*64*4).fill(255),before=pen.getImageData(16,0,16,16).data;blend(pen,source,0,0,{x:0,y:0,w:16,h:16});assert.deepEqual(pen.getImageData(16,0,16,16).data,before);
 });
