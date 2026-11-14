@@ -44,12 +44,16 @@ const PlayerProgression = (() => {
   function award(mob){
     if(window.gameFlowState!=='playing'||CharacterActions.dead||OwnedInventory.owner!==window.activeCharacterId)return false;
     const reward=mob.reward??=roll(mob),before=window.activeCharacterLevel;
+    // 正義值：打死 lawful 為負的怪（邪惡怪物）加回絕對值（DB npc.lawful，例：骷髏 −12 → +12、巴風特 −500 → +500），上限 32767；先加再存檔，獎勵失敗就退回
+    const lawfulBefore=Number(window.activeCharacterLawful)||0,lawfulGain=Math.max(0,-(Number(mob.spawn.npc.raw?.lawful)||0));
+    if(lawfulGain)window.activeCharacterLawful=Math.min(32767,lawfulBefore+lawfulGain);
     if(!OwnedInventory.reward(reward.experience,reward.loot)){
+      window.activeCharacterLawful=lawfulBefore;
       IslandCombat.stop();
       document.querySelector('#log').textContent='獎勵尚未領取，請確認背包空間及本機存檔可用後再擊殺。';
       return false;
     }
-    const text=['擊殺 '+mob.spawn.npc.name,'經驗 +'+reward.experience,...reward.loot.map(item=>item.name+' × '+item.count)];
+    const text=['擊殺 '+mob.spawn.npc.name,'經驗 +'+reward.experience,...(window.activeCharacterLawful>lawfulBefore?['正義 +'+(window.activeCharacterLawful-lawfulBefore)]:[]),...reward.loot.map(item=>item.name+' × '+item.count)];
     if(window.activeCharacterLevel>before)text.push('升至 Lv. '+window.activeCharacterLevel);
     document.querySelector('#log').textContent=text.join(' · ');
     updateReferenceHud();
