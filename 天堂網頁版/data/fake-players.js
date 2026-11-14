@@ -175,8 +175,11 @@ const FakePlayers=(()=>{
  // 商店資料（native-npc-dialog-data.js）比這支晚載入，第一次擺攤時才建價目表
  let SHOP_PRICE=null,stallPool=[],usefulPool=[];
  function prices(){if(SHOP_PRICE)return;SHOP_PRICE=new Map();for(const rows of [...Object.values((typeof NATIVE_NPC_DIALOGS!=='undefined'?NATIVE_NPC_DIALOGS:null)?.shops||{}),(typeof islandNpcServiceData!=='undefined'?islandNpcServiceData:null)?.shop||[]])for(const [id,,buy,pack,,ench] of rows){if(!(buy>0)||ench||id===40308)continue;const unit=buy/Math.max(1,pack|0);if(!SHOP_PRICE.has(id)||unit<SHOP_PRICE.get(id))SHOP_PRICE.set(id,unit);}
-  stallPool=[...SHOP_PRICE.keys()].filter(id=>itemById.get(id)?.icon&&SHOP_PRICE.get(id)>=5&&SHOP_PRICE.get(id)<=30000);
+  stallPool=[...SHOP_PRICE.keys()].filter(id=>itemById.get(id)?.icon&&SHOP_PRICE.get(id)>=5&&SHOP_PRICE.get(id)<=30000&&stallOk(itemById.get(id)));
   usefulPool=stallPool.filter(id=>{const it=itemById.get(id),h=ITEM_USE_RULES.definitions[it.kind+':'+id]?.handler||'';return /^(hp.|mp.|brave.|teleport.)/.test(h)||it.type==='arrow'});}
+ // 擺攤白名單（使用者 2026-11-14：假人不該賣家具這類）：裝備、箭、魔法書／精靈水晶、魔法材料、藥水、實用卷軸、磨刀石；家具、煙火、食物、船票、骰子、花束等不賣
+ const STALL_HANDLER=/^(hp.|mp.|brave.|teleport.|magicreel.|Disintoxicat_Potion|Water_Essence|Appraisal_Reel|Scroll_CurseRemoval|Reactivating_Reel|Blank_MagicReel|Hone)/;
+ function stallOk(it){if(!it)return false;if(it.kind==='weapon'||it.kind==='armor')return !/結婚|活動|紀念/.test(it.name);if(['arrow','material','spellbook'].includes(it.type))return true;const h=ITEM_USE_RULES.definitions[it.kind+':'+it.id]?.handler||'';if(it.type==='other'&&!/^Hone/.test(h))return false;return STALL_HANDLER.test(ITEM_USE_RULES.definitions[it.kind+':'+it.id]?.handler||'');}
  function genStall(){prices();const items=[],n=ri(3,5),ids=new Set();while(items.length<n&&ids.size<stallPool.length){const id=pick(usefulPool.length&&Math.random()<.7?usefulPool:stallPool);/* 七成賣實用品：藥水、卷軸、箭 */if(ids.has(id))continue;ids.add(id);const item=itemById.get(id),stack=!!ITEM_USE_RULES.definitions[item.kind+':'+id]?.stackable;
    const unit=SHOP_PRICE.get(id),qty=stack?Math.max(1,Math.min(pick([5,10,20,50,100]),Math.floor(200000/unit))):1,price=Math.max(1,Math.round(unit*rnd(.9,1.6)));items.push({id,key:item.kind+':'+id,qty,price});}
   return {items,restock:movementTime()+rnd(240000,420000)};}
@@ -232,5 +235,5 @@ const FakePlayers=(()=>{
   setTimeout(()=>window.GameChat?.say('[密語] '+to+'：'+whisperReply(b,text),'whisper'),rnd(1500,4000));});
  function setEnabled(on){enabled=!!on;maintain();}
  function setRed(on){redOn=!!on;maintain();}
- return {update,label,hurt,drawShots,openStall,setRed,get redOn(){return redOn;},get count(){return bots().length;},get enabled(){return enabled;},setEnabled,looks};
+ return {update,label,hurt,drawShots,openStall,sampleStall:()=>genStall().items.map(i=>itemById.get(i.id)?.name),setRed,get redOn(){return redOn;},get count(){return bots().length;},get enabled(){return enabled;},setEnabled,looks};
 })();window.FakePlayers=FakePlayers;
