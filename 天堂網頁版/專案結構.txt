@@ -227,4 +227,10 @@ NPC 穿衣服（2026-11-13）：
   聊天：orb-hud.js／client-classic-hud.js 加共用 window.GameChat.say(text,kind)，玩家送出訊息時發 document 事件 player-chat；
    假人每 20～70 秒有機會說話（玩家 18 格內才說），玩家提到 組隊／王／你好／買賣／強化／PK／謝 時附近 20 格的假人 1～2 秒後回話
   FakePlayers.setEnabled(false) 可關（localStorage lineage-fake-players），目前沒有設定介面
-  第 2 期待做：紅名 PK、撿掉落物（傳說公告）、王出現集合打王
+假玩家 第 2 期（2026-11-14）：
+  紅名：每張地圖 2 個（RED_NAMES，血盟血月，island-monsters.js 繪製時 pen.filter 染暗紅、名字紅色），只在野外出現；pkCd 到了且玩家在野外 8 格內就盯上（訊息框【警告】＋toast），
+   追打玩家（命中＝0.6＋(等級差)×0.02＋(防禦−10)×0.025，傷害 3～9＋等級×0.6＋4，CharacterActions.damage），玩家進安全區／倒下／超過 14 格就放棄
+   island-monsters.js：紅名可點選（selectAt）、玩家攻擊 damage() 轉給 FakePlayers.hurt（被打就反擊）；擊敗得 等級×40 金幣（OwnedInventory.receive），fp.hidden 一分鐘（不畫、不能點）後別處出現
+  寶物公告：遊戲沒有地上掉落物，所以改成假人殺怪時照 killRewardData 掉寶表擲骰（掉率 ≤ 2% 的道具、機率 ×2），中了就發【全服】公告（訊息框「掉落」）
+  打王：名字含 BOSS 或單隻生成且血量 ≥ 1500 的怪在玩家 30 格內時，14 級以上一般假人每 3 秒 20% 機率集合去打（state boss），王倒了喊一句
+  實測：紅名毒蛇 PK 擊倒 1 級角色、擊敗紅名血手得 960 金幣並消失、3 個假人集合打測試王（3000→1509）

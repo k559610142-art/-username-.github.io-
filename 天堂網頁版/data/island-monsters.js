@@ -155,6 +155,7 @@ const IslandMonsters = (() => {
     const visible=[];
     for(const mob of mobs){
       if((mob.spawn.mapId||0)!==(window.activeMapId||0))continue;
+      if(mob.spawn.bot&&mob.fp?.hidden){advance(mob,now);continue;}
       if(!mob.hp){
         if(now<mob.respawnAt)continue;
         mob.hp=mob.spawn.npc.hp;mob.x=mob.homeX;mob.y=mob.homeY;
@@ -181,7 +182,9 @@ const IslandMonsters = (() => {
         pen.beginPath();pen.ellipse(x,y,Math.max(12,width*.36),6,0,0,Math.PI*2);
         pen.strokeStyle='#f0bc65';pen.lineWidth=2;pen.stroke();
       }
+      const redBot=mob.spawn.bot&&mob.fp?.red;if(redBot)pen.filter='sepia(1) saturate(5) hue-rotate(-40deg) brightness(.7)';
       pen.drawImage(sheet,sx,sy,sw,sh,left,top,width,height);
+      if(redBot)pen.filter='none';
       const vx=mob.step?mob.x+(mob.step.x-mob.x)*phase:mob.x,vy=mob.step?mob.y+(mob.step.y-mob.y)*phase:mob.y;window.NativeWorld?.paintEntity(pen,view,vx,vy,{left,top,width,height});
       if(mob===selected){
         const meter=Math.max(42,Math.min(84,width));
@@ -223,7 +226,7 @@ const IslandMonsters = (() => {
   }
   function selectAt({x,y}){
     const hit=hitboxes.findLast(box=>x>=box.left-4&&x<=box.left+box.width+4&&y>=box.top-4&&y<=box.top+box.height+4);
-    const next=hit?.mob?.spawn.ally||hit?.mob?.spawn.bot?null:hit?.mob||null;
+    const next=hit?.mob?.spawn.ally||hit?.mob?.spawn.bot&&!hit.mob.fp?.red?null:hit?.mob||null;
     // 強制攻擊開啟：點到的目標（含 NPC、守衛）直接攻擊。
     if(next&&window.ForceAttack?.on){lastTap=null;if(next!==selected){selected=next;draw(getRenderedSceneView(),movementTime());}return 'attack';}
     if(next?.spawn.resident){
@@ -247,6 +250,7 @@ const IslandMonsters = (() => {
   function setTarget(mob){selected=mob;draw(getRenderedSceneView(),movementTime());}
   function damage(mob,amount){
     if(!mob.hp)return;
+    if(mob.spawn.bot){window.FakePlayers?.hurt(mob,amount);draw(getRenderedSceneView(),movementTime());return;}
     // 商人、傳送師等 DB 沒有血量的常駐 NPC 不會受傷（強制攻擊只會揮空）；守衛、稻草人等有血量的照常扣血。
     if(mob.spawn.resident&&!(mob.spawn.npc.hp>0)){CombatSound.monsterHit(mob);return;}
     IslandNpcAi.provoke(mob,mobs);
