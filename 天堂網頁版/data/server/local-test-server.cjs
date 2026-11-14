@@ -19,6 +19,7 @@ function createGameServer(options={}){
  CREATE TABLE IF NOT EXISTS chat(id INTEGER PRIMARY KEY,user_id INTEGER,character_id TEXT,channel TEXT,text TEXT,created INTEGER);
  CREATE TABLE IF NOT EXISTS friends(user_id INTEGER NOT NULL,character_id TEXT NOT NULL,target_id TEXT NOT NULL,UNIQUE(character_id,target_id));
  `);
+ if(!db.prepare('PRAGMA table_info(auctions)').all().some(c=>c.name==='currency'))db.exec("ALTER TABLE auctions ADD COLUMN currency TEXT NOT NULL DEFAULT 'adena'");
  const events=new Set(),presence=new Map(),attempts=new Map();
  const clone=value=>JSON.parse(JSON.stringify(value));
  const fail=(status,message)=>{const e=Error(message);e.status=status;throw e;};
@@ -60,6 +61,7 @@ function createGameServer(options={}){
    ids.add(c.id);names.add(c.name);
    if(![0,1].includes(c.gender)||!c.stats||Object.keys(rules.base).some(k=>!Number.isInteger(c.stats[k])||c.stats[k]<rules.base[k]||c.stats[k]>rules.base[k]+rules.points)||Object.keys(rules.base).reduce((n,k)=>n+c.stats[k],0)!==75)fail(400,'角色能力值有誤。');
    int(c.level||1,1,100);validInventory(c.inventory||[]);
+   const old=snapshot(user.id).characters.find(row=>row?.id===c.id);c.diamonds=old?.diamonds||0; // 鑽石只允許由伺服器交易修改。
   }
   validInventory(state.warehouse||[],true);
   for(const old of snapshot(user.id).characters.filter(Boolean)){
@@ -162,12 +164,12 @@ function createGameServer(options={}){
      return json(res,200,{players:[...presence].filter(([id,p])=>id!==user.id&&Date.now()-p.at<12000).map(([,p])=>p)});
     }
     if(route==='/api/social'&&req.method==='GET'){
-     const cid=url.searchParams.get('characterId');actor(user,cid);
+     const cid=url.searchParams.get('characterId'),viewer=actor(user,cid).character;
      const groups=db.prepare('SELECT groups.* FROM groups JOIN members ON members.group_id=groups.id WHERE members.user_id=? AND members.character_id=?').all(user.id,cid);
      for(const group of groups){group.storage=JSON.parse(group.storage);group.members=db.prepare('SELECT character_id FROM members WHERE group_id=?').all(group.id).map(m=>({id:m.character_id,...findCharacter(m.character_id)}));}
      return json(res,200,{groups,invites:db.prepare('SELECT invites.id,groups.name,groups.kind FROM invites JOIN groups ON groups.id=invites.group_id WHERE invites.user_id=? AND invites.character_id=?').all(user.id,cid),
       mail:db.prepare('SELECT id,subject,body,claimed,created,attachment FROM mail WHERE recipient=? ORDER BY id DESC LIMIT 100').all(user.id).map(m=>({...m,attachment:JSON.parse(m.attachment)})),
-      auctions:db.prepare("SELECT id,seller,character_id,item,price,expires FROM auctions WHERE status='open' ORDER BY id DESC LIMIT 100").all().map(a=>({...a,item:JSON.parse(a.item)})),
+      auctions:(viewer.level||1)<30?[]:db.prepare("SELECT id,seller,character_id,item,price,expires,currency FROM auctions WHERE status='open' ORDER BY id DESC LIMIT 100").all().map(a=>({...a,item:JSON.parse(a.item)})),
       trades:db.prepare("SELECT * FROM trades WHERE status='open' AND (a=? OR b=?)").all(user.id,user.id).map(t=>({...t,ao:JSON.parse(t.ao),bo:JSON.parse(t.bo)})),
       friends:db.prepare('SELECT target_id FROM friends WHERE user_id=? AND character_id=?').all(user.id,cid).map(f=>({id:f.target_id,...findCharacter(f.target_id)})),
       chat:db.prepare("SELECT chat.*,users.name FROM chat JOIN users ON users.id=chat.user_id WHERE channel='world' ORDER BY id DESC LIMIT 50").all().reverse()});
@@ -245,16 +247,19 @@ function createGameServer(options={}){
       for(const item of JSON.parse(mail.attachment))give(c,item);
       db.prepare('UPDATE mail SET claimed=1 WHERE id=?').run(mail.id);save(user.id,state);return {};
      }
+     if(route.startsWith('/api/auction/')&&route!=='/api/auction/cancel'&&(c.level||1)<30)fail(403,'交易所需角色 30 等開放。');
      if(route==='/api/auction/list'){
       const item=removeItem(c,input.itemUid,int(input.count));
-      db.prepare('INSERT INTO auctions(seller,character_id,item,price,expires) VALUES(?,?,?,?,?)').run(user.id,c.id,JSON.stringify(item),int(input.price),Date.now()+86400000);save(user.id,state);return {};
+      db.prepare("INSERT INTO auctions(seller,character_id,item,price,expires,currency) VALUES(?,?,?,?,?,'diamond')").run(user.id,c.id,JSON.stringify(item),int(input.price),Date.now()+86400000);save(user.id,state);return {};
      }
      if(route==='/api/auction/buy'){
       const auction=db.prepare("SELECT * FROM auctions WHERE id=? AND status='open' AND expires>?").get(int(input.auctionId),Date.now());
       if(!auction||auction.seller===user.id)fail(409,'商品無法購買。');
       const seller=snapshot(auction.seller),sc=seller.characters.find(p=>p?.id===auction.character_id);
       if(!sc)fail(409,'賣家角色不存在。');
-      gold(c,-auction.price);give(c,JSON.parse(auction.item));gold(sc,auction.price);
+      if(auction.currency!=='diamond')fail(409,'舊版天幣商品請由賣家下架後重新上架。');
+      const balance=int(c.diamonds||0,0),sellerBalance=int(sc.diamonds||0,0);if(balance<auction.price)fail(400,'鑽石不足。');
+      int(sellerBalance+auction.price,0);c.diamonds=balance-auction.price;give(c,JSON.parse(auction.item));sc.diamonds=sellerBalance+auction.price;
       save(user.id,state);save(auction.seller,seller);db.prepare("UPDATE auctions SET status='sold' WHERE id=?").run(auction.id);return {};
      }
      if(route==='/api/auction/cancel'){

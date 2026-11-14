@@ -85,6 +85,7 @@ const LocalServerClient=(()=>{
  }
  const control=(label,action)=>{const b=uiElement('button','classic-use',label);b.type='button';b.onclick=action;return b;};
  async function open(tab=socialTab){
+  if(tab==='auction'&&window.DiamondCommerce)return window.DiamondCommerce.open('exchange');
   if(!online||!user){message('請從本機測試伺服器網址登入。');return;}
   socialTab=tab;
   const response=await request('/api/social?characterId='+encodeURIComponent(window.activeCharacterId));
@@ -231,8 +232,8 @@ const LocalServerClient=(()=>{
    const health=await request('/api/health');if(health.service!=='lineage-local-test')return;
    online=true;
    for(const entry of menuLayout){
-    const tab={'社交':'players','信件':'mail','交易所':'auction'}[entry[0]];
-    if(tab)entry[2]=entry[0]==='社交'?'social':'online-'+tab;
+    const tab={'社交':'players','信件':'mail','交易所':'exchange'}[entry[0]];
+    if(tab)entry[2]=entry[0]==='社交'?'social':entry[0]==='交易所'?'exchange':'online-'+tab;
    }
    const originalMenuAction=runGameMenuAction;
    runGameMenuAction=function(action){if(action.startsWith('online-'))return open(action.slice(7));return originalMenuAction(action);};
@@ -245,6 +246,6 @@ const LocalServerClient=(()=>{
   }catch{}
  }
  init();
- return {flush,open,act,get online(){return online;}};
+ return {flush,open,act,async market(){await flush();return request('/api/social?characterId='+encodeURIComponent(window.activeCharacterId));},get online(){return online;}};
 })();
 window.LocalServerClient=LocalServerClient;

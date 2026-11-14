@@ -322,3 +322,10 @@ NPC 穿衣服（2026-11-13）：
   建築事件依附近區域載入，不一次解析整張大地圖；圖片等待期間保留行走路線。
   tools/region-background/build.cjs 建圖，finalize.cjs 分割事件資料，validate.cjs 驗證所有地圖與圖檔。
   tools/region-background.test.cjs 驗證原始像素、混色、跨區接縫、室內切換與主遊戲入口。
+
+鑽石商城／扭蛋／交易所框架（2026-11-14）
+  選單新增商城、扭蛋機與交易所入口；data/diamond-commerce.js、.css 提供深色金框、分類、商品卡、獎池與單抽／十抽按鈕。
+  商城商品價格、扭蛋獎池／機率／保底尚未設定，按鈕停用，不扣鑽；沒有自動贈送鑽石或套用參考圖餘額。
+  交易所 30 等開放，新上架使用鑽石；伺服器驗證等級、餘額、成交一次與原子收付。角色 diamonds 為伺服器保存欄位，預設 0，客戶端一般存檔不能改餘額。
+  舊天幣商品保留原幣別，只能下架重售，避免把原售價誤當鑽石。後端異動需重啟本機測試伺服器。
+  tools/diamond-commerce.test.cjs 為隔離 SQLite 整合測試；tools/diamond-commerce-preview.cjs 為隔離 UI 預覽，示意餘額不寫入玩家存檔。
