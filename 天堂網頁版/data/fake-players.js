@@ -8,14 +8,20 @@
 //  不能點選、不會被 AUTO／技能選到、不會被怪打死。
 // 第 4 期（2026-11-14 使用者規則）：
 //  名單存檔：一般假人的名字、外觀、等級、血盟存在 localStorage lineage-fake-roster，重登後同一批人回來（位置仍在你附近）。
-//  擺攤商人：固定 6 人（STALL_NAMES），時間表存在 localStorage lineage-fake-stalls，照真實時間走（重登不影響）：
-//   每次擺 30 分鐘～3 小時，到時間就下線消失；下線 3 小時後隨機到「奇岩村莊」或「銀騎士村莊」（只有這兩村）找新位置再擺，不固定點；
+//  擺攤商人：約 55 人的商人池（名字＝人名＋店名，跟外觀性別對得上），時間表存在 localStorage lineage-fake-stalls，照真實時間走（重登不影響）：
+//   每次擺 30 分鐘～3 小時，到時間就下線消失；下線 3 小時後才再出來，開攤那一刻才決定去「奇岩村莊」（約 8 成）或「銀騎士村莊」，不固定點；
+//   同時在攤人數不固定：奇岩上限 20、平常 10～20 人；銀騎士上限 6、平常 1～6 人（兩村都滿就這輪不擺）。
 //   擺攤時只喊【賣】／【收】，不聊天、不回公開對話、不回密語；點他開攤位：可以買他賣的，也可以把他收的東西賣給他。
+//  時間線（2026-11-14 使用者規則）：localStorage lineage-fake-world-start 記開服第一天，強化值跟著天數慢慢變高：
+//   第 1 天沒有強化裝備、第 2 天 +3、第 3 天 +4、第 4～5 天 +5、第 6～7 天 +6、第 8～13 天 +7、第 14 天起 +8（防具最多 +6）；聊天台詞的 +N 也照這個過濾。
+//  強化裝備：只賣一般人會衝的（長劍、銀長劍、大馬士革刀、武士刀、雙手劍、巨劍、闊矛、戰斧、巨斧；鋼盔、騎士面甲、抗魔斗篷、金屬盔甲、鱗甲、
+//   鋼鐵手套、鋼鐵長靴、大盾、塔盾），不賣匕首、弓、皮甲；價格照衝裝成本：武捲 8 萬、防捲 4 萬，+7 武器約 100～150 萬。不賣高級、稀有裝備。
+//  收購（防洗錢）：只收對武器施法的卷軸（7.5～7.9 萬）、對盔甲施法的卷軸（3.7～3.95 萬），一攤最多收幾張，收購價一定低於任何攤位賣價與商店價。
 // 第 3 期（2026-11-14）：（設定開關已拿掉，玩家不能控制假人）；妖精箭矢／法師魔法彈飛行特效（drawShots）；
 //  假人被打時頭上短暫顯示血條；地監裡說地監台詞；擺攤商人：玩家附近有安全區時 1 個假人在安全區固定擺攤，
 //  3～5 件貨（NPC 商店有賣的東西，價格 0.9～1.6 倍），每 40～90 秒喊「【賣】…」，點他打開攤位用金幣買，賣完或 4～7 分鐘換貨。
 // 第 2 期（2026-11-14）：
-//  紅名：每張地圖 2 個（血手、夜梟…，血盟「血月」，身體染暗紅、名字紅色），只在野外；冷卻到了且你在野外 8 格內就盯上你
+//  紅名：每張地圖 2 個（血手、夜梟…，血盟「血月」，只有名字紅色、身體不染色），只在野外；冷卻到了且你在野外 8 格內就盯上你
 //   （訊息框【警告】），追著打（命中看等級差與你的防禦），你進安全區、倒下或跑出 14 格就放棄。紅名可以點選、攻擊（不用強制攻擊），
 //   被打會反擊；擊敗得到 等級×40 金幣，紅名消失一分鐘後在別處出現。
 //  寶物公告：遊戲沒有地上掉落物，改成假人殺怪時照那隻怪的掉寶表擲骰（掉率 ≤ 2% 的道具、機率 ×2），打到就發【全服】公告。
@@ -41,7 +47,10 @@ const FakePlayers=(()=>{
  // 名字跟職業、性別要對得上（使用者 2026-11-14：王子叫「法師老李」不合理）：通用名＋性別名＋職業名，職業名只給那個職業
  const NAMES=['夜行俠','小雨點','劍無痕','黑貓貓','星辰雨','月下影','冰咖啡','焦糖布丁','北風','米漿加蛋','風之谷','咖哩飯','孤狼','雷霆一擊','無名氏','天堂老玩家','肝帝','打寶仔','紅水不夠','閃電貂','銀色月光','喵喵拳','鐵頭','碎星','白目王'];
  const GENDER_NAMES=[['阿翔哥','阿凱','老王出擊','大叔來了','型男一號'],['血色玫瑰','奶茶微糖','小公主喵','櫻花雨','甜心兔']];
- const STALL_NAMES=['阿福雜貨','藥水小舖','箭矢批發','二手裝備行','回收大王','便宜賣啦'];
+ // 擺攤商人名字：人名（男／女／通用）＋店名
+ const STALL_FIRST=[['阿福','老張','大雄','阿明','胖虎','老陳','阿德','阿勇','老林','阿達','老吳','阿財','大頭'],['小美','小芳','阿珠','小翠','小倩','米米','阿花','小琪','阿蓮','小鳳'],['肥貓','小黑','阿寶','招財貓','大福','金元寶','旺旺']];
+ const STALL_SHOP=['雜貨','商行','小舖','批發','二手','百貨','賣場','當舖','的店','便宜賣','老店','工作室'];
+ const stallNames=()=>new Set((stalls||[]).map(s=>s.name));
  const CLASS_NAMES={騎士:{any:['小騎士','鐵壁騎士','聖光之盾'],m:['重甲阿強'],f:['女武神']},法師:{any:['魔導研究生','火球專家','冰封千里'],m:['法師老李'],f:['魔女小玲']},
   妖精:{any:['森林射手','風之箭','月光弓手'],m:['精靈王子'],f:['精靈公主','綠葉小妖']},王族:{any:['血盟君主'],m:['小王子','王者之劍'],f:['公主殿下','女王陛下']},
   戰士:{any:['狂戰','斧頭幫','怒吼戰神'],m:[],f:['戰場女神']},龍騎士:{any:['飛龍騎','龍之血','赤焰龍騎'],m:[],f:['龍騎少女']}};
@@ -71,7 +80,7 @@ const FakePlayers=(()=>{
  let roster=loadJson(ROSTER_KEY)||[];
  function remember(mob){const r={name:mob.spawn.npc.name,look:lookKey(mob.fp.look),lv:mob.spawn.npc.level,clan:mob.fp.clan,red:!!mob.fp.red};roster=[r,...roster.filter(x=>x.name!==r.name)].slice(0,40);saveJson(ROSTER_KEY,roster);}
  function make(x,y,red=false){
-  const saved=roster.find(r=>!used.has(r.name)&&!!r.red===red&&lookOf(r.look)&&!STALL_NAMES.includes(r.name));
+  const saved=roster.find(r=>!used.has(r.name)&&!!r.red===red&&lookOf(r.look)&&!stallNames().has(r.name));
   const look=saved?lookOf(saved.look):pick(looks);const g=A.avatars[look.avatar]?.gender?1:0,cls=CLASS_NAMES[look.role]||{any:[],m:[],f:[]},own=[...cls.any,...(g?cls.f:cls.m)].filter(n=>!used.has(n));
   let name=saved?saved.name:pick((red?RED_NAMES:own.length&&Math.random()<.35?own:[...NAMES,...GENDER_NAMES[g],...own]).filter(n=>!used.has(n)));if(!name)return null;used.add(name);const lv=saved?saved.lv:red?ri(18,40):ri(5,45);
   const npc={name,kind:'L1Bot',gfx:look.id,level:lv,hp:40+lv*14,mp:0,ac:0,walk:look.weapon==='bow'?600:640,attack:look.attackMs,ranged:RANGED[look.weapon]||1,skills:[],regeneration:null,aggressive:false};
@@ -93,7 +102,9 @@ const FakePlayers=(()=>{
   if(!redOn)for(const b of list.filter(b=>b.fp.red)){IslandMonsters.removeAlly(b);used.delete(b.spawn.npc.name);if(IslandMonsters.target===b){IslandMonsters.setTarget(null);IslandCombat.stop();}}
   const reds=redOn?list.filter(b=>b.fp.red).length:RED_PER_MAP;
   stallTick();
-  if(reds<RED_PER_MAP){const s=spotNear(worldX,worldY,16,22,false);if(s)make(...s,true);}
+  // 紅名找不到野外位置（例如人在大村莊中央）時，照樣補一般假人，不然村裡一個路人都沒有
+  const redSpot=reds<RED_PER_MAP&&spotNear(worldX,worldY,16,22,false);
+  if(redSpot)make(...redSpot,true);
   else{const roam=list.filter(b=>!b.fp.stall).length;if(roam<PER_MAP){const s=spotNear(worldX,worldY,roam<PER_MAP/2?8:16,20);if(s)make(...s);}}
  }
  setInterval(maintain,2000);
@@ -105,7 +116,7 @@ const FakePlayers=(()=>{
  function update(mob,now,stepToward){
   const f=mob.fp;if(!f)return;
   if(mob.bubble&&now>mob.bubble.until)mob.bubble=null;
-  if(now>=f.chatAt){f.chatAt=now+rnd(20000,70000);if(Math.random()<.55&&dist(mob.x,mob.y,worldX,worldY)<=18&&!f.stall)say(mob,pick(isDungeon()?DUN_LINES:LINES));}
+  if(now>=f.chatAt){f.chatAt=now+rnd(20000,70000);if(Math.random()<.55&&dist(mob.x,mob.y,worldX,worldY)<=18&&!f.stall)say(mob,pick(isDungeon()?DUN_LINES:LINES.filter(lineOk)));}
   if(f.vanish){if(now>=f.vanish){f.vanish=0;f.hidden=false;f.pk=false;mob.hp=mob.spawn.npc.hp;const s=f.red?spotNear(worldX,worldY,16,22,false):spotNear(worldX,worldY,16,22,true)||spotNear(worldX,worldY,16,22);if(s)place(mob,...s);}return;}
   if(mob.step)return;
   if(f.stall){mob.hp=mob.spawn.npc.hp;if(now>=f.shoutAt){f.shoutAt=now+rnd(40000,90000);shout(mob);}return;}
@@ -192,34 +203,78 @@ const FakePlayers=(()=>{
  // 擺攤白名單（使用者 2026-11-14：假人不該賣家具這類）：裝備、箭、魔法書／精靈水晶、魔法材料、藥水、實用卷軸、磨刀石；家具、煙火、食物、船票、骰子、花束等不賣
  const STALL_HANDLER=/^(hp.|mp.|brave.|teleport.|magicreel.|Disintoxicat_Potion|Water_Essence|Appraisal_Reel|Scroll_CurseRemoval|Reactivating_Reel|Blank_MagicReel|Hone)/;
  function stallOk(it){if(!it)return false;if(it.kind==='weapon'||it.kind==='armor')return !/結婚|活動|紀念/.test(it.name);if(['arrow','material','spellbook'].includes(it.type))return true;const h=ITEM_USE_RULES.definitions[it.kind+':'+it.id]?.handler||'';if(it.type==='other'&&!/^Hone/.test(h))return false;return STALL_HANDLER.test(ITEM_USE_RULES.definitions[it.kind+':'+it.id]?.handler||'');}
- function genStall(){prices();const items=[],n=ri(3,5),ids=new Set();while(items.length<n&&ids.size<stallPool.length){const id=pick(usefulPool.length&&Math.random()<.7?usefulPool:stallPool);/* 七成賣實用品：藥水、卷軸、箭 */if(ids.has(id))continue;ids.add(id);const item=itemById.get(id),stack=!!ITEM_USE_RULES.definitions[item.kind+':'+id]?.stackable;
+ // ---- 時間線：開服第幾天決定市面上最高強化值 ----
+ const WORLD_KEY='lineage-fake-world-start',DAY=86400000;
+ function worldDay(){let s=0;try{s=Number(localStorage.getItem(WORLD_KEY))}catch{}if(!(s>0)){s=Date.now();try{localStorage.setItem(WORLD_KEY,String(s))}catch{}}return Math.floor((Date.now()-s)/DAY)+1;}
+ function maxEnchant(day=worldDay()){return day<=1?0:day===2?3:day===3?4:day<=5?5:day<=7?6:day<=13?7:8;}
+ const armorMax=()=>Math.min(6,Math.max(0,maxEnchant()-1));
+ const lineOk=l=>{const m=l.match(/\+(\d+)/);return !m||Number(m[1])<=maxEnchant();};
+ // ---- 擺攤貨品 ----
+ // 強化裝備白名單：一般人會衝的武器／防具（不賣匕首、弓、皮甲；不賣高級、稀有裝備）
+ const ENCH_WEAPONS=[31,29,37,41,52,64,98,143,148],ENCH_ARMORS=[20043,20006,20056,20154,20122,20163,20194,20242,20231];
+ const W_SCROLL=40087,A_SCROLL=40074;
+ // 價格＝衝裝成本：武捲 8 萬、防捲 4 萬；安定值內照張數，過安定值要算蒸發風險（+7 武器約 100～150 萬）
+ function enchPrice(id,n,weapon){const base=Math.max(500,Math.round((SHOP_PRICE.get(id)||20000)*rnd(.9,1.2)));let p;
+  if(weapon)p=n<=6?80000*n*rnd(1,1.15):n===7?560000*rnd(1.8,2.7):640000*rnd(4,5.5);
+  else p=n<=4?40000*n*rnd(1,1.15):n===5?200000*rnd(1.8,2.6):240000*rnd(3.5,5);
+  return Math.round((p+base)/1000)*1000;}
+ function enchItem(){const weapon=Math.random()<.6,max=weapon?maxEnchant():armorMax();if(max<1)return null;
+  let n=ri(Math.max(1,max-3),max);if(n>=7&&Math.random()<.5)n=ri(4,6);/* 高強化比較少見 */
+  const id=pick(weapon?ENCH_WEAPONS:ENCH_ARMORS),item=itemById.get(id);if(!item)return null;
+  return {id,key:item.kind+':'+id,qty:1,price:enchPrice(id,n,weapon),enchant:n};}
+ const stallName=it=>(it.enchant?'+'+it.enchant+' ':'')+(itemById.get(it.id)?.name||'道具');
+ function genStall(){prices();const items=[],ids=new Set();
+  // 約 4 成攤位有強化裝備（第 1 天沒有）
+  if(maxEnchant()>0&&Math.random()<.4)for(let i=ri(1,2);i>0;i--){const e=enchItem();if(e&&!ids.has(e.key+'+'+e.enchant)){ids.add(e.key+'+'+e.enchant);items.push(e);}}
+  // 施法卷軸：武捲 8～8.4 萬、防捲 4～4.1 萬（商店 8.5 萬／4.1 萬）
+  if(Math.random()<.45){const w=Math.random()<.5,id=w?W_SCROLL:A_SCROLL;ids.add(id);items.push({id,key:'etcitem:'+id,qty:ri(1,5),price:w?ri(80,84)*1000:ri(400,410)*100});}
+  const n=items.length+ri(2,4);let guard=0;
+  while(items.length<n&&guard++<200){const id=pick(usefulPool.length&&Math.random()<.7?usefulPool:stallPool);/* 七成賣實用品：藥水、卷軸、箭 */if(ids.has(id))continue;ids.add(id);const item=itemById.get(id),stack=!!ITEM_USE_RULES.definitions[item.kind+':'+id]?.stackable;
    const unit=SHOP_PRICE.get(id),qty=stack?Math.max(1,Math.min(pick([5,10,20,50,100]),Math.floor(200000/unit))):1,price=Math.max(1,Math.round(unit*rnd(.9,1.6)));items.push({id,key:item.kind+':'+id,qty,price});}
   return {items,restock:movementTime()+rnd(240000,420000)};}
  function shout(mob){const st=mob.fp.stall,b=st?.buys?.length&&Math.random()<.35?pick(st.buys):null;
-  if(b){say(mob,'【收】'+(itemById.get(b.id)?.name||'道具')+' 每個 '+b.price.toLocaleString()+' 金');return;}
-  const it=st?.items?.length&&pick(st.items);if(!it)return;const name=itemById.get(it.id)?.name||'道具';
-  say(mob,'【賣】'+name+(it.qty>1?' ×'+it.qty:'')+' '+it.price.toLocaleString()+' 金');}
- function genBuys(){prices();const out=[],n=ri(1,2),ids=new Set();while(out.length<n&&ids.size<stallPool.length){const id=pick(usefulPool.length&&Math.random()<.8?usefulPool:stallPool);if(ids.has(id))continue;ids.add(id);
-   const item=itemById.get(id),stack=!!ITEM_USE_RULES.definitions[item.kind+':'+id]?.stackable;out.push({id,key:item.kind+':'+id,want:stack?pick([10,20,50]):ri(1,2),price:Math.max(1,Math.round(SHOP_PRICE.get(id)*rnd(.5,.8)))});}
+  if(b){say(mob,'【收】'+(itemById.get(b.id)?.name||'道具')+' 每張 '+b.price.toLocaleString()+' 金');return;}
+  const it=st?.items?.length&&pick(st.items);if(!it)return;
+  say(mob,'【賣】'+stallName(it)+(it.qty>1?' ×'+it.qty:'')+' '+it.price.toLocaleString()+' 金');}
+ // 收購（防洗錢，使用者 2026-11-14）：只收武捲、防捲，價錢低於任何攤位賣價（武 8 萬起、防 4 萬起）與商店價，一攤最多收幾張
+ function genBuys(){if(Math.random()<.5)return [];const out=[];
+  if(Math.random()<.6)out.push({id:W_SCROLL,key:'etcitem:'+W_SCROLL,want:ri(1,5),price:ri(750,790)*100});
+  if(!out.length||Math.random()<.4)out.push({id:A_SCROLL,key:'etcitem:'+A_SCROLL,want:ri(1,5),price:ri(370,395)*100});
   return out;}
  // ---- 擺攤商人時間表（只在奇岩村莊、銀騎士村莊）----
- const STALL_TOWNS={giran:{name:'奇岩村莊',map:4,x:33421,y:32813},silver:{name:'銀騎士村莊',map:4,x:33080,y:33395}};
- const H=3600000,MIN=60000;
+ const STALL_TOWNS={giran:{name:'奇岩村莊',map:4,x:33421,y:32813,cap:20,r:[3,16]},silver:{name:'銀騎士村莊',map:4,x:33080,y:33395,cap:6,r:[2,9]}};
+ const H=3600000,MIN=60000,STALL_POOL=55,STALL_VER=2;
  let stalls=loadJson(STALL_KEY);
- function stallInit(){if(stalls&&stalls.length===STALL_NAMES.length&&stalls.every(s=>lookOf(s.look)))return;const now=Date.now(),pool=looks.filter(l=>l.weapon!=='bow');
-  stalls=STALL_NAMES.map((name,i)=>{const start=i%2?now+rnd(5*MIN,3*H):now-rnd(0,20*MIN);return {name,look:lookKey(pick(pool)),clan:Math.random()<.6?pick(CLANS):null,town:pick(Object.keys(STALL_TOWNS)),spot:null,start,end:start+rnd(30*MIN,3*H),items:null,buys:null};});saveJson(STALL_KEY,stalls);}
- function roll(s,now){let changed=false;while(now>=s.end){const off=s.end+3*H;s.start=off;s.end=off+rnd(30*MIN,3*H);s.town=pick(Object.keys(STALL_TOWNS));s.spot=null;s.items=null;s.buys=null;changed=true;}return changed;}
- function stallSpot(s){const t=STALL_TOWNS[s.town];for(let i=0;i<120;i++){const r=rnd(2,10),a=Math.random()*Math.PI*2,x=Math.round(t.x+Math.cos(a)*r),y=Math.round(t.y+Math.sin(a)*r);
-   if(!TeleportScrolls.canLand(x,y)||!safe(x,y))continue;if(stalls.some(o=>o!==s&&o.town===s.town&&o.spot&&dist(o.spot[0],o.spot[1],x,y)<3))continue;return [x,y];}return null;}
+ function stallInit(){if(stalls&&stalls.length&&stalls.every(s=>s.v===STALL_VER&&lookOf(s.look)))return;const now=Date.now(),pool=looks.filter(l=>l.weapon!=='bow'),names=new Set();stalls=[];
+  for(let i=0;i<STALL_POOL*4&&stalls.length<STALL_POOL;i++){const look=pick(pool),g=A.avatars[look.avatar]?.gender?1:0,name=pick([...STALL_FIRST[g],...STALL_FIRST[2]])+pick(STALL_SHOP);if(names.has(name))continue;names.add(name);
+   // 一開始就是「穩定狀態」：每人隨機落在自己週期（擺攤＋休息 3 小時）的某一點
+   const d=rnd(30*MIN,3*H),start=now-rnd(0,d+3*H);stalls.push({v:STALL_VER,name,look:lookKey(look),clan:Math.random()<.6?pick(CLANS):null,town:null,spot:null,start,end:start+d,items:null,buys:null});}
+  saveJson(STALL_KEY,stalls);}
+ function roll(s,now){let changed=false;while(now>=s.end){const off=s.end+3*H;s.start=off;s.end=off+rnd(30*MIN,3*H);s.town=null;s.spot=null;s.items=null;s.buys=null;changed=true;}return changed;}
+ const isLive=(s,now)=>now>=s.start&&now<s.end;
+ // 開攤時才選村：奇岩約 8 成；奇岩不到 10 人優先補奇岩、銀騎士沒人優先補銀騎士；滿了去另一村，兩村都滿這輪不擺
+ function pickTown(now){const c={giran:0,silver:0};for(const o of stalls)if(o.town&&isLive(o,now))c[o.town]++;
+  let t=c.giran<10?'giran':c.silver<1?'silver':Math.random()<.8?'giran':'silver';if(c[t]>=STALL_TOWNS[t].cap)t=t==='giran'?'silver':'giran';return c[t]>=STALL_TOWNS[t].cap?null:t;}
+ function stallSpot(s){const t=STALL_TOWNS[s.town];for(let i=0;i<160;i++){const r=rnd(...t.r),a=Math.random()*Math.PI*2,x=Math.round(t.x+Math.cos(a)*r),y=Math.round(t.y+Math.sin(a)*r);
+   if(!TeleportScrolls.canLand(x,y)||!safe(x,y))continue;if(stalls.some(o=>o!==s&&o.town===s.town&&o.spot&&dist(o.spot[0],o.spot[1],x,y)<2))continue;return [x,y];}return null;}
  let stallSaveAt=0;
  function stallTick(){if(!looks.length)return;stallInit();const now=Date.now(),map=window.activeMapId||0;let dirty=false;
-  for(const s of stalls){if(roll(s,now))dirty=true;const live=now>=s.start&&now<s.end,t=STALL_TOWNS[s.town],mob=IslandMonsters.botList.find(m=>m.fp?.stallRef===s||m.fp?.stallName===s.name);
+  // 舊版時間表留下的攤位假人（已不在名單）直接收掉
+  for(const m of [...IslandMonsters.botList])if(m.fp?.stall&&!stalls.includes(m.fp.stallRef)){IslandMonsters.removeAlly(m);used.delete(m.fp.stallName);}
+  for(const s of stalls){if(roll(s,now))dirty=true;let live=isLive(s,now);
+   if(live&&!s.town){s.town=pickTown(now);if(!s.town){s.end=now;live=false;}dirty=true;}
+   const t=live&&STALL_TOWNS[s.town],mob=IslandMonsters.botList.find(m=>m.fp?.stallRef===s||m.fp?.stallName===s.name);
    if(live&&map===t.map){if(!s.spot){s.spot=stallSpot(s);dirty=true;}if(!s.items){s.items=genStall().items;s.buys=genBuys();dirty=true;}}
    const near=live&&map===t.map&&s.spot&&dist(s.spot[0],s.spot[1],worldX,worldY)<=32;
    if(near&&!mob)makeStallMob(s);
    else if(mob&&!near){if(!live&&dist(mob.x,mob.y,worldX,worldY)<=20)IslandMonsters.playEffect(169,mob.x,mob.y,movementTime());IslandMonsters.removeAlly(mob);used.delete(s.name);}
    else if(mob)mob.fp.stall=s;}
   if(dirty||now-stallSaveAt>30000){stallSaveAt=now;saveJson(STALL_KEY,stalls);}}
+ // 買強化裝備：一般交易沒有強化值，這裡自己扣金幣、放一筆帶 enchant 的物品
+ function buyEnchanted(it){const next=OwnedInventory.snapshot,gold=next.find(e=>e.key==='etcitem:40308'&&!e.slot);
+  if(!gold||gold.count<it.price)return '天幣不足。';gold.count-=it.price;if(!gold.count)next.splice(next.indexOf(gold),1);
+  next.push({uid:'item-'+Date.now().toString(36)+'-fp'+Math.random().toString(36).slice(2,7),key:it.key,count:1,slot:null,enchant:it.enchant});
+  return OwnedInventory.applyChange(next)?'':'背包欄位不足，交易未完成。';}
  function makeStallMob(s){const look=lookOf(s.look)||pick(looks),[x,y]=s.spot;used.add(s.name);
   const npc={name:s.name,kind:'L1Bot',gfx:look.id,level:ri(20,45),hp:500,mp:0,ac:0,walk:640,attack:look.attackMs,ranged:1,skills:[],regeneration:null,aggressive:false};
   const mob={spawn:{bot:true,mapId:STALL_TOWNS[s.town].map,npc,heading:4,respawn:[0,0]},region:[x-5,y-5,x+5,y+5],x,y,homeX:x,homeY:y,hp:npc.hp,heading:ri(3,5),rest:0,phase:Math.random()*1800,step:null,
@@ -234,9 +289,9 @@ const FakePlayers=(()=>{
   const gold=()=>OwnedInventory.items.filter(e=>e.key==='etcitem:40308').reduce((n,e)=>n+e.count,0);
   const have=key=>OwnedInventory.items.filter(e=>e.key===key&&!e.slot).reduce((n,e)=>n+e.count,0);
   function render(){list.replaceChildren();list.append(el('div','fp-stall-msg','【賣】'));for(const it of f.stall.items){const item=itemById.get(it.id),row=el('div','fp-stall-row'),buy=el('button','','買 1 個');buy.type='button';
-    row.append(itemIcon(item),el('span','nm',item.name+(it.qty>1?'（剩 '+it.qty+'）':'')),el('span','pr',it.price.toLocaleString()+' 金'),buy);
-    buy.disabled=gold()<it.price;buy.onclick=()=>{if(dist(mob.x,mob.y,worldX,worldY)>8){msg.textContent='離攤位太遠了。';return;}const err=OwnedInventory.trade(it.key,1,it.price,false);
-     if(err){msg.textContent=err;return;}it.qty--;if(!it.qty)f.stall.items.splice(f.stall.items.indexOf(it),1);msg.textContent='買到 '+item.name+'。';saveStalls();render();};
+    row.append(itemIcon(item),el('span','nm',stallName(it)+(it.qty>1?'（剩 '+it.qty+'）':'')),el('span','pr',it.price.toLocaleString()+' 金'),buy);
+    buy.disabled=gold()<it.price;buy.onclick=()=>{if(dist(mob.x,mob.y,worldX,worldY)>8){msg.textContent='離攤位太遠了。';return;}const err=it.enchant?buyEnchanted(it):OwnedInventory.trade(it.key,1,it.price,false);
+     if(err){msg.textContent=err;return;}it.qty--;if(!it.qty)f.stall.items.splice(f.stall.items.indexOf(it),1);msg.textContent='買到 '+stallName(it)+'。';saveStalls();render();};
     list.append(row);}
    if(!f.stall.items.length)list.append(el('div','fp-stall-msg','（賣完了）'));
    if(f.stall.buys?.length){list.append(el('div','fp-stall-msg','【收】把你身上的東西賣給他'));

@@ -100,11 +100,13 @@ const IslandMonsters = (() => {
   function advance(mob,now){
     const regen=mob.spawn.npc.regeneration;if(regen&&mob.hp>0){const last=mob.regenTimes??={hp:now,mp:now};for(const key of ['hp','mp']){const ms=regen[key+'Ms'];if(ms>0&&regen[key]>0&&now-last[key]>=ms){const ticks=Math.floor((now-last[key])/ms);last[key]+=ticks*ms;mob[key]=Math.min(mob.spawn.npc[key],(mob[key]||0)+ticks*regen[key]);}}}
 
+    let stepEnd=0;
     if(mob.step&&now>=mob.step.end){
-      mob.x=mob.step.x;mob.y=mob.step.y;mob.step=null;
+      stepEnd=mob.step.end;mob.x=mob.step.x;mob.y=mob.step.y;mob.step=null;
       mob.rest=now+1400+Math.random()*2300;
     }
-    if(mob.spawn.bot){window.FakePlayers?.update(mob,now,stepToward);return;}
+    // 假人連續走路：下一步從上一步結束的時間點接著算，不會每格停一下
+    if(mob.spawn.bot){window.FakePlayers?.update(mob,stepEnd&&now-stepEnd<250?stepEnd:now,stepToward);return;}
     if(mob.spawn.ally){window.Summons?.update(mob,now,stepToward);return;}    if(IslandNpcAi.update(mob,now,mobs,steps,stepToward))return;
     // 消氣的常駐 NPC（被強制攻擊追出去的警衛）走回原位
     if(mob.spawn.resident){if(!mob.step&&now>=mob.rest&&(mob.x!==mob.homeX||mob.y!==mob.homeY)&&!stepToward(mob,mob.homeX,mob.homeY,now))mob.rest=now+1000;return;}
@@ -184,9 +186,7 @@ const IslandMonsters = (() => {
         pen.beginPath();pen.ellipse(x,y,Math.max(12,width*.36),6,0,0,Math.PI*2);
         pen.strokeStyle='#f0bc65';pen.lineWidth=2;pen.stroke();
       }
-      const redBot=mob.spawn.bot&&mob.fp?.red;if(redBot)pen.filter='sepia(1) saturate(5) hue-rotate(-40deg) brightness(.7)';
-      pen.drawImage(sheet,sx,sy,sw,sh,left,top,width,height);
-      if(redBot)pen.filter='none';
+      pen.drawImage(sheet,sx,sy,sw,sh,left,top,width,height); // 紅名只有名字紅色，身體不染色（使用者 2026-11-14）
       const vx=mob.step?mob.x+(mob.step.x-mob.x)*phase:mob.x,vy=mob.step?mob.y+(mob.step.y-mob.y)*phase:mob.y;window.NativeWorld?.paintEntity(pen,view,vx,vy,{left,top,width,height});
       if(mob===selected){
         const meter=Math.max(42,Math.min(84,width));
@@ -293,9 +293,8 @@ draw=function(now=movementTime()){
   drawIslandScene(now);
   IslandMonsters.draw(getRenderedSceneView(),now);
 };
-setInterval(()=>{
-  if(!document.hidden&&!movementAnimating())IslandMonsters.draw(getRenderedSceneView(),movementTime());
-},80);
+// 角色沒在走時，怪物／假人圖層每個畫面幀都重畫（原本 80ms 一次，假人走路看起來卡卡的）
+(function monsterFrame(){requestAnimationFrame(monsterFrame);if(!document.hidden&&!movementAnimating())IslandMonsters.draw(getRenderedSceneView(),movementTime());})();
 
 // AI runs independently of repainting and character animation.
 setInterval(()=>IslandMonsters.updateBackground(movementTime()),100);

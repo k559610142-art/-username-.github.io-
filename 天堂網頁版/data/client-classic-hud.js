@@ -92,9 +92,9 @@
  const channel=el('select');for(const [v,l]of [['say','一般'],['world','世界']]){const o=el('option','',l);o.value=v;channel.append(o)}
  const text=el('input');text.placeholder='輸入訊息';text.maxLength=60;text.setAttribute('aria-label','輸入訊息');const send=el('button','','發送');send.type='submit';
  input.append(channel,text,send);chat.append(tabs,list,input);
- function line(m){const d=el('div',m.kind,m.text),who=(m.kind==='say'||m.kind==='whisper')&&m.text.match(/^(?:\[密語\] )?([^：→\s]+)：/)?.[1];
+ function chatLine(m){const d=el('div',m.kind,m.text),who=(m.kind==='say'||m.kind==='whisper')&&m.text.match(/^(?:\[密語\] )?([^：→\s]+)：/)?.[1];
   if(who&&who!==window.activeCharacterName){d.dataset.who=who;d.title='點一下密語 '+who;d.style.cursor='pointer';d.onclick=()=>{text.value='/密 '+who+' ';text.focus()}}if(m.kind==='whisper')d.style.color='#ff9be0';return d}
- function renderList(){list.replaceChildren(...messages.filter(m=>filter==='all'||m.kind===filter||(filter==='sys'&&m.kind==='journal')).map(line));list.scrollTop=list.scrollHeight}
+ function renderList(){list.replaceChildren(...messages.filter(m=>filter==='all'||m.kind===filter||(filter==='sys'&&m.kind==='journal')).map(chatLine));list.scrollTop=list.scrollHeight}
  function push(text,kind){messages.push({text,kind});if(messages.length>150)messages.shift();renderList()}
  const log=document.querySelector('#log');let lastLog='';
  function capture(){const t=log?.textContent.trim();if(!t||t===lastLog)return;lastLog=t;push(t,t.startsWith('[日誌]')?'journal':/獲得|撿起|拾取|掉落/.test(t)?'drop':'sys')}

@@ -2,7 +2,8 @@
 //  擺攤中：不能移動、不能 AUTO 打怪（scene-renderer.js stepWorld／move、navigation.js navigateTo、island-combat.js begin 會擋），頭上顯示招牌；
 //   道具仍在背包，賣出時才用 OwnedInventory.trade(賣) 扣掉並收金幣（被你自己用掉就自動下架）。不存檔，重新整理就收攤。
 //  買家是附近 20 格內的假人（data/fake-players.js）：每 6～14 秒有一個假人來看貨，照「你的單價 ÷ 參考價」決定買不買
-//   （參考價＝NPC 商店最低價，沒有就用自動販賣價 ×4，再沒有用 100）：比 ≤ 0.8 幾乎必買、1 倍約六成、1.5 倍約兩成、2 倍以上很少；一次買 1～3 成存量（最多 50 個）。
+//   （參考價＝NPC 商店最低價，沒有就用自動販賣價 ×4，再沒有用 100）：比 ≤ 0.8 幾乎必買、1 倍約六成；一次買 1～3 成存量（最多 50 個）。
+//   防洗錢（使用者 2026-11-14）：商店買得到的東西開價超過商店價就沒人買；商店沒賣的超過參考價 1.5 倍沒人買（不再有「天價也有 3% 會買」）。
 const PlayerStall=(()=>{
  const el=(t,c,x)=>uiElement(t,c,x),MAX=8;
  let active=false,items=[],title='',win=null,nextBuyer=0,sign=null,earned=0;
@@ -10,6 +11,7 @@ const PlayerStall=(()=>{
  const gold=()=>OwnedInventory.items.filter(e=>e.key==='etcitem:40308').reduce((n,e)=>n+e.count,0);
  const haveCount=key=>OwnedInventory.items.filter(e=>e.key===key&&!e.slot).reduce((n,e)=>n+e.count,0);
  let refPrices=null;
+ const inShop=key=>{ref(key);return refPrices.has(Number(key.split(':')[1]));};
  function ref(key){
   if(!refPrices){refPrices=new Map();for(const rows of [...Object.values((typeof NATIVE_NPC_DIALOGS!=='undefined'?NATIVE_NPC_DIALOGS:null)?.shops||{}),(typeof islandNpcServiceData!=='undefined'?islandNpcServiceData:null)?.shop||[]])for(const [id,,buy,pack,,ench] of rows){if(!(buy>0)||ench)continue;const u=buy/Math.max(1,pack|0);if(!refPrices.has(id)||u<refPrices.get(id))refPrices.set(id,u);}}
   const id=Number(key.split(':')[1]);if(refPrices.has(id))return Math.max(1,Math.round(refPrices.get(id)));
@@ -33,7 +35,7 @@ const PlayerStall=(()=>{
   items=items.filter(it=>{it.qty=Math.min(it.qty,haveCount(it.key));return it.qty>0;});if(!items.length){stop();toast('攤位的東西賣完了，自動收攤。');return;}
   const bots=((typeof IslandMonsters!=="undefined"?IslandMonsters.botList:null)||[]).filter(b=>(b.spawn.mapId||0)===(window.activeMapId||0)&&!b.fp?.red&&!b.fp?.stall&&!b.fp?.hidden&&Math.max(Math.abs(b.x-worldX),Math.abs(b.y-worldY))<=20);
   if(!bots.length)return;
-  const buyer=pick(bots),it=pick(items),ratio=it.price/ref(it.key),chance=Math.max(.03,Math.min(.95,1.2-ratio*.6));
+  const buyer=pick(bots),it=pick(items),ratio=it.price/ref(it.key),chance=ratio>(inShop(it.key)?1:1.5)?0:Math.max(.05,Math.min(.95,1.2-ratio*.6));
   if(Math.random()>=chance){if(Math.random()<.25)window.FakePlayers&&say(buyer,pick(['太貴了吧','便宜一點啦','看看而已','老闆算便宜點']));return;}
   const n=Math.max(1,Math.min(it.qty,Math.ceil(it.qty*rnd(.1,.3)),Math.round(rnd(5,50)))),/* 一次最多買 50 個 */total=it.price*n,name=it.item.name;
   const err=OwnedInventory.trade(it.key,n,total,true);if(err){toast('擺攤交易失敗：'+err);return;}
