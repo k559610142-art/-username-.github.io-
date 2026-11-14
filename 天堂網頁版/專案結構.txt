@@ -246,3 +246,5 @@ NPC 穿衣服（2026-11-13）：
   影格圖還沒解碼時沿用這隻上一次畫出來的影格（mob.lastDrawn，怪物也適用），不再整隻消失；新增 loadSheet／IslandMonsters.preload，假人外觀第一次用到時先載入整組影格
 正義值（2026-11-14）：player-progression.js award() 擊殺時加正義值＝max(0, −DB npc.lawful)（邪惡怪物為負，例：史萊姆 −6 → +6、骷髏 −12 → +12、巴風特 −500 → +500；lawful 0 的怪不加），上限 32767，
   擊殺訊息顯示「正義 +N」，獎勵失敗時退回；entry-flow.js 存檔欄位 lawful、進遊戲讀回 window.activeCharacterLawful（角色視窗「正義」、NPC 對話 chaotic 判斷都用它）
+狀態圖示位置（2026-11-14）：native-potions.js positionBuffs() 有「輔助」鈕時，藥水狀態列（.native-potion-buffs）放在輔助鈕右邊、與鈕同高，技能狀態列（class-buff-bar）接在後面，
+  寬度到小地圖前為止（原本在頭像框 MP 條下方，會壓到防禦／魔防）；每 0.5 秒重排一次跟著圖示數量變化
