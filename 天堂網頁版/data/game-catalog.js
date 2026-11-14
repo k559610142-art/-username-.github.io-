@@ -1,5 +1,5 @@
 // 圖鑑面板共用既有遊戲視窗的鍵盤和關閉操作。
-const gameCatalogTitles = {dolls: '魔法娃娃', transforms: '變身卡冊', enchant: 'BOSS附魔', wuhun: '武魂', collection: '圖鑑'};
+const gameCatalogTitles = {dolls: '魔法娃娃', transforms: '變身卡冊', enchant: 'BOSS附魔', wuhun: '武魂真身', collection: '圖鑑', adventurer: '冒險者配對'};
 const gameCatalogIcons = {dolls: 'doll', transforms: 'transform', cards: 'transform', enchant: 'attack', wuhun: 'character', collection: 'collection'};
 // 天地劫系統分頁（娃娃召喚、BOSS 附魔、武魂）：列表資料快取，讓選取狀態在重畫時保持同一列。
 const tdjCatalogRows = {};
@@ -1748,7 +1748,7 @@ function openGameCatalog(type) {
   const title = uiElement('h2', 'game-catalog-title', gameCatalogTitles[type]);
   const tabs = uiElement('nav', 'game-catalog-tabs');
   tabs.setAttribute('aria-label', '圖鑑分類');
-  for (const [key, label] of Object.entries(gameCatalogTitles)) {
+  for (const [key, label] of (['collection','adventurer'].includes(type) ? [['collection','圖鑑'],['adventurer','冒險者配對']] : [])) {
     const button = catalogButton(label, () => openGameCatalog(key));
     button.setAttribute('aria-pressed', String(key === type));
     tabs.append(button);
@@ -1765,10 +1765,10 @@ function openGameCatalog(type) {
   results.append(search);
   results.append(cards);
   layout.append(sidebar, results, detail);
-  gameDialogContent.replaceChildren(title, tabs, layout);
+  gameDialogContent.replaceChildren(title, ...(['collection','adventurer'].includes(type)?[tabs]:[]), layout);
 
-  if (type === 'collection') {
-    renderEquipmentCollection(sidebar, results, cards, detail, search, gameCollections);
+  if (type === 'collection' || type === 'adventurer') {
+    renderEquipmentCollection(sidebar, results, cards, detail, search, gameCollections, type === 'adventurer' ? 'sets' : 'weapon');
     return;
   }
   const entries = type === 'cards' ? lineageMTransformCards

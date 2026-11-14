@@ -1,4 +1,4 @@
-function renderEquipmentCollection(sidebar,results,cards,detail,search,referenceSets) {
+function renderEquipmentCollection(sidebar,results,cards,detail,search,referenceSets,initialTab='weapon') {
   const gear = INTERFACE_CATALOG.items.filter(item=>item.kind==='weapon'||item.kind==='armor');
   const key = item => item.kind+':'+item.id;
   const byKey = new Map(gear.map(item=>[key(item),item]));
@@ -13,7 +13,7 @@ function renderEquipmentCollection(sidebar,results,cards,detail,search,reference
   pager.setAttribute('aria-label','收藏分頁');
   results.append(pager);
   const pageSize=36;
-  let tab='weapon',page=0,selected=null;
+  let tab=initialTab,page=0,selected=null;
   function show(row,items) {
     selected=row;
     detail.replaceChildren();
