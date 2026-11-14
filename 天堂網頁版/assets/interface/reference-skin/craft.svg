@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- 製作：鐵砧＋鐵鎚，配色照目錄其他銅色圖示 -->
+  <defs>
+    <linearGradient id="anvil" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e2b46a"/><stop offset=".45" stop-color="#a86f2f"/><stop offset="1" stop-color="#5a3816"/>
+    </linearGradient>
+    <linearGradient id="head" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f1d79a"/><stop offset=".5" stop-color="#b98443"/><stop offset="1" stop-color="#6b4319"/>
+    </linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7a4b22"/><stop offset=".5" stop-color="#a86a33"/><stop offset="1" stop-color="#5b3517"/>
+    </linearGradient>
+  </defs>
+  <g stroke="#2a1708" stroke-width="1.6" stroke-linejoin="round">
+    <path d="M8 34h34c4 0 8 2 12 5-5 0-9 1-12 3v4h-6l3 8H17l3-8h-6v-4c-3-1-5-4-6-8z" fill="url(#anvil)"/>
+    <path d="M14 34h28" stroke="#f3d08a" stroke-width="1.2" fill="none"/>
+    <path d="M30 8l5 5-13 13-5-5z" fill="url(#wood)"/>
+    <path d="M33 3l12 12-6 6L27 9z" fill="url(#head)"/>
+    <path d="M35 7l6 6" stroke="#f8e6b8" stroke-width="1.2" fill="none"/>
+  </g>
+  <g fill="#ffd77a"><circle cx="46" cy="28" r="1.6"/><circle cx="51" cy="24" r="1.1"/><circle cx="43" cy="22" r="1"/></g>
+</svg>

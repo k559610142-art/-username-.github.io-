@@ -202,3 +202,9 @@ NPC 穿衣服（2026-11-13）：
   .assist-hud 54×74 用背景圖顯示、文字只留給讀屏；位置改由 assist-system.js place() 自己算（頭像框 .hud 右邊、頂端對齊），不再跟著舊自動喝水鈕
 輔助系統技能圖（2026-11-14）：魔法分頁（開怪／範圍／攻擊／治癒／洗魔／輔助魔法）與召喚分頁左邊顯示技能圖（interfaceCatalog.skills icon，sico()）；
   沒選或還沒學會時顯示代表技能（光箭 4、龍捲風 53、初級治癒術 1、召喚術 51／妖精召喚屬性精靈 154）並變暗；召喚控制戒指列用戒指道具圖（armor:20284）
+
+製作工匠（2026-11-14）：目錄（reference-menu.js）新增「製作」（圖示 assets/interface/reference-skin/craft.svg；reference-skin.js 的圖檔名可帶副檔名）→ data/crafting-window.js（CraftingWindow）
+  配方＝DB system_item_blend，只列成品與材料都在 INTERFACE_CATALOG 的（約 1,240 筆）；分頁 全部／可製作／武器／防具／飾品／材料／寵物／道具／煉金，搜尋成品、材料、NPC；
+  可製作（材料、等級、職業、體力魔力都夠）卡片綠框綠點排前面；沒有背包圖的成品（伺服器自訂道具，約 500 筆）顯示類別徽章並排後面
+  使用者決定隨時隨地都能製作：db-game-rules.js craft(npcId,id,anywhere) 第三個參數 true 時不檢查是否靠近 NPC（NPC 對話裡的製作照舊要靠近）
+  嘗試過從客戶端 Sprite*.pak 抽 <gfx>.img 當背包圖，但編號對不上（抽到介面元件、綠底），已放棄
