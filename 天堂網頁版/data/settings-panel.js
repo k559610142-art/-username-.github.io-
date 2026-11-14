@@ -63,11 +63,6 @@
   if(window.HudStyle){const sel=el('select');for(const [v,l]of [['orb','水晶球式'],['classic','奇岩式']]){const o=el('option','',l);o.value=v;sel.append(o)}sel.value=HudStyle.current;sel.setAttribute('aria-label','底部介面');sel.onchange=()=>HudStyle.set(sel.value);g3.append(row('🧭','底部介面','橫向畫面的狀態列樣式',sel))}
   if(cameraNote)g3.append(row('🎥','鏡頭',cameraNote));
   sys.append(el('div','qy-set-head','畫面'),g3);
-  // 其他玩家（data/fake-players.js）
-  if(window.FakePlayers){const g5=el('div','qy-set-group'),sw=(on,fn,label)=>{const s=el('button','qy-switch');s.type='button';s.setAttribute('role','switch');s.setAttribute('aria-label',label);s.setAttribute('aria-checked',String(!!on));s.onclick=()=>{const v=s.getAttribute('aria-checked')!=='true';fn(v);s.setAttribute('aria-checked',String(v))};return s};
-   g5.append(row('👥','顯示其他玩家','地圖上會有其他玩家走動、打怪、聊天、擺攤',sw(FakePlayers.enabled,v=>FakePlayers.setEnabled(v),'顯示其他玩家')),
-    row('🩸','紅名 PK','野外會有紅名玩家盯上你、追著打',sw(FakePlayers.redOn,v=>FakePlayers.setRed(v),'紅名 PK')));
-   sys.append(el('div','qy-set-head','其他玩家'),g5);}
   const g4=el('div','qy-set-group');
   if(rangeInput){const val=el('span','val',rangeInput.value+' 格');const slider=el('input');slider.type='range';slider.min=rangeInput.min||'1';slider.max=rangeInput.max||'64';slider.step=rangeInput.step||'1';slider.value=rangeInput.value;
    slider.setAttribute('aria-label','掛機索敵範圍');slider.oninput=()=>{val.textContent=slider.value+' 格'};slider.onchange=()=>{rangeInput.value=slider.value;rangeInput.dispatchEvent(new Event('input',{bubbles:true}));rangeInput.dispatchEvent(new Event('change',{bubbles:true}))};

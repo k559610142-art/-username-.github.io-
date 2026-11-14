@@ -6,7 +6,7 @@
 //  人數：每張地圖約 12 人，散在你周圍 8～20 格；離你超過 28 格的會換到你附近 16～22 格（假人跟怪物一樣只有在你 22 格內才會動）。
 //  聊天：每 20～70 秒有機會說一句（頭上泡泡＋訊息框「一般」）；你在訊息框打字提到 組隊／王／買賣／強化／你好／PK 時，附近假人會回話。
 //  不能點選、不會被 AUTO／技能選到、不會被怪打死。
-// 第 3 期（2026-11-14）：設定「其他玩家」開關（顯示其他玩家、紅名 PK）；妖精箭矢／法師魔法彈飛行特效（drawShots）；
+// 第 3 期（2026-11-14）：（設定開關已拿掉，玩家不能控制假人）；妖精箭矢／法師魔法彈飛行特效（drawShots）；
 //  假人被打時頭上短暫顯示血條；地監裡說地監台詞；擺攤商人：玩家附近有安全區時 1 個假人在安全區固定擺攤，
 //  3～5 件貨（NPC 商店有賣的東西，價格 0.9～1.6 倍），每 40～90 秒喊「【賣】…」，點他打開攤位用金幣買，賣完或 4～7 分鐘換貨。
 // 第 2 期（2026-11-14）：
@@ -45,7 +45,8 @@ const FakePlayers=(()=>{
  const pick=a=>a[Math.floor(Math.random()*a.length)],rnd=(a,b)=>a+Math.random()*(b-a),ri=(a,b)=>Math.floor(rnd(a,b+1));
  const dist=(ax,ay,bx,by)=>Math.max(Math.abs(ax-bx),Math.abs(ay-by));
  const safe=(x,y)=>(tile(x,y)&48)===16;
- let enabled=true,redOn=true;try{enabled=localStorage.getItem('lineage-fake-players')!=='off';redOn=localStorage.getItem('lineage-fake-red')!=='off'}catch{}
+ // 玩家不能自行開關假人（使用者 2026-11-14 決定）：永遠開啟，不讀本機設定
+ let enabled=true,redOn=true;
  const DUN_LINES=['這層好難','誰有回家卷軸','王在哪','組隊嗎','爆了一個祝福卷!','差點死','上樓上樓','掉寶率真低','這裡好暗','怪好多 小心','紅水快沒了','下一層是什麼'];
  const isDungeon=()=>!!window.WorldMaps?.isDungeon?.(window.activeMapId||0);
  const PER_MAP=12,used=new Set();let mapNow=null;
@@ -207,7 +208,7 @@ const FakePlayers=(()=>{
  // ---- 回話 ----
  document.addEventListener('player-chat',e=>{const text=String(e.detail||'');for(const [re,ans] of REPLY){if(!re.test(text))continue;
   const near=bots().filter(b=>!b.fp?.vanish&&dist(b.x,b.y,worldX,worldY)<=20);if(near.length)setTimeout(()=>say(pick(near),pick(ans)),rnd(900,2200));break;}});
- function setEnabled(on){enabled=!!on;try{localStorage.setItem('lineage-fake-players',on?'on':'off')}catch{}maintain();}
- function setRed(on){redOn=!!on;try{localStorage.setItem('lineage-fake-red',on?'on':'off')}catch{}maintain();}
+ function setEnabled(on){enabled=!!on;maintain();}
+ function setRed(on){redOn=!!on;maintain();}
  return {update,label,hurt,drawShots,openStall,setRed,get redOn(){return redOn;},get count(){return bots().length;},get enabled(){return enabled;},setEnabled,looks};
 })();window.FakePlayers=FakePlayers;
