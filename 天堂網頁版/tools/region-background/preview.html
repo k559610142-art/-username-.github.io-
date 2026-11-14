@@ -1,0 +1,22 @@
+<!doctype html><meta charset="utf-8"><title>分區背景圖驗證</title>
+<style>body{margin:0;background:#111;color:#eee;font:14px sans-serif}header{height:50px;display:flex;align-items:center;gap:12px;padding:0 12px}button{padding:7px 12px}.game{position:relative;width:100vw;height:calc(100vh - 50px);overflow:hidden}.game>canvas{position:absolute;inset:0;pointer-events:none}#actor{position:absolute;z-index:1;pointer-events:none}#actor .body{position:absolute;left:-118.5px;top:-103px;width:237px;height:144px}#actor img{width:237px;height:144px;image-rendering:pixelated}#actor small{position:absolute;left:-45px;top:-105px;width:90px;text-align:center;text-shadow:1px 1px #000}#status{position:absolute;left:12px;top:10px;z-index:5;color:white;background:#111b}#coordinates{margin-left:auto}</style>
+<header><strong>分區背景圖驗證</strong><button id="out">屋外</button><button id="in">屋內</button><button id="east">往東移動</button><button id="west">返回</button><span id="coordinates"></span></header>
+<div class="game"><canvas id="input"></canvas><div id="actor"><div class="body"><img src="../../assets/character-actions/男騎士/S/sword1_idle_0.png"></div><small>測試角色</small></div><div id="status"></div></div>
+<script>
+// Isolated rendering preview. It does not load, modify or save player accounts.
+window.REGION_BACKGROUND_INDEX={maps:{0:{file:'0/map.json'}}};window.gameFlowState='playing';window.activeMapId=0;
+const game=document.querySelector('.game'),canvas=document.querySelector('#input'),actor=document.querySelector('#actor'),characterBody=document.querySelector('.body'),status=document.querySelector('#status');
+let worldX=32583,worldY=32924,characterCurrentPath='idle0',sceneStarted=false,terrainDirty=true,renderedSceneView=null,frame=0;
+const terrainRaster={hidden:true},terrainForegroundRoot={hidden:true},devicePixelRatio=window.devicePixelRatio;
+const movementTime=()=>performance.now(),visualWorldPosition=()=>({x:worldX,y:worldY}),tile=()=>1,viewportLayout=()=>({anchorY:.55,defaultZoom:1});
+function refreshCharacter(){}
+function view(){const r=game.getBoundingClientRect(),a=worldX-32256,b=worldY-32768,px=(a+b)*24+24,py=(b-a+512)*12;return {width:r.width,height:r.height,anchorY:.55,zoom:1,px,py,ox:r.width/2-px,oy:r.height*.55-py};}
+function schedule(){if(!frame)frame=requestAnimationFrame(t=>{frame=0;if(!window.RegionBackground)return;RegionBackground.render(view(),window.devicePixelRatio,t);refreshCharacter(t);});}
+</script>
+<script src="../../data/region-background.js"></script>
+<script>
+// Resolve asset URLs from the game root while this preview lives under tools/.
+const base=document.createElement('base');base.href='../../';document.head.append(base);
+async function go(x,y){await RegionBackground.prepare(0,x,y);worldX=x;worldY=y;sceneStarted=false;schedule();}
+document.querySelector('#out').onclick=()=>go(32583,32924);document.querySelector('#in').onclick=()=>go(32587,32919);document.querySelector('#east').onclick=()=>go(32603,32944);document.querySelector('#west').onclick=()=>go(32583,32924);addEventListener('resize',schedule);go(worldX,worldY);
+</script>
