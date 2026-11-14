@@ -67,6 +67,11 @@ test('社交視窗呈現交易確認、數量、總金額、隊伍與附近玩�
  const f=fixture();negotiate(f);f.social.open();const text=node=>[node.textContent||'',...(node.children||[]).map(text)].join(' ');const rendered=text(f.game);
  assert.match(rendered,/確認交易/);assert.match(rendered,/總金額：140/);assert.match(rendered,/約銀騎士村莊/);assert.match(rendered,/目前隊伍/);assert.match(rendered,/附近玩家/);
 });
+test('忙於戰鬥時不主動邀組，也不因交易密語立刻丟下戰鬥',()=>{
+ const f=fixture(),b=f.bot();vm.runInContext(fs.readFileSync(require('node:path').join(__dirname,'../data/npc-context.js'),'utf8'),f.c);
+ b.fp.target={hp:100};f.social.onSpeech(b,'組隊打怪，缺補');assert.ok(!f.messages.some(m=>m.text.includes('社交接受邀請')));
+ assert.equal(f.social.handleWhisper('小雨點','我有紅水，給你'),true);assert.equal(f.social.meeting,null);assert.match(f.messages.at(-1).text,/正在打怪/);
+});
 test('實際地圖人口管理轉移同一人物，首次進圖仍生成原有怪物，不留下分身',()=>{
  const source=fs.readFileSync(require('node:path').join(__dirname,'../data/island-monsters.js'),'utf8');
  const b={spawn:{bot:true,mapId:0},fp:{},x:1,y:1},monster={spawn:{mapId:0}},c={window:{activeMapId:0},populationMap:0,mobs:[b,monster],populations:new Map(),incomingBots:new Map(),taken:new Set(),selected:b,occupancyTick:0};

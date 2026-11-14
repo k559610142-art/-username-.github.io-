@@ -305,3 +305,7 @@ NPC 穿衣服（2026-11-13）：
   tools/npc-clothes/build.js --monsters：51 種怪物原始 105.clothes 附加圖層／火焰重組，產生 monster-layer-data.js 與 monster-layer-*.png；包括烈炎獸 1780＋火焰 1781。
   同工具 --deaths：232 種怪物死亡動作，原始首張屍體移到播放末尾，產生 monster-death-data.js 與 monster-death-*.png。island-monsters.js markDead 固定死亡位置，播倒地後保留屍體至多 12 秒或重生前；屍體不阻擋、不點選、不顯示名牌，不重發獎勵。
   驗證：node --test tools/npc-social.test.cjs tools/movement-death.test.cjs；原始圖檔裁切範圍亦已核對。
+
+假人場合發言與區域人口（2026-11-14）：npc-context.js 依安全區／野外／地監、職業、實際補給、附近怪物選台詞；戰鬥、撤退、重傷、交易及擺攤不閒聊，升級／衝裝成功／掉寶不再當隨機台詞。公開回話延遲後重查距離與角色，密語忙碌時回報正在戰鬥。
+  fake-players.js 移除超過 28 格就搬到玩家旁邊的補位；原區域路人留在原地，新區域延後 6～14 秒按地域密度補人，野外可無人，村莊較熱鬧；離開 5 分鐘的非社交路人退場，名字冷卻 3 分鐘，不立即在下一區重用。消失後回自己原區域；隊友與約交易的跟隨仍由 npc-social.js 管理。
+  驗證：node --test tools/npc-context.test.cjs tools/npc-social.test.cjs tools/movement-death.test.cjs（21 項）。

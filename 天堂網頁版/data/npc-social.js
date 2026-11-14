@@ -53,7 +53,7 @@ const NpcSocial=(()=>{
   if(/組隊|一起.*(?:打|練)|缺補|求帶/.test(text)&&!party.size&&!invite&&!deal&&distance(b,player())<=18)offerParty(b);
  }
  function offerParty(b){
-  if(!usable(b)||b.fp.social||party.has(b)||party.size>=3)return false;
+  if(!usable(b)||b.fp.social||party.has(b)||party.size>=3||CharacterActions.dead||window.NpcContext&&!NpcContext.available(b))return false;
   invite={bot:b,owner,until:now()+45000};remember(b);
   whisper(b,'要不要組隊一起打怪？密我「好，組隊」，或到選單 → 社交接受邀請。');render();return true;
  }
@@ -90,6 +90,7 @@ const NpcSocial=(()=>{
   if(!checkOwner())return false;const b=lookup(name);if(!usable(b)&&deal?.bot!==b)return false;remember(b);
   if(/取消|算了|不交易|不用了/.test(text)&&deal?.bot===b){cancelDeal();return true;}
   if(/離隊|退隊|解散/.test(text)&&party.has(b)){party.delete(b);b.fp.partyOwner=null;release(b);whisper(b,'好，先離隊了。');render();return true;}
+  if(window.NpcContext?.busy(b)&&deal?.bot!==b){whisper(b,b.fp.retreatUntil||b.hp<b.spawn.npc.hp*.4?'我在撤退補血，等安全了再聊。':'正在打怪，等我打完再聊。');return true;}
   if(/組隊|入隊|一起打|一起練|加入/.test(text)||invite?.bot===b&&/好|可以|走|接受|要/.test(text)){join(b);return true;}
   if(/你在哪|在哪裡|哪個村|你的位置|你在什麼地方/.test(text)){
    whisper(b,'我目前在'+(deal?.bot===b&&deal.destination?deal.destination.name:locationName(b))+'。'+(deal?.bot===b?'要換地點可以說「到騎村交易」。':'有要交易的東西可以告訴我，也能另外約村莊。'));return true;
@@ -185,7 +186,7 @@ const NpcSocial=(()=>{
    if(!usable(b)){party.delete(b);b.fp.partyOwner=null;message(b.spawn.npc.name+' 暫時離隊。');render();continue;}
    if((b.spawn.mapId||0)!==map()||distance(b,player())>20){const spot=landing(worldX,worldY,3,6);if(spot){IslandMonsters.transferBot(b,map(),spot.x,spot.y);IslandMonsters.playEffect(169,b.x,b.y,now());}}
   }
-  if(now()>=nextInvite){nextInvite=now()+90000;if(!party.size&&!invite&&!deal){const b=IslandMonsters.botList.find(b=>usable(b)&&!b.fp.social&&distance(b,player())<=12);if(b&&(b.spawn.mapId||0)===map())offerParty(b);}}
+  if(now()>=nextInvite){nextInvite=now()+90000;if(!party.size&&!invite&&!deal){const b=IslandMonsters.botList.find(b=>usable(b)&&(b.spawn.mapId||0)===map()&&!b.fp.social&&distance(b,player())<=12&&(!window.NpcContext||NpcContext.available(b)));if(b&&(b.spawn.mapId||0)===map())offerParty(b);}}
  }
  const el=(tag,text)=>{const node=document.createElement(tag);if(text!==undefined)node.textContent=text;return node;};
  function button(label,fn){const b=el('button',label);b.type='button';b.onclick=fn;return b;}
