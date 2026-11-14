@@ -92,13 +92,17 @@
  const channel=el('select');for(const [v,l]of [['say','一般'],['world','世界']]){const o=el('option','',l);o.value=v;channel.append(o)}
  const text=el('input');text.placeholder='輸入訊息';text.maxLength=60;text.setAttribute('aria-label','輸入訊息');const send=el('button','','發送');send.type='submit';
  input.append(channel,text,send);chat.append(tabs,list,input);
- function renderList(){list.replaceChildren(...messages.filter(m=>filter==='all'||m.kind===filter||(filter==='sys'&&m.kind==='journal')).map(m=>el('div',m.kind,m.text)));list.scrollTop=list.scrollHeight}
+ function line(m){const d=el('div',m.kind,m.text),who=(m.kind==='say'||m.kind==='whisper')&&m.text.match(/^(?:\[密語\] )?([^：→\s]+)：/)?.[1];
+  if(who&&who!==window.activeCharacterName){d.dataset.who=who;d.title='點一下密語 '+who;d.style.cursor='pointer';d.onclick=()=>{text.value='/密 '+who+' ';text.focus()}}if(m.kind==='whisper')d.style.color='#ff9be0';return d}
+ function renderList(){list.replaceChildren(...messages.filter(m=>filter==='all'||m.kind===filter||(filter==='sys'&&m.kind==='journal')).map(line));list.scrollTop=list.scrollHeight}
  function push(text,kind){messages.push({text,kind});if(messages.length>150)messages.shift();renderList()}
  const log=document.querySelector('#log');let lastLog='';
  function capture(){const t=log?.textContent.trim();if(!t||t===lastLog)return;lastLog=t;push(t,t.startsWith('[日誌]')?'journal':/獲得|撿起|拾取|掉落/.test(t)?'drop':'sys')}
  if(log){new MutationObserver(capture).observe(log,{childList:true,characterData:true,subtree:true});capture()}
  (window.GameChat??={pushers:[],say(text,kind='say'){for(const p of this.pushers)p(text,kind)}}).pushers.push(push);
- input.onsubmit=e=>{e.preventDefault();const t=text.value.trim();if(!t)return;text.value='';const who=window.activeCharacterName||'我';document.dispatchEvent(new CustomEvent('player-chat',{detail:t}));
+ input.onsubmit=e=>{e.preventDefault();const t=text.value.trim();if(!t)return;text.value='';const who=window.activeCharacterName||'我';
+  const w=t.match(/^(?:\/密|\/w\b|")\s*([^\s"]+)\s+(.+)$/i);if(w){push('[密語] → '+w[1]+'：'+w[2],'whisper');document.dispatchEvent(new CustomEvent('player-whisper',{detail:{to:w[1],text:w[2]}}));return}
+  document.dispatchEvent(new CustomEvent('player-chat',{detail:t}));
   if(channel.value==='world'&&window.LocalServerClient?.online&&typeof LocalServerClient.chat==='function'){LocalServerClient.chat(t);push('[世界] '+who+'：'+t,'world');return}
   push((channel.value==='world'?'[世界] ':'')+who+'：'+t,channel.value==='world'?'world':'say')};
  text.addEventListener('keydown',e=>e.stopPropagation());

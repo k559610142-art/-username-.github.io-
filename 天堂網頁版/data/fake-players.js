@@ -55,7 +55,7 @@ const FakePlayers=(()=>{
  const DUN_LINES=['這層好難','誰有回家卷軸','王在哪','組隊嗎','爆了一個祝福卷!','差點死','上樓上樓','掉寶率真低','這裡好暗','怪好多 小心','紅水快沒了','下一層是什麼'];
  const isDungeon=()=>!!window.WorldMaps?.isDungeon?.(window.activeMapId||0);
  const PER_MAP=12,used=new Set();let mapNow=null;
- function say(mob,text){mob.bubble={text,until:movementTime()+4500};window.GameChat?.say(mob.spawn.npc.name+'：'+text,'say');}
+ function say(mob,text){mob.bubble={text,until:movementTime()+4500};if(mob.fp)mob.fp.lastLine=text;window.GameChat?.say(mob.spawn.npc.name+'：'+text,'say');}
  function spotNear(cx,cy,minR,maxR,wantSafe=null){for(let i=0;i<80;i++){const r=rnd(minR,maxR),a=Math.random()*Math.PI*2,x=Math.round(cx+Math.cos(a)*r),y=Math.round(cy+Math.sin(a)*r);
    if(dist(x,y,worldX,worldY)<minR||!TeleportScrolls.canLand(x,y))continue;if(wantSafe!==null&&safe(x,y)!==wantSafe)continue;return [x,y];}return null;}
  function make(x,y,red=false){const look=pick(looks);const g=A.avatars[look.avatar]?.gender?1:0,cls=CLASS_NAMES[look.role]||{any:[],m:[],f:[]},own=[...cls.any,...(g?cls.f:cls.m)].filter(n=>!used.has(n));
@@ -216,6 +216,20 @@ const FakePlayers=(()=>{
  // ---- 回話 ----
  document.addEventListener('player-chat',e=>{const text=String(e.detail||'');for(const [re,ans] of REPLY){if(!re.test(text))continue;
   const near=bots().filter(b=>!b.fp?.vanish&&dist(b.x,b.y,worldX,worldY)<=20);if(near.length)setTimeout(()=>say(pick(near),pick(ans)),rnd(900,2200));break;}});
+ // ---- 密語：玩家 /密 名字 內容 → 找同名假人（任何地圖），1.5～4 秒後回密語；找不到就「不在線上」 ----
+ const W_TRADE_ASK=/有|賣|收|多少|價|錢|幾|算|便宜|出/;
+ function whisperReply(b,text){const f=b.fp||{},last=f.lastLine||'',item=(last.match(/^(?:收|賣)\s*(.+?)(?:\s+(?:私我|便宜賣|\d+).*)?$/)||[])[1];
+  if(f.red)return pick(['滾','想死嗎','嘿嘿 野外見','找我幹嘛']);
+  if(f.stall)return pick(['來攤位看看啊','我在村裡擺攤 過來挑','東西都在攤位上 點我就能買']);
+  if(/^收/.test(last)&&W_TRADE_ASK.test(text))return pick(['你有'+(item||'喔')+'? 開價多少','還在收 你出個價','剛剛收到了 抱歉','給你 '+ri(3,30)*1000+' 金 要不要']);
+  if(/^賣/.test(last)&&W_TRADE_ASK.test(text))return pick([(item||'東西')+' '+ri(2,40)*500+' 金 要嗎','可以算便宜點','剛賣掉了 sorry','你出多少?']);
+  for(const [re,ans] of REPLY)if(re.test(text))return pick(ans);
+  if(/\?|？|嗎/.test(text))return pick(['不知道耶','應該吧','我也不確定','你問問看別人']);
+  return pick(['嗯?','怎麼了','打怪中 等等','?','有事嗎','哈哈','好喔']);}
+ document.addEventListener('player-whisper',e=>{const to=String(e.detail?.to||''),text=String(e.detail?.text||'');
+  const b=IslandMonsters.botList.find(x=>x.spawn.npc.name===to);
+  if(!b||b.fp?.hidden){setTimeout(()=>window.GameChat?.say('【系統】'+to+' 目前不在線上。','sys'),300);return;}
+  setTimeout(()=>window.GameChat?.say('[密語] '+to+'：'+whisperReply(b,text),'whisper'),rnd(1500,4000));});
  function setEnabled(on){enabled=!!on;maintain();}
  function setRed(on){redOn=!!on;maintain();}
  return {update,label,hurt,drawShots,openStall,setRed,get redOn(){return redOn;},get count(){return bots().length;},get enabled(){return enabled;},setEnabled,looks};

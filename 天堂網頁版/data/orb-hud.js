@@ -20,6 +20,7 @@
  .oh-msg .tabs button{min-height:0!important;padding:${k(1)} ${k(7)}!important;font-size:${k(10.5)};color:#d6ccb4;background:#000000b8;border:1px solid #ffffff1c;border-radius:${k(9)}}
  .oh-msg .tabs button[aria-pressed=true]{color:#ffe08a;border-color:#c9a45e}
  .oh-msg .list{flex:1;min-height:0;overflow-y:auto;padding:${k(2)} ${k(4)};background:linear-gradient(90deg,#0006,#0002 75%,#0000);color:#f1d98e;line-height:1.5;text-shadow:1px 1px 0 #000,0 0 3px #000;scrollbar-width:thin;scrollbar-color:#8a7650 #0000}
+ .oh-msg .list .whisper{color:#ff9be0}.oh-msg .list [data-who]{cursor:pointer}
  .oh-msg .list .say{color:#fff}.oh-msg .list .drop{color:#9fe0ff}.oh-msg .list .journal{color:#c5b9ff}
  .oh-msg form{display:flex;gap:${k(6)}}
  .oh-msg form input{flex:1;min-width:0;min-height:0!important;height:${k(24)};padding:0 ${k(6)};font-size:${k(11.5)};color:#fff;background:#000d;border:1px solid #c9a45e;border-radius:${k(3)};box-shadow:inset 0 0 4px #000}
@@ -95,18 +96,24 @@
  const root=el('div','orb-hud-root');root.setAttribute('aria-label','狀態列');game.append(root);
  // 訊息框
  const msg=el('section','oh-msg'),tabs=el('div','tabs'),list=el('div','list'),form=el('form'),input=el('input'),send=el('button','','發送');
- list.setAttribute('aria-live','polite');list.setAttribute('aria-label','遊戲訊息');input.placeholder='輸入訊息';input.maxLength=60;input.setAttribute('aria-label','輸入訊息');send.type='submit';form.append(input,send);
+ list.setAttribute('aria-live','polite');list.setAttribute('aria-label','遊戲訊息');input.placeholder='輸入訊息（/密 名字 內容＝密語）';input.maxLength=60;input.setAttribute('aria-label','輸入訊息');send.type='submit';form.append(input,send);
  let filter='all';const messages=[];
  for(const [key,l]of [['all','全部'],['say','一般'],['drop','掉落'],['sys','系統']]){const b=el('button','',l);b.type='button';b.setAttribute('aria-pressed',String(key===filter));b.onclick=()=>{filter=key;for(const t of tabs.children)t.setAttribute('aria-pressed',String(t===b));render()};tabs.append(b)}
  msg.append(tabs,list,form);root.append(msg);
- function render(){list.replaceChildren(...messages.filter(m=>filter==='all'||m.kind===filter||(filter==='sys'&&m.kind==='journal')).map(m=>el('div',m.kind,m.text)));list.scrollTop=list.scrollHeight}
+ // 點聊天訊息的名字就填好密語（/密 名字 ）
+ function line(m){const d=el('div',m.kind,m.text),who=(m.kind==='say'||m.kind==='whisper')&&m.text.match(/^(?:\[密語\] )?([^：→\s]+)：/)?.[1];
+  if(who&&who!==window.activeCharacterName){d.dataset.who=who;d.title='點一下密語 '+who;d.onclick=()=>{input.value='/密 '+who+' ';input.focus()}}return d}
+ function render(){list.replaceChildren(...messages.filter(m=>filter==='all'||m.kind===filter||(filter==='sys'&&m.kind==='journal')).map(line));list.scrollTop=list.scrollHeight}
  function push(text,kind){messages.push({text,kind});if(messages.length>150)messages.shift();render()}
  const log=document.querySelector('#log');let last='';
  function capture(){const t=log?.textContent.trim();if(!t||t===last)return;last=t;push(t,t.startsWith('[日誌]')?'journal':/獲得|撿起|拾取|掉落/.test(t)?'drop':'sys')}
  if(log){new MutationObserver(capture).observe(log,{childList:true,characterData:true,subtree:true});capture()}
  // 共用聊天接口：假人說話（GameChat.say）；玩家發言發出 player-chat 事件（data/fake-players.js 會回話）
  (window.GameChat??={pushers:[],say(text,kind='say'){for(const p of this.pushers)p(text,kind)}}).pushers.push(push);
- form.onsubmit=e=>{e.preventDefault();const t=input.value.trim();if(!t)return;input.value='';push((window.activeCharacterName||'我')+'：'+t,'say');document.dispatchEvent(new CustomEvent('player-chat',{detail:t}))};
+ form.onsubmit=e=>{e.preventDefault();const t=input.value.trim();if(!t)return;input.value='';
+  // 密語：/密 名字 內容、/w 名字 內容、"名字 內容
+  const w=t.match(/^(?:\/密|\/w\b|")\s*([^\s"]+)\s+(.+)$/i);if(w){push('[密語] → '+w[1]+'：'+w[2],'whisper');document.dispatchEvent(new CustomEvent('player-whisper',{detail:{to:w[1],text:w[2]}}));return}
+  push((window.activeCharacterName||'我')+'：'+t,'say');document.dispatchEvent(new CustomEvent('player-chat',{detail:t}))};
  input.addEventListener('keydown',e=>e.stopPropagation());
  // 水晶＋快捷列底圖＋經驗線
  function orb(kind,label){const o=el('div','oh-orb '+kind),v=el('div','val');v.append(el('b','',label),el('span'));o.append(el('div','empty'),v);return o}
