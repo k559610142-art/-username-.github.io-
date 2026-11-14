@@ -57,7 +57,9 @@ const FakePlayers=(()=>{
   const npc={name,kind:'L1Bot',gfx:look.id,level:lv,hp:40+lv*14,mp:0,ac:0,walk:look.weapon==='bow'?600:640,attack:look.attackMs,ranged:RANGED[look.weapon]||1,skills:[],regeneration:null,aggressive:false};
   const mob={spawn:{bot:true,mapId:window.activeMapId||0,npc,heading:ri(0,7),respawn:[0,0]},region:[x-50,y-50,x+50,y+50],x,y,homeX:x,homeY:y,hp:npc.hp,heading:ri(0,7),rest:0,phase:Math.random()*1800,step:null,
    fp:{look,red,clan:red?'血月':Math.random()<.8?pick(CLANS):null,state:safe(x,y)?'town':'hunt',think:0,chatAt:movementTime()+rnd(6000,40000),ready:0,target:null,since:movementTime(),pk:false,pkCd:movementTime()+rnd(20000,60000)}};
-  IslandMonsters.addAlly(mob);return mob;}
+  preloadLook(look);IslandMonsters.addAlly(mob);return mob;}
+ const preloaded=new Set();
+ function preloadLook(look){if(preloaded.has(look.id))return;preloaded.add(look.id);const files=new Set();for(const list of Object.values(islandMonsterFrames[look.id]||{}))for(const f of list)files.add(f[0]);IslandMonsters.preload([...files]);}
  function place(mob,x,y){mob.x=mob.homeX=x;mob.y=mob.homeY=y;mob.step=null;mob.fp.target=null;mob.fp.state=safe(x,y)?'town':'hunt';mob.fp.since=movementTime();mob.spawn.mapId=window.activeMapId||0;}
  function bots(){return IslandMonsters.botList.filter(m=>(m.spawn.mapId||0)===(window.activeMapId||0));}
  // 人數維持與換位置（每 2 秒）

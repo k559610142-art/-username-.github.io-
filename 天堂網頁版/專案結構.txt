@@ -242,3 +242,5 @@ NPC 穿衣服（2026-11-13）：
    每 40～90 秒喊「【賣】…」，4～7 分鐘或賣完換貨；點攤主（island-monsters.js selectAt）開攤位視窗，8 格內用 OwnedInventory.trade 買 1 個；玩家離開 26 格就收攤
   實測：擺攤喊賣、買到蘋果扣 7 金幣、關紅名後紅名消失、設定出現兩個開關；箭矢／血條在隱藏面板下沒有截圖確認
 假玩家設定開關已拿掉（2026-11-14 使用者：玩家不能自行控制假人）：settings-panel.js 移除「其他玩家」一區；fake-players.js 永遠開啟、不讀 localStorage（lineage-fake-players／lineage-fake-red 就算是 off 也忽略）
+假人穿牆／閃爍修正（2026-11-14）：island-monsters.js usable() 假人改成檢查 tile 阻擋旗標 128（原本只看格子存在，會走進牆裡）；
+  影格圖還沒解碼時沿用這隻上一次畫出來的影格（mob.lastDrawn，怪物也適用），不再整隻消失；新增 loadSheet／IslandMonsters.preload，假人外觀第一次用到時先載入整組影格

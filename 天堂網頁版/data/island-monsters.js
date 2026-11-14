@@ -12,9 +12,11 @@ const IslandMonsters = (() => {
   const within=(area,x,y)=>x>=area[0]&&x<=area[2]&&y>=area[1]&&y<=area[3];
   const town=gfx=>gfx===945||gfx===1094;
   const effects=[];
+  function loadSheet(file){if(!sheets.has(file)){const image=new Image();image.decoding='async';image.onload=()=>{const ready=()=>decodedSheets.add(image);if(image.decode)image.decode().then(ready,ready);else ready()};image.src=(typeof nativeMonsterFiles!=='undefined'&&nativeMonsterFiles.has(file)?'assets/native-monsters/':'assets/island-monsters-v2/')+file;sheets.set(file,image);}return sheets.get(file);}
   function usable(spawn,x,y){
-    // 假人（data/fake-players.js）和常駐 NPC 一樣可以走進安全區
-    if(spawn.resident||spawn.bot)return !!WorldMaps.cell(spawn.mapId||0,x,y)&&steps.some(([dx,dy])=>canTraverse(x,y,dx,dy));
+    // 假人（data/fake-players.js）可以走進安全區，但和一般怪物一樣不能走進牆／障礙格（阻擋旗標 128）
+    if(spawn.bot){const c=tile(x,y);return !!c&&!(c&128)&&steps.some(([dx,dy])=>canTraverse(x,y,dx,dy));}
+    if(spawn.resident)return !!WorldMaps.cell(spawn.mapId||0,x,y)&&steps.some(([dx,dy])=>canTraverse(x,y,dx,dy));
     const cell=tile(x,y);
     return !!cell&&!(cell&128)&&(town(spawn.npc.gfx)||(cell&48)!==16)
       &&steps.some(([dx,dy])=>canTraverse(x,y,dx,dy));
@@ -171,10 +173,10 @@ const IslandMonsters = (() => {
       visible.push([mob,x*view.zoom+view.ox,y*view.zoom+view.oy,phase]);
     }
     for(const [mob,x,y,phase] of visible.sort((a,b)=>a[2]-b[2])){
-      const [[file,fx,fy,sw,sh,,sx,sy],[cx,cy]]=spriteFrame(mob,now,phase);
-      if(!sheets.has(file)){const image=new Image();image.decoding='async';image.onload=()=>{const ready=()=>decodedSheets.add(image);if(image.decode)image.decode().then(ready,ready);else ready()};image.src=(typeof nativeMonsterFiles!=='undefined'&&nativeMonsterFiles.has(file)?'assets/native-monsters/':'assets/island-monsters-v2/')+file;sheets.set(file,image);}
-      const sheet=sheets.get(file);
-      if(!sheet.complete||!sheet.naturalWidth||!decodedSheets.has(sheet))continue;
+      let [[file,fx,fy,sw,sh,,sx,sy],[cx,cy]]=spriteFrame(mob,now,phase);
+      let sheet=loadSheet(file);
+      if(!sheet.complete||!sheet.naturalWidth||!decodedSheets.has(sheet)){if(!mob.lastDrawn)continue;({sheet,fx,fy,sw,sh,sx,sy}=mob.lastDrawn);}
+      else mob.lastDrawn={sheet,fx,fy,sw,sh,sx,sy};
       const left=x+(fx-cx)*scale,top=y+(fy-cy)*scale;
       const width=sw*scale,height=sh*scale;
       hitboxes.push({mob,left,top,width,height});
@@ -281,6 +283,7 @@ const IslandMonsters = (() => {
     }
   }
   return {get residentPositions(){ensurePopulation();return mobs.filter(m=>m.spawn.resident).map(m=>({id:m.spawn.npcId,spawnId:m.spawn.spawnId,x:m.x,y:m.y,point:[...m.spawn.point],sourcePoint:[...(m.spawn.sourcePoint||m.spawn.point)],random:[...m.spawn.random]}))},get audit(){return {mapId:populationMap,spawned:mobs.length,sourceRows:islandMonsterSpawns.length,fullCounts:true}},occupied:(x,y)=>{ensurePopulation();const tick=Math.floor(movementTime()/50);if(tick!==occupancyTick){occupancyTick=tick;occupancy.clear();for(const m of mobs)if(m.hp){occupancy.add(m.x+","+m.y);if(m.step)occupancy.add(m.step.x+","+m.step.y)}}return occupancy.has(x+","+y)},around:(x,y,r)=>{ensurePopulation();return mobs.filter(m=>m.hp&&!m.spawn.resident&&!m.spawn.ally&&!m.spawn.bot&&(m.spawn.mapId||0)===(window.activeMapId||0)&&Math.max(Math.abs(m.x-x),Math.abs(m.y-y))<=r)},addAlly:(mob)=>{ensurePopulation();if(!mobs.includes(mob))mobs.push(mob);return mob;},removeAlly:(mob)=>{const i=mobs.indexOf(mob);if(i>=0)mobs.splice(i,1);if(selected===mob)selected=null;},hasMob:(mob)=>mobs.includes(mob),
+    preload(files){for(const f of files)loadSheet(f);},
     botHit(mob,amount){if(!mob?.hp||mob.spawn.resident||mob.spawn.ally||mob.spawn.bot)return false;mob.hp=Math.max(0,mob.hp-amount);CombatSound.monsterHit(mob);
      if(!mob.hp){const [min,max]=mob.spawn.respawn;mob.step=null;mob.respawnAt=movementTime()+1000*(Math.min(min,max)+Math.random()*Math.abs(max-min));if(selected===mob)selected=null;}return true;},
     get botList(){return mobs.filter(m=>m.spawn.bot);},updateBackground,draw,selectAt,nearest,setTarget,damage,playEffect,serviceNearby:(id,range)=>mobs.some(m=>(m.spawn.mapId||0)===(window.activeMapId||0)&&m.spawn.resident&&m.spawn.npcId===id&&Math.max(Math.abs(m.x-worldX),Math.abs(m.y-worldY))<=range),get target(){return selected;}};
