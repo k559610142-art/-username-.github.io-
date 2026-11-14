@@ -6,3 +6,5 @@
 
 /* Dice creation: values are results rather than manual +/- controls. */
 .creation-stat{grid-template-columns:minmax(85px,1fr) 64px;min-height:38px}.creation-stat output.rolled-max{color:#ffe27b;text-shadow:0 0 8px #d89d35;font-weight:bold}
+
+.creation-genders #creation-reset{flex:none;margin-left:12px;padding:6px 16px;background:linear-gradient(#7d6337,#493820);color:#ffebba;border-color:#b69758;white-space:nowrap}
