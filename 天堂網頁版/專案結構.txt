@@ -348,3 +348,8 @@ NPC 穿衣服（2026-11-13）：
   本機伺服器 /api/presence 僅回傳同隊成員血量，現有1.5秒同步同時更新隊伍欄；需重啟本機伺服器套用。
   血盟傳送卷軸 etcitem:40124 改為使用者提供的原圖 assets/interface/items/clan-teleport-scroll.jpg，由 item-icon-overrides.js 統一套用到背包／快捷欄／道具詳細圖。
   tools/party-hud.test.cjs 驗證HP更新、換角色、真人同隊權限與離隊；隔離瀏覽器 --party／--clan-scroll 驗證桌面、直式排版及背包圖示。
+
+省電模式（2026-11-14）
+  設定 → 系統 → 畫面：省電模式開關；預設關閉，啟用時所有 requestAnimationFrame 動畫共用 20 FPS 時鐘，降低場景／人物／怪物／特效重繪頻率。
+  data/power-saving.js 於遊戲腳本前載入；保留實際時間戳與原本遊戲計時器，取消回呼與關閉模式仍正常，設定保存於 localStorage。
+  tools/power-saving.test.cjs 驗證120Hz下20FPS、取消、恢復及設定保存；隔離瀏覽器 --power-saving 實測1.05秒20幀，重載設定保留。

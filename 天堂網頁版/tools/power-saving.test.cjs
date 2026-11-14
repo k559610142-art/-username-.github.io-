@@ -1,0 +1,9 @@
+const test=require('node:test'),assert=require('node:assert/strict'),vm=require('node:vm'),fs=require('node:fs'),path=require('node:path');
+function fixture(saved='off'){
+ let clock=0,id=0;const frames=new Map(),timers=new Map(),storage=new Map([['lineage-power-saving-v1',saved]]);
+ const c={performance:{now:()=>clock},localStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v)},requestAnimationFrame:fn=>{frames.set(++id,fn);return id;},cancelAnimationFrame:n=>frames.delete(n),setTimeout:(fn,delay)=>{timers.set(++id,{fn,at:clock+delay});return id;},clearTimeout:n=>timers.delete(n)};c.window=c;vm.createContext(c);vm.runInContext(fs.readFileSync(path.join(__dirname,'../data/power-saving.js'),'utf8'),c);
+ function step(ms=1000/120){clock+=ms;for(const [n,t]of [...timers])if(t.at<=clock){timers.delete(n);t.fn();}const batch=[...frames];frames.clear();for(const [,fn]of batch)fn(clock);}
+ return {c,step,storage};
+}
+test('省電模式在 120Hz 螢幕將所有動畫共用限制為 20 FPS，時間戳保持實際時間',()=>{const {c,step}=fixture('20fps'),a=[],b=[];function loop(out){c.requestAnimationFrame(t=>{out.push(t);loop(out);});}loop(a);loop(b);for(let i=0;i<120;i++)step();assert(a.length>=19&&a.length<=21);assert.equal(a.length,b.length);assert.deepEqual(a,b);assert(a.at(-1)>950);for(let i=1;i<a.length;i++)assert(a[i]-a[i-1]>=49.99);});
+test('取消回呼、關閉省電後恢復螢幕更新率，開關保存到下次載入',()=>{const {c,step,storage}=fixture();assert.equal(c.PowerSaving.enabled,false);c.PowerSaving.setEnabled(true);assert.equal(storage.get('lineage-power-saving-v1'),'20fps');let cancelled=false;c.cancelAnimationFrame(c.requestAnimationFrame(()=>cancelled=true));step();assert.equal(cancelled,false);let calls=0;function loop(){calls++;c.requestAnimationFrame(loop);}c.requestAnimationFrame(loop);step();c.PowerSaving.setEnabled(false);assert.equal(storage.get('lineage-power-saving-v1'),'off');for(let i=0;i<120;i++)step();assert(calls>=119);assert.equal(fixture('20fps').c.PowerSaving.fps,20);});
