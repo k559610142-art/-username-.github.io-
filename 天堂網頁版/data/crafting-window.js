@@ -19,7 +19,7 @@ const CraftingWindow=(()=>{
  }
  let recipes=null;
  function load(){if(recipes)return recipes;recipes=[];
-  for(const r of DBGameRules.rows('system_item_blend')){const item=byId.get(r.new_item),mats=split(r.materials);
+  for(const r of DBGameRules.craftRecipes()){const item=byId.get(r.new_item),mats=split(r.materials);
    if(!item||!mats.length||mats.some(id=>!byId.has(id)))continue;
    recipes.push({r,item,cat:category(item),mats:mats.map((id,i)=>({item:byId.get(id),count:split(r.materials_count)[i]||1,enchant:split(r.materials_enchants)[i]||0})),
     text:(item.name+' '+r.note+' '+String(r.npcname).replace(/\^/g,' ')+' '+mats.map(id=>byId.get(id).name).join(' ')).toLowerCase()});}

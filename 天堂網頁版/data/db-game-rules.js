@@ -166,8 +166,9 @@ const DBGameRules = (() => {
     return OwnedInventory.items.filter(e=>e.slot).reduce((n,e)=>n+(e.item.sourceRules?.damage_reduction||0),0)+
       (EquipmentSets.read(OwnedInventory.items).reduction_dmg||0)+(window.ClassBuffs?.reduction()||0);
   }
+  const craftRecipes=()=>rows('system_item_blend').filter(r=>!/^回收魔珠/.test(byId.get(Number(r.new_item))?.name||''));
   function craft(npcId,id,anywhere=false){ // anywhere：從目錄「製作」視窗做，不用靠近 NPC（使用者 2026-11-14 決定）
-    const recipe=rows('system_item_blend').find(r=>r.id===id&&r.npcid===npcId);
+    const recipe=craftRecipes().find(r=>r.id===id&&r.npcid===npcId);
     if(!recipe||!anywhere&&!IslandMonsters.serviceNearby(npcId,3))return '請靠近對應的製作 NPC。';
     if(recipe.checkLevel>(window.activeCharacterLevel||1)||recipe.checkClass&&recipe.checkClass!==roleCode[job])return '職業或等級不符合條件。';
     if(hp<=recipe.hpConsume||mp<recipe.mpConsume)return '生命或魔力不足。';
@@ -190,7 +191,7 @@ const DBGameRules = (() => {
     content.replaceChildren(title,query,list,detail);
     function refresh(){
       list.replaceChildren();
-      const matches=rows('system_item_blend').filter(r=>(npcId===null||r.npcid===npcId)&&r.note?.includes(query.value));
+      const matches=craftRecipes().filter(r=>(npcId===null||r.npcid===npcId)&&r.note?.includes(query.value));
       for(const row of matches.slice(0,60)){
         const b=uiElement('button','classic-use',row.note+' · '+row.npcname);
         b.onclick=()=>{
@@ -217,6 +218,6 @@ const DBGameRules = (() => {
     }
   };
   return {rows,automaticSkills,extraDrops,killRewards,xpMultiplier,starter,useItem,damageBonus,weaponProc,syncVitals,reduction,
-    craft,openCrafting,craftNpcs:()=>new Set(rows('system_item_blend').map(r=>r.npcid))};
+    craft,craftRecipes,openCrafting,craftNpcs:()=>new Set(craftRecipes().map(r=>r.npcid))};
 })();
 window.DBGameRules=DBGameRules;
