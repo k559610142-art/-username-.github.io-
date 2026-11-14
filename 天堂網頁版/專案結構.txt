@@ -254,3 +254,5 @@ NPC 穿衣服（2026-11-13）：
    player-progression.js roll() 經驗 × ItemEffects.expRate()；更高倍率可覆蓋、較低的不能喝；倒下不消失（native-potions.js clearOnDeath）；狀態列顯示「經驗加成 N%」與藥水圖
   魔法卷軸 magicreel.MagicReel_Spell／Buff／Armor／Weapon <技能>：自身輔助（ClassBuffs.selfBuff）用新 ClassBuffs.grant(id) 生效（不用學會、不耗魔力），治癒類照技能數值補血；攻擊卷軸（MagicReel_Long）尚未接
   輔助系統補給分頁「其他補給」：經驗藥水（AUTO 打怪中效果沒了自動喝、高的先喝）、魔法屏障卷軸（沒有魔法屏障時自動用）
+假人名字（2026-11-14）：fake-players.js 名字分 通用 NAMES／性別 GENDER_NAMES／職業 CLASS_NAMES（騎士、法師、妖精、王族、戰士、龍騎士，再分男女），
+  只從「通用＋同性別＋自己職業」裡挑（35% 優先職業名），不會再出現王子叫「法師老李」、男角叫「精靈公主」；魔法卷軸持續時間不到 60 秒改顯示秒數

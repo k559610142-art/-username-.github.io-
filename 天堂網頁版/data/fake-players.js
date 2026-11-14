@@ -33,7 +33,12 @@ const FakePlayers=(()=>{
   }
  }
  // ---- 名字、血盟、台詞 ----
- const NAMES=['夜行俠','小雨點','阿翔哥','劍無痕','黑貓貓','老王出擊','星辰雨','月下影','飛龍騎','冰咖啡','焦糖布丁','北風','米漿加蛋','阿凱','風之谷','咖哩飯','奶茶微糖','血色玫瑰','孤狼','小騎士','法師老李','精靈公主','狂戰','雷霆一擊','無名氏','天堂老玩家','肝帝','打寶仔','紅水不夠','閃電貂','銀色月光','大叔來了','喵喵拳','鐵頭','碎星','白目王'];
+ // 名字跟職業、性別要對得上（使用者 2026-11-14：王子叫「法師老李」不合理）：通用名＋性別名＋職業名，職業名只給那個職業
+ const NAMES=['夜行俠','小雨點','劍無痕','黑貓貓','星辰雨','月下影','冰咖啡','焦糖布丁','北風','米漿加蛋','風之谷','咖哩飯','孤狼','雷霆一擊','無名氏','天堂老玩家','肝帝','打寶仔','紅水不夠','閃電貂','銀色月光','喵喵拳','鐵頭','碎星','白目王'];
+ const GENDER_NAMES=[['阿翔哥','阿凱','老王出擊','大叔來了','型男一號'],['血色玫瑰','奶茶微糖','小公主喵','櫻花雨','甜心兔']];
+ const CLASS_NAMES={騎士:{any:['小騎士','鐵壁騎士','聖光之盾'],m:['重甲阿強'],f:['女武神']},法師:{any:['魔導研究生','火球專家','冰封千里'],m:['法師老李'],f:['魔女小玲']},
+  妖精:{any:['森林射手','風之箭','月光弓手'],m:['精靈王子'],f:['精靈公主','綠葉小妖']},王族:{any:['血盟君主'],m:['小王子','王者之劍'],f:['公主殿下','女王陛下']},
+  戰士:{any:['狂戰','斧頭幫','怒吼戰神'],m:[],f:['戰場女神']},龍騎士:{any:['飛龍騎','龍之血','赤焰龍騎'],m:[],f:['龍騎少女']}};
  const CLANS=['風雲','天堂之戰','傲世','夜城','龍騎團','銀月','狂嵐','聖騎士團'];
  const LINES=['收 +7 長劍 私我','賣 精靈餅乾 便宜賣','組隊打死亡騎士 缺補','有人要一起去龍之谷嗎','升等了 開心','讚啦','剛衝 +8 成功!!!','嗚嗚 +7 蒸發了','說話之島人好多','誰有多的紅水','求帶 新手','6666','今天掉寶好爛','骷髏好硬','奇岩城門口集合','有人看到巴風特嗎','收 魔法娃娃','綠水喝完了 誰有','練功練到睡著','這裡怪被搶光了 哈','回家卷軸剩一張 先回了','妖精的箭好貴','法師沒藍好痛苦','今天要衝到 40 等'];
  const REPLY=[[/組|隊|一起/,['我可以!','+1','等我一下','缺什麼職業?']],[/王|boss|巴風特|死亡騎士/i,['王快出了吧','我也要打!','王在哪?']],[/哈囉|你好|嗨|安安|hi|hello/i,['嗨~','哈囉','安安','新人嗎?']],[/賣|收|買|交易/,['多少?','私我','太貴了吧','我有 等等']],[/強化|衝|\+\d/,['+6 以上小心','祝你過!','蒸發不要哭']],[/殺|PK|pk|紅名/i,['不要殺我啦','紅名去死','來啊']],[/謝/,['不客氣','小事','^^']]];
@@ -53,7 +58,8 @@ const FakePlayers=(()=>{
  function say(mob,text){mob.bubble={text,until:movementTime()+4500};window.GameChat?.say(mob.spawn.npc.name+'：'+text,'say');}
  function spotNear(cx,cy,minR,maxR,wantSafe=null){for(let i=0;i<80;i++){const r=rnd(minR,maxR),a=Math.random()*Math.PI*2,x=Math.round(cx+Math.cos(a)*r),y=Math.round(cy+Math.sin(a)*r);
    if(dist(x,y,worldX,worldY)<minR||!TeleportScrolls.canLand(x,y))continue;if(wantSafe!==null&&safe(x,y)!==wantSafe)continue;return [x,y];}return null;}
- function make(x,y,red=false){const look=pick(looks);let name=pick((red?RED_NAMES:NAMES).filter(n=>!used.has(n)));if(!name)return null;used.add(name);const lv=red?ri(18,40):ri(5,45);
+ function make(x,y,red=false){const look=pick(looks);const g=A.avatars[look.avatar]?.gender?1:0,cls=CLASS_NAMES[look.role]||{any:[],m:[],f:[]},own=[...cls.any,...(g?cls.f:cls.m)].filter(n=>!used.has(n));
+  let name=pick((red?RED_NAMES:own.length&&Math.random()<.35?own:[...NAMES,...GENDER_NAMES[g],...own]).filter(n=>!used.has(n)));if(!name)return null;used.add(name);const lv=red?ri(18,40):ri(5,45);
   const npc={name,kind:'L1Bot',gfx:look.id,level:lv,hp:40+lv*14,mp:0,ac:0,walk:look.weapon==='bow'?600:640,attack:look.attackMs,ranged:RANGED[look.weapon]||1,skills:[],regeneration:null,aggressive:false};
   const mob={spawn:{bot:true,mapId:window.activeMapId||0,npc,heading:ri(0,7),respawn:[0,0]},region:[x-50,y-50,x+50,y+50],x,y,homeX:x,homeY:y,hp:npc.hp,heading:ri(0,7),rest:0,phase:Math.random()*1800,step:null,
    fp:{look,red,clan:red?'血月':Math.random()<.8?pick(CLANS):null,state:safe(x,y)?'town':'hunt',think:0,chatAt:movementTime()+rnd(6000,40000),ready:0,target:null,since:movementTime(),pk:false,pkCd:movementTime()+rnd(20000,60000)}};
