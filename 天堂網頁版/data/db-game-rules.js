@@ -4,8 +4,8 @@ const DBGameRules = (() => {
     tables.set(name,table.rows.map(row=>Object.fromEntries(table.columns.map((c,i)=>[c.name,row[i]]))));
   }
   const rows=name=>tables.get(name)||[];
-  const roleCode={'王族':0,'騎士':1,'法師':2,'妖精':3};
-  const roleFlag={'王族':1,'騎士':2,'妖精':4,'法師':8};
+  const roleCode={'王族':0,'騎士':1,'法師':2,'妖精':3,'黑妖':4};
+  const roleFlag={'王族':1,'騎士':2,'妖精':4,'法師':8,'黑妖':16};
   const byId=new Map(INTERFACE_CATALOG.items.map(item=>[item.id,item]));
   const keyFor=id=>{const item=byId.get(+id);return item?item.kind+':'+item.id:null;};
   const split=value=>String(value??'').split(',').filter(Boolean).map(Number);
@@ -70,7 +70,7 @@ const DBGameRules = (() => {
   // 龍騎士 修練者單手劍（DB 沒有龍騎士能用的矛）、幻術師 修練者魔杖（DB 幻術師不能用匕首）、王族／騎士／法師 修練者短劍
   const STARTER_KIT={
     common:[[40308,100000],[40013,50],[40010,1000],[40079,10],[20028,1],[20082,1],[20126,1],[20173,1],[20206,1],[20232,1],[20282,1]],
-    '王族':[[7,1]],'騎士':[[7,1]],'法師':[[7,1]],'妖精':[[175,1],[7,1],[40743,1000]],'戰士':[[147,1]],'龍騎士':[[35,1]],'幻術師':[[120,1]]
+    '黑妖':[[73,1]],'王族':[[7,1]],'騎士':[[7,1]],'法師':[[7,1]],'妖精':[[175,1],[7,1],[40743,1000]],'戰士':[[147,1]],'龍騎士':[[35,1]],'幻術師':[[120,1]]
   };
   function starter(role,existing){
     const next=clone(existing);

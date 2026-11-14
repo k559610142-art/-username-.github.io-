@@ -1,7 +1,7 @@
 // 角色視窗＋背包：照網頁奇岩城的畫面排版重寫（只對照截圖的位置與分頁，程式與樣式為本專案自寫）。
-//  角色（status）：能力／隊伍／血盟／好友 分頁；能力 = 六項能力 3×2、等級經驗體力魔力防禦魔防正義、負重飽食條、戰鬥數值
-//  背包（bag）：全部(數量)／武器／防具／道具／裝備欄 分頁；負重條＋格數＋防禦；4 欄大格；底部工具鈕
-//  裝備欄（equipment 也開這裡）：名字等級職業、HP／MP 條、左右兩排裝備格夾著人物、下方戒指與 3×3 數值
+//  角色（status）：裝備／能力／隊伍／血盟／好友分頁。
+//  背包（bag）：全部(數量)／武器／防具／道具分頁；裝備欄移至角色視窗。
+//  角色內裝備欄（equipment）：名字等級職業、HP／MP 條、左右兩排裝備格夾著人物、下方戒指與 3×3 數值
 (()=>{
  const css=document.createElement('style');css.textContent=`
  .reference-game .classic-window.qy-win{display:flex!important;flex-direction:column;padding:0 7px 7px!important;border:0!important;border-image:none!important;border-radius:3px;
@@ -87,7 +87,7 @@
  function portrait(){const img=el('img');img.alt='';img.src=currentPortrait();img.onerror=()=>img.remove();return img}
 
  // ---------- 角色（status） ----------
- let charTab='ability';
+ let charTab='equip';
  function abilityTab(){const p=PlayerClassStats.read(),a=p.attributes||{},d=window.NativeCombatRules?.defense?.()||{},x=expInfo(),frag=document.createDocumentFragment();
   const st=el('div','qy-box qy-stats');for(const [k,l]of [['str','力量'],['int','智力'],['dex','敏捷'],['wis','精神'],['con','體質'],['cha','魅力']]){const s=el('div','qy-stat '+k);s.append(el('span','',l),el('b','',String(a[k]??'—')));st.append(s)}frag.append(st);
   const box=el('div','qy-box');box.append(row('等級',p.level),row('經驗值',x.exp.toLocaleString()+' ('+x.pct.toFixed(2)+'%)'),row('體力',hp+' / '+maxHp,'hp'),row('魔力',mp+' / '+maxMp,'mp'),
@@ -96,12 +96,12 @@
   const more=el('div','qy-box');more.append(row('近距離傷害','+'+(p.meleeBonus||0)),row('遠距離傷害','+'+(p.rangedBonus||0)),row('武器傷害',p.weapon?.damage?.join(' / ')??'空手'),row('魔攻',p.sp||0),row('閃避',d.dodge||0),row('自然回血',p.hpRecoveryText),row('自然回魔',p.mpRecoveryText));frag.append(more);return frag}
  const SOCIAL={party:['隊伍','目前沒有隊伍。'],clan:['血盟','尚未加入血盟。'],friend:['好友','好友名單是空的。']};
  function characterPane(){const pane=makeClassicWindow('角色');pane.classList.add('qy-win','qy-char','status-window');
-  const body=el('div','qy-body'),fill=()=>body.replaceChildren(charTab==='ability'?abilityTab():el('div','qy-empty',SOCIAL[charTab][1]));
-  pane.append(tabs([['ability','能力'],['party','隊伍'],['clan','血盟'],['friend','好友']],charTab,k=>{charTab=k;fill()}),body);fill();return pane}
+  const body=el('div','qy-body'),fill=()=>body.replaceChildren(charTab==='equip'?equipView():charTab==='ability'?abilityTab():el('div','qy-empty',SOCIAL[charTab][1]));
+  pane.append(tabs([['equip','裝備'],['ability','能力'],['party','隊伍'],['clan','血盟'],['friend','好友']],charTab,k=>{charTab=k;fill()}),body);fill();return pane}
  renderStatusPane=characterPane;
 
  // ---------- 背包（bag）＋裝備欄 ----------
- let bagView='items';
+
  inventoryPageSize=999;
  catalogMatches=function(){return OwnedInventory.items.filter(e=>(catalogKind==='all'||e.item.kind===catalogKind)&&(!catalogQuery||e.item.name.includes(catalogQuery)||String(e.item.id)===catalogQuery))};
  if(!['all','weapon','armor','etcitem'].includes(catalogKind))catalogKind='all';
@@ -116,19 +116,18 @@
   const s=el('div','qy-eq-stats');for(const [l,v]of [['力量',a.str],['敏捷',a.dex],['體質',a.con],['智力',a.int],['精神',a.wis],['魅力',a.cha],['防禦',previewArmorClass()],['魔防',d.mr||0],['正義',window.activeCharacterLawful??0]]){const c=el('div');c.append(el('span','',l),el('b','',String(v??'—')));s.append(c)}box.append(s);return box}
  function padGrid(grid){const items=grid.querySelectorAll('.item-slot:not(.empty)').length,blanks=[...grid.querySelectorAll('.item-slot.empty')],want=Math.max(24,Math.ceil(items/4)*4)-items;
   if(blanks.length===want)return;for(const b of blanks.slice(want))b.remove();for(let i=blanks.length;i<want;i++){const b=el('div','item-slot empty');b.setAttribute('aria-hidden','true');grid.append(b)}}
- renderInventoryPane=function(){const pane=baseInventory();pane.classList.add('qy-win','qy-bag');pane.classList.toggle('qy-equip-view',bagView==='equip');
+ renderInventoryPane=function(){const pane=baseInventory();pane.classList.add('qy-win','qy-bag');
   const header=pane.querySelector('.classic-window-header'),filter=pane.querySelector('.classic-filter'),scroll=pane.querySelector('.classic-grid-scroll'),grid=pane.querySelector('.classic-item-grid'),query=filter?.querySelector('input'),tools=pane.lastElementChild;
-  const bar=tabs([['all','全部',OwnedInventory.items.length],['weapon','武器'],['armor','防具'],['etcitem','道具'],['equip','裝備欄']],bagView==='equip'?'equip':catalogKind,k=>{
-   if(k==='equip'){bagView='equip';pane.classList.add('qy-equip-view');pane.querySelector('.qy-equip')?.replaceWith(equipView());return}
-   bagView='items';pane.classList.remove('qy-equip-view');catalogKind=k;query?.dispatchEvent(new Event('input'))});
+  const bar=tabs([['all','全部',OwnedInventory.items.length],['weapon','武器'],['armor','防具'],['etcitem','道具']],catalogKind,k=>{
+   catalogKind=k;query?.dispatchEvent(new Event('input'))});
   const info=el('div','qy-bag-info'),w=weightPct(),wd=el('div','w');wd.append('負重 ',el('b','',w+'%'),meter(w));const cap=el('span','cap');cap.append('格數 ',el('b','',OwnedInventory.items.length+'/180'));const ac=el('span');ac.append('防禦 ',el('b','',String(previewArmorClass())));info.append(wd,cap,ac);
   const foot=el('div','qy-bag-foot');if(filter)foot.append(filter);if(tools&&tools!==filter&&tools!==scroll&&!tools.classList.contains('classic-item-detail'))foot.append(tools);
-  header.after(bar,info);info.after(scroll||el('div'),foot);foot.after(equipView());
+  header.after(bar,info);info.after(scroll||el('div'),foot);
   if(grid){padGrid(grid);new MutationObserver(()=>padGrid(grid)).observe(grid,{childList:true})}
   return pane};
- // 裝備（E）開背包的裝備欄；人物狀態開角色視窗（借用左側 equipment 視窗位置，跟奇岩一樣角色在左、背包在右）
+ // 裝備（E）與角色選單開角色的裝備分頁；人物狀態開能力分頁。
  renderEquipmentPane=characterPane;
- const prevPanel=panel;panel=function(type){if(type==='equipment'){bagView='equip';return prevPanel('bag')}if(type==='status')return prevPanel('equipment');if(type==='bag'&&!document.querySelector('.qy-bag'))bagView='items';return prevPanel(type)};
+ const prevPanel=panel;panel=function(type){if(type==='equipment'){charTab='equip';return prevPanel('equipment')}if(type==='status'){charTab='ability';return prevPanel('equipment')}return prevPanel(type)};
 
  // HP／MP 變動時更新已開啟的視窗
  const baseStats=stats;stats=function(...args){const out=baseStats.apply(this,args);
