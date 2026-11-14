@@ -16,14 +16,14 @@ const AssistSystem=(()=>{
  for(const rows of [...Object.values(NATIVE_NPC_DIALOGS.shops||{}),islandNpcServiceData.shop||[]])for(const [id,,buy,pack,,ench] of rows){if(!(buy>=0)||ench)continue;const n=Math.max(1,pack|0),b=SHOP.get(id);if(!b||buy/n<b.price/b.pack)SHOP.set(id,{price:buy,pack:n});}
  const QTY=[1,5,10,20,50,100,200,500,1000];
  const BUYS=[['tp','瞬間移動卷軸',10],['home','傳送回家的卷軸',5],['heal','補血道具（補給選的那種）',100],['haste','綠色藥水',5],['brave','勇敢藥水類',5],['wisdom','慎重藥水',5],['blue','藍色藥水',5],['arrow','箭（裝備弓時）',1000]];
- const base=()=>({noMobTp:false,noMobSec:10,potions:{haste:false,brave:false,wisdom:false,blue:false},attackOn:false,attackSkill:null,attackMp:30,buffs:[],list:{},escape:false,healFallback:false,morph:false,openOn:false,openSkill:null,openMp:50,aoeOn:false,aoeSkill:null,aoeRange:3,aoeCount:3,aoeMp:50,mindOn:false,mindHp:80,mindMp:40,summonOn:false,ringOn:false,pick:{haste:null,brave:null,wisdom:null,blue:null},buy:Object.fromEntries(BUYS.map(([k,,n])=>[k,{on:false,n}]))});
+ const base=()=>({noMobTp:false,noMobSec:10,potions:{haste:false,brave:false,wisdom:false,blue:false},attackOn:false,attackSkill:null,attackMp:30,buffs:[],list:{},escape:false,healFallback:false,morph:false,openOn:false,openSkill:null,openMp:50,aoeOn:false,aoeSkill:null,aoeRange:3,aoeCount:3,aoeMp:50,mindOn:false,mindHp:80,mindMp:40,summonOn:false,ringOn:false,expAuto:false,barrierScroll:false,pick:{haste:null,brave:null,wisdom:null,blue:null},buy:Object.fromEntries(BUYS.map(([k,,n])=>[k,{on:false,n}]))});
  let state=base(),owner='',dialog=null,tab='hunt',idleSince=0,lastTp=0,retry=new Map(),escapes=[],lostMorph=null,seenMorph=null,lastOpen=null;
  const int=(v,lo,hi,d)=>Number.isInteger(v)?Math.max(lo,Math.min(hi,v)):d;
  function validate(v){const s=base();if(!v||typeof v!=='object')return s;
   s.noMobTp=v.noMobTp===true;s.noMobSec=int(v.noMobSec,3,60,10);for(const k of Object.keys(s.potions))s.potions[k]=v.potions?.[k]===true;
   s.attackOn=v.attackOn===true;s.attackSkill=Number.isInteger(v.attackSkill)&&playerSkillData.skills[v.attackSkill]?v.attackSkill:null;s.attackMp=int(v.attackMp,0,99,30);
   s.buffs=Array.isArray(v.buffs)?[...new Set(v.buffs.filter(id=>Number.isInteger(id)&&playerSkillData.skills[id]))]:[];
-  for(const k of ['escape','healFallback','morph','openOn','aoeOn','mindOn','summonOn','ringOn'])s[k]=v[k]===true;
+  for(const k of ['escape','healFallback','morph','openOn','aoeOn','mindOn','summonOn','ringOn','expAuto','barrierScroll'])s[k]=v[k]===true;
   const skillOk=id=>Number.isInteger(id)&&playerSkillData.skills[id]?id:null;s.openSkill=skillOk(v.openSkill);s.aoeSkill=skillOk(v.aoeSkill);
   s.openMp=int(v.openMp,0,99,50);s.aoeRange=int(v.aoeRange,1,8,3);s.aoeCount=int(v.aoeCount,2,10,3);s.aoeMp=int(v.aoeMp,0,99,50);s.mindHp=int(v.mindHp,1,99,80);s.mindMp=int(v.mindMp,1,99,40);
   for(const k of Object.keys(s.pick))s.pick[k]=typeof v.pick?.[k]==='string'&&catalog.has(v.pick[k])?v.pick[k]:null;
@@ -94,6 +94,12 @@ const AssistSystem=(()=>{
   // 召喚：身邊沒有召喚物時（掛機中）
   if(state.summonOn&&auto&&!Summons.list.length&&(retry.get('sum')||0)<=now){const id=summonSkill();retry.set('sum',now+5000);
    if(id&&(id!==51||!Summons.hasRing()||state.ringOn&&Summons.useLast())&&ClassBuffs.cast(id))return;}
+  // 經驗藥水：AUTO 打怪中效果沒了就喝，高的先喝
+  if(state.expAuto&&auto&&!(Number(window.activePotionBuffs?.exp)>Date.now())&&(retry.get('exp')||0)<=now){retry.set('exp',now+2000);
+   const best=owned().map(e=>({e,p:window.ItemEffects?.parse(e)})).filter(x=>x.p?.kind==='exp').sort((a,b)=>b.p.rate-a.p.rate)[0];if(best&&OwnedInventory.use(best.e.uid))return;}
+  // 魔法屏障卷軸：沒有魔法屏障時用
+  if(state.barrierScroll&&!ClassBuffs.active(31)&&(retry.get('bar')||0)<=now){retry.set('bar',now+3000);
+   const sc=owned().find(e=>{const p=window.ItemEffects?.parse(e);return p?.kind==='scroll'&&p.skill===31;});if(sc&&OwnedInventory.use(sc.uid))return;}
   // 補給：效果沒了自動喝
   for(const [kind] of POTIONS){if(!state.potions[kind]||(retry.get('p'+kind)||0)>now)continue;const e=potionFor(kind);if(!e)continue;retry.set('p'+kind,now+1500);if(OwnedInventory.use(e.uid))return;}
   // 輔助魔法
@@ -177,6 +183,11 @@ const AssistSystem=(()=>{
    sel.onchange=()=>{save({pick:{...state.pick,[kind]:sel.value||null}});render();};
    return row(ico(shown,'🧪'),label,'效果沒了自動喝 · 身上 '+n+' 個',sel,switcher(state.potions[kind],on=>save({potions:{...state.potions,[kind]:on}}),label));});
   p.append(head('狀態藥水'),group(...rows),el('p','assist-note','職業不能喝的（例如勇水限騎士、戰士）會自動略過。'));
+  const expItems=owned().filter(e=>window.ItemEffects?.parse(e)?.kind==='exp'),bestExp=[...expItems].sort((a,b)=>ItemEffects.parse(b).rate-ItemEffects.parse(a).rate)[0];
+  const barrier=owned().filter(e=>{const q=window.ItemEffects?.parse(e);return q?.kind==='scroll'&&q.skill===31;});
+  p.append(head('其他補給'),group(
+   row(ico(bestExp?.key,'📗'),'經驗藥水','打怪（AUTO）時效果沒了自動喝 · 高的先喝 · 身上 '+expItems.reduce((n,e)=>n+e.count,0)+' 個',switcher(state.expAuto,on=>save({expAuto:on}),'自動喝經驗藥水')),
+   row(ico(barrier[0]?.key||'etcitem:40889','📜'),'魔法屏障卷軸','沒有魔法屏障時自動用 · 身上 '+barrier.reduce((n,e)=>n+e.count,0)+' 張',switcher(state.barrierScroll,on=>save({barrierScroll:on}),'自動用魔法屏障卷軸'))));
   const cur=TransformCards.active;p.append(head('變身'),group(row('🎭','死亡後自動再變身',(cur?'目前變身：'+cur+'。':'目前沒有變身。')+'倒地後變身會消失，復活後自動變回死亡前的那張變身卡',switcher(state.morph,on=>save({morph:on}),'死亡後自動再變身'))));
   const buyRows=BUYS.map(([k,label])=>{const b=state.buy[k],pr=product(k),qty=el('select');qty.setAttribute('aria-label',label+' 購買數量');
    for(const n of QTY)qty.append(new Option('×'+n,String(n),false,n===b.n));qty.onchange=()=>{save({buy:{...state.buy,[k]:{...b,n:Number(qty.value)}}});render();};

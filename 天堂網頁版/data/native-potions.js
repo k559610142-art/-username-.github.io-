@@ -2,7 +2,7 @@
 const NativePotions=(()=>{
   const timers=new Map();
   const buffIcons={haste:43,brave:52,elfBrave:150,braveX:54,blue:32,wisdom:26};
-  const buffNames={haste:'加速',brave:'勇敢',elfBrave:'精靈餅乾',braveX:'三段加速',blue:'魔力回復',wisdom:'慎重'};
+  const buffNames={haste:'加速',brave:'勇敢',elfBrave:'精靈餅乾',braveX:'三段加速',blue:'魔力回復',wisdom:'慎重',exp:'經驗加成'};
   // 原版職業位元：王族 1、騎士 2、妖精 4、法師 8、黑妖 16、龍騎士 32、幻術師 64、戰士 128（例：綠水 255＝全職業、勇水 130＝騎士＋戰士、生命之樹果實 96＝龍騎士＋幻術師）
   const flags={'王族':1,'騎士':2,'妖精':4,'法師':8,'黑暗妖精':16,'龍騎士':32,'幻術師':64,'戰士':128};
   const bar=document.createElement('div');
@@ -49,17 +49,18 @@ const NativePotions=(()=>{
     for(let i=rows.length-1;i>=0;i--)if(!rows[i].count)rows.splice(i,1);
     return true;
   }
-  function clearOnDeath(){window.activePotionBuffs={};timers.clear();sync();}
+  function clearOnDeath(){const b=window.activePotionBuffs||{};window.activePotionBuffs=Number(b.exp)>Date.now()?{exp:b.exp,expRate:b.expRate,expIcon:b.expIcon}:{};timers.clear();sync();} // 經驗藥水倒下不消失
   function sync(){
     window.playerMovementModifiers=window.playerMovementModifiers||{};
     for(const key of ['haste','brave','elfBrave','braveX'])window.playerMovementModifiers[key]=active(key);
     bar.hidden=window.gameFlowState!=='playing';bar.replaceChildren();
     if(bar.hidden)return;
     positionBuffs();
-    for(const [key,name]of Object.entries(buffNames)){
+    for(let [key,name]of Object.entries(buffNames)){
       if(!active(key))continue;
       const label=document.createElement('span'),image=document.createElement('img'),timer=document.createElement('small');
-      image.src='assets/interface/skills/'+buffIcons[key]+'.png';image.alt='';image.style.cssText='width:24px;height:24px;display:block;image-rendering:pixelated';
+      image.src=key==='exp'&&window.activePotionBuffs?.expIcon?window.activePotionBuffs.expIcon:'assets/interface/skills/'+(buffIcons[key]||43)+'.png';image.alt='';image.style.cssText='width:24px;height:24px;display:block;image-rendering:pixelated';
+      if(key==='exp')name=name+' '+Math.round((Number(window.activePotionBuffs.expRate)||1)*100)+'%';
       label.title=name;label.setAttribute('aria-label',name);timer.style.cssText='position:absolute;bottom:0;right:1px;font:10px sans-serif;color:white;text-shadow:0 1px 2px black';
       label.style.cssText='position:relative;width:26px;height:26px;background:#162733d9;border:1px solid #8d986480';
       timer.textContent=Math.ceil((activePotionBuffs[key]-Date.now())/1000);label.append(image,timer);

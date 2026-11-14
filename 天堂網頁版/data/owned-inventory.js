@@ -142,6 +142,7 @@ window.OwnedInventory=(()=>{
   if(window.PlayerSkills?.isBook(e.key))return PlayerSkills.learn(uid);
   const scrollUse=window.TeleportScrolls?.use(uid);if(scrollUse!==undefined&&scrollUse!==null)return scrollUse;
   const potionUse=window.NativePotions?.use(uid);if(potionUse!==undefined&&potionUse!==null)return potionUse;
+  const effectUse=window.ItemEffects?.use(uid);if(effectUse!==undefined&&effectUse!==null)return effectUse; // 經驗藥水、魔法卷軸（data/item-effects.js）
   const nativeUse=window.DBGameRules?.useItem(uid);if(nativeUse!==undefined&&nativeUse!==null)return nativeUse;
   const item=definition(e),r=config(e);if(item.kind!=='etcitem')return equip(uid);if(level()<r.minLevel||r.maxLevel&&level()>r.maxLevel){toast('等級不符合道具限制。');return false}
   const handler=rules.handlers[r.handler];if(!handler){toast('此道具需要目標或尚未接入的功能，物品未消耗。');return false}if(window.playerItemState?.decayPotion){toast('喉嚨灼熱，無法喝東西。');return false}

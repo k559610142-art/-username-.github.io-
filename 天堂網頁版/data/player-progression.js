@@ -39,7 +39,7 @@ const PlayerProgression = (() => {
       if(count>0)loot.push({key:item.kind+':'+item.id,count,name:item.name});
     }
     loot.push(...DBGameRules.killRewards(mob));
-    return {experience:Math.max(0,Math.floor(mob.spawn.npc.exp*rates.RateXp*DBGameRules.xpMultiplier(window.activeCharacterLevel))),loot};
+    return {experience:Math.max(0,Math.floor(mob.spawn.npc.exp*rates.RateXp*DBGameRules.xpMultiplier(window.activeCharacterLevel)*(window.ItemEffects?.expRate()||1))),loot}; // 經驗藥水倍率
   }
   function award(mob){
     if(window.gameFlowState!=='playing'||CharacterActions.dead||OwnedInventory.owner!==window.activeCharacterId)return false;

@@ -248,3 +248,9 @@ NPC 穿衣服（2026-11-13）：
   擊殺訊息顯示「正義 +N」，獎勵失敗時退回；entry-flow.js 存檔欄位 lawful、進遊戲讀回 window.activeCharacterLawful（角色視窗「正義」、NPC 對話 chaotic 判斷都用它）
 狀態圖示位置（2026-11-14）：native-potions.js positionBuffs() 有「輔助」鈕時，藥水狀態列（.native-potion-buffs）放在輔助鈕右邊、與鈕同高，技能狀態列（class-buff-bar）接在後面，
   寬度到小地圖前為止（原本在頭像框 MP 條下方，會壓到防禦／魔防）；每 0.5 秒重排一次跟著圖示數量變化
+
+經驗藥水、魔法卷軸（2026-11-14）：data/item-effects.js（ItemEffects），owned-inventory.js use() 在 NativePotions 後呼叫
+  經驗藥水 event.ExpNN 600：倍率照名稱 %（130%～800%），600 秒；經驗寶石 event.SExpNN：倍率照名稱「N倍」，1800 秒；activePotionBuffs.exp／expRate／expIcon，
+   player-progression.js roll() 經驗 × ItemEffects.expRate()；更高倍率可覆蓋、較低的不能喝；倒下不消失（native-potions.js clearOnDeath）；狀態列顯示「經驗加成 N%」與藥水圖
+  魔法卷軸 magicreel.MagicReel_Spell／Buff／Armor／Weapon <技能>：自身輔助（ClassBuffs.selfBuff）用新 ClassBuffs.grant(id) 生效（不用學會、不耗魔力），治癒類照技能數值補血；攻擊卷軸（MagicReel_Long）尚未接
+  輔助系統補給分頁「其他補給」：經驗藥水（AUTO 打怪中效果沒了自動喝、高的先喝）、魔法屏障卷軸（沒有魔法屏障時自動用）

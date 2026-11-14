@@ -178,6 +178,19 @@ const ClassBuffs=(()=>{
   return true;
  }
 
+ // 魔法卷軸（data/item-effects.js）：不用學會、不耗魔力，直接得到自身輔助效果（照技能持續時間）
+ function grant(id){
+  const skill=sk(id);if(!skill||!SELF[id]||PASSIVE[id]||UTIL[id])return false;
+  if(CharacterActions.dead||window.gameFlowState!=='playing'||characterMovementBlocked()||movementAnimating())return false;
+  if(!CharacterActions.play('skill'))return false;
+  const t=now(),dur=(skill.duration||0)*1000,e=SELF[id];invisible=false;
+  IslandMonsters.playEffect(skill.gfx,worldX,worldY,t);buffs.set(id,t+dur);
+  if(e.speed)speed(e.speed,Date.now()+dur);
+  if(e.barrier&&window.playerItemState&&!playerItemState.absoluteBarrier){playerItemState.absoluteBarrier=true;barrierSet=true;}
+  if(e.gigantic||e.spirit)vitals();
+  return true;
+ }
+
  // ---- timers, reset and status bar ----
  const bar=document.createElement('div');bar.className='class-buff-bar';bar.hidden=true;
  const style=document.createElement('style');style.textContent='.class-buff-bar{position:absolute;left:8px;top:96px;z-index:30;display:flex;flex-wrap:wrap;gap:3px;max-width:240px;pointer-events:none}.class-buff-bar img{width:26px;height:26px;border:1px solid #b79b5a;border-radius:3px;background:#0b1410}';
@@ -203,5 +216,5 @@ const ClassBuffs=(()=>{
   bar.hidden=!ids.length;
  }
  setInterval(tick,250);
- return {handles,cast,afterCast,invisible:()=>invisible,reveal:()=>{invisible=false;},damageBonus,reduction,ac,dodge,mpr,mr,sp,stats,maxHp:maxHpBonus,maxMp:maxMpBonus,onHit,onHurt,silenced,rooted,slowed,active:id=>on(id),selfBuff:id=>!!SELF[id]&&!PASSIVE[id]&&!UTIL[id]&&(sk(id)?.duration||0)>0};
+ return {handles,cast,grant,afterCast,invisible:()=>invisible,reveal:()=>{invisible=false;},damageBonus,reduction,ac,dodge,mpr,mr,sp,stats,maxHp:maxHpBonus,maxMp:maxMpBonus,onHit,onHurt,silenced,rooted,slowed,active:id=>on(id),selfBuff:id=>!!SELF[id]&&!PASSIVE[id]&&!UTIL[id]&&(sk(id)?.duration||0)>0};
 })();window.ClassBuffs=ClassBuffs;
