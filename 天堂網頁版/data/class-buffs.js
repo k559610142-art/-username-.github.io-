@@ -80,6 +80,7 @@ const ClassBuffs=(()=>{
   return add;
  }
  // Damage a monster is about to deal to the player; returns what is left.
+ function blocksNegative(skill){if(on(78))return true;if(skill&&on(31)){buffs.delete(31);IslandMonsters.playEffect(sk(31).gfx,worldX,worldY,now());return true;}return false;}
  function onHurt(mob,amount,skill){
   if(amount<=0)return amount;
   const d=debuffs.get(mob)||{},t=now();
@@ -141,7 +142,7 @@ const ClassBuffs=(()=>{
   IslandMonsters.playEffect(skill.gfx,mob?mob.x:worldX,mob?mob.y:worldY,t);
   if(kind==='teleport'){const p=landing();if(p&&OwnedInventory.applyChange(OwnedInventory.snapshot,{position:p})){WorldMaps.arrived();window.DungeonPortals?.settle();IslandMonsters.playEffect(169,worldX,worldY,now());}}
   if(kind==='mother')WorldMaps.travel(4,33051,32337).then(ok=>{if(ok)window.DungeonPortals?.settle();});
-  if(kind==='cure'||kind==='purify'){window.IslandNpcAi?.curePoison?.();if(window.playerItemState){delete playerItemState.poison;delete playerItemState.poisoned;}if(kind==='purify')window.IslandNpcAi?.cure?.();}
+  if(kind==='cure'||kind==='purify'){window.IslandNpcAi?.curePoison?.();if(window.playerItemState){delete playerItemState.poison;delete playerItemState.poisoned;}if(id===37)window.IslandNpcAi?.cureStone?.();}
   if(kind==='sense')say(mob.spawn.npc.name+'　體力 '+mob.hp+' / '+mob.spawn.npc.hp+'　等級 '+mob.spawn.npc.level);
   if(kind==='turnUndead'){const u=mob.spawn.npc.raw?.undead??mob.spawn.npc.undead;if(u===1&&Math.random()<.5)IslandMonsters.damage(mob,mob.hp);else say('沒有效果。');}
   if(kind==='drain'){const gain=Math.min(5+Math.floor(Math.random()*10),Math.max(0,mob.mp??99));if(mob.mp!==undefined)mob.mp-=gain;mp=Math.min(maxMp,mp+gain);window.stats?.();}
@@ -218,5 +219,5 @@ const ClassBuffs=(()=>{
   bar.hidden=!ids.length;
  }
  setInterval(tick,250);
- return {handles,cast,grant,afterCast,invisible:()=>invisible,reveal:()=>{invisible=false;},resistances,rangedHitBonus,damageBonus,reduction,ac,dodge,mpr,mr,sp,stats,maxHp:maxHpBonus,maxMp:maxMpBonus,onHit,onHurt,silenced,rooted,slowed,active:id=>on(id),selfBuff:id=>!!SELF[id]&&!PASSIVE[id]&&!UTIL[id]&&(sk(id)?.duration||0)>0};
+ return {handles,cast,grant,afterCast,invisible:()=>invisible,reveal:()=>{invisible=false;},resistances,rangedHitBonus,damageBonus,reduction,ac,dodge,mpr,mr,sp,stats,maxHp:maxHpBonus,maxMp:maxMpBonus,onHit,onHurt,blocksNegative,silenced,rooted,slowed,active:id=>on(id),selfBuff:id=>!!SELF[id]&&!PASSIVE[id]&&!UTIL[id]&&(sk(id)?.duration||0)>0};
 })();window.ClassBuffs=ClassBuffs;

@@ -6,6 +6,7 @@ window.PlayerAbilityRules=(()=>{
  const originalManaReduction=n=>clamp(Math.floor((score(n)-12)/3),0,3);
  function magicCritical(n,items=[]){const extra=items.filter(e=>e.slot).reduce((sum,e)=>sum+(e.item.kind==='armor'?(PLAYER_ABILITY_DATA.armor[e.item.id]?.critical||0):(e.item.sourceRules?.magic_critical||0)),0);return clamp(10+(score(n)>=35?Math.floor((score(n)-30)/5):0)+extra,0,100);}
  function resistances(items,sets={}){const out={earth:0,fire:0,water:0,wind:0},buff=window.ClassBuffs?.resistances?.()||{};for(const k of Object.keys(out)){out[k]=(sets['defense_'+k]||0)+(buff[k]||0)+(window.SoulRings?.bonuses()[k]||0);for(const e of items.filter(e=>e.slot)){const native=e.item.kind==='armor'?PLAYER_ABILITY_DATA.armor[e.item.id]:null;out[k]+=native?.[k]??e.item.sourceRules?.['defense_'+k]??0;}}return out;}
+ function statusResistances(items){const out={stone:0,freeze:0,stun:0,sleep:0,sustain:0,blind:0};for(const e of items.filter(e=>e.slot))for(const k of Object.keys(out))out[k]+=(e.item.kind==='armor'?PLAYER_ABILITY_DATA.armor[e.item.id]?.control?.[k]:undefined)??e.item.sourceRules?.['regist_'+k]??0;return out;}
  const element=skill=>({1:'earth',2:'fire',4:'water',8:'wind'}[skill?.attr??skill?.spell?.attr??PLAYER_ABILITY_DATA.skills[skill?.id]?.attr]||null);
  const elementalFactor=(skill,res={})=>{const k=element(skill);return k?1-.0032*clamp(Number(res[k])||0,-100,100):1;};
  const mrFactor=mr=>Math.max(0,mr<100?1-Math.floor(Math.max(0,mr)/2)*.01:.6-Math.floor(mr/10)*.01);
@@ -17,5 +18,5 @@ window.PlayerAbilityRules=(()=>{
   if(!healing){const n=mob?.spawn?.npc||{};amount=Math.floor(amount*mrFactor(Number(n.mr)||0)*elementalFactor(skill,n.elements||{}));}
   return {amount:Math.max(0,amount),critical,power};
  }
- return {strengthDamage,intelligencePower,manaReduction,originalManaReduction,magicCritical,resistances,element,elementalFactor,mrFactor,manaCost,magicAmount};
+ return {strengthDamage,intelligencePower,manaReduction,originalManaReduction,magicCritical,resistances,statusResistances,element,elementalFactor,mrFactor,manaCost,magicAmount};
 })();

@@ -34,14 +34,15 @@ test('地圖同座標反覆重繪不反覆存檔，走路定期存、停下即�
 function statusFixture(){
  let clock=1000;function element(){return {style:{},dataset:{},children:[],append(...nodes){this.children.push(...nodes);},replaceChildren(...nodes){this.children=nodes;},setAttribute(k,v){this[k]=v;}};}
  const game=element(),c={window:{activeCharacterId:'hero',gameFlowState:'playing',activePotionBuffs:{}},document:{createElement:element,querySelector:()=>null},game,CharacterActions:{dead:false},movementTime:()=>clock,worldX:10,worldY:10,tile:()=>1,IslandCombat:{clearShot:()=>true},IslandMonsters:{playEffect(){}},ResizeObserver:class{observe(){}},setInterval(){},ITEM_USE_RULES:{definitions:{},handlers:{}},activePotionBuffs:{},Date};
- vm.createContext(c);vm.runInContext(read('island-npc-ai.js'),c);vm.runInContext(read('native-potions.js'),c);const ai=c.window.IslandNpcAi,native=c.window.NativePotions;ai.playerActive();
+ c.Math=Object.create(Math);c.Math.random=()=>0;vm.createContext(c);vm.runInContext(read('island-npc-ai.js'),c);vm.runInContext(read('native-potions.js'),c);const ai=c.window.IslandNpcAi,native=c.window.NativePotions;ai.playerActive();
  const mob={x:11,y:10,homeX:11,homeY:10,hp:100,spawn:{npc:{attack:1000,ranged:1,mp:20,skills:[]},movement:12}};ai.reset(mob);
  return {c,ai,native,bar:game.children.find(e=>e.className==='native-potion-buffs'),apply(id,duration){mob.alert=true;mob.windup={at:clock,range:1,skill:{id,spell:{duration}}};ai.update(mob,clock,[mob],[],()=>false);},advance:ms=>clock+=ms};
 }
-test('怪物實際施放石化後立即顯示負面圖示及倒數，到期自動移除',()=>{
- const f=statusFixture();f.apply(33,3);assert.equal(f.ai.cursed,true);let icons=f.bar.children.filter(e=>e.className==='negative-buff');assert.equal(icons.length,1);assert.equal(icons[0].dataset.effect,'petrify');assert.equal(icons[0].children[0].src,'assets/interface/skills/33.png');assert.equal(icons[0].children[1].textContent,3);
- f.advance(1600);f.native.sync();icons=f.bar.children.filter(e=>e.className==='negative-buff');assert.equal(icons[0].children[1].textContent,2);f.advance(1500);f.native.sync();assert.equal(f.ai.cursed,false);assert.equal(f.bar.children.length,0);
+test('木乃伊詛咒先顯示 5 秒預警圖示，之後 4 秒石化，再自動解除',()=>{
+ const f=statusFixture();f.apply(33,20);assert.equal(f.ai.cursed,false);let icons=f.bar.children.filter(e=>e.className==='negative-buff');assert.equal(icons.length,1);assert.equal(icons[0].dataset.effect,'petrify-warning');assert.equal(icons[0].children[1].textContent,5);
+ f.advance(5000);f.native.sync();icons=f.bar.children.filter(e=>e.className==='negative-buff');assert.equal(icons.length,1);assert.equal(icons[0].dataset.effect,'petrify');assert.equal(icons[0].children[1].textContent,4);assert(f.ai.cursed);f.advance(4000);f.native.sync();assert.equal(f.ai.cursed,false);assert.equal(f.bar.children.length,0);
 });
+
 test('石化與緩速可同時顯示，解除、死亡、切角色會移除圖示',()=>{
  const f=statusFixture();f.apply(33,10);f.apply(29,10);assert.equal(f.bar.children.length,2);f.ai.cure();assert.equal(f.bar.children.length,0);
  f.apply(33,10);f.c.CharacterActions.dead=true;f.native.sync();assert.equal(f.bar.children.length,0);f.c.CharacterActions.dead=false;f.c.window.activeCharacterId='other';f.native.sync();assert.equal(f.bar.children.length,0);

@@ -1,0 +1,94 @@
+{
+  "playerSkills": 199,
+  "monsterSpells": 538,
+  "differences": [],
+  "unsupportedMonsterEffects": [
+    {
+      "id": 43,
+      "name": "加速術"
+    },
+    {
+      "id": 47,
+      "name": "弱化術"
+    },
+    {
+      "id": 4000,
+      "name": "束縛術"
+    },
+    {
+      "id": 167,
+      "name": "風之枷鎖"
+    },
+    {
+      "id": 56,
+      "name": "疾病術"
+    },
+    {
+      "id": 27,
+      "name": "壞物術"
+    },
+    {
+      "id": 87,
+      "name": "衝擊之暈"
+    },
+    {
+      "id": 39,
+      "name": "魔力奪取"
+    },
+    {
+      "id": 44,
+      "name": "魔法相消術"
+    },
+    {
+      "id": 10057,
+      "name": "召喚傳送術"
+    },
+    {
+      "id": 14065,
+      "name": "逃跑"
+    },
+    {
+      "id": 4013,
+      "name": "治癒侵蝕術"
+    },
+    {
+      "id": 157,
+      "name": "大地屏障"
+    },
+    {
+      "id": 68,
+      "name": "聖結界"
+    },
+    {
+      "id": 11060,
+      "name": "BOSS-吉爾塔斯-反擊屏障"
+    },
+    {
+      "id": 11059,
+      "name": "BOSS-吉爾塔斯-鏡反射"
+    },
+    {
+      "id": 11058,
+      "name": "BOSS-吉爾塔斯-絕對屏障"
+    },
+    {
+      "id": 11057,
+      "name": "BOSS-吉爾塔斯-全部反射"
+    },
+    {
+      "id": 187,
+      "name": "屠宰者"
+    }
+  ],
+  "mummy": {
+    "skillId": 33,
+    "databaseDurationSeconds": 20,
+    "coreDelayMs": 5000,
+    "corePetrifyMs": 4000,
+    "coreEvidence": "Server_Game_2.jar: skillmode/CURSE_PARALYZE.start -> L1CurseParalysis.curse(target,5000,4000,1)",
+    "holySkillId": 37,
+    "holySkillName": "聖潔之光",
+    "antidoteSkillId": 9,
+    "webExtraProtectionMs": 8000
+  }
+}

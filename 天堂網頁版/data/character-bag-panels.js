@@ -110,6 +110,7 @@
    ['魔法爆擊率',PlayerAbilityRules.magicCritical(a.int,OwnedInventory.items)+'%','攻擊魔法暴擊造成 1.5 倍傷害'],
    ['智力省魔',PlayerAbilityRules.manaReduction(a.int)+'%','依當前智力降低 MP 消耗'],['創角智力省魔',PlayerAbilityRules.originalManaReduction(playerAttributes.int)+' MP','百分比省魔後再扣除；正消耗技能最低 1 MP']]);
   section('屬性抗性',[['火屬性抗性',d.elements?.fire||0],['水屬性抗性',d.elements?.water||0],['風屬性抗性',d.elements?.wind||0],['地屬性抗性',d.elements?.earth||0]]);
+  section('異常抗性',[['石化抗性',(d.status?.stone||0)+'%'],['束縛／緩速抗性',(d.status?.sustain||0)+'%']]);
   frag.append(el('p','qy-ability-note','遠攻命中依等級、敏捷與目標防禦計算；近戰與傷害魔法仍為有效攻擊必中。四屬性抗性降低對應魔法傷害，每 100 點抗性減少 32%。'));return frag}
  const SOCIAL={party:['隊伍','目前沒有隊伍。'],clan:['血盟','尚未加入血盟。'],friend:['好友','好友名單是空的。']};
  function characterPane(){const pane=makeClassicWindow('角色');pane.classList.add('qy-win','qy-char','status-window');
