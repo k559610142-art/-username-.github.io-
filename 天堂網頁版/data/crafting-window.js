@@ -7,22 +7,8 @@ const CraftingWindow=(()=>{
  const byId=new Map(INTERFACE_CATALOG.items.map(i=>[i.id,i]));
  const split=v=>String(v??'').split(',').filter(Boolean).map(Number);
  const roleCode={'王族':0,'騎士':1,'法師':2,'妖精':3};
- const TABS=[['all','全部'],['can','可製作'],['weapon','武器'],['armor','防具'],['acc','飾品'],['rune','符石'],['doll','娃娃'],['wuhun','武魂'],['potion','藥品'],['scroll','卷軸'],['gem','魔石'],['box','寶箱'],['material','材料'],['pet','寵物'],['item','道具']];
- const ACC=new Set(['ring','amulet','earring','belt','necklace']);
- function category(item){
-  const n=item.name,t=item.type;
-  if(/武魂/.test(n))return 'wuhun';
-  if(/娃娃/.test(n))return 'doll';
-  if(/項圈|寵物|哨子/.test(n))return 'pet';
-  if(item.kind==='weapon')return 'weapon';
-  if(item.kind==='armor')return /^(runeword|talisman)/.test(t)?'rune':ACC.has(t)?'acc':'armor';
-  if(t==='potion'||/藥水|靈藥|萬能藥|餅乾/.test(n))return 'potion';
-  if(t==='scroll'||/卷軸|強化卷/.test(n))return 'scroll';
-  if(t==='gem'||/魔石|寶石|附魔石|變身石/.test(n))return 'gem';
-  if(t==='treasure_box'||/寶箱|禮盒|禮包/.test(n))return 'box';
-  if(t==='material')return 'material';
-  return 'item';
- }
+ const TABS=[['all','全部'],['can','可製作'],['weapon','武器'],['armor','防具'],['acc','飾品'],['rune','符石'],['doll','娃娃'],['wuhun','武魂'],['potion','藥品'],['scroll','卷軸'],['gem','魔石'],['material','材料'],['pet','寵物'],['item','道具']];
+ const category=DBGameRules.craftCategory;
  let recipes=null;
  function load(){if(recipes)return recipes;recipes=[];
   for(const r of DBGameRules.craftRecipes()){const item=byId.get(r.new_item),mats=split(r.materials);

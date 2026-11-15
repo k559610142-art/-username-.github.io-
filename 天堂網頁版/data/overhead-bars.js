@@ -1,4 +1,4 @@
-// 頭頂名牌＋HP／MP 條（2026-11-12，使用者要「人物 ID 跟頭頂血條在角色正上方」）
+// 頭頂名牌＋MP 條（HP 只留主介面）（2026-11-12，使用者要「人物 ID 跟頭頂血條在角色正上方」）
 //  水平：對齊角色腳下的基準點（#actor），所以永遠在角色正上方，不會跟著武器、動作左右飄
 //  垂直：讀目前這一格角色圖的不透明範圍（每張圖算一次存起來），放在頭頂上方一點，並做平滑避免動作時上下跳
 //  名字沿用原本 #actor>small 的文字（原本那行藏起來），HP 紅條在上、MP 藍條在下
@@ -17,7 +17,7 @@
  #actor>.ovh .bars i.m b{background:linear-gradient(#6fb4ff,#2457c9)}
  `;document.head.append(css);
  const el=(t,c)=>{const e=document.createElement(t);if(c)e.className=c;return e};
- const box=el('div','ovh'),nm=el('div','nm'),bars=el('div','bars'),hI=el('i','h'),mI=el('i','m'),hB=el('b'),mB=el('b');
+ const box=el('div','ovh'),nm=el('div','nm'),bars=el('div','bars'),mI=el('i','m'),mB=el('b');
  // The player HP bar is shown in the HUD; omit the red overhead row.
  mI.append(mB);bars.append(mI);box.append(nm,bars);box.hidden=true;actor.append(box);
  // 每張角色圖：不透明像素的上緣（佔原圖高度的比例）
@@ -30,14 +30,14 @@
  function shownImage(){const morph=actor.querySelector('.transform-morph');if(morph&&!morph.hidden){const m=[...morph.querySelectorAll('img')].find(i=>!i.classList.contains('transform-morph-shadow')&&i.offsetWidth);if(m)return m}
   return [...actor.querySelectorAll('img.character-main')].find(i=>i.getBoundingClientRect().height>0)||null}
  // 效能：版面量測（getBoundingClientRect）只在換圖尺寸或每 30 幀做一次，其餘用快取，避免每幀強制重排
- let y=null,n=0,img=null,geo=null,lastName='',lastH='',lastM='',fallback=null;
+ let y=null,n=0,img=null,geo=null,lastName='',lastM='',fallback=null;
  function measure(){img=shownImage();geo=null;if(!img)return;const r=img.getBoundingClientRect(),a=actor.getBoundingClientRect();if(!r.height)return;geo={nw:img.naturalWidth,nh:img.naturalHeight,top:r.top-a.top,w:r.width,h:r.height}}
  function frame(){
   const playing=window.gameFlowState==='playing';if(box.hidden===playing)box.hidden=!playing;
   if(playing){
    const name=actor.querySelector(':scope>small')?.textContent||window.activeCharacterName||'';if(name!==lastName)nm.textContent=lastName=name;
    const pct=(v,m)=>(m>0?Math.max(0,Math.min(100,v/m*100)):0).toFixed(1)+'%';
-   if(typeof hp!=='undefined'){const h=pct(hp,maxHp),m=pct(mp,maxMp);if(h!==lastH)hB.style.setProperty('--p',lastH=h);if(m!==lastM)mB.style.setProperty('--p',lastM=m)}
+   if(typeof mp!=='undefined'){const m=pct(mp,maxMp);if(m!==lastM)mB.style.setProperty('--p',lastM=m)}
    if(n++%30===0||!img||!img.isConnected||!geo||geo.nw!==img.naturalWidth||geo.nh!==img.naturalHeight)measure();
    let target=null;const t=img&&geo?topOf(img):null;
    if(t!==null){const sc=Math.min(geo.w/geo.nw,geo.h/geo.nh),oy=(geo.h-geo.nh*sc)/2;target=geo.top+oy+t*geo.nh*sc-3}
