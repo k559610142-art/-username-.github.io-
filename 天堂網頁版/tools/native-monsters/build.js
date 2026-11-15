@@ -36,7 +36,7 @@ function clipsFor(gfx) {
   for (let dir = 0; dir < 8; dir++) for (const [key, ids] of Object.entries(KEYS)) {
     const id = ids.find(i => e.actions[i]?.frames.length); if (id === undefined) continue;
     const a = e.actions[id], frames = [];
-    for (const f of a.frames) { const file = gfx + '-' + (f.group + (a.dirs ? dir : 0)) + '.spr'; const s = spr(file); if (!s || !s.frames[f.frame]) { frames.length = 0; break; } frames.push({ file, frame: f.frame, dur: ms(f.dur) }); }
+    for (const f of a.frames) { const file = (e.src || gfx) + '-' + (f.group + (a.dirs ? dir : 0)) + '.spr'; const s = spr(file); if (!s || !s.frames[f.frame]) { frames.length = 0; break; } frames.push({ file, frame: f.frame, dur: ms(f.dur) }); }
     if (frames.length) out['d' + dir + '/' + key] = frames;
   }
   return out['d0/idle'] || out['d0/walk'] ? out : null;
@@ -70,6 +70,8 @@ const looks = new Set(); for (const s of spawns) { looks.add(templates[s.npcId].
 // Monsters made by skills (data/summons.js): 召喚術 81210–81228, 屬性精靈 45303–45306, 強力屬性精靈 81050–81053.
 for (let id = 81210; id <= 81240; id++) if (templates[id]) looks.add(templates[id].gfx); // 召喚控制戒指 list
 for (const id of [81210, 81213, 81216, 81219, 81222, 81225, 81228, 45303, 45304, 45305, 45306, 81050, 81051, 81052, 81053]) if (templates[id]) looks.add(templates[id].gfx);
+// Some custom graphics are absent from this supplied client. Preserve NPC stats and use only an exact-name native look.
+const aliases={};for(const spawn of spawns){const n=templates[spawn.npcId];if(existing[n.gfx]||clipsFor(n.gfx))continue;const peer=Object.values(templates).find(t=>t.name===n.name&&t.gfx!==n.gfx&&(existing[t.gfx]||clipsFor(t.gfx)));if(peer){aliases[n.gfx]=peer.gfx;looks.add(peer.gfx);}}
 const need = [...looks].filter(g => !existing[g]).sort((a, b) => a - b);
 
 // Cut and pack.
@@ -102,5 +104,6 @@ fs.writeFileSync(path.join(ROOT, 'data/dungeon-monster-data.js'),
   'const dungeonMonsterFrames=' + JSON.stringify(frames) + ';\n' +
   'for(const f of ' + JSON.stringify(files) + ')nativeMonsterFiles.add(f);\n' +
   'for(const [g,clips]of Object.entries(dungeonMonsterFrames))if(!islandMonsterFrames[g])islandMonsterFrames[g]=clips;\n' +
+  'for(const [gfx,source]of Object.entries('+JSON.stringify(aliases)+'))if(!islandMonsterFrames[gfx]&&islandMonsterFrames[source])islandMonsterFrames[gfx]=islandMonsterFrames[source];\n' +
   'for(const s of dungeonMonsterSpawns)islandMonsterSpawns.push({...s,npc:islandMonsterTemplates[s.npcId]});\n');
 console.log('生怪', spawns.length, '筆，怪物外觀', looks.size, '種（新切', Object.keys(frames).length, '種、沒有圖', missing.length, missing.join(' ') + '）圖檔', files.length);

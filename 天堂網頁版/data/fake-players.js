@@ -159,9 +159,9 @@ const FakePlayers=(()=>{
   if(mob.step)return;
   if(f.stall){mob.hp=mob.spawn.npc.hp;if(now>=f.shoutAt){f.shoutAt=now+rnd(40000,90000);shout(mob);}return;}
   if((f.red||f.pk)&&pk(mob,now,stepToward))return;
-  // 打王：王出現在你附近時集合
+  // 各自在所在地搜尋 BOSS，不以玩家位置集合
   const lvl=mob.spawn.npc.level;
-  if(!f.red&&lvl>=14&&f.state!=='boss'&&now>=(f.bossLook||0)){f.bossLook=now+3000;const boss=IslandMonsters.around(worldX,worldY,30).find(isBoss);
+  if(!f.red&&lvl>=14&&f.state!=='boss'&&now>=(f.bossLook||0)){f.bossLook=now+3000;const boss=IslandMonsters.around(mob.x,mob.y,14).find(isBoss);
    if(boss&&Math.random()<.2){claimed.delete(f.target);f.state='boss';f.boss=boss;f.target=boss;f.goal=null;if(Math.random()<.45)say(mob,pick(['王出了!集合!','衝王!','打王打王','有王!']));}}
   if(f.state==='boss'){if(!f.boss?.hp||dist(mob.x,mob.y,f.boss.x,f.boss.y)>40){if(f.boss&&!f.boss.hp&&Math.random()<.4)say(mob,pick(['王倒了!!','太爽了','有掉什麼嗎']));f.state='hunt';f.boss=null;f.target=null;}else f.target=f.boss;}
   // 繼續走向目標點（每步走完一格，下一格接著走）
@@ -204,7 +204,8 @@ const FakePlayers=(()=>{
     if(Math.random()<clamp(.6+(lv-plv)*.02+(ac-10)*.025,.1,.95)){CharacterActions.damage(ri(3,9)+Math.floor(lv*.6)+4,{animate:!movementAnimating()&&!navigationPath.length});
      if(CharacterActions.dead){say(mob,pick(RED_WIN));window.GameChat?.say('【系統】你被 '+name+' 擊倒了。','sys');f.pk=false;f.pkCd=movementTime()+rnd(60000,120000);}}},dur*.45);
    return true;}
-  if(f.red&&now>=f.pkCd&&ok&&!safe(mob.x,mob.y)&&pd<=8&&IslandCombat.clearShot(mob.x,mob.y,worldX,worldY)){f.pk=true;f.enemyId=window.activeCharacterId;claimed.delete(f.target);f.target=null;f.goal=null;f.pkCd=now+rnd(45000,90000);say(mob,pick(RED_LINES));window.GameChat?.say('【警告】'+name+'（紅名）盯上你了！','sys');window.toast?.(name+'（紅名）盯上你了！');return true;}
+
+  // 紅名路人不主動追殺玩家，受到玩家攻擊後才反擊。
   return false;}
  function monsterHurt(mob,amount,now=movementTime()){const f=mob?.fp;if(!f||f.hidden||!mob.hp)return;mob.hp=Math.max(0,mob.hp-Math.max(1,Math.floor(amount)));f.hpShow=now+3000;window.CombatSound?.monsterHit?.(mob);if(mob.hp)return;claimed.delete(f.target);f.target=f.partyTarget=null;f.pk=false;f.goal=f.route=null;f.hidden=true;f.vanish=now+60000;mob.hp=mob.spawn.npc.hp;mob.step=mob.action=null;mob.bubble=null;if(IslandMonsters.target===mob){IslandMonsters.setTarget(null);IslandCombat.stop();}}
  // 玩家打到假人（只有紅名能被點選）：被打就反擊；打倒得金幣，消失一分鐘
