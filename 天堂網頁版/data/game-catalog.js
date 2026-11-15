@@ -1794,7 +1794,7 @@ function openGameCatalog(type) {
     soulStage.dataset.equipped=equipped?String(equipped.id):'';
     scene.classList.toggle('has-soul',!!equipped);
     if(equipped){const src=TdjSystems.wuhun.image(equipped);if(src){const spirit=uiElement('img','wuhun-equipped-spirit');spirit.src=src;spirit.alt='已裝備武魂：'+equipped.name;scene.append(spirit);}else scene.append(uiElement('div','wuhun-equipped-aura'));scene.append(uiElement('div','wuhun-live-rings'));}
-    const player=uiElement('img','wuhun-player-art');player.src=currentPortrait();player.alt=(window.activeCharacterName||'玩家')+' · '+job+' · '+(characterGender?'女性':'男性')+'人物立繪';scene.append(player);
+    const player=uiElement('img','wuhun-player-art'),portraitSource=currentPortrait(),cutout={'assets/entry/knight-m.png':'assets/entry/cutouts/knight-m.webp'}[portraitSource];player.src=cutout||portraitSource;player.classList.toggle('wuhun-player-cutout',!!cutout);player.alt=(window.activeCharacterName||'玩家')+' · '+job+' · '+(characterGender?'女性':'男性')+'人物立繪';scene.append(player);
     const name=uiElement('div','wuhun-live-caption');name.append(uiElement('strong','',window.activeCharacterName||'玩家'),uiElement('span','',equipped?'裝備中：'+equipped.name:'尚未裝備武魂'));scene.append(name);soulStage.prepend(scene);
   }
 

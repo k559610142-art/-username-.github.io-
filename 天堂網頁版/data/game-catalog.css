@@ -166,3 +166,5 @@ main.game.reference-game #panel.game-catalog-panel.wuhun-panel{padding:16px 14px
 .wuhun-ring-picker{display:grid;gap:5px;max-height:170px;overflow:auto;margin:8px 0;padding:7px;background:#101a2bcc;border:1px solid #746144;font-size:12px;scrollbar-width:thin}.wuhun-ring-picker strong{color:#e9cd93}.wuhun-ring-picker small{color:#ac9e84}
 .wuhun-panel .wuhun-ring-choice,.wuhun-panel .wuhun-ring-remove,.wuhun-panel .wuhun-ring-craft{min-height:30px;padding:6px!important;text-align:left;white-space:normal;font:12px/1.45 system-ui!important;color:#e4d2a6!important;border:1px solid #8b754e!important;background:linear-gradient(#3a3028,#1a2130)!important}.wuhun-panel .wuhun-ring-craft{width:100%;text-align:center;margin:5px 0}.wuhun-ring-craft:disabled{opacity:.4;cursor:not-allowed}
 @media(max-width:700px){.wuhun-live-scene{bottom:110px}.wuhun-player-art{left:6%;width:88%;height:70%}.wuhun-live-caption strong{font-size:14px}.wuhun-live-caption span{font-size:10px}.wuhun-live-rings{border-width:2px}}
+
+.wuhun-live-stage .wuhun-player-art.wuhun-player-cutout{mask-image:none;filter:drop-shadow(0 3px 4px #0008)}
