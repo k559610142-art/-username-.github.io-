@@ -182,3 +182,6 @@ main.game.reference-game #panel.game-catalog-panel.wuhun-panel{padding:16px 14px
 /* 六色魂環：依參考圖維持明確的色階與發光環帶。 */
 .wuhun-ring-slot[data-ring-level="1"]{--ring-color:#f8fbff}.wuhun-ring-slot[data-ring-level="2"]{--ring-color:#ffca16}.wuhun-ring-slot[data-ring-level="3"]{--ring-color:#b635ff}.wuhun-ring-slot[data-ring-level="4"]{--ring-color:#7515d8}.wuhun-ring-slot[data-ring-level="5"]{--ring-color:#e51625}.wuhun-ring-slot[data-ring-level="6"]{--ring-color:#ff202b}
 .wuhun-ring-slot[data-ring-level]:not([data-ring-level="empty"]) i{border-width:4px;box-shadow:0 0 3px var(--ring-color),0 0 9px var(--ring-color),inset 0 0 9px var(--ring-color);text-shadow:0 0 6px var(--ring-color)}
+
+/* 預覽與人物腳底共用原圖六色，不再使用固定金紫光圈。 */
+.wuhun-live-stage .wuhun-reference-rings{border:0;box-shadow:none;transform:none}.wuhun-preview-ring{position:absolute;left:50%;top:50%;width:var(--ring-width);aspect-ratio:1;transform:translate(-50%,-50%) scaleY(.28)}.wuhun-preview-ring>svg{display:block;width:100%;height:100%;filter:none}

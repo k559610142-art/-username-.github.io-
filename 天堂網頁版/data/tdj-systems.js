@@ -243,11 +243,11 @@ window.TdjSystems = (() => {
     // 魂環光圈（2026-11-15 使用者要「武魂光暈特效在人物腳底浮現」）：環位每放一個魂環＝腳底一圈，照品級上色；外框壓扁成地面透視，流光轉、整圈呼吸
     '.tdj-rings{position:absolute;left:0;top:0;width:0;height:0;--s:1}' +
     '.tdj-ring{position:absolute;left:calc(var(--r) * var(--s) * -1px);top:calc(var(--r) * var(--s) * -1px);width:calc(var(--r) * var(--s) * 2px);height:calc(var(--r) * var(--s) * 2px);transform:translateY(calc(var(--s) * 2px)) scaleY(.42);animation:tdjRingPulse 2.6s ease-in-out infinite;animation-delay:var(--d)}' +
-    // 魂環圖（assets/interface/wuhun-rings/ring-1～6.png，使用者給的六色魂環總圖由 tools/soul-ring-cut.ps1 切成透明正圓；環半徑＝圖寬 0.36）：整圈 scaleY 壓成地面，圖本身慢慢轉
-    '.tdj-ring img{position:absolute;left:-19.44%;top:-19.44%;width:138.89%;height:138.89%;max-width:none;pointer-events:none;animation:tdjRingSpin var(--t) linear infinite;filter:var(--tone,saturate(1.9) contrast(1.16) brightness(1.18)) drop-shadow(0 0 calc(var(--s) * .8px) var(--c)) drop-shadow(0 0 calc(var(--s) * 3px) var(--g))}' +
+    // 以 SVG 顯示原始六色參考圖：只校正幾何與去除黑底，保留 RGB；外層壓成地面透視。
+    '.tdj-ring>svg{position:absolute;left:-19.44%;top:-19.44%;width:138.89%;height:138.89%;max-width:none;pointer-events:none;animation:tdjRingSpin var(--t) linear infinite;filter:none}' +
     '.tdj-rings.idle .tdj-ring{opacity:.35;animation:none}' +
     '@keyframes tdjRingSpin{to{transform:rotate(360deg)}}' +
-    '@keyframes tdjRingPulse{0%,100%{opacity:.98}50%{opacity:1}}';
+    '@keyframes tdjRingPulse{0%,100%{opacity:1}50%{opacity:1}}';
   document.head.append(style);
   const back = document.createElement('div'), front = document.createElement('div');
   back.className = front.className = 'tdj-layer';
@@ -274,11 +274,9 @@ window.TdjSystems = (() => {
       const ring = document.createElement('div');
       ring.className = 'tdj-ring';ring.dataset.tier=w.tier;
       ring.style.cssText = '--r:' + Math.round(15 * Math.pow(1.3, i)) + ';--c:' + c + ';--g:' + g + ';--t:' + (16 + i * 4) + 's;--d:' + (-i * .4) + 's';
-      const pic = new Image(); pic.alt = ''; pic.decoding = 'async'; pic.draggable = false;
-      pic.src = 'assets/interface/wuhun-rings/ring-' + Math.min(6, Math.max(1, WUHUN_TIERS.indexOf(w.tier) + 1)) + '.png';
+      const pic = SoulRingVisuals.create(WUHUN_TIERS.indexOf(w.tier) + 1);
       if (i % 2) pic.style.animationDirection = 'reverse';
-      const tone = {下品:'saturate(0) contrast(1.2) brightness(1.3)',上品:'saturate(2) contrast(1.15) brightness(1.15)',極品:'saturate(2.1) contrast(1.2) brightness(1.2)',千年:'saturate(2.2) contrast(1.35) brightness(1.14)',萬年:'saturate(2.25) contrast(1.5) brightness(1.15)',上古:'saturate(2.3) contrast(1.25) brightness(1.2)'}[w.tier]; // 六色對照參考圖：保留深紫與黑紅底色，強化亮色環帶。
-      if (tone) pic.style.setProperty('--tone', tone);
+      // 原圖 RGB 直接顯示；不再調色或疊加有色陰影。
       ring.append(pic);
       ring.title = w.name.replace('武魂', '魂環');
       box.prepend(ring); // 外圈先畫、內圈疊在上面，內層顏色不會被外圈光暈蓋掉
