@@ -6,3 +6,16 @@ test('原始變身表依排除清單匯入，既有收藏名稱不被改寫',()=
 test('關刀聖使、四髮白金與兩種死騎有可用外觀、8 方向與原始限制',()=>{const {book,frames}=data();for(const gfx of [21120,21170,21175,21003,21004,21005,21006]){const c=book.find(c=>c.p.gfx===gfx);assert(c,'Missing card '+gfx);assert(!c.unavailable,'Unavailable '+gfx);assert(fs.existsSync(path.join(__dirname,'../assets/transform-portraits',gfx+'.png')));for(let d=0;d<8;d++)for(const clip of ['idle','walk','attack']){assert(frames[gfx]['d'+d+'/'+clip]?.length,`${gfx} d${d}/${clip}`);for(const f of frames[gfx]['d'+d+'/'+clip])assert(fs.existsSync(path.join(__dirname,'../assets/monster-actions',f[0])),f[0]);}}});
 
 test('未命名與混合數字格式不會遺失動作',()=>{const rows=parseList('#1 8 animal 0.(1 2,0.0:4 0.1:4)\n#2 64 alias 110.framerate(28) 0 1 2 8 0 4 8 1 4 3 1 1 0 0 4');assert.equal(rows.get(1).actions[0].frames.length,2);assert.equal(rows.get(2).actions[0].frames.length,2);assert.equal(rows.get(2).frameRate,28);});
+
+test('截圖五張未使用卡與裝備系列不再進入卡冊或抽卡名單',()=>{
+  const {c,book}=data();
+  const targets=book.filter(card=>(card.p.id>=324&&card.p.id<=328)||card.aliases?.includes('套裝變身系統專用'));
+  assert.equal(targets.length,43);
+  vm.runInContext(fs.readFileSync(path.join(__dirname,'../data/removed-transform-cards.js'),'utf8'),c);
+  for(const card of targets)assert(!book.includes(card),card.n);
+  assert(!book.some(card=>card.aliases?.includes('套裝變身系統專用')));
+  for(const name of ['死亡騎士','黑暗精靈','黑暗騎士','黑暗法師','黑暗巡守','黑暗妖精刺客','炎魔']){
+    const card=book.find(card=>card.n===name);
+    assert(card,name);assert.equal(card.g,2,name+' 應保留綠卡分級');
+  }
+});

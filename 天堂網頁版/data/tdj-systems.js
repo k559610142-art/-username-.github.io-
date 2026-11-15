@@ -242,9 +242,10 @@ window.TdjSystems = (() => {
     '@keyframes tdjFlash{0%{opacity:0;transform:scale(1.2)}25%{opacity:.85;transform:scale(1.8)}100%{opacity:0;transform:scale(2.2)}}' +
     // 魂環光圈（2026-11-15 使用者要「武魂光暈特效在人物腳底浮現」）：環位每放一個魂環＝腳底一圈，照品級上色；外框壓扁成地面透視，流光轉、整圈呼吸
     '.tdj-rings{position:absolute;left:0;top:0;width:0;height:0;--s:1}' +
-    '.tdj-ring{position:absolute;left:calc(var(--r) * var(--s) * -1px);top:calc(var(--r) * var(--s) * -1px);width:calc(var(--r) * var(--s) * 2px);height:calc(var(--r) * var(--s) * 2px);transform:translateY(calc(var(--s) * 2px)) scaleY(.42);animation:tdjRingPulse 2.6s ease-in-out infinite;animation-delay:var(--d)}' +
+    '.tdj-ring{position:absolute;left:calc(var(--r) * var(--s) * -1px);top:calc(var(--r) * var(--s) * -1px);width:calc(var(--r) * var(--s) * 2px);height:calc(var(--r) * var(--s) * 2px);transform:translateY(calc(var(--s) * (2px - var(--rise, 0) * 1px))) scaleY(.42);animation:tdjRingPulse 2.6s ease-in-out infinite;animation-delay:var(--d)}' +
     // 以 SVG 顯示原始六色參考圖：只校正幾何與去除黑底，保留 RGB；外層壓成地面透視。
     '.tdj-ring>svg{position:absolute;left:-19.44%;top:-19.44%;width:138.89%;height:138.89%;max-width:none;pointer-events:none;animation:tdjRingSpin var(--t) linear infinite;filter:none}' +
+    '.tdj-ring-far{clip-path:inset(-30% -30% 50% -30%)}.tdj-ring-near{clip-path:inset(50% -30% -30% -30%)}.tdj-dragon-ring{transform:translateY(calc(var(--s) * var(--rise) * -1px));animation:none}.tdj-dragon-ring>svg{animation:none}' +
     '.tdj-rings.idle .tdj-ring{opacity:.35;animation:none}' +
     '@keyframes tdjRingSpin{to{transform:rotate(360deg)}}' +
     '@keyframes tdjRingPulse{0%,100%{opacity:1}50%{opacity:1}}';
@@ -261,7 +262,7 @@ window.TdjSystems = (() => {
   // 魂環顏色（依武魂品級；仿「十年白、百年黃、千年紫、萬年黑、十萬年紅」，上古紅、四神獸金）：[環色, 光暈]
   const ringColors = {下品: ['#f8fbff', '#e8efffff'], 上品: ['#ffca16', '#ffb820ee'], 極品: ['#b635ff', '#ad27ffef'], 千年: ['#7515d8', '#7816d8dd'],
     萬年: ['#e51625', '#d80818df'], 上古: ['#ff202b', '#ff1228f0'], 四神獸: ['#ffcc33', '#ffe9a0cc']};
-  let ringLayer = null;
+  let ringLayer = null, ringFrontLayer = null;
   function buildRings() {
     ringLayer = null;
     const slots = state.wuhun.ringSlots || [];
@@ -269,23 +270,44 @@ window.TdjSystems = (() => {
     if (!rings.length) return;
     const box = document.createElement('div');
     box.className = 'tdj-rings' + (state.wuhun.active ? '' : ' idle'); // 沒裝武魂＝魂環加成沒生效，光圈淡、不動
+    const foreground = document.createElement('div');
+    foreground.className = box.className + ' tdj-rings-front';
+    function surround(ring, upright = false) {
+      if (upright) { box.prepend(ring); return; }
+      const near = ring.cloneNode(true);
+      ring.classList.add('tdj-ring-far');
+      near.classList.add('tdj-ring-near');
+      box.prepend(ring); foreground.append(near);
+    }
     rings.forEach((w, i) => {
       const [c, g] = ringColors[w.tier] || ringColors.下品;
       const ring = document.createElement('div');
+      const level = WUHUN_TIERS.indexOf(w.tier);
       ring.className = 'tdj-ring';ring.dataset.tier=w.tier;
-      ring.style.cssText = '--r:' + Math.round(15 * Math.pow(1.3, i)) + ';--c:' + c + ';--g:' + g + ';--t:' + (16 + i * 4) + 's;--d:' + (-i * .4) + 's';
+      ring.style.cssText = '--r:' + SoulRingVisuals.layout[level].radius + ';--rise:' + SoulRingVisuals.layout[level].rise + ';--c:' + c + ';--g:' + g + ';--t:' + (16 + i * 4) + 's;--d:' + (-i * .4) + 's';
       const pic = SoulRingVisuals.create(WUHUN_TIERS.indexOf(w.tier) + 1);
       if (i % 2) pic.style.animationDirection = 'reverse';
-      // 原圖 RGB 直接顯示；不再調色或疊加有色陰影。
+      // 使用核准預覽的透明素材，紫環與黑環保留加深的實體環帶。
       ring.append(pic);
       ring.title = w.name.replace('武魂', '魂環');
-      box.prepend(ring); // 外圈先畫、內圈疊在上面，內層顏色不會被外圈光暈蓋掉
+      surround(ring); // 六環由腳下逐層升高；前半圈繞到人物前面。
     });
+    const activeSoul = wuhunById.get(+state.wuhun.active);
+    if (SoulRingVisuals.dragonEnabled(slots, activeSoul?.tier)) {
+      const dragon = document.createElement('div');
+      dragon.className = 'tdj-ring tdj-dragon-ring';
+      dragon.style.cssText = '--r:' + SoulRingVisuals.dragonLayout.radius + ';--d:0s;--rise:' + SoulRingVisuals.dragonLayout.rise;
+      dragon.append(SoulRingVisuals.create(7));
+      surround(dragon);
+    }
     back.prepend(box); // 最底層：在人物、武魂虛影下面
+    front.prepend(foreground);
+    ringFrontLayer = foreground;
     ringLayer = box;
     positionRings();
   }
   function positionRings() {
+    if (ringFrontLayer) ringFrontLayer.style.setProperty('--s', String((typeof characterRenderScale === 'function' ? characterRenderScale() : 1)));
     if (ringLayer) ringLayer.style.setProperty('--s', String((typeof characterRenderScale === 'function' ? characterRenderScale() : 1)));
   }
   let phantom = null, dollSprite = null;
@@ -330,7 +352,7 @@ window.TdjSystems = (() => {
   function render() {
     const previousPhantom = phantom;
     phantom = dollSprite = null;
-    back.replaceChildren(); front.replaceChildren(); ringLayer = null;
+    back.replaceChildren(); front.replaceChildren(); ringLayer = ringFrontLayer = null;
     if (!owner || window.gameFlowState !== 'playing') return;
     const w = wuhunById.get(+state.wuhun.active);
     buildRings();

@@ -185,3 +185,13 @@ main.game.reference-game #panel.game-catalog-panel.wuhun-panel{padding:16px 14px
 
 /* 預覽與人物腳底共用原圖六色，不再使用固定金紫光圈。 */
 .wuhun-live-stage .wuhun-reference-rings{border:0;box-shadow:none;transform:none}.wuhun-preview-ring{position:absolute;left:50%;top:50%;width:var(--ring-width);aspect-ratio:1;transform:translate(-50%,-50%) scaleY(.28)}.wuhun-preview-ring>svg{display:block;width:100%;height:100%;filter:none}
+.wuhun-preview-ring:has(>.soul-dragon){transform:translate(-50%,-50%)}
+.soul-dragon{overflow:hidden}
+
+/* Six horizontal hoops arranged from feet to shoulders. */
+.wuhun-preview-ring{margin-top:calc(-1 * var(--ring-rise,0px))}
+
+.wuhun-preview-ring:has(>.soul-dragon){margin-top:calc(-1 * var(--ring-rise,55px))}
+
+.wuhun-live-stage .wuhun-live-scene.rings-only .wuhun-player-art{left:12%;width:76%;height:68%}
+.wuhun-live-stage .rings-only .wuhun-reference-rings{left:9%;width:82%}

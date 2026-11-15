@@ -1,7 +1,23 @@
-// Display crops of the untouched reference image. RGB is preserved; only the black matte alpha is removed.
+// User reference artwork; six colors plus the dragon motion sampled from the supplied video.
 window.SoulRingVisuals=(()=>{
- const source='assets/interface/wuhun-rings/reference-colors.jpg?v=original1',width=2752,height=1536,cw=width/3,ch=height/2,matrices=[[0.479609,0.34231,-0.206099,0.796581,53.511994,-291.016124],[0.481987,0.290316,-0.19952,0.701324,56.889724,-211.659725],[0.460802,0.267707,-0.196231,0.628648,70.268634,-174.418016],[0.419988,0.370593,-0.262938,0.591944,98.2902,-192.771653],[0.39167,0.262884,-0.186908,0.550879,79.265167,-130.271329],[0.441208,0.23915,-0.194079,0.543668,63.897788,-114.705327]];
- let serial=0;const ns='http://www.w3.org/2000/svg';
- function create(level){const n=Math.min(5,Math.max(0,level-1)),id='soul-reference-'+(++serial),svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 384 384');svg.setAttribute('aria-hidden','true');svg.dataset.ringLevel=String(n+1);svg.innerHTML=`<defs><clipPath id="${id}-cell"><rect width="${cw}" height="${ch}"/></clipPath><filter id="${id}-matte" filterUnits="userSpaceOnUse" x="0" y="0" width="${cw}" height="${ch}" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  4 4 4 0 -.025"/></filter><radialGradient id="${id}-band"><stop offset="60%" stop-color="white" stop-opacity="0"/><stop offset="66%" stop-color="white"/><stop offset="78%" stop-color="white"/><stop offset="84%" stop-color="white" stop-opacity="0"/></radialGradient><mask id="${id}-mask"><rect width="384" height="384" fill="url(#${id}-band)"/></mask></defs><g mask="url(#${id}-mask)"><g transform="matrix(${matrices[n].join(' ')})"><g clip-path="url(#${id}-cell)"><image href="${source}" x="${-(n%3)*cw}" y="${-Math.floor(n/3)*ch}" width="${width}" height="${height}" filter="url(#${id}-matte)"/></g></g></g>`;return svg;}
- return {create,source};
+ const source='assets/interface/wuhun-rings/reference-new.jpg?v=2',ns='http://www.w3.org/2000/svg';
+
+ function create(level){
+  const svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 384 384');svg.setAttribute('overflow','hidden');svg.setAttribute('aria-hidden','true');svg.dataset.ringLevel=String(level);
+  if(level===7){
+   svg.classList.add('soul-dragon');
+   const xs=Array.from({length:120},(_,i)=>-(i%10)*384).join(';'),ys=Array.from({length:120},(_,i)=>-Math.floor(i/10)*384).join(';');
+   svg.innerHTML=`<image href="assets/interface/wuhun-rings/dragon-atlas.png?v=2" width="3840" height="4608"><animate attributeName="x" values="${xs}" dur="10s" calcMode="discrete" repeatCount="indefinite"/><animate attributeName="y" values="${ys}" dur="10s" calcMode="discrete" repeatCount="indefinite"/></image>`;
+  }else{
+   const n=Math.min(5,Math.max(0,level-1));
+   svg.innerHTML=`<image href="assets/interface/wuhun-rings/ring-live-${n+1}.png?v=approved2" width="384" height="384"/>`;
+  }
+  return svg;
+ }
+ // Six horizontal hoops rise from the feet to above the shoulders.
+ const layout=Object.freeze(Array.from({length:6},(_,i)=>Object.freeze({radius:22+i*2,rise:i*12})));
+ function dragonEnabled(slots,tier){return tier==='四神獸'&&Array.isArray(slots)&&slots.length===6&&Array.from(slots).every(id=>id!=null);}
+ const dragonLayout=Object.freeze({radius:62,rise:44});
+ const showPhantom=tier=>tier!=='四神獸';
+ return {create,source,layout,dragonLayout,dragonEnabled,showPhantom};
 })();

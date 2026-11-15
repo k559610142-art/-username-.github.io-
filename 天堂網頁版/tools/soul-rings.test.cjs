@@ -10,3 +10,10 @@ test('魂槽祭品不給能力，只算裝備中的武魂',()=>{const f=fixture(
 test('魂槽重新載入仍保留；舊版魂環退回成武魂；條件不夠的裝備會卸下',()=>{const f=fixture();f.api.get(LOW);f.r.offer(LOW);f.api.get(MID);f.api.equip(MID);const g=fixture(f.store);assert.equal(g.r.state().slots[0],LOW);assert.equal(g.api.active,String(MID));
   const store=new Map([['lineage-web-tdj-systems-v1:hero',JSON.stringify({wuhun:{owned:{[ANCIENT]:1},active:String(ANCIENT),ringOwned:{[ANCIENT]:2},ringSlots:[ANCIENT,null,null,null,null,null]}})]]);const h=fixture(store);assert.equal(h.api.owned(ANCIENT),3);assert.equal(h.r.state().slots[0],null);assert.equal(h.api.active,null);});
 test('儲存失敗不消耗祭品、不改變魂槽',()=>{const f=fixture();f.api.get(LOW);f.fail=true;assert.equal(f.r.offer(LOW),false);assert.equal(f.api.owned(LOW),1);assert.equal(f.r.state().slots[0],null);});
+
+function visuals(){const c={window:{}};vm.createContext(c);vm.runInContext(read('soul-ring-visuals.js'),c);return c.window.SoulRingVisuals;}
+test('金龍只在六槽全滿且裝備四神獸時啟動',()=>{const v=visuals(),slots=[1,2,3,4,5,6];assert.equal(v.dragonEnabled(slots,'四神獸'),true);assert.equal(v.dragonEnabled(slots,'上古'),false);assert.equal(v.dragonEnabled(slots,null),false);for(let i=0;i<6;i++){const partial=slots.slice();partial[i]=null;assert.equal(v.dragonEnabled(partial,'四神獸'),false);}});
+test('空槽、缺槽與稀疏陣列均不啟動金龍',()=>{const v=visuals();for(const slots of [[],Array(6),[1,2,3,4,5],null])assert.equal(v.dragonEnabled(slots,'四神獸'),false);});
+test('六層魂環由下而上、每層都有獨立高度',()=>{const {layout}=visuals();assert.equal(layout.length,6);assert.equal(layout[0].rise,0);for(let i=1;i<6;i++)assert(layout[i].rise>layout[i-1].rise);});
+
+test('四神獸只顯示魂環與金龍，其餘武魂仍顯示虛影',()=>{const v=visuals();assert.equal(v.showPhantom('四神獸'),false);assert.equal(v.showPhantom('上古'),true);assert.equal(v.showPhantom('下品'),true);});
