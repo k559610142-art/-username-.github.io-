@@ -391,7 +391,7 @@ NPC 穿衣服（2026-11-13）：
 2026-11-15 武魂實際預覽與魂環：中央改為 currentPortrait 玩家職業／性別立繪，加上目前已裝備武魂圖案；右側武魂環位共 6 格，SoulRings 使用多餘副本煉成（保留一個收藏），加成取原武魂支援能力 20% 且各項至少 1。環位及持有數存在角色 TDJ 存檔，失敗回復原狀；武魂與魂環屬性、HP/MP、恢復、傷害、SP、減傷、抗性與經驗加成接入實際計算。測試 tools/soul-rings.test.cjs。
 
 等級任務（2026-11-15，使用者決定「等級到 → 任務怪出現 → 打到任務道具就過關」）：
-  data/level-quest-data.js        LEVEL_QUESTS 11 個職業任務：王族 15/30/45、騎士 15、妖精 30、法師 15/30/45、黑妖 15/30/45
+  data/level-quest-data.js        LEVEL_QUESTS 18 個職業任務：王族 15/30/45、騎士 15、妖精 30/45/50、法師 15/30/45/50、黑妖 15/30/45/50、龍騎士 15/30、幻術師 15
                                   任務道具與獎勵取自 Server_Game_2.jar 各任務 NPC 最後一步「收什麼 → 給什麼」；掉落照 DB droplist；任務怪位置照 server_quest_spawn
                                   原版任務地監沒轉換的改放：變種巨蟻女皇→巨蟻洞穴(45)、達克馬勒→妖精森林地監1樓(19)、不死族背叛者→冒險洞窟2樓(2)、黑妖刺客→沉默洞穴(304)
                                   變形怪的血原版由 NPC 給，改成變形怪 10% 掉（target.drop）
@@ -400,4 +400,7 @@ NPC 穿衣服（2026-11-13）：
   island-monsters.js              生怪迴圈抽成 seedSpawn；spawn.quest 的任務怪不在進地圖時生；db-game-rules.js extraDrops 併入 LevelQuests.drops、匯出 addItem/takeItem
   data/level-quest-frames.js＋assets/native-monsters/quest-mob-*.png   遊戲原本沒有的 6 種任務怪外觀（tools/level-quests/cut-mobs.js 從客戶端切）
   tools/level-quests/dump-class.js   讀伺服器 jar 的 class 常數（查任務道具與獎勵用）
-  沒做：妖精 15（遠征隊裝備逐件換）、騎士 30/45/50、王族 50、龍騎士、幻術師、全職業任務（原版流程複雜或資料殘缺）
+  第二批（同日）：任務道具改從 jar 的任務怪程式 com/lineage/data/npc/mob/*（打死給什麼）取得；程式裡 Random 門檻看不到的訂 20%，沒有隨機的訂 100%
+    三位司祭（黑妖 50）原版在 map 306（未轉換）改放沉默洞穴；新切巫女莎爾、混沌／死亡的司祭外觀
+  沒做（伺服器程式裡找不到最終獎勵或流程不是打怪）：騎士 30/45/50、王族 50、妖精 15、妖精 45「妖精的任務」、黑妖 15「皮爾斯」、黑妖 50「死神之証」（寶石換武器）、
+    龍騎士 45/50、幻術師 30/45/50、全職業任務（擊退妖魔的契約、毒蛇之牙等）
