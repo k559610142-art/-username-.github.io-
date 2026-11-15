@@ -15,6 +15,12 @@ function parseList(text) {
     // 105.clothes(n id…): layers drawn over this body with the same action / frame layout (town NPCs are bare bodies + clothes).
     const cl = body.match(/105\.[^(]*\(([\d\s]+)\)/), clothes = cl ? cl[1].trim().split(/\s+/).slice(1).map(Number) : [];
     let shadow=+(body.match(/101\.[^(]*\((\d+)\)/)?.[1]||0),attr=+(body.match(/104\.[^(]*\((\d+)\)/)?.[1]||0),frameRate=+(body.match(/110\.[^(]*\((\d+)\)/)?.[1]||24);
+    // Some named records mix parenthesized actions with bare numeric metadata.
+    // Parse those fields even when the named actions above already succeeded.
+    shadow=+(body.match(/(?:^|\s)101\s+(\d+)(?=\s|$)/)?.[1]||shadow);
+    attr=+(body.match(/(?:^|\s)104\s+(\d+)(?=\s|$)/)?.[1]||attr);
+    frameRate=+(body.match(/(?:^|\s)110\s+(\d+)(?=\s|$)/)?.[1]||frameRate);
+    if(!cl){const numericClothes=body.match(/(?:^|\s)105\s+(\d+)((?:\s+\d+)+)/);if(numericClothes)clothes.push(...numericClothes[2].trim().split(/\s+/).slice(0,+numericClothes[1]).map(Number));}
     // The same client also contains compact numeric definitions (no action names or punctuation).
     if(!Object.keys(actions).length){
       const numeric=body.replace(/\d+\.[^()]*\([^)]*\)/g,' ').match(/(?:^|\s)(?:110\s+\d+\s+)?[0-9]+\s+[018]\s+\d+\s+[0-9]+\s+[0-9]+\s+[0-9]+[\s\S]*/)?.[0];
@@ -25,7 +31,7 @@ function parseList(text) {
         else{const dirs=parseInt(tokens[p++],10),n=parseInt(tokens[p++],10);if(![0,1,8].includes(dirs)||!Number.isInteger(n)||n<0||n>1000)break;const frames=[];for(let i=0;i<n;i++){const group=parseInt(tokens[p++],10),frame=parseInt(tokens[p++],10),token=tokens[p++]||'',dur=parseInt(token,10);if(![group,frame,dur].every(Number.isFinite))break;frames.push({group,frame,dur,hit:token.includes('!')});}if(frames.length===n)actions[id]={name:'action '+id,dirs,frames};}
       }
     }
-    out.set(gfx, { gfx, sprites: +m[2], name: (name || '').trim(), src: +(m[3] || m[1]), actions, clothes, shadow, attr, frameRate, raw: body });
+    out.set(gfx, { gfx, sprites: +m[2], name: (name || '').trim(), src: +(m[3] || m[1]), actions, clothes:[...new Set(clothes)], shadow, attr, frameRate, raw: body });
   }
   return out;
 }

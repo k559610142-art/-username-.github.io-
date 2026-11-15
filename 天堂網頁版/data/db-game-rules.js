@@ -185,7 +185,7 @@ const DBGameRules = (() => {
   return 'item';
  }
   const hiddenCraftItems=new Set([84077,84080,82202,350080,350130,44213,350061]); // 使用者截圖中可見的七項成品；塗黑項目保留。
-  const craftRecipes=()=>rows('system_item_blend').filter(r=>craftCategory(byId.get(Number(r.new_item)))!=='box'&&!/^(?:回收魔珠)|神聖魔法書/.test(byId.get(Number(r.new_item))?.name||'')&&!hiddenCraftItems.has(Number(r.new_item))&&!(String(r.materials)==='40308'&&[39287,39288].includes(Number(r.new_item)))&&![576,577,578].includes(r.id)); // 576～578：卡立普暗黑武器的舊版重複配方（沒有等級職業限制），只留 1061～1063「死神之証」 // 武魂結晶／提煉石不能用金幣做，只能打怪掉（使用者 2026-11-15）
+  const craftRecipes=()=>rows('system_item_blend').filter(r=>craftCategory(byId.get(Number(r.new_item)))!=='box'&&!/^(?:回收魔珠)|神聖魔法書|神力禮盒/.test(byId.get(Number(r.new_item))?.name||'')&&!hiddenCraftItems.has(Number(r.new_item))&&!(String(r.materials)==='40308'&&[39287,39288].includes(Number(r.new_item)))&&![576,577,578].includes(r.id)); // 576～578：卡立普暗黑武器的舊版重複配方（沒有等級職業限制），只留 1061～1063「死神之証」 // 武魂結晶／提煉石不能用金幣做，只能打怪掉（使用者 2026-11-15）
   function craft(npcId,id,anywhere=false){ // anywhere：從目錄「製作」視窗做，不用靠近 NPC（使用者 2026-11-14 決定）
     const recipe=craftRecipes().find(r=>r.id===id&&r.npcid===npcId);
     if(!recipe||!anywhere&&!IslandMonsters.serviceNearby(npcId,3))return '請靠近對應的製作 NPC。';

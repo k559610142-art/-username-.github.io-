@@ -1,0 +1,1830 @@
+[
+  {
+    "name": "妖魔巡守",
+    "gfx": 2323,
+    "clothes": [],
+    "shadow": 791,
+    "first": "atlas-790.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "阿吐巴妖魔",
+    "gfx": 3868,
+    "clothes": [],
+    "shadow": 787,
+    "first": "atlas-786.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "那魯加妖魔",
+    "gfx": 3870,
+    "clothes": [],
+    "shadow": 789,
+    "first": "atlas-788.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "萊肯",
+    "gfx": 11348,
+    "clothes": [],
+    "shadow": 1109,
+    "first": "atlas-1108.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "招財貓",
+    "gfx": 5719,
+    "clothes": [
+      5721
+    ],
+    "shadow": 5720,
+    "first": "extra-poly-5719-0.webp",
+    "composite": true,
+    "legacyLayer": false,
+    "extra": true
+  },
+  {
+    "name": "南瓜稻草人",
+    "gfx": 5645,
+    "clothes": [],
+    "shadow": 5646,
+    "first": "poly-original-5645-0.webp",
+    "composite": true,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "新手狂暴將軍",
+    "gfx": 7332,
+    "clothes": [
+      7334,
+      20619,
+      20523
+    ],
+    "shadow": 7333,
+    "first": "spr-7332-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "甘地妖魔",
+    "gfx": 3866,
+    "clothes": [],
+    "shadow": 785,
+    "first": "atlas-784.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "果凍怪",
+    "gfx": 11338,
+    "clothes": [
+      2543,
+      2542
+    ],
+    "shadow": 0,
+    "first": "atlas-2541.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "羅孚妖魔",
+    "gfx": 3867,
+    "clothes": [],
+    "shadow": 787,
+    "first": "atlas-786.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "銀光刺客",
+    "gfx": 5730,
+    "clothes": [
+      5732
+    ],
+    "shadow": 5731,
+    "first": "atlas-5730.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "史巴托",
+    "gfx": 2378,
+    "clothes": [],
+    "shadow": 128,
+    "first": "atlas-145.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "長老",
+    "gfx": 3879,
+    "clothes": [],
+    "shadow": 0,
+    "first": "atlas-32.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "食人妖精",
+    "gfx": 3876,
+    "clothes": [],
+    "shadow": 153,
+    "first": "atlas-152.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "歐姆民兵",
+    "gfx": 11334,
+    "clothes": [],
+    "shadow": 3645,
+    "first": "atlas-3644.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "紙人",
+    "gfx": 4002,
+    "clothes": [],
+    "shadow": 1539,
+    "first": "atlas-1538.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "黑暗妖精運送員",
+    "gfx": 3887,
+    "clothes": [],
+    "shadow": 3660,
+    "first": "atlas-3659.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "歐吉",
+    "gfx": 3877,
+    "clothes": [],
+    "shadow": 1021,
+    "first": "atlas-1020.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "巨人",
+    "gfx": 2387,
+    "clothes": [],
+    "shadow": 1543,
+    "first": "atlas-1542.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "食人妖精王",
+    "gfx": 3880,
+    "clothes": [],
+    "shadow": 1006,
+    "first": "atlas-894.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "黑暗精靈",
+    "gfx": 2284,
+    "clothes": [
+      20619,
+      20523
+    ],
+    "shadow": 1126,
+    "first": "atlas-1125.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "格利芬",
+    "gfx": 3631,
+    "clothes": [],
+    "shadow": 1205,
+    "first": "atlas-1204.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "雪怪",
+    "gfx": 2385,
+    "clothes": [],
+    "shadow": 2135,
+    "first": "atlas-2134.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "黑暗妖精刺客",
+    "gfx": 3634,
+    "clothes": [],
+    "shadow": 2967,
+    "first": "atlas-2966.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "阿魯巴",
+    "gfx": 3633,
+    "clothes": [],
+    "shadow": 1129,
+    "first": "atlas-1128.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "思克巴",
+    "gfx": 2384,
+    "clothes": [
+      1114
+    ],
+    "shadow": 1113,
+    "first": "atlas-1112.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "黑長者",
+    "gfx": 3881,
+    "clothes": [
+      184
+    ],
+    "shadow": 174,
+    "first": "atlas-183.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "神話・銀光巡守",
+    "gfx": 3895,
+    "clothes": [
+      3147
+    ],
+    "shadow": 3146,
+    "first": "atlas-3145.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "神話・銀光法師",
+    "gfx": 3894,
+    "clothes": [
+      3072
+    ],
+    "shadow": 3071,
+    "first": "atlas-3070.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "神話・銀光騎士",
+    "gfx": 3893,
+    "clothes": [
+      3065
+    ],
+    "shadow": 3064,
+    "first": "atlas-3063.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "藍警衛(槍)",
+    "gfx": 15832,
+    "clothes": [
+      15533
+    ],
+    "shadow": 15532,
+    "first": "spr-15832-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "紅警衛(槍)",
+    "gfx": 15833,
+    "clothes": [
+      15533
+    ],
+    "shadow": 15532,
+    "first": "spr-15833-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "綠警衛(弓)",
+    "gfx": 15528,
+    "clothes": [
+      15530
+    ],
+    "shadow": 15529,
+    "first": "spr-15528-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "綠警衛(槍)",
+    "gfx": 15531,
+    "clothes": [
+      15533
+    ],
+    "shadow": 15532,
+    "first": "spr-15531-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "反恐菁英(走)",
+    "gfx": 15316,
+    "clothes": [
+      15318
+    ],
+    "shadow": 15317,
+    "first": "spr-15316-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "反恐菁英(跑)",
+    "gfx": 15319,
+    "clothes": [
+      15321
+    ],
+    "shadow": 15320,
+    "first": "spr-15319-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "鋼爪刺客",
+    "gfx": 16053,
+    "clothes": [
+      16055,
+      16101
+    ],
+    "shadow": 16054,
+    "first": "spr-16053-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "黃金刺客",
+    "gfx": 5733,
+    "clothes": [
+      5735
+    ],
+    "shadow": 5734,
+    "first": "atlas-5733.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "獨眼巨人",
+    "gfx": 3630,
+    "clothes": [],
+    "shadow": 1203,
+    "first": "atlas-1202.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "思克巴女皇",
+    "gfx": 4004,
+    "clothes": [
+      1118
+    ],
+    "shadow": 1117,
+    "first": "atlas-1116.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "西瑪",
+    "gfx": 3885,
+    "clothes": [
+      184
+    ],
+    "shadow": 174,
+    "first": "atlas-183.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "巴土瑟",
+    "gfx": 3882,
+    "clothes": [
+      186
+    ],
+    "shadow": 174,
+    "first": "atlas-185.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "小惡魔",
+    "gfx": 3886,
+    "clothes": [
+      2526
+    ],
+    "shadow": 2525,
+    "first": "atlas-2524.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "卡士柏",
+    "gfx": 3883,
+    "clothes": [
+      175
+    ],
+    "shadow": 174,
+    "first": "atlas-173.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "火焰弓箭手",
+    "gfx": 3126,
+    "clothes": [
+      1834
+    ],
+    "shadow": 1833,
+    "first": "atlas-1832.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "馬庫爾",
+    "gfx": 3884,
+    "clothes": [
+      188
+    ],
+    "shadow": 174,
+    "first": "atlas-187.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "歐姆裝甲兵",
+    "gfx": 3596,
+    "clothes": [],
+    "shadow": 3597,
+    "first": "atlas-3596.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "神話・黃金巡守",
+    "gfx": 3898,
+    "clothes": [
+      3150
+    ],
+    "shadow": 3149,
+    "first": "atlas-3148.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "神話・黃金法師",
+    "gfx": 3897,
+    "clothes": [
+      3077
+    ],
+    "shadow": 3076,
+    "first": "atlas-3075.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "神話・黃金騎士",
+    "gfx": 3896,
+    "clothes": [
+      3059
+    ],
+    "shadow": 3058,
+    "first": "atlas-3057.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "喵小編",
+    "gfx": 13696,
+    "clothes": [
+      13698,
+      13920,
+      13921
+    ],
+    "shadow": 13697,
+    "first": "spr-13696-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "巴風特",
+    "gfx": 3888,
+    "clothes": [],
+    "shadow": 127,
+    "first": "atlas-53.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "克特",
+    "gfx": 14923,
+    "clothes": [
+      14342,
+      14343,
+      20549
+    ],
+    "shadow": 14341,
+    "first": "spr-14340-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "大名",
+    "gfx": 13216,
+    "clothes": [
+      10265
+    ],
+    "shadow": 10263,
+    "first": "spr-10262-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "死亡騎士",
+    "gfx": 3784,
+    "clothes": [
+      242
+    ],
+    "shadow": 241,
+    "first": "spr-240-0.webp",
+    "composite": false,
+    "legacyLayer": true,
+    "extra": false
+  },
+  {
+    "name": "忍者",
+    "gfx": 13220,
+    "clothes": [],
+    "first": "spr-10309-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "侍",
+    "gfx": 13217,
+    "clothes": [
+      10240
+    ],
+    "shadow": 10236,
+    "first": "spr-10235-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "姬武者",
+    "gfx": 13218,
+    "clothes": [],
+    "first": "spr-10286-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "陰陽師",
+    "gfx": 13219,
+    "clothes": [],
+    "first": "spr-10248-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "神話・黑暗巡守",
+    "gfx": 3892,
+    "clothes": [],
+    "shadow": 3106,
+    "first": "atlas-3105.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "神話・黑暗法師",
+    "gfx": 3891,
+    "clothes": [
+      3048
+    ],
+    "shadow": 3047,
+    "first": "atlas-3046.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "神話・黑暗騎士",
+    "gfx": 3890,
+    "clothes": [
+      3056
+    ],
+    "shadow": 3055,
+    "first": "atlas-3054.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "神話・騎士范德",
+    "gfx": 4000,
+    "clothes": [
+      3068
+    ],
+    "shadow": 3067,
+    "first": "atlas-3066.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "神話・白金巡守",
+    "gfx": 3901,
+    "clothes": [
+      3153
+    ],
+    "shadow": 3152,
+    "first": "atlas-3151.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "神話・白金法師",
+    "gfx": 3900,
+    "clothes": [
+      3082
+    ],
+    "shadow": 3081,
+    "first": "atlas-3080.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "神話・白金騎士",
+    "gfx": 3899,
+    "clothes": [
+      3062
+    ],
+    "shadow": 3061,
+    "first": "atlas-3060.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "真王子",
+    "gfx": 13715,
+    "clothes": [
+      13933,
+      13934
+    ],
+    "shadow": 13716,
+    "first": "spr-13715-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "真公主",
+    "gfx": 13717,
+    "clothes": [
+      13935,
+      13936
+    ],
+    "shadow": 13718,
+    "first": "spr-13717-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "真騎士",
+    "gfx": 13719,
+    "clothes": [
+      13937,
+      13938
+    ],
+    "shadow": 13720,
+    "first": "spr-13719-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "真女騎士",
+    "gfx": 13721,
+    "clothes": [
+      13939,
+      13940
+    ],
+    "shadow": 13722,
+    "first": "spr-13721-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "真妖精",
+    "gfx": 13723,
+    "clothes": [
+      13941,
+      13942
+    ],
+    "shadow": 13724,
+    "first": "spr-13723-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "真女妖精",
+    "gfx": 13725,
+    "clothes": [
+      13943,
+      13944
+    ],
+    "shadow": 13726,
+    "first": "spr-13725-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "真女法師",
+    "gfx": 13729,
+    "clothes": [
+      13947,
+      13948
+    ],
+    "shadow": 13730,
+    "first": "spr-13729-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "真黑妖",
+    "gfx": 13731,
+    "clothes": [
+      13949,
+      13950
+    ],
+    "shadow": 13732,
+    "first": "spr-13731-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "真女黑妖",
+    "gfx": 13733,
+    "clothes": [
+      13951,
+      13952
+    ],
+    "shadow": 13734,
+    "first": "spr-13733-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "真龍騎",
+    "gfx": 13735,
+    "clothes": [
+      13953,
+      13954
+    ],
+    "shadow": 13736,
+    "first": "spr-13735-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "真女龍騎",
+    "gfx": 13737,
+    "clothes": [
+      13955,
+      13956
+    ],
+    "shadow": 13738,
+    "first": "spr-13737-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "真幻術",
+    "gfx": 13739,
+    "clothes": [
+      13957,
+      13958
+    ],
+    "shadow": 13740,
+    "first": "spr-13739-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "真女幻術",
+    "gfx": 13741,
+    "clothes": [
+      13959,
+      13960
+    ],
+    "shadow": 13742,
+    "first": "spr-13741-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "真戰士",
+    "gfx": 13743,
+    "clothes": [
+      13961,
+      13962
+    ],
+    "shadow": 13744,
+    "first": "spr-13743-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "真女戰士",
+    "gfx": 13745,
+    "clothes": [
+      13963,
+      13964
+    ],
+    "shadow": 13746,
+    "first": "spr-13745-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "真法師",
+    "gfx": 13727,
+    "clothes": [
+      13945,
+      13946
+    ],
+    "shadow": 13728,
+    "first": "spr-13727-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "鷹眼",
+    "gfx": 15814,
+    "clothes": [
+      15816,
+      20550,
+      20525,
+      20526
+    ],
+    "shadow": 15815,
+    "first": "spr-15814-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "神話・絲莉安",
+    "gfx": 12314,
+    "clothes": [],
+    "first": "poly-original-12314-0.webp",
+    "composite": true,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "藍警弓",
+    "gfx": 15830,
+    "clothes": [
+      15530,
+      20544,
+      20545,
+      20558,
+      20474
+    ],
+    "shadow": 15529,
+    "first": "spr-15830-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "紅警弓",
+    "gfx": 15831,
+    "clothes": [
+      15530,
+      20544,
+      20545,
+      20558,
+      20474
+    ],
+    "shadow": 15529,
+    "first": "spr-15831-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "黑暗射手",
+    "gfx": 16002,
+    "clothes": [
+      16564,
+      16079,
+      20550,
+      20419,
+      20520,
+      20525,
+      20526
+    ],
+    "shadow": 16003,
+    "first": "spr-16002-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "聖戰士",
+    "gfx": 16284,
+    "clothes": [
+      16286
+    ],
+    "shadow": 16285,
+    "first": "spr-16284-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "大甩刀戰士",
+    "gfx": 16056,
+    "clothes": [
+      16058
+    ],
+    "shadow": 16057,
+    "first": "spr-16056-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "暗殺者",
+    "gfx": 15986,
+    "clothes": [
+      15988,
+      15989
+    ],
+    "shadow": 15987,
+    "first": "spr-15986-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "戰將艾莉絲",
+    "gfx": 16008,
+    "clothes": [
+      16010,
+      16011
+    ],
+    "shadow": 16009,
+    "first": "spr-16008-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "惡靈刀手",
+    "gfx": 16027,
+    "clothes": [
+      16029,
+      16030
+    ],
+    "shadow": 16028,
+    "first": "spr-16027-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "劍靈法師",
+    "gfx": 16040,
+    "clothes": [
+      16042
+    ],
+    "shadow": 16041,
+    "first": "spr-16040-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "巨大牛人",
+    "gfx": 3102,
+    "clothes": [
+      2403
+    ],
+    "shadow": 2404,
+    "first": "atlas-2402.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "賽尼斯",
+    "gfx": 15223,
+    "clothes": [
+      15225,
+      15226
+    ],
+    "shadow": 15224,
+    "first": "spr-15223-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "神話・艾莉絲",
+    "gfx": 4001,
+    "clothes": [],
+    "shadow": 3181,
+    "first": "atlas-3180.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "土精靈王",
+    "gfx": 6002,
+    "clothes": [],
+    "shadow": 0,
+    "first": "atlas-2749.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "神話・反王肯恩",
+    "gfx": 3903,
+    "clothes": [],
+    "shadow": 2420,
+    "first": "atlas-2419.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "狂暴將軍",
+    "gfx": 9011,
+    "clothes": [
+      7334
+    ],
+    "shadow": 7333,
+    "first": "spr-7332-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "真死亡騎士 冥皇丹特斯",
+    "gfx": 12681,
+    "clothes": [
+      12683,
+      12684,
+      20545,
+      20547,
+      20548,
+      20415,
+      20319,
+      20744
+    ],
+    "shadow": 12682,
+    "first": "dk-original-12681-0.webp",
+    "composite": true,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "德雷克",
+    "gfx": 6089,
+    "clothes": [
+      4220
+    ],
+    "shadow": 4219,
+    "first": "atlas-4218.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "神話・焚焰死亡騎士",
+    "gfx": 12232,
+    "clothes": [
+      11655,
+      11656,
+      20529,
+      20404
+    ],
+    "shadow": 11654,
+    "first": "dk-original-11653-0.webp",
+    "composite": true,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "神話・黃金死亡騎士",
+    "gfx": 12231,
+    "clothes": [
+      11633,
+      20528,
+      20403
+    ],
+    "shadow": 11632,
+    "first": "dk-original-11631-0.webp",
+    "composite": true,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "神話・雷霆死亡騎士",
+    "gfx": 12230,
+    "clothes": [
+      11618,
+      11619,
+      20527,
+      20307,
+      20401
+    ],
+    "shadow": 11617,
+    "first": "dk-original-11616-0.webp",
+    "composite": true,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "神話・闇黑死亡騎士",
+    "gfx": 12229,
+    "clothes": [
+      11639,
+      11640,
+      20530,
+      20300,
+      20400
+    ],
+    "shadow": 11615,
+    "first": "dk-original-11614-0.webp",
+    "composite": true,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "聖光巴風特",
+    "gfx": 15545,
+    "clothes": [
+      15547,
+      20549
+    ],
+    "shadow": 15546,
+    "first": "spr-15545-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "聖光槍聖",
+    "gfx": 15534,
+    "clothes": [
+      15536,
+      20549
+    ],
+    "shadow": 15535,
+    "first": "spr-15534-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "戰將反王肯恩",
+    "gfx": 15232,
+    "clothes": [
+      15234
+    ],
+    "shadow": 15233,
+    "first": "spr-15232-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "丹特斯",
+    "gfx": 11401,
+    "clothes": [
+      8853
+    ],
+    "shadow": 8852,
+    "first": "poly-original-8851-0.webp",
+    "composite": true,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "甘特",
+    "gfx": 11404,
+    "clothes": [
+      8814
+    ],
+    "shadow": 8813,
+    "first": "poly-original-8812-0.webp",
+    "composite": true,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "布魯迪卡",
+    "gfx": 11405,
+    "clothes": [
+      8980
+    ],
+    "shadow": 8979,
+    "first": "poly-original-8978-0.webp",
+    "composite": true,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "神話・特羅斯",
+    "gfx": 12283,
+    "clothes": [
+      12285
+    ],
+    "shadow": 12287,
+    "first": "poly-original-12283-0.webp",
+    "composite": true,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "屠龍者（翅膀）",
+    "gfx": 14491,
+    "clothes": [
+      14493,
+      14494,
+      14666,
+      14667
+    ],
+    "shadow": 14492,
+    "first": "extra-poly-14491-0.webp",
+    "composite": true,
+    "legacyLayer": false,
+    "extra": true
+  },
+  {
+    "name": "屠龍者（披風）",
+    "gfx": 15483,
+    "clothes": [
+      14493,
+      14494
+    ],
+    "shadow": 14492,
+    "first": "poly-original-14491-1.webp",
+    "composite": true,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "大盾戰士",
+    "gfx": 16014,
+    "clothes": [
+      16016,
+      16017
+    ],
+    "shadow": 16015,
+    "first": "spr-16014-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "飄揚射手",
+    "gfx": 16074,
+    "clothes": [
+      16076,
+      16077
+    ],
+    "shadow": 16075,
+    "first": "spr-16074-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "大不死鳥",
+    "gfx": 16287,
+    "clothes": [
+      16289,
+      16290
+    ],
+    "shadow": 16288,
+    "first": "spr-16287-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "神話・炎魔",
+    "gfx": 3103,
+    "clothes": [
+      2540
+    ],
+    "shadow": 2539,
+    "first": "atlas-2538.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "海露拜",
+    "gfx": 11402,
+    "clothes": [
+      8901
+    ],
+    "shadow": 8902,
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "滄嵐巴風特",
+    "gfx": 15548,
+    "clothes": [
+      15549,
+      15823,
+      20549
+    ],
+    "shadow": 15546,
+    "first": "spr-15548-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "滄嵐槍聖",
+    "gfx": 15537,
+    "clothes": [
+      15538,
+      15821,
+      20549
+    ],
+    "shadow": 15535,
+    "first": "spr-15537-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "真騎士(88)",
+    "gfx": 15079,
+    "clothes": [
+      15082,
+      15083
+    ],
+    "shadow": 15081,
+    "first": "spr-15079-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "神話・伊詩蒂",
+    "gfx": 12286,
+    "clothes": [],
+    "first": "poly-original-12286-0.webp",
+    "composite": true,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "神話・格利特",
+    "gfx": 12280,
+    "clothes": [
+      12282
+    ],
+    "shadow": 12281,
+    "first": "poly-original-12280-0.webp",
+    "composite": true,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "喬",
+    "gfx": 12295,
+    "clothes": [],
+    "first": "poly-original-12295-0.webp",
+    "composite": true,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "死神",
+    "gfx": 2388,
+    "clothes": [],
+    "shadow": 1577,
+    "first": "atlas-1576.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "煉獄巴風特",
+    "gfx": 15550,
+    "clothes": [
+      15551,
+      20549
+    ],
+    "shadow": 15546,
+    "first": "spr-15550-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "煉獄槍聖",
+    "gfx": 15539,
+    "clothes": [
+      15540,
+      15822,
+      20549
+    ],
+    "shadow": 15535,
+    "first": "spr-15539-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": false
+  },
+  {
+    "name": "死亡戰騎",
+    "gfx": 8486,
+    "clothes": [
+      8488
+    ],
+    "shadow": 8487,
+    "first": "extra-poly-8486-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": true
+  },
+  {
+    "name": "巴風特雕像",
+    "gfx": 13450,
+    "clothes": [],
+    "shadow": 127,
+    "first": "extra-poly-13450-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": true
+  },
+  {
+    "name": "未使用",
+    "gfx": 20229,
+    "clothes": [],
+    "shadow": 0,
+    "first": "extra-poly-20229-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": true
+  },
+  {
+    "name": "法令軍王蕾雅-變形術(歐姆民兵)",
+    "gfx": 3644,
+    "clothes": [],
+    "shadow": 3645,
+    "first": "extra-poly-3644-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": true
+  },
+  {
+    "name": "墮落-變形術(人形殭屍)",
+    "gfx": 52,
+    "clothes": [],
+    "shadow": 0,
+    "first": "extra-poly-52-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": true
+  },
+  {
+    "name": "安特-變形術(妖魔)",
+    "gfx": 56,
+    "clothes": [],
+    "shadow": 0,
+    "first": "extra-poly-56-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": true
+  },
+  {
+    "name": "生日蛋糕怪物-集體變形術(生日慶祝妖精)",
+    "gfx": 8321,
+    "clothes": [],
+    "shadow": 8218,
+    "first": "extra-poly-8321-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": true
+  },
+  {
+    "name": "變身 15115",
+    "gfx": 15115,
+    "clothes": [
+      15116,
+      15117
+    ],
+    "shadow": 15081,
+    "first": "extra-poly-15115-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": true
+  },
+  {
+    "name": "關刀聖使",
+    "gfx": 21120,
+    "clothes": [
+      13155,
+      13156,
+      20326,
+      20536,
+      20546,
+      20474,
+      20740,
+      20531
+    ],
+    "shadow": 13154,
+    "first": "extra-poly-21120-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": true
+  },
+  {
+    "name": "赤炎聖使",
+    "gfx": 21121,
+    "clothes": [
+      11640,
+      20319,
+      20548,
+      20744,
+      20402,
+      20528,
+      20535
+    ],
+    "shadow": 11615,
+    "first": "extra-poly-21121-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": true
+  },
+  {
+    "name": "冰炎聖使",
+    "gfx": 21122,
+    "clothes": [
+      11655,
+      20308,
+      20552,
+      20545,
+      20526,
+      20528,
+      20404,
+      20556
+    ],
+    "shadow": 11654,
+    "first": "extra-poly-21122-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": true
+  },
+  {
+    "name": "劍聖",
+    "gfx": 21123,
+    "clothes": [
+      11655,
+      11640,
+      20319,
+      20475,
+      20740,
+      20742,
+      20528,
+      20536
+    ],
+    "shadow": 11615,
+    "first": "extra-poly-21123-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": true
+  },
+  {
+    "name": "殞滅箭神",
+    "gfx": 21124,
+    "clothes": [
+      16564,
+      16079,
+      20420,
+      20509,
+      20521,
+      20536,
+      20535
+    ],
+    "shadow": 16003,
+    "first": "extra-poly-21124-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": true
+  },
+  {
+    "name": "光輝使者",
+    "gfx": 21160,
+    "clothes": [
+      20413
+    ],
+    "shadow": 13154,
+    "first": "extra-poly-21160-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": true
+  },
+  {
+    "name": "赤焰使者",
+    "gfx": 21165,
+    "clothes": [
+      20412
+    ],
+    "shadow": 13154,
+    "first": "extra-poly-21165-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": true
+  },
+  {
+    "name": "紫刃死騎",
+    "gfx": 21170,
+    "clothes": [
+      20319
+    ],
+    "shadow": 13154,
+    "first": "extra-poly-21170-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": true
+  },
+  {
+    "name": "光刃死騎",
+    "gfx": 21175,
+    "clothes": [
+      20308
+    ],
+    "shadow": 13154,
+    "first": "extra-poly-21175-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": true
+  },
+  {
+    "name": "魔神呂布",
+    "gfx": 21145,
+    "clothes": [],
+    "shadow": 0,
+    "first": "extra-poly-21145-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": true
+  },
+  {
+    "name": "戰神呂布",
+    "gfx": 21146,
+    "clothes": [],
+    "shadow": 0,
+    "first": "extra-poly-21146-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": true
+  },
+  {
+    "name": "迷你八風特",
+    "gfx": 21133,
+    "clothes": [],
+    "shadow": 21134,
+    "first": "extra-poly-21133-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": true
+  },
+  {
+    "name": "神威剛彈",
+    "gfx": 21150,
+    "clothes": [],
+    "shadow": 0,
+    "first": "extra-poly-21150-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": true
+  },
+  {
+    "name": "疾風精靈王",
+    "gfx": 22000,
+    "clothes": [
+      13348,
+      20741,
+      20740,
+      20536,
+      20738,
+      20739,
+      20613
+    ],
+    "shadow": 13347,
+    "first": "extra-poly-22000-0.webp",
+    "composite": false,
+    "legacyLayer": false,
+    "extra": true
+  }
+]

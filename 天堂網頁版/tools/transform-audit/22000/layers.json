@@ -1,0 +1,68 @@
+[
+  {
+    "id": 22000,
+    "src": 13346,
+    "attr": 0,
+    "w": 29,
+    "h": 61,
+    "x": 12,
+    "y": -45
+  },
+  {
+    "id": 13347,
+    "src": 13347,
+    "attr": 0,
+    "w": 35,
+    "h": 25,
+    "x": 3,
+    "y": -5
+  },
+  {
+    "id": 13348,
+    "src": 13348,
+    "attr": 8,
+    "w": 27,
+    "h": 33,
+    "x": 14,
+    "y": -39
+  },
+  {
+    "id": 20741,
+    "src": 20741,
+    "attr": 8,
+    "w": 96,
+    "h": 55,
+    "x": -22,
+    "y": -21
+  },
+  {
+    "id": 20740,
+    "src": 20740,
+    "attr": 8,
+    "w": 228,
+    "h": 169,
+    "x": -94,
+    "y": -104
+  },
+  {
+    "id": 20536,
+    "error": "Cannot read properties of null (reading 'w')"
+  },
+  {
+    "id": 20738,
+    "error": "Cannot read properties of null (reading 'w')"
+  },
+  {
+    "id": 20739,
+    "error": "Cannot read properties of null (reading 'w')"
+  },
+  {
+    "id": 20613,
+    "src": 20613,
+    "attr": 0,
+    "w": 75,
+    "h": 47,
+    "x": -13,
+    "y": -12
+  }
+]

@@ -9,6 +9,9 @@ const REMOVED_TRANSFORM_CARDS = new Set([
   'shelob', 're ungoliant', 'ghast', 'cerberus', 'scorpion', 'troll', 'minotaur i morph', 're cockatrice',
   'bandit bow morph', 'elmor soldier morph', 'elmor general morph', 'darkelf guard morph', 'guardian armor morph', 'darkelf spear morph',
   'vampire', 'beagle',
+  '變身 14491',
+  '迷你漫波兔', '白髮白金神射手', '紅髮白金神射手',
+  '紫髮白金神射手', '金髮白金神射手',
   // 2026-11-15：使用者補充截圖中的未使用卡。
   '未使用（原始#324）', '未使用（原始#325）', '未使用（原始#326）',
   '未使用（原始#327）', '未使用（原始#328）'
@@ -16,5 +19,5 @@ const REMOVED_TRANSFORM_CARDS = new Set([
 // 裝備附帶的造型不列為獨立變身卡；依原始用途標記辨識，避免誤刪同造型的一般卡。
 for (let i = transformCardBook.length - 1; i >= 0; i--) {
   const card = transformCardBook[i];
-  if (REMOVED_TRANSFORM_CARDS.has(card.n) || card.aliases?.includes('套裝變身系統專用')) transformCardBook.splice(i, 1);
+  if (REMOVED_TRANSFORM_CARDS.has(card.n) || /^競賽變身(?:（原始#\d+）)?$/.test(card.n) || card.aliases?.includes('套裝變身系統專用')) transformCardBook.splice(i, 1);
 }
