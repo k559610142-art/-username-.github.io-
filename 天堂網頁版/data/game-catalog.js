@@ -97,7 +97,7 @@ const gameCollections = [];
 gameDialogClose.onclick = () => closePanel();
 const catalogClosePanel = closePanel;
 closePanel = function () {
-  gameDialog.classList.remove('game-catalog-panel');
+  gameDialog.classList.remove('game-catalog-panel','wuhun-panel');
   catalogClosePanel();
 };
 
@@ -1741,6 +1741,7 @@ function openGameCatalog(type) {
   previous = menuButton;
   gameDialog.classList.remove('reference-menu-panel', 'classic-panel');
   gameDialog.classList.add('game-catalog-panel');
+  gameDialog.classList.toggle('wuhun-panel',type==='wuhun');
   gameDialog.setAttribute('aria-label', gameCatalogTitles[type]);
   gameDialogClose.hidden = false;
   gameDialog.hidden = false;
@@ -1764,7 +1765,8 @@ function openGameCatalog(type) {
   const cards = uiElement('div', type === 'collection' ? 'game-catalog-sets' : 'game-catalog-cards');
   results.append(search);
   results.append(cards);
-  layout.append(sidebar, results, detail);
+  const soulStage=type==='wuhun'?uiElement('section','wuhun-stage'):null;
+  if(soulStage){const art=uiElement('img','wuhun-stage-art');art.src='assets/interface/wuhun-panel/soul-awakening.webp';art.alt='龍魂與魂環武魂主視覺';soulStage.append(art);layout.append(sidebar,results,soulStage,detail);}else layout.append(sidebar, results, detail);
   gameDialogContent.replaceChildren(title, ...(['collection','adventurer'].includes(type)?[tabs]:[]), layout);
 
   if (type === 'collection' || type === 'adventurer') {
@@ -1789,6 +1791,7 @@ function openGameCatalog(type) {
     detail.replaceChildren();
     for (const button of cards.children) button.setAttribute('aria-pressed', String(button.catalogEntry === row));
     if (!row) {
+      soulStage?.querySelector('.wuhun-stage-summary')?.remove();
       detail.append(uiElement('p', '', '沒有符合條件的項目。'));
       return;
     }
@@ -1831,9 +1834,17 @@ function openGameCatalog(type) {
       detail.append(action);
     } else if (type === 'wuhun') {
       const w = row.w, owned = TdjSystems.wuhun.owned(w.id), active = String(TdjSystems.wuhun.active) === String(w.id);
+      soulStage.querySelector('.wuhun-stage-summary')?.remove();
+      const summary=uiElement('div','wuhun-stage-summary'),badge=uiElement('span','wuhun-stage-badge',active?'裝備中':owned?'已擁有 ×'+owned:'尚未擁有');
+      const stageAction=catalogButton(active?'卸下武魂':owned?'裝備武魂':'尚未取得武魂',()=>{if(active)TdjSystems.wuhun.unequip();else TdjSystems.wuhun.equip(w.id);refreshCards();},'wuhun-stage-equip');stageAction.disabled=!owned;
+      summary.append(badge,uiElement('h3','',w.name),stageAction);soulStage.append(summary);
+
       detail.append(uiElement('strong', '', w.tier + (w.desc ? ' · ' + w.desc : '')), uiElement('p', '', owned ? '擁有' + (active ? ' · 裝備中' : '') : '尚未擁有'), uiElement('h4', '', '武魂能力'));
       for (const effect of w.fx) detail.append(uiElement('p', '', effect));
-      detail.append(uiElement('small', '', '武魂外觀 ' + w.skin + ' · 原怪物 ' + (TdjSystems.wuhun.baseGfx(w) ?? '未查到') + (TdjSystems.wuhun.image(w) ? ' · 半透明原怪物圖' : ' · 尚缺原圖，使用光暈')));
+      const collection=uiElement('section','wuhun-owned-strip');collection.append(uiElement('h4','','已收集武魂'));
+      const ownedRows=entries.filter(x=>TdjSystems.wuhun.owned(x.w.id)>0),slots=uiElement('div','wuhun-owned-slots');
+      for(const x of ownedRows.slice(0,6)){const b=catalogButton('',()=>showDetails(x),'wuhun-owned-slot');b.title=x.name;b.setAttribute('aria-label','查看 '+x.name);b.append(catalogPortrait('wuhun',x));slots.append(b);}
+      if(!ownedRows.length)slots.append(uiElement('p','','尚未取得武魂'));collection.append(slots,uiElement('small','','已收集 '+ownedRows.length+' / '+entries.length+' 種'));detail.append(collection);
       const action = active ? catalogButton('卸下武魂', () => { TdjSystems.wuhun.unequip(); refreshCards(); }, 'game-catalog-action')
         : catalogButton(owned ? '裝備武魂' : '擁有才能裝備', () => { if (TdjSystems.wuhun.equip(w.id)) refreshCards(); }, 'game-catalog-action');
       action.disabled = !owned;
