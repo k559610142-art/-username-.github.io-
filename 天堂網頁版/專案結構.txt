@@ -431,3 +431,6 @@ NPC 穿衣服（2026-11-13）：
 2026-11-15 負面技能來源核對：木乃伊詛咒依核心 CURSE_PARALYZE 先預警 5 秒、再石化 4 秒；僅技能 37 聖潔之光解除，解毒僅清毒。不刷新倒數，解除後 8 秒免控為網頁版保護；MR 與裝備異常抗性降低命中。199 玩家／538 怪物法術資料比對無差異；19 種未完成的怪物特殊效果停用，詳「技能來源比對.md/json」。
 
 2026-11-15 移除「夏納的變身卷軸」系列變身卡（使用者要求，126 張）：tools/build-extra-transform-cards.cjs 產生時跳過，data/extra-transform-cards-data.js 同步移除（剩 536 張）
+2026-11-15 依使用者截圖再移除 42 張變身卡（主卡冊 20 張：胡蘿蔔曼波兔、高等柯利／浣熊／熊、曼波兔、妖魔、哥布林、地靈、妖魔弓箭手、侏儒、人形殭屍、妖魔鬥士、狼人、骷髏系、石頭高崙、都達瑪拉妖魔、食屍鬼；
+  原始變身表 22 張：milkcow、deer、wild boar、floating eye、giant ant 等）：data/removed-transform-cards.js（REMOVED_TRANSFORM_CARDS）載入在兩份卡片資料後、transform-cards.js 前，從 transformCardBook 拿掉；
+  已持有的會在讀檔時自動消失。截圖中塗黑的煉獄槍聖、beleth、darkelf ranger morph 保留
