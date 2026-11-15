@@ -244,10 +244,10 @@ window.TdjSystems = (() => {
     '.tdj-rings{position:absolute;left:0;top:0;width:0;height:0;--s:1}' +
     '.tdj-ring{position:absolute;left:calc(var(--r) * var(--s) * -1px);top:calc(var(--r) * var(--s) * -1px);width:calc(var(--r) * var(--s) * 2px);height:calc(var(--r) * var(--s) * 2px);transform:translateY(calc(var(--s) * 2px)) scaleY(.42);animation:tdjRingPulse 2.6s ease-in-out infinite;animation-delay:var(--d)}' +
     // 魂環圖（assets/interface/wuhun-rings/ring-1～6.png，使用者給的六色魂環總圖由 tools/soul-ring-cut.ps1 切成透明正圓；環半徑＝圖寬 0.36）：整圈 scaleY 壓成地面，圖本身慢慢轉
-    '.tdj-ring img{position:absolute;left:-19.44%;top:-19.44%;width:138.89%;height:138.89%;max-width:none;pointer-events:none;animation:tdjRingSpin var(--t) linear infinite;filter:var(--tone,none) drop-shadow(0 0 calc(var(--s) * 3px) var(--g))}' +
+    '.tdj-ring img{position:absolute;left:-19.44%;top:-19.44%;width:138.89%;height:138.89%;max-width:none;pointer-events:none;animation:tdjRingSpin var(--t) linear infinite;filter:var(--tone,none) saturate(1.7) brightness(1.3) drop-shadow(0 0 calc(var(--s) * 4px) var(--g))}' +
     '.tdj-rings.idle .tdj-ring{opacity:.35;animation:none}' +
     '@keyframes tdjRingSpin{to{transform:rotate(360deg)}}' +
-    '@keyframes tdjRingPulse{0%,100%{opacity:.7}50%{opacity:1}}';
+    '@keyframes tdjRingPulse{0%,100%{opacity:.88}50%{opacity:1}}';
   document.head.append(style);
   const back = document.createElement('div'), front = document.createElement('div');
   back.className = front.className = 'tdj-layer';

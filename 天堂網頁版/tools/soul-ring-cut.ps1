@@ -26,7 +26,7 @@ for ($n = 0; $n -lt 6; $n++) {
       $b = $bytes[$i]; $gg = $bytes[$i + 1]; $r = $bytes[$i + 2]
       $a = [math]::Max($r, [math]::Max($gg, $b))
       if ($a -lt 14) { $a = 0 }
-      $ao = [int](255 * [math]::Pow($a / 255.0, 1.6))   # 收緊淡光暈：多圈同心疊加時才分得出層次
+      $ao = [int](255 * [math]::Pow($a / 255.0, 1.1))   # 輕微收緊淡光暈（1.6 太淡，使用者回報顏色太淡後改 1.1；層次靠下面的環帶遮罩）
       if ($a -gt 0) {
         $bytes[$i] = [byte][math]::Min(255, [int]($b * 255 / $a)); $bytes[$i + 1] = [byte][math]::Min(255, [int]($gg * 255 / $a)); $bytes[$i + 2] = [byte][math]::Min(255, [int]($r * 255 / $a))
         if ($a -gt 90) { $w = [double]$a; $sw += $w; $sx += $w * $x; $sy += $w * $y; $sxx += $w * $x * $x; $syy += $w * $y * $y; $sxy += $w * $x * $y }
