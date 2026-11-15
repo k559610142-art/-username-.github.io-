@@ -97,7 +97,7 @@ const IslandNpcAi = (() => {
     if(now<activeUntil||now<guardUntil||stone&&stonePendingUntil>now){lastControlResult={id:skill.id,applied:false,reason:'guard'};return false;}
     if(window.ClassBuffs?.blocksNegative?.(skill)){lastControlResult={id:skill.id,applied:false,reason:'barrier'};return false;}
     const d=window.NativeCombatRules?.defense?.()||{},mr=Math.max(0,Number(d.mr)||0),res=Math.max(0,Number(d.status?.[stone?'stone':'sustain'])||0);
-    const level=Number(window.activeCharacterLevel)||1,enemy=Number(mob?.spawn?.npc?.level)||1,chance=res>=100?0:Math.max(5,Math.min(80,60+(enemy-level)*2-mr*.25-res));
+    const level=Number(window.activeCharacterLevel)||1,enemy=Number(mob?.spawn?.npc?.level)||1,chance=res>=100?0:Math.max(5,Math.min(80,Math.max(10,60+(enemy-level)*2))-mr*.25-res);
     if(Math.random()*100>=chance){lastControlResult={id:skill.id,applied:false,reason:'resisted',chance};if(now>=resistanceNoticeAt){window.toast?.('抵抗'+name);resistanceNoticeAt=now+2500;}return false;}
     const duration=stone?4000:Math.max(1000,(Number(skill.spell?.duration)||5)*1000);
     if(stone){stonePendingUntil=now+5000;pendingStoneDuration=duration;}else{slowedUntil=now+duration;slowGuardUntil=slowedUntil+3000;}
