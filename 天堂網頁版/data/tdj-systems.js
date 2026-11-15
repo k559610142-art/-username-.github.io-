@@ -235,7 +235,18 @@ window.TdjSystems = (() => {
     '.tdj-doll{position:absolute;transform:translate(-50%,-100%);width:calc(27px * var(--character-size-factor,1));height:calc(30px * var(--character-size-factor,1));object-fit:contain;object-position:bottom center;pointer-events:none;filter:drop-shadow(0 2px 2px #0008)}' +
     '.tdj-flash{position:absolute;opacity:0;animation:tdjFlash 1s ease-out forwards;filter:drop-shadow(0 0 14px #ff5a3a) brightness(1.4)}' +
     '@keyframes tdjFloat{0%,100%{transform:translateY(0) scale(1.35)}50%{transform:translateY(-4px) scale(1.35)}}' +
-    '@keyframes tdjFlash{0%{opacity:0;transform:scale(1.2)}25%{opacity:.85;transform:scale(1.8)}100%{opacity:0;transform:scale(2.2)}}';
+    '@keyframes tdjFlash{0%{opacity:0;transform:scale(1.2)}25%{opacity:.85;transform:scale(1.8)}100%{opacity:0;transform:scale(2.2)}}' +
+    // 魂環光圈（2026-11-15 使用者要「武魂光暈特效在人物腳底浮現」）：環位每放一個魂環＝腳底一圈，照品級上色；外框壓扁成地面透視，流光轉、整圈呼吸
+    '.tdj-rings{position:absolute;left:0;top:0;width:0;height:0;--s:1}' +
+    '.tdj-ring{position:absolute;left:calc(var(--r) * var(--s) * -1px);top:calc(var(--r) * var(--s) * -1px);width:calc(var(--r) * var(--s) * 2px);height:calc(var(--r) * var(--s) * 2px);transform:translateY(calc(var(--s) * 2px)) scaleY(.42);animation:tdjRingPulse 2.6s ease-in-out infinite;animation-delay:var(--d)}' +
+    '.tdj-ring b,.tdj-ring i{position:absolute;inset:0;border-radius:50%}' +
+    '.tdj-ring b{border:calc(var(--s) * 1.5px) solid var(--c);box-shadow:0 0 calc(var(--s) * 6px) var(--g),inset 0 0 calc(var(--s) * 6px) var(--g);opacity:.75}' +
+    '.tdj-ring i{background:conic-gradient(from 0deg,transparent 0 12%,var(--c) 22%,#fff 25%,var(--c) 28%,transparent 40% 62%,var(--c) 72%,transparent 84%);' +
+    '-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - var(--s) * 3.5px),#000 calc(100% - var(--s) * 3px));mask:radial-gradient(farthest-side,transparent calc(100% - var(--s) * 3.5px),#000 calc(100% - var(--s) * 3px));' +
+    'animation:tdjRingSpin var(--t) linear infinite;filter:drop-shadow(0 0 calc(var(--s) * 3px) var(--g))}' +
+    '.tdj-rings.idle .tdj-ring{opacity:.35;animation:none}' +
+    '@keyframes tdjRingSpin{to{transform:rotate(360deg)}}' +
+    '@keyframes tdjRingPulse{0%,100%{opacity:.7}50%{opacity:1}}';
   document.head.append(style);
   const back = document.createElement('div'), front = document.createElement('div');
   back.className = front.className = 'tdj-layer';
@@ -245,6 +256,35 @@ window.TdjSystems = (() => {
   function placeImage(img, wScale, anchorY) {
     const fit = () => { const s = (typeof characterRenderScale === 'function' ? characterRenderScale() : 1) * wScale, w = img.naturalWidth * s, h = img.naturalHeight * s; img.style.width = w + 'px'; img.style.height = h + 'px'; img.style.left = (-w / 2) + 'px'; img.style.top = (-h * anchorY) + 'px'; };
     if (img.complete && img.naturalWidth) fit(); else img.onload = fit;
+  }
+  // 魂環顏色（依武魂品級；仿「十年白、百年黃、千年紫、萬年黑、十萬年紅」，上古紅、四神獸金）：[環色, 光暈]
+  const ringColors = {下品: ['#f2f2f2', '#ffffffaa'], 上品: ['#ffd83a', '#ffe36a99'], 極品: ['#b45cff', '#c98bffaa'], 千年: ['#6a1fc9', '#9b5cffaa'],
+    萬年: ['#141414', '#ff2a2acc'], 上古: ['#ff2a2a', '#ff6a5aaa'], 四神獸: ['#ffcc33', '#ffe9a0cc']};
+  let ringLayer = null;
+  function buildRings() {
+    ringLayer = null;
+    const slots = state.wuhun.ringSlots || [];
+    const rings = slots.map(id => id === null ? null : wuhunById.get(+id)).filter(Boolean);
+    if (!rings.length) return;
+    const box = document.createElement('div');
+    box.className = 'tdj-rings' + (state.wuhun.active ? '' : ' idle'); // 沒裝武魂＝魂環加成沒生效，光圈淡、不動
+    rings.forEach((w, i) => {
+      const [c, g] = ringColors[w.tier] || ringColors.下品;
+      const ring = document.createElement('div');
+      ring.className = 'tdj-ring';
+      ring.style.cssText = '--r:' + (17 + i * 7) + ';--c:' + c + ';--g:' + g + ';--t:' + (5 + i * 1.3) + 's;--d:' + (-i * .4) + 's';
+      const glow = document.createElement('b'), flow = document.createElement('i');
+      if (i % 2) flow.style.animationDirection = 'reverse';
+      ring.append(glow, flow);
+      ring.title = w.name.replace('武魂', '魂環');
+      box.append(ring);
+    });
+    back.prepend(box); // 最底層：在人物、武魂虛影下面
+    ringLayer = box;
+    positionRings();
+  }
+  function positionRings() {
+    if (ringLayer) ringLayer.style.setProperty('--s', String((typeof characterRenderScale === 'function' ? characterRenderScale() : 1)));
   }
   let phantom = null, dollSprite = null;
   // Projected one-tile offsets behind the actor, based on the direction it faces.
@@ -288,9 +328,10 @@ window.TdjSystems = (() => {
   function render() {
     const previousPhantom = phantom;
     phantom = dollSprite = null;
-    back.replaceChildren(); front.replaceChildren();
+    back.replaceChildren(); front.replaceChildren(); ringLayer = null;
     if (!owner || window.gameFlowState !== 'playing') return;
     const w = wuhunById.get(+state.wuhun.active);
+    buildRings();
     if (w) {
       const src = wuhunImage(w);
       const color = tierColor[w.tier] || '#ffd27a88';
@@ -405,7 +446,7 @@ window.TdjSystems = (() => {
     else{if(!Number.isInteger(slot)||slot<0||slot>=6)return false;if(kind==='remove'){if(s.ringSlots[slot]===null)return false;s.ringSlots[slot]=null;}
       else if(kind==='equip'){const used=s.ringSlots.filter((v,i)=>i!==slot&&Number(v)===id).length;if(!wuhunById.has(id)||(s.ringOwned[id]||0)<=used)return false;s.ringSlots[slot]=id;}else return false;}
     try{localStorage.setItem(key(owner),JSON.stringify(state));}catch(error){state=old;toast('儲存失敗，魂環未變更。');return false;}
-    refreshSoulStats();return true;
+    refreshSoulStats();render();return true; // render：腳底魂環光圈跟著換
   }
   // ---- 武魂 ----
   function getWuhun(id) {
@@ -422,7 +463,7 @@ window.TdjSystems = (() => {
 
   // 進出遊戲、換角色時重畫
   const baseRefresh = refreshCharacter;
-  refreshCharacter = function (...args) { const before = owner; ensure(); if (before !== owner) render(); const result = baseRefresh.apply(this, args); drawPhantom(args[0] ?? movementTime()); positionDoll(); return result; };
+  refreshCharacter = function (...args) { const before = owner; ensure(); if (before !== owner) render(); const result = baseRefresh.apply(this, args); drawPhantom(args[0] ?? movementTime()); positionDoll(); positionRings(); return result; };
 
   const get = () => (ensure(), state);
   return {
