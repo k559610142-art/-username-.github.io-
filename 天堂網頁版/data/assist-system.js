@@ -103,7 +103,7 @@ const AssistSystem=(()=>{
   // 補給：效果沒了自動喝
   for(const [kind] of POTIONS){if(!state.potions[kind]||(retry.get('p'+kind)||0)>now)continue;const e=potionFor(kind);if(!e)continue;retry.set('p'+kind,now+1500);if(OwnedInventory.use(e.uid))return;}
   // 輔助魔法
-  for(const id of state.buffs){if(!learned().includes(id)||ClassBuffs.active(id)||(retry.get('b'+id)||0)>now)continue;const s=playerSkillData.skills[id];if(mp<(s.mp||0)||hp<=(s.hp||0))continue;retry.set('b'+id,now+3000);if(ClassBuffs.cast(id))return;}
+  for(const id of state.buffs){if(!learned().includes(id)||ClassBuffs.active(id)||(retry.get('b'+id)||0)>now)continue;const s=playerSkillData.skills[id];if(mp<(window.PlayerAbilityRules?.manaCost(s)??s.mp??0)||hp<=(s.hp||0))continue;retry.set('b'+id,now+3000);if(ClassBuffs.cast(id))return;}
   // 攻擊技能
   const t=IslandMonsters.target,id=state.attackSkill,fighting=IslandCombat.mode&&t?.hp;
   // 開怪技能：換到新目標（滿血）先放一次

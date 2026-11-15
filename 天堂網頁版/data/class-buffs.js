@@ -56,6 +56,7 @@ const ClassBuffs=(()=>{
  const sum=key=>active().reduce((n,e)=>n+(typeof e[key]==='number'?e[key]:0),0);
 
  // ---- stat hooks (db-game-rules / native-combat-rules / player-class-stats / island-combat / island-npc-ai) ----
+ function resistances(){const out={earth:0,fire:0,water:0,wind:0};if(on(138))for(const k of Object.keys(out))out[k]+=10;const k={'地':'earth','火':'fire','水':'water','風':'wind'}[OwnedInventory.skills.element];if(on(147)&&k)out[k]+=50;return out;}
  function rangedHitBonus(){return sum('bowHit');}
  function damageBonus(ranged){return ranged?sum('bow'):sum('dmg');}
  function reduction(){let n=sum('red');if(on(88))n+=Math.max(1,Math.trunc((level()-50)/5)+1);
@@ -172,7 +173,7 @@ const ClassBuffs=(()=>{
   if(TARGET[id])applyTarget(mob,id,dur,t);
   if(AREA_TARGET[id])for(const m of IslandMonsters.around(worldX,worldY,skill.area||3)){applyTarget(m,id,dur,t);IslandMonsters.playEffect(skill.gfx,m.x,m.y,t);}
   if(id===187){const p=PlayerClassStats.read(),max=Math.max(1,p.weapon?.damage[0]||2);for(let i=0;i<3;i++)IslandMonsters.damage(mob,1+Math.floor(Math.random()*max)+p.meleeBonus+damageBonus(false));}
-  if(id===207){const p=PlayerClassStats.read();IslandMonsters.damage(mob,Math.max(1,Math.round(5+(p.sp||0)*3.8)));}
+  if(id===207){const result=PlayerAbilityRules.magicAmount({...skill,id},mob,{raw:5});if(result.critical)mob.magicCriticalUntil=t+650;IslandMonsters.damage(mob,Math.max(1,result.amount));}
   if(id===229&&Math.random()<.9)dots.push({mob,until:t+dur,next:t+1000,every:1000,dmg:Math.trunc(level()/2)+6});
   if(id===205)cubes.push({x:worldX,y:worldY,until:t+dur,next:t+4000,dmg:skill.damage[0]||10,r:skill.area||3});
   if(AREA[id]&&id!==205)for(const m of IslandMonsters.around(worldX,worldY,skill.area||3))IslandMonsters.playEffect(skill.gfx,m.x,m.y,t);
@@ -208,7 +209,7 @@ const ClassBuffs=(()=>{
   const t=now();
   if(barrierSet&&!on(78)){if(window.playerItemState)playerItemState.absoluteBarrier=false;barrierSet=false;}
   const vk=(on(226)?'g':'')+(on(79)?'s':'');if(vk!==vitalsKey){vitalsKey=vk;vitals();}
-  for(const c of cubes)if(t>=c.next&&t<c.until){c.next+=4000;for(const m of IslandMonsters.around(c.x,c.y,c.r))IslandMonsters.damage(m,c.dmg);}
+  for(const c of cubes)if(t>=c.next&&t<c.until){c.next+=4000;for(const m of IslandMonsters.around(c.x,c.y,c.r)){const result=PlayerAbilityRules.magicAmount({...sk(205),id:205},m,{raw:c.dmg});if(result.critical)m.magicCriticalUntil=t+650;IslandMonsters.damage(m,Math.max(1,result.amount));}}
   cubes=cubes.filter(c=>t<c.until);
   for(const h of dots)if(t>=h.next&&t<h.until&&h.mob.hp){h.next+=h.every;IslandMonsters.damage(h.mob,h.dmg);}
   dots=dots.filter(h=>t<h.until&&h.mob.hp);
@@ -217,5 +218,5 @@ const ClassBuffs=(()=>{
   bar.hidden=!ids.length;
  }
  setInterval(tick,250);
- return {handles,cast,grant,afterCast,invisible:()=>invisible,reveal:()=>{invisible=false;},rangedHitBonus,damageBonus,reduction,ac,dodge,mpr,mr,sp,stats,maxHp:maxHpBonus,maxMp:maxMpBonus,onHit,onHurt,silenced,rooted,slowed,active:id=>on(id),selfBuff:id=>!!SELF[id]&&!PASSIVE[id]&&!UTIL[id]&&(sk(id)?.duration||0)>0};
+ return {handles,cast,grant,afterCast,invisible:()=>invisible,reveal:()=>{invisible=false;},resistances,rangedHitBonus,damageBonus,reduction,ac,dodge,mpr,mr,sp,stats,maxHp:maxHpBonus,maxMp:maxMpBonus,onHit,onHurt,silenced,rooted,slowed,active:id=>on(id),selfBuff:id=>!!SELF[id]&&!PASSIVE[id]&&!UTIL[id]&&(sk(id)?.duration||0)>0};
 })();window.ClassBuffs=ClassBuffs;

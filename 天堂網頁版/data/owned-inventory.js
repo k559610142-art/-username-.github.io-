@@ -62,9 +62,10 @@ window.OwnedInventory=(()=>{
  }
  function castCost(skill,nextHp){
   const next=clone(entries);
-  if(mp<skill.mp||hp<=skill.hp)return false;
+  const mpCost=window.PlayerAbilityRules?.manaCost(skill)??skill.mp;
+  if(mp<mpCost||hp<=skill.hp)return false;
   if(skill.materialCount&&!deduct(next,next.find(e=>e.key==='etcitem:'+skill.material)?.uid,skill.materialCount))return false;
-  return transact(next,{hp:nextHp??hp-skill.hp,mp:mp-skill.mp});
+  return transact(next,{hp:nextHp??hp-skill.hp,mp:mp-mpCost});
  }
  function addItems(next,key,count){
   if(!Number.isSafeInteger(count)||count<=0||count>2147483647)return false;

@@ -48,14 +48,15 @@ const PlayerSkills = (() => {
     const range=skill.range>0?skill.range:10;
     if(!healing&&(!mob?.hp||Math.max(Math.abs(mob.x-worldX),Math.abs(mob.y-worldY))>range||
       !IslandCombat.clearShot(worldX,worldY,mob.x,mob.y)))return false;
-    let amount=skill.damage[0];
-    for(let i=0;i<skill.damage[2];i++)amount+=1+Math.floor(Math.random()*Math.max(1,skill.damage[1]));
+    const result=PlayerAbilityRules.magicAmount(skill,mob,{healing});
+    const amount=result.amount;
     if(!OwnedInventory.castCost(skill,healing?Math.min(maxHp,hp-skill.hp+amount):undefined))return false;
     if(!CharacterActions.play('skill'))return false;
     window.ClassBuffs?.reveal();
     cooldowns.set(id,now+skill.reuse);
     IslandMonsters.playEffect(skill.gfx,healing?worldX:mob.x,healing?worldY:mob.y,now);
     if(!healing){
+      if(result.critical)mob.magicCriticalUntil=now+650;
       mob.allyTarget=null;IslandMonsters.damage(mob,Math.max(id===87?0:1,amount));
       if(id>=181)window.ClassBuffs?.afterCast(id,mob);
       if(id===87)mob.ready=Math.max(mob.ready||0,now+skill.duration*1000);
