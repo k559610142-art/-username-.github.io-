@@ -20,6 +20,15 @@ test('短附加動畫循環，並可使用獨立待機組，不會在本體後�
  assert.equal(c.frameInfo(123,0,3,11,1,false),null);
 });
 
+test('重建圖層具備八方向與所有引用素材，疾風精靈王保留超越分級及本體錨點',()=>{
+ const {c,book,frames}=data(),report=JSON.parse(fs.readFileSync(path.join(__dirname,'transform-audit/repair-report.json'),'utf8'));
+ assert.equal(report.length,95);assert(report.every(row=>row.complete));
+ const files=new Set();for(const row of report){const cache=JSON.parse(fs.readFileSync(path.join(__dirname,'../assets/monster-actions/extra-poly-'+row.gfx+'.json'),'utf8'));assert.equal(cache.blendVersion,5);for(let d=0;d<8;d++)for(const clip of ['idle','walk'])assert(frames[row.gfx]['d'+d+'/'+clip]?.length,row.gfx+' d'+d+'/'+clip);for(const sequence of Object.values(frames[row.gfx]))for(const frame of sequence){assert(frame[3]>0&&frame[4]>0&&frame[5]>0);files.add(frame[0]);}}
+ for(const file of files)assert(fs.existsSync(path.join(__dirname,'../assets/monster-actions',file)),file);
+ const wind=book.find(card=>card.n==='疾風精靈王');assert.equal(wind.g,7);assert.equal(wind.p.gfx,22000);assert(c.NativeMorphGroundAnchors[22000].S);
+ assert(frames[22000]['d0/skill']?.length);assert(vm.runInContext('weaponMorphFrames[weaponMorphModes[22000][20]]["d0/attack"].length',c)>0);
+});
+
 test('截圖五張未使用卡與裝備系列不再進入卡冊或抽卡名單',()=>{
   const {c,book}=data();
   const targets=book.filter(card=>(card.p.id>=324&&card.p.id<=328)||card.aliases?.includes('套裝變身系統專用'));
