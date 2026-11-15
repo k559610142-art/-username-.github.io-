@@ -195,3 +195,7 @@ main.game.reference-game #panel.game-catalog-panel.wuhun-panel{padding:16px 14px
 
 .wuhun-live-stage .wuhun-live-scene.rings-only .wuhun-player-art{left:12%;width:76%;height:68%}
 .wuhun-live-stage .rings-only .wuhun-reference-rings{left:9%;width:82%}
+.game-catalog-card.collection-locked .game-catalog-portrait,.collection-item-locked{filter:grayscale(1) brightness(.6);opacity:.5}
+.game-catalog-card.collection-locked{background:linear-gradient(#24282d,#171b20)!important;border-color:#565b62}
+.game-catalog-card.collection-unlocked .game-catalog-portrait{filter:none;opacity:1}
+.game-catalog-card.collection-unlocked{border-color:#bda45c;box-shadow:inset 0 0 12px #d2ae3720}

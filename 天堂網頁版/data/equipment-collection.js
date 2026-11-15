@@ -22,14 +22,17 @@ function renderEquipmentCollection(sidebar,results,cards,detail,search,reference
     detail.append(uiElement('h3','',row.name));
     if(tab==='sets'){
       const progress=EquipmentSets.progress(row,items);
-      const equipped=progress.filter(part=>part.equipped).length;
-      detail.append(uiElement('strong','',EquipmentSets.label(row.bonus)),uiElement('p','',equipped===row.keys.length?'加成已生效':'已穿戴 '+equipped+'／'+row.keys.length),uiElement('small','','穿齊後自動生效，卸下任一部件即解除。'));
+      const collected=progress.filter(part=>part.collected).length;
+      const active=EquipmentSets.read(items).active.includes(row.name);
+      detail.append(uiElement('strong','',EquipmentSets.label(row.bonus)||'無額外能力'),uiElement('p','',collected===row.keys.length?'圖鑑配對加成已生效':'已開圖 '+collected+'／'+row.keys.length+(active?' · 穿戴套裝加成已生效':'')),uiElement('small','','需求物品全部加入圖鑑後，配對加成永久生效，不需穿戴。'));
       for(const [i,required] of row.keys.entries()){
         const item=byKey.get(required),status=progress[i];
         const line=uiElement('p',''),icon=uiElement('span','item-slot');
         icon.style.cssText='display:inline-grid;width:32px;height:32px;vertical-align:middle;margin-right:8px';
         icon.append(itemIcon(item));
-        line.append(icon,document.createTextNode(item.name+' · '+(status.equipped?'已穿戴':status.owned?'已持有':'未持有')));
+        icon.classList.toggle('collection-item-locked',!status.collected);
+        line.append(icon,document.createTextNode((item?.name||required)+' · '+(status.collected?'已開圖':status.equipped?'未開圖 · 請先卸下':status.owned?'未開圖 · 可加入':'未開圖 · 尚未持有')));
+        if(item&&!status.collected)line.append(catalogButton('查看物品',()=>{tab=item.kind;page=0;selected=item;search.value='';refresh();}));
         detail.append(line);
       }
       return;
@@ -46,9 +49,15 @@ function renderEquipmentCollection(sidebar,results,cards,detail,search,reference
     icon.append(itemIcon(row));
     const matches=items.filter(i=>i.key===key(row));
     const owned=matches.reduce((total,i)=>total+i.count,0);
+    const unlocked=!!window.OwnedInventory?.hasCollection(key(row));
+    icon.classList.toggle('collection-item-locked',!unlocked);
     detail.append(icon,uiElement('p','',owned?'已持有 × '+owned+(matches.some(i=>i.slot)?' · 已穿戴':''):'尚未持有'),
       uiElement('p','',row.kind==='weapon'?'武器傷害（小型／大型） '+row.damage.join('／'):'防具 AC '+row.ac),
       uiElement('p','','適用職業 '+(row.allowed.join('、')||'未設定')));
+    const candidate=matches.find(entry=>!entry.slot);
+    const register=catalogButton(unlocked?'已加入圖鑑':'加入圖鑑',()=>{if(window.OwnedInventory?.collect(candidate?.uid))refresh();});
+    register.disabled=unlocked||!candidate;
+    detail.append(uiElement('p','',unlocked?'已開圖 · 收藏永久保留':'未開圖 · 加入時消耗 1 件未穿戴道具'),register);
     const sets=EquipmentSets.definitions.filter(set=>set.keys.includes(key(row)));
     for(const set of sets)detail.append(catalogButton('查看 '+set.name,()=>{
       tab='sets';page=0;search.value='';selected=set;refresh();
@@ -58,7 +67,6 @@ function renderEquipmentCollection(sidebar,results,cards,detail,search,reference
     search.hidden=tab==='references'&&!rows.references.length;
     const items=window.OwnedInventory?.items||[];
     const query=search.value.trim().toLowerCase();
-    const ownedKeys=new Set(items.map(e=>e.key));
     const visible=rows[tab].filter(row=>{
       const terms=[row.name,row.id,...(row.required||[]),...(row.keys||[]).map(k=>byKey.get(k)?.name)];
       return terms.join(' ').toLowerCase().includes(query);
@@ -76,10 +84,13 @@ function renderEquipmentCollection(sidebar,results,cards,detail,search,reference
       if(tab==='weapon'||tab==='armor'){
         const icon=itemIcon(row);
         icon.classList.add('game-catalog-portrait');
-        tile.append(icon,uiElement('small','',ownedKeys.has(key(row))?'已持有':'未持有'));
+        const unlocked=!!window.OwnedInventory?.hasCollection(key(row));
+        tile.classList.add(unlocked?'collection-unlocked':'collection-locked');
+        tile.append(icon,uiElement('small','',unlocked?'已開圖':'未開圖'));
       }else if(tab==='sets'){
-        const n=EquipmentSets.progress(row,items).filter(p=>p.equipped).length;
-        tile.append(uiElement('small','',n===row.keys.length?'已生效':'已穿戴 '+n+'／'+row.keys.length));
+        const n=EquipmentSets.progress(row,items).filter(p=>p.collected).length;
+        tile.classList.add(n===row.keys.length?'collection-unlocked':'collection-locked');
+        tile.append(uiElement('small','',n===row.keys.length?'配對已生效':'已開圖 '+n+'／'+row.keys.length));
       }
       tile.append(uiElement('span','',row.name));
       if(tab==='sets'||tab==='references')tile.append(uiElement('small','',row.bonus?EquipmentSets.label(row.bonus):row.effect));
@@ -98,5 +109,6 @@ function renderEquipmentCollection(sidebar,results,cards,detail,search,reference
   search.placeholder='搜尋裝備、套裝或需求道具';
   search.setAttribute('aria-label',search.placeholder);
   search.oninput=()=>{page=0;selected=null;refresh();};
+  window.refreshEquipmentCollection=()=>{if(cards.isConnected)refresh();};
   refresh();
 }

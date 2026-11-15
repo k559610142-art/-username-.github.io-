@@ -8,12 +8,13 @@ const EquipmentSets = (() => {
       state.owned=true;
       state.equipped ||= !!entry.slot;
     }
-    return set.keys.map(key=>owned.get(key)||{owned:false,equipped:false});
+    return set.keys.map(key=>({...owned.get(key),owned:owned.get(key)?.owned||false,equipped:owned.get(key)?.equipped||false,collected:!!window.OwnedInventory?.hasCollection?.(key)}));
   }
   function read(items) {
     const result={ac:0,hpr:0,mpr:0,active:[]};
     const equipped=new Map();for(const e of items.filter(e=>e.slot))equipped.set(e.key,(equipped.get(e.key)||0)+1);
-    for (const set of definitions) if(set.keys.every((key,index)=>set.keys.slice(0,index+1).filter(k=>k===key).length<=(equipped.get(key)||0))){
+    for (const set of definitions) if(set.keys.every(key=>window.OwnedInventory?.hasCollection?.(key)) ||
+      set.name!=='冒險者配對'&&set.keys.every((key,index)=>set.keys.slice(0,index+1).filter(k=>k===key).length<=(equipped.get(key)||0))){
       for(const [key,value] of Object.entries(set.bonus))result[key]=(result[key]||0)+value;
       result.active.push(set.name);
     }
