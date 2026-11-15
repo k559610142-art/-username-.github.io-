@@ -189,6 +189,11 @@ window.TransformCards = (() => {
   }
 
   let displayedNativeCard = null;
+  function alignMorphGround(anchor, scale) {
+    // Move every morph layer together; the actor origin remains the feet used by rings and bars.
+    morphLayer.style.left = (-anchor[0] * scale) + 'px';
+    morphLayer.style.top = (-anchor[1] * scale) + 'px';
+  }
   function drawMorph(now) {
     const card = window.activeTransformCard;
     let clip = 'idle', elapsed = now - morphStarted, loop = true;
@@ -202,6 +207,7 @@ window.TransformCards = (() => {
     MonsterActions.warmWeapon(card.p?.gfx, heading, weapon);
     const pose = MonsterActions.pose(now);
     if (MonsterActions.draw(atlasBody, card.p?.gfx, heading, pose, scale, weapon, compositeLayers)) {
+      alignMorphGround(MonsterActions.groundAnchor(card.p?.gfx, heading, weapon), scale);
       displayedNativeCard = card;
       morphBody.hidden = morphShadow.hidden = true;
       return;
@@ -217,6 +223,11 @@ window.TransformCards = (() => {
     if (useAtlas) {
       morphShadow.hidden = true;
       const dir = atlasDirs[heading] || 'd5';
+      const resting = atlas.data.frames[dir + '/idle'] || atlas.data.frames[dir + '/walk'] || [];
+      const centers = resting.map(f => f[4] + f[2] / 2 - atlas.data.cw / 2).sort((a,b) => a-b);
+      const bottoms = resting.map(f => f[5] + f[3] - (atlas.ground ?? atlas.data.foot)).sort((a,b) => a-b);
+      const mid = Math.floor(resting.length / 2);
+      alignMorphGround(resting.length ? [centers[mid], bottoms[mid]] : [0, 0], scale);
       const name = phase !== null ? 'walk' : acting && atlas.data.frames[dir + '/' + action.action] ? action.action : 'idle';
       const frames = atlas.data.frames[dir + '/' + name] || atlas.data.frames[dir + '/idle'] || (atlas.data.frames[dir + '/walk'] || []).slice(0, 1);
       const index = phase !== null ? Math.floor(phase * frames.length) : name !== 'idle' && acting ? Math.min(frames.length - 1, Math.floor((now - action.started) * frames.length / Math.max(1, action.duration))) : Math.floor(elapsed / (frameMs * 1.5)) % frames.length;
@@ -227,6 +238,7 @@ window.TransformCards = (() => {
       return;
     }
     // 網站單方向動畫：有 walk 的用 walk，沒有的用待機加踏步擺動。
+    alignMorphGround([0, 0], scale);
     let bob = 0;
     if (phase !== null && card.f.walk) { clip = 'walk'; elapsed = phase * card.f.walk * frameMs; loop = true; }
     else if (phase !== null) bob = -Math.abs(Math.sin(phase * Math.PI * 2)) * 4 * scale;
@@ -256,7 +268,7 @@ window.TransformCards = (() => {
     characterBody.style.visibility = morphed ? 'hidden' : '';
     baseRefresh(frameTime);
     if (morphed) drawMorph(frameTime);
-    else displayedNativeCard = null;
+    else { displayedNativeCard = null; alignMorphGround([0, 0], 1); }
   };
 
   return {

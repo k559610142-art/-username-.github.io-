@@ -32,6 +32,19 @@ const MonsterActions = (() => {
     if(weapon===20&&clip==='attack')return weaponMorphFrames[variant]?.[key];
     return weaponMorphFrames[variant]?.[key] || monsterActionIndex[gfx]?.[key];
   };
+  const groundAnchors = new WeakMap();
+  function groundAnchor(gfx, heading, weapon) {
+    // Use the resting body, not the current attack frame or its extended weapon.
+    const frames = get(gfx, heading, 'idle') || get(gfx, heading, 'idle', weapon);
+    if (!frames?.length) return [0, 0];
+    if (!groundAnchors.has(frames)) {
+      const xs = frames.map(f => f[1] + f[3] / 2).sort((a,b) => a-b);
+      const ys = frames.map(f => f[2] + f[4]).sort((a,b) => a-b);
+      const mid = Math.floor(frames.length / 2);
+      groundAnchors.set(frames, [xs[mid], ys[mid]]);
+    }
+    return groundAnchors.get(frames);
+  }
   const weaponBases = {sword:4, blunt:11, tohandblunt:11, bow:20, singlebow:20, spear:24, singlespear:24, chainsword:24, staff:40, tohandstaff:40, dagger:46, tohandsword:50, edoryu:54, claw:58, kiringku:58, gauntlet:62};
   const equippedWeapon = () => {
     const type = window.OwnedInventory?.equippedWeaponType;
@@ -140,7 +153,7 @@ const MonsterActions = (() => {
     return true;
   }
   return {
-    draw, pose, equippedWeapon, warmWeapon, walkOffset, paintSprite,
+    draw, pose, equippedWeapon, warmWeapon, walkOffset, paintSprite, groundAnchor,
     preloadFrames(frames) { for (const frame of frames) load(frame[0]); },
     preload(gfx, heading, clips) { for (const clip of clips) for (const frame of get(gfx, heading, clip) || []) load(frame[0]); },
     has: gfx => !!monsterActionIndex[gfx],
