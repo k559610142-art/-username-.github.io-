@@ -1,0 +1,67 @@
+// 等級任務怪的圖（遊戲裡原本沒有的外觀）：從客戶端 Sprite*.pak 切出，作法同 tools/native-monsters/build.js。
+// 輸出 assets/native-monsters/quest-mob-<gfx>-<n>.png、data/level-quest-frames.js。
+// 用法：node tools/level-quests/cut-mobs.js [--client DIR]
+const fs = require('fs'), path = require('path'), vm = require('vm');
+const ROOT = path.resolve(__dirname, '../..');
+const { openPak } = require('../client-pak/l1pak.js');
+const { rgbaPng } = require('../client-pak/img2png.js');
+const { parseSpr, renderFrame } = require('../native-monsters/spr.js');
+const { parseList } = require('../native-monsters/listspr.js');
+const args = process.argv.slice(2), opt = { client: 'C:/Users/User/Desktop/天地劫天堂' };
+for (let i = 0; i < args.length; i++) if (args[i] === '--client') opt.client = args[++i];
+
+const game = {}; vm.createContext(game);
+vm.runInContext(fs.readFileSync(path.join(ROOT, 'data/island-monster-data.js'), 'utf8').replace(/^const (\w+)\s*=/gm, 'var $1='), game);
+vm.runInContext(fs.readFileSync(path.join(ROOT, 'data/dungeon-monster-data.js'), 'utf8').replace(/^const (\w+)\s*=/gm, 'var $1=').replace(/^for\(.*$/gm, ''), game);
+vm.runInContext(fs.readFileSync(path.join(ROOT, 'data/level-quest-data.js'), 'utf8').replace(/^const (\w+)\s*=/gm, 'var $1='), game);
+const templates = game.islandMonsterTemplates, existing = { ...game.islandMonsterFrames, ...game.dungeonMonsterFrames };
+
+const paks = ['Sprite.idx', ...Array.from({ length: 16 }, (_, i) => 'Sprite' + String(i).padStart(2, '0') + '.idx')].map(f => openPak(path.join(opt.client, f)));
+const sprIndex = new Map(); for (const p of paks) for (const r of p.records) if (/\.spr$/i.test(r.name)) sprIndex.set(r.name.toLowerCase(), [p, r]);
+const sprCache = new Map();
+const spr = name => { if (!sprCache.has(name)) { const e = sprIndex.get(name); sprCache.set(name, e ? parseSpr(e[0].read(e[1])) : null); } return sprCache.get(name); };
+const text = openPak(path.join(opt.client, 'Text.idx')), list = parseList(text.read(text.records.find(r => r.name === 'list.spr')).toString('latin1'));
+const KEYS = { idle: [3, 0], walk: [0], attack: [1], cast: [18, 19], special: [30] };
+function yShift(clips) { const bottoms = []; for (const [key, l] of Object.entries(clips)) { if (!key.endsWith('/idle')) continue; for (const f of l) { const r = renderFrame(spr(f.file), f.frame); bottoms.push(r.y + r.h); } } bottoms.sort((x, y) => x - y); return -(bottoms[bottoms.length >> 1] ?? 0); }
+const ms = d => Math.round(d * 1000 / 24 * 10) / 10;
+function clipsFor(gfx) {
+  const e = list.get(gfx); if (!e) return null;
+  const out = {};
+  for (let dir = 0; dir < 8; dir++) for (const [key, ids] of Object.entries(KEYS)) {
+    const id = ids.find(i => e.actions[i]?.frames.length); if (id === undefined) continue;
+    const a = e.actions[id], frames = [];
+    for (const f of a.frames) { const file = (e.src || gfx) + '-' + (f.group + (a.dirs ? dir : 0)) + '.spr'; const s = spr(file); if (!s || !s.frames[f.frame]) { frames.length = 0; break; } frames.push({ file, frame: f.frame, dur: ms(f.dur) }); }
+    if (frames.length) out['d' + dir + '/' + key] = frames;
+  }
+  return out['d0/idle'] || out['d0/walk'] ? out : null;
+}
+const looks = new Set();
+for (const q of game.LEVEL_QUESTS) for (const t of q.targets) for (const id of t.mobs) if (templates[id]) looks.add(templates[id].gfx);
+const need = [...looks].filter(g => !existing[g]).sort((a, b) => a - b);
+const SHEET = 2048, frames = {}, files = [], missing = [], sheets = [];
+let sheet = null, sheetNo = 0, cx = 0, cy = 0, rowH = 0;
+function newSheet(gfx) { sheet = { name: 'quest-mob-' + gfx + '-' + sheetNo++ + '.png', px: Buffer.alloc(SHEET * SHEET * 4), h: 0 }; sheets.push(sheet); cx = cy = rowH = 0; }
+for (const gfx of need) {
+  const clips = clipsFor(gfx); if (!clips) { missing.push(gfx); continue; }
+  sheetNo = 0; newSheet(gfx); const placed = new Map(), Y = yShift(clips); frames[gfx] = {};
+  for (const [key, l] of Object.entries(clips)) frames[gfx][key] = l.map(f => {
+    const id = f.file + '#' + f.frame; let p = placed.get(id);
+    if (!p) {
+      const r = renderFrame(spr(f.file), f.frame);
+      if (cx + r.w > SHEET) { cx = 0; cy += rowH + 1; rowH = 0; }
+      if (cy + r.h > SHEET) newSheet(gfx);
+      for (let y = 0; y < r.h; y++) r.px.copy(sheet.px, ((cy + y) * SHEET + cx) * 4, y * r.w * 4, (y + 1) * r.w * 4);
+      p = [sheet.name, r.x, r.y + Y, r.w, r.h, cx, cy]; placed.set(id, p);
+      sheet.h = Math.max(sheet.h, cy + r.h); cx += r.w + 1; rowH = Math.max(rowH, r.h);
+    }
+    return [p[0], p[1], p[2], p[3], p[4], f.dur, p[5], p[6], SHEET];
+  });
+}
+const outDir = path.join(ROOT, 'assets/native-monsters');
+for (const f of fs.readdirSync(outDir)) if (/^quest-mob-/.test(f)) fs.unlinkSync(path.join(outDir, f));
+for (const s of sheets) { const h = Math.max(1, s.h); fs.writeFileSync(path.join(outDir, s.name), rgbaPng(SHEET, h, s.px.subarray(0, SHEET * h * 4))); files.push(s.name); }
+fs.writeFileSync(path.join(ROOT, 'data/level-quest-frames.js'),
+  '// Generated by tools/level-quests/cut-mobs.js: 等級任務怪的外觀（客戶端 .spr，list.spr 時間）。\n' +
+  'for(const f of ' + JSON.stringify(files) + ')nativeMonsterFiles.add(f);\n' +
+  'for(const [g,clips]of Object.entries(' + JSON.stringify(frames) + '))if(!islandMonsterFrames[g])islandMonsterFrames[g]=clips;\n');
+console.log('任務怪外觀', looks.size, '種，新切', Object.keys(frames).length, '種', Object.keys(frames).join(' '), '沒有圖', missing.join(' ') || '無', '圖檔', files.length);

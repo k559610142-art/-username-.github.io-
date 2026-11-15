@@ -23,7 +23,8 @@ const DBGameRules = (() => {
     const map=window.activeMapId||0;
     return [
       ...rows('怪物掉落全圖設置').map(row=>({id:row['道具'],min:row['最小量'],max:row['最大量'],chance:row['機率'],fixedRate:true})),
-      ...rows('droplist_map').filter(row=>row.mapid===map).map(row=>({id:row.itemid,min:row.min,max:row.max,chance:row.chance}))
+      ...rows('droplist_map').filter(row=>row.mapid===map).map(row=>({id:row.itemid,min:row.min,max:row.max,chance:row.chance})),
+      ...(window.LevelQuests?.drops(mob)||[]) // 等級任務補的掉落（data/level-quests.js）
     ];
   }
   function killRewards(mob){
@@ -218,6 +219,6 @@ const DBGameRules = (() => {
     }
   };
   return {rows,automaticSkills,extraDrops,killRewards,xpMultiplier,starter,useItem,damageBonus,weaponProc,syncVitals,reduction,
-    craft,craftRecipes,openCrafting,craftNpcs:()=>new Set(craftRecipes().map(r=>r.npcid))};
+    craft,craftRecipes,openCrafting,addItem:add,takeItem:take,craftNpcs:()=>new Set(craftRecipes().map(r=>r.npcid))};
 })();
 window.DBGameRules=DBGameRules;

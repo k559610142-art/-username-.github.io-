@@ -77,12 +77,15 @@ const IslandMonsters = (() => {
   function seedPopulation(){
   // These two DB positions belong to a different house layout. Match the supplied client indoor groups.
   const indoorServices={231:[33094,33385],262:[33097,33405]};
-  for(const source of islandMonsterSpawns){
+  for(const source of islandMonsterSpawns)if(!source.quest)seedSpawn(source,indoorServices);
+  }
+  // 單筆生怪；等級任務怪（spawn.quest）不在進地圖時生，由 LevelQuests 呼叫 addQuestSpawns 加入。
+  function seedSpawn(source,indoorServices={}){{
     const corrected=source.resident&&source.mapId===4&&indoorServices[source.spawnId];
     const spawn=corrected?{...source,point:corrected,sourcePoint:source.point}:source;
-    if((spawn.mapId||0)!==(window.activeMapId||0))continue;
-    if(spawn.resident&&craftOnly(spawn.npcId))continue;
-    if(!islandMonsterFrames[spawn.npc.gfx])continue;
+    if((spawn.mapId||0)!==(window.activeMapId||0))return;
+    if(spawn.resident&&craftOnly(spawn.npcId))return;
+    if(!islandMonsterFrames[spawn.npc.gfx])return;
     let seed=spawn.spawnId>>>0;
     const random=()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);
     const [px,py]=spawn.point;
@@ -373,7 +376,10 @@ const IslandMonsters = (() => {
       if(Math.max(Math.abs(worldX-mob.x),Math.abs(worldY-mob.y))<=Math.max(22,window.IslandCombat?.autoRange||22))advance(mob,now);
     }
   }
-  return {get residentPositions(){ensurePopulation();return mobs.filter(m=>m.spawn.resident).map(m=>({id:m.spawn.npcId,spawnId:m.spawn.spawnId,x:m.x,y:m.y,point:[...m.spawn.point],sourcePoint:[...(m.spawn.sourcePoint||m.spawn.point)],random:[...m.spawn.random]}))},get audit(){return {mapId:populationMap,spawned:mobs.length,sourceRows:islandMonsterSpawns.length,fullCounts:true}},occupied:(x,y)=>{ensurePopulation();const tick=Math.floor(movementTime()/50);if(tick!==occupancyTick){occupancyTick=tick;occupancy.clear();for(const m of mobs)if(m.hp){occupancy.add(m.x+","+m.y);if(m.step)occupancy.add(m.step.x+","+m.step.y)}}return occupancy.has(x+","+y)},around:(x,y,r)=>{ensurePopulation();return mobs.filter(m=>m.hp&&!m.spawn.resident&&!m.spawn.ally&&!m.spawn.bot&&(m.spawn.mapId||0)===(window.activeMapId||0)&&Math.max(Math.abs(m.x-x),Math.abs(m.y-y))<=r)},addAlly:(mob)=>{ensurePopulation();if(!mobs.includes(mob))mobs.push(mob);return mob;},removeAlly:(mob)=>{for(const list of [mobs,...populations.values(),...incomingBots.values()]){const i=list.indexOf(mob);if(i>=0)list.splice(i,1);}if(selected===mob)selected=null;},hasMob:(mob)=>mobs.includes(mob),
+  // 等級任務（data/level-quests.js）：目前地圖加入／移除任務怪
+  function addQuestSpawns(list){ensurePopulation();for(const spawn of list)if(!mobs.some(m=>m.spawn===spawn))seedSpawn(spawn);}
+  function removeQuestSpawns(keep){ensurePopulation();for(let i=mobs.length-1;i>=0;i--)if(mobs[i].spawn.quest&&!keep(mobs[i].spawn)){if(selected===mobs[i])selected=null;mobs.splice(i,1);}}
+  return {addQuestSpawns,removeQuestSpawns,get residentPositions(){ensurePopulation();return mobs.filter(m=>m.spawn.resident).map(m=>({id:m.spawn.npcId,spawnId:m.spawn.spawnId,x:m.x,y:m.y,point:[...m.spawn.point],sourcePoint:[...(m.spawn.sourcePoint||m.spawn.point)],random:[...m.spawn.random]}))},get audit(){return {mapId:populationMap,spawned:mobs.length,sourceRows:islandMonsterSpawns.length,fullCounts:true}},occupied:(x,y)=>{ensurePopulation();const tick=Math.floor(movementTime()/50);if(tick!==occupancyTick){occupancyTick=tick;occupancy.clear();for(const m of mobs)if(m.hp){occupancy.add(m.x+","+m.y);if(m.step)occupancy.add(m.step.x+","+m.step.y)}}return occupancy.has(x+","+y)},around:(x,y,r)=>{ensurePopulation();return mobs.filter(m=>m.hp&&!m.spawn.resident&&!m.spawn.ally&&!m.spawn.bot&&(m.spawn.mapId||0)===(window.activeMapId||0)&&Math.max(Math.abs(m.x-x),Math.abs(m.y-y))<=r)},addAlly:(mob)=>{ensurePopulation();if(!mobs.includes(mob))mobs.push(mob);return mob;},removeAlly:(mob)=>{for(const list of [mobs,...populations.values(),...incomingBots.values()]){const i=list.indexOf(mob);if(i>=0)list.splice(i,1);}if(selected===mob)selected=null;},hasMob:(mob)=>mobs.includes(mob),
     preload(files){for(const f of files)loadSheet(f);},
     botHit(mob,amount,options={}){if(!mob?.hp||mob.spawn.resident||mob.spawn.ally||mob.spawn.bot)return false;if(options.party&&amount>=mob.hp&&!PlayerProgression.award(mob))return false;mob.hp=Math.max(0,mob.hp-amount);CombatSound.monsterHit(mob);if(mob.hp&&options.attacker)IslandNpcAi.provokeBot(mob,options.attacker);
      if(!mob.hp)markDead(mob);return true;},
