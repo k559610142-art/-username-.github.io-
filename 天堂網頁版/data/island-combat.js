@@ -67,8 +67,9 @@ const IslandCombat=(()=>{
     if(bow&&!OwnedInventory.consumeArrow()){stop();return false;}
     const profile=PlayerClassStats.read();
     const weaponMax=Math.max(1,profile.weapon?.damage[0]||2);
-    const damage=1+Math.floor(Math.random()*weaponMax)+(bow?profile.rangedBonus:profile.meleeBonus)+DBGameRules.weaponProc(mob)+(window.ClassBuffs?.onHit(mob,bow)||0);
-    pending={mob,damage,at:movementTime()+characterActionState.duration*.4};
+    const landed=!bow||PlayerRangedRules.hits(profile,mob);
+    const damage=landed?1+Math.floor(Math.random()*weaponMax)+(bow?profile.rangedBonus:profile.meleeBonus)+DBGameRules.weaponProc(mob)+(window.ClassBuffs?.onHit(mob,bow)||0):0;
+    pending={mob,damage,landed,at:movementTime()+characterActionState.duration*.4};
     window.TdjSystems?.onAttack();
     return true;
   }
@@ -77,7 +78,8 @@ const IslandCombat=(()=>{
     if(id!==owner){owner=id;stop();pending=null;}
     if(!id||CharacterActions.dead){stop();pending=null;return;}
     if(pending&&movementTime()>=pending.at){
-      IslandMonsters.damage(pending.mob,pending.damage);
+      if(pending.landed)IslandMonsters.damage(pending.mob,pending.damage);
+      else if(pending.mob.hp){pending.mob.rangedMissUntil=movementTime()+650;if(!pending.mob.spawn.bot)window.IslandNpcAi?.provoke(pending.mob,[]);}
       pending=null;
     }
     if(mode&&!TransformCards.canAttack()){stop();return;}

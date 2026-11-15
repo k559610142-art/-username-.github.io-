@@ -13,7 +13,7 @@
 //   祝福魔法武器 dmg+2, 狂暴術 dmg+5, 勇猛意志 dmg+5, 冥想術 MP+5, 聖結界 half damage, 靈魂昇華 max HP／MP +20%,
 //   增幅防禦 reduction (lv−50)/5+1, 反擊屏障 DB probability 25%, 毒咒 5 every 3 s.
 // Durations, costs, materials, range, area and cooldowns: DB `skills`.
-// This web version has no hit roll, monster AC or elements, so effects that only change those show their status only.
+// Melee still has no hit roll; ranged attacks now use bow hit and monster AC. Elements are not implemented, so effects that only change those show their status only.
 const ClassBuffs=(()=>{
  const sk=id=>playerSkillData.skills[id];
  const buffs=new Map(),cooldowns=new Map(),debuffs=new WeakMap();let owner=null,cubes=[],dots=[],barrierSet=false;
@@ -27,7 +27,7 @@ const ClassBuffs=(()=>{
   2:{},3:{ac:-2},8:{dmg:1},12:{dmg:2},14:{},21:{ac:-3},26:{stats:{dex:5}},31:{counterMagic:1},32:{mpr:5},42:{stats:{str:5}},
   43:{speed:'haste'},48:{dmg:2},52:{speed:'brave'},54:{speed:'haste'},55:{ac:10,dmg:5},68:{immune:1},78:{barrier:1},79:{spirit:1},
   88:{red:'reductionArmor'},89:{},90:{},91:{counter:.25},114:{dmg:5},115:{ac:-8},117:{dmg:5},119:{},
-  129:{mr:10},134:{},137:{stats:{wis:3}},138:{},147:{},148:{dmg:4},149:{},150:{speed:'elfBrave'},151:{ac:-6},155:{},156:{bow:2},
+  129:{mr:10},134:{},137:{stats:{wis:3}},138:{},147:{},148:{dmg:4},149:{bowHit:6},150:{speed:'elfBrave'},151:{ac:-6},155:{},156:{bow:2,bowHit:2},
   158:{},159:{},160:{dodge:5},163:{dmg:6},166:{bow:5},168:{ac:-10},
   181:{red:5},182:{burning:1},185:{ac:-3},186:{speed:'brave'},190:{},191:{mortal:1},194:{},195:{},
   201:{dodge:5},204:{dmg:4},206:{mpr:2},209:{sp:2},211:{red:2},213:{},214:{ac:-8},216:{stats:{str:1,con:1,dex:1,wis:1,int:1}},
@@ -56,6 +56,7 @@ const ClassBuffs=(()=>{
  const sum=key=>active().reduce((n,e)=>n+(typeof e[key]==='number'?e[key]:0),0);
 
  // ---- stat hooks (db-game-rules / native-combat-rules / player-class-stats / island-combat / island-npc-ai) ----
+ function rangedHitBonus(){return sum('bowHit');}
  function damageBonus(ranged){return ranged?sum('bow'):sum('dmg');}
  function reduction(){let n=sum('red');if(on(88))n+=Math.max(1,Math.trunc((level()-50)/5)+1);
   if(knows(236)){const ac=window.NativeCombatRules?.armorClass?.()??0;n+=Math.max(0,Math.trunc(-ac/10));}return n;}
@@ -216,5 +217,5 @@ const ClassBuffs=(()=>{
   bar.hidden=!ids.length;
  }
  setInterval(tick,250);
- return {handles,cast,grant,afterCast,invisible:()=>invisible,reveal:()=>{invisible=false;},damageBonus,reduction,ac,dodge,mpr,mr,sp,stats,maxHp:maxHpBonus,maxMp:maxMpBonus,onHit,onHurt,silenced,rooted,slowed,active:id=>on(id),selfBuff:id=>!!SELF[id]&&!PASSIVE[id]&&!UTIL[id]&&(sk(id)?.duration||0)>0};
+ return {handles,cast,grant,afterCast,invisible:()=>invisible,reveal:()=>{invisible=false;},rangedHitBonus,damageBonus,reduction,ac,dodge,mpr,mr,sp,stats,maxHp:maxHpBonus,maxMp:maxMpBonus,onHit,onHurt,silenced,rooted,slowed,active:id=>on(id),selfBuff:id=>!!SELF[id]&&!PASSIVE[id]&&!UTIL[id]&&(sk(id)?.duration||0)>0};
 })();window.ClassBuffs=ClassBuffs;

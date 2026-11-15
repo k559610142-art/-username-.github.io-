@@ -255,6 +255,7 @@ const IslandMonsters = (() => {
       pen.drawImage(sheet,sx,sy,sw,sh,left,top,width,height); // 紅名只有名字紅色，身體不染色（使用者 2026-11-14）
       const vx=mob.death&&!mob.hp?mob.death.x:mob.step?mob.x+(mob.step.x-mob.x)*phase:mob.x,vy=mob.death&&!mob.hp?mob.death.y:mob.step?mob.y+(mob.step.y-mob.y)*phase:mob.y;window.NativeWorld?.paintEntity(pen,view,vx,vy,{left,top,width,height});
       if(!mob.hp)continue; // 屍體不顯示名牌、血條，也不能被點選。
+      if(now<(mob.rangedMissUntil||0)){pen.save();pen.font='bold 13px sans-serif';pen.textAlign='center';pen.lineWidth=3;pen.strokeStyle='#181818';pen.fillStyle='#eee5ca';pen.strokeText('MISS',left+width/2,top-38);pen.fillText('MISS',left+width/2,top-38);pen.restore();}
       if(mob===selected){
         const meter=Math.max(42,Math.min(84,width));
         pen.fillStyle='#241b17';pen.fillRect(left+(width-meter)/2-1,top-21,meter+2,7);

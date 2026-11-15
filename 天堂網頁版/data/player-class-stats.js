@@ -28,7 +28,9 @@ const PlayerClassStats = (() => {
     const hpMin = 1 + gearHp, hpMax = hpDie + gearHp;
     return {attributes, level, weapon, sp:items.filter(e=>e.slot).reduce((n,e)=>n+(e.item.sourceRules?.add_sp||0),0)+(equipmentSets.sp||0)+(window.NativePotions?.spBonus||0)+(window.ClassBuffs?.sp()||0), hpDie, gearHp, mpAmount, equipmentSets,
       meleeBonus: (job === '騎士' ? Math.trunc(level / 10) : 0)+(window.DBGameRules?.damageBonus(false)||0),
-      rangedBonus: (job === '妖精' ? Math.trunc(level / 10) : 0)+(window.DBGameRules?.damageBonus(true)||0),
+      rangedHitBonus: PlayerRangedRules.hitBonus(attributes.dex,items,equipmentSets),
+      rangedDexDamage: PlayerRangedRules.dexBonus(attributes.dex).damage,
+      rangedBonus: PlayerRangedRules.dexBonus(attributes.dex).damage+(job === '妖精' ? Math.trunc(level / 10) : 0)+(window.DBGameRules?.damageBonus(true)||0),
       hpRecoveryText: (hpMin === hpMax ? hpMin : hpMin + '～' + hpMax) + ' HP／次',
       mpRecoveryText: mpAmount + ' MP／次'};
   }

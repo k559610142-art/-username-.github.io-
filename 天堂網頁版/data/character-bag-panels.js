@@ -99,7 +99,7 @@
    ['近距離傷害',signed(p.meleeBonus||0),'固定加成，不含武器隨機傷害與觸發技能'],
    ['近距離命中','必中','目前有效普攻未進行命中擲骰'],
    ['遠距離傷害',signed(p.rangedBonus||0),'固定加成，不含武器隨機傷害與觸發技能'],
-   ['遠距離命中','必中','目前有效普攻未進行命中擲骰'],
+   ['遠距離命中',signed(p.rangedHitBonus||0),'敏捷、裝備、套裝、變身及技能命中加成；實際機率依等級與目標防禦計算（5%～95%）'],
    ['武器傷害',p.weapon?.damage?.join(' / ')??'空手'],
    ['迴避修正',d.dodge||0,'用於怪物命中擲骰，迴避率依攻擊者與防禦決定'],
    ['HP恢復量',p.hpRecoveryText],['MP恢復量',p.mpRecoveryText],
@@ -110,7 +110,7 @@
    ['魔法爆擊率','0%','目前未實作玩家魔法暴擊'],
    ['智力省魔',0,'目前使用技能原始 MP 消耗'],['創角智力省魔',0,'目前尚未套用']]);
   section('屬性抗性',[['火屬性抗性','未套用'],['水屬性抗性','未套用'],['風屬性抗性','未套用'],['地屬性抗性','未套用']]);
-  frag.append(el('p','qy-ability-note','命中目前為有效攻擊必中；迴避依敵人與防禦計算。屬性抗性尚未接入戰鬥。'));return frag}
+  frag.append(el('p','qy-ability-note','遠攻命中依等級、敏捷與目標防禦計算；近戰與傷害魔法仍為有效攻擊必中。屬性抗性尚未接入戰鬥。'));return frag}
  const SOCIAL={party:['隊伍','目前沒有隊伍。'],clan:['血盟','尚未加入血盟。'],friend:['好友','好友名單是空的。']};
  function characterPane(){const pane=makeClassicWindow('角色');pane.classList.add('qy-win','qy-char','status-window');
   const body=el('div','qy-body'),fill=()=>body.replaceChildren(charTab==='equip'?equipView():charTab==='ability'?abilityTab():el('div','qy-empty',SOCIAL[charTab][1]));
