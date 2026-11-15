@@ -35,5 +35,6 @@
   ],
   "prefixes": [
     "夏納的變身卷軸"
-  ]
+  ],
+  "excludeEnglish": true
 }

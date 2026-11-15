@@ -2,6 +2,138 @@
   "originalRows": 810,
   "excludedRows": [
     {
+      "id": 1,
+      "name": "milkcow"
+    },
+    {
+      "id": 2,
+      "name": "deer"
+    },
+    {
+      "id": 3,
+      "name": "wild boar"
+    },
+    {
+      "id": 12,
+      "name": "floating eye"
+    },
+    {
+      "id": 13,
+      "name": "giant ant"
+    },
+    {
+      "id": 14,
+      "name": "giant ant soldier"
+    },
+    {
+      "id": 24,
+      "name": "shelob"
+    },
+    {
+      "id": 29,
+      "name": "re ungoliant"
+    },
+    {
+      "id": 30,
+      "name": "ghast"
+    },
+    {
+      "id": 32,
+      "name": "cerberus"
+    },
+    {
+      "id": 33,
+      "name": "scorpion"
+    },
+    {
+      "id": 35,
+      "name": "troll"
+    },
+    {
+      "id": 39,
+      "name": "minotaur i morph"
+    },
+    {
+      "id": 44,
+      "name": "re cockatrice"
+    },
+    {
+      "id": 54,
+      "name": "beleth"
+    },
+    {
+      "id": 60,
+      "name": "bandit bow morph"
+    },
+    {
+      "id": 61,
+      "name": "elmor soldier morph"
+    },
+    {
+      "id": 63,
+      "name": "darkelf ranger morph"
+    },
+    {
+      "id": 64,
+      "name": "elmor general morph"
+    },
+    {
+      "id": 66,
+      "name": "darkelf guard morph"
+    },
+    {
+      "id": 67,
+      "name": "guardian armor morph"
+    },
+    {
+      "id": 68,
+      "name": "darkelf spear morph"
+    },
+    {
+      "id": 69,
+      "name": "darkelf wizard morph"
+    },
+    {
+      "id": 71,
+      "name": "darkelf general morph"
+    },
+    {
+      "id": 72,
+      "name": "assassin master morph"
+    },
+    {
+      "id": 76,
+      "name": "ancient black assassin morph"
+    },
+    {
+      "id": 85,
+      "name": "ancient platinum knight morph"
+    },
+    {
+      "id": 86,
+      "name": "ancient platinum mage morph"
+    },
+    {
+      "id": 87,
+      "name": "ancient platinum scouter morph"
+    },
+    {
+      "id": 88,
+      "name": "ancient platinum assassin morph"
+    },
+    {
+      "id": 89,
+      "name": "jack o lantern"
+    },
+    {
+      "id": 91,
+      "name": "vampire"
+    },
+    {
+      "id": 96,
+      "name": "beagle"
+    },
+    {
       "id": 97,
       "name": "snowman"
     },
@@ -12,6 +144,10 @@
     {
       "id": 99,
       "name": "haregi"
+    },
+    {
+      "id": 100,
+      "name": "baranka"
     },
     {
       "id": 102,
@@ -38,8 +174,188 @@
       "name": "robber bone soldier"
     },
     {
+      "id": 114,
+      "name": "princess horse"
+    },
+    {
+      "id": 115,
+      "name": "prince horse"
+    },
+    {
+      "id": 116,
+      "name": "death 52"
+    },
+    {
+      "id": 117,
+      "name": "darkelf 52"
+    },
+    {
+      "id": 118,
+      "name": "barlog 52"
+    },
+    {
+      "id": 119,
+      "name": "general 52"
+    },
+    {
+      "id": 120,
+      "name": "assassin 52"
+    },
+    {
+      "id": 121,
+      "name": "neo black knight"
+    },
+    {
+      "id": 122,
+      "name": "neo black mage"
+    },
+    {
+      "id": 123,
+      "name": "neo black scouter"
+    },
+    {
+      "id": 124,
+      "name": "neo black assassin"
+    },
+    {
+      "id": 125,
+      "name": "death 55"
+    },
+    {
+      "id": 126,
+      "name": "darkelf 55"
+    },
+    {
+      "id": 127,
+      "name": "barlog 55"
+    },
+    {
+      "id": 128,
+      "name": "general 55"
+    },
+    {
+      "id": 129,
+      "name": "assassin 55"
+    },
+    {
+      "id": 130,
+      "name": "neo silver knight"
+    },
+    {
+      "id": 131,
+      "name": "neo silver mage"
+    },
+    {
+      "id": 132,
+      "name": "neo silver scouter"
+    },
+    {
+      "id": 133,
+      "name": "neo silver assassin"
+    },
+    {
+      "id": 134,
+      "name": "death 60 死騎"
+    },
+    {
+      "id": 135,
+      "name": "darkelf 60黑妞"
+    },
+    {
+      "id": 136,
+      "name": "barlog 60 炎魔"
+    },
+    {
+      "id": 137,
+      "name": "general 60 黑暗將軍"
+    },
+    {
+      "id": 138,
+      "name": "assassin 60 黑妖首領"
+    },
+    {
+      "id": 139,
+      "name": "neo gold knight"
+    },
+    {
+      "id": 140,
+      "name": "neo gold mage"
+    },
+    {
+      "id": 141,
+      "name": "neo gold scouter"
+    },
+    {
+      "id": 142,
+      "name": "neo gold assassin"
+    },
+    {
+      "id": 143,
+      "name": "death 65"
+    },
+    {
+      "id": 144,
+      "name": "darkelf 65"
+    },
+    {
+      "id": 145,
+      "name": "barlog 65"
+    },
+    {
+      "id": 146,
+      "name": "general 65"
+    },
+    {
+      "id": 147,
+      "name": "assassin 65"
+    },
+    {
+      "id": 148,
+      "name": "neo platinum knight"
+    },
+    {
+      "id": 149,
+      "name": "neo platinum mage"
+    },
+    {
+      "id": 150,
+      "name": "neo platinum scouter"
+    },
+    {
+      "id": 151,
+      "name": "neo platinum assassin"
+    },
+    {
+      "id": 152,
+      "name": "death 70"
+    },
+    {
+      "id": 153,
+      "name": "darkelf 70"
+    },
+    {
+      "id": 154,
+      "name": "barlog 70"
+    },
+    {
+      "id": 155,
+      "name": "general 70"
+    },
+    {
+      "id": 156,
+      "name": "assassin 70"
+    },
+    {
       "id": 157,
       "name": "Haunted House jack o lantern"
+    },
+    {
+      "id": 158,
+      "name": "Kelenis Morph"
+    },
+    {
+      "id": 162,
+      "name": "Rabor Born Head"
     },
     {
       "id": 163,
@@ -64,6 +380,14 @@
     {
       "id": 168,
       "name": "awake"
+    },
+    {
+      "id": 170,
+      "name": "spearm 55"
+    },
+    {
+      "id": 171,
+      "name": "spearm 60 狂暴將軍"
     },
     {
       "id": 172,
@@ -128,6 +452,314 @@
     {
       "id": 187,
       "name": "wlis 70"
+    },
+    {
+      "id": 188,
+      "name": "cat"
+    },
+    {
+      "id": 189,
+      "name": "xmasman"
+    },
+    {
+      "id": 190,
+      "name": "young ken lauel"
+    },
+    {
+      "id": 191,
+      "name": "young kelenis"
+    },
+    {
+      "id": 194,
+      "name": "death 75"
+    },
+    {
+      "id": 196,
+      "name": "darkelf 75"
+    },
+    {
+      "id": 198,
+      "name": "young joewoo"
+    },
+    {
+      "id": 199,
+      "name": "young gilian"
+    },
+    {
+      "id": 201,
+      "name": "death 80"
+    },
+    {
+      "id": 202,
+      "name": "spearm 80"
+    },
+    {
+      "id": 203,
+      "name": "darkelf 80"
+    },
+    {
+      "id": 204,
+      "name": "re orc scout"
+    },
+    {
+      "id": 205,
+      "name": "re bugbear"
+    },
+    {
+      "id": 206,
+      "name": "re giant ant"
+    },
+    {
+      "id": 207,
+      "name": "re giant ant soldier"
+    },
+    {
+      "id": 208,
+      "name": "re ghast"
+    },
+    {
+      "id": 209,
+      "name": "re lizardman"
+    },
+    {
+      "id": 210,
+      "name": "re kiwi parrot"
+    },
+    {
+      "id": 211,
+      "name": "re wild fang"
+    },
+    {
+      "id": 212,
+      "name": "re raccoon"
+    },
+    {
+      "id": 213,
+      "name": "re owlbear"
+    },
+    {
+      "id": 214,
+      "name": "re ratman"
+    },
+    {
+      "id": 215,
+      "name": "re dragon fly"
+    },
+    {
+      "id": 216,
+      "name": "re succubus"
+    },
+    {
+      "id": 217,
+      "name": "re guard sword"
+    },
+    {
+      "id": 218,
+      "name": "re darkelf carrier"
+    },
+    {
+      "id": 219,
+      "name": "re darkelf assassin"
+    },
+    {
+      "id": 220,
+      "name": "re elder"
+    },
+    {
+      "id": 221,
+      "name": "re orc axe"
+    },
+    {
+      "id": 222,
+      "name": "re bandit bow"
+    },
+    {
+      "id": 223,
+      "name": "re guard chief"
+    },
+    {
+      "id": 224,
+      "name": "re guard spear"
+    },
+    {
+      "id": 225,
+      "name": "re hose"
+    },
+    {
+      "id": 226,
+      "name": "re dark elder"
+    },
+    {
+      "id": 227,
+      "name": "re bandit axe"
+    },
+    {
+      "id": 228,
+      "name": "re darkelf ranger"
+    },
+    {
+      "id": 229,
+      "name": "re cargo"
+    },
+    {
+      "id": 230,
+      "name": "re darkelf spear"
+    },
+    {
+      "id": 231,
+      "name": "re blaze"
+    },
+    {
+      "id": 232,
+      "name": "re black wizard"
+    },
+    {
+      "id": 233,
+      "name": "re dwarf boss"
+    },
+    {
+      "id": 234,
+      "name": "re darkelf thief"
+    },
+    {
+      "id": 235,
+      "name": "re black knight chief"
+    },
+    {
+      "id": 236,
+      "name": "re black knight"
+    },
+    {
+      "id": 237,
+      "name": "re assassin master"
+    },
+    {
+      "id": 238,
+      "name": "re baphomet"
+    },
+    {
+      "id": 239,
+      "name": "re minotaur"
+    },
+    {
+      "id": 240,
+      "name": "re darkelf guard"
+    },
+    {
+      "id": 241,
+      "name": "re dreik"
+    },
+    {
+      "id": 242,
+      "name": "re xinclair"
+    },
+    {
+      "id": 243,
+      "name": "re great minotaur"
+    },
+    {
+      "id": 244,
+      "name": "re darkelf bow"
+    },
+    {
+      "id": 260,
+      "name": "spearm 85"
+    },
+    {
+      "id": 261,
+      "name": "spearm 82"
+    },
+    {
+      "id": 262,
+      "name": "fire dk 85"
+    },
+    {
+      "id": 263,
+      "name": "lightning dk 82"
+    },
+    {
+      "id": 264,
+      "name": "tw real darkelf"
+    },
+    {
+      "id": 265,
+      "name": "owei 82"
+    },
+    {
+      "id": 266,
+      "name": "owei 85"
+    },
+    {
+      "id": 283,
+      "name": "red guard archer 85"
+    },
+    {
+      "id": 284,
+      "name": "red guard 85"
+    },
+    {
+      "id": 288,
+      "name": "82 True assassin"
+    },
+    {
+      "id": 289,
+      "name": "86 True assassin"
+    },
+    {
+      "id": 311,
+      "name": "86 real knight"
+    },
+    {
+      "id": 322,
+      "name": "gm"
+    },
+    {
+      "id": 367,
+      "name": "opp333"
+    },
+    {
+      "id": 368,
+      "name": "opp334"
+    },
+    {
+      "id": 369,
+      "name": "opp336"
+    },
+    {
+      "id": 370,
+      "name": "opp337"
+    },
+    {
+      "id": 371,
+      "name": "opp332"
+    },
+    {
+      "id": 372,
+      "name": "opp335"
+    },
+    {
+      "id": 373,
+      "name": "opp333free"
+    },
+    {
+      "id": 374,
+      "name": "opp334free"
+    },
+    {
+      "id": 375,
+      "name": "opp336free"
+    },
+    {
+      "id": 376,
+      "name": "opp337free"
+    },
+    {
+      "id": 377,
+      "name": "opp332free"
+    },
+    {
+      "id": 378,
+      "name": "opp335free"
     },
     {
       "id": 379,
@@ -634,6 +1266,394 @@
       "name": "夏納的變身卷軸(等級30)"
     },
     {
+      "id": 505,
+      "name": "GM專用"
+    },
+    {
+      "id": 507,
+      "name": "milkcow"
+    },
+    {
+      "id": 508,
+      "name": "deer"
+    },
+    {
+      "id": 509,
+      "name": "wild boar"
+    },
+    {
+      "id": 510,
+      "name": "orc"
+    },
+    {
+      "id": 511,
+      "name": "bow orc"
+    },
+    {
+      "id": 512,
+      "name": "goblin"
+    },
+    {
+      "id": 513,
+      "name": "kobolds"
+    },
+    {
+      "id": 514,
+      "name": "dwarf"
+    },
+    {
+      "id": 515,
+      "name": "orc fighter"
+    },
+    {
+      "id": 516,
+      "name": "werewolf"
+    },
+    {
+      "id": 517,
+      "name": "stone golem"
+    },
+    {
+      "id": 518,
+      "name": "floating eye"
+    },
+    {
+      "id": 519,
+      "name": "giant ant"
+    },
+    {
+      "id": 520,
+      "name": "giant ant soldier"
+    },
+    {
+      "id": 521,
+      "name": "gandi orc"
+    },
+    {
+      "id": 522,
+      "name": "rova orc"
+    },
+    {
+      "id": 523,
+      "name": "atuba orc"
+    },
+    {
+      "id": 524,
+      "name": "dudamara orc"
+    },
+    {
+      "id": 525,
+      "name": "neruga orc"
+    },
+    {
+      "id": 526,
+      "name": "skeleton polymorph"
+    },
+    {
+      "id": 527,
+      "name": "skeleton pike polymorph"
+    },
+    {
+      "id": 528,
+      "name": "skeleton archer polymorph"
+    },
+    {
+      "id": 529,
+      "name": "skeleton axeman polymorph"
+    },
+    {
+      "id": 530,
+      "name": "shelob"
+    },
+    {
+      "id": 531,
+      "name": "zombie"
+    },
+    {
+      "id": 532,
+      "name": "ghoul"
+    },
+    {
+      "id": 533,
+      "name": "spartoi polymorph"
+    },
+    {
+      "id": 534,
+      "name": "lycanthrope"
+    },
+    {
+      "id": 535,
+      "name": "ungoliant"
+    },
+    {
+      "id": 536,
+      "name": "ghast"
+    },
+    {
+      "id": 537,
+      "name": "bugbear"
+    },
+    {
+      "id": 538,
+      "name": "cerberus"
+    },
+    {
+      "id": 539,
+      "name": "scorpion"
+    },
+    {
+      "id": 540,
+      "name": "ogre"
+    },
+    {
+      "id": 541,
+      "name": "troll"
+    },
+    {
+      "id": 542,
+      "name": "elder"
+    },
+    {
+      "id": 543,
+      "name": "king bugbear"
+    },
+    {
+      "id": 544,
+      "name": "orc scout polymorph"
+    },
+    {
+      "id": 545,
+      "name": "minotaur i morph"
+    },
+    {
+      "id": 546,
+      "name": "giant a morph"
+    },
+    {
+      "id": 547,
+      "name": "yeti morph"
+    },
+    {
+      "id": 548,
+      "name": "cyclops"
+    },
+    {
+      "id": 549,
+      "name": "griffon"
+    },
+    {
+      "id": 550,
+      "name": "cockatrice"
+    },
+    {
+      "id": 551,
+      "name": "ettin"
+    },
+    {
+      "id": 552,
+      "name": "dark elder"
+    },
+    {
+      "id": 553,
+      "name": "necromancer3"
+    },
+    {
+      "id": 554,
+      "name": "necromancer4"
+    },
+    {
+      "id": 555,
+      "name": "necromancer1"
+    },
+    {
+      "id": 556,
+      "name": "necromancer2"
+    },
+    {
+      "id": 557,
+      "name": "assassin"
+    },
+    {
+      "id": 558,
+      "name": "darkelf carrier"
+    },
+    {
+      "id": 559,
+      "name": "baphomet"
+    },
+    {
+      "id": 560,
+      "name": "beleth"
+    },
+    {
+      "id": 561,
+      "name": "demon"
+    },
+    {
+      "id": 562,
+      "name": "death knight"
+    },
+    {
+      "id": 563,
+      "name": "dark elf polymorph"
+    },
+    {
+      "id": 564,
+      "name": "gelatincube"
+    },
+    {
+      "id": 565,
+      "name": "middle oum"
+    },
+    {
+      "id": 566,
+      "name": "succubus morph"
+    },
+    {
+      "id": 567,
+      "name": "bandit bow morph"
+    },
+    {
+      "id": 568,
+      "name": "elmor soldier morph"
+    },
+    {
+      "id": 569,
+      "name": "lesser demon"
+    },
+    {
+      "id": 570,
+      "name": "darkelf ranger morph"
+    },
+    {
+      "id": 571,
+      "name": "elmor general morph"
+    },
+    {
+      "id": 572,
+      "name": "great minotaur morph"
+    },
+    {
+      "id": 573,
+      "name": "darkelf guard morph"
+    },
+    {
+      "id": 574,
+      "name": "guardian armor morph"
+    },
+    {
+      "id": 575,
+      "name": "darkelf spear morph"
+    },
+    {
+      "id": 576,
+      "name": "darkelf wizard morph"
+    },
+    {
+      "id": 577,
+      "name": "black knight chief morph"
+    },
+    {
+      "id": 578,
+      "name": "black knight morph"
+    },
+    {
+      "id": 580,
+      "name": "barlog morph"
+    },
+    {
+      "id": 581,
+      "name": "darkelf general morph"
+    },
+    {
+      "id": 582,
+      "name": "assassin master morph"
+    },
+    {
+      "id": 583,
+      "name": "ancient black knight morph"
+    },
+    {
+      "id": 584,
+      "name": "ancient black mage morph"
+    },
+    {
+      "id": 585,
+      "name": "ancient black scouter morph"
+    },
+    {
+      "id": 586,
+      "name": "ancient black assassin morph"
+    },
+    {
+      "id": 587,
+      "name": "ancient silver knight morph"
+    },
+    {
+      "id": 588,
+      "name": "ancient silver mage morph"
+    },
+    {
+      "id": 589,
+      "name": "ancient silver scouter morph"
+    },
+    {
+      "id": 590,
+      "name": "ancient silver assassin morph"
+    },
+    {
+      "id": 591,
+      "name": "ancient gold knight morph"
+    },
+    {
+      "id": 592,
+      "name": "ancient gold mage morph"
+    },
+    {
+      "id": 593,
+      "name": "ancient gold scouter morph"
+    },
+    {
+      "id": 594,
+      "name": "ancient gold assassin morph"
+    },
+    {
+      "id": 598,
+      "name": "ancient platinum assassin morph"
+    },
+    {
+      "id": 599,
+      "name": "jack o lantern"
+    },
+    {
+      "id": 600,
+      "name": "death"
+    },
+    {
+      "id": 601,
+      "name": "vampire"
+    },
+    {
+      "id": 602,
+      "name": "rabbit"
+    },
+    {
+      "id": 603,
+      "name": "carrot rabbit"
+    },
+    {
+      "id": 604,
+      "name": "high collie"
+    },
+    {
+      "id": 605,
+      "name": "high raccoon"
+    },
+    {
+      "id": 606,
+      "name": "beagle"
+    },
+    {
       "id": 607,
       "name": "snowman"
     },
@@ -646,8 +1666,36 @@
       "name": "haregi"
     },
     {
+      "id": 610,
+      "name": "baranka"
+    },
+    {
+      "id": 611,
+      "name": "manekineko"
+    },
+    {
       "id": 612,
       "name": "red orc"
+    },
+    {
+      "id": 613,
+      "name": "drake morph"
+    },
+    {
+      "id": 614,
+      "name": "knight vald morph"
+    },
+    {
+      "id": 615,
+      "name": "iris morph"
+    },
+    {
+      "id": 616,
+      "name": "paperman morph"
+    },
+    {
+      "id": 617,
+      "name": "succubus queen morph"
     },
     {
       "id": 618,
@@ -668,11 +1716,527 @@
     {
       "id": 622,
       "name": "robber bone soldier"
+    },
+    {
+      "id": 623,
+      "name": "spirit of earth boss"
+    },
+    {
+      "id": 624,
+      "name": "princess horse"
+    },
+    {
+      "id": 625,
+      "name": "prince horse"
+    },
+    {
+      "id": 626,
+      "name": "death 52"
+    },
+    {
+      "id": 627,
+      "name": "darkelf 52"
+    },
+    {
+      "id": 628,
+      "name": "barlog 52"
+    },
+    {
+      "id": 629,
+      "name": "general 52"
+    },
+    {
+      "id": 630,
+      "name": "assassin 52"
+    },
+    {
+      "id": 631,
+      "name": "neo black knight"
+    },
+    {
+      "id": 632,
+      "name": "neo black mage"
+    },
+    {
+      "id": 633,
+      "name": "neo black scouter"
+    },
+    {
+      "id": 634,
+      "name": "neo black assassin"
+    },
+    {
+      "id": 635,
+      "name": "death 55"
+    },
+    {
+      "id": 636,
+      "name": "darkelf 55"
+    },
+    {
+      "id": 637,
+      "name": "barlog 55"
+    },
+    {
+      "id": 638,
+      "name": "general 55"
+    },
+    {
+      "id": 639,
+      "name": "assassin 55"
+    },
+    {
+      "id": 640,
+      "name": "neo silver knight"
+    },
+    {
+      "id": 641,
+      "name": "neo silver mage"
+    },
+    {
+      "id": 642,
+      "name": "neo silver scouter"
+    },
+    {
+      "id": 643,
+      "name": "neo silver assassin"
+    },
+    {
+      "id": 644,
+      "name": "death 60"
+    },
+    {
+      "id": 645,
+      "name": "darkelf 60"
+    },
+    {
+      "id": 646,
+      "name": "barlog 60"
+    },
+    {
+      "id": 647,
+      "name": "general 60"
+    },
+    {
+      "id": 648,
+      "name": "assassin 60"
+    },
+    {
+      "id": 649,
+      "name": "neo gold knight"
+    },
+    {
+      "id": 650,
+      "name": "neo gold mage"
+    },
+    {
+      "id": 651,
+      "name": "neo gold scouter"
+    },
+    {
+      "id": 652,
+      "name": "neo gold assassin"
+    },
+    {
+      "id": 653,
+      "name": "death 65"
+    },
+    {
+      "id": 654,
+      "name": "darkelf 65"
+    },
+    {
+      "id": 655,
+      "name": "barlog 65"
+    },
+    {
+      "id": 656,
+      "name": "general 65"
+    },
+    {
+      "id": 657,
+      "name": "assassin 65"
+    },
+    {
+      "id": 658,
+      "name": "neo platinum knight"
+    },
+    {
+      "id": 659,
+      "name": "neo platinum mage"
+    },
+    {
+      "id": 660,
+      "name": "neo platinum scouter"
+    },
+    {
+      "id": 661,
+      "name": "neo platinum assassin"
+    },
+    {
+      "id": 662,
+      "name": "death 70"
+    },
+    {
+      "id": 663,
+      "name": "darkelf 70"
+    },
+    {
+      "id": 664,
+      "name": "barlog 70"
+    },
+    {
+      "id": 665,
+      "name": "general 70"
+    },
+    {
+      "id": 666,
+      "name": "assassin 70"
+    },
+    {
+      "id": 667,
+      "name": "unicorn A"
+    },
+    {
+      "id": 668,
+      "name": "unicorn B"
+    },
+    {
+      "id": 669,
+      "name": "unicorn C"
+    },
+    {
+      "id": 670,
+      "name": "unicorn D"
+    },
+    {
+      "id": 671,
+      "name": "bear A"
+    },
+    {
+      "id": 672,
+      "name": "bear B"
+    },
+    {
+      "id": 673,
+      "name": "bear C"
+    },
+    {
+      "id": 674,
+      "name": "bear D"
+    },
+    {
+      "id": 675,
+      "name": "mini white dog A"
+    },
+    {
+      "id": 676,
+      "name": "mini white dog B"
+    },
+    {
+      "id": 677,
+      "name": "mini white dog C"
+    },
+    {
+      "id": 678,
+      "name": "mini white dog D"
+    },
+    {
+      "id": 679,
+      "name": "ratman A"
+    },
+    {
+      "id": 680,
+      "name": "ratman B"
+    },
+    {
+      "id": 681,
+      "name": "ratman C"
+    },
+    {
+      "id": 682,
+      "name": "ratman D"
+    },
+    {
+      "id": 683,
+      "name": "pet tiger A"
+    },
+    {
+      "id": 684,
+      "name": "pet tiger B"
+    },
+    {
+      "id": 685,
+      "name": "pet tiger C"
+    },
+    {
+      "id": 686,
+      "name": "pet tiger D"
+    },
+    {
+      "id": 687,
+      "name": "dillo A"
+    },
+    {
+      "id": 688,
+      "name": "dillo B"
+    },
+    {
+      "id": 689,
+      "name": "dillo C"
+    },
+    {
+      "id": 690,
+      "name": "dillo D"
+    },
+    {
+      "id": 691,
+      "name": "mole A"
+    },
+    {
+      "id": 692,
+      "name": "mole B"
+    },
+    {
+      "id": 693,
+      "name": "mole C"
+    },
+    {
+      "id": 694,
+      "name": "mole D"
+    },
+    {
+      "id": 695,
+      "name": "darkelf thief A"
+    },
+    {
+      "id": 696,
+      "name": "darkelf thief B"
+    },
+    {
+      "id": 697,
+      "name": "darkelf thief C"
+    },
+    {
+      "id": 698,
+      "name": "darkelf thief D"
+    },
+    {
+      "id": 699,
+      "name": "ken lauhel A"
+    },
+    {
+      "id": 700,
+      "name": "ken lauhel B"
+    },
+    {
+      "id": 701,
+      "name": "ken lauhel C"
+    },
+    {
+      "id": 702,
+      "name": "ken lauhel D"
+    },
+    {
+      "id": 703,
+      "name": "kelenis A"
+    },
+    {
+      "id": 704,
+      "name": "kelenis B"
+    },
+    {
+      "id": 705,
+      "name": "kelenis C"
+    },
+    {
+      "id": 706,
+      "name": "kelenis D"
+    },
+    {
+      "id": 707,
+      "name": "slave A"
+    },
+    {
+      "id": 708,
+      "name": "slave B"
+    },
+    {
+      "id": 709,
+      "name": "slave C"
+    },
+    {
+      "id": 710,
+      "name": "slave D"
+    },
+    {
+      "id": 711,
+      "name": "dofleganger boss A"
+    },
+    {
+      "id": 712,
+      "name": "dofleganger boss B"
+    },
+    {
+      "id": 713,
+      "name": "dofleganger boss C"
+    },
+    {
+      "id": 714,
+      "name": "dofleganger boss D"
+    },
+    {
+      "id": 715,
+      "name": "lich A"
+    },
+    {
+      "id": 716,
+      "name": "lich B"
+    },
+    {
+      "id": 717,
+      "name": "lich C"
+    },
+    {
+      "id": 718,
+      "name": "lich D"
+    },
+    {
+      "id": 719,
+      "name": "woman1 A"
+    },
+    {
+      "id": 720,
+      "name": "woman1 B"
+    },
+    {
+      "id": 721,
+      "name": "woman2 A"
+    },
+    {
+      "id": 722,
+      "name": "woman2 B"
+    },
+    {
+      "id": 723,
+      "name": "woman3 A"
+    },
+    {
+      "id": 724,
+      "name": "woman3 B"
+    },
+    {
+      "id": 725,
+      "name": "woman4 A"
+    },
+    {
+      "id": 726,
+      "name": "woman4 B"
+    },
+    {
+      "id": 727,
+      "name": "woman5 A"
+    },
+    {
+      "id": 728,
+      "name": "90 Really anti-king"
+    },
+    {
+      "id": 729,
+      "name": "90 True sines"
+    },
+    {
+      "id": 730,
+      "name": "75 Counter Strike"
+    },
+    {
+      "id": 731,
+      "name": "77 Counter Strike"
+    },
+    {
+      "id": 732,
+      "name": "75 Meow small series"
+    },
+    {
+      "id": 733,
+      "name": "eightysix curtz"
+    },
+    {
+      "id": 734,
+      "name": "eihgtysix helvine"
+    },
+    {
+      "id": 735,
+      "name": "82 real knight"
+    },
+    {
+      "id": 736,
+      "name": "eightyeight gunter"
+    },
+    {
+      "id": 737,
+      "name": "eightyeight prokel"
+    },
+    {
+      "id": 738,
+      "name": "eightyeight bluedica"
+    },
+    {
+      "id": 739,
+      "name": "eightysix slave"
+    },
+    {
+      "id": 740,
+      "name": "Eightyeight zillan"
+    },
+    {
+      "id": 741,
+      "name": "eightysix iris"
+    },
+    {
+      "id": 742,
+      "name": "eightysix hardin"
+    },
+    {
+      "id": 743,
+      "name": "eightyeight joewoo"
+    },
+    {
+      "id": 744,
+      "name": "GM專用"
+    },
+    {
+      "id": 781,
+      "name": "Wilderness knight"
+    },
+    {
+      "id": 782,
+      "name": "Bliss White Gold Knight"
+    },
+    {
+      "id": 783,
+      "name": "Magistera Master"
+    },
+    {
+      "id": 784,
+      "name": "Wilderness white gold black demon"
+    },
+    {
+      "id": 785,
+      "name": "Wilderness white gold goblin"
+    },
+    {
+      "id": 786,
+      "name": "Dragon Dragon Knight"
+    },
+    {
+      "id": 787,
+      "name": "red spearm 90"
     }
   ],
   "existingCards": 173,
-  "newCards": 495,
-  "newGraphics": 327,
+  "newCards": 104,
+  "newGraphics": 85,
   "unavailable": [
     {
       "id": 325,
