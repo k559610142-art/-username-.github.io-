@@ -10,12 +10,12 @@ window.SoulRingVisuals=(()=>{
    svg.innerHTML=`<image href="assets/interface/wuhun-rings/dragon-atlas.png?v=2" width="3840" height="4608"><animate attributeName="x" values="${xs}" dur="10s" calcMode="discrete" repeatCount="indefinite"/><animate attributeName="y" values="${ys}" dur="10s" calcMode="discrete" repeatCount="indefinite"/></image>`;
   }else{
    const n=Math.min(5,Math.max(0,level-1));
-   svg.innerHTML=`<image href="assets/interface/wuhun-rings/ring-live-${n+1}.png?v=approved2" width="384" height="384"/>`;
+   svg.innerHTML=`<image href="assets/interface/wuhun-rings/ring-live-${n+1}.png?v=approved3" width="384" height="384"/>`;
   }
   return svg;
  }
- // Six horizontal hoops rise from the feet to above the shoulders.
- const layout=Object.freeze(Array.from({length:6},(_,i)=>Object.freeze({radius:22+i*2,rise:i*12})));
+ // White is the smallest, highest hoop; red is the widest hoop at the feet.
+ const layout=Object.freeze(Array.from({length:6},(_,i)=>Object.freeze({radius:22+i*2,rise:(5-i)*12})));
  function dragonEnabled(slots,tier){return tier==='四神獸'&&Array.isArray(slots)&&slots.length===6&&Array.from(slots).every(id=>id!=null);}
  const dragonLayout=Object.freeze({radius:62,rise:44});
  const showPhantom=tier=>tier!=='四神獸';

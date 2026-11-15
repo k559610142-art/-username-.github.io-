@@ -37,9 +37,10 @@ public static class SoulRingAssets {
               double halo=65*Math.Exp(-Math.Pow((r-.34)/.10,2));
               halo*=Smooth(.17,.23,r)*(1-Smooth(.445,.495,r));
               a=Math.Max(242*band,halo);
-              red=red*.68*band+90*(1-band);
-              green=green*.68*band+90*(1-band);
-              blue=blue*.68*band+90*(1-band);
+              // Avoid a jet-black ink-like stroke when the smoky band is flattened.
+              red=Math.Min(64,Math.Max(28,red*.68))*band+90*(1-band);
+              green=Math.Min(64,Math.Max(28,green*.68))*band+90*(1-band);
+              blue=Math.Min(64,Math.Max(28,blue*.68))*band+90*(1-band);
             }
           }
           bytes[i]=(byte)(a==0?0:blue);bytes[i+1]=(byte)(a==0?0:green);bytes[i+2]=(byte)(a==0?0:red);bytes[i+3]=(byte)a;
