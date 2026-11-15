@@ -168,3 +168,11 @@ main.game.reference-game #panel.game-catalog-panel.wuhun-panel{padding:16px 14px
 @media(max-width:700px){.wuhun-live-scene{bottom:110px}.wuhun-player-art{left:6%;width:88%;height:70%}.wuhun-live-caption strong{font-size:14px}.wuhun-live-caption span{font-size:10px}.wuhun-live-rings{border-width:2px}}
 
 .wuhun-live-stage .wuhun-player-art.wuhun-player-cutout{mask-image:none;filter:drop-shadow(0 3px 4px #0008)}
+
+/* 強化已裝備武魂：上方偏左為主體，玩家縮小並移到右下。 */
+.wuhun-live-stage .wuhun-equipped-spirit{left:-5%;top:8%;width:100%;height:84%;object-position:center top;opacity:.95;filter:brightness(1.14) contrast(1.08) drop-shadow(0 0 15px #ae84ddaa);image-rendering:auto;transform:none}
+.wuhun-live-stage .wuhun-equipped-aura{inset:8% 8% 18% 0}
+.wuhun-live-stage .wuhun-player-art{left:43%;bottom:0;width:53%;height:49%}
+.wuhun-live-stage .wuhun-live-rings{left:8%;bottom:3%;height:10%;border-width:2px;box-shadow:0 0 9px #e4ac48,inset 0 0 7px #c99243,0 -9px 2px -1px #b96bf6,0 -9px 9px #8b48d0}
+.wuhun-live-stage .wuhun-live-scene:not(.has-soul) .wuhun-player-art{left:12%;width:76%;height:68%}
+@media(max-width:700px){.wuhun-live-stage .wuhun-equipped-spirit{left:-4%;width:100%;top:12%;height:77%}.wuhun-live-stage .wuhun-player-art{left:40%;width:58%;height:46%}.wuhun-live-stage .wuhun-live-scene:not(.has-soul) .wuhun-player-art{left:6%;width:88%;height:70%}}
