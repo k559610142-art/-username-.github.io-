@@ -12,8 +12,8 @@ const IslandNpcServices = (() => {
   };
   function open(id,service=null) {
     if (CharacterActions.dead || window.gameFlowState !== 'playing') return;
-    if(!service){if(DBGameRules.craftNpcs().has(id)&&!NativeNpcDialogs.profile(id)?.normal)return DBGameRules.openCrafting(id);return NativeNpcDialogs.open(id);}
-    if(service==='craft'&&DBGameRules.craftNpcs().has(id))return DBGameRules.openCrafting(id);
+    if(!service)return NativeNpcDialogs.open(id);
+    if(service==='craft')return CraftingWindow.open(); // 製作只在玩家身上的製作清單
     const warehouse = islandMonsterTemplates[id]?.kind==='L1Dwarf';const shopRows=NativeNpcDialogs.shop(id);if(!warehouse&&!shopRows.length){NativeNpcDialogs.open(id);return NativeNpcDialogs.message('此 NPC 沒有設定商品。')}if(!warehouse&&(NativeNpcDialogs.profile(id)?.currency||40308)!==40308){NativeNpcDialogs.open(id);return NativeNpcDialogs.message('此商店使用特殊貨幣，目前尚未接入交易。')}
     const title = NativeNpcDialogs.title(id);
     let secondary = service==='sell'||service==='retrieve';

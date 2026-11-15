@@ -67,7 +67,12 @@ const IslandMonsters = (() => {
     }
   }
   // Keep village landmarks and service NPCs visible. Other residents remain in the source data.
-  const villageServices = new Set([60001,70014,...TELEPORTER_DATA.ids,...dbActiveSettings.system_item_blend.rows.map(row=>row[1])]); // 傳送師、倉庫、雜貨商
+  // 製作改在玩家身上的「製作」清單（CraftingWindow），只負責製作的 NPC 不放進地圖（使用者 2026-11-15）：有製作配方、沒有商品、不是傳送師。
+  let craftOnlyNpcs=null;
+  function craftOnly(id){
+    if(!craftOnlyNpcs){const shops=typeof NATIVE_NPC_DIALOGS!=='undefined'?NATIVE_NPC_DIALOGS.shops:null;const set=new Set(dbActiveSettings.system_item_blend.rows.map(row=>row[1]).filter(npcId=>!shops?.[npcId]?.length&&!TELEPORTER_DATA.ids.includes(npcId)));if(!shops)return set.has(id);craftOnlyNpcs=set;}
+    return craftOnlyNpcs.has(id);
+  }
   const occupancy=new Set();let occupancyTick=-1;const populations=new Map(),incomingBots=new Map();let populationMap=null;
   function seedPopulation(){
   // These two DB positions belong to a different house layout. Match the supplied client indoor groups.
@@ -76,6 +81,7 @@ const IslandMonsters = (() => {
     const corrected=source.resident&&source.mapId===4&&indoorServices[source.spawnId];
     const spawn=corrected?{...source,point:corrected,sourcePoint:source.point}:source;
     if((spawn.mapId||0)!==(window.activeMapId||0))continue;
+    if(spawn.resident&&craftOnly(spawn.npcId))continue;
     if(!islandMonsterFrames[spawn.npc.gfx])continue;
     let seed=spawn.spawnId>>>0;
     const random=()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);

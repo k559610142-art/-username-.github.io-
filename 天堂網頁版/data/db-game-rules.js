@@ -213,7 +213,7 @@ const DBGameRules = (() => {
   panel=function(type){
     previousPanel(type);
     if(type==='settings'){
-      const craftButton=uiElement('button','classic-use','製作配方');craftButton.onclick=()=>openCrafting();
+      const craftButton=uiElement('button','classic-use','製作配方');craftButton.onclick=()=>CraftingWindow.open();
       document.querySelector('#panelContent').append(craftButton);
     }
   };
