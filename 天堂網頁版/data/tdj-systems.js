@@ -243,11 +243,8 @@ window.TdjSystems = (() => {
     // 魂環光圈（2026-11-15 使用者要「武魂光暈特效在人物腳底浮現」）：環位每放一個魂環＝腳底一圈，照品級上色；外框壓扁成地面透視，流光轉、整圈呼吸
     '.tdj-rings{position:absolute;left:0;top:0;width:0;height:0;--s:1}' +
     '.tdj-ring{position:absolute;left:calc(var(--r) * var(--s) * -1px);top:calc(var(--r) * var(--s) * -1px);width:calc(var(--r) * var(--s) * 2px);height:calc(var(--r) * var(--s) * 2px);transform:translateY(calc(var(--s) * 2px)) scaleY(.42);animation:tdjRingPulse 2.6s ease-in-out infinite;animation-delay:var(--d)}' +
-    '.tdj-ring b,.tdj-ring i{position:absolute;inset:0;border-radius:50%}' +
-    '.tdj-ring b{border:calc(var(--s) * 1.5px) solid var(--c);box-shadow:0 0 calc(var(--s) * 6px) var(--g),inset 0 0 calc(var(--s) * 6px) var(--g);opacity:.75}' +
-    '.tdj-ring i{background:conic-gradient(from 0deg,transparent 0 12%,var(--c) 22%,#fff 25%,var(--c) 28%,transparent 40% 62%,var(--c) 72%,transparent 84%);' +
-    '-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - var(--s) * 3.5px),#000 calc(100% - var(--s) * 3px));mask:radial-gradient(farthest-side,transparent calc(100% - var(--s) * 3.5px),#000 calc(100% - var(--s) * 3px));' +
-    'animation:tdjRingSpin var(--t) linear infinite;filter:drop-shadow(0 0 calc(var(--s) * 3px) var(--g))}' +
+    // 魂環圖（assets/interface/wuhun-rings/ring-1～6.png，使用者給的六色魂環總圖由 tools/soul-ring-cut.ps1 切成透明正圓；環半徑＝圖寬 0.36）：整圈 scaleY 壓成地面，圖本身慢慢轉
+    '.tdj-ring img{position:absolute;left:-19.44%;top:-19.44%;width:138.89%;height:138.89%;max-width:none;pointer-events:none;animation:tdjRingSpin var(--t) linear infinite;filter:var(--tone,none) drop-shadow(0 0 calc(var(--s) * 3px) var(--g))}' +
     '.tdj-rings.idle .tdj-ring{opacity:.35;animation:none}' +
     '@keyframes tdjRingSpin{to{transform:rotate(360deg)}}' +
     '@keyframes tdjRingPulse{0%,100%{opacity:.7}50%{opacity:1}}';
@@ -276,12 +273,15 @@ window.TdjSystems = (() => {
       const [c, g] = ringColors[w.tier] || ringColors.下品;
       const ring = document.createElement('div');
       ring.className = 'tdj-ring';
-      ring.style.cssText = '--r:' + (17 + i * 7) + ';--c:' + c + ';--g:' + g + ';--t:' + (5 + i * 1.3) + 's;--d:' + (-i * .4) + 's';
-      const glow = document.createElement('b'), flow = document.createElement('i');
-      if (i % 2) flow.style.animationDirection = 'reverse';
-      ring.append(glow, flow);
+      ring.style.cssText = '--r:' + Math.round(15 * Math.pow(1.3, i)) + ';--c:' + c + ';--g:' + g + ';--t:' + (16 + i * 4) + 's;--d:' + (-i * .4) + 's';
+      const pic = new Image(); pic.alt = ''; pic.decoding = 'async'; pic.draggable = false;
+      pic.src = 'assets/interface/wuhun-rings/ring-' + Math.min(6, Math.max(1, WUHUN_TIERS.indexOf(w.tier) + 1)) + '.png';
+      if (i % 2) pic.style.animationDirection = 'reverse';
+      const tone = {千年: 'hue-rotate(-28deg) saturate(1.35)', 萬年: 'brightness(.62) saturate(1.25) contrast(1.25)'}[w.tier]; // 讓相近色的兩階分得開：千年偏藍紫、萬年壓成黑紅
+      if (tone) pic.style.setProperty('--tone', tone);
+      ring.append(pic);
       ring.title = w.name.replace('武魂', '魂環');
-      box.append(ring);
+      box.prepend(ring); // 外圈先畫、內圈疊在上面，內層顏色不會被外圈光暈蓋掉
     });
     back.prepend(box); // 最底層：在人物、武魂虛影下面
     ringLayer = box;

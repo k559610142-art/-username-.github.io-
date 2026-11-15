@@ -389,6 +389,9 @@ NPC 穿衣服（2026-11-13）：
 2026-11-15 武魂真身內頁更新：game-catalog.js/css 專用 wuhun-panel 四欄金框版面，中央主視覺 assets/interface/wuhun-panel/soul-awakening.webp；分類／搜尋／取得／裝備／卸下保留原功能，右側顯示真實能力與已收集武魂。
 
 2026-11-15 武魂實際預覽與魂環：中央改為 currentPortrait 玩家職業／性別立繪，加上目前已裝備武魂圖案；右側武魂環位共 6 格，SoulRings 使用多餘副本煉成（保留一個收藏），加成取原武魂支援能力 20% 且各項至少 1。環位及持有數存在角色 TDJ 存檔，失敗回復原狀；武魂與魂環屬性、HP/MP、恢復、傷害、SP、減傷、抗性與經驗加成接入實際計算。測試 tools/soul-rings.test.cjs。
+  2026-11-15 魂環改用使用者給的六色魂環圖：tools/soul-ring-cut.ps1 切成 assets/interface/wuhun-rings/ring-1～6.png（下品白、上品黃、極品紫、千年深紫、萬年黑紅、上古紅）
+    黑底轉透明、量傾斜角與長短軸比轉正拉成正圓、只留環帶；遊戲裡 scaleY(.42) 壓成地面透視慢轉，半徑 15×1.3^i 等比放大、內圈疊上層；
+    千年 hue-rotate 偏藍紫、萬年壓暗成黑紅，讓相近色分得開（使用者回報每層顏色不明顯後調整）
   2026-11-15 魂槽升階改版（使用者設計，取代「多餘武魂煉魂環＋20% 加成」）：第 1～6 槽依序只能獻祭 下品／上品／極品／千年／萬年／上古 武魂，
     放入即消耗、不能拿回、不給能力（SoulRings.bonuses 只算裝備中的武魂）；裝備第 N 階要前 N 槽都點亮（四神獸要 6 槽全滿）；裝備中的最後一隻不能獻祭；
     tdj-systems.js changeRings('offer') 與 ringMissing、存檔 ringV:2；舊存檔的魂環（ringOwned）退回成武魂、魂槽清空、條件不夠的裝備卸下；測試 tools/soul-rings.test.cjs 改寫
