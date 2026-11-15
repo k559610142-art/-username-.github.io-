@@ -167,11 +167,13 @@ const DBGameRules = (() => {
     return OwnedInventory.items.filter(e=>e.slot).reduce((n,e)=>n+(e.item.sourceRules?.damage_reduction||0),0)+
       (EquipmentSets.read(OwnedInventory.items).reduction_dmg||0)+(window.ClassBuffs?.reduction()||0)+(window.SoulRings?.bonuses().reduction||0);
   }
-  const craftRecipes=()=>rows('system_item_blend').filter(r=>!/^回收魔珠/.test(byId.get(Number(r.new_item))?.name||'')&&!(String(r.materials)==='40308'&&[39287,39288].includes(Number(r.new_item)))); // 武魂結晶／提煉石不能用金幣做，只能打怪掉（使用者 2026-11-15）
+  // system_item_blend.checkClass 的職業代碼（DB 只用到 5＝黑妖：卡立普「死神之証」、庫普黑暗武器）；和上面 roleCode（自動學技能用）不同
+  const BLEND_CLASS={'黑妖':5};
+  const craftRecipes=()=>rows('system_item_blend').filter(r=>!/^回收魔珠/.test(byId.get(Number(r.new_item))?.name||'')&&!(String(r.materials)==='40308'&&[39287,39288].includes(Number(r.new_item)))&&![576,577,578].includes(r.id)); // 576～578：卡立普暗黑武器的舊版重複配方（沒有等級職業限制），只留 1061～1063「死神之証」 // 武魂結晶／提煉石不能用金幣做，只能打怪掉（使用者 2026-11-15）
   function craft(npcId,id,anywhere=false){ // anywhere：從目錄「製作」視窗做，不用靠近 NPC（使用者 2026-11-14 決定）
     const recipe=craftRecipes().find(r=>r.id===id&&r.npcid===npcId);
     if(!recipe||!anywhere&&!IslandMonsters.serviceNearby(npcId,3))return '請靠近對應的製作 NPC。';
-    if(recipe.checkLevel>(window.activeCharacterLevel||1)||recipe.checkClass&&recipe.checkClass!==roleCode[job])return '職業或等級不符合條件。';
+    if(recipe.checkLevel>(window.activeCharacterLevel||1)||recipe.checkClass&&recipe.checkClass!==BLEND_CLASS[job])return '職業或等級不符合條件。';
     if(hp<=recipe.hpConsume||mp<recipe.mpConsume)return '生命或魔力不足。';
     const next=OwnedInventory.snapshot,materials=split(recipe.materials),counts=split(recipe.materials_count),enchants=split(recipe.materials_enchants);
     for(let i=0;i<materials.length;i++)if(!take(next,keyFor(materials[i]),counts[i]||1,enchants[i]??null))return '需要的材料不足，或材料正在穿戴。';
@@ -219,6 +221,6 @@ const DBGameRules = (() => {
     }
   };
   return {rows,automaticSkills,extraDrops,killRewards,xpMultiplier,starter,useItem,damageBonus,weaponProc,syncVitals,reduction,
-    craft,craftRecipes,openCrafting,addItem:add,takeItem:take,craftNpcs:()=>new Set(craftRecipes().map(r=>r.npcid))};
+    craft,craftRecipes,openCrafting,blendClass:role=>BLEND_CLASS[role],addItem:add,takeItem:take,craftNpcs:()=>new Set(craftRecipes().map(r=>r.npcid))};
 })();
 window.DBGameRules=DBGameRules;

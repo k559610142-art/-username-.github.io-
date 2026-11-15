@@ -31,7 +31,7 @@ const CraftingWindow=(()=>{
     text:(item.name+' '+r.note+' '+String(r.npcname).replace(/\^/g,' ')+' '+mats.map(id=>byId.get(id).name).join(' ')).toLowerCase()});}
   return recipes;}
  const have=(m)=>OwnedInventory.items.filter(e=>!e.slot&&e.item.id===m.item.id&&(!m.enchant||(e.enchant||0)===m.enchant)).reduce((n,e)=>n+e.count,0);
- const fits=x=>!(x.r.checkLevel>(window.activeCharacterLevel||1))&&!(x.r.checkClass&&x.r.checkClass!==roleCode[job]);
+ const fits=x=>!(x.r.checkLevel>(window.activeCharacterLevel||1))&&!(x.r.checkClass&&x.r.checkClass!==DBGameRules.blendClass(job));
  const craftable=x=>fits(x)&&hp>x.r.hpConsume&&mp>=x.r.mpConsume&&x.mats.every(m=>have(m)>=m.count);
  // 很多成品是伺服器自訂道具、遊戲裡沒有背包圖：改顯示類別徽章（不是只有一個字）
  const BADGE={weapon:'⚔',armor:'🛡',acc:'💍',rune:'✦',doll:'🧸',wuhun:'👻',potion:'⚗',scroll:'📜',gem:'💎',box:'🎁',material:'◆',pet:'🐾',item:'📦'};
