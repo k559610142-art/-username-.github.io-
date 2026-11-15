@@ -32,7 +32,7 @@ const IslandMonsters = (() => {
   const within=(area,x,y)=>x>=area[0]&&x<=area[2]&&y>=area[1]&&y<=area[3];
   const town=gfx=>gfx===945||gfx===1094;
   const effects=[];
-  function loadSheet(file){if(!sheets.has(file)){const image=new Image();image.decoding='async';image.onload=()=>{const ready=()=>decodedSheets.add(image);if(image.decode)image.decode().then(ready,ready);else ready()};image.src=(typeof nativeMonsterFiles!=='undefined'&&nativeMonsterFiles.has(file)?'assets/native-monsters/':'assets/island-monsters-v2/')+file;sheets.set(file,image);}return sheets.get(file);}
+  function loadSheet(file){if(!sheets.has(file)){const image=new Image();image.decoding='async';image.onload=()=>{const ready=()=>decodedSheets.add(image);if(image.decode)image.decode().then(ready,ready);else ready()};image.src=(typeof nativeMonsterFiles!=='undefined'&&nativeMonsterFiles.has(file)?'assets/native-monsters/':'assets/island-monsters-v2/')+file+(/^monster-(layer|death)-1820-/.test(file)?'?v=screen-body2':'');sheets.set(file,image);}return sheets.get(file);}
   function usable(spawn,x,y){
     // 假人（data/fake-players.js）可以走進安全區，但和一般怪物一樣不能走進牆／障礙格（阻擋旗標 128）
     if(spawn.bot){const c=tile(x,y);return !!c&&!(c&128)&&steps.some(([dx,dy])=>canTraverse(x,y,dx,dy));}

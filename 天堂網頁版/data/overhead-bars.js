@@ -18,7 +18,8 @@
  `;document.head.append(css);
  const el=(t,c)=>{const e=document.createElement(t);if(c)e.className=c;return e};
  const box=el('div','ovh'),nm=el('div','nm'),bars=el('div','bars'),hI=el('i','h'),mI=el('i','m'),hB=el('b'),mB=el('b');
- hI.append(hB);mI.append(mB);bars.append(hI,mI);box.append(nm,bars);box.hidden=true;actor.append(box);
+ // The player HP bar is shown in the HUD; omit the red overhead row.
+ mI.append(mB);bars.append(mI);box.append(nm,bars);box.hidden=true;actor.append(box);
  // 每張角色圖：不透明像素的上緣（佔原圖高度的比例）
  const tops=new Map(),probe=document.createElement('canvas'),pen=probe.getContext('2d',{willReadFrequently:true});
  function topOf(img){const src=img.currentSrc||img.src;if(!src||!img.complete||!img.naturalWidth)return null;if(tops.has(src))return tops.get(src);

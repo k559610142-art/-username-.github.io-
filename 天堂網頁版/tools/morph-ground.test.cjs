@@ -24,3 +24,19 @@ test('攻擊幀向前伸展時不重新以攻擊外框移動腳底錨點',()=>{
 test('方向或素材尚未載入時使用安全原點',()=>{
   const c=fixture();assert.deepEqual([...c.actions.groundAnchor(999,'N',4)],[0,0]);assert.deepEqual([...c.actions.groundAnchor(123,'S')],[0,0]);
 });
+
+test('頁面載入真正的變身定位修正版，不能誤改成移除清單的版本',()=>{
+  const html=fs.readFileSync(path.join(__dirname,'../index.html'),'utf8');
+  for(const file of ['transform-cards.js','monster-actions.js','soul-ring-visuals.js','tdj-systems.js'])assert(html.includes('src="data/'+file+'?v=chest-ring-npc4"'),file);
+  assert(html.includes('src="data/removed-transform-cards.js?v=remove-equipment2"'));
+});
+
+test('原始死亡騎士八方向的偏移由實際待機幀校正，而非固定左右位移',()=>{
+  const c=fixture();vm.runInContext(read('monster-action-index.js'),c);
+  for(const heading of ['NW','N','NE','E','SE','S','SW','W']){
+    const anchor=c.actions.groundAnchor(3784,heading);
+    assert.equal(anchor.length,2);assert(anchor.every(Number.isFinite));
+  }
+  // This source sprite has its body to the right of the raw origin.
+  assert(c.actions.groundAnchor(3784,'S')[0]>20);
+});

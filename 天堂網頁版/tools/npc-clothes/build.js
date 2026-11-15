@@ -51,7 +51,7 @@ function clipsFor(gfx) {
 const c5 = v => Math.floor(v * 255 / 31);
 // Body frame + every clothes layer's frame at the same group / index, composited around the shared anchor.
 function dressed(gfx, g, frame) {
-  const layers = [[list.get(gfx).src, false], ...list.get(gfx).clothes.filter(id => layerMode(id) !== 128).map(id => [list.get(id)?.src || id, screenLayer(id)])], parts = [];
+  const layers = [[list.get(gfx).src, screenLayer(gfx)], ...list.get(gfx).clothes.filter(id => layerMode(id) !== 128).map(id => [list.get(id)?.src || id, screenLayer(id)])], parts = [];
   for (const [id, screen] of layers) { const s = spr(id + '-' + g + '.spr'); const r = s && s.frames[frame] && renderFrame(s, frame); if (r && r.w > 1) parts.push([r, screen]); }
   if(!parts.length)return {x:0,y:0,w:1,h:1,px:Buffer.alloc(4)};
   const x0 = Math.min(...parts.map(([r]) => r.x)), y0 = Math.min(...parts.map(([r]) => r.y));

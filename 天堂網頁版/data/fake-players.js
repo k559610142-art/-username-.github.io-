@@ -90,7 +90,7 @@ const FakePlayers=(()=>{
   preloadLook(look);IslandMonsters.addAlly(mob);remember(mob);return mob;}
  const preloaded=new Set();
  function preloadLook(look){if(preloaded.has(look.id))return;preloaded.add(look.id);const files=new Set();for(const list of Object.values(islandMonsterFrames[look.id]||{}))for(const f of list)files.add(f[0]);IslandMonsters.preload([...files]);}
- function place(mob,x,y){mob.x=mob.homeX=x;mob.y=mob.homeY=y;mob.step=null;mob.fp.route=null;mob.fp.goal=null;mob.fp.target=null;mob.fp.state=safe(x,y)?'town':'hunt';mob.fp.since=movementTime();mob.spawn.mapId=window.activeMapId||0;}
+ function place(mob,x,y){mob.x=mob.homeX=x;mob.y=mob.homeY=y;mob.step=null;mob.fp.route=null;mob.fp.goal=null;mob.fp.huntGoal=null;mob.fp.target=null;mob.fp.state=safe(x,y)?'town':'hunt';mob.fp.since=movementTime();mob.spawn.mapId=window.activeMapId||0;}
  function bots(){return IslandMonsters.botList.filter(m=>(m.spawn.mapId||0)===(window.activeMapId||0));}
  // 路人留在自己所在區域；新區域的人數依地點變化，不把舊人搬到玩家旁邊。
  function areaDemand(map,x,y,town){
@@ -164,6 +164,8 @@ const FakePlayers=(()=>{
   if(!f.red&&lvl>=14&&f.state!=='boss'&&now>=(f.bossLook||0)){f.bossLook=now+3000;const boss=IslandMonsters.around(mob.x,mob.y,14).find(isBoss);
    if(boss&&Math.random()<.2){claimed.delete(f.target);f.state='boss';f.boss=boss;f.target=boss;f.goal=null;if(Math.random()<.45)say(mob,pick(['王出了!集合!','衝王!','打王打王','有王!']));}}
   if(f.state==='boss'){if(!f.boss?.hp||dist(mob.x,mob.y,f.boss.x,f.boss.y)>40){if(f.boss&&!f.boss.hp&&Math.random()<.4)say(mob,pick(['王倒了!!','太爽了','有掉什麼嗎']));f.state='hunt';f.boss=null;f.target=null;}else f.target=f.boss;}
+  // A hunting destination stops being valid when the player engages it or another bot claims it.
+  if(f.huntGoal&&(!f.huntGoal.hp||f.huntGoal===IslandMonsters.target||f.huntGoal.alert||claimed.has(f.huntGoal))){f.goal=null;f.route=null;f.huntGoal=null;f.think=now;}
   // 繼續走向目標點（每步走完一格，下一格接著走）
   if(f.goal&&!f.target){if(dist(mob.x,mob.y,...f.goal)<=0||!stepToward(mob,...f.goal,now)){f.goal=null;f.think=now+rnd(900,3500);}return;}
   if(f.state==='town'){
@@ -175,7 +177,7 @@ const FakePlayers=(()=>{
   if(!f.target&&now>=f.think){f.think=now+800;const lv=mob.spawn.npc.level;
    const c=IslandMonsters.around(mob.x,mob.y,10).filter(m=>!claimed.has(m)&&m!==IslandMonsters.target&&!m.alert&&(m.spawn.npc.level||1)<=lv+4&&!safe(m.x,m.y))
     .sort((a,b)=>dist(mob.x,mob.y,a.x,a.y)-dist(mob.x,mob.y,b.x,b.y))[0];
-   if(c){f.target=c;claimed.set(c,mob);}else{const far=IslandMonsters.around(mob.x,mob.y,24).filter(m=>!claimed.has(m)&&!safe(m.x,m.y)&&(m.spawn.npc.level||1)<=lv+4).sort((a,b)=>dist(mob.x,mob.y,a.x,a.y)-dist(mob.x,mob.y,b.x,b.y))[0];if(far){mob.homeX=far.x;mob.homeY=far.y;f.goal=[far.x,far.y];return;}wander(mob,now,stepToward,8);if(now-f.since>rnd(60000,120000)&&Math.random()<.4){f.state='town';f.since=now;}}}
+   if(c){f.target=c;claimed.set(c,mob);}else{const far=IslandMonsters.around(mob.x,mob.y,24).filter(m=>!claimed.has(m)&&m!==IslandMonsters.target&&!m.alert&&!safe(m.x,m.y)&&(m.spawn.npc.level||1)<=lv+4).sort((a,b)=>dist(mob.x,mob.y,a.x,a.y)-dist(mob.x,mob.y,b.x,b.y))[0];if(far){mob.homeX=far.x;mob.homeY=far.y;f.goal=[far.x,far.y];f.huntGoal=far;return;}f.think=now;wander(mob,now,stepToward,8);if(now-f.since>rnd(60000,120000)&&Math.random()<.4){f.state='town';f.since=now;}}}
   const t=f.target;if(!t)return;
   const reach=mob.spawn.npc.ranged||1,d=dist(mob.x,mob.y,t.x,t.y);
   if(d>reach||!IslandCombat.clearShot(mob.x,mob.y,t.x,t.y)){if(!stepToward(mob,t.x,t.y,now)){claimed.delete(t);f.target=null;f.think=now+1500;}return;}
