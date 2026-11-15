@@ -47,10 +47,10 @@ const LEVEL_QUESTS=[
   targets:[{mobs:[70972],item:40600,count:1,drop:1000000},{mobs:[81046],item:40606,count:1,drop:1000000},{mobs:[45507],item:40541,count:1,drop:1000000}],reward:[[13,1]], // 奇岩城試煉獎勵表（2026-11-15 使用者決定照網頁奇岩城 guide.html）
   spawns:[70972,81046,45507].map(npcId=>({npcId,mapId:304,bounds:[32629,32809,32680,32835],count:1})),note:'三位司祭原版在 map 306（未轉換），改放沉默洞穴'},
  {id:129,name:'行跡可疑的妖魔們',roles:['龍騎士'],level:15,
-  targets:[{mobs:[84001],item:49218,count:1,drop:200000},{mobs:[84002],item:49217,count:1,drop:200000},{mobs:[84003],item:49219,count:1,drop:200000}],reward:[[21103,1]],
+  targets:[{mobs:[84001],item:49218,count:1,drop:200000},{mobs:[84002],item:49217,count:1,drop:200000},{mobs:[84003],item:49219,count:1,drop:200000}],reward:[[275,1],[49102,1]], // 使用者提供的龍騎士試煉流程（2026-11-15）：龍騎士雙手劍＋龍騎士書板(龍之護鎧)
   spawns:[{npcId:84001,mapId:4,point:[32615,32676],random:[5,5],count:2},{npcId:84002,mapId:4,point:[32686,32440],random:[5,5],count:2},{npcId:84003,mapId:4,point:[32689,33172],random:[5,5],count:2}]},
  {id:130,name:'妖魔密使首領的情報',roles:['龍騎士'],level:30,
-  targets:[{mobs:[84004],item:49223,count:1,drop:1000000}],reward:[[21102,1]],
+  targets:[{mobs:[84004],item:49223,count:1,drop:1000000}],reward:[[21103,1],[49107,1]], // 使用者提供的龍騎士試煉流程（2026-11-15）：龍鱗臂甲＋龍騎士書板(血之渴望)
   spawns:[{npcId:84004,mapId:61,bounds:[32677,32788,32744,32869],count:4}]},
  {id:133,name:'眠龍洞穴污染的來源',roles:['幻術師'],level:15,
   targets:[{mobs:[45117,45118,45128],item:49169,count:1,drop:200000},{mobs:[45153],item:49170,count:1,drop:200000}],reward:[[269,1],[49121,1]]},
@@ -69,5 +69,12 @@ const LEVEL_QUESTS=[
   note:'奇岩城試煉：精靈敏捷頭盔或精靈體質頭盔二選一'},
  {id:109,name:'精靈們的騷動',roles:['騎士'],level:50,
   targets:[{mobs:[45416,45418,45419,45424,45500,45508,45510,45511,45591,45592,45593,45594],item:49161,count:1,drop:200000},{mobs:[46047],item:49160,count:1,drop:200000}],reward:[[56,1]],
-  note:'任務道具取自 jar 任務怪程式 K50_*（精靈墓穴的元素系怪物給精靈的私語、黑暗妖精將軍給丹特斯的召書）；獎勵照奇岩城試煉：黑燄之劍'}
+  note:'任務道具取自 jar 任務怪程式 K50_*（精靈墓穴的元素系怪物給精靈的私語、黑暗妖精將軍給丹特斯的召書）；獎勵照奇岩城試煉：黑燄之劍'},
+ {id:131,name:'與幻術士締結同盟',roles:['龍騎士'],level:45,
+  targets:[{mobs:[45294],item:49225,count:10,drop:200000}],reward:[[21102,1]],note:'使用者提供流程：歐瑞村打雪怪收集雪怪之心 10 個（任務怪程式 DK45_Yeti）；獎勵龍騎士斗篷'},
+ {id:132,name:'時空彼端的線索',roles:['龍騎士'],level:50,
+  targets:[{mobs:[80140,80141,80142],item:49229,count:10,drop:200000},{mobs:[80139],item:49231,count:1,drop:1000000}],reward:[[272,1]],
+  spawns:[{npcId:80140,mapId:36,bounds:[32576,32704,32831,32959],count:6},{npcId:80142,mapId:36,bounds:[32576,32704,32831,32959],count:5},
+   {npcId:80141,mapId:36,bounds:[32576,32704,32831,32959],count:4},{npcId:80139,mapId:36,bounds:[32576,32704,32831,32959],count:1}],
+  note:'使用者提供流程：試煉場打時空裂痕／食腐獸／翼龍收集異界邪念粉末 10 個，再打 BOSS 路西爾斯；獎勵消滅者鎖鏈劍。原版試煉場 map 2004 未轉換，改放龍之谷地監 6 樓；入場要的 100 個時空裂痕碎片（48 小時開一次）省略'}
 ];
