@@ -1851,26 +1851,31 @@ function openGameCatalog(type) {
       const w = row.w, owned = TdjSystems.wuhun.owned(w.id), active = String(TdjSystems.wuhun.active) === String(w.id);
       soulStage.querySelector('.wuhun-stage-summary')?.remove();
       const summary=uiElement('div','wuhun-stage-summary'),badge=uiElement('span','wuhun-stage-badge',active?'目前已裝備':owned?'選取 · 已擁有 ×'+owned:'選取 · 尚未擁有');
-      const stageAction=catalogButton(active?'卸下武魂':owned?'裝備武魂':'尚未取得武魂',()=>{if(active)TdjSystems.wuhun.unequip();else TdjSystems.wuhun.equip(w.id);refreshCards();},'wuhun-stage-equip');stageAction.disabled=!owned;
+      const stageAction=catalogButton(active?'卸下武魂':owned?'裝備武魂':'尚未取得武魂',()=>{if(active)TdjSystems.wuhun.unequip();else TdjSystems.wuhun.equip(w.id);refreshCards();},'wuhun-stage-equip');stageAction.disabled=!active&&(!owned||SoulRings.need(w.id).length>0);
       summary.append(badge,uiElement('h3','',w.name),stageAction);soulStage.append(summary);
 
       detail.append(uiElement('strong', '', w.tier + (w.desc ? ' · ' + w.desc : '')), uiElement('p', '', owned ? '擁有' + (active ? ' · 裝備中' : '') : '尚未擁有'), uiElement('h4', '', '武魂能力'));
       for (const effect of w.fx) detail.append(uiElement('p', '', effect));
-      const collection=uiElement('section','wuhun-ring-section');collection.append(uiElement('h4','','武魂環位'));
+      // 魂槽升階（2026-11-15 使用者設計）：第 1～6 槽依序只能獻祭 下品／上品／極品／千年／萬年／上古 武魂（消耗、不能拿回、不給能力）；裝備第 N 階要前 N 槽都點亮
+      const collection=uiElement('section','wuhun-ring-section');collection.append(uiElement('h4','','魂槽（升階獻祭）'));
       const ringState=SoulRings.state(),slots=uiElement('div','wuhun-ring-slots');
-      ringState.slots.forEach((id,index)=>{const ring=SoulRings.get(id),b=catalogButton('',()=>{selectedRingSlot=index;showDetails(selected);},'wuhun-ring-slot');b.setAttribute('aria-label','第 '+(index+1)+' 環位：'+(ring?ring.name:'空'));b.setAttribute('aria-pressed',String(index===selectedRingSlot));b.dataset.tier=ring?tdjWuhunTierTag[ring.tier]||'white':'empty';b.title=ring?ring.name+'：'+SoulRings.describe(ring.bonus).join('、'):'點選放入魂環';b.append(uiElement('i','',ring?'✦':'+'),uiElement('small','',String(index+1)));slots.append(b);});
-      collection.append(slots,uiElement('p','wuhun-ring-note',TdjSystems.wuhun.active?'魂環加成已生效':'裝備武魂後，魂環加成才會生效'));
-      const total=SoulRings.describe(SoulRings.ringBonuses());if(total.length)collection.append(uiElement('p','wuhun-ring-total',total.join(' · ')));
-      const picker=uiElement('div','wuhun-ring-picker');picker.append(uiElement('strong','','第 '+(selectedRingSlot+1)+' 環位'));
-      for(const ring of SoulRings.inventory().filter(r=>r.available>0)){const b=catalogButton(ring.name+' ×'+ring.available+'｜'+SoulRings.describe(ring.bonus).join('、'),()=>{if(SoulRings.equip(selectedRingSlot,ring.id))refreshCards();},'wuhun-ring-choice');picker.append(b);}
-      if(ringState.slots[selectedRingSlot]!==null)picker.append(catalogButton('卸下此魂環',()=>{if(SoulRings.remove(selectedRingSlot))refreshCards();},'wuhun-ring-remove'));
-      if(!SoulRings.inventory().some(r=>r.available>0))picker.append(uiElement('small','','尚無可放入的魂環，可用多餘武魂煉製。'));
-      collection.append(picker);
-      const craft=catalogButton('煉製所選魂環（消耗 1 個重複武魂）',()=>{if(SoulRings.craft(w.id)){updateCounts();refreshCards();}},'wuhun-ring-craft');craft.disabled=owned<2;craft.title=owned<2?'至少持有 2 個所選武魂，才能保留 1 個並煉製魂環':w.name+' → '+SoulRings.get(w.id).name;collection.append(craft,uiElement('small','wuhun-ring-note','魂環保留原武魂 20% 的可用能力，各項至少 +1；永久保留 1 個原武魂。'));
+      ringState.slots.forEach((id,index)=>{const ring=id==null?null:SoulRings.get(id),tier=SoulRings.TIERS[index],b=catalogButton('',()=>{selectedRingSlot=index;showDetails(selected);},'wuhun-ring-slot');
+        b.setAttribute('aria-label','第 '+(index+1)+' 魂槽（'+tier+'）：'+(ring?ring.name:'未獻祭'));b.setAttribute('aria-pressed',String(index===selectedRingSlot));b.dataset.tier=ring?tdjWuhunTierTag[tier]||'white':'empty';
+        b.title=ring?'已獻祭 '+ring.name:'獻祭一隻'+tier+'武魂點亮';b.append(uiElement('i','',ring?'✦':'+'),uiElement('small','',tier));slots.append(b);});
+      const missing=SoulRings.need(w.id);
+      collection.append(slots,uiElement('p','wuhun-ring-note',missing.length?'裝備「'+w.name+'」前，還要獻祭：'+missing.join('、')+'武魂':'魂槽條件已達成，可以裝備「'+w.name+'」'));
+      const slotTier=SoulRings.TIERS[selectedRingSlot],picker=uiElement('div','wuhun-ring-picker');
+      picker.append(uiElement('strong','','第 '+(selectedRingSlot+1)+' 魂槽：獻祭'+slotTier+'武魂'+(ringState.slots[selectedRingSlot]!=null?'（已點亮：'+SoulRings.get(ringState.slots[selectedRingSlot]).name+'）':'')));
+      const prevEmpty=ringState.slots.slice(0,selectedRingSlot).findIndex(v=>v==null);
+      if(prevEmpty>=0)picker.append(uiElement('small','','要先點亮第 '+(prevEmpty+1)+' 槽（'+SoulRings.TIERS[prevEmpty]+'）。'));
+      else if(ringState.slots[selectedRingSlot]==null){const list=SoulRings.candidates(selectedRingSlot);
+        for(const {w:c,spare} of list)picker.append(catalogButton('獻祭 '+c.name+'（持有可用 ×'+spare+'）',()=>{if(SoulRings.offer(c.id)){updateCounts();refreshCards();}},'wuhun-ring-choice'));
+        if(!list.length)picker.append(uiElement('small','','沒有可獻祭的'+slotTier+'武魂（裝備中的那隻不能獻祭）。'));}
+      collection.append(picker,uiElement('small','wuhun-ring-note','祭品放入後會消耗、不能拿回；魂槽只當升階門檻，不加能力。'));
       detail.append(collection);
       const action = active ? catalogButton('卸下武魂', () => { TdjSystems.wuhun.unequip(); refreshCards(); }, 'game-catalog-action')
         : catalogButton(owned ? '裝備武魂' : '擁有才能裝備', () => { if (TdjSystems.wuhun.equip(w.id)) refreshCards(); }, 'game-catalog-action');
-      action.disabled = !owned;
+      action.disabled = !active && (!owned || SoulRings.need(w.id).length > 0);
       detail.append(action);
     } else {
       const card = row.card, owned = TransformCards.owned(row.name), active = TransformCards.active === row.name;

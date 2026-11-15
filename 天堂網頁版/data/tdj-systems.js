@@ -6,7 +6,10 @@ window.TdjSystems = (() => {
   const enchantById = new Map(bossEnchantData.map(e => [e.id, e]));
   const wuhunById = new Map(wuhunData.map(w => [w.id, w]));
   let owner = '', state = null;
-  const blank = () => ({dolls: {owned: {}, active: null}, enchant: {stones: {}, weapon: null}, wuhun: {owned: {}, active: null, ringOwned:{}, ringSlots:Array(6).fill(null)}});
+  const blank = () => ({dolls: {owned: {}, active: null}, enchant: {stones: {}, weapon: null}, wuhun: {owned: {}, active: null, ringSlots:Array(6).fill(null), ringV:2}});
+  // 魂槽升階（2026-11-15 使用者設計）：品級順序；第 i 槽只能獻祭第 i 階武魂（放入即消耗、不能拿回、不給能力）；裝備第 N 階武魂要前 N 槽都已獻祭
+  const WUHUN_TIERS = ['下品', '上品', '極品', '千年', '萬年', '上古', '四神獸'];
+  function ringMissing(w) { const t = WUHUN_TIERS.indexOf(w?.tier); const out = []; for (let i = 0; i < Math.min(Math.max(t, 0), 6); i++) if (state.wuhun.ringSlots[i] == null) out.push(WUHUN_TIERS[i]); return out; }
   const key = id => 'lineage-web-tdj-systems-v1:' + id;
   function ensure() {
     const id = window.activeCharacterId || '';
@@ -23,8 +26,9 @@ window.TdjSystems = (() => {
         if (w && enchantById.has(w.id) && w.lv >= 1 && w.lv <= 5) state.enchant.weapon = {id: w.id, lv: w.lv, uid: w.uid};
         for (const [k, n] of Object.entries(saved.wuhun?.owned || {})) if (wuhunById.has(+k) && Number.isSafeInteger(n) && n > 0) state.wuhun.owned[k] = n;
         if (state.wuhun.owned[saved.wuhun?.active]) state.wuhun.active = saved.wuhun.active;
-        for(const [id,n]of Object.entries(saved.wuhun?.ringOwned||{}))if(wuhunById.has(+id)&&Number.isSafeInteger(n)&&n>0)state.wuhun.ringOwned[id]=n;
-        const used={};for(let i=0;i<6;i++){const id=Number(saved.wuhun?.ringSlots?.[i]);if(wuhunById.has(id)&&(used[id]||0)<(state.wuhun.ringOwned[id]||0)){state.wuhun.ringSlots[i]=id;used[id]=(used[id]||0)+1;}}
+        if (saved.wuhun?.ringV === 2) { for (let i = 0; i < 6; i++) { const id = Number(saved.wuhun?.ringSlots?.[i]), rw = wuhunById.get(id); if (rw && WUHUN_TIERS.indexOf(rw.tier) === i) state.wuhun.ringSlots[i] = id; } }
+        else for (const [id, n] of Object.entries(saved.wuhun?.ringOwned || {})) if (wuhunById.has(+id) && Number.isSafeInteger(n) && n > 0) state.wuhun.owned[id] = Math.min(2147483647, (state.wuhun.owned[id] || 0) + n); // 舊版魂環（多餘武魂煉的）退回成武魂
+        if (state.wuhun.active && ringMissing(wuhunById.get(+state.wuhun.active)).length) state.wuhun.active = null; // 魂槽條件不夠的武魂先卸下
 
       }
     } catch (error) { /* 讀不到就從空白開始 */ }
@@ -439,13 +443,17 @@ window.TdjSystems = (() => {
   }
 
   function refreshSoulStats(){window.DBGameRules?.syncVitals();window.stats?.();}
-  function changeRings(kind,id,slot){
-    if(!playing()||window.CharacterActions?.dead)return false;
-    const old=JSON.parse(JSON.stringify(state)),s=state.wuhun;
-    if(kind==='craft'){if(!wuhunById.has(id)||(s.owned[id]||0)<2||(s.ringOwned[id]||0)>=2147483647)return false;s.owned[id]--;s.ringOwned[id]=(s.ringOwned[id]||0)+1;}
-    else{if(!Number.isInteger(slot)||slot<0||slot>=6)return false;if(kind==='remove'){if(s.ringSlots[slot]===null)return false;s.ringSlots[slot]=null;}
-      else if(kind==='equip'){const used=s.ringSlots.filter((v,i)=>i!==slot&&Number(v)===id).length;if(!wuhunById.has(id)||(s.ringOwned[id]||0)<=used)return false;s.ringSlots[slot]=id;}else return false;}
-    try{localStorage.setItem(key(owner),JSON.stringify(state));}catch(error){state=old;toast('儲存失敗，魂環未變更。');return false;}
+  function changeRings(kind,id){
+    if(!playing()||window.CharacterActions?.dead||kind!=='offer')return false;
+    const w=wuhunById.get(+id),s=state.wuhun,slot=WUHUN_TIERS.indexOf(w?.tier);
+    if(!w||slot<0||slot>=6){toast('四神獸武魂不能當祭品。');return false;}
+    for(let i=0;i<slot;i++)if(s.ringSlots[i]==null){toast('要先在第 '+(i+1)+' 槽獻祭'+WUHUN_TIERS[i]+'武魂。');return false;}
+    const spare=(s.owned[w.id]||0)-(String(s.active)===String(w.id)?1:0);
+    if(spare<1){toast(String(s.active)===String(w.id)?'裝備中的這隻不能獻祭，請先卸下或再取得一隻。':'沒有可獻祭的'+w.name+'。');return false;}
+    const old=JSON.parse(JSON.stringify(state));
+    s.owned[w.id]--;if(!s.owned[w.id])delete s.owned[w.id];s.ringSlots[slot]=w.id;
+    try{localStorage.setItem(key(owner),JSON.stringify(state));}catch(error){state=old;toast('儲存失敗，魂槽未變更。');return false;}
+    toast('獻祭 '+w.name+'，第 '+(slot+1)+' 魂槽點亮（'+w.tier+'）');
     refreshSoulStats();render();return true; // render：腳底魂環光圈跟著換
   }
   // ---- 武魂 ----
@@ -456,6 +464,7 @@ window.TdjSystems = (() => {
   function equipWuhun(id) {
     if (!playing()) return false;
     const w = wuhunById.get(+id); if (!w || !state.wuhun.owned[id]) { toast('還沒有這個武魂。'); return false; }
+    const missing = ringMissing(w); if (missing.length) { toast('裝備' + w.tier + '武魂前，要先在魂槽獻祭：' + missing.join('、') + '武魂。'); return false; }
     state.wuhun.active = String(id); save(); refreshSoulStats();render(); flash(wuhunImage(w));
     toast('裝備 ' + w.name + '（' + w.fx.slice(0, 4).join('、') + '）'); return true;
   }
@@ -469,7 +478,7 @@ window.TdjSystems = (() => {
   return {
     dolls: {draw: drawDoll, summon, dismiss, image: dollImage, owned: id => get().dolls.owned[id] || 0, get active() { return get().dolls.active; }},
     enchant: {get: getStone, enchant, current: currentEnchant, image: enchantImage, stones: id => get().enchant.stones[id] || 0},
-    wuhun: {changeRings,get ringState(){ensure();return JSON.parse(JSON.stringify({owned:state.wuhun.ringOwned,slots:state.wuhun.ringSlots}));},get: getWuhun, equip: equipWuhun, unequip: unequipWuhun, image: wuhunImage, baseGfx: wuhunBaseGfx, owned: id => get().wuhun.owned[id] || 0, get active() { return get().wuhun.active; }},
+    wuhun: {changeRings,tiers:WUHUN_TIERS,ringMissing:id=>(ensure(),ringMissing(wuhunById.get(+id))),get ringState(){ensure();return JSON.parse(JSON.stringify({slots:state.wuhun.ringSlots}));},get: getWuhun, equip: equipWuhun, unequip: unequipWuhun, image: wuhunImage, baseGfx: wuhunBaseGfx, owned: id => get().wuhun.owned[id] || 0, get active() { return get().wuhun.active; }},
     onAttack, render
   };
 })();
