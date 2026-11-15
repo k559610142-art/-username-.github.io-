@@ -21,7 +21,7 @@ window.TdjSystems = (() => {
         for (const [k, n] of Object.entries(saved.enchant?.stones || {})) if (enchantById.has(+k) && n > 0) state.enchant.stones[k] = n;
         const w = saved.enchant?.weapon;
         if (w && enchantById.has(w.id) && w.lv >= 1 && w.lv <= 5) state.enchant.weapon = {id: w.id, lv: w.lv, uid: w.uid};
-        for (const [k, n] of Object.entries(saved.wuhun?.owned || {})) if (wuhunById.has(+k) && n > 0) state.wuhun.owned[k] = n;
+        for (const [k, n] of Object.entries(saved.wuhun?.owned || {})) if (wuhunById.has(+k) && Number.isSafeInteger(n) && n > 0) state.wuhun.owned[k] = n;
         if (state.wuhun.owned[saved.wuhun?.active]) state.wuhun.active = saved.wuhun.active;
         for(const [id,n]of Object.entries(saved.wuhun?.ringOwned||{}))if(wuhunById.has(+id)&&Number.isSafeInteger(n)&&n>0)state.wuhun.ringOwned[id]=n;
         const used={};for(let i=0;i<6;i++){const id=Number(saved.wuhun?.ringSlots?.[i]);if(wuhunById.has(id)&&(used[id]||0)<(state.wuhun.ringOwned[id]||0)){state.wuhun.ringSlots[i]=id;used[id]=(used[id]||0)+1;}}
@@ -401,7 +401,7 @@ window.TdjSystems = (() => {
   function changeRings(kind,id,slot){
     if(!playing()||window.CharacterActions?.dead)return false;
     const old=JSON.parse(JSON.stringify(state)),s=state.wuhun;
-    if(kind==='craft'){if(!wuhunById.has(id)||(s.owned[id]||0)<2)return false;s.owned[id]--;s.ringOwned[id]=(s.ringOwned[id]||0)+1;}
+    if(kind==='craft'){if(!wuhunById.has(id)||(s.owned[id]||0)<2||(s.ringOwned[id]||0)>=2147483647)return false;s.owned[id]--;s.ringOwned[id]=(s.ringOwned[id]||0)+1;}
     else{if(!Number.isInteger(slot)||slot<0||slot>=6)return false;if(kind==='remove'){if(s.ringSlots[slot]===null)return false;s.ringSlots[slot]=null;}
       else if(kind==='equip'){const used=s.ringSlots.filter((v,i)=>i!==slot&&Number(v)===id).length;if(!wuhunById.has(id)||(s.ringOwned[id]||0)<=used)return false;s.ringSlots[slot]=id;}else return false;}
     try{localStorage.setItem(key(owner),JSON.stringify(state));}catch(error){state=old;toast('儲存失敗，魂環未變更。');return false;}

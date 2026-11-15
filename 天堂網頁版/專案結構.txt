@@ -382,3 +382,5 @@ NPC 穿衣服（2026-11-13）：
 2026-11-15 能力實裝：player-ability-data.js / player-ability-rules.js 接入 STR 傷害、INT+SP 魔法與治癒加成、暴擊、實際 MP 減耗及四元素抗性，能力欄動態刷新。隨身傳送按鈕縮小並向 AUTO 左側調整，CSS 版本 auto-left-position2。
 
 2026-11-15 武魂真身內頁更新：game-catalog.js/css 專用 wuhun-panel 四欄金框版面，中央主視覺 assets/interface/wuhun-panel/soul-awakening.webp；分類／搜尋／取得／裝備／卸下保留原功能，右側顯示真實能力與已收集武魂。
+
+2026-11-15 武魂實際預覽與魂環：中央改為 currentPortrait 玩家職業／性別立繪，加上目前已裝備武魂圖案；右側武魂環位共 6 格，SoulRings 使用多餘副本煉成（保留一個收藏），加成取原武魂支援能力 20% 且各項至少 1。環位及持有數存在角色 TDJ 存檔，失敗回復原狀；武魂與魂環屬性、HP/MP、恢復、傷害、SP、減傷、抗性與經驗加成接入實際計算。測試 tools/soul-rings.test.cjs。
