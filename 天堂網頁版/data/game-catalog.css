@@ -178,3 +178,7 @@ main.game.reference-game #panel.game-catalog-panel.wuhun-panel{padding:16px 14px
 @media(max-width:700px){.wuhun-live-stage .wuhun-equipped-spirit{left:-4%;width:100%;top:12%;height:77%}.wuhun-live-stage .wuhun-player-art{left:40%;width:58%;height:46%}.wuhun-live-stage .wuhun-live-scene:not(.has-soul) .wuhun-player-art{left:6%;width:88%;height:70%}}
 
 .transform-catalog-panel .game-catalog-card.game-catalog-locked img{filter:grayscale(.2) brightness(.95);opacity:1}.transform-catalog-panel .game-catalog-card.game-catalog-locked span{opacity:.9}.transform-catalog-panel .game-catalog-card .game-catalog-portrait{width:100%;height:84px;object-fit:contain;image-rendering:auto}.transform-catalog-panel .game-catalog-missing{display:grid;place-items:center;min-height:70px;color:#bcad91;font-size:12px}.transform-catalog-panel .game-catalog-card small{line-height:1.5}
+
+/* 六色魂環：依參考圖維持明確的色階與發光環帶。 */
+.wuhun-ring-slot[data-ring-level="1"]{--ring-color:#f8fbff}.wuhun-ring-slot[data-ring-level="2"]{--ring-color:#ffca16}.wuhun-ring-slot[data-ring-level="3"]{--ring-color:#b635ff}.wuhun-ring-slot[data-ring-level="4"]{--ring-color:#7515d8}.wuhun-ring-slot[data-ring-level="5"]{--ring-color:#e51625}.wuhun-ring-slot[data-ring-level="6"]{--ring-color:#ff202b}
+.wuhun-ring-slot[data-ring-level]:not([data-ring-level="empty"]) i{border-width:4px;box-shadow:0 0 3px var(--ring-color),0 0 9px var(--ring-color),inset 0 0 9px var(--ring-color);text-shadow:0 0 6px var(--ring-color)}

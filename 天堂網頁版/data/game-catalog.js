@@ -1860,7 +1860,7 @@ function openGameCatalog(type) {
       const collection=uiElement('section','wuhun-ring-section');collection.append(uiElement('h4','','魂槽（升階獻祭）'));
       const ringState=SoulRings.state(),slots=uiElement('div','wuhun-ring-slots');
       ringState.slots.forEach((id,index)=>{const ring=id==null?null:SoulRings.get(id),tier=SoulRings.TIERS[index],b=catalogButton('',()=>{selectedRingSlot=index;showDetails(selected);},'wuhun-ring-slot');
-        b.setAttribute('aria-label','第 '+(index+1)+' 魂槽（'+tier+'）：'+(ring?ring.name:'未獻祭'));b.setAttribute('aria-pressed',String(index===selectedRingSlot));b.dataset.tier=ring?tdjWuhunTierTag[tier]||'white':'empty';
+        b.setAttribute('aria-label','第 '+(index+1)+' 魂槽（'+tier+'）：'+(ring?ring.name:'未獻祭'));b.setAttribute('aria-pressed',String(index===selectedRingSlot));b.dataset.tier=ring?tdjWuhunTierTag[tier]||'white':'empty';b.dataset.ringLevel=ring?String(index+1):'empty';
         b.title=ring?'已獻祭 '+ring.name:'獻祭一隻'+tier+'武魂點亮';b.append(uiElement('i','',ring?'✦':'+'),uiElement('small','',tier));slots.append(b);});
       const missing=SoulRings.need(w.id);
       collection.append(slots,uiElement('p','wuhun-ring-note',missing.length?'裝備「'+w.name+'」前，還要獻祭：'+missing.join('、')+'武魂':'魂槽條件已達成，可以裝備「'+w.name+'」'));
