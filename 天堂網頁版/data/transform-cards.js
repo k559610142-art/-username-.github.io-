@@ -18,7 +18,7 @@ window.TransformCards = (() => {
       const saved = JSON.parse(localStorage.getItem(storageKey(id)) || 'null');
       if (saved && typeof saved.owned === 'object') {
         for (const [name, count] of Object.entries(saved.owned)) if (byName.has(name) && Number.isSafeInteger(count) && count > 0) state.owned[name] = count;
-        if (saved.active && state.owned[saved.active]) state.active = saved.active;
+        if (saved.active && state.owned[saved.active] && !byName.get(saved.active)?.unavailable) state.active = saved.active;
       }
     } catch (error) { /* 讀不到就從空卡冊開始 */ }
     if(characterDead&&state.active){state.active=null;save();}
@@ -33,8 +33,8 @@ window.TransformCards = (() => {
     const total = Object.values(gradeWeights).reduce((a, b) => a + b, 0);
     let roll = Math.random() * total, grade = 1;
     for (const [g, weight] of Object.entries(gradeWeights)) { roll -= weight; if (roll < 0) { grade = Number(g); break; } }
-    let pool = book.filter(card => card.g === grade);
-    if (!pool.length) pool = book.filter(card => card.g === 1);
+    let pool = book.filter(card => card.g === grade&&!card.unavailable);
+    if (!pool.length) pool = book.filter(card => card.g === 1&&!card.unavailable);
     return pool[Math.floor(Math.random() * pool.length)];
   }
   function draw(times = 1) {
@@ -102,6 +102,7 @@ window.TransformCards = (() => {
     if (!ensure()) { toast('請先進入遊戲角色。'); return false; }
     const card = byName.get(name);
     if (!card || !state.owned[name]) { toast('還沒收集到這張變身卡。'); return false; }
+    if(card.unavailable){toast('這個原始造型尚缺客戶端素材，暫時不能變身。');return false;}
     const level = Number(window.activeCharacterLevel) || 1;
     if (card.p && level < card.p.lv) { toast('等級 ' + card.p.lv + ' 以上才能變身為 ' + name + '。'); return false; }
     if (typeof characterMovementBlocked === 'function' && characterMovementBlocked()) { toast('請等目前動作結束。'); return false; }
@@ -132,7 +133,7 @@ window.TransformCards = (() => {
   morphStyle.textContent = '.transform-morph{position:absolute;left:0;top:0;width:0;height:0;pointer-events:none}.transform-morph img{position:absolute;image-rendering:auto}.transform-morph-shadow{opacity:.6}.transform-morph[hidden]{display:none}';
   document.head.append(morphStyle);
   let morphStarted = 0;
-  const framePath = (card, clip, i, shadow) => 'assets/transform-anim/' + encodeURIComponent(card.n) + '/' + clip + (shadow ? '_s_' : '_') + i + (i === 0 ? '.png' : '.webp');
+  const framePath = (card, clip, i, shadow) => card.originalExtra?'assets/transform-portraits/'+card.p.gfx+'.png':'assets/transform-anim/' + encodeURIComponent(card.n) + '/' + clip + (shadow ? '_s_' : '_') + i + (i === 0 ? '.png' : '.webp');
   const flipHeadings = new Set(['W', 'SW', 'NW']);
 
   // 秋月天堂怪物圖集（8 方向）：d0～d7 依天堂朝向，對應遊戲的 heading。

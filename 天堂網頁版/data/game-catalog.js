@@ -97,7 +97,7 @@ const gameCollections = [];
 gameDialogClose.onclick = () => closePanel();
 const catalogClosePanel = closePanel;
 closePanel = function () {
-  gameDialog.classList.remove('game-catalog-panel','wuhun-panel');
+  gameDialog.classList.remove('game-catalog-panel','wuhun-panel','transform-catalog-panel');
   catalogClosePanel();
 };
 
@@ -1708,6 +1708,7 @@ function catalogPortrait(type, row, preview = false) {
     return img;
   }
   if (type === 'transforms') {
+    if(row.card.unavailable)return uiElement('span','game-catalog-missing','尚缺原始動作素材');
     const img = uiElement('img', 'game-catalog-portrait' + (preview ? ' game-catalog-preview' : ''));
     img.src = TransformCards.portrait(row.card);
     img.alt = preview ? row.name + '外觀' : '';
@@ -1742,6 +1743,7 @@ function openGameCatalog(type) {
   gameDialog.classList.remove('reference-menu-panel', 'classic-panel');
   gameDialog.classList.add('game-catalog-panel');
   gameDialog.classList.toggle('wuhun-panel',type==='wuhun');
+  gameDialog.classList.toggle('transform-catalog-panel',type==='transforms');
   gameDialog.setAttribute('aria-label', gameCatalogTitles[type]);
   gameDialogClose.hidden = false;
   gameDialog.hidden = false;
@@ -1778,7 +1780,7 @@ function openGameCatalog(type) {
   const all = () => true;
   const usedGrades = type === 'transforms' ? [...new Set(entries.map(row => row.grade))].sort((a, b) => a - b) : [];
   const filters = type === 'cards' ? [['全部', all], ...Object.entries(lineageMCardTiers).map(([tier, label]) => [label, row => row.tier === tier])]
-    : type === 'transforms' ? [['全部', all], ['已收集', row => TransformCards.owned(row.name) > 0], ...usedGrades.map(grade => [lineageWGrades[grade][0], row => row.grade === grade])]
+    : type === 'transforms' ? [['全部', all], ['已收集', row => TransformCards.owned(row.name) > 0], ...usedGrades.map(grade => [lineageWGrades[grade][0], row => row.grade === grade]), ['原始新增',row=>!!row.card.originalExtra]]
     : type === 'dolls' ? [['全部', all], ['已擁有', row => TdjSystems.dolls.owned(row.id) > 0]]
     : type === 'enchant' ? [['全部', all], ['已擁有', row => TdjSystems.enchant.stones(row.e.id) > 0]]
     : type === 'wuhun' ? [['全部', all], ['已擁有', row => TdjSystems.wuhun.owned(row.w.id) > 0], ...wuhunTiers.map(tier => [tier, row => row.w.tier === tier])]
@@ -1892,8 +1894,8 @@ function openGameCatalog(type) {
         detail.append(uiElement('small', '', '天地劫天堂變身表：' + rule.en));
       } else detail.append(uiElement('small', '', '天地劫天堂變身表沒有這個變身，不限等級與裝備'));
       const action = active ? catalogButton('解除變身', () => { TransformCards.deactivate(); refreshCards(); }, 'game-catalog-action')
-        : catalogButton(owned ? '變身' : '收集到才能變身', () => { if (TransformCards.activate(row.name)) refreshCards(); }, 'game-catalog-action');
-      action.disabled = !owned;
+        : catalogButton(card.unavailable?'原始素材待補':owned ? '變身' : '收集到才能變身', () => { if (TransformCards.activate(row.name)) refreshCards(); }, 'game-catalog-action');
+      action.disabled = !owned || !!card.unavailable;
       detail.append(action);
     }
   }
@@ -1937,7 +1939,7 @@ function openGameCatalog(type) {
   function refreshCards() {
     const query = search.value.trim().toLowerCase();
     const visible = entries.filter(row => activeFilter(row) &&
-      [row.name, row.gfx, ...(row.required || [])].join(' ').toLowerCase().includes(query));
+      [row.name, row.gfx, row.card?.p?.gfx, row.card?.p?.id, ...(row.card?.aliases||[]), ...(row.required || [])].join(' ').toLowerCase().includes(query));
     cards.replaceChildren();
     for (const row of visible) {
       const card = catalogButton('', () => showDetails(row), 'game-catalog-card');

@@ -1,0 +1,26 @@
+{
+  "originalRows": 810,
+  "existingCards": 173,
+  "newCards": 662,
+  "newGraphics": 464,
+  "unavailable": [
+    {
+      "id": 325,
+      "gfx": 20231,
+      "name": "未使用（原始#325）",
+      "reason": "缺少完整待機／行走 SPR 素材"
+    },
+    {
+      "id": 326,
+      "gfx": 20234,
+      "name": "未使用（原始#326）",
+      "reason": "缺少完整待機／行走 SPR 素材"
+    },
+    {
+      "id": 328,
+      "gfx": 20232,
+      "name": "未使用（原始#328）",
+      "reason": "缺少完整待機／行走 SPR 素材"
+    }
+  ]
+}
