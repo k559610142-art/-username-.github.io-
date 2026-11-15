@@ -36,14 +36,14 @@ const LEVEL_QUESTS=[
  // 2026-11-15 第二批：任務道具取自 jar 的任務怪程式（com/lineage/data/npc/mob/*：打死給什麼），獎勵取自任務 NPC 最後一步。
  // 原版任務怪程式裡「Random.nextInt(100) < ?」的門檻看不到，這類掉落先訂 20%（騎士以外的 rnd 怪）；程式沒有隨機的訂 100%。
  {id:115,name:'妖精族傳說中的弓',roles:['妖精'],level:45,
-  targets:[{mobs:[45941],item:41349,count:1}],reward:[[205,1]],
+  targets:[{mobs:[45941],item:41349,count:1}],reward:[[20171,1],[40245,1]], // 使用者指定：保護者手套＋強化精靈召喚水晶（DB 名：精靈水晶(召喚強力屬性精靈)）
   spawns:[{npcId:45941,mapId:63,bounds:[32611,32688,32702,32912],count:2}],note:'原版還要收集元素氣息等多種材料，簡化成打巫女莎爾拿莎爾之戒'},
  {id:116,name:'協助間諜大逃亡',roles:['妖精'],level:50,
   targets:[{mobs:[45115,45190],item:49162,count:1,drop:200000}],reward:[[184,1]]},
  {id:121,name:'取回間諜的報告書',roles:['法師'],level:50,
   targets:[{mobs:[45315,45482,45569,45570,45571,45579,45582,45587,45605,45647],item:49164,count:1,drop:200000}],reward:[[20225,1]]},
  {id:127,name:'尋找黑暗之星',roles:['黑妖'],level:50,
-  targets:[{mobs:[70972],item:40600,count:1,drop:1000000},{mobs:[81046],item:40606,count:1,drop:1000000},{mobs:[45507],item:40541,count:1,drop:1000000}],reward:[[306,1]],
+  targets:[{mobs:[70972],item:40600,count:1,drop:1000000},{mobs:[81046],item:40606,count:1,drop:1000000},{mobs:[45507],item:40541,count:1,drop:1000000}],reward:[[13,1]], // 使用者指定：死亡之指
   spawns:[70972,81046,45507].map(npcId=>({npcId,mapId:304,bounds:[32629,32809,32680,32835],count:1})),note:'三位司祭原版在 map 306（未轉換），改放沉默洞穴'},
  {id:129,name:'行跡可疑的妖魔們',roles:['龍騎士'],level:15,
   targets:[{mobs:[84001],item:49218,count:1,drop:200000},{mobs:[84002],item:49217,count:1,drop:200000},{mobs:[84003],item:49219,count:1,drop:200000}],reward:[[21103,1]],
