@@ -26,13 +26,18 @@ const LevelQuests=(()=>{
    if(t.drop&&t.mobs.includes(mob.spawn.npcId))out.push({id:t.item,min:1,max:1,chance:t.drop,fixedRate:true});
   return out;
  }
- function complete(q){
+ // choice：獎勵二選一（奇岩城試煉表），pick＝q.reward 的第幾個；沒選就先不完成，等玩家在任務清單點
+ const ready=q=>active(q)&&q.targets.every(t=>have(t.item)>=t.count);
+ const asked=new Set();
+ function complete(q,pick){
+  if(q.choice&&!Number.isInteger(pick)){if(!asked.has(q.id)){asked.add(q.id);toast('任務「'+q.name+'」完成！到 目錄 → 任務 選一個獎勵：'+q.reward.map(([id])=>nameOf(id)).join(' 或 '),'journal');}return false;}
+  const reward=q.choice?[q.reward[pick]].filter(Boolean):q.reward;if(!reward.length)return false;
   const next=OwnedInventory.snapshot;
   for(const t of q.targets)if(!DBGameRules.takeItem(next,keyOf(t.item),t.count))return false;
-  for(const [id,count] of q.reward)if(!DBGameRules.addItem(next,keyOf(id),count)){toast('背包空間不足，任務「'+q.name+'」先保留，整理背包後自動完成。');return false;}
+  for(const [id,count] of reward)if(!DBGameRules.addItem(next,keyOf(id),count)){toast('背包空間不足，任務「'+q.name+'」先保留，整理背包後'+(q.choice?'再選一次。':'自動完成。'));return false;}
   if(!OwnedInventory.applyChange(next))return false;
   done.add(q.id);
-  const text='任務「'+q.name+'」完成！獲得 '+q.reward.map(([id,n])=>nameOf(id)+(n>1?' ×'+n:'')).join('、');
+  const text='任務「'+q.name+'」完成！獲得 '+reward.map(([id,n])=>nameOf(id)+(n>1?' ×'+n:'')).join('、');
   toast(text,'journal');window.GameLog?.add?.(text);
   window.GameEntry?.saveActive();
   return true;
@@ -40,7 +45,7 @@ const LevelQuests=(()=>{
  function sync(){
   if(window.gameFlowState!=='playing'||!window.activeCharacterId||OwnedInventory.owner!==window.activeCharacterId)return;
   if(owner!==window.activeCharacterId){owner=window.activeCharacterId;signature='';}
-  for(const q of LEVEL_QUESTS)if(active(q)&&q.targets.every(t=>have(t.item)>=t.count))complete(q);
+  for(const q of LEVEL_QUESTS)if(ready(q))complete(q);
   const ids=LEVEL_QUESTS.filter(active).map(q=>q.id),sig=(window.activeMapId||0)+':'+ids.join(',');
   if(sig===signature)return;
   signature=sig;const on=new Set(ids);
@@ -51,7 +56,7 @@ const LevelQuests=(()=>{
  }
  const announced=new Set();
  const goal=q=>q.targets.map(t=>'打 '+[...new Set(t.mobs.map(mobName))].join('／')+' 取得 '+nameOf(t.item)+(t.count>1?' ×'+t.count:'')).join('，');
- function restore(list){done=new Set(Array.isArray(list)?list.filter(Number.isInteger):[]);announced.clear();for(const q of LEVEL_QUESTS)if(eligible(q)&&level()>=q.level)announced.add(q.id);signature='';owner='';}
+ function restore(list){done=new Set(Array.isArray(list)?list.filter(Number.isInteger):[]);announced.clear();asked.clear();for(const q of LEVEL_QUESTS)if(eligible(q)&&level()>=q.level)announced.add(q.id);signature='';owner='';}
  setInterval(sync,1000);
 
  const css=document.createElement('style');css.textContent=`
@@ -66,7 +71,7 @@ const LevelQuests=(()=>{
   dialog.classList.remove('classic-panel','reference-menu-panel','game-catalog-panel','npc-shop-panel','native-dialog-panel');
   dialog.hidden=false;document.querySelector('#close').hidden=false;
   const list=uiElement('div','level-quests');
-  const mine=LEVEL_QUESTS.filter(eligible);
+  const mine=LEVEL_QUESTS.filter(eligible).sort((a,b)=>a.level-b.level);
   content.replaceChildren(uiElement('h2','','等級任務'),uiElement('p','','等級到就自動接任務，任務怪出現、任務道具開始掉落；打到全部任務道具自動完成並領獎。'),list);
   if(!mine.length)list.append(uiElement('p','','目前職業沒有可做的等級任務。'));
   for(const q of mine){
@@ -74,7 +79,8 @@ const LevelQuests=(()=>{
    const box=uiElement('div','lq'+(done.has(q.id)?' done':''));
    box.append(uiElement('h3','',q.name+'（Lv'+q.level+'）'),uiElement('small','',state));
    for(const t of q.targets){const n=Math.min(have(t.item),t.count);box.append(uiElement('p',done.has(q.id)||n>=t.count?'ok':'wait','打 '+[...new Set(t.mobs.map(mobName))].join('／')+' → '+nameOf(t.item)+' '+(done.has(q.id)?t.count:n)+'／'+t.count));}
-   box.append(uiElement('p','','獎勵：'+q.reward.map(([id,n])=>nameOf(id)+(n>1?' ×'+n:'')).join('、')));
+   box.append(uiElement('p','','獎勵：'+q.reward.map(([id,n])=>nameOf(id)+(n>1?' ×'+n:'')).join(q.choice?' 或 ':'、')+(q.choice?'（二選一）':'')));
+   if(q.choice&&ready(q))for(const [i,[id]] of q.reward.entries()){const b=uiElement('button','classic-use','領取 '+nameOf(id));b.type='button';b.onclick=()=>{if(complete(q,i))open();};box.append(b);}
    list.append(box);
   }
   return true;
