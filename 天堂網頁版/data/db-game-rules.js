@@ -166,7 +166,7 @@ const DBGameRules = (() => {
     return OwnedInventory.items.filter(e=>e.slot).reduce((n,e)=>n+(e.item.sourceRules?.damage_reduction||0),0)+
       (EquipmentSets.read(OwnedInventory.items).reduction_dmg||0)+(window.ClassBuffs?.reduction()||0)+(window.SoulRings?.bonuses().reduction||0);
   }
-  const craftRecipes=()=>rows('system_item_blend').filter(r=>!/^回收魔珠/.test(byId.get(Number(r.new_item))?.name||''));
+  const craftRecipes=()=>rows('system_item_blend').filter(r=>!/^回收魔珠/.test(byId.get(Number(r.new_item))?.name||'')&&!(String(r.materials)==='40308'&&[39287,39288].includes(Number(r.new_item)))); // 武魂結晶／提煉石不能用金幣做，只能打怪掉（使用者 2026-11-15）
   function craft(npcId,id,anywhere=false){ // anywhere：從目錄「製作」視窗做，不用靠近 NPC（使用者 2026-11-14 決定）
     const recipe=craftRecipes().find(r=>r.id===id&&r.npcid===npcId);
     if(!recipe||!anywhere&&!IslandMonsters.serviceNearby(npcId,3))return '請靠近對應的製作 NPC。';

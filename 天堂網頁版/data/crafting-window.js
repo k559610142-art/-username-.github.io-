@@ -1,20 +1,26 @@
 // 製作工匠視窗（2026-11-14）：目錄「製作」打開。配方來自 DB system_item_blend（DBGameRules.rows），
 // 只列出成品和所有材料都在道具目錄（INTERFACE_CATALOG）裡的配方（其餘是伺服器自訂道具，遊戲裡沒有）。
-// 分頁：全部／可製作／武器／防具／飾品／材料／寵物／道具／煉金；搜尋成品、材料、NPC 名稱。
+// 分頁（2026-11-15 細分）：全部／可製作／武器／防具／飾品／符石／娃娃／武魂／藥品／卷軸／魔石／寶箱／材料／寵物／道具；搜尋成品、材料、NPC 名稱。
 // 隨時隨地都能製作（DBGameRules.craft(npcId,id,true)，使用者決定），材料、等級、職業、成功率照原配方。
 const CraftingWindow=(()=>{
  const el=(t,c,x)=>uiElement(t,c,x);
  const byId=new Map(INTERFACE_CATALOG.items.map(i=>[i.id,i]));
  const split=v=>String(v??'').split(',').filter(Boolean).map(Number);
  const roleCode={'王族':0,'騎士':1,'法師':2,'妖精':3};
- const TABS=[['all','全部'],['can','可製作'],['weapon','武器'],['armor','防具'],['acc','飾品'],['material','材料'],['pet','寵物'],['item','道具'],['alchemy','煉金']];
+ const TABS=[['all','全部'],['can','可製作'],['weapon','武器'],['armor','防具'],['acc','飾品'],['rune','符石'],['doll','娃娃'],['wuhun','武魂'],['potion','藥品'],['scroll','卷軸'],['gem','魔石'],['box','寶箱'],['material','材料'],['pet','寵物'],['item','道具']];
  const ACC=new Set(['ring','amulet','earring','belt','necklace']);
  function category(item){
-  if(/項圈|寵物|哨子/.test(item.name))return 'pet';
+  const n=item.name,t=item.type;
+  if(/武魂/.test(n))return 'wuhun';
+  if(/娃娃/.test(n))return 'doll';
+  if(/項圈|寵物|哨子/.test(n))return 'pet';
   if(item.kind==='weapon')return 'weapon';
-  if(item.kind==='armor')return ACC.has(item.type)?'acc':'armor';
-  if(item.type==='material')return 'material';
-  if(item.type==='potion'||/藥水|靈藥|煉金/.test(item.name))return 'alchemy';
+  if(item.kind==='armor')return /^(runeword|talisman)/.test(t)?'rune':ACC.has(t)?'acc':'armor';
+  if(t==='potion'||/藥水|靈藥|萬能藥|餅乾/.test(n))return 'potion';
+  if(t==='scroll'||/卷軸|強化卷/.test(n))return 'scroll';
+  if(t==='gem'||/魔石|寶石|附魔石|變身石/.test(n))return 'gem';
+  if(t==='treasure_box'||/寶箱|禮盒|禮包/.test(n))return 'box';
+  if(t==='material')return 'material';
   return 'item';
  }
  let recipes=null;
@@ -28,8 +34,8 @@ const CraftingWindow=(()=>{
  const fits=x=>!(x.r.checkLevel>(window.activeCharacterLevel||1))&&!(x.r.checkClass&&x.r.checkClass!==roleCode[job]);
  const craftable=x=>fits(x)&&hp>x.r.hpConsume&&mp>=x.r.mpConsume&&x.mats.every(m=>have(m)>=m.count);
  // 很多成品是伺服器自訂道具、遊戲裡沒有背包圖：改顯示類別徽章（不是只有一個字）
- const BADGE={weapon:'⚔',armor:'🛡',acc:'💍',material:'◆',pet:'🐾',item:'📦',alchemy:'⚗'};
- function pic(item,cat,cls){const box=el('span',cls||'pic');if(item.icon)box.append(itemIcon(item));else{box.classList.add('badge');box.append(el('b','',BADGE[cat]||'◇'));}return box;}
+ const BADGE={weapon:'⚔',armor:'🛡',acc:'💍',rune:'✦',doll:'🧸',wuhun:'👻',potion:'⚗',scroll:'📜',gem:'💎',box:'🎁',material:'◆',pet:'🐾',item:'📦'};
+ function pic(item,cat,cls){const box=el('span',cls||'pic');const soul=!item.icon&&typeof wuhunData!=='undefined'&&wuhunData.find(w=>w.id===item.id),soulSrc=soul&&window.TdjSystems?.wuhun.image(soul);if(soulSrc){const img=el('img','');img.src=soulSrc;img.alt='';img.style.cssText='width:100%;height:100%;object-fit:contain';box.append(img);}else if(item.icon)box.append(itemIcon(item));else{box.classList.add('badge');box.append(el('b','',BADGE[cat]||'◇'));}return box;}
  const npcName=x=>String(x.r.npcname||'').replace(/\^/g,' ');
 
  const css=document.createElement('style');css.textContent=`
@@ -90,7 +96,7 @@ const CraftingWindow=(()=>{
  function open(){if(window.gameFlowState!=='playing')return false;if(win){win.style.zIndex=String(FloatingWindows.frontLevel());return true;}
   win=el('section','craft-window');win.setAttribute('role','dialog');win.setAttribute('aria-label','製作工匠');win.style.zIndex=String(FloatingWindows.frontLevel());
   const h=el('div','craft-head'),x=el('button','','✕');x.type='button';x.setAttribute('aria-label','關閉製作');x.onclick=close;h.append(el('h2','','製作工匠'),x);
-  tabsBox=el('div','craft-tabs');for(const [k,l] of TABS){const b=el('button','',l);b.type='button';b.dataset.tab=k;b.onclick=()=>{tab=k;current=null;render();};tabsBox.append(b);}
+  tabsBox=el('div','craft-tabs');for(const [k,l] of TABS){if(k!=='all'&&k!=='can'&&!load().some(x=>x.cat===k))continue;const b=el('button','',l);b.type='button';b.dataset.tab=k;b.onclick=()=>{tab=k;current=null;render();};tabsBox.append(b);}
   search=el('input','craft-search');search.type='search';search.placeholder='搜尋道具、材料、NPC';search.value=query;search.oninput=()=>{query=search.value;current=null;render();};
   body=el('div');body.style.cssText='flex:1;min-height:0;display:flex;flex-direction:column';win.append(h,tabsBox,search,body);game.append(win);render();return true;}
  function close(){win?.remove();win=null;current=null;}
