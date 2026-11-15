@@ -7,6 +7,19 @@ test('關刀聖使、四髮白金與兩種死騎有可用外觀、8 方向與原
 
 test('未命名與混合數字格式不會遺失動作',()=>{const rows=parseList('#1 8 animal 0.(1 2,0.0:4 0.1:4)\n#2 64 alias 110.framerate(28) 0 1 2 8 0 4 8 1 4 3 1 1 0 0 4');assert.equal(rows.get(1).actions[0].frames.length,2);assert.equal(rows.get(2).actions[0].frames.length,2);assert.equal(rows.get(2).frameRate,28);});
 
+test('具名動作與裸數字屬性混用時仍讀取發光、影子與附加圖層',()=>{
+ const row=parseList('#20613 8 layer 3.breath(1 1,0.0:4) 104 8 101 99 110 32 105 2 201 202').get(20613);
+ assert.equal(row.attr,8);assert.equal(row.shadow,99);assert.equal(row.frameRate,32);assert.deepEqual(row.clothes,[201,202]);assert.equal(row.actions[3].frames.length,1);
+});
+
+test('短附加動畫循環，並可使用獨立待機組，不會在本體後半段消失',()=>{
+ const script=fs.readFileSync(path.join(__dirname,'build-extra-transform-cards.cjs'),'utf8'),start=script.indexOf('function frameInfo('),end=script.indexOf('async function build(',start);
+ const c={spr:file=>file==='123-3.spr'?{frames:Array.from({length:8},()=>({}))}:null};vm.createContext(c);vm.runInContext(script.slice(start,end),c);
+ assert.equal(c.frameInfo(123,0,3,11,1,true).frame,3);
+ assert.equal(c.frameInfo(123,32,3,11,1,true).file,'123-3.spr');
+ assert.equal(c.frameInfo(123,0,3,11,1,false),null);
+});
+
 test('截圖五張未使用卡與裝備系列不再進入卡冊或抽卡名單',()=>{
   const {c,book}=data();
   const targets=book.filter(card=>(card.p.id>=324&&card.p.id<=328)||card.aliases?.includes('套裝變身系統專用'));

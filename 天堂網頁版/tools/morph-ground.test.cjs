@@ -25,10 +25,17 @@ test('方向或素材尚未載入時使用安全原點',()=>{
   const c=fixture();assert.deepEqual([...c.actions.groundAnchor(999,'N',4)],[0,0]);assert.deepEqual([...c.actions.groundAnchor(123,'S')],[0,0]);
 });
 
-test('頁面載入真正的變身定位修正版，不能誤改成移除清單的版本',()=>{
+test('完整合成圖的腳底依本體錨點，不把外圍光圈當成人物腳底',()=>{
+ const c=fixture();c.NativeMorphGroundAnchors={999:{S:[24,2]}};
+ assert.deepEqual([...c.actions.groundAnchor(999,'S',4)],[24,2]);c.draw(0);
+ assert.equal(c.morphLayer.style.left,'-48px');assert.equal(c.morphLayer.style.top,'-4px');
+});
+
+test('變身定位及魂環程式使用一致的新版本，移除清單獨立載入',()=>{
   const html=fs.readFileSync(path.join(__dirname,'../index.html'),'utf8');
-  for(const file of ['transform-cards.js','monster-actions.js','soul-ring-visuals.js','tdj-systems.js'])assert(html.includes('src="data/'+file+'?v=chest-ring-npc4"'),file);
-  assert(html.includes('src="data/removed-transform-cards.js?v=remove-equipment2"'));
+  const scripts=new Map([...html.matchAll(/src="data\/([^?"\/]+)\?v=([^"]+)"/g)].map(m=>[m[1],m[2]]));
+  const versions=['transform-cards.js','monster-actions.js','soul-ring-visuals.js','tdj-systems.js'].map(name=>scripts.get(name));
+  assert(versions.every(Boolean));assert.equal(new Set(versions).size,1);assert.notEqual(scripts.get('removed-transform-cards.js'),versions[0]);
 });
 
 test('原始死亡騎士八方向的偏移由實際待機幀校正，而非固定左右位移',()=>{

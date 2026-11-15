@@ -25,7 +25,7 @@ const MonsterActions = (() => {
     const [x, y] = headings.get(heading);
     return [x * index / frames.length, y * index / frames.length];
   }
-  const asset = file => 'assets/monster-actions/' + file;
+  const asset = file => 'assets/monster-actions/' + file + (file.startsWith('extra-poly-')?'?v=complete-layers5':'');
   const get = (gfx, heading, clip, weapon) => {
     const key = 'd' + (directions[heading] ?? 5) + '/' + clip;
     const variant = weaponMorphModes[gfx]?.[weapon];
@@ -34,6 +34,8 @@ const MonsterActions = (() => {
   };
   const groundAnchors = new WeakMap();
   function groundAnchor(gfx, heading, weapon) {
+    const bodyAnchor=window.NativeMorphGroundAnchors?.[gfx]?.[heading];
+    if(bodyAnchor)return bodyAnchor;
     // Use the resting body, not the current attack frame or its extended weapon.
     const frames = get(gfx, heading, 'idle') || get(gfx, heading, 'idle', weapon);
     if (!frames?.length) return [0, 0];
@@ -141,9 +143,9 @@ const MonsterActions = (() => {
     if (layers) element.style.zIndex = gfx === 12681 || /^wuhun-(auto|more)-/.test(frame[0]) ? '1' : '';
     if (layers) layers.shadow.hidden = layers.light.hidden = layers.extras.hidden = true;
     const address = [file, sx, sy].join(':');
-    if (layers && deathKnightOriginalLayers[gfx]) {
+    if (layers && !file.startsWith('extra-poly-') && deathKnightOriginalLayers[gfx]) {
       paintComposite(layers, deathKnightOriginalLayers[gfx][address], left, top, scale, gfx);
-    } else if (layers && gfx === 3784) {
+    } else if (layers && !file.startsWith('extra-poly-') && gfx === 3784) {
       for (const name of ['shadow', 'light']) {
         const layer = layers[name];
         const overlay = deathKnightLayers[name + '/' + address];
