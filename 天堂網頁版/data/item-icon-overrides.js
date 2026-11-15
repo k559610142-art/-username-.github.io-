@@ -9,3 +9,6 @@ for(const item of INTERFACE_CATALOG.items)if(item.gfx===6833&&!item.icon)item.ic
 
 // User-provided clan teleport scroll artwork (2026-11-14).
 for(const item of INTERFACE_CATALOG.items)if(item.kind==="etcitem"&&item.id===40124)item.icon="assets/interface/items/clan-teleport-scroll-v2.jpg";
+
+// User-approved black reagent bottle illustration (2026-11-16); do not replace shared GFX 1161.
+for(const item of INTERFACE_CATALOG.items)if(item.kind==="etcitem"&&item.id===49015)item.icon="assets/interface/items/black-mithril-solution-v2.png";
