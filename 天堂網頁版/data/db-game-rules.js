@@ -133,7 +133,7 @@ const DBGameRules = (() => {
       return sum+(ranged?(r.bow_dmg_modifier||0):(r.dmgmodifier||r.dmg_modifier||0))+(e.slot==='weapon'?(e.enchant||0):0);
     },0);
     const poly=rows('system_poly_orginal').find(r=>r.gfxId===window.activeTransformCard?.p?.gfx);
-    return extra+(ranged?set.bow_modifier_dmg||0:set.modifier_dmg||0)+(ranged?poly?.addBowDmg||0:poly?.addDmg||0)+(window.ClassBuffs?.damageBonus(ranged)||0);
+    return extra+(window.SoulRings?.bonuses()[ranged?'ranged':'melee']||0)+(ranged?set.bow_modifier_dmg||0:set.modifier_dmg||0)+(ranged?poly?.addBowDmg||0:poly?.addDmg||0)+(window.ClassBuffs?.damageBonus(ranged)||0);
   }
   function weaponProc(mob){
     const weapon=OwnedInventory.items.find(e=>e.slot==='weapon');
@@ -158,13 +158,13 @@ const DBGameRules = (() => {
     if(OwnedInventory.owner!==window.activeCharacterId||!window.activeVitalGrowth)return;
     const equipped=OwnedInventory.items.filter(e=>e.slot),sets=EquipmentSets.read(equipped);
     const poly=rows('system_poly_orginal').find(r=>r.gfxId===window.activeTransformCard?.p?.gfx);
-    maxHp=Math.max(1,activeVitalGrowth.maxHp+(sets.hp||0)+equipped.reduce((s,e)=>s+(e.item.bonuses.hp||0),0)+(poly?.addMaxHP||0)+(window.ClassBuffs?.maxHp()||0));
-    maxMp=Math.max(0,activeVitalGrowth.maxMp+(sets.mp||0)+equipped.reduce((s,e)=>s+(e.item.bonuses.mp||0),0)+(poly?.addMaxMP||0)+(window.ClassBuffs?.maxMp()||0));
+    maxHp=Math.max(1,(window.SoulRings?.bonuses().hp||0)+activeVitalGrowth.maxHp+(sets.hp||0)+equipped.reduce((s,e)=>s+(e.item.bonuses.hp||0),0)+(poly?.addMaxHP||0)+(window.ClassBuffs?.maxHp()||0));
+    maxMp=Math.max(0,(window.SoulRings?.bonuses().mp||0)+activeVitalGrowth.maxMp+(sets.mp||0)+equipped.reduce((s,e)=>s+(e.item.bonuses.mp||0),0)+(poly?.addMaxMP||0)+(window.ClassBuffs?.maxMp()||0));
     hp=Math.min(hp,maxHp);mp=Math.min(mp,maxMp);
   }
   function reduction(){
     return OwnedInventory.items.filter(e=>e.slot).reduce((n,e)=>n+(e.item.sourceRules?.damage_reduction||0),0)+
-      (EquipmentSets.read(OwnedInventory.items).reduction_dmg||0)+(window.ClassBuffs?.reduction()||0);
+      (EquipmentSets.read(OwnedInventory.items).reduction_dmg||0)+(window.ClassBuffs?.reduction()||0)+(window.SoulRings?.bonuses().reduction||0);
   }
   const craftRecipes=()=>rows('system_item_blend').filter(r=>!/^回收魔珠/.test(byId.get(Number(r.new_item))?.name||''));
   function craft(npcId,id,anywhere=false){ // anywhere：從目錄「製作」視窗做，不用靠近 NPC（使用者 2026-11-14 決定）

@@ -5,7 +5,7 @@ window.PlayerAbilityRules=(()=>{
  function manaReduction(n){n=score(n);if(n<8)return 0;let v=5;for(let i=8;i<=n;i++)if(i%3===0||i%3===2)v++;return Math.min(30,v);}
  const originalManaReduction=n=>clamp(Math.floor((score(n)-12)/3),0,3);
  function magicCritical(n,items=[]){const extra=items.filter(e=>e.slot).reduce((sum,e)=>sum+(e.item.kind==='armor'?(PLAYER_ABILITY_DATA.armor[e.item.id]?.critical||0):(e.item.sourceRules?.magic_critical||0)),0);return clamp(10+(score(n)>=35?Math.floor((score(n)-30)/5):0)+extra,0,100);}
- function resistances(items,sets={}){const out={earth:0,fire:0,water:0,wind:0},buff=window.ClassBuffs?.resistances?.()||{};for(const k of Object.keys(out)){out[k]=(sets['defense_'+k]||0)+(buff[k]||0);for(const e of items.filter(e=>e.slot)){const native=e.item.kind==='armor'?PLAYER_ABILITY_DATA.armor[e.item.id]:null;out[k]+=native?.[k]??e.item.sourceRules?.['defense_'+k]??0;}}return out;}
+ function resistances(items,sets={}){const out={earth:0,fire:0,water:0,wind:0},buff=window.ClassBuffs?.resistances?.()||{};for(const k of Object.keys(out)){out[k]=(sets['defense_'+k]||0)+(buff[k]||0)+(window.SoulRings?.bonuses()[k]||0);for(const e of items.filter(e=>e.slot)){const native=e.item.kind==='armor'?PLAYER_ABILITY_DATA.armor[e.item.id]:null;out[k]+=native?.[k]??e.item.sourceRules?.['defense_'+k]??0;}}return out;}
  const element=skill=>({1:'earth',2:'fire',4:'water',8:'wind'}[skill?.attr??skill?.spell?.attr??PLAYER_ABILITY_DATA.skills[skill?.id]?.attr]||null);
  const elementalFactor=(skill,res={})=>{const k=element(skill);return k?1-.0032*clamp(Number(res[k])||0,-100,100):1;};
  const mrFactor=mr=>Math.max(0,mr<100?1-Math.floor(Math.max(0,mr)/2)*.01:.6-Math.floor(mr/10)*.01);

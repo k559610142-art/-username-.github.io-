@@ -1766,7 +1766,7 @@ function openGameCatalog(type) {
   results.append(search);
   results.append(cards);
   const soulStage=type==='wuhun'?uiElement('section','wuhun-stage'):null;
-  if(soulStage){const art=uiElement('img','wuhun-stage-art');art.src='assets/interface/wuhun-panel/soul-awakening.webp';art.alt='龍魂與魂環武魂主視覺';soulStage.append(art);layout.append(sidebar,results,soulStage,detail);}else layout.append(sidebar, results, detail);
+  if(soulStage){soulStage.classList.add('wuhun-live-stage');soulStage.setAttribute('aria-label','玩家與已裝備武魂預覽');layout.append(sidebar,results,soulStage,detail);}else layout.append(sidebar, results, detail);
   gameDialogContent.replaceChildren(title, ...(['collection','adventurer'].includes(type)?[tabs]:[]), layout);
 
   if (type === 'collection' || type === 'adventurer') {
@@ -1785,9 +1785,22 @@ function openGameCatalog(type) {
     : [['全部', all]];
   let activeFilter = all;
   let selected = null;
+  let selectedRingSlot=0;
+
+  function syncSoulPreview(){
+    if(!soulStage)return;
+    soulStage.querySelector('.wuhun-live-scene')?.remove();
+    const scene=uiElement('div','wuhun-live-scene'),equipped=entries.find(x=>String(x.w?.id)===String(TdjSystems.wuhun.active))?.w;
+    soulStage.dataset.equipped=equipped?String(equipped.id):'';
+    scene.classList.toggle('has-soul',!!equipped);
+    if(equipped){const src=TdjSystems.wuhun.image(equipped);if(src){const spirit=uiElement('img','wuhun-equipped-spirit');spirit.src=src;spirit.alt='已裝備武魂：'+equipped.name;scene.append(spirit);}else scene.append(uiElement('div','wuhun-equipped-aura'));scene.append(uiElement('div','wuhun-live-rings'));}
+    const player=uiElement('img','wuhun-player-art');player.src=currentPortrait();player.alt=(window.activeCharacterName||'玩家')+' · '+job+' · '+(characterGender?'女性':'男性')+'人物立繪';scene.append(player);
+    const name=uiElement('div','wuhun-live-caption');name.append(uiElement('strong','',window.activeCharacterName||'玩家'),uiElement('span','',equipped?'裝備中：'+equipped.name:'尚未裝備武魂'));scene.append(name);soulStage.prepend(scene);
+  }
 
   function showDetails(row) {
     selected = row;
+    syncSoulPreview();
     detail.replaceChildren();
     for (const button of cards.children) button.setAttribute('aria-pressed', String(button.catalogEntry === row));
     if (!row) {
@@ -1835,16 +1848,24 @@ function openGameCatalog(type) {
     } else if (type === 'wuhun') {
       const w = row.w, owned = TdjSystems.wuhun.owned(w.id), active = String(TdjSystems.wuhun.active) === String(w.id);
       soulStage.querySelector('.wuhun-stage-summary')?.remove();
-      const summary=uiElement('div','wuhun-stage-summary'),badge=uiElement('span','wuhun-stage-badge',active?'裝備中':owned?'已擁有 ×'+owned:'尚未擁有');
+      const summary=uiElement('div','wuhun-stage-summary'),badge=uiElement('span','wuhun-stage-badge',active?'目前已裝備':owned?'選取 · 已擁有 ×'+owned:'選取 · 尚未擁有');
       const stageAction=catalogButton(active?'卸下武魂':owned?'裝備武魂':'尚未取得武魂',()=>{if(active)TdjSystems.wuhun.unequip();else TdjSystems.wuhun.equip(w.id);refreshCards();},'wuhun-stage-equip');stageAction.disabled=!owned;
       summary.append(badge,uiElement('h3','',w.name),stageAction);soulStage.append(summary);
 
       detail.append(uiElement('strong', '', w.tier + (w.desc ? ' · ' + w.desc : '')), uiElement('p', '', owned ? '擁有' + (active ? ' · 裝備中' : '') : '尚未擁有'), uiElement('h4', '', '武魂能力'));
       for (const effect of w.fx) detail.append(uiElement('p', '', effect));
-      const collection=uiElement('section','wuhun-owned-strip');collection.append(uiElement('h4','','已收集武魂'));
-      const ownedRows=entries.filter(x=>TdjSystems.wuhun.owned(x.w.id)>0),slots=uiElement('div','wuhun-owned-slots');
-      for(const x of ownedRows.slice(0,6)){const b=catalogButton('',()=>showDetails(x),'wuhun-owned-slot');b.title=x.name;b.setAttribute('aria-label','查看 '+x.name);b.append(catalogPortrait('wuhun',x));slots.append(b);}
-      if(!ownedRows.length)slots.append(uiElement('p','','尚未取得武魂'));collection.append(slots,uiElement('small','','已收集 '+ownedRows.length+' / '+entries.length+' 種'));detail.append(collection);
+      const collection=uiElement('section','wuhun-ring-section');collection.append(uiElement('h4','','武魂環位'));
+      const ringState=SoulRings.state(),slots=uiElement('div','wuhun-ring-slots');
+      ringState.slots.forEach((id,index)=>{const ring=SoulRings.get(id),b=catalogButton('',()=>{selectedRingSlot=index;showDetails(selected);},'wuhun-ring-slot');b.setAttribute('aria-label','第 '+(index+1)+' 環位：'+(ring?ring.name:'空'));b.setAttribute('aria-pressed',String(index===selectedRingSlot));b.dataset.tier=ring?tdjWuhunTierTag[ring.tier]||'white':'empty';b.title=ring?ring.name+'：'+SoulRings.describe(ring.bonus).join('、'):'點選放入魂環';b.append(uiElement('i','',ring?'✦':'+'),uiElement('small','',String(index+1)));slots.append(b);});
+      collection.append(slots,uiElement('p','wuhun-ring-note',TdjSystems.wuhun.active?'魂環加成已生效':'裝備武魂後，魂環加成才會生效'));
+      const total=SoulRings.describe(SoulRings.ringBonuses());if(total.length)collection.append(uiElement('p','wuhun-ring-total',total.join(' · ')));
+      const picker=uiElement('div','wuhun-ring-picker');picker.append(uiElement('strong','','第 '+(selectedRingSlot+1)+' 環位'));
+      for(const ring of SoulRings.inventory().filter(r=>r.available>0)){const b=catalogButton(ring.name+' ×'+ring.available+'｜'+SoulRings.describe(ring.bonus).join('、'),()=>{if(SoulRings.equip(selectedRingSlot,ring.id))refreshCards();},'wuhun-ring-choice');picker.append(b);}
+      if(ringState.slots[selectedRingSlot]!==null)picker.append(catalogButton('卸下此魂環',()=>{if(SoulRings.remove(selectedRingSlot))refreshCards();},'wuhun-ring-remove'));
+      if(!SoulRings.inventory().some(r=>r.available>0))picker.append(uiElement('small','','尚無可放入的魂環，可用多餘武魂煉製。'));
+      collection.append(picker);
+      const craft=catalogButton('煉製所選魂環（消耗 1 個重複武魂）',()=>{if(SoulRings.craft(w.id)){updateCounts();refreshCards();}},'wuhun-ring-craft');craft.disabled=owned<2;craft.title=owned<2?'至少持有 2 個所選武魂，才能保留 1 個並煉製魂環':w.name+' → '+SoulRings.get(w.id).name;collection.append(craft,uiElement('small','wuhun-ring-note','魂環保留原武魂 20% 的可用能力，各項至少 +1；永久保留 1 個原武魂。'));
+      detail.append(collection);
       const action = active ? catalogButton('卸下武魂', () => { TdjSystems.wuhun.unequip(); refreshCards(); }, 'game-catalog-action')
         : catalogButton(owned ? '裝備武魂' : '擁有才能裝備', () => { if (TdjSystems.wuhun.equip(w.id)) refreshCards(); }, 'game-catalog-action');
       action.disabled = !owned;

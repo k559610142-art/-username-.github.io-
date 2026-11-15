@@ -6,7 +6,7 @@ window.TdjSystems = (() => {
   const enchantById = new Map(bossEnchantData.map(e => [e.id, e]));
   const wuhunById = new Map(wuhunData.map(w => [w.id, w]));
   let owner = '', state = null;
-  const blank = () => ({dolls: {owned: {}, active: null}, enchant: {stones: {}, weapon: null}, wuhun: {owned: {}, active: null}});
+  const blank = () => ({dolls: {owned: {}, active: null}, enchant: {stones: {}, weapon: null}, wuhun: {owned: {}, active: null, ringOwned:{}, ringSlots:Array(6).fill(null)}});
   const key = id => 'lineage-web-tdj-systems-v1:' + id;
   function ensure() {
     const id = window.activeCharacterId || '';
@@ -23,6 +23,9 @@ window.TdjSystems = (() => {
         if (w && enchantById.has(w.id) && w.lv >= 1 && w.lv <= 5) state.enchant.weapon = {id: w.id, lv: w.lv, uid: w.uid};
         for (const [k, n] of Object.entries(saved.wuhun?.owned || {})) if (wuhunById.has(+k) && n > 0) state.wuhun.owned[k] = n;
         if (state.wuhun.owned[saved.wuhun?.active]) state.wuhun.active = saved.wuhun.active;
+        for(const [id,n]of Object.entries(saved.wuhun?.ringOwned||{}))if(wuhunById.has(+id)&&Number.isSafeInteger(n)&&n>0)state.wuhun.ringOwned[id]=n;
+        const used={};for(let i=0;i<6;i++){const id=Number(saved.wuhun?.ringSlots?.[i]);if(wuhunById.has(id)&&(used[id]||0)<(state.wuhun.ringOwned[id]||0)){state.wuhun.ringSlots[i]=id;used[id]=(used[id]||0)+1;}}
+
       }
     } catch (error) { /* 讀不到就從空白開始 */ }
     queueMicrotask(render);
@@ -394,6 +397,16 @@ window.TdjSystems = (() => {
     toast(cur.level.name + ' 發動「' + cur.data.skill + '」' + extra, 'journal');
   }
 
+  function refreshSoulStats(){window.DBGameRules?.syncVitals();window.stats?.();}
+  function changeRings(kind,id,slot){
+    if(!playing()||window.CharacterActions?.dead)return false;
+    const old=JSON.parse(JSON.stringify(state)),s=state.wuhun;
+    if(kind==='craft'){if(!wuhunById.has(id)||(s.owned[id]||0)<2)return false;s.owned[id]--;s.ringOwned[id]=(s.ringOwned[id]||0)+1;}
+    else{if(!Number.isInteger(slot)||slot<0||slot>=6)return false;if(kind==='remove'){if(s.ringSlots[slot]===null)return false;s.ringSlots[slot]=null;}
+      else if(kind==='equip'){const used=s.ringSlots.filter((v,i)=>i!==slot&&Number(v)===id).length;if(!wuhunById.has(id)||(s.ringOwned[id]||0)<=used)return false;s.ringSlots[slot]=id;}else return false;}
+    try{localStorage.setItem(key(owner),JSON.stringify(state));}catch(error){state=old;toast('儲存失敗，魂環未變更。');return false;}
+    refreshSoulStats();return true;
+  }
   // ---- 武魂 ----
   function getWuhun(id) {
     if (!playing()) { toast('請先進入遊戲角色。'); return null; }
@@ -402,10 +415,10 @@ window.TdjSystems = (() => {
   function equipWuhun(id) {
     if (!playing()) return false;
     const w = wuhunById.get(+id); if (!w || !state.wuhun.owned[id]) { toast('還沒有這個武魂。'); return false; }
-    state.wuhun.active = String(id); save(); render(); flash(wuhunImage(w));
+    state.wuhun.active = String(id); save(); refreshSoulStats();render(); flash(wuhunImage(w));
     toast('裝備 ' + w.name + '（' + w.fx.slice(0, 4).join('、') + '）'); return true;
   }
-  function unequipWuhun() { if (!playing() || !state.wuhun.active) return false; state.wuhun.active = null; save(); render(); toast('卸下武魂'); return true; }
+  function unequipWuhun() { if (!playing() || !state.wuhun.active) return false; state.wuhun.active = null; save(); refreshSoulStats();render(); toast('卸下武魂'); return true; }
 
   // 進出遊戲、換角色時重畫
   const baseRefresh = refreshCharacter;
@@ -415,7 +428,7 @@ window.TdjSystems = (() => {
   return {
     dolls: {draw: drawDoll, summon, dismiss, image: dollImage, owned: id => get().dolls.owned[id] || 0, get active() { return get().dolls.active; }},
     enchant: {get: getStone, enchant, current: currentEnchant, image: enchantImage, stones: id => get().enchant.stones[id] || 0},
-    wuhun: {get: getWuhun, equip: equipWuhun, unequip: unequipWuhun, image: wuhunImage, baseGfx: wuhunBaseGfx, owned: id => get().wuhun.owned[id] || 0, get active() { return get().wuhun.active; }},
+    wuhun: {changeRings,get ringState(){ensure();return JSON.parse(JSON.stringify({owned:state.wuhun.ringOwned,slots:state.wuhun.ringSlots}));},get: getWuhun, equip: equipWuhun, unequip: unequipWuhun, image: wuhunImage, baseGfx: wuhunBaseGfx, owned: id => get().wuhun.owned[id] || 0, get active() { return get().wuhun.active; }},
     onAttack, render
   };
 })();
