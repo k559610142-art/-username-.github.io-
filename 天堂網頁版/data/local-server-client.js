@@ -95,7 +95,7 @@ const LocalServerClient=(()=>{
   content.replaceChildren(uiElement('h2','','多人系統'));
   const tabs=uiElement('nav',''),body=uiElement('section',''),notice=uiElement('p','');
   body.style.cssText='max-height:60dvh;overflow:auto;display:grid;gap:8px';
-  for(const [key,label]of [['players','玩家'],['friends','好友'],['guild','血盟'],['party','組隊'],['auction','交易所'],['trade','交易'],['mail','郵件'],['chat','聊天']])tabs.append(control(label,()=>open(key)));
+  for(const [key,label]of [['players','玩家'],['friends','好友'],['guild','血盟'],['party','組隊'],['auction','鑽石交易所'],['trade','交易'],['mail','郵件'],['chat','聊天']])tabs.append(control(label,()=>open(key)));
   content.append(tabs,notice,body);
   async function run(route,data){try{await act(route,data);await open(tab);}catch(error){notice.textContent=error.message;}}
   function form(fields,label,submit){
@@ -232,8 +232,8 @@ const LocalServerClient=(()=>{
    const health=await request('/api/health');if(health.service!=='lineage-local-test')return;
    online=true;
    for(const entry of menuLayout){
-    const tab={'社交':'players','信件':'mail','交易所':'exchange'}[entry[0]];
-    if(tab)entry[2]=entry[0]==='社交'?'social':entry[0]==='交易所'?'exchange':'online-'+tab;
+    const tab={'社交':'players','信件':'mail','交易所':'exchange','鑽石交易所':'exchange'}[entry[0]];
+    if(tab)entry[2]=entry[0]==='社交'?'social':tab==='exchange'?'exchange':'online-'+tab;
    }
    const originalMenuAction=runGameMenuAction;
    runGameMenuAction=function(action){if(action.startsWith('online-'))return open(action.slice(7));return originalMenuAction(action);};

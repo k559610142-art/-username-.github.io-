@@ -1,0 +1,526 @@
+{
+  "targets": 52,
+  "rebuilt": [
+    {
+      "id": 55015,
+      "name": "王族(王子)",
+      "gfx": 9635,
+      "file": "doll-native-9635-v2.png",
+      "width": 37,
+      "height": 36,
+      "layers": 1,
+      "screen": false
+    },
+    {
+      "id": 55016,
+      "name": "王族(公主)",
+      "gfx": 9638,
+      "file": "doll-native-9638-v2.png",
+      "width": 22,
+      "height": 35,
+      "layers": 1,
+      "screen": false
+    },
+    {
+      "id": 55017,
+      "name": "騎士(男騎士)",
+      "gfx": 9411,
+      "file": "doll-native-9411-v2.png",
+      "width": 24,
+      "height": 35,
+      "layers": 1,
+      "screen": false
+    },
+    {
+      "id": 55018,
+      "name": "騎士(女騎士)",
+      "gfx": 9414,
+      "file": "doll-native-9414-v2.png",
+      "width": 21,
+      "height": 38,
+      "layers": 1,
+      "screen": false
+    },
+    {
+      "id": 55019,
+      "name": "妖精(男妖精)",
+      "gfx": 9398,
+      "file": "doll-native-9398-v2.png",
+      "width": 23,
+      "height": 39,
+      "layers": 1,
+      "screen": false
+    },
+    {
+      "id": 55020,
+      "name": "妖精(女妖精)",
+      "gfx": 9401,
+      "file": "doll-native-9401-v2.png",
+      "width": 24,
+      "height": 34,
+      "layers": 1,
+      "screen": false
+    },
+    {
+      "id": 55021,
+      "name": "法師(男法師)",
+      "gfx": 9381,
+      "file": "doll-native-9381-v2.png",
+      "width": 26,
+      "height": 36,
+      "layers": 1,
+      "screen": false
+    },
+    {
+      "id": 55022,
+      "name": "法師(女法師)",
+      "gfx": 9377,
+      "file": "doll-native-9377-v2.png",
+      "width": 23,
+      "height": 35,
+      "layers": 1,
+      "screen": false
+    },
+    {
+      "id": 55023,
+      "name": "黑暗妖精(男黑暗妖精)",
+      "gfx": 9391,
+      "file": "doll-native-9391-v2.png",
+      "width": 26,
+      "height": 35,
+      "layers": 1,
+      "screen": false
+    },
+    {
+      "id": 55024,
+      "name": "黑暗妖精(女黑暗妖精)",
+      "gfx": 9395,
+      "file": "doll-native-9395-v2.png",
+      "width": 28,
+      "height": 38,
+      "layers": 1,
+      "screen": false
+    },
+    {
+      "id": 55025,
+      "name": "龍騎士(男龍騎士)",
+      "gfx": 9388,
+      "file": "doll-native-9388-v2.png",
+      "width": 28,
+      "height": 38,
+      "layers": 1,
+      "screen": false
+    },
+    {
+      "id": 55026,
+      "name": "龍騎士(女龍騎士)",
+      "gfx": 9385,
+      "file": "doll-native-9385-v2.png",
+      "width": 30,
+      "height": 36,
+      "layers": 1,
+      "screen": false
+    },
+    {
+      "id": 55027,
+      "name": "幻術士(男幻術師)",
+      "gfx": 9404,
+      "file": "doll-native-9404-v2.png",
+      "width": 24,
+      "height": 35,
+      "layers": 1,
+      "screen": false
+    },
+    {
+      "id": 55028,
+      "name": "幻術士(女幻術師)",
+      "gfx": 9407,
+      "file": "doll-native-9407-v2.png",
+      "width": 23,
+      "height": 35,
+      "layers": 1,
+      "screen": false
+    },
+    {
+      "id": 55033,
+      "name": "發光的魔法娃娃：美人魚",
+      "gfx": 8653,
+      "file": "doll-native-8653-v2.png",
+      "width": 33,
+      "height": 50,
+      "layers": 2,
+      "screen": true
+    },
+    {
+      "id": 55034,
+      "name": "光彩照人的魔法娃娃：美人魚",
+      "gfx": 8656,
+      "file": "doll-native-8656-v2.png",
+      "width": 35,
+      "height": 54,
+      "layers": 2,
+      "screen": true
+    },
+    {
+      "id": 55035,
+      "name": "阿魯巴",
+      "gfx": 8741,
+      "file": "doll-native-8741-v2.png",
+      "width": 34,
+      "height": 38,
+      "layers": 1,
+      "screen": false
+    },
+    {
+      "id": 55036,
+      "name": "努力的魔法娃娃：阿魯巴",
+      "gfx": 8748,
+      "file": "doll-native-8748-v2.png",
+      "width": 34,
+      "height": 38,
+      "layers": 1,
+      "screen": false
+    },
+    {
+      "id": 55037,
+      "name": "聰明的魔法娃娃：阿魯巴",
+      "gfx": 8749,
+      "file": "doll-native-8749-v2.png",
+      "width": 34,
+      "height": 38,
+      "layers": 1,
+      "screen": false
+    },
+    {
+      "id": 55038,
+      "name": "聰穎的魔法娃娃：阿魯巴",
+      "gfx": 8750,
+      "file": "doll-native-8750-v2.png",
+      "width": 34,
+      "height": 38,
+      "layers": 1,
+      "screen": false
+    },
+    {
+      "id": 55039,
+      "name": "發光的魔法娃娃：阿魯巴",
+      "gfx": 8743,
+      "file": "doll-native-8743-v2.png",
+      "width": 34,
+      "height": 42,
+      "layers": 1,
+      "screen": false
+    },
+    {
+      "id": 55040,
+      "name": "光彩照人的魔法娃娃：阿魯巴",
+      "gfx": 8744,
+      "file": "doll-native-8744-v2.png",
+      "width": 34,
+      "height": 42,
+      "layers": 1,
+      "screen": false
+    },
+    {
+      "id": 55053,
+      "name": "橘熾娃娃：紅火",
+      "gfx": 9693,
+      "file": "doll-native-9693-v2.png",
+      "width": 49,
+      "height": 55,
+      "layers": 2,
+      "screen": true
+    },
+    {
+      "id": 55054,
+      "name": "燃燒的橘熾娃娃：紅火",
+      "gfx": 9694,
+      "file": "doll-native-9694-v2.png",
+      "width": 49,
+      "height": 55,
+      "layers": 2,
+      "screen": true
+    },
+    {
+      "id": 55055,
+      "name": "猛烈的橘熾娃娃：紅火",
+      "gfx": 9695,
+      "file": "doll-native-9695-v2.png",
+      "width": 49,
+      "height": 55,
+      "layers": 2,
+      "screen": true
+    },
+    {
+      "id": 55056,
+      "name": "爆發的橘熾娃娃：紅火",
+      "gfx": 9696,
+      "file": "doll-native-9696-v2.png",
+      "width": 49,
+      "height": 55,
+      "layers": 2,
+      "screen": true
+    },
+    {
+      "id": 55057,
+      "name": "雷厲的橘熾娃娃：紅火",
+      "gfx": 9697,
+      "file": "doll-native-9697-v2.png",
+      "width": 49,
+      "height": 55,
+      "layers": 2,
+      "screen": true
+    },
+    {
+      "id": 55058,
+      "name": "猖狂的橘熾娃娃：紅火",
+      "gfx": 9698,
+      "file": "doll-native-9698-v2.png",
+      "width": 49,
+      "height": 55,
+      "layers": 2,
+      "screen": true
+    },
+    {
+      "id": 55059,
+      "name": "橘熾娃娃：黃燄",
+      "gfx": 10266,
+      "file": "doll-native-10266-v2.png",
+      "width": 49,
+      "height": 54,
+      "layers": 2,
+      "screen": true
+    },
+    {
+      "id": 55060,
+      "name": "燃燒的橘熾娃娃：黃燄",
+      "gfx": 9684,
+      "file": "doll-native-9684-v2.png",
+      "width": 49,
+      "height": 54,
+      "layers": 2,
+      "screen": true
+    },
+    {
+      "id": 55061,
+      "name": "猛烈的橘熾娃娃：黃燄",
+      "gfx": 9685,
+      "file": "doll-native-9685-v2.png",
+      "width": 49,
+      "height": 54,
+      "layers": 2,
+      "screen": true
+    },
+    {
+      "id": 55062,
+      "name": "爆發的橘熾娃娃：黃燄",
+      "gfx": 9690,
+      "file": "doll-native-9690-v2.png",
+      "width": 49,
+      "height": 54,
+      "layers": 2,
+      "screen": true
+    },
+    {
+      "id": 55063,
+      "name": "雷厲的橘熾娃娃：黃燄",
+      "gfx": 9691,
+      "file": "doll-native-9691-v2.png",
+      "width": 49,
+      "height": 54,
+      "layers": 2,
+      "screen": true
+    },
+    {
+      "id": 55064,
+      "name": "猖狂的橘熾娃娃：黃燄",
+      "gfx": 9692,
+      "file": "doll-native-9692-v2.png",
+      "width": 49,
+      "height": 54,
+      "layers": 2,
+      "screen": true
+    },
+    {
+      "id": 55065,
+      "name": "橘熾娃娃：綠光",
+      "gfx": 9699,
+      "file": "doll-native-9699-v2.png",
+      "width": 43,
+      "height": 50,
+      "layers": 2,
+      "screen": true
+    },
+    {
+      "id": 55066,
+      "name": "燃燒的橘熾娃娃：綠光",
+      "gfx": 9700,
+      "file": "doll-native-9700-v2.png",
+      "width": 43,
+      "height": 50,
+      "layers": 2,
+      "screen": true
+    },
+    {
+      "id": 55067,
+      "name": "猛烈的橘熾娃娃：綠光",
+      "gfx": 9701,
+      "file": "doll-native-9701-v2.png",
+      "width": 43,
+      "height": 50,
+      "layers": 2,
+      "screen": true
+    },
+    {
+      "id": 55068,
+      "name": "爆發的橘熾娃娃：綠光",
+      "gfx": 9702,
+      "file": "doll-native-9702-v2.png",
+      "width": 43,
+      "height": 50,
+      "layers": 2,
+      "screen": true
+    },
+    {
+      "id": 55069,
+      "name": "雷厲的橘熾娃娃：綠光",
+      "gfx": 9703,
+      "file": "doll-native-9703-v2.png",
+      "width": 43,
+      "height": 50,
+      "layers": 2,
+      "screen": true
+    },
+    {
+      "id": 55070,
+      "name": "猖狂的橘熾娃娃：綠光",
+      "gfx": 9704,
+      "file": "doll-native-9704-v2.png",
+      "width": 43,
+      "height": 50,
+      "layers": 2,
+      "screen": true
+    },
+    {
+      "id": 55071,
+      "name": "橘熾娃娃：飛龍",
+      "gfx": 10256,
+      "file": "doll-native-10256-v2.png",
+      "width": 31,
+      "height": 57,
+      "layers": 2,
+      "screen": true
+    },
+    {
+      "id": 55072,
+      "name": "燃燒的橘熾娃娃：飛龍",
+      "gfx": 9679,
+      "file": "doll-native-9679-v2.png",
+      "width": 33,
+      "height": 56,
+      "layers": 2,
+      "screen": true
+    },
+    {
+      "id": 55073,
+      "name": "猛烈的橘熾娃娃：飛龍",
+      "gfx": 9680,
+      "file": "doll-native-9680-v2.png",
+      "width": 33,
+      "height": 56,
+      "layers": 2,
+      "screen": true
+    },
+    {
+      "id": 55074,
+      "name": "爆發的橘熾娃娃：飛龍",
+      "gfx": 9681,
+      "file": "doll-native-9681-v2.png",
+      "width": 33,
+      "height": 56,
+      "layers": 2,
+      "screen": true
+    },
+    {
+      "id": 55075,
+      "name": "雷厲的橘熾娃娃：飛龍",
+      "gfx": 9682,
+      "file": "doll-native-9682-v2.png",
+      "width": 33,
+      "height": 56,
+      "layers": 2,
+      "screen": true
+    },
+    {
+      "id": 55076,
+      "name": "猖狂的橘熾娃娃：飛龍",
+      "gfx": 9683,
+      "file": "doll-native-9683-v2.png",
+      "width": 33,
+      "height": 56,
+      "layers": 2,
+      "screen": true
+    },
+    {
+      "id": 55077,
+      "name": "橘熾娃娃：藍炙",
+      "gfx": 9705,
+      "file": "doll-native-9705-v2.png",
+      "width": 49,
+      "height": 55,
+      "layers": 2,
+      "screen": true
+    },
+    {
+      "id": 55078,
+      "name": "燃燒的橘熾娃娃：藍炙",
+      "gfx": 9706,
+      "file": "doll-native-9706-v2.png",
+      "width": 49,
+      "height": 55,
+      "layers": 2,
+      "screen": true
+    },
+    {
+      "id": 55079,
+      "name": "猛烈的橘熾娃娃：藍炙",
+      "gfx": 9707,
+      "file": "doll-native-9707-v2.png",
+      "width": 49,
+      "height": 55,
+      "layers": 2,
+      "screen": true
+    },
+    {
+      "id": 55080,
+      "name": "爆發的橘熾娃娃：藍炙",
+      "gfx": 9708,
+      "file": "doll-native-9708-v2.png",
+      "width": 49,
+      "height": 55,
+      "layers": 2,
+      "screen": true
+    },
+    {
+      "id": 55081,
+      "name": "雷厲的橘熾娃娃：藍炙",
+      "gfx": 9709,
+      "file": "doll-native-9709-v2.png",
+      "width": 49,
+      "height": 55,
+      "layers": 2,
+      "screen": true
+    },
+    {
+      "id": 55082,
+      "name": "猖狂的橘熾娃娃：藍炙",
+      "gfx": 9710,
+      "file": "doll-native-9710-v2.png",
+      "width": 49,
+      "height": 55,
+      "layers": 2,
+      "screen": true
+    }
+  ],
+  "missing": []
+}

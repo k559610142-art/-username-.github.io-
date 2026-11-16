@@ -11,7 +11,7 @@ closePanel = function () {
 const menuLayout = [
   ['背包', '▣', 'bag'], ['技能', '✦', 'magic'], ['信件', '✉'], ['關閉', '×', 'close'],
   ['角色', '♙', 'character'], ['社交', '♧', 'social'], ['設定', '⚙', 'settings'], ['排行', '♜'], ['記憶座標', '⌖'],
-  ['變身', '◈', 'transforms'], ['魔法娃娃', '✧', 'dolls'], ['BOSS附魔', '⚔', 'enchant'], ['武魂真身', '♜', 'wuhun'], ['收藏', '▤', 'collection'], ['交易所', '⚖', 'exchange'], ['登出', '⇥', 'logout'],
+  ['變身', '◈', 'transforms'], ['魔法娃娃', '✧', 'dolls'], ['BOSS附魔', '⚔', 'enchant'], ['武魂真身', '♜', 'wuhun'], ['收藏', '▤', 'collection'], ['鑽石交易所', '⚖', 'exchange'], ['登出', '⇥', 'logout'],
   ['鑽石百貨公司', '◈', 'gacha'], ['製作', '⚒', 'craft'], ['任務', '❖', 'quests'], ['擺攤', '⛺', 'stall'], ['返回選擇英雄', '‹', 'roles']
 ];
 const characterMenuLayout = [

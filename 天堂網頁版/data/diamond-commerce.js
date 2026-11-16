@@ -2,7 +2,7 @@
 const DiamondCommerce=(()=>{
  const el=(tag,cls,text)=>{const n=document.createElement(tag);n.className=cls||'';if(text!==undefined)n.textContent=text;return n;};
  const button=(text,fn)=>{const b=el('button','dc-button',text);b.type='button';b.onclick=fn;return b;};
- const names={mall:'商城',gacha:'鑽石百貨公司',exchange:'交易所'};
+ const names={mall:'商城',gacha:'鑽石百貨公司',exchange:'鑽石交易所'};
  const shopTabs=['鑽石商店','試煉商店','AI 會員'];
  const gachaTabs=['龍脈星晶','扭蛋機','一番賞','我的時裝','髮型','寵物'];
  let win=null,mode='mall',tab=0,notice='',market=null,busy=false,generation=0;
@@ -12,7 +12,7 @@ const DiamondCommerce=(()=>{
  function icon(file,cls=''){const img=el('img',cls);img.src='assets/interface/reference-skin/'+file+'.png';img.alt='';return img;}
  function render(){
   if(!win)return;win.replaceChildren();const head=el('div','dc-heading');head.append(el('strong','',''+names[mode]),el('span','dc-wallet','💎 鑽石 '+balance().toLocaleString()));const x=button('✕',close);x.className='dc-close';x.setAttribute('aria-label','關閉'+names[mode]);head.append(x);win.append(head);
-  const nav=el('nav','dc-main-tabs');nav.setAttribute('aria-label','鑽石功能');for(const [key,label]of Object.entries(names)){const b=button(label,()=>open(key));b.classList.toggle('selected',key===mode);nav.append(b);}win.append(nav);
+  const nav=el('nav','dc-main-tabs');nav.setAttribute('aria-label','鑽石功能');for(const [key,label]of Object.entries(names).filter(([key])=>mode!=='exchange'||key==='exchange')){const b=button(label,()=>open(key));b.classList.toggle('selected',key===mode);nav.append(b);}win.append(nav);
   const body=el('div','dc-body');win.append(body);
   if(mode==='exchange')exchange(body);else{
    const tabs=el('nav','dc-tabs');for(const [i,label]of (mode==='mall'?shopTabs:gachaTabs).entries()){const b=button(label,()=>{tab=i;notice='';render();});b.classList.toggle('selected',i===tab);tabs.append(b);}body.append(tabs);
@@ -33,9 +33,9 @@ const DiamondCommerce=(()=>{
   const rates=button('查看獎池與機率',()=>{notice='目前尚未設定正式獎池與機率。';render();});detail.append(rates);const actions=el('div','dc-draw-actions');for(const count of [1,10]){const b=button('召喚 '+count+' 次（鑽石價格待設定）',()=>{});b.disabled=true;actions.append(b);}detail.append(actions);box.append(art,detail);body.append(box);
  }
  function exchange(body){
-  if(level()<30){body.append(el('div','dc-empty','🔒 交易所於 30 等開放｜目前 '+level()+' 等'));return;}
+  if(level()<30){body.append(el('div','dc-empty','🔒 鑽石交易所於 30 等開放｜目前 '+level()+' 等'));return;}
   body.append(el('p','dc-muted','使用鑽石交易 · 商品上架 24 小時'));
-  if(!window.LocalServerClient?.online){body.append(el('div','dc-empty','請登入本機多人伺服器使用交易所。'));return;}
+  if(!window.LocalServerClient?.online){body.append(el('div','dc-empty','請登入本機多人伺服器使用鑽石交易所。'));return;}
   const tabs=el('nav','dc-tabs');for(const [i,label]of ['購買商品','我的上架','上架商品'].entries()){const b=button(label,()=>{tab=i;notice='';render();});b.classList.toggle('selected',tab===i);tabs.append(b);}body.append(tabs);
   if(tab===2){
    const form=el('form','dc-list-form'),select=el('select');select.setAttribute('aria-label','上架道具');for(const item of OwnedInventory.items.filter(e=>!e.slot&&e.key!=='etcitem:40308'&&OwnedInventory.canDiscard(e.uid))){const o=el('option','',item.item.name+' × '+item.count);o.value=item.uid;select.append(o);}const qty=el('input'),price=el('input');for(const [input,label]of [[qty,'上架數量'],[price,'總售價（鑽石）']]){input.type='number';input.min='1';input.max='2147483647';input.step='1';input.value='1';input.setAttribute('aria-label',label);const wrap=el('label','',label);wrap.append(input);form.append(wrap);}form.prepend(select);const submit=button(busy?'處理中…':'確認上架',()=>{});submit.type='submit';submit.disabled=busy||!select.options.length;form.append(submit);form.onsubmit=e=>{e.preventDefault();const count=Number(qty.value),amount=Number(price.value);if(!Number.isSafeInteger(count)||count<1||!Number.isSafeInteger(amount)||amount<1){notice='請輸入正整數數量與鑽石售價。';render();return;}if(confirm('上架 '+count+' 個道具，總售價 '+amount+' 鑽石？'))act('/api/auction/list',{itemUid:select.value,count,price:amount});};body.append(form);return;
@@ -46,7 +46,7 @@ const DiamondCommerce=(()=>{
  }
  async function load(){const token=generation;try{const result=await LocalServerClient.market();if(win&&token===generation){market=result;render();}}catch(e){if(win&&token===generation){notice=e.message;market={auctions:[]};render();}}}
  async function act(route,data){if(busy||level()<30)return;busy=true;render();try{await LocalServerClient.act(route,data);notice='操作完成。';await load();}catch(e){notice=e.message;}finally{busy=false;render();}}
- function open(type='mall'){if(window.gameFlowState!=='playing')return;mode=Object.hasOwn(names,type)?type:'mall';tab=0;notice='';generation++;if(!win){win=el('section','diamond-commerce');win.setAttribute('role','dialog');win.setAttribute('aria-label','鑽石商城、扭蛋與交易所');document.querySelector('.game').append(win);}render();if(mode==='exchange'&&level()>=30&&window.LocalServerClient?.online){market=null;render();load();}win.querySelector('.dc-close').focus();}
+ function open(type='mall'){if(window.gameFlowState!=='playing')return;mode=Object.hasOwn(names,type)?type:'mall';tab=0;notice='';generation++;if(!win){win=el('section','diamond-commerce');win.setAttribute('role','dialog');win.setAttribute('aria-label',names[mode]);document.querySelector('.game').append(win);}win.setAttribute('aria-label',names[mode]);render();if(mode==='exchange'&&level()>=30&&window.LocalServerClient?.online){market=null;render();load();}win.querySelector('.dc-close').focus();}
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&win){e.preventDefault();close();}});
  return {open,close,get balance(){return balance();}};
 })();window.DiamondCommerce=DiamondCommerce;

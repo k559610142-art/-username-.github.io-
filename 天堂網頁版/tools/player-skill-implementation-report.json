@@ -1,0 +1,1562 @@
+{
+  "counts": {
+    "有主要效果路徑": 120,
+    "未完成效果": 28,
+    "未實裝": 35,
+    "部分實裝": 11
+  },
+  "skills": [
+    {
+      "id": 1,
+      "name": "初級治癒術",
+      "status": "有主要效果路徑",
+      "note": "傷害／治癒進入 PlayerAbilityRules 與實際 HP 結算",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 2,
+      "name": "日光術",
+      "status": "未完成效果",
+      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 3,
+      "name": "保護罩",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 4,
+      "name": "光箭",
+      "status": "有主要效果路徑",
+      "note": "傷害／治癒進入 PlayerAbilityRules 與實際 HP 結算",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 5,
+      "name": "指定傳送",
+      "status": "有主要效果路徑",
+      "note": "工具／召喚流程：teleport",
+      "group": "UTIL",
+      "learnable": true
+    },
+    {
+      "id": 6,
+      "name": "冰箭",
+      "status": "有主要效果路徑",
+      "note": "傷害／治癒進入 PlayerAbilityRules 與實際 HP 結算",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 7,
+      "name": "風刃",
+      "status": "有主要效果路徑",
+      "note": "傷害／治癒進入 PlayerAbilityRules 與實際 HP 結算",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 8,
+      "name": "神聖武器",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 9,
+      "name": "解毒術",
+      "status": "有主要效果路徑",
+      "note": "工具／召喚流程：cure",
+      "group": "UTIL",
+      "learnable": true
+    },
+    {
+      "id": 10,
+      "name": "寒冷戰慄",
+      "status": "有主要效果路徑",
+      "note": "傷害／治癒進入 PlayerAbilityRules 與實際 HP 結算",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 11,
+      "name": "毒咒",
+      "status": "有主要效果路徑",
+      "note": "單體負面狀態進入戰鬥鉤子",
+      "group": "TARGET",
+      "learnable": true
+    },
+    {
+      "id": 12,
+      "name": "擬似魔法武器",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 13,
+      "name": "無所遁形術",
+      "status": "未實裝",
+      "note": "施放只提示沒有作用對象",
+      "group": "UTIL",
+      "learnable": true
+    },
+    {
+      "id": 14,
+      "name": "負重強化",
+      "status": "未完成效果",
+      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 15,
+      "name": "火箭",
+      "status": "有主要效果路徑",
+      "note": "傷害／治癒進入 PlayerAbilityRules 與實際 HP 結算",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 16,
+      "name": "地獄之牙",
+      "status": "有主要效果路徑",
+      "note": "傷害／治癒進入 PlayerAbilityRules 與實際 HP 結算",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 17,
+      "name": "極光雷電",
+      "status": "有主要效果路徑",
+      "note": "傷害／治癒進入 PlayerAbilityRules 與實際 HP 結算",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 18,
+      "name": "起死回生術",
+      "status": "有主要效果路徑",
+      "note": "工具／召喚流程：turnUndead",
+      "group": "UTIL",
+      "learnable": true
+    },
+    {
+      "id": 19,
+      "name": "中級治癒術",
+      "status": "有主要效果路徑",
+      "note": "傷害／治癒進入 PlayerAbilityRules 與實際 HP 結算",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 20,
+      "name": "闇盲咒術",
+      "status": "未完成效果",
+      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "group": "TARGET",
+      "learnable": true
+    },
+    {
+      "id": 21,
+      "name": "鎧甲護持",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 22,
+      "name": "寒冰氣息",
+      "status": "部分實裝",
+      "note": "目前直接施法只結算選定目標，原始範圍效果尚未完整接入",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 23,
+      "name": "能量感測",
+      "status": "有主要效果路徑",
+      "note": "工具／召喚流程：sense",
+      "group": "UTIL",
+      "learnable": true
+    },
+    {
+      "id": 25,
+      "name": "燃燒的火球",
+      "status": "部分實裝",
+      "note": "目前直接施法只結算選定目標，原始範圍效果尚未完整接入",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 26,
+      "name": "通暢氣脈術",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 27,
+      "name": "壞物術",
+      "status": "未實裝",
+      "note": "施放只提示沒有作用對象",
+      "group": "UTIL",
+      "learnable": true
+    },
+    {
+      "id": 28,
+      "name": "吸血鬼之吻",
+      "status": "有主要效果路徑",
+      "note": "傷害／治癒進入 PlayerAbilityRules 與實際 HP 結算",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 29,
+      "name": "緩速術",
+      "status": "有主要效果路徑",
+      "note": "單體負面狀態進入戰鬥鉤子",
+      "group": "TARGET",
+      "learnable": true
+    },
+    {
+      "id": 30,
+      "name": "岩牢",
+      "status": "部分實裝",
+      "note": "目前直接施法只結算選定目標，原始範圍效果尚未完整接入",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 31,
+      "name": "魔法屏障",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 32,
+      "name": "冥想術",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 33,
+      "name": "木乃伊的詛咒",
+      "status": "有主要效果路徑",
+      "note": "單體負面狀態進入戰鬥鉤子",
+      "group": "TARGET",
+      "learnable": true
+    },
+    {
+      "id": 34,
+      "name": "極道落雷",
+      "status": "有主要效果路徑",
+      "note": "傷害／治癒進入 PlayerAbilityRules 與實際 HP 結算",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 35,
+      "name": "高級治癒術",
+      "status": "有主要效果路徑",
+      "note": "傷害／治癒進入 PlayerAbilityRules 與實際 HP 結算",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 36,
+      "name": "迷魅術",
+      "status": "有主要效果路徑",
+      "note": "工具／召喚流程：tame",
+      "group": "UTIL",
+      "learnable": true
+    },
+    {
+      "id": 37,
+      "name": "聖潔之光",
+      "status": "有主要效果路徑",
+      "note": "工具／召喚流程：purify",
+      "group": "UTIL",
+      "learnable": true
+    },
+    {
+      "id": 38,
+      "name": "冰錐",
+      "status": "有主要效果路徑",
+      "note": "傷害／治癒進入 PlayerAbilityRules 與實際 HP 結算",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 39,
+      "name": "魔力奪取",
+      "status": "有主要效果路徑",
+      "note": "工具／召喚流程：drain",
+      "group": "UTIL",
+      "learnable": true
+    },
+    {
+      "id": 40,
+      "name": "黑闇之影",
+      "status": "未完成效果",
+      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "group": "TARGET",
+      "learnable": true
+    },
+    {
+      "id": 41,
+      "name": "造屍術",
+      "status": "有主要效果路徑",
+      "note": "工具／召喚流程：zombie",
+      "group": "UTIL",
+      "learnable": true
+    },
+    {
+      "id": 42,
+      "name": "體魄強健術",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 43,
+      "name": "加速術",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 44,
+      "name": "魔法相消術",
+      "status": "有主要效果路徑",
+      "note": "工具／召喚流程：purify",
+      "group": "UTIL",
+      "learnable": true
+    },
+    {
+      "id": 45,
+      "name": "地裂術",
+      "status": "有主要效果路徑",
+      "note": "傷害／治癒進入 PlayerAbilityRules 與實際 HP 結算",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 46,
+      "name": "烈炎術",
+      "status": "有主要效果路徑",
+      "note": "傷害／治癒進入 PlayerAbilityRules 與實際 HP 結算",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 47,
+      "name": "弱化術",
+      "status": "有主要效果路徑",
+      "note": "單體負面狀態進入戰鬥鉤子",
+      "group": "TARGET",
+      "learnable": true
+    },
+    {
+      "id": 48,
+      "name": "祝福魔法武器",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 49,
+      "name": "體力回復術",
+      "status": "有主要效果路徑",
+      "note": "傷害／治癒進入 PlayerAbilityRules 與實際 HP 結算",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 50,
+      "name": "冰矛圍籬",
+      "status": "有主要效果路徑",
+      "note": "傷害／治癒進入 PlayerAbilityRules 與實際 HP 結算",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 51,
+      "name": "召喚術",
+      "status": "有主要效果路徑",
+      "note": "工具／召喚流程：summon",
+      "group": "UTIL",
+      "learnable": true
+    },
+    {
+      "id": 52,
+      "name": "神聖疾走",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 53,
+      "name": "龍捲風",
+      "status": "部分實裝",
+      "note": "目前直接施法只結算選定目標，原始範圍效果尚未完整接入",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 54,
+      "name": "強力加速術",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 55,
+      "name": "狂暴術",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 56,
+      "name": "疾病術",
+      "status": "有主要效果路徑",
+      "note": "單體負面狀態進入戰鬥鉤子",
+      "group": "TARGET",
+      "learnable": true
+    },
+    {
+      "id": 57,
+      "name": "全部治癒術",
+      "status": "有主要效果路徑",
+      "note": "傷害／治癒進入 PlayerAbilityRules 與實際 HP 結算",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 58,
+      "name": "火牢",
+      "status": "有主要效果路徑",
+      "note": "傷害／治癒進入 PlayerAbilityRules 與實際 HP 結算",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 59,
+      "name": "冰雪暴",
+      "status": "部分實裝",
+      "note": "目前直接施法只結算選定目標，原始範圍效果尚未完整接入",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 60,
+      "name": "隱身術",
+      "status": "有主要效果路徑",
+      "note": "工具／召喚流程：invisible",
+      "group": "UTIL",
+      "learnable": true
+    },
+    {
+      "id": 61,
+      "name": "返生術",
+      "status": "未實裝",
+      "note": "缺少隊友技能接入",
+      "group": "UTIL",
+      "learnable": true
+    },
+    {
+      "id": 62,
+      "name": "震裂術",
+      "status": "部分實裝",
+      "note": "目前直接施法只結算選定目標，原始範圍效果尚未完整接入",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 63,
+      "name": "治癒能量風暴",
+      "status": "未實裝",
+      "note": "PlayerSkills.supports 不接受此技能",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 64,
+      "name": "魔法封印",
+      "status": "有主要效果路徑",
+      "note": "單體負面狀態進入戰鬥鉤子",
+      "group": "TARGET",
+      "learnable": true
+    },
+    {
+      "id": 65,
+      "name": "雷霆風暴",
+      "status": "部分實裝",
+      "note": "目前直接施法只結算選定目標，原始範圍效果尚未完整接入",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 66,
+      "name": "沉睡之霧",
+      "status": "有主要效果路徑",
+      "note": "單體負面狀態進入戰鬥鉤子",
+      "group": "TARGET",
+      "learnable": true
+    },
+    {
+      "id": 67,
+      "name": "變形術",
+      "status": "有主要效果路徑",
+      "note": "工具／召喚流程：poly",
+      "group": "UTIL",
+      "learnable": true
+    },
+    {
+      "id": 68,
+      "name": "聖結界",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 69,
+      "name": "集體傳送術",
+      "status": "有主要效果路徑",
+      "note": "工具／召喚流程：teleport",
+      "group": "UTIL",
+      "learnable": true
+    },
+    {
+      "id": 70,
+      "name": "火風暴",
+      "status": "部分實裝",
+      "note": "目前直接施法只結算選定目標，原始範圍效果尚未完整接入",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 71,
+      "name": "藥水霜化術",
+      "status": "未實裝",
+      "note": "施放只提示沒有作用對象",
+      "group": "UTIL",
+      "learnable": true
+    },
+    {
+      "id": 72,
+      "name": "強力無所遁形術",
+      "status": "有主要效果路徑",
+      "note": "傷害／治癒進入 PlayerAbilityRules 與實際 HP 結算",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 73,
+      "name": "創造魔法武器",
+      "status": "未實裝",
+      "note": "缺少製作技能接入",
+      "group": "UTIL",
+      "learnable": true
+    },
+    {
+      "id": 74,
+      "name": "流星雨",
+      "status": "部分實裝",
+      "note": "目前直接施法只結算選定目標，原始範圍效果尚未完整接入",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 75,
+      "name": "終極返生術",
+      "status": "未實裝",
+      "note": "缺少隊友技能接入",
+      "group": "UTIL",
+      "learnable": true
+    },
+    {
+      "id": 76,
+      "name": "集體緩速術",
+      "status": "有主要效果路徑",
+      "note": "範圍負面狀態",
+      "group": "AREA_TARGET",
+      "learnable": true
+    },
+    {
+      "id": 77,
+      "name": "究極光裂術",
+      "status": "有主要效果路徑",
+      "note": "傷害／治癒進入 PlayerAbilityRules 與實際 HP 結算",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 78,
+      "name": "絕對屏障",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 79,
+      "name": "靈魂昇華",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 80,
+      "name": "冰雪颶風",
+      "status": "部分實裝",
+      "note": "目前直接施法只結算選定目標，原始範圍效果尚未完整接入",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 87,
+      "name": "衝擊之暈",
+      "status": "有主要效果路徑",
+      "note": "傷害／治癒進入 PlayerAbilityRules 與實際 HP 結算",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 88,
+      "name": "增幅防禦",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 89,
+      "name": "尖刺盔甲",
+      "status": "未完成效果",
+      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 90,
+      "name": "堅固防護",
+      "status": "未完成效果",
+      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 91,
+      "name": "反擊屏障",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 97,
+      "name": "暗隱術",
+      "status": "未實裝",
+      "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
+      "group": "unavailable",
+      "learnable": false
+    },
+    {
+      "id": 98,
+      "name": "附加劇毒",
+      "status": "未實裝",
+      "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
+      "group": "unavailable",
+      "learnable": false
+    },
+    {
+      "id": 99,
+      "name": "影之防護",
+      "status": "未實裝",
+      "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
+      "group": "unavailable",
+      "learnable": false
+    },
+    {
+      "id": 100,
+      "name": "提煉魔石",
+      "status": "未實裝",
+      "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
+      "group": "unavailable",
+      "learnable": false
+    },
+    {
+      "id": 101,
+      "name": "行走加速",
+      "status": "未實裝",
+      "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
+      "group": "unavailable",
+      "learnable": false
+    },
+    {
+      "id": 102,
+      "name": "燃燒鬥志",
+      "status": "未實裝",
+      "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
+      "group": "unavailable",
+      "learnable": false
+    },
+    {
+      "id": 103,
+      "name": "暗黑盲咒",
+      "status": "未實裝",
+      "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
+      "group": "unavailable",
+      "learnable": false
+    },
+    {
+      "id": 104,
+      "name": "毒性抵抗",
+      "status": "未實裝",
+      "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
+      "group": "unavailable",
+      "learnable": false
+    },
+    {
+      "id": 105,
+      "name": "雙重破壞",
+      "status": "未實裝",
+      "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
+      "group": "unavailable",
+      "learnable": false
+    },
+    {
+      "id": 106,
+      "name": "暗影閃避",
+      "status": "未實裝",
+      "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
+      "group": "unavailable",
+      "learnable": false
+    },
+    {
+      "id": 107,
+      "name": "暗影之牙",
+      "status": "未實裝",
+      "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
+      "group": "unavailable",
+      "learnable": false
+    },
+    {
+      "id": 108,
+      "name": "會心一擊",
+      "status": "未實裝",
+      "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
+      "group": "unavailable",
+      "learnable": false
+    },
+    {
+      "id": 109,
+      "name": "力量提升",
+      "status": "未實裝",
+      "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
+      "group": "unavailable",
+      "learnable": false
+    },
+    {
+      "id": 110,
+      "name": "敏捷提升",
+      "status": "未實裝",
+      "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
+      "group": "unavailable",
+      "learnable": false
+    },
+    {
+      "id": 111,
+      "name": "迴避提升",
+      "status": "未實裝",
+      "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
+      "group": "unavailable",
+      "learnable": false
+    },
+    {
+      "id": 112,
+      "name": "破壞盔甲",
+      "status": "未實裝",
+      "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
+      "group": "unavailable",
+      "learnable": false
+    },
+    {
+      "id": 113,
+      "name": "精準目標",
+      "status": "未完成效果",
+      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "group": "TARGET",
+      "learnable": true
+    },
+    {
+      "id": 114,
+      "name": "灼熱武器",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 115,
+      "name": "閃亮之盾",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 116,
+      "name": "呼喚盟友",
+      "status": "未實裝",
+      "note": "缺少血盟技能接入",
+      "group": "UTIL",
+      "learnable": true
+    },
+    {
+      "id": 117,
+      "name": "勇猛意志",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 118,
+      "name": "援護盟友",
+      "status": "未實裝",
+      "note": "缺少血盟技能接入",
+      "group": "UTIL",
+      "learnable": true
+    },
+    {
+      "id": 119,
+      "name": "王者加護",
+      "status": "未完成效果",
+      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 129,
+      "name": "魔法防禦",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 130,
+      "name": "心靈轉換",
+      "status": "有主要效果路徑",
+      "note": "工具／召喚流程：mp2",
+      "group": "UTIL",
+      "learnable": true
+    },
+    {
+      "id": 131,
+      "name": "世界樹的呼喚",
+      "status": "有主要效果路徑",
+      "note": "工具／召喚流程：mother",
+      "group": "UTIL",
+      "learnable": true
+    },
+    {
+      "id": 132,
+      "name": "三重矢",
+      "status": "未實裝",
+      "note": "PlayerSkills.supports 不接受此技能",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 133,
+      "name": "弱化屬性",
+      "status": "未完成效果",
+      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "group": "TARGET",
+      "learnable": true
+    },
+    {
+      "id": 134,
+      "name": "鏡反射",
+      "status": "未完成效果",
+      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 137,
+      "name": "淨化精神",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 138,
+      "name": "屬性防禦",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 145,
+      "name": "釋放元素",
+      "status": "有主要效果路徑",
+      "note": "工具／召喚流程：release",
+      "group": "UTIL",
+      "learnable": true
+    },
+    {
+      "id": 146,
+      "name": "魂體轉換",
+      "status": "有主要效果路徑",
+      "note": "工具／召喚流程：mp15",
+      "group": "UTIL",
+      "learnable": true
+    },
+    {
+      "id": 147,
+      "name": "單屬性防禦",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 148,
+      "name": "火焰武器",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 149,
+      "name": "風之神射",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 150,
+      "name": "風之疾走",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 151,
+      "name": "大地防護",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 152,
+      "name": "地面障礙",
+      "status": "有主要效果路徑",
+      "note": "單體負面狀態進入戰鬥鉤子",
+      "group": "TARGET",
+      "learnable": true
+    },
+    {
+      "id": 153,
+      "name": "魔法消除",
+      "status": "未完成效果",
+      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "group": "TARGET",
+      "learnable": true
+    },
+    {
+      "id": 154,
+      "name": "召喚屬性精靈",
+      "status": "有主要效果路徑",
+      "note": "工具／召喚流程：elemental",
+      "group": "UTIL",
+      "learnable": true
+    },
+    {
+      "id": 155,
+      "name": "舞躍之火",
+      "status": "未完成效果",
+      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 156,
+      "name": "暴風之眼",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 157,
+      "name": "大地屏障",
+      "status": "有主要效果路徑",
+      "note": "單體負面狀態進入戰鬥鉤子",
+      "group": "TARGET",
+      "learnable": true
+    },
+    {
+      "id": 158,
+      "name": "生命之泉",
+      "status": "未完成效果",
+      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 159,
+      "name": "大地的護衛",
+      "status": "未完成效果",
+      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 160,
+      "name": "水之防護",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 161,
+      "name": "封印禁地",
+      "status": "有主要效果路徑",
+      "note": "範圍負面狀態",
+      "group": "AREA_TARGET",
+      "learnable": true
+    },
+    {
+      "id": 162,
+      "name": "召喚強力屬性精靈",
+      "status": "有主要效果路徑",
+      "note": "工具／召喚流程：greater",
+      "group": "UTIL",
+      "learnable": true
+    },
+    {
+      "id": 163,
+      "name": "烈炎武器",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 164,
+      "name": "生命的祝福",
+      "status": "有主要效果路徑",
+      "note": "傷害／治癒進入 PlayerAbilityRules 與實際 HP 結算",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 165,
+      "name": "生命呼喚",
+      "status": "未實裝",
+      "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
+      "group": "unavailable",
+      "learnable": false
+    },
+    {
+      "id": 166,
+      "name": "暴風神射",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 167,
+      "name": "風之枷鎖",
+      "status": "有主要效果路徑",
+      "note": "單體負面狀態進入戰鬥鉤子",
+      "group": "TARGET",
+      "learnable": true
+    },
+    {
+      "id": 168,
+      "name": "鋼鐵防護",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 169,
+      "name": "體能激發",
+      "status": "未實裝",
+      "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
+      "group": "unavailable",
+      "learnable": false
+    },
+    {
+      "id": 170,
+      "name": "水之元氣",
+      "status": "未實裝",
+      "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
+      "group": "unavailable",
+      "learnable": false
+    },
+    {
+      "id": 171,
+      "name": "屬性之火",
+      "status": "未實裝",
+      "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
+      "group": "unavailable",
+      "learnable": false
+    },
+    {
+      "id": 172,
+      "name": "暴風疾走",
+      "status": "未實裝",
+      "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
+      "group": "unavailable",
+      "learnable": false
+    },
+    {
+      "id": 173,
+      "name": "污濁之水",
+      "status": "未實裝",
+      "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
+      "group": "unavailable",
+      "learnable": false
+    },
+    {
+      "id": 174,
+      "name": "精準射擊",
+      "status": "未實裝",
+      "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
+      "group": "unavailable",
+      "learnable": false
+    },
+    {
+      "id": 175,
+      "name": "烈焰之魂",
+      "status": "未實裝",
+      "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
+      "group": "unavailable",
+      "learnable": false
+    },
+    {
+      "id": 176,
+      "name": "能量激發",
+      "status": "未實裝",
+      "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
+      "group": "unavailable",
+      "learnable": false
+    },
+    {
+      "id": 181,
+      "name": "龍之護鎧",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 182,
+      "name": "燃燒擊砍",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 183,
+      "name": "護衛毀滅",
+      "status": "未完成效果",
+      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "group": "TARGET",
+      "learnable": true
+    },
+    {
+      "id": 184,
+      "name": "岩漿噴吐",
+      "status": "部分實裝",
+      "note": "目前直接施法只結算選定目標，原始範圍效果尚未完整接入",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 185,
+      "name": "覺醒：安塔瑞斯",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 186,
+      "name": "血之渴望",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 187,
+      "name": "屠宰者",
+      "status": "有主要效果路徑",
+      "note": "職業攻擊與傷害結算",
+      "group": "ATTACK",
+      "learnable": true
+    },
+    {
+      "id": 188,
+      "name": "恐懼無助",
+      "status": "未完成效果",
+      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "group": "TARGET",
+      "learnable": true
+    },
+    {
+      "id": 189,
+      "name": "岩漿之箭",
+      "status": "有主要效果路徑",
+      "note": "傷害／治癒進入 PlayerAbilityRules 與實際 HP 結算",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 190,
+      "name": "覺醒：法利昂",
+      "status": "未完成效果",
+      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 191,
+      "name": "致命身軀",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 192,
+      "name": "奪命之雷",
+      "status": "有主要效果路徑",
+      "note": "傷害／治癒進入 PlayerAbilityRules 與實際 HP 結算",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 193,
+      "name": "驚悚死神",
+      "status": "未完成效果",
+      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "group": "TARGET",
+      "learnable": true
+    },
+    {
+      "id": 194,
+      "name": "暴龍之眼",
+      "status": "未完成效果",
+      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 195,
+      "name": "覺醒：巴拉卡斯",
+      "status": "未完成效果",
+      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 201,
+      "name": "鏡像",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 202,
+      "name": "混亂",
+      "status": "有主要效果路徑",
+      "note": "單體負面狀態進入戰鬥鉤子",
+      "group": "TARGET",
+      "learnable": true
+    },
+    {
+      "id": 203,
+      "name": "粉碎能量",
+      "status": "有主要效果路徑",
+      "note": "傷害／治癒進入 PlayerAbilityRules 與實際 HP 結算",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 204,
+      "name": "幻覺：歐吉",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 205,
+      "name": "立方：燃燒",
+      "status": "有主要效果路徑",
+      "note": "立方燃燒定時造成傷害",
+      "group": "AREA",
+      "learnable": true
+    },
+    {
+      "id": 206,
+      "name": "專注",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 207,
+      "name": "心靈破壞",
+      "status": "有主要效果路徑",
+      "note": "職業攻擊與傷害結算",
+      "group": "ATTACK",
+      "learnable": true
+    },
+    {
+      "id": 208,
+      "name": "骷髏毀壞",
+      "status": "有主要效果路徑",
+      "note": "傷害／治癒進入 PlayerAbilityRules 與實際 HP 結算",
+      "group": "direct",
+      "learnable": true
+    },
+    {
+      "id": 209,
+      "name": "幻覺：巫妖",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 210,
+      "name": "立方：地裂",
+      "status": "未完成效果",
+      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "group": "AREA",
+      "learnable": true
+    },
+    {
+      "id": 211,
+      "name": "耐力",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 212,
+      "name": "幻想",
+      "status": "有主要效果路徑",
+      "note": "單體負面狀態進入戰鬥鉤子",
+      "group": "TARGET",
+      "learnable": true
+    },
+    {
+      "id": 213,
+      "name": "隱身破壞者",
+      "status": "未完成效果",
+      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 214,
+      "name": "幻覺：鑽石高崙",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 215,
+      "name": "立方：衝擊",
+      "status": "未完成效果",
+      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "group": "AREA",
+      "learnable": true
+    },
+    {
+      "id": 216,
+      "name": "洞察",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 217,
+      "name": "恐慌",
+      "status": "未完成效果",
+      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "group": "TARGET",
+      "learnable": true
+    },
+    {
+      "id": 218,
+      "name": "疼痛的歡愉",
+      "status": "未完成效果",
+      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 219,
+      "name": "幻覺：化身",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 220,
+      "name": "立方：和諧",
+      "status": "未完成效果",
+      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "group": "AREA",
+      "learnable": true
+    },
+    {
+      "id": 225,
+      "name": "咆哮",
+      "status": "未完成效果",
+      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "group": "AREA",
+      "learnable": true
+    },
+    {
+      "id": 226,
+      "name": "體能強化",
+      "status": "有主要效果路徑",
+      "note": "自身增益進入能力／戰鬥鉤子",
+      "group": "SELF",
+      "learnable": true
+    },
+    {
+      "id": 228,
+      "name": "拘束移動",
+      "status": "有主要效果路徑",
+      "note": "單體負面狀態進入戰鬥鉤子",
+      "group": "TARGET",
+      "learnable": true
+    },
+    {
+      "id": 229,
+      "name": "戰斧投擲",
+      "status": "有主要效果路徑",
+      "note": "職業攻擊與傷害結算",
+      "group": "ATTACK",
+      "learnable": true
+    },
+    {
+      "id": 230,
+      "name": "亡命之徒",
+      "status": "有主要效果路徑",
+      "note": "單體負面狀態進入戰鬥鉤子",
+      "group": "TARGET",
+      "learnable": true
+    },
+    {
+      "id": 233,
+      "name": "粉碎",
+      "status": "有主要效果路徑",
+      "note": "學會後由戰鬥鉤子觸發",
+      "group": "PASSIVE",
+      "learnable": true
+    },
+    {
+      "id": 234,
+      "name": "狂暴",
+      "status": "有主要效果路徑",
+      "note": "學會後由戰鬥鉤子觸發",
+      "group": "PASSIVE",
+      "learnable": true
+    },
+    {
+      "id": 235,
+      "name": "迅猛雙斧",
+      "status": "未完成效果",
+      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "group": "PASSIVE",
+      "learnable": true
+    },
+    {
+      "id": 236,
+      "name": "護甲身軀",
+      "status": "有主要效果路徑",
+      "note": "學會後由戰鬥鉤子觸發",
+      "group": "PASSIVE",
+      "learnable": true
+    },
+    {
+      "id": 237,
+      "name": "泰坦：岩石",
+      "status": "有主要效果路徑",
+      "note": "學會後由戰鬥鉤子觸發",
+      "group": "PASSIVE",
+      "learnable": true
+    },
+    {
+      "id": 238,
+      "name": "泰坦：子彈",
+      "status": "有主要效果路徑",
+      "note": "學會後由戰鬥鉤子觸發",
+      "group": "PASSIVE",
+      "learnable": true
+    },
+    {
+      "id": 239,
+      "name": "泰坦：魔法",
+      "status": "有主要效果路徑",
+      "note": "學會後由戰鬥鉤子觸發",
+      "group": "PASSIVE",
+      "learnable": true
+    }
+  ]
+}

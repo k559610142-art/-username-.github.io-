@@ -9,6 +9,13 @@ const NativePotions=(()=>{
   bar.className='native-potion-buffs';
   bar.style.cssText='position:absolute;left:var(--ui-left,12px);top:calc(var(--ui-top,12px) + 60px);z-index:3;display:flex;gap:4px;max-width:260px;flex-wrap:wrap;pointer-events:none';
   game.append(bar);
+  function placeMagicBuffs(left,top,max){
+    const cb=document.querySelector('.class-buff-bar');if(!cb)return;
+    const height=bar.hidden||!bar.children.length?0:bar.getBoundingClientRect().height+6;
+    cb.style.setProperty('left',left+'px','important');
+    cb.style.setProperty('top',(top+height)+'px','important');
+    cb.style.setProperty('max-width',max+'px','important');
+  }
   function positionBuffs(){
     // 2026-11-14：狀態圖示（藥水＋技能 class-buff-bar）排在左上「輔助」鈕右邊同一排，往右到小地圖前，不再壓到頭像框的防禦／魔防
     const assist=document.querySelector('.assist-hud');
@@ -16,13 +23,13 @@ const NativePotions=(()=>{
       const g=game.getBoundingClientRect(),a=assist.getBoundingClientRect(),mini=document.querySelector('.minimap-button')?.getBoundingClientRect();
       const left=a.right-g.left+8,top=a.top-g.top+6,max=Math.max(60,(mini&&mini.width?mini.left-g.left:g.width)-left-8);
       bar.style.left=left+'px';bar.style.top=top+'px';bar.style.maxWidth=max+'px';
-      const cb=document.querySelector('.class-buff-bar');
-      if(cb){const used=bar.hidden||!bar.children.length?0:bar.getBoundingClientRect().width+6;cb.style.setProperty('left',(left+used)+'px','important');cb.style.setProperty('top',top+'px','important');cb.style.setProperty('max-width',Math.max(60,max-used)+'px','important');}
+      placeMagicBuffs(left,top,max);
       return;
     }
     const mana=document.querySelector('.hud .bar.mana');if(!mana)return;
     const g=game.getBoundingClientRect(),m=mana.getBoundingClientRect(),left=m.left-g.left+2;
     bar.style.left=left+'px';bar.style.top=(m.bottom-g.top+8)+'px';bar.style.maxWidth=Math.max(28,Math.min(260,g.width-left-8))+'px';
+    placeMagicBuffs(left,m.bottom-g.top+8,Math.max(28,Math.min(260,g.width-left-8)));
   }
   const observer=new ResizeObserver(positionBuffs);observer.observe(game);observer.observe(document.querySelector('.hud'));
   setInterval(()=>{if(window.gameFlowState==='playing')positionBuffs()},500); // 圖示數量變化、輔助鈕位置更新後跟著排
@@ -75,6 +82,7 @@ const NativePotions=(()=>{
       timer.textContent=seconds===null?'':seconds;timer.style.cssText='position:absolute;bottom:0;right:1px;font:bold 10px sans-serif;color:#fff;text-shadow:0 1px 2px #000';
       label.append(image,timer);bar.append(label);
     }
+    positionBuffs();
   }
   function use(uid){
     const entry=OwnedInventory.items.find(e=>e.uid===uid),config=entry&&parse(entry.key);
@@ -152,6 +160,6 @@ const NativePotions=(()=>{
     return factor;
   }
   setInterval(sync,500);
-  return {clearOnDeath,use,isHealing,sync,durationState,recoveryBonus,actionMultiplier,get spBonus(){return active('wisdom')?2:0;}};
+  return {clearOnDeath,use,isHealing,sync,layout:positionBuffs,durationState,recoveryBonus,actionMultiplier,get spBonus(){return active('wisdom')?2:0;}};
 })();
 window.NativePotions=NativePotions;

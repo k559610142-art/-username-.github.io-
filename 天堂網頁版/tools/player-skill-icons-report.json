@@ -1,0 +1,1166 @@
+[
+  {
+    "id": 1,
+    "name": "初級治癒術",
+    "icon": "assets/interface/skills/1.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 2,
+    "name": "日光術",
+    "icon": "assets/interface/skills/2.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 3,
+    "name": "保護罩",
+    "icon": "assets/interface/skills/3.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 4,
+    "name": "光箭",
+    "icon": "assets/interface/skills/4.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 5,
+    "name": "指定傳送",
+    "icon": "assets/interface/client-icons/250.png",
+    "source": "對應技能書圖示"
+  },
+  {
+    "id": 6,
+    "name": "冰箭",
+    "icon": "assets/interface/skills/6.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 7,
+    "name": "風刃",
+    "icon": "assets/interface/skills/7.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 8,
+    "name": "神聖武器",
+    "icon": "assets/interface/skills/8.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 9,
+    "name": "解毒術",
+    "icon": "assets/interface/skills/9.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 10,
+    "name": "寒冷戰慄",
+    "icon": "assets/interface/skills/10.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 11,
+    "name": "毒咒",
+    "icon": "assets/interface/skills/11.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 12,
+    "name": "擬似魔法武器",
+    "icon": "assets/interface/skills/12.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 13,
+    "name": "無所遁形術",
+    "icon": "assets/interface/skills/13.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 14,
+    "name": "負重強化",
+    "icon": "assets/interface/skills/14.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 15,
+    "name": "火箭",
+    "icon": "assets/interface/skills/15.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 16,
+    "name": "地獄之牙",
+    "icon": "assets/interface/skills/16.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 17,
+    "name": "極光雷電",
+    "icon": "assets/interface/skills/17.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 18,
+    "name": "起死回生術",
+    "icon": "assets/interface/skills/18.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 19,
+    "name": "中級治癒術",
+    "icon": "assets/interface/skills/19.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 20,
+    "name": "闇盲咒術",
+    "icon": "assets/interface/skills/20.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 21,
+    "name": "鎧甲護持",
+    "icon": "assets/interface/skills/21.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 22,
+    "name": "寒冰氣息",
+    "icon": "assets/interface/skills/22.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 23,
+    "name": "能量感測",
+    "icon": "assets/interface/skills/23.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 25,
+    "name": "燃燒的火球",
+    "icon": "assets/interface/skills/25.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 26,
+    "name": "通暢氣脈術",
+    "icon": "assets/interface/skills/26.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 27,
+    "name": "壞物術",
+    "icon": "assets/interface/skills/27.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 28,
+    "name": "吸血鬼之吻",
+    "icon": "assets/interface/skills/28.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 29,
+    "name": "緩速術",
+    "icon": "assets/interface/skills/29.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 30,
+    "name": "岩牢",
+    "icon": "assets/interface/skills/native-30.png",
+    "source": "技能圖示"
+  },
+  {
+    "id": 31,
+    "name": "魔法屏障",
+    "icon": "assets/interface/skills/31.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 32,
+    "name": "冥想術",
+    "icon": "assets/interface/skills/32.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 33,
+    "name": "木乃伊的詛咒",
+    "icon": "assets/interface/skills/33.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 34,
+    "name": "極道落雷",
+    "icon": "assets/interface/skills/34.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 35,
+    "name": "高級治癒術",
+    "icon": "assets/interface/skills/35.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 36,
+    "name": "迷魅術",
+    "icon": "assets/interface/skills/36.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 37,
+    "name": "聖潔之光",
+    "icon": "assets/interface/skills/37.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 38,
+    "name": "冰錐",
+    "icon": "assets/interface/skills/38.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 39,
+    "name": "魔力奪取",
+    "icon": "assets/interface/skills/39.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 40,
+    "name": "黑闇之影",
+    "icon": "assets/interface/skills/40.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 41,
+    "name": "造屍術",
+    "icon": "assets/interface/skills/41.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 42,
+    "name": "體魄強健術",
+    "icon": "assets/interface/skills/42.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 43,
+    "name": "加速術",
+    "icon": "assets/interface/skills/43.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 44,
+    "name": "魔法相消術",
+    "icon": "assets/interface/skills/44.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 45,
+    "name": "地裂術",
+    "icon": "assets/interface/skills/45.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 46,
+    "name": "烈炎術",
+    "icon": "assets/interface/skills/46.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 47,
+    "name": "弱化術",
+    "icon": "assets/interface/skills/47.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 48,
+    "name": "祝福魔法武器",
+    "icon": "assets/interface/skills/48.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 49,
+    "name": "體力回復術",
+    "icon": "assets/interface/skills/49.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 50,
+    "name": "冰矛圍籬",
+    "icon": "assets/interface/skills/50.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 51,
+    "name": "召喚術",
+    "icon": "assets/interface/skills/51.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 52,
+    "name": "神聖疾走",
+    "icon": "assets/interface/skills/52.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 53,
+    "name": "龍捲風",
+    "icon": "assets/interface/skills/53.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 54,
+    "name": "強力加速術",
+    "icon": "assets/interface/skills/54.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 55,
+    "name": "狂暴術",
+    "icon": "assets/interface/skills/55.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 56,
+    "name": "疾病術",
+    "icon": "assets/interface/skills/56.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 57,
+    "name": "全部治癒術",
+    "icon": "assets/interface/skills/57.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 58,
+    "name": "火牢",
+    "icon": "assets/interface/skills/58.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 59,
+    "name": "冰雪暴",
+    "icon": "assets/interface/skills/59.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 60,
+    "name": "隱身術",
+    "icon": "assets/interface/skills/60.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 61,
+    "name": "返生術",
+    "icon": "assets/interface/skills/61.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 62,
+    "name": "震裂術",
+    "icon": "assets/interface/skills/62.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 63,
+    "name": "治癒能量風暴",
+    "icon": "assets/interface/skills/63.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 64,
+    "name": "魔法封印",
+    "icon": "assets/interface/skills/64.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 65,
+    "name": "雷霆風暴",
+    "icon": "assets/interface/skills/65.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 66,
+    "name": "沉睡之霧",
+    "icon": "assets/interface/skills/66.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 67,
+    "name": "變形術",
+    "icon": "assets/interface/skills/native-67.jpg",
+    "source": "狀態圖示"
+  },
+  {
+    "id": 68,
+    "name": "聖結界",
+    "icon": "assets/interface/skills/68.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 69,
+    "name": "集體傳送術",
+    "icon": "assets/interface/skills/69.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 70,
+    "name": "火風暴",
+    "icon": "assets/interface/skills/70.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 71,
+    "name": "藥水霜化術",
+    "icon": "assets/interface/skills/native-71.jpg",
+    "source": "狀態圖示"
+  },
+  {
+    "id": 72,
+    "name": "強力無所遁形術",
+    "icon": "assets/interface/items/etcitem-252.png",
+    "source": "對應技能書圖示"
+  },
+  {
+    "id": 73,
+    "name": "創造魔法武器",
+    "icon": "assets/interface/items/etcitem-252.png",
+    "source": "對應技能書圖示"
+  },
+  {
+    "id": 74,
+    "name": "流星雨",
+    "icon": "assets/interface/skills/74.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 75,
+    "name": "終極返生術",
+    "icon": "assets/interface/items/etcitem-252.png",
+    "source": "對應技能書圖示"
+  },
+  {
+    "id": 76,
+    "name": "集體緩速術",
+    "icon": "assets/interface/skills/native-76.jpg",
+    "source": "狀態圖示"
+  },
+  {
+    "id": 77,
+    "name": "究極光裂術",
+    "icon": "assets/interface/skills/77.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 78,
+    "name": "絕對屏障",
+    "icon": "assets/interface/skills/78.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 79,
+    "name": "靈魂昇華",
+    "icon": "assets/interface/skills/79.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 80,
+    "name": "冰雪颶風",
+    "icon": "assets/interface/skills/80.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 87,
+    "name": "衝擊之暈",
+    "icon": "assets/interface/skills/87.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 88,
+    "name": "增幅防禦",
+    "icon": "assets/interface/skills/88.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 89,
+    "name": "尖刺盔甲",
+    "icon": "assets/interface/skills/89.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 90,
+    "name": "堅固防護",
+    "icon": "assets/interface/skills/90.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 91,
+    "name": "反擊屏障",
+    "icon": "assets/interface/skills/91.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 97,
+    "name": "暗隱術",
+    "icon": "assets/interface/skills/97.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 98,
+    "name": "附加劇毒",
+    "icon": "assets/interface/skills/98.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 99,
+    "name": "影之防護",
+    "icon": "assets/interface/skills/99.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 100,
+    "name": "提煉魔石",
+    "icon": "assets/interface/skills/100.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 101,
+    "name": "行走加速",
+    "icon": "assets/interface/skills/101.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 102,
+    "name": "燃燒鬥志",
+    "icon": "assets/interface/skills/102.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 103,
+    "name": "暗黑盲咒",
+    "icon": "assets/interface/skills/103.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 104,
+    "name": "毒性抵抗",
+    "icon": "assets/interface/skills/104.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 105,
+    "name": "雙重破壞",
+    "icon": "assets/interface/skills/105.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 106,
+    "name": "暗影閃避",
+    "icon": "assets/interface/skills/106.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 107,
+    "name": "暗影之牙",
+    "icon": "assets/interface/skills/107.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 108,
+    "name": "會心一擊",
+    "icon": "assets/interface/skills/108.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 109,
+    "name": "力量提升",
+    "icon": "assets/interface/skills/109.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 110,
+    "name": "敏捷提升",
+    "icon": "assets/interface/skills/110.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 111,
+    "name": "迴避提升",
+    "icon": "assets/interface/skills/native-111.png",
+    "source": "技能圖示"
+  },
+  {
+    "id": 112,
+    "name": "破壞盔甲",
+    "icon": "assets/interface/skills/native-112.png",
+    "source": "技能圖示"
+  },
+  {
+    "id": 113,
+    "name": "精準目標",
+    "icon": "assets/interface/skills/113.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 114,
+    "name": "灼熱武器",
+    "icon": "assets/interface/skills/native-114.png",
+    "source": "技能圖示"
+  },
+  {
+    "id": 115,
+    "name": "閃亮之盾",
+    "icon": "assets/interface/skills/native-115.png",
+    "source": "技能圖示"
+  },
+  {
+    "id": 116,
+    "name": "呼喚盟友",
+    "icon": "assets/interface/skills/116.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 117,
+    "name": "勇猛意志",
+    "icon": "assets/interface/skills/native-117.png",
+    "source": "技能圖示"
+  },
+  {
+    "id": 118,
+    "name": "援護盟友",
+    "icon": "assets/interface/items/etcitem-252.png",
+    "source": "對應技能書圖示"
+  },
+  {
+    "id": 119,
+    "name": "王者加護",
+    "icon": "assets/interface/skills/native-119.png",
+    "source": "技能圖示"
+  },
+  {
+    "id": 129,
+    "name": "魔法防禦",
+    "icon": "assets/interface/skills/129.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 130,
+    "name": "心靈轉換",
+    "icon": "assets/interface/skills/130.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 131,
+    "name": "世界樹的呼喚",
+    "icon": "assets/interface/skills/131.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 132,
+    "name": "三重矢",
+    "icon": "assets/interface/skills/132.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 133,
+    "name": "弱化屬性",
+    "icon": "assets/interface/skills/native-133.jpg",
+    "source": "狀態圖示"
+  },
+  {
+    "id": 134,
+    "name": "鏡反射",
+    "icon": "assets/interface/skills/134.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 137,
+    "name": "淨化精神",
+    "icon": "assets/interface/skills/137.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 138,
+    "name": "屬性防禦",
+    "icon": "assets/interface/skills/138.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 145,
+    "name": "釋放元素",
+    "icon": "assets/interface/skills/145.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 146,
+    "name": "魂體轉換",
+    "icon": "assets/interface/skills/146.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 147,
+    "name": "單屬性防禦",
+    "icon": "assets/interface/skills/147.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 148,
+    "name": "火焰武器",
+    "icon": "assets/interface/skills/148.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 149,
+    "name": "風之神射",
+    "icon": "assets/interface/skills/149.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 150,
+    "name": "風之疾走",
+    "icon": "assets/interface/skills/150.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 151,
+    "name": "大地防護",
+    "icon": "assets/interface/skills/151.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 152,
+    "name": "地面障礙",
+    "icon": "assets/interface/skills/152.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 153,
+    "name": "魔法消除",
+    "icon": "assets/interface/skills/153.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 154,
+    "name": "召喚屬性精靈",
+    "icon": "assets/interface/skills/154.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 155,
+    "name": "舞躍之火",
+    "icon": "assets/interface/skills/native-155.png",
+    "source": "技能圖示"
+  },
+  {
+    "id": 156,
+    "name": "暴風之眼",
+    "icon": "assets/interface/skills/156.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 157,
+    "name": "大地屏障",
+    "icon": "assets/interface/skills/157.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 158,
+    "name": "生命之泉",
+    "icon": "assets/interface/skills/158.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 159,
+    "name": "大地的護衛",
+    "icon": "assets/interface/skills/native-159.jpg",
+    "source": "狀態圖示"
+  },
+  {
+    "id": 160,
+    "name": "水之防護",
+    "icon": "assets/interface/skills/native-160.jpg",
+    "source": "狀態圖示"
+  },
+  {
+    "id": 161,
+    "name": "封印禁地",
+    "icon": "assets/interface/skills/161.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 162,
+    "name": "召喚強力屬性精靈",
+    "icon": "assets/interface/skills/162.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 163,
+    "name": "烈炎武器",
+    "icon": "assets/interface/skills/163.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 164,
+    "name": "生命的祝福",
+    "icon": "assets/interface/skills/164.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 166,
+    "name": "暴風神射",
+    "icon": "assets/interface/skills/166.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 167,
+    "name": "風之枷鎖",
+    "icon": "assets/interface/skills/native-167.jpg",
+    "source": "狀態圖示"
+  },
+  {
+    "id": 168,
+    "name": "鋼鐵防護",
+    "icon": "assets/interface/skills/168.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 169,
+    "name": "體能激發",
+    "icon": "assets/interface/skills/169.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 170,
+    "name": "水之元氣",
+    "icon": "assets/interface/skills/170.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 171,
+    "name": "屬性之火",
+    "icon": "assets/interface/skills/171.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 173,
+    "name": "污濁之水",
+    "icon": "assets/interface/skills/173.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 174,
+    "name": "精準射擊",
+    "icon": "assets/interface/skills/174.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 175,
+    "name": "烈焰之魂",
+    "icon": "assets/interface/skills/175.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 176,
+    "name": "能量激發",
+    "icon": "assets/interface/skills/176.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 181,
+    "name": "龍之護鎧",
+    "icon": "assets/interface/skills/181.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 182,
+    "name": "燃燒擊砍",
+    "icon": "assets/interface/skills/182.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 183,
+    "name": "護衛毀滅",
+    "icon": "assets/interface/skills/183.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 184,
+    "name": "岩漿噴吐",
+    "icon": "assets/interface/skills/184.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 185,
+    "name": "覺醒：安塔瑞斯",
+    "icon": "assets/interface/skills/185.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 186,
+    "name": "血之渴望",
+    "icon": "assets/interface/skills/186.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 187,
+    "name": "屠宰者",
+    "icon": "assets/interface/skills/187.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 188,
+    "name": "恐懼無助",
+    "icon": "assets/interface/skills/188.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 189,
+    "name": "岩漿之箭",
+    "icon": "assets/interface/skills/native-189.png",
+    "source": "技能圖示"
+  },
+  {
+    "id": 190,
+    "name": "覺醒：法利昂",
+    "icon": "assets/interface/skills/190.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 191,
+    "name": "致命身軀",
+    "icon": "assets/interface/skills/191.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 192,
+    "name": "奪命之雷",
+    "icon": "assets/interface/skills/192.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 193,
+    "name": "驚悚死神",
+    "icon": "assets/interface/skills/193.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 194,
+    "name": "暴龍之眼",
+    "icon": "assets/interface/client-icons/3037.png",
+    "source": "對應技能書圖示"
+  },
+  {
+    "id": 195,
+    "name": "覺醒：巴拉卡斯",
+    "icon": "assets/interface/skills/195.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 201,
+    "name": "鏡像",
+    "icon": "assets/interface/skills/201.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 202,
+    "name": "混亂",
+    "icon": "assets/interface/skills/202.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 203,
+    "name": "粉碎能量",
+    "icon": "assets/interface/skills/native-203.png",
+    "source": "技能圖示"
+  },
+  {
+    "id": 204,
+    "name": "幻覺：歐吉",
+    "icon": "assets/interface/skills/204.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 205,
+    "name": "立方：燃燒",
+    "icon": "assets/interface/skills/205.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 206,
+    "name": "專注",
+    "icon": "assets/interface/skills/206.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 207,
+    "name": "心靈破壞",
+    "icon": "assets/interface/skills/207.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 208,
+    "name": "骷髏毀壞",
+    "icon": "assets/interface/skills/208.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 209,
+    "name": "幻覺：巫妖",
+    "icon": "assets/interface/skills/209.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 210,
+    "name": "立方：地裂",
+    "icon": "assets/interface/skills/210.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 211,
+    "name": "耐力",
+    "icon": "assets/interface/skills/211.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 212,
+    "name": "幻想",
+    "icon": "assets/interface/skills/212.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 213,
+    "name": "隱身破壞者",
+    "icon": "assets/interface/skills/native-213.png",
+    "source": "偵測隱身圖示"
+  },
+  {
+    "id": 214,
+    "name": "幻覺：鑽石高崙",
+    "icon": "assets/interface/skills/214.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 215,
+    "name": "立方：衝擊",
+    "icon": "assets/interface/skills/215.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 216,
+    "name": "洞察",
+    "icon": "assets/interface/skills/216.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 217,
+    "name": "恐慌",
+    "icon": "assets/interface/skills/217.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 218,
+    "name": "疼痛的歡愉",
+    "icon": "assets/interface/skills/218.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 219,
+    "name": "幻覺：化身",
+    "icon": "assets/interface/skills/219.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 220,
+    "name": "立方：和諧",
+    "icon": "assets/interface/skills/220.png",
+    "source": "既有技能圖示"
+  },
+  {
+    "id": 225,
+    "name": "咆哮",
+    "icon": "assets/interface/skills/native-225.png",
+    "source": "技能圖示"
+  },
+  {
+    "id": 226,
+    "name": "體能強化",
+    "icon": "assets/interface/skills/native-226.png",
+    "source": "技能圖示"
+  },
+  {
+    "id": 228,
+    "name": "拘束移動",
+    "icon": "assets/interface/skills/native-228.jpg",
+    "source": "狀態圖示"
+  },
+  {
+    "id": 229,
+    "name": "戰斧投擲",
+    "icon": "assets/interface/skills/native-229.png",
+    "source": "技能圖示"
+  },
+  {
+    "id": 230,
+    "name": "亡命之徒",
+    "icon": "assets/interface/skills/native-230.png",
+    "source": "技能圖示"
+  },
+  {
+    "id": 233,
+    "name": "粉碎",
+    "icon": "assets/interface/skills/native-233.png",
+    "source": "技能圖示"
+  },
+  {
+    "id": 234,
+    "name": "狂暴",
+    "icon": "assets/interface/skills/native-234.png",
+    "source": "技能圖示"
+  },
+  {
+    "id": 235,
+    "name": "迅猛雙斧",
+    "icon": "assets/interface/skills/native-235.png",
+    "source": "技能圖示"
+  },
+  {
+    "id": 236,
+    "name": "護甲身軀",
+    "icon": "assets/interface/skills/native-236.png",
+    "source": "技能圖示"
+  },
+  {
+    "id": 237,
+    "name": "泰坦：岩石",
+    "icon": "assets/interface/skills/native-237.png",
+    "source": "技能圖示"
+  },
+  {
+    "id": 238,
+    "name": "泰坦：子彈",
+    "icon": "assets/interface/skills/native-238.png",
+    "source": "技能圖示"
+  },
+  {
+    "id": 239,
+    "name": "泰坦：魔法",
+    "icon": "assets/interface/skills/native-239.png",
+    "source": "技能圖示"
+  },
+  {
+    "id": 165,
+    "name": "生命呼喚",
+    "icon": "assets/interface/items/etcitem-252.png",
+    "source": "通用魔法書圖示（尚缺專屬圖）"
+  },
+  {
+    "id": 172,
+    "name": "暴風疾走",
+    "icon": "assets/interface/items/etcitem-252.png",
+    "source": "通用魔法書圖示（尚缺專屬圖）"
+  }
+]

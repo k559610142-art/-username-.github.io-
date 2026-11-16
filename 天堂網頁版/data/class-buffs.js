@@ -196,7 +196,7 @@ const ClassBuffs=(()=>{
 
  // ---- timers, reset and status bar ----
  const bar=document.createElement('div');bar.className='class-buff-bar';bar.hidden=true;
- const style=document.createElement('style');style.textContent='.class-buff-bar{position:absolute;left:8px;top:96px;z-index:30;display:flex;flex-wrap:wrap;gap:3px;max-width:240px;pointer-events:none}.class-buff-bar img{width:26px;height:26px;border:1px solid #b79b5a;border-radius:3px;background:#0b1410}';
+ const style=document.createElement('style');style.textContent='.class-buff-bar{position:absolute;left:8px;top:96px;z-index:30;display:flex;flex-wrap:wrap;gap:3px;max-width:240px;pointer-events:none}.class-buff-bar[hidden]{display:none!important}.class-buff-bar img{width:26px;height:26px;border:1px solid #b79b5a;border-radius:3px;background:#0b1410}';
  document.head.append(style);document.querySelector('.game')?.append(bar);
  let vitalsKey='';
  function reset(){const hadVitals=on(226)||on(79);buffs.clear();cooldowns.clear();cubes=[];dots=[];invisible=false;
@@ -217,6 +217,7 @@ const ClassBuffs=(()=>{
   const ids=[...buffs.keys()].filter(on);const key=ids.join(',');
   if(key!==barKey){barKey=key;bar.replaceChildren(...ids.map(id=>{const img=document.createElement('img');img.alt=img.title=sk(id).name;img.src=interfaceCatalog.skills.find(s=>s.id===id)?.icon||'';return img;}));}
   bar.hidden=!ids.length;
+  window.NativePotions?.layout?.();
  }
  setInterval(tick,250);
  return {handles,cast,grant,afterCast,invisible:()=>invisible,reveal:()=>{invisible=false;},resistances,rangedHitBonus,damageBonus,reduction,ac,dodge,mpr,mr,sp,stats,maxHp:maxHpBonus,maxMp:maxMpBonus,onHit,onHurt,blocksNegative,silenced,rooted,slowed,active:id=>on(id),selfBuff:id=>!!SELF[id]&&!PASSIVE[id]&&!UTIL[id]&&(sk(id)?.duration||0)>0};

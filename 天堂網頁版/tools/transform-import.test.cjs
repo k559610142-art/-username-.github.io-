@@ -41,3 +41,5 @@ test('截圖五張未使用卡與裝備系列不再進入卡冊或抽卡名單',
     assert(card,name);assert.equal(card.g,2,name+' 應保留綠卡分級');
   }
 });
+
+test('光輝使者、赤焰使者、迷你八風特與兩種呂布從現行卡冊移除',()=>{const {c,book}=data(),names=['光輝使者','赤焰使者','迷你八風特','戰神呂布','魔神呂布'];for(const n of names)assert(book.some(card=>card.n===n),n);vm.runInContext(fs.readFileSync(path.join(__dirname,'../data/removed-transform-cards.js'),'utf8'),c);for(const n of names)assert(!book.some(card=>card.n===n),n);});
