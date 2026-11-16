@@ -14,8 +14,8 @@ const covered=new Set(book.map(x=>x.p.id)),names=new Set(book.map(x=>x.n)),nativ
 const paks=['Sprite.idx',...Array.from({length:16},(_,i)=>'Sprite'+String(i).padStart(2,'0')+'.idx')].map(f=>openPak(path.join(client,f))),index=new Map();
 for(const p of paks)for(const r of p.records)if(/\.spr$/i.test(r.name))index.set(r.name.toLowerCase(),[p,r]);
 const dir=path.join(root,'assets/monster-actions'),portraits=path.join(root,'assets/transform-portraits');fs.mkdirSync(dir,{recursive:true});fs.mkdirSync(portraits,{recursive:true});
-// 使用者要求拿掉的身上特效疊層（2026-11-16：疾風精靈王只留本體與自身光點）；用不同檔名避免玩家瀏覽器沿用舊圖。
-const strippedEffects={22000:[20741,20740,20536,20738,20739,20613]},sheetTag=gfx=>strippedEffects[gfx]?'-nofx':{13362:'-trim'}[gfx]||''; // 13362：裁邊後重建，換檔名避開舊快取
+// 使用者要求拿掉的身上特效疊層（2026-11-16：疾風精靈王、紅警弓、黑暗射手只留本體與自身光點，拿掉天地劫附加的大型光暈）；用不同檔名避免玩家瀏覽器沿用舊圖。
+const strippedEffects={22000:[20741,20740,20536,20738,20739,20613],15831:[20544,20545,20558,20474],16002:[20550,20419,20520,20525,20526]},sheetTag=gfx=>strippedEffects[gfx]?'-nofx':{13362:'-trim'}[gfx]||''; // 13362：裁邊後重建，換檔名避開舊快取
 // 光暈層（screen）幾乎透明的雜訊會把圖框撐得很大，腳底對齊跟著跑掉（2026-11-16 新版炎魔 13362）；清掉 alpha<32（含原圖邊緣 alpha 16 的藍色殘邊）並裁掉每層的空白邊。
 function trimFaint(r,min=16){const px=Buffer.from(r.px);let x0=r.w,y0=r.h,x1=-1,y1=-1;for(let y=0;y<r.h;y++)for(let x=0;x<r.w;x++){const i=(y*r.w+x)*4;if(px[i+3]<min){px[i+3]=0;continue;}if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;}if(x1<0)return {x:r.x,y:r.y,w:1,h:1,px:Buffer.alloc(4)};const w=x1-x0+1,h=y1-y0+1,out=Buffer.alloc(w*h*4);for(let y=0;y<h;y++)px.copy(out,y*w*4,((y+y0)*r.w+x0)*4,((y+y0)*r.w+x1+1)*4);return {x:r.x+x0,y:r.y+y0,w,h,px:out};}
 const sprCache=new Map();function spr(file){if(sprCache.has(file))return sprCache.get(file);const r=index.get(file.toLowerCase());let value=null;try{if(r)value=parseSpr(r[0].read(r[1]));}catch{}if(sprCache.size>1500)sprCache.clear();sprCache.set(file,value);return value;}
