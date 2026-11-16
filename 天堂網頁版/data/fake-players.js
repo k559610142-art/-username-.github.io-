@@ -1,3 +1,4 @@
+// 2026-11-16：假人像真人「經過就離開」：沒事時朝一個方向旅行（fake-player-autonomy.js travel），在玩家 12 格內待 35～80 秒就走開、28 格外才恢復；不搶玩家腳邊 4 格內的怪；新路人 6 成從遠處朝玩家方向路過；走遠 1 分鐘就下線。
 // 2026-11-16：紅名假人會主動攻擊野外 8 格視線內的玩家；約半秒反應後追擊，超過14格、進安全區、失去視線或玩家倒下停戰。
 // 假玩家（2026-11-14 第 1 期，參考使用者另一款遊戲「龍脈紀元」的假人）：讓單機地圖看起來有其他玩家。
 //  外觀：原版 8 種角色動作圖（CHARACTER_ACTION_ASSETS：騎士、法師、王族、妖精 × 男女），轉成怪物影格格式（[檔, x, y, w, h, 毫秒, sx, sy]）
@@ -106,7 +107,7 @@ const FakePlayers=(()=>{
   for(const b of all){
    if(b.fp.stall||b.fp.social||b.fp.partyOwner)continue;
    if((b.spawn.mapId||0)===map&&dist(b.x,b.y,worldX,worldY)<=32)b.fp.lastSeen=time;
-   else{b.fp.lastSeen??=time;if(time-b.fp.lastSeen>300000){claimed.delete(b.fp.target);IslandMonsters.removeAlly(b);used.delete(b.spawn.npc.name);recentlyDeparted.set(b.spawn.npc.name,time+180000);}}
+   else{b.fp.lastSeen??=time;if(time-b.fp.lastSeen>60000){ /* 2026-11-16：走遠超過 1 分鐘就下線（原 5 分鐘），讓路人經過後真的離開 */claimed.delete(b.fp.target);IslandMonsters.removeAlly(b);used.delete(b.spawn.npc.name);recentlyDeparted.set(b.spawn.npc.name,time+180000);}}
   }
   const jumped=!lastObserver||map!==mapNow||dist(lastObserver.x,lastObserver.y,worldX,worldY)>40;
   if(jumped){arrivalAt=time+rnd(6000,14000);nextArrival=arrivalAt;}
@@ -119,7 +120,7 @@ const FakePlayers=(()=>{
   if(near.length>=want||all.filter(b=>!b.fp.stall).length>=48)return;
   nextArrival=time+rnd(4000,10000);
   const red=redOn&&!safe(worldX,worldY)&&near.filter(b=>b.fp.red).length<1&&Math.random()<.18;
-  const spot=spotNear(worldX,worldY,20,28,red?false:null);if(spot)make(...spot,red);
+  const spot=spotNear(worldX,worldY,20,28,red?false:null);if(spot){const mob=make(...spot,red);window.FakePlayerAutonomy?.arrive(mob);}
  }
  setInterval(maintain,2000);
  // ---- 每隻假人的行為（island-monsters.js advance 呼叫） ----
