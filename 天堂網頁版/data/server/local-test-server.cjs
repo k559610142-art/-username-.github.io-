@@ -1,6 +1,7 @@
 const http=require('node:http'),fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const {DatabaseSync}=require('node:sqlite');
 const MERC=require('../mercenary-data.js'); // 傭兵團規則（與遊戲共用）
+const WUHUN_GACHA=require('../wuhun-gacha-data.js'); // 武魂扭蛋機獎池與機率（與遊戲共用）
 function createGameServer(options={}){
  const root=options.root||path.resolve(__dirname,'../..');
  const database=options.database||path.join(__dirname,'runtime.sqlite');
@@ -138,7 +139,7 @@ function createGameServer(options={}){
  const server=http.createServer(async(req,res)=>{
   try{
    const url=new URL(req.url,'http://'+req.headers.host),route=url.pathname;
-   if(route==='/api/health')return json(res,200,{service:'lineage-local-test',storage:'sqlite',systems:['accounts','characters','guilds','parties','trade','auction','mail','chat','mercenary']});
+   if(route==='/api/health')return json(res,200,{service:'lineage-local-test',storage:'sqlite',systems:['accounts','characters','guilds','parties','trade','auction','mail','chat','mercenary','gacha']});
    if(route.startsWith('/api/')&&req.headers.origin&&req.headers.origin!==url.origin)fail(403,'來源不符。');
    if(route==='/api/auth'&&req.method==='POST'){
     const input=await body(req),name=text(input.name,32),password=text(input.password,256),record=db.prepare('SELECT * FROM users WHERE name=?').get(name);
@@ -309,6 +310,13 @@ function createGameServer(options={}){
        for(const [id,offer]of [[trade.a,trade.ao],[trade.b,trade.bo]])if(JSON.parse(offer).length)deliver(null,id,'交易退回','交易已取消。',JSON.parse(offer));
        db.prepare("UPDATE trades SET status='cancelled' WHERE id=?").run(trade.id);return {};
       }
+     }
+     // ---- 武魂扭蛋機（2026-11-17）：伺服器擲骰、扣鑽石、發武魂 ----
+     if(route==='/api/gacha/wuhun'){
+      const count=input.count===10?10:input.count===1?1:fail(400,'召喚次數不正確。'),cost=WUHUN_GACHA.prices[count],balance=int(c.diamonds||0,0);if(balance<cost)fail(400,'鑽石不足，需要 '+cost+' 鑽石。');
+      const random=()=>crypto.randomInt(0,1e9)/1e9,results=WUHUN_GACHA.draw(count,random);
+      if((c.inventory||[]).length+results.length>179)fail(409,'背包空間不足，請先整理背包。');
+      c.diamonds=balance-cost;for(const r of results)give(c,{key:r.key,count:1});save(user.id,state);return {results:results.map(r=>({id:r.id,tier:r.tier}))};
      }
      // ---- 傭兵團（2026-11-16）----
      if(route.startsWith('/api/merc/')){

@@ -4,7 +4,7 @@ const DiamondCommerce=(()=>{
  const button=(text,fn)=>{const b=el('button','dc-button',text);b.type='button';b.onclick=fn;return b;};
  const names={mall:'商城',gacha:'鑽石百貨公司',exchange:'鑽石交易所'};
  const shopTabs=['鑽石商店','試煉商店','AI 會員'];
- const gachaTabs=['龍脈星晶','扭蛋機','一番賞','我的時裝','髮型','寵物'];
+ const gachaTabs=['龍脈星晶','武魂扭蛋機','一番賞','我的時裝','髮型','寵物'];
  let win=null,mode='mall',tab=0,notice='',market=null,busy=false,generation=0;
  const level=()=>Number(window.activeCharacterLevel)||1;
  const balance=()=>window.GameEntry?.characters.find(c=>c?.id===window.activeCharacterId)?.diamonds||0;
@@ -28,7 +28,25 @@ const DiamondCommerce=(()=>{
    const card=el('article','dc-product');card.append(file.includes('.')?el('span','dc-art','✦'):icon(file),el('h3','',name),el('span','dc-price','💎 價格待設定'));const b=button('尚未上架',()=>{});b.disabled=true;card.append(b);grid.append(card);
   }layout.append(grid);body.append(layout);
  }
+ // 武魂扭蛋機（2026-11-17 使用者審核，規則在 wuhun-gacha-data.js，伺服器 /api/gacha/wuhun 擲骰扣鑽）
+ let wuhunResults=null,showRates=false;
+ const TIER_COLOR={上品:'#8fd18b',極品:'#6fb6ff',千年:'#c18cff',萬年:'#ffb347',上古:'#ff6b6b',四神獸:'#ffe066'};
+ function wuhunInfo(id){const w=typeof wuhunData!=='undefined'?wuhunData.find(x=>x.id===id):null,item=INTERFACE_CATALOG.items.find(i=>i.kind==='etcitem'&&i.id===id);return {name:w?.name||item?.name||('武魂 '+id),icon:item?.icon||w?.img||''};}
+ function wuhunGacha(body){
+  const G=window.WUHUN_GACHA,online=!!window.LocalServerClient?.online,box=el('div','dc-gacha'),art=el('div','dc-crystal','✦'),detail=el('div','dc-gacha-detail');art.setAttribute('aria-hidden','true');
+  detail.append(el('h2','','武魂扭蛋機'),el('p','','召喚上品到四神獸共 42 種武魂。十連保底至少 1 個極品以上。'));
+  if(!online)detail.append(el('p','dc-muted','武魂扭蛋機使用伺服器保管的鑽石，請登入本機多人伺服器後召喚。'));
+  detail.append(button(showRates?'收起獎池與機率':'查看獎池與機率',()=>{showRates=!showRates;render();}));
+  const actions=el('div','dc-draw-actions');
+  for(const count of [1,10]){const b=button((count===1?'單抽':'十連')+' 💎'+G.prices[count].toLocaleString()+(count===10?'（九折）':''),()=>drawWuhun(count));b.disabled=busy||!online||balance()<G.prices[count];actions.append(b);}
+  detail.append(actions);box.append(art,detail);body.append(box);
+  if(wuhunResults){const grid=el('div','dc-wuhun-results');for(const r of wuhunResults){const info=wuhunInfo(r.id),card=el('div','dc-wuhun-card'),img=el('img');img.alt='';if(info.icon)img.src=info.icon;const tier=el('span','dc-wuhun-tier',r.tier);tier.style.color=TIER_COLOR[r.tier]||'';card.style.borderColor=TIER_COLOR[r.tier]||'';card.append(img,tier,el('span','dc-wuhun-name',info.name.replace(/^[^-]*-/,'')));grid.append(card);}body.append(grid);}
+  if(showRates){const table=el('table','dc-wuhun-rates');const head=el('tr');for(const h of ['等級','合計機率','每種機率','武魂'])head.append(el('th','',h));table.append(head);
+   for(const t of G.tiers){const row=el('tr');row.append(el('td','',t.tier),el('td','',t.rate+'%'),el('td','',Math.round(t.rate/t.ids.length*1000)/1000+'%'),el('td','',t.ids.map(id=>wuhunInfo(id).name.replace(/^[^-]*-/,'').replace(/武魂$/,'')).join('、')));row.firstChild.style.color=TIER_COLOR[t.tier];table.append(row);}body.append(table);}
+ }
+ async function drawWuhun(count){if(busy)return;busy=true;notice='';render();try{const r=await LocalServerClient.act('/api/gacha/wuhun',{count});wuhunResults=r.results||[];const best=wuhunResults.reduce((a,b)=>window.WUHUN_GACHA.tiers.findIndex(t=>t.tier===b.tier)>window.WUHUN_GACHA.tiers.findIndex(t=>t.tier===a.tier)?b:a,wuhunResults[0]);notice='召喚完成！最高：'+best.tier+'－'+wuhunInfo(best.id).name.replace(/^[^-]*-/,'')+'，武魂已放進背包。';if(['上古','四神獸'].includes(best.tier))window.GameChat?.say('【全服】'+(window.activeCharacterName||'')+' 從武魂扭蛋機召喚出【'+wuhunInfo(best.id).name+'】！','drop');}catch(e){notice=e.message;}finally{busy=false;}if(win)render();}
  function gacha(body){
+  if(tab===1){wuhunGacha(body);return;}
   if(tab>=3){body.append(el('div','dc-empty',gachaTabs[tab]+'收藏尚無資料'));return;}
   const box=el('div','dc-gacha'),art=el('div','dc-crystal','✦'),detail=el('div','dc-gacha-detail');art.setAttribute('aria-hidden','true');detail.append(el('h2','',gachaTabs[tab]),el('p','','凝聚龍脈星光的水晶，召喚時裝、髮型、寵物與稀有道具。'),el('p','dc-muted','獎池、各獎項機率與保底規則待設定；正式開放前不會扣除鑽石。'));
   const rates=button('查看獎池與機率',()=>{notice='目前尚未設定正式獎池與機率。';render();});detail.append(rates);const actions=el('div','dc-draw-actions');for(const count of [1,10]){const b=button('召喚 '+count+' 次（鑽石價格待設定）',()=>{});b.disabled=true;actions.append(b);}detail.append(actions);box.append(art,detail);body.append(box);
