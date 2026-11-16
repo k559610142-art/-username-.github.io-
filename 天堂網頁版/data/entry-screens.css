@@ -4,3 +4,17 @@
 
 /* 2026-11-16 登入畫面改用影片背景（assets/entry/login-video.mp4）；login-screen.png 留作載入前與失敗時的備援 */
 .login-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-1;pointer-events:none;background:#080b09}
+/* 影片模式（data/login-video.js）：真正的輸入框與按鈕透明疊在影片畫好的登入框上，座標是影片 1280×720 */
+.login-video-mode .login-card{left:0;top:0;width:1280px;height:720px;padding:0;margin:0;background:none;border:0;border-radius:0;box-shadow:none;transform-origin:0 0;pointer-events:none;opacity:0;transition:opacity .6s}
+.login-stage.login-video-mode{overflow:hidden}
+.login-video-shown .login-card{opacity:1}
+.login-video-mode .login-card>*{position:absolute;margin:0;pointer-events:auto}
+.login-video-mode .entry-title,.login-video-mode .entry-subtitle,.login-video-mode .login-card label{width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.login-video-mode .login-card>button:not(#login-submit):not(.login-hot){display:none}
+.login-video-mode #login-account,.login-video-mode #login-password{padding:0 6px;background:transparent;border:0;border-radius:3px;outline:none;color:#f1e3bd;font-size:16px;line-height:22px;caret-color:#f1d27c}
+.login-video-mode #login-account::placeholder,.login-video-mode #login-password::placeholder{color:#8d806588}
+.login-video-mode #login-account:focus,.login-video-mode #login-password:focus{box-shadow:0 0 0 1px #c9a45a99,0 0 10px #c9a45a44}
+.login-video-mode #login-submit,.login-video-mode .login-hot{padding:0;background:transparent;border:0;border-radius:6px;color:transparent;font-size:0;cursor:pointer}
+.login-video-mode #login-submit:hover:not(:disabled),.login-video-mode .login-hot:hover{box-shadow:0 0 16px #f5d07a66,inset 0 0 12px #f5d07a33}
+.login-video-mode #login-submit:disabled{cursor:default}
+.login-video-mode #login-message{color:#f0d58a;font-size:15px;text-align:center;text-shadow:0 1px 3px #000}
