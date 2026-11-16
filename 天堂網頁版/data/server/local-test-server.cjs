@@ -1,5 +1,6 @@
 const http=require('node:http'),fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const {DatabaseSync}=require('node:sqlite');
+const MERC=require('../mercenary-data.js'); // 傭兵團規則（與遊戲共用）
 function createGameServer(options={}){
  const root=options.root||path.resolve(__dirname,'../..');
  const database=options.database||path.join(__dirname,'runtime.sqlite');
@@ -18,6 +19,7 @@ function createGameServer(options={}){
  CREATE TABLE IF NOT EXISTS trades(id INTEGER PRIMARY KEY,a INTEGER NOT NULL,b INTEGER NOT NULL,ac TEXT NOT NULL,bc TEXT NOT NULL,ao TEXT NOT NULL DEFAULT '[]',bo TEXT NOT NULL DEFAULT '[]',aa INTEGER NOT NULL DEFAULT 0,ba INTEGER NOT NULL DEFAULT 0,status TEXT NOT NULL DEFAULT 'open');
  CREATE TABLE IF NOT EXISTS chat(id INTEGER PRIMARY KEY,user_id INTEGER,character_id TEXT,channel TEXT,text TEXT,created INTEGER);
  CREATE TABLE IF NOT EXISTS friends(user_id INTEGER NOT NULL,character_id TEXT NOT NULL,target_id TEXT NOT NULL,UNIQUE(character_id,target_id));
+ CREATE TABLE IF NOT EXISTS mercenaries(character_id TEXT PRIMARY KEY,user_id INTEGER NOT NULL REFERENCES users(id),snapshot TEXT NOT NULL,price INTEGER NOT NULL,hires INTEGER NOT NULL DEFAULT 0,updated INTEGER NOT NULL);
  `);
  if(!db.prepare('PRAGMA table_info(auctions)').all().some(c=>c.name==='currency'))db.exec("ALTER TABLE auctions ADD COLUMN currency TEXT NOT NULL DEFAULT 'adena'");
  const events=new Set(),presence=new Map(),attempts=new Map();
@@ -63,6 +65,7 @@ function createGameServer(options={}){
    int(c.level||1,1,100);validInventory(c.inventory||[]);
    const previous=snapshot(user.id).characters.find(row=>row?.id===c.id);if(Object.keys(rules.base).some(k=>c.stats[k]>20)&&(!previous||Object.keys(rules.base).some(k=>previous.stats[k]!==c.stats[k])))fail(400,'創角單項屬性最高 20。');
    const old=snapshot(user.id).characters.find(row=>row?.id===c.id);c.diamonds=old?.diamonds||0; // 鑽石只允許由伺服器交易修改。
+   c.mercPoints=old?.mercPoints||0;c.mercContract=old?.mercContract||null; // 傭兵點數與雇用合約也只由伺服器修改。
   }
   validInventory(state.warehouse||[],true);
   for(const old of snapshot(user.id).characters.filter(Boolean)){
@@ -70,6 +73,7 @@ function createGameServer(options={}){
    if(db.prepare('SELECT 1 FROM members WHERE character_id=?').get(old.id)||
      db.prepare("SELECT 1 FROM auctions WHERE character_id=? AND status='open'").get(old.id)||
      db.prepare("SELECT 1 FROM trades WHERE (ac=? OR bc=?) AND status='open'").get(old.id,old.id))fail(409,'請先離開團體並結束交易、拍賣，再刪除角色。');
+   db.prepare('DELETE FROM mercenaries WHERE character_id=?').run(old.id);
   }
   for(const row of db.prepare('SELECT user_id,payload FROM states WHERE user_id<>?').all(user.id)){
    for(const c of JSON.parse(row.payload).characters.filter(Boolean))if(ids.has(c.id)||names.has(c.name))fail(409,'角色名稱已存在。');
@@ -134,7 +138,7 @@ function createGameServer(options={}){
  const server=http.createServer(async(req,res)=>{
   try{
    const url=new URL(req.url,'http://'+req.headers.host),route=url.pathname;
-   if(route==='/api/health')return json(res,200,{service:'lineage-local-test',storage:'sqlite',systems:['accounts','characters','guilds','parties','trade','auction','mail','chat']});
+   if(route==='/api/health')return json(res,200,{service:'lineage-local-test',storage:'sqlite',systems:['accounts','characters','guilds','parties','trade','auction','mail','chat','mercenary']});
    if(route.startsWith('/api/')&&req.headers.origin&&req.headers.origin!==url.origin)fail(403,'來源不符。');
    if(route==='/api/auth'&&req.method==='POST'){
     const input=await body(req),name=text(input.name,32),password=text(input.password,256),record=db.prepare('SELECT * FROM users WHERE name=?').get(name);
@@ -305,6 +309,45 @@ function createGameServer(options={}){
        for(const [id,offer]of [[trade.a,trade.ao],[trade.b,trade.bo]])if(JSON.parse(offer).length)deliver(null,id,'交易退回','交易已取消。',JSON.parse(offer));
        db.prepare("UPDATE trades SET status='cancelled' WHERE id=?").run(trade.id);return {};
       }
+     }
+     // ---- 傭兵團（2026-11-16）----
+     if(route.startsWith('/api/merc/')){
+      const now=Date.now(),mercView=row=>({id:row.character_id,owner:row.user_id,price:row.price,hires:row.hires,updated:row.updated,...JSON.parse(row.snapshot)});
+      if(c.mercContract&&c.mercContract.until<=now&&c.mercContract.mode==='follow')c.mercContract=null;
+      if(route==='/api/merc/board'){
+       const mine=db.prepare('SELECT * FROM mercenaries WHERE character_id=?').get(c.id);
+       return {board:db.prepare('SELECT * FROM mercenaries WHERE user_id<>? ORDER BY updated DESC LIMIT 100').all(user.id).map(mercView),mine:mine?mercView(mine):null};
+      }
+      if(route==='/api/merc/register'){
+       const price=int(input.price,MERC.priceMin,MERC.priceMax),weapon=(c.inventory||[]).find(e=>e.slot==='weapon');
+       const snap={name:c.name,role:c.role,gender:c.gender,level:int(c.level||1,1,100),maxHp:Number.isSafeInteger(c.maxHp)?c.maxHp:0,stats:c.stats,weapon:weapon?{key:weapon.key,enchant:weapon.enchant||0}:null};
+       db.prepare('INSERT INTO mercenaries(character_id,user_id,snapshot,price,hires,updated) VALUES(?,?,?,?,0,?) ON CONFLICT(character_id) DO UPDATE SET snapshot=excluded.snapshot,price=excluded.price,updated=excluded.updated').run(c.id,user.id,JSON.stringify(snap),price,now);return {};
+      }
+      if(route==='/api/merc/withdraw'){db.prepare('DELETE FROM mercenaries WHERE character_id=? AND user_id=?').run(c.id,user.id);return {};}
+      if(route==='/api/merc/hire'){
+       const hours=int(input.hours,1,8);if(!MERC.hours.includes(hours))fail(400,'雇用時數不正確。');
+       const mode=input.mode==='mission'?'mission':'follow',mission=mode==='mission'?MERC.missions.find(m=>m.id===input.missionId):null;if(mode==='mission'&&!mission)fail(400,'請選擇任務。');
+       if(c.mercContract&&(c.mercContract.mode==='follow'?c.mercContract.until>now:!c.mercContract.claimed))fail(409,'你已經雇用了一名傭兵，請等合約結束或解約。');
+       const row=db.prepare('SELECT * FROM mercenaries WHERE character_id=?').get(text(input.mercId,80));if(!row)fail(409,'這名傭兵已經撤下。');if(row.user_id===user.id)fail(409,'不能雇用自己的角色。');
+       const owner=snapshot(row.user_id),oc=owner.characters.find(p=>p?.id===row.character_id);if(!oc){db.prepare('DELETE FROM mercenaries WHERE character_id=?').run(row.character_id);fail(409,'傭兵角色已不存在。');}
+       const cost=int(row.price*hours),fee=Math.floor(cost*MERC.feeRate),balance=int(c.diamonds||0,0);if(balance<cost)fail(400,'鑽石不足，需要 '+cost+' 鑽石。');
+       c.diamonds=balance-cost;oc.diamonds=int((oc.diamonds||0)+cost-fee,0);const points=MERC.points(hours);oc.mercPoints=int((oc.mercPoints||0)+points,0);
+       const snap=JSON.parse(row.snapshot);c.mercContract={id:crypto.randomUUID(),mercId:row.character_id,...snap,mode,missionId:mission?.id||null,hours,cost,start:now,until:now+hours*3600000,claimed:false};
+       db.prepare('UPDATE mercenaries SET hires=hires+1 WHERE character_id=?').run(row.character_id);
+       save(user.id,state);save(row.user_id,owner);
+       deliver(null,row.user_id,'傭兵團：'+oc.name+' 被雇用了',c.name+' 雇用了你的角色 '+oc.name+' '+hours+' 小時（'+(mode==='mission'?'任務：'+mission.name:'跟隨打怪')+'）。 收入 '+(cost-fee)+' 鑽石（公會手續費 '+fee+'），傭兵點數 +'+points+'。',[]);
+       return {contract:c.mercContract};
+      }
+      if(route==='/api/merc/dismiss'){if(!c.mercContract)fail(409,'目前沒有雇用傭兵。');c.mercContract=null;save(user.id,state);return {};}
+      if(route==='/api/merc/claim'){
+       const k=c.mercContract;if(!k||k.mode!=='mission'||k.claimed)fail(409,'沒有可領取的任務。');if(k.until>now)fail(409,'任務尚未完成。');
+       const reward=MERC.missionReward(k.level,k.hours,k.missionId);if(reward.gold)give(c,{key:'etcitem:40308',count:reward.gold});c.mercContract=null;save(user.id,state);return {reward};
+      }
+      if(route==='/api/merc/shop'){
+       const item=MERC.shop.find(x=>x.id===input.itemId);if(!item)fail(400,'商品不存在。');const points=int(c.mercPoints||0,0);if(points<item.cost)fail(400,'傭兵點數不足。');
+       c.mercPoints=points-item.cost;give(c,{key:item.key,count:item.count});save(user.id,state);return {};
+      }
+      fail(404,'找不到服務。');
      }
      if(route==='/api/chat'){
       db.prepare('INSERT INTO chat(user_id,character_id,channel,text,created) VALUES(?,?,?,?,?)').run(user.id,c.id,'world',text(input.text,200),Date.now());return {};

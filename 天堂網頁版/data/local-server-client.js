@@ -73,6 +73,8 @@ const LocalServerClient=(()=>{
    return result;
   }finally{busy=false;}
  }
+ // 只查詢、不重新安裝存檔（傭兵公告板用，2026-11-16）
+ async function call(route,data={}){if(!online||!user||window.gameFlowState!=='playing')throw Error('請使用本機伺服器登入角色。');await flush();return request(route,{method:'POST',body:JSON.stringify({...data,characterId:window.activeCharacterId})});}
  async function importFile(file){
   try{
    if(!online||!user)throw Error('請先登入本機測試帳號。');
@@ -246,6 +248,6 @@ const LocalServerClient=(()=>{
   }catch{}
  }
  init();
- return {flush,open,act,get party(){return window.gameFlowState==='playing'&&partyOwner===window.activeCharacterId?partyMembers:[];},async market(){await flush();return request('/api/social?characterId='+encodeURIComponent(window.activeCharacterId));},get online(){return online;}};
+ return {flush,open,act,call,get party(){return window.gameFlowState==='playing'&&partyOwner===window.activeCharacterId?partyMembers:[];},async market(){await flush();return request('/api/social?characterId='+encodeURIComponent(window.activeCharacterId));},get online(){return online;}};
 })();
 window.LocalServerClient=LocalServerClient;

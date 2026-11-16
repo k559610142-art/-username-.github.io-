@@ -95,6 +95,14 @@ const FakePlayers=(()=>{
    fp:{look,red,clan:rollClan(red),state:safe(x,y)?'town':'hunt',think:0,chatAt:movementTime()+rnd(6000,40000),ready:0,target:null,since:movementTime(),pk:false,pkCd:movementTime()+rnd(2500,6500)}};
   if(saved)mob.fp.clan=saved.clan;
   preloadLook(look);IslandMonsters.addAlly(mob);remember(mob);return mob;}
+ // 傭兵（2026-11-16，mercenary.js）：用雇用合約裡的玩家角色資料生成一個由 AI 操控的同伴，不進路人名單。
+ const LOOK_ROLE={黑妖:'妖精',龍騎士:'騎士',戰士:'騎士',幻術師:'法師'};
+ function hireBot(spec,x,y){if(!looks.length)return null;const role=LOOK_ROLE[spec.role]||spec.role,g=spec.gender?1:0,byRole=looks.filter(l=>l.role===role),same=byRole.filter(l=>(A.avatars[l.avatar]?.gender?1:0)===g);
+  const look=pick(same.length?same:byRole.length?byRole:looks),lv=Math.max(1,Math.min(100,spec.level|0||1));
+  const npc={name:spec.name,kind:'L1Bot',gfx:look.id,level:lv,hp:Math.max(40+lv*14,spec.maxHp|0),mp:0,ac:0,walk:look.walkProfile?.stepMs||640,attack:look.attackMs,ranged:RANGED[look.weapon]||1,skills:[],regeneration:null,aggressive:false};
+  const mob={spawn:{bot:true,mapId:window.activeMapId||0,npc,heading:ri(0,7),respawn:[0,0]},region:[x-50,y-50,x+50,y+50],x,y,homeX:x,homeY:y,hp:npc.hp,heading:ri(0,7),rest:0,phase:Math.random()*1800,step:null,
+   fp:{look,red:false,clan:'傭兵團',state:'hunt',think:0,chatAt:movementTime()+rnd(30000,90000),ready:0,target:null,since:movementTime(),pk:false,pkCd:Infinity,merc:spec.id}};
+  preloadLook(look);IslandMonsters.addAlly(mob);return mob;}
  const preloaded=new Set();
  function preloadLook(look){if(preloaded.has(look.id))return;preloaded.add(look.id);const files=new Set();for(const list of Object.values(islandMonsterFrames[look.id]||{}))for(const f of list)files.add(f[0]);IslandMonsters.preload([...files]);}
  function place(mob,x,y){mob.x=mob.homeX=x;mob.y=mob.homeY=y;mob.step=null;mob.fp.route=null;mob.fp.goal=null;mob.fp.huntGoal=null;mob.fp.target=null;mob.fp.state=safe(x,y)?'town':'hunt';mob.fp.since=movementTime();mob.spawn.mapId=window.activeMapId||0;}
@@ -409,5 +417,5 @@ const FakePlayers=(()=>{
   const reply=whisperReply(b,text);if(reply)setTimeout(()=>window.GameChat?.say('[密語] '+to+'：'+reply,'whisper'),rnd(1500,4000));});
  function setEnabled(on){enabled=!!on;maintain();}
  function setRed(on){redOn=!!on;maintain();}
- return {canFight,canAttack,update,label,hurt,monsterHurt,drawShots,openStall,get stalls(){stallInit();return stalls;},sampleStall:()=>genStall().items.map(i=>itemById.get(i.id)?.name),setRed,get redOn(){return redOn;},get count(){return bots().length;},get enabled(){return enabled;},setEnabled,looks};
+ return {hireBot,canFight,canAttack,update,label,hurt,monsterHurt,drawShots,openStall,get stalls(){stallInit();return stalls;},sampleStall:()=>genStall().items.map(i=>itemById.get(i.id)?.name),setRed,get redOn(){return redOn;},get count(){return bots().length;},get enabled(){return enabled;},setEnabled,looks};
 })();window.FakePlayers=FakePlayers;

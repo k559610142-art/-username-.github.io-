@@ -8,10 +8,11 @@ const DiamondCommerce=(()=>{
  let win=null,mode='mall',tab=0,notice='',market=null,busy=false,generation=0;
  const level=()=>Number(window.activeCharacterLevel)||1;
  const balance=()=>window.GameEntry?.characters.find(c=>c?.id===window.activeCharacterId)?.diamonds||0;
+ const mercPoints=()=>window.GameEntry?.characters.find(c=>c?.id===window.activeCharacterId)?.mercPoints||0; // 傭兵點數（傭兵團，2026-11-16）
  function close(){generation++;win?.remove();win=null;}
  function icon(file,cls=''){const img=el('img',cls);img.src='assets/interface/reference-skin/'+file+'.png';img.alt='';return img;}
  function render(){
-  if(!win)return;win.replaceChildren();const head=el('div','dc-heading');head.append(el('strong','',''+names[mode]),el('span','dc-wallet','💎 鑽石 '+balance().toLocaleString()));const x=button('✕',close);x.className='dc-close';x.setAttribute('aria-label','關閉'+names[mode]);head.append(x);win.append(head);
+  if(!win)return;win.replaceChildren();const head=el('div','dc-heading');head.append(el('strong','',''+names[mode]),el('span','dc-wallet','💎 鑽石 '+balance().toLocaleString()),el('span','dc-wallet dc-merc-points','⚔ 傭兵點數 '+mercPoints().toLocaleString()));const x=button('✕',close);x.className='dc-close';x.setAttribute('aria-label','關閉'+names[mode]);head.append(x);win.append(head);
   const nav=el('nav','dc-main-tabs');nav.setAttribute('aria-label','鑽石功能');for(const [key,label]of Object.entries(names).filter(([key])=>mode!=='exchange'||key==='exchange')){const b=button(label,()=>open(key));b.classList.toggle('selected',key===mode);nav.append(b);}win.append(nav);
   const body=el('div','dc-body');win.append(body);
   if(mode==='exchange')exchange(body);else{
