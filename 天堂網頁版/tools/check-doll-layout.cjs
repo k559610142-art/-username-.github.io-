@@ -1,0 +1,12 @@
+const fs=require('fs'),path=require('path'),assert=require('assert/strict');
+const {chromium}=require('C:/Users/User/AppData/Local/Python/pythoncore-3.15-64/Lib/site-packages/playwright/driver/package');
+(async()=>{const browser=await chromium.launch({headless:true,executablePath:'C:/Users/User/AppData/Local/ms-playwright/chromium-1254/chrome-win64/chrome.exe',args:['--allow-file-access-from-files']});try{const page=await browser.newPage({viewport:{width:1440,height:900}}),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('file:///'+path.resolve(__dirname,'doll-layout-preview.html').replaceAll('\\','/'));await page.waitForSelector('.doll-evolution-step');
+ assert.equal(await page.locator('.game-catalog-cards .game-catalog-card').count(),await page.evaluate(()=>DollEvolution.bases().length));
+ const names=await page.locator('.game-catalog-cards').innerText();assert(!names.includes('努力的魔法娃娃'));assert(!names.includes('聰穎的魔法娃娃'));assert(!names.includes('附魔15'));
+ assert((await page.locator('.game-catalog-status').innerText()).includes('發光的魔法娃娃：美人魚'));
+ await page.locator('.doll-evolution-step[data-doll-id="55034"]').click();assert((await page.locator('.game-catalog-detail>h3').innerText()).includes('光彩照人'));assert.equal(await page.locator('.doll-evolution-step[aria-pressed="true"]').getAttribute('data-doll-id'),'55034');
+ await page.getByRole('button',{name:/已擁有 \(/}).click();assert((await page.locator('.game-catalog-cards').innerText()).includes('美人魚'));assert((await page.locator('.game-catalog-detail>h3').innerText()).includes('光彩照人'));
+ await page.locator('.doll-evolution-step[data-doll-id="55033"]').click();await page.getByRole('button',{name:'解除召喚',exact:true}).click();assert((await page.locator('.game-catalog-status').innerText()).includes('未召喚'));await page.getByRole('button',{name:'召喚',exact:true}).click();assert((await page.locator('.game-catalog-status').innerText()).includes('發光的魔法娃娃：美人魚'));
+ await page.screenshot({path:path.resolve(__dirname,'doll-layout-desktop.png'),fullPage:true});
+ await page.setViewportSize({width:390,height:844});await page.screenshot({path:path.resolve(__dirname,'doll-layout-mobile.png'),fullPage:true});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));assert.deepEqual(errors,[]);console.log('Verified base-only grid, clickable upgrade routes, evolved ownership filter, selection persistence, summon and mobile width.');
+}finally{await browser.close()}})().catch(e=>{console.error(e);process.exitCode=1});

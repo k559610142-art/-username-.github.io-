@@ -1,0 +1,12 @@
+<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><base href="../"><meta name="viewport" content="width=device-width,initial-scale=1"><title>娃娃版面隔離預覽</title><link rel="stylesheet" href="data/game-catalog.css">
+<style>body{margin:0;background:#0c1925;color:#e6d9bc;font:15px 'Microsoft JhengHei',sans-serif;--stage-height:780px}button{font:inherit;color:inherit;background:#243022;border:1px solid #938052;border-radius:4px;padding:9px;cursor:pointer}main{min-height:100vh}#panel{position:fixed}#close{float:right}#panelContent{height:calc(100vh - 60px)}.game-catalog-results{display:flex;flex-direction:column}.game-catalog-cards{align-content:start}.game-catalog-cards .game-catalog-card{min-height:150px}.game-catalog-sidebar{align-self:start}.game-catalog-detail{align-self:start}</style>
+<main class="game reference-game"><section id="panel"><button id="close">關閉 ×</button><div id="panelContent"></div></section></main>
+<script>
+const gameDialog=document.querySelector('#panel'),gameDialogContent=document.querySelector('#panelContent'),gameDialogClose=document.querySelector('#close'),menuButton=document.createElement('button');let previous=null;
+function closePanel(){gameDialog.hidden=true}function cancelPointerGesture(){}function toast(){}function uiElement(t,c,x){const e=document.createElement(t);e.className=c||'';if(x!==undefined)e.textContent=x;return e}
+const fakeOwned={55033:2};let fakeActive=55033;
+window.TdjSystems={dolls:{owned:id=>fakeOwned[id]||0,get active(){return fakeActive},summon(id){fakeActive=id;return true},dismiss(){fakeActive=null}}};
+function runGameMenuAction(action){document.title='預覽入口：'+action}
+</script>
+<script src="data/interface-catalog.js"></script><script src="data/game-catalog-data.js"></script><script src="data/doll-dedup.js"></script><script src="data/doll-evolution.js"></script><script src="data/game-catalog.js"></script>
+<script>openGameCatalog('dolls');</script>

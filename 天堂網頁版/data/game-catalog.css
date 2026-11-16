@@ -103,6 +103,29 @@ main.game.reference-game #panel.game-catalog-panel {
 .game-catalog-toolbar button:hover, .game-catalog-action:not(:disabled):hover { background: #57452a; }
 .game-catalog-action { margin-top: 12px; width: 100%; }
 .game-catalog-action:disabled { opacity: .5; cursor: not-allowed; }
+.doll-catalog-panel .game-catalog-detail{overflow:auto;max-height:calc(100dvh - 125px)}
+.doll-detail-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(165px,1.2fr);gap:12px;align-items:start}
+.doll-abilities h4,.doll-evolution h4{margin:8px 0 10px;color:#eed49b}
+.doll-abilities p{margin:7px 0;line-height:1.5}
+.doll-no-evolution{display:block;margin-top:14px;color:#a9b9c4}
+.doll-evolution{padding:9px;border:1px solid #947a444d;border-radius:7px;background:#0715229c;min-width:0}
+.doll-evolution h5{margin:12px 0 7px;color:#c8d9ed;font-size:12px}
+.doll-evolution-path{list-style:none;margin:0;padding:0;display:grid;gap:15px}
+.doll-evolution-path li{position:relative;min-width:0}
+.doll-evolution-path li+li:before{content:'↓';position:absolute;top:-17px;left:22px;color:#c4a86d;font-size:15px}
+.doll-evolution-step{width:100%;display:flex;align-items:center;gap:7px;padding:7px!important;text-align:left;min-height:55px;background:#152839!important;border:1px solid #466077!important;border-radius:5px;color:#c8d2dc;cursor:pointer}
+.doll-evolution-step img{width:38px!important;height:42px!important;object-fit:contain;flex:none;image-rendering:pixelated}
+.doll-evolution-step:not(.owned) img{filter:grayscale(1) brightness(.65)}
+.doll-evolution-step.owned{border-color:#9c864f!important}
+.doll-evolution-label{min-width:0;display:grid;gap:3px;font-size:12px;line-height:1.4}
+.doll-evolution-label strong{font-weight:500;overflow-wrap:anywhere}
+.doll-evolution-label small{font-size:11px;color:#bda97f}
+.doll-evolution-variants{margin-top:12px;font-size:12px}
+.doll-evolution-variants summary{cursor:pointer;color:#e3cc98;line-height:1.5}
+.doll-evolution-variants>small{display:block;color:#a8b7c8;margin:7px 0}
+.doll-evolution-variants .doll-evolution-step{margin-top:5px}
+@media(max-width:1050px){.doll-detail-grid{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:600px){.doll-catalog-panel .game-catalog-layout{display:flex;flex-direction:column}.doll-catalog-panel .game-catalog-sidebar{flex-direction:row;flex-wrap:wrap}.doll-catalog-panel .game-catalog-results,.doll-catalog-panel .game-catalog-detail{width:100%}.doll-catalog-panel .game-catalog-cards{grid-template-columns:repeat(2,minmax(0,1fr));max-height:42dvh}.doll-catalog-panel .game-catalog-detail{max-height:none}.doll-detail-grid{grid-template-columns:minmax(0,1fr)}}
 .game-catalog-status { color: #d8c9a0; font-size: 13px; }
 .game-catalog-card.game-catalog-locked img { filter: grayscale(1) brightness(.45); }
 .game-catalog-card.game-catalog-locked span { opacity: .6; }

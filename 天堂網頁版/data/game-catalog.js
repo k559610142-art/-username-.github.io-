@@ -97,7 +97,7 @@ const gameCollections = [];
 gameDialogClose.onclick = () => closePanel();
 const catalogClosePanel = closePanel;
 closePanel = function () {
-  gameDialog.classList.remove('game-catalog-panel','wuhun-panel','transform-catalog-panel');
+  gameDialog.classList.remove('game-catalog-panel','wuhun-panel','transform-catalog-panel','doll-catalog-panel');
   catalogClosePanel();
 };
 
@@ -1743,6 +1743,7 @@ function openGameCatalog(type) {
   gameDialog.classList.remove('reference-menu-panel', 'classic-panel');
   gameDialog.classList.add('game-catalog-panel');
   gameDialog.classList.toggle('wuhun-panel',type==='wuhun');
+  gameDialog.classList.toggle('doll-catalog-panel',type==='dolls');
   gameDialog.classList.toggle('transform-catalog-panel',type==='transforms');
   gameDialog.setAttribute('aria-label', gameCatalogTitles[type]);
   gameDialogClose.hidden = false;
@@ -1776,17 +1777,17 @@ function openGameCatalog(type) {
     return;
   }
   const entries = type === 'cards' ? lineageMTransformCards
-    : type === 'transforms' ? transformBookRows() : tdjRows(type) || gameCatalogData[type];
+    : type === 'transforms' ? transformBookRows() : type === 'dolls' ? DollEvolution.bases() : tdjRows(type) || gameCatalogData[type];
   const all = () => true;
   const usedGrades = type === 'transforms' ? [...new Set(entries.map(row => row.grade))].sort((a, b) => a - b) : [];
   const filters = type === 'cards' ? [['全部', all], ...Object.entries(lineageMCardTiers).map(([tier, label]) => [label, row => row.tier === tier])]
     : type === 'transforms' ? [['全部', all], ['已收集', row => TransformCards.owned(row.name) > 0], ...usedGrades.map(grade => [lineageWGrades[grade][0], row => row.grade === grade]), ['原始新增',row=>!!row.card.originalExtra]]
-    : type === 'dolls' ? [['全部', all], ['已擁有', row => TdjSystems.dolls.owned(row.id) > 0]]
+    : type === 'dolls' ? [['全部', all], ['已擁有', row => DollEvolution.members(row.id).some(d=>TdjSystems.dolls.owned(d.id)>0)]]
     : type === 'enchant' ? [['全部', all], ['已擁有', row => TdjSystems.enchant.stones(row.e.id) > 0]]
     : type === 'wuhun' ? [['全部', all], ['已擁有', row => TdjSystems.wuhun.owned(row.w.id) > 0], ...wuhunTiers.map(tier => [tier, row => row.w.tier === tier])]
     : [['全部', all]];
   let activeFilter = all;
-  let selected = type==='wuhun' ? entries.find(row=>String(row.w.id)===String(TdjSystems.wuhun.active))||null : null;
+  let selected = type==='wuhun' ? entries.find(row=>String(row.w.id)===String(TdjSystems.wuhun.active))||null : type==='dolls' ? DollEvolution.get(TdjSystems.dolls.active)||null : null;
   let selectedRingSlot=0;
 
   function syncSoulPreview(){
@@ -1805,7 +1806,7 @@ function openGameCatalog(type) {
     selected = row;
     syncSoulPreview();
     detail.replaceChildren();
-    for (const button of cards.children) button.setAttribute('aria-pressed', String(button.catalogEntry === row));
+    for (const button of cards.children) button.setAttribute('aria-pressed', String(button.catalogEntry === row || type==='dolls'&&button.catalogEntry.id===DollEvolution.rootId(row?.id)));
     if (!row) {
       soulStage?.querySelector('.wuhun-stage-summary')?.remove();
       detail.append(uiElement('p', '', '沒有符合條件的項目。'));
@@ -1826,10 +1827,23 @@ function openGameCatalog(type) {
       for (const [id, amount] of row.materials) {
         detail.append(uiElement('p', '', (id === 41246 ? '魔法結晶體' : '道具 #' + id) + ' × ' + amount));
       }
-      detail.append(uiElement('h4', '', '娃娃能力'));
-      for (const effect of row.effects) detail.append(uiElement('p', '', effect));
-      if (!row.effects.length) detail.append(uiElement('p', '', '能力未設定'));
-      if (row.note) detail.append(uiElement('small', '', row.note));
+      const abilities=uiElement('div','doll-abilities');abilities.append(uiElement('h4', '', '娃娃能力'));
+      for (const effect of row.effects) abilities.append(uiElement('p', '', effect));
+      if (!row.effects.length) abilities.append(uiElement('p', '', '能力未設定'));
+      if (row.note) abilities.append(uiElement('small', '', row.note));
+      const info=uiElement('div','doll-detail-grid');info.append(abilities);
+      const family=DollEvolution.family(row.id);
+      if(family){
+        const route=uiElement('section','doll-evolution');route.setAttribute('aria-label','娃娃升級順序');route.append(uiElement('h4','','升級順序'));
+        const stage=(id,index)=>{const d=DollEvolution.get(id),b=catalogButton('',()=>showDetails(d),'doll-evolution-step'),count=TdjSystems.dolls.owned(id),active=String(TdjSystems.dolls.active)===String(id);
+          b.dataset.dollId=String(id);b.setAttribute('aria-pressed',String(id===row.id));b.classList.toggle('owned',count>0);
+          const label=uiElement('span','doll-evolution-label');label.append(uiElement('strong','',(index==null?'型態':index===0?'基礎':'第'+index+'階')+' · '+d.name),uiElement('small','',active?'召喚中':count?'擁有 ×'+count:'未擁有'));
+          b.append(catalogPortrait('dolls',d),label);return b;};
+        family.paths.forEach((path,index)=>{if(family.paths.length>1)route.append(uiElement('h5','',index===0?'帕歐路線':'帕克路線'));const list=uiElement('ol','doll-evolution-path');path.forEach((id,index)=>{const li=uiElement('li');li.append(stage(id,index));list.append(li);});route.append(list);});
+        for(const variant of family.variants){const group=uiElement('details','doll-evolution-variants');group.open=variant.ids.includes(row.id);group.append(uiElement('summary','',DollEvolution.get(variant.parent).name+' · 附魔型態（'+variant.ids.length+'種）'));group.append(uiElement('small','','不同附魔型態，並非依編號逐階升級'));for(const id of variant.ids)group.append(stage(id,null));route.append(group);}
+        info.append(route);
+      }else abilities.append(uiElement('small','doll-no-evolution','目前沒有進階型態'));
+      detail.append(info);
       const owned = TdjSystems.dolls.owned(row.id), active = String(TdjSystems.dolls.active) === String(row.id);
       detail.append(uiElement('p', '', owned ? '擁有 ' + owned + ' 隻' + (active ? ' · 召喚中' : '') : '尚未擁有'));
       const action = active ? catalogButton('解除召喚', () => { TdjSystems.dolls.dismiss(); refreshCards(); }, 'game-catalog-action')
@@ -1932,7 +1946,7 @@ function openGameCatalog(type) {
     toolbar.append(status);
     results.prepend(toolbar);
     status.update = () => {
-      if (type === 'dolls') { const d = entries.find(x => String(x.id) === String(TdjSystems.dolls.active)); status.textContent = d ? '召喚中：' + d.name : '未召喚'; }
+      if (type === 'dolls') { const d = DollEvolution.get(TdjSystems.dolls.active); status.textContent = d ? '召喚中：' + d.name : '未召喚'; }
       if (type === 'enchant') { const c = TdjSystems.enchant.current(); status.textContent = '測試用（免費）· ' + (c ? c.weapon.item.name + '：' + c.level.name : '武器未附魔'); }
       if (type === 'wuhun') { const w = entries.find(x => String(x.w.id) === String(TdjSystems.wuhun.active)); status.textContent = '測試用（免費）· ' + (w ? '裝備中：' + w.name : '未裝備'); }
     };
@@ -1945,7 +1959,7 @@ function openGameCatalog(type) {
   function refreshCards() {
     const query = search.value.trim().toLowerCase();
     const visible = entries.filter(row => activeFilter(row) &&
-      [row.name, row.gfx, row.card?.p?.gfx, row.card?.p?.id, ...(row.card?.aliases||[]), ...(row.required || [])].join(' ').toLowerCase().includes(query));
+      [row.name, row.gfx, row.card?.p?.gfx, row.card?.p?.id, ...(row.card?.aliases||[]), ...(row.required || []), ...(type==='dolls'?DollEvolution.members(row.id).flatMap(d=>[d.name,d.gfx]):[])].join(' ').toLowerCase().includes(query));
     cards.replaceChildren();
     for (const row of visible) {
       const card = catalogButton('', () => showDetails(row), 'game-catalog-card');
@@ -1960,18 +1974,20 @@ function openGameCatalog(type) {
         card.append(uiElement('small', '', lineageWGrades[row.grade][0] + (owned ? ' ×' + owned : ' · 未收集')));
       } else if (type === 'dolls' || type === 'enchant' || type === 'wuhun') {
         const owned = type === 'dolls' ? TdjSystems.dolls.owned(row.id) : type === 'enchant' ? TdjSystems.enchant.stones(row.e.id) : TdjSystems.wuhun.owned(row.w.id);
+        const evolvedOwned=type==='dolls'?DollEvolution.members(row.id).filter(d=>d.id!==row.id).reduce((n,d)=>n+TdjSystems.dolls.owned(d.id),0):0;
         if (type === 'wuhun') card.setAttribute('data-tier', tdjWuhunTierTag[row.w.tier] || 'white');
-        if (!owned) card.classList.add('game-catalog-locked');
+        if (!owned&&!evolvedOwned) card.classList.add('game-catalog-locked');
         const equipped=type==='wuhun'&&String(TdjSystems.wuhun.active)===String(row.w.id);
         if(equipped)card.dataset.equipped='true';
-        card.append(uiElement('small', '', (type === 'wuhun' ? row.w.tier + ' · ' : '') + (owned ? '×' + owned : '未擁有')+(equipped?' · 裝備中':'')));
+        card.append(uiElement('small', '', (type === 'wuhun' ? row.w.tier + ' · ' : '') + (owned ? '×' + owned : evolvedOwned?'進階已擁有 ×'+evolvedOwned:'未擁有')+(equipped?' · 裝備中':'')));
       }
       card.append(catalogPortrait(type, row));
       card.append(uiElement('span', '', row.name));
       if (row.effect) card.append(uiElement('small', '', row.effect));
       cards.append(card);
     }
-    showDetails(visible.includes(selected) ? selected : visible[0]);
+    const keepSelected=type==='dolls'?visible.some(root=>root.id===DollEvolution.rootId(selected?.id)):visible.includes(selected);
+    showDetails(keepSelected ? selected : visible[0]);
     if (type === 'transforms') transformStatus.update();
     if (tdjStatus) tdjStatus.update();
   }
