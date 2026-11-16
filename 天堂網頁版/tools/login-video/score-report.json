@@ -1,0 +1,17 @@
+{
+  "title": "門扉彼端",
+  "composition": "Original procedural instrumental, D minor, 20 bars, 66 seconds",
+  "sampleRate": 44100,
+  "narration": "歡迎來到，這奇怪的天堂。",
+  "narrationStart": 49,
+  "narrationDuration": 3.62702947845805,
+  "peak": 0.7077625393867493,
+  "rms": 0.07963369210382869,
+  "sections": {
+    "intro": "0–4",
+    "professions": "4–36",
+    "unknown": "36–45",
+    "welcome": "45–56",
+    "login": "56–66"
+  }
+}

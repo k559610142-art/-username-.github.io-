@@ -1,0 +1,1 @@
+Original eleven-hero fantasy login art for 這奇怪的天堂. Eight professions in order: 王族、騎士、法師、妖精、黑暗妖精、龍騎士、幻術師、戰士. Three mysterious unknown professions. Full-body warm welcoming poses, ruined cathedral, teal and gold light. Reserve lower forecourt for login form below feet. No text or UI baked into illustration. Built-in image_gen used; original PNG preserved.
