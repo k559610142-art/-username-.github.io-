@@ -11,9 +11,12 @@ function fixture(){
  const mob={x:104,y:100,hp:100,spawn:{npc:{name:'路人',hp:100,level:20,ranged:1}},fp:{red:true,chatAt:Infinity,state:'hunt',think:Infinity,pkCd:0,ready:Infinity}};
  return {c,mob,calls,steps,step:(m,x,y)=>{steps.push([x,y]);return true;}};
 }
-test('紅名假人靠近玩家也不主動鎖定或追隨',()=>{const f=fixture();for(const x of [100,102,106]){f.c.worldX=x;f.c.run(f.mob,5000,f.step);}assert.equal(f.mob.fp.pk,undefined);assert.deepEqual(f.steps,[]);});
+test('紅名在視線內主動鎖定玩家，反應延遲後追擊；普通假人不主動PK',()=>{const f=fixture();f.c.run(f.mob,5000,f.step);assert.equal(f.mob.fp.pk,true);assert.equal(f.mob.fp.enemyId,'hero');assert.deepEqual(f.steps,[]);f.c.run(f.mob,6500,f.step);assert.deepEqual(f.steps,[[100,100]]);const ordinary=fixture();ordinary.mob.fp.red=false;ordinary.c.run(ordinary.mob,5000,ordinary.step);assert(!ordinary.mob.fp.pk);});
 test('搜尋 BOSS 以假人自身位置為中心',()=>{const f=fixture();f.mob.fp.red=false;f.c.run(f.mob,5000,f.step);assert.deepEqual(f.calls[0],[104,100,14]);});
 test('受到玩家攻擊後仍可追近反擊，距離過遠則停戰',()=>{const f=fixture();Object.assign(f.mob.fp,{pk:true,enemyId:'hero'});assert.equal(f.c.pkTest(f.mob,5000,f.step),true);assert.deepEqual(f.steps,[[100,100]]);f.c.worldX=50;assert.equal(f.c.pkTest(f.mob,6000,f.step),false);assert.equal(f.mob.fp.pk,false);});
+test('安全區、牆後、死亡、距離超過8格與重傷時不主動找玩家',()=>{for(const setup of [f=>f.c.canFight=()=>false,f=>f.c.IslandCombat.clearShot=()=>false,f=>f.c.CharacterActions.dead=true,f=>f.c.worldX=80,f=>f.mob.hp=40,f=>f.mob.fp.pkCd=9000,f=>f.c.window.ClassBuffs={invisible:()=>true}]){const f=fixture();setup(f);f.c.run(f.mob,5000,f.step);assert(!f.mob.fp.pk);}});
+test('追擊失去視線只前往最後看見的位置，短期記憶到期後停戰',()=>{const f=fixture();f.c.run(f.mob,5000,f.step);f.c.IslandCombat.clearShot=()=>false;f.c.worldX=101;f.c.run(f.mob,6500,f.step);assert.deepEqual(f.steps,[[100,100]]);f.c.run(f.mob,9000,f.step);assert.equal(f.mob.fp.pk,false);});
+test('主動攻擊的傷害在玩家回安全區或切換角色後不會落下',()=>{for(const change of [f=>f.c.canFight=()=>false,f=>f.c.window.activeCharacterId='other']){const f=fixture(),timers=[];let damage=0;f.mob.x=101;f.mob.fp.look={attackMs:600};f.mob.fp.ready=0;f.c.setTimeout=fn=>timers.push(fn);f.c.CharacterActions.damage=()=>damage++;f.c.clamp=(n,a,b)=>Math.max(a,Math.min(b,n));f.c.movementAnimating=()=>false;f.c.navigationPath=[];f.c.shoot=()=>{};f.c.Math=Object.create(Math);f.c.Math.random=()=>0;f.c.run(f.mob,5000,f.step);f.c.run(f.mob,6500,f.step);assert(timers.length);change(f);for(const fn of timers)fn();assert.equal(damage,0);}});
 
 function enablePatrol(f){
  Object.assign(f.mob,{homeX:104,homeY:100});Object.assign(f.mob.fp,{red:false,bossLook:Infinity,think:0,since:0});

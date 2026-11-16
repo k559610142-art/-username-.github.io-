@@ -3,7 +3,7 @@ const NpcContext=(()=>{
  const gap=(a,b)=>Math.max(Math.abs(a.x-b.x),Math.abs(a.y-b.y));
  const safe=b=>(tile(b.x,b.y)&48)===16;
  function canHear(b){return window.gameFlowState==='playing'&&!CharacterActions.dead&&!!b?.fp&&!b.fp.hidden&&!b.fp.vanish&&b.hp>0&&(b.spawn.mapId||0)===(window.activeMapId||0)&&gap(b,{x:worldX,y:worldY})<=18;}
- function busy(b){const f=b.fp;return !!(f.pk||f.retreatUntil||f.target?.hp||f.partyTarget?.hp||b.hp<b.spawn.npc.hp*.4||b.action&&movementTime()<b.action.end);}
+ function busy(b){const f=b.fp;return !!(['attack','approach','kite','retreat','heal','restock','loot','control','area'].includes(f.intent)||f.pk||f.retreatUntil||f.target?.hp||f.partyTarget?.hp||b.hp<b.spawn.npc.hp*.4||b.action&&movementTime()<b.action.end);}
  function available(b){return canHear(b)&&!b.fp.red&&!b.fp.stall&&!b.fp.social&&!busy(b);}
  function nearby(b){return IslandMonsters.around(b.x,b.y,12).filter(m=>m.hp>0);}
  function ambient(b){

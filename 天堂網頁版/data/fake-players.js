@@ -1,3 +1,4 @@
+// 2026-11-16：紅名假人會主動攻擊野外 8 格視線內的玩家；約半秒反應後追擊，超過14格、進安全區、失去視線或玩家倒下停戰。
 // 假玩家（2026-11-14 第 1 期，參考使用者另一款遊戲「龍脈紀元」的假人）：讓單機地圖看起來有其他玩家。
 //  外觀：原版 8 種角色動作圖（CHARACTER_ACTION_ASSETS：騎士、法師、王族、妖精 × 男女），轉成怪物影格格式（[檔, x, y, w, h, 毫秒, sx, sy]）
 //   掛在 islandMonsterFrames 的虛擬外觀編號 990000＋，所以沿用 island-monsters.js 的繪製、尋路與走路（spawn.bot）。
@@ -85,7 +86,7 @@ const FakePlayers=(()=>{
   let name=saved?saved.name:pick((red?RED_NAMES:own.length&&Math.random()<.35?own:[...NAMES,...GENDER_NAMES[g],...own]).filter(n=>!used.has(n)&&!(recentlyDeparted.get(n)>movementTime())));if(!name)return null;used.add(name);const lv=saved?saved.lv:red?ri(18,40):ri(5,45);
   const npc={name,kind:'L1Bot',gfx:look.id,level:lv,hp:40+lv*14,mp:0,ac:0,walk:look.walkProfile?.stepMs||640,attack:look.attackMs,ranged:RANGED[look.weapon]||1,skills:[],regeneration:null,aggressive:false};
   const mob={spawn:{bot:true,mapId:window.activeMapId||0,npc,heading:ri(0,7),respawn:[0,0]},region:[x-50,y-50,x+50,y+50],x,y,homeX:x,homeY:y,hp:npc.hp,heading:ri(0,7),rest:0,phase:Math.random()*1800,step:null,
-   fp:{look,red,clan:rollClan(red),state:safe(x,y)?'town':'hunt',think:0,chatAt:movementTime()+rnd(6000,40000),ready:0,target:null,since:movementTime(),pk:false,pkCd:movementTime()+rnd(20000,60000)}};
+   fp:{look,red,clan:rollClan(red),state:safe(x,y)?'town':'hunt',think:0,chatAt:movementTime()+rnd(6000,40000),ready:0,target:null,since:movementTime(),pk:false,pkCd:movementTime()+rnd(2500,6500)}};
   if(saved)mob.fp.clan=saved.clan;
   preloadLook(look);IslandMonsters.addAlly(mob);remember(mob);return mob;}
  const preloaded=new Set();
@@ -150,10 +151,12 @@ const FakePlayers=(()=>{
   return true;
  }
  function update(mob,now,stepToward){
-  const f=mob.fp;if(!f)return;
+  const f=mob.fp;if(!f||(mob.spawn.mapId||0)!==(window.activeMapId||0))return;
   if(mob.bubble&&now>mob.bubble.until)mob.bubble=null;
   if(now>=f.chatAt){f.chatAt=now+rnd(35000,90000);const lines=(window.NpcContext?.ambient(mob)||[]).filter(lineOk);if(lines.length&&Math.random()<.45)say(mob,pick(lines));}
-  if(f.vanish){if(now>=f.vanish){const s=spotNear(mob.homeX,mob.homeY,2,8,f.red?false:null);if(s){f.vanish=0;f.hidden=false;f.pk=false;mob.hp=mob.spawn.npc.hp;place(mob,...s);}else f.vanish=now+5000;}return;}
+  if(f.vanish){if(now>=f.vanish){const s=spotNear(mob.homeX,mob.homeY,2,8,f.red?false:null);if(s&&(!window.FakePlayerAutonomy||FakePlayerAutonomy.canReturn(mob,s,now))){f.vanish=0;f.hidden=false;f.pk=false;mob.hp=mob.spawn.npc.hp;window.FakePlayerAutonomy?.onReturn(mob,now);place(mob,...s);}else f.vanish=now+5000;}return;}
+  if(f.red&&!f.pk&&!f.stall&&!f.social&&!f.partyOwner&&!f.retreatUntil)pk(mob,now,stepToward);
+  if(!f.stall&&!f.pk&&!f.social&&!f.partyOwner&&window.FakePlayerAutonomy?.update(mob,now,stepToward,{say,face,shoot,loot,claimed}))return;
   if(!f.stall&&survival(mob,now,stepToward))return;
   if(window.NpcSocial?.update(mob,now,stepToward))return;
   if(mob.step)return;
@@ -192,11 +195,15 @@ const FakePlayers=(()=>{
  // ---- 紅名 PK ----
  function pk(mob,now,stepToward){const f=mob.fp,name=mob.spawn.npc.name,lv=mob.spawn.npc.level,pd=dist(mob.x,mob.y,worldX,worldY);
   const ok=window.gameFlowState==='playing'&&!CharacterActions.dead&&canFight(mob);
+  const visible=IslandCombat.clearShot(mob.x,mob.y,worldX,worldY)&&!window.ClassBuffs?.invisible?.();
   if(f.pk){
    if(!ok||f.enemyId!==window.activeCharacterId||pd>14||safe(mob.x,mob.y)){if(CharacterActions.dead)say(mob,pick(RED_WIN));f.pk=false;f.pkCd=now+rnd(45000,90000);return false;}
+   if(visible)f.pkLastSeen={x:worldX,y:worldY,until:now+3500};
+   if(!visible&&(!f.pkLastSeen||now>=f.pkLastSeen.until)){f.pk=false;f.pkCd=now+rnd(15000,30000);f.goal=f.route=null;return false;}
+   if(now<(f.pkReactAt||0))return true;
    const reach=mob.spawn.npc.ranged||1;
    if(pd===0){for(const [dx,dy] of [[1,0],[0,1],[-1,0],[0,-1]])if(stepToward(mob,mob.x+dx*2,mob.y+dy*2,now))return true;}
-   if(pd>reach||!IslandCombat.clearShot(mob.x,mob.y,worldX,worldY)){stepToward(mob,worldX,worldY,now);return true;}
+   if(pd>reach||!visible){const point=visible?{x:worldX,y:worldY}:f.pkLastSeen;if(point)stepToward(mob,point.x,point.y,now);return true;}
    if(now<f.ready)return true;
    face(mob,worldX,worldY);const dur=f.look.attackMs;mob.action={clip:'attack',start:now,end:now+dur};f.ready=now+dur+rnd(200,600);
    if(reach>1)shoot(mob,{x:worldX,y:worldY},now+dur*.45,f.look.weapon);
@@ -207,13 +214,18 @@ const FakePlayers=(()=>{
      if(CharacterActions.dead){say(mob,pick(RED_WIN));window.GameChat?.say('【系統】你被 '+name+' 擊倒了。','sys');f.pk=false;f.pkCd=movementTime()+rnd(60000,120000);}}},dur*.45);
    return true;}
 
-  // 紅名路人不主動追殺玩家，受到玩家攻擊後才反擊。
+  // 紅名在野外視線內主動找玩家；不穿牆發現、不追安全區。
+  if(f.red&&!['restock','retreat'].includes(f.intent)&&ok&&pd<=8&&visible&&now>=(f.pkCd||0)&&!f.retreatUntil&&!f.stall&&!f.social&&!f.partyOwner&&mob.hp>mob.spawn.npc.hp*.55&&(f.potions??8)>0){
+   claimed.delete(f.target);f.target=f.partyTarget=f.huntGoal=f.goal=f.route=null;f.pk=true;f.enemyId=window.activeCharacterId;f.pkReactAt=now+rnd(450,900);f.pkLastSeen={x:worldX,y:worldY,until:now+3500};f.ready=Math.max(f.ready||0,f.pkReactAt);f.intent='pk';if(f.brain){f.brain.target=null;f.brain.last=null;}
+   say(mob,pick(RED_LINES));window.GameChat?.say('【警告】紅名 '+name+' 盯上了你！','sys');return true;
+  }
   return false;}
- function monsterHurt(mob,amount,now=movementTime()){const f=mob?.fp;if(!f||f.hidden||!mob.hp)return;mob.hp=Math.max(0,mob.hp-Math.max(1,Math.floor(amount)));f.hpShow=now+3000;window.CombatSound?.monsterHit?.(mob);if(mob.hp)return;claimed.delete(f.target);f.target=f.partyTarget=null;f.pk=false;f.goal=f.route=null;f.hidden=true;f.vanish=now+60000;mob.hp=mob.spawn.npc.hp;mob.step=mob.action=null;mob.bubble=null;if(IslandMonsters.target===mob){IslandMonsters.setTarget(null);IslandCombat.stop();}}
+ function monsterHurt(mob,amount,now=movementTime(),attacker=null){const f=mob?.fp;if(!f||f.hidden||!mob.hp)return;mob.hp=Math.max(0,mob.hp-Math.max(1,Math.floor(amount)));f.hpShow=now+3000;window.CombatSound?.monsterHit?.(mob);window.FakePlayerAutonomy?.remember(mob,'hurt',attacker,now);if(mob.hp)return;window.FakePlayerAutonomy?.remember(mob,'death',attacker||f.target,now);claimed.delete(f.target);f.target=f.partyTarget=null;f.pk=false;f.goal=f.route=null;f.hidden=true;f.vanish=now+60000;mob.hp=mob.spawn.npc.hp;mob.step=mob.action=null;mob.bubble=null;if(IslandMonsters.target===mob){IslandMonsters.setTarget(null);IslandCombat.stop();}}
  // 玩家打到假人（只有紅名能被點選）：被打就反擊；打倒得金幣，消失一分鐘
  function hurt(mob,amount){const f=mob.fp;if(!f||!canFight(mob))return;mob.hp=Math.max(0,mob.hp-Math.max(1,Math.floor(amount)));f.hpShow=movementTime()+3000;window.CombatSound?.monsterHit?.(mob);
   if(!f.pk&&!f.retreatUntil&&mob.hp>0&&!CharacterActions.dead){f.pk=true;f.enemyId=window.activeCharacterId;claimed.delete(f.target);f.target=null;f.goal=null;f.route=null;say(mob,pick(['你敢打我?','找死','來啊']));}
   if(mob.hp>0)return;
+  window.FakePlayerAutonomy?.remember(mob,'death',null,movementTime());
   const gold=f.red?mob.spawn.npc.level*40:0;IslandMonsters.playEffect(169,mob.x,mob.y,movementTime());
   if(gold)window.OwnedInventory?.receive('etcitem',40308,gold);
   window.GameChat?.say('【系統】你擊敗了 '+mob.spawn.npc.name+(gold?'，獲得 '+gold.toLocaleString()+' 金幣。':'。'),'sys');

@@ -27,6 +27,12 @@ const CraftingWindow=(()=>{
  const BADGE={weapon:'⚔',armor:'🛡',acc:'💍',rune:'✦',doll:'🧸',wuhun:'👻',potion:'⚗',scroll:'📜',gem:'💎',box:'🎁',material:'◆',pet:'🐾',item:'📦'};
  function pic(item,cat,cls){const box=el('span',cls||'pic');const soul=!item.icon&&typeof wuhunData!=='undefined'&&wuhunData.find(w=>w.id===item.id),soulSrc=soul&&window.TdjSystems?.wuhun.image(soul);if(soulSrc){const img=el('img','');img.src=soulSrc;img.alt='';img.style.cssText='width:100%;height:100%;object-fit:contain';box.append(img);}else if(item.icon)box.append(itemIcon(item));else{box.classList.add('badge');box.append(el('b','',BADGE[cat]||'◇'));}return box;}
  const npcName=x=>String(x.r.npcname||'').replace(/\^/g,' ');
+ function propertyPanel(item,enchant=0,title='物品屬性'){
+  const section=el('section','craft-item-properties');section.append(el('h4','',title));
+  const key=item.kind+':'+item.id,rule=ITEM_USE_RULES.definitions[key],doll=typeof gameCatalogData!=='undefined'&&gameCatalogData.dolls?.find(d=>d.id===(typeof DOLL_ID_ALIASES!=='undefined'?DOLL_ID_ALIASES[item.id]||item.id:item.id)),soul=typeof wuhunData!=='undefined'&&wuhunData.find(w=>w.id===item.id),effects=doll?.effects||soul?.fx||[];
+  const rows=ItemProperties.read(item,{enchant,rule,handler:ITEM_USE_RULES.handlers[rule?.handler],armorData:typeof PLAYER_ABILITY_DATA!=='undefined'?PLAYER_ABILITY_DATA.armor[item.id]:null,effects}),list=el('dl','craft-properties-list');
+  for(const row of rows)list.append(el('dt','',row.label),el('dd','',row.value));section.append(list);return section;
+ }
 
  const css=document.createElement('style');css.textContent=`
  .craft-window{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(460px,94%);height:min(620px,90%);display:flex;flex-direction:column;box-sizing:border-box;padding:8px 10px 10px;pointer-events:auto;color:#e8dcc0;
@@ -64,6 +70,15 @@ const CraftingWindow=(()=>{
  .craft-actions button{flex:1;height:34px;min-height:0!important;font-size:14px!important;border-radius:6px!important;background:linear-gradient(#5e4c2a,#3b2f1b)!important;color:#ffe2a0!important;border:1px solid #a3864d!important}
  .craft-actions button:disabled{opacity:.45}
  .craft-actions .back{flex:0 0 80px;background:linear-gradient(#2a2b2e,#1e1f22)!important;color:#cbbd9c!important;border-color:#3d3a33!important}
+ .craft-inspect-product{padding:0!important;background:none!important;border:0!important;flex:none;cursor:pointer}
+ .craft-material-info{display:flex;align-items:center;gap:8px;flex:1;min-width:0;padding:0!important;background:none!important;border:0!important;text-align:left;color:inherit!important;font-size:13px!important;cursor:pointer}
+ .craft-material-info>span{overflow-wrap:anywhere}
+ .craft-mat{flex-wrap:wrap}.craft-mat>.n{white-space:nowrap}
+ .craft-item-properties{padding:10px;margin:4px 0 10px;background:#101820;border:1px solid #665537;border-radius:6px}
+ .craft-item-properties[hidden]{display:none!important}.craft-item-properties h4{margin:0 0 8px;color:#efd194;font-size:13px}
+ .craft-properties-list{display:grid;grid-template-columns:minmax(95px,.8fr) minmax(0,1.2fr);gap:5px 10px;font-size:12px;line-height:1.5;margin:0}
+ .craft-properties-list dt{color:#b3ac9b}.craft-properties-list dd{margin:0;color:#f3e6c9;overflow-wrap:anywhere}
+ .craft-mat>.craft-item-properties{flex-basis:100%;margin:3px 0}
  .craft-result{margin-top:8px;text-align:center;font-size:13px;color:#f0dcae;min-height:18px}`;document.head.append(css);
 
  let win=null,tab='all',query='',body=null,tabsBox=null,search=null,current=null;
@@ -75,16 +90,17 @@ const CraftingWindow=(()=>{
   if(!unique.length)grid.append(el('div','craft-empty',tab==='can'?'目前材料不夠做任何東西。':'沒有符合的配方。'));
   else if(unique.length>300)grid.append(el('div','craft-empty','只顯示前 300 筆，請用搜尋縮小範圍。'));return grid;}
  function detail(x){const d=el('div','craft-detail'),top=el('div','top'),info=el('div');
+  const properties=propertyPanel(x.item,x.r.new_item_Enchantlvl||0,'成品屬性');
   const r=x.r,cnt=r.new_item_counts>1?' ×'+r.new_item_counts:'',enc=r.new_item_Enchantlvl?'+'+r.new_item_Enchantlvl+' ':'';
-  info.append(el('h3','',enc+(r.note||x.item.name)+cnt),el('small','','製作 NPC：'+npcName(x)+' · 成功率 '+r.rnd+'%'+(r.checkLevel?' · 需要等級 '+r.checkLevel:'')+(r.hpConsume?' · 消耗體力 '+r.hpConsume:'')+(r.mpConsume?' · 消耗魔力 '+r.mpConsume:'')));top.append(pic(x.item,x.cat),info);
+  info.append(el('h3','',enc+(r.note||x.item.name)+cnt),el('small','','製作 NPC：'+npcName(x)+' · 成功率 '+r.rnd+'%'+(r.checkLevel?' · 需要等級 '+r.checkLevel:'')+(r.hpConsume?' · 消耗體力 '+r.hpConsume:'')+(r.mpConsume?' · 消耗魔力 '+r.mpConsume:'')));const inspect=el('button','craft-inspect-product');inspect.type='button';inspect.setAttribute('aria-label','查看'+x.item.name+'的屬性');inspect.setAttribute('aria-expanded','true');inspect.append(pic(x.item,x.cat));inspect.onclick=()=>{properties.hidden=!properties.hidden;inspect.setAttribute('aria-expanded',String(!properties.hidden));};top.append(inspect,info);d.append(top,properties);
   const variants=load().filter(v=>v.item.id===x.item.id);
   if(variants.length>1){const select=el('select','craft-variants');select.setAttribute('aria-label','製作方式');select.style.cssText='width:100%;padding:6px;background:#17191c;color:#e8dcc0';for(const [i,v] of variants.entries()){const option=el('option','', '方式 '+(i+1)+' · '+npcName(v)+' · 成功率 '+v.r.rnd+'% · '+v.mats.map(m=>m.item.name+'×'+m.count).join('、'));option.value=String(v.r.id);option.selected=v===x;select.append(option);}select.onchange=()=>{current=variants.find(v=>String(v.r.id)===select.value);render();};d.append(select);}
-  const mats=el('div','craft-mats');for(const m of x.mats){const row=el('div','craft-mat'),n=have(m);row.append(m.item.icon?itemIcon(m.item):pic(m.item,category(m.item),'mini'),el('span','',(m.enchant?'+'+m.enchant+' ':'')+m.item.name),el('span','n '+(n>=m.count?'enough':'short'),n.toLocaleString()+' / '+m.count.toLocaleString()));mats.append(row);}
+  const mats=el('div','craft-mats');for(const m of x.mats){const row=el('div','craft-mat'),n=have(m),inspect=el('button','craft-material-info');inspect.type='button';inspect.setAttribute('aria-label','查看'+m.item.name+'的屬性');inspect.setAttribute('aria-expanded','false');inspect.append(m.item.icon?itemIcon(m.item):pic(m.item,category(m.item),'mini'),el('span','',(m.enchant?'+'+m.enchant+' ':'')+m.item.name));let props=null;inspect.onclick=()=>{if(!props){props=propertyPanel(m.item,m.enchant,'材料屬性');row.append(props);}else props.hidden=!props.hidden;inspect.setAttribute('aria-expanded',String(!props.hidden));};row.append(inspect,el('span','n '+(n>=m.count?'enough':'short'),n.toLocaleString()+' / '+m.count.toLocaleString()));mats.append(row);}
   const actions=el('div','craft-actions'),back=el('button','back','返回'),make=el('button','','製作'),result=el('div','craft-result');back.type=make.type='button';
   back.onclick=()=>{current=null;render();};
   const why=!fits(x)?'職業或等級不符合條件。':!craftable(x)?'材料不足。':'';make.disabled=!!why;result.textContent=why;
   make.onclick=()=>{const msg=DBGameRules.craft(r.npcid,r.id,true);current=x;render();body.querySelector('.craft-result').textContent=msg;};
-  actions.append(back,make);d.append(top,el('small','','材料（身上數量 / 需要數量）'),mats,actions,result);return d;}
+  actions.append(back,make);d.append(el('small','','材料（身上數量 / 需要數量；點圖片可查看屬性）'),mats,actions,result);return d;}
  function render(){if(!win)return;for(const b of tabsBox.children)b.setAttribute('aria-selected',String(b.dataset.tab===tab));const y=body.firstChild?.scrollTop||0;body.replaceChildren(current?detail(current):list());if(!current&&body.firstChild)body.firstChild.scrollTop=y;}
  function open(){if(window.gameFlowState!=='playing')return false;if(win){win.style.zIndex=String(FloatingWindows.frontLevel());return true;}
   win=el('section','craft-window');win.setAttribute('role','dialog');win.setAttribute('aria-label','製作工匠');win.style.zIndex=String(FloatingWindows.frontLevel());

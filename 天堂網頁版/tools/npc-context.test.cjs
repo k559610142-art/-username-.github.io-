@@ -56,7 +56,7 @@ test('新路人的選名也遵守退場冷卻，不只檢查舊存檔',()=>{
  assert.equal(c.make(10,10).spawn.npc.name,'新路人');
 });
 test('假人消失後回自己原區域，不改在順飛後的玩家身邊重生',()=>{
- const calls=[],c={spotNear:(...args)=>{calls.push(args);return [102,202];},place:(b,x,y)=>{b.x=x;b.y=y;}};vm.createContext(c);const source=read('fake-players.js'),start=source.indexOf('  if(f.vanish){'),end=source.indexOf('  if(!f.stall&&survival',start);
+ const calls=[],c={window:{},spotNear:(...args)=>{calls.push(args);return [102,202];},place:(b,x,y)=>{b.x=x;b.y=y;}};vm.createContext(c);const source=read('fake-players.js'),start=source.indexOf('  if(f.vanish){'),end=source.indexOf('  if(!f.stall&&survival',start);
  vm.runInContext('function revive(mob,now){const f=mob.fp;'+source.slice(start,end)+'}',c);
  const b={homeX:100,homeY:200,hp:1,spawn:{npc:{hp:100}},fp:{vanish:1000,hidden:true}};c.revive(b,2000);assert.equal(calls[0][0],100);assert.equal(calls[0][1],200);assert.equal(b.x,102);assert.equal(b.fp.hidden,false);
 });
