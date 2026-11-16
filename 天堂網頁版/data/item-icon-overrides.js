@@ -12,3 +12,6 @@ for(const item of INTERFACE_CATALOG.items)if(item.kind==="etcitem"&&item.id===40
 
 // User-approved black reagent bottle illustration (2026-11-16); do not replace shared GFX 1161.
 for(const item of INTERFACE_CATALOG.items)if(item.kind==="etcitem"&&item.id===49015)item.icon="assets/interface/items/black-mithril-solution-v2.png";
+
+// Experience potion tiers without shipped native artwork use the existing experience potion bottle.
+for(const item of INTERFACE_CATALOG.items)if(item.kind==="etcitem"&&!item.icon&&/經驗.*藥水/.test(item.name))item.icon="assets/interface/items/etcitem-1032.png";

@@ -10,9 +10,10 @@ const CraftingWindow=(()=>{
  const TABS=[['all','全部'],['can','可製作'],['weapon','武器'],['armor','防具'],['acc','飾品'],['rune','符石'],['doll','娃娃'],['wuhun','武魂'],['potion','藥品'],['scroll','卷軸'],['gem','魔石'],['material','材料'],['pet','寵物'],['item','道具']];
  const category=DBGameRules.craftCategory;
  let recipes=null;
- function load(){if(recipes)return recipes;recipes=[];
+ function load(){if(recipes)return recipes;recipes=[];const seen=new Set();
   for(const r of DBGameRules.craftRecipes()){const item=byId.get(r.new_item),mats=split(r.materials);
    if(!item||!mats.length||mats.some(id=>!byId.has(id)))continue;
+   const signature=JSON.stringify(Object.keys(r).sort().filter(k=>!['id','action','note','npcname'].includes(k)).map(k=>[k,r[k]]));if(seen.has(signature))continue;seen.add(signature);
    recipes.push({r,item,cat:category(item),mats:mats.map((id,i)=>({item:byId.get(id),count:split(r.materials_count)[i]||1,enchant:split(r.materials_enchants)[i]||0})),
     text:(item.name+' '+r.note+' '+String(r.npcname).replace(/\^/g,' ')+' '+mats.map(id=>byId.get(id).name).join(' ')).toLowerCase()});}
   return recipes;}
@@ -66,12 +67,15 @@ const CraftingWindow=(()=>{
  function card(x){const b=el('button','craft-card'+(craftable(x)?' ok':''));b.type='button';b.append(pic(x.item,x.cat),el('span','nm',x.r.note||x.item.name));b.title=x.item.name+' · '+npcName(x);b.onclick=()=>{current=x;render();};return b;}
  function list(){const q=query.trim().toLowerCase(),out=load().filter(x=>(tab==='all'||(tab==='can'?craftable(x):x.cat===tab))&&(!q||x.text.includes(q)));
   out.sort((a,b)=>(craftable(b)-craftable(a))||(!!b.item.icon-!!a.item.icon)||(fits(b)-fits(a)));
-  const grid=el('div','craft-grid');for(const x of out.slice(0,300))grid.append(card(x));
-  if(!out.length)grid.append(el('div','craft-empty',tab==='can'?'目前材料不夠做任何東西。':'沒有符合的配方。'));
-  else if(out.length>300)grid.append(el('div','craft-empty','只顯示前 300 筆，請用搜尋縮小範圍。'));return grid;}
+  const unique=[...new Map(out.map(x=>[x.item.id,null])).keys()].map(id=>out.find(x=>x.item.id===id));
+  const grid=el('div','craft-grid');for(const x of unique.slice(0,300))grid.append(card(x));
+  if(!unique.length)grid.append(el('div','craft-empty',tab==='can'?'目前材料不夠做任何東西。':'沒有符合的配方。'));
+  else if(unique.length>300)grid.append(el('div','craft-empty','只顯示前 300 筆，請用搜尋縮小範圍。'));return grid;}
  function detail(x){const d=el('div','craft-detail'),top=el('div','top'),info=el('div');
   const r=x.r,cnt=r.new_item_counts>1?' ×'+r.new_item_counts:'',enc=r.new_item_Enchantlvl?'+'+r.new_item_Enchantlvl+' ':'';
   info.append(el('h3','',enc+(r.note||x.item.name)+cnt),el('small','','製作 NPC：'+npcName(x)+' · 成功率 '+r.rnd+'%'+(r.checkLevel?' · 需要等級 '+r.checkLevel:'')+(r.hpConsume?' · 消耗體力 '+r.hpConsume:'')+(r.mpConsume?' · 消耗魔力 '+r.mpConsume:'')));top.append(pic(x.item,x.cat),info);
+  const variants=load().filter(v=>v.item.id===x.item.id);
+  if(variants.length>1){const select=el('select','craft-variants');select.setAttribute('aria-label','製作方式');select.style.cssText='width:100%;padding:6px;background:#17191c;color:#e8dcc0';for(const [i,v] of variants.entries()){const option=el('option','', '方式 '+(i+1)+' · '+npcName(v)+' · 成功率 '+v.r.rnd+'% · '+v.mats.map(m=>m.item.name+'×'+m.count).join('、'));option.value=String(v.r.id);option.selected=v===x;select.append(option);}select.onchange=()=>{current=variants.find(v=>String(v.r.id)===select.value);render();};d.append(select);}
   const mats=el('div','craft-mats');for(const m of x.mats){const row=el('div','craft-mat'),n=have(m);row.append(m.item.icon?itemIcon(m.item):pic(m.item,category(m.item),'mini'),el('span','',(m.enchant?'+'+m.enchant+' ':'')+m.item.name),el('span','n '+(n>=m.count?'enough':'short'),n.toLocaleString()+' / '+m.count.toLocaleString()));mats.append(row);}
   const actions=el('div','craft-actions'),back=el('button','back','返回'),make=el('button','','製作'),result=el('div','craft-result');back.type=make.type='button';
   back.onclick=()=>{current=null;render();};
