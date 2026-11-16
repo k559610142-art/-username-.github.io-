@@ -26,6 +26,9 @@ function table(file) {
 }
 const mapids = new Map(table('table-078.js').map(r => [+r.mapid, r]));
 const dungeon = table('table-054.js'), getback = table('table-072.js');
+if(mapids.has(3301))mapids.get(3301).locationname='新傲慢之塔1樓';
+// Native 3301 is supplied by the client/core but absent from the older mapids table.
+if(!mapids.has(3301))mapids.set(3301,{mapid:3301,locationname:'新傲慢之塔1樓',startX:32704,endX:32895,startY:32704,endY:32895,teleportable:0,escapable:1,markable:0,usable_item:1});
 
 const chunkPos = name => { const hi = parseInt(name.slice(0, 4), 16), lo = parseInt(name.slice(4, 8), 16); return [32704 + (hi - 0x7fff) * 64, 32704 + (lo - 0x7fff) * 64]; };
 // One file per 64×64 block: the .s32 when present, otherwise the older .seg.
@@ -76,7 +79,7 @@ for (const id of ids) {
   const info = mapids.get(id), files = s32Files(id);
   if (!info || !files.length) { console.log('略過 Map', id, info ? '（客戶端沒有 S32）' : '（DB 沒有 mapids）'); continue; }
   const startX = info.startX, startY = info.startY, width = info.endX - info.startX + 1, height = info.endY - info.startY + 1;
-  const dir = path.join(NW, String(id)); fs.rmSync(dir, { recursive: true, force: true }); fs.mkdirSync(dir, { recursive: true });
+  const dir = path.resolve(NW, String(id)); if(!Number.isSafeInteger(id)||!dir.startsWith(path.resolve(NW)+path.sep))throw Error('Invalid map output path'); fs.rmSync(dir, { recursive: true, force: true }); fs.mkdirSync(dir, { recursive: true });
   const collision = new Uint8Array(width * height), chunks = [];
   for (const f of files) {
     const name = f.slice(0, 8).toLowerCase(), [cx, cy] = chunkPos(name), buf = fs.readFileSync(path.join(opt.client, 'map', String(id), f));

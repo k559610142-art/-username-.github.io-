@@ -6,6 +6,10 @@ let rows;vm.runInNewContext(fs.readFileSync(path.join(root,'data/database/table-
 const settings=vm.runInContext('dbActiveSettings',game),table=name=>settings[name]?.rows.map(r=>Object.fromEntries(settings[name].columns.map((c,i)=>[c.name,r[i]])))||[],removed=new Set([40738,40739,40740]);
 // 新遺忘之島在核心 getback_restart 的入口；隨身傳送費用沿用遺忘之島 500,000 天幣。
 rows.push({id:170000,name:'新遺忘之島',orderid:'',locx:32655,locy:33015,mapid:1700,itemid:40308,price:500000,min:1,max:200,note:'入口：getback_restart；費用：網頁版設定'});
+// User travel entries use the native first-floor map and validated native entrance.
+const tower=rows.find(r=>r.id===368),oldTower=game.NATIVE_DUNGEON_MAPS[101];
+if(tower&&oldTower)Object.assign(tower,{name:'傲慢之塔1樓',mapid:101,locx:oldTower.spawn.x,locy:oldTower.spawn.y});
+for(const [id,mapid,name,price]of [[807000,807,'新古魯丁地監1樓',5000],[330100,3301,'新傲慢之塔1樓',50000]]){const map=game.NATIVE_DUNGEON_MAPS[mapid];if(map)rows.push({id,mapid,name,locx:map.spawn.x,locy:map.spawn.y,itemid:40308,price,min:1,max:200,orderid:''});}
 const routes=[];
 for(const r of rows){
  if(!supported[r.mapid]||r.itemid!==40308||!Number.isSafeInteger(r.price)||r.price<0)continue;
