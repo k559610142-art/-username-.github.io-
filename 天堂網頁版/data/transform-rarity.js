@@ -1,8 +1,10 @@
 // Ability-based rarity. Original card effects, restrictions and owned names stay intact.
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else{root.TransformRarity=api;api.apply(transformCardBook);}})(typeof window!=='undefined'?window:globalThis,()=>{
- const FIXED=Object.freeze({巴風特:1,死亡騎士:2,黑暗精靈:2,黑暗妖精刺客:2,黑暗騎士:2,黑暗法師:2,黑暗巡守:2,炎魔:2,銀光刺客:3,銀光法師:3,銀光騎士:3,銀光巡守:3,關刀聖使:6,疾風精靈王:6,
+ const FIXED=Object.freeze({巴風特:1,死亡騎士:2,黑暗精靈:2,黑暗騎士:2,黑暗法師:2,黑暗巡守:2,炎魔:2,銀光刺客:3,銀光法師:3,銀光騎士:3,銀光巡守:3,關刀聖使:6,疾風精靈王:6,
   // 2026-11-16：使用者截圖要求改成高級卡
-  光刃死騎:2,死亡戰騎:2,神威剛彈:2,紫刃死騎:2});
+  光刃死騎:2,死亡戰騎:2,神威剛彈:2,紫刃死騎:2,
+  // 2026-11-16：使用者截圖要求改成一般卡（含原本固定高級的黑暗妖精刺客）
+  果凍怪:1,甘地妖魔:1,阿魯巴:1,羅孚妖魔:1,食人妖精王:1,長老:1,食人妖精:1,黑長者:1,史巴托:1,巨人:1,思克巴:1,格利芬:1,紙人:1,雪怪:1,黑暗妖精刺客:1,黑暗妖精運送員:1,歐吉:1,歐姆民兵:1,巴土瑟:1,馬庫爾:1});
  const LIMITS=Object.freeze([14,30,60,105,145,220]);
  const LABELS={
   攻擊速度:['attackSpeed',1],施展速度:['castSpeed',.7],移動速度:['moveSpeed',1.3],

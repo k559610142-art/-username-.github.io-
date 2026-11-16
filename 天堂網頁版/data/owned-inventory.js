@@ -176,7 +176,7 @@ window.OwnedInventory=(()=>{
  }
  function sortInventory(){
   const rank={weapon:0,armor:1,etcitem:2},collator=new Intl.Collator('zh-Hant',{numeric:true});
-  const sorted=clone(entries).sort((a,b)=>(rank[definition(a).kind]??3)-(rank[definition(b).kind]??3)||collator.compare(definition(a).name,definition(b).name)||collator.compare(a.uid,b.uid));
+  const sorted=clone(entries).sort((a,b)=>(rank[definition(a).kind]??3)-(rank[definition(b).kind]??3)||collator.compare(presented(a).name,presented(b).name)||collator.compare(a.uid,b.uid));
   return transact(sorted);
  }
  function usePotion(){const e=entries.find(i=>i.key==='etcitem:40010')||entries.find(i=>window.NativePotions?.isHealing(i.key)||rules.handlers[config(i).handler]?.kind==='hpGaussian');if(!e){toast('背包中沒有回復藥水。');return false}return use(e.uid)}
