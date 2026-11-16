@@ -7,7 +7,8 @@ const CraftingWindow=(()=>{
  const byId=new Map(INTERFACE_CATALOG.items.map(i=>[i.id,i]));
  const split=v=>String(v??'').split(',').filter(Boolean).map(Number);
  const roleCode={'王族':0,'騎士':1,'法師':2,'妖精':3};
- const TABS=[['all','全部'],['can','可製作'],['weapon','武器'],['armor','防具'],['acc','飾品'],['rune','符石'],['doll','娃娃'],['wuhun','武魂'],['potion','藥品'],['scroll','卷軸'],['gem','魔石'],['material','材料'],['pet','寵物'],['item','道具']];
+ // 2026-11-16 使用者要求移除「全部」分頁：預設開「可製作」；有輸入搜尋字時跨所有分頁找。
+ const TABS=[['can','可製作'],['weapon','武器'],['armor','防具'],['acc','飾品'],['rune','符石'],['doll','娃娃'],['wuhun','武魂'],['potion','藥品'],['scroll','卷軸'],['gem','魔石'],['material','材料'],['pet','寵物'],['item','道具']];
  const category=DBGameRules.craftCategory;
  const soulTiers=['下品','上品','極品','千年','萬年','上古','四神獸'];
  const soulTier=x=>(typeof wuhunData!=='undefined'&&wuhunData.find(w=>w.id===x.item.id)?.tier)||soulTiers.find(t=>x.item.name.startsWith(t))||'其他武魂';
@@ -81,13 +82,13 @@ const CraftingWindow=(()=>{
  .craft-mat>.craft-item-properties{flex-basis:100%;margin:3px 0}
  .craft-result{margin-top:8px;text-align:center;font-size:13px;color:#f0dcae;min-height:18px}`;document.head.append(css);
 
- let win=null,tab='all',query='',body=null,tabsBox=null,search=null,current=null;
+ let win=null,tab='can',query='',body=null,tabsBox=null,search=null,current=null;
  function card(x){const b=el('button','craft-card'+(craftable(x)?' ok':''));b.type='button';b.append(pic(x.item,x.cat),el('span','nm',x.r.note||x.item.name));b.title=x.item.name+' · '+npcName(x);b.onclick=()=>{current=x;render();};return b;}
- function list(){const q=query.trim().toLowerCase(),out=load().filter(x=>(tab==='all'||(tab==='can'?craftable(x):x.cat===tab))&&(!q||x.text.includes(q)));
+ function list(){const q=query.trim().toLowerCase(),out=load().filter(x=>(q?x.text.includes(q):tab==='can'?craftable(x):x.cat===tab));
   out.sort((a,b)=>(tab==='wuhun'?soulRank(a)-soulRank(b):0)||(craftable(b)-craftable(a))||(!!b.item.icon-!!a.item.icon)||(fits(b)-fits(a)));
   const unique=[...new Map(out.map(x=>[x.item.id,null])).keys()].map(id=>out.find(x=>x.item.id===id));
   const grid=el('div','craft-grid');let lastTier=null;for(const x of unique.slice(0,300)){if(tab==='wuhun'){const tier=soulTier(x);if(tier!==lastTier){const heading=el('h3','craft-tier-heading',tier);heading.style.cssText='grid-column:1/-1;margin:5px 0 0;padding:6px 8px;color:#f0cf7c;font-size:14px;border-bottom:1px solid #53462f';grid.append(heading);lastTier=tier;}}grid.append(card(x));}
-  if(!unique.length)grid.append(el('div','craft-empty',tab==='can'?'目前材料不夠做任何東西。':'沒有符合的配方。'));
+  if(!unique.length)grid.append(el('div','craft-empty',tab==='can'&&!query.trim()?'目前材料不夠做任何東西。':'沒有符合的配方。'));
   else if(unique.length>300)grid.append(el('div','craft-empty','只顯示前 300 筆，請用搜尋縮小範圍。'));return grid;}
  function detail(x){const d=el('div','craft-detail'),top=el('div','top'),info=el('div');
   const properties=propertyPanel(x.item,x.r.new_item_Enchantlvl||0,'成品屬性');
@@ -105,7 +106,7 @@ const CraftingWindow=(()=>{
  function open(){if(window.gameFlowState!=='playing')return false;if(win){win.style.zIndex=String(FloatingWindows.frontLevel());return true;}
   win=el('section','craft-window');win.setAttribute('role','dialog');win.setAttribute('aria-label','製作工匠');win.style.zIndex=String(FloatingWindows.frontLevel());
   const h=el('div','craft-head'),x=el('button','','✕');x.type='button';x.setAttribute('aria-label','關閉製作');x.onclick=close;h.append(el('h2','','製作工匠'),x);
-  tabsBox=el('div','craft-tabs');for(const [k,l] of TABS){if(k!=='all'&&k!=='can'&&!load().some(x=>x.cat===k))continue;const b=el('button','',l);b.type='button';b.dataset.tab=k;b.onclick=()=>{tab=k;current=null;render();};tabsBox.append(b);}
+  tabsBox=el('div','craft-tabs');for(const [k,l] of TABS){if(k!=='can'&&!load().some(x=>x.cat===k))continue;const b=el('button','',l);b.type='button';b.dataset.tab=k;b.onclick=()=>{tab=k;current=null;render();};tabsBox.append(b);}
   search=el('input','craft-search');search.type='search';search.placeholder='搜尋道具、材料、NPC';search.value=query;search.oninput=()=>{query=search.value;current=null;render();};
   body=el('div');body.style.cssText='flex:1;min-height:0;display:flex;flex-direction:column';win.append(h,tabsBox,search,body);game.append(win);render();return true;}
  function close(){win?.remove();win=null;current=null;}
