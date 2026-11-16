@@ -1926,7 +1926,7 @@ function openGameCatalog(type) {
     const toolbar = uiElement('div', 'game-catalog-toolbar');
     const add = (label, fn) => toolbar.append(catalogButton(label, () => { const got = fn(); if (!got.filter(Boolean).length) return; toast('獲得：' + got.filter(Boolean).map(x => x.stone || x.name).join('、')); updateCounts(); refreshCards(); }));
     const times = (n, fn) => () => Array.from({length: n}, fn);
-    if (type === 'dolls') { add('抽 1 隻', times(1, () => TdjSystems.dolls.draw())); add('抽 10 隻', times(10, () => TdjSystems.dolls.draw())); }
+    if (type === 'dolls') { add('抽 1 隻', times(1, () => TdjSystems.dolls.draw())); add('抽 10 隻', times(10, () => TdjSystems.dolls.draw())); toolbar.append(catalogButton('製作',()=>runGameMenuAction('craft')),catalogButton('扭蛋',()=>runGameMenuAction('gacha'))); }
     if (type === 'enchant') { add('取得附魔石', times(1, () => TdjSystems.enchant.get())); add('取得 5 個', times(5, () => TdjSystems.enchant.get())); }
     if (type === 'wuhun') { add('取得武魂', times(1, () => TdjSystems.wuhun.get())); add('取得 5 個', times(5, () => TdjSystems.wuhun.get())); }
     toolbar.append(status);

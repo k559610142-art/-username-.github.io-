@@ -2,7 +2,7 @@
 const DiamondCommerce=(()=>{
  const el=(tag,cls,text)=>{const n=document.createElement(tag);n.className=cls||'';if(text!==undefined)n.textContent=text;return n;};
  const button=(text,fn)=>{const b=el('button','dc-button',text);b.type='button';b.onclick=fn;return b;};
- const names={mall:'商城',gacha:'時裝扭蛋',exchange:'交易所'};
+ const names={mall:'商城',gacha:'鑽石百貨公司',exchange:'交易所'};
  const shopTabs=['鑽石商店','試煉商店','AI 會員'];
  const gachaTabs=['龍脈星晶','扭蛋機','一番賞','我的時裝','髮型','寵物'];
  let win=null,mode='mall',tab=0,notice='',market=null,busy=false,generation=0;
