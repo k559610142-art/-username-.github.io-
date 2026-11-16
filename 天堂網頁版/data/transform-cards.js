@@ -133,7 +133,10 @@ window.TransformCards = (() => {
   morphStyle.textContent = '.transform-morph{position:absolute;left:0;top:0;width:0;height:0;pointer-events:none}.transform-morph img{position:absolute;image-rendering:auto}.transform-morph-shadow{opacity:.6}.transform-morph[hidden]{display:none}';
   document.head.append(morphStyle);
   let morphStarted = 0;
-  const framePath = (card, clip, i, shadow) => card.originalExtra?'assets/transform-portraits/'+card.p.gfx+'.png?v=complete-layers5':'assets/transform-anim/' + encodeURIComponent(card.n) + '/' + clip + (shadow ? '_s_' : '_') + i + (i === 0 ? '.png' : '.webp');
+  // 重做過的頭像各自換版本號（同網址瀏覽器會一直用舊圖）：13362 新版炎魔裁邊、22000 疾風精靈王去特效（2026-11-16）
+  const portraitVersions = {13362: 'balrog-trim', 22000: 'nofx'};
+  const portraitUrl = gfx => 'assets/transform-portraits/' + gfx + '.png?v=' + (portraitVersions[gfx] || 'complete-layers5');
+  const framePath = (card, clip, i, shadow) => card.originalExtra?portraitUrl(card.p.gfx):'assets/transform-anim/' + encodeURIComponent(card.n) + '/' + clip + (shadow ? '_s_' : '_') + i + (i === 0 ? '.png' : '.webp');
   const flipHeadings = new Set(['W', 'SW', 'NW']);
 
   // 秋月天堂怪物圖集（8 方向）：d0～d7 依天堂朝向，對應遊戲的 heading。
@@ -278,6 +281,6 @@ window.TransformCards = (() => {
     get collected() { ensure(); return Object.keys(state.owned).length; },
     get active() { ensure(); return state.active; },
     // 重做過的頭像加版本號，避免瀏覽器用舊快取（14491 屠龍者(翅膀) 2026-11-13 拿掉白霧重畫）
-    portrait: card => 'assets/transform-portraits/' + card.p.gfx + '.png?v=complete-layers5'
+    portrait: card => portraitUrl(card.p.gfx)
   };
 })();
