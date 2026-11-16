@@ -6,7 +6,7 @@ window.OwnedInventory=(()=>{
  const clone=a=>JSON.parse(JSON.stringify(a)),level=()=>Number(window.activeCharacterLevel)||1;
  const slots=['weapon','helm','armor','tshirt','cloak','glove','boots','shield','necklace','belt','earring','ring1','ring2','ring3','ring4'];
  function slotFor(item){if(item.kind==='weapon')return 'weapon';if(item.kind!=='armor')return null;return {helmet:'helm',shirt:'tshirt',gloves:'glove',amulet:'necklace',ring:'ring1',ring2:'ring1'}[item.type]||(['helm','armor','tshirt','cloak','glove','boots','shield','necklace','belt','earring'].includes(item.type)?item.type:null)}
- const definition=e=>catalog.get(e.key),config=e=>({...rules.definitions[e.key],bless:e.bless??rules.definitions[e.key]?.bless});
+ const definition=e=>catalog.get(e.key),presented=e=>{const d=catalog.get(e.key);return e.unid&&d?.baseName?{...d,name:d.baseName,unidentified:true}:d},config=e=>({...rules.definitions[e.key],bless:e.bless??rules.definitions[e.key]?.bless});
  function validate(rows,role=null,charLevel=1){
   if(!Array.isArray(rows)||rows.length>=rules.maxSizeExclusive)return '背包格式或容量有誤';
   const ids=new Set(),used=new Set();for(const e of rows){
@@ -31,7 +31,7 @@ window.OwnedInventory=(()=>{
   let next=clone(entries);
   for(const drop of loot){
    const candidate=clone(next);
-   if(!addItems(candidate,drop.key,drop.count))return false;
+   if(!addItems(candidate,drop.key,drop.count,true))return false;
    next=candidate;
   }
   const oldExperience=window.activeCharacterExperience,oldLevel=window.activeCharacterLevel;
@@ -67,11 +67,13 @@ window.OwnedInventory=(()=>{
   if(skill.materialCount&&!deduct(next,next.find(e=>e.key==='etcitem:'+skill.material)?.uid,skill.materialCount))return false;
   return transact(next,{hp:nextHp??hp-skill.hp,mp:mp-mpCost});
  }
- function addItems(next,key,count){
+ // unid：怪物掉落的祝福／詛咒物品先未鑑定（blessed-item-names.js 給 baseName；item-identify.js 鑑定）
+ function addItems(next,key,count,unid=false){
   if(!Number.isSafeInteger(count)||count<=0||count>2147483647)return false;
   const r=rules.definitions[key];if(!catalog.has(key)||!r)return false;let uid;
-  if(r.stackable&&next.some(e=>e.key===key)){const e=next.find(e=>e.key===key);if(e.count+count>2147483647)return false;e.count+=count;uid=e.uid}
-  else{if(next.length+(r.stackable?1:count)>=rules.maxSizeExclusive){toast('背包容量不足。');return false}for(let i=0;i<(r.stackable?1:count);i++){do{uid='item-'+Date.now().toString(36)+'-'+(++sequence).toString(36)}while(next.some(e=>e.uid===uid));next.push({uid,key,count:r.stackable?count:1,slot:null})}}
+  unid=!!(unid&&catalog.get(key)?.baseName);const same=e=>e.key===key&&!!e.unid===unid;
+  if(r.stackable&&next.some(same)){const e=next.find(same);if(e.count+count>2147483647)return false;e.count+=count;uid=e.uid}
+  else{if(next.length+(r.stackable?1:count)>=rules.maxSizeExclusive){toast('背包容量不足。');return false}for(let i=0;i<(r.stackable?1:count);i++){do{uid='item-'+Date.now().toString(36)+'-'+(++sequence).toString(36)}while(next.some(e=>e.uid===uid));next.push(unid?{uid,key,count:r.stackable?count:1,slot:null,unid:true}:{uid,key,count:r.stackable?count:1,slot:null})}}
   return uid;
  }
  function receive(kind,id,count=1){
@@ -141,6 +143,7 @@ window.OwnedInventory=(()=>{
  function use(uid){
   if(window.gameFlowState!=='playing'||owner!==window.activeCharacterId)return false;const e=entries.find(i=>i.uid===uid);if(!e){toast('背包中沒有這個物品。');return false}if(CharacterActions.dead){toast('倒地時無法使用物品。');return false}
   if(window.PlayerSkills?.isBook(e.key))return PlayerSkills.learn(uid);
+  const identifyUse=window.ItemIdentify?.use(uid);if(identifyUse!==undefined&&identifyUse!==null)return identifyUse; // 鑑定卷軸（data/item-identify.js）
   const scrollUse=window.TeleportScrolls?.use(uid);if(scrollUse!==undefined&&scrollUse!==null)return scrollUse;
   const potionUse=window.NativePotions?.use(uid);if(potionUse!==undefined&&potionUse!==null)return potionUse;
   const effectUse=window.ItemEffects?.use(uid);if(effectUse!==undefined&&effectUse!==null)return effectUse; // 經驗藥水、魔法卷軸（data/item-effects.js）
@@ -178,5 +181,5 @@ window.OwnedInventory=(()=>{
  }
  function usePotion(){const e=entries.find(i=>i.key==='etcitem:40010')||entries.find(i=>window.NativePotions?.isHealing(i.key)||rules.handlers[config(i).handler]?.kind==='hpGaussian');if(!e){toast('背包中沒有回復藥水。');return false}return use(e.uid)}
  document.querySelector('#heal').onclick=usePotion;potions=0;
- return {collect,hasCollection,get collection(){return collection.slice()},canDiscard,discard,sortInventory,activate,validate,validateWarehouse,get healingItems(){return entries.filter(e=>window.NativePotions?.isHealing(e.key)||rules.handlers[config(e).handler]?.kind==='hpGaussian').map(e=>({...e,item:definition(e)}))},applyChange:transact,reward,learnSkill,setElfElement,castCost,get skills(){return clone(skillState)},prepareTransform,transfer,trade,receive,get warehouse(){return clone(warehouse)},get storedItems(){return warehouse.map(e=>({...e,item:definition(e)}))},use,equip,unequip,usePotion,consumeArrow,slotFor,deactivate(){owner='';entries=[];warehouse=[];collection=[];skillState={ids:[],element:''};cooldowns.clear();potions=0},get owner(){return owner},get snapshot(){return clone(entries)},get equippedWeaponType(){const weapon=entries.find(e=>e.slot==='weapon');return weapon?definition(weapon).type:null},get items(){return entries.map(e=>({...e,item:definition(e)}))}};
+ return {collect,hasCollection,get collection(){return collection.slice()},canDiscard,discard,sortInventory,activate,validate,validateWarehouse,get healingItems(){return entries.filter(e=>window.NativePotions?.isHealing(e.key)||rules.handlers[config(e).handler]?.kind==='hpGaussian').map(e=>({...e,item:definition(e)}))},applyChange:transact,reward,learnSkill,setElfElement,castCost,get skills(){return clone(skillState)},prepareTransform,transfer,trade,receive,get warehouse(){return clone(warehouse)},get storedItems(){return warehouse.map(e=>({...e,item:presented(e)}))},use,equip,unequip,usePotion,consumeArrow,slotFor,deactivate(){owner='';entries=[];warehouse=[];collection=[];skillState={ids:[],element:''};cooldowns.clear();potions=0},get owner(){return owner},get snapshot(){return clone(entries)},get equippedWeaponType(){const weapon=entries.find(e=>e.slot==='weapon');return weapon?definition(weapon).type:null},get items(){return entries.map(e=>({...e,item:presented(e)}))}};
 })();
