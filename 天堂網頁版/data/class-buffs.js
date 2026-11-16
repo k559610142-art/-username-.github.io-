@@ -114,8 +114,9 @@ const ClassBuffs=(()=>{
 
  // ---- casting ----
  function targetInRange(skill){const mob=IslandMonsters.target,range=skill.range>0?skill.range:3;
-  return mob?.hp&&Math.max(Math.abs(mob.x-worldX),Math.abs(mob.y-worldY))<=range&&IslandCombat.clearShot(worldX,worldY,mob.x,mob.y)?mob:null;}
+  return mob?.hp&&(!mob.spawn.bot||window.FakePlayers?.canAttack(mob))&&Math.max(Math.abs(mob.x-worldX),Math.abs(mob.y-worldY))<=range&&IslandCombat.clearShot(worldX,worldY,mob.x,mob.y)?mob:null;}
  function applyTarget(mob,id,dur,t){
+  if(mob.spawn.bot&&!window.FakePlayers?.canAttack(mob))return;
   const e=TARGET[id]||AREA_TARGET[id];mark(mob,id,dur);
   if(e.stun)stun(mob,dur);
   if(e.dot)dots.push({mob,until:t+dur,next:t+e.dot[1],every:e.dot[1],dmg:e.dot[0]});

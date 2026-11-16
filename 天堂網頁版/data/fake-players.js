@@ -23,7 +23,7 @@
 //  3～5 件貨（NPC 商店有賣的東西，價格 0.9～1.6 倍），每 40～90 秒喊「【賣】…」，點他打開攤位用金幣買，賣完或 4～7 分鐘換貨。
 // 第 2 期（2026-11-14）：
 //  紅名：每張地圖 2 個（血手、夜梟…，血盟「血月」，只有名字紅色、身體不染色），只在野外；冷卻到了且你在野外 8 格內就盯上你
-//   （訊息框【警告】），追著打（命中看等級差與你的防禦），你進安全區、倒下或跑出 14 格就放棄。紅名可以點選、攻擊（不用強制攻擊），
+//   （訊息框【警告】），追著打（命中看等級差與你的防禦），你進安全區、倒下或跑出 14 格就放棄。玩家必須開啟強制攻擊才能點選、攻擊假人，
 //   被打會反擊；擊敗得到 等級×40 金幣，紅名消失一分鐘後在別處出現。
 //  寶物公告：遊戲沒有地上掉落物，改成假人殺怪時照那隻怪的掉寶表擲骰（掉率 ≤ 2% 的道具、機率 ×2），打到就發【全服】公告。
 //  打王：名字有 BOSS、或單隻生成且血量 ≥ 1500 的怪出現在你 30 格內時，14 級以上的一般假人有機會喊「王出了!集合!」跑去打。
@@ -129,6 +129,9 @@ const FakePlayers=(()=>{
   for(let i=0;i<6;i++){const x=mob.homeX+ri(-r,r),y=mob.homeY+ri(-r,r);if(stepToward(mob,x,y,now)){f.goal=[x,y];return;}}}
  // 村莊雙向保護：出手與傷害落下時都檢查，踏入安全區立即停戰。
  function canFight(mob){return !!mob?.fp&&!mob.fp.hidden&&!mob.fp.vanish&&!mob.fp.stall&&mob.fp.partyOwner!==window.activeCharacterId&&mob.hp>0&&(mob.spawn.mapId||0)===(window.activeMapId||0)&&!safe(worldX,worldY)&&!(typeof movementTween!=='undefined'&&movementAnimating()&&safe(movementTween.fromTileX,movementTween.fromTileY))&&!safe(mob.x,mob.y)&&(!mob.step||!safe(mob.step.x,mob.step.y));}
+ // 玩家傷害必須明確開啟強制攻擊；假人的主動 PK 仍使用 canFight。
+ function canAttack(mob){return !!window.ForceAttack?.on&&canFight(mob);}
+
  function survival(mob,now,stepToward){
   const f=mob.fp,max=mob.spawn.npc.hp;
   f.potions??=ri(5,12);f.nerve??=rnd(.25,.48);
@@ -221,8 +224,8 @@ const FakePlayers=(()=>{
   }
   return false;}
  function monsterHurt(mob,amount,now=movementTime(),attacker=null){const f=mob?.fp;if(!f||f.hidden||!mob.hp)return;mob.hp=Math.max(0,mob.hp-Math.max(1,Math.floor(amount)));f.hpShow=now+3000;window.CombatSound?.monsterHit?.(mob);window.FakePlayerAutonomy?.remember(mob,'hurt',attacker,now);if(mob.hp)return;window.FakePlayerAutonomy?.remember(mob,'death',attacker||f.target,now);claimed.delete(f.target);f.target=f.partyTarget=null;f.pk=false;f.goal=f.route=null;f.hidden=true;f.vanish=now+60000;mob.hp=mob.spawn.npc.hp;mob.step=mob.action=null;mob.bubble=null;if(IslandMonsters.target===mob){IslandMonsters.setTarget(null);IslandCombat.stop();}}
- // 玩家打到假人（只有紅名能被點選）：被打就反擊；打倒得金幣，消失一分鐘
- function hurt(mob,amount){const f=mob.fp;if(!f||!canFight(mob))return;mob.hp=Math.max(0,mob.hp-Math.max(1,Math.floor(amount)));f.hpShow=movementTime()+3000;window.CombatSound?.monsterHit?.(mob);
+ // 玩家開啟強制攻擊後打到假人：被打就反擊；打倒得金幣，消失一分鐘
+ function hurt(mob,amount){const f=mob.fp;if(!f||!canAttack(mob))return;mob.hp=Math.max(0,mob.hp-Math.max(1,Math.floor(amount)));f.hpShow=movementTime()+3000;window.CombatSound?.monsterHit?.(mob);
   if(!f.pk&&!f.retreatUntil&&mob.hp>0&&!CharacterActions.dead){f.pk=true;f.enemyId=window.activeCharacterId;claimed.delete(f.target);f.target=null;f.goal=null;f.route=null;say(mob,pick(['你敢打我?','找死','來啊']));}
   if(mob.hp>0)return;
   window.FakePlayerAutonomy?.remember(mob,'death',null,movementTime());
@@ -400,5 +403,5 @@ const FakePlayers=(()=>{
   const reply=whisperReply(b,text);if(reply)setTimeout(()=>window.GameChat?.say('[密語] '+to+'：'+reply,'whisper'),rnd(1500,4000));});
  function setEnabled(on){enabled=!!on;maintain();}
  function setRed(on){redOn=!!on;maintain();}
- return {canFight,update,label,hurt,monsterHurt,drawShots,openStall,get stalls(){stallInit();return stalls;},sampleStall:()=>genStall().items.map(i=>itemById.get(i.id)?.name),setRed,get redOn(){return redOn;},get count(){return bots().length;},get enabled(){return enabled;},setEnabled,looks};
+ return {canFight,canAttack,update,label,hurt,monsterHurt,drawShots,openStall,get stalls(){stallInit();return stalls;},sampleStall:()=>genStall().items.map(i=>itemById.get(i.id)?.name),setRed,get redOn(){return redOn;},get count(){return bots().length;},get enabled(){return enabled;},setEnabled,looks};
 })();window.FakePlayers=FakePlayers;

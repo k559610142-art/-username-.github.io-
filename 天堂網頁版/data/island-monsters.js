@@ -315,7 +315,7 @@ const IslandMonsters = (() => {
   function selectAt({x,y}){
     const hit=hitboxes.findLast(box=>box.mob.fp?.stall?stallHit(box,x,y):x>=box.left-4&&x<=box.left+box.width+4&&y>=box.top-4&&y<=box.top+box.height+4);
     if(hit?.mob?.spawn.bot&&hit.mob.fp?.stall){lastTap=null;window.FakePlayers?.openStall(hit.mob);return true;}
-    const next=hit?.mob?.spawn.ally||hit?.mob?.spawn.bot&&!window.FakePlayers?.canFight(hit.mob)?null:hit?.mob||null;
+    const next=hit?.mob?.spawn.ally||hit?.mob?.spawn.bot&&!window.FakePlayers?.canAttack(hit.mob)?null:hit?.mob||null;
     // 強制攻擊開啟：點到的目標（含 NPC、守衛）直接攻擊。
     if(next&&window.ForceAttack?.on){lastTap=null;if(next!==selected){selected=next;draw(getRenderedSceneView(),movementTime());}return 'attack';}
     if(next?.spawn.resident){

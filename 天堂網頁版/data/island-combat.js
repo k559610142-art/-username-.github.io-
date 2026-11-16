@@ -24,7 +24,7 @@ const IslandCombat=(()=>{
     if(window.gameFlowState!=='playing'||CharacterActions.dead||!TransformCards.canAttack())return false;
     if(window.PlayerStall?.active){toast('擺攤中不能戰鬥，請先收攤。');return false;}
     if(kind!=='auto'&&!mob?.hp)return false;
-    if(mob?.spawn.bot&&!window.FakePlayers?.canFight(mob))return false;
+    if(mob?.spawn.bot&&!window.FakePlayers?.canAttack(mob))return false;
     if(owner!==window.activeCharacterId){owner=window.activeCharacterId;pending=null;}
     stop();mode=kind;target=mob||null;tick();return true;
   }
@@ -48,7 +48,7 @@ const IslandCombat=(()=>{
     return true;
   }
   function hit(mob,interrupt=false){
-    if(mob?.spawn.bot&&!window.FakePlayers?.canFight(mob)){stop();return false;}
+    if(mob?.spawn.bot&&!window.FakePlayers?.canAttack(mob)){stop();return false;}
     const bow=ranged(),range=attackRange();
     if(!TransformCards.canAttack()){stop();return false;}
     if(!mob?.hp||distance(mob.x,mob.y)>range||!clearShot(worldX,worldY,mob.x,mob.y))return false;
@@ -78,8 +78,8 @@ const IslandCombat=(()=>{
     if(id!==owner){owner=id;stop();pending=null;}
     if(!id||CharacterActions.dead){stop();pending=null;return;}
     if(pending&&movementTime()>=pending.at){
-      if(pending.landed)IslandMonsters.damage(pending.mob,pending.damage);
-      else if(pending.mob.hp){pending.mob.rangedMissUntil=movementTime()+650;if(!pending.mob.spawn.bot)window.IslandNpcAi?.provoke(pending.mob,[]);}
+      if(pending.landed&&(!pending.mob.spawn.bot||window.FakePlayers?.canAttack(pending.mob)))IslandMonsters.damage(pending.mob,pending.damage);
+      else if(!pending.landed&&pending.mob.hp){pending.mob.rangedMissUntil=movementTime()+650;if(!pending.mob.spawn.bot)window.IslandNpcAi?.provoke(pending.mob,[]);}
       pending=null;
     }
     if(mode&&!TransformCards.canAttack()){stop();return;}
@@ -90,7 +90,7 @@ const IslandCombat=(()=>{
       if(!target)return;
       IslandMonsters.setTarget(target);
     }
-    if(target?.spawn.bot&&!window.FakePlayers?.canFight(target)){stop();return;}
+    if(target?.spawn.bot&&!window.FakePlayers?.canAttack(target)){stop();return;}
     const range=attackRange();
     if(distance(target.x,target.y)<=range&&clearShot(worldX,worldY,target.x,target.y)){
       hit(target,true);
