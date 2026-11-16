@@ -1,0 +1,56 @@
+{
+  "count": 163,
+  "grades": {
+    "1": 16,
+    "2": 26,
+    "3": 22,
+    "4": 30,
+    "5": 27,
+    "6": 39,
+    "7": 3
+  },
+  "changes": [
+    {
+      "name": "巴土瑟",
+      "before": 3,
+      "grade": 2,
+      "score": 28.76
+    },
+    {
+      "name": "馬庫爾",
+      "before": 3,
+      "grade": 2,
+      "score": 29
+    },
+    {
+      "name": "克特",
+      "before": 4,
+      "grade": 5,
+      "score": 130.7
+    },
+    {
+      "name": "賽尼斯",
+      "before": 5,
+      "grade": 6,
+      "score": 159.74
+    },
+    {
+      "name": "特羅斯",
+      "before": 5,
+      "grade": 6,
+      "score": 157.66
+    },
+    {
+      "name": "屠龍者（翅膀）",
+      "before": 5,
+      "grade": 4,
+      "score": 78.8
+    },
+    {
+      "name": "屠龍者（披風）",
+      "before": 5,
+      "grade": 4,
+      "score": 78.8
+    }
+  ]
+}

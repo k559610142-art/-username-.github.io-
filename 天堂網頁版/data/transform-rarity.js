@@ -1,0 +1,31 @@
+// Ability-based rarity. Original card effects, restrictions and owned names stay intact.
+(function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else{root.TransformRarity=api;api.apply(transformCardBook);}})(typeof window!=='undefined'?window:globalThis,()=>{
+ const FIXED=Object.freeze({巴風特:1,死亡騎士:2,黑暗精靈:2,黑暗妖精刺客:2,黑暗騎士:2,黑暗法師:2,黑暗巡守:2,炎魔:2,銀光刺客:3,銀光法師:3,銀光騎士:3,銀光巡守:3,關刀聖使:6,疾風精靈王:6});
+ const LIMITS=Object.freeze([14,30,60,105,145,220]);
+ const LABELS={
+  攻擊速度:['attackSpeed',1],施展速度:['castSpeed',.7],移動速度:['moveSpeed',1.3],
+  近距離傷害:['meleeDamage',3],遠距離傷害:['rangedDamage',3],魔法傷害:['magicDamage',3],
+  近距離命中:['meleeHit',2],遠距離命中:['rangedHit',2],魔法命中:['magicHit',2],命中:['hit',.45],
+  力量:['str',1.5],STR:['str',1.5],敏捷:['dex',1.5],DEX:['dex',1.5],體質:['con',1.5],CON:['con',1.5],智力:['int',1.5],INT:['int',1.5],精神:['wis',1.5],WIS:['wis',1.5],魅力:['cha',1.5],CHA:['cha',1.5],
+  最大HP:['hp',.01],HP:['hp',.01],最大MP:['mp',.018],MP:['mp',.018],HP恢復:['hpr',.5],MP恢復:['mpr',1],
+  魔法增幅力:['sp',3],傷害減免:['reduction',3],無視傷害減免:['ignoreReduction',3],
+  物理防禦力:['ac',.6],魔法防禦力:['mr',.4],抗性:['resist',.4],
+  近距離迴避力:['meleeDodge',.8],遠距離迴避力:['rangedDodge',.8],無視近距離迴避力:['ignoreMeleeDodge',1],無視遠距離迴避力:['ignoreRangedDodge',1],
+  遠距離暴擊:['rangedCritical',.8],狀態傷害量增加:['statusDamage',.4]
+ };
+ function score(card){
+  const fields=new Map();
+  for(const effect of [...(card.fx||[]),...(card.pb?.fx||[])]){
+   const text=String(effect).replace(/\s+/g,''),m=text.match(/^(PVP|PVE)?(.+?)\+(\d+(?:\.\d+)?)(%)?$/);if(!m)continue;
+   const definition=LABELS[m[2]];if(!definition)continue;const key=(m[1]||'')+':'+definition[0],value=Number(m[3])*definition[1]*(m[1]==='PVP'?.6:m[1]==='PVE'?.7:1);
+   // Some original card sheets repeat the server bonus in the visible effect list.
+   fields.set(key,Math.max(fields.get(key)||0,value));
+  }
+  return Math.round([...fields.values()].reduce((a,b)=>a+b,0)*1000)/1000;
+ }
+ function grade(score){return 1+LIMITS.filter(limit=>score>=limit).length;}
+ function evaluate(card){const power=score(card),fixed=Object.hasOwn(FIXED,card.n);return {score:power,grade:fixed?FIXED[card.n]:grade(power),fixed};}
+ function apply(book){for(const card of book){const result=evaluate(card);card.g=result.grade;card.powerScore=result.score;card.fixedRarity=result.fixed;}return book;}
+ const compare=(a,b)=>a.g-b.g||(a.powerScore??score(a))-(b.powerScore??score(b))||a.n.localeCompare(b.n,'zh-Hant');
+ return {score,grade,evaluate,apply,compare,fixed:FIXED,limits:LIMITS};
+});

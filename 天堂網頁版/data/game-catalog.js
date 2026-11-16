@@ -1693,7 +1693,7 @@ const catalogPortraits = {
 
 let transformBookCache = null;
 function transformBookRows() {
-  transformBookCache ??= TransformCards.book.map(card => ({name: card.n, grade: card.g, card}));
+  transformBookCache ??= [...TransformCards.book].sort(TransformRarity.compare).map(card => ({name: card.n, grade: card.g, card}));
   return transformBookCache;
 }
 
