@@ -14,6 +14,6 @@ test('儲存失敗不消耗祭品、不改變魂槽',()=>{const f=fixture();f.ap
 function visuals(){const c={window:{}};vm.createContext(c);vm.runInContext(read('soul-ring-visuals.js'),c);return c.window.SoulRingVisuals;}
 test('金龍只在六槽全滿且裝備四神獸時啟動',()=>{const v=visuals(),slots=[1,2,3,4,5,6];assert.equal(v.dragonEnabled(slots,'四神獸'),true);assert.equal(v.dragonEnabled(slots,'上古'),false);assert.equal(v.dragonEnabled(slots,null),false);for(let i=0;i<6;i++){const partial=slots.slice();partial[i]=null;assert.equal(v.dragonEnabled(partial,'四神獸'),false);}});
 test('空槽、缺槽與稀疏陣列均不啟動金龍',()=>{const v=visuals();for(const slots of [[],Array(6),[1,2,3,4,5],null])assert.equal(v.dragonEnabled(slots,'四神獸'),false);});
-test('白環最高最小、紅環最低最大，六層依序向下擴展',()=>{const {layout}=visuals();assert.equal(layout.length,6);assert.equal(layout[0].rise,36);assert.equal(layout[5].rise,0);for(let i=1;i<6;i++){assert(layout[i].rise<layout[i-1].rise);assert(layout[i].radius>layout[i-1].radius);}});
+test('白環最下、紅環最上，維持原本六層高度與尺寸',()=>{const {layout}=visuals();assert.equal(layout.length,6);assert.equal(layout[0].rise,0);assert.equal(layout[5].rise,36);for(let i=1;i<6;i++){assert(layout[i].rise>layout[i-1].rise);assert(layout[i].radius>layout[i-1].radius);}});
 
 test('四神獸只顯示魂環與金龍，其餘武魂仍顯示虛影',()=>{const v=visuals();assert.equal(v.showPhantom('四神獸'),false);assert.equal(v.showPhantom('上古'),true);assert.equal(v.showPhantom('下品'),true);});

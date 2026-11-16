@@ -15,7 +15,7 @@ window.SoulRingVisuals=(()=>{
   return svg;
  }
  // White starts at chest height; the wider hoops descend to red at the feet.
- const layout=Object.freeze(Array.from({length:6},(_,i)=>Object.freeze({radius:22+i*2,rise:(5-i)*7.2})));
+ const layout=Object.freeze(Array.from({length:6},(_,i)=>Object.freeze({radius:22+i*2,rise:i*7.2})));
  function dragonEnabled(slots,tier){return tier==='四神獸'&&Array.isArray(slots)&&slots.length===6&&Array.from(slots).every(id=>id!=null);}
  const dragonLayout=Object.freeze({radius:62,rise:44});
  const showPhantom=tier=>tier!=='四神獸';

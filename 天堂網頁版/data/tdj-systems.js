@@ -486,9 +486,10 @@ window.TdjSystems = (() => {
     const w = wuhunById.get(+id); if (!w || !state.wuhun.owned[id]) { toast('還沒有這個武魂。'); return false; }
     const missing = ringMissing(w); if (missing.length) { toast('裝備' + w.tier + '武魂前，要先在魂槽獻祭：' + missing.join('、') + '武魂。'); return false; }
     state.wuhun.active = String(id); save(); refreshSoulStats();render(); flash(wuhunImage(w));
+    window.dispatchEvent?.(new Event('wuhun-equipment-change'));
     toast('裝備 ' + w.name + '（' + w.fx.slice(0, 4).join('、') + '）'); return true;
   }
-  function unequipWuhun() { if (!playing() || !state.wuhun.active) return false; state.wuhun.active = null; save(); refreshSoulStats();render(); toast('卸下武魂'); return true; }
+  function unequipWuhun() { if (!playing() || !state.wuhun.active) return false; state.wuhun.active = null; save(); refreshSoulStats();render(); window.dispatchEvent?.(new Event('wuhun-equipment-change')); toast('卸下武魂'); return true; }
 
   // 進出遊戲、換角色時重畫
   const baseRefresh = refreshCharacter;

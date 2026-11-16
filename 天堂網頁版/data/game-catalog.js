@@ -1786,13 +1786,14 @@ function openGameCatalog(type) {
     : type === 'wuhun' ? [['全部', all], ['已擁有', row => TdjSystems.wuhun.owned(row.w.id) > 0], ...wuhunTiers.map(tier => [tier, row => row.w.tier === tier])]
     : [['全部', all]];
   let activeFilter = all;
-  let selected = null;
+  let selected = type==='wuhun' ? entries.find(row=>String(row.w.id)===String(TdjSystems.wuhun.active))||null : null;
   let selectedRingSlot=0;
 
   function syncSoulPreview(){
     if(!soulStage)return;
     soulStage.querySelector('.wuhun-live-scene')?.remove();
-    const scene=uiElement('div','wuhun-live-scene'),equipped=entries.find(x=>String(x.w?.id)===String(TdjSystems.wuhun.active))?.w;
+    const activeSoulId=TdjSystems.wuhun.active;
+    const scene=uiElement('div','wuhun-live-scene'),equipped=wuhunData.find(w=>String(w.id)===String(activeSoulId));
     soulStage.dataset.equipped=equipped?String(equipped.id):'';
     scene.classList.toggle('has-soul',!!equipped);
     if(equipped){const showSpirit=SoulRingVisuals.showPhantom(equipped.tier);if(!showSpirit)scene.classList.add('rings-only');const src=showSpirit?TdjSystems.wuhun.image(equipped):null;if(src){const spirit=uiElement('img','wuhun-equipped-spirit');spirit.src=src;spirit.alt='已裝備武魂：'+equipped.name;scene.append(spirit);}else if(showSpirit)scene.append(uiElement('div','wuhun-equipped-aura'));const rings=uiElement('div','wuhun-live-rings wuhun-reference-rings'),filled=SoulRings.state().slots.map((id,index)=>id==null?null:index).filter(index=>index!=null);for(const index of filled.slice().reverse()){const ring=uiElement('div','wuhun-preview-ring');ring.style.setProperty('--ring-width',(SoulRingVisuals.layout[index].radius/32*100)+'%');ring.dataset.ringLevel=String(index+1);ring.style.setProperty('--ring-rise',(SoulRingVisuals.layout[index].rise*1.25)+'px');ring.append(SoulRingVisuals.create(index+1));rings.append(ring);}if(SoulRingVisuals.dragonEnabled(SoulRings.state().slots,equipped.tier)){const dragon=uiElement('div','wuhun-preview-ring');dragon.style.setProperty('--ring-width',(SoulRingVisuals.dragonLayout.radius/32*100)+'%');dragon.style.setProperty('--ring-rise',(SoulRingVisuals.dragonLayout.rise*1.25)+'px');dragon.append(SoulRingVisuals.create(7));rings.append(dragon);}if(filled.length)scene.append(rings);}
@@ -1961,7 +1962,9 @@ function openGameCatalog(type) {
         const owned = type === 'dolls' ? TdjSystems.dolls.owned(row.id) : type === 'enchant' ? TdjSystems.enchant.stones(row.e.id) : TdjSystems.wuhun.owned(row.w.id);
         if (type === 'wuhun') card.setAttribute('data-tier', tdjWuhunTierTag[row.w.tier] || 'white');
         if (!owned) card.classList.add('game-catalog-locked');
-        card.append(uiElement('small', '', (type === 'wuhun' ? row.w.tier + ' · ' : '') + (owned ? '×' + owned : '未擁有')));
+        const equipped=type==='wuhun'&&String(TdjSystems.wuhun.active)===String(row.w.id);
+        if(equipped)card.dataset.equipped='true';
+        card.append(uiElement('small', '', (type === 'wuhun' ? row.w.tier + ' · ' : '') + (owned ? '×' + owned : '未擁有')+(equipped?' · 裝備中':'')));
       }
       card.append(catalogPortrait(type, row));
       card.append(uiElement('span', '', row.name));
@@ -1972,6 +1975,8 @@ function openGameCatalog(type) {
     if (type === 'transforms') transformStatus.update();
     if (tdjStatus) tdjStatus.update();
   }
+
+  if(type==='wuhun'){window.wuhunCatalogSync&&window.removeEventListener('wuhun-equipment-change',window.wuhunCatalogSync);window.wuhunCatalogSync=()=>{if(!soulStage.isConnected)return;selected=entries.find(row=>String(row.w.id)===String(TdjSystems.wuhun.active))||selected;refreshCards();};window.addEventListener('wuhun-equipment-change',window.wuhunCatalogSync);}
 
   for (const [label, predicate] of filters) {
     const button = catalogButton(label + ' (' + entries.filter(predicate).length + ')', () => {
