@@ -98,11 +98,14 @@ const MonsterActions = (() => {
     element.hidden = false;
     return true;
   }
+  // 使用者 2026-11-16「全部拿掉」：死亡騎士系列只畫本體與自身光效，天地劫附加的大型光暈（圖層 20000 號以上）略過
+  const strippedAuraGfx = new Set([12229, 12230, 12231, 12232, 12681]);
   function paintComposite(layers, overlays, left, top, scale, gfx) {
     if (!overlays) return;
     layers.extras.hidden = false;
     let index = 0;
     for (const [attribute, frame] of overlays) {
+      if (strippedAuraGfx.has(gfx) && /^dk-original-2\d{4}-/.test(frame[0])) continue; // 天地劫附加光暈（20000 號以上圖層）不畫
       let layer = layers.shadow, groundOffset = 0;
       if (attribute !== 'shadow') {
         layer = layers.extras.children[index++];

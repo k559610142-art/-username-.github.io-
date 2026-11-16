@@ -134,7 +134,7 @@ window.TransformCards = (() => {
   document.head.append(morphStyle);
   let morphStarted = 0;
   // 重做過的頭像各自換版本號（同網址瀏覽器會一直用舊圖）：13362 新版炎魔裁邊、22000 疾風精靈王去特效（2026-11-16）
-  const portraitVersions = {13362: 'balrog-trim', 22000: 'nofx', 15831: 'nofx', 16002: 'nofx'};
+  const portraitVersions = {13362: 'balrog-trim', 22000: 'nofx', 15831: 'nofx', 16002: 'nofx', 2284: 'nofx', 14923: 'nofx', 15534: 'nofx', 15537: 'nofx', 15545: 'nofx', 15548: 'nofx', 15550: 'nofx', 15830: 'nofx', 21120: 'nofx', 12229: 'nofx', 12230: 'nofx', 12231: 'nofx', 12232: 'nofx', 12681: 'nofx'};
   const portraitUrl = gfx => 'assets/transform-portraits/' + gfx + '.png?v=' + (portraitVersions[gfx] || 'complete-layers5');
   const framePath = (card, clip, i, shadow) => card.originalExtra?portraitUrl(card.p.gfx):'assets/transform-anim/' + encodeURIComponent(card.n) + '/' + clip + (shadow ? '_s_' : '_') + i + (i === 0 ? '.png' : '.webp');
   const flipHeadings = new Set(['W', 'SW', 'NW']);
