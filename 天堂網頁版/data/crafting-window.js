@@ -9,6 +9,9 @@ const CraftingWindow=(()=>{
  const roleCode={'王族':0,'騎士':1,'法師':2,'妖精':3};
  const TABS=[['all','全部'],['can','可製作'],['weapon','武器'],['armor','防具'],['acc','飾品'],['rune','符石'],['doll','娃娃'],['wuhun','武魂'],['potion','藥品'],['scroll','卷軸'],['gem','魔石'],['material','材料'],['pet','寵物'],['item','道具']];
  const category=DBGameRules.craftCategory;
+ const soulTiers=['下品','上品','極品','千年','萬年','上古','四神獸'];
+ const soulTier=x=>(typeof wuhunData!=='undefined'&&wuhunData.find(w=>w.id===x.item.id)?.tier)||soulTiers.find(t=>x.item.name.startsWith(t))||'其他武魂';
+ const soulRank=x=>{const rank=soulTiers.indexOf(soulTier(x));return rank<0?soulTiers.length:rank;};
  let recipes=null;
  function load(){if(recipes)return recipes;recipes=[];const seen=new Set();
   for(const r of DBGameRules.craftRecipes()){const item=byId.get(r.new_item),mats=split(r.materials);
@@ -35,7 +38,7 @@ const CraftingWindow=(()=>{
  .craft-tabs button{min-height:0!important;height:30px;padding:0!important;font-size:13px!important;background:linear-gradient(#24262a,#1a1b1e)!important;color:#cbbd9c!important;border:1px solid #3d3a33!important;border-radius:6px!important}
  .craft-tabs button[aria-selected=true]{background:linear-gradient(#5a4726,#3a2e19)!important;color:#ffe2a0!important;border-color:#b08d4c!important}
  .craft-search{flex:none;height:32px;box-sizing:border-box;margin-bottom:8px;padding:0 10px!important;font-size:13px;background:#0e0f11!important;border:1px solid #3d3a33!important;border-radius:6px;color:#e6dcc2!important}
- .craft-grid{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));grid-auto-rows:98px;gap:7px;align-content:start;padding-top:6px;border-top:1px solid #2c2a25;scrollbar-width:thin;scrollbar-color:#7a6740 #121416}
+ .craft-grid{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));grid-auto-rows:auto;gap:7px;align-content:start;padding-top:6px;border-top:1px solid #2c2a25;scrollbar-width:thin;scrollbar-color:#7a6740 #121416}
  .craft-card{position:relative;display:flex!important;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;height:98px!important;min-height:0!important;max-height:none!important;width:auto!important;box-sizing:border-box;padding:8px 4px 6px!important;background:linear-gradient(#1d1e21,#151618)!important;border:1px solid #34312b!important;border-radius:8px!important;color:#e8dcc0!important}
  .craft-card.ok{border-color:#4f7a3a!important;background:linear-gradient(#1f2a1c,#151a14)!important}
  .craft-card .pic{width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:#0b0c0d;border:1px solid #3a362e;border-radius:6px}
@@ -66,9 +69,9 @@ const CraftingWindow=(()=>{
  let win=null,tab='all',query='',body=null,tabsBox=null,search=null,current=null;
  function card(x){const b=el('button','craft-card'+(craftable(x)?' ok':''));b.type='button';b.append(pic(x.item,x.cat),el('span','nm',x.r.note||x.item.name));b.title=x.item.name+' · '+npcName(x);b.onclick=()=>{current=x;render();};return b;}
  function list(){const q=query.trim().toLowerCase(),out=load().filter(x=>(tab==='all'||(tab==='can'?craftable(x):x.cat===tab))&&(!q||x.text.includes(q)));
-  out.sort((a,b)=>(craftable(b)-craftable(a))||(!!b.item.icon-!!a.item.icon)||(fits(b)-fits(a)));
+  out.sort((a,b)=>(tab==='wuhun'?soulRank(a)-soulRank(b):0)||(craftable(b)-craftable(a))||(!!b.item.icon-!!a.item.icon)||(fits(b)-fits(a)));
   const unique=[...new Map(out.map(x=>[x.item.id,null])).keys()].map(id=>out.find(x=>x.item.id===id));
-  const grid=el('div','craft-grid');for(const x of unique.slice(0,300))grid.append(card(x));
+  const grid=el('div','craft-grid');let lastTier=null;for(const x of unique.slice(0,300)){if(tab==='wuhun'){const tier=soulTier(x);if(tier!==lastTier){const heading=el('h3','craft-tier-heading',tier);heading.style.cssText='grid-column:1/-1;margin:5px 0 0;padding:6px 8px;color:#f0cf7c;font-size:14px;border-bottom:1px solid #53462f';grid.append(heading);lastTier=tier;}}grid.append(card(x));}
   if(!unique.length)grid.append(el('div','craft-empty',tab==='can'?'目前材料不夠做任何東西。':'沒有符合的配方。'));
   else if(unique.length>300)grid.append(el('div','craft-empty','只顯示前 300 筆，請用搜尋縮小範圍。'));return grid;}
  function detail(x){const d=el('div','craft-detail'),top=el('div','top'),info=el('div');
