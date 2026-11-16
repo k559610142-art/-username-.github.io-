@@ -1,4 +1,4 @@
-// 2026-11-16：假人像真人「經過就離開」：沒事時朝一個方向旅行（fake-player-autonomy.js travel），在玩家 12 格內待 35～80 秒就走開、28 格外才恢復；不搶玩家腳邊 4 格內的怪；新路人 6 成從遠處朝玩家方向路過；走遠 1 分鐘就下線。
+// 2026-11-16：假人像真人「經過就離開」：沒事時朝一個方向旅行（fake-player-autonomy.js travel），在玩家 12 格內待 35～80 秒就走開、28 格外才恢復；不搶玩家腳邊 4 格內的怪；新路人 6 成從遠處朝玩家方向路過；走遠 1 分鐘就下線。 2026-11-16 加人：村莊 12～18、野外 5～10，上限 72；1744 個組合 ID，舊面孔只有約 3 成機率回來。
 // 2026-11-16：紅名假人會主動攻擊野外 8 格視線內的玩家；約半秒反應後追擊，超過14格、進安全區、失去視線或玩家倒下停戰。
 // 假玩家（2026-11-14 第 1 期，參考使用者另一款遊戲「龍脈紀元」的假人）：讓單機地圖看起來有其他玩家。
 //  外觀：原版 8 種角色動作圖（CHARACTER_ACTION_ASSETS：騎士、法師、王族、妖精 × 男女），轉成怪物影格格式（[檔, x, y, w, h, 毫秒, sx, sy]）
@@ -49,6 +49,11 @@ const FakePlayers=(()=>{
  // 名字跟職業、性別要對得上（使用者 2026-11-14：王子叫「法師老李」不合理）：通用名＋性別名＋職業名，職業名只給那個職業
  const NAMES=['夜行俠','小雨點','劍無痕','黑貓貓','星辰雨','月下影','冰咖啡','焦糖布丁','北風','米漿加蛋','風之谷','咖哩飯','孤狼','雷霆一擊','無名氏','天堂老玩家','肝帝','打寶仔','紅水不夠','閃電貂','銀色月光','喵喵拳','鐵頭','碎星','白目王'];
  const GENDER_NAMES=[['阿翔哥','阿凱','老王出擊','大叔來了','型男一號'],['血色玫瑰','奶茶微糖','小公主喵','櫻花雨','甜心兔']];
+ // 2026-11-16 使用者：假人基數要增加，不要總是固定幾個 ID。用前綴＋後綴（偶爾加數字）組出上千個不重複的玩家 ID。
+ const ID_HEAD=['暗夜','烈焰','冰雪','狂風','孤獨','流浪','沉默','無敵','傳說','神聖','黑暗','閃電','天空','月光','星空','紅蓮','銀色','黃金','幽靈','鋼鐵','迷途','快樂','憂鬱','傲嬌','可愛','霸氣','佛系','爆肝','課金','平民','午夜','晨曦','落葉','秋風','雪花','楓葉','雷神','火焰','海風','山豬','鹹魚','路過','肥宅','奶油','草莓','珍奶','滷肉','雞腿','阿貓','阿狗'];
+ const ID_TAIL=['騎士','劍客','法師','射手','王子','公主','小貓','小狗','勇者','浪人','獵人','戰神','少年','大叔','妹妹','哥哥','阿伯','魔王','精靈','刺客','小熊','布丁','奶茶','雞排','包子','守護者','旅人','俠','君','仔','醬','大大','小白','老大','一號'];
+ const ID_MARK=['','','','','','','99','520','168','777','01','TW','x','丶','灬','ㄉ','2026','0817'];
+ const GEN_NAMES=(()=>{const out=[];let n=7;for(const h of ID_HEAD)for(const t of ID_TAIL){n=(n*1103515245+12345)>>>0;const mark=ID_MARK[n%ID_MARK.length];const name=mark==='丶'||mark==='灬'?mark+h+t:h+t+mark;if(Array.from(name).length<=8)out.push(name);}return out;})();
  // 擺攤商人名字：人名（男／女／通用）＋店名
  const STALL_FIRST=[['阿福','老張','大雄','阿明','胖虎','老陳','阿德','阿勇','老林','阿達','老吳','阿財','大頭'],['小美','小芳','阿珠','小翠','小倩','米米','阿花','小琪','阿蓮','小鳳'],['肥貓','小黑','阿寶','招財貓','大福','金元寶','旺旺']];
  const STALL_SHOP=['雜貨','商行','小舖','批發','二手','百貨','賣場','當舖','的店','便宜賣','老店','工作室'];
@@ -80,11 +85,11 @@ const FakePlayers=(()=>{
  function migrateClans(list,key){let changed=false;for(const r of list)if(r.clanV!==1){r.clan=Math.random()<.4?(r.clan||(r.red?'血月':pick(CLANS))):null;r.clanV=1;changed=true;}if(changed)saveJson(key,list);}
  let roster=loadJson(ROSTER_KEY)||[];
  migrateClans(roster,ROSTER_KEY);
- function remember(mob){const r={name:mob.spawn.npc.name,look:lookKey(mob.fp.look),lv:mob.spawn.npc.level,clan:mob.fp.clan,clanV:1,red:!!mob.fp.red};roster=[r,...roster.filter(x=>x.name!==r.name)].slice(0,40);saveJson(ROSTER_KEY,roster);}
+ function remember(mob){const r={name:mob.spawn.npc.name,look:lookKey(mob.fp.look),lv:mob.spawn.npc.level,clan:mob.fp.clan,clanV:1,red:!!mob.fp.red};roster=[r,...roster.filter(x=>x.name!==r.name)].slice(0,300);saveJson(ROSTER_KEY,roster);}
  function make(x,y,red=false){
-  const saved=roster.find(r=>!used.has(r.name)&&!(recentlyDeparted.get(r.name)>movementTime())&&!!r.red===red&&lookOf(r.look)&&!stallNames().has(r.name));
+  const pool=roster.filter(r=>!used.has(r.name)&&!(recentlyDeparted.get(r.name)>movementTime())&&!!r.red===red&&lookOf(r.look)&&!stallNames().has(r.name)),saved=pool.length&&(red||Math.random()<.3)?pick(pool):null; // 舊面孔只有約 3 成機率回來，而且隨機挑，不再總是同幾個
   const look=saved?lookOf(saved.look):pick(looks);const g=A.avatars[look.avatar]?.gender?1:0,cls=CLASS_NAMES[look.role]||{any:[],m:[],f:[]},own=[...cls.any,...(g?cls.f:cls.m)].filter(n=>!used.has(n)&&!(recentlyDeparted.get(n)>movementTime()));
-  let name=saved?saved.name:pick((red?RED_NAMES:own.length&&Math.random()<.35?own:[...NAMES,...GENDER_NAMES[g],...own]).filter(n=>!used.has(n)&&!(recentlyDeparted.get(n)>movementTime())));if(!name)return null;used.add(name);const lv=saved?saved.lv:red?ri(18,40):ri(5,45);
+  let name=saved?saved.name:pick((red?RED_NAMES:own.length&&Math.random()<.35?own:(Math.random()<.75?GEN_NAMES:[...NAMES,...GENDER_NAMES[g],...own])).filter(n=>!used.has(n)&&!(recentlyDeparted.get(n)>movementTime())));if(!name)return null;used.add(name);const lv=saved?saved.lv:red?ri(18,40):ri(5,45);
   const npc={name,kind:'L1Bot',gfx:look.id,level:lv,hp:40+lv*14,mp:0,ac:0,walk:look.walkProfile?.stepMs||640,attack:look.attackMs,ranged:RANGED[look.weapon]||1,skills:[],regeneration:null,aggressive:false};
   const mob={spawn:{bot:true,mapId:window.activeMapId||0,npc,heading:ri(0,7),respawn:[0,0]},region:[x-50,y-50,x+50,y+50],x,y,homeX:x,homeY:y,hp:npc.hp,heading:ri(0,7),rest:0,phase:Math.random()*1800,step:null,
    fp:{look,red,clan:rollClan(red),state:safe(x,y)?'town':'hunt',think:0,chatAt:movementTime()+rnd(6000,40000),ready:0,target:null,since:movementTime(),pk:false,pkCd:movementTime()+rnd(2500,6500)}};
@@ -97,7 +102,7 @@ const FakePlayers=(()=>{
  // 路人留在自己所在區域；新區域的人數依地點變化，不把舊人搬到玩家旁邊。
  function areaDemand(map,x,y,town){
   const seed=Math.abs(Math.imul(Math.floor(x/64),73856093)^Math.imul(Math.floor(y/64),19349663)^Math.imul(map,83492791));
-  return town?6+seed%5:seed%5===0?0:2+seed%5;
+  return town?12+seed%7:seed%7===0?2:5+seed%6; // 2026-11-16 加人：村莊 12～18、野外 5～10（少數冷門區 2）
  }
  function maintain(){
   if(window.gameFlowState!=='playing'||!sceneStarted||!looks.length)return;
@@ -117,8 +122,8 @@ const FakePlayers=(()=>{
   stallTick(); // 村莊商人仍留在原定村莊，不受路人人口影響。
   if(time<arrivalAt||time<nextArrival)return;
   const near=list.filter(b=>!b.fp.stall&&!b.fp.hidden&&!b.fp.vanish&&dist(b.x,b.y,worldX,worldY)<=32),want=areaDemand(map,worldX,worldY,safe(worldX,worldY));
-  if(near.length>=want||all.filter(b=>!b.fp.stall).length>=48)return;
-  nextArrival=time+rnd(4000,10000);
+  if(near.length>=want||all.filter(b=>!b.fp.stall).length>=72)return;
+  nextArrival=time+rnd(2500,6000);
   const red=redOn&&!safe(worldX,worldY)&&near.filter(b=>b.fp.red).length<1&&Math.random()<.18;
   const spot=spotNear(worldX,worldY,20,28,red?false:null);if(spot){const mob=make(...spot,red);window.FakePlayerAutonomy?.arrive(mob);}
  }
