@@ -11,3 +11,10 @@
 /* 武魂扭蛋機左側：使用者提供的武魂真身圖（2026-11-17） */
 .dc-crystal.dc-wuhun-art{flex:0 0 34%;font-size:0;text-shadow:none;align-self:stretch;display:flex;align-items:center}
 .dc-wuhun-art img{display:block;width:100%;height:auto;border:1px solid #6b5530;border-radius:6px;box-shadow:0 0 18px #7628cb66}
+
+/* 武魂召喚影片（2026-11-17）：抽卡時全畫面播放，播完顯示結果 */
+.dc-summon{position:fixed;inset:0;z-index:2000;display:grid;place-items:center;background:#000d;animation:dcSummonIn .25s ease-out}
+.dc-summon video{width:min(100vw,calc(100dvh*16/9));max-height:100dvh;object-fit:contain;background:#000}
+.dc-summon-skip{position:absolute;right:max(16px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));padding:8px 16px;border:1px solid #c9a45a;border-radius:6px;background:#1b1610cc;color:#f1dfae;font-size:14px;cursor:pointer}
+.dc-summon-out{opacity:0;transition:opacity .35s}
+@keyframes dcSummonIn{from{opacity:0}to{opacity:1}}

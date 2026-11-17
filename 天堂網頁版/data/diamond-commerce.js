@@ -45,7 +45,14 @@ const DiamondCommerce=(()=>{
   if(showRates){const table=el('table','dc-wuhun-rates');const head=el('tr');for(const h of ['等級','合計機率','每種機率','武魂'])head.append(el('th','',h));table.append(head);
    for(const t of G.tiers){const row=el('tr');row.append(el('td','',t.tier),el('td','',t.rate+'%'),el('td','',Math.round(t.rate/t.ids.length*1000)/1000+'%'),el('td','',t.ids.map(id=>wuhunInfo(id).name.replace(/^[^-]*-/,'').replace(/武魂$/,'')).join('、')));row.firstChild.style.color=TIER_COLOR[t.tier];table.append(row);}body.append(table);}
  }
- async function drawWuhun(count){if(busy)return;busy=true;notice='';render();try{const r=await LocalServerClient.act('/api/gacha/wuhun',{count});wuhunResults=r.results||[];const best=wuhunResults.reduce((a,b)=>window.WUHUN_GACHA.tiers.findIndex(t=>t.tier===b.tier)>window.WUHUN_GACHA.tiers.findIndex(t=>t.tier===a.tier)?b:a,wuhunResults[0]);notice='召喚完成！最高：'+best.tier+'－'+wuhunInfo(best.id).name.replace(/^[^-]*-/,'')+'，武魂已放進背包。';if(['上古','四神獸'].includes(best.tier))window.GameChat?.say('【全服】'+(window.activeCharacterName||'')+' 從武魂扭蛋機召喚出【'+wuhunInfo(best.id).name+'】！','drop');}catch(e){notice=e.message;}finally{busy=false;}if(win)render();}
+ // 2026-11-17 使用者：抽卡先跳出召喚影片（assets/interface/wuhun/gacha-summon.mp4，約 10 秒），影片播完才出現抽到的武魂。
+ //  按下就開始播（算使用者操作，可以有聲音），同時向伺服器抽；兩邊都好了才顯示結果。點「跳過」或影片出錯就直接進結果。
+ function summonVideo(){return new Promise(resolve=>{const box=el('div','dc-summon'),video=document.createElement('video'),skip=el('button','dc-summon-skip','跳過 ▶');
+  video.src='assets/interface/wuhun/gacha-summon.mp4?v=1';video.playsInline=true;video.preload='auto';skip.type='button';
+  let done=false;const finish=()=>{if(done)return;done=true;video.pause();box.classList.add('dc-summon-out');setTimeout(()=>box.remove(),350);resolve();};
+  video.onended=finish;video.onerror=finish;skip.onclick=finish;box.append(video,skip);document.querySelector('.game')?.append(box)||document.body.append(box);
+  video.play().catch(()=>{video.muted=true;video.play().catch(finish);});});}
+ async function drawWuhun(count){if(busy)return;busy=true;notice='';wuhunResults=null;render();const film=summonVideo();try{const r=await LocalServerClient.act('/api/gacha/wuhun',{count});await film;wuhunResults=r.results||[];const best=wuhunResults.reduce((a,b)=>window.WUHUN_GACHA.tiers.findIndex(t=>t.tier===b.tier)>window.WUHUN_GACHA.tiers.findIndex(t=>t.tier===a.tier)?b:a,wuhunResults[0]);notice='召喚完成！最高：'+best.tier+'－'+wuhunInfo(best.id).name.replace(/^[^-]*-/,'')+'，武魂已放進背包。';if(['上古','四神獸'].includes(best.tier))window.GameChat?.say('【全服】'+(window.activeCharacterName||'')+' 從武魂扭蛋機召喚出【'+wuhunInfo(best.id).name+'】！','drop');}catch(e){notice=e.message;document.querySelector('.dc-summon-skip')?.click();}finally{busy=false;}if(win)render();}
  function gacha(body){
   if(tab===1){wuhunGacha(body);return;}
   if(tab>=3){body.append(el('div','dc-empty',gachaTabs[tab]+'收藏尚無資料'));return;}
