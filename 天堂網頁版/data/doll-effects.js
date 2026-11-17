@@ -5,7 +5,7 @@
 //   每 N 秒恢復 HP／MP、每分鐘給天幣 → 這裡的計時器；N% 機率施展法術或額外傷害 → onHit（island-combat.js 普攻命中時呼叫）
 //   N% 機率傷害減免 → chanceReduction（native-combat-rules.js 怪物打玩家時呼叫）
 //   娃娃附帶的輔助魔法（通暢氣脈術、體魄強健術、魔法武器…）照 class-buffs.js 同名技能的數值常駐。
-//  目前沒有對應系統、只顯示的：近距離／魔法命中（普攻與攻擊魔法本來就必中）、負重、人物速度、水底呼吸、屠宰者／破壞盔甲／昏迷等級、西遊記三招、泰坦、恐怖命中。
+//  目前沒有對應系統、只顯示的：負重、人物速度、水底呼吸、屠宰者／破壞盔甲／昏迷等級、西遊記三招、泰坦、恐怖命中。
 window.DollEffects=(()=>{
  const STAT={力量:'str',敏捷:'dex',體質:'con',智力:'int',精神:'wis',魅力:'cha'};
  const BUFF={通暢氣脈術:{dex:5},體魄強健術:{str:5},祝福魔法武器:{melee:2},魔法武器:{melee:2},狂暴術:{melee:5,ac:10},大地防護:{ac:-6},鋼鐵防護:{ac:-10},魔法屏障:{mr:10},生命之泉:{hpRegen:[16,10]},靈魂昇華:{hp:50,mp:50}};
@@ -22,6 +22,8 @@ window.DollEffects=(()=>{
    else if((m=e.match(/^(魔力上限|MP)\+(\d+)$/)))add('mp',+m[2]);
    else if((m=e.match(/^(近距離攻擊|額外攻擊點數)\+(\d+)$/)))add('melee',+m[2]);
    else if((m=e.match(/^遠距離攻擊\+(\d+)$/)))add('ranged',+m[1]);
+   else if((m=e.match(/^近距離命中\+(\d+)$/)))add('meleeHit',+m[1]);
+   else if((m=e.match(/^魔法命中\+(\d+)$/)))add('magicHit',+m[1]);
    else if((m=e.match(/^遠距離命中\+(\d+)$/)))add('rangedHit',+m[1]);
    else if((m=e.match(/^魔攻\+(\d+)$/)))add('sp',+m[1]);
    else if((m=e.match(/^傷害減免\+(\d+)$/)))add('reduction',+m[1]);

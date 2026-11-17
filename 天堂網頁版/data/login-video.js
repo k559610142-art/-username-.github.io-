@@ -10,6 +10,16 @@
  const VW=1280,VH=720,SHOW_AT=8.0,PORTRAIT_STOP=5.5;
  // 影片裡畫好的元件位置（1280×720 座標，量自最後一格）
  const SPOT={account:[509,285,344,50],password:[509,355,344,51],accountEye:[812,295,34,30],passwordEye:[812,365,34,30],register:[418,445,123,44],login:[553,445,174,44],forgotBox:[738,445,123,44],message:[390,496,500,26]}; // 新影片最後一格量的（2026-11-17）
+ // 將影片內建的面板移到角色下半身，輸入框與按鈕使用相同座標轉換。
+ const PANEL={x:383,y:232,w:518,h:306},MOVED={x:433,y:430,scale:.8};
+ for(const spot of Object.values(SPOT)){spot[0]=MOVED.x+(spot[0]-PANEL.x)*MOVED.scale;spot[1]=MOVED.y+(spot[1]-PANEL.y)*MOVED.scale;spot[2]*=MOVED.scale;spot[3]*=MOVED.scale;}
+ const panelCanvas=document.createElement('canvas');panelCanvas.width=VW;panelCanvas.height=VH;panelCanvas.className='login-panel-reposition';panelCanvas.setAttribute('aria-hidden','true');stage.insertBefore(panelCanvas,form);
+ const cleanCanvas=document.createElement('canvas');cleanCanvas.width=VW;cleanCanvas.height=VH;let cleanReady=false;
+ const captureClean=source=>{const ctx=cleanCanvas.getContext('2d');ctx.filter='brightness(.58)';ctx.drawImage(source,0,0,VW,VH);ctx.filter='none';cleanReady=true;};
+ function paintPanel(){if(!cleanReady||video.readyState<2)return;const ctx=panelCanvas.getContext('2d');ctx.clearRect(0,0,VW,VH);ctx.drawImage(cleanCanvas,0,0);ctx.drawImage(video,PANEL.x,PANEL.y,PANEL.w,PANEL.h,MOVED.x,MOVED.y,PANEL.w*MOVED.scale,PANEL.h*MOVED.scale);}
+ // 獨立讀取面板出現前的畫面，快取／直接跳到片尾時也能補回原位置。
+ const cleanVideo=document.createElement('video');cleanVideo.muted=true;cleanVideo.preload='auto';cleanVideo.src=video.currentSrc||video.querySelector('source')?.src||video.src;
+ cleanVideo.addEventListener('loadedmetadata',()=>{cleanVideo.currentTime=7.0;});cleanVideo.addEventListener('seeked',()=>{captureClean(cleanVideo);paintPanel();cleanVideo.removeAttribute('src');cleanVideo.load();},{once:true});
  const portrait=()=>{const r=stage.getBoundingClientRect();return r.height>r.width;};
  const hot=(cls,label,fn)=>{const b=document.createElement('button');b.type='button';b.className='login-hot '+cls;b.setAttribute('aria-label',label);b.onclick=fn;return b;};
  const place=(node,[x,y,w,h])=>{Object.assign(node.style,{left:x+'px',top:y+'px',width:w+'px',height:h+'px'});};
@@ -32,6 +42,7 @@
   if(!stage.classList.contains('login-video-mode'))return;
   const r=stage.getBoundingClientRect(),s=Math.max(r.width/VW,r.height/VH),ox=(r.width-VW*s)/2,oy=(r.height-VH*s)/2;
   form.style.transform='translate('+ox+'px,'+oy+'px) scale('+s+')';
+  panelCanvas.style.transform=form.style.transform;paintPanel();
  }
  function enter(){
   if(ready||failed||portrait())return;ready=true;fallback(false);stage.classList.add('login-video-mode');
@@ -58,10 +69,12 @@
  // 有些瀏覽器（互動分數高）允許有聲自動播放：先試一次，成功就跟影片同步開始
  bgm.play().then(()=>{wantSound=true;bgm.currentTime=video.currentTime;}).catch(()=>{});
  video.addEventListener('timeupdate',()=>{
+  if(!cleanReady&&video.currentTime>=7&&video.currentTime<7.1)captureClean(video);
+  if(video.currentTime>=SHOW_AT)paintPanel();
   if(portrait()){if(video.currentTime>=PORTRAIT_STOP){if(!video.paused)video.pause();fallback(true);}if(ready)leave();return;}
   if(video.currentTime>=SHOW_AT)enter();
  });
- video.addEventListener('ended',()=>{if(!portrait())enter();});
+ video.addEventListener('ended',()=>{if(!portrait()){enter();paintPanel();}});
  video.addEventListener('error',()=>{failed=true;leave();fallback(true);video.remove();});
  setTimeout(()=>{if(!ready&&(failed||video.readyState<3))fallback(true);},20000); // 網路太慢 20 秒還沒播到登入框，先給簡易登入卡
  // 已經播完（例如登出回到登入畫面）就直接停在最後一格；直式↔橫式切換時重新判斷

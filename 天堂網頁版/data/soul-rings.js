@@ -12,5 +12,5 @@ window.SoulRings=(()=>{
  const need=id=>window.TdjSystems?.wuhun.ringMissing(id)||[];
  // 第 slot 槽可獻祭的武魂：該階、持有中（裝備中的那隻要留 1 隻）
  function candidates(slot){const tier=TIERS[slot],active=String(window.TdjSystems?.wuhun.active);return wuhunData.filter(w=>w.tier===tier).map(w=>({w,spare:(TdjSystems.wuhun.owned(w.id)||0)-(active===String(w.id)?1:0)})).filter(r=>r.spare>0);}
- return {TIERS,effects,bonuses,ringBonuses,describe,state,need,candidates,get:soul,offer:id=>TdjSystems.wuhun.changeRings('offer',Number(id))};
+ return {TIERS,effects,bonuses,ringBonuses,describe,state,need,candidates,get:soul,offer:id=>TdjSystems.wuhun.changeRings('offer',Number(id)),fuse:t=>TdjSystems.wuhun.changeRings('fuse',Number(t)),place:slot=>TdjSystems.wuhun.changeRings('place',Number(slot))};
 })();

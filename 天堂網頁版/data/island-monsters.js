@@ -84,6 +84,8 @@ const IslandMonsters = (() => {
     const corrected=source.resident&&source.mapId===4&&indoorServices[source.spawnId];
     const spawn=corrected?{...source,point:corrected,sourcePoint:source.point}:source;
     if((spawn.mapId||0)!==(window.activeMapId||0))return;
+    // 商店村傳送師（50027）的所有出生點停止生成。
+    if(spawn.npcId===50027)return;
     if(spawn.resident&&craftOnly(spawn.npcId))return;
     if(!islandMonsterFrames[spawn.npc.gfx])return;
     let seed=spawn.spawnId>>>0;

@@ -25,14 +25,14 @@ const DBGameRules = (() => {
       ...rows('怪物掉落全圖設置').map(row=>({id:row['道具'],min:row['最小量'],max:row['最大量'],chance:row['機率'],fixedRate:true})),
       ...rows('droplist_map').filter(row=>row.mapid===map).map(row=>({id:row.itemid,min:row.min,max:row.max,chance:row.chance})),
       ...(window.LevelQuests?.drops(mob)||[]) // 等級任務補的掉落（data/level-quests.js）
-    ];
+    ].filter(drop=>drop.id!==39288&&!/娃娃/.test(byId.get(drop.id)?.name||''));
   }
   function killRewards(mob){
     const rewards=[];
     for(const row of rows('怪物擊殺獎勵系統')){
       if(row['Npc編號']!==mob.spawn.npcId)continue;
       for(const id of [row['一般攻擊者獎勵道具編號'],row['最後攻擊者獎勵道具編號']]){
-        if(id>0&&byId.has(id))rewards.push({key:keyFor(id),name:byId.get(id).name,count:1});
+        if(id>0&&id!==39288&&byId.has(id)&&!/娃娃/.test(byId.get(id)?.name||''))rewards.push({key:keyFor(id),name:byId.get(id).name,count:1});
       }
     }
     return rewards;
@@ -45,7 +45,7 @@ const DBGameRules = (() => {
   }
   function add(next,key,count,enchant=0,bless){
     const rule=ITEM_USE_RULES.definitions[key];
-    if(!key||!rule||!Number.isSafeInteger(count)||count<1)return false;
+    if(key==='etcitem:39288'||!key||!rule||!Number.isSafeInteger(count)||count<1)return false;
     const existing=rule.stackable?next.find(e=>e.key===key&&!e.slot&&(!enchant||e.enchant===enchant)):null;
     if(existing){
       if(existing.count+count>2147483647)return false;
@@ -184,8 +184,10 @@ const DBGameRules = (() => {
   if(t==='material')return 'material';
   return 'item';
  }
-  const hiddenCraftItems=new Set([84077,84080,82202,350080,350130,44213,350061,80034,44149,44148,183002,82214,82215,60230,84002,84003,84004,84005,84006,84007,84008,84009,84010,40018,350094,350020,62015,86002,80326,80328,86200,86001,70508,80331,44150,80027,56148,56147,350070,350071,350072,350073,350074,350075,350076,350077,350078,350079,80320,80321,44143,44144,44145,44146,70048,70058,70068,70078,39166,39167,39168,39169,84078,84079,350057,350058,350059,350060,67024,67025,21229,350096,350098,350099]); // 2026-11-16 加：聖誕王者頭飾、耶誕之魔力氣息、耶誕紅襪、耶誕綠襪 // 使用者指定移除的製作成品；依成品編號排除所有重複配方。
-  const craftRecipes=()=>rows('system_item_blend').filter(r=>craftCategory(byId.get(Number(r.new_item)))!=='box'&&!/^(?:回收魔珠)|神聖魔法書|神力禮盒/.test(byId.get(Number(r.new_item))?.name||'')&&!hiddenCraftItems.has(Number(r.new_item))&&!(String(r.materials)==='40308'&&[39287,39288].includes(Number(r.new_item)))&&![576,577,578].includes(r.id)); // 576～578：卡立普暗黑武器的舊版重複配方（沒有等級職業限制），只留 1061～1063「死神之証」 // 武魂結晶／提煉石不能用金幣做，只能打怪掉（使用者 2026-11-15）
+  const hiddenCraftItems=new Set([60228,39059,84071,44212,84001,39288,84077,84080,82202,350080,350130,44213,350061,80034,44149,44148,183002,82214,82215,60230,84002,84003,84004,84005,84006,84007,84008,84009,84010,40018,350094,350020,62015,86002,80326,80328,86200,86001,70508,80331,44150,80027,56148,56147,350070,350071,350072,350073,350074,350075,350076,350077,350078,350079,80320,80321,44143,44144,44145,44146,70048,70058,70068,70078,39166,39167,39168,39169,84078,84079,350057,350058,350059,350060,67024,67025,21229,350096,350098,350099]); // 2026-11-16 加：聖誕王者頭飾、耶誕之魔力氣息、耶誕紅襪、耶誕綠襪 // 使用者指定移除的製作成品；依成品編號排除所有重複配方。
+  // 傲慢之塔卷軸與傳送符：包含頂樓、幻象、混亂、異變，統一停止製作。
+  const towerCraftItems=new Set([...byId.values()].filter(item=>/傲慢/.test(item.name)&&/卷|捲|傳送符/.test(item.name)).map(item=>item.id));
+  const craftRecipes=()=>rows('system_item_blend').filter(r=>!towerCraftItems.has(Number(r.new_item))&&!['box','wuhun','doll'].includes(craftCategory(byId.get(Number(r.new_item))))&&Number(r.addchanceitem)!==39288&&!split(r.materials).includes(39288)&&!/^(?:回收魔珠)|神聖魔法書|神力禮盒/.test(byId.get(Number(r.new_item))?.name||'')&&!hiddenCraftItems.has(Number(r.new_item))&&!(String(r.materials)==='40308'&&[39287,39288].includes(Number(r.new_item)))&&![576,577,578].includes(r.id)); // 576～578：卡立普暗黑武器的舊版重複配方（沒有等級職業限制），只留 1061～1063「死神之証」 // 武魂結晶／提煉石不能用金幣做，只能打怪掉（使用者 2026-11-15）
   function craft(npcId,id,anywhere=false){ // anywhere：從目錄「製作」視窗做，不用靠近 NPC（使用者 2026-11-14 決定）
     const recipe=craftRecipes().find(r=>r.id===id&&r.npcid===npcId);
     if(!recipe||!anywhere&&!IslandMonsters.serviceNearby(npcId,3))return '請靠近對應的製作 NPC。';

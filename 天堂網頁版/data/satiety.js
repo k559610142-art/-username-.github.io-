@@ -3,12 +3,13 @@
 window.Satiety=(()=>{
  const MAX=225,KEY='lineage-web-satiety-v1:',VOL={};
  const id=()=>window.activeCharacterId||'';
- function load(){try{const v=JSON.parse(localStorage.getItem(KEY+id())||'null');if(v&&Number.isFinite(v.n))return v;}catch{}return {n:MAX,t:Date.now()};}
+ function load(){try{const v=JSON.parse(localStorage.getItem(KEY+id())||'null');if(v&&Number.isFinite(v.n)&&Number.isFinite(v.t)){v.n=Math.max(0,Math.min(MAX,Math.floor(v.n)));v.t=Math.min(Date.now(),v.t);return v;}}catch{}const fresh={n:MAX,t:Date.now()};save(fresh);return fresh;}
  function save(v){try{localStorage.setItem(KEY+id(),JSON.stringify(v));}catch{}}
  function value(){if(!id())return null;const v=load(),steps=Math.floor((Date.now()-v.t)/300000);if(steps>0){v.n=Math.max(0,v.n-steps);v.t+=steps*300000;save(v);}return v.n;}
- addEventListener('DOMContentLoaded',()=>{try{GameDatabase.rows('etcitem').then(rows=>{for(const r of rows)if(r.use_type==='food')VOL[+r.item_id]=+r.food_volume||0;});}catch{}});
+ for(const [key,rule] of Object.entries(ITEM_USE_RULES.definitions))if(rule.useType==='food')VOL[+key.split(':')[1]]=0;
+ addEventListener('DOMContentLoaded',()=>{try{GameDatabase.rows('etcitem').then(rows=>{for(const r of rows)if(r.use_type==='food')VOL[+r.item_id]=+r.food_volume||0;}).catch(()=>{});}catch{}});
  function use(uid){const e=OwnedInventory.items.find(x=>x.uid===uid);if(!e||e.item?.kind!=='etcitem'||!(e.item.id in VOL))return null;
-  const cur=value();if(cur>=MAX){toast('已經吃飽了。');return false;}
+  const cur=value();if(cur===null)return false;if(cur>=MAX){toast('已經吃飽了。');return false;}
   const next=OwnedInventory.snapshot,row=next.find(x=>x.uid===uid);if(!row)return false;if(row.count>1)row.count--;else next.splice(next.indexOf(row),1);
   if(!OwnedInventory.applyChange(next))return false;const add=Math.floor(VOL[e.item.id]/10)||5,v=load();v.n=Math.min(MAX,cur+add);save(v);toast('吃了'+e.item.name+'，飽食度 '+v.n+'／'+MAX);return true;}
  return {value,use,starving:()=>{const n=value();return n!==null&&n<=3;},MAX};

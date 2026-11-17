@@ -30,3 +30,8 @@
 .login-video-mode #login-account:focus,.login-video-mode #login-password:focus{border-color:#e2c27a99;box-shadow:0 0 8px #e2c27a44}
 .login-video-mode .login-eye-icon{padding:3px!important;opacity:.9}.login-video-mode .login-eye-icon:hover{opacity:1;box-shadow:none}
 .login-video-mode #login-message{font-size:18px}
+
+/* 登入面板整體下移，背景修補與影片保持相同縮放。 */
+.login-panel-reposition{display:none;position:absolute;left:0;top:0;width:1280px;height:720px;transform-origin:0 0;pointer-events:none;z-index:0}
+.login-video-mode .login-panel-reposition{display:block}
+.login-video-mode .login-card{z-index:1}

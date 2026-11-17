@@ -1886,10 +1886,10 @@ function openGameCatalog(type) {
       picker.append(uiElement('strong','','第 '+(selectedRingSlot+1)+' 魂槽：獻祭'+slotTier+'武魂'+(ringState.slots[selectedRingSlot]!=null?'（已點亮：'+SoulRings.get(ringState.slots[selectedRingSlot]).name+'）':'')));
       const prevEmpty=ringState.slots.slice(0,selectedRingSlot).findIndex(v=>v==null);
       if(prevEmpty>=0)picker.append(uiElement('small','','要先點亮第 '+(prevEmpty+1)+' 槽（'+SoulRings.TIERS[prevEmpty]+'）。'));
-      else if(ringState.slots[selectedRingSlot]==null){const list=SoulRings.candidates(selectedRingSlot);
-        for(const {w:c,spare} of list)picker.append(catalogButton('獻祭 '+c.name+'（持有可用 ×'+spare+'）',()=>{if(SoulRings.offer(c.id)){updateCounts();refreshCards();}},'wuhun-ring-choice'));
-        if(!list.length)picker.append(uiElement('small','','沒有可獻祭的'+slotTier+'武魂（裝備中的那隻不能獻祭）。'));}
-      collection.append(picker,uiElement('small','wuhun-ring-note','祭品放入後會消耗、不能拿回；魂槽只當升階門檻，不加能力。'));
+      else if(ringState.slots[selectedRingSlot]==null){const color=TdjSystems.wuhun.ringColor[selectedRingSlot],have=TdjSystems.wuhun.rings()[selectedRingSlot]||0; // 2026-11-17：魂槽改放魂環（武魂融合而來）
+        const put=catalogButton('放入'+color+'魂環（擁有 ×'+have+'）',()=>{if(SoulRings.place(selectedRingSlot)){updateCounts();refreshCards();}},'wuhun-ring-choice');put.disabled=!have;picker.append(put);
+        if(!have)picker.append(uiElement('small','','沒有'+color+'魂環：用上方「武魂融合」把 '+TdjSystems.wuhun.ringCost[selectedRingSlot]+' 個'+slotTier+'武魂融合成'+color+'魂環。'));}
+      collection.append(picker,uiElement('small','wuhun-ring-note','魂環放入魂槽後啟動、不能拿回；魂槽只當升階門檻，不加能力。'));
       detail.append(collection);
       const action = active ? catalogButton('卸下武魂', () => { TdjSystems.wuhun.unequip(); refreshCards(); }, 'game-catalog-action')
         : catalogButton(owned ? '裝備武魂' : '擁有才能裝備', () => { if (TdjSystems.wuhun.equip(w.id)) refreshCards(); }, 'game-catalog-action');
@@ -1945,13 +1945,19 @@ function openGameCatalog(type) {
     const times = (n, fn) => () => Array.from({length: n}, fn);
     if (type === 'dolls') { toolbar.append(catalogButton('製作',()=>runGameMenuAction('craft')),catalogButton('扭蛋',()=>runGameMenuAction('gacha'))); toolbar.append(uiElement('small','doll-sort-note','依稀有度排列：一般→超越')); }
     if (type === 'enchant') { add('取得附魔石', times(1, () => TdjSystems.enchant.get())); add('取得 5 個', times(5, () => TdjSystems.enchant.get())); }
-    if (type === 'wuhun') { add('取得武魂', times(1, () => TdjSystems.wuhun.get())); add('取得 5 個', times(5, () => TdjSystems.wuhun.get())); }
+    // 2026-11-17 使用者：武魂真身上方的測試按鈕（取得武魂／取得 5 個）取消，改成「武魂融合」
+    if (type === 'wuhun') { const panel=uiElement('div','wuhun-fuse-panel');panel.hidden=true;
+      const fill=()=>{panel.replaceChildren(uiElement('strong','','武魂融合：同品階武魂（不必同一種）合成魂環，裝備中的不會被用掉'));const rings=TdjSystems.wuhun.rings();
+        TdjSystems.wuhun.tiers.slice(0,6).forEach((tier,t)=>{const row=uiElement('div','wuhun-fuse-row'),need=TdjSystems.wuhun.ringCost[t],spare=TdjSystems.wuhun.spare(t),color=TdjSystems.wuhun.ringColor[t];
+          row.dataset.tier=tdjWuhunTierTag[tier]||'white';row.append(uiElement('span','',tier+' ×'+need+' → '+color+'魂環'),uiElement('small','','可用 '+spare+'｜已有魂環 ×'+(rings[t]||0)));
+          const go=catalogButton('融合',()=>{if(SoulRings.fuse(t)){fill();updateCounts();refreshCards();}},'wuhun-fuse-go');go.disabled=spare<need;row.append(go);panel.append(row);});};
+      toolbar.append(catalogButton('武魂融合',()=>{panel.hidden=!panel.hidden;if(!panel.hidden)fill();}),panel); }
     toolbar.append(status);
     results.prepend(toolbar);
     status.update = () => {
       if (type === 'dolls') { const d = DollEvolution.get(TdjSystems.dolls.active); status.textContent = d ? '召喚中：' + d.name : '未召喚'; }
       if (type === 'enchant') { const c = TdjSystems.enchant.current(); status.textContent = '測試用（免費）· ' + (c ? c.weapon.item.name + '：' + c.level.name : '武器未附魔'); }
-      if (type === 'wuhun') { const w = entries.find(x => String(x.w.id) === String(TdjSystems.wuhun.active)); status.textContent = '測試用（免費）· ' + (w ? '裝備中：' + w.name : '未裝備'); }
+      if (type === 'wuhun') { const w = entries.find(x => String(x.w.id) === String(TdjSystems.wuhun.active)); status.textContent = w ? '裝備中：' + w.name : '未裝備武魂'; }
     };
     var tdjStatus = status;
   }

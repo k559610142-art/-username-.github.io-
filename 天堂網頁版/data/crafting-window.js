@@ -1,6 +1,6 @@
 // 製作工匠視窗（2026-11-14）：目錄「製作」打開。配方來自 DB system_item_blend（DBGameRules.rows），
 // 只列出成品和所有材料都在道具目錄（INTERFACE_CATALOG）裡的配方（其餘是伺服器自訂道具，遊戲裡沒有）。
-// 分頁（2026-11-15 細分）：全部／可製作／武器／防具／飾品／符石／娃娃／武魂／藥品／卷軸／魔石／寶箱／材料／寵物／道具；搜尋成品、材料、NPC 名稱。
+// 分頁（2026-11-15 細分）：全部／可製作／武器／防具／飾品／符石／藥品／卷軸／魔石／寶箱／材料／寵物／道具；搜尋成品、材料、NPC 名稱。
 // 隨時隨地都能製作（DBGameRules.craft(npcId,id,true)，使用者決定），材料、等級、職業、成功率照原配方。
 const CraftingWindow=(()=>{
  const el=(t,c,x)=>uiElement(t,c,x);
@@ -8,7 +8,7 @@ const CraftingWindow=(()=>{
  const split=v=>String(v??'').split(',').filter(Boolean).map(Number);
  const roleCode={'王族':0,'騎士':1,'法師':2,'妖精':3};
  // 2026-11-16 使用者要求移除「全部」分頁：預設開「可製作」；有輸入搜尋字時跨所有分頁找。
- const TABS=[['can','可製作'],['weapon','武器'],['armor','防具'],['acc','飾品'],['rune','符石'],['doll','娃娃'],['wuhun','武魂'],['potion','藥品'],['scroll','卷軸'],['gem','魔石'],['material','材料'],['pet','寵物'],['item','道具']];
+ const TABS=[['can','可製作'],['weapon','武器'],['armor','防具'],['acc','飾品'],['rune','符石'],['potion','藥品'],['scroll','卷軸'],['gem','魔石'],['material','材料'],['pet','寵物'],['item','道具']];
  const category=DBGameRules.craftCategory;
  const soulTiers=['下品','上品','極品','千年','萬年','上古','四神獸'];
  const soulTier=x=>(typeof wuhunData!=='undefined'&&wuhunData.find(w=>w.id===x.item.id)?.tier)||soulTiers.find(t=>x.item.name.startsWith(t))||'其他武魂';
