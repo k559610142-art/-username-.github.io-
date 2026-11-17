@@ -8,7 +8,7 @@ window.DollEvolution=(()=>{
   {paths:[[80280,80281,80282,80283],[80280,80286,80287,80288]],variants:[{parent:80283,ids:range(80290,15)},{parent:80288,ids:range(80305,15)}]},
   {paths:[[39149,39150]]},
   ...[80365,80368,80371,80374].map(id=>({paths:[range(id,3)]})),
-  {paths:[[80385,80512]]},{paths:[[80384,80513]]},{paths:[[80386,80514]]}
+  {paths:[[80385,80512]]},{paths:[[80384,80513]]},{paths:[[80386,80514]]},{paths:[[80383,80515]]}
  ];
  const families=[],familyById=new Map();
  for(const definition of definitions){

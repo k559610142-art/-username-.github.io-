@@ -149,6 +149,7 @@ window.OwnedInventory=(()=>{
  function use(uid){
   if(window.gameFlowState!=='playing'||owner!==window.activeCharacterId)return false;const e=entries.find(i=>i.uid===uid);if(!e){toast('背包中沒有這個物品。');return false}if(CharacterActions.dead){toast('倒地時無法使用物品。');return false}
   if(window.PlayerSkills?.isBook(e.key))return PlayerSkills.learn(uid);
+  const tdjUse=window.TdjSystems?.useItem?.(uid);if(tdjUse!==undefined&&tdjUse!==null)return tdjUse; // 魔法娃娃／武魂道具雙擊收進圖鑑（data/tdj-systems.js）
   const identifyUse=window.ItemIdentify?.use(uid);if(identifyUse!==undefined&&identifyUse!==null)return identifyUse; // 鑑定卷軸（data/item-identify.js）
   const scrollUse=window.TeleportScrolls?.use(uid);if(scrollUse!==undefined&&scrollUse!==null)return scrollUse;
   const potionUse=window.NativePotions?.use(uid);if(potionUse!==undefined&&potionUse!==null)return potionUse;

@@ -4,7 +4,7 @@ const DiamondCommerce=(()=>{
  const button=(text,fn)=>{const b=el('button','dc-button',text);b.type='button';b.onclick=fn;return b;};
  const names={mall:'商城',gacha:'鑽石百貨公司',exchange:'鑽石交易所'};
  const shopTabs=['鑽石商店','試煉商店','AI 會員'];
- const gachaTabs=['龍脈星晶','武魂扭蛋機','一番賞','我的時裝','髮型','寵物'];
+ const gachaTabs=['魔法娃娃扭蛋機','武魂扭蛋機','一番賞','我的時裝','髮型','寵物'];
  let win=null,mode='mall',tab=0,notice='',market=null,busy=false,generation=0;
  const level=()=>Number(window.activeCharacterLevel)||1;
  const balance=()=>window.GameEntry?.characters.find(c=>c?.id===window.activeCharacterId)?.diamonds||0;
@@ -28,23 +28,34 @@ const DiamondCommerce=(()=>{
    const card=el('article','dc-product');card.append(file.includes('.')?el('span','dc-art','✦'):icon(file),el('h3','',name),el('span','dc-price','💎 價格待設定'));const b=button('尚未上架',()=>{});b.disabled=true;card.append(b);grid.append(card);
   }layout.append(grid);body.append(layout);
  }
- // 武魂扭蛋機（2026-11-17 使用者審核，規則在 wuhun-gacha-data.js，伺服器 /api/gacha/wuhun 擲骰扣鑽）
- let wuhunResults=null,showRates=false;
+ // 扭蛋機（2026-11-17）：武魂扭蛋機（wuhun-gacha-data.js）與魔法娃娃扭蛋機（doll-gacha-data.js）共用同一套畫面與流程。
+ //  有連本機多人伺服器 → 伺服器擲骰扣鑽（/api/gacha/wuhun、/api/gacha/doll）；
+ //  沒連伺服器但目前是免費抽（資料檔 FREE）→ 直接在本機抽、道具放進背包（使用者回報 GitHub Pages 上按鈕是灰的、抽不了）。收費後一定要伺服器。
  const TIER_COLOR={上品:'#8fd18b',極品:'#6fb6ff',千年:'#c18cff',萬年:'#ffb347',上古:'#ff6b6b',四神獸:'#ffe066'};
+ const DOLL_COLOR={一般:'#cfc8b8',高級:'#8fd18b',稀有:'#6fb6ff',英雄:'#c18cff',傳說:'#ffb347',神話:'#ff6b6b',超越:'#ffe066'};
  function wuhunInfo(id){const w=typeof wuhunData!=='undefined'?wuhunData.find(x=>x.id===id):null,item=INTERFACE_CATALOG.items.find(i=>i.kind==='etcitem'&&i.id===id);return {name:w?.name||item?.name||('武魂 '+id),icon:item?.icon||w?.img||''};}
- function wuhunGacha(body){
-  const G=window.WUHUN_GACHA,online=!!window.LocalServerClient?.online,box=el('div','dc-gacha'),art=el('div','dc-crystal dc-wuhun-art'),detail=el('div','dc-gacha-detail');art.setAttribute('aria-hidden','true'); // 2026-11-17 使用者提供的武魂真身圖取代 ✦
-  const pic=el('img');pic.src='assets/interface/wuhun/gacha-art.jpg?v=1';pic.alt='';art.append(pic);
-  detail.append(el('h2','','武魂扭蛋機'),el('p','','召喚上品到四神獸共 42 種武魂。十連保底至少 1 個極品以上。'));
-  if(!online)detail.append(el('p','dc-muted','武魂扭蛋機使用伺服器保管的鑽石，請登入本機多人伺服器後召喚。'));
-  detail.append(button(showRates?'收起獎池與機率':'查看獎池與機率',()=>{showRates=!showRates;render();}));
+ function dollInfo(id){const d=typeof gameCatalogData!=='undefined'?gameCatalogData.dolls.find(x=>x.id===id):null,item=INTERFACE_CATALOG.items.find(i=>i.kind==='etcitem'&&i.id===id);return {name:d?.name||item?.name||('魔法娃娃 '+id),icon:(d&&window.TdjSystems?.dolls?.image(d))||item?.icon||''};}
+ const GACHA={
+  wuhun:{data:()=>window.WUHUN_GACHA,route:'/api/gacha/wuhun',title:'武魂扭蛋機',noun:'武魂',desc:'召喚上品到四神獸共 42 種武魂。十連保底至少 1 個極品以上。',art:'assets/interface/wuhun/gacha-art.jpg?v=1',colors:TIER_COLOR,info:wuhunInfo,short:n=>n.replace(/^[^-]*-/,''),rateName:n=>n.replace(/^[^-]*-/,'').replace(/武魂$/,''),announce:['上古','四神獸']},
+  doll:{data:()=>window.DOLL_GACHA,route:'/api/gacha/doll',title:'魔法娃娃扭蛋機',noun:'魔法娃娃',desc:'召喚 89 種魔法娃娃（一般～超越）。十連保底至少 1 隻高級以上。',art:null,colors:DOLL_COLOR,info:dollInfo,short:n=>n,rateName:n=>n.replace(/^.*：/,''),announce:['神話','超越']}
+ };
+ const gachaState={wuhun:{results:null,rates:false},doll:{results:null,rates:false}};
+ function gachaView(body,kind){
+  const cfg=GACHA[kind],st=gachaState[kind],G=cfg.data(),online=!!window.LocalServerClient?.online,box=el('div','dc-gacha'),art=el('div',cfg.art?'dc-crystal dc-wuhun-art':'dc-crystal',cfg.art?'':'✦'),detail=el('div','dc-gacha-detail');art.setAttribute('aria-hidden','true');
+  if(!G){body.append(el('div','dc-empty',cfg.title+'資料載入失敗'));return;}
+  if(cfg.art){const pic=el('img');pic.src=cfg.art;pic.alt='';art.append(pic);}
+  detail.append(el('h2','',cfg.title),el('p','',cfg.desc));
+  if(!online&&!G.free)detail.append(el('p','dc-muted',cfg.title+'使用伺服器保管的鑽石，請登入本機多人伺服器後召喚。'));
+  if(G.free)detail.append(el('p','dc-muted','目前免費召喚；抽到的'+cfg.noun+'放進背包，雙擊即可收進圖鑑。'));
+  detail.append(button(st.rates?'收起獎池與機率':'查看獎池與機率',()=>{st.rates=!st.rates;render();}));
   const actions=el('div','dc-draw-actions');
-  for(const count of [1,10]){const b=button((count===1?'單抽':'十連')+(G.free?' 免費':' 💎'+G.prices[count].toLocaleString()+(count===10?'（九折）':'')),()=>drawWuhun(count));b.disabled=busy||!online||balance()<G.prices[count];actions.append(b);}
+  for(const count of [1,10]){const b=button((count===1?'單抽':'十連')+(G.free?' 免費':' 💎'+G.prices[count].toLocaleString()+(count===10?'（九折）':'')),()=>drawGacha(kind,count));b.disabled=busy||(!online&&!G.free)||balance()<G.prices[count];actions.append(b);}
   detail.append(actions);box.append(art,detail);body.append(box);
-  if(wuhunResults){const grid=el('div','dc-wuhun-results');for(const r of wuhunResults){const info=wuhunInfo(r.id),card=el('div','dc-wuhun-card'),img=el('img');img.alt='';if(info.icon)img.src=info.icon;const tier=el('span','dc-wuhun-tier',r.tier);tier.style.color=TIER_COLOR[r.tier]||'';card.style.borderColor=TIER_COLOR[r.tier]||'';card.append(img,tier,el('span','dc-wuhun-name',info.name.replace(/^[^-]*-/,'')));grid.append(card);}body.append(grid);}
-  if(showRates){const table=el('table','dc-wuhun-rates');const head=el('tr');for(const h of ['等級','合計機率','每種機率','武魂'])head.append(el('th','',h));table.append(head);
-   for(const t of G.tiers){const row=el('tr');row.append(el('td','',t.tier),el('td','',t.rate+'%'),el('td','',Math.round(t.rate/t.ids.length*1000)/1000+'%'),el('td','',t.ids.map(id=>wuhunInfo(id).name.replace(/^[^-]*-/,'').replace(/武魂$/,'')).join('、')));row.firstChild.style.color=TIER_COLOR[t.tier];table.append(row);}body.append(table);}
+  if(st.results){const grid=el('div','dc-wuhun-results');for(const r of st.results){const info=cfg.info(r.id),card=el('div','dc-wuhun-card'),img=el('img');img.alt='';if(info.icon)img.src=info.icon;const tier=el('span','dc-wuhun-tier',r.tier);tier.style.color=cfg.colors[r.tier]||'';card.style.borderColor=cfg.colors[r.tier]||'';card.append(img,tier,el('span','dc-wuhun-name',cfg.short(info.name)));grid.append(card);}body.append(grid);}
+  if(st.rates){const table=el('table','dc-wuhun-rates');const head=el('tr');for(const h of ['等級','合計機率','每種機率',cfg.noun])head.append(el('th','',h));table.append(head);
+   for(const t of G.tiers){const row=el('tr');row.append(el('td','',t.tier),el('td','',t.rate+'%'),el('td','',Math.round(t.rate/t.ids.length*1000)/1000+'%'),el('td','',t.ids.map(id=>cfg.rateName(cfg.info(id).name)).join('、')));row.firstChild.style.color=cfg.colors[t.tier];table.append(row);}body.append(table);}
  }
+ function wuhunGacha(body){gachaView(body,'wuhun');}
  // 2026-11-17 使用者：抽卡先跳出召喚影片（assets/interface/wuhun/gacha-summon.mp4，約 10 秒），影片播完才出現抽到的武魂。
  //  按下就開始播（算使用者操作，可以有聲音），同時向伺服器抽；兩邊都好了才顯示結果。點「跳過」或影片出錯就直接進結果。
  function summonVideo(){return new Promise(resolve=>{const box=el('div','dc-summon'),video=document.createElement('video'),skip=el('button','dc-summon-skip','跳過 ▶');
@@ -52,8 +63,18 @@ const DiamondCommerce=(()=>{
   let done=false;const finish=()=>{if(done)return;done=true;video.pause();box.classList.add('dc-summon-out');setTimeout(()=>box.remove(),350);resolve();};
   video.onended=finish;video.onerror=finish;skip.onclick=finish;box.append(video,skip);document.querySelector('.game')?.append(box)||document.body.append(box);
   video.play().catch(()=>{video.muted=true;video.play().catch(finish);});});}
- async function drawWuhun(count){if(busy)return;busy=true;notice='';wuhunResults=null;render();const film=summonVideo();try{const r=await LocalServerClient.act('/api/gacha/wuhun',{count});await film;wuhunResults=r.results||[];const best=wuhunResults.reduce((a,b)=>window.WUHUN_GACHA.tiers.findIndex(t=>t.tier===b.tier)>window.WUHUN_GACHA.tiers.findIndex(t=>t.tier===a.tier)?b:a,wuhunResults[0]);notice='召喚完成！最高：'+best.tier+'－'+wuhunInfo(best.id).name.replace(/^[^-]*-/,'')+'，武魂已放進背包。';if(['上古','四神獸'].includes(best.tier))window.GameChat?.say('【全服】'+(window.activeCharacterName||'')+' 從武魂扭蛋機召喚出【'+wuhunInfo(best.id).name+'】！','drop');}catch(e){notice=e.message;document.querySelector('.dc-summon-skip')?.click();}finally{busy=false;}if(win)render();}
+ async function drawGacha(kind,count){if(busy)return;const cfg=GACHA[kind],st=gachaState[kind],G=cfg.data();busy=true;notice='';st.results=null;render();const film=summonVideo();
+  try{let results;
+   if(window.LocalServerClient?.online){results=(await LocalServerClient.act(cfg.route,{count})).results||[];}
+   else if(G.free){if(window.gameFlowState!=='playing'||!window.OwnedInventory)throw new Error('請先進入遊戲角色。');if(OwnedInventory.items.length+count>179)throw new Error('背包空間不足，請先整理背包。');
+    const rolled=G.draw(count,Math.random);if(!OwnedInventory.reward(0,rolled.map(r=>({key:r.key,count:1}))))throw new Error('背包空間不足或無法放入，請先整理背包。');results=rolled.map(r=>({id:r.id,tier:r.tier}));}
+   else throw new Error(cfg.title+'需要登入本機多人伺服器。');
+   await film;st.results=results;const rank=r=>G.tiers.findIndex(t=>t.tier===r.tier),best=results.reduce((a,b)=>rank(b)>rank(a)?b:a,results[0]);
+   notice='召喚完成！最高：'+best.tier+'－'+cfg.short(cfg.info(best.id).name)+'，'+cfg.noun+'已放進背包（雙擊收進圖鑑）。';
+   if(cfg.announce.includes(best.tier))window.GameChat?.say('【全服】'+(window.activeCharacterName||'')+' 從'+cfg.title+'召喚出【'+cfg.info(best.id).name+'】！','drop');
+  }catch(e){notice=e.message;document.querySelector('.dc-summon-skip')?.click();}finally{busy=false;}if(win)render();}
  function gacha(body){
+  if(tab===0){gachaView(body,'doll');return;} // 2026-11-17 使用者：龍脈星晶改成魔法娃娃扭蛋機
   if(tab===1){wuhunGacha(body);return;}
   if(tab>=3){body.append(el('div','dc-empty',gachaTabs[tab]+'收藏尚無資料'));return;}
   const box=el('div','dc-gacha'),art=el('div','dc-crystal','✦'),detail=el('div','dc-gacha-detail');art.setAttribute('aria-hidden','true');detail.append(el('h2','',gachaTabs[tab]),el('p','','凝聚龍脈星光的水晶，召喚時裝、髮型、寵物與稀有道具。'),el('p','dc-muted','獎池、各獎項機率與保底規則待設定；正式開放前不會扣除鑽石。'));

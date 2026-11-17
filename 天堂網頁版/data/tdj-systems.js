@@ -495,8 +495,26 @@ window.TdjSystems = (() => {
   const baseRefresh = refreshCharacter;
   refreshCharacter = function (...args) { const before = owner; ensure(); if (before !== owner) render(); const result = baseRefresh.apply(this, args); drawPhantom(args[0] ?? movementTime()); positionDoll(); positionRings(); return result; };
 
+  // 2026-11-17：背包裡的魔法娃娃／武魂道具（扭蛋機、製作取得）雙擊 → 收進圖鑑變成擁有（道具消失、擁有數 +1）。
+  //  原本擁有數只能靠圖鑑測試按鈕增加，扭蛋抽到的道具只會躺在背包裡。
+  function useItem(uid) {
+    const e = window.OwnedInventory?.items.find(x => x.uid === uid);
+    if (!e || e.item?.kind !== 'etcitem') return null;
+    const dollId = (typeof DOLL_ID_ALIASES !== 'undefined' && DOLL_ID_ALIASES[e.item.id]) || e.item.id;
+    const doll = dollById.get(+dollId), soul = doll ? null : wuhunById.get(+e.item.id);
+    if (!doll && !soul) return null;
+    if (!playing()) { toast('請先進入遊戲角色。'); return false; }
+    if (!OwnedInventory.discard([uid])) { toast('這個道具目前無法收進圖鑑。'); return false; }
+    const n = e.count || 1;
+    if (doll) state.dolls.owned[doll.id] = Math.min(2147483647, (state.dolls.owned[doll.id] || 0) + n);
+    else state.wuhun.owned[soul.id] = Math.min(2147483647, (state.wuhun.owned[soul.id] || 0) + n);
+    save(); render();
+    toast((doll ? '魔法娃娃「' + doll.name + '」' : '武魂「' + soul.name + '」') + '已收進圖鑑' + (n > 1 ? ' ×' + n : '') + '，可到圖鑑' + (doll ? '召喚' : '裝備') + '。');
+    return true;
+  }
   const get = () => (ensure(), state);
   return {
+    useItem,
     dolls: {draw: drawDoll, summon, dismiss, image: dollImage, owned: id => get().dolls.owned[id] || 0, get active() { return get().dolls.active; }},
     enchant: {get: getStone, enchant, current: currentEnchant, image: enchantImage, stones: id => get().enchant.stones[id] || 0},
     wuhun: {changeRings,tiers:WUHUN_TIERS,ringMissing:id=>(ensure(),ringMissing(wuhunById.get(+id))),get ringState(){ensure();return JSON.parse(JSON.stringify({slots:state.wuhun.ringSlots}));},get: getWuhun, equip: equipWuhun, unequip: unequipWuhun, image: wuhunImage, baseGfx: wuhunBaseGfx, owned: id => get().wuhun.owned[id] || 0, get active() { return get().wuhun.active; }},

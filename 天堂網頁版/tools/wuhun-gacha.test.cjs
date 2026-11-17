@@ -30,3 +30,23 @@ test('伺服器扣鑽、發武魂，鑽石不足不扣',async()=>{
   r=await api('/api/gacha/wuhun',{characterId:'g',count:5},auth.cookie);assert.equal(r.status,400);
  }finally{server.close();db.close();}
 });
+// 魔法娃娃扭蛋機（2026-11-17）：89 隻、機率合計 100%、十連保底高級以上、伺服器路由會發娃娃道具
+const D=require('../data/doll-gacha-data.js');
+test('娃娃獎池 89 隻、七級機率合計 100%、帕歐 20 分在超越',()=>{
+ assert.equal(D.tiers.reduce((n,t)=>n+t.ids.length,0),89);
+ assert.equal(Math.round(D.tiers.reduce((n,t)=>n+t.rate,0)*1000)/1000,100);
+ assert.deepEqual(D.tiers.find(t=>t.tier==='超越').ids,[39149]);
+ const ten=D.draw(10,()=>0);assert(ten.some(x=>x.rank>=1));
+ const s=require('../data/server/server-settings.json');for(const t of D.tiers)for(const id of t.ids)assert(s.items['etcitem:'+id],'伺服器沒有道具 etcitem:'+id);
+});
+test('伺服器 /api/gacha/doll 發娃娃道具',async()=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'lineage-doll-')),file=path.join(dir,'t.sqlite');
+ const items={};for(const t of D.tiers)for(const id of t.ids)items['etcitem:'+id]={kind:'etcitem',stackable:false,trade:true};
+ const server=createGameServer({database:file,settings:{items,classes:{騎士:{base:{str:20,dex:15,con:10,wis:10,cha:10,int:10},points:0}}}});await new Promise(r=>server.listen(0,'127.0.0.1',r));const db=new DatabaseSync(file),base='http://127.0.0.1:'+server.address().port;
+ const api=async(route,data,cookie)=>{const r=await fetch(base+route,{method:'POST',headers:{'Content-Type':'application/json',...(cookie?{Cookie:cookie}:{})},body:JSON.stringify(data)});return {status:r.status,data:await r.json(),cookie:r.headers.get('set-cookie')?.split(';')[0]};};
+ try{const auth=await api('/api/auth',{name:'dollg',password:'testpass',register:true});
+  db.prepare('INSERT INTO states(user_id,revision,payload) VALUES(?,0,?)').run(auth.data.user.id,JSON.stringify({characters:[{id:'g',name:'g',role:'騎士',gender:0,stats:{str:20,dex:15,con:10,wis:10,cha:10,int:10},level:1,diamonds:2000,inventory:[]},null,null,null],warehouse:[]}));
+  const r=await api('/api/gacha/doll',{characterId:'g',count:10},auth.cookie);assert.equal(r.status,200);assert.equal(r.data.results.length,10);
+  const c=JSON.parse(db.prepare('SELECT payload FROM states WHERE user_id=?').get(auth.data.user.id).payload).characters[0];assert.equal(c.inventory.length,10);assert.equal(c.diamonds,2000-D.prices[10]);
+ }finally{server.close();db.close();}
+});

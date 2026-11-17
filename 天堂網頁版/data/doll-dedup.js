@@ -8,3 +8,7 @@ const DOLL_ID_ALIASES={"80346":55006,"80347":55011,"80348":55000,"80349":55002,"
 (()=>{const fix={39039:{name:'小祭司',effects:['魔法武器']},80382:{effects:['遠距離攻擊+1','遠距離命中+2']}};
  for(const d of gameCatalogData.dolls)if(fix[d.id])Object.assign(d,fix[d.id]);
  if(typeof INTERFACE_CATALOG!=='undefined')for(const item of INTERFACE_CATALOG.items)if(item.kind==='etcitem'&&fix[item.id]?.name)item.name=fix[item.id].name;})();
+// 2026-11-17 使用者：四龍娃娃只有安塔瑞斯沒有進擊版 → 補「進擊娃娃：安塔瑞斯」（80515，原版資料庫沒有這筆）。
+//  能力、外觀、材料照安塔瑞斯（其他三隻進擊版也是沿用原版數值）；背包道具在 extra-doll-items.js，進化系列在 doll-evolution.js。
+(()=>{const base=gameCatalogData.dolls.find(d=>d.id===80383);if(base&&!gameCatalogData.dolls.some(d=>d.id===80515))gameCatalogData.dolls.push({...base,id:80515,name:'進擊娃娃：安塔瑞斯',img:'dolls-80515.png',effects:[...base.effects],materials:base.materials.map(m=>[...m])});
+})();
