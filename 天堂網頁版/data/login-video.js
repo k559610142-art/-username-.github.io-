@@ -37,15 +37,16 @@
  }
  function leave(){ready=false;stage.classList.remove('login-video-mode','login-video-shown');form.style.transform='';for(const el of [document.querySelector('#login-account'),document.querySelector('#login-password'),document.querySelector('#login-submit'),message])if(el)el.removeAttribute('style');for(const [node] of hots)node.remove();}
  video.loop=false;video.removeAttribute('loop');
- // 影片配樂（2026-11-17 使用者：登入畫面只要影片配樂）：影片本身一律靜音，配樂用另一個音訊播放器放同一個檔案（同網址走快取）。
+ // 影片配樂（2026-11-17 使用者：登入畫面只要影片配樂）：影片本身一律靜音，配樂用另一個音訊播放器放從影片抽出的 login-music.m4a。
  //  瀏覽器通常擋有聲自動播放，而玩家多半等登入框出來（影片已播完）才點 → 第一次點擊／按鍵時從影片當下進度（播完就從頭）開始放，
  //  停在登入畫面期間循環播放；離開登入畫面就停（遊戲音樂 music0 由 island-music.js 在登入畫面靜音）。
  const onLogin=()=>!document.querySelector('#login-screen')?.hidden;
- const bgm=new Audio(video.currentSrc||video.getAttribute('src'));bgm.loop=true;bgm.volume=.7;bgm.preload='auto';window.LoginBgm=bgm; // 除錯／檢查用
+ const bgm=new Audio('assets/entry/login-music.m4a?v=1'); // 從影片抽出的音軌（tools/extract-audio.ps1，168KB）；直接載 12MB 影片會跟畫面搶頻寬、點擊後卡住
+ bgm.loop=true;bgm.volume=.7;bgm.preload='auto';window.LoginBgm=bgm; // 除錯／檢查用
  let wantSound=false;
  const syncSound=()=>{if(!wantSound||!onLogin()||document.hidden){if(!bgm.paused)bgm.pause();return;}if(bgm.paused){if(!video.ended&&!video.paused)bgm.currentTime=video.currentTime;bgm.play().catch(()=>{});}};
- const firstGesture=()=>{if(wantSound)return;wantSound=true;if(video.ended||video.paused)bgm.currentTime=0;syncSound();};
- for(const ev of ['pointerdown','keydown','touchend'])document.addEventListener(ev,firstGesture,{passive:true,capture:true});
+ const firstGesture=()=>{if(!wantSound){wantSound=true;if(video.ended||video.paused)bgm.currentTime=0;}syncSound();}; // 手機觸控的 pointerdown 不算使用者操作，之後的 touchend／click 會再試一次
+ for(const ev of ['pointerdown','pointerup','touchend','click','keydown'])document.addEventListener(ev,firstGesture,{passive:true,capture:true});
  document.addEventListener('visibilitychange',syncSound);setInterval(syncSound,500);
  video.muted=true;
  // 有些瀏覽器（互動分數高）允許有聲自動播放：先試一次，成功就跟影片同步開始
