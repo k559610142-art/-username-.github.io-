@@ -18,3 +18,13 @@
 .dc-summon-skip{position:absolute;right:max(16px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));padding:8px 16px;border:1px solid #c9a45a;border-radius:6px;background:#1b1610cc;color:#f1dfae;font-size:14px;cursor:pointer}
 .dc-summon-out{opacity:0;transition:opacity .35s}
 @keyframes dcSummonIn{from{opacity:0}to{opacity:1}}
+
+/* 2026-11-17 娃娃扭蛋機：結果疊在召喚影片最後一格上 */
+.dc-summon-result{position:absolute;left:50%;bottom:max(18px,4dvh);transform:translateX(-50%);width:min(92vw,640px);display:flex;flex-direction:column;align-items:center;gap:10px;padding:12px 14px 14px;background:linear-gradient(#0b0d12b0,#05060acc);border:1px solid #c9a45a99;border-radius:10px;box-shadow:0 0 24px #000c;animation:dcSummonIn .35s ease-out}
+.dc-summon-title{color:#f4dfa6;font-size:18px;font-weight:700;letter-spacing:4px;text-shadow:0 0 8px #e9b75a,0 1px 2px #000}
+.dc-summon-cards{display:flex;justify-content:center;gap:8px;width:100%}.dc-summon-cards.many{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
+.dc-summon-cards .dc-wuhun-card{min-width:96px;opacity:0;animation:dcCardPop .45s ease-out forwards;box-shadow:0 0 10px var(--glow)}
+.dc-summon-cards.many .dc-wuhun-card{min-width:0}
+.dc-summon-ok{min-width:120px;padding:8px 22px;border:1px solid #c9a45a;border-radius:6px;background:linear-gradient(#3a2d17,#1b1409);color:#f6e2ae;font-size:15px;cursor:pointer}
+@keyframes dcCardPop{0%{opacity:0;transform:scale(.6) translateY(10px)}70%{opacity:1;transform:scale(1.08)}100%{opacity:1;transform:none}}
+@media (max-width:700px){.dc-summon-cards.many{grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}.dc-summon-cards .dc-wuhun-card{padding:4px 2px}.dc-summon-cards .dc-wuhun-card img{width:30px;height:30px}.dc-summon-cards .dc-wuhun-name{font-size:10px}.dc-summon-title{font-size:15px}}

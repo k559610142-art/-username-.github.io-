@@ -37,7 +37,7 @@ const DiamondCommerce=(()=>{
  function dollInfo(id){const d=typeof gameCatalogData!=='undefined'?gameCatalogData.dolls.find(x=>x.id===id):null,item=INTERFACE_CATALOG.items.find(i=>i.kind==='etcitem'&&i.id===id);return {name:d?.name||item?.name||('魔法娃娃 '+id),icon:(d&&window.TdjSystems?.dolls?.image(d))||item?.icon||''};}
  const GACHA={
   wuhun:{data:()=>window.WUHUN_GACHA,route:'/api/gacha/wuhun',title:'武魂扭蛋機',noun:'武魂',desc:'召喚上品到四神獸共 42 種武魂。十連保底至少 1 個極品以上。',art:'assets/interface/wuhun/gacha-art.jpg?v=1',colors:TIER_COLOR,info:wuhunInfo,short:n=>n.replace(/^[^-]*-/,''),rateName:n=>n.replace(/^[^-]*-/,'').replace(/武魂$/,''),announce:['上古','四神獸']},
-  doll:{data:()=>window.DOLL_GACHA,route:'/api/gacha/doll',video:'assets/interface/dolls/gacha-summon.mp4?v=1',title:'魔法娃娃扭蛋機',noun:'魔法娃娃',desc:'召喚 89 種魔法娃娃（一般～超越）。十連保底至少 1 隻高級以上。',art:null,colors:DOLL_COLOR,info:dollInfo,short:n=>n,rateName:n=>n.replace(/^.*：/,''),announce:['神話','超越']}
+  doll:{data:()=>window.DOLL_GACHA,route:'/api/gacha/doll',video:'assets/interface/dolls/gacha-summon.mp4?v=1',hold:true,title:'魔法娃娃扭蛋機',noun:'魔法娃娃',desc:'召喚 89 種魔法娃娃（一般～超越）。十連保底至少 1 隻高級以上。',art:null,colors:DOLL_COLOR,info:dollInfo,short:n=>n,rateName:n=>n.replace(/^.*：/,''),announce:['神話','超越']}
  };
  const gachaState={wuhun:{results:null,rates:false},doll:{results:null,rates:false}};
  function gachaView(body,kind){
@@ -58,21 +58,30 @@ const DiamondCommerce=(()=>{
  function wuhunGacha(body){gachaView(body,'wuhun');}
  // 2026-11-17 使用者：抽卡先跳出召喚影片（assets/interface/wuhun/gacha-summon.mp4，約 10 秒），影片播完才出現抽到的武魂。
  //  按下就開始播（算使用者操作，可以有聲音），同時向伺服器抽；兩邊都好了才顯示結果。點「跳過」或影片出錯就直接進結果。
- function summonVideo(src='assets/interface/wuhun/gacha-summon.mp4?v=1'){return new Promise(resolve=>{const box=el('div','dc-summon'),video=document.createElement('video'),skip=el('button','dc-summon-skip','跳過 ▶');
+ // hold（2026-11-17 娃娃扭蛋機）：影片播完停在最後一格（小龍閉眼微笑），回傳畫面框讓結果直接疊在影片上；按「跳過」就靜音快轉到最後一格。
+ function summonVideo(src='assets/interface/wuhun/gacha-summon.mp4?v=1',hold=false){return new Promise(resolve=>{const box=el('div','dc-summon'),video=document.createElement('video'),skip=el('button','dc-summon-skip','跳過 ▶');
   video.src=src;video.playsInline=true;video.preload='auto';skip.type='button';
-  let done=false;const finish=()=>{if(done)return;done=true;video.pause();box.classList.add('dc-summon-out');setTimeout(()=>box.remove(),350);resolve();};
-  video.onended=finish;video.onerror=finish;skip.onclick=finish;box.append(video,skip);document.querySelector('.game')?.append(box)||document.body.append(box);
+  let done=false;const close=()=>{video.pause();box.classList.add('dc-summon-out');setTimeout(()=>box.remove(),350);};
+  const finish=()=>{if(done)return;done=true;video.pause();close();resolve(null);};
+  const held=()=>{if(done)return;done=true;video.pause();skip.remove();resolve({box,close});};
+  const toEnd=()=>{if(done)return;skip.remove();video.muted=true;video.playbackRate=16;video.play().catch(held);setTimeout(held,3000);}; // 快轉到結尾（不用 seek：不支援 Range 的伺服器 seek 會失敗）
+  video.onended=hold?held:finish;video.onerror=finish;skip.onclick=hold?toEnd:finish;box.append(video,skip);document.querySelector('.game')?.append(box)||document.body.append(box);
   video.play().catch(()=>{video.muted=true;video.play().catch(finish);});});}
- async function drawGacha(kind,count){if(busy)return;const cfg=GACHA[kind],st=gachaState[kind],G=cfg.data();busy=true;notice='';st.results=null;render();const film=summonVideo(cfg.video); // 2026-11-17 娃娃扭蛋機用使用者給的另一支召喚影片
+ // 抽到的結果直接疊在召喚影片最後一格上（娃娃扭蛋機），一張一張亮出來，按「確定」關掉影片回扭蛋機畫面。
+ function resultOverlay({box,close},cfg,results){const pane=el('div','dc-summon-result'),grid=el('div','dc-summon-cards'+(results.length>1?' many':''));
+  results.forEach((r,i)=>{const info=cfg.info(r.id),card=el('div','dc-wuhun-card'),img=el('img');img.alt='';if(info.icon)img.src=info.icon;const tier=el('span','dc-wuhun-tier',r.tier);tier.style.color=cfg.colors[r.tier]||'';card.style.borderColor=cfg.colors[r.tier]||'';card.style.setProperty('--glow',cfg.colors[r.tier]||'#c9a45a');card.style.animationDelay=(i*.12)+'s';card.append(img,tier,el('span','dc-wuhun-name',cfg.short(info.name)));grid.append(card);});
+  const ok=el('button','dc-summon-ok','確定');ok.type='button';let gone=false;const shut=()=>{if(gone)return;gone=true;document.removeEventListener('keydown',key,true);close();};const key=e=>{if(e.key==='Enter'||e.key==='Escape'){e.preventDefault();shut();}};ok.onclick=shut;document.addEventListener('keydown',key,true);
+  pane.append(el('div','dc-summon-title','召喚結果'),grid,ok);box.append(pane);}
+ async function drawGacha(kind,count){if(busy)return;const cfg=GACHA[kind],st=gachaState[kind],G=cfg.data();busy=true;notice='';st.results=null;render();const film=summonVideo(cfg.video,cfg.hold); // 2026-11-17 娃娃扭蛋機用使用者給的另一支召喚影片
   try{let results;
    if(window.LocalServerClient?.online){results=(await LocalServerClient.act(cfg.route,{count})).results||[];}
    else if(G.free){if(window.gameFlowState!=='playing'||!window.OwnedInventory)throw new Error('請先進入遊戲角色。');if(OwnedInventory.items.length+count>179)throw new Error('背包空間不足，請先整理背包。');
     const rolled=G.draw(count,Math.random);if(!OwnedInventory.reward(0,rolled.map(r=>({key:r.key,count:1}))))throw new Error('背包空間不足或無法放入，請先整理背包。');results=rolled.map(r=>({id:r.id,tier:r.tier}));}
    else throw new Error(cfg.title+'需要登入本機多人伺服器。');
-   await film;st.results=results;const rank=r=>G.tiers.findIndex(t=>t.tier===r.tier),best=results.reduce((a,b)=>rank(b)>rank(a)?b:a,results[0]);
+   const shown=await film;st.results=results;if(shown)resultOverlay(shown,cfg,results);const rank=r=>G.tiers.findIndex(t=>t.tier===r.tier),best=results.reduce((a,b)=>rank(b)>rank(a)?b:a,results[0]);
    notice='召喚完成！最高：'+best.tier+'－'+cfg.short(cfg.info(best.id).name)+'，'+cfg.noun+'已放進背包（雙擊收進圖鑑）。';
    if(cfg.announce.includes(best.tier))window.GameChat?.say('【全服】'+(window.activeCharacterName||'')+' 從'+cfg.title+'召喚出【'+cfg.info(best.id).name+'】！','drop');
-  }catch(e){notice=e.message;document.querySelector('.dc-summon-skip')?.click();}finally{busy=false;}if(win)render();}
+  }catch(e){notice=e.message;document.querySelector('.dc-summon-skip')?.click();film.then(h=>h?.close());}finally{busy=false;}if(win)render();}
  function gacha(body){
   if(tab===0){gachaView(body,'doll');return;} // 2026-11-17 使用者：龍脈星晶改成魔法娃娃扭蛋機
   if(tab===1){wuhunGacha(body);return;}
