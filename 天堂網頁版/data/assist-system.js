@@ -18,7 +18,7 @@ const AssistSystem=(()=>{
  // 2026-11-18 使用者：商店沒賣或職業不能用時（例如騎士的慎重藥水）也顯示該道具的圖，不要只有購物車
  const BUY_ICON={tp:'etcitem:40100',home:'etcitem:40081',heal:'etcitem:40010',haste:'etcitem:40018',brave:'etcitem:40014',wisdom:'etcitem:40016',blue:'etcitem:40015',arrow:'etcitem:40743'};
  const BUYS=[['tp','瞬間移動卷軸',10],['home','傳送回家的卷軸',5],['heal','補血道具（補給選的那種）',100],['haste','綠色藥水',5],['brave','勇敢藥水類',5],['wisdom','慎重藥水',5],['blue','藍色藥水',5],['arrow','箭（裝備弓時）',1000]];
- const base=()=>({noMobTp:false,noMobSec:10,potions:{haste:false,brave:false,wisdom:false,blue:false},attackOn:false,attackSkill:null,attackMp:30,buffs:[],list:{},escape:false,healFallback:false,morph:false,openOn:false,openSkill:null,openMp:50,aoeOn:false,aoeSkill:null,aoeRange:3,aoeCount:3,aoeMp:50,mindOn:false,mindHp:80,mindMp:40,summonOn:false,ringOn:false,expAuto:false,barrierScroll:false,pick:{haste:null,brave:null,wisdom:null,blue:null},buy:Object.fromEntries(BUYS.map(([k,,n])=>[k,{on:false,n}]))});
+ const base=()=>({noMobTp:false,noMobSec:10,potions:{haste:false,brave:false,wisdom:false,blue:false},attackOn:false,attackSkill:null,attackMp:30,buffs:[],list:{},escape:false,healFallback:false,morph:false,morphCard:null,morphLost:false,openOn:false,openSkill:null,openMp:50,aoeOn:false,aoeSkill:null,aoeRange:3,aoeCount:3,aoeMp:50,mindOn:false,mindHp:80,mindMp:40,summonOn:false,ringOn:false,expAuto:false,barrierScroll:false,pick:{haste:null,brave:null,wisdom:null,blue:null},buy:Object.fromEntries(BUYS.map(([k,,n])=>[k,{on:false,n}]))});
  let state=base(),owner='',dialog=null,tab='hunt',idleSince=0,lastTp=0,retry=new Map(),escapes=[],lostMorph=null,seenMorph=null,lastOpen=null;
  const int=(v,lo,hi,d)=>Number.isInteger(v)?Math.max(lo,Math.min(hi,v)):d;
  function validate(v){const s=base();if(!v||typeof v!=='object')return s;
@@ -26,6 +26,7 @@ const AssistSystem=(()=>{
   s.attackOn=v.attackOn===true;s.attackSkill=Number.isInteger(v.attackSkill)&&playerSkillData.skills[v.attackSkill]?v.attackSkill:null;s.attackMp=int(v.attackMp,0,99,30);
   s.buffs=Array.isArray(v.buffs)?[...new Set(v.buffs.filter(id=>Number.isInteger(id)&&playerSkillData.skills[id]))]:[];
   for(const k of ['escape','healFallback','morph','openOn','aoeOn','mindOn','summonOn','ringOn','expAuto','barrierScroll'])s[k]=v[k]===true;
+  s.morphCard=typeof v.morphCard==='string'&&v.morphCard.length<80?v.morphCard:null;s.morphLost=v.morphLost===true; // 記憶的變身卡（2026-11-18）
   const skillOk=id=>Number.isInteger(id)&&playerSkillData.skills[id]?id:null;s.openSkill=skillOk(v.openSkill);s.aoeSkill=skillOk(v.aoeSkill);
   s.openMp=int(v.openMp,0,99,50);s.aoeRange=int(v.aoeRange,1,8,3);s.aoeCount=int(v.aoeCount,2,10,3);s.aoeMp=int(v.aoeMp,0,99,50);s.mindHp=int(v.mindHp,1,99,80);s.mindMp=int(v.mindMp,1,99,40);
   for(const k of Object.keys(s.pick))s.pick[k]=typeof v.pick?.[k]==='string'&&catalog.has(v.pick[k])?v.pick[k]:null;
@@ -78,8 +79,12 @@ const AssistSystem=(()=>{
  function tick(){
   if(window.gameFlowState!=='playing'||owner!==window.activeCharacterId||OwnedInventory.owner!==owner)return;
   // 倒地的同一刻變身就被取消（TransformCards.onDeath），所以平常就記住目前變身；活著時自己取消變身則清掉，不會被自動變回去
-  if(CharacterActions.dead||hp<=0){if(seenMorph)lostMorph=seenMorph;seenMorph=null;return;}
+  // 2026-11-18 使用者：記憶使用的變身卡 → 變身中的卡存進設定（morphCard，跟著角色存檔、重新整理也在）；倒地時記下 morphLost，復活後變回記憶的那張
+  if(CharacterActions.dead||hp<=0){if(seenMorph)lostMorph=seenMorph;seenMorph=null;if(state.morphCard&&!state.morphLost)save({morphLost:true});return;}
   if(!lostMorph)seenMorph=TransformCards.active||null;
+  if(TransformCards.active&&TransformCards.active!==state.morphCard)save({morphCard:TransformCards.active,morphLost:false});
+  else if(TransformCards.active&&state.morphLost)save({morphLost:false});
+  if(!lostMorph&&state.morphLost&&state.morph&&state.morphCard)lostMorph=state.morphCard;
   const now=movementTime(),auto=IslandCombat.mode==='auto';
   if(escape(now))return;
   if(autoBuy(now))return;
@@ -90,7 +95,7 @@ const AssistSystem=(()=>{
   if(auto&&state.noMobTp){if(IslandMonsters.target?.hp||!idleSince)idleSince=now;else if(now-idleSince>=state.noMobSec*1000){idleSince=now;if(teleport())return;}}else idleSince=0;
   if(busy())return;
   // 死亡後自動再變身（變身卡）
-  if(lostMorph){const name=lostMorph;if(!state.morph||TransformCards.active)lostMorph=null;else if((retry.get('morph')||0)<=now){retry.set('morph',now+5000);if(TransformCards.owned(name)&&TransformCards.activate(name)){lostMorph=null;return;}}}
+  if(lostMorph){const name=state.morphCard||lostMorph;if(!state.morph||TransformCards.active){lostMorph=null;if(state.morphLost&&!state.morph)save({morphLost:false});}else if((retry.get('morph')||0)<=now){retry.set('morph',now+5000);if(TransformCards.owned(name)&&TransformCards.activate(name)){lostMorph=null;save({morphLost:false});return;}if(!TransformCards.owned(name)){lostMorph=null;save({morphLost:false});}}}
   // 洗魔：心靈轉換
   if(state.mindOn&&learned().includes(130)&&pctOf(hp,maxHp)>=state.mindHp&&pctOf(mp,maxMp)<state.mindMp&&(retry.get('mind')||0)<=now){retry.set('mind',now+1500);if(ClassBuffs.cast(130))return;}
   // 召喚：身邊沒有召喚物時（掛機中）
@@ -190,7 +195,7 @@ const AssistSystem=(()=>{
   p.append(head('其他補給'),group(
    row(ico(bestExp?.key,'📗'),'經驗藥水','打怪（AUTO）時效果沒了自動喝 · 高的先喝 · 身上 '+expItems.reduce((n,e)=>n+e.count,0)+' 個',switcher(state.expAuto,on=>save({expAuto:on}),'自動喝經驗藥水')),
    row(ico(barrier[0]?.key||'etcitem:40889','📜'),'魔法屏障卷軸','沒有魔法屏障時自動用 · 身上 '+barrier.reduce((n,e)=>n+e.count,0)+' 張',switcher(state.barrierScroll,on=>save({barrierScroll:on}),'自動用魔法屏障卷軸'))));
-  const cur=TransformCards.active;p.append(head('變身'),group(row('🎭','死亡後自動再變身',(cur?'目前變身：'+cur+'。':'目前沒有變身。')+'倒地後變身會消失，復活後自動變回死亡前的那張變身卡',switcher(state.morph,on=>save({morph:on}),'死亡後自動再變身'))));
+  const cur=TransformCards.active;p.append(head('變身'),group(row('🎭','死亡後自動再變身','記憶的變身卡：'+(state.morphCard||'（還沒有，變身一次就會記住）')+'。'+(cur?'目前變身：'+cur+'。':'目前沒有變身。')+'倒地後變身會消失，復活後自動變回記憶的那張變身卡（重新整理也會記得）',switcher(state.morph,on=>save({morph:on}),'死亡後自動再變身'))));
   const buyRows=BUYS.map(([k,label])=>{const b=state.buy[k],pr=product(k),qty=el('select');qty.setAttribute('aria-label',label+' 購買數量');
    for(const n of QTY)qty.append(new Option('×'+n,String(n),false,n===b.n));qty.onchange=()=>{save({buy:{...state.buy,[k]:{...b,n:Number(qty.value)}}});render();};
    const packs=pr?Math.ceil(b.n/pr.pack):0,note=pr?catalog.get(pr.key).name+' · 一次 '+(packs*pr.pack)+' 個 '+(packs*pr.price).toLocaleString()+' 金幣':k==='heal'&&!AutoPotion.snapshot.key?'先在上面選補血道具':'商店沒賣或目前職業不能用';
