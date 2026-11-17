@@ -37,11 +37,19 @@
  }
  function leave(){ready=false;stage.classList.remove('login-video-mode','login-video-shown');form.style.transform='';for(const el of [document.querySelector('#login-account'),document.querySelector('#login-password'),document.querySelector('#login-submit'),message])if(el)el.removeAttribute('style');for(const [node] of hots)node.remove();}
  video.loop=false;video.removeAttribute('loop');
- // 影片配樂（2026-11-17 使用者：登入畫面只要影片配樂）：先試著有聲自動播放；瀏覽器擋下就改靜音播放，第一次點擊／按鍵再打開聲音
+ // 影片配樂（2026-11-17 使用者：登入畫面只要影片配樂）：影片本身一律靜音，配樂用另一個音訊播放器放同一個檔案（同網址走快取）。
+ //  瀏覽器通常擋有聲自動播放，而玩家多半等登入框出來（影片已播完）才點 → 第一次點擊／按鍵時從影片當下進度（播完就從頭）開始放，
+ //  停在登入畫面期間循環播放；離開登入畫面就停（遊戲音樂 music0 由 island-music.js 在登入畫面靜音）。
  const onLogin=()=>!document.querySelector('#login-screen')?.hidden;
- const unmute=()=>{if(!video.muted)return;video.muted=false;if(video.paused&&!video.ended&&onLogin()&&!(portrait()&&video.currentTime>=PORTRAIT_STOP))video.play().catch(()=>{});};
- for(const ev of ['pointerdown','keydown','touchend'])document.addEventListener(ev,unmute,{passive:true});
- video.muted=false;video.play().catch(()=>{video.muted=true;video.play().catch(()=>{});});
+ const bgm=new Audio(video.currentSrc||video.getAttribute('src'));bgm.loop=true;bgm.volume=.7;bgm.preload='auto';window.LoginBgm=bgm; // 除錯／檢查用
+ let wantSound=false;
+ const syncSound=()=>{if(!wantSound||!onLogin()||document.hidden){if(!bgm.paused)bgm.pause();return;}if(bgm.paused){if(!video.ended&&!video.paused)bgm.currentTime=video.currentTime;bgm.play().catch(()=>{});}};
+ const firstGesture=()=>{if(wantSound)return;wantSound=true;if(video.ended||video.paused)bgm.currentTime=0;syncSound();};
+ for(const ev of ['pointerdown','keydown','touchend'])document.addEventListener(ev,firstGesture,{passive:true,capture:true});
+ document.addEventListener('visibilitychange',syncSound);setInterval(syncSound,500);
+ video.muted=true;
+ // 有些瀏覽器（互動分數高）允許有聲自動播放：先試一次，成功就跟影片同步開始
+ bgm.play().then(()=>{wantSound=true;bgm.currentTime=video.currentTime;}).catch(()=>{});
  video.addEventListener('timeupdate',()=>{
   if(portrait()){if(video.currentTime>=PORTRAIT_STOP){if(!video.paused)video.pause();fallback(true);}if(ready)leave();return;}
   if(video.currentTime>=SHOW_AT)enter();
