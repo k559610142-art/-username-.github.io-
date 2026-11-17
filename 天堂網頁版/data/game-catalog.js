@@ -1962,7 +1962,7 @@ function openGameCatalog(type) {
   function refreshCards() {
     const query = search.value.trim().toLowerCase();
     const visible = entries.filter(row => activeFilter(row) &&
-      [row.name, row.gfx, row.card?.p?.gfx, row.card?.p?.id, ...(row.card?.aliases||[]), ...(row.required || []), ...(type==='dolls'?DollEvolution.members(row.id).flatMap(d=>[d.name,d.gfx]):[])].join(' ').toLowerCase().includes(query));
+      [row.name, row.card?.dn, row.gfx, row.card?.p?.gfx, row.card?.p?.id, ...(row.card?.aliases||[]), ...(row.required || []), ...(type==='dolls'?DollEvolution.members(row.id).flatMap(d=>[d.name,d.gfx]):[])].join(' ').toLowerCase().includes(query));
     cards.replaceChildren();
     for (const row of visible) {
       const card = catalogButton('', () => showDetails(row), 'game-catalog-card');

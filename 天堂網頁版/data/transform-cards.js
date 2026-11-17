@@ -4,7 +4,7 @@ window.TransformCards = (() => {
   const book = transformCardBook;
   const byName = new Map(book.map(card => [card.n, card]));
   // 顯示名稱（2026-11-17 使用者：神話・炎魔改名炎魔）。卡名同時是收集紀錄與稀有度的鍵，兩張都叫「炎魔」會撞名，所以只改畫面上顯示的名字。
-  const DISPLAY_NAMES = {'神話・炎魔': '炎魔'};
+  const DISPLAY_NAMES = {'神話・炎魔': '炎魔', '疾風精靈王': '黑暗精靈王', '關刀聖使': '獄火死亡騎士'}; // 2026-11-17 使用者：疾風精靈王→黑暗精靈王、關刀聖使→獄火死亡騎士（只改顯示名，收藏與稀有度仍用原卡名）
   for (const card of book) if (DISPLAY_NAMES[card.n]) card.dn = DISPLAY_NAMES[card.n];
   const label = name => byName.get(name)?.dn || name;
   const gradeWeights = {1: 40, 2: 28, 3: 18, 4: 9, 5: 4, 6: 0.9, 7: 0.1, 8: 0};
