@@ -142,17 +142,27 @@
  if(!['all','weapon','armor','etcitem'].includes(catalogKind))catalogKind='all';
  const baseEquipment=renderEquipmentPane,baseInventory=renderInventoryPane;
  function equipView(){const box=el('div','qy-equip'),p=PlayerClassStats.read(),a=p.attributes||{},d=window.NativeCombatRules?.defense?.()||{};
-  const name=el('div','qy-eq-name',window.activeCharacterName||job);name.append(el('small','','Lv.'+p.level+' '+job));box.append(name);
-  for(const [k,v,m]of [['hp',hp,maxHp],['mp',mp,maxMp]]){const bar=el('div','qy-eq-bar '+k),i=el('i');i.style.width=(m?Math.max(0,Math.min(100,v/m*100)):0)+'%';const s=el('span','',k.toUpperCase()+' '+v+' / '+m);s.dataset.qyBar=k;bar.append(i,s);box.append(bar)}
   const source=baseEquipment(),buttons=new Map();[...source.querySelectorAll('.equipment-slot')].forEach((b,i)=>{b.removeAttribute('style');buttons.set(equipmentSlots[i]?.[0],b)});
   const col=keys=>{const c=el('div','qy-doll-col');for(const k of keys){const b=buttons.get(k);if(b)c.append(b)}return c};
   const right=OwnedInventory.items.some(e=>e.slot==='weapon2')?'weapon2':'shield'; // 右手欄：裝了第二把斧就顯示斧，否則盾牌／臂甲
-  const LAYOUT=[[null,'helm','earring'],[null,'necklace',null],['tshirt','armor','cloak'],['ring1','belt','ring2'],['ring3','glove','ring4'],['weapon',null,right],[null,'boots',null]];
-  const doll=el('div','qy-doll3'),COLS=[3,59,114],ROWS=[5,50,95,140,185,230,275],lv=Number(window.activeCharacterLevel)||1,LOCK={ring3:76,ring4:81};
-  LAYOUT.forEach((row,r)=>row.forEach((k,c)=>{const b=k&&buttons.get(k);if(!b)return;b.style.setProperty('--x',(COLS[c]/152*100)+'%');b.style.setProperty('--y',(ROWS[r]/330*100)+'%');
-   if(LOCK[k]&&lv<LOCK[k]){b.classList.add('qy-locked');b.append(el('span','qy-slot-lock','Lv.'+LOCK[k]));b.title='Lv.'+LOCK[k]+' 開放';}doll.append(b);}));box.append(doll);
-  const s=el('div','qy-eq-stats');for(const [l,v]of [['力量',a.str],['敏捷',a.dex],['體質',a.con],['智力',a.int],['精神',a.wis],['魅力',a.cha],['防禦',previewArmorClass()],['魔防',d.mr||0],['正義',window.activeCharacterLawful??0]]){const c=el('div');c.append(el('span','',l),el('b','',String(v??'—')));s.append(c)}box.append(s);return box}
- function padGrid(grid){const items=grid.querySelectorAll('.item-slot:not(.empty)').length,blanks=[...grid.querySelectorAll('.item-slot.empty')],want=Math.max(24,Math.ceil(items/4)*4)-items;
+  // 2026-11-17 使用者：人物狀態／裝備直接用天地劫天堂客戶端的介面圖（Sprite.idx 563c.img，257×336，狀態與裝備同一張）。
+  //  12 個裝備格照原圖位置（左上角座標，格寬 33）；原圖沒有的耳環、第 3～4 枚戒指放在圖下方一排。數值填進原圖的欄位。
+  const SLOT={helm:[174,33],necklace:[138,55],tshirt:[110,95],armor:[147,95],cloak:[184,95],weapon:[77,133],belt:[160,131],[right]:[199,143],ring1:[80,167],glove:[115,153],ring2:[193,179],boots:[196,265]};
+  const sheet=el('div','qy-sheet'),lv=Number(window.activeCharacterLevel)||1,LOCK={ring3:76,ring4:81},X=v=>(v/257*100)+'%',Y=v=>(v/336*100)+'%';
+  const put=(cls,text,x,y,w,h,key)=>{const t=el('span','qy-f '+cls,String(text??''));t.style.left=X(x);t.style.top=Y(y);t.style.width=X(w);t.style.height=Y(h);if(key)t.dataset.qyVital=key;sheet.append(t);return t};
+  const x=expInfo(),circle={法師:[4,10],妖精:[8,6],王族:[10,2],騎士:[50,1],黑妖:[12,2]}[job],magicLv=circle?Math.min(circle[1],Math.floor(lv/circle[0])):0;
+  put('wide','Lv.'+lv+'　'+x.pct.toFixed(2)+'%',80,13,140,12);
+  put('',hp+'/'+maxHp,80,35,50,12,'hp');put('',mp+'/'+maxMp,80,50,50,12,'mp');put('',previewArmorClass(),80,65,50,12);
+  put('',weightPct()+'%',59,88,44,12);put('','—',59,101,44,12);
+  [a.str,a.dex,a.con,a.int,a.wis,a.cha].forEach((v,i)=>put('',v??'—',38,125+i*13,34,12));
+  put('',magicLv,96,218,30,12);put('',p.sp||0,96,231,30,12);put('name',window.activeCharacterName||'',153,242,77,13);
+  [d.elements?.earth,d.elements?.water,d.elements?.fire,d.elements?.wind].forEach((v,i)=>put('',v||0,82,274+i*13,32,12));
+  put('',d.dodge||0,154,300,45,12);
+  for(const [k,[sx,sy]]of Object.entries(SLOT)){const b=buttons.get(k);if(!b)continue;b.classList.add('qy-sheet-slot');b.style.setProperty('--x',X(sx));b.style.setProperty('--y',Y(sy));sheet.append(b)}
+  box.append(sheet);
+  const extra=el('div','qy-sheet-extra');for(const [k,l]of [['earring','耳環'],['ring3','戒指'],['ring4','戒指']]){const b=buttons.get(k);if(!b)continue;const cell=el('label','qy-extra-cell');cell.append(b,el('span','',l));if(LOCK[k]&&lv<LOCK[k]){b.classList.add('qy-locked');b.append(el('span','qy-slot-lock','Lv.'+LOCK[k]));b.title='Lv.'+LOCK[k]+' 開放';}extra.append(cell)}
+  box.append(extra);return box}
+ function padGrid(grid){const items=grid.querySelectorAll('.item-slot:not(.empty)').length,blanks=[...grid.querySelectorAll('.item-slot.empty')],want=Math.max(32,Math.ceil(items/4)*4)-items;
   if(blanks.length===want)return;for(const b of blanks.slice(want))b.remove();for(let i=blanks.length;i<want;i++){const b=el('div','item-slot empty');b.setAttribute('aria-hidden','true');grid.append(b)}}
  renderInventoryPane=function(){const pane=baseInventory();pane.classList.add('qy-win','qy-bag');
   const header=pane.querySelector('.classic-window-header'),filter=pane.querySelector('.classic-filter'),scroll=pane.querySelector('.classic-grid-scroll'),grid=pane.querySelector('.classic-item-grid'),query=filter?.querySelector('input'),tools=pane.lastElementChild;
@@ -160,7 +170,11 @@
    catalogKind=k;query?.dispatchEvent(new Event('input'))});
   const info=el('div','qy-bag-info'),w=weightPct(),wd=el('div','w');wd.append('負重 ',el('b','',w+'%'),meter(w));const cap=el('span','cap');cap.append('格數 ',el('b','',OwnedInventory.items.length+'/180'));const ac=el('span');ac.append('防禦 ',el('b','',String(previewArmorClass())));info.append(wd,cap,ac);
   const foot=el('div','qy-bag-foot');if(filter)foot.append(filter);if(tools&&tools!==filter&&tools!==scroll&&!tools.classList.contains('classic-item-detail'))foot.append(tools);
-  header.after(bar,info);info.after(scroll||el('div'),foot);
+  // 2026-11-17 使用者：背包用天地劫天堂客戶端的背包圖（Sprite.idx 538c.img，223×336，4×8 格），物品排在原圖格子裡、可捲動；下方 S.power／M.resist。
+  const frame=el('div','qy-bagframe');if(scroll)frame.append(scroll);
+  {const p=PlayerClassStats.read(),d=window.NativeCombatRules?.defense?.()||{};const sp=el('span','qy-bf-sp',String(PlayerAbilityRules.intelligencePower(p.attributes?.int)+(p.sp||0))),mr=el('span','qy-bf-mr',String(d.mr||0));frame.append(sp,mr);}
+  {const close=el('button','qy-bf-close');close.type='button';close.setAttribute('aria-label','關閉背包');close.onclick=()=>pane.querySelector('.classic-close')?.click();frame.append(close);} // 原圖左上角畫的「Close」也能按
+  header.after(bar,info);info.after(frame,foot);
   if(grid){padGrid(grid);new MutationObserver(()=>padGrid(grid)).observe(grid,{childList:true})}
   return pane};
  // 裝備（E）與角色選單開角色的裝備分頁；人物狀態開能力分頁。
@@ -171,4 +185,33 @@
  const baseStats=stats;stats=function(...args){const out=baseStats.apply(this,args);
   for(const [key,v,m]of [['hp',hp,maxHp],['mp',mp,maxMp]]){for(const b of document.querySelectorAll('[data-qy-vital="'+key+'"]'))b.textContent=v+' / '+m;
    for(const s of document.querySelectorAll('[data-qy-bar="'+key+'"]')){s.textContent=key.toUpperCase()+' '+v+' / '+m;s.previousSibling.style.width=(m?Math.max(0,Math.min(100,v/m*100)):0)+'%'}}return out};
+
+ // 天地劫天堂原版介面圖（563c 人物狀態＋裝備、538c 背包）的樣式
+ {const st=document.createElement('style');st.textContent=`
+ .qy-sheet{position:relative;width:min(100%,386px);aspect-ratio:257/336;margin:2px auto 0;background:url('assets/interface/client-ui/563c.png?v=1') center/100% 100% no-repeat;container-type:inline-size;flex:none}
+ .qy-sheet .qy-f{position:absolute;display:flex;align-items:center;justify-content:center;font-size:4.1cqw;line-height:1;color:#f1e6c8;text-shadow:1px 1px 0 #000;white-space:nowrap;overflow:hidden;font-variant-numeric:tabular-nums}
+ .qy-sheet .qy-f.wide,.qy-sheet .qy-f.name{justify-content:flex-start;padding-left:1.5cqw;box-sizing:border-box}
+ .qy-sheet .qy-f.name{color:#ffe2a0}
+ .qy-win .qy-sheet .equipment-slot.qy-sheet-slot{position:absolute!important;left:var(--x)!important;top:var(--y)!important;right:auto!important;bottom:auto!important;width:12.84%!important;height:9.82%!important;min-width:0!important;min-height:0!important;aspect-ratio:auto;padding:1px!important;margin:0!important;background:transparent!important;border:1px solid transparent!important;border-radius:0!important}
+ .qy-win .qy-sheet .equipment-slot.qy-sheet-slot:hover,.qy-win .qy-sheet .equipment-slot.qy-sheet-slot:focus-visible{border-color:#d7b464!important;box-shadow:0 0 6px #d7b46488}
+ .qy-win .qy-sheet .equipment-slot .slot-symbol,.qy-win .qy-sheet-extra .equipment-slot .slot-symbol{display:none}
+ .qy-win .qy-sheet .equipment-slot img{width:100%;height:100%;object-fit:contain;background:transparent!important}
+ .qy-sheet-extra{display:flex;justify-content:center;gap:10px;margin:6px auto 0;width:min(100%,386px)}
+ .qy-extra-cell{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:#b7ad95}
+ .qy-win .qy-sheet-extra .equipment-slot{position:relative!important;inset:auto!important;width:44px!important;height:44px!important;min-height:0!important;padding:2px!important;background:#2a2a2e99!important;border:1px solid #55524b!important;border-radius:0!important}
+ .qy-win .qy-sheet-extra .equipment-slot img{width:100%;height:100%;object-fit:contain}
+ .qy-win .qy-sheet-extra .equipment-slot.qy-locked{background:#0a0b0dbb!important}
+ .qy-sheet-extra .qy-slot-lock{position:absolute;right:2px;bottom:1px;font-size:10px;color:#c9c2b0;text-shadow:1px 1px 0 #000;pointer-events:none}
+ .qy-bagframe{position:relative;flex:none;width:min(100%,340px);aspect-ratio:223/336;margin:5px auto 0;background:url('assets/interface/client-ui/538c.png?v=1') center/100% 100% no-repeat;container-type:inline-size}
+ .qy-win.qy-bag .qy-bagframe .classic-grid-scroll{position:absolute!important;left:23.9%;top:5.45%;width:61.4%;height:81.4%;min-height:0!important;max-height:none!important;margin:0!important;padding:0!important;background:transparent!important;border:0!important;overflow-y:auto!important;scrollbar-width:none;scroll-snap-type:y mandatory}
+ .qy-win.qy-bag .qy-bagframe .classic-grid-scroll::-webkit-scrollbar{display:none}
+ .qy-win.qy-bag .qy-bagframe .classic-item-grid{gap:0!important;padding:0!important;background:transparent!important}
+ .qy-win.qy-bag .qy-bagframe .classic-item-grid .item-slot{aspect-ratio:1/1;padding:8%!important;background:transparent!important;border:1px solid transparent!important;border-radius:0!important;scroll-snap-align:start}
+ .qy-win.qy-bag .qy-bagframe .classic-item-grid .item-slot.empty{background:transparent!important;border-color:transparent!important}
+ .qy-win.qy-bag .qy-bagframe .classic-item-grid .item-slot:not(.empty):hover,.qy-win.qy-bag .qy-bagframe .classic-item-grid .item-slot[aria-pressed=true]{border-color:#d7b464!important;box-shadow:inset 0 0 6px #d7b46488}
+ .qy-bagframe .qy-bf-sp,.qy-bagframe .qy-bf-mr{position:absolute;top:91.4%;height:3.6%;display:flex;align-items:center;justify-content:center;font-size:4.6cqw;color:#f1e6c8;text-shadow:1px 1px 0 #000}
+ .qy-bagframe .qy-bf-sp{left:34.5%;width:13%}.qy-bagframe .qy-bf-mr{left:72.2%;width:17.9%}
+ .qy-bagframe .qy-bf-close{position:absolute;left:1%;top:0;width:15%;height:5.5%;min-height:0!important;padding:0!important;background:transparent!important;border:0!important;cursor:pointer}
+ .qy-win.qy-bag .qy-bagframe .inventory-count{font-size:3.6cqw;right:2px;bottom:0}
+ `;document.head.append(st);}
 })();
