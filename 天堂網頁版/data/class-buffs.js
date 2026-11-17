@@ -32,22 +32,25 @@ const ClassBuffs=(()=>{
   181:{red:5},182:{burning:1},185:{ac:-3},186:{speed:'brave'},190:{},191:{mortal:1},194:{},195:{},
   201:{dodge:5},204:{dmg:4},206:{mpr:2},209:{sp:2},211:{red:2},213:{},214:{ac:-8},216:{stats:{str:1,con:1,dex:1,wis:1,int:1}},
   218:{},219:{dmg:10},226:{gigantic:1},
+  // 黑妖（2026-11-17 補學法術；L1J 常見數值）：附加劇毒、毒性抵抗只顯示狀態；影之防護 AC−3、行走加速＝加速、燃燒鬥志 dmg+3、
+  //  雙重破壞 dmg+4、暗影閃避 閃避+5、暗影之牙 dmg+5、力量提升 str+2、敏捷提升 dex+2、迴避提升 閃避+5
+  98:{},99:{ac:-3},101:{speed:'haste'},102:{dmg:3},104:{},105:{dmg:4},106:{dodge:5},107:{dmg:5},109:{stats:{str:2}},110:{stats:{dex:2}},111:{dodge:5},
  };
  // Monster debuffs: mobDmg (less damage dealt), stun／sleep, silence, root, slow, dot.
  const TARGET={
   11:{dot:[5,3000]},20:{},29:{slow:1},33:{stun:1},40:{},47:{mobDmg:5},56:{mobDmg:6},64:{silence:1},66:{stun:1},113:{},
   133:{},152:{root:1},153:{},157:{stun:1},167:{slow:1},
-  183:{},188:{},193:{},202:{silence:1},212:{stun:1},217:{},228:{root:1},230:{stun:1},
+  103:{stun:1},112:{},183:{},188:{},193:{},202:{silence:1},212:{stun:1},217:{},228:{root:1},230:{stun:1},
  };
  const AREA_TARGET={76:{slow:1},161:{silence:1}};
- const ATTACK={187:1,207:1,229:1};
+ const ATTACK={108:1,187:1,207:1,229:1};
  const AREA={205:1,210:1,215:1,220:1,225:1};
  const PASSIVE={233:1,234:1,235:1,236:1,237:1,238:1,239:1};
  // Utility skills (skillmode BODY_TO_MIND mp+2, BLOODY_SOUL mp+15, TELEPORT／MASS_TELEPORT, TELEPORT_TO_MATHER, CURE_POISON,
  // REMOVE_CURSE; L1J 魔力奪取 5–14 MP, 起死回生術 kills undead at 50%). Summon kinds go to data/summons.js.
  // `need` = needs another system and only explains why.
  const UTIL={5:'teleport',69:'teleport',131:'mother',9:'cure',37:'purify',44:'purify',153:'purify',23:'sense',18:'turnUndead',39:'drain',
-  130:'mp2',146:'mp15',60:'invisible',67:'poly',13:'none',27:'none',71:'none',
+  130:'mp2',146:'mp15',60:'invisible',97:'invisible',100:'need:製作',67:'poly',13:'none',27:'none',71:'none',
   36:'tame',41:'zombie',51:'summon',145:'release',154:'elemental',162:'greater',61:'need:隊友',75:'need:隊友',116:'need:血盟',118:'need:血盟',73:'need:製作'};
  const UTIL_TARGET={18:1,23:1,39:1,27:1,71:1,153:1};
  const handles=id=>!!(SELF[id]||TARGET[id]||AREA_TARGET[id]||ATTACK[id]||AREA[id]||PASSIVE[id]||UTIL[id]);
@@ -174,6 +177,8 @@ const ClassBuffs=(()=>{
   }
   if(TARGET[id])applyTarget(mob,id,dur,t);
   if(AREA_TARGET[id])for(const m of IslandMonsters.around(worldX,worldY,skill.area||3)){applyTarget(m,id,dur,t);IslandMonsters.playEffect(skill.gfx,m.x,m.y,t);}
+  // 會心一擊（黑妖）：一次重擊＝武器最大傷害×2＋近戰加成
+  if(id===108){const p=PlayerClassStats.read(),max=Math.max(1,p.weapon?.damage[0]||2);IslandMonsters.damage(mob,max*2+p.meleeBonus+damageBonus(false));}
   if(id===187){const p=PlayerClassStats.read(),max=Math.max(1,p.weapon?.damage[0]||2);for(let i=0;i<3;i++)IslandMonsters.damage(mob,1+Math.floor(Math.random()*max)+p.meleeBonus+damageBonus(false));}
   if(id===207){const result=PlayerAbilityRules.magicAmount({...skill,id},mob,{raw:5});if(result.critical)mob.magicCriticalUntil=t+650;IslandMonsters.damage(mob,Math.max(1,result.amount));}
   if(id===229&&Math.random()<.9)dots.push({mob,until:t+dur,next:t+1000,every:1000,dmg:Math.trunc(level()/2)+6});
