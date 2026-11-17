@@ -33,7 +33,8 @@ const DiamondCommerce=(()=>{
  const TIER_COLOR={上品:'#8fd18b',極品:'#6fb6ff',千年:'#c18cff',萬年:'#ffb347',上古:'#ff6b6b',四神獸:'#ffe066'};
  function wuhunInfo(id){const w=typeof wuhunData!=='undefined'?wuhunData.find(x=>x.id===id):null,item=INTERFACE_CATALOG.items.find(i=>i.kind==='etcitem'&&i.id===id);return {name:w?.name||item?.name||('武魂 '+id),icon:item?.icon||w?.img||''};}
  function wuhunGacha(body){
-  const G=window.WUHUN_GACHA,online=!!window.LocalServerClient?.online,box=el('div','dc-gacha'),art=el('div','dc-crystal','✦'),detail=el('div','dc-gacha-detail');art.setAttribute('aria-hidden','true');
+  const G=window.WUHUN_GACHA,online=!!window.LocalServerClient?.online,box=el('div','dc-gacha'),art=el('div','dc-crystal dc-wuhun-art'),detail=el('div','dc-gacha-detail');art.setAttribute('aria-hidden','true'); // 2026-11-17 使用者提供的武魂真身圖取代 ✦
+  const pic=el('img');pic.src='assets/interface/wuhun/gacha-art.jpg?v=1';pic.alt='';art.append(pic);
   detail.append(el('h2','','武魂扭蛋機'),el('p','','召喚上品到四神獸共 42 種武魂。十連保底至少 1 個極品以上。'));
   if(!online)detail.append(el('p','dc-muted','武魂扭蛋機使用伺服器保管的鑽石，請登入本機多人伺服器後召喚。'));
   detail.append(button(showRates?'收起獎池與機率':'查看獎池與機率',()=>{showRates=!showRates;render();}));
