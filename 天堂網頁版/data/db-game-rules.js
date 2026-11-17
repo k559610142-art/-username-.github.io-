@@ -22,7 +22,8 @@ const DBGameRules = (() => {
   function extraDrops(mob){
     const map=window.activeMapId||0;
     return [
-      ...rows('怪物掉落全圖設置').map(row=>({id:row['道具'],min:row['最小量'],max:row['最大量'],chance:row['機率'],fixedRate:true})),
+      // 2026-11-18 使用者：武魂結晶（39287）掉落提高 → 0.5% 改 5%（50000／1000000），數量仍 1～3；平均約 1 萬隻怪做一個下品武魂（結晶×1000）
+      ...rows('怪物掉落全圖設置').map(row=>({id:row['道具'],min:row['最小量'],max:row['最大量'],chance:row['道具']===39287?50000:row['機率'],fixedRate:true})),
       ...rows('droplist_map').filter(row=>row.mapid===map).map(row=>({id:row.itemid,min:row.min,max:row.max,chance:row.chance})),
       ...(window.LevelQuests?.drops(mob)||[]) // 等級任務補的掉落（data/level-quests.js）
     ].filter(drop=>drop.id!==39288&&!/娃娃/.test(byId.get(drop.id)?.name||''));
