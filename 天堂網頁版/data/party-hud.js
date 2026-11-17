@@ -28,8 +28,11 @@ const PartyHud=(()=>{
  function tick(){
   root.hidden=window.gameFlowState!=='playing';if(root.hidden){signature='';return;}
   if(owner!==window.activeCharacterId){owner=window.activeCharacterId;signature='';}
-  const data=snapshot(),key=JSON.stringify(data);if(key===signature)return;signature=key;
-  const scroll=root.scrollTop;root.replaceChildren(section('目前隊伍',data.party,'尚未組隊'),section('召喚怪物',data.summons,'目前沒有召喚物'));position();root.scrollTop=scroll;
+  const data=snapshot(),key=JSON.stringify(data);if(key===signature){root.hidden=!data.party.length&&!data.summons.length;return;}signature=key;
+  // 2026-11-17 使用者：有組隊才顯示「目前隊伍」、有召喚才顯示「召喚怪物」，兩個都沒有就整塊隱藏
+  const parts=[];if(data.party.length)parts.push(section('目前隊伍',data.party,'尚未組隊'));if(data.summons.length)parts.push(section('召喚怪物',data.summons,'目前沒有召喚物'));
+  root.hidden=!parts.length;if(root.hidden)return;
+  const scroll=root.scrollTop;root.replaceChildren(...parts);position();root.scrollTop=scroll;
  }
  const observer=new ResizeObserver(position);observer.observe(game);for(const node of [game.querySelector(':scope>.hud'),game.querySelector('.oh-msg'),game.querySelector('.qh-chat'),game.querySelector('.reference-messages')])if(node)observer.observe(node);
  setInterval(tick,250);tick();return {snapshot,refresh:tick};
