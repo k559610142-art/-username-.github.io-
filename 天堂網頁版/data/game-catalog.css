@@ -242,3 +242,5 @@ main.game.reference-game #panel.doll-catalog-panel .game-catalog-card[data-tier]
 .wuhun-fuse-row[data-tier=white]{border-color:#c9c9c9}.wuhun-fuse-row[data-tier=green]{border-color:#4fc35b}.wuhun-fuse-row[data-tier=blue]{border-color:#4f8fe8}.wuhun-fuse-row[data-tier=red]{border-color:#e0503f}.wuhun-fuse-row[data-tier=purple]{border-color:#b45cf0}.wuhun-fuse-row[data-tier=gold]{border-color:#f0c040}
 .wuhun-fuse-go{min-height:26px!important;padding:2px 12px!important}
 .wuhun-fuse-row>span{grid-column:1/-1;white-space:nowrap;color:#f0e2bd}
+
+.wuhun-panel .game-catalog-toolbar>.wuhun-process-button{flex:0 0 100%;width:100%}.wuhun-fuse-panel[hidden]{display:none}

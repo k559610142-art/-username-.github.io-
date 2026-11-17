@@ -1886,9 +1886,9 @@ function openGameCatalog(type) {
       picker.append(uiElement('strong','','第 '+(selectedRingSlot+1)+' 魂槽：放入'+TdjSystems.wuhun.ringColor[selectedRingSlot]+'魂環'+(ringState.slots[selectedRingSlot]!=null?'（已啟動）':'')));
       const prevEmpty=ringState.slots.slice(0,selectedRingSlot).findIndex(v=>v==null);
       if(prevEmpty>=0)picker.append(uiElement('small','','要先點亮第 '+(prevEmpty+1)+' 槽（'+SoulRings.TIERS[prevEmpty]+'）。'));
-      else if(ringState.slots[selectedRingSlot]==null){const color=TdjSystems.wuhun.ringColor[selectedRingSlot],have=TdjSystems.wuhun.rings()[selectedRingSlot]||0; // 2026-11-17：魂槽改放魂環（武魂融合而來）
+      else if(ringState.slots[selectedRingSlot]==null){const color=TdjSystems.wuhun.ringColor[selectedRingSlot],have=TdjSystems.wuhun.rings()[selectedRingSlot]||0; // 2026-11-17：魂槽改放魂環（武魂提煉而來）
         const put=catalogButton('放入'+color+'魂環（擁有 ×'+have+'）',()=>{if(SoulRings.place(selectedRingSlot)){updateCounts();refreshCards();}},'wuhun-ring-choice');put.disabled=!have;picker.append(put);
-        if(!have)picker.append(uiElement('small','','沒有'+color+'魂環：用上方「武魂融合」把 '+TdjSystems.wuhun.ringCost[selectedRingSlot]+' 個'+slotTier+'武魂融合成'+color+'魂環。'));}
+        if(!have)picker.append(uiElement('small','','沒有'+color+'魂環：用上方「武魂提煉」把 '+TdjSystems.wuhun.ringCost[selectedRingSlot]+' 個'+slotTier+'武魂提煉成'+color+'魂環。'));}
       collection.append(picker,uiElement('small','wuhun-ring-note','魂環放入魂槽後啟動、不能拿回；魂槽只當升階門檻，不加能力。'));
       detail.append(collection);
       const action = active ? catalogButton('卸下武魂', () => { TdjSystems.wuhun.unequip(); refreshCards(); }, 'game-catalog-action')
@@ -1945,13 +1945,18 @@ function openGameCatalog(type) {
     const times = (n, fn) => () => Array.from({length: n}, fn);
     if (type === 'dolls') { toolbar.append(catalogButton('製作',()=>runGameMenuAction('craft')),catalogButton('扭蛋',()=>runGameMenuAction('gacha'))); toolbar.append(uiElement('small','doll-sort-note','依稀有度排列：一般→超越')); }
     if (type === 'enchant') { add('取得附魔石', times(1, () => TdjSystems.enchant.get())); add('取得 5 個', times(5, () => TdjSystems.enchant.get())); }
-    // 2026-11-17 使用者：武魂真身上方的測試按鈕（取得武魂／取得 5 個）取消，改成「武魂融合」
+    // 2026-11-17 使用者：武魂真身上方的測試按鈕（取得武魂／取得 5 個）取消，改成「武魂提煉」
     if (type === 'wuhun') { const panel=uiElement('div','wuhun-fuse-panel');panel.hidden=true;
-      const fill=()=>{panel.replaceChildren(uiElement('strong','','武魂融合：同品階武魂（不必同一種）合成魂環，裝備中的不會被用掉'));const rings=TdjSystems.wuhun.rings();
+      const fill=()=>{panel.replaceChildren(uiElement('strong','','武魂提煉：同品階武魂（不必同一種）合成魂環，裝備中的不會被用掉'));const rings=TdjSystems.wuhun.rings();
         TdjSystems.wuhun.tiers.slice(0,6).forEach((tier,t)=>{const row=uiElement('div','wuhun-fuse-row'),need=TdjSystems.wuhun.ringCost[t],spare=TdjSystems.wuhun.spare(t),color=TdjSystems.wuhun.ringColor[t];
           row.dataset.tier=tdjWuhunTierTag[tier]||'white';row.append(uiElement('span','',tier+' ×'+need+' → '+color+'魂環'),uiElement('small','','可用 '+spare+'｜已有魂環 ×'+(rings[t]||0)));
-          const go=catalogButton('融合',()=>{if(SoulRings.fuse(t)){fill();updateCounts();refreshCards();}},'wuhun-fuse-go');go.disabled=spare<need;row.append(go);panel.append(row);});};
-      toolbar.append(catalogButton('武魂融合',()=>{panel.hidden=!panel.hidden;if(!panel.hidden)fill();}),panel); }
+          const go=catalogButton('提煉',()=>{if(SoulRings.fuse(t)){fill();fillFusion();updateCounts();refreshCards();}},'wuhun-fuse-go');go.disabled=spare<need;row.append(go);panel.append(row);});};
+      const fusionPanel=uiElement('div','wuhun-fuse-panel');fusionPanel.hidden=true;
+      const fillFusion=()=>{fusionPanel.replaceChildren(uiElement('strong','','武魂融合：5 個同階武魂（可混合不同種類）→ 隨機下一階武魂'),uiElement('small','','成功或失敗均消耗 5 個；失敗無產物。裝備中的武魂保留，四神獸為最高階。'));
+        TdjSystems.wuhun.tiers.slice(0,6).forEach((tier,t)=>{const spare=TdjSystems.wuhun.spare(t),row=uiElement('div','wuhun-fuse-row');row.dataset.tier=tdjWuhunTierTag[tier]||'white';row.append(uiElement('span','',tier+' ×5 → 隨機'+TdjSystems.wuhun.tiers[t+1]+' ×1'),uiElement('small','','成功率 '+TdjSystems.wuhun.fusionRates[t]+'%｜可用 '+spare));const go=catalogButton('融合',()=>{const result=TdjSystems.wuhun.fuseSoul(t);if(result){fillFusion();fill();updateCounts();refreshCards();}},'wuhun-fuse-go');go.disabled=spare<5;row.append(go);fusionPanel.append(row);});};
+      const refineButton=catalogButton('武魂提煉',()=>{panel.hidden=!panel.hidden;if(!panel.hidden)fill();}),fusionButton=catalogButton('武魂融合',()=>{fusionPanel.hidden=!fusionPanel.hidden;if(!fusionPanel.hidden)fillFusion();});
+      refineButton.classList.add('wuhun-process-button');fusionButton.classList.add('wuhun-process-button');
+      toolbar.append(refineButton,panel,fusionButton,fusionPanel); }
     toolbar.append(status);
     results.prepend(toolbar);
     status.update = () => {

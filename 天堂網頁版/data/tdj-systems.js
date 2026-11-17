@@ -480,25 +480,38 @@ window.TdjSystems = (() => {
   }
 
   function refreshSoulStats(){window.DBGameRules?.syncVitals();window.stats?.();}
-  // 武魂融合（2026-11-17 使用者設計）：同品階武魂（不必同一種）湊滿數量融合成一個該色魂環；魂環放進對應魂槽才點亮。
-  //  下品3→白、上品3→綠、極品5→藍、千年5→紅、萬年8→紫、上古10→金。裝備中的那隻不會被拿去融合。原本直接獻祭武魂的方式取消。
+  // 武魂提煉（2026-11-17 使用者設計）：同品階武魂（不必同一種）湊滿數量提煉成一個該色魂環；魂環放進對應魂槽才點亮。
+  //  下品3→白、上品3→綠、極品5→藍、千年5→紅、萬年8→紫、上古10→金。裝備中的那隻不會被拿去提煉。原本直接獻祭武魂的方式取消。
   const RING_COST=[3,3,5,5,8,10],RING_COLOR=['白色','綠色','藍色','紅色','紫色','金色'];
   function spareOf(t){const tier=WUHUN_TIERS[t];return wuhunData.filter(w=>w.tier===tier).map(w=>({w,n:(state.wuhun.owned[w.id]||0)-(String(state.wuhun.active)===String(w.id)?1:0)})).filter(x=>x.n>0);}
   function fuseRing(t){
     if(!playing()||window.CharacterActions?.dead||!(t>=0&&t<6))return false;
     const need=RING_COST[t],list=spareOf(t).sort((a,b)=>b.n-a.n),total=list.reduce((n,x)=>n+x.n,0);
-    if(total<need){toast('融合'+RING_COLOR[t]+'魂環需要 '+need+' 個'+WUHUN_TIERS[t]+'武魂（可用 '+total+' 個，裝備中的不算）。');return false;}
+    if(total<need){toast('提煉'+RING_COLOR[t]+'魂環需要 '+need+' 個'+WUHUN_TIERS[t]+'武魂（可用 '+total+' 個，裝備中的不算）。');return false;}
     const old=JSON.parse(JSON.stringify(state));let left=need;
     for(const {w,n} of list){const take=Math.min(n,left);state.wuhun.owned[w.id]-=take;if(!state.wuhun.owned[w.id])delete state.wuhun.owned[w.id];left-=take;if(!left)break;}
     state.wuhun.rings[t]=(state.wuhun.rings[t]||0)+1;
-    try{localStorage.setItem(key(owner),JSON.stringify(state));}catch(error){state=old;toast('儲存失敗，融合未完成。');return false;}
-    toast('武魂融合成功：獲得'+RING_COLOR[t]+'魂環');render();return true;
+    try{localStorage.setItem(key(owner),JSON.stringify(state));}catch(error){state=old;toast('儲存失敗，提煉未完成。');return false;}
+    toast('武魂提煉成功：獲得'+RING_COLOR[t]+'魂環');render();return true;
+  }
+  // 五個同階武魂融合為隨機下一階；失敗消耗材料，裝備中的一個保留。
+  const SOUL_FUSION_RATES=Object.freeze([80,60,40,25,10,5]);
+  function fuseSoul(t){
+    if(!playing()||window.CharacterActions?.dead||!Number.isInteger(t)||t<0||t>=6)return false;
+    const pool=wuhunData.filter(w=>w.tier===WUHUN_TIERS[t+1]),list=spareOf(t).sort((a,b)=>b.n-a.n);
+    const total=list.reduce((n,x)=>n+x.n,0);if(total<5||!pool.length){toast('武魂融合需要 5 個'+WUHUN_TIERS[t]+'武魂（裝備中的不算）。');return false;}
+    const old=JSON.parse(JSON.stringify(state));let left=5;
+    for(const {w,n} of list){const take=Math.min(n,left);state.wuhun.owned[w.id]-=take;if(!state.wuhun.owned[w.id])delete state.wuhun.owned[w.id];left-=take;if(!left)break;}
+    const success=Math.random()*100<SOUL_FUSION_RATES[t],reward=success?pick(pool):null;
+    if(reward){const count=state.wuhun.owned[reward.id]||0;if(count>=2147483647){state=old;toast('武魂數量已達上限，融合取消。');return false;}state.wuhun.owned[reward.id]=count+1;}
+    try{localStorage.setItem(key(owner),JSON.stringify(state));}catch(error){state=old;toast('儲存失敗，武魂融合取消，材料未消耗。');return false;}
+    toast(success?'武魂融合成功：獲得'+reward.name:'武魂融合失敗：消耗 5 個'+WUHUN_TIERS[t]+'武魂，未獲得武魂。');render();return {success,reward:reward?.id||null};
   }
   function placeRing(slot){
     if(!playing()||window.CharacterActions?.dead||!(slot>=0&&slot<6))return false;const s=state.wuhun;
     if(s.ringSlots[slot]!=null){toast('這個魂槽已經點亮。');return false;}
     for(let i=0;i<slot;i++)if(s.ringSlots[i]==null){toast('要先點亮第 '+(i+1)+' 槽（'+RING_COLOR[i]+'魂環）。');return false;}
-    if(!(s.rings[slot]>0)){toast('沒有'+RING_COLOR[slot]+'魂環，請先用 '+RING_COST[slot]+' 個'+WUHUN_TIERS[slot]+'武魂融合。');return false;}
+    if(!(s.rings[slot]>0)){toast('沒有'+RING_COLOR[slot]+'魂環，請先用 '+RING_COST[slot]+' 個'+WUHUN_TIERS[slot]+'武魂提煉。');return false;}
     const old=JSON.parse(JSON.stringify(state));s.rings[slot]--;if(!s.rings[slot])delete s.rings[slot];
     s.ringSlots[slot]=wuhunData.find(w=>w.tier===WUHUN_TIERS[slot])?.id??null; // 魂槽記一隻該品階武魂當外觀代表（光圈顏色用）
     try{localStorage.setItem(key(owner),JSON.stringify(state));}catch(error){state=old;toast('儲存失敗，魂槽未變更。');return false;}
@@ -526,7 +539,7 @@ window.TdjSystems = (() => {
   function equipWuhun(id) {
     if (!playing()) return false;
     const w = wuhunById.get(+id); if (!w || !state.wuhun.owned[id]) { toast('還沒有這個武魂。'); return false; }
-    const missing = ringMissing(w); if (missing.length) { toast('裝備' + w.tier + '武魂前，要先在魂槽放入：' + missing.map(t => RING_COLOR[WUHUN_TIERS.indexOf(t)]).join('、') + '魂環（武魂融合取得）。'); return false; }
+    const missing = ringMissing(w); if (missing.length) { toast('裝備' + w.tier + '武魂前，要先在魂槽放入：' + missing.map(t => RING_COLOR[WUHUN_TIERS.indexOf(t)]).join('、') + '魂環（武魂提煉取得）。'); return false; }
     state.wuhun.active = String(id); save(); refreshSoulStats();render(); flash(wuhunImage(w));
     window.dispatchEvent?.(new Event('wuhun-equipment-change'));
     toast('裝備 ' + w.name + '（' + w.fx.slice(0, 4).join('、') + '）'); return true;
@@ -559,7 +572,7 @@ window.TdjSystems = (() => {
     useItem,
     dolls: {draw: drawDoll, summon, dismiss, image: dollImage, owned: id => get().dolls.owned[id] || 0, get active() { return get().dolls.active; }},
     enchant: {get: getStone, enchant, current: currentEnchant, image: enchantImage, stones: id => get().enchant.stones[id] || 0},
-    wuhun: {changeRings,ringCost:RING_COST,ringColor:RING_COLOR,rings:()=>(ensure(),{...state.wuhun.rings}),spare:t=>(ensure(),spareOf(+t).reduce((n,x)=>n+x.n,0)),tiers:WUHUN_TIERS,ringMissing:id=>(ensure(),ringMissing(wuhunById.get(+id))),get ringState(){ensure();return JSON.parse(JSON.stringify({slots:state.wuhun.ringSlots}));},get: getWuhun, equip: equipWuhun, unequip: unequipWuhun, image: wuhunImage, baseGfx: wuhunBaseGfx, owned: id => get().wuhun.owned[id] || 0, get active() { return get().wuhun.active; }},
+    wuhun: {fuseSoul,fusionRates:SOUL_FUSION_RATES,changeRings,ringCost:RING_COST,ringColor:RING_COLOR,rings:()=>(ensure(),{...state.wuhun.rings}),spare:t=>(ensure(),spareOf(+t).reduce((n,x)=>n+x.n,0)),tiers:WUHUN_TIERS,ringMissing:id=>(ensure(),ringMissing(wuhunById.get(+id))),get ringState(){ensure();return JSON.parse(JSON.stringify({slots:state.wuhun.ringSlots}));},get: getWuhun, equip: equipWuhun, unequip: unequipWuhun, image: wuhunImage, baseGfx: wuhunBaseGfx, owned: id => get().wuhun.owned[id] || 0, get active() { return get().wuhun.active; }},
     onAttack, render
   };
 })();
