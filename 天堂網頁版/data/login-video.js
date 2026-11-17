@@ -78,7 +78,7 @@
  video.addEventListener('error',()=>{failed=true;leave();fallback(true);video.remove();});
  setTimeout(()=>{if(!ready&&(failed||video.readyState<3))fallback(true);},20000); // 網路太慢 20 秒還沒播到登入框，先給簡易登入卡
  // 已經播完（例如登出回到登入畫面）就直接停在最後一格；直式↔橫式切換時重新判斷
- addEventListener('resize',()=>{if(portrait()){if(ready)leave();if(video.currentTime>=PORTRAIT_STOP||failed)fallback(true);return;}
+ addEventListener('resize',()=>{if(portrait()){if(ready)leave();if(video.currentTime>=PORTRAIT_STOP||failed)fallback(true);if(!failed&&video.currentTime>7.2)video.currentTime=7;return;}
   // 轉回橫式：拿掉簡易登入卡，直式時停住的影片繼續播到畫好的登入框
   if(!failed){fallback(false);if(video.paused&&!video.ended&&video.currentTime<SHOW_AT&&!document.querySelector('#login-screen')?.hidden)video.play().catch(()=>{});}
    if(video.ended||video.currentTime>=SHOW_AT)enter();layout();});

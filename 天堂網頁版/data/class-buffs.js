@@ -115,8 +115,8 @@ const ClassBuffs=(()=>{
  // Extra effect after an attack skill cast by player-skills.js.
  function afterCast(id,mob){
   if(!mob?.hp)return;
-  if(id===192&&Math.random()<.6)stun(mob,4000);
-  if(id===208&&Math.random()<.5)stun(mob,sk(208).duration*1000);
+  if(id===192&&PlayerAbilityRules.statusHits({...sk(id),id},mob))stun(mob,4000);
+  if(id===208&&PlayerAbilityRules.statusHits({...sk(id),id},mob))stun(mob,sk(208).duration*1000);
  }
  function speed(kind,until){window.activePotionBuffs=window.activePotionBuffs||{};window.activePotionBuffs[kind]=Math.max(Number(window.activePotionBuffs[kind])||0,until);window.NativePotions?.sync();}
  function vitals(){DBGameRules.syncVitals();window.stats?.();}
@@ -126,6 +126,7 @@ const ClassBuffs=(()=>{
   return mob?.hp&&(!mob.spawn.bot||window.FakePlayers?.canAttack(mob))&&Math.max(Math.abs(mob.x-worldX),Math.abs(mob.y-worldY))<=range&&IslandCombat.clearShot(worldX,worldY,mob.x,mob.y)?mob:null;}
  function applyTarget(mob,id,dur,t){
   if(mob.spawn.bot&&!window.FakePlayers?.canAttack(mob))return;
+  if(!PlayerAbilityRules.statusHits({...sk(id),id},mob)){mob.rangedMissUntil=t+650;window.IslandNpcAi?.provoke(mob,[]);return false;}
   const e=TARGET[id]||AREA_TARGET[id];mark(mob,id,dur);
   if(e.stun)stun(mob,dur);
   if(e.dot)dots.push({mob,until:t+dur,next:t+e.dot[1],every:e.dot[1],dmg:e.dot[0]});
@@ -154,7 +155,8 @@ const ClassBuffs=(()=>{
   if(kind==='mother')WorldMaps.travel(4,33051,32337).then(ok=>{if(ok)window.DungeonPortals?.settle();});
   if(kind==='cure'||kind==='purify'){window.IslandNpcAi?.curePoison?.();if(window.playerItemState){delete playerItemState.poison;delete playerItemState.poisoned;}if(id===37)window.IslandNpcAi?.cureStone?.();}
   if(kind==='sense')say(mob.spawn.npc.name+'　體力 '+mob.hp+' / '+mob.spawn.npc.hp+'　等級 '+mob.spawn.npc.level);
-  if(kind==='turnUndead'){const u=mob.spawn.npc.raw?.undead??mob.spawn.npc.undead;if(u===1&&Math.random()<.5)IslandMonsters.damage(mob,mob.hp);else say('沒有效果。');}
+  if(kind==='turnUndead'){const u=mob.spawn.npc.raw?.undead??mob.spawn.npc.undead;if(u===1&&PlayerAbilityRules.statusHits({...skill,id},mob))IslandMonsters.damage(mob,mob.hp);else say('沒有效果。');}
+  if(kind==='drain'&&!PlayerAbilityRules.statusHits({...skill,id},mob)){say('魔法未生效。');return true;}
   if(kind==='drain'){const gain=Math.min(5+Math.floor(Math.random()*10),Math.max(0,mob.mp??99));if(mob.mp!==undefined)mob.mp-=gain;mp=Math.min(maxMp,mp+gain);window.stats?.();}
   if(kind==='bringStone'){const r=OwnedInventory.bringStone();if(r.error)say(r.error);else say(r.ok?'提煉成功！得到'+['一','二','三','四','五'][r.to-1]+'級黑魔石。':'提煉失敗，'+['一','二','三','四','五'][r.from-1]+'級黑魔石碎掉了。');}
   if(kind==='mp2'||kind==='mp15'){mp=Math.min(maxMp,mp+(kind==='mp2'?2:15));window.stats?.();}
@@ -185,7 +187,7 @@ const ClassBuffs=(()=>{
   if(TARGET[id])applyTarget(mob,id,dur,t);
   if(AREA_TARGET[id])for(const m of IslandMonsters.around(worldX,worldY,skill.area||3)){applyTarget(m,id,dur,t);IslandMonsters.playEffect(skill.gfx,m.x,m.y,t);}
   // 會心一擊（黑妖）：一次重擊＝武器最大傷害×2＋近戰加成
-  if((id===108||id===187)&&!PlayerRangedRules.meleeHits(PlayerClassStats.read(),mob)){mob.rangedMissUntil=t+650;window.IslandNpcAi?.provoke(mob,[]);return true;}
+  if((id===108||id===187||id===229)&&!PlayerRangedRules.meleeHits(PlayerClassStats.read(),mob)){mob.rangedMissUntil=t+650;window.IslandNpcAi?.provoke(mob,[]);return true;}
   if(id===108){const p=PlayerClassStats.read(),max=Math.max(1,p.weapon?.damage[0]||2);IslandMonsters.damage(mob,max*2+p.meleeBonus+damageBonus(false));}
   if(id===187){const p=PlayerClassStats.read(),max=Math.max(1,p.weapon?.damage[0]||2);for(let i=0;i<3;i++)IslandMonsters.damage(mob,1+Math.floor(Math.random()*max)+p.meleeBonus+damageBonus(false));}
   if(id===207){const result=PlayerAbilityRules.magicAmount({...skill,id},mob,{raw:5});if(result.critical)mob.magicCriticalUntil=t+650;if(result.amount>0)IslandMonsters.damage(mob,result.amount);}

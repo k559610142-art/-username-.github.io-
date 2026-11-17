@@ -59,7 +59,7 @@ const PlayerSkills = (() => {
       if(result.critical)mob.magicCriticalUntil=now+650;
       mob.allyTarget=null;if(amount>0)IslandMonsters.damage(mob,amount);
       if(id>=181)window.ClassBuffs?.afterCast(id,mob);
-      if(id===87)mob.ready=Math.max(mob.ready||0,now+skill.duration*1000);
+      if(id===87){if(PlayerAbilityRules.statusHits({...skill,id},mob))mob.ready=Math.max(mob.ready||0,now+skill.duration*1000);else mob.rangedMissUntil=now+650;}
     }
     return true;
   }
