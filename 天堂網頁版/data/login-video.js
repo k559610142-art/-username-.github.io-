@@ -12,6 +12,8 @@
  const hot=(cls,label,fn)=>{const b=document.createElement('button');b.type='button';b.className='login-hot '+cls;b.setAttribute('aria-label',label);b.onclick=fn;return b;};
  const place=(node,[x,y,w,h])=>{Object.assign(node.style,{left:x+'px',top:y+'px',width:w+'px',height:h+'px'});};
  let ready=false,failed=false;
+ // 舊登入卡預設隱形（CSS），只有直式／影片壞掉／太久沒播到登入框時才打開 fallback
+ const fallback=on=>stage.classList.toggle('login-video-fallback',on);
  const say=text=>{if(message)message.textContent=text;};
  const register=hot('login-hot-register','註冊帳號',()=>{const real=[...form.querySelectorAll('button')].find(b=>b.textContent==='建立測試帳號');if(real)real.click();else say('輸入帳號與密碼後按「登入」即可建立本機帳號。');});
  const forgot=()=>say('測試版尚未提供找回密碼，請聯絡管理員。');
@@ -23,7 +25,7 @@
   form.style.transform='translate('+ox+'px,'+oy+'px) scale('+s+')';
  }
  function enter(){
-  if(ready||failed||portrait())return;ready=true;stage.classList.add('login-video-mode');
+  if(ready||failed||portrait())return;ready=true;fallback(false);stage.classList.add('login-video-mode');
   place(document.querySelector('#login-account'),SPOT.account);place(document.querySelector('#login-password'),SPOT.password);place(document.querySelector('#login-submit'),SPOT.login);if(message)place(message,SPOT.message);
   for(const [node,spot] of hots){place(node,spot);if(!node.isConnected)form.append(node);}
   layout();setTimeout(()=>stage.classList.add('login-video-shown'),30); // 不用 requestAnimationFrame：背景分頁不會執行，表單會一直隱形
@@ -31,11 +33,17 @@
  function leave(){ready=false;stage.classList.remove('login-video-mode','login-video-shown');form.style.transform='';for(const el of [document.querySelector('#login-account'),document.querySelector('#login-password'),document.querySelector('#login-submit'),message])if(el)el.removeAttribute('style');for(const [node] of hots)node.remove();}
  video.loop=false;video.removeAttribute('loop');
  video.addEventListener('timeupdate',()=>{
-  if(portrait()){if(video.currentTime>=PORTRAIT_STOP&&!video.paused)video.pause();if(ready)leave();return;}
+  if(portrait()){if(video.currentTime>=PORTRAIT_STOP){if(!video.paused)video.pause();fallback(true);}if(ready)leave();return;}
   if(video.currentTime>=SHOW_AT)enter();
  });
  video.addEventListener('ended',()=>{if(!portrait())enter();});
- video.addEventListener('error',()=>{failed=true;leave();video.remove();});
+ video.addEventListener('error',()=>{failed=true;leave();fallback(true);video.remove();});
+ setTimeout(()=>{if(!ready&&(failed||video.readyState<3))fallback(true);},20000); // 網路太慢 20 秒還沒播到登入框，先給簡易登入卡
  // 已經播完（例如登出回到登入畫面）就直接停在最後一格；直式↔橫式切換時重新判斷
- addEventListener('resize',()=>{if(portrait()){if(ready)leave();}else if(video.ended||video.currentTime>=SHOW_AT)enter();layout();});
+ addEventListener('resize',()=>{if(portrait()){if(ready)leave();if(video.currentTime>=PORTRAIT_STOP||failed)fallback(true);return;}
+  // 轉回橫式：拿掉簡易登入卡，直式時停住的影片繼續播到畫好的登入框
+  if(!failed){fallback(false);if(video.paused&&!video.ended&&video.currentTime<SHOW_AT&&!document.querySelector('#login-screen')?.hidden)video.play().catch(()=>{});}
+   if(video.ended||video.currentTime>=SHOW_AT)enter();layout();});
+ // 頁面載完（CSS 就位）再判斷一次直／橫式，避免載入途中誤判成直式而把影片停住
+ addEventListener('load',()=>dispatchEvent(new Event('resize')));
 })();
