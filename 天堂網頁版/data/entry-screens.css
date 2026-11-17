@@ -25,8 +25,8 @@
 .login-video-mode #login-message{color:#f0d58a;font-size:15px;text-align:center;text-shadow:0 1px 3px #000}
 
 /* 2026-11-17 新登入影片：帳號／密碼改成看得見的輸入框（使用者提供的樣式：深色底、細金邊、右側眼睛），座標以影片 1280×720 為準 */
-.login-video-mode #login-account,.login-video-mode #login-password{padding:0 46px 0 14px;background:linear-gradient(#0b0c0fe6,#15161ae6);border:1px solid #8c7646;border-radius:3px;box-shadow:inset 0 0 6px #000c;color:#f3e6c2;font-size:21px;line-height:48px;letter-spacing:.5px}
+.login-video-mode #login-account,.login-video-mode #login-password{padding:0 46px 0 14px;background:transparent;border:1px solid transparent;border-radius:3px;box-shadow:none; /* 2026-11-17 使用者：輸入框不要擋住影片畫的欄位 → 透明，只留文字 */color:#f3e6c2;font-size:21px;line-height:48px;letter-spacing:.5px}
 .login-video-mode #login-account::placeholder,.login-video-mode #login-password::placeholder{color:#a3957a}
-.login-video-mode #login-account:focus,.login-video-mode #login-password:focus{border-color:#e2c27a;box-shadow:inset 0 0 6px #000c,0 0 10px #e2c27a55}
+.login-video-mode #login-account:focus,.login-video-mode #login-password:focus{border-color:#e2c27a99;box-shadow:0 0 8px #e2c27a44}
 .login-video-mode .login-eye-icon{padding:3px!important;opacity:.9}.login-video-mode .login-eye-icon:hover{opacity:1;box-shadow:none}
 .login-video-mode #login-message{font-size:18px}
