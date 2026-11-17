@@ -50,6 +50,8 @@ const IslandMusic = (() => {
   function next(a) { if (a !== players[active] || !list || list.length < 2) return; index = (index + 1) % list.length; start(list[index]); }
   function sync() {
     if (!enabled || document.hidden) { listKey = ''; list = null; fadeTo(false); return; }
+    // 2026-11-17 使用者：登入畫面只放登入影片自己的配樂（data/login-video.js），不放 music0
+    if (window.gameFlowState === 'login') { if (listKey !== 'login') { listKey = 'login'; list = null; fadeTo(false); } return; }
     const [k, tracks] = wanted();
     if (k === listKey) { const a = players[active]; if (a.paused && a.src) a.play().catch(() => {}); return; }
     listKey = k; list = tracks; index = (window.activeMapId || 0) % tracks.length;

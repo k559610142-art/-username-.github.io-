@@ -35,6 +35,11 @@
  }
  function leave(){ready=false;stage.classList.remove('login-video-mode','login-video-shown');form.style.transform='';for(const el of [document.querySelector('#login-account'),document.querySelector('#login-password'),document.querySelector('#login-submit'),message])if(el)el.removeAttribute('style');for(const [node] of hots)node.remove();}
  video.loop=false;video.removeAttribute('loop');
+ // 影片配樂（2026-11-17 使用者：登入畫面只要影片配樂）：先試著有聲自動播放；瀏覽器擋下就改靜音播放，第一次點擊／按鍵再打開聲音
+ const onLogin=()=>!document.querySelector('#login-screen')?.hidden;
+ const unmute=()=>{if(!video.muted)return;video.muted=false;if(video.paused&&!video.ended&&onLogin()&&!(portrait()&&video.currentTime>=PORTRAIT_STOP))video.play().catch(()=>{});};
+ for(const ev of ['pointerdown','keydown','touchend'])document.addEventListener(ev,unmute,{passive:true});
+ video.muted=false;video.play().catch(()=>{video.muted=true;video.play().catch(()=>{});});
  video.addEventListener('timeupdate',()=>{
   if(portrait()){if(video.currentTime>=PORTRAIT_STOP){if(!video.paused)video.pause();fallback(true);}if(ready)leave();return;}
   if(video.currentTime>=SHOW_AT)enter();
