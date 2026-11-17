@@ -15,6 +15,8 @@ const AssistSystem=(()=>{
  const SHOP=new Map();
  for(const rows of [...Object.values(NATIVE_NPC_DIALOGS.shops||{}),islandNpcServiceData.shop||[]])for(const [id,,buy,pack,,ench] of rows){if(!(buy>=0)||ench)continue;const n=Math.max(1,pack|0),b=SHOP.get(id);if(!b||buy/n<b.price/b.pack)SHOP.set(id,{price:buy,pack:n});}
  const QTY=[1,5,10,20,50,100,200,500,1000];
+ // 2026-11-18 使用者：商店沒賣或職業不能用時（例如騎士的慎重藥水）也顯示該道具的圖，不要只有購物車
+ const BUY_ICON={tp:'etcitem:40100',home:'etcitem:40081',heal:'etcitem:40010',haste:'etcitem:40018',brave:'etcitem:40014',wisdom:'etcitem:40016',blue:'etcitem:40015',arrow:'etcitem:40743'};
  const BUYS=[['tp','瞬間移動卷軸',10],['home','傳送回家的卷軸',5],['heal','補血道具（補給選的那種）',100],['haste','綠色藥水',5],['brave','勇敢藥水類',5],['wisdom','慎重藥水',5],['blue','藍色藥水',5],['arrow','箭（裝備弓時）',1000]];
  const base=()=>({noMobTp:false,noMobSec:10,potions:{haste:false,brave:false,wisdom:false,blue:false},attackOn:false,attackSkill:null,attackMp:30,buffs:[],list:{},escape:false,healFallback:false,morph:false,openOn:false,openSkill:null,openMp:50,aoeOn:false,aoeSkill:null,aoeRange:3,aoeCount:3,aoeMp:50,mindOn:false,mindHp:80,mindMp:40,summonOn:false,ringOn:false,expAuto:false,barrierScroll:false,pick:{haste:null,brave:null,wisdom:null,blue:null},buy:Object.fromEntries(BUYS.map(([k,,n])=>[k,{on:false,n}]))});
  let state=base(),owner='',dialog=null,tab='hunt',idleSince=0,lastTp=0,retry=new Map(),escapes=[],lostMorph=null,seenMorph=null,lastOpen=null;
@@ -193,7 +195,7 @@ const AssistSystem=(()=>{
    for(const n of QTY)qty.append(new Option('×'+n,String(n),false,n===b.n));qty.onchange=()=>{save({buy:{...state.buy,[k]:{...b,n:Number(qty.value)}}});render();};
    const packs=pr?Math.ceil(b.n/pr.pack):0,note=pr?catalog.get(pr.key).name+' · 一次 '+(packs*pr.pack)+' 個 '+(packs*pr.price).toLocaleString()+' 金幣':k==='heal'&&!AutoPotion.snapshot.key?'先在上面選補血道具':'商店沒賣或目前職業不能用';
    const sw=switcher(b.on,on=>pr||!on?save({buy:{...state.buy,[k]:{...b,on}}}):(toast('商店沒賣這項，無法自動購買。'),false),'自動購買 '+label);
-   return row(ico(pr?.key,'🛒'),label,'用完時自動買 · '+note,qty,sw);});
+   return row(ico(pr?.key||BUY_ICON[k],'🛒'),label,'用完時自動買 · '+note,qty,sw);});
   const purse=OwnedInventory.items.find(e=>e.key==='etcitem:40308')?.count||0;
   p.append(head('自動購買'),group(...buyRows),el('p','assist-note','身上用完（0 個）時直接扣金幣購買，價格取各地商店最便宜的。目前金幣 '+purse.toLocaleString()+'。'));return p;}
 
