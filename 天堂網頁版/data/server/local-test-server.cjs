@@ -71,7 +71,7 @@ function createGameServer(options={}){
    int(c.level||1,1,100);validInventory(c.inventory||[]);
    const previous=snapshot(user.id).characters.find(row=>row?.id===c.id);if(Object.keys(rules.base).some(k=>c.stats[k]>20)&&(!previous||Object.keys(rules.base).some(k=>previous.stats[k]!==c.stats[k])))fail(400,'創角單項屬性最高 20。');
    const old=snapshot(user.id).characters.find(row=>row?.id===c.id);c.diamonds=old?.diamonds||0; // 鑽石只允許由伺服器交易修改。
-   c.mercPoints=old?.mercPoints||0;c.mercContract=old?.mercContract||null; // 傭兵點數與雇用合約也只由伺服器修改。
+   c.mercPoints=old?.mercPoints||0;c.mercContract=old?.mercContract||null;c.dailyDiamond=old?.dailyDiamond||null; // 傭兵點數與雇用合約也只由伺服器修改。
   }
   validInventory(state.warehouse||[],true);
   for(const old of snapshot(user.id).characters.filter(Boolean)){
@@ -323,6 +323,11 @@ function createGameServer(options={}){
       const random=()=>crypto.randomInt(0,1e9)/1e9,results=GACHA.draw(count,random);
       if((c.inventory||[]).length+results.length>179)fail(409,'背包空間不足，請先整理背包。');
       c.diamonds=balance-cost;for(const r of results)give(c,{key:r.key,count:1});save(user.id,state);return {results:results.map(r=>({id:r.id,tier:r.tier}))};
+     }
+     // ---- 每日任務鑽石（2026-11-17）：完成 1 個每日任務給 10 鑽，每天（清晨 5 點重置）最多 10 次＝100 鑽；任務進度在角色存檔 character.daily ----
+     if(route==='/api/daily/claim'){
+      const d=new Date(Date.now()-5*3600e3),day=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(),rec=c.dailyDiamond&&c.dailyDiamond.day===day?c.dailyDiamond:{day,n:0};
+      if(rec.n>=10)fail(409,'今天的每日任務鑽石已經領滿 100 顆。');rec.n++;c.dailyDiamond=rec;c.diamonds=int((c.diamonds||0)+10,0);save(user.id,state);return {diamonds:c.diamonds,claimed:rec.n};
      }
      // ---- 傭兵團（2026-11-16）----
      if(route.startsWith('/api/merc/')){

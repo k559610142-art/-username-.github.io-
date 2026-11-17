@@ -16,6 +16,8 @@ const QuestTracker=(()=>{
  const have=id=>(window.OwnedInventory?.items||[]).filter(e=>!e.slot&&e.item.id===id).reduce((n,e)=>n+e.count,0);
  const fmt=ms=>{const s=Math.max(0,Math.ceil(ms/1000)),h=Math.floor(s/3600),m=Math.floor(s%3600/60),r=s%60;return (h?h+':'+String(m).padStart(2,'0'):m)+':'+String(r).padStart(2,'0');};
  const mobs=list=>{const n=[...new Set(list.map(mobName))];return n.length>3?n.slice(0,3).join('／')+' 等'+n.length+'種':n.join('／');};
+ // 每日任務（data/daily-quests.js）：完成的排到後面
+ function dailyQuests(){const list=window.DailyQuests?.list()||[];return list.slice().sort((a,b)=>a.done-b.done).map(t=>({name:t.label,lines:[{text:t.done?'完成（💎10 已領）':t.progress+' / '+t.count,done:t.done}],open:()=>{}}));}
  function levelQuests(){
   const ids=new Set(window.LevelQuests?.active()||[]);if(!ids.size||typeof LEVEL_QUESTS==='undefined')return [];
   return LEVEL_QUESTS.filter(q=>ids.has(q.id)).map(q=>({name:q.name,lines:q.targets.map(t=>{const n=Math.min(have(t.item),t.count);return {text:mobs(t.mobs)+' → '+itemName(t.item)+' '+n+'/'+t.count,done:n>=t.count};}),open:()=>window.LevelQuests?.open()}));
@@ -37,9 +39,9 @@ const QuestTracker=(()=>{
  let sig='';
  function tick(){
   if(window.gameFlowState!=='playing'){root.hidden=true;sig='';return;}
-  const lv=levelQuests(),merc=mercQuest(),key=JSON.stringify([lv.map(q=>[q.name,q.lines]),merc.map(q=>[q.name,q.lines])]);
-  root.hidden=!lv.length&&!merc.length;if(root.hidden)return;position();if(key===sig)return;sig=key;
-  const scroll=root.scrollTop,parts=[];if(lv.length)parts.push(section('等級任務',lv));if(merc.length)parts.push(section('傭兵任務',merc));root.replaceChildren(...parts);root.scrollTop=scroll;
+  const daily=dailyQuests(),lv=levelQuests(),merc=mercQuest(),key=JSON.stringify([daily.map(q=>[q.name,q.lines]),lv.map(q=>[q.name,q.lines]),merc.map(q=>[q.name,q.lines])]);
+  root.hidden=!daily.length&&!lv.length&&!merc.length;if(root.hidden)return;position();if(key===sig)return;sig=key;
+  const scroll=root.scrollTop,parts=[];if(daily.length){const t=window.DailyQuests.list(),done=t.filter(x=>x.done).length;parts.push(section('每日任務（'+done+'/'+t.length+'）'+(window.DailyQuests.chest?' ✔獎勵箱':''),daily));}if(lv.length)parts.push(section('等級任務',lv));if(merc.length)parts.push(section('傭兵任務',merc));root.replaceChildren(...parts);root.scrollTop=scroll;
  }
  setInterval(tick,1000);return {refresh:tick};
 })();window.QuestTracker=QuestTracker;
