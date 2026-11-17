@@ -34,13 +34,15 @@ const ClassBuffs=(()=>{
   218:{},219:{dmg:10},226:{gigantic:1},
   // 黑妖（2026-11-17 補學法術；L1J 常見數值）：附加劇毒、毒性抵抗只顯示狀態；影之防護 AC−3、行走加速＝加速、燃燒鬥志 dmg+3、
   //  雙重破壞 dmg+4、暗影閃避 閃避+5、暗影之牙 dmg+5、力量提升 str+2、敏捷提升 dex+2、迴避提升 閃避+5
+  // 精靈魔法第 6 階（2026-11-17 補）：體能激發 AC−3、水之元氣 MP 回復+3、屬性之火 dmg+3、精準射擊 遠攻命中+6、烈焰之魂 dmg+5、能量激發 dmg+2
+  169:{ac:-3},170:{mpr:3},171:{dmg:3},174:{bowHit:6},175:{dmg:5},176:{dmg:2},
   98:{},99:{ac:-3},101:{speed:'haste'},102:{dmg:3},104:{},105:{dmg:4},106:{dodge:5},107:{dmg:5},109:{stats:{str:2}},110:{stats:{dex:2}},111:{dodge:5},
  };
  // Monster debuffs: mobDmg (less damage dealt), stun／sleep, silence, root, slow, dot.
  const TARGET={
   11:{dot:[5,3000]},20:{},29:{slow:1},33:{stun:1},40:{},47:{mobDmg:5},56:{mobDmg:6},64:{silence:1},66:{stun:1},113:{},
   133:{},152:{root:1},153:{},157:{stun:1},167:{slow:1},
-  103:{stun:1},112:{},183:{},188:{},193:{},202:{silence:1},212:{stun:1},217:{},228:{root:1},230:{stun:1},
+  173:{mobDmg:3},103:{stun:1},112:{},183:{},188:{},193:{},202:{silence:1},212:{stun:1},217:{},228:{root:1},230:{stun:1},
  };
  const AREA_TARGET={76:{slow:1},161:{silence:1}};
  const ATTACK={108:1,187:1,207:1,229:1};
