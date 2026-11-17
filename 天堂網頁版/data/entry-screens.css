@@ -35,3 +35,7 @@
 .login-panel-reposition{display:none;position:absolute;left:0;top:0;width:1280px;height:720px;transform-origin:0 0;pointer-events:none;z-index:0}
 .login-video-mode .login-panel-reposition{display:block}
 .login-video-mode .login-card{z-index:1}
+/* 2026-11-18 使用者：登入框虛影 → 瀏覽器「自動填入」會把帳號／密碼框強制塗成淺藍白底，蓋住影片畫的欄位。
+   自動填入的底色無法直接改，只能用超長 transition 讓它永遠不出現，文字顏色用 -webkit-text-fill-color 蓋回來。 */
+.login-video-mode #login-account:-webkit-autofill,.login-video-mode #login-password:-webkit-autofill,.login-video-mode #login-account:autofill,.login-video-mode #login-password:autofill{-webkit-text-fill-color:#f3e6c2;caret-color:#f1d27c;background-color:transparent!important;background-clip:text;transition:background-color 99999s ease 0s,color 99999s ease 0s}
+.login-video-mode #login-account::-ms-reveal,.login-video-mode #login-password::-ms-reveal,.login-video-mode #login-password::-ms-clear{display:none}
