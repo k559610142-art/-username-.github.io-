@@ -153,7 +153,7 @@
   const x=expInfo(),circle={法師:[4,10],妖精:[8,6],王族:[10,2],騎士:[50,1],黑妖:[12,2]}[job],magicLv=circle?Math.min(circle[1],Math.floor(lv/circle[0])):0;
   put('wide','Lv.'+lv+'　'+x.pct.toFixed(2)+'%',80,13,140,12);
   put('',hp+'/'+maxHp,80,35,50,12,'hp');put('',mp+'/'+maxMp,80,50,50,12,'mp');put('',previewArmorClass(),80,65,50,12);
-  put('',weightPct()+'%',59,88,44,12);put('','—',59,101,44,12);
+  put('',weightPct()+'%',59,88,44,12);put('',window.Satiety?.value()??'—',59,101,44,12);
   [a.str,a.dex,a.con,a.int,a.wis,a.cha].forEach((v,i)=>put('',v??'—',38,125+i*13,34,12));
   put('',magicLv,96,218,30,12);put('',p.sp||0,96,231,30,12);put('name',window.activeCharacterName||'',153,242,77,13);
   [d.elements?.earth,d.elements?.water,d.elements?.fire,d.elements?.wind].forEach((v,i)=>put('',v||0,82,274+i*13,32,12));

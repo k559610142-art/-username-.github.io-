@@ -170,6 +170,7 @@ window.OwnedInventory=(()=>{
   const tdjUse=window.TdjSystems?.useItem?.(uid);if(tdjUse!==undefined&&tdjUse!==null)return tdjUse; // 魔法娃娃／武魂道具雙擊收進圖鑑（data/tdj-systems.js）
   const identifyUse=window.ItemIdentify?.use(uid);if(identifyUse!==undefined&&identifyUse!==null)return identifyUse; // 鑑定卷軸（data/item-identify.js）
   const scrollUse=window.TeleportScrolls?.use(uid);if(scrollUse!==undefined&&scrollUse!==null)return scrollUse;
+  const foodUse=window.Satiety?.use(uid);if(foodUse!==undefined&&foodUse!==null)return foodUse; // 食物（data/satiety.js）
   const potionUse=window.NativePotions?.use(uid);if(potionUse!==undefined&&potionUse!==null)return potionUse;
   const effectUse=window.ItemEffects?.use(uid);if(effectUse!==undefined&&effectUse!==null)return effectUse; // 經驗藥水、魔法卷軸（data/item-effects.js）
   const nativeUse=window.DBGameRules?.useItem(uid);if(nativeUse!==undefined&&nativeUse!==null)return nativeUse;
