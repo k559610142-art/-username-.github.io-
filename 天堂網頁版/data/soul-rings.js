@@ -6,7 +6,7 @@ window.SoulRings=(()=>{
  const TIERS=['下品','上品','極品','千年','萬年','上古','四神獸'];
  const state=()=>window.TdjSystems?.wuhun.ringState||{slots:Array(6).fill(null)};
  const soul=id=>wuhunData.find(w=>String(w.id)===String(id));
- function bonuses(){const active=window.TdjSystems?.wuhun.active;return active?effects(soul(active)):{};} // 只算裝備中的武魂；魂槽祭品不給能力
+ function bonuses(){const active=window.TdjSystems?.wuhun.active,out=active?effects(soul(active)):{};const doll=window.DollEffects?.bonuses();if(doll)for(const [k,n]of Object.entries(doll))out[k]=(out[k]||0)+n;return out;} // 只算裝備中的武魂；魂槽祭品不給能力。2026-11-17：召喚中的魔法娃娃能力一起算（data/doll-effects.js）
  const ringBonuses=()=>({});
  const describe=bonus=>Object.entries(bonus).map(([k,n])=>(labels[k]||k)+'+'+n+(k==='exp'?'%':''));
  const need=id=>window.TdjSystems?.wuhun.ringMissing(id)||[];
