@@ -7,7 +7,7 @@
  if(!video||!stage||!form)return;
  const VW=1280,VH=720,SHOW_AT=8.6,PORTRAIT_STOP=5.5;
  // 影片裡畫好的元件位置（1280×720 座標，量自最後一格）
- const SPOT={account:[506,537,206,22],password:[506,576,206,22],accountEye:[712,535,22,26],passwordEye:[712,574,22,26],forgotBox:[749,624,112,32],patch:[738,564,136,102],register:[439,619,92,36],login:[548,618,172,38],forgotText:[748,624,78,26],message:[330,474,604,26]};
+ const SPOT={account:[506,537,206,22],password:[506,576,206,22],accountEye:[712,535,22,26],passwordEye:[712,574,22,26],forgotBox:[749,624,112,32],patch:[738,564,136,102],titlePatch:[400,8,480,262],register:[439,619,92,36],login:[548,618,172,38],forgotText:[748,624,78,26],message:[330,474,604,26]};
  const portrait=()=>{const r=stage.getBoundingClientRect();return r.height>r.width;};
  const hot=(cls,label,fn)=>{const b=document.createElement('button');b.type='button';b.className='login-hot '+cls;b.setAttribute('aria-label',label);b.onclick=fn;return b;};
  const place=(node,[x,y,w,h])=>{Object.assign(node.style,{left:x+'px',top:y+'px',width:w+'px',height:h+'px'});};
@@ -21,7 +21,9 @@
  // 2026-11-17 使用者：影片裡有兩個「忘記密碼」→ 移除下面那行字、藍色按鈕往下移。影片本身改不了，所以疊一張從最後一格做的補丁圖
  //  （assets/entry/login-forgot-patch.png：原按鈕位置補平、按鈕下移 50 格蓋住那行字），隨表單一起淡入。
  const patch=document.createElement('img');patch.className='login-patch';patch.alt='';patch.src='assets/entry/login-forgot-patch.png?v=1';
- const hots=[[patch,SPOT.patch],[register,SPOT.register],[hot('login-hot-forgot','忘記密碼',forgot),SPOT.forgotBox],[eye,SPOT.passwordEye]];
+ // 2026-11-17 使用者：標題「這奇怪的天堂」移到兜帽人胸口那一帶 → 補丁圖（原位置換成 8.4 秒還沒出標題的畫面、標題下移 95 格）
+ const titlePatch=document.createElement('img');titlePatch.className='login-patch';titlePatch.alt='';titlePatch.src='assets/entry/login-title-patch.png?v=1';
+ const hots=[[titlePatch,SPOT.titlePatch],[patch,SPOT.patch],[register,SPOT.register],[hot('login-hot-forgot','忘記密碼',forgot),SPOT.forgotBox],[eye,SPOT.passwordEye]];
  function layout(){
   if(!stage.classList.contains('login-video-mode'))return;
   const r=stage.getBoundingClientRect(),s=Math.max(r.width/VW,r.height/VH),ox=(r.width-VW*s)/2,oy=(r.height-VH*s)/2;
@@ -30,7 +32,7 @@
  function enter(){
   if(ready||failed||portrait())return;ready=true;fallback(false);stage.classList.add('login-video-mode');
   place(document.querySelector('#login-account'),SPOT.account);place(document.querySelector('#login-password'),SPOT.password);place(document.querySelector('#login-submit'),SPOT.login);if(message)place(message,SPOT.message);
-  for(const [node,spot] of hots){place(node,spot);if(!node.isConnected)node===patch?form.prepend(node):form.append(node);}
+  for(const [node,spot] of hots){place(node,spot);if(!node.isConnected)node.classList.contains('login-patch')?form.prepend(node):form.append(node);}
   layout();setTimeout(()=>stage.classList.add('login-video-shown'),30); // 不用 requestAnimationFrame：背景分頁不會執行，表單會一直隱形
  }
  function leave(){ready=false;stage.classList.remove('login-video-mode','login-video-shown');form.style.transform='';for(const el of [document.querySelector('#login-account'),document.querySelector('#login-password'),document.querySelector('#login-submit'),message])if(el)el.removeAttribute('style');for(const [node] of hots)node.remove();}
