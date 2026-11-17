@@ -8,7 +8,8 @@ function activeCharacterAvatar(){return characterCatalog.jobs[job]?.[characterGe
 function activeCharacterActions(){return fullCharacterAssets.avatars[activeCharacterAvatar()]}
 function activeCharacterWeapon(){const data=activeCharacterActions();return data.weapons.includes(characterWeapon)?characterWeapon:'unarmed'}
 function activeWeaponWalkAction(){return fullCharacterAssets.weapons[activeCharacterWeapon()].base}
-function fullCharacterPath(avatar,heading,clip,index,shadow=false){return 'assets/character-actions/'+avatar+'/'+heading+'/'+clip+(shadow?'_s':'')+'_'+index+'.png'}
+function fullCharacterPath(avatar,heading,clip,index,shadow=false){heading=fullCharacterAssets.avatars[avatar]?.mirror?.[heading]||heading; // 鏡像方向讀來源方向的圖（character-action-fallbacks.js）
+ return 'assets/character-actions/'+avatar+'/'+heading+'/'+clip+(shadow?'_s':'')+'_'+index+'.png'}
 const characterFrameResources=new Map();
 let displayedCharacterBody=null,displayedCharacterShadow=null,preloadedWalkSet='',displayedCharacterSignature='';
 // These legacy nodes retain diagnostic state. Only decoded cache nodes are displayed.
@@ -26,7 +27,7 @@ function characterFrameResource(file){
 function preloadFullCharacterClip(avatar,heading,clip){
  const key=avatar+'/'+heading+'/'+clip;if(fullCharacterCache.has(key)){const cached=fullCharacterCache.get(key);fullCharacterCache.delete(key);fullCharacterCache.set(key,cached);return;}
  const data=fullCharacterAssets.avatars[avatar],frames=[];
- for(const shadow of [false,true])for(let i=0;i<(shadow?data.shadows:data.directions)[heading][clip];i++){const file=fullCharacterPath(avatar,heading,clip,i,shadow);frames.push({file,item:characterFrameResource(file)})}
+ for(const shadow of [false,true])for(let i=0;i<((shadow?data.shadows:data.directions)[heading]?.[clip]||0);i++){const file=fullCharacterPath(avatar,heading,clip,i,shadow);frames.push({file,item:characterFrameResource(file)})}
  fullCharacterCache.set(key,frames);
  while(fullCharacterCache.size>48){const pinned=avatar+'/',walk='/'+activeCharacterWeapon()+'_walk';const key=[...fullCharacterCache.keys()].find(k=>!(k.startsWith(pinned)&&k.endsWith(walk)));if(!key)break;const old=fullCharacterCache.get(key);fullCharacterCache.delete(key);for(const f of old)if(characterFrameResources.get(f.file)===f.item)characterFrameResources.delete(f.file)}
 }
@@ -54,11 +55,11 @@ refreshCharacter=function(frameTime=movementTime()){
  else{const clip=weapon+'_idle';pose=fullCharacterPose(data.timelines[clip],now-characterIdleStarted,true)}
  if(characterDead&&!characterActionState){action='death';const t=data.timelines.death;pose=t.frames[t.frames.length-1]}
  characterLastAction=action;preloadFullCharacterClip(avatar,characterHeading,pose.clip);
- const file=fullCharacterPath(avatar,characterHeading,pose.clip,pose.frame),hasShadow=pose.frame<data.shadows[characterHeading][pose.clip],body=characterFrameResource(file),shadow=hasShadow?characterFrameResource(fullCharacterPath(avatar,characterHeading,pose.clip,pose.frame,true)):null;
+ const file=fullCharacterPath(avatar,characterHeading,pose.clip,pose.frame),hasShadow=pose.frame<(data.shadows[characterHeading]?.[pose.clip]||0)&&!data.autoShadow,body=characterFrameResource(file),shadow=hasShadow?characterFrameResource(fullCharacterPath(avatar,characterHeading,pose.clip,pose.frame,true)):(typeof characterAutoShadow==='function'?characterAutoShadow(body,data,!!data.mirror?.[characterHeading]):null); // 沒有影子圖就自動產生
  // Keep the prior bitmap, geometry and correction together while either new layer is decoding.
  // Decode completions refresh the current pose, so obsolete requests can never overwrite it.
  if(!body.ready||shadow&&!shadow.ready&&!shadow.error){ensureFullCharacterAnimation();return}
- const scale=characterRenderScale(),w=data.size[0]*scale,h=data.size[1]*scale,correction=characterWalkCorrection(pose,data,characterHeading),transform='translate('+(correction.x*scale)+'px,'+(correction.y*scale)+'px)';
+ const scale=characterRenderScale(),w=data.size[0]*scale,h=data.size[1]*scale,correction=characterWalkCorrection(pose,data,characterHeading),transform='translate('+(correction.x*scale)+'px,'+(correction.y*scale)+'px)'+(data.mirror?.[characterHeading]?' scaleX(-1)':''); // 鏡像方向左右翻轉
  const signature=[file,scale,w,h,transform,!!shadow?.ready].join('|');
  if(signature!==displayedCharacterSignature||displayedCharacterBody!==body.img){
   characterBody.style.width=w+'px';characterBody.style.height=h+'px';characterBody.style.left=(-w/2)+'px';characterBody.style.top=(-data.footY*scale)+'px';
