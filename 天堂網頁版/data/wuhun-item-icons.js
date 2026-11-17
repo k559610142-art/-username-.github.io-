@@ -4,4 +4,6 @@
 (()=>{
  const IDS=new Set([39311,39312,39313,39301,39302,39303,39304,39305,39306,39307,39308,39309,39310,39291,39292,39293,39294,39295,39296,39297,39298,39299,39300,39266,39269,39270,39275,39276,39277,39265,39278,39279,39280,39281,39282,39285,39267,39268,39283,39284,39286,39271,39272,39273,39274]);
  for(const item of INTERFACE_CATALOG.items)if(item.kind==='etcitem'&&IDS.has(item.id))item.icon='assets/interface/wuhun/cards/wuhun-'+item.id+'.png?v=1';
+ // 武魂結晶（39287）道具圖：使用者 2026-11-18 提供的水晶圖，裁成 64×64（assets/interface/items/wuhun-crystal.png）
+ for(const item of INTERFACE_CATALOG.items)if(item.kind==='etcitem'&&item.id===39287)item.icon='assets/interface/items/wuhun-crystal.png?v=1';
 })();
