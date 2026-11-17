@@ -62,6 +62,18 @@ window.OwnedInventory=(()=>{
   if(job!=='妖精'||level()<30||skillState.element||!['地','風','水','火'].includes(element))return false;
   return transact(clone(entries),{skills:{...skillState,element}});
  }
+ // 解除精靈力（2026-11-17 使用者：妖精要可以更換屬性，照 DB 艾利溫對話 ellyonne11／12）：付天幣或回憶蠟燭回到「純真狀態」，
+ //  已學的屬性魔法一併遺忘（「想學其他屬性，就必需遺忘已學習過的」），之後可重新選屬性。天幣費用每解除一次加倍（「次數越多越貴」）。
+ const ELF_RESET_BASE=10000,ELF_RESET_MAX=1280000,CANDLES=['etcitem:49142','etcitem:49144'];
+ function elfResetCost(){return Math.min(ELF_RESET_MAX,ELF_RESET_BASE*2**(skillState.resets||0))}
+ function resetElfElement(useCandle){
+  if(job!=='妖精'||!skillState.element)return false;
+  const next=clone(entries);
+  if(useCandle){const c=next.find(e=>CANDLES.includes(e.key)&&!e.slot);if(!c||!deduct(next,c.uid,1)){toast('沒有回憶蠟燭。');return false}}
+  else if(!pay(next,elfResetCost())){toast('天幣不足，需要 '+elfResetCost().toLocaleString()+' 天幣。');return false}
+  const books=playerSkillData.books,elemental=new Set(Object.values(books).filter(b=>b.element).map(b=>b.skill));
+  return transact(next,{skills:{...skillState,element:'',ids:skillState.ids.filter(id=>!elemental.has(id)),resets:(skillState.resets||0)+(useCandle?0:1)}});
+ }
  function castCost(skill,nextHp){
   const next=clone(entries);
   const mpCost=window.PlayerAbilityRules?.manaCost(skill)??skill.mp;
@@ -188,5 +200,5 @@ window.OwnedInventory=(()=>{
  }
  function usePotion(){const e=entries.find(i=>i.key==='etcitem:40010')||entries.find(i=>window.NativePotions?.isHealing(i.key)||rules.handlers[config(i).handler]?.kind==='hpGaussian');if(!e){toast('背包中沒有回復藥水。');return false}return use(e.uid)}
  document.querySelector('#heal').onclick=usePotion;potions=0;
- return {collect,hasCollection,get collection(){return collection.slice()},canDiscard,discard,sortInventory,activate,validate,validateWarehouse,get healingItems(){return entries.filter(e=>window.NativePotions?.isHealing(e.key)||rules.handlers[config(e).handler]?.kind==='hpGaussian').map(e=>({...e,item:definition(e)}))},applyChange:transact,reward,learnSkill,setElfElement,castCost,get skills(){return clone(skillState)},prepareTransform,transfer,trade,receive,get warehouse(){return clone(warehouse)},get storedItems(){return warehouse.map(e=>({...e,item:presented(e)}))},use,equip,unequip,usePotion,consumeArrow,slotFor,deactivate(){owner='';entries=[];warehouse=[];collection=[];skillState={ids:[],element:''};cooldowns.clear();potions=0},get owner(){return owner},get snapshot(){return clone(entries)},get equippedWeaponType(){const weapon=entries.find(e=>e.slot==='weapon');return weapon?definition(weapon).type:null},get items(){return entries.map(e=>({...e,item:presented(e)}))}};
+ return {collect,hasCollection,get collection(){return collection.slice()},canDiscard,discard,sortInventory,activate,validate,validateWarehouse,get healingItems(){return entries.filter(e=>window.NativePotions?.isHealing(e.key)||rules.handlers[config(e).handler]?.kind==='hpGaussian').map(e=>({...e,item:definition(e)}))},applyChange:transact,reward,learnSkill,setElfElement,resetElfElement,elfResetCost,hasMemoryCandle:()=>entries.some(e=>CANDLES.includes(e.key)&&!e.slot),castCost,get skills(){return clone(skillState)},prepareTransform,transfer,trade,receive,get warehouse(){return clone(warehouse)},get storedItems(){return warehouse.map(e=>({...e,item:presented(e)}))},use,equip,unequip,usePotion,consumeArrow,slotFor,deactivate(){owner='';entries=[];warehouse=[];collection=[];skillState={ids:[],element:''};cooldowns.clear();potions=0},get owner(){return owner},get snapshot(){return clone(entries)},get equippedWeaponType(){const weapon=entries.find(e=>e.slot==='weapon');return weapon?definition(weapon).type:null},get items(){return entries.map(e=>({...e,item:presented(e)}))}};
 })();

@@ -90,6 +90,13 @@ const PlayerSkills = (() => {
       const grid=document.querySelector('.magic-grid');
       grid?.append(uiElement('p','','尚未學習技能。'));
     }
+    if(job==='妖精'&&learned().element){ // 2026-11-17：已選屬性 → 顯示目前屬性與「解除精靈力」（兩段式確認，避免誤按）
+      const box=uiElement('div','elf-element-box');box.append(uiElement('span','','精靈屬性：'+learned().element+' '));
+      const cost=OwnedInventory.elfResetCost(),btn=uiElement('button','','解除精靈力（'+cost.toLocaleString()+' 天幣）');btn.type='button';
+      let armed=false;btn.onclick=()=>{if(!armed){armed=true;btn.textContent='確定解除？已學的屬性魔法會遺忘';return;}if(OwnedInventory.resetElfElement(false))panel('magic');};box.append(btn);
+      if(OwnedInventory.hasMemoryCandle()){const c=uiElement('button','','用回憶蠟燭解除');c.type='button';let a2=false;c.onclick=()=>{if(!a2){a2=true;c.textContent='確定用回憶蠟燭解除？';return;}if(OwnedInventory.resetElfElement(true))panel('magic');};box.append(c);}
+      document.querySelector('#panelContent .magic-window')?.append(box,uiElement('small','','解除後回到純真狀態，可重新選擇屬性；已學的屬性魔法會一併遺忘。天幣費用每解除一次加倍。'));
+    }
     if(job==='妖精'&&!learned().element){
       const label=uiElement('label','','精靈屬性 ');
       const select=uiElement('select','');
@@ -97,7 +104,7 @@ const PlayerSkills = (() => {
         const option=document.createElement('option');option.value=value;option.textContent=text;select.append(option);
       }
       select.disabled=(window.activeCharacterLevel||1)<30;
-      select.onchange=()=>{if(OwnedInventory.setElfElement(select.value))panel('magic');};
+      select.onchange=()=>{if(!select.value)return;const ok=document.createElement('button');ok.type='button';ok.textContent='確定選擇「'+select.value+'」';ok.onclick=()=>{if(OwnedInventory.setElfElement(select.value))panel('magic');};label.querySelector('button')?.remove();label.append(ok);};
       label.append(select);
       document.querySelector('#panelContent .magic-window')?.append(label,uiElement('small','','30 級可選擇精靈屬性。'));
     }
