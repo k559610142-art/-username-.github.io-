@@ -3,6 +3,10 @@
 window.TransformCards = (() => {
   const book = transformCardBook;
   const byName = new Map(book.map(card => [card.n, card]));
+  // 顯示名稱（2026-11-17 使用者：神話・炎魔改名炎魔）。卡名同時是收集紀錄與稀有度的鍵，兩張都叫「炎魔」會撞名，所以只改畫面上顯示的名字。
+  const DISPLAY_NAMES = {'神話・炎魔': '炎魔'};
+  for (const card of book) if (DISPLAY_NAMES[card.n]) card.dn = DISPLAY_NAMES[card.n];
+  const label = name => byName.get(name)?.dn || name;
   const gradeWeights = {1: 40, 2: 28, 3: 18, 4: 9, 5: 4, 6: 0.9, 7: 0.1, 8: 0};
   const frameMs = 130;
   let owner = '', state = {owned: {}, active: null};
@@ -104,13 +108,13 @@ window.TransformCards = (() => {
     if (!card || !state.owned[name]) { toast('還沒收集到這張變身卡。'); return false; }
     if(card.unavailable){toast('這個原始造型尚缺客戶端素材，暫時不能變身。');return false;}
     const level = Number(window.activeCharacterLevel) || 1;
-    if (card.p && level < card.p.lv) { toast('等級 ' + card.p.lv + ' 以上才能變身為 ' + name + '。'); return false; }
+    if (card.p && level < card.p.lv) { toast('等級 ' + card.p.lv + ' 以上才能變身為 ' + label(name) + '。'); return false; }
     if (typeof characterMovementBlocked === 'function' && characterMovementBlocked()) { toast('請等目前動作結束。'); return false; }
     // 照 3.63 規則：變身後不能用的裝備自動卸下（被詛咒的卸不下就不能變身）。
     const blocked = (window.OwnedInventory?.items || []).filter(entry => entry.slot && !canEquip(entry.item, card));
     if(blocked.length&&!OwnedInventory.prepareTransform(card))return false;
     state.active = name; save(); applyEffects(); morphStarted = movementTime(); refreshCharacter();
-    toast('變身為 ' + name + '（' + card.fx.slice(0, 3).join('、') + '）' + (blocked.length ? '，已卸下 ' + blocked.map(entry => entry.item.name).join('、') : ''));
+    toast('變身為 ' + label(name) + '（' + card.fx.slice(0, 3).join('、') + '）' + (blocked.length ? '，已卸下 ' + blocked.map(entry => entry.item.name).join('、') : ''));
     return true;
   }
   function deactivate({quiet=false}={}) {
@@ -277,6 +281,7 @@ window.TransformCards = (() => {
   return {
     book, draw, activate, deactivate, canAttack, reconcileEquipment, onDeath(){deactivate({quiet:true});}, gradeWeights, canEquip, rules,
     get canCast() { ensure(); return window.activeTransformCard?.p?.m !== 0; },
+    label,
     owned: name => (ensure(), state.owned[name] || 0),
     get collected() { ensure(); return Object.keys(state.owned).length; },
     get active() { ensure(); return state.active; },

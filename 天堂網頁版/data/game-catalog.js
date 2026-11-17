@@ -1813,7 +1813,7 @@ function openGameCatalog(type) {
       return;
     }
     const picture = catalogPortrait(type, row, true);
-    detail.append(picture, uiElement('h3', '', row.name));
+    detail.append(picture, uiElement('h3', '', type === 'transforms' ? row.card?.dn || row.name : row.name));
     if (type === 'cards') {
       detail.append(uiElement('strong', '', lineageMCardTiers[row.tier]));
       for (const effect of row.effects || []) detail.append(uiElement('p', '', effect));
@@ -1925,7 +1925,7 @@ function openGameCatalog(type) {
     const drawButton = times => catalogButton('抽 ' + times + ' 張', () => {
       const got = TransformCards.draw(times);
       if (!got.length) return;
-      toast('獲得：' + got.map(card => card.n + '（' + lineageWGrades[card.g][0] + '）').join('、'));
+      toast('獲得：' + got.map(card => (card.dn || card.n) + '（' + lineageWGrades[card.g][0] + '）').join('、'));
       updateCounts();
       refreshCards();
     });
@@ -1982,7 +1982,7 @@ function openGameCatalog(type) {
         card.append(uiElement('small', '', (type === 'wuhun' ? row.w.tier + ' · ' : '') + (owned ? '×' + owned : evolvedOwned?'進階已擁有 ×'+evolvedOwned:'未擁有')+(equipped?' · 裝備中':'')));
       }
       card.append(catalogPortrait(type, row));
-      card.append(uiElement('span', '', row.name));
+      card.append(uiElement('span', '', type === 'transforms' ? row.card?.dn || row.name : row.name));
       if (row.effect) card.append(uiElement('small', '', row.effect));
       cards.append(card);
     }
