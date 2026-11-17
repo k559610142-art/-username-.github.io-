@@ -418,13 +418,29 @@ window.TdjSystems = (() => {
     if (!playing()) { toast('請先進入遊戲角色。'); return null; }
     const d = pick(dolls); state.dolls.owned[d.id] = (state.dolls.owned[d.id] || 0) + 1; save(); return d;
   }
+  // 2026-11-17 使用者：召喚要扣材料（多為魔法結晶體×100，商人有賣）；召喚時間到自動再扣一次續召，材料不夠才解除。
+  //  續召到期時間存在 state.dolls.until（毫秒）；離線期間不扣，回來時從現在重新計時。
+  function payDoll(d) {
+    const need = d.materials || [], next = window.OwnedInventory?.snapshot; if (!next) return false;
+    for (const [mid, n] of need) { let left = n; for (const e of next) { if (left <= 0) break; if (e.key !== 'etcitem:' + mid || e.slot) continue; const take = Math.min(left, e.count || 1); e.count = (e.count || 1) - take; left -= take; } if (left > 0) return false; }
+    return OwnedInventory.applyChange(next.filter(e => (e.count ?? 1) > 0));
+  }
+  const matText = d => (d.materials || []).map(([mid, n]) => (INTERFACE_CATALOG.items.find(i => i.kind === 'etcitem' && i.id === mid)?.name || '道具') + '×' + n).join('、');
   function summon(id) {
     if (!playing()) return false;
     const d = dollById.get(+id); if (!d || !state.dolls.owned[id]) { toast('還沒有這隻魔法娃娃。'); return false; }
-    state.dolls.active = String(id); save(); render();
+    if (d.materials?.length && !payDoll(d)) { toast('召喚需要 ' + matText(d) + '，材料不足（魔法結晶體可向雜貨商購買）。'); return false; }
+    state.dolls.active = String(id); state.dolls.until = Date.now() + (d.time || 1800) * 1000; save(); render();
     toast('召喚 ' + d.name.replace(/^.*：/, '') + '（' + (d.effects.slice(0, 3).join('、') || '無能力') + '）'); return true;
   }
-  function dismiss() { if (!playing() || !state.dolls.active) return false; state.dolls.active = null; save(); render(); toast('魔法娃娃已解除召喚'); return true; }
+  setInterval(() => {
+    if (!playing() || !state.dolls.active) return; const d = dollById.get(+state.dolls.active); if (!d) return;
+    if (!state.dolls.until) { state.dolls.until = Date.now() + (d.time || 1800) * 1000; save(); return; }
+    if (Date.now() < state.dolls.until) return;
+    if (!d.materials?.length || payDoll(d)) { state.dolls.until = Date.now() + (d.time || 1800) * 1000; save(); toast('魔法娃娃召喚時間到，自動消耗 ' + matText(d) + ' 繼續召喚。'); }
+    else { state.dolls.active = null; state.dolls.until = 0; save(); render(); window.DBGameRules?.syncVitals(); window.stats?.(); toast('魔法娃娃召喚時間到，' + matText(d) + ' 不足，娃娃已離開。'); }
+  }, 1000);
+  function dismiss() { if (!playing() || !state.dolls.active) return false; state.dolls.active = null; state.dolls.until = 0; save(); render(); toast('魔法娃娃已解除召喚'); return true; }
 
   // ---- BOSS 靈魂附魔 ----
   const equippedWeapon = () => (window.OwnedInventory?.items || []).find(e => e.slot === 'weapon');
