@@ -68,6 +68,14 @@
  .qy-doll2{position:relative;display:grid;grid-template-columns:repeat(3,21%);justify-content:space-between;row-gap:5px;margin:8px 4% 0;padding:2px 0;
   background:var(--qy-doll-figure) center/auto 100% no-repeat}
  .qy-doll2>.qy-doll-gap{aspect-ratio:1}
+ /* 2026-11-17 使用者：要沿用原版裝備圖（拱門背景＋金屬格框）→ 底圖 equipment-doll.png 已把格子照新排列重畫並加剪影，按鈕透明疊在格子上 */
+ .qy-doll3{position:relative;flex:none;width:260px;max-width:100%;aspect-ratio:152/330;margin:8px auto 0;background:url('assets/interface/player-panels/equipment-doll.png?v=1') center/100% 100% no-repeat;image-rendering:auto;border:1px solid #2e2c28}
+ .qy-win .qy-doll3 .equipment-slot{position:absolute!important;left:var(--x)!important;top:var(--y)!important;right:auto!important;bottom:auto!important;width:23.03%!important;height:10.61%!important;aspect-ratio:auto;padding:2px!important;background:transparent!important;border:1px solid transparent!important}
+ .qy-win .qy-doll3 .equipment-slot:hover,.qy-win .qy-doll3 .equipment-slot:focus-visible{border-color:#d7b464!important;box-shadow:0 0 6px #d7b46488}
+ .qy-win .qy-doll3 .equipment-slot .slot-symbol{display:none}
+ .qy-win .qy-doll3 .equipment-slot img{background:#15161a}
+ .qy-doll3 .qy-slot-lock{position:absolute;right:2px;bottom:1px;font-size:10px;color:#c9c2b0;text-shadow:1px 1px 0 #000;pointer-events:none}
+ .qy-win .qy-doll3 .equipment-slot.qy-locked{background:#0a0b0dbb!important}
  .qy-doll2 .equipment-slot{background:radial-gradient(#25272b8c,#17181b99)!important;border-color:#5a554a!important}
  .qy-ring-row{display:grid;grid-template-columns:repeat(5,16%);justify-content:space-between;margin-top:4px}
  .qy-win .equipment-slot{position:relative!important;inset:auto!important;width:auto!important;height:auto!important;aspect-ratio:1;min-height:0!important;margin:0!important;padding:3px!important;display:flex;align-items:center;justify-content:center;
@@ -140,7 +148,9 @@
   const col=keys=>{const c=el('div','qy-doll-col');for(const k of keys){const b=buttons.get(k);if(b)c.append(b)}return c};
   const right=OwnedInventory.items.some(e=>e.slot==='weapon2')?'weapon2':'shield'; // 右手欄：裝了第二把斧就顯示斧，否則盾牌／臂甲
   const LAYOUT=[[null,'helm','earring'],[null,'necklace',null],['tshirt','armor','cloak'],['ring1','belt','ring2'],['ring3','glove','ring4'],['weapon',null,right],[null,'boots',null]];
-  const doll=el('div','qy-doll2');for(const row of LAYOUT)for(const k of row){const b=k&&buttons.get(k);if(b)doll.append(b);else{const g=el('div','qy-doll-gap');g.setAttribute('aria-hidden','true');doll.append(g)}}box.append(doll);
+  const doll=el('div','qy-doll3'),COLS=[3,59,114],ROWS=[5,50,95,140,185,230,275],lv=Number(window.activeCharacterLevel)||1,LOCK={ring3:76,ring4:81};
+  LAYOUT.forEach((row,r)=>row.forEach((k,c)=>{const b=k&&buttons.get(k);if(!b)return;b.style.setProperty('--x',(COLS[c]/152*100)+'%');b.style.setProperty('--y',(ROWS[r]/330*100)+'%');
+   if(LOCK[k]&&lv<LOCK[k]){b.classList.add('qy-locked');b.append(el('span','qy-slot-lock','Lv.'+LOCK[k]));b.title='Lv.'+LOCK[k]+' 開放';}doll.append(b);}));box.append(doll);
   const s=el('div','qy-eq-stats');for(const [l,v]of [['力量',a.str],['敏捷',a.dex],['體質',a.con],['智力',a.int],['精神',a.wis],['魅力',a.cha],['防禦',previewArmorClass()],['魔防',d.mr||0],['正義',window.activeCharacterLawful??0]]){const c=el('div');c.append(el('span','',l),el('b','',String(v??'—')));s.append(c)}box.append(s);return box}
  function padGrid(grid){const items=grid.querySelectorAll('.item-slot:not(.empty)').length,blanks=[...grid.querySelectorAll('.item-slot.empty')],want=Math.max(24,Math.ceil(items/4)*4)-items;
   if(blanks.length===want)return;for(const b of blanks.slice(want))b.remove();for(let i=blanks.length;i<want;i++){const b=el('div','item-slot empty');b.setAttribute('aria-hidden','true');grid.append(b)}}
