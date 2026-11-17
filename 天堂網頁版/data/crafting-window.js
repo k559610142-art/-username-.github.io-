@@ -8,7 +8,7 @@ const CraftingWindow=(()=>{
  const split=v=>String(v??'').split(',').filter(Boolean).map(Number);
  const roleCode={'王族':0,'騎士':1,'法師':2,'妖精':3};
  // 2026-11-16 使用者要求移除「全部」分頁：預設開「可製作」；有輸入搜尋字時跨所有分頁找。
- const TABS=[['can','可製作'],['weapon','武器'],['armor','防具'],['acc','飾品'],['rune','符石'],['potion','藥品'],['scroll','卷軸'],['gem','魔石'],['material','材料'],['pet','寵物'],['item','道具']];
+ const TABS=[['can','可製作'],['weapon','武器'],['armor','防具'],['acc','飾品'],['rune','符石'],['potion','藥品'],['scroll','卷軸'],['gem','魔石'],['material','材料'],['pet','寵物'],['wuhun','武魂'],['item','道具']]; // 武魂分頁 2026-11-18：只有下品武魂（武魂結晶×1000）
  const category=DBGameRules.craftCategory;
  const soulTiers=['下品','上品','極品','千年','萬年','上古','四神獸'];
  const soulTier=x=>(typeof wuhunData!=='undefined'&&wuhunData.find(w=>w.id===x.item.id)?.tier)||soulTiers.find(t=>x.item.name.startsWith(t))||'其他武魂';
