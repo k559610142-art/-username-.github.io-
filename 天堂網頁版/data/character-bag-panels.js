@@ -179,7 +179,7 @@
   pane.classList.add('qy-bag-frameonly');
   {const strip=el('div','qy-bf-strip');const tabBtn=(k,label)=>{const b=el('button','qy-bf-btn',label);b.type='button';b.setAttribute('aria-pressed',String(catalogKind===k));b.onclick=()=>{catalogKind=k;for(const x of strip.querySelectorAll('[data-kind]'))x.setAttribute('aria-pressed',String(x.dataset.kind===k));query?.dispatchEvent(new Event('input'));};b.dataset.kind=k;return b;};
    const toolBtn=(label,title)=>{const b=el('button','qy-bf-btn qy-bf-tool',label);b.type='button';b.title=title;b.onclick=()=>pane.querySelector('.qy-bag-foot button[title="'+title+'"]')?.click();return b;};
-   strip.append(tabBtn('all','全部'),tabBtn('weapon','武器'),tabBtn('armor','防具'),tabBtn('etcitem','道具'),toolBtn('整理','整理背包'),toolBtn('販售','自動販賣'));frame.append(strip);}
+   strip.append(tabBtn('all','全部'),tabBtn('weapon','武器'),tabBtn('armor','防具'),tabBtn('etcitem','道具'),toolBtn('整理','整理背包'),toolBtn('販售','自動販賣'));frame.append(strip);for(const pos of ['top','bottom']){const d=el('div','qy-bf-drag qy-bf-drag-'+pos);d.title='拖動背包';frame.append(d);}} // 原圖上下邊框當拖動區（floating-windows.js bindDrag）
   const main=el('div','qy-bag-main'),side=el('div','qy-bag-side'),wrap=el('div','qy-bagframe-wrap');side.append(bar,info);wrap.append(frame);main.append(side,wrap);header.after(main,foot);
   if(grid){padGrid(grid);new MutationObserver(()=>padGrid(grid)).observe(grid,{childList:true})}
   return pane};
@@ -232,6 +232,7 @@
  .qy-bf-btn[aria-pressed=true]{color:#fff2c8;background:linear-gradient(#6a5428,#3a2c14)!important;border-color:#e2c27a!important;box-shadow:0 0 6px #e2c27a88,inset 0 0 4px #000}
  .qy-bf-btn.qy-bf-tool{color:#bfe0f0;border-color:#4e6b7a!important}
  .qy-bf-btn:hover{border-color:#e2c27a!important}
+ .qy-bf-drag{position:absolute;cursor:move;touch-action:none;user-select:none}.qy-bf-drag-top{left:16%;right:0;top:0;height:5.4%}.qy-bf-drag-bottom{left:0;right:0;top:87.5%;bottom:0}
  .qy-bagframe .qy-bf-close{position:absolute;left:1%;top:0;width:15%;height:5.5%;min-height:0!important;padding:0!important;background:transparent!important;border:0!important;cursor:pointer}
  .qy-win.qy-bag .qy-bagframe .inventory-count{font-size:3.6cqw;right:2px;bottom:0}
  `;document.head.append(st);}

@@ -32,7 +32,7 @@ const FloatingWindows=(()=>{
   }
   const restored=rec.frame.querySelector('.classic-window,.floating-window-content');if(restored)restored.scrollTop=scroll;const grid=rec.frame.querySelector('.classic-grid-scroll');if(grid)grid.scrollTop=gridScroll;
   if(focusLabel){const input=[...rec.frame.querySelectorAll('input,select,textarea')].find(el=>el.getAttribute('aria-label')===focusLabel);if(input){input.focus({preventScroll:true});if(typeof selection==='number'&&input.type==='search')input.setSelectionRange(selection,selection);}}
-  bindDrag(rec,node);
+  bindDrag(rec,node);for(const h of rec.frame.querySelectorAll('.qy-bf-drag'))bindDrag(rec,h); // 背包只剩框圖時，用框圖上下邊框拖動
  }
  function bindDrag(rec,head){
   let drag=null;
