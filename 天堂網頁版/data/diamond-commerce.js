@@ -39,7 +39,7 @@ const DiamondCommerce=(()=>{
   if(!online)detail.append(el('p','dc-muted','武魂扭蛋機使用伺服器保管的鑽石，請登入本機多人伺服器後召喚。'));
   detail.append(button(showRates?'收起獎池與機率':'查看獎池與機率',()=>{showRates=!showRates;render();}));
   const actions=el('div','dc-draw-actions');
-  for(const count of [1,10]){const b=button((count===1?'單抽':'十連')+' 💎'+G.prices[count].toLocaleString()+(count===10?'（九折）':''),()=>drawWuhun(count));b.disabled=busy||!online||balance()<G.prices[count];actions.append(b);}
+  for(const count of [1,10]){const b=button((count===1?'單抽':'十連')+(G.free?' 免費':' 💎'+G.prices[count].toLocaleString()+(count===10?'（九折）':'')),()=>drawWuhun(count));b.disabled=busy||!online||balance()<G.prices[count];actions.append(b);}
   detail.append(actions);box.append(art,detail);body.append(box);
   if(wuhunResults){const grid=el('div','dc-wuhun-results');for(const r of wuhunResults){const info=wuhunInfo(r.id),card=el('div','dc-wuhun-card'),img=el('img');img.alt='';if(info.icon)img.src=info.icon;const tier=el('span','dc-wuhun-tier',r.tier);tier.style.color=TIER_COLOR[r.tier]||'';card.style.borderColor=TIER_COLOR[r.tier]||'';card.append(img,tier,el('span','dc-wuhun-name',info.name.replace(/^[^-]*-/,'')));grid.append(card);}body.append(grid);}
   if(showRates){const table=el('table','dc-wuhun-rates');const head=el('tr');for(const h of ['等級','合計機率','每種機率','武魂'])head.append(el('th','',h));table.append(head);

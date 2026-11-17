@@ -6,7 +6,7 @@ const G=require('../data/wuhun-gacha-data.js');
 test('獎池 42 種、機率合計 100%、價格照使用者設定',()=>{
  assert.equal(G.tiers.reduce((n,t)=>n+t.ids.length,0),42);
  assert.equal(Math.round(G.tiers.reduce((n,t)=>n+t.rate,0)*1000)/1000,100);
- assert.deepEqual(G.prices,{1:150,10:1350});
+ assert.deepEqual(G.prices,G.free?{1:0,10:0}:{1:150,10:1350}); // 2026-11-17 先改免費抽
 });
 test('十連一定有極品以上；固定亂數時落在正確等級',()=>{
  const always=()=>0; // 全部抽到上品第一隻
@@ -23,10 +23,10 @@ test('伺服器扣鑽、發武魂，鑽石不足不扣',async()=>{
   const auth=await api('/api/auth',{name:'gacha',password:'testpass',register:true});
   db.prepare('INSERT INTO states(user_id,revision,payload) VALUES(?,0,?)').run(auth.data.user.id,JSON.stringify({characters:[{id:'g',name:'g',role:'騎士',gender:0,stats:{str:20,dex:15,con:10,wis:10,cha:10,int:10},level:1,diamonds:1600,inventory:[]},null,null,null],warehouse:[]}));
   const char=()=>JSON.parse(db.prepare('SELECT payload FROM states WHERE user_id=?').get(auth.data.user.id).payload).characters[0];
-  let r=await api('/api/gacha/wuhun',{characterId:'g',count:10},auth.cookie);assert.equal(r.status,200);assert.equal(r.data.results.length,10);assert.equal(char().diamonds,250);
+  let r=await api('/api/gacha/wuhun',{characterId:'g',count:10},auth.cookie);assert.equal(r.status,200);assert.equal(r.data.results.length,10);assert.equal(char().diamonds,1600-G.prices[10]);
   assert.equal(char().inventory.reduce((n,e)=>n+e.count,0),10);assert(r.data.results.some(x=>x.tier!=='上品'));
-  r=await api('/api/gacha/wuhun',{characterId:'g',count:1},auth.cookie);assert.equal(r.status,200);assert.equal(char().diamonds,100);
-  r=await api('/api/gacha/wuhun',{characterId:'g',count:1},auth.cookie);assert.equal(r.status,400);assert.equal(char().diamonds,100);
+  r=await api('/api/gacha/wuhun',{characterId:'g',count:1},auth.cookie);assert.equal(r.status,200);assert.equal(char().diamonds,1600-G.prices[10]-G.prices[1]);
+  if(!G.free){r=await api('/api/gacha/wuhun',{characterId:'g',count:1},auth.cookie);assert.equal(r.status,400);assert.equal(char().diamonds,100);}
   r=await api('/api/gacha/wuhun',{characterId:'g',count:5},auth.cookie);assert.equal(r.status,400);
  }finally{server.close();db.close();}
 });

@@ -10,7 +10,8 @@
   {tier:'上古',rate:2,ids:[39267,39268,39283,39284,39286]},
   {tier:'四神獸',rate:.4,ids:[39271,39272,39273,39274]}
  ];
- const prices={1:150,10:1350};
+ // 2026-11-17 使用者：先改免費抽（原價 單抽 150、十連 1350；要恢復把 FREE 改成 false）
+ const FREE=true,PAID={1:150,10:1350},prices=FREE?{1:0,10:0}:PAID;
  // 依機率抽一次；random 回傳 [0,1)。minTier＝保底最低等級（十連保底用），從該等級以上依原比例重抽。
  function roll(random,minTier=0){const pool=tiers.slice(minTier),total=pool.reduce((n,t)=>n+t.rate,0);let r=random()*total;
   for(const t of pool){if(r<t.rate){const id=t.ids[Math.min(t.ids.length-1,Math.floor(random()*t.ids.length))];return {id,key:'etcitem:'+id,tier:t.tier,rank:tiers.indexOf(t)};}r-=t.rate;}
@@ -18,5 +19,5 @@
  // 一次召喚：十連若沒有極品以上，最後一抽改從極品以上重抽。
  function draw(count,random){const out=[];for(let i=0;i<count;i++)out.push(roll(random));
   if(count===10&&!out.some(x=>x.rank>=1))out[9]=roll(random,1);return out;}
- return {tiers,prices,roll,draw};
+ return {tiers,prices,free:FREE,roll,draw};
 });
