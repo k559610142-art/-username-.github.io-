@@ -1,6 +1,8 @@
 // Native potion handlers carry their amount, effect and class parameters in classname.
 const NativePotions=(()=>{
   const timers=new Map();
+  // 2026-11-17 使用者：藥水狀態圖跟技能狀態圖混在一起 → 藥水效果改顯示藥水道具圖（加速＝自我加速藥水、勇敢／精靈餅乾＝勇敢藥水、三段加速＝巧克力蛋糕、魔力回復＝加速魔力回復藥水、慎重＝慎重藥水）
+  const POTION_ICONS={haste:'assets/interface/items/etcitem-77.png',brave:'assets/interface/items/etcitem-79.png',elfBrave:'assets/interface/items/etcitem-79.png',braveX:'assets/interface/client-icons/2901.png',blue:'assets/interface/client-icons/75.png',wisdom:'assets/interface/items/etcitem-1529.png'};
   const buffIcons={haste:43,brave:52,elfBrave:52 /* 2026-11-17 使用者：精靈餅乾 BUFF 圖示改用勇敢藥水的 */,braveX:54,blue:32,wisdom:26};
   const buffNames={haste:'加速',brave:'勇敢',elfBrave:'精靈餅乾',braveX:'三段加速',blue:'魔力回復',wisdom:'慎重',exp:'經驗加成'};
   // 原版職業位元：王族 1、騎士 2、妖精 4、法師 8、黑妖 16、龍騎士 32、幻術師 64、戰士 128（例：綠水 255＝全職業、勇水 130＝騎士＋戰士、生命之樹果實 96＝龍騎士＋幻術師）
@@ -66,7 +68,7 @@ const NativePotions=(()=>{
     for(let [key,name]of Object.entries(buffNames)){
       if(!active(key))continue;
       const label=document.createElement('span'),image=document.createElement('img'),timer=document.createElement('small');
-      image.src=key==='exp'&&window.activePotionBuffs?.expIcon?window.activePotionBuffs.expIcon:'assets/interface/skills/'+(buffIcons[key]||43)+'.png';image.alt='';image.style.cssText='width:24px;height:24px;display:block;image-rendering:pixelated';
+      image.src=key==='exp'&&window.activePotionBuffs?.expIcon?window.activePotionBuffs.expIcon:(POTION_ICONS[key]||'assets/interface/skills/'+(buffIcons[key]||43)+'.png');image.alt='';image.style.cssText='width:24px;height:24px;display:block;image-rendering:pixelated';
       if(key==='exp')name=name+' '+Math.round((Number(window.activePotionBuffs.expRate)||1)*100)+'%';
       label.title=name;label.setAttribute('aria-label',name);timer.style.cssText='position:absolute;bottom:0;right:1px;font:10px sans-serif;color:white;text-shadow:0 1px 2px black';
       label.style.cssText='position:relative;width:26px;height:26px;background:#162733d9;border:1px solid #8d986480';

@@ -113,7 +113,7 @@ const IslandNpcAi = (() => {
   }
 
   function infectPoison(now=movementTime()){
-    if(!playerActive())return false;if(poisoned&&now<poisonUntil)return false;poisoned=true;poisonAt=now+3000;poisonUntil=now+30000;
+    if(!playerActive())return false;if(window.ClassBuffs?.active(104))return false; /* 黑妖毒性抵抗：不會中毒 */if(poisoned&&now<poisonUntil)return false;poisoned=true;poisonAt=now+3000;poisonUntil=now+30000;
     window.NativePotions?.sync();window.PlayerAppearance?.sync();return true;
   }
   function curePoison(){poisoned=false;poisonAt=poisonUntil=0;if(window.playerItemState){delete playerItemState.poison;delete playerItemState.poisoned;}window.NativePotions?.sync();window.PlayerAppearance?.sync();}

@@ -202,7 +202,8 @@
  .qy-win .qy-sheet-extra .equipment-slot img{width:100%;height:100%;object-fit:contain}
  .qy-win .qy-sheet-extra .equipment-slot.qy-locked{background:#0a0b0dbb!important}
  .qy-sheet-extra .qy-slot-lock{position:absolute;right:2px;bottom:1px;font-size:10px;color:#c9c2b0;text-shadow:1px 1px 0 #000;pointer-events:none}
- .qy-bagframe{position:relative;flex:none;width:min(100%,340px);aspect-ratio:223/336;margin:5px auto 0;background:url('assets/interface/client-ui/538c.png?v=1') center/100% 100% no-repeat;container-type:inline-size}
+ /* 2026-11-17 使用者：背包拉不到最下面 → 外框依視窗剩下的高度縮放（高度優先，寬度照 223:336 比例），不再固定寬度被視窗切掉 */
+ .qy-bagframe{position:relative;flex:1 1 0;min-height:150px;width:auto;height:auto;max-width:100%;max-height:min(506px,calc((100cqw - 14px) * 336 / 223));align-self:center;aspect-ratio:223/336;margin:5px auto 0;background:url('assets/interface/client-ui/538c.png?v=1') center/100% 100% no-repeat;container-type:inline-size}
  .qy-win.qy-bag .qy-bagframe .classic-grid-scroll{position:absolute!important;left:23.9%;top:5.45%;width:61.4%;height:81.4%;min-height:0!important;max-height:none!important;margin:0!important;padding:0!important;background:transparent!important;border:0!important;overflow-y:auto!important;scrollbar-width:none;scroll-snap-type:y mandatory}
  .qy-win.qy-bag .qy-bagframe .classic-grid-scroll::-webkit-scrollbar{display:none}
  .qy-win.qy-bag .qy-bagframe .classic-item-grid{gap:0!important;padding:0!important;background:transparent!important}

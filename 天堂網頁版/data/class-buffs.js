@@ -42,7 +42,7 @@ const ClassBuffs=(()=>{
  const TARGET={
   11:{dot:[5,3000]},20:{},29:{slow:1},33:{stun:1},40:{},47:{mobDmg:5},56:{mobDmg:6},64:{silence:1},66:{stun:1},113:{},
   133:{},152:{root:1},153:{},157:{stun:1},167:{slow:1},
-  173:{mobDmg:3},103:{stun:1},112:{},183:{},188:{},193:{},202:{silence:1},212:{stun:1},217:{},228:{root:1},230:{stun:1},
+  173:{mobDmg:3},103:{stun:1},112:{armorBreak:1},183:{},188:{},193:{},202:{silence:1},212:{stun:1},217:{},228:{root:1},230:{stun:1},
  };
  const AREA_TARGET={76:{slow:1},161:{silence:1}};
  const ATTACK={108:1,187:1,207:1,229:1};
@@ -52,7 +52,7 @@ const ClassBuffs=(()=>{
  // REMOVE_CURSE; L1J 魔力奪取 5–14 MP, 起死回生術 kills undead at 50%). Summon kinds go to data/summons.js.
  // `need` = needs another system and only explains why.
  const UTIL={5:'teleport',69:'teleport',131:'mother',9:'cure',37:'purify',44:'purify',153:'purify',23:'sense',18:'turnUndead',39:'drain',
-  130:'mp2',146:'mp15',60:'invisible',97:'invisible',100:'need:製作',67:'poly',13:'none',27:'none',71:'none',
+  130:'mp2',146:'mp15',60:'invisible',97:'invisible',100:'bringStone',67:'poly',13:'none',27:'none',71:'none',
   36:'tame',41:'zombie',51:'summon',145:'release',154:'elemental',162:'greater',61:'need:隊友',75:'need:隊友',116:'need:血盟',118:'need:血盟',73:'need:製作'};
  const UTIL_TARGET={18:1,23:1,39:1,27:1,71:1,153:1};
  const handles=id=>!!(SELF[id]||TARGET[id]||AREA_TARGET[id]||ATTACK[id]||AREA[id]||PASSIVE[id]||UTIL[id]);
@@ -79,6 +79,9 @@ const ClassBuffs=(()=>{
  function onHit(mob,ranged){
   let add=0;invisible=false;mob.allyTarget=null;
   if(!ranged&&on(182)){add+=10;buffs.delete(182);}
+  // 黑妖（2026-11-17）：附加劇毒＝近戰 1/3 機率讓目標中毒（每 3 秒 5 點，9 秒）；破壞盔甲中的目標受到的普攻傷害 +（等級/2＋5）
+  if(!ranged&&on(98)&&Math.random()<1/3){const t=now();dots.push({mob,until:t+9000,next:t+3000,every:3000,dmg:5});}
+  if(has(mob,'armorBreak'))add+=Math.trunc(level()/2)+5;
   if(!ranged){const bonus=Math.max(2,2+level()-45);
    if(knows(233)&&Math.random()<.17){add+=bonus;IslandMonsters.playEffect(12487,mob.x,mob.y,now());}
    if(knows(234)&&Math.random()<.02){add+=bonus*2;IslandMonsters.playEffect(12489,mob.x,mob.y,now());}}
@@ -152,6 +155,7 @@ const ClassBuffs=(()=>{
   if(kind==='sense')say(mob.spawn.npc.name+'　體力 '+mob.hp+' / '+mob.spawn.npc.hp+'　等級 '+mob.spawn.npc.level);
   if(kind==='turnUndead'){const u=mob.spawn.npc.raw?.undead??mob.spawn.npc.undead;if(u===1&&Math.random()<.5)IslandMonsters.damage(mob,mob.hp);else say('沒有效果。');}
   if(kind==='drain'){const gain=Math.min(5+Math.floor(Math.random()*10),Math.max(0,mob.mp??99));if(mob.mp!==undefined)mob.mp-=gain;mp=Math.min(maxMp,mp+gain);window.stats?.();}
+  if(kind==='bringStone'){const r=OwnedInventory.bringStone();if(r.error)say(r.error);else say(r.ok?'提煉成功！得到'+['一','二','三','四','五'][r.to-1]+'級黑魔石。':'提煉失敗，'+['一','二','三','四','五'][r.from-1]+'級黑魔石碎掉了。');}
   if(kind==='mp2'||kind==='mp15'){mp=Math.min(maxMp,mp+(kind==='mp2'?2:15));window.stats?.();}
   if(kind==='poly')window.openGameCatalog?.('transforms');
   if(typeof summon==='function')summon();
