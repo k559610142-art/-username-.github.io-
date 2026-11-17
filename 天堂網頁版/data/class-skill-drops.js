@@ -6,6 +6,10 @@
 //  載入順序：kill-reward-data.js、dungeon-monster-data.js、darkelf-skills.js 之後。
 (()=>{
  const {skills,books}=playerSkillData,drops=killRewardData.drops,RARE=new Set([]),RARE_RATE=.2;
+ // 使用者 2026-11-17 指定的稀有技能：每隻怪的掉落機率上限（百萬分比，10000＝1%）。
+ //  增幅防禦 3%、尖刺盔甲 3%、鋼鐵防護 10%、破壞盔甲 0.05%、疼痛的歡愉 0.5%
+ const CAP={40165:30000,40166:30000,40251:100000,80038:500,49134:5000};
+ for(const list of Object.values(drops))for(const d of list)if(CAP[d.id])d.chance=Math.min(d.chance,CAP[d.id]);
  const dropped=new Set();for(const list of Object.values(drops))for(const d of list)dropped.add(d.id);
  const mobs=new Map();for(const s of islandMonsterSpawns){const n=s.npc||islandMonsterTemplates[s.npcId];if(n?.kind==='L1Monster'&&!s.resident&&n.level>0)mobs.set(s.npcId,n.level);}
  const pool=[...mobs].sort((a,b)=>a[1]-b[1]);
