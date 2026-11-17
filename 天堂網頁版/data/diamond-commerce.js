@@ -37,7 +37,7 @@ const DiamondCommerce=(()=>{
  function dollInfo(id){const d=typeof gameCatalogData!=='undefined'?gameCatalogData.dolls.find(x=>x.id===id):null,item=INTERFACE_CATALOG.items.find(i=>i.kind==='etcitem'&&i.id===id);return {name:d?.name||item?.name||('魔法娃娃 '+id),icon:(d&&window.TdjSystems?.dolls?.image(d))||item?.icon||''};}
  const GACHA={
   wuhun:{data:()=>window.WUHUN_GACHA,route:'/api/gacha/wuhun',hold:true,title:'武魂扭蛋機',noun:'武魂',desc:'召喚上品到四神獸共 42 種武魂。十連保底至少 1 個極品以上。',art:'assets/interface/wuhun/gacha-art.jpg?v=1',colors:TIER_COLOR,info:wuhunInfo,short:n=>n.replace(/^[^-]*-/,''),rateName:n=>n.replace(/^[^-]*-/,'').replace(/武魂$/,''),announce:['上古','四神獸']},
-  doll:{data:()=>window.DOLL_GACHA,route:'/api/gacha/doll',video:'assets/interface/dolls/gacha-summon.mp4?v=1',hold:true,title:'魔法娃娃扭蛋機',noun:'魔法娃娃',desc:'召喚 89 種魔法娃娃（一般～超越）。十連保底至少 1 隻高級以上。',art:null,colors:DOLL_COLOR,info:dollInfo,short:n=>n,rateName:n=>n.replace(/^.*：/,''),announce:['神話','超越']}
+  doll:{data:()=>window.DOLL_GACHA,route:'/api/gacha/doll',video:'assets/interface/dolls/gacha-summon.mp4?v=1',hold:true,title:'魔法娃娃扭蛋機',noun:'魔法娃娃',desc:'召喚 89 種魔法娃娃（一般～超越）。十連保底至少 1 隻高級以上。',art:'assets/interface/dolls/gacha-art.webp?v=1',colors:DOLL_COLOR,info:dollInfo,short:n=>n,rateName:n=>n.replace(/^.*：/,''),announce:['神話','超越']}
  };
  const gachaState={wuhun:{results:null,rates:false},doll:{results:null,rates:false}};
  function gachaView(body,kind){

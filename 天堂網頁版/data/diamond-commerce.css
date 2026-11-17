@@ -28,3 +28,6 @@
 .dc-summon-ok{min-width:120px;padding:8px 22px;border:1px solid #c9a45a;border-radius:6px;background:linear-gradient(#3a2d17,#1b1409);color:#f6e2ae;font-size:15px;cursor:pointer}
 @keyframes dcCardPop{0%{opacity:0;transform:scale(.6) translateY(10px)}70%{opacity:1;transform:scale(1.08)}100%{opacity:1;transform:none}}
 @media (max-width:700px){.dc-summon-cards.many{grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}.dc-summon-cards .dc-wuhun-card{padding:4px 2px}.dc-summon-cards .dc-wuhun-card img{width:30px;height:30px}.dc-summon-cards .dc-wuhun-name{font-size:10px}.dc-summon-title{font-size:15px}}
+
+/* 2026-11-17 娃娃扭蛋機主圖：敲金蛋（使用者提供），裁掉原圖上方黑邊 */
+.dc-wuhun-art img[src*="dolls/gacha-art"]{aspect-ratio:1111/690;object-fit:cover;object-position:50% 100%}
