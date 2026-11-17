@@ -6,6 +6,9 @@ function createGameServer(options={}){
  const root=options.root||path.resolve(__dirname,'../..');
  const database=options.database||path.join(__dirname,'runtime.sqlite');
  const settings=options.settings||JSON.parse(fs.readFileSync(path.join(__dirname,'server-settings.json'),'utf8'));
+ // 2026-11-17：server-settings.json 只有舊 5 職業，龍騎士／幻術師／戰士存檔會被擋（不支援的職業）→ 缺的職業從遊戲的 data/class-creation-data.js 補上。
+ if(!options.settings)try{const sandbox={window:{}};require('vm').runInNewContext(fs.readFileSync(path.join(__dirname,'../class-creation-data.js'),'utf8'),sandbox);
+  for(const [role,rule] of Object.entries(sandbox.window.CreationRules?.classes||{}))settings.classes[role]??={type:rule.type,base:rule.base,points:rule.points,hp:rule.hp};}catch(error){console.warn('class-creation-data 載入失敗',error.message);}
  const db=new DatabaseSync(database);
  db.exec('PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON;');
  db.exec(`
@@ -49,8 +52,9 @@ function createGameServer(options={}){
    ids.add(item.uid);int(item.count);
    if(!rule.stackable&&item.count!==1||warehouse&&item.slot)fail(400,'物品堆疊或穿戴資料有誤。');
    if(item.slot){
-    if(!['weapon','helm','armor','tshirt','cloak','glove','boots','shield','necklace','belt','earring','ring1','ring2','ring3','ring4'].includes(item.slot)||slots.has(item.slot))fail(400,'穿戴欄位有誤或重複。');
-    if(item.slot==='weapon'&&rule.kind!=='weapon'||item.slot!=='weapon'&&rule.kind!=='armor')fail(400,'穿戴道具種類不符。');
+    if(!['weapon','weapon2','helm','armor','tshirt','cloak','glove','boots','shield','necklace','belt','earring','ring1','ring2','ring3','ring4'].includes(item.slot)||slots.has(item.slot))fail(400,'穿戴欄位有誤或重複。');
+    const weaponSlot=item.slot==='weapon'||item.slot==='weapon2'; // weapon2＝戰士右手第二把斧（2026-11-17）
+    if(weaponSlot&&rule.kind!=='weapon'||!weaponSlot&&rule.kind!=='armor')fail(400,'穿戴道具種類不符。');
     slots.add(item.slot);
    }
   }

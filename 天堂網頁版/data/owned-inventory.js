@@ -4,16 +4,18 @@ window.OwnedInventory=(()=>{
  let owner='',entries=[],warehouse=[],collection=[],skillState={ids:[],element:''},sequence=0;
  const money='etcitem:40308';
  const clone=a=>JSON.parse(JSON.stringify(a)),level=()=>Number(window.activeCharacterLevel)||1;
- const slots=['weapon','helm','armor','tshirt','cloak','glove','boots','shield','necklace','belt','earring','ring1','ring2','ring3','ring4'];
- function slotFor(item){if(item.kind==='weapon')return 'weapon';if(item.kind!=='armor')return null;return {helmet:'helm',shirt:'tshirt',gloves:'glove',amulet:'necklace',ring:'ring1',ring2:'ring1'}[item.type]||(['helm','armor','tshirt','cloak','glove','boots','shield','necklace','belt','earring'].includes(item.type)?item.type:null)}
+ const slots=['weapon','weapon2','helm','armor','tshirt','cloak','glove','boots','shield','necklace','belt','earring','ring1','ring2','ring3','ring4'];
+ // 2026-11-17 右手欄：盾牌、臂甲（guarder，也放 shield 欄）或戰士的第二把單手斧（weapon2），三選一。臂甲可以配雙手武器。
+ const isAxe=item=>item?.kind==='weapon'&&!item.twoHand&&/斧/.test(item.name||''),isGuarder=item=>item?.type==='guarder';
+ function slotFor(item){if(item.kind==='weapon')return 'weapon';if(item.kind!=='armor')return null;return {helmet:'helm',shirt:'tshirt',gloves:'glove',amulet:'necklace',ring:'ring1',ring2:'ring1',guarder:'shield'}[item.type]||(['helm','armor','tshirt','cloak','glove','boots','shield','necklace','belt','earring'].includes(item.type)?item.type:null)}
  const definition=e=>catalog.get(e.key),presented=e=>{const d=catalog.get(e.key);return e.unid&&d?.baseName?{...d,name:d.baseName,unidentified:true}:d},config=e=>({...rules.definitions[e.key],bless:e.bless??rules.definitions[e.key]?.bless});
  function validate(rows,role=null,charLevel=1){
   if(!Array.isArray(rows)||rows.length>=rules.maxSizeExclusive)return '背包格式或容量有誤';
   const ids=new Set(),used=new Set();for(const e of rows){
    if(!e||typeof e.uid!=='string'||!e.uid||e.uid.length>80||ids.has(e.uid)||!catalog.has(e.key)||!Number.isSafeInteger(e.count)||e.count<=0||e.count>2147483647)return '背包物品資料有誤';ids.add(e.uid);
    const r=config(e),item=definition(e);if(!r)return '道具設定不存在';if(!r.stackable&&e.count!==1)return '非堆疊物品數量有誤';if(e.slot!==undefined&&e.slot!==null&&typeof e.slot!=='string')return '穿戴欄位格式有誤';
-   if(e.slot){if(!slots.includes(e.slot)||used.has(e.slot)||!(e.slot===slotFor(item)||/^ring[1-4]$/.test(e.slot)&&slotFor(item)==='ring1'))return '穿戴欄位資料有誤';used.add(e.slot);if(role&&!item.allowed.includes(role))return '穿戴物品不符合職業';if(role&&(r.minLevel>charLevel||r.maxLevel&&charLevel>r.maxLevel))return '穿戴物品不符合等級'}
-  }const weapon=rows.find(e=>e.slot==='weapon');if(weapon&&definition(weapon).twoHand&&used.has('shield'))return '雙手武器與盾牌不能同時穿戴';if(role&&([...used].filter(s=>s.startsWith('ring')).length>(charLevel>=81?4:charLevel>=76?3:2)||charLevel<76&&(used.has('ring3')||used.has('ring4'))||charLevel<81&&used.has('ring4')))return '戒指欄位不符合角色等級';return null;
+   if(e.slot){if(!slots.includes(e.slot)||used.has(e.slot)||!(e.slot===slotFor(item)||/^ring[1-4]$/.test(e.slot)&&slotFor(item)==='ring1'||e.slot==='weapon2'&&isAxe(item)&&(!role||role==='戰士')))return '穿戴欄位資料有誤';used.add(e.slot);if(role&&!item.allowed.includes(role))return '穿戴物品不符合職業';if(role&&(r.minLevel>charLevel||r.maxLevel&&charLevel>r.maxLevel))return '穿戴物品不符合等級'}
+  }const weapon=rows.find(e=>e.slot==='weapon'),shield=rows.find(e=>e.slot==='shield');if(weapon&&definition(weapon).twoHand&&shield&&!isGuarder(definition(shield)))return '雙手武器與盾牌不能同時穿戴';if(used.has('weapon2')&&(used.has('shield')||weapon&&!isAxe(definition(weapon))))return '第二把斧頭只能配單手斧、右手不能再裝盾牌';if(role&&([...used].filter(s=>s.startsWith('ring')).length>(charLevel>=81?4:charLevel>=76?3:2)||charLevel<76&&(used.has('ring3')||used.has('ring4'))||charLevel<81&&used.has('ring4')))return '戒指欄位不符合角色等級';return null;
  }
  function visualMode(rows){const weapon=rows.find(e=>e.slot==='weapon'),item=weapon&&definition(weapon),modes=CharacterActions.available.weapons;if(!item)return 'unarmed';if(modes.includes(item.mode))return item.mode;const native={chainsword:'chainsword',kiringku:'kiringku',edoryu:'edoryu',claw:'claw',gauntlet:'gauntlet'}[item.type];if(native&&modes.includes(native))return native;if(/staff/.test(item.type)&&modes.includes('blunt'))return 'blunt';return 'unarmed'}
  function sync(){window.DBGameRules?.syncVitals();potions=entries.filter(e=>window.NativePotions?.isHealing(e.key)||rules.handlers[config(e).handler]?.kind==='hpGaussian').reduce((n,e)=>n+e.count,0);stats();if(typeof updateReferenceHud==='function')updateReferenceHud()}
@@ -131,12 +133,16 @@ window.OwnedInventory=(()=>{
   const e=entries.find(e=>e.uid===uid);if(!e)return false;if(e.slot)return unequip(uid);const item=definition(e),r=config(e),slot=slotFor(item);if(!slot)return false;
   if(!item.allowed.includes(job)){toast('目前職業無法使用這項裝備。');return false}if(window.TransformCards&&!TransformCards.canEquip(item)){toast('目前的變身無法裝備這項物品。');return false}if(level()<r.minLevel||r.maxLevel&&level()>r.maxLevel){toast('角色等級不符合道具限制。');return false}if(characterMovementBlocked()||movementAnimating()){toast('請等目前動作結束。');return false}
   if(item.kind==='weapon'&&[65,133,191,192].includes(item.id)){toast('這項任務武器不能在說話之島使用。');return false}
-  const current=entries.find(i=>i.slot===slot),weapon=entries.find(i=>i.slot==='weapon');
-  if(slot==='weapon'&&item.twoHand&&entries.some(i=>i.slot==='shield')||slot==='shield'&&weapon&&definition(weapon).twoHand){toast('雙手武器與盾牌不能同時裝備。');return false}
+  let current=entries.find(i=>i.slot===slot);const weapon=entries.find(i=>i.slot==='weapon'),second=entries.find(i=>i.slot==='weapon2');let target=slot;
+  // 戰士：手上已拿單手斧、再裝一把單手斧 → 放右手（第二把武器）
+  if(slot==='weapon'&&job==='戰士'&&isAxe(item)&&weapon&&isAxe(definition(weapon))&&!second){if(entries.some(i=>i.slot==='shield')){toast('右手已有盾牌或臂甲，請先卸下才能裝第二把斧頭。');return false}target='weapon2';current=null}
+  if(slot==='weapon'&&target==='weapon'&&second&&!isAxe(item)){toast('右手拿著第二把斧頭，請先卸下才能換其他武器。');return false}
+  if(slot==='shield'&&second){toast('右手已裝備第二把斧頭，請先卸下。');return false}
+  if(slot==='weapon'&&item.twoHand&&entries.some(i=>i.slot==='shield'&&!isGuarder(definition(i)))||slot==='shield'&&!isGuarder(item)&&weapon&&definition(weapon).twoHand){toast('雙手武器與盾牌不能同時裝備。');return false}
   if(slot==='tshirt'&&entries.some(i=>['armor','cloak'].includes(i.slot))||slot==='armor'&&entries.some(i=>i.slot==='cloak')){toast('請先脫下外層裝備。');return false}
-  const next=clone(entries);let target=slot;
+  const next=clone(entries);
   if(slot==='ring1'){const limit=level()>=81?4:level()>=76?3:2;target=['ring1','ring2','ring3','ring4'].slice(0,limit).find(s=>!entries.some(i=>i.slot===s));if(!target){toast('目前等級的戒指欄位已滿。');return false}}
-  else if(current){if(slot!=='weapon'){toast('這個欄位已有裝備，請先卸下。');return false}if(config(current).bless===2){toast('手上的武器被詛咒，無法更換。');return false}next.find(i=>i.uid===current.uid).slot=null}
+  else if(current&&target!=='weapon2'){if(slot!=='weapon'){toast('這個欄位已有裝備，請先卸下。');return false}if(config(current).bless===2){toast('手上的武器被詛咒，無法更換。');return false}next.find(i=>i.uid===current.uid).slot=null}
   next.find(i=>i.uid===uid).slot=target;return transact(next);
  }
  function gaussian(){return Math.sqrt(-2*Math.log(Math.max(Number.MIN_VALUE,Math.random())))*Math.cos(2*Math.PI*Math.random())}
