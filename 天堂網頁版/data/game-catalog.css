@@ -237,7 +237,8 @@ main.game.reference-game #panel.doll-catalog-panel .game-catalog-card[data-tier]
 /* 2026-11-17 武魂融合面板 */
 .wuhun-fuse-panel{flex-basis:100%;display:grid;gap:5px;margin-top:6px;padding:8px;background:#0c141bcc;border:1px solid #6b5a36;border-radius:4px}
 .wuhun-fuse-panel>strong{color:#ebd599;font-size:12px}
-.wuhun-fuse-row{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:8px;padding:4px 6px;border-left:3px solid #999;background:#ffffff08;font-size:12.5px}
+.wuhun-fuse-row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px;padding:4px 6px;border-left:3px solid #999;background:#ffffff08;font-size:12.5px}
 .wuhun-fuse-row small{color:#b9ae94}
 .wuhun-fuse-row[data-tier=white]{border-color:#c9c9c9}.wuhun-fuse-row[data-tier=green]{border-color:#4fc35b}.wuhun-fuse-row[data-tier=blue]{border-color:#4f8fe8}.wuhun-fuse-row[data-tier=red]{border-color:#e0503f}.wuhun-fuse-row[data-tier=purple]{border-color:#b45cf0}.wuhun-fuse-row[data-tier=gold]{border-color:#f0c040}
 .wuhun-fuse-go{min-height:26px!important;padding:2px 12px!important}
+.wuhun-fuse-row>span{grid-column:1/-1;white-space:nowrap;color:#f0e2bd}

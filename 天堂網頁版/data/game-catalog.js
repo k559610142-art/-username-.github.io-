@@ -1875,15 +1875,15 @@ function openGameCatalog(type) {
       detail.append(uiElement('strong', '', w.tier + (w.desc ? ' · ' + w.desc : '')), uiElement('p', '', owned ? '擁有' + (active ? ' · 裝備中' : '') : '尚未擁有'), uiElement('h4', '', '武魂能力'));
       for (const effect of w.fx) detail.append(uiElement('p', '', effect));
       // 魂槽升階（2026-11-15 使用者設計）：第 1～6 槽依序只能獻祭 下品／上品／極品／千年／萬年／上古 武魂（消耗、不能拿回、不給能力）；裝備第 N 階要前 N 槽都點亮
-      const collection=uiElement('section','wuhun-ring-section');collection.append(uiElement('h4','','魂槽（升階獻祭）'));
+      const collection=uiElement('section','wuhun-ring-section');collection.append(uiElement('h4','','魂槽（放入魂環）'));
       const ringState=SoulRings.state(),slots=uiElement('div','wuhun-ring-slots');
       ringState.slots.forEach((id,index)=>{const ring=id==null?null:SoulRings.get(id),tier=SoulRings.TIERS[index],b=catalogButton('',()=>{selectedRingSlot=index;showDetails(selected);},'wuhun-ring-slot');
         b.setAttribute('aria-label','第 '+(index+1)+' 魂槽（'+tier+'）：'+(ring?ring.name:'未獻祭'));b.setAttribute('aria-pressed',String(index===selectedRingSlot));b.dataset.tier=ring?tdjWuhunTierTag[tier]||'white':'empty';b.dataset.ringLevel=ring?String(index+1):'empty';
-        b.title=ring?'已獻祭 '+ring.name:'獻祭一隻'+tier+'武魂點亮';b.append(uiElement('i','',ring?'✦':'+'),uiElement('small','',tier));slots.append(b);});
+        b.title=ring?'已放入'+TdjSystems.wuhun.ringColor[index]+'魂環':'放入'+TdjSystems.wuhun.ringColor[index]+'魂環點亮';b.append(uiElement('i','',ring?'✦':'+'),uiElement('small','',tier));slots.append(b);});
       const missing=SoulRings.need(w.id);
-      collection.append(slots,uiElement('p','wuhun-ring-note',missing.length?'裝備「'+w.name+'」前，還要獻祭：'+missing.join('、')+'武魂':'魂槽條件已達成，可以裝備「'+w.name+'」'));
+      collection.append(slots,uiElement('p','wuhun-ring-note',missing.length?'裝備「'+w.name+'」前，還要在魂槽放入：'+missing.map(t=>TdjSystems.wuhun.ringColor[SoulRings.TIERS.indexOf(t)]).join('、')+'魂環':'魂槽條件已達成，可以裝備「'+w.name+'」'));
       const slotTier=SoulRings.TIERS[selectedRingSlot],picker=uiElement('div','wuhun-ring-picker');
-      picker.append(uiElement('strong','','第 '+(selectedRingSlot+1)+' 魂槽：獻祭'+slotTier+'武魂'+(ringState.slots[selectedRingSlot]!=null?'（已點亮：'+SoulRings.get(ringState.slots[selectedRingSlot]).name+'）':'')));
+      picker.append(uiElement('strong','','第 '+(selectedRingSlot+1)+' 魂槽：放入'+TdjSystems.wuhun.ringColor[selectedRingSlot]+'魂環'+(ringState.slots[selectedRingSlot]!=null?'（已啟動）':'')));
       const prevEmpty=ringState.slots.slice(0,selectedRingSlot).findIndex(v=>v==null);
       if(prevEmpty>=0)picker.append(uiElement('small','','要先點亮第 '+(prevEmpty+1)+' 槽（'+SoulRings.TIERS[prevEmpty]+'）。'));
       else if(ringState.slots[selectedRingSlot]==null){const color=TdjSystems.wuhun.ringColor[selectedRingSlot],have=TdjSystems.wuhun.rings()[selectedRingSlot]||0; // 2026-11-17：魂槽改放魂環（武魂融合而來）
