@@ -1,7 +1,7 @@
 // Native potion handlers carry their amount, effect and class parameters in classname.
 const NativePotions=(()=>{
   const timers=new Map();
-  const buffIcons={haste:43,brave:52,elfBrave:150,braveX:54,blue:32,wisdom:26};
+  const buffIcons={haste:43,brave:52,elfBrave:52 /* 2026-11-17 使用者：精靈餅乾 BUFF 圖示改用勇敢藥水的 */,braveX:54,blue:32,wisdom:26};
   const buffNames={haste:'加速',brave:'勇敢',elfBrave:'精靈餅乾',braveX:'三段加速',blue:'魔力回復',wisdom:'慎重',exp:'經驗加成'};
   // 原版職業位元：王族 1、騎士 2、妖精 4、法師 8、黑妖 16、龍騎士 32、幻術師 64、戰士 128（例：綠水 255＝全職業、勇水 130＝騎士＋戰士、生命之樹果實 96＝龍騎士＋幻術師）
   const flags={'王族':1,'騎士':2,'妖精':4,'法師':8,'黑妖':16,'黑暗妖精':16,'龍騎士':32,'幻術師':64,'戰士':128};
