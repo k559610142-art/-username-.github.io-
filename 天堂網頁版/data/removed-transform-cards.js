@@ -2,6 +2,7 @@
 // 載入順序：transform-cards-data.js、extra-transform-cards-data.js 之後，transform-cards.js 之前。
 // 已持有的紀錄在 transform-cards.js 讀檔時只保留卡冊裡還有的卡，所以這些卡會自動從收藏消失；正在使用的變身也會解除。
 const REMOVED_TRANSFORM_CARDS = new Set([
+  "神話・反王肯恩", // 2026-11-17 使用者要求移除（神話・戰將反王肯恩保留）
   "鷹眼",
   "光輝使者", "赤焰使者", "迷你八風特", "戰神呂布", "魔神呂布",
   "赤炎聖使", "冰炎聖使", "劍聖", "殞滅箭神",
