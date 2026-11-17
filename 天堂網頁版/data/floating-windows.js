@@ -8,7 +8,7 @@ const FloatingWindows=(()=>{
  function geometry(rec,initial=false){
   const g=game.getBoundingClientRect(),W=g.width,H=g.height,side=Math.min(310,Math.max(220,W*.28)),width=rec.type==='settings'?Math.max(280,Math.min(600,W-2*side-32)):rec.type==='bag'?Math.max(side,Math.min(460,W*.45)):side; /* 2026-11-17：背包改左側分類＋原版道具框，需要較寬 */
   const top=Math.min(80,Math.max(58,H*.1)),q=shortcuts.getBoundingClientRect(),bottom=q.top>g.top+top+140?q.top-g.top-8:H-8;
-  rec.width=Math.min(width,W-12);rec.height=Math.max(150,Math.min(rec.type==='settings'?560:620,bottom-top));
+  rec.width=Math.min(width,W-12);rec.height=Math.max(150,Math.min(rec.type==='settings'?560:620,bottom-top));if(rec.type==='bag'){rec.height=Math.min(rec.height,560);rec.width=Math.min(W-12,Math.round(rec.height*223/336));} /* 2026-11-17：背包只剩原版框圖，視窗照圖 223:336 */
   if(initial||!rec.userPlaced){rec.x=rec.type==='equipment'?8:rec.type==='bag'?W-rec.width-8:(W-rec.width)/2;rec.y=top+(W<800&&rec.type==='settings'?18:0);}
   rec.x=Math.max(4,Math.min(W-rec.width-4,rec.x));rec.y=Math.max(4,Math.min(H-rec.height-4,rec.y));
   Object.assign(rec.frame.style,{left:rec.x+'px',top:rec.y+'px',width:rec.width+'px',height:rec.height+'px'});

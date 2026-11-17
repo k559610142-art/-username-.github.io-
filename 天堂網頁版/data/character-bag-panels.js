@@ -175,6 +175,11 @@
   {const p=PlayerClassStats.read(),d=window.NativeCombatRules?.defense?.()||{};const sp=el('span','qy-bf-sp',String(PlayerAbilityRules.intelligencePower(p.attributes?.int)+(p.sp||0))),mr=el('span','qy-bf-mr',String(d.mr||0));frame.append(sp,mr);}
   {const close=el('button','qy-bf-close');close.type='button';close.setAttribute('aria-label','關閉背包');close.onclick=()=>pane.querySelector('.classic-close')?.click();frame.append(close);} // 原圖左上角畫的「Close」也能按
   // 2026-11-17 使用者：原版道具框要看得清楚、分類放側邊 → 左側直排分類＋負重資訊，右側道具框用整個高度
+  // 2026-11-17 使用者：背包只要原版框圖，分類與整理／自動販售按鈕放進框圖左側的空白條（外框、上方分頁、負重、下方工具列都不顯示）
+  pane.classList.add('qy-bag-frameonly');
+  {const strip=el('div','qy-bf-strip');const tabBtn=(k,label)=>{const b=el('button','qy-bf-btn',label);b.type='button';b.setAttribute('aria-pressed',String(catalogKind===k));b.onclick=()=>{catalogKind=k;for(const x of strip.querySelectorAll('[data-kind]'))x.setAttribute('aria-pressed',String(x.dataset.kind===k));query?.dispatchEvent(new Event('input'));};b.dataset.kind=k;return b;};
+   const toolBtn=(label,title)=>{const b=el('button','qy-bf-btn qy-bf-tool',label);b.type='button';b.title=title;b.onclick=()=>pane.querySelector('.qy-bag-foot button[title="'+title+'"]')?.click();return b;};
+   strip.append(tabBtn('all','全部'),tabBtn('weapon','武器'),tabBtn('armor','防具'),tabBtn('etcitem','道具'),toolBtn('整理','整理背包'),toolBtn('販售','自動販賣'));frame.append(strip);}
   const main=el('div','qy-bag-main'),side=el('div','qy-bag-side'),wrap=el('div','qy-bagframe-wrap');side.append(bar,info);wrap.append(frame);main.append(side,wrap);header.after(main,foot);
   if(grid){padGrid(grid);new MutationObserver(()=>padGrid(grid)).observe(grid,{childList:true})}
   return pane};
@@ -218,6 +223,15 @@
  .qy-win.qy-bag .qy-bagframe .classic-item-grid .item-slot:not(.empty):hover,.qy-win.qy-bag .qy-bagframe .classic-item-grid .item-slot[aria-pressed=true]{border-color:#d7b464!important;box-shadow:inset 0 0 6px #d7b46488}
  .qy-bagframe .qy-bf-sp,.qy-bagframe .qy-bf-mr{position:absolute;top:91.4%;height:3.6%;display:flex;align-items:center;justify-content:center;font-size:4.6cqw;color:#f1e6c8;text-shadow:1px 1px 0 #000}
  .qy-bagframe .qy-bf-sp{left:34.5%;width:13%}.qy-bagframe .qy-bf-mr{left:72.2%;width:17.9%}
+ .qy-win.qy-bag.qy-bag-frameonly{padding:0!important;background:none!important;border:0!important;box-shadow:none!important;overflow:visible!important}
+ .qy-win.qy-bag.qy-bag-frameonly>.classic-window-header,.qy-bag-frameonly .qy-bag-side,.qy-bag-frameonly .qy-bag-foot{display:none!important}
+ .qy-bag-frameonly .qy-bag-main{margin:0;gap:0;height:100%}
+ .qy-bag-frameonly .qy-bagframe{filter:drop-shadow(0 6px 14px #000c)}
+ .qy-bf-strip{position:absolute;left:5.6%;top:16%;width:13.5%;height:70%;display:flex;flex-direction:column;justify-content:flex-start;gap:2.2%}
+ .qy-bf-btn{width:100%;aspect-ratio:1/1.05;min-height:0!important;padding:0!important;display:flex;align-items:center;justify-content:center;writing-mode:vertical-rl;letter-spacing:0;font:700 4.6cqw/1 system-ui;color:#e9d6a4;background:linear-gradient(#3b3326,#1c1813)!important;border:1px solid #6e5a35!important;border-radius:3px!important;box-shadow:inset 0 0 4px #000;text-shadow:0 1px 1px #000;cursor:pointer}
+ .qy-bf-btn[aria-pressed=true]{color:#fff2c8;background:linear-gradient(#6a5428,#3a2c14)!important;border-color:#e2c27a!important;box-shadow:0 0 6px #e2c27a88,inset 0 0 4px #000}
+ .qy-bf-btn.qy-bf-tool{color:#bfe0f0;border-color:#4e6b7a!important}
+ .qy-bf-btn:hover{border-color:#e2c27a!important}
  .qy-bagframe .qy-bf-close{position:absolute;left:1%;top:0;width:15%;height:5.5%;min-height:0!important;padding:0!important;background:transparent!important;border:0!important;cursor:pointer}
  .qy-win.qy-bag .qy-bagframe .inventory-count{font-size:3.6cqw;right:2px;bottom:0}
  `;document.head.append(st);}
