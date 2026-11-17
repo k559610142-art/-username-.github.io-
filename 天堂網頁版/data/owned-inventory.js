@@ -58,6 +58,8 @@ window.OwnedInventory=(()=>{
   if(!deduct(next,uid,1))return false;
   return transact(next,{skills:{...skillState,ids:[...skillState.ids,skill]}});
  }
+ // 不用書直接學會（2026-11-17：1～2 階魔法到等級自動學會，data/auto-magic.js）
+ function grantSkills(list){const add=list.filter(id=>!skillState.ids.includes(id));if(!add.length)return false;return transact(clone(entries),{skills:{...skillState,ids:[...skillState.ids,...add]}});}
  function setElfElement(element){
   if(job!=='妖精'||level()<30||skillState.element||!['地','風','水','火'].includes(element))return false;
   return transact(clone(entries),{skills:{...skillState,element}});
@@ -200,5 +202,5 @@ window.OwnedInventory=(()=>{
  }
  function usePotion(){const e=entries.find(i=>i.key==='etcitem:40010')||entries.find(i=>window.NativePotions?.isHealing(i.key)||rules.handlers[config(i).handler]?.kind==='hpGaussian');if(!e){toast('背包中沒有回復藥水。');return false}return use(e.uid)}
  document.querySelector('#heal').onclick=usePotion;potions=0;
- return {collect,hasCollection,get collection(){return collection.slice()},canDiscard,discard,sortInventory,activate,validate,validateWarehouse,get healingItems(){return entries.filter(e=>window.NativePotions?.isHealing(e.key)||rules.handlers[config(e).handler]?.kind==='hpGaussian').map(e=>({...e,item:definition(e)}))},applyChange:transact,reward,learnSkill,setElfElement,resetElfElement,elfResetCost,hasMemoryCandle:()=>entries.some(e=>CANDLES.includes(e.key)&&!e.slot),castCost,get skills(){return clone(skillState)},prepareTransform,transfer,trade,receive,get warehouse(){return clone(warehouse)},get storedItems(){return warehouse.map(e=>({...e,item:presented(e)}))},use,equip,unequip,usePotion,consumeArrow,slotFor,deactivate(){owner='';entries=[];warehouse=[];collection=[];skillState={ids:[],element:''};cooldowns.clear();potions=0},get owner(){return owner},get snapshot(){return clone(entries)},get equippedWeaponType(){const weapon=entries.find(e=>e.slot==='weapon');return weapon?definition(weapon).type:null},get items(){return entries.map(e=>({...e,item:presented(e)}))}};
+ return {collect,hasCollection,get collection(){return collection.slice()},canDiscard,discard,sortInventory,activate,validate,validateWarehouse,get healingItems(){return entries.filter(e=>window.NativePotions?.isHealing(e.key)||rules.handlers[config(e).handler]?.kind==='hpGaussian').map(e=>({...e,item:definition(e)}))},applyChange:transact,reward,learnSkill,setElfElement,grantSkills,resetElfElement,elfResetCost,hasMemoryCandle:()=>entries.some(e=>CANDLES.includes(e.key)&&!e.slot),castCost,get skills(){return clone(skillState)},prepareTransform,transfer,trade,receive,get warehouse(){return clone(warehouse)},get storedItems(){return warehouse.map(e=>({...e,item:presented(e)}))},use,equip,unequip,usePotion,consumeArrow,slotFor,deactivate(){owner='';entries=[];warehouse=[];collection=[];skillState={ids:[],element:''};cooldowns.clear();potions=0},get owner(){return owner},get snapshot(){return clone(entries)},get equippedWeaponType(){const weapon=entries.find(e=>e.slot==='weapon');return weapon?definition(weapon).type:null},get items(){return entries.map(e=>({...e,item:presented(e)}))}};
 })();
