@@ -174,7 +174,8 @@
   const frame=el('div','qy-bagframe');if(scroll)frame.append(scroll);
   {const p=PlayerClassStats.read(),d=window.NativeCombatRules?.defense?.()||{};const sp=el('span','qy-bf-sp',String(PlayerAbilityRules.intelligencePower(p.attributes?.int)+(p.sp||0))),mr=el('span','qy-bf-mr',String(d.mr||0));frame.append(sp,mr);}
   {const close=el('button','qy-bf-close');close.type='button';close.setAttribute('aria-label','關閉背包');close.onclick=()=>pane.querySelector('.classic-close')?.click();frame.append(close);} // 原圖左上角畫的「Close」也能按
-  header.after(bar,info);info.after(frame,foot);
+  // 2026-11-17 使用者：原版道具框要看得清楚、分類放側邊 → 左側直排分類＋負重資訊，右側道具框用整個高度
+  const main=el('div','qy-bag-main'),side=el('div','qy-bag-side'),wrap=el('div','qy-bagframe-wrap');side.append(bar,info);wrap.append(frame);main.append(side,wrap);header.after(main,foot);
   if(grid){padGrid(grid);new MutationObserver(()=>padGrid(grid)).observe(grid,{childList:true})}
   return pane};
  // 裝備（E）與角色選單開角色的裝備分頁；人物狀態開能力分頁。
@@ -203,7 +204,12 @@
  .qy-win .qy-sheet-extra .equipment-slot.qy-locked{background:#0a0b0dbb!important}
  .qy-sheet-extra .qy-slot-lock{position:absolute;right:2px;bottom:1px;font-size:10px;color:#c9c2b0;text-shadow:1px 1px 0 #000;pointer-events:none}
  /* 2026-11-17 使用者：背包拉不到最下面 → 外框依視窗剩下的高度縮放（高度優先，寬度照 223:336 比例），不再固定寬度被視窗切掉 */
- .qy-bagframe{position:relative;flex:1 1 0;min-height:150px;width:auto;height:auto;max-width:100%;max-height:min(506px,calc((100cqw - 14px) * 336 / 223));align-self:center;aspect-ratio:223/336;margin:5px auto 0;background:url('assets/interface/client-ui/538c.png?v=1') center/100% 100% no-repeat;container-type:inline-size}
+ .qy-bag-main{flex:1 1 auto;min-height:0;display:flex;gap:6px;margin-top:6px}
+ .qy-bag-side{flex:0 0 86px;display:flex;flex-direction:column;gap:8px;min-width:0}
+ .qy-bag-side .qy-tabs{flex-direction:column;margin:0;gap:4px}.qy-bag-side .qy-tabs button{flex:none;min-height:34px!important;font-size:13px!important}
+ .qy-bag-side .qy-bag-info{flex-direction:column;align-items:stretch;gap:6px;margin:0;white-space:normal;font-size:11px}.qy-bag-side .qy-bag-info .w{flex:none}.qy-bag-side .qy-bag-info>span{text-align:center}
+ .qy-bagframe-wrap{flex:1 1 auto;min-width:0;min-height:0;display:flex;justify-content:center;align-items:flex-start;container-type:size}
+ .qy-bagframe{position:relative;flex:none;height:min(100cqh,calc(100cqw * 336 / 223));width:auto;aspect-ratio:223/336;margin:0;background:url('assets/interface/client-ui/538c.png?v=1') center/100% 100% no-repeat;container-type:inline-size}
  .qy-win.qy-bag .qy-bagframe .classic-grid-scroll{position:absolute!important;left:23.9%;top:5.45%;width:61.4%;height:81.4%;min-height:0!important;max-height:none!important;margin:0!important;padding:0!important;background:transparent!important;border:0!important;overflow-y:auto!important;scrollbar-width:none;scroll-snap-type:y mandatory}
  .qy-win.qy-bag .qy-bagframe .classic-grid-scroll::-webkit-scrollbar{display:none}
  .qy-win.qy-bag .qy-bagframe .classic-item-grid{gap:0!important;padding:0!important;background:transparent!important}
