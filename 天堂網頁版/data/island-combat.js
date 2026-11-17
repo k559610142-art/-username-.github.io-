@@ -1,5 +1,5 @@
 const IslandCombat=(()=>{
-  let mode=null,target=null,pending=null,owner=null;
+  let mode=null,target=null,pending=null,owner=null,followUp=null;
   let autoScanRange=32;
   try{const saved=Number(localStorage.getItem('lineage-auto-range'));if(saved>=12&&saved<=48)autoScanRange=saved;}catch{}
   function setAutoRange(value){
@@ -69,16 +69,21 @@ const IslandCombat=(()=>{
     const weaponMax=Math.max(1,profile.weapon?.damage[0]||2);
     const landed=!bow||PlayerRangedRules.hits(profile,mob);
     const damage=landed?1+Math.floor(Math.random()*weaponMax)+(bow?profile.rangedBonus:profile.meleeBonus)+DBGameRules.weaponProc(mob)+(window.ClassBuffs?.onHit(mob,bow)||0):0;
-    pending={mob,damage,landed,at:movementTime()+characterActionState.duration*.4};
+    // 2026-11-17 戰士副手斧（右手 weapon2）：近戰命中時 20% 機率追擊（學會迅猛雙斧 235 → 35%），
+    //  只有觸發時才用副手斧攻擊，傷害＝副手斧照普攻公式算的一半；粉碎／狂暴在追擊上也能觸發。
+    let offhand=0;const off=landed&&!bow&&typeof job!=='undefined'&&job==='戰士'&&window.OwnedInventory?.items?.find(e=>e.slot==='weapon2');
+    if(off&&Math.random()<(OwnedInventory.skills?.ids?.includes(235)?.35:.2)){const offMax=Math.max(1,off.item.damage?.[0]||2);offhand=Math.max(1,Math.floor((1+Math.floor(Math.random()*offMax)+profile.meleeBonus+(window.ClassBuffs?.onHit(mob,false)||0))/2));}
+    pending={mob,damage,landed,offhand,at:movementTime()+characterActionState.duration*.4};
     window.TdjSystems?.onAttack();
     return true;
   }
   function tick(){
     const id=window.gameFlowState==='playing'?window.activeCharacterId:null;
     if(id!==owner){owner=id;stop();pending=null;}
-    if(!id||CharacterActions.dead){stop();pending=null;return;}
+    if(!id||CharacterActions.dead){stop();pending=null;followUp=null;return;}
+    if(followUp&&movementTime()>=followUp.at){if(followUp.mob.hp)IslandMonsters.damage(followUp.mob,followUp.damage);followUp=null;} // 副手斧追擊（晚一點出數字，不跟主手疊在一起）
     if(pending&&movementTime()>=pending.at){
-      if(pending.landed&&(!pending.mob.spawn.bot||window.FakePlayers?.canAttack(pending.mob)))IslandMonsters.damage(pending.mob,pending.damage);
+      if(pending.landed&&(!pending.mob.spawn.bot||window.FakePlayers?.canAttack(pending.mob))){IslandMonsters.damage(pending.mob,pending.damage);if(pending.offhand)followUp={mob:pending.mob,damage:pending.offhand,at:movementTime()+180};}
       else if(!pending.landed&&pending.mob.hp){pending.mob.rangedMissUntil=movementTime()+650;if(!pending.mob.spawn.bot)window.IslandNpcAi?.provoke(pending.mob,[]);}
       pending=null;
     }

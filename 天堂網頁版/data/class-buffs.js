@@ -177,6 +177,8 @@ const ClassBuffs=(()=>{
   if(id===187){const p=PlayerClassStats.read(),max=Math.max(1,p.weapon?.damage[0]||2);for(let i=0;i<3;i++)IslandMonsters.damage(mob,1+Math.floor(Math.random()*max)+p.meleeBonus+damageBonus(false));}
   if(id===207){const result=PlayerAbilityRules.magicAmount({...skill,id},mob,{raw:5});if(result.critical)mob.magicCriticalUntil=t+650;IslandMonsters.damage(mob,Math.max(1,result.amount));}
   if(id===229&&Math.random()<.9)dots.push({mob,until:t+dur,next:t+1000,every:1000,dmg:Math.trunc(level()/2)+6});
+  // 2026-11-17 戰士裝雙斧（右手 weapon2）時連副手斧一起丟：另外 90% 機率再上一層持續傷害，數值一半
+  if(id===229&&OwnedInventory.items.some(e=>e.slot==='weapon2')&&Math.random()<.9){dots.push({mob,until:t+dur,next:t+1000,every:1000,dmg:Math.max(1,Math.trunc((Math.trunc(level()/2)+6)/2))});IslandMonsters.playEffect(skill.gfx,mob.x,mob.y,t+150);}
   if(id===205)cubes.push({x:worldX,y:worldY,until:t+dur,next:t+4000,dmg:skill.damage[0]||10,r:skill.area||3});
   if(AREA[id]&&id!==205)for(const m of IslandMonsters.around(worldX,worldY,skill.area||3))IslandMonsters.playEffect(skill.gfx,m.x,m.y,t);
   return true;
