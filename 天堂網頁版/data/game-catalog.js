@@ -8,6 +8,9 @@ function tdjRows(type) {
   if (type === 'wuhun') return tdjCatalogRows.wuhun ??= wuhunData.map(w => ({name: w.name, w}));
   return null;
 }
+// 2026-11-17 使用者：魔法娃娃卡依稀有度排列。稀有度照扭蛋機的分級（doll-gacha-data.js：一般～超越），卡框顏色同變身卡。
+const DOLL_TIER_ORDER = ['一般','高級','稀有','英雄','傳說','神話','超越'], DOLL_TIER_TAG = {一般:'white',高級:'green',稀有:'blue',英雄:'red',傳說:'purple',神話:'gold',超越:'transcend'};
+function dollTier(id){return window.DOLL_GACHA?.tiers.find(t=>t.ids.includes(+id))?.tier||'一般';}
 const tdjWuhunTierTag = {下品: 'white', 上品: 'green', 極品: 'blue', 千年: 'red', 萬年: 'purple', 上古: 'gold', 四神獸: 'transcend'};
 const lineageMCardTiers = {
   "white": "白卡 · 一般",
@@ -1777,12 +1780,12 @@ function openGameCatalog(type) {
     return;
   }
   const entries = type === 'cards' ? lineageMTransformCards
-    : type === 'transforms' ? transformBookRows() : type === 'dolls' ? DollEvolution.bases() : tdjRows(type) || gameCatalogData[type];
+    : type === 'transforms' ? transformBookRows() : type === 'dolls' ? DollEvolution.bases().map((row,i)=>[row,i]).sort((a,b)=>DOLL_TIER_ORDER.indexOf(dollTier(a[0].id))-DOLL_TIER_ORDER.indexOf(dollTier(b[0].id))||a[1]-b[1]).map(x=>x[0]) : tdjRows(type) || gameCatalogData[type];
   const all = () => true;
   const usedGrades = type === 'transforms' ? [...new Set(entries.map(row => row.grade))].sort((a, b) => a - b) : [];
   const filters = type === 'cards' ? [['全部', all], ...Object.entries(lineageMCardTiers).map(([tier, label]) => [label, row => row.tier === tier])]
     : type === 'transforms' ? [['全部', all], ['已收集', row => TransformCards.owned(row.name) > 0], ...usedGrades.map(grade => [lineageWGrades[grade][0], row => row.grade === grade])] // 2026-11-17 使用者：移除「原始新增」分類（卡片仍依稀有度出現在各分類）
-    : type === 'dolls' ? [['全部', all], ['已擁有', row => DollEvolution.members(row.id).some(d=>TdjSystems.dolls.owned(d.id)>0)]]
+    : type === 'dolls' ? [['全部', all], ['已擁有', row => DollEvolution.members(row.id).some(d=>TdjSystems.dolls.owned(d.id)>0)], ...DOLL_TIER_ORDER.map(tier => [tier, row => dollTier(row.id) === tier])]
     : type === 'enchant' ? [['全部', all], ['已擁有', row => TdjSystems.enchant.stones(row.e.id) > 0]]
     : type === 'wuhun' ? [['全部', all], ['已擁有', row => TdjSystems.wuhun.owned(row.w.id) > 0], ...wuhunTiers.map(tier => [tier, row => row.w.tier === tier])]
     : [['全部', all]];
@@ -1940,7 +1943,7 @@ function openGameCatalog(type) {
     const toolbar = uiElement('div', 'game-catalog-toolbar');
     const add = (label, fn) => toolbar.append(catalogButton(label, () => { const got = fn(); if (!got.filter(Boolean).length) return; toast('獲得：' + got.filter(Boolean).map(x => x.stone || x.name).join('、')); updateCounts(); refreshCards(); }));
     const times = (n, fn) => () => Array.from({length: n}, fn);
-    if (type === 'dolls') { toolbar.append(catalogButton('製作',()=>runGameMenuAction('craft')),catalogButton('扭蛋',()=>runGameMenuAction('gacha'))); toolbar.append(uiElement('small','doll-sort-note','能力參考：由低到高')); }
+    if (type === 'dolls') { toolbar.append(catalogButton('製作',()=>runGameMenuAction('craft')),catalogButton('扭蛋',()=>runGameMenuAction('gacha'))); toolbar.append(uiElement('small','doll-sort-note','依稀有度排列：一般→超越')); }
     if (type === 'enchant') { add('取得附魔石', times(1, () => TdjSystems.enchant.get())); add('取得 5 個', times(5, () => TdjSystems.enchant.get())); }
     if (type === 'wuhun') { add('取得武魂', times(1, () => TdjSystems.wuhun.get())); add('取得 5 個', times(5, () => TdjSystems.wuhun.get())); }
     toolbar.append(status);
@@ -1976,10 +1979,11 @@ function openGameCatalog(type) {
         const owned = type === 'dolls' ? TdjSystems.dolls.owned(row.id) : type === 'enchant' ? TdjSystems.enchant.stones(row.e.id) : TdjSystems.wuhun.owned(row.w.id);
         const evolvedOwned=type==='dolls'?DollEvolution.members(row.id).filter(d=>d.id!==row.id).reduce((n,d)=>n+TdjSystems.dolls.owned(d.id),0):0;
         if (type === 'wuhun') card.setAttribute('data-tier', tdjWuhunTierTag[row.w.tier] || 'white');
+        if (type === 'dolls') card.setAttribute('data-tier', DOLL_TIER_TAG[dollTier(row.id)]);
         if (!owned&&!evolvedOwned) card.classList.add('game-catalog-locked');
         const equipped=type==='wuhun'&&String(TdjSystems.wuhun.active)===String(row.w.id);
         if(equipped)card.dataset.equipped='true';
-        card.append(uiElement('small', '', (type === 'wuhun' ? row.w.tier + ' · ' : '') + (owned ? '×' + owned : evolvedOwned?'進階已擁有 ×'+evolvedOwned:'未擁有')+(equipped?' · 裝備中':'')));
+        card.append(uiElement('small', '', (type === 'wuhun' ? row.w.tier + ' · ' : type === 'dolls' ? dollTier(row.id) + ' · ' : '') + (owned ? '×' + owned : evolvedOwned?'進階已擁有 ×'+evolvedOwned:'未擁有')+(equipped?' · 裝備中':'')));
       }
       card.append(catalogPortrait(type, row));
       card.append(uiElement('span', '', type === 'transforms' ? row.card?.dn || row.name : row.name));
