@@ -1,0 +1,108 @@
+{
+  "rates": {
+    "RateXp": 2,
+    "RateDropAdena": 5,
+    "RateDropItems": 1,
+    "WeekendRateDropItems": 1.5,
+    "weekend": true
+  },
+  "shopCount": 104,
+  "arbitrage": [],
+  "autoSellArbitrage": [],
+  "dropRows": 12831,
+  "invalidDrops": [],
+  "missingDropItems": [],
+  "duplicateDrops": [],
+  "invalidMapDrops": [],
+  "invalidXp": [],
+  "earlyGold": [
+    {
+      "npc": 45562,
+      "id": 40308,
+      "min": 409,
+      "max": 654,
+      "chance": 1000000,
+      "name": "鎧甲守護神",
+      "level": 8,
+      "effectiveMin": 2045,
+      "effectiveMax": 3270
+    },
+    {
+      "npc": 45085,
+      "id": 40308,
+      "min": 300,
+      "max": 500,
+      "chance": 1000000,
+      "name": "弱化食人妖精",
+      "level": 8,
+      "effectiveMin": 1500,
+      "effectiveMax": 2500
+    },
+    {
+      "npc": 46140,
+      "id": 40308,
+      "min": 150,
+      "max": 450,
+      "chance": 1000000,
+      "name": "冰之女王侍女",
+      "level": 10,
+      "effectiveMin": 750,
+      "effectiveMax": 2250
+    },
+    {
+      "npc": 45549,
+      "id": 40308,
+      "min": 109,
+      "max": 254,
+      "chance": 1000000,
+      "name": "閃電球",
+      "level": 7,
+      "effectiveMin": 545,
+      "effectiveMax": 1270
+    },
+    {
+      "npc": 45551,
+      "id": 40308,
+      "min": 109,
+      "max": 254,
+      "chance": 1000000,
+      "name": "蘑菇",
+      "level": 7,
+      "effectiveMin": 545,
+      "effectiveMax": 1270
+    },
+    {
+      "npc": 45552,
+      "id": 40308,
+      "min": 109,
+      "max": 254,
+      "chance": 1000000,
+      "name": "火蜥蜴",
+      "level": 7,
+      "effectiveMin": 545,
+      "effectiveMax": 1270
+    },
+    {
+      "npc": 45553,
+      "id": 40308,
+      "min": 109,
+      "max": 254,
+      "chance": 1000000,
+      "name": "高崙冰石人",
+      "level": 7,
+      "effectiveMin": 545,
+      "effectiveMax": 1270
+    },
+    {
+      "npc": 45554,
+      "id": 40308,
+      "min": 109,
+      "max": 254,
+      "chance": 1000000,
+      "name": "殺人蜂",
+      "level": 8,
+      "effectiveMin": 545,
+      "effectiveMax": 1270
+    }
+  ]
+}
