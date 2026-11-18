@@ -44,3 +44,32 @@
 .login-stage.login-stage{background-image:url('../assets/entry/login-clean-background.jpg?v=1')}
 .login-stage .login-video{opacity:0}.login-stage.login-video-ready .login-video{opacity:1}
 .login-stage.login-video-fallback:not(.login-video-mode) .login-card{left:50%;top:auto;bottom:4%;width:calc(100% - 32px);max-width:350px;max-height:90%;overflow-y:auto;transform:translateX(-50%);padding:18px 20px;background:#11150ef0;border:1px solid #a48952}
+
+/* 2026-11-18 手機登入／選角修正（使用者：iPhone 測試） */
+/* 3 直式：影片縮成上方一條，標題整段看得到；後面墊一張模糊背景 */
+@media(orientation:portrait) and (max-width:600px){
+ .login-stage{overflow:hidden}
+ .login-stage::before{content:'';position:absolute;inset:0;z-index:-2;background:url('../assets/entry/login-clean-background.jpg?v=1') center/cover;filter:blur(14px) brightness(.45);transform:scale(1.1)}
+ .login-stage .login-video{inset:auto;left:50%;top:max(0px,env(safe-area-inset-top));width:135%;height:auto;aspect-ratio:16/9;transform:translateX(-50%);object-fit:cover;background:none}
+ /* 5 選角：背景圖只留拱門，下面原版資訊框（Character Name…空白格子）蓋掉 */
+ #selection-screen .select-stage{background-image:linear-gradient(#0000 0 41vw,#0c100c 41vw),url('../assets/entry/character-select.png')}
+ .creation-form label{white-space:nowrap}
+ #selection-screen .selection-options{flex-direction:column!important;align-items:stretch!important}
+ #selection-screen .selection-options>div:last-child{width:100%}
+ .selection-options>div:last-child{justify-content:stretch!important}
+ .selection-options>div:last-child>button{flex:1 1 0;min-height:44px}
+ #entry-enter{flex:1 1 100%!important}
+}
+/* 1+2 橫式手機（高度不到 500）：簡易登入卡放右側、正常大小（字 16px，iPhone 不會自動放大） */
+@media(orientation:landscape) and (max-height:500px){
+ .login-stage{width:100vw!important;height:100dvh!important;max-width:none!important;aspect-ratio:auto!important}
+ .login-stage.login-video-fallback:not(.login-video-mode) .login-card{left:auto;right:max(16px,env(safe-area-inset-right));top:50%;bottom:auto;transform:translateY(-50%);width:min(320px,44vw);max-height:calc(100dvh - 16px);padding:12px 18px}
+ .login-stage .login-card .entry-title{font-size:20px;margin:0 0 2px;text-align:center}
+ .login-stage .login-card .entry-subtitle{display:none}
+ .login-stage .login-card label{font-size:12px;margin:8px 0 4px}
+ .login-stage .login-card input{height:40px;font-size:16px;padding:6px 10px}
+ .login-stage .login-card .entry-primary{min-height:42px;margin-top:12px}
+ /* 8 建角：人物圖縮小，職業按鈕不用往下捲就看得到 */
+ .creation-preview>img{height:auto!important;max-height:140px}
+ .creation-form label{white-space:nowrap}
+}

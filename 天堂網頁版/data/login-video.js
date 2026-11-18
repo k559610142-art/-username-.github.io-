@@ -20,7 +20,7 @@
  function paintPanel(){if(!cleanReady||!panelImage.complete||!panelImage.naturalWidth)return;const ctx=panelCanvas.getContext('2d');ctx.clearRect(0,0,VW,VH);ctx.drawImage(cleanCanvas,0,0);ctx.drawImage(panelImage,MOVED.x,MOVED.y,PANEL.w*MOVED.scale,PANEL.h*MOVED.scale);}
  cleanImage.onload=()=>{cleanCanvas.getContext('2d').drawImage(cleanImage,0,0,VW,VH);cleanReady=true;paintPanel();if(failed&&!portrait())enter();};
  panelImage.onload=()=>{paintPanel();if(failed&&cleanReady&&!portrait())enter();};
- const portrait=()=>{const r=stage.getBoundingClientRect();return r.height>r.width;};
+ const portrait=()=>{const r=stage.getBoundingClientRect();return r.height>r.width||r.height<500;}; // 2026-11-18：手機橫式（高度不到 500）也改用簡易登入卡，影片裡畫的登入框太小、iPhone 點輸入框會自動放大
  const hot=(cls,label,fn)=>{const b=document.createElement('button');b.type='button';b.className='login-hot '+cls;b.setAttribute('aria-label',label);b.onclick=fn;return b;};
  const place=(node,[x,y,w,h])=>{Object.assign(node.style,{left:x+'px',top:y+'px',width:w+'px',height:h+'px'});};
  let ready=false,failed=false;

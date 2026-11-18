@@ -88,11 +88,15 @@ const IslandMusic = (() => {
   }
   const muteBtn = document.createElement('button');
   muteBtn.type = 'button'; muteBtn.className = 'entry-music-toggle';
-  muteBtn.style.cssText = 'position:fixed;top:max(10px,env(safe-area-inset-top));right:max(10px,env(safe-area-inset-right));z-index:9999;min-width:44px;height:40px;padding:0 10px;border:1px solid #b8975a;border-radius:20px;background:#120d08cc;color:#f3e6c2;font:600 14px system-ui;cursor:pointer;box-shadow:0 2px 8px #000a';
+  { const st = document.createElement('style'); st.textContent = '.entry-music-toggle{position:fixed;top:max(10px,env(safe-area-inset-top));right:max(10px,env(safe-area-inset-right));z-index:9999;min-width:44px;height:40px;padding:0 10px;border:1px solid #b8975a;border-radius:20px;background:#120d08cc;color:#f3e6c2;font:600 14px system-ui;cursor:pointer;box-shadow:0 2px 8px #000a}.entry-music-toggle.docked{position:static;margin:0 8px 0 auto;height:34px;min-height:34px;font-size:12px;box-shadow:none;flex:none}'; document.head.append(st); }
   muteBtn.onclick = e => { e.stopPropagation(); setEnabled(!enabled); };
   document.body.append(muteBtn);
   function refreshMute() {
-    muteBtn.hidden = window.gameFlowState === 'playing';
+    const st = window.gameFlowState; muteBtn.hidden = st === 'playing';
+    // 2026-11-18 手機：選角／建角畫面右上角是「返回」鈕，音樂鈕放進標題列、排在返回鈕左邊
+    const host = st === 'selection' ? document.querySelector('.select-heading') : st === 'creation' ? document.querySelector('.creation-heading') : null;
+    if (host) { if (muteBtn.parentElement !== host) host.insertBefore(muteBtn, host.querySelector('button')); muteBtn.classList.add('docked'); }
+    else if (muteBtn.parentElement !== document.body) { document.body.append(muteBtn); muteBtn.classList.remove('docked'); }
     muteBtn.textContent = enabled ? '🔊 音樂' : '🔇 靜音';
     muteBtn.setAttribute('aria-pressed', String(!enabled));
     muteBtn.setAttribute('aria-label', enabled ? '關閉音樂' : '開啟音樂');
