@@ -244,3 +244,10 @@ main.game.reference-game #panel.doll-catalog-panel .game-catalog-card[data-tier]
 .wuhun-fuse-row>span{grid-column:1/-1;white-space:nowrap;color:#f0e2bd}
 
 .wuhun-panel .game-catalog-toolbar>.wuhun-process-button{flex:0 0 100%;width:100%}.wuhun-fuse-panel[hidden]{display:none}
+
+/* 提煉／融合展開後保留卡片區，清單可用滾輪或觸控向下捲動。 */
+.wuhun-panel .game-catalog-toolbar{min-height:0;max-height:min(52dvh,440px);overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;touch-action:pan-y;scrollbar-width:auto;scrollbar-color:#b49a59 #111c27;scrollbar-gutter:stable;padding-right:5px;flex-shrink:1}
+.wuhun-panel .game-catalog-toolbar::-webkit-scrollbar{width:10px}
+.wuhun-panel .game-catalog-toolbar::-webkit-scrollbar-thumb{background:#b49a59;border:2px solid #111c27;border-radius:6px}
+.wuhun-panel .game-catalog-toolbar::-webkit-scrollbar-track{background:#111c27}
+.wuhun-panel .wuhun-fuse-row>span{white-space:normal}

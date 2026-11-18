@@ -4,7 +4,7 @@ const DiamondCommerce=(()=>{
  const button=(text,fn)=>{const b=el('button','dc-button',text);b.type='button';b.onclick=fn;return b;};
  const names={mall:'商城',gacha:'鑽石百貨公司',exchange:'鑽石交易所'};
  const shopTabs=['鑽石商店','試煉商店','AI 會員'];
- const gachaTabs=['魔法娃娃扭蛋機','武魂扭蛋機','造型一番賞','我的時裝','髮型','寵物'];
+ const gachaTabs=['魔法娃娃扭蛋機','武魂扭蛋機','造型一番賞','寵物'];
  let win=null,mode='mall',tab=0,notice='',market=null,busy=false,generation=0;
  const level=()=>Number(window.activeCharacterLevel)||1;
  const balance=()=>window.GameEntry?.characters.find(c=>c?.id===window.activeCharacterId)?.diamonds||0;

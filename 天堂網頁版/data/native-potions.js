@@ -10,13 +10,15 @@ const NativePotions=(()=>{
   const bar=document.createElement('div');
   bar.className='native-potion-buffs';
   bar.style.cssText='position:absolute;left:var(--ui-left,12px);top:calc(var(--ui-top,12px) + 60px);z-index:3;display:flex;gap:4px;max-width:260px;flex-wrap:wrap;pointer-events:none';
-  game.append(bar);
+  const statusRow=document.createElement('div');statusRow.className='status-effects-row';
+  statusRow.style.cssText='position:absolute;z-index:30;display:flex;align-items:center;gap:4px;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;max-width:260px;pointer-events:auto;touch-action:pan-x;scrollbar-width:thin;scrollbar-color:#b49a59 #111c27';
+  bar.style.cssText='position:static;display:flex;align-items:center;gap:4px;flex-wrap:nowrap;flex:0 0 auto;pointer-events:none';
+  statusRow.append(bar);game.append(statusRow);
+  const statusStyle=document.createElement('style');statusStyle.textContent='.status-effects-row .class-buff-bar{position:static!important;display:flex;align-items:center;flex-wrap:nowrap!important;max-width:none!important;flex:0 0 auto;gap:4px}.status-effects-row .class-buff-bar img,.status-effects-row .native-potion-buffs>span{flex-shrink:0}.status-effects-row .native-potion-buffs[hidden]{display:none!important}';document.head.append(statusStyle);
   function placeMagicBuffs(left,top,max){
-    const cb=document.querySelector('.class-buff-bar');if(!cb)return;
-    const height=bar.hidden||!bar.children.length?0:bar.getBoundingClientRect().height+6;
-    cb.style.setProperty('left',left+'px','important');
-    cb.style.setProperty('top',(top+height)+'px','important');
-    cb.style.setProperty('max-width',max+'px','important');
+    const cb=document.querySelector('.class-buff-bar');if(cb&&cb.parentNode!==statusRow)statusRow.append(cb);
+    statusRow.style.left=left+'px';statusRow.style.top=top+'px';statusRow.style.maxWidth=max+'px';
+    statusRow.hidden=window.gameFlowState!=='playing';
   }
   function positionBuffs(){
     // 2026-11-14：狀態圖示（藥水＋技能 class-buff-bar）排在左上「輔助」鈕右邊同一排，往右到小地圖前，不再壓到頭像框的防禦／魔防
