@@ -12,7 +12,7 @@
   '.app-version{position:fixed;left:max(8px,env(safe-area-inset-left));bottom:max(6px,env(safe-area-inset-bottom));z-index:101;font:11px system-ui;color:#a89a7a99;pointer-events:none}';
  document.head.append(css);
  const ver=document.createElement('div');ver.className='app-version';ver.textContent='版本 '+code;document.body.append(ver);
- setInterval(()=>{ver.hidden=!document.querySelector('#login-screen')||document.querySelector('#login-screen').hidden;},1000);
+ setInterval(()=>{ver.hidden=window.gameFlowState==='playing'||window.gameFlowState==='creation';},1000); // 登入畫面、選擇人物畫面都顯示版本代碼（方便確認手機是不是新版）
  let bar=null;
  function show(){if(bar)return;bar=document.createElement('div');bar.className='app-update-bar';bar.setAttribute('role','status');
   const b=document.createElement('button');b.type='button';b.textContent='更新';bar.append('有新版本可以更新',b);

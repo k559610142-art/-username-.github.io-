@@ -6,18 +6,27 @@ function setEntryScreen(state){if(state!=='playing'){window.FloatingWindows?.clo
 window.IslandMusic?.sync();for(const [id,value] of [['login-screen','login'],['selection-screen','selection'],['creation-screen','creation']])document.querySelector('#'+id).hidden=state!==value;game.inert=state!=='playing';document.querySelector('#panel').hidden=true;}
 function updateEntrySelection(){if(deleteArmed&&entryCharacters[entrySelectedSlot]?.id!==deleteArmed)disarmDelete();for(const {button,image,label,empty,index} of entryCards){const c=entryCharacters[index];button.className='character-choice'+(c?'':' empty-slot');button.setAttribute('aria-pressed',String(entrySelectedSlot===index));image.hidden=!c;empty.hidden=!!c;if(c){{const cr=CreationRules.classes[c.role],art=cr.art?.[c.gender];image.src='assets/entry/'+(art||cr.portraits[c.gender]);image.classList.toggle('entry-art',!!art)}image.alt=c.name+' · '+c.role;label.textContent=c.name}else{image.removeAttribute('src');label.textContent='空欄位'}}const c=entryCharacters[entrySelectedSlot]||null,emptyPicked=entrySelectedSlot>=0&&entrySelectedSlot<4&&!c;document.querySelector('#entry-name').textContent=c?c.name:emptyPicked?'空欄位 '+(entrySelectedSlot+1):'尚未選擇';document.querySelector('#entry-gender').textContent=c?(c.gender?'女性':'男性'):emptyPicked?'按「建立角色」在這一格建立新角色':'請先點選上方的人物或空欄位';document.querySelector('#entry-class').textContent=c?c.role:'—';document.querySelector('#entry-level').textContent=c?'Lv. '+c.level:'—';document.querySelector('#entry-health').textContent=c?CreationRules.vitals(c.role,c.stats).hp+' / '+CreationRules.vitals(c.role,c.stats).mp:'—';document.querySelector('#entry-attributes').textContent=c?CreationRules.keys.map(k=>CreationRules.labels[k]+' '+c.stats[k]).join('　'):'';document.querySelector('#entry-new').disabled=!emptyPicked;document.querySelector('#entry-delete').disabled=!c;{const en=document.querySelector('#entry-enter');if(en)en.disabled=!c;}document.querySelector('#selection-message').textContent=c?'按「進入遊戲」（或連點兩下角色）進入遊戲。':emptyPicked?'已選擇空欄位 '+(entrySelectedSlot+1)+'，按「建立角色」開始建立。':entryCharacters.some(Boolean)?'點選已有的角色進入遊戲，或先點選空欄位再按「建立角色」。':'目前沒有角色，請先點選一個空欄位，再按「建立角色」。';}
 var deleteArmed=null,deleteTimer=0;
-function disarmDelete(){deleteArmed=null;clearTimeout(deleteTimer);const b=document.querySelector('#entry-delete');if(b){b.textContent='刪除角色';b.classList.remove('entry-danger');}}
+// 2026-11-19 使用者：手機直式按「刪除角色」沒反應（iPhone 主畫面版、Google App 內建瀏覽器都會擋 confirm，按兩次的方式也容易逾時）→ 改成遊戲內確認視窗
+function disarmDelete(){deleteArmed=null;clearTimeout(deleteTimer);document.querySelector('.entry-delete-dialog')?.remove();const b=document.querySelector('#entry-delete');if(b){b.textContent='刪除角色';b.classList.remove('entry-danger');}}
 function deleteSelectedCharacter(){
  const slot=entrySelectedSlot,character=entryCharacters[slot];
  if(!entryLoggedIn||window.gameFlowState!=='selection'||!character)return;
- // 2026-11-18 手機：iPhone 主畫面安裝版不會跳出瀏覽器的確認視窗（confirm），改成按兩次：第一次變「確認刪除？」，5 秒內再按才刪
- const del=document.querySelector('#entry-delete');
- if(deleteArmed!==character.id){deleteArmed=character.id;del.textContent='確認刪除？';del.classList.add('entry-danger');document.querySelector('#selection-message').textContent='再按一次「確認刪除？」就會永久刪除「'+character.name+'」（角色、背包和收集紀錄）。';clearTimeout(deleteTimer);deleteTimer=setTimeout(disarmDelete,5000);return;}
- disarmDelete();
+ disarmDelete();deleteArmed=character.id;
+ const box=document.createElement('div');box.className='entry-delete-dialog';box.setAttribute('role','dialog');box.setAttribute('aria-modal','true');
+ const card=document.createElement('div'),title=document.createElement('strong'),text=document.createElement('p'),err=document.createElement('p'),row=document.createElement('div'),ok=document.createElement('button'),no=document.createElement('button');
+ title.textContent='刪除角色';text.textContent='確定要永久刪除「'+character.name+'」嗎？角色、背包和收集紀錄都會刪除，無法復原。';err.className='entry-delete-error';
+ ok.type=no.type='button';ok.className='entry-danger';ok.textContent='確定刪除';no.textContent='取消';
+ no.onclick=disarmDelete;box.onclick=e=>{if(e.target===box)disarmDelete();};
+ ok.onclick=()=>{const why=performCharacterDelete(slot,character.id);if(why){err.textContent=why;return;}disarmDelete();};
+ row.append(no,ok);card.append(title,text,err,row);box.append(card);document.body.append(box);ok.focus();
+}
+function performCharacterDelete(slot,id){
+ const character=entryCharacters[slot];
+ if(!entryLoggedIn||window.gameFlowState!=='selection'||!character||character.id!==id)return '角色已變更，請重新選擇。';
  const next=entryCharacters.slice();
  next[slot]=null;
  try{entryCharacters=CharacterStore.save(entryAccount,next);}
- catch{document.querySelector('#selection-message').textContent='無法儲存刪除結果，請再試一次。';return;}
+ catch(e){const why='無法儲存刪除結果：'+(e?.message||e);document.querySelector('#selection-message').textContent=why;return why;}
  for(const prefix of ['lineage-web-transform-cards-v1:','lineage-web-tdj-systems-v1:']){
   try{localStorage.removeItem(prefix+character.id);}catch{}
  }

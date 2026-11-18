@@ -79,3 +79,11 @@
 
 /* 2026-11-18 刪除角色第二次確認 */
 #entry-delete.entry-danger{background:linear-gradient(#8a2b20,#4a140e)!important;border-color:#e0705f!important;color:#ffe2d8!important}
+/* 2026-11-19 刪除角色確認視窗（取代瀏覽器 confirm／按兩次） */
+.entry-delete-dialog{position:fixed;inset:0;z-index:10050;display:flex;align-items:center;justify-content:center;padding:16px;background:#000b}
+.entry-delete-dialog>div{width:min(360px,100%);padding:18px 16px 16px;border:1px solid #c9a45e;border-radius:6px;background:linear-gradient(#24201a,#13110d);box-shadow:0 8px 30px #000;color:#eadcb8;font:15px/1.6 system-ui,sans-serif}
+.entry-delete-dialog strong{display:block;margin-bottom:6px;font-size:18px;color:#ffe2a8}
+.entry-delete-dialog p{margin:0 0 12px}.entry-delete-dialog .entry-delete-error{color:#ff9d8a;margin:0}.entry-delete-dialog .entry-delete-error:not(:empty){margin-bottom:12px}
+.entry-delete-dialog>div>div{display:flex;gap:10px}
+.entry-delete-dialog button{flex:1;min-height:46px;border:1px solid #9d8a5c;border-radius:4px;background:linear-gradient(#4a3d26,#2a2216);color:#f3e6c4;font:600 16px system-ui,sans-serif;touch-action:manipulation}
+.entry-delete-dialog button.entry-danger{background:linear-gradient(#8a2b20,#4a140e);border-color:#e0705f;color:#ffe2d8}
