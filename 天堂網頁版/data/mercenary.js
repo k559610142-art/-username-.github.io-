@@ -7,7 +7,7 @@
 const Mercenary=(()=>{
  const R=window.MERCENARY_RULES,el=(tag,cls,text)=>{const n=document.createElement(tag);n.className=cls||'';if(text!==undefined)n.textContent=text;return n;};
  const button=(text,fn)=>{const b=el('button','dc-button',text);b.type='button';b.onclick=fn;return b;};
- const TABS=['傭兵公告板','登記傭兵','我的傭兵','點數商店'];
+ const TABS=['傭兵公告板','登記傭兵','我的傭兵','點數商店','傭兵任務'];
  let win=null,tab=0,notice='',board=null,mine=null,busy=false,generation=0,bot=null,armed=null;
  const me=()=>window.GameEntry?.characters.find(c=>c?.id===window.activeCharacterId)||null;
  const contract=()=>me()?.mercContract||null;
@@ -19,9 +19,10 @@ const Mercenary=(()=>{
   if(!win)return;const c=me();win.replaceChildren();
   const head=el('div','dc-heading');head.append(el('strong','','傭兵團'),el('span','dc-wallet','💎 鑽石 '+(c?.diamonds||0).toLocaleString()),el('span','dc-wallet dc-merc-points','⚔ 傭兵點數 '+(c?.mercPoints||0).toLocaleString()));
   const x=button('✕',close);x.className='dc-close';x.setAttribute('aria-label','關閉傭兵團');head.append(x);win.append(head);
-  const nav=el('nav','dc-tabs');for(const [i,label]of TABS.entries()){const b=button(label,()=>{tab=i;notice='';armed=null;render();if(i<2)load();});b.classList.toggle('selected',i===tab);nav.append(b);}win.append(nav);
+  const nav=el('nav','dc-tabs');for(const [i,label]of TABS.entries()){const b=button(label,()=>{tab=i;notice='';armed=null;render();if(i<2||i===4)load();});b.classList.toggle('selected',i===tab);nav.append(b);}win.append(nav);
   const body=el('div','dc-body merc-body');win.append(body);
-  if(!online())body.append(el('div','dc-empty','傭兵團需要登入本機多人伺服器：其他玩家上傳的傭兵、鑽石與傭兵點數都由伺服器保管。'));
+  if(tab===4)missionView(body);
+  else if(!online())body.append(el('div','dc-empty','傭兵團需要登入本機多人伺服器：其他玩家上傳的傭兵、鑽石與傭兵點數都由伺服器保管。'));
   else [boardView,registerView,contractView,shopView][tab](body);
   const status=el('p','dc-notice',notice);status.setAttribute('role','status');win.append(status);
  }
@@ -70,6 +71,26 @@ const Mercenary=(()=>{
   }
   body.append(box);
  }
+ function missionView(body){
+  const k=contract(),active=!!(k&&(k.mode==='follow'?k.until>Date.now():!k.claimed)),tokens=()=> (window.OwnedInventory?.items||[]).filter(e=>e.key==='etcitem:990102'&&!e.slot).reduce((n,e)=>n+e.count,0);
+  body.append(el('h2','','可接傭兵任務'),el('p','dc-muted','選擇任務、雇用傭兵與派遣時數。每次需 1 個傭兵任務令牌及雇用鑽石；任務完成後在「我的傭兵」領取經驗與金幣。'));
+  if(!online())body.append(el('p','dc-muted','登入本機多人伺服器後即可選擇傭兵並接取任務。'));
+  if(active){body.append(el('p','merc-meta','目前已有傭兵合約，完成或解約後才能接取下一個任務。'));if(k.mode==='mission')contractView(body);}
+  const grid=el('div','dc-products merc-grid merc-missions');
+  for(const mission of R.missions){
+   const card=el('article','dc-product merc-card'),merc=el('select','merc-select'),hours=el('select','merc-select');merc.setAttribute('aria-label',mission.name+'的傭兵');hours.setAttribute('aria-label',mission.name+'的任務時數');
+   for(const m of board||[]){const opt=el('option','',m.name+'｜Lv.'+m.level+'｜💎'+m.price+'/小時');opt.value=m.id;merc.append(opt);}
+   if(!merc.options.length){const opt=el('option','',online()?(board?'目前沒有可雇用傭兵':'載入傭兵中…'):'登入後選擇傭兵');opt.value='';merc.append(opt);}
+   for(const h of R.hours){const opt=el('option','',h+' 小時');opt.value=h;hours.append(opt);}
+   const reward=el('p','merc-meta'),cost=el('p','merc-cost'),reason=el('p','merc-meta');
+   const selected=()=>board?.find(m=>String(m.id)===merc.value),canTake=()=>online()&&!busy&&!active&&!!selected()&&tokens()>0&&(me()?.diamonds||0)>=selected().price*Number(hours.value);
+   const take=button('接取任務',()=>{if(!canTake())return;const m=selected(),h=Number(hours.value),key='mission:'+mission.id+':'+m.id+':'+h;if(armed!==key){armed=key;take.textContent='確認支付 💎'+m.price*h+' ＋令牌 ×1';return;}armed=null;run('/api/merc/hire',{mercId:m.id,hours:h,mode:'mission',missionId:mission.id},'已接取「'+mission.name+'」，由 '+m.name+' 執行。',true);});
+   const sync=()=>{armed=null;take.textContent='接取任務';const m=selected(),h=Number(hours.value);if(m){const r=R.missionReward(m.level,h,mission.id);reward.textContent='獎勵：經驗 +'+r.experience.toLocaleString()+'、金幣 +'+r.gold.toLocaleString();cost.textContent='費用：💎 '+m.price*h+' ＋令牌 ×1';}else{reward.textContent='獎勵依傭兵等級與派遣時數計算';cost.textContent='每次消耗傭兵任務令牌 ×1，另付傭兵雇用費';}
+    reason.textContent=!online()?'需登入多人伺服器':active?'已有進行中的傭兵合約':!m?(board?'目前沒有可雇用傭兵':'正在載入傭兵'):tokens()<1?'缺少傭兵任務令牌（每日任務全部完成可得）':(me()?.diamonds||0)<m.price*h?'鑽石不足':'可接取｜持有令牌 '+tokens()+' 個';take.disabled=!canTake();merc.disabled=hours.disabled=!online()||busy||active;};
+   merc.onchange=hours.onchange=sync;sync();card.append(el('h3','',mission.name),el('p','merc-meta',mission.note),merc,hours,reward,cost,reason,take);grid.append(card);
+  }
+  body.append(grid);
+ }
  function shopView(body){
   const c=me();body.append(el('p','dc-muted','傭兵點數由傭兵公會發放：你的角色登記成傭兵並被雇用就會得到，雇用時間越長點數越多。'));
   const grid=el('div','dc-products merc-grid');
@@ -79,18 +100,18 @@ const Mercenary=(()=>{
   body.append(grid);
  }
  async function load(){if(!online()||window.gameFlowState!=='playing')return;const token=generation;try{const r=await LocalServerClient.call('/api/merc/board');if(win&&token===generation){board=r.board;mine=r.mine;render();}}catch(e){if(win&&token===generation){notice=e.message;board=[];render();}}}
- async function run(route,data,ok,reload=false){if(busy)return;busy=true;render();try{await LocalServerClient.act(route,data);notice=ok;}catch(e){notice=e.message;}finally{busy=false;}reopen();if(reload||tab===0)load();}
+ async function run(route,data,ok,reload=false){if(busy)return;busy=true;render();try{await LocalServerClient.act(route,data);notice=ok;}catch(e){notice=e.message;}finally{busy=false;}reopen();if(reload||tab===0||tab===4)load();}
  // act() 會重新安裝存檔並重進遊戲，視窗要重新掛回畫面
  function reopen(){if(window.gameFlowState!=='playing'){close();return;}if(!win||!document.body.contains(win)){win=null;open(tab,true);}else render();}
  async function claimReward(){if(busy)return;busy=true;render();try{const r=await LocalServerClient.act('/api/merc/claim',{});const reward=r.reward||{experience:0,gold:0};if(reward.experience&&window.OwnedInventory)OwnedInventory.reward(reward.experience,[]);notice='任務完成：經驗 +'+reward.experience.toLocaleString()+'、金幣 +'+reward.gold.toLocaleString()+'。';window.GameChat?.say('傭兵任務完成，獲得經驗 '+reward.experience.toLocaleString()+'、金幣 '+reward.gold.toLocaleString()+'。','system');}catch(e){notice=e.message;}finally{busy=false;}reopen();}
  function open(startTab=0,keepNotice=false){if(window.gameFlowState!=='playing')return;tab=startTab;if(!keepNotice)notice='';generation++;armed=null;
   if(!win){win=el('section','diamond-commerce mercenary-window');win.setAttribute('role','dialog');win.setAttribute('aria-label','傭兵團');document.querySelector('.game').append(win);}
-  render();win.querySelector('.dc-close')?.focus();if(tab<2)load();}
+  render();win.querySelector('.dc-close')?.focus();if(tab<2||tab===4)load();}
  // ---- 跟隨型傭兵：照合約生成／維持／到期離開 ----
  function landing(){for(let i=0;i<40;i++){const r=2+Math.floor(Math.random()*3),a=Math.random()*Math.PI*2,x=Math.round(worldX+Math.cos(a)*r),y=Math.round(worldY+Math.sin(a)*r);if(TeleportScrolls.canLand(x,y)&&!IslandMonsters.occupied(x,y))return [x,y];}return null;}
  function release(text){if(!bot)return;window.NpcSocial?.dismiss(bot);IslandMonsters.removeAlly(bot);bot=null;if(text)window.GameChat?.say(text,'system');}
  function tick(){
-  if(win&&tab===2)render();
+  if(win&&(tab===2||tab===4&&contract()?.mode==='mission'))render();
   if(window.gameFlowState!=='playing'||!window.FakePlayers?.hireBot||!window.NpcSocial?.adopt){bot=null;return;}
   const k=contract();
   if(!k||k.mode!=='follow'||k.until<=Date.now()){if(bot&&bot.fp?.merc)release(k&&k.mode==='follow'?'傭兵 '+bot.spawn.npc.name+' 的合約到期，向你道別後離開了。':null);return;}
