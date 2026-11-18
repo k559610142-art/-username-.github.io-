@@ -39,3 +39,8 @@
    自動填入的底色無法直接改，只能用超長 transition 讓它永遠不出現，文字顏色用 -webkit-text-fill-color 蓋回來。 */
 .login-video-mode #login-account:-webkit-autofill,.login-video-mode #login-password:-webkit-autofill,.login-video-mode #login-account:autofill,.login-video-mode #login-password:autofill{-webkit-text-fill-color:#f3e6c2;caret-color:#f1d27c;background-color:transparent!important;background-clip:text;transition:background-color 99999s ease 0s,color 99999s ease 0s}
 .login-video-mode #login-account::-ms-reveal,.login-video-mode #login-password::-ms-reveal,.login-video-mode #login-password::-ms-clear{display:none}
+
+/* 重新整理／慢速連線仍先顯示登入背景，避免黑底與偏左的備用表單。 */
+.login-stage.login-stage{background-image:url('../assets/entry/login-clean-background.jpg?v=1')}
+.login-stage .login-video{opacity:0}.login-stage.login-video-ready .login-video{opacity:1}
+.login-stage.login-video-fallback:not(.login-video-mode) .login-card{left:50%;top:auto;bottom:4%;width:calc(100% - 32px);max-width:350px;max-height:90%;overflow-y:auto;transform:translateX(-50%);padding:18px 20px;background:#11150ef0;border:1px solid #a48952}

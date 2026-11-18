@@ -14,12 +14,12 @@
  const PANEL={x:383,y:232,w:518,h:306},MOVED={x:433,y:430,scale:.8};
  for(const spot of Object.values(SPOT)){spot[0]=MOVED.x+(spot[0]-PANEL.x)*MOVED.scale;spot[1]=MOVED.y+(spot[1]-PANEL.y)*MOVED.scale;spot[2]*=MOVED.scale;spot[3]*=MOVED.scale;}
  const panelCanvas=document.createElement('canvas');panelCanvas.width=VW;panelCanvas.height=VH;panelCanvas.className='login-panel-reposition';panelCanvas.setAttribute('aria-hidden','true');stage.insertBefore(panelCanvas,form);
+ // 使用小型靜態畫面重排面板，不再額外下載／解碼第二支登入影片。
  const cleanCanvas=document.createElement('canvas');cleanCanvas.width=VW;cleanCanvas.height=VH;let cleanReady=false;
- const captureClean=source=>{const ctx=cleanCanvas.getContext('2d');ctx.filter='brightness(.58)';ctx.drawImage(source,0,0,VW,VH);ctx.filter='none';cleanReady=true;};
- function paintPanel(){if(!cleanReady||video.readyState<2)return;const ctx=panelCanvas.getContext('2d');ctx.clearRect(0,0,VW,VH);ctx.drawImage(cleanCanvas,0,0);ctx.drawImage(video,PANEL.x,PANEL.y,PANEL.w,PANEL.h,MOVED.x,MOVED.y,PANEL.w*MOVED.scale,PANEL.h*MOVED.scale);}
- // 獨立讀取面板出現前的畫面，快取／直接跳到片尾時也能補回原位置。
- const cleanVideo=document.createElement('video');cleanVideo.muted=true;cleanVideo.preload='auto';cleanVideo.src=video.currentSrc||video.querySelector('source')?.src||video.src;
- cleanVideo.addEventListener('loadedmetadata',()=>{cleanVideo.currentTime=7.0;});cleanVideo.addEventListener('seeked',()=>{captureClean(cleanVideo);paintPanel();cleanVideo.removeAttribute('src');cleanVideo.load();},{once:true});
+ const cleanImage=new Image(),panelImage=new Image();cleanImage.src='assets/entry/login-clean-background.jpg?v=1';panelImage.src='assets/entry/login-panel-frame.png?v=1';
+ function paintPanel(){if(!cleanReady||!panelImage.complete||!panelImage.naturalWidth)return;const ctx=panelCanvas.getContext('2d');ctx.clearRect(0,0,VW,VH);ctx.drawImage(cleanCanvas,0,0);ctx.drawImage(panelImage,MOVED.x,MOVED.y,PANEL.w*MOVED.scale,PANEL.h*MOVED.scale);}
+ cleanImage.onload=()=>{cleanCanvas.getContext('2d').drawImage(cleanImage,0,0,VW,VH);cleanReady=true;paintPanel();if(failed&&!portrait())enter();};
+ panelImage.onload=()=>{paintPanel();if(failed&&cleanReady&&!portrait())enter();};
  const portrait=()=>{const r=stage.getBoundingClientRect();return r.height>r.width;};
  const hot=(cls,label,fn)=>{const b=document.createElement('button');b.type='button';b.className='login-hot '+cls;b.setAttribute('aria-label',label);b.onclick=fn;return b;};
  const place=(node,[x,y,w,h])=>{Object.assign(node.style,{left:x+'px',top:y+'px',width:w+'px',height:h+'px'});};
@@ -32,11 +32,6 @@
  const EYE='<svg viewBox="0 0 24 24" width="100%" height="100%" aria-hidden="true"><path d="M12 5C6.5 5 2.7 9.4 1.5 12c1.2 2.6 5 7 10.5 7s9.3-4.4 10.5-7C21.3 9.4 17.5 5 12 5zm0 11.5A4.5 4.5 0 1 1 12 7.5a4.5 4.5 0 0 1 0 9zm0-2.3a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4z" fill="#d8c79a"/></svg>';
  const eye=hot('login-hot-eye login-eye-icon','顯示或隱藏密碼',()=>{const p=document.querySelector('#login-password');p.type=p.type==='password'?'text':'password';});eye.innerHTML=EYE;
  const accEye=hot('login-hot-eye login-eye-icon','顯示帳號（帳號本來就是明碼）',()=>document.querySelector('#login-account')?.focus());accEye.innerHTML=EYE;
- // 2026-11-17 使用者：影片裡有兩個「忘記密碼」→ 移除下面那行字、藍色按鈕往下移。影片本身改不了，所以疊一張從最後一格做的補丁圖
- //  （assets/entry/login-forgot-patch.png：原按鈕位置補平、按鈕下移 50 格蓋住那行字），隨表單一起淡入。
- const patch=document.createElement('img');patch.className='login-patch';patch.alt='';patch.src='assets/entry/login-forgot-patch.png?v=1';
- // 2026-11-17 使用者：標題「這奇怪的天堂」移到兜帽人胸口那一帶 → 補丁圖（原位置換成 8.4 秒還沒出標題的畫面、標題下移 95 格）
- const titlePatch=document.createElement('img');titlePatch.className='login-patch';titlePatch.alt='';titlePatch.src='assets/entry/login-title-patch.png?v=1';
  const hots=[[register,SPOT.register],[hot('login-hot-forgot','忘記密碼',forgot),SPOT.forgotBox],[accEye,SPOT.accountEye],[eye,SPOT.passwordEye]]; // 新影片不需要舊版的標題／忘記密碼補丁圖
  function layout(){
   if(!stage.classList.contains('login-video-mode'))return;
@@ -45,7 +40,7 @@
   panelCanvas.style.transform=form.style.transform;paintPanel();
  }
  function enter(){
-  if(ready||failed||portrait())return;ready=true;fallback(false);stage.classList.add('login-video-mode');
+  if(ready||portrait()||(failed&&(!cleanReady||!panelImage.naturalWidth)))return;ready=true;fallback(false);stage.classList.add('login-video-mode');
   place(document.querySelector('#login-account'),SPOT.account);place(document.querySelector('#login-password'),SPOT.password);place(document.querySelector('#login-submit'),SPOT.login);if(message)place(message,SPOT.message);
   for(const [node,spot] of hots){place(node,spot);if(!node.isConnected)node.classList.contains('login-patch')?form.prepend(node):form.append(node);}
   layout();setTimeout(()=>stage.classList.add('login-video-shown'),30); // 不用 requestAnimationFrame：背景分頁不會執行，表單會一直隱形
@@ -69,19 +64,20 @@
  // 有些瀏覽器（互動分數高）允許有聲自動播放：先試一次，成功就跟影片同步開始
  bgm.play().then(()=>{wantSound=true;bgm.currentTime=video.currentTime;}).catch(()=>{});
  video.addEventListener('timeupdate',()=>{
-  if(!cleanReady&&video.currentTime>=7&&video.currentTime<7.1)captureClean(video);
   if(video.currentTime>=SHOW_AT)paintPanel();
   if(portrait()){if(video.currentTime>=PORTRAIT_STOP){if(!video.paused)video.pause();fallback(true);}if(ready)leave();return;}
   if(video.currentTime>=SHOW_AT)enter();
  });
  video.addEventListener('ended',()=>{if(!portrait()){enter();paintPanel();}});
- video.addEventListener('error',()=>{failed=true;leave();fallback(true);video.remove();});
- setTimeout(()=>{if(!ready&&(failed||video.readyState<3))fallback(true);},20000); // 網路太慢 20 秒還沒播到登入框，先給簡易登入卡
+ video.addEventListener('loadeddata',()=>stage.classList.add('login-video-ready'));
+ video.addEventListener('error',()=>{failed=true;leave();fallback(true);if(cleanReady&&panelImage.naturalWidth&&!portrait())enter();});
+ setTimeout(()=>{if(!ready&&(failed||video.readyState<3||video.currentTime<.2)){fallback(true);if(cleanReady&&panelImage.naturalWidth&&!portrait())enter();}},1800); // 網路太慢 20 秒還沒播到登入框，先給簡易登入卡
  // 已經播完（例如登出回到登入畫面）就直接停在最後一格；直式↔橫式切換時重新判斷
- addEventListener('resize',()=>{if(portrait()){if(ready)leave();if(video.currentTime>=PORTRAIT_STOP||failed)fallback(true);if(!failed&&video.currentTime>7.2)video.currentTime=7;return;}
+ addEventListener('resize',()=>{if(portrait()){if(ready)leave();fallback(true);if(!failed&&video.currentTime>7.2)video.currentTime=7;return;}
   // 轉回橫式：拿掉簡易登入卡，直式時停住的影片繼續播到畫好的登入框
   if(!failed){fallback(false);if(video.paused&&!video.ended&&video.currentTime<SHOW_AT&&!document.querySelector('#login-screen')?.hidden)video.play().catch(()=>{});}
    if(video.ended||video.currentTime>=SHOW_AT)enter();layout();});
  // 頁面載完（CSS 就位）再判斷一次直／橫式，避免載入途中誤判成直式而把影片停住
- addEventListener('load',()=>dispatchEvent(new Event('resize')));
+ addEventListener('DOMContentLoaded',()=>dispatchEvent(new Event('resize')));
+ queueMicrotask(()=>{if(portrait())fallback(true);});
 })();
