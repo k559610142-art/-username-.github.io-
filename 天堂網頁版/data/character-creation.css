@@ -8,3 +8,7 @@
 .creation-stat{grid-template-columns:minmax(85px,1fr) 64px;min-height:38px}.creation-stat output.rolled-max{color:#ffe27b;text-shadow:0 0 8px #d89d35;font-weight:bold}
 
 .creation-genders #creation-reset{flex:none;margin-left:12px;padding:6px 16px;background:linear-gradient(#7d6337,#493820);color:#ffebba;border-color:#b69758;white-space:nowrap}
+
+/* 手機建角返回鍵保持在內容上方，保留原生點擊與觸控操作。 */
+.creation-heading{z-index:3;pointer-events:auto}.creation-layout{z-index:1}
+#creation-back{min-width:100px;min-height:44px;touch-action:manipulation;position:relative;z-index:4}
