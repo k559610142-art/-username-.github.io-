@@ -23,7 +23,7 @@ const IslandMusic = (() => {
   const CLASS_KEY = { '王族': 'Prince', '騎士': 'Knight', '妖精': 'Elf', '法師': 'Magician', '黑暗妖精': 'Darkelf', '龍騎士': 'DragonKnight', '幻術師': 'illusionist', '戰士': 'Knight' };
   const players = [new Audio(), new Audio()];
   for (const a of players) { a.preload = 'none'; a.volume = 0; a.addEventListener('ended', () => next(a)); }
-  let enabled = true, active = 0, list = null, listKey = '', index = 0, fadeTimer = 0;
+  let enabled = true, active = 0, list = null, listKey = '', index = 0, fadeTimer = 0, fadeUntil = 0;
   try { enabled = localStorage.getItem(key) !== 'off'; } catch {}
 
   const sys = (name, fallback) => [data.sys[name] ?? fallback];
@@ -51,6 +51,7 @@ const IslandMusic = (() => {
     const to = target ? players[active] : null, t0 = Date.now();
     for (const a of from) if (a.paused) a.volume = 0;
     const startVol = from.map(a => a.volume);
+    fadeUntil = Date.now() + FADE_MS + 200;
     fadeTimer = setInterval(() => {
       const k = Math.min(1, (Date.now() - t0) / FADE_MS);
       from.forEach((a, i) => { try { a.volume = Math.max(0, startVol[i] * (1 - k)); } catch {} if (k >= 1 && !a.paused) a.pause(); });
@@ -97,6 +98,16 @@ const IslandMusic = (() => {
     muteBtn.setAttribute('aria-label', enabled ? '關閉音樂' : '開啟音樂');
   }
   setInterval(refreshMute, 300); refreshMute();
+  // 2026-11-18 使用者：手機仍有兩首背景音樂同時播 → 保險：每秒檢查，只允許「目前該播的那首」出聲，
+  //  另一個播放器（淡出期間除外）、離開登入畫面後的登入配樂、登入影片，一律暫停。
+  function guard() {
+    const inGame = window.gameFlowState !== 'login';
+    if (Date.now() > fadeUntil) players.forEach((a, i) => { if ((i !== active || !list || !enabled || document.hidden) && !a.paused) a.pause(); });
+    if (inGame || !enabled) { const b = window.LoginBgm; if (b && !b.paused) b.pause(); }
+    if (inGame) { const v = document.querySelector('.login-video'); if (v && !v.paused) { v.muted = true; v.pause(); } }
+  }
+  setInterval(guard, 1000);
+  document.addEventListener('visibilitychange', guard);
   setInterval(sync, 1000);
   for (const ev of ['visibilitychange']) document.addEventListener(ev, sync);
   for (const ev of ['click', 'pointerdown', 'keydown', 'touchend']) document.addEventListener(ev, sync, { passive: true });
@@ -117,6 +128,6 @@ const IslandMusic = (() => {
     refresh();
     document.querySelector('#panelContent').append(button);
   };
-  return { sync, setEnabled, get enabled() { return enabled; }, get scene() { return listKey; }, get track() { return players[active].src; } };
+  return { sync, setEnabled, guard, get playing() { return players.filter(a => !a.paused).map(a => a.src.split('/').pop()); }, get enabled() { return enabled; }, get scene() { return listKey; }, get track() { return players[active].src; } };
 })();
 window.IslandMusic = IslandMusic;
