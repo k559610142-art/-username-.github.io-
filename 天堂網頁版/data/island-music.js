@@ -30,12 +30,16 @@ const IslandMusic = (() => {
   function fadeTo(target) {
     clearInterval(fadeTimer);
     const from = players.filter((a, i) => i !== active || !target);
-    const to = target ? players[active] : null, step = 50 / FADE_MS * VOLUME;
+    // 2026-11-18 修：iPhone（iOS Safari）不能用程式改音量（volume 永遠是 1），舊寫法「淡出到 0 才暫停」永遠不暫停 → 選角音樂與遊戲音樂重疊。
+    //  改成依時間淡出：時間到一律暫停要關掉的那首，不看 volume。
+    const to = target ? players[active] : null, t0 = Date.now();
+    for (const a of from) if (a.paused) a.volume = 0;
+    const startVol = from.map(a => a.volume);
     fadeTimer = setInterval(() => {
-      let done = true;
-      for (const a of from) { a.volume = Math.max(0, a.volume - step); if (a.volume > 0) done = false; else if (!a.paused) a.pause(); }
-      if (to) { to.volume = Math.min(VOLUME, to.volume + step); if (to.volume < VOLUME) done = false; }
-      if (done) clearInterval(fadeTimer);
+      const k = Math.min(1, (Date.now() - t0) / FADE_MS);
+      from.forEach((a, i) => { try { a.volume = Math.max(0, startVol[i] * (1 - k)); } catch {} if (k >= 1 && !a.paused) a.pause(); });
+      if (to) try { to.volume = VOLUME * k; } catch {}
+      if (k >= 1) clearInterval(fadeTimer);
     }, 50);
   }
   function start(n) {
