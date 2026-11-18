@@ -1,0 +1,17 @@
+{
+  "name": "天堂網頁版",
+  "short_name": "天堂網頁版",
+  "description": "天堂網頁版：說話之島冒險",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#101a19",
+  "theme_color": "#101a19",
+  "lang": "zh-Hant",
+  "icons": [
+    { "src": "assets/app/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/app/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
