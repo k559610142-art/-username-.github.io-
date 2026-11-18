@@ -61,7 +61,7 @@
  let bgmDone=false;bgm.addEventListener('ended',()=>{bgmDone=true;});
  bgm.preload='auto';window.LoginBgm=bgm; // 除錯／檢查用
  let wantSound=false;
- const syncSound=()=>{if(bgmDone||!wantSound||!onLogin()||document.hidden){if(!bgm.paused)bgm.pause();return;}if(bgm.paused){if(!video.ended&&!video.paused)bgm.currentTime=video.currentTime;bgm.play().catch(()=>{});}};
+ const syncSound=()=>{if(bgmDone||!wantSound||window.IslandMusic?.enabled===false||!onLogin()||document.hidden){if(!bgm.paused)bgm.pause();return;}if(bgm.paused){if(!video.ended&&!video.paused)bgm.currentTime=video.currentTime;bgm.play().catch(()=>{});}};
  const firstGesture=()=>{if(!wantSound){wantSound=true;if(video.ended||video.paused)bgm.currentTime=0;}syncSound();}; // 手機觸控的 pointerdown 不算使用者操作，之後的 touchend／click 會再試一次
  for(const ev of ['pointerdown','pointerup','touchend','click','keydown'])document.addEventListener(ev,firstGesture,{passive:true,capture:true});
  document.addEventListener('visibilitychange',syncSound);setInterval(syncSound,500);

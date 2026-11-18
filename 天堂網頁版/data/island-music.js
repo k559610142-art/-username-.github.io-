@@ -62,6 +62,25 @@ const IslandMusic = (() => {
     start(list[index]);
   }
 
+  // 2026-11-18 使用者：手機登入畫面也要能關音樂 → 登入／選角／建角畫面右上角放一顆喇叭鈕（跟設定裡的「遊戲音樂」同一個開關，也管登入配樂）
+  function setEnabled(on) {
+    enabled = !!on;
+    try { localStorage.setItem(key, enabled ? 'on' : 'off'); } catch {}
+    if (!enabled) window.LoginBgm?.pause();
+    sync();
+  }
+  const muteBtn = document.createElement('button');
+  muteBtn.type = 'button'; muteBtn.className = 'entry-music-toggle';
+  muteBtn.style.cssText = 'position:fixed;top:max(10px,env(safe-area-inset-top));right:max(10px,env(safe-area-inset-right));z-index:9999;min-width:44px;height:40px;padding:0 10px;border:1px solid #b8975a;border-radius:20px;background:#120d08cc;color:#f3e6c2;font:600 14px system-ui;cursor:pointer;box-shadow:0 2px 8px #000a';
+  muteBtn.onclick = e => { e.stopPropagation(); setEnabled(!enabled); };
+  document.body.append(muteBtn);
+  function refreshMute() {
+    muteBtn.hidden = window.gameFlowState === 'playing';
+    muteBtn.textContent = enabled ? '🔊 音樂' : '🔇 靜音';
+    muteBtn.setAttribute('aria-pressed', String(!enabled));
+    muteBtn.setAttribute('aria-label', enabled ? '關閉音樂' : '開啟音樂');
+  }
+  setInterval(refreshMute, 300); refreshMute();
   setInterval(sync, 1000);
   for (const ev of ['visibilitychange']) document.addEventListener(ev, sync);
   for (const ev of ['click', 'pointerdown', 'keydown', 'touchend']) document.addEventListener(ev, sync, { passive: true });
@@ -78,15 +97,10 @@ const IslandMusic = (() => {
       button.textContent = '遊戲音樂 ' + (enabled ? '開啟' : '關閉');
       button.setAttribute('aria-pressed', String(enabled));
     };
-    button.onclick = () => {
-      enabled = !enabled;
-      try { localStorage.setItem(key, enabled ? 'on' : 'off'); } catch {}
-      refresh();
-      sync();
-    };
+    button.onclick = () => { setEnabled(!enabled); refresh(); };
     refresh();
     document.querySelector('#panelContent').append(button);
   };
-  return { sync, get scene() { return listKey; }, get track() { return players[active].src; } };
+  return { sync, setEnabled, get enabled() { return enabled; }, get scene() { return listKey; }, get track() { return players[active].src; } };
 })();
 window.IslandMusic = IslandMusic;
