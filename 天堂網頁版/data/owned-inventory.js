@@ -28,9 +28,10 @@ window.OwnedInventory=(()=>{
   if(!window.GameEntry?.saveActive()){entries=old;warehouse=oldStorage;collection=oldCollection;skillState=oldSkills;window.activePotionBuffs=oldBuffs;hp=oldHp;mp=oldMp;worldX=oldX;worldY=oldY;if(CharacterActions.weapon!==oldMode||CharacterActions.dead!==(oldHp<=0))CharacterActions.reset(oldMode);sync();toast('儲存失敗，物品與狀態未變更。');return false}
   refresh();return true;
  }
- function reward(gain,loot){
+ function reward(gain,loot,consumeUid=null){
   const autoLoot=window.AutoSell?.prepareLoot(loot);if(autoLoot?.error)return false;if(autoLoot)loot=autoLoot.rows;
   let next=clone(entries);
+  if(consumeUid!==null){const row=next.find(e=>e.uid===consumeUid&&!e.slot);if(!row||row.count<1)return false;deduct(next,row.uid,1);}
   for(const drop of loot){
    const candidate=clone(next);
    if(!addItems(candidate,drop.key,drop.count,true))return false;
@@ -166,6 +167,13 @@ window.OwnedInventory=(()=>{
  function gaussian(){return Math.sqrt(-2*Math.log(Math.max(Number.MIN_VALUE,Math.random())))*Math.cos(2*Math.PI*Math.random())}
  function use(uid){
   if(window.gameFlowState!=='playing'||owner!==window.activeCharacterId)return false;const e=entries.find(i=>i.uid===uid);if(!e){toast('背包中沒有這個物品。');return false}if(CharacterActions.dead){toast('倒地時無法使用物品。');return false}
+  if(e.key==='etcitem:990103'){
+   const current=Number(window.activeCharacterExperience)||0,target=PlayerProgression.experienceForLevel(10);
+   if(level()>=10||PlayerProgression.levelFor(current)>=10){toast('已達10等，無需使用立即10等藥水。');return false;}
+   if(target===null||target<=current){toast('升級資料尚未就緒，藥水未消耗。');return false;}
+   if(!reward(target-current,[],uid))return false;
+   toast('使用立即10等藥水，等級提升至10等！');window.updateReferenceHud?.();return true;
+  }
   if(window.PlayerSkills?.isBook(e.key))return PlayerSkills.learn(uid);
   const tdjUse=window.TdjSystems?.useItem?.(uid);if(tdjUse!==undefined&&tdjUse!==null)return tdjUse; // 魔法娃娃／武魂道具雙擊收進圖鑑（data/tdj-systems.js）
   const identifyUse=window.ItemIdentify?.use(uid);if(identifyUse!==undefined&&identifyUse!==null)return identifyUse; // 鑑定卷軸（data/item-identify.js）

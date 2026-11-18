@@ -23,10 +23,7 @@ const DiamondCommerce=(()=>{
  }
  function shop(body){
   if(tab){body.append(el('div','dc-empty',shopTabs[tab]+'商品準備中｜使用貨幣：鑽石'));return;}
-  const layout=el('div','dc-shop-layout'),aside=el('aside','dc-recommend');aside.append(el('h3','','推薦商品'),icon('shop'),el('p','','精選商品即將上架'),el('span','dc-price','💎 鑽石'));layout.append(aside);
-  const grid=el('div','dc-products');for(const [name,file]of [['成長補給禮包','bag'],['變身禮包','transform'],['冒險卷軸禮包','memory'],['龍脈星晶','doll'],['強化補給禮包','craft.svg'],['會員禮包','character']]){
-   const card=el('article','dc-product');card.append(file.includes('.')?el('span','dc-art','✦'):icon(file),el('h3','',name),el('span','dc-price','💎 價格待設定'));const b=button('尚未上架',()=>{});b.disabled=true;card.append(b);grid.append(card);
-  }layout.append(grid);body.append(layout);
+  body.append(el('div','dc-empty','目前沒有販售商品'));
  }
  // 扭蛋機（2026-11-17）：武魂扭蛋機（wuhun-gacha-data.js）與魔法娃娃扭蛋機（doll-gacha-data.js）共用同一套畫面與流程。
  //  有連本機多人伺服器 → 伺服器擲骰扣鑽（/api/gacha/wuhun、/api/gacha/doll）；

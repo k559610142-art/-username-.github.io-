@@ -68,6 +68,6 @@ const PlayerProgression = (() => {
     updateReferenceHud();
     return true;
   }
-  return {levelFor,initialExperience,percentage,award,dropInfo,get maxExperience(){return maximum;}};
+  return {experienceForLevel:level=>thresholds.find(row=>row[0]===level)?.[1]??null,levelFor,initialExperience,percentage,award,dropInfo,get maxExperience(){return maximum;}};
 })();
 window.PlayerProgression=PlayerProgression;
