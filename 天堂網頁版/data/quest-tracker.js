@@ -1,10 +1,18 @@
 // 當前任務框（使用者 2026-11-17）：畫面左側、隊伍／召喚欄下方、聊天框上方的半透明框，可上下捲動。
 //  內容：等級任務（data/level-quests.js，進度＝背包任務道具數量）、傭兵任務（data/mercenary.js 的合約）。
-//  每日任務遊戲目前沒有這個系統，等規則定好再加一段 section。沒有任何任務時整塊隱藏。點等級任務開「任務」清單。
+// 手機與桌面共用收合抽屜，預設只顯示任務按鈕；展開後可捲動每日／等級／傭兵任務。
 const QuestTracker=(()=>{
  const game=document.querySelector('.game'),root=document.createElement('aside');root.className='quest-tracker';root.hidden=true;root.setAttribute('aria-label','當前任務');game.append(root);
+ const toggle=document.createElement('button'),content=document.createElement('div');let expanded=false,owner=null;
+ toggle.type='button';toggle.className='qt-drawer-toggle';toggle.setAttribute('aria-controls','quest-tracker-content');content.id='quest-tracker-content';content.className='qt-drawer-content';root.append(toggle,content);
+ function setExpanded(value){expanded=!!value;toggle.setAttribute('aria-expanded',String(expanded));toggle.textContent=expanded?'任務 ▾':'任務 ▸';content.hidden=!expanded;root.classList.toggle('qt-expanded',expanded);position();}
+ toggle.onclick=()=>setExpanded(!expanded);
  const css=document.createElement('style');css.textContent=`
- .quest-tracker{position:absolute;z-index:7;box-sizing:border-box;overflow-y:auto;pointer-events:auto;scrollbar-width:thin;scrollbar-color:#8d784c #151c1600;color:#e6dcc3;font:12px/1.35 system-ui;text-shadow:0 1px 2px #000,0 0 3px #000;background:linear-gradient(90deg,#0d140d8c,#0d140d33);border-left:2px solid #8d784c99;border-radius:3px;padding:6px 8px;max-width:calc(100% - 12px)}
+ .quest-tracker{position:absolute;z-index:7;box-sizing:border-box;overflow:hidden;pointer-events:auto;scrollbar-width:thin;scrollbar-color:#8d784c #151c1600;color:#e6dcc3;font:12px/1.35 system-ui;text-shadow:0 1px 2px #000,0 0 3px #000;background:linear-gradient(90deg,#0d140d8c,#0d140d33);border-left:2px solid #8d784c99;border-radius:3px;padding:0;max-width:calc(100% - 12px)}
+ .quest-tracker[hidden],.qt-drawer-content[hidden]{display:none!important}
+ .quest-tracker .qt-drawer-toggle{display:block;width:100%;min-height:38px;padding:8px 12px;text-align:left;cursor:pointer;border:1px solid #8d784c99;border-radius:3px;background:linear-gradient(#242b20ee,#101a13ee);color:#ebd599;font:600 13px/1.4 system-ui;letter-spacing:1px;touch-action:manipulation}
+ .qt-drawer-toggle:focus-visible{outline:2px solid #edce7c;outline-offset:-3px}
+ .qt-drawer-content{padding:8px;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;scrollbar-width:thin;scrollbar-color:#8d784c #151c16}
  .quest-tracker h3{margin:0 0 4px;font-size:12.5px;color:#ebd599;letter-spacing:1px}
  .quest-tracker section+section{margin-top:8px}
  .quest-tracker .qt-item{display:block;width:100%;text-align:left;margin:0 0 5px;padding:0;background:none;border:0;color:inherit;font:inherit;cursor:pointer}
@@ -34,14 +42,16 @@ const QuestTracker=(()=>{
   const chat=['.oh-msg','.qh-chat','.reference-messages'].map(s=>game.querySelector(s)?.getBoundingClientRect()).find(r=>r?.height>0);
   let top=Math.max(8,(hud?.bottom??g.top+110)-g.top+14);if(party&&!party.hidden){const p=party.getBoundingClientRect();top=p.bottom-g.top+8;}
   const bottom=chat&&chat.top>g.top+top+60?chat.top-g.top-10:g.height-110,left=Math.max(6,(hud?.left??g.left+8)-g.left);
-  root.style.left=left+'px';root.style.top=top+'px';root.style.maxHeight=Math.max(60,bottom-top)+'px';root.style.width=Math.min(230,Math.max(150,g.width*.38))+'px';
+  root.style.left=left+'px';root.style.top=top+'px';root.style.maxHeight=Math.max(60,bottom-top)+'px';root.style.width=(expanded?Math.min(230,Math.max(150,g.width*.38)):96)+'px';content.style.maxHeight=Math.max(48,bottom-top-42)+'px';
  }
  let sig='';
  function tick(){
-  if(window.gameFlowState!=='playing'){root.hidden=true;sig='';return;}
+  if(window.gameFlowState!=='playing'){root.hidden=true;sig='';owner=null;expanded=false;return;}
+  if(owner!==window.activeCharacterId){owner=window.activeCharacterId;setExpanded(false);}
   const daily=dailyQuests(),lv=levelQuests(),merc=mercQuest(),key=JSON.stringify([daily.map(q=>[q.name,q.lines]),lv.map(q=>[q.name,q.lines]),merc.map(q=>[q.name,q.lines])]);
   root.hidden=!daily.length&&!lv.length&&!merc.length;if(root.hidden)return;position();if(key===sig)return;sig=key;
-  const scroll=root.scrollTop,parts=[];if(daily.length){const t=window.DailyQuests.list(),done=t.filter(x=>x.done).length;parts.push(section('每日任務（'+done+'/'+t.length+'）'+(window.DailyQuests.chest?' ✔獎勵箱':''),daily));}if(lv.length)parts.push(section('等級任務',lv));if(merc.length)parts.push(section('傭兵任務',merc));root.replaceChildren(...parts);root.scrollTop=scroll;
+  const scroll=content.scrollTop,parts=[];if(daily.length){const t=window.DailyQuests.list(),done=t.filter(x=>x.done).length;parts.push(section('每日任務（'+done+'/'+t.length+'）'+(window.DailyQuests.chest?' ✔獎勵箱':''),daily));}if(lv.length)parts.push(section('等級任務',lv));if(merc.length)parts.push(section('傭兵任務',merc));content.replaceChildren(...parts);content.scrollTop=scroll;
  }
+ setExpanded(false);new ResizeObserver(()=>{if(!root.hidden)position();}).observe(game);
  setInterval(tick,1000);return {refresh:tick};
 })();window.QuestTracker=QuestTracker;

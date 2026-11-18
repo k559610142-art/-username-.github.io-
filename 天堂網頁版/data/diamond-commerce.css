@@ -31,3 +31,22 @@
 
 /* 2026-11-17 娃娃扭蛋機主圖：敲金蛋（使用者提供），裁掉原圖上方黑邊 */
 .dc-wuhun-art img[src*="dolls/gacha-art"]{aspect-ratio:1111/690;object-fit:cover;object-position:50% 100%}
+
+/* 造型一番賞：使用指定原圖，完整顯示人物與寶箱。 */
+.dc-crystal.dc-style-art{flex:0 0 40%;min-width:0;font-size:0;line-height:0;text-shadow:none}
+.dc-style-art img{display:block;width:100%;height:auto;border:1px solid #806039;border-radius:6px;box-sizing:border-box}
+@media(max-width:700px){.dc-gacha:has(.dc-style-art){flex-direction:column;align-items:stretch}.dc-crystal.dc-style-art{flex:none;width:100%;max-width:440px;margin:0 auto}}
+
+/* 變身卡結果覆蓋片尾金框內的問號；尺寸跟隨實際影片畫面。 */
+.dc-framed-result{bottom:auto;transform:none;box-sizing:border-box;border:0;border-radius:2px;background:linear-gradient(#241909,#110d08);box-shadow:inset 0 0 22px #a7793044;container-type:inline-size;padding:8px;gap:6px;animation:none}
+.dc-framed-result .dc-summon-title{font-size:4cqw;letter-spacing:1cqw;line-height:1.2;flex:none}
+.dc-framed-result .dc-summon-cards{flex:1;min-height:0;align-items:stretch;gap:1.5cqw}
+.dc-framed-result .dc-summon-cards.many{grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:1.5cqw}
+.dc-framed-result .dc-wuhun-card{box-sizing:border-box;min-width:0;min-height:0;padding:1cqw;gap:.6cqw;justify-content:center;overflow:hidden}
+.dc-framed-result .dc-wuhun-card img{width:32cqw;height:36cqw;max-width:100%;object-fit:contain}
+.dc-framed-result .many .dc-wuhun-card img{width:100%;height:14cqw;object-fit:contain}
+.dc-framed-result .dc-wuhun-tier{font-size:3cqw;line-height:1.1}.dc-framed-result .dc-wuhun-name{font-size:3.5cqw;line-height:1.15;overflow-wrap:anywhere}
+.dc-framed-result .many .dc-wuhun-tier{font-size:2.3cqw}.dc-framed-result .many .dc-wuhun-name{font-size:2.5cqw}
+.dc-framed-result .dc-summon-ok{min-width:60px;min-height:44px;padding:1cqw 6cqw;font-size:3.5cqw;line-height:1.2;flex:none}
+
+@media(max-width:700px) and (orientation:portrait){.dc-style-summon{overflow:hidden}.dc-style-summon video{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(256vw,calc(76dvh * 16 / 9));max-width:none;height:auto;max-height:none}}

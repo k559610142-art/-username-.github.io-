@@ -35,18 +35,23 @@ const DiamondCommerce=(()=>{
  const DOLL_COLOR={一般:'#cfc8b8',高級:'#8fd18b',稀有:'#6fb6ff',英雄:'#c18cff',傳說:'#ffb347',神話:'#ff6b6b',超越:'#ffe066'};
  function wuhunInfo(id){const w=typeof wuhunData!=='undefined'?wuhunData.find(x=>x.id===id):null,item=INTERFACE_CATALOG.items.find(i=>i.kind==='etcitem'&&i.id===id);return {name:w?.name||item?.name||('武魂 '+id),icon:item?.icon||w?.img||''};}
  function dollInfo(id){const d=typeof gameCatalogData!=='undefined'?gameCatalogData.dolls.find(x=>x.id===id):null,item=INTERFACE_CATALOG.items.find(i=>i.kind==='etcitem'&&i.id===id);return {name:d?.name||item?.name||('魔法娃娃 '+id),icon:(d&&window.TdjSystems?.dolls?.image(d))||item?.icon||''};}
+ const STYLE_GRADES=['','一般','高級','稀有','英雄','傳說','神話','超越','唯一'];
+ function styleInfo(name){const card=window.TransformCards?.book.find(c=>c.n===name);return {name:card?.dn||card?.n||name,icon:card?.p?TransformCards.portrait(card):''};}
+ function styleData(){const cards=window.TransformCards?.book||[],weights=window.TransformCards?.gradeWeights||{};return {free:true,prices:{1:0,10:0},tiers:Object.entries(weights).map(([g,rate])=>({tier:STYLE_GRADES[+g],rate,ids:cards.filter(c=>c.g===+g&&!c.unavailable).map(c=>c.n)})).filter(t=>t.ids.length)};}
  const GACHA={
+  style:{data:styleData,hold:true,video:'assets/interface/style-gacha-summon.mp4?v=1',frame:[445,198,392,335],title:'造型一番賞',noun:'變身卡',desc:'抽取變身卡，沿用變身卡冊獎池與機率。單抽、十抽目前免費；十抽無額外保底。',art:'assets/interface/style-gacha-art.png?v=1',colors:{...DOLL_COLOR,唯一:'#fff2bf'},info:styleInfo,short:n=>n,rateName:n=>n,announce:['神話','超越','唯一']},
   wuhun:{data:()=>window.WUHUN_GACHA,route:'/api/gacha/wuhun',hold:true,title:'武魂扭蛋機',noun:'武魂',desc:'召喚上品到四神獸共 42 種武魂。十連保底至少 1 個極品以上。',art:'assets/interface/wuhun/gacha-art.jpg?v=1',colors:TIER_COLOR,info:wuhunInfo,short:n=>n.replace(/^[^-]*-/,''),rateName:n=>n.replace(/^[^-]*-/,'').replace(/武魂$/,''),announce:['上古','四神獸']},
   doll:{data:()=>window.DOLL_GACHA,route:'/api/gacha/doll',video:'assets/interface/dolls/gacha-summon.mp4?v=1',hold:true,title:'魔法娃娃扭蛋機',noun:'魔法娃娃',desc:'召喚 89 種魔法娃娃（一般～超越）。十連保底至少 1 隻高級以上。',art:'assets/interface/dolls/gacha-art.webp?v=1',colors:DOLL_COLOR,info:dollInfo,short:n=>n,rateName:n=>n.replace(/^.*：/,''),announce:['神話','超越']}
  };
- const gachaState={wuhun:{results:null,rates:false},doll:{results:null,rates:false}};
+ const gachaState={style:{results:null,rates:false},wuhun:{results:null,rates:false},doll:{results:null,rates:false}};
  function gachaView(body,kind){
   const cfg=GACHA[kind],st=gachaState[kind],G=cfg.data(),online=!!window.LocalServerClient?.online,box=el('div','dc-gacha'),art=el('div',cfg.art?'dc-crystal dc-wuhun-art':'dc-crystal',cfg.art?'':'✦'),detail=el('div','dc-gacha-detail');art.setAttribute('aria-hidden','true');
   if(!G){body.append(el('div','dc-empty',cfg.title+'資料載入失敗'));return;}
+  if(kind==='style'){art.classList.add('dc-style-art');art.classList.remove('dc-wuhun-art');}
   if(cfg.art){const pic=el('img');pic.src=cfg.art;pic.alt='';art.append(pic);}
   detail.append(el('h2','',cfg.title),el('p','',cfg.desc));
   if(!online&&!G.free)detail.append(el('p','dc-muted',cfg.title+'使用伺服器保管的鑽石，請登入本機多人伺服器後召喚。'));
-  if(G.free)detail.append(el('p','dc-muted','目前免費召喚；抽到的'+cfg.noun+'放進背包，雙擊即可收進圖鑑。'));
+  if(G.free)detail.append(el('p','dc-muted',kind==='style'?'目前免費召喚；抽到的變身卡直接加入變身卡冊。':'目前免費召喚；抽到的'+cfg.noun+'放進背包，雙擊即可收進圖鑑。'));
   detail.append(button(st.rates?'收起獎池與機率':'查看獎池與機率',()=>{st.rates=!st.rates;render();}));
   const actions=el('div','dc-draw-actions');
   for(const count of [1,10]){const b=button((count===1?'單抽':'十連')+(G.free?' 免費':' 💎'+G.prices[count].toLocaleString()+(count===10?'（九折）':'')),()=>drawGacha(kind,count));b.disabled=busy||(!online&&!G.free)||balance()<G.prices[count];actions.append(b);}
@@ -71,23 +76,25 @@ const DiamondCommerce=(()=>{
  function resultOverlay({box,close},cfg,results){const pane=el('div','dc-summon-result'),grid=el('div','dc-summon-cards'+(results.length>1?' many':''));
   results.forEach((r,i)=>{const info=cfg.info(r.id),card=el('div','dc-wuhun-card'),img=el('img');img.alt='';if(info.icon)img.src=info.icon;const tier=el('span','dc-wuhun-tier',r.tier);tier.style.color=cfg.colors[r.tier]||'';card.style.borderColor=cfg.colors[r.tier]||'';card.style.setProperty('--glow',cfg.colors[r.tier]||'#c9a45a');card.style.animationDelay=(i*.12)+'s';card.append(img,tier,el('span','dc-wuhun-name',cfg.short(info.name)));grid.append(card);});
   const ok=el('button','dc-summon-ok','確定');ok.type='button';let gone=false;const shut=()=>{if(gone)return;gone=true;document.removeEventListener('keydown',key,true);close();};const key=e=>{if(e.key==='Enter'||e.key==='Escape'){e.preventDefault();shut();}};ok.onclick=shut;document.addEventListener('keydown',key,true);
-  pane.append(el('div','dc-summon-title','召喚結果'),grid,ok);box.append(pane);}
- async function drawGacha(kind,count){if(busy)return;const cfg=GACHA[kind],st=gachaState[kind],G=cfg.data();busy=true;notice='';st.results=null;render();const film=summonVideo(cfg.video,cfg.hold); // 2026-11-17 娃娃扭蛋機用使用者給的另一支召喚影片
+  pane.append(el('div','dc-summon-title','召喚結果'),grid,ok);box.append(pane);
+  if(cfg.frame){box.classList.add('dc-style-summon');pane.classList.add('dc-framed-result');const video=box.querySelector('video');const layout=()=>{const b=box.getBoundingClientRect(),v=video.getBoundingClientRect(),scale=Math.min(v.width/1280,v.height/720),ox=v.left-b.left+(v.width-1280*scale)/2,oy=v.top-b.top+(v.height-720*scale)/2;const [x,y,w,h]=cfg.frame;Object.assign(pane.style,{left:(ox+x*scale)+'px',top:(oy+y*scale)+'px',width:w*scale+'px',height:h*scale+'px'});};const observer=new ResizeObserver(layout);observer.observe(video);const originalClose=close;close=()=>{observer.disconnect();originalClose();};layout();}
+ }
+ async function drawGacha(kind,count){if(busy||![1,10].includes(count)||window.gameFlowState!=='playing')return;const cfg=GACHA[kind],st=gachaState[kind],G=cfg.data();busy=true;notice='';st.results=null;render();const film=summonVideo(cfg.video,cfg.hold); // 2026-11-17 娃娃扭蛋機用使用者給的另一支召喚影片
   try{let results;
-   if(window.LocalServerClient?.online){results=(await LocalServerClient.act(cfg.route,{count})).results||[];}
+   if(kind==='style'){const drawn=TransformCards.draw(count);if(drawn.length!==count)throw new Error('變身卡抽取失敗。');results=drawn.map(card=>({id:card.n,tier:STYLE_GRADES[card.g]}));}
+   else if(window.LocalServerClient?.online){results=(await LocalServerClient.act(cfg.route,{count})).results||[];}
    else if(G.free){if(window.gameFlowState!=='playing'||!window.OwnedInventory)throw new Error('請先進入遊戲角色。');if(OwnedInventory.items.length+count>179)throw new Error('背包空間不足，請先整理背包。');
     const rolled=G.draw(count,Math.random);if(!OwnedInventory.reward(0,rolled.map(r=>({key:r.key,count:1}))))throw new Error('背包空間不足或無法放入，請先整理背包。');results=rolled.map(r=>({id:r.id,tier:r.tier}));}
    else throw new Error(cfg.title+'需要登入本機多人伺服器。');
    const shown=await film;st.results=results;if(shown)resultOverlay(shown,cfg,results);const rank=r=>G.tiers.findIndex(t=>t.tier===r.tier),best=results.reduce((a,b)=>rank(b)>rank(a)?b:a,results[0]);
-   notice='召喚完成！最高：'+best.tier+'－'+cfg.short(cfg.info(best.id).name)+'，'+cfg.noun+'已放進背包（雙擊收進圖鑑）。';
+   notice='召喚完成！最高：'+best.tier+'－'+cfg.short(cfg.info(best.id).name)+(kind==='style'?'，變身卡已加入卡冊。':'，'+cfg.noun+'已放進背包（雙擊收進圖鑑）。');
    if(cfg.announce.includes(best.tier))window.GameChat?.say('【全服】'+(window.activeCharacterName||'')+' 從'+cfg.title+'召喚出【'+cfg.info(best.id).name+'】！','drop');
   }catch(e){notice=e.message;document.querySelector('.dc-summon-skip')?.click();film.then(h=>h?.close());}finally{busy=false;}if(win)render();}
  function gacha(body){
   if(tab===0){gachaView(body,'doll');return;} // 2026-11-17 使用者：龍脈星晶改成魔法娃娃扭蛋機
   if(tab===1){wuhunGacha(body);return;}
   if(tab>=3){body.append(el('div','dc-empty',gachaTabs[tab]+'收藏尚無資料'));return;}
-  const box=el('div','dc-gacha'),art=el('div','dc-crystal','✦'),detail=el('div','dc-gacha-detail');art.setAttribute('aria-hidden','true');detail.append(el('h2','',gachaTabs[tab]),el('p','','凝聚龍脈星光的水晶，召喚時裝、髮型、寵物與稀有道具。'),el('p','dc-muted','獎池、各獎項機率與保底規則待設定；正式開放前不會扣除鑽石。'));
-  const rates=button('查看獎池與機率',()=>{notice='目前尚未設定正式獎池與機率。';render();});detail.append(rates);const actions=el('div','dc-draw-actions');for(const count of [1,10]){const b=button('召喚 '+count+' 次（鑽石價格待設定）',()=>{});b.disabled=true;actions.append(b);}detail.append(actions);box.append(art,detail);body.append(box);
+  gachaView(body,'style');
  }
  function exchange(body){
   if(level()<30){body.append(el('div','dc-empty','🔒 鑽石交易所於 30 等開放｜目前 '+level()+' 等'));return;}
