@@ -4,6 +4,22 @@
 const IslandMusic = (() => {
   const key = 'lineage-web-music', VOLUME = .35, FADE_MS = 900;
   const data = window.MUSIC_ZONES || { sys: {}, zones: {}, tracks: [0] };
+  // 2026-11-18 使用者：原版 music.def 沒列到的 12 張地圖補配音樂（照性質相近的地圖挑，不改產生檔 music-zones-data.js）
+  const EXTRA = {
+    3: [64],               // 甘特之屋：小型地監
+    16: [11],              // 哈汀研究所：跟象牙塔同屬魔法研究
+    17: [65, 66],          // 娜魯帕洞穴：洞穴類
+    62: [24],              // 伊娃神殿：跟伊娃王國同一首
+    70: [30],              // 遺忘之島：島嶼曲（同說話之島野外）
+    301: [36],             // 傲慢之塔地下水路：水道（同海底隧道）
+    305: [67, 68],         // 布魯迪卡洞穴：洞穴類
+    330: [58],             // 礦物洞穴：礦坑（同侏儒洞穴）
+    401: [44],             // 大洞穴隱遁者地區：同隱遁者村莊外圍
+    807: [65, 64, 66],     // 新版古魯丁地監：同古魯丁地下監獄
+    1700: [30],            // 忘卻島：島嶼曲
+    3301: [63, 64, 65, 66, 67, 68, 69] // 新傲慢之塔：同傲慢之塔
+  };
+  for (const [map, tracks] of Object.entries(EXTRA)) if (!data.zones[map]) data.zones[map] = [[tracks]];
   const CLASS_KEY = { '王族': 'Prince', '騎士': 'Knight', '妖精': 'Elf', '法師': 'Magician', '黑暗妖精': 'Darkelf', '龍騎士': 'DragonKnight', '幻術師': 'illusionist', '戰士': 'Knight' };
   const players = [new Audio(), new Audio()];
   for (const a of players) { a.preload = 'none'; a.volume = 0; a.addEventListener('ended', () => next(a)); }
