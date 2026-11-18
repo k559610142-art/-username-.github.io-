@@ -25,12 +25,17 @@ test('傭兵登記、雇用付費、公會抽成、點數發放、合約與點�
   assert.equal(char(boss).diamonds,10);assert.equal(char(merc).diamonds,32);assert.equal(char(merc).mercPoints,MERC.points(4));assert.equal(char(boss).mercContract.mode,'follow');assert.equal(char(boss).mercContract.level,40);
   assert.equal(db.prepare('SELECT hires FROM mercenaries').get().hires,1);
   r=await api('/api/merc/hire',{characterId:'boss',mercId:'merc',hours:1,mode:'follow'},boss.cookie);assert.equal(r.status,409,'合約進行中不能再雇');
+  // 2026-11-18：被雇用中，其他玩家公告板看不到、也不能雇；傭兵本人不能撤下
+  const other=await user('other',20,100);r=await api('/api/merc/board',{characterId:'other'},other.cookie);assert.equal(r.data.board.length,0,'雇用中不出現在公告板');
+  r=await api('/api/merc/hire',{characterId:'other',mercId:'merc',hours:1,mode:'follow'},other.cookie);assert.equal(r.status,409,'雇用中不能被別人雇');assert.equal(char(other).diamonds,100);
+  r=await api('/api/merc/board',{characterId:'merc'},merc.cookie);assert.ok(r.data.mine.busyUntil>Date.now());r=await api('/api/merc/withdraw',{characterId:'merc'},merc.cookie);assert.equal(r.status,409,'雇用中不能撤下');
   // 存檔不能改寫點數與合約
   const s=state(merc);s.characters[0].mercPoints=99999;s.characters[0].diamonds=99999;delete s.revision;
   r=await api('/api/state',{...s,revision:state(merc).revision||1},merc.cookie,'PUT');
   assert.equal(char(merc).mercPoints,MERC.points(4));assert.equal(char(merc).diamonds,32);
   // 解約後派任務；時間到才能領
   r=await api('/api/merc/dismiss',{characterId:'boss'},boss.cookie);assert.equal(r.status,200);assert.equal(char(boss).mercContract,null);
+  r=await api('/api/merc/board',{characterId:'other'},other.cookie);assert.equal(r.data.board.length,1,'解約後重新出現在公告板');
   patch(boss,c=>{c.diamonds=100;});
   r=await api('/api/merc/hire',{characterId:'boss',mercId:'merc',hours:1,mode:'mission',missionId:'hunt'},boss.cookie);assert.equal(r.status,200);
   r=await api('/api/merc/claim',{characterId:'boss'},boss.cookie);assert.equal(r.status,409,'任務未完成');

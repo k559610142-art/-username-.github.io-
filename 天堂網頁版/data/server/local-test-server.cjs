@@ -26,6 +26,8 @@ function createGameServer(options={}){
  CREATE TABLE IF NOT EXISTS friends(user_id INTEGER NOT NULL,character_id TEXT NOT NULL,target_id TEXT NOT NULL,UNIQUE(character_id,target_id));
  CREATE TABLE IF NOT EXISTS mercenaries(character_id TEXT PRIMARY KEY,user_id INTEGER NOT NULL REFERENCES users(id),snapshot TEXT NOT NULL,price INTEGER NOT NULL,hires INTEGER NOT NULL DEFAULT 0,updated INTEGER NOT NULL);
  `);
+ // 2026-11-18 使用者：傭兵被雇用後，合約期間其他玩家看不到也不能雇（busy_until＝合約到期時間，hired_by＝雇主角色）
+ {const cols=db.prepare('PRAGMA table_info(mercenaries)').all().map(c=>c.name);if(!cols.includes('busy_until'))db.exec('ALTER TABLE mercenaries ADD COLUMN busy_until INTEGER NOT NULL DEFAULT 0');if(!cols.includes('hired_by'))db.exec('ALTER TABLE mercenaries ADD COLUMN hired_by TEXT');}
  if(!db.prepare('PRAGMA table_info(auctions)').all().some(c=>c.name==='currency'))db.exec("ALTER TABLE auctions ADD COLUMN currency TEXT NOT NULL DEFAULT 'adena'");
  const events=new Set(),presence=new Map(),attempts=new Map();
  const clone=value=>JSON.parse(JSON.stringify(value));
@@ -331,35 +333,35 @@ function createGameServer(options={}){
      }
      // ---- 傭兵團（2026-11-16）----
      if(route.startsWith('/api/merc/')){
-      const now=Date.now(),mercView=row=>({id:row.character_id,owner:row.user_id,price:row.price,hires:row.hires,updated:row.updated,...JSON.parse(row.snapshot)});
+      const now=Date.now(),mercView=row=>({id:row.character_id,owner:row.user_id,price:row.price,hires:row.hires,updated:row.updated,busyUntil:row.busy_until>now?row.busy_until:0,...JSON.parse(row.snapshot)});
       if(c.mercContract&&c.mercContract.until<=now&&c.mercContract.mode==='follow')c.mercContract=null;
       if(route==='/api/merc/board'){
        const mine=db.prepare('SELECT * FROM mercenaries WHERE character_id=?').get(c.id);
-       return {board:db.prepare('SELECT * FROM mercenaries WHERE user_id<>? ORDER BY updated DESC LIMIT 100').all(user.id).map(mercView),mine:mine?mercView(mine):null};
+       return {board:db.prepare('SELECT * FROM mercenaries WHERE user_id<>? AND busy_until<=? ORDER BY updated DESC LIMIT 100').all(user.id,now).map(mercView),mine:mine?mercView(mine):null};
       }
       if(route==='/api/merc/register'){
        const price=int(input.price,MERC.priceMin,MERC.priceMax),weapon=(c.inventory||[]).find(e=>e.slot==='weapon');
        const snap={name:c.name,role:c.role,gender:c.gender,level:int(c.level||1,1,100),maxHp:Number.isSafeInteger(c.maxHp)?c.maxHp:0,stats:c.stats,weapon:weapon?{key:weapon.key,enchant:weapon.enchant||0}:null};
        db.prepare('INSERT INTO mercenaries(character_id,user_id,snapshot,price,hires,updated) VALUES(?,?,?,?,0,?) ON CONFLICT(character_id) DO UPDATE SET snapshot=excluded.snapshot,price=excluded.price,updated=excluded.updated').run(c.id,user.id,JSON.stringify(snap),price,now);return {};
       }
-      if(route==='/api/merc/withdraw'){db.prepare('DELETE FROM mercenaries WHERE character_id=? AND user_id=?').run(c.id,user.id);return {};}
+      if(route==='/api/merc/withdraw'){const r=db.prepare('SELECT busy_until FROM mercenaries WHERE character_id=? AND user_id=?').get(c.id,user.id);if(r&&r.busy_until>now)fail(409,'傭兵正在被雇用中，合約結束後才能撤下。');db.prepare('DELETE FROM mercenaries WHERE character_id=? AND user_id=?').run(c.id,user.id);return {};}
       if(route==='/api/merc/hire'){
        const hours=int(input.hours,1,8);if(!MERC.hours.includes(hours))fail(400,'雇用時數不正確。');
        const mode=input.mode==='mission'?'mission':'follow',mission=mode==='mission'?MERC.missions.find(m=>m.id===input.missionId):null;if(mode==='mission'&&!mission)fail(400,'請選擇任務。');
        if(c.mercContract&&(c.mercContract.mode==='follow'?c.mercContract.until>now:!c.mercContract.claimed))fail(409,'你已經雇用了一名傭兵，請等合約結束或解約。');
-       const row=db.prepare('SELECT * FROM mercenaries WHERE character_id=?').get(text(input.mercId,80));if(!row)fail(409,'這名傭兵已經撤下。');if(row.user_id===user.id)fail(409,'不能雇用自己的角色。');
+       const row=db.prepare('SELECT * FROM mercenaries WHERE character_id=?').get(text(input.mercId,80));if(!row)fail(409,'這名傭兵已經撤下。');if(row.user_id===user.id)fail(409,'不能雇用自己的角色。');if(row.busy_until>now)fail(409,'這名傭兵已被其他玩家雇用，請選別的傭兵。');
        const owner=snapshot(row.user_id),oc=owner.characters.find(p=>p?.id===row.character_id);if(!oc){db.prepare('DELETE FROM mercenaries WHERE character_id=?').run(row.character_id);fail(409,'傭兵角色已不存在。');}
        const cost=int(row.price*hours),fee=Math.floor(cost*MERC.feeRate),balance=int(c.diamonds||0,0);if(balance<cost)fail(400,'鑽石不足，需要 '+cost+' 鑽石。');
        c.diamonds=balance-cost;oc.diamonds=int((oc.diamonds||0)+cost-fee,0);const points=MERC.points(hours);oc.mercPoints=int((oc.mercPoints||0)+points,0);
        const snap=JSON.parse(row.snapshot);c.mercContract={id:crypto.randomUUID(),mercId:row.character_id,...snap,mode,missionId:mission?.id||null,hours,cost,start:now,until:now+hours*3600000,claimed:false};
-       db.prepare('UPDATE mercenaries SET hires=hires+1 WHERE character_id=?').run(row.character_id);
+       db.prepare('UPDATE mercenaries SET hires=hires+1,busy_until=?,hired_by=? WHERE character_id=?').run(c.mercContract.until,c.id,row.character_id);
        save(user.id,state);save(row.user_id,owner);
        deliver(null,row.user_id,'傭兵團：'+oc.name+' 被雇用了',c.name+' 雇用了你的角色 '+oc.name+' '+hours+' 小時（'+(mode==='mission'?'任務：'+mission.name:'跟隨打怪')+'）。 收入 '+(cost-fee)+' 鑽石（公會手續費 '+fee+'），傭兵點數 +'+points+'。',[]);
        return {contract:c.mercContract};
       }
-      if(route==='/api/merc/dismiss'){if(!c.mercContract)fail(409,'目前沒有雇用傭兵。');c.mercContract=null;save(user.id,state);return {};}
+      if(route==='/api/merc/dismiss'){if(!c.mercContract)fail(409,'目前沒有雇用傭兵。');if(c.mercContract.mercId)db.prepare('UPDATE mercenaries SET busy_until=0,hired_by=NULL WHERE character_id=? AND hired_by=?').run(c.mercContract.mercId,c.id);c.mercContract=null;save(user.id,state);return {};}
       if(route==='/api/merc/claim'){
-       const k=c.mercContract;if(!k||k.mode!=='mission'||k.claimed)fail(409,'沒有可領取的任務。');if(k.until>now)fail(409,'任務尚未完成。');
+       const k=c.mercContract;if(!k||k.mode!=='mission'||k.claimed)fail(409,'沒有可領取的任務。');if(k.until>now)fail(409,'任務尚未完成。');if(k.mercId)db.prepare('UPDATE mercenaries SET busy_until=0,hired_by=NULL WHERE character_id=? AND hired_by=?').run(k.mercId,c.id);
        const reward=MERC.missionReward(k.level,k.hours,k.missionId);if(reward.gold)give(c,{key:'etcitem:40308',count:reward.gold});c.mercContract=null;save(user.id,state);return {reward};
       }
       if(route==='/api/merc/shop'){

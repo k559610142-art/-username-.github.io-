@@ -47,13 +47,13 @@ const Mercenary=(()=>{
   body.append(el('p','dc-muted','把目前角色的資料（職業、等級、HP、武器）上傳到傭兵公告板。被雇用時由 AI 操控你的角色分身，你不用在線；雇主付的鑽石（扣除 '+Math.round(R.feeRate*100)+'% 手續費）和公會發的傭兵點數會直接進你的角色，信件會通知你。'));
   const box=el('div','merc-register');
   box.append(el('p','merc-meta','目前角色：'+c.name+'｜'+c.role+'｜Lv.'+(window.activeCharacterLevel||c.level||1)));
-  if(mine)box.append(el('p','merc-meta','已登記：每小時 💎 '+mine.price+'｜等級 '+mine.level+'｜被雇用 '+mine.hires+' 次'));else if(board)box.append(el('p','merc-meta','尚未登記傭兵。'));
+  if(mine)box.append(el('p','merc-meta','已登記：每小時 💎 '+mine.price+'｜等級 '+mine.level+'｜被雇用 '+mine.hires+' 次'),...(mine.busyUntil?[el('p','merc-meta','目前被雇用中（合約到 '+new Date(mine.busyUntil).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})+'），期間不會出現在公告板，也不能撤下。')]:[]));else if(board)box.append(el('p','merc-meta','尚未登記傭兵。'));
   const price=el('input','merc-input');price.type='number';price.min=R.priceMin;price.max=R.priceMax;price.value=mine?.price||R.suggestPrice(window.activeCharacterLevel||1);price.setAttribute('aria-label','每小時鑽石價格');
   const row=el('label','merc-price-row');row.append('每小時價格 💎 ',price);box.append(row);
   box.append(el('p','merc-meta','傭兵點數：1 小時 +'+R.points(1)+'、2 小時 +'+R.points(2)+'、4 小時 +'+R.points(4)+'、8 小時 +'+R.points(8)));
   const up=button(mine?'更新資料與價格':'上傳成為傭兵',()=>{const p=Math.round(+price.value);if(!(p>=R.priceMin&&p<=R.priceMax)){notice='價格要在 '+R.priceMin+'～'+R.priceMax+' 鑽石之間。';render();return;}run('/api/merc/register',{price:p},'已上傳目前角色資料到傭兵公告板。',true);});
   up.disabled=busy;box.append(up);
-  if(mine){const off=button('撤下傭兵',()=>run('/api/merc/withdraw',{},'已從公告板撤下。',true));off.disabled=busy;box.append(off);}
+  if(mine){const off=button('撤下傭兵',()=>run('/api/merc/withdraw',{},'已從公告板撤下。',true));off.disabled=busy||!!mine.busyUntil;box.append(off);}
   body.append(box);
  }
  function contractView(body){
