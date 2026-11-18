@@ -196,6 +196,7 @@ const QuickSlots=(()=>{
    +'main.game.reference-game.qs-narrow:not(.orb-hud):not(.classic-hud) .quick-expanded-row[hidden]{display:none!important}'
    +'main.game.reference-game.qs-narrow:not(.orb-hud):not(.classic-hud) .quick-expanded-row>.combat-quick-slot{width:auto!important;min-width:0!important;height:auto!important;min-height:0!important;aspect-ratio:1}'
    +'main.game.reference-game.qs-narrow:not(.orb-hud):not(.classic-hud) .quick-slots .quick-expand-arrow{left:0!important;bottom:calc(100% + 4px)!important;width:44px!important;min-width:44px!important;height:24px!important;min-height:24px!important;font-size:18px!important;line-height:1!important}'
+   +'main.game.reference-game.qs-narrow:not(.orb-hud):not(.classic-hud)>.reference-messages{margin-top:8px!important}'
    +'main.game.reference-game.qs-narrow:not(.orb-hud):not(.classic-hud) .pt-quick{left:auto!important;right:calc(var(--safe-right,0px) + 60px)!important;bottom:calc(var(--safe-bottom,0px) + 118px)!important}';
    document.head.append(narrowStyle);
    const g=document.querySelector("main.game"),fit=()=>g.classList.toggle("qs-narrow",g.clientWidth>0&&g.clientWidth<=650);fit();

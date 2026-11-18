@@ -12,6 +12,13 @@
  const css=document.createElement('style');css.textContent=`
  .orb-hud-root{display:none}
  main.game.orb-hud.orb-hud.orb-hud .orb-hud-root{display:block;position:absolute;inset:0;pointer-events:none;z-index:6}
+ /* 2026-11-19 使用者：手機橫式快捷格太小（畫面矮、--ok 約 0.6，格子只剩 22px）→ 矮畫面（oh-compact）把快捷列放大到每格約 34px（--oqs 倍）；
+    中間位置不夠放兩顆水晶，HP／MP 左上角已經有，所以矮畫面隱藏水晶；隨身傳送移到拾取鈕左邊；放大倍數以不碰到左邊訊息框、右邊 AUTO 為上限 */
+ main.game.orb-hud.oh-compact .oh-orb{display:none!important}
+ main.game.orb-hud.orb-hud.orb-hud.oh-compact>.quick-slots,main.game.orb-hud.oh-compact .oh-bar{transform:scale(var(--oqs,1))!important;transform-origin:50% 100%!important}
+ main.game.orb-hud.oh-compact .oh-exp{transform:scale(var(--oqs,1))!important;transform-origin:50% calc(100% + ${k(68)})!important}
+ main.game.orb-hud.oh-compact .pt-quick{left:auto!important;right:calc(${k(92)} + 2px)!important;bottom:${k(180)}!important;width:46px!important;height:58px!important;font-size:10px!important;padding:0!important}
+ main.game.orb-hud.oh-compact .pt-quick img{width:34px!important;height:34px!important}
  .orb-hud-root>*{position:absolute;pointer-events:auto;box-sizing:border-box}
  main.game.orb-hud.orb-hud.orb-hud>.nav,main.game.orb-hud.orb-hud.orb-hud>.exp-track,main.game.orb-hud.orb-hud.orb-hud>.reference-messages{display:none!important}
  /* 訊息框 */
@@ -146,7 +153,8 @@
  function refresh(){if(!game.classList.contains('orb-hud')||window.gameFlowState!=='playing')return;refreshDef();setOrb(hpO,'hp',hp,maxHp);setOrb(mpO,'mp',mp,maxMp);const e=expPct();exp.style.setProperty('--fill',e+'%');exp.title='經驗 '+e.toFixed(2)+'%';labelSlots();placeMenu()}
  function layout(){const r=game.getBoundingClientRect(),on=style==='orb'&&r.width>=560&&r.width>r.height;game.classList.toggle('orb-hud',on);
   if(!on){const lock=document.querySelector('.bottom .actions>.reference-lock');lock?.style.removeProperty('top');lock?.style.removeProperty('bottom');const loc=document.querySelector('.location');loc?.style.removeProperty('top');loc?.style.removeProperty('right')}
-  if(on){game.classList.remove('classic-hud');game.style.setProperty('--ok',Math.max(.5,Math.min(r.height/572,r.width/1024,1.5)));refresh()}}
+  if(!on)game.classList.remove('oh-compact');
+  if(on){game.classList.remove('classic-hud');const ok=Math.max(.5,Math.min(r.height/572,r.width/1024,1.5)),c=r.width/2+10.5*ok,half=222.5*ok,msgR=4+Math.max(140,Math.min(300*ok,r.width/2-352*ok)),qs=Math.max(1,Math.min(1.6,34/(35.5*ok),(c-msgR-4)/half,(r.width-189*ok-6-c)/half));game.style.setProperty('--ok',ok);game.style.setProperty('--oqs',qs);game.classList.toggle('oh-compact',qs>1.05);refresh()}} // 矮畫面放大快捷列（--oqs）
  new ResizeObserver(layout).observe(game);addEventListener("resize",layout);
  const baseStats=stats;stats=function(...args){const out=baseStats.apply(this,args);refresh();return out};
  setInterval(refresh,1000);
