@@ -8,6 +8,7 @@
 //   戴召喚控制戒指時用 Summons.useLast 召喚上次手選的）。遊戲沒有的系統（寵物、夥伴、武器耐久、水中、中毒、木乃伊、經驗藥水效果）不做。
 //  2026-11-18 第 4 期（使用者「1～6 全做」）：自動吃食物（飽食度）、回村後回原地續掛（用瞬間移動卷軸傳回）、背包／負重快滿處理、
 //   掛機統計（統計分頁）、設定方案 3 組＋複製給同帳號其他角色（方案分頁）、名單「優先打」（island-combat.js 選目標時先找）。
+//  2026-11-18 第 5 期：危險迴避（附近有首領／其他玩家就瞬移）、自動召喚魔法娃娃（記住上次召喚的那隻；手動解除召喚就暫停）。
 //  設定存在角色存檔 assist 欄位（entry-flow.js saveActiveCharacter／enterSelectedCharacter）。
 const AssistSystem=(()=>{
  const el=(t,c,x)=>uiElement(t,c,x);
@@ -20,7 +21,7 @@ const AssistSystem=(()=>{
  // 2026-11-18 使用者：商店沒賣或職業不能用時（例如騎士的慎重藥水）也顯示該道具的圖，不要只有購物車
  const BUY_ICON={tp:'etcitem:40100',home:'etcitem:40081',heal:'etcitem:40010',haste:'etcitem:40018',brave:'etcitem:40014',wisdom:'etcitem:40016',blue:'etcitem:40015',arrow:'etcitem:40743'};
  const BUYS=[['tp','瞬間移動卷軸',10],['home','傳送回家的卷軸',5],['heal','補血道具（補給選的那種）',100],['haste','綠色藥水',5],['brave','勇敢藥水類',5],['wisdom','慎重藥水',5],['blue','藍色藥水',5],['arrow','箭（裝備弓時）',1000]];
- const base=()=>({noMobTp:false,noMobSec:10,potions:{haste:false,brave:false,wisdom:false,blue:false},attackOn:false,attackSkill:null,attackMp:30,buffs:[],list:{},escape:false,healFallback:false,morph:false,morphCard:null,morphLost:false,openOn:false,openSkill:null,openMp:50,aoeOn:false,aoeSkill:null,aoeRange:3,aoeCount:3,aoeMp:50,mindOn:false,mindHp:80,mindMp:40,summonOn:false,ringOn:false,expAuto:false,barrierScroll:false,eatOn:false,eatAt:30,eatPick:null,returnOn:false,returnHp:80,returnSpot:null,fullOn:false,fullWeight:80,fullSlots:10,fullAct:'home',presets:[null,null,null],pick:{haste:null,brave:null,wisdom:null,blue:null},buy:Object.fromEntries(BUYS.map(([k,,n])=>[k,{on:false,n}]))});
+ const base=()=>({noMobTp:false,noMobSec:10,potions:{haste:false,brave:false,wisdom:false,blue:false},attackOn:false,attackSkill:null,attackMp:30,buffs:[],list:{},escape:false,healFallback:false,morph:false,morphCard:null,morphLost:false,openOn:false,openSkill:null,openMp:50,aoeOn:false,aoeSkill:null,aoeRange:3,aoeCount:3,aoeMp:50,mindOn:false,mindHp:80,mindMp:40,summonOn:false,ringOn:false,expAuto:false,barrierScroll:false,eatOn:false,eatAt:30,eatPick:null,returnOn:false,returnHp:80,returnSpot:null,fullOn:false,fullWeight:80,fullSlots:10,fullAct:'home',presets:[null,null,null],dangerOn:false,dangerBoss:true,dangerPlayer:'red',dangerRange:8,dollOn:false,dollId:null,pick:{haste:null,brave:null,wisdom:null,blue:null},buy:Object.fromEntries(BUYS.map(([k,,n])=>[k,{on:false,n}]))});
  let state=base(),owner='',dialog=null,tab='hunt',idleSince=0,lastTp=0,retry=new Map(),escapes=[],lostMorph=null,seenMorph=null,lastOpen=null;
  const int=(v,lo,hi,d)=>Number.isInteger(v)?Math.max(lo,Math.min(hi,v)):d;
  function validate(v){const s=base();if(!v||typeof v!=='object')return s;
@@ -32,6 +33,8 @@ const AssistSystem=(()=>{
   s.returnHp=int(v.returnHp,10,100,80);const rs=v.returnSpot;s.returnSpot=rs&&Number.isInteger(rs.mapId)&&Number.isInteger(rs.x)&&Number.isInteger(rs.y)?{mapId:rs.mapId,x:rs.x,y:rs.y}:null;
   s.fullWeight=int(v.fullWeight,30,100,80);s.fullSlots=int(v.fullSlots,0,60,10);s.fullAct=v.fullAct==='stop'?'stop':'home';
   if(Array.isArray(v.presets))s.presets=[0,1,2].map(i=>{const p=v.presets[i];return p&&typeof p==='object'&&p.assist&&typeof p.assist==='object'?{name:typeof p.name==='string'?p.name.slice(0,20):'方案 '+(i+1),at:Number.isFinite(p.at)?p.at:0,assist:p.assist,autoPotion:p.autoPotion&&typeof p.autoPotion==='object'?p.autoPotion:null,range:Number.isInteger(p.range)?p.range:null}:null;});
+  s.dangerOn=v.dangerOn===true;s.dangerBoss=v.dangerBoss!==false;s.dangerPlayer=['off','red','all'].includes(v.dangerPlayer)?v.dangerPlayer:'red';s.dangerRange=int(v.dangerRange,3,20,8);
+  s.dollOn=v.dollOn===true;s.dollId=typeof v.dollId==='string'&&v.dollId.length<20?v.dollId:null;
   s.morphCard=typeof v.morphCard==='string'&&v.morphCard.length<80?v.morphCard:null;s.morphLost=v.morphLost===true; // 記憶的變身卡（2026-11-18）
   const skillOk=id=>Number.isInteger(id)&&playerSkillData.skills[id]?id:null;s.openSkill=skillOk(v.openSkill);s.aoeSkill=skillOk(v.aoeSkill);
   s.openMp=int(v.openMp,0,99,50);s.aoeRange=int(v.aoeRange,1,8,3);s.aoeCount=int(v.aoeCount,2,10,3);s.aoeMp=int(v.aoeMp,0,99,50);s.mindHp=int(v.mindHp,1,99,80);s.mindMp=int(v.mindMp,1,99,40);
@@ -108,7 +111,25 @@ const AssistSystem=(()=>{
    window.DungeonPortals?.settle?.();save({returnSpot:null});IslandCombat.resetAfterTeleport?.();IslandMonsters.playEffect?.(169,worldX,worldY,movementTime());
    idleSince=movementTime();setTimeout(()=>{if(!CharacterActions.dead)IslandCombat.begin('auto');},400);toast('已回到掛機地點，繼續 AUTO。');}).catch(()=>{returning=false;toast('回原地失敗，卷軸未消耗。');});
   return true;}
+ // ---- 第 5 期 ----
+ // 首領判斷和假人系統一樣（fake-players.js isBoss）：名字有 BOSS，或單隻生成且體力 1500 以上
+ const isBoss=m=>!m.spawn?.bot&&(/BOSS/i.test(m.spawn?.npc?.name||'')||(m.spawn?.count===1&&(m.spawn?.npc?.hp||0)>=1500));
+ const dangerOf=m=>m.hp>0&&(state.dangerBoss&&isBoss(m)?'首領 '+m.spawn.npc.name:m.spawn?.bot&&(state.dangerPlayer==='all'||state.dangerPlayer==='red'&&m.fp?.red)?'玩家 '+(m.spawn.npc?.name||m.fp?.name||''):'');
+ function danger(now,auto){if(!state.dangerOn||!auto||(retry.get('danger')||0)>now)return false;
+  let why='';for(const m of IslandMonsters.around(worldX,worldY,state.dangerRange)){why=dangerOf(m);if(why)break;}if(!why)return false;
+  retry.set('danger',now+2500);if(teleport()){toast('危險迴避：附近出現'+why+'，已瞬移。');return true;}say('危險迴避：附近出現'+why+'，但沒有瞬間移動卷軸或這裡不能瞬移。',now);return false;}
+ // 魔法娃娃：記住上次召喚的；沒有娃娃時自動召喚（材料不足就每分鐘再試）；自己按「解除召喚」就暫停，直到再手動召喚
+ let dollPaused=false;
+ if(window.TdjSystems?.dolls?.dismiss){const dis=TdjSystems.dolls.dismiss.bind(TdjSystems.dolls);TdjSystems.dolls.dismiss=function(...a){const r=dis(...a);if(r)dollPaused=true;return r;};}
+ const dollName=id=>{const d=typeof gameCatalogData!=='undefined'&&gameCatalogData.dolls?.find(x=>String(x.id)===String(id));return d?d.name.replace(/^.*：/,''):'娃娃 '+id;};
+ function autoDoll(now){const dolls=window.TdjSystems?.dolls;if(!dolls)return false;const cur=dolls.active;
+  if(cur){dollPaused=false;if(String(cur)!==state.dollId)save({dollId:String(cur)});return false;}
+  if(!state.dollOn||!state.dollId||dollPaused||(retry.get('doll')||0)>now)return false;retry.set('doll',now+60000);
+  if(!dolls.owned(state.dollId)){say('自動召喚：已經沒有'+dollName(state.dollId)+'。',now);return false;}
+  return dolls.summon(state.dollId);}
  function phase4(now,auto){
+  if(danger(now,auto))return true;
+  if(autoDoll(now))return true;
   // 自動吃食物：飽食度低於門檻
   if(state.eatOn&&window.Satiety&&(retry.get('eat')||0)<=now){const v=Satiety.value();if(v!==null&&v<state.eatAt){retry.set('eat',now+4000);const list=foods(),f=list.find(e=>e.key===state.eatPick)||list[0];
    if(f){if(OwnedInventory.use(f.uid))return true;}else say('飽食度偏低，但身上沒有食物。',now);}}
@@ -235,6 +256,12 @@ const AssistSystem=(()=>{
    row(ico(firstKey(e=>handler(e)==='teleport.GoHome_Reel')||product('home')?.key,'🏠'),'體力低於 '+ap.homeThreshold+'% 時回村','用回家卷軸（身上 '+home+' 張）',slider(ap.homeThreshold,1,99,v=>AutoPotion.configure({homeThreshold:v})&&void render(),'%','回村體力門檻'),switcher(ap.homeEnabled,on=>AutoPotion.configure({homeEnabled:on}),'低血回村')),
    row(ico(firstKey(e=>handler(e)==='teleport.Move_Reel')||product('tp')?.key,'🏃'),'撐不住先瞬移，3 次就回村','體力低於回村門檻時先用瞬間移動卷軸；一分鐘內逃到第 3 次才用回家卷軸（要開上面的回村）',switcher(state.escape,on=>save({escape:on}),'撐不住先瞬移'))));
   const rs=state.returnSpot,cancel=el('button','act','取消');cancel.type='button';cancel.onclick=()=>{save({returnSpot:null});render();};
+  {const pl=el('select');pl.setAttribute('aria-label','其他玩家靠近時');pl.append(new Option('不管玩家','off',false,state.dangerPlayer==='off'),new Option('紅名玩家','red',false,state.dangerPlayer==='red'),new Option('所有玩家','all',false,state.dangerPlayer==='all'));pl.onchange=()=>save({dangerPlayer:pl.value});
+   p.append(head('危險迴避'),group(
+    row(ico(firstKey(e=>handler(e)==='teleport.Move_Reel')||product('tp')?.key,'⚠️'),'附近有危險就瞬移','AUTO 中 '+state.dangerRange+' 格內出現首領或其他玩家時，用瞬間移動卷軸離開（要打首領時請先關掉）',switcher(state.dangerOn,on=>save({dangerOn:on}),'危險迴避')),
+    row('👹','首領靠近','名字有 BOSS，或單隻出現、體力 1500 以上的怪',switcher(state.dangerBoss,on=>save({dangerBoss:on}),'首領靠近就瞬移')),
+    row('🧍','其他玩家靠近',null,pl),
+    row('📏','範圍 '+state.dangerRange+' 格',null,slider(state.dangerRange,3,20,v=>save({dangerRange:v})&&void render(),' 格','危險迴避範圍'))));}
   p.append(head('回村後回原地'),group(
    row(ico(firstKey(e=>handler(e)==='teleport.Move_Reel')||product('tp')?.key,'↩️'),'回村補給後自動回原地續掛','AUTO 中因低血用回家卷軸回村時記住地點；在村裡體力回到 '+state.returnHp+'% 就用 1 張瞬間移動卷軸傳回去，自動開 AUTO',switcher(state.returnOn,on=>save({returnOn:on,...(on?{}:{returnSpot:null})})&&void render(),'回村後回原地')),
    row('❤️','體力回到 '+state.returnHp+'% 才回去',null,slider(state.returnHp,10,100,v=>save({returnHp:v})&&void render(),'%','回原地體力門檻')),
@@ -304,6 +331,8 @@ const AssistSystem=(()=>{
   return p;}
 
  function summonPage(){const p=el('div'),id=summonSkill(),last=Summons.lastName,list=Summons.list;
+  {const cur=window.TdjSystems?.dolls?.active,mem=state.dollId;
+   p.append(head('魔法娃娃'),group(row('🧸','沒有娃娃時自動召喚','記住的娃娃：'+(mem?dollName(mem):'（還沒有，召喚一次就會記住）')+'。'+(cur?'目前召喚：'+dollName(cur)+'。':'目前沒有召喚。')+(dollPaused?'（你手動解除了召喚，暫停到下次手動召喚）':'')+'需要材料的娃娃，材料不足時每分鐘再試一次',switcher(state.dollOn,on=>save({dollOn:on}),'自動召喚魔法娃娃'))));}
   p.append(head('自動召喚'),group(
    row(sico(id,job==='妖精'?154:51),'沒有召喚物時自動施放',id?playerSkillData.skills[id].name+' · 掛機（AUTO）時身邊沒有召喚物就施放':'還沒學會召喚術／召喚屬性精靈',switcher(state.summonOn,on=>id||!on?save({summonOn:on}):(toast('還沒學會召喚魔法。'),false),'自動召喚')),
    row(ico('armor:20284','💍'),'戴召喚控制戒指時召喚上次手選的',last?'上次手選：'+last:'先手動用一次召喚控制戒指選單選怪物',switcher(state.ringOn,on=>save({ringOn:on}),'召喚控制戒指自動召喚'))));
