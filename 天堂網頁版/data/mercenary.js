@@ -110,11 +110,16 @@ const Mercenary=(()=>{
  // ---- 跟隨型傭兵：照合約生成／維持／到期離開 ----
  function landing(){for(let i=0;i<40;i++){const r=2+Math.floor(Math.random()*3),a=Math.random()*Math.PI*2,x=Math.round(worldX+Math.cos(a)*r),y=Math.round(worldY+Math.sin(a)*r);if(TeleportScrolls.canLand(x,y)&&!IslandMonsters.occupied(x,y))return [x,y];}return null;}
  function release(text){if(!bot)return;window.NpcSocial?.dismiss(bot);IslandMonsters.removeAlly(bot);bot=null;if(text)window.GameChat?.say(text,'system');}
+ // 2026-11-18 使用者：合約到期通知雇主（跳提示＋系統訊息）；每份合約只通知一次（記在瀏覽器），離線期間到期的話下次上線通知
+ function notifyExpired(){const k=contract();if(!k?.id||k.until>Date.now()||k.claimed)return;const key='lineage-merc-notified:'+k.id;try{if(localStorage.getItem(key))return;localStorage.setItem(key,'1');}catch{}
+  const text=k.mode==='mission'?'傭兵任務完成：'+k.name+' 的「'+(R.missions.find(m=>m.id===k.missionId)?.name||'任務')+'」，請到 傭兵團 → 我的傭兵 領取獎勵。':'傭兵合約到期：'+k.name+' 向你道別後離開了，可以到傭兵團雇用新的傭兵。';
+  if(typeof toast==='function')toast(text);window.GameChat?.say(text,'system');}
  function tick(){
   if(win&&(tab===2||tab===4&&contract()?.mode==='mission'))render();
+  if(window.gameFlowState==='playing')notifyExpired();
   if(window.gameFlowState!=='playing'||!window.FakePlayers?.hireBot||!window.NpcSocial?.adopt){bot=null;return;}
   const k=contract();
-  if(!k||k.mode!=='follow'||k.until<=Date.now()){if(bot&&bot.fp?.merc)release(k&&k.mode==='follow'?'傭兵 '+bot.spawn.npc.name+' 的合約到期，向你道別後離開了。':null);return;}
+  if(!k||k.mode!=='follow'||k.until<=Date.now()){if(bot&&bot.fp?.merc)release(null);return;}
   if(bot&&(bot.fp?.merc!==k.id||!IslandMonsters.botList.includes(bot)))bot=null;
   if(!bot){bot=IslandMonsters.botList.find(b=>b.fp?.merc===k.id)||null;
    if(!bot){const spot=landing();if(!spot)return;bot=FakePlayers.hireBot(k,spot[0],spot[1]);if(!bot)return;IslandMonsters.playEffect(169,bot.x,bot.y,movementTime());window.GameChat?.say('傭兵 '+k.name+' 報到，接下來 '+fmtTime(k.until-Date.now())+'跟著你行動。','system');}}
