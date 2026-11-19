@@ -3,11 +3,11 @@
 //  所以帳號／密碼改成看得見的輸入框疊在影片畫的欄位上；按鈕仍是透明熱區疊在影片畫好的按鈕上。以下舊版說明保留參考：
 //  影片播一次停在最後一格；約第 8.3～9.2 秒影片本身會淡入標題與畫好的帳號／密碼欄、註冊／登入／忘記密碼按鈕，
 //  這裡把遊戲真正的輸入框與按鈕（透明）疊到影片畫的位置上。座標以影片 1280×720 為準，依 object-fit:cover 換算。
-//  直式手機畫面會把影片裡的登入框裁掉，所以直式時停在第 5.5 秒（還沒出現畫好的介面）並沿用原本的登入卡。
+//  直式手機畫面會把影片裡的登入框裁掉，所以直式時停在第 7 秒（還沒出現畫好的介面）並沿用原本的登入卡。
 (()=>{
  const video=document.querySelector('.login-video'),stage=document.querySelector('.login-stage'),form=document.querySelector('#login-form'),message=document.querySelector('#login-message');
  if(!video||!stage||!form)return;
- const VW=1280,VH=720,SHOW_AT=8.0,PORTRAIT_STOP=5.5;
+ const VW=1280,VH=720,SHOW_AT=8.0,PORTRAIT_STOP=7;
  // 影片裡畫好的元件位置（1280×720 座標，量自最後一格）
  const SPOT={account:[509,285,344,50],password:[509,355,344,51],accountEye:[812,295,34,30],passwordEye:[812,365,34,30],register:[418,445,123,44],login:[553,445,174,44],forgotBox:[738,445,123,44],message:[390,496,500,26]}; // 新影片最後一格量的（2026-11-17）
  // 將影片內建的面板移到角色下半身，輸入框與按鈕使用相同座標轉換。
@@ -20,7 +20,7 @@
  function paintPanel(){if(!cleanReady||!panelImage.complete||!panelImage.naturalWidth)return;const ctx=panelCanvas.getContext('2d');ctx.clearRect(0,0,VW,VH);ctx.drawImage(cleanCanvas,0,0);ctx.drawImage(panelImage,MOVED.x,MOVED.y,PANEL.w*MOVED.scale,PANEL.h*MOVED.scale);}
  cleanImage.onload=()=>{cleanCanvas.getContext('2d').drawImage(cleanImage,0,0,VW,VH);cleanReady=true;paintPanel();if(failed&&!portrait())enter();};
  panelImage.onload=()=>{paintPanel();if(failed&&cleanReady&&!portrait())enter();};
- const portrait=()=>{const r=stage.getBoundingClientRect();return r.height>r.width||r.height<500;}; // 2026-11-18：手機橫式（高度不到 500）也改用簡易登入卡，影片裡畫的登入框太小、iPhone 點輸入框會自動放大
+ const portrait=()=>{const r=stage.getBoundingClientRect();return r.height>r.width||r.height<=500;}; // 與 CSS 一致，橫式高度 500px 以下也用簡易登入卡
  const hot=(cls,label,fn)=>{const b=document.createElement('button');b.type='button';b.className='login-hot '+cls;b.setAttribute('aria-label',label);b.onclick=fn;return b;};
  const place=(node,[x,y,w,h])=>{Object.assign(node.style,{left:x+'px',top:y+'px',width:w+'px',height:h+'px'});};
  let ready=false,failed=false;
@@ -61,21 +61,27 @@
  for(const ev of ['pointerdown','pointerup','touchend','click','keydown'])document.addEventListener(ev,firstGesture,{passive:true,capture:true});
  document.addEventListener('visibilitychange',syncSound);setInterval(syncSound,500);
  video.muted=true;
+ // 簡易登入卡使用閃光消退後的畫格，切換尺寸或掉幀時也回到同一位置。
+ function parkFallbackVideo(){
+  video.pause();
+  if(video.currentTime>PORTRAIT_STOP)video.currentTime=PORTRAIT_STOP;
+  fallback(true);
+ }
  // 有些瀏覽器（互動分數高）允許有聲自動播放：先試一次，成功就跟影片同步開始
  bgm.play().then(()=>{wantSound=true;bgm.currentTime=video.currentTime;}).catch(()=>{});
  video.addEventListener('timeupdate',()=>{
   if(video.currentTime>=SHOW_AT)paintPanel();
-  if(portrait()){if(video.currentTime>=PORTRAIT_STOP){if(!video.paused)video.pause();fallback(true);}if(ready)leave();return;}
+  if(portrait()){if(ready)leave();if(video.currentTime>=PORTRAIT_STOP)parkFallbackVideo();return;}
   if(video.currentTime>=SHOW_AT)enter();
  });
- video.addEventListener('ended',()=>{if(!portrait()){enter();paintPanel();}});
+ video.addEventListener('ended',()=>{if(portrait())parkFallbackVideo();else{enter();paintPanel();}});
  video.addEventListener('loadeddata',()=>stage.classList.add('login-video-ready'));
  video.addEventListener('error',()=>{failed=true;leave();fallback(true);if(cleanReady&&panelImage.naturalWidth&&!portrait())enter();});
  setTimeout(()=>{if(!ready&&(failed||video.readyState<3||video.currentTime<.2)){fallback(true);if(cleanReady&&panelImage.naturalWidth&&!portrait())enter();}},1800); // 網路太慢 20 秒還沒播到登入框，先給簡易登入卡
  // 已經播完（例如登出回到登入畫面）就直接停在最後一格；直式↔橫式切換時重新判斷
- addEventListener('resize',()=>{if(portrait()){if(ready)leave();fallback(true);if(!failed&&video.currentTime>7.2)video.currentTime=7;return;}
+ addEventListener('resize',()=>{if(portrait()){if(ready)leave();if(!failed&&video.currentTime>=PORTRAIT_STOP)parkFallbackVideo();else fallback(true);return;}
   // 轉回橫式：拿掉簡易登入卡，直式時停住的影片繼續播到畫好的登入框
-  if(!failed){fallback(false);if(video.paused&&!video.ended&&video.currentTime<SHOW_AT&&!document.querySelector('#login-screen')?.hidden)video.play().catch(()=>{});}
+  if(!failed){fallback(false);if(video.paused&&!video.ended&&video.currentTime<SHOW_AT&&onLogin())video.play().catch(()=>{});}
    if(video.ended||video.currentTime>=SHOW_AT)enter();layout();});
  // 頁面載完（CSS 就位）再判斷一次直／橫式，避免載入途中誤判成直式而把影片停住
  addEventListener('DOMContentLoaded',()=>dispatchEvent(new Event('resize')));

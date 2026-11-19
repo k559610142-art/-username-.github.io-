@@ -112,6 +112,8 @@ const IslandCombat=(()=>{
       if(pending.landed&&(!pending.mob.spawn.bot||window.FakePlayers?.canAttack(pending.mob))){IslandMonsters.damage(pending.mob,pending.damage);if(pending.offhand)followUp={mob:pending.mob,damage:pending.offhand,at:movementTime()+180};}
       else if(!pending.landed&&pending.mob.hp){pending.mob.rangedMissUntil=movementTime()+650;if(!pending.mob.spawn.bot)window.IslandNpcAi?.provoke(pending.mob,[]);}
       pending=null;
+      // 2026-11-19 手機：擊殺結算（經驗、掉寶、存檔、介面）和「找下一隻怪」擠在同一格會頓一下，找怪延到下一個節拍（0.1 秒）
+      if(!target?.hp&&mode==='auto')return;
     }
     if(mode&&!TransformCards.canAttack()){stop();return;}
     if(!mode||pending||characterMovementBlocked())return;

@@ -332,7 +332,7 @@ const IslandMonsters = (() => {
     if(hit?.mob?.spawn.bot&&hit.mob.fp?.stall){lastTap=null;window.FakePlayers?.openStall(hit.mob);return true;}
     const next=hit?.mob?.spawn.ally||hit?.mob?.spawn.bot&&!window.FakePlayers?.canAttack(hit.mob)?null:hit?.mob||null;
     // 強制攻擊開啟：點到的目標（含 NPC、守衛）直接攻擊。
-    if(next&&window.ForceAttack?.on){lastTap=null;if(next!==selected){selected=next;draw(getRenderedSceneView(),movementTime());}return 'attack';}
+    if(next&&window.ForceAttack?.on){lastTap=null;if(next!==selected){selected=next;redrawSoon();}return 'attack';}
     if(next?.spawn.resident){
       selected=null;
       lastTap=null;
@@ -344,14 +344,17 @@ const IslandMonsters = (() => {
       lastTap=null;return 'attack';
     }
     lastTap=next?{mob:next,time:now}:null;
-    if(next!==selected){selected=next;draw(getRenderedSceneView(),now);}
+    if(next!==selected){selected=next;redrawSoon();}
     return !!hit;
   }
   function nearest(range,eligible=()=>true){
     return mobs.filter(m=>(m.spawn.mapId||0)===(window.activeMapId||0)&&m.hp&&!m.spawn.resident&&!m.spawn.ally&&!m.spawn.bot&&!town(m.spawn.npc.gfx)&&Math.max(Math.abs(m.x-worldX),Math.abs(m.y-worldY))<=range&&eligible(m))
       .sort((a,b)=>Math.hypot(a.x-worldX,a.y-worldY)-Math.hypot(b.x-worldX,b.y-worldY))[0];
   }
-  function setTarget(mob){selected=mob;draw(getRenderedSceneView(),movementTime());}
+  // 2026-11-19 iPhone 地監打怪每隔幾秒頓 70～100ms：打中／擊殺／換目標時原本「立刻」整層重畫怪物（含牆壁遮擋），
+  //  同一格畫面內等於多畫 2～3 次。改成交給下一格畫面：沒在走時 monsterFrame 每格都會畫，走路中由場景排程一起畫。
+  function redrawSoon(){if(typeof movementAnimating==='function'&&movementAnimating()&&typeof schedule==='function')schedule();}
+  function setTarget(mob){if(selected===mob)return;selected=mob;redrawSoon();}
   function markDead(mob,at=movementTime(),respawnAt=null){
     globalThis.ClassBuffs?.clearTarget?.(mob);
     const frames=islandMonsterFrames[mob.spawn.npc.gfx]?.['d'+mob.heading+'/death']||islandMonsterFrames[mob.spawn.npc.gfx]?.['d0/death'];
@@ -366,7 +369,7 @@ const IslandMonsters = (() => {
   }
   function damage(mob,amount){
     if(!mob?.hp||!Number.isFinite(amount)||amount<=0)return;amount=Math.floor(amount);if(!amount)return;
-    if(mob.spawn.bot){window.FakePlayers?.hurt(mob,amount);draw(getRenderedSceneView(),movementTime());return;}
+    if(mob.spawn.bot){window.FakePlayers?.hurt(mob,amount);redrawSoon();return;}
     // 商人、傳送師等 DB 沒有血量的常駐 NPC 不會受傷（強制攻擊只會揮空）；守衛、稻草人等有血量的照常扣血。
     if(mob.spawn.resident&&!(mob.spawn.npc.hp>0)){CombatSound.monsterHit(mob);return;}
     IslandNpcAi.provoke(mob,mobs);
@@ -380,7 +383,7 @@ const IslandMonsters = (() => {
       }
       if(selected===mob)selected=null;
     }
-    draw(getRenderedSceneView(),movementTime());
+    redrawSoon();
   }
   function updateBackground(now){
     ensurePopulation();
