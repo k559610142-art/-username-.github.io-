@@ -9,15 +9,15 @@ window.PowerSaving=(()=>{
  const IDLE_MS=30000;let lastInput=performance.now();
  for(const t of ['pointerdown','pointermove','touchstart','wheel','keydown'])addEventListener(t,()=>{lastInput=performance.now();},{capture:true,passive:true});
  function cap(){if(enabled)return 50;try{if(typeof IslandCombat!=='undefined'&&IslandCombat.mode==='auto'&&performance.now()-lastInput>IDLE_MS)return 31;}catch{}return 0;}
+ // 2026-11-19 省電模式原本先 setTimeout 等 50ms 再等下一次螢幕刷新，常變成 66ms，間隔 50／66 忽快忽慢看起來一頓一頓。
+ //  改成每次螢幕刷新都檢查、滿 50ms（容許 4ms 誤差）才畫：60Hz 螢幕固定每 3 次刷新畫一格，節奏穩定。
  function schedule(){
   if(!queue.size||timer!==null||pending)return;
-  const delay=enabled?Math.max(0,50-(performance.now()-last)):0;
-  if(delay>0)timer=setTimeout(()=>{timer=null;pending=raf(flush);},delay);
-  else pending=raf(flush);
+  pending=raf(flush);
  }
  function flush(now){
   pending=0;
-  const c=cap();if(c&&now-last<c-.01){schedule();return;}
+  const c=cap();if(c&&now-last<c-4){schedule();return;}
   last=now;
   for(const id of [...queue.keys()]){const callback=queue.get(id);queue.delete(id);if(!callback)continue;try{callback(now);}catch(error){setTimeout(()=>{throw error;},0);}}
   schedule();

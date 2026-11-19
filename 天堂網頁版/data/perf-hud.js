@@ -63,7 +63,7 @@
    if(gap>worst){worst=gap;const top=[...frameWork].filter(([k])=>!NESTED(k)).sort((a,b)=>b[1]-a[1]),tracked=top.reduce((s,[,v])=>s+v,0);
     const parts=[...frameWork].sort((a,b)=>b[1]-a[1]).slice(0,4).map(([k,v])=>label(k)+v.toFixed(0));
     worstWork=parts.join(' ')+' 未追蹤'+Math.max(0,gap-16-tracked).toFixed(0);}
-   if(gap>50)janks++;}
+   if(gap>(window.PowerSaving?.enabled?85:window.PowerSaving?.idleCapped?60:50))janks++;} // 省電 20 格本來就每格 50ms，不算卡頓
   lastFrame=t;frames++;frameWork=new Map();
   raf.call(window,loop);
  }
