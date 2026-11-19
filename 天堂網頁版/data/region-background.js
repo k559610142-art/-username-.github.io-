@@ -7,7 +7,7 @@ const RegionBackground=(()=>{
  root.className='region-background-pages';root.style.cssText='position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform;pointer-events:none';
  front.className='region-background-foreground';front.style.cssText='position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2';
  canvas.before(fill,root);game.append(front);fill.hidden=root.hidden=front.hidden=true;
- const nodes=new Map();
+ const nodes=new Map();let warnedMissing=false;
  const touch=()=>{imageRevision++;schedule();};
  function pump(){
   while(inFlight<6&&queue.length){
@@ -22,7 +22,8 @@ const RegionBackground=(()=>{
    item.image.onerror=()=>{
     item.tries=(item.tries||0)+1;
     if(item.tries<=3){inFlight--;setTimeout(()=>{item.started=false;queue.unshift(item);pump();},[800,2000,4000][item.tries-1]);return;}
-    item.failed=true;item.reject(Error('無法讀取分區地圖圖片：'+item.file));finish();
+    // 3 次都失敗（例：防毒／外掛一直擋某個檔案）：這一塊背景留空、照樣傳送，不讓整個傳送失敗
+    item.failed=true;console.warn('分區地圖圖片讀取失敗，先留空：'+item.file);if(!warnedMissing){warnedMissing=true;window.toast?.('部分地圖背景讀取失敗，先以空白顯示（可能被防毒或外掛阻擋）');}item.resolve(item);finish();
    };
    item.image.src=base+item.file+(item.tries?'?r='+item.tries:'');
   }
@@ -89,7 +90,7 @@ const RegionBackground=(()=>{
   const required=visiblePages(data,v,128),shown=visiblePages(data,v,320),must=new Set(required);
   for(const page of shown){
    const file=pageFile(data,page,mask),item=image(file,must.has(page));wanted.add(file);
-   if(!item.ready){if(must.has(page)){ready=false;failed||=item.failed;}continue;}
+   if(!item.ready){if(must.has(page)&&!item.failed)ready=false;continue;} // 讀取失敗的塊留空，不擋畫面
    if(!nodes.has(file)){
     const img=item.image;img.style.cssText='position:absolute;max-width:none;max-height:none;pointer-events:none;image-rendering:pixelated';img.dataset.regionX=page.x;img.dataset.regionY=page.y;img.style.left=(page.x-baseX)+'px';img.style.top=(page.y-baseY)+'px';img.style.width=page.w+'px';img.style.height=page.h+'px';root.append(img);nodes.set(file,img);
    }
