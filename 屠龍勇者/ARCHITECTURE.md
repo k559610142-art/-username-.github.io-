@@ -337,7 +337,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261113y`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261119a`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -1381,12 +1381,12 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 介面：**2026-10-12 起改到村莊鍛造 NPC →「🔮 裝備改造」**（`renderGearForge`，列身上與背包的武器、防具和持有通貨，版本 `20261012m`），「🔮 改造」開 `openCraftDialog`（上方裝備詞綴、下方全部通貨與數量，不能用的變灰），點一顆就套用並重畫視窗；背包裝備、地圖、通貨的道具視窗不再有改造相關按鈕（版本 `20261012o` 起連「找鍛造 NPC」提示按鈕也移除）。
   圖鑑新增「通貨」分類，取得方式顯示掉落機率。
 
-## 24. 異界地圖 T1～T15（POE 式；`maps.js`；2026-10-09，版本 `20261009s`，存檔 schema 3）
+## 24. 異界地圖 T1～T18（POE 式；`maps.js`；2026-10-09，版本 `20261009s`，存檔 schema 3）
 
 - 20261024t新增五格地圖排程（第126節），每格指定同種地圖張數，通關後依序自動開圖；原異界裝置仍可單張開啟，執行排程時須先暫停或取消。
 
 - 取代第 23 節同日的「自由開關詞綴」（`player.mapMods` 已移除，`migrateSave` 刪掉）。地圖詞綴只在異界裡生效。
-- **地圖道具** `map1`～`map15`（`cat: 'map'`、不堆疊、`wt: 0`，載入時併入 `ITEMS`）：實體帶 `q`（magic 1～2 條／rare 3～4 條）、`mm` 詞綴、`nm` 名稱前綴。
+- **地圖道具** `map1`～`map18`（`cat: 'map'`、不堆疊、`wt: 0`，載入時併入 `ITEMS`）：實體帶 `q`（magic 1～2 條／rare 3～4 條）、`mm` 詞綴、`nm` 名稱前綴。
   階級對應地區 `mapZoneFor(t)`：野外＋地監依建議等級排序（14 個），T15 用最後一個（泰坦墓穴）且怪物 HP／傷害／經驗 ×1.4。
 - **地圖詞綴** `MAP_MODS`（8 種）：強壯 HP+40%、兇猛 傷害+30%、成群 怪群上限+2 且數量+50%、**大軍 數量+100%**、精英、抗魔、迅捷、枯竭；
   獎勵加成 `mapBonusOf`（經驗、金幣、所有掉落機率）。
@@ -5133,3 +5133,9 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - 刪除 `INF_FAIL_PILE`、`infFail` 與 `infTick` 裡的累積判定／警告（`infRun.warned`）；失敗只剩 `infOnDeath`（倒下：沒懲罰、HP 回 30%、送回塔門口）。
 - `infPile()` 保留，小地圖下方 `zoneTitle` 改顯示「怪 N」（不再有 /150）。地圖同時最多 `INF_MAP_CAP`＝200 隻，超過的留在 `budget`，打掉再出場。
 - 本機驗證：`infRun` 累積 450 隻跑 `infTick`，挑戰繼續、沒有送回塔門口；Console 無錯誤。
+
+## 339. 高階異界 T16～T18（2026-11-19，版本 `20261119a`）
+
+- T16 霜骨要塞 Lv.86～92／首領 Lv.96；T17 灰燼地宮 Lv.91～98／首領 Lv.102；T18 裂界王庭 Lv.97～105／首領 Lv.110。沿用異界裝置、排程、鑑定及 T15 起 HP／物理傷害／經驗 ×1.4。
+- 專屬區域只由異界地圖開啟。首領依序使用扇形斬後留下減速霜地、召喚兩座各提升 25% 傷害的火祭壇、半血後在外圈爆裂和中心落雷間交替。
+- 線上掉落需由使用者執行 `tools/map-tiers-16-18.sql`。補丁保留舊版規則快照，更新現行掉寶目錄及未鑑定地圖上限。

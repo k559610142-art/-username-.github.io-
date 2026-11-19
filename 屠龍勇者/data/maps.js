@@ -1,11 +1,11 @@
-// 屠龍勇者：流亡黯道式異界地圖 T1～T15（ARCHITECTURE.md 第 24 節）（依賴 items、zones、monsters、affix、craft、player）
-// 地圖是道具（cat 'map'，id map1～map15，不堆疊、不佔負重），實體帶：
+// 屠龍勇者：流亡黯道式異界地圖 T1～T18（ARCHITECTURE.md 第 24 節）（依賴 items、zones、monsters、affix、craft、player）
+// 地圖是道具（cat 'map'，id map1～map18，不堆疊、不佔負重），實體帶：
 //   q 品質（magic 1～2 條／rare 3～4 條，沒有＝普通）、mm 地圖詞綴 key 陣列、nm 名稱前綴
 // 在村莊「地圖」頁的「🌀 異界裝置」放入 → player.mapRun 開始一場異界：
 //   { t 階級, zone 地區 id, mods, q, total 怪物總數, left 剩幾隻, boss 首領是否已出現 }
 // 怪物總數＝200～300 × 數量倍率（成群 +50%、大軍 +100%…，最多 ×3）；殺光後出現異界首領，打倒就通關、掉地圖並回村。
 // 戰鬥中所有「地圖詞綴」只在異界裡生效（mapModsOn），離線收益也會推進異界進度。
-const MAP_TIERS = 15;
+const MAP_TIERS = 18;
 const TREASURE_MAP_DROP_P = 0.01;
 function isTreasureMap(x) { return !!(x && ITEMS[x.id] && ITEMS[x.id].cat === 'map' && ITEMS[x.id].tier >= 8 && x.q === 'legend'); }
 function treasureMapActive() { return !!(inMapRun() && player.mapRun.treasure); }
@@ -52,15 +52,15 @@ const MAP_DROP_P = 0.004, MAP_DROP_IN_MAP_P = 0.015;   // 一般地圖每隻 0.4
 
 // 階級對應的地區：野外＋地監依建議等級排序（14 個），T15 用最後一個並加強 ×1.4
 function mapZones() { return ZONES.filter(z => !z.noMap && (z.type === 'field' || z.type === 'dungeon')).sort((a, b) => a.lv[0] - b.lv[0]); }
-function mapZoneFor(t) { const zs = mapZones(); return zs[Math.min(t, zs.length) - 1]; }
-function mapTierScale(t) { return t > mapZones().length ? 1.4 : 1; }
+function mapZoneFor(t) { const zs = mapZones(); return MAP_ONLY_ZONES.find(z => z.mapTier === t) || zs[Math.min(t, zs.length) - 1]; }
+function mapTierScale(t) { return t >= 15 ? 1.4 : 1; }
 // 怪物等級對應掉落的地圖階級：建議等級 ≤ 怪物等級的最高階
 function mapTierForLv(lv) { let t = 1; mapZones().forEach((z, i) => { if (z.lv[0] <= lv) t = i + 1; }); return t; }
 
 for (let t = 1; t <= MAP_TIERS; t++) {
     const z = mapZoneFor(t);
     ITEMS['map' + t] = { name: `異界地圖 T${t}`, cat: 'map', tier: t, wt: 0, sell: 150 * t * t,
-        desc: `放進「異界裝置」開啟「${z.name}」的異界${t > mapZones().length ? '（強化 ×1.4）' : ''}。` };
+        desc: `放進「異界裝置」開啟「${z.name}」的異界${mapTierScale(t) > 1 ? '（強化 ×1.4）' : ''}。` };
 }
 
 // ───────── 地圖道具 ─────────
@@ -119,7 +119,7 @@ const MAP_CURRENCY = {
 function mapDescHtml(x) {
     const t = ITEMS[x.id].tier, z = mapZoneFor(t), mods = x.mm || [];
     const same = findInv(x.uid) ? mapCountSame(x) : 1;
-    const L = [`<small class="muted">異界地圖・T${t}${same > 1 ? `　背包裡同樣的共 ${same} 張` : ''}</small>`, `地區：${z.icon} ${z.name}（建議 Lv.${z.lv[0]}～${z.lv[1]}）${t > mapZones().length ? '<span class="warn">　怪物強化 ×1.4</span>' : ''}`,
+    const L = [`<small class="muted">異界地圖・T${t}${same > 1 ? `　背包裡同樣的共 ${same} 張` : ''}</small>`, `地區：${z.icon} ${z.name}（建議 Lv.${z.lv[0]}～${z.lv[1]}）${mapTierScale(t) > 1 ? '<span class="warn">　怪物強化 ×1.4</span>' : ''}`,
         `怪物數量：200～300 隻${mapQtyOf(mods) > 1 ? ` <b class="warn">×${mapQtyOf(mods)}</b>` : ''}，殺光後出現異界首領`];
     if (x.unidentified === true) {
         L.push('<b>未鑑定</b>：請到村莊鑑定台免費鑑定，鑑定後才知道品級與詞綴；鑑定前不能開啟或用通貨改造；可以放進地圖排程，輪到時在村莊自動鑑定。');
@@ -161,7 +161,7 @@ function mapModsOn() { return inMapRun() ? player.mapRun.mods.filter(k => MAP_MO
 function mapModOn(k) { return mapModsOn().includes(k); }
 function mapBonus() { return mapBonusOf(mapModsOn()); }
 
-// 新出現的怪套用地圖詞綴與 T15 強化（combat.js 的 addMob 呼叫）
+// 新出現的怪套用地圖詞綴與高階強化（combat.js 的 addMob 呼叫）
 function applyMapMods(m) {
     if (!inMapRun()) return m;
     const on = mapModsOn(), sc = mapTierScale(player.mapRun.t);

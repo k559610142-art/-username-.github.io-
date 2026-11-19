@@ -135,5 +135,13 @@ const ZONES = [
     { id: 'lairLindvior', name: '維斯塔爾的巢穴', icon: '🌪️', type: 'dragon', boss: 'lindvior', reqLv: 80, prev: 'fafurion', town: 'aden', fee: 12000, cdH: 6, lv: [80, 99], desc: '風之龍。' },
     { id: 'lairValakas',  name: '莫爾加斯的巢穴', icon: '🌋', type: 'dragon', boss: 'valakas', reqLv: 88, prev: 'lindvior', town: 'aden', fee: 20000, cdH: 6, lv: [88, 99], desc: '火之龍，四大龍之首。' },
 ];
-const ZONE_BY_ID = Object.fromEntries(ZONES.map(z => [z.id, z]));
+const MAP_ONLY_ZONES = [
+    { id: 'frostBoneFortress', name: '霜骨要塞', icon: '❄️', type: 'dungeon', town: 'aden', mapTier: 16, lv: [86, 92],
+        mons: ['frostBoneFootman', 'iceCrossbowSentry', 'coldMistPriest', 'frozenArmorGolem'], rare: { id: 'frostBoneWarlord', p: 0 }, drops: [] },
+    { id: 'ashCatacombs', name: '灰燼地宮', icon: '🔥', type: 'dungeon', town: 'aden', mapTier: 17, lv: [91, 98],
+        mons: ['slagHound', 'ashLancer', 'lavaSorcerer', 'cryptOverseer'], rare: { id: 'ashHighPriest', p: 0 }, drops: [] },
+    { id: 'riftRoyalCourt', name: '裂界王庭', icon: '🌌', type: 'dungeon', town: 'aden', mapTier: 18, lv: [97, 105],
+        mons: ['riftWraith', 'riftRoyalGuard', 'voidWatcher', 'voidBeast'], rare: { id: 'riftKing', p: 0 }, drops: [] },
+];
+const ZONE_BY_ID = Object.fromEntries([...ZONES, ...MAP_ONLY_ZONES].map(z => [z.id, z]));
 const DRAGON_IDS = ['antharas', 'fafurion', 'lindvior', 'valakas'];

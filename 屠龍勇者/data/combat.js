@@ -328,10 +328,11 @@ function bossSkillTick(dt) {
         worldVfxBoss(t);
         const live = t.seenAt != null && t.seenAt >= t.until - 300;
         const c=live && scene && scene.tele && scene.tele.ref===t ? scene.tele : null;
+        if (c && t.shape === 'cone') scene.mapFrost = { ...c, until: gameNow + 5000 };
         const dodged = c ? !sceneTeleContains(c,scene.pl.rx,scene.pl.ry) : live ? !!t.dodged : chance(player.settings.autoDodge ? 0.6 : 0.2);
         if (dodged) addLog(`💨 你閃開了${m.name}的「${t.name}」！`, 'miss');
         const st = calcStats();
-        let dmg = Math.round(rand(m.dmg[0], m.dmg[1]) * TELE_MUL) - st.reduce;
+        let dmg = Math.round(rand(m.dmg[0], m.dmg[1]) * TELE_MUL * mapAltarDamage(m)) - st.reduce;
         dmg = Math.max(1, dmg);
         dmg = Math.max(1, Math.round(bossEnchantEnemyDamage(m, dmg)));
         // 傭兵各自判斷有沒有站在紅圈外；人皇第二名傭兵用 mercAs2 再跑一次（mercenary.js，第 287 節）
@@ -358,9 +359,28 @@ function bossSkillTick(dt) {
         m.teleCd -= dt;
         if (m.teleCd > 0 || gameNow < m.stunUntil) continue;
         m.teleCd = rand(...TELE_CD);
-        const name = m.dragon ? '龍之吐息' : '重擊';
-        hunt.tele = { mob: m, name, start: gameNow, until: gameNow + TELE_MS, dodged: null, seenAt: null };
-        addLog(`⚠️ ${m.name}正在蓄力「${name}」！快離開紅圈`, 'boss');
+        let name = m.dragon ? '龍之吐息' : '重擊', shape = 'circle', tip = '快離開紅圈';
+        if (m.mapBoss && m.id === 'frostBoneWarlord') { name = '碎霜斬'; shape = 'cone'; }
+        if (m.mapBoss && m.id === 'ashHighPriest') {
+            name = '灰燼烈焰';
+            if (!m.altarsSummoned) {
+                m.altarsSummoned = true;
+                for (let i = 0; i < 2; i++) {
+                    const hp = Math.round(m.maxHp * .04);
+                    addMob({ ...makeMonster('cryptOverseer'), id: 'ashFireAltar', name: '火祭壇', icon: '🔥', eliteMinion: true,
+                        hp, maxHp: hp, spd: Infinity, ashAltarFor: m });
+                }
+                addLog('🔥 火祭壇強化了大祭司的傷害！擊毀兩座祭壇可解除。', 'boss');
+            }
+        }
+        if (m.mapBoss && m.id === 'riftKing' && m.hp <= m.maxHp / 2) {
+            m.riftOuter = !m.riftOuter;
+            shape = m.riftOuter ? 'ring' : 'center';
+            name = m.riftOuter ? '外圈爆裂' : '中心落雷';
+            tip = m.riftOuter ? '快靠近首領' : '快遠離首領';
+        }
+        hunt.tele = { mob: m, name, shape, start: gameNow, until: gameNow + (shape === 'circle' ? TELE_MS : 2400), dodged: null, seenAt: null };
+        addLog('⚠️ ' + m.name + '正在蓄力「' + name + '」！' + tip, 'boss');
         return;
     }
 }
@@ -481,7 +501,7 @@ function spawnMonster() {
     else if (z.type === 'tower') {
         const f = player.loc.floor;
         mon = makeTowerMonster(f, !server && towerBossUp(f));
-    } else if (!server && z.rare && chance(z.rare.p)) mon = makeMonster(z.rare.id);
+    } else if (!server && !z.mapTier && z.rare && chance(z.rare.p)) mon = makeMonster(z.rare.id);
     else {
         // 只出現不超過「玩家等級 +3」的怪；全都太強就出最弱的
         mon = makeZoneMob(z);
@@ -823,6 +843,7 @@ function monsterAttack(st, mon) {
         dmg = rand(mon.dmg[0], mon.dmg[1]);
         if (st.ac < 0) dmg -= rand(0, Math.floor(-st.ac / 5));   // AC 負值越多，額外減傷越多
     }
+    dmg *= mapAltarDamage(mon);
     if (mercEffectOn(mon, 'weaken')) dmg *= mon.boss ? .95 : .85;
     if (typeof eliteDmgMul === 'function') dmg *= eliteDmgMul(mon);   // 精英「狂暴」傷害 +30%
     dmg = Math.max(0, Math.round(dmg - st.reduce));
@@ -859,10 +880,20 @@ function monsterAttack(st, mon) {
     }
 }
 
+function mapAltarDamage(mon) {
+    return mon.id === 'ashHighPriest' ? 1 + .25 * hunt.mobs.filter(m => m.ashAltarFor === mon).length : 1;
+}
+
 // ───────── 結果 ─────────
 function onKill(mon) {
     if (typeof infOnKill === 'function' && infOnKill(mon)) return;   // 無限塔：不給經驗、不掉寶（survivor.js，第 332 節）
     if (!hunt.mobs.includes(mon)) return;   // 已經結算過
+    if (mon.ashAltarFor) {
+        hunt.mobs = hunt.mobs.filter(m => m !== mon);
+        if (hunt.mon === mon) hunt.mon = hunt.mobs.find(m => m.ashAltarFor === mon) || mon.ashAltarFor;
+        addLog('🔥 火祭壇被摧毀了！', 'win');
+        return;
+    }
     if (typeof eliteBeforeKill === 'function' && eliteBeforeKill(mon)) return;   // 精英護盾擋下／復甦：這次沒死（elite.js）
     const minion = !!mon.eliteMinion;   // 精英召喚／分裂的小怪：不掉寶、不算任務與異界剩餘數
     const z = currentZone(), st = calcStats();

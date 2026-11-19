@@ -262,6 +262,7 @@ const ITEM_IMG = Object.fromEntries([
     'map1', 'map2', 'map3', 'map4', 'map5', 'map6', 'map7', 'map8',
     'map9', 'map10', 'map11', 'map12', 'map13', 'map14', 'map15',
 ].map(id => [id, id]));
+for (const id of ['map16', 'map17', 'map18']) ITEM_IMG[id] = 'map15';
 ITEM_IMG.curAwaken = 'curAwaken-v1';   // 命運的覺醒石：虹彩晶石專屬外觀（第80節）
 ITEM_IMG.spiderVenom = 'spiderVenom-v1';
 ITEM_IMG.soul_spiderVenom = 'soul_spiderVenom-v1';

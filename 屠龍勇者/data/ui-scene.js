@@ -29,6 +29,9 @@ const SCENE_THEMES = {
 // 背景圖地圖（野外）：整張圖鋪成 w×h 格；block 是擋路的牆（格子座標 [x0,y0,x1,y1] 含頭尾），start 角色出生格
 // ruins.jpg 1500×837，每格約 37.5×38 原圖像素
 const SCENE_BGS = {
+    frostBoneFortress: { src: 'images/maps/rework/frost-bone-fortress.jpg', w: 40, h: 18, start: [20, 12], walk: [[9,12,31,15],[12,7,32,11],[16,5,29,6]], block: [] },
+    ashCatacombs: { src: 'images/maps/rework/ash-catacombs.jpg', w: 40, h: 18, start: [20, 12], walk: [[13,12,29,16],[11,8,33,11],[15,5,31,7]], block: [] },
+    riftRoyalCourt: { src: 'images/maps/rework/rift-royal-court.jpg', w: 40, h: 18, start: [20, 12], walk: [[12,8,29,15],[15,6,26,7]], block: [] },
     ruins: {
         src: 'images/maps/ruins.jpg', w: 40, h: 22, start: [20, 11],
         block: [
@@ -300,6 +303,15 @@ const MON_SPRITES = {
     lindvior: { cw: 128, ch: 105, body: 88, n: [4, 3, 4, 3, 6, 8], size: 80 },   // 風龍：側面走路 3 格、正面攻擊 3 格（原圖中間是大張立繪）
 };
 Object.assign(MON_SPRITES, SCENE_ART_MONSTERS);
+const HIGH_MAP_SPRITES = [
+    ['frostBoneFootman', 'iceCrossbowSentry', 'coldMistPriest', 'frozenArmorGolem', 'frostBoneWarlord'],
+    ['slagHound', 'ashLancer', 'lavaSorcerer', 'cryptOverseer', 'ashHighPriest'],
+    ['riftWraith', 'riftRoyalGuard', 'voidWatcher', 'voidBeast', 'riftKing'],
+];
+for (const roster of HIGH_MAP_SPRITES) roster.forEach((id, i) => {
+    MON_SPRITES[id] = { src: 'images/monsters/high-maps/' + id + '.png', cw: 128, ch: 128, body: 116,
+        foot: [64, 122], n: [1, 1, 1, 1, 1, 1], still: true, size: i === 4 ? 78 : 52 };
+});
 const MONSTER_ART_CACHE_LIMIT = 4;
 let monsterArtCache = [];
 function monSpriteSpec(mid, attack) {
@@ -366,6 +378,7 @@ function themeFor() {
     if (player.loc.type === 'town') return { ...SCENE_THEMES.town, bg: TOWN_BG[player.loc.id] || 'village' };
     const z = currentZone();
     if (z.bg && SCENE_BGS[z.bg] && SCENE_BGS[z.bg].big) return { ...SCENE_THEMES.field, bg: z.bg };   // 大地圖（含地監黃沙王陵的外圍）
+    if (z.mapTier) return { ...SCENE_THEMES.dungeon, bg: z.id };
     if (z.type === 'dragon') return { ...SCENE_THEMES.dragon, bg: SCENE_DRAGON_BGS[z.id] };
     if (z.type === 'tower' || z.type === 'infinite') return { ...SCENE_THEMES.tower, bg: 'art-tower' };   // 無限塔借用永夜之塔的競技場（第 332 節）
     if (z.id === 'venomNest') return { ...SCENE_THEMES.cave, bg: 'art-venom-nest' };
@@ -775,6 +788,7 @@ function sceneUpdate(dt) {
     for (const m of scene.mons) {
         if (!m.inst || m.dead || mobs.includes(m.inst)) continue;
         if (m.inst.hp <= 0) { m.dead = true; m.dying = 600; }   // 被打倒 → 淡出
+        else if (m.inst.ashAltarFor) { m.dead = true; m.dying = 0; }
         else m.inst = null;                                      // 脫離戰鬥（瞬移等）→ 放回遊走
     }
     for (const inst of mobs) {
@@ -837,6 +851,7 @@ function sceneUpdate(dt) {
     // 怪物遊走、死亡淡出
     for (const m of scene.mons) {
         if (m.dead) { m.dying -= dt; continue; }
+        if (m.inst && m.inst.ashAltarFor) continue;
         if (m === scene.engaged && (pl.path.length || !m.inst)) continue;   // 目標：角色走過去時站著等，角色停下（遠程）時自己走過來
         const enchantMove = m.inst ? bossEnchantMoveFactor(m.inst) : 1;
         if (!enchantMove || (m.inst && m.inst.stunUntil > gameNow)) continue;
@@ -917,7 +932,9 @@ function sceneUpdate(dt) {
             const far = pl.dest && pl.path.length > 1 && last[0] === pl.dest[0] && last[1] === pl.dest[1];
             pl.path = far ? findPath(pl.x, pl.y, pl.dest[0], pl.dest[1], !freeTileFor(pl.dest[0], pl.dest[1])) : [];
         } else {
-            const step = PLAYER_SPEED * dt / 1000;
+            const frost = scene.mapFrost;
+            const slowed = frost && frost.until > gameNow && sceneTeleContains(frost, pl.rx, pl.ry);
+            const step = PLAYER_SPEED * (slowed ? .55 : 1) * dt / 1000;
             const ddx = nx - pl.rx, ddy = ny - pl.ry;
             pl.dir = Math.abs(ddx) > Math.abs(ddy) ? (ddx > 0 ? 'right' : 'left') : (ddy > 0 ? 'down' : 'up');
             const dist = Math.hypot(ddx, ddy);
@@ -1004,8 +1021,34 @@ function sceneReach(e) {
 
 // ───────── 首領大招紅圈（hunt.tele）與自動閃避 ─────────
 const MANUAL_HOLD_MS = 2500;   // 手動移動後幾毫秒內不自動尋怪
+function drawMapTele(ctx, c, camX, camY, w, h, fill, stroke) {
+    const x = (c.x + .5) * TILE - camX, y = (c.y + .5) * TILE - camY;
+    ctx.save();
+    ctx.fillStyle = fill; ctx.strokeStyle = stroke; ctx.lineWidth = 2;
+    ctx.beginPath();
+    if (c.shape === 'cone') {
+        ctx.moveTo(x, y);
+        ctx.arc(x, y, c.r * TILE, c.angle - Math.PI / 4, c.angle + Math.PI / 4);
+        ctx.closePath();
+    } else if (c.shape === 'ring') {
+        ctx.rect(-4, -4, w + 8, h + 8);
+        ctx.moveTo(x + c.inner * TILE, y);
+        ctx.arc(x, y, c.inner * TILE, 0, Math.PI * 2);
+    } else {
+        ctx.arc(x, y, c.r * TILE, 0, Math.PI * 2);
+    }
+    ctx.fill('evenodd'); ctx.stroke(); ctx.restore();
+}
 function sceneTeleContains(c, x, y, margin = 0) {
-    return Math.hypot(x-c.x,y-c.y) <= c.r+margin;
+    const dx = x - c.x, dy = y - c.y, distance = Math.hypot(dx, dy);
+    if (c.shape === 'ring') return distance >= c.inner - margin;
+    if (c.shape === 'cone') {
+        if (distance > c.r + margin) return false;
+        if (distance <= .3 + margin) return true;
+        const angle = Math.atan2(dy, dx) - c.angle;
+        return Math.abs(Math.atan2(Math.sin(angle), Math.cos(angle))) <= Math.PI / 4 + margin / distance;
+    }
+    return distance <= c.r + margin;
 }
 function sceneTeleDodge(actor, dt, manual = false) {
     const c = scene.tele, t = hunt && hunt.tele;
@@ -1039,7 +1082,13 @@ function sceneTeleDodge(actor, dt, manual = false) {
 function sceneTeleTick(dt) {
     const t = hunt && hunt.tele, pl = scene.pl;
     if (!t || player.loc.type !== 'zone') { scene.tele = null; scene.dodging = false; sceneTeleDodge(pl,dt,scene.manualUntil>gameNow);return; }
-    if (!scene.tele || scene.tele.ref !== t) scene.tele = { ref: t, x: pl.x, y: pl.y, r: 1.5, react: rand(350, 900) };
+    if (!scene.tele || scene.tele.ref !== t) {
+        const boss = scene.mons.find(m => m.inst === t.mob);
+        const origin = t.shape && t.shape !== 'circle' && boss ? boss : pl;
+        const x = origin.rx, y = origin.ry;
+        scene.tele = { ref: t, x, y, shape: t.shape, r: t.shape === 'cone' ? 5 : t.shape === 'center' ? 3 : 1.5,
+            inner: 3, angle: Math.atan2(pl.ry - y, pl.rx - x), react: rand(350, 900) };
+    }
     const c = scene.tele;
     const inside = sceneTeleContains(c,pl.rx,pl.ry);
     t.dodged = !inside;          // 回報給 combat.js（時間到時用這個判斷有沒有閃開）
@@ -1199,7 +1248,11 @@ function sceneDraw(ctx, W, H) {
     drawBossEnchantEffects(ctx, camX, camY, 'ground');
     drawWorldVfx(ctx, camX, camY, 'ground');
     // 首領大招紅圈：外圈閃爍、內圈隨蓄力時間長大，滿了就爆
-    if (scene.tele && scene.tele.ref) {
+    const frost = scene.mapFrost;
+    if (frost && frost.until > gameNow) drawMapTele(ctx, frost, camX, camY, W, H, 'rgba(78,192,254,.23)', '#65cfff');
+    if (scene.tele && ['cone', 'ring', 'center'].includes(scene.tele.shape)) {
+        drawMapTele(ctx, scene.tele, camX, camY, W, H, 'rgba(229,43,37,.30)', '#ff6652');
+    } else if (scene.tele && scene.tele.ref) {
         const c = scene.tele, t = c.ref, k = clamp((gameNow - t.start) / (t.until - t.start), 0, 1);
         const cx = c.x * TILE - camX + TILE / 2, cy = c.y * TILE - camY + TILE / 2, R = (c.r + 0.5) * TILE;
         ctx.fillStyle = `rgba(220,30,20,${0.18 + 0.1 * Math.sin(gameNow / 80)})`;
@@ -1249,7 +1302,7 @@ function sceneDraw(ctx, W, H) {
             const fr = m.atk > 0 ? Math.min(n - 1, Math.floor((1 - m.atk / 380) * n)) : moving ? Math.floor(gameNow / 150) % n : 0;
             const bob = moving && n === 1 ? Math.abs(Math.sin(gameNow / 110)) * 2 : 0;
             const frameX = ms.cols ? (row * 2 + fr) % ms.cols * ms.cw : fr * ms.cw;
-            const frameY = ms.cols ? Math.floor((row * 2 + fr) / ms.cols) * ms.ch : (ms.actorRows ? row % 3 : row) * ms.ch;
+            const frameY = ms.still ? 0 : ms.cols ? Math.floor((row * 2 + fr) / ms.cols) * ms.ch : (ms.actorRows ? row % 3 : row) * ms.ch;
             const drawX = ms.foot ? sx - ms.foot[0] * dw / ms.cw : sx - dw / 2;
             const drawY = (ms.foot ? sy + 13 - ms.foot[1] * dh / ms.ch : sy + 13 - dh) - bob;
             const box = ms.foot ? [drawX - 4, drawY - 4, drawX + dw + 4, drawY + dh + 2] : [sx - dw / 2 - 4, sy + 13 - dh - 4, sx + dw / 2 + 4, sy + 15];

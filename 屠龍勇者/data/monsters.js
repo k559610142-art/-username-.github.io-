@@ -17,6 +17,22 @@ function monBase(lv) {
 // magic：{ p 機率, dmg, name } 魔法攻擊無視 AC，受 MR 減免
 // drops：{ id, p 機率, n:[min,max] }
 const MONSTERS = {
+    // T16～T18 專屬異界
+    frostBoneFootman: { name: "霜骨步兵", icon: "💀", lv: 86, undead: true },
+    iceCrossbowSentry: { name: "冰弩哨兵", icon: "🏹", lv: 88, undead: true, magic: { p: .35, dmg: [135, 205], name: "霜矢" } },
+    coldMistPriest: { name: "寒霧祭司", icon: "🧙", lv: 90, undead: true, magic: { p: .45, dmg: [150, 220], name: "寒霧咒" } },
+    frozenArmorGolem: { name: "凍甲巨像", icon: "🧊", lv: 92, large: true, acAdd: -10, hpMul: 1.4 },
+    frostBoneWarlord: { name: "霜骨軍督", icon: "🪓", lv: 96, boss: true, undead: true, hpMul: 12, dmgMul: 1.6, expMul: 15, goldMul: 10 },
+    slagHound: { name: "熔渣獵犬", icon: "🐺", lv: 91, spd: 1200 },
+    ashLancer: { name: "灰燼槍兵", icon: "⚔️", lv: 93, hit: 99 },
+    lavaSorcerer: { name: "熔火咒師", icon: "🔥", lv: 96, magic: { p: .45, dmg: [165, 240], name: "熔火彈" } },
+    cryptOverseer: { name: "地宮督衛", icon: "🛡️", lv: 98, large: true, hpMul: 1.4, acAdd: -12 },
+    ashHighPriest: { name: "灰燼大祭司", icon: "🔥", lv: 102, boss: true, hpMul: 12, dmgMul: 1.6, expMul: 15, goldMul: 10 },
+    riftWraith: { name: "裂界遊魂", icon: "👻", lv: 97, undead: true },
+    riftRoyalGuard: { name: "王庭禁衛", icon: "⚔️", lv: 100, acAdd: -13 },
+    voidWatcher: { name: "虛空觀測者", icon: "👁️", lv: 103, magic: { p: .45, dmg: [185, 260], name: "虛空凝視" } },
+    voidBeast: { name: "蝕空巨獸", icon: "🐉", lv: 105, large: true, hpMul: 1.5 },
+    riftKing: { name: "裂界君王", icon: "👑", lv: 110, boss: true, undead: true, hpMul: 12, dmgMul: 1.65, expMul: 15, goldMul: 10 },
     // 低語海岸
     goblin:         { name: '哥布林',     icon: '👺', lv: 1 },
     dwarf:          { name: '侏儒',       icon: '🧔', lv: 2 },
