@@ -190,14 +190,14 @@ const QuickSlots=(()=>{
     })());
   };
   // 2026-11-19 使用者：手機直式畫面快捷欄（10 格一排約 480px）超出畫面、壓到右下攻擊／AUTO／拾取鈕
-  //  畫面寬度 ≤650px（手機直式或「直式 9:16」）時改成左下 5×2 格，寬度讓出右下按鈕群；隨身傳送移到強制攻擊左邊
+  //  畫面寬度 ≤650px（手機直式或「直式 9:16」）時改成左下 5×2 格，寬度讓出右下按鈕群；隨身傳送放在強制攻擊正上方（2026-11-19 使用者指定）
   {const narrowStyle=document.createElement('style');narrowStyle.textContent='main.game.reference-game.qs-narrow:not(.orb-hud):not(.classic-hud) .quick-slots{left:calc(var(--safe-left,0px) + 4px)!important;right:auto!important;bottom:calc(var(--safe-bottom,0px) + 8px)!important;width:min(300px,calc(100% - var(--safe-left,0px) - 168px))!important;padding:0!important;margin:0!important;transform:none!important}'
    +'main.game.reference-game.qs-narrow:not(.orb-hud):not(.classic-hud) .quick-expanded-row{display:grid!important;grid-template-columns:repeat(5,1fr);gap:3px}'
    +'main.game.reference-game.qs-narrow:not(.orb-hud):not(.classic-hud) .quick-expanded-row[hidden]{display:none!important}'
    +'main.game.reference-game.qs-narrow:not(.orb-hud):not(.classic-hud) .quick-expanded-row>.combat-quick-slot{width:auto!important;min-width:0!important;height:auto!important;min-height:0!important;aspect-ratio:1}'
    +'main.game.reference-game.qs-narrow:not(.orb-hud):not(.classic-hud) .quick-slots .quick-expand-arrow{left:0!important;bottom:calc(100% + 4px)!important;width:44px!important;min-width:44px!important;height:24px!important;min-height:24px!important;font-size:18px!important;line-height:1!important}'
    +'main.game.reference-game.qs-narrow:not(.orb-hud):not(.classic-hud)>.reference-messages{margin-top:8px!important}'
-   +'main.game.reference-game.qs-narrow:not(.orb-hud):not(.classic-hud) .pt-quick{left:auto!important;right:calc(var(--safe-right,0px) + 60px)!important;bottom:calc(var(--safe-bottom,0px) + 118px)!important}';
+   +'main.game.reference-game.qs-narrow:not(.orb-hud):not(.classic-hud) .pt-quick{left:auto!important;right:calc(var(--safe-right,0px) + 2px)!important;bottom:170px!important;width:52px!important}';
    document.head.append(narrowStyle);
    const g=document.querySelector("main.game"),fit=()=>g.classList.toggle("qs-narrow",g.clientWidth>0&&g.clientWidth<=650);fit();
    if(typeof ResizeObserver==='function')new ResizeObserver(fit).observe(g);else addEventListener('resize',fit);}

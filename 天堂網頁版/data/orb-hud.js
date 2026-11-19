@@ -19,6 +19,23 @@
  main.game.orb-hud.oh-compact .oh-exp{transform:scale(var(--oqs,1))!important;transform-origin:50% calc(100% + ${k(68)})!important}
  main.game.orb-hud.oh-compact .pt-quick{left:auto!important;right:calc(${k(92)} + 2px)!important;bottom:${k(180)}!important;width:46px!important;height:58px!important;font-size:10px!important;padding:0!important}
  main.game.orb-hud.oh-compact .pt-quick img{width:34px!important;height:34px!important}
+ /* 2026-11-19 使用者：手機直式沒有對話框 → 直式（qs-narrow）只顯示這個訊息框：半透明底、可下拉展開（▼）；收合時 3 行、展開時變高並出現輸入列；左上原本的訊息列在直式隱藏 */
+ .oh-msg .oh-toggle{display:none}
+ main.game.qs-narrow:not(.orb-hud):not(.classic-hud) .orb-hud-root{display:block;position:absolute;inset:0;pointer-events:none;z-index:6}
+ main.game.qs-narrow:not(.orb-hud):not(.classic-hud) .orb-hud-root>*:not(.oh-msg){display:none!important}
+ main.game.qs-narrow:not(.orb-hud):not(.classic-hud)>.reference-messages{display:none!important}
+ main.game.qs-narrow:not(.orb-hud):not(.classic-hud) .oh-msg{position:absolute;left:calc(var(--safe-left,0px) + 4px);bottom:var(--mchat-bottom,140px);width:min(320px,calc(100% - var(--safe-left,0px) - 84px));height:auto;display:flex;flex-direction:column;gap:4px;padding:4px 6px 6px;font-size:12.5px;background:#080a0c6b;border:1px solid #c9a45e73;border-radius:8px;box-shadow:0 2px 10px #0006;-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);pointer-events:auto}
+ main.game.qs-narrow:not(.orb-hud):not(.classic-hud) .oh-msg .tabs{display:flex;align-items:center;gap:4px}
+ main.game.qs-narrow:not(.orb-hud):not(.classic-hud) .oh-msg .tabs button{min-height:24px!important;padding:0 9px!important;font-size:12px;border-radius:12px;background:#000000a0;color:#d6ccb4;border:1px solid #ffffff22}
+ main.game.qs-narrow:not(.orb-hud):not(.classic-hud) .oh-msg .tabs button[aria-pressed=true]{color:#ffe08a;border-color:#c9a45e}
+ main.game.qs-narrow:not(.orb-hud):not(.classic-hud) .oh-msg .tabs .oh-toggle{display:block;margin-left:auto;min-width:34px;padding:0 6px!important;font-size:13px;color:#ffe08a;border-color:#c9a45e99}
+ main.game.qs-narrow:not(.orb-hud):not(.classic-hud) .oh-msg .list{flex:none;height:56px;padding:2px 4px;background:none;font-size:12.5px;line-height:1.45;overflow-y:auto;touch-action:pan-y}
+ main.game.qs-narrow:not(.orb-hud):not(.classic-hud) .oh-msg form{display:none}
+ main.game.qs-narrow:not(.orb-hud):not(.classic-hud) .oh-msg.open{background:#080a0cb3}
+ main.game.qs-narrow:not(.orb-hud):not(.classic-hud) .oh-msg.open .list{height:min(170px,calc(var(--stage-height,100dvh) * .27))}
+ main.game.qs-narrow:not(.orb-hud):not(.classic-hud) .oh-msg.open form{display:flex;gap:6px}
+ main.game.qs-narrow:not(.orb-hud):not(.classic-hud) .oh-msg form input{flex:1;min-width:0;height:34px;min-height:0!important;padding:0 8px;font-size:16px;color:#fff;background:#000c;border:1px solid #c9a45e;border-radius:4px}
+ main.game.qs-narrow:not(.orb-hud):not(.classic-hud) .oh-msg form button{height:34px;min-height:0!important;padding:0 12px!important;font-size:14px;color:#f0e2bf;background:linear-gradient(#4a3d26,#2a2216);border:1px solid #9d8a5c;border-radius:4px}
  .orb-hud-root>*{position:absolute;pointer-events:auto;box-sizing:border-box}
  main.game.orb-hud.orb-hud.orb-hud>.nav,main.game.orb-hud.orb-hud.orb-hud>.exp-track,main.game.orb-hud.orb-hud.orb-hud>.reference-messages{display:none!important}
  /* 訊息框 */
@@ -107,6 +124,15 @@
  let filter='all';const messages=[];
  for(const [key,l]of [['all','全部'],['say','一般'],['drop','掉落'],['sys','系統']]){const b=el('button','',l);b.type='button';b.setAttribute('aria-pressed',String(key===filter));b.onclick=()=>{filter=key;for(const t of tabs.children)t.setAttribute('aria-pressed',String(t===b));render()};tabs.append(b)}
  msg.append(tabs,list,form);root.append(msg);
+ // 2026-11-19 手機直式對話框：▼ 展開（變高＋輸入列）／▲ 收合，點訊息區也會展開；記住上次狀態；位置跟著快捷欄上緣（展開第二、三排時一起往上）
+ {const tog=el('button','oh-toggle');tog.type='button';const MK='mobileChatOpen';
+  const setOpen=v=>{msg.classList.toggle('open',v);tog.textContent=v?'▲':'▼';tog.setAttribute('aria-label',v?'收合對話框':'展開對話框');tog.setAttribute('aria-expanded',String(v));try{localStorage.setItem(MK,v?'1':'0')}catch{}list.scrollTop=list.scrollHeight};
+  tog.onclick=()=>setOpen(!msg.classList.contains('open'));list.addEventListener('click',e=>{if(game.classList.contains('qs-narrow')&&!msg.classList.contains('open')&&!e.target.closest('[data-who]'))setOpen(true)});
+  let saved=false;try{saved=localStorage.getItem(MK)==='1'}catch{}tabs.append(tog);setOpen(saved);
+  const place=()=>{if(!game.classList.contains('qs-narrow')||game.classList.contains('orb-hud'))return;const g=game.getBoundingClientRect(),q=document.querySelector('.quick-slots'),a=q?.querySelector('.quick-expand-arrow');if(!q)return;let top=q.getBoundingClientRect().top;const ar=a?.getBoundingClientRect();if(ar&&ar.height)top=Math.min(top,ar.top);game.style.setProperty('--mchat-bottom',Math.max(8,Math.round(g.bottom-top+6))+'px')};
+  setInterval(place,500);addEventListener('resize',place);place();
+  // 手機點輸入框／按鈕時瀏覽器會把整個遊戲框捲走（overflow:hidden 也會被捲），捲了就拉回原位
+  game.addEventListener('scroll',()=>{if(game.scrollTop||game.scrollLeft){game.scrollTop=0;game.scrollLeft=0}});}
  // 點聊天訊息的名字就填好密語（/密 名字 ）
  function line(m){const d=el('div',m.kind,m.text),who=(m.kind==='say'||m.kind==='whisper')&&m.text.match(/^(?:\[密語\] )?([^：→\s]+)：/)?.[1];
   if(who&&who!==window.activeCharacterName){d.dataset.who=who;d.title='點一下密語 '+who;d.onclick=()=>{input.value='/密 '+who+' ';input.focus()}}return d}
@@ -151,10 +177,12 @@
  const hudBox=game.querySelector(':scope>.hud'),defRow=el('div','row oh-def'),acT=el('b'),mrT=el('b');{const a=el('small','','防禦 '),m=el('small','','魔防 ');a.append(acT);m.append(mrT);defRow.append(a,m);hudBox?.append(defRow)}
  function refreshDef(){try{acT.textContent=String(typeof previewArmorClass==='function'?previewArmorClass():'—');mrT.textContent=String(window.NativeCombatRules?.defense?.()?.mr??0)}catch{}}
  function refresh(){if(!game.classList.contains('orb-hud')||window.gameFlowState!=='playing')return;refreshDef();setOrb(hpO,'hp',hp,maxHp);setOrb(mpO,'mp',mp,maxMp);const e=expPct();exp.style.setProperty('--fill',e+'%');exp.title='經驗 '+e.toFixed(2)+'%';labelSlots();placeMenu()}
+ // 2026-11-19 使用者：電腦版隨身傳送要維持原位 → 快捷列放大（oh-compact）只用在觸控手機
+ const touchPhone=()=>{try{return matchMedia('(pointer:coarse)').matches&&Math.min(screen.width,screen.height)<=600}catch{return false}};
  function layout(){const r=game.getBoundingClientRect(),on=style==='orb'&&r.width>=560&&r.width>r.height;game.classList.toggle('orb-hud',on);
   if(!on){const lock=document.querySelector('.bottom .actions>.reference-lock');lock?.style.removeProperty('top');lock?.style.removeProperty('bottom');const loc=document.querySelector('.location');loc?.style.removeProperty('top');loc?.style.removeProperty('right')}
   if(!on)game.classList.remove('oh-compact');
-  if(on){game.classList.remove('classic-hud');const ok=Math.max(.5,Math.min(r.height/572,r.width/1024,1.5)),c=r.width/2+10.5*ok,half=222.5*ok,msgR=4+Math.max(140,Math.min(300*ok,r.width/2-352*ok)),qs=Math.max(1,Math.min(1.6,34/(35.5*ok),(c-msgR-4)/half,(r.width-189*ok-6-c)/half));game.style.setProperty('--ok',ok);game.style.setProperty('--oqs',qs);game.classList.toggle('oh-compact',qs>1.05);refresh()}} // 矮畫面放大快捷列（--oqs）
+  if(on){game.classList.remove('classic-hud');const ok=Math.max(.5,Math.min(r.height/572,r.width/1024,1.5)),c=r.width/2+10.5*ok,half=222.5*ok,msgR=4+Math.max(140,Math.min(300*ok,r.width/2-352*ok)),qs=Math.max(1,Math.min(1.6,34/(35.5*ok),(c-msgR-4)/half,(r.width-189*ok-6-c)/half));game.style.setProperty('--ok',ok);game.style.setProperty('--oqs',qs);game.classList.toggle('oh-compact',qs>1.05&&touchPhone());refresh()}} // 矮畫面放大快捷列（--oqs）
  new ResizeObserver(layout).observe(game);addEventListener("resize",layout);
  const baseStats=stats;stats=function(...args){const out=baseStats.apply(this,args);refresh();return out};
  setInterval(refresh,1000);
