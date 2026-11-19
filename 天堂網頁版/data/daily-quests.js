@@ -74,6 +74,15 @@ const DailyQuests=(()=>{
  // 娃娃召喚計時（每分鐘 +1）
  let dollSec=0;setInterval(()=>{if(!ensure())return;if(window.TdjSystems?.dolls?.active){dollSec++;if(dollSec>=60){dollSec=0;bump('doll');}}},1000);
  setInterval(ensure,5000);
- return {get snapshot(){return state&&state.day?JSON.parse(JSON.stringify(state)):undefined;},takeDiamonds(){const n=pendingDiamonds;pendingDiamonds=0;return n;},
+ // 2026-11-19 使用者：重開遊戲每日任務就重置、可無限洗鑽石。原因：進入遊戲後 ensure() 最多 5 秒才跑，
+ //  這段時間只要存檔（被怪打、喝水、移動…）就把「還沒讀進來的空任務」寫回存檔，蓋掉原本進度。
+ //  修正：目前角色的任務還沒讀進來時，存檔沿用該角色存檔裡原本的 daily，不寫空白、也不會拿到上一個角色的任務。
+ function snapshot(){
+  const id=window.activeCharacterId;
+  if(!id)return undefined;
+  if(owner!==id||!state){const c=window.GameEntry?.characters.find(x=>x?.id===id);return c?.daily&&typeof c.daily==='object'?c.daily:undefined;}
+  return state.day?JSON.parse(JSON.stringify(state)):undefined;
+ }
+ return {get snapshot(){return snapshot();},takeDiamonds(){const n=pendingDiamonds;pendingDiamonds=0;return n;},
   list:()=>ensure()?state.tasks.map(t=>({...t})):[],get chest(){return !!state?.chest;},bump};
 })();window.DailyQuests=DailyQuests;
