@@ -1925,15 +1925,8 @@ function openGameCatalog(type) {
 
   if (type === 'transforms') {
     const status = uiElement('span', 'game-catalog-status', '');
-    const drawButton = times => catalogButton('抽 ' + times + ' 張', () => {
-      const got = TransformCards.draw(times);
-      if (!got.length) return;
-      toast('獲得：' + got.map(card => (card.dn || card.n) + '（' + lineageWGrades[card.g][0] + '）').join('、'));
-      updateCounts();
-      refreshCards();
-    });
     const toolbar = uiElement('div', 'game-catalog-toolbar');
-    toolbar.append(drawButton(1), drawButton(10), status);
+    toolbar.append(status);
     results.prepend(toolbar);
     status.update = () => { status.textContent = '已收集 ' + TransformCards.collected + ' / ' + entries.length + (TransformCards.active ? ' · 變身中：' + TransformCards.active : ''); };
     var transformStatus = status;
