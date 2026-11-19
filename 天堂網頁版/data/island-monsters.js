@@ -217,6 +217,17 @@ const IslandMonsters = (() => {
     const correction=mob.step?MonsterActions.walkOffset(frames,directions[mob.heading],index):[0,0];
     return [frames[index],correction];
   }
+  // 2026-11-19 手機 lag：原本每格畫面都把整張地圖的怪（說話之島約 1700 隻）掃一遍；改成每 0.25 秒挑出畫面範圍內（含外圍）的怪，
+  //  每格只掃這份名單。人物走超過 4 格、地圖或怪物數量改變、視野變大時立刻重挑；隱藏中的假人照舊每格處理（等牠回來）。
+  let candList=[],candAt=0,candR=0,candLen=-1,candMap=-1,candX=0,candY=0;
+  function drawCandidates(view){
+    const zoom=view.zoom||1,R=Math.ceil(((view.width/2+120)/24+(view.height+160)/12)/zoom/2)+4,map=window.activeMapId||0,t=performance.now();
+    if(t<candAt&&candMap===map&&candLen===mobs.length&&R<=candR&&Math.max(Math.abs(worldX-candX),Math.abs(worldY-candY))<=4)return candList;
+    candAt=t+250;candMap=map;candLen=mobs.length;candR=R+6;candX=worldX;candY=worldY;
+    const near=(x,y)=>Math.max(Math.abs(worldX-x),Math.abs(worldY-y))<=candR+4;
+    candList=mobs.filter(m=>(m.spawn.mapId||0)===map&&(m.spawn.bot&&m.fp?.hidden||near(m.x,m.y)||near(m.homeX,m.homeY)||m.step&&near(m.step.x,m.step.y)));
+    return candList;
+  }
   function draw(view,now){
     ensurePopulation();
     const playing=window.gameFlowState==='playing'&&sceneStarted;
@@ -233,7 +244,7 @@ const IslandMonsters = (() => {
     pen.imageSmoothingEnabled=false;
     const scale=characterRenderScale();
     const visible=[];
-    for(const mob of mobs){
+    for(const mob of drawCandidates(view)){
       if((mob.spawn.mapId||0)!==(window.activeMapId||0))continue;
       if(mob.spawn.bot&&mob.fp?.hidden){advance(mob,now);continue;}
       if(!mob.hp){

@@ -72,8 +72,21 @@ const NativeWorld=(()=>{const names=document.createElement('style');names.textCo
   if(foregroundRect)fp.clearRect(foregroundRect.left-2,foregroundRect.top-2,foregroundRect.width+4,foregroundRect.height+4);
   foregroundRect=null;if(!cover.size||rasterView?.mapId!==(window.activeMapId||0))return;
   const box={left:bx,top:by,width:bw,height:bh};fp.save();fp.beginPath();fp.rect(bx,by,bw,bh);fp.clip();
-  for(const key of cover)for(const [x,y,t]of foregroundGroups.get(key)||[])if(inBox(x,y,v,box))tileImage(fp,t,x,y,v);
+  for(const key of cover)for(const [x,y,t]of rowsNear(key,v,box))if(inBox(x,y,v,box))tileImage(fp,t,x,y,v);
   fp.restore();foregroundRect=box;
+ }
+ // 2026-11-19 地監打怪 lag：遮擋層原本每隻怪每格都把「整面牆」的所有圖塊掃一遍（一面牆可能上千塊），佔畫怪物層九成。
+ //  改成每面牆依位置分成 128px 小格，只取怪物身體範圍附近那幾格的圖塊，再照原本順序畫（重疊順序不變）。
+ let bucketSource=null;const groupBuckets=new Map();
+ function rowsNear(id,v,b){
+  if(bucketSource!==foregroundGroups){bucketSource=foregroundGroups;groupBuckets.clear();}
+  let g=groupBuckets.get(id);
+  if(!g){const rows=foregroundGroups.get(id)||[];g={rows,cells:new Map()};rows.forEach((r,i)=>{const k=Math.floor(r[0]/128)*65536+Math.floor(r[1]/128);let a=g.cells.get(k);if(!a)g.cells.set(k,a=[]);a.push(i);});groupBuckets.set(id,g);}
+  if(g.rows.length<=24)return g.rows;
+  const x0=Math.floor(((b.left-v.ox)/v.zoom-64)/128),x1=Math.floor((b.left+b.width-v.ox)/v.zoom/128),y0=Math.floor(((b.top-v.oy)/v.zoom-64)/128),y1=Math.floor((b.top+b.height-v.oy)/v.zoom/128);
+  if((x1-x0+1)*(y1-y0+1)>64)return g.rows;
+  const out=[];for(let cx=x0;cx<=x1;cx++)for(let cy=y0;cy<=y1;cy++){const a=g.cells.get(cx*65536+cy);if(a)for(const i of a)out.push(i);}
+  if(out.length>1)out.sort((p,q)=>p-q);return out.map(i=>g.rows[i]);
  }
  function inBox(x,y,v,b){const s=64*v.zoom,px=x*v.zoom+v.ox,py=y*v.zoom+v.oy;return px<b.left+b.width&&px+s>b.left&&py<b.top+b.height&&py+s>b.top}
  function paintEntity(target,v,wx,wy,bounds){
@@ -81,7 +94,7 @@ const NativeWorld=(()=>{const names=document.createElement('style');names.textCo
   if(!active||rasterView?.mapId!==(window.activeMapId||0))return;const key=Math.round(wy)+','+Math.round(wx);let ids=entityCoverCache.get(key);
   if(!ids){const found=new Set();for(const c of chunks.values())for(const gid of c.cover.get(key)||[])found.add(c.key+':'+gid);ids=[...found];if(entityCoverCache.size>=4096)entityCoverCache.clear();entityCoverCache.set(key,ids);}
   if(!ids.length)return;target.save();target.beginPath();target.rect(bounds.left,bounds.top,bounds.width,bounds.height);target.clip();
-  for(const id of ids)for(const [x,y,t]of foregroundGroups.get(id)||[])if(inBox(x,y,v,bounds))tileImage(target,t,x,y,v);target.restore();
+  for(const id of ids)for(const [x,y,t]of rowsNear(id,v,bounds))if(inBox(x,y,v,bounds))tileImage(target,t,x,y,v);target.restore();
  }
  function render(v,dpr,now){if(window.RegionBackground)return RegionBackground.render(v,dpr,now);viewNow=v;const id=window.activeMapId||0,m=mapFor(id);if(window.gameFlowState==='playing'&&!m&&!manifest){showLoading(true);return true}if(!m||window.gameFlowState!=='playing'){showLoading(false);active=false;layer.hidden=front.hidden=workerSurface.hidden=true;return false}const entering=!rasterView||rasterView.mapId!==id||rasterView.zoom!==v.zoom||Math.abs(rasterView.ox-v.ox)>rasterView.padding||Math.abs(rasterView.oy-v.oy)>rasterView.padding;showLoading(entering);active=true;viewNow=v;const actorLeft=v.width/2+'px',actorTop=v.height*v.anchorY+'px';if(actor.style.left!==actorLeft)actor.style.setProperty('left',actorLeft,'important');if(actor.style.top!==actorTop)actor.style.setProperty('top',actorTop,'important');front.hidden=false;layer.hidden=!!worker&&!!presenter;workerSurface.hidden=!worker||!presenter;{const coord=worldX+', '+worldY+' · '+(((tile(worldX,worldY)&48)===16)?'安全區':'一般區'),el=document.querySelector('#coordinates');if(el&&el.textContent!==coord)el.textContent=coord}terrainRaster.hidden=true;terrainForegroundRoot.hidden=true;document.querySelector('.native-building-interior')?.setAttribute('hidden','');const p=visualWorldPosition(now),wx=Math.round(p.x),wy=Math.round(p.y),selection=selectChunks(m,v),near=selection.near;if(!selection.prefetched&&rasterView?.mapId===id&&rasterView.padding>=192){selection.prefetched=true;for(const e of selection.prefetch)requestChunk(id,e)}const list=[];let pending=false;for(const e of near){const key=keyFor(id,e[0],e[1]),c=chunks.get(key);if(c)list.push(c);else{pending=true;requestChunk(id,e)}}warm(list,m,v);if(pending){waiting(v,now);return true}const listKey=list.map(c=>c.key).join('|'),nextEventKey=id+'|'+wx+','+wy+'|'+listKey;if(nextEventKey!==eventKey){eventKey=nextEventKey;hidden=new Set();cover=new Set();for(const c of list){const k=wy+','+wx;for(const gid of c.indoor.get(k)||[])hidden.add(c.key+':'+gid);for(const gid of c.cover.get(k)||[])cover.add(c.key+':'+gid)}eventSignature=id+'|'+[...hidden].sort().join('|')+'|'+listKey;}const signature=eventSignature;const delta=rasterView?Math.max(Math.abs(rasterView.ox-v.ox),Math.abs(rasterView.oy-v.oy)):Infinity;if(!rasterView||rasterView.padding<192||lastKey!==signature||delta>96||rasterView.zoom!==v.zoom||rasterView.width!==v.width||rasterView.height!==v.height){if(!compose(v,dpr,list,m,signature))return true}layer.style.transform=`translate3d(${v.ox-rasterView.ox-rasterView.padding}px,${v.oy-rasterView.oy-rasterView.padding}px,0)`;workerSurface.style.transform=layer.style.transform;viewNow=v;renderedSceneView=v;sceneStarted=true;terrainDirty=false;actor.hidden=false;showLoading(false);status.hidden=true;return true}
  async function prepare(id,x,y){if(window.RegionBackground)return RegionBackground.prepare(id,x,y);while(!manifest)await new Promise(r=>setTimeout(r,20));const m=mapFor(id);if(!m)throw Error('Native map unavailable');await Promise.all(m.chunks.filter(e=>Math.abs(e[0]+32-x)<192&&Math.abs(e[1]+32-y)<192).map(e=>requestChunk(id,e)));return true}
