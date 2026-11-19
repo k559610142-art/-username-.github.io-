@@ -31,11 +31,11 @@ test('完整合成圖的腳底依本體錨點，不把外圍光圈當成人物�
  assert.equal(c.morphLayer.style.left,'-48px');assert.equal(c.morphLayer.style.top,'-4px');
 });
 
-test('變身定位及魂環程式使用一致的新版本，移除清單獨立載入',()=>{
+test('變身定位及魂環程式各自有版本號且只載入一次，移除清單獨立載入',()=>{
   const html=fs.readFileSync(path.join(__dirname,'../index.html'),'utf8');
   const scripts=new Map([...html.matchAll(/src="data\/([^?"\/]+)\?v=([^"]+)"/g)].map(m=>[m[1],m[2]]));
   const versions=['transform-cards.js','monster-actions.js','soul-ring-visuals.js','tdj-systems.js'].map(name=>scripts.get(name));
-  assert(versions.every(Boolean));assert.equal(new Set(versions).size,1);assert.notEqual(scripts.get('removed-transform-cards.js'),versions[0]);
+  assert(versions.every(Boolean));for(const name of ['transform-cards.js','monster-actions.js','soul-ring-visuals.js','tdj-systems.js'])assert.equal([...html.matchAll(/src="data\/([^?"\/]+)\?v=([^"]+)"/g)].filter(m=>m[1]===name).length,1);assert.notEqual(scripts.get('removed-transform-cards.js'),versions[0]);
 });
 
 test('原始死亡騎士八方向的偏移由實際待機幀校正，而非固定左右位移',()=>{

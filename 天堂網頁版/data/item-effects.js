@@ -29,7 +29,7 @@ const ItemEffects=(()=>{
  function useScroll(e,p){
   const skill=playerSkillData.skills[p.skill];if(!skill)return say('這張魔法卷軸的魔法不存在。');
   if(!window.TransformCards?.canCast)return say('目前的變身無法使用魔法。');
-  if(/治癒|恢復/.test(skill.name)&&skill.damage?.some(Boolean)){
+  if(/治癒|恢復|體力回復|生命的祝福/.test(skill.name)&&skill.damage?.some(Boolean)){
    if(CharacterActions.dead||characterMovementBlocked()||movementAnimating())return false;
    let amount=skill.damage[0];for(let i=0;i<skill.damage[2];i++)amount+=1+Math.floor(Math.random()*Math.max(1,skill.damage[1]));
    if(!CharacterActions.play('skill'))return false;

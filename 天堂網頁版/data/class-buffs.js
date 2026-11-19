@@ -55,6 +55,7 @@ const ClassBuffs=(()=>{
   130:'mp2',146:'mp15',60:'invisible',97:'invisible',100:'bringStone',67:'poly',13:'none',27:'none',71:'none',
   36:'tame',41:'zombie',51:'summon',145:'release',154:'elemental',162:'greater',61:'need:隊友',75:'need:隊友',116:'need:血盟',118:'need:血盟',73:'need:製作'};
  const UTIL_TARGET={18:1,23:1,39:1,27:1,71:1,153:1};
+ const UNIMPLEMENTED=new Set([13,27,71,2,14,89,90,119,134,155,158,159,190,194,195,213,218,20,40,113,133,153,183,188,193,217]);
  const handles=id=>!!(SELF[id]||TARGET[id]||AREA_TARGET[id]||ATTACK[id]||AREA[id]||PASSIVE[id]||UTIL[id]);
  let invisible=false;
  const active=()=>[...buffs.keys()].filter(on).map(id=>SELF[id]||{});
@@ -167,6 +168,7 @@ const ClassBuffs=(()=>{
  }
  function cast(id){
   const skill=sk(id);if(!skill||!knows(id))return false;
+  if(UNIMPLEMENTED.has(id))return say('「'+skill.name+'」的效果尚未實裝，未消耗魔力或材料。');
   if(PASSIVE[id])return say('「'+skill.name+'」是被動技能，學會後自動生效。');
   if(UTIL[id]){if(CharacterActions.dead||window.gameFlowState!=='playing'||characterMovementBlocked()||movementAnimating()||!TransformCards.canCast||now()<(cooldowns.get(id)||0))return false;return utility(id,skill);}
   invisible=false;
@@ -201,6 +203,7 @@ const ClassBuffs=(()=>{
 
  // 魔法卷軸（data/item-effects.js）：不用學會、不耗魔力，直接得到自身輔助效果（照技能持續時間）
  function grant(id){
+  if(UNIMPLEMENTED.has(id))return false;
   const skill=sk(id);if(!skill||!SELF[id]||PASSIVE[id]||UTIL[id])return false;
   if(CharacterActions.dead||window.gameFlowState!=='playing'||characterMovementBlocked()||movementAnimating())return false;
   if(!CharacterActions.play('skill'))return false;
@@ -228,7 +231,7 @@ const ClassBuffs=(()=>{
   const t=now();
   if(barrierSet&&!on(78)){if(window.playerItemState)playerItemState.absoluteBarrier=false;barrierSet=false;}
   const vk=(on(226)?'g':'')+(on(79)?'s':'');if(vk!==vitalsKey){vitalsKey=vk;vitals();}
-  for(const c of cubes)if(t>=c.next&&t<c.until){c.next+=4000;for(const m of IslandMonsters.around(c.x,c.y,c.r)){const result=PlayerAbilityRules.magicAmount({...sk(205),id:205},m,{raw:c.dmg});if(result.critical)m.magicCriticalUntil=t+650;IslandMonsters.damage(m,Math.max(1,result.amount));}}
+  for(const c of cubes)if(t>=c.next&&t<c.until){c.next+=4000;for(const m of IslandMonsters.around(c.x,c.y,c.r)){const result=PlayerAbilityRules.magicAmount({...sk(205),id:205},m,{raw:c.dmg});if(result.critical)m.magicCriticalUntil=t+650;if(result.amount>0)IslandMonsters.damage(m,result.amount);}}
   cubes=cubes.filter(c=>t<c.until);
   for(const h of dots)if(t>=h.next&&t<h.until&&h.mob.hp){h.next+=h.every;IslandMonsters.damage(h.mob,h.dmg);}
   dots=dots.filter(h=>t<h.until&&h.mob.hp);
@@ -238,5 +241,5 @@ const ClassBuffs=(()=>{
   window.NativePotions?.layout?.();
  }
  setInterval(tick,250);
- return {handles,cast,grant,afterCast,invisible:()=>invisible,reveal:()=>{invisible=false;},resistances,rangedHitBonus,meleeHitBonus,damageBonus,reduction,ac,dodge,mpr,mr,sp,stats,maxHp:maxHpBonus,maxMp:maxMpBonus,onHit,onHurt,blocksNegative,silenced,rooted,slowed,active:id=>on(id),selfBuff:id=>!!SELF[id]&&!PASSIVE[id]&&!UTIL[id]&&(sk(id)?.duration||0)>0};
+ return {handles,implemented:id=>handles(id)&&!UNIMPLEMENTED.has(id),cast,grant,afterCast,invisible:()=>invisible,reveal:()=>{invisible=false;},resistances,rangedHitBonus,meleeHitBonus,damageBonus,reduction,ac,dodge,mpr,mr,sp,stats,maxHp:maxHpBonus,maxMp:maxMpBonus,onHit,onHurt,blocksNegative,silenced,rooted,slowed,active:id=>on(id),selfBuff:id=>!UNIMPLEMENTED.has(id)&&!!SELF[id]&&!PASSIVE[id]&&!UTIL[id]&&(sk(id)?.duration||0)>0};
 })();window.ClassBuffs=ClassBuffs;

@@ -1,0 +1,860 @@
+{
+  "mapCount": 136,
+  "routeCount": 102,
+  "routeMapCount": 65,
+  "portalCount": 682,
+  "unsupportedPortals": [
+    {
+      "source": [
+        70,
+        32935,
+        33058
+      ],
+      "target": [
+        84,
+        32734,
+        32797
+      ],
+      "note": "FI船着場->ハイネ行きの船"
+    },
+    {
+      "source": [
+        70,
+        32936,
+        33058
+      ],
+      "target": [
+        84,
+        32734,
+        32797
+      ],
+      "note": "FI船着場->ハイネ行きの船"
+    },
+    {
+      "source": [
+        70,
+        32937,
+        33058
+      ],
+      "target": [
+        84,
+        32734,
+        32797
+      ],
+      "note": "FI船着場->ハイネ行きの船"
+    },
+    {
+      "source": [
+        807,
+        32740,
+        32807
+      ],
+      "target": [
+        808,
+        32750,
+        32798
+      ],
+      "note": "MLC1F->MLC2F"
+    },
+    {
+      "source": [
+        1700,
+        32693,
+        32717
+      ],
+      "target": [
+        1703,
+        32737,
+        32862
+      ],
+      "note": "遺忘之島<>高崙研究所"
+    },
+    {
+      "source": [
+        1700,
+        32694,
+        32717
+      ],
+      "target": [
+        1703,
+        32737,
+        32862
+      ],
+      "note": "遺忘之島<>高崙研究所"
+    },
+    {
+      "source": [
+        1700,
+        32925,
+        32889
+      ],
+      "target": [
+        1703,
+        32929,
+        32941
+      ],
+      "note": "遺忘之島<>高崙研究所"
+    },
+    {
+      "source": [
+        1700,
+        32925,
+        32890
+      ],
+      "target": [
+        1703,
+        32929,
+        32941
+      ],
+      "note": "遺忘之島<>高崙研究所"
+    },
+    {
+      "source": [
+        1700,
+        32753,
+        32943
+      ],
+      "target": [
+        1703,
+        32741,
+        33024
+      ],
+      "note": "遺忘之島<>高崙研究所"
+    },
+    {
+      "source": [
+        1700,
+        32754,
+        32943
+      ],
+      "target": [
+        1703,
+        32741,
+        33024
+      ],
+      "note": "遺忘之島<>高崙研究所"
+    }
+  ],
+  "blockedDestinations": [],
+  "blockedRoutes": [],
+  "missingFiles": [],
+  "pagesChecked": 20594,
+  "chunksChecked": 1872,
+  "maps": [
+    {
+      "id": 0,
+      "name": "說話之島",
+      "viaPortable": true
+    },
+    {
+      "id": 1,
+      "name": "冒險洞窟 1樓",
+      "viaPortable": true
+    },
+    {
+      "id": 2,
+      "name": "冒險洞窟 2樓",
+      "viaPortable": true
+    },
+    {
+      "id": 3,
+      "name": "甘特之屋",
+      "viaPortable": false
+    },
+    {
+      "id": 4,
+      "name": "亞丁大陸",
+      "viaPortable": true
+    },
+    {
+      "id": 5,
+      "name": "說話之島往古魯丁的船",
+      "viaPortable": false
+    },
+    {
+      "id": 6,
+      "name": "亞丁大陸往說話之島的船",
+      "viaPortable": false
+    },
+    {
+      "id": 7,
+      "name": "古魯丁地下監獄 1樓",
+      "viaPortable": true
+    },
+    {
+      "id": 8,
+      "name": "古魯丁地下監獄 2樓",
+      "viaPortable": true
+    },
+    {
+      "id": 9,
+      "name": "古魯丁地下監獄 3樓",
+      "viaPortable": true
+    },
+    {
+      "id": 10,
+      "name": "古魯丁地下監獄 4樓",
+      "viaPortable": true
+    },
+    {
+      "id": 11,
+      "name": "古魯丁地下監獄 5樓",
+      "viaPortable": true
+    },
+    {
+      "id": 12,
+      "name": "古魯丁地下監獄 6樓",
+      "viaPortable": true
+    },
+    {
+      "id": 13,
+      "name": "古魯丁地下監獄 7樓",
+      "viaPortable": true
+    },
+    {
+      "id": 14,
+      "name": "海底隧道",
+      "viaPortable": false
+    },
+    {
+      "id": 15,
+      "name": "肯特內城",
+      "viaPortable": false
+    },
+    {
+      "id": 16,
+      "name": "哈汀研究所",
+      "viaPortable": false
+    },
+    {
+      "id": 17,
+      "name": "娜魯帕洞穴",
+      "viaPortable": false
+    },
+    {
+      "id": 19,
+      "name": "妖精森林地監 1樓",
+      "viaPortable": true
+    },
+    {
+      "id": 20,
+      "name": "妖精森林地監 2樓",
+      "viaPortable": true
+    },
+    {
+      "id": 21,
+      "name": "妖精森林地監 3樓",
+      "viaPortable": true
+    },
+    {
+      "id": 22,
+      "name": "傑瑞德的試煉地監",
+      "viaPortable": false
+    },
+    {
+      "id": 23,
+      "name": "風木城地監 1樓",
+      "viaPortable": true
+    },
+    {
+      "id": 24,
+      "name": "風木城地監 2樓",
+      "viaPortable": true
+    },
+    {
+      "id": 25,
+      "name": "騎士洞穴 1樓",
+      "viaPortable": true
+    },
+    {
+      "id": 26,
+      "name": "騎士洞穴 2樓",
+      "viaPortable": true
+    },
+    {
+      "id": 27,
+      "name": "騎士洞穴 3樓",
+      "viaPortable": true
+    },
+    {
+      "id": 28,
+      "name": "騎士洞穴 4樓",
+      "viaPortable": true
+    },
+    {
+      "id": 29,
+      "name": "風木城內城",
+      "viaPortable": false
+    },
+    {
+      "id": 30,
+      "name": "龍之谷地監 1樓",
+      "viaPortable": true
+    },
+    {
+      "id": 31,
+      "name": "龍之谷地監 2樓",
+      "viaPortable": true
+    },
+    {
+      "id": 32,
+      "name": "龍之谷地監 3樓",
+      "viaPortable": true
+    },
+    {
+      "id": 33,
+      "name": "龍之谷地監 4樓",
+      "viaPortable": true
+    },
+    {
+      "id": 35,
+      "name": "龍之谷地監 5樓",
+      "viaPortable": true
+    },
+    {
+      "id": 36,
+      "name": "龍之谷地監 6樓",
+      "viaPortable": true
+    },
+    {
+      "id": 37,
+      "name": "龍之谷地監 7樓",
+      "viaPortable": false
+    },
+    {
+      "id": 43,
+      "name": "巨蟻洞穴",
+      "viaPortable": true
+    },
+    {
+      "id": 44,
+      "name": "巨蟻洞穴",
+      "viaPortable": true
+    },
+    {
+      "id": 45,
+      "name": "巨蟻洞穴",
+      "viaPortable": true
+    },
+    {
+      "id": 46,
+      "name": "巨蟻洞穴",
+      "viaPortable": true
+    },
+    {
+      "id": 47,
+      "name": "巨蟻洞穴",
+      "viaPortable": true
+    },
+    {
+      "id": 48,
+      "name": "巨蟻洞穴",
+      "viaPortable": true
+    },
+    {
+      "id": 49,
+      "name": "巨蟻洞穴",
+      "viaPortable": true
+    },
+    {
+      "id": 50,
+      "name": "巨蟻洞穴",
+      "viaPortable": true
+    },
+    {
+      "id": 51,
+      "name": "巨蟻洞穴",
+      "viaPortable": false
+    },
+    {
+      "id": 52,
+      "name": "奇岩內城",
+      "viaPortable": false
+    },
+    {
+      "id": 53,
+      "name": "奇岩地監 1樓",
+      "viaPortable": true
+    },
+    {
+      "id": 54,
+      "name": "奇岩地監 2樓",
+      "viaPortable": true
+    },
+    {
+      "id": 55,
+      "name": "奇岩地監 3樓",
+      "viaPortable": true
+    },
+    {
+      "id": 56,
+      "name": "奇岩地監 4樓",
+      "viaPortable": true
+    },
+    {
+      "id": 59,
+      "name": "伊娃王國地監 1樓",
+      "viaPortable": true
+    },
+    {
+      "id": 60,
+      "name": "伊娃王國地監 2樓",
+      "viaPortable": true
+    },
+    {
+      "id": 61,
+      "name": "伊娃王國地監 3樓",
+      "viaPortable": true
+    },
+    {
+      "id": 62,
+      "name": "伊娃神殿",
+      "viaPortable": false
+    },
+    {
+      "id": 63,
+      "name": "伊娃王國",
+      "viaPortable": true
+    },
+    {
+      "id": 64,
+      "name": "海音內城",
+      "viaPortable": false
+    },
+    {
+      "id": 65,
+      "name": "法利昂棲息地",
+      "viaPortable": false
+    },
+    {
+      "id": 66,
+      "name": "侏儒洞穴",
+      "viaPortable": false
+    },
+    {
+      "id": 67,
+      "name": "巴拉卡斯棲息地",
+      "viaPortable": false
+    },
+    {
+      "id": 70,
+      "name": "遺忘之島",
+      "viaPortable": true
+    },
+    {
+      "id": 75,
+      "name": "象牙塔 1樓",
+      "viaPortable": true
+    },
+    {
+      "id": 76,
+      "name": "象牙塔 2樓",
+      "viaPortable": true
+    },
+    {
+      "id": 77,
+      "name": "象牙塔 3樓",
+      "viaPortable": true
+    },
+    {
+      "id": 83,
+      "name": "往遺忘之島的船",
+      "viaPortable": false
+    },
+    {
+      "id": 101,
+      "name": "傲慢之塔 1樓",
+      "viaPortable": true
+    },
+    {
+      "id": 102,
+      "name": "傲慢之塔 2樓",
+      "viaPortable": false
+    },
+    {
+      "id": 103,
+      "name": "傲慢之塔 3樓",
+      "viaPortable": false
+    },
+    {
+      "id": 104,
+      "name": "傲慢之塔 4樓",
+      "viaPortable": false
+    },
+    {
+      "id": 105,
+      "name": "傲慢之塔 5樓",
+      "viaPortable": false
+    },
+    {
+      "id": 106,
+      "name": "傲慢之塔 6樓",
+      "viaPortable": false
+    },
+    {
+      "id": 107,
+      "name": "傲慢之塔 7樓",
+      "viaPortable": false
+    },
+    {
+      "id": 108,
+      "name": "傲慢之塔 8樓",
+      "viaPortable": false
+    },
+    {
+      "id": 109,
+      "name": "傲慢之塔 9樓",
+      "viaPortable": false
+    },
+    {
+      "id": 110,
+      "name": "傲慢之塔 10樓",
+      "viaPortable": false
+    },
+    {
+      "id": 237,
+      "name": "吉姆的密室",
+      "viaPortable": false
+    },
+    {
+      "id": 260,
+      "name": "妖堡內城",
+      "viaPortable": false
+    },
+    {
+      "id": 300,
+      "name": "亞丁內城",
+      "viaPortable": false
+    },
+    {
+      "id": 301,
+      "name": "傲慢之塔地下水路",
+      "viaPortable": false
+    },
+    {
+      "id": 304,
+      "name": "沉默洞穴",
+      "viaPortable": true
+    },
+    {
+      "id": 305,
+      "name": "布魯迪卡洞穴",
+      "viaPortable": false
+    },
+    {
+      "id": 307,
+      "name": "拉斯塔巴德地下洞穴 1樓",
+      "viaPortable": true
+    },
+    {
+      "id": 308,
+      "name": "拉斯塔巴德地下洞穴 2樓",
+      "viaPortable": true
+    },
+    {
+      "id": 309,
+      "name": "拉斯塔巴德地下洞穴 3樓",
+      "viaPortable": true
+    },
+    {
+      "id": 310,
+      "name": "歐姆地監",
+      "viaPortable": true
+    },
+    {
+      "id": 320,
+      "name": "狄亞得要塞",
+      "viaPortable": true
+    },
+    {
+      "id": 330,
+      "name": "礦物洞穴",
+      "viaPortable": true
+    },
+    {
+      "id": 400,
+      "name": "大洞穴隱遁者村莊地區",
+      "viaPortable": true
+    },
+    {
+      "id": 401,
+      "name": "大洞穴隱遁者地區",
+      "viaPortable": false
+    },
+    {
+      "id": 410,
+      "name": "魔族神殿",
+      "viaPortable": true
+    },
+    {
+      "id": 420,
+      "name": "地底湖",
+      "viaPortable": true
+    },
+    {
+      "id": 430,
+      "name": "精靈墓穴",
+      "viaPortable": true
+    },
+    {
+      "id": 450,
+      "name": "拉斯塔巴德正門",
+      "viaPortable": false
+    },
+    {
+      "id": 451,
+      "name": "1樓 集會場",
+      "viaPortable": false
+    },
+    {
+      "id": 452,
+      "name": "1樓 突擊隊訓練場",
+      "viaPortable": true
+    },
+    {
+      "id": 453,
+      "name": "1樓 魔獸軍王之室",
+      "viaPortable": false
+    },
+    {
+      "id": 454,
+      "name": "1樓 魔獸調教場",
+      "viaPortable": false
+    },
+    {
+      "id": 455,
+      "name": "1樓 魔獸訓練場",
+      "viaPortable": false
+    },
+    {
+      "id": 456,
+      "name": "1樓 魔獸召喚室",
+      "viaPortable": false
+    },
+    {
+      "id": 457,
+      "name": "1樓 黑暗結界",
+      "viaPortable": false
+    },
+    {
+      "id": 460,
+      "name": "2樓 黑魔法修練場",
+      "viaPortable": false
+    },
+    {
+      "id": 461,
+      "name": "2樓 黑魔法研究室",
+      "viaPortable": true
+    },
+    {
+      "id": 462,
+      "name": "2樓 法令軍王之室",
+      "viaPortable": false
+    },
+    {
+      "id": 463,
+      "name": "2樓 法令軍王的書房",
+      "viaPortable": false
+    },
+    {
+      "id": 464,
+      "name": "2樓 暗黑精靈召喚室",
+      "viaPortable": false
+    },
+    {
+      "id": 465,
+      "name": "2樓 暗黑精靈棲息地",
+      "viaPortable": false
+    },
+    {
+      "id": 466,
+      "name": "2樓 暗黑精靈研究室",
+      "viaPortable": false
+    },
+    {
+      "id": 467,
+      "name": "2樓 黑暗結界",
+      "viaPortable": false
+    },
+    {
+      "id": 468,
+      "name": "2樓 黑暗結界",
+      "viaPortable": false
+    },
+    {
+      "id": 470,
+      "name": "3樓 惡靈祭壇",
+      "viaPortable": false
+    },
+    {
+      "id": 471,
+      "name": "3樓 惡靈之主祭壇",
+      "viaPortable": true
+    },
+    {
+      "id": 472,
+      "name": "3樓 傭兵訓練場",
+      "viaPortable": false
+    },
+    {
+      "id": 473,
+      "name": "3樓 冥法軍訓練場",
+      "viaPortable": false
+    },
+    {
+      "id": 474,
+      "name": "3樓 歐姆實驗室",
+      "viaPortable": false
+    },
+    {
+      "id": 475,
+      "name": "3樓 冥法軍王之室",
+      "viaPortable": false
+    },
+    {
+      "id": 476,
+      "name": "3樓 中央控制室",
+      "viaPortable": false
+    },
+    {
+      "id": 477,
+      "name": "3樓 惡靈之主傭兵室",
+      "viaPortable": false
+    },
+    {
+      "id": 478,
+      "name": "3樓 控制室走廊",
+      "viaPortable": false
+    },
+    {
+      "id": 490,
+      "name": "地下訓練場",
+      "viaPortable": false
+    },
+    {
+      "id": 491,
+      "name": "地下通道",
+      "viaPortable": false
+    },
+    {
+      "id": 492,
+      "name": "暗殺軍王之室",
+      "viaPortable": false
+    },
+    {
+      "id": 493,
+      "name": "地下控制室",
+      "viaPortable": false
+    },
+    {
+      "id": 494,
+      "name": "地下處刑場",
+      "viaPortable": false
+    },
+    {
+      "id": 495,
+      "name": "地下競技場",
+      "viaPortable": true
+    },
+    {
+      "id": 496,
+      "name": "地下監獄",
+      "viaPortable": false
+    },
+    {
+      "id": 530,
+      "name": "4樓 格蘭肯神殿、長老．琪娜之室",
+      "viaPortable": false
+    },
+    {
+      "id": 531,
+      "name": "4樓 長老．巴塔斯之室、長老．安迪斯之室",
+      "viaPortable": false
+    },
+    {
+      "id": 532,
+      "name": "4樓 庭園廣場、長老．艾迪爾之室",
+      "viaPortable": false
+    },
+    {
+      "id": 533,
+      "name": "4樓 長老．泰瑪斯之室、長老．拉曼斯之室、長老．巴陸德之室",
+      "viaPortable": false
+    },
+    {
+      "id": 534,
+      "name": "4樓 長老會議廳、副神官．卡山德拉之室、真．冥皇丹特斯之室",
+      "viaPortable": false
+    },
+    {
+      "id": 536,
+      "name": "3樓 黑暗結界",
+      "viaPortable": false
+    },
+    {
+      "id": 541,
+      "name": "巨蟻洞穴",
+      "viaPortable": false
+    },
+    {
+      "id": 542,
+      "name": "巨蟻洞穴",
+      "viaPortable": false
+    },
+    {
+      "id": 543,
+      "name": "巨蟻女皇棲息地",
+      "viaPortable": false
+    },
+    {
+      "id": 807,
+      "name": "新版古魯丁地監 1樓",
+      "viaPortable": true
+    },
+    {
+      "id": 1700,
+      "name": "忘卻島",
+      "viaPortable": true
+    },
+    {
+      "id": 3301,
+      "name": "新傲慢之塔1樓",
+      "viaPortable": true
+    }
+  ],
+  "blockedDestinationsBeforeFix": [
+    {
+      "source": [
+        4,
+        33426,
+        33502
+      ],
+      "target": [
+        83,
+        33735,
+        32795
+      ],
+      "note": "ハイネ船着場->FI行きの船",
+      "reason": "outside"
+    }
+  ],
+  "runtimeCorrectedDestinations": [
+    {
+      "from": [
+        4,
+        33426,
+        33502
+      ],
+      "old": [
+        83,
+        33735,
+        32795
+      ],
+      "fixed": [
+        83,
+        32735,
+        32795
+      ]
+    }
+  ]
+}

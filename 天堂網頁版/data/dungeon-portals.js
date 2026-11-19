@@ -7,7 +7,7 @@ const DungeonPortals=(()=>{
  async function load(){
   try{
    const [fixed,random]=await Promise.all([GameDatabase.rows('dungeon'),GameDatabase.rows('dungeon_random').catch(()=>[])]);
-   for(const r of fixed)portals.set(key(+r.src_mapid,+r.src_x,+r.src_y),{targets:[[+r.new_mapid,+r.new_x,+r.new_y]],note:r.note});
+   for(const r of fixed)portals.set(key(+r.src_mapid,+r.src_x,+r.src_y),{targets:[[+r.new_mapid,(+r.new_mapid===83&&+r.new_x===33735)?32735:+r.new_x,+r.new_y]],note:r.note});
    for(const r of random){const targets=[1,2,3,4,5].map(i=>[+r['new_mapid'+i],+r['new_x'+i],+r['new_y'+i]]).filter(t=>t[1]&&t[2]);if(targets.length)portals.set(key(+r.src_mapid,+r.src_x,+r.src_y),{targets,note:r.note});}
    const cells=new Map();for(const k of portals.keys()){const m=+k.slice(0,k.indexOf(':'));if(!cells.has(m))cells.set(m,[]);cells.get(m).push(k.slice(k.indexOf(':')+1).split(',').map(Number));}
    for(const [m,list]of cells)NativeCollision.addEntrances(m,list);

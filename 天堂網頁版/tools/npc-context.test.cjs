@@ -47,11 +47,11 @@ test('順飛不搬動舊 NPC，新區域等候後才出現自己的路人',()=>{
 test('長期離開的路人才會退場，冷卻名字不立即在下一個區域重用',()=>{
  const f=populationFixture();f.c.maintain();f.c.worldX=f.c.worldY=1000;f.advance(10000);f.c.maintain();assert.ok(f.list.includes(f.old));f.advance(301000);f.c.maintain();assert.ok(!f.list.includes(f.old));assert.ok(f.c.recentlyDeparted.get('原區域路人')>f.c.movementTime());
 });
-test('不同區域有不同人口密度，野外允許沒有路人',()=>{
- const f=populationFixture(),counts=new Set();for(let x=0;x<20;x++)counts.add(f.c.areaDemand(4,x*64,1000,false));assert.ok(counts.has(0));assert.ok(counts.size>=3);assert.ok(f.c.areaDemand(4,1000,1000,true)>=6);
+test('不同區域有不同人口密度，符合村莊12～18與野外2～10人的設定',()=>{
+ const f=populationFixture(),counts=new Set();for(let x=0;x<20;x++)counts.add(f.c.areaDemand(4,x*64,1000,false));assert.ok([...counts].every(n=>n>=2&&n<=10));assert.ok(counts.size>=3);assert.ok(f.c.areaDemand(4,1000,1000,true)>=12);
 });
 test('新路人的選名也遵守退場冷卻，不只檢查舊存檔',()=>{
- const c={roster:[],used:new Set(),recentlyDeparted:new Map([['舊路人',99999]]),movementTime:()=>1000,lookOf:()=>null,stallNames:()=>new Set(),looks:[{avatar:'hero',role:'騎士',weapon:'sword1',id:1,attackMs:640}],A:{avatars:{hero:{gender:0}}},CLASS_NAMES:{騎士:{any:[],m:[],f:[]}},NAMES:['舊路人','新路人'],GENDER_NAMES:[[],[]],pick:a=>a[0],Math,ri:a=>a,rnd:a=>a,rollClan:()=>null,RANGED:{},safe:()=>false,window:{activeMapId:4},preloadLook(){},remember(){},IslandMonsters:{addAlly(){}}};
+ const c={roster:[],used:new Set(),recentlyDeparted:new Map([['舊路人',99999]]),movementTime:()=>1000,lookOf:()=>null,stallNames:()=>new Set(),looks:[{avatar:'hero',role:'騎士',weapon:'sword1',id:1,attackMs:640}],A:{avatars:{hero:{gender:0}}},CLASS_NAMES:{騎士:{any:[],m:[],f:[]}},NAMES:['舊路人','新路人'],GEN_NAMES:['舊路人','新路人'],RED_NAMES:[],GENDER_NAMES:[[],[]],pick:a=>a[0],Math,ri:a=>a,rnd:a=>a,rollClan:()=>null,RANGED:{},safe:()=>false,window:{activeMapId:4},preloadLook(){},remember(){},IslandMonsters:{addAlly(){}}};
  vm.createContext(c);const source=read('fake-players.js');vm.runInContext(source.slice(source.indexOf(' function make('),source.indexOf(' const preloaded=')),c);
  assert.equal(c.make(10,10).spawn.npc.name,'新路人');
 });
