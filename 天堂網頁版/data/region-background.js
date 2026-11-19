@@ -17,8 +17,14 @@ const RegionBackground=(()=>{
     const decoded=()=>{item.ready=true;item.bytes=item.image.naturalWidth*item.image.naturalHeight*4;item.resolve(item);finish();};
     if(item.image.decode)item.image.decode().then(decoded,decoded);else decoded();
    };
-   item.image.onerror=()=>{item.failed=true;item.reject(Error('無法讀取分區地圖圖片：'+item.file));finish();};
-   item.image.src=base+item.file;
+   // 2026-11-19 使用者傳送時出現「無法讀取分區地圖圖片」：檔案其實在，是那次下載剛好失敗（網路瞬斷、網站部署中），
+   //  原本失敗一次就永久記成壞圖、傳送一直失敗到重新整理。改成自動重試 3 次（0.8、2、4 秒後，網址加 r= 避開快取的錯誤），都失敗才報錯。
+   item.image.onerror=()=>{
+    item.tries=(item.tries||0)+1;
+    if(item.tries<=3){inFlight--;setTimeout(()=>{item.started=false;queue.unshift(item);pump();},[800,2000,4000][item.tries-1]);return;}
+    item.failed=true;item.reject(Error('無法讀取分區地圖圖片：'+item.file));finish();
+   };
+   item.image.src=base+item.file+(item.tries?'?r='+item.tries:'');
   }
  }
  function image(file,priority=false){
