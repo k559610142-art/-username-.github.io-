@@ -169,7 +169,8 @@ const IslandMonsters = (() => {
       mob.rest=now+1400+Math.random()*2300;
     }
     // 假人連續走路：下一步從上一步結束的時間點接著算，不會每格停一下
-    if(mob.spawn.bot){window.FakePlayers?.update(mob,stepEnd&&now-stepEnd<250?stepEnd:now,stepToward);return;}
+    // 2026-11-19 手機 lag：假玩家的 AI 原本每一格畫面（60 次/秒）都重算，佔畫怪物層約四成；改成每 0.1 秒想一次，剛走完一格時立刻接下一步（走路不會頓）。
+    if(mob.spawn.bot){if(!stepEnd&&now<(mob.fpThinkAt||0))return;mob.fpThinkAt=now+100;window.FakePlayers?.update(mob,stepEnd&&now-stepEnd<250?stepEnd:now,stepToward);return;}
     if(mob.spawn.ally){window.Summons?.update(mob,now,stepToward);return;}    if(IslandNpcAi.update(mob,now,mobs,steps,stepToward))return;
     // 消氣的常駐 NPC（被強制攻擊追出去的警衛）走回原位
     if(mob.spawn.resident){if(!mob.step&&now>=mob.rest&&(mob.x!==mob.homeX||mob.y!==mob.homeY)&&!stepToward(mob,mob.homeX,mob.homeY,now))mob.rest=now+1000;return;}

@@ -22,3 +22,16 @@ const ScreenSettings=(()=>{
  };
  document.addEventListener('fullscreenchange',()=>refresh());document.addEventListener('webkitfullscreenchange',()=>refresh());apply(mode);return {apply,get mode(){return mode}};
 })();window.ScreenSettings=ScreenSettings;
+// 2026-11-19 iPhone 加入主畫面（standalone）直式：畫面從螢幕最上緣開始畫，背包／技能被瀏海／動態島蓋住，下面反而空一條黑邊。
+//  把遊戲畫面往下移「瀏海高度」；若螢幕下方沒有多出來的空間，就把高度一起扣掉，避免底部被切掉。
+(()=>{const probe=document.createElement('div');probe.style.cssText='position:fixed;left:0;top:0;width:0;visibility:hidden;pointer-events:none;padding-top:env(safe-area-inset-top)';
+ const st=document.createElement('style');document.head.append(st);
+ const fit=()=>{let css='';try{
+  const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+  if(standalone&&innerHeight>innerWidth){if(!probe.isConnected)document.body.append(probe);
+   const inset=parseFloat(getComputedStyle(probe).paddingTop)||0;
+   if(inset>0){const spare=Math.max(0,(screen.height||0)-innerHeight),cut=spare>=inset-2?0:inset;
+    css=`main.game{margin-top:${inset}px!important}`+(cut?`main.game[data-screen-size]{--stage-height:calc(100dvh - ${cut}px);height:calc(100dvh - ${cut}px)!important}`:'');}}
+ }catch{}if(st.textContent!==css)st.textContent=css;};
+ addEventListener('resize',fit);addEventListener('orientationchange',()=>setTimeout(fit,300));
+ if(document.body)fit();else addEventListener('DOMContentLoaded',fit);setTimeout(fit,1500);})();
