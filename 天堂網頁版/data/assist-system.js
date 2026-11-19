@@ -80,7 +80,7 @@ const AssistSystem=(()=>{
   return false;
  }
  const pctOf=(v,m)=>m?v*100/m:0;
- const attackSkills=ids=>ids.filter(id=>PlayerSkills.supports(id)&&!/治癒|恢復/.test(playerSkillData.skills[id].name)&&!ClassBuffs.handles(id)||[187,207,229].includes(id));
+ const attackSkills=ids=>ids.filter(id=>PlayerSkills.supports(id)&&!/治癒|恢復/.test(playerSkillData.skills[id].name)&&!ClassBuffs.handles(id)||[132,187,207,218,229].includes(id));
  const summonSkill=()=>[51,162,154].find(id=>learned().includes(id))||null;
  function lowHp(){const ap=AutoPotion.snapshot;return ap.homeEnabled&&maxHp&&hp*100<=maxHp*ap.homeThreshold&&(tile(worldX,worldY)&48)!==16;}
  // 撐不住先瞬移：一分鐘內前兩次用瞬間移動卷軸，第 3 次用回家卷軸
@@ -89,7 +89,7 @@ const AssistSystem=(()=>{
   const home=owned().find(e=>handler(e)==='teleport.GoHome_Reel');if(home&&TeleportScrolls.use(home.uid)){escapes=[];return true;}return false;}
  // ---- 第 4 期 ----
  const foods=()=>owned().filter(e=>ITEM_USE_RULES.definitions[e.key]?.useType==='food');
- function weightPct(){const a=window.PlayerClassStats?.read?.().attributes||window.playerAttributes||{},mw=Math.max(0,Math.floor(1500+Math.floor(((a.str||0)+(a.con||0)-18)/2)*150));let t=0;for(const e of OwnedInventory.items)t+=(e.item?.weight??0)*(e.count||1);return mw?Math.round(t/1000/mw*100):0;}
+ function weightPct(){const a=window.PlayerClassStats?.read?.().attributes||window.playerAttributes||{},mw=Math.max(0,Math.floor(1500+Math.floor(((a.str||0)+(a.con||0)-18)/2)*150));let t=0;for(const e of OwnedInventory.items)t+=(e.item?.weight??0)*(e.count||1);const capacity=window.ClassBuffs?.maxWeight?.(mw)??mw;return capacity?Math.round(t/1000/capacity*100):0;}
  const BAG_MAX=180,bagLeft=()=>BAG_MAX-OwnedInventory.items.length;
  let fullHome=false,returnAt=0,returning=false,notice=0;
  const say=(t,now)=>{if(now-notice>20000){notice=now;toast(t);}};

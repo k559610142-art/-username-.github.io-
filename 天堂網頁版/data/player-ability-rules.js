@@ -6,14 +6,14 @@ window.PlayerAbilityRules=(()=>{
  const originalManaReduction=n=>clamp(Math.floor((score(n)-12)/3),0,3);
  function magicCritical(n,items=[]){const extra=items.filter(e=>e.slot).reduce((sum,e)=>sum+(e.item.kind==='armor'?(PLAYER_ABILITY_DATA.armor[e.item.id]?.critical||0):(e.item.sourceRules?.magic_critical||0)),0);return clamp(10+(score(n)>=35?Math.floor((score(n)-30)/5):0)+extra,0,100);}
  function resistances(items,sets={}){const out={earth:0,fire:0,water:0,wind:0},buff=window.ClassBuffs?.resistances?.()||{};for(const k of Object.keys(out)){out[k]=(sets['defense_'+k]||0)+(buff[k]||0)+(window.SoulRings?.bonuses()[k]||0);for(const e of items.filter(e=>e.slot)){const native=e.item.kind==='armor'?PLAYER_ABILITY_DATA.armor[e.item.id]:null;out[k]+=native?.[k]??e.item.sourceRules?.['defense_'+k]??0;}}return out;}
- function statusResistances(items){const out={stone:0,freeze:0,stun:0,sleep:0,sustain:0,blind:0};for(const e of items.filter(e=>e.slot))for(const k of Object.keys(out))out[k]+=(e.item.kind==='armor'?PLAYER_ABILITY_DATA.armor[e.item.id]?.control?.[k]:undefined)??e.item.sourceRules?.['regist_'+k]??0;const doll=window.DollEffects?.status()||{};for(const k of Object.keys(out))out[k]+=doll[k]||0;return out;}
+ function statusResistances(items){const out={stone:0,freeze:0,stun:0,sleep:0,sustain:0,blind:0};for(const e of items.filter(e=>e.slot))for(const k of Object.keys(out))out[k]+=(e.item.kind==='armor'?PLAYER_ABILITY_DATA.armor[e.item.id]?.control?.[k]:undefined)??e.item.sourceRules?.['regist_'+k]??0;const doll=window.DollEffects?.status()||{};for(const k of Object.keys(out))out[k]+=doll[k]||0;const extra=window.ClassBuffs?.statusResistances?.()||{};for(const k of Object.keys(out))out[k]+=extra[k]||0;return out;}
  const element=skill=>({1:'earth',2:'fire',4:'water',8:'wind'}[skill?.attr??skill?.spell?.attr??PLAYER_ABILITY_DATA.skills[skill?.id]?.attr]||null);
  const elementalFactor=(skill,res={})=>{const k=element(skill);return k?1-.0032*clamp(Number(res[k])||0,-100,100):1;};
  const mrFactor=mr=>Math.max(0,mr<100?1-Math.floor(Math.max(0,mr)/2)*.01:.6-Math.floor(mr/10)*.01);
  function manaCost(skill,profile=PlayerClassStats.read()){const base=Math.max(0,Number(skill.mp)||0);if(!base)return 0;return Math.max(1,Math.floor(base*(100-manaReduction(profile.attributes.int))/100)-originalManaReduction(window.playerAttributes?.int));}
  function magicHitBonus(){const items=window.OwnedInventory?.items||[],soul=window.SoulRings?.bonuses()||{};return items.filter(e=>e.slot).reduce((n,e)=>n+(Number(e.item.sourceRules?.magic_hit_modifier)||0),0)+(window.PlayerClassStats?.read()?.equipmentSets?.magic_hit_modifier||0)+(soul.magicHit||0);}
  function statusChance(skill,mob,{profile=PlayerClassStats.read()}={}){
-  const n=mob?.spawn?.npc||{},raw=n.raw||{},meta=PLAYER_ABILITY_DATA.skills[skill?.id]||{},level=Number(profile.level??window.activeCharacterLevel)||1,targetLevel=Number(n.level)||1;
+  const n=window.ClassBuffs?.targetNpc?.(mob)||mob?.spawn?.npc||{},raw=n.raw||{},meta=PLAYER_ABILITY_DATA.skills[skill?.id]||{},level=Number(profile.level??window.activeCharacterLevel)||1,targetLevel=Number(n.level)||1;
   const kind=/石化|木乃伊/.test(skill?.name||'')?'stone':/冰|寒|凍/.test(skill?.name||'')?'freeze':/暈|昏|衝擊|擊暈/.test(skill?.name||'')?'stun':/睡|沉睡/.test(skill?.name||'')?'sleep':/束縛|定身|纏繞/.test(skill?.name||'')?'sustain':'blind';
   const resist=Math.max(0,Number(n.status?.[kind]??raw['regist_'+kind])||0);if(resist>=100)return 0;
   const physical=meta.type===1||[87,183,188,193,230].includes(skill?.id),power=intelligencePower(profile.attributes?.int);
@@ -24,7 +24,7 @@ window.PlayerAbilityRules=(()=>{
  function statusHits(skill,mob,{rng=Math.random,...options}={}){return rng()*100<statusChance(skill,mob,options);}
  function magicAmount(skill,mob,{healing=false,raw,rng=Math.random,profile=PlayerClassStats.read()}={}){
   let amount=raw;if(amount===undefined){amount=skill.damage?.[0]||0;for(let i=0;i<(skill.damage?.[2]||0);i++)amount+=1+Math.floor(rng()*Math.max(1,skill.damage[1]));}
-  const power=intelligencePower(profile.attributes.int)+(profile.sp||0);amount=Math.max(0,Math.floor(amount*Math.max(0,1+power*.05)));
+  const power=healing?intelligencePower(profile.attributes.wis):intelligencePower(profile.attributes.int)+(profile.sp||0);amount=Math.max(0,Math.floor(amount*Math.max(0,1+power*.05)));
   const critical=!healing&&rng()*100<magicCritical(profile.attributes.int,window.OwnedInventory?.items||[]);if(critical)amount=Math.floor(amount*1.5);
   if(!healing){const n=mob?.spawn?.npc||{};amount=Math.floor(amount*mrFactor(Number(n.mr)||0)*elementalFactor(skill,n.elements||{}));}
   return {amount:Math.max(0,amount),critical,power};

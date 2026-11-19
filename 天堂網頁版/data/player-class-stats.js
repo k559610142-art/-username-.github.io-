@@ -25,6 +25,7 @@ const PlayerClassStats = (() => {
     const hpDie = Math.max(1, (level < 12 ? 0 : con <= 17 ? 5 : 6 + Math.trunc((con - 12) / 2)) + highStat(base.con));
     const naturalMp = wis <= 9 ? 1 : 1 + Math.trunc((wis - 5) / 5);
     const mpAmount = naturalMp + highStat(base.wis) + gearMp + (window.NativePotions?.recoveryBonus(wis,base.wis)||0) + (window.ClassBuffs?.mpr()||0);
+    gearHp+=(window.ClassBuffs?.hpr?.()||0);
     const hpMin = 1 + gearHp, hpMax = hpDie + gearHp;
     return {attributes, level, weapon, sp:items.filter(e=>e.slot).reduce((n,e)=>n+(e.item.sourceRules?.add_sp||0),0)+(equipmentSets.sp||0)+(window.NativePotions?.spBonus||0)+(window.ClassBuffs?.sp()||0)+(soul.sp||0), hpDie, gearHp, mpAmount, equipmentSets,
       meleeBonus: (window.PlayerAbilityRules?.strengthDamage(attributes.str)||0)+(job === '騎士' ? Math.trunc(level / 10) : 0)+(window.DBGameRules?.damageBonus(false)||0),

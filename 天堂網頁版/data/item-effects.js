@@ -12,7 +12,7 @@ const ItemEffects=(()=>{
   let m=h.match(/^event\.(S?)Exp(\d+)(?:\s+(\d+))?/);
   if(m){const pct=name.match(/(\d+)%/),times=name.match(/(\d+(?:\.\d+)?)倍/);const rate=pct?Number(pct[1])/100:times?Number(times[1]):Number(m[2])/10;
    return {kind:'exp',rate,sec:Number(m[3])||(m[1]?1800:600)};}
-  m=h.match(/^magicreel\.MagicReel_(Spell|Buff|Armor|Weapon)\s+(\d+)/);
+  m=h.match(/^magicreel\.MagicReel_(Spell|Buff|Armor|Weapon|Long)\s+(\d+)/);
   if(m)return {kind:'scroll',skill:Number(m[2])};
   return null;
  }
@@ -31,10 +31,13 @@ const ItemEffects=(()=>{
   if(!window.TransformCards?.canCast)return say('目前的變身無法使用魔法。');
   if(/治癒|恢復|體力回復|生命的祝福/.test(skill.name)&&skill.damage?.some(Boolean)){
    if(CharacterActions.dead||characterMovementBlocked()||movementAnimating())return false;
-   let amount=skill.damage[0];for(let i=0;i<skill.damage[2];i++)amount+=1+Math.floor(Math.random()*Math.max(1,skill.damage[1]));
+   if(window.GroupHealing?.isGroup(skill)&&window.LocalServerClient?.online)return GroupHealing.castOnline(skill,{scrollUid:e.uid});
+   const amount=PlayerAbilityRules.magicAmount(skill,null,{healing:true}).amount;
    if(!CharacterActions.play('skill'))return false;
    if(!consume(e,{hp:Math.min(maxHp,hp+amount)}))return false;
+   window.GroupHealing?.applyAllies(skill,amount);
    IslandMonsters.playEffect(skill.gfx,worldX,worldY,movementTime());say('使用 '+e.item.name+'：體力 +'+amount+'。');return true;}
+  if(window.PlayerSkills?.supports(p.skill))return PlayerSkills.cast(p.skill,{scroll:true,scrollUid:e.uid,pay:()=>consume(e)});
   if(!window.ClassBuffs?.selfBuff(p.skill))return say('「'+skill.name+'」卷軸還不能使用（目前只接自身輔助與治癒魔法）。');
   if(!ClassBuffs.grant(p.skill))return false;
   if(!consume(e))return false;

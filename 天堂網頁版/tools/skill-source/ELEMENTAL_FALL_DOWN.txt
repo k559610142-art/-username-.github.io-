@@ -1,0 +1,6 @@
+=== ELEMENTAL_FALL_DOWN.class
+start: 0 133 @L1Character.hasSkillEffect @L1PcInstance.getElfAttr -50 0 79 @S_ServerMessage.<init> @L1PcInstance.sendPackets 1 -50 @L1PcInstance.addEarth @L1PcInstance.setAddAttrKind 2 -50 @L1PcInstance.addFire @L1PcInstance.setAddAttrKind 4 -50 @L1PcInstance.addWater @L1PcInstance.setAddAttrKind @? 8 -50 @L1PcInstance.addWind @L1PcInstance.setAddAttrKind 0 79 @S_ServerMessage.<init> @L1PcInstance.sendPackets 1 -50 @L1MonsterInstance.addEarth @L1MonsterInstance.setAddAttrKind 2 -50 @L1MonsterInstance.addFire @L1MonsterInstance.setAddAttrKind 4 -50 @L1MonsterInstance.addWater @L1MonsterInstance.setAddAttrKind @? -50 @L1MonsterInstance.addWind @L1MonsterInstance.setAddAttrKind 1 133 1000 @L1Character.setSkillEffect 0
+start: 0 0
+stop: 50 @L1PcInstance.getAddAttrKind 0 50 @L1PcInstance.addEarth 50 @L1PcInstance.addFire 50 @L1PcInstance.addWater -22529 50 @L1PcInstance.addWind 1 0 @L1PcInstance.setAddAttrKind @S_OwnCharAttrDef.<init> @L1PcInstance.sendPackets @L1NpcInstance.getAddAttrKind 0 50 @L1NpcInstance.addEarth 50 @L1NpcInstance.addFire 50 @L1NpcInstance.addWater -22529 50 @L1NpcInstance.addWind 1 0 @L1NpcInstance.setAddAttrKind
+<init>: @SkillMode.<init>
+start: 

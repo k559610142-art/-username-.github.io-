@@ -13,13 +13,13 @@
 //   祝福魔法武器 dmg+2, 狂暴術 dmg+5, 勇猛意志 dmg+5, 冥想術 MP+5, 聖結界 half damage, 靈魂昇華 max HP／MP +20%,
 //   增幅防禦 reduction (lv−50)/5+1, 反擊屏障 DB probability 25%, 毒咒 5 every 3 s.
 // Durations, costs, materials, range, area and cooldowns: DB `skills`.
-// Melee and ranged attacks use separate hit bonuses and target AC. Elements are not implemented, so effects that only change those show their status only.
+// Combat uses effective target stats without modifying shared monster templates; effects expire or reset on character change.
 const ClassBuffs=(()=>{
  const sk=id=>playerSkillData.skills[id];
- const buffs=new Map(),cooldowns=new Map(),debuffs=new WeakMap();let owner=null,cubes=[],dots=[],barrierSet=false;
+ const buffs=new Map(),cooldowns=new Map();let debuffs=new WeakMap();let owner=null,cubes=[],dots=[],barrierSet=false;
  const now=()=>movementTime();
  const knows=id=>OwnedInventory.owner===window.activeCharacterId&&OwnedInventory.skills.ids.includes(id);
- const on=id=>(buffs.get(id)||0)>now();
+ const on=id=>owner===window.activeCharacterId&&(buffs.get(id)||0)>now();
  const level=()=>window.activeCharacterLevel||1;
  const say=t=>{document.querySelector('#log').textContent=t;return false;};
  // Self buffs: ac, red(uction), dmg (melee), bow (ranged dmg), dodge, mpr, mr, sp, stats, speed, plus flags handled in code.
@@ -32,7 +32,7 @@ const ClassBuffs=(()=>{
   181:{red:5},182:{burning:1},185:{ac:-3,hit:5},186:{speed:'brave'},190:{},191:{mortal:1},194:{},195:{},
   201:{dodge:5},204:{dmg:4,hit:4},206:{mpr:2},209:{sp:2},211:{red:2},213:{},214:{ac:-8},216:{stats:{str:1,con:1,dex:1,wis:1,int:1}},
   218:{},219:{dmg:10},226:{gigantic:1},
-  // 黑妖（2026-11-17 補學法術；L1J 常見數值）：附加劇毒、毒性抵抗只顯示狀態；影之防護 AC−3、行走加速＝加速、燃燒鬥志 dmg+3、
+  // 黑妖（2026-11-17 補學法術；L1J 常見數值）：附加劇毒觸發中毒、毒性抵抗阻止感染；影之防護 AC−3、行走加速＝加速、燃燒鬥志 dmg+3、
   //  雙重破壞 dmg+4、暗影閃避 閃避+5、暗影之牙 dmg+5、力量提升 str+2、敏捷提升 dex+2、迴避提升 閃避+5
   // 精靈魔法第 6 階（2026-11-17 補）：體能激發 AC−3、水之元氣 MP 回復+3、屬性之火 dmg+3、精準射擊 遠攻命中+6、烈焰之魂 dmg+5、能量激發 dmg+2
   169:{ac:-3},170:{mpr:3},171:{dmg:3},174:{bowHit:6},175:{dmg:5},176:{dmg:2},
@@ -52,26 +52,49 @@ const ClassBuffs=(()=>{
  // REMOVE_CURSE; L1J 魔力奪取 5–14 MP, 起死回生術 kills undead at 50%). Summon kinds go to data/summons.js.
  // `need` = needs another system and only explains why.
  const UTIL={5:'teleport',69:'teleport',131:'mother',9:'cure',37:'purify',44:'purify',153:'purify',23:'sense',18:'turnUndead',39:'drain',
-  130:'mp2',146:'mp15',60:'invisible',97:'invisible',100:'bringStone',67:'poly',13:'none',27:'none',71:'none',
-  36:'tame',41:'zombie',51:'summon',145:'release',154:'elemental',162:'greater',61:'need:隊友',75:'need:隊友',116:'need:血盟',118:'need:血盟',73:'need:製作'};
+  130:'mp2',146:'mp15',60:'invisible',97:'invisible',100:'bringStone',67:'poly',13:'detect',27:'target',71:'target',
+  36:'tame',41:'zombie',51:'summon',145:'release',154:'elemental',162:'greater',61:'resurrect',75:'resurrect',116:'clan',118:'clan',73:'enchant'};
  const UTIL_TARGET={18:1,23:1,39:1,27:1,71:1,153:1};
- const UNIMPLEMENTED=new Set([13,27,71,2,14,89,90,119,134,155,158,159,190,194,195,213,218,20,40,113,133,153,183,188,193,217]);
+ // Formerly disabled spells now have mechanical hooks below. King guard has no core values:
+ // this edition defines it as a learned passive AC -2 / MR +10.
+ Object.assign(SELF,{2:{light:1},14:{weight:1.5},89:{hit:3,spikes:1},90:{bowDodge:15},134:{reflect:.1},155:{speed:'brave'},158:{hpr:15},159:{ac:-7},190:{ac:-3,status:{freeze:10}},195:{hit:5,status:{stun:10}}});
+ delete SELF[119];delete SELF[194];delete SELF[213];delete SELF[218];PASSIVE[119]=1;
+ Object.assign(TARGET,{20:{blind:1},40:{blind:1},27:{weaponBreak:1},71:{decay:1},113:{focus:1},133:{elementDown:50},153:{erase:1},183:{ac:10},188:{dodge:-5},193:{stats:{str:-3,int:-3}},217:{stats:{str:-1,con:-1,dex:-1,wis:-1,int:-1}}});
+ delete UTIL[27];delete UTIL[71];delete UTIL[153];UTIL[13]=UTIL[194]=UTIL[213]='detect';UTIL[165]='resurrect';ATTACK[218]=1;ATTACK[132]=1;AREA[63]=1;
  const handles=id=>!!(SELF[id]||TARGET[id]||AREA_TARGET[id]||ATTACK[id]||AREA[id]||PASSIVE[id]||UTIL[id]);
  let invisible=false;
  const active=()=>[...buffs.keys()].filter(on).map(id=>SELF[id]||{});
  const sum=key=>active().reduce((n,e)=>n+(typeof e[key]==='number'?e[key]:0),0);
 
  // ---- stat hooks (db-game-rules / native-combat-rules / player-class-stats / island-combat / island-npc-ai) ----
- function resistances(){const out={earth:0,fire:0,water:0,wind:0};if(on(138))for(const k of Object.keys(out))out[k]+=10;const k={'地':'earth','火':'fire','水':'water','風':'wind'}[OwnedInventory.skills.element];if(on(147)&&k)out[k]+=50;return out;}
+ function resistances(){const out={earth:0,fire:0,water:0,wind:0};for(const c of cubes)if(c.mapId===(window.activeMapId||0)&&c.until>now()&&Math.max(Math.abs(worldX-c.x),Math.abs(worldY-c.y))<=c.r&&c.id!==63){const key={205:'fire',210:'earth',215:'wind'}[c.id];if(key)out[key]=30;}if(on(138))for(const k of Object.keys(out))out[k]+=10;const k={'地':'earth','火':'fire','水':'water','風':'wind'}[OwnedInventory.skills.element];if(on(147)&&k)out[k]+=50;return out;}
  function meleeHitBonus(){return sum('hit');}
  function rangedHitBonus(){return sum('bowHit');}
  function damageBonus(ranged){return ranged?sum('bow'):sum('dmg');}
  function reduction(){let n=sum('red');if(on(88))n+=Math.max(1,Math.trunc((level()-50)/5)+1);
   if(knows(236)){const ac=window.NativeCombatRules?.armorClass?.()??0;n+=Math.max(0,Math.trunc(-ac/10));}return n;}
- function ac(){return sum('ac');}
+ function ac(){return sum('ac')+(knows(119)?-2:0);}
  function dodge(){return sum('dodge');}
  function mpr(){return sum('mpr');}
- function mr(){return sum('mr');}
+ function hpr(){return sum('hpr');}
+ function maxWeight(base){return Math.floor(base*(on(14)?1.5:1));}
+ function statusResistances(){const r={};for(const e of active())for(const [k,v]of Object.entries(e.status||{}))r[k]=(r[k]||0)+v;return r;}
+ function targetNpc(mob){const base=mob?.spawn?.npc||{},n={...base,dodge:base.dodge??base.raw?.dodge??0,er:base.er??base.raw?.er??0,elements:{...(base.elements||{})}},d=debuffs.get(mob)||{};for(const [id,until]of Object.entries(d)){if(until<=now())continue;const e=TARGET[id]||AREA_TARGET[id]||{};n.ac=(n.ac||0)+(e.ac||0);if(e.dodge){n.dodge=(n.dodge||0)+e.dodge;n.er=(n.er||0)+e.dodge;}for(const [k,v]of Object.entries(e.stats||{}))n[k]=Math.max(0,(n[k]||0)+v);if(e.elementDown){const element=d.element||'earth';n.elements[element]=(n.elements[element]||0)-e.elementDown;}if(e.erase)n.mr=Math.floor((n.mr||0)/2);if(e.blind)n.hit=(n.hit||0)-10;}
+  n.hit=(n.hit||0)+Math.floor(((n.dex||0)-(base.dex||0))/2);n.mr=Math.max(0,(n.mr||0)+((n.wis||0)-(base.wis||0))*2);n.magicMultiplier=Math.max(.1,1+((n.int||0)-(base.int||0))*.05);
+  n.dmgup=(n.dmgup||0)-(d.weaponDamage||0);return n;
+ }
+ function consumeErase(mob){const d=debuffs.get(mob);if(d)delete d[153];}
+ function vision(mob){return has(mob,'blind')?1:14;}
+ function canUsePotions(mob){return !has(mob,'decay');}
+ function focusTarget(){return focused?.hp&&(focused.spawn.mapId||0)===(window.activeMapId||0)&&has(focused,'focus')?focused:null;}
+ let focused=null;
+ function detect(skill){let count=0;for(const m of IslandMonsters.all||[]){if(!m.hp||(m.spawn.mapId||0)!==(window.activeMapId||0)||Math.max(Math.abs(m.x-worldX),Math.abs(m.y-worldY))>14||!IslandCombat.clearShot(worldX,worldY,m.x,m.y))continue;
+  // Invisible/buried monsters are distinct from dead, offline and despawned NPCs.
+  if(m.invisible||m.hiddenStatus||m.spawn.npc.invisible&&!(m.revealedUntil>now())){m.invisible=false;m.hiddenStatus=0;m.revealedUntil=now()+16000;count++;if(skill.id===213&&!m.spawn.ally)IslandMonsters.damage(m,1);IslandMonsters.playEffect(skill.gfx,m.x,m.y,now());}}
+  say(skill.name+'：已偵測周圍，現形 '+count+' 個目標。');
+ }
+ function breakWeapon(mob){let d=debuffs.get(mob);if(!d){d={};debuffs.set(mob,d);}d.weaponDamage=Math.min(5,(d.weaponDamage||0)+1);d[27]=Infinity;}
+ function mr(){return sum('mr')+(knows(119)?10:0);}
  function sp(){return sum('sp');}
  function stats(){const out={};for(const e of active())for(const [k,v]of Object.entries(e.stats||{}))out[k]=(out[k]||0)+v;return out;}
  function base(){return window.activeVitalGrowth||{maxHp:0,maxMp:0};}
@@ -98,7 +121,10 @@ const ClassBuffs=(()=>{
   if(amount<=0)return 0;
   if(on(78))return 0;
   if(skill&&on(31)){buffs.delete(31);IslandMonsters.playEffect(sk(31).gfx,worldX,worldY,t);return 0;}
+  if(skill&&on(134)&&Math.random()<.1){buffs.delete(134);IslandMonsters.damage(mob,amount);IslandMonsters.playEffect(sk(134).gfx,mob.x,mob.y,t);return 0;}
   const melee=!skill&&Math.max(Math.abs(mob.x-worldX),Math.abs(mob.y-worldY))<=1;
+  if(melee&&on(89)&&Math.random()<.1)breakWeapon(mob);
+  if(!skill&&!melee&&on(90)&&OwnedInventory.items.some(e=>e.slot&&e.item.type==='shield')&&Math.random()<.15)return 0;
   if(melee&&on(91)&&Math.random()<.25){IslandMonsters.damage(mob,amount);IslandMonsters.playEffect(sk(91).gfx,worldX,worldY,t);return 0;}
   const titan=skill?(knows(239)?239:0):!melee?(knows(238)?238:0):(knows(237)?237:0);
   if(titan&&hp<=Math.trunc(maxHp/100)*40&&Math.random()<.1){IslandMonsters.damage(mob,amount);IslandMonsters.playEffect(12555,worldX,worldY,t);return 0;}
@@ -119,16 +145,22 @@ const ClassBuffs=(()=>{
   if(id===192&&PlayerAbilityRules.statusHits({...sk(id),id},mob))stun(mob,4000);
   if(id===208&&PlayerAbilityRules.statusHits({...sk(id),id},mob))stun(mob,sk(208).duration*1000);
  }
- function speed(kind,until){window.activePotionBuffs=window.activePotionBuffs||{};window.activePotionBuffs[kind]=Math.max(Number(window.activePotionBuffs[kind])||0,until);window.NativePotions?.sync();}
+ function speed(kind,until){window.activePotionBuffs=window.activePotionBuffs||{};if(kind==='brave')delete window.activePotionBuffs.elfBrave;if(kind==='elfBrave')delete window.activePotionBuffs.brave;window.activePotionBuffs[kind]=Math.max(Number(window.activePotionBuffs[kind])||0,until);window.NativePotions?.sync();}
  function vitals(){DBGameRules.syncVitals();window.stats?.();}
 
  // ---- casting ----
- function targetInRange(skill){const mob=IslandMonsters.target,range=skill.range>0?skill.range:3;
-  return mob?.hp&&(!mob.spawn.bot||window.FakePlayers?.canAttack(mob))&&Math.max(Math.abs(mob.x-worldX),Math.abs(mob.y-worldY))<=range&&IslandCombat.clearShot(worldX,worldY,mob.x,mob.y)?mob:null;}
+ function targetInRange(skill){const mob=IslandMonsters.target,range=skill.range>0?skill.range:skill.id===132?12:skill.id===113?14:3;
+  return mob?.hp&&!mob.spawn.ally&&(!mob.spawn.resident||mob.spawn.npc.hp>0)&&(!mob.spawn.bot||window.FakePlayers?.canAttack(mob))&&Math.max(Math.abs(mob.x-worldX),Math.abs(mob.y-worldY))<=range&&IslandCombat.clearShot(worldX,worldY,mob.x,mob.y)?mob:null;}
  function applyTarget(mob,id,dur,t){
   if(mob.spawn.bot&&!window.FakePlayers?.canAttack(mob))return;
-  if(!PlayerAbilityRules.statusHits({...sk(id),id},mob)){mob.rangedMissUntil=t+650;window.IslandNpcAi?.provoke(mob,[]);return false;}
-  const e=TARGET[id]||AREA_TARGET[id];mark(mob,id,dur);
+  const hit=PlayerAbilityRules.statusHits({...sk(id),id},mob);if(id!==153)consumeErase(mob);
+  if(!hit){mob.rangedMissUntil=t+650;window.IslandNpcAi?.provoke(mob,[]);return false;}
+  const e=TARGET[id]||AREA_TARGET[id];mark(mob,id,dur||1000);
+  if(e.weaponBreak)breakWeapon(mob);
+  if(e.elementDown)debuffs.get(mob).element=({'地':'earth','火':'fire','水':'water','風':'wind'}[OwnedInventory.skills.element]||'earth');
+  if(e.focus){focused=mob;for(const ally of window.NpcSocial?.party||[])if(ally.fp?.partyOwner===window.activeCharacterId)ally.fp.partyTarget=mob;}
+  if(e.blind){mob.windup=null;mob.alert=false;}
+  if(e.erase){mob.mp=Math.max(0,mob.mp||0);mob.windup=null;}
   if(e.stun)stun(mob,dur);
   if(e.dot)dots.push({mob,until:t+dur,next:t+e.dot[1],every:e.dot[1],dmg:e.dot[0]});
  }
@@ -139,16 +171,16 @@ const ClassBuffs=(()=>{
   for(let i=0;i<1024;i++){const x=l+Math.floor(Math.random()*(r-l+1)),y=tp+Math.floor(Math.random()*(b-tp+1));if(TeleportScrolls.canLand(x,y))return {x,y};}
   return null;
  }
- function utility(id,skill){
+ function utility(id,skill,pay=()=>OwnedInventory.castCost(skill)){
   const kind=UTIL[id];
-  if(kind.startsWith('need:'))return say('「'+skill.name+'」需要'+kind.slice(5)+'系統，網頁版目前還沒有。');
+  if(['resurrect','clan','enchant'].includes(kind))return say('技能模組尚未載入，請重新整理；未消耗資源。');
   if(kind==='teleport'&&!landing())return say('這個地區無法使用瞬間移動。');
   const summon=['summon','tame','zombie','elemental','greater','release'].includes(kind)?window.Summons?.prepare(kind,skill):null;
   if(typeof summon==='string')return say(summon);
   if(summon?.menu)return true;
   if(kind==='mother'&&!WorldMaps.has(4))return false;
   let mob=null;if(UTIL_TARGET[id]){mob=targetInRange(skill);if(!mob)return say('請先選擇範圍內的目標。');}
-  if(!OwnedInventory.castCost(skill))return say('魔力、體力或材料不足。');
+  if(!(pay?pay():OwnedInventory.castCost(skill)))return say('魔力、體力或材料不足。');
   if(!CharacterActions.play('skill'))return false;
   const t=now();cooldowns.set(id,t+(skill.reuse||0));invisible=kind==='invisible';
   IslandMonsters.playEffect(skill.gfx,mob?mob.x:worldX,mob?mob.y:worldY,t);
@@ -163,47 +195,59 @@ const ClassBuffs=(()=>{
   if(kind==='mp2'||kind==='mp15'){mp=Math.min(maxMp,mp+(kind==='mp2'?2:15));window.stats?.();}
   if(kind==='poly')window.openGameCatalog?.('transforms');
   if(typeof summon==='function')summon();
-  if(kind==='none')say('「'+skill.name+'」在這個網頁版沒有可作用的對象。');
+  if(kind==='detect')detect({...skill,id});
   return true;
  }
- function cast(id){
-  const skill=sk(id);if(!skill||!knows(id))return false;
-  if(UNIMPLEMENTED.has(id))return say('「'+skill.name+'」的效果尚未實裝，未消耗魔力或材料。');
+ function cast(id,options={}){
+  const skill=sk(id);if(!skill||!options.scroll&&!knows(id))return false;
+  if(owner!==window.activeCharacterId){reset();owner=window.activeCharacterId;}
+
   if(PASSIVE[id])return say('「'+skill.name+'」是被動技能，學會後自動生效。');
-  if(UTIL[id]){if(CharacterActions.dead||window.gameFlowState!=='playing'||characterMovementBlocked()||movementAnimating()||!TransformCards.canCast||now()<(cooldowns.get(id)||0))return false;return utility(id,skill);}
+  if(window.SkillUtilities?.handles(id))return SkillUtilities.cast(id,skill,options);
+  if(UTIL[id]){if(CharacterActions.dead||window.gameFlowState!=='playing'||characterMovementBlocked()||movementAnimating()||!TransformCards.canCast||now()<(cooldowns.get(id)||0))return false;return utility(id,skill,options.pay);}
+  const pay=options.pay;
   invisible=false;
   if(CharacterActions.dead||window.gameFlowState!=='playing'||characterMovementBlocked()||movementAnimating()||!TransformCards.canCast)return false;
   if(now()<(cooldowns.get(id)||0))return false;
+  if(id===132&&!['bow','singlebow'].includes(OwnedInventory.equippedWeaponType))return say('三重矢需要裝備弓。');
+  if(id===90&&!OwnedInventory.items.some(e=>e.slot&&e.item.type==='shield'))return say('堅固防護需要裝備盾牌。');
   let mob=null;
+  if(id===133&&!OwnedInventory.skills.element)return say('請先選擇精靈屬性。');
   if(TARGET[id]||ATTACK[id]){mob=targetInRange(skill);if(!mob)return say('請先選擇範圍內的目標。');}
-  if(!OwnedInventory.castCost(skill))return say('魔力、體力或材料不足。');
+  if(!(pay?pay():OwnedInventory.castCost(id===132?{...skill,arrows:3}:skill)))return say('魔力、體力、箭矢或材料不足。');
   if(!CharacterActions.play('skill'))return false;
   const t=now(),dur=(skill.duration||0)*1000;cooldowns.set(id,t+(skill.reuse||0));
   IslandMonsters.playEffect(skill.gfx,mob?mob.x:worldX,mob?mob.y:worldY,t);
   if(SELF[id]){
-   const e=SELF[id];buffs.set(id,t+dur);
+   const e=SELF[id];
+   if([185,190,195].includes(id))for(const other of [185,190,195])buffs.delete(other);
+   if([150,155].includes(id))for(const other of [150,155])buffs.delete(other);
+   buffs.set(id,t+dur);
    if(e.speed)speed(e.speed,Date.now()+dur);
    if(e.barrier&&window.playerItemState&&!playerItemState.absoluteBarrier){playerItemState.absoluteBarrier=true;barrierSet=true;}
    if(e.gigantic||e.spirit)vitals();
   }
+  if(id===132){const p=PlayerClassStats.read(),max=Math.max(1,p.weapon?.damage[0]||2);for(let i=0;i<3;i++){if(PlayerRangedRules.hits(p,mob))IslandMonsters.damage(mob,Math.max(0,1+Math.floor(Math.random()*max)+p.rangedBonus));else mob.rangedMissUntil=t+650;}window.CombatSound?.playerAttack?.({duration:500});}
+  if(id===218){const missing=Math.max(0,maxHp-hp),damage=Math.floor(missing/5);if(damage>0)IslandMonsters.damage(mob,damage);}
   if(TARGET[id])applyTarget(mob,id,dur,t);
-  if(AREA_TARGET[id])for(const m of IslandMonsters.around(worldX,worldY,skill.area||3)){applyTarget(m,id,dur,t);IslandMonsters.playEffect(skill.gfx,m.x,m.y,t);}
+  if(AREA_TARGET[id])for(const m of IslandMonsters.around(worldX,worldY,skill.area||3)){if(!IslandCombat.clearShot(worldX,worldY,m.x,m.y))continue;applyTarget(m,id,dur,t);IslandMonsters.playEffect(skill.gfx,m.x,m.y,t);}
   // 會心一擊（黑妖）：一次重擊＝武器最大傷害×2＋近戰加成
   if((id===108||id===187||id===229)&&!PlayerRangedRules.meleeHits(PlayerClassStats.read(),mob)){mob.rangedMissUntil=t+650;window.IslandNpcAi?.provoke(mob,[]);return true;}
-  if(id===108){const p=PlayerClassStats.read(),max=Math.max(1,p.weapon?.damage[0]||2);IslandMonsters.damage(mob,max*2+p.meleeBonus+damageBonus(false));}
+  if(id===108){const p=PlayerClassStats.read(),max=Math.max(1,p.weapon?.damage[0]||2);IslandMonsters.damage(mob,max*2+p.meleeBonus);}
   if(id===187){const p=PlayerClassStats.read(),max=Math.max(1,p.weapon?.damage[0]||2);for(let i=0;i<3;i++)IslandMonsters.damage(mob,1+Math.floor(Math.random()*max)+p.meleeBonus+damageBonus(false));}
-  if(id===207){const result=PlayerAbilityRules.magicAmount({...skill,id},mob,{raw:5});if(result.critical)mob.magicCriticalUntil=t+650;if(result.amount>0)IslandMonsters.damage(mob,result.amount);}
+  if(id===207){const result=PlayerAbilityRules.magicAmount({...skill,id},mob,{raw:Math.floor((PlayerClassStats.read().sp||0)*3.8+5)});if(result.critical)mob.magicCriticalUntil=t+650;if(result.amount>0)IslandMonsters.damage(mob,result.amount);}
   if(id===229&&Math.random()<.9)dots.push({mob,until:t+dur,next:t+1000,every:1000,dmg:Math.trunc(level()/2)+6});
   // 2026-11-17 戰士裝雙斧（右手 weapon2）時連副手斧一起丟：另外 90% 機率再上一層持續傷害，數值一半
   if(id===229&&OwnedInventory.items.some(e=>e.slot==='weapon2')&&Math.random()<.9){dots.push({mob,until:t+dur,next:t+1000,every:1000,dmg:Math.max(1,Math.trunc((Math.trunc(level()/2)+6)/2))});IslandMonsters.playEffect(skill.gfx,mob.x,mob.y,t+150);}
-  if(id===205)cubes.push({x:worldX,y:worldY,until:t+dur,next:t+4000,dmg:skill.damage[0]||10,r:skill.area||3});
+  if([63,205,210,215,220].includes(id)){cubes=cubes.filter(c=>c.id!==id);cubes.push({id,mapId:window.activeMapId||0,x:worldX,y:worldY,until:t+dur,next:t+4000,dmg:skill.damage[0]||10,r:skill.area||3});}
+  if(id===225)for(const m of IslandMonsters.around(worldX,worldY,skill.area||3))if(IslandCombat.clearShot(worldX,worldY,m.x,m.y)){IslandMonsters.damage(m,50);window.IslandNpcAi?.provoke?.(m,[]);}
   if(AREA[id]&&id!==205)for(const m of IslandMonsters.around(worldX,worldY,skill.area||3))IslandMonsters.playEffect(skill.gfx,m.x,m.y,t);
   return true;
  }
 
  // 魔法卷軸（data/item-effects.js）：不用學會、不耗魔力，直接得到自身輔助效果（照技能持續時間）
  function grant(id){
-  if(UNIMPLEMENTED.has(id))return false;
+  if(owner!==window.activeCharacterId){reset();owner=window.activeCharacterId;}
   const skill=sk(id);if(!skill||!SELF[id]||PASSIVE[id]||UTIL[id])return false;
   if(CharacterActions.dead||window.gameFlowState!=='playing'||characterMovementBlocked()||movementAnimating())return false;
   if(!CharacterActions.play('skill'))return false;
@@ -218,20 +262,28 @@ const ClassBuffs=(()=>{
  // ---- timers, reset and status bar ----
  const bar=document.createElement('div');bar.className='class-buff-bar';bar.hidden=true;
  const style=document.createElement('style');style.textContent='.class-buff-bar{position:absolute;left:8px;top:96px;z-index:30;display:flex;flex-wrap:wrap;gap:3px;max-width:240px;pointer-events:none}.class-buff-bar[hidden]{display:none!important}.class-buff-bar img{width:26px;height:26px;border:1px solid #b79b5a;border-radius:3px;background:#0b1410}';
+ style.textContent+='.game.spell-daylight::after{content:"";position:absolute;left:50%;top:45%;width:min(60vw,600px);height:min(60vw,600px);transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(ellipse,#ffec9e18,transparent 68%);backdrop-filter:brightness(1.15);mask-image:radial-gradient(ellipse,#000,transparent 70%);pointer-events:none;z-index:2}';
  document.head.append(style);document.querySelector('.game')?.append(bar);
  let vitalsKey='';
- function reset(){const hadVitals=on(226)||on(79);buffs.clear();cooldowns.clear();cubes=[];dots=[];invisible=false;
+ function reset(){document.querySelector('.game')?.classList.remove('spell-daylight');const hadVitals=on(226)||on(79);buffs.clear();cooldowns.clear();cubes=[];dots=[];invisible=false;focused=null;debuffs=new WeakMap();
   if(barrierSet&&window.playerItemState){playerItemState.absoluteBarrier=false;}barrierSet=false;if(hadVitals)vitals();}
  let barKey='';
  function tick(){
   const current=window.gameFlowState==='playing'?window.activeCharacterId:null;
   if(current!==owner){reset();owner=current;}
   if(!current)return;
-  if(CharacterActions.dead&&buffs.size)reset();
+  if(CharacterActions.dead){reset();bar.hidden=true;document.querySelector('.game')?.classList.remove('spell-daylight');return;}
   const t=now();
+  document.querySelector('.game')?.classList.toggle('spell-daylight',on(2));
   if(barrierSet&&!on(78)){if(window.playerItemState)playerItemState.absoluteBarrier=false;barrierSet=false;}
   const vk=(on(226)?'g':'')+(on(79)?'s':'');if(vk!==vitalsKey){vitalsKey=vk;vitals();}
-  for(const c of cubes)if(t>=c.next&&t<c.until){c.next+=4000;for(const m of IslandMonsters.around(c.x,c.y,c.r)){const result=PlayerAbilityRules.magicAmount({...sk(205),id:205},m,{raw:c.dmg});if(result.critical)m.magicCriticalUntil=t+650;if(result.amount>0)IslandMonsters.damage(m,result.amount);}}
+  for(const c of cubes)if(t>=c.next&&t<c.until&&c.mapId===(window.activeMapId||0)){c.next=t+4000;
+   if(c.id===63||c.id===220){const heal=c.id===63?3:25,extraMp=c.id===220?5:0;if(hp>0&&Math.max(Math.abs(worldX-c.x),Math.abs(worldY-c.y))<=c.r&&IslandCombat.clearShot(worldX,worldY,c.x,c.y)){hp=Math.min(maxHp,hp+heal);mp=Math.min(maxMp,mp+extraMp);window.stats?.();window.GameEntry?.saveActive?.();}
+    const allies=[...(window.Summons?.mobs||[]),...(window.NpcSocial?.party||[])];for(const m of allies)if(m.hp>0&&(m.spawn.mapId||0)===c.mapId&&Math.max(Math.abs(m.x-c.x),Math.abs(m.y-c.y))<=c.r&&IslandCombat.clearShot(c.x,c.y,m.x,m.y))m.hp=Math.min(m.spawn.npc.hp,m.hp+heal);window.GameEntry?.saveActive?.();}
+   if(c.id!==63)for(const m of IslandMonsters.around(c.x,c.y,c.r)){if(!IslandCombat.clearShot(c.x,c.y,m.x,m.y))continue;
+    if(c.id===215){stun(m,1000);continue;}if(c.id===220){m.mp=Math.max(0,(m.mp||0)-5);IslandMonsters.damage(m,25);continue;}
+    const result=PlayerAbilityRules.magicAmount({...sk(c.id),id:c.id,attr:c.id===210?1:2},m,{raw:c.dmg});if(result.critical)m.magicCriticalUntil=t+650;if(result.amount>0)IslandMonsters.damage(m,result.amount);}}
+
   cubes=cubes.filter(c=>t<c.until);
   for(const h of dots)if(t>=h.next&&t<h.until&&h.mob.hp){h.next+=h.every;IslandMonsters.damage(h.mob,h.dmg);}
   dots=dots.filter(h=>t<h.until&&h.mob.hp);
@@ -241,5 +293,5 @@ const ClassBuffs=(()=>{
   window.NativePotions?.layout?.();
  }
  setInterval(tick,250);
- return {handles,implemented:id=>handles(id)&&!UNIMPLEMENTED.has(id),cast,grant,afterCast,invisible:()=>invisible,reveal:()=>{invisible=false;},resistances,rangedHitBonus,meleeHitBonus,damageBonus,reduction,ac,dodge,mpr,mr,sp,stats,maxHp:maxHpBonus,maxMp:maxMpBonus,onHit,onHurt,blocksNegative,silenced,rooted,slowed,active:id=>on(id),selfBuff:id=>!UNIMPLEMENTED.has(id)&&!!SELF[id]&&!PASSIVE[id]&&!UTIL[id]&&(sk(id)?.duration||0)>0};
+ return {handles,implemented:id=>handles(id),cast,grant,afterCast,invisible:()=>invisible,reveal:()=>{invisible=false;},hpr,maxWeight,statusResistances,targetNpc,consumeErase,vision,canUsePotions,focusTarget,clearTarget:mob=>{debuffs.delete(mob);if(focused===mob)focused=null;},resistances,rangedHitBonus,meleeHitBonus,damageBonus,reduction,ac,dodge,mpr,mr,sp,stats,maxHp:maxHpBonus,maxMp:maxMpBonus,onHit,onHurt,blocksNegative,silenced,rooted,slowed,active:id=>on(id),selfBuff:id=>!!SELF[id]&&!PASSIVE[id]&&!UTIL[id]&&(sk(id)?.duration||0)>0};
 })();window.ClassBuffs=ClassBuffs;

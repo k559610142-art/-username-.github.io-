@@ -153,7 +153,7 @@ const NpcSocial=(()=>{
   if(b.fp.pk||b.fp.retreatUntil)return false;
   if(b.step||b.action&&time<b.action.end)return true;
   if(CharacterActions.dead)return true;
-  const target=IslandMonsters.target;b.fp.partyTarget=null;
+  const target=window.ClassBuffs?.focusTarget?.()||IslandMonsters.target;b.fp.partyTarget=null;
   if(target?.hp&&!target.spawn.bot&&!target.spawn.ally&&!target.spawn.resident&&!safe(worldX,worldY)&&!safe(b.x,b.y)&&!safe(target.x,target.y)&&distance(target,player())<=12){
    b.fp.partyTarget=target;const reach=b.spawn.npc.ranged||1;
    if(distance(b,target)>reach||!IslandCombat.clearShot(b.x,b.y,target.x,target.y)){stepToward(b,target.x,target.y,time);return true;}

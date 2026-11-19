@@ -1,0 +1,6 @@
+=== PANIC.class
+<init>: @SkillMode.<init>
+start: 0 217 @L1Character.hasSkillEffect 217 -1 -1 -1 @L1PcInstance.addStr @L1PcInstance.addCon @L1PcInstance.addDex @L1PcInstance.addWis @L1PcInstance.addInt 1000 @L1PcInstance.setSkillEffect @S_OwnCharStatus2.<init> @L1PcInstance.sendPackets 11457 217 -1 -1 -1 @L1NpcInstance.addStr @L1NpcInstance.addCon @L1NpcInstance.addDex @L1NpcInstance.addWis @L1NpcInstance.addInt 1000 @L1NpcInstance.setSkillEffect
+start: 0
+start: 
+stop: 1 1 1 @L1PcInstance.addStr @L1PcInstance.addCon @L1PcInstance.addDex @L1PcInstance.addWis @L1PcInstance.addInt @S_OwnCharStatus2.<init> @L1PcInstance.sendPackets 11201 1 1 1 @L1NpcInstance.addStr @L1NpcInstance.addCon @L1NpcInstance.addDex @L1NpcInstance.addWis @L1NpcInstance.addInt

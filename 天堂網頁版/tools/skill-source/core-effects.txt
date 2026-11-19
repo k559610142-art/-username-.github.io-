@@ -1,0 +1,180 @@
+=== C:\Users\User\Desktop\凡人修仙傳\-username-.github.io-\天堂網頁版\tools\skill-source\ARMOR_BREAK.class
+start: 0
+start: 0 112 @L1Magic.calcProbabilityMagic 112 @L1PcInstance.hasSkillEffect 112 @L1PcInstance.killSkillEffectTimer 112 8000 @L1PcInstance.setSkillEffect "砈墆盨番\u001c日攂扈劣y" @L1UbPattern.Andy @S_SystemMessage.<init> @L1PcInstance.sendPackets @L1PcInstance.getId 3400 @S_SkillSound.<init> @L1PcInstance.sendPacketsAll 119 8 @S_PacketBoxIconAura.<init> @L1PcInstance.sendPackets 11457 112 @L1NpcInstance.hasSkillEffect 112 @L1NpcInstance.killSkillEffectTimer @L1NpcInstance.getId 3400 @S_SkillSound.<init> @L1PcInstance.sendPacketsAll 0
+start: 
+stop: 
+<init>: @SkillMode.<init>
+=== C:\Users\User\Desktop\凡人修仙傳\-username-.github.io-\天堂網頁版\tools\skill-source\AWAKEN_ANTHARAS.class
+<init>: @SkillMode.<init>
+start: 0 185 @L1PcInstance.hasSkillEffect 185 -3 10 @L1PcInstance.addRegistSustain @L1PcInstance.addAc 1000 @L1PcInstance.setSkillEffect @S_OwnCharAttrDef.<init> @L1PcInstance.sendPackets @L1Character.getId 6975 @S_SkillSound.<init> @L1PcInstance.sendPacketsX8
+start: 
+start: 0
+stop: 3 -10 @L1PcInstance.addRegistSustain @L1PcInstance.addAc @S_OwnCharAttrDef.<init> @L1PcInstance.sendPackets
+=== C:\Users\User\Desktop\凡人修仙傳\-username-.github.io-\天堂網頁版\tools\skill-source\AWAKEN_FAFURION.class
+stop: 169 -10 @L1PcInstance.addRegistFreeze @L1PcInstance.killSkillEffectTimer
+start: 0 190 @L1PcInstance.hasSkillEffect 190 169 10 @L1PcInstance.addRegistFreeze 1000 @L1PcInstance.setSkillEffect 1000 @L1PcInstance.setSkillEffect @L1Character.getId 6976 @S_SkillSound.<init> @L1PcInstance.sendPacketsX8
+start: 0
+start: 
+<init>: @SkillMode.<init>
+=== C:\Users\User\Desktop\凡人修仙傳\-username-.github.io-\天堂網頁版\tools\skill-source\AWAKEN_VALAKAS.class
+<init>: @SkillMode.<init>
+start: 0
+start: 
+stop: -10 -5 @L1PcInstance.addHitup @L1PcInstance.addRegistStun
+start: 0 195 @L1PcInstance.hasSkillEffect 195 10 5 @L1PcInstance.addHitup @L1PcInstance.addRegistStun 1000 @L1PcInstance.setSkillEffect @L1Character.getId 6922 @S_SkillSound.<init> @L1PcInstance.sendPacketsX8
+=== C:\Users\User\Desktop\凡人修仙傳\-username-.github.io-\天堂網頁版\tools\skill-source\BONE_BREAK.class
+start: 208 @L1Magic.calcMagicDamage 208 @L1Magic.calcProbabilityMagic 2 @Random.nextInt 1 208 @L1Character.hasSkillEffect 208 1000 @L1Character.setSkillEffect 5 1 @S_Paralysis.<init> @L1PcInstance.sendPackets @L1PcInstance.getId 13119 @S_SkillSound.<init> @L1PcInstance.sendPacketsAll 11457 1 @L1NpcInstance.setParalyzed @L1NpcInstance.getId 13119 @S_SkillSound.<init> @L1NpcInstance.broadcastPacketAll
+start: 
+stop: 5 0 @S_Paralysis.<init> @L1PcInstance.sendPackets 11201 0 @L1NpcInstance.setParalyzed
+start: 0
+<init>: @SkillMode.<init>
+=== C:\Users\User\Desktop\凡人修仙傳\-username-.github.io-\天堂網頁版\tools\skill-source\DARK_BLIND.class
+start: 
+start: 0 66 1000 @L1PcInstance.setSkillEffect 3 1 @S_Paralysis.<init> @L1PcInstance.sendPackets 11457 1 66 1000 @L1NpcInstance.setSkillEffect @L1NpcInstance.setSleeped
+stop: 3 0 @S_Paralysis.<init> @L1PcInstance.sendPackets 11201 0 @L1NpcInstance.setSleeped
+<init>: @SkillMode.<init>
+start: 0
+=== C:\Users\User\Desktop\凡人修仙傳\-username-.github.io-\天堂網頁版\tools\skill-source\DRAGON_BLOOD1.class
+stop: -50 2 @L1PcInstance.addAc @L1PcInstance.addWater @S_OwnCharAttrDef.<init> @L1PcInstance.sendPackets
+<init>: @SkillMode.<init>
+start: 0
+start: 0 6797 @L1PcInstance.hasSkillEffect 6797 50 -2 @L1PcInstance.addAc @L1PcInstance.addWater @S_OwnCharAttrDef.<init> @L1PcInstance.sendPackets 1000 @L1PcInstance.setSkillEffect 100 82 60 @S_PacketBox.<init> @L1PcInstance.sendPackets
+start: 
+=== C:\Users\User\Desktop\凡人修仙傳\-username-.github.io-\天堂網頁版\tools\skill-source\DRAGON_BLOOD2.class
+<init>: @SkillMode.<init>
+start: 0 6798 @L1PcInstance.hasSkillEffect 6798 50 1 3 @L1PcInstance.addHpr @L1PcInstance.addMpr @L1PcInstance.addWind @S_OwnCharAttrDef.<init> @L1PcInstance.sendPackets 1000 @L1PcInstance.setSkillEffect 100 85 60 @S_PacketBox.<init> @L1PcInstance.sendPackets
+start: 0
+stop: -50 -1 -3 @L1PcInstance.addHpr @L1PcInstance.addMpr @L1PcInstance.addWind @S_OwnCharAttrDef.<init> @L1PcInstance.sendPackets
+start: 
+=== C:\Users\User\Desktop\凡人修仙傳\-username-.github.io-\天堂網頁版\tools\skill-source\DRAGON_BLOOD3.class
+stop: -50 -1 @L1PcInstance.addSp @L1PcInstance.addMr @L1PcInstance.addFire @S_SPMR.<init> @L1PcInstance.sendPackets @S_OwnCharAttrDef.<init> @L1PcInstance.sendPackets
+<init>: @SkillMode.<init>
+start: 0 6799 @L1PcInstance.hasSkillEffect 6799 50 1 @L1PcInstance.addSp @L1PcInstance.addMr @L1PcInstance.addFire @S_SPMR.<init> @L1PcInstance.sendPackets @S_OwnCharAttrDef.<init> @L1PcInstance.sendPackets 1000 @L1PcInstance.setSkillEffect 100 88 60 @S_PacketBox.<init> @L1PcInstance.sendPackets
+start: 0
+start: 
+=== C:\Users\User\Desktop\凡人修仙傳\-username-.github.io-\天堂網頁版\tools\skill-source\DRAGONEYE_ANTHARAS.class
+start: 
+stop: -1 -3 @L1Character.addRegistStone @L1Character.add_dodge 1 @L1PcInstance.get_dodge @S_PacketBoxIcon1.<init> @L1PcInstance.sendPackets
+start: 0
+start: 0 6684 @L1PcInstance.hasSkillEffect 1 6684 3 @L1PcInstance.addRegistStone 1000 @L1PcInstance.setSkillEffect @L1PcInstance.add_dodge 1 @L1PcInstance.get_dodge @S_PacketBoxIcon1.<init> @L1PcInstance.sendPackets
+<init>: @SkillMode.<init>
+=== C:\Users\User\Desktop\凡人修仙傳\-username-.github.io-\天堂網頁版\tools\skill-source\DRAGONEYE_BIRTH.class
+stop: -1 -3 @L1Character.addRegistBlind @L1Character.add_dodge 1 @L1PcInstance.get_dodge @S_PacketBoxIcon1.<init> @L1PcInstance.sendPackets
+<init>: @SkillMode.<init>
+start: 0 6688 @L1PcInstance.hasSkillEffect 1 6688 3 @L1PcInstance.addRegistBlind 1000 @L1PcInstance.setSkillEffect @L1PcInstance.add_dodge 1 @L1PcInstance.get_dodge @S_PacketBoxIcon1.<init> @L1PcInstance.sendPackets
+start: 
+start: 0
+=== C:\Users\User\Desktop\凡人修仙傳\-username-.github.io-\天堂網頁版\tools\skill-source\DRAGONEYE_FAFURION.class
+start: 0
+stop: -3 @L1Character.addRegistFreeze
+start: 0 6685 @L1PcInstance.hasSkillEffect 3 @L1PcInstance.addRegistFreeze 1000 @L1PcInstance.setSkillEffect
+start: 
+<init>: @SkillMode.<init>
+=== C:\Users\User\Desktop\凡人修仙傳\-username-.github.io-\天堂網頁版\tools\skill-source\DRAGONEYE_FIGURE.class
+<init>: @SkillMode.<init>
+start: 0
+start: 0 6689 @L1PcInstance.hasSkillEffect 1 2 6689 3 @L1PcInstance.addRegistSustain 1000 @L1PcInstance.setSkillEffect @L1PcInstance.add_Magic_Critical @L1PcInstance.add_dodge 1 @L1PcInstance.get_dodge @S_PacketBoxIcon1.<init> @L1PcInstance.sendPackets
+stop: -1 -3 @L1Character.addRegistSustain @L1Character.add_dodge -2 @L1PcInstance.add_Magic_Critical 1 @L1PcInstance.get_dodge @S_PacketBoxIcon1.<init> @L1PcInstance.sendPackets
+start: 
+=== C:\Users\User\Desktop\凡人修仙傳\-username-.github.io-\天堂網頁版\tools\skill-source\DRAGONEYE_LIFE.class
+stop: -1 -2 @L1Character.addDmgup @L1Character.add_dodge -2 @L1PcInstance.add_Magic_Critical 1 @L1PcInstance.get_dodge @S_PacketBoxIcon1.<init> @L1PcInstance.sendPackets
+start: 0
+start: 
+start: 0 6687 @L1PcInstance.hasSkillEffect 2 1 6687 2 @L1PcInstance.addDmgup 1000 @L1PcInstance.setSkillEffect @L1PcInstance.add_dodge @L1PcInstance.add_Magic_Critical 1 @L1PcInstance.get_dodge @S_PacketBoxIcon1.<init> @L1PcInstance.sendPackets
+<init>: @SkillMode.<init>
+=== C:\Users\User\Desktop\凡人修仙傳\-username-.github.io-\天堂網頁版\tools\skill-source\DRAGONEYE_LINDVIOR.class
+start: 0 6686 @L1PcInstance.hasSkillEffect 6686 2 3 @L1PcInstance.addRegistSleep @L1PcInstance.add_Magic_Critical 1000 @L1PcInstance.setSkillEffect
+start: 
+<init>: @SkillMode.<init>
+stop: -3 @L1Character.addRegistSleep -2 @L1PcInstance.add_Magic_Critical
+start: 0
+=== C:\Users\User\Desktop\凡人修仙傳\-username-.github.io-\天堂網頁版\tools\skill-source\DRAGONEYE_VALAKAS.class
+start: 
+start: 0 6683 @L1PcInstance.hasSkillEffect 6683 3 2 @L1PcInstance.addDmgup @L1PcInstance.addRegistStun 1000 @L1PcInstance.setSkillEffect
+stop: -3 -2 @L1Character.addDmgup @L1Character.addRegistStun
+<init>: @SkillMode.<init>
+start: 0
+=== C:\Users\User\Desktop\凡人修仙傳\-username-.github.io-\天堂網頁版\tools\skill-source\EARTH_BIND.class
+start: 0 @Random.<init> 12 @Random.nextInt 1 157 1000 @L1Character.setSkillEffect @L1PcInstance.getId 2 @S_Poison.<init> @L1PcInstance.sendPacketsAll 4 1 @S_Paralysis.<init> @L1PcInstance.sendPackets 11457 1 @L1NpcInstance.getId 2 @S_Poison.<init> @L1NpcInstance.broadcastPacketAll @L1NpcInstance.setParalyzed
+start: 0 @Random.<init> 12 @Random.nextInt 1 @L1PcInstance.castleWarResult 157 1000 @L1Character.setSkillEffect @L1PcInstance.getId 2 @S_Poison.<init> @L1PcInstance.sendPacketsAll 4 1 @S_Paralysis.<init> @L1PcInstance.sendPackets 11457 1 @L1NpcInstance.getId 2 @S_Poison.<init> @L1NpcInstance.broadcastPacketAll @L1NpcInstance.setParalyzed
+start: 
+stop: @L1PcInstance.getId 0 @S_Poison.<init> @L1PcInstance.sendPacketsAll 4 0 @S_Paralysis.<init> @L1PcInstance.sendPackets 11201 0 @L1NpcInstance.getId 0 @S_Poison.<init> @L1NpcInstance.broadcastPacketAll @L1NpcInstance.setParalyzed
+<init>: @SkillMode.<init>
+=== C:\Users\User\Desktop\凡人修仙傳\-username-.github.io-\天堂網頁版\tools\skill-source\ELEMENTAL_FALL_DOWN.class
+start: 0 133 @L1Character.hasSkillEffect @L1PcInstance.getElfAttr -50 0 79 @S_ServerMessage.<init> @L1PcInstance.sendPackets 1 -50 @L1PcInstance.addEarth @L1PcInstance.setAddAttrKind 2 -50 @L1PcInstance.addFire @L1PcInstance.setAddAttrKind 4 -50 @L1PcInstance.addWater @L1PcInstance.setAddAttrKind @? 8 -50 @L1PcInstance.addWind @L1PcInstance.setAddAttrKind 0 79 @S_ServerMessage.<init> @L1PcInstance.sendPackets 1 -50 @L1MonsterInstance.addEarth @L1MonsterInstance.setAddAttrKind 2 -50 @L1MonsterInstance.addFire @L1MonsterInstance.setAddAttrKind 4 -50 @L1MonsterInstance.addWater @L1MonsterInstance.setAddAttrKind @? -50 @L1MonsterInstance.addWind @L1MonsterInstance.setAddAttrKind 1 133 1000 @L1Character.setSkillEffect 0
+start: 0 0
+stop: 50 @L1PcInstance.getAddAttrKind 0 50 @L1PcInstance.addEarth 50 @L1PcInstance.addFire 50 @L1PcInstance.addWater -22529 50 @L1PcInstance.addWind 1 0 @L1PcInstance.setAddAttrKind @S_OwnCharAttrDef.<init> @L1PcInstance.sendPackets @L1NpcInstance.getAddAttrKind 0 50 @L1NpcInstance.addEarth 50 @L1NpcInstance.addFire 50 @L1NpcInstance.addWater -22529 50 @L1NpcInstance.addWind 1 0 @L1NpcInstance.setAddAttrKind
+<init>: @SkillMode.<init>
+start: 
+=== C:\Users\User\Desktop\凡人修仙傳\-username-.github.io-\天堂網頁版\tools\skill-source\GREATER_ELEMENTAL.class
+start: 
+<init>: @SkillMode.<init>
+start: 0 @L1PcInstance.getElfAttr @L1PcInstance.getMap @L1Map.isRecallPets 353 @S_ServerMessage.<init> @L1PcInstance.sendPackets 0 @L1PcInstance.getPetList @Map.values @Collection.toArray 0 @L1NpcInstance.getPetcost 0 81053 0 81050 81052 @NpcTable.get @NpcTable.getTemplate @L1SummonInstance.<init> @L1PcInstance.getCha 7 @L1SummonInstance.setPetcost 0
+stop: 
+start: 0 0
+=== C:\Users\User\Desktop\凡人修仙傳\-username-.github.io-\天堂網頁版\tools\skill-source\ILLUSION_AVATAR.class
+stop: -10 @L1PcInstance.addDmgup
+start: 0
+start: 
+<init>: @SkillMode.<init>
+start: 0 219 @L1Character.hasSkillEffect 10 @L1PcInstance.addDmgup 219 1000 @L1Character.setSkillEffect
+=== C:\Users\User\Desktop\凡人修仙傳\-username-.github.io-\天堂網頁版\tools\skill-source\ILLUSION_LICH.class
+start: 0
+start: 
+stop: -2 @L1PcInstance.addSp @S_SPMR.<init> @L1PcInstance.sendPackets 11201 -2 @L1NpcInstance.addSp
+start: 0 209 @L1Character.hasSkillEffect 209 2 @L1PcInstance.addSp @S_SPMR.<init> @L1PcInstance.sendPackets 1000 @L1PcInstance.setSkillEffect 11457 209 2 @L1NpcInstance.addSp 1000 @L1NpcInstance.setSkillEffect
+<init>: @SkillMode.<init>
+=== C:\Users\User\Desktop\凡人修仙傳\-username-.github.io-\天堂網頁版\tools\skill-source\INSIGHT.class
+<init>: @SkillMode.<init>
+start: 0
+stop: -1 -1 -1 @L1PcInstance.addStr @L1PcInstance.addCon @L1PcInstance.addDex @L1PcInstance.addWis @L1PcInstance.addInt @S_OwnCharStatus2.<init> @L1PcInstance.sendPackets 11201 -1 -1 -1 @L1NpcInstance.addStr @L1NpcInstance.addCon @L1NpcInstance.addDex @L1NpcInstance.addWis @L1NpcInstance.addInt
+start: 
+start: 0 216 @L1Character.hasSkillEffect 216 1 1 1 @L1PcInstance.addStr @L1PcInstance.addCon @L1PcInstance.addDex @L1PcInstance.addWis @L1PcInstance.addInt 1000 @L1PcInstance.setSkillEffect @S_OwnCharStatus2.<init> @L1PcInstance.sendPackets 11457 216 1 1 1 @L1NpcInstance.addStr @L1NpcInstance.addCon @L1NpcInstance.addDex @L1NpcInstance.addWis @L1NpcInstance.addInt 1000 @L1NpcInstance.setSkillEffect
+=== C:\Users\User\Desktop\凡人修仙傳\-username-.github.io-\天堂網頁版\tools\skill-source\LESSER_ELEMENTAL.class
+start: 0 0
+start: 0 @L1PcInstance.getElfAttr @L1PcInstance.getMap @L1Map.isRecallPets 353 @S_ServerMessage.<init> @L1PcInstance.sendPackets 0 @L1PcInstance.getPetList @Map.values @Collection.toArray 0 @L1NpcInstance.getPetcost 0 45306 0 45303 45305 @NpcTable.get @NpcTable.getTemplate @L1SummonInstance.<init> @L1PcInstance.getCha 7 @L1SummonInstance.setPetcost 0
+start: 
+<init>: @SkillMode.<init>
+stop: 
+=== C:\Users\User\Desktop\凡人修仙傳\-username-.github.io-\天堂網頁版\tools\skill-source\LINDVIOR_SKY_SPIKED.class
+stop: 
+<init>: @SkillMode.<init>
+start: 
+start: 11061 @L1Magic.calcMagicDamage @L1Character.getX @L1Character.getY @L1NpcInstance.targetDirection 3 4 @L1Character.getX @L1Character.getY 7987 @S_EffectLocation.<init> @L1NpcInstance.broadcastPacketAll 5 @L1Character.getX @L1Character.getY 8050 @S_EffectLocation.<init> @L1NpcInstance.broadcastPacketAll 6 7 @L1Character.getX @L1Character.getY 8051 @S_EffectLocation.<init> @L1NpcInstance.broadcastPacketAll
+start: 0
+=== C:\Users\User\Desktop\凡人修仙傳\-username-.github.io-\天堂網頁版\tools\skill-source\MIND_BREAK.class
+start: 
+start: 0
+<init>: @SkillMode.<init>
+start: 5 @L1PcInstance.getSp @L1Character.getId 6553 @S_SkillSound.<init> @L1PcInstance.sendPacketsAll @L1PcInstance.getCurrentMp 3 0 @L1PcInstance.setCurrentMp 0 @L1PcInstance.receiveDamage 11457 @L1NpcInstance.getCurrentMp 3 0 @L1NpcInstance.setCurrentMp @L1NpcInstance.receiveDamage 0
+stop: 
+=== C:\Users\User\Desktop\凡人修仙傳\-username-.github.io-\天堂網頁版\tools\skill-source\MIRROR_IMAGE.class
+start: 
+start: 0
+start: 0 201 @L1PcInstance.hasSkillEffect 5 201 1000 @L1PcInstance.setSkillEffect @L1PcInstance.add_dodge 1 @L1PcInstance.get_dodge @S_PacketBoxIcon1.<init> @L1PcInstance.sendPackets
+<init>: @SkillMode.<init>
+stop: -5 @L1PcInstance.add_dodge 1 @L1PcInstance.get_dodge @S_PacketBoxIcon1.<init> @L1PcInstance.sendPackets
+=== C:\Users\User\Desktop\凡人修仙傳\-username-.github.io-\天堂網頁版\tools\skill-source\PANIC.class
+<init>: @SkillMode.<init>
+start: 0 217 @L1Character.hasSkillEffect 217 -1 -1 -1 @L1PcInstance.addStr @L1PcInstance.addCon @L1PcInstance.addDex @L1PcInstance.addWis @L1PcInstance.addInt 1000 @L1PcInstance.setSkillEffect @S_OwnCharStatus2.<init> @L1PcInstance.sendPackets 11457 217 -1 -1 -1 @L1NpcInstance.addStr @L1NpcInstance.addCon @L1NpcInstance.addDex @L1NpcInstance.addWis @L1NpcInstance.addInt 1000 @L1NpcInstance.setSkillEffect
+start: 0
+start: 
+stop: 1 1 1 @L1PcInstance.addStr @L1PcInstance.addCon @L1PcInstance.addDex @L1PcInstance.addWis @L1PcInstance.addInt @S_OwnCharStatus2.<init> @L1PcInstance.sendPackets 11201 1 1 1 @L1NpcInstance.addStr @L1NpcInstance.addCon @L1NpcInstance.addDex @L1NpcInstance.addWis @L1NpcInstance.addInt
+=== C:\Users\User\Desktop\凡人修仙傳\-username-.github.io-\天堂網頁版\tools\skill-source\RESIST_FEAR.class
+stop: -5 @L1PcInstance.add_dodge_down 0 @L1PcInstance.get_dodge_down @S_PacketBoxIcon1.<init> @L1PcInstance.sendPackets
+<init>: @SkillMode.<init>
+start: 0 188 @L1Character.hasSkillEffect 5 188 1000 @L1PcInstance.setSkillEffect @L1PcInstance.add_dodge_down 0 @L1PcInstance.get_dodge_down @S_PacketBoxIcon1.<init> @L1PcInstance.sendPackets
+start: 
+start: 0
+=== C:\Users\User\Desktop\凡人修仙傳\-username-.github.io-\天堂網頁版\tools\skill-source\SHAPE_CHANGE.class
+start: 
+<init>: @SkillMode.<init>
+start: 0
+start: 0 @Random.<init> 31 1 0 29 1 945 2 947 3 979 4 1037 5 1039 6 3860 7 3861 8 3862 9 3863 10 3864 11 3865 12 3904 13 3906 14 95 15 146 16 2374 17 2376 18 2377 19 2378 20 3866 21 3867 22 3868 23 3869 24 3870 25 3871 26 3872 27 3873 28 3874 29 3875 30 3876 @Random.nextInt @L1PcInstance.getAwakeSkillId 185 ? 190 195 1384 @S_ServerMessage.<init> @L1PcInstance.sendPackets 0 @L1PcInstance.getInventory 20281 @L1PcInventory.checkEquipped 25 @L1PcInstance.getInventory 120281 @L1PcInventory.checkEquipped @L1PcInstance.getId @S_ShowPolyList.<init> @L1PcInstance.sendPackets @L1PcInstance.isShapeChange 1 0 @L1PcInstance.setSummonMonster @L1PcInstance.setShapeChange 966 @S_ServerMessage.<init> @L1PcInstance.sendPackets @L1PcInstance.getId @L1PcInstance.getId @L1PcInstance.getId @S_ShowPolyList.<init> @L1PcInstance.sendPackets @L1PcInstance.isShapeChange 1 0 @L1PcInstance.setSummonMonster @L1PcInstance.setShapeChange 241 @L1PcInstance.getName @S_ServerMessage.<init> @L1PcInstance.sendPackets 1 @L1PolyMorph.doPoly @L1PinkName.onAction @L1MonsterInstance.getLevel 50 @L1MonsterInstance.getNpcTemplate @L1Npc.get_npcId 45464 45473 45488 45497 45458 45752 45492 46035 99006 1 @L1PolyMorph.doPoly
+stop: @L1PolyMorph.undoPoly
+=== C:\Users\User\Desktop\凡人修仙傳\-username-.github.io-\天堂網頁版\tools\skill-source\SOLID_CARRIAGE.class
+stop: 132 @L1PcInstance.getEr @S_PacketBox.<init> @L1PcInstance.sendPackets
+start: 
+start: 0 @L1PcInstance.getInventory 2 7 @L1PcInventory.getTypeEquipped 1 L1PcInstance.sendPackets 3 @L1PcInstance.getInventory 2 13 @L1PcInventory.getTypeEquipped 1 90 1000 @L1PcInstance.setSkillEffect 132 @L1PcInstance.getEr @S_PacketBox.<init> @L1PcInstance.sendPackets "佥乡术袚傜皹牉" @ConfigDoll_Chan.Andy @S_ServerMessage.<init> @L1PcInstance.sendPackets
+<init>: @SkillMode.<init>
+start: 0

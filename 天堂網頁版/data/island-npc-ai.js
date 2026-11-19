@@ -153,9 +153,10 @@ const IslandNpcAi = (() => {
       calm(mob);
       return false;
     }
-    const clear = gap <= 14 && IslandCombat.clearShot(mob.x, mob.y, worldX, worldY);
+    const clear = gap <= (window.ClassBuffs?.vision?.(mob)??14) && IslandCombat.clearShot(mob.x, mob.y, worldX, worldY);
     if (!mob.alert && mob.spawn.npc.aggressive && gap <= 14 && clear) provoke(mob, mobs);
     if (!mob.alert) return false;
+    if(gap>(window.ClassBuffs?.vision?.(mob)??14)&&window.ClassBuffs?.vision?.(mob)===1){mob.windup=null;return false;}
     if (mob.step) return true;
     // 攻擊最小距離 1 格：跟玩家同一格（重疊）時先退到旁邊空格再出手
     if (gap === 0) {

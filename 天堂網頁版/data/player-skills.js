@@ -33,16 +33,17 @@ const PlayerSkills = (() => {
     if(id>=181)return !!skill&&skill.target==='attack'&&skill.damage.some(Boolean);
     return !!skill&&(skill.damage.some(Boolean)||id===87);
   }
-  function cast(id){
+  function cast(id,options={}){
     const skill=skills[id];
     if(skill&&knows(id)&&!supports(id))return errors('「'+skill.name+'」的效果尚未實作。');
-    if(skill&&window.ClassBuffs?.handles(id))return ClassBuffs.cast(id);
-    if(!skill||!knows(id)||!supports(id)||CharacterActions.dead||window.gameFlowState!=='playing'||
+    if(skill&&window.ClassBuffs?.handles(id))return ClassBuffs.cast(id,options);
+    if(!skill||!options.scroll&&!knows(id)||!supports(id)||CharacterActions.dead||window.gameFlowState!=='playing'||
       characterMovementBlocked()||movementAnimating()||!TransformCards.canCast)return false;
     const now=movementTime();
     if(owner!==window.activeCharacterId){owner=window.activeCharacterId;cooldowns.clear();}
     if(now<(cooldowns.get(id)||0))return false;
     const healing=/治癒|恢復|體力回復|生命的祝福/.test(skill.name);
+    if(healing&&window.GroupHealing?.isGroup(skill)&&window.LocalServerClient?.online)return GroupHealing.castOnline(skill);
     const mob=IslandMonsters.target;
     if(!healing&&mob?.spawn.bot&&!window.FakePlayers?.canAttack(mob))return false;
     const range=skill.range>0?skill.range:10;
@@ -50,17 +51,18 @@ const PlayerSkills = (() => {
       !IslandCombat.clearShot(worldX,worldY,mob.x,mob.y)))return false;
     const result=PlayerAbilityRules.magicAmount(skill,mob,{healing});
     const amount=result.amount;
-    if(!OwnedInventory.castCost(skill,healing?Math.min(maxHp,hp-skill.hp+amount):undefined))return false;
+    if(!(options.pay?options.pay():OwnedInventory.castCost(skill,healing?Math.min(maxHp,hp-skill.hp+amount):undefined)))return false;
     if(!CharacterActions.play('skill'))return false;
     window.ClassBuffs?.reveal();
     cooldowns.set(id,now+skill.reuse);
     IslandMonsters.playEffect(skill.gfx,healing?worldX:mob.x,healing?worldY:mob.y,now);
+    if(healing)window.GroupHealing?.applyAllies(skill,amount);
     if(!healing){
       const area=Number(skill.area??(typeof PLAYER_ABILITY_DATA!=='undefined'?PLAYER_ABILITY_DATA.skills[id]?.area:0))||0,rangeMeta=typeof PLAYER_ABILITY_DATA!=='undefined'?PLAYER_ABILITY_DATA.skills[id]?.range:null;
       const targets=area>0&&IslandMonsters.around?[...new Set([mob,...IslandMonsters.around(rangeMeta===-1?worldX:mob.x,rangeMeta===-1?worldY:mob.y,area)])]:[mob];
       for(const victim of targets){if(!victim?.hp||victim.spawn.ally||victim!==mob&&victim.spawn.resident||victim.spawn.bot&&!window.FakePlayers?.canAttack(victim)||!IslandCombat.clearShot(worldX,worldY,victim.x,victim.y))continue;
        const hitResult=victim===mob?result:PlayerAbilityRules.magicAmount(skill,victim,{healing:false});if(hitResult.critical)victim.magicCriticalUntil=now+650;
-       victim.allyTarget=null;if(hitResult.amount>0)IslandMonsters.damage(victim,hitResult.amount);if(victim!==mob)IslandMonsters.playEffect(skill.gfx,victim.x,victim.y,now);
+       victim.allyTarget=null;if(hitResult.amount>0)IslandMonsters.damage(victim,hitResult.amount);window.ClassBuffs?.consumeErase?.(victim);if(victim!==mob)IslandMonsters.playEffect(skill.gfx,victim.x,victim.y,now);
       }
       if(id>=181)window.ClassBuffs?.afterCast(id,mob);
       if(id===87){if(PlayerAbilityRules.statusHits({...skill,id},mob))mob.ready=Math.max(mob.ready||0,now+skill.duration*1000);else mob.rangedMissUntil=now+650;}

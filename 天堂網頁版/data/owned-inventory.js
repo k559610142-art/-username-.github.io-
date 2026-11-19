@@ -83,6 +83,8 @@ window.OwnedInventory=(()=>{
  }
  function castCost(skill,nextHp){
   const next=clone(entries);
+  if(skill.enchantUid){const row=next.find(e=>e.uid===skill.enchantUid&&e.slot==='weapon'&&e.key.startsWith('weapon:'));if(!row||(row.enchant||0)>=6)return false;row.enchant=(row.enchant||0)+1;}
+  if(skill.arrows){let left=skill.arrows;for(const row of [...next])if(definition(row).type==='arrow'){const n=Math.min(left,row.count);if(!deduct(next,row.uid,n))return false;left-=n;if(!left)break;}if(left)return false;}
   const mpCost=window.PlayerAbilityRules?.manaCost(skill)??skill.mp;
   if(mp<mpCost||hp<=skill.hp)return false;
   if(skill.materialCount&&!deduct(next,next.find(e=>e.key==='etcitem:'+skill.material)?.uid,skill.materialCount))return false;

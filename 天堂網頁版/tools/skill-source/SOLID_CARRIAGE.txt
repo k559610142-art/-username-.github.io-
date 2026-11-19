@@ -1,0 +1,6 @@
+=== SOLID_CARRIAGE.class
+stop: 132 @L1PcInstance.getEr @S_PacketBox.<init> @L1PcInstance.sendPackets
+start: 
+start: 0 @L1PcInstance.getInventory 2 7 @L1PcInventory.getTypeEquipped 1 L1PcInstance.sendPackets 3 @L1PcInstance.getInventory 2 13 @L1PcInventory.getTypeEquipped 1 90 1000 @L1PcInstance.setSkillEffect 132 @L1PcInstance.getEr @S_PacketBox.<init> @L1PcInstance.sendPackets "佥乡术袚傜皹牉" @ConfigDoll_Chan.Andy @S_ServerMessage.<init> @L1PcInstance.sendPackets
+<init>: @SkillMode.<init>
+start: 0

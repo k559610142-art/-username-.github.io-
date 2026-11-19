@@ -3,7 +3,10 @@ const {DatabaseSync}=require('node:sqlite');
 const MERC=require('../mercenary-data.js'); // 傭兵團規則（與遊戲共用）
 const WUHUN_GACHA=require('../wuhun-gacha-data.js'); // 武魂扭蛋機獎池與機率（與遊戲共用）
 const DOLL_GACHA=require('../doll-gacha-data.js'); // 魔法娃娃扭蛋機（2026-11-17，與遊戲共用）
+let healingCache=null;
+function healingData(){if(healingCache)return healingCache;const vm=require('node:vm'),c={};c.window=c;vm.createContext(c);for(const file of ['interface-catalog.js','item-use-data.js','db-native-catalog.js','player-skill-data.js','native-dungeon-maps.js','native-collision-data.js','native-collision.js'])vm.runInContext(fs.readFileSync(path.join(__dirname,'..',file),'utf8'),c);return healingCache={skills:vm.runInContext('playerSkillData.skills',c),rules:c.ITEM_USE_RULES.definitions,maps:c.NATIVE_DUNGEON_MAPS,collision:c.NativeCollision};}
 function createGameServer(options={}){
+ const healCooldowns=new Map();
  const root=options.root||path.resolve(__dirname,'../..');
  const database=options.database||path.join(__dirname,'runtime.sqlite');
  const settings=options.settings||JSON.parse(fs.readFileSync(path.join(__dirname,'server-settings.json'),'utf8'));
@@ -198,6 +201,40 @@ function createGameServer(options={}){
     const input=await body(req);
     const result=transaction(()=>{
      const {state,character:c}=actor(user,input.characterId);
+     if(route==='/api/skills/utility'){
+      const id=int(input.skillId,1,239),data=healingData(),skill=data.skills[id];if(![61,75,165,116,118].includes(id)||!skill||!(c.hp>0))fail(400,'目前不能使用這項技能。');
+      if(Date.now()<(healCooldowns.get(c.id+':utility:'+id)||0))fail(409,'技能冷卻中。');
+      const kind=[61,75,165].includes(id)?'party':'guild',own=db.prepare('SELECT group_id FROM members WHERE user_id=? AND character_id=? AND kind=?').get(user.id,c.id,kind);if(!own)fail(400,'請先加入'+(kind==='party'?'隊伍':'血盟')+'。');
+      if(kind==='guild'&&c.role!=='王族')fail(400,'只有王族可以使用盟友傳送。');
+      const member=db.prepare('SELECT user_id,character_id FROM members WHERE group_id=? AND character_id=?').get(own.group_id,input.targetId);if(!member||member.character_id===c.id)fail(400,'無效的同伴目標。');
+      const online=presence.get(member.user_id);if(online?.id!==member.character_id||Date.now()-online.at>=12000)fail(400,'目標不在線上，未消耗資源。');
+      const other=snapshot(member.user_id),target=other.characters.find(v=>v?.id===member.character_id);if(!target||![c.x,c.y,target.x,target.y].every(Number.isInteger))fail(400,'目標座標無效。');
+      if(kind==='party'){if(target.hp>0||(target.mapId||0)!==(c.mapId||0)||Math.max(Math.abs(c.x-target.x),Math.abs(c.y-target.y))>10)fail(400,'請選擇同圖十格內倒下的隊友。');let x=c.x,y=c.y;while(x!==target.x||y!==target.y){const dx=Math.sign(target.x-x),dy=Math.sign(target.y-y);if(data.collision.canTraverse(x,y,dx,dy,c.mapId||0)===false)fail(400,'隊友被障礙物擋住。');x+=dx;y+=dy;}}
+      else if(!(target.hp>0))fail(400,'盟友已倒下。');
+      if(input.scrollUid){const row=(c.inventory||[]).find(e=>e.uid===input.scrollUid&&!e.slot&&e.count>0),parts=String(row&&data.rules[row.key]?.handler||'').trim().split(/\s+/);if(!row||!/^magicreel\.MagicReel_(Spell|Buff|Armor|Weapon)$/.test(parts[0])||Number(parts[1])!==id)fail(400,'找不到對應卷軸。');row.count--;if(!row.count)c.inventory.splice(c.inventory.indexOf(row),1);}
+      else{if(!(c.skills?.ids||[]).includes(id))fail(400,'尚未學會技能。');const intelligence=int(input.int,0,127);let reduction=0;if(intelligence>=8){reduction=5;for(let i=8;i<=intelligence;i++)if(i%3===0||i%3===2)reduction++;reduction=Math.min(30,reduction);}const cost=Math.max(1,Math.floor(skill.mp*(100-reduction)/100)-Math.max(0,Math.min(3,Math.floor(((c.stats?.int||0)-12)/3))));if(c.mp<cost||c.hp<=skill.hp)fail(400,'魔力或體力不足。');if(skill.materialCount){let left=skill.materialCount;for(const row of [...c.inventory])if(row.key==='etcitem:'+skill.material&&!row.slot){const n=Math.min(left,row.count);row.count-=n;left-=n;if(!row.count)c.inventory.splice(c.inventory.indexOf(row),1);if(!left)break;}if(left)fail(400,'材料不足。');}c.mp-=cost;c.hp-=skill.hp;}
+      if(kind==='party'){if(!(target.maxHp>0))fail(400,'隊友體力資料無效。');target.hp=id===75?target.maxHp:Math.max(1,Math.floor(target.maxHp/2));}
+      else{const from=id===116?target:c,to=id===116?c:target,rule=data.maps[from.mapId||0]?.rules;if(rule&&(!rule.escapable||!rule.teleportable))fail(400,'這個地區不允許盟友傳送。');const step=[[1,0],[-1,0],[0,1],[0,-1]].find(([dx,dy])=>data.collision.canTraverse(to.x,to.y,dx,dy,to.mapId||0));if(!step)fail(400,'盟友附近沒有安全落點。');from.mapId=to.mapId||0;from.x=to.x+step[0];from.y=to.y+step[1];}
+      save(member.user_id,other);save(user.id,state);healCooldowns.set(c.id+':utility:'+id,Date.now()+Math.max(1000,skill.reuse));return {targetId:target.id,hp:target.hp};
+     }
+     if(route==='/api/party/heal'){
+      const id=int(input.skillId,1,239),data=healingData(),skill=data.skills[id];if(![49,164].includes(id)||!skill)fail(400,'這項技能不是範圍治癒。');
+      if(!(c.hp>0)||!Number.isInteger(c.x)||!Number.isInteger(c.y))fail(400,'角色狀態不能施法。');if(Date.now()<(healCooldowns.get(c.id+':'+id)||0))fail(409,'治癒技能冷卻中。');
+      const wis=int(input.wis,0,127),intelligence=int(input.int,0,127);let cost=0;
+      if(input.scrollUid){const row=(c.inventory||[]).find(e=>e.uid===input.scrollUid&&!e.slot&&e.count>0),rule=row&&data.rules[row.key],parts=String(rule?.handler||'').trim().split(/\s+/);if(!row||!/^magicreel\.MagicReel_(Spell|Buff|Armor|Weapon)$/.test(parts[0])||Number(parts[1])!==id)fail(400,'找不到對應的治癒卷軸。');row.count--;if(!row.count)c.inventory.splice(c.inventory.indexOf(row),1);}
+      else{if(!(c.skills?.ids||[]).includes(id))fail(400,'尚未學會這項技能。');let reduction=0;if(intelligence>=8){reduction=5;for(let i=8;i<=intelligence;i++)if(i%3===0||i%3===2)reduction++;reduction=Math.min(30,reduction);}const original=Math.max(0,Math.min(3,Math.floor(((c.stats?.int||0)-12)/3)));cost=Math.max(1,Math.floor(skill.mp*(100-reduction)/100)-original);if(!(c.mp>=cost))fail(400,'魔力不足。');c.mp-=cost;}
+      let raw=skill.damage[0];for(let i=0;i<skill.damage[2];i++)raw+=1+Math.floor(Math.random()*Math.max(1,skill.damage[1]));const amount=Math.max(0,Math.floor(raw*(1+Math.max(0,Math.floor(wis/5)-2)*.05)));
+      const maximum=Number(c.maxHp||c.vitalGrowth?.maxHp);if(!(maximum>0))fail(400,'角色體力資料不完整。');c.hp=Math.min(maximum,c.hp+amount);const healed=[];
+      const member=db.prepare("SELECT group_id FROM members WHERE user_id=? AND character_id=? AND kind='party'").get(user.id,c.id);
+      if(member)for(const row of db.prepare('SELECT user_id,character_id FROM members WHERE group_id=?').all(member.group_id)){
+       if(row.character_id===c.id)continue;const presenceRow=presence.get(row.user_id);if(presenceRow?.id!==row.character_id||Date.now()-presenceRow.at>=12000)continue;
+       const other=snapshot(row.user_id),target=other.characters.find(v=>v?.id===row.character_id);if(!target||!(target.hp>0)||!Number.isInteger(target.x)||!Number.isInteger(target.y)||(target.mapId||0)!==(c.mapId||0)||Math.max(Math.abs(target.x-c.x),Math.abs(target.y-c.y))>10||!(target.maxHp>0))continue;
+       let x=c.x,y=c.y,clear=true;while(x!==target.x||y!==target.y){const dx=Math.sign(target.x-x),dy=Math.sign(target.y-y);if(data.collision.canTraverse(x,y,dx,dy,c.mapId||0)===false){clear=false;break;}x+=dx;y+=dy;}if(!clear)continue;
+       target.hp=Math.min(target.maxHp,target.hp+amount);save(row.user_id,other);healed.push({id:target.id,hp:target.hp,maxHp:target.maxHp});
+      }
+      save(user.id,state);healCooldowns.set(c.id+':'+id,Date.now()+skill.reuse);return {amount,cost,healed};
+     }
+
      if(route==='/api/groups/create'){
       const kind=input.kind;if(!['guild','party'].includes(kind))fail(400,'團體類型不正確。');
       if(kind==='guild'&&c.role!=='王族')fail(400,'只有王族可以建立血盟。');

@@ -105,7 +105,7 @@ const Summons=(()=>{
 
  // ---- ally AI (called from IslandMonsters.advance for spawn.ally) ----
  function enemyFor(mob){
-  const t=IslandMonsters.target;
+  const t=window.ClassBuffs?.focusTarget?.()||IslandMonsters.target;
   if(t?.hp&&!t.spawn.ally&&dist(t.x,t.y,worldX,worldY)<=12)return t;
   return IslandMonsters.around(worldX,worldY,6).filter(m=>m.alert||m.windup||m.allyTarget).sort((a,b)=>dist(a.x,a.y,mob.x,mob.y)-dist(b.x,b.y,mob.x,mob.y))[0]||null;
  }

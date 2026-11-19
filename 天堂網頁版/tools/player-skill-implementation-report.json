@@ -1,9 +1,8 @@
 {
   "counts": {
     "有主要效果路徑": 120,
-    "未完成效果": 28,
-    "未實裝": 35,
-    "部分實裝": 11
+    "已補上效果": 49,
+    "未開放技能（無學習管道）": 25
   },
   "skills": [
     {
@@ -17,8 +16,8 @@
     {
       "id": 2,
       "name": "日光術",
-      "status": "未完成效果",
-      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "status": "已補上效果",
+      "note": "實際照明效果",
       "group": "SELF",
       "learnable": true
     },
@@ -105,16 +104,16 @@
     {
       "id": 13,
       "name": "無所遁形術",
-      "status": "未實裝",
-      "note": "施放只提示沒有作用對象",
+      "status": "已補上效果",
+      "note": "周圍十四格偵測隱身目標",
       "group": "UTIL",
       "learnable": true
     },
     {
       "id": 14,
       "name": "負重強化",
-      "status": "未完成效果",
-      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "status": "已補上效果",
+      "note": "負重容量乘1.5，背包與掛機共用",
       "group": "SELF",
       "learnable": true
     },
@@ -161,8 +160,8 @@
     {
       "id": 20,
       "name": "闇盲咒術",
-      "status": "未完成效果",
-      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "status": "已補上效果",
+      "note": "目標視野限制一格及命中降低",
       "group": "TARGET",
       "learnable": true
     },
@@ -177,8 +176,8 @@
     {
       "id": 22,
       "name": "寒冰氣息",
-      "status": "部分實裝",
-      "note": "目前直接施法只結算選定目標，原始範圍效果尚未完整接入",
+      "status": "已補上效果",
+      "note": "範圍逐目標結算，遵守視線、抗性及友軍排除",
       "group": "direct",
       "learnable": true
     },
@@ -193,8 +192,8 @@
     {
       "id": 25,
       "name": "燃燒的火球",
-      "status": "部分實裝",
-      "note": "目前直接施法只結算選定目標，原始範圍效果尚未完整接入",
+      "status": "已補上效果",
+      "note": "範圍逐目標結算，遵守視線、抗性及友軍排除",
       "group": "direct",
       "learnable": true
     },
@@ -209,8 +208,8 @@
     {
       "id": 27,
       "name": "壞物術",
-      "status": "未實裝",
-      "note": "施放只提示沒有作用對象",
+      "status": "已補上效果",
+      "note": "武器攻擊損傷每次1、上限5，死亡清除",
       "group": "UTIL",
       "learnable": true
     },
@@ -233,8 +232,8 @@
     {
       "id": 30,
       "name": "岩牢",
-      "status": "部分實裝",
-      "note": "目前直接施法只結算選定目標，原始範圍效果尚未完整接入",
+      "status": "已補上效果",
+      "note": "範圍逐目標結算，遵守視線、抗性及友軍排除",
       "group": "direct",
       "learnable": true
     },
@@ -313,8 +312,8 @@
     {
       "id": 40,
       "name": "黑闇之影",
-      "status": "未完成效果",
-      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "status": "已補上效果",
+      "note": "目標視野限制一格及命中降低",
       "group": "TARGET",
       "learnable": true
     },
@@ -417,8 +416,8 @@
     {
       "id": 53,
       "name": "龍捲風",
-      "status": "部分實裝",
-      "note": "目前直接施法只結算選定目標，原始範圍效果尚未完整接入",
+      "status": "已補上效果",
+      "note": "範圍逐目標結算，遵守視線、抗性及友軍排除",
       "group": "direct",
       "learnable": true
     },
@@ -465,8 +464,8 @@
     {
       "id": 59,
       "name": "冰雪暴",
-      "status": "部分實裝",
-      "note": "目前直接施法只結算選定目標，原始範圍效果尚未完整接入",
+      "status": "已補上效果",
+      "note": "範圍逐目標結算，遵守視線、抗性及友軍排除",
       "group": "direct",
       "learnable": true
     },
@@ -481,24 +480,24 @@
     {
       "id": 61,
       "name": "返生術",
-      "status": "未實裝",
-      "note": "缺少隊友技能接入",
+      "status": "已補上效果",
+      "note": "選擇十格內倒下的組隊隊友，回復一半HP",
       "group": "UTIL",
       "learnable": true
     },
     {
       "id": 62,
       "name": "震裂術",
-      "status": "部分實裝",
-      "note": "目前直接施法只結算選定目標，原始範圍效果尚未完整接入",
+      "status": "已補上效果",
+      "note": "範圍逐目標結算，遵守視線、抗性及友軍排除",
       "group": "direct",
       "learnable": true
     },
     {
       "id": 63,
       "name": "治癒能量風暴",
-      "status": "未實裝",
-      "note": "PlayerSkills.supports 不接受此技能",
+      "status": "已補上效果",
+      "note": "原地範圍持續回復HP，四秒3HP",
       "group": "direct",
       "learnable": true
     },
@@ -513,8 +512,8 @@
     {
       "id": 65,
       "name": "雷霆風暴",
-      "status": "部分實裝",
-      "note": "目前直接施法只結算選定目標，原始範圍效果尚未完整接入",
+      "status": "已補上效果",
+      "note": "範圍逐目標結算，遵守視線、抗性及友軍排除",
       "group": "direct",
       "learnable": true
     },
@@ -553,16 +552,16 @@
     {
       "id": 70,
       "name": "火風暴",
-      "status": "部分實裝",
-      "note": "目前直接施法只結算選定目標，原始範圍效果尚未完整接入",
+      "status": "已補上效果",
+      "note": "範圍逐目標結算，遵守視線、抗性及友軍排除",
       "group": "direct",
       "learnable": true
     },
     {
       "id": 71,
       "name": "藥水霜化術",
-      "status": "未實裝",
-      "note": "施放只提示沒有作用對象",
+      "status": "已補上效果",
+      "note": "目標不能喝補血藥",
       "group": "UTIL",
       "learnable": true
     },
@@ -577,24 +576,24 @@
     {
       "id": 73,
       "name": "創造魔法武器",
-      "status": "未實裝",
-      "note": "缺少製作技能接入",
+      "status": "已補上效果",
+      "note": "本版補完：已裝備武器+1、上限+6；材料與魔力同筆交易",
       "group": "UTIL",
       "learnable": true
     },
     {
       "id": 74,
       "name": "流星雨",
-      "status": "部分實裝",
-      "note": "目前直接施法只結算選定目標，原始範圍效果尚未完整接入",
+      "status": "已補上效果",
+      "note": "範圍逐目標結算，遵守視線、抗性及友軍排除",
       "group": "direct",
       "learnable": true
     },
     {
       "id": 75,
       "name": "終極返生術",
-      "status": "未實裝",
-      "note": "缺少隊友技能接入",
+      "status": "已補上效果",
+      "note": "選擇十格內倒下的組隊隊友，回復滿HP",
       "group": "UTIL",
       "learnable": true
     },
@@ -633,8 +632,8 @@
     {
       "id": 80,
       "name": "冰雪颶風",
-      "status": "部分實裝",
-      "note": "目前直接施法只結算選定目標，原始範圍效果尚未完整接入",
+      "status": "已補上效果",
+      "note": "範圍逐目標結算，遵守視線、抗性及友軍排除",
       "group": "direct",
       "learnable": true
     },
@@ -657,16 +656,16 @@
     {
       "id": 89,
       "name": "尖刺盔甲",
-      "status": "未完成效果",
-      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "status": "已補上效果",
+      "note": "命中+3、受到近戰攻擊時10%損傷對方武器",
       "group": "SELF",
       "learnable": true
     },
     {
       "id": 90,
       "name": "堅固防護",
-      "status": "未完成效果",
-      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "status": "已補上效果",
+      "note": "需要盾牌，遠距離物理攻擊15%迴避",
       "group": "SELF",
       "learnable": true
     },
@@ -681,7 +680,7 @@
     {
       "id": 97,
       "name": "暗隱術",
-      "status": "未實裝",
+      "status": "未開放技能（無學習管道）",
       "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
       "group": "unavailable",
       "learnable": false
@@ -689,7 +688,7 @@
     {
       "id": 98,
       "name": "附加劇毒",
-      "status": "未實裝",
+      "status": "未開放技能（無學習管道）",
       "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
       "group": "unavailable",
       "learnable": false
@@ -697,7 +696,7 @@
     {
       "id": 99,
       "name": "影之防護",
-      "status": "未實裝",
+      "status": "未開放技能（無學習管道）",
       "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
       "group": "unavailable",
       "learnable": false
@@ -705,7 +704,7 @@
     {
       "id": 100,
       "name": "提煉魔石",
-      "status": "未實裝",
+      "status": "未開放技能（無學習管道）",
       "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
       "group": "unavailable",
       "learnable": false
@@ -713,7 +712,7 @@
     {
       "id": 101,
       "name": "行走加速",
-      "status": "未實裝",
+      "status": "未開放技能（無學習管道）",
       "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
       "group": "unavailable",
       "learnable": false
@@ -721,7 +720,7 @@
     {
       "id": 102,
       "name": "燃燒鬥志",
-      "status": "未實裝",
+      "status": "未開放技能（無學習管道）",
       "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
       "group": "unavailable",
       "learnable": false
@@ -729,7 +728,7 @@
     {
       "id": 103,
       "name": "暗黑盲咒",
-      "status": "未實裝",
+      "status": "未開放技能（無學習管道）",
       "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
       "group": "unavailable",
       "learnable": false
@@ -737,7 +736,7 @@
     {
       "id": 104,
       "name": "毒性抵抗",
-      "status": "未實裝",
+      "status": "未開放技能（無學習管道）",
       "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
       "group": "unavailable",
       "learnable": false
@@ -745,7 +744,7 @@
     {
       "id": 105,
       "name": "雙重破壞",
-      "status": "未實裝",
+      "status": "未開放技能（無學習管道）",
       "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
       "group": "unavailable",
       "learnable": false
@@ -753,7 +752,7 @@
     {
       "id": 106,
       "name": "暗影閃避",
-      "status": "未實裝",
+      "status": "未開放技能（無學習管道）",
       "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
       "group": "unavailable",
       "learnable": false
@@ -761,7 +760,7 @@
     {
       "id": 107,
       "name": "暗影之牙",
-      "status": "未實裝",
+      "status": "未開放技能（無學習管道）",
       "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
       "group": "unavailable",
       "learnable": false
@@ -769,7 +768,7 @@
     {
       "id": 108,
       "name": "會心一擊",
-      "status": "未實裝",
+      "status": "未開放技能（無學習管道）",
       "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
       "group": "unavailable",
       "learnable": false
@@ -777,7 +776,7 @@
     {
       "id": 109,
       "name": "力量提升",
-      "status": "未實裝",
+      "status": "未開放技能（無學習管道）",
       "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
       "group": "unavailable",
       "learnable": false
@@ -785,7 +784,7 @@
     {
       "id": 110,
       "name": "敏捷提升",
-      "status": "未實裝",
+      "status": "未開放技能（無學習管道）",
       "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
       "group": "unavailable",
       "learnable": false
@@ -793,7 +792,7 @@
     {
       "id": 111,
       "name": "迴避提升",
-      "status": "未實裝",
+      "status": "未開放技能（無學習管道）",
       "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
       "group": "unavailable",
       "learnable": false
@@ -801,7 +800,7 @@
     {
       "id": 112,
       "name": "破壞盔甲",
-      "status": "未實裝",
+      "status": "未開放技能（無學習管道）",
       "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
       "group": "unavailable",
       "learnable": false
@@ -809,8 +808,8 @@
     {
       "id": 113,
       "name": "精準目標",
-      "status": "未完成效果",
-      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "status": "已補上效果",
+      "note": "設定隊伍／召喚物集火目標",
       "group": "TARGET",
       "learnable": true
     },
@@ -833,8 +832,8 @@
     {
       "id": 116,
       "name": "呼喚盟友",
-      "status": "未實裝",
-      "note": "缺少血盟技能接入",
+      "status": "已補上效果",
+      "note": "伺服器驗證同血盟在線盟友，傳來身邊",
       "group": "UTIL",
       "learnable": true
     },
@@ -849,16 +848,16 @@
     {
       "id": 118,
       "name": "援護盟友",
-      "status": "未實裝",
-      "note": "缺少血盟技能接入",
+      "status": "已補上效果",
+      "note": "伺服器驗證同血盟在線盟友，移動至身邊",
       "group": "UTIL",
       "learnable": true
     },
     {
       "id": 119,
       "name": "王者加護",
-      "status": "未完成效果",
-      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "status": "已補上效果",
+      "note": "原始資料無數值；本版被動AC-2、MR+10",
       "group": "SELF",
       "learnable": true
     },
@@ -889,24 +888,24 @@
     {
       "id": 132,
       "name": "三重矢",
-      "status": "未實裝",
-      "note": "PlayerSkills.supports 不接受此技能",
+      "status": "已補上效果",
+      "note": "裝弓且消耗三支箭，三次獨立命中",
       "group": "direct",
       "learnable": true
     },
     {
       "id": 133,
       "name": "弱化屬性",
-      "status": "未完成效果",
-      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "status": "已補上效果",
+      "note": "所選精靈屬性抗性-50",
       "group": "TARGET",
       "learnable": true
     },
     {
       "id": 134,
       "name": "鏡反射",
-      "status": "未完成效果",
-      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "status": "已補上效果",
+      "note": "受到魔法攻擊時10%鏡反射，觸發後解除",
       "group": "SELF",
       "learnable": true
     },
@@ -993,8 +992,8 @@
     {
       "id": 153,
       "name": "魔法消除",
-      "status": "未完成效果",
-      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "status": "已補上效果",
+      "note": "目標MR暫時減半，下一個攻擊／異常法術判定後消失",
       "group": "TARGET",
       "learnable": true
     },
@@ -1009,8 +1008,8 @@
     {
       "id": 155,
       "name": "舞躍之火",
-      "status": "未完成效果",
-      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "status": "已補上效果",
+      "note": "勇敢加速，與精靈餅乾加速互斥",
       "group": "SELF",
       "learnable": true
     },
@@ -1033,16 +1032,16 @@
     {
       "id": 158,
       "name": "生命之泉",
-      "status": "未完成效果",
-      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "status": "已補上效果",
+      "note": "自然回血+15",
       "group": "SELF",
       "learnable": true
     },
     {
       "id": 159,
       "name": "大地的護衛",
-      "status": "未完成效果",
-      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "status": "已補上效果",
+      "note": "AC-7",
       "group": "SELF",
       "learnable": true
     },
@@ -1089,7 +1088,7 @@
     {
       "id": 165,
       "name": "生命呼喚",
-      "status": "未實裝",
+      "status": "未開放技能（無學習管道）",
       "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
       "group": "unavailable",
       "learnable": false
@@ -1121,7 +1120,7 @@
     {
       "id": 169,
       "name": "體能激發",
-      "status": "未實裝",
+      "status": "未開放技能（無學習管道）",
       "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
       "group": "unavailable",
       "learnable": false
@@ -1129,7 +1128,7 @@
     {
       "id": 170,
       "name": "水之元氣",
-      "status": "未實裝",
+      "status": "未開放技能（無學習管道）",
       "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
       "group": "unavailable",
       "learnable": false
@@ -1137,7 +1136,7 @@
     {
       "id": 171,
       "name": "屬性之火",
-      "status": "未實裝",
+      "status": "未開放技能（無學習管道）",
       "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
       "group": "unavailable",
       "learnable": false
@@ -1145,7 +1144,7 @@
     {
       "id": 172,
       "name": "暴風疾走",
-      "status": "未實裝",
+      "status": "未開放技能（無學習管道）",
       "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
       "group": "unavailable",
       "learnable": false
@@ -1153,7 +1152,7 @@
     {
       "id": 173,
       "name": "污濁之水",
-      "status": "未實裝",
+      "status": "未開放技能（無學習管道）",
       "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
       "group": "unavailable",
       "learnable": false
@@ -1161,7 +1160,7 @@
     {
       "id": 174,
       "name": "精準射擊",
-      "status": "未實裝",
+      "status": "未開放技能（無學習管道）",
       "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
       "group": "unavailable",
       "learnable": false
@@ -1169,7 +1168,7 @@
     {
       "id": 175,
       "name": "烈焰之魂",
-      "status": "未實裝",
+      "status": "未開放技能（無學習管道）",
       "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
       "group": "unavailable",
       "learnable": false
@@ -1177,7 +1176,7 @@
     {
       "id": 176,
       "name": "能量激發",
-      "status": "未實裝",
+      "status": "未開放技能（無學習管道）",
       "note": "沒有對應施放效果，且目前技能書未提供學習途徑",
       "group": "unavailable",
       "learnable": false
@@ -1201,16 +1200,16 @@
     {
       "id": 183,
       "name": "護衛毀滅",
-      "status": "未完成效果",
-      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "status": "已補上效果",
+      "note": "目標AC+10",
       "group": "TARGET",
       "learnable": true
     },
     {
       "id": 184,
       "name": "岩漿噴吐",
-      "status": "部分實裝",
-      "note": "目前直接施法只結算選定目標，原始範圍效果尚未完整接入",
+      "status": "已補上效果",
+      "note": "範圍逐目標結算，遵守視線、抗性及友軍排除",
       "group": "direct",
       "learnable": true
     },
@@ -1241,8 +1240,8 @@
     {
       "id": 188,
       "name": "恐懼無助",
-      "status": "未完成效果",
-      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "status": "已補上效果",
+      "note": "目標閃避-5，零閃避也會提高對其命中",
       "group": "TARGET",
       "learnable": true
     },
@@ -1257,8 +1256,8 @@
     {
       "id": 190,
       "name": "覺醒：法利昂",
-      "status": "未完成效果",
-      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "status": "已補上效果",
+      "note": "AC-3、冰凍抗性+10，覺醒互斥",
       "group": "SELF",
       "learnable": true
     },
@@ -1281,24 +1280,24 @@
     {
       "id": 193,
       "name": "驚悚死神",
-      "status": "未完成效果",
-      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "status": "已補上效果",
+      "note": "目標力量及智力-3，實際物理／魔法攻擊下降",
       "group": "TARGET",
       "learnable": true
     },
     {
       "id": 194,
       "name": "暴龍之眼",
-      "status": "未完成效果",
-      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "status": "已補上效果",
+      "note": "周圍十四格偵測隱身目標",
       "group": "SELF",
       "learnable": true
     },
     {
       "id": 195,
       "name": "覺醒：巴拉卡斯",
-      "status": "未完成效果",
-      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "status": "已補上效果",
+      "note": "近戰命中+5、昏迷抗性+10，覺醒互斥",
       "group": "SELF",
       "learnable": true
     },
@@ -1377,8 +1376,8 @@
     {
       "id": 210,
       "name": "立方：地裂",
-      "status": "未完成效果",
-      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "status": "已補上效果",
+      "note": "範圍地屬性傷害，自身範圍地抗+30",
       "group": "AREA",
       "learnable": true
     },
@@ -1401,8 +1400,8 @@
     {
       "id": 213,
       "name": "隱身破壞者",
-      "status": "未完成效果",
-      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "status": "已補上效果",
+      "note": "偵測隱身並對現形敵人造成1傷害",
       "group": "SELF",
       "learnable": true
     },
@@ -1417,8 +1416,8 @@
     {
       "id": 215,
       "name": "立方：衝擊",
-      "status": "未完成效果",
-      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "status": "已補上效果",
+      "note": "範圍敵人每四秒定身一秒，自身範圍風抗+30",
       "group": "AREA",
       "learnable": true
     },
@@ -1433,16 +1432,16 @@
     {
       "id": 217,
       "name": "恐慌",
-      "status": "未完成效果",
-      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "status": "已補上效果",
+      "note": "目標力量、體質、敏捷、精神、智力各-1",
       "group": "TARGET",
       "learnable": true
     },
     {
       "id": 218,
       "name": "疼痛的歡愉",
-      "status": "未完成效果",
-      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "status": "已補上效果",
+      "note": "依施法後缺少HP的五分之一造成傷害",
       "group": "SELF",
       "learnable": true
     },
@@ -1457,16 +1456,16 @@
     {
       "id": 220,
       "name": "立方：和諧",
-      "status": "未完成效果",
-      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "status": "已補上效果",
+      "note": "範圍自身與本機同伴補HP25／自身MP5，敵人扣HP25／MP5",
       "group": "AREA",
       "learnable": true
     },
     {
       "id": 225,
       "name": "咆哮",
-      "status": "未完成效果",
-      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "status": "已補上效果",
+      "note": "範圍敵人50傷害",
       "group": "AREA",
       "learnable": true
     },
@@ -1521,8 +1520,8 @@
     {
       "id": 235,
       "name": "迅猛雙斧",
-      "status": "未完成效果",
-      "note": "已登記施法／狀態或特效，但沒有對應能力或特殊效果結算",
+      "status": "已補上效果",
+      "note": "副手斧追擊機率由20%提高至35%",
       "group": "PASSIVE",
       "learnable": true
     },
@@ -1558,5 +1557,7 @@
       "group": "PASSIVE",
       "learnable": true
     }
-  ]
+  ],
+  "updated": "2026-11-19",
+  "scope": "技能書可學技能皆有施放或被動入口；數值缺漏採明列的本版規則，未開放技能不加入學習清單。"
 }

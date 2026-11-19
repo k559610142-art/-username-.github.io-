@@ -150,7 +150,7 @@ const FakePlayers=(()=>{
   const f=mob.fp,max=mob.spawn.npc.hp;
   f.potions??=ri(5,12);f.nerve??=rnd(.25,.48);
   if(safe(mob.x,mob.y)){f.potions=Math.max(f.potions,8);}
-  if(mob.hp<max*.7&&now>=(f.healAt||0)&&f.potions>0){
+  if(mob.hp<max*.7&&now>=(f.healAt||0)&&f.potions>0&&window.ClassBuffs?.canUsePotions?.(mob)!==false){
    const magic=f.look.role==='法師'&&Math.random()<.5;
    mob.hp=Math.min(max,mob.hp+Math.round(max*(magic ? .3 : .22)));f.potions--;f.healAt=now+(magic?4500:1800);f.hpShow=now+3000;
    IslandMonsters.playEffect(magic?(typeof playerSkillData!=='undefined'?playerSkillData.skills[1]?.gfx:0)||189:189,mob.x,mob.y,now,{follow:mob});
@@ -172,6 +172,7 @@ const FakePlayers=(()=>{
   if(mob.bubble&&now>mob.bubble.until)mob.bubble=null;
   if(now>=f.chatAt){f.chatAt=now+rnd(35000,90000);const lines=(window.NpcContext?.ambient(mob)||[]).filter(lineOk);if(lines.length&&Math.random()<.45)say(mob,pick(lines));}
   if(f.vanish){if(now>=f.vanish){const s=spotNear(mob.homeX,mob.homeY,2,8,f.red?false:null);if(s&&(!window.FakePlayerAutonomy||FakePlayerAutonomy.canReturn(mob,s,now))){f.vanish=0;f.hidden=false;f.pk=false;mob.hp=mob.spawn.npc.hp;window.FakePlayerAutonomy?.onReturn(mob,now);place(mob,...s);}else f.vanish=now+5000;}return;}
+  if(now<(mob.ready||0))return;
   if(f.red&&!f.pk&&!f.stall&&!f.social&&!f.partyOwner&&!f.retreatUntil)pk(mob,now,stepToward);
   if(!f.stall&&!f.pk&&!f.social&&!f.partyOwner&&window.FakePlayerAutonomy?.update(mob,now,stepToward,{say,face,shoot,loot,claimed}))return;
   if(!f.stall&&survival(mob,now,stepToward))return;
@@ -212,7 +213,7 @@ const FakePlayers=(()=>{
  // ---- 紅名 PK ----
  function pk(mob,now,stepToward){const f=mob.fp,name=mob.spawn.npc.name,lv=mob.spawn.npc.level,pd=dist(mob.x,mob.y,worldX,worldY);
   const ok=window.gameFlowState==='playing'&&!CharacterActions.dead&&canFight(mob);
-  const visible=IslandCombat.clearShot(mob.x,mob.y,worldX,worldY)&&!window.ClassBuffs?.invisible?.();
+  const visible=pd<=(window.ClassBuffs?.vision?.(mob)??14)&&IslandCombat.clearShot(mob.x,mob.y,worldX,worldY)&&!window.ClassBuffs?.invisible?.();
   if(f.pk){
    if(!ok||f.enemyId!==window.activeCharacterId||pd>14||safe(mob.x,mob.y)){if(CharacterActions.dead)say(mob,pick(RED_WIN));f.pk=false;f.pkCd=now+rnd(45000,90000);return false;}
    if(visible)f.pkLastSeen={x:worldX,y:worldY,until:now+3500};
@@ -227,7 +228,7 @@ const FakePlayers=(()=>{
    const attackMap=window.activeMapId||0,attackOwner=window.activeCharacterId;
    setTimeout(()=>{if(!f.pk||f.retreatUntil||CharacterActions.dead||!canFight(mob)||(window.activeMapId||0)!==attackMap||window.activeCharacterId!==attackOwner||dist(mob.x,mob.y,worldX,worldY)>reach||!IslandCombat.clearShot(mob.x,mob.y,worldX,worldY))return;
     const ac=typeof previewArmorClass==='function'?Number(previewArmorClass())||10:10,plv=window.activeCharacterLevel||1;
-    if(Math.random()<clamp(.6+(lv-plv)*.02+(ac-10)*.025,.1,.95)){CharacterActions.damage(ri(3,9)+Math.floor(lv*.6)+4,{animate:!movementAnimating()&&!navigationPath.length});
+    if(Math.random()<clamp(.6+(lv-plv)*.02+(ac-10)*.025,.1,.95)){const n=window.ClassBuffs?.targetNpc?.(mob)||mob.spawn.npc,delta=(n.dmgup||0)-(mob.spawn.npc.dmgup||0)+Math.floor(((n.str||0)-(mob.spawn.npc.str||0))/2),raw=Math.max(0,ri(3,9)+Math.floor(lv*.6)+4+delta),dealt=window.ClassBuffs?.onHurt?.(mob,raw,null)??raw;if(dealt>0)CharacterActions.damage(dealt,{animate:!movementAnimating()&&!navigationPath.length});
      if(CharacterActions.dead){say(mob,pick(RED_WIN));window.GameChat?.say('【系統】你被 '+name+' 擊倒了。','sys');f.pk=false;f.pkCd=movementTime()+rnd(60000,120000);}}},dur*.45);
    return true;}
 
@@ -242,6 +243,7 @@ const FakePlayers=(()=>{
  function hurt(mob,amount){const f=mob.fp;if(!f||!canAttack(mob))return;mob.hp=Math.max(0,mob.hp-Math.max(1,Math.floor(amount)));f.hpShow=movementTime()+3000;window.CombatSound?.monsterHit?.(mob);
   if(!f.pk&&!f.retreatUntil&&mob.hp>0&&!CharacterActions.dead){f.pk=true;f.enemyId=window.activeCharacterId;claimed.delete(f.target);f.target=null;f.goal=null;f.route=null;say(mob,pick(['你敢打我?','找死','來啊']));}
   if(mob.hp>0)return;
+  window.ClassBuffs?.clearTarget?.(mob);
   window.FakePlayerAutonomy?.remember(mob,'death',null,movementTime());
   const gold=f.red?mob.spawn.npc.level*40:0;IslandMonsters.playEffect(169,mob.x,mob.y,movementTime());
   if(gold)window.OwnedInventory?.receive('etcitem',40308,gold);

@@ -1,0 +1,16 @@
+const test=require('node:test'),assert=require('node:assert/strict');
+test('返生與盟友傳送由伺服器驗證身份、存活、範圍與資源並更新對方',async()=>{
+ const {createGameServer}=require('../data/server/local-test-server.cjs'),stats={str:20,dex:15,con:10,wis:10,cha:10,int:10};
+ const settings={items:{'etcitem:40308':{kind:'etcitem',stackable:true},'etcitem:40318':{kind:'etcitem',stackable:true}},classes:{王族:{base:stats,points:0}}},server=createGameServer({database:':memory:',settings});await new Promise(r=>server.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+server.address().port;
+ async function api(route,data,cookie,method='POST',expected=200){const r=await fetch(base+route,{method,headers:{'Content-Type':'application/json',...(cookie?{Cookie:cookie}:{})},...(data?{body:JSON.stringify(data)}:{})});const value=await r.json();assert.equal(r.status,expected,JSON.stringify(value));return {data:value,cookie:r.headers.get('set-cookie')?.split(';')[0]};}
+ async function user(name,hp,x=32574){const auth=await api('/api/auth',{name,password:'testpass',register:true}),cookie=auth.cookie;await api('/api/state',{revision:0,characters:[{id:name,name,role:'王族',gender:0,stats,level:50,hp,maxHp:100,mp:1000,maxMp:1000,mapId:0,x,y:32941,skills:{ids:[61,75,165,116,118]},inventory:[{uid:'gold',key:'etcitem:40308',count:60000},{uid:'gem',key:'etcitem:40318',count:10}]},null,null,null],warehouse:[]},cookie,'PUT');await api('/api/presence',{characterId:name},cookie);return cookie;}
+ async function group(a,b,kind){await api('/api/groups/create',{characterId:'healer',kind,name:kind+'技能'},a);const social=(await api('/api/social?characterId=healer',null,a,'GET')).data,g=social.groups.find(g=>g.kind===kind);await api('/api/groups/invite',{characterId:'healer',groupId:g.id,name:'mate'},a);const pending=(await api('/api/social?characterId=mate',null,b,'GET')).data;await api('/api/groups/accept',{characterId:'mate',inviteId:pending.invites.find(i=>i.kind===kind).id},b);}
+ async function change(cookie,fn){const old=(await api('/api/state',null,cookie,'GET')).data.state;fn(old.characters[0]);return (await api('/api/state',old,cookie,'PUT')).data.state;}
+ try{const a=await user('healer',100),b=await user('mate',0),outsider=await user('outsider',0);await group(a,b,'party');const spell=(id,targetId='mate',expected=200)=>api('/api/skills/utility',{characterId:'healer',skillId:id,targetId,int:10},a,'POST',expected);
+  await spell(61,'outsider',400);let before=(await api('/api/state',null,a,'GET')).data.state.characters[0];assert.equal(before.mp,1000);
+  await spell(61);assert.equal((await api('/api/state',null,b,'GET')).data.state.characters[0].hp,50);await spell(75,'mate',400);
+  await change(b,c=>{c.hp=0;c.x+=30;});await spell(75,'mate',400);assert.equal((await api('/api/state',null,a,'GET')).data.state.characters[0].mp,1000-46);
+  await change(b,c=>{c.x=32574;});await spell(75);assert.equal((await api('/api/state',null,b,'GET')).data.state.characters[0].hp,100);
+  await group(a,b,'guild');await change(b,c=>{c.x=32578;});await spell(116);const caster=(await api('/api/state',null,a,'GET')).data.state.characters[0],mate=(await api('/api/state',null,b,'GET')).data.state.characters[0];assert(Math.max(Math.abs(caster.x-mate.x),Math.abs(caster.y-mate.y))<=1);await spell(118);
+ }finally{await new Promise(r=>server.close(r));}
+});
