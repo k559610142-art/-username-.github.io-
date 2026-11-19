@@ -5,7 +5,7 @@ const MainlandOcclusion=(()=>{
  function draw(now=movementTime()){
   window.MainlandInteriors?.sync(now);if(window.NativeWorld?.active){surface.hidden=true;return}
   const body=characterBody,view=renderedSceneView;if(!view)return;const g={width:view.width,height:view.height,left:0,top:0},b={left:view.width/2+(parseFloat(body.style.left)||0),top:view.height*view.anchorY+(parseFloat(body.style.top)||0),width:parseFloat(body.style.width)||0,height:parseFloat(body.style.height)||0};surface.hidden=window.gameFlowState!=='playing'||window.activeMapId!==4||!sceneStarted;if(surface.hidden||!b?.width||!b.height)return;
-  const dpr=Math.min(devicePixelRatio||1,2),w=Math.round(g.width*dpr),h=Math.round(g.height*dpr);if(surface.width!==w||surface.height!==h){surface.width=w;surface.height=h;}pen.setTransform(dpr,0,0,dpr,0,0);pen.clearRect(0,0,g.width,g.height);pen.imageSmoothingEnabled=false;
+  const dpr=(window.renderDpr||Math.min(devicePixelRatio||1,2)),w=Math.round(g.width*dpr),h=Math.round(g.height*dpr);if(surface.width!==w||surface.height!==h){surface.width=w;surface.height=h;}pen.setTransform(dpr,0,0,dpr,0,0);pen.clearRect(0,0,g.width,g.height);pen.imageSmoothingEnabled=false;
   const p=visualWorldPosition(now),foot=project(p.x,p.y),left=(b.left-g.left-view.ox)/view.zoom,top=(b.top-g.top-view.oy)/view.zoom,right=left+b.width/view.zoom,bottom=top+b.height/view.zoom;
   const covered=NativeMapCoverage.at(p.x,p.y);
   pen.save();pen.beginPath();pen.rect(b.left-g.left,b.top-g.top,b.width,b.height);pen.clip();let covering=0;

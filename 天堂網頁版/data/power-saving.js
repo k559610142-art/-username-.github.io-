@@ -22,3 +22,6 @@ window.PowerSaving=(()=>{
  function setEnabled(value){enabled=!!value;try{localStorage.setItem(key,enabled?'20fps':'off');}catch{}if(timer!==null){clearTimeout(timer);timer=null;}if(pending){cancel(pending);pending=0;}last=-Infinity;schedule();}
  return {setEnabled,get enabled(){return enabled;},get fps(){return enabled?20:null;}};
 })();
+// 2026-11-19 使用者：手機版玩會 lag → 觸控手機的地圖畫布解析度上限 2 倍改 1.5 倍（每層少畫約 44% 像素，畫面只略柔一點）；電腦維持 2 倍
+//  各畫布用 window.renderDpr（scene-renderer、island-monsters、native-world、region-background、mainland-occlusion）
+(()=>{const calc=()=>{let coarse=false;try{coarse=matchMedia('(pointer:coarse)').matches}catch{}window.renderDpr=Math.min(devicePixelRatio||1,coarse?1.5:2)};calc();addEventListener('resize',calc);})();

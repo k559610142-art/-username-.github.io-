@@ -81,7 +81,7 @@ function paintCachedTerrain(view,layers,dpr,dirty){
   const offsetY=(terrainRasterView.py-view.py)*view.zoom;
   terrainRaster.style.transform='translate3d('+(-terrainPadding+offsetX)+'px,'+(-terrainPadding+offsetY)+'px,0)';paintForegroundLayers(view,layers);
 }
-function draw(frameTime=movementTime()){const rect=sceneBoxCache||(sceneBoxCache=game.getBoundingClientRect()),/* 效能：用 ResizeObserver 維護的快取，不每幀強制排版 */w=rect.width,h=rect.height,layout=viewportLayout(w,h),dpr=Math.min(devicePixelRatio||1,2),cw=Math.round(w*dpr),ch=Math.round(h*dpr);zoom=layout.defaultZoom;panX=0;panY=0;const view=sceneViewAt(w,h,frameTime),{px,py,ox,oy}=view;
+function draw(frameTime=movementTime()){const rect=sceneBoxCache||(sceneBoxCache=game.getBoundingClientRect()),/* 效能：用 ResizeObserver 維護的快取，不每幀強制排版 */w=rect.width,h=rect.height,layout=viewportLayout(w,h),dpr=(window.renderDpr||Math.min(devicePixelRatio||1,2)),cw=Math.round(w*dpr),ch=Math.round(h*dpr);zoom=layout.defaultZoom;panX=0;panY=0;const view=sceneViewAt(w,h,frameTime),{px,py,ox,oy}=view;
 if(window.NativeWorld?.render(view,dpr,frameTime))return;
 if(terrainDirty===false&&paintedView&&paintedView.px===px&&paintedView.py===py&&paintedView.worldX===worldX&&paintedView.worldY===worldY&&paintedView.width===w&&paintedView.height===h&&canvas.width===cw&&canvas.height===ch)return;
 const pageVisible=(p,margin)=>{const [x,y]=p.pixelOrigin;return x*zoom+ox<w+margin&&y*zoom+oy<h+margin&&(x+3072)*zoom+ox>-margin&&(y+1536)*zoom+oy>-margin};

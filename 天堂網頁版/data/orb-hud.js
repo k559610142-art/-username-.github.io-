@@ -24,7 +24,7 @@
  main.game.qs-narrow:not(.orb-hud):not(.classic-hud) .orb-hud-root{display:block;position:absolute;inset:0;pointer-events:none;z-index:6}
  main.game.qs-narrow:not(.orb-hud):not(.classic-hud) .orb-hud-root>*:not(.oh-msg){display:none!important}
  main.game.qs-narrow:not(.orb-hud):not(.classic-hud)>.reference-messages{display:none!important}
- main.game.qs-narrow:not(.orb-hud):not(.classic-hud) .oh-msg{position:absolute;left:calc(var(--safe-left,0px) + 4px);bottom:var(--mchat-bottom,140px);width:min(320px,calc(100% - var(--safe-left,0px) - 84px));height:auto;display:flex;flex-direction:column;gap:4px;padding:4px 6px 6px;font-size:12.5px;background:#080a0c6b;border:1px solid #c9a45e73;border-radius:8px;box-shadow:0 2px 10px #0006;-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);pointer-events:auto}
+ main.game.qs-narrow:not(.orb-hud):not(.classic-hud) .oh-msg{position:absolute;left:calc(var(--safe-left,0px) + 4px);bottom:var(--mchat-bottom,140px);width:min(320px,calc(100% - var(--safe-left,0px) - 84px));height:auto;display:flex;flex-direction:column;gap:4px;padding:4px 6px 6px;font-size:12.5px;background:#080a0c80;border:1px solid #c9a45e73;border-radius:8px;box-shadow:0 2px 10px #0006;pointer-events:auto}
  main.game.qs-narrow:not(.orb-hud):not(.classic-hud) .oh-msg .tabs{display:flex;align-items:center;gap:4px}
  main.game.qs-narrow:not(.orb-hud):not(.classic-hud) .oh-msg .tabs button{min-height:24px!important;padding:0 9px!important;font-size:12px;border-radius:12px;background:#000000a0;color:#d6ccb4;border:1px solid #ffffff22}
  main.game.qs-narrow:not(.orb-hud):not(.classic-hud) .oh-msg .tabs button[aria-pressed=true]{color:#ffe08a;border-color:#c9a45e}

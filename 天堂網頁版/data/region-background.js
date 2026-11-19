@@ -102,7 +102,7 @@ const RegionBackground=(()=>{
   }}target.restore();
  }
  function drawForeground(v){
-  if(!active||!current)return;const dpr=Math.min(devicePixelRatio||1,2),w=Math.round(v.width*dpr),h=Math.round(v.height*dpr);
+  if(!active||!current)return;const dpr=(window.renderDpr||Math.min(devicePixelRatio||1,2)),w=Math.round(v.width*dpr),h=Math.round(v.height*dpr);
   if(front.width!==w||front.height!==h){front.width=w;front.height=h;lastForeground='';foregroundBox=null;}
   const box={left:v.width/2+(parseFloat(characterBody.style.left)||0),top:v.height*v.anchorY+(parseFloat(characterBody.style.top)||0),width:parseFloat(characterBody.style.width)||0,height:parseFloat(characterBody.style.height)||0};
   const signature=[current.id,v.ox,v.oy,v.zoom,characterCurrentPath,cover.join('|'),[...hidden].join('|'),imageRevision,box.left,box.top,box.width,box.height].join('/');if(signature===lastForeground)return;lastForeground=signature;

@@ -225,7 +225,7 @@ const IslandMonsters = (() => {
     IslandNpcAi.updateRevive();
     if(!playing){selected=null;effects.length=0;return;}
     if(!view.width||!view.height)return;
-    const dpr=Math.min(devicePixelRatio||1,2),w=Math.round(view.width*dpr),h=Math.round(view.height*dpr);
+    const dpr=(window.renderDpr||Math.min(devicePixelRatio||1,2)),w=Math.round(view.width*dpr),h=Math.round(view.height*dpr);
     if(surface.width!==w||surface.height!==h){surface.width=w;surface.height=h;}
     pen.setTransform(dpr,0,0,dpr,0,0);
     pen.clearRect(0,0,view.width,view.height);
