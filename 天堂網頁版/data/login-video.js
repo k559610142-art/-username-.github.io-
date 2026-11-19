@@ -5,11 +5,11 @@
 //  這裡把遊戲真正的輸入框與按鈕（透明）疊到影片畫的位置上。座標以影片 1280×720 為準，依 object-fit:cover 換算。
 //  直式手機畫面會把影片裡的登入框裁掉，所以直式時停在第 7 秒（還沒出現畫好的介面）並沿用原本的登入卡。
 (()=>{
- const video=document.querySelector('.login-video'),stage=document.querySelector('.login-stage'),form=document.querySelector('#login-form'),message=document.querySelector('#login-message');
+ const video=document.querySelector('.login-video'),stage=document.querySelector('.login-stage'),form=document.querySelector('#login-form'),message=document.querySelector('#login-message'),rememberRow=document.querySelector('#login-remember-row');
  if(!video||!stage||!form)return;
  const VW=1280,VH=720,SHOW_AT=8.0,PORTRAIT_STOP=7;
  // 影片裡畫好的元件位置（1280×720 座標，量自最後一格）
- const SPOT={account:[509,285,344,50],password:[509,355,344,51],accountEye:[812,295,34,30],passwordEye:[812,365,34,30],register:[418,445,123,44],login:[553,445,174,44],forgotBox:[738,445,123,44],message:[390,496,500,26]}; // 新影片最後一格量的（2026-11-17）
+ const SPOT={account:[509,285,344,50],password:[509,355,344,51],accountEye:[812,295,34,30],passwordEye:[812,365,34,30],remember:[509,408,174,32],register:[418,445,123,44],login:[553,445,174,44],forgotBox:[738,445,123,44],message:[390,496,500,26]}; // 新影片最後一格量的（2026-11-17）
  // 將影片內建的面板移到角色下半身，輸入框與按鈕使用相同座標轉換。
  const PANEL={x:383,y:232,w:518,h:306},MOVED={x:433,y:430,scale:.8};
  for(const spot of Object.values(SPOT)){spot[0]=MOVED.x+(spot[0]-PANEL.x)*MOVED.scale;spot[1]=MOVED.y+(spot[1]-PANEL.y)*MOVED.scale;spot[2]*=MOVED.scale;spot[3]*=MOVED.scale;}
@@ -42,10 +42,11 @@
  function enter(){
   if(ready||portrait()||(failed&&(!cleanReady||!panelImage.naturalWidth)))return;ready=true;fallback(false);stage.classList.add('login-video-mode');
   place(document.querySelector('#login-account'),SPOT.account);place(document.querySelector('#login-password'),SPOT.password);place(document.querySelector('#login-submit'),SPOT.login);if(message)place(message,SPOT.message);
+  if(rememberRow)place(rememberRow,SPOT.remember);
   for(const [node,spot] of hots){place(node,spot);if(!node.isConnected)node.classList.contains('login-patch')?form.prepend(node):form.append(node);}
   layout();setTimeout(()=>stage.classList.add('login-video-shown'),30); // 不用 requestAnimationFrame：背景分頁不會執行，表單會一直隱形
  }
- function leave(){ready=false;stage.classList.remove('login-video-mode','login-video-shown');form.style.transform='';for(const el of [document.querySelector('#login-account'),document.querySelector('#login-password'),document.querySelector('#login-submit'),message])if(el)el.removeAttribute('style');for(const [node] of hots)node.remove();}
+ function leave(){ready=false;stage.classList.remove('login-video-mode','login-video-shown');form.style.transform='';for(const el of [document.querySelector('#login-account'),document.querySelector('#login-password'),document.querySelector('#login-submit'),message,rememberRow])if(el)el.removeAttribute('style');for(const [node] of hots)node.remove();}
  video.loop=false;video.removeAttribute('loop');
  // 影片配樂（2026-11-17 使用者：登入畫面只要影片配樂）：影片本身一律靜音，配樂用另一個音訊播放器放從影片抽出的 login-music.m4a。
  //  瀏覽器通常擋有聲自動播放，而玩家多半等登入框出來（影片已播完）才點 → 第一次點擊／按鍵時從影片當下進度（播完就從頭）開始放，

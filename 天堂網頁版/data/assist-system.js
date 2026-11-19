@@ -13,15 +13,16 @@
 const AssistSystem=(()=>{
  const el=(t,c,x)=>uiElement(t,c,x);
  const catalog=new Map(INTERFACE_CATALOG.items.map(i=>[i.kind+':'+i.id,i]));
- const POTIONS=[['haste','綠色藥水（加速）',['haste']],['brave','勇敢藥水類（勇水／精靈餅乾／巧克力蛋糕）',['brave','elfBrave','braveX']],['wisdom','慎重藥水',['wisdom']],['blue','藍色藥水（魔力回復）',['blue']]];
+ const POTIONS=[['haste','綠色藥水（加速）',['haste']],['brave','二段加速（勇水／精靈餅乾）',['brave','elfBrave']],['cake','三段加速（巧克力蛋糕）',['braveX']],['wisdom','慎重藥水',['wisdom']],['blue','藍色藥水（魔力回復）',['blue']]];
  // 自動購買（第 2 期）：用完（身上 0 個）時從商店買，價格取所有 NPC 商店裡最便宜的那一家（NATIVE_NPC_DIALOGS.shops＋islandNpcServiceData.shop，[道具, 順序, 買價, 一組幾個, 賣價, 強化]）
  const SHOP=new Map();
- for(const rows of [...Object.values(NATIVE_NPC_DIALOGS.shops||{}),islandNpcServiceData.shop||[]])for(const [id,,buy,pack,,ench] of rows){if(!(buy>=0)||ench)continue;const n=Math.max(1,pack|0),b=SHOP.get(id);if(!b||buy/n<b.price/b.pack)SHOP.set(id,{price:buy,pack:n});}
+ for(const rows of [...Object.entries(NATIVE_NPC_DIALOGS.shops||{}).filter(([id])=>id!=='70089'&&(NATIVE_NPC_DIALOGS.actions[id]?.currency||40308)===40308).map(([,rows])=>rows),islandNpcServiceData.shop||[]])for(const [id,,buy,pack,,ench] of rows){if(!(buy>=0)||ench)continue;const n=Math.max(1,pack|0),b=SHOP.get(id);if(!b||buy/n<b.price/b.pack)SHOP.set(id,{price:buy,pack:n});}
  const QTY=[1,5,10,20,50,100,200,500,1000];
  // 2026-11-18 使用者：商店沒賣或職業不能用時（例如騎士的慎重藥水）也顯示該道具的圖，不要只有購物車
- const BUY_ICON={tp:'etcitem:40100',home:'etcitem:40081',heal:'etcitem:40010',haste:'etcitem:40018',brave:'etcitem:40014',wisdom:'etcitem:40016',blue:'etcitem:40015',arrow:'etcitem:40743'};
- const BUYS=[['tp','瞬間移動卷軸',10],['home','傳送回家的卷軸',5],['heal','補血道具（補給選的那種）',100],['haste','綠色藥水',5],['brave','勇敢藥水類',5],['wisdom','慎重藥水',5],['blue','藍色藥水',5],['arrow','箭（裝備弓時）',1000]];
- const base=()=>({noMobTp:false,noMobSec:10,potions:{haste:false,brave:false,wisdom:false,blue:false},attackOn:false,attackSkill:null,attackMp:30,buffs:[],list:{},escape:false,healFallback:false,morph:false,morphCard:null,morphLost:false,openOn:false,openSkill:null,openMp:50,aoeOn:false,aoeSkill:null,aoeRange:3,aoeCount:3,aoeMp:50,mindOn:false,mindHp:80,mindMp:40,summonOn:false,ringOn:false,expAuto:false,barrierScroll:false,eatOn:false,eatAt:30,eatPick:null,returnOn:false,returnHp:80,returnSpot:null,fullOn:false,fullWeight:80,fullSlots:10,fullAct:'home',presets:[null,null,null],dangerOn:false,dangerBoss:true,dangerPlayer:'red',dangerRange:8,dollOn:false,dollId:null,pick:{haste:null,brave:null,wisdom:null,blue:null},buy:Object.fromEntries(BUYS.map(([k,,n])=>[k,{on:false,n}]))});
+ const BUY_ICON={tp:'etcitem:40100',home:'etcitem:40081',heal:'etcitem:40010',haste:'etcitem:40018',brave:'etcitem:40014',wisdom:'etcitem:40016',blue:'etcitem:40015',arrow:'etcitem:40743',cake:'etcitem:49138',meat:'etcitem:40056',barrier:'etcitem:40889'};
+ const BUYS=[['tp','瞬間移動卷軸',10],['home','傳送回家的卷軸',5],['heal','補血道具（補給選的那種）',100],['haste','綠色藥水',5],['brave','二段加速',5],['cake','巧克力蛋糕（三段加速）',5],['meat','肉',20],['barrier','魔法屏障卷軸',5],['wisdom','慎重藥水',5],['blue','藍色藥水',5],['arrow','箭（裝備弓時）',1000]];
+ const base=()=>({noMobTp:false,noMobSec:10,potions:Object.fromEntries(POTIONS.map(([k])=>[k,false])),attackOn:false,attackSkill:null,attackMp:30,buffs:[],list:{},escape:false,healFallback:false,morph:false,morphCard:null,morphLost:false,openOn:false,openSkill:null,openMp:50,aoeOn:false,aoeSkill:null,aoeRange:3,aoeCount:3,aoeMp:50,mindOn:false,mindHp:80,mindMp:40,summonOn:false,ringOn:false,expAuto:false,barrierScroll:false,eatOn:false,eatAt:30,eatPick:null,returnOn:false,returnHp:80,returnSpot:null,fullOn:false,fullWeight:80,fullSlots:10,fullAct:'home',presets:[null,null,null],dangerOn:false,dangerBoss:true,dangerPlayer:'red',dangerRange:8,dollOn:false,dollId:null,pick:Object.fromEntries(POTIONS.map(([k])=>[k,null])),buy:Object.fromEntries(BUYS.map(([k,,n])=>[k,{on:false,n}]))});
+ let buyOpen=false,healShop=null,healQty=100;
  let state=base(),owner='',dialog=null,tab='hunt',idleSince=0,lastTp=0,retry=new Map(),escapes=[],lostMorph=null,seenMorph=null,lastOpen=null;
  const int=(v,lo,hi,d)=>Number.isInteger(v)?Math.max(lo,Math.min(hi,v)):d;
  function validate(v){const s=base();if(!v||typeof v!=='object')return s;
@@ -39,6 +40,12 @@ const AssistSystem=(()=>{
   const skillOk=id=>Number.isInteger(id)&&playerSkillData.skills[id]?id:null;s.openSkill=skillOk(v.openSkill);s.aoeSkill=skillOk(v.aoeSkill);
   s.openMp=int(v.openMp,0,99,50);s.aoeRange=int(v.aoeRange,1,8,3);s.aoeCount=int(v.aoeCount,2,10,3);s.aoeMp=int(v.aoeMp,0,99,50);s.mindHp=int(v.mindHp,1,99,80);s.mindMp=int(v.mindMp,1,99,40);
   for(const k of Object.keys(s.pick))s.pick[k]=typeof v.pick?.[k]==='string'&&catalog.has(v.pick[k])?v.pick[k]:null;
+  // 舊存檔若指定三段加速道具，就把該選擇移到新的三段設定。
+  if(s.pick.brave&&ITEM_USE_RULES.definitions[s.pick.brave]?.handler?.includes('BraveCake')){
+   if(!Object.hasOwn(v.pick,'cake'))s.pick.cake=s.pick.brave;
+   if(!Object.hasOwn(v.potions||{},'cake')){s.potions.cake=s.potions.brave;s.potions.brave=false;}
+   s.pick.brave=null;
+  }
   for(const [k] of BUYS){const b=v.buy?.[k];if(b)s.buy[k]={on:b.on===true,n:QTY.includes(b.n)?b.n:s.buy[k].n};}
   if(v.list&&typeof v.list==='object')for(const [map,names] of Object.entries(v.list)){if(!names||typeof names!=='object')continue;const m={};for(const [n,mode] of Object.entries(names))if(['skip','tp','first'].includes(mode))m[n]=mode;if(Object.keys(m).length)s.list[map]=m;}
   return s;}
@@ -64,19 +71,23 @@ const AssistSystem=(()=>{
   if(k==='tp')return key=>ITEM_USE_RULES.definitions[key]?.handler==='teleport.Move_Reel';
   if(k==='home')return key=>ITEM_USE_RULES.definitions[key]?.handler==='teleport.GoHome_Reel';
   if(k==='heal'){const want=AutoPotion.snapshot.key;return key=>!!want&&key===want;}
+  if(k==='meat'||k==='barrier')return key=>key===BUY_ICON[k];
+  if(k==='cake')return key=>key==='etcitem:49138'&&NativePotions.durationState(key)?.key==='braveX';
   if(k==='arrow')return key=>catalog.get(key)?.type==='arrow';
   const kinds=kindsOf(k);return key=>kinds.includes(NativePotions.durationState(key)?.key);
  }
- function product(k){const match=matcher(k);let best=null;for(const [id,s] of SHOP){const key='etcitem:'+id;if(!catalog.has(key)||!match(key))continue;if(k==='arrow'&&id!==40743&&id!==40744)continue;if(!best||s.price/s.pack<best.price/best.pack)best={key,id,...s};}return best;}
+ const shopProducts=Array.from(SHOP,([id,offer])=>({key:'etcitem:'+id,id,...offer})).filter(p=>catalog.has(p.key));
+ function product(k){const match=matcher(k);let best=null;for(const p of shopProducts){if(!match(p.key)||k==='arrow'&&p.id!==40743&&p.id!==40744)continue;if(!best||p.price/p.pack<best.price/best.pack)best=p;}return best;}
+ function quote(p,n){const packs=Math.ceil(n/p.pack);return {count:packs*p.pack,cost:packs*p.price};}
  const bowEquipped=()=>{const w=OwnedInventory.items.find(e=>e.slot==='weapon');return ['bow','singlebow'].includes(w?.item?.type);};
  let buyNotice=0;
  function autoBuy(now){
   for(const [k,label] of BUYS){const b=state.buy[k];if(!b?.on||(retry.get('buy'+k)||0)>now)continue;if(k==='arrow'&&!bowEquipped())continue;
    const match=matcher(k);if(OwnedInventory.items.some(e=>match(e.key)&&e.count>0))continue;
    const p=product(k);retry.set('buy'+k,now+5000);if(!p)continue;
-   const packs=Math.ceil(b.n/p.pack),err=OwnedInventory.trade(p.key,packs*p.pack,packs*p.price,false);
+   const {count,cost}=quote(p,b.n),err=OwnedInventory.trade(p.key,count,cost,false);
    if(err){retry.set('buy'+k,now+30000);if(now-buyNotice>30000){buyNotice=now;toast('自動購買 '+catalog.get(p.key).name+' 失敗：'+err);}}
-   else{toast('自動購買 '+catalog.get(p.key).name+' ×'+(packs*p.pack)+'（'+(packs*p.price).toLocaleString()+' 金幣）');return true;}}
+   else{toast('自動購買 '+catalog.get(p.key).name+' ×'+count+'（'+cost.toLocaleString()+' 金幣）');return true;}}
   return false;
  }
  const pctOf=(v,m)=>m?v*100/m:0;
@@ -226,6 +237,11 @@ const AssistSystem=(()=>{
  .assist-body .qy-set-row .ico.item{width:32px;height:32px;flex:none;display:flex;align-items:center;justify-content:center;background:#0a0b0c;border:1px solid #4a4336;border-radius:3px}
  .assist-body .qy-set-row .ico.item img{max-width:28px;max-height:28px;image-rendering:pixelated}
  .assist-body .qy-set-row .ico.item.dim img{opacity:.4;filter:grayscale(.6)}
+ .assist-body .assist-drawer{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:38px;margin:8px 0 4px;padding:6px 10px;border:1px solid #4a4336;background:#20201c;color:#e6cd92;text-align:left}
+ .assist-body .assist-drawer::after{content:'▸'}.assist-body .assist-drawer[aria-expanded=true]::after{content:'▾'}
+ .assist-body button.assist-shop-icon{width:36px;height:36px;flex:none;padding:0;border:1px solid #9b8150;border-radius:3px;background:#0a0b0c;color:#f0dcae}
+ .assist-shop-icon .ico.item{width:100%;height:100%;border:0}
+ .assist-heal-shop{padding:6px 0}.assist-heal-shop .txt{min-width:0}
  .assist-body .qy-set-row .ico.item .missing-item-icon{font-size:12px;color:#cdbb8a}`;document.head.append(css);
 
  const hud=el('button','assist-hud');hud.type='button';hud.setAttribute('aria-label','輔助系統');
@@ -273,12 +289,36 @@ const AssistSystem=(()=>{
    row('📦','剩 '+state.fullSlots+' 格以下',null,slider(state.fullSlots,0,60,v=>save({fullSlots:v})&&void render(),' 格','背包剩餘格數'))),
    el('p','assist-note','巡邏範圍從開 AUTO 的地方算起；瞬間移動卷軸不能用的地區不會瞬移。開「自動出售」（背包）可以讓垃圾撿到就換成天幣，減少回村次數。'));return p;}
 
+ function healShopIcon(key,source){
+  const button=el('button','assist-shop-icon');button.type='button';button.append(ico(key||BUY_ICON.heal,'🧪'));
+  button.setAttribute('aria-label','購買補血藥水');
+  button.setAttribute('aria-expanded',String(healShop===source));
+  button.onclick=()=>{healShop=healShop===source?null:source;render();body.querySelector('[data-heal-shop="'+source+'"]')?.focus();};
+  button.dataset.healShop=source;return button;
+ }
+ function healShopPanel(){
+  const panel=el('div','assist-heal-shop'),qty=el('select');
+  qty.setAttribute('aria-label','藥水購買數量');
+  for(const n of QTY)qty.append(new Option('×'+n,String(n),false,n===healQty));
+  qty.onchange=()=>{healQty=Number(qty.value);render();body.querySelector('[aria-label="藥水購買數量"]')?.focus();};
+  const products=shopProducts.filter(p=>NativePotions.isHealing(p.key)).sort((a,b)=>a.price/a.pack-b.price/b.pack);
+  panel.append(row('🧪','商店補血藥水',null,qty),group(...products.map(p=>{
+   const item=catalog.get(p.key),{count,cost}=quote(p,healQty),buy=el('button','act','購買');
+   buy.type='button';buy.setAttribute('aria-label','購買 '+item.name);
+   buy.onclick=()=>{const error=OwnedInventory.trade(p.key,count,cost,false);toast(error||'已購買 '+item.name+' ×'+count);if(!error)render();};
+   return row(ico(p.key,'🧪'),item.name,'×'+count+' · '+cost.toLocaleString()+' 金幣',buy);
+  })));
+  if(!products.length)panel.append(el('p','assist-note','商店目前沒有販售補血藥水。'));
+  return panel;
+ }
  function supplyPage(){const p=el('div'),ap=AutoPotion.snapshot;
   const heal=el('select');heal.setAttribute('aria-label','補血道具');heal.append(new Option('（選擇補血道具）',''));
-  for(const key of [...new Set(OwnedInventory.healingItems.map(e=>e.key))])heal.append(new Option(catalog.get(key).name+' ×'+count(e=>e.key===key),key,false,ap.key===key&&!ap.skillId));
+  const healKeys=new Set(OwnedInventory.healingItems.map(e=>e.key));if(ap.key&&!ap.skillId)healKeys.add(ap.key);
+  for(const key of healKeys)heal.append(new Option(catalog.get(key).name+' ×'+count(e=>e.key===key),key,false,ap.key===key&&!ap.skillId));
   heal.onchange=()=>{if(heal.value&&!AutoPotion.configure({key:heal.value,skillId:null}))heal.value='';render();};
   p.append(head('補血'),group(
-   row(ico(ap.key,'❤️'),'自動喝補血道具',null,heal),
+   row(healShopIcon(ap.key,'heal'),'自動喝補血道具',null,heal),
+   ...(healShop==='heal'?[healShopPanel()]:[]),
    row('🔁','喝完先喝身上別種','選的補血道具用完時，改喝身上其他補血藥水',switcher(state.healFallback,on=>save({healFallback:on}),'喝完先喝身上別種')),
    row('📉','體力低於 '+ap.threshold+'% 時喝',null,slider(ap.threshold,1,99,v=>AutoPotion.configure({threshold:v})&&void render(),'%','補血門檻'),switcher(ap.enabled,on=>AutoPotion.configure({enabled:on})||(toast('請先選擇補血道具或治癒魔法。'),false),'自動補血'))));
   {const list=foods(),keys=[...new Set(list.map(e=>e.key))],sel=el('select'),cur=window.Satiety?.value?.();sel.setAttribute('aria-label','吃哪一種食物');sel.append(new Option('自動（身上有的）',''));
@@ -300,13 +340,19 @@ const AssistSystem=(()=>{
    row(ico(bestExp?.key,'📗'),'經驗藥水','打怪（AUTO）時效果沒了自動喝 · 高的先喝 · 身上 '+expItems.reduce((n,e)=>n+e.count,0)+' 個',switcher(state.expAuto,on=>save({expAuto:on}),'自動喝經驗藥水')),
    row(ico(barrier[0]?.key||'etcitem:40889','📜'),'魔法屏障卷軸','沒有魔法屏障時自動用 · 身上 '+barrier.reduce((n,e)=>n+e.count,0)+' 張',switcher(state.barrierScroll,on=>save({barrierScroll:on}),'自動用魔法屏障卷軸'))));
   const cur=TransformCards.active;p.append(head('變身'),group(row('🎭','死亡後自動再變身','記憶的變身卡：'+(state.morphCard||'（還沒有，變身一次就會記住）')+'。'+(cur?'目前變身：'+cur+'。':'目前沒有變身。')+'倒地後變身會消失，復活後自動變回記憶的那張變身卡（重新整理也會記得）',switcher(state.morph,on=>save({morph:on}),'死亡後自動再變身'))));
-  const buyRows=BUYS.map(([k,label])=>{const b=state.buy[k],pr=product(k),qty=el('select');qty.setAttribute('aria-label',label+' 購買數量');
+  const buyRows=BUYS.flatMap(([k,label])=>{const b=state.buy[k],pr=product(k),qty=el('select');qty.setAttribute('aria-label',label+' 購買數量');
    for(const n of QTY)qty.append(new Option('×'+n,String(n),false,n===b.n));qty.onchange=()=>{save({buy:{...state.buy,[k]:{...b,n:Number(qty.value)}}});render();};
-   const packs=pr?Math.ceil(b.n/pr.pack):0,note=pr?catalog.get(pr.key).name+' · 一次 '+(packs*pr.pack)+' 個 '+(packs*pr.price).toLocaleString()+' 金幣':k==='heal'&&!AutoPotion.snapshot.key?'先在上面選補血道具':'商店沒賣或目前職業不能用';
+   const order=pr?quote(pr,b.n):null,note=pr?catalog.get(pr.key).name+' · 一次 '+order.count+' 個 '+order.cost.toLocaleString()+' 金幣':k==='heal'&&!AutoPotion.snapshot.key?'先在上面選補血道具':'商店沒賣或目前職業不能用';
    const sw=switcher(b.on,on=>pr||!on?save({buy:{...state.buy,[k]:{...b,on}}}):(toast('商店沒賣這項，無法自動購買。'),false),'自動購買 '+label);
-   return row(ico(pr?.key||BUY_ICON[k],'🛒'),label,'用完時自動買 · '+note,qty,sw);});
+   const itemRow=row(k==='heal'?healShopIcon(pr?.key||ap.key,'buy'):ico(pr?.key||BUY_ICON[k],'🛒'),label,'用完時自動買 · '+note,qty,sw);
+   return k==='heal'&&healShop==='buy'?[itemRow,healShopPanel()]:[itemRow];});
   const purse=OwnedInventory.items.find(e=>e.key==='etcitem:40308')?.count||0;
-  p.append(head('自動購買'),group(...buyRows),el('p','assist-note','身上用完（0 個）時直接扣金幣購買，價格取各地商店最便宜的。目前金幣 '+purse.toLocaleString()+'。'));return p;}
+  const drawer=el('button','assist-drawer','自動購買'),content=el('div');
+  drawer.type='button';drawer.setAttribute('aria-label','自動購買');content.id='assist-auto-buy';drawer.setAttribute('aria-controls',content.id);
+  function syncDrawer(){drawer.setAttribute('aria-expanded',String(buyOpen));content.hidden=!buyOpen;}
+  drawer.onclick=()=>{buyOpen=!buyOpen;syncDrawer();};
+  syncDrawer();content.append(group(...buyRows),el('p','assist-note','身上用完（0 個）時直接扣金幣購買，價格取天幣商店最低價。目前金幣 '+purse.toLocaleString()+'。'));
+  p.append(drawer,content);return p;}
 
  function magicPage(){const p=el('div'),ids=learned(),ap=AutoPotion.snapshot,sk=id=>playerSkillData.skills[id];
   const pickSkill=(field,label)=>{const s=el('select');s.setAttribute('aria-label',label);s.append(new Option('（選擇'+label+'）',''));for(const id of attackSkills(ids))s.append(new Option(sk(id).name+' · MP '+sk(id).mp,String(id),false,state[field]===id));s.onchange=()=>{save({[field]:s.value?Number(s.value):null});render();};return s;};
@@ -384,7 +430,7 @@ const AssistSystem=(()=>{
   const h=el('header'),x=el('button','','✕');x.type='button';x.setAttribute('aria-label','關閉輔助系統');x.onclick=close;h.append(el('h2','','輔助系統'),x);
   tabs=el('div','qy-set-tabs');for(const [k,l] of PAGES){const b=el('button','',l);b.type='button';b.dataset.tab=k;b.onclick=()=>{tab=k;body.scrollTop=0;render();};tabs.append(b);}
   body=el('div','assist-body');dialog.append(h,tabs,body);game.append(dialog);hud.setAttribute('aria-pressed','true');render();return true;}
- function close(){dialog?.remove();dialog=null;hud.setAttribute('aria-pressed','false');}
+ function close(){dialog?.remove();dialog=null;buyOpen=false;healShop=null;hud.setAttribute('aria-pressed','false');}
  addEventListener('keydown',e=>{if(e.key==='Escape'&&dialog)close();});
  return {activate,open,close,skip,prefer,tick,get stats(){return JSON.parse(JSON.stringify(stats));},get escapeFirst(){return state.escape&&owner===window.activeCharacterId;},get healFallback(){return state.healFallback&&owner===window.activeCharacterId;},get snapshot(){return JSON.parse(JSON.stringify(state));}};
 })();window.AssistSystem=AssistSystem;
