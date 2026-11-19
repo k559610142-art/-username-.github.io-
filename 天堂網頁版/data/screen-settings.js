@@ -19,9 +19,7 @@ const ScreenSettings=(()=>{
  const prior=panel;panel=function(type){prior(type);if(type!=='settings')return;
   const section=uiElement('section','screen-settings'),label=uiElement('label','','螢幕尺寸'),select=document.createElement('select'),button=uiElement('button','','全螢幕'),note=uiElement('small','','手機以橫式操作為主；全螢幕支援時會切換橫向。');
   select.setAttribute('aria-label','螢幕尺寸');for(const [value,name]of [['auto','自動尺寸'],['landscape','橫式 16:9'],['portrait','直式 9:16']]){const option=document.createElement('option');option.value=value;option.textContent=name;select.append(option)}select.value=mode;select.onchange=()=>apply(select.value);button.type='button';button.dataset.screenFullscreen='';button.onclick=()=>toggle(button,note);refresh(button);label.append(select);
-  // 2026-11-19 路人數量（多／少／關）：手機 lag 時可調少；擺攤商人、傭兵不受影響（fake-players.js 讀 lineage-bot-density）
-  const botLabel=uiElement('label','','路人數量'),botSelect=document.createElement('select');botSelect.setAttribute('aria-label','路人數量');for(const [value,name]of [['full','多'],['few','少'],['off','關']]){const option=document.createElement('option');option.value=value;option.textContent=name;botSelect.append(option)}let cur='full';try{cur=localStorage.getItem('lineage-bot-density')||'full'}catch{}botSelect.value=['full','few','off'].includes(cur)?cur:'full';botSelect.onchange=()=>{try{localStorage.setItem('lineage-bot-density',botSelect.value)}catch{}window.FakePlayers?.applyDensity?.();};botLabel.append(botSelect);
-  section.append(label,botLabel,button,note);document.querySelector('#panelContent h2')?.after(section);
+  section.append(label,button,note);document.querySelector('#panelContent h2')?.after(section);
  };
  document.addEventListener('fullscreenchange',()=>refresh());document.addEventListener('webkitfullscreenchange',()=>refresh());apply(mode);return {apply,get mode(){return mode}};
 })();window.ScreenSettings=ScreenSettings;

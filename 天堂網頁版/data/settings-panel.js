@@ -62,9 +62,7 @@
   if(sizeSelect)g3.append(row('👆','操作按鈕大小','',sizeSelect));
   if(window.HudStyle){const sel=el('select');for(const [v,l]of [['orb','水晶球式'],['classic','奇岩式']]){const o=el('option','',l);o.value=v;sel.append(o)}sel.value=HudStyle.current;sel.setAttribute('aria-label','底部介面');sel.onchange=()=>HudStyle.set(sel.value);g3.append(row('🧭','底部介面','橫向畫面的狀態列樣式',sel))}
   if(window.PowerSaving){const sw=action(PowerSaving.enabled?'開啟':'關閉',()=>{PowerSaving.setEnabled(!PowerSaving.enabled);sw.textContent=PowerSaving.enabled?'開啟':'關閉';sw.setAttribute('aria-checked',String(PowerSaving.enabled))});sw.setAttribute('role','switch');sw.setAttribute('aria-label','省電模式（20 FPS）');sw.setAttribute('aria-checked',String(PowerSaving.enabled));g3.append(row('🔋','省電模式','限制畫面更新為每秒 20 幀',sw))}
-  // 2026-11-19 路人數量（fake-players.js 讀 lineage-bot-density）、效能監看（perf-hud.js）：原本加在舊設定區，被這裡藏起來了
-  {const sel=el('select');for(const [v,l]of [['full','多'],['few','少'],['off','關']]){const o=el('option','',l);o.value=v;sel.append(o)}let cur='full';try{cur=localStorage.getItem('lineage-bot-density')||'full'}catch{}sel.value=cur;sel.setAttribute('aria-label','路人數量');
-   sel.onchange=()=>{try{localStorage.setItem('lineage-bot-density',sel.value)}catch{}window.FakePlayers?.applyDensity?.()};g3.append(row('👥','路人數量','路人越少手機越順',sel))}
+  // 2026-11-19 效能監看（perf-hud.js）：原本加在舊設定區，被這裡藏起來了
   if(window.PerfHud){const sw=action(PerfHud.on?'開啟':'關閉',()=>{PerfHud.setOn(!PerfHud.on);sw.textContent=PerfHud.on?'開啟':'關閉';sw.setAttribute('aria-checked',String(PerfHud.on))});sw.setAttribute('role','switch');sw.setAttribute('aria-label','效能監看');sw.setAttribute('aria-checked',String(PerfHud.on));g3.append(row('📊','效能監看','畫面上方顯示每秒格數與耗時，回報 lag 用',sw))}
   if(cameraNote)g3.append(row('🎥','鏡頭',cameraNote));
   sys.append(el('div','qy-set-head','畫面'),g3);

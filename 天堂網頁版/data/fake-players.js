@@ -129,19 +129,14 @@ const FakePlayers=(()=>{
   if(!redOn)for(const b of list.filter(b=>b.fp.red)){IslandMonsters.removeAlly(b);used.delete(b.spawn.npc.name);if(IslandMonsters.target===b){IslandMonsters.setTarget(null);IslandCombat.stop();}}
   stallTick(); // 村莊商人仍留在原定村莊，不受路人人口影響。
   if(time<arrivalAt||time<nextArrival)return;
-  const near=list.filter(b=>!b.fp.stall&&!b.fp.hidden&&!b.fp.vanish&&dist(b.x,b.y,worldX,worldY)<=32),want=Math.round(areaDemand(map,worldX,worldY,safe(worldX,worldY))*botDensity());
-  if(botDensity()<1&&near.length>want)trimBots(near.filter(b=>!b.fp.stall),near.length-want);
+  const near=list.filter(b=>!b.fp.stall&&!b.fp.hidden&&!b.fp.vanish&&dist(b.x,b.y,worldX,worldY)<=32),want=areaDemand(map,worldX,worldY,safe(worldX,worldY));
   if(near.length>=want||all.filter(b=>!b.fp.stall).length>=72)return;
   nextArrival=time+rnd(2500,6000);
   const red=redOn&&!safe(worldX,worldY)&&near.filter(b=>b.fp.red).length<1&&Math.random()<.18;
   const spot=spotNear(worldX,worldY,20,28,red?false:null);if(spot){const mob=make(...spot,red);window.FakePlayerAutonomy?.arrive(mob);}
  }
  // 2026-11-19 設定「路人數量」：多＝原本人數、少＝約四成、關＝不出現。擺攤商人、傭兵、組隊中的不算路人，不會被移走。
- function botDensity(){let v='full';try{v=localStorage.getItem('lineage-bot-density')||'full'}catch{}return v==='off'?0:v==='few'?.4:1;}
- function trimBots(list,count){const extra=list.filter(b=>!b.fp.stall&&!b.fp.merc&&!b.fp.partyOwner&&!b.fp.party).sort((p,q)=>dist(q.x,q.y,worldX,worldY)-dist(p.x,p.y,worldX,worldY)).slice(0,count);
-  for(const b of extra){IslandMonsters.removeAlly(b);used.delete(b.spawn.npc.name);if(IslandMonsters.target===b){IslandMonsters.setTarget(null);IslandCombat.stop();}}}
- function applyDensity(){if(botDensity()>0)return;const list=bots().filter(b=>!b.fp.stall);trimBots(list,list.length);}
- setInterval(()=>{if(botDensity()===0)applyDensity();},2000);
+ try{localStorage.removeItem('lineage-bot-density')}catch{} // 2026-11-19 使用者要求移除「路人數量」設定，清掉舊設定、路人固定照原本數量
  setInterval(maintain,2000);
  // ---- 每隻假人的行為（island-monsters.js advance 呼叫） ----
  const claimed=new WeakMap();
@@ -426,5 +421,5 @@ const FakePlayers=(()=>{
   const reply=whisperReply(b,text);if(reply)setTimeout(()=>window.GameChat?.say('[密語] '+to+'：'+reply,'whisper'),rnd(1500,4000));});
  function setEnabled(on){enabled=!!on;maintain();}
  function setRed(on){redOn=!!on;maintain();}
- return {applyDensity,hireBot,canFight,canAttack,update,label,hurt,monsterHurt,drawShots,openStall,get stalls(){stallInit();return stalls;},sampleStall:()=>genStall().items.map(i=>itemById.get(i.id)?.name),setRed,get redOn(){return redOn;},get count(){return bots().length;},get enabled(){return enabled;},setEnabled,looks};
+ return {hireBot,canFight,canAttack,update,label,hurt,monsterHurt,drawShots,openStall,get stalls(){stallInit();return stalls;},sampleStall:()=>genStall().items.map(i=>itemById.get(i.id)?.name),setRed,get redOn(){return redOn;},get count(){return bots().length;},get enabled(){return enabled;},setEnabled,looks};
 })();window.FakePlayers=FakePlayers;
