@@ -22,7 +22,7 @@
   tops.set(src,t);if(tops.size>600)tops.delete(tops.keys().next().value);return t}
  // 目前畫出來的角色圖（變身時用變身圖）
  function shownImage(){const morph=actor.querySelector('.transform-morph');if(morph&&!morph.hidden){const m=[...morph.querySelectorAll('img')].find(i=>!i.classList.contains('transform-morph-shadow')&&i.offsetWidth);if(m)return m}
-  return [...actor.querySelectorAll('img.character-main')].find(i=>i.getBoundingClientRect().height>0)||null}
+  return [...actor.querySelectorAll('.character-main')].find(i=>i.getBoundingClientRect().height>0)||null}
  // 效能：版面量測（getBoundingClientRect）只在換圖尺寸或每 30 幀做一次，其餘用快取，避免每幀強制重排
  let y=null,n=0,img=null,geo=null,lastName='',fallback=null;
  function measure(){img=shownImage();geo=null;if(!img)return;const r=img.getBoundingClientRect(),a=actor.getBoundingClientRect();if(!r.height)return;geo={nw:img.naturalWidth,nh:img.naturalHeight,top:r.top-a.top,w:r.width,h:r.height}}

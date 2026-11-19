@@ -3,7 +3,7 @@ const fullCharacterAssets=window.CHARACTER_ACTION_ASSETS;
 let characterWeapon='unarmed',characterActionState=null,characterDead=false,characterIdleStarted=movementTime(),characterIdentity='',characterActionRaf=0;
 const fullCharacterCache=new Map(),characterShadow=document.createElement('img');
 characterShadow.alt='';characterShadow.draggable=false;characterShadow.className='character-shadow';characterImage.className='character-main';characterBody.append(characterShadow);characterFrameCache.clear();
-const fullCharacterStyle=document.createElement('style');fullCharacterStyle.textContent='.actor .body img{position:absolute;left:0;top:0}.actor .body .character-shadow{z-index:0;opacity:.65}.actor .body .character-main{z-index:1}.character-action-controls{margin-top:18px}.character-action-controls .slots{grid-template-columns:repeat(2,minmax(0,1fr))}.character-action-controls button{min-height:48px}.character-action-controls [aria-pressed="true"]{border-color:#e4bd64;background:#4d4125}';document.head.append(fullCharacterStyle);
+const fullCharacterStyle=document.createElement('style');fullCharacterStyle.textContent='.actor .body img{position:absolute;left:0;top:0}.actor .body canvas.character-main,.actor .body canvas.character-shadow{position:absolute;left:0;top:0;width:100%;height:100%;max-width:none}.actor .body .character-shadow{z-index:0;opacity:.65}.actor .body .character-main{z-index:1}.character-action-controls{margin-top:18px}.character-action-controls .slots{grid-template-columns:repeat(2,minmax(0,1fr))}.character-action-controls button{min-height:48px}.character-action-controls [aria-pressed="true"]{border-color:#e4bd64;background:#4d4125}';document.head.append(fullCharacterStyle);
 function activeCharacterAvatar(){return characterCatalog.jobs[job]?.[characterGender]||'男騎士'}
 function activeCharacterActions(){return fullCharacterAssets.avatars[activeCharacterAvatar()]}
 function activeCharacterWeapon(){const data=activeCharacterActions();return data.weapons.includes(characterWeapon)?characterWeapon:'unarmed'}
@@ -32,11 +32,21 @@ function preloadFullCharacterClip(avatar,heading,clip){
  while(fullCharacterCache.size>48){const pinned=avatar+'/',walk='/'+activeCharacterWeapon()+'_walk';const key=[...fullCharacterCache.keys()].find(k=>!(k.startsWith(pinned)&&k.endsWith(walk)));if(!key)break;const old=fullCharacterCache.get(key);fullCharacterCache.delete(key);for(const f of old)if(characterFrameResources.get(f.file)===f.item)characterFrameResources.delete(f.file)}
 }
 function preloadCharacterWalkSet(avatar,weapon){const key=avatar+'/'+weapon;if(preloadedWalkSet===key)return;preloadedWalkSet=key;for(const heading of Object.keys(fullCharacterAssets.avatars[avatar].directions))preloadFullCharacterClip(avatar,heading,weapon+'_walk')}
+// 2026-11-19 使用者：手機上人物會稍微閃爍 → 原本每換一格動作就拔掉舊 <img>、插入新 <img>，iPhone 對剛插入的圖常會空白一幀。
+//  改成兩張固定的畫布（人物、影子），每格直接畫上去：新圖畫好前舊畫面一直留著，不會閃。displayedCharacterBody／Shadow 仍記錄目前的來源圖。
+const characterMainCanvas=document.createElement('canvas'),characterShadowCanvas=document.createElement('canvas');
+characterMainCanvas.className='character-main';characterMainCanvas.setAttribute('role','img');characterMainCanvas.setAttribute('aria-label','遊戲人物');characterShadowCanvas.className='character-shadow';characterShadowCanvas.setAttribute('aria-hidden','true');
+for(const c of [characterShadowCanvas,characterMainCanvas]){c.style.display='none';characterBody.append(c)}
+function drawCharacterLayer(canvas,img){
+ const bw=parseFloat(characterBody.style.width)||img.naturalWidth,bh=parseFloat(characterBody.style.height)||img.naturalHeight,dpr=Math.min(window.renderDpr||devicePixelRatio||1,2),cw=Math.max(1,Math.round(bw*dpr)),ch=Math.max(1,Math.round(bh*dpr));
+ if(canvas.width!==cw||canvas.height!==ch){canvas.width=cw;canvas.height=ch}
+ const g=canvas.getContext('2d'),iw=img.naturalWidth||cw,ih=img.naturalHeight||ch,k=Math.min(cw/iw,ch/ih),dw=iw*k,dh=ih*k; // 跟原本 <img> 的 object-fit:contain 一樣置中縮放
+ g.clearRect(0,0,cw,ch);g.imageSmoothingEnabled=true;try{g.drawImage(img,(cw-dw)/2,(ch-dh)/2,dw,dh)}catch{}
+}
 function showDecodedCharacterFrame(body,shadow,transform){
- if(displayedCharacterBody!==body.img){displayedCharacterBody?.remove?.();displayedCharacterBody=body.img;displayedCharacterBody.className='character-main';displayedCharacterBody.alt='遊戲人物';characterBody.append(displayedCharacterBody)}
- displayedCharacterBody.style.display='block';displayedCharacterBody.style.transform=transform;
- if(shadow?.ready){if(displayedCharacterShadow!==shadow.img){displayedCharacterShadow?.remove?.();displayedCharacterShadow=shadow.img;displayedCharacterShadow.className='character-shadow';displayedCharacterShadow.alt='';characterBody.append(displayedCharacterShadow)}displayedCharacterShadow.style.display='block';displayedCharacterShadow.style.transform=transform}
- else{displayedCharacterShadow?.remove?.();displayedCharacterShadow=null}
+ displayedCharacterBody=body.img;drawCharacterLayer(characterMainCanvas,body.img);characterMainCanvas.style.display='block';characterMainCanvas.style.transform=transform;
+ if(shadow?.ready){displayedCharacterShadow=shadow.img;drawCharacterLayer(characterShadowCanvas,shadow.img);characterShadowCanvas.style.display='block';characterShadowCanvas.style.transform=transform}
+ else{displayedCharacterShadow=null;characterShadowCanvas.style.display='none'}
 }
 function fullCharacterPose(timeline,elapsed,loop=false){
  const duration=Math.max(1,timeline.durationMs),phase=loop?(Math.max(0,elapsed)%duration)/duration:Math.max(0,Math.min(1-Number.EPSILON,elapsed/duration));
