@@ -449,3 +449,11 @@ NPC 穿衣服（2026-11-13）：
     allyOut（加傷、力量/2、敏捷/5、加速類 ×1.25），生命之泉每 5 秒回血；掛在 summons.js（出手／受傷）、fake-players.js monsterHurt、island-monsters.js botHit
   距離 10 格內且沒被牆擋；太遠提示「按 SELF 可改放自己」
   真人玩家（本機測試伺服器 local-server-client.js drawPeers）只是 DOM 圖片、不能點選，沒有支援
+
+2026-11-20 旅館開放（使用者：「旅館功能 需要開放」）：
+  data/inn.js（InnServices）：旅館老闆（DB npcaction normal＝inn：70012 說話之島瑟琳娜、70019、70031、70054、70065、70070、70075、70084、70096、70898）的
+    租房間／租會議廳／退租／進入房間或會議廳。原本這四個按鈕回「這項服務目前尚未接入」。
+  native-npc-dialogs.js dispatch：npcaction 是 inn 的 NPC，room／hall／return／enter 交給 InnServices.handle
+  規則照原版：房間 300 天幣、會議廳 600 天幣（只有王族能租）、租期 4 小時、期限內退租退 20%；給旅館鑰匙（etcitem 40312），已有有效租用不能再租；鑰匙只能在租的那間用
+  網頁版沒有旅館房間地圖：「進入房間」＝在老闆 6 格內休息 3 秒，體力魔力全滿（期限內可重複）；離開或死亡則中斷
+  租用紀錄存 localStorage innRental:角色 id（不動角色存檔結構）；紀錄遺失或過期時鑰匙無效，退租只收回鑰匙不退錢；再租會先收回舊鑰匙
