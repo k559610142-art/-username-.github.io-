@@ -27,8 +27,8 @@
  // 舊登入卡預設隱形（CSS），只有直式／影片壞掉／太久沒播到登入框時才打開 fallback
  const fallback=on=>stage.classList.toggle('login-video-fallback',on);
  const say=text=>{if(message)message.textContent=text;};
- const register=hot('login-hot-register','註冊帳號',()=>{const real=[...form.querySelectorAll('button')].find(b=>b.textContent==='建立測試帳號');if(real)real.click();else say('輸入帳號與密碼後按「登入」即可建立本機帳號。');});
- const forgot=()=>say('測試版尚未提供找回密碼，請聯絡管理員。');
+ const register=hot('login-hot-register','註冊帳號',()=>{if(window.TmCloud?.enabled)return window.TmCloud.openRegister();const real=[...form.querySelectorAll('button')].find(b=>b.textContent==='建立測試帳號');if(real)real.click();else say('輸入帳號與密碼後按「登入」即可建立本機帳號。');});
+ const forgot=()=>{if(window.TmCloud?.enabled)return window.TmCloud.openForgot();say('測試版尚未提供找回密碼，請聯絡管理員。');}; // 2026-11-21 雲端帳號啟用時開註冊／忘記密碼視窗（cloud-account.js）
  const EYE='<svg viewBox="0 0 24 24" width="100%" height="100%" aria-hidden="true"><path d="M12 5C6.5 5 2.7 9.4 1.5 12c1.2 2.6 5 7 10.5 7s9.3-4.4 10.5-7C21.3 9.4 17.5 5 12 5zm0 11.5A4.5 4.5 0 1 1 12 7.5a4.5 4.5 0 0 1 0 9zm0-2.3a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4z" fill="#d8c79a"/></svg>';
  const eye=hot('login-hot-eye login-eye-icon','顯示或隱藏密碼',()=>{const p=document.querySelector('#login-password');p.type=p.type==='password'?'text':'password';});eye.innerHTML=EYE;
  const accEye=hot('login-hot-eye login-eye-icon','顯示帳號（帳號本來就是明碼）',()=>document.querySelector('#login-account')?.focus());accEye.innerHTML=EYE;

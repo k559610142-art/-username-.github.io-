@@ -492,3 +492,17 @@ NPC 穿衣服（2026-11-13）：
   掛勾：island-monsters.js damage()（damageNumber，含假玩家 FakePlayers.hurt 前後血量差）、character-actions.js damage()；畫在 island-monsters.js draw() 特效之後
   怪物位置用當幀 mob.screenHead；玩家用 visualWorldPosition 往上 62×scale
   設定 → 系統 → 畫面「傷害數字」開關（localStorage damageNumbers＝off 關閉），settings-panel.js
+
+
+2026-11-21 雲端帳號第 1 期（Supabase 新專案，跟黑暗大陸分開）：data/cloud-account.js（TmCloud）＋tools/supabase/tianmo-phase1.sql
+  啟用：cloud-account.js 開頭 CLOUD_URL／CLOUD_KEY 兩個都填才啟用；空字串＝不載入 SDK、登入照舊用本機存檔（目前就是這樣）
+  主控台設定：SQL Editor 貼 tianmo-phase1.sql；Authentication → Email 關掉 Confirm email
+  帳號：只輸入帳號名稱（英文小寫＋數字 4～16），轉成 名稱@tianmo.example.com 假信箱登入（保留網域，沒人收得到重設信）；密碼至少 6 字
+  資料表：tm_accounts（user_id、name、hint、last_login；註冊時 auth.users 觸發 tm_on_signup 自動建立）、tm_saves（revision＋payload{characters[4],warehouse[]}）
+  函式：tm_name_free（名稱可不可用）、tm_password_hint（忘記密碼顯示提示，不用登入）、tm_load、tm_save(revision,payload)（revision 不符回 TM_CONFLICT）
+  存檔：本機 CharacterStore 帳號鍵 cloud:名稱；CharacterStore.save 之後延遲 3 秒、至少間隔 15 秒上傳；切背景／登出時立刻上傳；衝突時以雲端為準重新載入
+  密碼三種給玩家自己看：輸入框眼睛按鈕、註冊時寫的密碼提示（登入畫面「忘記密碼」輸入帳號就顯示；提示不能含密碼）、瀏覽器記住密碼（autocomplete current-password／new-password＋PasswordCredential）
+  login-video.js 影片畫面的「註冊／忘記密碼」熱區在啟用時開 TmCloud 視窗；直式簡易登入卡補 .tm-cloud-links 兩個文字按鈕
+  本機多人測試伺服器（local-server-client.js）連得上時一律交給它
+  限制：第 1 期存檔內容只檢查格式，還沒有伺服器端防改檔；交易／拍賣等經濟功能在第 3 期改成伺服器函式
+  測試：SQL 用 PGlite 測（註冊觸發、提示、名稱、revision 衝突、格式、未登入）；遊戲端用模擬 Supabase 測註冊／登入／錯誤密碼／重新登入載回／兩台裝置衝突／遊戲中存檔上傳
