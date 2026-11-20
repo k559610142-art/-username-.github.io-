@@ -5,8 +5,9 @@ window.TdjSystems = (() => {
   const dollById = new Map(dolls.map(d => [d.id, d]));
   const enchantById = new Map(bossEnchantData.map(e => [e.id, e]));
   const wuhunById = new Map(wuhunData.map(w => [w.id, w]));
+  let restoredEnchant = null;
   let owner = '', state = null;
-  const blank = () => ({dolls: {owned: {}, active: null}, enchant: {stones: {}, weapon: null}, wuhun: {owned: {}, active: null, ringSlots:Array(6).fill(null), ringV:2, rings: {}}});
+  const blank = () => ({dolls: {owned: {}, active: null}, enchant: {stones: {}, weapons: Object.create(null)}, wuhun: {owned: {}, active: null, ringSlots:Array(6).fill(null), ringV:2, rings: {}}});
   // 魂槽升階（2026-11-15 使用者設計）：品級順序；第 i 槽只能獻祭第 i 階武魂（放入即消耗、不能拿回、不給能力）；裝備第 N 階武魂要前 N 槽都已獻祭
   const WUHUN_TIERS = ['下品', '上品', '極品', '千年', '萬年', '上古', '四神獸'];
   function ringMissing(w) { const t = WUHUN_TIERS.indexOf(w?.tier); const out = []; for (let i = 0; i < Math.min(Math.max(t, 0), 6); i++) if (state.wuhun.ringSlots[i] == null) out.push(WUHUN_TIERS[i]); return out; }
@@ -18,12 +19,22 @@ window.TdjSystems = (() => {
     if (!id) return false;
     try {
       const saved = JSON.parse(localStorage.getItem(key(id)) || 'null');
+      const savedEnchant = restoredEnchant?.owner === id ? restoredEnchant.value ?? saved?.enchant : saved?.enchant;
+      if (savedEnchant) {
+        for (const [k, n] of Object.entries(savedEnchant.stones || {})) if (enchantById.has(+k) && n > 0) state.enchant.stones[k] = n;
+        const w = savedEnchant.weapon;
+        const weapons = {...savedEnchant.weapons};
+        if (typeof w?.uid === 'string' && !Object.hasOwn(weapons, w.uid)) weapons[w.uid] = w;
+        for (const [uid, record] of Object.entries(weapons)) {
+          const id = record?.id, lv = record?.lv;
+          if (uid && Number.isInteger(lv) && lv >= 1 && enchantById.get(id)?.levels[lv - 1]) {
+            state.enchant.weapons[uid] = {id, lv};
+          }
+        }
+      }
       if (saved) {
         for (const [k, n] of Object.entries(saved.dolls?.owned || {})) {const canonical=DOLL_ID_ALIASES[k]||+k;if(dollById.has(canonical)&&Number.isSafeInteger(n)&&n>0)state.dolls.owned[canonical]=Math.min(2147483647,(state.dolls.owned[canonical]||0)+n);}
         const activeDoll=DOLL_ID_ALIASES[saved.dolls?.active]||saved.dolls?.active;if(state.dolls.owned[activeDoll])state.dolls.active=String(activeDoll);
-        for (const [k, n] of Object.entries(saved.enchant?.stones || {})) if (enchantById.has(+k) && n > 0) state.enchant.stones[k] = n;
-        const w = saved.enchant?.weapon;
-        if (w && enchantById.has(w.id) && w.lv >= 1 && w.lv <= 5) state.enchant.weapon = {id: w.id, lv: w.lv, uid: w.uid};
         for (const [k, n] of Object.entries(saved.wuhun?.owned || {})) if (wuhunById.has(+k) && Number.isSafeInteger(n) && n > 0) state.wuhun.owned[k] = n;
         if (state.wuhun.owned[saved.wuhun?.active]) state.wuhun.active = saved.wuhun.active;
         if (saved.wuhun?.ringV === 2) { for (let i = 0; i < 6; i++) { const id = Number(saved.wuhun?.ringSlots?.[i]), rw = wuhunById.get(id); if (rw && WUHUN_TIERS.indexOf(rw.tier) === i) state.wuhun.ringSlots[i] = id; } }
@@ -447,35 +458,74 @@ window.TdjSystems = (() => {
   const equippedWeapon = () => (window.OwnedInventory?.items || []).find(e => e.slot === 'weapon');
   function getStone(id) {
     if (!playing()) { toast('請先進入遊戲角色。'); return null; }
-    const e = id ? enchantById.get(+id) : pick(bossEnchantData); state.enchant.stones[e.id] = (state.enchant.stones[e.id] || 0) + 1; save(); return e;
+    const e = id ? enchantById.get(+id) : pick(bossEnchantData);
+    return e && creditEnchantLoot([{key:'etcitem:' + e.id,count:1}], () => window.GameEntry.saveActive()) ? e : null;
+  }
+  function isEnchantLoot(drop) {
+    return enchantById.has(Number(/^etcitem:(\d+)$/.exec(drop.key)?.[1]));
+  }
+  function creditEnchantLoot(loot, commit) {
+    if (!loot.length) return commit();
+    if (!playing()) return false;
+    const previous = state.enchant.stones, next = {...previous};
+    for (const {key, count} of loot) {
+      const id = Number(key.slice('etcitem:'.length));
+      const total = (next[id] || 0) + count;
+      if (!Number.isSafeInteger(count) || count <= 0 || total > 2147483647) return false;
+      next[id] = total;
+    }
+    state.enchant.stones = next;
+    let committed = false;
+    try {
+      committed = commit();
+      return committed;
+    } finally {
+      if (!committed) state.enchant.stones = previous;
+    }
   }
   function currentEnchant() {
     ensure();
-    const w = state.enchant.weapon, weapon = equippedWeapon();
-    if (!w || !weapon || weapon.uid !== w.uid) return null;
-    return {...w, data: enchantById.get(w.id), level: enchantById.get(w.id).levels[w.lv - 1], weapon};
+    const weapon = equippedWeapon();
+    const w = state.enchant.weapons[weapon?.uid];
+    if (!w || !weapon) return null;
+    const data = enchantById.get(w.id);
+    return {...w, uid: weapon.uid, data, level: data.levels[w.lv - 1], weapon};
   }
   function enchant(id) {
     if (!playing()) return false;
     const e = enchantById.get(+id), weapon = equippedWeapon();
     if (!state.enchant.stones[id]) { toast('沒有' + e.stone + '。'); return false; }
     if (!weapon) { toast('請先裝備武器再附魔。'); return false; }
-    const cur = state.enchant.weapon && state.enchant.weapon.uid === weapon.uid && state.enchant.weapon.id === e.id ? state.enchant.weapon.lv : 0;
+    const applied = state.enchant.weapons[weapon.uid];
+    const cur = applied?.id === e.id ? applied.lv : 0;
     if (cur >= e.levels.length) { toast('已經是最高階 ' + e.levels[cur - 1].name + '。'); return false; }
     const next = e.levels[cur];
+    const previous = state.enchant;
+    state.enchant = {stones:{...previous.stones}, weapons:{...previous.weapons}};
     state.enchant.stones[id]--; if (!state.enchant.stones[id]) delete state.enchant.stones[id];
     const ok = Math.random() * 100 < next.rate;
-    if (ok) state.enchant.weapon = {id: e.id, lv: cur + 1, uid: weapon.uid};
-    save();
+    if (ok) state.enchant.weapons[weapon.uid] = {id: e.id, lv: cur + 1};
+    if (!window.GameEntry.saveActive()) { state.enchant = previous; toast('儲存失敗，附魔石未消耗。'); return false; }
     toast(ok ? '強大的 BOSS 靈魂技能附魔成功了：' + weapon.item.name + ' 獲得 ' + next.name : '很抱歉，您的附魔失敗了（成功率 ' + next.rate + '%）。');
     if (ok) flash(enchantImage(e));
     return ok;
   }
-  function onAttack() {
+  function rollEnchantProc() {
     const cur = currentEnchant(); if (!cur) return;
     if (Math.random() * 100 >= cur.level.proc) return;
+    const {dmg, rnd, drain} = cur.level;
+    const damage = dmg + (rnd > 0 ? Math.floor(Math.random() * (rnd + 1)) : 0);
+    return {cur, damage, drain};
+  }
+  function applyEnchantProc({cur, damage, drain}) {
     flash(enchantImage(cur.data));
-    const extra = cur.level.dmg || cur.level.rnd ? '，傷害 ' + cur.level.dmg + '～' + (cur.level.dmg + cur.level.rnd) + (cur.level.drain ? '、吸血 ' + cur.level.drain : '') : '';
+    const healed = Math.min(drain, Math.max(0, maxHp - hp));
+    if (healed > 0) {
+      hp += healed;
+      window.stats?.();
+      window.GameEntry?.saveActive();
+    }
+    const extra = (damage ? '，額外傷害 ' + damage : '') + (healed ? '、吸血 ' + healed : '');
     toast(cur.level.name + ' 發動「' + cur.data.skill + '」' + extra, 'journal');
   }
 
@@ -570,9 +620,12 @@ window.TdjSystems = (() => {
   const get = () => (ensure(), state);
   return {
     useItem,
+    isEnchantLoot, creditEnchantLoot,
+    restoreEnchant(id,value){restoredEnchant={owner:id,value};owner='';},
+    get enchantSnapshot(){return ensure() ? state.enchant : undefined;},
     dolls: {draw: drawDoll, summon, dismiss, image: dollImage, owned: id => get().dolls.owned[id] || 0, get active() { return get().dolls.active; }},
     enchant: {get: getStone, enchant, current: currentEnchant, image: enchantImage, stones: id => get().enchant.stones[id] || 0},
     wuhun: {fuseSoul,fusionRates:SOUL_FUSION_RATES,changeRings,ringCost:RING_COST,ringColor:RING_COLOR,rings:()=>(ensure(),{...state.wuhun.rings}),spare:t=>(ensure(),spareOf(+t).reduce((n,x)=>n+x.n,0)),tiers:WUHUN_TIERS,ringMissing:id=>(ensure(),ringMissing(wuhunById.get(+id))),get ringState(){ensure();return JSON.parse(JSON.stringify({slots:state.wuhun.ringSlots}));},get: getWuhun, equip: equipWuhun, unequip: unequipWuhun, image: wuhunImage, baseGfx: wuhunBaseGfx, owned: id => get().wuhun.owned[id] || 0, get active() { return get().wuhun.active; }},
-    onAttack, render
+    rollEnchantProc, applyEnchantProc, render
   };
 })();

@@ -100,7 +100,6 @@ const IslandCombat=(()=>{
     let offhand=0;const off=landed&&!bow&&typeof job!=='undefined'&&job==='戰士'&&window.OwnedInventory?.items?.find(e=>e.slot==='weapon2');
     if(off&&Math.random()<(OwnedInventory.skills?.ids?.includes(235)?.35:.2)){const offMax=Math.max(1,off.item.damage?.[0]||2);offhand=Math.max(1,Math.floor((1+Math.floor(Math.random()*offMax)+profile.meleeBonus+(window.ClassBuffs?.onHit(mob,false)||0))/2));}
     pending={mob,damage,landed,offhand,at:movementTime()+characterActionState.duration*.4};
-    window.TdjSystems?.onAttack();
     return true;
   }
   function tick(){
@@ -109,7 +108,15 @@ const IslandCombat=(()=>{
     if(!id||CharacterActions.dead){stop();pending=null;followUp=null;return;}
     if(followUp&&movementTime()>=followUp.at){if(followUp.mob.hp)IslandMonsters.damage(followUp.mob,followUp.damage);followUp=null;} // 副手斧追擊（晚一點出數字，不跟主手疊在一起）
     if(pending&&movementTime()>=pending.at){
-      if(pending.landed&&(!pending.mob.spawn.bot||window.FakePlayers?.canAttack(pending.mob))){IslandMonsters.damage(pending.mob,pending.damage);if(pending.offhand)followUp={mob:pending.mob,damage:pending.offhand,at:movementTime()+180};}
+      if(pending.landed&&(!pending.mob.spawn.bot||window.FakePlayers?.canAttack(pending.mob))){
+        const {mob,damage,offhand}=pending;
+        const beforeHp=mob.hp;
+        const proc=beforeHp&&(!mob.spawn.resident||mob.spawn.npc.hp>0)
+          ? window.TdjSystems?.rollEnchantProc() : null;
+        IslandMonsters.damage(mob,damage+(proc?.damage||0));
+        if(proc&&mob.hp<beforeHp)window.TdjSystems.applyEnchantProc(proc);
+        if(offhand)followUp={mob,damage:offhand,at:movementTime()+180};
+      }
       else if(!pending.landed&&pending.mob.hp){pending.mob.rangedMissUntil=movementTime()+650;if(!pending.mob.spawn.bot)window.IslandNpcAi?.provoke(pending.mob,[]);}
       pending=null;
       // 2026-11-19 手機：擊殺結算（經驗、掉寶、存檔、介面）和「找下一隻怪」擠在同一格會頓一下，找怪延到下一個節拍（0.1 秒）
@@ -138,7 +145,7 @@ const IslandCombat=(()=>{
     const mob=IslandMonsters.target;
     if(mode==='auto'){if(mob?.hp&&mob!==target)begin('auto',mob);return true;} // 2026-11-20 掛機中按攻擊不解除掛機，只改打選中的怪
     if(mob?.hp)return begin('once',mob);
-    if(CharacterActions.play('attack',{interruptMovement:true}))window.TdjSystems?.onAttack();
+    CharacterActions.play('attack',{interruptMovement:true});
   }
   setInterval(tick,100);
   function resetAfterTeleport(){const auto=mode==='auto';stop();pending=null;IslandMonsters.setTarget(null);if(auto)mode='auto';}

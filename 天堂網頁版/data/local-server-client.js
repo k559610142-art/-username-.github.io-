@@ -191,13 +191,6 @@ const LocalServerClient=(()=>{
   previousPanel(type);
   if(type==='settings'){
    if(online)document.querySelector('#panelContent').append(control('多人系統',()=>open()));
-   const exportButton=control('匯出角色存檔',()=>{
-    if(!entryAccount)return;
-    const data={characters:CharacterStore.load(entryAccount),warehouse:CharacterStore.warehouse(entryAccount)};
-    const blob=new Blob([JSON.stringify(data)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
-    a.href=url;a.download='天堂角色存檔.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
-   });
-   document.querySelector('#panelContent').append(exportButton);
   }
  };
  const peersLayer=uiElement('div',''),peers=new Map();

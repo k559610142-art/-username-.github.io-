@@ -29,6 +29,9 @@ window.OwnedInventory=(()=>{
   refresh();return true;
  }
  function reward(gain,loot,consumeUid=null){
+  const tdj=window.TdjSystems;
+  const enchantLoot=tdj ? loot.filter(tdj.isEnchantLoot) : [];
+  if(enchantLoot.length)loot=loot.filter(drop=>!tdj.isEnchantLoot(drop));
   const autoLoot=window.AutoSell?.prepareLoot(loot);if(autoLoot?.error)return false;if(autoLoot)loot=autoLoot.rows;
   let next=clone(entries);
   if(consumeUid!==null){const row=next.find(e=>e.uid===consumeUid&&!e.slot);if(!row||row.count<1)return false;deduct(next,row.uid,1);}
@@ -43,7 +46,8 @@ window.OwnedInventory=(()=>{
   window.activeCharacterExperience=experience;
   window.activeCharacterLevel=PlayerProgression.levelFor(experience);
   PlayerGrowth.advance(window.activeCharacterLevel);
-  const result=transact(next,{skills:DBGameRules.automaticSkills(job,window.activeCharacterLevel,skillState)});
+  const commit=()=>transact(next,{skills:DBGameRules.automaticSkills(job,window.activeCharacterLevel,skillState)});
+  const result=enchantLoot.length?tdj.creditEnchantLoot(enchantLoot,commit):commit();
   if(!result){window.activeCharacterExperience=oldExperience;window.activeCharacterLevel=oldLevel;hp=previousVitals.hp;mp=previousVitals.mp;maxHp=previousVitals.maxHp;maxMp=previousVitals.maxMp;window.activeVitalGrowth=previousVitals.growth;sync();}
   return result;
  }
