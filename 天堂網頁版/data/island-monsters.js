@@ -332,6 +332,8 @@ const IslandMonsters = (() => {
   }
   function playEffect(gfx,x,y,now,options={}){
     const visited=options.visited||new Set();if(visited.has(gfx))return;visited.add(gfx);
+    // 2026-11-20 有 8 方向的技能特效（光箭等，skill-effect-data.js）：沒指定方向就用玩家→目標的方向（天堂 heading 0＝北，順時針）
+    if(options.heading===undefined&&(x!==worldX||y!==worldY)){const dx=Math.sign(x-worldX),dy=Math.sign(y-worldY);options={...options,heading:[[0,-1],[1,-1],[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1]].findIndex(([a,b])=>a===dx&&b===dy)};}
     const native=typeof NPC_EFFECT_DATA!=='undefined'&&NPC_EFFECT_DATA[gfx],frames=native?.directions['d'+(options.heading||0)+'/idle']||native?.directions['d0/idle']||islandMonsterFrames[gfx]?.['d0/idle'];
     if(frames){const effect={gfx,heading:options.heading||0,nativeScreen:native?.attribute===8,frames,attribute:native?.attribute||0,x,y,start:now,follow:options.follow,owner:window.activeCharacterId,duration:frames.reduce((sum,f)=>sum+f[5],0)};effects.push(effect);
       if(effect.nativeScreen&&window.NpcEffectRenderer?.preload){effect.waiting=true;NpcEffectRenderer.preload(gfx).then(ready=>{effect.failed=!ready;effect.waiting=false;effect.start=movementTime();schedule();});}

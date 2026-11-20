@@ -472,3 +472,11 @@ NPC 穿衣服（2026-11-13）：
         背包放不下：先改成經驗＋可堆疊道具，再不行只給經驗。不扣藥水、不會死亡
   手機背景被系統暫停也算離線：回到畫面若距上次伺服器時間超過 2 分鐘，就補發那段時間（仍在掛機、紀錄繼續）
   紀錄存 localStorage offlineIdle:角色 id（不改角色存檔結構）
+
+2026-11-20 玩家技能特效補圖（使用者：「施放技能有動作，可是沒有那個技能的特效圖」）：
+  原因：181 招技能（playerSkillData，含外加職業）只有 12 招的 gfx 在 NPC_EFFECT_DATA／islandMonsterFrames 有圖格，其他 playEffect 找不到圖就什麼都不畫。
+  tools/build-skill-effects.cjs：照 build-potion-effects.cjs，從原版客戶端 Sprite*.pak 依 list.spr 抽技能特效（含 109.effect 子特效、8 方向的抽 d0～d7、attr 混色、原始時間）
+    清單 tools/skill-effect-gfx.json（遊戲內還沒有特效的技能 gfx）；用法：node tools/build-skill-effects.cjs [客戶端資料夾]
+    輸出 assets/skill-effects/skill-<gfx>-<方向>-<格>.png（約 3,450 張、21 MB，施放時才下載）＋data/skill-effect-data.js（併入 NPC_EFFECT_DATA，不覆蓋原有）
+  結果 173／181 招有特效；客戶端也沒有的 8 招：魔法屏障、暗隱術、精準目標、咆哮、體能強化、拘束移動、戰斧投擲、亡命之徒
+  island-monsters.js playEffect：沒指定 heading 時，用玩家→特效位置的方向（光箭等有方向的特效朝目標飛）
