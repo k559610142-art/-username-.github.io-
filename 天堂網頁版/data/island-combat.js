@@ -136,6 +136,7 @@ const IslandCombat=(()=>{
   }
   function attack(){
     const mob=IslandMonsters.target;
+    if(mode==='auto'){if(mob?.hp&&mob!==target)begin('auto',mob);return true;} // 2026-11-20 掛機中按攻擊不解除掛機，只改打選中的怪
     if(mob?.hp)return begin('once',mob);
     if(CharacterActions.play('attack',{interruptMovement:true}))window.TdjSystems?.onAttack();
   }

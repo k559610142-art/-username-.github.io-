@@ -434,3 +434,7 @@ NPC 穿衣服（2026-11-13）：
 2026-11-15 依使用者截圖再移除 42 張變身卡（主卡冊 20 張：胡蘿蔔曼波兔、高等柯利／浣熊／熊、曼波兔、妖魔、哥布林、地靈、妖魔弓箭手、侏儒、人形殭屍、妖魔鬥士、狼人、骷髏系、石頭高崙、都達瑪拉妖魔、食屍鬼；
   原始變身表 22 張：milkcow、deer、wild boar、floating eye、giant ant 等）：data/removed-transform-cards.js（REMOVED_TRANSFORM_CARDS）載入在兩份卡片資料後、transform-cards.js 前，從 transformCardBook 拿掉；
   已持有的會在讀檔時自動消失。截圖中塗黑的煉獄槍聖、beleth、darkelf ranger morph 保留
+
+2026-11-20 掛機（AUTO）防誤觸：掛機中點畫面不再解除掛機（data/mobile-controls.js autoTapGuard：點怪＝改打那隻仍在掛機、點地面不移動只提示）；
+  攻擊鍵在掛機中也只改打選中的怪（island-combat.js attack()）。停止掛機只剩：手動按 AUTO、回城（卷軸回村）、換地圖、死亡、背包滿。
+  注意 IslandCombat 是 const，window.IslandCombat 取不到，要直接用 IslandCombat。

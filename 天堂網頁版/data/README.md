@@ -7,7 +7,7 @@
 - talking-island-data.js / island-scene-data.js：通行資料與場景分頁排列。
 - scene-renderer.js：地圖繪製、碰撞、固定角度／倍率的跟隨鏡頭、位置保存。
 - navigation.js：點地座標轉換、尋路、目的地標記。
-- mobile-controls.js：觸控／滑鼠、長按、手勢隔離。
+- mobile-controls.js：觸控／滑鼠、長按、手勢隔離；掛機（AUTO）中點畫面不解除掛機（autoTapGuard）。
 - rpg-hud.js：操作介面、小地圖、快捷欄。
 - character-data.js / character-renderer.js：四職業男女、八方向人物影格與動畫。
 
