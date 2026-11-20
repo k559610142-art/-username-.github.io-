@@ -99,7 +99,7 @@ function setOrb(id, cur, max, label) {
 function orbShieldAmount() {
     if (typeof advRt !== 'function') return 0;
     const rt = advRt();
-    return Math.max(0, (rt.shieldUntil > gameNow ? rt.shield : 0) + (rt.overShield || 0));
+    return Math.max(0, (rt.shieldUntil > gameNow ? rt.shield : 0) + (rt.overShield || 0) + (typeof uniqueRiftShieldAmount === 'function' ? uniqueRiftShieldAmount() : 0));
 }
 function setOrbShield(maxHp) {
     const el = $('orb-hp');

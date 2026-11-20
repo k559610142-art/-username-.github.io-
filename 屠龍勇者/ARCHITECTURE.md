@@ -6,6 +6,7 @@
 ## 1. 專案結構
 
 | 檔案 | 內容 |
+| `tools/map-boss-craft.sql` | T16～T18 對應首領固定掉鍛造材料，保存舊掉寶規則快照（第340節） |
 | `data/guild-missions.js` | 十二項普通任務凍結目錄、場景目標／波次／護送／可選目標與純模擬擴充（第301節） |
 | `tools/guild-missions.sql`、`tools/guild-missions/{index.ts,simulation.mjs,deploy.ts,sources.json,README.md,test-proofs.json,verification.json,build-verification.json}`、`tools/prepare-guild-missions.cjs` | 新增獨立SQL、12任務17景可信重播／單檔部署、來源SHA256、安裝與本機效能紀錄；正式未部署 |
 | `tools/test-guild-missions.cjs`、`test-guild-missions-ui.cjs`、`test-guild-missions-db.cjs`、`test-guild-missions-verifier.mjs`、`tools/guild-missions-preview.js` | 48完整流程／重播、正式UI佇列／失敗、全新與增量DB／權限、實際Edge與集中GUI驗收 |
@@ -337,7 +338,7 @@
 
 ## 3. 開發規則
 
-- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261119a`；使用者2026-10-24同意z後延伸為aa）。
+- **版本號**：改任何 JS 都要把 `index.html` 全部 `?v=` 與 `config.js` 的 `GAME_VERSION` 一起換新（目前 `20261120a`；使用者2026-10-24同意z後延伸為aa）。
 - **防改檔（第 60 節）**：讀寫 localStorage 存檔一律用 `saveParse(raw)`／`saveEncode(JSON.stringify(…))`，不要直接 `JSON.parse`／`JSON.stringify` 存檔文字；
   `player` 換成新物件時（例如從快照還原）要 `guardWrap(player)`；`onclick="…"` 只呼叫頂層函式（發佈版是混淆過的，`player` 不在 window 上）。
 - **合併衝突**：合併後一定要搜尋 `<<<<<<<`。2026-10-09 曾把衝突標記留在 `index.html`／`config.js`／`ui-scene.js`，
@@ -5139,3 +5140,10 @@ python3 tools/cut-sprites.py tools/sprite-src/mage-walk.json --preview 預覽.pn
 - T16 霜骨要塞 Lv.86～92／首領 Lv.96；T17 灰燼地宮 Lv.91～98／首領 Lv.102；T18 裂界王庭 Lv.97～105／首領 Lv.110。沿用異界裝置、排程、鑑定及 T15 起 HP／物理傷害／經驗 ×1.4。
 - 專屬區域只由異界地圖開啟。首領依序使用扇形斬後留下減速霜地、召喚兩座各提升 25% 傷害的火祭壇、半血後在外圈爆裂和中心落雷間交替。
 - 線上掉落需由使用者執行 `tools/map-tiers-16-18.sql`。補丁保留舊版規則快照，更新現行掉寶目錄及未鑑定地圖上限。
+
+## 340. 高階異界首領鍛造（2026-11-20，版本 `20261120a`）
+
+- T16 霜骨軍督 → 霜骨軍督的冰核 ×1；T17 灰燼大祭司 → 灰燼大祭司的火印 ×1；T18 裂界君王 → 裂界君王的王冠碎片 ×1。各階首領每勝固定給一枚，包含財寶圖；材料無重量、可堆疊。
+- 村莊鍛造師「裝備鍛造」各耗對應材料 ×10。霜骨戰靴 200 萬金幣，普攻命中 20% 緩速 3 秒；灰燼指環 300 萬，直接命中 15% 追加 35% 火焰傷害，最多命中 3 隻、範圍 3 格、冷卻 2 秒；裂界王權墜飾 500 萬，受傷跨過半血且存活時給最大 HP 20% 的護盾，持續 5 秒、冷卻 30 秒，顯示於血球。
+- `uniques.js` 註冊道具和配方，裝備沿用傳奇固定詞綴及 Lv.60 門檻，排除舊隨機傳奇掉落池；使用既有裝備圖示。`maps.js` 的 `MAP_BOSS_CRAFT_MATERIALS` 供戰鬥及圖鑑對應材料。`uniqueAshBurst`、`uniqueRiftShieldAmount`、`uniqueRiftAbsorb`、`uniqueRiftAfterDamage` 沿用傳奇執行期及娃娃扣血入口。無新增存檔欄位。
+- 正式版先部署並重整至 20261120a，再由使用者執行 `tools/map-boss-craft.sql`。補丁追加 `-mapBossCraft20261120a`，保留舊票券的掉落快照，改版後取得的首領憑證才發新材料。

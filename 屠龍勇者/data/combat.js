@@ -642,7 +642,7 @@ function castSpell(k, st) {
         m.hp -= d;
         if (!k.id.startsWith('res_')) dollOnHit(m, dealt, true, dollScope);
         lifeSteal(d, st);
-        if (typeof uqOn === 'function') uniqueOnHit(m, d, true);
+        if (typeof uqOn === 'function') uniqueOnHit(m, d, true, false, st);
         if (typeof elemPhys === 'function' && (el || gx)) { const pp = { fire: 0, ice: 0, light: 0 }; if (el) pp[el] += d; if (gx) for (const e in gx) pp[e] += gx[e]; elemOnHit(m, pp, st); }   // 點燃／冰緩／感電
         if (typeof advOnSpellHit === 'function') advOnSpellHit(k, m, d, st);
         return `${m.name} ${d}`;
@@ -816,7 +816,7 @@ function physicalAttack(st, mult, opt, mon = hunt.mon) {
     mon.hp -= total;
     if (typeof eliteOnPlayerPhys === 'function') eliteOnPlayerPhys(mon, total);
     if (elemParts && typeof elemPhys === 'function') elemOnHit(mon, elemParts, st);
-    if (typeof uqOn === 'function' && !opt.res && !opt.advExtra) { uniqueOnHit(mon, total, false); uniqueAfterPhys(mon, total, st, ammoDef ? player.ammoId || null : null); }   // 千羽、獵魂者   // 精英「反傷」15%（不會反彈致死，elite.js）
+    if (typeof uqOn === 'function' && !opt.res && !opt.advExtra) { uniqueOnHit(mon, total, false, !opt.skill, st); uniqueAfterPhys(mon, total, st, ammoDef ? player.ammoId || null : null); }   // 千羽、獵魂者   // 精英「反傷」15%（不會反彈致死，elite.js）
     if (!opt.res) dollOnHit(mon, dealt, false, opt);
     lifeSteal(total, st);
     if (st.weapon && st.weapon.drain) player.mp = Math.min(st.maxMp, player.mp + rand(st.weapon.drain[0], st.weapon.drain[1]));
@@ -989,6 +989,14 @@ function rollDrops(mon, z, raid = false) {
         sfx(rare || (inst && inst.q) ? 'treasure' : 'loot-gold');
         worldVfxLoot(mon, d, inst);
     };
+    if (!raid && mon.mapBoss && inMapRun()) {
+        const tier = player.mapRun.t;
+        const material = MAP_BOSS_CRAFT_MATERIALS[tier];
+        if (material && z.rare && z.rare.id === mon.id) {
+            addItem(material);
+            addLootLog('🎁 獲得 ' + ITEMS[material].name + ' ×1', 'boss');
+        }
+    }
     const qm = 1 + mapBonus();   // 地圖詞綴：掉落機率加成
     if (!raid && treasureMapActive()) {
         if (chance(Math.min(1, (mon.boss ? CURRENCY_BOSS_P : CURRENCY_DROP_P) * qm * 3))) {

@@ -75,6 +75,10 @@ function codexSources(id) {
         const S = codexSrcCache = {};
         const add = (k, s) => { (S[k] = S[k] || []).push(s); };
         for (const m in MONSTERS) for (const dr of MONSTERS[m].drops || []) add(dr.id, '掉落：' + MONSTERS[m].name + (MONSTERS[m].boss && ITEMS[dr.id] && ITEMS[dr.id].cat === 'material' ? `（${BOSS_MATERIAL_DROP_P * 100}%）` : ''));
+        for (const [tier, material] of Object.entries(MAP_BOSS_CRAFT_MATERIALS)) {
+            const boss = MONSTERS[mapZoneFor(Number(tier)).rare.id];
+            add(material, '掉落：T' + tier + ' 異界首領・' + boss.name + '（每次 1 個）');
+        }
         add('towerSoul', `掉落：永夜之塔每 10 層首領（${BOSS_MATERIAL_DROP_P * 100}%）`);
         TOWER_BOSS_MATERIALS.forEach((id, g) => add(id, `掉落：永夜之塔 ${g * 10 + 10}F・${TOWER_BOSSES[g]}（${BOSS_MATERIAL_DROP_P * 100}%）`));
         TOWER_BOSS_DROPS.forEach((ids, g) => ids.forEach(i => add(i, `掉落：永夜之塔 ${g * 10 + 10}F 首領`)));
@@ -100,7 +104,7 @@ function codexSources(id) {
     // 只列真的掉得出來的（需要的怪物等級不超過遊戲裡最高等的怪，永夜之塔 100F 首領約 Lv.92）
     const needLv = Math.max(1, Math.ceil(sellPriceOf(id) / 600));
     const topLv = Math.max(makeTowerMonster(100, true).lv, ...Object.values(MONSTERS).map(m => m.lv));
-    if ((d.cat === 'weapon' || d.cat === 'armor') && !d.classes && !d.res && needLv <= topLv) list.push(`掉落：隨機裝備（Lv.${needLv} 以上的怪物，至少魔法品質）`);
+    if ((d.cat === 'weapon' || d.cat === 'armor') && !d.classes && !d.res && !d.unique && needLv <= topLv) list.push(`掉落：隨機裝備（Lv.${needLv} 以上的怪物，至少魔法品質）`);
     if (d.cat === 'book' && !d.price) list.push(`掉落：Lv.${Math.max(1, bookMinLv(d) - 5)} 以上的怪物 ${BOOK_DROP_P * 100}%、首領 ${BOOK_BOSS_P * 100}%（隨機一本高級書）`);
     if (d.res) {   // 共鳴武器：異界首領（resonance.js）
         const minT = [1, 6, 11, 15][d.res.tier - 1];

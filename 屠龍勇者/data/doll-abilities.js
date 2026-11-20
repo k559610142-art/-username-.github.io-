@@ -193,7 +193,10 @@ function dollTakeDamage(value, st) {
         if (r.until > gameNow && a.reduction) dmg = Math.max(0, Math.round(dmg * (1 - a.reduction)));
         if (r.until > gameNow && r.shield > 0) { const n = Math.min(dmg, r.shield); dmg -= n; r.shield -= n; }
     }
+    if (dmg > 0 && typeof uniqueRiftAbsorb === 'function') dmg = uniqueRiftAbsorb(dmg);
+    const hpBefore = player.hp;
     player.hp -= dmg;
+    if (dmg > 0 && typeof uniqueRiftAfterDamage === 'function') uniqueRiftAfterDamage(hpBefore, st);
     if (!r) return dmg;
     if (player.hp <= 0 && r.id === 'phoenix' && dollTrigger(r)) {
         player.hp = Math.max(1, Math.floor(st.maxHp * .2)); dollNotify(r, '免死，HP恢復至20%');

@@ -62,6 +62,16 @@ const UNIQUE_DEFS = [
       fx: { fireToLight: 1, lightInc: 0.2 }, special: '火焰傷害全部轉為閃電；閃電傷害 +20%' },
     { key: 'elementalist', name: '元素使徒', base: 'crystalWand', cat: 'weapon', type: 'staff', dmg: [6, 6], hit: 2, safe: 6, wt: 40,
       fx: { fireInc: 0.25, iceInc: 0.25, lightInc: 0.25, ailment: 0.15, sp: 6, physLess: 0.5 }, special: '火焰／冰冷／閃電傷害 +25%、元素異常觸發機率 +15%；物理傷害 −50%' },
+    // ── 高階異界鍛造 ──
+    { key: 'frostBoneBoots', name: '霜骨戰靴', base: 'dragonWardBoots', cat: 'armor', slot: 'boots', ac: 4, mr: 8, safe: 4, wt: 50,
+      fx: { hp: 100 }, craft: { material: 'frostBoneCore', name: '霜骨軍督的冰核', gold: 2000000 },
+      special: '普攻命中時有 20% 機率使目標緩速 3 秒' },
+    { key: 'ashRing', name: '灰燼指環', base: 'dexRing', cat: 'armor', slot: 'ring', safe: -1, wt: 2,
+      fx: { hp: 60 }, craft: { material: 'ashFireSeal', name: '灰燼大祭司的火印', gold: 3000000 },
+      special: '直接攻擊命中有 15% 機率爆發，對目標及周圍最多 2 隻敵人追加相當於命中傷害 35% 的火焰傷害，冷卻 2 秒' },
+    { key: 'riftRoyalAmulet', name: '裂界王權墜飾', base: 'mrAmulet', cat: 'armor', slot: 'amulet', safe: -1, wt: 5, mr: 12,
+      fx: { hp: 120 }, craft: { material: 'riftCrownShard', name: '裂界君王的王冠碎片', gold: 5000000 },
+      special: '受傷後從 50% 以上降至 50% 以下且存活，獲得最大 HP 20% 的護盾，持續 5 秒，冷卻 30 秒' },
 ];
 const UNIQUE_BY_KEY = {};
 for (const u of UNIQUE_DEFS) {
@@ -70,8 +80,13 @@ for (const u of UNIQUE_DEFS) {
     else for (const k of ['slot', 'ac', 'mr', 'weight']) if (u[k] != null) d[k] = u[k];
     ITEMS[id] = d;
     UNIQUE_BY_KEY[u.key] = Object.assign({ id }, u);
+    if (u.craft) {
+        const { material, name, gold } = u.craft;
+        ITEMS[material] = { name, cat: 'material', wt: 0, sell: 0, desc: '擊倒對應異界首領固定獲得 1 個，集滿 10 個可找鍛造師製作 ' + u.name + '。' };
+        RECIPES.push({ out: id, need: { [material]: 10 }, gold });
+    }
 }
-const UNIQUE_IDS = UNIQUE_DEFS.map(u => 'uq_' + u.key);
+const UNIQUE_IDS = UNIQUE_DEFS.filter(u => !u.craft).map(u => 'uq_' + u.key);
 
 // ───────── 判斷／執行期狀態 ─────────
 function uqOn(key, p = player) {
@@ -82,7 +97,7 @@ function uqOn(key, p = player) {
 const uqRuntime = new WeakMap();   // 不存檔：斷罪者計數、幻影披風、影噬層數、獵魂者的詞條、怪物身上的持續傷害
 function uqRt(p = player) {
     let r = uqRuntime.get(p);
-    if (!r) { r = { swings: 0, phantom: false, devour: [], hh: {}, hhShield: 0, hhRevive: false }; uqRuntime.set(p, r); }
+    if (!r) { r = { swings: 0, phantom: false, devour: [], hh: {}, hhShield: 0, hhRevive: false, ashReady: 0, riftReady: 0, riftShield: 0, riftUntil: 0 }; uqRuntime.set(p, r); }
     return r;
 }
 function uqHh(k) { const r = uqRt(); return (r.hh[k] || 0) > gameNow; }
@@ -139,12 +154,53 @@ function uniqueCritRoll(st) {
 function uniqueNoCritMul() { return uqOn('gambler') ? 0.8 : 1; }
 
 // 打中怪物後（物理、魔法都會呼叫）：獵魂者的魔力燃燒、冰封／燃燒／中毒
-function uniqueOnHit(mon, dealt, magic) {
-    if (!mon || dealt <= 0 || !uqOn('soulhunter')) return;
+function uniqueOnHit(mon, dealt, magic, basic = false, stats = null) {
+    if (!mon || dealt <= 0) return;
+    if (basic && uqOn('frostBoneBoots') && chance(0.2)) mercEffectSet(mon, 'slow', 3);
+    if (stats && uqOn('ashRing')) uniqueAshBurst(mon, dealt, stats);
+    if (!uqOn('soulhunter')) return;
     const st = calcStats();
     if (uqHh('manaBurn')) player.mp = Math.min(st.maxMp, player.mp + Math.max(1, Math.round(st.maxMp * 0.01)));
     if (uqHh('frost') && typeof mercEffectSet === 'function') mercEffectSet(mon, 'slow', 4);
     for (const k of ['blaze', 'venom']) if (uqHh(k)) uqAddDot(mon, k, Math.max(1, Math.round(dealt * 0.1)), 4);
+}
+function uniqueAshBurst(mon, dealt, st) {
+    const r = uqRt();
+    if (!hunt || r.ashReady > gameNow || !chance(0.15)) return;
+    r.ashReady = gameNow + 2000;
+    const anchor = typeof scene === 'undefined' ? null : mercTarget(mon);
+    const nearby = hunt.mobs.filter(m => {
+        if (m === mon || m.hp <= 0) return false;
+        if (!anchor) return true;
+        const target = mercTarget(m);
+        return target && Math.hypot(target.rx - anchor.rx, target.ry - anchor.ry) <= 3;
+    });
+    for (const m of [mon, ...nearby.slice(0, 2)]) {
+        if (m.hp <= 0) continue;
+        const d = Math.max(1, Math.round(dealt * 0.35 * elemSpellMul(m, 'fire', st)));
+        m.hp -= d;
+        addLog(`🔥 灰燼指環：${m.name}受到 ${d} 火焰傷害`, 'magic');
+    }
+}
+function uniqueRiftShieldAmount() {
+    const r = uqRuntime.get(player);
+    return r && r.riftUntil > gameNow && uqOn('riftRoyalAmulet') ? r.riftShield : 0;
+}
+function uniqueRiftAbsorb(dmg) {
+    const absorbed = Math.min(dmg, uniqueRiftShieldAmount());
+    if (!absorbed) return dmg;
+    const r = uqRuntime.get(player);
+    r.riftShield -= absorbed;
+    return dmg - absorbed;
+}
+function uniqueRiftAfterDamage(hpBefore, st) {
+    if (player.hp <= 0 || hpBefore < st.maxHp / 2 || player.hp >= st.maxHp / 2 || !uqOn('riftRoyalAmulet')) return;
+    const r = uqRt();
+    if (r.riftReady > gameNow) return;
+    r.riftShield = Math.round(st.maxHp * 0.2);
+    r.riftUntil = gameNow + 5000;
+    r.riftReady = gameNow + 30000;
+    addLog('🛡️ 裂界王權墜飾：獲得護盾 ' + r.riftShield, 'buff');
 }
 function uqAddDot(mon, kind, perSec, sec) {
     mon.uqDots = (mon.uqDots || []).filter(x => x.until > gameNow && x.kind !== kind);

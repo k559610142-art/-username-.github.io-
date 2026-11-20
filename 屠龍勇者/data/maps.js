@@ -6,6 +6,7 @@
 // 怪物總數＝200～300 × 數量倍率（成群 +50%、大軍 +100%…，最多 ×3）；殺光後出現異界首領，打倒就通關、掉地圖並回村。
 // 戰鬥中所有「地圖詞綴」只在異界裡生效（mapModsOn），離線收益也會推進異界進度。
 const MAP_TIERS = 18;
+const MAP_BOSS_CRAFT_MATERIALS = { 16: 'frostBoneCore', 17: 'ashFireSeal', 18: 'riftCrownShard' };
 const TREASURE_MAP_DROP_P = 0.01;
 function isTreasureMap(x) { return !!(x && ITEMS[x.id] && ITEMS[x.id].cat === 'map' && ITEMS[x.id].tier >= 8 && x.q === 'legend'); }
 function treasureMapActive() { return !!(inMapRun() && player.mapRun.treasure); }
@@ -125,7 +126,7 @@ function mapDescHtml(x) {
         L.push('<b>未鑑定</b>：請到村莊鑑定台免費鑑定，鑑定後才知道品級與詞綴；鑑定前不能開啟或用通貨改造；可以放進地圖排程，輪到時在村莊自動鑑定。');
         return L.join('<br>');
     }
-    if (isTreasureMap(x)) L.push('<b class="q-legend">傳奇財寶地圖</b>', '已鑑定：6條固定詞綴。', '只掉通貨：掉落機率為正常3倍（最高100%），數量2倍；不可使用任何通貨改造。');
+    if (isTreasureMap(x)) L.push('<b class="q-legend">傳奇財寶地圖</b>', '已鑑定：6條固定詞綴。', '通貨掉落機率為正常3倍（最高100%），數量2倍；不可使用任何通貨改造。', MAP_BOSS_CRAFT_MATERIALS[ITEMS[x.id].tier] ? '擊倒首領固定獲得 1 個專屬鍛造材料。' : '只掉落通貨。');
     if (x.q && !isTreasureMap(x)) L.push(`<b class="${QUALITY[x.q].cls}">${QUALITY[x.q].name}地圖</b>　<span class="good">獎勵 +${Math.round(mapBonusOf(mods) * 100)}%</span>`);
     for (const k of mods) L.push(`<span class="q-magic">◆ ${MAP_MODS[k].icon} ${MAP_MODS[k].name}：${MAP_MODS[k].desc}</span>`);
     L.push('<small class="muted">獎勵加成作用在經驗、金幣與所有掉落機率。' + (isTreasureMap(x) ? '傳奇地圖不可用通貨改造。' : '可用通貨改造（🔮）。') + '</small>');
