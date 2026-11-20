@@ -461,3 +461,14 @@ NPC 穿衣服（2026-11-13）：
     native-npc-dialogs.js show(id,'inn') 後呼叫 InnServices.trim：拿掉租會議廳、進入房間，「退租」改名「退房間」，已租時顯示剩餘時間
     取消會議廳與「進入房間＝休息 3 秒回滿」；改成鑰匙有效＋離租的那位旅館老闆 12 格內，自然回魔累積點數 ×4
     （player-class-stats.js tick：mpCount += points × InnServices.mpBoost()；靜止約 4 秒回一次，一般是 16 秒）；進出範圍會跳提示
+
+2026-11-20 離線掛機（使用者規則）：data/offline-idle.js（OfflineIdle）
+  記錄條件：同一張地圖開 AUTO（IslandCombat.mode==='auto'）連續滿 5 分鐘才記這張地圖（跳提示）；中途關 AUTO、換地圖、死亡就重算；記好之後關 AUTO 會清掉紀錄
+  時間：只用伺服器時間＝HEAD index.html?serverTime=… 讀回應 Date 標頭（GitHub Pages／本機伺服器都有），不看裝置時鐘。
+        掛機中每 60 秒、切到背景、pagehide 各更新一次「離線前」伺服器時間；進遊戲時再拿一次，相減＝離線時間，最多 12 小時、不到 1 分鐘不發
+  沒網路：拿不到伺服器時間就跳「無法連線…不能領取」，可「重試」或「放棄獎勵」
+  獎勵：擊殺速度＝這次在該地圖實際擊殺數／掛機時間（player-progression.js award 成功後呼叫 OfflineIdle.onKill），
+        離線分鐘 × 速度＝擊殺數；每隻依實際打到的怪物比例用 PlayerProgression.roll（新匯出）擲經驗與掉落，一次 OwnedInventory.reward 發放（會升級）。
+        背包放不下：先改成經驗＋可堆疊道具，再不行只給經驗。不扣藥水、不會死亡
+  手機背景被系統暫停也算離線：回到畫面若距上次伺服器時間超過 2 分鐘，就補發那段時間（仍在掛機、紀錄繼續）
+  紀錄存 localStorage offlineIdle:角色 id（不改角色存檔結構）

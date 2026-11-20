@@ -65,12 +65,13 @@ const PlayerProgression = (() => {
       return false;
     }
     reward.claimed=true; // 同一條生命只發一次；儲存失敗仍可用原獎勵重試。
+    window.OfflineIdle?.onKill(mob); // 離線掛機：記錄掛機地圖的擊殺速度與怪物比例（offline-idle.js）
     const text=['擊殺 '+mob.spawn.npc.name,'經驗 +'+reward.experience,...(window.activeCharacterLawful>lawfulBefore?['正義 +'+(window.activeCharacterLawful-lawfulBefore)]:[]),...reward.loot.map(item=>item.name+' × '+item.count)];
     if(window.activeCharacterLevel>before)text.push('升至 Lv. '+window.activeCharacterLevel);
     document.querySelector('#log').textContent=text.join(' · ');
     updateReferenceHud();
     return true;
   }
-  return {experienceForLevel:level=>thresholds.find(row=>row[0]===level)?.[1]??null,levelFor,initialExperience,percentage,award,dropInfo,get maxExperience(){return maximum;}};
+  return {roll,experienceForLevel:level=>thresholds.find(row=>row[0]===level)?.[1]??null,levelFor,initialExperience,percentage,award,dropInfo,get maxExperience(){return maximum;}};
 })();
 window.PlayerProgression=PlayerProgression;
