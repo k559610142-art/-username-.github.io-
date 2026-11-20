@@ -43,7 +43,7 @@ const PlayerClassStats = (() => {
     const action = typeof characterLastAction === 'string' ? characterLastAction : 'idle';
     const points = action === 'attack' ? 1 : action === 'walk' ? 2 : 4;
     hpCount += points;
-    mpCount += points;
+    mpCount += points * (window.InnServices?.mpBoost() || 1); /* 2026-11-20 旅館：有鑰匙在旅館附近回魔加快（inn.js） */
     const healHp = hpCount >= 12 && !window.Satiety?.starving(), /* 飽食度 3 以下不自然回血 */ healMp = mpCount >= 64;
     if (!healHp && !healMp) return;
     if (healHp) hpCount = 0;
