@@ -485,3 +485,10 @@ NPC 穿衣服（2026-11-13）：
   對武器施法的卷軸 40087／140087／240087、對盔甲施法的卷軸 40074／140074／240074、[天地劫] 放生系統 90000、古代終極戰鬥袋(100) 350573、
   古代體力戰鬥袋(500) 350574、銀箭戰鬥包(5000) 350575、黑色米索莉箭戰鬥包(2000) 350576、血盟勳章 300000、料理書 1～5 階段 41255～41259
   原本約 35 家商店有賣；輔助系統自動購買、假玩家／擺攤參考價都讀同一份商店資料，所以一起消失
+
+
+2026-11-21 傷害顯示：data/damage-numbers.js（DamageNumbers.add／draw／setOn），打中怪物／假玩家、玩家被打時頭上飄傷害數字（0.9 秒往上飄、淡出，同時多段往上錯開）
+  白字＝打怪、金色放大＝暴擊（magicCriticalUntil，只第一個數字）、紅字＝玩家受傷
+  掛勾：island-monsters.js damage()（damageNumber，含假玩家 FakePlayers.hurt 前後血量差）、character-actions.js damage()；畫在 island-monsters.js draw() 特效之後
+  怪物位置用當幀 mob.screenHead；玩家用 visualWorldPosition 往上 62×scale
+  設定 → 系統 → 畫面「傷害數字」開關（localStorage damageNumbers＝off 關閉），settings-panel.js

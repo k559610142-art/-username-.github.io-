@@ -282,6 +282,7 @@ const IslandMonsters = (() => {
       }
       pen.drawImage(sheet,sx,sy,sw,sh,left,top,width,height); // 紅名只有名字紅色，身體不染色（使用者 2026-11-14）
       const vx=mob.death&&!mob.hp?mob.death.x:mob.step?mob.x+(mob.step.x-mob.x)*phase:mob.x,vy=mob.death&&!mob.hp?mob.death.y:mob.step?mob.y+(mob.step.y-mob.y)*phase:mob.y;window.NativeWorld?.paintEntity(pen,view,vx,vy,{left,top,width,height});
+      mob.screenHead=[left+width/2,top,now];
       if(!mob.hp)continue; // 屍體不顯示名牌、血條，也不能被點選。
       if(now<(mob.magicCriticalUntil||0)){pen.save();pen.font='bold 13px sans-serif';pen.textAlign='center';pen.lineWidth=3;pen.strokeStyle='#181818';pen.fillStyle='#ffd05c';pen.strokeText('CRITICAL',left+width/2,top-38);pen.fillText('CRITICAL',left+width/2,top-38);pen.restore();}
       if(now<(mob.rangedMissUntil||0)){pen.save();pen.font='bold 13px sans-serif';pen.textAlign='center';pen.lineWidth=3;pen.strokeStyle='#181818';pen.fillStyle='#eee5ca';pen.strokeText('MISS',left+width/2,top-38);pen.fillText('MISS',left+width/2,top-38);pen.restore();}
@@ -329,6 +330,8 @@ const IslandMonsters = (() => {
       const image=sheets.get(file);
       if(image.complete&&image.naturalWidth&&decodedSheets.has(image)){pen.save();pen.globalCompositeOperation=effect.attribute===8?'screen':effect.attribute===128?'multiply':'source-over';pen.drawImage(image,sx||0,sy||0,sw,sh,px*view.zoom+view.ox+fx*scale,py*view.zoom+view.oy+fy*scale,sw*scale,sh*scale);pen.restore();}
     }
+    // 傷害數字：怪物用這一幀畫的頭頂位置；玩家用目前位置往上約一個身高
+    window.DamageNumbers?.draw(pen,now,(target,t)=>{if(target==='player'){const p=visualWorldPosition(t),[x,y]=project(p.x,p.y);return [x*view.zoom+view.ox,y*view.zoom+view.oy-62*scale];}const h=target?.screenHead;return h&&t-h[2]<200?h:null;});
   }
   function playEffect(gfx,x,y,now,options={}){
     const visited=options.visited||new Set();if(visited.has(gfx))return;visited.add(gfx);
@@ -385,14 +388,16 @@ const IslandMonsters = (() => {
     if(frames)for(const frame of frames)loadSheet(frame[0]);
     mob.hp=0;mob.step=null;mob.action=null;mob.windup=null;if(selected===mob)selected=null;
   }
+  // 2026-11-21 傷害數字（damage-numbers.js）：暴擊標記（magicCriticalUntil）只讓第一個數字變金色
+  function damageNumber(mob,amount){if(!window.DamageNumbers)return;const t=movementTime(),crit=t<(mob.magicCriticalUntil||0)&&mob.magicCriticalUntil!==mob.critNumberAt;if(crit)mob.critNumberAt=mob.magicCriticalUntil;DamageNumbers.add(mob,amount,crit?'crit':'hit');}
   function damage(mob,amount){
     if(!mob?.hp||!Number.isFinite(amount)||amount<=0)return;amount=Math.floor(amount);if(!amount)return;
-    if(mob.spawn.bot){window.FakePlayers?.hurt(mob,amount);redrawSoon();return;}
+    if(mob.spawn.bot){const before=mob.hp;window.FakePlayers?.hurt(mob,amount);if(mob.hp<before)damageNumber(mob,before-mob.hp);redrawSoon();return;}
     // 商人、傳送師等 DB 沒有血量的常駐 NPC 不會受傷（強制攻擊只會揮空）；守衛、稻草人等有血量的照常扣血。
     if(mob.spawn.resident&&!(mob.spawn.npc.hp>0)){CombatSound.monsterHit(mob);return;}
     IslandNpcAi.provoke(mob,mobs);
     if(amount>=mob.hp&&!mob.spawn.resident&&!PlayerProgression.award(mob))return;
-    mob.hp=Math.max(0,mob.hp-amount);
+    damageNumber(mob,Math.min(amount,mob.hp));mob.hp=Math.max(0,mob.hp-amount);
     CombatSound.monsterHit(mob);
     if(!mob.hp){
       window.Summons?.killed(mob);markDead(mob);

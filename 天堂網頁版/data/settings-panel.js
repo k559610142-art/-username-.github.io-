@@ -63,6 +63,8 @@
   if(window.PowerSaving){const sw=action(PowerSaving.enabled?'開啟':'關閉',()=>{PowerSaving.setEnabled(!PowerSaving.enabled);sw.textContent=PowerSaving.enabled?'開啟':'關閉';sw.setAttribute('aria-checked',String(PowerSaving.enabled))});sw.setAttribute('role','switch');sw.setAttribute('aria-label','省電模式（20 FPS）');sw.setAttribute('aria-checked',String(PowerSaving.enabled));g3.append(row('🔋','省電模式','限制畫面更新為每秒 20 幀',sw))}
   // 2026-11-19 效能監看（perf-hud.js）：原本加在舊設定區，被這裡藏起來了
   if(window.PerfHud){const sw=action(PerfHud.on?'開啟':'關閉',()=>{PerfHud.setOn(!PerfHud.on);sw.textContent=PerfHud.on?'開啟':'關閉';sw.setAttribute('aria-checked',String(PerfHud.on))});sw.setAttribute('role','switch');sw.setAttribute('aria-label','效能監看');sw.setAttribute('aria-checked',String(PerfHud.on));g3.append(row('📊','效能監看','畫面上方顯示每秒格數與耗時，回報 lag 用',sw))}
+  // 2026-11-21 傷害數字（damage-numbers.js）
+  if(window.DamageNumbers){const sw=action(DamageNumbers.on?'開啟':'關閉',()=>{DamageNumbers.setOn(!DamageNumbers.on);sw.textContent=DamageNumbers.on?'開啟':'關閉';sw.setAttribute('aria-checked',String(DamageNumbers.on))});sw.setAttribute('role','switch');sw.setAttribute('aria-label','傷害數字');sw.setAttribute('aria-checked',String(DamageNumbers.on));g3.append(row('💥','傷害數字','打怪與被打時頭上顯示傷害',sw))}
   if(cameraNote)g3.append(row('🎥','鏡頭',cameraNote));
   sys.append(el('div','qy-set-head','畫面'),g3);
   const g4=el('div','qy-set-group');
