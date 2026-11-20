@@ -45,11 +45,12 @@ const InnServices=(()=>{
   return reply(id,refund?'謝謝你。這裡還給你 '+refund.toLocaleString()+' 天幣。謝謝光臨。':'謝謝你。租期已經過了，收回鑰匙，沒有退款。謝謝光臨。');
  }
  // 自然回魔倍數：鑰匙有效、在同一張地圖、離租的旅館老闆 RANGE 格內
- function mpBoost(){const r=active();const now=!!(r&&near(r.npcId,RANGE));if(now!==inside){inside=now;if(window.gameFlowState==='playing'&&r)toast(now?'進入旅館，魔力恢復加快。':'離開旅館，魔力恢復回到一般速度。')}return now?MP_SPEED:1}
+ function mpRecoveryRental(r=active()){return r&&near(r.npcId,RANGE)?r:null}
+ function mpBoost(){const r=active();const now=!!mpRecoveryRental(r);if(now!==inside){inside=now;if(window.gameFlowState==='playing'&&r)toast(now?'進入旅館，魔力恢復加快。':'離開旅館，魔力恢復回到一般速度。')}return now?MP_SPEED:1}
  function handle(id,action){
   if(action==='room')return reply(id,'這裡的房間一人 '+PRICE.toLocaleString()+' 天幣，租期 '+HOURS+' 小時。要租用嗎？（目前持有 '+money().toLocaleString()+' 天幣）',[button('確定租用',()=>rent(id))]);
   if(action==='return')return giveBack(id);
   return false;
  }
- return {handle,trim,mpBoost,actions:['room','return'],get rental(){return active()}};
+ return {handle,trim,mpBoost,get mpRecoveryActive(){return !!mpRecoveryRental()},actions:['room','return'],get rental(){return active()}};
 })();window.InnServices=InnServices;

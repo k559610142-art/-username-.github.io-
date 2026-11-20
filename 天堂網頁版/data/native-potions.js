@@ -77,6 +77,17 @@ const NativePotions=(()=>{
       timer.textContent=Math.ceil((activePotionBuffs[key]-Date.now())/1000);label.append(image,timer);
       bar.append(label);
     }
+    if(!CharacterActions.dead&&window.InnServices?.mpRecoveryActive){
+      const label=document.createElement('span'),image=document.createElement('img');
+      label.dataset.effect='inn-mp-recovery';
+      label.title='旅館魔力回復｜自然回魔加快';
+      label.setAttribute('aria-label',label.title);
+      label.style.cssText='position:relative;width:26px;height:26px;background:#162733d9;border:1px solid #8d986480';
+      image.src='assets/interface/items/etcitem-59.png';
+      image.alt='';
+      image.style.cssText='width:24px;height:24px;display:block;image-rendering:pixelated';
+      label.append(image);bar.append(label);
+    }
     for(const effect of window.IslandNpcAi?.negativeEffects||[]){
       const label=document.createElement('span'),image=document.createElement('img'),timer=document.createElement('small'),seconds=Number.isFinite(effect.remainingMs)?Math.ceil(effect.remainingMs/1000):null;
       label.className='negative-buff';label.dataset.effect=effect.id;
