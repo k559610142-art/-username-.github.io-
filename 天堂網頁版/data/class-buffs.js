@@ -209,6 +209,8 @@ const ClassBuffs=(()=>{
   invisible=false;
   if(CharacterActions.dead||window.gameFlowState!=='playing'||characterMovementBlocked()||movementAnimating()||!TransformCards.canCast)return false;
   if(now()<(cooldowns.get(id)||0))return false;
+  // 2026-11-20 手動施放可對他人放的增益（DB target＝buff 且有持續時間）：有輔助目標就放在對方身上
+  if(options.support&&SELF[id]&&!PASSIVE[id]&&skill.target==='buff'&&(skill.duration||0)>0){const ally=supportTarget(skill);if(ally===false)return false;if(ally)return castAlly(id,skill,ally,pay);}
   if(id===132&&!['bow','singlebow'].includes(OwnedInventory.equippedWeaponType))return say('三重矢需要裝備弓。');
   if(id===90&&!OwnedInventory.items.some(e=>e.slot&&e.item.type==='shield'))return say('堅固防護需要裝備盾牌。');
   let mob=null;
@@ -245,6 +247,36 @@ const ClassBuffs=(()=>{
   return true;
  }
 
+ // ---- 2026-11-20 輔助目標（隊友／召喚物／其他玩家）：治癒與增益放在對方身上 ----
+ //  效果換算（夥伴沒有完整角色數值，用簡化規則）：AC 每 −2 少受 1 傷害、傷害減免直接扣、閃避每點 2% 完全閃掉、聖結界受傷減半、
+ //  靈魂昇華受傷 ×0.83（≈血量 +20%）；加傷／弓傷直接加、力量每 2 點 +1、敏捷每 5 點 +1、加速／勇敢類傷害 ×1.25（≈出手變快）、生命之泉每 5 秒回血。
+ let allyBuffs=new WeakMap();
+ function supportTarget(skill){
+  const mob=IslandMonsters.support;if(!mob)return null;
+  const range=skill.range>0?skill.range:10;
+  if(Math.max(Math.abs(mob.x-worldX),Math.abs(mob.y-worldY))>range||!IslandCombat.clearShot(worldX,worldY,mob.x,mob.y)){say('輔助目標太遠或被擋住（按 SELF 可改放自己）。');window.toast?.('輔助目標太遠或被擋住（按 SELF 可改放自己）。');return false;}
+  return mob;
+ }
+ function castAlly(id,skill,ally,pay){
+  if(!(pay?pay():OwnedInventory.castCost(skill)))return say('魔力、體力、箭矢或材料不足。');
+  if(!CharacterActions.play('skill'))return false;
+  const t=now(),dur=(skill.duration||0)*1000;cooldowns.set(id,t+(skill.reuse||0));invisible=false;
+  IslandMonsters.playEffect(skill.gfx,ally.x,ally.y,t);
+  let map=allyBuffs.get(ally);if(!map)allyBuffs.set(ally,map=new Map());
+  if([150,155].includes(id))for(const other of [150,155])map.delete(other);
+  map.set(id,t+dur);window.toast?.('對 '+(ally.fp?.name||ally.spawn.npc.name)+' 施放「'+skill.name+'」');
+  return true;
+ }
+ function allyMods(mob){
+  const map=mob&&allyBuffs.get(mob);if(!map)return null;const t=now(),out={ac:0,dmg:0,red:0,dodge:0,str:0,dex:0,speed:false,immune:false,spirit:false,hpr:0};let any=false;
+  for(const [id,until]of map){if(until<=t){map.delete(id);continue;}const e=SELF[id]||{};any=true;
+   out.ac+=e.ac||0;out.dmg+=(e.dmg||0)+(e.bow||0);out.red+=typeof e.red==='number'?e.red:0;out.dodge+=(e.dodge||0)+(e.bowDodge||0);out.str+=e.stats?.str||0;out.dex+=e.stats?.dex||0;
+   if(e.speed)out.speed=true;if(e.immune)out.immune=true;if(e.spirit)out.spirit=true;out.hpr+=e.hpr||0;}
+  return any?out:null;
+ }
+ function allyOut(mob,amount){const m=allyMods(mob);if(!m||!(amount>0))return amount;let v=amount+m.dmg+Math.floor(m.str/2)+Math.floor(m.dex/5);if(m.speed)v*=1.25;return Math.max(0,Math.floor(v));}
+ function allyIn(mob,amount){const m=allyMods(mob);if(!m||!(amount>0))return amount;if(m.dodge>0&&Math.random()<m.dodge*.02)return 0;let v=amount-m.red-Math.floor(-m.ac/2);if(m.immune)v/=2;if(m.spirit)v*=.83;return Math.max(0,Math.floor(v));}
+ setInterval(()=>{for(const mob of [...(window.Summons?.mobs||[]),...(window.NpcSocial?.party||[]),...(IslandMonsters.support?[IslandMonsters.support]:[])]){const m=allyMods(mob);if(!m?.hpr||!(mob.hp>0))continue;mob.hp=Math.min(Number(mob.spawn.npc.hp)||mob.hp,mob.hp+m.hpr);}},5000);
  // 魔法卷軸（data/item-effects.js）：不用學會、不耗魔力，直接得到自身輔助效果（照技能持續時間）
  function grant(id){
   if(owner!==window.activeCharacterId){reset();owner=window.activeCharacterId;}
@@ -293,5 +325,5 @@ const ClassBuffs=(()=>{
   window.NativePotions?.layout?.();
  }
  setInterval(tick,250);
- return {handles,implemented:id=>handles(id),cast,grant,afterCast,invisible:()=>invisible,reveal:()=>{invisible=false;},hpr,maxWeight,statusResistances,targetNpc,consumeErase,vision,canUsePotions,focusTarget,clearTarget:mob=>{debuffs.delete(mob);if(focused===mob)focused=null;},resistances,rangedHitBonus,meleeHitBonus,damageBonus,reduction,ac,dodge,mpr,mr,sp,stats,maxHp:maxHpBonus,maxMp:maxMpBonus,onHit,onHurt,blocksNegative,silenced,rooted,slowed,active:id=>on(id),selfBuff:id=>!!SELF[id]&&!PASSIVE[id]&&!UTIL[id]&&(sk(id)?.duration||0)>0};
+ return {supportTarget,allyOut,allyIn,allyBuffs:mob=>{const map=mob&&allyBuffs.get(mob);return map?[...map].filter(([,u])=>u>now()).map(([id])=>id):[];},handles,implemented:id=>handles(id),cast,grant,afterCast,invisible:()=>invisible,reveal:()=>{invisible=false;},hpr,maxWeight,statusResistances,targetNpc,consumeErase,vision,canUsePotions,focusTarget,clearTarget:mob=>{debuffs.delete(mob);if(focused===mob)focused=null;},resistances,rangedHitBonus,meleeHitBonus,damageBonus,reduction,ac,dodge,mpr,mr,sp,stats,maxHp:maxHpBonus,maxMp:maxMpBonus,onHit,onHurt,blocksNegative,silenced,rooted,slowed,active:id=>on(id),selfBuff:id=>!!SELF[id]&&!PASSIVE[id]&&!UTIL[id]&&(sk(id)?.duration||0)>0};
 })();window.ClassBuffs=ClassBuffs;

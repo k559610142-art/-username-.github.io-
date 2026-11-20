@@ -132,7 +132,7 @@ const Summons=(()=>{
     const dx=Math.sign(target.x-mob.x),dy=Math.sign(target.y-mob.y);const h=[[0,-1],[1,-1],[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1]].findIndex(([x,y])=>x===dx&&y===dy);if(h>=0)mob.heading=h;
     const duration=npc.attack||1000;mob.action={clip:'attack',start:t,end:t+duration};mob.ready=t+duration;
     const r=NativeCombatRules.physical(npc,{ac:target.spawn.npc.ac||0,dodge:0,reduction:0,role:''});
-    setTimeout(()=>{if(!target.hp||!mob.hp)return;if(!target.spawn.resident&&!target.allyTarget)target.allyTarget=mob;if(r.hit&&r.damage>0)IslandMonsters.damage(target,r.damage);},duration*.45);
+    setTimeout(()=>{if(!target.hp||!mob.hp)return;if(!target.spawn.resident&&!target.allyTarget)target.allyTarget=mob;if(r.hit&&r.damage>0)IslandMonsters.damage(target,window.ClassBuffs?.allyOut?.(mob,r.damage)??r.damage);},duration*.45);
     return;
    }
    moveToward(mob,target.x,target.y,t,stepToward);return;
@@ -161,6 +161,7 @@ const Summons=(()=>{
   return true;
  }
  function hurt(mob,amount){
+  amount=window.ClassBuffs?.allyIn?.(mob,amount)??amount;if(!(amount>0))return;
   mob.hp=Math.max(0,mob.hp-amount);window.CombatSound?.monsterHit?.(mob);
   if(!mob.hp){IslandMonsters.playEffect(169,mob.x,mob.y,now());window.toast?.(mob.spawn.npc.name+' 倒下了。');killed(mob);}
  }

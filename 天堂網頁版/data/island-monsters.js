@@ -8,7 +8,7 @@ const IslandMonsters = (() => {
   const directions=['NW','N','NE','E','SE','S','SW','W'];
   const steps=[[0,-1],[1,-1],[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1]];
   const decodedSheets=new WeakSet(),sheets=new Map(), mobs=[], taken=new Set();
-  let hitboxes=[],selected=null,lastTap=null;
+  let hitboxes=[],selected=null,lastTap=null,support=null; // support＝輔助目標（隊友／召喚物／其他玩家；null＝自己，2026-11-20）
   const stallMasks=new WeakMap();
   function stallHit(box,x,y){
     if(x<box.left||y<box.top||x>=box.left+box.width||y>=box.top+box.height)return false;
@@ -111,7 +111,7 @@ const IslandMonsters = (() => {
     }
   }
   }
-  function ensurePopulation(){const id=window.activeMapId||0;if(id===populationMap)return;if(populationMap!==null)populations.set(populationMap,mobs.splice(0).filter(m=>!m.spawn.ally));populationMap=id;occupancyTick=-1;taken.clear();selected=null;const previous=populations.get(id);if(previous)mobs.push(...previous);else seedPopulation();const incoming=incomingBots.get(id);if(incoming){for(const mob of incoming)if(!mobs.includes(mob))mobs.push(mob);incomingBots.delete(id);}}
+  function ensurePopulation(){const id=window.activeMapId||0;if(id===populationMap)return;if(populationMap!==null)populations.set(populationMap,mobs.splice(0).filter(m=>!m.spawn.ally));populationMap=id;occupancyTick=-1;taken.clear();selected=null;support=null;const previous=populations.get(id);if(previous)mobs.push(...previous);else seedPopulation();const incoming=incomingBots.get(id);if(incoming){for(const mob of incoming)if(!mobs.includes(mob))mobs.push(mob);incomingBots.delete(id);}}
   function transferBot(mob,mapId,x,y){
     if(!mob?.spawn.bot)return false;ensurePopulation();
     for(const list of [mobs,...populations.values(),...incomingBots.values()]){const index=list.indexOf(mob);if(index>=0)list.splice(index,1);}
@@ -272,6 +272,10 @@ const IslandMonsters = (() => {
       const left=x+(fx-cx)*scale,top=y+(fy-cy)*scale;
       const width=sw*scale,height=sh*scale;
       if(mob.hp)hitboxes.push({mob,left,top,width,height,sheet,sx:sx||0,sy:sy||0,sw,sh});
+      if(mob===support&&mob.hp){
+        pen.beginPath();pen.ellipse(x,y,Math.max(14,width*.4),7,0,0,Math.PI*2);
+        pen.strokeStyle='#6fe3a0';pen.lineWidth=2;pen.stroke();
+      }
       if(mob===selected){
         pen.beginPath();pen.ellipse(x,y,Math.max(12,width*.36),6,0,0,Math.PI*2);
         pen.strokeStyle='#f0bc65';pen.lineWidth=2;pen.stroke();
@@ -281,6 +285,13 @@ const IslandMonsters = (() => {
       if(!mob.hp)continue; // 屍體不顯示名牌、血條，也不能被點選。
       if(now<(mob.magicCriticalUntil||0)){pen.save();pen.font='bold 13px sans-serif';pen.textAlign='center';pen.lineWidth=3;pen.strokeStyle='#181818';pen.fillStyle='#ffd05c';pen.strokeText('CRITICAL',left+width/2,top-38);pen.fillText('CRITICAL',left+width/2,top-38);pen.restore();}
       if(now<(mob.rangedMissUntil||0)){pen.save();pen.font='bold 13px sans-serif';pen.textAlign='center';pen.lineWidth=3;pen.strokeStyle='#181818';pen.fillStyle='#eee5ca';pen.strokeText('MISS',left+width/2,top-38);pen.fillText('MISS',left+width/2,top-38);pen.restore();}
+      if(mob===support&&mob!==selected){
+        const meter=Math.max(42,Math.min(84,width)),max=Number(mob.spawn.npc.hp)||1;
+        pen.fillStyle='#17241b';pen.fillRect(left+(width-meter)/2-1,top-21,meter+2,7);
+        pen.fillStyle='#3fae62';pen.fillRect(left+(width-meter)/2,top-20,meter*Math.min(1,mob.hp/max),5);
+        pen.font='10px sans-serif';pen.textAlign='center';pen.fillStyle='#e6ffe9';
+        pen.fillText(mob.hp+' / '+max,left+width/2,top-23);
+      }
       if(mob===selected){
         const meter=Math.max(42,Math.min(84,width));
         pen.fillStyle='#241b17';pen.fillRect(left+(width-meter)/2-1,top-21,meter+2,7);
@@ -330,7 +341,10 @@ const IslandMonsters = (() => {
   function selectAt({x,y}){
     const hit=hitboxes.findLast(box=>box.mob.fp?.stall?stallHit(box,x,y):x>=box.left-4&&x<=box.left+box.width+4&&y>=box.top-4&&y<=box.top+box.height+4);
     if(hit?.mob?.spawn.bot&&hit.mob.fp?.stall){lastTap=null;window.FakePlayers?.openStall(hit.mob);return true;}
-    const next=hit?.mob?.spawn.ally||hit?.mob?.spawn.bot&&!window.FakePlayers?.canAttack(hit.mob)?null:hit?.mob||null;
+    // 2026-11-20 點到友方（召喚物、寵物、隊友、不能攻擊的其他玩家）＝設為輔助目標：治癒／增益改放在對方身上，按 SELF 切回自己
+    const friend=hit?.mob&&(hit.mob.spawn.ally||hit.mob.spawn.bot&&!window.FakePlayers?.canAttack(hit.mob))?hit.mob:null;
+    if(friend){lastTap=null;setSupport(friend);return true;}
+    const next=hit?.mob||null;
     // 強制攻擊開啟：點到的目標（含 NPC、守衛）直接攻擊。
     if(next&&window.ForceAttack?.on){lastTap=null;if(next!==selected){selected=next;redrawSoon();}return 'attack';}
     if(next?.spawn.resident){
@@ -355,6 +369,8 @@ const IslandMonsters = (() => {
   //  同一格畫面內等於多畫 2～3 次。改成交給下一格畫面：沒在走時 monsterFrame 每格都會畫，走路中由場景排程一起畫。
   function redrawSoon(){if(typeof movementAnimating==='function'&&movementAnimating()&&typeof schedule==='function')schedule();}
   function setTarget(mob){if(selected===mob)return;selected=mob;redrawSoon();}
+  function supportOk(mob){return !!mob&&mob.hp>0&&mobs.includes(mob)&&(mob.spawn.mapId||0)===(window.activeMapId||0)&&!mob.fp?.hidden&&!mob.fp?.vanish;}
+  function setSupport(mob){if(mob&&!supportOk(mob))mob=null;const changed=support!==mob;support=mob;redrawSoon();if(changed)window.toast?.(mob?'輔助目標：'+(mob.fp?.name||mob.spawn.npc.name)+'（治癒／增益會放在對方身上，按 SELF 切回自己）':'輔助目標：自己');return true;}
   function markDead(mob,at=movementTime(),respawnAt=null){
     globalThis.ClassBuffs?.clearTarget?.(mob);
     const frames=islandMonsterFrames[mob.spawn.npc.gfx]?.['d'+mob.heading+'/death']||islandMonsterFrames[mob.spawn.npc.gfx]?.['d0/death'];
@@ -398,9 +414,9 @@ const IslandMonsters = (() => {
   // 等級任務（data/level-quests.js）：目前地圖加入／移除任務怪
   function addQuestSpawns(list){ensurePopulation();for(const spawn of list)if(!mobs.some(m=>m.spawn===spawn))seedSpawn(spawn);}
   function removeQuestSpawns(keep){ensurePopulation();for(let i=mobs.length-1;i>=0;i--)if(mobs[i].spawn.quest&&!keep(mobs[i].spawn)){if(selected===mobs[i])selected=null;mobs.splice(i,1);}}
-  return {get all(){ensurePopulation();return [...mobs];},addQuestSpawns,removeQuestSpawns,get residentPositions(){ensurePopulation();return mobs.filter(m=>m.spawn.resident).map(m=>({id:m.spawn.npcId,spawnId:m.spawn.spawnId,x:m.x,y:m.y,point:[...m.spawn.point],sourcePoint:[...(m.spawn.sourcePoint||m.spawn.point)],random:[...m.spawn.random]}))},get audit(){return {mapId:populationMap,spawned:mobs.length,sourceRows:islandMonsterSpawns.length,fullCounts:true}},occupied:(x,y)=>{ensurePopulation();const tick=Math.floor(movementTime()/50);if(tick!==occupancyTick){occupancyTick=tick;occupancy.clear();for(const m of mobs)if(m.hp){occupancy.add(m.x+","+m.y);if(m.step)occupancy.add(m.step.x+","+m.step.y)}}return occupancy.has(x+","+y)},around:(x,y,r)=>{ensurePopulation();return mobs.filter(m=>m.hp&&!m.spawn.resident&&!m.spawn.ally&&!m.spawn.bot&&(m.spawn.mapId||0)===(window.activeMapId||0)&&Math.max(Math.abs(m.x-x),Math.abs(m.y-y))<=r)},addAlly:(mob)=>{ensurePopulation();if(!mobs.includes(mob))mobs.push(mob);return mob;},removeAlly:(mob)=>{for(const list of [mobs,...populations.values(),...incomingBots.values()]){const i=list.indexOf(mob);if(i>=0)list.splice(i,1);}if(selected===mob)selected=null;},hasMob:(mob)=>mobs.includes(mob),
+  return {setSupport,get support(){if(support&&!supportOk(support))support=null;return support;},get all(){ensurePopulation();return [...mobs];},addQuestSpawns,removeQuestSpawns,get residentPositions(){ensurePopulation();return mobs.filter(m=>m.spawn.resident).map(m=>({id:m.spawn.npcId,spawnId:m.spawn.spawnId,x:m.x,y:m.y,point:[...m.spawn.point],sourcePoint:[...(m.spawn.sourcePoint||m.spawn.point)],random:[...m.spawn.random]}))},get audit(){return {mapId:populationMap,spawned:mobs.length,sourceRows:islandMonsterSpawns.length,fullCounts:true}},occupied:(x,y)=>{ensurePopulation();const tick=Math.floor(movementTime()/50);if(tick!==occupancyTick){occupancyTick=tick;occupancy.clear();for(const m of mobs)if(m.hp){occupancy.add(m.x+","+m.y);if(m.step)occupancy.add(m.step.x+","+m.step.y)}}return occupancy.has(x+","+y)},around:(x,y,r)=>{ensurePopulation();return mobs.filter(m=>m.hp&&!m.spawn.resident&&!m.spawn.ally&&!m.spawn.bot&&(m.spawn.mapId||0)===(window.activeMapId||0)&&Math.max(Math.abs(m.x-x),Math.abs(m.y-y))<=r)},addAlly:(mob)=>{ensurePopulation();if(!mobs.includes(mob))mobs.push(mob);return mob;},removeAlly:(mob)=>{for(const list of [mobs,...populations.values(),...incomingBots.values()]){const i=list.indexOf(mob);if(i>=0)list.splice(i,1);}if(selected===mob)selected=null;},hasMob:(mob)=>mobs.includes(mob),
     preload(files){for(const f of files)loadSheet(f);},
-    botHit(mob,amount,options={}){if(!mob?.hp||mob.spawn.resident||mob.spawn.ally||mob.spawn.bot)return false;if(options.party&&amount>=mob.hp&&!PlayerProgression.award(mob))return false;mob.hp=Math.max(0,mob.hp-amount);CombatSound.monsterHit(mob);if(mob.hp&&options.attacker)IslandNpcAi.provokeBot(mob,options.attacker);
+    botHit(mob,amount,options={}){if(options.attacker)amount=window.ClassBuffs?.allyOut?.(options.attacker,amount)??amount;if(!mob?.hp||mob.spawn.resident||mob.spawn.ally||mob.spawn.bot)return false;if(options.party&&amount>=mob.hp&&!PlayerProgression.award(mob))return false;mob.hp=Math.max(0,mob.hp-amount);CombatSound.monsterHit(mob);if(mob.hp&&options.attacker)IslandNpcAi.provokeBot(mob,options.attacker);
      if(!mob.hp)markDead(mob);return true;},
     transferBot,get botList(){ensurePopulation();const result=new Set();for(const list of [mobs,...populations.values(),...incomingBots.values()])for(const mob of list)if(mob.spawn.bot)result.add(mob);return [...result];},updateBackground,draw,selectAt,nearest,setTarget,damage,playEffect,serviceNearby:(id,range)=>mobs.some(m=>(m.spawn.mapId||0)===(window.activeMapId||0)&&m.spawn.resident&&m.spawn.npcId===id&&Math.max(Math.abs(m.x-worldX),Math.abs(m.y-worldY))<=range),get target(){return selected;}};
 })();

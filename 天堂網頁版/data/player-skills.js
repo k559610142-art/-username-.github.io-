@@ -44,6 +44,10 @@ const PlayerSkills = (() => {
     if(now<(cooldowns.get(id)||0))return false;
     const healing=/治癒|恢復|體力回復|生命的祝福/.test(skill.name);
     if(healing&&window.GroupHealing?.isGroup(skill)&&window.LocalServerClient?.online)return GroupHealing.castOnline(skill);
+    // 2026-11-20 手動施放單體治癒：有輔助目標（點隊友／召喚物／其他玩家）就補對方；範圍治癒、自動補血照舊補自己
+    const ally=healing&&options.support&&!window.GroupHealing?.isGroup(skill)?window.ClassBuffs?.supportTarget?.(skill):null;
+    if(ally===false)return false;
+    if(ally)return healAlly(id,skill,ally,options,now);
     const mob=IslandMonsters.target;
     if(!healing&&mob?.spawn.bot&&!window.FakePlayers?.canAttack(mob))return false;
     const range=skill.range>0?skill.range:10;
@@ -67,6 +71,18 @@ const PlayerSkills = (() => {
       if(id>=181)window.ClassBuffs?.afterCast(id,mob);
       if(id===87){if(PlayerAbilityRules.statusHits({...skill,id},mob))mob.ready=Math.max(mob.ready||0,now+skill.duration*1000);else mob.rangedMissUntil=now+650;}
     }
+    return true;
+  }
+  function healAlly(id,skill,ally,options,now){
+    const max=Number(ally.spawn.npc.hp)||ally.hp;
+    if(ally.hp>=max){toast((ally.fp?.name||ally.spawn.npc.name)+' 的體力是滿的。');return false;}
+    const amount=PlayerAbilityRules.magicAmount(skill,null,{healing:true}).amount;
+    if(!(options.pay?options.pay():OwnedInventory.castCost(skill)))return false;
+    if(!CharacterActions.play('skill'))return false;
+    window.ClassBuffs?.reveal();cooldowns.set(id,now+skill.reuse);
+    IslandMonsters.playEffect(skill.gfx,ally.x,ally.y,now);
+    ally.hp=Math.min(max,ally.hp+Math.max(1,amount));if(ally.fp)ally.fp.hpShow=now+3000;
+    window.PartyHud?.refresh?.();window.GameEntry?.saveActive?.();
     return true;
   }
   function syncQuickSlots(){

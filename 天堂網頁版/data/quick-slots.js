@@ -67,7 +67,7 @@ const QuickSlots=(()=>{
       const entry=OwnedInventory.items.find(e=>e.key===payload.key);
       return entry?OwnedInventory.use(entry.uid):false;
     }
-    return PlayerSkills.cast(payload.id);
+    return PlayerSkills.cast(payload.id,{support:true}); // 手動施放：治癒／增益放在輔助目標（SELF＝自己）
   }
   function render(){
     const slots=window.gameFlowState==='playing'?current():Array(30).fill(null);

@@ -438,3 +438,14 @@ NPC 穿衣服（2026-11-13）：
 2026-11-20 掛機（AUTO）防誤觸：掛機中點畫面不再解除掛機（data/mobile-controls.js autoTapGuard：點怪＝改打那隻仍在掛機、點地面不移動只提示）；
   攻擊鍵在掛機中也只改打選中的怪（island-combat.js attack()）。停止掛機只剩：手動按 AUTO、回城（卷軸回村）、換地圖、死亡、背包滿。
   注意 IslandCombat 是 const，window.IslandCombat 取不到，要直接用 IslandCombat。
+
+2026-11-20 輔助目標＋SELF（使用者要「點隊友或玩家後，治癒或增益放在對方身上；按 SELF 切回自己」）：
+  island-monsters.js selectAt：點到友方（spawn.ally 召喚物／寵物、不能攻擊的假玩家含 NPC 隊友）＝setSupport(mob)，畫綠圈＋綠血條；換地圖清掉；IslandMonsters.support 取得
+  reference-hud.js SELF 鈕＝setSupport(null) 切回自己（原本只是外觀切換、沒有作用）
+  只有手動施放（quick-slots.js 快捷欄、classic-panels.js 技能面板「施放技能」）帶 {support:true}；自動補血、輔助系統自動增益照舊只放自己
+  player-skills.js healAlly：單體治癒（初級／中級／高級／全部治癒術）補輔助目標；範圍治癒照舊
+  class-buffs.js castAlly：DB target＝buff 且有持續時間的自身增益（神聖武器、通暢氣脈、體魄強健、加速術、祝福魔法武器、狂暴術、聖結界、靈魂昇華、風之神射、生命之泉、水之防護、水之元氣…）放在對方；
+    保護罩等 DB target＝none 的照原版只能放自己。夥伴沒有完整角色數值，用簡化換算：allyIn（AC 每 −2 少受 1、減免、閃避每點 2%、聖結界減半、靈魂昇華 ×0.83）、
+    allyOut（加傷、力量/2、敏捷/5、加速類 ×1.25），生命之泉每 5 秒回血；掛在 summons.js（出手／受傷）、fake-players.js monsterHurt、island-monsters.js botHit
+  距離 10 格內且沒被牆擋；太遠提示「按 SELF 可改放自己」
+  真人玩家（本機測試伺服器 local-server-client.js drawPeers）只是 DOM 圖片、不能點選，沒有支援
