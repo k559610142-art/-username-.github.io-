@@ -66,9 +66,11 @@ window.OwnedInventory=(()=>{
  // 不用書直接學會（2026-11-17：1～2 階魔法到等級自動學會，data/auto-magic.js）
  function grantSkills(list){const add=list.filter(id=>!skillState.ids.includes(id));if(!add.length)return false;return transact(clone(entries),{skills:{...skillState,ids:[...skillState.ids,...add]}});}
  // 提煉魔石（黑妖技能 100，2026-11-17）：背包裡等級最低的黑魔石（一～四級，40320～40323）消耗 1 顆，成功率 70／50／30／15%，成功得到高一級的黑魔石。
- function bringStone(){const next=clone(entries),stone=next.filter(e=>!e.slot&&/^etcitem:4032[0-3]$/.test(e.key)).sort((a,b)=>a.key.localeCompare(b.key))[0];if(!stone)return {error:'背包裡沒有可提煉的黑魔石（一～四級）。'};
-  const lv=+stone.key.slice(-1),ok=Math.random()<[.7,.5,.3,.15][lv];if(!deduct(next,stone.uid,1))return {error:'黑魔石無法使用。'};if(ok&&!addItems(next,'etcitem:'+(40321+lv),1))return {error:'背包空間不足。'};
-  return transact(next)?{ok,from:lv+1,to:lv+2}:{error:'儲存失敗。'};}
+ const stoneRates=[.7,.5,.3,.15];
+ function bringStone(tier=null,mpCost=0){const next=clone(entries),stone=next.filter(e=>!e.slot&&(tier===null?/^etcitem:4032[0-3]$/.test(e.key):e.key==='etcitem:'+(40318+tier))).sort((a,b)=>a.key.localeCompare(b.key))[0];if(!stone)return {error:'背包裡沒有可提煉的黑魔石（一～四級）。'};
+  const lv=+stone.key.slice(-1),ok=Math.random()<stoneRates[lv];if(!deduct(next,stone.uid,1))return {error:'黑魔石無法使用。'};if(ok&&!addItems(next,'etcitem:'+(40321+lv),1))return {error:'背包空間不足。'};
+  if(mp<mpCost)return {error:'魔力不足。'};
+  return transact(next,{mp:mp-mpCost})?{ok,from:lv+1,to:lv+2}:{error:'儲存失敗。'};}
  function setElfElement(element){
   if(job!=='妖精'||level()<30||skillState.element||!['地','風','水','火'].includes(element))return false;
   return transact(clone(entries),{skills:{...skillState,element}});

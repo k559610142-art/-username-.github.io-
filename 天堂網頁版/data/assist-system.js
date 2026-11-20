@@ -22,6 +22,7 @@ const AssistSystem=(()=>{
  const BUY_ICON={tp:'etcitem:40100',home:'etcitem:40081',heal:'etcitem:40010',haste:'etcitem:40018',brave:'etcitem:40014',wisdom:'etcitem:40016',blue:'etcitem:40015',arrow:'etcitem:40743',cake:'etcitem:49138',meat:'etcitem:40056',barrier:'etcitem:40889'};
  const BUYS=[['tp','瞬間移動卷軸',10],['home','傳送回家的卷軸',5],['heal','補血道具（補給選的那種）',100],['haste','綠色藥水',5],['brave','二段加速',5],['cake','巧克力蛋糕（三段加速）',5],['meat','肉',20],['barrier','魔法屏障卷軸',5],['wisdom','慎重藥水',5],['blue','藍色藥水',5],['arrow','箭（裝備弓時）',1000]];
  const base=()=>({noMobTp:false,noMobSec:10,potions:Object.fromEntries(POTIONS.map(([k])=>[k,false])),attackOn:false,attackSkill:null,attackMp:30,buffs:[],list:{},escape:false,healFallback:false,morph:false,morphCard:null,morphLost:false,openOn:false,openSkill:null,openMp:50,aoeOn:false,aoeSkill:null,aoeRange:3,aoeCount:3,aoeMp:50,mindOn:false,mindHp:80,mindMp:40,summonOn:false,ringOn:false,expAuto:false,barrierScroll:false,eatOn:false,eatAt:30,eatPick:null,returnOn:false,returnHp:80,returnSpot:null,fullOn:false,fullWeight:80,fullSlots:10,fullAct:'home',presets:[null,null,null],dangerOn:false,dangerBoss:true,dangerPlayer:'red',dangerRange:8,dollOn:false,dollId:null,pick:Object.fromEntries(POTIONS.map(([k])=>[k,null])),buy:Object.fromEntries(BUYS.map(([k,,n])=>[k,{on:false,n}]))});
+ let stoneQueue=null;
  let buyOpen=false,healShop=null,healQty=100;
  let state=base(),owner='',dialog=null,tab='hunt',idleSince=0,lastTp=0,retry=new Map(),escapes=[],lostMorph=null,seenMorph=null,lastOpen=null;
  const int=(v,lo,hi,d)=>Number.isInteger(v)?Math.max(lo,Math.min(hi,v)):d;
@@ -49,7 +50,7 @@ const AssistSystem=(()=>{
   for(const [k] of BUYS){const b=v.buy?.[k];if(b)s.buy[k]={on:b.on===true,n:QTY.includes(b.n)?b.n:s.buy[k].n};}
   if(v.list&&typeof v.list==='object')for(const [map,names] of Object.entries(v.list)){if(!names||typeof names!=='object')continue;const m={};for(const [n,mode] of Object.entries(names))if(['skip','tp','first'].includes(mode))m[n]=mode;if(Object.keys(m).length)s.list[map]=m;}
   return s;}
- function activate(v){state=validate(v);owner=window.activeCharacterId||'';idleSince=0;lastTp=0;retry.clear();escapes=[];lostMorph=null;seenMorph=null;lastOpen=null;base0=null;returning=false;resetStats();close();}
+ function activate(v){stoneQueue=null;state=validate(v);owner=window.activeCharacterId||'';idleSince=0;lastTp=0;retry.clear();escapes=[];lostMorph=null;seenMorph=null;lastOpen=null;base0=null;returning=false;resetStats();close();}
  function save(next){if(window.gameFlowState!=='playing'||owner!==window.activeCharacterId)return false;const old=state;state=validate({...state,...next});if(!GameEntry.saveActive()){state=old;return false;}return true;}
  const mapList=()=>state.list[String(window.activeMapId||0)]||{};
  function skip(mob){const m=mapList()[mob?.spawn?.npc?.name];return m==='skip'||m==='tp';}
@@ -173,7 +174,7 @@ const AssistSystem=(()=>{
   if(window.gameFlowState!=='playing'||owner!==window.activeCharacterId||OwnedInventory.owner!==owner)return;
   // 倒地的同一刻變身就被取消（TransformCards.onDeath），所以平常就記住目前變身；活著時自己取消變身則清掉，不會被自動變回去
   // 2026-11-18 使用者：記憶使用的變身卡 → 變身中的卡存進設定（morphCard，跟著角色存檔、重新整理也在）；倒地時記下 morphLost，復活後變回記憶的那張
-  if(CharacterActions.dead||hp<=0){fullHome=false;if(seenMorph)lostMorph=seenMorph;seenMorph=null;if(state.morphCard&&!state.morphLost)save({morphLost:true});return;}
+  if(CharacterActions.dead||hp<=0){stoneQueue=null;fullHome=false;if(seenMorph)lostMorph=seenMorph;seenMorph=null;if(state.morphCard&&!state.morphLost)save({morphLost:true});return;}
   if(!lostMorph)seenMorph=TransformCards.active||null;
   if(TransformCards.active&&TransformCards.active!==state.morphCard)save({morphCard:TransformCards.active,morphLost:false});
   else if(TransformCards.active&&state.morphLost)save({morphLost:false});
@@ -188,6 +189,16 @@ const AssistSystem=(()=>{
   // 沒怪自動瞬移
   if(auto&&state.noMobTp){if(IslandMonsters.target?.hp||!idleSince)idleSince=now;else if(now-idleSince>=state.noMobSec*1000){idleSince=now;if(teleport())return;}}else idleSince=0;
   if(busy())return;
+  if(stoneQueue){
+   const queue=stoneQueue;
+   if(!learned().includes(100)){stoneQueue=null;return;}
+   ClassBuffs.cast(100,{stoneTier:queue.tier,onStone:result=>{
+    if(result.error){stoneQueue=null;return;}
+    queue.remaining--;
+    if(!queue.remaining)stoneQueue=null;
+   }});
+   return;
+  }
   // 死亡後自動再變身（變身卡）
   if(lostMorph){const name=state.morphCard||lostMorph;if(!state.morph||TransformCards.active){lostMorph=null;if(state.morphLost&&!state.morph)save({morphLost:false});}else if((retry.get('morph')||0)<=now){retry.set('morph',now+5000);if(TransformCards.owned(name)&&TransformCards.activate(name)){lostMorph=null;save({morphLost:false});return;}if(!TransformCards.owned(name)){lostMorph=null;save({morphLost:false});}}}
   // 洗魔：心靈轉換
@@ -311,6 +322,40 @@ const AssistSystem=(()=>{
   if(!products.length)panel.append(el('p','assist-note','商店目前沒有販售補血藥水。'));
   return panel;
  }
+ function stoneSupplyRows(){
+  const key='etcitem:40321',offer=SHOP.get(40321),qty=el('select'),buy=el('button','act','購買');
+  qty.setAttribute('aria-label','二級黑魔石購買數量');
+  for(const n of QTY)qty.append(new Option('×'+n,String(n)));
+  const purchase=row(ico(key,'◆'),'購買二級黑魔石',offer?offer.price.toLocaleString()+' 天幣／組':'商店未販售',qty,buy);
+  buy.type='button';buy.disabled=!offer;
+  buy.onclick=()=>{
+   const {count,cost}=quote(offer,Number(qty.value));
+   const error=OwnedInventory.trade(key,count,cost,false);
+   toast(error||'已購買二級黑魔石 ×'+count);
+  };
+
+  const tier=el('select'),amount=el('input'),refine=el('button','act','提煉'),max=el('button','act','最大');
+  tier.setAttribute('aria-label','提煉目標階級');
+  for(const [n,label] of [[3,'三級'],[4,'四級'],[5,'五級']])tier.append(new Option(label,String(n)));
+  amount.type='number';amount.min='1';amount.step='1';amount.value='1';
+  amount.style.width='4em';amount.setAttribute('aria-label','提煉嘗試次數');
+  function run(quantity){
+   if(stoneQueue){toast('正在提煉黑魔石，剩下 '+stoneQueue.remaining+' 次。');return;}
+   if(!learned().includes(100)){toast('請先學會提煉魔石。');return;}
+   if(quantity!==null&&(!Number.isSafeInteger(quantity)||quantity<1)){toast('請輸入有效的提煉次數。');return;}
+   const target=Number(tier.value),skill=playerSkillData.skills[100];
+   const cost=window.PlayerAbilityRules?.manaCost(skill)??skill.mp;
+   const available=count(e=>e.key==='etcitem:'+(40318+target));
+   const remaining=Math.min(quantity??Infinity,available,cost>0?Math.floor(mp/cost):Infinity);
+   if(!remaining){toast(available?'魔力不足。':'背包裡沒有上一級黑魔石。');return;}
+   stoneQueue={tier:target,remaining};
+   toast('開始逐顆提煉，共 '+remaining+' 次。');
+  }
+  refine.type=max.type='button';
+  refine.onclick=()=>run(amount.valueAsNumber);
+  max.onclick=()=>run(null);
+  return [purchase,row('◆','提煉黑魔石','消耗上一級黑魔石與魔力，最大依現有材料及魔力計算',tier,amount,refine,max)];
+ }
  function supplyPage(){const p=el('div'),ap=AutoPotion.snapshot;
   const heal=el('select');heal.setAttribute('aria-label','補血道具');heal.append(new Option('（選擇補血道具）',''));
   const healKeys=new Set(OwnedInventory.healingItems.map(e=>e.key));if(ap.key&&!ap.skillId)healKeys.add(ap.key);
@@ -338,7 +383,8 @@ const AssistSystem=(()=>{
   const barrier=owned().filter(e=>{const q=window.ItemEffects?.parse(e);return q?.kind==='scroll'&&q.skill===31;});
   p.append(head('其他補給'),group(
    row(ico(bestExp?.key,'📗'),'經驗藥水','打怪（AUTO）時效果沒了自動喝 · 高的先喝 · 身上 '+expItems.reduce((n,e)=>n+e.count,0)+' 個',switcher(state.expAuto,on=>save({expAuto:on}),'自動喝經驗藥水')),
-   row(ico(barrier[0]?.key||'etcitem:40889','📜'),'魔法屏障卷軸','沒有魔法屏障時自動用 · 身上 '+barrier.reduce((n,e)=>n+e.count,0)+' 張',switcher(state.barrierScroll,on=>save({barrierScroll:on}),'自動用魔法屏障卷軸'))));
+   row(ico(barrier[0]?.key||'etcitem:40889','📜'),'魔法屏障卷軸','沒有魔法屏障時自動用 · 身上 '+barrier.reduce((n,e)=>n+e.count,0)+' 張',switcher(state.barrierScroll,on=>save({barrierScroll:on}),'自動用魔法屏障卷軸')),
+   ...stoneSupplyRows()));
   const cur=TransformCards.active;p.append(head('變身'),group(row('🎭','死亡後自動再變身','記憶的變身卡：'+(state.morphCard||'（還沒有，變身一次就會記住）')+'。'+(cur?'目前變身：'+cur+'。':'目前沒有變身。')+'倒地後變身會消失，復活後自動變回記憶的那張變身卡（重新整理也會記得）',switcher(state.morph,on=>save({morph:on}),'死亡後自動再變身'))));
   const buyRows=BUYS.flatMap(([k,label])=>{const b=state.buy[k],pr=product(k),qty=el('select');qty.setAttribute('aria-label',label+' 購買數量');
    for(const n of QTY)qty.append(new Option('×'+n,String(n),false,n===b.n));qty.onchange=()=>{save({buy:{...state.buy,[k]:{...b,n:Number(qty.value)}}});render();};

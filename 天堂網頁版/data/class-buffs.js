@@ -171,7 +171,7 @@ const ClassBuffs=(()=>{
   for(let i=0;i<1024;i++){const x=l+Math.floor(Math.random()*(r-l+1)),y=tp+Math.floor(Math.random()*(b-tp+1));if(TeleportScrolls.canLand(x,y))return {x,y};}
   return null;
  }
- function utility(id,skill,pay=()=>OwnedInventory.castCost(skill)){
+ function utility(id,skill,{pay,stoneTier,onStone}={}){
   const kind=UTIL[id];
   if(['resurrect','clan','enchant'].includes(kind))return say('技能模組尚未載入，請重新整理；未消耗資源。');
   if(kind==='teleport'&&!landing())return say('這個地區無法使用瞬間移動。');
@@ -180,7 +180,13 @@ const ClassBuffs=(()=>{
   if(summon?.menu)return true;
   if(kind==='mother'&&!WorldMaps.has(4))return false;
   let mob=null;if(UTIL_TARGET[id]){mob=targetInRange(skill);if(!mob)return say('請先選擇範圍內的目標。');}
-  if(!(pay?pay():OwnedInventory.castCost(skill)))return say('魔力、體力或材料不足。');
+  let stoneResult;
+  if(kind==='bringStone'&&[3,4,5].includes(stoneTier)){
+   const cost=window.PlayerAbilityRules?.manaCost(skill)??skill.mp;
+   stoneResult=OwnedInventory.bringStone(stoneTier,cost);
+   onStone?.(stoneResult);
+   if(stoneResult.error)return say(stoneResult.error);
+  }else if(!(pay?pay():OwnedInventory.castCost(skill)))return say('魔力、體力或材料不足。');
   if(!CharacterActions.play('skill'))return false;
   const t=now();cooldowns.set(id,t+(skill.reuse||0));invisible=kind==='invisible';
   IslandMonsters.playEffect(skill.gfx,mob?mob.x:worldX,mob?mob.y:worldY,t);
@@ -191,7 +197,7 @@ const ClassBuffs=(()=>{
   if(kind==='turnUndead'){const u=mob.spawn.npc.raw?.undead??mob.spawn.npc.undead;if(u===1&&PlayerAbilityRules.statusHits({...skill,id},mob))IslandMonsters.damage(mob,mob.hp);else say('沒有效果。');}
   if(kind==='drain'&&!PlayerAbilityRules.statusHits({...skill,id},mob)){say('魔法未生效。');return true;}
   if(kind==='drain'){const gain=Math.min(5+Math.floor(Math.random()*10),Math.max(0,mob.mp??99));if(mob.mp!==undefined)mob.mp-=gain;mp=Math.min(maxMp,mp+gain);window.stats?.();}
-  if(kind==='bringStone'){const r=OwnedInventory.bringStone();if(r.error)say(r.error);else say(r.ok?'提煉成功！得到'+['一','二','三','四','五'][r.to-1]+'級黑魔石。':'提煉失敗，'+['一','二','三','四','五'][r.from-1]+'級黑魔石碎掉了。');}
+  if(kind==='bringStone'){const r=stoneResult??OwnedInventory.bringStone();if(r.error)say(r.error);else say(r.ok?'提煉成功！得到'+['一','二','三','四','五'][r.to-1]+'級黑魔石。':'提煉失敗，'+['一','二','三','四','五'][r.from-1]+'級黑魔石碎掉了。');}
   if(kind==='mp2'||kind==='mp15'){mp=Math.min(maxMp,mp+(kind==='mp2'?2:15));window.stats?.();}
   if(kind==='poly')window.openGameCatalog?.('transforms');
   if(typeof summon==='function')summon();
@@ -204,7 +210,7 @@ const ClassBuffs=(()=>{
 
   if(PASSIVE[id])return say('「'+skill.name+'」是被動技能，學會後自動生效。');
   if(window.SkillUtilities?.handles(id))return SkillUtilities.cast(id,skill,options);
-  if(UTIL[id]){if(CharacterActions.dead||window.gameFlowState!=='playing'||characterMovementBlocked()||movementAnimating()||!TransformCards.canCast||now()<(cooldowns.get(id)||0))return false;return utility(id,skill,options.pay);}
+  if(UTIL[id]){if(CharacterActions.dead||window.gameFlowState!=='playing'||characterMovementBlocked()||movementAnimating()||!TransformCards.canCast||now()<(cooldowns.get(id)||0))return false;return utility(id,skill,options);}
   const pay=options.pay;
   invisible=false;
   if(CharacterActions.dead||window.gameFlowState!=='playing'||characterMovementBlocked()||movementAnimating()||!TransformCards.canCast)return false;
