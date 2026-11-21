@@ -25,7 +25,7 @@ const MonsterActions = (() => {
     const [x, y] = headings.get(heading);
     return [x * index / frames.length, y * index / frames.length];
   }
-  const asset = file => 'assets/monster-actions/' + file + (file.startsWith('extra-poly-')?'?v=complete-layers5':'');
+  const asset = file => 'assets/monster-actions/' + (file==='dk-original-11655-0.webp'?'dk-11655-flame-alpha.png':file) + (file.startsWith('extra-poly-')?'?v=complete-layers5':'');
   const get = (gfx, heading, clip, weapon) => {
     const key = 'd' + (directions[heading] ?? 5) + '/' + clip;
     const variant = weaponMorphModes[gfx]?.[weapon];
