@@ -200,7 +200,26 @@
    syncDeleteControls();
    frame.append(strip);for(const pos of ['top','bottom']){const d=el('div','qy-bf-drag qy-bf-drag-'+pos);d.title='拖動背包';frame.append(d);}}
   const main=el('div','qy-bag-main'),side=el('div','qy-bag-side'),wrap=el('div','qy-bagframe-wrap');side.append(bar,info);wrap.append(frame);main.append(side,wrap);header.after(main,foot);
-  if(grid){padGrid(grid);new MutationObserver(()=>padGrid(grid)).observe(grid,{childList:true})}
+  if(grid&&scroll){
+   const up=el('button','qy-bf-scroll up','▲'),down=el('button','qy-bf-scroll down','▼');
+   for(const [button,direction,label] of [[up,-1,'背包向上捲動一排'],[down,1,'背包向下捲動一排']]){
+    button.type='button';button.title=label;button.setAttribute('aria-label',label);
+    button.onclick=()=>{
+     const rowHeight=grid.querySelector('.item-slot')?.getBoundingClientRect().height||0;
+     scroll.scrollTop+=direction*rowHeight;
+     syncScrollButtons();
+    };
+   }
+   function syncScrollButtons(){
+    up.disabled=scroll.scrollTop<=1;
+    down.disabled=scroll.scrollTop+scroll.clientHeight>=scroll.scrollHeight-1;
+   }
+   frame.append(up,down);
+   scroll.addEventListener('scroll',syncScrollButtons,{passive:true});
+   padGrid(grid);
+   new MutationObserver(()=>{padGrid(grid);syncScrollButtons();}).observe(grid,{childList:true});
+   requestAnimationFrame(syncScrollButtons);
+  }
   return pane};
  // 裝備（E）與角色選單開角色的裝備分頁；人物狀態開能力分頁。
  renderEquipmentPane=characterPane;
@@ -234,10 +253,10 @@
  .qy-bag-side .qy-bag-info{flex-direction:column;align-items:stretch;gap:6px;margin:0;white-space:normal;font-size:11px}.qy-bag-side .qy-bag-info .w{flex:none}.qy-bag-side .qy-bag-info>span{text-align:center}
  .qy-bagframe-wrap{flex:1 1 auto;min-width:0;min-height:0;display:flex;justify-content:center;align-items:flex-start;container-type:size}
  .qy-bagframe{position:relative;flex:none;height:min(100cqh,calc(100cqw * 336 / 223));width:auto;aspect-ratio:223/336;margin:0;background:url('assets/interface/client-ui/538c.png?v=1') center/100% 100% no-repeat;container-type:inline-size}
- .qy-win.qy-bag .qy-bagframe .classic-grid-scroll{position:absolute!important;left:23.9%;top:5.45%;width:61.4%;height:81.4%;min-height:0!important;max-height:none!important;margin:0!important;padding:0!important;background:transparent!important;border:0!important;overflow-y:auto!important;scrollbar-width:none;scroll-snap-type:y mandatory}
+ .qy-win.qy-bag .qy-bagframe .classic-grid-scroll{position:absolute!important;left:23.9%;top:5.45%;width:61.4%;height:81.4%;min-height:0!important;max-height:none!important;margin:0!important;padding:0!important;background:transparent!important;border:0!important;overflow-y:auto!important;scrollbar-width:none;touch-action:pan-y;overscroll-behavior-y:contain}
  .qy-win.qy-bag .qy-bagframe .classic-grid-scroll::-webkit-scrollbar{display:none}
  .qy-win.qy-bag .qy-bagframe .classic-item-grid{gap:0!important;padding:0!important;background:transparent!important}
- .qy-win.qy-bag .qy-bagframe .classic-item-grid .item-slot{aspect-ratio:1/1;padding:8%!important;background:transparent!important;border:1px solid transparent!important;border-radius:0!important;scroll-snap-align:start}
+ .qy-win.qy-bag .qy-bagframe .classic-item-grid .item-slot{aspect-ratio:1/1;padding:8%!important;background:transparent!important;border:1px solid transparent!important;border-radius:0!important}
  .qy-win.qy-bag .qy-bagframe .classic-item-grid .item-slot.empty{background:transparent!important;border-color:transparent!important}
  .qy-win.qy-bag .qy-bagframe .classic-item-grid .item-slot:not(.empty):hover,.qy-win.qy-bag .qy-bagframe .classic-item-grid .item-slot[aria-pressed=true]{border-color:#d7b464!important;box-shadow:inset 0 0 6px #d7b46488}
  .qy-bagframe .qy-bf-sp,.qy-bagframe .qy-bf-mr{position:absolute;top:91.4%;height:3.6%;display:flex;align-items:center;justify-content:center;font-size:4.6cqw;color:#f1e6c8;text-shadow:1px 1px 0 #000}
@@ -254,6 +273,10 @@
  .qy-bf-strip .qy-bf-delete{color:#ffd3c2;border-color:#9c5144!important}
  .qy-bf-btn:hover{border-color:#e2c27a!important}
  .qy-bf-drag{position:absolute;cursor:move;touch-action:none;user-select:none}.qy-bf-drag-top{left:16%;right:0;top:0;height:5.4%}.qy-bf-drag-bottom{left:0;right:0;top:87.5%;bottom:0}
+ .qy-bagframe .qy-bf-scroll{position:absolute;z-index:2;right:2%;width:10%;height:7%;min-height:0!important;padding:0!important;display:grid;place-items:center;color:#f5dc9f;background:linear-gradient(#453924,#211a11)!important;border:1px solid #a3844a!important;border-radius:4px;font-size:4.3cqw;line-height:1;cursor:pointer;touch-action:manipulation}
+ .qy-bagframe .qy-bf-scroll.up{top:5.45%}
+ .qy-bagframe .qy-bf-scroll.down{top:79.85%}
+ .qy-bagframe .qy-bf-scroll:disabled{opacity:.48;cursor:default}
  .qy-bagframe .qy-bf-close{position:absolute;left:1%;top:0;width:15%;height:5.5%;min-height:0!important;padding:0!important;background:transparent!important;border:0!important;cursor:pointer}
  .qy-win.qy-bag .qy-bagframe .inventory-count{font-size:3.6cqw;right:2px;bottom:0}
  `;document.head.append(st);}

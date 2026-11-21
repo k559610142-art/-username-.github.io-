@@ -224,9 +224,16 @@ window.OwnedInventory=(()=>{
   window.refreshEquipmentCollection?.();
   toast(item.name+' 已加入圖鑑，消耗 1 件。');return true;
  }
- function canDiscard(uid){const e=entries.find(e=>e.uid===uid);return !!e&&!e.slot&&!definition(e).sourceRules?.cant_delete;}
- function discard(uids){
-  if(!Array.isArray(uids)||!uids.length||new Set(uids).size!==uids.length||uids.some(uid=>typeof uid!=='string'||!canDiscard(uid)))return false;
+ function canDiscard(uid,{allowDolls=false}={}){
+  const e=entries.find(e=>e.uid===uid);
+  if(!e||e.slot)return false;
+  const item=definition(e);
+  if(!item.sourceRules?.cant_delete)return true;
+  const dollId=(typeof DOLL_ID_ALIASES!=='undefined'&&DOLL_ID_ALIASES[item.id])||item.id;
+  return allowDolls&&item.kind==='etcitem'&&!!window.DollEvolution?.get(dollId);
+ }
+ function discard(uids,options){
+  if(!Array.isArray(uids)||!uids.length||new Set(uids).size!==uids.length||uids.some(uid=>typeof uid!=='string'||!canDiscard(uid,options)))return false;
   const selected=new Set(uids);return transact(entries.filter(e=>!selected.has(e.uid)));
  }
  function sortInventory(){

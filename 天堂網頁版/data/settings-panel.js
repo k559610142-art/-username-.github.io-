@@ -1,5 +1,5 @@
 // 設定視窗：照網頁奇岩城畫面排版自寫（分頁＋分區標題＋開關列）。內容沿用遊戲原本的設定控制項，只重新排列與換樣式。
-//  系統：一般（視窗歸位、重設快捷欄）／聲音（背景音樂、戰鬥音效）／畫面（螢幕尺寸、全螢幕、操作按鈕大小、底部介面 水晶球式／奇岩式）
+//  系統：一般（視窗歸位、重設快捷欄）／聲音（背景音樂、戰鬥音效）／畫面（螢幕尺寸、全螢幕、字體大小縮放、底部介面 水晶球式／奇岩式）
 //  狩獵：掛機索敵範圍
 (()=>{
  const css=document.createElement('style');css.textContent=`
@@ -30,10 +30,36 @@
  .qy-switch[aria-checked=true]{background:linear-gradient(#c79a45,#8c6421)!important;border-color:#d8b56a!important}
  .qy-switch[aria-checked=true]::after{left:20px;background:#fff3d2}
  .qy-set-hidden{display:none!important}
+ main.game[data-font-scale] :is(.qy-set-row,.healing-priority-line,.reference-messages,.oh-msg .list,.quest-drawer,.assist-header h2){font-size:calc(12.5px * var(--game-font-scale))!important}
+ main.game[data-font-scale] :is(.qy-set-head,.qy-set-row small,.assist-note,.auto-potion-note,.hud .oh-def){font-size:calc(11px * var(--game-font-scale))!important}
+ main.game[data-font-scale] :is(.qy-set-tabs button,.qy-set-row select,.qy-set-row .act,.healing-priority-line select,.healing-priority-line input[type=number],.hud strong,.oh-msg .tabs button,.oh-msg form input,.oh-msg form button){font-size:calc(12px * var(--game-font-scale))!important}
+ main.game[data-font-scale] :is(.floating-window-header h2,.native-dialog,.craft-detail,.game-catalog-detail){font-size:calc(15px * var(--game-font-scale))!important}
+ main.game[data-font-scale] :is(.floating-window-content,.craft-grid,.game-catalog-card,.location){font-size:calc(13px * var(--game-font-scale))!important}
+ main.game[data-font-scale] .hud .bar span{font-size:calc(10px * var(--game-font-scale))!important}
+ main.game[data-font-scale] .qy-set-row select{max-width:min(49%,220px)}
+ main.game[data-font-scale] .qy-set-row :is(select,.act){height:auto;min-height:24px!important}
+ main.game[data-font-scale] .qy-set-row .txt{overflow-wrap:anywhere}
  `;document.head.append(css);
 
  const el=(tag,cls,text)=>uiElement(tag,cls,text);
+ const game=document.querySelector('.game');
  let tab='system';
+ const fontKey='lineage-ui-font-size',fontSizes=[['90','較小（90%）'],['100','標準（100%）'],['115','較大（115%）'],['130','特大（130%）']];
+ let fontSize='100';
+ try{const saved=localStorage.getItem(fontKey);if(fontSizes.some(([value])=>value===saved))fontSize=saved;}catch{}
+ function applyFontSize(value){
+  fontSize=value;
+  if(value==='100'){delete game.dataset.fontScale;game.style.removeProperty('--game-font-scale');}
+  else{game.dataset.fontScale=value;game.style.setProperty('--game-font-scale',Number(value)/100);}
+ }
+ applyFontSize(fontSize);
+ function fontSelect(){
+  const select=el('select');
+  select.setAttribute('aria-label','字體大小縮放');
+  for(const [value,label] of fontSizes)select.append(new Option(label,value,false,value===fontSize));
+  select.onchange=()=>{applyFontSize(select.value);try{localStorage.setItem(fontKey,fontSize);}catch{}};
+  return select;
+ }
  function row(icon,label,note,...controls){const r=el('div','qy-set-row');const t=el('div','txt',label);if(note)t.append(el('small','',note));r.append(el('span','ico',icon),t,...controls);return r}
  function action(text,fn){const b=el('button','act',text);b.type='button';b.onclick=fn;return b}
  // 原本的開關按鈕（文字是「遊戲音樂 開啟／關閉」）改成開關；點開關就按原本的按鈕
@@ -42,7 +68,7 @@
  function transform(frame){const content=frame.querySelector('.floating-window-content');if(!content||content.dataset.qy)return;content.dataset.qy='1';frame.classList.add('qy-settings');
   const h=frame.querySelector('.floating-window-header');if(h){h.querySelector('h2').textContent='設定';const x=h.querySelector('button');if(x)x.textContent='✕'}
   const nodes=[...content.children],byText=re=>nodes.flatMap(n=>n.matches('button')?[n]:[...n.querySelectorAll('button')]).find(b=>re.test(b.textContent));
-  const screen=content.querySelector('.screen-settings'),screenSelect=screen?.querySelector('select'),full=screen?byText(/全螢幕/):null,sizeSelect=content.querySelector('#size'),
+  const screen=content.querySelector('.screen-settings'),screenSelect=screen?.querySelector('select'),full=screen?byText(/全螢幕/):null,
    music=byText(/遊戲音樂/),sfx=byText(/戰鬥音效/),resetQuick=byText(/重設快捷欄/),
    rangeInput=nodes.find(n=>n.matches?.('label')&&n.querySelector('input'))?.querySelector('input'),cameraNote=nodes.find(n=>n.tagName==='P')?.textContent.trim();
   const keep=el('div','qy-set-hidden');keep.append(...nodes);   // 原本的控制項保留在隱藏區，事件都還在
@@ -58,7 +84,7 @@
   const g3=el('div','qy-set-group');
   if(screenSelect)g3.append(row('🖥️','螢幕尺寸','',screenSelect));
   if(full)g3.append(row('⛶','全螢幕','手機以橫式操作為主',action('切換',()=>full.click())));
-  if(sizeSelect)g3.append(row('👆','操作按鈕大小','',sizeSelect));
+  g3.append(row('🔤','字體大小縮放','調整遊戲訊息、狀態列與面板文字',fontSelect()));
   if(window.HudStyle){const sel=el('select');for(const [v,l]of [['orb','水晶球式'],['classic','奇岩式']]){const o=el('option','',l);o.value=v;sel.append(o)}sel.value=HudStyle.current;sel.setAttribute('aria-label','底部介面');sel.onchange=()=>HudStyle.set(sel.value);g3.append(row('🧭','底部介面','橫向畫面的狀態列樣式',sel))}
   if(window.PowerSaving){const sw=action(PowerSaving.enabled?'開啟':'關閉',()=>{PowerSaving.setEnabled(!PowerSaving.enabled);sw.textContent=PowerSaving.enabled?'開啟':'關閉';sw.setAttribute('aria-checked',String(PowerSaving.enabled))});sw.setAttribute('role','switch');sw.setAttribute('aria-label','省電模式（20 FPS）');sw.setAttribute('aria-checked',String(PowerSaving.enabled));g3.append(row('🔋','省電模式','限制畫面更新為每秒 20 幀',sw))}
   // 2026-11-19 效能監看（perf-hud.js）：原本加在舊設定區，被這裡藏起來了
@@ -76,6 +102,5 @@
   for(const [k,l]of [['system','系統'],['hunt','狩獵']]){const b=el('button','',l);b.type='button';b.setAttribute('aria-selected',String(k===tab));b.onclick=()=>{tab=k;for(const x of tabs.children)x.setAttribute('aria-selected',String(x===b));for(const [pk,p]of Object.entries(pages))p.hidden=pk!==k};tabs.append(b)}
   for(const [pk,p]of Object.entries(pages))p.hidden=pk!==tab;
   content.replaceChildren(sys,hunt,keep);content.before(tabs)}
- const game=document.querySelector('.game');
  new MutationObserver(()=>{for(const f of game.querySelectorAll('.floating-settings'))transform(f)}).observe(game,{childList:true,subtree:true});
 })();
