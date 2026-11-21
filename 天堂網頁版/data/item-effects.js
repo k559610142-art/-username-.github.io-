@@ -7,6 +7,65 @@
 //   不用學會、不耗魔力，用一張扣一張；攻擊用的 MagicReel_Long（光箭、冰箭…）還沒接。
 const ItemEffects=(()=>{
  const defs=()=>ITEM_USE_RULES.definitions;
+ const enchantKind=key=>({40074:'armor',140074:'armor',240074:'armor',40087:'weapon',140087:'weapon',240087:'weapon'})[Number(key.split(':')[1])];
+ const canEnchant=(entry,kind)=>entry?.item?.kind===kind&&entry.count===1&&(entry.item.sourceRules?.safenchant??0)>=0;
+ const enchantLabel=entry=>{const n=entry.enchant||0;return (n>=0?'+':'')+n+' '+entry.item.name;};
+ function enchantOutcome(current,safe,kind,bless){
+  if(bless===2)return current>-7?{change:-1}:{destroyed:true};
+  if(current>=safe){
+   const divisor=kind==='weapon'?3:safe===0?current+2:current;
+   const chance=Math.floor((kind==='weapon'?103:100)/(divisor*(current>=9?2:1)));
+   const roll=1+Math.floor(Math.random()*100);
+   if(roll>=chance)return current>=9&&roll<chance*2?{change:0}:{destroyed:true};
+  }
+  let change=1;
+  if(bless===0&&current<=5){
+   const roll=1+Math.floor(Math.random()*100);
+   change=current<=2?(roll>=77?3:roll>=33?2:1):roll<50?2:1;
+  }
+  return {change};
+ }
+ function applyEnchant(scrollUid,targetUid,kind){
+  if(window.gameFlowState!=='playing'||CharacterActions.dead)return false;
+  const target=OwnedInventory.items.find(e=>e.uid===targetUid),scroll=OwnedInventory.items.find(e=>e.uid===scrollUid);
+  if(!scroll||scroll.slot||enchantKind(scroll.key)!==kind||!canEnchant(target,kind))return say('卷軸或裝備已變更，請重新選擇。');
+  const rule=defs()[scroll.key],bless=scroll.bless??rule.bless;
+  const current=target.enchant||0,safe=target.item.sourceRules?.safenchant??0;
+  const {destroyed,change}=enchantOutcome(current,safe,kind,bless);
+  const next=OwnedInventory.snapshot,row=next.find(e=>e.uid===targetUid),used=next.find(e=>e.uid===scrollUid);
+  if(--used.count===0)next.splice(next.indexOf(used),1);
+  if(destroyed)next.splice(next.indexOf(row),1);else row.enchant=current+change;
+  if(!OwnedInventory.applyChange(next))return false;
+  const message=destroyed?'強化失敗，'+enchantLabel(target)+' 已消失。':change?'強化結果：'+enchantLabel({...target,enchant:row.enchant})+'。':'強化值維持原樣。';
+  toast(message);
+  return true;
+ }
+ function openEnchant(scroll,kind){
+  const items=OwnedInventory.items.filter(e=>canEnchant(e,kind));
+  if(!items.length){toast('背包裡沒有可強化的裝備。');return false;}
+  const overlay=document.querySelector('#panel'),content=document.querySelector('#panelContent');
+  cancelPointerGesture({preserveNavigation:true});
+  overlay.classList.remove('classic-panel','reference-menu-panel','game-catalog-panel','npc-shop-panel','map-overview-panel','bookmark-panel');
+  overlay.classList.add('native-dialog-panel');
+  const title=kind==='weapon'?'武器強化':'盔甲強化';
+  overlay.setAttribute('aria-label',title);overlay.querySelector('#close').hidden=false;overlay.hidden=false;
+  const dialog=uiElement('div','native-dialog enchant-scroll-dialog'),select=uiElement('select');
+  const note=uiElement('p','','選擇裝備後，消耗 1 張卷軸。'),submit=uiElement('button','','確認強化');
+  select.setAttribute('aria-label','選擇強化裝備');select.append(new Option('選擇裝備',''));
+  for(const item of items)select.append(new Option(enchantLabel(item)+(item.slot?'（已穿戴）':''),item.uid));
+  submit.type='button';submit.disabled=true;
+  select.onchange=()=>{
+   const item=items.find(e=>e.uid===select.value);
+   submit.disabled=!item;
+   if(!item){note.textContent='選擇裝備後，消耗 1 張卷軸。';return;}
+   const safe=item.item.sourceRules?.safenchant??0,bless=scroll.bless??defs()[scroll.key].bless;
+   note.textContent='安全強化值 +'+safe+'。'+(bless===2?(item.enchant||0)<=-7?'這件裝備可能消失。':'詛咒卷軸會降低 1 點強化值。':(item.enchant||0)>=safe?'超過安全範圍，失敗時裝備可能消失。':'使用卷軸強化這件裝備。');
+  };
+  submit.onclick=()=>{if(applyEnchant(scroll.uid,select.value,kind))overlay.hidden=true;};
+  dialog.append(uiElement('p','',scroll.item.name),select,note,submit);
+  content.replaceChildren(uiElement('h2','',title),dialog);overlay.scrollTop=0;
+  return true;
+ }
  function parse(e){
   const h=String(defs()[e.key]?.handler||'').trim(),name=e.item?.name||'';
   let m=h.match(/^event\.(S?)Exp(\d+)(?:\s+(\d+))?/);
@@ -43,7 +102,7 @@ const ItemEffects=(()=>{
   if(!consume(e))return false;
   const d=skill.duration||0;say('使用 '+e.item.name+'：'+skill.name+' '+(d<60?d+' 秒':Math.round(d/60*10)/10+' 分鐘')+'。');return true;
  }
- function use(uid){const e=OwnedInventory.items.find(i=>i.uid===uid);if(!e||e.slot)return null;const p=parse(e);if(!p)return null;
+ function use(uid){const e=OwnedInventory.items.find(i=>i.uid===uid);if(!e||e.slot)return null;const kind=enchantKind(e.key);if(kind)return window.gameFlowState==='playing'&&!CharacterActions.dead&&openEnchant(e,kind);const p=parse(e);if(!p)return null;
   if(window.gameFlowState!=='playing'||CharacterActions.dead)return false;
   const rule=defs()[e.key]||{},lv=window.activeCharacterLevel||1;if(lv<(rule.minLevel||0)||rule.maxLevel&&lv>rule.maxLevel)return say('等級不符合道具限制。');
   return p.kind==='exp'?useExp(e,p):useScroll(e,p);}

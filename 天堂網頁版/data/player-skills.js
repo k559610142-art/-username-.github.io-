@@ -9,7 +9,11 @@ const PlayerSkills = (() => {
       new Set(state.ids).size!==state.ids.length||!['','地','風','水','火'].includes(state.element))return '技能存檔資料有誤。';
     return null;
   }
-  function knows(id){return learned().ids.includes(id);}
+  function availableIds(){
+    if(OwnedInventory.owner!==window.activeCharacterId)return [];
+    return [...new Set([...learned().ids,...(window.PlayerAbilityRules?.helmetSkills()||[])])];
+  }
+  function knows(id){return availableIds().includes(id);}
   function isBook(key){return !!books[key.split(':')[1]];}
   function learn(uid){
     const item=OwnedInventory.items.find(e=>e.uid===uid);
@@ -18,7 +22,7 @@ const PlayerSkills = (() => {
     const minimum=book.min[job];
     if(minimum===undefined)return errors('目前職業無法學習這項技能。');
     if((window.activeCharacterLevel||1)<minimum)return errors('學習「'+skills[book.skill].name+'」需要 '+minimum+' 級。');
-    if(knows(book.skill))return errors('已經學會這項技能。');
+    if(learned().ids.includes(book.skill))return errors('已經學會這項技能。');
     if(book.element&&learned().element!==book.element)return errors('需要選擇'+book.element+'屬性才能學習。');
     if(characterMovementBlocked()||movementAnimating())return false;
     const ok=OwnedInventory.learnSkill(uid,book.skill);
@@ -88,7 +92,7 @@ const PlayerSkills = (() => {
   function syncQuickSlots(){
     if(window.QuickSlots)return QuickSlots.render();
     const active=window.gameFlowState==='playing';
-    const ids=active?learned().ids:[];
+    const ids=active?availableIds():[];
     const key=[window.activeCharacterId,active,...ids].join('|');
     if(signature===key)return;
     signature=key;
@@ -108,7 +112,7 @@ const PlayerSkills = (() => {
   panel=function(type){
     previousPanel(type);
     if(type!=='magic')return;
-    if(!learned().ids.length){
+    if(!availableIds().length){
       const grid=document.querySelector('.magic-grid');
       grid?.append(uiElement('p','','尚未學習技能。'));
     }
@@ -132,6 +136,6 @@ const PlayerSkills = (() => {
     }
   };
   syncQuickSlots();
-  return {validate,knows,isBook,learn,supports,cast,syncQuickSlots};
+  return {validate,knows,availableIds,isBook,learn,supports,cast,syncQuickSlots};
 })();
 window.PlayerSkills=PlayerSkills;

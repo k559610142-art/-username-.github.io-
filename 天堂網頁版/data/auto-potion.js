@@ -58,7 +58,7 @@ const AutoPotion=(()=>{
    check.type='checkbox';check.setAttribute('aria-label','啟用'+label);
    select.setAttribute('aria-label',label);select.append(new Option(magic?'選擇治療魔法':'選擇補血藥水',''));
    if(magic){
-    for(const id of OwnedInventory.skills.ids.filter(healingSkill)){
+    for(const id of PlayerSkills.availableIds().filter(healingSkill)){
      const skill=playerSkillData.skills[id];
      select.append(new Option(skill.name+' · MP '+(window.PlayerAbilityRules?.manaCost(skill)??skill.mp),String(id)));
     }

@@ -10,7 +10,19 @@ window.PlayerAbilityRules=(()=>{
  const element=skill=>({1:'earth',2:'fire',4:'water',8:'wind'}[skill?.attr??skill?.spell?.attr??PLAYER_ABILITY_DATA.skills[skill?.id]?.attr]||null);
  const elementalFactor=(skill,res={})=>{const k=element(skill);return k?1-.0032*clamp(Number(res[k])||0,-100,100):1;};
  const mrFactor=mr=>Math.max(0,mr<100?1-Math.floor(Math.max(0,mr)/2)*.01:.6-Math.floor(mr/10)*.01);
- function manaCost(skill,profile=PlayerClassStats.read()){const base=Math.max(0,Number(skill.mp)||0);if(!base)return 0;return Math.max(1,Math.floor(base*(100-manaReduction(profile.attributes.int))/100)-originalManaReduction(window.playerAttributes?.int));}
+ const helmetSpells={20013:[26,43],20014:[1,19],20015:[12,13,42]};
+ function helmetSkills(){
+  if(typeof job==='undefined'||job!=='騎士')return [];
+  const helm=window.OwnedInventory?.items?.find(e=>e.slot==='helm');
+  const id=helm?.item?.id;
+  return helmetSpells[id>=120013&&id<=120015?id-100000:id]||[];
+ }
+ function manaCost(skill,profile=PlayerClassStats.read()){
+  const base=Math.max(0,Number(skill.mp)||0);if(!base)return 0;
+  let cost=Math.floor(base*(100-manaReduction(profile.attributes.int))/100);
+  if(helmetSkills().includes(skill.id))cost=Math.floor(cost/2);
+  return Math.max(1,cost-originalManaReduction(window.playerAttributes?.int));
+ }
  function magicHitBonus(){const items=window.OwnedInventory?.items||[],soul=window.SoulRings?.bonuses()||{};return items.filter(e=>e.slot).reduce((n,e)=>n+(Number(e.item.sourceRules?.magic_hit_modifier)||0),0)+(window.PlayerClassStats?.read()?.equipmentSets?.magic_hit_modifier||0)+(soul.magicHit||0);}
  function statusChance(skill,mob,{profile=PlayerClassStats.read()}={}){
   const n=window.ClassBuffs?.targetNpc?.(mob)||mob?.spawn?.npc||{},raw=n.raw||{},meta=PLAYER_ABILITY_DATA.skills[skill?.id]||{},level=Number(profile.level??window.activeCharacterLevel)||1,targetLevel=Number(n.level)||1;
@@ -29,5 +41,5 @@ window.PlayerAbilityRules=(()=>{
   if(!healing){const n=mob?.spawn?.npc||{};amount=Math.floor(amount*mrFactor(Number(n.mr)||0)*elementalFactor(skill,n.elements||{}));}
   return {amount:Math.max(0,amount),critical,power};
  }
- return {strengthDamage,intelligencePower,manaReduction,originalManaReduction,magicCritical,resistances,statusResistances,element,elementalFactor,mrFactor,manaCost,magicAmount,magicHitBonus,statusChance,statusHits};
+ return {strengthDamage,intelligencePower,manaReduction,originalManaReduction,magicCritical,resistances,statusResistances,element,elementalFactor,mrFactor,manaCost,helmetSkills,magicAmount,magicHitBonus,statusChance,statusHits};
 })();

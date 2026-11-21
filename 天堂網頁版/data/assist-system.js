@@ -23,15 +23,15 @@ const AssistSystem=(()=>{
  const QTY=[1,5,10,20,50,100,200,500,1000];
  // 2026-11-18 使用者：商店沒賣或職業不能用時（例如騎士的慎重藥水）也顯示該道具的圖，不要只有購物車
  const BUY_ICON={tp:'etcitem:40100',home:'etcitem:40081',heal:'etcitem:40010',haste:'etcitem:40018',brave:'etcitem:40014',wisdom:'etcitem:40016',blue:'etcitem:40015',arrow:'etcitem:40743',cake:'etcitem:49138',meat:'etcitem:40056',barrier:'etcitem:40889',antidote:'etcitem:40017'};
- const BUYS=[['tp','瞬間移動卷軸',10],['home','傳送回家的卷軸',5],['heal','補血道具（補給選的那種）',100],['haste','綠色藥水',5],['brave','二段加速',5],['cake','巧克力蛋糕（三段加速）',5],['meat','肉',20],['barrier','魔法屏障卷軸',5],['antidote','解毒藥水',5],['wisdom','慎重藥水',5],['blue','藍色藥水',5],['arrow','箭（裝備弓時）',1000]];
- const base=()=>({noMobTp:false,noMobSec:10,potions:Object.fromEntries(POTIONS.map(([k])=>[k,false])),attackOn:false,attackSkill:null,attackMp:30,buffs:[],list:{},escape:false,healFallback:false,healBuyKeys:[],arrowBuyKey:ARROW_KEYS[0],cureOn:false,cureMethod:CURES[0][0],morph:false,morphCard:null,morphLost:false,openOn:false,openSkill:null,openMp:50,aoeOn:false,aoeSkill:null,aoeRange:3,aoeCount:3,aoeMp:50,mindOn:false,mindHp:80,mindMp:40,summonOn:false,ringOn:false,expAuto:false,barrierScroll:false,eatOn:false,eatAt:30,eatPick:null,returnOn:false,returnHp:80,returnSpot:null,fullOn:false,fullWeight:80,fullSlots:10,fullAct:'home',presets:[null,null,null],dangerOn:false,dangerBoss:true,dangerPlayer:'red',dangerRange:8,dollOn:false,dollId:null,pick:Object.fromEntries(POTIONS.map(([k])=>[k,null])),buy:Object.fromEntries(BUYS.map(([k,,n])=>[k,{on:false,n}]))});
+ const BUYS=[['tp','一般瞬間移動卷軸',10],['home','傳送回家的卷軸',5],['heal','補血道具（補給選的那種）',100],['haste','綠色藥水',5],['brave','二段加速',5],['cake','巧克力蛋糕（三段加速）',5],['meat','肉',20],['barrier','魔法屏障卷軸',5],['antidote','解毒藥水',5],['wisdom','慎重藥水',5],['blue','藍色藥水',5],['arrow','箭（裝備弓時）',1000]];
+ const base=()=>({noMobTp:false,noMobSec:10,tpScrollType:'normal',potions:Object.fromEntries(POTIONS.map(([k])=>[k,false])),attackOn:false,attackSkill:null,attackMp:30,buffs:[],list:{},escape:false,healFallback:false,healBuyKeys:[],arrowBuyKey:ARROW_KEYS[0],cureOn:false,cureMethod:CURES[0][0],morph:false,morphCard:null,morphLost:false,openOn:false,openSkill:null,openMp:50,aoeOn:false,aoeSkill:null,aoeRange:3,aoeCount:3,aoeMp:50,mindOn:false,mindHp:80,mindMp:40,summonOn:false,ringOn:false,expAuto:false,barrierScroll:false,eatOn:false,eatAt:30,eatPick:null,returnOn:false,returnHp:80,returnSpot:null,fullOn:false,fullWeight:80,fullSlots:10,fullAct:'home',presets:[null,null,null],dangerOn:false,dangerBoss:true,dangerPlayer:'red',dangerRange:8,dollOn:false,dollId:null,pick:Object.fromEntries(POTIONS.map(([k])=>[k,null])),buy:Object.fromEntries(BUYS.map(([k,,n])=>[k,{on:false,n}]))});
  let stoneQueue=null;
  let buyOpen=false,healShop=null,healQty=100;
  const healChecked=new Set();
  let state=base(),owner='',dialog=null,tab='hunt',idleSince=0,lastTp=0,retry=new Map(),escapes=[],lostMorph=null,seenMorph=null,lastOpen=null;
  const int=(v,lo,hi,d)=>Number.isInteger(v)?Math.max(lo,Math.min(hi,v)):d;
  function validate(v){const s=base();if(!v||typeof v!=='object')return s;
-  s.noMobTp=v.noMobTp===true;s.noMobSec=int(v.noMobSec,3,60,10);for(const k of Object.keys(s.potions))s.potions[k]=v.potions?.[k]===true;
+  if(['auto','normal','blessed'].includes(v.tpScrollType))s.tpScrollType=v.tpScrollType;s.noMobTp=v.noMobTp===true;s.noMobSec=int(v.noMobSec,3,60,10);for(const k of Object.keys(s.potions))s.potions[k]=v.potions?.[k]===true;
   s.attackOn=v.attackOn===true;s.attackSkill=Number.isInteger(v.attackSkill)&&playerSkillData.skills[v.attackSkill]?v.attackSkill:null;s.attackMp=int(v.attackMp,0,99,30);
   s.buffs=Array.isArray(v.buffs)?[...new Set(v.buffs.filter(id=>Number.isInteger(id)&&playerSkillData.skills[id]))]:[];
   for(const k of ['escape','healFallback','cureOn','morph','openOn','aoeOn','mindOn','summonOn','ringOn','expAuto','barrierScroll'])s[k]=v[k]===true;
@@ -67,16 +67,23 @@ const AssistSystem=(()=>{
  // ---- 動作 ----
  const owned=()=>OwnedInventory.owner===owner?OwnedInventory.items.filter(e=>!e.slot):[];
  const handler=e=>ITEM_USE_RULES.definitions[e.key]?.handler||'';
- const learned=()=>OwnedInventory.owner===owner?OwnedInventory.skills.ids:[];
+ const learned=()=>OwnedInventory.owner===owner?PlayerSkills.availableIds():[];
  const busy=()=>characterMovementBlocked()||movementAnimating();
- function teleport(){const s=owned().find(e=>handler(e)==='teleport.Move_Reel');if(!s||movementTime()-lastTp<2000)return false;lastTp=movementTime();const ok=TeleportScrolls.random(s.uid);if(ok){idleSince=movementTime();IslandCombat.resetAfterTeleport?.();}return ok;}
+ const tpScrollBless=entry=>entry.bless??ITEM_USE_RULES.definitions[entry.key]?.bless;
+ function teleportScrolls(){
+  const scrolls=owned().filter(e=>handler(e)==='teleport.Move_Reel');
+  const normal=scrolls.filter(e=>tpScrollBless(e)===1),blessed=scrolls.filter(e=>tpScrollBless(e)===0);
+  return state.tpScrollType==='normal'?normal:state.tpScrollType==='blessed'?blessed:[...normal,...blessed];
+ }
+ function teleportScrollIcon(){return teleportScrolls()[0]?.key||(state.tpScrollType==='blessed'?'etcitem:140100':'etcitem:40100');}
+ function teleport(){const s=teleportScrolls()[0];if(!s||movementTime()-lastTp<2000)return false;lastTp=movementTime();const ok=TeleportScrolls.random(s.uid);if(ok){idleSince=movementTime();IslandCombat.resetAfterTeleport?.();}return ok;}
  function potionFor(kind){const kinds=POTIONS.find(p=>p[0]===kind)[2];if(kinds.some(k=>Number(window.activePotionBuffs?.[k])>Date.now()+1500))return null;
   const ok=e=>kinds.includes(NativePotions.durationState(e.key)?.key),pick=state.pick[kind];
   return owned().find(e=>e.key===pick&&ok(e))||owned().find(ok)||null;}
  // 每種補給：身上算哪些道具、要買哪一個（商店有賣、職業能用的最便宜那個）
  const kindsOf=k=>POTIONS.find(p=>p[0]===k)?.[2];
  function matcher(k){
-  if(k==='tp')return key=>ITEM_USE_RULES.definitions[key]?.handler==='teleport.Move_Reel';
+  if(k==='tp')return key=>ITEM_USE_RULES.definitions[key]?.handler==='teleport.Move_Reel'&&ITEM_USE_RULES.definitions[key]?.bless===1;
   if(k==='home')return key=>ITEM_USE_RULES.definitions[key]?.handler==='teleport.GoHome_Reel';
   if(k==='heal'){const want=AutoPotion.snapshot.key;return key=>!!want&&key===want;}
   if(k==='meat'||k==='barrier'||k==='antidote')return key=>key===BUY_ICON[k];
@@ -115,7 +122,7 @@ const AssistSystem=(()=>{
  function lowHp(){const ap=AutoPotion.snapshot;return ap.homeEnabled&&maxHp&&hp*100<=maxHp*ap.homeThreshold&&(tile(worldX,worldY)&48)!==16;}
  // 撐不住先瞬移：一分鐘內前兩次用瞬間移動卷軸，第 3 次用回家卷軸
  function escape(now){if(!state.escape||!lowHp()||(retry.get('esc')||0)>now)return false;retry.set('esc',now+1500);escapes=escapes.filter(t=>now-t<60000);
-  if(escapes.length<2&&owned().some(e=>handler(e)==='teleport.Move_Reel')){if(teleport()){escapes.push(now);return true;}return false;} // 瞬移冷卻中就等，不提早回村
+  if(escapes.length<2&&teleportScrolls().length){if(teleport()){escapes.push(now);return true;}return false;} // 瞬移冷卻中就等，不提早回村
   const home=owned().find(e=>handler(e)==='teleport.GoHome_Reel');if(home&&TeleportScrolls.use(home.uid)){escapes=[];return true;}return false;}
  // ---- 第 4 期 ----
  const foods=()=>owned().filter(e=>ITEM_USE_RULES.definitions[e.key]?.useType==='food');
@@ -133,7 +140,7 @@ const AssistSystem=(()=>{
  const canReturnTo=id=>WorldMaps.has(id)&&!!(TeleportMapRules[id]?.markable||TeleportMapRules[id]?.teleportable);
  function goBack(now){
   const s=state.returnSpot;if(!canReturnTo(s.mapId)){toast('掛機地點（'+WorldMaps.name(s.mapId)+'）不能用卷軸傳回，請自己走回去。');save({returnSpot:null});return false;}
-  const sc=owned().find(e=>handler(e)==='teleport.Move_Reel');if(!sc){say('回原地需要瞬間移動卷軸（可開「補給 → 自動購買」）。',now);return false;}
+  const sc=teleportScrolls()[0];if(!sc){say('回原地需要瞬間移動卷軸（可開「補給 → 自動購買」）。',now);return false;}
   if(window.IslandNpcAi?.cursed||window.playerItemState?.teleportBlocked||window.playerItemState?.rooted||window.playerItemState?.paralyzed)return false;
   const next=OwnedInventory.snapshot,i=next.findIndex(e=>e.uid===sc.uid);if(i<0)return false;if(--next[i].count===0)next.splice(i,1);
   returning=true;
@@ -309,21 +316,27 @@ const AssistSystem=(()=>{
  const head=t=>el('div','qy-set-head',t);
  const count=pred=>owned().filter(pred).reduce((n,e)=>n+e.count,0);
 
- function huntPage(){const p=el('div'),ap=AutoPotion.snapshot,tp=count(e=>handler(e)==='teleport.Move_Reel'),home=count(e=>handler(e)==='teleport.GoHome_Reel');
+ function huntPage(){const p=el('div'),ap=AutoPotion.snapshot,tp=teleportScrolls().reduce((sum,e)=>sum+e.count,0),home=count(e=>handler(e)==='teleport.GoHome_Reel');
+  const scrollType=el('select');scrollType.setAttribute('aria-label','自動瞬移使用卷軸');
+  for(const [key,label] of [['auto','一般優先，沒了用祝福'],['normal','一般瞬間移動卷軸'],['blessed','祝福瞬間移動卷軸']]){
+   scrollType.append(new Option(label,key,false,key===state.tpScrollType));
+  }
+  scrollType.onchange=()=>{if(save({tpScrollType:scrollType.value}))render();else scrollType.value=state.tpScrollType;};
   p.append(head('AUTO 掛機'),group(
+   row(ico(teleportScrollIcon(),'🌀'),'自動瞬移使用卷軸','可用 '+tp+' 張',scrollType),
    row('🎯','掛機索敵範圍','AUTO 時會往多遠的怪物走過去',slider(IslandCombat.autoRange,12,48,v=>{IslandCombat.setAutoRange(v);},' 格','掛機索敵範圍')),
-   row(ico(firstKey(e=>handler(e)==='teleport.Move_Reel')||product('tp')?.key,'🌀'),'沒怪 '+state.noMobSec+' 秒自動瞬移','用瞬間移動卷軸（身上 '+tp+' 張）',slider(state.noMobSec,3,60,v=>save({noMobSec:v})&&void render(),' 秒','沒怪幾秒瞬移'),switcher(state.noMobTp,on=>save({noMobTp:on}),'沒怪自動瞬移')),
+   row(ico(teleportScrollIcon(),'🌀'),'沒怪 '+state.noMobSec+' 秒自動瞬移','用瞬間移動卷軸（身上 '+tp+' 張）',slider(state.noMobSec,3,60,v=>save({noMobSec:v})&&void render(),' 秒','沒怪幾秒瞬移'),switcher(state.noMobTp,on=>save({noMobTp:on}),'沒怪自動瞬移')),
    row(ico(firstKey(e=>handler(e)==='teleport.GoHome_Reel')||product('home')?.key,'🏠'),'體力低於 '+ap.homeThreshold+'% 時回村','用回家卷軸（身上 '+home+' 張）',slider(ap.homeThreshold,1,99,v=>AutoPotion.configure({homeThreshold:v})&&void render(),'%','回村體力門檻'),switcher(ap.homeEnabled,on=>AutoPotion.configure({homeEnabled:on}),'低血回村')),
-   row(ico(firstKey(e=>handler(e)==='teleport.Move_Reel')||product('tp')?.key,'🏃'),'撐不住先瞬移，3 次就回村','體力低於回村門檻時先用瞬間移動卷軸；一分鐘內逃到第 3 次才用回家卷軸（要開上面的回村）',switcher(state.escape,on=>save({escape:on}),'撐不住先瞬移'))));
+   row(ico(teleportScrollIcon(),'🏃'),'撐不住先瞬移，3 次就回村','體力低於回村門檻時先用瞬間移動卷軸；一分鐘內逃到第 3 次才用回家卷軸（要開上面的回村）',switcher(state.escape,on=>save({escape:on}),'撐不住先瞬移'))));
   const rs=state.returnSpot,cancel=el('button','act','取消');cancel.type='button';cancel.onclick=()=>{save({returnSpot:null});render();};
   {const pl=el('select');pl.setAttribute('aria-label','其他玩家靠近時');pl.append(new Option('不管玩家','off',false,state.dangerPlayer==='off'),new Option('紅名玩家','red',false,state.dangerPlayer==='red'),new Option('所有玩家','all',false,state.dangerPlayer==='all'));pl.onchange=()=>save({dangerPlayer:pl.value});
    p.append(head('危險迴避'),group(
-    row(ico(firstKey(e=>handler(e)==='teleport.Move_Reel')||product('tp')?.key,'⚠️'),'附近有危險就瞬移','AUTO 中 '+state.dangerRange+' 格內出現首領或其他玩家時，用瞬間移動卷軸離開（要打首領時請先關掉）',switcher(state.dangerOn,on=>save({dangerOn:on}),'危險迴避')),
+    row(ico(teleportScrollIcon(),'⚠️'),'附近有危險就瞬移','AUTO 中 '+state.dangerRange+' 格內出現首領或其他玩家時，用瞬間移動卷軸離開（要打首領時請先關掉）',switcher(state.dangerOn,on=>save({dangerOn:on}),'危險迴避')),
     row('👹','首領靠近','名字有 BOSS，或單隻出現、體力 1500 以上的怪',switcher(state.dangerBoss,on=>save({dangerBoss:on}),'首領靠近就瞬移')),
     row('🧍','其他玩家靠近',null,pl),
     row('📏','範圍 '+state.dangerRange+' 格',null,slider(state.dangerRange,3,20,v=>save({dangerRange:v})&&void render(),' 格','危險迴避範圍'))));}
   p.append(head('回村後回原地'),group(
-   row(ico(firstKey(e=>handler(e)==='teleport.Move_Reel')||product('tp')?.key,'↩️'),'回村補給後自動回原地續掛','AUTO 中因低血用回家卷軸回村時記住地點；在村裡體力回到 '+state.returnHp+'% 就用 1 張瞬間移動卷軸傳回去，自動開 AUTO',switcher(state.returnOn,on=>save({returnOn:on,...(on?{}:{returnSpot:null})})&&void render(),'回村後回原地')),
+   row(ico(teleportScrollIcon(),'↩️'),'回村補給後自動回原地續掛','AUTO 中因低血用回家卷軸回村時記住地點；在村裡體力回到 '+state.returnHp+'% 就用 1 張瞬間移動卷軸傳回去，自動開 AUTO',switcher(state.returnOn,on=>save({returnOn:on,...(on?{}:{returnSpot:null})})&&void render(),'回村後回原地')),
    row('❤️','體力回到 '+state.returnHp+'% 才回去',null,slider(state.returnHp,10,100,v=>save({returnHp:v})&&void render(),'%','回原地體力門檻')),
    ...(rs?[row('📍','等待回原地：'+WorldMaps.name(rs.mapId)+' '+rs.x+','+rs.y,canReturnTo(rs.mapId)?'體力夠了就傳回去':'這張地圖不能用卷軸傳回',cancel)]:[])));
   const w=weightPct(),left=bagLeft(),act=el('select');act.setAttribute('aria-label','背包快滿時');act.append(new Option('回村並停止掛機','home',false,state.fullAct==='home'),new Option('只停止掛機','stop',false,state.fullAct==='stop'));act.onchange=()=>save({fullAct:act.value});

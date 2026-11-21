@@ -18,7 +18,7 @@ const ClassBuffs=(()=>{
  const sk=id=>playerSkillData.skills[id];
  const buffs=new Map(),cooldowns=new Map();let debuffs=new WeakMap();let owner=null,cubes=[],dots=[],barrierSet=false;
  const now=()=>movementTime();
- const knows=id=>OwnedInventory.owner===window.activeCharacterId&&OwnedInventory.skills.ids.includes(id);
+ const knows=id=>window.PlayerSkills?.knows(id)??(OwnedInventory.owner===window.activeCharacterId&&OwnedInventory.skills.ids.includes(id));
  const on=id=>owner===window.activeCharacterId&&(buffs.get(id)||0)>now();
  const level=()=>window.activeCharacterLevel||1;
  const say=t=>{document.querySelector('#log').textContent=t;return false;};
