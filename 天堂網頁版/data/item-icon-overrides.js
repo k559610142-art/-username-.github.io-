@@ -15,3 +15,11 @@ for(const item of INTERFACE_CATALOG.items)if(item.kind==="etcitem"&&item.id===49
 
 // Experience potion tiers without shipped native artwork use the existing experience potion bottle.
 for(const item of INTERFACE_CATALOG.items)if(item.kind==="etcitem"&&!item.icon&&/經驗.*藥水/.test(item.name))item.icon="assets/interface/items/etcitem-1032.png";
+
+// 缺少專用素材的惡元素武器，以相同武器類型的惡魔系列圖示補齊。
+(()=>{
+ const icons={350:1720,351:1719,352:1240,353:1721};
+ for(const item of INTERFACE_CATALOG.items){
+  if(item.kind==='weapon'&&!item.icon&&Object.hasOwn(icons,item.id))item.icon='assets/interface/items/weapon-'+icons[item.id]+'.png';
+ }
+})();

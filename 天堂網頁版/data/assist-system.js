@@ -18,6 +18,7 @@ const AssistSystem=(()=>{
  // 自動購買（第 2 期）：用完（身上 0 個）時從商店買，價格取所有 NPC 商店裡最便宜的那一家（NATIVE_NPC_DIALOGS.shops＋islandNpcServiceData.shop，[道具, 順序, 買價, 一組幾個, 賣價, 強化]）
  const SHOP=new Map();
  for(const rows of [...Object.entries(NATIVE_NPC_DIALOGS.shops||{}).filter(([id])=>id!=='70089'&&(NATIVE_NPC_DIALOGS.actions[id]?.currency||40308)===40308).map(([,rows])=>rows),islandNpcServiceData.shop||[]])for(const [id,,buy,pack,,ench] of rows){if(!(buy>=0)||ench)continue;const n=Math.max(1,pack|0),b=SHOP.get(id);if(!b||buy/n<b.price/b.pack)SHOP.set(id,{price:buy,pack:n});}
+ const ARROW_RESTOCK_AT=100;
  const ARROW_KEYS=['etcitem:40743','etcitem:40744','etcitem:40746'];
  const QTY=[1,5,10,20,50,100,200,500,1000];
  // 2026-11-18 使用者：商店沒賣或職業不能用時（例如騎士的慎重藥水）也顯示該道具的圖，不要只有購物車
@@ -101,7 +102,7 @@ const AssistSystem=(()=>{
     }
     continue;
    }
-   const match=matcher(k);if(OwnedInventory.items.some(e=>match(e.key)&&e.count>0))continue;
+   const match=matcher(k),remaining=OwnedInventory.items.reduce((sum,e)=>sum+(match(e.key)?e.count:0),0);if(remaining>(k==='arrow'?ARROW_RESTOCK_AT:0))continue;
    const p=product(k);retry.set('buy'+k,now+5000);if(!p)continue;
    const {count,cost}=quote(p,b.n),err=OwnedInventory.trade(p.key,count,cost,false);
    if(err){retry.set('buy'+k,now+30000);if(now-buyNotice>30000){buyNotice=now;toast('自動購買 '+catalog.get(p.key).name+' 失敗：'+err);}}
@@ -451,7 +452,7 @@ const AssistSystem=(()=>{
    const order=pr?quote(pr,b.n):null,note=pr?catalog.get(pr.key).name+' · 一次 '+order.count+' 個 '+order.cost.toLocaleString()+' 金幣':k==='heal'&&!AutoPotion.snapshot.key?'先在上面選補血道具':'商店沒賣或目前職業不能用';
    const sw=switcher(b.on,on=>pr||k==='heal'&&state.healBuyKeys.length||!on?save({buy:{...state.buy,[k]:{...b,on}}}):(toast('商店沒賣這項，無法自動購買。'),false),'自動購買 '+label);
    const itemRow=row(k==='heal'?healShopIcon(pr?.key||ap.key,'buy'):ico(pr?.key||(k==='arrow'?state.arrowBuyKey:BUY_ICON[k]),'🛒'),label,
-    k==='heal'&&state.healBuyKeys.length?'用完時自動買 · 已設定 '+state.healBuyKeys.length+' 種':'用完時自動買 · '+note,qty,sw);
+    k==='heal'&&state.healBuyKeys.length?'用完時自動買 · 已設定 '+state.healBuyKeys.length+' 種':(k==='arrow'?'剩 '+ARROW_RESTOCK_AT+' 支以下自動買':'用完時自動買')+' · '+note,qty,sw);
    if(k==='arrow'){
     const type=el('select');type.setAttribute('aria-label','自動購買箭矢種類');
     for(const key of ARROW_KEYS)type.append(new Option(catalog.get(key).name,key,false,key===state.arrowBuyKey));
@@ -470,7 +471,7 @@ const AssistSystem=(()=>{
   drawer.type='button';drawer.setAttribute('aria-label','自動購買');content.id='assist-auto-buy';drawer.setAttribute('aria-controls',content.id);
   function syncDrawer(){drawer.setAttribute('aria-expanded',String(buyOpen));content.hidden=!buyOpen;}
   drawer.onclick=()=>{buyOpen=!buyOpen;syncDrawer();};
-  syncDrawer();content.append(group(...buyRows),el('p','assist-note','身上用完（0 個）時直接扣金幣購買，價格取天幣商店最低價。目前金幣 '+purse.toLocaleString()+'。'));
+  syncDrawer();content.append(group(...buyRows),el('p','assist-note','箭矢剩 100 支以下、其他道具用完時自動補貨，價格取天幣商店最低價。目前金幣 '+purse.toLocaleString()+'。'));
   p.append(drawer,content);return p;}
 
  function magicPage(){const p=el('div'),ids=learned(),sk=id=>playerSkillData.skills[id];

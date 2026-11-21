@@ -11,8 +11,10 @@ function createGameServer(options={}){
  const database=options.database||path.join(__dirname,'runtime.sqlite');
  const settings=options.settings||JSON.parse(fs.readFileSync(path.join(__dirname,'server-settings.json'),'utf8'));
  // 2026-11-17：server-settings.json 只有舊 5 職業，龍騎士／幻術師／戰士存檔會被擋（不支援的職業）→ 缺的職業從遊戲的 data/class-creation-data.js 補上。
- if(!options.settings)try{const sandbox={window:{}};require('vm').runInNewContext(fs.readFileSync(path.join(__dirname,'../class-creation-data.js'),'utf8'),sandbox);
-  for(const [role,rule] of Object.entries(sandbox.window.CreationRules?.classes||{}))settings.classes[role]??={type:rule.type,base:rule.base,points:rule.points,hp:rule.hp};}catch(error){console.warn('class-creation-data 載入失敗',error.message);}
+ let creationRules;
+ try{const sandbox={window:{}};require('vm').runInNewContext(fs.readFileSync(path.join(__dirname,'../class-creation-data.js'),'utf8'),sandbox);
+  creationRules=sandbox.window.CreationRules;
+  if(!options.settings)for(const [role,rule] of Object.entries(creationRules?.classes||{}))settings.classes[role]??={type:rule.type,base:rule.base,points:rule.points,hp:rule.hp};}catch(error){console.warn('class-creation-data 載入失敗',error.message);}
  const db=new DatabaseSync(database);
  db.exec('PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON;');
  db.exec(`
@@ -72,7 +74,7 @@ function createGameServer(options={}){
    const rules=settings.classes[c.role];if(!rules)fail(400,'不支援的職業。');
    text(c.name,12);if(typeof c.id!=='string'||!c.id||c.id.length>80||ids.has(c.id)||names.has(c.name))fail(400,'角色名稱或識別碼重複。');
    ids.add(c.id);names.add(c.name);
-   if(![0,1].includes(c.gender)||!c.stats||Object.keys(rules.base).some(k=>!Number.isInteger(c.stats[k])||c.stats[k]<rules.base[k]||c.stats[k]>rules.base[k]+rules.points)||Object.keys(rules.base).reduce((n,k)=>n+c.stats[k],0)!==75)fail(400,'角色能力值有誤。');
+   if(![0,1].includes(c.gender)||!(creationRules?.validStats(c.role,c.stats)||c.stats&&Object.keys(rules.base).every(k=>Number.isInteger(c.stats[k])&&c.stats[k]>=rules.base[k]&&c.stats[k]<=rules.base[k]+rules.points)&&Object.keys(rules.base).reduce((n,k)=>n+c.stats[k],0)===75))fail(400,'角色能力值有誤。');
    int(c.level||1,1,100);validInventory(c.inventory||[]);
    const previous=snapshot(user.id).characters.find(row=>row?.id===c.id);if(Object.keys(rules.base).some(k=>c.stats[k]>20)&&(!previous||Object.keys(rules.base).some(k=>previous.stats[k]!==c.stats[k])))fail(400,'創角單項屬性最高 20。');
    const old=snapshot(user.id).characters.find(row=>row?.id===c.id);c.diamonds=old?.diamonds||0; // 鑽石只允許由伺服器交易修改。

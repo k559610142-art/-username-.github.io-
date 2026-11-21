@@ -1,9 +1,23 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
 const read=n=>fs.readFileSync(path.join(__dirname,'../data',n),'utf8');
-test('所有職業擲骰遵守初始值、總和75與上限20；黑妖有機會擲出20',()=>{
- const c={};c.window=c;vm.createContext(c);vm.runInContext(read('class-creation-data.js'),c);let seed=42;const random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
- for(const role of c.CreationRules.jobs){const combinations=new Set();for(let i=0;i<300;i++){const stats=c.CreationRules.rollStats(role,random);assert(c.CreationRules.validStats(role,stats));assert.equal(Object.values(stats).reduce((a,b)=>a+b),75);for(const key of c.CreationRules.keys)assert(stats[key]>=c.CreationRules.classes[role].base[key]&&stats[key]<=20);combinations.add(JSON.stringify(stats));}assert(combinations.size>10);}
- assert.equal(c.CreationRules.rollStats('黑妖',()=>.999999999).str,20);assert.notEqual(c.CreationRules.rollStats('黑妖',()=>0).str,20);assert.equal(c.CreationRules.rollStats('不存在'),null);
+test('每個職業及屬性使用相同骰池，總和 75 且單項 7～20',()=>{
+ const c={};c.window=c;vm.createContext(c);vm.runInContext(read('class-creation-data.js'),c);
+ const rules=c.CreationRules;
+ const count=120000,byStat=Object.fromEntries(rules.keys.map(k=>[k,0]));
+ let seed=42;
+ const random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
+ for(let i=0;i<count;i++){
+  const sample=random(),stats=rules.rollStats('黑妖',()=>sample);
+  assert(rules.validStats('黑妖',stats));
+  if(i<300)for(const role of rules.jobs)assert.deepEqual(rules.rollStats(role,()=>sample),stats);
+  for(const key of rules.keys)if(stats[key]===20)byStat[key]++;
+ }
+ assert(byStat.con>0);
+ assert(Math.max(...Object.values(byStat))-Math.min(...Object.values(byStat))<500);
+ assert.equal(rules.rollStats('不存在'),null);
+ const legacy={...rules.classes.黑妖.base,str:22};
+ assert(rules.validStoredStats('黑妖',legacy));
+ assert(!rules.validStats('黑妖',legacy));
 });
 test('創角自動擲骰、可重擲、切職業重新產生，性別切換保留結果，沒有手動加減',()=>{
  function node(tag='div'){const classes=new Set();return {tag,children:[],classList:{toggle:(key,on)=>on?classes.add(key):classes.delete(key)},append(...n){this.children.push(...n);},setAttribute(k,v){this[k]=v;},addEventListener(){}};}

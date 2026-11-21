@@ -8,7 +8,7 @@ function updateCreation(){
  document.querySelector('#creation-remaining').textContent=String(creationDraft.rolls);document.querySelector('#creation-total').textContent='能力合計 '+total+' / 75';
  for(const gender of [0,1])document.querySelector(gender?'#creation-female':'#creation-male').setAttribute('aria-pressed',String(creationDraft.gender===gender));
  for(const item of creationClassButtons)item.button.setAttribute('aria-pressed',String(item.role===creationDraft.role));
- for(const k of CreationRules.keys){const item=creationStatControls[k],value=creationDraft.stats[k];item.value.textContent=String(value);item.value.classList.toggle('rolled-max',value===20);item.base.textContent='初始 '+c.base[k]+' · 最高 20';}
+ for(const k of CreationRules.keys){const item=creationStatControls[k],value=creationDraft.stats[k];item.value.textContent=String(value);item.value.classList.toggle('rolled-max',value===20);item.base.textContent='骰點範圍 7～20';}
  const v=CreationRules.vitals(creationDraft.role,creationDraft.stats);document.querySelector('#creation-vitals').textContent='初始生命 '+v.hp+'　初始魔力 '+v.mp;document.querySelector('#creation-submit').disabled=!CreationRules.validStats(creationDraft.role,creationDraft.stats);
 }
 function rollCreationStats(){if(!creationDraft)return false;creationDraft.stats=CreationRules.rollStats(creationDraft.role);creationDraft.rolls++;document.querySelector('#creation-message').textContent='已擲出新屬性，可重新擲骰或使用這組數值建立角色。';updateCreation();return true;}

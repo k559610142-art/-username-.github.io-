@@ -14,13 +14,34 @@ window.CreationRules=(()=>{
     '幻術師':{type:6,base:{str:11,dex:10,con:12,wis:12,cha:8,int:12},points:10,hp:14,portraits:['class-6671.png','class-6650.png'],art:['illusionist-art-m.jpg','illusionist-art-f.jpg'],intro:'操控幻象的施法者，使用奇古獸與魔杖，兼顧攻擊與輔助。'},
     '戰士':{type:7,base:{str:16,dex:13,con:16,wis:7,cha:9,int:10},points:4,hp:16,portraits:['class-12490.png','class-12494.png'],art:['warrior-art-m.jpg','warrior-art-f.jpg'],intro:'以強健體魄揮舞斧、劍與長矛的近戰職業，擅長正面硬戰。'}
   };
-  function validStoredStats(role,stats){const c=classes[role];return !!c&&!!stats&&keys.every(k=>Number.isInteger(stats[k])&&stats[k]>=c.base[k]&&stats[k]<=c.base[k]+c.points)&&keys.reduce((s,k)=>s+stats[k],0)===75}
-  function validStats(role,stats){return validStoredStats(role,stats)&&keys.every(k=>stats[k]<=20)}
+  const minStat=7,maxStat=20,totalStats=75;
+  function hasTotal(stats){return !!stats&&keys.every(k=>Number.isInteger(stats[k]))&&keys.reduce((sum,k)=>sum+stats[k],0)===totalStats;}
+  function validStats(role,stats){
+    return Object.hasOwn(classes,role)&&hasTotal(stats)&&keys.every(k=>stats[k]>=minStat&&stats[k]<=maxStat);
+  }
+  function validStoredStats(role,stats){
+    const c=Object.hasOwn(classes,role)?classes[role]:null;
+    return validStats(role,stats)||!!c&&hasTotal(stats)&&keys.every(k=>stats[k]>=c.base[k]&&stats[k]<=c.base[k]+c.points);
+  }
+  const ways=Array.from({length:keys.length+1},()=>Array(totalStats+1).fill(0));
+  ways[0][0]=1;
+  for(let fields=1;fields<=keys.length;fields++){
+    for(let sum=0;sum<=totalStats;sum++){
+      for(let value=minStat;value<=Math.min(maxStat,sum);value++)ways[fields][sum]+=ways[fields-1][sum-value];
+    }
+  }
   function rollStats(role,rng=Math.random){
-    const c=classes[role];if(!c)return null;const memo=new Map();
-    function ways(index,left){if(index===keys.length)return left===0?1:0;const key=index+','+left;if(memo.has(key))return memo.get(key);let total=0;for(let n=0;n<=Math.min(left,20-c.base[keys[index]]);n++)total+=ways(index+1,left-n);memo.set(key,total);return total;}
-    let left=c.points;const stats={...c.base};
-    for(let index=0;index<keys.length;index++){let ticket=Math.floor(Math.max(0,Math.min(1-Number.EPSILON,Number(rng())||0))*ways(index,left));for(let n=0;n<=Math.min(left,20-c.base[keys[index]]);n++){const count=ways(index+1,left-n);if(ticket<count){stats[keys[index]]+=n;left-=n;break;}ticket-=count;}}
+    if(!Object.hasOwn(classes,role))return null;
+    const stats={};
+    let left=totalStats,ticket=Math.floor(Math.max(0,Math.min(1-Number.EPSILON,Number(rng())||0))*ways[keys.length][left]);
+    for(const [index,key] of keys.entries()){
+      const remaining=keys.length-1-index;
+      for(let value=minStat;value<=Math.min(maxStat,left);value++){
+        const count=ways[remaining][left-value];
+        if(ticket<count){stats[key]=value;left-=value;break;}
+        ticket-=count;
+      }
+    }
     return stats;
   }
   function vitals(role,stats){const c=classes[role],wis=stats.wis;let mp;
