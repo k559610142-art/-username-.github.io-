@@ -391,7 +391,7 @@ const IslandMonsters = (() => {
   // 2026-11-21 傷害數字（damage-numbers.js）：暴擊標記（magicCriticalUntil）只讓第一個數字變金色
   function damageNumber(mob,amount){if(!window.DamageNumbers)return;const t=movementTime(),crit=t<(mob.magicCriticalUntil||0)&&mob.magicCriticalUntil!==mob.critNumberAt;if(crit)mob.critNumberAt=mob.magicCriticalUntil;DamageNumbers.add(mob,amount,crit?'crit':'hit');}
   function damage(mob,amount){
-    if(!mob?.hp||!Number.isFinite(amount)||amount<=0)return;amount=Math.floor(amount);if(!amount)return;
+    if(!mob?.hp||!Number.isFinite(amount)||amount<=0)return;if(mob.enchantVuln?.until>movementTime())amount*=1+mob.enchantVuln.pct/100; /* BOSS 附魔：傑尼斯女王蛛毒易傷 */amount=Math.floor(amount);if(!amount)return;
     if(mob.spawn.bot){const before=mob.hp;window.FakePlayers?.hurt(mob,amount);if(mob.hp<before)damageNumber(mob,before-mob.hp);redrawSoon();return;}
     // 商人、傳送師等 DB 沒有血量的常駐 NPC 不會受傷（強制攻擊只會揮空）；守衛、稻草人等有血量的照常扣血。
     if(mob.spawn.resident&&!(mob.spawn.npc.hp>0)){CombatSound.monsterHit(mob);return;}

@@ -510,23 +510,82 @@ window.TdjSystems = (() => {
     if (ok) flash(enchantImage(e));
     return ok;
   }
-  function rollEnchantProc() {
-    const cur = currentEnchant(); if (!cur) return;
+  // 2026-11-21 BOSS 附魔石改傷害型（使用者規劃）：等級只提高發動率（data 的 proc），傷害固定不隨等級變。
+  // dmg 額外傷害區間、hits 連打段數、lowHp 自身血量 <30% 傷害×2、dot [每次,間隔ms,持續ms]、area 範圍格數、
+  // vuln [受傷加成%,ms]、drain 回血、mp 回魔、repeat 再普攻次數、armor 破壞盔甲 ms、execute 怪物血量 <30% ×N、stun 暈眩 ms、pct 扣目前血量%（BOSS 上限 cap）
+  const ENCHANT_FX = {
+    62000: {dmg: [20, 35], hits: 2, text: '風刃連打 2 段，每段 20～35'},
+    62001: {dmg: [40, 80], lowHp: 2, text: '火焰 40～80；自身血量低於 30% 時傷害 ×2'},
+    62002: {dmg: [50, 90], text: '落雷 50～90'},
+    62003: {dot: [10, 1000, 6000], text: '中毒：每秒 10，持續 6 秒（再中毒重算時間）'},
+    62004: {dmg: [25, 45], area: 2, text: '冰矛：目標周圍 2 格內每隻怪物 25～45'},
+    62005: {dmg: [30, 50], vuln: [10, 5000], text: '蛛毒 30～50，並讓怪物 5 秒內受到的傷害 +10%'},
+    62006: {dmg: [35, 60], text: '暗影 35～60（必中）'},
+    62007: {dmg: [25, 65], drain: 15, text: '吸血 25～65，並回血最多 15'},
+    62008: {dmg: [20, 40], mp: 5, text: '弱化 20～40，並回魔 5'},
+    62009: {repeat: 2, text: '立刻再普通攻擊 2 次'},
+    62010: {dot: [6, 1000, 10000], armor: 10000, text: '疾病：每秒 6，持續 10 秒，期間怪物防禦降低（普攻傷害提高）'},
+    62011: {dmg: [30, 50], execute: 3, text: '骷髏毀壞 30～50；怪物血量低於 30% 時 ×3'},
+    62012: {dmg: [40, 70], stun: 500, text: '衝擊 40～70，並暈眩 0.5 秒'},
+    62013: {pct: 3, cap: 300, text: '扣怪物目前血量 3%（打 BOSS 一次最多 300）'},
+    62014: {dmg: [35, 60], area: 1, text: '鐮刀橫掃：目標身邊 1 格內每隻怪物 35～60'},
+    62015: {dmg: [60, 100], text: '地獄火 60～100'}
+  };
+  const enchantDots = [];
+  const rand = ([a, b]) => a + Math.floor(Math.random() * (b - a + 1));
+  // 首領判斷和自動輔助／假人相同：名字有 BOSS，或單隻生成且體力 1500 以上
+  const isBossMob = m => /BOSS/i.test(m.spawn?.npc?.name || '') || (m.spawn?.count === 1 && (m.spawn?.npc?.hp || 0) >= 1500);
+  const hittable = m => m?.hp > 0 && !m.spawn.ally && !m.spawn.resident && (!m.spawn.bot || window.FakePlayers?.canAttack(m));
+  function rollEnchantProc(mob, base = 0) {
+    const cur = currentEnchant(); if (!cur || !mob) return;
     if (Math.random() * 100 >= cur.level.proc) return;
-    const {dmg, rnd, drain} = cur.level;
-    const damage = dmg + (rnd > 0 ? Math.floor(Math.random() * (rnd + 1)) : 0);
-    return {cur, damage, drain};
+    const fx = ENCHANT_FX[cur.data.id] || {};
+    let damage = fx.dmg ? rand(fx.dmg) : 0;
+    if (fx.lowHp && hp < maxHp * 0.3) damage *= fx.lowHp;
+    if (fx.execute && mob.spawn?.npc?.hp > 0 && mob.hp < mob.spawn.npc.hp * 0.3) damage *= fx.execute;
+    if (fx.pct) { damage = Math.max(1, Math.floor(mob.hp * fx.pct / 100)); if (isBossMob(mob)) damage = Math.min(fx.cap, damage); }
+    return {cur, fx, mob, base, damage};
   }
-  function applyEnchantProc({cur, damage, drain}) {
-    flash(enchantImage(cur.data));
-    const healed = Math.min(drain, Math.max(0, maxHp - hp));
-    if (healed > 0) {
-      hp += healed;
-      window.stats?.();
-      window.GameEntry?.saveActive();
+  function later(ms, fn) { const who = window.activeCharacterId; setTimeout(() => { if (playing() && window.activeCharacterId === who && !CharacterActions.dead) fn(); }, ms); }
+  function addDot(mob, id, [dmg, every, dur]) {
+    const t = movementTime(), old = enchantDots.find(d => d.mob === mob && d.id === id);
+    if (old) { old.until = t + dur; return; }
+    enchantDots.push({mob, id, dmg, every, next: t + every, until: t + dur, who: window.activeCharacterId});
+  }
+  setInterval(() => {
+    if (!enchantDots.length) return;
+    const t = movementTime(), on = window.gameFlowState === 'playing';
+    for (let i = enchantDots.length - 1; i >= 0; i--) {
+      const d = enchantDots[i];
+      if (!on || d.who !== window.activeCharacterId || !d.mob.hp || t >= d.until) { enchantDots.splice(i, 1); continue; }
+      if (t >= d.next) { d.next += d.every; IslandMonsters.damage(d.mob, d.dmg); }
     }
-    const extra = (damage ? '，額外傷害 ' + damage : '') + (healed ? '、吸血 ' + healed : '');
-    toast(cur.level.name + ' 發動「' + cur.data.skill + '」' + extra, 'journal');
+  }, 250);
+  function applyEnchantProc({cur, fx, mob, base, damage}) {
+    flash(enchantImage(cur.data));
+    const t = movementTime(), notes = [];
+    if (damage) notes.push('額外傷害 ' + damage);
+    if (fx.hits > 1) for (let i = 1; i < fx.hits; i++) later(150 * i, () => { if (mob.hp) IslandMonsters.damage(mob, rand(fx.dmg)); });
+    if (fx.repeat && base > 0) { for (let i = 1; i <= fx.repeat; i++) later(160 * i, () => { if (mob.hp) IslandMonsters.damage(mob, base); }); notes.push('連擊 ' + fx.repeat + ' 次'); }
+    if (fx.dot && mob.hp) { addDot(mob, cur.data.id, fx.dot); notes.push(fx.dot[0] + '/秒 持續 ' + fx.dot[2] / 1000 + ' 秒'); }
+    if (fx.armor && mob.hp) window.ClassBuffs?.mark?.(mob, 112, fx.armor);
+    if (fx.vuln && mob.hp) mob.enchantVuln = {pct: fx.vuln[0], until: t + fx.vuln[1]};
+    if (fx.stun && mob.hp) mob.ready = Math.max(mob.ready || 0, t + fx.stun);
+    if (fx.area) {
+      let n = 0;
+      for (const m of IslandMonsters.all || []) {
+        if (m === mob || !hittable(m) || (m.spawn.mapId || 0) !== (mob.spawn.mapId || 0) || Math.max(Math.abs(m.x - mob.x), Math.abs(m.y - mob.y)) > fx.area) continue;
+        IslandMonsters.damage(m, rand(fx.dmg)); n++;
+      }
+      if (n) notes.push('波及 ' + n + ' 隻');
+    }
+    let changed = false;
+    const healed = fx.drain ? Math.min(fx.drain, Math.max(0, maxHp - hp)) : 0;
+    if (healed > 0) { hp += healed; changed = true; notes.push('吸血 ' + healed); }
+    const mana = fx.mp ? Math.min(fx.mp, Math.max(0, maxMp - mp)) : 0;
+    if (mana > 0) { mp += mana; changed = true; notes.push('回魔 ' + mana); }
+    if (changed) { window.stats?.(); window.GameEntry?.saveActive(); }
+    toast(cur.level.name + ' 發動「' + cur.data.skill + '」' + (notes.length ? '，' + notes.join('、') : ''), 'journal');
   }
 
   function refreshSoulStats(){window.DBGameRules?.syncVitals();window.stats?.();}
@@ -624,7 +683,7 @@ window.TdjSystems = (() => {
     restoreEnchant(id,value){restoredEnchant={owner:id,value};owner='';},
     get enchantSnapshot(){return ensure() ? state.enchant : undefined;},
     dolls: {draw: drawDoll, summon, dismiss, image: dollImage, owned: id => get().dolls.owned[id] || 0, get active() { return get().dolls.active; }},
-    enchant: {get: getStone, enchant, current: currentEnchant, image: enchantImage, stones: id => get().enchant.stones[id] || 0},
+    enchant: {get: getStone, enchant, current: currentEnchant, image: enchantImage, effectText: id => ENCHANT_FX[+id]?.text || '', stones: id => get().enchant.stones[id] || 0},
     wuhun: {fuseSoul,fusionRates:SOUL_FUSION_RATES,changeRings,ringCost:RING_COST,ringColor:RING_COLOR,rings:()=>(ensure(),{...state.wuhun.rings}),spare:t=>(ensure(),spareOf(+t).reduce((n,x)=>n+x.n,0)),tiers:WUHUN_TIERS,ringMissing:id=>(ensure(),ringMissing(wuhunById.get(+id))),get ringState(){ensure();return JSON.parse(JSON.stringify({slots:state.wuhun.ringSlots}));},get: getWuhun, equip: equipWuhun, unequip: unequipWuhun, image: wuhunImage, baseGfx: wuhunBaseGfx, owned: id => get().wuhun.owned[id] || 0, get active() { return get().wuhun.active; }},
     rollEnchantProc, applyEnchantProc, render
   };

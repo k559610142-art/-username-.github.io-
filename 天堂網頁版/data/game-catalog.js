@@ -1859,9 +1859,10 @@ function openGameCatalog(type) {
       detail.append(uiElement('strong', '', e.boss + '的靈魂 · 技能「' + e.skill + '」'),
         uiElement('p', '', '擁有附魔石 ' + stones + ' 個'),
         uiElement('p', '', cur ? '目前武器：' + cur.weapon.item.name + ' · ' + cur.level.name : '目前武器沒有 BOSS 附魔'),
+        uiElement('p', '', '發動效果：' + (TdjSystems.enchant.effectText(e.id) || '—')),
         uiElement('h4', '', '各階設定'));
-      e.levels.forEach((lv, i) => detail.append(uiElement('p', '', (i + 1 === mine ? '▶ ' : '') + lv.name + '：附魔成功 ' + lv.rate + '% · 攻擊發動 ' + lv.proc + '%' + (lv.dmg || lv.rnd ? ' · 傷害 ' + lv.dmg + '～' + (lv.dmg + lv.rnd) : '') + (lv.drain ? ' · 吸血 ' + lv.drain : ''))));
-      detail.append(uiElement('small', '', '附魔在目前裝備的武器上；同一種石頭可往上升階，換不同石頭會從 LV1 重來；失敗會消耗石頭。'));
+      e.levels.forEach((lv, i) => detail.append(uiElement('p', '', (i + 1 === mine ? '▶ ' : '') + lv.name + '：附魔成功 ' + lv.rate + '% · 攻擊發動 ' + lv.proc + '%')));
+      detail.append(uiElement('small', '', '普通攻擊打中時依發動率觸發，升階只提高發動率、效果固定。附魔在目前裝備的武器上；同一種石頭可往上升階，換不同石頭會從 LV1 重來；失敗會消耗石頭。'));
       const action = catalogButton(mine >= e.levels.length ? '已達最高階' : stones ? '附魔到武器（LV' + (mine + 1) + '）' : '沒有附魔石', () => { TdjSystems.enchant.enchant(e.id); updateCounts(); refreshCards(); }, 'game-catalog-action');
       action.disabled = !stones || mine >= e.levels.length;
       detail.append(action);

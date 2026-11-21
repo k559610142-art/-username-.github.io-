@@ -112,7 +112,7 @@ const IslandCombat=(()=>{
         const {mob,damage,offhand}=pending;
         const beforeHp=mob.hp;
         const proc=beforeHp&&(!mob.spawn.resident||mob.spawn.npc.hp>0)
-          ? window.TdjSystems?.rollEnchantProc() : null;
+          ? window.TdjSystems?.rollEnchantProc(mob,damage) : null;
         IslandMonsters.damage(mob,damage+(proc?.damage||0));
         if(proc&&mob.hp<beforeHp)window.TdjSystems.applyEnchantProc(proc);
         if(offhand)followUp={mob,damage:offhand,at:movementTime()+180};
