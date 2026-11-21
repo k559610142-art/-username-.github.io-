@@ -521,3 +521,6 @@ NPC 穿衣服（2026-11-13）：
   鐮刀死神 目標身邊 1 格每隻 35～60｜死亡騎士 60～100
 - 範圍不打常駐 NPC／盟友／不可攻擊的假玩家。延遲段數、持續傷害換角色或離開遊戲即停止。
 - island-combat.js 改呼叫 rollEnchantProc(mob,damage)；game-catalog.js BOSS附魔 詳細頁顯示「發動效果」。
+
+【2026-11-21 製作工匠移除三項】
+- data/db-game-rules.js hiddenCraftItems 加入 血盟勳章 300000、上古神話變身-劍聖 39264、上古神話變身-疾風精靈王 39263（只拿掉製作配方，背包已有的不動）。
