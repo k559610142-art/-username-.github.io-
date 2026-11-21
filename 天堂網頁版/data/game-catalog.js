@@ -1862,7 +1862,7 @@ function openGameCatalog(type) {
         uiElement('p', '', '發動效果：' + (TdjSystems.enchant.effectText(e.id) || '—')),
         uiElement('h4', '', '各階設定'));
       e.levels.forEach((lv, i) => detail.append(uiElement('p', '', (i + 1 === mine ? '▶ ' : '') + lv.name + '：附魔成功 ' + lv.rate + '% · 攻擊發動 ' + lv.proc + '%')));
-      detail.append(uiElement('small', '', '普通攻擊打中時依發動率觸發，升階只提高發動率、效果固定。附魔在目前裝備的武器上；同一種石頭可往上升階，換不同石頭會從 LV1 重來；失敗會消耗石頭。'));
+      detail.append(uiElement('small', '', '普通攻擊打中時依發動率觸發，升階只提高發動率、效果固定。附魔在目前裝備的武器上、跟著武器走（卸下、放倉庫、換角色都保留，只有拿這把武器攻擊才會發動）；同一種石頭可往上升階，換不同石頭會從 LV1 重來；失敗會消耗石頭。'));
       const action = catalogButton(mine >= e.levels.length ? '已達最高階' : stones ? '附魔到武器（LV' + (mine + 1) + '）' : '沒有附魔石', () => { TdjSystems.enchant.enchant(e.id); updateCounts(); refreshCards(); }, 'game-catalog-action');
       action.disabled = !stones || mine >= e.levels.length;
       detail.append(action);

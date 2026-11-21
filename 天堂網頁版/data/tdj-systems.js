@@ -483,20 +483,41 @@ window.TdjSystems = (() => {
       if (!committed) state.enchant.stones = previous;
     }
   }
+  // 2026-11-22 使用者要求：附魔是附在「武器」上，跟著武器走（卸下、換角色、放倉庫都保留），不是附在玩家身上。
+  // 紀錄存在背包／倉庫的武器物件 entry.soul = {id, lv}；舊版存在角色 state.enchant.weapons[uid] 的，進遊戲時搬到對應武器上。
+  const validSoul = s => s && Number.isInteger(s.lv) && s.lv >= 1 && enchantById.get(s.id)?.levels[s.lv - 1] ? s : null;
+  function soulInfo(entry) {
+    const s = validSoul(entry?.soul); if (!s) return null;
+    const data = enchantById.get(s.id);
+    return {id: s.id, lv: s.lv, data, level: data.levels[s.lv - 1]};
+  }
+  function migrateLegacySouls() {
+    const inv = window.OwnedInventory;
+    if (!state || !inv || inv.owner !== owner || !Object.keys(state.enchant.weapons).length) return;
+    const legacy = state.enchant.weapons, rows = inv.snapshot, storage = inv.warehouse;
+    for (const e of [...rows, ...storage]) if (legacy[e.uid] && !validSoul(e.soul)) e.soul = {id: legacy[e.uid].id, lv: legacy[e.uid].lv};
+    state.enchant.weapons = Object.create(null);
+    if (inv.applyChange(rows, {warehouse: storage})) save(); else state.enchant.weapons = legacy;
+  }
+  function setWeaponSoul(uid, soul) {
+    const rows = OwnedInventory.snapshot, e = rows.find(r => r.uid === uid);
+    if (!e) return false;
+    if (soul) e.soul = soul; else delete e.soul;
+    return OwnedInventory.applyChange(rows);
+  }
   function currentEnchant() {
-    ensure();
-    const weapon = equippedWeapon();
-    const w = state.enchant.weapons[weapon?.uid];
-    if (!w || !weapon) return null;
-    const data = enchantById.get(w.id);
-    return {...w, uid: weapon.uid, data, level: data.levels[w.lv - 1], weapon};
+    if (!ensure()) return null;
+    migrateLegacySouls();
+    const weapon = equippedWeapon(), s = soulInfo(weapon);
+    return s && {...s, uid: weapon.uid, weapon};
   }
   function enchant(id) {
     if (!playing()) return false;
+    migrateLegacySouls();
     const e = enchantById.get(+id), weapon = equippedWeapon();
     if (!state.enchant.stones[id]) { toast('沒有' + e.stone + '。'); return false; }
     if (!weapon) { toast('請先裝備武器再附魔。'); return false; }
-    const applied = state.enchant.weapons[weapon.uid];
+    const applied = soulInfo(weapon);
     const cur = applied?.id === e.id ? applied.lv : 0;
     if (cur >= e.levels.length) { toast('已經是最高階 ' + e.levels[cur - 1].name + '。'); return false; }
     const next = e.levels[cur];
@@ -504,8 +525,8 @@ window.TdjSystems = (() => {
     state.enchant = {stones:{...previous.stones}, weapons:{...previous.weapons}};
     state.enchant.stones[id]--; if (!state.enchant.stones[id]) delete state.enchant.stones[id];
     const ok = Math.random() * 100 < next.rate;
-    if (ok) state.enchant.weapons[weapon.uid] = {id: e.id, lv: cur + 1};
-    if (!window.GameEntry.saveActive()) { state.enchant = previous; toast('儲存失敗，附魔石未消耗。'); return false; }
+    const saved = ok ? setWeaponSoul(weapon.uid, {id: e.id, lv: cur + 1}) : window.GameEntry.saveActive();
+    if (!saved) { state.enchant = previous; toast('儲存失敗，附魔石未消耗。'); return false; }
     toast(ok ? '強大的 BOSS 靈魂技能附魔成功了：' + weapon.item.name + ' 獲得 ' + next.name : '很抱歉，您的附魔失敗了（成功率 ' + next.rate + '%）。');
     if (ok) flash(enchantImage(e));
     return ok;
@@ -683,7 +704,7 @@ window.TdjSystems = (() => {
     restoreEnchant(id,value){restoredEnchant={owner:id,value};owner='';},
     get enchantSnapshot(){return ensure() ? state.enchant : undefined;},
     dolls: {draw: drawDoll, summon, dismiss, image: dollImage, owned: id => get().dolls.owned[id] || 0, get active() { return get().dolls.active; }},
-    enchant: {get: getStone, enchant, current: currentEnchant, image: enchantImage, effectText: id => ENCHANT_FX[+id]?.text || '', stones: id => get().enchant.stones[id] || 0},
+    enchant: {get: getStone, enchant, current: currentEnchant, image: enchantImage, effectText: id => ENCHANT_FX[+id]?.text || '', soulOf: soulInfo, soulLabel: entry => { const s = soulInfo(entry); return s ? s.level.name + '（攻擊發動 ' + s.level.proc + '%）' : ''; }, stones: id => get().enchant.stones[id] || 0},
     wuhun: {fuseSoul,fusionRates:SOUL_FUSION_RATES,changeRings,ringCost:RING_COST,ringColor:RING_COLOR,rings:()=>(ensure(),{...state.wuhun.rings}),spare:t=>(ensure(),spareOf(+t).reduce((n,x)=>n+x.n,0)),tiers:WUHUN_TIERS,ringMissing:id=>(ensure(),ringMissing(wuhunById.get(+id))),get ringState(){ensure();return JSON.parse(JSON.stringify({slots:state.wuhun.ringSlots}));},get: getWuhun, equip: equipWuhun, unequip: unequipWuhun, image: wuhunImage, baseGfx: wuhunBaseGfx, owned: id => get().wuhun.owned[id] || 0, get active() { return get().wuhun.active; }},
     rollEnchantProc, applyEnchantProc, render
   };

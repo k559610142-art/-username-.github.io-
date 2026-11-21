@@ -524,3 +524,12 @@ NPC 穿衣服（2026-11-13）：
 
 【2026-11-21 製作工匠移除三項】
 - data/db-game-rules.js hiddenCraftItems 加入 血盟勳章 300000、上古神話變身-劍聖 39264、上古神話變身-疾風精靈王 39263（只拿掉製作配方，背包已有的不動）。
+
+【2026-11-22 BOSS 附魔改成附在武器上（跟著武器走）】
+- 使用者要求：附魔是對武器、不是對玩家。紀錄從角色資料 state.enchant.weapons[uid] 改存在武器物件本身 entry.soul = {id, lv}（背包／倉庫的 entry）。
+- data/tdj-systems.js：soulInfo(entry)、setWeaponSoul(uid,soul)（OwnedInventory.applyChange 存檔）；currentEnchant() 讀目前裝備武器的 soul；
+  migrateLegacySouls()：舊存檔的 state.enchant.weapons 第一次讀取時搬到對應 uid 的背包／倉庫武器上，搬完清空（找不到的武器就捨棄）。
+  新匯出 TdjSystems.enchant.soulOf(entry)、soulLabel(entry)。附魔石數量仍存在角色（state.enchant.stones）。
+- data/owned-inventory.js transfer()：存入／取出倉庫時把 soul 複製到新 entry（倉庫是帳號共用，所以附魔武器可以換角色用）。
+- data/classic-panels.js showItemDetails：武器說明加一行紫字「BOSS 附魔：LVn○○的靈魂（攻擊發動 x%）」。
+- data/game-catalog.js BOSS附魔 說明文字補「跟著武器走」。卸下武器就不發動，裝回來恢復；武器被丟棄／賣掉／加入圖鑑則附魔一起消失。

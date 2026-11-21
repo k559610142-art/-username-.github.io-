@@ -128,7 +128,8 @@ window.OwnedInventory=(()=>{
   const item=from.find(e=>e.uid===uid&&!e.slot);
   if(!item)return '找不到物品，或物品正在穿戴。';
   if(withdraw&&!pay(next,fee))return '需要 '+fee+' 天幣。';
-  if(!addItems(to,item.key,item.count))return '欄位不足或堆疊已滿。';
+  const moved=addItems(to,item.key,item.count);if(!moved)return '欄位不足或堆疊已滿。';
+  if(item.soul)to.find(e=>e.uid===moved).soul={...item.soul}; // BOSS 靈魂附魔跟著武器進出倉庫
   deduct(from,uid,item.count);
   return transact(next,{warehouse:storage})?'':'存檔失敗，物品未移動。';
  }
