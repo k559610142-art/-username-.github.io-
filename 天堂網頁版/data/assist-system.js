@@ -13,24 +13,30 @@
 const AssistSystem=(()=>{
  const el=(t,c,x)=>uiElement(t,c,x);
  const catalog=new Map(INTERFACE_CATALOG.items.map(i=>[i.kind+':'+i.id,i]));
+ const CURES=[['skill','解毒術'],['etcitem:40017','解毒藥水'],['etcitem:40507','安特樹枝']];
  const POTIONS=[['haste','綠色藥水（加速）',['haste']],['brave','二段加速（勇水／精靈餅乾）',['brave','elfBrave']],['cake','三段加速（巧克力蛋糕）',['braveX']],['wisdom','慎重藥水',['wisdom']],['blue','藍色藥水（魔力回復）',['blue']]];
  // 自動購買（第 2 期）：用完（身上 0 個）時從商店買，價格取所有 NPC 商店裡最便宜的那一家（NATIVE_NPC_DIALOGS.shops＋islandNpcServiceData.shop，[道具, 順序, 買價, 一組幾個, 賣價, 強化]）
  const SHOP=new Map();
  for(const rows of [...Object.entries(NATIVE_NPC_DIALOGS.shops||{}).filter(([id])=>id!=='70089'&&(NATIVE_NPC_DIALOGS.actions[id]?.currency||40308)===40308).map(([,rows])=>rows),islandNpcServiceData.shop||[]])for(const [id,,buy,pack,,ench] of rows){if(!(buy>=0)||ench)continue;const n=Math.max(1,pack|0),b=SHOP.get(id);if(!b||buy/n<b.price/b.pack)SHOP.set(id,{price:buy,pack:n});}
+ const ARROW_KEYS=['etcitem:40743','etcitem:40744','etcitem:40746'];
  const QTY=[1,5,10,20,50,100,200,500,1000];
  // 2026-11-18 使用者：商店沒賣或職業不能用時（例如騎士的慎重藥水）也顯示該道具的圖，不要只有購物車
  const BUY_ICON={tp:'etcitem:40100',home:'etcitem:40081',heal:'etcitem:40010',haste:'etcitem:40018',brave:'etcitem:40014',wisdom:'etcitem:40016',blue:'etcitem:40015',arrow:'etcitem:40743',cake:'etcitem:49138',meat:'etcitem:40056',barrier:'etcitem:40889'};
  const BUYS=[['tp','瞬間移動卷軸',10],['home','傳送回家的卷軸',5],['heal','補血道具（補給選的那種）',100],['haste','綠色藥水',5],['brave','二段加速',5],['cake','巧克力蛋糕（三段加速）',5],['meat','肉',20],['barrier','魔法屏障卷軸',5],['wisdom','慎重藥水',5],['blue','藍色藥水',5],['arrow','箭（裝備弓時）',1000]];
- const base=()=>({noMobTp:false,noMobSec:10,potions:Object.fromEntries(POTIONS.map(([k])=>[k,false])),attackOn:false,attackSkill:null,attackMp:30,buffs:[],list:{},escape:false,healFallback:false,morph:false,morphCard:null,morphLost:false,openOn:false,openSkill:null,openMp:50,aoeOn:false,aoeSkill:null,aoeRange:3,aoeCount:3,aoeMp:50,mindOn:false,mindHp:80,mindMp:40,summonOn:false,ringOn:false,expAuto:false,barrierScroll:false,eatOn:false,eatAt:30,eatPick:null,returnOn:false,returnHp:80,returnSpot:null,fullOn:false,fullWeight:80,fullSlots:10,fullAct:'home',presets:[null,null,null],dangerOn:false,dangerBoss:true,dangerPlayer:'red',dangerRange:8,dollOn:false,dollId:null,pick:Object.fromEntries(POTIONS.map(([k])=>[k,null])),buy:Object.fromEntries(BUYS.map(([k,,n])=>[k,{on:false,n}]))});
+ const base=()=>({noMobTp:false,noMobSec:10,potions:Object.fromEntries(POTIONS.map(([k])=>[k,false])),attackOn:false,attackSkill:null,attackMp:30,buffs:[],list:{},escape:false,healFallback:false,healBuyKeys:[],arrowBuyKey:ARROW_KEYS[0],cureOn:false,cureMethod:CURES[0][0],morph:false,morphCard:null,morphLost:false,openOn:false,openSkill:null,openMp:50,aoeOn:false,aoeSkill:null,aoeRange:3,aoeCount:3,aoeMp:50,mindOn:false,mindHp:80,mindMp:40,summonOn:false,ringOn:false,expAuto:false,barrierScroll:false,eatOn:false,eatAt:30,eatPick:null,returnOn:false,returnHp:80,returnSpot:null,fullOn:false,fullWeight:80,fullSlots:10,fullAct:'home',presets:[null,null,null],dangerOn:false,dangerBoss:true,dangerPlayer:'red',dangerRange:8,dollOn:false,dollId:null,pick:Object.fromEntries(POTIONS.map(([k])=>[k,null])),buy:Object.fromEntries(BUYS.map(([k,,n])=>[k,{on:false,n}]))});
  let stoneQueue=null;
  let buyOpen=false,healShop=null,healQty=100;
+ const healChecked=new Set();
  let state=base(),owner='',dialog=null,tab='hunt',idleSince=0,lastTp=0,retry=new Map(),escapes=[],lostMorph=null,seenMorph=null,lastOpen=null;
  const int=(v,lo,hi,d)=>Number.isInteger(v)?Math.max(lo,Math.min(hi,v)):d;
  function validate(v){const s=base();if(!v||typeof v!=='object')return s;
   s.noMobTp=v.noMobTp===true;s.noMobSec=int(v.noMobSec,3,60,10);for(const k of Object.keys(s.potions))s.potions[k]=v.potions?.[k]===true;
   s.attackOn=v.attackOn===true;s.attackSkill=Number.isInteger(v.attackSkill)&&playerSkillData.skills[v.attackSkill]?v.attackSkill:null;s.attackMp=int(v.attackMp,0,99,30);
   s.buffs=Array.isArray(v.buffs)?[...new Set(v.buffs.filter(id=>Number.isInteger(id)&&playerSkillData.skills[id]))]:[];
-  for(const k of ['escape','healFallback','morph','openOn','aoeOn','mindOn','summonOn','ringOn','expAuto','barrierScroll'])s[k]=v[k]===true;
+  for(const k of ['escape','healFallback','cureOn','morph','openOn','aoeOn','mindOn','summonOn','ringOn','expAuto','barrierScroll'])s[k]=v[k]===true;
+  if(Array.isArray(v.healBuyKeys))s.healBuyKeys=[...new Set(v.healBuyKeys.filter(key=>typeof key==='string'&&catalog.has(key)&&NativePotions.isHealing(key)))];
+  if(ARROW_KEYS.includes(v.arrowBuyKey))s.arrowBuyKey=v.arrowBuyKey;
+  if(CURES.some(([method])=>method===v.cureMethod))s.cureMethod=v.cureMethod;
   for(const k of ['eatOn','returnOn','fullOn'])s[k]=v[k]===true;s.eatAt=int(v.eatAt,1,224,30);s.eatPick=typeof v.eatPick==='string'&&catalog.has(v.eatPick)?v.eatPick:null;
   s.returnHp=int(v.returnHp,10,100,80);const rs=v.returnSpot;s.returnSpot=rs&&Number.isInteger(rs.mapId)&&Number.isInteger(rs.x)&&Number.isInteger(rs.y)?{mapId:rs.mapId,x:rs.x,y:rs.y}:null;
   s.fullWeight=int(v.fullWeight,30,100,80);s.fullSlots=int(v.fullSlots,0,60,10);s.fullAct=v.fullAct==='stop'?'stop':'home';
@@ -74,16 +80,27 @@ const AssistSystem=(()=>{
   if(k==='heal'){const want=AutoPotion.snapshot.key;return key=>!!want&&key===want;}
   if(k==='meat'||k==='barrier')return key=>key===BUY_ICON[k];
   if(k==='cake')return key=>key==='etcitem:49138'&&NativePotions.durationState(key)?.key==='braveX';
-  if(k==='arrow')return key=>catalog.get(key)?.type==='arrow';
+  if(k==='arrow')return key=>key===state.arrowBuyKey;
   const kinds=kindsOf(k);return key=>kinds.includes(NativePotions.durationState(key)?.key);
  }
  const shopProducts=Array.from(SHOP,([id,offer])=>({key:'etcitem:'+id,id,...offer})).filter(p=>catalog.has(p.key));
- function product(k){const match=matcher(k);let best=null;for(const p of shopProducts){if(!match(p.key)||k==='arrow'&&p.id!==40743&&p.id!==40744)continue;if(!best||p.price/p.pack<best.price/best.pack)best=p;}return best;}
+ function product(k){const match=matcher(k);let best=null;for(const p of shopProducts){if(!match(p.key))continue;if(!best||p.price/p.pack<best.price/best.pack)best=p;}return best;}
  function quote(p,n){const packs=Math.ceil(n/p.pack);return {count:packs*p.pack,cost:packs*p.price};}
  const bowEquipped=()=>{const w=OwnedInventory.items.find(e=>e.slot==='weapon');return ['bow','singlebow'].includes(w?.item?.type);};
  let buyNotice=0;
  function autoBuy(now){
   for(const [k,label] of BUYS){const b=state.buy[k];if(!b?.on||(retry.get('buy'+k)||0)>now)continue;if(k==='arrow'&&!bowEquipped())continue;
+   if(k==='heal'&&state.healBuyKeys.length){
+    for(const key of state.healBuyKeys){
+     if((retry.get('buy:'+key)||0)>now||OwnedInventory.items.some(e=>e.key===key&&e.count>0))continue;
+     const p=shopProducts.find(offer=>offer.key===key);
+     if(!p)continue;
+     const {count,cost}=quote(p,b.n),error=OwnedInventory.trade(key,count,cost,false);
+     retry.set('buy:'+key,now+(error?30000:5000));
+     if(!error){toast('自動購買 '+catalog.get(key).name+' ×'+count+'（'+cost.toLocaleString()+' 天幣）');return true;}
+    }
+    continue;
+   }
    const match=matcher(k);if(OwnedInventory.items.some(e=>match(e.key)&&e.count>0))continue;
    const p=product(k);retry.set('buy'+k,now+5000);if(!p)continue;
    const {count,cost}=quote(p,b.n),err=OwnedInventory.trade(p.key,count,cost,false);
@@ -170,6 +187,20 @@ const AssistSystem=(()=>{
  function snap(){if(window.gameFlowState!=='playing'||owner!==window.activeCharacterId)return;base0={exp:Number(window.activeCharacterExperience)||0,c:counts()};}
  const award=PlayerProgression.award.bind(PlayerProgression);PlayerProgression.award=function(mob){const ok=award(mob);if(ok&&IslandCombat.mode==='auto'&&owner===window.activeCharacterId)stats.kills++;return ok;};
  function resetStats(){Object.assign(stats,{ms:0,kills:0,exp:0,coins:0,deaths:0,items:{},since:Date.now()});}
+ function autoCure(now){
+  if(!state.cureOn||!window.IslandNpcAi?.poisoned||(retry.get('cure')||0)>now)return false;
+  if(state.cureMethod==='skill'){
+   if(!PlayerSkills.knows(9))return false;
+   const skill=playerSkillData.skills[9];
+   if(mp<(window.PlayerAbilityRules?.manaCost(skill)??skill.mp))return false;
+   retry.set('cure',now+1000);
+   return PlayerSkills.cast(9,{support:true});
+  }
+  const item=owned().find(e=>e.key===state.cureMethod&&!e.slot);
+  if(!item)return false;
+  retry.set('cure',now+1000);
+  return OwnedInventory.use(item.uid);
+ }
  function tick(){
   if(window.gameFlowState!=='playing'||owner!==window.activeCharacterId||OwnedInventory.owner!==owner)return;
   // 倒地的同一刻變身就被取消（TransformCards.onDeath），所以平常就記住目前變身；活著時自己取消變身則清掉，不會被自動變回去
@@ -189,6 +220,7 @@ const AssistSystem=(()=>{
   // 沒怪自動瞬移
   if(auto&&state.noMobTp){if(IslandMonsters.target?.hp||!idleSince)idleSince=now;else if(now-idleSince>=state.noMobSec*1000){idleSince=now;if(teleport())return;}}else idleSince=0;
   if(busy())return;
+  if(autoCure(now))return;
   if(stoneQueue){
    const queue=stoneQueue;
    if(!learned().includes(100)){stoneQueue=null;return;}
@@ -236,9 +268,9 @@ const AssistSystem=(()=>{
  .auto-potion-hud{display:none!important}
  .assist-window{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(420px,94%);max-height:86%;display:flex;flex-direction:column;box-sizing:border-box;padding:0 7px 7px;color:#d8cfb8;pointer-events:auto;
   background:linear-gradient(90deg,#6e5a33 0,#c9a85e 2px,#3b3020 4px,transparent 5px,transparent calc(100% - 5px),#3b3020 calc(100% - 4px),#c9a85e calc(100% - 2px),#6e5a33 100%),linear-gradient(#17191c,#121416);box-shadow:0 0 0 1px #000,0 8px 24px #000b;border-radius:3px}
- .assist-window header{flex:none;height:30px;margin:0 -7px;display:flex;align-items:center;justify-content:center;position:relative;background:linear-gradient(#2c2a26,#1b1a18);border-bottom:1px solid #5b4b2c}
- .assist-window header h2{margin:0;font-size:15px;letter-spacing:6px;color:#efd9a4}
- .assist-window header button{position:absolute;right:5px;top:4px;width:24px;height:21px;min-height:0!important;padding:0!important;font-size:13px;background:linear-gradient(#4a3d26,#2a2216)!important;border:1px solid #9b8150!important;border-radius:2px;color:#f0dcae!important}
+ .assist-window>.assist-header{flex:none;min-height:44px;margin:0 -7px;display:flex;align-items:center;justify-content:space-between;padding:0 8px;background:linear-gradient(#2c2a26,#1b1a18);border-bottom:1px solid #5b4b2c}
+ .assist-window>.assist-header h2{margin:0;font-size:15px;letter-spacing:6px;color:#efd9a4}
+ .assist-window>.assist-header button{min-width:64px;min-height:34px!important;padding:2px 8px!important;font-size:13px;white-space:nowrap;background:linear-gradient(#4a3d26,#2a2216)!important;border:1px solid #9b8150!important;border-radius:2px;color:#f0dcae!important}
  .assist-body{flex:1;min-height:0;overflow:auto;padding-top:2px;scrollbar-width:thin;scrollbar-color:#7a6740 #121416}
  .assist-body .qy-set-row select{max-width:150px}
  .assist-note{margin:6px 4px;font-size:11px;color:#857d6a;line-height:1.5;text-align:center}
@@ -304,7 +336,9 @@ const AssistSystem=(()=>{
   const button=el('button','assist-shop-icon');button.type='button';button.append(ico(key||BUY_ICON.heal,'🧪'));
   button.setAttribute('aria-label','購買補血藥水');
   button.setAttribute('aria-expanded',String(healShop===source));
-  button.onclick=()=>{healShop=healShop===source?null:source;render();body.querySelector('[data-heal-shop="'+source+'"]')?.focus();};
+  button.onclick=()=>{healShop=healShop===source?null:source;healChecked.clear();
+   if(healShop==='buy'){healQty=state.buy.heal.n;for(const key of state.healBuyKeys)healChecked.add(key);}
+   render();body.querySelector('[data-heal-shop="'+source+'"]')?.focus();};
   button.dataset.healShop=source;return button;
  }
  function healShopPanel(){
@@ -313,14 +347,37 @@ const AssistSystem=(()=>{
   for(const n of QTY)qty.append(new Option('×'+n,String(n),false,n===healQty));
   qty.onchange=()=>{healQty=Number(qty.value);render();body.querySelector('[aria-label="藥水購買數量"]')?.focus();};
   const products=shopProducts.filter(p=>NativePotions.isHealing(p.key)).sort((a,b)=>a.price/a.pack-b.price/b.pack);
-  panel.append(row('🧪','商店補血藥水',null,qty),group(...products.map(p=>{
-   const item=catalog.get(p.key),{count,cost}=quote(p,healQty),buy=el('button','act','購買');
+  const summary=el('span'),buyAll=el('button','act','購買勾選'),apply=el('button','act','設為自動購買');
+  summary.setAttribute('aria-live','polite');
+  const orders=()=>products.filter(p=>healChecked.has(p.key)).map(p=>({key:p.key,...quote(p,healQty)}));
+  function update(){
+   const list=orders();
+   summary.textContent='已選 '+list.length+' 種 · '+list.reduce((sum,o)=>sum+o.cost,0).toLocaleString()+' 天幣';
+   buyAll.disabled=!list.length;
+  }
+  buyAll.type=apply.type='button';
+  buyAll.onclick=()=>{
+   const list=orders(),error=OwnedInventory.buyBatch(list);
+   toast(error||'已購買 '+list.length+' 種補血藥水。');
+   if(!error){healChecked.clear();render();}
+  };
+  apply.onclick=()=>{
+   const keys=orders().map(o=>o.key);
+   if(save({healBuyKeys:keys,buy:{...state.buy,heal:{on:keys.length>0,n:healQty}}})){
+    toast(keys.length?'已設定 '+keys.length+' 種藥水自動購買。':'已清除自動購買清單。');
+    render();
+   }else toast('自動購買設定未儲存。');
+  };
+  panel.append(row('🧪','商店補血藥水',null,qty),row('', '批次購買',null,summary,buyAll,...(healShop==='buy'?[apply]:[])),group(...products.map(p=>{
+   const item=catalog.get(p.key),{count,cost}=quote(p,healQty),buy=el('button','act','購買'),check=el('input');
+   check.type='checkbox';check.checked=healChecked.has(p.key);check.setAttribute('aria-label','勾選 '+item.name);
+   check.onchange=()=>{if(check.checked)healChecked.add(p.key);else healChecked.delete(p.key);update();};
    buy.type='button';buy.setAttribute('aria-label','購買 '+item.name);
    buy.onclick=()=>{const error=OwnedInventory.trade(p.key,count,cost,false);toast(error||'已購買 '+item.name+' ×'+count);if(!error)render();};
-   return row(ico(p.key,'🧪'),item.name,'×'+count+' · '+cost.toLocaleString()+' 金幣',buy);
+   return row(ico(p.key,'🧪'),item.name,'×'+count+' · '+cost.toLocaleString()+' 天幣',check,buy);
   })));
   if(!products.length)panel.append(el('p','assist-note','商店目前沒有販售補血藥水。'));
-  return panel;
+  update();return panel;
  }
  function stoneSupplyRows(){
   const key='etcitem:40321',offer=SHOP.get(40321),qty=el('select'),buy=el('button','act','購買');
@@ -357,40 +414,56 @@ const AssistSystem=(()=>{
   return [purchase,row('◆','提煉黑魔石','消耗上一級黑魔石與魔力，最大依現有材料及魔力計算',tier,amount,refine,max)];
  }
  function supplyPage(){const p=el('div'),ap=AutoPotion.snapshot;
-  const heal=el('select');heal.setAttribute('aria-label','補血道具');heal.append(new Option('（選擇補血道具）',''));
-  const healKeys=new Set(OwnedInventory.healingItems.map(e=>e.key));if(ap.key&&!ap.skillId)healKeys.add(ap.key);
-  for(const key of healKeys)heal.append(new Option(catalog.get(key).name+' ×'+count(e=>e.key===key),key,false,ap.key===key&&!ap.skillId));
-  heal.onchange=()=>{if(heal.value&&!AutoPotion.configure({key:heal.value,skillId:null}))heal.value='';render();};
-  p.append(head('補血'),group(
-   row(healShopIcon(ap.key,'heal'),'自動喝補血道具',null,heal),
-   ...(healShop==='heal'?[healShopPanel()]:[]),
-   row('🔁','喝完先喝身上別種','選的補血道具用完時，改喝身上其他補血藥水',switcher(state.healFallback,on=>save({healFallback:on}),'喝完先喝身上別種')),
-   row('📉','體力低於 '+ap.threshold+'% 時喝',null,slider(ap.threshold,1,99,v=>AutoPotion.configure({threshold:v})&&void render(),'%','補血門檻'),switcher(ap.enabled,on=>AutoPotion.configure({enabled:on})||(toast('請先選擇補血道具或治癒魔法。'),false),'自動補血'))));
+  p.append(head('補血'),AutoPotion.healingControls(),group(row(healShopIcon(ap.key,'heal'),'購買補血藥水')),
+   ...(healShop==='heal'?[healShopPanel()]:[]));
+  const mind=learned().includes(130);
+  p.append(head('洗魔魔法'),mind?group(row(sico(130,'🔄'),'用體力換魔力（心靈轉換）','體力高於 '+state.mindHp+'%、魔力低於 '+state.mindMp+'% 時施放',switcher(state.mindOn,on=>save({mindOn:on}),'自動心靈轉換')),
+   row('❤️','體力高於 '+state.mindHp+'%',null,slider(state.mindHp,1,99,v=>save({mindHp:v})&&void render(),'%','洗魔體力門檻')),
+   row('💧','魔力低於 '+state.mindMp+'%',null,slider(state.mindMp,1,99,v=>save({mindMp:v})&&void render(),'%','洗魔魔力門檻'))):el('p','assist-note','還沒有學會心靈轉換。'));
   {const list=foods(),keys=[...new Set(list.map(e=>e.key))],sel=el('select'),cur=window.Satiety?.value?.();sel.setAttribute('aria-label','吃哪一種食物');sel.append(new Option('自動（身上有的）',''));
    for(const k of keys)sel.append(new Option(catalog.get(k).name+' ×'+count(e=>e.key===k),k,false,k===state.eatPick));if(state.eatPick&&!keys.includes(state.eatPick))sel.append(new Option(catalog.get(state.eatPick).name+' ×0',state.eatPick,false,true));
    sel.onchange=()=>{save({eatPick:sel.value||null});render();};
    p.append(head('食物'),group(row(ico(state.eatPick||keys[0]||'etcitem:49138','🍖'),'飽食度低於 '+state.eatAt+' 時自動吃','目前飽食度 '+(cur??'—')+'／'+(window.Satiety?.MAX||225)+'（3 以下不會自然回血）· 身上食物 '+list.reduce((n,e)=>n+e.count,0)+' 個',sel,switcher(state.eatOn,on=>save({eatOn:on}),'自動吃食物')),
     row('🍽️','門檻 '+state.eatAt,null,slider(state.eatAt,1,224,v=>save({eatAt:v})&&void render(),'','吃食物門檻'))));}
+  const cure=el('select'),method=state.cureMethod;
+  cure.setAttribute('aria-label','解除中毒方式');
+  for(const [value,label] of CURES)cure.append(new Option(label,value,false,value===method));
+  cure.onchange=()=>{if(save({cureMethod:cure.value}))render();else cure.value=method;};
+  const cureNote=method==='skill'?(PlayerSkills.knows(9)?'中毒時施放解毒術':'尚未學會解毒術'):'中毒時使用 · 身上 '+count(e=>e.key===method&&!e.slot)+' 個';
+  p.append(group(row(method==='skill'?sico(9,'🧪'):ico(method,'🧪'),'解除中毒',cureNote,cure,switcher(state.cureOn,on=>save({cureOn:on}),'自動解除中毒'))));
   const rows=POTIONS.map(([kind,label,kinds])=>{const ok=e=>kinds.includes(NativePotions.durationState(e.key)?.key),n=count(ok),keys=[...new Set(owned().filter(ok).map(e=>e.key))];
-   const pick=state.pick[kind],shown=keys.includes(pick)?pick:keys[0]||product(kind)?.key;
+   const pick=state.pick[kind],shown=keys.includes(pick)?pick:keys[0]||product(kind)?.key||BUY_ICON[kind];
    const sel=el('select');sel.setAttribute('aria-label',label+' 喝哪一種');sel.append(new Option('自動（先喝身上有的）',''));
    for(const k of keys)sel.append(new Option(catalog.get(k).name+' ×'+count(e=>e.key===k),k,false,k===pick));
    if(pick&&!keys.includes(pick))sel.append(new Option(catalog.get(pick).name+' ×0',pick,false,true));
    sel.onchange=()=>{save({pick:{...state.pick,[kind]:sel.value||null}});render();};
    return row(ico(shown,'🧪'),label,'效果沒了自動喝 · 身上 '+n+' 個',sel,switcher(state.potions[kind],on=>save({potions:{...state.potions,[kind]:on}}),label));});
   p.append(head('狀態藥水'),group(...rows),el('p','assist-note','職業不能喝的（例如勇水限騎士、戰士）會自動略過。'));
-  const expItems=owned().filter(e=>window.ItemEffects?.parse(e)?.kind==='exp'),bestExp=[...expItems].sort((a,b)=>ItemEffects.parse(b).rate-ItemEffects.parse(a).rate)[0];
+  const expItems=owned().filter(e=>window.ItemEffects?.parse(e)?.kind==='exp');
   const barrier=owned().filter(e=>{const q=window.ItemEffects?.parse(e);return q?.kind==='scroll'&&q.skill===31;});
   p.append(head('其他補給'),group(
-   row(ico(bestExp?.key,'📗'),'經驗藥水','打怪（AUTO）時效果沒了自動喝 · 高的先喝 · 身上 '+expItems.reduce((n,e)=>n+e.count,0)+' 個',switcher(state.expAuto,on=>save({expAuto:on}),'自動喝經驗藥水')),
+   row(ico('etcitem:990103',''),'經驗藥水','打怪（AUTO）時效果沒了自動喝 · 高的先喝 · 身上 '+expItems.reduce((n,e)=>n+e.count,0)+' 個',switcher(state.expAuto,on=>save({expAuto:on}),'自動喝經驗藥水')),
    row(ico(barrier[0]?.key||'etcitem:40889','📜'),'魔法屏障卷軸','沒有魔法屏障時自動用 · 身上 '+barrier.reduce((n,e)=>n+e.count,0)+' 張',switcher(state.barrierScroll,on=>save({barrierScroll:on}),'自動用魔法屏障卷軸')),
    ...stoneSupplyRows()));
   const cur=TransformCards.active;p.append(head('變身'),group(row('🎭','死亡後自動再變身','記憶的變身卡：'+(state.morphCard||'（還沒有，變身一次就會記住）')+'。'+(cur?'目前變身：'+cur+'。':'目前沒有變身。')+'倒地後變身會消失，復活後自動變回記憶的那張變身卡（重新整理也會記得）',switcher(state.morph,on=>save({morph:on}),'死亡後自動再變身'))));
   const buyRows=BUYS.flatMap(([k,label])=>{const b=state.buy[k],pr=product(k),qty=el('select');qty.setAttribute('aria-label',label+' 購買數量');
    for(const n of QTY)qty.append(new Option('×'+n,String(n),false,n===b.n));qty.onchange=()=>{save({buy:{...state.buy,[k]:{...b,n:Number(qty.value)}}});render();};
    const order=pr?quote(pr,b.n):null,note=pr?catalog.get(pr.key).name+' · 一次 '+order.count+' 個 '+order.cost.toLocaleString()+' 金幣':k==='heal'&&!AutoPotion.snapshot.key?'先在上面選補血道具':'商店沒賣或目前職業不能用';
-   const sw=switcher(b.on,on=>pr||!on?save({buy:{...state.buy,[k]:{...b,on}}}):(toast('商店沒賣這項，無法自動購買。'),false),'自動購買 '+label);
-   const itemRow=row(k==='heal'?healShopIcon(pr?.key||ap.key,'buy'):ico(pr?.key||BUY_ICON[k],'🛒'),label,'用完時自動買 · '+note,qty,sw);
+   const sw=switcher(b.on,on=>pr||k==='heal'&&state.healBuyKeys.length||!on?save({buy:{...state.buy,[k]:{...b,on}}}):(toast('商店沒賣這項，無法自動購買。'),false),'自動購買 '+label);
+   const itemRow=row(k==='heal'?healShopIcon(pr?.key||ap.key,'buy'):ico(pr?.key||(k==='arrow'?state.arrowBuyKey:BUY_ICON[k]),'🛒'),label,
+    k==='heal'&&state.healBuyKeys.length?'用完時自動買 · 已設定 '+state.healBuyKeys.length+' 種':'用完時自動買 · '+note,qty,sw);
+   if(k==='arrow'){
+    const type=el('select');type.setAttribute('aria-label','自動購買箭矢種類');
+    for(const key of ARROW_KEYS)type.append(new Option(catalog.get(key).name,key,false,key===state.arrowBuyKey));
+    type.onchange=()=>{if(save({arrowBuyKey:type.value})){retry.delete('buyarrow');render();}else type.value=state.arrowBuyKey;};
+    itemRow.insertBefore(type,qty);
+   }
+   if(k==='heal'){
+    const title=el('button','act assist-heal-shop-link','補血藥水商店');title.type='button';
+    title.setAttribute('aria-expanded',String(healShop==='buy'));
+    title.onclick=()=>itemRow.querySelector('[data-heal-shop="buy"]').click();
+    itemRow.querySelector('.txt').prepend(title);
+   }
    return k==='heal'&&healShop==='buy'?[itemRow,healShopPanel()]:[itemRow];});
   const purse=OwnedInventory.items.find(e=>e.key==='etcitem:40308')?.count||0;
   const drawer=el('button','assist-drawer','自動購買'),content=el('div');
@@ -400,23 +473,15 @@ const AssistSystem=(()=>{
   syncDrawer();content.append(group(...buyRows),el('p','assist-note','身上用完（0 個）時直接扣金幣購買，價格取天幣商店最低價。目前金幣 '+purse.toLocaleString()+'。'));
   p.append(drawer,content);return p;}
 
- function magicPage(){const p=el('div'),ids=learned(),ap=AutoPotion.snapshot,sk=id=>playerSkillData.skills[id];
+ function magicPage(){const p=el('div'),ids=learned(),sk=id=>playerSkillData.skills[id];
   const pickSkill=(field,label)=>{const s=el('select');s.setAttribute('aria-label',label);s.append(new Option('（選擇'+label+'）',''));for(const id of attackSkills(ids))s.append(new Option(sk(id).name+' · MP '+sk(id).mp,String(id),false,state[field]===id));s.onchange=()=>{save({[field]:s.value?Number(s.value):null});render();};return s;};
   const atk=pickSkill('attackSkill','攻擊技能');
-  const healSk=el('select');healSk.setAttribute('aria-label','治癒魔法');healSk.append(new Option('（不用治癒魔法）',''));
-  for(const id of ids.filter(id=>PlayerSkills.supports(id)&&/治癒|恢復/.test(sk(id).name)))healSk.append(new Option(sk(id).name+' · MP '+sk(id).mp,String(id),false,ap.skillId===id));
-  healSk.onchange=()=>{if(healSk.value){if(!AutoPotion.configure({skillId:Number(healSk.value),key:null}))healSk.value='';}else{const k=OwnedInventory.healingItems[0]?.key;AutoPotion.configure(k?{skillId:null,key:k}:{skillId:null,key:null,enabled:false});}render();};
   p.append(head('開怪技能'),group(row(sico(state.openSkill,4),'開怪技能','換到新目標（滿血）先放一次',pickSkill('openSkill','開怪技能')),row('💧','魔力 '+state.openMp+'% 以上',null,slider(state.openMp,0,99,v=>save({openMp:v})&&void render(),'%','開怪技能魔力門檻'),switcher(state.openOn,on=>save({openOn:on}),'自動開怪技能'))));
   p.append(head('範圍技能'),group(row(sico(state.aoeSkill,53),'範圍技能','周圍 '+state.aoeRange+' 格有 '+state.aoeCount+' 隻以上時施放',pickSkill('aoeSkill','範圍技能')),
    row('📏','範圍 '+state.aoeRange+' 格',null,slider(state.aoeRange,1,8,v=>save({aoeRange:v})&&void render(),' 格','範圍格數')),
    row('👥',state.aoeCount+' 隻以上',null,slider(state.aoeCount,2,10,v=>save({aoeCount:v})&&void render(),' 隻','怪物數量')),
    row('💧','魔力 '+state.aoeMp+'% 以上',null,slider(state.aoeMp,0,99,v=>save({aoeMp:v})&&void render(),'%','範圍技能魔力門檻'),switcher(state.aoeOn,on=>save({aoeOn:on}),'自動範圍技能'))));
   p.append(head('攻擊魔法'),group(row(sico(state.attackSkill,4),'攻擊技能','打怪時魔力 '+state.attackMp+'% 以上施放',atk),row('💧','魔力門檻',null,slider(state.attackMp,0,99,v=>save({attackMp:v})&&void render(),'%','攻擊技能魔力門檻'),switcher(state.attackOn,on=>save({attackOn:on}),'自動攻擊技能'))));
-  p.append(head('治癒魔法'),group(row(sico(ap.skillId,1),'體力低於 '+ap.threshold+'% 時施放','和「補給」的補血門檻共用',healSk)));
-  const mind=ids.includes(130);
-  p.append(head('洗魔魔法'),mind?group(row(sico(130,'🔄'),'用體力換魔力（心靈轉換）','體力高於 '+state.mindHp+'%、魔力低於 '+state.mindMp+'% 時施放',switcher(state.mindOn,on=>save({mindOn:on}),'自動心靈轉換')),
-   row('❤️','體力高於 '+state.mindHp+'%',null,slider(state.mindHp,1,99,v=>save({mindHp:v})&&void render(),'%','洗魔體力門檻')),
-   row('💧','魔力低於 '+state.mindMp+'%',null,slider(state.mindMp,1,99,v=>save({mindMp:v})&&void render(),'%','洗魔魔力門檻'))):el('p','assist-note','還沒有學會心靈轉換。'));
   const buffIds=ids.filter(id=>ClassBuffs.selfBuff(id));
   if(buffIds.length){const g=el('div','qy-set-group assist-buffs');for(const id of buffIds)g.append(row(sico(id,''),sk(id).name,null,switcher(state.buffs.includes(id),on=>save({buffs:on?[...state.buffs,id]:state.buffs.filter(x=>x!==id)}),sk(id).name)));p.append(head('輔助魔法'),g,el('p','assist-note','效果沒了就補；沒開 AUTO 也會。'));}
   else p.append(head('輔助魔法'),el('p','assist-note','還沒有學會可以自動施放的輔助魔法。'));
@@ -452,7 +517,7 @@ const AssistSystem=(()=>{
  // 方案分頁：3 組設定一鍵切換；把目前設定複製給同帳號其他角色
  function capture(){const a=JSON.parse(JSON.stringify(state));for(const k of ['presets','returnSpot','morphCard','morphLost'])delete a[k];return {assist:a,autoPotion:{...AutoPotion.snapshot},range:IslandCombat.autoRange};}
  function applyPreset(p){const keep={presets:state.presets,returnSpot:state.returnSpot,morphCard:state.morphCard,morphLost:state.morphLost};if(!save({...base(),...p.assist,...keep}))return false;
-  if(p.autoPotion){const {threshold,enabled,homeEnabled,homeThreshold,key,skillId}=p.autoPotion;AutoPotion.configure({threshold,homeEnabled,homeThreshold});if(!AutoPotion.configure({key,skillId,enabled}))AutoPotion.configure({enabled:false});}
+  if(p.autoPotion&&!AutoPotion.configure(p.autoPotion,true))return false;
   if(Number.isInteger(p.range))IslandCombat.setAutoRange(p.range);return true;}
  function copyTo(id){if(!GameEntry.saveActive())return '目前角色存檔失敗。';const chars=GameEntry.characters,i=chars.findIndex(c=>c?.id===id);if(i<0)return '找不到角色。';
   const c=chars[i],d=capture(),old=c.assist&&typeof c.assist==='object'?c.assist:{};
@@ -473,10 +538,10 @@ const AssistSystem=(()=>{
  function render(){if(!dialog)return;const y=body.scrollTop;body.replaceChildren(PAGES.find(p=>p[0]===tab)[2]());body.scrollTop=y;for(const b of tabs.children)b.setAttribute('aria-selected',String(b.dataset.tab===tab));}
  function open(){if(window.gameFlowState!=='playing')return false;if(dialog){dialog.style.zIndex=String(FloatingWindows.frontLevel());return true;}
   dialog=el('section','assist-window');dialog.setAttribute('role','dialog');dialog.setAttribute('aria-label','輔助系統');dialog.style.zIndex=String(FloatingWindows.frontLevel());
-  const h=el('header'),x=el('button','','✕');x.type='button';x.setAttribute('aria-label','關閉輔助系統');x.onclick=close;h.append(el('h2','','輔助系統'),x);
+  const h=el('div','assist-header'),x=el('button','assist-close','關閉 ✕');x.type='button';x.setAttribute('aria-label','關閉輔助系統');x.onclick=close;h.append(el('h2','','輔助系統'),x);
   tabs=el('div','qy-set-tabs');for(const [k,l] of PAGES){const b=el('button','',l);b.type='button';b.dataset.tab=k;b.onclick=()=>{tab=k;body.scrollTop=0;render();};tabs.append(b);}
   body=el('div','assist-body');dialog.append(h,tabs,body);game.append(dialog);hud.setAttribute('aria-pressed','true');render();return true;}
- function close(){dialog?.remove();dialog=null;buyOpen=false;healShop=null;hud.setAttribute('aria-pressed','false');}
+ function close(){dialog?.remove();dialog=null;buyOpen=false;healShop=null;healChecked.clear();hud.setAttribute('aria-pressed','false');}
  addEventListener('keydown',e=>{if(e.key==='Escape'&&dialog)close();});
  return {activate,open,close,skip,prefer,tick,get stats(){return JSON.parse(JSON.stringify(stats));},get escapeFirst(){return state.escape&&owner===window.activeCharacterId;},get healFallback(){return state.healFallback&&owner===window.activeCharacterId;},get snapshot(){return JSON.parse(JSON.stringify(state));}};
 })();window.AssistSystem=AssistSystem;

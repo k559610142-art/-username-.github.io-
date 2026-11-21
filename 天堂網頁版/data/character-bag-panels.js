@@ -179,7 +179,26 @@
   pane.classList.add('qy-bag-frameonly');
   {const strip=el('div','qy-bf-strip');const tabBtn=(k,label)=>{const b=el('button','qy-bf-btn',label);b.type='button';b.setAttribute('aria-pressed',String(catalogKind===k));b.onclick=()=>{catalogKind=k;for(const x of strip.querySelectorAll('[data-kind]'))x.setAttribute('aria-pressed',String(x.dataset.kind===k));query?.dispatchEvent(new Event('input'));};b.dataset.kind=k;return b;};
    const toolBtn=(label,title)=>{const b=el('button','qy-bf-btn qy-bf-tool',label);b.type='button';b.title=title;b.onclick=()=>pane.querySelector('.qy-bag-foot button[title="'+title+'"]')?.click();return b;};
-   strip.append(tabBtn('all','全部'),tabBtn('weapon','武器'),tabBtn('armor','防具'),tabBtn('etcitem','道具'),toolBtn('整理','整理背包'),toolBtn('販售','自動販賣'));frame.append(strip);for(const pos of ['top','bottom']){const d=el('div','qy-bf-drag qy-bf-drag-'+pos);d.title='拖動背包';frame.append(d);}} // 原圖上下邊框當拖動區（floating-windows.js bindDrag）
+   const sort=toolBtn('整理','整理背包'),sell=toolBtn('販售','自動販賣');
+   const remove=toolBtn('刪除','選擇刪除'),check=toolBtn('確定','確認刪除所選物品');
+   remove.classList.add('qy-bf-delete');
+   const hiddenConfirm=tools.querySelector('[data-tool=check]');
+   function syncDeleteControls(){
+    const selecting=InventoryTools.selecting;
+    sort.disabled=selecting;
+    sell.hidden=selecting;
+    check.hidden=!selecting;
+    check.disabled=hiddenConfirm.disabled;
+    check.setAttribute('aria-label','確認刪除所選物品（'+InventoryTools.selected.size+' 格）');
+    remove.textContent=selecting?'取消':'刪除';
+    remove.setAttribute('aria-pressed',String(selecting));
+   }
+   const toggleDelete=remove.onclick;
+   remove.onclick=()=>{toggleDelete();syncDeleteControls();};
+   grid.addEventListener('click',syncDeleteControls);
+   strip.append(tabBtn('all','全部'),tabBtn('weapon','武器'),tabBtn('armor','防具'),tabBtn('etcitem','道具'),sort,sell,check,remove);
+   syncDeleteControls();
+   frame.append(strip);for(const pos of ['top','bottom']){const d=el('div','qy-bf-drag qy-bf-drag-'+pos);d.title='拖動背包';frame.append(d);}}
   const main=el('div','qy-bag-main'),side=el('div','qy-bag-side'),wrap=el('div','qy-bagframe-wrap');side.append(bar,info);wrap.append(frame);main.append(side,wrap);header.after(main,foot);
   if(grid){padGrid(grid);new MutationObserver(()=>padGrid(grid)).observe(grid,{childList:true})}
   return pane};
@@ -227,10 +246,12 @@
  .qy-win.qy-bag.qy-bag-frameonly>.classic-window-header,.qy-bag-frameonly .qy-bag-side,.qy-bag-frameonly .qy-bag-foot{display:none!important}
  .qy-bag-frameonly .qy-bag-main{margin:0;gap:0;height:100%}
  .qy-bag-frameonly .qy-bagframe{filter:drop-shadow(0 6px 14px #000c)}
- .qy-bf-strip{position:absolute;left:5.6%;top:16%;width:13.5%;height:70%;display:flex;flex-direction:column;justify-content:flex-start;gap:2.2%}
+ .qy-bf-strip{position:absolute;left:5.6%;top:9.5%;width:13.5%;height:80%;display:flex;flex-direction:column;justify-content:flex-start;gap:2.2%}
  .qy-bf-btn{width:100%;aspect-ratio:1/1.05;min-height:0!important;padding:0!important;display:flex;align-items:center;justify-content:center;writing-mode:vertical-rl;letter-spacing:0;font:700 4.6cqw/1 system-ui;color:#e9d6a4;background:linear-gradient(#3b3326,#1c1813)!important;border:1px solid #6e5a35!important;border-radius:3px!important;box-shadow:inset 0 0 4px #000;text-shadow:0 1px 1px #000;cursor:pointer}
  .qy-bf-btn[aria-pressed=true]{color:#fff2c8;background:linear-gradient(#6a5428,#3a2c14)!important;border-color:#e2c27a!important;box-shadow:0 0 6px #e2c27a88,inset 0 0 4px #000}
  .qy-bf-btn.qy-bf-tool{color:#bfe0f0;border-color:#4e6b7a!important}
+ .qy-bf-strip .qy-bf-btn[hidden]{display:none!important}
+ .qy-bf-strip .qy-bf-delete{color:#ffd3c2;border-color:#9c5144!important}
  .qy-bf-btn:hover{border-color:#e2c27a!important}
  .qy-bf-drag{position:absolute;cursor:move;touch-action:none;user-select:none}.qy-bf-drag-top{left:16%;right:0;top:0;height:5.4%}.qy-bf-drag-bottom{left:0;right:0;top:87.5%;bottom:0}
  .qy-bagframe .qy-bf-close{position:absolute;left:1%;top:0;width:15%;height:5.5%;min-height:0!important;padding:0!important;background:transparent!important;border:0!important;cursor:pointer}

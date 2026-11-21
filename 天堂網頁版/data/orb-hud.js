@@ -2,7 +2,7 @@
 //  左下：遊戲訊息／對話框（分頁＋訊息＋金框輸入列）
 //  中下：左邊 HP 紅水晶、右邊 MP 藍水晶（數值用文字疊上，空的部分把寶石壓暗），中間快捷列 F1～F10（左 6 技能、右 4 藥水）＋上緣金色經驗線
 //  右側：小地圖下方「目錄」（打開原本的大圖示選單），鎖定／拾取／SELF／AUTO／攻擊換成素材圓鈕
-// 版面以設計圖 1024×572 為基準（--ok＝實際畫面縮放），只在橫向畫面啟用；設定裡可切回奇岩式（window.HudStyle，localStorage 'hudStyle'）。
+// Desktop landscape uses the crystal HUD. On phones the HUD keeps the top-left HP and MP bars.
 (()=>{
  const KEY='hudStyle',game=document.querySelector('.game'),A='assets/interface/orb-hud/';
  let style='orb';try{style=localStorage.getItem(KEY)||'orb'}catch{}
@@ -12,9 +12,7 @@
  const css=document.createElement('style');css.textContent=`
  .orb-hud-root{display:none}
  main.game.orb-hud.orb-hud.orb-hud .orb-hud-root{display:block;position:absolute;inset:0;pointer-events:none;z-index:6}
- /* 2026-11-19 使用者：手機橫式快捷格太小（畫面矮、--ok 約 0.6，格子只剩 22px）→ 矮畫面（oh-compact）把快捷列放大到每格約 34px（--oqs 倍）；
-    中間位置不夠放兩顆水晶，HP／MP 左上角已經有，所以矮畫面隱藏水晶；隨身傳送移到拾取鈕左邊；放大倍數以不碰到左邊訊息框、右邊 AUTO 為上限 */
- main.game.orb-hud.oh-compact .oh-orb{display:none!important}
+ main.game.oh-phone .oh-orb{display:none!important}
  main.game.orb-hud.orb-hud.orb-hud.oh-compact>.quick-slots,main.game.orb-hud.oh-compact .oh-bar{transform:scale(var(--oqs,1))!important;transform-origin:50% 100%!important}
  main.game.orb-hud.oh-compact .oh-exp{transform:scale(var(--oqs,1))!important;transform-origin:50% calc(100% + ${k(68)})!important}
  main.game.orb-hud.oh-compact .pt-quick{left:auto!important;right:calc(${k(92)} + 2px)!important;bottom:${k(180)}!important;width:46px!important;height:58px!important;font-size:10px!important;padding:0!important}
@@ -176,10 +174,11 @@
  // 左上頭像框加一行防禦／魔防
  const hudBox=game.querySelector(':scope>.hud'),defRow=el('div','row oh-def'),acT=el('b'),mrT=el('b');{const a=el('small','','防禦 '),m=el('small','','魔防 ');a.append(acT);m.append(mrT);defRow.append(a,m);hudBox?.append(defRow)}
  function refreshDef(){try{acT.textContent=String(typeof previewArmorClass==='function'?previewArmorClass():'—');mrT.textContent=String(window.NativeCombatRules?.defense?.()?.mr??0)}catch{}}
- function refresh(){if(!game.classList.contains('orb-hud')||window.gameFlowState!=='playing')return;refreshDef();setOrb(hpO,'hp',hp,maxHp);setOrb(mpO,'mp',mp,maxMp);const e=expPct();exp.style.setProperty('--fill',e+'%');exp.title='經驗 '+e.toFixed(2)+'%';labelSlots();placeMenu()}
+ function refresh(){if(window.gameFlowState!=='playing')return;if(!game.classList.contains('orb-hud'))return;refreshDef();if(!game.classList.contains('oh-phone')){setOrb(hpO,'hp',hp,maxHp);setOrb(mpO,'mp',mp,maxMp);}const e=expPct();exp.style.setProperty('--fill',e+'%');exp.title='經驗 '+e.toFixed(2)+'%';labelSlots();placeMenu()}
  // 2026-11-19 使用者：電腦版隨身傳送要維持原位 → 快捷列放大（oh-compact）只用在觸控手機
  const touchPhone=()=>{try{return matchMedia('(pointer:coarse)').matches&&Math.min(screen.width,screen.height)<=600}catch{return false}};
  function layout(){const r=game.getBoundingClientRect(),on=style==='orb'&&r.width>=560&&r.width>r.height;game.classList.toggle('orb-hud',on);
+  game.classList.toggle('oh-phone',touchPhone());
   if(!on){const lock=document.querySelector('.bottom .actions>.reference-lock');lock?.style.removeProperty('top');lock?.style.removeProperty('bottom');const loc=document.querySelector('.location');loc?.style.removeProperty('top');loc?.style.removeProperty('right')}
   if(!on)game.classList.remove('oh-compact');
   if(on){game.classList.remove('classic-hud');const ok=Math.max(.5,Math.min(r.height/572,r.width/1024,1.5)),c=r.width/2+10.5*ok,half=222.5*ok,msgR=4+Math.max(140,Math.min(300*ok,r.width/2-352*ok)),qs=Math.max(1,Math.min(1.6,34/(35.5*ok),(c-msgR-4)/half,(r.width-189*ok-6-c)/half));game.style.setProperty('--ok',ok);game.style.setProperty('--oqs',qs);game.classList.toggle('oh-compact',qs>1.05&&touchPhone());refresh()}} // 矮畫面放大快捷列（--oqs）
