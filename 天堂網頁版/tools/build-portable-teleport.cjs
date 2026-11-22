@@ -10,7 +10,7 @@ rows.push({id:170000,name:'新遺忘之島',orderid:'',locx:32655,locy:33015,map
 // User travel entries use the native first-floor map and validated native entrance.
 const tower=rows.find(r=>r.id===368),oldTower=game.NATIVE_DUNGEON_MAPS[101];
 if(tower&&oldTower)Object.assign(tower,{name:'傲慢之塔1樓',mapid:101,locx:oldTower.spawn.x,locy:oldTower.spawn.y});
-for(const [id,mapid,name,price]of [[807000,807,'新古魯丁地監1樓',5000],[330100,3301,'新傲慢之塔1樓',50000]]){const map=game.NATIVE_DUNGEON_MAPS[mapid];if(map)rows.push({id,mapid,name,locx:map.spawn.x,locy:map.spawn.y,itemid:40308,price,min:1,max:200,orderid:''});}
+for(const [id,mapid,name,price]of [[330100,3301,'新傲慢之塔1樓',50000]]){const map=game.NATIVE_DUNGEON_MAPS[mapid];if(map)rows.push({id,mapid,name,locx:map.spawn.x,locy:map.spawn.y,itemid:40308,price,min:1,max:200,orderid:''});}
 
 // 2026-11-22 使用者：所有狩獵地圖都用狩獵場傳送進入（不另做樓梯）；沒怪物的地圖不做傳送點；傲慢之塔只到 1 樓（高樓層用卷軸）。
 // 分類：村莊／外圍／島嶼／高塔／地監，島嶼、高塔、地監再依 group 分組，點進去才列出樓層。
@@ -31,7 +31,7 @@ const range=(a,b)=>Array.from({length:b-a+1},(_,i)=>a+i);
 const GROUPS=[ // [分類, 分組名稱, 地圖編號]
  ['island','霧月島',[]],['island','遺忘之島',[70]],['island','新遺忘之島',[1700]],
  ['tower','傲慢之塔',[101]],['tower','新傲慢之塔',[3301]],['tower','象牙塔',range(75,82)],
- ['dungeon','冒險洞窟',[1,2,14]],['dungeon','古魯丁地監',range(7,13)],['dungeon','新古魯丁地監',[807]],['dungeon','眠龍洞穴',[19,20,21]],
+ ['dungeon','冒險洞窟',[1,2,14]],['dungeon','古魯丁地監',range(7,13)],['dungeon','眠龍洞穴',[19,20,21]],
  ['dungeon','風木城地監',[23,24]],['dungeon','騎士洞穴',range(25,28)],['dungeon','龍之谷地監',[30,31,32,33,35,36,37]],['dungeon','巨蟻洞穴',[...range(43,51),541,542,543]],
  ['dungeon','奇岩地監',range(53,56)],['dungeon','海音地監',[59,60,61,63]],['dungeon','傑瑞德的試煉地監',[22]],['dungeon','沉默洞穴',[304]],
  ['dungeon','拉斯塔巴德',[307,308,309,...range(450,496),...range(530,536)]],['dungeon','歐姆地監',[310]],['dungeon','狄亞得要塞',[320]],
@@ -42,6 +42,7 @@ const routes=[];
 for(const r of rows){
  if(!supported[r.mapid]||r.itemid!==40308||!Number.isSafeInteger(r.price)||r.price<0)continue;
  if(r.mapid>=102&&r.mapid<=110)continue; // 傲慢之塔 2～10 樓只能用卷軸上去
+ if(r.mapid===807)continue; // 2026-11-22 使用者：狩獵場移除新古魯丁地監
  let category=r.orderid==='B'?'village':/島/.test(r.name)?'island':r.mapid===4&&!/地監|洞穴|洞窟|地下|墓穴|之塔|象牙塔/.test(r.name)?'field':'dungeon',group=null;
  const g=r.mapid!==4&&r.mapid!==0&&category!=='village'?groupOf.get(r.mapid):null;if(g){category=g.category;group=g.group;}
  if(r.id===110){category='island';group='霧月島';}
