@@ -540,3 +540,10 @@ NPC 穿衣服（2026-11-13）：
 - data/doll-effects.js SPELL 加 列炎術 20～35（目前沒有娃娃用到，留著備用）。
 - data/auto-sell.js convert：穿戴中、強化過（entry.enchant ≠ 0）、有 BOSS 附魔（entry.soul）的物品不自動販賣／刪除。
 - data/owned-inventory.js trade(sell)：商店賣出同名物品時先賣沒強化、沒附魔的；穿戴中原本就不能賣（!e.slot）也不能刪除（canDiscard）。
+
+【2026-11-22 娃娃卡冊：進化階段也做成卡片＋移除帕歐／帕克】
+- 使用者：進化後的每一階也要有卡片才能收納。game-catalog.js 魔法娃娃列表改成 DollEvolution.bases() 依品階排序後 flatMap(members)，
+  每個系列第一階後面接著各進化階段；dollTier(id) 找不到時用該系列第一階（rootId）的品階。
+- 使用者：火焰之子 → 少女帕歐／少年帕克…魔導師帕歐／魔騎士帕克＋附魔 1～15 不開放。doll-evolution.js 拿掉該系列定義（火焰之子變成不能進化），
+  doll-dedup.js 從 gameCatalogData.dolls 移除那 36 隻（80281～80283、80286～80288、80290～80319；已擁有的讀檔時自動消失）。
+- 卡冊現在 164 張：不能進化 67 隻＋可進化 22 系列共 97 隻。娃娃進化功能（成長藥劑、成功率、取得管道）還在設計討論中。

@@ -10,7 +10,7 @@ function tdjRows(type) {
 }
 // 2026-11-17 使用者：魔法娃娃卡依稀有度排列。稀有度照扭蛋機的分級（doll-gacha-data.js：一般～超越），卡框顏色同變身卡。
 const DOLL_TIER_ORDER = ['一般','高級','稀有','英雄','傳說','神話','超越'], DOLL_TIER_TAG = {一般:'white',高級:'green',稀有:'blue',英雄:'red',傳說:'purple',神話:'gold',超越:'transcend'};
-function dollTier(id){return window.DOLL_GACHA?.tiers.find(t=>t.ids.includes(+id))?.tier||'一般';}
+function dollTier(id){const root=window.DollEvolution?.rootId(id)??+id;return window.DOLL_GACHA?.tiers.find(t=>t.ids.includes(+id)||t.ids.includes(root))?.tier||'一般';} // 進化階段跟著該系列第一階的品階
 const tdjWuhunTierTag = {下品: 'white', 上品: 'green', 極品: 'blue', 千年: 'red', 萬年: 'purple', 上古: 'gold', 四神獸: 'transcend'};
 const lineageMCardTiers = {
   "white": "白卡 · 一般",
@@ -1780,7 +1780,7 @@ function openGameCatalog(type) {
     return;
   }
   const entries = type === 'cards' ? lineageMTransformCards
-    : type === 'transforms' ? transformBookRows() : type === 'dolls' ? DollEvolution.bases().map((row,i)=>[row,i]).sort((a,b)=>DOLL_TIER_ORDER.indexOf(dollTier(a[0].id))-DOLL_TIER_ORDER.indexOf(dollTier(b[0].id))||a[1]-b[1]).map(x=>x[0]) : tdjRows(type) || gameCatalogData[type];
+    : type === 'transforms' ? transformBookRows() : type === 'dolls' ? DollEvolution.bases().map((row,i)=>[row,i]).sort((a,b)=>DOLL_TIER_ORDER.indexOf(dollTier(a[0].id))-DOLL_TIER_ORDER.indexOf(dollTier(b[0].id))||a[1]-b[1]).map(x=>x[0]).flatMap(base=>DollEvolution.members(base.id)) /* 2026-11-22 使用者：進化後的每一階也做成卡片才能收納，排在該系列第一階後面 */ : tdjRows(type) || gameCatalogData[type];
   const all = () => true;
   const usedGrades = type === 'transforms' ? [...new Set(entries.map(row => row.grade))].sort((a, b) => a - b) : [];
   const filters = type === 'cards' ? [['全部', all], ...Object.entries(lineageMCardTiers).map(([tier, label]) => [label, row => row.tier === tier])]
