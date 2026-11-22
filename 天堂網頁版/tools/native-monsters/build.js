@@ -11,7 +11,7 @@ const { parseSpr, renderFrame } = require('./spr.js');
 const { parseList } = require('./listspr.js');
 
 const args = process.argv.slice(2), opt = { client: 'C:/Users/User/Desktop/天地劫天堂', check: false };
-for (let i = 0; i < args.length; i++) { if (args[i] === '--client') opt.client = args[++i]; else if (args[i] === '--check') opt.check = true; else if(args[i]==='--maps')opt.maps=args[++i].split(',').map(Number); else if(args[i]==='--looks')opt.looks=args[++i].split(',').map(Number); }
+for (let i = 0; i < args.length; i++) { if (args[i] === '--client') opt.client = args[++i]; else if (args[i] === '--check') opt.check = true; else if(args[i]==='--maps')opt.maps=args[++i].split(',').map(Number); else if(args[i]==='--looks')opt.looks=args[++i].split(',').map(Number); else if(args[i]==='--boss'){opt.boss=true;opt.maps=['boss'];} }
 
 const game = {}; vm.createContext(game);
 vm.runInContext(fs.readFileSync(path.join(ROOT, 'data/island-monster-data.js'), 'utf8').replace(/^const (\w+)\s*=/gm, 'var $1='), game);
@@ -54,7 +54,7 @@ if (opt.check) {
 }
 
 // Spawns for the converted maps.
-const maps = new Set(opt.maps||Object.keys(game.NATIVE_DUNGEON_MAPS).map(Number));
+const maps = new Set(opt.boss?[]:opt.maps||Object.keys(game.NATIVE_DUNGEON_MAPS).map(Number));
 const spawns = table('table-141.js').filter(r => maps.has(+r.mapid) && templates[r.npc_templateid] && +r.count > 0).map(r => ({
   mapId: +r.mapid, spawnId: +r.id, zone: r.location, count: +r.count, npcId: +r.npc_templateid, group: +r.group_id || 0,
   point: [+r.locx, +r.locy], random: [+r.randomx, +r.randomy], bounds: [+r.locx1, +r.locy1, +r.locx2, +r.locy2], heading: +r.heading || 0,
@@ -67,12 +67,28 @@ for (const r of npcRows) spawns.push({
   point: [+r.locx, +r.locy], random: [+r.randomx, +r.randomy], bounds: [0, 0, 0, 0], heading: +r.heading || 0,
   respawn: [+r.respawn_delay || 0, +r.respawn_delay || 0], movement: +r.movement_distance || 0, resident: true,
 });
+// --boss（2026-11-22 使用者：BOSS 全部放進地圖）：DB spawnlist_boss 中地圖遊戲裡已有、且有座標的列。
+// 一律 1 隻、重生 = spawn_interval 分鐘（0 當 180）、boss:true（island-monsters.js 把死亡時間存 localStorage，重整不重刷）。
+// 地圖上已經有同一隻（一般 spawnlist）就跳過。座標：locx2=0 是定點，否則是範圍。
+if(opt.boss){
+ const have=new Set(game.islandMonsterSpawns.map(s=>(s.mapId||0)+':'+s.npcId)),mapOk=m=>m===0||m===4||!!game.NATIVE_DUNGEON_MAPS[m];
+ for(const r of table('table-143.js')){
+  const m=+r.mapid,id=+r.npc_templateid,x1=+r.locx1,y1=+r.locy1,x2=+r.locx2,y2=+r.locy2;
+  if(!mapOk(m)||!templates[id]||!x1||!y1||have.has(m+':'+id))continue;
+  if(id===45600)continue; // 克特：座標在說話之島村莊安全區內，怪物不能在安全區出生
+
+  const area=x2>0&&y2>0,sec=(+r.spawn_interval||180)*60;have.add(m+':'+id);
+  spawns.push({mapId:m,spawnId:900000000+(+r.id),zone:r.location,count:1,npcId:id,group:groups[+r.group_id]?+r.group_id:0,
+   point:area?[Math.round((x1+x2)/2),Math.round((y1+y2)/2)]:[x1,y1],random:area?[0,0]:[2,2],bounds:area?[x1,y1,x2,y2]:[0,0,0,0],heading:+r.heading||0,
+   respawn:[sec,sec],movement:0,boss:true});
+ }
+}
 const looks = new Set(); for (const s of spawns) { looks.add(templates[s.npcId].gfx); for (const [id] of groups[s.group]?.members || []) if (templates[id]) looks.add(templates[id].gfx); }
 // Monsters made by skills (data/summons.js): 召喚術 81210–81228, 屬性精靈 45303–45306, 強力屬性精靈 81050–81053.
 for (let id = 81210; id <= 81240; id++) if (templates[id]) looks.add(templates[id].gfx); // 召喚控制戒指 list
 for (const id of [81210, 81213, 81216, 81219, 81222, 81225, 81228, 45303, 45304, 45305, 45306, 81050, 81051, 81052, 81053]) if (templates[id]) looks.add(templates[id].gfx);
 // Some custom graphics are absent from this supplied client. Preserve NPC stats and use only an exact-name native look.
-const aliases={};for(const spawn of spawns){const n=templates[spawn.npcId];if(existing[n.gfx]||clipsFor(n.gfx))continue;const ok=t=>t.gfx!==n.gfx&&(existing[t.gfx]||clipsFor(t.gfx)),base=n.name.replace(/^(歪曲|不幸|恐怖|死亡|地獄|不死|殘忍|黑暗|不滅|傲慢)的/,''),all=Object.values(templates);
+const aliases={};for(const spawn of spawns){const n=templates[spawn.npcId];if(existing[n.gfx]||clipsFor(n.gfx))continue;const ok=t=>t.gfx!==n.gfx&&(existing[t.gfx]||clipsFor(t.gfx)),base=n.name.replace(/^\s*(\[BOSS\]|【BOSS】|【寶物】)\s*/,'').replace(/^(歪曲|不幸|恐怖|死亡|地獄|不死|殘忍|黑暗|不滅|傲慢)的/,''),all=Object.values(templates);
  // 新傲慢之塔的「不幸的魔狼」等變種沒有圖：先找同名，再找去掉前綴的原版怪物（2026-11-22）
  const peer=all.find(t=>t.name===n.name&&ok(t))||all.find(t=>t.name===base&&ok(t))||all.find(t=>t.name===base.replace(/\(.*\)$/,'')&&ok(t));if(peer){aliases[n.gfx]=peer.gfx;looks.add(peer.gfx);}}
 for(const gfx of opt.looks||[])looks.add(gfx);

@@ -46,8 +46,14 @@ const IslandMonsters = (() => {
       rest:500+random()*2200,phase:random()*1800,step:null,pack};
     mob.lastRegen=movementTime();mobs.push(mob);
     IslandNpcAi.reset(mob);
+    if(spawn.boss){const left=bossTimer(spawn)-Date.now();if(left>0){mob.hp=0;mob.respawnAt=movementTime()+left;mob.death=null;}}
     return mob;
   }
+  // 2026-11-22 BOSS（spawnlist_boss，spawn.boss）：死亡時間存 localStorage，重新整理或重進遊戲不會提早重生。
+  const BOSS_KEY='lineage-web-boss-respawn-v1';
+  function bossTimers(){try{return JSON.parse(localStorage.getItem(BOSS_KEY)||'{}')||{};}catch{return {};}}
+  function bossTimer(spawn){return Number(bossTimers()[(spawn.mapId||0)+':'+spawn.spawnId])||0;}
+  function saveBossTimer(spawn,until){try{const all=bossTimers(),now=Date.now();for(const k of Object.keys(all))if(all[k]<=now)delete all[k];all[(spawn.mapId||0)+':'+spawn.spawnId]=until;localStorage.setItem(BOSS_KEY,JSON.stringify(all));}catch{}}
   function spawnPack(spawn, region, x, y, random) {
     const group = islandMonsterGroups[spawn.group];
     const pack = group ? {members:[],group} : null;
@@ -424,6 +430,7 @@ const IslandMonsters = (() => {
     const [min,max]=mob.spawn.respawn;
     mob.respawnAt=Math.max(respawnAt??at+1000*(Math.min(min,max)+Math.random()*Math.abs(max-min)),at+duration+1500);
     mob.death=frames?{start:at,end:at+duration,until:Math.min(mob.respawnAt,at+duration+12000),x,y}:null;
+    if(mob.spawn.boss)saveBossTimer(mob.spawn,Date.now()+(mob.respawnAt-at));
     if(frames)for(const frame of frames)loadSheet(frame[0]);
     mob.hp=0;mob.step=null;mob.action=null;mob.windup=null;if(selected===mob)selected=null;
   }

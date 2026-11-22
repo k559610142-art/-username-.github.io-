@@ -591,3 +591,12 @@ NPC 穿衣服（2026-11-13）：
 - 2026-11-22 使用者修正：傳送符不開放（46011～、40280～、40289～、84031～、84041～ 按了提示不開放，也不掉落）；2～10 樓卷軸只靠怪物掉落
   （NPC 148390 原本賣舊塔卷軸，但遊戲裡沒放這個 NPC）；兩座塔 1 樓用狩獵場傳送，新塔 1 樓卷軸 84001 按了提示改用狩獵場。
 - 2026-11-22 使用者：狩獵場移除新古魯丁地監（Map 807，build-portable-teleport.cjs 跳過），共 143 個傳送點；地圖本身保留。
+
+【2026-11-22 BOSS 全部放進地圖】
+- 使用者：天地劫 DB spawnlist_boss 有地圖的 BOSS 全部放進去。node tools/native-monsters/build.js --boss（增量附加在 dungeon-monster-data.js）：
+  地圖遊戲裡有（0／4／native）、有座標（locx1>0）、該地圖沒有同一隻的列 → 1 隻、spawnId 900000000+DB id、respawn = spawn_interval×60 秒（0 當 180 分）、boss:true。
+  座標 locx2=0 是定點（random 2），否則 bounds 範圍。克特 45600 座標在說話之島安全區 → 排除。共 82 隻、45 張地圖，新切外觀 54 種（dungeon-mob-*.png 約 96MB）。
+  aliases 名稱比對先去掉 [BOSS]／【BOSS】／【寶物】前綴；仍沒圖的 13 種人工借用（custom-actions.json aliases，custom-looks.js 輸出）。
+- data/island-monsters.js：spawn.boss 的怪 markDead 時把重生時間存 localStorage lineage-web-boss-respawn-v1（key 地圖:spawnId，值 Date.now 毫秒），
+  addMob 時還沒到就直接以死亡狀態生成 → 重新整理、重進遊戲不會提早重生（同一台瀏覽器共用）。
+- 清單：BOSS資料清單.md 第〇節。
