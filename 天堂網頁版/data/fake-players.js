@@ -89,11 +89,12 @@ const FakePlayers=(()=>{
  function make(x,y,red=false){
   const pool=roster.filter(r=>!used.has(r.name)&&!(recentlyDeparted.get(r.name)>movementTime())&&!!r.red===red&&lookOf(r.look)&&!stallNames().has(r.name)),saved=pool.length&&(red||Math.random()<.3)?pick(pool):null; // 舊面孔只有約 3 成機率回來，而且隨機挑，不再總是同幾個
   const look=saved?lookOf(saved.look):pick(looks);const g=A.avatars[look.avatar]?.gender?1:0,cls=CLASS_NAMES[look.role]||{any:[],m:[],f:[]},own=[...cls.any,...(g?cls.f:cls.m)].filter(n=>!used.has(n)&&!(recentlyDeparted.get(n)>movementTime()));
-  let name=saved?saved.name:pick((red?RED_NAMES:own.length&&Math.random()<.35?own:(Math.random()<.75?GEN_NAMES:[...NAMES,...GENDER_NAMES[g],...own])).filter(n=>!used.has(n)&&!(recentlyDeparted.get(n)>movementTime())));if(!name)return null;used.add(name);const lv=saved?saved.lv:red?ri(18,40):ri(5,45);
+  let name=saved?saved.name:pick((red?RED_NAMES:own.length&&Math.random()<.35?own:(Math.random()<.75?GEN_NAMES:[...NAMES,...GENDER_NAMES[g],...own])).filter(n=>!used.has(n)&&!(recentlyDeparted.get(n)>movementTime())));if(!name)return null;used.add(name);const lv=saved?saved.lv:red?ri(18,40):ri(8,62);
   const npc={name,kind:'L1Bot',gfx:look.id,level:lv,hp:40+lv*14,mp:0,ac:0,walk:look.walkProfile?.stepMs||640,attack:look.attackMs,ranged:RANGED[look.weapon]||1,skills:[],regeneration:null,aggressive:false};
   const mob={spawn:{bot:true,mapId:window.activeMapId||0,npc,heading:ri(0,7),respawn:[0,0]},region:[x-50,y-50,x+50,y+50],x,y,homeX:x,homeY:y,hp:npc.hp,heading:ri(0,7),rest:0,phase:Math.random()*1800,step:null,
    fp:{look,red,clan:rollClan(red),state:safe(x,y)?'town':'hunt',think:0,chatAt:movementTime()+rnd(6000,40000),ready:0,target:null,since:movementTime(),pk:false,pkCd:movementTime()+rnd(2500,6500)}};
   if(saved)mob.fp.clan=saved.clan;
+  if(!red)combatProfile(mob);
   preloadLook(look);IslandMonsters.addAlly(mob);remember(mob);return mob;}
  // 傭兵（2026-11-16，mercenary.js）：用雇用合約裡的玩家角色資料生成一個由 AI 操控的同伴，不進路人名單。
  const LOOK_ROLE={黑妖:'妖精',龍騎士:'騎士',戰士:'騎士',幻術師:'法師'};
@@ -148,8 +149,71 @@ const FakePlayers=(()=>{
  // 手動強制攻擊和掛機反擊都受安全區保護。
  function canAttack(mob){return (window.ForceAttack?.on||IslandCombat.canRetaliate(mob))&&canFight(mob);}
 
+ const gearPools=new Map();
+ function combatProfile(mob){
+  const f=mob.fp,n=mob.spawn.npc;
+  if(f.combatProfile)return f.combatProfile;
+  const role=f.look.role,mode=f.look.weapon,key=role+'/'+mode;
+  if(!gearPools.has(key)){
+   const valid=INTERFACE_CATALOG.items.filter(i=>i.allowed.includes(role)&&!/試煉|失去|封印|任務|修練者|劍身/.test(i.name)&&i.sourceRules?.safenchant>=0);
+   const byPower=(a,b)=>(a.damage[0]+a.damage[1]-b.damage[0]-b.damage[1])||a.id-b.id;
+   const weapons=valid.filter(i=>i.kind==='weapon'&&(mode==='wand'?i.type==='staff':i.mode===mode)).sort(byPower);
+   const armor=['helm','armor','cloak','glove','boots','tshirt'].map(type=>valid.filter(i=>i.kind==='armor'&&i.type===type&&i.ac<0).sort((a,b)=>b.ac-a.ac||a.id-b.id));
+   gearPools.set(key,{weapons,armor});
+  }
+  let seed=2166136261;
+  for(const char of n.name+'|'+n.level)seed=Math.imul(seed^char.charCodeAt(0),16777619);
+  const next=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
+  const quality=Math.min(.98,Math.max(.05,n.level/90+(next()-.5)*.5));
+  const pool=gearPools.get(key),piece=list=>list[Math.floor((list.length-1)*Math.max(0,Math.min(.99,quality+(next()-.5)*.18)))];
+  const gear=[piece(pool.weapons),...pool.armor.map(piece)].filter(Boolean).map(item=>{
+   const cap=Math.max(0,Math.min(item.sourceRules.safenchant,Math.floor(n.level/9)));
+   return {item,enchant:Math.floor(next()*(cap+1))};
+  });
+  const weapon=gear.find(g=>g.item.kind==='weapon'),ranged=n.ranged>1;
+  const attack=weapon?ItemProperties.attackModifiers(weapon.item,ranged):{hit:0,damage:0};
+  const bonusHp=gear.reduce((sum,g)=>sum+(g.item.bonuses?.hp||0),0);
+  n.hp+=Math.round(n.level*(2+quality*3))+bonusHp;
+  mob.hp=Math.min(n.hp,mob.hp+Math.round(n.level*(2+quality*3))+bonusHp);
+  n.ac=10-Math.floor(n.level/6)+gear.reduce((sum,g)=>sum+(g.item.kind==='armor'?g.item.ac-g.enchant:0),0);
+  f.combatProfile={quality,gear,weapon,attack};
+  return f.combatProfile;
+ }
+ function attackDamage(mob,target){
+  const profile=combatProfile(mob),n=mob.spawn.npc,t=target.spawn.npc,weapon=profile.weapon;
+  const hitBonus=profile.attack.hit+Math.floor((weapon?.enchant||0)/2)+Math.floor(n.level/6);
+  const hitChance=clamp((n.level+hitBonus+10+(t.ac||0))*5,5,95);
+  if(Math.random()*100>=hitChance)return 0;
+  const max=Math.max(1,weapon?.item.damage?.[t.size==='large'?1:0]||5);
+  return Math.max(1,ri(1,max)+Math.max(2,Math.floor(n.level*.65))+profile.attack.damage+(weapon?.enchant||0));
+ }
+ const partyPotions=[[40012,75],[40011,45],[40010,22]];
+ function partyPotion(mob,now){
+  const f=mob.fp,max=mob.spawn.npc.hp;
+  if(f.partyOwner!==window.activeCharacterId||!f.partyOwner||mob.hp<=0||mob.hp>=max*.82||now<(f.healAt||0)||window.ClassBuffs?.canUsePotions?.(mob)===false)return false;
+  prices();
+  const profile=combatProfile(mob);
+  const choices=profile.quality>=.65?partyPotions:profile.quality>=.4?partyPotions.slice(1):partyPotions.slice(2);
+  for(const [id,heal] of choices){
+   const price=Math.ceil(SHOP_PRICE.get(id)||0);
+   if(!price)continue;
+   const inventory=OwnedInventory.snapshot;
+   if(!DBGameRules.takeItem(inventory,'etcitem:40308',price))continue;
+   if(!OwnedInventory.applyChange(inventory))return false;
+   mob.hp=Math.min(max,mob.hp+Math.max(1,Math.round(heal*rnd(.8,1.2))));
+   f.healAt=now+1800;f.hpShow=now+3000;
+   IslandMonsters.playEffect(189,mob.x,mob.y,now,{follow:mob});
+   return true;
+  }
+  return false;
+ }
  function survival(mob,now,stepToward){
   const f=mob.fp,max=mob.spawn.npc.hp;
+  if(f.partyOwner){
+   combatProfile(mob);
+   partyPotion(mob,now);
+   return false;
+  }
   f.potions??=ri(5,12);f.nerve??=rnd(.25,.48);
   if(safe(mob.x,mob.y)){f.potions=Math.max(f.potions,8);}
   if(mob.hp<max*.7&&now>=(f.healAt||0)&&f.potions>0&&window.ClassBuffs?.canUsePotions?.(mob)!==false){
@@ -243,7 +307,7 @@ const FakePlayers=(()=>{
    say(mob,pick(RED_LINES));window.GameChat?.say('【警告】紅名 '+name+' 盯上了你！','sys');return true;
   }
   return false;}
- function monsterHurt(mob,amount,now=movementTime(),attacker=null){const f=mob?.fp;if(!f||f.hidden||!mob.hp)return;amount=window.ClassBuffs?.allyIn?.(mob,amount)??amount;if(!(amount>0))return;mob.hp=Math.max(0,mob.hp-Math.max(1,Math.floor(amount)));f.hpShow=now+3000;window.CombatSound?.monsterHit?.(mob);window.FakePlayerAutonomy?.remember(mob,'hurt',attacker,now);if(mob.hp)return;window.FakePlayerAutonomy?.remember(mob,'death',attacker||f.target,now);claimed.delete(f.target);f.target=f.partyTarget=null;f.pk=false;f.goal=f.route=null;f.hidden=true;f.vanish=now+60000;mob.hp=mob.spawn.npc.hp;mob.step=mob.action=null;mob.bubble=null;if(IslandMonsters.target===mob){IslandMonsters.setTarget(null);IslandCombat.stop();}}
+ function monsterHurt(mob,amount,now=movementTime(),attacker=null){const f=mob?.fp;if(!f||f.hidden||!mob.hp)return;amount=window.ClassBuffs?.allyIn?.(mob,amount)??amount;if(!(amount>0))return;if(!f.red&&!f.stall){combatProfile(mob);amount*=1-Math.min(.45,Math.max(0,10-mob.spawn.npc.ac)*.012);}mob.hp=Math.max(0,mob.hp-Math.max(1,Math.floor(amount)));f.hpShow=now+3000;window.CombatSound?.monsterHit?.(mob);window.FakePlayerAutonomy?.remember(mob,'hurt',attacker,now);if(mob.hp)return;window.FakePlayerAutonomy?.remember(mob,'death',attacker||f.target,now);claimed.delete(f.target);f.target=f.partyTarget=null;f.pk=false;f.goal=f.route=null;f.hidden=true;f.vanish=now+60000;mob.hp=mob.spawn.npc.hp;mob.step=mob.action=null;mob.bubble=null;if(IslandMonsters.target===mob){IslandMonsters.setTarget(null);IslandCombat.stop();}}
  // 玩家開啟強制攻擊後打到假人：被打就反擊；打倒得金幣，消失一分鐘
  function hurt(mob,amount){const f=mob.fp;if(!f||!canAttack(mob))return;mob.hp=Math.max(0,mob.hp-Math.max(1,Math.floor(amount)));f.hpShow=movementTime()+3000;window.CombatSound?.monsterHit?.(mob);
   if(!f.pk&&!f.retreatUntil&&mob.hp>0&&!CharacterActions.dead){f.pk=true;f.enemyId=window.activeCharacterId;claimed.delete(f.target);f.target=null;f.goal=null;f.route=null;say(mob,pick(['你敢打我?','找死','來啊']));}
@@ -425,5 +489,5 @@ const FakePlayers=(()=>{
   const reply=whisperReply(b,text);if(reply)setTimeout(()=>window.GameChat?.say('[密語] '+to+'：'+reply,'whisper'),rnd(1500,4000));});
  function setEnabled(on){enabled=!!on;maintain();}
  function setRed(on){redOn=!!on;maintain();}
- return {hireBot,canFight,canAttack,update,label,hurt,monsterHurt,drawShots,openStall,get stalls(){stallInit();return stalls;},sampleStall:()=>genStall().items.map(i=>itemById.get(i.id)?.name),setRed,get redOn(){return redOn;},get count(){return bots().length;},get enabled(){return enabled;},setEnabled,looks};
+ return {hireBot,canFight,combatProfile,attackDamage,partyPotion,canAttack,update,label,hurt,monsterHurt,drawShots,openStall,get stalls(){stallInit();return stalls;},sampleStall:()=>genStall().items.map(i=>itemById.get(i.id)?.name),setRed,get redOn(){return redOn;},get count(){return bots().length;},get enabled(){return enabled;},setEnabled,looks};
 })();window.FakePlayers=FakePlayers;

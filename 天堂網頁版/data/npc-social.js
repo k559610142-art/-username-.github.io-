@@ -16,7 +16,7 @@ const NpcSocial=(()=>{
  function whisper(b,text){window.GameChat?.say('[密語] '+b.spawn.npc.name+'：'+text,'whisper');}
  function message(text){window.GameChat?.say('【社交】'+text,'sys');}
  function reset(){
-  for(const b of party){b.fp.partyOwner=null;b.fp.target=null;}
+  for(const b of party){b.fp.partyOwner=null;b.fp.target=null;b.fp.partyTarget=null;}
   party.clear();invite=null;if(deal)release(deal.bot);deal=null;win?.remove();win=null;
  }
  function checkOwner(){const id=window.gameFlowState==='playing'?window.activeCharacterId:null;if(id!==owner){reset();known.clear();owner=id;nextInvite=now()+60000;}return !!id;}
@@ -60,7 +60,7 @@ const NpcSocial=(()=>{
  function join(b){
   if(!checkOwner()||!usable(b)||b.fp.social==='leaving'||party.size>=3)return false;
   if(deal?.bot===b){whisper(b,'先完成這筆交易，再一起練功吧。');return false;}
-  party.add(b);b.fp.partyOwner=owner;b.fp.pk=false;b.fp.target=null;b.fp.goal=null;b.fp.route=null;
+  if(!adopt(b))return false;
   invite=null;remember(b);whisper(b,'組好了！你帶路，我會跟著你、幫打你正在打的怪。');render();return true;
  }
  function release(b){if(!b?.fp)return;if(b.fp.hidden&&!b.fp.vanish)b.fp.hidden=false;b.fp.social=null;b.fp.target=null;b.fp.goal=null;b.fp.route=null;b.fp.think=now()+2500;}
@@ -153,8 +153,13 @@ const NpcSocial=(()=>{
   if(b.fp.pk||b.fp.retreatUntil)return false;
   if(b.step||b.action&&time<b.action.end)return true;
   if(CharacterActions.dead)return true;
-  const target=window.ClassBuffs?.focusTarget?.()||IslandMonsters.target;b.fp.partyTarget=null;
-  if(target?.hp&&!target.spawn.bot&&!target.spawn.ally&&!target.spawn.resident&&!safe(worldX,worldY)&&!safe(b.x,b.y)&&!safe(target.x,target.y)&&distance(target,player())<=12){
+  const f=b.fp;
+  const valid=t=>t?.hp&&!t.spawn.bot&&!t.spawn.ally&&!t.spawn.resident&&(t.spawn.mapId||0)===map()&&
+   !safe(worldX,worldY)&&!safe(b.x,b.y)&&!safe(t.x,t.y)&&distance(t,player())<=16;
+  const focus=window.ClassBuffs?.focusTarget?.()||IslandMonsters.target;
+  const target=valid(f.partyTarget)?f.partyTarget:valid(focus)?focus:null;
+  f.partyTarget=target;
+  if(target){
    b.fp.partyTarget=target;const reach=b.spawn.npc.ranged||1;
    if(distance(b,target)>reach||!IslandCombat.clearShot(b.x,b.y,target.x,target.y)){stepToward(b,target.x,target.y,time);return true;}
    if(time<(b.fp.ready||0))return true;
@@ -163,8 +168,9 @@ const NpcSocial=(()=>{
    b.action={clip:'attack',start:time,end:time+duration};
    setTimeout(()=>{
     if(owner!==teamOwner||map()!==teamMap||!party.has(b)||!usable(b)||b.fp.retreatUntil||CharacterActions.dead||!target.hp||distance(b,target)>reach||safe(b.x,b.y)||safe(target.x,target.y)||safe(worldX,worldY)||!IslandCombat.clearShot(b.x,b.y,target.x,target.y))return;
-    IslandMonsters.botHit(target,3+Math.floor(b.spawn.npc.level*.6),{party:true,attacker:b});
-    b.hp=Math.max(1,b.hp-Math.max(1,Math.floor((target.spawn.npc.level||1)*.5)));b.fp.hpShow=now()+3000;
+    const amount=FakePlayers.attackDamage(b,target);
+    if(!amount){target.rangedMissUntil=now()+650;return;}
+    if(IslandMonsters.botHit(target,amount,{party:true,attacker:b})&&!target.hp)b.fp.partyTarget=null;
    },duration*.45);return true;
   }
   if(distance(b,player())>3)stepToward(b,worldX,worldY,time);return true;
@@ -211,7 +217,7 @@ const NpcSocial=(()=>{
  const css=el('style');css.textContent='.npc-social-window{position:absolute;z-index:150;left:50%;top:12%;transform:translateX(-50%);width:min(470px,94%);max-height:75%;overflow:auto;box-sizing:border-box;padding:14px;background:#14171bee;color:#e9dfc5;border:1px solid #a48b54;border-radius:8px;pointer-events:auto;font:13px sans-serif}.npc-social-heading,.npc-social-row{display:flex;align-items:center;justify-content:space-between;gap:8px}.npc-social-heading{position:sticky;top:-14px;z-index:1;margin:-14px -14px 10px;padding:8px 14px;background:#14171b;border-bottom:1px solid #655a40}.npc-social-window .npc-social-close{flex:none;min-width:72px;min-height:44px!important;background:#302a20;border:1px solid #a48b54;border-radius:4px;color:#fff1ce}.npc-social-window section{border-top:1px solid #655a40;margin-top:12px;padding-top:12px}.npc-social-window p{line-height:1.6}.npc-social-window button{min-height:28px!important;padding:4px 8px!important;margin:3px;font-size:12px!important}.npc-social-window input{width:70px;color:#eee;background:#262626;border:1px solid #987;padding:5px}.npc-social-row{flex-wrap:wrap;margin-top:8px}.npc-social-row span{flex:1}';document.head.append(css);
  setInterval(tick,750);
  // 傭兵團（mercenary.js）：雇來的傭兵直接入隊，不占邀請流程；合約結束由 dismiss 移出。
- function adopt(b){if(!checkOwner()||!b?.fp)return false;party.add(b);b.fp.partyOwner=owner;b.fp.pk=false;b.fp.target=null;b.fp.goal=null;b.fp.route=null;render();return true;}
- function dismiss(b){if(!b)return;party.delete(b);if(b.fp)b.fp.partyOwner=null;render();}
+ function adopt(b){if(!checkOwner()||!b?.fp)return false;party.add(b);b.fp.partyOwner=owner;b.fp.pk=false;b.fp.retreatUntil=0;b.fp.partyTarget=b.fp.committedTarget||null;b.fp.committedTarget=null;b.fp.target=null;b.fp.goal=null;b.fp.route=null;render();return true;}
+ function dismiss(b){if(!b)return;party.delete(b);if(b.fp){b.fp.partyOwner=null;b.fp.partyTarget=null;}render();}
  return {adopt,dismiss,open,onSpeech,handleWhisper,handlePublic,update,lookup,completeTrade,get party(){return [...party];},get meeting(){return deal;}};
 })();window.NpcSocial=NpcSocial;

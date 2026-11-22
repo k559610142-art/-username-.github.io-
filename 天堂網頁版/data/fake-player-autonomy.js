@@ -10,8 +10,8 @@ window.FakePlayerAutonomy=(()=>{
   }return f.brain;}
  function persist(mob,now,force=false){if(!force&&now-lastSave<5000)return;lastSave=now;records[mob.spawn.npc.name]={at:Date.now(),brain:Brain.checkpoint(mob.fp.brain,now)};const rows=Object.entries(records).sort((a,b)=>b[1].at-a[1].at).slice(0,80);records=Object.fromEntries(rows);try{localStorage.setItem(KEY,JSON.stringify(records));}catch{}}
  function remember(mob,event,target,now){const b=ensure(mob,now);Brain.remember(b,event,{map:mob.spawn.mapId||0,x:mob.x,y:mob.y,species:target?.spawn?.npcId||target?.spawn?.npc?.name||'unknown',id:target?id(target):''},now);persist(mob,now,event==='death');}
- function clear(mob,hooks){const f=mob.fp;if(f.target)hooks.claimed.delete(f.target);f.target=null;f.huntGoal=null;f.goal=null;f.route=null;}
- function sensed(mob,hooks){const local=IslandMonsters.around(mob.x,mob.y,12);for(const m of local){const owner=hooks.claimed.get(m);if(owner&&(!owner.hp||owner.fp?.hidden||owner.fp?.target!==m))hooks.claimed.delete(m);}return local.filter(m=>m.hp>0&&IslandCombat.clearShot(mob.x,mob.y,m.x,m.y)&&(m.botEnemy===mob||(m.spawn.mapId||0)!==(window.activeMapId||0)||Math.max(Math.abs(m.x-worldX),Math.abs(m.y-worldY))>4)) /* 不搶玩家腳邊 4 格內的怪 */.map(m=>({mob:m,id:id(m),map:m.spawn.mapId||0,x:m.x,y:m.y,alive:m.hp>0,lineOfSight:true,visible:true,species:m.spawn.npcId||m.spawn.npc.name,level:m.spawn.npc.level||1,boss:/BOSS/i.test(m.spawn.npc.name)||m.spawn.count===1&&m.spawn.npc.hp>=1500,safe:safe(m.x,m.y),playerClaim:m===IslandMonsters.target,claimedOther:hooks.claimed.has(m)&&hooks.claimed.get(m)!==mob,engaged:!!m.alert,attackingSelf:m.botEnemy===mob,aggressive:!!m.spawn.npc.aggressive,value:Math.min(8,(m.spawn.npc.level||1)/8),quest:!!mob.fp.need&&drops(m).some(d=>d.id===mob.fp.need.item?.id)}));}
+ function clear(mob,hooks){const f=mob.fp;if(f.target)hooks.claimed.delete(f.target);f.target=null;f.committedTarget=null;f.huntGoal=null;f.goal=null;f.route=null;}
+ function sensed(mob,hooks){const local=IslandMonsters.around(mob.x,mob.y,12);for(const m of local){const owner=hooks.claimed.get(m);if(owner&&(!owner.hp||owner.fp?.hidden||owner.fp?.target!==m))hooks.claimed.delete(m);}return local.filter(m=>m.hp>0&&IslandCombat.clearShot(mob.x,mob.y,m.x,m.y)&&(m===mob.fp.committedTarget||m.botEnemy===mob||(m.spawn.mapId||0)!==(window.activeMapId||0)||Math.max(Math.abs(m.x-worldX),Math.abs(m.y-worldY))>4)) /* 不搶玩家腳邊 4 格內的怪 */.map(m=>({mob:m,id:id(m),map:m.spawn.mapId||0,x:m.x,y:m.y,alive:m.hp>0,lineOfSight:true,visible:true,species:m.spawn.npcId||m.spawn.npc.name,level:m.spawn.npc.level||1,boss:/BOSS/i.test(m.spawn.npc.name)||m.spawn.count===1&&m.spawn.npc.hp>=1500,safe:safe(m.x,m.y),playerClaim:m===IslandMonsters.target,claimedOther:hooks.claimed.has(m)&&hooks.claimed.get(m)!==mob,engaged:!!m.alert,attackingSelf:m.botEnemy===mob,aggressive:!!m.spawn.npc.aggressive,value:Math.min(8,(m.spawn.npc.level||1)/8),quest:!!mob.fp.need&&drops(m).some(d=>d.id===mob.fp.need.item?.id)}));}
  const drops=m=>(typeof killRewardData!=='undefined'?killRewardData:window.killRewardData)?.drops?.[m.spawn.npcId]||[];
  function move(mob,now,stepToward,seen,kind,target=null){const f=mob.fp;
   if(mob.step)return true;
@@ -54,7 +54,7 @@ window.FakePlayerAutonomy=(()=>{
  }
  function onReturn(mob,now){const f=mob.fp;ensure(mob,now);if(f.resupplyTrip){f.potions=10;f.privateGold=Math.max(0,f.privateGold+f.bagLoad*6-8);f.bagLoad=0;f.brainMp=mob.spawn.npc.level*3+40;f.resupplyTrip=false;}f.brain.last=null;f.brain.target=null;f.brain.nextThink=now+f.brain.reaction;f.moveIntent=null;}
  function canReturn(mob,point,now){return Brain.danger(ensure(mob,now),{x:point[0],y:point[1]},mob.spawn.mapId||0,now)<2;}
- function killed(mob,target,now,hooks){const f=mob.fp;hooks.claimed.delete(target);if(f.target===target)f.target=null;remember(mob,'win',target,now);
+ function killed(mob,target,now,hooks){const f=mob.fp;hooks.claimed.delete(target);if(f.target===target){f.target=null;f.committedTarget=null;}remember(mob,'win',target,now);
   let rare=null;for(const d of drops(target)){if(d.id!==40308&&d.chance>0&&d.chance<=20000&&Math.random()*1e6<d.chance*2){rare=d.id;break;}}
   // Personal NPC spoils, not player ground drops or inventory. Roll once at kill time.
   f.pendingLoot.push({id:'loot-'+(++sequence),map:mob.spawn.mapId||0,x:target.x,y:target.y,value:rare?8:2,rare,monster:target.spawn.npc.name,expires:now+25000});f.pendingLoot=f.pendingLoot.slice(-8);f.brain.target=null;f.brain.last=null;f.brain.nextThink=now+500;
@@ -68,8 +68,11 @@ window.FakePlayerAutonomy=(()=>{
   if(reach>1)hooks.shoot(mob,target,now+duration*.45,f.look.weapon);
   const victims=kind==='area'?seen.filter(e=>!e.playerClaim&&!e.claimedOther&&(!e.engaged||e.attackingSelf)&&!e.safe&&distance(e,target)<=2&&distance(mob,e)<=reach).slice(0,4).map(e=>e.mob):[target];
   setTimeout(()=>{const time=movementTime();if(window.gameFlowState!=='playing'||window.activeCharacterId!==owner||(window.activeMapId||0)!==map||(mob.spawn.mapId||0)!==map||!mob.hp||f.hidden||f.retreatUntil||f.target!==target)return;
-   for(const t of victims){if(!t.hp||t===IslandMonsters.target||safe(mob.x,mob.y)||safe(t.x,t.y)||distance(mob,t)>reach||!IslandCombat.clearShot(mob.x,mob.y,t.x,t.y)||(hooks.claimed.has(t)&&hooks.claimed.get(t)!==mob)||(t.alert&&t.botEnemy!==mob))continue;
-    const amount=Math.max(1,Math.round((4+mob.spawn.npc.level*.6)*(kind==='area'?.7:kind==='control'?.55:1)));
+   for(const t of victims){if(!t.hp||t!==f.committedTarget&&(t===IslandMonsters.target||t.alert&&t.botEnemy!==mob)||safe(mob.x,mob.y)||safe(t.x,t.y)||distance(mob,t)>reach||!IslandCombat.clearShot(mob.x,mob.y,t.x,t.y)||(hooks.claimed.has(t)&&hooks.claimed.get(t)!==mob))continue;
+    const raw=FakePlayers.attackDamage(mob,t);
+    if(!raw){t.rangedMissUntil=time+650;continue;}
+    const amount=Math.max(1,Math.round(raw*(kind==='area'?.7:kind==='control'?.55:1)));
+    if(t===target)f.committedTarget=t;
     IslandMonsters.botHit(t,amount,{attacker:mob});if(kind==='control'&&t.hp&&t.botEnemy===mob){t.botControlUntil=time+1800;t.windup=null;IslandMonsters.playEffect(750,t.x,t.y,time);}
     if(!t.hp)killed(mob,t,time,hooks);
    }
@@ -81,6 +84,16 @@ window.FakePlayerAutonomy=(()=>{
   f.brainMp=Math.min(mob.spawn.npc.level*3+40,f.brainMp+Math.max(0,now-f.brainMpAt)/3000);f.brainMpAt=now;f.pendingLoot=f.pendingLoot.filter(l=>l.expires>now);
   const seen=sensed(mob,hooks),c={now,map:mob.spawn.mapId||0,x:mob.x,y:mob.y,hp:mob.hp,maxHp:mob.spawn.npc.hp,level:mob.spawn.npc.level,role:f.look.role,reach:mob.spawn.npc.ranged||1,vision:12,safe:safe(mob.x,mob.y),enemies:seen,potions:f.potions,healAt:f.healAt||0,mp:f.brainMp,areaAt:f.areaAt||0,controlAt:f.controlAt||0,kiteAt:f.kiteAt||0,load:f.bagLoad,capacity:f.bagCapacity,loot:f.pendingLoot};
   const plan=Brain.decide(b,c);f.intent=plan.kind;f.personality=b.profile.name;const leaving=linger(mob,now);
+  const committed=f.committedTarget;
+  if(committed?.hp&&(committed.spawn.mapId||0)===(mob.spawn.mapId||0)&&distance(mob,committed)<=14&&!safe(mob.x,mob.y)&&!safe(committed.x,committed.y)&&!['heal','retreat'].includes(plan.kind)){
+   if(mob.step)return true;
+   if(distance(mob,committed)<=(mob.spawn.npc.ranged||1)&&IslandCombat.clearShot(mob.x,mob.y,committed.x,committed.y)){
+    f.intent='attack';
+    attack(mob,committed,now,'attack',hooks,seen);
+    return true;
+   }
+   if(stepToward(mob,committed.x,committed.y,now))return true;
+  }
   if(leaving&&!['heal','retreat','restock'].includes(plan.kind)){if(f.target)clear(mob,hooks);b.target=null;f.intent='leave';travel(mob,now,stepToward,true);return true;}
   if(plan.kind==='heal'){if(f.potions>0&&now>=(f.healAt||0)){f.potions--;mob.hp=Math.min(mob.spawn.npc.hp,mob.hp+Math.ceil(mob.spawn.npc.hp*.24));f.healAt=now+1800;f.hpShow=now+2500;IslandMonsters.playEffect(189,mob.x,mob.y,now,{follow:mob});b.nextThink=Math.min(b.nextThink,now+400);}return true;}
   if(plan.kind==='retreat'){if(!f.retreatSince||now-f.retreatSince>20000){remember(mob,'retreat',f.target,now);f.retreatSince=now;hooks.say(mob,'這邊太危險，先拉開！');}clear(mob,hooks);move(mob,now,stepToward,seen.filter(e=>e.attackingSelf||e.aggressive),'retreat');return true;}
