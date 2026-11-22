@@ -39,12 +39,19 @@ window.PlayerAbilityRules=(()=>{
   return clamp(rate-resist,5,95);
  }
  function statusHits(skill,mob,{rng=Math.random,...options}={}){return rng()*100<statusChance(skill,mob,options);}
+ const magicAccuracy=profile=>2*(intelligencePower(profile.attributes.int)+magicHitBonus());
+ function magicDamageChance(profile,mob){
+  const target=window.ClassBuffs?.targetNpc?.(mob)||mob.spawn.npc;
+  const level=Number(target.level)||1,mr=Math.max(0,Number(target.mr)||0);
+  return clamp(85+(profile.level-level)+magicAccuracy(profile)-mr/2,5,95);
+ }
  function magicAmount(skill,mob,{healing=false,raw,rng=Math.random,profile=PlayerClassStats.read()}={}){
+  if(!healing&&mob?.spawn?.npc&&rng()*100>=magicDamageChance(profile,mob))return {amount:0,critical:false,power:0,hit:false};
   let amount=raw;if(amount===undefined){amount=skill.damage?.[0]||0;for(let i=0;i<(skill.damage?.[2]||0);i++)amount+=1+Math.floor(rng()*Math.max(1,skill.damage[1]));}
   const power=healing?intelligencePower(profile.attributes.wis):intelligencePower(profile.attributes.int)+(profile.sp||0);amount=Math.max(0,Math.floor(amount*Math.max(0,1+power*.05)));
   const critical=!healing&&rng()*100<magicCritical(profile.attributes.int,window.OwnedInventory?.items||[]);if(critical)amount=Math.floor(amount*1.5);
   if(!healing){const n=mob?.spawn?.npc||{};amount=Math.floor(amount*mrFactor(Number(n.mr)||0)*elementalFactor(skill,n.elements||{}));}
-  return {amount:Math.max(0,amount),critical,power};
+  return {amount:Math.max(0,amount),critical,power,hit:true};
  }
- return {strengthDamage,intelligencePower,manaReduction,originalManaReduction,magicCritical,resistances,statusResistances,element,elementalFactor,mrFactor,manaCost,helmetSkills,magicAmount,magicHitBonus,statusChance,statusHits};
+ return {strengthDamage,intelligencePower,manaReduction,originalManaReduction,magicCritical,resistances,statusResistances,element,elementalFactor,mrFactor,manaCost,helmetSkills,magicAmount,magicHitBonus,magicAccuracy,magicDamageChance,statusChance,statusHits};
 })();

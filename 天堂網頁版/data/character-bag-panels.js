@@ -112,7 +112,7 @@
   const section=(title,rows)=>{const box=el('div','qy-box');box.append(el('h3','',title));for(const [label,value,note]of rows){const r=row(label,value);if(note)r.title=note;box.append(r)}frag.append(box)};
   section('物理能力',[
    ['近距離傷害',signed(p.meleeBonus||0),'固定加成，不含武器隨機傷害與觸發技能'],
-   ['近距離命中','必中','目前有效普攻未進行命中擲骰'],
+   ['近距離命中',signed(p.meleeHitBonus||0),'依等級、力量、命中加成與目標防禦和迴避判定（5%～95%）'],
    ['遠距離傷害',signed(p.rangedBonus||0),'固定加成，不含武器隨機傷害與觸發技能'],
    ['遠距離命中',signed(p.rangedHitBonus||0),'敏捷、裝備、套裝、變身及技能命中加成；實際機率依等級與目標防禦計算（5%～95%）'],
    ['武器傷害',p.weapon?.damage?.join(' / ')??'空手'],
@@ -120,19 +120,20 @@
    ['HP恢復量',p.hpRecoveryText],['MP恢復量',p.mpRecoveryText],
    ['傷害減免',d.reduction||0],['魔法傷害減免',d.magicReduction||0]]);
   section('魔法能力',[
-   ['魔攻',PlayerAbilityRules.intelligencePower(a.int)+(p.sp||0),'智力魔法加成加上裝備、藥水與技能 SP；每點增加 5% 魔法傷害與治癒量'],
-   ['魔法命中','必中','目前有效傷害魔法未進行命中擲骰'],
+   ['魔攻',PlayerAbilityRules.intelligencePower(a.int)+(p.sp||0),'智力魔法加成加上裝備、藥水與技能 SP；每點增加 5% 攻擊魔法傷害'],
+   ['魔法命中修正',signed(PlayerAbilityRules.magicAccuracy(p))+'%', '攻擊魔法依雙方等級、智力、命中加成與目標魔防判定（5%～95%）'],
+   ['精神治癒加成',signed(5*PlayerAbilityRules.intelligencePower(a.wis))+'%', '精神越高，治癒魔法回復的體力越多'],
    ['魔法爆擊率',PlayerAbilityRules.magicCritical(a.int,OwnedInventory.items)+'%','攻擊魔法暴擊造成 1.5 倍傷害'],
    ['智力省魔',PlayerAbilityRules.manaReduction(a.int)+'%','依當前智力降低 MP 消耗'],['創角智力省魔',PlayerAbilityRules.originalManaReduction(playerAttributes.int)+' MP','百分比省魔後再扣除；正消耗技能最低 1 MP']]);
   section('屬性抗性',[['火屬性抗性',d.elements?.fire||0],['水屬性抗性',d.elements?.water||0],['風屬性抗性',d.elements?.wind||0],['地屬性抗性',d.elements?.earth||0]]);
   section('異常抗性',[['石化抗性',(d.status?.stone||0)+'%'],['束縛／緩速抗性',(d.status?.sustain||0)+'%']]);
-  frag.append(el('p','qy-ability-note','遠攻命中依等級、敏捷與目標防禦計算；近戰與傷害魔法仍為有效攻擊必中。四屬性抗性降低對應魔法傷害，每 100 點抗性減少 32%。'));return frag}
+  frag.append(el('p','qy-ability-note','近戰、遠攻和攻擊魔法依目標判定命中。精神會提高治癒魔法的回復量。四屬性抗性降低對應魔法傷害，每 100 點抗性減少 32%。'));return frag}
  const SOCIAL={party:['隊伍','目前沒有隊伍。'],clan:['血盟','尚未加入血盟。'],friend:['好友','好友名單是空的。']};
  function characterPane(){const pane=makeClassicWindow('角色');pane.classList.add('qy-win','qy-char','status-window');
   const body=el('div','qy-body'),fill=()=>{body.dataset.ability=String(charTab==='ability');body.replaceChildren(charTab==='equip'?equipView():charTab==='ability'?abilityTab():el('div','qy-empty',SOCIAL[charTab][1]));};
   pane.append(tabs([['equip','裝備'],['ability','能力'],['party','隊伍'],['clan','血盟'],['friend','好友']],charTab,k=>{charTab=k;fill()}),body);fill();return pane}
  renderStatusPane=characterPane;
- setInterval(()=>{const body=document.querySelector('.qy-char .qy-body[data-ability="true"]');if(!body||window.gameFlowState!=='playing')return;const p=PlayerClassStats.read(),d=NativeCombatRules.defense(),key=JSON.stringify([p.attributes,p.sp,p.meleeBonus,p.rangedBonus,p.rangedHitBonus,p.hpRecoveryText,p.mpRecoveryText,d,PlayerAbilityRules.magicCritical(p.attributes.int,OwnedInventory.items),hp,mp]);if(body.abilitySignature===key)return;body.abilitySignature=key;const scroll=body.scrollTop;body.replaceChildren(abilityTab());body.scrollTop=scroll;},500);
+ setInterval(()=>{const body=document.querySelector('.qy-char .qy-body[data-ability="true"]');if(!body||window.gameFlowState!=='playing')return;const p=PlayerClassStats.read(),d=NativeCombatRules.defense(),key=JSON.stringify([p.attributes,p.sp,p.meleeBonus,p.meleeHitBonus,PlayerAbilityRules.magicAccuracy(p),p.rangedBonus,p.rangedHitBonus,p.hpRecoveryText,p.mpRecoveryText,d,PlayerAbilityRules.magicCritical(p.attributes.int,OwnedInventory.items),hp,mp]);if(body.abilitySignature===key)return;body.abilitySignature=key;const scroll=body.scrollTop;body.replaceChildren(abilityTab());body.scrollTop=scroll;},500);
 
  // ---------- 背包（bag）＋裝備欄 ----------
 

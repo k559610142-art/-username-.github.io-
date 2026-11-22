@@ -243,7 +243,7 @@ const ClassBuffs=(()=>{
   if((id===108||id===187||id===229)&&!PlayerRangedRules.meleeHits(PlayerClassStats.read(),mob)){mob.rangedMissUntil=t+650;window.IslandNpcAi?.provoke(mob,[]);return true;}
   if(id===108){const p=PlayerClassStats.read(),max=Math.max(1,p.weapon?.damage[0]||2);IslandMonsters.damage(mob,max*2+p.meleeBonus);}
   if(id===187){const p=PlayerClassStats.read(),max=Math.max(1,p.weapon?.damage[0]||2);for(let i=0;i<3;i++)IslandMonsters.damage(mob,1+Math.floor(Math.random()*max)+p.meleeBonus+damageBonus(false));}
-  if(id===207){const result=PlayerAbilityRules.magicAmount({...skill,id},mob,{raw:Math.floor((PlayerClassStats.read().sp||0)*3.8+5)});if(result.critical)mob.magicCriticalUntil=t+650;if(result.amount>0)IslandMonsters.damage(mob,result.amount);}
+  if(id===207){const result=PlayerAbilityRules.magicAmount({...skill,id},mob,{raw:Math.floor((PlayerClassStats.read().sp||0)*3.8+5)});if(!result.hit)mob.rangedMissUntil=t+650;if(result.critical)mob.magicCriticalUntil=t+650;if(result.amount>0)IslandMonsters.damage(mob,result.amount);}
   if(id===229&&Math.random()<.9)dots.push({mob,until:t+dur,next:t+1000,every:1000,dmg:Math.trunc(level()/2)+6});
   // 2026-11-17 戰士裝雙斧（右手 weapon2）時連副手斧一起丟：另外 90% 機率再上一層持續傷害，數值一半
   if(id===229&&OwnedInventory.items.some(e=>e.slot==='weapon2')&&Math.random()<.9){dots.push({mob,until:t+dur,next:t+1000,every:1000,dmg:Math.max(1,Math.trunc((Math.trunc(level()/2)+6)/2))});IslandMonsters.playEffect(skill.gfx,mob.x,mob.y,t+150);}
@@ -320,7 +320,7 @@ const ClassBuffs=(()=>{
     const allies=[...(window.Summons?.mobs||[]),...(window.NpcSocial?.party||[])];for(const m of allies)if(m.hp>0&&(m.spawn.mapId||0)===c.mapId&&Math.max(Math.abs(m.x-c.x),Math.abs(m.y-c.y))<=c.r&&IslandCombat.clearShot(c.x,c.y,m.x,m.y))m.hp=Math.min(m.spawn.npc.hp,m.hp+heal);window.GameEntry?.saveActive?.();}
    if(c.id!==63)for(const m of IslandMonsters.around(c.x,c.y,c.r)){if(!IslandCombat.clearShot(c.x,c.y,m.x,m.y))continue;
     if(c.id===215){stun(m,1000);continue;}if(c.id===220){m.mp=Math.max(0,(m.mp||0)-5);IslandMonsters.damage(m,25);continue;}
-    const result=PlayerAbilityRules.magicAmount({...sk(c.id),id:c.id,attr:c.id===210?1:2},m,{raw:c.dmg});if(result.critical)m.magicCriticalUntil=t+650;if(result.amount>0)IslandMonsters.damage(m,result.amount);}}
+    const result=PlayerAbilityRules.magicAmount({...sk(c.id),id:c.id,attr:c.id===210?1:2},m,{raw:c.dmg});if(!result.hit)m.rangedMissUntil=t+650;if(result.critical)m.magicCriticalUntil=t+650;if(result.amount>0)IslandMonsters.damage(m,result.amount);}}
 
   cubes=cubes.filter(c=>t<c.until);
   for(const h of dots)if(t>=h.next&&t<h.until&&h.mob.hp){h.next+=h.every;IslandMonsters.damage(h.mob,h.dmg);}

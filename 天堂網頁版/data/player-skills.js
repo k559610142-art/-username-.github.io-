@@ -57,7 +57,7 @@ const PlayerSkills = (() => {
     const range=skill.range>0?skill.range:10;
     if(!healing&&(!mob?.hp||Math.max(Math.abs(mob.x-worldX),Math.abs(mob.y-worldY))>range||
       !IslandCombat.clearShot(worldX,worldY,mob.x,mob.y)))return false;
-    const result=PlayerAbilityRules.magicAmount(skill,mob,{healing});
+    const result=PlayerAbilityRules.magicAmount(skill,id===87?null:mob,{healing});
     const amount=result.amount;
     if(!(options.pay?options.pay():OwnedInventory.castCost(skill,healing?Math.min(maxHp,hp-skill.hp+amount):undefined)))return false;
     if(!CharacterActions.play('skill'))return false;
@@ -69,10 +69,19 @@ const PlayerSkills = (() => {
       const area=Number(skill.area??(typeof PLAYER_ABILITY_DATA!=='undefined'?PLAYER_ABILITY_DATA.skills[id]?.area:0))||0,rangeMeta=typeof PLAYER_ABILITY_DATA!=='undefined'?PLAYER_ABILITY_DATA.skills[id]?.range:null;
       const targets=area>0&&IslandMonsters.around?[...new Set([mob,...IslandMonsters.around(rangeMeta===-1?worldX:mob.x,rangeMeta===-1?worldY:mob.y,area)])]:[mob];
       for(const victim of targets){if(!victim?.hp||victim.spawn.ally||victim!==mob&&victim.spawn.resident||victim.spawn.bot&&!window.FakePlayers?.canAttack(victim)||!IslandCombat.clearShot(worldX,worldY,victim.x,victim.y))continue;
-       const hitResult=victim===mob?result:PlayerAbilityRules.magicAmount(skill,victim,{healing:false});if(hitResult.critical)victim.magicCriticalUntil=now+650;
-       victim.allyTarget=null;if(hitResult.amount>0)IslandMonsters.damage(victim,hitResult.amount);window.ClassBuffs?.consumeErase?.(victim);if(victim!==mob)IslandMonsters.playEffect(skill.gfx,victim.x,victim.y,now);
+       const hitResult=victim===mob?result:PlayerAbilityRules.magicAmount(skill,victim);
+       if(victim!==mob)IslandMonsters.playEffect(skill.gfx,victim.x,victim.y,now);
+       if(!hitResult.hit){
+        victim.rangedMissUntil=now+650;
+        if(!victim.spawn.bot)window.IslandNpcAi?.provoke(victim,[]);
+        continue;
+       }
+       if(hitResult.critical)victim.magicCriticalUntil=now+650;
+       victim.allyTarget=null;
+       if(hitResult.amount>0)IslandMonsters.damage(victim,hitResult.amount);
+       window.ClassBuffs?.consumeErase?.(victim);
       }
-      if(id>=181)window.ClassBuffs?.afterCast(id,mob);
+      if(id>=181&&result.hit)window.ClassBuffs?.afterCast(id,mob);
       if(id===87){if(PlayerAbilityRules.statusHits({...skill,id},mob))mob.ready=Math.max(mob.ready||0,now+skill.duration*1000);else mob.rangedMissUntil=now+650;}
     }
     return true;
