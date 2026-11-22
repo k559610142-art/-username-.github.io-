@@ -574,4 +574,17 @@ NPC 穿衣服（2026-11-13）：
 - data/portable-teleport.js：加「高塔」分頁；島嶼／高塔／地監顯示分組（n 層／n 處、等級、最低價），點進去列樓層，詳細頁可返回分組；搜尋時改成平面列表。
 - 象牙塔 4～7 樓原本地圖有、沒放怪：node tools/native-monsters/build.js --maps 78,79,80,81 補 DB 出生點（紙人、密密、活鎧甲、鋼鐵高崙／影魔、鬼魂、死神），價格照原版 4,000～7,000。
   8 樓（Map 82）地圖還沒轉。外觀 13068 客戶端沒圖。
-- 傲慢之塔移動卷軸／傳送符（40104～、40289～、84001～ 等）道具有資料但使用效果尚未實作。
+- 傲慢之塔移動卷軸／傳送符：見下一節（已實作）。
+
+【2026-11-22 新傲慢之塔 2～10 樓＋傲慢之塔卷軸／傳送符】
+- 使用者：舊版傲慢之塔 10 樓（地圖 101～110）、新傲慢之塔也規劃 10 樓（地圖 3301～3310）；高樓層用卷軸上去，怪物掉卷軸與傳送符。
+- 地圖：node tools/native-map/build.js 3302…3310（DB mapids 把這幾張標成死神獄所／支配者之塔，build.js 改名「新傲慢之塔n樓」）
+  → node --expose-gc tools/region-background/build.cjs 3302…3310 ＋ finalize.cjs（NODE_PATH=tools/.native-runtime/node_modules），每層約 11～15MB。
+- 怪物：node tools/native-monsters/build.js --maps 3302,…,3310（DB spawnlist，51 筆）。變種怪（不幸的／恐怖的／死亡的…）客戶端沒有圖：
+  build.js aliases 改成「同名 → 去掉前綴的原版怪 → 再去掉括號」；仍找不到的 10 種在 custom-actions.json aliases 人工借用（custom-looks.js 輸出到 custom-monster-frames.js）。
+- data/tower-scrolls.js（TowerScrolls，owned-inventory.js use() 在 TeleportScrolls 前呼叫）：
+  舊塔：原版 100 層濃縮成 10 層，第 n 樓 = ceil(F/10)。移動卷軸 40104～40112（11F～91F→2～10 樓）、40113（100F→10 樓）用完消失；
+        傳送符 46011～46020（10F～100F→1～10 樓）、40289～40297（11F～91F）不消失。落點＝地圖 spawn。
+  新塔：移動卷軸 84001～84010 用完消失；移動傳送符 84031～84040、支配傳送符 84041～84050 不消失；落點照 DB etcitem_teleport。頂樓 84011（地圖 7100）未轉，按了提示未開放。
+  掉落（player-progression.js roll）：塔內第 n 樓怪物 1% 掉往上一層的移動卷軸（第 10 樓掉 100F／10 樓卷軸）、0.1% 掉本樓傳送符。
+- 狩獵場仍只列兩座塔的 1 樓；既有樓梯保留。

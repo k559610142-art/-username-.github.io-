@@ -72,7 +72,9 @@ const looks = new Set(); for (const s of spawns) { looks.add(templates[s.npcId].
 for (let id = 81210; id <= 81240; id++) if (templates[id]) looks.add(templates[id].gfx); // 召喚控制戒指 list
 for (const id of [81210, 81213, 81216, 81219, 81222, 81225, 81228, 45303, 45304, 45305, 45306, 81050, 81051, 81052, 81053]) if (templates[id]) looks.add(templates[id].gfx);
 // Some custom graphics are absent from this supplied client. Preserve NPC stats and use only an exact-name native look.
-const aliases={};for(const spawn of spawns){const n=templates[spawn.npcId];if(existing[n.gfx]||clipsFor(n.gfx))continue;const peer=Object.values(templates).find(t=>t.name===n.name&&t.gfx!==n.gfx&&(existing[t.gfx]||clipsFor(t.gfx)));if(peer){aliases[n.gfx]=peer.gfx;looks.add(peer.gfx);}}
+const aliases={};for(const spawn of spawns){const n=templates[spawn.npcId];if(existing[n.gfx]||clipsFor(n.gfx))continue;const ok=t=>t.gfx!==n.gfx&&(existing[t.gfx]||clipsFor(t.gfx)),base=n.name.replace(/^(歪曲|不幸|恐怖|死亡|地獄|不死|殘忍|黑暗|不滅|傲慢)的/,''),all=Object.values(templates);
+ // 新傲慢之塔的「不幸的魔狼」等變種沒有圖：先找同名，再找去掉前綴的原版怪物（2026-11-22）
+ const peer=all.find(t=>t.name===n.name&&ok(t))||all.find(t=>t.name===base&&ok(t))||all.find(t=>t.name===base.replace(/\(.*\)$/,'')&&ok(t));if(peer){aliases[n.gfx]=peer.gfx;looks.add(peer.gfx);}}
 for(const gfx of opt.looks||[])looks.add(gfx);
 const need = [...looks].filter(g => !existing[g]).sort((a, b) => a - b);
 
@@ -108,7 +110,7 @@ if(opt.maps){
  'for(const [g,clips]of Object.entries('+JSON.stringify(frames)+'))if(!islandMonsterFrames[g])islandMonsterFrames[g]=clips;',
  'for(const f of '+JSON.stringify(files)+')nativeMonsterFiles.add(f);',
  'for(const s of '+JSON.stringify(added)+'){dungeonMonsterSpawns.push(s);islandMonsterSpawns.push({...s,npc:islandMonsterTemplates[s.npcId]});}'
- ,"for(const [gfx,source]of Object.entries({\"12417\":14169,\"13037\":146,\"13038\":2535,\"13039\":1600,\"13040\":2407,\"13041\":1052,\"13051\":2332}))if(!islandMonsterFrames[gfx]&&islandMonsterFrames[source])islandMonsterFrames[gfx]=islandMonsterFrames[source];"
+ ,'for(const [gfx,source]of Object.entries('+JSON.stringify(aliases)+'))if(!islandMonsterFrames[gfx]&&islandMonsterFrames[source])islandMonsterFrames[gfx]=islandMonsterFrames[source];'
  ].join('\n')+'\n');
 }
 else fs.writeFileSync(path.join(ROOT, 'data/dungeon-monster-data.js'),

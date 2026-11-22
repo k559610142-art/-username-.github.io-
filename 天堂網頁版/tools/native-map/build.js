@@ -27,6 +27,8 @@ function table(file) {
 const mapids = new Map(table('table-078.js').map(r => [+r.mapid, r]));
 const dungeon = table('table-054.js'), getback = table('table-072.js');
 if(mapids.has(3301))mapids.get(3301).locationname='新傲慢之塔1樓';
+// 2026-11-22 使用者：新傲慢之塔規劃 10 樓；DB mapids 把 3302～3310 標成死神獄所／支配者之塔，但 spawnlist 與卷軸（84002～84010）都是傲慢之塔 2～10F。
+for(let n=2;n<=10;n++)if(mapids.has(3300+n))mapids.get(3300+n).locationname='新傲慢之塔'+n+'樓';
 // Native 3301 is supplied by the client/core but absent from the older mapids table.
 if(!mapids.has(3301))mapids.set(3301,{mapid:3301,locationname:'新傲慢之塔1樓',startX:32704,endX:32895,startY:32704,endY:32895,teleportable:0,escapable:1,markable:0,usable_item:1});
 
