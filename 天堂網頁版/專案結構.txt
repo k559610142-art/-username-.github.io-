@@ -536,7 +536,7 @@ NPC 穿衣服（2026-11-13）：
 
 【2026-11-22 娃娃收進圖鑑修正＋強化裝備保護】
 - data/doll-dedup.js：DOLL_ID_ALIASES 補 300206～300211 → 80259～80264（搖滾／西裝／熱血 PSY、勝利的丹狄、賽利、玉兔），原本雙擊道具收不進圖鑑。
-  魔法娃娃：變形怪 55014 原本不在娃娃清單，照 DB etcitem_doll_type 補（3%機率施展「列炎術」、造型 7516、魔法結晶體 50、30 分鐘）。
-- data/doll-effects.js SPELL 加 列炎術 20～35（娃娃機率施法用）。
+  魔法娃娃：變形怪 55014、隨身祭司 39007～39010 本來就沒開放（沒有取得管道），不放進娃娃清單；圖鑑 200 隻＝扭蛋獎池 89＋進化取得 111，全部拿得到。
+- data/doll-effects.js SPELL 加 列炎術 20～35（目前沒有娃娃用到，留著備用）。
 - data/auto-sell.js convert：穿戴中、強化過（entry.enchant ≠ 0）、有 BOSS 附魔（entry.soul）的物品不自動販賣／刪除。
 - data/owned-inventory.js trade(sell)：商店賣出同名物品時先賣沒強化、沒附魔的；穿戴中原本就不能賣（!e.slot）也不能刪除（canDiscard）。

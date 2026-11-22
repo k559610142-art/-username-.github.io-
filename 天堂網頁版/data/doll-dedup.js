@@ -14,6 +14,5 @@ const DOLL_ID_ALIASES={"80346":55006,"80347":55011,"80348":55000,"80349":55002,"
 //  能力、外觀、材料照安塔瑞斯（其他三隻進擊版也是沿用原版數值）；背包道具在 extra-doll-items.js，進化系列在 doll-evolution.js。
 (()=>{const base=gameCatalogData.dolls.find(d=>d.id===80383);if(base&&!gameCatalogData.dolls.some(d=>d.id===80515))gameCatalogData.dolls.push({...base,id:80515,name:'進擊娃娃：安塔瑞斯',img:'dolls-80515.png',effects:[...base.effects],materials:base.materials.map(m=>[...m])});
 })();
-// 2026-11-22 使用者回報部分娃娃收不進圖鑑：PSY×3、勝利的丹狄、賽利、玉兔 的道具編號（300206～300211）補對應到圖鑑娃娃（80259～80264，上面 DOLL_ID_ALIASES）；
-//  魔法娃娃：變形怪（55014）原本沒收錄在娃娃清單，照 DB etcitem_doll_type（能力 186＝3%機率施展「列炎術」、造型 7516、魔法結晶體 50、30 分鐘）補上。
-if(!gameCatalogData.dolls.some(d=>d.id===55014))gameCatalogData.dolls.push({id:55014,name:'變形怪',gfx:7516,effects:['3%機率施展「列炎術」'],materials:[[41246,50]],time:1800});
+// 2026-11-22 使用者回報部分娃娃收不進圖鑑：PSY×3、勝利的丹狄、賽利、玉兔 的道具編號（300206～300211）補對應到圖鑑娃娃（80259～80264，上面 DOLL_ID_ALIASES）。
+//  魔法娃娃：變形怪（55014）、隨身祭司（39007～39010）本來就沒開放（沒有取得管道），不放進娃娃清單。
