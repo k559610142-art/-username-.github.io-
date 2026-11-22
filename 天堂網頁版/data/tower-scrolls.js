@@ -1,20 +1,19 @@
 // 傲慢之塔移動卷軸／傳送符（2026-11-22 使用者：舊版傲慢之塔 10 樓、新傲慢之塔 10 樓；高樓層用卷軸上去，怪物掉卷軸與傳送符）。
+// 2026-11-22 使用者修正：傳送符不開放；2～10 樓卷軸只靠怪物掉落；兩座塔的 1 樓都用狩獵場（隨身傳送）過去，所以新塔 1 樓卷軸 84001 也不用。
 // 舊版塔（地圖 101～110）：原版 100 層濃縮成 10 層，每 10F 一樓 → 第 n 樓 = ceil(F/10)。
 //   移動卷軸 40104～40112（11F～91F）→ 2～10 樓、40113（100F）→ 10 樓，用完消失。
-//   傳送符 46011～46020（10F～100F）、40289～40297（11F～91F）→ 同上換算，不會消失（原版可重複使用的符）。
-// 新傲慢之塔（地圖 3301～3310）：移動卷軸 84001～84010 用完消失；移動傳送符 84031～84040、支配傳送符 84041～84050 不會消失。
+// 新傲慢之塔（地圖 3301～3310）：移動卷軸 84002～84010 用完消失。各種傳送符（46011～、40280～、40289～、84031～、84041～）按了只提示不開放。
 //   落點用 DB etcitem_teleport 的座標；頂樓卷軸 84011（地圖 7100）還沒轉，暫不能用。
-// 掉落（player-progression.js roll 呼叫 drop）：塔內每一樓的怪物 1% 掉「上一層樓」的移動卷軸、0.1% 掉本樓的傳送符。
+// 掉落（player-progression.js roll 呼叫 drop）：塔內每一樓的怪物 1% 掉「上一層樓」的移動卷軸（10 樓掉 10 樓卷軸）。
 const TowerScrolls=(()=>{
  const OLD=101,NEW=3300,dest=new Map(); // itemId → {mapId, x, y, keep}
  const oldFloor=f=>Math.min(10,Math.max(1,Math.ceil(f/10)));
  for(let i=0;i<9;i++)dest.set(40104+i,{mapId:OLD-1+oldFloor(11+i*10)});
  dest.set(40113,{mapId:OLD+9});
- for(let i=0;i<10;i++)dest.set(46011+i,{mapId:OLD-1+oldFloor(10+i*10),keep:true});
- for(let i=0;i<9;i++)dest.set(40289+i,{mapId:OLD-1+oldFloor(11+i*10),keep:true});
  // 新傲慢之塔落點（DB etcitem_teleport）
  const NEW_SPOT={1:[32797,32799],2:[32797,32799],3:[32797,32799],4:[32668,32864],5:[32668,32864],6:[32717,32871],7:[32668,32864],8:[32668,32864],9:[32668,32864],10:[32797,32799]};
- for(let n=1;n<=10;n++){const [x,y]=NEW_SPOT[n];dest.set(84000+n,{mapId:NEW+n,x,y});dest.set(84030+n,{mapId:NEW+n,x,y,keep:true});dest.set(84040+n,{mapId:NEW+n,x,y,keep:true});}
+ for(let n=2;n<=10;n++){const [x,y]=NEW_SPOT[n];dest.set(84000+n,{mapId:NEW+n,x,y});}
+ const charm=id=>id>=46011&&id<=46020||id>=40280&&id<=40297||id>=84031&&id<=84050;
  let busy=false;
  const toast=t=>{const log=document.querySelector('#log');if(log)log.textContent=t;return false;};
  function blocked(){
@@ -37,6 +36,8 @@ const TowerScrolls=(()=>{
  function use(uid){
   const e=OwnedInventory.items.find(i=>i.uid===uid),id=e?.item?.id;
   if(id===84011)return toast('傲慢之塔頂樓尚未開放。');
+  if(charm(id))return toast('傲慢之塔傳送符目前不開放。');
+  if(id===84001)return toast('新傲慢之塔 1 樓請用狩獵場傳送前往。');
   const d=dest.get(id);if(!d||e.slot)return null;
   if(busy)return toast('正在傳送中…');const why=blocked();if(why)return toast(why);
   if(!WorldMaps.has(d.mapId))return toast(WorldMaps.name(d.mapId)+' 目前無法前往。');
@@ -51,15 +52,15 @@ const TowerScrolls=(()=>{
   return true;
  }
  // 掉落：舊塔第 n 樓（地圖 100+n）、新塔第 n 樓（地圖 3300+n）
- const SCROLL_RATE=0.01,CHARM_RATE=0.001;
+ const SCROLL_RATE=0.01;
  function drop(mob){
   const s=mob?.spawn;if(!s||s.resident||s.ally||s.bot)return [];const m=s.mapId||0,out=[];
-  let scroll=null,charm=null;
-  if(m>=101&&m<=110){const n=m-100;scroll=n<10?40103+n:40113;charm=46010+n;}
-  else if(m>=3301&&m<=3310){const n=m-3300;scroll=84000+Math.min(10,n+1);charm=84030+n;}
+  let scroll=null;
+  if(m>=101&&m<=110){const n=m-100;scroll=n<10?40103+n:40113;}
+  else if(m>=3301&&m<=3310){const n=m-3300;scroll=84000+Math.min(10,n+1);}
   else return out;
   const add=id=>{const it=window.INTERFACE_CATALOG?.items.find(i=>i.id===id);if(it)out.push({key:'etcitem:'+id,count:1,name:it.name});};
-  if(Math.random()<SCROLL_RATE)add(scroll);if(Math.random()<CHARM_RATE)add(charm);
+  if(Math.random()<SCROLL_RATE)add(scroll);
   return out;
  }
  return {use,drop,destination:id=>dest.get(id)||null};
