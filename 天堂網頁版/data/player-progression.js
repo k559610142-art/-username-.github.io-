@@ -47,7 +47,7 @@ const PlayerProgression = (() => {
       const count=Math.floor((low+Math.floor(Math.random()*(high-low+1)))*(coin?rates.RateDropAdena:1));
       if(count>0)loot.push({key:item.kind+':'+item.id,count,name:item.name});
     }
-    loot.push(...DBGameRules.killRewards(mob));
+    loot.push(...DBGameRules.killRewards(mob)); loot.push(...(window.TdjSystems?.dolls.potionDrop(mob)||[])); // 2026-11-22 魔法娃娃成長藥劑：BOSS 必掉 1～3、一般怪 0.3%
     return {experience:Math.max(0,Math.floor(mob.spawn.npc.exp*rates.RateXp*DBGameRules.xpMultiplier(window.activeCharacterLevel)*(window.ItemEffects?.expRate()||1)*(1+(window.SoulRings?.bonuses().exp||0)/100))),loot}; // 經驗藥水倍率
   }
   function award(mob){

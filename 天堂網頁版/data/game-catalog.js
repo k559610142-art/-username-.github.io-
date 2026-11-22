@@ -1853,6 +1853,15 @@ function openGameCatalog(type) {
         : catalogButton(owned ? '召喚' : '擁有才能召喚', () => { if (TdjSystems.dolls.summon(row.id)) refreshCards(); }, 'game-catalog-action');
       action.disabled = !owned;
       detail.append(action);
+      // 2026-11-22 娃娃進化／分解（使用者定案規則見 tdj-systems.js）
+      const evo = TdjSystems.dolls.evolveInfo(row.id), potions = TdjSystems.dolls.potions(), free = owned - (active ? 1 : 0);
+      detail.append(uiElement('p', '', '魔法娃娃成長藥劑：' + potions + ' 瓶'));
+      const evolveBtn = catalogButton(evo ? '進化（藥劑 ' + evo.potions + ' 瓶 · 成功 ' + evo.rate + '%）' : '已達最高階', () => { TdjSystems.dolls.evolve(row.id); updateCounts(); refreshCards(); }, 'game-catalog-action');
+      evolveBtn.disabled = !evo || free < 1 || potions < evo.potions;
+      if (evo) detail.append(uiElement('small', '', '進化成功變成「' + evo.next.name + '」；失敗只扣藥劑，娃娃保留。' + (active && free < 1 ? '召喚中的娃娃要先解除召喚。' : '')));
+      const splitBtn = catalogButton('分解（得藥劑 ' + TdjSystems.dolls.splitPotions(row.id) + ' 瓶）', () => { TdjSystems.dolls.split(row.id); updateCounts(); refreshCards(); }, 'game-catalog-action');
+      splitBtn.disabled = owned < 2;
+      detail.append(evolveBtn, splitBtn, uiElement('small', '', '分解：每種娃娃至少保留 1 隻。藥劑也可打 BOSS（必掉 1～3 瓶）或一般怪物（0.3%）取得。'));
     } else if (type === 'enchant') {
       const e = row.e, stones = TdjSystems.enchant.stones(e.id), cur = TdjSystems.enchant.current();
       const mine = cur && cur.data.id === e.id ? cur.lv : 0;
@@ -1982,7 +1991,7 @@ function openGameCatalog(type) {
         card.append(uiElement('small', '', lineageWGrades[row.grade][0] + (owned ? ' ×' + owned : ' · 未收集')));
       } else if (type === 'dolls' || type === 'enchant' || type === 'wuhun') {
         const owned = type === 'dolls' ? TdjSystems.dolls.owned(row.id) : type === 'enchant' ? TdjSystems.enchant.stones(row.e.id) : TdjSystems.wuhun.owned(row.w.id);
-        const evolvedOwned=type==='dolls'?DollEvolution.members(row.id).filter(d=>d.id!==row.id).reduce((n,d)=>n+TdjSystems.dolls.owned(d.id),0):0;
+        const evolvedOwned=0; // 2026-11-22 進化階段各有自己的卡片，不再在第一階顯示「進階已擁有」
         if (type === 'wuhun') card.setAttribute('data-tier', tdjWuhunTierTag[row.w.tier] || 'white');
         if (type === 'dolls') card.setAttribute('data-tier', DOLL_TIER_TAG[dollTier(row.id)]);
         if (!owned&&!evolvedOwned) card.classList.add('game-catalog-locked');

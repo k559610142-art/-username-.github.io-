@@ -454,6 +454,64 @@ window.TdjSystems = (() => {
   }, 1000);
   function dismiss() { if (!playing() || !state.dolls.active) return false; state.dolls.active = null; state.dolls.until = 0; save(); render(); toast('魔法娃娃已解除召喚'); return true; }
 
+  // ---- 娃娃進化／分解（2026-11-22 使用者定案）----
+  //  進化：消耗本階娃娃 1 隻＋魔法娃娃成長藥劑，升 2/3/4/5/6 階要 1/2/3/4/5 瓶，成功率 60/40/20/10/5%；失敗只扣藥劑、娃娃不降階。召喚中的那隻不能用。
+  //  分解：每種至少留 1 隻（召喚中的也不能分），依系列第一階品階給藥劑 一般1 高級2 稀有3 英雄5 傳說10 神話20 超越40，進化階段再加已投入藥劑的一半。
+  //  掉落：BOSS 必掉 1～3 瓶、一般怪 0.3% 掉 1 瓶（player-progression.js roll 呼叫 potionDrop）。
+  const DOLL_POTION = 60219, POTION_KEY = 'etcitem:' + DOLL_POTION;
+  const EVOLVE_COST = [1, 2, 3, 4, 5], EVOLVE_RATE = [60, 40, 20, 10, 5];
+  const SPLIT_POTIONS = {一般: 1, 高級: 2, 稀有: 3, 英雄: 5, 傳說: 10, 神話: 20, 超越: 40};
+  function stageOf(id) {
+    const fam = window.DollEvolution?.family(id), path = fam?.paths.find(p => p.includes(+id));
+    return path ? {path, index: path.indexOf(+id)} : null;
+  }
+  function evolveInfo(id) {
+    const s = stageOf(id); if (!s || s.index >= s.path.length - 1) return null;
+    return {next: dollById.get(s.path[s.index + 1]), potions: EVOLVE_COST[s.index], rate: EVOLVE_RATE[s.index], stage: s.index + 2};
+  }
+  function splitPotions(id) {
+    const tier = typeof dollTier === 'function' ? dollTier(id) : '一般', k = stageOf(id)?.index || 0;
+    return (SPLIT_POTIONS[tier] || 1) + Math.floor(EVOLVE_COST.slice(0, k).reduce((a, b) => a + b, 0) / 2);
+  }
+  const potionCount = () => (window.OwnedInventory?.items || []).filter(e => e.key === POTION_KEY && !e.slot).reduce((n, e) => n + e.count, 0);
+  const freeDolls = id => (state.dolls.owned[id] || 0) - (String(state.dolls.active) === String(id) ? 1 : 0);
+  function takePotions(n) {
+    const next = OwnedInventory.snapshot; let left = n;
+    for (const e of next) { if (left <= 0) break; if (e.key !== POTION_KEY || e.slot) continue; const t = Math.min(left, e.count); e.count -= t; left -= t; }
+    return left <= 0 && OwnedInventory.applyChange(next.filter(e => e.count > 0));
+  }
+  function evolveDoll(id) {
+    if (!playing()) return false;
+    const d = dollById.get(+id), info = evolveInfo(id);
+    if (!d || !info) { toast('這隻娃娃已達最高階。'); return false; }
+    if (freeDolls(d.id) < 1) { toast(state.dolls.owned[d.id] ? '召喚中的娃娃不能進化，請先解除召喚。' : '還沒有這隻魔法娃娃。'); return false; }
+    if (potionCount() < info.potions) { toast('進化需要魔法娃娃成長藥劑 ' + info.potions + ' 瓶（目前 ' + potionCount() + ' 瓶）。'); return false; }
+    if (!takePotions(info.potions)) { toast('儲存失敗，進化未進行。'); return false; }
+    const ok = Math.random() * 100 < info.rate;
+    if (ok) {
+      if (!--state.dolls.owned[d.id]) delete state.dolls.owned[d.id];
+      state.dolls.owned[info.next.id] = Math.min(2147483647, (state.dolls.owned[info.next.id] || 0) + 1);
+    }
+    save(); render();
+    toast(ok ? '進化成功！' + d.name + ' → ' + info.next.name : '進化失敗（成功率 ' + info.rate + '%），消耗成長藥劑 ' + info.potions + ' 瓶，' + d.name + ' 保留。');
+    if (ok) flash(dollImage(info.next));
+    return ok;
+  }
+  function splitDoll(id) {
+    if (!playing()) return false;
+    const d = dollById.get(+id); if (!d) return false;
+    if ((state.dolls.owned[d.id] || 0) < 2) { toast('每種娃娃至少要保留 1 隻才能分解。'); return false; }
+    const n = splitPotions(d.id);
+    state.dolls.owned[d.id]--;
+    if (!OwnedInventory.receive('etcitem', DOLL_POTION, n)) { state.dolls.owned[d.id]++; toast('背包空間不足或儲存失敗，娃娃未分解。'); return false; }
+    save(); render(); toast('分解 ' + d.name + '，獲得魔法娃娃成長藥劑 ' + n + ' 瓶。'); return true;
+  }
+  function potionDrop(mob) {
+    if (!mob?.spawn || mob.spawn.resident || mob.spawn.ally || mob.spawn.bot) return [];
+    const n = isBossMob(mob) ? 1 + Math.floor(Math.random() * 3) : Math.random() < 0.003 ? 1 : 0;
+    return n ? [{key: POTION_KEY, count: n, name: '魔法娃娃成長藥劑'}] : [];
+  }
+
   // ---- BOSS 靈魂附魔 ----
   const equippedWeapon = () => (window.OwnedInventory?.items || []).find(e => e.slot === 'weapon');
   function getStone(id) {
@@ -703,7 +761,8 @@ window.TdjSystems = (() => {
     isEnchantLoot, creditEnchantLoot,
     restoreEnchant(id,value){restoredEnchant={owner:id,value};owner='';},
     get enchantSnapshot(){return ensure() ? state.enchant : undefined;},
-    dolls: {draw: drawDoll, summon, dismiss, image: dollImage, owned: id => get().dolls.owned[id] || 0, get active() { return get().dolls.active; }},
+    dolls: {draw: drawDoll, summon, dismiss, image: dollImage, owned: id => get().dolls.owned[id] || 0, get active() { return get().dolls.active; },
+      evolve: evolveDoll, split: splitDoll, evolveInfo, splitPotions, potionDrop, potions: () => (ensure(), potionCount())},
     enchant: {get: getStone, enchant, current: currentEnchant, image: enchantImage, effectText: id => ENCHANT_FX[+id]?.text || '', soulOf: soulInfo, soulLabel: entry => { const s = soulInfo(entry); return s ? s.level.name + '（攻擊發動 ' + s.level.proc + '%）' : ''; }, stones: id => get().enchant.stones[id] || 0},
     wuhun: {fuseSoul,fusionRates:SOUL_FUSION_RATES,changeRings,ringCost:RING_COST,ringColor:RING_COLOR,rings:()=>(ensure(),{...state.wuhun.rings}),spare:t=>(ensure(),spareOf(+t).reduce((n,x)=>n+x.n,0)),tiers:WUHUN_TIERS,ringMissing:id=>(ensure(),ringMissing(wuhunById.get(+id))),get ringState(){ensure();return JSON.parse(JSON.stringify({slots:state.wuhun.ringSlots}));},get: getWuhun, equip: equipWuhun, unequip: unequipWuhun, image: wuhunImage, baseGfx: wuhunBaseGfx, owned: id => get().wuhun.owned[id] || 0, get active() { return get().wuhun.active; }},
     rollEnchantProc, applyEnchantProc, render

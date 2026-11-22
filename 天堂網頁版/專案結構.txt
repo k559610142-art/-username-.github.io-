@@ -547,3 +547,13 @@ NPC 穿衣服（2026-11-13）：
 - 使用者：火焰之子 → 少女帕歐／少年帕克…魔導師帕歐／魔騎士帕克＋附魔 1～15 不開放。doll-evolution.js 拿掉該系列定義（火焰之子變成不能進化），
   doll-dedup.js 從 gameCatalogData.dolls 移除那 36 隻（80281～80283、80286～80288、80290～80319；已擁有的讀檔時自動消失）。
 - 卡冊現在 164 張：不能進化 67 隻＋可進化 22 系列共 97 隻。娃娃進化功能（成長藥劑、成功率、取得管道）還在設計討論中。
+
+【2026-11-22 娃娃進化／分解（使用者定案）】
+- data/tdj-systems.js：evolveDoll／splitDoll／evolveInfo／splitPotions／potionDrop，匯出在 TdjSystems.dolls.{evolve,split,evolveInfo,splitPotions,potionDrop,potions}。
+  進化：本階娃娃 1 隻＋魔法娃娃成長藥劑（etcitem 60219），升 2/3/4/5/6 階要 1/2/3/4/5 瓶，成功率 60/40/20/10/5%；失敗只扣藥劑、娃娃保留。
+        路線用 DollEvolution.family(id).paths；召喚中的那隻不能拿去進化（要多一隻或先解除）。
+  分解：每種至少留 1 隻；依系列第一階品階給藥劑 一般1 高級2 稀有3 英雄5 傳說10 神話20 超越40，進化階段再加已投入藥劑（1＋2＋…）的一半。
+  掉落：data/player-progression.js roll() 在 killRewards 後加 potionDrop(mob)：BOSS（同 BOSS 附魔判斷）必掉 1～3 瓶、一般怪 0.3% 掉 1 瓶。
+        （DB 掉落表會濾掉名字有「娃娃」的道具，所以藥劑另外加，不走 drops 表。）
+- data/game-catalog.js 娃娃詳細頁：顯示藥劑數量、「進化（藥劑 n 瓶 · 成功 x%）」「分解（得藥劑 n 瓶）」按鈕；卡片不再顯示「進階已擁有」（每階都有自己的卡片）。
+- 不開放：DB 15 條娃娃合成配方、魔幻的寶石、精靈的寶石、能量石；鑽石商城不賣藥劑。
