@@ -75,13 +75,21 @@ if(opt.boss){
  for(const r of table('table-143.js')){
   const m=+r.mapid,id=+r.npc_templateid,x1=+r.locx1,y1=+r.locy1,x2=+r.locx2,y2=+r.locy2;
   if(!mapOk(m)||!templates[id]||!x1||!y1||have.has(m+':'+id))continue;
-  if(id===45600)continue; // 克特：座標在說話之島村莊安全區內，怪物不能在安全區出生
+  if(id===45600)continue; // 克特：DB 座標在說話之島村莊安全區內 → 改放碼頭（下方 BOSS_EXTRA）
 
   const area=x2>0&&y2>0,sec=(+r.spawn_interval||180)*60;have.add(m+':'+id);
   spawns.push({mapId:m,spawnId:900000000+(+r.id),zone:r.location,count:1,npcId:id,group:groups[+r.group_id]?+r.group_id:0,
    point:area?[Math.round((x1+x2)/2),Math.round((y1+y2)/2)]:[x1,y1],random:area?[0,0]:[2,2],bounds:area?[x1,y1,x2,y2]:[0,0,0,0],heading:+r.heading||0,
    respawn:[sec,sec],movement:0,boss:true});
  }
+ // 2026-11-22 使用者指定位置（DB 沒座標或座標不能用）：[DB 列 id, 地圖, NPC, 中心點, 範圍(0=定點±2), 重生分鐘]
+ const BOSS_EXTRA=[
+  [201151,0,45600,[32631,32977],null,480],                  // 克特：說話之島碼頭（港口主人南邊的棧橋）
+  [230278,36,107034,[32703,32831],[32576,32704,32831,32959],180], // 傑羅斯：龍之谷地監 6 樓
+  [230279,4,107035,[33364,32383],[33356,32375,33371,32390],360],  // 巨大飛龍：龍之谷和 [BOSS] 飛龍同一點，重生加倍（飛龍 180 → 360 分）
+ ];
+ for(const [rid,m,id,point,bounds,min]of BOSS_EXTRA){if(!templates[id]||have.has(m+':'+id))continue;have.add(m+':'+id);
+  spawns.push({mapId:m,spawnId:900000000+rid,zone:templates[id].name,count:1,npcId:id,group:0,point,random:bounds?[0,0]:[2,2],bounds:bounds||[0,0,0,0],heading:5,respawn:[min*60,min*60],movement:0,boss:true});}
 }
 const looks = new Set(); for (const s of spawns) { looks.add(templates[s.npcId].gfx); for (const [id] of groups[s.group]?.members || []) if (templates[id]) looks.add(templates[id].gfx); }
 // Monsters made by skills (data/summons.js): 召喚術 81210–81228, 屬性精靈 45303–45306, 強力屬性精靈 81050–81053.

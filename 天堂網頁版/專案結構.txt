@@ -600,3 +600,4 @@ NPC 穿衣服（2026-11-13）：
 - data/island-monsters.js：spawn.boss 的怪 markDead 時把重生時間存 localStorage lineage-web-boss-respawn-v1（key 地圖:spawnId，值 Date.now 毫秒），
   addMob 時還沒到就直接以死亡狀態生成 → 重新整理、重進遊戲不會提早重生（同一台瀏覽器共用）。
 - 清單：BOSS資料清單.md 第〇節。
+- 2026-11-22 使用者指定（build.js BOSS_EXTRA）：克特→說話之島碼頭 32631,32977（8h）、傑羅斯→龍之谷地監 6 樓（3h，借古代巨人外觀）、巨大飛龍→龍之谷 [BOSS] 飛龍同範圍（6h＝飛龍兩倍）。共 85 隻。
