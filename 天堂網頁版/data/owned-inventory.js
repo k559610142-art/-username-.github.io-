@@ -161,7 +161,6 @@ window.OwnedInventory=(()=>{
   return transact(next)?'':'存檔失敗，交易未完成。';
  }
  function unequip(uid){const e=entries.find(e=>e.uid===uid);if(!e?.slot)return false;const r=config(e);if(r.bless===2){toast('被詛咒的裝備無法卸下。');return false}if(characterMovementBlocked()||movementAnimating()){toast('請等目前動作結束。');return false}
-  if(e.slot==='tshirt'&&entries.some(i=>['armor','cloak'].includes(i.slot))||e.slot==='armor'&&entries.some(i=>i.slot==='cloak')){toast('請先脫下外層裝備。');return false}
   const next=clone(entries);next.find(i=>i.uid===uid).slot=null;return transact(next);
  }
  function prepareTransform(card){
@@ -181,7 +180,6 @@ window.OwnedInventory=(()=>{
   if(slot==='weapon'&&target==='weapon'&&second&&!isAxe(item)){toast('右手拿著第二把斧頭，請先卸下才能換其他武器。');return false}
   if(slot==='shield'&&second){toast('右手已裝備第二把斧頭，請先卸下。');return false}
   if(slot==='weapon'&&item.twoHand&&entries.some(i=>i.slot==='shield'&&!isGuarder(definition(i)))||slot==='shield'&&!isGuarder(item)&&weapon&&definition(weapon).twoHand){toast('雙手武器與盾牌不能同時裝備。');return false}
-  if(slot==='tshirt'&&entries.some(i=>['armor','cloak'].includes(i.slot))||slot==='armor'&&entries.some(i=>i.slot==='cloak')){toast('請先脫下外層裝備。');return false}
   const next=clone(entries);
   if(slot==='ring1'){const limit=level()>=81?4:level()>=76?3:2;target=['ring1','ring2','ring3','ring4'].slice(0,limit).find(s=>!entries.some(i=>i.slot===s));if(!target){toast('目前等級的戒指欄位已滿。');return false}}
   else if(current&&target!=='weapon2'){if(slot!=='weapon'){toast('這個欄位已有裝備，請先卸下。');return false}if(config(current).bless===2){toast('手上的武器被詛咒，無法更換。');return false}next.find(i=>i.uid===current.uid).slot=null}
@@ -239,9 +237,25 @@ window.OwnedInventory=(()=>{
   if(!Array.isArray(uids)||!uids.length||new Set(uids).size!==uids.length||uids.some(uid=>typeof uid!=='string'||!canDiscard(uid,options)))return false;
   const selected=new Set(uids);return transact(entries.filter(e=>!selected.has(e.uid)));
  }
+ function mergeStoredStacks(items){
+  const stacks=new Map(),merged=[];
+  for(const item of items){
+   if(item.slot||!rules.definitions[item.key]?.stackable){merged.push(item);continue;}
+   const {uid,count,slot,...attributes}=item;
+   attributes.unid=!!attributes.unid;
+   attributes.enchant=attributes.enchant||0;
+   attributes.bless=config(item).bless;
+   const key=JSON.stringify(Object.keys(attributes).sort().map(k=>[k,attributes[k]]));
+   const stack=stacks.get(key);
+   if(stack&&stack.count+count<=2147483647){stack.count+=count;continue;}
+   stacks.set(key,item);
+   merged.push(item);
+  }
+  return merged;
+ }
  function sortInventory(){
   const rank={weapon:0,armor:1,etcitem:2},collator=new Intl.Collator('zh-Hant',{numeric:true});
-  const sorted=clone(entries).sort((a,b)=>(rank[definition(a).kind]??3)-(rank[definition(b).kind]??3)||collator.compare(presented(a).name,presented(b).name)||collator.compare(a.uid,b.uid));
+  const sorted=mergeStoredStacks(clone(entries)).sort((a,b)=>(rank[definition(a).kind]??3)-(rank[definition(b).kind]??3)||collator.compare(presented(a).name,presented(b).name)||collator.compare(a.uid,b.uid));
   return transact(sorted);
  }
  function usePotion(){const e=entries.find(i=>i.key==='etcitem:40010')||entries.find(i=>window.NativePotions?.isHealing(i.key)||rules.handlers[config(i).handler]?.kind==='hpGaussian');if(!e){toast('背包中沒有回復藥水。');return false}return use(e.uid)}

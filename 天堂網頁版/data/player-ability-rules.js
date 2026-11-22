@@ -13,9 +13,14 @@ window.PlayerAbilityRules=(()=>{
  const helmetSpells={20013:[26,43],20014:[1,19],20015:[12,13,42]};
  function helmetSkills(){
   if(typeof job==='undefined'||job!=='騎士')return [];
-  const helm=window.OwnedInventory?.items?.find(e=>e.slot==='helm');
-  const id=helm?.item?.id;
-  return helmetSpells[id>=120013&&id<=120015?id-100000:id]||[];
+  const inventory=window.OwnedInventory;
+  if(!inventory||inventory.owner!==window.activeCharacterId)return [];
+  const available=new Set();
+  for(const {item} of inventory.items){
+   const id=item.id>=120013&&item.id<=120015?item.id-100000:item.id;
+   for(const skill of helmetSpells[id]||[])available.add(skill);
+  }
+  return [...available];
  }
  function manaCost(skill,profile=PlayerClassStats.read()){
   const base=Math.max(0,Number(skill.mp)||0);if(!base)return 0;

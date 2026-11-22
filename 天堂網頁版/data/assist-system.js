@@ -24,7 +24,7 @@ const AssistSystem=(()=>{
  // 2026-11-18 使用者：商店沒賣或職業不能用時（例如騎士的慎重藥水）也顯示該道具的圖，不要只有購物車
  const BUY_ICON={tp:'etcitem:40100',home:'etcitem:40081',heal:'etcitem:40010',haste:'etcitem:40018',brave:'etcitem:40014',wisdom:'etcitem:40016',blue:'etcitem:40015',arrow:'etcitem:40743',cake:'etcitem:49138',meat:'etcitem:40056',barrier:'etcitem:40889',antidote:'etcitem:40017'};
  const BUYS=[['tp','一般瞬間移動卷軸',10],['home','傳送回家的卷軸',5],['heal','補血道具（補給選的那種）',100],['haste','綠色藥水',5],['brave','二段加速',5],['cake','巧克力蛋糕（三段加速）',5],['meat','肉',20],['barrier','魔法屏障卷軸',5],['antidote','解毒藥水',5],['wisdom','慎重藥水',5],['blue','藍色藥水',5],['arrow','箭（裝備弓時）',1000]];
- const base=()=>({noMobTp:false,noMobSec:10,tpScrollType:'normal',potions:Object.fromEntries(POTIONS.map(([k])=>[k,false])),attackOn:false,attackSkill:null,attackMp:30,buffs:[],list:{},escape:false,healFallback:false,healBuyKeys:[],arrowBuyKey:ARROW_KEYS[0],cureOn:false,cureMethod:CURES[0][0],morph:false,morphCard:null,morphLost:false,openOn:false,openSkill:null,openMp:50,aoeOn:false,aoeSkill:null,aoeRange:3,aoeCount:3,aoeMp:50,mindOn:false,mindHp:80,mindMp:40,summonOn:false,ringOn:false,expAuto:false,barrierScroll:false,eatOn:false,eatAt:30,eatPick:null,returnOn:false,returnHp:80,returnSpot:null,fullOn:false,fullWeight:80,fullSlots:10,fullAct:'home',presets:[null,null,null],dangerOn:false,dangerBoss:true,dangerPlayer:'red',dangerRange:8,dollOn:false,dollId:null,pick:Object.fromEntries(POTIONS.map(([k])=>[k,null])),buy:Object.fromEntries(BUYS.map(([k,,n])=>[k,{on:false,n}]))});
+ const base=()=>({retaliateRed:false,noMobTp:false,noMobSec:10,tpScrollType:'normal',potions:Object.fromEntries(POTIONS.map(([k])=>[k,false])),attackOn:false,attackSkill:null,attackMp:30,buffs:[],list:{},escape:false,healFallback:false,healBuyKeys:[],arrowBuyKey:ARROW_KEYS[0],cureOn:false,cureMethod:CURES[0][0],morph:false,morphCard:null,morphLost:false,openOn:false,openSkill:null,openMp:50,aoeOn:false,aoeSkill:null,aoeRange:3,aoeCount:3,aoeMp:50,mindOn:false,mindHp:80,mindMp:40,summonOn:false,ringOn:false,expAuto:false,barrierScroll:false,eatOn:false,eatAt:30,eatPick:null,returnOn:false,returnHp:80,returnSpot:null,fullOn:false,fullWeight:80,fullSlots:10,fullAct:'home',presets:[null,null,null],dangerOn:false,dangerBoss:true,dangerPlayer:'red',dangerRange:8,dollOn:false,dollId:null,pick:Object.fromEntries(POTIONS.map(([k])=>[k,null])),buy:Object.fromEntries(BUYS.map(([k,,n])=>[k,{on:false,n}]))});
  let stoneQueue=null;
  let buyOpen=false,healShop=null,healQty=100;
  const healChecked=new Set();
@@ -34,7 +34,7 @@ const AssistSystem=(()=>{
   if(['auto','normal','blessed'].includes(v.tpScrollType))s.tpScrollType=v.tpScrollType;s.noMobTp=v.noMobTp===true;s.noMobSec=int(v.noMobSec,3,60,10);for(const k of Object.keys(s.potions))s.potions[k]=v.potions?.[k]===true;
   s.attackOn=v.attackOn===true;s.attackSkill=Number.isInteger(v.attackSkill)&&playerSkillData.skills[v.attackSkill]?v.attackSkill:null;s.attackMp=int(v.attackMp,0,99,30);
   s.buffs=Array.isArray(v.buffs)?[...new Set(v.buffs.filter(id=>Number.isInteger(id)&&playerSkillData.skills[id]))]:[];
-  for(const k of ['escape','healFallback','cureOn','morph','openOn','aoeOn','mindOn','summonOn','ringOn','expAuto','barrierScroll'])s[k]=v[k]===true;
+  for(const k of ['retaliateRed','escape','healFallback','cureOn','morph','openOn','aoeOn','mindOn','summonOn','ringOn','expAuto','barrierScroll'])s[k]=v[k]===true;
   if(Array.isArray(v.healBuyKeys))s.healBuyKeys=[...new Set(v.healBuyKeys.filter(key=>typeof key==='string'&&catalog.has(key)&&NativePotions.isHealing(key)))];
   if(ARROW_KEYS.includes(v.arrowBuyKey))s.arrowBuyKey=v.arrowBuyKey;
   if(CURES.some(([method])=>method===v.cureMethod))s.cureMethod=v.cureMethod;
@@ -323,6 +323,7 @@ const AssistSystem=(()=>{
   }
   scrollType.onchange=()=>{if(save({tpScrollType:scrollType.value}))render();else scrollType.value=state.tpScrollType;};
   p.append(head('AUTO 掛機'),group(
+   row('⚔️','反擊紅人','AUTO 中被紅名玩家擊中時反擊，結束後繼續打怪',switcher(state.retaliateRed,on=>save({retaliateRed:on}),'反擊紅人')),
    row(ico(teleportScrollIcon(),'🌀'),'自動瞬移使用卷軸','可用 '+tp+' 張',scrollType),
    row('🎯','掛機索敵範圍','AUTO 時會往多遠的怪物走過去',slider(IslandCombat.autoRange,12,48,v=>{IslandCombat.setAutoRange(v);},' 格','掛機索敵範圍')),
    row(ico(teleportScrollIcon(),'🌀'),'沒怪 '+state.noMobSec+' 秒自動瞬移','用瞬間移動卷軸（身上 '+tp+' 張）',slider(state.noMobSec,3,60,v=>save({noMobSec:v})&&void render(),' 秒','沒怪幾秒瞬移'),switcher(state.noMobTp,on=>save({noMobTp:on}),'沒怪自動瞬移')),
@@ -557,5 +558,5 @@ const AssistSystem=(()=>{
   body=el('div','assist-body');dialog.append(h,tabs,body);game.append(dialog);hud.setAttribute('aria-pressed','true');render();return true;}
  function close(){dialog?.remove();dialog=null;buyOpen=false;healShop=null;healChecked.clear();hud.setAttribute('aria-pressed','false');}
  addEventListener('keydown',e=>{if(e.key==='Escape'&&dialog)close();});
- return {activate,open,close,skip,prefer,tick,get stats(){return JSON.parse(JSON.stringify(stats));},get escapeFirst(){return state.escape&&owner===window.activeCharacterId;},get healFallback(){return state.healFallback&&owner===window.activeCharacterId;},get snapshot(){return JSON.parse(JSON.stringify(state));}};
+ return {activate,open,close,skip,prefer,tick,get stats(){return JSON.parse(JSON.stringify(stats));},get retaliateRed(){return state.retaliateRed&&owner===window.activeCharacterId;},get escapeFirst(){return state.escape&&owner===window.activeCharacterId;},get healFallback(){return state.healFallback&&owner===window.activeCharacterId;},get snapshot(){return JSON.parse(JSON.stringify(state));}};
 })();window.AssistSystem=AssistSystem;

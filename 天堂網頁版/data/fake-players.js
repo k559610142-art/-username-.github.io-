@@ -145,8 +145,8 @@ const FakePlayers=(()=>{
   for(let i=0;i<6;i++){const x=mob.homeX+ri(-r,r),y=mob.homeY+ri(-r,r);if(stepToward(mob,x,y,now)){f.goal=[x,y];return;}}}
  // 村莊雙向保護：出手與傷害落下時都檢查，踏入安全區立即停戰。
  function canFight(mob){return !!mob?.fp&&!mob.fp.hidden&&!mob.fp.vanish&&!mob.fp.stall&&mob.fp.partyOwner!==window.activeCharacterId&&mob.hp>0&&(mob.spawn.mapId||0)===(window.activeMapId||0)&&!safe(worldX,worldY)&&!(typeof movementTween!=='undefined'&&movementAnimating()&&safe(movementTween.fromTileX,movementTween.fromTileY))&&!safe(mob.x,mob.y)&&(!mob.step||!safe(mob.step.x,mob.step.y));}
- // 玩家傷害必須明確開啟強制攻擊；假人的主動 PK 仍使用 canFight。
- function canAttack(mob){return !!window.ForceAttack?.on&&canFight(mob);}
+ // 手動強制攻擊和掛機反擊都受安全區保護。
+ function canAttack(mob){return (window.ForceAttack?.on||IslandCombat.canRetaliate(mob))&&canFight(mob);}
 
  function survival(mob,now,stepToward){
   const f=mob.fp,max=mob.spawn.npc.hp;
@@ -230,7 +230,10 @@ const FakePlayers=(()=>{
    const attackMap=window.activeMapId||0,attackOwner=window.activeCharacterId;
    setTimeout(()=>{if(!f.pk||f.retreatUntil||CharacterActions.dead||!canFight(mob)||(window.activeMapId||0)!==attackMap||window.activeCharacterId!==attackOwner||dist(mob.x,mob.y,worldX,worldY)>reach||!IslandCombat.clearShot(mob.x,mob.y,worldX,worldY))return;
     const ac=typeof previewArmorClass==='function'?Number(previewArmorClass())||10:10,plv=window.activeCharacterLevel||1;
-    if(Math.random()<clamp(.6+(lv-plv)*.02+(ac-10)*.025,.1,.95)){const n=window.ClassBuffs?.targetNpc?.(mob)||mob.spawn.npc,delta=(n.dmgup||0)-(mob.spawn.npc.dmgup||0)+Math.floor(((n.str||0)-(mob.spawn.npc.str||0))/2),raw=Math.max(0,ri(3,9)+Math.floor(lv*.6)+4+delta),dealt=window.ClassBuffs?.onHurt?.(mob,raw,null)??raw;if(dealt>0)CharacterActions.damage(dealt,{animate:!movementAnimating()&&!navigationPath.length});
+    if(Math.random()<clamp(.6+(lv-plv)*.02+(ac-10)*.025,.1,.95)){const n=window.ClassBuffs?.targetNpc?.(mob)||mob.spawn.npc,delta=(n.dmgup||0)-(mob.spawn.npc.dmgup||0)+Math.floor(((n.str||0)-(mob.spawn.npc.str||0))/2),raw=Math.max(0,ri(3,9)+Math.floor(lv*.6)+4+delta),dealt=window.ClassBuffs?.onHurt?.(mob,raw,null)??raw;if(dealt>0){
+      CharacterActions.damage(dealt,{animate:!movementAnimating()&&!navigationPath.length});
+      IslandCombat.retaliateAgainst(mob);
+     }
      if(CharacterActions.dead){say(mob,pick(RED_WIN));window.GameChat?.say('【系統】你被 '+name+' 擊倒了。','sys');f.pk=false;f.pkCd=movementTime()+rnd(60000,120000);}}},dur*.45);
    return true;}
 
@@ -251,7 +254,7 @@ const FakePlayers=(()=>{
   if(gold)window.OwnedInventory?.receive('etcitem',40308,gold);
   window.GameChat?.say('【系統】你擊敗了 '+mob.spawn.npc.name+(gold?'，獲得 '+gold.toLocaleString()+' 金幣。':'。'),'sys');
   mob.hp=mob.spawn.npc.hp;f.retreatUntil=0;f.pk=false;f.target=null;f.goal=null;f.hidden=true;f.vanish=movementTime()+60000;mob.bubble=null;
-  if(IslandMonsters.target===mob){IslandMonsters.setTarget(null);IslandCombat.stop();}}
+  if(!IslandCombat.finishRetaliation(mob)&&IslandMonsters.target===mob){IslandMonsters.setTarget(null);IslandCombat.stop();}}
  // 寶物公告：照怪物掉寶表擲骰（只看掉率 ≤ 2% 的道具，機率 ×2）
  function loot(mob,t){const drops=(typeof killRewardData!=='undefined'?killRewardData:window.killRewardData)?.drops?.[t.spawn.npcId]||[];
   for(const d of drops){if(d.id===40308||!(d.chance>0)||d.chance>20000||Math.random()*1e6>=d.chance*2)continue;const item=itemById.get(d.id);if(!item)continue;

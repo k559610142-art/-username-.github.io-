@@ -8,6 +8,22 @@ const DBGameRules = (() => {
   const roleFlag={'王族':1,'騎士':2,'妖精':4,'法師':8,'黑妖':16};
   const byId=new Map(INTERFACE_CATALOG.items.map(item=>[item.id,item]));
   const keyFor=id=>{const item=byId.get(+id);return item?item.kind+':'+item.id:null;};
+  // 古老的寶箱：權重以百萬分之一計，總和為 1,000,000，每箱選一項。
+  const ancientChestRewards=[
+    [40048,110000],[40049,110000],[40050,110000],[40051,110000],
+    [40052,80000],[40053,80000],[40054,80000],[40055,80000],
+    [350123,70000],[350124,60000],
+    [67,14000],[68,14000],[182,14000],
+    [20092,14000],[20093,14000],[20094,14000],[20095,14000],
+    [40076,6000],[39186,6000]
+  ].map(([get_item_id,random])=>({
+    box_item_id:39185,get_item_id,random,randomint:1000000,
+    min_count:1,max_count:1,bless:-1,enchant:0
+  }));
+  tables.set('etcitem_box',[
+    ...rows('etcitem_box').filter(row=>row.box_item_id!==39185),
+    ...ancientChestRewards
+  ]);
   const split=value=>String(value??'').split(',').filter(Boolean).map(Number);
   const clone=value=>JSON.parse(JSON.stringify(value));
   const boxRolls=new Map(),cooldowns=new Map();
@@ -139,8 +155,9 @@ const DBGameRules = (() => {
   function damageBonus(ranged){
     const gear=OwnedInventory.items.filter(i=>i.slot),set=EquipmentSets.read(gear);
     const extra=gear.reduce((sum,e)=>{
-      const r=e.item.sourceRules||{};
-      return sum+(ranged?(r.bow_dmg_modifier||0):(r.dmgmodifier||r.dmg_modifier||0))+(e.slot==='weapon'?(e.enchant||0):0);
+      const modifiers=ItemProperties.attackModifiers(e.item,ranged);
+      const matchingWeapon=e.slot==='weapon'&&ranged===['bow','singlebow'].includes(e.item.type);
+      return sum+modifiers.damage+(matchingWeapon?(e.enchant||0):0);
     },0);
     const poly=rows('system_poly_orginal').find(r=>r.gfxId===window.activeTransformCard?.p?.gfx);
     return extra+(window.SoulRings?.bonuses()[ranged?'ranged':'melee']||0)+(ranged?set.bow_modifier_dmg||0:set.modifier_dmg||0)+(ranged?poly?.addBowDmg||0:poly?.addDmg||0)+(window.ClassBuffs?.damageBonus(ranged)||0);

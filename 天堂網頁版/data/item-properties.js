@@ -1,8 +1,8 @@
 // Read-only item descriptions, shared by crafting previews and future inventory UI.
-(function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.ItemProperties=api;})(typeof window!=='undefined'?window:globalThis,()=>{
+(function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else {root.ItemProperties=api;for(const key of api.stackableMaterialKeys){const rule=root.ITEM_USE_RULES?.definitions[key];if(rule)rule.stackable=true;}}})(typeof window!=='undefined'?window:globalThis,()=>{
  const TYPES={helm:'頭盔',armor:'盔甲',cloak:'斗篷',glove:'手套',boots:'靴子',shield:'盾牌',ring:'戒指',amulet:'項鍊',earring:'耳環',belt:'腰帶',talisman:'符石',runeword:'符石',sword:'單手劍',dagger:'匕首',tohandsword:'雙手劍',blunt:'鈍器',bow:'弓',staff:'法杖',spear:'矛',singlespear:'單手矛',edoryu:'雙刀',claw:'鋼爪',kiringku:'奇古獸',chainsword:'鎖鏈劍',tohandblunt:'雙手鈍器',tshirt:'內衣',arrow:'箭矢',potion:'藥水',scroll:'卷軸',gem:'寶石',material:'材料',questitem:'任務／製作道具',spellbook:'技能書'};
  const ATTR={str:'力量',dex:'敏捷',con:'體質',int:'智力',wis:'精神',cha:'魅力',hp:'HP',mp:'MP'};
- const RULES={m_def:'魔法防禦 MR',add_sp:'魔攻 SP',add_hpr:'體力恢復',add_mpr:'魔力恢復',hitmodifier:'近距離命中',hit_modifier:'近距離命中',dmgmodifier:'近距離傷害',dmg_modifier:'近距離傷害',bow_hit_modifier:'遠距離命中',bow_dmg_modifier:'遠距離傷害',damage_reduction:'傷害減免',magic_critical:'魔法暴擊',exp_point:'經驗加成'};
+ const RULES={m_def:'魔法防禦 MR',add_sp:'魔攻 SP',add_hpr:'體力恢復',add_mpr:'魔力恢復',damage_reduction:'傷害減免',magic_critical:'魔法暴擊',exp_point:'經驗加成'};
  const sign=n=>n>0?'+'+n:String(n);
  function read(item,options={}){
   const out=[],add=(label,value)=>{if(value!==undefined&&value!==null&&value!=='')out.push({label,value:String(value)});},r=item.sourceRules||{},enchant=Number(options.enchant)||0;
@@ -11,6 +11,11 @@
   if(item.kind==='armor'){add('基礎防禦 AC',item.ac||0);if(enchant)add('強化後防禦 AC',Number(item.ac||0)-enchant);}
   if(enchant)add('強化等級',sign(enchant));
   for(const [key,label]of Object.entries(ATTR)){const n=Number(item.bonuses?.[key])||0;if(n)add(label,sign(n));}
+  for(const ranged of [false,true]){
+   const {hit,damage}=attackModifiers(item,ranged), label=ranged?'遠距離':'近距離';
+   if(hit)add(label+'命中',sign(hit));
+   if(damage)add(label+'傷害',sign(damage));
+  }
   const seen=new Set();for(const [key,label]of Object.entries(RULES)){const n=Number(r[key])||0;if(n&&!seen.has(label)){add(label,sign(n)+(key==='exp_point'||key==='magic_critical'?'%':''));seen.add(label);}}
   const native=options.armorData||{},elements={earth:'地屬性防禦',fire:'火屬性防禦',water:'水屬性防禦',wind:'風屬性防禦'};
   for(const [key,label]of Object.entries(elements)){const n=Number(native[key]??r['defense_'+key])||0;if(n)add(label,sign(n));}
@@ -31,7 +36,27 @@
   return out;
  }
  // 道具目錄用千分之一單位儲存重量，詳情與負重都用同一個換算。
- const weight=item=>(Number(item?.weight)||0)/1000;
+ const stackableMaterialKeys=[
+  40417,49014,82241,80036,80037,56148,56147,80333,70509,80328,80331,80334,
+  80335,80327,86005,86006,86007,86200,82242,44150,350104,350035,350036,350037,
+  350038,350070,350071,350072,350073,350074,350075,350076,350077,350078,
+  39191,39320,39325,39328
+ ].map(id=>'etcitem:'+id);
+ function attackModifiers(item,ranged){
+  const r=item?.sourceRules||{},bow=item?.kind==='weapon'&&['bow','singlebow'].includes(item.type);
+  const hit=r.hitmodifier??r.hit_modifier??0,damage=r.dmgmodifier??r.dmg_modifier??0;
+  if(ranged)return {hit:Number(r.bow_hit_modifier??(bow?hit:0)),damage:Number(r.bow_dmg_modifier??(bow?damage:0))};
+  return {hit:bow?0:Number(hit),damage:bow?0:Number(damage)};
+ }
+ const weightOverrides=new Map([[87,30],[135,40],[40497,3.1],[40509,1.4]]);
+ function weight(item){
+  if(!item)return 0;
+  const value=Math.max(0,Number(item.weight)||0);
+  if(weightOverrides.has(item.id))return weightOverrides.get(item.id);
+  if(item.kind==='armor'&&item.type==='cloak'&&item.id>=301170&&item.id<=301209&&value===10)return 10;
+  if(item.kind==='etcitem'&&item.type==='potion'&&!/萬能藥/.test(item.name))return value/10000;
+  return value/1000;
+ }
  function weightPercent(items,attributes,adjustCapacity){
   const {str=0,con=0}=attributes||{};
   const base=Math.max(0,1500+Math.floor((str+con-18)/2)*150);
@@ -39,5 +64,5 @@
   const carried=items.reduce((total,entry)=>total+weight(entry.item)*(entry.count||1),0);
   return capacity>0?Math.round(100*carried/capacity):0;
  }
- return {read,weight,weightPercent};
+ return {read,weight,weightPercent,attackModifiers,stackableMaterialKeys};
 });

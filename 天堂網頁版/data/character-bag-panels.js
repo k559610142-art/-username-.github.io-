@@ -42,6 +42,7 @@
  .qy-win.qy-bag .classic-item-grid .item-slot.empty{background:#141518!important;border-color:#23221f!important}
  .qy-win.qy-bag .classic-item-grid .item-slot:not(.empty):hover,.qy-win.qy-bag .classic-item-grid .item-slot[aria-pressed=true]{border-color:#d7b464!important}
  .qy-win.qy-bag .inventory-count{position:absolute;right:3px;bottom:1px;font-size:11px;color:#fff;text-shadow:0 0 2px #000,1px 1px 0 #000}
+ .qy-win.qy-bag .inventory-enchant{position:absolute;z-index:1;right:2px;top:1px;padding:0 2px;border-radius:2px;background:#18130eea;color:#ffd782;font:bold 11px/1.2 sans-serif;pointer-events:none}
  .qy-win.qy-bag .equipped-mark{position:absolute;left:2px;top:1px;font-size:9px;padding:0 3px;background:#2f6bd0;color:#fff;border-radius:2px}
  .qy-win.qy-bag .missing-item-icon{display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:14px;color:#c9b98e}
  .qy-win.qy-bag .classic-pager{display:none!important}

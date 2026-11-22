@@ -1,5 +1,5 @@
 const IslandCombat=(()=>{
-  let mode=null,target=null,pending=null,owner=null,followUp=null;
+  let mode=null,target=null,pending=null,owner=null,followUp=null,retaliation=null;
   let autoScanRange=32;
   try{const saved=Number(localStorage.getItem('lineage-auto-range'));if(saved>=12&&saved<=48)autoScanRange=saved;}catch{}
   function setAutoRange(value){
@@ -18,7 +18,7 @@ const IslandCombat=(()=>{
   }
   function stop(){
     if(mode&&navigationPath.length)cancelNavigation();
-    mode=null;target=null;
+    mode=null;target=null;retaliation=null;
   }
   function begin(kind,mob){
     if(window.gameFlowState!=='playing'||CharacterActions.dead||!TransformCards.canAttack())return false;
@@ -27,6 +27,32 @@ const IslandCombat=(()=>{
     if(mob?.spawn.bot&&!window.FakePlayers?.canAttack(mob))return false;
     if(owner!==window.activeCharacterId){owner=window.activeCharacterId;pending=null;}
     stop();mode=kind;target=mob||null;tick();return true;
+  }
+  function canRetaliate(mob){
+    return mode==='auto'&&!!retaliation&&retaliation.mob===mob&&owner===window.activeCharacterId&&
+      !!window.AssistSystem?.retaliateRed&&movementTime()<retaliation.until&&
+      mob.fp?.red&&mob.fp.pk&&!mob.fp.retreatUntil&&mob.fp.enemyId===owner&&distance(mob.x,mob.y)<=14;
+  }
+  function retaliateAgainst(mob){
+    if(mode!=='auto'||!window.AssistSystem?.retaliateRed||!mob?.fp?.red||
+      mob.fp.enemyId!==owner||!mob.fp.pk||CharacterActions.dead||!window.FakePlayers?.canFight(mob))return false;
+    retaliation={mob,until:movementTime()+8000};
+    if(target!==mob){
+      cancelNavigation();
+      target=mob;
+      IslandMonsters.setTarget(mob);
+    }
+    return true;
+  }
+  function finishRetaliation(mob){
+    if(retaliation?.mob!==mob)return false;
+    retaliation=null;
+    if(target===mob){
+      cancelNavigation();
+      target=null;
+      IslandMonsters.setTarget(null);
+    }
+    return true;
   }
   function walkTo(mob,range){
     if(movementAnimating()||navigationPath.length)return true;
@@ -106,6 +132,7 @@ const IslandCombat=(()=>{
     const id=window.gameFlowState==='playing'?window.activeCharacterId:null;
     if(id!==owner){owner=id;stop();pending=null;}
     if(!id||CharacterActions.dead){stop();pending=null;followUp=null;return;}
+    if(retaliation&&(!canRetaliate(retaliation.mob)||!window.FakePlayers?.canFight(retaliation.mob)))finishRetaliation(retaliation.mob);
     if(followUp&&movementTime()>=followUp.at){if(followUp.mob.hp)IslandMonsters.damage(followUp.mob,followUp.damage);followUp=null;} // 副手斧追擊（晚一點出數字，不跟主手疊在一起）
     if(pending&&movementTime()>=pending.at){
       if(pending.landed&&(!pending.mob.spawn.bot||window.FakePlayers?.canAttack(pending.mob))){
@@ -138,7 +165,7 @@ const IslandCombat=(()=>{
       hit(target,true);
       if(mode==='once')stop();
     }else if(!walkTo(target,range)){
-      if(mode==='auto'){retryAfter.set(target,movementTime()+3000);target=null;}else stop();
+      if(mode==='auto'){retryAfter.set(target,movementTime()+3000);if(!finishRetaliation(target))target=null;}else stop();
     }
   }
   function attack(){
@@ -149,5 +176,5 @@ const IslandCombat=(()=>{
   }
   setInterval(tick,100);
   function resetAfterTeleport(){const auto=mode==='auto';stop();pending=null;IslandMonsters.setTarget(null);if(auto)mode='auto';}
-  return {resetAfterTeleport,tick,begin,stop,attack,clearShot,setAutoRange,pickAutoTarget,get autoRange(){return autoScanRange},get range(){return attackRange()},get mode(){return mode}};
+  return {resetAfterTeleport,tick,begin,stop,attack,canRetaliate,retaliateAgainst,finishRetaliation,clearShot,setAutoRange,pickAutoTarget,get autoRange(){return autoScanRange},get range(){return attackRange()},get mode(){return mode}};
 })();
