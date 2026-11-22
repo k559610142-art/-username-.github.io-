@@ -150,7 +150,8 @@ window.OwnedInventory=(()=>{
   if(!Number.isSafeInteger(count)||count<1||count>2147483647||!Number.isSafeInteger(price)||price<0||price>2147483647)return '交易數量或價格有誤。';
   const next=clone(entries);
   if(sell){
-   let remaining=count;for(const row of next.filter(e=>e.key===key&&!e.slot)){const taken=Math.min(row.count,remaining);if(taken)deduct(next,row.uid,taken);remaining-=taken;if(!remaining)break;}
+   let remaining=count;for(const row of next.filter(e=>e.key===key&&!e.slot).sort((a,b)=>(!!(a.enchant||a.soul))-(!!(b.enchant||b.soul)))){// 2026-11-22 先賣沒強化、沒附魔的
+   const taken=Math.min(row.count,remaining);if(taken)deduct(next,row.uid,taken);remaining-=taken;if(!remaining)break;}
    if(remaining)return '背包沒有可出售的物品。';
    if(price&&!addItems(next,money,price))return '背包無法收取天幣。';
   }else{

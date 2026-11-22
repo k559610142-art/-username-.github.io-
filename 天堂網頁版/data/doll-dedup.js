@@ -1,5 +1,5 @@
 // Collapse identical name, appearance, effects, duration and material requirements. Old ownership IDs remain aliases.
-const DOLL_ID_ALIASES={"80346":55006,"80347":55011,"80348":55000,"80349":55002,"80353":55013,"80354":55010,"80355":55001,"300201":80254,"300202":80255,"300203":80256,"300204":80257,"300205":80258};
+const DOLL_ID_ALIASES={"80346":55006,"80347":55011,"80348":55000,"80349":55002,"80353":55013,"80354":55010,"80355":55001,"300201":80254,"300202":80255,"300203":80256,"300204":80257,"300205":80258,"300206":80259,"300207":80260,"300208":80261,"300209":80262,"300210":80263,"300211":80264};
 (()=>{const images={"55000":"dolls-55000.png","55001":"dolls-55001.png","55002":"dolls-55002.png","55006":"dolls-55006.png","55010":"dolls-55010.png","55011":"dolls-55011.png","55013":"dolls-55013.png"};for(const d of gameCatalogData.dolls)if(images[d.id]&&!d.img)d.img=images[d.id];gameCatalogData.dolls=gameCatalogData.dolls.filter(d=>!Object.hasOwn(DOLL_ID_ALIASES,d.id));})();for(const d of gameCatalogData.dolls){const variants={55004:"巫妖（體力型）",80358:"巫妖（減傷回魔型）",55029:"美人魚（水中呼吸型）",80351:"美人魚（經驗型）"};if(variants[d.id]){d.originalName=d.name;d.name=variants[d.id];}}
 
 // Use native doll portraits for inventory and crafting items whose inventory artwork is missing.
@@ -14,3 +14,6 @@ const DOLL_ID_ALIASES={"80346":55006,"80347":55011,"80348":55000,"80349":55002,"
 //  能力、外觀、材料照安塔瑞斯（其他三隻進擊版也是沿用原版數值）；背包道具在 extra-doll-items.js，進化系列在 doll-evolution.js。
 (()=>{const base=gameCatalogData.dolls.find(d=>d.id===80383);if(base&&!gameCatalogData.dolls.some(d=>d.id===80515))gameCatalogData.dolls.push({...base,id:80515,name:'進擊娃娃：安塔瑞斯',img:'dolls-80515.png',effects:[...base.effects],materials:base.materials.map(m=>[...m])});
 })();
+// 2026-11-22 使用者回報部分娃娃收不進圖鑑：PSY×3、勝利的丹狄、賽利、玉兔 的道具編號（300206～300211）補對應到圖鑑娃娃（80259～80264，上面 DOLL_ID_ALIASES）；
+//  魔法娃娃：變形怪（55014）原本沒收錄在娃娃清單，照 DB etcitem_doll_type（能力 186＝3%機率施展「列炎術」、造型 7516、魔法結晶體 50、30 分鐘）補上。
+if(!gameCatalogData.dolls.some(d=>d.id===55014))gameCatalogData.dolls.push({id:55014,name:'變形怪',gfx:7516,effects:['3%機率施展「列炎術」'],materials:[[41246,50]],time:1800});

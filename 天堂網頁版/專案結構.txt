@@ -533,3 +533,10 @@ NPC 穿衣服（2026-11-13）：
 - data/owned-inventory.js transfer()：存入／取出倉庫時把 soul 複製到新 entry（倉庫是帳號共用，所以附魔武器可以換角色用）。
 - data/classic-panels.js showItemDetails：武器說明加一行紫字「BOSS 附魔：LVn○○的靈魂（攻擊發動 x%）」。
 - data/game-catalog.js BOSS附魔 說明文字補「跟著武器走」。卸下武器就不發動，裝回來恢復；武器被丟棄／賣掉／加入圖鑑則附魔一起消失。
+
+【2026-11-22 娃娃收進圖鑑修正＋強化裝備保護】
+- data/doll-dedup.js：DOLL_ID_ALIASES 補 300206～300211 → 80259～80264（搖滾／西裝／熱血 PSY、勝利的丹狄、賽利、玉兔），原本雙擊道具收不進圖鑑。
+  魔法娃娃：變形怪 55014 原本不在娃娃清單，照 DB etcitem_doll_type 補（3%機率施展「列炎術」、造型 7516、魔法結晶體 50、30 分鐘）。
+- data/doll-effects.js SPELL 加 列炎術 20～35（娃娃機率施法用）。
+- data/auto-sell.js convert：穿戴中、強化過（entry.enchant ≠ 0）、有 BOSS 附魔（entry.soul）的物品不自動販賣／刪除。
+- data/owned-inventory.js trade(sell)：商店賣出同名物品時先賣沒強化、沒附魔的；穿戴中原本就不能賣（!e.slot）也不能刪除（canDiscard）。
