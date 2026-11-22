@@ -1,0 +1,23 @@
+{
+  "_說明": "list.spr 沒登錄的新外觀（2026-11-22 新遺忘之島／忘卻島 Map 1700）。數字是第幾組（檔名 <gfx>-<組*8+方向>.spr），用 preview-groups.js 看圖人工辨認。ms = 整段動畫長度（照舊版同名怪物），未列的用 default。",
+  "default": {"ms": {"idle": 1500, "walk": 800, "attack": 1000, "cast": 1200, "special": 1000, "death": 1400}},
+  "looks": {
+    "14221": {"name": "食人妖精", "idle": 0, "walk": 1, "attack": 3, "cast": 4, "special": 5, "death": 6, "ms": {"idle": 1333, "walk": 667, "attack": 875, "cast": 1708, "special": 750}},
+    "12846": {"name": "哈維", "walk": 0, "attack": 1, "cast": 2, "death": 4, "idle": 5, "ms": {"idle": 1334, "walk": 875, "attack": 1292}},
+    "14123": {"name": "食人妖精王", "idle": 0, "walk": 1, "attack": 3, "cast": 4, "special": 5, "death": 6, "ms": {"idle": 1333, "walk": 667, "attack": 750, "cast": 1333, "special": 750}},
+    "14120": {"name": "獨眼巨人", "walk": 0, "attack": 1, "cast": 2, "special": 3, "death": 6, "idle": 7, "ms": {"idle": 1875, "walk": 1000, "attack": 1208, "cast": 1208, "special": 1167}},
+    "14131": {"name": "阿魯巴", "walk": 0, "attack": 2, "cast": 3, "idle": 4, "death": 5, "special": 6, "ms": {"idle": 3000, "walk": 666, "attack": 1208, "cast": 1208, "special": 1292}},
+    "13304": {"name": "安普", "idle": 0, "walk": 1, "attack": 3, "cast": 4, "death": 5, "ms": {"idle": 875, "walk": 500, "attack": 1583, "cast": 1459}},
+    "14046": {"name": "艾多倫", "walk": 0, "idle": 2, "attack": 3, "cast": 4, "death": 5, "ms": {"idle": 1000, "walk": 334, "attack": 1000, "cast": 1500}},
+    "13290": {"name": "青蛙", "walk": 0, "idle": 2, "attack": 3, "cast": 4, "death": 5, "ms": {"idle": 1500, "walk": 1500}},
+    "14071": {"name": "卡司特", "walk": 0, "attack": 1, "cast": 2, "death": 4, "idle": 5, "ms": {"idle": 1250, "walk": 1042, "attack": 667, "cast": 792}},
+    "13310": {"name": "安普長老", "idle": 0, "walk": 1, "attack": 3, "cast": 4, "death": 5, "ms": {"idle": 1500, "walk": 1000, "attack": 958, "cast": 1542}},
+    "14077": {"name": "蛇女(綠)", "idle": 0, "walk": 1, "attack": 3, "special": 4, "death": 5, "ms": {"idle": 2334, "walk": 1000, "attack": 1959, "special": 2833}},
+    "14074": {"name": "蛇女(藍)", "idle": 0, "walk": 1, "attack": 3, "special": 4, "death": 5, "ms": {"idle": 2334, "walk": 1000, "attack": 1959, "special": 2833}},
+    "14056": {"name": "鱷魚", "idle": 0, "walk": 1, "attack": 2, "special": 3, "death": 5, "ms": {"idle": 1667, "walk": 666, "attack": 1542, "special": 1292}},
+    "14105": {"name": "卡司特王", "idle": 0, "walk": 1, "attack": 2, "cast": 3, "special": 4, "death": 6, "ms": {"idle": 1250, "walk": 1125, "attack": 667, "cast": 792, "special": 792}},
+    "14043": {"name": "狼人", "walk": 0, "attack": 1, "cast": 2, "death": 4, "idle": 5, "ms": {"idle": 1750, "walk": 666, "attack": 875, "cast": 1833}},
+    "14040": {"name": "萊肯", "walk": 0, "attack": 1, "cast": 2, "death": 4, "idle": 5, "ms": {"idle": 1750, "walk": 666, "attack": 833, "cast": 1500}},
+    "14053": {"name": "巨斧牛人", "idle": 0, "walk": 1, "attack": 2, "cast": 3, "death": 5, "special": 6, "ms": {"idle": 1666, "walk": 666, "attack": 1208, "special": 1083}}
+  }
+}

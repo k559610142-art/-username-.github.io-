@@ -557,3 +557,11 @@ NPC 穿衣服（2026-11-13）：
         （DB 掉落表會濾掉名字有「娃娃」的道具，所以藥劑另外加，不走 drops 表。）
 - data/game-catalog.js 娃娃詳細頁：顯示藥劑數量、「進化（藥劑 n 瓶 · 成功 x%）」「分解（得藥劑 n 瓶）」按鈕；卡片不再顯示「進階已擁有」（每階都有自己的卡片）。
 - 不開放：DB 15 條娃娃合成配方、魔幻的寶石、精靈的寶石、能量石；鑽石商城不賣藥劑。
+
+【2026-11-22 新遺忘之島（忘卻島 Map 1700）怪物換新版外觀】
+- 原因：天地劫 DB 給忘卻島 22 種怪物專屬新外觀（14xxx），其中 17 種的 .spr 在天地劫客戶端裡有，但 Text.pak 的 list.spr 沒登錄動作，
+  build.js 的 clipsFor 找不到就退回同名舊外觀（dungeon-monster-data.js 的 aliases）。歐吉 14173、亞力安 14169、巨大鱷魚 14167、黑暗精靈 14170、鏈鎚牛人 14171 客戶端完全沒有新圖，維持舊圖。
+- tools/native-monsters/preview-groups.js 畫各組影格人工辨認動作 → custom-actions.json（17 種的 idle/walk/attack/cast/special/death 組別＋動畫長度照舊版同名怪）
+  → tools/native-monsters/custom-looks.js 切成 assets/native-monsters/custom-mob-<gfx>-<n>.png（24 張，約 21MB，和 dungeon-mob 同為 PNG）＋data/custom-monster-frames.js。
+- index.html：data/custom-monster-frames.js 接在 dungeon-monster-data.js 後面載入（Object.assign 覆蓋 islandMonsterFrames）。
+- 17 種：食人妖精、哈維、食人妖精王、獨眼巨人、阿魯巴、安普、艾多倫、青蛙、卡司特、安普長老、蛇女(綠／藍)、鱷魚、卡司特王、狼人、萊肯、巨斧牛人。
