@@ -92,9 +92,7 @@
  document.documentElement.style.setProperty('--qy-doll-figure','url("data:image/svg+xml,'+encodeURIComponent(DOLL_SVG)+'")');
 
  const el=(tag,cls,text)=>uiElement(tag,cls,text);
- function maxWeight(a){const base=Math.max(0,Math.floor(1500+Math.floor(((a.str||0)+(a.con||0)-18)/2)*150));return window.ClassBuffs?.maxWeight?.(base)??base}
- function carried(){let t=0;for(const e of window.OwnedInventory?.items||[])t+=(e.item?.weight??0)*(e.count||1);return Math.round(t/1000)}
- function weightPct(){const a=PlayerClassStats.read().attributes||{},mw=maxWeight(a);return mw?Math.min(100,Math.round(carried()/mw*100)):0}
+ function weightPct(){return Math.min(100,ItemProperties.weightPercent(window.OwnedInventory?.items||[],window.PlayerClassStats?.read?.().attributes||window.playerAttributes,window.ClassBuffs?.maxWeight));}
  function expInfo(){const lv=window.activeCharacterLevel||1,exp=window.activeCharacterExperience||0,t=typeof killRewardData!=='undefined'?killRewardData.thresholds:null;const a=t?.find(r=>r[0]===lv)?.[1],b=t?.find(r=>r[0]===lv+1)?.[1];return {exp,pct:Number.isFinite(a)&&Number.isFinite(b)&&b>a?Math.max(0,Math.min(100,(exp-a)/(b-a)*100)):0}}
  function row(label,value,key){const r=el('div','qy-row');r.append(el('span','',label));const b=el('b','',String(value??'—'));if(key)b.dataset.qyVital=key;r.append(b);return r}
  function meter(pct){const m=el('div','qy-meter'),i=el('i');i.style.width=Math.max(0,Math.min(100,pct))+'%';m.append(i);return m}

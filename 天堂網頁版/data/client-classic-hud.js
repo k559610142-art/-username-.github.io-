@@ -116,7 +116,7 @@
  function labelSlots(){[...document.querySelectorAll('.quick-slots>.quick-expanded-row:first-child>.combat-quick-slot')].forEach((b,i)=>{b.dataset.qhKey='F'+(i+1);b.style.display=i<10?'':'none'})}
  // 數值
  function expPct(){const lv=window.activeCharacterLevel||1,exp=window.activeCharacterExperience||0,t=typeof killRewardData!=='undefined'?killRewardData.thresholds:null;const a=t?.find(r=>r[0]===lv)?.[1],b=t?.find(r=>r[0]===lv+1)?.[1];return Number.isFinite(a)&&Number.isFinite(b)&&b>a?Math.max(0,Math.min(100,(exp-a)/(b-a)*100)):0}
- function weightPct(){const a=window.playerAttributes||{};let t=0;for(const e of window.OwnedInventory?.items||[])t+=(e.item?.weight??0)*(e.count||1);const max=1500+Math.floor(((a.str||0)+(a.con||0)-18)/2)*150;return max>0?Math.min(100,Math.round(t/1000/max*100)):0}
+ function weightPct(){return Math.min(100,ItemProperties.weightPercent(window.OwnedInventory?.items||[],window.PlayerClassStats?.read?.().attributes||window.playerAttributes,window.ClassBuffs?.maxWeight));}
  function gold(){let n=0;for(const e of window.OwnedInventory?.items||[])if(e.item?.kind==='etcitem'&&e.item.id===40308)n+=e.count||0;return n}
  function setFill(g,pct,label){g.style.setProperty('--fill',Math.max(0,Math.min(100,pct))+'%');g.lastChild.textContent=label}
  function line(row,label,value){row.replaceChildren(el('span','ico'),el('span','',label),el('b','',value))}

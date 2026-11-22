@@ -18,7 +18,7 @@ const PlayerStall=(()=>{
   const sell=(typeof AUTO_SELL_DATA!=='undefined'?AUTO_SELL_DATA:null)?.prices?.[key];return sell>0?sell*4:100;}
  function sellable(){const seen=new Map();for(const e of OwnedInventory.items){if(e.slot||e.key==='etcitem:40308'||!OwnedInventory.canDiscard(e.uid))continue;const r=seen.get(e.key);if(r)r.count+=e.count;else seen.set(e.key,{key:e.key,item:e.item,count:e.count});}return [...seen.values()];}
  // ---- 擺攤中：招牌、不能移動 ----
- function showSign(){sign?.remove();if(!active)return;const box=document.querySelector('#actor .ovh');sign=el('div','ps-sign','【擺攤】'+(title||'歡迎光臨'));(box||document.querySelector('#actor'))?.prepend(sign);}
+ function showSign(){sign?.remove();if(!active)return;const box=document.querySelector('#actor .ovh');sign=el('button','ps-sign','▼');sign.type='button';sign.title='開啟自己的攤位';sign.setAttribute('aria-label',sign.title);sign.addEventListener('click',event=>{event.stopPropagation();open();});(box||document.querySelector('#actor'))?.prepend(sign);}
  function start(){
   if(!safeHere())return toast('只能在村莊（安全區）擺攤。');
   items=items.filter(it=>haveCount(it.key)>0&&it.qty>0&&it.price>0);if(!items.length)return toast('請先放上要賣的道具。');
@@ -63,7 +63,7 @@ const PlayerStall=(()=>{
  .ps-title{width:100%;box-sizing:border-box;height:30px;padding:0 8px!important;margin-bottom:6px;font-size:13px;background:#0e0f11!important;border:1px solid #3d3a33!important;border-radius:6px;color:#e6dcc2!important}
  .ps-actions{flex:none;display:flex;gap:8px;margin-top:8px}.ps-actions button{flex:1;height:34px;font-size:14px!important}
  .ps-msg{flex:none;margin-top:6px;text-align:center;font-size:12px;color:#c9bd9c;min-height:16px}
- .ps-sign{display:inline-block;margin:0 auto 2px;padding:1px 8px;font:12px sans-serif;color:#2a1c06;background:linear-gradient(#ffe7a6,#e2b450);border:1px solid #7a5a1a;border-radius:4px;box-shadow:0 1px 3px #000a;white-space:nowrap}`;document.head.append(css);
+ #actor button.ps-sign{display:grid;place-items:center;min-width:44px;min-height:44px;padding:0;margin:0 0 2px;font:16px sans-serif;color:#ffe39d;background:#2a2013;border:2px solid #e6bd65;border-radius:6px;box-shadow:0 1px 3px #000a;pointer-events:auto;cursor:pointer;touch-action:manipulation}`;document.head.append(css);
  let msg=null,body=null;
  function render(){if(!win)return;body.replaceChildren();
   if(active){body.append(el('div','ps-sub','擺攤中：'+(title||'歡迎光臨')+'（這次已賺 '+earned.toLocaleString()+' 金幣）'));

@@ -8,7 +8,7 @@ const IslandMonsters = (() => {
   const directions=['NW','N','NE','E','SE','S','SW','W'];
   const steps=[[0,-1],[1,-1],[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1]];
   const decodedSheets=new WeakSet(),sheets=new Map(), mobs=[], taken=new Set();
-  let hitboxes=[],selected=null,lastTap=null,support=null; // support＝輔助目標（隊友／召喚物／其他玩家；null＝自己，2026-11-20）
+  let hitboxes=[],stallMarkers=[],selected=null,lastTap=null,support=null; // support＝輔助目標（隊友／召喚物／其他玩家；null＝自己，2026-11-20）
   const stallMasks=new WeakMap();
   function stallHit(box,x,y){
     if(x<box.left||y<box.top||x>=box.left+box.width||y>=box.top+box.height)return false;
@@ -233,6 +233,7 @@ const IslandMonsters = (() => {
     const playing=window.gameFlowState==='playing'&&sceneStarted;
     surface.hidden=!playing;
     hitboxes=[];
+    stallMarkers=[];
     IslandNpcAi.playerActive();
     IslandNpcAi.updateRevive();
     if(!playing){selected=null;effects.length=0;return;}
@@ -306,11 +307,36 @@ const IslandMonsters = (() => {
       pen.strokeStyle='#171510';
       pen.fillStyle=town(mob.spawn.npc.gfx)?'#ebdcb6':'#ffdd9a';
       const name=mob.spawn.npc.name.replace('^',' · ');
-      if(mob.spawn.bot){window.FakePlayers?.label(pen,mob,left+sw*scale/2,top-5,now);continue;}
+      if(mob.spawn.bot){
+        const labelTop=window.FakePlayers?.label(pen,mob,left+width/2,top-5,now);
+        if(mob.fp?.stall&&Number.isFinite(labelTop)){
+          stallMarkers.push({mob,x:left+width/2,y:labelTop-19});
+        }
+        continue;
+      }
       pen.strokeText(name,left+sw*scale/2,top-5);
       pen.fillText(name,left+sw*scale/2,top-5);
     }
     window.FakePlayers?.drawShots(pen,view,now);
+    for(const marker of stallMarkers){
+      const {x,y}=marker;
+      pen.save();
+      pen.fillStyle='#2a2013';
+      pen.strokeStyle='#e6bd65';
+      pen.lineWidth=2;
+      pen.beginPath();
+      pen.roundRect(x-17,y-14,34,28,6);
+      pen.fill();
+      pen.stroke();
+      pen.fillStyle='#ffe39d';
+      pen.beginPath();
+      pen.moveTo(x-8,y-3);
+      pen.lineTo(x+8,y-3);
+      pen.lineTo(x,y+6);
+      pen.closePath();
+      pen.fill();
+      pen.restore();
+    }
     for(let i=effects.length-1;i>=0;i--){
       const effect=effects[i];
       if(effect.failed||effect.owner&&effect.owner!==window.activeCharacterId){effects.splice(i,1);continue;}
@@ -344,6 +370,19 @@ const IslandMonsters = (() => {
     for(const child of native?.attribute===8?[]:native?.parts||[])playEffect(child,x,y,now,{...options,visited});
   }
   function selectAt({x,y}){
+    let markerHit=null, closest=Infinity;
+    for(const marker of stallMarkers){
+      const dx=x-marker.x,dy=y-marker.y;
+      if(!marker.mob.hp||!marker.mob.fp?.stall||
+        (marker.mob.spawn.mapId||0)!==(window.activeMapId||0)||Math.abs(dx)>22||Math.abs(dy)>22)continue;
+      const distance=dx*dx+dy*dy;
+      if(distance<closest){markerHit=marker;closest=distance;}
+    }
+    if(markerHit){
+      lastTap=null;
+      window.FakePlayers?.openStall(markerHit.mob);
+      return true;
+    }
     const hit=hitboxes.findLast(box=>box.mob.fp?.stall?stallHit(box,x,y):x>=box.left-4&&x<=box.left+box.width+4&&y>=box.top-4&&y<=box.top+box.height+4);
     if(hit?.mob?.spawn.bot&&hit.mob.fp?.stall){lastTap=null;window.FakePlayers?.openStall(hit.mob);return true;}
     // 2026-11-20 點到友方（召喚物、寵物、隊友、不能攻擊的其他玩家）＝設為輔助目標：治癒／增益改放在對方身上，按 SELF 切回自己

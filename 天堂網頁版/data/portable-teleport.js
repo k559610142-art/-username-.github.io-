@@ -29,7 +29,8 @@ window.PortableTeleport=(()=>{
    return {x,y};
   }return null;
  }
- function matches(route,text){const q=text.trim().toLowerCase();return !q||[route.name,...route.monsters,...route.drops].some(s=>s.toLowerCase().includes(q));}
+ function routeDrops(route){return [...new Set([...DBGameRules.dragonCaveDropNames(route.mapId),...route.drops])];}
+ function matches(route,text){const q=text.trim().toLowerCase();return !q||[route.name,...route.monsters,...routeDrops(route)].some(s=>s.toLowerCase().includes(q));}
  async function travel(id){
   if(busy)return {ok:false,message:'正在準備傳送，請稍候。'};const route=byId.get(Number(id));if(!route)return {ok:false,message:'找不到傳送地點。'};
   let error=blocked();if(error)return {ok:false,message:error};const level=Number(window.activeCharacterLevel)||1;
@@ -58,7 +59,7 @@ window.PortableTeleport=(()=>{
    if(route.minLevel>1||route.maxLevel<100)body.append(el('p','', '進入等級 Lv.'+route.minLevel+'～'+route.maxLevel));
    const go=button(busy?'讀取目的地中…':'傳送 · '+route.price.toLocaleString()+' 天幣',async()=>{const result=await travel(route.id);if(win&&!result.ok)render(result.message);},'pt-button pt-go');go.disabled=busy||!!blocked()||gold()<route.price;body.append(go);
    if(route.category==='island'&&route.monsterDetails?.length){body.append(el('h4','','原始怪物配置'));for(const m of route.monsterDetails)body.append(el('p','pt-monster',m.name+' · Lv.'+m.level+' · HP '+m.hp.toLocaleString()+' · '+m.count+' 隻 · 重生 '+m.respawn.join('～')+' 秒'));}else body.append(el('p','pt-muted',route.monsters.length?'怪物：'+route.monsters.slice(0,12).join('、'):'村莊／傳送據點'));
-   body.append(el('h4','','掉落物'));const drops=el('div','pt-drops'),q=query.trim().toLowerCase(),filtered=route.drops.filter(n=>n.toLowerCase().includes(q)),shown=(q&&filtered.length?filtered:route.drops).slice(0,40);for(const name of shown)drops.append(el('span','',name));if(!shown.length)drops.append(el('p','pt-muted','此據點附近沒有已登錄的怪物掉落。'));body.append(drops);return;
+   body.append(el('h4','','掉落物'));const drops=el('div','pt-drops'),q=query.trim().toLowerCase(),available=routeDrops(route),filtered=available.filter(n=>n.toLowerCase().includes(q)),shown=(q&&filtered.length?filtered:available).slice(0,40);for(const name of shown)drops.append(el('span','',name));if(!shown.length)drops.append(el('p','pt-muted','此據點附近沒有已登錄的怪物掉落。'));body.append(drops);return;
   }
   const visible=routes.filter(r=>r.category===tab&&matches(r,query));
   for(const route of visible){const row=button('',()=>{selected=route;render();},'pt-route'),left=el('span','pt-destination');left.append(el('strong','',route.name),el('small','',route.levels?'Lv.'+route.levels.join('～'):route.category==='village'?'村莊／據點':'傳送據點'));row.append(left,el('span','pt-cost','◆ '+route.price.toLocaleString()),el('span','pt-arrow','›'));row.disabled=busy;body.append(row);}

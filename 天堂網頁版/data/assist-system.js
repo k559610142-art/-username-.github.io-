@@ -126,7 +126,7 @@ const AssistSystem=(()=>{
   const home=owned().find(e=>handler(e)==='teleport.GoHome_Reel');if(home&&TeleportScrolls.use(home.uid)){escapes=[];return true;}return false;}
  // ---- 第 4 期 ----
  const foods=()=>owned().filter(e=>ITEM_USE_RULES.definitions[e.key]?.useType==='food');
- function weightPct(){const a=window.PlayerClassStats?.read?.().attributes||window.playerAttributes||{},mw=Math.max(0,Math.floor(1500+Math.floor(((a.str||0)+(a.con||0)-18)/2)*150));let t=0;for(const e of OwnedInventory.items)t+=(e.item?.weight??0)*(e.count||1);const capacity=window.ClassBuffs?.maxWeight?.(mw)??mw;return capacity?Math.round(t/1000/capacity*100):0;}
+ function weightPct(){return ItemProperties.weightPercent(OwnedInventory.items,window.PlayerClassStats?.read?.().attributes||window.playerAttributes,window.ClassBuffs?.maxWeight);}
  const BAG_MAX=180,bagLeft=()=>BAG_MAX-OwnedInventory.items.length;
  let fullHome=false,returnAt=0,returning=false,notice=0;
  const say=(t,now)=>{if(now-notice>20000){notice=now;toast(t);}};

@@ -388,12 +388,13 @@ const FakePlayers=(()=>{
   const name=mob.spawn.npc.name,clan=mob.fp?.clan;pen.textAlign='center';pen.lineWidth=3;pen.strokeStyle='#101010';
   pen.font='12px sans-serif';pen.fillStyle=mob.fp?.red?'#ff6a5a':'#e9f1ff';pen.strokeText(name,x,y);pen.fillText(name,x,y);
   let top=y-14;
-  if(mob.fp?.stall){pen.font='10px sans-serif';pen.fillStyle='#ffd77a';pen.strokeText('【擺攤中】點頭部購買',x,y+13);pen.fillText('【擺攤中】點我購買',x,y+13);pen.font='12px sans-serif';}
+
   if(mob.fp?.hpShow>now){const w=36,h=4,r=Math.max(0,mob.hp/mob.spawn.npc.hp);pen.fillStyle='#1a1410';pen.fillRect(x-w/2-1,y+3,w+2,h+2);pen.fillStyle=mob.fp.red?'#e04030':'#c83a32';pen.fillRect(x-w/2,y+4,w*r,h);}
   if(clan){pen.font='10px sans-serif';pen.fillStyle=mob.fp?.red?'#d05050':'#9fd18b';pen.strokeText('['+clan+']',x,top);pen.fillText('['+clan+']',x,top);top-=13;}
   const b=mob.bubble;if(b&&now<b.until){pen.font='12px sans-serif';const w=Math.min(190,pen.measureText(b.text).width+14),h=20,bx=x-w/2,by=top-h-2;
    pen.fillStyle='rgba(255,252,240,.94)';pen.strokeStyle='#5a4a2a';pen.lineWidth=1;pen.beginPath();pen.roundRect?pen.roundRect(bx,by,w,h,6):pen.rect(bx,by,w,h);pen.fill();pen.stroke();
-   pen.fillStyle='#2a2216';pen.fillText(b.text.length>14?b.text.slice(0,14)+'…':b.text,x,by+14);}
+   pen.fillStyle='#2a2216';pen.fillText(b.text.length>14?b.text.slice(0,14)+'…':b.text,x,by+14);top=by;}
+  return top;
  }
  // ---- 回話 ----
  document.addEventListener('player-chat',e=>{

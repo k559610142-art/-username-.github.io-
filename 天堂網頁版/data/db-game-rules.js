@@ -19,12 +19,20 @@ const DBGameRules = (() => {
     }
     return {...current,ids:[...ids]};
   }
+  // 隨身傳送的眠龍洞穴 1～3 樓，實際地圖編號為 19～21。
+  const dragonCaveMaterials=new Map([
+    [19,[40515,40503,40505,40519]],
+    [20,[3,19,20]],
+    [21,[89,100,41351]]
+  ]);
+  const dragonCaveDropNames=map=>(dragonCaveMaterials.get(map)||[]).map(id=>byId.get(id).name);
   function extraDrops(mob){
     const map=window.activeMapId||0;
     return [
       // 2026-11-18 使用者：武魂結晶（39287）掉落提高 → 0.5% 改 5%（50000／1000000），數量仍 1～3；平均約 1 萬隻怪做一個下品武魂（結晶×1000）
       ...rows('怪物掉落全圖設置').map(row=>({id:row['道具'],min:row['最小量'],max:row['最大量'],chance:row['道具']===39287?50000:row['機率'],fixedRate:true})),
       ...rows('droplist_map').filter(row=>row.mapid===map).map(row=>({id:row.itemid,min:row.min,max:row.max,chance:row.chance})),
+      ...(dragonCaveMaterials.get(map)||[]).map(id=>({id,min:1,max:1,chance:20000,fixedRate:true})),
       ...(window.LevelQuests?.drops(mob)||[]) // 等級任務補的掉落（data/level-quests.js）
     ].filter(drop=>drop.id!==39288&&!/娃娃/.test(byId.get(drop.id)?.name||''));
   }
@@ -191,7 +199,46 @@ const DBGameRules = (() => {
   const towerCraftItems=new Set([...byId.values()].filter(item=>/傲慢/.test(item.name)&&/卷|捲|傳送符/.test(item.name)).map(item=>item.id));
   // 2026-11-18 使用者：製作工匠新增武魂製作，只開放下品武魂（DB 1189～1191：魔蝙蝠／翼魔／污濁精靈），材料改成武魂結晶 1000（原 DB 500），成功率照原本 100%。其餘武魂配方仍不開放。
   const SOUL_CRAFT=new Set([1189,1190,1191]),SOUL_CRAFT_COST='1000';
-  const craftRecipes=()=>rows('system_item_blend').filter(r=>!towerCraftItems.has(Number(r.new_item))&&(SOUL_CRAFT.has(r.id)||!['box','wuhun','doll'].includes(craftCategory(byId.get(Number(r.new_item)))))&&Number(r.addchanceitem)!==39288&&!split(r.materials).includes(39288)&&!/^(?:回收魔珠)|神聖魔法書|神力禮盒/.test(byId.get(Number(r.new_item))?.name||'')&&!hiddenCraftItems.has(Number(r.new_item))&&!(String(r.materials)==='40308'&&[39287,39288].includes(Number(r.new_item)))&&![576,577,578].includes(r.id)).map(r=>SOUL_CRAFT.has(r.id)?{...r,materials:'39287',materials_count:SOUL_CRAFT_COST,addchanceitem:0}:r); // 576～578：卡立普暗黑武器的舊版重複配方（沒有等級職業限制），只留 1061～1063「死神之証」 // 武魂結晶／提煉石不能用金幣做，只能打怪掉（使用者 2026-11-15）
+  // 娜魯帕對話列出的材料與數量。新配方沿用資料庫中娜魯帕的 100% 成功率。
+  const elvenNpcIds=new Set([70838,70852,70850,70846,70841]);
+  const elvenDialogueCraft=[
+    [28, [19, 1], [40507, 5], [40494, 150], [40503, 50]],
+    [42, [20, 1], [40521, 2], [40508, 50], [40049, 1], [40503, 25]],
+    [138, [40507, 10], [40503, 5]],
+    [143, [3, 1], [40503, 5], [40507, 10], [40494, 60]],
+    [97, [3, 1], [40503, 10], [40507, 10], [40494, 90]],
+    [99, [89, 1], [40503, 30], [40507, 10]],
+    [104, [99, 1], [100, 1], [40503, 50], [40508, 60], [40049, 1]],
+    [20322, [40507, 10], [40502, 6]],
+    [20097, [40505, 2], [40519, 5]],
+    [20139, [40504, 2], [40502, 10]],
+    [20137, [40497, 4], [40495, 80]],
+    [20138, [40509, 8], [40495, 20], [40052, 1]],
+    [20222, [40505, 1], [40503, 5], [40507, 5]],
+    [20236, [20222, 1], [40497, 2], [40503, 5]],
+    [20035, [40521, 1], [40505, 2], [40519, 10], [40503, 20]],
+    [20073, [40318, 2], [40495, 10], [40520, 120]],
+    [20213, [40505, 2], [40502, 4]],
+    [40743, [40507, 1]],
+    [20205, [40504, 2], [40502, 10]],
+    [172, [40507, 1], [40502, 5]],
+    [170, [40507, 10], [40494, 20], [40502, 2], [40504, 2]],
+    [5, [40507, 5], [40494, 20]],
+    [22, [89, 1], [40507, 10], [40044, 1], [3, 1], [40503, 50]]
+  ];
+  function elvenDialogueRecipes(){
+    return elvenDialogueCraft.map(([new_item,...materials])=>({
+      id:-new_item,npcid:70838,npcname:'娜魯帕',new_item,
+      note:new_item===20322?'木製的夾克':byId.get(new_item).name,
+      new_item_counts:1,new_item_Enchantlvl:0,new_item_Bless:1,
+      checkLevel:0,checkClass:0,rnd:100,hpConsume:0,mpConsume:0,
+      materials:materials.map(([id])=>id).join(','),
+      materials_count:materials.map(([,count])=>count).join(','),
+      materials_enchants:materials.map(()=>0).join(',')
+    }));
+  }
+  const isElvenCraft=recipe=>elvenNpcIds.has(recipe.npcid);
+  const craftRecipes=()=>[...rows('system_item_blend'),...elvenDialogueRecipes()].filter(r=>!towerCraftItems.has(Number(r.new_item))&&(SOUL_CRAFT.has(r.id)||!['box','wuhun','doll'].includes(craftCategory(byId.get(Number(r.new_item)))))&&Number(r.addchanceitem)!==39288&&!split(r.materials).includes(39288)&&!/^(?:回收魔珠)|神聖魔法書|神力禮盒/.test(byId.get(Number(r.new_item))?.name||'')&&!hiddenCraftItems.has(Number(r.new_item))&&!(String(r.materials)==='40308'&&[39287,39288].includes(Number(r.new_item)))&&![576,577,578].includes(r.id)).map(r=>SOUL_CRAFT.has(r.id)?{...r,materials:'39287',materials_count:SOUL_CRAFT_COST,addchanceitem:0}:r); // 576～578：卡立普暗黑武器的舊版重複配方（沒有等級職業限制），只留 1061～1063「死神之証」 // 武魂結晶／提煉石不能用金幣做，只能打怪掉（使用者 2026-11-15）
   function craft(npcId,id,anywhere=false){ // anywhere：從目錄「製作」視窗做，不用靠近 NPC（使用者 2026-11-14 決定）
     const recipe=craftRecipes().find(r=>r.id===id&&r.npcid===npcId);
     if(!recipe||!anywhere&&!IslandMonsters.serviceNearby(npcId,3))return '請靠近對應的製作 NPC。';
@@ -242,7 +289,7 @@ const DBGameRules = (() => {
       document.querySelector('#panelContent').append(craftButton);
     }
   };
-  return {rows,automaticSkills,extraDrops,killRewards,xpMultiplier,starter,useItem,damageBonus,weaponProc,syncVitals,reduction,
-    craft,craftRecipes,craftCategory,openCrafting,blendClass:role=>BLEND_CLASS[role],addItem:add,takeItem:take,craftNpcs:()=>new Set(craftRecipes().map(r=>r.npcid))};
+  return {rows,automaticSkills,extraDrops,dragonCaveDropNames,killRewards,xpMultiplier,starter,useItem,damageBonus,weaponProc,syncVitals,reduction,
+    craft,craftRecipes,craftCategory,isElvenCraft,openCrafting,blendClass:role=>BLEND_CLASS[role],addItem:add,takeItem:take,craftNpcs:()=>new Set(craftRecipes().map(r=>r.npcid))};
 })();
 window.DBGameRules=DBGameRules;

@@ -13,7 +13,36 @@ function removePreviewItem(slot){const row=OwnedInventory.items.find(e=>e.slot==
 function previewArmorClass(){if(window.NativeCombatRules)return NativeCombatRules.armorClass();const items=OwnedInventory.items;return 10+EquipmentSets.read(items).ac+items.filter(e=>e.slot&&e.item.kind==='armor').reduce((n,e)=>n+e.item.ac-(e.enchant||0),0)}
 function itemIcon(item){if(item.icon){const img=uiElement('img');img.src=item.icon;img.alt='';img.loading='lazy';img.decoding='async';img.onerror=()=>img.replaceWith(uiElement('span','missing-item-icon',item.name?.slice(0,1)||'◇'));return img}return uiElement('span','missing-item-icon',item.name?.slice(0,1)||'◇')}
 function makeClassicWindow(title){const pane=uiElement('section','classic-window'),head=uiElement('header','classic-window-header'),h=uiElement('h2','',title),close=uiElement('button','classic-close','×');close.type='button';close.setAttribute('aria-label','關閉'+title);close.onclick=closePanel;head.append(h,close);pane.append(head);return pane}
-function showItemDetails(item,detail,entry){detail.replaceChildren();const heading=uiElement('div','classic-detail-heading'),picture=itemIcon(item);if(picture.tagName==='IMG')picture.loading='eager';heading.append(picture,uiElement('strong','',entry.enchant?(entry.enchant>0?'+':'')+entry.enchant+' '+item.name:item.name));detail.append(heading,uiElement('p','','數量 '+entry.count+(entry.slot?' · 已穿戴':'')),uiElement('p','',item.kind==='weapon'?'傷害 '+item.damage.join(' / '):item.kind==='armor'?'裝備 AC '+item.ac:'雙擊／連點兩下使用'),uiElement('small','',item.allowed.join('／')+' · 重量 '+item.weight));const soul=window.TdjSystems?.enchant.soulLabel(entry);if(soul){const s=uiElement('p','classic-weapon-soul','BOSS 附魔：'+soul);s.style.color='#d9a8ff';detail.append(s);}const b=uiElement('button','classic-use',entry.slot?'卸下':slotForItem(item)?'穿戴':'使用');b.onclick=()=>OwnedInventory.use(entry.uid);detail.append(b);const quick=uiElement('button','classic-use','放入快捷欄');quick.onclick=()=>QuickSlots.pick({kind:'item',key:entry.key});detail.append(quick);if(['weapon','armor'].includes(item.kind)){const unlocked=OwnedInventory.hasCollection(entry.key),collect=uiElement('button','classic-use',unlocked?'已加入圖鑑':'加入圖鑑');collect.type='button';collect.disabled=unlocked||!!entry.slot;collect.onclick=()=>{if(OwnedInventory.collect(entry.uid)){window.BagDetails?.hide();detail.replaceChildren(uiElement('p','',item.name+' 已開圖。'));}};detail.append(uiElement('small','',unlocked?'圖鑑已開啟，收藏永久保留。':entry.slot?'請先卸下裝備，再加入圖鑑。':'消耗 1 件未穿戴道具，永久開啟對應圖鑑。'),collect);}window.BagDetails?.show(detail)}
+function showItemDetails(item,detail,entry){
+ detail.replaceChildren();
+ const heading=uiElement('div','classic-detail-heading'),picture=itemIcon(item);
+ if(picture.tagName==='IMG')picture.loading='eager';
+ heading.append(picture,uiElement('strong','',entry.enchant?(entry.enchant>0?'+':'')+entry.enchant+' '+item.name:item.name));
+ detail.append(heading,uiElement('p','','數量 '+entry.count+(entry.slot?' · 已穿戴':'')));
+ const equipment=item.kind==='weapon'||item.kind==='armor';
+ if(equipment){
+  const rows=ItemProperties.read(item,{enchant:entry.enchant,armorData:window.PLAYER_ABILITY_DATA?.armor[item.id]});
+  if(item.kind==='weapon'){
+   const power=DBGameRules.rows('weapon_power').find(r=>r.weapon_id===item.id);
+   if(power)rows.push({label:'武器額外傷害',value:power.add_dmg_min+'～'+power.add_dmg_max});
+   for(const skill of DBGameRules.rows('weapon_skill').filter(r=>r.weapon_id===item.id&&r.probability>0)){
+    const low=skill.fix_damage,high=low+skill.random_damage;
+    rows.push({label:'武器效果',value:skill.probability+'% 發動 · 額外傷害 '+(high===low?low:low+'～'+high)});
+   }
+  }
+  for(const set of EquipmentSets.definitions.filter(s=>s.keys.includes(entry.key)&&s.keys.length>1)){
+   const bonus=EquipmentSets.label(set.bonus);
+   rows.push({label:'所屬套裝',value:set.name+(bonus?' · '+bonus:'')});
+  }
+  const properties=uiElement('dl','bag-gear-properties');
+  for(const {label,value} of rows)properties.append(uiElement('dt','',label),uiElement('dd','',value));
+  detail.append(properties);
+ }else{
+  detail.append(uiElement('p','','雙擊／連點兩下使用'),uiElement('small','',item.allowed.join('／')+' · 重量 '+ItemProperties.weight(item)));
+ }
+ const soul=window.TdjSystems?.enchant.soulLabel(entry);
+ if(soul)detail.append(uiElement('p','classic-weapon-soul','BOSS 附魔：'+soul));
+ const b=uiElement('button','classic-use',entry.slot?'卸下':slotForItem(item)?'穿戴':'使用');b.onclick=()=>OwnedInventory.use(entry.uid);detail.append(b);const quick=uiElement('button','classic-use','放入快捷欄');quick.onclick=()=>QuickSlots.pick({kind:'item',key:entry.key});detail.append(quick);if(['weapon','armor'].includes(item.kind)){const unlocked=OwnedInventory.hasCollection(entry.key),collect=uiElement('button','classic-use',unlocked?'已加入圖鑑':'加入圖鑑');collect.type='button';collect.disabled=unlocked||!!entry.slot;collect.onclick=()=>{if(OwnedInventory.collect(entry.uid)){window.BagDetails?.hide();detail.replaceChildren(uiElement('p','',item.name+' 已開圖。'));}};detail.append(uiElement('small','',unlocked?'圖鑑已開啟，收藏永久保留。':entry.slot?'請先卸下裝備，再加入圖鑑。':'消耗 1 件未穿戴道具，永久開啟對應圖鑑。'),collect);}window.BagDetails?.show(detail)}
 let lastInventoryTap=null,suppressInventoryDblClickUntil=-Infinity;
 function bindOwnedItemButton(button,entry,detail){
  window.QuickSlots?.bindSource(button,{kind:'item',key:entry.key});

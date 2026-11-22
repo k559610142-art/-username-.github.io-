@@ -8,8 +8,10 @@ const CraftingWindow=(()=>{
  const split=v=>String(v??'').split(',').filter(Boolean).map(Number);
  const roleCode={'王族':0,'騎士':1,'法師':2,'妖精':3};
  // 2026-11-16 使用者要求移除「全部」分頁：預設開「可製作」；有輸入搜尋字時跨所有分頁找。
- const TABS=[['can','可製作'],['weapon','武器'],['armor','防具'],['acc','飾品'],['rune','符石'],['potion','藥品'],['scroll','卷軸'],['gem','魔石'],['material','材料'],['pet','寵物'],['wuhun','武魂'],['item','道具']]; // 武魂分頁 2026-11-18：只有下品武魂（武魂結晶×1000）
- const category=DBGameRules.craftCategory;
+ const TABS=[['can','可製作'],['elf','精靈製作'],['weapon','武器'],['armor','防具'],['acc','飾品'],['arrow','箭矢'],['rune','符石'],['potion','藥品'],['scroll','卷軸'],['gem','魔石'],['material','材料'],['pet','寵物'],['wuhun','武魂'],['item','道具']]; // 武魂分頁 2026-11-18：只有下品武魂（武魂結晶×1000）
+ const category=item=>item.type==='arrow'?'arrow':DBGameRules.craftCategory(item);
+ const elvenGroups=['weapon','armor','acc','arrow','potion','material','item'];
+ const tabLabel=new Map(TABS);
  const soulTiers=['下品','上品','極品','千年','萬年','上古','四神獸'];
  const soulTier=x=>(typeof wuhunData!=='undefined'&&wuhunData.find(w=>w.id===x.item.id)?.tier)||soulTiers.find(t=>x.item.name.startsWith(t))||'其他武魂';
  const soulRank=x=>{const rank=soulTiers.indexOf(soulTier(x));return rank<0?soulTiers.length:rank;};
@@ -18,10 +20,10 @@ const CraftingWindow=(()=>{
   for(const r of DBGameRules.craftRecipes()){const item=byId.get(r.new_item),mats=split(r.materials);
    if(!item||!mats.length||mats.some(id=>!byId.has(id)))continue;
    const signature=JSON.stringify(Object.keys(r).sort().filter(k=>!['id','action','note','npcname'].includes(k)).map(k=>[k,r[k]]));if(seen.has(signature))continue;seen.add(signature);
-   recipes.push({r,item,cat:category(item),mats:mats.map((id,i)=>({item:byId.get(id),count:split(r.materials_count)[i]||1,enchant:split(r.materials_enchants)[i]||0})),
-    text:(item.name+' '+r.note+' '+String(r.npcname).replace(/\^/g,' ')+' '+mats.map(id=>byId.get(id).name).join(' ')).toLowerCase()});}
+   recipes.push({r,item,cat:category(item),elven:DBGameRules.isElvenCraft(r),mats:mats.map((id,i)=>({item:byId.get(id),count:split(r.materials_count)[i]||1,enchant:split(r.materials_enchants)[i]??null})),
+    text:(item.name+' '+r.note+' '+(DBGameRules.isElvenCraft(r)?'精靈製作 ':'')+String(r.npcname).replace(/\^/g,' ')+' '+mats.map(id=>byId.get(id).name).join(' ')).toLowerCase()});}
   return recipes;}
- const have=(m)=>OwnedInventory.items.filter(e=>!e.slot&&e.item.id===m.item.id&&(!m.enchant||(e.enchant||0)===m.enchant)).reduce((n,e)=>n+e.count,0);
+ const have=(m)=>OwnedInventory.items.filter(e=>!e.slot&&e.item.id===m.item.id&&(m.enchant==null||(e.enchant||0)===m.enchant)).reduce((n,e)=>n+e.count,0);
  const fits=x=>!(x.r.checkLevel>(window.activeCharacterLevel||1))&&!(x.r.checkClass&&x.r.checkClass!==DBGameRules.blendClass(job));
  const craftable=x=>fits(x)&&hp>x.r.hpConsume&&mp>=x.r.mpConsume&&x.mats.every(m=>have(m)>=m.count);
  // 很多成品是伺服器自訂道具、遊戲裡沒有背包圖：改顯示類別徽章（不是只有一個字）
@@ -84,10 +86,14 @@ const CraftingWindow=(()=>{
 
  let win=null,tab='can',query='',body=null,tabsBox=null,search=null,current=null;
  function card(x){const b=el('button','craft-card'+(craftable(x)?' ok':''));b.type='button';b.append(pic(x.item,x.cat),el('span','nm',x.r.note||x.item.name));b.title=x.item.name+' · '+npcName(x);b.onclick=()=>{current=x;render();};return b;}
- function list(){const q=query.trim().toLowerCase(),out=load().filter(x=>(q?x.text.includes(q):tab==='can'?craftable(x):x.cat===tab));
-  out.sort((a,b)=>(tab==='wuhun'?soulRank(a)-soulRank(b):0)||(craftable(b)-craftable(a))||(!!b.item.icon-!!a.item.icon)||(fits(b)-fits(a)));
+ function list(){
+  const q=query.trim().toLowerCase(),out=load().filter(x=>{
+    if(tab==='elf')return x.elven&&(!q||x.text.includes(q));
+    return q?x.text.includes(q):tab==='can'?craftable(x):x.cat===tab;
+  });
+  out.sort((a,b)=>(tab==='wuhun'?soulRank(a)-soulRank(b):tab==='elf'?elvenGroups.indexOf(a.cat)-elvenGroups.indexOf(b.cat):0)||(craftable(b)-craftable(a))||(!!b.item.icon-!!a.item.icon)||(fits(b)-fits(a)));
   const unique=[...new Map(out.map(x=>[x.item.id,null])).keys()].map(id=>out.find(x=>x.item.id===id));
-  const grid=el('div','craft-grid');let lastTier=null;for(const x of unique.slice(0,300)){if(tab==='wuhun'){const tier=soulTier(x);if(tier!==lastTier){const heading=el('h3','craft-tier-heading',tier);heading.style.cssText='grid-column:1/-1;margin:5px 0 0;padding:6px 8px;color:#f0cf7c;font-size:14px;border-bottom:1px solid #53462f';grid.append(heading);lastTier=tier;}}grid.append(card(x));}
+  const grid=el('div','craft-grid');let lastTier=null;for(const x of unique.slice(0,300)){if(tab==='wuhun'||tab==='elf'){const tier=tab==='elf'?tabLabel.get(x.cat):soulTier(x);if(tier!==lastTier){const heading=el('h3','craft-tier-heading',tier);heading.style.cssText='grid-column:1/-1;margin:5px 0 0;padding:6px 8px;color:#f0cf7c;font-size:14px;border-bottom:1px solid #53462f';grid.append(heading);lastTier=tier;}}grid.append(card(x));}
   if(!unique.length)grid.append(el('div','craft-empty',tab==='can'&&!query.trim()?'目前材料不夠做任何東西。':'沒有符合的配方。'));
   else if(unique.length>300)grid.append(el('div','craft-empty','只顯示前 300 筆，請用搜尋縮小範圍。'));return grid;}
  function detail(x){const d=el('div','craft-detail'),top=el('div','top'),info=el('div');
@@ -106,7 +112,7 @@ const CraftingWindow=(()=>{
  function open(){if(window.gameFlowState!=='playing')return false;if(win){win.style.zIndex=String(FloatingWindows.frontLevel());return true;}
   win=el('section','craft-window');win.setAttribute('role','dialog');win.setAttribute('aria-label','製作工匠');win.style.zIndex=String(FloatingWindows.frontLevel());
   const h=el('div','craft-head'),x=el('button','','✕');x.type='button';x.setAttribute('aria-label','關閉製作');x.onclick=close;h.append(el('h2','','製作工匠'),x);
-  tabsBox=el('div','craft-tabs');for(const [k,l] of TABS){if(k!=='can'&&!load().some(x=>x.cat===k))continue;const b=el('button','',l);b.type='button';b.dataset.tab=k;b.onclick=()=>{tab=k;current=null;render();};tabsBox.append(b);}
+  tabsBox=el('div','craft-tabs');for(const [k,l] of TABS){if(k!=='can'&&!load().some(x=>k==='elf'?x.elven:x.cat===k))continue;const b=el('button','',l);b.type='button';b.dataset.tab=k;b.onclick=()=>{tab=k;current=null;render();};tabsBox.append(b);}
   search=el('input','craft-search');search.type='search';search.placeholder='搜尋道具、材料、NPC';search.value=query;search.oninput=()=>{query=search.value;current=null;render();};
   body=el('div');body.style.cssText='flex:1;min-height:0;display:flex;flex-direction:column';win.append(h,tabsBox,search,body);game.append(win);render();return true;}
  function close(){win?.remove();win=null;current=null;}
