@@ -1,8 +1,9 @@
 // Portable paid travel; destination images load before a single inventory/position save.
 window.PortableTeleport=(()=>{
  const routes=window.PORTABLE_TELEPORT_ROUTES||[],byId=new Map(routes.map(r=>[r.id,r]));
- const categories=[['village','村莊'],['field','外圍'],['island','島嶼'],['dungeon','地監']];
- let win=null,body=null,notice=null,tab='village',query='',selected=null,busy=false,session=0;
+ const categories=[['village','村莊'],['field','外圍'],['island','島嶼'],['tower','高塔'],['dungeon','地監']];
+ // 2026-11-22 島嶼／高塔／地監依 route.group 分組：點分組才列出樓層（只有一層的直接進詳細頁）
+ let win=null,body=null,notice=null,tab='village',query='',selected=null,group=null,busy=false,session=0;
  const el=(tag,cls,text)=>{const n=document.createElement(tag);n.className=cls||'';if(text!==undefined)n.textContent=text;return n;};
  const button=(text,fn,cls='pt-button')=>{const n=el('button',cls,text);n.type='button';n.onclick=fn;return n;};
  const quick=button('',()=>{if(typeof closePanel==='function')closePanel();open();},'pt-quick');
@@ -54,14 +55,27 @@ window.PortableTeleport=(()=>{
   if(!win)return;notice.textContent=message;body.replaceChildren();win.querySelector('.pt-wallet').textContent='天幣 '+gold().toLocaleString();
   for(const b of win.querySelectorAll('[data-category]')){b.setAttribute('aria-selected',String(b.dataset.category===tab));b.disabled=busy;}
   if(selected){
-   const route=selected;body.append(button('‹ 返回地點列表',()=>{selected=null;render();}));body.append(el('h3','',route.name),el('p','pt-muted',WorldMaps.name(route.mapId)+' · '+route.x+', '+route.y));
+   const route=selected;body.append(button(group?'‹ 返回 '+group:'‹ 返回地點列表',()=>{selected=null;render();}));body.append(el('h3','',route.name),el('p','pt-muted',WorldMaps.name(route.mapId)+' · '+route.x+', '+route.y));
    if(route.levels)body.append(el('p','', '附近怪物 Lv.'+route.levels.join('～')));
    if(route.minLevel>1||route.maxLevel<100)body.append(el('p','', '進入等級 Lv.'+route.minLevel+'～'+route.maxLevel));
    const go=button(busy?'讀取目的地中…':'傳送 · '+route.price.toLocaleString()+' 天幣',async()=>{const result=await travel(route.id);if(win&&!result.ok)render(result.message);},'pt-button pt-go');go.disabled=busy||!!blocked()||gold()<route.price;body.append(go);
    if(route.category==='island'&&route.monsterDetails?.length){body.append(el('h4','','原始怪物配置'));for(const m of route.monsterDetails)body.append(el('p','pt-monster',m.name+' · Lv.'+m.level+' · HP '+m.hp.toLocaleString()+' · '+m.count+' 隻 · 重生 '+m.respawn.join('～')+' 秒'));}else body.append(el('p','pt-muted',route.monsters.length?'怪物：'+route.monsters.slice(0,12).join('、'):'村莊／傳送據點'));
    body.append(el('h4','','掉落物'));const drops=el('div','pt-drops'),q=query.trim().toLowerCase(),available=routeDrops(route),filtered=available.filter(n=>n.toLowerCase().includes(q)),shown=(q&&filtered.length?filtered:available).slice(0,40);for(const name of shown)drops.append(el('span','',name));if(!shown.length)drops.append(el('p','pt-muted','此據點附近沒有已登錄的怪物掉落。'));body.append(drops);return;
   }
-  const visible=routes.filter(r=>r.category===tab&&matches(r,query));
+  const visible=routes.filter(r=>r.category===tab&&matches(r,query)&&(!group||r.group===group));
+  if(group&&!query.trim()){body.append(button('‹ 返回'+(categories.find(c=>c[0]===tab)?.[1]||'')+'列表',()=>{group=null;render();}));body.append(el('h3','pt-group-title',group));}
+  else if(!query.trim()){
+   const groups=new Map();for(const r of visible){const k=r.group||'#'+r.id;if(!groups.has(k))groups.set(k,[]);groups.get(k).push(r);}
+   if([...groups.values()].some(list=>list.length>1||list[0].group)){
+    for(const list of groups.values()){
+     if(list.length===1){const route=list[0],row=button('',()=>{selected=route;render();},'pt-route'),left=el('span','pt-destination');left.append(el('strong','',route.name),el('small','',route.levels?'Lv.'+route.levels.join('～'):route.category==='village'?'村莊／據點':'傳送據點'));row.append(left,el('span','pt-cost','◆ '+route.price.toLocaleString()),el('span','pt-arrow','›'));row.disabled=busy;body.append(row);continue;}
+     const lv=list.flatMap(r=>r.levels||[]),prices=list.map(r=>r.price),row=button('',()=>{group=list[0].group;render();},'pt-route pt-group'),left=el('span','pt-destination');
+     left.append(el('strong','',list[0].group),el('small','',list.length+(list.every(r=>/樓|dF/.test(r.name))?' 層':' 處')+(lv.length?' · Lv.'+Math.min(...lv)+'～'+Math.max(...lv):'')));
+     row.append(left,el('span','pt-cost','◆ '+Math.min(...prices).toLocaleString()+(Math.max(...prices)>Math.min(...prices)?'～':'')),el('span','pt-arrow','›'));row.disabled=busy;body.append(row);
+    }
+    if(!visible.length)body.append(el('p','pt-empty','此分類沒有符合條件的地點。'));return;
+   }
+  }
   for(const route of visible){const row=button('',()=>{selected=route;render();},'pt-route'),left=el('span','pt-destination');left.append(el('strong','',route.name),el('small','',route.levels?'Lv.'+route.levels.join('～'):route.category==='village'?'村莊／據點':'傳送據點'));row.append(left,el('span','pt-cost','◆ '+route.price.toLocaleString()),el('span','pt-arrow','›'));row.disabled=busy;body.append(row);}
   if(!visible.length)body.append(el('p','pt-empty','此分類沒有符合條件的地點。'));
  }
@@ -69,8 +83,8 @@ window.PortableTeleport=(()=>{
  function open(){
   if(window.gameFlowState!=='playing')return;session++;if(win){render();return;}win=el('section','portable-teleport');win.setAttribute('role','dialog');win.setAttribute('aria-label','隨身傳送');
   const head=el('div','pt-head');head.append(el('h2','','狩獵場'),button('✕',close,'pt-close'));head.lastChild.setAttribute('aria-label','關閉隨身傳送');
-  const search=el('input','pt-search');search.type='search';search.placeholder='搜尋掉落物、怪物、地點';search.setAttribute('aria-label',search.placeholder);search.value=query;search.oninput=()=>{query=search.value;selected=null;render();};
-  const tabs=el('div','pt-tabs');tabs.setAttribute('role','tablist');for(const [key,label]of categories){const b=button(label,()=>{tab=key;selected=null;render();});b.dataset.category=key;b.setAttribute('role','tab');tabs.append(b);}
+  const search=el('input','pt-search');search.type='search';search.placeholder='搜尋掉落物、怪物、地點';search.setAttribute('aria-label',search.placeholder);search.value=query;search.oninput=()=>{query=search.value;selected=null;if(query.trim())group=null;render();};
+  const tabs=el('div','pt-tabs');tabs.setAttribute('role','tablist');for(const [key,label]of categories){const b=button(label,()=>{tab=key;selected=null;group=null;render();});b.dataset.category=key;b.setAttribute('role','tab');tabs.append(b);}
   body=el('div','pt-body');notice=el('p','pt-notice');notice.setAttribute('role','status');win.append(head,search,tabs,body,el('div','pt-wallet'),notice);document.querySelector('.game').append(win);selected=null;render();head.lastChild.focus();
  }
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&win){e.preventDefault();close();}});

@@ -565,3 +565,13 @@ NPC 穿衣服（2026-11-13）：
   → tools/native-monsters/custom-looks.js 切成 assets/native-monsters/custom-mob-<gfx>-<n>.png（24 張，約 21MB，和 dungeon-mob 同為 PNG）＋data/custom-monster-frames.js。
 - index.html：data/custom-monster-frames.js 接在 dungeon-monster-data.js 後面載入（Object.assign 覆蓋 islandMonsterFrames）。
 - 17 種：食人妖精、哈維、食人妖精王、獨眼巨人、阿魯巴、安普、艾多倫、青蛙、卡司特、安普長老、蛇女(綠／藍)、鱷魚、卡司特王、狼人、萊肯、巨斧牛人。
+
+【2026-11-22 狩獵場改版：分類細分＋分組樓層＋全部狩獵地圖都可傳送】
+- 使用者：所有狩獵地圖都用狩獵場傳送進入（不另做樓梯，既有樓梯保留）；沒怪物的地圖不做傳送點；傲慢之塔只到 1 樓（高樓層用卷軸）。
+- tools/build-portable-teleport.cjs：分類 村莊／外圍／島嶼／高塔／地監，route 加 group（GROUPS 表：地圖編號→分組），同組依樓層排序；
+  HUNT_EXTRA 補 npcaction_teleport 沒有的狩獵地圖（海底隧道、傑瑞德試煉、龍之谷 7 樓、巨蟻洞穴 9／541／542／女皇棲息地、拉斯塔巴德各房間與 4 樓、沉默洞穴地監入口），
+  落點取 DB dungeon 表走進該圖的位置；沒怪物的地監（礦物洞穴）不列；傲慢之塔 102～110 不列；[舊版] 古魯丁地下監獄 n樓 → 古魯丁地監n樓。共 144 個傳送點。
+- data/portable-teleport.js：加「高塔」分頁；島嶼／高塔／地監顯示分組（n 層／n 處、等級、最低價），點進去列樓層，詳細頁可返回分組；搜尋時改成平面列表。
+- 象牙塔 4～7 樓原本地圖有、沒放怪：node tools/native-monsters/build.js --maps 78,79,80,81 補 DB 出生點（紙人、密密、活鎧甲、鋼鐵高崙／影魔、鬼魂、死神），價格照原版 4,000～7,000。
+  8 樓（Map 82）地圖還沒轉。外觀 13068 客戶端沒圖。
+- 傲慢之塔移動卷軸／傳送符（40104～、40289～、84001～ 等）道具有資料但使用效果尚未實作。

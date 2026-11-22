@@ -6,8 +6,8 @@ test('島嶼怪物保留原始數量、座標、能力，全部戰鬥怪物有�
 
 test('地監傳送包含新古魯丁與新傲慢，舊傲慢改為真正的1樓且入口可通行',()=>{
  const c=setup(),manifest=JSON.parse(read('assets/region-background/manifest.json'));
- for(const [id,name]of [[101,'傲慢之塔1樓'],[807,'新古魯丁地監1樓'],[3301,'新傲慢之塔1樓']]){
-  const route=c.PORTABLE_TELEPORT_ROUTES.find(r=>r.name===name);assert(route,name);assert.equal(route.mapId,id);assert.equal(route.category,'dungeon');assert(manifest.maps[id]);
+ for(const [id,name,category]of [[101,'傲慢之塔1樓','tower'],[807,'新古魯丁地監1樓','dungeon'],[3301,'新傲慢之塔1樓','tower']]){
+  const route=c.PORTABLE_TELEPORT_ROUTES.find(r=>r.name===name);assert(route,name);assert.equal(route.mapId,id);assert.equal(route.category,category);assert(manifest.maps[id]);
   const map=c.NATIVE_DUNGEON_MAPS[id],terrain=[];for(let i=0;i<map.terrain.length;i+=2)for(let j=0;j<map.terrain[i+1];j++)terrain.push(map.terrain[i]);
   const cell=terrain[(route.y-map.startY)*map.width+route.x-map.startX];assert(cell&&!(cell&128));
   const background=JSON.parse(read('assets/region-background/'+id+'/map.json'));for(const page of Object.values(background.pages))for(const file of Object.values(page.variants))assert(fs.existsSync(path.join(root,'assets/region-background',String(id),file)));
