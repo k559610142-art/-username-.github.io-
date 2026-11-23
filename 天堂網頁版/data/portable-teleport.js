@@ -30,7 +30,7 @@ window.PortableTeleport=(()=>{
    return {x,y};
   }return null;
  }
- function routeDrops(route){return [...new Set([...DBGameRules.dragonCaveDropNames(route.mapId),...route.drops])];}
+ function routeDrops(route){return [...new Set([...(window.DBGameRules?.supplementalDropNames(route.mapId)||[]),...route.drops])];}
  function matches(route,text){const q=text.trim().toLowerCase();return !q||[route.name,...route.monsters,...routeDrops(route)].some(s=>s.toLowerCase().includes(q));}
  async function travel(id){
   if(busy)return {ok:false,message:'正在準備傳送，請稍候。'};const route=byId.get(Number(id));if(!route)return {ok:false,message:'找不到傳送地點。'};

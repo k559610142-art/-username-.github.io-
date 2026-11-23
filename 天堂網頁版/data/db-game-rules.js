@@ -41,14 +41,22 @@ const DBGameRules = (() => {
     [20,[3,19,20]],
     [21,[89,100,41351]]
   ]);
-  const dragonCaveDropNames=map=>(dragonCaveMaterials.get(map)||[]).map(id=>byId.get(id).name);
+  const clothDrops=[40455,40456,40457];
+  const dragonValleyGear=[272,273,21105,21106];
+  const addedMapDrops=new Map([
+    ...[53,54,55,56].map(map=>[map,{ids:clothDrops,chance:20000}]),
+    ...[35,36].map(map=>[map,{ids:dragonValleyGear,chance:2000}])
+  ]);
+  const supplementalDropNames=map=>[...(dragonCaveMaterials.get(map)||[]),...(addedMapDrops.get(map)?.ids||[])].map(id=>byId.get(id).name);
   function extraDrops(mob){
-    const map=window.activeMapId||0;
+    const map=mob?.spawn?.mapId??window.activeMapId??0;
+    const added=addedMapDrops.get(map);
     return [
       // 2026-11-18 使用者：武魂結晶（39287）掉落提高 → 0.5% 改 5%（50000／1000000），數量仍 1～3；平均約 1 萬隻怪做一個下品武魂（結晶×1000）
       ...rows('怪物掉落全圖設置').map(row=>({id:row['道具'],min:row['最小量'],max:row['最大量'],chance:row['道具']===39287?50000:row['機率'],fixedRate:true})),
       ...rows('droplist_map').filter(row=>row.mapid===map).map(row=>({id:row.itemid,min:row.min,max:row.max,chance:row.chance})),
       ...(dragonCaveMaterials.get(map)||[]).map(id=>({id,min:1,max:1,chance:20000,fixedRate:true})),
+      ...(added?.ids.map(id=>({id,min:1,max:1,chance:added.chance,fixedRate:true}))||[]),
       ...(window.LevelQuests?.drops(mob)||[]) // 等級任務補的掉落（data/level-quests.js）
     ].filter(drop=>drop.id!==39288&&!/娃娃/.test(byId.get(drop.id)?.name||''));
   }
@@ -243,19 +251,19 @@ const DBGameRules = (() => {
     [5, [40507, 5], [40494, 20]],
     [22, [89, 1], [40507, 10], [40044, 1], [3, 1], [40503, 50]]
   ];
-  function elvenDialogueRecipes(){
-    return elvenDialogueCraft.map(([new_item,...materials])=>({
-      id:-new_item,npcid:70838,npcname:'娜魯帕',new_item,
+  function dialogueRecipe(npcid,npcname,new_item,materials){
+    return {
+      id:-new_item,npcid,npcname,new_item,
       note:new_item===20322?'木製的夾克':byId.get(new_item).name,
       new_item_counts:1,new_item_Enchantlvl:0,new_item_Bless:1,
       checkLevel:0,checkClass:0,rnd:100,hpConsume:0,mpConsume:0,
       materials:materials.map(([id])=>id).join(','),
       materials_count:materials.map(([,count])=>count).join(','),
       materials_enchants:materials.map(()=>0).join(',')
-    }));
+    };
   }
   const isElvenCraft=recipe=>elvenNpcIds.has(recipe.npcid);
-  const craftRecipes=()=>[...rows('system_item_blend'),...elvenDialogueRecipes()].filter(r=>!towerCraftItems.has(Number(r.new_item))&&(SOUL_CRAFT.has(r.id)||!['box','wuhun','doll'].includes(craftCategory(byId.get(Number(r.new_item)))))&&Number(r.addchanceitem)!==39288&&!split(r.materials).includes(39288)&&!/^(?:回收魔珠)|神聖魔法書|神力禮盒/.test(byId.get(Number(r.new_item))?.name||'')&&!hiddenCraftItems.has(Number(r.new_item))&&!(String(r.materials)==='40308'&&[39287,39288].includes(Number(r.new_item)))&&![576,577,578].includes(r.id)).map(r=>SOUL_CRAFT.has(r.id)?{...r,materials:'39287',materials_count:SOUL_CRAFT_COST,addchanceitem:0}:r); // 576～578：卡立普暗黑武器的舊版重複配方（沒有等級職業限制），只留 1061～1063「死神之証」 // 武魂結晶／提煉石不能用金幣做，只能打怪掉（使用者 2026-11-15）
+  const craftRecipes=()=>[...rows('system_item_blend'),...elvenDialogueCraft.map(([id,...materials])=>dialogueRecipe(70838,'娜魯帕',id,materials)),...giranCraftingData.map(args=>dialogueRecipe(...args))].filter(r=>!towerCraftItems.has(Number(r.new_item))&&(SOUL_CRAFT.has(r.id)||!['box','wuhun','doll'].includes(craftCategory(byId.get(Number(r.new_item)))))&&Number(r.addchanceitem)!==39288&&!split(r.materials).includes(39288)&&!/^(?:回收魔珠)|神聖魔法書|神力禮盒/.test(byId.get(Number(r.new_item))?.name||'')&&!hiddenCraftItems.has(Number(r.new_item))&&!(String(r.materials)==='40308'&&[39287,39288].includes(Number(r.new_item)))&&![576,577,578].includes(r.id)).map(r=>SOUL_CRAFT.has(r.id)?{...r,materials:'39287',materials_count:SOUL_CRAFT_COST,addchanceitem:0}:r); // 576～578：卡立普暗黑武器的舊版重複配方（沒有等級職業限制），只留 1061～1063「死神之証」 // 武魂結晶／提煉石不能用金幣做，只能打怪掉（使用者 2026-11-15）
   function craft(npcId,id,anywhere=false){ // anywhere：從目錄「製作」視窗做，不用靠近 NPC（使用者 2026-11-14 決定）
     const recipe=craftRecipes().find(r=>r.id===id&&r.npcid===npcId);
     if(!recipe||!anywhere&&!IslandMonsters.serviceNearby(npcId,3))return '請靠近對應的製作 NPC。';
@@ -306,7 +314,7 @@ const DBGameRules = (() => {
       document.querySelector('#panelContent').append(craftButton);
     }
   };
-  return {rows,automaticSkills,extraDrops,dragonCaveDropNames,killRewards,xpMultiplier,starter,useItem,damageBonus,weaponProc,syncVitals,reduction,
+  return {rows,automaticSkills,extraDrops,supplementalDropNames,killRewards,xpMultiplier,starter,useItem,damageBonus,weaponProc,syncVitals,reduction,
     craft,craftRecipes,craftCategory,isElvenCraft,openCrafting,blendClass:role=>BLEND_CLASS[role],addItem:add,takeItem:take,craftNpcs:()=>new Set(craftRecipes().map(r=>r.npcid))};
 })();
 window.DBGameRules=DBGameRules;

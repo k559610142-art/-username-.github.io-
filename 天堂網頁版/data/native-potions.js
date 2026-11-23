@@ -22,9 +22,10 @@ const NativePotions=(()=>{
   }
   const portraitStatusLayout=window.matchMedia('(orientation: portrait) and (max-width: 650px)');
   statusStyle.textContent+=
-    + '.status-effects-row[hidden]{display:none!important}.status-effects-row.mobile-status:not([hidden]){display:grid!important;grid-template-columns:repeat(10,minmax(0,20px));grid-auto-rows:20px;justify-content:start;align-content:start;gap:3px;max-height:43px;overflow-x:hidden;overflow-y:auto;touch-action:pan-y}'
+    '.status-effects-row[hidden]{display:none!important}.status-effects-row.mobile-status:not([hidden]){display:grid!important;grid-template-columns:repeat(10,minmax(0,20px));grid-auto-rows:20px;justify-content:start;align-content:start;gap:3px;max-height:43px;overflow-x:hidden;overflow-y:auto;touch-action:pan-y}'
     + '.status-effects-row.mobile-status .native-potion-buffs:not([hidden]),.status-effects-row.mobile-status .class-buff-bar:not([hidden]){display:contents!important}'
-    + '.status-effects-row.mobile-status .native-potion-buffs>span,.status-effects-row.mobile-status .class-buff-bar img{box-sizing:border-box;width:100%!important;height:20px!important}'
+    + '.status-effects-row.mobile-status .native-potion-buffs>span,.status-effects-row.mobile-status .class-buff-bar img{box-sizing:border-box;width:100%!important;max-width:20px;height:20px!important;object-fit:contain}'
+    + '.status-effects-row.mobile-status .native-potion-buffs>span>small{font-size:8px!important;right:1px!important;max-width:100%;overflow:hidden}'
     + '.status-effects-row.mobile-status .native-potion-buffs>span>img{width:100%!important;max-width:18px;height:18px!important;object-fit:contain}';
   function positionBuffs(){
     const mobile=portraitStatusLayout.matches;
