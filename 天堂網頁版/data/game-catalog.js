@@ -1912,7 +1912,7 @@ function openGameCatalog(type) {
         uiElement('p', '', owned ? '已收集 ' + owned + ' 張' + (active ? ' · 變身中' : '') : '尚未收集'),
         uiElement('h4', '', '變身能力'));
       for (const effect of card.fx) detail.append(uiElement('p', '', effect));
-      detail.append(uiElement('small', '', card.nativeComplete ? '能力：本機原始變身加成表' : card.src === '天堂W' ? '能力：天堂W 官方圖鑑（' + card.w + '）' : '能力：參考天堂W 同階平均'));
+      detail.append(uiElement('small', '', card.bonusSource ? '能力：' + card.bonusSource : card.nativeComplete ? '能力：本機原始變身加成表' : card.src === '天堂W' ? '能力：天堂W 官方圖鑑（' + card.w + '）' : '能力：參考天堂W 同階平均'));
       detail.append(uiElement('small', '', card.nativeComplete ? '動作：8 方向走路、待機、攻擊、施法、死亡' : card.wk ? '動作：8 方向走路' + (card.wa ? '、待機、攻擊' : '') : card.f.walk ? '動作：單方向走路（往左時翻面）' : '動作：沒有走路圖，只有單方向待機（走路時原地擺動）'));
       if (rule) {
         if (rule.bonus) {

@@ -17,7 +17,8 @@ const PlayerClassStats = (() => {
       gearHp += hpr;
       gearMp += mpr;
     }
-    for(const key of Object.keys(attributes))attributes[key]+=(equipmentSets[key]||0)+(window.ClassBuffs?.stats()[key]||0)+(soul[key]||0);
+    const transformAttributes = window.activeTransformCard?.attributeBonuses;
+    for(const key of Object.keys(attributes))attributes[key]+=(equipmentSets[key]||0)+(window.ClassBuffs?.stats()[key]||0)+(soul[key]||0)+(transformAttributes?.[key]||0);
     gearHp += equipmentSets.hpr+(soul.hpr||0);
     gearMp += equipmentSets.mpr+(soul.mpr||0);
     const con = attributes.con || 0, wis = attributes.wis || 0;

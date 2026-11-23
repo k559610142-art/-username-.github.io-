@@ -56,7 +56,12 @@ window.TransformCards = (() => {
     const card = state.active ? byName.get(state.active) : null;
     window.playerMovementModifiers = window.playerMovementModifiers || {};
     window.playerMovementModifiers.polyMovePct = speedPct(card, '移動速度');
+    const previousCard = window.activeTransformCard;
     window.activeTransformCard = card || null;
+    if ((previousCard?.attributeBonuses || card?.attributeBonuses) && window.DBGameRules) {
+      window.DBGameRules.syncVitals();
+      stats();
+    }
     if (card?.wk) loadAtlas(card.wk, card.wx);
   }
   // ---- 3.63 變身設定（L1PolyMorph）：最低等級、可用武器／防具遮罩、能否施法 ----
