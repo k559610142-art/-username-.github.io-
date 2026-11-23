@@ -102,12 +102,17 @@ window.OwnedInventory=(()=>{
   return transact(next,{hp:nextHp??hp-skill.hp,mp:mp-mpCost});
  }
  // unid：怪物掉落的祝福／詛咒物品先未鑑定（blessed-item-names.js 給 baseName；item-identify.js 鑑定）
+ function nextItemUid(rows){
+  let uid;
+  do{uid='item-'+Date.now().toString(36)+'-'+(++sequence).toString(36)}while(rows.some(e=>e.uid===uid));
+  return uid;
+ }
  function addItems(next,key,count,unid=false){
   if(!Number.isSafeInteger(count)||count<=0||count>2147483647)return false;
   const r=rules.definitions[key];if(!catalog.has(key)||!r)return false;let uid;
   unid=!!(unid&&catalog.get(key)?.baseName);const same=e=>e.key===key&&!!e.unid===unid;
   if(r.stackable&&next.some(same)){const e=next.find(same);if(e.count+count>2147483647)return false;e.count+=count;uid=e.uid}
-  else{if(next.length+(r.stackable?1:count)>=rules.maxSizeExclusive){toast('背包容量不足。');return false}for(let i=0;i<(r.stackable?1:count);i++){do{uid='item-'+Date.now().toString(36)+'-'+(++sequence).toString(36)}while(next.some(e=>e.uid===uid));next.push(unid?{uid,key,count:r.stackable?count:1,slot:null,unid:true}:{uid,key,count:r.stackable?count:1,slot:null})}}
+  else{if(next.length+(r.stackable?1:count)>=rules.maxSizeExclusive){toast('背包容量不足。');return false}for(let i=0;i<(r.stackable?1:count);i++){uid=nextItemUid(next);next.push(unid?{uid,key,count:r.stackable?count:1,slot:null,unid:true}:{uid,key,count:r.stackable?count:1,slot:null})}}
   return uid;
  }
  function receive(kind,id,count=1){
@@ -133,8 +138,16 @@ window.OwnedInventory=(()=>{
   const item=from.find(e=>e.uid===uid&&!e.slot);
   if(!item)return '找不到物品，或物品正在穿戴。';
   if(withdraw&&!pay(next,fee))return '需要 '+fee+' 天幣。';
-  const moved=addItems(to,item.key,item.count);if(!moved)return '欄位不足或堆疊已滿。';
-  if(item.soul)to.find(e=>e.uid===moved).soul={...item.soul}; // BOSS 靈魂附魔跟著武器進出倉庫
+  const stackKey=rules.definitions[item.key]?.stackable?storedStackKey(item):null;
+  const stack=stackKey&&to.find(entry=>!entry.slot&&entry.key===item.key&&storedStackKey(entry)===stackKey);
+  if(stack){
+   if(stack.count+item.count>2147483647)return '欄位不足或堆疊已滿。';
+   stack.count+=item.count;
+  }else{
+   if(to.length+1>=rules.maxSizeExclusive)return '欄位不足或堆疊已滿。';
+   const movedUid=to.some(entry=>entry.uid===uid)?nextItemUid([...next,...storage]):uid;
+   to.push({...item,uid:movedUid,slot:null});
+  }
   deduct(from,uid,item.count);
   return transact(next,{warehouse:storage})?'':'存檔失敗，物品未移動。';
  }
@@ -243,15 +256,18 @@ window.OwnedInventory=(()=>{
   if(!Array.isArray(uids)||!uids.length||new Set(uids).size!==uids.length||uids.some(uid=>typeof uid!=='string'||!canDiscard(uid,options)))return false;
   const selected=new Set(uids);return transact(entries.filter(e=>!selected.has(e.uid)));
  }
+ function storedStackKey(item){
+  const {uid,count,slot,...attributes}=item;
+  attributes.unid=!!attributes.unid;
+  attributes.enchant=attributes.enchant||0;
+  attributes.bless=config(item).bless;
+  return JSON.stringify(Object.keys(attributes).sort().map(k=>[k,attributes[k]]));
+ }
  function mergeStoredStacks(items){
   const stacks=new Map(),merged=[];
   for(const item of items){
    if(item.slot||!rules.definitions[item.key]?.stackable){merged.push(item);continue;}
-   const {uid,count,slot,...attributes}=item;
-   attributes.unid=!!attributes.unid;
-   attributes.enchant=attributes.enchant||0;
-   attributes.bless=config(item).bless;
-   const key=JSON.stringify(Object.keys(attributes).sort().map(k=>[k,attributes[k]]));
+   const key=storedStackKey(item),count=item.count;
    const stack=stacks.get(key);
    if(stack&&stack.count+count<=2147483647){stack.count+=count;continue;}
    stacks.set(key,item);

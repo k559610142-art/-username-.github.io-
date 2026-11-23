@@ -44,7 +44,8 @@ const IslandNpcServices = (() => {
       if (warehouse) {
         const rows = secondary ? OwnedInventory.storedItems : OwnedInventory.items.filter(e=>!e.slot);
         for (const item of rows) {
-          const label = (secondary?'領取 ':'存入 ')+item.item.name+' × '+item.count;
+          const enchant=item.enchant?(item.enchant>0?'+':'')+item.enchant+' ':'';
+          const label = (secondary?'領取 ':'存入 ')+enchant+item.item.name+' × '+item.count;
           list.append(button(label,()=>render(OwnedInventory.transfer(item.uid,secondary,islandNpcServiceData.fee)||'已完成。')));
         }
       } else {
