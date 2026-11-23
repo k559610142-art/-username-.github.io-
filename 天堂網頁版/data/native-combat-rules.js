@@ -10,7 +10,8 @@ const NativeCombatRules=(()=>{
   const level=Math.max(1,integer(npc.level,1)),hitRate=level+5+integer(npc.hit),die=rand(20,rng)+1,attackDie=die+hitRate-3-Math.max(0,def.dodge||0),defendDie=def.ac>=0?10-def.ac:11+rand(-def.ac,rng);const hit=attackDie>hitRate+19||attackDie>hitRate&&attackDie>defendDie;
   if(!hit)return {hit:false,damage:0,critical:false,acDefense:0};
   const strength=Math.max(0,integer(npc.str)),strDamage=strength<10?2:Math.floor(strength/2)-2;
-  let raw=rand(level,rng)+strDamage;const critical=rand(100,rng)<15;if(critical)raw*=2;raw+=integer(npc.dmgup);raw=Math.trunc(raw*(skill?.leverage||10)/10);
+  const levelFloor=Math.ceil(level/2);
+  let raw=levelFloor+rand(level-levelFloor+1,rng)+strDamage;const critical=rand(100,rng)<15;if(critical)raw*=2;raw+=integer(npc.dmgup);raw=Math.trunc(raw*(skill?.leverage||10)/10);
   const cap=Math.max(0,Math.trunc(Math.max(0,10-def.ac)/({騎士:2,妖精:3,王族:5,法師:5}[def.role]||5))),acDefense=cap?rand(cap,rng)+Math.max(1,cap>>3):0;
   return {hit:true,damage:Math.max(0,Math.trunc(raw-acDefense-(def.reduction||0)-(window.DollEffects?.chanceReduction()||0))),critical,acDefense,raw};
  }

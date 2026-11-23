@@ -22,10 +22,10 @@ const NativePotions=(()=>{
   }
   const portraitStatusLayout=window.matchMedia('(orientation: portrait) and (max-width: 650px)');
   statusStyle.textContent+=
-    + '.status-effects-row.mobile-status{flex-wrap:wrap;align-content:flex-start;gap:3px;max-height:43px;overflow-x:hidden;overflow-y:auto;touch-action:pan-y}'
+    + '.status-effects-row[hidden]{display:none!important}.status-effects-row.mobile-status:not([hidden]){display:grid!important;grid-template-columns:repeat(10,minmax(0,20px));grid-auto-rows:20px;justify-content:start;align-content:start;gap:3px;max-height:43px;overflow-x:hidden;overflow-y:auto;touch-action:pan-y}'
     + '.status-effects-row.mobile-status .native-potion-buffs:not([hidden]),.status-effects-row.mobile-status .class-buff-bar:not([hidden]){display:contents!important}'
-    + '.status-effects-row.mobile-status .native-potion-buffs>span,.status-effects-row.mobile-status .class-buff-bar img{box-sizing:border-box;width:20px!important;height:20px!important}'
-    + '.status-effects-row.mobile-status .native-potion-buffs>span>img{width:18px!important;height:18px!important}';
+    + '.status-effects-row.mobile-status .native-potion-buffs>span,.status-effects-row.mobile-status .class-buff-bar img{box-sizing:border-box;width:100%!important;height:20px!important}'
+    + '.status-effects-row.mobile-status .native-potion-buffs>span>img{width:100%!important;max-width:18px;height:18px!important;object-fit:contain}';
   function positionBuffs(){
     const mobile=portraitStatusLayout.matches;
     statusRow.classList.toggle('mobile-status',mobile);
@@ -128,7 +128,10 @@ const NativePotions=(()=>{
     const {handler,parameters:p,rule}=config;
     if((activeCharacterLevel||1)<rule.minLevel||rule.maxLevel&&(activeCharacterLevel||1)>rule.maxLevel)return false;
     if(window.playerItemState?.decayPotion)return false;
-    const cooldown=window.activeCharacterId+'/'+(rule.delayId||entry.key);
+    // 永久古白沿用一般古白的補血冷卻群組與間隔。
+    const sharedDelay=entry.key==='etcitem:67001'?ITEM_USE_RULES.definitions['etcitem:40024']:null;
+    const cooldown=window.activeCharacterId+'/'+(rule.delayId||sharedDelay?.delayId||entry.key);
+    const delayMs=rule.delayMs||sharedDelay?.delayMs||0;
     if(movementTime()<(timers.get(cooldown)||0))return false;
     const next=OwnedInventory.snapshot,buffs={...(window.activePotionBuffs||{})};
     const effect={hp,mp,potionBuffs:buffs};
@@ -167,7 +170,7 @@ const NativePotions=(()=>{
       if(key)buffs[key]=Date.now()+duration*1000;
     }
     if(!OwnedInventory.applyChange(next,effect))return false;
-    timers.set(cooldown,movementTime()+(rule.delayMs||0));
+    timers.set(cooldown,movementTime()+delayMs);
     if(handler==='Disintoxicat_Potion'){
       window.IslandNpcAi?.curePoison?.();
       if(window.playerItemState){delete playerItemState.poison;delete playerItemState.poisoned;}

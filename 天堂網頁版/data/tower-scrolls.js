@@ -1,15 +1,15 @@
 // 傲慢之塔移動卷軸／傳送符（2026-11-22 使用者：舊版傲慢之塔 10 樓、新傲慢之塔 10 樓；高樓層用卷軸上去，怪物掉卷軸與傳送符）。
 // 2026-11-22 使用者修正：傳送符不開放；2～10 樓卷軸只靠怪物掉落；兩座塔的 1 樓都用狩獵場（隨身傳送）過去，所以新塔 1 樓卷軸 84001 也不用。
-// 舊版塔（地圖 101～110）：原版 100 層濃縮成 10 層，每 10F 一樓 → 第 n 樓 = ceil(F/10)。
+// 舊版塔（地圖 110、120…200）：第 n 層使用原版第 n×10 樓。
 //   移動卷軸 40104～40112（11F～91F）→ 2～10 樓、40113（100F）→ 10 樓，用完消失。
 // 新傲慢之塔（地圖 3301～3310）：移動卷軸 84002～84010 用完消失。各種傳送符（46011～、40280～、40289～、84031～、84041～）按了只提示不開放。
 //   落點用 DB etcitem_teleport 的座標；頂樓卷軸 84011（地圖 7100）還沒轉，暫不能用。
 // 掉落（player-progression.js roll 呼叫 drop）：塔內每一樓的怪物 1% 掉「上一層樓」的移動卷軸（10 樓掉 10 樓卷軸）。
 const TowerScrolls=(()=>{
- const OLD=101,NEW=3300,dest=new Map(); // itemId → {mapId, x, y, keep}
+ const OLD=100,NEW=3300,dest=new Map(); // itemId → {mapId, x, y, keep}
  const oldFloor=f=>Math.min(10,Math.max(1,Math.ceil(f/10)));
- for(let i=0;i<9;i++)dest.set(40104+i,{mapId:OLD-1+oldFloor(11+i*10)});
- dest.set(40113,{mapId:OLD+9});
+ for(let i=0;i<9;i++)dest.set(40104+i,{mapId:OLD+10*oldFloor(11+i*10)});
+ dest.set(40113,{mapId:200});
  // 新傲慢之塔落點（DB etcitem_teleport）
  const NEW_SPOT={1:[32797,32799],2:[32797,32799],3:[32797,32799],4:[32668,32864],5:[32668,32864],6:[32717,32871],7:[32668,32864],8:[32668,32864],9:[32668,32864],10:[32797,32799]};
  for(let n=2;n<=10;n++){const [x,y]=NEW_SPOT[n];dest.set(84000+n,{mapId:NEW+n,x,y});}
@@ -51,12 +51,12 @@ const TowerScrolls=(()=>{
    .finally(()=>{busy=false;});
   return true;
  }
- // 掉落：舊塔第 n 樓（地圖 100+n）、新塔第 n 樓（地圖 3300+n）
+ // 掉落：舊塔第 n 層（地圖 100+10n）、新塔第 n 樓（地圖 3300+n）
  const SCROLL_RATE=0.01;
  function drop(mob){
   const s=mob?.spawn;if(!s||s.resident||s.ally||s.bot)return [];const m=s.mapId||0,out=[];
   let scroll=null;
-  if(m>=101&&m<=110){const n=m-100;scroll=n<10?40103+n:40113;}
+  if(m===101||m>=110&&m<=200&&m%10===0){const n=m===101?1:(m-OLD)/10;scroll=n<10?40103+n:40113;}
   else if(m>=3301&&m<=3310){const n=m-3300;scroll=84000+Math.min(10,n+1);}
   else return out;
   const add=id=>{const it=window.INTERFACE_CATALOG?.items.find(i=>i.id===id);if(it)out.push({key:'etcitem:'+id,count:1,name:it.name});};

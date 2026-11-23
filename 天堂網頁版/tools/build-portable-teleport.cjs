@@ -8,8 +8,8 @@ const settings=vm.runInContext('dbActiveSettings',game),table=name=>settings[nam
 // 新遺忘之島在核心 getback_restart 的入口；隨身傳送費用沿用遺忘之島 500,000 天幣。
 rows.push({id:170000,name:'新遺忘之島',orderid:'',locx:32655,locy:33015,mapid:1700,itemid:40308,price:500000,min:1,max:200,note:'入口：getback_restart；費用：網頁版設定'});
 // User travel entries use the native first-floor map and validated native entrance.
-const tower=rows.find(r=>r.id===368),oldTower=game.NATIVE_DUNGEON_MAPS[101];
-if(tower&&oldTower)Object.assign(tower,{name:'傲慢之塔1樓',mapid:101,locx:oldTower.spawn.x,locy:oldTower.spawn.y});
+const tower=rows.find(r=>r.id===368),oldTower=game.NATIVE_DUNGEON_MAPS[110];
+if(tower&&oldTower)Object.assign(tower,{name:'傲慢之塔1樓（10F）',mapid:110,locx:oldTower.spawn.x,locy:oldTower.spawn.y});
 for(const [id,mapid,name,price]of [[330100,3301,'新傲慢之塔1樓',50000]]){const map=game.NATIVE_DUNGEON_MAPS[mapid];if(map)rows.push({id,mapid,name,locx:map.spawn.x,locy:map.spawn.y,itemid:40308,price,min:1,max:200,orderid:''});}
 
 // 2026-11-22 使用者：所有狩獵地圖都用狩獵場傳送進入（不另做樓梯）；沒怪物的地圖不做傳送點；傲慢之塔只到 1 樓（高樓層用卷軸）。
@@ -30,7 +30,7 @@ for(const [mapid,price]of Object.entries(HUNT_EXTRA).map(([m,p])=>[+m,p])){
 const range=(a,b)=>Array.from({length:b-a+1},(_,i)=>a+i);
 const GROUPS=[ // [分類, 分組名稱, 地圖編號]
  ['island','霧月島',[]],['island','遺忘之島',[70]],['island','新遺忘之島',[1700]],
- ['tower','傲慢之塔',[101]],['tower','新傲慢之塔',[3301]],['tower','象牙塔',range(75,82)],
+ ['tower','傲慢之塔',[110]],['tower','新傲慢之塔',[3301]],['tower','象牙塔',range(75,82)],
  ['dungeon','冒險洞窟',[1,2,14]],['dungeon','古魯丁地監',range(7,13)],['dungeon','眠龍洞穴',[19,20,21]],
  ['dungeon','風木城地監',[23,24]],['dungeon','騎士洞穴',range(25,28)],['dungeon','龍之谷地監',[30,31,32,33,35,36,37]],['dungeon','巨蟻洞穴',[...range(43,51),541,542,543]],
  ['dungeon','奇岩地監',range(53,56)],['dungeon','海音地監',[59,60,61,63]],['dungeon','傑瑞德的試煉地監',[22]],['dungeon','沉默洞穴',[304]],
@@ -41,13 +41,13 @@ const groupOf=new Map();for(const [category,group,maps]of GROUPS)for(const m of 
 const routes=[];
 for(const r of rows){
  if(!supported[r.mapid]||r.itemid!==40308||!Number.isSafeInteger(r.price)||r.price<0)continue;
- if(r.mapid>=102&&r.mapid<=110)continue; // 傲慢之塔 2～10 樓只能用卷軸上去
+ if(r.mapid>=101&&r.mapid<=200&&r.id!==368)continue; // 傲慢之塔 2～10 樓只能用卷軸上去
  if(r.mapid===807)continue; // 2026-11-22 使用者：狩獵場移除新古魯丁地監
  let category=r.orderid==='B'?'village':/島/.test(r.name)?'island':r.mapid===4&&!/地監|洞穴|洞窟|地下|墓穴|之塔|象牙塔/.test(r.name)?'field':'dungeon',group=null;
  const g=r.mapid!==4&&r.mapid!==0&&category!=='village'?groupOf.get(r.mapid):null;if(g){category=g.category;group=g.group;}
  if(r.id===110){category='island';group='霧月島';}
  const near=spawns.filter(s=>(s.mapId||0)===r.mapid&&!s.resident&&s.npc?.kind==='L1Monster'&&(r.mapid!==0&&r.mapid!==4||Math.max(Math.abs(s.point[0]-r.locx),Math.abs(s.point[1]-r.locy))<=55));
- if(!near.length&&category!=='village'&&category!=='field'&&r.mapid!==101)continue; // 沒怪物的地圖不做傳送點（傲慢之塔 1 樓保留當卷軸起點）
+ if(!near.length&&category!=='village'&&category!=='field')continue; // 沒怪物的地圖不做傳送點
  const levels=near.map(s=>s.npc.level).filter(v=>v>0),monsters=[...new Set(near.map(s=>s.npc.name))],drops=new Set();
  for(const s of near)for(const d of rewards.drops[s.npcId]||[])if(d.chance>0&&items.has(d.id)&&d.id!==40308&&!removed.has(d.id))drops.add(items.get(d.id).name);
  if(near.length)for(const drop of [...table('怪物掉落全圖設置').map(d=>({id:d['道具'],chance:d['機率']})),...table('droplist_map').filter(d=>d.mapid===r.mapid).map(d=>({id:d.itemid,chance:d.chance}))])if(drop.chance>0&&drop.id!==40308&&!removed.has(drop.id)&&items.has(drop.id))drops.add(items.get(drop.id).name);
