@@ -26,6 +26,8 @@
     card.fx = Object.entries(effects)
       .filter(([key]) => bonus[key])
       .map(([key, label]) => label + ' +' + bonus[key]);
+    card.attackSpeedPct = 24;
+    card.fx.unshift('攻擊速度 +' + card.attackSpeedPct + '%');
     card.bonusSource = gfx === 8486 ? '本機原始變身加成表' : '參考死亡騎士加成';
     card.attributeBonuses = {
       str: bonus.addStr, dex: bonus.addDex, con: bonus.addCon,

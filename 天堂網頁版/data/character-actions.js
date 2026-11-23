@@ -91,7 +91,8 @@ function playCharacterAction(action,options={}){
   if(interruptVisualStep())recenter();
  }
  if(action==='idle'){characterActionState=null;characterWalkUntil=0;characterIdleStarted=movementTime();refreshCharacter();return true}
- const started=options.force&&movementAnimating()?movementTween.started+movementTween.duration:movementTime(),duration=((typeof MonsterActions !== 'undefined' && MonsterActions.actionDuration(window.activeTransformCard?.p?.gfx,characterHeading,action,MonsterActions.equippedWeapon()))||data.timelines[clip].durationMs)*(window.NativePotions?.actionMultiplier(action)||1);
+ const attackSpeedPct = action === 'attack' ? window.activeTransformCard?.attackSpeedPct || 0 : 0;
+ const started=options.force&&movementAnimating()?movementTween.started+movementTween.duration:movementTime(),duration=((typeof MonsterActions !== 'undefined' && MonsterActions.actionDuration(window.activeTransformCard?.p?.gfx,characterHeading,action,MonsterActions.equippedWeapon()))||data.timelines[clip].durationMs)*(window.NativePotions?.actionMultiplier(action)||1)/(1+attackSpeedPct/100);
  characterActionState={action,clip,started,duration,hold:!!options.hold,until:options.hold?Infinity:started+duration+(action==='death'?900:0)};
  if(action==='attack')CombatSound.playerAttack(characterActionState);
  if(started<=movementTime())characterWalkUntil=0;

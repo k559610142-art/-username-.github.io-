@@ -160,6 +160,12 @@ const IslandCombat=(()=>{
       IslandMonsters.setTarget(target);
     }
     if(target?.spawn.bot&&!window.FakePlayers?.canAttack(target)){stop();return;}
+    // 在下一次普攻或追怪前，先讓掛機輔助使用已就緒的技能。
+    if(mode==='auto'&&!movementAnimating()&&window.AssistSystem){
+      const nextTarget=target;
+      window.AssistSystem.tick();
+      if(mode!=='auto'||target!==nextTarget||!target?.hp||characterMovementBlocked()||movementAnimating())return;
+    }
     const range=attackRange();
     if(distance(target.x,target.y)<=range&&clearShot(worldX,worldY,target.x,target.y)){
       hit(target,true);
