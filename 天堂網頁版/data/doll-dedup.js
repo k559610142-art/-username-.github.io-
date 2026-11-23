@@ -1,4 +1,8 @@
 // Collapse identical name, appearance, effects, duration and material requirements. Old ownership IDs remain aliases.
+// 收購價適用於女法師、橘熾五系（含各階）、飛龍。
+const DOLL_RESALE_PRICES = new Map(
+  [55022, ...Array.from({length:30}, (_, i) => 55053+i), 80356].map(id => [id, 100])
+);
 const DOLL_ID_ALIASES={"80346":55006,"80347":55011,"80348":55000,"80349":55002,"80353":55013,"80354":55010,"80355":55001,"300201":80254,"300202":80255,"300203":80256,"300204":80257,"300205":80258,"300206":80259,"300207":80260,"300208":80261,"300209":80262,"300210":80263,"300211":80264};
 (()=>{const images={"55000":"dolls-55000.png","55001":"dolls-55001.png","55002":"dolls-55002.png","55006":"dolls-55006.png","55010":"dolls-55010.png","55011":"dolls-55011.png","55013":"dolls-55013.png"};for(const d of gameCatalogData.dolls)if(images[d.id]&&!d.img)d.img=images[d.id];gameCatalogData.dolls=gameCatalogData.dolls.filter(d=>!Object.hasOwn(DOLL_ID_ALIASES,d.id));})();for(const d of gameCatalogData.dolls){const variants={55004:"巫妖（體力型）",80358:"巫妖（減傷回魔型）",55029:"美人魚（水中呼吸型）",80351:"美人魚（經驗型）"};if(variants[d.id]){d.originalName=d.name;d.name=variants[d.id];}}
 

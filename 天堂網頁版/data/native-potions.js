@@ -20,7 +20,29 @@ const NativePotions=(()=>{
     statusRow.style.left=left+'px';statusRow.style.top=top+'px';statusRow.style.maxWidth=max+'px';
     statusRow.hidden=window.gameFlowState!=='playing';
   }
+  const portraitStatusLayout=window.matchMedia('(orientation: portrait) and (max-width: 650px)');
+  statusStyle.textContent+=
+    + '.status-effects-row.mobile-status{flex-wrap:wrap;align-content:flex-start;gap:3px;max-height:43px;overflow-x:hidden;overflow-y:auto;touch-action:pan-y}'
+    + '.status-effects-row.mobile-status .native-potion-buffs:not([hidden]),.status-effects-row.mobile-status .class-buff-bar:not([hidden]){display:contents!important}'
+    + '.status-effects-row.mobile-status .native-potion-buffs>span,.status-effects-row.mobile-status .class-buff-bar img{box-sizing:border-box;width:20px!important;height:20px!important}'
+    + '.status-effects-row.mobile-status .native-potion-buffs>span>img{width:18px!important;height:18px!important}';
   function positionBuffs(){
+    const mobile=portraitStatusLayout.matches;
+    statusRow.classList.toggle('mobile-status',mobile);
+    if(mobile){
+      const hud=document.querySelector('.hud'),bag=document.querySelector('.nav button[aria-label="背包"]');
+      if(hud){
+        const stage=game.getBoundingClientRect(),character=hud.getBoundingClientRect(),bagBox=bag?.getBoundingClientRect();
+        const left=character.left-stage.left;
+        const right=bagBox?.width?bagBox.left:stage.right;
+        const width=Math.max(0,right-character.left-6);
+        const top=Math.max(0,character.top-stage.top-46);
+        statusRow.style.width=width+'px';
+        placeMagicBuffs(left,top,width);
+        return;
+      }
+    }
+    statusRow.style.width='';
     // 2026-11-14：狀態圖示（藥水＋技能 class-buff-bar）排在左上「輔助」鈕右邊同一排，往右到小地圖前，不再壓到頭像框的防禦／魔防
     const assist=document.querySelector('.assist-hud');
     if(assist&&!assist.hidden&&assist.offsetWidth){

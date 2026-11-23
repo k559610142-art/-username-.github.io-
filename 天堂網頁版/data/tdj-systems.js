@@ -747,10 +747,12 @@ window.TdjSystems = (() => {
     const doll = dollById.get(+dollId), soul = doll ? null : wuhunById.get(+e.item.id);
     if (!doll && !soul) return null;
     if (!playing()) { toast('請先進入遊戲角色。'); return false; }
-    if (!OwnedInventory.discard([uid])) { toast('這個道具目前無法收進圖鑑。'); return false; }
     const n = e.count || 1;
-    if (doll) state.dolls.owned[doll.id] = Math.min(2147483647, (state.dolls.owned[doll.id] || 0) + n);
-    else state.wuhun.owned[soul.id] = Math.min(2147483647, (state.wuhun.owned[soul.id] || 0) + n);
+    const owned = doll ? state.dolls.owned : state.wuhun.owned;
+    const card = doll || soul;
+    if((owned[card.id]||0)+n>2147483647){toast('圖鑑持有數已達上限。');return false;}
+    if (!OwnedInventory.discard([uid], {allowDolls:!!doll})) { toast('這個道具目前無法收進圖鑑。'); return false; }
+    owned[card.id] = (owned[card.id] || 0) + n;
     save(); render();
     toast((doll ? '魔法娃娃「' + doll.name + '」' : '武魂「' + soul.name + '」') + '已收進圖鑑' + (n > 1 ? ' ×' + n : '') + '，可到圖鑑' + (doll ? '召喚' : '裝備') + '。');
     return true;

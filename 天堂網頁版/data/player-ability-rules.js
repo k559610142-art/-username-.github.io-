@@ -26,7 +26,7 @@ window.PlayerAbilityRules=(()=>{
   const base=Math.max(0,Number(skill.mp)||0);if(!base)return 0;
   let cost=Math.floor(base*(100-manaReduction(profile.attributes.int))/100);
   if(helmetSkills().includes(skill.id))cost=Math.floor(cost/2);
-  return Math.max(1,cost-originalManaReduction(window.playerAttributes?.int));
+  return Math.max(1,cost-originalManaReduction(window.initialPlayerAttributes?.int??window.playerAttributes?.int));
  }
  function magicHitBonus(){const items=window.OwnedInventory?.items||[],soul=window.SoulRings?.bonuses()||{};return items.filter(e=>e.slot).reduce((n,e)=>n+(Number(e.item.sourceRules?.magic_hit_modifier)||0),0)+(window.PlayerClassStats?.read()?.equipmentSets?.magic_hit_modifier||0)+(soul.magicHit||0);}
  function statusChance(skill,mob,{profile=PlayerClassStats.read()}={}){

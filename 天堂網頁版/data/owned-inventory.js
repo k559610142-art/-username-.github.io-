@@ -8,7 +8,12 @@ window.OwnedInventory=(()=>{
  // 2026-11-17 右手欄：盾牌、臂甲（guarder，也放 shield 欄）或戰士的第二把單手斧（weapon2），三選一。臂甲可以配雙手武器。
  const isAxe=item=>item?.kind==='weapon'&&!item.twoHand&&/斧/.test(item.name||''),isGuarder=item=>item?.type==='guarder';
  function slotFor(item){if(item.kind==='weapon')return 'weapon';if(item.kind!=='armor')return null;return {helmet:'helm',shirt:'tshirt',gloves:'glove',amulet:'necklace',ring:'ring1',ring2:'ring1',guarder:'shield'}[item.type]||(['helm','armor','tshirt','cloak','glove','boots','shield','necklace','belt','earring'].includes(item.type)?item.type:null)}
- const definition=e=>catalog.get(e.key),presented=e=>{const d=catalog.get(e.key);return e.unid&&d?.baseName?{...d,name:d.baseName,icon:d.baseIcon||d.icon,unidentified:true}:d},config=e=>({...rules.definitions[e.key],bless:e.bless??rules.definitions[e.key]?.bless});
+ const definition=e=>catalog.get(e.key),presented=e=>{
+  const item=catalog.get(e.key);
+  if(e.bless===1&&item?.cursed)return {...item,name:item.baseName||item.name,cursed:false};
+  if(e.unid&&item?.baseName)return {...item,name:item.baseName,icon:item.baseIcon||item.icon,unidentified:true};
+  return item;
+ },config=e=>({...rules.definitions[e.key],bless:e.bless??rules.definitions[e.key]?.bless});
  function validate(rows,role=null,charLevel=1){
   if(!Array.isArray(rows)||rows.length>=rules.maxSizeExclusive)return '背包格式或容量有誤';
   const ids=new Set(),used=new Set();for(const e of rows){
@@ -229,6 +234,7 @@ window.OwnedInventory=(()=>{
   const e=entries.find(e=>e.uid===uid);
   if(!e||e.slot)return false;
   const item=definition(e);
+  if(item.kind==='etcitem'&&typeof DOLL_RESALE_PRICES!=='undefined'&&DOLL_RESALE_PRICES.has(item.id))return true;
   if(!item.sourceRules?.cant_delete)return true;
   const dollId=(typeof DOLL_ID_ALIASES!=='undefined'&&DOLL_ID_ALIASES[item.id])||item.id;
   return allowDolls&&item.kind==='etcitem'&&!!window.DollEvolution?.get(dollId);

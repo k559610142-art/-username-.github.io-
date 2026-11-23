@@ -3,7 +3,7 @@ const AutoSell=(()=>{
  const money='etcitem:40308',protectedItems=new Set(AUTO_SELL_DATA.protectedItems),catalog=new Map(INTERFACE_CATALOG.items.map(i=>[i.kind+':'+i.id,i]));let state={enabled:false,keys:[]},host=null,owner='',message='',query='',drawerOpen=false;
  function validate(value){return {enabled:value?.enabled===true,keys:Array.isArray(value?.keys)?[...new Set(value.keys.filter(k=>typeof k==='string'&&k!==money&&catalog.has(k)))].slice(0,2000):[]};}
  function activate(value){state=validate(value);owner=window.activeCharacterId||'';close();}
- function action(key){const price=AUTO_SELL_DATA.prices[key];if(Number.isSafeInteger(price)&&price>=0)return {kind:'sell',price};return protectedItems.has(key)?{kind:'keep',price:0}:{kind:'delete',price:0};}
+ function action(key){const price=AUTO_SELL_DATA.prices[key]??(key.startsWith('etcitem:')?DOLL_RESALE_PRICES.get(Number(key.slice(8))):undefined);if(Number.isSafeInteger(price)&&price>=0)return {kind:'sell',price};return protectedItems.has(key)?{kind:'keep',price:0}:{kind:'delete',price:0};}
  function label(key){const a=action(key);return a.kind==='sell'?'販賣 '+a.price.toLocaleString()+' 天幣／個':a.kind==='delete'?'無法販賣 → 刪除':'禁止刪除 → 保留';}
  function convert(rows){
   if(!state.enabled||owner!==window.activeCharacterId)return {rows,total:0};const selected=new Set(state.keys),kept=[];let total=0;

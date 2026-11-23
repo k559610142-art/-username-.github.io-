@@ -103,7 +103,28 @@
 
  // ---------- 角色（status） ----------
  let charTab='equip';
+ function statPointControls(){
+  const box=el('div','qy-box');
+  const points=PlayerGrowth.available();
+  box.append(el('h3','','可分配屬性點 '+points));
+  if(points){
+   const actions=el('div','qy-stat-point-actions');
+   for(const [key,label] of Object.entries(PlayerGrowth.statNames)){
+    const add=el('button','act',label+' +1');add.type='button';add.dataset.statPoint=key;
+    add.onclick=()=>{
+     if(!PlayerGrowth.allocate(key)){toast('屬性點分配未儲存。');return;}
+     const body=box.closest('.qy-body'),scroll=body.scrollTop;
+     body.replaceChildren(abilityTab());body.scrollTop=scroll;
+     body.querySelector('[data-stat-point="'+key+'"]')?.focus({preventScroll:true});
+    };
+    actions.append(add);
+   }
+   box.append(actions);
+  }
+  return box;
+ }
  function abilityTab(){const p=PlayerClassStats.read(),a=p.attributes||{},d=window.NativeCombatRules?.defense?.()||{},x=expInfo(),frag=document.createDocumentFragment();
+  if(p.level>=50)frag.append(statPointControls());
   const st=el('div','qy-box qy-stats');for(const [k,l]of [['str','力量'],['int','智力'],['dex','敏捷'],['wis','精神'],['con','體質'],['cha','魅力']]){const s=el('div','qy-stat '+k);s.append(el('span','',l),el('b','',String(a[k]??'—')));st.append(s)}frag.append(st);
   const box=el('div','qy-box');box.append(row('等級',p.level),row('經驗值',x.exp.toLocaleString()+' ('+x.pct.toFixed(2)+'%)'),row('體力',hp+' / '+maxHp,'hp'),row('魔力',mp+' / '+maxMp,'mp'),
    row('防禦',previewArmorClass()),row('魔防',(d.mr||0)+'%'),row('正義值',window.activeCharacterLawful??0));frag.append(box);
@@ -124,16 +145,19 @@
    ['魔法命中修正',signed(PlayerAbilityRules.magicAccuracy(p))+'%', '攻擊魔法依雙方等級、智力、命中加成與目標魔防判定（5%～95%）'],
    ['精神治癒加成',signed(5*PlayerAbilityRules.intelligencePower(a.wis))+'%', '精神越高，治癒魔法回復的體力越多'],
    ['魔法爆擊率',PlayerAbilityRules.magicCritical(a.int,OwnedInventory.items)+'%','攻擊魔法暴擊造成 1.5 倍傷害'],
-   ['智力省魔',PlayerAbilityRules.manaReduction(a.int)+'%','依當前智力降低 MP 消耗'],['創角智力省魔',PlayerAbilityRules.originalManaReduction(playerAttributes.int)+' MP','百分比省魔後再扣除；正消耗技能最低 1 MP']]);
+   ['智力省魔',PlayerAbilityRules.manaReduction(a.int)+'%','依當前智力降低 MP 消耗'],['創角智力省魔',PlayerAbilityRules.originalManaReduction(window.initialPlayerAttributes?.int??playerAttributes.int)+' MP','百分比省魔後再扣除；正消耗技能最低 1 MP']]);
   section('屬性抗性',[['火屬性抗性',d.elements?.fire||0],['水屬性抗性',d.elements?.water||0],['風屬性抗性',d.elements?.wind||0],['地屬性抗性',d.elements?.earth||0]]);
   section('異常抗性',[['石化抗性',(d.status?.stone||0)+'%'],['束縛／緩速抗性',(d.status?.sustain||0)+'%']]);
   frag.append(el('p','qy-ability-note','近戰、遠攻和攻擊魔法依目標判定命中。精神會提高治癒魔法的回復量。四屬性抗性降低對應魔法傷害，每 100 點抗性減少 32%。'));return frag}
+ const pointStyle=document.createElement('style');
+ pointStyle.textContent='.qy-stat-point-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}.qy-stat-point-actions button{min-height:34px}';
+ document.head.append(pointStyle);
  const SOCIAL={party:['隊伍','目前沒有隊伍。'],clan:['血盟','尚未加入血盟。'],friend:['好友','好友名單是空的。']};
  function characterPane(){const pane=makeClassicWindow('角色');pane.classList.add('qy-win','qy-char','status-window');
   const body=el('div','qy-body'),fill=()=>{body.dataset.ability=String(charTab==='ability');body.replaceChildren(charTab==='equip'?equipView():charTab==='ability'?abilityTab():el('div','qy-empty',SOCIAL[charTab][1]));};
   pane.append(tabs([['equip','裝備'],['ability','能力'],['party','隊伍'],['clan','血盟'],['friend','好友']],charTab,k=>{charTab=k;fill()}),body);fill();return pane}
  renderStatusPane=characterPane;
- setInterval(()=>{const body=document.querySelector('.qy-char .qy-body[data-ability="true"]');if(!body||window.gameFlowState!=='playing')return;const p=PlayerClassStats.read(),d=NativeCombatRules.defense(),key=JSON.stringify([p.attributes,p.sp,p.meleeBonus,p.meleeHitBonus,PlayerAbilityRules.magicAccuracy(p),p.rangedBonus,p.rangedHitBonus,p.hpRecoveryText,p.mpRecoveryText,d,PlayerAbilityRules.magicCritical(p.attributes.int,OwnedInventory.items),hp,mp]);if(body.abilitySignature===key)return;body.abilitySignature=key;const scroll=body.scrollTop;body.replaceChildren(abilityTab());body.scrollTop=scroll;},500);
+ setInterval(()=>{const body=document.querySelector('.qy-char .qy-body[data-ability="true"]');if(!body||window.gameFlowState!=='playing')return;const p=PlayerClassStats.read(),d=NativeCombatRules.defense(),key=JSON.stringify([p.level,PlayerGrowth.available(),p.attributes,p.sp,p.meleeBonus,p.meleeHitBonus,PlayerAbilityRules.magicAccuracy(p),p.rangedBonus,p.rangedHitBonus,p.hpRecoveryText,p.mpRecoveryText,d,PlayerAbilityRules.magicCritical(p.attributes.int,OwnedInventory.items),hp,mp]);if(body.abilitySignature===key)return;body.abilitySignature=key;const scroll=body.scrollTop;body.replaceChildren(abilityTab());body.scrollTop=scroll;},500);
 
  // ---------- 背包（bag）＋裝備欄 ----------
 

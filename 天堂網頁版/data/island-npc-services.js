@@ -4,6 +4,7 @@ const IslandNpcServices = (() => {
   for(const item of INTERFACE_CATALOG.items)if(!item.icon&&iconOverrides[item.gfx])item.icon=iconOverrides[item.gfx];
   const content = document.querySelector('#panelContent');
   const catalog = new Map(INTERFACE_CATALOG.items.map(item=>[item.id,item]));
+  const dollCatalog = new Map(INTERFACE_CATALOG.items.filter(item=>item.kind==='etcitem'&&DOLL_RESALE_PRICES.has(item.id)).map(item=>[item.id,item]));
   const button = (label,action) => {
     const control = uiElement('button','classic-use',label);
     control.type = 'button';
@@ -47,8 +48,10 @@ const IslandNpcServices = (() => {
           list.append(button(label,()=>render(OwnedInventory.transfer(item.uid,secondary,islandNpcServiceData.fee)||'已完成。')));
         }
       } else {
-        for (const [itemId,,buy,pack,sell,enchant] of shopRows) {
-          const item = catalog.get(itemId), price = secondary?sell:buy, count = secondary?1:Math.max(1,pack);
+        const rows=secondary?[...shopRows,...Array.from(DOLL_RESALE_PRICES,([id,price])=>[id,0,-1,1,price,0]).filter(([id])=>!shopRows.some(row=>row[0]===id&&row[4]>=0&&!row[5]))]:shopRows;
+        for (const [itemId,,buy,pack,sell,enchant] of rows) {
+          const item = (secondary?dollCatalog.get(itemId):null)||catalog.get(itemId);
+          const price = secondary?sell:buy, count = secondary?1:Math.max(1,pack);
           if (!item || price < 0 || enchant || secondary&&!OwnedInventory.items.some(e=>!e.slot&&e.item.id===itemId)) continue;
           const key=item.kind+':'+item.id;
           const row=uiElement('div','npc-shop-row'),product=uiElement('div','npc-shop-product'),image=itemIcon(item),info=uiElement('div','npc-shop-info'),name=uiElement('strong','',item.name),unit=uiElement('small','',count>1?'每組 '+count+' 個':'每個');

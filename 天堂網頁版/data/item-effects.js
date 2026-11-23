@@ -68,6 +68,7 @@ const ItemEffects=(()=>{
  }
  function parse(e){
   const h=String(defs()[e.key]?.handler||'').trim(),name=e.item?.name||'';
+  if(h==='Scroll_CurseRemoval')return {kind:'removeCurse'};
   let m=h.match(/^event\.(S?)Exp(\d+)(?:\s+(\d+))?/);
   if(m){const pct=name.match(/(\d+)%/),times=name.match(/(\d+(?:\.\d+)?)倍/);const rate=pct?Number(pct[1])/100:times?Number(times[1]):Number(m[2])/10;
    return {kind:'exp',rate,sec:Number(m[3])||(m[1]?1800:600)};}
@@ -77,6 +78,22 @@ const ItemEffects=(()=>{
  }
  const say=t=>{document.querySelector('#log').textContent=t;return false;};
  function consume(e,effect={}){const next=OwnedInventory.snapshot,row=next.find(i=>i.uid===e.uid);if(!row||row.count<1)return false;row.count--;if(!row.count)next.splice(next.indexOf(row),1);return OwnedInventory.applyChange(next,effect);}
+ function removeCurse(scroll,rule){
+  const blessed=(scroll.bless??rule.bless)===0;
+  const next=OwnedInventory.snapshot;
+  const targets=next.filter(entry=>{
+   if(!/^(weapon|armor):/.test(entry.key)||!blessed&&!entry.slot)return false;
+   return (entry.bless??defs()[entry.key]?.bless)===2;
+  });
+  if(!targets.length)return say(blessed?'背包裡沒有受詛咒的裝備。':'身上沒有穿戴受詛咒的裝備。');
+  const used=next.find(entry=>entry.uid===scroll.uid);
+  if(!used||used.count<1)return false;
+  if(--used.count===0)next.splice(next.indexOf(used),1);
+  for(const target of targets)target.bless=1;
+  if(!OwnedInventory.applyChange(next))return false;
+  toast('已解除 '+targets.length+' 件裝備的詛咒。');
+  return true;
+ }
  function useExp(e,p){
   const buffs={...(window.activePotionBuffs||{})},active=Number(buffs.exp)>Date.now(),cur=active?Number(buffs.expRate)||1:1;
   if(active&&p.rate<cur)return say('已經有更高的經驗加成（'+Math.round(cur*100)+'%），不能使用。');
@@ -105,6 +122,7 @@ const ItemEffects=(()=>{
  function use(uid){const e=OwnedInventory.items.find(i=>i.uid===uid);if(!e||e.slot)return null;const kind=enchantKind(e.key);if(kind)return window.gameFlowState==='playing'&&!CharacterActions.dead&&openEnchant(e,kind);const p=parse(e);if(!p)return null;
   if(window.gameFlowState!=='playing'||CharacterActions.dead)return false;
   const rule=defs()[e.key]||{},lv=window.activeCharacterLevel||1;if(lv<(rule.minLevel||0)||rule.maxLevel&&lv>rule.maxLevel)return say('等級不符合道具限制。');
+  if(p.kind==='removeCurse')return removeCurse(e,rule);
   return p.kind==='exp'?useExp(e,p):useScroll(e,p);}
  const expRate=()=>Number(window.activePotionBuffs?.exp)>Date.now()?Number(window.activePotionBuffs.expRate)||1:1;
  return {use,parse,expRate,isExp:e=>parse(e)?.kind==='exp'};
