@@ -1,5 +1,5 @@
 // Read-only item descriptions, shared by crafting previews and future inventory UI.
-(function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else {root.ItemProperties=api;for(const key of api.stackableMaterialKeys){const rule=root.ITEM_USE_RULES?.definitions[key];if(rule)rule.stackable=true;}}})(typeof window!=='undefined'?window:globalThis,()=>{
+(function(root,factory){const api=factory(root);if(typeof module==='object'&&module.exports)module.exports=api;else {root.ItemProperties=api;for(const key of api.stackableMaterialKeys){const rule=root.ITEM_USE_RULES?.definitions[key];if(rule)rule.stackable=true;}}})(typeof window!=='undefined'?window:globalThis,(root)=>{
  const TYPES={helm:'頭盔',armor:'盔甲',cloak:'斗篷',glove:'手套',boots:'靴子',shield:'盾牌',ring:'戒指',amulet:'項鍊',earring:'耳環',belt:'腰帶',talisman:'符石',runeword:'符石',sword:'單手劍',dagger:'匕首',tohandsword:'雙手劍',blunt:'鈍器',bow:'弓',staff:'法杖',spear:'矛',singlespear:'單手矛',edoryu:'雙刀',claw:'鋼爪',kiringku:'奇古獸',chainsword:'鎖鏈劍',tohandblunt:'雙手鈍器',tshirt:'內衣',arrow:'箭矢',potion:'藥水',scroll:'卷軸',gem:'寶石',material:'材料',questitem:'任務／製作道具',spellbook:'技能書'};
  const ATTR={str:'力量',dex:'敏捷',con:'體質',int:'智力',wis:'精神',cha:'魅力',hp:'HP',mp:'MP'};
  const RULES={m_def:'魔法防禦 MR',add_sp:'魔攻 SP',add_hpr:'體力恢復',add_mpr:'魔力恢復',damage_reduction:'傷害減免',magic_critical:'魔法暴擊',exp_point:'經驗加成'};
@@ -23,7 +23,7 @@
   if(Number(native.critical))add('魔法暴擊',sign(Number(native.critical))+'%');
   if(['weapon','armor'].includes(item.kind)&&Number.isFinite(Number(r.safenchant)))add('強化安定值',Number(r.safenchant)<0?'無法強化':r.safenchant);
   if(item.allowed?.length&&['weapon','armor'].includes(item.kind))add('可用職業',item.allowed.join('／'));
-  if(Number.isFinite(item.weight))add('重量',weight(item));
+  if(Number.isFinite(item.weight)||isWeightlessStack(item,options.rule))add('重量',weight(item,options.rule));
   for(const effect of options.effects||[])add('效果',effect);
   if(item.kind==='etcitem'&&!(options.effects?.length)){
    const h=options.rule?.handler||'',definition=options.handler;let m;
@@ -49,8 +49,11 @@
   return {hit:bow?0:Number(hit),damage:bow?0:Number(damage)};
  }
  const weightOverrides=new Map([[87,30],[135,40],[40497,3.1],[40509,1.4]]);
- function weight(item){
-  if(!item)return 0;
+ function isWeightlessStack(item,rule){
+  return item?.kind==='etcitem'&&(rule??root.ITEM_USE_RULES?.definitions['etcitem:'+item.id])?.stackable===true;
+ }
+ function weight(item,rule){
+  if(!item||isWeightlessStack(item,rule))return 0;
   const value=Math.max(0,Number(item.weight)||0);
   if(weightOverrides.has(item.id))return weightOverrides.get(item.id);
   if(item.kind==='armor'&&item.type==='cloak'&&item.id>=301170&&item.id<=301209&&value===10)return 10;
