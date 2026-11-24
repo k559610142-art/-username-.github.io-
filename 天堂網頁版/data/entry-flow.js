@@ -82,3 +82,7 @@ const entryLogout=document.createElement('button');entryLogout.type='button';ent
 window.GameEntry={login:loginLocally,selectSlot:selectCharacterSlot,startCreate:startCharacterCreation,create:createLocalCharacter,enter:enterSelectedCharacter,logout:logoutLocally,backToSelect:returnToSelection,saveActive:saveActiveCharacter,get state(){return window.gameFlowState},get characters(){return JSON.parse(JSON.stringify(entryCharacters))},get selectedSlot(){return entrySelectedSlot}};
 restoreRememberedLoginAccount();
 addEventListener('pagehide',saveActiveCharacter);updateEntrySelection();setEntryScreen('login');document.querySelector('#login-submit').disabled=false;
+
+const entryUpdatesButton = document.querySelector('#entry-updates');
+const entryUpdatesDialog = document.querySelector('#entry-updates-dialog');
+entryUpdatesButton.addEventListener('click', () => entryUpdatesDialog.showModal());

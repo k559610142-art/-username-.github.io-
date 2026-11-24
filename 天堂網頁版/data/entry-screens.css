@@ -93,3 +93,36 @@
 .entry-delete-dialog>div>div{display:flex;gap:10px}
 .entry-delete-dialog button{flex:1;min-height:46px;border:1px solid #9d8a5c;border-radius:4px;background:linear-gradient(#4a3d26,#2a2216);color:#f3e6c4;font:600 16px system-ui,sans-serif;touch-action:manipulation}
 .entry-delete-dialog button.entry-danger{background:linear-gradient(#8a2b20,#4a140e);border-color:#e0705f;color:#ffe2d8}
+
+#entry-updates {
+  border-color: #ba9a55;
+  background: linear-gradient(#493b22, #252516);
+  color: #ffe4a3;
+}
+#entry-updates:hover { border-color: #ffe4a3; }
+#entry-updates-dialog {
+  box-sizing: border-box;
+  width: min(480px, calc(100% - 32px));
+  max-height: calc(100% - 32px);
+  overflow: auto;
+  padding: 20px;
+  border: 1px solid #ba9a55;
+  border-radius: 8px;
+  background: linear-gradient(#27251c, #151911);
+  color: #efe1c3;
+  box-shadow: 0 12px 48px #000a;
+}
+#entry-updates-dialog::backdrop { background: #0009; }
+#entry-updates-dialog form {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #75613e;
+}
+#entry-updates-dialog h2, #entry-updates-dialog h3 { margin: 0; color: #ffe4a3; }
+#entry-updates-dialog button { min-height: 44px; }
+#entry-updates-dialog ul { margin: 8px 0 0; padding-inline-start: 22px; line-height: 1.65; }
+#entry-updates-dialog li + li { margin-top: 6px; }
