@@ -84,6 +84,13 @@ const NativePotions=(()=>{
     return true;
   }
   function clearOnDeath(){const b=window.activePotionBuffs||{};window.activePotionBuffs=Number(b.exp)>Date.now()?{exp:b.exp,expRate:b.expRate,expIcon:b.expIcon}:{};timers.clear();window.IslandNpcAi?.cure?.();sync();} // 經驗藥水倒下不消失
+  function cancelHaste(){
+    if(!active('haste'))return false;
+    delete window.activePotionBuffs.haste;
+    window.ClassBuffs?.clearHaste?.();
+    sync();
+    return true;
+  }
   function sync(){
     window.playerMovementModifiers=window.playerMovementModifiers||{};
     for(const key of ['haste','brave','elfBrave','braveX'])window.playerMovementModifiers[key]=active(key);
@@ -136,7 +143,7 @@ const NativePotions=(()=>{
     if(movementTime()<(timers.get(cooldown)||0))return false;
     const next=OwnedInventory.snapshot,buffs={...(window.activePotionBuffs||{})};
     const effect={hp,mp,potionBuffs:buffs};
-    let gfx=0;
+    let gfx=0,cancelSlow=false;
     if(handler.startsWith('hp.UserAddHp')||handler==='mp.UserAddMp'){
       const min=Number(p[0]),max=Number(p[1]);
       if(!Number.isFinite(min)||!Number.isFinite(max)||min<1||max<min)return false;
@@ -168,10 +175,12 @@ const NativePotions=(()=>{
       const key=handler==='mp.UserMprBlue'?'blue':handler.includes('WisdomPotion')?'wisdom':
         handler.includes('ElfBrave')?'elfBrave':handler.includes('BraveCake')?'braveX':
         handler.includes('Haste')?'haste':handler.includes('Brave')?'brave':null;
-      if(key)buffs[key]=Date.now()+duration*1000;
+      cancelSlow=key==='haste'&&!!window.IslandNpcAi?.slowed;
+      if(key&&!cancelSlow)buffs[key]=Date.now()+duration*1000;
     }
     if(!OwnedInventory.applyChange(next,effect))return false;
     timers.set(cooldown,movementTime()+delayMs);
+    if(cancelSlow)window.IslandNpcAi?.cureSlow();
     if(handler==='Disintoxicat_Potion'){
       window.IslandNpcAi?.curePoison?.();
       if(window.playerItemState){delete playerItemState.poison;delete playerItemState.poisoned;}
@@ -201,6 +210,6 @@ const NativePotions=(()=>{
     return factor;
   }
   setInterval(sync,500);
-  return {clearOnDeath,use,isHealing,sync,layout:positionBuffs,durationState,recoveryBonus,actionMultiplier,get spBonus(){return active('wisdom')?2:0;}};
+  return {clearOnDeath,cancelHaste,use,isHealing,sync,layout:positionBuffs,durationState,recoveryBonus,actionMultiplier,get spBonus(){return active('wisdom')?2:0;}};
 })();
 window.NativePotions=NativePotions;

@@ -145,7 +145,12 @@ const ClassBuffs=(()=>{
   if(id===192&&PlayerAbilityRules.statusHits({...sk(id),id},mob))stun(mob,4000);
   if(id===208&&PlayerAbilityRules.statusHits({...sk(id),id},mob))stun(mob,sk(208).duration*1000);
  }
- function speed(kind,until){window.activePotionBuffs=window.activePotionBuffs||{};if(kind==='brave')delete window.activePotionBuffs.elfBrave;if(kind==='elfBrave')delete window.activePotionBuffs.brave;window.activePotionBuffs[kind]=Math.max(Number(window.activePotionBuffs[kind])||0,until);window.NativePotions?.sync();}
+ function clearHaste(){
+  for(const id of buffs.keys())if(SELF[id]?.speed==='haste')buffs.delete(id);
+ }
+ function speed(kind,until){
+  if(kind==='haste'&&window.IslandNpcAi?.cureSlow?.())return false;
+  window.activePotionBuffs=window.activePotionBuffs||{};if(kind==='brave')delete window.activePotionBuffs.elfBrave;if(kind==='elfBrave')delete window.activePotionBuffs.brave;window.activePotionBuffs[kind]=Math.max(Number(window.activePotionBuffs[kind])||0,until);window.NativePotions?.sync();return true;}
  function vitals(){DBGameRules.syncVitals();window.stats?.();}
 
  // ---- casting ----
@@ -230,8 +235,7 @@ const ClassBuffs=(()=>{
    const e=SELF[id];
    if([185,190,195].includes(id))for(const other of [185,190,195])buffs.delete(other);
    if([150,155].includes(id))for(const other of [150,155])buffs.delete(other);
-   buffs.set(id,t+dur);
-   if(e.speed)speed(e.speed,Date.now()+dur);
+   if(!e.speed||speed(e.speed,Date.now()+dur))buffs.set(id,t+dur);
    if(e.barrier&&window.playerItemState&&!playerItemState.absoluteBarrier){playerItemState.absoluteBarrier=true;barrierSet=true;}
    if(e.gigantic||e.spirit)vitals();
   }
@@ -290,8 +294,8 @@ const ClassBuffs=(()=>{
   if(CharacterActions.dead||window.gameFlowState!=='playing'||characterMovementBlocked()||movementAnimating())return false;
   if(!CharacterActions.play('skill'))return false;
   const t=now(),dur=(skill.duration||0)*1000,e=SELF[id];invisible=false;
-  IslandMonsters.playEffect(skill.gfx,worldX,worldY,t);buffs.set(id,t+dur);
-  if(e.speed)speed(e.speed,Date.now()+dur);
+  IslandMonsters.playEffect(skill.gfx,worldX,worldY,t);
+  if(!e.speed||speed(e.speed,Date.now()+dur))buffs.set(id,t+dur);
   if(e.barrier&&window.playerItemState&&!playerItemState.absoluteBarrier){playerItemState.absoluteBarrier=true;barrierSet=true;}
   if(e.gigantic||e.spirit)vitals();
   return true;
@@ -331,5 +335,5 @@ const ClassBuffs=(()=>{
   window.NativePotions?.layout?.();
  }
  setInterval(tick,250);
- return {supportTarget,allyOut,allyIn,allyBuffs:mob=>{const map=mob&&allyBuffs.get(mob);return map?[...map].filter(([,u])=>u>now()).map(([id])=>id):[];},handles,implemented:id=>handles(id),cast,grant,afterCast,invisible:()=>invisible,reveal:()=>{invisible=false;},hpr,maxWeight,statusResistances,targetNpc,consumeErase,vision,canUsePotions,focusTarget,clearTarget:mob=>{debuffs.delete(mob);if(focused===mob)focused=null;},resistances,rangedHitBonus,meleeHitBonus,damageBonus,reduction,ac,dodge,mpr,mr,sp,stats,maxHp:maxHpBonus,maxMp:maxMpBonus,onHit,onHurt,blocksNegative,silenced,rooted,slowed,mark,active:id=>on(id),selfBuff:id=>!!SELF[id]&&!PASSIVE[id]&&!UTIL[id]&&(sk(id)?.duration||0)>0};
+ return {supportTarget,allyOut,allyIn,allyBuffs:mob=>{const map=mob&&allyBuffs.get(mob);return map?[...map].filter(([,u])=>u>now()).map(([id])=>id):[];},handles,implemented:id=>handles(id),cast,grant,afterCast,invisible:()=>invisible,reveal:()=>{invisible=false;},hpr,maxWeight,statusResistances,targetNpc,consumeErase,vision,canUsePotions,focusTarget,clearTarget:mob=>{debuffs.delete(mob);if(focused===mob)focused=null;},resistances,rangedHitBonus,meleeHitBonus,damageBonus,reduction,ac,dodge,mpr,mr,sp,stats,maxHp:maxHpBonus,maxMp:maxMpBonus,onHit,onHurt,blocksNegative,clearHaste,silenced,rooted,slowed,mark,active:id=>on(id),selfBuff:id=>!!SELF[id]&&!PASSIVE[id]&&!UTIL[id]&&(sk(id)?.duration||0)>0};
 })();window.ClassBuffs=ClassBuffs;

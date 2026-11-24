@@ -10,3 +10,32 @@ test('原始石化抗性裝備確實讀入，背包中未穿戴不計算',()=>{c
 test('解毒不解除詛咒；聖光解除倒數與完整石化，舊倒數不會再次觸發',()=>{const f=fixture();f.ai.applyNegativeStatus(f.mob,f.skill);f.clock=2000;f.ai.curePoison();assert(f.ai.pendingCurse);assert(f.ai.cureStone());assert(!f.ai.pendingCurse);f.clock=6000;assert(!f.ai.cursed);f.clock=12000;assert(f.ai.applyNegativeStatus(f.mob,f.skill));f.clock=17000;assert(f.ai.cursed);f.ai.curePoison();assert(f.ai.cursed);assert(f.ai.cureStone());assert(!f.ai.cursed);});
 
 test('高等怪物的基礎機率先封頂，提升 MR 仍會確實降低詛咒命中率',()=>{const f=fixture();f.mob.spawn.npc.level=100;f.roll=.99;f.ai.applyNegativeStatus(f.mob,f.skill);assert.equal(f.ai.lastControlResult.chance,80);f.mr=100;f.ai.applyNegativeStatus(f.mob,f.skill);assert.equal(f.ai.lastControlResult.chance,55);});
+
+test('緩速與一段加速雙向抵銷，綠水解除後才能再次加速',()=>{
+ const f=fixture(),c=f.c,slow={id:29,spell:{duration:20}};
+ const element=()=>({style:{},dataset:{},append(){},replaceChildren(){},setAttribute(){},classList:{toggle(){}}});
+ c.document={createElement:element,head:element(),querySelector:selector=>selector==='.hud'?element():null};
+ c.ResizeObserver=class{observe(){}};
+ c.matchMedia=()=>({matches:false});
+ c.ITEM_USE_RULES={definitions:{'etcitem:40013':{handler:'brave.StatusHaste 300 191 255',delayId:2,delayMs:1000}}};
+ c.job='騎士';c.hp=100;c.mp=20;
+ let bag=[{uid:'green',key:'etcitem:40013',count:3}],canSave=true;
+ c.OwnedInventory={get items(){return bag},get snapshot(){return structuredClone(bag)},applyChange(next,e){if(!canSave)return false;bag=next;c.activePotionBuffs=e.potionBuffs;return true;}};
+ vm.runInContext(read('native-potions.js'),c);
+ c.activePotionBuffs={haste:Date.now()+60000,brave:Date.now()+60000};
+ c.buffs=new Map([[43,90000],[52,90000]]);c.SELF={43:{speed:'haste'},52:{speed:'brave'}};
+ const source=read('class-buffs.js');
+ vm.runInContext(source.slice(source.indexOf(' function clearHaste'),source.indexOf(' function vitals')),c);
+ c.ClassBuffs.clearHaste=c.clearHaste;
+ assert(f.ai.applyNegativeStatus(f.mob,slow));
+ assert.equal(f.ai.slowed,false);
+ assert.equal(c.playerMovementModifiers.haste,false);
+ assert.equal(c.buffs.has(43),false);
+ assert(c.buffs.has(52));
+ assert(f.ai.applyNegativeStatus(f.mob,slow));
+ canSave=false;assert(!c.NativePotions.use('green'));assert(f.ai.slowed);
+ canSave=true;assert(c.NativePotions.use('green'));assert(!f.ai.slowed);assert.equal(c.playerMovementModifiers.haste,false);assert.equal(bag[0].count,2);
+ f.clock=2100;assert(c.NativePotions.use('green'));assert(c.playerMovementModifiers.haste);
+ f.clock=4100;assert(f.ai.applyNegativeStatus(f.mob,slow));assert(!f.ai.slowed);assert(f.ai.applyNegativeStatus(f.mob,slow));
+ assert.equal(c.speed('haste',Date.now()+60000),false);assert(!f.ai.slowed);assert(!c.playerMovementModifiers.haste);
+});

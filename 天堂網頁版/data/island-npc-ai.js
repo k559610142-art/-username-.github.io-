@@ -99,6 +99,10 @@ const IslandNpcAi = (() => {
     const d=window.NativeCombatRules?.defense?.()||{},mr=Math.max(0,Number(d.mr)||0),res=Math.max(0,Number(d.status?.[stone?'stone':'sustain'])||0);
     const level=Number(window.activeCharacterLevel)||1,enemy=Number(mob?.spawn?.npc?.level)||1,chance=res>=100?0:Math.max(5,Math.min(80,Math.max(10,60+(enemy-level)*2))-mr*.25-res);
     if(Math.random()*100>=chance){lastControlResult={id:skill.id,applied:false,reason:'resisted',chance};if(now>=resistanceNoticeAt){window.toast?.('抵抗'+name);resistanceNoticeAt=now+2500;}return false;}
+    if(!stone&&window.NativePotions?.cancelHaste?.()){
+      lastControlResult={id:skill.id,applied:true,reason:'haste-cancelled',chance,durationMs:0,delayMs:0};
+      return true;
+    }
     const duration=stone?4000:Math.max(1000,(Number(skill.spell?.duration)||5)*1000);
     if(stone){stonePendingUntil=now+5000;pendingStoneDuration=duration;}else{slowedUntil=now+duration;slowGuardUntil=slowedUntil+3000;}
     lastControlResult={id:skill.id,applied:true,chance,durationMs:duration,delayMs:stone?5000:0};window.NativePotions?.sync();window.PlayerAppearance?.sync();return true;
@@ -106,6 +110,13 @@ const IslandNpcAi = (() => {
   function advanceStone(now=movementTime()){
     if(!stonePendingUntil||now<stonePendingUntil||window.activeCharacterId!==owner||CharacterActions.dead)return;
     cursedUntil=stonePendingUntil+pendingStoneDuration;stoneGuardUntil=cursedUntil+8000;stonePendingUntil=pendingStoneDuration=0;
+  }
+  function cureSlow(){
+    const now=movementTime();
+    if(window.activeCharacterId!==owner||now>=slowedUntil)return false;
+    slowedUntil=0;slowGuardUntil=now+3000;
+    window.NativePotions?.sync();window.PlayerAppearance?.sync();
+    return true;
   }
   function cureStone(){
     const now=movementTime();advanceStone(now);if(window.activeCharacterId!==owner||!stonePendingUntil&&now>=cursedUntil)return false;
@@ -220,9 +231,9 @@ const IslandNpcAi = (() => {
     revive.hidden = true;
   };
   game.append(revive);
-  return {reset, playerActive, provoke, provokeBot, update, canFight,infectPoison,curePoison,cureStone,applyNegativeStatus,get lastControlResult(){return lastControlResult;},
+  return {reset, playerActive, provoke, provokeBot, update, canFight,infectPoison,curePoison,cureStone,cureSlow,applyNegativeStatus,get lastControlResult(){return lastControlResult;},
     updateRevive(){revive.hidden = window.gameFlowState !== 'playing' || !CharacterActions.dead;},
-    cure(){cureStone();const now=movementTime();if(now<slowedUntil)slowGuardUntil=now+3000;slowedUntil=0;curePoison();},
+    cure(){cureStone();cureSlow();curePoison();},
     get negativeEffects(){
       if(window.gameFlowState!=='playing'||CharacterActions.dead||window.activeCharacterId!==owner)return [];
       const now=movementTime(),effects=[];advanceStone(now);
