@@ -52,3 +52,21 @@ test('倉庫只合併同狀態堆疊，且存檔失敗不扣取件費',()=>{
   assert.equal(bag.items.find(item=>item.uid==='coins').count,900);
   assert.equal(bag.storedItems[0].count,3);
 });
+
+test('可部分存入堆疊，天幣獨立存取，批次失敗不會部分入庫',()=>{
+  const regular={uid:'regular',key:'etcitem:2',count:12};
+  const {bag}=fixture([money,regular]);
+  assert.equal(bag.transfer('regular',false,0,5),'');
+  assert.equal(bag.items.find(item=>item.uid==='regular').count,7);
+  assert.equal(bag.storedItems[0].count,5);
+  assert.notEqual(bag.storedItems[0].uid,'regular');
+  assert.equal(bag.transferMoney(700,false),'');
+  assert.equal(bag.transferMoney(250,true),'');
+  assert.equal(bag.items.find(item=>item.key==='etcitem:40308').count,550);
+  assert.equal(bag.storedItems.find(item=>item.key==='etcitem:40308').count,450);
+  assert.match(bag.storeBatch(['regular','missing']),/找不到/);
+  assert.equal(bag.items.find(item=>item.uid==='regular').count,7);
+  assert.equal(bag.storeBatch(['regular']),'');
+  assert.equal(bag.storedItems.find(item=>item.key==='etcitem:2').count,12);
+  assert.equal(bag.sortWarehouse(),'');
+});

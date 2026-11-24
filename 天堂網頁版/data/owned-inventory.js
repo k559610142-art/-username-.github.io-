@@ -132,24 +132,53 @@ window.OwnedInventory=(()=>{
  function validateWarehouse(rows){
   return validate(rows)|| (rows.some(e=>e.slot)?'倉庫含有穿戴中的物品':null);
  }
- function transfer(uid,withdraw,fee){
+
+ function moveWarehouseRows(requests,withdraw,fee){
   const next=clone(entries),storage=clone(warehouse);
   const from=withdraw?storage:next,to=withdraw?next:storage;
-  const item=from.find(e=>e.uid===uid&&!e.slot);
-  if(!item)return '找不到物品，或物品正在穿戴。';
+  if(!requests.length)return '沒有可移動的物品。';
   if(withdraw&&!pay(next,fee))return '需要 '+fee+' 天幣。';
-  const stackKey=rules.definitions[item.key]?.stackable?storedStackKey(item):null;
-  const stack=stackKey&&to.find(entry=>!entry.slot&&entry.key===item.key&&storedStackKey(entry)===stackKey);
-  if(stack){
-   if(stack.count+item.count>2147483647)return '欄位不足或堆疊已滿。';
-   stack.count+=item.count;
-  }else{
-   if(to.length+1>=rules.maxSizeExclusive)return '欄位不足或堆疊已滿。';
-   const movedUid=to.some(entry=>entry.uid===uid)?nextItemUid([...next,...storage]):uid;
-   to.push({...item,uid:movedUid,slot:null});
+  for(const {uid,quantity} of requests){
+   const item=from.find(entry=>entry.uid===uid);
+   if(!item||item.slot||item.locked)return '找不到物品，或物品正在穿戴／鎖定。';
+   const count=quantity??item.count;
+   if(!Number.isSafeInteger(count)||count<1||count>item.count)return '數量超過持有量，或格式不正確。';
+   const stackKey=rules.definitions[item.key]?.stackable?storedStackKey(item):null;
+   const stack=stackKey&&to.find(entry=>!entry.slot&&entry.key===item.key&&storedStackKey(entry)===stackKey);
+   if(stack){
+    if(stack.count+count>2147483647)return '欄位不足或堆疊已滿。';
+    stack.count+=count;
+   }else{
+    if(to.length+1>=rules.maxSizeExclusive)return '欄位不足或堆疊已滿。';
+    const movedUid=count<item.count||to.some(entry=>entry.uid===uid)?nextItemUid([...next,...storage]):uid;
+    to.push({...item,count,uid:movedUid,slot:null});
+   }
+   deduct(from,uid,count);
   }
-  deduct(from,uid,item.count);
   return transact(next,{warehouse:storage})?'':'存檔失敗，物品未移動。';
+ }
+ function transfer(uid,withdraw,fee,quantity){
+  return moveWarehouseRows([{uid,quantity}],withdraw,fee);
+ }
+ function storeBatch(ids){
+  if(new Set(ids).size!==ids.length||ids.some(id=>entries.find(e=>e.uid===id)?.key===money))return '存入清單有誤。';
+  return moveWarehouseRows(ids.map(uid=>({uid})),false,0);
+ }
+ function transferMoney(quantity,withdraw){
+  if(!Number.isSafeInteger(quantity)||quantity<1)return '請輸入要移動的天幣數量。';
+  const source=withdraw?warehouse:entries,requests=[];
+  let left=quantity;
+  for(const row of source){
+   if(row.key!==money||row.slot||row.locked)continue;
+   const amount=Math.min(left,row.count);
+   requests.push({uid:row.uid,quantity:amount});
+   left-=amount;
+   if(!left)break;
+  }
+  return left?'天幣不足。':moveWarehouseRows(requests,withdraw,0);
+ }
+ function sortWarehouse(){
+  return transact(clone(entries),{warehouse:sortedItems(warehouse)})?'':'存檔失敗，倉庫未重新排列。';
  }
  function buyBatch(orders){
   if(!Array.isArray(orders)||!orders.length)return '請先勾選要購買的道具。';
@@ -275,12 +304,12 @@ window.OwnedInventory=(()=>{
   }
   return merged;
  }
- function sortInventory(){
+ function sortedItems(rows){
   const rank={weapon:0,armor:1,etcitem:2},collator=new Intl.Collator('zh-Hant',{numeric:true});
-  const sorted=mergeStoredStacks(clone(entries)).sort((a,b)=>(rank[definition(a).kind]??3)-(rank[definition(b).kind]??3)||collator.compare(presented(a).name,presented(b).name)||collator.compare(a.uid,b.uid));
-  return transact(sorted);
+  return mergeStoredStacks(clone(rows)).sort((a,b)=>(rank[definition(a).kind]??3)-(rank[definition(b).kind]??3)||collator.compare(presented(a).name,presented(b).name)||collator.compare(a.uid,b.uid));
  }
+ function sortInventory(){return transact(sortedItems(entries));}
  function usePotion(){const e=entries.find(i=>i.key==='etcitem:40010')||entries.find(i=>window.NativePotions?.isHealing(i.key)||rules.handlers[config(i).handler]?.kind==='hpGaussian');if(!e){toast('背包中沒有回復藥水。');return false}return use(e.uid)}
  document.querySelector('#heal').onclick=usePotion;potions=0;
- return {collect,hasCollection,get collection(){return collection.slice()},canDiscard,discard,sortInventory,activate,validate,validateWarehouse,get healingItems(){return entries.filter(e=>window.NativePotions?.isHealing(e.key)||rules.handlers[config(e).handler]?.kind==='hpGaussian').map(e=>({...e,item:definition(e)}))},applyChange:transact,reward,learnSkill,setElfElement,bringStone,grantSkills,resetElfElement,elfResetCost,hasMemoryCandle:()=>entries.some(e=>CANDLES.includes(e.key)&&!e.slot),castCost,get skills(){return clone(skillState)},prepareTransform,transfer,trade,buyBatch,receive,get warehouse(){return clone(warehouse)},get storedItems(){return warehouse.map(e=>({...e,item:presented(e)}))},use,equip,unequip,usePotion,consumeArrow,slotFor,deactivate(){owner='';entries=[];warehouse=[];collection=[];skillState={ids:[],element:''};cooldowns.clear();potions=0},get owner(){return owner},get snapshot(){return clone(entries)},get equippedWeaponType(){const weapon=entries.find(e=>e.slot==='weapon');return weapon?definition(weapon).type:null},get items(){return entries.map(e=>({...e,item:presented(e)}))}};
+ return {collect,hasCollection,get collection(){return collection.slice()},canDiscard,discard,sortInventory,activate,validate,validateWarehouse,get healingItems(){return entries.filter(e=>window.NativePotions?.isHealing(e.key)||rules.handlers[config(e).handler]?.kind==='hpGaussian').map(e=>({...e,item:definition(e)}))},applyChange:transact,reward,learnSkill,setElfElement,bringStone,grantSkills,resetElfElement,elfResetCost,hasMemoryCandle:()=>entries.some(e=>CANDLES.includes(e.key)&&!e.slot),castCost,get skills(){return clone(skillState)},prepareTransform,transfer,transferMoney,storeBatch,sortWarehouse,get warehouseCapacity(){return rules.maxSizeExclusive-1},trade,buyBatch,receive,get warehouse(){return clone(warehouse)},get storedItems(){return warehouse.map(e=>({...e,item:presented(e)}))},use,equip,unequip,usePotion,consumeArrow,slotFor,deactivate(){owner='';entries=[];warehouse=[];collection=[];skillState={ids:[],element:''};cooldowns.clear();potions=0},get owner(){return owner},get snapshot(){return clone(entries)},get equippedWeaponType(){const weapon=entries.find(e=>e.slot==='weapon');return weapon?definition(weapon).type:null},get items(){return entries.map(e=>({...e,item:presented(e)}))}};
 })();
