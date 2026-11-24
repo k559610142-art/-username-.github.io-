@@ -98,8 +98,9 @@ const ClassBuffs=(()=>{
  function sp(){return sum('sp');}
  function stats(){const out={};for(const e of active())for(const [k,v]of Object.entries(e.stats||{}))out[k]=(out[k]||0)+v;return out;}
  function base(){return window.activeVitalGrowth||{maxHp:0,maxMp:0};}
- function maxHpBonus(){return (on(226)?Math.trunc(base().maxHp*(level()/2)/100):0)+(on(79)?Math.trunc(base().maxHp/5):0);}
- function maxMpBonus(){return on(79)?Math.trunc(base().maxMp/5):0;}
+ const spiritActive=()=>on(79)||window.DollEffects?.hasBuff('靈魂昇華');
+ function maxHpBonus(){return (on(226)?Math.trunc(base().maxHp*(level()/2)/100):0)+(spiritActive()?Math.trunc(base().maxHp/5):0);}
+ function maxMpBonus(){return spiritActive()?Math.trunc(base().maxMp/5):0;}
  // Extra damage on a melee／bow hit.
  function onHit(mob,ranged){
   let add=0;invisible=false;mob.allyTarget=null;
@@ -113,14 +114,21 @@ const ClassBuffs=(()=>{
   return add;
  }
  // Damage a monster is about to deal to the player; returns what is left.
- function blocksNegative(skill){if(on(78))return true;if(skill&&on(31)){buffs.delete(31);IslandMonsters.playEffect(sk(31).gfx,worldX,worldY,now());return true;}return false;}
+ function blockMagic(skill,t){
+  if(!skill)return false;
+  const player=on(31),doll=window.TdjSystems?.dolls.consumeMagicBarrier();
+  if(!player&&!doll)return false;
+  if(player)buffs.delete(31);
+  IslandMonsters.playEffect(sk(31).gfx,worldX,worldY,t);return true;
+ }
+ function blocksNegative(skill){return on(78)||blockMagic(skill,now());}
  function onHurt(mob,amount,skill){
   if(amount<=0)return amount;
   const d=debuffs.get(mob)||{},t=now();
   for(const [id,until]of Object.entries(d))if(until>t&&TARGET[id]?.mobDmg)amount=Math.max(0,amount-TARGET[id].mobDmg);
   if(amount<=0)return 0;
   if(on(78))return 0;
-  if(skill&&on(31)){buffs.delete(31);IslandMonsters.playEffect(sk(31).gfx,worldX,worldY,t);return 0;}
+  if(blockMagic(skill,t))return 0;
   if(skill&&on(134)&&Math.random()<.1){buffs.delete(134);IslandMonsters.damage(mob,amount);IslandMonsters.playEffect(sk(134).gfx,mob.x,mob.y,t);return 0;}
   const melee=!skill&&Math.max(Math.abs(mob.x-worldX),Math.abs(mob.y-worldY))<=1;
   if(melee&&on(89)&&Math.random()<.1)breakWeapon(mob);
@@ -309,6 +317,17 @@ const ClassBuffs=(()=>{
  let vitalsKey='';
  function reset(){document.querySelector('.game')?.classList.remove('spell-daylight');const hadVitals=on(226)||on(79);buffs.clear();cooldowns.clear();cubes=[];dots=[];invisible=false;focused=null;debuffs=new WeakMap();
   if(barrierSet&&window.playerItemState){playerItemState.absoluteBarrier=false;}barrierSet=false;if(hadVitals)vitals();}
+ function detailDescription(id){
+  const e=SELF[id]||{},values=[];
+  const labels={ac:'防禦 AC',dmg:'近距離傷害',bow:'遠距離傷害',hit:'近距離命中',bowHit:'遠距離命中',dodge:'迴避',mpr:'魔力回復',mr:'魔法防禦',sp:'魔攻'};
+  for(const [key,label] of Object.entries(labels))if(e[key])values.push(label+(e[key]>0?' +':' ')+e[key]);
+  for(const [key,n] of Object.entries(e.stats||{}))values.push(({str:'力量',dex:'敏捷',con:'體質',int:'智力',wis:'精神',cha:'魅力'})[key]+' +'+n);
+  if(e.speed)values.push('提升移動與攻擊速度。');
+  if(e.counterMagic)values.push('可抵擋一次魔法攻擊。');
+  if(e.spirit)values.push('最大 HP／MP +20%。');
+  if(e.immune)values.push('降低受到的傷害。');
+  return values.join('、')||'技能效果持續中。';
+ }
  let barKey='';
  function tick(){
   const current=window.gameFlowState==='playing'?window.activeCharacterId:null;
@@ -330,7 +349,7 @@ const ClassBuffs=(()=>{
   for(const h of dots)if(t>=h.next&&t<h.until&&h.mob.hp){h.next+=h.every;IslandMonsters.damage(h.mob,h.dmg);}
   dots=dots.filter(h=>t<h.until&&h.mob.hp);
   const ids=[...buffs.keys()].filter(on);const key=ids.join(',');
-  if(key!==barKey){barKey=key;bar.replaceChildren(...ids.map(id=>{const img=document.createElement('img');img.alt=img.title=sk(id).name;img.src=interfaceCatalog.skills.find(s=>s.id===id)?.icon||'';return img;}));}
+  if(key!==barKey){barKey=key;bar.replaceChildren(...ids.map(id=>{const img=document.createElement('img');img.alt=img.title=sk(id).name;img.dataset.buffDescription=detailDescription(id);img.src=interfaceCatalog.skills.find(s=>s.id===id)?.icon||'';return img;}));}
   bar.hidden=!ids.length;
   window.NativePotions?.layout?.();
  }

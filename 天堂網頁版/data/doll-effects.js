@@ -8,7 +8,7 @@
 //  目前沒有對應系統、只顯示的：負重、人物速度、水底呼吸、屠宰者／破壞盔甲／昏迷等級、西遊記三招、泰坦、恐怖命中。
 window.DollEffects=(()=>{
  const STAT={力量:'str',敏捷:'dex',體質:'con',智力:'int',精神:'wis',魅力:'cha'};
- const BUFF={通暢氣脈術:{dex:5},體魄強健術:{str:5},祝福魔法武器:{melee:2},魔法武器:{melee:2},狂暴術:{melee:5,ac:10},大地防護:{ac:-6},鋼鐵防護:{ac:-10},魔法屏障:{mr:10},生命之泉:{hpRegen:[16,10]},靈魂昇華:{hp:50,mp:50}};
+ const BUFF={通暢氣脈術:{dex:5},體魄強健術:{str:5},祝福魔法武器:{melee:2},魔法武器:{melee:2},狂暴術:{melee:5,ac:10},大地防護:{ac:-6},鋼鐵防護:{ac:-10},魔法屏障:{},生命之泉:{hpRegen:[16,10]},靈魂昇華:{}};
  // 機率法術的傷害（娃娃版，固定範圍）；緩速術／岩牢／毒咒給較小的傷害代替控制效果
  const SPELL={'火焰衝擊':[15,25],'列炎術':[20,35],'爆擊火焰衝擊':[30,50],'地獄火':[40,60],'極道落雷':[30,50],'魔法箭矢':[10,20],'毒咒':[8,14],'緩速術':[5,10],'岩牢':[8,14]};
  const cache=new Map();
@@ -51,5 +51,14 @@ window.DollEffects=(()=>{
    if(r.hp){if(typeof hp!=='undefined'&&hp<maxHp){hp=Math.min(maxHp,hp+r.n);window.stats?.();}}else if(typeof mp!=='undefined'&&mp<maxMp){mp=Math.min(maxMp,mp+r.n);window.stats?.();}});
   if(a.gold){if(!last.has('g'))last.set('g',now);else if(now-last.get('g')>=a.gold.sec*1000){last.set('g',now);if(window.OwnedInventory?.reward(0,[{key:'etcitem:40308',count:a.gold.n}])&&typeof toast==='function')toast('魔法娃娃帶來 '+a.gold.n.toLocaleString()+' 天幣');}}
  },1000);
- return {bonuses,buffs:()=>active()?.buffs||[],ac:()=>active()?.ac||0,mr:()=>active()?.mr||0,status:()=>active()?.status||{},onHit,chanceReduction,parse};
+ function buffDetails(){
+  const labels={dex:'敏捷',str:'力量',melee:'近距離傷害',ac:'防禦 AC',mr:'魔法防禦',hp:'最大 HP',mp:'最大 MP'};
+  return (active()?.buffs||[]).map(name=>{
+   if(name==='靈魂昇華')return name+'　基礎最大 HP／MP +20%，與玩家施放的同名技能不疊加。';
+   if(name==='魔法屏障')return name+'　'+(window.TdjSystems?.dolls.magicBarrierReady?'可抵擋一次魔法攻擊。':'已消耗，下次召喚或續召時恢復。');
+   return name+'　'+Object.entries(BUFF[name]).map(([key,n])=>
+   key==='hpRegen'?'每 '+n[0]+' 秒回復 '+n[1]+' HP':labels[key]+(n>=0?' +':' ')+n).join('、');
+  });
+ }
+ return {hasBuff:name=>active()?.buffs.includes(name)||false,buffDetails,bonuses,buffs:()=>active()?.buffs||[],ac:()=>active()?.ac||0,mr:()=>active()?.mr||0,status:()=>active()?.status||{},onHit,chanceReduction,parse};
 })();

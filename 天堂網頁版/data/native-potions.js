@@ -15,10 +15,45 @@ const NativePotions=(()=>{
   bar.style.cssText='position:static;display:flex;align-items:center;gap:4px;flex-wrap:nowrap;flex:0 0 auto;pointer-events:none';
   statusRow.append(bar);game.append(statusRow);
   const statusStyle=document.createElement('style');statusStyle.textContent='.status-effects-row .class-buff-bar{position:static!important;display:flex;align-items:center;flex-wrap:nowrap!important;max-width:none!important;flex:0 0 auto;gap:4px}.status-effects-row .class-buff-bar img,.status-effects-row .native-potion-buffs>span{flex-shrink:0}.status-effects-row .native-potion-buffs[hidden]{display:none!important}';document.head.append(statusStyle);
+  const details=document.createElement('section');
+  details.className='buff-effect-details';details.hidden=true;
+  details.setAttribute('aria-label','狀態效果');
+  const detailTitle=document.createElement('strong'),detailText=document.createElement('p'),close=document.createElement('button');
+  close.type='button';close.textContent='關閉';
+  close.onclick=()=>{details.hidden=true;};
+  details.append(detailTitle,close,detailText);game.append(details);
+  statusStyle.textContent += `
+    .status-effects-row .native-potion-buffs>span,.status-effects-row .class-buff-bar>img{pointer-events:auto;cursor:pointer}
+    .reference-game .buff-effect-details{position:absolute;z-index:32;box-sizing:border-box;width:min(300px,calc(100% - 16px));max-height:min(260px,45%);overflow:auto;padding:10px;color:#f6e5be;background:#13222e;border:1px solid #a79159;border-radius:6px;box-shadow:0 4px 14px #000a;font:14px/1.5 system-ui,sans-serif;pointer-events:auto}
+    .buff-effect-details[hidden]{display:none!important}
+    .buff-effect-details p{margin:6px 0 0;white-space:pre-line;clear:both}
+    .buff-effect-details button{float:right;min-height:36px;color:inherit;background:#29382d;border:1px solid #8c7748;border-radius:4px}
+  `;
+  function stopStatusGesture(event){event.stopPropagation();}
+  for(const type of ['pointerdown','pointerup','dblclick']){
+    statusRow.addEventListener(type,stopStatusGesture);
+    details.addEventListener(type,stopStatusGesture);
+  }
+  details.addEventListener('click',stopStatusGesture);
+  statusRow.addEventListener('click',event=>{
+    const icon=event.target.closest('.native-potion-buffs > span,.class-buff-bar > img');
+    if(!icon||!icon.title)return;
+    event.stopPropagation();
+    detailTitle.textContent=icon.dataset.buffName||icon.title;
+    detailText.textContent=icon.dataset.buffDescription||'目前生效中。';
+    details.style.left=Math.max(8,Math.min(statusRow.offsetLeft,game.clientWidth-Math.min(300,game.clientWidth-16)-8))+'px';
+    details.style.top=(statusRow.offsetTop+statusRow.offsetHeight+5)+'px';
+    details.hidden=false;
+  });
+  game.addEventListener('pointerdown',event=>{
+    if(!statusRow.contains(event.target)&&!details.contains(event.target))details.hidden=true;
+  },true);
+  const potionDescriptions={haste:'提升移動、攻擊與施法速度。',brave:'提升移動與攻擊速度。',elfBrave:'提升妖精的移動與攻擊速度。',braveX:'提升移動與攻擊速度。',blue:'增加自然魔力回復量，效果依精神而定。',wisdom:'魔攻 +2，魔力回復 +2。',exp:'提升狩獵獲得的經驗值。'};
   function placeMagicBuffs(left,top,max){
     const cb=document.querySelector('.class-buff-bar');if(cb&&cb.parentNode!==statusRow)statusRow.append(cb);
     statusRow.style.left=left+'px';statusRow.style.top=top+'px';statusRow.style.maxWidth=max+'px';
     statusRow.hidden=window.gameFlowState!=='playing';
+    if(statusRow.hidden)details.hidden=true;
   }
   const portraitStatusLayout=window.matchMedia('(orientation: portrait) and (max-width: 650px)');
   statusStyle.textContent+=
@@ -110,6 +145,7 @@ const NativePotions=(()=>{
       if(key==='exp')name=name+' '+Math.round((Number(window.activePotionBuffs.expRate)||1)*100)+'%';
       label.title=name;label.setAttribute('aria-label',name);timer.style.cssText='position:absolute;bottom:0;right:1px;font:10px sans-serif;color:white;text-shadow:0 1px 2px black';
       label.style.cssText='position:relative;width:26px;height:26px;background:#162733d9;border:1px solid #8d986480';
+      label.dataset.buffDescription=potionDescriptions[key]+' 剩餘約 '+Math.ceil((activePotionBuffs[key]-Date.now())/1000)+' 秒。';
       timer.textContent=Math.ceil((activePotionBuffs[key]-Date.now())/1000);label.append(image,timer);
       bar.append(label);
     }
@@ -117,17 +153,23 @@ const NativePotions=(()=>{
     if(!CharacterActions.dead&&dollBuffs.length){
       const label=document.createElement('span'),image=document.createElement('img');
       label.dataset.effect='doll-buffs';
-      label.title='魔法娃娃常駐加成：'+dollBuffs.join('、');
+      label.title='魔法娃娃常駐加成';
+      label.dataset.buffDescription=DollEffects.buffDetails().join('\n');
       label.setAttribute('aria-label',label.title);
       label.style.cssText='position:relative;width:26px;height:26px;background:#162733d9;border:1px solid #8d986480';
-      image.src='assets/interface/skills/26.png';image.alt='';
-      image.style.cssText='width:24px;height:24px;display:block;image-rendering:pixelated';
-      label.append(image);bar.append(label);
+      const portrait=window.TdjSystems?.dolls.activeImage;
+      if(portrait){
+        image.src=portrait;image.alt='';
+        image.style.cssText='width:100%;height:100%;object-fit:contain;display:block';
+        label.append(image);
+      }else label.textContent='娃';
+      bar.append(label);
     }
     if(!CharacterActions.dead&&window.InnServices?.mpRecoveryActive){
       const label=document.createElement('span'),image=document.createElement('img');
       label.dataset.effect='inn-mp-recovery';
-      label.title='旅館魔力回復｜自然回魔加快';
+      label.title='旅館魔力回復';
+      label.dataset.buffDescription='自然魔力回復速度提高。';
       label.setAttribute('aria-label',label.title);
       label.style.cssText='position:relative;width:26px;height:26px;background:#162733d9;border:1px solid #8d986480';
       image.src='assets/interface/items/etcitem-59.png';
@@ -138,6 +180,7 @@ const NativePotions=(()=>{
     for(const effect of window.IslandNpcAi?.negativeEffects||[]){
       const label=document.createElement('span'),image=document.createElement('img'),timer=document.createElement('small'),seconds=Number.isFinite(effect.remainingMs)?Math.ceil(effect.remainingMs/1000):null;
       label.className='negative-buff';label.dataset.effect=effect.id;
+      label.dataset.buffName=effect.name;label.dataset.buffDescription=effect.description+(seconds===null?'':'（剩餘約 '+seconds+' 秒）');
       label.title=effect.name+'：'+effect.description+(seconds===null?'':'（剩餘 '+seconds+' 秒）');label.setAttribute('aria-label',label.title);
       label.style.cssText='position:relative;width:26px;height:26px;background:#361622e8;border:1px solid #f36d79;box-shadow:0 0 4px #b3294266';
       image.src=effect.icon;image.alt=effect.name;image.style.cssText='width:24px;height:24px;display:block;image-rendering:pixelated';

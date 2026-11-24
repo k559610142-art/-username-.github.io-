@@ -35,6 +35,7 @@ window.TdjSystems = (() => {
       if (saved) {
         for (const [k, n] of Object.entries(saved.dolls?.owned || {})) {const canonical=DOLL_ID_ALIASES[k]||+k;if(dollById.has(canonical)&&Number.isSafeInteger(n)&&n>0)state.dolls.owned[canonical]=Math.min(2147483647,(state.dolls.owned[canonical]||0)+n);}
         const activeDoll=DOLL_ID_ALIASES[saved.dolls?.active]||saved.dolls?.active;if(state.dolls.owned[activeDoll])state.dolls.active=String(activeDoll);
+        state.dolls.magicBarrierSpent=saved.dolls?.magicBarrierSpent===true;
         for (const [k, n] of Object.entries(saved.wuhun?.owned || {})) if (wuhunById.has(+k) && Number.isSafeInteger(n) && n > 0) state.wuhun.owned[k] = n;
         if (state.wuhun.owned[saved.wuhun?.active]) state.wuhun.active = saved.wuhun.active;
         if (saved.wuhun?.ringV === 2) { for (let i = 0; i < 6; i++) { const id = Number(saved.wuhun?.ringSlots?.[i]), rw = wuhunById.get(id); if (rw && WUHUN_TIERS.indexOf(rw.tier) === i) state.wuhun.ringSlots[i] = id; } }
@@ -455,16 +456,20 @@ window.TdjSystems = (() => {
     if (!playing()) return false;
     const d = dollById.get(+id); if (!d || !state.dolls.owned[id]) { toast('還沒有這隻魔法娃娃。'); return false; }
     if (d.materials?.length && !payDoll(d)) { toast('召喚需要 ' + matText(d) + '，材料不足（魔法結晶體可向雜貨商購買）。'); return false; }
-    state.dolls.active = String(id); state.dolls.until = Date.now() + (d.time || 1800) * 1000; save(); refreshSoulStats(); render();
+    state.dolls.active = String(id); state.dolls.magicBarrierSpent=false; state.dolls.until = Date.now() + (d.time || 1800) * 1000; save(); refreshSoulStats(); render();
     toast('召喚 ' + d.name.replace(/^.*：/, '') + '（' + (d.effects.slice(0, 3).join('、') || '無能力') + '）'); return true;
   }
   setInterval(() => {
     if (!playing() || !state.dolls.active) return; const d = dollById.get(+state.dolls.active); if (!d) return;
     if (!state.dolls.until) { state.dolls.until = Date.now() + (d.time || 1800) * 1000; save(); return; }
     if (Date.now() < state.dolls.until) return;
-    if (!d.materials?.length || payDoll(d)) { state.dolls.until = Date.now() + (d.time || 1800) * 1000; save(); toast('魔法娃娃召喚時間到，自動消耗 ' + matText(d) + ' 繼續召喚。'); }
+    if (!d.materials?.length || payDoll(d)) { state.dolls.magicBarrierSpent=false; state.dolls.until = Date.now() + (d.time || 1800) * 1000; save(); toast('魔法娃娃召喚時間到，自動消耗 ' + matText(d) + ' 繼續召喚。'); }
     else { state.dolls.active = null; state.dolls.until = 0; save(); refreshSoulStats(); render(); toast('魔法娃娃召喚時間到，' + matText(d) + ' 不足，娃娃已離開。'); }
   }, 1000);
+  function consumeDollBarrier(){
+    if(!playing()||state.dolls.magicBarrierSpent||!window.DollEffects?.hasBuff('魔法屏障'))return false;
+    state.dolls.magicBarrierSpent=true;save();return true;
+  }
   function dismiss() { if (!playing() || !state.dolls.active) return false; state.dolls.active = null; state.dolls.until = 0; save(); refreshSoulStats(); render(); toast('魔法娃娃已解除召喚'); return true; }
 
   // ---- 娃娃進化／分解（2026-11-22 使用者定案）----
@@ -776,7 +781,7 @@ window.TdjSystems = (() => {
     isEnchantLoot, creditEnchantLoot,
     restoreEnchant(id,value){restoredEnchant={owner:id,value};owner='';},
     get enchantSnapshot(){return ensure() ? state.enchant : undefined;},
-    dolls: {draw: drawDoll, summon, dismiss, image: dollImage, owned: id => get().dolls.owned[id] || 0, get active() { return get().dolls.active; },
+    dolls: {draw: drawDoll, summon, dismiss, image: dollImage, owned: id => get().dolls.owned[id] || 0, get active() { return get().dolls.active; }, get activeImage() { return dollImage(dollById.get(+get().dolls.active)); }, consumeMagicBarrier:consumeDollBarrier, get magicBarrierReady(){return !get().dolls.magicBarrierSpent&&!!window.DollEffects?.hasBuff('魔法屏障');},
       evolve: evolveDoll, split: splitDoll, evolveInfo, splitPotions, potionDrop, potions: () => (ensure(), potionCount())},
     enchant: {get: getStone, enchant, current: currentEnchant, image: enchantImage, effectText: id => ENCHANT_FX[+id]?.text || '', soulOf: soulInfo, soulLabel: entry => { const s = soulInfo(entry); return s ? s.level.name + '（攻擊發動 ' + s.level.proc + '%）' : ''; }, stones: id => get().enchant.stones[id] || 0},
     wuhun: {fuseSoul,fusionRates:SOUL_FUSION_RATES,changeRings,ringCost:RING_COST,ringColor:RING_COLOR,rings:()=>(ensure(),{...state.wuhun.rings}),spare:t=>(ensure(),spareOf(+t).reduce((n,x)=>n+x.n,0)),tiers:WUHUN_TIERS,ringMissing:id=>(ensure(),ringMissing(wuhunById.get(+id))),get ringState(){ensure();return JSON.parse(JSON.stringify({slots:state.wuhun.ringSlots}));},get: getWuhun, equip: equipWuhun, unequip: unequipWuhun, image: wuhunImage, baseGfx: wuhunBaseGfx, owned: id => get().wuhun.owned[id] || 0, get active() { return get().wuhun.active; }},

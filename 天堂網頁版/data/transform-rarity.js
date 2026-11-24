@@ -1,5 +1,5 @@
 // Ability-based rarity. Original card effects, restrictions and owned names stay intact.
-(function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else{root.TransformRarity=api;api.apply(transformCardBook);}})(typeof window!=='undefined'?window:globalThis,()=>{
+(function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else{root.TransformRarity=api;api.applyAttackSpeeds(api.apply(transformCardBook));}})(typeof window!=='undefined'?window:globalThis,()=>{
  const FIXED=Object.freeze({克特:6,雷霆死亡騎士:6,闇黑死亡騎士:6,/* 2026-11-17 使用者：從傳說移到神話 */賽尼斯:7,飄揚射手:7,/* 2026-11-17 使用者：黑暗精靈王（疾風精靈王）、獄火死亡騎士（關刀聖使）、飄揚射手、賽尼斯放入超越 */狂暴將軍:2,德雷克:2,/* 2026-11-17 使用者：從傳說移到高級 */反王肯恩:3,布魯迪卡:3,/* 2026-11-17 使用者：從傳說移到稀有 */巴風特:1,死亡騎士:2,黑暗精靈:2,黑暗騎士:2,黑暗法師:2,黑暗巡守:2,炎魔:5,銀光刺客:3,銀光法師:3,銀光騎士:3,銀光巡守:3,關刀聖使:7,疾風精靈王:7,
   // 2026-11-16：使用者截圖要求改成高級卡（神威剛彈）；光刃死騎、死亡戰騎、紫刃死騎後來再改成稀有卡；火焰弓箭手、小惡魔、思克巴女皇、反恐菁英(走)、歐姆裝甲兵、獨眼巨人改成高級；神話・炎魔改成高級；紫警衛(弓)、紫警衛(槍)改成英雄
   光刃死騎:3,死亡戰騎:3,神威剛彈:2,紫刃死騎:3,
@@ -31,6 +31,23 @@
  function grade(score){return 1+LIMITS.filter(limit=>score>=limit).length;}
  function evaluate(card){const power=score(card),fixed=Object.hasOwn(FIXED,card.n);return {score:power,grade:fixed?FIXED[card.n]:grade(power),fixed};}
  function apply(book){for(const card of book){const result=evaluate(card);card.g=result.grade;card.powerScore=result.score;card.fixedRarity=result.fixed;}return book;}
+ const ATTACK_CAPS={2:30,3:38,4:48,5:58,6:68};
+ const ATTACK_SPEED=/^攻擊速度\s*\+\s*(\d+(?:\.\d+)?)\s*%$/;
+ function applyAttackSpeeds(book){
+  for(const card of book){
+   if(card.g!==7&&!Object.hasOwn(ATTACK_CAPS,card.g))continue;
+   const effects=card.fx||[],serverEffects=card.pb?.fx||[];
+   const speeds=[...effects,...serverEffects].map(text=>Number(String(text).trim().match(ATTACK_SPEED)?.[1])||0);
+   const original=Math.max(0,Number(card.attackSpeedPct)||0,...speeds);
+   const speed=card.g===7?80:Math.min(original,ATTACK_CAPS[card.g]??Infinity);
+   const withoutSpeed=text=>!ATTACK_SPEED.test(String(text).trim());
+   card.attackSpeedPct=speed;
+   card.fx=effects.filter(withoutSpeed);
+   if(speed)card.fx.unshift('攻擊速度 +'+speed+'%');
+   if(serverEffects.some(text=>!withoutSpeed(text)))card.pb={...card.pb,fx:serverEffects.filter(withoutSpeed)};
+  }
+  return book;
+ }
  const compare=(a,b)=>a.g-b.g||(a.powerScore??score(a))-(b.powerScore??score(b))||a.n.localeCompare(b.n,'zh-Hant');
- return {score,grade,evaluate,apply,compare,fixed:FIXED,limits:LIMITS};
+ return {score,grade,evaluate,apply,applyAttackSpeeds,compare,fixed:FIXED,limits:LIMITS};
 });

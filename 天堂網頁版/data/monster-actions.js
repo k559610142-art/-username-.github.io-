@@ -66,8 +66,32 @@ const MonsterActions = (() => {
   function load(file) {
     if (!loaded.has(file)) {
       const image = new Image();
-      image.src = asset(file);
       loaded.set(file, image);
+      if (file !== 'dk-original-11618-0.webp') {
+        image.src = asset(file);
+        return image;
+      }
+      // 原始雷光圖集以黑底作加色混合。先轉為透明像素，避免瀏覽器合成時露出黑邊。
+      const source = new Image();
+      source.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = source.naturalWidth;
+        canvas.height = source.naturalHeight;
+        const context = canvas.getContext('2d', {willReadFrequently:true});
+        context.drawImage(source,0,0);
+        const frame = context.getImageData(0,0,canvas.width,canvas.height);
+        const pixels = frame.data;
+        for(let i=0;i<pixels.length;i+=4){
+          const level=Math.max(pixels[i],pixels[i+1],pixels[i+2]);
+          if(level<=28){pixels[i+3]=0;continue;}
+          const alpha=(level-28)/227;
+          pixels[i+3]*=alpha;
+          for(let channel=0;channel<3;channel++)pixels[i+channel]=pixels[i+channel]*255/level;
+        }
+        context.putImageData(frame,0,0);
+        canvas.toBlob(blob=>{if(blob)image.src=URL.createObjectURL(blob);},'image/png');
+      };
+      source.src=asset(file);
     }
     return loaded.get(file);
   }
@@ -88,7 +112,7 @@ const MonsterActions = (() => {
     const image = load(file);
     if (!image.complete || !image.naturalWidth) return false;
     const style = element.style;
-    style.backgroundImage = 'url("' + asset(file) + '")';
+    style.backgroundImage = 'url("' + image.src + '")';
     style.backgroundPosition = (-(sx || 0) * scale) + 'px ' + (-(sy || 0) * scale) + 'px';
     style.backgroundSize = (atlasWidth || image.naturalWidth) * scale + 'px auto';
     style.width = w * scale + 'px';
