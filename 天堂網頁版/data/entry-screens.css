@@ -102,27 +102,35 @@
 #entry-updates:hover { border-color: #ffe4a3; }
 #entry-updates-dialog {
   box-sizing: border-box;
-  width: min(480px, calc(100% - 32px));
-  max-height: calc(100% - 32px);
-  overflow: auto;
-  padding: 20px;
-  border: 1px solid #ba9a55;
-  border-radius: 8px;
-  background: linear-gradient(#27251c, #151911);
+  width: min(560px, calc(100% - 24px));
+  max-height: calc(100% - 24px);
+  padding: clamp(14px, 4vw, 24px);
+  border: 1px solid #685338;
+  border-radius: 14px;
+  background: #211b14;
   color: #efe1c3;
   box-shadow: 0 12px 48px #000a;
 }
-#entry-updates-dialog::backdrop { background: #0009; }
-#entry-updates-dialog form {
+#entry-updates-dialog[open] {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 16px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #75613e;
+  flex-direction: column;
+  gap: 14px;
 }
-#entry-updates-dialog h2, #entry-updates-dialog h3 { margin: 0; color: #ffe4a3; }
-#entry-updates-dialog button { min-height: 44px; }
-#entry-updates-dialog ul { margin: 8px 0 0; padding-inline-start: 22px; line-height: 1.65; }
-#entry-updates-dialog li + li { margin-top: 6px; }
+#entry-updates-dialog::backdrop { background: #0009; }
+#entry-updates-dialog h2, #entry-updates-dialog h3 { margin: 0; color: #efc36f; }
+#entry-updates-dialog h2 { font-size: clamp(20px, 5vw, 25px); }
+#entry-updates-dialog h3 { font-size: 17px; }
+#entry-updates-dialog .entry-updates-body {
+  min-height: 0;
+  max-height: min(55vh, 460px);
+  overflow-y: auto;
+  padding-inline-end: 10px;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+#entry-updates-status { margin: 0 0 8px; }
+#entry-updates-status:empty { display: none; }
+#entry-updates-dialog ul { margin: 10px 0 0; padding-inline-start: 22px; line-height: 1.65; }
+#entry-updates-dialog li + li { margin-top: 8px; }
+#entry-updates-dialog form { display: flex; justify-content: flex-end; margin: 0; }
+#entry-updates-dialog button { min-height: 44px; padding-inline: 18px; }

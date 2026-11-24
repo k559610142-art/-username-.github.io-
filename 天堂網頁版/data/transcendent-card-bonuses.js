@@ -13,7 +13,7 @@
  const attributes={addStr:['str','力量'],addDex:['dex','敏捷'],addCon:['con','體質'],addInt:['int','智力'],addWis:['wis','精神'],addCha:['cha','魅力']};
  const labels={...Object.fromEntries(Object.entries(attributes).map(([key,[,label]])=>[key,label])),
   addMaxHP:'HP',addMaxMP:'MP',addDmg:'近距離傷害',addHit:'近距離命中',addBowDmg:'遠距離傷害',addBowHit:'遠距離命中'};
- const speeds=[['攻擊速度','attackSpeedPct',120],['移動速度','moveSpeedPct',16],['施展速度','castSpeedPct',43]];
+ const speeds=[['攻擊速度','attackSpeedPct',110],['移動速度','moveSpeedPct',16],['施展速度','castSpeedPct',43]];
 
  for(const card of transformCardBook){
   const profile=profiles.get(card.n);

@@ -86,23 +86,34 @@ addEventListener('pagehide',saveActiveCharacter);updateEntrySelection();setEntry
 const entryUpdatesButton = document.querySelector('#entry-updates');
 const entryUpdatesDialog = document.querySelector('#entry-updates-dialog');
 const entryUpdatesStatus = document.querySelector('#entry-updates-status');
+const entryUpdatesTitle = document.querySelector('#entry-updates-title');
+const entryUpdatesVersion = document.querySelector('#entry-updates-version');
+let entryUpdatesRequest = 0;
 const entryUpdatesList = document.querySelector('#entry-updates-list');
 
 entryUpdatesButton.addEventListener('click', async () => {
  entryUpdatesDialog.showModal();
+ const request = ++entryUpdatesRequest;
  entryUpdatesStatus.textContent = '載入更新內容中…';
  try {
   const response = await fetch('data/entry-updates.json', {cache:'no-store'});
   if(!response.ok)throw Error('更新內容載入失敗');
-  const notes = await response.json();
+  const {version,notes} = await response.json();
+  if(request!==entryUpdatesRequest)return;
+  if(typeof version!=='string'||!version.trim())throw Error('版本號格式有誤');
   if(!Array.isArray(notes)||!notes.length||notes.some(note=>typeof note!=='string'||!note.trim()))throw Error('更新內容格式有誤');
   entryUpdatesList.replaceChildren(...notes.map(note=>{
    const row=document.createElement('li');
    row.textContent=note;
    return row;
   }));
+  entryUpdatesTitle.textContent = '更新內容 · '+version;
+  entryUpdatesVersion.textContent = '本次更新 · '+version;
+  entryUpdatesVersion.hidden = false;
+  entryUpdatesList.parentElement.scrollTop = 0;
   entryUpdatesStatus.textContent = '';
  }catch{
+  if(request!==entryUpdatesRequest)return;
   entryUpdatesStatus.textContent = entryUpdatesList.childElementCount
    ? '暫時無法確認最新內容，目前顯示上次成功載入的版本。'
    : '暫時無法載入更新內容，請關閉後再試一次。';
