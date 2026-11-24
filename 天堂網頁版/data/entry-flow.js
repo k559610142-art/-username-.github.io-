@@ -85,4 +85,26 @@ addEventListener('pagehide',saveActiveCharacter);updateEntrySelection();setEntry
 
 const entryUpdatesButton = document.querySelector('#entry-updates');
 const entryUpdatesDialog = document.querySelector('#entry-updates-dialog');
-entryUpdatesButton.addEventListener('click', () => entryUpdatesDialog.showModal());
+const entryUpdatesStatus = document.querySelector('#entry-updates-status');
+const entryUpdatesList = document.querySelector('#entry-updates-list');
+
+entryUpdatesButton.addEventListener('click', async () => {
+ entryUpdatesDialog.showModal();
+ entryUpdatesStatus.textContent = '載入更新內容中…';
+ try {
+  const response = await fetch('data/entry-updates.json', {cache:'no-store'});
+  if(!response.ok)throw Error('更新內容載入失敗');
+  const notes = await response.json();
+  if(!Array.isArray(notes)||!notes.length||notes.some(note=>typeof note!=='string'||!note.trim()))throw Error('更新內容格式有誤');
+  entryUpdatesList.replaceChildren(...notes.map(note=>{
+   const row=document.createElement('li');
+   row.textContent=note;
+   return row;
+  }));
+  entryUpdatesStatus.textContent = '';
+ }catch{
+  entryUpdatesStatus.textContent = entryUpdatesList.childElementCount
+   ? '暫時無法確認最新內容，目前顯示上次成功載入的版本。'
+   : '暫時無法載入更新內容，請關閉後再試一次。';
+ }
+});
