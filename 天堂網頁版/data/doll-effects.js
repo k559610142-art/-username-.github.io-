@@ -14,9 +14,9 @@ window.DollEffects=(()=>{
  const cache=new Map();
  function parse(d){
   if(!d)return null;if(cache.has(d.id))return cache.get(d.id);
-  const o={bonus:{},ac:0,mr:0,status:{},regen:[],gold:null,procs:[],guard:null};const add=(k,n)=>{o.bonus[k]=(o.bonus[k]||0)+n};
+  const o={bonus:{},buffs:[],ac:0,mr:0,status:{},regen:[],gold:null,procs:[],guard:null};const add=(k,n)=>{o.bonus[k]=(o.bonus[k]||0)+n};
   for(const raw of d.effects||[]){const e=String(raw).trim();let m;
-   if(BUFF[e]){for(const [k,v]of Object.entries(BUFF[e])){if(k==='ac')o.ac+=v;else if(k==='mr')o.mr+=v;else if(k==='hpRegen')o.regen.push({hp:true,sec:v[0],n:v[1]});else add(k,v);}continue;}
+   if(BUFF[e]){o.buffs.push(e);for(const [k,v]of Object.entries(BUFF[e])){if(k==='ac')o.ac+=v;else if(k==='mr')o.mr+=v;else if(k==='hpRegen')o.regen.push({hp:true,sec:v[0],n:v[1]});else add(k,v);}continue;}
    if((m=e.match(/^(力量|敏捷|體質|智力|精神|魅力)\+(\d+)$/)))add(STAT[m[1]],+m[2]);
    else if((m=e.match(/^(體力上限|HP)\+(\d+)$/)))add('hp',+m[2]);
    else if((m=e.match(/^(魔力上限|MP)\+(\d+)$/)))add('mp',+m[2]);
@@ -46,10 +46,10 @@ window.DollEffects=(()=>{
  function chanceReduction(){const g=active()?.guard;return g&&Math.random()<g.p?g.n:0;}
  // 每秒檢查：恢復與天幣
  const last=new Map();let dollId=null;
- setInterval(()=>{const a=active(),id=window.TdjSystems?.dolls?.active;if(!a){dollId=null;return;}if(id!==dollId){dollId=id;last.clear();}const now=Date.now();
+ setInterval(()=>{const a=active(),id=window.activeCharacterId+'/'+window.TdjSystems?.dolls?.active;if(!a){dollId=null;return;}if(id!==dollId){dollId=id;last.clear();}const now=Date.now();
   a.regen.forEach((r,i)=>{const k='r'+i;if(!last.has(k)){last.set(k,now);return;}if(now-last.get(k)<r.sec*1000)return;last.set(k,now);if(window.CharacterActions?.dead)return;
    if(r.hp){if(typeof hp!=='undefined'&&hp<maxHp){hp=Math.min(maxHp,hp+r.n);window.stats?.();}}else if(typeof mp!=='undefined'&&mp<maxMp){mp=Math.min(maxMp,mp+r.n);window.stats?.();}});
   if(a.gold){if(!last.has('g'))last.set('g',now);else if(now-last.get('g')>=a.gold.sec*1000){last.set('g',now);if(window.OwnedInventory?.reward(0,[{key:'etcitem:40308',count:a.gold.n}])&&typeof toast==='function')toast('魔法娃娃帶來 '+a.gold.n.toLocaleString()+' 天幣');}}
  },1000);
- return {bonuses,ac:()=>active()?.ac||0,mr:()=>active()?.mr||0,status:()=>active()?.status||{},onHit,chanceReduction,parse};
+ return {bonuses,buffs:()=>active()?.buffs||[],ac:()=>active()?.ac||0,mr:()=>active()?.mr||0,status:()=>active()?.status||{},onHit,chanceReduction,parse};
 })();

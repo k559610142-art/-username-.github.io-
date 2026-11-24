@@ -113,6 +113,17 @@ const NativePotions=(()=>{
       timer.textContent=Math.ceil((activePotionBuffs[key]-Date.now())/1000);label.append(image,timer);
       bar.append(label);
     }
+    const dollBuffs=window.DollEffects?.buffs()||[];
+    if(!CharacterActions.dead&&dollBuffs.length){
+      const label=document.createElement('span'),image=document.createElement('img');
+      label.dataset.effect='doll-buffs';
+      label.title='魔法娃娃常駐加成：'+dollBuffs.join('、');
+      label.setAttribute('aria-label',label.title);
+      label.style.cssText='position:relative;width:26px;height:26px;background:#162733d9;border:1px solid #8d986480';
+      image.src='assets/interface/skills/26.png';image.alt='';
+      image.style.cssText='width:24px;height:24px;display:block;image-rendering:pixelated';
+      label.append(image);bar.append(label);
+    }
     if(!CharacterActions.dead&&window.InnServices?.mpRecoveryActive){
       const label=document.createElement('span'),image=document.createElement('img');
       label.dataset.effect='inn-mp-recovery';

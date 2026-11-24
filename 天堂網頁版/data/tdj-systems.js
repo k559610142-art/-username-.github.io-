@@ -455,7 +455,7 @@ window.TdjSystems = (() => {
     if (!playing()) return false;
     const d = dollById.get(+id); if (!d || !state.dolls.owned[id]) { toast('還沒有這隻魔法娃娃。'); return false; }
     if (d.materials?.length && !payDoll(d)) { toast('召喚需要 ' + matText(d) + '，材料不足（魔法結晶體可向雜貨商購買）。'); return false; }
-    state.dolls.active = String(id); state.dolls.until = Date.now() + (d.time || 1800) * 1000; save(); render();
+    state.dolls.active = String(id); state.dolls.until = Date.now() + (d.time || 1800) * 1000; save(); refreshSoulStats(); render();
     toast('召喚 ' + d.name.replace(/^.*：/, '') + '（' + (d.effects.slice(0, 3).join('、') || '無能力') + '）'); return true;
   }
   setInterval(() => {
@@ -463,9 +463,9 @@ window.TdjSystems = (() => {
     if (!state.dolls.until) { state.dolls.until = Date.now() + (d.time || 1800) * 1000; save(); return; }
     if (Date.now() < state.dolls.until) return;
     if (!d.materials?.length || payDoll(d)) { state.dolls.until = Date.now() + (d.time || 1800) * 1000; save(); toast('魔法娃娃召喚時間到，自動消耗 ' + matText(d) + ' 繼續召喚。'); }
-    else { state.dolls.active = null; state.dolls.until = 0; save(); render(); window.DBGameRules?.syncVitals(); window.stats?.(); toast('魔法娃娃召喚時間到，' + matText(d) + ' 不足，娃娃已離開。'); }
+    else { state.dolls.active = null; state.dolls.until = 0; save(); refreshSoulStats(); render(); toast('魔法娃娃召喚時間到，' + matText(d) + ' 不足，娃娃已離開。'); }
   }, 1000);
-  function dismiss() { if (!playing() || !state.dolls.active) return false; state.dolls.active = null; state.dolls.until = 0; save(); render(); toast('魔法娃娃已解除召喚'); return true; }
+  function dismiss() { if (!playing() || !state.dolls.active) return false; state.dolls.active = null; state.dolls.until = 0; save(); refreshSoulStats(); render(); toast('魔法娃娃已解除召喚'); return true; }
 
   // ---- 娃娃進化／分解（2026-11-22 使用者定案）----
   //  進化：消耗本階娃娃 1 隻＋魔法娃娃成長藥劑，升 2/3/4/5/6 階要 1/2/3/4/5 瓶，成功率 60/40/20/10/5%；失敗只扣藥劑、娃娃不降階。召喚中的那隻不能用。
