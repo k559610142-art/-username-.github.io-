@@ -259,11 +259,15 @@ window.TdjSystems = (() => {
     '.tdj-ring>svg{position:absolute;left:-19.44%;top:-19.44%;width:138.89%;height:138.89%;max-width:none;pointer-events:none;animation:tdjRingSpin var(--t) linear infinite;filter:none}' +
     '.tdj-ring-far{clip-path:inset(-30% -30% 50% -30%)}.tdj-ring-near{clip-path:inset(50% -30% -30% -30%)}.tdj-dragon-ring{transform:translateY(calc(var(--s) * var(--rise) * -1px));animation:none}.tdj-dragon-ring>svg{animation:none}' +
     '.tdj-rings.idle .tdj-ring{opacity:.35;animation:none}' +
+    '.tdj-layer.tdj-mobile-effects .tdj-ring,.tdj-layer.tdj-mobile-effects .tdj-ring>svg,.tdj-layer.tdj-mobile-effects .tdj-phantom{animation:none}' +
+    '.tdj-mobile-effects .tdj-dragon-glow{border:2px solid #ffd16b88;border-radius:50%;box-sizing:border-box;transform:translateY(calc(var(--s) * var(--rise) * -1px)) scaleY(.42)}' +
     '@keyframes tdjRingSpin{to{transform:rotate(360deg)}}' +
     '@keyframes tdjRingPulse{0%,100%{opacity:1}50%{opacity:1}}';
   document.head.append(style);
   const back = document.createElement('div'), front = document.createElement('div');
   back.className = front.className = 'tdj-layer';
+  const lightEffects=window.matchMedia('(pointer: coarse) and (max-width: 1024px), (max-width: 650px)');
+  lightEffects.addEventListener('change',()=>render());
   back.style.zIndex = '0'; front.style.zIndex = '3';
   characterActor.prepend(back); characterActor.append(front);
   const tierColor = {下品: '#9fd0ff88', 上品: '#8fffb088', 極品: '#d698ff88', 千年: '#ffb35a88', 萬年: '#ff7b7b88', 上古: '#ffe27a99', 四神獸: '#7ee8e099'};
@@ -274,9 +278,10 @@ window.TdjSystems = (() => {
   // 魂環顏色（依武魂品級；仿「十年白、百年黃、千年紫、萬年黑、十萬年紅」，上古紅、四神獸金）：[環色, 光暈]
   const ringColors = {下品: ['#f8fbff', '#e8efffff'], 上品: ['#ffca16', '#ffb820ee'], 極品: ['#b635ff', '#ad27ffef'], 千年: ['#7515d8', '#7816d8dd'],
     萬年: ['#e51625', '#d80818df'], 上古: ['#ff202b', '#ff1228f0'], 四神獸: ['#ffcc33', '#ffe9a0cc']};
-  let ringLayer = null, ringFrontLayer = null;
+  let ringLayer = null, ringFrontLayer = null, ringScale = '';
   function buildRings() {
     ringLayer = null;
+    ringScale = '';
     const slots = state.wuhun.ringSlots || [];
     const rings = slots.map(id => id === null ? null : wuhunById.get(+id)).filter(Boolean);
     if (!rings.length) return;
@@ -309,8 +314,9 @@ window.TdjSystems = (() => {
       const dragon = document.createElement('div');
       dragon.className = 'tdj-ring tdj-dragon-ring';
       dragon.style.cssText = '--r:' + SoulRingVisuals.dragonLayout.radius + ';--d:0s;--rise:' + SoulRingVisuals.dragonLayout.rise;
-      dragon.append(SoulRingVisuals.create(7));
-      surround(dragon);
+      if(lightEffects.matches)dragon.classList.add('tdj-dragon-glow');
+      else dragon.append(SoulRingVisuals.create(7));
+      surround(dragon,true);
     }
     back.prepend(box); // 最底層：在人物、武魂虛影下面
     front.prepend(foreground);
@@ -319,8 +325,12 @@ window.TdjSystems = (() => {
     positionRings();
   }
   function positionRings() {
-    if (ringFrontLayer) ringFrontLayer.style.setProperty('--s', String((typeof characterRenderScale === 'function' ? characterRenderScale() : 1)));
-    if (ringLayer) ringLayer.style.setProperty('--s', String((typeof characterRenderScale === 'function' ? characterRenderScale() : 1)));
+    if(!ringLayer)return;
+    const scale=String(characterRenderScale());
+    if(scale===ringScale)return;
+    ringScale=scale;
+    ringLayer.style.setProperty('--s',scale);
+    ringFrontLayer.style.setProperty('--s',scale);
   }
   let phantom = null, dollSprite = null;
   // Projected one-tile offsets behind the actor, based on the direction it faces.
@@ -335,7 +345,7 @@ window.TdjSystems = (() => {
     if (dollSprite.parentNode !== layer) layer.append(dollSprite);
   }
   function drawPhantom(now) {
-    if (!phantom || window.gameFlowState !== 'playing') return;
+    if (!phantom || document.hidden || window.gameFlowState !== 'playing') return;
     const {sprite, fallback, gfx, layers, group, fx} = phantom;
     const scale = characterRenderScale();
     const phoenix = gfx === 22003;
@@ -365,6 +375,9 @@ window.TdjSystems = (() => {
     const previousPhantom = phantom;
     phantom = dollSprite = null;
     back.replaceChildren(); front.replaceChildren(); ringLayer = ringFrontLayer = null;
+    const lightweight=lightEffects.matches;
+    back.classList.toggle('tdj-mobile-effects',lightweight);
+    front.classList.toggle('tdj-mobile-effects',lightweight);
     if (!owner || window.gameFlowState !== 'playing') return;
     const w = wuhunById.get(+state.wuhun.active);
     buildRings();
@@ -389,7 +402,7 @@ window.TdjSystems = (() => {
         back.append(img);
         img.src = src;
       } else { fallback = aura(); back.append(fallback); }
-      if (MonsterActions.has(w.skin)) {
+      if (!lightweight && MonsterActions.has(w.skin)) {
         const sprite = document.createElement('div');
         sprite.className = 'tdj-phantom tdj-phantom-animated';
         sprite.style.setProperty('--tdj-aura', color);
@@ -419,8 +432,8 @@ window.TdjSystems = (() => {
       positionDoll();
     }
   }
-  function flash(src) {
-    if (!src) return;
+  function flash(src, {skipOnMobile=false}={}) {
+    if (!src || (skipOnMobile && lightEffects.matches)) return;
     const img = new Image(); img.className = 'tdj-flash'; img.src = src; img.alt = '';
     placeImage(img, 1, 0.9); back.append(img); setTimeout(() => img.remove(), 1100);
   }
@@ -728,7 +741,7 @@ window.TdjSystems = (() => {
     if (!playing()) return false;
     const w = wuhunById.get(+id); if (!w || !state.wuhun.owned[id]) { toast('還沒有這個武魂。'); return false; }
     const missing = ringMissing(w); if (missing.length) { toast('裝備' + w.tier + '武魂前，要先在魂槽放入：' + missing.map(t => RING_COLOR[WUHUN_TIERS.indexOf(t)]).join('、') + '魂環（武魂提煉取得）。'); return false; }
-    state.wuhun.active = String(id); save(); refreshSoulStats();render(); flash(wuhunImage(w));
+    state.wuhun.active = String(id); save(); refreshSoulStats();render(); flash(wuhunImage(w),{skipOnMobile:true});
     window.dispatchEvent?.(new Event('wuhun-equipment-change'));
     toast('裝備 ' + w.name + '（' + w.fx.slice(0, 4).join('、') + '）'); return true;
   }

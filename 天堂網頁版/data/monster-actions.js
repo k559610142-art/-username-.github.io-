@@ -105,6 +105,8 @@ const MonsterActions = (() => {
     layers.extras.hidden = false;
     let index = 0;
     for (const [attribute, frame] of overlays) {
+      // 這兩張死亡騎士的乘色遮罩在網頁上會把本體外緣塗成黑色。
+      if (gfx === 12230 && frame[0].startsWith('dk-original-11619-')) continue;
       if (gfx === 12232 && frame[0].startsWith('dk-original-11656-')) continue;
       if (strippedAuraGfx.has(gfx) && /^dk-original-2\d{4}-/.test(frame[0])) continue; // 天地劫附加光暈（20000 號以上圖層）不畫
       let layer = layers.shadow, groundOffset = 0;
