@@ -25,4 +25,4 @@ for(const item of INTERFACE_CATALOG.items)if(item.kind==="etcitem"&&!item.icon&&
 })();
 
 // 使用玩家提供的古老寶箱圖示。
-for(const item of INTERFACE_CATALOG.items)if(item.kind==="etcitem"&&item.id===39185)item.icon="assets/interface/items/ancient-chest.webp";
+for(const item of INTERFACE_CATALOG.items)if(item.kind==="etcitem"&&item.id===39185)item.icon="assets/interface/items/ancient-chest-transparent.png";

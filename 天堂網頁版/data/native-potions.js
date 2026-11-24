@@ -68,6 +68,12 @@ const NativePotions=(()=>{
     if(!/^(hp\.UserAddHp(?:_FR)?|mp\.UserAddMp|mp\.UserMprBlue|brave\.Status(?:Haste|Brave|ElfBrave|WisdomPotion|BraveCake|Ribrave)(?:_FR)?|Disintoxicat_Potion)$/.test(handler))return null;
     return {handler,parameters,rule};
   }
+  function canUseForClass(handler,parameters){
+    if(handler.startsWith('brave.StatusElfBrave'))return job==='妖精';
+    if(!handler.startsWith('brave.'))return true;
+    const allowed=Number(parameters[2]);
+    return Number.isInteger(allowed)&&!!(allowed&flags[job]);
+  }
   function isHealing(key){
     if(parse(key)?.handler.startsWith('hp.UserAddHp'))return true;
     const rule=ITEM_USE_RULES.definitions[key];if(ITEM_USE_RULES.handlers[rule?.handler]?.kind==='hpGaussian')return true;
@@ -134,6 +140,10 @@ const NativePotions=(()=>{
     if(!config)return null;
     if(window.gameFlowState!=='playing'||CharacterActions.dead)return false;
     const {handler,parameters:p,rule}=config;
+    if(!canUseForClass(handler,p)){
+      if(handler.startsWith('brave.StatusElfBrave'))toast('只有妖精可以使用精靈餅乾。');
+      return false;
+    }
     if((activeCharacterLevel||1)<rule.minLevel||rule.maxLevel&&(activeCharacterLevel||1)>rule.maxLevel)return false;
     if(window.playerItemState?.decayPotion)return false;
     // 永久古白沿用一般古白的補血冷卻群組與間隔。
@@ -162,10 +172,6 @@ const NativePotions=(()=>{
         effect.hp=Math.max(0,Math.min(maxHp,hp+amount));
       }else effect.mp=Math.min(maxMp,mp+amount);
     }else{
-      if(handler.startsWith('brave.')){
-        const allowed=Number(p[2]);
-        if(!Number.isInteger(allowed)||!(allowed&flags[job]))return false;
-      }
       const priceId=Number(p[3])||0,priceCount=Number(p[4])||0;
       if(priceId){
         if(priceCount>0&&!take(next,'etcitem:'+priceId,priceCount))return false;
@@ -190,7 +196,7 @@ const NativePotions=(()=>{
     if(gfx)IslandMonsters.playEffect(gfx,worldX,worldY,movementTime(),{follow:'player'});
     sync();return true;
   }
-  function durationState(key){const c=parse(key);if(!c||Number(c.parameters[0])<=0||c.rule.minLevel>(window.activeCharacterLevel||1)||c.rule.maxLevel&&c.rule.maxLevel<(window.activeCharacterLevel||1))return null;const h=c.handler;if(h.startsWith('brave.')&&!(Number(c.parameters[2])&flags[job]))return null;const buff=h==='mp.UserMprBlue'?'blue':h.includes('WisdomPotion')?'wisdom':h.includes('ElfBrave')?'elfBrave':h.includes('BraveCake')?'braveX':h.includes('Haste')?'haste':h.includes('Brave')?'brave':null;if(!buff)return null;return {key:buff,duration:Number(c.parameters[0])*1000,until:Number(window.activePotionBuffs?.[buff])||0};}
+  function durationState(key){const c=parse(key);if(!c||Number(c.parameters[0])<=0||c.rule.minLevel>(window.activeCharacterLevel||1)||c.rule.maxLevel&&c.rule.maxLevel<(window.activeCharacterLevel||1))return null;const h=c.handler;if(!canUseForClass(h,c.parameters))return null;const buff=h==='mp.UserMprBlue'?'blue':h.includes('WisdomPotion')?'wisdom':h.includes('ElfBrave')?'elfBrave':h.includes('BraveCake')?'braveX':h.includes('Haste')?'haste':h.includes('Brave')?'brave':null;if(!buff)return null;return {key:buff,duration:Number(c.parameters[0])*1000,until:Number(window.activePotionBuffs?.[buff])||0};}
   function recoveryBonus(wis,baseWis){
     let amount=active('wisdom')?2:0;
     if(active('blue')){
