@@ -2,9 +2,17 @@ function renderEquipmentCollection(sidebar,results,cards,detail,search,reference
   const gear = INTERFACE_CATALOG.items.filter(item=>item.kind==='weapon'||item.kind==='armor');
   const key = item => item.kind+':'+item.id;
   const byKey = new Map(gear.map(item=>[key(item),item]));
+  const collectionKey = OwnedInventory.collectionKey;
+  const variants = new Map();
+  for(const item of gear){
+    const family=collectionKey(key(item));
+    if(!variants.has(family))variants.set(family,[]);
+    variants.get(family).push(item);
+  }
+  const baseGear=gear.filter(item=>collectionKey(key(item))===key(item));
   const rows = {
-    weapon:gear.filter(i=>i.kind==='weapon'),
-    armor:gear.filter(i=>i.kind==='armor'),
+    weapon:baseGear.filter(i=>i.kind==='weapon'),
+    armor:baseGear.filter(i=>i.kind==='armor'),
     sets:EquipmentSets.definitions,
     references:referenceSets
   };
@@ -47,7 +55,7 @@ function renderEquipmentCollection(sidebar,results,cards,detail,search,reference
     const icon=uiElement('div','item-slot');
     icon.style.cssText='width:56px;height:56px';
     icon.append(itemIcon(row));
-    const matches=items.filter(i=>i.key===key(row));
+    const matches=items.filter(i=>collectionKey(i.key)===key(row));
     const owned=matches.reduce((total,i)=>total+i.count,0);
     const unlocked=!!window.OwnedInventory?.hasCollection(key(row));
     icon.classList.toggle('collection-item-locked',!unlocked);
@@ -68,7 +76,8 @@ function renderEquipmentCollection(sidebar,results,cards,detail,search,reference
     const items=window.OwnedInventory?.items||[];
     const query=search.value.trim().toLowerCase();
     const visible=rows[tab].filter(row=>{
-      const terms=[row.name,row.id,...(row.required||[]),...(row.keys||[]).map(k=>byKey.get(k)?.name)];
+      const aliases=variants.get(key(row))||[];
+      const terms=[row.name,row.id,...aliases.flatMap(item=>[item.name,item.id]),...(row.required||[]),...(row.keys||[]).map(k=>byKey.get(k)?.name)];
       return terms.join(' ').toLowerCase().includes(query);
     });
     const pages=Math.max(1,Math.ceil(visible.length/pageSize));

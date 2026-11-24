@@ -261,14 +261,22 @@ window.OwnedInventory=(()=>{
   if(!transact(next,{hp:nextHp,mp:nextMp}))return false;if(r.delayId&&r.delayMs)cooldowns.set(r.delayId,now+r.delayMs);if(window.playerItemState)window.playerItemState.absoluteBarrier=false;toast('使用 '+item.name);return true;
  }
 
- function hasCollection(key){return !!owner&&owner===window.activeCharacterId&&collection.includes(key);}
+ function collectionKey(key){
+  const item=catalog.get(key);
+  if(!item?.baseName||!['weapon','armor'].includes(item.kind))return key;
+  const offset=item.blessed?100000:item.cursed?200000:0;
+  return item.kind+':'+(item.id-offset);
+ }
+ function hasCollection(key){
+  return !!owner&&owner===window.activeCharacterId&&collection.some(saved=>collectionKey(saved)===collectionKey(key));
+ }
  function collect(uid){
   const entry=entries.find(e=>e.uid===uid),item=entry&&definition(entry);
   if(!entry||!['weapon','armor'].includes(item?.kind))return false;
   if(entry.slot){toast('請先卸下裝備，再加入圖鑑。');return false;}
   if(hasCollection(entry.key)){toast('這件物品已開圖，不需重複加入。');return false;}
   const next=clone(entries);if(!deduct(next,uid,1))return false;
-  if(!transact(next,{collection:[...collection,entry.key]}))return false;
+  if(!transact(next,{collection:[...collection,collectionKey(entry.key)]}))return false;
   window.refreshEquipmentCollection?.();
   toast(item.name+' 已加入圖鑑，消耗 1 件。');return true;
  }
@@ -311,5 +319,5 @@ window.OwnedInventory=(()=>{
  function sortInventory(){return transact(sortedItems(entries));}
  function usePotion(){const e=entries.find(i=>i.key==='etcitem:40010')||entries.find(i=>window.NativePotions?.isHealing(i.key)||rules.handlers[config(i).handler]?.kind==='hpGaussian');if(!e){toast('背包中沒有回復藥水。');return false}return use(e.uid)}
  document.querySelector('#heal').onclick=usePotion;potions=0;
- return {collect,hasCollection,get collection(){return collection.slice()},canDiscard,discard,sortInventory,activate,validate,validateWarehouse,get healingItems(){return entries.filter(e=>window.NativePotions?.isHealing(e.key)||rules.handlers[config(e).handler]?.kind==='hpGaussian').map(e=>({...e,item:definition(e)}))},applyChange:transact,reward,learnSkill,setElfElement,bringStone,grantSkills,resetElfElement,elfResetCost,hasMemoryCandle:()=>entries.some(e=>CANDLES.includes(e.key)&&!e.slot),castCost,get skills(){return clone(skillState)},prepareTransform,transfer,transferMoney,storeBatch,sortWarehouse,get warehouseCapacity(){return rules.maxSizeExclusive-1},trade,buyBatch,receive,get warehouse(){return clone(warehouse)},get storedItems(){return warehouse.map(e=>({...e,item:presented(e)}))},use,equip,unequip,usePotion,consumeArrow,slotFor,deactivate(){owner='';entries=[];warehouse=[];collection=[];skillState={ids:[],element:''};cooldowns.clear();potions=0},get owner(){return owner},get snapshot(){return clone(entries)},get equippedWeaponType(){const weapon=entries.find(e=>e.slot==='weapon');return weapon?definition(weapon).type:null},get items(){return entries.map(e=>({...e,item:presented(e)}))}};
+ return {collect,hasCollection,collectionKey,get collection(){return collection.slice()},canDiscard,discard,sortInventory,activate,validate,validateWarehouse,get healingItems(){return entries.filter(e=>window.NativePotions?.isHealing(e.key)||rules.handlers[config(e).handler]?.kind==='hpGaussian').map(e=>({...e,item:definition(e)}))},applyChange:transact,reward,learnSkill,setElfElement,bringStone,grantSkills,resetElfElement,elfResetCost,hasMemoryCandle:()=>entries.some(e=>CANDLES.includes(e.key)&&!e.slot),castCost,get skills(){return clone(skillState)},prepareTransform,transfer,transferMoney,storeBatch,sortWarehouse,get warehouseCapacity(){return rules.maxSizeExclusive-1},trade,buyBatch,receive,get warehouse(){return clone(warehouse)},get storedItems(){return warehouse.map(e=>({...e,item:presented(e)}))},use,equip,unequip,usePotion,consumeArrow,slotFor,deactivate(){owner='';entries=[];warehouse=[];collection=[];skillState={ids:[],element:''};cooldowns.clear();potions=0},get owner(){return owner},get snapshot(){return clone(entries)},get equippedWeaponType(){const weapon=entries.find(e=>e.slot==='weapon');return weapon?definition(weapon).type:null},get items(){return entries.map(e=>({...e,item:presented(e)}))}};
 })();
