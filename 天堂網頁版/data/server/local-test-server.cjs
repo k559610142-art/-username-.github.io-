@@ -13,6 +13,7 @@ function createGameServer(options={}){
  if(!options.settings)for(const key of require('../item-properties.js').stackableMaterialKeys){
   if(settings.items[key])settings.items[key].stackable=true;
  }
+ for(const [key,rule] of Object.entries(settings.items))if(/^(weapon|armor):/.test(key))rule.stackable=false;
  // 2026-11-17：server-settings.json 只有舊 5 職業，龍騎士／幻術師／戰士存檔會被擋（不支援的職業）→ 缺的職業從遊戲的 data/class-creation-data.js 補上。
  let creationRules;
  try{const sandbox={window:{}};require('vm').runInNewContext(fs.readFileSync(path.join(__dirname,'../class-creation-data.js'),'utf8'),sandbox);

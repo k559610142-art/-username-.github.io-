@@ -48,7 +48,7 @@ const NativePotions=(()=>{
   game.addEventListener('pointerdown',event=>{
     if(!statusRow.contains(event.target)&&!details.contains(event.target))details.hidden=true;
   },true);
-  const potionDescriptions={haste:'提升移動、攻擊與施法速度。',brave:'提升移動與攻擊速度。',elfBrave:'提升妖精的移動與攻擊速度。',braveX:'提升移動與攻擊速度。',blue:'增加自然魔力回復量，效果依精神而定。',wisdom:'魔攻 +2，魔力回復 +2。',exp:'提升狩獵獲得的經驗值。'};
+  const potionDescriptions={haste:'提升移動、攻擊與施法速度。',brave:'提升移動與攻擊速度。',elfBrave:'提升妖精的移動與攻擊速度。',braveX:'移動與普攻速度 ×1.05（再提高 5%），施法速度維持原值。',blue:'增加自然魔力回復量，效果依精神而定。',wisdom:'魔攻 +2，魔力回復 +2。',exp:'提升狩獵獲得的經驗值。'};
   function placeMagicBuffs(left,top,max){
     const cb=document.querySelector('.class-buff-bar');if(cb&&cb.parentNode!==statusRow)statusRow.append(cb);
     statusRow.style.left=left+'px';statusRow.style.top=top+'px';statusRow.style.maxWidth=max+'px';
@@ -265,7 +265,7 @@ const NativePotions=(()=>{
     if(action==='attack'){
       if(active('brave'))factor*=.755;
       if(active('elfBrave'))factor*=.855;
-      if(active('braveX'))factor*=.755;
+      if(active('braveX'))factor*=THIRD_SPEED_DURATION_FACTOR;
     }
     return factor;
   }

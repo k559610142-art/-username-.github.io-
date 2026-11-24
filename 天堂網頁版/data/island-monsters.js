@@ -32,7 +32,44 @@ const IslandMonsters = (() => {
   const within=(area,x,y)=>x>=area[0]&&x<=area[2]&&y>=area[1]&&y<=area[3];
   const town=gfx=>gfx===945||gfx===1094;
   const effects=[];
-  function loadSheet(file){if(!sheets.has(file)){const image=new Image();image.decoding='async';image.onload=()=>{const ready=()=>decodedSheets.add(image);if(image.decode)image.decode().then(ready,ready);else ready()};image.src=(typeof nativeMonsterFiles!=='undefined'&&nativeMonsterFiles.has(file)?'assets/native-monsters/':'assets/island-monsters-v2/')+file+(/^monster-(layer|death)-1820-/.test(file)?'?v=screen-body2':'');sheets.set(file,image);}return sheets.get(file);}
+  function loadSheet(file){
+    if(sheets.has(file))return sheets.get(file);
+    const image=new Image();
+    image.decoding='async';
+    const ready=()=>decodedSheets.add(image);
+    image.onload=()=>{if(image.decode)image.decode().then(ready,ready);else ready();};
+    sheets.set(file,image);
+    const src=(typeof nativeMonsterFiles!=='undefined'&&nativeMonsterFiles.has(file)?'assets/native-monsters/':'assets/island-monsters-v2/')+file+(/^monster-(layer|death)-1820-/.test(file)?'?v=screen-body2':'');
+    if(!/^dungeon-mob-1791-\d+\.png$/.test(file)){
+      image.src=src;
+      return image;
+    }
+    // 不死鳥圖集的火焰以黑底加色，轉成透明圖層後再繪入怪物畫布。
+    const source=new Image();
+    source.onload=()=>{
+      const canvas=document.createElement('canvas');
+      canvas.width=source.naturalWidth;canvas.height=source.naturalHeight;
+      const context=canvas.getContext('2d',{willReadFrequently:true});
+      context.drawImage(source,0,0);
+      const frame=context.getImageData(0,0,canvas.width,canvas.height),pixels=frame.data;
+      for(let i=0;i<pixels.length;i+=4){
+        if(!pixels[i+3])continue;
+        const level=Math.max(pixels[i],pixels[i+1],pixels[i+2]);
+        if(level<=24){pixels[i+3]=0;continue;}
+        pixels[i+3]*=(level-24)/231;
+        for(let channel=0;channel<3;channel++)pixels[i+channel]*=255/level;
+      }
+      context.putImageData(frame,0,0);
+      canvas.toBlob(blob=>{
+        if(!blob)return;
+        const url=URL.createObjectURL(blob);
+        image.onload=()=>{URL.revokeObjectURL(url);ready();};
+        image.src=url;
+      },'image/png');
+    };
+    source.src=src;
+    return image;
+  }
   function usable(spawn,x,y){
     // 假人（data/fake-players.js）可以走進安全區，但和一般怪物一樣不能走進牆／障礙格（阻擋旗標 128）
     if(spawn.bot){const c=tile(x,y);return !!c&&!(c&128)&&steps.some(([dx,dy])=>canTraverse(x,y,dx,dy));}
