@@ -20,7 +20,7 @@ window.WarehouseWindow = (() => {
     const closeControl=overlay.querySelector('#close');
     cancelPointerGesture({preserveNavigation:true});
     overlay.classList.remove('classic-panel','npc-shop-panel','native-dialog-panel','reference-menu-panel','game-catalog-panel');
-    overlay.setAttribute('aria-label','共用倉庫');
+    overlay.setAttribute('aria-label','倉庫管理員');
     overlay.hidden=false;
     closeControl.hidden=true;
 
@@ -30,7 +30,22 @@ window.WarehouseWindow = (() => {
       control.type='button';control.onclick=action;return control;
     };
     const header=element('div','warehouse-heading'),heading=element('div');
-    heading.append(element('h2','','共用倉庫'),element('p','','帳號內的角色共用同一個倉庫'));
+    heading.append(element('h2','','倉庫管理員'));
+    const navigation=element('div','warehouse-navigation');
+    navigation.setAttribute('role','group');
+    navigation.setAttribute('aria-label','倉庫類型');
+    const accountTab=button('帳號倉庫','',()=>selectWarehouse(false));
+    const clanTab=button('血盟倉庫','',()=>selectWarehouse(true));
+    navigation.append(accountTab,clanTab);
+    const clan=element('section','warehouse-clan');
+    clan.append(element('h3','','血盟倉庫'),element('p','','血盟服務尚未接入，目前無法使用血盟倉庫。'));
+    function selectWarehouse(isClan){
+      accountTab.setAttribute('aria-pressed',String(!isClan));
+      clanTab.setAttribute('aria-pressed',String(isClan));
+      account.hidden=isClan;
+      clan.hidden=!isClan;
+      if(!isClan)updateTypes();
+    }
     const close=button('關閉','warehouse-close',()=>closeControl.click());
     header.append(heading,close);
 
@@ -66,7 +81,7 @@ window.WarehouseWindow = (() => {
     const bulk=button('批次存入','warehouse-deposit',()=>{
       const rows=OwnedInventory.items.filter(entry=>matches(entry)&&movable(entry));
       if(!rows.length)return render('目前篩選下沒有可存入的物品。',true);
-      if(!confirm('將目前篩選下的 '+rows.length+' 格道具整疊存入共用倉庫？'))return;
+      if(!confirm('將目前篩選下的 '+rows.length+' 格道具整疊存入帳號倉庫？'))return;
       const error=OwnedInventory.storeBatch(rows.map(entry=>entry.uid));
       render(error||'已存入 '+rows.length+' 格道具。',!!error);
     });
@@ -75,7 +90,7 @@ window.WarehouseWindow = (() => {
     });
     filters.append(bulk,sort);
 
-    const hint=element('p','warehouse-hint','點背包道具存入，點倉庫道具取出。數量留空會移動整疊。'+(fee?' 每次取出道具需 '+fee.toLocaleString()+' 天幣。':''));
+    const hint=element('p','warehouse-hint','同帳號的角色都能存取。點背包道具存入，點倉庫道具取出。數量留空會移動整疊。'+(fee?' 每次取出道具需 '+fee.toLocaleString()+' 天幣。':''));
     const note=element('p','warehouse-feedback');note.setAttribute('role','status');
     const columns=element('div','warehouse-columns');
     function column(label,cls){
@@ -84,8 +99,10 @@ window.WarehouseWindow = (() => {
       bar.append(element('h3','',label),count);wrap.append(bar,rows);columns.append(wrap);
       return {rows,count};
     }
-    const bag=column('背包 · 點擊存入','warehouse-bag'),storage=column('共用倉庫 · 點擊取出','warehouse-store');
-    host.append(header,funds,filters,hint,note,columns);content.replaceChildren(host);
+    const bag=column('背包 · 點擊存入','warehouse-bag'),storage=column('帳號倉庫 · 點擊取出','warehouse-store');
+    const account=element('section','warehouse-account');
+    account.append(funds,filters,hint,note,columns);
+    host.append(header,navigation,account,clan);content.replaceChildren(host);
 
     function canWear(entry){
       const item=entry.item,rule=ITEM_USE_RULES.definitions[entry.key],level=window.activeCharacterLevel||1;
@@ -131,7 +148,7 @@ window.WarehouseWindow = (() => {
       render();
     }
     kind.onchange=updateTypes;type.onchange=wearable.onchange=search.oninput=()=>render();
-    updateTypes();close.focus({preventScroll:true});
+    selectWarehouse(false);close.focus({preventScroll:true});
     return true;
   }
   return {open};

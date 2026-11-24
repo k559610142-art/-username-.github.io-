@@ -103,3 +103,13 @@
   .shared-warehouse .warehouse-item { grid-template-columns: 19px minmax(0,1fr) auto; min-height: 42px; gap: 4px; padding: 4px; }
   .warehouse-item img, .warehouse-item .missing-item-icon { width: 19px; height: 19px; }
 }
+
+.warehouse-navigation { display: flex; gap: 8px; }
+.shared-warehouse .warehouse-navigation button { min-height: 44px; padding-inline: 16px; }
+.shared-warehouse .warehouse-navigation button[aria-pressed=true] {
+  border-color: #b69157; background: #493a24; color: #ffe1a1;
+}
+.warehouse-account:not([hidden]) { display: contents; }
+.shared-warehouse [hidden] { display: none; }
+.warehouse-clan { padding: 14px; border: 1px solid #544838; border-radius: 5px; background: #252630; }
+.warehouse-clan p { margin-top: 6px; color: #c6b8a1; }
