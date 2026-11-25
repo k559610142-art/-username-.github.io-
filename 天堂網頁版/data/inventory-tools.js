@@ -10,9 +10,32 @@ const InventoryTools=(()=>{
  function update(){if(!toolbar)return;const sort=toolbar.querySelector('[data-tool=sort]'),trash=toolbar.querySelector('[data-tool=trash]'),check=toolbar.querySelector('[data-tool=check]'),cancel=toolbar.querySelector('[data-tool=cancel]'),count=toolbar.querySelector('.inventory-tools-count');sort.disabled=selecting;trash.setAttribute('aria-pressed',String(selecting));check.hidden=!selecting;cancel.hidden=!selecting;check.disabled=!selected.size;count.textContent=selecting?String(selected.size):'';count.setAttribute('aria-label','已選擇 '+selected.size+' 格');}
  function confirmDelete(){
   const entries=OwnedInventory.items.filter(e=>selected.has(e.uid));
-  if(!entries.length||entries.some(e=>!canDiscard(e.uid)))return;
-  if(!confirm('確定刪除以下 '+entries.length+' 格物品？堆疊物品將刪除整組，無法復原。\n\n'+entries.map(e=>e.item.name+' × '+e.count).join('\n')))return;
-  const ids=entries.map(e=>e.uid);reset();if(!OwnedInventory.discard(ids,discardOptions)){selecting=true;selected=new Set(ids);panel('bag');}
+  if(entries.length!==selected.size||!entries.length||entries.some(e=>!canDiscard(e.uid))||pane.querySelector('.inventory-discard-dialog'))return;
+  const characterId=window.activeCharacterId;
+  const dialog=uiElement('dialog','inventory-discard-dialog'),form=uiElement('form','inventory-discard-form');
+  dialog.setAttribute('aria-label','刪除物品');
+  const list=uiElement('div','inventory-discard-list'),actions=uiElement('div','inventory-discard-actions');
+  const fields=entries.map(entry=>{
+   const row=uiElement('label','inventory-discard-row'),name=uiElement('span','',entry.item.name+'（持有 '+entry.count+'）');
+   row.append(name);list.append(row);
+   if(entry.count===1)return {uid:entry.uid,input:null};
+   const input=uiElement('input','');input.type='number';input.required=true;input.min='1';input.max=String(entry.count);input.step='1';input.inputMode='numeric';input.value='1';
+   input.setAttribute('aria-label',entry.item.name+' 的刪除數量');row.append(input);
+   return {uid:entry.uid,input};
+  });
+  const cancel=uiElement('button','','取消'),submit=uiElement('button','','確定刪除');
+  cancel.type='button';cancel.onclick=()=>dialog.close();submit.type='submit';
+  actions.append(cancel,submit);
+  form.append(uiElement('h3','','刪除物品'),list,uiElement('p','','刪除後無法復原。'),actions);
+  form.onsubmit=event=>{
+   event.preventDefault();
+   if(window.activeCharacterId!==characterId){dialog.close();return;}
+   const requests=fields.map(({uid,input})=>({uid,count:input?input.valueAsNumber:1}));
+   dialog.close();reset();
+   if(!OwnedInventory.discard(requests,discardOptions)){selecting=true;selected=new Set(requests.map(r=>r.uid));panel('bag');}
+  };
+  dialog.addEventListener('close',()=>dialog.remove(),{once:true});
+  dialog.append(form);pane.append(dialog);dialog.showModal();
  }
  function mount(next,refresh){
   if(owner!==window.activeCharacterId){owner=window.activeCharacterId;reset();}

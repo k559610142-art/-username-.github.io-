@@ -308,9 +308,20 @@ window.OwnedInventory=(()=>{
   const dollId=(typeof DOLL_ID_ALIASES!=='undefined'&&DOLL_ID_ALIASES[item.id])||item.id;
   return allowDolls&&item.kind==='etcitem'&&!!window.DollEvolution?.get(dollId);
  }
- function discard(uids,options){
-  if(!Array.isArray(uids)||!uids.length||new Set(uids).size!==uids.length||uids.some(uid=>typeof uid!=='string'||!canDiscard(uid,options)))return false;
-  const selected=new Set(uids);return transact(entries.filter(e=>!selected.has(e.uid)));
+ function discard(requests,options){
+  if(!Array.isArray(requests)||!requests.length)return false;
+  const quantities=new Map();
+  for(const request of requests){
+   const uid=typeof request==='string'?request:request?.uid;
+   if(typeof uid!=='string'||quantities.has(uid)||!canDiscard(uid,options))return false;
+   const entry=entries.find(e=>e.uid===uid);
+   const count=typeof request==='string'?entry.count:request.count;
+   if(!Number.isSafeInteger(count)||count<1||count>entry.count)return false;
+   quantities.set(uid,count);
+  }
+  const next=clone(entries);
+  for(const [uid,count]of quantities)if(!deduct(next,uid,count))return false;
+  return transact(next);
  }
  function storedStackKey(item){
   const {uid,count,slot,...attributes}=item;

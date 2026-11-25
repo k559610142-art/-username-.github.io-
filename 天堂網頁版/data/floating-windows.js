@@ -57,7 +57,7 @@ const FloatingWindows=(()=>{
  game.addEventListener('pointerdown',e=>{const host=e.target.closest('.floating-game-window');if(host){front(windows.get(host.dataset.windowType));}else if(e.target.closest('.bag-detail-floating'))front(windows.get('bag'));else active=null;},true);
  function frontRoot(){if(!suppressRoot&&!root.hidden){active=null;root.style.setProperty('z-index',String(++level),'important');root.setAttribute('aria-modal','false');}}
  root.addEventListener('pointerdown',frontRoot,true);new MutationObserver(frontRoot).observe(root,{attributes:true,attributeFilter:['hidden']});new MutationObserver(frontRoot).observe(content,{childList:true});
- addEventListener('keydown',e=>{if(e.key!=='Escape')return;const rec=active&&windows.get(active);if(rec){e.preventDefault();e.stopImmediatePropagation();closeWindow(rec.type);}},true);
+ addEventListener('keydown',e=>{if(e.key!=='Escape'||e.target?.closest?.('dialog[open]'))return;const rec=active&&windows.get(active);if(rec){e.preventDefault();e.stopImmediatePropagation();closeWindow(rec.type);}},true);
  new ResizeObserver(()=>{for(const rec of windows.values())geometry(rec);}).observe(game);
  return {open,close:closeWindow,closeAll,refreshInventory,frontLevel:()=>++level,get types(){return [...windows.keys()]}};
 })();window.FloatingWindows=FloatingWindows;

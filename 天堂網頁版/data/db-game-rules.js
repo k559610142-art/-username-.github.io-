@@ -147,7 +147,9 @@ const DBGameRules = (() => {
       boxRolls.set(cacheKey,selected);
     }
     const next=OwnedInventory.snapshot;
-    if(!take(next,entry.key,1))return false;
+    const boxIndex=next.findIndex(row=>row.uid===uid&&!row.slot);
+    if(boxIndex<0)return false;
+    if(--next[boxIndex].count===0)next.splice(boxIndex,1);
     for(const reward of selected)if(!add(next,keyFor(reward.id),reward.count,reward.enchant,reward.bless))return false;
     if(!OwnedInventory.applyChange(next))return false;
     boxRolls.delete(cacheKey);
