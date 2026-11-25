@@ -64,9 +64,9 @@ function createGameServer(options={}){
    ids.add(item.uid);int(item.count);
    if(!rule.stackable&&item.count!==1||warehouse&&item.slot)fail(400,'物品堆疊或穿戴資料有誤。');
    if(item.slot){
-    if(!['weapon','weapon2','helm','armor','tshirt','cloak','glove','boots','shield','necklace','belt','earring','ring1','ring2','ring3','ring4'].includes(item.slot)||slots.has(item.slot))fail(400,'穿戴欄位有誤或重複。');
+    if(!['weapon','weapon2','helm','armor','tshirt','pants','cloak','glove','boots','shield','necklace','belt','earring','ring1','ring2','ring3','ring4'].includes(item.slot)||slots.has(item.slot))fail(400,'穿戴欄位有誤或重複。');
     const weaponSlot=item.slot==='weapon'||item.slot==='weapon2'; // weapon2＝戰士右手第二把斧（2026-11-17）
-    if(weaponSlot&&rule.kind!=='weapon'||!weaponSlot&&rule.kind!=='armor')fail(400,'穿戴道具種類不符。');
+    if((item.slot==='pants')!==(rule.type==='pants')||weaponSlot&&rule.kind!=='weapon'||!weaponSlot&&rule.kind!=='armor')fail(400,'穿戴道具種類不符。');
     slots.add(item.slot);
    }
   }

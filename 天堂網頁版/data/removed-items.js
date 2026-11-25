@@ -2,7 +2,7 @@
 // 已移除的道具（2026-11-13 使用者要求）：飛刀類（銀飛刀、飛刀、重飛刀）丟出去打不到，整類拿掉
 //  NPC 商店、天幣商店、怪物掉落都不再出現；玩家身上已有的仍可看到、可出售
 // 2026-11-18 使用者：靈魂石：黑騎士隊長（81017）沒有用途（訓練所沒做）→ 說話之島不再掉落，傳送選單掉落清單也拿掉
-const REMOVED_ITEM_IDS=new Set([40738,40739,40740,39288,81017]);
+const REMOVED_ITEM_IDS=new Set([40738,40739,40740,39288,81017,300317,83031,301,302,303,304,305,306,307,308,309,310,311,312,313,314,315,350133,350134,350135,350136,350137,410191,410192,410193,410194,410195,410196,410197,410198,410199,410200,410201,410202,410203,410204,410205,410206]);
 // 遺忘之島的封印裝備只停掉落，保留道具定義和舊存檔。
 const DROP_ONLY_REMOVED_IDS=new Set([17,18,167,20140,20141,20142,20143]);
 (()=>{const keep=r=>!REMOVED_ITEM_IDS.has(Array.isArray(r)?r[0]:r?.id);
@@ -20,4 +20,4 @@ const DROP_ONLY_REMOVED_IDS=new Set([17,18,167,20140,20141,20142,20143]);
  }
 })();
 // 傳送選單的地區掉落清單（data/portable-teleport-data.js 比這支晚載入，等全部 defer 腳本跑完再清）
-document.addEventListener('DOMContentLoaded',()=>{const names=new Set(INTERFACE_CATALOG.items.filter(i=>i.id===81017||DROP_ONLY_REMOVED_IDS.has(i.id)).map(i=>i.name));for(const r of window.PORTABLE_TELEPORT_ROUTES||[])if(Array.isArray(r.drops))r.drops=r.drops.filter(n=>!names.has(n));});
+document.addEventListener('DOMContentLoaded',()=>{const names=new Set(INTERFACE_CATALOG.items.filter(i=>REMOVED_ITEM_IDS.has(i.id)||DROP_ONLY_REMOVED_IDS.has(i.id)).map(i=>i.name));for(const r of window.PORTABLE_TELEPORT_ROUTES||[])if(Array.isArray(r.drops))r.drops=r.drops.filter(n=>!names.has(n));});

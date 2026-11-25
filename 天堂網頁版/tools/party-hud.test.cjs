@@ -3,8 +3,20 @@ test('隊伍欄呈現 NPC、真人及召喚物血量，換角色不殘留舊 NPC
  function node(){return {style:{},children:[],append(...nodes){this.children.push(...nodes);},replaceChildren(...nodes){this.children=nodes;},setAttribute(k,v){this[k]=v;},getBoundingClientRect:()=>({top:0,left:0,width:500,height:700})};}
  const game=node();game.querySelector=()=>null;const document={createElement:node,querySelector:()=>game},bot={spawn:{npcId:1,npc:{name:'隊友阿明',hp:100}},hp:40,fp:{partyOwner:'hero'}},summon={hp:20,spawn:{npcId:2,npc:{name:'召喚狼',hp:80}}};
  const c={document,gameFlowState:'playing',activeCharacterId:'hero',NpcSocial:{party:[bot]},LocalServerClient:{party:[{id:'player-1',name:'真人隊友',hp:30,maxHp:60,online:true}]},ResizeObserver:class{observe(){}},setInterval(){}};c.window=c;c.Summons={get snapshot(){return c.activeCharacterId==='hero'?[{}]:[];},mobs:[summon]};vm.createContext(c);vm.runInContext(fs.readFileSync(path.join(__dirname,'../data/party-hud.js'),'utf8'),c);
- const data=c.PartyHud.snapshot();assert.equal(data.party.length,2);assert.equal(data.party[0].hp,40);assert.equal(data.summons[0].maxHp,80);const root=game.children[0],bar=root.children[0].children[1].children[1];assert.equal(bar.children[0].style.width,'40%');assert.equal(bar['aria-valuenow'],'40');
- bot.hp=10;c.PartyHud.refresh();assert.equal(root.children[0].children[1].children[1].children[0].style.width,'10%');c.activeCharacterId='other';c.LocalServerClient.party=[];c.PartyHud.refresh();assert.equal(c.PartyHud.snapshot().party.length,0);assert.equal(c.PartyHud.snapshot().summons.length,0);c.gameFlowState='selection';c.PartyHud.refresh();assert(root.hidden);
+ const data=c.PartyHud.snapshot();assert.equal(data.party.length,2);assert.equal(data.party[0].hp,40);assert.equal(data.summons[0].maxHp,80);
+ const root=game.children[0],[controls,panels]=root.children,[party,pet]=controls.children,[partyPanel,petPanel]=panels.children;
+ assert(!root.hidden);assert(panels.hidden);assert(partyPanel.hidden);assert(petPanel.hidden);assert.equal(party['aria-expanded'],'false');
+ party.onclick();assert(!panels.hidden);assert(!partyPanel.hidden);assert(petPanel.hidden);assert.equal(party['aria-expanded'],'true');
+ let bar=partyPanel.children[0].children[1];assert.equal(bar.children[0].style.width,'40%');assert.equal(bar['aria-valuenow'],'40');
+ bot.hp=10;c.PartyHud.refresh();assert.equal(controls.children[0],party);assert(!partyPanel.hidden);
+ bar=partyPanel.children[0].children[1];assert.equal(bar.children[0].style.width,'10%');
+ pet.onclick();assert(!petPanel.hidden);assert.equal(petPanel.children[0].children[1]['aria-valuenow'],'20');
+ party.onclick();assert(partyPanel.hidden);assert(!petPanel.hidden);
+ pet.onclick();assert(panels.hidden);pet.onclick();
+ c.activeCharacterId='other';c.LocalServerClient.party=[];c.PartyHud.refresh();
+ assert.equal(c.PartyHud.snapshot().party.length,0);assert.equal(c.PartyHud.snapshot().summons.length,0);assert(root.hidden);assert(panels.hidden);
+ c.activeCharacterId='hero';c.PartyHud.refresh();assert(!root.hidden);assert(petPanel.hidden);
+ c.gameFlowState='selection';c.PartyHud.refresh();assert(root.hidden);
 });
 test('真人隊伍血量只傳給同隊成員，離隊後移除並區分離線',async()=>{
  const {createGameServer}=require('../data/server/local-test-server.cjs'),server=createGameServer({database:':memory:',settings:{items:{},classes:{騎士:{base:{str:20,dex:15,con:10,wis:10,cha:10,int:10},points:0}}}});await new Promise(r=>server.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+server.address().port;

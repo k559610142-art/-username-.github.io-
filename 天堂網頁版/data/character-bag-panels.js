@@ -170,7 +170,7 @@
   const col=keys=>{const c=el('div','qy-doll-col');for(const k of keys){const b=buttons.get(k);if(b)c.append(b)}return c};
   const right=OwnedInventory.items.some(e=>e.slot==='weapon2')?'weapon2':'shield'; // 右手欄：裝了第二把斧就顯示斧，否則盾牌／臂甲
   // 2026-11-17 使用者：人物狀態／裝備直接用天地劫天堂客戶端的介面圖（Sprite.idx 563c.img，257×336，狀態與裝備同一張）。
-  //  12 個裝備格照原圖位置（左上角座標，格寬 33）；原圖沒有的耳環、第 3～4 枚戒指放在圖下方一排。數值填進原圖的欄位。
+  //  12 個裝備格照原圖位置（左上角座標，格寬 33）；原圖沒有的脛甲、耳環、第 3～4 枚戒指放在圖下方一排。數值填進原圖的欄位。
   const SLOT={helm:[174,33],necklace:[138,55],tshirt:[110,95],armor:[147,95],cloak:[184,95],weapon:[77,133],belt:[160,131],[right]:[199,143],ring1:[80,167],glove:[115,153],ring2:[193,179],boots:[196,265]};
   const sheet=el('div','qy-sheet'),lv=Number(window.activeCharacterLevel)||1,LOCK={ring3:76,ring4:81},X=v=>(v/257*100)+'%',Y=v=>(v/336*100)+'%';
   const put=(cls,text,x,y,w,h,key)=>{const t=el('span','qy-f '+cls,String(text??''));t.style.left=X(x);t.style.top=Y(y);t.style.width=X(w);t.style.height=Y(h);if(key)t.dataset.qyVital=key;sheet.append(t);return t};
@@ -184,7 +184,7 @@
   put('',d.dodge||0,154,300,45,12);
   for(const [k,[sx,sy]]of Object.entries(SLOT)){const b=buttons.get(k);if(!b)continue;b.classList.add('qy-sheet-slot');b.style.setProperty('--x',X(sx));b.style.setProperty('--y',Y(sy));sheet.append(b)}
   box.append(sheet);
-  const extra=el('div','qy-sheet-extra');for(const [k,l]of [['earring','耳環'],['ring3','戒指'],['ring4','戒指']]){const b=buttons.get(k);if(!b)continue;const cell=el('label','qy-extra-cell');cell.append(b,el('span','',l));if(LOCK[k]&&lv<LOCK[k]){b.classList.add('qy-locked');b.append(el('span','qy-slot-lock','Lv.'+LOCK[k]));b.title='Lv.'+LOCK[k]+' 開放';}extra.append(cell)}
+  const extra=el('div','qy-sheet-extra');for(const [k,l]of [['pants','脛甲'],['earring','耳環'],['ring3','戒指'],['ring4','戒指']]){const b=buttons.get(k);if(!b)continue;const cell=el('label','qy-extra-cell');cell.append(b,el('span','',l));if(LOCK[k]&&lv<LOCK[k]){b.classList.add('qy-locked');b.append(el('span','qy-slot-lock','Lv.'+LOCK[k]));b.title='Lv.'+LOCK[k]+' 開放';}extra.append(cell)}
   box.append(extra);return box}
  function padGrid(grid){const items=grid.querySelectorAll('.item-slot:not(.empty)').length,blanks=[...grid.querySelectorAll('.item-slot.empty')],want=Math.max(32,Math.ceil(items/4)*4)-items;
   if(blanks.length===want)return;for(const b of blanks.slice(want))b.remove();for(let i=blanks.length;i<want;i++){const b=el('div','item-slot empty');b.setAttribute('aria-hidden','true');grid.append(b)}}

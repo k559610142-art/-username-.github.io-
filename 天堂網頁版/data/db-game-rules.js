@@ -129,8 +129,9 @@ const DBGameRules = (() => {
   }
   function openBox(uid){
     const entry=OwnedInventory.items.find(e=>e.uid===uid),id=entry?.item.id;
-    const fixed=rows('etcitem_boxs').filter(row=>row.box_item_id===id);
-    const random=rows('etcitem_box').filter(row=>row.box_item_id===id);
+    const availableReward=row=>row.box_item_id===id&&(typeof REMOVED_ITEM_IDS==='undefined'||!REMOVED_ITEM_IDS.has(row.get_item_id));
+    const fixed=rows('etcitem_boxs').filter(availableReward);
+    const random=rows('etcitem_box').filter(availableReward);
     if(!fixed.length&&!random.length)return null;
     const cacheKey=window.activeCharacterId+'/'+uid;
     let selected=boxRolls.get(cacheKey);
@@ -170,6 +171,10 @@ const DBGameRules = (() => {
     const poly=rows('system_poly_orginal').find(r=>r.gfxId===window.activeTransformCard?.p?.gfx);
     return extra+(window.SoulRings?.bonuses()[ranged?'ranged':'melee']||0)+(ranged?set.bow_modifier_dmg||0:set.modifier_dmg||0)+(ranged?poly?.addBowDmg||0:poly?.addDmg||0)+(window.ClassBuffs?.damageBonus(ranged)||0);
   }
+  function weaponSkillChance(skill,enchant=0){
+    if(skill.weapon_id<115200||skill.weapon_id>115207)return skill.probability;
+    return Math.min(100,skill.probability+Math.floor(Math.max(0,enchant)/3));
+  }
   function weaponProc(mob){
     const weapon=OwnedInventory.items.find(e=>e.slot==='weapon');
     if(!weapon)return 0;
@@ -177,7 +182,7 @@ const DBGameRules = (() => {
     const power=rows('weapon_power').find(r=>r.weapon_id===weapon.item.id);
     if(power)damage+=power.add_dmg_min+Math.floor(Math.random()*(power.add_dmg_max-power.add_dmg_min+1));
     for(const row of rows('weapon_skill')){
-      if(row.weapon_id!==weapon.item.id||Math.random()*100>=row.probability)continue;
+      if(row.weapon_id!==weapon.item.id||Math.random()*100>=weaponSkillChance(row,weapon.enchant))continue;
       damage+=row.fix_damage+Math.floor(Math.random()*(row.random_damage+1));
       if(row.effect_id>0)IslandMonsters.playEffect(row.effect_id,mob.x,mob.y,movementTime());
       for(let n=1;n<=5;n++){
@@ -219,7 +224,7 @@ const DBGameRules = (() => {
   return 'item';
  }
   // 2026-11-21 使用者：製作工匠移除 血盟勳章 300000、上古神話變身-劍聖 39264、上古神話變身-疾風精靈王 39263
-  const hiddenCraftItems=new Set([300000,39264,39263,60228,39059,84071,44212,84001,39288,84077,84080,82202,350080,350130,44213,350061,80034,44149,44148,183002,82214,82215,60230,84002,84003,84004,84005,84006,84007,84008,84009,84010,40018,350094,350020,62015,86002,80326,80328,86200,86001,70508,80331,44150,80027,56148,56147,350070,350071,350072,350073,350074,350075,350076,350077,350078,350079,80320,80321,44143,44144,44145,44146,70048,70058,70068,70078,39166,39167,39168,39169,84078,84079,350057,350058,350059,350060,67024,67025,21229,350096,350098,350099]); // 2026-11-16 加：聖誕王者頭飾、耶誕之魔力氣息、耶誕紅襪、耶誕綠襪 // 使用者指定移除的製作成品；依成品編號排除所有重複配方。
+  const hiddenCraftItems=new Set([300000,39264,39263,60228,39059,84071,44212,84001,39288,84077,84080,82202,350080,350130,44213,350061,80034,44149,44148,183002,82214,82215,60230,84002,84003,84004,84005,84006,84007,84008,84009,84010,40018,350094,350020,62015,86002,80326,80328,86200,86001,70508,80331,44150,80027,56148,56147,350070,350071,350072,350073,350074,350075,350076,350077,350078,350079,80320,80321,44143,44144,44145,44146,70048,70058,70068,70078,39166,39167,39168,39169,84078,84079,350057,350058,350059,350060,67024,67025,21229,350096,350098,350099,410300,410301,410302,410303,410304,410305,410306,410307,301,302,303,304,305,306,307,308,309,310,311,312,313,314,315,350133,350134,350135,350136,350137,410191,410192,410193,410194,410195,410196,410197,410198,410199,410200,410201,410202,410203,410204,410205,410206]); // 2026-11-16 加：聖誕王者頭飾、耶誕之魔力氣息、耶誕紅襪、耶誕綠襪 // 使用者指定移除的製作成品；依成品編號排除所有重複配方。
   // 傲慢之塔卷軸與傳送符：包含頂樓、幻象、混亂、異變，統一停止製作。
   const towerCraftItems=new Set([...byId.values()].filter(item=>/傲慢/.test(item.name)&&/卷|捲|傳送符/.test(item.name)).map(item=>item.id));
   // 2026-11-18 使用者：製作工匠新增武魂製作，只開放下品武魂（DB 1189～1191：魔蝙蝠／翼魔／污濁精靈），材料改成武魂結晶 1000（原 DB 500），成功率照原本 100%。其餘武魂配方仍不開放。
@@ -314,7 +319,7 @@ const DBGameRules = (() => {
       document.querySelector('#panelContent').append(craftButton);
     }
   };
-  return {rows,automaticSkills,extraDrops,supplementalDropNames,killRewards,xpMultiplier,starter,useItem,damageBonus,weaponProc,syncVitals,reduction,
+  return {rows,automaticSkills,extraDrops,supplementalDropNames,killRewards,xpMultiplier,starter,useItem,damageBonus,weaponProc,weaponSkillChance,syncVitals,reduction,
     craft,craftRecipes,craftCategory,isElvenCraft,openCrafting,blendClass:role=>BLEND_CLASS[role],addItem:add,takeItem:take,craftNpcs:()=>new Set(craftRecipes().map(r=>r.npcid))};
 })();
 window.DBGameRules=DBGameRules;

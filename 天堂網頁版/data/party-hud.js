@@ -2,7 +2,20 @@
 const PartyHud=(()=>{
  const game=document.querySelector('.game'),root=document.createElement('aside');root.className='party-hud';root.hidden=true;root.setAttribute('aria-label','目前隊伍與召喚怪物');game.append(root);
  const el=(tag,cls,text)=>{const n=document.createElement(tag);n.className=cls;if(text!==undefined)n.textContent=text;return n;};
- let signature='',owner=null;
+ const controls=el('div','party-hud-controls'),panels=el('div','party-hud-panels');
+ const groups=[['party','隊伍'],['summons','寵物']].map(([key,label])=>{
+  const button=el('button','party-hud-toggle'),panel=el('section','party-hud-panel');
+  button.type='button';panel.id='party-hud-'+key;button.setAttribute('aria-controls',panel.id);
+  button.hidden=true;panel.hidden=true;button.setAttribute('aria-expanded','false');
+  button.onclick=()=>{setExpanded({button,panel},panel.hidden);position();};
+  controls.append(button);panels.append(panel);return {key,label,button,panel,signature:''};
+ });
+ root.append(controls,panels);
+ let owner=null;
+ function setExpanded({button,panel},expanded){
+  panel.hidden=!expanded;button.setAttribute('aria-expanded',String(expanded));
+  panels.hidden=groups.every(group=>group.panel.hidden);
+ }
  function snapshot(){
   if(window.gameFlowState!=='playing'||!window.activeCharacterId)return {party:[],summons:[]};
   const party=[];
@@ -16,7 +29,7 @@ const PartyHud=(()=>{
   const chat=['.oh-msg','.qh-chat','.reference-messages'].map(s=>game.querySelector(s)?.getBoundingClientRect()).find(r=>r?.height>0);
   let top=Math.max(8,(hud?.bottom??g.top+110)-g.top+14),bottom=g.height-100;const left=Math.max(6,(hud?.left??g.left+8)-g.left);
   if(chat){if(chat.top>=g.top+top+80)bottom=chat.top-g.top-10;else if(chat.bottom>g.top+top&&chat.bottom<g.top+g.height-100)top=chat.bottom-g.top+10;}
-  root.style.left=left+'px';root.style.top=top+'px';root.style.maxHeight=Math.max(70,bottom-top)+'px';root.style.width=Math.min(210,Math.max(145,g.width*.38))+'px';
+  root.style.left=left+'px';root.style.top=top+'px';root.style.maxHeight=Math.max(70,bottom-top)+'px';root.style.width=panels.hidden?'max-content':Math.min(210,Math.max(145,g.width*.38))+'px';
  }
  function row(member){
   const box=el('div','party-hud-member'+(member.online===false?' offline':'')),line=el('div','party-hud-name');
@@ -24,15 +37,21 @@ const PartyHud=(()=>{
   const known=Number.isFinite(member.hp)&&Number.isFinite(member.maxHp)&&member.maxHp>0,hp=known?Math.max(0,Math.min(member.maxHp,Math.ceil(member.hp))):0,max=known?Math.ceil(member.maxHp):0;
   const bar=el('div','party-hud-bar'),fill=el('i',''),text=el('span','',known?hp+' / '+max:'HP 資料待同步');fill.style.width=(known?hp/max*100:0)+'%';bar.append(fill,text);bar.setAttribute('role','meter');bar.setAttribute('aria-label',(member.name||member.id)+' 血量');if(known){bar.setAttribute('aria-valuemin','0');bar.setAttribute('aria-valuemax',String(max));bar.setAttribute('aria-valuenow',String(hp));}box.append(bar);return box;
  }
- function section(title,members,empty){const section=el('section',''),heading=el('div','party-hud-heading',title+'（'+members.length+'）');section.append(heading);if(members.length)for(const m of members)section.append(row(m));else section.append(el('p','party-hud-empty',empty));return section;}
  function tick(){
-  root.hidden=window.gameFlowState!=='playing';if(root.hidden){signature='';return;}
-  if(owner!==window.activeCharacterId){owner=window.activeCharacterId;signature='';}
-  const data=snapshot(),key=JSON.stringify(data);if(key===signature){root.hidden=!data.party.length&&!data.summons.length;return;}signature=key;
-  // 2026-11-17 使用者：有組隊才顯示「目前隊伍」、有召喚才顯示「召喚怪物」，兩個都沒有就整塊隱藏
-  const parts=[];if(data.party.length)parts.push(section('目前隊伍',data.party,'尚未組隊'));if(data.summons.length)parts.push(section('召喚怪物',data.summons,'目前沒有召喚物'));
-  root.hidden=!parts.length;if(root.hidden)return;
-  const scroll=root.scrollTop;root.replaceChildren(...parts);position();root.scrollTop=scroll;
+  const character=window.gameFlowState==='playing'?window.activeCharacterId:null;
+  if(owner!==character){owner=character;for(const group of groups)setExpanded(group,false);}
+  const data=snapshot();
+  root.hidden=!data.party.length&&!data.summons.length;
+  for(const group of groups){
+   const members=data[group.key],{button,panel}=group;
+   button.hidden=!members.length;
+   if(button.hidden)setExpanded(group,false);
+   else button.textContent=group.label+'（'+members.length+'）';
+   const signature=JSON.stringify(members);
+   if(signature===group.signature)continue;
+   group.signature=signature;panel.replaceChildren(...members.map(row));
+  }
+  if(!root.hidden)position();
  }
  const observer=new ResizeObserver(position);observer.observe(game);for(const node of [game.querySelector(':scope>.hud'),game.querySelector('.oh-msg'),game.querySelector('.qh-chat'),game.querySelector('.reference-messages')])if(node)observer.observe(node);
  setInterval(tick,250);tick();return {snapshot,refresh:tick};

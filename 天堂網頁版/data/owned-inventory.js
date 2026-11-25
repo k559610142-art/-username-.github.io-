@@ -23,10 +23,10 @@ window.OwnedInventory=(()=>{
  }
  const money='etcitem:40308';
  const clone=a=>JSON.parse(JSON.stringify(a)),level=()=>Number(window.activeCharacterLevel)||1;
- const slots=['weapon','weapon2','helm','armor','tshirt','cloak','glove','boots','shield','necklace','belt','earring','ring1','ring2','ring3','ring4'];
+ const slots=['weapon','weapon2','helm','armor','tshirt','pants','cloak','glove','boots','shield','necklace','belt','earring','ring1','ring2','ring3','ring4'];
  // 2026-11-17 右手欄：盾牌、臂甲（guarder，也放 shield 欄）或戰士的第二把單手斧（weapon2），三選一。臂甲可以配雙手武器。
  const isAxe=item=>item?.kind==='weapon'&&!item.twoHand&&/斧/.test(item.name||''),isGuarder=item=>item?.type==='guarder';
- function slotFor(item){if(item.kind==='weapon')return 'weapon';if(item.kind!=='armor')return null;return {helmet:'helm',shirt:'tshirt',gloves:'glove',amulet:'necklace',ring:'ring1',ring2:'ring1',guarder:'shield'}[item.type]||(['helm','armor','tshirt','cloak','glove','boots','shield','necklace','belt','earring'].includes(item.type)?item.type:null)}
+ function slotFor(item){if(item.kind==='weapon')return 'weapon';if(item.kind!=='armor')return null;return {helmet:'helm',shirt:'tshirt',gloves:'glove',amulet:'necklace',ring:'ring1',ring2:'ring1',guarder:'shield'}[item.type]||(['helm','armor','tshirt','pants','cloak','glove','boots','shield','necklace','belt','earring'].includes(item.type)?item.type:null)}
  const definition=e=>catalog.get(e.key),presented=e=>{
   const item=catalog.get(e.key);
   if(e.bless===1&&item?.cursed)return {...item,name:item.baseName||item.name,cursed:false};

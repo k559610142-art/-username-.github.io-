@@ -1,6 +1,6 @@
 // 古典框體與 3.63 物品／魔法資料。穿戴與使用僅接受角色實際持有的物品。
 const interfaceCatalog=window.INTERFACE_CATALOG,previewEquipment=new Map();
-const equipmentSlots=[['necklace','項鍊'],['helm','頭盔'],['earring','耳環'],['cloak','斗篷'],['armor','盔甲'],['tshirt','內衣'],['weapon','左手'],['belt','腰帶'],['shield','右手'],['glove','手套'],['ring1','戒指Ⅰ'],['ring2','戒指Ⅱ'],['ring3','戒指Ⅲ'],['boots','長靴'],['ring4','戒指Ⅳ'],['weapon2','第二把斧']];
+const equipmentSlots=[['necklace','項鍊'],['helm','頭盔'],['earring','耳環'],['cloak','斗篷'],['armor','盔甲'],['tshirt','內衣'],['pants','脛甲'],['weapon','左手'],['belt','腰帶'],['shield','右手'],['glove','手套'],['ring1','戒指Ⅰ'],['ring2','戒指Ⅱ'],['ring3','戒指Ⅲ'],['boots','長靴'],['ring4','戒指Ⅳ'],['weapon2','第二把斧']];
 let classicTab='bag',catalogPage=0,catalogQuery='',catalogKind='all',equipmentOwner='';
 const uiElement=(tag,className,text)=>{const e=document.createElement(tag);if(className)e.className=className;if(text!==undefined)e.textContent=text;return e};
 function itemKey(item){return item.kind+':'+item.id}
@@ -27,7 +27,7 @@ function showItemDetails(item,detail,entry,bringToFront=true,origin){
    if(power)rows.push({label:'武器額外傷害',value:power.add_dmg_min+'～'+power.add_dmg_max});
    for(const skill of DBGameRules.rows('weapon_skill').filter(r=>r.weapon_id===item.id&&r.probability>0)){
     const low=skill.fix_damage,high=low+skill.random_damage;
-    rows.push({label:'武器效果',value:skill.probability+'% 發動 · 額外傷害 '+(high===low?low:low+'～'+high)});
+    rows.push({label:'武器效果',value:DBGameRules.weaponSkillChance(skill,entry.enchant)+'% 發動 · 額外傷害 '+(high===low?low:low+'～'+high)});
    }
   }
   for(const set of EquipmentSets.definitions.filter(s=>s.keys.includes(entry.key)&&s.keys.length>1)){
