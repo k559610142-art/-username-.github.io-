@@ -43,6 +43,7 @@ for(const r of rows){
  if(!supported[r.mapid]||r.itemid!==40308||!Number.isSafeInteger(r.price)||r.price<0)continue;
  if(r.mapid>=101&&r.mapid<=200&&r.id!==368)continue; // 傲慢之塔 2～10 樓只能用卷軸上去
  if(r.mapid===807)continue; // 2026-11-22 使用者：狩獵場移除新古魯丁地監
+ if(r.id>=357&&r.id<=365)continue; // 狩獵場移除時空裂痕 1–9
  let category=r.orderid==='B'?'village':/島/.test(r.name)?'island':r.mapid===4&&!/地監|洞穴|洞窟|地下|墓穴|之塔|象牙塔/.test(r.name)?'field':'dungeon',group=null;
  const g=r.mapid!==4&&r.mapid!==0&&category!=='village'?groupOf.get(r.mapid):null;if(g){category=g.category;group=g.group;}
  if(r.id===110){category='island';group='霧月島';}

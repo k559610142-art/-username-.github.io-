@@ -106,6 +106,7 @@ const NativePotions=(()=>{
   function canUseForClass(handler,parameters){
     if(handler.startsWith('brave.StatusElfBrave'))return job==='妖精';
     if(!handler.startsWith('brave.'))return true;
+    if(handler.startsWith('brave.StatusWisdomPotion')&&job==='幻術師')return true;
     const allowed=Number(parameters[2]);
     return Number.isInteger(allowed)&&!!(allowed&flags[job]);
   }
