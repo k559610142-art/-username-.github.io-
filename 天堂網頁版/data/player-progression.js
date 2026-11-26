@@ -25,11 +25,15 @@ const PlayerProgression = (() => {
     const day=parts.find(p=>p.type==='weekday').value,hour=+parts.find(p=>p.type==='hour').value;
     return day==='Sat'||day==='Sun'||day==='Fri'&&hour>=19||day==='Mon'&&hour<7;
   }
+  function dropAllowedOnMap(mob,id){
+    const map=mob.spawn.mapId??window.activeMapId??0;
+    return map!==1700||(id!==56466&&(id<67005||id>67012));
+  }
   function dropInfo(mob){
     const result=[],weekendRate=rates.weekend&&weekend()?rates.WeekendRateDropItems:1;
     const groups=[['monster',drops[mob.spawn.npcId]||[]],['region',DBGameRules.extraDrops(mob)]];
     for(const [source,list]of groups)for(const drop of list){
-      if(drop.id===39288||/娃娃/.test(catalog.get(drop.id)?.name||'')||(typeof REMOVED_ITEM_IDS!=='undefined'&&REMOVED_ITEM_IDS.has(drop.id))||(typeof DROP_ONLY_REMOVED_IDS!=='undefined'&&DROP_ONLY_REMOVED_IDS.has(drop.id)))continue;
+      if(!dropAllowedOnMap(mob,drop.id)||drop.id===39288||/娃娃/.test(catalog.get(drop.id)?.name||'')||(typeof REMOVED_ITEM_IDS!=='undefined'&&REMOVED_ITEM_IDS.has(drop.id))||(typeof DROP_ONLY_REMOVED_IDS!=='undefined'&&DROP_ONLY_REMOVED_IDS.has(drop.id)))continue;
       const item=catalog.get(drop.id);if(!item||!(drop.chance>0))continue;const coin=drop.id===40308,multiplier=drop.fixedRate||coin?1:rates.RateDropItems*weekendRate;
       result.push({id:drop.id,key:item.kind+':'+item.id,name:item.name,icon:item.icon,source,chance:Math.min(1000000,drop.chance*multiplier),baseChance:drop.chance,min:Math.floor(Math.min(drop.min,drop.max)*(coin?rates.RateDropAdena:1)),max:Math.floor(Math.max(drop.min,drop.max)*(coin?rates.RateDropAdena:1))});
     }return result;
@@ -37,7 +41,7 @@ const PlayerProgression = (() => {
   function roll(mob){
     const loot=[],weekendRate=rates.weekend&&weekend()?rates.WeekendRateDropItems:1;
     for(const drop of [...(drops[mob.spawn.npcId]||[]),...DBGameRules.extraDrops(mob)]){
-      if(drop.id===39288||/娃娃/.test(catalog.get(drop.id)?.name||'')||(typeof REMOVED_ITEM_IDS!=='undefined'&&REMOVED_ITEM_IDS.has(drop.id))||(typeof DROP_ONLY_REMOVED_IDS!=='undefined'&&DROP_ONLY_REMOVED_IDS.has(drop.id)))continue;
+      if(!dropAllowedOnMap(mob,drop.id)||drop.id===39288||/娃娃/.test(catalog.get(drop.id)?.name||'')||(typeof REMOVED_ITEM_IDS!=='undefined'&&REMOVED_ITEM_IDS.has(drop.id))||(typeof DROP_ONLY_REMOVED_IDS!=='undefined'&&DROP_ONLY_REMOVED_IDS.has(drop.id)))continue;
       const item=catalog.get(drop.id);
       if(!item)throw Error('掉落道具不存在：'+drop.id);
       const coin=drop.id===40308;
