@@ -7,9 +7,21 @@ const CraftingWindow=(()=>{
  const byId=new Map(INTERFACE_CATALOG.items.map(i=>[i.id,i]));
  const split=v=>String(v??'').split(',').filter(Boolean).map(Number);
  const roleCode={'王族':0,'騎士':1,'法師':2,'妖精':3};
- // 2026-11-16 使用者要求移除「全部」分頁：預設開「可製作」；有輸入搜尋字時跨所有分頁找。
+ // 預設開「可製作」。武器、防具與精靈製作各自在目前分類內搜尋。
  const TABS=[['can','可製作'],['elf','精靈製作'],['weapon','武器'],['armor','防具'],['acc','飾品'],['arrow','箭矢'],['rune','符石'],['potion','藥品'],['scroll','卷軸'],['gem','魔石'],['material','材料'],['pet','寵物'],['wuhun','武魂'],['item','道具']]; // 武魂分頁 2026-11-18：只有下品武魂（武魂結晶×1000）
  const category=item=>item.type==='arrow'?'arrow':DBGameRules.craftCategory(item);
+ const equipmentTabs={
+  weapon:[
+   ['匕首','dagger'],['單手劍','sword'],['雙手劍','tohandsword'],
+   ['斧錘','blunt','tohandblunt'],['長矛','spear','singlespear'],
+   ['弓','bow','singlebow'],['法杖','staff','tohandstaff'],
+   ['雙刀','edoryu'],['鋼爪','claw'],['鎖鏈劍','chainsword'],['奇古獸','kiringku']
+  ],
+  armor:[
+   ['頭盔','helm'],['盔甲','armor'],['內衣','tshirt'],['斗篷','cloak'],
+   ['手套','glove'],['盾牌','shield'],['長靴','boots'],['脛甲','pants'],['臂甲','guarder']
+  ]
+ };
  const elvenGroups=['weapon','armor','acc','arrow','potion','material','item'];
  const tabLabel=new Map(TABS);
  const soulTiers=['下品','上品','極品','千年','萬年','上古','四神獸'];
@@ -46,6 +58,9 @@ const CraftingWindow=(()=>{
  .craft-tabs{flex:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(62px,1fr));gap:5px;margin:8px 0 6px}
  .craft-tabs button{min-height:0!important;height:30px;padding:0!important;font-size:13px!important;background:linear-gradient(#24262a,#1a1b1e)!important;color:#cbbd9c!important;border:1px solid #3d3a33!important;border-radius:6px!important}
  .craft-tabs button[aria-selected=true]{background:linear-gradient(#5a4726,#3a2e19)!important;color:#ffe2a0!important;border-color:#b08d4c!important}
+ .craft-subtabs{display:grid;grid-template-columns:repeat(auto-fit,minmax(56px,1fr));gap:4px;margin:2px 0 8px}
+ .craft-subtabs[hidden]{display:none}
+ .craft-subtabs button{height:27px;font-size:12px!important;white-space:nowrap}
  .craft-search{flex:none;height:32px;box-sizing:border-box;margin-bottom:8px;padding:0 10px!important;font-size:13px;background:#0e0f11!important;border:1px solid #3d3a33!important;border-radius:6px;color:#e6dcc2!important}
  .craft-grid{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));grid-auto-rows:auto;gap:7px;align-content:start;padding-top:6px;border-top:1px solid #2c2a25;scrollbar-width:thin;scrollbar-color:#7a6740 #121416}
  .craft-card{position:relative;display:flex!important;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;height:98px!important;min-height:0!important;max-height:none!important;width:auto!important;box-sizing:border-box;padding:8px 4px 6px!important;background:linear-gradient(#1d1e21,#151618)!important;border:1px solid #34312b!important;border-radius:8px!important;color:#e8dcc0!important}
@@ -84,10 +99,36 @@ const CraftingWindow=(()=>{
  .craft-mat>.craft-item-properties{flex-basis:100%;margin:3px 0}
  .craft-result{margin-top:8px;text-align:center;font-size:13px;color:#f0dcae;min-height:18px}`;document.head.append(css);
 
- let win=null,tab='can',query='',body=null,tabsBox=null,search=null,current=null;
+ let win=null,tab='can',subtab=0,query='',body=null,tabsBox=null,subtabsBox=null,search=null,current=null;
+ function showSubtabs(){
+  const groups=equipmentTabs[tab];
+  subtabsBox.hidden=!groups;
+  subtabsBox.replaceChildren();
+  if(!groups)return;
+  for(const [index,[label]] of [['全部'],...groups].entries()){
+   const button=el('button','',label);
+   button.type='button';
+   button.setAttribute('aria-pressed',String(index===subtab));
+   button.setAttribute('aria-selected',String(index===subtab));
+   button.onclick=()=>{
+    subtab=index;
+    current=null;
+    body.firstChild.scrollTop=0;
+    for(const [i,b] of Array.from(subtabsBox.children).entries()){
+     b.setAttribute('aria-pressed',String(i===subtab));
+     b.setAttribute('aria-selected',String(i===subtab));
+    }
+    render();
+   };
+   subtabsBox.append(button);
+  }
+ }
  function card(x){const b=el('button','craft-card'+(craftable(x)?' ok':''));b.type='button';b.append(pic(x.item,x.cat),el('span','nm',x.r.note||x.item.name));b.title=x.item.name+' · '+npcName(x);b.onclick=()=>{current=x;render();};return b;}
  function list(){
-  const q=query.trim().toLowerCase(),out=load().filter(x=>{
+  const q=query.trim().toLowerCase(),groups=equipmentTabs[tab];
+  const types=subtab ? groups?.[subtab-1]?.slice(1) : null;
+  const out=load().filter(x=>{
+    if(groups)return x.cat===tab&&(!types||types.includes(x.item.type))&&(!q||x.text.includes(q));
     if(tab==='elf')return x.elven&&(!q||x.text.includes(q));
     return q?x.text.includes(q):tab==='can'?craftable(x):x.cat===tab;
   });
@@ -112,9 +153,10 @@ const CraftingWindow=(()=>{
  function open(){if(window.gameFlowState!=='playing')return false;if(win){win.style.zIndex=String(FloatingWindows.frontLevel());return true;}
   win=el('section','craft-window');win.setAttribute('role','dialog');win.setAttribute('aria-label','製作工匠');win.style.zIndex=String(FloatingWindows.frontLevel());
   const h=el('div','craft-head'),x=el('button','','✕');x.type='button';x.setAttribute('aria-label','關閉製作');x.onclick=close;h.append(el('h2','','製作工匠'),x);
-  tabsBox=el('div','craft-tabs');for(const [k,l] of TABS){if(k!=='can'&&!load().some(x=>k==='elf'?x.elven:x.cat===k))continue;const b=el('button','',l);b.type='button';b.dataset.tab=k;b.onclick=()=>{tab=k;current=null;render();};tabsBox.append(b);}
+  tabsBox=el('div','craft-tabs');for(const [k,l] of TABS){if(k!=='can'&&!load().some(x=>k==='elf'?x.elven:x.cat===k))continue;const b=el('button','',l);b.type='button';b.dataset.tab=k;b.onclick=()=>{if(tab!==k)subtab=0;tab=k;current=null;showSubtabs();body.firstChild.scrollTop=0;render();};tabsBox.append(b);}
+  subtabsBox=el('div','craft-tabs craft-subtabs');subtabsBox.setAttribute('role','group');subtabsBox.setAttribute('aria-label','裝備種類');
   search=el('input','craft-search');search.type='search';search.placeholder='搜尋道具、材料、NPC';search.value=query;search.oninput=()=>{query=search.value;current=null;render();};
-  body=el('div');body.style.cssText='flex:1;min-height:0;display:flex;flex-direction:column';win.append(h,tabsBox,search,body);game.append(win);render();return true;}
+  body=el('div');body.style.cssText='flex:1;min-height:0;display:flex;flex-direction:column';win.append(h,tabsBox,subtabsBox,search,body);game.append(win);showSubtabs();render();return true;}
  function close(){win?.remove();win=null;current=null;}
  addEventListener('keydown',e=>{if(e.key==='Escape'&&win)close();});
  return {open,close,get count(){return load().length;}};
