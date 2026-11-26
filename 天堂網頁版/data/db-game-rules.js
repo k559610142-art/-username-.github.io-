@@ -51,10 +51,15 @@ const DBGameRules = (() => {
   function extraDrops(mob){
     const map=mob?.spawn?.mapId??window.activeMapId??0;
     const added=addedMapDrops.get(map);
+    const spawn=mob?.spawn;
+    const template=spawn&&(spawn.npc?.name?spawn.npc:typeof islandMonsterTemplates!=='undefined'?islandMonsterTemplates[spawn.npcId]:null);
+    const boss=spawn&&!spawn.resident&&!spawn.ally&&!spawn.bot&&(spawn.boss||/BOSS/i.test(template?.name||''));
+    const proof=39189;
     return [
       // 2026-11-18 使用者：武魂結晶（39287）掉落提高 → 0.5% 改 5%（50000／1000000），數量仍 1～3；平均約 1 萬隻怪做一個下品武魂（結晶×1000）
       ...rows('怪物掉落全圖設置').map(row=>({id:row['道具'],min:row['最小量'],max:row['最大量'],chance:row['道具']===39287?50000:row['機率'],fixedRate:true})),
-      ...rows('droplist_map').filter(row=>row.mapid===map).map(row=>({id:row.itemid,min:row.min,max:row.max,chance:row.chance})),
+      ...rows('droplist_map').filter(row=>row.mapid===map&&(!boss||row.itemid!==proof)).map(row=>({id:row.itemid,min:row.min,max:row.max,chance:row.chance})),
+      ...(boss?[{id:proof,min:1,max:1,chance:200000,fixedRate:true}]:[]),
       ...(dragonCaveMaterials.get(map)||[]).map(id=>({id,min:1,max:1,chance:20000,fixedRate:true})),
       ...(added?.ids.map(id=>({id,min:1,max:1,chance:added.chance,fixedRate:true}))||[]),
       ...(window.LevelQuests?.drops(mob)||[]) // 等級任務補的掉落（data/level-quests.js）

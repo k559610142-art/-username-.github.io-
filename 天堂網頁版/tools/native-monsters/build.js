@@ -16,7 +16,7 @@ for (let i = 0; i < args.length; i++) { if (args[i] === '--client') opt.client =
 const game = {}; vm.createContext(game);
 vm.runInContext(fs.readFileSync(path.join(ROOT, 'data/island-monster-data.js'), 'utf8').replace(/^const (\w+)\s*=/gm, 'var $1='), game);
 vm.runInContext(fs.readFileSync(path.join(ROOT, 'data/native-dungeon-maps.js'), 'utf8').replace(/window\./g, 'this.'), game);
-if(opt.maps){game.nativeMonsterFiles=new Set();vm.runInContext(fs.readFileSync(path.join(ROOT,'data/dungeon-monster-data.js'),'utf8'),game);}
+if(opt.maps){vm.runInContext(fs.readFileSync(path.join(ROOT, 'data/monster-action-index.js'), 'utf8'),game);game.nativeMonsterFiles=new Set();vm.runInContext(fs.readFileSync(path.join(ROOT,'data/dungeon-monster-data.js'),'utf8'),game);}
 const templates = game.islandMonsterTemplates, existing = game.islandMonsterFrames, groups = game.islandMonsterGroups;
 function table(file) { const c = { GameDatabase: { register: (n, cols, rows) => { c.T = { cols, rows }; } } }; vm.createContext(c); vm.runInContext(fs.readFileSync(path.join(ROOT, 'data/database', file), 'utf8'), c); return c.T.rows.map(r => Object.fromEntries(c.T.cols.map((col, i) => [col.name, r[i]]))); }
 

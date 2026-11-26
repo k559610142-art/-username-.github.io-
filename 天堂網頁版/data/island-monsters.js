@@ -40,11 +40,11 @@ const IslandMonsters = (() => {
     image.onload=()=>{if(image.decode)image.decode().then(ready,ready);else ready();};
     sheets.set(file,image);
     const src=(typeof nativeMonsterFiles!=='undefined'&&nativeMonsterFiles.has(file)?'assets/native-monsters/':'assets/island-monsters-v2/')+file+(/^monster-(layer|death)-1820-/.test(file)?'?v=screen-body2':'');
-    if(!/^dungeon-mob-1791-\d+\.png$/.test(file)){
+    if(!/^dungeon-mob-(?:1791|2738|2741|2747|2749|4017|4024|4025|4028|4029|4030)-\d+\.png$/.test(file)){
       image.src=src;
       return image;
     }
-    // 不死鳥圖集的火焰以黑底加色，轉成透明圖層後再繪入怪物畫布。
+    // 不死鳥與精靈的發光圖集以黑底加色，轉成透明圖層後再繪入怪物畫布。
     const source=new Image();
     source.onload=()=>{
       const canvas=document.createElement('canvas');
