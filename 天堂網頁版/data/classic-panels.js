@@ -11,14 +11,71 @@ function slotForItem(item){return OwnedInventory.slotFor(item)}
 function equipPreviewItem(item){const row=OwnedInventory.items.find(e=>itemKey(e.item)===itemKey(item)&&!e.slot)||OwnedInventory.items.find(e=>itemKey(e.item)===itemKey(item));if(!row){toast('背包中沒有這個物品。');return false}return OwnedInventory.use(row.uid)}
 function removePreviewItem(slot){const row=OwnedInventory.items.find(e=>e.slot===slot);return row?OwnedInventory.unequip(row.uid):false}
 function previewArmorClass(){if(window.NativeCombatRules)return NativeCombatRules.armorClass();const items=OwnedInventory.items;return 10+EquipmentSets.read(items).ac+items.filter(e=>e.slot&&e.item.kind==='armor').reduce((n,e)=>n+e.item.ac-(e.enchant||0),0)}
-function itemIcon(item){if(item.icon){const img=uiElement('img');img.src=item.icon;img.alt='';img.loading='lazy';img.decoding='async';img.onerror=()=>img.replaceWith(uiElement('span','missing-item-icon',item.name?.slice(0,1)||'◇'));return img}return uiElement('span','missing-item-icon',item.name?.slice(0,1)||'◇')}
+function isBlessedEquipment(item){
+ return item.blessed&&!item.unidentified&&!item.cursed&&(item.kind==='weapon'||item.kind==='armor');
+}
+const blessedEquipmentIcons=new Map();
+function drawBlessedEquipmentIcon(img){
+ const source=img.src,canvas=document.createElement('canvas');
+ const width=img.naturalWidth,height=img.naturalHeight;
+ if(!width||!height)return;
+ canvas.width=width+4;canvas.height=height+4;
+ const ctx=canvas.getContext('2d');
+ if(!ctx)return;
+ for(const [x,y] of [[0,2],[1,1],[2,0],[3,1],[4,2],[3,3],[2,4],[1,3]])ctx.drawImage(img,x,y);
+ ctx.globalCompositeOperation='source-in';
+ const rainbow=ctx.createLinearGradient(0,canvas.height,canvas.width,0);
+ const colors=['#ff5976','#ff975d','#ffe779','#86ef96','#57ddf5','#8499ff','#db79ff'];
+ colors.forEach((color,index)=>rainbow.addColorStop(index/(colors.length-1),color));
+ ctx.fillStyle=rainbow;ctx.fillRect(0,0,canvas.width,canvas.height);
+ ctx.globalCompositeOperation='source-over';ctx.drawImage(img,2,2);
+ try{
+  const url=canvas.toDataURL();
+  blessedEquipmentIcons.set(source,url);
+  img.src=url;
+ }catch{/* 原始圖無法匯出時，保留原圖。 */}
+}
+function itemIcon(item){
+ if(!item.icon)return uiElement('span','missing-item-icon',item.name?.slice(0,1)||'◇');
+ const img=uiElement('img');
+ img.src=item.icon;img.alt='';img.loading='lazy';img.decoding='async';
+ if(isBlessedEquipment(item)){
+  const cached=blessedEquipmentIcons.get(img.src);
+  if(cached)img.src=cached;
+  else img.addEventListener('load',()=>drawBlessedEquipmentIcon(img),{once:true});
+ }
+ img.onerror=()=>img.replaceWith(uiElement('span','missing-item-icon',item.name?.slice(0,1)||'◇'));
+ return img;
+}
 function makeClassicWindow(title){const pane=uiElement('section','classic-window'),head=uiElement('header','classic-window-header'),h=uiElement('h2','',title),close=uiElement('button','classic-close','×');close.type='button';close.setAttribute('aria-label','關閉'+title);close.onclick=closePanel;head.append(h,close);pane.append(head);return pane}
+function itemNameText(tag,className,text,item){
+ const node=uiElement(tag,className,text);
+ if(item.unidentified)return node;
+ if(item.cursed)node.classList.add('item-name-cursed');
+ else if(item.blessed&&(item.kind==='weapon'||item.kind==='armor'||item.type==='scroll'))node.classList.add('item-name-blessed');
+ return node;
+}
+const itemNameStyle=document.createElement('style');
+itemNameStyle.textContent=`
+ .item-name-cursed{color:#ff6269!important}
+ .item-name-blessed{color:#ffe095!important}
+ @supports (background-clip:text){
+  .item-name-blessed{
+   background-image:linear-gradient(105deg,#ff8585,#ffc482,#fff29a,#a9ffa5,#8df1ff,#a9b8ff,#efa8ff,#ff8585);
+   background-size:260% 100%;background-clip:text;color:transparent!important;text-shadow:none!important;
+   animation:blessed-item-shimmer 4.5s linear infinite alternate
+  }
+ }
+ @keyframes blessed-item-shimmer{to{background-position:100% 50%}}
+ @media (prefers-reduced-motion:reduce){.item-name-blessed{animation:none}}
+`;
+document.head.append(itemNameStyle);
 function showItemDetails(item,detail,entry,bringToFront=true,origin){
  detail.replaceChildren();
  const heading=uiElement('div','classic-detail-heading'),picture=itemIcon(item);
  if(picture.tagName==='IMG')picture.loading='eager';
  const attributePrefix=item.attribute?item.attribute.name+' ':'';
- heading.append(picture,uiElement('strong','',attributePrefix+(entry.enchant?(entry.enchant>0?'+':'')+entry.enchant+' ':'')+item.name));
+ heading.append(picture,itemNameText('strong','',attributePrefix+(entry.enchant?(entry.enchant>0?'+':'')+entry.enchant+' ':'')+item.name,item));
  detail.append(heading,uiElement('p','','數量 '+entry.count+(entry.slot?' · 已穿戴':'')));
  const equipment=item.kind==='weapon'||item.kind==='armor';
  if(equipment){

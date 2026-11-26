@@ -126,7 +126,7 @@ window.WarehouseWindow = (() => {
         row.title=caption;
         row.setAttribute('aria-label',(withdraw?'取出 ':'存入 ')+caption);
         const marker=entry.locked?'鎖定':entry.slot?'已穿戴':entry.count>1?entry.count.toLocaleString():'';
-        row.append(itemIcon(entry.item),element('span','warehouse-item-name',caption),element('small','',marker));
+        row.append(itemIcon(entry.item),itemNameText('span','warehouse-item-name',caption,entry.item),element('small','',marker));
         row.disabled=!movable(entry);
         return row;
       }));

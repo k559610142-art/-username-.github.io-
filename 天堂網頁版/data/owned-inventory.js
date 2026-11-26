@@ -22,6 +22,7 @@ window.OwnedInventory=(()=>{
   });
  }
  const money='etcitem:40308';
+ const visiblyTypedScroll=key=>/^etcitem:(?:[12])?400(?:74|87)$/.test(key);
  const clone=a=>JSON.parse(JSON.stringify(a)),level=()=>Number(window.activeCharacterLevel)||1;
  const slots=['weapon','weapon2','helm','armor','tshirt','pants','cloak','glove','boots','shield','necklace','belt','earring','ring1','ring2','ring3','ring4'];
  // 2026-11-17 右手欄：盾牌、臂甲（guarder，也放 shield 欄）或戰士的第二把單手斧（weapon2），三選一。臂甲可以配雙手武器。
@@ -29,8 +30,8 @@ window.OwnedInventory=(()=>{
  function slotFor(item){if(item.kind==='weapon')return 'weapon';if(item.kind!=='armor')return null;return {helmet:'helm',shirt:'tshirt',gloves:'glove',amulet:'necklace',ring:'ring1',ring2:'ring1',guarder:'shield'}[item.type]||(['helm','armor','tshirt','pants','cloak','glove','boots','shield','necklace','belt','earring'].includes(item.type)?item.type:null)}
  const definition=e=>catalog.get(e.key),presented=e=>{
   let item=catalog.get(e.key);
-  if(e.bless===1&&item?.cursed)item={...item,name:item.baseName||item.name,cursed:false};
-  else if(e.unid&&item?.baseName)item={...item,name:item.baseName,icon:item.baseIcon||item.icon,unidentified:true};
+  if(e.bless===1&&item?.cursed)item={...item,name:item.baseName||item.name,icon:item.baseIcon||item.icon,cursed:false};
+  else if(e.unid&&!visiblyTypedScroll(e.key)&&item?.baseName)item={...item,name:item.baseName,icon:item.baseIcon||item.icon,unidentified:true};
   const attribute=window.ItemEffects?.elementInfo(e);
   return attribute?{...item,attribute}:item;
  },config=e=>({...rules.definitions[e.key],bless:e.bless??rules.definitions[e.key]?.bless});
@@ -132,8 +133,9 @@ window.OwnedInventory=(()=>{
  function addItems(next,key,count,unid=false){
   if(!Number.isSafeInteger(count)||count<=0||count>2147483647)return false;
   const r=rules.definitions[key];if(!catalog.has(key)||!r)return false;let uid;
-  unid=!!(unid&&catalog.get(key)?.baseName);const same=e=>e.key===key&&!!e.unid===unid;
-  if(r.stackable&&next.some(same)){const e=next.find(same);if(e.count+count>2147483647)return false;e.count+=count;uid=e.uid}
+  const visible=visiblyTypedScroll(key);
+  unid=!!(unid&&!visible&&catalog.get(key)?.baseName);const same=e=>e.key===key&&(visible||!!e.unid===unid);
+  if(r.stackable&&next.some(same)){const e=next.find(same);if(e.count+count>2147483647)return false;if(visible)delete e.unid;e.count+=count;uid=e.uid}
   else{if(next.length+(r.stackable?1:count)>=rules.maxSizeExclusive){toast('背包容量不足。');return false}for(let i=0;i<(r.stackable?1:count);i++){uid=nextItemUid(next);next.push(unid?{uid,key,count:r.stackable?count:1,slot:null,unid:true}:{uid,key,count:r.stackable?count:1,slot:null})}}
   return uid;
  }

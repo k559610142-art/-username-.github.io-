@@ -4,4 +4,10 @@
 (()=>{
  const MAP={'assets/interface/items/etcitem-467.png':'items-etcitem-467','assets/interface/items/etcitem-468.png':'items-etcitem-468','assets/interface/items/etcitem-472.png':'items-etcitem-472','assets/interface/items/etcitem-471.png':'items-etcitem-471','assets/interface/items/etcitem-473.png':'items-etcitem-473','assets/interface/client-icons/470.png':'client-icons-470','assets/interface/client-icons/1686.png':'client-icons-1686','assets/interface/client-icons/1687.png':'client-icons-1687','assets/interface/client-icons/1693.png':'client-icons-1693','assets/interface/client-icons/1690.png':'client-icons-1690'};
  for(const item of INTERFACE_CATALOG.items){if(!item.blessed||item.type!=='scroll'||!MAP[item.icon])continue;item.baseIcon=item.icon;item.icon='assets/interface/items/blessed/'+MAP[item.icon]+'.png?v=1';}
+ const cursedScrolls=new Map([[240074,'etcitem-467'],[240087,'etcitem-468']]);
+ for(const item of INTERFACE_CATALOG.items){
+  if(!item.cursed||item.kind!=='etcitem'||!cursedScrolls.has(item.id))continue;
+  item.baseIcon=item.icon;
+  item.icon='assets/interface/items/cursed/'+cursedScrolls.get(item.id)+'.png';
+ }
 })();
