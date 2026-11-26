@@ -25,12 +25,14 @@ const AssistSystem=(()=>{
  const BUY_ICON={tp:'etcitem:40100',home:'etcitem:40081',haste:'etcitem:40018',brave:'etcitem:40014',wisdom:'etcitem:40016',blue:'etcitem:40015',arrow:'etcitem:40743',cake:'etcitem:49138',meat:'etcitem:40056',barrier:'etcitem:40889',antidote:'etcitem:40017'};
  const BUYS=[['tp','一般瞬間移動卷軸',10],['home','傳送回家的卷軸',5],['haste','綠色藥水',5],['brave','二段加速',5],['cake','巧克力蛋糕（三段加速）',5],['meat','肉',20],['barrier','魔法屏障卷軸',5],['antidote','解毒藥水',5],['wisdom','慎重藥水',5],['blue','藍色藥水',5],['arrow','箭（裝備弓時）',1000]];
  const DIRECT_BUYS=new Set([...POTIONS.map(([key])=>key),'meat','antidote','barrier']);
- const base=()=>({retaliateRed:false,noMobTp:false,noMobSec:10,tpScrollType:'normal',potions:Object.fromEntries(POTIONS.map(([k])=>[k,false])),attackOn:false,attackSkill:null,attackMp:30,buffs:[],list:{},escape:false,healFallback:false,arrowBuyKey:ARROW_KEYS[0],cureOn:false,cureMethod:CURES[0][0],morph:false,morphCard:null,morphLost:false,openOn:false,openSkill:null,openMp:50,aoeOn:false,aoeSkill:null,aoeRange:3,aoeCount:3,aoeMp:50,mindOn:false,mindHp:80,mindMp:40,summonOn:false,ringOn:false,expAuto:false,barrierScroll:false,eatOn:false,eatAt:30,returnOn:false,returnHp:80,returnSpot:null,fullOn:false,fullWeight:80,fullSlots:10,fullAct:'home',presets:[null,null,null],dangerOn:false,dangerBoss:true,dangerPlayer:'red',dangerRange:8,dollOn:false,dollId:null,pick:Object.fromEntries(POTIONS.map(([k])=>[k,null])),buy:Object.fromEntries(BUYS.map(([k,,n])=>[k,{on:false,n}]))});
+ const base=()=>({huntPoint:null,retaliateRed:false,noMobTp:false,noMobSec:10,tpScrollType:'normal',potions:Object.fromEntries(POTIONS.map(([k])=>[k,false])),attackOn:false,attackSkill:null,attackMp:30,buffs:[],list:{},escape:false,healFallback:false,arrowBuyKey:ARROW_KEYS[0],cureOn:false,cureMethod:CURES[0][0],morph:false,morphCard:null,morphLost:false,openOn:false,openSkill:null,openMp:50,aoeOn:false,aoeSkill:null,aoeRange:3,aoeCount:3,aoeMp:50,mindOn:false,mindHp:80,mindMp:40,summonOn:false,ringOn:false,expAuto:false,barrierScroll:false,eatOn:false,eatAt:30,returnOn:false,returnHp:80,returnSpot:null,fullOn:false,fullWeight:80,fullSlots:10,fullAct:'home',presets:[null,null,null],dangerOn:false,dangerBoss:true,dangerPlayer:'red',dangerRange:8,dollOn:false,dollId:null,pick:Object.fromEntries(POTIONS.map(([k])=>[k,null])),buy:Object.fromEntries(BUYS.map(([k,,n])=>[k,{on:false,n}]))});
  let stoneQueue=null;
  let buyOpen=false;
  let state=base(),owner='',dialog=null,tab='hunt',idleSince=0,lastTp=0,retry=new Map(),escapes=[],lostMorph=null,seenMorph=null,lastOpen=null;
  const int=(v,lo,hi,d)=>Number.isInteger(v)?Math.max(lo,Math.min(hi,v)):d;
  function validate(v){const s=base();if(!v||typeof v!=='object')return s;
+  const anchor=v.huntPoint;
+  if(anchor&&Number.isSafeInteger(anchor.mapId)&&Number.isSafeInteger(anchor.x)&&Number.isSafeInteger(anchor.y))s.huntPoint={mapId:anchor.mapId,x:anchor.x,y:anchor.y};
   if(['auto','normal','blessed'].includes(v.tpScrollType))s.tpScrollType=v.tpScrollType;s.noMobTp=v.noMobTp===true;s.noMobSec=int(v.noMobSec,3,60,10);for(const k of Object.keys(s.potions))s.potions[k]=v.potions?.[k]===true;
   s.attackOn=v.attackOn===true;s.attackSkill=Number.isInteger(v.attackSkill)&&playerSkillData.skills[v.attackSkill]?v.attackSkill:null;s.attackMp=int(v.attackMp,0,99,30);
   s.buffs=Array.isArray(v.buffs)?[...new Set(v.buffs.filter(id=>Number.isInteger(id)&&playerSkillData.skills[id]))]:[];
@@ -238,7 +240,7 @@ const AssistSystem=(()=>{
   const tpNames=Object.entries(mapList()).filter(([,m])=>m==='tp').map(([n])=>n);
   if(tpNames.length&&IslandMonsters.around(worldX,worldY,8).some(m=>tpNames.includes(m.spawn.npc.name))&&teleport())return;
   // 沒怪自動瞬移
-  if(auto&&state.noMobTp){if(IslandMonsters.target?.hp||!idleSince)idleSince=now;else if(now-idleSince>=state.noMobSec*1000){idleSince=now;if(teleport())return;}}else idleSince=0;
+  if(auto&&state.noMobTp&&!state.huntPoint){if(IslandMonsters.target?.hp||!idleSince)idleSince=now;else if(now-idleSince>=state.noMobSec*1000){idleSince=now;if(teleport())return;}}else idleSince=0;
   const actionBusy=busy();
   if(!actionBusy&&autoCure(now))return;
   // 藥水不需要等走路或普攻動畫結束，掛機時也能補上其他狀態。
@@ -334,7 +336,16 @@ const AssistSystem=(()=>{
    scrollType.append(new Option(label,key,false,key===state.tpScrollType));
   }
   scrollType.onchange=()=>{if(save({tpScrollType:scrollType.value}))render();else scrollType.value=state.tpScrollType;};
+  const remember=el('button','act','記住目前座標'),forget=el('button','act','取消記憶');
+  remember.type=forget.type='button';
+  remember.onclick=()=>{
+   if(autoPortalNearby(worldX,worldY)){toast('請離開樓梯或傳送入口至少 3 格，再記憶座標。');return;}
+   if(save({huntPoint:{mapId:window.activeMapId||0,x:worldX,y:worldY}})){if(IslandCombat.mode==='auto')cancelNavigation();render();}
+  };
+  forget.onclick=()=>{if(save({huntPoint:null})){if(IslandCombat.mode==='auto')cancelNavigation();render();}};
+  const point=state.huntPoint;
   p.append(head('AUTO 掛機'),group(
+   row('📍','記憶座標掛機',point?WorldMaps.name(point.mapId)+' '+point.x+', '+point.y+'。超過 40 格走回此處，沒怪時暫停自動瞬移。':'記住目前腳下座標，將掛機範圍限制在 40 格內。',remember,...(point?[forget]:[])),
    row('⚔️','反擊紅人','AUTO 中被紅名玩家擊中時反擊，結束後繼續打怪',switcher(state.retaliateRed,on=>save({retaliateRed:on}),'反擊紅人')),
    row(ico(teleportScrollIcon(),'🌀'),'自動瞬移使用卷軸','可用 '+tp+' 張',scrollType),
    row('🎯','掛機索敵範圍','AUTO 時會往多遠的怪物走過去',slider(IslandCombat.autoRange,12,48,v=>{IslandCombat.setAutoRange(v);},' 格','掛機索敵範圍')),
@@ -357,7 +368,7 @@ const AssistSystem=(()=>{
    row('🎒','負重 '+state.fullWeight+'% 以上或背包剩 '+state.fullSlots+' 格以下時處理','目前負重 '+w+'%、背包 '+OwnedInventory.items.length+'/'+BAG_MAX+'（剩 '+left+' 格）。這種回村不會自動回原地',act,switcher(state.fullOn,on=>save({fullOn:on}),'背包快滿處理')),
    row('⚖️','負重門檻 '+state.fullWeight+'%',null,slider(state.fullWeight,30,100,v=>save({fullWeight:v})&&void render(),'%','負重門檻')),
    row('📦','剩 '+state.fullSlots+' 格以下',null,slider(state.fullSlots,0,60,v=>save({fullSlots:v})&&void render(),' 格','背包剩餘格數'))),
-   el('p','assist-note','巡邏範圍從開 AUTO 的地方算起；瞬間移動卷軸不能用的地區不會瞬移。開「自動出售」（背包）可以讓垃圾撿到就換成天幣，減少回村次數。'));return p;}
+   el('p','assist-note','AUTO 尋路會避開樓梯與傳送入口。瞬間移動卷軸不能用的地區不會瞬移。'));return p;}
 
  function stoneSupplyRows(){
   const key='etcitem:40321',offer=SHOP.get(40321),qty=el('select'),buy=el('button','act','購買');
@@ -519,5 +530,5 @@ const AssistSystem=(()=>{
   body=el('div','assist-body');dialog.append(h,tabs,body);game.append(dialog);hud.setAttribute('aria-pressed','true');render();return true;}
  function close(){dialog?.remove();dialog=null;buyOpen=false;hud.setAttribute('aria-pressed','false');}
  addEventListener('keydown',e=>{if(e.key==='Escape'&&dialog)close();});
- return {activate,open,close,skip,prefer,tick,healingOffers,get stats(){return JSON.parse(JSON.stringify(stats));},get retaliateRed(){return state.retaliateRed&&owner===window.activeCharacterId;},get escapeFirst(){return state.escape&&owner===window.activeCharacterId;},get healFallback(){return state.healFallback&&owner===window.activeCharacterId;},get snapshot(){return JSON.parse(JSON.stringify(state));}};
+ return {activate,open,close,skip,prefer,tick,healingOffers,get huntPoint(){return owner===window.activeCharacterId?state.huntPoint:null;},get stats(){return JSON.parse(JSON.stringify(stats));},get retaliateRed(){return state.retaliateRed&&owner===window.activeCharacterId;},get escapeFirst(){return state.escape&&owner===window.activeCharacterId;},get healFallback(){return state.healFallback&&owner===window.activeCharacterId;},get snapshot(){return JSON.parse(JSON.stringify(state));}};
 })();window.AssistSystem=AssistSystem;

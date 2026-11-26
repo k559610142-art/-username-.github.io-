@@ -1,5 +1,22 @@
 // 點地尋路：使用原始地圖的八方向通行規則，不直接改寫到目的地。
 let navigationPath=[],navigationTarget=null;
+let navigationStepAllowed=null,portalBufferMap=null,portalBufferReady=false,portalBuffer=new Set();
+function autoPortalNearby(x,y){
+ const map=window.activeMapId||0,portals=window.DungeonPortals;
+ const ready=!!portals?.ready;
+ if(map!==portalBufferMap||ready!==portalBufferReady){
+  portalBufferMap=map;portalBufferReady=ready;portalBuffer=new Set();
+  for(const [px,py] of portals?.sources(map)||[]){
+   for(let dx=-2;dx<=2;dx++)for(let dy=-2;dy<=2;dy++)portalBuffer.add((px+dx)+','+(py+dy));
+  }
+ }
+ return portalBuffer.has(x+','+y)||!!window.NativeCollision?.isEntrance(map,x,y);
+}
+function autoPortalStep(x,y,nx,ny){
+ const map=window.activeMapId||0;
+ if(window.DungeonPortals?.portalAt(map,nx,ny)||window.NativeCollision?.isEntrance(map,nx,ny))return false;
+ return !autoPortalNearby(nx,ny)||autoPortalNearby(x,y);
+}
 const navigationDirections=[[1,-1],[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1],[0,-1]];
 let walkingSearch=null;
 function findWalkingPath(startX,startY,targetX,targetY,options={}){
@@ -8,7 +25,7 @@ function findWalkingPath(startX,startY,targetX,targetY,options={}){
  if(startX===targetX&&startY===targetY)return [];
  if(window.NavigationConnectivity&&!NavigationConnectivity.canReach(startX,startY,targetX,targetY))return null;
  const straight=[];let sx=startX,sy=startY;
- while(sx!==targetX||sy!==targetY){const dx=Math.sign(targetX-sx),dy=Math.sign(targetY-sy);if(!canTraverse(sx,sy,dx,dy))break;sx+=dx;sy+=dy;straight.push([sx,sy]);}
+ while(sx!==targetX||sy!==targetY){const dx=Math.sign(targetX-sx),dy=Math.sign(targetY-sy);if(!canTraverse(sx,sy,dx,dy)||options.allowStep&&!options.allowStep(sx,sy,sx+dx,sy+dy))break;sx+=dx;sy+=dy;straight.push([sx,sy]);}
  if(sx===targetX&&sy===targetY)return straight;
  if(!walkingSearch||walkingSearch.size!==w*h)walkingSearch={size:w*h,stamp:0,marks:new Uint32Array(w*h),closed:new Uint32Array(w*h),cost:new Int32Array(w*h),previous:new Int32Array(w*h),heap:new Int32Array(w*h),position:new Int32Array(w*h),heuristic:new Int32Array(w*h)};
  const data=walkingSearch;if(++data.stamp>=4294967295){data.marks.fill(0);data.closed.fill(0);data.stamp=1;}const stamp=data.stamp;
@@ -18,12 +35,17 @@ function findWalkingPath(startX,startY,targetX,targetY,options={}){
  function pop(){const first=heap[0],last=heap[--count];data.position[first]=-1;if(count){let i=0;while(i*2+1<count){let child=i*2+1;if(child+1<count&&less(heap[child+1],heap[child]))child++;if(!less(heap[child],last))break;heap[i]=heap[child];data.position[heap[i]]=i;i=child;}heap[i]=last;data.position[last]=i;}return first;}
  data.marks[start]=stamp;data.cost[start]=0;data.previous[start]=start;const heuristic=(x,y)=>Math.max(Math.abs(targetX-x),Math.abs(targetY-y));const initial=heuristic(startX,startY);data.heuristic[start]=initial;data.position[start]=-1;push(start);
  let visited=0;while(count){if(++visited>(options.maxNodes||Infinity))return null;const id=pop();if(data.closed[id]===stamp)continue;if(id===goal){const route=[];for(let p=goal;p!==start;p=data.previous[p])route.push([p%w+ox,Math.floor(p/w)+oy]);return route.reverse();}data.closed[id]=stamp;const x=id%w+ox,y=Math.floor(id/w)+oy;
-  for(const [dx,dy]of navigationDirections){const nx=x+dx,ny=y+dy;if(nx<ox||ny<oy||nx>=ox+w||ny>=oy+h||!canTraverse(x,y,dx,dy))continue;const next=(ny-oy)*w+nx-ox,cost=data.cost[id]+1;if(data.closed[next]===stamp||data.marks[next]===stamp&&data.cost[next]<=cost)continue;if(data.marks[next]!==stamp){data.position[next]=-1;data.heuristic[next]=heuristic(nx,ny);}data.marks[next]=stamp;data.cost[next]=cost;data.previous[next]=id;push(next);}
+  for(const [dx,dy]of navigationDirections){const nx=x+dx,ny=y+dy;if(nx<ox||ny<oy||nx>=ox+w||ny>=oy+h||!canTraverse(x,y,dx,dy)||options.allowStep&&!options.allowStep(x,y,nx,ny))continue;const next=(ny-oy)*w+nx-ox,cost=data.cost[id]+1;if(data.closed[next]===stamp||data.marks[next]===stamp&&data.cost[next]<=cost)continue;if(data.marks[next]!==stamp){data.position[next]=-1;data.heuristic[next]=heuristic(nx,ny);}data.marks[next]=stamp;data.cost[next]=cost;data.previous[next]=id;push(next);}
  }
  return null;
 }
-function cancelNavigation(){navigationPath=[];navigationTarget=null;paintNavigationTarget()}
-function advanceNavigation(now=movementTime(),continuous=false){if(window.NativeWorld?.loading)return;if(!movementReady(now)||(typeof characterMovementBlocked==='function'&&characterMovementBlocked()))return;const due=lastMovementAt+lastMovementDuration;const started=continuous&&now-due<=Math.min(250,lastMovementDuration*.5)?due:now;/* 畫面偶爾卡一下（≤250ms）時下一步仍接在上一步結束點，不會停頓後才起步 */const next=navigationPath.shift();if(!next){cancelNavigation();return}if(!stepWorld(next[0]-worldX,next[1]-worldY,now,started)){cancelNavigation();toast('前方無法通行，請重新選擇位置');return}if(!navigationPath.length)cancelNavigation()}
+function cancelNavigation(){navigationPath=[];navigationTarget=null;navigationStepAllowed=null;paintNavigationTarget()}
+function startAutoNavigation(route,allowStep){
+ if(!route?.length)return false;
+ cancelNavigation();navigationPath=route;navigationTarget=route.at(-1);navigationStepAllowed=allowStep;
+ advanceNavigation();paintNavigationTarget();if(navigationPath.length)schedule();return true;
+}
+function advanceNavigation(now=movementTime(),continuous=false){if(window.NativeWorld?.loading)return;if(!movementReady(now)||(typeof characterMovementBlocked==='function'&&characterMovementBlocked()))return;const due=lastMovementAt+lastMovementDuration;const started=continuous&&now-due<=Math.min(250,lastMovementDuration*.5)?due:now;/* 畫面偶爾卡一下（≤250ms）時下一步仍接在上一步結束點，不會停頓後才起步 */const next=navigationPath.shift();if(!next){cancelNavigation();return}if(navigationStepAllowed&&!navigationStepAllowed(worldX,worldY,next[0],next[1])){cancelNavigation();return}if(!stepWorld(next[0]-worldX,next[1]-worldY,now,started)){cancelNavigation();toast('前方無法通行，請重新選擇位置');return}if(!navigationPath.length)cancelNavigation()}
 // Reverse an in-flight edge from the current visual position, retaining native speed.
 function reverseWalkingEdge(targetX,targetY,now=movementTime()){
  if(!movementAnimating(now)||characterMovementBlocked())return null;
@@ -52,7 +74,7 @@ function paintNavigationTarget(){navigationMarker.hidden=!navigationTarget;if(!n
 const navigationDraw=draw;draw=function(frameTime){navigationDraw(frameTime);paintNavigationTarget()};
 const pauseManualNavigation=()=>{if(window.IslandCombat?.mode!=='auto')cancelNavigation()};addEventListener('blur',pauseManualNavigation);addEventListener('pagehide',cancelNavigation);document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseManualNavigation()});
 
-function navigateToAny(targets,radius){
+function navigateToAny(targets,radius,allowStep=null){
   if(window.gameFlowState!=='playing'||!targets.length)return false;
   const width=island.width,ox=island.startX,oy=island.startY;
   const id=(x,y)=>(y-oy)*width+x-ox;
@@ -64,7 +86,7 @@ function navigateToAny(targets,radius){
     const cell=queue[head],x=cell%width+ox,y=Math.floor(cell/width)+oy;
     for(const [dx,dy]of navigationDirections){
       const nx=x+dx,ny=y+dy;
-      if(nx<ox||ny<oy||nx>=ox+width||ny>=oy+island.height||Math.max(Math.abs(nx-worldX),Math.abs(ny-worldY))>radius||!canTraverse(x,y,dx,dy))continue;
+      if(nx<ox||ny<oy||nx>=ox+width||ny>=oy+island.height||Math.max(Math.abs(nx-worldX),Math.abs(ny-worldY))>radius||!canTraverse(x,y,dx,dy)||allowStep&&!allowStep(x,y,nx,ny))continue;
       const next=id(nx,ny);if(previous[next]!==-1)continue;
       previous[next]=cell;
       if(goals.has(next)){found=next;break;}
@@ -73,6 +95,5 @@ function navigateToAny(targets,radius){
   }
   if(found===null)return false;
   const route=[];for(let cell=found;cell!==start;cell=previous[cell])route.push([cell%width+ox,Math.floor(cell/width)+oy]);
-  route.reverse();cancelNavigation();navigationPath=route;navigationTarget=route.at(-1);
-  advanceNavigation();paintNavigationTarget();if(navigationPath.length)schedule();return true;
+  return startAutoNavigation(route.reverse(),allowStep);
 }

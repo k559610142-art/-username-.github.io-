@@ -1,5 +1,8 @@
 const IslandCombat=(()=>{
   let mode=null,target=null,pending=null,owner=null,followUp=null,retaliation=null;
+  const huntLimit=40;
+  let returningToPoint=false,returnPointKey='',returnRetryAt=0;
+  const insideHuntPoint=(point,x,y)=>!point||Math.max(Math.abs(point.x-x),Math.abs(point.y-y))<=huntLimit;
   let autoScanRange=32;
   try{const saved=Number(localStorage.getItem('lineage-auto-range'));if(saved>=12&&saved<=48)autoScanRange=saved;}catch{}
   function setAutoRange(value){
@@ -18,7 +21,7 @@ const IslandCombat=(()=>{
   }
   function stop(){
     if(mode&&navigationPath.length)cancelNavigation();
-    mode=null;target=null;retaliation=null;
+    mode=null;target=null;retaliation=null;returningToPoint=false;returnPointKey='';returnRetryAt=0;
   }
   function begin(kind,mob){
     if(window.gameFlowState!=='playing'||CharacterActions.dead||!TransformCards.canAttack())return false;
@@ -63,24 +66,26 @@ const IslandCombat=(()=>{
       if(tile(x,y)&&!(tile(x,y)&128)&&clearShot(x,y,mob.x,mob.y))candidates.push([x,y]);
     }
     candidates.sort((a,b)=>distance(...a)-distance(...b));
-    return navigateToAny(candidates,Math.max(24,autoScanRange+range));
+    const point=window.AssistSystem?.huntPoint;
+    const allowStep=mode==='auto'?(x,y,nx,ny)=>insideHuntPoint(point,nx,ny)&&autoPortalStep(x,y,nx,ny):null;
+    return navigateToAny(candidates,Math.max(24,autoScanRange+range),allowStep);
   }
   // 2026-11-19 使用者：自動打怪要優先打身邊、不要判定到圍牆後面的怪。
   //  原本用直線距離挑最近的怪，圍牆另一邊的怪也算「最近」。改成從人物位置做一次走路距離擴散（會被牆擋），
   //  每隻怪算「走到能打到牠的位置要幾步」，挑步數最少的；走不到能打的位置（被牆隔開）就不挑。
   let noTargetUntil=0;
-  function walkSteps(maxR){
+  function walkSteps(maxR,point){
     const size=maxR*2+1,dist=new Int16Array(size*size).fill(-1),qx=new Int32Array(size*size),qy=new Int32Array(size*size),cx=worldX,cy=worldY;
     const at=(x,y)=>{const ix=x-cx+maxR,iy=y-cy+maxR;return ix<0||iy<0||ix>=size||iy>=size?-1:iy*size+ix};
     let head=0,tail=0;dist[at(cx,cy)]=0;qx[tail]=cx;qy[tail++]=cy;
     while(head<tail){const x=qx[head],y=qy[head++],d=dist[at(x,y)];
-     for(const [dx,dy]of navigationDirections){const i=at(x+dx,y+dy);if(i<0||dist[i]>=0||!canTraverse(x,y,dx,dy))continue;dist[i]=d+1;qx[tail]=x+dx;qy[tail++]=y+dy;}}
+     for(const [dx,dy]of navigationDirections){const i=at(x+dx,y+dy);if(i<0||dist[i]>=0||!canTraverse(x,y,dx,dy)||mode==='auto'&&(!insideHuntPoint(point,x+dx,y+dy)||!autoPortalStep(x,y,x+dx,y+dy)))continue;dist[i]=d+1;qx[tail]=x+dx;qy[tail++]=y+dy;}}
     return (x,y)=>{const i=at(x,y);return i<0?-1:dist[i]};
   }
   function pickAutoTarget(r,ok,first){
     const list=[];IslandMonsters.nearest(r,mob=>{if(ok(mob))list.push(mob);return false}); // 只借 nearest 的篩選條件收集候選怪
     if(!list.length)return null;
-    const range=attackRange(),steps=walkSteps(r+range+2);
+    const range=attackRange(),steps=walkSteps(r+range+2,mode==='auto'?window.AssistSystem?.huntPoint:null);
     const cost=mob=>{
       if(distance(mob.x,mob.y)<=range&&clearShot(worldX,worldY,mob.x,mob.y))return 0; // 站著就打得到
       let best=-1;
@@ -129,6 +134,29 @@ const IslandCombat=(()=>{
     pending={mob,damage,landed,offhand,at:movementTime()+characterActionState.duration*.4};
     return true;
   }
+  function handleHuntReturn(point){
+    const key=point?point.mapId+':'+point.x+','+point.y:'';
+    if(key!==returnPointKey){
+      if(returningToPoint)cancelNavigation();
+      returningToPoint=false;returnRetryAt=0;returnPointKey=key;
+    }
+    if(!point)return false;
+    if(point.mapId!==(window.activeMapId||0)){
+      if(navigationStepAllowed)cancelNavigation();
+      if(target){target=null;IslandMonsters.setTarget(null);}
+      return true;
+    }
+    if(!returningToPoint&&insideHuntPoint(point,worldX,worldY))return false;
+    if(!returningToPoint){
+      returningToPoint=true;target=null;retaliation=null;IslandMonsters.setTarget(null);cancelNavigation();
+    }
+    if(worldX===point.x&&worldY===point.y){returningToPoint=false;return false;}
+    if(movementAnimating()||navigationPath.length||movementTime()<returnRetryAt)return true;
+    if(!startAutoNavigation(findWalkingPath(worldX,worldY,point.x,point.y,{allowStep:autoPortalStep,maxNodes:16000}),autoPortalStep)){
+      returnRetryAt=movementTime()+3000;
+    }
+    return true;
+  }
   function tick(){
     const id=window.gameFlowState==='playing'?window.activeCharacterId:null;
     if(id!==owner){owner=id;stop();pending=null;}
@@ -152,10 +180,13 @@ const IslandCombat=(()=>{
     }
     if(mode&&!TransformCards.canAttack()){stop();return;}
     if(!mode||pending||characterMovementBlocked())return;
+    const huntPoint=mode==='auto'?window.AssistSystem?.huntPoint:null;
+    if(mode==='auto'&&handleHuntReturn(huntPoint))return;
+    if(target&&!insideHuntPoint(huntPoint,target.x,target.y)){target=null;IslandMonsters.setTarget(null);cancelNavigation();}
     if(!target?.hp){
       if(mode!=='auto'){stop();return;}
       if(performance.now()<noTargetUntil)return;
-      {const r=Math.max(autoScanRange,attackRange()),ok=mob=>!(retryAfter.get(mob)>movementTime())&&!window.AssistSystem?.skip(mob),first=window.AssistSystem?.prefer?.(); // 名單「優先打」先找（2026-11-18）
+      {const r=Math.max(autoScanRange,attackRange()),ok=mob=>insideHuntPoint(huntPoint,mob.x,mob.y)&&!(retryAfter.get(mob)>movementTime())&&!window.AssistSystem?.skip(mob),first=window.AssistSystem?.prefer?.(); // 名單「優先打」先找（2026-11-18）
       target=pickAutoTarget(r,ok,first);} // 輔助系統怪物名單：不打／瞬移的怪不主動找
       if(!target){noTargetUntil=performance.now()+500;return;}
       IslandMonsters.setTarget(target);
