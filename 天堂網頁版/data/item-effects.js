@@ -7,6 +7,28 @@
 //   不用學會、不耗魔力，用一張扣一張；攻擊用的 MagicReel_Long（光箭、冰箭…）還沒接。
 const ItemEffects=(()=>{
  const defs=()=>ITEM_USE_RULES.definitions;
+ const elements={
+  'etcitem:56264':{attr:2,label:'火',names:['火之','烈焰','火靈','炎獄','焚天']},
+  'etcitem:56263':{attr:4,label:'水',names:['水之','海嘯','水靈','冰獄','冰封']},
+  'etcitem:56262':{attr:1,label:'地',names:['地之','崩裂','地靈','裂地','撼地']},
+  'etcitem:56261':{attr:8,label:'風',names:['風之','暴風','風靈','雷嵐','颶風']}
+ };
+ const ranks=[{damage:1,rate:70},{damage:3,rate:50},{damage:5,rate:35},{damage:8,rate:20},{damage:12,rate:10}];
+ function elementInfo(entry){
+  const element=elements[entry?.attributeScroll],rank=ranks[entry?.attributeRank-1];
+  return element&&rank?{...rank,attr:element.attr,label:element.label,name:element.names[entry.attributeRank-1],level:entry.attributeRank}:null;
+ }
+ function elementalHit(entry,mob){
+  const info=elementInfo(entry);
+  if(!info)return 0;
+  const factor=window.PlayerAbilityRules?.elementalFactor({attr:info.attr},mob?.spawn?.npc?.elements)||1;
+  return Math.floor(info.damage*factor);
+ }
+ function attributeError(scroll,target){
+  if(target?.item?.kind!=='weapon'||target.count!==1)return '請選擇一把武器。';
+  if(target.attributeScroll&&target.attributeScroll!==scroll.key)return '武器已有其他屬性，卷軸未消耗。';
+  return target.attributeRank>=ranks.length?'武器已達 5 階，卷軸未消耗。':'';
+ }
  const accessoryTypes=new Set(['necklace','amulet','earring','ring','ring2','belt']);
  const enchantKind=key=>key.startsWith('etcitem:')?({
   40074:'armor',140074:'armor',240074:'armor',40087:'weapon',140087:'weapon',240087:'weapon',
@@ -37,6 +59,18 @@ const ItemEffects=(()=>{
  function applyEnchant(scrollUid,targetUid,kind){
   if(window.gameFlowState!=='playing'||CharacterActions.dead)return false;
   const target=OwnedInventory.items.find(e=>e.uid===targetUid),scroll=OwnedInventory.items.find(e=>e.uid===scrollUid);
+  if(kind==='attribute'){
+   if(!scroll||scroll.slot||!elements[scroll.key])return say('卷軸已變更，請重新選擇。');
+   const error=attributeError(scroll,target);
+   if(error)return say(error);
+   const next=OwnedInventory.snapshot,row=next.find(e=>e.uid===targetUid),used=next.find(e=>e.uid===scrollUid);
+   const rank=row.attributeRank||0,success=Math.random()*100<ranks[rank].rate;
+   if(--used.count===0)next.splice(next.indexOf(used),1);
+   if(success){row.attributeScroll=scroll.key;row.attributeRank=rank+1;}
+   if(!OwnedInventory.applyChange(next))return false;
+   toast(success?'屬性強化成功：'+elementInfo(row).name+'（'+row.attributeRank+' 階）。':'屬性強化失敗，維持原階級。');
+   return true;
+  }
   if(!scroll||scroll.slot||enchantKind(scroll.key)!==kind||!canEnchant(target,kind))return say('卷軸或裝備已變更，請重新選擇。');
   const rule=defs()[scroll.key],bless=scroll.bless??rule.bless;
   const current=target.enchant||0,safe=target.item.sourceRules?.safenchant??0;
@@ -50,13 +84,13 @@ const ItemEffects=(()=>{
   return true;
  }
  function openEnchant(scroll,kind){
-  const items=OwnedInventory.items.filter(e=>canEnchant(e,kind));
+  const items=OwnedInventory.items.filter(e=>kind==='attribute'?e.item.kind==='weapon'&&e.count===1:canEnchant(e,kind));
   if(!items.length){toast(kind==='accessory'?'背包裡沒有可強化的飾品。':'背包裡沒有可用這張卷軸強化的裝備。');return false;}
   const overlay=document.querySelector('#panel'),content=document.querySelector('#panelContent');
   cancelPointerGesture({preserveNavigation:true});
   overlay.classList.remove('classic-panel','reference-menu-panel','game-catalog-panel','npc-shop-panel','map-overview-panel','bookmark-panel');
   overlay.classList.add('native-dialog-panel');
-  const title={weapon:'武器強化',armor:'盔甲強化',accessory:'飾品強化'}[kind];
+  const title={weapon:'武器強化',armor:'盔甲強化',accessory:'飾品強化',attribute:'武器屬性強化'}[kind];
   overlay.setAttribute('aria-label',title);overlay.querySelector('#close').hidden=false;overlay.hidden=false;
   const dialog=uiElement('div','native-dialog enchant-scroll-dialog'),select=uiElement('select');
   const note=uiElement('p','','選擇裝備後，消耗 1 張卷軸。'),submit=uiElement('button','','確認強化');
@@ -67,6 +101,12 @@ const ItemEffects=(()=>{
    const item=items.find(e=>e.uid===select.value);
    submit.disabled=!item;
    if(!item){note.textContent='選擇裝備後，消耗 1 張卷軸。';return;}
+   if(kind==='attribute'){
+    const error=attributeError(scroll,item),rank=item.attributeRank||0;
+    submit.disabled=!!error;
+    note.textContent=error||('升至 '+(rank+1)+' 階，成功率 '+ranks[rank].rate+'%，普攻屬性傷害 +'+ranks[rank].damage+'。');
+    return;
+   }
    if(scroll.key==='etcitem:49147'){note.textContent='消耗 1 張卷軸，強化值必定增加 1。';return;}
    const safe=item.item.sourceRules?.safenchant??0,bless=scroll.bless??defs()[scroll.key].bless;
    note.textContent='安全強化值 +'+safe+'。'+(bless===2?(item.enchant||0)<=-7?'這件裝備可能消失。':'詛咒卷軸會降低 1 點強化值。':(item.enchant||0)>=safe?'超過安全範圍，失敗時裝備可能消失。':'使用卷軸強化這件裝備。');
@@ -129,11 +169,11 @@ const ItemEffects=(()=>{
   if(!consume(e))return false;
   const d=skill.duration||0;say('使用 '+e.item.name+'：'+skill.name+' '+(d<60?d+' 秒':Math.round(d/60*10)/10+' 分鐘')+'。');return true;
  }
- function use(uid){const e=OwnedInventory.items.find(i=>i.uid===uid);if(!e||e.slot)return null;const kind=enchantKind(e.key);if(kind)return window.gameFlowState==='playing'&&!CharacterActions.dead&&openEnchant(e,kind);const p=parse(e);if(!p)return null;
+ function use(uid){const e=OwnedInventory.items.find(i=>i.uid===uid);if(!e||e.slot)return null;const kind=elements[e.key]?'attribute':enchantKind(e.key);if(kind)return window.gameFlowState==='playing'&&!CharacterActions.dead&&openEnchant(e,kind);const p=parse(e);if(!p)return null;
   if(window.gameFlowState!=='playing'||CharacterActions.dead)return false;
   const rule=defs()[e.key]||{},lv=window.activeCharacterLevel||1;if(lv<(rule.minLevel||0)||rule.maxLevel&&lv>rule.maxLevel)return say('等級不符合道具限制。');
   if(p.kind==='removeCurse')return removeCurse(e,rule);
   return p.kind==='exp'?useExp(e,p):useScroll(e,p);}
  const expRate=()=>Number(window.activePotionBuffs?.exp)>Date.now()?Number(window.activePotionBuffs.expRate)||1:1;
- return {use,parse,expRate,isExp:e=>parse(e)?.kind==='exp'};
+ return {use,parse,expRate,elementInfo,elementalHit,isExp:e=>parse(e)?.kind==='exp'};
 })();window.ItemEffects=ItemEffects;

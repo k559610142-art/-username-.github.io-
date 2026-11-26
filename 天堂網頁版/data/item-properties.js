@@ -10,6 +10,10 @@
   if(item.kind==='weapon'){add('基礎傷害（小型／大型）',(item.damage||[0,0]).join('／'));add('持用方式',item.twoHand?'雙手':'單手');if(Number(r.range)>0)add('攻擊距離',r.range+' 格');if(enchant)add('強化傷害',sign(enchant));}
   if(item.kind==='armor'){add('基礎防禦 AC',item.ac||0);if(enchant)add('強化後防禦 AC',Number(item.ac||0)-enchant);}
   if(enchant)add('強化等級',sign(enchant));
+  if(item.attribute){
+   add('武器屬性',item.attribute.label+'屬性 '+item.attribute.level+' 階');
+   add('普攻屬性傷害','+'+item.attribute.damage);
+  }
   for(const [key,label]of Object.entries(ATTR)){const n=Number(item.bonuses?.[key])||0;if(n)add(label,sign(n));}
   for(const ranged of [false,true]){
    const {hit,damage}=attackModifiers(item,ranged), label=ranged?'遠距離':'近距離';

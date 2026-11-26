@@ -62,6 +62,8 @@ function createGameServer(options={}){
    const rule=Object.hasOwn(settings.items,item.key)?settings.items[item.key]:null;
    if(!rule||typeof item.uid!=='string'||!item.uid||item.uid.length>80||ids.has(item.uid))fail(400,'物品資料有誤。');
    ids.add(item.uid);int(item.count);
+   if((item.attributeScroll!==undefined||item.attributeRank!==undefined)&&
+      (rule.kind!=='weapon'||!/^etcitem:5626[1-4]$/.test(item.attributeScroll)||!Number.isInteger(item.attributeRank)||item.attributeRank<1||item.attributeRank>5))fail(400,'武器屬性資料有誤。');
    if(!rule.stackable&&item.count!==1||warehouse&&item.slot)fail(400,'物品堆疊或穿戴資料有誤。');
    if(item.slot){
     if(!['weapon','weapon2','helm','armor','tshirt','pants','cloak','glove','boots','shield','necklace','belt','earring','ring1','ring2','ring3','ring4'].includes(item.slot)||slots.has(item.slot))fail(400,'穿戴欄位有誤或重複。');

@@ -120,11 +120,12 @@ const IslandCombat=(()=>{
     const profile=PlayerClassStats.read();
     const weaponMax=Math.max(1,profile.weapon?.damage[0]||2);
     const landed=bow?PlayerRangedRules.hits(profile,mob):PlayerRangedRules.meleeHits(profile,mob);
-    const damage=landed?1+Math.floor(Math.random()*weaponMax)+(bow?profile.rangedBonus:profile.meleeBonus)+DBGameRules.weaponProc(mob)+(window.ClassBuffs?.onHit(mob,bow)||0)+(window.DollEffects?.onHit(mob)||0):0;
+    const elementalDamage=landed?window.ItemEffects?.elementalHit(OwnedInventory.items.find(e=>e.slot==='weapon'),mob)||0:0;
+    const damage=landed?1+Math.floor(Math.random()*weaponMax)+(bow?profile.rangedBonus:profile.meleeBonus)+DBGameRules.weaponProc(mob)+(window.ClassBuffs?.onHit(mob,bow)||0)+(window.DollEffects?.onHit(mob)||0)+elementalDamage:0;
     // 2026-11-17 戰士副手斧（右手 weapon2）：近戰命中時 20% 機率追擊（學會迅猛雙斧 235 → 35%），
     //  只有觸發時才用副手斧攻擊，傷害＝副手斧照普攻公式算的一半；粉碎／狂暴在追擊上也能觸發。
     let offhand=0;const off=landed&&!bow&&typeof job!=='undefined'&&job==='戰士'&&window.OwnedInventory?.items?.find(e=>e.slot==='weapon2');
-    if(off&&Math.random()<(OwnedInventory.skills?.ids?.includes(235)?.35:.2)){const offMax=Math.max(1,off.item.damage?.[0]||2);offhand=Math.max(1,Math.floor((1+Math.floor(Math.random()*offMax)+profile.meleeBonus+(window.ClassBuffs?.onHit(mob,false)||0))/2));}
+    if(off&&Math.random()<(OwnedInventory.skills?.ids?.includes(235)?.35:.2)){const offMax=Math.max(1,off.item.damage?.[0]||2);offhand=Math.max(1,Math.floor((1+Math.floor(Math.random()*offMax)+profile.meleeBonus+(window.ClassBuffs?.onHit(mob,false)||0))/2))+(window.ItemEffects?.elementalHit(off,mob)||0);}
     pending={mob,damage,landed,offhand,at:movementTime()+characterActionState.duration*.4};
     return true;
   }

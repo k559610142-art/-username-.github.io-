@@ -28,16 +28,19 @@ window.OwnedInventory=(()=>{
  const isAxe=item=>item?.kind==='weapon'&&!item.twoHand&&/斧/.test(item.name||''),isGuarder=item=>item?.type==='guarder';
  function slotFor(item){if(item.kind==='weapon')return 'weapon';if(item.kind!=='armor')return null;return {helmet:'helm',shirt:'tshirt',gloves:'glove',amulet:'necklace',ring:'ring1',ring2:'ring1',guarder:'shield'}[item.type]||(['helm','armor','tshirt','pants','cloak','glove','boots','shield','necklace','belt','earring'].includes(item.type)?item.type:null)}
  const definition=e=>catalog.get(e.key),presented=e=>{
-  const item=catalog.get(e.key);
-  if(e.bless===1&&item?.cursed)return {...item,name:item.baseName||item.name,cursed:false};
-  if(e.unid&&item?.baseName)return {...item,name:item.baseName,icon:item.baseIcon||item.icon,unidentified:true};
-  return item;
+  let item=catalog.get(e.key);
+  if(e.bless===1&&item?.cursed)item={...item,name:item.baseName||item.name,cursed:false};
+  else if(e.unid&&item?.baseName)item={...item,name:item.baseName,icon:item.baseIcon||item.icon,unidentified:true};
+  const attribute=window.ItemEffects?.elementInfo(e);
+  return attribute?{...item,attribute}:item;
  },config=e=>({...rules.definitions[e.key],bless:e.bless??rules.definitions[e.key]?.bless});
  function validate(rows,role=null,charLevel=1){
   if(!Array.isArray(rows)||rows.length>=rules.maxSizeExclusive)return '背包格式或容量有誤';
   const ids=new Set(),used=new Set();for(const e of rows){
    if(!e||typeof e.uid!=='string'||!e.uid||e.uid.length>80||ids.has(e.uid)||!catalog.has(e.key)||!Number.isSafeInteger(e.count)||e.count<=0||e.count>2147483647)return '背包物品資料有誤';ids.add(e.uid);
    const r=config(e),item=definition(e);if(!r)return '道具設定不存在';if(!r.stackable&&e.count!==1)return '非堆疊物品數量有誤';if(e.slot!==undefined&&e.slot!==null&&typeof e.slot!=='string')return '穿戴欄位格式有誤';
+   if((e.attributeScroll!==undefined||e.attributeRank!==undefined)&&
+      (item.kind!=='weapon'||!/^etcitem:5626[1-4]$/.test(e.attributeScroll)||!Number.isInteger(e.attributeRank)||e.attributeRank<1||e.attributeRank>5))return '武器屬性資料有誤';
    if(e.slot){if(!slots.includes(e.slot)||used.has(e.slot)||!(e.slot===slotFor(item)||/^ring[1-4]$/.test(e.slot)&&slotFor(item)==='ring1'||e.slot==='weapon2'&&isAxe(item)&&(!role||role==='戰士')))return '穿戴欄位資料有誤';used.add(e.slot);if(role&&!item.allowed.includes(role))return '穿戴物品不符合職業';if(role&&(r.minLevel>charLevel||r.maxLevel&&charLevel>r.maxLevel))return '穿戴物品不符合等級'}
   }const weapon=rows.find(e=>e.slot==='weapon'),shield=rows.find(e=>e.slot==='shield');if(weapon&&definition(weapon).twoHand&&shield&&!isGuarder(definition(shield)))return '雙手武器與盾牌不能同時穿戴';if(used.has('weapon2')&&(used.has('shield')||weapon&&!isAxe(definition(weapon))))return '第二把斧頭只能配單手斧、右手不能再裝盾牌';if(role&&([...used].filter(s=>s.startsWith('ring')).length>(charLevel>=81?4:charLevel>=76?3:2)||charLevel<76&&(used.has('ring3')||used.has('ring4'))||charLevel<81&&used.has('ring4')))return '戒指欄位不符合角色等級';return null;
  }

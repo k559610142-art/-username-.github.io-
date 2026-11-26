@@ -17,7 +17,8 @@ function showItemDetails(item,detail,entry,bringToFront=true,origin){
  detail.replaceChildren();
  const heading=uiElement('div','classic-detail-heading'),picture=itemIcon(item);
  if(picture.tagName==='IMG')picture.loading='eager';
- heading.append(picture,uiElement('strong','',entry.enchant?(entry.enchant>0?'+':'')+entry.enchant+' '+item.name:item.name));
+ const attributePrefix=item.attribute?item.attribute.name+' ':'';
+ heading.append(picture,uiElement('strong','',attributePrefix+(entry.enchant?(entry.enchant>0?'+':'')+entry.enchant+' ':'')+item.name));
  detail.append(heading,uiElement('p','','數量 '+entry.count+(entry.slot?' · 已穿戴':'')));
  const equipment=item.kind==='weapon'||item.kind==='armor';
  if(equipment){
