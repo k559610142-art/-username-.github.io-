@@ -11,7 +11,8 @@ const { parseSpr, renderFrame } = require('./spr.js');
 const { parseList } = require('./listspr.js');
 
 const args = process.argv.slice(2), opt = { client: 'C:/Users/User/Desktop/天地劫天堂', check: false };
-for (let i = 0; i < args.length; i++) { if (args[i] === '--client') opt.client = args[++i]; else if (args[i] === '--check') opt.check = true; else if(args[i]==='--maps')opt.maps=args[++i].split(',').map(Number); else if(args[i]==='--looks')opt.looks=args[++i].split(',').map(Number); else if(args[i]==='--boss'){opt.boss=true;opt.maps=['boss'];} }
+for (let i = 0; i < args.length; i++) { if (args[i] === '--client') opt.client = args[++i]; else if (args[i] === '--check') opt.check = true; else if(args[i]==='--maps')opt.maps=args[++i].split(',').map(Number); else if(args[i]==='--looks')opt.looks=args[++i].split(',').map(Number); else if(args[i]==='--boss')opt.boss=true; }
+if(opt.boss&&!opt.maps)opt.maps=['boss'];
 
 const game = {}; vm.createContext(game);
 vm.runInContext(fs.readFileSync(path.join(ROOT, 'data/island-monster-data.js'), 'utf8').replace(/^const (\w+)\s*=/gm, 'var $1='), game);
@@ -71,7 +72,8 @@ for (const r of npcRows) spawns.push({
 // 一律 1 隻、重生 = spawn_interval 分鐘（0 當 180）、boss:true（island-monsters.js 把死亡時間存 localStorage，重整不重刷）。
 // 地圖上已經有同一隻（一般 spawnlist）就跳過。座標：locx2=0 是定點，否則是範圍。
 if(opt.boss){
- const have=new Set(game.islandMonsterSpawns.map(s=>(s.mapId||0)+':'+s.npcId)),mapOk=m=>m===0||m===4||!!game.NATIVE_DUNGEON_MAPS[m];
+ const have=new Set(game.islandMonsterSpawns.map(s=>(s.mapId||0)+':'+s.npcId));
+ const mapOk=m=>(opt.maps.includes('boss')||opt.maps.includes(m))&&(m===0||m===4||!!game.NATIVE_DUNGEON_MAPS[m]);
  for(const r of table('table-143.js')){
   const m=+r.mapid,id=+r.npc_templateid,x1=+r.locx1,y1=+r.locy1,x2=+r.locx2,y2=+r.locy2;
   if(!mapOk(m)||!templates[id]||!x1||!y1||have.has(m+':'+id))continue;
@@ -88,7 +90,7 @@ if(opt.boss){
   [230278,36,107034,[32703,32831],[32576,32704,32831,32959],180], // 傑羅斯：龍之谷地監 6 樓
   [230279,4,107035,[33364,32383],[33356,32375,33371,32390],360],  // 巨大飛龍：龍之谷和 [BOSS] 飛龍同一點，重生加倍（飛龍 180 → 360 分）
  ];
- for(const [rid,m,id,point,bounds,min]of BOSS_EXTRA){if(!templates[id]||have.has(m+':'+id))continue;have.add(m+':'+id);
+ for(const [rid,m,id,point,bounds,min]of BOSS_EXTRA){if(!mapOk(m)||!templates[id]||have.has(m+':'+id))continue;have.add(m+':'+id);
   spawns.push({mapId:m,spawnId:900000000+rid,zone:templates[id].name,count:1,npcId:id,group:0,point,random:bounds?[0,0]:[2,2],bounds:bounds||[0,0,0,0],heading:5,respawn:[min*60,min*60],movement:0,boss:true});}
 }
 const looks = new Set(); for (const s of spawns) { looks.add(templates[s.npcId].gfx); for (const [id] of groups[s.group]?.members || []) if (templates[id]) looks.add(templates[id].gfx); }

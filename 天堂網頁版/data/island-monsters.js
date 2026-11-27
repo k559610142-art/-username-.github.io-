@@ -75,7 +75,8 @@ const IslandMonsters = (() => {
     if(spawn.bot){const c=tile(x,y);return !!c&&!(c&128)&&steps.some(([dx,dy])=>canTraverse(x,y,dx,dy));}
     if(spawn.resident)return !!WorldMaps.cell(spawn.mapId||0,x,y)&&steps.some(([dx,dy])=>canTraverse(x,y,dx,dy));
     const cell=tile(x,y);
-    return !!cell&&!(cell&128)&&(town(spawn.npc.gfx)||(cell&48)!==16)
+    // 夢幻之島的原始首領區標為安全區，仍保留首領出生與地形通行判定。
+    return !!cell&&!(cell&128)&&(town(spawn.npc.gfx)||(cell&48)!==16||spawn.boss&&spawn.mapId===303)
       &&steps.some(([dx,dy])=>canTraverse(x,y,dx,dy));
   }
   function addMob(spawn, region, x, y, random, pack = null) {
