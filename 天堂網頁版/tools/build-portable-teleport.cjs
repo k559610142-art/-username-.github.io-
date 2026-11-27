@@ -1,6 +1,6 @@
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const root=path.resolve(__dirname,'..'),game={nativeMonsterFiles:new Set()};game.window=game;vm.createContext(game);
-for(const file of ['interface-catalog.js','item-use-data.js','db-native-catalog.js','native-dungeon-maps.js','island-monster-data.js','dungeon-monster-data.js','kill-reward-data.js','db-active-settings.js'])vm.runInContext(fs.readFileSync(path.join(root,'data',file),'utf8'),game,{filename:file});
+for(const file of ['interface-catalog.js','item-use-data.js','db-native-catalog.js','native-dungeon-maps.js','island-monster-data.js','monster-action-index.js','dungeon-monster-data.js','kill-reward-data.js','db-active-settings.js'])vm.runInContext(fs.readFileSync(path.join(root,'data',file),'utf8'),game,{filename:file});
 const spawns=vm.runInContext('islandMonsterSpawns',game),rewards=vm.runInContext('killRewardData',game),items=new Map(game.INTERFACE_CATALOG.items.map(i=>[i.id,i])),supported=JSON.parse(fs.readFileSync(path.join(root,'assets/region-background/manifest.json'),'utf8')).maps;
 const dbTable=file=>{let rows;vm.runInNewContext(fs.readFileSync(path.join(root,'data/database',file),'utf8'),{GameDatabase:{register:(name,cols,data)=>rows=data.map(row=>Object.fromEntries(cols.map((c,i)=>[c.name,row[i]])))}});return rows;};
 const rows=dbTable('table-087.js'),dungeonRows=dbTable('table-054.js');
@@ -29,7 +29,7 @@ for(const [mapid,price]of Object.entries(HUNT_EXTRA).map(([m,p])=>[+m,p])){
 }
 const range=(a,b)=>Array.from({length:b-a+1},(_,i)=>a+i);
 const GROUPS=[ // [分類, 分組名稱, 地圖編號]
- ['island','霧月島',[]],['island','遺忘之島',[70]],['island','新遺忘之島',[1700]],
+ ['island','霧月島',[]],['island','遺忘之島',[70]],['island','新遺忘之島',[1700]],['island','夢幻之島',[303]],
  ['tower','傲慢之塔',[110]],['tower','新傲慢之塔',[3301]],['tower','象牙塔',range(75,82)],
  ['dungeon','冒險洞窟',[1,2,14]],['dungeon','古魯丁地監',range(7,13)],['dungeon','眠龍洞穴',[19,20,21]],
  ['dungeon','風木城地監',[23,24]],['dungeon','騎士洞穴',range(25,28)],['dungeon','龍之谷地監',[30,31,32,33,35,36,37]],['dungeon','巨蟻洞穴',[...range(43,51),541,542,543]],
