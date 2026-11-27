@@ -13,12 +13,15 @@
  const dropped=new Set();for(const list of Object.values(drops))for(const d of list)dropped.add(d.id);
  const mobs=new Map();for(const s of islandMonsterSpawns){const n=s.npc||islandMonsterTemplates[s.npcId];if(n?.kind==='L1Monster'&&!s.resident&&n.level>0)mobs.set(s.npcId,n.level);}
  const pool=[...mobs].sort((a,b)=>a[1]-b[1]);
+ const spawnedWarriorDrops=new Set();
+ for(const [npcId] of pool)for(const drop of drops[npcId]||[])if(drop.chance>0&&drop.max>0)spawnedWarriorDrops.add(drop.id);
  for(const [id,b] of Object.entries(books)){
   const sk=skills[b.skill];if(!sk||sk.circle<=10)continue;
   const item=+id,lv=Math.min(...Object.values(b.min));
   let chance=lv>=50?3000:lv>=30?5000:10000;if(RARE.has(item))chance=Math.max(1,Math.round(chance*RARE_RATE));
   for(const list of Object.values(drops))for(const d of list)if(d.id===item&&RARE.has(item))d.chance=Math.min(d.chance,chance);
-  if(dropped.has(item))continue;
+  // A warrior seal listed only on monsters absent from the world cannot be earned.
+  if((b.min.戰士!==undefined?spawnedWarriorDrops:dropped).has(item))continue;
   let pick=pool.filter(([,l])=>l>=lv&&l<=lv+20).sort((a,c)=>a[1]-c[1]).slice(0,6);if(!pick.length)pick=pool.slice(-6);
   for(const [mob] of pick)(drops[mob]??=[]).push({id:item,min:1,max:1,chance});
  }

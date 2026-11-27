@@ -39,7 +39,7 @@ const IslandMonsters = (() => {
     const ready=()=>decodedSheets.add(image);
     image.onload=()=>{if(image.decode)image.decode().then(ready,ready);else ready();};
     sheets.set(file,image);
-    const src=(typeof nativeMonsterFiles!=='undefined'&&nativeMonsterFiles.has(file)?'assets/native-monsters/':'assets/island-monsters-v2/')+file+(/^monster-(layer|death)-1820-/.test(file)?'?v=screen-body2':/^dungeon-mob-(?:2727|2752|297[2-5])-\d+\.png$/.test(file)?'?v=dream-glow1':'');
+    const src=(typeof nativeMonsterFiles!=='undefined'&&nativeMonsterFiles.has(file)?'assets/native-monsters/':'assets/island-monsters-v2/')+file+(/^monster-(layer|death)-1820-/.test(file)?'?v=screen-body2':/^dungeon-mob-2975-\d+\.png$/.test(file)?'?v=dream-ghost-body1':/^dungeon-mob-(?:2727|2752|297[2-5])-\d+\.png$/.test(file)?'?v=dream-glow1':'');
     if(!/^dungeon-mob-(?:1791|2738|2741|2747|2749|4017|4024|4025|4028|4029|4030)-\d+\.png$/.test(file)){
       image.src=src;
       return image;
@@ -331,7 +331,7 @@ const IslandMonsters = (() => {
       const vx=mob.death&&!mob.hp?mob.death.x:mob.step?mob.x+(mob.step.x-mob.x)*phase:mob.x,vy=mob.death&&!mob.hp?mob.death.y:mob.step?mob.y+(mob.step.y-mob.y)*phase:mob.y;window.NativeWorld?.paintEntity(pen,view,vx,vy,{left,top,width,height});
       mob.screenHead=[left+width/2,top,now];
       if(!mob.hp)continue; // 屍體不顯示名牌、血條，也不能被點選。
-      if(now<(mob.magicCriticalUntil||0)){pen.save();pen.font='bold 13px sans-serif';pen.textAlign='center';pen.lineWidth=3;pen.strokeStyle='#181818';pen.fillStyle='#ffd05c';pen.strokeText('CRITICAL',left+width/2,top-38);pen.fillText('CRITICAL',left+width/2,top-38);pen.restore();}
+      if(now<Math.max(mob.magicCriticalUntil||0,mob.weaponStrikeUntil||0)){pen.save();pen.font='bold 13px sans-serif';pen.textAlign='center';pen.lineWidth=3;pen.strokeStyle='#181818';pen.fillStyle='#ffd05c';const label=now<(mob.weaponStrikeUntil||0)?mob.weaponStrike:'CRITICAL';pen.strokeText(label,left+width/2,top-38);pen.fillText(label,left+width/2,top-38);pen.restore();}
       if(now<(mob.rangedMissUntil||0)){pen.save();pen.font='bold 13px sans-serif';pen.textAlign='center';pen.lineWidth=3;pen.strokeStyle='#181818';pen.fillStyle='#eee5ca';pen.strokeText('MISS',left+width/2,top-38);pen.fillText('MISS',left+width/2,top-38);pen.restore();}
       if(mob===support&&mob!==selected){
         const meter=Math.max(42,Math.min(84,width)),max=Number(mob.spawn.npc.hp)||1;

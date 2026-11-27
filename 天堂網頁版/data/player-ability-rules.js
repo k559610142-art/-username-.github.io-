@@ -51,7 +51,10 @@ window.PlayerAbilityRules=(()=>{
   let amount=raw;if(amount===undefined){amount=skill.damage?.[0]||0;for(let i=0;i<(skill.damage?.[2]||0);i++)amount+=1+Math.floor(rng()*Math.max(1,skill.damage[1]));}
   const power=healing?intelligencePower(profile.attributes.wis):intelligencePower(profile.attributes.int)+(profile.sp||0);amount=Math.max(0,Math.floor(amount*Math.max(0,1+power*.05)));
   const critical=!healing&&rng()*100<magicCritical(profile.attributes.int,window.OwnedInventory?.items||[]);if(critical)amount=Math.floor(amount*1.5);
-  if(!healing){const n=mob?.spawn?.npc||{};amount=Math.floor(amount*mrFactor(Number(n.mr)||0)*elementalFactor(skill,n.elements||{}));}
+  if(!healing){
+   const target=mob?.spawn?.npc?(window.ClassBuffs?.targetNpc?.(mob)||mob.spawn.npc):{};
+   amount=Math.floor(amount*mrFactor(Number(target.mr)||0)*elementalFactor(skill,target.elements||{}));
+  }
   return {amount:Math.max(0,amount),critical,power,hit:true};
  }
  return {strengthDamage,intelligencePower,manaReduction,originalManaReduction,magicCritical,resistances,statusResistances,element,elementalFactor,mrFactor,manaCost,helmetSkills,magicAmount,magicHitBonus,magicAccuracy,magicDamageChance,statusChance,statusHits};

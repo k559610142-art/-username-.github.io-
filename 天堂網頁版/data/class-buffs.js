@@ -34,11 +34,10 @@ const ClassBuffs=(()=>{
   181:{red:5},182:{burning:1},185:{ac:-3,hit:5},186:{speed:'brave'},190:{},191:{mortal:1},194:{},195:{},
   201:{dodge:5},204:{dmg:4,hit:4},206:{mpr:2},209:{sp:2},211:{red:2},213:{},214:{ac:-8},216:{stats:{str:1,con:1,dex:1,wis:1,int:1}},
   218:{},219:{dmg:10},226:{gigantic:1},
-  // 黑妖（2026-11-17 補學法術；L1J 常見數值）：附加劇毒觸發中毒、毒性抵抗阻止感染；影之防護 AC−3、行走加速＝加速、燃燒鬥志 dmg+3、
+  // 黑妖：附加劇毒觸發中毒、毒性抵抗阻止感染；影之防護 AC−3、行走加速＝加速。
   //  雙重破壞 dmg+4、暗影閃避 閃避+5、暗影之牙 dmg+5、力量提升 str+2、敏捷提升 dex+2、迴避提升 閃避+5
-  // 精靈魔法第 6 階（2026-11-17 補）：體能激發 AC−3、水之元氣 MP 回復+3、屬性之火 dmg+3、精準射擊 遠攻命中+6、烈焰之魂 dmg+5、能量激發 dmg+2
-  169:{ac:-3},170:{mpr:3},171:{dmg:3},174:{bowHit:6},175:{dmg:5},176:{dmg:2},
-  98:{},99:{ac:-3},101:{speed:'haste'},102:{dmg:3},104:{},105:{dmg:4},106:{dodge:5},107:{dmg:5},109:{stats:{str:2}},110:{stats:{dex:2}},111:{dodge:5},
+  169:{ac:-3},170:{mpr:3},171:{},174:{bowHit:6},175:{},176:{dmg:2},
+  98:{},99:{ac:-3},101:{speed:'haste'},102:{},104:{},105:{dmg:4},106:{dodge:5},107:{dmg:5},109:{stats:{str:2}},110:{stats:{dex:2}},111:{dodge:5},
   [oil.shield]:{},[oil.step]:{stats:{dex:3},dodge:4},
  };
  // Monster debuffs: mobDmg (less damage dealt), stun／sleep, silence, root, slow, dot.
@@ -75,6 +74,12 @@ const ClassBuffs=(()=>{
  function meleeHitBonus(){return sum('hit');}
  function rangedHitBonus(){return sum('bowHit');}
  function damageBonus(ranged){return ranged?sum('bow'):sum('dmg');}
+ // The core treats these as one weapon-buff group, including the wind variants.
+ const elfBuffGroups=[[148,149,156,163,166],[151,168]];
+ function clearExclusiveElfBuffs(id,buffMap){
+  const group=elfBuffGroups.find(ids=>ids.includes(id));
+  if(group)for(const other of group)buffMap.delete(other);
+ }
  function reduction(){let n=sum('red');if(on(88))n+=Math.max(1,Math.trunc((level()-50)/5)+1);
   if(knows(236)){const ac=window.NativeCombatRules?.armorClass?.()??0;n+=Math.max(0,Math.trunc(-ac/10));}return n;}
  function ac(){return sum('ac')+(knows(119)?-2:0);}
@@ -117,8 +122,8 @@ const ClassBuffs=(()=>{
  function onHit(mob,ranged){
   let add=0;invisible=false;mob.allyTarget=null;
   if(!ranged&&on(182)){add+=10;buffs.delete(182);}
-  // 黑妖（2026-11-17）：附加劇毒＝近戰 1/3 機率讓目標中毒（每 3 秒 5 點，9 秒）；破壞盔甲中的目標受到的普攻傷害 +（等級/2＋5）
-  if(!ranged&&on(98)&&Math.random()<1/3){const t=now();dots.push({mob,until:t+9000,next:t+3000,every:3000,dmg:5});}
+  // L1AttackPc: 附加劇毒近戰命中後以 10% 機率觸發，每 3 秒 5 點。
+  if(!ranged&&on(98)&&Math.random()<.1){const t=now();dots.push({mob,until:t+9000,next:t+3000,every:3000,dmg:5});}
   if(has(mob,'armorBreak'))add+=Math.trunc(level()/2)+5;
   if(!ranged){const bonus=Math.max(2,2+level()-45);
    if(knows(233)&&Math.random()<.17){add+=bonus;IslandMonsters.playEffect(12487,mob.x,mob.y,now());}
@@ -142,12 +147,14 @@ const ClassBuffs=(()=>{
   if(on(78))return 0;
   if(blockMagic(skill,t))return 0;
   if(skill&&on(134)&&Math.random()<.1){buffs.delete(134);IslandMonsters.damage(mob,amount);IslandMonsters.playEffect(sk(134).gfx,mob.x,mob.y,t);return 0;}
-  const melee=!skill&&Math.max(Math.abs(mob.x-worldX),Math.abs(mob.y-worldY))<=1;
+  const near=Math.max(Math.abs(mob.x-worldX),Math.abs(mob.y-worldY))<=1;
+  const melee=!skill&&near;
   if(melee&&on(89)&&Math.random()<.1)breakWeapon(mob);
   if(!skill&&!melee&&on(90)&&OwnedInventory.items.some(e=>e.slot&&e.item.type==='shield')&&Math.random()<.15)return 0;
   if(melee&&on(91)&&Math.random()<.25){IslandMonsters.damage(mob,amount);IslandMonsters.playEffect(sk(91).gfx,worldX,worldY,t);return 0;}
-  const titan=skill?(knows(239)?239:0):!melee?(knows(238)?238:0):(knows(237)?237:0);
-  if(titan&&hp<=Math.trunc(maxHp/100)*40&&Math.random()<.1){IslandMonsters.damage(mob,amount);IslandMonsters.playEffect(12555,worldX,worldY,t);return 0;}
+  const magic=skill?.type===2;
+  const titan=magic?239:near?237:238;
+  if(knows(titan)&&hp<=Math.trunc(maxHp/100)*40&&Math.random()<.1){IslandMonsters.damage(mob,amount);IslandMonsters.playEffect(titan===238?12557:12555,worldX,worldY,t);return 0;}
   if(on(191)&&Math.random()<.23){IslandMonsters.damage(mob,amount);IslandMonsters.playEffect(sk(191).gfx,worldX,worldY,t);}
   if(on(68))amount=Math.trunc(amount/2);
   return amount;
@@ -194,7 +201,10 @@ const ClassBuffs=(()=>{
   if(e.focus){focused=mob;for(const ally of window.NpcSocial?.party||[])if(ally.fp?.partyOwner===window.activeCharacterId)ally.fp.partyTarget=mob;}
   if(e.blind){mob.windup=null;mob.alert=false;}
   if(e.erase){mob.mp=Math.max(0,mob.mp||0);mob.windup=null;}
-  if(e.stun)stun(mob,dur);
+  if(e.stun){
+   if(id===230)mob.windup=null;
+   stun(mob,dur);
+  }
   if(e.dot)dots.push({mob,until:t+dur,next:t+e.dot[1],every:e.dot[1],dmg:e.dot[0]});
  }
  // Random passable cell within 200 (same rule as the teleport scroll), honouring the map's teleportable flag.
@@ -277,6 +287,7 @@ const ClassBuffs=(()=>{
   if(skill.gfx)IslandMonsters.playEffect(skill.gfx,mob?mob.x:worldX,mob?mob.y:worldY,t);
   if(SELF[id]){
    const e=SELF[id];
+   clearExclusiveElfBuffs(id,buffs);
    if([185,190,195].includes(id))for(const other of [185,190,195])buffs.delete(other);
    if([150,155].includes(id))for(const other of [150,155])buffs.delete(other);
    if(!e.speed||speed(e.speed,Date.now()+dur))buffs.set(id,t+dur);
@@ -330,6 +341,7 @@ const ClassBuffs=(()=>{
   const t=now(),dur=(skill.duration||0)*1000;cooldowns.set(id,t+(skill.reuse||0));invisible=false;
   IslandMonsters.playEffect(skill.gfx,ally.x,ally.y,t);
   let map=allyBuffs.get(ally);if(!map)allyBuffs.set(ally,map=new Map());
+  clearExclusiveElfBuffs(id,map);
   if([150,155].includes(id))for(const other of [150,155])map.delete(other);
   map.set(id,t+dur);window.toast?.('對 '+(ally.fp?.name||ally.spawn.npc.name)+' 施放「'+skill.name+'」');
   return true;
@@ -352,6 +364,7 @@ const ClassBuffs=(()=>{
   if(!CharacterActions.play('skill'))return false;
   const t=now(),dur=(skill.duration||0)*1000,e=SELF[id];invisible=false;
   IslandMonsters.playEffect(skill.gfx,worldX,worldY,t);
+  clearExclusiveElfBuffs(id,buffs);
   if(!e.speed||speed(e.speed,Date.now()+dur))buffs.set(id,t+dur);
   if(e.barrier&&window.playerItemState&&!playerItemState.absoluteBarrier){playerItemState.absoluteBarrier=true;barrierSet=true;}
   if(e.gigantic||e.spirit)vitals();

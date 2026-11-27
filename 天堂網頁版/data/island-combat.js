@@ -104,6 +104,25 @@ const IslandCombat=(()=>{
     }
     return true;
   }
+  function normalPhysicalDamage(profile,mob,bow,weaponMax,equippedWeapon){
+    const meleeElf=job==='妖精'&&!bow, buffs=window.ClassBuffs;
+    const soulOfFlame=meleeElf&&profile.weapon&&buffs?.active?.(175);
+    const type=profile.weapon?.type;
+    const darkElfWeapon=job==='黑妖'&&!bow&&(type==='claw'||type==='edoryu');
+    const max=soulOfFlame||darkElfWeapon?Math.max(1,profile.weapon.damage?.[mob.spawn.npc.size==='large'?1:0]??weaponMax):weaponMax;
+    const rate=darkElfWeapon?Number(profile.weapon.sourceRules?.double_dmg_chance)||0:0;
+    const proc=rate>0&&Math.random()*100<rate;
+    const roll=soulOfFlame||proc&&type==='claw'?max:1+Math.floor(Math.random()*max);
+    const bonus=bow?profile.rangedBonus:profile.meleeBonus;
+    let amount=roll+bonus;
+    if(proc&&type==='edoryu'){
+      // The normal bonus already includes weapon damage and enchant. Add just the second weapon portion.
+      amount+=roll+ItemProperties.attackModifiers(profile.weapon,false).damage+(equippedWeapon?.enchant||0);
+    }
+    const boostedPhysical=(meleeElf&&buffs?.active?.(171))||(job==='黑妖'&&!bow&&buffs?.active?.(102));
+    if(boostedPhysical&&Math.random()<.33)amount=Math.floor(amount*1.5);
+    return {amount,weaponStrike:proc?(type==='claw'?'爆擊':'雙擊'):null};
+  }
   function hit(mob,interrupt=false){
     if(mob?.spawn.bot&&!window.FakePlayers?.canAttack(mob)){stop();return false;}
     const bow=ranged(),range=attackRange();
@@ -125,13 +144,15 @@ const IslandCombat=(()=>{
     const profile=PlayerClassStats.read();
     const weaponMax=Math.max(1,OilParasolRules.isWeapon(profile.weapon)?OilParasolRules.baseDamage(profile.weapon,mob):(profile.weapon?.damage[0]||2));
     const landed=bow?PlayerRangedRules.hits(profile,mob):PlayerRangedRules.meleeHits(profile,mob);
-    const elementalDamage=landed?window.ItemEffects?.elementalHit(OwnedInventory.items.find(e=>e.slot==='weapon'),mob)||0:0;
-    const damage=landed?1+Math.floor(Math.random()*weaponMax)+(bow?profile.rangedBonus:profile.meleeBonus)+DBGameRules.weaponProc(mob)+(window.ClassBuffs?.onHit(mob,bow)||0)+(window.DollEffects?.onHit(mob)||0)+elementalDamage:0;
+    const equippedWeapon=OwnedInventory.items.find(e=>e.slot==='weapon');
+    const elementalDamage=landed?window.ItemEffects?.elementalHit(equippedWeapon,mob)||0:0;
+    const physical=landed?normalPhysicalDamage(profile,mob,bow,weaponMax,equippedWeapon):null;
+    const damage=physical?physical.amount+DBGameRules.weaponProc(mob)+(window.ClassBuffs?.onHit(mob,bow)||0)+(window.DollEffects?.onHit(mob)||0)+elementalDamage:0;
     // 2026-11-17 戰士副手斧（右手 weapon2）：近戰命中時 20% 機率追擊（學會迅猛雙斧 235 → 35%），
     //  只有觸發時才用副手斧攻擊，傷害＝副手斧照普攻公式算的一半；粉碎／狂暴在追擊上也能觸發。
     let offhand=0;const off=landed&&!bow&&typeof job!=='undefined'&&job==='戰士'&&window.OwnedInventory?.items?.find(e=>e.slot==='weapon2');
     if(off&&Math.random()<(OwnedInventory.skills?.ids?.includes(235)?.35:.2)){const offMax=Math.max(1,off.item.damage?.[0]||2);offhand=Math.max(1,Math.floor((1+Math.floor(Math.random()*offMax)+profile.meleeBonus+(window.ClassBuffs?.onHit(mob,false)||0))/2))+(window.ItemEffects?.elementalHit(off,mob)||0);}
-    pending={mob,damage,landed,offhand,at:movementTime()+characterActionState.duration*.4};
+    pending={mob,damage,landed,offhand,weaponStrike:physical?.weaponStrike,at:movementTime()+characterActionState.duration*.4};
     return true;
   }
   function handleHuntReturn(point){
@@ -165,11 +186,12 @@ const IslandCombat=(()=>{
     if(followUp&&movementTime()>=followUp.at){if(followUp.mob.hp)IslandMonsters.damage(followUp.mob,followUp.damage);followUp=null;} // 副手斧追擊（晚一點出數字，不跟主手疊在一起）
     if(pending&&movementTime()>=pending.at){
       if(pending.landed&&(!pending.mob.spawn.bot||window.FakePlayers?.canAttack(pending.mob))){
-        const {mob,damage,offhand}=pending;
+        const {mob,damage,offhand,weaponStrike}=pending;
         const beforeHp=mob.hp;
         const proc=beforeHp&&(!mob.spawn.resident||mob.spawn.npc.hp>0)
           ? window.TdjSystems?.rollEnchantProc(mob,damage) : null;
         IslandMonsters.damage(mob,damage+(proc?.damage||0));
+        if(weaponStrike&&mob.hp<beforeHp){mob.weaponStrike=weaponStrike;mob.weaponStrikeUntil=movementTime()+650;}
         if(proc&&mob.hp<beforeHp)window.TdjSystems.applyEnchantProc(proc);
         if(offhand)followUp={mob,damage:offhand,at:movementTime()+180};
       }

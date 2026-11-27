@@ -109,7 +109,7 @@ const need = [...looks].filter(g => !existing[g]).sort((a, b) => a - b);
 // Cut and pack.
 const SHEET = 2048, frames = {}, files = [], missing = [];
 // These glow sprites store their intensity against a black background.
-const dreamIslandGlowLooks = new Set([2727, 2752, 2972, 2973, 2974, 2975]);
+const dreamIslandGlowLooks = new Set([2727, 2752, 2972, 2973, 2974]);
 function removeGlowMatte(pixels) {
   for (let i = 0; i < pixels.length; i += 4) {
     const level = Math.max(pixels[i], pixels[i + 1], pixels[i + 2]);
@@ -119,6 +119,18 @@ function removeGlowMatte(pixels) {
       pixels[i + channel] = alpha ? Math.round(pixels[i + channel] * 255 / level) : 0;
     }
     pixels[i + 3] = alpha;
+  }
+}
+// The shadow will-o'-wisp is a multiply sprite. White is neutral; darker pixels form the body.
+function removeMultiplyMatte(pixels) {
+  for (let i = 0; i < pixels.length; i += 4) {
+    if (!pixels[i + 3]) continue;
+    const base = Math.min(pixels[i], pixels[i + 1], pixels[i + 2]);
+    const strength = 255 - base;
+    for (let channel = 0; channel < 3; channel++) {
+      pixels[i + channel] = strength ? Math.round((pixels[i + channel] - base) * 255 / strength) : 0;
+    }
+    pixels[i + 3] = Math.round(pixels[i + 3] * strength / 255);
   }
 }
 let sheet = null, sheetNo = 0, cx = 0, cy = 0, rowH = 0;
@@ -132,6 +144,7 @@ for (const gfx of need) {
     if (!p) {
       const r = renderFrame(spr(f.file), f.frame);
       if (dreamIslandGlowLooks.has(gfx)) removeGlowMatte(r.px);
+      if (gfx === 2975) removeMultiplyMatte(r.px);
       if (cx + r.w > SHEET) { cx = 0; cy += rowH + 1; rowH = 0; }
       if (cy + r.h > SHEET) newSheet(gfx);
       for (let y = 0; y < r.h; y++) r.px.copy(sheet.px, ((cy + y) * SHEET + cx) * 4, y * r.w * 4, (y + 1) * r.w * 4);
