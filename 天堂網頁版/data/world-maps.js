@@ -13,6 +13,12 @@ const WorldMaps=(()=>{
   maps.set(id,m);return m;
  }
  function cell(id,x,y){const m=get(id);if(!m)return 0;const tx=x-m.info.startX,ty=y-m.info.startY;return tx<0||ty<0||tx>=m.info.width||ty>=m.info.height?0:m.terrain[ty*m.info.width+tx];}
+ // Map 303's supplied terrain marks nearly the whole island PvP-safe. Keep that
+ // flag and the landing area protected while allowing hunting elsewhere.
+ function monsterSafe(id,x,y){
+  if(id===303)return Math.max(Math.abs(x-32634),Math.abs(y-32843))<=6;
+  return (cell(id,x,y)&48)===16;
+ }
  function activate(id){const m=get(id);if(!m)return false;window.activeMapId=id;island=m.info;scene=m.scene;terrain=m.terrain;root=m.root;cache.clear();terrainForegroundRoot.replaceChildren();terrainRasterView=null;renderedSceneView=null;paintedView=null;terrainDirty=true;sceneStarted=false;preview.src=m.preview?m.root+m.preview:blank;document.querySelector('.location strong').textContent=island.name;document.querySelector('.location small').textContent='MAP '+id;return true;}
  function loadImage(src){return new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(Error('目的地場景讀取失敗，天幣未扣除。'));img.src=src;});}
  async function prepare(id,x,y){if(window.NativeWorld)return NativeWorld.prepare(id,x,y);const m=get(id);if(!m||m.dungeon||!cell(id,x,y)||(cell(id,x,y)&128))throw Error('目的地目前無法抵達，天幣未扣除。');const dx=x-m.info.startX,dy=y-m.info.startY,px=(dx+dy)*24+(id===4?24:0),py=(dy-dx+m.info.width)*12;const rect=game.getBoundingClientRect(),z=viewportLayout(rect.width,rect.height).defaultZoom,rx=rect.width/(2*z)+400,ry=rect.height/z+400;const pages=m.scene.pages.filter(p=>p.pixelOrigin[0]<px+rx&&p.pixelOrigin[0]+3072>px-rx&&p.pixelOrigin[1]<py+ry&&p.pixelOrigin[1]+1536>py-ry);await Promise.all([loadImage(m.root+m.preview),...pages.flatMap(p=>[p.file,p.foreground].filter(Boolean).map(f=>loadImage(m.root+f)))]);return true;}
@@ -26,5 +32,5 @@ const WorldMaps=(()=>{
  }
  function name(id){return get(id)?.info.name||'地圖 '+id;}
  window.activeMapId=0;
- return {cell,activate,prepare,arrived,travel,name,has:id=>!!get(id),isDungeon:id=>!!get(id)?.dungeon};
+ return {cell,monsterSafe,activate,prepare,arrived,travel,name,has:id=>!!get(id),isDungeon:id=>!!get(id)?.dungeon};
 })();window.WorldMaps=WorldMaps;

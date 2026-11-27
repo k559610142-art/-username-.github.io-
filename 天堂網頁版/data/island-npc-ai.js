@@ -1,7 +1,7 @@
 // Talking Island monster behaviour, driven by the server's Map 0 tables.
 const IslandNpcAi = (() => {
   const distance = (x, y, tx, ty) => Math.max(Math.abs(x - tx), Math.abs(y - ty));
-  const safe = (x, y) => (tile(x, y) & 48) === 16;
+  const safe = (x, y) => WorldMaps.monsterSafe(window.activeMapId||0,x,y);
   // 強制攻擊：被打的常駐警衛／守護者（有血量）會生氣反擊，安全區也一樣；玩家離開範圍或死亡後消氣、走回原位（island-monsters.js advance）。
   const retaliates = mob => mob.spawn.resident && mob.spawn.npc.hp > 0 && (mob.spawn.npc.kind === 'L1Guard' || mob.spawn.npc.kind === 'L1Guardian');
   const canFight = mob => !mob.spawn.resident && mob.spawn.npc.attack > 0 || !!mob.angry && retaliates(mob);

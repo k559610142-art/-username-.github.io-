@@ -74,11 +74,12 @@ const Summons=(()=>{
    const profile=PlayerClassStats.read(),cap=Math.max(1,Math.floor(maxHp/2));
    const npc={gfx:appearance.p.gfx,name:'油傘影分身',kind:'L1Monster',level:profile.level,hp:cap,mp:0,ac:NativeCombatRules.armorClass()};
    const {mob:shadow}=create(npc.gfx,x,y,0,'shadow',cap,{npc,duration:skill.duration*1000});
-   if((tile(x,y)&48)===16)return;
+   const map=window.activeMapId||0;
+   if(WorldMaps.monsterSafe(map,x,y))return;
    IslandNpcAi.playerActive();
    const nearby=IslandMonsters.around(worldX,worldY,skill.range).filter(m=>
     m.spawn.npc.kind==='L1Monster'&&!m.spawn.boss&&!/BOSS/i.test(m.spawn.npc.name)&&
-    IslandNpcAi.canFight(m)&&(tile(m.x,m.y)&48)!==16&&IslandCombat.clearShot(x,y,m.x,m.y));
+    IslandNpcAi.canFight(m)&&!WorldMaps.monsterSafe(map,m.x,m.y)&&IslandCombat.clearShot(x,y,m.x,m.y));
    nearby.sort((a,b)=>dist(a.x,a.y,worldX,worldY)-dist(b.x,b.y,worldX,worldY));
    for(const mob of nearby.slice(0,4)){
     IslandNpcAi.provoke(mob,[]);

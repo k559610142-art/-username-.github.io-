@@ -56,11 +56,13 @@ if (opt.check) {
 
 // Spawns for the converted maps.
 const maps = new Set(opt.boss?[]:opt.maps||Object.keys(game.NATIVE_DUNGEON_MAPS).map(Number));
-const spawns = table('table-141.js').filter(r => maps.has(+r.mapid) && templates[r.npc_templateid] && +r.count > 0).map(r => ({
+const spawns = table('table-141.js').filter(r => maps.has(+r.mapid) && +r.mapid!==303 && templates[r.npc_templateid] && +r.count > 0).map(r => ({
   mapId: +r.mapid, spawnId: +r.id, zone: r.location, count: +r.count, npcId: +r.npc_templateid, group: +r.group_id || 0,
   point: [+r.locx, +r.locy], random: [+r.randomx, +r.randomy], bounds: [+r.locx1, +r.locy1, +r.locx2, +r.locy2], heading: +r.heading || 0,
   respawn: [+r.min_respawn_delay, +r.max_respawn_delay], movement: +r.movement_distance || 0,
 }));
+// Map 303 uses the ordinary monster records from 天地劫天堂 2019-07-02(原始).sql.
+if(maps.has(303))spawns.push(...require('./classic-dream-island-spawns.json'));
 // Town / castle NPCs (spawnlist_npc) become resident spawns like Map 0／4; L1Bow rows are invisible arrow traps and were never placed.
 const npcRows = table('table-147.js').filter(r => maps.has(+r.mapid) && templates[r.npc_templateid] && templates[r.npc_templateid].kind !== 'L1Bow' && +r.count > 0);
 for (const r of npcRows) spawns.push({
