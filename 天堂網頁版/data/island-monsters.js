@@ -314,8 +314,9 @@ const IslandMonsters = (() => {
       let sheet=loadSheet(file);
       if(!sheet.complete||!sheet.naturalWidth||!decodedSheets.has(sheet)){if(!mob.lastDrawn)continue;({sheet,fx,fy,sw,sh,sx,sy,cx,cy}=mob.lastDrawn);}
       else mob.lastDrawn={sheet,fx,fy,sw,sh,sx,sy,cx,cy};
-      const left=x+(fx-cx)*scale,top=y+(fy-cy)*scale;
-      const width=sw*scale,height=sh*scale;
+      const spriteScale=scale*(mob.spawn.shadow?window.OilParasolAppearance.renderScale:1);
+      const left=x+(fx-cx)*spriteScale,top=y+(fy-cy)*spriteScale;
+      const width=sw*spriteScale,height=sh*spriteScale;
       if(mob.hp)hitboxes.push({mob,left,top,width,height,sheet,sx:sx||0,sy:sy||0,sw,sh});
       if(mob===support&&mob.hp){
         pen.beginPath();pen.ellipse(x,y,Math.max(14,width*.4),7,0,0,Math.PI*2);
@@ -325,7 +326,9 @@ const IslandMonsters = (() => {
         pen.beginPath();pen.ellipse(x,y,Math.max(12,width*.36),6,0,0,Math.PI*2);
         pen.strokeStyle='#f0bc65';pen.lineWidth=2;pen.stroke();
       }
+      if(mob.spawn.shadow)pen.globalAlpha=.66;
       pen.drawImage(sheet,sx,sy,sw,sh,left,top,width,height); // 紅名只有名字紅色，身體不染色（使用者 2026-11-14）
+      if(mob.spawn.shadow)pen.globalAlpha=1;
       const vx=mob.death&&!mob.hp?mob.death.x:mob.step?mob.x+(mob.step.x-mob.x)*phase:mob.x,vy=mob.death&&!mob.hp?mob.death.y:mob.step?mob.y+(mob.step.y-mob.y)*phase:mob.y;window.NativeWorld?.paintEntity(pen,view,vx,vy,{left,top,width,height});
       mob.screenHead=[left+width/2,top,now];
       if(!mob.hp)continue; // 屍體不顯示名牌、血條，也不能被點選。
@@ -358,8 +361,8 @@ const IslandMonsters = (() => {
         }
         continue;
       }
-      pen.strokeText(name,left+sw*scale/2,top-5);
-      pen.fillText(name,left+sw*scale/2,top-5);
+      pen.strokeText(name,left+width/2,top-5);
+      pen.fillText(name,left+width/2,top-5);
     }
     window.FakePlayers?.drawShots(pen,view,now);
     for(const marker of stallMarkers){

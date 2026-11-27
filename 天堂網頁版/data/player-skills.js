@@ -11,7 +11,7 @@ const PlayerSkills = (() => {
   }
   function availableIds(){
     if(OwnedInventory.owner!==window.activeCharacterId)return [];
-    return [...new Set([...learned().ids,...(window.PlayerAbilityRules?.helmetSkills()||[])])];
+    return [...new Set([...learned().ids.filter(id=>Object.hasOwn(OilParasolRules.skills,id)===(job==='油傘女')),...(window.PlayerAbilityRules?.helmetSkills()||[])])];
   }
   function knows(id){return availableIds().includes(id);}
   function isBook(key){return !!books[key.split(':')[1]];}

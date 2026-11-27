@@ -47,18 +47,45 @@ const Summons=(()=>{
    const t=tile(tx,ty);if(t&&!(t&128)&&!IslandMonsters.occupied(tx,ty)&&!allies.some(a=>a.mob.x===tx&&a.mob.y===ty)&&!(tx===worldX&&ty===worldY))return [tx,ty];}
   return [x,y];
  }
- function create(npcId,x,y,cost,kind,hp){
-  const npc=islandMonsterTemplates[npcId];if(!npc||!islandMonsterFrames[npc.gfx])return null;
-  const [sx,sy]=spot(x,y);
+ function create(npcId,x,y,cost,kind,hp,shadow){
+  const npc=shadow?.npc||islandMonsterTemplates[npcId];if(!npc||!islandMonsterFrames[npc.gfx])return null;
+  const [sx,sy]=shadow?[x,y]:spot(x,y);
   const spawn={mapId:window.activeMapId||0,spawnId:-npcId,zone:'召喚',count:1,npcId,group:0,point:[sx,sy],random:[0,0],bounds:[0,0,0,0],heading:0,respawn:[0,0],movement:0,npc,ally:true};
+  if(shadow)spawn.shadow=true;
   const mob={spawn,region:[sx,sy,sx,sy],x:sx,y:sy,homeX:sx,homeY:sy,hp:Math.min(npc.hp,hp||npc.hp),mp:npc.mp,heading:4,rest:0,phase:Math.random()*1800,step:null,pack:null};
   mob.lastRegen=now();IslandNpcAi.reset(mob);mob.ready=0;
   IslandMonsters.addAlly(mob);
-  const a={mob,cost,kind,until:kind==='tame'||kind==='zombie'?Infinity:now()+LIFE};allies.push(a);
+  const a={mob,cost,kind,until:kind==='tame'||kind==='zombie'?Infinity:now()+(shadow?.duration??LIFE)};allies.push(a);
   IslandMonsters.playEffect(169,sx,sy,now());
   return a;
  }
  function release(filter=()=>true){for(const a of allies.filter(filter)){IslandMonsters.removeAlly(a.mob);IslandMonsters.playEffect(169,a.mob.x,a.mob.y,now());}allies=allies.filter(a=>!filter(a));}
+ function activeShadow(){
+  if(owner!==window.activeCharacterId||window.gameFlowState!=='playing'||CharacterActions.dead)return null;
+  return allies.find(a=>a.kind==='shadow'&&a.mob.hp&&a.until>now()&&a.mob.spawn.mapId===(window.activeMapId||0))?.mob||null;
+ }
+ function prepareShadow(skill){
+  const appearance=window.OilParasolAppearance;
+  const [x,y]=spot(worldX,worldY);
+  if(!appearance||!islandMonsterFrames[appearance.p.gfx]||x===worldX&&y===worldY)return null;
+  return ()=>{
+   tick();
+   release(a=>a.kind==='shadow');
+   const profile=PlayerClassStats.read(),cap=Math.max(1,Math.floor(maxHp/2));
+   const npc={gfx:appearance.p.gfx,name:'油傘影分身',kind:'L1Monster',level:profile.level,hp:cap,mp:0,ac:NativeCombatRules.armorClass()};
+   const {mob:shadow}=create(npc.gfx,x,y,0,'shadow',cap,{npc,duration:skill.duration*1000});
+   if((tile(x,y)&48)===16)return;
+   IslandNpcAi.playerActive();
+   const nearby=IslandMonsters.around(worldX,worldY,skill.range).filter(m=>
+    m.spawn.npc.kind==='L1Monster'&&!m.spawn.boss&&!/BOSS/i.test(m.spawn.npc.name)&&
+    IslandNpcAi.canFight(m)&&(tile(m.x,m.y)&48)!==16&&IslandCombat.clearShot(x,y,m.x,m.y));
+   nearby.sort((a,b)=>dist(a.x,a.y,worldX,worldY)-dist(b.x,b.y,worldX,worldY));
+   for(const mob of nearby.slice(0,4)){
+    IslandNpcAi.provoke(mob,[]);
+    mob.shadowTarget=shadow;mob.windup=null;mob.botEnemy=null;mob.alert=true;
+   }
+  };
+ }
 
  // ---- skills (called by ClassBuffs before paying the cost; return an error text or a function that does the work) ----
  function prepare(kind,skill){
@@ -123,6 +150,7 @@ const Summons=(()=>{
   mob.path=null;return false;
  }
  function update(mob,t,stepToward){
+  if(mob.spawn.shadow)return;
   if(!mob.hp||mob.step)return;
   const npc=mob.spawn.npc,target=enemyFor(mob);
   if(target){
@@ -143,7 +171,8 @@ const Summons=(()=>{
  // A monster hit by an ally attacks that ally (same NativeCombatRules.physical) until the ally dies, leaves 12 cells or the
  // player hits the monster (ClassBuffs.onHit／player-skills clear allyTarget). Returns true while it handles the monster.
  function drive(mob,t,stepToward){
-  const a=mob.allyTarget;
+  if(mob.shadowTarget&&mob.shadowTarget!==activeShadow())mob.shadowTarget=null;
+  const a=mob.shadowTarget||mob.allyTarget;
   if(!a)return false;
   if(!a.hp||!allies.some(x=>x.mob===a)||dist(a.x,a.y,mob.x,mob.y)>12||mob.spawn.resident){mob.allyTarget=null;return false;}
   if(!mob.hp)return true;
@@ -154,7 +183,7 @@ const Summons=(()=>{
    const dx=Math.sign(a.x-mob.x),dy=Math.sign(a.y-mob.y);const h=[[0,-1],[1,-1],[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1]].findIndex(([x,y])=>x===dx&&y===dy);if(h>=0)mob.heading=h;
    const duration=npc.attack||1000;mob.action={clip:'attack',start:t,end:t+duration};mob.ready=t+duration*(window.ClassBuffs?.slowed(mob)?1.33:1);
    const r=NativeCombatRules.physical(npc,{ac:a.spawn.npc.ac||0,dodge:0,reduction:0,role:''});
-   setTimeout(()=>{if(mob.hp&&a.hp&&r.hit&&r.damage>0)hurt(a,r.damage);},duration*.45);
+   setTimeout(()=>{if(mob.hp&&a.hp&&(!a.spawn.shadow||activeShadow()===a)&&r.hit&&r.damage>0)hurt(a,r.damage);},duration*.45);
    return true;
   }
   if(!window.ClassBuffs?.rooted(mob))moveToward(mob,a.x,a.y,t,stepToward);
@@ -175,16 +204,18 @@ const Summons=(()=>{
    pending=null;}
   if(!current)return;
   const t=now();
+  const shadowExpired=a=>a.kind==='shadow'&&(CharacterActions.dead||a.mob.spawn.mapId!==(window.activeMapId||0)||t>=a.until||!a.mob.hp);
+  if(allies.some(shadowExpired))release(shadowExpired);
   for(const a of allies){
    const m=a.mob;if(!m.hp)continue;
    const lost=!IslandMonsters.hasMob(m)||(m.spawn.mapId||0)!==(window.activeMapId||0)||dist(m.x,m.y,worldX,worldY)>16;
-   if(lost){const [x,y]=spot(worldX,worldY);m.spawn.mapId=window.activeMapId||0;m.x=m.homeX=x;m.y=m.homeY=y;m.step=null;IslandMonsters.addAlly(m);}
+   if(lost&&a.kind!=='shadow'){const [x,y]=spot(worldX,worldY);m.spawn.mapId=window.activeMapId||0;m.x=m.homeX=x;m.y=m.homeY=y;m.step=null;IslandMonsters.addAlly(m);}
   }
   const expired=a=>t>=a.until||!a.mob.hp;
   if(allies.some(expired))release(expired);
  }
  setInterval(tick,500);
- function snapshot(){const t=now();return allies.filter(a=>a.mob.hp).map(a=>({npcId:a.mob.spawn.npcId,hp:a.mob.hp,cost:a.cost,kind:a.kind,left:a.until===Infinity?null:Math.max(0,Math.round(a.until-t))}));}
+ function snapshot(){const t=now();return allies.filter(a=>a.kind!=='shadow'&&a.mob.hp).map(a=>({npcId:a.mob.spawn.npcId,hp:a.mob.hp,cost:a.cost,kind:a.kind,left:a.until===Infinity?null:Math.max(0,Math.round(a.until-t))}));}
  function restore(id,list){pending=Array.isArray(list)&&list.length?{id,list:list.filter(s=>s&&Number.isInteger(s.npcId)&&islandMonsterTemplates[s.npcId]&&s.hp>0).slice(0,12)}:null;}
- return {prepare,update,drive,killed,restore,get snapshot(){return owner===window.activeCharacterId?snapshot():[];},release:()=>release(),get mobs(){return allies.map(a=>a.mob);},get list(){return allies.map(a=>({name:a.mob.spawn.npc.name,hp:a.mob.hp,kind:a.kind}))},get room(){return room();},hasRing:()=>hasRing(),useLast(){if(lastChosen===null)return false;chosen=lastChosen;return true;},get lastName(){return lastChosen===null?null:islandMonsterTemplates[RING_IDS[lastChosen]]?.name||null;}};
+ return {prepare,prepareShadow,activeShadow,update,drive,killed,restore,get snapshot(){return owner===window.activeCharacterId?snapshot():[];},release:()=>release(),get mobs(){return allies.map(a=>a.mob);},get list(){return allies.map(a=>({name:a.mob.spawn.npc.name,hp:a.mob.hp,kind:a.kind}))},get room(){return room();},hasRing:()=>hasRing(),useLast(){if(lastChosen===null)return false;chosen=lastChosen;return true;},get lastName(){return lastChosen===null?null:islandMonsterTemplates[RING_IDS[lastChosen]]?.name||null;}};
 })();window.Summons=Summons;

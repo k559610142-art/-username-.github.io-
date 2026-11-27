@@ -14,6 +14,17 @@ window.CreationRules=(()=>{
     '幻術師':{type:6,base:{str:11,dex:10,con:12,wis:12,cha:8,int:12},points:10,hp:14,portraits:['class-6671.png','class-6650.png'],art:['illusionist-art-m.jpg','illusionist-art-f.jpg'],intro:'操控幻象的施法者，使用奇古獸與魔杖，兼顧攻擊與輔助。'},
     '戰士':{type:7,base:{str:16,dex:13,con:16,wis:7,cha:9,int:10},points:4,hp:16,portraits:['class-12490.png','class-12494.png'],art:['warrior-art-m.jpg','warrior-art-f.jpg'],intro:'以強健體魄揮舞斧、劍與長矛的近戰職業，擅長正面硬戰。'}
   };
+  classes['油傘女']={
+    type:8,gender:1,base:{str:11,dex:17,con:12,wis:10,cha:7,int:8},points:10,hp:14,
+    portraits:['../transform-portraits/980001.png','../transform-portraits/980001.png'],
+    intro:'以油傘近身作戰。敏捷提升命中與傷害，張傘可吸收傷害。'
+  };
+  const validGender=(role,gender)=>(gender===0||gender===1)&&(classes[role]?.gender===undefined||gender===classes[role].gender);
+  function canEquip(role,item){
+    if(role!=='油傘女')return !!item?.allowed.includes(role);
+    if(item?.kind==='weapon')return item.allowed.includes(role);
+    return item?.kind==='armor'&&item.type!=='shield'&&item.type!=='guarder'&&item.allowed.length>=5;
+  }
   const minStat=7,maxStat=20,totalStats=75;
   function hasTotal(stats){return !!stats&&keys.every(k=>Number.isInteger(stats[k]))&&keys.reduce((sum,k)=>sum+stats[k],0)===totalStats;}
   function validStats(role,stats){
@@ -33,9 +44,16 @@ window.CreationRules=(()=>{
   function rollStats(role,rng=Math.random){
     if(!Object.hasOwn(classes,role))return null;
     const stats={};
-    let left=totalStats,ticket=Math.floor(Math.max(0,Math.min(1-Number.EPSILON,Number(rng())||0))*ways[keys.length][left]);
-    for(const [index,key] of keys.entries()){
-      const remaining=keys.length-1-index;
+    const roll=()=>Math.max(0,Math.min(1-Number.EPSILON,Number(rng())||0));
+    let left=totalStats,fields=keys;
+    if(role==='油傘女'){
+      stats.dex=16+Math.floor(roll()*5);
+      left-=stats.dex;
+      fields=keys.filter(key=>key!=='dex');
+    }
+    let ticket=Math.floor(roll()*ways[fields.length][left]);
+    for(const [index,key] of fields.entries()){
+      const remaining=fields.length-1-index;
       for(let value=minStat;value<=Math.min(maxStat,left);value++){
         const count=ways[remaining][left-value];
         if(ticket<count){stats[key]=value;left-=value;break;}
@@ -51,8 +69,9 @@ window.CreationRules=(()=>{
     else if(role==='妖精')mp=wis>=16&&wis<=18?6:4;
     else if(role==='龍騎士'||role==='幻術師')mp=wis>=16&&wis<=18?6:4;
     else if(role==='戰士')mp=1;
+    else if(role==='油傘女')mp=5;
     else mp=wis>=16&&wis<=18?8:6;
     return {hp:c.hp,mp};
   }
-  return {keys,labels,classes,jobs:Object.keys(classes),validStats,validStoredStats,rollStats,vitals};
+  return {keys,labels,classes,jobs:Object.keys(classes),canEquip,validGender,validStats,validStoredStats,rollStats,vitals};
 })();

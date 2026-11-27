@@ -14,7 +14,7 @@ const CraftingWindow=(()=>{
   weapon:[
    ['匕首','dagger'],['單手劍','sword'],['雙手劍','tohandsword'],
    ['斧錘','blunt','tohandblunt'],['長矛','spear','singlespear'],
-   ['弓','bow','singlebow'],['法杖','staff','tohandstaff'],
+   ['弓','bow','singlebow'],['法杖','staff','tohandstaff'],['油傘','parasol'],
    ['雙刀','edoryu'],['鋼爪','claw'],['鎖鏈劍','chainsword'],['奇古獸','kiringku']
   ],
   armor:[

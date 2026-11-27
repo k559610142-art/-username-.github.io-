@@ -24,6 +24,7 @@ window.PlayerAbilityRules=(()=>{
  }
  function manaCost(skill,profile=PlayerClassStats.read()){
   const base=Math.max(0,Number(skill.mp)||0);if(!base)return 0;
+  if(skill.fixedMp)return base;
   let cost=Math.floor(base*(100-manaReduction(profile.attributes.int))/100);
   if(helmetSkills().includes(skill.id))cost=Math.floor(cost/2);
   return Math.max(1,cost-originalManaReduction(window.initialPlayerAttributes?.int??window.playerAttributes?.int));

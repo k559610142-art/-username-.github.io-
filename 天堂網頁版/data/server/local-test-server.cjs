@@ -2,6 +2,7 @@ const http=require('node:http'),fs=require('node:fs'),path=require('node:path'),
 const {DatabaseSync}=require('node:sqlite');
 const MERC=require('../mercenary-data.js'); // 傭兵團規則（與遊戲共用）
 const WUHUN_GACHA=require('../wuhun-gacha-data.js'); // 武魂扭蛋機獎池與機率（與遊戲共用）
+const OIL_PARASOL=require('../oil-parasol-rules.js');
 const DOLL_GACHA=require('../doll-gacha-data.js'); // 魔法娃娃扭蛋機（2026-11-17，與遊戲共用）
 let healingCache=null;
 function healingData(){if(healingCache)return healingCache;const vm=require('node:vm'),c={};c.window=c;vm.createContext(c);for(const file of ['interface-catalog.js','item-use-data.js','db-native-catalog.js','player-skill-data.js','native-dungeon-maps.js','native-collision-data.js','native-collision.js'])vm.runInContext(fs.readFileSync(path.join(__dirname,'..',file),'utf8'),c);return healingCache={skills:vm.runInContext('playerSkillData.skills',c),rules:c.ITEM_USE_RULES.definitions,maps:c.NATIVE_DUNGEON_MAPS,collision:c.NativeCollision};}
@@ -10,6 +11,7 @@ function createGameServer(options={}){
  const root=options.root||path.resolve(__dirname,'../..');
  const database=options.database||path.join(__dirname,'runtime.sqlite');
  const settings=options.settings||JSON.parse(fs.readFileSync(path.join(__dirname,'server-settings.json'),'utf8'));
+ if(!options.settings)Object.assign(settings.items,OIL_PARASOL.itemRules);
  if(!options.settings)for(const key of require('../item-properties.js').stackableMaterialKeys){
   if(settings.items[key])settings.items[key].stackable=true;
  }
@@ -80,8 +82,12 @@ function createGameServer(options={}){
    const rules=settings.classes[c.role];if(!rules)fail(400,'不支援的職業。');
    text(c.name,12);if(typeof c.id!=='string'||!c.id||c.id.length>80||ids.has(c.id)||names.has(c.name))fail(400,'角色名稱或識別碼重複。');
    ids.add(c.id);names.add(c.name);
-   if(![0,1].includes(c.gender)||!(creationRules?.validStats(c.role,c.stats)||c.stats&&Object.keys(rules.base).every(k=>Number.isInteger(c.stats[k])&&c.stats[k]>=rules.base[k]&&c.stats[k]<=rules.base[k]+rules.points)&&Object.keys(rules.base).reduce((n,k)=>n+c.stats[k],0)===75))fail(400,'角色能力值有誤。');
+   if(!(creationRules?.validGender(c.role,c.gender)??[0,1].includes(c.gender))||!(creationRules?.validStats(c.role,c.stats)||c.stats&&Object.keys(rules.base).every(k=>Number.isInteger(c.stats[k])&&c.stats[k]>=rules.base[k]&&c.stats[k]<=rules.base[k]+rules.points)&&Object.keys(rules.base).reduce((n,k)=>n+c.stats[k],0)===75))fail(400,'角色能力值有誤。');
    int(c.level||1,1,100);validInventory(c.inventory||[]);
+   for(const item of c.inventory||[]){
+    const parasol=OIL_PARASOL.itemRules[item.key];
+    if(item.slot&&parasol?.kind==='weapon'&&c.role!=='油傘女')fail(400,'傘類武器限油傘女裝備。');
+   }
    const previous=snapshot(user.id).characters.find(row=>row?.id===c.id);if(Object.keys(rules.base).some(k=>c.stats[k]>20)&&(!previous||Object.keys(rules.base).some(k=>previous.stats[k]!==c.stats[k])))fail(400,'創角單項屬性最高 20。');
    const old=snapshot(user.id).characters.find(row=>row?.id===c.id);c.diamonds=old?.diamonds||0; // 鑽石只允許由伺服器交易修改。
    c.mercPoints=old?.mercPoints||0;c.mercContract=old?.mercContract||null;c.dailyDiamond=old?.dailyDiamond||null; // 傭兵點數與雇用合約也只由伺服器修改。

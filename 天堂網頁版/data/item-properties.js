@@ -1,11 +1,12 @@
 // Read-only item descriptions, shared by crafting previews and future inventory UI.
 (function(root,factory){const api=factory(root);if(typeof module==='object'&&module.exports)module.exports=api;else {root.ItemProperties=api;for(const key of api.stackableMaterialKeys){const rule=root.ITEM_USE_RULES?.definitions[key];if(rule)rule.stackable=true;}}})(typeof window!=='undefined'?window:globalThis,(root)=>{
- const TYPES={helm:'頭盔',armor:'盔甲',pants:'脛甲',cloak:'斗篷',glove:'手套',boots:'靴子',shield:'盾牌',ring:'戒指',amulet:'項鍊',earring:'耳環',belt:'腰帶',talisman:'符石',runeword:'符石',sword:'單手劍',dagger:'匕首',tohandsword:'雙手劍',blunt:'鈍器',bow:'弓',staff:'法杖',spear:'矛',singlespear:'單手矛',edoryu:'雙刀',claw:'鋼爪',kiringku:'奇古獸',chainsword:'鎖鏈劍',tohandblunt:'雙手鈍器',tshirt:'內衣',arrow:'箭矢',potion:'藥水',scroll:'卷軸',gem:'寶石',material:'材料',questitem:'任務／製作道具',spellbook:'技能書'};
+ const TYPES={helm:'頭盔',armor:'盔甲',pants:'脛甲',cloak:'斗篷',glove:'手套',boots:'靴子',shield:'盾牌',ring:'戒指',amulet:'項鍊',earring:'耳環',belt:'腰帶',talisman:'符石',runeword:'符石',sword:'單手劍',dagger:'匕首',tohandsword:'雙手劍',blunt:'鈍器',bow:'弓',staff:'法杖',parasol:'油傘',spear:'矛',singlespear:'單手矛',edoryu:'雙刀',claw:'鋼爪',kiringku:'奇古獸',chainsword:'鎖鏈劍',tohandblunt:'雙手鈍器',tshirt:'內衣',arrow:'箭矢',potion:'藥水',scroll:'卷軸',gem:'寶石',material:'材料',questitem:'任務／製作道具',spellbook:'技能書'};
  const ATTR={str:'力量',dex:'敏捷',con:'體質',int:'智力',wis:'精神',cha:'魅力',hp:'HP',mp:'MP'};
  const RULES={m_def:'魔法防禦 MR',add_sp:'魔攻 SP',add_hpr:'體力恢復',add_mpr:'魔力恢復',damage_reduction:'傷害減免',magic_critical:'魔法暴擊',exp_point:'經驗加成'};
  const sign=n=>n>0?'+'+n:String(n);
  function read(item,options={}){
   const out=[],add=(label,value)=>{if(value!==undefined&&value!==null&&value!=='')out.push({label,value:String(value)});},r=item.sourceRules||{},enchant=Number(options.enchant)||0;
+  if(item.type==='parasol'){add('武器分型',item.profile+(item.boss?' · BOSS':''));if(item.shield)add('護盾吸收量',sign(item.shield));}
   add('類型',TYPES[item.type]||({weapon:'武器',armor:'防具',etcitem:'道具'}[item.kind])||'道具');
   if(item.kind==='weapon'){add('基礎傷害（小型／大型）',(item.damage||[0,0]).join('／'));add('持用方式',item.twoHand?'雙手':'單手');if(Number(r.range)>0)add('攻擊距離',r.range+' 格');if(enchant)add('強化傷害',sign(enchant));}
   if(item.kind==='armor'){add('基礎防禦 AC',item.ac||0);if(enchant)add('強化後防禦 AC',Number(item.ac||0)-enchant);}

@@ -74,10 +74,12 @@ const ItemEffects=(()=>{
   if(!scroll||scroll.slot||enchantKind(scroll.key)!==kind||!canEnchant(target,kind))return say('卷軸或裝備已變更，請重新選擇。');
   const rule=defs()[scroll.key],bless=scroll.bless??rule.bless;
   const current=target.enchant||0,safe=target.item.sourceRules?.safenchant??0;
+  const signature=OilParasolRules.isWeapon(target.item);
+  if(signature&&current>=safe&&bless!==2)return say(target.item.name+'已達最高強化 +'+safe+'。');
   const {destroyed,change}=scroll.key==='etcitem:49147'?{change:1}:enchantOutcome(current,safe,kind,bless);
   const next=OwnedInventory.snapshot,row=next.find(e=>e.uid===targetUid),used=next.find(e=>e.uid===scrollUid);
   if(--used.count===0)next.splice(next.indexOf(used),1);
-  if(destroyed)next.splice(next.indexOf(row),1);else row.enchant=current+change;
+  if(destroyed)next.splice(next.indexOf(row),1);else row.enchant=signature?Math.min(safe,current+change):current+change;
   if(!OwnedInventory.applyChange(next))return false;
   const message=destroyed?'強化失敗，'+enchantLabel(target)+' 已消失。':change?'強化結果：'+enchantLabel({...target,enchant:row.enchant})+'。':'強化值維持原樣。';
   toast(message);

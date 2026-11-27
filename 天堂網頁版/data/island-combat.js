@@ -123,7 +123,7 @@ const IslandCombat=(()=>{
     if(!CharacterActions.play('attack',{interruptMovement:interrupt}))return false;
     if(bow&&!OwnedInventory.consumeArrow()){stop();return false;}
     const profile=PlayerClassStats.read();
-    const weaponMax=Math.max(1,profile.weapon?.damage[0]||2);
+    const weaponMax=Math.max(1,OilParasolRules.isWeapon(profile.weapon)?OilParasolRules.baseDamage(profile.weapon,mob):(profile.weapon?.damage[0]||2));
     const landed=bow?PlayerRangedRules.hits(profile,mob):PlayerRangedRules.meleeHits(profile,mob);
     const elementalDamage=landed?window.ItemEffects?.elementalHit(OwnedInventory.items.find(e=>e.slot==='weapon'),mob)||0:0;
     const damage=landed?1+Math.floor(Math.random()*weaponMax)+(bow?profile.rangedBonus:profile.meleeBonus)+DBGameRules.weaponProc(mob)+(window.ClassBuffs?.onHit(mob,bow)||0)+(window.DollEffects?.onHit(mob)||0)+elementalDamage:0;

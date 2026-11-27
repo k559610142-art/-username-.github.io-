@@ -113,10 +113,29 @@ const DBGameRules = (() => {
   };
   function starter(role,existing){
     const next=clone(existing);
-    for(const [id,count] of [...STARTER_KIT.common,...(STARTER_KIT[role]||[])]){
+    const equipment=role==='油傘女'
+      ? [...STARTER_KIT.common.filter(([id])=>id!==20232),[OilParasolRules.weapon.id,1],[OilParasolRules.starterBookId,1]]
+      : [...STARTER_KIT.common,...(STARTER_KIT[role]||[])];
+    for(const [id,count] of equipment){
       if(!add(next,keyFor(id),count))throw Error('新手道具設定錯誤：'+id);
     }
+    if(role==='油傘女')next.find(item=>item.key===OilParasolRules.weaponKey).slot='weapon';
     return next;
+  }
+  function prepareOilParasolKit(character,inventory,warehouse){
+    if(character.role!=='油傘女')return null;
+    let needsSave=false;
+    for(const row of inventory){
+      const item=byId.get(Number(row.key?.split(':')[1]));
+      if(row.slot&&item&&!CreationRules.canEquip(character.role,item)){row.slot=null;needsSave=true;}
+    }
+    if(character.oilParasolKit)return needsSave?{}:null;
+    const key=OilParasolRules.weaponKey;
+    if(![...inventory,...warehouse].some(row=>row.key===key)){
+      if(!add(inventory,key,1))return needsSave?{}:null;
+      if(!inventory.some(row=>row.slot==='weapon'))inventory.at(-1).slot='weapon';
+    }
+    return {oilParasolKit:true};
   }
   function potion(uid,row){
     const entry=OwnedInventory.items.find(e=>e.uid===uid);
@@ -327,6 +346,6 @@ const DBGameRules = (() => {
     }
   };
   return {rows,automaticSkills,extraDrops,supplementalDropNames,killRewards,xpMultiplier,starter,useItem,damageBonus,weaponProc,weaponSkillChance,syncVitals,reduction,
-    craft,craftRecipes,craftCategory,isElvenCraft,openCrafting,blendClass:role=>BLEND_CLASS[role],addItem:add,takeItem:take,craftNpcs:()=>new Set(craftRecipes().map(r=>r.npcid))};
+    craft,craftRecipes,craftCategory,isElvenCraft,openCrafting,prepareOilParasolKit,blendClass:role=>BLEND_CLASS[role],addItem:add,takeItem:take,craftNpcs:()=>new Set(craftRecipes().map(r=>r.npcid))};
 })();
 window.DBGameRules=DBGameRules;

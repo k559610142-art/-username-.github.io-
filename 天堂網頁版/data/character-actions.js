@@ -7,6 +7,7 @@ const fullCharacterStyle=document.createElement('style');fullCharacterStyle.text
 function activeCharacterAvatar(){return characterCatalog.jobs[job]?.[characterGender]||'男騎士'}
 function activeCharacterActions(){return fullCharacterAssets.avatars[activeCharacterAvatar()]}
 function activeCharacterWeapon(){const data=activeCharacterActions();return data.weapons.includes(characterWeapon)?characterWeapon:'unarmed'}
+function nativeClassAppearance(){return job==='油傘女'?window.OilParasolAppearance:null}
 function activeWeaponWalkAction(){return fullCharacterAssets.weapons[activeCharacterWeapon()].base}
 function fullCharacterPath(avatar,heading,clip,index,shadow=false){heading=fullCharacterAssets.avatars[avatar]?.mirror?.[heading]||heading; // 鏡像方向讀來源方向的圖（character-action-fallbacks.js）
  return 'assets/character-actions/'+avatar+'/'+heading+'/'+clip+(shadow?'_s':'')+'_'+index+'.png'}
@@ -92,7 +93,8 @@ function playCharacterAction(action,options={}){
  }
  if(action==='idle'){characterActionState=null;characterWalkUntil=0;characterIdleStarted=movementTime();refreshCharacter();return true}
  const speedPct = action === 'attack' ? window.activeTransformCard?.attackSpeedPct || 0 : action === 'skill' ? window.activeTransformCard?.castSpeedPct || 0 : 0;
- const started=options.force&&movementAnimating()?movementTween.started+movementTween.duration:movementTime(),duration=((typeof MonsterActions !== 'undefined' && MonsterActions.actionDuration(window.activeTransformCard?.p?.gfx,characterHeading,action,MonsterActions.equippedWeapon()))||data.timelines[clip].durationMs)*(window.NativePotions?.actionMultiplier(action)||1)/(1+speedPct/100);
+ const appearance=window.activeTransformCard||(action==='death'?window.TransformCards?.deathAppearance:null)||nativeClassAppearance();
+ const started=options.force&&movementAnimating()?movementTween.started+movementTween.duration:movementTime(),duration=((typeof MonsterActions !== 'undefined' && MonsterActions.actionDuration(appearance?.p?.gfx,characterHeading,action,MonsterActions.equippedWeapon()))||data.timelines[clip].durationMs)*(window.NativePotions?.actionMultiplier(action)||1)/(1+speedPct/100);
  characterActionState={action,clip,started,duration,hold:!!options.hold,until:options.hold?Infinity:started+duration+(action==='death'?900:0)};
  if(action==='attack')CombatSound.playerAttack(characterActionState);
  if(started<=movementTime())characterWalkUntil=0;
@@ -104,7 +106,7 @@ function resetCharacterActions(weapon='unarmed'){
 window.CharacterActions={
  play:playCharacterAction,
  setWeapon(weapon){if(window.gameFlowState!=='playing'||!activeCharacterActions().weapons.includes(weapon)||movementAnimating()||characterMovementBlocked())return false;characterWeapon=weapon;characterActionState=null;characterIdleStarted=movementTime();refreshCharacter();window.GameEntry?.saveActive();return true},
- damage(amount,{animate=true}={}){if(window.gameFlowState!=='playing'||!Number.isFinite(amount)||amount<=0||characterDead)return false;window.DamageNumbers?.add('player',Math.min(hp,Math.floor(amount)),'player');hp=Math.max(0,hp-Math.floor(amount));characterDead=hp===0;CombatSound.playerHit(characterDead);if(characterDead){window.NativePotions?.clearOnDeath();window.TransformCards?.onDeath();}if(animate||characterDead)playCharacterAction(characterDead?'death':'hurt',{force:true,hold:characterDead});stats();window.GameEntry?.saveActive();return true},
+ damage(amount,{animate=true}={}){if(window.gameFlowState!=='playing'||!Number.isFinite(amount)||amount<=0||characterDead)return false;const damage=window.ClassBuffs?.absorbOilParasolDamage?.(Math.floor(amount))??Math.floor(amount);if(damage<=0)return true;window.DamageNumbers?.add('player',Math.min(hp,damage),'player');hp=Math.max(0,hp-damage);characterDead=hp===0;CombatSound.playerHit(characterDead);if(characterDead){window.NativePotions?.clearOnDeath();window.TransformCards?.onDeath();}if(animate||characterDead)playCharacterAction(characterDead?'death':'hurt',{force:true,hold:characterDead});stats();window.GameEntry?.saveActive();return true},
  revive(){if(window.gameFlowState!=='playing'||movementAnimating())return false;if(hp<=0)hp=maxHp;resetCharacterActions(characterWeapon);stats();window.GameEntry?.saveActive();return true},
  reset:resetCharacterActions,
  get weapon(){return activeCharacterWeapon()},get action(){return characterLastAction},get dead(){return characterDead},

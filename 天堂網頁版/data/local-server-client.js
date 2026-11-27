@@ -202,11 +202,26 @@ const LocalServerClient=(()=>{
   const view=getRenderedSceneView(),scale=characterRenderScale(),used=new Set();
   for(const player of visiblePlayers){
    if(player.mapId!==(window.activeMapId||0))continue;
-   used.add(player.id);let element=peers.get(player.id);
+   const appearance=player.role==='油傘女'?window.OilParasolAppearance:null;
    const avatar=characterCatalog.jobs[player.role]?.[player.gender];if(!avatar)continue;
    const asset=CHARACTER_ACTION_ASSETS.avatars[avatar];if(!asset)continue;
-   if(!element){element=uiElement('div','');const image=document.createElement('img'),label=uiElement('small','',player.name);image.src='assets/character-actions/'+avatar+'/S/unarmed_idle_0.png';image.alt='';element.append(image,label);peers.set(player.id,element);peersLayer.append(element);}
-   const [x,y]=project(player.x,player.y),w=asset.size[0]*scale,h=asset.size[1]*scale;
+   used.add(player.id);let element=peers.get(player.id);
+   if(!element){
+    element=uiElement('div','');
+    const image=document.createElement(appearance?'div':'img'),label=uiElement('small','',player.name);
+    if(appearance)image.style.cssText='position:absolute;background-repeat:no-repeat';
+    else{image.src='assets/character-actions/'+avatar+'/S/unarmed_idle_0.png';image.alt='';}
+    element.append(image,label);peers.set(player.id,element);peersLayer.append(element);
+   }
+   const [x,y]=project(player.x,player.y);
+   if(appearance){
+    const sprite=element.firstChild;
+    element.style.cssText='position:absolute;left:'+(x*view.zoom+view.ox)+'px;top:'+(y*view.zoom+view.oy)+'px';
+    MonsterActions.draw(sprite,appearance.p.gfx,'S',{clip:'idle',time:movementTime()},scale*appearance.renderScale);
+    element.lastChild.style.cssText='position:absolute;left:0;top:'+sprite.style.top+';transform:translate(-50%,-100%);white-space:nowrap;color:'+(window.PlayerAppearance?.lawfulColor(player.lawful)||'#fff')+';text-shadow:1px 1px #000';
+    continue;
+   }
+   const w=asset.size[0]*scale,h=asset.size[1]*scale;
    element.style.cssText='position:absolute;left:'+(x*view.zoom+view.ox-w/2)+'px;top:'+(y*view.zoom+view.oy-asset.footY*scale)+'px;width:'+w+'px;height:'+h+'px';
    element.firstChild.style.cssText='width:100%;height:100%;position:absolute;inset:0';
    element.lastChild.style.cssText='position:absolute;left:0;right:0;top:0;text-align:center;color:'+(window.PlayerAppearance?.lawfulColor(player.lawful)||'#fff')+';text-shadow:1px 1px #000';

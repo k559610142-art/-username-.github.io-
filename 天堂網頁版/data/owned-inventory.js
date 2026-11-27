@@ -42,7 +42,7 @@ window.OwnedInventory=(()=>{
    const r=config(e),item=definition(e);if(!r)return '道具設定不存在';if(!r.stackable&&e.count!==1)return '非堆疊物品數量有誤';if(e.slot!==undefined&&e.slot!==null&&typeof e.slot!=='string')return '穿戴欄位格式有誤';
    if((e.attributeScroll!==undefined||e.attributeRank!==undefined)&&
       (item.kind!=='weapon'||!/^etcitem:5626[1-4]$/.test(e.attributeScroll)||!Number.isInteger(e.attributeRank)||e.attributeRank<1||e.attributeRank>5))return '武器屬性資料有誤';
-   if(e.slot){if(!slots.includes(e.slot)||used.has(e.slot)||!(e.slot===slotFor(item)||/^ring[1-4]$/.test(e.slot)&&slotFor(item)==='ring1'||e.slot==='weapon2'&&isAxe(item)&&(!role||role==='戰士')))return '穿戴欄位資料有誤';used.add(e.slot);if(role&&!item.allowed.includes(role))return '穿戴物品不符合職業';if(role&&(r.minLevel>charLevel||r.maxLevel&&charLevel>r.maxLevel))return '穿戴物品不符合等級'}
+   if(e.slot){if(!slots.includes(e.slot)||used.has(e.slot)||!(e.slot===slotFor(item)||/^ring[1-4]$/.test(e.slot)&&slotFor(item)==='ring1'||e.slot==='weapon2'&&isAxe(item)&&(!role||role==='戰士')))return '穿戴欄位資料有誤';used.add(e.slot);if(role&&!CreationRules.canEquip(role,item))return '穿戴物品不符合職業';if(role&&(r.minLevel>charLevel||r.maxLevel&&charLevel>r.maxLevel))return '穿戴物品不符合等級'}
   }const weapon=rows.find(e=>e.slot==='weapon'),shield=rows.find(e=>e.slot==='shield');if(weapon&&definition(weapon).twoHand&&shield&&!isGuarder(definition(shield)))return '雙手武器與盾牌不能同時穿戴';if(used.has('weapon2')&&(used.has('shield')||weapon&&!isAxe(definition(weapon))))return '第二把斧頭只能配單手斧、右手不能再裝盾牌';if(role&&([...used].filter(s=>s.startsWith('ring')).length>(charLevel>=81?4:charLevel>=76?3:2)||charLevel<76&&(used.has('ring3')||used.has('ring4'))||charLevel<81&&used.has('ring4')))return '戒指欄位不符合角色等級';return null;
  }
  function visualMode(rows){const weapon=rows.find(e=>e.slot==='weapon'),item=weapon&&definition(weapon),modes=CharacterActions.available.weapons;if(!item)return 'unarmed';if(modes.includes(item.mode))return item.mode;const native={chainsword:'chainsword',kiringku:'kiringku',edoryu:'edoryu',claw:'claw',gauntlet:'gauntlet'}[item.type];if(native&&modes.includes(native))return native;if(/staff/.test(item.type)&&modes.includes('blunt'))return 'blunt';return 'unarmed'}
@@ -243,7 +243,7 @@ window.OwnedInventory=(()=>{
  }
  function equip(uid){
   const e=entries.find(e=>e.uid===uid);if(!e)return false;if(e.slot)return unequip(uid);const item=definition(e),r=config(e),slot=slotFor(item);if(!slot)return false;
-  if(!item.allowed.includes(job)){toast('目前職業無法使用這項裝備。');return false}if(window.TransformCards&&!TransformCards.canEquip(item)){toast('目前的變身無法裝備這項物品。');return false}if(level()<r.minLevel||r.maxLevel&&level()>r.maxLevel){toast('角色等級不符合道具限制。');return false}if(characterMovementBlocked()||movementAnimating()){toast('請等目前動作結束。');return false}
+  if(!CreationRules.canEquip(job,item)){toast('目前職業無法使用這項裝備。');return false}if(window.TransformCards&&!TransformCards.canEquip(item)){toast('目前的變身無法裝備這項物品。');return false}if(level()<r.minLevel||r.maxLevel&&level()>r.maxLevel){toast('角色等級不符合道具限制。');return false}if(characterMovementBlocked()||movementAnimating()){toast('請等目前動作結束。');return false}
   if(item.kind==='weapon'&&[65,133,191,192].includes(item.id)){toast('這項任務武器不能在說話之島使用。');return false}
   let current=entries.find(i=>i.slot===slot);const weapon=entries.find(i=>i.slot==='weapon'),second=entries.find(i=>i.slot==='weapon2');let target=slot;
   // 戰士：手上已拿單手斧、再裝一把單手斧 → 放右手（第二把武器）
@@ -297,6 +297,7 @@ window.OwnedInventory=(()=>{
  function collect(uid){
   const entry=entries.find(e=>e.uid===uid),item=entry&&definition(entry);
   if(!entry||!['weapon','armor'].includes(item?.kind))return false;
+  if(entry.key===OilParasolRules.weaponKey){toast('青楓油傘是新手武器，無法加入圖鑑。');return false;}
   if(entry.slot){toast('請先卸下裝備，再加入圖鑑。');return false;}
   if(hasCollection(entry.key)){toast('這件物品已開圖，不需重複加入。');return false;}
   const next=clone(entries);if(!deduct(next,uid,1))return false;

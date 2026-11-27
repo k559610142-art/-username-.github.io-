@@ -14,6 +14,7 @@ const IslandNpcAi = (() => {
     mob.alert = false;
     mob.angry = false;
     mob.windup = null;
+    mob.shadowTarget = null;
     mob.botEnemy = null; mob.botControlUntil = 0;
     mob.ready = 0;
     mob.action = null;
@@ -152,7 +153,7 @@ const IslandNpcAi = (() => {
     if (mob.aiOwner !== owner) {
       reset(mob);
     }
-    if(mob.botEnemy){fightBot(mob,now,steps,stepToward);return true;}
+    if(mob.botEnemy&&!mob.shadowTarget){fightBot(mob,now,steps,stepToward);return true;}
     if (window.Summons?.drive(mob, now, stepToward)) return true;
     if (!canFight(mob) || !playerActive() || now < immuneUntil || !mob.angry && (safe(worldX, worldY) || safe(mob.x, mob.y)) || window.ClassBuffs?.invisible()) {
       calm(mob);

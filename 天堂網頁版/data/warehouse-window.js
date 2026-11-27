@@ -106,7 +106,7 @@ window.WarehouseWindow = (() => {
 
     function canWear(entry){
       const item=entry.item,rule=ITEM_USE_RULES.definitions[entry.key],level=window.activeCharacterLevel||1;
-      return !!OwnedInventory.slotFor(item)&&item.allowed.includes(job)&&level>=(rule?.minLevel||0)&&(!rule?.maxLevel||level<=rule.maxLevel);
+      return !!OwnedInventory.slotFor(item)&&CreationRules.canEquip(job,item)&&level>=(rule?.minLevel||0)&&(!rule?.maxLevel||level<=rule.maxLevel);
     }
     function matches(entry){
       const item=entry.item;

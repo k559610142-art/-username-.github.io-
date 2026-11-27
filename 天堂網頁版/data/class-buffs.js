@@ -16,6 +16,8 @@
 // Combat uses effective target stats without modifying shared monster templates; effects expire or reset on character change.
 const ClassBuffs=(()=>{
  const sk=id=>playerSkillData.skills[id];
+ const oil=OilParasolRules.skillIds;
+ let oilShield=null;
  const buffs=new Map(),cooldowns=new Map();let debuffs=new WeakMap();let owner=null,cubes=[],dots=[],barrierSet=false;
  const now=()=>movementTime();
  const knows=id=>window.PlayerSkills?.knows(id)??(OwnedInventory.owner===window.activeCharacterId&&OwnedInventory.skills.ids.includes(id));
@@ -37,6 +39,7 @@ const ClassBuffs=(()=>{
   // 精靈魔法第 6 階（2026-11-17 補）：體能激發 AC−3、水之元氣 MP 回復+3、屬性之火 dmg+3、精準射擊 遠攻命中+6、烈焰之魂 dmg+5、能量激發 dmg+2
   169:{ac:-3},170:{mpr:3},171:{dmg:3},174:{bowHit:6},175:{dmg:5},176:{dmg:2},
   98:{},99:{ac:-3},101:{speed:'haste'},102:{dmg:3},104:{},105:{dmg:4},106:{dodge:5},107:{dmg:5},109:{stats:{str:2}},110:{stats:{dex:2}},111:{dodge:5},
+  [oil.shield]:{},[oil.step]:{stats:{dex:3},dodge:4},
  };
  // Monster debuffs: mobDmg (less damage dealt), stun／sleep, silence, root, slow, dot.
  const TARGET={
@@ -45,9 +48,10 @@ const ClassBuffs=(()=>{
   173:{mobDmg:3},103:{stun:1},112:{armorBreak:1},183:{},188:{},193:{},202:{silence:1},212:{stun:1},217:{},228:{root:1},230:{stun:1},
  };
  const AREA_TARGET={76:{slow:1},161:{silence:1}};
- const ATTACK={108:1,187:1,207:1,229:1};
+ const ATTACK={108:1,187:1,207:1,229:1,[oil.slash]:1,[oil.counter]:1};
  const AREA={205:1,210:1,215:1,220:1,225:1};
- const PASSIVE={233:1,234:1,235:1,236:1,237:1,238:1,239:1};
+ const PASSIVE={233:1,234:1,235:1,236:1,237:1,238:1,239:1,[oil.lightfoot]:1,[oil.shieldMastery]:1};
+ const oilArea={[oil.sweep]:{limit:3,scale:.7},[oil.riposte]:{limit:3,scale:.7},[oil.twinSweep]:{limit:5,scale:.85}};
  // Utility skills (skillmode BODY_TO_MIND mp+2, BLOODY_SOUL mp+15, TELEPORT／MASS_TELEPORT, TELEPORT_TO_MATHER, CURE_POISON,
  // REMOVE_CURSE; L1J 魔力奪取 5–14 MP, 起死回生術 kills undead at 50%). Summon kinds go to data/summons.js.
  // `need` = needs another system and only explains why.
@@ -61,7 +65,7 @@ const ClassBuffs=(()=>{
  delete SELF[119];delete SELF[194];delete SELF[213];delete SELF[218];PASSIVE[119]=1;
  Object.assign(TARGET,{20:{blind:1},40:{blind:1},27:{weaponBreak:1},71:{decay:1},113:{focus:1},133:{elementDown:50},153:{erase:1},183:{ac:10},188:{dodge:-5},193:{stats:{str:-3,int:-3}},217:{stats:{str:-1,con:-1,dex:-1,wis:-1,int:-1}}});
  delete UTIL[27];delete UTIL[71];delete UTIL[153];UTIL[13]=UTIL[194]=UTIL[213]='detect';UTIL[165]='resurrect';ATTACK[218]=1;ATTACK[132]=1;AREA[63]=1;
- const handles=id=>!!(SELF[id]||TARGET[id]||AREA_TARGET[id]||ATTACK[id]||AREA[id]||PASSIVE[id]||UTIL[id]);
+ const handles=id=>!!(SELF[id]||TARGET[id]||AREA_TARGET[id]||ATTACK[id]||AREA[id]||PASSIVE[id]||UTIL[id]||oilArea[id]||id===oil.decoy);
  let invisible=false;
  const active=()=>[...buffs.keys()].filter(on).map(id=>SELF[id]||{});
  const sum=key=>active().reduce((n,e)=>n+(typeof e[key]==='number'?e[key]:0),0);
@@ -74,7 +78,15 @@ const ClassBuffs=(()=>{
  function reduction(){let n=sum('red');if(on(88))n+=Math.max(1,Math.trunc((level()-50)/5)+1);
   if(knows(236)){const ac=window.NativeCombatRules?.armorClass?.()??0;n+=Math.max(0,Math.trunc(-ac/10));}return n;}
  function ac(){return sum('ac')+(knows(119)?-2:0);}
- function dodge(){return sum('dodge');}
+ function dodge(){return sum('dodge')+(job==='油傘女'&&OwnedInventory.equippedWeaponType==='parasol'&&knows(oil.lightfoot)?2:0);}
+ const shieldLeft=()=>on(oil.shield)?oilShield:0;
+ function absorbOilParasolDamage(damage){
+  const absorbed=Math.min(damage,shieldLeft()||0);
+  if(!absorbed)return damage;
+  oilShield-=absorbed;
+  if(!oilShield)buffs.delete(oil.shield);
+  return damage-absorbed;
+ }
  function mpr(){return sum('mpr');}
  function hpr(){return sum('hpr');}
  function maxWeight(base){return Math.floor(base*(on(14)?1.5:1));}
@@ -164,6 +176,14 @@ const ClassBuffs=(()=>{
  // ---- casting ----
  function targetInRange(skill){const mob=IslandMonsters.target,range=skill.range>0?skill.range:skill.id===132?12:skill.id===113?14:3;
   return mob?.hp&&!mob.spawn.ally&&(!mob.spawn.resident||mob.spawn.npc.hp>0)&&(!mob.spawn.bot||window.FakePlayers?.canAttack(mob))&&Math.max(Math.abs(mob.x-worldX),Math.abs(mob.y-worldY))<=range&&IslandCombat.clearShot(worldX,worldY,mob.x,mob.y)?mob:null;}
+ function parasolTargets(x,y){
+  return IslandMonsters.around(x,y,1).filter(m=>m.spawn.npc.kind==='L1Monster'&&IslandCombat.clearShot(x,y,m.x,m.y));
+ }
+ function parasolHit(profile,mob,scale,t,extra=0){
+  if(!PlayerRangedRules.meleeHits(profile,mob)){mob.rangedMissUntil=t+650;window.IslandNpcAi?.provoke(mob,[]);return;}
+  const base=OilParasolRules.baseDamage(profile.weapon,mob)+4+profile.meleeBonus;
+  IslandMonsters.damage(mob,Math.max(1,Math.floor(base*scale)+extra));
+ }
  function applyTarget(mob,id,dur,t){
   if(mob.spawn.bot&&!window.FakePlayers?.canAttack(mob))return;
   const hit=PlayerAbilityRules.statusHits({...sk(id),id},mob);if(id!==153)consumeErase(mob);
@@ -219,6 +239,8 @@ const ClassBuffs=(()=>{
  }
  function cast(id,options={}){
   const skill=sk(id);if(!skill||!options.scroll&&!knows(id))return false;
+  const parasolProfile=Object.hasOwn(OilParasolRules.skills,id)?PlayerClassStats.read():null;
+  if(parasolProfile&&(job!=='油傘女'||!knows(id)||!OilParasolRules.isWeapon(parasolProfile.weapon)))return say('油傘女技能需要裝備傘類武器。');
   if(owner!==window.activeCharacterId){reset();owner=window.activeCharacterId;}
 
   if(PASSIVE[id])return say('「'+skill.name+'」是被動技能，學會後自動生效。');
@@ -235,10 +257,24 @@ const ClassBuffs=(()=>{
   let mob=null;
   if(id===133&&!OwnedInventory.skills.element)return say('請先選擇精靈屬性。');
   if(TARGET[id]||ATTACK[id]){mob=targetInRange(skill);if(!mob)return say('請先選擇範圍內的目標。');}
+  let shadowCast=null,parasolMobs=null;
+  const area=oilArea[id];
+  if(id===oil.decoy){
+   shadowCast=window.Summons?.prepareShadow(skill);
+   if(!shadowCast)return say('身旁沒有可召出分身的位置。');
+  }
+  if(area){
+   const shadow=id===oil.twinSweep?window.Summons?.activeShadow():null;
+   if(id===oil.twinSweep&&!shadow)return say('雙影旋傘需要存活的油傘影分身。');
+   const nearby=parasolTargets(worldX,worldY);
+   if(shadow)nearby.push(...parasolTargets(shadow.x,shadow.y));
+   parasolMobs=[...new Set(nearby)].slice(0,area.limit);
+   if(!parasolMobs.length)return say('範圍內沒有怪物。');
+  }
   if(!(pay?pay():OwnedInventory.castCost(id===132?{...skill,arrows:3}:skill)))return say('魔力、體力、箭矢或材料不足。');
   if(!CharacterActions.play('skill'))return false;
   const t=now(),dur=(skill.duration||0)*1000;cooldowns.set(id,t+(skill.reuse||0));
-  IslandMonsters.playEffect(skill.gfx,mob?mob.x:worldX,mob?mob.y:worldY,t);
+  if(skill.gfx)IslandMonsters.playEffect(skill.gfx,mob?mob.x:worldX,mob?mob.y:worldY,t);
   if(SELF[id]){
    const e=SELF[id];
    if([185,190,195].includes(id))for(const other of [185,190,195])buffs.delete(other);
@@ -249,6 +285,19 @@ const ClassBuffs=(()=>{
   }
   if(id===132){const p=PlayerClassStats.read(),max=Math.max(1,p.weapon?.damage[0]||2);for(let i=0;i<3;i++){if(PlayerRangedRules.hits(p,mob))IslandMonsters.damage(mob,Math.max(0,1+Math.floor(Math.random()*max)+p.rangedBonus));else mob.rangedMissUntil=t+650;}window.CombatSound?.playerAttack?.({duration:500});}
   if(id===218){const missing=Math.max(0,maxHp-hp),damage=Math.floor(missing/5);if(damage>0)IslandMonsters.damage(mob,damage);}
+  if(id===oil.slash||id===oil.counter)parasolHit(parasolProfile,mob,id===oil.counter&&shieldLeft()?1.25:1,t);
+  if(shadowCast)shadowCast();
+  if(parasolMobs){
+   const extra=id===oil.riposte?Math.min(10,shieldLeft()||0):0;
+   if(extra)absorbOilParasolDamage(extra);
+   for(const target of parasolMobs)parasolHit(parasolProfile,target,area.scale,t,extra);
+  }
+  if(id===oil.shield){
+   const mastery=level()>=32&&knows(oil.shieldMastery);
+   oilShield=OilParasolRules.shieldCapacity(parasolProfile.attributes.dex,parasolProfile.weapon,mastery);
+   if(mastery)buffs.set(id,t+10000);
+   toast(skill.name+'可吸收 '+oilShield+' 點傷害。');
+  }
   if(TARGET[id])applyTarget(mob,id,dur,t);
   if(AREA_TARGET[id])for(const m of IslandMonsters.around(worldX,worldY,skill.area||3)){if(!IslandCombat.clearShot(worldX,worldY,m.x,m.y))continue;applyTarget(m,id,dur,t);IslandMonsters.playEffect(skill.gfx,m.x,m.y,t);}
   // 會心一擊（黑妖）：一次重擊＝武器最大傷害×2＋近戰加成
@@ -315,7 +364,7 @@ const ClassBuffs=(()=>{
  style.textContent+='.game.spell-daylight::after{content:"";position:absolute;left:50%;top:45%;width:min(60vw,600px);height:min(60vw,600px);transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(ellipse,#ffec9e18,transparent 68%);backdrop-filter:brightness(1.15);mask-image:radial-gradient(ellipse,#000,transparent 70%);pointer-events:none;z-index:2}';
  document.head.append(style);document.querySelector('.game')?.append(bar);
  let vitalsKey='';
- function reset(){document.querySelector('.game')?.classList.remove('spell-daylight');const hadVitals=on(226)||on(79);buffs.clear();cooldowns.clear();cubes=[];dots=[];invisible=false;focused=null;debuffs=new WeakMap();
+ function reset(){document.querySelector('.game')?.classList.remove('spell-daylight');const hadVitals=on(226)||on(79);buffs.clear();cooldowns.clear();oilShield=null;cubes=[];dots=[];invisible=false;focused=null;debuffs=new WeakMap();
   if(barrierSet&&window.playerItemState){playerItemState.absoluteBarrier=false;}barrierSet=false;if(hadVitals)vitals();}
  function detailDescription(id){
   const e=SELF[id]||{},values=[];
@@ -354,5 +403,5 @@ const ClassBuffs=(()=>{
   window.NativePotions?.layout?.();
  }
  setInterval(tick,250);
- return {supportTarget,allyOut,allyIn,allyBuffs:mob=>{const map=mob&&allyBuffs.get(mob);return map?[...map].filter(([,u])=>u>now()).map(([id])=>id):[];},handles,implemented:id=>handles(id),cast,grant,afterCast,invisible:()=>invisible,reveal:()=>{invisible=false;},hpr,maxWeight,statusResistances,targetNpc,consumeErase,vision,canUsePotions,focusTarget,clearTarget:mob=>{debuffs.delete(mob);if(focused===mob)focused=null;},resistances,rangedHitBonus,meleeHitBonus,damageBonus,reduction,ac,dodge,mpr,mr,sp,stats,maxHp:maxHpBonus,maxMp:maxMpBonus,onHit,onHurt,blocksNegative,clearHaste,silenced,rooted,slowed,mark,active:id=>on(id),selfBuff:id=>!!SELF[id]&&!PASSIVE[id]&&!UTIL[id]&&(sk(id)?.duration||0)>0};
+ return {supportTarget,allyOut,allyIn,allyBuffs:mob=>{const map=mob&&allyBuffs.get(mob);return map?[...map].filter(([,u])=>u>now()).map(([id])=>id):[];},handles,implemented:id=>handles(id),cast,grant,afterCast,invisible:()=>invisible,reveal:()=>{invisible=false;},hpr,maxWeight,statusResistances,targetNpc,consumeErase,vision,canUsePotions,focusTarget,clearTarget:mob=>{debuffs.delete(mob);if(focused===mob)focused=null;},resistances,rangedHitBonus,meleeHitBonus,damageBonus,reduction,absorbOilParasolDamage,ac,dodge,mpr,mr,sp,stats,maxHp:maxHpBonus,maxMp:maxMpBonus,onHit,onHurt,blocksNegative,clearHaste,silenced,rooted,slowed,mark,active:id=>on(id),selfBuff:id=>!!SELF[id]&&!PASSIVE[id]&&!UTIL[id]&&(sk(id)?.duration||0)>0};
 })();window.ClassBuffs=ClassBuffs;

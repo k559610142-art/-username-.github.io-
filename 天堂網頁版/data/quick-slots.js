@@ -27,7 +27,8 @@ const QuickSlots=(()=>{
   function current(){
     if(Array.isArray(window.activeQuickSlots)&&[10,30].includes(activeQuickSlots.length))return Array.from({length:30},(_,i)=>valid(activeQuickSlots[i]));
     const slots=Array(30).fill(null);
-    OwnedInventory.skills.ids.slice(0,5).forEach((id,i)=>{slots[i]={kind:'skill',id};});
+    const ids=job==='油傘女'?PlayerSkills.availableIds():OwnedInventory.skills.ids;
+    ids.slice(0,5).forEach((id,i)=>{slots[i]={kind:'skill',id};});
     const healing=OwnedInventory.healingItems[0];
     if(healing)slots[5]={kind:'item',key:healing.key};
     return slots;

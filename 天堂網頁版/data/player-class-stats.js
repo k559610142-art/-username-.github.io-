@@ -13,7 +13,7 @@ const PlayerClassStats = (() => {
       const item = entry.item;
       if (entry.slot === 'weapon') weapon = item;
       for (const key of Object.keys(attributes)) attributes[key] += item.bonuses?.[key] || 0;
-      const [hpr, mpr] = item.nativeDb?[item.sourceRules?.add_hpr||0,item.sourceRules?.add_mpr||0]:playerGearRecovery[item.kind + ':' + item.id] || [0, 0];
+      const [hpr, mpr] = item.nativeDb||item.type==='parasol'?[item.sourceRules?.add_hpr||0,item.sourceRules?.add_mpr||0]:playerGearRecovery[item.kind + ':' + item.id] || [0, 0];
       gearHp += hpr;
       gearMp += mpr;
     }
@@ -28,9 +28,10 @@ const PlayerClassStats = (() => {
     const mpAmount = naturalMp + highStat(base.wis) + gearMp + (window.NativePotions?.recoveryBonus(wis,base.wis)||0) + (window.ClassBuffs?.mpr()||0);
     gearHp+=(window.ClassBuffs?.hpr?.()||0);
     const hpMin = 1 + gearHp, hpMax = hpDie + gearHp;
+    const oilParasol=job==='油傘女'&&OilParasolRules.isWeapon(weapon);
     return {attributes, level, weapon, sp:items.filter(e=>e.slot).reduce((n,e)=>n+(e.item.sourceRules?.add_sp||0),0)+(equipmentSets.sp||0)+(window.NativePotions?.spBonus||0)+(window.ClassBuffs?.sp()||0)+(soul.sp||0), hpDie, gearHp, mpAmount, equipmentSets,
-      meleeBonus: (window.PlayerAbilityRules?.strengthDamage(attributes.str)||0)+(job === '騎士' ? Math.trunc(level / 10) : 0)+(window.DBGameRules?.damageBonus(false)||0),
-      meleeHitBonus: PlayerRangedRules.meleeHitBonus(attributes.str,items,equipmentSets)+(soul.meleeHit||0),
+      meleeBonus: (oilParasol?OilParasolRules.dexBonus(attributes.dex,3):(window.PlayerAbilityRules?.strengthDamage(attributes.str)||0))+(job === '騎士' ? Math.trunc(level / 10) : 0)+(window.DBGameRules?.damageBonus(false)||0),
+      meleeHitBonus: PlayerRangedRules.meleeHitBonus(oilParasol?attributes.dex:attributes.str,items,equipmentSets)+(soul.meleeHit||0),
       rangedHitBonus: PlayerRangedRules.hitBonus(attributes.dex,items,equipmentSets)+(soul.rangedHit||0),
       rangedDexDamage: PlayerRangedRules.dexBonus(attributes.dex).damage,
       rangedBonus: PlayerRangedRules.dexBonus(attributes.dex).damage+(job === '妖精' ? Math.trunc(level / 10) : 0)+(window.DBGameRules?.damageBonus(true)||0),

@@ -47,7 +47,7 @@ const MonsterActions = (() => {
     }
     return groundAnchors.get(frames);
   }
-  const weaponBases = {sword:4, blunt:11, tohandblunt:11, bow:20, singlebow:20, spear:24, singlespear:24, chainsword:24, staff:40, tohandstaff:40, dagger:46, tohandsword:50, edoryu:54, claw:58, kiringku:58, gauntlet:62};
+  const weaponBases = {sword:4, blunt:11, tohandblunt:11, bow:20, singlebow:20, spear:24, singlespear:24, chainsword:24, staff:40, tohandstaff:40, parasol:40, dagger:46, tohandsword:50, edoryu:54, claw:58, kiringku:58, gauntlet:62};
   const equippedWeapon = () => {
     const type = window.OwnedInventory?.equippedWeaponType;
     const gfx = window.activeTransformCard?.p?.gfx;

@@ -10,12 +10,14 @@ window.TransformCards = (() => {
   const gradeWeights = {1: 40, 2: 28, 3: 18, 4: 9, 5: 4, 6: 0.9, 7: 0.1, 8: 0};
   const frameMs = 130;
   let owner = '', state = {owned: {}, active: null};
+  let deathAppearance = null;
 
   const storageKey = id => 'lineage-web-transform-cards-v1:' + id;
   function ensure() {
     const id = window.activeCharacterId || '';
     if (id === owner) return !!id;
     owner = id;
+    deathAppearance = null;
     state = {owned: {}, active: null};
     if (!id) return false;
     try {
@@ -65,7 +67,7 @@ window.TransformCards = (() => {
     if (card?.wk) loadAtlas(card.wk, card.wx);
   }
   // ---- 3.63 變身設定（L1PolyMorph）：最低等級、可用武器／防具遮罩、能否施法 ----
-  const weaponFlags = {dagger: 1, sword: 2, tohandsword: 4, blunt: 8, tohandblunt: 8, spear: 16, singlespear: 16, staff: 32, tohandstaff: 32, edoryu: 64, claw: 128, bow: 256, singlebow: 256, gauntlet: 256, kiringku: 512, chainsword: 1024};
+  const weaponFlags = {dagger: 1, sword: 2, tohandsword: 4, blunt: 8, tohandblunt: 8, spear: 16, singlespear: 16, staff: 32, tohandstaff: 32, parasol: 32, edoryu: 64, claw: 128, bow: 256, singlebow: 256, gauntlet: 256, kiringku: 512, chainsword: 1024};
   const armorFlags = {helmet: 1, helm: 1, amulet: 2, necklace: 2, earring: 4, T: 8, tshirt: 8, shirt: 8, armor: 16, pants: 16, cloak: 32, belt: 64, shield: 128, glove: 256, gloves: 256, ring: 512, ring2: 512, boots: 1024, guarder: 2048};
   const weaponNames = {1: '匕首', 2: '單手劍', 4: '雙手劍', 8: '斧／鈍器', 16: '矛', 32: '魔杖', 64: '雙刀', 128: '鋼爪', 256: '弓', 512: '奇古獸', 1024: '鎖鏈劍'};
   const armorNames = {1: '頭盔', 2: '項鍊', 4: '耳環', 8: '內衣', 16: '盔甲／脛甲', 32: '斗篷', 64: '腰帶', 128: '盾牌', 256: '手套', 512: '戒指', 1024: '長靴', 2048: '臂甲'};
@@ -127,6 +129,13 @@ window.TransformCards = (() => {
     state.active = null; save(); applyEffects(); refreshCharacter();
     if(!quiet)toast('解除變身');
     return true;
+  }
+
+  function onDeath() {
+    const card = window.activeTransformCard;
+    const corpse = card?.keepDeathAppearance && MonsterActions.hasClip(card.p.gfx, characterHeading, 'death') ? card : null;
+    deathAppearance = corpse;
+    deactivate({quiet:true});
   }
 
   // ---- 變身外觀：蓋在人物位置上，原本職業圖先藏起來 ----
@@ -206,18 +215,19 @@ window.TransformCards = (() => {
     morphLayer.style.left = (-anchor[0] * scale) + 'px';
     morphLayer.style.top = (-anchor[1] * scale) + 'px';
   }
-  function drawMorph(now) {
-    const card = window.activeTransformCard;
+  function drawMorph(now, card) {
     let clip = 'idle', elapsed = now - morphStarted, loop = true;
     const action = typeof characterActionState !== 'undefined' ? characterActionState : null;
     const acting = action && now >= action.started && now < action.until && ['attack', 'skill', 'hurt', 'death'].includes(action.action);
     if (acting && card.f[action.action]) { clip = action.action; elapsed = now - action.started; loop = false; }
-    const scale = typeof characterRenderScale === 'function' ? characterRenderScale() : 1;
+    const scale = (typeof characterRenderScale === 'function' ? characterRenderScale() : 1) * (card.renderScale ?? 1);
     const heading = typeof characterHeading === 'string' ? characterHeading : 'E';
     const phase = acting ? null : walkPhase(now);
     const weapon = MonsterActions.equippedWeapon();
     MonsterActions.warmWeapon(card.p?.gfx, heading, weapon);
-    const pose = MonsterActions.pose(now);
+    const pose = card === deathAppearance && action && now < action.started
+      ? {clip: 'idle', time: now}
+      : MonsterActions.pose(now);
     // 攻速會縮短攻擊動作時間，圖集要在相同時間內播放完整。
     if (pose.clip === 'attack' && action.duration > 0) pose.phase = pose.time / action.duration;
     if (MonsterActions.draw(atlasBody, card.p?.gfx, heading, pose, scale, weapon, compositeLayers)) {
@@ -277,16 +287,19 @@ window.TransformCards = (() => {
   const baseRefresh = refreshCharacter;
   refreshCharacter = function (frameTime = movementTime()) {
     ensure();
-    const morphed = !!window.activeTransformCard && window.gameFlowState === 'playing' && (!characterDead || MonsterActions.hasClip(window.activeTransformCard.p?.gfx, characterHeading, 'death'));
+    if (!characterDead) deathAppearance = null;
+    const card = window.activeTransformCard || deathAppearance || nativeClassAppearance();
+    const morphed = !!card && window.gameFlowState === 'playing' && (!characterDead || MonsterActions.hasClip(card.p?.gfx, characterHeading, 'death'));
     morphLayer.hidden = !morphed;
     characterBody.style.visibility = morphed ? 'hidden' : '';
     baseRefresh(frameTime);
-    if (morphed) drawMorph(frameTime);
+    if (morphed) drawMorph(frameTime, card);
     else { displayedNativeCard = null; alignMorphGround([0, 0], 1); }
   };
 
   return {
-    book, draw, activate, deactivate, canAttack, reconcileEquipment, onDeath(){deactivate({quiet:true});}, gradeWeights, canEquip, rules,
+    book, draw, activate, deactivate, canAttack, reconcileEquipment, onDeath, gradeWeights, canEquip, rules,
+    get deathAppearance() { return deathAppearance; },
     get canCast() { ensure(); return window.activeTransformCard?.p?.m !== 0; },
     label,
     owned: name => (ensure(), state.owned[name] || 0),
