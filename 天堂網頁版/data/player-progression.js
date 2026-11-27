@@ -29,10 +29,17 @@ const PlayerProgression = (() => {
     const map=mob.spawn.mapId??window.activeMapId??0;
     return map!==1700||(id!==56466&&(id<67005||id>67012));
   }
+  function dropGroups(mob){
+    const native=drops[mob.spawn.npcId]||[];
+    const regional=DBGameRules.extraDrops(mob);
+    const map=mob.spawn.mapId??window.activeMapId??0;
+    // Dream Island's regional gold is a fallback for monsters without a native gold drop.
+    const hasNativeGold=map===303&&native.some(drop=>drop.id===40308&&drop.chance>0&&Math.max(drop.min,drop.max)>0);
+    return [['monster',native],['region',hasNativeGold?regional.filter(drop=>drop.id!==40308):regional]];
+  }
   function dropInfo(mob){
     const result=[],weekendRate=rates.weekend&&weekend()?rates.WeekendRateDropItems:1;
-    const groups=[['monster',drops[mob.spawn.npcId]||[]],['region',DBGameRules.extraDrops(mob)]];
-    for(const [source,list]of groups)for(const drop of list){
+    for(const [source,list]of dropGroups(mob))for(const drop of list){
       if(!dropAllowedOnMap(mob,drop.id)||drop.id===39288||/娃娃/.test(catalog.get(drop.id)?.name||'')||(typeof REMOVED_ITEM_IDS!=='undefined'&&REMOVED_ITEM_IDS.has(drop.id))||(typeof DROP_ONLY_REMOVED_IDS!=='undefined'&&DROP_ONLY_REMOVED_IDS.has(drop.id)))continue;
       const item=catalog.get(drop.id);if(!item||!(drop.chance>0))continue;const coin=drop.id===40308,multiplier=drop.fixedRate||coin?1:rates.RateDropItems*weekendRate;
       result.push({id:drop.id,key:item.kind+':'+item.id,name:item.name,icon:item.icon,source,chance:Math.min(1000000,drop.chance*multiplier),baseChance:drop.chance,min:Math.floor(Math.min(drop.min,drop.max)*(coin?rates.RateDropAdena:1)),max:Math.floor(Math.max(drop.min,drop.max)*(coin?rates.RateDropAdena:1))});
@@ -40,7 +47,7 @@ const PlayerProgression = (() => {
   }
   function roll(mob){
     const loot=[],weekendRate=rates.weekend&&weekend()?rates.WeekendRateDropItems:1;
-    for(const drop of [...(drops[mob.spawn.npcId]||[]),...DBGameRules.extraDrops(mob)]){
+    for(const [,list]of dropGroups(mob))for(const drop of list){
       if(!dropAllowedOnMap(mob,drop.id)||drop.id===39288||/娃娃/.test(catalog.get(drop.id)?.name||'')||(typeof REMOVED_ITEM_IDS!=='undefined'&&REMOVED_ITEM_IDS.has(drop.id))||(typeof DROP_ONLY_REMOVED_IDS!=='undefined'&&DROP_ONLY_REMOVED_IDS.has(drop.id)))continue;
       const item=catalog.get(drop.id);
       if(!item)throw Error('掉落道具不存在：'+drop.id);

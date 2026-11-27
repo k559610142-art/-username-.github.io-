@@ -4,7 +4,7 @@
 //  魔法：攻擊技能（AUTO／攻擊目標時魔力 ≥ N% 施放）、治癒魔法（AutoPotion 的補血技能）、輔助魔法（ClassBuffs.selfBuff，效果沒了就補）
 //  名單：每張地圖各自的怪物名單，「不打」＝AUTO 不主動找（被打仍還手）、「瞬移」＝附近 8 格出現就用瞬間移動卷軸離開
 //  第 3 期：撐不住先瞬移（一分鐘內第 3 次改回村，auto-potion.js 讓出回村判斷）、補血喝完改喝別種（auto-potion.js healFallback）、
-//   死亡後自動再變身（TransformCards）、開怪技能、範圍技能、洗魔（心靈轉換 130）、召喚分頁（召喚術 51／召喚屬性精靈 154／強力 162，
+//   死亡後自動再變身（TransformCards）、開怪技能、範圍技能、洗魔（心靈轉換／魂體轉換／魔力奪取）、召喚分頁（召喚術 51／召喚屬性精靈 154／強力 162，
 //   戴召喚控制戒指時用 Summons.useLast 召喚上次手選的）。遊戲沒有的系統（寵物、夥伴、武器耐久、水中、中毒、木乃伊、經驗藥水效果）不做。
 //  2026-11-18 第 4 期（使用者「1～6 全做」）：自動吃食物（飽食度）、回村後回原地續掛（用瞬間移動卷軸傳回）、背包／負重快滿處理、
 //   掛機統計（統計分頁）、設定方案 3 組＋複製給同帳號其他角色（方案分頁）、名單「優先打」（island-combat.js 選目標時先找）。
@@ -25,7 +25,8 @@ const AssistSystem=(()=>{
  const BUY_ICON={tp:'etcitem:40100',home:'etcitem:40081',haste:'etcitem:40018',brave:'etcitem:40014',wisdom:'etcitem:40016',blue:'etcitem:40015',arrow:'etcitem:40743',cake:'etcitem:49138',meat:'etcitem:40056',barrier:'etcitem:40889',antidote:'etcitem:40017'};
  const BUYS=[['tp','一般瞬間移動卷軸',10],['home','傳送回家的卷軸',5],['haste','綠色藥水',5],['brave','二段加速',5],['cake','巧克力蛋糕（三段加速）',5],['meat','肉',20],['barrier','魔法屏障卷軸',5],['antidote','解毒藥水',5],['wisdom','慎重藥水',5],['blue','藍色藥水',5],['arrow','箭（裝備弓時）',1000]];
  const DIRECT_BUYS=new Set([...POTIONS.map(([key])=>key),'meat','antidote','barrier']);
- const base=()=>({huntPoint:null,retaliateRed:false,noMobTp:false,noMobSec:10,tpScrollType:'normal',potions:Object.fromEntries(POTIONS.map(([k])=>[k,false])),attackOn:false,attackSkill:null,attackMp:30,buffs:[],list:{},escape:false,healFallback:false,arrowBuyKey:ARROW_KEYS[0],cureOn:false,cureMethod:CURES[0][0],morph:false,morphCard:null,morphLost:false,openOn:false,openSkill:null,openMp:50,aoeOn:false,aoeSkill:null,aoeRange:3,aoeCount:3,aoeMp:50,mindOn:false,mindHp:80,mindMp:40,summonOn:false,ringOn:false,expAuto:false,barrierScroll:false,eatOn:false,eatAt:30,returnOn:false,returnHp:80,returnSpot:null,fullOn:false,fullWeight:80,fullSlots:10,fullAct:'home',presets:[null,null,null],dangerOn:false,dangerBoss:true,dangerPlayer:'red',dangerRange:8,dollOn:false,dollId:null,pick:Object.fromEntries(POTIONS.map(([k])=>[k,null])),buy:Object.fromEntries(BUYS.map(([k,,n])=>[k,{on:false,n}]))});
+ const MANA_SKILLS=[[130,'心靈轉換'],[146,'魂體轉換'],[39,'魔力奪取']];
+ const base=()=>({huntPoint:null,retaliateRed:false,noMobTp:false,noMobSec:10,tpScrollType:'normal',potions:Object.fromEntries(POTIONS.map(([k])=>[k,false])),attackOn:false,attackSkill:null,attackMp:30,buffs:[],list:{},escape:false,healFallback:false,arrowBuyKey:ARROW_KEYS[0],cureOn:false,cureMethod:CURES[0][0],morph:false,morphCard:null,morphLost:false,openOn:false,openSkill:null,openMp:50,aoeOn:false,aoeSkill:null,aoeRange:3,aoeCount:3,aoeMp:50,mindOn:false,mindSkill:130,mindHp:80,mindMp:40,summonOn:false,ringOn:false,expAuto:false,barrierScroll:false,eatOn:false,eatAt:30,returnOn:false,returnHp:80,returnSpot:null,fullOn:false,fullWeight:80,fullSlots:10,fullAct:'home',presets:[null,null,null],dangerOn:false,dangerBoss:true,dangerPlayer:'red',dangerRange:8,dollOn:false,dollId:null,pick:Object.fromEntries(POTIONS.map(([k])=>[k,null])),buy:Object.fromEntries(BUYS.map(([k,,n])=>[k,{on:false,n}]))});
  let stoneQueue=null;
  let buyOpen=false;
  let state=base(),owner='',dialog=null,tab='hunt',idleSince=0,lastTp=0,retry=new Map(),escapes=[],lostMorph=null,seenMorph=null,lastOpen=null;
@@ -47,6 +48,7 @@ const AssistSystem=(()=>{
   s.dollOn=v.dollOn===true;s.dollId=typeof v.dollId==='string'&&v.dollId.length<20?v.dollId:null;
   s.morphCard=typeof v.morphCard==='string'&&v.morphCard.length<80?v.morphCard:null;s.morphLost=v.morphLost===true; // 記憶的變身卡（2026-11-18）
   const skillOk=id=>Number.isInteger(id)&&playerSkillData.skills[id]?id:null;s.openSkill=skillOk(v.openSkill);s.aoeSkill=skillOk(v.aoeSkill);
+  if(MANA_SKILLS.some(([id])=>id===v.mindSkill))s.mindSkill=v.mindSkill;
   s.openMp=int(v.openMp,0,99,50);s.aoeRange=int(v.aoeRange,1,8,3);s.aoeCount=int(v.aoeCount,2,10,3);s.aoeMp=int(v.aoeMp,0,99,50);s.mindHp=int(v.mindHp,1,99,80);s.mindMp=int(v.mindMp,1,99,40);
   for(const k of Object.keys(s.pick))s.pick[k]=typeof v.pick?.[k]==='string'&&catalog.has(v.pick[k])?v.pick[k]:null;
   // 舊存檔若指定三段加速道具，就把該選擇移到新的三段設定。
@@ -258,8 +260,13 @@ const AssistSystem=(()=>{
   }
   // 死亡後自動再變身（變身卡）
   if(lostMorph){const name=state.morphCard||lostMorph;if(!state.morph||TransformCards.active){lostMorph=null;if(state.morphLost&&!state.morph)save({morphLost:false});}else if((retry.get('morph')||0)<=now){retry.set('morph',now+5000);if(TransformCards.owned(name)&&TransformCards.activate(name)){lostMorph=null;save({morphLost:false});return;}if(!TransformCards.owned(name)){lostMorph=null;save({morphLost:false});}}}
-  // 洗魔：心靈轉換
-  if(state.mindOn&&learned().includes(130)&&pctOf(hp,maxHp)>=state.mindHp&&pctOf(mp,maxMp)<state.mindMp&&(retry.get('mind')||0)<=now){retry.set('mind',now+1500);if(ClassBuffs.cast(130))return;}
+  const manaTarget=state.mindSkill===39?IslandMonsters.target:null;
+  if(state.mindOn&&maxMp>0&&pctOf(hp,maxHp)>state.mindHp&&pctOf(mp,maxMp)<state.mindMp&&
+   (retry.get('mind')||0)<=now&&learned().includes(state.mindSkill)&&
+   (state.mindSkill!==39||(manaTarget?.hp>0&&(manaTarget.mp??1)>0))){
+   retry.set('mind',now+1500);
+   if(PlayerSkills.cast(state.mindSkill))return;
+  }
   // 召喚：身邊沒有召喚物時（掛機中）
   if(state.summonOn&&auto&&!Summons.list.length&&(retry.get('sum')||0)<=now){const id=summonSkill();retry.set('sum',now+5000);
    if(id&&(id!==51||!Summons.hasRing()||state.ringOn&&Summons.useLast())&&ClassBuffs.cast(id))return;}
@@ -406,10 +413,15 @@ const AssistSystem=(()=>{
  }
  function supplyPage(){const p=el('div');
   p.append(head('補血'),AutoPotion.healingControls());
-  const mind=learned().includes(130);
-  p.append(head('洗魔魔法'),mind?group(row(sico(130,'🔄'),'用體力換魔力（心靈轉換）','體力高於 '+state.mindHp+'%、魔力低於 '+state.mindMp+'% 時施放',switcher(state.mindOn,on=>save({mindOn:on}),'自動心靈轉換')),
+  const known=learned(),mana=el('select');
+  mana.setAttribute('aria-label','洗魔技能');
+  for(const [id,name] of MANA_SKILLS)mana.append(new Option(name+(known.includes(id)?'':'（尚未學會）'),String(id),false,id===state.mindSkill));
+  mana.onchange=()=>{save({mindSkill:Number(mana.value)});render();};
+  const note=state.mindSkill===39?'魔力奪取需要範圍內有魔力的攻擊目標。':'體力與魔力門檻都達成時，施放選定的技能。';
+  p.append(head('洗魔魔法'),group(
+   row(sico(state.mindSkill,'🔄'),'洗魔技能',note,mana,switcher(state.mindOn,on=>save({mindOn:on}),'自動洗魔')),
    row('❤️','體力高於 '+state.mindHp+'%',null,slider(state.mindHp,1,99,v=>save({mindHp:v})&&void render(),'%','洗魔體力門檻')),
-   row('💧','魔力低於 '+state.mindMp+'%',null,slider(state.mindMp,1,99,v=>save({mindMp:v})&&void render(),'%','洗魔魔力門檻'))):el('p','assist-note','還沒有學會心靈轉換。'));
+   row('💧','魔力低於 '+state.mindMp+'%',null,slider(state.mindMp,1,99,v=>save({mindMp:v})&&void render(),'%','洗魔魔力門檻'))));
   const satiety=window.Satiety?.value?.(),meatCount=count(e=>e.key===BUY_ICON.meat&&!e.slot);
   p.append(head('食物'),group(
    row(ico(BUY_ICON.meat,'🍖'),'飽食度低於 '+state.eatAt+' 時自動吃',

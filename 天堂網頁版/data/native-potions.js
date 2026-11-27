@@ -7,6 +7,15 @@ const NativePotions=(()=>{
   const buffNames={haste:'加速',brave:'勇敢',elfBrave:'精靈餅乾',braveX:'三段加速',blue:'魔力回復',wisdom:'慎重',exp:'經驗加成'};
   // 原版職業位元：王族 1、騎士 2、妖精 4、法師 8、黑妖 16、龍騎士 32、幻術師 64、戰士 128（例：綠水 255＝全職業、勇水 130＝騎士＋戰士、生命之樹果實 96＝龍騎士＋幻術師）
   const flags={'王族':1,'騎士':2,'妖精':4,'法師':8,'黑妖':16,'黑暗妖精':16,'龍騎士':32,'幻術師':64,'戰士':128};
+  const oilParasolPotions=new Set([
+    40013,40018,140013,140018,42023,82196, // 綠水
+    40733,82186,                         // 名譽貨幣
+    40015,140015,42027,82193,            // 藍色藥水
+    49138,82213                          // 巧克力蛋糕
+  ]);
+  for(const item of INTERFACE_CATALOG.items){
+    if(item.kind==='etcitem'&&oilParasolPotions.has(item.id)&&!item.allowed.includes('油傘女'))item.allowed.push('油傘女');
+  }
   const bar=document.createElement('div');
   bar.className='native-potion-buffs';
   bar.style.cssText='position:absolute;left:var(--ui-left,12px);top:calc(var(--ui-top,12px) + 60px);z-index:3;display:flex;gap:4px;max-width:260px;flex-wrap:wrap;pointer-events:none';
@@ -103,7 +112,8 @@ const NativePotions=(()=>{
     if(!/^(hp\.UserAddHp(?:_FR)?|mp\.UserAddMp|mp\.UserMprBlue|brave\.Status(?:Haste|Brave|ElfBrave|WisdomPotion|BraveCake|Ribrave)(?:_FR)?|Disintoxicat_Potion)$/.test(handler))return null;
     return {handler,parameters,rule};
   }
-  function canUseForClass(handler,parameters){
+  function canUseForClass(key,handler,parameters){
+    if(job==='油傘女'&&oilParasolPotions.has(Number(key.split(':')[1])))return true;
     if(handler.startsWith('brave.StatusElfBrave'))return job==='妖精';
     if(!handler.startsWith('brave.'))return true;
     if(handler.startsWith('brave.StatusWisdomPotion')&&job==='幻術師')return true;
@@ -195,7 +205,7 @@ const NativePotions=(()=>{
     if(!config)return null;
     if(window.gameFlowState!=='playing'||CharacterActions.dead)return false;
     const {handler,parameters:p,rule}=config;
-    if(!canUseForClass(handler,p)){
+    if(!canUseForClass(entry.key,handler,p)){
       if(handler.startsWith('brave.StatusElfBrave'))toast('只有妖精可以使用精靈餅乾。');
       return false;
     }
@@ -251,7 +261,7 @@ const NativePotions=(()=>{
     if(gfx)IslandMonsters.playEffect(gfx,worldX,worldY,movementTime(),{follow:'player'});
     sync();return true;
   }
-  function durationState(key){const c=parse(key);if(!c||Number(c.parameters[0])<=0||c.rule.minLevel>(window.activeCharacterLevel||1)||c.rule.maxLevel&&c.rule.maxLevel<(window.activeCharacterLevel||1))return null;const h=c.handler;if(!canUseForClass(h,c.parameters))return null;const buff=h==='mp.UserMprBlue'?'blue':h.includes('WisdomPotion')?'wisdom':h.includes('ElfBrave')?'elfBrave':h.includes('BraveCake')?'braveX':h.includes('Haste')?'haste':h.includes('Brave')?'brave':null;if(!buff)return null;return {key:buff,duration:Number(c.parameters[0])*1000,until:Number(window.activePotionBuffs?.[buff])||0};}
+  function durationState(key){const c=parse(key);if(!c||Number(c.parameters[0])<=0||c.rule.minLevel>(window.activeCharacterLevel||1)||c.rule.maxLevel&&c.rule.maxLevel<(window.activeCharacterLevel||1))return null;const h=c.handler;if(!canUseForClass(key,h,c.parameters))return null;const buff=h==='mp.UserMprBlue'?'blue':h.includes('WisdomPotion')?'wisdom':h.includes('ElfBrave')?'elfBrave':h.includes('BraveCake')?'braveX':h.includes('Haste')?'haste':h.includes('Brave')?'brave':null;if(!buff)return null;return {key:buff,duration:Number(c.parameters[0])*1000,until:Number(window.activePotionBuffs?.[buff])||0};}
   function recoveryBonus(wis,baseWis){
     let amount=active('wisdom')?2:0;
     if(active('blue')){
