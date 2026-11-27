@@ -107,13 +107,12 @@
     [gfx]: Object.fromEntries(['NW', 'N', 'NE', 'E', 'SE', 'S', 'SW', 'W'].map(heading => [heading, [0, 0]]))
   };
   const appearance = {
-    n: '月下楓林朱傘行', g: 1, originalExtra: true, renderScale: 0.7,
+    n: '油傘女', originalExtra: true, renderScale: 0.7,
     f: {idle: 1, walk: 4, attack: 3, skill: 3, hurt: 2, death: 3}, s: {},
     keepDeathAppearance: true,
     fx: ['外觀變身'],
     p: {id: gfx, gfx, lv: 1, w: 1791, a: 4095, m: 1, en: 0, rb: 0}
   };
-  transformCardBook.push(appearance);
   window.OilParasolAppearance = appearance;
   characterCatalog.jobs['油傘女'] = characterCatalog.jobs['幻術師'];
   SPRITE_MOVEMENT.profiles['油傘女:1'] = SPRITE_MOVEMENT.profiles['幻術師:1'];
