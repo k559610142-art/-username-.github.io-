@@ -108,6 +108,19 @@ const need = [...looks].filter(g => !existing[g]).sort((a, b) => a - b);
 
 // Cut and pack.
 const SHEET = 2048, frames = {}, files = [], missing = [];
+// These glow sprites store their intensity against a black background.
+const dreamIslandGlowLooks = new Set([2727, 2752, 2972, 2973, 2974, 2975]);
+function removeGlowMatte(pixels) {
+  for (let i = 0; i < pixels.length; i += 4) {
+    const level = Math.max(pixels[i], pixels[i + 1], pixels[i + 2]);
+    if (!pixels[i + 3] || level === 255) continue;
+    const alpha = Math.round(pixels[i + 3] * Math.max(0, level - 24) / 231);
+    for (let channel = 0; channel < 3; channel++) {
+      pixels[i + channel] = alpha ? Math.round(pixels[i + channel] * 255 / level) : 0;
+    }
+    pixels[i + 3] = alpha;
+  }
+}
 let sheet = null, sheetNo = 0, cx = 0, cy = 0, rowH = 0;
 const sheets = [];
 function newSheet(gfx) { sheet = { name: 'dungeon-mob-' + gfx + '-' + sheetNo++ + '.png', px: Buffer.alloc(SHEET * SHEET * 4), h: 0 }; sheets.push(sheet); cx = cy = rowH = 0; }
@@ -118,6 +131,7 @@ for (const gfx of need) {
     const id = f.file + '#' + f.frame; let p = placed.get(id);
     if (!p) {
       const r = renderFrame(spr(f.file), f.frame);
+      if (dreamIslandGlowLooks.has(gfx)) removeGlowMatte(r.px);
       if (cx + r.w > SHEET) { cx = 0; cy += rowH + 1; rowH = 0; }
       if (cy + r.h > SHEET) newSheet(gfx);
       for (let y = 0; y < r.h; y++) r.px.copy(sheet.px, ((cy + y) * SHEET + cx) * 4, y * r.w * 4, (y + 1) * r.w * 4);
