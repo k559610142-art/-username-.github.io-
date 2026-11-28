@@ -39,51 +39,20 @@
       [-50, -87, 96, 87, 898, 226]
     ]
   ];
-  const swordAtlas = 'oil-parasol-sword-combo.png';
-  // 收傘預備、下劈、上挑、直刺。每列各有八方向。
+  const swordAtlas = 'oil-parasol-elf-stance.png';
+  const swordAtlasWidth = 1024;
+  const swordAtlasHeight = 448;
+  // 收傘預備、下劈、上挑、收勢。每列各有八方向。
   const swordPoses = [
-    [
-      [-22, -105, 55, 105, 2, 2],
-      [-17, -105, 42, 105, 130, 2],
-      [-24, -105, 57, 105, 258, 2],
-      [-19, -105, 53, 105, 386, 2],
-      [-10, -105, 49, 105, 514, 2],
-      [-5, -105, 42, 105, 642, 2],
-      [-25, -105, 46, 105, 770, 2],
-      [-7, -105, 49, 105, 898, 2]
-    ],
-    [
-      [-58, -91, 84, 91, 2, 114],
-      [-15, -91, 47, 91, 130, 114],
-      [-26, -91, 79, 91, 258, 114],
-      [-14, -91, 82, 91, 386, 114],
-      [-12, -91, 69, 91, 514, 114],
-      [-11, -91, 46, 91, 642, 114],
-      [-49, -91, 67, 91, 770, 114],
-      [-47, -91, 101, 91, 898, 114]
-    ],
-    [
-      [-43, -104, 71, 104, 2, 226],
-      [-18, -104, 44, 104, 130, 226],
-      [-21, -104, 67, 104, 258, 226],
-      [-16, -104, 83, 104, 386, 226],
-      [-11, -104, 68, 104, 514, 226],
-      [-9, -104, 37, 104, 642, 226],
-      [-49, -104, 68, 104, 770, 226],
-      [-33, -104, 79, 104, 898, 226]
-    ],
-    [
-      [-73, -92, 96, 92, 2, 338],
-      [-17, -92, 44, 92, 130, 338],
-      [-17, -92, 97, 92, 258, 338],
-      [-7, -92, 114, 92, 386, 338],
-      [-19, -92, 102, 92, 514, 338],
-      [-17, -92, 39, 92, 642, 338],
-      [-68, -92, 113, 92, 770, 338],
-      [-68, -92, 115, 92, 898, 338]
-    ]
+    [[-31, -101, 62, 101, 2, 2],[-32, -101, 61, 101, 130, 2],[-41, -101, 57, 101, 258, 2],[-20, -101, 45, 101, 386, 2],[-27, -101, 56, 101, 514, 2],[-28, -101, 56, 101, 642, 2],[-29, -101, 50, 101, 770, 2],[-28, -101, 44, 101, 898, 2]],
+    [[-42, -95, 79, 95, 2, 114],[-35, -95, 75, 95, 130, 114],[-46, -95, 73, 95, 258, 114],[-28, -95, 65, 95, 386, 114],[-16, -95, 51, 95, 514, 114],[-30, -95, 51, 95, 642, 114],[-45, -95, 61, 95, 770, 114],[-36, -95, 64, 95, 898, 114]],
+    [[-35, -101, 70, 101, 2, 226],[-33, -101, 74, 101, 130, 226],[-35, -101, 77, 101, 258, 226],[-24, -101, 75, 101, 386, 226],[-29, -101, 66, 101, 514, 226],[-29, -101, 53, 101, 642, 226],[-41, -101, 57, 101, 770, 226],[-49, -101, 78, 101, 898, 226]],
+    [[-28, -98, 67, 98, 2, 338],[-29, -98, 70, 98, 130, 338],[-28, -98, 64, 98, 258, 338],[-17, -98, 32, 98, 386, 338],[-34, -98, 56, 98, 514, 338],[-38, -98, 66, 98, 642, 338],[-45, -98, 60, 98, 770, 338],[-24, -98, 40, 98, 898, 338]]
   ];
-  const swordTimings = [90, 115, 105, 120];
+  const swordAttacks = {
+    attack: [[0, 166], [1, 244], [3, 430]],
+    attack_rise: [[3, 166], [2, 244], [3, 430]]
+  };
   // 施法、後仰、跪倒、倒地各有八方向圖格。
   const reactions = [
     [
@@ -138,15 +107,18 @@
     const key = 'd' + direction + '/';
     clips[key + 'idle'] = [frame(idle, 500)];
     clips[key + 'walk'] = [frame(idle, 90), frame(stride, 130), frame(idle, 90), frame(stride, 130)];
-    clips[key + 'attack'] = swordPoses.map((row,index)=>{
-      const [x,y,width,height,sx,sy]=row[direction];
-      return [swordAtlas,x,y,width,height,swordTimings[index],sx,sy,atlasWidth,448];
-    });
+    for (const [attack, sequence] of Object.entries(swordAttacks)) {
+      clips[key + attack] = sequence.map(([pose, ms]) => {
+        const [x, y, width, height, sx, sy] = swordPoses[pose][direction];
+        return [swordAtlas, x, y, width, height, ms, sx, sy, swordAtlasWidth, swordAtlasHeight];
+      });
+    }
     clips[key + 'skill'] = [frame(idle, 100), reactionFrame(cast, 280), frame(idle, 120)];
     clips[key + 'hurt'] = [reactionFrame(recoil, 140), frame(idle, 100)];
     clips[key + 'death'] = [reactionFrame(recoil, 140), reactionFrame(fall, 230), reactionFrame(fallen, 380)];
   }
   monsterActionIndex[gfx] = clips;
+  MonsterActions.preload(gfx, 'SE', ['attack']);
   islandMonsterFrames[gfx] = Object.fromEntries(Object.entries(clips).map(([name,frames])=>[
     name,frames.map(([file,...frame])=>['../monster-actions/'+file,...frame])
   ]));
@@ -156,7 +128,8 @@
   };
   const appearance = {
     n: '油傘女', originalExtra: true, renderScale: 0.7,
-    f: {idle: 1, walk: 4, attack: 4, skill: 3, hurt: 2, death: 3}, s: {},
+    f: {idle: 1, walk: 4, attack: 3, skill: 3, hurt: 2, death: 3}, s: {},
+    attackClips: Object.keys(swordAttacks),
     keepDeathAppearance: true,
     fx: ['外觀變身'],
     p: {id: gfx, gfx, lv: 1, w: 1791, a: 4095, m: 1, en: 0, rb: 0}

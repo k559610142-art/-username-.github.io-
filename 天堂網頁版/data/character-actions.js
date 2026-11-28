@@ -79,6 +79,7 @@ refreshCharacter=function(frameTime=movementTime()){
  const label=characterActor.querySelector('small'),name=window.activeCharacterName||avatar;if(label.textContent!==name)label.textContent=name;
  ensureFullCharacterAnimation();
 };
+let nextClassAttack = 0;
 function playCharacterAction(action,options={}){
  if(window.gameFlowState!=='playing'||!['idle','attack','skill','hurt','death'].includes(action)||characterDead&&action!=='death')return false;
  if(action==='attack'&&window.TransformCards&&!TransformCards.canAttack())return false;
@@ -94,13 +95,17 @@ function playCharacterAction(action,options={}){
  if(action==='idle'){characterActionState=null;characterWalkUntil=0;characterIdleStarted=movementTime();refreshCharacter();return true}
  const speedPct = action === 'attack' ? window.activeTransformCard?.attackSpeedPct || 0 : action === 'skill' ? window.activeTransformCard?.castSpeedPct || 0 : 0;
  const appearance=window.activeTransformCard||(action==='death'?window.TransformCards?.deathAppearance:null)||nativeClassAppearance();
- const started=options.force&&movementAnimating()?movementTween.started+movementTween.duration:movementTime(),duration=((typeof MonsterActions !== 'undefined' && MonsterActions.actionDuration(appearance?.p?.gfx,characterHeading,action,MonsterActions.equippedWeapon()))||data.timelines[clip].durationMs)*(window.NativePotions?.actionMultiplier(action)||1)/(1+speedPct/100);
- characterActionState={action,clip,started,duration,hold:!!options.hold,until:options.hold?Infinity:started+duration+(action==='death'?900:0)};
+ const attackClips = action === 'attack' ? appearance?.attackClips : null;
+ const visualClip = attackClips?.[nextClassAttack];
+ const started=options.force&&movementAnimating()?movementTween.started+movementTween.duration:movementTime(),duration=((typeof MonsterActions !== 'undefined' && MonsterActions.actionDuration(appearance?.p?.gfx,characterHeading,visualClip || action,visualClip ? undefined : MonsterActions.equippedWeapon()))||data.timelines[clip].durationMs)*(window.NativePotions?.actionMultiplier(action)||1)/(1+speedPct/100);
+ characterActionState={action,clip,visualClip,started,duration,hold:!!options.hold,until:options.hold?Infinity:started+duration+(action==='death'?900:0)};
+ if (attackClips) nextClassAttack = (nextClassAttack + 1) % attackClips.length;
  if(action==='attack')CombatSound.playerAttack(characterActionState);
  if(started<=movementTime())characterWalkUntil=0;
  preloadFullCharacterClip(activeCharacterAvatar(),characterHeading,clip);refreshCharacter();return true;
 }
 function resetCharacterActions(weapon='unarmed'){
+ nextClassAttack = 0;
  characterWeapon=activeCharacterActions().weapons.includes(weapon)?weapon:'unarmed';characterActionState=null;characterDead=hp<=0;characterWalkUntil=0;characterAttackUntil=0;characterIdleStarted=movementTime();characterIdentity='';refreshCharacter();
 }
 window.CharacterActions={

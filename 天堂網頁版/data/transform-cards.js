@@ -223,13 +223,17 @@ window.TransformCards = (() => {
     const scale = (typeof characterRenderScale === 'function' ? characterRenderScale() : 1) * (card.renderScale ?? 1);
     const heading = typeof characterHeading === 'string' ? characterHeading : 'E';
     const phase = acting ? null : walkPhase(now);
-    const weapon = MonsterActions.equippedWeapon();
+    const attackClip = acting && card.attackClips?.includes(action.visualClip) ? action.visualClip : null;
+    const weapon = attackClip ? undefined : MonsterActions.equippedWeapon();
     MonsterActions.warmWeapon(card.p?.gfx, heading, weapon);
     const pose = card === deathAppearance && action && now < action.started
       ? {clip: 'idle', time: now}
       : MonsterActions.pose(now);
     // 攻速會縮短攻擊動作時間，圖集要在相同時間內播放完整。
-    if (pose.clip === 'attack' && action.duration > 0) pose.phase = pose.time / action.duration;
+    if (pose.clip === 'attack' && action.duration > 0) {
+      pose.phase = pose.time / action.duration;
+      if (attackClip) pose.clip = attackClip;
+    }
     if (MonsterActions.draw(atlasBody, card.p?.gfx, heading, pose, scale, weapon, compositeLayers)) {
       alignMorphGround(MonsterActions.groundAnchor(card.p?.gfx, heading, weapon), scale);
       displayedNativeCard = card;
