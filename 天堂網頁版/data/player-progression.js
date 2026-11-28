@@ -46,14 +46,17 @@ const PlayerProgression = (() => {
   }
   function dropInfo(mob){
     const result=[],weekendActive=rates.weekend&&weekend();
+    const adenaRate=weekendActive?(rates.WeekendRateDropAdena??rates.RateDropAdena):rates.RateDropAdena;
     for(const [source,list]of dropGroups(mob))for(const drop of list){
       if(!dropAllowedOnMap(mob,drop.id)||drop.id===39288||/娃娃/.test(catalog.get(drop.id)?.name||'')||(typeof REMOVED_ITEM_IDS!=='undefined'&&REMOVED_ITEM_IDS.has(drop.id))||(typeof DROP_ONLY_REMOVED_IDS!=='undefined'&&DROP_ONLY_REMOVED_IDS.has(drop.id)))continue;
       const item=catalog.get(drop.id);if(!item||!(drop.chance>0))continue;const coin=drop.id===40308;
-      result.push({id:drop.id,key:item.kind+':'+item.id,name:item.name,icon:item.icon,source,...dropChance(mob,drop,weekendActive),min:Math.floor(Math.min(drop.min,drop.max)*(coin?rates.RateDropAdena:1)),max:Math.floor(Math.max(drop.min,drop.max)*(coin?rates.RateDropAdena:1))});
+      result.push({id:drop.id,key:item.kind+':'+item.id,name:item.name,icon:item.icon,source,...dropChance(mob,drop,weekendActive),min:Math.floor(Math.min(drop.min,drop.max)*(coin?adenaRate:1)),max:Math.floor(Math.max(drop.min,drop.max)*(coin?adenaRate:1))});
     }return result;
   }
   function roll(mob){
     const loot=[],weekendActive=rates.weekend&&weekend();
+    const adenaRate=weekendActive?(rates.WeekendRateDropAdena??rates.RateDropAdena):rates.RateDropAdena;
+    const xpRate=weekendActive?(rates.WeekendRateXp??rates.RateXp):rates.RateXp;
     for(const [,list]of dropGroups(mob))for(const drop of list){
       if(!dropAllowedOnMap(mob,drop.id)||drop.id===39288||/娃娃/.test(catalog.get(drop.id)?.name||'')||(typeof REMOVED_ITEM_IDS!=='undefined'&&REMOVED_ITEM_IDS.has(drop.id))||(typeof DROP_ONLY_REMOVED_IDS!=='undefined'&&DROP_ONLY_REMOVED_IDS.has(drop.id)))continue;
       const item=catalog.get(drop.id);
@@ -61,11 +64,11 @@ const PlayerProgression = (() => {
       const coin=drop.id===40308;
       if(Math.random()*1000000>=dropChance(mob,drop,weekendActive).chance)continue;
       const low=Math.min(drop.min,drop.max),high=Math.max(drop.min,drop.max);
-      const count=Math.floor((low+Math.floor(Math.random()*(high-low+1)))*(coin?rates.RateDropAdena:1));
+      const count=Math.floor((low+Math.floor(Math.random()*(high-low+1)))*(coin?adenaRate:1));
       if(count>0)loot.push({key:item.kind+':'+item.id,count,name:item.name});
     }
     loot.push(...DBGameRules.killRewards(mob)); loot.push(...(window.TdjSystems?.dolls.potionDrop(mob)||[])); loot.push(...(window.TowerScrolls?.drop(mob)||[])); // 傲慢之塔卷軸／傳送符 // 2026-11-22 魔法娃娃成長藥劑：BOSS 必掉 1～3、一般怪 0.3%
-    return {experience:Math.max(0,Math.floor(mob.spawn.npc.exp*rates.RateXp*DBGameRules.xpMultiplier(window.activeCharacterLevel)*(window.ItemEffects?.expRate()||1)*(1+(window.SoulRings?.bonuses().exp||0)/100))),loot}; // 經驗藥水倍率
+    return {experience:Math.max(0,Math.floor(mob.spawn.npc.exp*xpRate*DBGameRules.xpMultiplier(window.activeCharacterLevel)*(window.ItemEffects?.expRate()||1)*(1+(window.SoulRings?.bonuses().exp||0)/100))),loot}; // 經驗藥水倍率
   }
   function award(mob){
     if(window.gameFlowState!=='playing'||CharacterActions.dead||OwnedInventory.owner!==window.activeCharacterId)return false;
