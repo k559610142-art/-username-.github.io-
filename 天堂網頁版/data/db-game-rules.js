@@ -4,6 +4,12 @@ const DBGameRules = (() => {
     tables.set(name,table.rows.map(row=>Object.fromEntries(table.columns.map((c,i)=>[c.name,row[i]]))));
   }
   const rows=name=>tables.get(name)||[];
+  // 六種能力萬能藥各保留原配方，停用同材料的重複配方。
+  const elixirRecipes = new Set([162, 163, 164, 165, 166, 167]);
+  const duplicateElixirRecipes = new Set([855, 856, 857, 858, 859, 860]);
+  tables.set('system_item_blend', rows('system_item_blend')
+    .filter(row => !duplicateElixirRecipes.has(row.id))
+    .map(row => elixirRecipes.has(row.id) ? {...row, rnd: 30} : row));
   const roleCode={'王族':0,'騎士':1,'法師':2,'妖精':3,'黑妖':4};
   const roleFlag={'王族':1,'騎士':2,'妖精':4,'法師':8,'黑妖':16};
   const byId=new Map(INTERFACE_CATALOG.items.map(item=>[item.id,item]));
