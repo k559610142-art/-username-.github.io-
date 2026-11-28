@@ -37,23 +37,29 @@ const PlayerProgression = (() => {
     const hasNativeGold=map===303&&native.some(drop=>drop.id===40308&&drop.chance>0&&Math.max(drop.min,drop.max)>0);
     return [['monster',native],['region',hasNativeGold?regional.filter(drop=>drop.id!==40308):regional]];
   }
+  function dropChance(mob,drop,weekendActive){
+    const map=mob.spawn.mapId??window.activeMapId??0;
+    if(map>=101&&map<=110&&drop.id>=40397&&drop.id<=40400&&drop.chance>0)
+      return {baseChance:50000,chance:weekendActive?80000:50000};
+    const multiplier=drop.fixedRate||drop.id===40308?1:rates.RateDropItems*(weekendActive?rates.WeekendRateDropItems:1);
+    return {baseChance:drop.chance,chance:Math.min(1000000,drop.chance*multiplier)};
+  }
   function dropInfo(mob){
-    const result=[],weekendRate=rates.weekend&&weekend()?rates.WeekendRateDropItems:1;
+    const result=[],weekendActive=rates.weekend&&weekend();
     for(const [source,list]of dropGroups(mob))for(const drop of list){
       if(!dropAllowedOnMap(mob,drop.id)||drop.id===39288||/娃娃/.test(catalog.get(drop.id)?.name||'')||(typeof REMOVED_ITEM_IDS!=='undefined'&&REMOVED_ITEM_IDS.has(drop.id))||(typeof DROP_ONLY_REMOVED_IDS!=='undefined'&&DROP_ONLY_REMOVED_IDS.has(drop.id)))continue;
-      const item=catalog.get(drop.id);if(!item||!(drop.chance>0))continue;const coin=drop.id===40308,multiplier=drop.fixedRate||coin?1:rates.RateDropItems*weekendRate;
-      result.push({id:drop.id,key:item.kind+':'+item.id,name:item.name,icon:item.icon,source,chance:Math.min(1000000,drop.chance*multiplier),baseChance:drop.chance,min:Math.floor(Math.min(drop.min,drop.max)*(coin?rates.RateDropAdena:1)),max:Math.floor(Math.max(drop.min,drop.max)*(coin?rates.RateDropAdena:1))});
+      const item=catalog.get(drop.id);if(!item||!(drop.chance>0))continue;const coin=drop.id===40308;
+      result.push({id:drop.id,key:item.kind+':'+item.id,name:item.name,icon:item.icon,source,...dropChance(mob,drop,weekendActive),min:Math.floor(Math.min(drop.min,drop.max)*(coin?rates.RateDropAdena:1)),max:Math.floor(Math.max(drop.min,drop.max)*(coin?rates.RateDropAdena:1))});
     }return result;
   }
   function roll(mob){
-    const loot=[],weekendRate=rates.weekend&&weekend()?rates.WeekendRateDropItems:1;
+    const loot=[],weekendActive=rates.weekend&&weekend();
     for(const [,list]of dropGroups(mob))for(const drop of list){
       if(!dropAllowedOnMap(mob,drop.id)||drop.id===39288||/娃娃/.test(catalog.get(drop.id)?.name||'')||(typeof REMOVED_ITEM_IDS!=='undefined'&&REMOVED_ITEM_IDS.has(drop.id))||(typeof DROP_ONLY_REMOVED_IDS!=='undefined'&&DROP_ONLY_REMOVED_IDS.has(drop.id)))continue;
       const item=catalog.get(drop.id);
       if(!item)throw Error('掉落道具不存在：'+drop.id);
       const coin=drop.id===40308;
-      const multiplier=drop.fixedRate?1:coin?1:rates.RateDropItems*weekendRate;
-      if(Math.random()*1000000>=Math.min(1000000,drop.chance*multiplier))continue;
+      if(Math.random()*1000000>=dropChance(mob,drop,weekendActive).chance)continue;
       const low=Math.min(drop.min,drop.max),high=Math.max(drop.min,drop.max);
       const count=Math.floor((low+Math.floor(Math.random()*(high-low+1)))*(coin?rates.RateDropAdena:1));
       if(count>0)loot.push({key:item.kind+':'+item.id,count,name:item.name});

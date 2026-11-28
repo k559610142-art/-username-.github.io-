@@ -30,13 +30,25 @@ const ItemEffects=(()=>{
   return target.attributeRank>=ranks.length?'武器已達 5 階，卷軸未消耗。':'';
  }
  const accessoryTypes=new Set(['necklace','amulet','earring','ring','ring2','belt']);
+ // server_item_power_update: each color has nine consecutive item IDs, for stages 0–8.
+ const meisterEarringBases=[70220,70229,70238];
+ const meisterEarringRates=[30,30,30,30,30,30,20,10];
+ const meisterEarringStage=id=>{
+  const base=meisterEarringBases.find(start=>id>=start&&id<start+9);
+  return base===undefined?-1:id-base;
+ };
  const enchantKind=key=>key.startsWith('etcitem:')?({
   40074:'armor',140074:'armor',240074:'armor',40087:'weapon',140087:'weapon',240087:'weapon',
-  49147:'accessory',49148:'accessory'
+  49147:'accessory',49148:'accessory',60231:'meisterEarring'
  })[Number(key.slice(8))]:undefined;
  function canEnchant(entry,kind){
   const item=entry?.item;
-  if(!item||entry.count!==1||(item.sourceRules?.safenchant??0)<0)return false;
+  if(!item||entry.count!==1)return false;
+  if(kind==='meisterEarring'){
+   const stage=meisterEarringStage(item.id);
+   return item.kind==='armor'&&item.type==='earring'&&stage>=0&&stage<meisterEarringRates.length;
+  }
+  if((item.sourceRules?.safenchant??0)<0)return false;
   const targetKind=item.kind==='armor'&&accessoryTypes.has(item.type)?'accessory':item.kind;
   return targetKind===kind;
  }
@@ -72,6 +84,16 @@ const ItemEffects=(()=>{
    return true;
   }
   if(!scroll||scroll.slot||enchantKind(scroll.key)!==kind||!canEnchant(target,kind))return say('卷軸或裝備已變更，請重新選擇。');
+  if(kind==='meisterEarring'){
+   const next=OwnedInventory.snapshot,row=next.find(e=>e.uid===targetUid),used=next.find(e=>e.uid===scrollUid);
+   const success=Math.random()*100<meisterEarringRates[meisterEarringStage(target.item.id)];
+   if(--used.count===0)next.splice(next.indexOf(used),1);
+   if(success)row.key='armor:'+(target.item.id+1);
+   else next.splice(next.indexOf(row),1);
+   if(!OwnedInventory.applyChange(next))return false;
+   toast(success?'麥斯特耳環強化成功。':'強化失敗，麥斯特耳環已消失。');
+   return true;
+  }
   const rule=defs()[scroll.key],bless=scroll.bless??rule.bless;
   const current=target.enchant||0,safe=target.item.sourceRules?.safenchant??0;
   const signature=OilParasolRules.isWeapon(target.item);
@@ -87,12 +109,12 @@ const ItemEffects=(()=>{
  }
  function openEnchant(scroll,kind){
   const items=OwnedInventory.items.filter(e=>kind==='attribute'?e.item.kind==='weapon'&&e.count===1:canEnchant(e,kind));
-  if(!items.length){toast(kind==='accessory'?'背包裡沒有可強化的飾品。':'背包裡沒有可用這張卷軸強化的裝備。');return false;}
+  if(!items.length){toast(kind==='meisterEarring'?'背包裡沒有未達 8 階的麥斯特耳環。':kind==='accessory'?'背包裡沒有可強化的飾品。':'背包裡沒有可用這張卷軸強化的裝備。');return false;}
   const overlay=document.querySelector('#panel'),content=document.querySelector('#panelContent');
   cancelPointerGesture({preserveNavigation:true});
   overlay.classList.remove('classic-panel','reference-menu-panel','game-catalog-panel','npc-shop-panel','map-overview-panel','bookmark-panel');
   overlay.classList.add('native-dialog-panel');
-  const title={weapon:'武器強化',armor:'盔甲強化',accessory:'飾品強化',attribute:'武器屬性強化'}[kind];
+  const title={weapon:'武器強化',armor:'盔甲強化',accessory:'飾品強化',attribute:'武器屬性強化',meisterEarring:'麥斯特耳環強化'}[kind];
   overlay.setAttribute('aria-label',title);overlay.querySelector('#close').hidden=false;overlay.hidden=false;
   const dialog=uiElement('div','native-dialog enchant-scroll-dialog'),select=uiElement('select');
   const note=uiElement('p','','選擇裝備後，消耗 1 張卷軸。'),submit=uiElement('button','','確認強化');
@@ -110,6 +132,11 @@ const ItemEffects=(()=>{
     return;
    }
    if(scroll.key==='etcitem:49147'){note.textContent='消耗 1 張卷軸，強化值必定增加 1。';return;}
+   if(kind==='meisterEarring'){
+    const stage=meisterEarringStage(item.item.id);
+    note.textContent='升至 '+(stage+1)+' 階，成功率 '+meisterEarringRates[stage]+'%。強化失敗時耳環會消失。';
+    return;
+   }
    const safe=item.item.sourceRules?.safenchant??0,bless=scroll.bless??defs()[scroll.key].bless;
    note.textContent='安全強化值 +'+safe+'。'+(bless===2?(item.enchant||0)<=-7?'這件裝備可能消失。':'詛咒卷軸會降低 1 點強化值。':(item.enchant||0)>=safe?'超過安全範圍，失敗時裝備可能消失。':'使用卷軸強化這件裝備。');
   };

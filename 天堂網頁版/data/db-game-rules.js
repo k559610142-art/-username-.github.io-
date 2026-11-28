@@ -21,8 +21,11 @@ const DBGameRules = (() => {
     min_count:1,max_count:1,bless:-1,enchant:0
   }));
   tables.set('etcitem_box',[
-    ...rows('etcitem_box').filter(row=>row.box_item_id!==39185),
-    ...ancientChestRewards
+    ...rows('etcitem_box').filter(row=>row.box_item_id!==39185&&row.box_item_id!==40639),
+    ...ancientChestRewards,
+    // 原始核心 Box_DarkPowerArmy 的魔獸軍王印記盒獎勵。
+    ...[[40638,30,3],[40675,22,3],[40703,10,1],[20020,9,1],[20058,9,1],[20168,9,1],[20201,9,1],[155,1,1],[20200,1,1]]
+      .map(([get_item_id,random,count])=>({box_item_id:40639,get_item_id,random,randomint:100,min_count:count,max_count:count,bless:-1,enchant:0}))
   ]);
   const split=value=>String(value??'').split(',').filter(Boolean).map(Number);
   const clone=value=>JSON.parse(JSON.stringify(value));
