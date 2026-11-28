@@ -282,6 +282,18 @@ const DBGameRules = (() => {
     [5, [40507, 5], [40494, 20]],
     [22, [89, 1], [40507, 10], [40044, 1], [3, 1], [40503, 50]]
   ];
+  // 巴姆特原始配方（核心 data/xml/NpcActions/ItemMaking.xml）。
+  const bamuteDialogueCraft=[
+    [40406,[40405,20]],
+    [40401,[40399,5],[40308,500]],
+    [40402,[40397,5],[40308,500]],
+    [40403,[40398,5],[40308,500]],
+    [40404,[40400,5],[40308,500]],
+    [20071,[40401,100],[40393,3],[40045,30],[40495,50],[40308,100000]],
+    [20059,[40402,100],[40395,3],[40047,30],[40495,50],[40308,100000]],
+    [20061,[40403,100],[40394,3],[40046,30],[40495,50],[40308,100000]],
+    [20054,[40404,100],[40396,3],[40044,30],[40495,50],[40308,100000]]
+  ];
   function dialogueRecipe(npcid,npcname,new_item,materials){
     return {
       id:-new_item,npcid,npcname,new_item,
@@ -294,7 +306,7 @@ const DBGameRules = (() => {
     };
   }
   const isElvenCraft=recipe=>elvenNpcIds.has(recipe.npcid);
-  const craftRecipes=()=>[...rows('system_item_blend'),...elvenDialogueCraft.map(([id,...materials])=>dialogueRecipe(70838,'娜魯帕',id,materials)),...giranCraftingData.map(args=>dialogueRecipe(...args))].filter(r=>!towerCraftItems.has(Number(r.new_item))&&(SOUL_CRAFT.has(r.id)||!['box','wuhun','doll'].includes(craftCategory(byId.get(Number(r.new_item)))))&&Number(r.addchanceitem)!==39288&&!split(r.materials).includes(39288)&&!/^(?:回收魔珠)|神聖魔法書|神力禮盒/.test(byId.get(Number(r.new_item))?.name||'')&&!hiddenCraftItems.has(Number(r.new_item))&&!(String(r.materials)==='40308'&&[39287,39288].includes(Number(r.new_item)))&&![50,51,576,577,578,697,698].includes(r.id)).map(r=>SOUL_CRAFT.has(r.id)?{...r,materials:'39287',materials_count:SOUL_CRAFT_COST,addchanceitem:0}:r); // 576～578：卡立普暗黑武器的舊版重複配方（沒有等級職業限制），只留 1061～1063「死神之証」 // 武魂結晶／提煉石不能用金幣做，只能打怪掉（使用者 2026-11-15）
+  const craftRecipes=()=>[...rows('system_item_blend'),...elvenDialogueCraft.map(([id,...materials])=>dialogueRecipe(70838,'娜魯帕',id,materials)),...giranCraftingData.map(args=>dialogueRecipe(...args)),...bamuteDialogueCraft.map(([id,...materials])=>{const recipe=dialogueRecipe(70690,"巴姆特",id,materials);return {...recipe,note:recipe.note.replace("屬性 斗篷","屬性斗篷")};})].filter(r=>!towerCraftItems.has(Number(r.new_item))&&(SOUL_CRAFT.has(r.id)||!['box','wuhun','doll'].includes(craftCategory(byId.get(Number(r.new_item)))))&&Number(r.addchanceitem)!==39288&&!split(r.materials).includes(39288)&&!/^(?:回收魔珠)|神聖魔法書|神力禮盒/.test(byId.get(Number(r.new_item))?.name||'')&&!hiddenCraftItems.has(Number(r.new_item))&&!(String(r.materials)==='40308'&&[39287,39288].includes(Number(r.new_item)))&&![50,51,576,577,578,697,698].includes(r.id)).map(r=>SOUL_CRAFT.has(r.id)?{...r,materials:'39287',materials_count:SOUL_CRAFT_COST,addchanceitem:0}:r); // 576～578：卡立普暗黑武器的舊版重複配方（沒有等級職業限制），只留 1061～1063「死神之証」 // 武魂結晶／提煉石不能用金幣做，只能打怪掉（使用者 2026-11-15）
   function craft(npcId,id,anywhere=false){ // anywhere：從目錄「製作」視窗做，不用靠近 NPC（使用者 2026-11-14 決定）
     const recipe=craftRecipes().find(r=>r.id===id&&r.npcid===npcId);
     if(!recipe||!anywhere&&!IslandMonsters.serviceNearby(npcId,3))return '請靠近對應的製作 NPC。';
