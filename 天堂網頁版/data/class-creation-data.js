@@ -17,6 +17,7 @@ window.CreationRules=(()=>{
   classes['油傘女']={
     type:8,gender:1,base:{str:11,dex:17,con:12,wis:10,cha:7,int:8},points:10,hp:14,
     portraits:['../transform-portraits/980001.png','../transform-portraits/980001.png'],
+    selectionArt:'oil-parasol-selection.png',
     intro:'以油傘近身作戰。敏捷提升命中與傷害，張傘可吸收傷害。'
   };
   const validGender=(role,gender)=>(gender===0||gender===1)&&(classes[role]?.gender===undefined||gender===classes[role].gender);
